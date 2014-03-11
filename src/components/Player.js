@@ -81,3 +81,12 @@ WebAudio.Player.prototype.stop = function(stopTime){
 		this.source.stop(stopTime);
 	}
 }
+
+//@returns {number} the buffer duration
+WebAudio.Player.prototype.getDuration = function(){
+	if (this.buffer){
+		this.buffer.duration;
+	} else {
+		return 0;
+	}
+}

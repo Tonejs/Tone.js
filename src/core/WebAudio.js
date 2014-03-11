@@ -101,16 +101,7 @@
 	WebAudio.prototype.isSupported = function(){
 		return audioContext !== undefined;
 	}
-
-    WebAudio.prototype.dbToGain = function(db) {
-        // return Math.max(0, Math.round(1000 * Math.pow(2, db / 6)) / 1000);
-        return Math.pow(2, db / 6);
-    }
-
-    WebAudio.prototype.gainToDb = function(gain) {
-        return  20 * (Math.log(gain) / Math.LN10);
-    }
-
+	
 	//A extends B
 	WebAudio.prototype.extend = function(A, B){
 		A.prototype = new B();
