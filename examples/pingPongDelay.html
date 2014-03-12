@@ -1,0 +1,67 @@
+<html>
+<head>
+	<title>Web Audio</title>
+
+	<script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
+	<script type="text/javascript" src="../src/core/WebAudio.js"></script>
+	<script type="text/javascript" src="../src/core/Unit.js"></script>
+	<script type="text/javascript" src="../src/components/Player.js"></script>
+	<script type="text/javascript" src="../src/components/Meter.js"></script>
+	<script type="text/javascript" src="../src/components/Envelope.js"></script>
+	<script type="text/javascript" src="../src/components/LFO.js"></script>
+	<script type="text/javascript" src="../src/components/Noise.js"></script>
+	<script type="text/javascript" src="../src/components/StereoSplit.js"></script>
+	<script type="text/javascript" src="../src/effects/Effect.js"></script>
+	<script type="text/javascript" src="../src/effects/FeedbackDelay.js"></script>
+	<script type="text/javascript" src="../src/effects/PingPongDelay.js"></script>
+	<script type="text/javascript" src="../src/GUI/GUI.Meter.js"></script>
+</head>
+<body>
+	<style type="text/css">
+		#meter {
+			width: 100%;
+			text-align: center;
+			font-size: 10px;
+		}
+	</style>
+	<div id='Instructions'>Press 'e'</div>
+	<div id='meter'></div>
+	<script type="text/javascript">
+		var player = new WebAudio.Player("../audio/A3.mp3");
+		var meter = new WebAudio.Meter(2);
+		var env = new WebAudio.Envelope(.01, .05, 0, 0);
+		var lfo = new WebAudio.LFO(undefined, 1, .5, 1);
+		var noise = new WebAudio.Noise();
+		var feedbackDelay = new WebAudio.PingPongDelay(.25);
+		var meterGui = new WebAudio.GUI.Meter($("#meter")[0], meter);
+		
+		noise.connect(env);
+		env.connect(feedbackDelay);
+		feedbackDelay.setFeedback(.5);
+		// lfo.connect(feedbackDelay);
+		// env.connect(WebAudio.output);
+		feedbackDelay.connect(meter);
+		feedbackDelay.connect(WebAudio.output);
+
+		noise.setVolume(.4);
+
+		player.load(function(){
+			// player.loop(0, 0, 1);
+			player.loop();
+		});
+		setInterval(function(){
+			// var text = meter.getVolume(0).toFixed(3);
+			// text += " "+meter.getVolume(1).toFixed(3)
+			// $("#meter").html(text);
+		}, 100);
+
+		$(document).keydown(function(e){
+			if (e.which == 69){
+				env.triggerAttack();
+			} else if (e.which == 83) {
+				env.triggerRelease();
+			}
+		});
+	</script>
+</body>
+</html>

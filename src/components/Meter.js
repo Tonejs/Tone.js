@@ -74,6 +74,6 @@ WebAudio.Meter.prototype.onprocess = function(event){
 	    	sum += x * x;
 		}
 		var rms = Math.sqrt(sum / bufferSize);
-		this.volume[channel] = Math.max(rms, this.volume[channel] * .8);
+		this.volume[channel] = Math.max(rms, this.volume[channel] * .9);
 	}
 }

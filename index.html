@@ -27,6 +27,7 @@
 		
 		noise.connect(env);
 		env.connect(feedbackDelay);
+		feedbackDelay.setFeedback(.5);
 		// lfo.connect(feedbackDelay);
 		// env.connect(WebAudio.output);
 		feedbackDelay.connect(meter);
