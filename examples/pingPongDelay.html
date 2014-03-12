@@ -5,6 +5,7 @@
 	<script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
 	<script type="text/javascript" src="../src/core/WebAudio.js"></script>
 	<script type="text/javascript" src="../src/core/Unit.js"></script>
+	<script type="text/javascript" src="../src/core/AudioUnit.js"></script>
 	<script type="text/javascript" src="../src/components/Player.js"></script>
 	<script type="text/javascript" src="../src/components/Meter.js"></script>
 	<script type="text/javascript" src="../src/components/Envelope.js"></script>
@@ -27,15 +28,16 @@
 	<div id='Instructions'>Press 'e'</div>
 	<div id='meter'></div>
 	<script type="text/javascript">
-		var player = new WebAudio.Player("../audio/A3.mp3");
+		var player = new AudioUnit.Player("../audio/A3.mp3");
 		var meter = new WebAudio.Meter(2);
 		var env = new WebAudio.Envelope(.01, .05, 0, 0);
 		var lfo = new WebAudio.LFO(undefined, 1, .5, 1);
 		var noise = new WebAudio.Noise();
 		var feedbackDelay = new WebAudio.PingPongDelay(.25);
-		var meterGui = new WebAudio.GUI.Meter($("#meter")[0], meter);
+		// var meterGui = new WebAudio.GUI.Meter($("#meter")[0], meter);
 		
-		noise.connect(env);
+		//player.connect(env);
+		player.toSpeakers();
 		env.connect(feedbackDelay);
 		feedbackDelay.setFeedback(.5);
 		// lfo.connect(feedbackDelay);

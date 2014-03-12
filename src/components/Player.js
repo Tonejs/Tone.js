@@ -4,9 +4,9 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-WebAudio.Player = function(url){
+AudioUnit.Player = function(url){
 	//extend Unit
-	WebAudio.Unit.call(this);
+	AudioUnit.call(this);
 
 	//player vars
 	this.url = url;
@@ -14,19 +14,19 @@ WebAudio.Player = function(url){
 	this.buffer = null;
 }
 
-WebAudio.extend(WebAudio.Player, WebAudio.Unit);
+AudioUnit.extend(AudioUnit.Player, AudioUnit);
 
 //makes an xhr for the buffer at the url
 //invokes the callback at the end
-//@param {function(WebAudio.Player)=} callback
-WebAudio.Player.prototype.load = function(callback){
+//@param {function(AudioUnit.Player)=} callback
+AudioUnit.Player.prototype.load = function(callback){
 	var request = new XMLHttpRequest();
 	request.open('GET', this.url, true);
 	request.responseType = 'arraybuffer';
 	// decode asynchronously
 	var self = this;
 	request.onload = function() {
-		WebAudio.decodeAudioData(request.response, function(b) {
+		self.context.decodeAudioData(request.response, function(b) {
 			self.buffer = b;
 			if (callback){
 				callback(self);
@@ -39,14 +39,14 @@ WebAudio.Player.prototype.load = function(callback){
 }
 
 //play the buffer from start to finish at a time
-WebAudio.Player.prototype.start = function(startTime, offset, duration){
+AudioUnit.Player.prototype.start = function(startTime, offset, duration){
 	if (this.buffer){
 		//default args
-		startTime = this.defaultArgument(startTime, WebAudio.now);
+		startTime = this.defaultArgument(startTime, AudioUnit.now());
 		offset = this.defaultArgument(offset, 0);
 		duration = this.defaultArgument(duration, this.buffer.duration - offset);
 		//make the source
-		this.source = WebAudio.createBufferSource();
+		this.source = this.context.createBufferSource();
 		this.source.buffer = this.buffer;
 		this.source.loop = false;
 		this.source.connect(this.output);
@@ -55,16 +55,16 @@ WebAudio.Player.prototype.start = function(startTime, offset, duration){
 }
 
 //play the buffer from start to finish at a time
-WebAudio.Player.prototype.loop = function(startTime, loopStart, loopEnd, offset, duration){
+AudioUnit.Player.prototype.loop = function(startTime, loopStart, loopEnd, offset, duration){
 	if (this.buffer){
 		//default args
-		startTime = this.defaultArgument(startTime, WebAudio.now);
+		startTime = this.defaultArgument(startTime, this.now());
 		loopStart = this.defaultArgument(loopStart, 0);
 		loopEnd = this.defaultArgument(loopEnd, this.buffer.duration);
 		offset = this.defaultArgument(offset, loopStart);
 		duration = this.defaultArgument(duration, this.buffer.duration - offset);
 		//make/play the source
-		this.source = WebAudio.createBufferSource();
+		this.source = this.context.createBufferSource();
 		this.source.buffer = this.buffer;
 		this.source.loop = true;
 		this.source.loopStart = loopStart;
@@ -75,15 +75,15 @@ WebAudio.Player.prototype.loop = function(startTime, loopStart, loopEnd, offset,
 }
 
 //stop playback
-WebAudio.Player.prototype.stop = function(stopTime){
+AudioUnit.Player.prototype.stop = function(stopTime){
 	if (this.buffer){
-		stopTime = this.defaultArgument(stopTime, WebAudio.now);
+		stopTime = this.defaultArgument(stopTime, this.now());
 		this.source.stop(stopTime);
 	}
 }
 
 //@returns {number} the buffer duration
-WebAudio.Player.prototype.getDuration = function(){
+AudioUnit.Player.prototype.getDuration = function(){
 	if (this.buffer){
 		this.buffer.duration;
 	} else {
