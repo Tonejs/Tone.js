@@ -2,7 +2,11 @@
   width: 30px;
   height: 6px;
   margin-bottom: 2px;
-  opacity: 0; }
+  opacity: 0;
+  -webkit-transition: opacity 0.016s linear;
+  -moz-transition: opacity 0.016s linear;
+  -o-transition: opacity 0.016s linear;
+  transition: opacity 0.016s linear; }
 
 .bar .segment.peak {
   background-color: red; }

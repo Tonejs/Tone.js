@@ -14,6 +14,7 @@
 	height: 6px;
 	margin-bottom: 2px;
 	opacity: 0;
+	@include transitionAndTime(opacity, .016s);
 }
 
 .bar .segment.peak {
