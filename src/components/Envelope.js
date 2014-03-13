@@ -5,31 +5,31 @@
 //	ADR envelope generator attaches to an AudioParam
 ///////////////////////////////////////////////////////////////////////////////
 
-WebAudio.Envelope = function(attack, decay, sustain, release, audioParam, minOutput, maxOutput){
+AudioUnit.Envelope = function(attack, decay, sustain, release, audioParam, minOutput, maxOutput){
 	//extend Unit
-	WebAudio.Unit.call(this);
+	AudioUnit.call(this);
 
 	this.input.connect(this.output);
-	this.param = this.defaultArgument(audioParam, this.input.gain);
-	this.attack = this.defaultArgument(attack, .01);
-	this.decay = this.defaultArgument(decay, .1);
-	this.release = this.defaultArgument(release, 1);
-	this.sustain = this.defaultArgument(sustain, .5);
-	this.min = this.defaultArgument(minOutput, 0);
-	this.max = this.defaultArgument(maxOutput, 1);
+	this.param = this.defaultArg(audioParam, this.input.gain);
+	this.attack = this.defaultArg(attack, .01);
+	this.decay = this.defaultArg(decay, .1);
+	this.release = this.defaultArg(release, 1);
+	this.sustain = this.defaultArg(sustain, .5);
+	this.min = this.defaultArg(minOutput, 0);
+	this.max = this.defaultArg(maxOutput, 1);
 	//set the initial
 	this.param.value = this.min;
 }
 
-WebAudio.extend(WebAudio.Envelope, WebAudio.Unit);
+AudioUnit.extend(AudioUnit.Envelope, AudioUnit);
 
 //attack->decay->sustain
-WebAudio.Envelope.prototype.triggerAttack = function(time){
+AudioUnit.Envelope.prototype.triggerAttack = function(time){
 	var startVal = this.min;
 	if (!time){
 		startVal = this.param.value;
 	}
-	time = this.defaultArgument(time, WebAudio.now);
+	time = this.defaultArg(time, this.now());
 	this.param.cancelScheduledValues(time);
 	this.param.setValueAtTime(startVal, time);
 	this.param.linearRampToValueAtTime(this.max, time + this.attack);
@@ -38,12 +38,12 @@ WebAudio.Envelope.prototype.triggerAttack = function(time){
 }
 
 //triggers the release portiion of the envelope
-WebAudio.Envelope.prototype.triggerRelease = function(time){
+AudioUnit.Envelope.prototype.triggerRelease = function(time){
 	var startVal = this.param.value;
 	if (time){
 		startVal = (this.max - this.min) * this.sustain + this.min;
 	}
-	time = this.defaultArgument(time, WebAudio.now);
+	time = this.defaultArg(time, this.now());
 	this.param.cancelScheduledValues(time);
 	this.param.setValueAtTime(startVal, time);
 	this.param.linearRampToValueAtTime(this.min, time + this.release);
@@ -54,32 +54,32 @@ WebAudio.Envelope.prototype.triggerRelease = function(time){
 ///////////////////////////////////////////////////////////////////////////////
 
 //@param {number} attack (seconds)
-WebAudio.Envelope.setAttack = function(attack){
+AudioUnit.Envelope.setAttack = function(attack){
 	this.attack = attack;
 }
 
 //@param {number} decay (seconds)
-WebAudio.Envelope.setDecay = function(decay){
+AudioUnit.Envelope.setDecay = function(decay){
 	this.decay = decay;
 }
 
 //@param {number} release (seconds)
-WebAudio.Envelope.setRelease = function(release){
+AudioUnit.Envelope.setRelease = function(release){
 	this.release = release;
 }
 
 //@param {number} sustain (gain)
-WebAudio.Envelope.setSustain = function(sustain){
+AudioUnit.Envelope.setSustain = function(sustain){
 	this.sustain = sustain;
 }
 
 //@param {number} min
-WebAudio.Envelope.setMin = function(min){
+AudioUnit.Envelope.setMin = function(min){
 	this.min = min;
 }
 
 //@param {number} max
-WebAudio.Envelope.setMax = function(max){
+AudioUnit.Envelope.setMax = function(max){
 	this.max = max;
 }
 

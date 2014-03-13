@@ -1,0 +1,14 @@
+.bar .segment {
+  width: 30px;
+  height: 6px;
+  margin-bottom: 2px;
+  opacity: 0; }
+
+.bar .segment.peak {
+  background-color: red; }
+
+.bar .segment.high {
+  background-color: orange; }
+
+.bar .segment.normal {
+  background-color: green; }

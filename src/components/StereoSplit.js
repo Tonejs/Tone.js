@@ -6,15 +6,15 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 
-WebAudio.StereoSplit = function(){
+AudioUnit.StereoSplit = function(){
 	//extends Unit
-	WebAudio.Unit.call(this);
+	AudioUnit.call(this);
 
-	this.merger = WebAudio.createChannelMerger(2);
-	this.leftSend = WebAudio.createGain();
-	this.leftReturn = WebAudio.createGain();
-	this.rightSend = WebAudio.createGain();
-	this.rightReturn = WebAudio.createGain();
+	this.merger = this.context.createChannelMerger(2);
+	this.leftSend = this.context.createGain();
+	this.leftReturn = this.context.createGain();
+	this.rightSend = this.context.createGain();
+	this.rightReturn = this.context.createGain();
 
 	//connect it up
 	this.input.connect(this.leftSend);
@@ -24,12 +24,12 @@ WebAudio.StereoSplit = function(){
 	this.merger.connect(this.output);
 }
 
-WebAudio.extend(WebAudio.StereoSplit, WebAudio.Unit);
+AudioUnit.extend(AudioUnit.StereoSplit, AudioUnit);
 
-WebAudio.StereoSplit.prototype.connectLeft = function(unit){
-	this.chain([this.leftSend, unit, this.leftReturn]);
+AudioUnit.StereoSplit.prototype.connectLeft = function(unit){
+	this.chain(this.leftSend, unit, this.leftReturn);
 }
 
-WebAudio.StereoSplit.prototype.connectRight = function(unit){
-	this.chain([this.rightSend, unit, this.rightReturn]);
+AudioUnit.StereoSplit.prototype.connectRight = function(unit){
+	this.chain(this.rightSend, unit, this.rightReturn);
 }

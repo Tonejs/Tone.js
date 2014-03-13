@@ -42,9 +42,9 @@ AudioUnit.Player.prototype.load = function(callback){
 AudioUnit.Player.prototype.start = function(startTime, offset, duration){
 	if (this.buffer){
 		//default args
-		startTime = this.defaultArgument(startTime, AudioUnit.now());
-		offset = this.defaultArgument(offset, 0);
-		duration = this.defaultArgument(duration, this.buffer.duration - offset);
+		startTime = this.defaultArg(startTime, this.now());
+		offset = this.defaultArg(offset, 0);
+		duration = this.defaultArg(duration, this.buffer.duration - offset);
 		//make the source
 		this.source = this.context.createBufferSource();
 		this.source.buffer = this.buffer;
@@ -58,11 +58,11 @@ AudioUnit.Player.prototype.start = function(startTime, offset, duration){
 AudioUnit.Player.prototype.loop = function(startTime, loopStart, loopEnd, offset, duration){
 	if (this.buffer){
 		//default args
-		startTime = this.defaultArgument(startTime, this.now());
-		loopStart = this.defaultArgument(loopStart, 0);
-		loopEnd = this.defaultArgument(loopEnd, this.buffer.duration);
-		offset = this.defaultArgument(offset, loopStart);
-		duration = this.defaultArgument(duration, this.buffer.duration - offset);
+		startTime = this.defaultArg(startTime, this.now());
+		loopStart = this.defaultArg(loopStart, 0);
+		loopEnd = this.defaultArg(loopEnd, this.buffer.duration);
+		offset = this.defaultArg(offset, loopStart);
+		duration = this.defaultArg(duration, this.buffer.duration - offset);
 		//make/play the source
 		this.source = this.context.createBufferSource();
 		this.source.buffer = this.buffer;
@@ -77,7 +77,7 @@ AudioUnit.Player.prototype.loop = function(startTime, loopStart, loopEnd, offset
 //stop playback
 AudioUnit.Player.prototype.stop = function(stopTime){
 	if (this.buffer){
-		stopTime = this.defaultArgument(stopTime, this.now());
+		stopTime = this.defaultArg(stopTime, this.now());
 		this.source.stop(stopTime);
 	}
 }

@@ -5,7 +5,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 //@param {number=} delayTime
-WebAudio.StereoMeter = function(){
-	WebAudio.StereoSplit.call(this);
+AudioUnit.StereoMeter = function(){
+	AudioUnit.StereoSplit.call(this);
 
 }

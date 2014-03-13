@@ -5,18 +5,18 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 //@param {number} delayTime
-WebAudio.FeedbackDelay = function(delayTime){
-	WebAudio.Effect.call(this);
+AudioUnit.FeedbackDelay = function(delayTime){
+	AudioUnit.Effect.call(this);
 
-	this.delay = WebAudio.createDelay(4);
-	this.delay.delayTime.value = this.defaultArgument(delayTime, .25);
+	this.delay = this.context.createDelay(4);
+	this.delay.delayTime.value = this.defaultArg(delayTime, .25);
 
 	//connect it up
 	this.connectEffect(this.delay);
 }
 
-WebAudio.extend(WebAudio.FeedbackDelay, WebAudio.Effect);
+AudioUnit.extend(AudioUnit.FeedbackDelay, AudioUnit.Effect);
 
-WebAudio.FeedbackDelay.prototype.setDelayTime = function(delayTime){
+AudioUnit.FeedbackDelay.prototype.setDelayTime = function(delayTime){
 	this.rampToValue(this.delay.delayTime, delayTime);
 }

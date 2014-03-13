@@ -105,7 +105,7 @@
 	//@param {number} value
 	//@param {number=} duration (in seconds)
 	AudioUnit.prototype.fadeTo = function(value, duration){
-		this.defaultArgument(duration, this.fadeTime);
+		this.defaultArg(duration, this.fadeTime);
 		this.rampToValue(this.output.gain, value, duration);
 	}
 
@@ -125,7 +125,7 @@
 	AudioUnit.prototype.rampToValue = function(audioParam, value, duration){
 		var currentValue = audioParam.value;
 		var now = this.now();
-		duration = this.defaultArgument(duration, this.fadeTime);
+		duration = this.defaultArg(duration, this.fadeTime);
 		audioParam.setValueAtTime(currentValue, now);
 		audioParam.linearRampToValueAtTime(value, now + duration);
 	}
@@ -145,7 +145,7 @@
 	//@param {*} given
 	//@param {*} fallback
 	//@returns {*}
-	AudioUnit.prototype.defaultArgument = function(given, fallback){
+	AudioUnit.prototype.defaultArg = function(given, fallback){
 		return typeof(given) !== 'undefined' ? given : fallback;
 	}
 
@@ -170,7 +170,7 @@
 
 	//@param {AudioParam|AudioUnit=} unit
 	AudioUnit.prototype.toSpeakers = function(unit){
-		unit = this.defaultArgument(unit, this.output);
+		unit = this.defaultArg(unit, this.output);
 		unit.connect(audioContext.destination);
 	}
 

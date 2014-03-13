@@ -5,25 +5,25 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 //@param {string} type the noise type
-WebAudio.Noise = function(type){
+AudioUnit.Noise = function(type){
 	//extend Unit
-	WebAudio.Unit.call(this);
+	AudioUnit.call(this);
 
 	//components
-	this.jsNode = WebAudio.createScriptProcessor(WebAudio.bufferSize, 1, 1);
-	this.shaper = WebAudio.createWaveShaper();
+	this.jsNode = this.context.createScriptProcessor(this.bufferSize, 1, 1);
+	this.shaper = this.context.createWaveShaper();
 
 	//connections
 	this.jsNode.connect(this.shaper);
 	this.shaper.connect(this.output);
 
-	this.setType(this.defaultArgument(type, "white"));
+	this.setType(this.defaultArg(type, "white"));
 }
 
-WebAudio.Unit.extend(WebAudio.Noise);
+AudioUnit.extend(AudioUnit.Noise, AudioUnit);
 
 //@param {string} type ('white', 'pink', 'brown')
-WebAudio.Noise.prototype.setType = function(type){
+AudioUnit.Noise.prototype.setType = function(type){
 	switch (type){
 		case "white" : 
 			this.jsNode.onaudioprocess = this._whiteNoise.bind(this);
@@ -40,10 +40,10 @@ WebAudio.Noise.prototype.setType = function(type){
 }
 
 //modified from http://noisehack.com/generate-noise-web-audio-api/
-WebAudio.Noise.prototype._pinkNoise = (function() {
+AudioUnit.Noise.prototype._pinkNoise = (function() {
     var b0, b1, b2, b3, b4, b5, b6;
     b0 = b1 = b2 = b3 = b4 = b5 = b6 = 0.0;
-    var bufferSize = WebAudio.bufferSize;
+    var bufferSize = this.bufferSize;
     return function(e) {
         var output = e.outputBuffer.getChannelData(0);
         for (var i = 0; i < bufferSize; i++) {
@@ -62,9 +62,9 @@ WebAudio.Noise.prototype._pinkNoise = (function() {
 })();
 
 //modified from http://noisehack.com/generate-noise-web-audio-api/
-WebAudio.Noise.prototype._brownNoise = (function() {
+AudioUnit.Noise.prototype._brownNoise = (function() {
     var lastOut = 0.0;
-    var bufferSize = WebAudio.bufferSize;
+    var bufferSize = this.bufferSize;
     return function(e) {
         var output = e.outputBuffer.getChannelData(0);
         for (var i = 0; i < bufferSize; i++) {
@@ -78,8 +78,8 @@ WebAudio.Noise.prototype._brownNoise = (function() {
 })();
 
 //modified from http://noisehack.com/generate-noise-web-audio-api/
-WebAudio.Noise.prototype._whiteNoise = function(e){
-	var bufferSize = WebAudio.bufferSize;
+AudioUnit.Noise.prototype._whiteNoise = function(e){
+	var bufferSize = this.bufferSize;
  	var output = event.outputBuffer.getChannelData(0);
     for (var i = 0; i < bufferSize; i++) {
         output[i] = Math.random() * 2 - 1;
