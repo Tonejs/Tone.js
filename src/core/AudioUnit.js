@@ -42,9 +42,8 @@
 	}
 
 	///////////////////////////////////////////////////////////////////////////
-	//
 	//	AUDIO UNIT
-	//
+	//	@constructor
 	///////////////////////////////////////////////////////////////////////////
 
 	var AudioUnit = function(){
@@ -74,9 +73,14 @@
 		this._connect(this, unit);
 	}
 
+	//disconnect the output
+	AudioUnit.prototype.disconnect = function(){
+		this.output.disconnect();
+	}
+
 	//@private internal connect
-	//@param {AudioNode | AudioUnit} from
-	//@param {AudioNode | AudioUnit} to
+	//@param {AudioNode|AudioUnit} A
+	//@param {AudioNode|AudioUnit} B
 	AudioUnit.prototype._connect = function(A, B){
 		var compA = A;
 		if (A.output && A.output instanceof GainNode){
@@ -116,9 +120,10 @@
 		this.rampToValue(this.output.gain, value, duration);
 	}
 
-	//tear down a node
-	AudioUnit.prototype.tearDown = function(){
-		//go through all of the attributes, if any of them has a disconnect function, call it	
+
+	//destroy all of the 
+	AudioUnit.prototype.dispose = function(){
+
 	}
 
 	///////////////////////////////////////////////////////////////////////////
@@ -178,13 +183,13 @@
 	//@param {number} gain
 	//@returns {number} gain (decibel scale but betwee 0-1)
 	AudioUnit.prototype.gainToLogScale = function(gain) {
-		return  Math.max(this.normalize(this.gainToDb(gain), -60, 0), 0);
+		return  Math.max(this.normalize(this.gainToDb(gain), -100, 0), 0);
 	}
 
 	//@param {number} gain
 	//@returns {number} gain (decibel scale but betwee 0-1)
 	AudioUnit.prototype.gainToPowScale = function(gain) {
-		return this.dbToGain(this.interpolate(gain, -60, 0));
+		return this.dbToGain(this.interpolate(gain, -100, 0));
 	}
 
 	//@param {number} input 0-1

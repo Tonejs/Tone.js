@@ -23,6 +23,9 @@ window.requestAnimFrame = (function(){
 		this._slowUpdateID = null;
 	}
 
+	//BORROW SOME METHODS FROM AUDIOUNIT
+	AudioUnit.extend(AudioUnit.GUI, AudioUnit);
+
 	///////////////////////////////////////////////////////////////////////////
 	//	PRIVATE
 	///////////////////////////////////////////////////////////////////////////
@@ -109,7 +112,6 @@ window.requestAnimFrame = (function(){
 				_onFastUpdateCallbacks.splice(i, 1);
 			}	
 		}
-
 	}
 
 	///////////////////////////////////////////////////////////////////////////
@@ -161,20 +163,6 @@ window.requestAnimFrame = (function(){
 			this.label.textContent = str;
 		}
 	}
-
-
-	///////////////////////////////////////////////////////////////////////////
-	//	BORROW SOME METHODS
-	///////////////////////////////////////////////////////////////////////////
-
-	AudioUnit.GUI.prototype.defaultArg = AudioUnit.prototype.defaultArg;
-	AudioUnit.GUI.prototype.equalPowerGain = AudioUnit.prototype.equalPowerGain;
-	AudioUnit.GUI.prototype.dbToGain = AudioUnit.prototype.dbToGain;
-	AudioUnit.GUI.prototype.gainToDb = AudioUnit.prototype.gainToDb;
-	AudioUnit.GUI.prototype.gainToLogScale = AudioUnit.prototype.gainToLogScale;
-	AudioUnit.GUI.prototype.gainToPowScale = AudioUnit.prototype.gainToPowScale;
-	AudioUnit.GUI.prototype.interpolate = AudioUnit.prototype.interpolate;
-	AudioUnit.GUI.prototype.normalize = AudioUnit.prototype.normalize;
 
 
 	//give it to the window

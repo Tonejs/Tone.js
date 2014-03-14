@@ -41,7 +41,7 @@ AudioUnit.GUI.Meter.prototype.update = function(){
 AudioUnit.GUI.Meter.prototype.labelUpdate = function(){
 	for (var channel = 0, channelCount = this.meter.channels; channel < channelCount; channel++){
 		var db = this.meter.getDb(channel);
-		if (db < -100){
+		if (db < -120){
 			db = "-inf"
 		} else {
 			db = db.toFixed(1);

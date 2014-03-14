@@ -7,8 +7,11 @@
 		//extend audio unit
 		AudioUnit.call(this);
 
-		this.input.connect(this.output);
-		this.output.connect(this.context.destination);
+		//put a hard limiter on the output so we don't blow any eardrums
+		this.limiter = this.context.createDynamicsCompressor();
+		this.limiter.threshold.value = 0;
+		this.limiter.ratio.value = 100;
+		this.chain(this.input, this.limiter, this.output, this.context.destination);
 	}
 
 	AudioUnit.extend(Master, AudioUnit);

@@ -39,7 +39,7 @@ AudioUnit.extend(AudioUnit.Meter, AudioUnit);
 AudioUnit.Meter.prototype.getLevel = function(channel){
 	channel = this.defaultArg(channel, 0);
 	var vol = this.volume[channel];
-	if (vol < .001){
+	if (vol < .00001){
 		return 0;
 	} else {
 		return vol;
