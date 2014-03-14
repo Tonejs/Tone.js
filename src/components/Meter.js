@@ -28,7 +28,7 @@ AudioUnit.Meter = function(channels){
 	//signal just passes
 	this.input.connect(this.output);
 	this.input.connect(this.jsNode);
-	this.toSpeakers(this.jsNode);
+	this.toMaster(this.jsNode);
 }
 
 AudioUnit.extend(AudioUnit.Meter, AudioUnit);
@@ -36,7 +36,7 @@ AudioUnit.extend(AudioUnit.Meter, AudioUnit);
 
 //@param {number=} channel
 //@returns {number}
-AudioUnit.Meter.prototype.getVolume = function(channel){
+AudioUnit.Meter.prototype.getLevel = function(channel){
 	channel = this.defaultArg(channel, 0);
 	var vol = this.volume[channel];
 	if (vol < .001){
@@ -49,7 +49,7 @@ AudioUnit.Meter.prototype.getVolume = function(channel){
 //@param {number=} channel
 //@returns {number} the channel volume in decibels
 AudioUnit.Meter.prototype.getDb = function(channel){
-	return this.gainToDb(this.getVolume(channel));
+	return this.gainToDb(this.getLevel(channel));
 }
 
 // @returns {boolean} if the audio has clipped in the last 500ms

@@ -47,12 +47,15 @@ window.requestAnimFrame = (function(){
 
 	function doSlowUpdate(){
 		setTimeout(doSlowUpdate, 250);
+		for (var i = 0; i < _onSlowUpdateCallbacks.length; i++){
+			var cback = _onSlowUpdateCallbacks[i];
+			cback.callback.call(cback.context);
+		}
 	}
 	doSlowUpdate();
 
 	function doFastUpdate(){
 		global.requestAnimFrame(doFastUpdate);
-		//remove from the updates
 		for (var i = 0; i < _onFastUpdateCallbacks.length; i++){
 			var cback = _onFastUpdateCallbacks[i];
 			cback.callback.call(cback.context);
@@ -74,7 +77,7 @@ window.requestAnimFrame = (function(){
 			context : this.defaultArg(ctx, global),
 			id : id
 		}
-		_onFastUpdate.push(callback);
+		_onFastUpdateCallbacks.push(callbackObj);
 	}
 
 	//callback gets envoked at 60fps
@@ -87,7 +90,7 @@ window.requestAnimFrame = (function(){
 			context : this.defaultArg(ctx, global),
 			id : id
 		}
-		_onSlowUpdateCallbacks.push(callback);
+		_onSlowUpdateCallbacks.push(callbackObj);
 	}
 
 	AudioUnit.GUI.prototype.remove = function(){
@@ -122,6 +125,36 @@ window.requestAnimFrame = (function(){
 		}
 	}
 
+	//@param {Element} container
+	//@param {Element} element
+	AudioUnit.GUI.prototype.appendChild = function(container, element){
+		this._getElement(container).appendChild(this._getElement(element));
+	}
+
+	//@param {string=} type
+	AudioUnit.GUI.prototype.createElement = function(type){
+		type = this.defaultArg(type, "div");
+		return document.createElement(type);
+	}
+
+	//@param {Element} element
+	//@param {Element} unwraps jquery if necessary
+	AudioUnit.GUI.prototype._getElement = function(el){
+		if (typeof jQuery !== 'undefined' && el instanceof jQuery){
+			return el[0];
+		} else if (el.element && meterGui.element instanceof HTMLElement){
+			return el.element
+		} else {
+			return el;
+		}
+	}
+
+	//@param {Element} element
+	//@param {string} className
+	AudioUnit.GUI.prototype.setClass = function(element, className){
+		this._getElement(element).className = className;
+	}
+
 
 	///////////////////////////////////////////////////////////////////////////
 	//	BORROW SOME METHODS
@@ -131,6 +164,10 @@ window.requestAnimFrame = (function(){
 	AudioUnit.GUI.prototype.equalPowerGain = AudioUnit.prototype.equalPowerGain;
 	AudioUnit.GUI.prototype.dbToGain = AudioUnit.prototype.dbToGain;
 	AudioUnit.GUI.prototype.gainToDb = AudioUnit.prototype.gainToDb;
+	AudioUnit.GUI.prototype.gainToLogScale = AudioUnit.prototype.gainToLogScale;
+	AudioUnit.GUI.prototype.gainToPowScale = AudioUnit.prototype.gainToPowScale;
+	AudioUnit.GUI.prototype.interpolate = AudioUnit.prototype.interpolate;
+	AudioUnit.GUI.prototype.normalize = AudioUnit.prototype.normalize;
 
 
 	//give it to the window

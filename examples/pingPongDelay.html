@@ -6,8 +6,9 @@
 
 	<script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
 	<script type="text/javascript" src="../src/core/AudioUnit.js"></script>
-	<script type="text/javascript" src="../src/components/Player.js"></script>
+	<script type="text/javascript" src="../src/core/Master.js"></script>
 	<script type="text/javascript" src="../src/components/Meter.js"></script>
+	<script type="text/javascript" src="../src/components/Player.js"></script>
 	<script type="text/javascript" src="../src/components/Envelope.js"></script>
 	<script type="text/javascript" src="../src/components/LFO.js"></script>
 	<script type="text/javascript" src="../src/components/Noise.js"></script>
@@ -17,19 +18,31 @@
 	<script type="text/javascript" src="../src/effects/PingPongDelay.js"></script>
 	<script type="text/javascript" src="../src/components/Microphone.js"></script>
 	<script type="text/javascript" src="../src/GUI/GUI.js"></script>
-	<script type="text/javascript" src="../src/GUI/GUI.Bars.js"></script>
+	<script type="text/javascript" src="../src/GUI/GUI.Bar.js"></script>
 	<script type="text/javascript" src="../src/GUI/GUI.Meter.js"></script>
+	<script type="text/javascript" src="../src/GUI/GUI.Fader.js"></script>
 </head>
 <body>
 	<style type="text/css">
 		#meter {
-			width: 100%;
+			width: auto;
 			text-align: center;
-			font-size: 10px;
+			float: right;
+			position: absolute;
+			bottom: 10px;
+			right: 10px;
+		}
+
+		#fader {
+			position: absolute;
+			bottom: 10px;
+			right: 100px;
+			width: auto;
 		}
 	</style>
 	<div id='Instructions'>Press 'e'</div>
 	<div id='meter'></div>
+	<div id='fader'></div>
 	<script type="text/javascript">
 		var player = new AudioUnit.Player("../audio/A3.mp3");
 		var meter = new AudioUnit.Meter(2);
@@ -37,26 +50,21 @@
 		var lfo = new AudioUnit.LFO(undefined, 1, .5, 1);
 		var noise = new AudioUnit.Noise();
 		var feedbackDelay = new AudioUnit.PingPongDelay(.25);
-		var bars = new AudioUnit.GUI.Bars(document.body);
-		// var meterGui = new WebAudio.GUI.Meter($("#meter")[0], meter);
+		var meterGui = new AudioUnit.GUI.Meter($("#meter"), meter, "master", 20);
+		var fader = new AudioUnit.GUI.Fader($("#fader"), 0, 20, "master gain", 20);
 		
 		noise.connect(env);
 		env.connect(feedbackDelay);
 		feedbackDelay.setFeedback(.5);
-		feedbackDelay.toSpeakers();
-		// feedbackDelay.connect(meter);
+		feedbackDelay.toMaster();
 
-		noise.setVolume(.4);
+		//the master output meter
+		AudioUnit.Master.connect(meter);
 
 		player.load(function(){
 			// player.loop(0, 0, 1);
 			player.loop();
 		});
-		setInterval(function(){
-			// var text = meter.getVolume(0).toFixed(3);
-			// text += " "+meter.getVolume(1).toFixed(3)
-			// $("#meter").html(text);
-		}, 100);
 
 		$(document).keydown(function(e){
 			if (e.which == 69){

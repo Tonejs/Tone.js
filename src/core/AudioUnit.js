@@ -71,11 +71,22 @@
 
 	//@param {AudioParam | AudioUnit} unit
 	AudioUnit.prototype.connect = function(unit){
-		if (unit.input && unit.input instanceof GainNode){
-			this.output.connect(unit.input);
-		} else {
-			this.output.connect(unit);
+		this._connect(this, unit);
+	}
+
+	//@private internal connect
+	//@param {AudioNode | AudioUnit} from
+	//@param {AudioNode | AudioUnit} to
+	AudioUnit.prototype._connect = function(A, B){
+		var compA = A;
+		if (A.output && A.output instanceof GainNode){
+			compA = A.output;
 		}
+		var compB = B;
+		if (B.input && B.input instanceof GainNode){
+			compB = B.input;
+		} 
+		compA.connect(compB);
 	}
 	
 	//connect together an array of units in series
@@ -85,11 +96,7 @@
 			var currentUnit = arguments[0];
 			for (var i = 1; i < arguments.length; i++){
 				var toUnit = arguments[i];
-				if (toUnit.input && toUnit.input instanceof GainNode){
-					currentUnit.connect(toUnit.input);
-				} else {
-					currentUnit.connect(toUnit);
-				}
+				this._connect(currentUnit, toUnit);
 				currentUnit = toUnit;
 			}
 		}
@@ -168,11 +175,42 @@
 		return  20 * (Math.log(gain) / Math.LN10);
 	}
 
-	//@param {AudioParam|AudioUnit=} unit
-	AudioUnit.prototype.toSpeakers = function(unit){
-		unit = this.defaultArg(unit, this.output);
-		unit.connect(audioContext.destination);
+	//@param {number} gain
+	//@returns {number} gain (decibel scale but betwee 0-1)
+	AudioUnit.prototype.gainToLogScale = function(gain) {
+		return  Math.max(this.normalize(this.gainToDb(gain), -60, 0), 0);
 	}
+
+	//@param {number} gain
+	//@returns {number} gain (decibel scale but betwee 0-1)
+	AudioUnit.prototype.gainToPowScale = function(gain) {
+		return this.dbToGain(this.interpolate(gain, -60, 0));
+	}
+
+	//@param {number} input 0-1
+	AudioUnit.prototype.interpolate = function(input, outputMin, outputMax){
+		return input*(outputMax - outputMin) + outputMin;
+	}
+
+	//@returns {number} 0-1
+	AudioUnit.prototype.normalize = function(input, inputMin, inputMax){
+		//make sure that min < max
+		if (inputMin > inputMax){
+			var tmp = inputMax;
+			inputMax = inputMin;
+			inputMin = tmp;
+		} else if (inputMin == inputMax){
+			return 0;
+		}
+		return (input - inputMin) / (inputMax - inputMin);
+	}
+
+	//@param {AudioParam|AudioUnit=} unit
+	AudioUnit.prototype.toMaster = function(unit){
+		unit = this.defaultArg(unit, this.output);
+		this._connect(unit, AudioUnit.Master);
+	}
+
 
 	///////////////////////////////////////////////////////////////////////////
 	//	STATIC METHODS
@@ -182,19 +220,6 @@
 	AudioUnit.extend = function(A, B){
 		A.prototype = new B();
 		A.prototype.constructor = A;
-	}
-
-	AudioUnit.muteAll = function(){
-
-	}
-
-	AudioUnit.unmuteAll = function(){
-
-	}
-
-
-	AudioUnit.setGlobalVolume = function(){
-		
 	}
 
 	//make it global
