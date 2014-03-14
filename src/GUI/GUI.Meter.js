@@ -34,6 +34,7 @@ AudioUnit.GUI.Meter.prototype.update = function(){
 	for (var channel = 0, channelCount = this.meter.channels; channel < channelCount; channel++){
 		var volume = this.meter.getLevel(channel);
 		this.bars[channel].setLevel(this.gainToLogScale(volume));
+		//also check if it's clipped
 	}
 }
 
@@ -47,9 +48,4 @@ AudioUnit.GUI.Meter.prototype.labelUpdate = function(){
 		}
 		this.bars[channel].setLabel(db);
 	}
-}
-
-//@param {string} str
-AudioUnit.GUI.Meter.prototype.setLabel = function(str){
-	this.label.textContent = str;
 }

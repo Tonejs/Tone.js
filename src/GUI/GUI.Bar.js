@@ -13,7 +13,7 @@ AudioUnit.GUI.Bar = function(container, segments){
 
 	//vars
 	this.element = this.createElement();
-	this.segmentCount = this.defaultArg(segments, 10);
+	this.segmentCount = this.defaultArg(segments, 20);
 	this.segments = new Array(this.segmentCount);
 	this.label = this.createElement();
 
@@ -47,9 +47,4 @@ AudioUnit.GUI.Bar.prototype.setLevel = function(val){
 		var seg = this.segments[i];
 		seg.style.opacity = Math.max(Math.min(val - i, 1), 0);
 	}
-}
-
-//@param {string} str
-AudioUnit.GUI.Bar.prototype.setLabel = function(str){
-	this.label.textContent = str;
 }

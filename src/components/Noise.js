@@ -80,7 +80,7 @@ AudioUnit.Noise.prototype._brownNoise = (function() {
 //modified from http://noisehack.com/generate-noise-web-audio-api/
 AudioUnit.Noise.prototype._whiteNoise = function(e){
 	var bufferSize = this.bufferSize;
- 	var output = event.outputBuffer.getChannelData(0);
+ 	var output = e.outputBuffer.getChannelData(0);
     for (var i = 0; i < bufferSize; i++) {
         output[i] = Math.random() * 2 - 1;
     }

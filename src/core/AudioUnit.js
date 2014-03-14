@@ -217,9 +217,14 @@
 	///////////////////////////////////////////////////////////////////////////
 	
 	//A extends B
-	AudioUnit.extend = function(A, B){
-		A.prototype = new B();
-		A.prototype.constructor = A;
+	//based on closure library 'inherit' function
+	AudioUnit.extend = function(childCtor, parentCtor){
+		/** @constructor */
+  		function tempCtor() {};
+  		tempCtor.prototype = parentCtor.prototype;
+  		childCtor.prototype = new tempCtor();
+  		/** @override */
+  		childCtor.prototype.constructor = childCtor;
 	}
 
 	//make it global

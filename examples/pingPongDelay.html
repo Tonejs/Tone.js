@@ -21,6 +21,8 @@
 	<script type="text/javascript" src="../src/GUI/GUI.Bar.js"></script>
 	<script type="text/javascript" src="../src/GUI/GUI.Meter.js"></script>
 	<script type="text/javascript" src="../src/GUI/GUI.Fader.js"></script>
+	<script type="text/javascript" src="../src/GUI/GUI.ParamFader.js"></script>
+	<script type="text/javascript" src="../src/GUI/GUI.GainFader.js"></script>
 </head>
 <body>
 	<style type="text/css">
@@ -39,19 +41,39 @@
 			right: 100px;
 			width: auto;
 		}
+
+		#MasterOut {
+			width: 160px;
+			height: 200px;
+			position: absolute;
+			bottom: 10px;
+			right: 0px;
+		}
+
+		#Trigger {
+			width: 100px;
+			height: 100px;
+			position: absolute;
+			top: 20px;
+			left: 20px;
+			background-color: blue;
+			color: white;
+		}
 	</style>
-	<div id='Instructions'>Press 'e'</div>
-	<div id='meter'></div>
-	<div id='fader'></div>
+	<div id='Trigger'>Press</div>
+	<div id='MasterOut'>
+		<div id='meter'></div>
+		<div id='fader'></div>
+	</div>
 	<script type="text/javascript">
 		var player = new AudioUnit.Player("../audio/A3.mp3");
 		var meter = new AudioUnit.Meter(2);
-		var env = new AudioUnit.Envelope(.01, .05, 0, 0);
+		var env = new AudioUnit.Envelope(.05, .01, 0, 0);
 		var lfo = new AudioUnit.LFO(undefined, 1, .5, 1);
 		var noise = new AudioUnit.Noise();
 		var feedbackDelay = new AudioUnit.PingPongDelay(.25);
 		var meterGui = new AudioUnit.GUI.Meter($("#meter"), meter, "master", 20);
-		var fader = new AudioUnit.GUI.Fader($("#fader"), 0, 20, "master gain", 20);
+		var fader = new AudioUnit.GUI.GainFader($("#fader"), AudioUnit.Master.output, "mstr");
 		
 		noise.connect(env);
 		env.connect(feedbackDelay);
@@ -66,12 +88,20 @@
 			player.loop();
 		});
 
-		$(document).keydown(function(e){
-			if (e.which == 69){
-				env.triggerAttack();
-			} else if (e.which == 83) {
-				env.triggerRelease();
-			}
+		document.addEventListener('touchstart', function(e){
+			env.triggerAttack();
+		});
+
+		document.addEventListener('touchend', function(e){
+			env.triggerRelease();
+		});
+
+		$("#Trigger").bind("mousedown touchstart", function(e){
+			console.log('hi')
+			env.triggerAttack();
+		});
+		$("#Trigger").bind("mouseup touchend", function(e){
+			env.triggerRelease();
 		});
 	</script>
 </body>

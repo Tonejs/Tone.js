@@ -25,7 +25,6 @@ $unitWidth : 30px;
 =============================================================================*/
 
 .bar {
-	pointer-events: none;
 }
 
 .bar .segment {
@@ -92,12 +91,18 @@ $faderWidth: 40px;
 
 .fader .slider {
 	position: absolute;
-	width: 100%;
-	height: 100%;
-	margin: 0px;
+	width: 100px;
+	height: $faderWidth;
+	margin-left: 23px;
+	margin-top: -20px;
 	top: 0px;
 	left: 0px;
-	 -webkit-appearance: slider-vertical;
+	-webkit-transform: rotate(90deg);
+	-webkit-transform-origin: left center;
+	-moz-transform: rotate(90deg);
+	-moz-transform-origin: left center;
+	transform: rotate(90deg);
+	transform-origin: left center;
 }
 
 .fader input.label {

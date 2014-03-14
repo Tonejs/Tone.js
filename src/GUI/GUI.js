@@ -155,6 +155,13 @@ window.requestAnimFrame = (function(){
 		this._getElement(element).className = className;
 	}
 
+	//@param {string} str
+	AudioUnit.GUI.prototype.setLabel = function(str){
+		if (this.label && this.label instanceof HTMLElement){
+			this.label.textContent = str;
+		}
+	}
+
 
 	///////////////////////////////////////////////////////////////////////////
 	//	BORROW SOME METHODS
