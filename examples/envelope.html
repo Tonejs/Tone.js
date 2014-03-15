@@ -6,76 +6,49 @@
 
 	<script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
 	<script type="text/javascript" src="../src/core/AudioUnit.js"></script>
-	<script type="text/javascript" src="../src/components/Meter.js"></script>
-	<script type="text/javascript" src="../src/components/Player.js"></script>
 	<script type="text/javascript" src="../src/components/Envelope.js"></script>
-	<script type="text/javascript" src="../src/components/LFO.js"></script>
 	<script type="text/javascript" src="../src/components/Noise.js"></script>
-	<script type="text/javascript" src="../src/components/StereoSplit.js"></script>
-	<script type="text/javascript" src="../src/effects/Effect.js"></script>
-	<script type="text/javascript" src="../src/effects/FeedbackDelay.js"></script>
-	<script type="text/javascript" src="../src/effects/PingPongDelay.js"></script>
-	<script type="text/javascript" src="../src/components/Microphone.js"></script>
-	<script type="text/javascript" src="../src/GUI/GUI.js"></script>
-	<script type="text/javascript" src="../src/GUI/GUI.Bar.js"></script>
-	<script type="text/javascript" src="../src/GUI/GUI.Meter.js"></script>
-	<script type="text/javascript" src="../src/GUI/GUI.Fader.js"></script>
-	<script type="text/javascript" src="../src/GUI/GUI.ParamFader.js"></script>
-	<script type="text/javascript" src="../src/GUI/GUI.GainFader.js"></script>
-	<script type="text/javascript" src="../src/GUI/GUI.Compressor.js"></script>
 </head>
 <body>
 	<style type="text/css">
-		#meter {
-			width: auto;
-			text-align: center;
-			float: right;
-			position: absolute;
-			bottom: 10px;
-			right: 10px;
-		}
-
-		#fader {
-			position: absolute;
-			bottom: 10px;
-			right: 100px;
-			width: auto;
-		}
-
-		#MasterOut {
-			width: 160px;
-			height: 200px;
-			position: absolute;
-			bottom: 10px;
-			right: 0px;
-		}
-
 		#Trigger {
+			margin-left: -50px;
+			margin-top: -50px;
 			width: 100px;
 			height: 100px;
 			position: absolute;
 			top: 50%;
 			left: 50%;
 			background-color: blue;
+		}
+
+		#Trigger:after {
+			font-family: monospace;
+			position: absolute;
+			width: 100%;
+			content: "attack";
 			color: white;
+			text-align: center;
+			line-height: 100px;
+		}
+
+		#Trigger:active {
+			background-color: white;
+			color: black;
+		}
+
+		#Trigger:active:after {
+			content: "release";
+			color: black;
 		}
 	</style>
-	<div id='Trigger'>Press</div>
-	<div id='MasterOut'>
-		<div id='meter'></div>
-		<div id='fader'></div>
-	</div>
+	<div id='Trigger'></div>
 	<script type="text/javascript">
-		var meter = new AudioUnit.Meter(2);
-		var env = new AudioUnit.Envelope(.05, .01, 0, 0);
+		var env = new AudioUnit.Envelope(.05, .01, .1, .4);
 		var noise = new AudioUnit.Noise();
-		var fader = new AudioUnit.GUI.GainFader($("#MasterOut"), AudioUnit.Master.output, "mstr");
-		var meterGui = new AudioUnit.GUI.Meter($("#MasterOut"), meter, "master", 20);
 		
 		noise.connect(env);
 		env.toMaster();
-
-		AudioUnit.Master.connect(meter);
 
 		$("#Trigger").bind("mousedown touchstart", function(e){
 			env.triggerAttack();

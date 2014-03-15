@@ -7,15 +7,12 @@
 	<script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
 	<script type="text/javascript" src="../src/core/AudioUnit.js"></script>
 	<script type="text/javascript" src="../src/components/Meter.js"></script>
-	<script type="text/javascript" src="../src/components/Player.js"></script>
 	<script type="text/javascript" src="../src/components/Envelope.js"></script>
-	<script type="text/javascript" src="../src/components/LFO.js"></script>
 	<script type="text/javascript" src="../src/components/Noise.js"></script>
 	<script type="text/javascript" src="../src/components/StereoSplit.js"></script>
 	<script type="text/javascript" src="../src/effects/Effect.js"></script>
 	<script type="text/javascript" src="../src/effects/FeedbackDelay.js"></script>
 	<script type="text/javascript" src="../src/effects/PingPongDelay.js"></script>
-	<script type="text/javascript" src="../src/components/Microphone.js"></script>
 	<script type="text/javascript" src="../src/GUI/GUI.js"></script>
 	<script type="text/javascript" src="../src/GUI/GUI.Bar.js"></script>
 	<script type="text/javascript" src="../src/GUI/GUI.Meter.js"></script>
@@ -51,27 +48,45 @@
 		}
 
 		#Trigger {
+			margin-left: -50px;
+			margin-top: -50px;
 			width: 100px;
 			height: 100px;
 			position: absolute;
 			top: 50%;
 			left: 50%;
 			background-color: blue;
+		}
+
+		#Trigger:after {
+			font-family: monospace;
+			position: absolute;
+			width: 100%;
+			content: "attack";
 			color: white;
+			text-align: center;
+			line-height: 100px;
+		}
+
+		#Trigger:active {
+			background-color: white;
+			color: black;
+		}
+
+		#Trigger:active:after {
+			content: "release";
+			color: black;
 		}
 	</style>
-	<div id='Trigger'>Press</div>
-	<div id='MasterOut'>
-		<div id='meter'></div>
-		<div id='fader'></div>
-	</div>
+	<div id='Trigger'></div>
+	<div id='MasterOut'></div>
 	<script type="text/javascript">
 		var meter = new AudioUnit.Meter(2);
 		var env = new AudioUnit.Envelope(.05, .01, 0, 0);
 		var noise = new AudioUnit.Noise();
 		var feedbackDelay = new AudioUnit.PingPongDelay(.25);
-		var meterGui = new AudioUnit.GUI.Meter($("#meter"), meter, "master", 20);
-		var fader = new AudioUnit.GUI.GainFader($("#fader"), AudioUnit.Master.output, "mstr");
+		var fader = new AudioUnit.GUI.GainFader($("#MasterOut"), AudioUnit.Master.output, "mstr");
+		var meterGui = new AudioUnit.GUI.Meter($("#MasterOut"), meter, "master", 20);
 		var compGui = new AudioUnit.GUI.Compressor($("body"), AudioUnit.Master.limiter);
 		
 		noise.connect(env);
