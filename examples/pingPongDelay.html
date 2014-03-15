@@ -6,7 +6,6 @@
 
 	<script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
 	<script type="text/javascript" src="../src/core/AudioUnit.js"></script>
-	<script type="text/javascript" src="../src/core/Master.js"></script>
 	<script type="text/javascript" src="../src/components/Meter.js"></script>
 	<script type="text/javascript" src="../src/components/Player.js"></script>
 	<script type="text/javascript" src="../src/components/Envelope.js"></script>
@@ -55,8 +54,8 @@
 			width: 100px;
 			height: 100px;
 			position: absolute;
-			top: 20px;
-			left: 20px;
+			top: 50%;
+			left: 50%;
 			background-color: blue;
 			color: white;
 		}
@@ -99,7 +98,6 @@
 		});
 
 		$("#Trigger").bind("mousedown touchstart", function(e){
-			console.log('hi')
 			env.triggerAttack();
 		});
 		$("#Trigger").bind("mouseup touchend", function(e){

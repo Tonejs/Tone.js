@@ -31,8 +31,6 @@ AudioUnit.Player.prototype.load = function(callback){
 			if (callback){
 				callback(self);
 			}
-			//memory leak?
-			self = null;
 		});
 	}
 	request.send();
