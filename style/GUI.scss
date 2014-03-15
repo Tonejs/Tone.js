@@ -56,6 +56,9 @@ $unitWidth : 30px;
 =============================================================================*/
 
 .meter {
+	position: relative;
+	float: left;
+	margin: 5px;
 	display: table;
 	@include borderStyle;
 }

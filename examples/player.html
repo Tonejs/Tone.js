@@ -1,0 +1,73 @@
+<html>
+<head>
+	<title>Basic Player</title>
+
+	<link rel="stylesheet" type="text/css" href="../style/GUI.css">
+
+	<script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
+	<script type="text/javascript" src="../src/core/AudioUnit.js"></script>
+	<script type="text/javascript" src="../src/components/Meter.js"></script>
+	<script type="text/javascript" src="../src/components/Player.js"></script>
+	<script type="text/javascript" src="../src/GUI/GUI.js"></script>
+	<script type="text/javascript" src="../src/GUI/GUI.Bar.js"></script>
+	<script type="text/javascript" src="../src/GUI/GUI.Meter.js"></script>
+	<script type="text/javascript" src="../src/GUI/GUI.Fader.js"></script>
+	<script type="text/javascript" src="../src/GUI/GUI.ParamFader.js"></script>
+	<script type="text/javascript" src="../src/GUI/GUI.GainFader.js"></script>
+</head>
+<body>
+	<style type="text/css">
+		#meter {
+			width: auto;
+			text-align: center;
+			float: right;
+			position: absolute;
+			bottom: 10px;
+			right: 10px;
+		}
+
+		#fader {
+			position: absolute;
+			bottom: 10px;
+			right: 100px;
+			width: auto;
+		}
+
+		#Trigger {
+			width: 100px;
+			height: 100px;
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			background-color: blue;
+			color: white;
+			text-align: center;
+			line-height: 100px;
+		}
+	</style>
+	<div id='Trigger'>Press</div>
+	<div id='MasterOut'>
+		<div id='meter'></div>
+		<div id='fader'></div>
+	</div>
+	<script type="text/javascript">
+		var player = new AudioUnit.Player("../audio/casio/A1.mp3");
+		var meter = new AudioUnit.Meter(2);
+		var fader = new AudioUnit.GUI.GainFader($("#MasterOut"), AudioUnit.Master.output, "mstr");
+		var meterGui = new AudioUnit.GUI.Meter($("#MasterOut"), meter, "master", 20);
+
+		player.toMaster();
+		//the master output meter
+		AudioUnit.Master.connect(meter);
+		player.load(function(){
+			$("#Trigger").bind("mousedown touchstart", function(e){
+				player.start();
+			});
+			$("#Trigger").bind("mouseup touchend", function(e){
+				player.stop();
+			});
+		});
+
+	</script>
+</body>
+</html>

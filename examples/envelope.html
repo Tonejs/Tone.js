@@ -69,17 +69,12 @@
 		var meter = new AudioUnit.Meter(2);
 		var env = new AudioUnit.Envelope(.05, .01, 0, 0);
 		var noise = new AudioUnit.Noise();
-		var feedbackDelay = new AudioUnit.PingPongDelay(.25);
-		var meterGui = new AudioUnit.GUI.Meter($("#meter"), meter, "master", 20);
-		var fader = new AudioUnit.GUI.GainFader($("#fader"), AudioUnit.Master.output, "mstr");
-		var compGui = new AudioUnit.GUI.Compressor($("body"), AudioUnit.Master.limiter);
+		var fader = new AudioUnit.GUI.GainFader($("#MasterOut"), AudioUnit.Master.output, "mstr");
+		var meterGui = new AudioUnit.GUI.Meter($("#MasterOut"), meter, "master", 20);
 		
 		noise.connect(env);
-		env.connect(feedbackDelay);
-		feedbackDelay.setFeedback(.5);
-		feedbackDelay.toMaster();
+		env.toMaster();
 
-		//the master output meter
 		AudioUnit.Master.connect(meter);
 
 		$("#Trigger").bind("mousedown touchstart", function(e){
