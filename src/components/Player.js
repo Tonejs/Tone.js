@@ -18,7 +18,7 @@ AudioUnit.extend(AudioUnit.Player, AudioUnit);
 
 //makes an xhr for the buffer at the url
 //invokes the callback at the end
-//@param {function(AudioUnit.Player)=} callback
+//@param {function(AudioUnit.Player)} callback
 AudioUnit.Player.prototype.load = function(callback){
 	var request = new XMLHttpRequest();
 	request.open('GET', this.url, true);
@@ -26,13 +26,14 @@ AudioUnit.Player.prototype.load = function(callback){
 	// decode asynchronously
 	var self = this;
 	request.onload = function() {
-		self.context.decodeAudioData(request.response, function(b) {
-			self.buffer = b;
+		self.context.decodeAudioData(request.response, function(buff) {
+			self.buffer = buff;
 			if (callback){
 				callback(self);
 			}
 		});
 	}
+	//send the request
 	request.send();
 }
 

@@ -4,7 +4,7 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-AudioUnit.LFO = function(param, rate, outputMin, outputMax){
+AudioUnit.LFO = function(rate, outputMin, outputMax, param){
 	//extends Unit
 	AudioUnit.call(this);
 	//pass audio through

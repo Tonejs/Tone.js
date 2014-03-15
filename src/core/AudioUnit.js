@@ -47,16 +47,16 @@
 	///////////////////////////////////////////////////////////////////////////
 
 	var AudioUnit = function(){
-		this.context = audioContext;
 		this.input = audioContext.createGain();
 		this.output = audioContext.createGain();
 	}
 
 	///////////////////////////////////////////////////////////////////////////
-	//	STATIC VARS
+	//	CLASS VARS
 	///////////////////////////////////////////////////////////////////////////
 
-	AudioUnit.prototype.fadeTime = .001; //1ms
+	AudioUnit.prototype.context = audioContext;
+	AudioUnit.prototype.fadeTime = .005; //5ms
 	AudioUnit.prototype.bufferSize = 1024; //default buffer size
 
 	///////////////////////////////////////////////////////////////////////////
@@ -221,15 +221,14 @@
 	//	STATIC METHODS
 	///////////////////////////////////////////////////////////////////////////
 	
-	//A extends B
 	//based on closure library 'inherit' function
-	AudioUnit.extend = function(childCtor, parentCtor){
+	AudioUnit.extend = function(child, parent){
 		/** @constructor */
-  		function tempCtor() {};
-  		tempCtor.prototype = parentCtor.prototype;
-  		childCtor.prototype = new tempCtor();
-  		/** @override */
-  		childCtor.prototype.constructor = childCtor;
+		function tempConstructor() {};
+		tempConstructor.prototype = parent.prototype;
+		child.prototype = new tempConstructor();
+		/** @override */
+		child.prototype.constructor = child;
 	}
 
 	///////////////////////////////////////////////////////////////////////////
@@ -243,7 +242,7 @@
 		//put a hard limiter on the output so we don't blow any eardrums
 		this.limiter = this.context.createDynamicsCompressor();
 		this.limiter.threshold.value = 0;
-		this.limiter.ratio.value = 100;
+		this.limiter.ratio.value = 20;
 		this.chain(this.input, this.limiter, this.output, this.context.destination);
 	}
 	AudioUnit.extend(Master, AudioUnit);

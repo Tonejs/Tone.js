@@ -11,8 +11,8 @@
 </head>
 <body>
 	<script type="text/javascript">
-		var lfo = new AudioUnit.LFO(undefined, 1, 0, 1);
 		var noise = new AudioUnit.Noise("brown");
+		var lfo = new AudioUnit.LFO(1);
 		
 		noise.connect(lfo);
 		lfo.toMaster();
