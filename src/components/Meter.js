@@ -59,7 +59,7 @@ AudioUnit.Meter.prototype.isClipped = function(){
 
 //get the max value
 AudioUnit.Meter.prototype.onprocess = function(event){
-	var bufferSize = this.bufferSize;
+	var bufferSize = this.jsNode.bufferSize;
 	for (var channel = 0; channel < this.channels; channel++){
 		var input = event.inputBuffer.getChannelData(channel);
 		var sum = 0;
