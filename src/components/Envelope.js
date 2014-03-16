@@ -5,9 +5,9 @@
 //	ADR envelope generator attaches to an AudioParam
 ///////////////////////////////////////////////////////////////////////////////
 
-AudioUnit.Envelope = function(attack, decay, sustain, release, audioParam, minOutput, maxOutput){
+Tone.Envelope = function(attack, decay, sustain, release, audioParam, minOutput, maxOutput){
 	//extend Unit
-	AudioUnit.call(this);
+	Tone.call(this);
 
 	//pass audio through
 	this.input.connect(this.output);
@@ -26,10 +26,10 @@ AudioUnit.Envelope = function(attack, decay, sustain, release, audioParam, minOu
 	this.param.value = this.min;
 }
 
-AudioUnit.extend(AudioUnit.Envelope, AudioUnit);
+Tone.extend(Tone.Envelope, Tone);
 
 //attack->decay->sustain
-AudioUnit.Envelope.prototype.triggerAttack = function(time){
+Tone.Envelope.prototype.triggerAttack = function(time){
 	var startVal = this.min;
 	if (!time){
 		startVal = this.param.value;
@@ -43,7 +43,7 @@ AudioUnit.Envelope.prototype.triggerAttack = function(time){
 }
 
 //triggers the release of the envelope
-AudioUnit.Envelope.prototype.triggerRelease = function(time){
+Tone.Envelope.prototype.triggerRelease = function(time){
 	var startVal = this.param.value;
 	if (time){
 		startVal = (this.max - this.min) * this.sustain + this.min;
@@ -59,32 +59,32 @@ AudioUnit.Envelope.prototype.triggerRelease = function(time){
 ///////////////////////////////////////////////////////////////////////////////
 
 //@param {number} attack (seconds)
-AudioUnit.Envelope.prototype.setAttack = function(attack){
+Tone.Envelope.prototype.setAttack = function(attack){
 	this.attack = attack;
 }
 
 //@param {number} decay (seconds)
-AudioUnit.Envelope.prototype.setDecay = function(decay){
+Tone.Envelope.prototype.setDecay = function(decay){
 	this.decay = decay;
 }
 
 //@param {number} release (seconds)
-AudioUnit.Envelope.prototype.setRelease = function(release){
+Tone.Envelope.prototype.setRelease = function(release){
 	this.release = release;
 }
 
 //@param {number} sustain as a percentage (0-1);
-AudioUnit.Envelope.prototype.setSustain = function(sustain){
+Tone.Envelope.prototype.setSustain = function(sustain){
 	this.sustain = this.gainToPowScale(sustain);
 }
 
 //@param {number} min
-AudioUnit.Envelope.prototype.setMin = function(min){
+Tone.Envelope.prototype.setMin = function(min){
 	this.min = min;
 }
 
 //@param {number} max
-AudioUnit.Envelope.prototype.setMax = function(max){
+Tone.Envelope.prototype.setMax = function(max){
 	this.max = max;
 }
 

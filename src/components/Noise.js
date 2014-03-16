@@ -5,9 +5,9 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 //@param {string} type the noise type
-AudioUnit.Noise = function(type){
+Tone.Noise = function(type){
 	//extend Unit
-	AudioUnit.call(this);
+	Tone.call(this);
 
 	//components
 	this.jsNode = this.context.createScriptProcessor(this.bufferSize, 1, 1);
@@ -20,10 +20,10 @@ AudioUnit.Noise = function(type){
 	this.setType(this.defaultArg(type, "white"));
 }
 
-AudioUnit.extend(AudioUnit.Noise, AudioUnit);
+Tone.extend(Tone.Noise, Tone);
 
 //@param {string} type ('white', 'pink', 'brown')
-AudioUnit.Noise.prototype.setType = function(type){
+Tone.Noise.prototype.setType = function(type){
 	switch (type){
 		case "white" : 
 			this.jsNode.onaudioprocess = this._whiteNoise.bind(this);
@@ -40,7 +40,7 @@ AudioUnit.Noise.prototype.setType = function(type){
 }
 
 //modified from http://noisehack.com/generate-noise-web-audio-api/
-AudioUnit.Noise.prototype._pinkNoise = (function() {
+Tone.Noise.prototype._pinkNoise = (function() {
     var b0, b1, b2, b3, b4, b5, b6;
     b0 = b1 = b2 = b3 = b4 = b5 = b6 = 0.0;
     return function(e) {
@@ -62,7 +62,7 @@ AudioUnit.Noise.prototype._pinkNoise = (function() {
 })();
 
 //modified from http://noisehack.com/generate-noise-web-audio-api/
-AudioUnit.Noise.prototype._brownNoise = (function() {
+Tone.Noise.prototype._brownNoise = (function() {
     var lastOut = 0.0;
     return function(e) {
         var bufferSize = this.jsNode.bufferSize;
@@ -78,7 +78,7 @@ AudioUnit.Noise.prototype._brownNoise = (function() {
 })();
 
 //modified from http://noisehack.com/generate-noise-web-audio-api/
-AudioUnit.Noise.prototype._whiteNoise = function(e){
+Tone.Noise.prototype._whiteNoise = function(e){
     var bufferSize = this.jsNode.bufferSize;
     var output = e.outputBuffer.getChannelData(0);
     for (var i = 0; i < bufferSize; i++) {

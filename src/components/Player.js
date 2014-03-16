@@ -4,9 +4,9 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-AudioUnit.Player = function(url){
+Tone.Player = function(url){
 	//extend Unit
-	AudioUnit.call(this);
+	Tone.call(this);
 
 	//player vars
 	this.url = url;
@@ -14,12 +14,12 @@ AudioUnit.Player = function(url){
 	this.buffer = null;
 }
 
-AudioUnit.extend(AudioUnit.Player, AudioUnit);
+Tone.extend(Tone.Player, Tone);
 
 //makes an xhr for the buffer at the url
 //invokes the callback at the end
-//@param {function(AudioUnit.Player)} callback
-AudioUnit.Player.prototype.load = function(callback){
+//@param {function(Tone.Player)} callback
+Tone.Player.prototype.load = function(callback){
 	var request = new XMLHttpRequest();
 	request.open('GET', this.url, true);
 	request.responseType = 'arraybuffer';
@@ -38,7 +38,7 @@ AudioUnit.Player.prototype.load = function(callback){
 }
 
 //play the buffer from start to finish at a time
-AudioUnit.Player.prototype.start = function(startTime, offset, duration){
+Tone.Player.prototype.start = function(startTime, offset, duration){
 	if (this.buffer){
 		//default args
 		startTime = this.defaultArg(startTime, this.now());
@@ -54,7 +54,7 @@ AudioUnit.Player.prototype.start = function(startTime, offset, duration){
 }
 
 //play the buffer from start to finish at a time
-AudioUnit.Player.prototype.loop = function(startTime, loopStart, loopEnd, offset, duration){
+Tone.Player.prototype.loop = function(startTime, loopStart, loopEnd, offset, duration){
 	if (this.buffer){
 		//default args
 		startTime = this.defaultArg(startTime, this.now());
@@ -74,7 +74,7 @@ AudioUnit.Player.prototype.loop = function(startTime, loopStart, loopEnd, offset
 }
 
 //stop playback
-AudioUnit.Player.prototype.stop = function(stopTime){
+Tone.Player.prototype.stop = function(stopTime){
 	if (this.buffer){
 		stopTime = this.defaultArg(stopTime, this.now());
 		this.source.stop(stopTime);
@@ -82,7 +82,7 @@ AudioUnit.Player.prototype.stop = function(stopTime){
 }
 
 //@returns {number} the buffer duration
-AudioUnit.Player.prototype.getDuration = function(){
+Tone.Player.prototype.getDuration = function(){
 	if (this.buffer){
 		this.buffer.duration;
 	} else {

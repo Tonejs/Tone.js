@@ -4,9 +4,9 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-AudioUnit.LFO = function(rate, outputMin, outputMax, param){
+Tone.LFO = function(rate, outputMin, outputMax, param){
 	//extends Unit
-	AudioUnit.call(this);
+	Tone.call(this);
 	//pass audio through
 	this.input.connect(this.output);
 
@@ -31,10 +31,10 @@ AudioUnit.LFO = function(rate, outputMin, outputMax, param){
 	this.setType("sine");
 }
 
-AudioUnit.extend(AudioUnit.LFO, AudioUnit);
+Tone.extend(Tone.LFO, Tone);
 
 //generates the values for the waveshaper
-AudioUnit.LFO.prototype._createCurve = function(){
+Tone.LFO.prototype._createCurve = function(){
 	var len = 16;
 	var curve = new Float32Array(len);
 	for (var i = 0; i < len; i++){
@@ -46,32 +46,32 @@ AudioUnit.LFO.prototype._createCurve = function(){
 }
 
 //sets the gain value
-AudioUnit.LFO.prototype._setScalar = function(){
+Tone.LFO.prototype._setScalar = function(){
 	this.scalar.gain.value = this.max - this.min;
 }
 
 
 //set the params
-AudioUnit.LFO.prototype.setRate = function(rate){
+Tone.LFO.prototype.setRate = function(rate){
 	this.rate = rate;
 	this.rampToValue(this.oscillator.frequency, rate, .1);
 }
 
 //set the params
-AudioUnit.LFO.prototype.setMin = function(min){
+Tone.LFO.prototype.setMin = function(min){
 	this.min = min;
 	this._createCurve();
 	this._setScalar();
 }
 
 //set the params
-AudioUnit.LFO.prototype.setMax = function(max){
+Tone.LFO.prototype.setMax = function(max){
 	this.max = max;
 	this._setScalar();
 }
 
 //set the waveform of the LFO
 //@param {string | number} type ('sine', 'square', 'sawtooth', 'triangle', 'custom');
-AudioUnit.LFO.prototype.setType = function(type){
+Tone.LFO.prototype.setType = function(type){
 	this.oscillator.type = type;
 }

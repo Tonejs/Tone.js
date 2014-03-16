@@ -4,9 +4,9 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-AudioUnit.GUI.Fader = function(container, minOutput, maxOutput, label, segments){
+Tone.GUI.Fader = function(container, minOutput, maxOutput, label, segments){
 	//extend GUI
-	AudioUnit.GUI.call(this);
+	Tone.GUI.call(this);
 
 	//components
 	this.element = this.createElement();
@@ -25,7 +25,7 @@ AudioUnit.GUI.Fader = function(container, minOutput, maxOutput, label, segments)
 	this.currentLevel = null;
 	this.scaling = "lin";
 	
-	this.bars = new AudioUnit.GUI.Bar(this.track, segments);
+	this.bars = new Tone.GUI.Bar(this.track, segments);
 
 	//set it
 	this.setClass(this.element, "fader");
@@ -44,14 +44,14 @@ AudioUnit.GUI.Fader = function(container, minOutput, maxOutput, label, segments)
 	this.setLabel(this.defaultArg(label, ""));
 }
 
-AudioUnit.extend(AudioUnit.GUI.Fader, AudioUnit.GUI);
+Tone.extend(Tone.GUI.Fader, Tone.GUI);
 
 //called when the value has changed
-AudioUnit.GUI.Fader.prototype.onchange = function(){};
+Tone.GUI.Fader.prototype.onchange = function(){};
 
 
 //set the level of the 
-AudioUnit.GUI.Fader.prototype.setLevel = function(level){
+Tone.GUI.Fader.prototype.setLevel = function(level){
 	if (level !== this.currentLevel){
 		this.currentLevel = level;
 		this._setText(level);
@@ -64,13 +64,13 @@ AudioUnit.GUI.Fader.prototype.setLevel = function(level){
 //	SCALING VALUES
 ///////////////////////////////////////////////////////////////////////////////
 
-AudioUnit.GUI.Fader.prototype._onchangeText = function(e){
+Tone.GUI.Fader.prototype._onchangeText = function(e){
 	var val = parseFloat(this.textInput.value);
 	this.setLevel(val);
 }
 
 //called when the value has changed
-AudioUnit.GUI.Fader.prototype._onchangeSlider = function(){
+Tone.GUI.Fader.prototype._onchangeSlider = function(){
 	var scaledVal = this._scale(this.slider.value / 100)
 	var val = this.interpolate(scaledVal, this.min, this.max);
 	this.setLevel(val);
@@ -78,7 +78,7 @@ AudioUnit.GUI.Fader.prototype._onchangeSlider = function(){
 
 
 //@param {number} val 
-AudioUnit.GUI.Fader.prototype._setText = function(val){
+Tone.GUI.Fader.prototype._setText = function(val){
 	if (val < 10){
 		this.textInput.value = val.toFixed(3);
 	} else if (val < 100){
@@ -88,7 +88,7 @@ AudioUnit.GUI.Fader.prototype._setText = function(val){
 	}
 }
 
-AudioUnit.GUI.Fader.prototype._setSlider = function(val){
+Tone.GUI.Fader.prototype._setSlider = function(val){
 	//scale it to the slider range
 	var normed = this.normalize(val, this.min, this.max);
 	var scaled = this._inverseScale(normed);
@@ -98,7 +98,7 @@ AudioUnit.GUI.Fader.prototype._setSlider = function(val){
 
 
 //input a value between 0-1
-AudioUnit.GUI.Fader.prototype._inverseScale = function(x){
+Tone.GUI.Fader.prototype._inverseScale = function(x){
 	switch(this.scaling){
 		case "lin" : 
 			return parseFloat(x);
@@ -110,7 +110,7 @@ AudioUnit.GUI.Fader.prototype._inverseScale = function(x){
 }
 
 //input a value between 0-1
-AudioUnit.GUI.Fader.prototype._scale = function(x){
+Tone.GUI.Fader.prototype._scale = function(x){
 	switch(this.scaling){
 		case "lin" : 
 			return parseFloat(x);
@@ -126,17 +126,17 @@ AudioUnit.GUI.Fader.prototype._scale = function(x){
 ///////////////////////////////////////////////////////////////////////////////
 
 //called when the value has changed
-AudioUnit.GUI.Fader.prototype._setupEvents = function(){
+Tone.GUI.Fader.prototype._setupEvents = function(){
 	this.textInput.onchange = this._onchangeText.bind(this);
 	this.slider.onchange = this._onchangeSlider.bind(this);
 	this.slider.onmousedown = this._mousedown.bind(this);
 	this.slider.onmouseup = this._mouseup.bind(this);
 };
 
-AudioUnit.GUI.Fader.prototype._mousedown = function(e){
+Tone.GUI.Fader.prototype._mousedown = function(e){
 	this.isDragging = true;
 }
 
-AudioUnit.GUI.Fader.prototype._mouseup = function(e){
+Tone.GUI.Fader.prototype._mouseup = function(e){
 	this.isDragging = false;
 }

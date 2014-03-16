@@ -5,9 +5,9 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 //@param {number=} inputNum
-AudioUnit.Microphone = function(inputNum){
+Tone.Microphone = function(inputNum){
 	//extend the base class
-	AudioUnit.call(this);
+	Tone.call(this);
 
 	//components
 	this.mediaStream = null;
@@ -24,23 +24,23 @@ AudioUnit.Microphone = function(inputNum){
 	});		
 }
 
-AudioUnit.extend(AudioUnit.Microphone, AudioUnit);
+Tone.extend(Tone.Microphone, Tone);
 
 //stop the WebRTC connection
-AudioUnit.Microphone.prototype.start = function(){
+Tone.Microphone.prototype.start = function(){
 	// Only get the audio stream.
 	navigator.getUserMedia(this.constraints, this._onStream.bind(this), this._onStreamError.bind(this));
 }
 
 //stop the WebRTC connection
-AudioUnit.Microphone.prototype.stop = function(){
+Tone.Microphone.prototype.stop = function(){
 	if (this.stream){
 		this.stream.stop();
 	}
 }
 
 //when the stream is setup
-AudioUnit.Microphone.prototype._onStream = function(stream) {
+Tone.Microphone.prototype._onStream = function(stream) {
 	this.stream = stream;
 	// Wrap a MediaStreamSourceNode around the live input stream.
 	this.mediaStream =  this.context.createMediaStreamSource(stream);
@@ -48,7 +48,7 @@ AudioUnit.Microphone.prototype._onStream = function(stream) {
 };
 
 //on error
-AudioUnit.Microphone.prototype._onStreamError = function(e) {
+Tone.Microphone.prototype._onStreamError = function(e) {
 	console.error(e);
 };
 

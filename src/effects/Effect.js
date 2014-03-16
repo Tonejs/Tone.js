@@ -6,9 +6,9 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 
-AudioUnit.Effect = function(){
+Tone.Effect = function(){
 	//extends Unit
-	AudioUnit.call(this);
+	Tone.call(this);
 
 	//components
 	this.dry = this.context.createGain();
@@ -25,11 +25,11 @@ AudioUnit.Effect = function(){
 	this.setDry(.5);
 }
 
-AudioUnit.extend(AudioUnit.Effect, AudioUnit);
+Tone.extend(Tone.Effect, Tone);
 
 //adjust the dry/wet balance
 //dryness 0-1
-AudioUnit.Effect.prototype.setDry = function(dryness, duration){
+Tone.Effect.prototype.setDry = function(dryness, duration){
 	duration = this.defaultArg(duration, this.fadeTime);
 	var dryGain = this.equalPowerGain(dryness);
 	var wetGain = this.equalPowerGain(1 - dryness);
@@ -38,14 +38,14 @@ AudioUnit.Effect.prototype.setDry = function(dryness, duration){
 }
 
 //adjust the wet/dry balance
-AudioUnit.Effect.prototype.setWet = function(wetness, duration){
+Tone.Effect.prototype.setWet = function(wetness, duration){
 	this.setDry(1 - wetness);
 }
 
-AudioUnit.Effect.prototype.bypass = function(){
+Tone.Effect.prototype.bypass = function(){
 	this.setDry(1);
 }
 
-AudioUnit.Effect.prototype.connectEffect = function(effect){
+Tone.Effect.prototype.connectEffect = function(effect){
 	this.chain(this.effectSend, effect, this.effectReturn);
 }

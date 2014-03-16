@@ -9,9 +9,9 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 //@param {number=} channels
-AudioUnit.Meter = function(channels){
+Tone.Meter = function(channels){
 	//extends Unit
-	AudioUnit.call(this);
+	Tone.call(this);
 
 	this.channels = this.defaultArg(channels, 1);
 	this.volume = new Array(this.channels);
@@ -31,12 +31,12 @@ AudioUnit.Meter = function(channels){
 	this.toMaster(this.jsNode);
 }
 
-AudioUnit.extend(AudioUnit.Meter, AudioUnit);
+Tone.extend(Tone.Meter, Tone);
 
 
 //@param {number=} channel
 //@returns {number}
-AudioUnit.Meter.prototype.getLevel = function(channel){
+Tone.Meter.prototype.getLevel = function(channel){
 	channel = this.defaultArg(channel, 0);
 	var vol = this.volume[channel];
 	if (vol < .00001){
@@ -48,17 +48,17 @@ AudioUnit.Meter.prototype.getLevel = function(channel){
 
 //@param {number=} channel
 //@returns {number} the channel volume in decibels
-AudioUnit.Meter.prototype.getDb = function(channel){
+Tone.Meter.prototype.getDb = function(channel){
 	return this.gainToDb(this.getLevel(channel));
 }
 
 // @returns {boolean} if the audio has clipped in the last 500ms
-AudioUnit.Meter.prototype.isClipped = function(){
+Tone.Meter.prototype.isClipped = function(){
 	return Date.now() - this.clipTime < 500;
 }
 
 //get the max value
-AudioUnit.Meter.prototype.onprocess = function(event){
+Tone.Meter.prototype.onprocess = function(event){
 	var bufferSize = this.jsNode.bufferSize;
 	for (var channel = 0; channel < this.channels; channel++){
 		var input = event.inputBuffer.getChannelData(channel);

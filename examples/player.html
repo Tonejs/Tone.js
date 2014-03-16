@@ -5,7 +5,7 @@
 	<link rel="stylesheet" type="text/css" href="../style/GUI.css">
 
 	<script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
-	<script type="text/javascript" src="../src/core/AudioUnit.js"></script>
+	<script type="text/javascript" src="../src/core/Tone.js"></script>
 	<script type="text/javascript" src="../src/components/Player.js"></script>
 </head>
 <body>
@@ -43,7 +43,7 @@
 	</style>
 	<div id='Trigger'></div>
 	<script type="text/javascript">
-		var player = new AudioUnit.Player("../audio/casio/A1.mp3");
+		var player = new Tone.Player("../audio/casio/A1.mp3");
 
 		player.toMaster();
 		

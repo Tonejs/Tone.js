@@ -1,10 +1,10 @@
 
 //@param {Element} container
-//@param {AudioUnit.Meter} meter
+//@param {Tone.Meter} meter
 //@param {string=} label
 //@param {number=} segments
-AudioUnit.GUI.Meter = function(container, meter, label, segments){
-	AudioUnit.GUI.call(this);
+Tone.GUI.Meter = function(container, meter, label, segments){
+	Tone.GUI.call(this);
 
 	//components
 	this.meter = meter;
@@ -14,7 +14,7 @@ AudioUnit.GUI.Meter = function(container, meter, label, segments){
 
 	//add the bars
 	for (var i = 0; i < this.meter.channels; i++){
-		var bar = new AudioUnit.GUI.Bar(this.element, segments);
+		var bar = new Tone.GUI.Bar(this.element, segments);
 		this.bars[i] = bar;
 	}
 
@@ -28,9 +28,9 @@ AudioUnit.GUI.Meter = function(container, meter, label, segments){
 	this.appendChild(this.element, this.label);
 }
 
-AudioUnit.extend(AudioUnit.GUI.Meter, AudioUnit.GUI);
+Tone.extend(Tone.GUI.Meter, Tone.GUI);
 
-AudioUnit.GUI.Meter.prototype.update = function(){
+Tone.GUI.Meter.prototype.update = function(){
 	for (var channel = 0, channelCount = this.meter.channels; channel < channelCount; channel++){
 		var volume = this.meter.getLevel(channel);
 		this.bars[channel].setLevel(this.gainToLogScale(volume));
@@ -38,7 +38,7 @@ AudioUnit.GUI.Meter.prototype.update = function(){
 	}
 }
 
-AudioUnit.GUI.Meter.prototype.labelUpdate = function(){
+Tone.GUI.Meter.prototype.labelUpdate = function(){
 	for (var channel = 0, channelCount = this.meter.channels; channel < channelCount; channel++){
 		var db = this.meter.getDb(channel);
 		if (db < -120){

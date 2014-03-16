@@ -5,12 +5,12 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 //@param {number=} delayTime
-AudioUnit.PingPongDelay = function(delayTime){
-	AudioUnit.StereoSplit.call(this);
+Tone.PingPongDelay = function(delayTime){
+	Tone.StereoSplit.call(this);
 
 	//components
-	this.leftDelay = new AudioUnit.FeedbackDelay(delayTime);
-	this.rightDelay = new AudioUnit.FeedbackDelay(delayTime);
+	this.leftDelay = new Tone.FeedbackDelay(delayTime);
+	this.rightDelay = new Tone.FeedbackDelay(delayTime);
 
 
 	//connect it up
@@ -28,28 +28,28 @@ AudioUnit.PingPongDelay = function(delayTime){
 	this.setDelayTime(delayTime);
 }
 
-AudioUnit.extend(AudioUnit.PingPongDelay, AudioUnit.StereoSplit);
+Tone.extend(Tone.PingPongDelay, Tone.StereoSplit);
 
 //@param {number} delayTime
-AudioUnit.PingPongDelay.prototype.setDelayTime = function(delayTime){
+Tone.PingPongDelay.prototype.setDelayTime = function(delayTime){
 	this.leftDelay.setDelayTime(delayTime);
 	this.rightDelay.setDelayTime(delayTime * 2);
 }
 
 //@param {number} feedback (0 - 1)
-AudioUnit.PingPongDelay.prototype.setFeedback = function(feedback){
+Tone.PingPongDelay.prototype.setFeedback = function(feedback){
 	this.leftDelay.setFeedback(feedback);
 	this.rightDelay.setFeedback(feedback);
 }
 
 //@param {number} wet (0 - 1)
-AudioUnit.PingPongDelay.prototype.setWet = function(wet){
+Tone.PingPongDelay.prototype.setWet = function(wet){
 	this.leftDelay.setWet(wet);
 	this.rightDelay.setWet(wet);
 }
 
 //@param {number} dry (0 - 1)
-AudioUnit.PingPongDelay.prototype.setDry = function(dry){
+Tone.PingPongDelay.prototype.setDry = function(dry){
 	this.leftDelay.setDry(dry);
 	this.rightDelay.setDry(dry);
 }

@@ -6,9 +6,9 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 
-AudioUnit.StereoSplit = function(){
+Tone.StereoSplit = function(){
 	//extends Unit
-	AudioUnit.call(this);
+	Tone.call(this);
 
 	this.merger = this.context.createChannelMerger(2);
 	this.leftSend = this.context.createGain();
@@ -24,12 +24,12 @@ AudioUnit.StereoSplit = function(){
 	this.merger.connect(this.output);
 }
 
-AudioUnit.extend(AudioUnit.StereoSplit, AudioUnit);
+Tone.extend(Tone.StereoSplit, Tone);
 
-AudioUnit.StereoSplit.prototype.connectLeft = function(unit){
+Tone.StereoSplit.prototype.connectLeft = function(unit){
 	this.chain(this.leftSend, unit, this.leftReturn);
 }
 
-AudioUnit.StereoSplit.prototype.connectRight = function(unit){
+Tone.StereoSplit.prototype.connectRight = function(unit){
 	this.chain(this.rightSend, unit, this.rightReturn);
 }

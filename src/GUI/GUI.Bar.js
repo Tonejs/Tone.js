@@ -7,9 +7,9 @@
 
 //@param {Element} container
 //@param {number=} segments
-AudioUnit.GUI.Bar = function(container, segments){
+Tone.GUI.Bar = function(container, segments){
 	//extend GUI
-	AudioUnit.GUI.call(this);
+	Tone.GUI.call(this);
 
 	//vars
 	this.element = this.createElement();
@@ -38,10 +38,10 @@ AudioUnit.GUI.Bar = function(container, segments){
 	this.appendChild(this.element, this.label);
 }
 
-AudioUnit.extend(AudioUnit.GUI.Bar, AudioUnit.GUI);
+Tone.extend(Tone.GUI.Bar, Tone.GUI);
 
 //@param {number} val (0-1)
-AudioUnit.GUI.Bar.prototype.setLevel = function(val){
+Tone.GUI.Bar.prototype.setLevel = function(val){
 	val *= this.segmentCount;
 	for (var i = 0; i < this.segmentCount; i++){
 		var seg = this.segments[i];

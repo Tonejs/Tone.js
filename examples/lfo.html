@@ -5,14 +5,14 @@
 	<link rel="stylesheet" type="text/css" href="../style/GUI.css">
 
 	<script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
-	<script type="text/javascript" src="../src/core/AudioUnit.js"></script>
+	<script type="text/javascript" src="../src/core/Tone.js"></script>
 	<script type="text/javascript" src="../src/components/LFO.js"></script>
 	<script type="text/javascript" src="../src/components/Noise.js"></script>
 </head>
 <body>
 	<script type="text/javascript">
-		var noise = new AudioUnit.Noise("brown");
-		var lfo = new AudioUnit.LFO(1);
+		var noise = new Tone.Noise("brown");
+		var lfo = new Tone.LFO(1);
 		
 		noise.connect(lfo);
 		lfo.toMaster();

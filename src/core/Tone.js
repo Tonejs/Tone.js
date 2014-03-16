@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////////////
 //
-//	AUDIO UNIT
+//	TONE
 //
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -42,11 +42,11 @@
 	}
 
 	///////////////////////////////////////////////////////////////////////////
-	//	AUDIO UNIT
+	//	TONE
 	//	@constructor
 	///////////////////////////////////////////////////////////////////////////
 
-	var AudioUnit = function(){
+	var Tone = function(){
 		this.input = audioContext.createGain();
 		this.output = audioContext.createGain();
 	}
@@ -55,33 +55,33 @@
 	//	CLASS VARS
 	///////////////////////////////////////////////////////////////////////////
 
-	AudioUnit.prototype.context = audioContext;
-	AudioUnit.prototype.fadeTime = .005; //5ms
-	AudioUnit.prototype.bufferSize = 1024; //default buffer size
+	Tone.prototype.context = audioContext;
+	Tone.prototype.fadeTime = .005; //5ms
+	Tone.prototype.bufferSize = 1024; //default buffer size
 
 	///////////////////////////////////////////////////////////////////////////
 	//	CLASS METHODS
 	///////////////////////////////////////////////////////////////////////////
 
 	//@returns {number} the currentTime from the AudioContext
-	AudioUnit.prototype.now = function(){
+	Tone.prototype.now = function(){
 		return audioContext.currentTime;
 	}
 
-	//@param {AudioParam | AudioUnit} unit
-	AudioUnit.prototype.connect = function(unit){
+	//@param {AudioParam | Tone} unit
+	Tone.prototype.connect = function(unit){
 		this._connect(this, unit);
 	}
 
 	//disconnect the output
-	AudioUnit.prototype.disconnect = function(){
+	Tone.prototype.disconnect = function(){
 		this.output.disconnect();
 	}
 
 	//@private internal connect
-	//@param {AudioNode|AudioUnit} A
-	//@param {AudioNode|AudioUnit} B
-	AudioUnit.prototype._connect = function(A, B){
+	//@param {AudioNode|Tone} A
+	//@param {AudioNode|Tone} B
+	Tone.prototype._connect = function(A, B){
 		var compA = A;
 		if (A.output && A.output instanceof GainNode){
 			compA = A.output;
@@ -94,8 +94,8 @@
 	}
 	
 	//connect together an array of units in series
-	//@param {...AudioParam | AudioUnit} units
-	AudioUnit.prototype.chain = function(){
+	//@param {...AudioParam | Tone} units
+	Tone.prototype.chain = function(){
 		if (arguments.length > 1){
 			var currentUnit = arguments[0];
 			for (var i = 1; i < arguments.length; i++){
@@ -108,14 +108,14 @@
 
 	//set the output volume
 	//@param {number} vol
-	AudioUnit.prototype.setVolume = function(vol){
+	Tone.prototype.setVolume = function(vol){
 		this.output.gain.value = vol;
 	}
 
 	//fade the output volume
 	//@param {number} value
 	//@param {number=} duration (in seconds)
-	AudioUnit.prototype.fadeTo = function(value, duration){
+	Tone.prototype.fadeTo = function(value, duration){
 		this.defaultArg(duration, this.fadeTime);
 		this.rampToValue(this.output.gain, value, duration);
 	}
@@ -129,7 +129,7 @@
 	//@param {AudioParam} audioParam
 	//@param {number} value
 	//@param {number=} duration (in seconds)
-	AudioUnit.prototype.rampToValue = function(audioParam, value, duration){
+	Tone.prototype.rampToValue = function(audioParam, value, duration){
 		var currentValue = audioParam.value;
 		var now = this.now();
 		duration = this.defaultArg(duration, this.fadeTime);
@@ -141,7 +141,7 @@
 	//@param {AudioParam} audioParam
 	//@param {number} value
 	//@param {number=} duration (in seconds)
-	AudioUnit.prototype.exponentialRampToValue = function(audioParam, value, duration){
+	Tone.prototype.exponentialRampToValue = function(audioParam, value, duration){
 		var currentValue = audioParam.value;
 		var now = this.now();
 		audioParam.setValueAtTime(currentValue, now);
@@ -152,48 +152,48 @@
 	//@param {*} given
 	//@param {*} fallback
 	//@returns {*}
-	AudioUnit.prototype.defaultArg = function(given, fallback){
+	Tone.prototype.defaultArg = function(given, fallback){
 		return typeof(given) !== 'undefined' ? given : fallback;
 	}
 
 	//@param {number} percent (0-1)
 	//@returns {number} the equal power gain
 	//good for cross fades
-	AudioUnit.prototype.equalPowerGain = function(percent){
+	Tone.prototype.equalPowerGain = function(percent){
 		return Math.sin((percent) * 0.5*Math.PI);
 	}
 
 	//@param {number} db
 	//@returns {number} gain
-	AudioUnit.prototype.dbToGain = function(db) {
+	Tone.prototype.dbToGain = function(db) {
 		return Math.pow(2, db / 6);
 	}
 
 	//@param {number} gain
 	//@returns {number} db
-	AudioUnit.prototype.gainToDb = function(gain) {
+	Tone.prototype.gainToDb = function(gain) {
 		return  20 * (Math.log(gain) / Math.LN10);
 	}
 
 	//@param {number} gain
 	//@returns {number} gain (decibel scale but betwee 0-1)
-	AudioUnit.prototype.gainToLogScale = function(gain) {
+	Tone.prototype.gainToLogScale = function(gain) {
 		return  Math.max(this.normalize(this.gainToDb(gain), -100, 0), 0);
 	}
 
 	//@param {number} gain
 	//@returns {number} gain (decibel scale but betwee 0-1)
-	AudioUnit.prototype.gainToPowScale = function(gain) {
+	Tone.prototype.gainToPowScale = function(gain) {
 		return this.dbToGain(this.interpolate(gain, -100, 0));
 	}
 
 	//@param {number} input 0-1
-	AudioUnit.prototype.interpolate = function(input, outputMin, outputMax){
+	Tone.prototype.interpolate = function(input, outputMin, outputMax){
 		return input*(outputMax - outputMin) + outputMin;
 	}
 
 	//@returns {number} 0-1
-	AudioUnit.prototype.normalize = function(input, inputMin, inputMax){
+	Tone.prototype.normalize = function(input, inputMin, inputMax){
 		//make sure that min < max
 		if (inputMin > inputMax){
 			var tmp = inputMax;
@@ -205,19 +205,24 @@
 		return (input - inputMin) / (inputMax - inputMin);
 	}
 
-	//@param {AudioParam|AudioUnit=} unit
-	AudioUnit.prototype.toMaster = function(unit){
+	//@param {AudioParam|Tone=} unit
+	Tone.prototype.toMaster = function(unit){
 		unit = this.defaultArg(unit, this.output);
-		this._connect(unit, AudioUnit.Master);
+		this._connect(unit, Tone.Master);
 	}
 
+	///////////////////////////////////////////////////////////////////////////
+	//	MUSICAL TIMING
+	///////////////////////////////////////////////////////////////////////////
+
+	
 
 	///////////////////////////////////////////////////////////////////////////
 	//	STATIC METHODS
 	///////////////////////////////////////////////////////////////////////////
 	
 	//based on closure library 'inherit' function
-	AudioUnit.extend = function(child, parent){
+	Tone.extend = function(child, parent){
 		/** @constructor */
 		function tempConstructor() {};
 		tempConstructor.prototype = parent.prototype;
@@ -232,7 +237,7 @@
 
 	var Master = function(){
 		//extend audio unit
-		AudioUnit.call(this);
+		Tone.call(this);
 
 		//put a hard limiter on the output so we don't blow any eardrums
 		this.limiter = this.context.createDynamicsCompressor();
@@ -240,10 +245,10 @@
 		this.limiter.ratio.value = 20;
 		this.chain(this.input, this.limiter, this.output, this.context.destination);
 	}
-	AudioUnit.extend(Master, AudioUnit);
-	AudioUnit.Master = new Master();
+	Tone.extend(Master, Tone);
+	Tone.Master = new Master();
 
 	//make it global
-	global.AudioUnit = AudioUnit;
+	global.Tone = Tone;
 
 })(window);

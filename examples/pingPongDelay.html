@@ -5,7 +5,7 @@
 	<link rel="stylesheet" type="text/css" href="../style/GUI.css">
 
 	<script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
-	<script type="text/javascript" src="../src/core/AudioUnit.js"></script>
+	<script type="text/javascript" src="../src/core/Tone.js"></script>
 	<script type="text/javascript" src="../src/components/Meter.js"></script>
 	<script type="text/javascript" src="../src/components/Envelope.js"></script>
 	<script type="text/javascript" src="../src/components/Noise.js"></script>
@@ -82,13 +82,13 @@
 	<div id='Trigger'></div>
 	<div id='MasterOut'></div>
 	<script type="text/javascript">
-		var meter = new AudioUnit.Meter(2);
-		var env = new AudioUnit.Envelope(.05, .01, 0, 0);
-		var noise = new AudioUnit.Noise();
-		var feedbackDelay = new AudioUnit.PingPongDelay(.25);
-		var fader = new AudioUnit.GUI.GainFader($("#MasterOut"), AudioUnit.Master.output, "mstr");
-		var meterGui = new AudioUnit.GUI.Meter($("#MasterOut"), meter, "master", 20);
-		var compGui = new AudioUnit.GUI.Compressor($("body"), AudioUnit.Master.limiter);
+		var meter = new Tone.Meter(2);
+		var env = new Tone.Envelope(.05, .01, 0, 0);
+		var noise = new Tone.Noise();
+		var feedbackDelay = new Tone.PingPongDelay(.25);
+		var fader = new Tone.GUI.GainFader($("#MasterOut"), Tone.Master.output, "mstr");
+		var meterGui = new Tone.GUI.Meter($("#MasterOut"), meter, "master", 20);
+		var compGui = new Tone.GUI.Compressor($("body"), Tone.Master.limiter);
 		
 		noise.connect(env);
 		env.connect(feedbackDelay);
@@ -96,7 +96,7 @@
 		feedbackDelay.toMaster();
 
 		//the master output meter
-		AudioUnit.Master.connect(meter);
+		Tone.Master.connect(meter);
 
 		$("#Trigger").bind("mousedown touchstart", function(e){
 			env.triggerAttack();

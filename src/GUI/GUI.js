@@ -17,25 +17,25 @@ window.requestAnimFrame = (function(){
 
 (function(global){
 
-	AudioUnit.GUI = function(){
+	Tone.GUI = function(){
 		this.element = null;
 		this._fastUpdateID = null;
 		this._slowUpdateID = null;
 	}
 
 	//BORROW SOME METHODS FROM AUDIOUNIT
-	AudioUnit.extend(AudioUnit.GUI, AudioUnit);
+	Tone.extend(Tone.GUI, Tone);
 
 	///////////////////////////////////////////////////////////////////////////
 	//	PRIVATE
 	///////////////////////////////////////////////////////////////////////////
 
 	//@private
-	//@type {Array<AudioUnit.GUI>}
+	//@type {Array<Tone.GUI>}
 	var _onFastUpdateCallbacks = [];
 
 	//@private
-	//@type {Array<AudioUnit.GUI>}
+	//@type {Array<Tone.GUI>}
 	var _onSlowUpdateCallbacks = [];
 
 	//@private
@@ -73,7 +73,7 @@ window.requestAnimFrame = (function(){
 	//callback gets envoked at 60fps
 	//@param {function()} callback
 	//@param {Object} ctx (the "this" object)
-	AudioUnit.GUI.prototype.onAnimationFrame = function(callback, ctx){
+	Tone.GUI.prototype.onAnimationFrame = function(callback, ctx){
 		var id = getNextID();
 		var callbackObj = {
 			callback : callback,
@@ -86,7 +86,7 @@ window.requestAnimFrame = (function(){
 	//callback gets envoked at 60fps
 	//@param {function()} callback
 	//@param {Object} ctx (the "this" object)
-	AudioUnit.GUI.prototype.onSlowUpdate = function(callback, ctx){
+	Tone.GUI.prototype.onSlowUpdate = function(callback, ctx){
 		var id = getNextID();
 		var callbackObj = {
 			callback : callback,
@@ -96,7 +96,7 @@ window.requestAnimFrame = (function(){
 		_onSlowUpdateCallbacks.push(callbackObj);
 	}
 
-	AudioUnit.GUI.prototype.remove = function(){
+	Tone.GUI.prototype.remove = function(){
 		if (this.element !== null){
 			this.removeChildren();
 			this.element.remove();
@@ -118,7 +118,7 @@ window.requestAnimFrame = (function(){
 	//	UTILITIES
 	///////////////////////////////////////////////////////////////////////////
 
-	AudioUnit.GUI.prototype.removeChildren = function(){
+	Tone.GUI.prototype.removeChildren = function(){
 		if (this.element){
 			var child;
 			while (child = this.element.firstChild) {
@@ -129,19 +129,19 @@ window.requestAnimFrame = (function(){
 
 	//@param {Element} container
 	//@param {Element} element
-	AudioUnit.GUI.prototype.appendChild = function(container, element){
+	Tone.GUI.prototype.appendChild = function(container, element){
 		this._getElement(container).appendChild(this._getElement(element));
 	}
 
 	//@param {string=} type
-	AudioUnit.GUI.prototype.createElement = function(type){
+	Tone.GUI.prototype.createElement = function(type){
 		type = this.defaultArg(type, "div");
 		return document.createElement(type);
 	}
 
 	//@param {Element} element
 	//@param {Element} unwraps jquery if necessary
-	AudioUnit.GUI.prototype._getElement = function(el){
+	Tone.GUI.prototype._getElement = function(el){
 		if (typeof jQuery !== 'undefined' && el instanceof jQuery){
 			return el[0];
 		} else if (el.element && meterGui.element instanceof HTMLElement){
@@ -153,12 +153,12 @@ window.requestAnimFrame = (function(){
 
 	//@param {Element} element
 	//@param {string} className
-	AudioUnit.GUI.prototype.setClass = function(element, className){
+	Tone.GUI.prototype.setClass = function(element, className){
 		this._getElement(element).className = className;
 	}
 
 	//@param {string} str
-	AudioUnit.GUI.prototype.setLabel = function(str){
+	Tone.GUI.prototype.setLabel = function(str){
 		if (this.label && this.label instanceof HTMLElement){
 			this.label.textContent = str;
 		}
@@ -166,5 +166,5 @@ window.requestAnimFrame = (function(){
 
 
 	//give it to the window
-	global.AudioUnit.GUI = AudioUnit.GUI;
+	global.Tone.GUI = Tone.GUI;
 })(window);

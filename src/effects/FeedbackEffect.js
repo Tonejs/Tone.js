@@ -6,9 +6,9 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 
-AudioUnit.FeedbackEffect = function(){
+Tone.FeedbackEffect = function(){
 	//extends Unit
-	AudioUnit.Effect.call(this);
+	Tone.Effect.call(this);
 
 	this.feedback = this.context.createGain();
 	//feedback loop
@@ -18,9 +18,9 @@ AudioUnit.FeedbackEffect = function(){
 	this.setDry(.5);
 }
 
-AudioUnit.extend(AudioUnit.FeedbackEffect, AudioUnit.Effect);
+Tone.extend(Tone.FeedbackEffect, Tone.Effect);
 
 
-AudioUnit.Effect.prototype.setFeedback = function(fback){
+Tone.Effect.prototype.setFeedback = function(fback){
 	this.rampToValue(this.feedback.gain, fback);
 }

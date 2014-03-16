@@ -5,8 +5,8 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 //@param {number} delayTime
-AudioUnit.FeedbackDelay = function(delayTime){
-	AudioUnit.FeedbackEffect.call(this);
+Tone.FeedbackDelay = function(delayTime){
+	Tone.FeedbackEffect.call(this);
 
 	this.delay = this.context.createDelay(4);
 	this.delay.delayTime.value = this.defaultArg(delayTime, .25);
@@ -15,8 +15,8 @@ AudioUnit.FeedbackDelay = function(delayTime){
 	this.connectEffect(this.delay);
 }
 
-AudioUnit.extend(AudioUnit.FeedbackDelay, AudioUnit.FeedbackEffect);
+Tone.extend(Tone.FeedbackDelay, Tone.FeedbackEffect);
 
-AudioUnit.FeedbackDelay.prototype.setDelayTime = function(delayTime){
+Tone.FeedbackDelay.prototype.setDelayTime = function(delayTime){
 	this.rampToValue(this.delay.delayTime, delayTime);
 }
