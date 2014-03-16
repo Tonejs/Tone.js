@@ -40,6 +40,15 @@
 	if (typeof OscillatorNode.prototype.stop !== "function"){
 		OscillatorNode.prototype.stop = OscillatorNode.prototype.noteOff;	
 	}
+	//extend the connect function to include Tones
+	AudioNode.prototype._nativeConnect = AudioNode.prototype.connect;
+	AudioNode.prototype.connect = function(B){
+		if (B.input && B.input instanceof GainNode){
+			this._nativeConnect(B.input);
+		} else {
+			this._nativeConnect.apply(this, arguments);
+		}
+	}
 
 	///////////////////////////////////////////////////////////////////////////
 	//	TONE
@@ -70,27 +79,12 @@
 
 	//@param {AudioParam | Tone} unit
 	Tone.prototype.connect = function(unit){
-		this._connect(this, unit);
+		this.output.connect(unit);
 	}
 
 	//disconnect the output
 	Tone.prototype.disconnect = function(){
 		this.output.disconnect();
-	}
-
-	//@private internal connect
-	//@param {AudioNode|Tone} A
-	//@param {AudioNode|Tone} B
-	Tone.prototype._connect = function(A, B){
-		var compA = A;
-		if (A.output && A.output instanceof GainNode){
-			compA = A.output;
-		}
-		var compB = B;
-		if (B.input && B.input instanceof GainNode){
-			compB = B.input;
-		} 
-		compA.connect(compB);
 	}
 	
 	//connect together an array of units in series
@@ -100,7 +94,7 @@
 			var currentUnit = arguments[0];
 			for (var i = 1; i < arguments.length; i++){
 				var toUnit = arguments[i];
-				this._connect(currentUnit, toUnit);
+				currentUnit.connect(toUnit);
 				currentUnit = toUnit;
 			}
 		}
@@ -205,17 +199,65 @@
 		return (input - inputMin) / (inputMax - inputMin);
 	}
 
-	//@param {AudioParam|Tone=} unit
-	Tone.prototype.toMaster = function(unit){
-		unit = this.defaultArg(unit, this.output);
-		this._connect(unit, Tone.Master);
+	//@param {AudioNode|Tone=} unit
+	Tone.prototype.toMaster = function(node){
+		node = this.defaultArg(node, this.output);
+		node.connect(Tone.Master);
 	}
 
 	///////////////////////////////////////////////////////////////////////////
 	//	MUSICAL TIMING
+	//
+	//	numbers are passed through
+	//	musical timing will be evaluated based on the passed in bpm
+	//	notation values are 4n = quarter, 8t = 8th note tripplet
+	//	'+' prefixed values will be "now" relative
 	///////////////////////////////////////////////////////////////////////////
 
-	
+	//@param {number|string} timing
+	//@param {number=} bpm
+	//@returns {number} the time (clock relative)
+	Tone.prototype.parseTime = function(time, bpm){
+		if (typeof time === "number"){
+			return time;
+		} else if (typeof time === "string"){
+			var plusTime = 0;
+			if(time.charAt(0) === "+") {
+				plusTime = this.now();
+				time = time.slice(1);				
+			} 
+			//test if it's a beat format
+			if (this.isNotation(time)){
+				return this.parseNotation(time, bpm) + plusTime;
+			} else {
+				return parseFloat(time) + plusTime;
+			}
+		}
+	}
+
+	Tone.prototype.isNotation = (function(){
+		var notationFormat = new RegExp(/[0-9]+[nt]$/);
+		return function(note){
+			return notationFormat.test(note);
+		}
+	})();
+
+	//@param {string} notation
+	//@param {number=} bpm
+	//@returns {number} time duration of notation
+	Tone.prototype.parseNotation = function(notation, bpm){
+		bpm = this.defaultArg(bpm, 120);
+		var measureInSeconds = (60 / bpm) * 4;
+		var subdivision = parseInt(notation, 10);
+		var lastLetter = notation.slice(-1);
+		if (lastLetter === "t"){
+			return (measureInSeconds / subdivision) * 2/3;
+		} else if (lastLetter === 'n'){
+			return measureInSeconds / subdivision;
+		} else {
+			return 0;
+		}
+	}
 
 	///////////////////////////////////////////////////////////////////////////
 	//	STATIC METHODS
