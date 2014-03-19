@@ -1,0 +1,50 @@
+<html>
+<head>
+	<title>Transport</title>
+
+	<link rel="stylesheet" type="text/css" href="../style/GUI.css">
+
+	<script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
+	<script type="text/javascript" src="../src/core/Tone.js"></script>
+	<script type="text/javascript" src="../src/components/Transport.js"></script>
+</head>
+<body>
+	<style type="text/css">
+		body {
+			font-family:  monospace;
+		}
+	</style>
+
+	<div id="Transport">0:0:0</div>
+	<script type="text/javascript">
+		var transport = new Tone.Transport(60, 4);
+
+		transport.setInterval(function(time){
+			$("#Transport").html(transport.getProgress());
+		}, transport.notationToBeat("16n"));
+
+		transport.setTimeout(function(time){
+			console.log("a");
+		}, "0:0:1");
+
+		transport.setTimeout(function(time){
+			console.log("series");
+		}, "0:1:0");
+
+		transport.setTimeout(function(time){
+			console.log("of");
+		}, "0:3:0");
+
+		transport.setTimeout(function(time){
+			console.log("timed");
+		}, "1:0:0");
+
+		transport.setTimeout(function(time){
+			console.log("events");
+		}, "1:0:3");
+
+		transport.start();
+
+	</script>
+</body>
+</html>
