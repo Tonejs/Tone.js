@@ -205,6 +205,12 @@
 		node.connect(Tone.Master);
 	}
 
+	//@param {number} samples
+	//@returns {number} the number of seconds
+	Tone.prototype.samplesToSeconds = function(samples){
+		return samples / audioContext.sampleRate;
+	}
+
 	///////////////////////////////////////////////////////////////////////////
 	//	MUSICAL TIMING
 	//
@@ -228,7 +234,7 @@
 			} 
 			//test if it's a beat format
 			if (this.isNotation(time)){
-				return this.parseNotation(time, bpm) + plusTime;
+				return this.notationTime(time, bpm) + plusTime;
 			} else {
 				return parseFloat(time) + plusTime;
 			}
@@ -236,7 +242,7 @@
 	}
 
 	Tone.prototype.isNotation = (function(){
-		var notationFormat = new RegExp(/[0-9]+[nt]$/);
+		var notationFormat = new RegExp(/[0-9]+[mnt]$/);
 		return function(note){
 			return notationFormat.test(note);
 		}
@@ -244,16 +250,29 @@
 
 	//@param {string} notation
 	//@param {number=} bpm
+	//@param {number} timeSignature (default 4)
 	//@returns {number} time duration of notation
-	Tone.prototype.parseNotation = function(notation, bpm){
+	Tone.prototype.notationTime = function(notation, bpm, timeSignature){
 		bpm = this.defaultArg(bpm, 120);
-		var measureInSeconds = (60 / bpm) * 4;
+		var beatTime = (60 / bpm);
+		return beatTime * this.notationToBeat(notation, timeSignature);
+	}
+
+	//@param {string} notation
+	//@param {number} timeSignature (default 4)
+	// 1m = 1 measure in 4/4 = returns 4
+	// 4n always returns 1
+	//@returns {number} the subdivison of a beat
+	Tone.prototype.notationToBeat = function(notation, timeSignature){
+		timeSignature = this.defaultArg(timeSignature, 4);
 		var subdivision = parseInt(notation, 10);
 		var lastLetter = notation.slice(-1);
 		if (lastLetter === "t"){
-			return (measureInSeconds / subdivision) * 2/3;
+			return (4 / subdivision) * 2/3
 		} else if (lastLetter === 'n'){
-			return measureInSeconds / subdivision;
+			return 4 / subdivision
+		} else if (lastLetter === 'm'){
+			return subdivision * timeSignature;
 		} else {
 			return 0;
 		}
@@ -293,4 +312,4 @@
 	//make it global
 	global.Tone = Tone;
 
-})(window);
+})(this);

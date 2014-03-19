@@ -25,12 +25,13 @@ $unitWidth : 30px;
 =============================================================================*/
 
 .bar {
+	padding: 0px 2px 0px 2px;
 }
 
 .bar .segment {
 	width: $unitWidth;
 	height: 6px;
-	margin: 2px;
+	margin: 2px auto 2px auto;
 	opacity: 1;
 	/*@include transitionAndTime(opacity, .016s);*/
 }
