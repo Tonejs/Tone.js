@@ -7,6 +7,10 @@
 	<script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
 	<script type="text/javascript" src="../src/core/Tone.js"></script>
 	<script type="text/javascript" src="../src/components/Transport.js"></script>
+	<script type="text/javascript" src="../src/components/Player.js"></script>
+	<script type="text/javascript" src="../src/GUI/GUI.js"></script>
+	<script type="text/javascript" src="../src/GUI/GUI.Button.js"></script>
+	<script type="text/javascript" src="../src/GUI/GUI.Transport.js"></script>
 </head>
 <body>
 	<style type="text/css">
@@ -19,13 +23,24 @@
 	<script type="text/javascript">
 		var transport = new Tone.Transport(60, 4);
 
+		var transportGUI = new Tone.GUI.Transport($("body"), transport);
+
+		var player = new Tone.Player("../audio/505/hh.mp3");
+		player.toMaster();
+		player.setVolume(1);
+		player.load(function(){
+			// player.start(1);
+			transport.start(1);
+		});
+
 		transport.setInterval(function(time){
 			$("#Transport").html(transport.getProgress());
-		}, transport.notationToBeat("16n"));
+			player.start(time);
+		}, "16n");
 
 		transport.setTimeout(function(time){
 			console.log("a");
-		}, "0:0:1");
+		}, "0:0:0");
 
 		transport.setTimeout(function(time){
 			console.log("series");
@@ -43,7 +58,6 @@
 			console.log("events");
 		}, "1:0:3");
 
-		transport.start();
 
 	</script>
 </body>

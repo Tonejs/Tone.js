@@ -9,10 +9,9 @@
 //@param {number=} segments
 Tone.GUI.Bar = function(container, segments){
 	//extend GUI
-	Tone.GUI.call(this);
+	Tone.GUI.call(this, container);
 
 	//vars
-	this.element = this.createElement();
 	this.segmentCount = this.defaultArg(segments, 20);
 	this.segments = new Array(this.segmentCount);
 	this.label = this.createElement();
@@ -34,7 +33,6 @@ Tone.GUI.Bar = function(container, segments){
 	this.setClass(this.element, "bar");
 	this.setClass(this.label, "label");
 	//add it to the container
-	this.appendChild(container, this.element);
 	this.appendChild(this.element, this.label);
 }
 

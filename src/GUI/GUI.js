@@ -17,13 +17,16 @@ window.requestAnimFrame = (function(){
 
 (function(global){
 
-	Tone.GUI = function(){
-		this.element = null;
+	//@constructor
+	//@param {string=} elementType
+	Tone.GUI = function(container, type){
+		this.element = this.createElement(type);
 		this._fastUpdateID = null;
 		this._slowUpdateID = null;
+		this.appendChild(container, this.element);
 	}
 
-	//BORROW SOME METHODS FROM AUDIOUNIT
+	//BORROW SOME METHODS FROM TONE
 	Tone.extend(Tone.GUI, Tone);
 
 	///////////////////////////////////////////////////////////////////////////

@@ -85,3 +85,31 @@
 .fader .bar .segment {
   width: 40px;
   background-color: black; }
+
+/*=============================================================================
+	BUTTONS
+=============================================================================*/
+.button {
+  margin: 5px;
+  width: 40px;
+  height: 20px;
+  position: absolute;
+  left: 0px;
+  border: none; }
+
+.button input {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  border: none; }
+
+.button .label {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  height: 100%;
+  line-height: 20px;
+  color: white;
+  pointer-events: none; }

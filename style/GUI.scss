@@ -119,3 +119,39 @@ $faderWidth: 40px;
 	width: $faderWidth;
 	background-color: black;
 }
+
+
+/*=============================================================================
+	BUTTONS
+=============================================================================*/
+
+$buttonWidth: 40px;
+$buttonHeight: 20px;
+
+.button {
+	margin: 5px;
+	width: $buttonWidth;
+	height: $buttonHeight;
+	position: absolute;
+	left: 0px;
+    border: none;
+}
+
+.button input{
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	left: 0px;
+	top:0px;
+    border: none;
+}
+
+.button .label {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    height: 100%;
+    line-height: $buttonHeight;
+    color: white;
+    pointer-events: none;
+}
