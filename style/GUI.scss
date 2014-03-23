@@ -132,9 +132,10 @@ $buttonHeight: 20px;
 	margin: 5px;
 	width: $buttonWidth;
 	height: $buttonHeight;
-	position: absolute;
+	position: relative;
 	left: 0px;
     border: none;
+    display: inline-block;
 }
 
 .button input{
@@ -143,8 +144,10 @@ $buttonHeight: 20px;
 	position: absolute;
 	left: 0px;
 	top:0px;
-    border: none;
+	border: none;
+	cursor: pointer;
 }
+
 
 .button .label {
     position: absolute;
@@ -155,3 +158,39 @@ $buttonHeight: 20px;
     color: white;
     pointer-events: none;
 }
+
+.button:active input{
+	background-color: white;
+}
+
+.button:active .label{
+	color: black;
+}
+
+
+/*=============================================================================
+	TRANSPORT
+=============================================================================*/
+
+.transport {
+	@include borderStyle;
+	position: absolute;
+	width: auto;
+	height: auto;
+}
+
+.transport .button{
+	float: left;
+}
+
+.transport .progress{
+	margin: 5px;
+	float: left;
+	display: inline-block;
+	width: 60px;
+	text-align: center;
+	border: none;
+	font-size: 14px;
+	font-family: monospace;
+}
+

@@ -19,7 +19,6 @@
 		}
 	</style>
 
-	<div id="Transport">0:0:0</div>
 	<script type="text/javascript">
 		var transport = new Tone.Transport(60, 4);
 
@@ -29,14 +28,8 @@
 		player.toMaster();
 		player.setVolume(1);
 		player.load(function(){
-			// player.start(1);
-			transport.start(1);
+			// transport.start(1);
 		});
-
-		transport.setInterval(function(time){
-			$("#Transport").html(transport.getProgress());
-			player.start(time);
-		}, "16n");
 
 		transport.setTimeout(function(time){
 			console.log("a");

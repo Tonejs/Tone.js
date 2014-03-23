@@ -93,9 +93,10 @@
   margin: 5px;
   width: 40px;
   height: 20px;
-  position: absolute;
+  position: relative;
   left: 0px;
-  border: none; }
+  border: none;
+  display: inline-block; }
 
 .button input {
   width: 100%;
@@ -103,7 +104,8 @@
   position: absolute;
   left: 0px;
   top: 0px;
-  border: none; }
+  border: none;
+  cursor: pointer; }
 
 .button .label {
   position: absolute;
@@ -113,3 +115,32 @@
   line-height: 20px;
   color: white;
   pointer-events: none; }
+
+.button:active input {
+  background-color: white; }
+
+.button:active .label {
+  color: black; }
+
+/*=============================================================================
+	TRANSPORT
+=============================================================================*/
+.transport {
+  border: 1px solid black;
+  border-radius: 3px;
+  position: absolute;
+  width: auto;
+  height: auto; }
+
+.transport .button {
+  float: left; }
+
+.transport .progress {
+  margin: 5px;
+  float: left;
+  display: inline-block;
+  width: 60px;
+  text-align: center;
+  border: none;
+  font-size: 14px;
+  font-family: monospace; }

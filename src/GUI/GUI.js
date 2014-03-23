@@ -137,9 +137,13 @@ window.requestAnimFrame = (function(){
 	}
 
 	//@param {string=} type
-	Tone.GUI.prototype.createElement = function(type){
+	//@param {string=} class
+	Tone.GUI.prototype.createElement = function(type, className){
 		type = this.defaultArg(type, "div");
-		return document.createElement(type);
+		var el = document.createElement(type);
+		className = this.defaultArg(className, "");
+		this.setClass(el, className);
+		return el;
 	}
 
 	//@param {Element} element

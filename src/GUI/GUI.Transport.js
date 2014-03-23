@@ -9,11 +9,17 @@
 Tone.GUI.Transport = function(container, transport){
 	Tone.GUI.call(this, container);
 
-	this.transport = transport;
-
 	this.setClass(this.element, "transport");
 
+	this.transport = transport;
+	this.transport.setInterval(this.updateProgress, "16n", this);
+
 	this.start = new Tone.GUI.Button(this.element, this.startClicked.bind(this), "play");
+
+	this.progress = this.createElement("input", "progress");
+	this.progress.type = "text";
+	this.progress.value = "0:0:0";
+	this.appendChild(this.element, this.progress);
 }
 
 Tone.extend(Tone.GUI.Transport, Tone.GUI);
@@ -26,5 +32,9 @@ Tone.GUI.Transport.prototype.startClicked = function(){
 		this.transport.start();
 		this.start.setText("stop");
 	}
+}
+
+Tone.GUI.Transport.prototype.updateProgress = function(time){
+	this.progress.value = this.transport.getProgress();
 }
 
