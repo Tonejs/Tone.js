@@ -6,6 +6,8 @@
 //	supports tempo curves and time changes
 //	setInterval (repeated events)
 //	setTimeout (single timeline event)
+//
+//	@dependency core/Tone.js
 ///////////////////////////////////////////////////////////////////////////////
 
 //@param {number=} bpm
