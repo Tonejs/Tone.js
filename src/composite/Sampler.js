@@ -1,14 +1,43 @@
-//dependencies : Tone, Player, Envelope
+///////////////////////////////////////////////////////////////////////////////
+//
+//  SAMPLE PLAYER
+//
+//	dependencies : Tone, Player, Envelope, LFO
+///////////////////////////////////////////////////////////////////////////////
 
-//bufferMap maps a sample name to a url
-Tone.Sampler = function(bufferMap){
 
+Tone.Sampler = function(url){
+	Tone.call(this);
+
+	//components
+	this.player = new Tone.Player(url);
+	this.envelope = new Tone.Envelope(.1, .01, .1, 1);
+	this.filter = this.context.createBiquadFilter();
+	this.filter.type = "lowpass";
+	this.filter.Q.value = 12;
+	this.filterEnvelope = new Tone.Envelope(.4, 0, 1, .6, this.filter.frequency, 0, 1200);
+
+	//connect it up
+	this.chain(this.player, this.envelope, this.filter, this.output);
 }
 
+Tone.extend(Tone.Sampler, Tone);
+
+
+//@param {function()} callback
 Tone.Sampler.prototype.load = function(callback){
-	//load all of the players
+	this.player.load(callback);
 }
 
-Tone.Sampler.prototype.addSample = function(name, url){
-	//load all of the players
+Tone.Sampler.prototype.triggerAttack = function(startTime){
+	this.player.start(startTime);
+	this.envelope.triggerAttack(startTime);
+	this.filterEnvelope.triggerAttack(startTime);
+}
+
+Tone.Sampler.prototype.triggerRelease = function(stopTime){
+	stopTime = this.defaultArg(stopTime, this.now());
+	this.player.stop(stopTime + Math.max(this.envelope.release, this.filterEnvelope.release));
+	this.envelope.triggerRelease(stopTime);
+	this.filterEnvelope.triggerRelease(stopTime);
 }

@@ -1,0 +1,64 @@
+<html>
+<head>
+	<title>Basic Player</title>
+
+	<link rel="stylesheet" type="text/css" href="../style/GUI.css">
+
+	<script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
+	<script type="text/javascript" src="../src/core/Tone.js"></script>
+	<script type="text/javascript" src="../src/components/Player.js"></script>
+	<script type="text/javascript" src="../src/components/Envelope.js"></script>
+	<script type="text/javascript" src="../src/composite/Sampler.js"></script>
+</head>
+<body>
+	<style type="text/css">
+		#Trigger {
+			margin-left: -50px;
+			margin-top: -50px;
+			width: 100px;
+			height: 100px;
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			background-color: blue;
+		}
+
+		#Trigger:after {
+			font-family: monospace;
+			position: absolute;
+			width: 100%;
+			content: "attack";
+			color: white;
+			text-align: center;
+			line-height: 100px;
+		}
+
+		#Trigger:active {
+			background-color: white;
+			color: black;
+		}
+
+		#Trigger:active:after {
+			content: "release";
+			color: black;
+		}
+	</style>
+	<div id='Trigger'></div>
+	<script type="text/javascript">
+		var sampler = new Tone.Sampler("../audio/casio/A1.mp3");
+
+		sampler.toMaster();
+		
+		//once it's loaded, add the event triggers
+		sampler.load(function(){
+			$("#Trigger").mousedown(function(e){
+				sampler.triggerAttack();
+			});
+			$("#Trigger").mouseup(function(e){
+				sampler.triggerRelease();
+			});
+		});
+
+	</script>
+</body>
+</html>

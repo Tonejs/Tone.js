@@ -17,8 +17,8 @@ Tone.Envelope = function(attack, decay, sustain, release, audioParam, minOutput,
 	this.attack = this.defaultArg(attack, .01);
 	this.decay = this.defaultArg(decay, .1);
 	this.release = this.defaultArg(release, 1);
-	// this.sustain = this.defaultArg(this.gainToPowScale(sustain), .1);
-	this.setSustain(this.defaultArg(sustain, .1));
+	this.sustain = this.defaultArg(.5);
+	// this.setSustain(this.defaultArg(sustain, .1));
 	this.min = this.defaultArg(minOutput, 0);
 	this.max = this.defaultArg(maxOutput, 1);
 	
@@ -42,6 +42,20 @@ Tone.Envelope.prototype.triggerAttack = function(time){
 	this.param.linearRampToValueAtTime(sustainVal, time + this.decay + this.attack);
 }
 
+//attack->decay->sustain
+Tone.Envelope.prototype.triggerAttackExp = function(time){
+	var startVal = this.min;
+	if (!time){
+		startVal = this.param.value;
+	}
+	time = this.defaultArg(time, this.now());
+	this.param.cancelScheduledValues(time);
+	this.param.setValueAtTime(startVal, time);
+	this.param.exponentialRampToValueAtTime(this.max, time + this.attack);
+	var sustainVal = (this.max - this.min) * this.sustain + this.min;
+	this.param.exponentialRampToValueAtTime(sustainVal, time + this.decay + this.attack);
+}
+
 //triggers the release of the envelope
 Tone.Envelope.prototype.triggerRelease = function(time){
 	var startVal = this.param.value;
@@ -53,6 +67,20 @@ Tone.Envelope.prototype.triggerRelease = function(time){
 	this.param.setValueAtTime(startVal, time);
 	this.param.linearRampToValueAtTime(this.min, time + this.release);
 }
+
+
+//triggers the release of the envelope
+Tone.Envelope.prototype.triggerReleaseExp = function(time){
+	var startVal = this.param.value;
+	if (time){
+		startVal = (this.max - this.min) * this.sustain + this.min;
+	}
+	time = this.defaultArg(time, this.now());
+	this.param.cancelScheduledValues(time);
+	this.param.setValueAtTime(startVal, time);
+	this.param.exponentialRampToValueAtTime(this.min, time + this.release);
+}
+
 
 ///////////////////////////////////////////////////////////////////////////////
 //  SET VALUES
@@ -75,7 +103,8 @@ Tone.Envelope.prototype.setRelease = function(release){
 
 //@param {number} sustain as a percentage (0-1);
 Tone.Envelope.prototype.setSustain = function(sustain){
-	this.sustain = this.gainToPowScale(sustain);
+	// this.sustain = this.gainToPowScale(sustain);
+	this.sustain = sustain;
 }
 
 //@param {number} min

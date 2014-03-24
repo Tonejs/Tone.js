@@ -12,6 +12,8 @@ Tone.Player = function(url){
 	this.url = url;
 	this.source = null;
 	this.buffer = null;
+
+	this.onended = function(){};
 }
 
 Tone.extend(Tone.Player, Tone);
@@ -50,6 +52,7 @@ Tone.Player.prototype.start = function(startTime, offset, duration){
 		this.source.loop = false;
 		this.source.connect(this.output);
 		this.source.start(startTime, offset, duration);
+		this.source.onended = this._onended.bind(this);
 	}
 }
 
@@ -70,6 +73,7 @@ Tone.Player.prototype.loop = function(startTime, loopStart, loopEnd, offset, dur
 		this.source.loopEnd = loopEnd;
 		this.source.connect(this.output);
 		this.source.start(startTime, offset, duration);
+		this.source.onended = this._onended.bind(this);
 	}
 }
 
@@ -88,4 +92,9 @@ Tone.Player.prototype.getDuration = function(){
 	} else {
 		return 0;
 	}
+}
+
+//@param {function(Event)} callback
+Tone.Player.prototype._onended = function(e){
+	this.onended(e);
 }
