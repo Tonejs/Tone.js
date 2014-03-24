@@ -501,6 +501,7 @@ Tone.GUI.Transport = function(container, transport){
 	this.progress = this.createElement("input", "progress");
 	this.progress.type = "text";
 	this.progress.value = "0:0:0";
+	this.progress.onchange = this.setProgress.bind(this);
 	this.appendChild(this.element, this.progress);
 }
 
@@ -520,7 +521,9 @@ Tone.GUI.Transport.prototype.updateProgress = function(time){
 	this.progress.value = this.transport.getProgress();
 }
 
-///////////////////////////////////////////////////////////////////////////////
+Tone.GUI.Transport.prototype.setProgress = function(){
+	this.transport.setProgress(this.progress.value);
+}///////////////////////////////////////////////////////////////////////////////
 //
 //	GAIN FADER
 //

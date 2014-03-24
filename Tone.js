@@ -860,7 +860,7 @@ Tone.Transport = function(bpm, timeSignature){
 
 	this.loopStart = 0;
 	this.loopEnd = this._tatum * 4;
-	this.loop = true;
+	this.loop = false;
 
 	this.state = Tone.Transport.state.stopped;
 
