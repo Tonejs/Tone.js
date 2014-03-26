@@ -51,10 +51,11 @@ Tone.Player.prototype.start = function(startTime, offset, duration, volume){
 		this.source = this.context.createBufferSource();
 		this.source.buffer = this.buffer;
 		this.source.loop = false;
-		this.source.connect(this.output);
 		this.source.start(startTime, offset, duration);
 		this.source.onended = this._onended.bind(this);
-		this.source.gain.value = volume;
+		var gain = this.context.createGain();
+		gain.gain.value = volume;
+		this.chain(this.source, gain, this.output);
 	}
 }
 
