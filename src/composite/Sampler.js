@@ -24,7 +24,7 @@ Tone.Sampler = function(url){
 Tone.extend(Tone.Sampler, Tone);
 
 
-//@param {function()} callback
+//@param {function()=} callback
 Tone.Sampler.prototype.load = function(callback){
 	this.player.load(callback);
 }

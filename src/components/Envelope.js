@@ -18,6 +18,7 @@ Tone.Envelope = function(attack, decay, sustain, release, audioParam, minOutput,
 	this.decay = this.defaultArg(decay, .1);
 	this.release = this.defaultArg(release, 1);
 	this.sustain = this.defaultArg(.5);
+
 	// this.setSustain(this.defaultArg(sustain, .1));
 	this.min = this.defaultArg(minOutput, 0);
 	this.max = this.defaultArg(maxOutput, 1);
@@ -80,40 +81,3 @@ Tone.Envelope.prototype.triggerReleaseExp = function(time){
 	this.param.setValueAtTime(startVal, time);
 	this.param.exponentialRampToValueAtTime(this.min, time + this.release);
 }
-
-
-///////////////////////////////////////////////////////////////////////////////
-//  SET VALUES
-///////////////////////////////////////////////////////////////////////////////
-
-//@param {number} attack (seconds)
-Tone.Envelope.prototype.setAttack = function(attack){
-	this.attack = attack;
-}
-
-//@param {number} decay (seconds)
-Tone.Envelope.prototype.setDecay = function(decay){
-	this.decay = decay;
-}
-
-//@param {number} release (seconds)
-Tone.Envelope.prototype.setRelease = function(release){
-	this.release = release;
-}
-
-//@param {number} sustain as a percentage (0-1);
-Tone.Envelope.prototype.setSustain = function(sustain){
-	// this.sustain = this.gainToPowScale(sustain);
-	this.sustain = sustain;
-}
-
-//@param {number} min
-Tone.Envelope.prototype.setMin = function(min){
-	this.min = min;
-}
-
-//@param {number} max
-Tone.Envelope.prototype.setMax = function(max){
-	this.max = max;
-}
-

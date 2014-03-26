@@ -50,7 +50,7 @@
 		//once it's loaded, add the event triggers
 		player.load(function(){
 			$("#Trigger").mousedown(function(e){
-				player.loop(0, 0, .5);
+				player.start(0, 0, .5, .1);
 			});
 			$("#Trigger").mouseup(function(e){
 				player.stop();

@@ -40,12 +40,13 @@ Tone.Player.prototype.load = function(callback){
 }
 
 //play the buffer from start to finish at a time
-Tone.Player.prototype.start = function(startTime, offset, duration){
+Tone.Player.prototype.start = function(startTime, offset, duration, volume){
 	if (this.buffer){
 		//default args
 		startTime = this.defaultArg(startTime, this.now());
 		offset = this.defaultArg(offset, 0);
 		duration = this.defaultArg(duration, this.buffer.duration - offset);
+		volume = this.defaultArg(volume, 1);
 		//make the source
 		this.source = this.context.createBufferSource();
 		this.source.buffer = this.buffer;
@@ -53,11 +54,12 @@ Tone.Player.prototype.start = function(startTime, offset, duration){
 		this.source.connect(this.output);
 		this.source.start(startTime, offset, duration);
 		this.source.onended = this._onended.bind(this);
+		this.source.gain.value = volume;
 	}
 }
 
 //play the buffer from start to finish at a time
-Tone.Player.prototype.loop = function(startTime, loopStart, loopEnd, offset, duration){
+Tone.Player.prototype.loop = function(startTime, loopStart, loopEnd, offset, duration, volume){
 	if (this.buffer){
 		//default args
 		startTime = this.defaultArg(startTime, this.now());
@@ -66,20 +68,16 @@ Tone.Player.prototype.loop = function(startTime, loopStart, loopEnd, offset, dur
 		offset = this.defaultArg(offset, loopStart);
 		duration = this.defaultArg(duration, this.buffer.duration - offset);
 		//make/play the source
-		this.source = this.context.createBufferSource();
-		this.source.buffer = this.buffer;
+		this.start(startTime, offset, duration, volume);
 		this.source.loop = true;
 		this.source.loopStart = loopStart;
 		this.source.loopEnd = loopEnd;
-		this.source.connect(this.output);
-		this.source.start(startTime, offset, duration);
-		this.source.onended = this._onended.bind(this);
 	}
 }
 
 //stop playback
 Tone.Player.prototype.stop = function(stopTime){
-	if (this.buffer){
+	if (this.buffer && this.source){
 		stopTime = this.defaultArg(stopTime, this.now());
 		this.source.stop(stopTime);
 	}
