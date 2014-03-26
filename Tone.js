@@ -332,8 +332,9 @@ Tone.Envelope = function(attack, decay, sustain, release, audioParam, minOutput,
 	this.attack = this.defaultArg(attack, .01);
 	this.decay = this.defaultArg(decay, .1);
 	this.release = this.defaultArg(release, 1);
-	// this.sustain = this.defaultArg(this.gainToPowScale(sustain), .1);
-	this.setSustain(this.defaultArg(sustain, .1));
+	this.sustain = this.defaultArg(.5);
+
+	// this.setSustain(this.defaultArg(sustain, .1));
 	this.min = this.defaultArg(minOutput, 0);
 	this.max = this.defaultArg(maxOutput, 1);
 	
@@ -357,6 +358,20 @@ Tone.Envelope.prototype.triggerAttack = function(time){
 	this.param.linearRampToValueAtTime(sustainVal, time + this.decay + this.attack);
 }
 
+//attack->decay->sustain
+Tone.Envelope.prototype.triggerAttackExp = function(time){
+	var startVal = this.min;
+	if (!time){
+		startVal = this.param.value;
+	}
+	time = this.defaultArg(time, this.now());
+	this.param.cancelScheduledValues(time);
+	this.param.setValueAtTime(startVal, time);
+	this.param.exponentialRampToValueAtTime(this.max, time + this.attack);
+	var sustainVal = (this.max - this.min) * this.sustain + this.min;
+	this.param.exponentialRampToValueAtTime(sustainVal, time + this.decay + this.attack);
+}
+
 //triggers the release of the envelope
 Tone.Envelope.prototype.triggerRelease = function(time){
 	var startVal = this.param.value;
@@ -369,40 +384,18 @@ Tone.Envelope.prototype.triggerRelease = function(time){
 	this.param.linearRampToValueAtTime(this.min, time + this.release);
 }
 
-///////////////////////////////////////////////////////////////////////////////
-//  SET VALUES
-///////////////////////////////////////////////////////////////////////////////
 
-//@param {number} attack (seconds)
-Tone.Envelope.prototype.setAttack = function(attack){
-	this.attack = attack;
+//triggers the release of the envelope
+Tone.Envelope.prototype.triggerReleaseExp = function(time){
+	var startVal = this.param.value;
+	if (time){
+		startVal = (this.max - this.min) * this.sustain + this.min;
+	}
+	time = this.defaultArg(time, this.now());
+	this.param.cancelScheduledValues(time);
+	this.param.setValueAtTime(startVal, time);
+	this.param.exponentialRampToValueAtTime(this.min, time + this.release);
 }
-
-//@param {number} decay (seconds)
-Tone.Envelope.prototype.setDecay = function(decay){
-	this.decay = decay;
-}
-
-//@param {number} release (seconds)
-Tone.Envelope.prototype.setRelease = function(release){
-	this.release = release;
-}
-
-//@param {number} sustain as a percentage (0-1);
-Tone.Envelope.prototype.setSustain = function(sustain){
-	this.sustain = this.gainToPowScale(sustain);
-}
-
-//@param {number} min
-Tone.Envelope.prototype.setMin = function(min){
-	this.min = min;
-}
-
-//@param {number} max
-Tone.Envelope.prototype.setMax = function(max){
-	this.max = max;
-}
-
 ///////////////////////////////////////////////////////////////////////////////
 //
 //  LFO
@@ -713,6 +706,8 @@ Tone.Player = function(url){
 	this.url = url;
 	this.source = null;
 	this.buffer = null;
+
+	this.onended = function(){};
 }
 
 Tone.extend(Tone.Player, Tone);
@@ -739,23 +734,26 @@ Tone.Player.prototype.load = function(callback){
 }
 
 //play the buffer from start to finish at a time
-Tone.Player.prototype.start = function(startTime, offset, duration){
+Tone.Player.prototype.start = function(startTime, offset, duration, volume){
 	if (this.buffer){
 		//default args
 		startTime = this.defaultArg(startTime, this.now());
 		offset = this.defaultArg(offset, 0);
 		duration = this.defaultArg(duration, this.buffer.duration - offset);
+		volume = this.defaultArg(volume, 1);
 		//make the source
 		this.source = this.context.createBufferSource();
 		this.source.buffer = this.buffer;
 		this.source.loop = false;
 		this.source.connect(this.output);
 		this.source.start(startTime, offset, duration);
+		this.source.onended = this._onended.bind(this);
+		this.source.gain.value = volume;
 	}
 }
 
 //play the buffer from start to finish at a time
-Tone.Player.prototype.loop = function(startTime, loopStart, loopEnd, offset, duration){
+Tone.Player.prototype.loop = function(startTime, loopStart, loopEnd, offset, duration, volume){
 	if (this.buffer){
 		//default args
 		startTime = this.defaultArg(startTime, this.now());
@@ -764,19 +762,16 @@ Tone.Player.prototype.loop = function(startTime, loopStart, loopEnd, offset, dur
 		offset = this.defaultArg(offset, loopStart);
 		duration = this.defaultArg(duration, this.buffer.duration - offset);
 		//make/play the source
-		this.source = this.context.createBufferSource();
-		this.source.buffer = this.buffer;
+		this.start(startTime, offset, duration, volume);
 		this.source.loop = true;
 		this.source.loopStart = loopStart;
 		this.source.loopEnd = loopEnd;
-		this.source.connect(this.output);
-		this.source.start(startTime, offset, duration);
 	}
 }
 
 //stop playback
 Tone.Player.prototype.stop = function(stopTime){
-	if (this.buffer){
+	if (this.buffer && this.source){
 		stopTime = this.defaultArg(stopTime, this.now());
 		this.source.stop(stopTime);
 	}
@@ -789,6 +784,11 @@ Tone.Player.prototype.getDuration = function(){
 	} else {
 		return 0;
 	}
+}
+
+//@param {function(Event)} callback
+Tone.Player.prototype._onended = function(e){
+	this.onended(e);
 }
 ///////////////////////////////////////////////////////////////////////////////
 //
