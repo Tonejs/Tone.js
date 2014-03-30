@@ -266,6 +266,9 @@
 	Tone.prototype.notationToBeat = function(notation, timeSignature){
 		timeSignature = this.defaultArg(timeSignature, 4);
 		var subdivision = parseInt(notation, 10);
+		if (subdivision === 0){
+			return 0;
+		}
 		var lastLetter = notation.slice(-1);
 		if (lastLetter === "t"){
 			return (4 / subdivision) * 2/3
@@ -1160,7 +1163,7 @@ Tone.Transport.state = {
 //@param {boolean} repeat
 Tone.Transport.Timeout = function(callback, context, interval, startTicks){
 	this.interval = interval;
-	this.start = interval;
+	this.start = startTicks;
 	this.callback = callback;
 	this.context = context;
 }

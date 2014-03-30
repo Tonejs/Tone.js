@@ -33,23 +33,23 @@
 
 		transport.setTimeout(function(time){
 			console.log("a");
-		}, "0:0:0");
+		}, "0:0");
 
 		transport.setTimeout(function(time){
 			console.log("series");
-		}, "0:1:0");
+		}, "0:1");
 
 		transport.setTimeout(function(time){
 			console.log("of");
-		}, "0:3:0");
+		}, "0:2");
 
 		transport.setTimeout(function(time){
 			console.log("timed");
-		}, "1:0:0");
+		}, 3);
 
 		transport.setTimeout(function(time){
 			console.log("events");
-		}, "1:0:3");
+		}, "1m");
 
 
 	</script>

@@ -333,7 +333,7 @@ Tone.Transport.state = {
 //@param {boolean} repeat
 Tone.Transport.Timeout = function(callback, context, interval, startTicks){
 	this.interval = interval;
-	this.start = interval;
+	this.start = startTicks;
 	this.callback = callback;
 	this.context = context;
 }
