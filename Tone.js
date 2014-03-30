@@ -721,21 +721,27 @@ Tone.extend(Tone.Player, Tone);
 //invokes the callback at the end
 //@param {function(Tone.Player)} callback
 Tone.Player.prototype.load = function(callback){
-	var request = new XMLHttpRequest();
-	request.open('GET', this.url, true);
-	request.responseType = 'arraybuffer';
-	// decode asynchronously
-	var self = this;
-	request.onload = function() {
-		self.context.decodeAudioData(request.response, function(buff) {
-			self.buffer = buff;
-			if (callback){
-				callback(self);
-			}
-		});
+	if (!this.buffer){
+		var request = new XMLHttpRequest();
+		request.open('GET', this.url, true);
+		request.responseType = 'arraybuffer';
+		// decode asynchronously
+		var self = this;
+		request.onload = function() {
+			self.context.decodeAudioData(request.response, function(buff) {
+				self.buffer = buff;
+				if (callback){
+					callback(self);
+				}
+			});
+		}
+		//send the request
+		request.send();
+	} else {
+		if (callback){
+			callback(this);
+		}
 	}
-	//send the request
-	request.send();
 }
 
 //play the buffer from start to finish at a time
