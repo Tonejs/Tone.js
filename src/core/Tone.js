@@ -199,16 +199,21 @@
 		return (input - inputMin) / (inputMax - inputMin);
 	}
 
-	//@param {AudioNode|Tone=} unit
-	Tone.prototype.toMaster = function(node){
-		node = this.defaultArg(node, this.output);
-		node.connect(Tone.Master);
-	}
 
 	//@param {number} samples
 	//@returns {number} the number of seconds
 	Tone.prototype.samplesToSeconds = function(samples){
 		return samples / audioContext.sampleRate;
+	}
+
+	///////////////////////////////////////////////////////////////////////////
+	//	CHANNEL ROUTING
+	///////////////////////////////////////////////////////////////////////////
+
+	//@param {AudioNode|Tone=} unit
+	Tone.prototype.toMaster = function(node){
+		node = this.defaultArg(node, this.output);
+		node.connect(Tone.Master);
 	}
 
 	///////////////////////////////////////////////////////////////////////////
