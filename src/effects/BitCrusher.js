@@ -3,7 +3,7 @@
 // 	BIT CRUSHER
 //
 // 	downsample incoming signal
-// 	some inspiration from https://github.com/jaz303/bitcrusher/blob/master/index.js
+// 	inspiration from https://github.com/jaz303/bitcrusher/blob/master/index.js
 ///////////////////////////////////////////////////////////////////////////////
 
 //@param {number=} bits
