@@ -14,8 +14,9 @@
 		var noise = new Tone.Noise("brown");
 		var lfo = new Tone.LFO(1);
 		
-		noise.connect(lfo);
-		lfo.toMaster();
+		noise.toMaster();
+		lfo.connect(noise.output.gain);
+		lfo.start();
 	</script>
 </body>
 </html>

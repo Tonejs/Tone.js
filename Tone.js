@@ -1,3 +1,5 @@
+// Tone.js Build  Thu, 03 Apr 2014 21:12:42 GMT
+
 ///////////////////////////////////////////////////////////////////////////////
 //
 //	TONE
@@ -324,7 +326,7 @@
 	//make it global
 	global.Tone = Tone;
 
-})(this);
+})(window);
 ///////////////////////////////////////////////////////////////////////////////
 //
 //	Envelope
@@ -420,23 +422,22 @@ Tone.LFO = function(rate, outputMin, outputMax, param){
 	//pass audio through
 	this.input.connect(this.output);
 
-	this.param = this.defaultArg(param, this.input.gain);
 	this.rate = this.defaultArg(rate, 1);
 	this.min = this.defaultArg(outputMin, 0);
 	this.max = this.defaultArg(outputMax, 1);
+	this.type = "sine";
 
 	//the components
 	this.oscillator = this.context.createOscillator();
-	this.offset = this.context.createWaveShaper();
+	this.scaler = this.context.createWaveShaper();
 
 	//connect it up
-	this.chain(this.oscillator, this.offset, this.param);
+	this.chain(this.oscillator, this.scaler, this.output);
 
 	//setup the values
 	this.oscillator.frequency.value = rate;
 	this._createCurve();
-	this.oscillator.start(0);
-	this.setType("sine");
+	this.setType(this.type);
 }
 
 Tone.extend(Tone.LFO, Tone);
@@ -447,18 +448,36 @@ Tone.LFO.prototype._createCurve = function(){
 	var curve = new Float32Array(len);
 	for (var i = 0; i < len; i++){
 		//values between -1 to 1
-		var baseline = (i / (len - 1));
+		var baseline = (i / (len - 1)) * 2 - 1;
 		curve[i] = baseline * (this.max - this.min) + this.min;
 	}
 	//console.log(curve);
-	this.offset.curve = curve;
+	this.scaler.curve = curve;
+}
+
+//start the lfo
+Tone.LFO.prototype.start = function(time){
+	time = this.defaultArg(time, this.now());
+	this.oscillator = this.context.createOscillator();
+	this.setRate(this.rate);
+	this.setType(this.type);
+	this.oscillator.connect(this.scaler);
+	this.oscillator.start(time);
+}
+
+//stop
+Tone.LFO.prototype.stop = function(time){
+	time = this.defaultArg(time, this.now());
+	this.oscillator.stop(time);
+	this.oscillator.disconnect();
+	this.oscillator = null;
 }
 
 
 //set the params
 Tone.LFO.prototype.setRate = function(rate){
 	this.rate = rate;
-	this.rampToValue(this.oscillator.frequency, rate, .1);
+	this.oscillator.frequency.value = rate;
 }
 
 //set the params
@@ -470,11 +489,13 @@ Tone.LFO.prototype.setMin = function(min){
 //set the params
 Tone.LFO.prototype.setMax = function(max){
 	this.max = max;
+	this._createCurve();
 }
 
 //set the waveform of the LFO
 //@param {string | number} type ('sine', 'square', 'sawtooth', 'triangle', 'custom');
 Tone.LFO.prototype.setType = function(type){
+	this.type = type;
 	this.oscillator.type = type;
 }///////////////////////////////////////////////////////////////////////////////
 //
@@ -493,9 +514,11 @@ Tone.Meter = function(channels){
 
 	this.channels = this.defaultArg(channels, 1);
 	this.volume = new Array(this.channels);
+	this.values = new Array(this.channels);
 	//zero out the volume array
 	for (var i = 0; i < this.channels; i++){
 		this.volume[i] = 0;
+		this.values[i] = 0;
 	}
 	this.clipTime = 0;
 	
@@ -525,6 +548,13 @@ Tone.Meter.prototype.getLevel = function(channel){
 }
 
 //@param {number=} channel
+//@returns {number}
+Tone.Meter.prototype.getValue = function(channel){
+	channel = this.defaultArg(channel, 0);
+	return this.values[channel];
+}
+
+//@param {number=} channel
 //@returns {number} the channel volume in decibels
 Tone.Meter.prototype.getDb = function(channel){
 	return this.gainToDb(this.getLevel(channel));
@@ -541,6 +571,7 @@ Tone.Meter.prototype.onprocess = function(event){
 	for (var channel = 0; channel < this.channels; channel++){
 		var input = event.inputBuffer.getChannelData(channel);
 		var sum = 0;
+		var total = 0;
 		var x;
 		var clipped = false;
 		for (var i = 0; i < bufferSize; i++){
@@ -549,10 +580,13 @@ Tone.Meter.prototype.onprocess = function(event){
 				clipped = true;
 				this.clipTime = Date.now();
 			}
+			total += x;
 	    	sum += x * x;
 		}
+		var average = total / bufferSize;
 		var rms = Math.sqrt(sum / bufferSize);
 		this.volume[channel] = Math.max(rms, this.volume[channel] * .8);
+		this.values[channel] = average;
 	}
 }///////////////////////////////////////////////////////////////////////////////
 //
@@ -1339,4 +1373,90 @@ Tone.PingPongDelay.prototype.setWet = function(wet){
 Tone.PingPongDelay.prototype.setDry = function(dry){
 	this.leftDelay.setDry(dry);
 	this.rightDelay.setDry(dry);
+}///////////////////////////////////////////////////////////////////////////////
+//
+//  AUTO PANNER
+//
+//	not a 3d panner. just LR
+//	
+// 	@dependency components/Tone.StereoSplit components/LFO
+///////////////////////////////////////////////////////////////////////////////
+
+Tone.AutoPanner = function(rate, amount){
+	Tone.StereoSplit.call(this);
+
+	//defaults
+	this.amount = this.defaultArg(amount, 1);
+	this.rate = this.defaultArg(rate, 1);
+
+	//components
+	this.lfo = new Tone.LFO(rate);
+	this.inverter = Tone.context.createWaveShaper();
+	this.equalGain = Tone.context.createWaveShaper();
+
+	//connections
+	this.leftSend.connect(this.leftReturn);
+	this.rightSend.connect(this.rightReturn);	
+	this.lfo.connect(this.equalGain);
+	this.equalGain.connect(this.leftSend.gain);
+	this.chain(this.equalGain, this.inverter, this.rightSend.gain);
+
+	//setup
+	this._inverterCurve();
+	this._equalPowerGainCurve();
+
 }
+
+//extend StereoSplit
+Tone.extend(Tone.AutoPanner, Tone.StereoSplit);
+
+//generates the values for the waveshaper
+Tone.AutoPanner.prototype._inverterCurve = function(){
+	var len = 16;
+	var curve = new Float32Array(len);
+	for (var i = 0; i < len; i++){
+		//values between -1 to 1
+		var baseline = (i / (len - 1)) * 2 - 1;
+		//scale it by amount
+		curve[i] = -baseline;
+	}
+	this.inverter.curve = curve;
+}
+
+//generates the values for the waveshaper
+Tone.AutoPanner.prototype._equalPowerGainCurve = function(){
+	var len = 16;
+	var curve = new Float32Array(len);
+	for (var i = 0; i < len; i++){
+		//values between -1 to 1
+		var baseline = (i / (len - 1)) * 2 - 1;
+		// curve[i] = baseline;
+		// scale it by amount
+		curve[i] = this.equalPowerGain(baseline) * this.amount;
+	}
+	this.equalGain.curve = curve;
+}
+
+Tone.AutoPanner.prototype.start = function(time){
+	this.lfo.start(time);
+}
+
+Tone.AutoPanner.prototype.stop = function(time){
+	this.lfo.stop();
+	this.leftSend.gain.value = this.equalPowerGain(.5);
+	this.rightSend.gain.value = this.equalPowerGain(.5);
+}
+
+Tone.AutoPanner.prototype.setType = function(type){
+	this.lfo.setType(type);
+}
+
+Tone.AutoPanner.prototype.setRate = function(rate){
+	this.lfo.setRate(rate);
+}
+
+Tone.AutoPanner.prototype.setAmount = function(amount){
+	this.amount = amount;
+	this._equalPowerGainCurve();
+}
+

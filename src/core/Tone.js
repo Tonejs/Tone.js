@@ -324,4 +324,4 @@
 	//make it global
 	global.Tone = Tone;
 
-})(this);
+})(window);

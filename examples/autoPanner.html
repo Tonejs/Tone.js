@@ -1,0 +1,35 @@
+<html>
+<head>
+	<title>LFO</title>
+
+	<!-- 
+	 <script type="text/javascript" src="../Tone.js"></script>
+	 -->
+	<script type="text/javascript" src="../src/core/Tone.js"></script>
+	<script type="text/javascript" src="../src/components/LFO.js"></script>
+	<script type="text/javascript" src="../src/components/StereoSplit.js"></script>
+	<script type="text/javascript" src="../src/composite/AutoPanner.js"></script>
+	<script type="text/javascript" src="../src/components/Noise.js"></script>
+	<script type="text/javascript" src="../src/components/Meter.js"></script>
+
+</head>
+<body>
+	<script type="text/javascript">
+		var noise = new Tone.Noise("brown");
+		var panner = new Tone.AutoPanner(.5, 1);
+		var meter = new Tone.Meter();
+		panner.lfo.connect(meter);
+
+
+		panner.setType("triangle");
+
+		panner.type
+
+		panner.start();
+		
+		noise.connect(panner);
+		panner.toMaster();
+
+	</script>
+</body>
+</html>

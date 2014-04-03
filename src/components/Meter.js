@@ -15,9 +15,11 @@ Tone.Meter = function(channels){
 
 	this.channels = this.defaultArg(channels, 1);
 	this.volume = new Array(this.channels);
+	this.values = new Array(this.channels);
 	//zero out the volume array
 	for (var i = 0; i < this.channels; i++){
 		this.volume[i] = 0;
+		this.values[i] = 0;
 	}
 	this.clipTime = 0;
 	
@@ -47,6 +49,13 @@ Tone.Meter.prototype.getLevel = function(channel){
 }
 
 //@param {number=} channel
+//@returns {number}
+Tone.Meter.prototype.getValue = function(channel){
+	channel = this.defaultArg(channel, 0);
+	return this.values[channel];
+}
+
+//@param {number=} channel
 //@returns {number} the channel volume in decibels
 Tone.Meter.prototype.getDb = function(channel){
 	return this.gainToDb(this.getLevel(channel));
@@ -63,6 +72,7 @@ Tone.Meter.prototype.onprocess = function(event){
 	for (var channel = 0; channel < this.channels; channel++){
 		var input = event.inputBuffer.getChannelData(channel);
 		var sum = 0;
+		var total = 0;
 		var x;
 		var clipped = false;
 		for (var i = 0; i < bufferSize; i++){
@@ -71,9 +81,12 @@ Tone.Meter.prototype.onprocess = function(event){
 				clipped = true;
 				this.clipTime = Date.now();
 			}
+			total += x;
 	    	sum += x * x;
 		}
+		var average = total / bufferSize;
 		var rms = Math.sqrt(sum / bufferSize);
 		this.volume[channel] = Math.max(rms, this.volume[channel] * .8);
+		this.values[channel] = average;
 	}
 }
