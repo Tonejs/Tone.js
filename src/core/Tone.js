@@ -294,6 +294,9 @@
 	
 	//based on closure library 'inherit' function
 	Tone.extend = function(child, parent){
+		if (parent === undefined){
+			parent = Tone;
+		}
 		/** @constructor */
 		function tempConstructor() {};
 		tempConstructor.prototype = parent.prototype;

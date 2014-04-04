@@ -10,12 +10,11 @@ Tone.Noise = function(type){
 	Tone.call(this);
 
 	//components
-	this.jsNode = this.context.createScriptProcessor(this.bufferSize, 1, 1);
-	this.shaper = this.context.createWaveShaper();
+	this.jsNode = this.context.createScriptProcessor(this.bufferSize, 0, 1);
 
 	//connections
 	this.jsNode.connect(this.shaper);
-	this.shaper.connect(this.output);
+    this.jsNode.connect(this.output);
 
 	this.setType(this.defaultArg(type, "white"));
 }
