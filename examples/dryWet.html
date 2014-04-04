@@ -1,0 +1,74 @@
+<html>
+<head>
+	<title>SIGNAL PROCESSING</title>
+
+	<link rel="stylesheet" type="text/css" href="../style/GUI.css">
+
+	<script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
+	<script type="text/javascript" src="../src/core/Tone.js"></script>
+	<script type="text/javascript" src="../src/signal/Signal.js"></script>
+	<script type="text/javascript" src="../src/signal/Scale.js"></script>
+	<script type="text/javascript" src="../src/signal/Invert.js"></script>
+	<script type="text/javascript" src="../src/components/DryWet.js"></script>
+
+	<script type="text/javascript" src="../src/components/Meter.js"></script>
+	<script type="text/javascript" src="../src/components/LFO.js"></script>
+</head>
+<body>
+	<style type="text/css">
+		
+	</style>
+	<input type='range' value='50'>
+	<div id='dry'>0</div>
+	<div id='wet'>0</div>
+	<div id='mix'>0</div>
+	<script type="text/javascript">
+
+		var dryWet = new Tone.DryWet();
+
+		var sine = Tone.context.createOscillator();
+		var square = Tone.context.createOscillator();
+		square.type = "square";
+		sine.start(0);
+		square.start(0);
+		square.frequency.value = 220;
+
+		
+		var dryMeter = new Tone.Meter();
+		var wetMeter = new Tone.Meter();
+		var output = new Tone.Meter();
+
+		//meter the outputs
+		dryWet.dry.connect(dryMeter);
+		dryWet.wet.connect(wetMeter);
+		dryWet.connect(output);
+
+		sine.connect(dryWet.dry);
+		square.connect(dryWet.wet);
+
+		dryWet.toMaster();
+
+
+		var $dry = $("#dry");
+		var $wet = $("#wet");
+		var $output = $("#mix");
+	
+		setInterval(function(){
+			$dry.html("dry: " + dryMeter.getDb().toFixed(2) + "db");
+			$wet.html("wet: " + wetMeter.getDb().toFixed(2) + "db");
+			$output.html("mix: " + output.getDb().toFixed(2) + "db");
+		}, 100);
+
+		var range = $("input")[0];
+		range.onchange = function(){
+			var val = range.value;
+			var now = dryWet.now();
+			dryWet.setDry(val/50 - 1);
+		}
+
+
+		// signal.toMaster();
+
+	</script>
+</body>
+</html>

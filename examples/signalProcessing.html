@@ -13,13 +13,12 @@
 	<script type="text/javascript" src="../src/signal/Scale.js"></script>
 
 	<script type="text/javascript" src="../src/components/Meter.js"></script>
-	<script type="text/javascript" src="../src/components/LFO.js"></script>
 </head>
 <body>
 	<style type="text/css">
 		
 	</style>
-	<input type='range' value='100'>
+	<input type='range' value='50'>
 	<div id='signal'>0</div>
 	<div id='invert'>0</div>
 	<div id='add'>0</div>
@@ -29,12 +28,6 @@
 		var signal = new Tone.Signal();
 		var dryMeter = new Tone.Meter();
 		signal.connect(dryMeter);
-
-		var oscillator = Tone.context.createOscillator();
-
-		oscillator.connect(Tone.context.destination);
-
-		oscillator.start(0);
 
 		//the inverter
 		var inverter = new Tone.Invert();
@@ -48,9 +41,6 @@
 		adder.connect(addMeter);
 		inverter.connect(adder);
 
-		//control the frequency with the output
-		adder.connect(oscillator.frequency);
-
 		//normalize back to -1 to 1
 		var norm = new Tone.Normalize(99, 101);
 		var normMeter = new Tone.Meter();
@@ -62,11 +52,6 @@
 		var scaleMeter = new Tone.Meter();
 		scaler.connect(scaleMeter);
 		norm.connect(scaler);
-
-		//lfo
-		var lfo = new Tone.LFO(.5);
-		lfo.connect(signal);
-		lfo.start();
 
 
 		var $signal = $("#signal");
