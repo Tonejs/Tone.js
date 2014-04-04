@@ -4,7 +4,7 @@
 //
 //	not a 3d panner. just LR
 //	
-// 	@dependency components/Tone.StereoSplit components/LFO
+// 	@dependency components/Tone.StereoSplit components/LFO components/Mono
 ///////////////////////////////////////////////////////////////////////////////
 
 Tone.AutoPanner = function(rate, amount){
