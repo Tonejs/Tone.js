@@ -1,4 +1,4 @@
-// Tone.js Build  Thu, 03 Apr 2014 21:12:42 GMT
+// Tone.js Build  Fri, 04 Apr 2014 03:51:50 GMT
 
 ///////////////////////////////////////////////////////////////////////////////
 //
@@ -847,15 +847,23 @@ Tone.StereoSplit = function(){
 	//extends Unit
 	Tone.call(this);
 
+	//components
+	this.splitter = Tone.context.createChannelSplitter();
+	this.mono = this.context.createGain();
 	this.merger = this.context.createChannelMerger(2);
 	this.leftSend = this.context.createGain();
 	this.leftReturn = this.context.createGain();
 	this.rightSend = this.context.createGain();
 	this.rightReturn = this.context.createGain();
 
-	//connect it up
-	this.input.connect(this.leftSend);
-	this.input.connect(this.rightSend);
+	//connections
+	//mono input
+	this.input.connect(this.splitter);
+	this.splitter.connect(this.mono, 0, 0);
+	this.splitter.connect(this.mono, 1, 0);
+
+	this.mono.connect(this.leftSend);
+	this.mono.connect(this.rightSend);
 	this.leftReturn.connect(this.merger, 0, 0);
 	this.rightReturn.connect(this.merger, 0, 1);
 	this.merger.connect(this.output);
@@ -1379,7 +1387,7 @@ Tone.PingPongDelay.prototype.setDry = function(dry){
 //
 //	not a 3d panner. just LR
 //	
-// 	@dependency components/Tone.StereoSplit components/LFO
+// 	@dependency components/Tone.StereoSplit components/LFO components/Mono
 ///////////////////////////////////////////////////////////////////////////////
 
 Tone.AutoPanner = function(rate, amount){
