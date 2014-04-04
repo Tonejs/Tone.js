@@ -8,12 +8,8 @@
 
 //@param {number=} bits
 //@param {number=} frequency
-Tone.BitCrusher = function(bits, frequency){
+Tone.BitCrusher = function(bits, frequency, channels){
 	Tone.Effect.call(this);
-
-	//the node
-	this.crusher = this.context.createScriptProcessor(this.bufferSize, 1, 1);
-	this.crusher.onaudioprocess = this.audioprocess.bind(this);
 
 	//the math
 	this.bits = this.defaultArg(bits, 8);
@@ -22,6 +18,11 @@ Tone.BitCrusher = function(bits, frequency){
 	this.invStep = 1/this.step;
 	this.phasor = 0;
 	this.last = 0;
+	channels = this.defaultArg(channels, 1);
+
+	//the node
+	this.crusher = this.context.createScriptProcessor(this.bufferSize, channels, channels);
+	this.crusher.onaudioprocess = this.audioprocess.bind(this);
 
 	//connect it up
 	this.chain(this.effectSend, this.crusher, this.effectReturn);
@@ -37,15 +38,18 @@ Tone.BitCrusher.prototype.audioprocess = function(event){
 	var floor = Math.floor;
 	var last = this.last;
 	var step = this.step;
-	var input = event.inputBuffer.getChannelData(0);
-	var output = event.outputBuffer.getChannelData(0);
-	for (var i = 0, len = output.length; i < len; i++) {
-		phasor += freq;
-	    if (phasor >= 1) {
-	        phasor -= 1;
-	        last = step * floor((input[i] * invStep) + 0.5);
-	    }
-	    output[i] = last;
+	var channels = this.crusher.channelCount;
+	for (var channel = 0; channel < channels; channel++){
+		var input = event.inputBuffer.getChannelData(0);
+		var output = event.outputBuffer.getChannelData(0);
+		for (var i = 0, len = output.length; i < len; i++) {
+			phasor += freq;
+		    if (phasor >= 1) {
+		        phasor -= 1;
+		        last = step * floor((input[i] * invStep) + 0.5);
+		    }
+		    output[i] = last;
+		}
 	}
 	this.phasor = phasor;
 	this.last = last;
