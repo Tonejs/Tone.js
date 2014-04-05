@@ -9,10 +9,10 @@
 	<script type="text/javascript" src="../src/signal/Signal.js"></script>
 	<script type="text/javascript" src="../src/signal/Scale.js"></script>
 	<script type="text/javascript" src="../src/signal/Invert.js"></script>
-	<script type="text/javascript" src="../src/components/DryWet.js"></script>
+	<script type="text/javascript" src="../src/component/DryWet.js"></script>
 
-	<script type="text/javascript" src="../src/components/Meter.js"></script>
-	<script type="text/javascript" src="../src/components/LFO.js"></script>
+	<script type="text/javascript" src="../src/component/Meter.js"></script>
+	<script type="text/javascript" src="../src/component/LFO.js"></script>
 </head>
 <body>
 	<style type="text/css">
@@ -24,16 +24,24 @@
 	<div id='mix'>0</div>
 	<script type="text/javascript">
 
+		//dry wet knob
 		var dryWet = new Tone.DryWet();
 
+		//input signals
 		var sine = Tone.context.createOscillator();
 		var square = Tone.context.createOscillator();
 		square.type = "square";
+		square.frequency.value = 220;
 		sine.start(0);
 		square.start(0);
-		square.frequency.value = 220;
 
-		
+		//connect it up
+		sine.connect(dryWet.dry);
+		square.connect(dryWet.wet);
+
+		dryWet.toMaster();
+
+		//meters
 		var dryMeter = new Tone.Meter();
 		var wetMeter = new Tone.Meter();
 		var output = new Tone.Meter();
@@ -43,20 +51,15 @@
 		dryWet.wet.connect(wetMeter);
 		dryWet.connect(output);
 
-		sine.connect(dryWet.dry);
-		square.connect(dryWet.wet);
-
-		dryWet.toMaster();
-
 
 		var $dry = $("#dry");
 		var $wet = $("#wet");
 		var $output = $("#mix");
 	
 		setInterval(function(){
-			$dry.html("dry: " + dryMeter.getDb().toFixed(2) + "db");
-			$wet.html("wet: " + wetMeter.getDb().toFixed(2) + "db");
-			$output.html("mix: " + output.getDb().toFixed(2) + "db");
+			$dry.html("dry: " + dryMeter.getDb().toFixed(2) + " db");
+			$wet.html("wet: " + wetMeter.getDb().toFixed(2) + " db");
+			$output.html("mix: " + output.getDb().toFixed(2) + " db");
 		}, 100);
 
 		var range = $("input")[0];
@@ -65,9 +68,6 @@
 			var now = dryWet.now();
 			dryWet.setDry(val/50 - 1);
 		}
-
-
-		// signal.toMaster();
 
 	</script>
 </body>

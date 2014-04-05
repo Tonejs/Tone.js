@@ -6,7 +6,7 @@
 //	MIT License (MIT)
 ///////////////////////////////////////////////////////////////////////////////
 
-(function(global){
+(function (global, undefined) {
 	
 	//////////////////////////////////////////////////////////////////////////
 	//	WEB AUDIO CONTEXT
@@ -68,7 +68,7 @@
 
 	Tone.prototype.context = audioContext;
 	Tone.prototype.fadeTime = .005; //5ms
-	Tone.prototype.bufferSize = 1024; //default buffer size
+	Tone.prototype.bufferSize = 2048; //default buffer size
 
 	///////////////////////////////////////////////////////////////////////////
 	//	CLASS METHODS
@@ -327,4 +327,4 @@
 	//make it global
 	global.Tone = Tone;
 
-})(window);
+})(this);

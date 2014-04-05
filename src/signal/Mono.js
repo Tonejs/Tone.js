@@ -9,12 +9,12 @@ Tone.Mono = function(){
 	Tone.call(this);
 
 	//components
-	this.splitter = this.context.createChannelSplitter();
+	this.merger = this.context.createChannelMerger(2);
 	
 	//connections
-	this.input.connect(this.splitter);
-	this.splitter.connect(this.output, 0, 0);
-	this.splitter.connect(this.output, 1, 0);
+	this.input.connect(this.merger, 0, 0);
+	this.input.connect(this.merger, 0, 1);
+	this.merger.connect(this.output);
 }
 
 Tone.extend(Tone.Mono, Tone);

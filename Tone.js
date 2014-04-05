@@ -1,4 +1,4 @@
-// Tone.js Build  Fri, 04 Apr 2014 03:51:50 GMT
+// Tone.js Build Sat, 05 Apr 2014 00:23:42 GMT
 
 ///////////////////////////////////////////////////////////////////////////////
 //
@@ -8,7 +8,7 @@
 //	MIT License (MIT)
 ///////////////////////////////////////////////////////////////////////////////
 
-(function(global){
+(function (global, undefined) {
 	
 	//////////////////////////////////////////////////////////////////////////
 	//	WEB AUDIO CONTEXT
@@ -70,7 +70,7 @@
 
 	Tone.prototype.context = audioContext;
 	Tone.prototype.fadeTime = .005; //5ms
-	Tone.prototype.bufferSize = 1024; //default buffer size
+	Tone.prototype.bufferSize = 2048; //default buffer size
 
 	///////////////////////////////////////////////////////////////////////////
 	//	CLASS METHODS
@@ -296,6 +296,9 @@
 	
 	//based on closure library 'inherit' function
 	Tone.extend = function(child, parent){
+		if (parent === undefined){
+			parent = Tone;
+		}
 		/** @constructor */
 		function tempConstructor() {};
 		tempConstructor.prototype = parent.prototype;
@@ -326,7 +329,436 @@
 	//make it global
 	global.Tone = Tone;
 
-})(window);
+})(this);
+///////////////////////////////////////////////////////////////////////////////
+//
+//  ADD
+//
+//	adds a constant value to the incoming signal in normal range (-1 to 1)
+///////////////////////////////////////////////////////////////////////////////
+
+Tone.Add = function(constant){
+	Tone.call(this);
+
+	this.constant = constant;
+
+	//component
+	this.adder = this.context.createWaveShaper();
+
+	//connections
+	this.chain(this.input, this.adder, this.output);
+
+	//setup
+	this._adderCurve();
+}
+
+Tone.extend(Tone.Add);
+
+//adds a constant value to the incoming signal
+Tone.Add.prototype._adderCurve = function(){
+	var len = this.bufferSize;
+	var curve = new Float32Array(len);
+	for (var i = 0; i < len; i++){
+		///scale the values between -1 to 1
+		var baseline = (i / (len - 1)) * 2 - 1;
+		//all inputs produce the output value
+		curve[i] = baseline + this.constant;
+	}
+	//console.log(curve);
+	this.adder.curve = curve;
+}///////////////////////////////////////////////////////////////////////////////
+//
+//  EQUAL POWER GAIN
+//
+//	takes an input and between -1 and 1
+//	outputs values between -1 and 1 equal power gain
+///////////////////////////////////////////////////////////////////////////////
+
+Tone.EqualPowerGain = function(){
+	Tone.call(this);
+}
+
+Tone.extend(Tone.EqualPowerGain);
+
+//generates the values for the waveshaper
+Tone.EqualPowerGain.prototype._equalPowerGainCurve = function(){
+	var len = this.bufferSize;
+	var curve = new Float32Array(len);
+	for (var i = 0; i < len; i++){
+		//values between -1 to 1
+		var baseline = (i / (len - 1)) * 2 - 1;
+		// scale it by amount
+		curve[i] = this.equalPowerGain(baseline);
+		// curve[i] = baseline;
+	}
+	this.equalGain.curve = curve;
+}///////////////////////////////////////////////////////////////////////////////
+//
+//  INVERT
+//
+//	accepts normal range signal (-1 to 1) and inverts the output
+// 	
+///////////////////////////////////////////////////////////////////////////////
+
+
+Tone.Invert = function(){
+	Tone.call(this);
+
+	//components
+	this.inverter = Tone.context.createWaveShaper();
+
+	//connections
+	this.chain(this.input, this.inverter, this.output);
+	
+	//setup
+	this._inverterCurve();
+}
+
+//extend StereoSplit
+Tone.extend(Tone.Invert);
+
+//generates the values for the waveshaper
+Tone.Invert.prototype._inverterCurve = function(){
+	var len = this.bufferSize;
+	var curve = new Float32Array(len);
+	for (var i = 0; i < len; i++){
+		//values between -1 to 1
+		var baseline = (i / (len - 1)) * 2 - 1;
+		//scale it by amount
+		curve[i] = -baseline;
+	}
+	this.inverter.curve = curve;
+}///////////////////////////////////////////////////////////////////////////////
+//
+//	MONO
+//
+//	Sum a stereo channel into a mono channel
+///////////////////////////////////////////////////////////////////////////////
+
+Tone.Mono = function(){
+	Tone.call(this);
+
+	//components
+	this.merger = this.context.createChannelMerger(2);
+	
+	//connections
+	this.input.connect(this.merger, 0, 0);
+	this.input.connect(this.merger, 0, 1);
+	this.merger.connect(this.output);
+}
+
+Tone.extend(Tone.Mono, Tone);
+///////////////////////////////////////////////////////////////////////////////
+//
+//  NORMALIZE
+//
+//	normalizes the incoming signal (between inputMin and inputMax)
+//	to normal range (-1 to 1)
+///////////////////////////////////////////////////////////////////////////////
+
+Tone.Normalize = function(inputMin, inputMax){
+	Tone.call(this);
+
+	//vars
+	this.inputMin = this.defaultArg(inputMin, -1);
+	this.inputMax = this.defaultArg(inputMax, 1);
+
+	//components
+	this.normalize = this.context.createScriptProcessor(this.bufferSize, 1, 1);
+
+	//connections
+	this.chain(this.input, this.normalize, this.output);
+
+	//setup
+	this.normalize.onaudioprocess = this._process.bind(this);
+}
+
+Tone.extend(Tone.Normalize);
+
+Tone.Normalize.prototype._process = function(e) {
+	var bufferSize = this.normalize.bufferSize;
+	var input = e.inputBuffer.getChannelData(0);
+	var output = e.outputBuffer.getChannelData(0);
+	var min = this.inputMin;
+	var max = this.inputMax;
+	var divisor = (max - min) / 2;
+	for (var i = 0; i < bufferSize; i++) {
+		output[i] = (input[i] - min) / divisor - 1;
+	}
+}
+///////////////////////////////////////////////////////////////////////////////
+//
+//  OSCILLATOR
+//
+//	just an oscillator, 
+//	but starting and stopping is easier than the native version
+///////////////////////////////////////////////////////////////////////////////
+
+Tone.Oscillator = function(freq, type){
+	Tone.call(this);
+
+	this.playing = false;
+
+	//components
+	this.oscillator = this.context.createOscillator();
+	this.oscillator.frequency.value = this.defaultArg(freq, 440);
+	this.oscillator.type = this.defaultArg(type, "sine");
+	console.log(freq);
+	//connections
+	this.chain(this.oscillator, this.output);
+}
+
+Tone.extend(Tone.Oscillator);
+
+//@param {number=} time
+Tone.Oscillator.prototype.start = function(time){
+	if (!this.playing){
+		var freq = this.oscillator.frequency.value;
+		var type = this.oscillator.type;
+		var detune = this.oscillator.frequency.value;
+		this.oscillator = this.context.createOscillator();
+		this.oscillator.frequency.value = freq;
+		this.oscillator.type = type;
+		this.oscillator.detune.value = detune;
+		this.oscillator.connect(this.output);
+		this.playing = true;
+		time = this.defaultArg(time, this.now());
+		this.oscillator.start(time);
+	}
+}
+
+//@param {number=} time
+Tone.Oscillator.prototype.stop = function(time){
+	if (this.playing){
+		time = this.defaultArg(time, this.now());
+		this.oscillator.stop(time);
+		this.playing = false;
+	}
+}
+
+//@param {number} val
+//@param {number=} rampTime
+Tone.Oscillator.prototype.setFrequency = function(val, rampTime){
+	rampTime = this.defaultArg(rampTime, 0);
+	this.oscillator.linearRampToValueAtTime(val, rampTime);
+}
+
+//@param {string} type
+Tone.Oscillator.prototype.setType = function(type){
+	this.oscillator.type = type;
+}///////////////////////////////////////////////////////////////////////////////
+//
+//  SCALE
+//
+//	scales the input in normal range (-1 to 1) to the output between min and max
+///////////////////////////////////////////////////////////////////////////////
+
+Tone.Scale = function(min, max){
+	Tone.call(this);
+
+	//vals
+	this.min = min;
+	this.max = max;
+
+	//components
+	this.scaler = Tone.context.createWaveShaper();
+
+	//connections
+	this.chain(this.input, this.scaler, this.output);
+
+	//setup
+	this._scaleCurve();
+}
+
+//extend StereoSplit
+Tone.extend(Tone.Scale);
+
+//generates the values for the waveshaper
+Tone.Scale.prototype._scaleCurve = function(){
+	var len = 512;
+	var curve = new Float32Array(len);
+	var min = this.min;
+	var max = this.max;
+	for (var i = 0; i < len; i++){
+		//values between 0 and 1
+		var terp = (i / (len - 1));
+		curve[i] = terp * (max - min) + min;
+	}
+	//console.log(curve);
+	this.scaler.curve = curve;
+}
+
+Tone.Scale.prototype.setMax = function(max){
+	this.max = max;
+	this._scaleCurve();
+}
+
+Tone.Scale.prototype.setMin = function(min){
+	this.min = min;
+	this._scaleCurve();
+}
+///////////////////////////////////////////////////////////////////////////////
+//
+//  SIGNAL
+//
+//	audio-rate value
+//	useful for controlling AudioParams
+///////////////////////////////////////////////////////////////////////////////
+
+Tone.Signal = function(){
+	Tone.call(this);
+
+	//components
+	this.signal = this.context.createWaveShaper();
+	this.scalar = this.context.createGain();
+	//generator to drive values
+	this.generator = this.context.createOscillator();
+
+	//connections
+	this.chain(this.generator, this.signal, this.scalar, this.output);
+	//connect the input to the scalar's gain so that can be controlled with the incoming signal
+	this.input.connect(this.scalar.gain);
+
+	//setup
+	this.generator.start(0);
+	this.scalar.gain.value = 0;
+	this._signalCurve();
+}
+
+Tone.extend(Tone.Signal);
+
+//generates a constant output of 1
+Tone.Signal.prototype._signalCurve = function(){
+	var len = 8;
+	var curve = new Float32Array(len);
+	for (var i = 0; i < len; i++){
+		//all inputs produce the output value
+		curve[i] = 1;
+	}
+	//console.log(curve);
+	this.signal.curve = curve;
+}
+
+Tone.Signal.prototype.getValue = function(val){
+	return this.scalar.gain.value;
+}
+
+Tone.Signal.prototype.setValue = function(val){
+	this.scalar.gain.value = val;
+}
+
+//all of the automation curves are available
+Tone.Signal.prototype.setValueAtTime = function(value, time){
+	this.scalar.gain.setValueAtTime(value, time);
+}
+
+Tone.Signal.prototype.linearRampToValueAtTime = function(value, endTime){
+	this.scalar.gain.linearRampToValueAtTime(value, endTime);
+}
+
+Tone.Signal.prototype.exponentialRampToValueAtTime = function(value, endTime){
+	this.scalar.gain.exponentialRampToValueAtTime(value, endTime);
+}
+
+Tone.Signal.prototype.setTargetAtTime = function(target, startTime, timeConstant){
+	this.scalar.gain.setTargetAtTime(target, startTime, timeConstant);
+}
+
+Tone.Signal.prototype.setValueCurveAtTime = function(values, startTime, duration){
+	this.scalar.gain.setValueCurveAtTime(values, startTime, duration);
+}
+
+Tone.Signal.prototype.cancelScheduledValues = function(startTime){
+	this.scalar.gain.cancelScheduledValues(startTime);
+}///////////////////////////////////////////////////////////////////////////////
+//
+//  STEREO
+//
+//	splits the incoming signal into left and right outputs
+///////////////////////////////////////////////////////////////////////////////
+
+Tone.Stereo = function(){
+	Tone.call(this);
+
+	//components
+	this.splitter = this.context.createChannelSplitter();
+	this.left = this.context.createGain();
+	this.right = this.context.createGain();
+	
+	//connections
+	this.input.connect(this.splitter);
+	this.splitter.connect(this.left, 0, 0);
+	this.splitter.connect(this.right, 1, 0);
+}
+
+Tone.extend(Tone.Stereo);///////////////////////////////////////////////////////////////////////////////
+//
+//  DRY/WET KNOB
+//
+// 	equal power fading
+//	control values:
+// 	   -1 = 100% dry
+//		1 = 100% wet
+///////////////////////////////////////////////////////////////////////////////
+
+Tone.DryWet = function(initialDry){
+	Tone.call(this);
+
+	//components
+	this.dry = this.context.createGain();
+	this.wet = this.context.createGain();
+	this.output = this.context.createGain();
+	this.equalGain = this.context.createWaveShaper();
+	//control signal
+	this.control = new Tone.Signal();
+	this.invert = new Tone.Invert();
+	this.dryScale = new Tone.Scale(0, 1);
+	this.wetScale = new Tone.Scale(0, 1);
+
+	//alias
+	this.input = this.dry;
+
+	//connections
+	this.dry.connect(this.output);
+	this.wet.connect(this.output);
+	//control signal connections
+	this.control.connect(this.equalGain);
+	//wet chain
+	this.chain(this.equalGain, this.wetScale, this.wet.gain);
+	//dry chain
+	this.chain(this.equalGain, this.invert, this.dryScale, this.dry.gain);
+
+	//setup
+	this._equalPowerGainCurve();
+	this.dry.gain.value = 0;
+	this.wet.gain.value = 0;
+	this.setDry(0);
+}
+
+Tone.extend(Tone.DryWet);
+
+Tone.DryWet.prototype.setDry = function(val, rampTime){
+	rampTime = this.defaultArg(rampTime, 0);
+	this.control.linearRampToValueAtTime(val, rampTime);
+}
+
+Tone.DryWet.prototype.setWet = function(val, rampTime){
+	this.setDry(-val, rampTime);
+}
+
+//generates the values for the waveshaper
+Tone.DryWet.prototype._equalPowerGainCurve = function(){
+	var len = this.bufferSize;
+	var curve = new Float32Array(len);
+	for (var i = 0; i < len; i++){
+		//values between -1 to 1
+		var baseline = (i / (len - 1)) * 2 - 1;
+		// scale it by amount
+		curve[i] = this.equalPowerGain(baseline);
+		// curve[i] = baseline;
+	}
+	this.equalGain.curve = curve;
+}
 ///////////////////////////////////////////////////////////////////////////////
 //
 //	Envelope
@@ -416,87 +848,56 @@ Tone.Envelope.prototype.triggerReleaseExp = function(time){
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-Tone.LFO = function(rate, outputMin, outputMax, param){
+Tone.LFO = function(rate, outputMin, outputMax){
 	//extends Unit
 	Tone.call(this);
-	//pass audio through
-	this.input.connect(this.output);
 
-	this.rate = this.defaultArg(rate, 1);
-	this.min = this.defaultArg(outputMin, 0);
-	this.max = this.defaultArg(outputMax, 1);
-	this.type = "sine";
+	//defaults
+	rate = this.defaultArg(rate, 1);
+	min = this.defaultArg(outputMin, -1);
+	max = this.defaultArg(outputMax, 1);
 
 	//the components
-	this.oscillator = this.context.createOscillator();
-	this.scaler = this.context.createWaveShaper();
+	this.oscillator = new Tone.Oscillator(rate, "sine");
+	this.scaler = new Tone.Scale(min, max);
 
 	//connect it up
 	this.chain(this.oscillator, this.scaler, this.output);
-
-	//setup the values
-	this.oscillator.frequency.value = rate;
-	this._createCurve();
-	this.setType(this.type);
 }
 
 Tone.extend(Tone.LFO, Tone);
 
-//generates the values for the waveshaper
-Tone.LFO.prototype._createCurve = function(){
-	var len = 512;
-	var curve = new Float32Array(len);
-	for (var i = 0; i < len; i++){
-		//values between -1 to 1
-		var baseline = (i / (len - 1)) * 2 - 1;
-		curve[i] = baseline * (this.max - this.min) + this.min;
-	}
-	//console.log(curve);
-	this.scaler.curve = curve;
-}
 
 //start the lfo
 Tone.LFO.prototype.start = function(time){
-	time = this.defaultArg(time, this.now());
-	this.oscillator = this.context.createOscillator();
-	this.setRate(this.rate);
-	this.setType(this.type);
-	this.oscillator.connect(this.scaler);
 	this.oscillator.start(time);
 }
 
 //stop
 Tone.LFO.prototype.stop = function(time){
-	time = this.defaultArg(time, this.now());
 	this.oscillator.stop(time);
-	this.oscillator.disconnect();
-	this.oscillator = null;
 }
 
 
 //set the params
 Tone.LFO.prototype.setRate = function(rate){
-	this.rate = rate;
-	this.oscillator.frequency.value = rate;
+	this.oscillator.setFrequency(rate);
 }
 
 //set the params
 Tone.LFO.prototype.setMin = function(min){
-	this.min = min;
-	this._createCurve();
+	this.scaler.setMin(min);
 }
 
 //set the params
 Tone.LFO.prototype.setMax = function(max){
-	this.max = max;
-	this._createCurve();
+	this.scaler.setMax(max);
 }
 
 //set the waveform of the LFO
 //@param {string | number} type ('sine', 'square', 'sawtooth', 'triangle', 'custom');
 Tone.LFO.prototype.setType = function(type){
-	this.type = type;
-	this.oscillator.type = type;
+	this.oscillator.setType(type);
 }///////////////////////////////////////////////////////////////////////////////
 //
 //  METER
@@ -656,12 +1057,10 @@ Tone.Noise = function(type){
 	Tone.call(this);
 
 	//components
-	this.jsNode = this.context.createScriptProcessor(this.bufferSize, 1, 1);
-	this.shaper = this.context.createWaveShaper();
+	this.jsNode = this.context.createScriptProcessor(this.bufferSize, 0, 1);
 
 	//connections
-	this.jsNode.connect(this.shaper);
-	this.shaper.connect(this.output);
+    this.jsNode.connect(this.output);
 
 	this.setType(this.defaultArg(type, "white"));
 }
@@ -730,6 +1129,64 @@ Tone.Noise.prototype._whiteNoise = function(e){
     for (var i = 0; i < bufferSize; i++) {
         output[i] = Math.random() * 2 - 1;
     }
+}///////////////////////////////////////////////////////////////////////////////
+//
+//  PANNER
+//
+//	Equal Power Gain L/R Panner. Not 3D
+//	-1 = 100% Left
+//	1 = 100% Right
+///////////////////////////////////////////////////////////////////////////////
+
+Tone.Panner = function(){
+	Tone.call(this);
+
+	//components
+	this.mono = new Tone.Mono();
+	this.split = new Tone.Stereo();
+	this.control = new Tone.Signal();
+	this.invert = new Tone.Invert();
+	this.leftScale = new Tone.Scale(0, 1);
+	this.rightScale = new Tone.Scale(0, 1);
+	this.equalGain = this.context.createWaveShaper();
+	this.merger = this.context.createChannelMerger(2);
+
+	//connections
+	this.chain(this.input, this.mono, this.split);
+	this.split.right.connect(this.merger, 0, 0);
+	this.split.left.connect(this.merger, 0, 1);
+	this.merger.connect(this.output);
+	//control connections
+	this.control.connect(this.equalGain);
+	this.chain(this.equalGain, this.leftScale, this.split.left.gain);
+	this.chain(this.equalGain, this.invert, this.rightScale, this.split.right.gain);
+
+	//setup
+	this.split.left.gain.value = 0;
+	this.split.right.gain.value = 0;
+	this.setPan(0);
+	this._equalPowerGainCurve();
+}
+
+Tone.extend(Tone.Panner);
+
+Tone.Panner.prototype.setPan = function(val, rampTime){
+	rampTime = this.defaultArg(rampTime, 0);
+	this.control.linearRampToValueAtTime(val, rampTime);
+}
+
+//generates the values for the waveshaper
+Tone.Panner.prototype._equalPowerGainCurve = function(){
+	var len = this.bufferSize;
+	var curve = new Float32Array(len);
+	for (var i = 0; i < len; i++){
+		//values between -1 to 1
+		var baseline = (i / (len - 1)) * 2 - 1;
+		// scale it by amount
+		curve[i] = this.equalPowerGain(baseline);
+		// curve[i] = baseline;
+	}
+	this.equalGain.curve = curve;
 }///////////////////////////////////////////////////////////////////////////////
 //
 //  AUDIO PLAYER
@@ -1282,6 +1739,55 @@ Tone.Effect.prototype.connectEffect = function(effect){
 	this.chain(this.effectSend, effect, this.effectReturn);
 }///////////////////////////////////////////////////////////////////////////////
 //
+//  AUTO PANNER
+//
+//	not a 3d panner. just LR
+//	
+///////////////////////////////////////////////////////////////////////////////
+
+Tone.AutoPanner = function(rate, amount){
+	Tone.Effect.call(this);
+
+	//defaults
+	amount = this.defaultArg(amount, 1);
+	rate = this.defaultArg(rate, 1);
+
+	//components
+	this.osc = new Tone.LFO(rate, -amount, amount);
+	this.panner = new Tone.Panner();
+
+	//connections
+	this.connectEffect(this.panner);
+	this.osc.connect(this.panner.control);
+}
+
+//extend StereoSplit
+Tone.extend(Tone.AutoPanner, Tone.Effect);
+
+Tone.AutoPanner.prototype.start = function(time){
+	this.osc.start(time);
+}
+
+Tone.AutoPanner.prototype.stop = function(time){
+	this.osc.stop(time);
+}
+
+Tone.AutoPanner.prototype.setType = function(type){
+	this.osc.setType(type);
+}
+
+Tone.AutoPanner.prototype.setRate = function(rate){
+	this.osc.setRate(rate);
+}
+
+Tone.AutoPanner.prototype.setAmount = function(amount){
+	this.osc.setMin(-amount);
+	this.osc.setMax(amount)
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
+//
 //  FEEDBACK EFFECTS
 //
 // 	an effect with feedback
@@ -1381,90 +1887,4 @@ Tone.PingPongDelay.prototype.setWet = function(wet){
 Tone.PingPongDelay.prototype.setDry = function(dry){
 	this.leftDelay.setDry(dry);
 	this.rightDelay.setDry(dry);
-}///////////////////////////////////////////////////////////////////////////////
-//
-//  AUTO PANNER
-//
-//	not a 3d panner. just LR
-//	
-// 	@dependency components/Tone.StereoSplit components/LFO components/Mono
-///////////////////////////////////////////////////////////////////////////////
-
-Tone.AutoPanner = function(rate, amount){
-	Tone.StereoSplit.call(this);
-
-	//defaults
-	this.amount = this.defaultArg(amount, 1);
-	this.rate = this.defaultArg(rate, 1);
-
-	//components
-	this.lfo = new Tone.LFO(rate);
-	this.inverter = Tone.context.createWaveShaper();
-	this.equalGain = Tone.context.createWaveShaper();
-
-	//connections
-	this.leftSend.connect(this.leftReturn);
-	this.rightSend.connect(this.rightReturn);	
-	this.lfo.connect(this.equalGain);
-	this.equalGain.connect(this.leftSend.gain);
-	this.chain(this.equalGain, this.inverter, this.rightSend.gain);
-
-	//setup
-	this._inverterCurve();
-	this._equalPowerGainCurve();
-
 }
-
-//extend StereoSplit
-Tone.extend(Tone.AutoPanner, Tone.StereoSplit);
-
-//generates the values for the waveshaper
-Tone.AutoPanner.prototype._inverterCurve = function(){
-	var len = 16;
-	var curve = new Float32Array(len);
-	for (var i = 0; i < len; i++){
-		//values between -1 to 1
-		var baseline = (i / (len - 1)) * 2 - 1;
-		//scale it by amount
-		curve[i] = -baseline;
-	}
-	this.inverter.curve = curve;
-}
-
-//generates the values for the waveshaper
-Tone.AutoPanner.prototype._equalPowerGainCurve = function(){
-	var len = 16;
-	var curve = new Float32Array(len);
-	for (var i = 0; i < len; i++){
-		//values between -1 to 1
-		var baseline = (i / (len - 1)) * 2 - 1;
-		// curve[i] = baseline;
-		// scale it by amount
-		curve[i] = this.equalPowerGain(baseline) * this.amount;
-	}
-	this.equalGain.curve = curve;
-}
-
-Tone.AutoPanner.prototype.start = function(time){
-	this.lfo.start(time);
-}
-
-Tone.AutoPanner.prototype.stop = function(time){
-	this.lfo.stop();
-	this.leftSend.gain.value = this.equalPowerGain(.5);
-	this.rightSend.gain.value = this.equalPowerGain(.5);
-}
-
-Tone.AutoPanner.prototype.setType = function(type){
-	this.lfo.setType(type);
-}
-
-Tone.AutoPanner.prototype.setRate = function(rate){
-	this.lfo.setRate(rate);
-}
-
-Tone.AutoPanner.prototype.setAmount = function(amount){
-	this.amount = amount;
-	this._equalPowerGainCurve();
-}
-

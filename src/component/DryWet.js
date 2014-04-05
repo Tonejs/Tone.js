@@ -4,8 +4,8 @@
 //
 // 	equal power fading
 //	control values:
-// 	-1 = 100% dry
-//	1 = 100% wet
+// 	   -1 = 100% dry
+//		1 = 100% wet
 ///////////////////////////////////////////////////////////////////////////////
 
 Tone.DryWet = function(initialDry){

@@ -13,7 +13,6 @@ Tone.Noise = function(type){
 	this.jsNode = this.context.createScriptProcessor(this.bufferSize, 0, 1);
 
 	//connections
-	this.jsNode.connect(this.shaper);
     this.jsNode.connect(this.output);
 
 	this.setType(this.defaultArg(type, "white"));

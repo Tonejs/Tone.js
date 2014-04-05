@@ -10,26 +10,24 @@
 	<script type="text/javascript" src="../src/signal/Scale.js"></script>
 	<script type="text/javascript" src="../src/signal/Invert.js"></script>
 	<script type="text/javascript" src="../src/signal/Mono.js"></script>
-	<script type="text/javascript" src="../src/signal/Oscillator.js"></script>
-	<script type="text/javascript" src="../src/component/LFO.js"></script>
 	<script type="text/javascript" src="../src/signal/Stereo.js"></script>
 	<script type="text/javascript" src="../src/component/DryWet.js"></script>
 	<script type="text/javascript" src="../src/component/Panner.js"></script>
 
 	<script type="text/javascript" src="../src/component/Meter.js"></script>
-	<script type="text/javascript" src="../src/effects/Effect.js"></script>
-	<script type="text/javascript" src="../src/effects/AutoPanner.js"></script>
+	<script type="text/javascript" src="../src/component/LFO.js"></script>
 </head>
 <body>
 	<style type="text/css">
 		
 	</style>
+	<input type='range' value='50'>
 	<div id='left'>0</div>
 	<div id='right'>0</div>
 	<script type="text/javascript">
 
 		//panner
-		var pan = new Tone.AutoPanner();
+		var pan = new Tone.Panner();
 
 		//input signals
 		var sine = Tone.context.createOscillator();
@@ -45,7 +43,6 @@
 
 		//meter the outputs
 		pan.connect(output);
-		pan.start();
 
 
 		var $left = $("#left");
@@ -56,6 +53,12 @@
 			$right.html("right: " + output.getDb(1).toFixed(2) + " db");
 		}, 100);
 
+		var range = $("input")[0];
+		range.onchange = function(){
+			var val = range.value;
+			var now = pan.now();
+			pan.setPan(val/50 - 1);
+		}
 
 	</script>
 </body>
