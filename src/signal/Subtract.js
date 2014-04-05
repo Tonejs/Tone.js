@@ -1,42 +1,43 @@
 ///////////////////////////////////////////////////////////////////////////////
 //
-//  ADD
+//  SUBTRACT FROM
 //
-//	adds a constant value to the incoming signal in normal range (-1 to 1)
+//	subtract the signal from the constant
+//	for subtracting from the signal, use Tone.Add with a negative number
 ///////////////////////////////////////////////////////////////////////////////
 
 define(["core/Tone"], function(Tone){
 
-	Tone.Add = function(constant){
+	Tone.Subtract = function(constant){
 		Tone.call(this);
 
 		this.constant = constant;
 
 		//component
-		this.adder = this.context.createWaveShaper();
+		this.subber = this.context.createWaveShaper();
 
 		//connections
-		this.chain(this.input, this.adder, this.output);
+		this.chain(this.input, this.subber, this.output);
 
 		//setup
-		this._adderCurve();
+		this._subCurve();
 	}
 
-	Tone.extend(Tone.Add);
+	Tone.extend(Tone.Subtract);
 
-	//adds a constant value to the incoming signal
-	Tone.Add.prototype._adderCurve = function(){
+	//subtracts the signal from the value
+	Tone.Subtract.prototype._subCurve = function(){
 		var len = this.waveShaperResolution;
 		var curve = new Float32Array(len);
 		for (var i = 0; i < len; i++){
 			///scale the values between -1 to 1
 			var baseline = (i / (len - 1)) * 2 - 1;
 			//all inputs produce the output value
-			curve[i] = baseline + this.constant;
+			curve[i] = this.constant - baseline;
 		}
 		//console.log(curve);
-		this.adder.curve = curve;
+		this.subber.curve = curve;
 	}
 
-	return Tone.Add;
+	return Tone.Subtract;
 });

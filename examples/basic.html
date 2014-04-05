@@ -6,14 +6,20 @@
 
 	<script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
 	<!--
-	<script type="text/javascript" src="../deps/require.js"></script>
-	-->
 	<script type="text/javascript" src='../Tone.js'></script>
+	-->
+	<script type="text/javascript" src="../deps/require.js"></script>
 </head>
 <body>
 
 	<script type="text/javascript">
-		
+		require.config({
+			baseUrl : "../src"
+		});
+
+		require(["core/Tone"], function(Tone){
+			console.log(Tone);
+		});
 		
 	</script>
 </body>

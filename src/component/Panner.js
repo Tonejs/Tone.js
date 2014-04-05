@@ -7,53 +7,44 @@
 //	1 = 100% Right
 ///////////////////////////////////////////////////////////////////////////////
 
-Tone.Panner = function(){
-	Tone.call(this);
+define(["core/Tone", "signal/Merge", "signal/Signal", "signal/Scale", "signal/Subtract"], 
+function(Tone){
 
-	//components
-	this.mono = new Tone.Mono();
-	this.split = new Tone.Stereo();
-	this.control = new Tone.Signal();
-	this.invert = new Tone.Invert();
-	this.leftScale = new Tone.Scale(0, 1);
-	this.rightScale = new Tone.Scale(0, 1);
-	this.equalGain = this.context.createWaveShaper();
-	this.merger = this.context.createChannelMerger(2);
+	Tone.Panner = function(){
+		Tone.call(this);
 
-	//connections
-	this.chain(this.input, this.mono, this.split);
-	this.split.right.connect(this.merger, 0, 0);
-	this.split.left.connect(this.merger, 0, 1);
-	this.merger.connect(this.output);
-	//control connections
-	this.control.connect(this.equalGain);
-	this.chain(this.equalGain, this.leftScale, this.split.left.gain);
-	this.chain(this.equalGain, this.invert, this.rightScale, this.split.right.gain);
+		//components
+		//incoming signal is sent to left and right
+		this.left = this.context.createGain();
+		this.right = this.context.createGain();
+		this.control = new Tone.Signal();
+		this.merge = new Tone.Merge();
+		this.invert = new Tone.Scale(1, -1);
+		this.equalPowerL = new Tone.Scale(0, 1, "equalPower");
+		this.equalPowerR = new Tone.Scale(0, 1, "equalPower");
 
-	//setup
-	this.split.left.gain.value = 0;
-	this.split.right.gain.value = 0;
-	this.setPan(0);
-	this._equalPowerGainCurve();
-}
+		//connections
+		this.chain(this.input, this.left, this.merge.left);
+		this.chain(this.input, this.right, this.merge.right);
+		this.merge.connect(this.output);
+		//left channel control
+		this.chain(this.control, this.invert, this.equalPowerL, this.left.gain);
+		//right channel control
+		this.chain(this.control, this.equalPowerR, this.right.gain);
 
-Tone.extend(Tone.Panner);
 
-Tone.Panner.prototype.setPan = function(val, rampTime){
-	rampTime = this.defaultArg(rampTime, 0);
-	this.control.linearRampToValueAtTime(val, rampTime);
-}
-
-//generates the values for the waveshaper
-Tone.Panner.prototype._equalPowerGainCurve = function(){
-	var len = this.bufferSize;
-	var curve = new Float32Array(len);
-	for (var i = 0; i < len; i++){
-		//values between -1 to 1
-		var baseline = (i / (len - 1)) * 2 - 1;
-		// scale it by amount
-		curve[i] = this.equalPowerGain(baseline);
-		// curve[i] = baseline;
+		//setup
+		this.left.gain.value = 0;
+		this.right.gain.value = 0;
+		this.setPan(0);
 	}
-	this.equalGain.curve = curve;
-}
+
+	Tone.extend(Tone.Panner);
+
+	Tone.Panner.prototype.setPan = function(val, rampTime){
+		rampTime = this.defaultArg(rampTime, 0);
+		this.control.linearRampToValueAtTime(val, rampTime);
+	}
+
+	return Tone.Panner;
+});;

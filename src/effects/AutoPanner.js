@@ -22,7 +22,7 @@ Tone.AutoPanner = function(rate, amount){
 	this.osc.connect(this.panner.control);
 }
 
-//extend StereoSplit
+//extend Effect
 Tone.extend(Tone.AutoPanner, Tone.Effect);
 
 Tone.AutoPanner.prototype.start = function(time){

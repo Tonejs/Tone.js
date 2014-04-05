@@ -6,20 +6,28 @@
 //	MIT License (MIT)
 ///////////////////////////////////////////////////////////////////////////////
 
-(function (global, undefined) {
+define(function () {
+
+	//////////////////////////////////////////////////////////////////////////
+	//	HELPERS
+	///////////////////////////////////////////////////////////////////////////
+
+	function isUndef(val){
+		return typeof val === "undefined";
+	}
 	
 	//////////////////////////////////////////////////////////////////////////
 	//	WEB AUDIO CONTEXT
 	///////////////////////////////////////////////////////////////////////////
 
 	//ALIAS
-	if (!global.AudioContext){
-		global.AudioContext = global.webkitAudioContext;
+	if (!window.AudioContext){
+		window.AudioContext = window.webkitAudioContext;
 	} 
 
 	var audioContext;
-	if (global.AudioContext){
-		audioContext = new global.AudioContext();
+	if (window.AudioContext){
+		audioContext = new window.AudioContext();
 	}
 
 	//SHIMS////////////////////////////////////////////////////////////////////
@@ -69,6 +77,7 @@
 	Tone.prototype.context = audioContext;
 	Tone.prototype.fadeTime = .005; //5ms
 	Tone.prototype.bufferSize = 2048; //default buffer size
+	Tone.prototype.waveShaperResolution = 1024; //default buffer size
 
 	///////////////////////////////////////////////////////////////////////////
 	//	CLASS METHODS
@@ -149,14 +158,26 @@
 	//@param {*} fallback
 	//@returns {*}
 	Tone.prototype.defaultArg = function(given, fallback){
-		return typeof(given) !== 'undefined' ? given : fallback;
+		return isUndef(given) ? fallback : given;
 	}
 
 	//@param {number} percent (0-1)
-	//@returns {number} the equal power gain
+	//@returns {number} the equal power gain (0-1)
 	//good for cross fades
-	Tone.prototype.equalPowerGain = function(percent){
+	Tone.prototype.equalPowerScale = function(percent){
 		return Math.sin((percent) * 0.5*Math.PI);
+	}
+
+	//@param {number} gain
+	//@returns {number} gain (decibel scale but betwee 0-1)
+	Tone.prototype.logScale = function(gain) {
+		return  Math.max(this.normalize(this.gainToDb(gain), -100, 0), 0);
+	}
+
+	//@param {number} gain
+	//@returns {number} gain (decibel scale but betwee 0-1)
+	Tone.prototype.expScale = function(gain) {
+		return this.dbToGain(this.interpolate(gain, -100, 0));
 	}
 
 	//@param {number} db
@@ -169,18 +190,6 @@
 	//@returns {number} db
 	Tone.prototype.gainToDb = function(gain) {
 		return  20 * (Math.log(gain) / Math.LN10);
-	}
-
-	//@param {number} gain
-	//@returns {number} gain (decibel scale but betwee 0-1)
-	Tone.prototype.gainToLogScale = function(gain) {
-		return  Math.max(this.normalize(this.gainToDb(gain), -100, 0), 0);
-	}
-
-	//@param {number} gain
-	//@returns {number} gain (decibel scale but betwee 0-1)
-	Tone.prototype.gainToPowScale = function(gain) {
-		return this.dbToGain(this.interpolate(gain, -100, 0));
 	}
 
 	//@param {number} input 0-1
@@ -206,16 +215,6 @@
 	//@returns {number} the number of seconds
 	Tone.prototype.samplesToSeconds = function(samples){
 		return samples / audioContext.sampleRate;
-	}
-
-	///////////////////////////////////////////////////////////////////////////
-	//	CHANNEL ROUTING
-	///////////////////////////////////////////////////////////////////////////
-
-	//@param {AudioNode|Tone=} unit
-	Tone.prototype.toMaster = function(node){
-		node = this.defaultArg(node, this.output);
-		node.connect(Tone.Master);
 	}
 
 	///////////////////////////////////////////////////////////////////////////
@@ -294,7 +293,7 @@
 	
 	//based on closure library 'inherit' function
 	Tone.extend = function(child, parent){
-		if (parent === undefined){
+		if (isUndef(parent)){
 			parent = Tone;
 		}
 		/** @constructor */
@@ -307,24 +306,5 @@
 
 	Tone.context = audioContext;
 
-	///////////////////////////////////////////////////////////////////////////
-	//	MASTER OUTPUT
-	///////////////////////////////////////////////////////////////////////////
-
-	var Master = function(){
-		//extend audio unit
-		Tone.call(this);
-
-		//put a hard limiter on the output so we don't blow any eardrums
-		this.limiter = this.context.createDynamicsCompressor();
-		this.limiter.threshold.value = 0;
-		this.limiter.ratio.value = 20;
-		this.chain(this.input, this.limiter, this.output, this.context.destination);
-	}
-	Tone.extend(Master, Tone);
-	Tone.Master = new Master();
-
-	//make it global
-	global.Tone = Tone;
-
-})(this);
+	return Tone;
+});

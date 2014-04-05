@@ -1,0 +1,60 @@
+<html>
+<head>
+	<title>MERGE/SPLIT</title>
+
+	<script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
+	<script type="text/javascript" src="../deps/require.js"></script>
+</head>
+<body>
+	<style type="text/css">
+		
+	</style>
+	<div id='mono'>0</div>
+	<div id='left'>0</div>
+	<div id='right'>0</div>
+	<script type="text/javascript">
+		require.config({
+			baseUrl : "../src"
+		});
+
+
+		require(["core/Tone", "signal/Signal", 'signal/Merge', "signal/Split", "component/Meter"], 
+
+		function(Tone){
+
+			//two signals into one (stereo) channel
+			var left = new Tone.Signal(-100);
+			var right = new Tone.Signal(75);
+			var mergeMeter = new Tone.Meter();
+			var merge = new Tone.Merge();
+
+			//connect it up
+			left.connect(merge.left);
+			right.connect(merge.right);
+			merge.connect(mergeMeter);
+
+			//one (stereo) signal split into two channels
+			var split = new Tone.Split();
+			merge.connect(split);
+			var rightMeter = new Tone.Meter();
+			var leftmeter = new Tone.Meter();
+
+			split.right.connect(rightMeter);
+			split.left.connect(leftmeter);
+
+
+			var $mono = $("#mono");
+			var $left = $("#left");
+			var $right = $("#right");
+
+			setInterval(function(){
+				$mono.html("merged: " + mergeMeter.getValue(0).toFixed(3));
+				$left.html("left: " + rightMeter.getValue(0).toFixed(3));
+				$right.html("right: " + leftmeter.getValue(0).toFixed(3));
+			}, 100);
+		});
+
+
+	</script>
+</body>
+</html>

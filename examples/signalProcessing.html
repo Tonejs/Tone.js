@@ -2,17 +2,8 @@
 <head>
 	<title>SIGNAL PROCESSING</title>
 
-	<link rel="stylesheet" type="text/css" href="../style/GUI.css">
-
 	<script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
-	<script type="text/javascript" src="../src/core/Tone.js"></script>
-	<script type="text/javascript" src="../src/signal/Signal.js"></script>
-	<script type="text/javascript" src="../src/signal/Add.js"></script>
-	<script type="text/javascript" src="../src/signal/Invert.js"></script>
-	<script type="text/javascript" src="../src/signal/Normalize.js"></script>
-	<script type="text/javascript" src="../src/signal/Scale.js"></script>
-
-	<script type="text/javascript" src="../src/component/Meter.js"></script>
+	<script type="text/javascript" src="../deps/require.js"></script>
 </head>
 <body>
 	<style type="text/css">
@@ -20,66 +11,66 @@
 	</style>
 	<input type='range' value='50'>
 	<div id='signal'>0</div>
-	<div id='invert'>0</div>
 	<div id='add'>0</div>
-	<div id='normalize'>0</div>
+	<div id='sub'>0</div>
 	<div id='scale'>0</div>
 	<script type="text/javascript">
-		var signal = new Tone.Signal();
-		var dryMeter = new Tone.Meter();
-		signal.connect(dryMeter);
-
-		//the inverter
-		var inverter = new Tone.Invert();
-		var invertMeter = new Tone.Meter();
-		inverter.connect(invertMeter);
-		signal.connect(inverter);
-
-		//the adder
-		var adder = new Tone.Add(100);
-		var addMeter = new Tone.Meter();
-		adder.connect(addMeter);
-		inverter.connect(adder);
-
-		//normalize back to -1 to 1
-		var norm = new Tone.Normalize(99, 101);
-		var normMeter = new Tone.Meter();
-		norm.connect(normMeter);
-		adder.connect(norm);
-
-		//the scaler
-		var scaler = new Tone.Scale(5, 10);
-		var scaleMeter = new Tone.Meter();
-		scaler.connect(scaleMeter);
-		norm.connect(scaler);
+		require.config({
+			baseUrl : "../src"
+		});
 
 
-		var $signal = $("#signal");
-		var $invert = $("#invert");
-		var $add = $("#add");
-		var $norm = $("#normalize");
-		var $scale = $("#scale");
+		require(["core/Tone", "core/Master", "signal/Signal", "signal/Add", "signal/Scale", "component/Meter", 
+			"signal/Subtract"], 
+		function(Tone){
+			var signal = new Tone.Signal();
+			var dryMeter = new Tone.Meter();
+			signal.connect(dryMeter);
 
-		setInterval(function(){
-			$signal.html("signal: " + dryMeter.getValue().toFixed(3));
-			$invert.html("inverted: " + invertMeter.getValue().toFixed(3));
-			$add.html("add 100: " + addMeter.getValue().toFixed(3));
-			$norm.html("normalized : "+normMeter.getValue().toFixed(3));
-			$scale.html("scaled 5 to 10: " + scaleMeter.getValue().toFixed(3));
-			/*$signal.html("signal: " + dryMeter.getValue());
-			$invert.html("incoming: " + );
-			$add.html("add 10: " + addMeter.getValue());*/
-		}, 100);
+			
+			//the adder
+			var adder = new Tone.Add(100);
+			var addMeter = new Tone.Meter();
+			adder.connect(addMeter);
+			signal.connect(adder);
 
-		var range = $("input")[0];
-		range.onchange = function(){
-			var val = range.value;
-			var now = signal.now();
-			signal.linearRampToValueAtTime(val / 50 - 1, now + .1);
-		}
+			//the adder
+			var subtract = new Tone.Subtract(100);
+			var subMeter = new Tone.Meter();
+			subtract.connect(subMeter);
+			signal.connect(subtract);
+
+			
+			//the scaler
+			var scaler = new Tone.Scale(5, 10);
+			var scaleMeter = new Tone.Meter();
+			scaler.connect(scaleMeter);
+			signal.connect(scaler);
 
 
-		// signal.toMaster();
+			var $signal = $("#signal");
+			var $add = $("#add");
+			var $scale = $("#scale");
+			var $sub = $("#sub");
+
+			setInterval(function(){
+				$signal.html("signal: " + dryMeter.getValue().toFixed(3));
+				$add.html("signal + 100: " + addMeter.getValue().toFixed(3));
+				$scale.html("scaled 5 to 10: " + scaleMeter.getValue().toFixed(3));
+				$sub.html("100 - signal: " + subMeter.getValue().toFixed(3));
+			}, 100);
+
+			var range = $("input")[0];
+			range.onchange = function(){
+				var val = range.value;
+				var now = signal.now();
+				signal.linearRampToValueAtTime(val / 50 - 1, now + .1);
+			}
+			
+			window.Tone = Tone;
+
+		});
+
 
 	</script>
 </body>
