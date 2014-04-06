@@ -10,10 +10,10 @@
 	<button>start</button>
 	<script type="text/javascript">
 		require.config({
-			baseUrl : "../src"
+			baseUrl : "../"
 		});
 
-		require(["core/Tone", "core/Master", "source/Noise", "component/LFO"], function(Tone){
+		require(["Tone/core/Tone", "Tone/core/Master", "Tone/source/Noise", "Tone/component/LFO"], function(Tone){
 
 			var noise = new Tone.Noise("brown");
 			var lfo = new Tone.LFO(.5);

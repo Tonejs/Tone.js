@@ -10,10 +10,10 @@
 	<input type='range'>
 	<script type="text/javascript">
 		require.config({
-			baseUrl : "../src"
+			baseUrl : "../"
 		});
 
-		require(["core/Tone", "core/Master", "source/Noise", "effects/Effect"], function(Tone){
+		require(["Tone/core/Tone", "Tone/core/Master", "Tone/source/Noise", "Tone/effects/Effect"], function(Tone){
 
 			//extend effect
 			var NoiseEffect = function(){

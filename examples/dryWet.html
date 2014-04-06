@@ -18,10 +18,10 @@
 	<script type="text/javascript">
 
 		require.config({
-			baseUrl : "../src"
+			baseUrl : "../"
 		});
 
-		require(["core/Tone", "component/DryWet", "component/Meter"], function(Tone){
+		require(["Tone/core/Tone", "Tone/component/DryWet", "Tone/component/Meter"], function(Tone){
 
 			//dry wet knob
 			var dryWet = new Tone.DryWet();

@@ -16,12 +16,11 @@
 	<div id='scale'>0</div>
 	<script type="text/javascript">
 		require.config({
-			baseUrl : "../src"
+			baseUrl : "../"
 		});
 
-
-		require(["core/Tone", "core/Master", "signal/Signal", "signal/Add", "signal/Scale", "component/Meter", 
-			"signal/Subtract"], 
+		require(["Tone/core/Tone", "Tone/core/Master", "Tone/signal/Signal", "Tone/signal/Add", 
+			"Tone/signal/Scale", "Tone/component/Meter", "Tone/signal/Subtract"], 
 		function(Tone){
 			var signal = new Tone.Signal();
 			var dryMeter = new Tone.Meter();

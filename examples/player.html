@@ -44,10 +44,10 @@
 	<script type="text/javascript">
 
 		require.config({
-			baseUrl : "../src"
+			baseUrl : "../"
 		});
 
-		require(["core/Tone", "core/Master", "source/Player"], function(Tone){
+		require(["Tone/core/Tone", "Tone/core/Master", "Tone/source/Player"], function(Tone){
 
 			var player = new Tone.Player("../audio/casio/A1.mp3");
 

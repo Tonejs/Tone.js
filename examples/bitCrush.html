@@ -12,10 +12,10 @@
 	<button>start</button>
 	<script type="text/javascript">
 		require.config({
-			baseUrl : "../src"
+			baseUrl : "../"
 		});
 
-		require(["core/Tone", "core/Master", "signal/BitCrusher"], function(Tone){
+		require(["Tone/core/Tone", "Tone/core/Master", "Tone/signal/BitCrusher"], function(Tone){
 			var sine = Tone.context.createOscillator();
 			var crusher = new Tone.BitCrusher(5);
 			

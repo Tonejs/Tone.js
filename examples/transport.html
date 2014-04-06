@@ -10,10 +10,10 @@
 	<div id="output"></div>
 	<script type="text/javascript">
 		require.config({
-			baseUrl : "../src"
+			baseUrl : "../"
 		});
 
-		require(["core/Tone", "core/Master", "component/Transport", "source/Player"], function(Tone){
+		require(["Tone/core/Tone", "Tone/core/Master", "Tone/core/Transport", "Tone/source/Player"], function(Tone){
 			
 			var transport = new Tone.Transport(60, 4);
 

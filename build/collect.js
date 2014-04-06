@@ -9,9 +9,9 @@ function main() {
 
 	console.log('* Collecting Files');
 
-	var srcFolder = "../src/";
+	var srcFolder = "../Tone/";
 
-	var outputFile = "../src/main.js";
+	var outputFile = "../main.js";
 	
 
 	var dependencies = [];
@@ -25,7 +25,7 @@ function main() {
 				var file = nestedFiles[j];
 				if (file.charAt(0) !== "."){
 					var noJS = file.substring(0, file.length - 3);
-					dependencies.push(nested + "/" + noJS);
+					dependencies.push("Tone/" + nested + "/" + noJS);
 				} 
 			}
 		} 

@@ -1,5 +1,5 @@
 ({
-    baseUrl: "../src",
+    baseUrl: "../",
     name : "main",
     out: "Tone.js",
     optimize : "none"

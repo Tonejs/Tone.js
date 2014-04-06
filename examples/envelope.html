@@ -46,10 +46,10 @@
 	</script>
 	<script type="text/javascript">
 		require.config({
-			baseUrl : "../src"
+			baseUrl : "../"
 		});
 
-		require(["core/Tone", "core/Master", "source/Noise", "component/Envelope"], function(Tone){
+		require(["Tone/core/Tone", "Tone/core/Master", "Tone/source/Noise", "Tone/component/Envelope"], function(Tone){
 
 			var env = new Tone.Envelope(.05, .01, .7, .4);
 			var noise = new Tone.Noise();
