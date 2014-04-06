@@ -25,14 +25,6 @@
 } (this, function (global) {
 
 	//////////////////////////////////////////////////////////////////////////
-	//	HELPERS
-	///////////////////////////////////////////////////////////////////////////
-
-	function isUndef(val){
-		return typeof val === "undefined";
-	}
-	
-	//////////////////////////////////////////////////////////////////////////
 	//	WEB AUDIO CONTEXT
 	///////////////////////////////////////////////////////////////////////////
 
@@ -146,6 +138,10 @@
 	//	UTILITIES / HELPERS
 	///////////////////////////////////////////////////////////////////////////
 
+	function isUndef(val){
+		return typeof val === "undefined";
+	}
+
 	//ramps to value linearly starting now
 	//@param {AudioParam} audioParam
 	//@param {number} value
@@ -208,7 +204,8 @@
 		return  20 * (Math.log(gain) / Math.LN10);
 	}
 
-	//@param {number} input 0-1
+	//@param {number} input 0 to 1
+	//@returns {number} between outputMin and outputMax
 	Tone.prototype.interpolate = function(input, outputMin, outputMax){
 		return input*(outputMax - outputMin) + outputMin;
 	}
@@ -973,10 +970,9 @@ function(Tone){
 //	setInterval (repeated events)
 //	setTimeout (single timeline event)
 //
-//	@dependency core/Tone.js
 ///////////////////////////////////////////////////////////////////////////////
 
-define('component/Transport',["core/Tone"], function(Tone){
+define('core/Transport',["core/Tone"], function(Tone){
 
 	//@param {number=} bpm
 	//@param {number=} timeSignature (over 4);
@@ -1774,8 +1770,7 @@ define('signal/BitCrusher',["core/Tone"], function(Tone){
 
 	//@param {number=} bits
 	//@param {number=} frequency
-	//@param {number=} channels
-	Tone.BitCrusher = function(bits, frequency, channels){
+	Tone.BitCrusher = function(bits, frequency){
 		Tone.call(this);
 
 		//the math
@@ -1785,10 +1780,9 @@ define('signal/BitCrusher',["core/Tone"], function(Tone){
 		this.invStep = 1/this.step;
 		this.phasor = 0;
 		this.last = 0;
-		this.channels = this.defaultArg(channels, 1);
 		
 		//the node
-		this.crusher = this.context.createScriptProcessor(this.bufferSize, this.channels, this.channels);
+		this.crusher = this.context.createScriptProcessor(this.bufferSize, 1, 1);
 		this.crusher.onaudioprocess = this.audioprocess.bind(this);
 
 		//connect it up
@@ -1802,22 +1796,18 @@ define('signal/BitCrusher',["core/Tone"], function(Tone){
 		var phasor = this.phasor;
 		var freq = this.frequency;
 		var invStep = this.invStep;
-		var floor = Math.floor;
 		var last = this.last;
 		var step = this.step;
-		var channel = 0;
-		var input = event.inputBuffer.getChannelData(channel);
-		var output = event.outputBuffer.getChannelData(channel);
+		var input = event.inputBuffer.getChannelData(0);
+		var output = event.outputBuffer.getChannelData(0);
 		for (var i = 0, len = output.length; i < len; i++) {
 			phasor += freq;
 		    if (phasor >= 1) {
 		        phasor -= 1;
-		        last = step * floor((input[i] * invStep) + 0.5);
+		        last = step * ((input[i] * invStep) | 0 + 0.5);
 		    }
 		    output[i] = last;
 		}
-		/*for (var channel = 0; channel < channels; channel++){
-		}*/
 		this.phasor = phasor;
 		this.last = last;
 	}
