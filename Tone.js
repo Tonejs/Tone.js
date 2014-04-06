@@ -972,7 +972,7 @@ function(Tone){
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-define('core/Transport',["core/Tone"], function(Tone){
+define('core/Transport',["core/Tone", "core/Master"], function(Tone){
 
 	//@param {number=} bpm
 	//@param {number=} timeSignature (over 4);
@@ -1003,7 +1003,7 @@ define('core/Transport',["core/Tone"], function(Tone){
 		this.state = Tone.Transport.state.stopped;
 
 		//so it doesn't get garbage collected
-		this.jsNode.connect(Tone.Master);
+		this.jsNode.toMaster();
 	}
 
 	Tone.extend(Tone.Transport, Tone);
