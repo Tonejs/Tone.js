@@ -24,14 +24,6 @@
 } (this, function (global) {
 
 	//////////////////////////////////////////////////////////////////////////
-	//	HELPERS
-	///////////////////////////////////////////////////////////////////////////
-
-	function isUndef(val){
-		return typeof val === "undefined";
-	}
-	
-	//////////////////////////////////////////////////////////////////////////
 	//	WEB AUDIO CONTEXT
 	///////////////////////////////////////////////////////////////////////////
 
@@ -145,6 +137,10 @@
 	//	UTILITIES / HELPERS
 	///////////////////////////////////////////////////////////////////////////
 
+	function isUndef(val){
+		return typeof val === "undefined";
+	}
+
 	//ramps to value linearly starting now
 	//@param {AudioParam} audioParam
 	//@param {number} value
@@ -207,7 +203,8 @@
 		return  20 * (Math.log(gain) / Math.LN10);
 	}
 
-	//@param {number} input 0-1
+	//@param {number} input 0 to 1
+	//@returns {number} between outputMin and outputMax
 	Tone.prototype.interpolate = function(input, outputMin, outputMax){
 		return input*(outputMax - outputMin) + outputMin;
 	}

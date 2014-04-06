@@ -7,7 +7,6 @@
 //	setInterval (repeated events)
 //	setTimeout (single timeline event)
 //
-//	@dependency core/Tone.js
 ///////////////////////////////////////////////////////////////////////////////
 
 define(["core/Tone"], function(Tone){
