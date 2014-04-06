@@ -5,22 +5,25 @@
 // 	an effect with feedback
 ///////////////////////////////////////////////////////////////////////////////
 
+define(["core/Tone", "effects/Effect"], function(Tone){
 
-Tone.FeedbackEffect = function(){
-	//extends Unit
-	Tone.Effect.call(this);
+	Tone.FeedbackEffect = function(){
+		//extends Unit
+		Tone.Effect.call(this);
 
-	this.feedback = this.context.createGain();
-	//feedback loop
-	this.chain(this.effectReturn, this.feedback, this.effectSend);
+		this.feedback = this.context.createGain();
+		//feedback loop
+		this.chain(this.effectReturn, this.feedback, this.effectSend);
 
-	//some initial values
-	this.setDry(.5);
-}
+		//some initial values
+		this.setDry(.5);
+	}
 
-Tone.extend(Tone.FeedbackEffect, Tone.Effect);
+	Tone.extend(Tone.FeedbackEffect, Tone.Effect);
 
+	Tone.FeedbackEffect.prototype.setFeedback = function(fback){
+		this.rampToValue(this.feedback.gain, fback);
+	}
 
-Tone.Effect.prototype.setFeedback = function(fback){
-	this.rampToValue(this.feedback.gain, fback);
-}
+	return Tone.FeedbackEffect;
+});

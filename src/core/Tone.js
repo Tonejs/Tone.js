@@ -1,12 +1,27 @@
 ///////////////////////////////////////////////////////////////////////////////
 //
-//	TONE
+//	TONE.js
 //
 //	(c) Yotam Mann. 2014.
 //	MIT License (MIT)
 ///////////////////////////////////////////////////////////////////////////////
-
-define(function () {
+(function (root, factory) {
+	//can run with or without requirejs
+	if (typeof define === 'function' && define.amd) {
+		// AMD. Register as an anonymous module.
+		define('core/Tone',[],function () {
+			var Tone = factory(root);
+			return Tone;
+		});
+	} else if (typeof root.Tone !== 'function') {
+		//make Tone public
+		root.Tone = factory(root);
+		//define 'define' to invoke the callbacks with Tone
+		root.define = function(name, deps, func){
+			func(Tone);
+		}
+	}
+} (this, function (global) {
 
 	//////////////////////////////////////////////////////////////////////////
 	//	HELPERS
@@ -21,13 +36,13 @@ define(function () {
 	///////////////////////////////////////////////////////////////////////////
 
 	//ALIAS
-	if (!window.AudioContext){
-		window.AudioContext = window.webkitAudioContext;
+	if (!global.AudioContext){
+		global.AudioContext = global.webkitAudioContext;
 	} 
 
 	var audioContext;
-	if (window.AudioContext){
-		audioContext = new window.AudioContext();
+	if (global.AudioContext){
+		audioContext = new global.AudioContext();
 	}
 
 	//SHIMS////////////////////////////////////////////////////////////////////
@@ -307,4 +322,4 @@ define(function () {
 	Tone.context = audioContext;
 
 	return Tone;
-});
+}));
