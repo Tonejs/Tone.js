@@ -7,7 +7,7 @@
 //	1 = 100% Right
 ///////////////////////////////////////////////////////////////////////////////
 
-define(["core/Tone", "signal/Merge", "signal/Signal", "signal/Scale", "signal/Subtract"], 
+define(["core/Tone", "signal/Merge", "signal/Signal", "signal/Scale"], 
 function(Tone){
 
 	Tone.Panner = function(){

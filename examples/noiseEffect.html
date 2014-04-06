@@ -1,0 +1,43 @@
+<html>
+<head>
+	<title>LFO</title>
+
+	<script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
+	<script type="text/javascript" src="../deps/require.js"></script>
+	
+</head>
+<body>
+	<input type='range'>
+	<script type="text/javascript">
+		require.config({
+			baseUrl : "../src"
+		});
+
+		require(["core/Tone", "core/Master", "source/Noise", "effects/Effect"], function(Tone){
+
+			//extend effect
+			var NoiseEffect = function(){
+				Tone.Effect.call(this);
+
+				//components
+				this.noise = new Tone.Noise("brown");
+
+				//connections
+				this.connectEffect(this.noise);
+			}
+			//extend effect
+			Tone.extend(NoiseEffect, Tone.Effect);
+
+			var noiseEffect = new NoiseEffect();
+			noiseEffect.toMaster();
+
+			var range = $("input")[0];
+
+			range.onchange = function(){
+				var val = range.value;
+				noiseEffect.setDry(val / 50 - 1);
+			}
+		});
+	</script>
+</body>
+</html>

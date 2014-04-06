@@ -2,23 +2,30 @@
 <head>
 	<title>LFO</title>
 
-	<link rel="stylesheet" type="text/css" href="../style/GUI.css">
-
 	<script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
-	<script type="text/javascript" src="../src/core/Tone.js"></script>
-	<script type="text/javascript" src="../src/signal/Oscillator.js"></script>
-	<script type="text/javascript" src="../src/signal/Scale.js"></script>
-	<script type="text/javascript" src="../src/component/LFO.js"></script>
-	<script type="text/javascript" src="../src/component/Noise.js"></script>
+	<script type="text/javascript" src="../deps/require.js"></script>
+	
 </head>
 <body>
+	<button>start</button>
 	<script type="text/javascript">
-		var noise = new Tone.Noise("brown");
-		var lfo = new Tone.LFO(1);
-		
-		noise.toMaster();
-		lfo.connect(noise.output.gain);
-		lfo.start();
+		require.config({
+			baseUrl : "../src"
+		});
+
+		require(["core/Tone", "core/Master", "source/Noise", "component/LFO"], function(Tone){
+
+			var noise = new Tone.Noise("brown");
+			var lfo = new Tone.LFO(.5);
+			
+			noise.toMaster();
+			noise.output.gain.value = 0;
+			lfo.connect(noise.output.gain);
+
+			$("button").click(function(){
+				lfo.start();
+			})
+		});
 	</script>
 </body>
 </html>

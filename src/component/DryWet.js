@@ -8,7 +8,7 @@
 //		1 = 100% wet
 ///////////////////////////////////////////////////////////////////////////////
 
-define(["core/Tone", "signal/Signal", "signal/Invert", "signal/Scale"], function(Tone){
+define(["core/Tone", "signal/Signal", "signal/Scale"], function(Tone){
 
 	Tone.DryWet = function(initialDry){
 		Tone.call(this);
@@ -16,27 +16,21 @@ define(["core/Tone", "signal/Signal", "signal/Invert", "signal/Scale"], function
 		//components
 		this.dry = this.context.createGain();
 		this.wet = this.context.createGain();
-		this.output = this.context.createGain();
-		this.equalGain = this.context.createWaveShaper();
 		//control signal
 		this.control = new Tone.Signal();
-		this.invert = new Tone.Invert();
-		this.dryScale = new Tone.Scale(0, 1);
-		this.wetScale = new Tone.Scale(0, 1);
-
+		this.invert = new Tone.Scale(1, -1);
+		this.equalPowerD = new Tone.Scale(0, 1, "equalPower");
+		this.equalPowerW = new Tone.Scale(0, 1, "equalPower");
 
 		//connections
 		this.dry.connect(this.output);
 		this.wet.connect(this.output);
-		//control signal connections
-		this.control.connect(this.equalGain);
-		//wet chain
-		this.chain(this.equalGain, this.wetScale, this.wet.gain);
-		//dry chain
-		this.chain(this.equalGain, this.invert, this.dryScale, this.dry.gain);
+		//wet control
+		this.chain(this.control, this.invert, this.equalPowerD, this.wet.gain);
+		//dry control
+		this.chain(this.control, this.equalPowerW, this.dry.gain);
 
 		//setup
-		this._equalPowerGainCurve();
 		this.dry.gain.value = 0;
 		this.wet.gain.value = 0;
 		this.setDry(0);
@@ -51,20 +45,6 @@ define(["core/Tone", "signal/Signal", "signal/Invert", "signal/Scale"], function
 
 	Tone.DryWet.prototype.setWet = function(val, rampTime){
 		this.setDry(-val, rampTime);
-	}
-
-	//generates the values for the waveshaper
-	Tone.DryWet.prototype._equalPowerGainCurve = function(){
-		var len = this.bufferSize;
-		var curve = new Float32Array(len);
-		for (var i = 0; i < len; i++){
-			//values between -1 to 1
-			var baseline = (i / (len - 1)) * 2 - 1;
-			// scale it by amount
-			curve[i] = this.equalPowerGain(baseline);
-			// curve[i] = baseline;
-		}
-		this.equalGain.curve = curve;
 	}
 
 	return Tone.DryWet;

@@ -20,11 +20,14 @@ define(["core/Tone"], function(Tone){
 
 		//connections
 		this.chain(this.generator, this.signal, this.scalar, this.output);
+		//pass values through
+		this.input.connect(this.output);
 
 		//setup
 		this.generator.start(0);
 		this._signalCurve();
 		this.setValue(this.defaultArg(value, 0));
+
 	}
 
 	Tone.extend(Tone.Signal);

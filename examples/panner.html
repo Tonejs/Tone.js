@@ -9,6 +9,7 @@
 	<style type="text/css">
 		
 	</style>
+	<button type="button">start</button>
 	<input type='range' value='50'>
 	<div id='left'>0</div>
 	<div id='right'>0</div>
@@ -24,7 +25,6 @@
 
 			//input signals
 			var sine = Tone.context.createOscillator();
-			sine.start(0);
 			// var sine = new Tone.Signal(100);
 
 			//connect it up
@@ -37,7 +37,6 @@
 
 			//meter the outputs
 			pan.connect(output);
-
 
 			var $left = $("#left");
 			var $right = $("#right");
@@ -53,6 +52,10 @@
 				var now = pan.now();
 				pan.setPan(val/50 - 1, now+.1);
 			}
+
+			$("button").click(function(){
+				sine.start(0);
+			})
 		});
 
 	</script>

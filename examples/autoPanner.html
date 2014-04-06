@@ -1,62 +1,66 @@
 <html>
 <head>
-	<title>SIGNAL PROCESSING</title>
-
-	<link rel="stylesheet" type="text/css" href="../style/GUI.css">
+	<title>AUTOPANNER</title>
 
 	<script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
-	<script type="text/javascript" src="../src/core/Tone.js"></script>
-	<script type="text/javascript" src="../src/signal/Signal.js"></script>
-	<script type="text/javascript" src="../src/signal/Scale.js"></script>
-	<script type="text/javascript" src="../src/signal/Invert.js"></script>
-	<script type="text/javascript" src="../src/signal/Mono.js"></script>
-	<script type="text/javascript" src="../src/signal/Oscillator.js"></script>
-	<script type="text/javascript" src="../src/component/LFO.js"></script>
-	<script type="text/javascript" src="../src/signal/Stereo.js"></script>
-	<script type="text/javascript" src="../src/component/DryWet.js"></script>
-	<script type="text/javascript" src="../src/component/Panner.js"></script>
-
-	<script type="text/javascript" src="../src/component/Meter.js"></script>
-	<script type="text/javascript" src="../src/effects/Effect.js"></script>
-	<script type="text/javascript" src="../src/effects/AutoPanner.js"></script>
+	<!--
+	<script type="text/javascript" src='../Tone.js'></script>
+	-->
+	<script type="text/javascript" src="../deps/require.js"></script>
 </head>
 <body>
-	<style type="text/css">
-		
-	</style>
+	<button>start</button>
+	<input type='range' value='50'>
 	<div id='left'>0</div>
 	<div id='right'>0</div>
 	<script type="text/javascript">
+		require.config({
+			baseUrl : "../src"
+		});
 
-		//panner
-		var pan = new Tone.AutoPanner();
+		require(["core/Tone", "core/Master", "effects/AutoPanner", "component/Meter"], function(Tone){
+			//panner
+			var pan = new Tone.AutoPanner();
 
-		//input signals
-		var sine = Tone.context.createOscillator();
-		sine.start(0);
+			//input signals
+			var sine = Tone.context.createOscillator();
+			// sine.start(0);
 
-		//connect it up
-		sine.connect(pan);
+			//connect it up
+			sine.connect(pan);
 
-		pan.toMaster();
+			pan.toMaster();
 
-		//meters
-		var output = new Tone.Meter(2);
+			//meters
+			var meter = new Tone.Meter(2);
 
-		//meter the outputs
-		pan.connect(output);
-		pan.start();
-
-
-		var $left = $("#left");
-		var $right = $("#right");
-	
-		setInterval(function(){
-			$left.html("left: " + output.getDb(0).toFixed(2) + " db");
-			$right.html("right: " + output.getDb(1).toFixed(2) + " db");
-		}, 100);
+			//meter the outputs
+			pan.connect(meter);
+			pan.start();
 
 
+			var $left = $("#left");
+			var $right = $("#right");
+		
+			setInterval(function(){
+				$left.html("left: " + meter.getDb(0).toFixed(2) + " db");
+				$right.html("right: " + meter.getDb(1).toFixed(2) + " db");
+			}, 100);
+
+			$("button").click(function(){
+				sine.start();
+			})
+
+			var range = $("input")[0];
+			range.onchange = function(){
+				var val = range.value;
+				var now = pan.now();
+				pan.setDry(val / 50 - 1, now + .1);
+			}
+
+			window.pan = pan;
+		});
+		
 	</script>
 </body>
 </html>

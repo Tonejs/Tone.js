@@ -1,55 +1,58 @@
 <html>
 <head>
-	<title>Transport</title>
-
-	<link rel="stylesheet" type="text/css" href="../style/GUI.css">
+	<title>TRANSPORT</title>
 
 	<script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
-	<script type="text/javascript" src="../src/core/Tone.js"></script>
-	<script type="text/javascript" src="../src/component/Transport.js"></script>
-	<script type="text/javascript" src="../src/component/Player.js"></script>
-	<script type="text/javascript" src="../src/GUI/GUI.js"></script>
-	<script type="text/javascript" src="../src/GUI/GUI.Button.js"></script>
-	<script type="text/javascript" src="../src/GUI/GUI.Transport.js"></script>
+	<script type="text/javascript" src="../deps/require.js"></script>
 </head>
 <body>
-	<style type="text/css">
-		body {
-			font-family:  monospace;
-		}
-	</style>
-
+	<button>start</button>
+	<div id="output"></div>
 	<script type="text/javascript">
-		var transport = new Tone.Transport(60, 4);
-
-		var transportGUI = new Tone.GUI.Transport($("body"), transport);
-
-		var player = new Tone.Player("../audio/505/hh.mp3");
-		player.toMaster();
-		player.setVolume(1);
-		player.load(function(){
-			// transport.start(1);
+		require.config({
+			baseUrl : "../src"
 		});
 
-		transport.setTimeout(function(time){
-			console.log("a");
-		}, "0:0");
+		require(["core/Tone", "core/Master", "component/Transport", "source/Player"], function(Tone){
+			
+			var transport = new Tone.Transport(60, 4);
 
-		transport.setTimeout(function(time){
-			console.log("series");
-		}, "0:1");
+			transport.loop = true;
 
-		transport.setTimeout(function(time){
-			console.log("of");
-		}, "0:2");
+			var player = new Tone.Player("../audio/505/hh.mp3");
+			player.toMaster();
+			player.load();
 
-		transport.setTimeout(function(time){
-			console.log("timed");
-		}, 3);
+			transport.setTimeout(function(time){
+				player.start(time);
+				$("#output").html("a");
+			}, "0:0");
 
-		transport.setTimeout(function(time){
-			console.log("events");
-		}, "1m");
+			transport.setTimeout(function(time){
+				player.start(time);
+				$("#output").html("series");
+			}, "0:1");
+
+			transport.setTimeout(function(time){
+				player.start(time);
+				$("#output").html("of");
+			}, "0:2");
+
+			transport.setTimeout(function(time){
+				player.start(time);
+				$("#output").html("timed");
+			}, 3);
+
+			transport.setTimeout(function(time){
+				player.start(time);
+				$("#output").html("events");
+			}, "0:3:2");
+
+			$("button").click(function(){
+				transport.start(0);
+			})
+		});
+
 
 
 	</script>

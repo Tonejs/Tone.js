@@ -5,8 +5,7 @@
 	<link rel="stylesheet" type="text/css" href="../style/GUI.css">
 
 	<script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
-	<script type="text/javascript" src="../src/core/Tone.js"></script>
-	<script type="text/javascript" src="../src/component/Player.js"></script>
+	<script type="text/javascript" src="../deps/require.js"></script>
 </head>
 <body>
 	<style type="text/css">
@@ -43,17 +42,25 @@
 	</style>
 	<div id='Trigger'></div>
 	<script type="text/javascript">
-		var player = new Tone.Player("../audio/casio/A1.mp3");
 
-		player.toMaster();
-		
-		//once it's loaded, add the event triggers
-		player.load(function(){
-			$("#Trigger").mousedown(function(e){
-				player.loop(0, 0, .5);
-			});
-			$("#Trigger").mouseup(function(e){
-				player.stop();
+		require.config({
+			baseUrl : "../src"
+		});
+
+		require(["core/Tone", "core/Master", "source/Player"], function(Tone){
+
+			var player = new Tone.Player("../audio/casio/A1.mp3");
+
+			player.toMaster();
+			
+			//once it's loaded, add the event triggers
+			player.load(function(){
+				$("#Trigger").mousedown(function(e){
+					player.loop(0, 0, .5);
+				});
+				$("#Trigger").mouseup(function(e){
+					player.stop();
+				});
 			});
 		});
 
