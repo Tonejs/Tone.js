@@ -38,7 +38,7 @@ define(["Tone/core/Tone", "Tone/source/Oscillator", "Tone/signal/Scale"], functi
 
 
 	//set the params
-	Tone.LFO.prototype.setRate = function(rate){
+	Tone.LFO.prototype.setFrequency = function(rate){
 		this.oscillator.setFrequency(rate);
 	}
 

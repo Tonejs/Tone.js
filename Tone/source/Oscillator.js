@@ -53,7 +53,7 @@ define(["Tone/core/Tone"], function(Tone){
 	//@param {number=} rampTime
 	Tone.Oscillator.prototype.setFrequency = function(val, rampTime){
 		rampTime = this.defaultArg(rampTime, 0);
-		this.oscillator.linearRampToValueAtTime(val, rampTime);
+		this.oscillator.frequency.linearRampToValueAtTime(val, rampTime);
 	}
 
 	//@param {string} type

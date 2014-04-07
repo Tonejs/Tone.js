@@ -16,7 +16,7 @@ define(["Tone/core/Tone", "Tone/effects/Effect"], function(Tone){
 		this.chain(this.effectReturn, this.feedback, this.effectSend);
 
 		//some initial values
-		this.setDry(.5);
+		this.setFeedback(0);
 	}
 
 	Tone.extend(Tone.FeedbackEffect, Tone.Effect);
