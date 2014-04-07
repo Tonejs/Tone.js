@@ -41,8 +41,8 @@ define(["Tone/core/Tone", "Tone/source/Oscillator", "Tone/component/Panner", "To
 		this.osc.setType(type);
 	}
 
-	Tone.AutoPanner.prototype.setRate = function(rate){
-		this.osc.setRate(rate);
+	Tone.AutoPanner.prototype.setFrequency = function(rate){
+		this.osc.setFrequency(rate);
 	}
 
 	Tone.AutoPanner.prototype.setAmount = function(amount){
