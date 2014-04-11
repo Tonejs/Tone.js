@@ -58,5 +58,18 @@ define(["Tone/core/Tone", "Tone/source/Oscillator", "Tone/signal/Scale"], functi
 		this.oscillator.setType(type);
 	}
 
+	//@private
+	//pointer to the parent's connect method
+	Tone.LFO.prototype._connect = Tone.prototype.connect;
+
+	//triggers the release of the envelope
+	Tone.LFO.prototype.connect = function(param){
+		if (param instanceof AudioParam){
+			//set the initial value
+			param.value = this.scaler.min;
+		} 
+		this._connect(param);
+	}
+
 	return Tone.LFO;
 });

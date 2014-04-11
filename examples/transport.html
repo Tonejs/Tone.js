@@ -15,42 +15,52 @@
 
 		require(["Tone/core/Tone", "Tone/core/Master", "Tone/core/Transport", "Tone/source/Player"], function(Tone){
 			
-			var transport = new Tone.Transport(60, 4);
 
-			transport.loop = true;
+			Tone.Transport.loop = true;
+			Tone.Transport.setLoopStart("0:0");
+			Tone.Transport.setLoopEnd("1:0");
+			Tone.Transport.setBpm(145);
 
 			var player = new Tone.Player("../audio/505/hh.mp3");
 			player.toMaster();
 			player.load();
 
-			transport.setTimeout(function(time){
+			Tone.Transport.setTimeout(function(time){
 				player.start(time);
 				$("#output").html("a");
 			}, "0:0");
 
-			transport.setTimeout(function(time){
+			Tone.Transport.setTimeout(function(time){
 				player.start(time);
 				$("#output").html("series");
 			}, "0:1");
 
-			transport.setTimeout(function(time){
+			Tone.Transport.setTimeout(function(time){
 				player.start(time);
 				$("#output").html("of");
-			}, "0:2");
+			}, "2n");
 
-			transport.setTimeout(function(time){
+			Tone.Transport.setTimeout(function(time){
 				player.start(time);
 				$("#output").html("timed");
-			}, 3);
+			}, "0:3");
 
-			transport.setTimeout(function(time){
+			Tone.Transport.setTimeout(function(time){
 				player.start(time);
 				$("#output").html("events");
 			}, "0:3:2");
 
 			$("button").click(function(){
-				transport.start(0);
+				if (Tone.Transport.state === "playing"){
+					Tone.Transport.stop(0);
+					$("button").html("start");
+				} else {
+					Tone.Transport.start(0);
+					$("button").html("stop");
+				}
 			})
+
+			window.Tone = Tone;
 		});
 
 

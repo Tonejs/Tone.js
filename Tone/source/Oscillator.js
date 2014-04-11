@@ -15,7 +15,7 @@ define(["Tone/core/Tone"], function(Tone){
 
 		//components
 		this.oscillator = this.context.createOscillator();
-		this.oscillator.frequency.value = this.defaultArg(freq, 440);
+		this.oscillator.frequency.value = this.defaultArg(this.toFrequency(freq), 440);
 		this.oscillator.type = this.defaultArg(type, "sine");
 		//connections
 		this.chain(this.oscillator, this.output);
@@ -50,10 +50,10 @@ define(["Tone/core/Tone"], function(Tone){
 	}
 
 	//@param {number} val
-	//@param {number=} rampTime
+	//@param {Tone.Timing=} rampTime
 	Tone.Oscillator.prototype.setFrequency = function(val, rampTime){
 		rampTime = this.defaultArg(rampTime, 0);
-		this.oscillator.frequency.linearRampToValueAtTime(val, rampTime);
+		this.oscillator.frequency.linearRampToValueAtTime(this.toFrequency(val), this.toSeconds(rampTime));
 	}
 
 	//@param {string} type

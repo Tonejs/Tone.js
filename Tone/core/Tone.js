@@ -3,7 +3,7 @@
 //	TONE.js
 //
 //	(c) Yotam Mann. 2014.
-//	MIT License (MIT)
+//	The MIT License (MIT)
 ///////////////////////////////////////////////////////////////////////////////
 (function (root, factory) {
 	//can run with or without requirejs
@@ -145,23 +145,23 @@
 	//@param {AudioParam} audioParam
 	//@param {number} value
 	//@param {number=} duration (in seconds)
-	Tone.prototype.rampToValue = function(audioParam, value, duration){
+	Tone.prototype.rampToValueNow = function(audioParam, value, duration){
 		var currentValue = audioParam.value;
 		var now = this.now();
 		duration = this.defaultArg(duration, this.fadeTime);
 		audioParam.setValueAtTime(currentValue, now);
-		audioParam.linearRampToValueAtTime(value, now + duration);
+		audioParam.linearRampToValueAtTime(value, now + this.toSeconds(duration));
 	}
 
 	//ramps to value exponentially starting now
 	//@param {AudioParam} audioParam
 	//@param {number} value
 	//@param {number=} duration (in seconds)
-	Tone.prototype.exponentialRampToValue = function(audioParam, value, duration){
+	Tone.prototype.exponentialRampToValueNow = function(audioParam, value, duration){
 		var currentValue = audioParam.value;
 		var now = this.now();
 		audioParam.setValueAtTime(currentValue, now);
-		audioParam.exponentialRampToValueAtTime(value, now + duration);
+		audioParam.exponentialRampToValueAtTime(value, now + this.toSeconds(duration));
 	}
 
 	//if the given argument is undefined, go with the default
@@ -230,73 +230,169 @@
 	}
 
 	///////////////////////////////////////////////////////////////////////////
-	//	MUSICAL TIMING
+	//	TIMING
 	//
 	//	numbers are passed through
-	//	musical timing will be evaluated based on the passed in bpm
-	//	notation values are 4n = quarter, 8t = 8th note tripplet
 	//	'+' prefixed values will be "now" relative
 	///////////////////////////////////////////////////////////////////////////
 
-	//@param {number|string} timing
+	//@typedef {string|number}
+	Tone.Timing;
+
+	//@param {Tone.Timing} timing
 	//@param {number=} bpm
-	//@returns {number} the time (clock relative)
-	Tone.prototype.parseTime = function(time, bpm){
+	//@param {number=} timeSignature
+	//@returns {number} the time in seconds
+	Tone.prototype.toSeconds = function(time, bpm, timeSignature){
 		if (typeof time === "number"){
-			return time;
+			return time; //assuming that it's seconds
 		} else if (typeof time === "string"){
 			var plusTime = 0;
 			if(time.charAt(0) === "+") {
 				plusTime = this.now();
 				time = time.slice(1);				
 			} 
-			//test if it's a beat format
 			if (this.isNotation(time)){
-				return this.notationTime(time, bpm) + plusTime;
-			} else {
-				return parseFloat(time) + plusTime;
+				time = this.notationToSeconds(time, bpm, timeSignature);
+			} else if (this.isTransportTime(time)){
+				time = this.transportTimeToSeconds(time, bpm, timeSignature);
+			} else if (this.isFrequency(time)){
+				time = this.frequencyToSeconds(time);
 			}
+			return parseFloat(time) + plusTime;
 		}
 	}
 
+	//@param {number|string} timing
+	//@param {number=} bpm
+	//@param {number=} timeSignature
+	//@returns {number} the time in seconds
+	Tone.prototype.toFrequency = function(time, bpm, timeSignature){
+		return this.secondsToFrequency(this.toSeconds(time, bpm, timeSignature));
+	}
+
+	//@returns {number} the tempo
+	//meant to be overriden by Transport
+	Tone.prototype.getBpm = function(){
+		return 120;
+	}
+
+	//@returns {number} the time signature / 4
+	//meant to be overriden by Transport
+	Tone.prototype.getTimeSignature = function(){
+		return 4;
+	}
+
+	///////////////////////////////////////////////////////////////////////////
+	//	TIMING CONVERSIONS
+	///////////////////////////////////////////////////////////////////////////
+
+	//@param {string} note
+	//@returns {boolean} if the value is in notation form
 	Tone.prototype.isNotation = (function(){
-		var notationFormat = new RegExp(/[0-9]+[mnt]$/);
+		var notationFormat = new RegExp(/[0-9]+[mnt]$/i);
 		return function(note){
 			return notationFormat.test(note);
 		}
 	})();
 
-	//@param {string} notation
+	//@param {string} transportTime
+	//@returns {boolean} if the value is in notation form
+	Tone.prototype.isTransportTime = (function(){
+		var transportTimeFormat = new RegExp(/^\d+(\.\d+)?:\d+(\.\d+)?(:\d+(\.\d+)?)?$/);
+		return function(transportTime){
+			return transportTimeFormat.test(transportTime);
+		}
+	})();
+
+	//@param {string} freq
+	//@returns {boolean} if the value is in notation form
+	Tone.prototype.isFrequency = (function(){
+		var freqFormat = new RegExp(/[0-9]+hz$/i);
+		return function(freq){
+			return freqFormat.test(freq);
+		}
+	})();
+
+	// 4n == quarter note; 16t == sixteenth note triplet; 1m == 1 measure
+	//@param {string} notation 
 	//@param {number=} bpm
 	//@param {number} timeSignature (default 4)
 	//@returns {number} time duration of notation
-	Tone.prototype.notationTime = function(notation, bpm, timeSignature){
-		bpm = this.defaultArg(bpm, 120);
+	Tone.prototype.notationToSeconds = function(notation, bpm, timeSignature){
+		bpm = this.defaultArg(bpm, this.getBpm());
+		timeSignature = this.defaultArg(timeSignature, this.getTimeSignature());
 		var beatTime = (60 / bpm);
-		return beatTime * this.notationToBeat(notation, timeSignature);
-	}
-
-	//@param {string} notation
-	//@param {number} timeSignature (default 4)
-	// 1m = 1 measure in 4/4 = returns 4
-	// 4n always returns 1
-	//@returns {number} the subdivison of a beat
-	Tone.prototype.notationToBeat = function(notation, timeSignature){
-		timeSignature = this.defaultArg(timeSignature, 4);
 		var subdivision = parseInt(notation, 10);
+		var beats = 0;
 		if (subdivision === 0){
-			return 0;
+			beats = 0;
 		}
 		var lastLetter = notation.slice(-1);
 		if (lastLetter === "t"){
-			return (4 / subdivision) * 2/3
+			beats = (4 / subdivision) * 2/3
 		} else if (lastLetter === 'n'){
-			return 4 / subdivision
+			beats = 4 / subdivision
 		} else if (lastLetter === 'm'){
-			return subdivision * timeSignature;
+			beats = subdivision * timeSignature;
 		} else {
-			return 0;
+			beats = 0;
 		}
+		return beatTime * beats;
+	}
+
+	// 4:2:3 == 4 measures + 2 quarters + 3 sixteenths
+	//@param {string} transportTime
+	//@param {number=} bpm
+	//@param {number=} timeSignature (default 4)
+	//@returns {number} time duration of notation
+	Tone.prototype.transportTimeToSeconds = function(transportTime, bpm, timeSignature){
+		bpm = this.defaultArg(bpm, this.getBpm());
+		timeSignature = this.defaultArg(timeSignature, this.getTimeSignature());
+		var measures = 0;
+		var quarters = 0;
+		var sixteenths = 0;
+		var split = transportTime.split(":");
+		if (split.length === 2){
+			measures = parseFloat(split[0]);
+			quarters = parseFloat(split[1]);
+		} else if (split.length === 1){
+			quarters = parseFloat(split[0]);
+		} else if (split.length === 3){
+			measures = parseFloat(split[0]);
+			quarters = parseFloat(split[1]);
+			sixteenths = parseFloat(split[2]);
+		}
+		var beats = (measures * timeSignature + quarters + sixteenths / 4);
+		return beats * this.notationToSeconds("4n", bpm, timeSignature);
+	}
+
+	//@param {string | number} freq (i.e. 440hz)
+	//@returns {number} the time of a single cycle
+	Tone.prototype.frequencyToSeconds = function(freq){
+		return 1 / parseFloat(freq);
+	}
+
+	//@param {number} seconds
+	//@param {number=} bpm
+	//@param {number=}
+	//@returns {string} the seconds in transportTime
+	Tone.prototype.secondsToTransportTime = function(seconds, bpm, timeSignature){
+		bpm = this.defaultArg(bpm, this.getBpm());
+		timeSignature = this.defaultArg(timeSignature, this.getTimeSignature());
+		var quarterTime = this.notationToSeconds("4n", bpm, timeSignature);
+		var quarters = seconds / quarterTime;
+		var measures = parseInt(quarters / timeSignature, 10);
+		var sixteenths = parseInt((quarters % 1) * 4, 10);
+		quarters = parseInt(quarters, 10) % timeSignature;
+		var progress = [measures, quarters, sixteenths];
+		return progress.join(":");
+	}
+
+	//@param {number} seconds
+	//@returns {number} the frequency
+	Tone.prototype.secondsToFrequency = function(seconds){
+		return 1/seconds
 	}
 
 	///////////////////////////////////////////////////////////////////////////

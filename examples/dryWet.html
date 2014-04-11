@@ -62,8 +62,7 @@
 			var range = $("input")[0];
 			range.onchange = function(){
 				var val = range.value;
-				var now = dryWet.now();
-				dryWet.setWet(val/50 - 1);
+				dryWet.setWet(val/50 - 1, 0);
 			}
 			$("button").click(function(){
 				sine.start(0);

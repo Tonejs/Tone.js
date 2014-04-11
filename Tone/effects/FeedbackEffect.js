@@ -22,7 +22,7 @@ define(["Tone/core/Tone", "Tone/effects/Effect"], function(Tone){
 	Tone.extend(Tone.FeedbackEffect, Tone.Effect);
 
 	Tone.FeedbackEffect.prototype.setFeedback = function(fback){
-		this.rampToValue(this.feedback.gain, fback);
+		this.rampToValueNow(this.feedback.gain, fback);
 	}
 
 	return Tone.FeedbackEffect;

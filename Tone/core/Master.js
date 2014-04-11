@@ -22,9 +22,6 @@ define(["Tone/core/Tone"], function(Tone){
 
 	Tone.extend(Master);
 
-	//a single master output
-	Tone.Master = new Master();
-
 	///////////////////////////////////////////////////////////////////////////
 	//	Add toMaster methods
 	///////////////////////////////////////////////////////////////////////////
@@ -37,6 +34,9 @@ define(["Tone/core/Tone"], function(Tone){
 	AudioNode.prototype.toMaster = function(){
 		this.connect(Tone.Master);
 	}
+
+	//a single master output
+	Tone.Master = new Master();
 
 	return Tone.Master;
 })

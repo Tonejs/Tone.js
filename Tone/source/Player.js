@@ -59,7 +59,7 @@ define(["Tone/core/Tone"], function(Tone){
 			this.source = this.context.createBufferSource();
 			this.source.buffer = this.buffer;
 			this.source.loop = false;
-			this.source.start(startTime, offset, duration);
+			this.source.start(this.toSeconds(startTime), this.toSeconds(offset), this.toSeconds(duration));
 			this.source.onended = this._onended.bind(this);
 			var gain = this.context.createGain();
 			gain.gain.value = volume;
@@ -79,8 +79,8 @@ define(["Tone/core/Tone"], function(Tone){
 			//make/play the source
 			this.start(startTime, offset, duration, volume);
 			this.source.loop = true;
-			this.source.loopStart = loopStart;
-			this.source.loopEnd = loopEnd;
+			this.source.loopStart = this.toSeconds(loopStart);
+			this.source.loopEnd = this.toSeconds(loopEnd);
 		}
 	}
 
@@ -88,7 +88,7 @@ define(["Tone/core/Tone"], function(Tone){
 	Tone.Player.prototype.stop = function(stopTime){
 		if (this.buffer && this.source){
 			stopTime = this.defaultArg(stopTime, this.now());
-			this.source.stop(stopTime);
+			this.source.stop(this.toSeconds(stopTime));
 		}
 	}
 

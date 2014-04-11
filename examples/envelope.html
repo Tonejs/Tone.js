@@ -2,8 +2,6 @@
 <head>
 	<title>Envelope</title>
 
-	<link rel="stylesheet" type="text/css" href="../style/GUI.css">
-
 	<script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
 	<script type="text/javascript" src="../deps/require.js"></script>
 
@@ -54,8 +52,9 @@
 			var env = new Tone.Envelope(.05, .01, .7, .4);
 			var noise = new Tone.Noise();
 			
-			noise.connect(env);
-			env.toMaster();
+			noise.toMaster();
+			//connect the evnelope to the output gain
+			env.connect(noise.output.gain);
 
 			$("#Trigger").bind("mousedown", function(e){
 				env.triggerAttack();
@@ -64,16 +63,6 @@
 				env.triggerRelease();
 			});
 
-			var noise = new Tone.Noise("brown");
-			var lfo = new Tone.LFO(.5);
-			
-			noise.toMaster();
-			noise.output.gain.value = 0;
-			lfo.connect(noise.output.gain);
-
-			$("button").click(function(){
-				lfo.start();
-			})
 		});
 	</script>
 </body>

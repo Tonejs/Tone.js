@@ -37,9 +37,11 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Scale"], function(T
 
 	Tone.extend(Tone.DryWet);
 
+	// @param {number} val
+	// @param {Tone.Timing} rampTime
 	Tone.DryWet.prototype.setDry = function(val, rampTime){
 		rampTime = this.defaultArg(rampTime, 0);
-		this.control.linearRampToValueAtTime(val, rampTime);
+		this.control.linearRampToValueAtTime(val, this.toSeconds(rampTime));
 	}
 
 	Tone.DryWet.prototype.setWet = function(val, rampTime){

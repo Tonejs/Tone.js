@@ -44,37 +44,53 @@ define(["Tone/core/Tone"], function(Tone){
 		this.signal.curve = curve;
 	}
 
-	Tone.Signal.prototype.getValue = function(val){
+	//@returns {number}
+	Tone.Signal.prototype.getValue = function(){
 		return this.scalar.gain.value;
 	}
 
+	//@param {number} val
 	Tone.Signal.prototype.setValue = function(val){
 		this.scalar.gain.value = val;
 	}
 
 	//all of the automation curves are available
+	//@param {number} value
+	//@param {Tone.Timing} time
 	Tone.Signal.prototype.setValueAtTime = function(value, time){
-		this.scalar.gain.setValueAtTime(value, time);
+
+		this.scalar.gain.setValueAtTime(value, this.toSeconds(time));
 	}
 
+	//@param {number} value
+	//@param {Tone.Timing} endTime
 	Tone.Signal.prototype.linearRampToValueAtTime = function(value, endTime){
-		this.scalar.gain.linearRampToValueAtTime(value, endTime);
+		this.scalar.gain.linearRampToValueAtTime(value, this.toSeconds(endTime));
 	}
 
+	//@param {number} value
+	//@param {Tone.Timing} endTime
 	Tone.Signal.prototype.exponentialRampToValueAtTime = function(value, endTime){
-		this.scalar.gain.exponentialRampToValueAtTime(value, endTime);
+		this.scalar.gain.exponentialRampToValueAtTime(value, this.toSeconds(endTime));
 	}
 
+	//@param {number} value
+	//@param {Tone.Timing} startTime
+	//@param {number} timeConstant
 	Tone.Signal.prototype.setTargetAtTime = function(target, startTime, timeConstant){
-		this.scalar.gain.setTargetAtTime(target, startTime, timeConstant);
+		this.scalar.gain.setTargetAtTime(target, this.toSeconds(startTime), timeConstant);
 	}
 
+	//@param {number} value
+	//@param {Tone.Timing} startTime
+	//@param {Tone.Timing} duration
 	Tone.Signal.prototype.setValueCurveAtTime = function(values, startTime, duration){
-		this.scalar.gain.setValueCurveAtTime(values, startTime, duration);
+		this.scalar.gain.setValueCurveAtTime(values, this.toSeconds(startTime), this.toSeconds(duration));
 	}
 
+	//@param {Tone.Timing} startTime
 	Tone.Signal.prototype.cancelScheduledValues = function(startTime){
-		this.scalar.gain.cancelScheduledValues(startTime);
+		this.scalar.gain.cancelScheduledValues(this.toSeconds(startTime));
 	}
 
 	return Tone.Signal;

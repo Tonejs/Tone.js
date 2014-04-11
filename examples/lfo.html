@@ -16,10 +16,9 @@
 		require(["Tone/core/Tone", "Tone/core/Master", "Tone/source/Noise", "Tone/component/LFO"], function(Tone){
 
 			var noise = new Tone.Noise("brown");
-			var lfo = new Tone.LFO(.5);
+			var lfo = new Tone.LFO("4n");
 			
 			noise.toMaster();
-			noise.output.gain.value = 0;
 			lfo.connect(noise.output.gain);
 
 			$("button").click(function(){

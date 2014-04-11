@@ -3,6 +3,9 @@
 	<title>SIGNAL PROCESSING</title>
 
 	<script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
+	<!--
+	<script type="text/javascript" src='../build/Tone.js'></script>
+	-->
 	<script type="text/javascript" src="../deps/require.js"></script>
 </head>
 <body>
@@ -62,8 +65,7 @@
 			var range = $("input")[0];
 			range.onchange = function(){
 				var val = range.value;
-				var now = signal.now();
-				signal.linearRampToValueAtTime(val / 50 - 1, now + .1);
+				signal.linearRampToValueAtTime(val / 50 - 1, "+.1");
 			}
 			
 			window.Tone = Tone;

@@ -4,7 +4,7 @@
 //	TONE.js
 //
 //	(c) Yotam Mann. 2014.
-//	MIT License (MIT)
+//	The MIT License (MIT)
 ///////////////////////////////////////////////////////////////////////////////
 (function (root, factory) {
 	//can run with or without requirejs
@@ -146,23 +146,23 @@
 	//@param {AudioParam} audioParam
 	//@param {number} value
 	//@param {number=} duration (in seconds)
-	Tone.prototype.rampToValue = function(audioParam, value, duration){
+	Tone.prototype.rampToValueNow = function(audioParam, value, duration){
 		var currentValue = audioParam.value;
 		var now = this.now();
 		duration = this.defaultArg(duration, this.fadeTime);
 		audioParam.setValueAtTime(currentValue, now);
-		audioParam.linearRampToValueAtTime(value, now + duration);
+		audioParam.linearRampToValueAtTime(value, now + this.toSeconds(duration));
 	}
 
 	//ramps to value exponentially starting now
 	//@param {AudioParam} audioParam
 	//@param {number} value
 	//@param {number=} duration (in seconds)
-	Tone.prototype.exponentialRampToValue = function(audioParam, value, duration){
+	Tone.prototype.exponentialRampToValueNow = function(audioParam, value, duration){
 		var currentValue = audioParam.value;
 		var now = this.now();
 		audioParam.setValueAtTime(currentValue, now);
-		audioParam.exponentialRampToValueAtTime(value, now + duration);
+		audioParam.exponentialRampToValueAtTime(value, now + this.toSeconds(duration));
 	}
 
 	//if the given argument is undefined, go with the default
@@ -231,73 +231,169 @@
 	}
 
 	///////////////////////////////////////////////////////////////////////////
-	//	MUSICAL TIMING
+	//	TIMING
 	//
 	//	numbers are passed through
-	//	musical timing will be evaluated based on the passed in bpm
-	//	notation values are 4n = quarter, 8t = 8th note tripplet
 	//	'+' prefixed values will be "now" relative
 	///////////////////////////////////////////////////////////////////////////
 
-	//@param {number|string} timing
+	//@typedef {string|number}
+	Tone.Timing;
+
+	//@param {Tone.Timing} timing
 	//@param {number=} bpm
-	//@returns {number} the time (clock relative)
-	Tone.prototype.parseTime = function(time, bpm){
+	//@param {number=} timeSignature
+	//@returns {number} the time in seconds
+	Tone.prototype.toSeconds = function(time, bpm, timeSignature){
 		if (typeof time === "number"){
-			return time;
+			return time; //assuming that it's seconds
 		} else if (typeof time === "string"){
 			var plusTime = 0;
 			if(time.charAt(0) === "+") {
 				plusTime = this.now();
 				time = time.slice(1);				
 			} 
-			//test if it's a beat format
 			if (this.isNotation(time)){
-				return this.notationTime(time, bpm) + plusTime;
-			} else {
-				return parseFloat(time) + plusTime;
+				time = this.notationToSeconds(time, bpm, timeSignature);
+			} else if (this.isTransportTime(time)){
+				time = this.transportTimeToSeconds(time, bpm, timeSignature);
+			} else if (this.isFrequency(time)){
+				time = this.frequencyToSeconds(time);
 			}
+			return parseFloat(time) + plusTime;
 		}
 	}
 
+	//@param {number|string} timing
+	//@param {number=} bpm
+	//@param {number=} timeSignature
+	//@returns {number} the time in seconds
+	Tone.prototype.toFrequency = function(time, bpm, timeSignature){
+		return this.secondsToFrequency(this.toSeconds(time, bpm, timeSignature));
+	}
+
+	//@returns {number} the tempo
+	//meant to be overriden by Transport
+	Tone.prototype.getBpm = function(){
+		return 120;
+	}
+
+	//@returns {number} the time signature / 4
+	//meant to be overriden by Transport
+	Tone.prototype.getTimeSignature = function(){
+		return 4;
+	}
+
+	///////////////////////////////////////////////////////////////////////////
+	//	TIMING CONVERSIONS
+	///////////////////////////////////////////////////////////////////////////
+
+	//@param {string} note
+	//@returns {boolean} if the value is in notation form
 	Tone.prototype.isNotation = (function(){
-		var notationFormat = new RegExp(/[0-9]+[mnt]$/);
+		var notationFormat = new RegExp(/[0-9]+[mnt]$/i);
 		return function(note){
 			return notationFormat.test(note);
 		}
 	})();
 
-	//@param {string} notation
+	//@param {string} transportTime
+	//@returns {boolean} if the value is in notation form
+	Tone.prototype.isTransportTime = (function(){
+		var transportTimeFormat = new RegExp(/^\d+(\.\d+)?:\d+(\.\d+)?(:\d+(\.\d+)?)?$/);
+		return function(transportTime){
+			return transportTimeFormat.test(transportTime);
+		}
+	})();
+
+	//@param {string} freq
+	//@returns {boolean} if the value is in notation form
+	Tone.prototype.isFrequency = (function(){
+		var freqFormat = new RegExp(/[0-9]+hz$/i);
+		return function(freq){
+			return freqFormat.test(freq);
+		}
+	})();
+
+	// 4n == quarter note; 16t == sixteenth note triplet; 1m == 1 measure
+	//@param {string} notation 
 	//@param {number=} bpm
 	//@param {number} timeSignature (default 4)
 	//@returns {number} time duration of notation
-	Tone.prototype.notationTime = function(notation, bpm, timeSignature){
-		bpm = this.defaultArg(bpm, 120);
+	Tone.prototype.notationToSeconds = function(notation, bpm, timeSignature){
+		bpm = this.defaultArg(bpm, this.getBpm());
+		timeSignature = this.defaultArg(timeSignature, this.getTimeSignature());
 		var beatTime = (60 / bpm);
-		return beatTime * this.notationToBeat(notation, timeSignature);
-	}
-
-	//@param {string} notation
-	//@param {number} timeSignature (default 4)
-	// 1m = 1 measure in 4/4 = returns 4
-	// 4n always returns 1
-	//@returns {number} the subdivison of a beat
-	Tone.prototype.notationToBeat = function(notation, timeSignature){
-		timeSignature = this.defaultArg(timeSignature, 4);
 		var subdivision = parseInt(notation, 10);
+		var beats = 0;
 		if (subdivision === 0){
-			return 0;
+			beats = 0;
 		}
 		var lastLetter = notation.slice(-1);
 		if (lastLetter === "t"){
-			return (4 / subdivision) * 2/3
+			beats = (4 / subdivision) * 2/3
 		} else if (lastLetter === 'n'){
-			return 4 / subdivision
+			beats = 4 / subdivision
 		} else if (lastLetter === 'm'){
-			return subdivision * timeSignature;
+			beats = subdivision * timeSignature;
 		} else {
-			return 0;
+			beats = 0;
 		}
+		return beatTime * beats;
+	}
+
+	// 4:2:3 == 4 measures + 2 quarters + 3 sixteenths
+	//@param {string} transportTime
+	//@param {number=} bpm
+	//@param {number=} timeSignature (default 4)
+	//@returns {number} time duration of notation
+	Tone.prototype.transportTimeToSeconds = function(transportTime, bpm, timeSignature){
+		bpm = this.defaultArg(bpm, this.getBpm());
+		timeSignature = this.defaultArg(timeSignature, this.getTimeSignature());
+		var measures = 0;
+		var quarters = 0;
+		var sixteenths = 0;
+		var split = transportTime.split(":");
+		if (split.length === 2){
+			measures = parseFloat(split[0]);
+			quarters = parseFloat(split[1]);
+		} else if (split.length === 1){
+			quarters = parseFloat(split[0]);
+		} else if (split.length === 3){
+			measures = parseFloat(split[0]);
+			quarters = parseFloat(split[1]);
+			sixteenths = parseFloat(split[2]);
+		}
+		var beats = (measures * timeSignature + quarters + sixteenths / 4);
+		return beats * this.notationToSeconds("4n", bpm, timeSignature);
+	}
+
+	//@param {string | number} freq (i.e. 440hz)
+	//@returns {number} the time of a single cycle
+	Tone.prototype.frequencyToSeconds = function(freq){
+		return 1 / parseFloat(freq);
+	}
+
+	//@param {number} seconds
+	//@param {number=} bpm
+	//@param {number=}
+	//@returns {string} the seconds in transportTime
+	Tone.prototype.secondsToTransportTime = function(seconds, bpm, timeSignature){
+		bpm = this.defaultArg(bpm, this.getBpm());
+		timeSignature = this.defaultArg(timeSignature, this.getTimeSignature());
+		var quarterTime = this.notationToSeconds("4n", bpm, timeSignature);
+		var quarters = seconds / quarterTime;
+		var measures = parseInt(quarters / timeSignature, 10);
+		var sixteenths = parseInt((quarters % 1) * 4, 10);
+		quarters = parseInt(quarters, 10) % timeSignature;
+		var progress = [measures, quarters, sixteenths];
+		return progress.join(":");
+	}
+
+	//@param {number} seconds
+	//@returns {number} the frequency
+	Tone.prototype.secondsToFrequency = function(seconds){
+		return 1/seconds
 	}
 
 	///////////////////////////////////////////////////////////////////////////
@@ -368,37 +464,53 @@ define('Tone/signal/Signal',["Tone/core/Tone"], function(Tone){
 		this.signal.curve = curve;
 	}
 
-	Tone.Signal.prototype.getValue = function(val){
+	//@returns {number}
+	Tone.Signal.prototype.getValue = function(){
 		return this.scalar.gain.value;
 	}
 
+	//@param {number} val
 	Tone.Signal.prototype.setValue = function(val){
 		this.scalar.gain.value = val;
 	}
 
 	//all of the automation curves are available
+	//@param {number} value
+	//@param {Tone.Timing} time
 	Tone.Signal.prototype.setValueAtTime = function(value, time){
-		this.scalar.gain.setValueAtTime(value, time);
+
+		this.scalar.gain.setValueAtTime(value, this.toSeconds(time));
 	}
 
+	//@param {number} value
+	//@param {Tone.Timing} endTime
 	Tone.Signal.prototype.linearRampToValueAtTime = function(value, endTime){
-		this.scalar.gain.linearRampToValueAtTime(value, endTime);
+		this.scalar.gain.linearRampToValueAtTime(value, this.toSeconds(endTime));
 	}
 
+	//@param {number} value
+	//@param {Tone.Timing} endTime
 	Tone.Signal.prototype.exponentialRampToValueAtTime = function(value, endTime){
-		this.scalar.gain.exponentialRampToValueAtTime(value, endTime);
+		this.scalar.gain.exponentialRampToValueAtTime(value, this.toSeconds(endTime));
 	}
 
+	//@param {number} value
+	//@param {Tone.Timing} startTime
+	//@param {number} timeConstant
 	Tone.Signal.prototype.setTargetAtTime = function(target, startTime, timeConstant){
-		this.scalar.gain.setTargetAtTime(target, startTime, timeConstant);
+		this.scalar.gain.setTargetAtTime(target, this.toSeconds(startTime), timeConstant);
 	}
 
+	//@param {number} value
+	//@param {Tone.Timing} startTime
+	//@param {Tone.Timing} duration
 	Tone.Signal.prototype.setValueCurveAtTime = function(values, startTime, duration){
-		this.scalar.gain.setValueCurveAtTime(values, startTime, duration);
+		this.scalar.gain.setValueCurveAtTime(values, this.toSeconds(startTime), this.toSeconds(duration));
 	}
 
+	//@param {Tone.Timing} startTime
 	Tone.Signal.prototype.cancelScheduledValues = function(startTime){
-		this.scalar.gain.cancelScheduledValues(startTime);
+		this.scalar.gain.cancelScheduledValues(this.toSeconds(startTime));
 	}
 
 	return Tone.Signal;
@@ -513,9 +625,11 @@ define('Tone/component/DryWet',["Tone/core/Tone", "Tone/signal/Signal", "Tone/si
 
 	Tone.extend(Tone.DryWet);
 
+	// @param {number} val
+	// @param {Tone.Timing} rampTime
 	Tone.DryWet.prototype.setDry = function(val, rampTime){
 		rampTime = this.defaultArg(rampTime, 0);
-		this.control.linearRampToValueAtTime(val, rampTime);
+		this.control.linearRampToValueAtTime(val, this.toSeconds(rampTime));
 	}
 
 	Tone.DryWet.prototype.setWet = function(val, rampTime){
@@ -532,84 +646,105 @@ define('Tone/component/DryWet',["Tone/core/Tone", "Tone/signal/Signal", "Tone/si
 //	ADR envelope generator attaches to an AudioParam
 ///////////////////////////////////////////////////////////////////////////////
 
-define('Tone/component/Envelope',["Tone/core/Tone"], function(Tone){
+define('Tone/component/Envelope',["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 
 
-	Tone.Envelope = function(attack, decay, sustain, release, audioParam, minOutput, maxOutput){
+	Tone.Envelope = function(attack, decay, sustain, release, minOutput, maxOutput){
 		//extend Unit
 		Tone.call(this);
 
-		//pass audio through
-		this.input.connect(this.output);
-
 		//set the parameters
-		this.param = this.defaultArg(audioParam, this.input.gain);
 		this.attack = this.defaultArg(attack, .01);
 		this.decay = this.defaultArg(decay, .1);
 		this.release = this.defaultArg(release, 1);
-		this.sustain = this.defaultArg(.5);
+		this.sustain = this.defaultArg(sustain, .5);
 
 		// this.setSustain(this.defaultArg(sustain, .1));
 		this.min = this.defaultArg(minOutput, 0);
 		this.max = this.defaultArg(maxOutput, 1);
 		
-		//set the initial value
-		this.param.value = this.min;
+		//the control signal
+		this.control = new Tone.Signal(this.min);
+
+		//connections
+		this.chain(this.control, this.output);
 	}
 
 	Tone.extend(Tone.Envelope, Tone);
 
 	//attack->decay->sustain
+	//@param {Tone.Timing} time
 	Tone.Envelope.prototype.triggerAttack = function(time){
 		var startVal = this.min;
 		if (!time){
-			startVal = this.param.value;
+			startVal = this.control.getValue();
 		}
 		time = this.defaultArg(time, this.now());
-		this.param.cancelScheduledValues(time);
-		this.param.setValueAtTime(startVal, time);
-		this.param.linearRampToValueAtTime(this.max, time + this.attack);
+		time = this.toSeconds(time);
+		this.control.cancelScheduledValues(time);
+		this.control.setValueAtTime(startVal, time);
+		var attackTime = this.toSeconds(this.attack);
+		var decayTime = this.toSeconds(this.decay);
+		this.control.linearRampToValueAtTime(this.max, time + attackTime);
 		var sustainVal = (this.max - this.min) * this.sustain + this.min;
-		this.param.linearRampToValueAtTime(sustainVal, time + this.decay + this.attack);
+		this.control.linearRampToValueAtTime(sustainVal, time + attackTime + decayTime);
 	}
 
 	//attack->decay->sustain
 	Tone.Envelope.prototype.triggerAttackExp = function(time){
 		var startVal = this.min;
 		if (!time){
-			startVal = this.param.value;
+			startVal = this.control.getValue();
 		}
 		time = this.defaultArg(time, this.now());
-		this.param.cancelScheduledValues(time);
-		this.param.setValueAtTime(startVal, time);
-		this.param.exponentialRampToValueAtTime(this.max, time + this.attack);
+		time = this.toSeconds(time);
+		this.control.cancelScheduledValues(time);
+		this.control.setValueAtTime(startVal, time);
+		var attackTime = this.toSeconds(this.attack);
+		var decayTime = this.toSeconds(this.decay);
+		this.control.linearRampToValueAtTime(this.max, time + attackTime);
 		var sustainVal = (this.max - this.min) * this.sustain + this.min;
-		this.param.exponentialRampToValueAtTime(sustainVal, time + this.decay + this.attack);
+		this.control.exponentialRampToValueAtTime(sustainVal, time + attackTime + decayTime);
 	}
 
 	//triggers the release of the envelope
 	Tone.Envelope.prototype.triggerRelease = function(time){
-		var startVal = this.param.value;
+		var startVal = this.control.getValue();
 		if (time){
 			startVal = (this.max - this.min) * this.sustain + this.min;
 		}
 		time = this.defaultArg(time, this.now());
-		this.param.cancelScheduledValues(time);
-		this.param.setValueAtTime(startVal, time);
-		this.param.linearRampToValueAtTime(this.min, time + this.release);
+		time = this.toSeconds(time);
+		this.control.cancelScheduledValues(time);
+		this.control.setValueAtTime(startVal, time);
+		this.control.linearRampToValueAtTime(this.min, time + this.toSeconds(this.release));
 	}
 
 
 	//triggers the release of the envelope
 	Tone.Envelope.prototype.triggerReleaseExp = function(time){
-		var startVal = this.param.value;
+		var startVal = this.control.getValue();
 		if (time){
 			startVal = (this.max - this.min) * this.sustain + this.min;
 		}
 		time = this.defaultArg(time, this.now());
-		this.param.cancelScheduledValues(time);
-		this.param.setValueAtTime(startVal, time);
-		this.param.exponentialRampToValueAtTime(this.min, time + this.release);
+		time = this.toSeconds(time);
+		this.control.cancelScheduledValues(time);
+		this.control.setValueAtTime(startVal, time);
+		this.control.exponentialRampToValueAtTime(this.min, time + this.toSeconds(this.release));
+	}
+
+	//@private
+	//pointer to the parent's connect method
+	Tone.Envelope.prototype._connect = Tone.prototype.connect;
+
+	//triggers the release of the envelope
+	Tone.Envelope.prototype.connect = function(param){
+		if (param instanceof AudioParam){
+			//set the initial value
+			param.value = this.min;
+		} 
+		this._connect(param);
 	}
 
 	return Tone.Envelope;
@@ -632,7 +767,7 @@ define('Tone/source/Oscillator',["Tone/core/Tone"], function(Tone){
 
 		//components
 		this.oscillator = this.context.createOscillator();
-		this.oscillator.frequency.value = this.defaultArg(freq, 440);
+		this.oscillator.frequency.value = this.defaultArg(this.toFrequency(freq), 440);
 		this.oscillator.type = this.defaultArg(type, "sine");
 		//connections
 		this.chain(this.oscillator, this.output);
@@ -667,10 +802,10 @@ define('Tone/source/Oscillator',["Tone/core/Tone"], function(Tone){
 	}
 
 	//@param {number} val
-	//@param {number=} rampTime
+	//@param {Tone.Timing=} rampTime
 	Tone.Oscillator.prototype.setFrequency = function(val, rampTime){
 		rampTime = this.defaultArg(rampTime, 0);
-		this.oscillator.linearRampToValueAtTime(val, rampTime);
+		this.oscillator.frequency.linearRampToValueAtTime(this.toFrequency(val), this.toSeconds(rampTime));
 	}
 
 	//@param {string} type
@@ -720,7 +855,7 @@ define('Tone/component/LFO',["Tone/core/Tone", "Tone/source/Oscillator", "Tone/s
 
 
 	//set the params
-	Tone.LFO.prototype.setRate = function(rate){
+	Tone.LFO.prototype.setFrequency = function(rate){
 		this.oscillator.setFrequency(rate);
 	}
 
@@ -738,6 +873,19 @@ define('Tone/component/LFO',["Tone/core/Tone", "Tone/source/Oscillator", "Tone/s
 	//@param {string | number} type ('sine', 'square', 'sawtooth', 'triangle', 'custom');
 	Tone.LFO.prototype.setType = function(type){
 		this.oscillator.setType(type);
+	}
+
+	//@private
+	//pointer to the parent's connect method
+	Tone.LFO.prototype._connect = Tone.prototype.connect;
+
+	//triggers the release of the envelope
+	Tone.LFO.prototype.connect = function(param){
+		if (param instanceof AudioParam){
+			//set the initial value
+			param.value = this.scaler.min;
+		} 
+		this._connect(param);
 	}
 
 	return Tone.LFO;
@@ -766,9 +914,6 @@ define('Tone/core/Master',["Tone/core/Tone"], function(Tone){
 
 	Tone.extend(Master);
 
-	//a single master output
-	Tone.Master = new Master();
-
 	///////////////////////////////////////////////////////////////////////////
 	//	Add toMaster methods
 	///////////////////////////////////////////////////////////////////////////
@@ -781,6 +926,9 @@ define('Tone/core/Master',["Tone/core/Tone"], function(Tone){
 	AudioNode.prototype.toMaster = function(){
 		this.connect(Tone.Master);
 	}
+
+	//a single master output
+	Tone.Master = new Master();
 
 	return Tone.Master;
 });
@@ -884,7 +1032,7 @@ define('Tone/component/Meter',["Tone/core/Tone", "Tone/core/Master"], function(T
 });
 ///////////////////////////////////////////////////////////////////////////////
 //
-//	MONO
+//	MERGE
 //
 //	Merge a left and a right into a single left/right channel
 ///////////////////////////////////////////////////////////////////////////////
@@ -972,45 +1120,43 @@ function(Tone){
 
 define('Tone/core/Transport',["Tone/core/Tone", "Tone/core/Master"], function(Tone){
 
-	//@param {number=} bpm
-	//@param {number=} timeSignature (over 4);
-	Tone.Transport = function(bpm, timeSignature){
+	var Transport = function(){
 
 		//components
 		this.oscillator = null;
 		this.jsNode = this.context.createScriptProcessor(this.bufferSize, 1, 1);
 		this.jsNode.onaudioprocess = this._processBuffer.bind(this);
-		this.timeSignature = this.defaultArg(timeSignature, 4);
+
 
 		//privates
+		this._timeSignature = 4;//defaults to 4/4
 		this._tatum = 12; //subdivisions of the quarter note
 		this._ticks = 0; //the number of tatums
 		this._upTick = false; // if the wave is on the rise or fall
-		this._bpm = bpm;
-
-		//@type {Array.<Tone.Transport.Interval>}
+		this._bpm = 120; //defaults to 120
+		//@type {Array.<Transport.Interval>}
 		this._intervals = [];
-		//@type {Array.<Tone.Transport.Timeout>}
+		//@type {Array.<Transport.Timeout>}
 		this._timeouts = [];
 		this._timeoutProgress = 0;
 
-		this.loopStart = 0;
-		this.loopEnd = this._tatum * 4;
+		//public
+		this._loopStart = 0;
+		this._loopEnd = this._tatum * 4;
 		this.loop = false;
-
-		this.state = Tone.Transport.state.stopped;
+		this.state = Transport.state.stopped;
 
 		//so it doesn't get garbage collected
 		this.jsNode.toMaster();
 	}
 
-	Tone.extend(Tone.Transport, Tone);
+	Tone.extend(Transport);
 
 	///////////////////////////////////////////////////////////////////////////////
 	//	INTERNAL METHODS
 	///////////////////////////////////////////////////////////////////////////////
 
-	Tone.Transport.prototype._processBuffer = function(event){
+	Transport.prototype._processBuffer = function(event){
 		var now = this.defaultArg(event.playbackTime, this.now());
 		var bufferSize = this.jsNode.bufferSize;
 		var endTime = now + this.samplesToSeconds(bufferSize);
@@ -1029,7 +1175,7 @@ define('Tone/core/Transport',["Tone/core/Tone", "Tone/core/Master"], function(To
 	}
 
 	//@param {number} tickTime
-	Tone.Transport.prototype._processTick = function(tickTime){
+	Transport.prototype._processTick = function(tickTime){
 		//do the looping stuff
 		var ticks = this._ticks;
 		//do the intervals
@@ -1037,14 +1183,14 @@ define('Tone/core/Transport',["Tone/core/Tone", "Tone/core/Master"], function(To
 		this._processTimeouts(ticks, tickTime);
 		this._ticks = ticks + 1;
 		if (this.loop){
-			if (this._ticks === this.loopEnd){
-				this._setTicks(this.loopStart);
+			if (this._ticks === this._loopEnd){
+				this._setTicks(this._loopStart);
 			}
 		}
 	}
 
 	//jump to a specific tick in the timeline
-	Tone.Transport.prototype._setTicks = function(ticks){
+	Transport.prototype._setTicks = function(ticks){
 		this._ticks = ticks;
 		for (var i = 0; i < this._timeouts.length; i++){
 			var timeout = this._timeouts[i];
@@ -1061,7 +1207,7 @@ define('Tone/core/Transport',["Tone/core/Tone", "Tone/core/Master"], function(To
 
 
 	//processes and invokes the intervals
-	Tone.Transport.prototype._processIntervals = function(ticks, time){
+	Transport.prototype._processIntervals = function(ticks, time){
 		for (var i = 0, len = this._intervals.length; i<len; i++){
 			var interval = this._intervals[i];
 			if (interval.testCallback(ticks)){
@@ -1071,7 +1217,7 @@ define('Tone/core/Transport',["Tone/core/Tone", "Tone/core/Master"], function(To
 	}
 
 	//processes and invokes the timeouts
-	Tone.Transport.prototype._processTimeouts = function(ticks, time){
+	Transport.prototype._processTimeouts = function(ticks, time){
 		for (var i = this._timeoutProgress, len = this._timeouts.length; i<len; i++){
 			var timeout = this._timeouts[i];
 			var callbackTick = timeout.callbackTick();
@@ -1089,11 +1235,11 @@ define('Tone/core/Transport',["Tone/core/Tone", "Tone/core/Master"], function(To
 	//@param {function(number)} callback
 	//@param {string} interval (01:02:0.2)
 	//@param {Object=} ctx the 'this' object which the 
-	//@returns {Tone.Transport.Event} the event
-	Tone.Transport.prototype.setInterval = function(callback, interval, ctx){
-		var ticks = this.progressToTicks(interval);
+	//@returns {Transport.Event} the event
+	Transport.prototype.setInterval = function(callback, interval, ctx){
+		var ticks = this.toTicks(interval);
 		ctx = this.defaultArg(ctx, window);
-		var timeout = new Tone.Transport.Timeout(callback, ctx, ticks, this._ticks);
+		var timeout = new Transport.Timeout(callback, ctx, ticks, this._ticks);
 		this._intervals.push(timeout);
 		return timeout;
 	}
@@ -1101,7 +1247,7 @@ define('Tone/core/Transport',["Tone/core/Tone", "Tone/core/Master"], function(To
 	//@param {number} intervalId
 	//@param {}
 	//@returns {boolean} true if the interval was removed
-	Tone.Transport.prototype.clearInterval = function(rmInterval){
+	Transport.prototype.clearInterval = function(rmInterval){
 		for (var i = 0; i < this._intervals.length; i++){
 			var interval = this._intervals[i];
 			if (interval === rmInterval){
@@ -1116,17 +1262,17 @@ define('Tone/core/Transport',["Tone/core/Tone", "Tone/core/Master"], function(To
 	//@param {string} timeout colon seperated (bars:beats)
 	//@param {Object=} ctx the 'this' object which the 
 	//@returns {number} the timeoutID
-	Tone.Transport.prototype.setTimeout = function(callback, timeout, ctx){
-		var ticks = this.progressToTicks(timeout);
+	Transport.prototype.setTimeout = function(callback, timeout, ctx){
+		var ticks = this.toTicks(timeout);
 		ctx = this.defaultArg(ctx, window);
-		var timeout = new Tone.Transport.Timeout(callback, ctx, ticks, this._ticks);
+		var timeout = new Transport.Timeout(callback, ctx, ticks, this._ticks);
 		//put it in the right spot
 		this._addTimeout(timeout);
 		return timeout;
 	}
 
 	//add an event in the correct position
-	Tone.Transport.prototype._addTimeout = function(event){
+	Transport.prototype._addTimeout = function(event){
 		for (var i = this._timeoutProgress, len = this._timeouts.length; i<len; i++){
 			var testEvnt = this._timeouts[i];
 			if (testEvnt.callbackTick() > event.callbackTick()){
@@ -1139,7 +1285,7 @@ define('Tone/core/Transport',["Tone/core/Tone", "Tone/core/Master"], function(To
 	}
 
 	//@param {string} timeoutID returned by setTimeout
-	Tone.Transport.prototype.clearTimeout = function(timeoutID){
+	Transport.prototype.clearTimeout = function(timeoutID){
 		for (var i = 0; i < this._timeouts.length; i++){
 			var timeout = this._timeouts[i];
 			if (timeout.id === timeoutID){
@@ -1150,56 +1296,38 @@ define('Tone/core/Transport',["Tone/core/Tone", "Tone/core/Master"], function(To
 		return false;
 	}
 
-	//@param {string} measures (measures:beats:sixteenths)
+	//@param {string|number} time
 	//@returns {number} the the conversion to ticks
-	Tone.Transport.prototype.progressToTicks = function(progress){
-		var measures = 0;
-		var quarters = 0;
-		var sixteenths = 0;
-		if (typeof progress === "number"){
-			quarters = progress;
-		} else if (typeof progress === "string"){
-			if (this.isNotation(progress)){
-				quarters = this.notationToBeat(progress);
-			} else {
-				var split = progress.split(":");
-				if (split.length === 2){
-					measures = parseFloat(split[0]);
-					quarters = parseFloat(split[1]);
-				} else if (split.length === 1){
-					quarters = parseFloat(split[0]);
-				} else if (split.length === 3){
-					measures = parseFloat(split[0]);
-					quarters = parseFloat(split[1]);
-					sixteenths = parseFloat(split[2]);
-				}
-			}
-		}
-		var ticks = (measures * this.timeSignature + quarters + sixteenths / 4) * this._tatum;
+	Transport.prototype.toTicks = function(time){
+		//get the seconds
+		var seconds = this.toSeconds(time);
+		var quarter = this.notationToSeconds("4n");
+		var quarters = seconds / quarter;
+		var ticks = quarters * this._tatum;
 		//quantize to tick value
 		return Math.round(ticks);
 	}
 
 	//@param {number} ticks
 	//@returns {string} progress (measures:beats:sixteenths)
-	Tone.Transport.prototype.ticksToProgress = function(ticks){
+	Transport.prototype.ticksToTransportTime = function(ticks){
 		var quarters = ticks / this._tatum;
-		var measures = parseInt(quarters / this.timeSignature, 10);
+		var measures = parseInt(quarters / this._timeSignature, 10);
 		var sixteenths = parseInt((quarters % 1) * 4, 10);
-		quarters = parseInt(quarters, 10) % this.timeSignature;
+		quarters = parseInt(quarters, 10) % this._timeSignature;
 		var progress = [measures, quarters, sixteenths];
 		return progress.join(":");
 	}
 
 	//@returns {string} progress (measures:beats:sixteenths)
-	Tone.Transport.prototype.getProgress = function(){
-		return this.ticksToProgress(this._ticks);
+	Transport.prototype.getTransportTime = function(){
+		return this.ticksToTransportTime(this._ticks);
 	}
 
 	//jump to a specific measure
 	//@param {string} progress
-	Tone.Transport.prototype.setProgress = function(progress){
-		var ticks = this.progressToTicks(progress);
+	Transport.prototype.setTransportTime = function(progress){
+		var ticks = this.toTicks(progress);
 		this._setTicks(ticks);
 	}
 
@@ -1207,45 +1335,46 @@ define('Tone/core/Transport',["Tone/core/Tone", "Tone/core/Master"], function(To
 	//	START/STOP/PAUSE
 	///////////////////////////////////////////////////////////////////////////////
 
-	Tone.Transport.prototype.start = function(time){
-		if (this.state !== Tone.Transport.state.playing){
-			this.state = Tone.Transport.state.playing;
+	Transport.prototype.start = function(time){
+		if (this.state !== Transport.state.playing){
+			this.state = Transport.state.playing;
 			this.upTick = false;
 			time = this.defaultArg(time, this.now());
 			this.oscillator	= this.context.createOscillator();
 			this.oscillator.type = "square";
-			this.setTempo(this._bpm);
+			this.setBpm(this._bpm);
 			this.oscillator.connect(this.jsNode);
-			this.oscillator.start(time);
+			this.oscillator.start(this.toSeconds(time));
 		}
 	}
 
-	Tone.Transport.prototype.stop = function(time){
-		if (this.state !== Tone.Transport.state.stopped){
-			this.state = Tone.Transport.state.stopped;
+	Transport.prototype.stop = function(time){
+		if (this.state !== Transport.state.stopped){
+			this.state = Transport.state.stopped;
 			time = this.defaultArg(time, this.now());
-			this.oscillator.stop(time);
+			this.oscillator.stop(this.toSeconds(time));
 			this._setTicks(0);
 		}
 	}
 
-	Tone.Transport.prototype.pause = function(time){
-		this.state = Tone.Transport.state.paused;
+	Transport.prototype.pause = function(time){
+		this.state = Transport.state.paused;
 		time = this.defaultArg(time, this.now());
-		this.oscillator.stop(time);
+		this.oscillator.stop(this.toSeconds(time));
 	}
 
 	///////////////////////////////////////////////////////////////////////////////
-	//	TEMPO CONTROLS
+	//	SETTERS/GETTERS
 	///////////////////////////////////////////////////////////////////////////////
 
 	//@param {number} bpm
 	//@param {number=} rampTime Optionally speed the tempo up over time
-	Tone.Transport.prototype.setTempo = function(bpm, rampTime){
+	Transport.prototype.setBpm = function(bpm, rampTime){
 		this._bpm = bpm;
-		if (this.state === Tone.Transport.state.playing){
+		if (this.state === Transport.state.playing){
 			//convert the bpm to frequency
-			var freqVal = 4 / this.notationTime(this._tatum.toString() + "n", this._bpm);
+			var tatumFreq = this.toFrequency(this._tatum.toString() + "n", this._bpm, this._timeSignature);
+			var freqVal = 4 * tatumFreq;
 			if (!rampTime){
 				this.oscillator.frequency.value = freqVal;
 			} else {
@@ -1255,25 +1384,41 @@ define('Tone/core/Transport',["Tone/core/Tone", "Tone/core/Master"], function(To
 	}
 
 	//@returns {number} the current bpm
-	Tone.Transport.prototype.getTempo = function(){
+	Transport.prototype.getBpm = function(){
 		//if the oscillator isn't running, return _bpm
-		if (this.state === Tone.Transport.state.playing){
+		if (this.state === Transport.state.playing){
 			//convert the current frequency of the oscillator to bpm
 			var freq = this.oscillator.frequency.value;
+			return 60 * (freq / this._tatum);
 		} else {
 			return this._bpm;
 		}
 	}
 
-	//@param {Array.<number>} noteValues
-	//@param {string} subdivision
-	//@returns {Array.<number>} the 
-	Tone.Transport.prototype.quantize = function(noteValues, subdivision, percentage){
+	//@param {number} numerator
+	//@param {number=} denominator
+	Transport.prototype.setTimeSignature = function(numerator, denominator){
+		denominator = this.defaultArg(denominator, 4);
+		this._timeSignature = numerator / (denominator / 4);
+	}
 
+	//@returns {number} the time signature
+	Transport.prototype.getTimeSignature = function(){
+		return this._timeSignature;
+	}
+
+	//@param {number|string} startPosition
+	Transport.prototype.setLoopStart = function(startPosition){
+		this._loopStart = this.toTicks(startPosition);
+	}
+
+	//@param {number|string} endPosition
+	Transport.prototype.setLoopEnd = function(endPosition){
+		this._loopEnd = this.toTicks(endPosition);
 	}
 
 	//@enum
-	Tone.Transport.state = {
+	Transport.state = {
 		playing : "playing",
 		paused : "paused",
 		stopped : "stopped"
@@ -1291,24 +1436,42 @@ define('Tone/core/Transport',["Tone/core/Tone", "Tone/core/Master"], function(To
 	//@param {number} interval (in ticks)
 	//@param {number} startTicks
 	//@param {boolean} repeat
-	Tone.Transport.Timeout = function(callback, context, interval, startTicks){
+	Transport.Timeout = function(callback, context, interval, startTicks){
 		this.interval = interval;
 		this.start = startTicks;
 		this.callback = callback;
 		this.context = context;
 	}
 
-	Tone.Transport.Timeout.prototype.doCallback = function(playbackTime){
+	Transport.Timeout.prototype.doCallback = function(playbackTime){
 		this.callback.call(this.context, playbackTime); 
 	}
 
-	Tone.Transport.Timeout.prototype.callbackTick = function(){
+	Transport.Timeout.prototype.callbackTick = function(){
 		return this.start + this.interval;
 	}
 
-	Tone.Transport.Timeout.prototype.testCallback = function(tick){
+	Transport.Timeout.prototype.testCallback = function(tick){
 		return (tick - this.start) % this.interval === 0;
 	}
+
+	//a single transport object
+	Tone.Transport = new Transport();
+
+	///////////////////////////////////////////////////////////////////////////////
+	//	override Tone's getBpm and getTimeSignature with transport value
+	///////////////////////////////////////////////////////////////////////////////
+
+	//@returns {number}
+	Tone.prototype.getBpm = function(){
+		return Tone.Transport.getBpm();
+	}
+
+	//@returns {number}
+	Tone.prototype.getTimeSignature = function(){
+		return Tone.Transport.getTimeSignature();
+	}
+
 
 	return Tone.Transport;
 });
@@ -1414,8 +1577,8 @@ define('Tone/effects/AutoPanner',["Tone/core/Tone", "Tone/source/Oscillator", "T
 		this.osc.setType(type);
 	}
 
-	Tone.AutoPanner.prototype.setRate = function(rate){
-		this.osc.setRate(rate);
+	Tone.AutoPanner.prototype.setFrequency = function(rate){
+		this.osc.setFrequency(rate);
 	}
 
 	Tone.AutoPanner.prototype.setAmount = function(amount){
@@ -1443,13 +1606,13 @@ define('Tone/effects/FeedbackEffect',["Tone/core/Tone", "Tone/effects/Effect"], 
 		this.chain(this.effectReturn, this.feedback, this.effectSend);
 
 		//some initial values
-		this.setDry(.5);
+		this.setFeedback(0);
 	}
 
 	Tone.extend(Tone.FeedbackEffect, Tone.Effect);
 
 	Tone.FeedbackEffect.prototype.setFeedback = function(fback){
-		this.rampToValue(this.feedback.gain, fback);
+		this.rampToValueNow(this.feedback.gain, fback);
 	}
 
 	return Tone.FeedbackEffect;
@@ -1468,7 +1631,7 @@ define('Tone/effects/FeedbackDelay',["Tone/core/Tone", "Tone/effects/FeedbackEff
 		Tone.FeedbackEffect.call(this);
 
 		this.delay = this.context.createDelay(4);
-		this.delay.delayTime.value = this.defaultArg(delayTime, .25);
+		this.delay.delayTime.value = this.toSeconds(this.defaultArg(delayTime, .25));
 
 		//connect it up
 		this.connectEffect(this.delay);
@@ -1477,7 +1640,7 @@ define('Tone/effects/FeedbackDelay',["Tone/core/Tone", "Tone/effects/FeedbackEff
 	Tone.extend(Tone.FeedbackDelay, Tone.FeedbackEffect);
 
 	Tone.FeedbackDelay.prototype.setDelayTime = function(delayTime){
-		this.rampToValue(this.delay.delayTime, delayTime);
+		this.rampToValueNow(this.delay.delayTime, this.toSeconds(delayTime));
 	}
 
 	return Tone.FeedbackDelay;
@@ -1617,7 +1780,7 @@ define('Tone/source/Player',["Tone/core/Tone"], function(Tone){
 			this.source = this.context.createBufferSource();
 			this.source.buffer = this.buffer;
 			this.source.loop = false;
-			this.source.start(startTime, offset, duration);
+			this.source.start(this.toSeconds(startTime), this.toSeconds(offset), this.toSeconds(duration));
 			this.source.onended = this._onended.bind(this);
 			var gain = this.context.createGain();
 			gain.gain.value = volume;
@@ -1637,8 +1800,8 @@ define('Tone/source/Player',["Tone/core/Tone"], function(Tone){
 			//make/play the source
 			this.start(startTime, offset, duration, volume);
 			this.source.loop = true;
-			this.source.loopStart = loopStart;
-			this.source.loopEnd = loopEnd;
+			this.source.loopStart = this.toSeconds(loopStart);
+			this.source.loopEnd = this.toSeconds(loopEnd);
 		}
 	}
 
@@ -1646,7 +1809,7 @@ define('Tone/source/Player',["Tone/core/Tone"], function(Tone){
 	Tone.Player.prototype.stop = function(stopTime){
 		if (this.buffer && this.source){
 			stopTime = this.defaultArg(stopTime, this.now());
-			this.source.stop(stopTime);
+			this.source.stop(this.toSeconds(stopTime));
 		}
 	}
 
@@ -1869,7 +2032,27 @@ define('Tone/signal/Normalize',["Tone/core/Tone"], function(Tone){
 ;
 ///////////////////////////////////////////////////////////////////////////////
 //
-//  STEREO
+//	PASS
+//
+//	Passes signal through
+///////////////////////////////////////////////////////////////////////////////
+
+define('Tone/signal/Pass',["Tone/core/Tone"], function(Tone){
+
+	Tone.Pass = function(){
+		Tone.call(this);
+
+		this.input.connect(this.output);
+	}
+
+	Tone.extend(Tone.Pass);
+
+	return Tone.Pass;
+})
+;
+///////////////////////////////////////////////////////////////////////////////
+//
+//  SPLIT
 //
 //	splits the incoming signal into left and right outputs
 //	 one input two outputs
