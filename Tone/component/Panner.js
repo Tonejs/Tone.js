@@ -3,7 +3,7 @@
 //  PANNER
 //
 //	Equal Power Gain L/R Panner. Not 3D
-//	-1 = 100% Left
+//	0 = 100% Left
 //	1 = 100% Right
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -35,14 +35,15 @@ function(Tone){
 		//setup
 		this.left.gain.value = 0;
 		this.right.gain.value = 0;
-		this.setPan(0);
+		this.setPan(.5);
 	}
 
 	Tone.extend(Tone.Panner);
 
 	Tone.Panner.prototype.setPan = function(val, rampTime){
 		rampTime = this.defaultArg(rampTime, 0);
-		this.control.linearRampToValueAtTime(val, rampTime);
+		//put val into -1 to 1 range
+		this.control.linearRampToValueAtTime(val * 2 - 1, rampTime);
 	}
 
 	return Tone.Panner;

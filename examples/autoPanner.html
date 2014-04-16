@@ -2,11 +2,8 @@
 <head>
 	<title>AUTOPANNER</title>
 
-	<script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
-	<!--
 	<script type="text/javascript" src='../build/Tone.js'></script>
-	-->
-	<script type="text/javascript" src="../deps/require.js"></script>
+	
 </head>
 <body>
 	<button>start</button>
@@ -14,53 +11,57 @@
 	<div id='left'>0</div>
 	<div id='right'>0</div>
 	<script type="text/javascript">
-		require.config({
-			baseUrl : "../"
-		});
-
-		require(["Tone/core/Tone", "Tone/core/Master", "Tone/effects/AutoPanner", "Tone/component/Meter"], 
-			function(Tone){
-			//panner
-			var pan = new Tone.AutoPanner();
-
-			//input signals
-			var sine = Tone.context.createOscillator();
-			// sine.start(0);
-
-			//connect it up
-			sine.connect(pan);
-
-			pan.toMaster();
-
-			//meters
-			var meter = new Tone.Meter(2);
-
-			//meter the outputs
-			pan.connect(meter);
-			pan.start();
-
-
-			var $left = $("#left");
-			var $right = $("#right");
 		
-			setInterval(function(){
-				$left.html("left: " + meter.getDb(0).toFixed(2) + " db");
-				$right.html("right: " + meter.getDb(1).toFixed(2) + " db");
-			}, 100);
+		//panner	
+		var pan = new Tone.AutoPanner();
 
-			$("button").click(function(){
+		//input signals
+		var sine = new Tone.Oscillator();
+
+		//connect it up
+		sine.connect(pan);
+		pan.toMaster();
+
+		//meter
+		var meter = new Tone.Meter(2);
+		pan.connect(meter);
+
+		//star the panner lfo
+		pan.start();
+
+		var leftMeter = document.querySelector("#left");
+		var rightMeter = document.querySelector("#right");
+	
+		//meter the content
+		setInterval(function(){
+			leftMeter.textContent = "left: " + meter.getDb(0).toFixed(2) + " db";
+			rightMeter.textContent = "right: " + meter.getDb(1).toFixed(2) + " db";
+		}, 100);
+
+
+		//INTERFACE//
+
+		var button = document.querySelector("button");
+
+		//called when the start button is clicked
+		button.onclick = function(){
+			if (!sine.started){
 				sine.start();
-			})
-
-			var range = $("input")[0];
-			range.onchange = function(){
-				var val = range.value;
-				var now = pan.now();
-				pan.setDry(val / 50 - 1, now + .1);
+				button.textContent = "stop";
+			} else {
+				sine.stop();
+				button.textContent = "start";
 			}
+		}
 
-			window.pan = pan;
-		});
+		var range = document.querySelector("input");
+
+		//called when the range is changed
+		range.onchange = function(){
+			var val = range.value;
+			var now = pan.now();
+			pan.setDry(val / 50 - 1, now + .1);
+		}
 		
 	</script>
 </body>

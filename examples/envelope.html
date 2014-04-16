@@ -2,68 +2,20 @@
 <head>
 	<title>Envelope</title>
 
-	<script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
-	<script type="text/javascript" src="../deps/require.js"></script>
+	<script type="text/javascript" src="../build/Tone.js"></script>
 
 </head>
-<body>
-	<style type="text/css">
-		#Trigger {
-			margin-left: -50px;
-			margin-top: -50px;
-			width: 100px;
-			height: 100px;
-			position: absolute;
-			top: 50%;
-			left: 50%;
-			background-color: blue;
-		}
-
-		#Trigger:after {
-			font-family: monospace;
-			position: absolute;
-			width: 100%;
-			content: "attack";
-			color: white;
-			text-align: center;
-			line-height: 100px;
-		}
-
-		#Trigger:active {
-			background-color: white;
-			color: black;
-		}
-
-		#Trigger:active:after {
-			content: "release";
-			color: black;
-		}
-	</style>
-	<div id='Trigger'></div>
+<body>	
+	<button onmousedown='env.triggerAttack()' onmouseup='env.triggerRelease()' id='Trigger'>trigger</button>
 	<script type="text/javascript">
 	</script>
 	<script type="text/javascript">
-		require.config({
-			baseUrl : "../"
-		});
-
-		require(["Tone/core/Tone", "Tone/core/Master", "Tone/source/Noise", "Tone/component/Envelope"], function(Tone){
-
-			var env = new Tone.Envelope(.05, .01, .7, .4);
-			var noise = new Tone.Noise();
-			
-			noise.toMaster();
-			//connect the evnelope to the output gain
-			env.connect(noise.output.gain);
-
-			$("#Trigger").bind("mousedown", function(e){
-				env.triggerAttack();
-			});
-			$("#Trigger").bind("mouseup", function(e){
-				env.triggerRelease();
-			});
-
-		});
+		var env = new Tone.Envelope(.05, .01, .7, .4);
+		var noise = new Tone.Noise();
+		
+		//connect the evnelope to the output gain
+		noise.toMaster();
+		env.connect(noise.output.gain);
 	</script>
 </body>
 </html>

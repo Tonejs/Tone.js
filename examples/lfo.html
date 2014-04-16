@@ -2,29 +2,37 @@
 <head>
 	<title>LFO</title>
 
-	<script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
-	<script type="text/javascript" src="../deps/require.js"></script>
+	<script type="text/javascript" src="../build/Tone.js"></script>
 	
 </head>
 <body>
-	<button>start</button>
+	<button onclick='startLFO()'>start</button>
 	<script type="text/javascript">
-		require.config({
-			baseUrl : "../"
-		});
+		//components
+		var noise = new Tone.Noise("brown");
+		var lfo = new Tone.LFO("4n");
+		
+		//connections
+		noise.toMaster();
+		lfo.connect(noise.output.gain);
+		
+		//INTERFACE//
 
-		require(["Tone/core/Tone", "Tone/core/Master", "Tone/source/Noise", "Tone/component/LFO"], function(Tone){
+		var button = document.querySelector("button");
 
-			var noise = new Tone.Noise("brown");
-			var lfo = new Tone.LFO("4n");
-			
-			noise.toMaster();
-			lfo.connect(noise.output.gain);
+		var started = false;
 
-			$("button").click(function(){
+		//called when the start button is clicked
+		function startLFO(){
+			if (!started){
 				lfo.start();
-			})
-		});
+				button.textContent = "stop";
+			} else {
+				lfo.stop();
+				button.textContent = "start";
+			}
+			started = !started;
+		}
 	</script>
 </body>
 </html>

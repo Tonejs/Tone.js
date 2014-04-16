@@ -4,7 +4,7 @@
 //
 // 	equal power fading
 //	control values:
-// 	   -1 = 100% dry
+// 	   	0 = 100% dry
 //		1 = 100% wet
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -41,11 +41,11 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Scale"], function(T
 	// @param {Tone.Timing} rampTime
 	Tone.DryWet.prototype.setDry = function(val, rampTime){
 		rampTime = this.defaultArg(rampTime, 0);
-		this.control.linearRampToValueAtTime(val, this.toSeconds(rampTime));
+		this.control.linearRampToValueAtTime(val*2 - 1, this.toSeconds(rampTime));
 	}
 
 	Tone.DryWet.prototype.setWet = function(val, rampTime){
-		this.setDry(-val, rampTime);
+		this.setDry(1-val, rampTime);
 	}
 
 	return Tone.DryWet;

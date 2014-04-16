@@ -1,67 +1,32 @@
 <html>
 <head>
 	<title>Basic Player</title>
-
-	<script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
-	<script type="text/javascript" src="../deps/require.js"></script>
+	<script type="text/javascript" src="../build/Tone.js"></script>
 </head>
 <body>
-	<style type="text/css">
-		#Trigger {
-			margin-left: -50px;
-			margin-top: -50px;
-			width: 100px;
-			height: 100px;
-			position: absolute;
-			top: 50%;
-			left: 50%;
-			background-color: blue;
-		}
-
-		#Trigger:after {
-			font-family: monospace;
-			position: absolute;
-			width: 100%;
-			content: "loop";
-			color: white;
-			text-align: center;
-			line-height: 100px;
-		}
-
-		#Trigger:active {
-			background-color: white;
-			color: black;
-		}
-
-		#Trigger:active:after {
-			content: "stop";
-			color: black;
-		}
-	</style>
-	<div id='Trigger'></div>
+	<button>trigger</button>
+	<div id='loading'>loading...</button>
 	<script type="text/javascript">
 
-		require.config({
-			baseUrl : "../"
+		var player = new Tone.Player("../audio/casio/A1.mp3");
+
+		//connect it to the output
+		player.toMaster();
+		
+		//once it's loaded, add the event triggers
+		player.load(function(){
+			document.querySelector('#loading').remove();
 		});
 
-		require(["Tone/core/Tone", "Tone/core/Master", "Tone/source/Player"], function(Tone){
+		var button = document.querySelector('button');
 
-			var player = new Tone.Player("../audio/casio/A1.mp3");
+		button.onmousedown = function(){
+			player.loop(0, .1, .11);
+		};
 
-			player.toMaster();
-			
-			//once it's loaded, add the event triggers
-			player.load(function(){
-				$("#Trigger").mousedown(function(e){
-					player.loop(0, 0, .5);
-				});
-				$("#Trigger").mouseup(function(e){
-					player.stop();
-				});
-			});
-		});
-
+		button.onmouseup = function(){
+			player.stop();
+		}
 	</script>
 </body>
 </html>

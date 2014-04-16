@@ -1,43 +1,40 @@
 <html>
 <head>
-	<title>LFO</title>
+	<title>Effect Example</title>
 
-	<script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
-	<script type="text/javascript" src="../deps/require.js"></script>
+	<script type="text/javascript" src="../build/Tone.js"></script>
 	
 </head>
 <body>
 	<input type='range'>
 	<script type="text/javascript">
-		require.config({
-			baseUrl : "../"
-		});
 
-		require(["Tone/core/Tone", "Tone/core/Master", "Tone/source/Noise", "Tone/effects/Effect"], function(Tone){
+		//extend effect
+		var NoiseEffect = function(){
+			//call the super class
+			Tone.Effect.call(this);
 
-			//extend effect
-			var NoiseEffect = function(){
-				Tone.Effect.call(this);
+			//components
+			this.noise = new Tone.Noise("brown");
 
-				//components
-				this.noise = new Tone.Noise("brown");
+			//connections
+			this.connectEffect(this.noise);
+		}
+		//extend effect
+		Tone.extend(NoiseEffect, Tone.Effect);
 
-				//connections
-				this.connectEffect(this.noise);
-			}
-			//extend effect
-			Tone.extend(NoiseEffect, Tone.Effect);
+		//make a new one
+		var noiseEffect = new NoiseEffect();
+		noiseEffect.toMaster();
 
-			var noiseEffect = new NoiseEffect();
-			noiseEffect.toMaster();
+		//INTERFACE//
 
-			var range = $("input")[0];
+		var range = document.querySelector("input");
 
-			range.onchange = function(){
-				var val = range.value;
-				noiseEffect.setDry(val / 50 - 1);
-			}
-		});
+		range.onchange = function(){
+			var val = range.value;
+			noiseEffect.setDry(val / 50 - 1);
+		}
 	</script>
 </body>
 </html>

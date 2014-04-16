@@ -2,67 +2,64 @@
 <head>
 	<title>TRANSPORT</title>
 
-	<script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
-	<script type="text/javascript" src="../deps/require.js"></script>
+	<script type="text/javascript" src="../build/Tone.js"></script>
 </head>
 <body>
 	<button>start</button>
 	<div id="output"></div>
+	<div id="loading">loading...</div>
 	<script type="text/javascript">
-		require.config({
-			baseUrl : "../"
+
+		Tone.Transport.loop = true;
+		Tone.Transport.setLoopStart("0:0");
+		Tone.Transport.setLoopEnd("1:0");
+		Tone.Transport.setBpm(145);
+
+		var player = new Tone.Player("../audio/505/hh.mp3");
+		player.toMaster();
+		player.load(function(){
+			document.querySelector("#loading").remove();
 		});
 
-		require(["Tone/core/Tone", "Tone/core/Master", "Tone/core/Transport", "Tone/source/Player"], function(Tone){
-			
+		//setting events
+		var output = document.querySelector("#output");
 
-			Tone.Transport.loop = true;
-			Tone.Transport.setLoopStart("0:0");
-			Tone.Transport.setLoopEnd("1:0");
-			Tone.Transport.setBpm(145);
+		Tone.Transport.setTimeout(function(time){
+			player.start(time);
+			output.textContent = "a";
+		}, "0:0");
 
-			var player = new Tone.Player("../audio/505/hh.mp3");
-			player.toMaster();
-			player.load();
+		Tone.Transport.setTimeout(function(time){
+			player.start(time);
+			output.textContent = "series";
+		}, "0:1");
 
-			Tone.Transport.setTimeout(function(time){
-				player.start(time);
-				$("#output").html("a");
-			}, "0:0");
+		Tone.Transport.setTimeout(function(time){
+			player.start(time);
+			output.textContent = "of";
+		}, "2n");
 
-			Tone.Transport.setTimeout(function(time){
-				player.start(time);
-				$("#output").html("series");
-			}, "0:1");
+		Tone.Transport.setTimeout(function(time){
+			player.start(time);
+			output.textContent = "timed";
+		}, "0:3");
 
-			Tone.Transport.setTimeout(function(time){
-				player.start(time);
-				$("#output").html("of");
-			}, "2n");
+		Tone.Transport.setTimeout(function(time){
+			player.start(time);
+			output.textContent = "events";
+		}, "0:3:2");
 
-			Tone.Transport.setTimeout(function(time){
-				player.start(time);
-				$("#output").html("timed");
-			}, "0:3");
+		var button = document.querySelector("button");
 
-			Tone.Transport.setTimeout(function(time){
-				player.start(time);
-				$("#output").html("events");
-			}, "0:3:2");
-
-			$("button").click(function(){
-				if (Tone.Transport.state === "playing"){
-					Tone.Transport.stop(0);
-					$("button").html("start");
-				} else {
-					Tone.Transport.start(0);
-					$("button").html("stop");
-				}
-			})
-
-			window.Tone = Tone;
-		});
-
+		button.onclick = function(){
+			if (Tone.Transport.state === "playing"){
+				Tone.Transport.stop();
+				button.textContent = "start";
+			} else {
+				Tone.Transport.start();
+				button.textContent = "stop";
+			}
+		}
 
 
 	</script>

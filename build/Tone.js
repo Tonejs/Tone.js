@@ -592,7 +592,7 @@ define('Tone/signal/Scale',["Tone/core/Tone"], function(Tone){
 //
 // 	equal power fading
 //	control values:
-// 	   -1 = 100% dry
+// 	   	0 = 100% dry
 //		1 = 100% wet
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -629,11 +629,11 @@ define('Tone/component/DryWet',["Tone/core/Tone", "Tone/signal/Signal", "Tone/si
 	// @param {Tone.Timing} rampTime
 	Tone.DryWet.prototype.setDry = function(val, rampTime){
 		rampTime = this.defaultArg(rampTime, 0);
-		this.control.linearRampToValueAtTime(val, this.toSeconds(rampTime));
+		this.control.linearRampToValueAtTime(val*2 - 1, this.toSeconds(rampTime));
 	}
 
 	Tone.DryWet.prototype.setWet = function(val, rampTime){
-		this.setDry(-val, rampTime);
+		this.setDry(1-val, rampTime);
 	}
 
 	return Tone.DryWet;
@@ -763,11 +763,11 @@ define('Tone/source/Oscillator',["Tone/core/Tone"], function(Tone){
 	Tone.Oscillator = function(freq, type){
 		Tone.call(this);
 
-		this.playing = false;
+		this.started = false;
 
 		//components
 		this.oscillator = this.context.createOscillator();
-		this.oscillator.frequency.value = this.defaultArg(this.toFrequency(freq), 440);
+		this.oscillator.frequency.value = this.defaultArg(freq, 440);
 		this.oscillator.type = this.defaultArg(type, "sine");
 		//connections
 		this.chain(this.oscillator, this.output);
@@ -777,7 +777,7 @@ define('Tone/source/Oscillator',["Tone/core/Tone"], function(Tone){
 
 	//@param {number=} time
 	Tone.Oscillator.prototype.start = function(time){
-		if (!this.playing){
+		if (!this.started){
 			var freq = this.oscillator.frequency.value;
 			var type = this.oscillator.type;
 			var detune = this.oscillator.frequency.value;
@@ -786,7 +786,7 @@ define('Tone/source/Oscillator',["Tone/core/Tone"], function(Tone){
 			this.oscillator.type = type;
 			this.oscillator.detune.value = detune;
 			this.oscillator.connect(this.output);
-			this.playing = true;
+			this.started = true;
 			time = this.defaultArg(time, this.now());
 			this.oscillator.start(time);
 		}
@@ -794,10 +794,10 @@ define('Tone/source/Oscillator',["Tone/core/Tone"], function(Tone){
 
 	//@param {number=} time
 	Tone.Oscillator.prototype.stop = function(time){
-		if (this.playing){
+		if (this.started){
 			time = this.defaultArg(time, this.now());
 			this.oscillator.stop(time);
-			this.playing = false;
+			this.started = false;
 		}
 	}
 
@@ -1063,7 +1063,7 @@ define('Tone/signal/Merge',["Tone/core/Tone"], function(Tone){
 //  PANNER
 //
 //	Equal Power Gain L/R Panner. Not 3D
-//	-1 = 100% Left
+//	0 = 100% Left
 //	1 = 100% Right
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -1095,14 +1095,15 @@ function(Tone){
 		//setup
 		this.left.gain.value = 0;
 		this.right.gain.value = 0;
-		this.setPan(0);
+		this.setPan(.5);
 	}
 
 	Tone.extend(Tone.Panner);
 
 	Tone.Panner.prototype.setPan = function(val, rampTime){
 		rampTime = this.defaultArg(rampTime, 0);
-		this.control.linearRampToValueAtTime(val, rampTime);
+		//put val into -1 to 1 range
+		this.control.linearRampToValueAtTime(val * 2 - 1, rampTime);
 	}
 
 	return Tone.Panner;

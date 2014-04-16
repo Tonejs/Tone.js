@@ -1,21 +1,20 @@
 <html>
 <head>
-	<title>BASIC</title>
+	<title>USING WITH REQUIRE</title>
 
 	<script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
-	<!--
-	<script type="text/javascript" src='../build/Tone.js'></script>
-	-->
 	<script type="text/javascript" src="../deps/require.js"></script>
+
 </head>
 <body>
 
 	<script type="text/javascript">
+		//minimal example using requirejs
 		require.config({
 			baseUrl : "../"
 		});
 		require(["Tone/core/Tone", "Tone/effects/PingPongDelay"], function(Tone, PingPongDelay){
-			console.log(PingPongDelay);
+			
 		})
 
 	</script>

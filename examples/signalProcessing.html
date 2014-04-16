@@ -2,77 +2,60 @@
 <head>
 	<title>SIGNAL PROCESSING</title>
 
-	<script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
-	<!--
 	<script type="text/javascript" src='../build/Tone.js'></script>
-	-->
-	<script type="text/javascript" src="../deps/require.js"></script>
 </head>
 <body>
-	<style type="text/css">
-		
-	</style>
+	<div id='description'>An example of audio-rate signal manipulation</div>
+	<br><br>
 	<input type='range' value='50'>
 	<div id='signal'>0</div>
 	<div id='add'>0</div>
 	<div id='sub'>0</div>
 	<div id='scale'>0</div>
 	<script type="text/javascript">
-		require.config({
-			baseUrl : "../"
-		});
+		var signal = new Tone.Signal();
+		var dryMeter = new Tone.Meter();
+		signal.connect(dryMeter);
 
-		require(["Tone/core/Tone", "Tone/core/Master", "Tone/signal/Signal", "Tone/signal/Add", 
-			"Tone/signal/Scale", "Tone/component/Meter", "Tone/signal/Subtract"], 
-		function(Tone){
-			var signal = new Tone.Signal();
-			var dryMeter = new Tone.Meter();
-			signal.connect(dryMeter);
+		
+		//the adder
+		var adder = new Tone.Add(100);
+		var addMeter = new Tone.Meter();
+		adder.connect(addMeter);
+		signal.connect(adder);
 
-			
-			//the adder
-			var adder = new Tone.Add(100);
-			var addMeter = new Tone.Meter();
-			adder.connect(addMeter);
-			signal.connect(adder);
+		//the adder
+		var subtract = new Tone.Subtract(100);
+		var subMeter = new Tone.Meter();
+		subtract.connect(subMeter);
+		signal.connect(subtract);
 
-			//the adder
-			var subtract = new Tone.Subtract(100);
-			var subMeter = new Tone.Meter();
-			subtract.connect(subMeter);
-			signal.connect(subtract);
+		
+		//the scaler
+		var scaler = new Tone.Scale(5, 10);
+		var scaleMeter = new Tone.Meter();
+		scaler.connect(scaleMeter);
+		signal.connect(scaler);
 
-			
-			//the scaler
-			var scaler = new Tone.Scale(5, 10);
-			var scaleMeter = new Tone.Meter();
-			scaler.connect(scaleMeter);
-			signal.connect(scaler);
+		//INTERFACE//
 
+		var $signal = document.querySelector("#signal");
+		var $add = document.querySelector("#add");
+		var $scale = document.querySelector("#scale");
+		var $sub = document.querySelector("#sub");
 
-			var $signal = $("#signal");
-			var $add = $("#add");
-			var $scale = $("#scale");
-			var $sub = $("#sub");
+		setInterval(function(){
+			$signal.textContent = "signal: " + dryMeter.getValue().toFixed(3);
+			$add.textContent = "signal + 100: " + addMeter.getValue().toFixed(3);
+			$scale.textContent = "scaled 5 to 10: " + scaleMeter.getValue().toFixed(3);
+			$sub.textContent = "100 - signal: " + subMeter.getValue().toFixed(3);
+		}, 100);
 
-			setInterval(function(){
-				$signal.html("signal: " + dryMeter.getValue().toFixed(3));
-				$add.html("signal + 100: " + addMeter.getValue().toFixed(3));
-				$scale.html("scaled 5 to 10: " + scaleMeter.getValue().toFixed(3));
-				$sub.html("100 - signal: " + subMeter.getValue().toFixed(3));
-			}, 100);
-
-			var range = $("input")[0];
-			range.onchange = function(){
-				var val = range.value;
-				signal.linearRampToValueAtTime(val / 50 - 1, "+.1");
-			}
-			
-			window.Tone = Tone;
-
-		});
-
-
+		var range = document.querySelector("input");
+		range.onchange = function(){
+			var val = range.value;
+			signal.linearRampToValueAtTime(val / 50 - 1, "+.3");
+		}
 	</script>
 </body>
 </html>

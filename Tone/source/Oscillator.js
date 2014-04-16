@@ -11,11 +11,11 @@ define(["Tone/core/Tone"], function(Tone){
 	Tone.Oscillator = function(freq, type){
 		Tone.call(this);
 
-		this.playing = false;
+		this.started = false;
 
 		//components
 		this.oscillator = this.context.createOscillator();
-		this.oscillator.frequency.value = this.defaultArg(this.toFrequency(freq), 440);
+		this.oscillator.frequency.value = this.defaultArg(freq, 440);
 		this.oscillator.type = this.defaultArg(type, "sine");
 		//connections
 		this.chain(this.oscillator, this.output);
@@ -25,7 +25,7 @@ define(["Tone/core/Tone"], function(Tone){
 
 	//@param {number=} time
 	Tone.Oscillator.prototype.start = function(time){
-		if (!this.playing){
+		if (!this.started){
 			var freq = this.oscillator.frequency.value;
 			var type = this.oscillator.type;
 			var detune = this.oscillator.frequency.value;
@@ -34,7 +34,7 @@ define(["Tone/core/Tone"], function(Tone){
 			this.oscillator.type = type;
 			this.oscillator.detune.value = detune;
 			this.oscillator.connect(this.output);
-			this.playing = true;
+			this.started = true;
 			time = this.defaultArg(time, this.now());
 			this.oscillator.start(time);
 		}
@@ -42,10 +42,10 @@ define(["Tone/core/Tone"], function(Tone){
 
 	//@param {number=} time
 	Tone.Oscillator.prototype.stop = function(time){
-		if (this.playing){
+		if (this.started){
 			time = this.defaultArg(time, this.now());
 			this.oscillator.stop(time);
-			this.playing = false;
+			this.started = false;
 		}
 	}
 

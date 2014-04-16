@@ -2,32 +2,35 @@
 <head>
 	<title>Bit Crush</title>
 
-	<script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
-	<!--
-	<script type="text/javascript" src='../Tone.js'></script>
-	-->
-	<script type="text/javascript" src="../deps/require.js"></script>
+	<script type="text/javascript" src='../build/Tone.js'></script>
+
 </head>
 <body>
-	<button>start</button>
+	<button onclick='startOsc()'>start</button>
 	<script type="text/javascript">
-		require.config({
-			baseUrl : "../"
-		});
+	
+		//components
+		var sine = new Tone.Oscillator();
+		var crusher = new Tone.BitCrusher(5);
+		
+		//connections
+		sine.connect(crusher);
+		crusher.toMaster();
 
-		require(["Tone/core/Tone", "Tone/core/Master", "Tone/signal/BitCrusher"], function(Tone){
-			var sine = Tone.context.createOscillator();
-			var crusher = new Tone.BitCrusher(5);
-			
-			sine.connect(crusher);
-			crusher.toMaster();
+		//INTERFACE//
 
-			$("button").click(function(){
-				sine.start(0);
-			})
+		var button = document.querySelector("button");
 
-			window.crusher = crusher;
-		});
+		//called when the start button is clicked
+		function startOsc(){
+			if (!sine.started){
+				sine.start();
+				button.textContent = "stop";
+			} else {
+				sine.stop();
+				button.textContent = "start";
+			}
+		}
 		
 	</script>
 </body>
