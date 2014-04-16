@@ -42,7 +42,7 @@ To use Tone.js without require, just add the build source (located at build/Tone
 
 ## Tone()
 
-Tone is the base-class of all ToneNode's. All ToneNode's extend Tone. 
+Tone is the base-class of all ToneNode's
 
 ### Properties
 
@@ -62,13 +62,13 @@ A reference to the AudioContext. It is also available globally as Tone.context
 
 #### .connect(node)
 
-node - {AudioNode | AudioParam | ToneNode}
+* node - {AudioNode | AudioParam | ToneNode}
 
 Connects the node's output to the next node. If it is a ToneNode it will automatically connect to that Node's .input 
 
 #### .now() {number}
 
-returns context.currentTime
+* returns context.currentTime
 
 ## Master
 
@@ -76,7 +76,7 @@ Tone.Master is a single master output which connects to context.destination (the
 
 #### .toMaster()
 
-toMaster() can be called on any AudioNode or ToneNode and will send the output audio to the Master channel. 
+.toMaster() can be called on any AudioNode or ToneNode and will send the output audio to the Master channel. 
 
 ## Transport
 
@@ -96,19 +96,18 @@ Set the transport to loop over a section
 
 #### .setBpm(bpm)
 
-bpm - {number} the new tempo in beats per minute
+* bpm - {number} the new tempo in beats per minute
 
-#### .getBpm() {number}
+#### .getBpm()
 
-returns the current bpm
+* returns - {number} the current bpm
 
 #### .setInterval(callback, interval, context) {Timeout}
 
-callback - in the form: function(number)
-interval - {number | Notation | TransportTime}
-context - {Object=} optional context in which the callback is invoked
-
-returns - a timeout which can be used to clear the interval
+* callback - in the form: function(number)
+* interval - {number | Notation | TransportTime} see Timing and Musical Notation for more information about timing in Tone.js
+* context - {Object=} optional context in which the callback is invoked
+* returns - a timeout which can be used to clear the interval
 
 .setInterval is used for repeat events. The callback is invoked before the event will occur and is passed the exact event time as a parameter
 
@@ -120,19 +119,51 @@ Tone.Transport.setInterval(function(time){
 
 #### .setTimeout(callback, timeoutTime, context) {Timeout}
 
-callback - in the form: function(number)
-timeoutTime - {number | Notation | TransportTime}
-context - {Object=} optional context in which the callback is invoked
-
-returns - a timeout which can be used to clear the timeout
+* callback - in the form: function(number)
+* timeoutTime - {number | Notation | TransportTime} see Timing and Musical Notation for more information about timing in Tone.js
+* context - {Object=} optional context in which the callback is invoked
+* returns - a timeout which can be used to clear the timeout
 
 .setTimeout is similar to .setInterval but for single occurance events. 
 
 ```javascript
 Tone.Transport.setTimeout(function(time){
     samplePlayer.start(time);
-}, "4n");
+}, "1:0:2");
 ```
+
+# Timing and Musical Notation
+
+All ToneNodes that accept a time as an argument can parse that time in a few ways. 
+
+#### 'now' relative timing
+
+A timing value preceeded by a "+" will be now-relative meaning that the time will be added to the context's currentTime. 
+
+```javascript
+oscillator.start("+1") //starts exactly 1 second from now
+```
+
+#### Notation
+
+Timing can also be described in musical notation. A quarter-note is notated as "4n" and a sixteenth-note triplet is notated as "16t". Three measures is "3m". The tempo and time signature is set by Tone.Transport. This can be combined with now-relative timing. 
+
+```javascript
+lfo.setFrequency("4n") //oscillates at the rate of a quarter note
+```
+
+#### Transport Time
+
+Transport Time is described measures:quater-notes:sixteenth-notes. 
+
+```javascript
+//Start the chorus 16 measures after the start of the Transport
+Tone.Transport.setTimeline(startChorus, "32:0:0");
+```
+
+
+
+
 
 
 
