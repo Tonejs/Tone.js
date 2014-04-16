@@ -9,9 +9,9 @@ function main() {
 
 	console.log('* Collecting Files');
 
-	var srcFolder = "../Tone/";
+	var srcFolder = "../../Tone/";
 
-	var outputFile = "../main.js";
+	var outputFile = "../../main.js";
 	
 
 	var dependencies = [];
