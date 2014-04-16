@@ -105,7 +105,7 @@ Set the transport to loop over a section
 #### .setInterval(callback, interval, context) {Timeout}
 
 * callback - in the form: function(number)
-* interval - {number | Notation | TransportTime} see Timing and Musical Notation for more information about timing in Tone.js
+* interval - {number | Notation | TransportTime} see (Timing and Musical Notation)[#timing-and-musical-notation] for more information about timing in Tone.js
 * context - {Object=} optional context in which the callback is invoked
 * returns - a timeout which can be used to clear the interval
 
@@ -120,7 +120,7 @@ Tone.Transport.setInterval(function(time){
 #### .setTimeout(callback, timeoutTime, context) {Timeout}
 
 * callback - in the form: function(number)
-* timeoutTime - {number | Notation | TransportTime} see Timing and Musical Notation for more information about timing in Tone.js
+* timeoutTime - {number | Notation | TransportTime} see (Timing and Musical Notation)[#timing-and-musical-notation] for more information about timing in Tone.js
 * context - {Object=} optional context in which the callback is invoked
 * returns - a timeout which can be used to clear the timeout
 
