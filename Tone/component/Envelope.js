@@ -101,7 +101,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	Tone.Envelope.prototype.connect = function(param){
 		if (param instanceof AudioParam){
 			//set the initial value
-			param.value = this.min;
+			param.value = 0;
 		} 
 		this._connect(param);
 	}

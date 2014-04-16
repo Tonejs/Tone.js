@@ -268,7 +268,11 @@
 	//@param {number=} timeSignature
 	//@returns {number} the time in seconds
 	Tone.prototype.toFrequency = function(time, bpm, timeSignature){
-		return this.secondsToFrequency(this.toSeconds(time, bpm, timeSignature));
+		if (this.isNotation(time) || this.isFrequency(time)){
+			return this.secondsToFrequency(this.toSeconds(time, bpm, timeSignature));
+		} else {
+			return time;
+		}
 	}
 
 	//@returns {number} the tempo

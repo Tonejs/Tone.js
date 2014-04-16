@@ -6,7 +6,7 @@
 
 </head>
 <body>
-	<button onclick='startOsc()'>start</button>
+	<button>start</button>
 	<script type="text/javascript">
 	
 		//components
@@ -22,7 +22,7 @@
 		var button = document.querySelector("button");
 
 		//called when the start button is clicked
-		function startOsc(){
+		button.onclick = function(){
 			if (!sine.started){
 				sine.start();
 				button.textContent = "stop";

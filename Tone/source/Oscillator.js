@@ -15,7 +15,7 @@ define(["Tone/core/Tone"], function(Tone){
 
 		//components
 		this.oscillator = this.context.createOscillator();
-		this.oscillator.frequency.value = this.defaultArg(freq, 440);
+		this.oscillator.frequency.value = this.defaultArg(this.toFrequency(freq), 440);
 		this.oscillator.type = this.defaultArg(type, "sine");
 		//connections
 		this.chain(this.oscillator, this.output);

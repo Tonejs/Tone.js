@@ -269,7 +269,11 @@
 	//@param {number=} timeSignature
 	//@returns {number} the time in seconds
 	Tone.prototype.toFrequency = function(time, bpm, timeSignature){
-		return this.secondsToFrequency(this.toSeconds(time, bpm, timeSignature));
+		if (this.isNotation(time) || this.isFrequency(time)){
+			return this.secondsToFrequency(this.toSeconds(time, bpm, timeSignature));
+		} else {
+			return time;
+		}
 	}
 
 	//@returns {number} the tempo
@@ -742,7 +746,7 @@ define('Tone/component/Envelope',["Tone/core/Tone", "Tone/signal/Signal"], funct
 	Tone.Envelope.prototype.connect = function(param){
 		if (param instanceof AudioParam){
 			//set the initial value
-			param.value = this.min;
+			param.value = 0;
 		} 
 		this._connect(param);
 	}
@@ -767,7 +771,7 @@ define('Tone/source/Oscillator',["Tone/core/Tone"], function(Tone){
 
 		//components
 		this.oscillator = this.context.createOscillator();
-		this.oscillator.frequency.value = this.defaultArg(freq, 440);
+		this.oscillator.frequency.value = this.defaultArg(this.toFrequency(freq), 440);
 		this.oscillator.type = this.defaultArg(type, "sine");
 		//connections
 		this.chain(this.oscillator, this.output);
@@ -883,7 +887,7 @@ define('Tone/component/LFO',["Tone/core/Tone", "Tone/source/Oscillator", "Tone/s
 	Tone.LFO.prototype.connect = function(param){
 		if (param instanceof AudioParam){
 			//set the initial value
-			param.value = this.scaler.min;
+			param.value = 0;
 		} 
 		this._connect(param);
 	}
@@ -1108,6 +1112,45 @@ function(Tone){
 
 	return Tone.Panner;
 });;
+///////////////////////////////////////////////////////////////////////////////
+//
+//	BUS
+//
+//	buses are another way of routing audio
+//
+//	adds: 	send(channelName, amount)
+//			receive(channelName) 
+///////////////////////////////////////////////////////////////////////////////
+
+define('Tone/core/Bus',["Tone/core/Tone"], function(Tone){
+
+	var Buses = {}
+
+	//@param {string} channelName
+	//@param {number=} amount
+	//@returns {GainNode} the send
+	Tone.prototype.send = function(channelName, amount){
+		if (!Buses.hasOwnProperty(channelName)){
+			Buses[channelName] = this.context.createGain();
+		}
+		var sendKnob = this.context.createGain();
+		sendKnob.gain.value = this.defaultArg(amount, 1);
+		this.chain(this.output, sendKnob, Buses[channelName]);
+		return sendKnob;		
+	}
+
+	//@param {string} channelName
+	Tone.prototype.receive = function(channelName){
+		if (!Buses.hasOwnProperty(channelName)){
+			Buses[channelName] = this.context.createGain();	
+		}
+		Buses[channelName].connect(this.input);
+	}
+
+	Tone.Buses = Buses;
+
+	return Tone.Buses;
+});
 ///////////////////////////////////////////////////////////////////////////////
 //
 //	TRANSPORT
@@ -1337,8 +1380,8 @@ define('Tone/core/Transport',["Tone/core/Tone", "Tone/core/Master"], function(To
 	///////////////////////////////////////////////////////////////////////////////
 
 	Transport.prototype.start = function(time){
-		if (this.state !== Transport.state.playing){
-			this.state = Transport.state.playing;
+		if (this.state !== Transport.state.started){
+			this.state = Transport.state.started;
 			this.upTick = false;
 			time = this.defaultArg(time, this.now());
 			this.oscillator	= this.context.createOscillator();
@@ -1372,14 +1415,14 @@ define('Tone/core/Transport',["Tone/core/Tone", "Tone/core/Master"], function(To
 	//@param {number=} rampTime Optionally speed the tempo up over time
 	Transport.prototype.setBpm = function(bpm, rampTime){
 		this._bpm = bpm;
-		if (this.state === Transport.state.playing){
+		if (this.state === Transport.state.started){
 			//convert the bpm to frequency
 			var tatumFreq = this.toFrequency(this._tatum.toString() + "n", this._bpm, this._timeSignature);
 			var freqVal = 4 * tatumFreq;
 			if (!rampTime){
 				this.oscillator.frequency.value = freqVal;
 			} else {
-				this.exponentialRampToValue(this.oscillator.frequency, freqVal, rampTime);
+				this.exponentialRampToValueNow(this.oscillator.frequency, freqVal, rampTime);
 			}
 		}
 	}
@@ -1387,7 +1430,7 @@ define('Tone/core/Transport',["Tone/core/Tone", "Tone/core/Master"], function(To
 	//@returns {number} the current bpm
 	Transport.prototype.getBpm = function(){
 		//if the oscillator isn't running, return _bpm
-		if (this.state === Transport.state.playing){
+		if (this.state === Transport.state.started){
 			//convert the current frequency of the oscillator to bpm
 			var freq = this.oscillator.frequency.value;
 			return 60 * (freq / this._tatum);
@@ -1420,7 +1463,7 @@ define('Tone/core/Transport',["Tone/core/Tone", "Tone/core/Master"], function(To
 
 	//@enum
 	Transport.state = {
-		playing : "playing",
+		started : "started",
 		paused : "paused",
 		stopped : "stopped"
 	}

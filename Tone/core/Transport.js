@@ -227,8 +227,8 @@ define(["Tone/core/Tone", "Tone/core/Master"], function(Tone){
 	///////////////////////////////////////////////////////////////////////////////
 
 	Transport.prototype.start = function(time){
-		if (this.state !== Transport.state.playing){
-			this.state = Transport.state.playing;
+		if (this.state !== Transport.state.started){
+			this.state = Transport.state.started;
 			this.upTick = false;
 			time = this.defaultArg(time, this.now());
 			this.oscillator	= this.context.createOscillator();
@@ -262,14 +262,14 @@ define(["Tone/core/Tone", "Tone/core/Master"], function(Tone){
 	//@param {number=} rampTime Optionally speed the tempo up over time
 	Transport.prototype.setBpm = function(bpm, rampTime){
 		this._bpm = bpm;
-		if (this.state === Transport.state.playing){
+		if (this.state === Transport.state.started){
 			//convert the bpm to frequency
 			var tatumFreq = this.toFrequency(this._tatum.toString() + "n", this._bpm, this._timeSignature);
 			var freqVal = 4 * tatumFreq;
 			if (!rampTime){
 				this.oscillator.frequency.value = freqVal;
 			} else {
-				this.exponentialRampToValue(this.oscillator.frequency, freqVal, rampTime);
+				this.exponentialRampToValueNow(this.oscillator.frequency, freqVal, rampTime);
 			}
 		}
 	}
@@ -277,7 +277,7 @@ define(["Tone/core/Tone", "Tone/core/Master"], function(Tone){
 	//@returns {number} the current bpm
 	Transport.prototype.getBpm = function(){
 		//if the oscillator isn't running, return _bpm
-		if (this.state === Transport.state.playing){
+		if (this.state === Transport.state.started){
 			//convert the current frequency of the oscillator to bpm
 			var freq = this.oscillator.frequency.value;
 			return 60 * (freq / this._tatum);
@@ -310,7 +310,7 @@ define(["Tone/core/Tone", "Tone/core/Master"], function(Tone){
 
 	//@enum
 	Transport.state = {
-		playing : "playing",
+		started : "started",
 		paused : "paused",
 		stopped : "stopped"
 	}

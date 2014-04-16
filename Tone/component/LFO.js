@@ -66,7 +66,7 @@ define(["Tone/core/Tone", "Tone/source/Oscillator", "Tone/signal/Scale"], functi
 	Tone.LFO.prototype.connect = function(param){
 		if (param instanceof AudioParam){
 			//set the initial value
-			param.value = this.scaler.min;
+			param.value = 0;
 		} 
 		this._connect(param);
 	}
