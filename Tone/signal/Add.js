@@ -38,5 +38,12 @@ define(["Tone/core/Tone"], function(Tone){
 		this.adder.curve = curve;
 	}
 
+	//set the constant value
+	//@param {number} const
+	Tone.Add.prototype.setConstant = function(constant){
+		this.constant = constant;
+		this._adderCurve();
+	}
+
 	return Tone.Add;
 });

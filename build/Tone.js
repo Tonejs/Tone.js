@@ -1315,6 +1315,21 @@ define('Tone/core/Transport',["Tone/core/Tone", "Tone/core/Master"], function(To
 		return timeout;
 	}
 
+	//@param {function(number)} callback
+	//@param {string} timeout colon seperated (bars:beats)
+	//@param {Object=} ctx the 'this' object which the 
+	//@returns {number} the timeoutID
+	//like setTimeout, but to absolute timeline positions instead of 'now' relative
+	//events which have passed will not be called
+	Transport.prototype.setTimeline = function(callback, timeout, ctx){
+		var ticks = this.toTicks(timeout);
+		ctx = this.defaultArg(ctx, window);
+		var timeout = new Transport.Timeout(callback, ctx, ticks, 0);
+		//put it in the right spot
+		this._addTimeout(timeout);
+		return timeout;
+	}
+
 	//add an event in the correct position
 	Transport.prototype._addTimeout = function(event){
 		for (var i = this._timeoutProgress, len = this._timeouts.length; i<len; i++){
@@ -1961,6 +1976,13 @@ define('Tone/signal/Add',["Tone/core/Tone"], function(Tone){
 		this.adder.curve = curve;
 	}
 
+	//set the constant value
+	//@param {number} const
+	Tone.Add.prototype.setConstant = function(constant){
+		this.constant = constant;
+		this._adderCurve();
+	}
+
 	return Tone.Add;
 });
 ///////////////////////////////////////////////////////////////////////////////
@@ -2031,6 +2053,37 @@ define('Tone/signal/BitCrusher',["Tone/core/Tone"], function(Tone){
 });
 ///////////////////////////////////////////////////////////////////////////////
 //
+//	MULTIPLY
+//
+//	Multiply the incoming signal by a factor
+///////////////////////////////////////////////////////////////////////////////
+
+define('Tone/signal/Multiply',["Tone/core/Tone"], function(Tone){
+
+	Tone.Multiply = function(factor){
+		Tone.call(this);
+
+		this.factor = this.defaultArg(factor, 1);
+
+		this.input.connect(this.output);
+
+		this.input.gain.value = factor;
+	}
+
+	Tone.extend(Tone.Multiply);
+
+	//set the constant value
+	//@param {number} const
+	Tone.Multiply.prototype.setFactor = function(factor){
+		this.factor = factor;
+		this.input.gain.value = factor;
+	}
+
+	return Tone.Multiply;
+})
+;
+///////////////////////////////////////////////////////////////////////////////
+//
 //  NORMALIZE
 //
 //	normalizes the incoming signal (between inputMin and inputMax)
@@ -2072,26 +2125,6 @@ define('Tone/signal/Normalize',["Tone/core/Tone"], function(Tone){
 	}
 
 	return Tone.Normalize;
-})
-;
-///////////////////////////////////////////////////////////////////////////////
-//
-//	PASS
-//
-//	Passes signal through
-///////////////////////////////////////////////////////////////////////////////
-
-define('Tone/signal/Pass',["Tone/core/Tone"], function(Tone){
-
-	Tone.Pass = function(){
-		Tone.call(this);
-
-		this.input.connect(this.output);
-	}
-
-	Tone.extend(Tone.Pass);
-
-	return Tone.Pass;
 })
 ;
 ///////////////////////////////////////////////////////////////////////////////

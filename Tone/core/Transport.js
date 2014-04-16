@@ -162,6 +162,21 @@ define(["Tone/core/Tone", "Tone/core/Master"], function(Tone){
 		return timeout;
 	}
 
+	//@param {function(number)} callback
+	//@param {string} timeout colon seperated (bars:beats)
+	//@param {Object=} ctx the 'this' object which the 
+	//@returns {number} the timeoutID
+	//like setTimeout, but to absolute timeline positions instead of 'now' relative
+	//events which have passed will not be called
+	Transport.prototype.setTimeline = function(callback, timeout, ctx){
+		var ticks = this.toTicks(timeout);
+		ctx = this.defaultArg(ctx, window);
+		var timeout = new Transport.Timeout(callback, ctx, ticks, 0);
+		//put it in the right spot
+		this._addTimeout(timeout);
+		return timeout;
+	}
+
 	//add an event in the correct position
 	Transport.prototype._addTimeout = function(event){
 		for (var i = this._timeoutProgress, len = this._timeouts.length; i<len; i++){
