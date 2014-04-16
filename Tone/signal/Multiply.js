@@ -5,25 +5,21 @@
 //	Multiply the incoming signal by a factor
 ///////////////////////////////////////////////////////////////////////////////
 
-define(["Tone/core/Tone"], function(Tone){
+define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 
-	Tone.Multiply = function(factor){
+	//@param {number} value
+	Tone.Multiply = function(value){
 		Tone.call(this);
-
-		this.factor = this.defaultArg(factor, 1);
-
 		this.input.connect(this.output);
-
-		this.input.gain.value = factor;
+		this.input.gain.value = value;
 	}
 
 	Tone.extend(Tone.Multiply);
 
 	//set the constant value
-	//@param {number} const
-	Tone.Multiply.prototype.setFactor = function(factor){
-		this.factor = factor;
-		this.input.gain.value = factor;
+	//@param {number} value
+	Tone.Multiply.prototype.setValue = function(value){
+		this.input.gain.value = value;
 	}
 
 	return Tone.Multiply;

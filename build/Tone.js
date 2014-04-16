@@ -521,71 +521,100 @@ define('Tone/signal/Signal',["Tone/core/Tone"], function(Tone){
 });
 ///////////////////////////////////////////////////////////////////////////////
 //
-//  SCALE
+//  ADD
 //
-//	scales the input in normal range (-1 to 1) to the output between min and max
+//	adds a value to the incoming signal
+//	can sum two signals or a signal and a constant
 ///////////////////////////////////////////////////////////////////////////////
 
-define('Tone/signal/Scale',["Tone/core/Tone"], function(Tone){
+define('Tone/signal/Add',["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 
-	//@param {number} min
-	//@param {number} max
-	//@param {string} scaling (lin|exp|log|equalPower)
-	Tone.Scale = function(min, max, scaling){
+	//@param {Tone.Signal|number} value
+	Tone.Add = function(value){
 		Tone.call(this);
 
-		//vals
-		this.min = min;
-		this.max = max;
-		this.scaling = this.defaultArg(scaling, "lin");
-		this.scalingFunction = this._selectScalingFunction(this.scaling);
-
-		//components
-		this.scaler = this.context.createWaveShaper();
+		if (typeof value === "number"){
+			this.value = new Tone.Signal(value);
+		} else {
+			this.value = value;
+		}
 
 		//connections
-		this.chain(this.input, this.scaler, this.output);
+		this.chain(this.value, this.input, this.output);
+	}
 
-		//setup
-		this._scaleCurve();
+	Tone.extend(Tone.Add);
+
+	//set the constant value
+	//@param {number} value
+	Tone.Add.prototype.setValue = function(value){
+		this.value.setValue(value);
+	}
+
+	return Tone.Add;
+});
+///////////////////////////////////////////////////////////////////////////////
+//
+//	MULTIPLY
+//
+//	Multiply the incoming signal by a factor
+///////////////////////////////////////////////////////////////////////////////
+
+define('Tone/signal/Multiply',["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
+
+	//@param {number} value
+	Tone.Multiply = function(value){
+		Tone.call(this);
+		this.input.connect(this.output);
+		this.input.gain.value = value;
+	}
+
+	Tone.extend(Tone.Multiply);
+
+	//set the constant value
+	//@param {number} value
+	Tone.Multiply.prototype.setValue = function(value){
+		this.input.gain.value = value;
+	}
+
+	return Tone.Multiply;
+})
+;
+///////////////////////////////////////////////////////////////////////////////
+//
+//  SCALE
+//
+//	performs linear scaling on an input signal between inputMin and inputMax 
+//	to output the range outputMin outputMax
+///////////////////////////////////////////////////////////////////////////////
+
+define('Tone/signal/Scale',["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Multiply"], function(Tone){
+
+	//@param {number} inputMin
+	//@param {number} inputMax
+	//@param {number=} outputMin
+	//@param {number=} outputMax
+	Tone.Scale = function(inputMin, inputMax, outputMin, outputMax){
+		Tone.call(this);
+
+		if (arguments.length == 2){
+			outputMin = inputMin;
+			outputMax = inputMax;
+			inputMin = -1;
+			inputMax = 1;
+		}
+		//components
+		this.plusInput = new Tone.Add(-inputMin);
+		this.scale = new Tone.Multiply((outputMax - outputMin)/(inputMax - inputMin));
+		this.plusOutput = new Tone.Add(outputMin);
+
+		//connections
+		this.chain(this.input, this.plusInput, this.scale, this.plusOutput, this.output);
 	}
 
 	//extend StereoSplit
 	Tone.extend(Tone.Scale);
 
-	//generates the values for the waveshaper
-	Tone.Scale.prototype._scaleCurve = function(){
-		var len = this.waveShaperResolution;
-		var curve = new Float32Array(len);
-		var min = this.min;
-		var max = this.max;
-		for (var i = 0; i < len; i++){
-			//values between 0 and 1
-			var terp = this.scalingFunction(i / (len - 1));
-			curve[i] = terp * (max - min) + min;
-		}
-		this.scaler.curve = curve;
-	}
-
-	//
-	Tone.Scale.prototype._selectScalingFunction = function(scaling){
-		switch(scaling){
-			case "lin" : return function(x) {return x};
-			case "exp" : return this.expScale;
-			case "log" : return this.logScale;
-			case "equalPower" : return this.equalPowerScale;
-		}
-	}
-
-	Tone.Scale.prototype.setMax = function(max){
-		this.max = max;
-		this._scaleCurve();
-	}
-
-	Tone.Scale.prototype.setMin = function(min){
-		this.min = min;
-		this._scaleCurve();
-	}
 
 	return Tone.Scale;
 });
@@ -1938,55 +1967,6 @@ define('Tone/instrument/Sampler',["Tone/core/Tone", "Tone/component/Envelope", "
 });
 ///////////////////////////////////////////////////////////////////////////////
 //
-//  ADD
-//
-//	adds a constant value to the incoming signal in normal range (-1 to 1)
-///////////////////////////////////////////////////////////////////////////////
-
-define('Tone/signal/Add',["Tone/core/Tone"], function(Tone){
-
-	Tone.Add = function(constant){
-		Tone.call(this);
-
-		this.constant = constant;
-
-		//component
-		this.adder = this.context.createWaveShaper();
-
-		//connections
-		this.chain(this.input, this.adder, this.output);
-
-		//setup
-		this._adderCurve();
-	}
-
-	Tone.extend(Tone.Add);
-
-	//adds a constant value to the incoming signal
-	Tone.Add.prototype._adderCurve = function(){
-		var len = this.waveShaperResolution;
-		var curve = new Float32Array(len);
-		for (var i = 0; i < len; i++){
-			///scale the values between -1 to 1
-			var baseline = (i / (len - 1)) * 2 - 1;
-			//all inputs produce the output value
-			curve[i] = baseline + this.constant;
-		}
-		//console.log(curve);
-		this.adder.curve = curve;
-	}
-
-	//set the constant value
-	//@param {number} const
-	Tone.Add.prototype.setConstant = function(constant){
-		this.constant = constant;
-		this._adderCurve();
-	}
-
-	return Tone.Add;
-});
-///////////////////////////////////////////////////////////////////////////////
-//
 // 	BIT CRUSHER
 //
 // 	downsample incoming signal
@@ -2053,82 +2033,6 @@ define('Tone/signal/BitCrusher',["Tone/core/Tone"], function(Tone){
 });
 ///////////////////////////////////////////////////////////////////////////////
 //
-//	MULTIPLY
-//
-//	Multiply the incoming signal by a factor
-///////////////////////////////////////////////////////////////////////////////
-
-define('Tone/signal/Multiply',["Tone/core/Tone"], function(Tone){
-
-	Tone.Multiply = function(factor){
-		Tone.call(this);
-
-		this.factor = this.defaultArg(factor, 1);
-
-		this.input.connect(this.output);
-
-		this.input.gain.value = factor;
-	}
-
-	Tone.extend(Tone.Multiply);
-
-	//set the constant value
-	//@param {number} const
-	Tone.Multiply.prototype.setFactor = function(factor){
-		this.factor = factor;
-		this.input.gain.value = factor;
-	}
-
-	return Tone.Multiply;
-})
-;
-///////////////////////////////////////////////////////////////////////////////
-//
-//  NORMALIZE
-//
-//	normalizes the incoming signal (between inputMin and inputMax)
-//	to normal range (-1 to 1)
-//	should deprecate!
-///////////////////////////////////////////////////////////////////////////////
-
-define('Tone/signal/Normalize',["Tone/core/Tone"], function(Tone){	
-
-	Tone.Normalize = function(inputMin, inputMax){
-		Tone.call(this);
-
-		//vars
-		this.inputMin = this.defaultArg(inputMin, -1);
-		this.inputMax = this.defaultArg(inputMax, 1);
-
-		//components
-		this.normalize = this.context.createScriptProcessor(this.bufferSize, 1, 1);
-
-		//connections
-		this.chain(this.input, this.normalize, this.output);
-
-		//setup
-		this.normalize.onaudioprocess = this._process.bind(this);
-	}
-
-	Tone.extend(Tone.Normalize);
-
-	Tone.Normalize.prototype._process = function(e) {
-		var bufferSize = this.normalize.bufferSize;
-		var input = e.inputBuffer.getChannelData(0);
-		var output = e.outputBuffer.getChannelData(0);
-		var min = this.inputMin;
-		var max = this.inputMax;
-		var divisor = (max - min) / 2;
-		for (var i = 0; i < bufferSize; i++) {
-			output[i] = (input[i] - min) / divisor - 1;
-		}
-	}
-
-	return Tone.Normalize;
-})
-;
-///////////////////////////////////////////////////////////////////////////////
-//
 //  SPLIT
 //
 //	splits the incoming signal into left and right outputs
@@ -2154,49 +2058,6 @@ define('Tone/signal/Split',["Tone/core/Tone"], function(Tone){
 	Tone.extend(Tone.Split);
 
 	return Tone.Split;
-});
-///////////////////////////////////////////////////////////////////////////////
-//
-//  SUBTRACT FROM
-//
-//	subtract the signal from the constant
-//	for subtracting from the signal, use Tone.Add with a negative number
-///////////////////////////////////////////////////////////////////////////////
-
-define('Tone/signal/Subtract',["Tone/core/Tone"], function(Tone){
-
-	Tone.Subtract = function(constant){
-		Tone.call(this);
-
-		this.constant = constant;
-
-		//component
-		this.subber = this.context.createWaveShaper();
-
-		//connections
-		this.chain(this.input, this.subber, this.output);
-
-		//setup
-		this._subCurve();
-	}
-
-	Tone.extend(Tone.Subtract);
-
-	//subtracts the signal from the value
-	Tone.Subtract.prototype._subCurve = function(){
-		var len = this.waveShaperResolution;
-		var curve = new Float32Array(len);
-		for (var i = 0; i < len; i++){
-			///scale the values between -1 to 1
-			var baseline = (i / (len - 1)) * 2 - 1;
-			//all inputs produce the output value
-			curve[i] = this.constant - baseline;
-		}
-		//console.log(curve);
-		this.subber.curve = curve;
-	}
-
-	return Tone.Subtract;
 });
 ///////////////////////////////////////////////////////////////////////////////
 //

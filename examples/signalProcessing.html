@@ -10,7 +10,6 @@
 	<input type='range' value='50'>
 	<div id='signal'>0</div>
 	<div id='add'>0</div>
-	<div id='sub'>0</div>
 	<div id='scale'>0</div>
 	<div id='mult'>0</div>
 	<script type="text/javascript">
@@ -24,46 +23,37 @@
 		var addMeter = new Tone.Meter();
 		adder.connect(addMeter);
 		signal.connect(adder);
-
-		//the subtract from
-		var subtract = new Tone.Subtract(100);
-		var subMeter = new Tone.Meter();
-		subtract.connect(subMeter);
-		signal.connect(subtract);
-
 		
 		//the scaler
-		var scaler = new Tone.Scale(5, 10);
+		var scaler = new Tone.Scale(99, 101, 5, 10);
 		var scaleMeter = new Tone.Meter();
 		scaler.connect(scaleMeter);
-		signal.connect(scaler);
+		adder.connect(scaler);
 
 		//the multiplier
 		var mult = new Tone.Multiply(10);
 		var multMeter = new Tone.Meter();
 		mult.connect(multMeter);
-		signal.connect(mult);
+		scaler.connect(mult);
 
 		//INTERFACE//
 
 		var $signal = document.querySelector("#signal");
 		var $add = document.querySelector("#add");
 		var $scale = document.querySelector("#scale");
-		var $sub = document.querySelector("#sub");
 		var $mult = document.querySelector("#mult");
 
 		setInterval(function(){
 			$signal.textContent = "signal: " + dryMeter.getValue().toFixed(3);
 			$add.textContent = "signal + 100: " + addMeter.getValue().toFixed(3);
 			$scale.textContent = "scaled 5 to 10: " + scaleMeter.getValue().toFixed(3);
-			$sub.textContent = "100 - signal: " + subMeter.getValue().toFixed(3);
 			$mult.textContent = "signal * 10: " + multMeter.getValue().toFixed(3);
 		}, 100);
 
 		var range = document.querySelector("input");
 		range.onchange = function(){
 			var val = range.value;
-			signal.linearRampToValueAtTime(val / 50 - 1, "+.3");
+			signal.linearRampToValueAtTime(val / 50 - 1, "+.1");
 		}
 	</script>
 </body>

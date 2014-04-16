@@ -7,15 +7,34 @@
 
 </head>
 <body>
-
+	<div id='meter'></div>
 	<script type="text/javascript">
 		//minimal example using requirejs
 		require.config({
 			baseUrl : "../"
 		});
-		require(["Tone/core/Tone", "Tone/effects/PingPongDelay"], function(Tone, PingPongDelay){
+		require(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Scale", "Tone/component/Meter"], 
+		function(Tone, Signal, Scale, Meter){
+
+			var meter = new Meter();
 			
+			var sig1 = new Signal(.5);
+			var scale = new Scale(0, 1, 10, 100);
+
+			sig1.connect(scale)
+			scale.connect(meter);
+
+			var meterEl = document.querySelector("#meter");
+
+			setInterval(function(){
+				meterEl.textContent = meter.getValue();
+			}, 100);
+			window.scale = scale;
 		});
+
+		var scaleVal = function(input, inmin, inmax, outmin, outmax){
+			return (input - inmin)*((outmax - outmin) / (inmax - inmin)) + outmin;
+		}
 
 	</script>
 </body>

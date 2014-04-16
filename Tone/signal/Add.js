@@ -2,47 +2,32 @@
 //
 //  ADD
 //
-//	adds a constant value to the incoming signal in normal range (-1 to 1)
+//	adds a value to the incoming signal
+//	can sum two signals or a signal and a constant
 ///////////////////////////////////////////////////////////////////////////////
 
-define(["Tone/core/Tone"], function(Tone){
+define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 
-	Tone.Add = function(constant){
+	//@param {Tone.Signal|number} value
+	Tone.Add = function(value){
 		Tone.call(this);
 
-		this.constant = constant;
-
-		//component
-		this.adder = this.context.createWaveShaper();
+		if (typeof value === "number"){
+			this.value = new Tone.Signal(value);
+		} else {
+			this.value = value;
+		}
 
 		//connections
-		this.chain(this.input, this.adder, this.output);
-
-		//setup
-		this._adderCurve();
+		this.chain(this.value, this.input, this.output);
 	}
 
 	Tone.extend(Tone.Add);
 
-	//adds a constant value to the incoming signal
-	Tone.Add.prototype._adderCurve = function(){
-		var len = this.waveShaperResolution;
-		var curve = new Float32Array(len);
-		for (var i = 0; i < len; i++){
-			///scale the values between -1 to 1
-			var baseline = (i / (len - 1)) * 2 - 1;
-			//all inputs produce the output value
-			curve[i] = baseline + this.constant;
-		}
-		//console.log(curve);
-		this.adder.curve = curve;
-	}
-
 	//set the constant value
-	//@param {number} const
-	Tone.Add.prototype.setConstant = function(constant){
-		this.constant = constant;
-		this._adderCurve();
+	//@param {number} value
+	Tone.Add.prototype.setValue = function(value){
+		this.value.setValue(value);
 	}
 
 	return Tone.Add;
