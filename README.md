@@ -1,12 +1,13 @@
 Tone.js
 =========
 
-A collection of building blocks extending and wrapping the Web Audio API
+A collection of building blocks extending and wrapping the Web Audio API.  
 
+# Installation
 
 Tone.js can be used with or without require.js
 
-## require.js
+### require.js
 
 There are a couple ways to use the tone library with require.js and r.js. 
 
@@ -29,6 +30,11 @@ require.config({
     }
 });
 ```
-## without require.js
+### without require.js
 
-To use Tone.js without require, just add the build source in a script tag at the top of your page. Tone will add itself and all its components to the global context. 
+To use Tone.js without require, just add the build source (located at build/Tone.js) to the top of your html page. Tone will add itself as a global. 
+
+```html
+<script type="text/javascript" src="../build/Tone.js"></script>
+```
+
