@@ -23,7 +23,7 @@ define(["Tone/core/Tone", "Tone/source/Oscillator", "Tone/signal/Scale"], functi
 		this.chain(this.oscillator, this.scaler, this.output);
 	}
 
-	Tone.extend(Tone.LFO, Tone);
+	Tone.extend(Tone.LFO);
 
 
 	//start the lfo
@@ -34,6 +34,11 @@ define(["Tone/core/Tone", "Tone/source/Oscillator", "Tone/signal/Scale"], functi
 	//stop
 	Tone.LFO.prototype.stop = function(time){
 		this.oscillator.stop(time);
+	}
+
+	//sync to the transport
+	Tone.LFO.prototype.sync = function(){
+		this.oscillator.sync();
 	}
 
 
