@@ -1,65 +1,99 @@
-///////////////////////////////////////////////////////////////////////////////
-//
-//  OSCILLATOR
-//
-//	just an oscillator, 
-//	but starting and stopping is easier than the native version
-///////////////////////////////////////////////////////////////////////////////
+define(["Tone/core/Tone", "Tone/core/Transport", "Tone/signal/Signal"], 
+function(Tone){
 
-define(["Tone/core/Tone"], function(Tone){
-
+	/**
+	 *  Oscillator
+	 *
+	 *  Oscilator with start, pause, stop and sync to Transport
+	 *
+	 *  @constructor
+	 *  @param {number=} freq starting frequency
+	 *  @param {string=} type type of oscillator (sine|square|triangle|sawtooth)
+	 */
 	Tone.Oscillator = function(freq, type){
-		Tone.call(this);
-
-		this.started = false;
 
 		//components
+		this.output = this.context.createGain();
 		this.oscillator = this.context.createOscillator();
-		this.oscillator.frequency.value = this.defaultArg(this.toFrequency(freq), 440);
-		this.oscillator.type = this.defaultArg(type, "sine");
+		this.control = new Tone.Signal(this.defaultArg(this.toFrequency(freq), 440));
+
 		//connections
-		this.chain(this.oscillator, this.output);
-	}
+		this.oscillator.connect(this.output);
+
+		//parameters
+		this.oscillator.type = this.defaultArg(type, "sine");
+		this.isSynced = false;
+	};
 
 	Tone.extend(Tone.Oscillator);
 
-	//@param {number=} time
+	/**
+	 *  start the oscillator
+	 *  
+	 *  @param  {Tone.Time} time 
+	 */
 	Tone.Oscillator.prototype.start = function(time){
-		if (!this.started){
-			var freq = this.oscillator.frequency.value;
-			var type = this.oscillator.type;
-			var detune = this.oscillator.frequency.value;
-			this.oscillator = this.context.createOscillator();
-			this.oscillator.frequency.value = freq;
-			this.oscillator.type = type;
-			this.oscillator.detune.value = detune;
-			this.oscillator.connect(this.output);
-			this.started = true;
-			time = this.defaultArg(time, this.now());
-			this.oscillator.start(time);
-		}
-	}
+		//get previous values
+		var type = this.oscillator.type;
+		var detune = this.oscillator.frequency.value;
+		//new oscillator with previous values
+		this.oscillator = this.context.createOscillator();
+		this.oscillator.type = type;
+		this.oscillator.detune.value = detune;
+		//connect the control signal to the oscillator frequency
+		this.oscillator.connect(this.output);
+		this.control.connect(this.oscillator.frequency);
+		this.oscillator.frequency.value = 0;
+		//start the oscillator
+		this.oscillator.start(this.toSeconds(time));
+	};
 
-	//@param {number=} time
+	/**
+	 *  Sync the oscillator to the transport
+	 *
+	 *  the current ratio between the oscillator and the Transport BPM
+	 *  is fixed and any change to the Transport BPM will change this
+	 *  oscillator in that same ratio
+	 *
+	 *  Transport start/pause/stop will also start/pause/stop the oscillator
+	 */
+	Tone.Oscillator.prototype.sync = function(){
+		Tone.Transport.sync(this, this.control);
+	};
+
+	/**
+	 *  unsync the oscillator from the Transport
+	 */
+	Tone.Oscillator.prototype.unsync = function(){
+		Tone.Transport.unsync(this);
+		this.control.unsync();
+	};
+
+	/**
+	 *  stop the oscillator
+	 *  @param  {Tone.Time=} time (optional) timing parameter
+	 */
 	Tone.Oscillator.prototype.stop = function(time){
-		if (this.started){
-			time = this.defaultArg(time, this.now());
-			this.oscillator.stop(time);
-			this.started = false;
-		}
-	}
+		this.oscillator.stop(this.toSeconds(time));
+	};
 
-	//@param {number} val
-	//@param {Tone.Timing=} rampTime
+	/**
+	 *  exponentially ramp the frequency of the oscillator over the rampTime
+	 *  
+	 *  @param {number}	     val      the frequency
+	 *  @param {Tone.Time} rampTime when the oscillator will arrive at the frequency
+	 */
 	Tone.Oscillator.prototype.setFrequency = function(val, rampTime){
-		rampTime = this.defaultArg(rampTime, 0);
-		this.oscillator.frequency.linearRampToValueAtTime(this.toFrequency(val), this.toSeconds(rampTime));
-	}
+		this.control.exponentialRampToValueAtTime(this.toFrequency(val), this.toSeconds(rampTime));
+	};
 
-	//@param {string} type
+	/**
+	 *  set the oscillator type
+	 *  @param {string} type (sine|square|triangle|sawtooth)
+	 */
 	Tone.Oscillator.prototype.setType = function(type){
 		this.oscillator.type = type;
-	}
+	};
 
 	return Tone.Oscillator;
 });
