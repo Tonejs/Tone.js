@@ -1,2 +1,8 @@
 
 *.scssc
+
+examples/scratch.html
+
+*.sublime-workspace
+
+*.sublime-project
