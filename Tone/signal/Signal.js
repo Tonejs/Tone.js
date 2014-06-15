@@ -74,7 +74,7 @@ define(["Tone/core/Tone"], function(Tone){
 	 *  Schedules a parameter value change at the given time.
 	 *  
 	 *  @param {number}		 value 
-	 *  @param {Tone.Timing} time 
+	 *  @param {Tone.Time} time 
 	 */
 	Tone.Signal.prototype.setValueAtTime = function(value, time){
 		value *= this._syncRatio;
@@ -86,7 +86,7 @@ define(["Tone/core/Tone"], function(Tone){
 	 *  previous scheduled parameter value to the given value.
 	 *  
 	 *  @param  {number} value   
-	 *  @param  {Tone.Timing} endTime 
+	 *  @param  {Tone.Time} endTime 
 	 */
 	Tone.Signal.prototype.linearRampToValueAtTime = function(value, endTime){
 		value *= this._syncRatio;
@@ -98,7 +98,7 @@ define(["Tone/core/Tone"], function(Tone){
 	 *  the previous scheduled parameter value to the given value.
 	 *  
 	 *  @param  {number} value   
-	 *  @param  {Tone.Timing} endTime 
+	 *  @param  {Tone.Time} endTime 
 	 */
 	Tone.Signal.prototype.exponentialRampToValueAtTime = function(value, endTime){
 		value *= this._syncRatio;
@@ -110,7 +110,7 @@ define(["Tone/core/Tone"], function(Tone){
 	 *  a rate having the given time constant.
 	 *  	
 	 *  @param {number} value        
-	 *  @param {Tone.Timing} startTime    
+	 *  @param {Tone.Time} startTime    
 	 *  @param {number} timeConstant 
 	 */
 	Tone.Signal.prototype.setTargetAtTime = function(value, startTime, timeConstant){
@@ -123,8 +123,8 @@ define(["Tone/core/Tone"], function(Tone){
 	 *  for the given duration.
 	 *  	
 	 *  @param {Array<number>} values    
-	 *  @param {Tone.Timing} startTime 
-	 *  @param {Tone.Timing} duration  
+	 *  @param {Tone.Time} startTime 
+	 *  @param {Tone.Time} duration  
 	 */
 	Tone.Signal.prototype.setValueCurveAtTime = function(values, startTime, duration){
 		for (var i = 0; i < values.length; i++){
@@ -137,7 +137,7 @@ define(["Tone/core/Tone"], function(Tone){
 	 *  Cancels all scheduled parameter changes with times greater than or 
 	 *  equal to startTime.
 	 *  
-	 *  @param  {Tone.Timing} startTime
+	 *  @param  {Tone.Time} startTime
 	 */
 	Tone.Signal.prototype.cancelScheduledValues = function(startTime){
 		this.scalar.gain.cancelScheduledValues(this.toSeconds(startTime));

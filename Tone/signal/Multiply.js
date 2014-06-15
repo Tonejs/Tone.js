@@ -9,10 +9,10 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 
 	//@param {number} value
 	Tone.Multiply = function(value){
-		Tone.call(this);
-		this.input.connect(this.output);
+		this.input = this.context.createGain();
+		this.output = this.input;
 		this.input.gain.value = value;
-	}
+	};
 
 	Tone.extend(Tone.Multiply);
 
@@ -20,7 +20,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	//@param {number} value
 	Tone.Multiply.prototype.setValue = function(value){
 		this.input.gain.value = value;
-	}
+	};
 
 	return Tone.Multiply;
-})
+});

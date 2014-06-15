@@ -20,7 +20,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 
 		//connections
 		this.chain(this.value, this.input, this.output);
-	}
+	};
 
 	Tone.extend(Tone.Add);
 
@@ -28,7 +28,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	//@param {number} value
 	Tone.Add.prototype.setValue = function(value){
 		this.value.setValue(value);
-	}
+	};
 
 	return Tone.Add;
 });
