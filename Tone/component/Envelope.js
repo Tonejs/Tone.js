@@ -13,12 +13,11 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 		Tone.call(this);
 
 		//set the parameters
-		this.attack = this.defaultArg(attack, .01);
-		this.decay = this.defaultArg(decay, .1);
+		this.attack = this.defaultArg(attack, 0.01);
+		this.decay = this.defaultArg(decay, 0.1);
 		this.release = this.defaultArg(release, 1);
-		this.sustain = this.defaultArg(sustain, .5);
+		this.sustain = this.defaultArg(sustain, 0.5);
 
-		// this.setSustain(this.defaultArg(sustain, .1));
 		this.min = this.defaultArg(minOutput, 0);
 		this.max = this.defaultArg(maxOutput, 1);
 		
@@ -27,12 +26,12 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 
 		//connections
 		this.chain(this.control, this.output);
-	}
+	};
 
-	Tone.extend(Tone.Envelope, Tone);
+	Tone.extend(Tone.Envelope);
 
 	//attack->decay->sustain
-	//@param {Tone.Timing} time
+	//@param {Tone.Time} time
 	Tone.Envelope.prototype.triggerAttack = function(time){
 		var startVal = this.min;
 		if (!time){
@@ -47,7 +46,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 		this.control.linearRampToValueAtTime(this.max, time + attackTime);
 		var sustainVal = (this.max - this.min) * this.sustain + this.min;
 		this.control.linearRampToValueAtTime(sustainVal, time + attackTime + decayTime);
-	}
+	};
 
 	//attack->decay->sustain
 	Tone.Envelope.prototype.triggerAttackExp = function(time){
@@ -55,7 +54,6 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 		if (!time){
 			startVal = this.control.getValue();
 		}
-		time = this.defaultArg(time, this.now());
 		time = this.toSeconds(time);
 		this.control.cancelScheduledValues(time);
 		this.control.setValueAtTime(startVal, time);
@@ -64,7 +62,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 		this.control.linearRampToValueAtTime(this.max, time + attackTime);
 		var sustainVal = (this.max - this.min) * this.sustain + this.min;
 		this.control.exponentialRampToValueAtTime(sustainVal, time + attackTime + decayTime);
-	}
+	};
 
 	//triggers the release of the envelope
 	Tone.Envelope.prototype.triggerRelease = function(time){
@@ -77,7 +75,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 		this.control.cancelScheduledValues(time);
 		this.control.setValueAtTime(startVal, time);
 		this.control.linearRampToValueAtTime(this.min, time + this.toSeconds(this.release));
-	}
+	};
 
 
 	//triggers the release of the envelope
@@ -91,7 +89,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 		this.control.cancelScheduledValues(time);
 		this.control.setValueAtTime(startVal, time);
 		this.control.exponentialRampToValueAtTime(this.min, time + this.toSeconds(this.release));
-	}
+	};
 
 	//@private
 	//pointer to the parent's connect method
@@ -104,7 +102,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 			param.value = 0;
 		} 
 		this._connect(param);
-	}
+	};
 
 	return Tone.Envelope;
 });
