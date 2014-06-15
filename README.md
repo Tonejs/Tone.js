@@ -157,7 +157,7 @@ lfo.setFrequency("4n") //oscillates at the rate of a quarter note
 Transport Time is described measures:quater-notes:sixteenth-notes. 
 
 ```javascript
-//Start the chorus 16 measures after the start of the Transport
+//Start the chorus 32 measures after the start of the Transport
 Tone.Transport.setTimeline(startChorus, "32:0:0");
 ```
 
