@@ -52,7 +52,7 @@
 		var button = document.querySelector("button");
 
 		button.onclick = function(){
-			if (Tone.Transport.state === "playing"){
+			if (Tone.Transport.state === "started"){
 				Tone.Transport.stop();
 				button.textContent = "start";
 			} else {

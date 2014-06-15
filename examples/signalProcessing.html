@@ -17,13 +17,13 @@
 		var dryMeter = new Tone.Meter();
 		signal.connect(dryMeter);
 
-		
+
 		//the adder
 		var adder = new Tone.Add(100);
 		var addMeter = new Tone.Meter();
 		adder.connect(addMeter);
 		signal.connect(adder);
-		
+
 		//the scaler
 		var scaler = new Tone.Scale(99, 101, 5, 10);
 		var scaleMeter = new Tone.Meter();
