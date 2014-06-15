@@ -34,7 +34,7 @@ define(["Tone/core/Tone", "Tone/core/Master"], function(Tone){
 		this.input.connect(this.jsNode);
 		//so it doesn't get garbage collected
 		this.jsNode.toMaster();
-	}
+	};
 
 	Tone.extend(Tone.Meter, Tone);
 
@@ -44,30 +44,30 @@ define(["Tone/core/Tone", "Tone/core/Master"], function(Tone){
 	Tone.Meter.prototype.getLevel = function(channel){
 		channel = this.defaultArg(channel, 0);
 		var vol = this.volume[channel];
-		if (vol < .00001){
+		if (vol < 0.00001){
 			return 0;
 		} else {
 			return vol;
 		}
-	}
+	};
 
 	//@param {number=} channel
 	//@returns {number}
 	Tone.Meter.prototype.getValue = function(channel){
 		channel = this.defaultArg(channel, 0);
 		return this.values[channel];
-	}
+	};
 
 	//@param {number=} channel
 	//@returns {number} the channel volume in decibels
 	Tone.Meter.prototype.getDb = function(channel){
 		return this.gainToDb(this.getLevel(channel));
-	}
+	};
 
 	// @returns {boolean} if the audio has clipped in the last 500ms
 	Tone.Meter.prototype.isClipped = function(){
 		return Date.now() - this.clipTime < 500;
-	}
+	};
 
 	//get the max value
 	Tone.Meter.prototype.onprocess = function(event){
@@ -80,7 +80,7 @@ define(["Tone/core/Tone", "Tone/core/Master"], function(Tone){
 			var clipped = false;
 			for (var i = 0; i < bufferSize; i++){
 				x = input[i];
-				if (!clipped && x > .95){
+				if (!clipped && x > 0.95){
 					clipped = true;
 					this.clipTime = Date.now();
 				}
@@ -89,10 +89,10 @@ define(["Tone/core/Tone", "Tone/core/Master"], function(Tone){
 			}
 			var average = total / bufferSize;
 			var rms = Math.sqrt(sum / bufferSize);
-			this.volume[channel] = Math.max(rms, this.volume[channel] * .8);
+			this.volume[channel] = Math.max(rms, this.volume[channel] * 0.8);
 			this.values[channel] = average;
 		}
-	}
+	};
 
 	return Tone.Meter;
 });
