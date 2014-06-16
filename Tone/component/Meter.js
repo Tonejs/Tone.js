@@ -58,7 +58,7 @@ define(["Tone/core/Tone", "Tone/core/Master"], function(Tone){
 		 *  @private
 		 *  @type {ScriptProcessorNode}
 		 */
-		this._jsNode = this.context.createScriptProcessor(this.bufferSize, this.channels, 0);
+		this._jsNode = this.context.createScriptProcessor(this.bufferSize, this.channels, 1);
 		this._jsNode.onaudioprocess = this._onprocess.bind(this);
 		//so it doesn't get garbage collected
 		this._jsNode.toMaster();
