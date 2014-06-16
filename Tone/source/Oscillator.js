@@ -12,9 +12,9 @@ function(Tone){
 	 *  @param {string=} type type of oscillator (sine|square|triangle|sawtooth)
 	 */
 	Tone.Oscillator = function(freq, type){
+		Tone.Source.call(this);
 
 		//components
-		this.output = this.context.createGain();
 		this.oscillator = this.context.createOscillator();
 		this.control = new Tone.Signal(this.defaultArg(this.toFrequency(freq), 440));
 
@@ -81,8 +81,8 @@ function(Tone){
 	/**
 	 *  exponentially ramp the frequency of the oscillator over the rampTime
 	 *  
-	 *  @param {number}	     val      the frequency
-	 *  @param {Tone.Time} rampTime when the oscillator will arrive at the frequency
+	 *  @param {Tone.Time}	val
+	 *  @param {Tone.Time=} rampTime when the oscillator will arrive at the frequency
 	 */
 	Tone.Oscillator.prototype.setFrequency = function(val, rampTime){
 		this.control.exponentialRampToValueAtTime(this.toFrequency(val), this.toSeconds(rampTime));

@@ -8,7 +8,12 @@ function(Tone){
 	 *  @extends {Tone}
 	 */	
 	Tone.Source = function(){
-
+		/**
+		 *  unlike most ToneNodes, Sources only have an output and no input
+		 *  
+		 *  @type {GainNode}
+		 */
+		this.output = this.context.createGain();
 	};
 
 	Tone.extend(Tone.Source);
