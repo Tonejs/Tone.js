@@ -47,7 +47,8 @@ define(["Tone/core/Tone", "Tone/source/Oscillator", "Tone/component/Panner", "To
 
 	/**
 	 * Set the type of oscillator attached to the AutoPanner.
-	 * @param {Oscillator} type of oscillator the panner is attached to
+	 * 
+	 * @param {string} type of oscillator the panner is attached to (sine|sawtooth|triangle|square)
 	 */
 	Tone.AutoPanner.prototype.setType = function(type){
 		this.osc.setType(type);
@@ -55,7 +56,8 @@ define(["Tone/core/Tone", "Tone/source/Oscillator", "Tone/component/Panner", "To
 
 	/**
 	 * Set frequency of the oscillator attached to the AutoPanner.
-	 * @param {number} rate in HZ of the oscillator's frequency.
+	 * 
+	 * @param {number|string} rate in HZ of the oscillator's frequency.
 	 */
 	Tone.AutoPanner.prototype.setFrequency = function(rate){
 		this.osc.setFrequency(rate);
@@ -63,6 +65,7 @@ define(["Tone/core/Tone", "Tone/source/Oscillator", "Tone/component/Panner", "To
 
 	/**
 	 * Set the amount of the AutoPanner.
+	 * 
 	 * @param {number} amount in dB (0 - 1)
 	 */
 	Tone.AutoPanner.prototype.setAmount = function(amount){
