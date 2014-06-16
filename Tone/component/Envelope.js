@@ -7,7 +7,16 @@
 
 define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 
-
+	/**
+	 * Envelope 
+	 * ADR envelope generator attaches to an AudioParam
+	 * @param {Tone.Time=} attack
+	 * @param {Tone.Time=} decay
+	 * @param {number=} sustain 	a percentage of the full amplitude
+	 * @param {Tone.Time=} release
+	 * @param {number=} minOutput
+	 * @param {number=} maxOutput
+	 */
 	Tone.Envelope = function(attack, decay, sustain, release, minOutput, maxOutput){
 		//extend Unit
 		Tone.call(this);
@@ -30,8 +39,10 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 
 	Tone.extend(Tone.Envelope);
 
-	//attack->decay->sustain
-	//@param {Tone.Time} time
+	/**
+	 * attack->decay->sustain linear ramp
+	 * @param  {Tone.Time} time
+	 */
 	Tone.Envelope.prototype.triggerAttack = function(time){
 		var startVal = this.min;
 		if (!time){
@@ -48,7 +59,10 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 		this.control.linearRampToValueAtTime(sustainVal, time + attackTime + decayTime);
 	};
 
-	//attack->decay->sustain
+	/**
+	 * attack->decay->sustain exponential ramp
+	 * @param  {Tone.Time} time
+	 */
 	Tone.Envelope.prototype.triggerAttackExp = function(time){
 		var startVal = this.min;
 		if (!time){
@@ -64,7 +78,11 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 		this.control.exponentialRampToValueAtTime(sustainVal, time + attackTime + decayTime);
 	};
 
-	//triggers the release of the envelope
+	
+	/**
+	 * triggers the release of the envelope with a linear ramp
+	 * @param  {Tone.Time} time
+	 */
 	Tone.Envelope.prototype.triggerRelease = function(time){
 		var startVal = this.control.getValue();
 		if (time){
@@ -78,7 +96,10 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	};
 
 
-	//triggers the release of the envelope
+	/**
+	 * triggers the release of the envelope with an exponential ramp
+	 * @param  {Tone.Time} time
+	 */
 	Tone.Envelope.prototype.triggerReleaseExp = function(time){
 		var startVal = this.control.getValue();
 		if (time){
@@ -91,11 +112,17 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 		this.control.exponentialRampToValueAtTime(this.min, time + this.toSeconds(this.release));
 	};
 
-	//@private
-	//pointer to the parent's connect method
+	/**
+	 * 	@private
+	 * 	pointer to the parent's connect method
+	 * @type {[type]}
+	 */
 	Tone.Envelope.prototype._connect = Tone.prototype.connect;
 
-	//triggers the release of the envelope
+	/**
+	 * triggers the release of the envelope
+	 * @param  {number} param
+	 */
 	Tone.Envelope.prototype.connect = function(param){
 		if (param instanceof AudioParam){
 			//set the initial value
