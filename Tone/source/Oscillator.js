@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/core/Transport", "Tone/signal/Signal"], 
+define(["Tone/core/Tone", "Tone/core/Transport", "Tone/signal/Signal", "Tone/source/Source"], 
 function(Tone){
 
 	/**
@@ -7,6 +7,7 @@ function(Tone){
 	 *  Oscilator with start, pause, stop and sync to Transport
 	 *
 	 *  @constructor
+	 *  @extends {Tone.Source}
 	 *  @param {number=} freq starting frequency
 	 *  @param {string=} type type of oscillator (sine|square|triangle|sawtooth)
 	 */
@@ -25,7 +26,7 @@ function(Tone){
 		this.isSynced = false;
 	};
 
-	Tone.extend(Tone.Oscillator);
+	Tone.extend(Tone.Oscillator, Tone.Source);
 
 	/**
 	 *  start the oscillator
@@ -89,6 +90,7 @@ function(Tone){
 
 	/**
 	 *  set the oscillator type
+	 *  
 	 *  @param {string} type (sine|square|triangle|sawtooth)
 	 */
 	Tone.Oscillator.prototype.setType = function(type){
