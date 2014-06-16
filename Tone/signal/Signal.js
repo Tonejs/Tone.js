@@ -1,5 +1,34 @@
 define(["Tone/core/Tone"], function(Tone){
-	
+
+	//all signals share a common constant signal generator
+	/**
+	 *  @static
+	 *  @private
+	 *  @type {OscillatorNode} 
+	 */
+	var generator = Tone.context.createOscillator();
+
+	/**
+	 *  @static
+	 *  @private
+	 *  @type {WaveShaperNode} 
+	 */
+	var constant = Tone.context.createWaveShaper();
+
+	//generate the waveshaper table which outputs 1 for any input value
+	(function(){
+		var len = 8;
+		var curve = new Float32Array(len);
+		for (var i = 0; i < len; i++){
+			//all inputs produce the output value
+			curve[i] = 1;
+		}
+		constant.curve = curve;
+	})();
+
+	generator.connect(constant);
+	generator.start(0);
+
 	/**
 	 *  Signal
 	 *
@@ -13,40 +42,33 @@ define(["Tone/core/Tone"], function(Tone){
 	 *  @param {number=} value (optional) initial value
 	 */
 	Tone.Signal = function(value){
-
-		//components
-		this.constant = this.context.createWaveShaper();
+		/**
+		 *  scales the constant output to the desired output
+		 *  @type {GainNode}
+		 */
 		this.scalar = this.context.createGain();
+		/**
+		 *  the output node
+		 *  @type {GainNode}
+		 */
 		this.output = this.context.createGain();
-		//generator to drive values
-		this.generator = this.context.createOscillator();
-		//the ratio of the this value to the control signal value
+		/**
+		 *  the ratio of the this value to the control signal value
+		 *
+		 *  @private
+		 *  @type {number}
+		 */
 		this._syncRatio = 1;
 
-		//connections
-		this.chain(this.generator, this.constant, this.scalar, this.output);
+		//connect the constant 1 output to the node output
+		this.chain(constant, this.scalar, this.output);
 
-		//setup
-		this.generator.start(0);
-		this._signalCurve();
+		//set the default value
 		this.setValue(this.defaultArg(value, 0));
 
 	};
 
 	Tone.extend(Tone.Signal);
-
-	/**
-	 *  generates a WaveShaper curve where the value for any input is 1
-	 */
-	Tone.Signal.prototype._signalCurve = function(){
-		var len = 8;
-		var curve = new Float32Array(len);
-		for (var i = 0; i < len; i++){
-			//all inputs produce the output value
-			curve[i] = 1;
-		}
-		this.constant.curve = curve;
-	};
 
 	/**
 	 *  @return {number} the current value of the signal
@@ -73,8 +95,8 @@ define(["Tone/core/Tone"], function(Tone){
 	/**
 	 *  Schedules a parameter value change at the given time.
 	 *  
-	 *  @param {number}		 value 
-	 *  @param {Tone.Time} time 
+	 *  @param {number}		value 
+	 *  @param {Tone.Time}  time 
 	 */
 	Tone.Signal.prototype.setValueAtTime = function(value, time){
 		value *= this._syncRatio;
@@ -115,7 +137,7 @@ define(["Tone/core/Tone"], function(Tone){
 	 */
 	Tone.Signal.prototype.setTargetAtTime = function(value, startTime, timeConstant){
 		value *= this._syncRatio;
-		this.scalar.gain.setTargetAtTime(value, this.toSeconds(startTime), timeConstant);
+		this.output.gain.setTargetAtTime(value, this.toSeconds(startTime), timeConstant);
 	};
 
 	/**
@@ -144,24 +166,24 @@ define(["Tone/core/Tone"], function(Tone){
 	};
 
 	/**
-	 *  Sync this signal value to a ratio of the input signal
+	 *  Sync this to another signal and it will always maintain the 
+	 *  ratio between the two signals until it is unsynced
 	 *  
 	 *  @param  {Tone.Signal} signal to sync to
 	 */
 	Tone.Signal.prototype.sync = function(signal){
-		//replace the this.constant with the incoming signal
-		this.constant.disconnect();
-		signal.connect(this.scalar);
-		//compute the sync ratio
+		//get the sync ratio
 		if (signal.getValue() !== 0){
 			this._syncRatio = this.getValue() / signal.getValue();
 		} else {
 			this._syncRatio = 0;
 		}
+		//make a new scalar which is not connected to the constant signal
+		this.scalar.disconnect();
+		this.scalar = this.context.createGain();
+		this.chain(signal, this.scalar, this.output);
+		//set it ot the sync ratio
 		this.scalar.gain.value = this._syncRatio;
-		//destroy the signal to free up compute and memory
-		this.generator.stop(0);
-		this.generator = null;
 	};
 
 	/**
@@ -172,17 +194,13 @@ define(["Tone/core/Tone"], function(Tone){
 	Tone.Signal.prototype.unsync = function(){
 		//make a new scalar so that it's disconnected from the control signal
 		//get the current gain
-		var currentGain = this.scalar.gain.value;
+		var currentGain = this.getValue();
 		this.scalar.disconnect();
 		this.scalar = this.context.createGain();
 		this.scalar.gain.value = currentGain / this._syncRatio;
 		this._syncRatio = 1;
-		//make a new generator
-		this.generator = this.context.createOscillator();
-		//connect things up
-		this.chain(this.generator, this.constant, this.scalar, this.output);
-		//start the generator
-		this.generator.start(0);
+		//reconnect things up
+		this.chain(constant, this.scalar, this.output);
 	};
 
 	return Tone.Signal;
