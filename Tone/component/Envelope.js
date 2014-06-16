@@ -1,21 +1,17 @@
-///////////////////////////////////////////////////////////////////////////////
-//
-//	Envelope
-//
-//	ADR envelope generator attaches to an AudioParam
-///////////////////////////////////////////////////////////////////////////////
-
 define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 
 	/**
-	 * Envelope 
-	 * ADR envelope generator attaches to an AudioParam
-	 * @param {Tone.Time=} attack
-	 * @param {Tone.Time=} decay
-	 * @param {number=} sustain 	a percentage of the full amplitude
-	 * @param {Tone.Time=} release
-	 * @param {number=} minOutput
-	 * @param {number=} maxOutput
+	 *  Envelope 
+	 *  ADR envelope generator attaches to an AudioParam
+	 *
+	 *  @constructor
+	 *  @extends {Tone}
+	 *  @param {Tone.Time=} attack
+	 *  @param {Tone.Time=} decay
+	 *  @param {number=} sustain 	a percentage (0-1) of the full amplitude
+	 *  @param {Tone.Time=} release
+	 *  @param {number=} minOutput the lowest point of the envelope
+	 *  @param {number=} maxOutput the highest point of the envelope
 	 */
 	Tone.Envelope = function(attack, decay, sustain, release, minOutput, maxOutput){
 		//extend Unit
@@ -88,7 +84,6 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 		if (time){
 			startVal = (this.max - this.min) * this.sustain + this.min;
 		}
-		time = this.defaultArg(time, this.now());
 		time = this.toSeconds(time);
 		this.control.cancelScheduledValues(time);
 		this.control.setValueAtTime(startVal, time);
@@ -98,6 +93,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 
 	/**
 	 * triggers the release of the envelope with an exponential ramp
+	 * 
 	 * @param  {Tone.Time} time
 	 */
 	Tone.Envelope.prototype.triggerReleaseExp = function(time){
@@ -105,7 +101,6 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 		if (time){
 			startVal = (this.max - this.min) * this.sustain + this.min;
 		}
-		time = this.defaultArg(time, this.now());
 		time = this.toSeconds(time);
 		this.control.cancelScheduledValues(time);
 		this.control.setValueAtTime(startVal, time);
@@ -115,12 +110,15 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	/**
 	 * 	@private
 	 * 	pointer to the parent's connect method
-	 * @type {[type]}
 	 */
 	Tone.Envelope.prototype._connect = Tone.prototype.connect;
 
 	/**
-	 * triggers the release of the envelope
+	 * connect the envelope
+	 * 
+	 * if the envelope is connected to a param, the params 
+	 * value will be set to 0 so that it doesn't interfere with the envelope
+	 * 
 	 * @param  {number} param
 	 */
 	Tone.Envelope.prototype.connect = function(param){
