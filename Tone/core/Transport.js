@@ -560,20 +560,141 @@ function(Tone){
 	Tone.Transport = new Tone.Transport();
 
 	///////////////////////////////////////////////////////////////////////////////
-	//	AUGMENT TONE'S PROTOTYPE
+	//	AUGMENT TONE'S PROTOTYPE TO INCLUDE TRANSPORT TIMING
 	///////////////////////////////////////////////////////////////////////////////
 
-	//@returns {number}
-	Tone.prototype.getBpm = function(){
-		return Tone.Transport.getBpm();
+	/**
+	 *  tests if a string is musical notation
+	 *  i.e.:
+	 *  	4n = quarter note
+	 *   	2m = two measures
+	 *    	8t = eighth-note triplet
+	 *  
+	 *  @return {boolean} 
+	 */
+	Tone.prototype.isNotation = (function(){
+		var notationFormat = new RegExp(/[0-9]+[mnt]$/i);
+		return function(note){
+			return notationFormat.test(note);
+		};
+	})();
+
+	/**
+	 *  tests if a string is transportTime
+	 *  i.e. :
+	 *  	1:2:0 = 1 measure + two quarter notes + 0 sixteenth notes
+	 *  	
+	 *  @return {boolean} 
+	 */
+	Tone.prototype.isTransportTime = (function(){
+		var transportTimeFormat = new RegExp(/^\d+(\.\d+)?:\d+(\.\d+)?(:\d+(\.\d+)?)?$/);
+		return function(transportTime){
+			return transportTimeFormat.test(transportTime);
+		};
+	})();
+
+	/**
+	 *  convert notation format strings to seconds
+	 *  @param  {string} notation      
+	 *  @return {number}               
+	 */
+	Tone.prototype.notationToSeconds = function(notation){
+		bpm = Tone.Transport.getBpm();
+		var beatTime = (60 / bpm);
+		var subdivision = parseInt(notation, 10);
+		var beats = 0;
+		if (subdivision === 0){
+			beats = 0;
+		}
+		var lastLetter = notation.slice(-1);
+		if (lastLetter === "t"){
+			beats = (4 / subdivision) * 2/3;
+		} else if (lastLetter === "n"){
+			beats = 4 / subdivision;
+		} else if (lastLetter === "m"){
+			beats = subdivision * timeSignature;
+		} else {
+			beats = 0;
+		}
+		return beatTime * beats;
+	};
+
+	/**
+	 *  convert transportTime into seconds
+	 *  i.e.:
+	 *  	4:2:3 == 4 measures + 2 quarters + 3 sixteenths
+	 *  
+	 *  @param  {string} transportTime 
+	 *  @return {number}               seconds
+	 */
+	Tone.prototype.transportTimeToSeconds = function(transportTime){
+		bpm = Tone.Transport.getBpm();
+		var measures = 0;
+		var quarters = 0;
+		var sixteenths = 0;
+		var split = transportTime.split(":");
+		if (split.length === 2){
+			measures = parseFloat(split[0]);
+			quarters = parseFloat(split[1]);
+		} else if (split.length === 1){
+			quarters = parseFloat(split[0]);
+		} else if (split.length === 3){
+			measures = parseFloat(split[0]);
+			quarters = parseFloat(split[1]);
+			sixteenths = parseFloat(split[2]);
+		}
+		var beats = (measures * timeSignature + quarters + sixteenths / 4);
+		return beats * this.notationToSeconds("4n", bpm, timeSignature);
+	};
+
+	/**
+	 *  Convert seconds to the closest transportTime in the form 
+	 *  	measures:quarters:sixteenths
+	 *  	
+	 *  @param  {number} seconds 
+	 *  @return {string}         
+	 */
+	Tone.prototype.secondsToTransportTime = function(seconds){
+		bpm = Tone.Transport.getBpm();
+		var quarterTime = this.notationToSeconds("4n", bpm, timeSignature);
+		var quarters = seconds / quarterTime;
+		var measures = Math.floor(quarters / timeSignature);
+		var sixteenths = Math.floor((quarters % 1) * 4);
+		quarters = Math.floor(quarters) % timeSignature;
+		var progress = [measures, quarters, sixteenths];
+		return progress.join(":");
 	};
 
 
-	//@returns {number}
-	Tone.prototype.getTimeSignature = function(){
-		return Tone.Transport.getTimeSignature();
+	/**
+	 *  convert Tone.Time into seconds
+	 *  
+	 *  unlike the method which it overrides, this takes into account 
+	 *  transporttime and musical notation
+	 *  
+	 *  @param  {Tone.Time} time          
+	 */
+	Tone.prototype.toSeconds = function(time){
+		if (typeof time === "number"){
+			return time; //assuming that it's seconds
+		} else if (typeof time === "string"){
+			var plusTime = 0;
+			if(time.charAt(0) === "+") {
+				plusTime = this.now();
+				time = time.slice(1);				
+			} 
+			if (this.isNotation(time)){
+				time = this.notationToSeconds(time);
+			} else if (this.isTransportTime(time)){
+				time = this.transportTimeToSeconds(time);
+			} else if (this.isFrequency(time)){
+				time = this.frequencyToSeconds(time);
+			}
+			return parseFloat(time) + plusTime;
+		} else {
+			return this.now();
+		}
 	};
-
 
 	return Tone.Transport;
 });

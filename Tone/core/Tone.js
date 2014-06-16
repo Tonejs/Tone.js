@@ -2,9 +2,11 @@
 //
 //	TONE.js
 //
-//	(c) Yotam Mann. 2014.
-//	The MIT License (MIT)
+//	@author Yotam Mann
+//	
+//	The MIT License (MIT) 2014
 ///////////////////////////////////////////////////////////////////////////////
+
 (function (root, factory) {
 	//can run with or without requirejs
 	if (typeof define === "function" && define.amd) {
@@ -45,22 +47,22 @@
 	if (typeof audioContext.createDelay !== "function"){
 		audioContext.createDelay = audioContext.createDelayNode;
 	}
-	if (typeof global.AudioBufferSourceNode.prototype.start !== "function"){
-		global.AudioBufferSourceNode.prototype.start = global.AudioBufferSourceNode.prototype.noteGrainOn;
+	if (typeof AudioBufferSourceNode.prototype.start !== "function"){
+		AudioBufferSourceNode.prototype.start = AudioBufferSourceNode.prototype.noteGrainOn;
 	}
-	if (typeof global.AudioBufferSourceNode.prototype.stop !== "function"){
-		global.AudioBufferSourceNode.prototype.stop = global.AudioBufferSourceNode.prototype.noteOff;
+	if (typeof AudioBufferSourceNode.prototype.stop !== "function"){
+		AudioBufferSourceNode.prototype.stop = AudioBufferSourceNode.prototype.noteOff;
 	}
-	if (typeof global.OscillatorNode.prototype.start !== "function"){
-		global.OscillatorNode.prototype.start = global.OscillatorNode.prototype.noteOn;
+	if (typeof OscillatorNode.prototype.start !== "function"){
+		OscillatorNode.prototype.start = OscillatorNode.prototype.noteOn;
 	}
-	if (typeof global.OscillatorNode.prototype.stop !== "function"){
-		global.OscillatorNode.prototype.stop = global.OscillatorNode.prototype.noteOff;	
+	if (typeof OscillatorNode.prototype.stop !== "function"){
+		OscillatorNode.prototype.stop = OscillatorNode.prototype.noteOff;	
 	}
 	//extend the connect function to include Tones
-	global.AudioNode.prototype._nativeConnect = global.AudioNode.prototype.connect;
-	global.AudioNode.prototype.connect = function(B){
-		if (B.input && B.input instanceof global.GainNode){
+	AudioNode.prototype._nativeConnect = AudioNode.prototype.connect;
+	AudioNode.prototype.connect = function(B){
+		if (B.input && B.input instanceof GainNode){
 			this._nativeConnect(B.input);
 		} else {
 			try {
@@ -76,8 +78,24 @@
 	//	@constructor
 	///////////////////////////////////////////////////////////////////////////
 
+	/**
+	 *  Tone is the baseclass of all ToneNodes
+	 *  From Tone, children inherit timing and math which is used throughout Tone.js
+	 *  
+	 *  @constructor
+	 */
 	var Tone = function(){
+		/**
+		 *  default input of the ToneNode
+		 *  
+		 *  @type {GainNode}
+		 */
 		this.input = audioContext.createGain();
+		/**
+		 *  default output of the ToneNode
+		 *  
+		 *  @type {GainNode}
+		 */
 		this.output = audioContext.createGain();
 	};
 
@@ -85,21 +103,33 @@
 	//	CLASS VARS
 	///////////////////////////////////////////////////////////////////////////
 
+	/**
+	 *  A pointer to the audio context
+	 *  @type {AudioContext}
+	 */
 	Tone.prototype.context = audioContext;
-	Tone.prototype.fadeTime = 0.005; //5ms
-	Tone.prototype.bufferSize = 2048; //default buffer size
-	Tone.prototype.waveShaperResolution = 1024; //default buffer size
-	
-	///////////////////////////////////////////////////
-	// 				CLASS METHODS					 //
-	///////////////////////////////////////////////////
 
 	/**
-	 *  @return {Number} the currentTime from the AudioContext
+	 *  A static pointer to the audio context
+	 *  @type {[type]}
 	 */
-	Tone.prototype.now = function(){
-		return audioContext.currentTime;
-	};
+	Tone.context = audioContext;
+
+	/**
+	 *  the default buffer size
+	 *  @type {number}
+	 */
+	Tone.prototype.bufferSize = 2048;
+
+	/**
+	 *  the default resolution for WaveShaperNodes
+	 *  @type {number}
+	 */
+	Tone.prototype.waveShaperResolution = 1024;
+	
+	///////////////////////////////////////////////////////////////////////////
+	//	CONNECTIONS
+	///////////////////////////////////////////////////////////////////////////
 
 	/**
 	 *  connect the output of a ToneNode to an AudioParam, AudioNode, or ToneNode
@@ -118,7 +148,7 @@
 	
 	/**
 	 *  connect together all of the arguments in series
-	 *  @param {...AudioParam | Tone}
+	 *  @param {...AudioParam|Tone}
 	 */
 	Tone.prototype.chain = function(){
 		if (arguments.length > 1){
@@ -132,59 +162,89 @@
 	};
 
 	///////////////////////////////////////////////////////////////////////////
-	//	UTILITIES / HELPERS
+	//	UTILITIES / HELPERS / MATHS
 	///////////////////////////////////////////////////////////////////////////
 
+	//borrowed from underscore.js
 	function isUndef(val){
-		return typeof val === "undefined";
+		return val === void 0;
 	}
 
-	//if the given argument is undefined, go with the default
-	//@param {*} given
-	//@param {*} fallback
-	//@returns {*}
+	/**
+	 *  if a the given is undefined, use the fallback
+	 *  
+	 *  @param  {*} given    
+	 *  @param  {*} fallback 
+	 *  @return {*}          
+	 */
 	Tone.prototype.defaultArg = function(given, fallback){
 		return isUndef(given) ? fallback : given;
 	};
 
-	//@param {number} percent (0-1)
-	//@returns {number} the equal power gain (0-1)
-	//good for cross fades
+	/**
+	 *  equal power gain scale
+	 *  good for cross-fading
+	 *  	
+	 *  @param  {number} percent (0-1)
+	 *  @return {number}         output gain (0-1)
+	 */
 	Tone.prototype.equalPowerScale = function(percent){
-		return Math.sin((percent) * 0.5*Math.PI);
+		var piFactor = 0.5 * Math.PI;
+		return Math.sin(percent * piFactor);
 	};
 
-	//@param {number} gain
-	//@returns {number} gain (decibel scale but betwee 0-1)
+	/**
+	 *  @param  {number} gain (0-1)
+	 *  @return {number}      gain (decibel scale but betwee 0-1)
+	 */
 	Tone.prototype.logScale = function(gain) {
 		return  Math.max(this.normalize(this.gainToDb(gain), -100, 0), 0);
 	};
 
-	//@param {number} gain
-	//@returns {number} gain (decibel scale but betwee 0-1)
+	/**
+	 *  @param  {number} gain (0-1)
+	 *  @return {number}      gain (decibel scale but betwee 0-1)
+	 */
 	Tone.prototype.expScale = function(gain) {
 		return this.dbToGain(this.interpolate(gain, -100, 0));
 	};
 
-	//@param {number} db
-	//@returns {number} gain
+	/**
+	 *  convert db scale to gain scale (0-1)
+	 *  @param  {number} db
+	 *  @return {number}   
+	 */
 	Tone.prototype.dbToGain = function(db) {
 		return Math.pow(2, db / 6);
 	};
 
-	//@param {number} gain
-	//@returns {number} db
+	/**
+	 *  convert gain scale to decibels
+	 *  @param  {number} gain (0-1)
+	 *  @return {number}   
+	 */
 	Tone.prototype.gainToDb = function(gain) {
 		return  20 * (Math.log(gain) / Math.LN10);
 	};
 
-	//@param {number} input 0 to 1
-	//@returns {number} between outputMin and outputMax
+	/**
+	 *  interpolate the input value (0-1) to be between outputMin and outputMax
+	 *  @param  {number} input     
+	 *  @param  {number} outputMin 
+	 *  @param  {number} outputMax 
+	 *  @return {number}           
+	 */
 	Tone.prototype.interpolate = function(input, outputMin, outputMax){
 		return input*(outputMax - outputMin) + outputMin;
 	};
 
-	//@returns {number} 0-1
+	/**
+	 *  normalize the input to 0-1 from between inputMin to inputMax
+	 *  @param  {number} input    
+	 *  @param  {number} inputMin 
+	 *  @param  {number} inputMax 
+	 *  @return {number}          
+	 */
 	Tone.prototype.normalize = function(input, inputMin, inputMax){
 		//make sure that min < max
 		if (inputMin > inputMax){
@@ -198,24 +258,32 @@
 	};
 
 
-	//@param {number} samples
-	//@returns {number} the number of seconds
+	///////////////////////////////////////////////////////////////////////////
+	//	TIMING
+	///////////////////////////////////////////////////////////////////////////
+
+	/**
+	 *  @return {number} the currentTime from the AudioContext
+	 */
+	Tone.prototype.now = function(){
+		return audioContext.currentTime;
+	};
+
+	/**
+	 *  convert a sample count to seconds
+	 *  @param  {number} samples 
+	 *  @return {number}         
+	 */
 	Tone.prototype.samplesToSeconds = function(samples){
 		return samples / audioContext.sampleRate;
 	};
 
-	///////////////////////////////////////////////////////////////////////////
-	//	TIMING
-	//
-	//	numbers are passed through
-	//	'+' prefixed values will be "now" relative
-	///////////////////////////////////////////////////////////////////////////
-
-	//@param {Tone.Time} timing
-	//@param {number=} bpm
-	//@param {number=} timeSignature
-	//@returns {number} the time in seconds
-	Tone.prototype.toSeconds = function(time, bpm, timeSignature){
+	/**
+	 *  convert Tone.Time to seconds
+	 *  @param  {Tone.Time} time 
+	 *  @return {number}     
+	 */
+	Tone.prototype.toSeconds = function(time){
 		if (typeof time === "number"){
 			return time; //assuming that it's seconds
 		} else if (typeof time === "string"){
@@ -224,11 +292,7 @@
 				plusTime = this.now();
 				time = time.slice(1);				
 			} 
-			if (this.isNotation(time)){
-				time = this.notationToSeconds(time, bpm, timeSignature);
-			} else if (this.isTransportTime(time)){
-				time = this.transportTimeToSeconds(time, bpm, timeSignature);
-			} else if (this.isFrequency(time)){
+			if (this.isFrequency(time)){
 				time = this.frequencyToSeconds(time);
 			}
 			return parseFloat(time) + plusTime;
@@ -237,54 +301,27 @@
 		}
 	};
 
-	//@param {number|string} timing
-	//@param {number=} bpm
-	//@param {number=} timeSignature
-	//@returns {number} the time in seconds
-	Tone.prototype.toFrequency = function(time, bpm, timeSignature){
-		if (this.isNotation(time) || this.isFrequency(time)){
-			return this.secondsToFrequency(this.toSeconds(time, bpm, timeSignature));
+	/**
+	 *  convert a time to a frequency
+	 *  	
+	 *  @param  {Tone.Time} time 
+	 *  @return {number}      the time in hertz
+	 */
+	Tone.prototype.toFrequency = function(time){
+		if (!this.isFrequency(time)){
+			return this.secondsToFrequency(this.toSeconds(time));
 		} else {
 			return time;
 		}
 	};
 
-	//@returns {number} the tempo
-	//meant to be overriden by Transport
-	Tone.prototype.getBpm = function(){
-		return 120;
-	};
-
-	//@returns {number} the time signature / 4
-	//meant to be overriden by Transport
-	Tone.prototype.getTimeSignature = function(){
-		return 4;
-	};
-
-	///////////////////////////////////////////////////////////////////////////
-	//	TIMING CONVERSIONS
-	///////////////////////////////////////////////////////////////////////////
-
-	//@param {string} note
-	//@returns {boolean} if the value is in notation form
-	Tone.prototype.isNotation = (function(){
-		var notationFormat = new RegExp(/[0-9]+[mnt]$/i);
-		return function(note){
-			return notationFormat.test(note);
-		};
-	})();
-
-	//@param {string} transportTime
-	//@returns {boolean} if the value is in notation form
-	Tone.prototype.isTransportTime = (function(){
-		var transportTimeFormat = new RegExp(/^\d+(\.\d+)?:\d+(\.\d+)?(:\d+(\.\d+)?)?$/);
-		return function(transportTime){
-			return transportTimeFormat.test(transportTime);
-		};
-	})();
-
-	//@param {string} freq
-	//@returns {boolean} if the value is in notation form
+	/**
+	 *  true if the input is in the format number+hz
+	 *  i.e.: 10hz
+	 *
+	 *  @param {number} freq 
+	 *  @return {boolean} 
+	 */
 	Tone.prototype.isFrequency = (function(){
 		var freqFormat = new RegExp(/[0-9]+hz$/i);
 		return function(freq){
@@ -292,83 +329,24 @@
 		};
 	})();
 
-	// 4n == quarter note; 16t == sixteenth note triplet; 1m == 1 measure
-	//@param {string} notation 
-	//@param {number=} bpm
-	//@param {number} timeSignature (default 4)
-	//@returns {number} time duration of notation
-	Tone.prototype.notationToSeconds = function(notation, bpm, timeSignature){
-		bpm = this.defaultArg(bpm, this.getBpm());
-		timeSignature = this.defaultArg(timeSignature, this.getTimeSignature());
-		var beatTime = (60 / bpm);
-		var subdivision = parseInt(notation, 10);
-		var beats = 0;
-		if (subdivision === 0){
-			beats = 0;
-		}
-		var lastLetter = notation.slice(-1);
-		if (lastLetter === "t"){
-			beats = (4 / subdivision) * 2/3;
-		} else if (lastLetter === "n"){
-			beats = 4 / subdivision;
-		} else if (lastLetter === "m"){
-			beats = subdivision * timeSignature;
-		} else {
-			beats = 0;
-		}
-		return beatTime * beats;
-	};
 
-	// 4:2:3 == 4 measures + 2 quarters + 3 sixteenths
-	//@param {string} transportTime
-	//@param {number=} bpm
-	//@param {number=} timeSignature (default 4)
-	//@returns {number} time duration of notation
-	Tone.prototype.transportTimeToSeconds = function(transportTime, bpm, timeSignature){
-		bpm = this.defaultArg(bpm, this.getBpm());
-		timeSignature = this.defaultArg(timeSignature, this.getTimeSignature());
-		var measures = 0;
-		var quarters = 0;
-		var sixteenths = 0;
-		var split = transportTime.split(":");
-		if (split.length === 2){
-			measures = parseFloat(split[0]);
-			quarters = parseFloat(split[1]);
-		} else if (split.length === 1){
-			quarters = parseFloat(split[0]);
-		} else if (split.length === 3){
-			measures = parseFloat(split[0]);
-			quarters = parseFloat(split[1]);
-			sixteenths = parseFloat(split[2]);
-		}
-		var beats = (measures * timeSignature + quarters + sixteenths / 4);
-		return beats * this.notationToSeconds("4n", bpm, timeSignature);
-	};
-
-	//@param {string | number} freq (i.e. 440hz)
-	//@returns {number} the time of a single cycle
+	/**
+	 *  convert a frequency into seconds
+	 *  accepts both numbers and strings 
+	 *  	i.e. 10hz or 10 both equal .1
+	 *  
+	 *  @param  {number|string} freq 
+	 *  @return {number}      
+	 */
 	Tone.prototype.frequencyToSeconds = function(freq){
 		return 1 / parseFloat(freq);
 	};
 
-	//@param {number} seconds
-	//@param {number=} bpm
-	//@param {number=}
-	//@returns {string} the seconds in transportTime
-	Tone.prototype.secondsToTransportTime = function(seconds, bpm, timeSignature){
-		bpm = this.defaultArg(bpm, this.getBpm());
-		timeSignature = this.defaultArg(timeSignature, this.getTimeSignature());
-		var quarterTime = this.notationToSeconds("4n", bpm, timeSignature);
-		var quarters = seconds / quarterTime;
-		var measures = parseInt(quarters / timeSignature, 10);
-		var sixteenths = parseInt((quarters % 1) * 4, 10);
-		quarters = parseInt(quarters, 10) % timeSignature;
-		var progress = [measures, quarters, sixteenths];
-		return progress.join(":");
-	};
-
-	//@param {number} seconds
-	//@returns {number} the frequency
+	/**
+	 *  convert a number in seconds to a frequency
+	 *  @param  {number} seconds 
+	 *  @return {number}         
+	 */
 	Tone.prototype.secondsToFrequency = function(seconds){
 		return 1/seconds;
 	};
@@ -399,8 +377,6 @@
 		/** @override */
 		child.prototype.constructor = child;
 	};
-
-	Tone.context = audioContext;
 
 	return Tone;
 }));
