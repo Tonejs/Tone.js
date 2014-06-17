@@ -30,13 +30,18 @@ define(["Tone/core/Tone"], function(Tone){
 	generator.start(0);
 
 	/**
-	 *  Signal
+	 *  constant audio-rate signal
 	 *
-	 *  audio rate value with ramping syncing
-	 *  useful for controlling AudioParams
-	 *  can sync to another Tone.Signal
+	 *  Tone.Signal is a core component which allows for synchronization of many components. 
+	 *  A single signal can drive multiple parameters by applying Scaling. 
+	 *
+	 *  For example: to synchronize two Tone.Oscillators in octaves of each other, 
+	 *  	Signal --> OscillatorA.frequency
+	 *  		  ^--> Tone.Multiply(2) --> OscillatorB.frequency
+	 *  
 	 *
 	 *  Tone.Signal can be scheduled with all of the functions available to AudioParams
+	 *
 	 *
 	 *  @constructor
 	 *  @param {number=} value (optional) initial value

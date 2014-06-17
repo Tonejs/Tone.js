@@ -14,16 +14,21 @@ function(Tone){
 	Tone.Oscillator = function(freq, type){
 		Tone.Source.call(this);
 
-		//components
+		/**
+		 *  the main oscillator
+		 *  @type {OscillatorNode}
+		 */
 		this.oscillator = this.context.createOscillator();
-		this.control = new Tone.Signal(this.defaultArg(this.toFrequency(freq), 440));
+		/**
+		 *  the frequency control signal
+		 *  @type {Tone.Signal}
+		 */
+		this.frequency = new Tone.Signal(this.defaultArg(this.toFrequency(freq), 440));
 
 		//connections
 		this.oscillator.connect(this.output);
-
-		//parameters
+		//setup
 		this.oscillator.type = this.defaultArg(type, "sine");
-		this.isSynced = false;
 	};
 
 	Tone.extend(Tone.Oscillator, Tone.Source);
@@ -43,7 +48,7 @@ function(Tone){
 		this.oscillator.detune.value = detune;
 		//connect the control signal to the oscillator frequency
 		this.oscillator.connect(this.output);
-		this.control.connect(this.oscillator.frequency);
+		this.frequency.connect(this.oscillator.frequency);
 		this.oscillator.frequency.value = 0;
 		//start the oscillator
 		this.oscillator.start(this.toSeconds(time));
@@ -59,7 +64,7 @@ function(Tone){
 	 *  Transport start/pause/stop will also start/pause/stop the oscillator
 	 */
 	Tone.Oscillator.prototype.sync = function(){
-		Tone.Transport.sync(this, this.control);
+		Tone.Transport.sync(this, this.frequency);
 	};
 
 	/**
@@ -67,7 +72,7 @@ function(Tone){
 	 */
 	Tone.Oscillator.prototype.unsync = function(){
 		Tone.Transport.unsync(this);
-		this.control.unsync();
+		this.frequency.unsync();
 	};
 
 	/**
@@ -85,7 +90,7 @@ function(Tone){
 	 *  @param {Tone.Time=} rampTime when the oscillator will arrive at the frequency
 	 */
 	Tone.Oscillator.prototype.setFrequency = function(val, rampTime){
-		this.control.exponentialRampToValueAtTime(this.toFrequency(val), this.toSeconds(rampTime));
+		this.frequency.exponentialRampToValueAtTime(this.toFrequency(val), this.toSeconds(rampTime));
 	};
 
 	/**
