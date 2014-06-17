@@ -5,12 +5,21 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	 *
 	 *  @constructor
 	 *  @extends {Tone}
-	 *  @param {number} value constant value to multiple
+	 *  @param {number=} value constant value to multiple
 	 */
 	Tone.Multiply = function(value){
+		/**
+		 *  the input node is the same as the output node
+		 *  it is also the GainNode which handles the scaling of incoming signal
+		 *  
+		 *  @type {GainNode}
+		 */
 		this.input = this.context.createGain();
+		/** @alias */
 		this.output = this.input;
-		this.input.gain.value = value;
+
+		//apply the inital scale factor
+		this.input.gain.value = this.defaultArg(value, 1);
 	};
 
 	Tone.extend(Tone.Multiply);
