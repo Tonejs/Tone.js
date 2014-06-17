@@ -10,18 +10,20 @@ function(Tone){
 	 */
 	Tone.Transport = function(){
 
-		/** @type {Tone.Signal} */
-		this.controlSignal = new Tone.Signal();
-		this.oscillator = null;
-		this.jsNode = this.context.createScriptProcessor(this.bufferSize, 1, 1);
-		this.jsNode.onaudioprocess = this._processBuffer.bind(this);
+		/**
+		 *  watches the main oscillator for timing ticks
+		 *  
+		 *  @private
+		 *  @type {ScriptProcessorNode}
+		 */
+		this._jsNode = this.context.createScriptProcessor(this.bufferSize, 1, 1);
+		this._jsNode.onaudioprocess = this._processBuffer.bind(this);
 
 		/** @type {boolean} */
 		this.loop = false;
 
 		//so it doesn't get garbage collected
-		this.jsNode.toMaster();
-
+		this._jsNode.toMaster();
 	};
 
 	Tone.extend(Tone.Transport);
@@ -51,6 +53,20 @@ function(Tone){
 	/** @private @type {number} */
 	var timelineProgress = 0;
 
+	/**
+	 *  The main oscillator for the system
+	 *  @private
+	 *  @type {OscillatorNode}
+	 */
+	var oscillator = null;
+
+	/** 
+	 *  controls the oscillator frequency
+	 *  @private
+	 *  @type {Tone.Signal}
+	 */
+	var controlSignal = new Tone.Signal(0);
+
 	/** 
 	 *  All of the synced components
 	 *  @private @type {Array<Tone>}
@@ -69,7 +85,7 @@ function(Tone){
 	 */
 	Tone.Transport.prototype._processBuffer = function(event){
 		var now = this.defaultArg(event.playbackTime, this.now());
-		var bufferSize = this.jsNode.bufferSize;
+		var bufferSize = this._jsNode.bufferSize;
 		var incomingBuffer = event.inputBuffer.getChannelData(0);
 		for (var i = 0; i < bufferSize; i++){
 			var sample = incomingBuffer[i];
@@ -215,6 +231,7 @@ function(Tone){
 	 */
 	Tone.Transport.prototype.setTimeout = function(callback, time, ctx){
 		var ticks = this.toTicks(time);
+		console.log(ticks);
 		var timeout = new TimelineEvent(callback, ctx, ticks + transportTicks, 0);
 		//put it in the right spot
 		for (var i = 0, len = timeouts.length; i<len; i++){
@@ -308,6 +325,7 @@ function(Tone){
 		var quarter = this.notationToSeconds("4n");
 		var quarters = seconds / quarter;
 		var tickNum = quarters * tatum;
+		console.log(time, seconds, quarters);
 		//quantize to tick value
 		return Math.round(tickNum);
 	};
@@ -347,15 +365,15 @@ function(Tone){
 	Tone.Transport.prototype.start = function(time){
 		upTick = false;
 		//reset the oscillator
-		this.oscillator	= this.context.createOscillator();
-		this.oscillator.type = "square";
+		oscillator	= this.context.createOscillator();
+		oscillator.type = "square";
 		//connect it up
-		this.oscillator.connect(this.jsNode);
-		this.controlSignal.connect(this.oscillator.frequency);
-		this.oscillator.frequency.value = 0;
+		oscillator.connect(this._jsNode);
+		controlSignal.connect(oscillator.frequency);
+		oscillator.frequency.value = 0;
 		//set the bpm
 		this.setBpm(bpm);
-		this.oscillator.start(this.toSeconds(time));
+		oscillator.start(this.toSeconds(time));
 		//call start on each of the synced sources
 	};
 
@@ -366,8 +384,8 @@ function(Tone){
 	 *  @param  {Tone.Time} time
 	 */
 	Tone.Transport.prototype.stop = function(time){
-		this.oscillator.stop(this.toSeconds(time));
-		this.oscillator = null;
+		oscillator.stop(this.toSeconds(time));
+		oscillator = null;
 		this._setTicks(0);
 		//call stop on each of the synced sources
 	};
@@ -378,8 +396,8 @@ function(Tone){
 	 *  @param  {Tone.Time} time
 	 */
 	Tone.Transport.prototype.pause = function(time){
-		this.oscillator.stop(this.toSeconds(time));
-		this.oscillator = null;
+		oscillator.stop(this.toSeconds(time));
+		oscillator = null;
 		//call pause on each of the synced sources
 	};
 
@@ -395,14 +413,14 @@ function(Tone){
 	 */
 	Tone.Transport.prototype.setBpm = function(newBpm, rampTime){
 		bpm = newBpm;
-		if (this.oscillator !== null){
+		if (oscillator !== null){
 			//convert the bpm to frequency
-			var tatumFreq = this.toFrequency(tatum.toString() + "n", bpm, timeSignature);
+			var tatumFreq = this.toFrequency(tatum.toString() + "n");
 			var freqVal = 4 * tatumFreq;
 			if (!rampTime){
-				this.oscillator.frequency.value = freqVal;
+				controlSignal.setValue(freqVal);
 			} else {
-				this.exponentialRampToValueNow(this.oscillator.frequency, freqVal, rampTime);
+				controlSignal.exponentialRampToValueAtTime(oscillator.frequency, freqVal, rampTime);
 			}
 		}
 	};
@@ -414,9 +432,9 @@ function(Tone){
 	 */
 	Tone.Transport.prototype.getBpm = function(){
 		//if the oscillator isn't running, return _bpm
-		if (this.oscillator !== null){
+		if (oscillator !== null){
 			//convert the current frequency of the oscillator to bpm
-			var freq = this.oscillator.frequency.value;
+			var freq = controlSignal.getValue();
 			return 60 * (freq / tatum);
 		} else {
 			return bpm;
@@ -556,9 +574,6 @@ function(Tone){
 	};
 
 
-	//a single transport object
-	Tone.Transport = new Tone.Transport();
-
 	///////////////////////////////////////////////////////////////////////////////
 	//	AUGMENT TONE'S PROTOTYPE TO INCLUDE TRANSPORT TIMING
 	///////////////////////////////////////////////////////////////////////////////
@@ -592,6 +607,21 @@ function(Tone){
 			return transportTimeFormat.test(transportTime);
 		};
 	})();
+
+	/**
+	 *  true if the input is in the format number+hz
+	 *  i.e.: 10hz
+	 *
+	 *  @param {number} freq 
+	 *  @return {boolean} 
+	 */
+	Tone.prototype.isFrequency = (function(){
+		var freqFormat = new RegExp(/[0-9]+hz$/i);
+		return function(freq){
+			return freqFormat.test(freq);
+		};
+	})();
+
 
 	/**
 	 *  convert notation format strings to seconds
@@ -644,19 +674,20 @@ function(Tone){
 			sixteenths = parseFloat(split[2]);
 		}
 		var beats = (measures * timeSignature + quarters + sixteenths / 4);
-		return beats * this.notationToSeconds("4n", bpm, timeSignature);
+		return beats * this.notationToSeconds("4n");
 	};
 
 	/**
 	 *  Convert seconds to the closest transportTime in the form 
 	 *  	measures:quarters:sixteenths
 	 *  	
-	 *  @param  {number} seconds 
+	 *  @param  {Tone.Time} seconds 
 	 *  @return {string}         
 	 */
-	Tone.prototype.secondsToTransportTime = function(seconds){
+	Tone.prototype.toTransportTime = function(time){
+		var seconds = this.toSeconds(time);
 		bpm = Tone.Transport.getBpm();
-		var quarterTime = this.notationToSeconds("4n", bpm, timeSignature);
+		var quarterTime = this.notationToSeconds("4n");
 		var quarters = seconds / quarterTime;
 		var measures = Math.floor(quarters / timeSignature);
 		var sixteenths = Math.floor((quarters % 1) * 4);
@@ -665,6 +696,21 @@ function(Tone){
 		return progress.join(":");
 	};
 
+	/**
+	 *  convert a time to a frequency
+	 *  	
+	 *  @param  {Tone.Time} time 
+	 *  @return {number}      the time in hertz
+	 */
+	Tone.prototype.toFrequency = function(time){
+		if (this.isFrequency(time)){
+			return parseFloat(time);
+		} else if (this.isNotation(time) || this.isTransportTime(time)) {
+			return this.secondsToFrequency(this.toSeconds(time));
+		} else {
+			return time;
+		}
+	};
 
 	/**
 	 *  convert Tone.Time into seconds
@@ -689,12 +735,17 @@ function(Tone){
 				time = this.transportTimeToSeconds(time);
 			} else if (this.isFrequency(time)){
 				time = this.frequencyToSeconds(time);
+			} else {
+				time = parseFloat(time);
 			}
-			return parseFloat(time) + plusTime;
+			return time + plusTime;
 		} else {
 			return this.now();
 		}
 	};
+
+	//a single transport object
+	Tone.Transport = new Tone.Transport();
 
 	return Tone.Transport;
 });

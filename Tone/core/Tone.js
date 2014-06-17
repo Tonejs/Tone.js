@@ -285,6 +285,12 @@
 
 	/**
 	 *  convert Tone.Time to seconds
+	 *
+	 *  this is a simplified version which only handles numbers and 
+	 *  'now' relative numbers. If the Transport is included this 
+	 *  method is overridden to include many other features including 
+	 *  notationTime, Frequency, and transportTime
+	 *  
 	 *  @param  {Tone.Time} time 
 	 *  @return {number}     
 	 */
@@ -297,42 +303,11 @@
 				plusTime = this.now();
 				time = time.slice(1);				
 			} 
-			if (this.isFrequency(time)){
-				time = this.frequencyToSeconds(time);
-			}
 			return parseFloat(time) + plusTime;
 		} else {
 			return this.now();
 		}
 	};
-
-	/**
-	 *  convert a time to a frequency
-	 *  	
-	 *  @param  {Tone.Time} time 
-	 *  @return {number}      the time in hertz
-	 */
-	Tone.prototype.toFrequency = function(time){
-		if (!this.isFrequency(time)){
-			return this.secondsToFrequency(this.toSeconds(time));
-		} else {
-			return time;
-		}
-	};
-
-	/**
-	 *  true if the input is in the format number+hz
-	 *  i.e.: 10hz
-	 *
-	 *  @param {number} freq 
-	 *  @return {boolean} 
-	 */
-	Tone.prototype.isFrequency = (function(){
-		var freqFormat = new RegExp(/[0-9]+hz$/i);
-		return function(freq){
-			return freqFormat.test(freq);
-		};
-	})();
 
 
 	/**
