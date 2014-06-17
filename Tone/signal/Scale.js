@@ -1,4 +1,5 @@
 define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Multiply"], function(Tone){
+	
 	/**
 	 *  performs a linear scaling on an input signal
 	 *
