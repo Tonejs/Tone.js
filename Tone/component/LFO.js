@@ -105,8 +105,7 @@ define(["Tone/core/Tone", "Tone/source/Oscillator", "Tone/signal/Scale"], functi
 	 *	if attached to an AudioParam
 	 *	
 	 *  @override
-	 *  @param  {[type]} param [description]
-	 *  @return {[type]}       [description]
+	 *  @param  {AudioNode|AudioParam|Tone} param 
 	 */
 	Tone.LFO.prototype.connect = function(param){
 		if (param instanceof AudioParam){
