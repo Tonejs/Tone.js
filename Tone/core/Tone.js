@@ -41,16 +41,12 @@
 
 	//SHIMS////////////////////////////////////////////////////////////////////
 
-	function shimAudioContext(ac){
-		if (typeof ac.createGain !== "function"){
-			ac.createGain = ac.createGainNode;
-		}
-		if (typeof ac.createDelay !== "function"){
-			ac.createDelay = ac.createDelayNode;
-		}
+	if (typeof audioContext.createGain !== "function"){
+		audioContext.createGain = audioContext.createGainNode;
 	}
-
-	shimAudioContext(audioContext);
+	if (typeof audioContext.createDelay !== "function"){
+		audioContext.createDelay = audioContext.createDelayNode;
+	}
 
 	if (typeof AudioBufferSourceNode.prototype.start !== "function"){
 		AudioBufferSourceNode.prototype.start = AudioBufferSourceNode.prototype.noteGrainOn;
@@ -356,17 +352,6 @@
 		child.prototype = new tempConstructor();
 		/** @override */
 		child.prototype.constructor = child;
-	};
-
-	/**
-	 *  sets an audio context different from the original one
-	 *  [note] the new context will be shimmed
-	 *  
-	 *  @param {AudioContext} ac 
-	 */
-	Tone.setAudioContext = function(ac){
-		audioContext = ac;
-		shimAudioContext(ac);
 	};
 
 	return Tone;
