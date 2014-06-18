@@ -36,15 +36,15 @@ function(Tone){
 		this.left.gain.value = 0;
 		this.right.gain.value = 0;
 		this.setPan(.5);
-	}
+	};
 
 	Tone.extend(Tone.Panner);
 
 	Tone.Panner.prototype.setPan = function(val, rampTime){
 		rampTime = this.defaultArg(rampTime, 0);
 		//put val into -1 to 1 range
-		this.control.linearRampToValueAtTime(val * 2 - 1, rampTime);
-	}
+		this.control.linearRampToValueAtTime(val, rampTime);
+	};
 
 	return Tone.Panner;
 });;
