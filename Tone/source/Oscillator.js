@@ -8,7 +8,7 @@ function(Tone){
 	 *
 	 *  @constructor
 	 *  @extends {Tone.Source}
-	 *  @param {number=} freq starting frequency
+	 *  @param {number|string=} freq starting frequency
 	 *  @param {string=} type type of oscillator (sine|square|triangle|sawtooth)
 	 */
 	Tone.Oscillator = function(freq, type){
