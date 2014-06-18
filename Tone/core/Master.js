@@ -1,12 +1,3 @@
-///////////////////////////////////////////////////////////////////////////////
-//
-//	MASTER OUTPUT
-//
-//	a single master output
-//	adds a toMaster method on AudioNodes and components
-///////////////////////////////////////////////////////////////////////////////
-
-
 define(["Tone/core/Tone"], function(Tone){
 
 	/**
@@ -59,4 +50,4 @@ define(["Tone/core/Tone"], function(Tone){
 	Tone.Master = new Master();
 
 	return Tone.Master;
-})
+});
