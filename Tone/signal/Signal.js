@@ -110,11 +110,12 @@ define(["Tone/core/Tone"], function(Tone){
 
 	/**
 	 *  creates a schedule point with the current value at the current time
-	 *  
+	 *
+	 *  @param {number=} now (optionally) pass the now value in
 	 *  @returns {number} the current value
 	 */
-	Tone.Signal.prototype.setCurrentValueNow = function(){
-		var now = this.now();
+	Tone.Signal.prototype.setCurrentValueNow = function(now){
+		now = this.defaultArg(now, this.now());
 		var currentVal = this.getValue();
 		this.cancelScheduledValues(now);
 		this.scalar.gain.setValueAtTime(currentVal, now);
@@ -153,13 +154,14 @@ define(["Tone/core/Tone"], function(Tone){
 	 *  @param  {Tone.Time} endTime 
 	 */
 	Tone.Signal.prototype.exponentialRampToValueNow = function(value, endTime){
-		this.setCurrentValueNow();
+		var now = this.now();
+		this.setCurrentValueNow(now);
 		value *= this._syncRatio;
 		//make sure that the endTime doesn't start with +
 		if (endTime.toString().charAt(0) === "+"){
 			endTime = endTime.substr(1);
 		}
-		this.scalar.gain.exponentialRampToValueAtTime(value, this.now() + this.toSeconds(endTime));
+		this.scalar.gain.exponentialRampToValueAtTime(value, now + this.toSeconds(endTime));
 	};
 
 	/**
@@ -170,13 +172,14 @@ define(["Tone/core/Tone"], function(Tone){
 	 *  @param  {Tone.Time} endTime 
 	 */
 	Tone.Signal.prototype.linearRampToValueNow = function(value, endTime){
-		this.setCurrentValueNow();
+		var now = this.now();
+		this.setCurrentValueNow(now);
 		value *= this._syncRatio;
 		//make sure that the endTime doesn't start with +
 		if (endTime.toString().charAt(0) === "+"){
 			endTime = endTime.substr(1);
 		}
-		this.scalar.gain.linearRampToValueAtTime(value, this.now() + this.toSeconds(endTime));
+		this.scalar.gain.linearRampToValueAtTime(value, now + this.toSeconds(endTime));
 	};
 
 	/**
