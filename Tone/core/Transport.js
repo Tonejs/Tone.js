@@ -1,12 +1,12 @@
 define(["Tone/core/Tone", "Tone/core/Master", "Tone/signal/Signal"], 
 function(Tone){
 
-
 	/**
 	 *  oscillator-based transport allows for simple musical timing
 	 *  supports tempo curves and time changes
 	 *
 	 *  @constructor
+	 *  @extends {Tone}
 	 */
 	Tone.Transport = function(){
 
@@ -66,6 +66,7 @@ function(Tone){
 	/** 
 	 *  controls the oscillator frequency
 	 *  starts at 120bpm
+	 *  
 	 *  @private
 	 *  @type {Tone.Signal}
 	 */
