@@ -53,7 +53,7 @@ define(["chai", "Tone/core/Transport"], function(chai, Transport){
 	});
 
 	describe("Transport.setInterval", function(){
-		this.timeout(1100);
+		this.timeout(1500);
 		it("invokes the callback with the correct playback time", function(done){
 			Transport.stop();
 			Transport.setBpm(200);
@@ -62,7 +62,7 @@ define(["chai", "Tone/core/Transport"], function(chai, Transport){
 			Transport.setInterval(function(time){
 				expect(time).to.be.greaterThan(Transport.now());
 				if (lastCall !== -1){
-					expect(time - lastCall).to.be.closeTo(0.3, 0.04);
+					expect(time - lastCall).to.be.closeTo(0.3, 0.1);
 				}
 				lastCall = time;
 				intervalCalls++;
@@ -73,6 +73,25 @@ define(["chai", "Tone/core/Transport"], function(chai, Transport){
 			}, "4n");
 			var now = Transport.now() + 0.05;
 			var lastCall = -1;
+			Transport.start(now);
+		});
+	});
+
+	describe("Transport.setTimeline", function(){
+		this.timeout(1100);
+		it("invokes the callback with the correct playback time", function(done){
+			Transport.stop();
+			Transport.setBpm(240);
+			Transport.setTimeSignature(4, 4);
+			Transport.setTimeline(function(time){
+				expect(time - now).to.be.closeTo(0.25, 0.1);
+				done();
+			}, "4n");
+			Transport.setTimeline(function(time){
+				expect(time - now).to.be.closeTo(0.75, 0.1);
+				done();
+			}, "0:3:0");
+			var now = Transport.now();
 			Transport.start(now);
 		});
 	});
