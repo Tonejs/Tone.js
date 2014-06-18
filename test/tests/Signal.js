@@ -1,4 +1,4 @@
-define(["chai", "Recorder", "Tone/signal/Signal", "Tone/signal/Add", "Tone/signal/Multiply", 
+define(["chai", "Tone/component/Recorder", "Tone/signal/Signal", "Tone/signal/Add", "Tone/signal/Multiply", 
 	"Tone/signal/Scale", "Tone/source/Oscillator", "Tone/signal/Merge", "Tone/signal/Split"], 
 function(chai, Recorder, Signal, Add, Multiply, Scale, Oscillator, Merge, Split){
 
@@ -9,46 +9,34 @@ function(chai, Recorder, Signal, Add, Multiply, Scale, Oscillator, Merge, Split)
 		this.timeout(300);
 		it("outputs correct value", function(done){
 			var signal = new Signal(2);
-			var recorder = new Recorder(signal, {
-				workerPath : "./testDeps/recorderWorker.js"
-			});
-			recorder.record();
+			var recorder = new Recorder();
+			signal.connect(recorder);
+			recorder.record(0.05);
 			setTimeout(function(){
-				recorder.stop();
-				recorder.getBuffer(function(buffers){
-					var lBuffer = buffers[0];
-					//get the left buffer and check that all values are === 1
-					for (var i = 0; i < lBuffer.length; i++){
-						expect(lBuffer[i]).to.equal(2);
-					}
-					done();
-				});
+				var buffer = recorder.getFloat32Array()[0];
+				for (var i = 0; i < buffer.length; i++){
+					expect(buffer[i]).to.equal(2);
+				}
+				done();
 			}, 100);
 		});
 		
 		it("can change value with sample accurate timing", function(done){
 			var signal = new Signal(0);
-			var recorder = new Recorder(signal, {
-				workerPath : "./testDeps/recorderWorker.js"
-			});
-			recorder.record();
-			var waitTime = 0.05;
+			var recorder = new Recorder(1);
+			signal.connect(recorder);
+			var waitTime = 0.03;
+			recorder.record(0.05);
 			signal.setValueAtTime(1, "+"+waitTime);//ramp after 50ms
 			setTimeout(function(){
-				recorder.stop();
-				recorder.getBuffer(function(buffers){
-					var lBuffer = buffers[0];
-					//get the left buffer and check that all values are === 1
-					for (var i = 0; i < lBuffer.length; i++){
-						if (lBuffer[i] === 1){
-							//check the time that it took to reach 1
-							//use closeTo to account for the time that it took to setup
-							expect(signal.samplesToSeconds(i)).is.closeTo(waitTime, 0.01);
-							break;
-						}
+				var buffer = recorder.getFloat32Array()[0];
+				for (var i = 0; i < buffer.length; i++){
+					if (buffer[i] === 1){
+						expect(signal.samplesToSeconds(i)).is.closeTo(waitTime, 0.01);
+						done();
+						break;
 					}
-					done();
-				});
+				}
 			}, 100);
 		});
 
@@ -59,20 +47,15 @@ function(chai, Recorder, Signal, Add, Multiply, Scale, Oscillator, Merge, Split)
 			signal1.sync(signal0);
 			//change signal0 and signal1 should also change
 			signal0.setValue(2);
-			var recorder = new Recorder(signal1, {
-				workerPath : "./testDeps/recorderWorker.js"
-			});
-			recorder.record();
+			var recorder = new Recorder();
+			signal1.connect(recorder);
+			recorder.record(0.05);
 			setTimeout(function(){
-				recorder.stop();
-				recorder.getBuffer(function(buffers){
-					var lBuffer = buffers[0];
-					//get the left buffer and check that all values are === 1
-					for (var i = 0; i < lBuffer.length; i++){
-						expect(lBuffer[i]).to.equal(4);
-					}
-					done();
-				});
+				var buffer = recorder.getFloat32Array()[0];
+				for (var i = 0; i < buffer.length; i++){
+					expect(buffer[i]).to.equal(4);
+				}
+				done();
 			}, 100);
 		});		
 	});
@@ -84,40 +67,32 @@ function(chai, Recorder, Signal, Add, Multiply, Scale, Oscillator, Merge, Split)
 			var signal = new Signal(0);
 			var adder = new Add(3);
 			signal.connect(adder);
-			var recorder = new Recorder(adder, {
-				workerPath : "./testDeps/recorderWorker.js"
-			});
-			recorder.record();
+			var recorder = new Recorder();
+			adder.connect(recorder);
+			recorder.record(0.05);
 			setTimeout(function(){
-				recorder.stop();
-				recorder.getBuffer(function(buffers){
-					var lBuffer = buffers[0];
-					//get the left buffer and check that all values are === 1
-					for (var i = 0; i < lBuffer.length; i++){
-						expect(lBuffer[i]).to.equal(3);
-					}
-					done();
-				});
+				var buffer = recorder.getFloat32Array()[0];
+				//get the left buffer and check that all values are === 1
+				for (var i = 0; i < buffer.length; i++){
+					expect(buffer[i]).to.equal(3);
+				}
+				done();
 			}, 100);
 		});
 		it("can handle negative values", function(done){
 			var signal = new Signal(10);
 			var adder = new Add(-1);
 			signal.connect(adder);
-			var recorder = new Recorder(adder, {
-				workerPath : "./testDeps/recorderWorker.js"
-			});
-			recorder.record();
+			var recorder = new Recorder();
+			adder.connect(recorder);
+			recorder.record(0.05);
 			setTimeout(function(){
-				recorder.stop();
-				recorder.getBuffer(function(buffers){
-					var lBuffer = buffers[0];
-					//get the left buffer and check that all values are === 1
-					for (var i = 0; i < lBuffer.length; i++){
-						expect(lBuffer[i]).to.equal(9);
-					}
-					done();
-				});
+				var buffer = recorder.getFloat32Array()[0];
+				//get the left buffer and check that all values are === 1
+				for (var i = 0; i < buffer.length; i++){
+					expect(buffer[i]).to.equal(9);
+				}
+				done();
 			}, 100);
 		});
 	});
@@ -129,20 +104,16 @@ function(chai, Recorder, Signal, Add, Multiply, Scale, Oscillator, Merge, Split)
 			var signal = new Signal(2);
 			var mult = new Multiply(10);
 			signal.connect(mult);
-			var recorder = new Recorder(mult, {
-				workerPath : "./testDeps/recorderWorker.js"
-			});
-			recorder.record();
+			var recorder = new Recorder();
+			mult.connect(recorder);
+			recorder.record(0.05);
 			setTimeout(function(){
-				recorder.stop();
-				recorder.getBuffer(function(buffers){
-					var lBuffer = buffers[0];
-					//get the left buffer and check that all values are === 1
-					for (var i = 0; i < lBuffer.length; i++){
-						expect(lBuffer[i]).to.equal(20);
-					}
-					done();
-				});
+				var buffer = recorder.getFloat32Array()[0];
+				//get the left buffer and check that all values are === 1
+				for (var i = 0; i < buffer.length; i++){
+					expect(buffer[i]).to.equal(20);
+				}
+				done();
 			}, 100);
 		});
 	});
@@ -156,25 +127,21 @@ function(chai, Recorder, Signal, Add, Multiply, Scale, Oscillator, Merge, Split)
 			osc.start();
 			var scale = new Scale(-1, 1, 10, 20);
 			osc.connect(scale);
-			var recorder = new Recorder(scale, {
-				workerPath : "./testDeps/recorderWorker.js"
-			});
-			recorder.record();
+			var recorder = new Recorder();
+			scale.connect(recorder);
+			recorder.record(0.05);
 			setTimeout(function(){
-				recorder.stop();
-				recorder.getBuffer(function(buffers){
-					var lBuffer = buffers[0];
-					//get the left buffer and check that all values are === 1
-					for (var i = 0; i < lBuffer.length; i++){
-						expect(lBuffer[i]).is.within(10, 20);
-					}
-					done();
-				});
+				var buffer = recorder.getFloat32Array()[0];
+				//get the left buffer and check that all values are === 1
+				for (var i = 0; i < buffer.length; i++){
+					expect(buffer[i]).to.be.within(10, 20);
+				}
+				done();
 			}, 100);
 		});
 	});
 
-	//SCALE
+	//MERGE
 	describe("Tone.Merge", function(){
 		this.timeout(300);
 		it("merge two signal into one stereo signal", function(done){
@@ -184,22 +151,19 @@ function(chai, Recorder, Signal, Add, Multiply, Scale, Oscillator, Merge, Split)
 			var merger = new Merge();
 			sigL.connect(merger.left);
 			sigR.connect(merger.right);
-			var recorder = new Recorder(merger, {
-				workerPath : "./testDeps/recorderWorker.js"
-			});
-			recorder.record();
+			var recorder = new Recorder(2);
+			merger.connect(recorder);
+			recorder.record(0.05);
 			setTimeout(function(){
-				recorder.stop();
-				recorder.getBuffer(function(buffers){
-					var lBuffer = buffers[0];
-					var rBuffer = buffers[1];
-					//get the left buffer and check that all values are === 1
-					for (var i = 0; i < lBuffer.length; i++){
-						expect(lBuffer[i]).to.equal(1);
-						expect(rBuffer[i]).to.equal(2);
-					}
-					done();
-				});
+				var buffers = recorder.getFloat32Array();				
+				var lBuffer = buffers[0];
+				var rBuffer = buffers[1];
+				//get the left buffer and check that all values are === 1
+				for (var i = 0; i < lBuffer.length; i++){
+					expect(lBuffer[i]).to.equal(1);
+					expect(rBuffer[i]).to.equal(2);
+				}
+				done();
 			}, 100);
 		});
 	});
@@ -216,40 +180,24 @@ function(chai, Recorder, Signal, Add, Multiply, Scale, Oscillator, Merge, Split)
 			sigL.connect(merger.left);
 			sigR.connect(merger.right);
 			merger.connect(split);
-			var recorderR = new Recorder(split.left, {
-				workerPath : "./testDeps/recorderWorker.js"
-			});
-			var recorderL = new Recorder(split.right, {
-				workerPath : "./testDeps/recorderWorker.js"
-			});
-
-			recorderR.record();
-			recorderL.record();
+			var recorderL = new Recorder();
+			var recorderR = new Recorder();
+			split.left.connect(recorderL);
+			split.right.connect(recorderR);
+			recorderL.record(0.05);
+			recorderR.record(0.05);
 			setTimeout(function(){
-				recorderR.stop();
-				recorderL.stop();
 				//test the left side
-				recorderL.getBuffer(function(buffers){
-					var lBuffer = buffers[0];
-					var rBuffer = buffers[1];
-					//get the left buffer and check that all values are === 1
-					for (var i = 0; i < lBuffer.length; i++){
-						expect(lBuffer[i]).to.equal(1);
-						expect(rBuffer[i]).to.equal(1);
-					}
-					done();
-				});
+				var lBuffer = recorderL.getFloat32Array()[0];
+				for (var i = 0; i < lBuffer.length; i++){
+					expect(lBuffer[i]).to.equal(1);
+				}
 				//test the right side
-				recorderR.getBuffer(function(buffers){
-					var lBuffer = buffers[0];
-					var rBuffer = buffers[1];
-					//get the left buffer and check that all values are === 1
-					for (var i = 0; i < lBuffer.length; i++){
-						expect(lBuffer[i]).to.equal(2);
-						expect(rBuffer[i]).to.equal(2);
-					}
-					done();
-				});
+				var rBuffer = recorderR.getFloat32Array()[0];
+				for (var j = 0; j < rBuffer.length; j++){
+					expect(rBuffer[j]).to.equal(2);
+				}
+				done();
 			}, 100);
 		});
 	});
