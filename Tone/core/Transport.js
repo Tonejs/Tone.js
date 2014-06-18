@@ -22,6 +22,11 @@ function(Tone){
 		/** @type {boolean} */
 		this.loop = false;
 
+		/**
+		 *  @type {TransportState}
+		 */
+		this.state = TransportState.STOPPED;
+
 		//so it doesn't get garbage collected
 		this._jsNode.toMaster();
 	};
@@ -71,6 +76,16 @@ function(Tone){
 	 *  @private @type {Array<Tone>}
 	 */
 	var SyncedComponents = [];
+
+
+	/**
+	 *  @enum
+	 */
+	 var TransportState = {
+	 	STARTED : "started",
+	 	PAUSED : "paused",
+	 	STOPPED : "stopped"
+	 };
 
 
 	///////////////////////////////////////////////////////////////////////////////
@@ -364,7 +379,8 @@ function(Tone){
 	 *  @param  {Tone.Time} time
 	 */
 	Tone.Transport.prototype.start = function(time){
-		if (oscillator === null){
+		if (this.state === TransportState.STOPPED || this.state === TransportState.PAUSED){
+			this.state = TransportState.STARTED;
 			//reset the oscillator
 			oscillator = this.context.createOscillator();
 			oscillator.type = "square";
@@ -372,10 +388,11 @@ function(Tone){
 			//connect it up
 			controlSignal.connect(oscillator.frequency);
 			oscillator.frequency.value = 0;
+			upTick = false;
+			oscillator.start(this.toSeconds(time));
+
+			//call start on each of the synced sources
 		}
-		upTick = false;
-		oscillator.start(this.toSeconds(time));
-		//call start on each of the synced sources
 	};
 
 
@@ -385,13 +402,15 @@ function(Tone){
 	 *  @param  {Tone.Time} time
 	 */
 	Tone.Transport.prototype.stop = function(time){
-		if (oscillator !== null){
+		if (this.state === TransportState.STARTED || this.state === TransportState.PAUSED){
+			this.state = TransportState.STOPPED;
 			oscillator.stop(this.toSeconds(time));
 			oscillator = null;
+			this._setTicks(0);
+			clearTimelineEvents();
+
+			//call stop on each of the synced sources
 		}
-		this._setTicks(0);
-		clearTimelineEvents();
-		//call stop on each of the synced sources
 	};
 
 	/**
@@ -400,10 +419,13 @@ function(Tone){
 	 *  @param  {Tone.Time} time
 	 */
 	Tone.Transport.prototype.pause = function(time){
-		oscillator.stop(this.toSeconds(time));
-		oscillator = null;
-		clearTimelineEvents();
-		//call pause on each of the synced sources
+		if (this.state === TransportState.STARTED){
+			this.state = TransportState.PAUSED;
+			oscillator.stop(this.toSeconds(time));
+			oscillator = null;
+			clearTimelineEvents();
+			//call pause on each of the synced sources
+		}
 	};
 
 	///////////////////////////////////////////////////////////////////////////////
