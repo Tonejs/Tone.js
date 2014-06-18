@@ -102,15 +102,15 @@ define(["chai", "Tone/core/Tone", "Tone/core/Transport"], function(chai, Tone, T
 			Transport.setBpm(120);
 			Transport.setTimeSignature(4, 4);
 			var now = tone.now();
-			expect(tone.toSeconds("+5")).to.be.closeTo(now + 5, 0.001);
+			expect(tone.toSeconds("+5")).to.be.closeTo(now + 5, 0.01);
 			now = tone.now();
-			expect(tone.toSeconds("+4n")).to.be.closeTo(now + 0.5, 0.001);
+			expect(tone.toSeconds("+4n")).to.be.closeTo(now + 0.5, 0.01);
 			now = tone.now();
-			expect(tone.toSeconds("+1:0")).to.be.closeTo(now + 2, 0.001);
+			expect(tone.toSeconds("+1:0")).to.be.closeTo(now + 2, 0.01);
 		});
 		it("with no arguments returns 'now'", function(){
 			var now = tone.now();
-			expect(tone.toSeconds()).to.be.closeTo(now, 0.0001);
+			expect(tone.toSeconds()).to.be.closeTo(now, 0.01);
 		});
 	});
 });
