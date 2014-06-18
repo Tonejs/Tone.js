@@ -1,12 +1,12 @@
 define(["Tone/core/Tone", "Tone/core/Master", "Tone/signal/Signal"], 
 function(Tone){
 
-
 	/**
 	 *  oscillator-based transport allows for simple musical timing
 	 *  supports tempo curves and time changes
 	 *
 	 *  @constructor
+	 *  @extends {Tone}
 	 */
 	Tone.Transport = function(){
 
@@ -21,6 +21,11 @@ function(Tone){
 
 		/** @type {boolean} */
 		this.loop = false;
+
+		/**
+		 *  @type {TransportState}
+		 */
+		this.state = TransportState.STOPPED;
 
 		//so it doesn't get garbage collected
 		this._jsNode.toMaster();
@@ -65,16 +70,19 @@ function(Tone){
 	 * @type {Array}
 	 */
 	var intervals = [];
+	
 	/** 
 	 * @private
 	 * @type {Array}
 	 */
 	var timeouts = [];
+	
 	/** 
 	 * @private
 	 * @type {Array}
 	 */
-	var timeline = [];
+	var transportTimeline = [];
+	
 	/** 
 	 * @private
 	 * @type {number}
@@ -91,6 +99,7 @@ function(Tone){
 	/** 
 	 *  controls the oscillator frequency
 	 *  starts at 120bpm
+	 *  
 	 *  @private
 	 *  @type {Tone.Signal}
 	 */
@@ -102,6 +111,16 @@ function(Tone){
 	 *  @type {Array<Tone>}
 	 */
 	var SyncedComponents = [];
+
+
+	/**
+	 *  @enum
+	 */
+	 var TransportState = {
+	 	STARTED : "started",
+	 	PAUSED : "paused",
+	 	STOPPED : "stopped"
+	 };
 
 
 	///////////////////////////////////////////////////////////////////////////////
@@ -146,8 +165,8 @@ function(Tone){
 	//jump to a specific tick in the timeline
 	Tone.Transport.prototype._setTicks = function(ticks){
 		transportTicks = ticks;
-		for (var i = 0; i < timeline.length; i++){
-			var timeout = timeline[i];
+		for (var i = 0; i < transportTimeline.length; i++){
+			var timeout = transportTimeline[i];
 			if (timeout.callbackTick() >= ticks){
 				timelineProgress = i;
 				break;
@@ -193,14 +212,14 @@ function(Tone){
 	};
 
 	/**
-	 *  process the timeline events
+	 *  process the transportTimeline events
 	 *  @param  {number} time 
 	 */
 	var processTimeline = function(time){
-		for (var i = timelineProgress, len = timeline.length; i<len; i++){
-			var evnt = timeline[i];
+		for (var i = timelineProgress, len = transportTimeline.length; i<len; i++){
+			var evnt = transportTimeline[i];
 			var callbackTick = evnt.callbackTick();
-			if (callbackTick <= transportTicks){
+			if (callbackTick === transportTicks){
 				evnt.doCallback(time);
 				timelineProgress = i;
 			} else if (callbackTick > transportTicks){
@@ -213,7 +232,7 @@ function(Tone){
 	 *  clear the timeouts and intervals
 	 */
 	function clearTimelineEvents(){
-		timeouts = [];
+		
 		intervals = [];
 	}
 
@@ -250,6 +269,13 @@ function(Tone){
 			}
 		}
 		return false;
+	};
+
+	/**
+	 *  removes all of the intervals that are currently set
+	 */
+	Tone.Transport.prototype.clearIntervals = function(){
+		intervals = [];
 	};
 
 	///////////////////////////////////////////////////////////////////////////////
@@ -296,12 +322,21 @@ function(Tone){
 		return false;
 	};
 
+	/**
+	 *  removes all of the timeouts that are currently set
+	 *
+	 *  @todo (optionally) remove events after a certain time
+	 */
+	Tone.Transport.prototype.clearTimeouts = function(){
+		timeouts = [];
+	};
+
 	///////////////////////////////////////////////////////////////////////////////
 	//	TIMELINE
 	///////////////////////////////////////////////////////////////////////////////
 
 	/**
-	 *  Timeline events are synced to the timeline of the Transport
+	 *  Timeline events are synced to the transportTimeline of the Transport
 	 *  Unlike Timeout, Timeline events will restart after the 
 	 *  Transport has been stopped and restarted. 
 	 *
@@ -309,39 +344,46 @@ function(Tone){
 	 *  @param {function} 	callback 	
 	 *  @param {Tome.Time}  timeout  
 	 *  @param {Object}   	ctx      	the context in which the funtion is called
-	 *  @return {number} 				the id for clearing the timeline event
+	 *  @return {number} 				the id for clearing the transportTimeline event
 	 */
 	Tone.Transport.prototype.setTimeline = function(callback, timeout, ctx){
 		var ticks = this.toTicks(timeout);
-		ctx = this.defaultArg(ctx, window);
 		var timelineEvnt = new TimelineEvent(callback, ctx, ticks + transportTicks, 0);
 		//put it in the right spot
-		for (var i = timelineProgress, len = timeline.length; i<len; i++){
-			var testEvnt = timeline[i];
+		for (var i = timelineProgress, len = transportTimeline.length; i<len; i++){
+			var testEvnt = transportTimeline[i];
 			if (testEvnt.callbackTick() > timelineEvnt.callbackTick()){
-				timeline.splice(i, 0, timelineEvnt);
+				transportTimeline.splice(i, 0, timelineEvnt);
 				return timelineEvnt.id;
 			}
 		}
 		//otherwise push it on the end
-		timeline.push(event);
+		transportTimeline.push(timelineEvnt);
 		return timelineEvnt.id;
 	};
 
 	/**
-	 *  clear the timeline event from the 
+	 *  clear the transportTimeline event from the 
 	 *  @param  {number} timelineID 
 	 *  @return {boolean} true if it was removed
 	 */
 	Tone.Transport.prototype.clearTimeline = function(timelineID){
-		for (var i = 0; i < timeline.length; i++){
-			var testTimeline = timeline[i];
+		for (var i = 0; i < transportTimeline.length; i++){
+			var testTimeline = transportTimeline[i];
 			if (testTimeline.id === timelineID){
-				timeline.splice(i, 1);
+				transportTimeline.splice(i, 1);
 				return true;
 			}
 		}
 		return false;
+	};
+
+	/**
+	 *  remove all events from the timeline
+	 */
+	Tone.Transport.prototype.clearTimelines = function(){
+		timelineProgress = 0;
+		transportTimeline = [];
 	};
 
 	///////////////////////////////////////////////////////////////////////////////
@@ -396,7 +438,8 @@ function(Tone){
 	 *  @param  {Tone.Time} time
 	 */
 	Tone.Transport.prototype.start = function(time){
-		if (oscillator === null){
+		if (this.state === TransportState.STOPPED || this.state === TransportState.PAUSED){
+			this.state = TransportState.STARTED;
 			//reset the oscillator
 			oscillator = this.context.createOscillator();
 			oscillator.type = "square";
@@ -404,10 +447,11 @@ function(Tone){
 			//connect it up
 			controlSignal.connect(oscillator.frequency);
 			oscillator.frequency.value = 0;
+			upTick = false;
+			oscillator.start(this.toSeconds(time));
+
+			//call start on each of the synced sources
 		}
-		upTick = false;
-		oscillator.start(this.toSeconds(time));
-		//call start on each of the synced sources
 	};
 
 
@@ -417,13 +461,16 @@ function(Tone){
 	 *  @param  {Tone.Time} time
 	 */
 	Tone.Transport.prototype.stop = function(time){
-		if (oscillator !== null){
+		if (this.state === TransportState.STARTED || this.state === TransportState.PAUSED){
+			this.state = TransportState.STOPPED;
 			oscillator.stop(this.toSeconds(time));
 			oscillator = null;
+			this._setTicks(0);
+			this.clearTimeouts();
+			this.clearIntervals();
+
+			//call stop on each of the synced sources
 		}
-		this._setTicks(0);
-		clearTimelineEvents();
-		//call stop on each of the synced sources
 	};
 
 	/**
@@ -432,10 +479,13 @@ function(Tone){
 	 *  @param  {Tone.Time} time
 	 */
 	Tone.Transport.prototype.pause = function(time){
-		oscillator.stop(this.toSeconds(time));
-		oscillator = null;
-		clearTimelineEvents();
-		//call pause on each of the synced sources
+		if (this.state === TransportState.STARTED){
+			this.state = TransportState.PAUSED;
+			oscillator.stop(this.toSeconds(time));
+			oscillator = null;
+			clearTimelineEvents();
+			//call pause on each of the synced sources
+		}
 	};
 
 	///////////////////////////////////////////////////////////////////////////////

@@ -18,6 +18,7 @@
     "AudioNode" : false,
     "AudioParam" : false,
     "WaveShaperNode" : false,
+    "DynamicsCompressorNode" : false
     //mocha stuff
     "mocha" : false,
     "describe"   : false,

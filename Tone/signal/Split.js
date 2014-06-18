@@ -27,8 +27,8 @@ define(["Tone/core/Tone"], function(Tone){
 		
 		//connections
 		this.input.connect(this.splitter);
-		this.splitter.connect(this.left, 1, 0);
-		this.splitter.connect(this.right, 0, 0);
+		this.splitter.connect(this.left, 0, 0);
+		this.splitter.connect(this.right, 1, 0);
 	};
 
 	Tone.extend(Tone.Split);

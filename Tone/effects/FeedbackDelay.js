@@ -19,8 +19,12 @@ define(["Tone/core/Tone", "Tone/effects/FeedbackEffect"], function(Tone){
 
 	Tone.extend(Tone.FeedbackDelay, Tone.FeedbackEffect);
 
-	Tone.FeedbackDelay.prototype.setDelayTime = function(delayTime){
-		this.rampToValueNow(this.delay.delayTime, this.toSeconds(delayTime));
+	/**
+	 *  sets the delay time
+	 *  @param {Tone.Time} time 
+	 */
+	Tone.FeedbackDelay.prototype.setDelayTime = function(time){
+		this.rampToValueNow(this.delay.delayTime, this.toSeconds(time));
 	}
 
 	return Tone.FeedbackDelay;
