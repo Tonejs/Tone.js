@@ -109,6 +109,19 @@ define(["Tone/core/Tone"], function(Tone){
 	};
 
 	/**
+	 *  creates a schedule point with the current value at the current time
+	 *  
+	 *  @returns {number} the current value
+	 */
+	Tone.Signal.prototype.setCurrentValueNow = function(){
+		var now = this.now();
+		var currentVal = this.getValue();
+		this.cancelScheduledValues(now);
+		this.scalar.gain.setValueAtTime(currentVal, now);
+		return currentVal;
+	};
+
+	/**
 	 *  Schedules a linear continuous change in parameter value from the 
 	 *  previous scheduled parameter value to the given value.
 	 *  
@@ -130,6 +143,40 @@ define(["Tone/core/Tone"], function(Tone){
 	Tone.Signal.prototype.exponentialRampToValueAtTime = function(value, endTime){
 		value *= this._syncRatio;
 		this.scalar.gain.exponentialRampToValueAtTime(value, this.toSeconds(endTime));
+	};
+
+	/**
+	 *  Schedules an exponential continuous change in parameter value from 
+	 *  the current time and current value to the given value.
+	 *  
+	 *  @param  {number} value   
+	 *  @param  {Tone.Time} endTime 
+	 */
+	Tone.Signal.prototype.exponentialRampToValueNow = function(value, endTime){
+		this.setCurrentValueNow();
+		value *= this._syncRatio;
+		//make sure that the endTime doesn't start with +
+		if (endTime.toString().charAt(0) === "+"){
+			endTime = endTime.substr(1);
+		}
+		this.scalar.gain.exponentialRampToValueAtTime(value, this.now() + this.toSeconds(endTime));
+	};
+
+	/**
+	 *  Schedules an linear continuous change in parameter value from 
+	 *  the current time and current value to the given value at the given time.
+	 *  
+	 *  @param  {number} value   
+	 *  @param  {Tone.Time} endTime 
+	 */
+	Tone.Signal.prototype.linearRampToValueAtTime = function(value, endTime){
+		this.setCurrentValueNow();
+		value *= this._syncRatio;
+		//make sure that the endTime doesn't start with +
+		if (endTime.toString().charAt(0) === "+"){
+			endTime = endTime.substr(1);
+		}
+		this.scalar.gain.linearRampToValueAtTime(value, this.now() + this.toSeconds(endTime));
 	};
 
 	/**
