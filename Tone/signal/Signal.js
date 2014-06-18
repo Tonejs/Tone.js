@@ -169,7 +169,7 @@ define(["Tone/core/Tone"], function(Tone){
 	 *  @param  {number} value   
 	 *  @param  {Tone.Time} endTime 
 	 */
-	Tone.Signal.prototype.linearRampToValueAtTime = function(value, endTime){
+	Tone.Signal.prototype.linearRampToValueNow = function(value, endTime){
 		this.setCurrentValueNow();
 		value *= this._syncRatio;
 		//make sure that the endTime doesn't start with +
