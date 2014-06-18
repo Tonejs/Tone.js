@@ -280,6 +280,17 @@
 	};
 
 	/**
+	 *  convert a time into samples
+	 *  
+	 *  @param  {Tone.time} time
+	 *  @return {number}         
+	 */
+	Tone.prototype.toSamples = function(time){
+		var seconds = this.toSeconds(time);
+		return seconds * audioContext.sampleRate;
+	};
+
+	/**
 	 *  convert Tone.Time to seconds
 	 *
 	 *  this is a simplified version which only handles numbers and 
