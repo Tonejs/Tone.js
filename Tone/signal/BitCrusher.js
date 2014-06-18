@@ -1,43 +1,52 @@
-///////////////////////////////////////////////////////////////////////////////
-//
-// 	BIT CRUSHER
-//
-// 	downsample incoming signal
-// 	inspiration from https://github.com/jaz303/bitcrusher/blob/master/index.js
-///////////////////////////////////////////////////////////////////////////////
-
 define(["Tone/core/Tone"], function(Tone){
 
-	//@param {number=} bits
-	//@param {number=} frequency
+	/**
+	 *  downsample incoming signal
+	 *  inspiration from https://github.com/jaz303/bitcrusher/blob/master/index.js
+	 *
+	 *  @constructor
+	 *  @extends {Tone}
+	 *  @param {number=} bits   
+	 *  @param {number=} frequency 
+	 */
 	Tone.BitCrusher = function(bits, frequency){
+
 		Tone.call(this);
 
-		//the math
-		this.bits = this.defaultArg(bits, 8);
-		this.frequency = this.defaultArg(frequency, .5);
-		this.step = 2 * Math.pow(0.5, this.bits);
-		this.invStep = 1/this.step;
-		this.phasor = 0;
-		this.last = 0;
+		/** @private @type {number} */
+		this._bits = this.defaultArg(bits, 8);
+		/** @private @type {number} */
+		this._frequency = this.defaultArg(frequency, 0.5);
+		/** @private @type {number} */
+		this._step = 2 * Math.pow(0.5, this._bits);
+		/** @private @type {number} */
+		this._invStep = 1/this._step;
+		/** @private @type {number} */
+		this._phasor = 0;
+		/** @private @type {number} */
+		this._last = 0;
 		
-		//the node
-		this.crusher = this.context.createScriptProcessor(this.bufferSize, 1, 1);
-		this.crusher.onaudioprocess = this.audioprocess.bind(this);
+		/** @private @type {ScriptProcessorNode} */
+		this._crusher = this.context.createScriptProcessor(this.bufferSize, 1, 1);
+		this._crusher.onaudioprocess = this._audioprocess.bind(this);
 
 		//connect it up
-		this.chain(this.input, this.crusher, this.output);
-	}
+		this.chain(this.input, this._crusher, this.output);
+	};
 
 	Tone.extend(Tone.BitCrusher);
 
-	Tone.BitCrusher.prototype.audioprocess = function(event){
-		var bufferSize = this.crusher.bufferSize;
-		var phasor = this.phasor;
-		var freq = this.frequency;
-		var invStep = this.invStep;
-		var last = this.last;
-		var step = this.step;
+	/**
+	 *  @private
+	 *  @param  {AudioProcessingEvent} event
+	 */
+	Tone.BitCrusher.prototype._audioprocess = function(event){
+		//cache the values used in the loop
+		var phasor = this._phasor;
+		var freq = this._frequency;
+		var invStep = this._invStep;
+		var last = this._last;
+		var step = this._step;
 		var input = event.inputBuffer.getChannelData(0);
 		var output = event.outputBuffer.getChannelData(0);
 		for (var i = 0, len = output.length; i < len; i++) {
@@ -48,19 +57,29 @@ define(["Tone/core/Tone"], function(Tone){
 		    }
 		    output[i] = last;
 		}
-		this.phasor = phasor;
-		this.last = last;
-	}
+		//set the values for the next loop
+		this._phasor = phasor;
+		this._last = last;
+	};
 
+	/**
+	 *  set the bit rate
+	 *  
+	 *  @param {number} bits 
+	 */
 	Tone.BitCrusher.prototype.setBits = function(bits){
-		this.bits = bits;
-		this.step = 2 * Math.pow(0.5, this.bits);
-		this.invStep = 1/this.step;
-	}
+		this._bits = bits;
+		this._step = 2 * Math.pow(0.5, this._bits);
+		this._invStep = 1/this._step;
+	};
 
+	/**
+	 *  set the frequency
+	 *  @param {number} freq 
+	 */
 	Tone.BitCrusher.prototype.setFrequency = function(freq){
-		this.frequency = freq;
-	}
+		this._frequency = freq;
+	};
 
 	return Tone.BitCrusher;
 });

@@ -1,20 +1,27 @@
-///////////////////////////////////////////////////////////////////////////////
-//
-//	BUS
-//
-//	buses are another way of routing audio
-//
-//	adds: 	send(channelName, amount)
-//			receive(channelName) 
-///////////////////////////////////////////////////////////////////////////////
-
 define(["Tone/core/Tone"], function(Tone){
 
-	var Buses = {}
+	/**
+	 *  @fileOverview 
+	 *
+	 *  buses are another way of routing audio
+	 *
+	 *  augments Tone.prototype to include send and recieve
+	 */
 
-	//@param {string} channelName
-	//@param {number=} amount
-	//@returns {GainNode} the send
+	 /**
+	  *  All of the routes
+	  *  
+	  *  @type {Object}
+	  */
+	var Buses = {};
+
+	/**
+	 *  send signal to a channel name
+	 *  
+	 *  @param  {string} channelName 
+	 *  @param  {number} amount      
+	 *  @return {GainNode}             
+	 */
 	Tone.prototype.send = function(channelName, amount){
 		if (!Buses.hasOwnProperty(channelName)){
 			Buses[channelName] = this.context.createGain();
@@ -23,17 +30,21 @@ define(["Tone/core/Tone"], function(Tone){
 		sendKnob.gain.value = this.defaultArg(amount, 1);
 		this.chain(this.output, sendKnob, Buses[channelName]);
 		return sendKnob;		
-	}
+	};
 
-	//@param {string} channelName
+	/**
+	 *  recieve the input from the desired channelName to the input gain of 'this' node.
+	 *  	
+	 *  @param  {string} channelName 
+	 */
 	Tone.prototype.receive = function(channelName){
 		if (!Buses.hasOwnProperty(channelName)){
 			Buses[channelName] = this.context.createGain();	
 		}
 		Buses[channelName].connect(this.input);
-	}
+	};
 
-	Tone.Buses = Buses;
+	// Tone.Buses = Buses;
 
-	return Tone.Buses;
+	// return Buses;
 });

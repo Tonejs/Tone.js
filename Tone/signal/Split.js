@@ -1,26 +1,35 @@
-///////////////////////////////////////////////////////////////////////////////
-//
-//  SPLIT
-//
-//	splits the incoming signal into left and right outputs
-//	 one input two outputs
-///////////////////////////////////////////////////////////////////////////////
-
 define(["Tone/core/Tone"], function(Tone){
 
+	/**
+	 *	split the incoming signal into left and right channels
+	 *
+	 *  the left channel is the default output
+	 *  
+	 *  @constructor
+	 *  @extends {Tone}
+	 */
 	Tone.Split = function(){
 		Tone.call(this);
 
-		//components
+		/** @type {ChannelSplitterNode} */
 		this.splitter = this.context.createChannelSplitter(2);
-		this.left = this.context.createGain();
+		/** 
+		 *  left channel output
+		 *  @alias for the default output
+		 *  @type {GainNode}
+		 */
+		this.left = this.output;
+		/**
+		 *  the right channel output
+		 *  @type {GainNode}
+		 */
 		this.right = this.context.createGain();
 		
 		//connections
 		this.input.connect(this.splitter);
 		this.splitter.connect(this.left, 1, 0);
 		this.splitter.connect(this.right, 0, 0);
-	}
+	};
 
 	Tone.extend(Tone.Split);
 

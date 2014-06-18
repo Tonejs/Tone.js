@@ -1,26 +1,37 @@
-///////////////////////////////////////////////////////////////////////////////
-//
-//	MULTIPLY
-//
-//	Multiply the incoming signal by a factor
-///////////////////////////////////////////////////////////////////////////////
-
 define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 
-	//@param {number} value
+	/**
+	 *  Multiply the incoming signal by some factor
+	 *
+	 *  @constructor
+	 *  @extends {Tone}
+	 *  @param {number=} value constant value to multiple
+	 */
 	Tone.Multiply = function(value){
-		Tone.call(this);
-		this.input.connect(this.output);
-		this.input.gain.value = value;
-	}
+		/**
+		 *  the input node is the same as the output node
+		 *  it is also the GainNode which handles the scaling of incoming signal
+		 *  
+		 *  @type {GainNode}
+		 */
+		this.input = this.context.createGain();
+		/** @alias */
+		this.output = this.input;
+
+		//apply the inital scale factor
+		this.input.gain.value = this.defaultArg(value, 1);
+	};
 
 	Tone.extend(Tone.Multiply);
 
-	//set the constant value
-	//@param {number} value
+	/**
+	 *  set the constant multiple
+	 *  	
+	 *  @param {number} value 
+	 */
 	Tone.Multiply.prototype.setValue = function(value){
 		this.input.gain.value = value;
-	}
+	};
 
 	return Tone.Multiply;
-})
+});

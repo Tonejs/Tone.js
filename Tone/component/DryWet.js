@@ -1,15 +1,15 @@
-///////////////////////////////////////////////////////////////////////////////
-//
-//  DRY/WET KNOB
-//
-// 	equal power fading
-//	control values:
-// 	   	0 = 100% dry
-//		1 = 100% wet
-///////////////////////////////////////////////////////////////////////////////
-
 define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Scale"], function(Tone){
 
+	/**
+	 * DRY/WET KNOB
+	 * 
+	 * equal power fading control values:
+	 * 	0 = 100% dry
+	 * 	1 = 100% wet
+	 *
+	 * @constructor
+	 * @param {number} initialDry
+	 */		
 	Tone.DryWet = function(initialDry){
 		Tone.call(this);
 
@@ -33,20 +33,30 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Scale"], function(T
 		this.dry.gain.value = 0;
 		this.wet.gain.value = 0;
 		this.setDry(0);
-	}
+	};
 
 	Tone.extend(Tone.DryWet);
 
-	// @param {number} val
-	// @param {Tone.Timing} rampTime
+	/**
+	 * Set the dry value of the knob 
+	 * 
+	 * @param {number} val
+	 * @param {Tone.Time} rampTime
+	 */
 	Tone.DryWet.prototype.setDry = function(val, rampTime){
 		rampTime = this.defaultArg(rampTime, 0);
 		this.control.linearRampToValueAtTime(val*2 - 1, this.toSeconds(rampTime));
-	}
+	};
 
+	/**
+	 * Set the wet value of the knob 
+	 * 
+	 * @param {number} val
+	 * @param {Tone.Time} rampTime
+	 */
 	Tone.DryWet.prototype.setWet = function(val, rampTime){
 		this.setDry(1-val, rampTime);
-	}
+	};
 
 	return Tone.DryWet;
 });
