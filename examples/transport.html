@@ -24,27 +24,27 @@
 		//setting events
 		var output = document.querySelector("#output");
 
-		Tone.Transport.setTimeout(function(time){
+		Tone.Transport.setInterval(function(time){
 			player.start(time);
 			output.textContent = "a";
 		}, "0:0");
 
-		Tone.Transport.setTimeout(function(time){
+		Tone.Transport.setInterval(function(time){
 			player.start(time);
 			output.textContent = "series";
 		}, "0:1");
 
-		Tone.Transport.setTimeout(function(time){
+		Tone.Transport.setInterval(function(time){
 			player.start(time);
 			output.textContent = "of";
 		}, "2n");
 
-		Tone.Transport.setTimeout(function(time){
+		Tone.Transport.setInterval(function(time){
 			player.start(time);
 			output.textContent = "timed";
 		}, "0:3");
 
-		Tone.Transport.setTimeout(function(time){
+		Tone.Transport.setInterval(function(time){
 			player.start(time);
 			output.textContent = "events";
 		}, "0:3:2");
@@ -52,7 +52,7 @@
 		var button = document.querySelector("button");
 
 		button.onclick = function(){
-			if (Tone.Transport.state === "playing"){
+			if (Tone.Transport.state === "started"){
 				Tone.Transport.stop();
 				button.textContent = "start";
 			} else {

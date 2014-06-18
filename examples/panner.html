@@ -47,10 +47,16 @@
 		
 		var range = document.querySelector("input");
 		
-		range.onchange = function(){
-			var val = range.value;
+		range.oninput = function(e){
+			var val = e.target.value;
 			pan.setPan(val/100, "+.1");
 		}
+
+		var mouseX, mouseY;
+		window.onmousemove = function(e) {
+			mouseX = e.x;
+			mouseY = e.y;
+		};
 
 	</script>
 </body>

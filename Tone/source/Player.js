@@ -1,11 +1,14 @@
-///////////////////////////////////////////////////////////////////////////////
-//
-//  AUDIO PLAYER
-//
-///////////////////////////////////////////////////////////////////////////////
-
 define(["Tone/core/Tone"], function(Tone){
 
+	/**
+	 *  Audio Player
+	 *  
+	 *  Audio file player with start, loop, stop.
+	 *  
+	 *  @constructor
+	 *  @extends {Tone.Source} 
+	 *  @param {string} url
+	 */
 	Tone.Player = function(url){
 		//extend Unit
 		Tone.call(this);
@@ -16,18 +19,22 @@ define(["Tone/core/Tone"], function(Tone){
 		this.buffer = null;
 
 		this.onended = function(){};
-	}
+	};
 
 	Tone.extend(Tone.Player, Tone);
 
-	//makes an xhr for the buffer at the url
-	//invokes the callback at the end
-	//@param {function(Tone.Player)} callback
+	/**
+	 *  Load the audio file as an audio buffer.
+	 *  Decodes the audio asynchronously and invokes
+	 *  the callback once the audio buffer loads.
+	 *  
+	 *  @param {function(Tone.Player)} callback
+	 */
 	Tone.Player.prototype.load = function(callback){
 		if (!this.buffer){
 			var request = new XMLHttpRequest();
-			request.open('GET', this.url, true);
-			request.responseType = 'arraybuffer';
+			request.open("GET", this.url, true);
+			request.responseType = "arraybuffer";
 			// decode asynchronously
 			var self = this;
 			request.onload = function() {
@@ -37,7 +44,7 @@ define(["Tone/core/Tone"], function(Tone){
 						callback(self);
 					}
 				});
-			}
+			};
 			//send the request
 			request.send();
 		} else {
@@ -45,9 +52,17 @@ define(["Tone/core/Tone"], function(Tone){
 				callback(this);
 			}
 		}
-	}
+	};
 
-	//play the buffer from start to finish at a time
+
+	/**
+	 *  Play the buffer from start to finish at a time
+	 *
+	 *  @param  {Tone.Time} startTime
+	 *  @param  {Tone.Time} offset
+	 *  @param  {Tone.Time} duration
+	 *  @param  {number} volume
+	 */
 	Tone.Player.prototype.start = function(startTime, offset, duration, volume){
 		if (this.buffer){
 			//default args
@@ -65,9 +80,18 @@ define(["Tone/core/Tone"], function(Tone){
 			gain.gain.value = volume;
 			this.chain(this.source, gain, this.output);
 		}
-	}
+	};
 
-	//play the buffer from start to finish at a time
+	/**
+	 *  Loop the buffer from start to finish at a time
+	 *
+	 *  @param  {Tone.Time} startTime
+	 *  @param  {Tone.Time} loopStart
+	 *  @param  {Tone.Time} loopEnd
+	 *  @param  {Tone.Time} offset
+	 *  @param  {Tone.Time} duration
+	 *  @param  {Tone.Time} volume
+	 */
 	Tone.Player.prototype.loop = function(startTime, loopStart, loopEnd, offset, duration, volume){
 		if (this.buffer){
 			//default args
@@ -82,29 +106,41 @@ define(["Tone/core/Tone"], function(Tone){
 			this.source.loopStart = this.toSeconds(loopStart);
 			this.source.loopEnd = this.toSeconds(loopEnd);
 		}
-	}
+	};
 
-	//stop playback
+	/**
+	 *  Stop playback.
+	 * 
+	 *  @param  {Tone.Time} stopTime
+	 */
 	Tone.Player.prototype.stop = function(stopTime){
 		if (this.buffer && this.source){
 			stopTime = this.defaultArg(stopTime, this.now());
 			this.source.stop(this.toSeconds(stopTime));
 		}
-	}
+	};
 
-	//@returns {number} the buffer duration
+	/**
+	 *  Get the duration in seconds as a floating point number
+	 *
+	 *  @return {number} the buffer duration
+	 */
 	Tone.Player.prototype.getDuration = function(){
 		if (this.buffer){
-			this.buffer.duration;
+			return this.buffer.duration;
 		} else {
 			return 0;
 		}
-	}
+	};
 
-	//@param {function(Event)} callback
+	/**
+	 *  
+	 *  @param {function(Event)} callback
+	 *  @private
+	 */
 	Tone.Player.prototype._onended = function(e){
 		this.onended(e);
-	}
+	};
 
 	return Tone.Player;
 });
