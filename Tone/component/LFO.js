@@ -96,7 +96,6 @@ define(["Tone/core/Tone", "Tone/source/Oscillator", "Tone/signal/Scale"], functi
 	/**
 	 *  pointer to the parent's connect method
 	 *  @private
-	 *  @type {[type]}
 	 */
 	Tone.LFO.prototype._connect = Tone.prototype.connect;
 

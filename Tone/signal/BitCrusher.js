@@ -13,20 +13,46 @@ define(["Tone/core/Tone"], function(Tone){
 
 		Tone.call(this);
 
-		/** @private @type {number} */
+		/** 
+		 * @private 
+		 * @type {number}
+		 */
 		this._bits = this.defaultArg(bits, 8);
-		/** @private @type {number} */
+		
+		/** 
+		 * @private 
+		 * @type {number}
+		 */
 		this._frequency = this.defaultArg(frequency, 0.5);
-		/** @private @type {number} */
+		
+		/** 
+		 * @private 
+		 * @type {number}
+		 */
 		this._step = 2 * Math.pow(0.5, this._bits);
-		/** @private @type {number} */
+		
+		/** 
+		 * @private 
+		 * @type {number}
+		 */
 		this._invStep = 1/this._step;
-		/** @private @type {number} */
+		
+		/** 
+		 * @private 
+		 * @type {number}
+		 */
 		this._phasor = 0;
-		/** @private @type {number} */
+		
+		/** 
+		 * @private 
+		 * @type {number}
+		 */
 		this._last = 0;
 		
-		/** @private @type {ScriptProcessorNode} */
+		/** 
+		 * @private 
+		 * @type {ScriptProcessorNode}
+		 */
 		this._crusher = this.context.createScriptProcessor(this.bufferSize, 1, 1);
 		this._crusher.onaudioprocess = this._audioprocess.bind(this);
 

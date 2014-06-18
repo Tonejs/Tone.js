@@ -112,7 +112,7 @@
 
 	/**
 	 *  A static pointer to the audio context
-	 *  @type {[type]}
+	 *  @type {AudioContext}
 	 */
 	Tone.context = audioContext;
 

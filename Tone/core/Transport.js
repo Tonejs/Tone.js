@@ -28,27 +28,57 @@ function(Tone){
 
 	Tone.extend(Tone.Transport);
 
-	/** @private @type {number} */
+	/** 
+	 * @private 
+	 * @type {number} 
+	 */
 	var transportTicks = 0;
-	/** @private @type {number} */
+	/** 
+	 * @private
+	 * @type {number}
+	 */
 	var tatum = 12;
-	/** @private @type {boolean} */
+	/** 
+	 * @private
+	 * @type {Boolean}
+	 */
 	var upTick = false;
-	/** @private @type {number} */
+	/** 
+	 * @private
+	 * @type {number}
+	 */
 	var transportTimeSignature = 4;
 
-	/** @private @type {number} */
+	/** 
+	 * @private
+	 * @type {number}
+	 */
 	var loopStart = 0;
-	/** @private @type {number} */
+	/** 
+	 * @private
+	 * @type {number}
+	 */
 	var loopEnd = tatum * 4;
 
-	/** @private @type {Array<TimelineEvent>} */
+	/** 
+	 * @private
+	 * @type {Array}
+	 */
 	var intervals = [];
-	/** @private @type {Array<TimelineEvent>} */
+	/** 
+	 * @private
+	 * @type {Array}
+	 */
 	var timeouts = [];
-	/** @private @type {Array<TimelineEvent>} */
+	/** 
+	 * @private
+	 * @type {Array}
+	 */
 	var timeline = [];
-	/** @private @type {number} */
+	/** 
+	 * @private
+	 * @type {number}
+	 */
 	var timelineProgress = 0;
 
 	/**
@@ -68,7 +98,8 @@ function(Tone){
 
 	/** 
 	 *  All of the synced components
-	 *  @private @type {Array<Tone>}
+	 *  @private 
+	 *  @type {Array<Tone>}
 	 */
 	var SyncedComponents = [];
 
@@ -508,8 +539,7 @@ function(Tone){
 	/**
 	 *  remove the source from the list of Synced Sources
 	 *  
-	 *  @param  {[type]} source [description]
-	 *  @return {[type]}        [description]
+	 *  @param  {Tone.Source} source [description]
 	 */
 	Tone.Transport.prototype.unsync = function(source){
 		
