@@ -12,7 +12,7 @@ require.config({
 	}
 });
 
-require(["tests/Timing", "tests/Signal", "tests/Math", "tests/Transport"], function(){
+require(["tests/Timing", "tests/Signal", "tests/Math", "tests/Transport", "tests/Sources"], function(){
 	if (window.mochaPhantomJS) { 
 		mochaPhantomJS.run(); 
 	} else { 

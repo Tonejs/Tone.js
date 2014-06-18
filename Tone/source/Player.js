@@ -1,11 +1,13 @@
-///////////////////////////////////////////////////////////////////////////////
-//
-//  AUDIO PLAYER
-//
-///////////////////////////////////////////////////////////////////////////////
-
 define(["Tone/core/Tone"], function(Tone){
-
+	/**
+	 *  Audio Player
+	 *  
+	 *  Audio file player with start, loop, stop.
+	 *  
+	 *  @constructor
+	 *  @extends {Tone.Source} 
+	 *  @param {string} url
+	 */
 	Tone.Player = function(url){
 		//extend Unit
 		Tone.call(this);
@@ -22,7 +24,11 @@ define(["Tone/core/Tone"], function(Tone){
 
 	/**
 	 *  makes an xhr reqest for the selected url
-	 *  @param  {function(Tone.Player)=} callback invoked when the sample is loaded
+	 *  Load the audio file as an audio buffer.
+	 *  Decodes the audio asynchronously and invokes
+	 *  the callback once the audio buffer loads.
+	 *  
+	 *  @param {function(Tone.Player)} callback
 	 */
 	Tone.Player.prototype.load = function(callback){
 		if (!this.buffer){
@@ -61,18 +67,26 @@ define(["Tone/core/Tone"], function(Tone){
 			startTime = this.defaultArg(startTime, this.now());
 			offset = this.defaultArg(offset, 0);
 			duration = this.defaultArg(duration, this.buffer.duration - offset);
-			volume = this.defaultArg(volume, 1);
 			//make the source
 			this.source = this.context.createBufferSource();
 			this.source.buffer = this.buffer;
 			this.source.loop = false;
 			this.source.start(this.toSeconds(startTime), this.toSeconds(offset), this.toSeconds(duration));
 			this.source.onended = this._onended.bind(this);
-			this.chain(this.source, gain, this.output);
+			this.chain(this.source, this.output);
 		}
 	};
 
-	//play the buffer from start to finish at a time
+	/**
+	 *  Loop the buffer from start to finish at a time
+	 *
+	 *  @param  {Tone.Time} startTime
+	 *  @param  {Tone.Time} loopStart
+	 *  @param  {Tone.Time} loopEnd
+	 *  @param  {Tone.Time} offset
+	 *  @param  {Tone.Time} duration
+	 *  @param  {Tone.Time} volume
+	 */
 	Tone.Player.prototype.loop = function(startTime, loopStart, loopEnd, offset, duration, volume){
 		if (this.buffer){
 			//default args
@@ -90,8 +104,9 @@ define(["Tone/core/Tone"], function(Tone){
 	};
 
 	/**
-	 *  stop the playback of the sample
-	 *  @param  {Tone.Time} stopTime 
+	 *  Stop playback.
+	 * 
+	 *  @param  {Tone.Time} stopTime
 	 */
 	Tone.Player.prototype.stop = function(stopTime){
 		if (this.buffer && this.source){
