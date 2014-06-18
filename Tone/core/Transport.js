@@ -169,7 +169,7 @@ function(Tone){
 		for (var i = timelineProgress, len = timeline.length; i<len; i++){
 			var evnt = timeline[i];
 			var callbackTick = evnt.callbackTick();
-			if (callbackTick <= transportTicks){
+			if (callbackTick === transportTicks){
 				evnt.doCallback(time);
 				timelineProgress = i;
 			} else if (callbackTick > transportTicks){
@@ -282,7 +282,6 @@ function(Tone){
 	 */
 	Tone.Transport.prototype.setTimeline = function(callback, timeout, ctx){
 		var ticks = this.toTicks(timeout);
-		ctx = this.defaultArg(ctx, window);
 		var timelineEvnt = new TimelineEvent(callback, ctx, ticks + transportTicks, 0);
 		//put it in the right spot
 		for (var i = timelineProgress, len = timeline.length; i<len; i++){
@@ -293,7 +292,7 @@ function(Tone){
 			}
 		}
 		//otherwise push it on the end
-		timeline.push(event);
+		timeline.push(timelineEvnt);
 		return timelineEvnt.id;
 	};
 
