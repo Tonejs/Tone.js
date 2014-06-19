@@ -1,8 +1,11 @@
-define(["Tone/core/Tone"], 
-function(Tone){
-
+define(["Tone/core/Tone", "Tone/core/Transport"], function(Tone){
 	/**
 	 *  base class for sources
+	 *
+	 *  sources have start/stop/pause
+	 *
+	 *  they also have the ability to be synced to the 
+	 *  start/stop/pause of Tone.Transport
 	 *
 	 *  @constructor
 	 *  @extends {Tone}
@@ -14,6 +17,11 @@ function(Tone){
 		 *  @type {GainNode}
 		 */
 		this.output = this.context.createGain();
+
+		/**
+		 *  @type {Tone.Source.State}
+		 */
+		this.state = Tone.Source.State.STOPPED;
 	};
 
 	Tone.extend(Tone.Source);
@@ -30,11 +38,35 @@ function(Tone){
 	 */
 	Tone.Source.prototype.stop = function(){};
 
+
 	/**
  	 *  @abstract
 	 *  @param  {Tone.Time} time 
 	 */
-	Tone.Source.prototype.pause = function(){};
+	Tone.Source.prototype.pause = function(time){
+		//if there is no pause, just stop it
+		this.stop(time);
+	};
+
+	/**
+	 *  sync the source to the Transport
+	 */
+	Tone.Source.prototype.sync = function(){
+		if (this.state !== Tone.Source.State.SYNCED){
+			this.state = Tone.Source.State.SYNCED;
+			Tone.Transport.sync(this);
+		}
+	};
+
+	/**
+	 *  unsync the source to the Transport
+	 */
+	Tone.Source.prototype.unsync = function(){
+		if (this.state === Tone.Source.State.SYNCED){
+			Tone.Transport.unsync(this);
+		}
+	};
+
 
 	/**
 	 *  @param {number} value 
@@ -54,6 +86,17 @@ function(Tone){
 	Tone.Source.prototype.setVolume = function(value){
 		this.output.gain.value = value;
 	};
+
+	/**
+	 *  @enum {string}
+	 */
+	Tone.Source.State = {
+		STARTED : "started",
+		PAUSED : "paused",
+		STOP_SCHEDULED : "stopScheduled",
+		STOPPED : "stopped",
+		SYNCED : "synced"
+ 	};
 
 	return Tone.Source;
 });

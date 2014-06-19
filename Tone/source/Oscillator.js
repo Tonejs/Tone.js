@@ -25,6 +25,11 @@ function(Tone){
 		 */
 		this.frequency = new Tone.Signal(this.defaultArg(this.toFrequency(freq), 440));
 
+		/**
+		 *  @type {function()}
+		 */
+		this.onended = function(){};
+
 		//connections
 		this.oscillator.connect(this.output);
 		//setup
@@ -39,19 +44,36 @@ function(Tone){
 	 *  @param  {Tone.Time} time 
 	 */
 	Tone.Oscillator.prototype.start = function(time){
-		//get previous values
-		var type = this.oscillator.type;
-		var detune = this.oscillator.frequency.value;
-		//new oscillator with previous values
-		this.oscillator = this.context.createOscillator();
-		this.oscillator.type = type;
-		this.oscillator.detune.value = detune;
-		//connect the control signal to the oscillator frequency
-		this.oscillator.connect(this.output);
-		this.frequency.connect(this.oscillator.frequency);
-		this.oscillator.frequency.value = 0;
-		//start the oscillator
-		this.oscillator.start(this.toSeconds(time));
+		if (this.state === Tone.Source.State.STOPPED){
+			this.state = Tone.Source.State.STARTED;
+			//get previous values
+			var type = this.oscillator.type;
+			var detune = this.oscillator.frequency.value;
+			//new oscillator with previous values
+			this.oscillator = this.context.createOscillator();
+			this.oscillator.type = type;
+			this.oscillator.detune.value = detune;
+			//connect the control signal to the oscillator frequency
+			this.oscillator.connect(this.output);
+			this.frequency.connect(this.oscillator.frequency);
+			this.oscillator.frequency.value = 0;
+			//start the oscillator
+			this.oscillator.start(this.toSeconds(time));
+			this.oscillator.onended = this._onended.bind(this);
+		}
+	};
+
+	/**
+	 *  stop the oscillator
+	 *  @param  {Tone.Time=} time (optional) timing parameter
+	 */
+	Tone.Oscillator.prototype.stop = function(time){
+		if (this.state === Tone.Source.State.STARTED){
+			if (!time){
+				this.state = Tone.Source.State.STOPPED;
+			}
+			this.oscillator.stop(this.toSeconds(time));
+		}
 	};
 
 	/**
@@ -64,23 +86,21 @@ function(Tone){
 	 *  Transport start/pause/stop will also start/pause/stop the oscillator
 	 */
 	Tone.Oscillator.prototype.sync = function(){
-		Tone.Transport.sync(this, this.frequency);
+		if (this.state !== Tone.Source.State.SYNCED){
+			this.state = Tone.Source.State.SYNCED;
+			Tone.Transport.sync(this);
+			Tone.Transport.syncSignal(this.frequency);
+		}
 	};
 
 	/**
 	 *  unsync the oscillator from the Transport
 	 */
 	Tone.Oscillator.prototype.unsync = function(){
-		Tone.Transport.unsync(this);
-		this.frequency.unsync();
-	};
-
-	/**
-	 *  stop the oscillator
-	 *  @param  {Tone.Time=} time (optional) timing parameter
-	 */
-	Tone.Oscillator.prototype.stop = function(time){
-		this.oscillator.stop(this.toSeconds(time));
+		if (this.state === Tone.Source.State.SYNCED){
+			Tone.Transport.unsync(this);
+			this.frequency.unsync();
+		}
 	};
 
 	/**
@@ -90,7 +110,11 @@ function(Tone){
 	 *  @param {Tone.Time=} rampTime when the oscillator will arrive at the frequency
 	 */
 	Tone.Oscillator.prototype.setFrequency = function(val, rampTime){
-		this.frequency.exponentialRampToValueAtTime(this.toFrequency(val), this.toSeconds(rampTime));
+		if (rampTime){
+			this.frequency.exponentialRampToValueAtTime(this.toFrequency(val), this.toSeconds(rampTime));
+		} else {
+			this.frequency.setValue(this.toFrequency(val));
+		}
 	};
 
 	/**
@@ -100,6 +124,28 @@ function(Tone){
 	 */
 	Tone.Oscillator.prototype.setType = function(type){
 		this.oscillator.type = type;
+	};
+
+	/**
+	 *  internal on end call
+	 *  @private
+	 */
+	Tone.Oscillator.prototype._onended = function(){
+		this.state = Tone.Source.State.STOPPED;
+		this.onended();
+	};
+
+	/**
+	 *  dispose and disconnect
+	 */
+	Tone.Oscillator.prototype.dispose = function(){
+		this.output.disconnect();
+		if (this.state === Tone.Source.State.STARTED){
+			this.stop();
+			this.oscillator.disconnect();
+			this.oscillator = null;
+		}
+		this.frequency.dispose();
 	};
 
 	return Tone.Oscillator;
