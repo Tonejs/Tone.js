@@ -12,6 +12,7 @@
     "require" : false,
     "define" : false,
     //set audio stuff
+    "AudioContext" : true,
     "AudioBufferSourceNode" : false,
     "OscillatorNode" : false,
     "GainNode" : false,

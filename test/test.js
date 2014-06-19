@@ -3,9 +3,17 @@ require.config({
 	paths : {
 		"Tone" : "../Tone",
 		"chai" : "./testDeps/chai",
+		"Recorder" : "./testDeps/recorder"
+	},
+	shim : {
+		"Recorder" : {
+			exports : "Recorder"
+		}
 	}
 });
 
-require(["tests/Timing", "tests/Signal", "tests/Math", "tests/Transport", "tests/Sources"], function(){
+var allTests = ["tests/WebAudio", "tests/Timing", "tests/Signal", "tests/Math", "tests/Transport", "tests/Sources"];
+
+require(allTests, function(){
 	mocha.run(); 
 });

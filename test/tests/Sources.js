@@ -1,5 +1,5 @@
-define(["chai", "Tone/source/Player"], function(chai, Player){
-  var expect = chai.expect;
+define(["chai", "Tone/source/Player", "tests/WebAudio"], function(chai, Player){
+	var expect = chai.expect;
 
 	describe("Tone.Player", function(){
 		this.timeout(100);
