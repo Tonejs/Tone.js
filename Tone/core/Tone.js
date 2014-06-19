@@ -110,7 +110,7 @@
 	Tone.context = audioContext;
 
 	/**
-	 *  A pointer to the audio context
+	 *  A static pointer to the audio context
 	 *  @type {AudioContext}
 	 */
 	Tone.prototype.context = Tone.context;

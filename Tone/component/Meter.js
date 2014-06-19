@@ -28,16 +28,16 @@ define(["Tone/core/Tone", "Tone/core/Master"], function(Tone){
 		this.clipMemory = this.defaultArg(clipMemory, 500);
 
 		/** 
+		 *  the rms for each of the channels
 		 *  @private
 		 *  @type {Array<number>}
-		 *  the rms for each of the channels
 		 */
 		this._volume = new Array(this.channels);
 
 		/** 
+		 *  the raw values for each of the channels
 		 *  @private
 		 *  @type {Array<number>}
-		 *  the raw values for each of the channels
 		 */
 		this._values = new Array(this.channels);
 
@@ -48,9 +48,9 @@ define(["Tone/core/Tone", "Tone/core/Master"], function(Tone){
 		}
 
 		/** 
+		 *  last time the values clipped
 		 *  @private
 		 *  @type {number}
-		 *  last time the values clipped
 		 */
 		this._lastClip = 0;
 		

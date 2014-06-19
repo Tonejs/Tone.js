@@ -108,8 +108,8 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	};
 
 	/**
-	 * 	@private
 	 * 	pointer to the parent's connect method
+	 * 	@private
 	 */
 	Tone.Envelope.prototype._connect = Tone.prototype.connect;
 

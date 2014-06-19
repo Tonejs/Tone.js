@@ -6,3 +6,5 @@ examples/scratch.html
 *.sublime-workspace
 
 *.sublime-project
+
+build/node_modules/*
