@@ -70,7 +70,6 @@ define(["Tone/core/Tone"], function(Tone){
 
 		//set the default value
 		this.setValue(this.defaultArg(value, 0));
-
 	};
 
 	Tone.extend(Tone.Signal);
@@ -256,6 +255,19 @@ define(["Tone/core/Tone"], function(Tone){
 		this._syncRatio = 1;
 		//reconnect things up
 		this.chain(constant, this.scalar, this.output);
+	};
+
+	/**
+	 *  internal dispose method to tear down the node
+	 *  
+	 *  @override
+	 */
+	Tone.Signal.prototype.dispose = function(){
+		//disconnect everything
+		this.output.disconnect();
+		this.scalar.disconnect();
+		this.output = null;
+		this.scalar = null;
 	};
 
 	return Tone.Signal;

@@ -61,7 +61,7 @@ define(["Tone/core/Tone", "Tone/core/Master"], function(Tone){
 		this._jsNode = this.context.createScriptProcessor(this.bufferSize, this.channels, 1);
 		this._jsNode.onaudioprocess = this._onprocess.bind(this);
 		//so it doesn't get garbage collected
-		this._jsNode.toMaster();
+		this._jsNode.noGC();
 
 		//signal just passes
 		this.input.connect(this.output);
@@ -138,6 +138,18 @@ define(["Tone/core/Tone", "Tone/core/Master"], function(Tone){
 	// @returns {boolean} if the audio has clipped in the last 500ms
 	Tone.Meter.prototype.isClipped = function(){
 		return Date.now() - this._lastClip < this.clipMemory;
+	};
+
+	/**
+	 *  @override
+	 */
+	Tone.Meter.prototype.dispose = function(){
+		this._jsNode.disconnect();
+		this._jsNode.onaudioprocess = null;
+		this._volume = null;
+		this._values = null;
+		this.input.disconnect();
+		this.output.disconnect();
 	};
 
 	return Tone.Meter;

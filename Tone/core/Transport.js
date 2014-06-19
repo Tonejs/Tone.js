@@ -28,7 +28,7 @@ function(Tone){
 		this.state = TransportState.STOPPED;
 
 		//so it doesn't get garbage collected
-		this._jsNode.toMaster();
+		this._jsNode.noGC();
 	};
 
 	Tone.extend(Tone.Transport);

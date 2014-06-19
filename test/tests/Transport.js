@@ -1,15 +1,18 @@
-define(["chai", "Tone/core/Transport"], function(chai, Transport){
+define(["chai", "Tone/core/Transport", "tests/WebAudio"], function(chai, Transport){
 	var expect = chai.expect;
 
 	describe("Transport.getBpm and Transport.getTimeSignature", function(){
 		this.timeout(300);
-		Transport.setBpm(120);
-		Transport.setTimeSignature(4, 4);
+
+		beforeEach(function(){
+			Transport.stop();
+			Transport.setBpm(120);
+			Transport.setTimeSignature(4, 4);
+		});
 
 		it("gets the right bpm before starting", function(){
 			Transport.start();
 			expect(Transport.getBpm()).to.equal(120);
-			Transport.stop();
 		});
 
 		it("gets the right bpm after starting", function(){
@@ -17,14 +20,13 @@ define(["chai", "Tone/core/Transport"], function(chai, Transport){
 		});
 
 		it("ramps to the right value", function(done){
-			Transport.setBpm(120);
-			expect(Transport.getBpm()).to.equal(120);
 			Transport.start();
+			expect(Transport.getBpm()).to.equal(120);
 			Transport.setBpm(200, 0.05);
 			setTimeout(function(){
 				expect(Transport.getBpm()).to.equal(200);
 				done();
-			}, 100);
+			}, 200);
 		});
 
 	});

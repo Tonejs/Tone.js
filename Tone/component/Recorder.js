@@ -44,7 +44,7 @@ define(["Tone/core/Tone", "Tone/core/Master"], function(Tone){
 		//pass thru audio
 		this.input.connect(this.output);
 		//so it doesn't get garbage collected
-		this._jsNode.toMaster();
+		this._jsNode.noGC();
 		//clear it to start
 		this.clear();
 	};

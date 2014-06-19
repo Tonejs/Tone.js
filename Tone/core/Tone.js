@@ -31,21 +31,21 @@
 
 	//ALIAS
 	if (!global.AudioContext){
-		global.AudioContext = global.webkitAudioContext;
+		AudioContext = webkitAudioContext;
 	} 
 
 	var audioContext;
 	if (global.AudioContext){
-		audioContext = new global.AudioContext();
+		audioContext = new AudioContext();
 	}
 
 	//SHIMS////////////////////////////////////////////////////////////////////
 
-	if (typeof audioContext.createGain !== "function"){
-		audioContext.createGain = audioContext.createGainNode;
+	if (typeof AudioContext.prototype.createGain !== "function"){
+		AudioContext.prototype.createGain = AudioContext.prototype.createGainNode;
 	}
-	if (typeof audioContext.createDelay !== "function"){
-		audioContext.createDelay = audioContext.createDelayNode;
+	if (typeof AudioContext.prototype.createDelay !== "function"){
+		AudioContext.prototype.createDelay = AudioContext.prototype.createDelayNode;
 	}
 
 	if (typeof AudioBufferSourceNode.prototype.start !== "function"){
@@ -76,7 +76,6 @@
 
 	///////////////////////////////////////////////////////////////////////////
 	//	TONE
-	//	@constructor
 	///////////////////////////////////////////////////////////////////////////
 
 	/**
@@ -91,13 +90,13 @@
 		 *  
 		 *  @type {GainNode}
 		 */
-		this.input = audioContext.createGain();
+		this.input = this.context.createGain();
 		/**
 		 *  default output of the ToneNode
 		 *  
 		 *  @type {GainNode}
 		 */
-		this.output = audioContext.createGain();
+		this.output = this.context.createGain();
 	};
 
 	///////////////////////////////////////////////////////////////////////////
@@ -105,16 +104,16 @@
 	///////////////////////////////////////////////////////////////////////////
 
 	/**
+	 *  A static pointer to the audio context
+	 *  @type {AudioContext}
+	 */
+	Tone.context = audioContext;
+
+	/**
 	 *  A pointer to the audio context
 	 *  @type {AudioContext}
 	 */
-	Tone.prototype.context = audioContext;
-
-	/**
-	 *  A static pointer to the audio context
-	 *  @type {[type]}
-	 */
-	Tone.context = audioContext;
+	Tone.prototype.context = Tone.context;
 
 	/**
 	 *  the default buffer size
@@ -258,6 +257,15 @@
 		return (input - inputMin) / (inputMax - inputMin);
 	};
 
+	/**
+	 *  a dispose method 
+	 *  
+	 *  should be overridden by child classes
+	 */
+	Tone.prototype.dispose = function(){
+		this.output.disconnect();
+	};
+
 
 	///////////////////////////////////////////////////////////////////////////
 	//	TIMING
@@ -267,7 +275,7 @@
 	 *  @return {number} the currentTime from the AudioContext
 	 */
 	Tone.prototype.now = function(){
-		return audioContext.currentTime;
+		return this.context.currentTime;
 	};
 
 	/**
@@ -276,7 +284,7 @@
 	 *  @return {number}         
 	 */
 	Tone.prototype.samplesToSeconds = function(samples){
-		return samples / audioContext.sampleRate;
+		return samples / this.context.sampleRate;
 	};
 
 	/**
@@ -287,7 +295,7 @@
 	 */
 	Tone.prototype.toSamples = function(time){
 		var seconds = this.toSeconds(time);
-		return seconds * audioContext.sampleRate;
+		return seconds * this.context.sampleRate;
 	};
 
 	/**
