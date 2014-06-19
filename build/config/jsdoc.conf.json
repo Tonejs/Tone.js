@@ -1,0 +1,15 @@
+{
+    "templates": {
+        "cleverLinks": false,
+        "monospaceLinks": false,
+        "default": {
+            "outputSourceFiles": true
+        },
+        "systemName"      : "Tone.js",
+        "navType"         : "inline",
+        "theme"           : "cyborg",
+        "linenums"        : true,
+        "collapseSymbols" : true,
+        "inverseNav"      : true
+    }
+}

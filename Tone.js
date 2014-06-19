@@ -7,45 +7,53 @@
 //	The MIT License (MIT) 2014
 ///////////////////////////////////////////////////////////////////////////////
 
-(function (root, factory) {
-	//can run with or without requirejs
-	if (typeof define === "function" && define.amd) {
-		// AMD. Register as an anonymous module.
-		define("Tone/core/Tone",[],function () {
-			var Tone = factory(root);
-			return Tone;
-		});
-	} else if (typeof root.Tone !== "function") {
-		//make Tone public
-		root.Tone = factory(root);
+(function (root) {
+	// Tone.js can run with or without requirejs
+	//
+	// this anonymous function checks to see if the 'define'
+	// method exists, if it does not (and there is not already
+	// something called Tone) it will create a function called
+	// 'define'. 'define' will invoke the 'core' module and attach
+	// its return value to the root. for all other modules
+	// Tone will be passed in as the argument.
+	if (typeof define !== "function" && !define.amd && 
+		typeof root.Tone !== "function") {
 		//define 'define' to invoke the callbacks with Tone
 		root.define = function(name, deps, func){
-			func(root.Tone);
+			//grab the one at the root
+			if (name === "Tone/core/Tone"){
+				root.Tone = func();
+			} else {
+				//for all others pass it in
+				func(root.Tone);
+			}
 		};
 	}
-} (this, function (global) {
+} (this));
+
+define("Tone/core/Tone", [], function(){
 
 	//////////////////////////////////////////////////////////////////////////
 	//	WEB AUDIO CONTEXT
 	///////////////////////////////////////////////////////////////////////////
 
 	//ALIAS
-	if (!global.AudioContext){
-		global.AudioContext = global.webkitAudioContext;
+	if (!AudioContext){
+		AudioContext = webkitAudioContext;
 	} 
 
 	var audioContext;
-	if (global.AudioContext){
-		audioContext = new global.AudioContext();
+	if (AudioContext){
+		audioContext = new AudioContext();
 	}
 
 	//SHIMS////////////////////////////////////////////////////////////////////
 
-	if (typeof audioContext.createGain !== "function"){
-		audioContext.createGain = audioContext.createGainNode;
+	if (typeof AudioContext.prototype.createGain !== "function"){
+		AudioContext.prototype.createGain = AudioContext.prototype.createGainNode;
 	}
-	if (typeof audioContext.createDelay !== "function"){
-		audioContext.createDelay = audioContext.createDelayNode;
+	if (typeof AudioContext.prototype.createDelay !== "function"){
+		AudioContext.prototype.createDelay = AudioContext.prototype.createDelayNode;
 	}
 
 	if (typeof AudioBufferSourceNode.prototype.start !== "function"){
@@ -76,7 +84,6 @@
 
 	///////////////////////////////////////////////////////////////////////////
 	//	TONE
-	//	@constructor
 	///////////////////////////////////////////////////////////////////////////
 
 	/**
@@ -84,6 +91,7 @@
 	 *  From Tone, children inherit timing and math which is used throughout Tone.js
 	 *  
 	 *  @constructor
+	 *  @alias Tone
 	 */
 	var Tone = function(){
 		/**
@@ -91,13 +99,13 @@
 		 *  
 		 *  @type {GainNode}
 		 */
-		this.input = audioContext.createGain();
+		this.input = this.context.createGain();
 		/**
 		 *  default output of the ToneNode
 		 *  
 		 *  @type {GainNode}
 		 */
-		this.output = audioContext.createGain();
+		this.output = this.context.createGain();
 	};
 
 	///////////////////////////////////////////////////////////////////////////
@@ -105,16 +113,16 @@
 	///////////////////////////////////////////////////////////////////////////
 
 	/**
-	 *  A pointer to the audio context
+	 *  A static pointer to the audio context
 	 *  @type {AudioContext}
 	 */
-	Tone.prototype.context = audioContext;
+	Tone.context = audioContext;
 
 	/**
 	 *  A static pointer to the audio context
 	 *  @type {AudioContext}
 	 */
-	Tone.context = audioContext;
+	Tone.prototype.context = Tone.context;
 
 	/**
 	 *  the default buffer size
@@ -258,6 +266,15 @@
 		return (input - inputMin) / (inputMax - inputMin);
 	};
 
+	/**
+	 *  a dispose method 
+	 *  
+	 *  should be overridden by child classes
+	 */
+	Tone.prototype.dispose = function(){
+		this.output.disconnect();
+	};
+
 
 	///////////////////////////////////////////////////////////////////////////
 	//	TIMING
@@ -267,7 +284,7 @@
 	 *  @return {number} the currentTime from the AudioContext
 	 */
 	Tone.prototype.now = function(){
-		return audioContext.currentTime;
+		return this.context.currentTime;
 	};
 
 	/**
@@ -276,7 +293,7 @@
 	 *  @return {number}         
 	 */
 	Tone.prototype.samplesToSeconds = function(samples){
-		return samples / audioContext.sampleRate;
+		return samples / this.context.sampleRate;
 	};
 
 	/**
@@ -287,7 +304,7 @@
 	 */
 	Tone.prototype.toSamples = function(time){
 		var seconds = this.toSeconds(time);
-		return seconds * audioContext.sampleRate;
+		return seconds * this.context.sampleRate;
 	};
 
 	/**
@@ -366,7 +383,8 @@
 	};
 
 	return Tone;
-}));
+
+});
 
 define('Tone/signal/Signal',["Tone/core/Tone"], function(Tone){
 
@@ -414,6 +432,7 @@ define('Tone/signal/Signal',["Tone/core/Tone"], function(Tone){
 	 *
 	 *
 	 *  @constructor
+	 *  @extends {Tone}
 	 *  @param {number=} value (optional) initial value
 	 */
 	Tone.Signal = function(value){
@@ -440,7 +459,6 @@ define('Tone/signal/Signal',["Tone/core/Tone"], function(Tone){
 
 		//set the default value
 		this.setValue(this.defaultArg(value, 0));
-
 	};
 
 	Tone.extend(Tone.Signal);
@@ -480,11 +498,12 @@ define('Tone/signal/Signal',["Tone/core/Tone"], function(Tone){
 
 	/**
 	 *  creates a schedule point with the current value at the current time
-	 *  
+	 *
+	 *  @param {number=} now (optionally) pass the now value in
 	 *  @returns {number} the current value
 	 */
-	Tone.Signal.prototype.setCurrentValueNow = function(){
-		var now = this.now();
+	Tone.Signal.prototype.setCurrentValueNow = function(now){
+		now = this.defaultArg(now, this.now());
 		var currentVal = this.getValue();
 		this.cancelScheduledValues(now);
 		this.scalar.gain.setValueAtTime(currentVal, now);
@@ -523,13 +542,14 @@ define('Tone/signal/Signal',["Tone/core/Tone"], function(Tone){
 	 *  @param  {Tone.Time} endTime 
 	 */
 	Tone.Signal.prototype.exponentialRampToValueNow = function(value, endTime){
-		this.setCurrentValueNow();
+		var now = this.now();
+		this.setCurrentValueNow(now);
 		value *= this._syncRatio;
 		//make sure that the endTime doesn't start with +
 		if (endTime.toString().charAt(0) === "+"){
 			endTime = endTime.substr(1);
 		}
-		this.scalar.gain.exponentialRampToValueAtTime(value, this.now() + this.toSeconds(endTime));
+		this.scalar.gain.exponentialRampToValueAtTime(value, now + this.toSeconds(endTime));
 	};
 
 	/**
@@ -540,13 +560,14 @@ define('Tone/signal/Signal',["Tone/core/Tone"], function(Tone){
 	 *  @param  {Tone.Time} endTime 
 	 */
 	Tone.Signal.prototype.linearRampToValueNow = function(value, endTime){
-		this.setCurrentValueNow();
+		var now = this.now();
+		this.setCurrentValueNow(now);
 		value *= this._syncRatio;
 		//make sure that the endTime doesn't start with +
 		if (endTime.toString().charAt(0) === "+"){
 			endTime = endTime.substr(1);
 		}
-		this.scalar.gain.linearRampToValueAtTime(value, this.now() + this.toSeconds(endTime));
+		this.scalar.gain.linearRampToValueAtTime(value, now + this.toSeconds(endTime));
 	};
 
 	/**
@@ -623,6 +644,19 @@ define('Tone/signal/Signal',["Tone/core/Tone"], function(Tone){
 		this._syncRatio = 1;
 		//reconnect things up
 		this.chain(constant, this.scalar, this.output);
+	};
+
+	/**
+	 *  internal dispose method to tear down the node
+	 *  
+	 *  @override
+	 */
+	Tone.Signal.prototype.dispose = function(){
+		//disconnect everything
+		this.output.disconnect();
+		this.scalar.disconnect();
+		this.output = null;
+		this.scalar = null;
 	};
 
 	return Tone.Signal;
@@ -1009,42 +1043,91 @@ define('Tone/component/Envelope',["Tone/core/Tone", "Tone/signal/Signal"], funct
 	return Tone.Envelope;
 });
 
-///////////////////////////////////////////////////////////////////////////////
-//
-//	MASTER OUTPUT
-//
-//	a single master output
-//	adds a toMaster method on AudioNodes and components
-///////////////////////////////////////////////////////////////////////////////
-
-
 define('Tone/core/Master',["Tone/core/Tone"], function(Tone){
-
+	
+	/**
+	 *  Master Output
+	 *  
+	 *  a single master output
+	 *  adds toMaster to Tone
+	 *
+	 *  @constructor
+	 *  @extends {Tone}
+	 */
 	var Master = function(){
 		//extend audio unit
 		Tone.call(this);
 
-		//put a hard limiter on the output so we don't blow any eardrums
+		/**
+		 *  put a hard limiter on the output so we don't blow any eardrums
+		 *  
+		 *  @type {DynamicsCompressorNode}
+		 */
 		this.limiter = this.context.createDynamicsCompressor();
 		this.limiter.threshold.value = 0;
 		this.limiter.ratio.value = 20;
+		//connect it up
 		this.chain(this.input, this.limiter, this.output, this.context.destination);
-	}
+	};
 
 	Tone.extend(Master);
 
+	/**
+	 *  mute the output
+	 *  @param {boolean} muted
+	 */
+	Master.prototype.mute = function(muted){
+		muted = this.defaultArg(muted, true);
+		if (muted){
+			this.output.gain.value = 0;
+		} else {
+			this.output.gain.value = 1;
+		}
+	};
+
 	///////////////////////////////////////////////////////////////////////////
-	//	Add toMaster methods
+	//	AUGMENT TONE's PROTOTYPE
 	///////////////////////////////////////////////////////////////////////////
 
-	//@param {AudioNode|Tone=} unit
+	/**
+	 *  connect 'this' to the master output
+	 */
 	Tone.prototype.toMaster = function(){
 		this.connect(Tone.Master);
-	}
+	};
 
+	/**
+	 *  Also augment AudioNode's prototype to include toMaster
+	 *  as a convenience
+	 */
 	AudioNode.prototype.toMaster = function(){
 		this.connect(Tone.Master);
-	}
+	};
+
+	/**
+	 *  a silent connection to the DesinationNode
+	 *  which will ensure that anything connected to it
+	 *  will not be garbage collected
+	 *  
+	 *  @private
+	 */
+	var _silentNode = Tone.context.createGain();
+	_silentNode.gain.value = 0;
+	_silentNode.connect(Tone.context.destination);
+
+	/**
+	 *  makes a connection to ensure that the node will not be garbage collected
+	 *  until 'dispose' is explicitly called
+	 *
+	 *  use carefully. circumvents JS and WebAudio's normal Garbage Collection behavior
+	 */
+	Tone.prototype.noGC = function(){
+		this.output.connect(_silentNode);
+	};
+
+	AudioNode.prototype.noGC = function(){
+		this.connect(_silentNode);
+	};
 
 	//a single master output
 	Tone.Master = new Master();
@@ -1054,12 +1137,12 @@ define('Tone/core/Master',["Tone/core/Tone"], function(Tone){
 define('Tone/core/Transport',["Tone/core/Tone", "Tone/core/Master", "Tone/signal/Signal"], 
 function(Tone){
 
-
 	/**
 	 *  oscillator-based transport allows for simple musical timing
 	 *  supports tempo curves and time changes
 	 *
 	 *  @constructor
+	 *  @extends {Tone}
 	 */
 	Tone.Transport = function(){
 
@@ -1075,8 +1158,13 @@ function(Tone){
 		/** @type {boolean} */
 		this.loop = false;
 
+		/**
+		 *  @type {TransportState}
+		 */
+		this.state = TransportState.STOPPED;
+
 		//so it doesn't get garbage collected
-		this._jsNode.toMaster();
+		this._jsNode.noGC();
 	};
 
 	Tone.extend(Tone.Transport);
@@ -1118,16 +1206,19 @@ function(Tone){
 	 * @type {Array}
 	 */
 	var intervals = [];
+	
 	/** 
 	 * @private
 	 * @type {Array}
 	 */
 	var timeouts = [];
+	
 	/** 
 	 * @private
 	 * @type {Array}
 	 */
-	var timeline = [];
+	var transportTimeline = [];
+	
 	/** 
 	 * @private
 	 * @type {number}
@@ -1144,6 +1235,7 @@ function(Tone){
 	/** 
 	 *  controls the oscillator frequency
 	 *  starts at 120bpm
+	 *  
 	 *  @private
 	 *  @type {Tone.Signal}
 	 */
@@ -1155,6 +1247,16 @@ function(Tone){
 	 *  @type {Array<Tone>}
 	 */
 	var SyncedComponents = [];
+
+
+	/**
+	 *  @enum
+	 */
+	 var TransportState = {
+	 	STARTED : "started",
+	 	PAUSED : "paused",
+	 	STOPPED : "stopped"
+	 };
 
 
 	///////////////////////////////////////////////////////////////////////////////
@@ -1199,8 +1301,8 @@ function(Tone){
 	//jump to a specific tick in the timeline
 	Tone.Transport.prototype._setTicks = function(ticks){
 		transportTicks = ticks;
-		for (var i = 0; i < timeline.length; i++){
-			var timeout = timeline[i];
+		for (var i = 0; i < transportTimeline.length; i++){
+			var timeout = transportTimeline[i];
 			if (timeout.callbackTick() >= ticks){
 				timelineProgress = i;
 				break;
@@ -1246,14 +1348,14 @@ function(Tone){
 	};
 
 	/**
-	 *  process the timeline events
+	 *  process the transportTimeline events
 	 *  @param  {number} time 
 	 */
 	var processTimeline = function(time){
-		for (var i = timelineProgress, len = timeline.length; i<len; i++){
-			var evnt = timeline[i];
+		for (var i = timelineProgress, len = transportTimeline.length; i<len; i++){
+			var evnt = transportTimeline[i];
 			var callbackTick = evnt.callbackTick();
-			if (callbackTick <= transportTicks){
+			if (callbackTick === transportTicks){
 				evnt.doCallback(time);
 				timelineProgress = i;
 			} else if (callbackTick > transportTicks){
@@ -1266,7 +1368,7 @@ function(Tone){
 	 *  clear the timeouts and intervals
 	 */
 	function clearTimelineEvents(){
-		timeouts = [];
+		
 		intervals = [];
 	}
 
@@ -1303,6 +1405,13 @@ function(Tone){
 			}
 		}
 		return false;
+	};
+
+	/**
+	 *  removes all of the intervals that are currently set
+	 */
+	Tone.Transport.prototype.clearIntervals = function(){
+		intervals = [];
 	};
 
 	///////////////////////////////////////////////////////////////////////////////
@@ -1349,12 +1458,21 @@ function(Tone){
 		return false;
 	};
 
+	/**
+	 *  removes all of the timeouts that are currently set
+	 *
+	 *  @todo (optionally) remove events after a certain time
+	 */
+	Tone.Transport.prototype.clearTimeouts = function(){
+		timeouts = [];
+	};
+
 	///////////////////////////////////////////////////////////////////////////////
 	//	TIMELINE
 	///////////////////////////////////////////////////////////////////////////////
 
 	/**
-	 *  Timeline events are synced to the timeline of the Transport
+	 *  Timeline events are synced to the transportTimeline of the Transport
 	 *  Unlike Timeout, Timeline events will restart after the 
 	 *  Transport has been stopped and restarted. 
 	 *
@@ -1362,39 +1480,46 @@ function(Tone){
 	 *  @param {function} 	callback 	
 	 *  @param {Tome.Time}  timeout  
 	 *  @param {Object}   	ctx      	the context in which the funtion is called
-	 *  @return {number} 				the id for clearing the timeline event
+	 *  @return {number} 				the id for clearing the transportTimeline event
 	 */
 	Tone.Transport.prototype.setTimeline = function(callback, timeout, ctx){
 		var ticks = this.toTicks(timeout);
-		ctx = this.defaultArg(ctx, window);
 		var timelineEvnt = new TimelineEvent(callback, ctx, ticks + transportTicks, 0);
 		//put it in the right spot
-		for (var i = timelineProgress, len = timeline.length; i<len; i++){
-			var testEvnt = timeline[i];
+		for (var i = timelineProgress, len = transportTimeline.length; i<len; i++){
+			var testEvnt = transportTimeline[i];
 			if (testEvnt.callbackTick() > timelineEvnt.callbackTick()){
-				timeline.splice(i, 0, timelineEvnt);
+				transportTimeline.splice(i, 0, timelineEvnt);
 				return timelineEvnt.id;
 			}
 		}
 		//otherwise push it on the end
-		timeline.push(event);
+		transportTimeline.push(timelineEvnt);
 		return timelineEvnt.id;
 	};
 
 	/**
-	 *  clear the timeline event from the 
+	 *  clear the transportTimeline event from the 
 	 *  @param  {number} timelineID 
 	 *  @return {boolean} true if it was removed
 	 */
 	Tone.Transport.prototype.clearTimeline = function(timelineID){
-		for (var i = 0; i < timeline.length; i++){
-			var testTimeline = timeline[i];
+		for (var i = 0; i < transportTimeline.length; i++){
+			var testTimeline = transportTimeline[i];
 			if (testTimeline.id === timelineID){
-				timeline.splice(i, 1);
+				transportTimeline.splice(i, 1);
 				return true;
 			}
 		}
 		return false;
+	};
+
+	/**
+	 *  remove all events from the timeline
+	 */
+	Tone.Transport.prototype.clearTimelines = function(){
+		timelineProgress = 0;
+		transportTimeline = [];
 	};
 
 	///////////////////////////////////////////////////////////////////////////////
@@ -1449,7 +1574,8 @@ function(Tone){
 	 *  @param  {Tone.Time} time
 	 */
 	Tone.Transport.prototype.start = function(time){
-		if (oscillator === null){
+		if (this.state === TransportState.STOPPED || this.state === TransportState.PAUSED){
+			this.state = TransportState.STARTED;
 			//reset the oscillator
 			oscillator = this.context.createOscillator();
 			oscillator.type = "square";
@@ -1457,10 +1583,11 @@ function(Tone){
 			//connect it up
 			controlSignal.connect(oscillator.frequency);
 			oscillator.frequency.value = 0;
+			upTick = false;
+			oscillator.start(this.toSeconds(time));
+
+			//call start on each of the synced sources
 		}
-		upTick = false;
-		oscillator.start(this.toSeconds(time));
-		//call start on each of the synced sources
 	};
 
 
@@ -1470,13 +1597,16 @@ function(Tone){
 	 *  @param  {Tone.Time} time
 	 */
 	Tone.Transport.prototype.stop = function(time){
-		if (oscillator !== null){
+		if (this.state === TransportState.STARTED || this.state === TransportState.PAUSED){
+			this.state = TransportState.STOPPED;
 			oscillator.stop(this.toSeconds(time));
 			oscillator = null;
+			this._setTicks(0);
+			this.clearTimeouts();
+			this.clearIntervals();
+
+			//call stop on each of the synced sources
 		}
-		this._setTicks(0);
-		clearTimelineEvents();
-		//call stop on each of the synced sources
 	};
 
 	/**
@@ -1485,10 +1615,13 @@ function(Tone){
 	 *  @param  {Tone.Time} time
 	 */
 	Tone.Transport.prototype.pause = function(time){
-		oscillator.stop(this.toSeconds(time));
-		oscillator = null;
-		clearTimelineEvents();
-		//call pause on each of the synced sources
+		if (this.state === TransportState.STARTED){
+			this.state = TransportState.PAUSED;
+			oscillator.stop(this.toSeconds(time));
+			oscillator = null;
+			clearTimelineEvents();
+			//call pause on each of the synced sources
+		}
 	};
 
 	///////////////////////////////////////////////////////////////////////////////
@@ -1804,7 +1937,7 @@ function(Tone){
 	};
 
 	/**
-	 *  convert Tone.Time into seconds
+	 *  convert Tone.Time into seconds.
 	 *  
 	 *  unlike the method which it overrides, this takes into account 
 	 *  transporttime and musical notation
@@ -1812,6 +1945,7 @@ function(Tone){
 	 *  @param  {Tone.Time} time       
 	 *  @param  {number=} 	bpm 
 	 *  @param  {number=} 	timeSignature   
+	 *  @return {number} 
 	 */
 	Tone.prototype.toSeconds = function(time, bpm, timeSignature){
 		if (typeof time === "number"){
@@ -1843,11 +1977,14 @@ function(Tone){
 	return Tone.Transport;
 });
 
-define('Tone/source/Source',["Tone/core/Tone"], 
-function(Tone){
-
+define('Tone/source/Source',["Tone/core/Tone", "Tone/core/Transport"], function(Tone){
 	/**
 	 *  base class for sources
+	 *
+	 *  sources have start/stop/pause
+	 *
+	 *  they also have the ability to be synced to the 
+	 *  start/stop/pause of Tone.Transport
 	 *
 	 *  @constructor
 	 *  @extends {Tone}
@@ -1859,6 +1996,11 @@ function(Tone){
 		 *  @type {GainNode}
 		 */
 		this.output = this.context.createGain();
+
+		/**
+		 *  @type {Tone.Source.State}
+		 */
+		this.state = Tone.Source.State.STOPPED;
 	};
 
 	Tone.extend(Tone.Source);
@@ -1875,11 +2017,35 @@ function(Tone){
 	 */
 	Tone.Source.prototype.stop = function(){};
 
+
 	/**
  	 *  @abstract
 	 *  @param  {Tone.Time} time 
 	 */
-	Tone.Source.prototype.pause = function(){};
+	Tone.Source.prototype.pause = function(time){
+		//if there is no pause, just stop it
+		this.stop(time);
+	};
+
+	/**
+	 *  sync the source to the Transport
+	 */
+	Tone.Source.prototype.sync = function(){
+		if (this.state !== Tone.Source.State.SYNCED){
+			this.state = Tone.Source.State.SYNCED;
+			Tone.Transport.sync(this);
+		}
+	};
+
+	/**
+	 *  unsync the source to the Transport
+	 */
+	Tone.Source.prototype.unsync = function(){
+		if (this.state === Tone.Source.State.SYNCED){
+			Tone.Transport.unsync(this);
+		}
+	};
+
 
 	/**
 	 *  @param {number} value 
@@ -1899,6 +2065,17 @@ function(Tone){
 	Tone.Source.prototype.setVolume = function(value){
 		this.output.gain.value = value;
 	};
+
+	/**
+	 *  @enum {string}
+	 */
+	Tone.Source.State = {
+		STARTED : "started",
+		PAUSED : "paused",
+		STOP_SCHEDULED : "stopScheduled",
+		STOPPED : "stopped",
+		SYNCED : "synced"
+ 	};
 
 	return Tone.Source;
 });
@@ -1929,6 +2106,11 @@ function(Tone){
 		 */
 		this.frequency = new Tone.Signal(this.defaultArg(this.toFrequency(freq), 440));
 
+		/**
+		 *  @type {function()}
+		 */
+		this.onended = function(){};
+
 		//connections
 		this.oscillator.connect(this.output);
 		//setup
@@ -1943,19 +2125,36 @@ function(Tone){
 	 *  @param  {Tone.Time} time 
 	 */
 	Tone.Oscillator.prototype.start = function(time){
-		//get previous values
-		var type = this.oscillator.type;
-		var detune = this.oscillator.frequency.value;
-		//new oscillator with previous values
-		this.oscillator = this.context.createOscillator();
-		this.oscillator.type = type;
-		this.oscillator.detune.value = detune;
-		//connect the control signal to the oscillator frequency
-		this.oscillator.connect(this.output);
-		this.frequency.connect(this.oscillator.frequency);
-		this.oscillator.frequency.value = 0;
-		//start the oscillator
-		this.oscillator.start(this.toSeconds(time));
+		if (this.state === Tone.Source.State.STOPPED){
+			this.state = Tone.Source.State.STARTED;
+			//get previous values
+			var type = this.oscillator.type;
+			var detune = this.oscillator.frequency.value;
+			//new oscillator with previous values
+			this.oscillator = this.context.createOscillator();
+			this.oscillator.type = type;
+			this.oscillator.detune.value = detune;
+			//connect the control signal to the oscillator frequency
+			this.oscillator.connect(this.output);
+			this.frequency.connect(this.oscillator.frequency);
+			this.oscillator.frequency.value = 0;
+			//start the oscillator
+			this.oscillator.start(this.toSeconds(time));
+			this.oscillator.onended = this._onended.bind(this);
+		}
+	};
+
+	/**
+	 *  stop the oscillator
+	 *  @param  {Tone.Time=} time (optional) timing parameter
+	 */
+	Tone.Oscillator.prototype.stop = function(time){
+		if (this.state === Tone.Source.State.STARTED){
+			if (!time){
+				this.state = Tone.Source.State.STOPPED;
+			}
+			this.oscillator.stop(this.toSeconds(time));
+		}
 	};
 
 	/**
@@ -1968,23 +2167,21 @@ function(Tone){
 	 *  Transport start/pause/stop will also start/pause/stop the oscillator
 	 */
 	Tone.Oscillator.prototype.sync = function(){
-		Tone.Transport.sync(this, this.frequency);
+		if (this.state !== Tone.Source.State.SYNCED){
+			this.state = Tone.Source.State.SYNCED;
+			Tone.Transport.sync(this);
+			Tone.Transport.syncSignal(this.frequency);
+		}
 	};
 
 	/**
 	 *  unsync the oscillator from the Transport
 	 */
 	Tone.Oscillator.prototype.unsync = function(){
-		Tone.Transport.unsync(this);
-		this.frequency.unsync();
-	};
-
-	/**
-	 *  stop the oscillator
-	 *  @param  {Tone.Time=} time (optional) timing parameter
-	 */
-	Tone.Oscillator.prototype.stop = function(time){
-		this.oscillator.stop(this.toSeconds(time));
+		if (this.state === Tone.Source.State.SYNCED){
+			Tone.Transport.unsync(this);
+			this.frequency.unsync();
+		}
 	};
 
 	/**
@@ -1994,7 +2191,11 @@ function(Tone){
 	 *  @param {Tone.Time=} rampTime when the oscillator will arrive at the frequency
 	 */
 	Tone.Oscillator.prototype.setFrequency = function(val, rampTime){
-		this.frequency.exponentialRampToValueAtTime(this.toFrequency(val), this.toSeconds(rampTime));
+		if (rampTime){
+			this.frequency.exponentialRampToValueAtTime(this.toFrequency(val), this.toSeconds(rampTime));
+		} else {
+			this.frequency.setValue(this.toFrequency(val));
+		}
 	};
 
 	/**
@@ -2004,6 +2205,28 @@ function(Tone){
 	 */
 	Tone.Oscillator.prototype.setType = function(type){
 		this.oscillator.type = type;
+	};
+
+	/**
+	 *  internal on end call
+	 *  @private
+	 */
+	Tone.Oscillator.prototype._onended = function(){
+		this.state = Tone.Source.State.STOPPED;
+		this.onended();
+	};
+
+	/**
+	 *  dispose and disconnect
+	 */
+	Tone.Oscillator.prototype.dispose = function(){
+		this.output.disconnect();
+		if (this.state === Tone.Source.State.STARTED){
+			this.stop();
+			this.oscillator.disconnect();
+			this.oscillator = null;
+		}
+		this.frequency.dispose();
 	};
 
 	return Tone.Oscillator;
@@ -2189,7 +2412,7 @@ define('Tone/component/Meter',["Tone/core/Tone", "Tone/core/Master"], function(T
 		this._jsNode = this.context.createScriptProcessor(this.bufferSize, this.channels, 1);
 		this._jsNode.onaudioprocess = this._onprocess.bind(this);
 		//so it doesn't get garbage collected
-		this._jsNode.toMaster();
+		this._jsNode.noGC();
 
 		//signal just passes
 		this.input.connect(this.output);
@@ -2266,6 +2489,18 @@ define('Tone/component/Meter',["Tone/core/Tone", "Tone/core/Master"], function(T
 	// @returns {boolean} if the audio has clipped in the last 500ms
 	Tone.Meter.prototype.isClipped = function(){
 		return Date.now() - this._lastClip < this.clipMemory;
+	};
+
+	/**
+	 *  @override
+	 */
+	Tone.Meter.prototype.dispose = function(){
+		this._jsNode.disconnect();
+		this._jsNode.onaudioprocess = null;
+		this._volume = null;
+		this._values = null;
+		this.input.disconnect();
+		this.output.disconnect();
 	};
 
 	return Tone.Meter;
@@ -2352,15 +2587,15 @@ function(Tone){
 		this.left.gain.value = 0;
 		this.right.gain.value = 0;
 		this.setPan(.5);
-	}
+	};
 
 	Tone.extend(Tone.Panner);
 
 	Tone.Panner.prototype.setPan = function(val, rampTime){
 		rampTime = this.defaultArg(rampTime, 0);
 		//put val into -1 to 1 range
-		this.control.linearRampToValueAtTime(val * 2 - 1, rampTime);
-	}
+		this.control.linearRampToValueAtTime(val, rampTime);
+	};
 
 	return Tone.Panner;
 });;
@@ -2410,7 +2645,7 @@ define('Tone/component/Recorder',["Tone/core/Tone", "Tone/core/Master"], functio
 		//pass thru audio
 		this.input.connect(this.output);
 		//so it doesn't get garbage collected
-		this._jsNode.toMaster();
+		this._jsNode.noGC();
 		//clear it to start
 		this.clear();
 	};
@@ -2519,8 +2754,6 @@ define('Tone/component/Recorder',["Tone/core/Tone", "Tone/core/Master"], functio
 define('Tone/core/Bus',["Tone/core/Tone"], function(Tone){
 
 	/**
-	 *  @fileOverview 
-	 *
 	 *  buses are another way of routing audio
 	 *
 	 *  augments Tone.prototype to include send and recieve
@@ -2535,7 +2768,7 @@ define('Tone/core/Bus',["Tone/core/Tone"], function(Tone){
 
 	/**
 	 *  send signal to a channel name
-	 *  
+	 *
 	 *  @param  {string} channelName 
 	 *  @param  {number} amount      
 	 *  @return {GainNode}             
@@ -2552,7 +2785,7 @@ define('Tone/core/Bus',["Tone/core/Tone"], function(Tone){
 
 	/**
 	 *  recieve the input from the desired channelName to the input gain of 'this' node.
-	 *  	
+	 *
 	 *  @param  {string} channelName 
 	 */
 	Tone.prototype.receive = function(channelName){
@@ -2562,9 +2795,9 @@ define('Tone/core/Bus',["Tone/core/Tone"], function(Tone){
 		Buses[channelName].connect(this.input);
 	};
 
-	// Tone.Buses = Buses;
+	Tone.Buses = Buses;
 
-	// return Buses;
+	return Buses;
 });
 ///////////////////////////////////////////////////////////////////////////////
 //
@@ -2752,8 +2985,12 @@ define('Tone/effects/FeedbackDelay',["Tone/core/Tone", "Tone/effects/FeedbackEff
 
 	Tone.extend(Tone.FeedbackDelay, Tone.FeedbackEffect);
 
-	Tone.FeedbackDelay.prototype.setDelayTime = function(delayTime){
-		this.rampToValueNow(this.delay.delayTime, this.toSeconds(delayTime));
+	/**
+	 *  sets the delay time
+	 *  @param {Tone.Time} time 
+	 */
+	Tone.FeedbackDelay.prototype.setDelayTime = function(time){
+		this.rampToValueNow(this.delay.delayTime, this.toSeconds(time));
 	}
 
 	return Tone.FeedbackDelay;
@@ -2832,46 +3069,94 @@ define('Tone/instrument/MonoSynth',["Tone/core/Tone", "Tone/component/Envelope",
 
 	return Tone.MonoSynth;
 });
-///////////////////////////////////////////////////////////////////////////////
-//
-//  AUDIO PLAYER
-//
-///////////////////////////////////////////////////////////////////////////////
-
-define('Tone/source/Player',["Tone/core/Tone"], function(Tone){
-
+define('Tone/source/Player',["Tone/core/Tone", "Tone/source/Source"], function(Tone){
+	
+	/**
+	 *  Audio Player
+	 *  
+	 *  Audio file player with start, loop, stop.
+	 *  
+	 *  @constructor
+	 *  @extends {Tone.Source} 
+	 *  @param {string} url
+	 */
 	Tone.Player = function(url){
-		//extend Unit
-		Tone.call(this);
+		Tone.Source.call(this);
 
-		//player vars
+		/**
+		 *  the url to load
+		 *  @type {string}
+		 */
 		this.url = url;
-		this.source = null;
-		this.buffer = null;
+		/**
+		 *  @private
+		 *  @type {AudioBufferSourceNode}
+		 */
+		this._source = null;
+		
+		/**
+		 *  the buffer
+		 *  @private
+		 *  @type {AudioBuffer}
+		 */
+		this._buffer = null;
 
+
+		/**
+		 *  the duration of the buffer once it's been loaded
+		 *  @type {number}
+		 */
+		this.duration = 0;
+
+		/**
+		 *  the playback rate
+		 *  @private
+		 *  @type {number}
+		 */
+		this._playbackRate = 1;
+
+		/**
+		 *  enabling retrigger will allow a player to be restarted
+		 *  before the it's is done playing
+		 *  
+		 *  @type {boolean}
+		 */
+		this.retrigger = false;
+
+		/**
+		 *  set a callback function to invoke when the sample is over
+		 *  
+		 *  @type {function}
+		 */
 		this.onended = function(){};
-	}
+	};
 
-	Tone.extend(Tone.Player, Tone);
+	Tone.extend(Tone.Player, Tone.Source);
 
-	//makes an xhr for the buffer at the url
-	//invokes the callback at the end
-	//@param {function(Tone.Player)} callback
+	/**
+	 *  makes an xhr reqest for the selected url
+	 *  Load the audio file as an audio buffer.
+	 *  Decodes the audio asynchronously and invokes
+	 *  the callback once the audio buffer loads.
+	 *  
+	 *  @param {function(Tone.Player)} callback
+	 */
 	Tone.Player.prototype.load = function(callback){
-		if (!this.buffer){
+		if (!this._buffer){
 			var request = new XMLHttpRequest();
-			request.open('GET', this.url, true);
-			request.responseType = 'arraybuffer';
+			request.open("GET", this.url, true);
+			request.responseType = "arraybuffer";
 			// decode asynchronously
 			var self = this;
 			request.onload = function() {
 				self.context.decodeAudioData(request.response, function(buff) {
-					self.buffer = buff;
+					self._buffer = buff;
+					self.duration = buff.duration;
 					if (callback){
 						callback(self);
 					}
 				});
-			}
+			};
 			//send the request
 			request.send();
 		} else {
@@ -2879,66 +3164,115 @@ define('Tone/source/Player',["Tone/core/Tone"], function(Tone){
 				callback(this);
 			}
 		}
-	}
+	};
 
-	//play the buffer from start to finish at a time
-	Tone.Player.prototype.start = function(startTime, offset, duration, volume){
-		if (this.buffer){
-			//default args
-			startTime = this.defaultArg(startTime, this.now());
-			offset = this.defaultArg(offset, 0);
-			duration = this.defaultArg(duration, this.buffer.duration - offset);
-			volume = this.defaultArg(volume, 1);
-			//make the source
-			this.source = this.context.createBufferSource();
-			this.source.buffer = this.buffer;
-			this.source.loop = false;
-			this.source.start(this.toSeconds(startTime), this.toSeconds(offset), this.toSeconds(duration));
-			this.source.onended = this._onended.bind(this);
-			var gain = this.context.createGain();
-			gain.gain.value = volume;
-			this.chain(this.source, gain, this.output);
+	/**
+	 *  play the buffer between the desired positions
+	 *  	
+	 *  @param  {Tone.Time=} startTime 
+	 *  @param  {Tone.Time=} offset    
+	 *  @param  {Tone.Time=} duration
+	 */
+	Tone.Player.prototype.start = function(startTime, offset, duration){
+		if (this.state === Tone.Source.State.STOPPED || this.retrigger){
+			if (this._buffer){
+				this.state = Tone.Source.State.STARTED;
+				//default args
+				startTime = this.defaultArg(startTime, this.now());
+				offset = this.defaultArg(offset, 0);
+				duration = this.defaultArg(duration, this._buffer.duration - offset);
+				//make the source
+				this._source = this.context.createBufferSource();
+				this._source.buffer = this._buffer;
+				this._source.loop = false;
+				this._source.playbackRate.value = this._playbackRate;
+				this._source.start(this.toSeconds(startTime), this.toSeconds(offset), this.toSeconds(duration));
+				this._source.onended = this._onended.bind(this);
+				this.chain(this._source, this.output);
+			}
 		}
-	}
+	};
 
-	//play the buffer from start to finish at a time
-	Tone.Player.prototype.loop = function(startTime, loopStart, loopEnd, offset, duration, volume){
-		if (this.buffer){
+	/**
+	 *  Loop the buffer from start to finish at a time
+	 *
+	 *  @param  {Tone.Time=} startTime
+	 *  @param  {Tone.Time=} loopStart
+	 *  @param  {Tone.Time=} loopEnd
+	 *  @param  {Tone.Time=} offset
+	 *  @param  {Tone.Time=} duration
+	 */
+	Tone.Player.prototype.loop = function(startTime, loopStart, loopEnd, offset, duration){
+		if (this._buffer){
 			//default args
-			startTime = this.defaultArg(startTime, this.now());
 			loopStart = this.defaultArg(loopStart, 0);
-			loopEnd = this.defaultArg(loopEnd, this.buffer.duration);
+			loopEnd = this.defaultArg(loopEnd, this._buffer.duration);
 			offset = this.defaultArg(offset, loopStart);
-			duration = this.defaultArg(duration, this.buffer.duration - offset);
+			duration = this.defaultArg(duration, this._buffer.duration - offset);
 			//make/play the source
-			this.start(startTime, offset, duration, volume);
-			this.source.loop = true;
-			this.source.loopStart = this.toSeconds(loopStart);
-			this.source.loopEnd = this.toSeconds(loopEnd);
+			this.start(startTime, offset, duration);
+			this._source.loop = true;
+			this._source.loopStart = this.toSeconds(loopStart);
+			this._source.loopEnd = this.toSeconds(loopEnd);
 		}
-	}
+	};
 
-	//stop playback
-	Tone.Player.prototype.stop = function(stopTime){
-		if (this.buffer && this.source){
-			stopTime = this.defaultArg(stopTime, this.now());
-			this.source.stop(this.toSeconds(stopTime));
+	/**
+	 *  Stop playback.
+	 * 
+	 *  @param  {Tone.Time} time
+	 */
+	Tone.Player.prototype.stop = function(time){
+		if (this.state === Tone.Source.State.STARTED) {
+			if (this._buffer && this._source){
+				if (!time){
+					this.state = Tone.Source.State.STOPPED;
+				}
+				this._source.stop(this.toSeconds(time));
+			}
 		}
-	}
+	};
 
-	//@returns {number} the buffer duration
-	Tone.Player.prototype.getDuration = function(){
-		if (this.buffer){
-			this.buffer.duration;
-		} else {
-			return 0;
+	/**
+	 *  set the rate at which the file plays
+	 *  
+	 *  @param {number} rate
+	 *  @param {Tone.Time=} rampTime (optional) the amount of time it takes to 
+	 *                               reach the rate
+	 */
+	Tone.Player.prototype.setPlaybackRate = function(rate, rampTime){
+		this._playbackRate = rate;
+		if (this._source) {
+			if (rampTime){
+				this._source.playbackRate.exponentialRampToValueAtTime(rate, this.toSeconds(rampTime));
+			} else {
+				this._source.playbackRate.value = rampTime;
+			}
+		} 
+	};
+
+	/**
+	 *  internal call when the buffer is done playing
+	 *  
+	 *  @private
+	 */
+	Tone.Player.prototype._onended = function(){
+		this.state = Tone.Source.State.STOPPED;
+		this.onended();
+	};
+
+	/**
+	 *  dispose and disconnect
+	 */
+	Tone.Player.prototype.dispose = function(){
+		this.output.disconnect();
+		if (this.state === Tone.Source.State.STARTED){
+			this.stop();
+			this._source.disconnect();
+			this._source = null;
 		}
-	}
-
-	//@param {function(Event)} callback
-	Tone.Player.prototype._onended = function(e){
-		this.onended(e);
-	}
+		this._buffer = null;
+	};
 
 	return Tone.Player;
 });
@@ -3130,8 +3464,8 @@ define('Tone/signal/Split',["Tone/core/Tone"], function(Tone){
 		
 		//connections
 		this.input.connect(this.splitter);
-		this.splitter.connect(this.left, 1, 0);
-		this.splitter.connect(this.right, 0, 0);
+		this.splitter.connect(this.left, 0, 0);
+		this.splitter.connect(this.right, 1, 0);
 	};
 
 	Tone.extend(Tone.Split);
@@ -3144,59 +3478,124 @@ define('Tone/signal/Split',["Tone/core/Tone"], function(Tone){
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-define('Tone/source/Microphone',["Tone/core/Tone"], function(Tone){
+define('Tone/source/Microphone',["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 
-	//@param {number=} inputNum
+	/**
+	 *  WebRTC Microphone
+	 *
+	 *  CHROME ONLY (for now) because of the 
+	 *  use of the MediaStreamAudioSourceNode
+	 *
+	 *  @constructor
+	 *  @extends {Tone.Source}
+	 *  @param {number=} inputNum 
+	 */
 	Tone.Microphone = function(inputNum){
-		//extend the base class
 		Tone.call(this);
 
-		//components
-		this.mediaStream = null;
-		this.stream = null;
+		/**
+		 *  @type {MediaStreamAudioSourceNode}
+		 *  @private
+		 */
+		this._mediaStream = null;
+		/**
+		 *  @type {LocalMediaStream}
+		 *  @private
+		 */
+		this._stream = null;
+		/**
+		 *  @type {Object}
+		 *  @private
+		 */
 		this.constraints = {"audio" : true};
-		//get that option
+
+		//get the option
 		var self = this;
 		MediaStreamTrack.getSources(function (media_sources) {
 			if (inputNum < media_sources.length){
 				self.constraints.audio = {
 					optional : [{ sourceId: media_sources[inputNum].id}]
-				}
+				};
 			}
 		});		
-	}
-
-	Tone.extend(Tone.Microphone, Tone);
-
-	//stop the WebRTC connection
-	Tone.Microphone.prototype.start = function(){
-		// Only get the audio stream.
-		navigator.getUserMedia(this.constraints, this._onStream.bind(this), this._onStreamError.bind(this));
-	}
-
-	//stop the WebRTC connection
-	Tone.Microphone.prototype.stop = function(){
-		if (this.stream){
-			this.stream.stop();
-		}
-	}
-
-	//when the stream is setup
-	Tone.Microphone.prototype._onStream = function(stream) {
-		this.stream = stream;
-		// Wrap a MediaStreamSourceNode around the live input stream.
-		this.mediaStream =  this.context.createMediaStreamSource(stream);
-		this.mediaStream.connect(this.output);
 	};
 
-	//on error
+	Tone.extend(Tone.Microphone, Tone.Source);
+
+	/**
+	 *  start the _stream. 
+	 *  
+	 *  accepts a time to stay consisten with other sources, even though 
+	 *  it can't be stopped in a sample accurate way. 
+	 *  uses setTimeout to approximate the behavior
+	 * 
+	 *  @param {Tone.Time} time
+	 */
+	Tone.Microphone.prototype.start = function(time){
+		if (this.state === Tone.Source.State.STOPPED){
+			this.state = Tone.Source.State.STARTED;
+			if (time){
+				var self = this;
+				setTimeout(function(){
+					navigator.getUserMedia(self.constraints, 
+						self._onStream.bind(self), self._onStreamError.bind(self));
+				}, this.toSeconds(time) * 1000);
+			} else {
+				navigator.getUserMedia(this.constraints, 
+					this._onStream.bind(this), this._onStreamError.bind(this));
+			}
+			
+		}
+	};
+
+	/**
+	 *  stop the _stream. 
+	 *  
+	 *  accepts a time to stay consisten with other sources, even though 
+	 *  it can't be stopped in a sample accurate way. 
+	 *  uses setTimeout to approximate the behavior
+	 * 
+	 *  @param {Tone.Time} time
+	 */
+	Tone.Microphone.prototype.stop = function(time){
+		if (this._stream && this.state === Tone.Source.State.STARTED){
+			if (time){
+				var self = this;
+				setTimeout(function(){
+					self.state = Tone.Source.State.STOPPED;
+					self._stream.stop();
+				}, this.toSeconds(time) * 1000);
+			} else {
+				this.state = Tone.Source.State.STOPPED;
+				this._stream.stop();
+			}
+		}
+	};
+
+	/**
+	 *  called when the _stream is successfully setup
+	 *  @param   {LocalMediaStream} _stream 
+	 *  @private
+	 */
+	Tone.Microphone.prototype._onStream = function(_stream) {
+		this._stream = _stream;
+		// Wrap a MediaStreamSourceNode around the live input _stream.
+		this._mediaStream = this.context.createMediaStreamSource(_stream);
+		this._mediaStream.connect(this.output);
+	};
+
+	/**
+	 *  called on error
+	 *  @param   {Error} e 
+	 *  @private
+	 */
 	Tone.Microphone.prototype._onStreamError = function(e) {
 		console.error(e);
 	};
 
 	//polyfill
-	navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia 
-		|| navigator.mozGetUserMedia || navigator.msGetUserMedia;
+	navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || 
+		navigator.mozGetUserMedia || navigator.msGetUserMedia;
 
 	return Tone.Microphone;
 });

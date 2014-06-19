@@ -801,7 +801,7 @@ function(Tone){
 	};
 
 	/**
-	 *  convert Tone.Time into seconds
+	 *  convert Tone.Time into seconds.
 	 *  
 	 *  unlike the method which it overrides, this takes into account 
 	 *  transporttime and musical notation
@@ -809,6 +809,7 @@ function(Tone){
 	 *  @param  {Tone.Time} time       
 	 *  @param  {number=} 	bpm 
 	 *  @param  {number=} 	timeSignature   
+	 *  @return {number} 
 	 */
 	Tone.prototype.toSeconds = function(time, bpm, timeSignature){
 		if (typeof time === "number"){

@@ -1,8 +1,6 @@
 define(["Tone/core/Tone"], function(Tone){
 
 	/**
-	 *  @fileOverview 
-	 *
 	 *  buses are another way of routing audio
 	 *
 	 *  augments Tone.prototype to include send and recieve
@@ -17,7 +15,7 @@ define(["Tone/core/Tone"], function(Tone){
 
 	/**
 	 *  send signal to a channel name
-	 *  
+	 *
 	 *  @param  {string} channelName 
 	 *  @param  {number} amount      
 	 *  @return {GainNode}             
@@ -34,7 +32,7 @@ define(["Tone/core/Tone"], function(Tone){
 
 	/**
 	 *  recieve the input from the desired channelName to the input gain of 'this' node.
-	 *  	
+	 *
 	 *  @param  {string} channelName 
 	 */
 	Tone.prototype.receive = function(channelName){
@@ -44,7 +42,7 @@ define(["Tone/core/Tone"], function(Tone){
 		Buses[channelName].connect(this.input);
 	};
 
-	// Tone.Buses = Buses;
+	Tone.Buses = Buses;
 
-	// return Buses;
+	return Buses;
 });

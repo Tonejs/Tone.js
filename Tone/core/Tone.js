@@ -7,35 +7,43 @@
 //	The MIT License (MIT) 2014
 ///////////////////////////////////////////////////////////////////////////////
 
-(function (root, factory) {
-	//can run with or without requirejs
-	if (typeof define === "function" && define.amd) {
-		// AMD. Register as an anonymous module.
-		define("Tone/core/Tone",[],function () {
-			var Tone = factory(root);
-			return Tone;
-		});
-	} else if (typeof root.Tone !== "function") {
-		//make Tone public
-		root.Tone = factory(root);
+(function (root) {
+	// Tone.js can run with or without requirejs
+	//
+	// this anonymous function checks to see if the 'define'
+	// method exists, if it does not (and there is not already
+	// something called Tone) it will create a function called
+	// 'define'. 'define' will invoke the 'core' module and attach
+	// its return value to the root. for all other modules
+	// Tone will be passed in as the argument.
+	if (typeof define !== "function" && !define.amd && 
+		typeof root.Tone !== "function") {
 		//define 'define' to invoke the callbacks with Tone
 		root.define = function(name, deps, func){
-			func(root.Tone);
+			//grab the one at the root
+			if (name === "Tone/core/Tone"){
+				root.Tone = func();
+			} else {
+				//for all others pass it in
+				func(root.Tone);
+			}
 		};
 	}
-} (this, function (global) {
+} (this));
+
+define("Tone/core/Tone", [], function(){
 
 	//////////////////////////////////////////////////////////////////////////
 	//	WEB AUDIO CONTEXT
 	///////////////////////////////////////////////////////////////////////////
 
 	//ALIAS
-	if (!global.AudioContext){
+	if (!AudioContext){
 		AudioContext = webkitAudioContext;
 	} 
 
 	var audioContext;
-	if (global.AudioContext){
+	if (AudioContext){
 		audioContext = new AudioContext();
 	}
 
@@ -83,6 +91,7 @@
 	 *  From Tone, children inherit timing and math which is used throughout Tone.js
 	 *  
 	 *  @constructor
+	 *  @alias Tone
 	 */
 	var Tone = function(){
 		/**
@@ -374,4 +383,5 @@
 	};
 
 	return Tone;
-}));
+
+});

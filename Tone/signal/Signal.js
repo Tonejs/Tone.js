@@ -44,6 +44,7 @@ define(["Tone/core/Tone"], function(Tone){
 	 *
 	 *
 	 *  @constructor
+	 *  @extends {Tone}
 	 *  @param {number=} value (optional) initial value
 	 */
 	Tone.Signal = function(value){

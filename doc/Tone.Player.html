@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Class: Signal</title>
+    <title>JSDoc: Class: Player</title>
     
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">Class: Signal</h1>
+    <h1 class="page-title">Class: Player</h1>
     
     
 
@@ -29,7 +29,7 @@
     <h2>
         <span class="ancestors"><a href="Tone.html">Tone</a>.</span>
     
-    Signal
+    Player
     </h2>
     
 </header>  
@@ -41,7 +41,7 @@
     
         
 <dt>
-    <h4 class="name" id="Signal"><span class="type-signature"></span>new Signal<span class="signature">(<span class="optional">value</span>)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="Player"><span class="type-signature"></span>new Player<span class="signature">(url)</span><span class="type-signature"></span></h4>
     
     
 </dt>
@@ -49,17 +49,9 @@
     
     
     <div class="description">
-        constant audio-rate signal
-
- Tone.Signal is a core component which allows for synchronization of many components. 
- A single signal can drive multiple parameters by applying Scaling. 
-
- For example: to synchronize two Tone.Oscillators in octaves of each other, 
- 	Signal --> OscillatorA.frequency
- 		  ^--> Tone.Multiply(2) --> OscillatorB.frequency
+        Audio Player
  
-
- Tone.Signal can be scheduled with all of the functions available to AudioParams
+ Audio file player with start, loop, stop.
     </div>
     
 
@@ -81,8 +73,6 @@
 		<th>Type</th>
 		
 		
-		<th>Argument</th>
-		
 		
 		
 		
@@ -95,33 +85,23 @@
 	
         <tr>
             
-                <td class="name"><code>value</code></td>
+                <td class="name"><code>url</code></td>
             
             
             <td class="type">
             
                 
-<span class="param-type">number</span>
+<span class="param-type">string</span>
 
 
             
             </td>
             
             
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-                    
-                
-                    
-                
-                </td>
             
             
             
-            
-            <td class="description last">(optional) initial value</td>
+            <td class="description last"></td>
         </tr>
 	
 	
@@ -152,7 +132,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#line438">line 438</a>
+        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#line3083">line 3083</a>
     </li></ul></dd>
     
     
@@ -184,7 +164,7 @@
         <h3 class="subsection-title">Extends</h3>
         
         <ul>
-            <li><a href="Tone.html">Tone</a></li>
+            <li><a href="Tone.Source.html">Tone.Source</a></li>
         </ul>
     
     
@@ -202,14 +182,78 @@
         <dl>
             
 <dt>
-    <h4 class="name" id="_syncRatio"><span class="type-signature">&lt;private> </span>_syncRatio<span class="type-signature"> :number</span></h4>
+    <h4 class="name" id="_buffer"><span class="type-signature">&lt;private> </span>_buffer<span class="type-signature"> :AudioBuffer</span></h4>
     
     
 </dt>
 <dd>
     
     <div class="description">
-        the ratio of the this value to the control signal value
+        the buffer
+    </div>
+    
+    
+    
+        <h5>Type:</h5>
+        <ul>
+            <li>
+                
+<span class="param-type">AudioBuffer</span>
+
+
+            </li>
+        </ul>
+    
+
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#line3102">line 3102</a>
+    </li></ul></dd>
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="_playbackRate"><span class="type-signature">&lt;private> </span>_playbackRate<span class="type-signature"> :number</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        the playback rate
     </div>
     
     
@@ -248,7 +292,67 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#line455">line 455</a>
+        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#line3116">line 3116</a>
+    </li></ul></dd>
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="_source"><span class="type-signature">&lt;private> </span>_source<span class="type-signature"> :AudioBufferSourceNode</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    
+        <h5>Type:</h5>
+        <ul>
+            <li>
+                
+<span class="param-type">AudioBufferSourceNode</span>
+
+
+            </li>
+        </ul>
+    
+
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#line3095">line 3095</a>
     </li></ul></dd>
     
     
@@ -387,6 +491,70 @@
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#line125">line 125</a>
+    </li></ul></dd>
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="duration"><span class="type-signature"></span>duration<span class="type-signature"> :number</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        the duration of the buffer once it's been loaded
+    </div>
+    
+    
+    
+        <h5>Type:</h5>
+        <ul>
+            <li>
+                
+<span class="param-type">number</span>
+
+
+            </li>
+        </ul>
+    
+
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#line3109">line 3109</a>
     </li></ul></dd>
     
     
@@ -664,7 +832,7 @@
 <dd>
     
     <div class="description">
-        the output node
+        unlike most ToneNodes, Sources only have an output and no input
     </div>
     
     
@@ -689,6 +857,11 @@
     
 
     
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Tone.Source.html#output">Tone.Source#output</a>
+    </li></dd>
+    
     
     
     
@@ -703,7 +876,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#line448">line 448</a>
+        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#line1998">line 1998</a>
     </li></ul></dd>
     
     
@@ -721,14 +894,15 @@
         
             
 <dt>
-    <h4 class="name" id="scalar"><span class="type-signature"></span>scalar<span class="type-signature"> :GainNode</span></h4>
+    <h4 class="name" id="retrigger"><span class="type-signature"></span>retrigger<span class="type-signature"> :boolean</span></h4>
     
     
 </dt>
 <dd>
     
     <div class="description">
-        scales the constant output to the desired output
+        enabling retrigger will allow a player to be restarted
+ before the it's is done playing
     </div>
     
     
@@ -737,7 +911,7 @@
         <ul>
             <li>
                 
-<span class="param-type">GainNode</span>
+<span class="param-type">boolean</span>
 
 
             </li>
@@ -767,7 +941,136 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#line443">line 443</a>
+        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#line3124">line 3124</a>
+    </li></ul></dd>
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="state"><span class="type-signature"></span>state<span class="type-signature"> :<a href="Tone.Source.html#State">Tone.Source.State</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    
+        <h5>Type:</h5>
+        <ul>
+            <li>
+                
+<span class="param-type"><a href="Tone.Source.html#State">Tone.Source.State</a></span>
+
+
+            </li>
+        </ul>
+    
+
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Tone.Source.html#state">Tone.Source#state</a>
+    </li></dd>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#line2003">line 2003</a>
+    </li></ul></dd>
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="url"><span class="type-signature"></span>url<span class="type-signature"> :string</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        the url to load
+    </div>
+    
+    
+    
+        <h5>Type:</h5>
+        <ul>
+            <li>
+                
+<span class="param-type">string</span>
+
+
+            </li>
+        </ul>
+    
+
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#line3090">line 3090</a>
     </li></ul></dd>
     
     
@@ -860,7 +1163,7 @@
         <dl>
             
 <dt>
-    <h4 class="name" id="cancelScheduledValues"><span class="type-signature"></span>cancelScheduledValues<span class="signature">(startTime)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="_onended"><span class="type-signature">&lt;private> </span>_onended<span class="signature">()</span><span class="type-signature"></span></h4>
     
     
 </dt>
@@ -868,8 +1171,7 @@
     
     
     <div class="description">
-        Cancels all scheduled parameter changes with times greater than or 
- equal to startTime.
+        internal call when the buffer is done playing
     </div>
     
 
@@ -877,54 +1179,6 @@
     
     
     
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params">
-    <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-		
-		<th>Type</th>
-		
-		
-		
-		
-		
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-	
-	<tbody>
-	
-	
-        <tr>
-            
-                <td class="name"><code>startTime</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">Tone.Time</span>
-
-
-            
-            </td>
-            
-            
-            
-            
-            
-            <td class="description last"></td>
-        </tr>
-	
-	
-	</tbody>
-</table>
     
     
     
@@ -950,7 +1204,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#line607">line 607</a>
+        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#line3259">line 3259</a>
     </li></ul></dd>
     
     
@@ -1624,7 +1878,7 @@
     
     
     <div class="description">
-        internal dispose method to tear down the node
+        dispose and disconnect
     </div>
     
 
@@ -1657,7 +1911,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#line654">line 654</a>
+        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#line3267">line 3267</a>
     </li></ul></dd>
     
     
@@ -1830,288 +2084,6 @@
         
             
 <dt>
-    <h4 class="name" id="exponentialRampToValueAtTime"><span class="type-signature"></span>exponentialRampToValueAtTime<span class="signature">(value, endTime)</span><span class="type-signature"></span></h4>
-    
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        Schedules an exponential continuous change in parameter value from 
- the previous scheduled parameter value to the given value.
-    </div>
-    
-
-    
-    
-    
-    
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params">
-    <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-		
-		<th>Type</th>
-		
-		
-		
-		
-		
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-	
-	<tbody>
-	
-	
-        <tr>
-            
-                <td class="name"><code>value</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-            
-            </td>
-            
-            
-            
-            
-            
-            <td class="description last"></td>
-        </tr>
-	
-	
-	
-        <tr>
-            
-                <td class="name"><code>endTime</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">Tone.Time</span>
-
-
-            
-            </td>
-            
-            
-            
-            
-            
-            <td class="description last"></td>
-        </tr>
-	
-	
-	</tbody>
-</table>
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#line532">line 532</a>
-    </li></ul></dd>
-    
-    
-    
-    
-    
-    
-    
-</dl>
-
-    
-    
-
-    
-
-    
-    
-    
-    
-    
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <h4 class="name" id="exponentialRampToValueNow"><span class="type-signature"></span>exponentialRampToValueNow<span class="signature">(value, endTime)</span><span class="type-signature"></span></h4>
-    
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        Schedules an exponential continuous change in parameter value from 
- the current time and current value to the given value.
-    </div>
-    
-
-    
-    
-    
-    
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params">
-    <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-		
-		<th>Type</th>
-		
-		
-		
-		
-		
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-	
-	<tbody>
-	
-	
-        <tr>
-            
-                <td class="name"><code>value</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-            
-            </td>
-            
-            
-            
-            
-            
-            <td class="description last"></td>
-        </tr>
-	
-	
-	
-        <tr>
-            
-                <td class="name"><code>endTime</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">Tone.Time</span>
-
-
-            
-            </td>
-            
-            
-            
-            
-            
-            <td class="description last"></td>
-        </tr>
-	
-	
-	</tbody>
-</table>
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#line544">line 544</a>
-    </li></ul></dd>
-    
-    
-    
-    
-    
-    
-    
-</dl>
-
-    
-    
-
-    
-
-    
-    
-    
-    
-    
-    
-    
-</dd>
-
-        
-            
-<dt>
     <h4 class="name" id="expScale"><span class="type-signature"></span>expScale<span class="signature">(gain)</span><span class="type-signature"> &rarr; {number}</span></h4>
     
     
@@ -2245,6 +2217,147 @@
 </dl>
 
         
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="fadeTo"><span class="type-signature"></span>fadeTo<span class="signature">(value, time)</span><span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>value</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last"></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>time</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Tone.Time</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">(relative to 'now')</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Tone.Source.html#fadeTo">Tone.Source#fadeTo</a>
+    </li></dd>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#line2054">line 2054</a>
+    </li></ul></dd>
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
     
     
 </dd>
@@ -2537,93 +2650,6 @@
         
             
 <dt>
-    <h4 class="name" id="getValue"><span class="type-signature"></span>getValue<span class="signature">()</span><span class="type-signature"> &rarr; {number}</span></h4>
-    
-    
-</dt>
-<dd>
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#line469">line 469</a>
-    </li></ul></dd>
-    
-    
-    
-    
-    
-    
-    
-</dl>
-
-    
-    
-
-    
-
-    
-    
-    
-    
-    
-    <h5>Returns:</h5>
-    
-            
-<div class="param-desc">
-    the current value of the signal
-</div>
-
-
-
-<dl>
-	<dt>
-		Type
-	</dt>
-	<dd>
-		
-<span class="param-type">number</span>
-
-
-	</dd>
-</dl>
-
-        
-    
-    
-</dd>
-
-        
-            
-<dt>
     <h4 class="name" id="interpolate"><span class="type-signature"></span>interpolate<span class="signature">(input, outputMin, outputMax)</span><span class="type-signature"> &rarr; {number}</span></h4>
     
     
@@ -2810,7 +2836,7 @@
         
             
 <dt>
-    <h4 class="name" id="linearRampToValueAtTime"><span class="type-signature"></span>linearRampToValueAtTime<span class="signature">(value, endTime)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="load"><span class="type-signature"></span>load<span class="signature">(callback)</span><span class="type-signature"></span></h4>
     
     
 </dt>
@@ -2818,8 +2844,10 @@
     
     
     <div class="description">
-        Schedules a linear continuous change in parameter value from the 
- previous scheduled parameter value to the given value.
+        makes an xhr reqest for the selected url
+ Load the audio file as an audio buffer.
+ Decodes the audio asynchronously and invokes
+ the callback once the audio buffer loads.
     </div>
     
 
@@ -2853,36 +2881,13 @@
 	
         <tr>
             
-                <td class="name"><code>value</code></td>
+                <td class="name"><code>callback</code></td>
             
             
             <td class="type">
             
                 
-<span class="param-type">number</span>
-
-
-            
-            </td>
-            
-            
-            
-            
-            
-            <td class="description last"></td>
-        </tr>
-	
-	
-	
-        <tr>
-            
-                <td class="name"><code>endTime</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">Tone.Time</span>
+<span class="param-type">function</span>
 
 
             
@@ -2923,148 +2928,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#line520">line 520</a>
-    </li></ul></dd>
-    
-    
-    
-    
-    
-    
-    
-</dl>
-
-    
-    
-
-    
-
-    
-    
-    
-    
-    
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <h4 class="name" id="linearRampToValueNow"><span class="type-signature"></span>linearRampToValueNow<span class="signature">(value, endTime)</span><span class="type-signature"></span></h4>
-    
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        Schedules an linear continuous change in parameter value from 
- the current time and current value to the given value at the given time.
-    </div>
-    
-
-    
-    
-    
-    
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params">
-    <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-		
-		<th>Type</th>
-		
-		
-		
-		
-		
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-	
-	<tbody>
-	
-	
-        <tr>
-            
-                <td class="name"><code>value</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-            
-            </td>
-            
-            
-            
-            
-            
-            <td class="description last"></td>
-        </tr>
-	
-	
-	
-        <tr>
-            
-                <td class="name"><code>endTime</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">Tone.Time</span>
-
-
-            
-            </td>
-            
-            
-            
-            
-            
-            <td class="description last"></td>
-        </tr>
-	
-	
-	</tbody>
-</table>
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#line562">line 562</a>
+        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#line3144">line 3144</a>
     </li></ul></dd>
     
     
@@ -3225,6 +3089,267 @@
 </dl>
 
         
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="loop"><span class="type-signature"></span>loop<span class="signature">(<span class="optional">startTime</span>, <span class="optional">loopStart</span>, <span class="optional">loopEnd</span>, <span class="optional">offset</span>, <span class="optional">duration</span>)</span><span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Loop the buffer from start to finish at a time
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		<th>Argument</th>
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>startTime</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Tone.Time</span>
+
+
+            
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+                    
+                
+                    
+                
+                </td>
+            
+            
+            
+            
+            <td class="description last"></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>loopStart</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Tone.Time</span>
+
+
+            
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+                    
+                
+                    
+                
+                </td>
+            
+            
+            
+            
+            <td class="description last"></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>loopEnd</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Tone.Time</span>
+
+
+            
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+                    
+                
+                    
+                
+                </td>
+            
+            
+            
+            
+            <td class="description last"></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>offset</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Tone.Time</span>
+
+
+            
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+                    
+                
+                    
+                
+                </td>
+            
+            
+            
+            
+            <td class="description last"></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>duration</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Tone.Time</span>
+
+
+            
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+                    
+                
+                    
+                
+                </td>
+            
+            
+            
+            
+            <td class="description last"></td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#line3205">line 3205</a>
+    </li></ul></dd>
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
     
     
 </dd>
@@ -3803,6 +3928,193 @@
         
             
 <dt>
+    <h4 class="name" id="onended"><span class="type-signature"></span>onended<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        set a callback function to invoke when the sample is over
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#line3131">line 3131</a>
+    </li></ul></dd>
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="pause"><span class="type-signature">&lt;abstract> </span>pause<span class="signature">(time)</span><span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>time</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Tone.Time</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last"></td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Tone.Source.html#pause">Tone.Source#pause</a>
+    </li></dd>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#line2025">line 2025</a>
+    </li></ul></dd>
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
     <h4 class="name" id="receive"><span class="type-signature"></span>receive<span class="signature">(channelName)</span><span class="type-signature"></span></h4>
     
     
@@ -4368,7 +4680,7 @@
         
             
 <dt>
-    <h4 class="name" id="setCurrentValueNow"><span class="type-signature"></span>setCurrentValueNow<span class="signature">(<span class="optional">now</span>)</span><span class="type-signature"> &rarr; {number}</span></h4>
+    <h4 class="name" id="setPlaybackRate"><span class="type-signature"></span>setPlaybackRate<span class="signature">(rate, <span class="optional">rampTime</span>)</span><span class="type-signature"></span></h4>
     
     
 </dt>
@@ -4376,7 +4688,7 @@
     
     
     <div class="description">
-        creates a schedule point with the current value at the current time
+        set the rate at which the file plays
     </div>
     
 
@@ -4412,13 +4724,44 @@
 	
         <tr>
             
-                <td class="name"><code>now</code></td>
+                <td class="name"><code>rate</code></td>
             
             
             <td class="type">
             
                 
 <span class="param-type">number</span>
+
+
+            
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    
+                
+                    
+                
+                </td>
+            
+            
+            
+            
+            <td class="description last"></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>rampTime</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Tone.Time</span>
 
 
             
@@ -4438,7 +4781,8 @@
             
             
             
-            <td class="description last">(optionally) pass the now value in</td>
+            <td class="description last">(optional) the amount of time it takes to 
+                              reach the rate</td>
         </tr>
 	
 	
@@ -4469,7 +4813,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#line505">line 505</a>
+        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#line3243">line 3243</a>
     </li></ul></dd>
     
     
@@ -4490,28 +4834,6 @@
     
     
     
-    <h5>Returns:</h5>
-    
-            
-<div class="param-desc">
-    the current value
-</div>
-
-
-
-<dl>
-	<dt>
-		Type
-	</dt>
-	<dd>
-		
-<span class="param-type">number</span>
-
-
-	</dd>
-</dl>
-
-        
     
     
 </dd>
@@ -4519,17 +4841,12 @@
         
             
 <dt>
-    <h4 class="name" id="setTargetAtTime"><span class="type-signature"></span>setTargetAtTime<span class="signature">(value, startTime, timeConstant)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="setVolume"><span class="type-signature"></span>setVolume<span class="signature">(value)</span><span class="type-signature"></span></h4>
     
     
 </dt>
 <dd>
     
-    
-    <div class="description">
-        Start exponentially approaching the target value at the given time with
- a rate having the given time constant.
-    </div>
     
 
     
@@ -4581,6 +4898,107 @@
             <td class="description last"></td>
         </tr>
 	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Tone.Source.html#setVolume">Tone.Source#setVolume</a>
+    </li></dd>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#line2065">line 2065</a>
+    </li></ul></dd>
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="start"><span class="type-signature"></span>start<span class="signature">(<span class="optional">startTime</span>, <span class="optional">offset</span>, <span class="optional">duration</span>)</span><span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        play the buffer between the desired positions
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		<th>Argument</th>
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
 	
 	
         <tr>
@@ -4598,6 +5016,16 @@
             </td>
             
             
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+                    
+                
+                    
+                
+                </td>
+            
             
             
             
@@ -4608,18 +5036,61 @@
 	
         <tr>
             
-                <td class="name"><code>timeConstant</code></td>
+                <td class="name"><code>offset</code></td>
             
             
             <td class="type">
             
                 
-<span class="param-type">number</span>
+<span class="param-type">Tone.Time</span>
 
 
             
             </td>
             
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+                    
+                
+                    
+                
+                </td>
+            
+            
+            
+            
+            <td class="description last"></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>duration</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Tone.Time</span>
+
+
+            
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+                    
+                
+                    
+                
+                </td>
             
             
             
@@ -4655,7 +5126,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#line581">line 581</a>
+        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#line3176">line 3176</a>
     </li></ul></dd>
     
     
@@ -4683,7 +5154,7 @@
         
             
 <dt>
-    <h4 class="name" id="setValue"><span class="type-signature"></span>setValue<span class="signature">(value)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="stop"><span class="type-signature"></span>stop<span class="signature">(time)</span><span class="type-signature"></span></h4>
     
     
 </dt>
@@ -4691,8 +5162,7 @@
     
     
     <div class="description">
-        set the value of the signal right away
- will be overwritten if there are previously scheduled automation curves
+        Stop playback.
     </div>
     
 
@@ -4722,146 +5192,6 @@
 	</thead>
 	
 	<tbody>
-	
-	
-        <tr>
-            
-                <td class="name"><code>value</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-            
-            </td>
-            
-            
-            
-            
-            
-            <td class="description last"></td>
-        </tr>
-	
-	
-	</tbody>
-</table>
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#line479">line 479</a>
-    </li></ul></dd>
-    
-    
-    
-    
-    
-    
-    
-</dl>
-
-    
-    
-
-    
-
-    
-    
-    
-    
-    
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <h4 class="name" id="setValueAtTime"><span class="type-signature"></span>setValueAtTime<span class="signature">(value, time)</span><span class="type-signature"></span></h4>
-    
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        Schedules a parameter value change at the given time.
-    </div>
-    
-
-    
-    
-    
-    
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params">
-    <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-		
-		<th>Type</th>
-		
-		
-		
-		
-		
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-	
-	<tbody>
-	
-	
-        <tr>
-            
-                <td class="name"><code>value</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-            
-            </td>
-            
-            
-            
-            
-            
-            <td class="description last"></td>
-        </tr>
-	
 	
 	
         <tr>
@@ -4913,7 +5243,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#line494">line 494</a>
+        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#line3225">line 3225</a>
     </li></ul></dd>
     
     
@@ -4941,7 +5271,7 @@
         
             
 <dt>
-    <h4 class="name" id="setValueCurveAtTime"><span class="type-signature"></span>setValueCurveAtTime<span class="signature">(values, startTime, duration)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="sync"><span class="type-signature"></span>sync<span class="signature">()</span><span class="type-signature"></span></h4>
     
     
 </dt>
@@ -4949,8 +5279,7 @@
     
     
     <div class="description">
-        Sets an array of arbitrary parameter values starting at the given time
- for the given duration.
+        sync the source to the Transport
     </div>
     
 
@@ -4958,100 +5287,6 @@
     
     
     
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params">
-    <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-		
-		<th>Type</th>
-		
-		
-		
-		
-		
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-	
-	<tbody>
-	
-	
-        <tr>
-            
-                <td class="name"><code>values</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">Array.&lt;number></span>
-
-
-            
-            </td>
-            
-            
-            
-            
-            
-            <td class="description last"></td>
-        </tr>
-	
-	
-	
-        <tr>
-            
-                <td class="name"><code>startTime</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">Tone.Time</span>
-
-
-            
-            </td>
-            
-            
-            
-            
-            
-            <td class="description last"></td>
-        </tr>
-	
-	
-	
-        <tr>
-            
-                <td class="name"><code>duration</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">Tone.Time</span>
-
-
-            
-            </td>
-            
-            
-            
-            
-            
-            <td class="description last"></td>
-        </tr>
-	
-	
-	</tbody>
-</table>
     
     
     
@@ -5062,6 +5297,11 @@
     
     
 
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Tone.Source.html#sync">Tone.Source#sync</a>
+    </li></dd>
     
     
     
@@ -5077,125 +5317,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#line594">line 594</a>
-    </li></ul></dd>
-    
-    
-    
-    
-    
-    
-    
-</dl>
-
-    
-    
-
-    
-
-    
-    
-    
-    
-    
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <h4 class="name" id="sync"><span class="type-signature"></span>sync<span class="signature">(signal)</span><span class="type-signature"></span></h4>
-    
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        Sync this to another signal and it will always maintain the 
- ratio between the two signals until it is unsynced
-    </div>
-    
-
-    
-    
-    
-    
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params">
-    <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-		
-		<th>Type</th>
-		
-		
-		
-		
-		
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-	
-	<tbody>
-	
-	
-        <tr>
-            
-                <td class="name"><code>signal</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type"><a href="Tone.Signal.html">Tone.Signal</a></span>
-
-
-            
-            </td>
-            
-            
-            
-            
-            
-            <td class="description last">to sync to</td>
-        </tr>
-	
-	
-	</tbody>
-</table>
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#line617">line 617</a>
+        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#line2033">line 2033</a>
     </li></ul></dd>
     
     
@@ -6392,9 +6514,7 @@
     
     
     <div class="description">
-        unbind the signal control
-
- will leave the signal value as it was without the influence of the control signal
+        unsync the source to the Transport
     </div>
     
 
@@ -6413,6 +6533,11 @@
     
 
     
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Tone.Source.html#unsync">Tone.Source#unsync</a>
+    </li></dd>
+    
     
     
     
@@ -6427,7 +6552,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#line637">line 637</a>
+        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#line2043">line 2043</a>
     </li></ul></dd>
     
     
