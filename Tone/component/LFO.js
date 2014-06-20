@@ -14,7 +14,6 @@ define(["Tone/core/Tone", "Tone/source/Oscillator", "Tone/signal/Scale"], functi
 	 *  @param {number=} outputMax
 	 */
 	Tone.LFO = function(rate, outputMin, outputMax){
-
 		Tone.call(this);
 
 		/** @type {Tone.Oscillator} */
@@ -112,6 +111,18 @@ define(["Tone/core/Tone", "Tone/source/Oscillator", "Tone/signal/Scale"], functi
 			param.value = 0;
 		} 
 		this._connect(param);
+	};
+
+	/**
+	 *  disconnect and dispose
+	 */
+	Tone.LFO.prototype.dispose = function(){
+		this.oscillator.dispose();
+		this.output.disconnect();
+		this.scaler.dispose();
+		this.oscillator = null;
+		this.output = null;
+		this.scaler = null;
 	};
 
 	return Tone.LFO;

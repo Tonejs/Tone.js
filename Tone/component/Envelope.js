@@ -2,7 +2,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 
 	/**
 	 *  Envelope 
-	 *  ADR envelope generator attaches to an AudioParam
+	 *  ADR envelope generator attaches to an AudioParam or AudioNode
 	 *
 	 *  @constructor
 	 *  @extends {Tone}
@@ -17,16 +17,21 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 		//extend Unit
 		Tone.call(this);
 
-		//set the parameters
+		/** @type {number} */
 		this.attack = this.defaultArg(attack, 0.01);
+		/** @type {number} */
 		this.decay = this.defaultArg(decay, 0.1);
+		/** @type {number} */
 		this.release = this.defaultArg(release, 1);
+		/** @type {number} */
 		this.sustain = this.defaultArg(sustain, 0.5);
 
+		/** @type {number} */
 		this.min = this.defaultArg(minOutput, 0);
+		/** @type {number} */
 		this.max = this.defaultArg(maxOutput, 1);
 		
-		//the control signal
+		/** @type {Tone.Signal} */
 		this.control = new Tone.Signal(this.min);
 
 		//connections
@@ -59,7 +64,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	 * attack->decay->sustain exponential ramp
 	 * @param  {Tone.Time} time
 	 */
-	Tone.Envelope.prototype.triggerAttackExp = function(time){
+	Tone.Envelope.prototype.triggerExponentialAttack = function(time){
 		var startVal = this.min;
 		if (!time){
 			startVal = this.control.getValue();
@@ -96,7 +101,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	 * 
 	 * @param  {Tone.Time} time
 	 */
-	Tone.Envelope.prototype.triggerReleaseExp = function(time){
+	Tone.Envelope.prototype.triggerExponentialRelease = function(time){
 		var startVal = this.control.getValue();
 		if (time){
 			startVal = (this.max - this.min) * this.sustain + this.min;
@@ -127,6 +132,14 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 			param.value = 0;
 		} 
 		this._connect(param);
+	};
+
+	/**
+	 *  disconnect and dispose
+	 */
+	Tone.Envelope.prototype.dispose = function(){
+		this.control.dispose();
+		this.control = null;
 	};
 
 	return Tone.Envelope;
