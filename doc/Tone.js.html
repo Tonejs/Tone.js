@@ -484,8 +484,6 @@ define('Tone/signal/Signal',["Tone/core/Tone"], function(Tone){
 
 		//set the default value
 		this.setValue(this.defaultArg(value, 0));
-
-		this.output.noGC();
 	};
 
 	Tone.extend(Tone.Signal);
@@ -951,7 +949,7 @@ define('Tone/component/DryWet',["Tone/core/Tone", "Tone/signal/Signal", "Tone/si
 		 *  controls the amount of wet signal 
 		 *  which is mixed into the dry signal
 		 *  
-		 *  @type {GainNode}
+		 *  @type {Tone.Signal}
 		 */
 		this.wetness = new Tone.Signal(initialDry);
 		/**
@@ -979,18 +977,21 @@ define('Tone/component/DryWet',["Tone/core/Tone", "Tone/signal/Signal", "Tone/si
 	 * Set the dry value 
 	 * 
 	 * @param {number} val
-	 * @param {Tone.Time} rampTime
+	 * @param {Tone.Time=} rampTime
 	 */
 	Tone.DryWet.prototype.setDry = function(val, rampTime){
-		rampTime = this.defaultArg(rampTime, 0);
-		this.wetness.linearRampToValueAtTime(this.equalPowerScale(val), this.toSeconds(rampTime));
+		if (rampTime){
+			this.wetness.linearRampToValueNow(this.equalPowerScale(val), rampTime);
+		} else {
+			this.wetness.setValueAtTime(this.equalPowerScale(val), this.now());
+		}
 	};
 
 	/**
 	 * Set the wet value
 	 * 
 	 * @param {number} val
-	 * @param {Tone.Time} rampTime
+	 * @param {Tone.Time=} rampTime
 	 */
 	Tone.DryWet.prototype.setWet = function(val, rampTime){
 		this.setDry(1-val, rampTime);
@@ -1035,13 +1036,13 @@ define('Tone/component/Envelope',["Tone/core/Tone", "Tone/signal/Signal"], funct
 		Tone.call(this);
 
 		/** @type {number} */
-		this.attack = this.defaultArg(attack, 0.01);
+		this.attack = this.toSeconds(this.defaultArg(attack, 0.01));
 		/** @type {number} */
-		this.decay = this.defaultArg(decay, 0.1);
+		this.decay = this.toSeconds(this.defaultArg(decay, 0.1));
 		/** @type {number} */
-		this.release = this.defaultArg(release, 1);
+		this.release = this.toSeconds(this.defaultArg(release, 1));
 		/** @type {number} */
-		this.sustain = this.defaultArg(sustain, 0.5);
+		this.sustain = this.toSeconds(this.defaultArg(sustain, 0.5));
 
 		/** @type {number} */
 		this.min = this.defaultArg(minOutput, 0);
@@ -1062,19 +1063,18 @@ define('Tone/component/Envelope',["Tone/core/Tone", "Tone/signal/Signal"], funct
 	 * @param  {Tone.Time} time
 	 */
 	Tone.Envelope.prototype.triggerAttack = function(time){
-		var startVal = this.min;
-		if (!time){
-			startVal = this.control.getValue();
-		}
-		time = this.defaultArg(time, this.now());
-		time = this.toSeconds(time);
-		this.control.cancelScheduledValues(time);
-		this.control.setValueAtTime(startVal, time);
-		var attackTime = this.toSeconds(this.attack);
-		var decayTime = this.toSeconds(this.decay);
-		this.control.linearRampToValueAtTime(this.max, time + attackTime);
 		var sustainVal = (this.max - this.min) * this.sustain + this.min;
-		this.control.linearRampToValueAtTime(sustainVal, time + attackTime + decayTime);
+		if (!time){
+			this.control.linearRampToValueNow(this.max, this.attack);
+			this.control.linearRampToValueAtTime(sustainVal, this.now() + this.attack + this.decay);	
+		} else {
+			var startVal = this.min;
+			time = this.toSeconds(time);
+			this.control.cancelScheduledValues(time);
+			this.control.setValueAtTime(startVal, time);
+			this.control.linearRampToValueAtTime(this.max, time + this.attack);
+			this.control.linearRampToValueAtTime(sustainVal, time + this.attack + this.decay);
+		}
 	};
 
 	/**
@@ -2649,10 +2649,16 @@ function(Tone){
 
 	/**
 	 *  a panner is just a dry/wet knob
+	 *  @constructor
+	 *  @extends {Tone.DryWet}
+	 *  @param {number} initialPan the initail panner value
 	 */
-	Tone.Panner = function(){
+	Tone.Panner = function(initialPan){
+		
 		Tone.DryWet.call(this);
-		this.setPan(0.5);
+		
+		initialPan = this.defaultArg(initialPan, 0.5);
+		this.setPan(initialPan);
 	};
 
 	Tone.extend(Tone.Panner, Tone.DryWet);
@@ -2926,7 +2932,7 @@ define('Tone/effects/AutoPanner',["Tone/core/Tone", "Tone/source/Oscillator", "T
 	*
 	* @constructor
 	* @param { number= } rate (optional) rate in HZ of the left-right pan
-	* @param { number= } amount (optional) of the pan in dB (0 - 1)
+	* @param { number= } amount (optional) of the pan (0 - 1)
 	*/
 	Tone.AutoPanner = function(rate, amount){
 		Tone.Effect.call(this);
@@ -3992,13 +3998,13 @@ define('Tone/source/Noise',["Tone/core/Tone", "Tone/source/Source"], function(To
 </div>
 
 <nav>
-    <h2><a href="index.html">Index</a></h2><h3>Classes</h3><ul><li><a href="Tone.html">Tone</a></li><li><a href="Tone.Add.html">Add</a></li><li><a href="Tone.AutoPanner.html">AutoPanner</a></li><li><a href="Tone.BitCrusher.html">BitCrusher</a></li><li><a href="Tone.DryWet.html">DryWet</a></li><li><a href="Tone.Envelope.html">Envelope</a></li><li><a href="Tone.LFO.html">LFO</a></li><li><a href="Tone.Merge.html">Merge</a></li><li><a href="Tone.Meter.html">Meter</a></li><li><a href="Tone.Microphone.html">Microphone</a></li><li><a href="Tone.Multiply.html">Multiply</a></li><li><a href="Tone.Noise.html">Noise</a></li><li><a href="Tone.Oscillator.html">Oscillator</a></li><li><a href="Tone.Player.html">Player</a></li><li><a href="Tone.Recorder.html">Recorder</a></li><li><a href="Tone.Scale.html">Scale</a></li><li><a href="Tone.Signal.html">Signal</a></li><li><a href="Tone.Source.html">Source</a></li><li><a href="Tone.Split.html">Split</a></li><li><a href="Tone.Transport.html">Transport</a></li></ul><h3>Global</h3><ul><li><a href="global.html#for the default output">for the default output</a></li><li>{GainNode}</li></ul>
+    <h2><a href="index.html">Index</a></h2><h3>Classes</h3><ul><li><a href="Tone.html">Tone</a></li><li><a href="Tone.Add.html">Add</a></li><li><a href="Tone.AutoPanner.html">AutoPanner</a></li><li><a href="Tone.BitCrusher.html">BitCrusher</a></li><li><a href="Tone.DryWet.html">DryWet</a></li><li><a href="Tone.Envelope.html">Envelope</a></li><li><a href="Tone.LFO.html">LFO</a></li><li><a href="Tone.Merge.html">Merge</a></li><li><a href="Tone.Meter.html">Meter</a></li><li><a href="Tone.Microphone.html">Microphone</a></li><li><a href="Tone.Multiply.html">Multiply</a></li><li><a href="Tone.Noise.html">Noise</a></li><li><a href="Tone.Oscillator.html">Oscillator</a></li><li><a href="Tone.Panner.html">Panner</a></li><li><a href="Tone.Player.html">Player</a></li><li><a href="Tone.Recorder.html">Recorder</a></li><li><a href="Tone.Scale.html">Scale</a></li><li><a href="Tone.Signal.html">Signal</a></li><li><a href="Tone.Source.html">Source</a></li><li><a href="Tone.Split.html">Split</a></li><li><a href="Tone.Transport.html">Transport</a></li></ul><h3>Global</h3><ul><li><a href="global.html#for the default output">for the default output</a></li><li>{GainNode}</li></ul>
 </nav>
 
 <br clear="both">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.2</a> on Fri Jun 20 2014 01:43:54 GMT-0400 (EDT)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.2</a> on Fri Jun 20 2014 11:03:19 GMT-0400 (EDT)
 </footer>
 
 <script> prettyPrint(); </script>
