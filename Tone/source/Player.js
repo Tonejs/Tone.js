@@ -107,7 +107,6 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 			if (this._buffer){
 				this.state = Tone.Source.State.STARTED;
 				//default args
-				startTime = this.defaultArg(startTime, this.now());
 				offset = this.defaultArg(offset, 0);
 				duration = this.defaultArg(duration, this._buffer.duration - offset);
 				//make the source
@@ -194,13 +193,13 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 	 *  dispose and disconnect
 	 */
 	Tone.Player.prototype.dispose = function(){
-		this.output.disconnect();
-		if (this.state === Tone.Source.State.STARTED){
-			this.stop();
+		if (this._source !== null){
 			this._source.disconnect();
 			this._source = null;
 		}
 		this._buffer = null;
+		this.output.disconnect();
+		this.output = null;
 	};
 
 	return Tone.Player;
