@@ -48,7 +48,7 @@ function(Tone){
 			this.state = Tone.Source.State.STARTED;
 			//get previous values
 			var type = this.oscillator.type;
-			var detune = this.oscillator.frequency.value;
+			var detune = this.oscillator.detune.value;
 			//new oscillator with previous values
 			this.oscillator = this.context.createOscillator();
 			this.oscillator.type = type;
