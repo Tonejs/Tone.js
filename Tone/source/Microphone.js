@@ -119,6 +119,20 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 		console.error(e);
 	};
 
+	/**
+	 *  clean up
+	 */
+	Tone.Microphone.prototype.dispose = function(e) {
+		this.input.disconnect();
+		this.output.disconnect();
+		this._stream.disconnect();
+		this._mediaStream.disconnect();
+		this.input = null;
+		this.output = null;
+		this._stream = null;
+		this._mediaStream = null;
+	};
+
 	//polyfill
 	navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || 
 		navigator.mozGetUserMedia || navigator.msGetUserMedia;
