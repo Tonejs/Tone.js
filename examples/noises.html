@@ -1,0 +1,48 @@
+<html>
+<head>
+	<title>NOISES</title>
+
+	<script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
+	<script type="text/javascript" src="../deps/require.js"></script>
+
+</head>
+<body>
+
+	<div id='noise'></button>
+	<script type="text/javascript">
+		//minimal example using requirejs
+		require.config({
+			baseUrl : "../"
+		});
+		require(["Tone/source/Noise", "Tone/core/Transport", "Tone/core/Master"], 
+		function(Noise, Transport){
+			var noise = new Noise();
+			noise.toMaster();
+			noise.start();
+
+			var noiseTypes = ["white", "brown", "pink"];
+
+			Transport.setInterval(function(time){
+				//stop the previous one
+				//set a random noise type
+				var randomIndex = Math.floor(Math.random()* noiseTypes.length);
+				var randomNoise = noiseTypes[randomIndex];
+				noise.setType(randomNoise, time);
+
+				$("#noise").text(randomNoise);
+			}, 0.25);
+
+			Transport.setTimeout(function(time){
+				noise.stop(time);
+				Transport.stop();
+				$("#noise").text("");
+			}, 8);
+
+			Transport.start();
+
+			window.noise = noise;
+		});
+
+	</script>
+</body>
+</html>
