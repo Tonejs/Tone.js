@@ -4,7 +4,7 @@
 
 
 	<script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
-	<script type="text/javascript" src="../build/Tone.js"></script>
+	<script type="text/javascript" src="../Tone.js"></script>
 </head>
 <body>
 	<style type="text/css">
@@ -53,7 +53,7 @@
 		}, 100);
 
 		var range = document.querySelector("input");
-		range.onchange = function(){
+		range.oninput = function(){
 			var val = range.value;
 			dryWet.setWet(val/100, 0);
 		}
@@ -61,7 +61,7 @@
 		var button = document.querySelector("button");
 
 		button.onclick = function(){
-			if (!sine.started){
+			if (sine.state !== "started"){
 				sine.start();
 				square.start();
 				button.textContent = "stop";
