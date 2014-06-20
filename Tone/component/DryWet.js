@@ -8,7 +8,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Scale"], function(T
 	 * 	1 =   0% dry  -  100% wet
 	 *
 	 * @constructor
-	 * @param {number} initialDry
+	 * @param {number=} initialDry
 	 */		
 	Tone.DryWet = function(initialDry){
 		Tone.call(this);
@@ -31,9 +31,9 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Scale"], function(T
 		 *  controls the amount of wet signal 
 		 *  which is mixed into the dry signal
 		 *  
-		 *  @type {GainNode}
+		 *  @type {Tone.Signal}
 		 */
-		this.wetness = new Tone.Signal(initialDry);
+		this.wetness = new Tone.Signal();
 		/**
 		 *  invert the incoming signal
 		 *  @private
@@ -51,6 +51,8 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Scale"], function(T
 
 		this.dry.gain.value = 0;
 		this.wet.gain.value = 0;
+
+		this.setDry(this.defaultArg(initialDry, 0));
 	};
 
 	Tone.extend(Tone.DryWet);
@@ -59,18 +61,21 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Scale"], function(T
 	 * Set the dry value 
 	 * 
 	 * @param {number} val
-	 * @param {Tone.Time} rampTime
+	 * @param {Tone.Time=} rampTime
 	 */
 	Tone.DryWet.prototype.setDry = function(val, rampTime){
-		rampTime = this.defaultArg(rampTime, 0);
-		this.wetness.linearRampToValueAtTime(this.equalPowerScale(val), this.toSeconds(rampTime));
+		if (rampTime){
+			this.wetness.linearRampToValueNow(this.equalPowerScale(val), rampTime);
+		} else {
+			this.wetness.setValueAtTime(this.equalPowerScale(val), this.now());
+		}
 	};
 
 	/**
 	 * Set the wet value
 	 * 
 	 * @param {number} val
-	 * @param {Tone.Time} rampTime
+	 * @param {Tone.Time=} rampTime
 	 */
 	Tone.DryWet.prototype.setWet = function(val, rampTime){
 		this.setDry(1-val, rampTime);
