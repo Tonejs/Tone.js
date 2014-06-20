@@ -93,7 +93,6 @@ define(["Tone/core/Tone", "Tone/core/Transport"], function(Tone){
 	Tone.Source.State = {
 		STARTED : "started",
 		PAUSED : "paused",
-		STOP_SCHEDULED : "stopScheduled",
 		STOPPED : "stopped",
 		SYNCED : "synced"
  	};

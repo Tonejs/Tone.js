@@ -142,10 +142,13 @@ function(Tone){
 		this.output.disconnect();
 		if (this.state === Tone.Source.State.STARTED){
 			this.stop();
+		}
+		if (this.oscillator !== null){
 			this.oscillator.disconnect();
 			this.oscillator = null;
 		}
 		this.frequency.dispose();
+		this.frequency = null;
 	};
 
 	return Tone.Oscillator;

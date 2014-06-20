@@ -12,7 +12,8 @@ require.config({
 	}
 });
 
-var allTests = ["tests/WebAudio", "tests/Timing", "tests/Signal", "tests/Math", "tests/Transport", "tests/Sources"];
+// var allTests = ["tests/WebAudio", "tests/Timing", "tests/Signal", "tests/Math", "tests/Transport", "tests/Sources"];
+var allTests = ["tests/WebAudio", "tests/Sources"];
 
 require(allTests, function(){
 	mocha.run(); 

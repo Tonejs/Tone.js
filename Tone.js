@@ -16,7 +16,7 @@
 	// 'define'. 'define' will invoke the 'core' module and attach
 	// its return value to the root. for all other modules
 	// Tone will be passed in as the argument.
-	if (typeof define !== "function" && !define.amd && 
+	if (typeof define !== "function" && 
 		typeof root.Tone !== "function") {
 		//define 'define' to invoke the callbacks with Tone
 		root.define = function(name, deps, func){

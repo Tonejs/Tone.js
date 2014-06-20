@@ -1,4 +1,4 @@
-define(["chai", "Tone/source/Player", "Tone/core/Master", "Tone/source/Oscillator", "tests/WebAudio", "Tone/component/Recorder"], 
+define(["chai", "Tone/source/Player", "Tone/core/Master", "Tone/source/Oscillator", "Tone/component/Recorder", "tests/WebAudio"], 
 function(chai, Player, Master, Oscillator, Recorder){
 
 	var expect = chai.expect;
@@ -8,10 +8,8 @@ function(chai, Player, Master, Oscillator, Recorder){
 	describe("Tone.Player", function(){
 		this.timeout(1000);
 		var player = new Player("./testAudio/kick.mp3");
-		before(function(){
-			player.toMaster();
-		});
-
+		player.toMaster();
+		
 		after(function(){
 			player.dispose();
 		});
@@ -47,10 +45,12 @@ function(chai, Player, Master, Oscillator, Recorder){
 		});
 
 		it("can handle multiple restarts", function(){
+			expect(player.state).to.equal("stopped");
 			player.start();
 			player.start();
 			player.stop();
 			player.stop();
+			expect(player.state).to.equal("stopped");
 		});
 
 	});
@@ -59,14 +59,12 @@ function(chai, Player, Master, Oscillator, Recorder){
 		this.timeout(1000);
 
 		var oscillator = new Oscillator();
-
-		before(function(){
-			oscillator.toMaster();
-		});
-
+		oscillator.toMaster();
+		
 		after(function(){
 			oscillator.dispose();
 		});
+
 		it("starts and stops", function(done){
 			expect(oscillator.state).to.equal("stopped");
 			oscillator.start();
@@ -80,12 +78,12 @@ function(chai, Player, Master, Oscillator, Recorder){
 		it("can be scheduled to stop", function(done){
 			expect(oscillator.state).to.equal("stopped");
 			oscillator.start();
-			oscillator.stop("+.05");
 			expect(oscillator.state).to.equal("started");
+			oscillator.stop("+0.05");
 			setTimeout(function(){
 				expect(oscillator.state).to.equal("stopped");
 				done();
-			}, 100);
+			}, 200);
 		});
 
 		it("won't start again before stopping", function(){
@@ -94,6 +92,25 @@ function(chai, Player, Master, Oscillator, Recorder){
 			oscillator.start();
 			oscillator.stop();
 			oscillator.stop();
+			expect(oscillator.state).to.equal("stopped");
+		});
+
+		it("be scheduled to start in the future", function(done){
+			var recorder = new Recorder();
+			oscillator.connect(recorder);
+			recorder.record(0.1);
+			oscillator.start("+.05");
+			setTimeout(function(){
+				oscillator.stop();
+				var buffer = recorder.getFloat32Array()[0];
+				for (var i = 0; i < buffer.length; i++){
+					if (buffer[i] !== 0){
+						expect(oscillator.samplesToSeconds(i)).to.be.closeTo(0.05, 0.001);
+						break;
+					}
+				}
+				done();
+			}, 200);
 		});
 
 		it("can set the frequency", function(done){
@@ -102,11 +119,13 @@ function(chai, Player, Master, Oscillator, Recorder){
 			oscillator.start();
 			oscillator.setFrequency(220, 0.05);
 			setTimeout(function(){
-				oscillator.stop();
 				expect(oscillator.frequency.getValue()).to.equal(220);
+				oscillator.stop();
 				done();
 			}, 100);
 		});
 	});
+
+	
 
 });
