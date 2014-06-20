@@ -4,8 +4,8 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Scale"], function(T
 	 * DRY/WET KNOB
 	 * 
 	 * equal power fading control values:
-	 * 	0 = 100% dry
-	 * 	1 = 100% wet
+	 * 	0 = 100% dry  -    0% wet
+	 * 	1 =   0% dry  -  100% wet
 	 *
 	 * @constructor
 	 * @param {number} initialDry

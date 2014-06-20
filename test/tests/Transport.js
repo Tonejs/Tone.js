@@ -1,4 +1,4 @@
-define(["chai", "Tone/core/Transport", "tests/WebAudio"], function(chai, Transport){
+define(["chai", "Tone/core/Transport", "tests/Core"], function(chai, Transport){
 	var expect = chai.expect;
 
 	describe("Transport.getBpm and Transport.getTimeSignature", function(){

@@ -269,11 +269,9 @@ define("Tone/core/Tone", [], function(){
 	/**
 	 *  a dispose method 
 	 *  
-	 *  should be overridden by child classes
+	 *  @abstract
 	 */
-	Tone.prototype.dispose = function(){
-		this.output.disconnect();
-	};
+	Tone.prototype.dispose = function(){};
 
 
 	///////////////////////////////////////////////////////////////////////////

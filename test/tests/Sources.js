@@ -1,4 +1,4 @@
-define(["chai", "Tone/source/Player", "Tone/core/Master", "Tone/source/Oscillator", "Tone/component/Recorder", "Tone/source/Noise", "tests/WebAudio"], 
+define(["chai", "Tone/source/Player", "Tone/core/Master", "Tone/source/Oscillator", "Tone/component/Recorder", "Tone/source/Noise", "tests/Core"], 
 function(chai, Player, Master, Oscillator, Recorder, Noise){
 
 	var expect = chai.expect;

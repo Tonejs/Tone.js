@@ -1,5 +1,5 @@
 define(["chai", "Tone/component/Recorder", "Tone/signal/Signal", "Tone/signal/Add", "Tone/signal/Multiply", 
-	"Tone/signal/Scale", "Tone/source/Oscillator", "Tone/signal/Merge", "Tone/signal/Split", "tests/WebAudio"], 
+	"Tone/signal/Scale", "Tone/source/Oscillator", "Tone/signal/Merge", "Tone/signal/Split", "tests/Core"], 
 function(chai, Recorder, Signal, Add, Multiply, Scale, Oscillator, Merge, Split, Master){
 
 	var expect = chai.expect;

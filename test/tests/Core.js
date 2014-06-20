@@ -1,4 +1,4 @@
-define(["chai", "Tone/core/Tone"], function(chai, Tone){
+define(["chai", "Tone/core/Tone", "Tone/core/Master", "Tone/core/Bus"], function(chai, Tone, Master, Bus){
 	var expect = chai.expect;
 
 	describe("AudioContext", function(){
@@ -27,5 +27,22 @@ define(["chai", "Tone/core/Tone"], function(chai, Tone){
 			expect(AudioContext.prototype.createGain).to.be.instanceof(Function);
 		});
 
+	});
+
+	describe("Tone.Master", function(){
+		it ("exists", function(){
+			expect(Tone.Master).to.equal(Master);
+		});
+	});
+
+	describe("Tone.Bus", function(){
+		it ("exists", function(){
+			expect(Bus).to.be.an("object");
+		});
+
+		it ("provides a send and receive method", function(){
+			expect(Tone.prototype.send).is.a("function");
+			expect(Tone.prototype.receive).is.a("function");
+		});
 	});
 });
