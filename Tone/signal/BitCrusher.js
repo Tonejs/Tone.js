@@ -107,5 +107,17 @@ define(["Tone/core/Tone"], function(Tone){
 		this._frequency = freq;
 	};
 
+	/**
+	 *  clean up
+	 */
+	Tone.BitCrusher.prototype.dispose = function(){
+		this.input.disconnect();
+		this.output.disconnect();
+		this._crusher.disconnect();
+		this.input = null;
+		this.output = null;
+		this._crusher = null;
+	}; 
+
 	return Tone.BitCrusher;
 });

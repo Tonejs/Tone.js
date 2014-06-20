@@ -33,5 +33,17 @@ define(["Tone/core/Tone"], function(Tone){
 
 	Tone.extend(Tone.Split);
 
+	/**
+	 *  dispose method
+	 */
+	Tone.Add.prototype.dispose = function(){
+		this._value.dispose();
+		this.input.disconnect();
+		this.output.disconnect();
+		this._value = null;
+		this.input = null;
+		this.output = null;
+	}; 
+
 	return Tone.Split;
 });

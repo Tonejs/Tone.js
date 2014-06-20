@@ -39,5 +39,17 @@ define(["Tone/core/Tone"], function(Tone){
 
 	Tone.extend(Tone.Merge);
 
+	/**
+	 *  clean up
+	 */
+	Tone.Merge.prototype.dispose = function(){
+		this.input.disconnect();
+		this.right.disconnect();
+		this.merger.disconnect();
+		this.input = null;
+		this.right = null;
+		this.merger = null;
+	}; 
+
 	return Tone.Merge;
 });

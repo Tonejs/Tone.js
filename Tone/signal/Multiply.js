@@ -33,5 +33,13 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 		this.input.gain.value = value;
 	};
 
+	/**
+	 *  clean up
+	 */
+	Tone.Multiply.prototype.dispose = function(){
+		this.input.disconnect();
+		this.input = null;
+	}; 
+
 	return Tone.Multiply;
 });

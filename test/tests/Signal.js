@@ -8,6 +8,10 @@ function(chai, Recorder, Signal, Add, Multiply, Scale, Oscillator, Merge, Split,
 	describe("Tone.Signal", function(){
 		this.timeout(1000);
 
+		it("can be created and disposed", function(){
+			var s = new Signal();
+			s.dispose();
+		});
 
 		it("can start with a value initially", function(){
 			var signal = new Signal(100);
@@ -105,6 +109,12 @@ function(chai, Recorder, Signal, Add, Multiply, Scale, Oscillator, Merge, Split,
 	//ADD
 	describe("Tone.Add", function(){
 		this.timeout(500);
+
+		it("can be created and disposed", function(){
+			var a = new Add(1);
+			a.dispose();
+		});
+
 		it("correctly sums a signal and a number", function(done){
 			var signal = new Signal(0);
 			var adder = new Add(3);
@@ -142,6 +152,12 @@ function(chai, Recorder, Signal, Add, Multiply, Scale, Oscillator, Merge, Split,
 	//MULTIPLY
 	describe("Tone.Multiply", function(){
 		this.timeout(500);
+
+		it("can be created and disposed", function(){
+			var m = new Multiply(1);
+			m.dispose();
+		});
+
 		it("correctly multiplys a signal and a scalar", function(done){
 			var signal = new Signal(2);
 			var mult = new Multiply(10);
@@ -163,6 +179,12 @@ function(chai, Recorder, Signal, Add, Multiply, Scale, Oscillator, Merge, Split,
 	//SCALE
 	describe("Tone.Scale", function(){
 		this.timeout(500);
+
+		it("can be created and disposed", function(){
+			var s = new Scale(0, 10);
+			s.dispose();
+		});
+
 		it("scales an input range to an output range", function(done){
 			//make an oscillator to drive the signal
 			var osc = new Oscillator(1000);
@@ -186,6 +208,12 @@ function(chai, Recorder, Signal, Add, Multiply, Scale, Oscillator, Merge, Split,
 	//MERGE
 	describe("Tone.Merge", function(){
 		this.timeout(500);
+
+		it("can be created and disposed", function(){
+			var mer = new Merge();
+			mer.dispose();
+		});
+
 		it("merge two signal into one stereo signal", function(done){
 			//make an oscillator to drive the signal
 			var sigL = new Signal(1);
@@ -213,6 +241,12 @@ function(chai, Recorder, Signal, Add, Multiply, Scale, Oscillator, Merge, Split,
 	//SCALE
 	describe("Tone.Split", function(){
 		this.timeout(500);
+
+		it("can be created and disposed", function(){
+			var split = new Split();
+			split.dispose();
+		});
+
 		it("merges two signal into one stereo signal and then split them back into two signals", function(done){
 			//make an oscillator to drive the signal
 			var sigL = new Signal(1);

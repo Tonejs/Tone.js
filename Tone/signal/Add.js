@@ -31,5 +31,17 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 		this._value.setValue(value);
 	}; 
 
+	/**
+	 *  dispose method
+	 */
+	Tone.Add.prototype.dispose = function(){
+		this._value.dispose();
+		this.input.disconnect();
+		this.output.disconnect();
+		this._value = null;
+		this.input = null;
+		this.output = null;
+	}; 
+
 	return Tone.Add;
 });
