@@ -33,7 +33,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Scale"], function(T
 		 *  
 		 *  @type {GainNode}
 		 */
-		this.wetness = new Tone.Signal(0);
+		this.wetness = new Tone.Signal(initialDry);
 		/**
 		 *  invert the incoming signal
 		 *  @private
@@ -48,6 +48,9 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Scale"], function(T
 		this.chain(this.wetness, this._invert, this.wet.gain);
 		//dry control
 		this.chain(this.wetness, this.dry.gain);
+
+		this.dry.gain.value = 0;
+		this.wet.gain.value = 0;
 	};
 
 	Tone.extend(Tone.DryWet);
@@ -60,7 +63,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Scale"], function(T
 	 */
 	Tone.DryWet.prototype.setDry = function(val, rampTime){
 		rampTime = this.defaultArg(rampTime, 0);
-		this.wetness.linearRampToValueAtTime(val, this.toSeconds(rampTime));
+		this.wetness.linearRampToValueAtTime(this.equalPowerScale(val), this.toSeconds(rampTime));
 	};
 
 	/**

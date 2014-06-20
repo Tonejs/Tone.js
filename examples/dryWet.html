@@ -14,11 +14,10 @@
 	<input type='range' value='50'>
 	<div id='dry'>0</div>
 	<div id='wet'>0</div>
-	<div id='mix'>0</div>
 	<script type="text/javascript">
 
 		//dry wet knob
-		var dryWet = new Tone.DryWet();
+		var dryWet = new Tone.DryWet(0.5);
 
 		//input signals
 		var sine = new Tone.Oscillator(440, "sine");
@@ -32,12 +31,10 @@
 		//meters
 		var dryMeter = new Tone.Meter();
 		var wetMeter = new Tone.Meter();
-		var outputMeter = new Tone.Meter();
 
 		//meter the outputs
 		dryWet.dry.connect(dryMeter);
 		dryWet.wet.connect(wetMeter);
-		dryWet.connect(outputMeter);
 
 
 		//INTERFACE//
@@ -49,7 +46,6 @@
 		setInterval(function(){
 			dry.textContent = "dry: " + dryMeter.getDb().toFixed(2) + " db";
 			wet.textContent = "wet: " + wetMeter.getDb().toFixed(2) + " db";
-			output.textContent = "mix: " + outputMeter.getDb().toFixed(2) + " db";
 		}, 100);
 
 		var range = document.querySelector("input");
