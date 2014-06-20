@@ -76,5 +76,6 @@ module.exports = function(grunt) {
   	// Default task(s).
   	grunt.registerTask('src', ['jsdoc:src']);
   	grunt.registerTask('dist', ['concat:dist','requirejs:compile','concat:removeRequireString','clean:dist','jsdoc:dist']);
+  	grunt.registerTask('build', ['concat:dist','requirejs:compile','concat:removeRequireString','clean:dist']);
   	
 };
