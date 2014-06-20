@@ -223,15 +223,25 @@ define(["Tone/core/Tone"], function(Tone){
 	/**
 	 *  Sync this to another signal and it will always maintain the 
 	 *  ratio between the two signals until it is unsynced
+	 *
+	 *  Signals can only be synced to one other signal. while syncing, 
+	 *  if a signal's value is changed, the new ratio between the signals
+	 *  is maintained as the syncing signal is changed. 
 	 *  
 	 *  @param  {Tone.Signal} signal to sync to
+	 *  @param {number=} ratio optionally pass in the ratio between 
+	 *                         the two signals, otherwise it will be computed
 	 */
-	Tone.Signal.prototype.sync = function(signal){
-		//get the sync ratio
-		if (signal.getValue() !== 0){
-			this._syncRatio = this.getValue() / signal.getValue();
+	Tone.Signal.prototype.sync = function(signal, ratio){
+		if (ratio){
+			this._syncRatio = ratio;
 		} else {
-			this._syncRatio = 0;
+			//get the sync ratio
+			if (signal.getValue() !== 0){
+				this._syncRatio = this.getValue() / signal.getValue();
+			} else {
+				this._syncRatio = 0;
+			}
 		}
 		//make a new scalar which is not connected to the constant signal
 		this.scalar.disconnect();
@@ -260,8 +270,6 @@ define(["Tone/core/Tone"], function(Tone){
 
 	/**
 	 *  internal dispose method to tear down the node
-	 *  
-	 *  @override
 	 */
 	Tone.Signal.prototype.dispose = function(){
 		//disconnect everything
