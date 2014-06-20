@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Class: Oscillator</title>
+    <title>JSDoc: Class: Noise</title>
     
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">Class: Oscillator</h1>
+    <h1 class="page-title">Class: Noise</h1>
     
     
 
@@ -29,7 +29,7 @@
     <h2>
         <span class="ancestors"><a href="Tone.html">Tone</a>.</span>
     
-    Oscillator
+    Noise
     </h2>
     
 </header>  
@@ -41,7 +41,7 @@
     
         
 <dt>
-    <h4 class="name" id="Oscillator"><span class="type-signature"></span>new Oscillator<span class="signature">(freq, <span class="optional">type</span>)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="Noise"><span class="type-signature"></span>new Noise<span class="signature">(type)</span><span class="type-signature"></span></h4>
     
     
 </dt>
@@ -49,9 +49,9 @@
     
     
     <div class="description">
-        Oscillator
+        Noise generator. 
 
- Oscilator with start, pause, stop and sync to Transport
+ uses looped noise buffers to save on performance.
     </div>
     
 
@@ -73,8 +73,6 @@
 		<th>Type</th>
 		
 		
-		<th>Argument</th>
-		
 		
 		
 		
@@ -83,40 +81,6 @@
 	</thead>
 	
 	<tbody>
-	
-	
-        <tr>
-            
-                <td class="name"><code>freq</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-|
-
-<span class="param-type">string</span>
-
-
-            
-            </td>
-            
-            
-                <td class="attributes">
-                
-                    
-                
-                    
-                
-                </td>
-            
-            
-            
-            
-            <td class="description last">starting frequency</td>
-        </tr>
-	
 	
 	
         <tr>
@@ -134,20 +98,10 @@
             </td>
             
             
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-                    
-                
-                    
-                
-                </td>
             
             
             
-            
-            <td class="description last">type of oscillator (sine|square|triangle|sawtooth)</td>
+            <td class="description last">the noise type (white|pink|brown)</td>
         </tr>
 	
 	
@@ -178,7 +132,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#line2186">line 2186</a>
+        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#line3745">line 3745</a>
     </li></ul></dd>
     
     
@@ -226,6 +180,130 @@
         <h3 class="subsection-title">Members</h3>
         
         <dl>
+            
+<dt>
+    <h4 class="name" id="_buffer"><span class="type-signature">&lt;private> </span>_buffer<span class="type-signature"> :AudioBuffer</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        the buffer
+    </div>
+    
+    
+    
+        <h5>Type:</h5>
+        <ul>
+            <li>
+                
+<span class="param-type">AudioBuffer</span>
+
+
+            </li>
+        </ul>
+    
+
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#line3760">line 3760</a>
+    </li></ul></dd>
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="_source"><span class="type-signature">&lt;private> </span>_source<span class="type-signature"> :AudioBufferSourceNode</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    
+        <h5>Type:</h5>
+        <ul>
+            <li>
+                
+<span class="param-type">AudioBufferSourceNode</span>
+
+
+            </li>
+        </ul>
+    
+
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#line3753">line 3753</a>
+    </li></ul></dd>
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+</dd>
+
+        
             
 <dt>
     <h4 class="name" id="bufferSize"><span class="type-signature"></span>bufferSize<span class="type-signature"> :number</span></h4>
@@ -349,70 +427,6 @@
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#line125">line 125</a>
-    </li></ul></dd>
-    
-    
-    
-    
-    
-    
-    
-</dl>
-
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <h4 class="name" id="frequency"><span class="type-signature"></span>frequency<span class="type-signature"> :<a href="Tone.Signal.html">Tone.Signal</a></span></h4>
-    
-    
-</dt>
-<dd>
-    
-    <div class="description">
-        the frequency control signal
-    </div>
-    
-    
-    
-        <h5>Type:</h5>
-        <ul>
-            <li>
-                
-<span class="param-type"><a href="Tone.Signal.html">Tone.Signal</a></span>
-
-
-            </li>
-        </ul>
-    
-
-    
-<dl class="details">
-    
-        
-    
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#line2198">line 2198</a>
     </li></ul></dd>
     
     
@@ -683,70 +697,6 @@
         
             
 <dt>
-    <h4 class="name" id="oscillator"><span class="type-signature"></span>oscillator<span class="type-signature"> :OscillatorNode</span></h4>
-    
-    
-</dt>
-<dd>
-    
-    <div class="description">
-        the main oscillator
-    </div>
-    
-    
-    
-        <h5>Type:</h5>
-        <ul>
-            <li>
-                
-<span class="param-type">OscillatorNode</span>
-
-
-            </li>
-        </ul>
-    
-
-    
-<dl class="details">
-    
-        
-    
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#line2193">line 2193</a>
-    </li></ul></dd>
-    
-    
-    
-    
-    
-    
-    
-</dl>
-
-    
-    
-</dd>
-
-        
-            
-<dt>
     <h4 class="name" id="output"><span class="type-signature"></span>output<span class="type-signature"> :GainNode</span></h4>
     
     
@@ -964,7 +914,7 @@
     
     
     <div class="description">
-        internal on end call
+        internal call when the buffer is done playing
     </div>
     
 
@@ -997,7 +947,241 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#line2305">line 2305</a>
+        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#line3864">line 3864</a>
+    </li></ul></dd>
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="_start"><span class="type-signature">&lt;private> </span>_start<span class="signature">(time)</span><span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        internal start method
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>time</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Tone.Time</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last"></td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#line3810">line 3810</a>
+    </li></ul></dd>
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="_stop"><span class="type-signature">&lt;private> </span>_stop<span class="signature">(time)</span><span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        internal stop method
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>time</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Tone.Time</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last"></td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#line3838">line 3838</a>
     </li></ul></dd>
     
     
@@ -1671,7 +1855,7 @@
     
     
     <div class="description">
-        dispose and disconnect
+        dispose all the components
     </div>
     
 
@@ -1704,7 +1888,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#line2313">line 2313</a>
+        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#line3872">line 3872</a>
     </li></ul></dd>
     
     
@@ -3347,6 +3531,10 @@
 <dd>
     
     
+    <div class="description">
+        set a callback function to invoke when the sample is over
+    </div>
+    
 
     
     
@@ -3377,7 +3565,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#line2203">line 2203</a>
+        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#line3767">line 3767</a>
     </li></ul></dd>
     
     
@@ -4088,7 +4276,7 @@
         
             
 <dt>
-    <h4 class="name" id="setFrequency"><span class="type-signature"></span>setFrequency<span class="signature">(val, <span class="optional">rampTime</span>)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="setType"><span class="type-signature"></span>setType<span class="signature">(type, time)</span><span class="type-signature"></span></h4>
     
     
 </dt>
@@ -4096,167 +4284,7 @@
     
     
     <div class="description">
-        exponentially ramp the frequency of the oscillator over the rampTime
-    </div>
-    
-
-    
-    
-    
-    
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params">
-    <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-		
-		<th>Type</th>
-		
-		
-		<th>Argument</th>
-		
-		
-		
-		
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-	
-	<tbody>
-	
-	
-        <tr>
-            
-                <td class="name"><code>val</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">Tone.Time</span>
-
-
-            
-            </td>
-            
-            
-                <td class="attributes">
-                
-                    
-                
-                    
-                
-                </td>
-            
-            
-            
-            
-            <td class="description last"></td>
-        </tr>
-	
-	
-	
-        <tr>
-            
-                <td class="name"><code>rampTime</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">Tone.Time</span>
-
-
-            
-            </td>
-            
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-                    
-                
-                    
-                
-                </td>
-            
-            
-            
-            
-            <td class="description last">when the oscillator will arrive at the frequency</td>
-        </tr>
-	
-	
-	</tbody>
-</table>
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#line2284">line 2284</a>
-    </li></ul></dd>
-    
-    
-    
-    
-    
-    
-    
-</dl>
-
-    
-    
-
-    
-
-    
-    
-    
-    
-    
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <h4 class="name" id="setType"><span class="type-signature"></span>setType<span class="signature">(type)</span><span class="type-signature"></span></h4>
-    
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        set the oscillator type
+        set the noise type
     </div>
     
 
@@ -4306,7 +4334,30 @@
             
             
             
-            <td class="description last">(sine|square|triangle|sawtooth)</td>
+            <td class="description last">the noise type (white|pink|brown)</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>time</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Tone.Time</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">(optional) time that the set will occur</td>
         </tr>
 	
 	
@@ -4337,7 +4388,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#line2297">line 2297</a>
+        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#line3780">line 3780</a>
     </li></ul></dd>
     
     
@@ -4491,7 +4542,7 @@
     
     
     <div class="description">
-        start the oscillator
+        start the noise at a specific time
     </div>
     
 
@@ -4572,7 +4623,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#line2218">line 2218</a>
+        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#line3824">line 3824</a>
     </li></ul></dd>
     
     
@@ -4600,7 +4651,7 @@
         
             
 <dt>
-    <h4 class="name" id="stop"><span class="type-signature"></span>stop<span class="signature">(<span class="optional">time</span>)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="stop"><span class="type-signature"></span>stop<span class="signature">(time)</span><span class="type-signature"></span></h4>
     
     
 </dt>
@@ -4608,7 +4659,7 @@
     
     
     <div class="description">
-        stop the oscillator
+        stop the noise at a specific time
     </div>
     
 
@@ -4629,8 +4680,6 @@
 		
 		<th>Type</th>
 		
-		
-		<th>Argument</th>
 		
 		
 		
@@ -4657,20 +4706,10 @@
             </td>
             
             
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-                    
-                
-                    
-                
-                </td>
             
             
             
-            
-            <td class="description last">(optional) timing parameter</td>
+            <td class="description last"></td>
         </tr>
 	
 	
@@ -4701,7 +4740,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#line2242">line 2242</a>
+        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#line3848">line 3848</a>
     </li></ul></dd>
     
     
@@ -4737,13 +4776,7 @@
     
     
     <div class="description">
-        Sync the oscillator to the transport
-
- the current ratio between the oscillator and the Transport BPM
- is fixed and any change to the Transport BPM will change this
- oscillator in that same ratio
-
- Transport start/pause/stop will also start/pause/stop the oscillator
+        sync the source to the Transport
     </div>
     
 
@@ -4762,6 +4795,11 @@
     
 
     
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Tone.Source.html#sync">Tone.Source#sync</a>
+    </li></dd>
+    
     
     
     
@@ -4776,7 +4814,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#line2260">line 2260</a>
+        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#line2125">line 2125</a>
     </li></ul></dd>
     
     
@@ -5973,7 +6011,7 @@
     
     
     <div class="description">
-        unsync the oscillator from the Transport
+        unsync the source to the Transport
     </div>
     
 
@@ -5992,6 +6030,11 @@
     
 
     
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Tone.Source.html#unsync">Tone.Source#unsync</a>
+    </li></dd>
+    
     
     
     
@@ -6006,7 +6049,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#line2271">line 2271</a>
+        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#line2135">line 2135</a>
     </li></ul></dd>
     
     

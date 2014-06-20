@@ -457,6 +457,8 @@ define('Tone/signal/Signal',["Tone/core/Tone"], function(Tone){
 
 		//set the default value
 		this.setValue(this.defaultArg(value, 0));
+
+		this.output.noGC();
 	};
 
 	Tone.extend(Tone.Signal);
@@ -609,15 +611,25 @@ define('Tone/signal/Signal',["Tone/core/Tone"], function(Tone){
 	/**
 	 *  Sync this to another signal and it will always maintain the 
 	 *  ratio between the two signals until it is unsynced
+	 *
+	 *  Signals can only be synced to one other signal. while syncing, 
+	 *  if a signal's value is changed, the new ratio between the signals
+	 *  is maintained as the syncing signal is changed. 
 	 *  
 	 *  @param  {Tone.Signal} signal to sync to
+	 *  @param {number=} ratio optionally pass in the ratio between 
+	 *                         the two signals, otherwise it will be computed
 	 */
-	Tone.Signal.prototype.sync = function(signal){
-		//get the sync ratio
-		if (signal.getValue() !== 0){
-			this._syncRatio = this.getValue() / signal.getValue();
+	Tone.Signal.prototype.sync = function(signal, ratio){
+		if (ratio){
+			this._syncRatio = ratio;
 		} else {
-			this._syncRatio = 0;
+			//get the sync ratio
+			if (signal.getValue() !== 0){
+				this._syncRatio = this.getValue() / signal.getValue();
+			} else {
+				this._syncRatio = 0;
+			}
 		}
 		//make a new scalar which is not connected to the constant signal
 		this.scalar.disconnect();
@@ -646,8 +658,6 @@ define('Tone/signal/Signal',["Tone/core/Tone"], function(Tone){
 
 	/**
 	 *  internal dispose method to tear down the node
-	 *  
-	 *  @override
 	 */
 	Tone.Signal.prototype.dispose = function(){
 		//disconnect everything
@@ -916,7 +926,7 @@ define('Tone/component/DryWet',["Tone/core/Tone", "Tone/signal/Signal", "Tone/si
 		 *  
 		 *  @type {GainNode}
 		 */
-		this.wetness = new Tone.Signal(0);
+		this.wetness = new Tone.Signal(initialDry);
 		/**
 		 *  invert the incoming signal
 		 *  @private
@@ -931,6 +941,9 @@ define('Tone/component/DryWet',["Tone/core/Tone", "Tone/signal/Signal", "Tone/si
 		this.chain(this.wetness, this._invert, this.wet.gain);
 		//dry control
 		this.chain(this.wetness, this.dry.gain);
+
+		this.dry.gain.value = 0;
+		this.wet.gain.value = 0;
 	};
 
 	Tone.extend(Tone.DryWet);
@@ -943,7 +956,7 @@ define('Tone/component/DryWet',["Tone/core/Tone", "Tone/signal/Signal", "Tone/si
 	 */
 	Tone.DryWet.prototype.setDry = function(val, rampTime){
 		rampTime = this.defaultArg(rampTime, 0);
-		this.wetness.linearRampToValueAtTime(val, this.toSeconds(rampTime));
+		this.wetness.linearRampToValueAtTime(this.equalPowerScale(val), this.toSeconds(rampTime));
 	};
 
 	/**
@@ -979,7 +992,7 @@ define('Tone/component/Envelope',["Tone/core/Tone", "Tone/signal/Signal"], funct
 
 	/**
 	 *  Envelope 
-	 *  ADR envelope generator attaches to an AudioParam
+	 *  ADR envelope generator attaches to an AudioParam or AudioNode
 	 *
 	 *  @constructor
 	 *  @extends {Tone}
@@ -994,16 +1007,21 @@ define('Tone/component/Envelope',["Tone/core/Tone", "Tone/signal/Signal"], funct
 		//extend Unit
 		Tone.call(this);
 
-		//set the parameters
+		/** @type {number} */
 		this.attack = this.defaultArg(attack, 0.01);
+		/** @type {number} */
 		this.decay = this.defaultArg(decay, 0.1);
+		/** @type {number} */
 		this.release = this.defaultArg(release, 1);
+		/** @type {number} */
 		this.sustain = this.defaultArg(sustain, 0.5);
 
+		/** @type {number} */
 		this.min = this.defaultArg(minOutput, 0);
+		/** @type {number} */
 		this.max = this.defaultArg(maxOutput, 1);
 		
-		//the control signal
+		/** @type {Tone.Signal} */
 		this.control = new Tone.Signal(this.min);
 
 		//connections
@@ -1036,7 +1054,7 @@ define('Tone/component/Envelope',["Tone/core/Tone", "Tone/signal/Signal"], funct
 	 * attack->decay->sustain exponential ramp
 	 * @param  {Tone.Time} time
 	 */
-	Tone.Envelope.prototype.triggerAttackExp = function(time){
+	Tone.Envelope.prototype.triggerExponentialAttack = function(time){
 		var startVal = this.min;
 		if (!time){
 			startVal = this.control.getValue();
@@ -1073,7 +1091,7 @@ define('Tone/component/Envelope',["Tone/core/Tone", "Tone/signal/Signal"], funct
 	 * 
 	 * @param  {Tone.Time} time
 	 */
-	Tone.Envelope.prototype.triggerReleaseExp = function(time){
+	Tone.Envelope.prototype.triggerExponentialRelease = function(time){
 		var startVal = this.control.getValue();
 		if (time){
 			startVal = (this.max - this.min) * this.sustain + this.min;
@@ -1104,6 +1122,14 @@ define('Tone/component/Envelope',["Tone/core/Tone", "Tone/signal/Signal"], funct
 			param.value = 0;
 		} 
 		this._connect(param);
+	};
+
+	/**
+	 *  disconnect and dispose
+	 */
+	Tone.Envelope.prototype.dispose = function(){
+		this.control.dispose();
+		this.control = null;
 	};
 
 	return Tone.Envelope;
@@ -2194,7 +2220,7 @@ function(Tone){
 			this.state = Tone.Source.State.STARTED;
 			//get previous values
 			var type = this.oscillator.type;
-			var detune = this.oscillator.frequency.value;
+			var detune = this.oscillator.detune.value;
 			//new oscillator with previous values
 			this.oscillator = this.context.createOscillator();
 			this.oscillator.type = type;
@@ -2313,7 +2339,6 @@ define('Tone/component/LFO',["Tone/core/Tone", "Tone/source/Oscillator", "Tone/s
 	 *  @param {number=} outputMax
 	 */
 	Tone.LFO = function(rate, outputMin, outputMax){
-
 		Tone.call(this);
 
 		/** @type {Tone.Oscillator} */
@@ -2411,6 +2436,18 @@ define('Tone/component/LFO',["Tone/core/Tone", "Tone/source/Oscillator", "Tone/s
 			param.value = 0;
 		} 
 		this._connect(param);
+	};
+
+	/**
+	 *  disconnect and dispose
+	 */
+	Tone.LFO.prototype.dispose = function(){
+		this.oscillator.dispose();
+		this.output.disconnect();
+		this.scaler.dispose();
+		this.oscillator = null;
+		this.output = null;
+		this.scaler = null;
 	};
 
 	return Tone.LFO;
@@ -2571,62 +2608,6 @@ define('Tone/component/Meter',["Tone/core/Tone", "Tone/core/Master"], function(T
 
 	return Tone.Meter;
 });
-define('Tone/signal/Merge',["Tone/core/Tone"], function(Tone){
-
-	/**
-	 *  merge a left and a right channel into a single stereo channel
-	 *
-	 *  instead of connecting to the input, connect to either the left, or right input
-	 *
-	 *  default input for connect is left input
-	 *
-	 *  @constructor
-	 *  @extends {Tone}
-	 */
-	Tone.Merge = function(){
-
-		Tone.call(this);
-
-		/**
-		 *  the left input channel
-		 *  also an alias for the input
-		 *  @type {GainNode}
-		 */
-		this.left = this.input;
-		/**
-		 *  the right input channel
-		 *  @type {GainNode}
-		 */
-		this.right = this.context.createGain();
-		/**
-		 *  the merger node for the two channels
-		 *  @type {ChannelMergerNode}
-		 */
-		this.merger = this.context.createChannelMerger(2);
-
-		//connections
-		this.left.connect(this.merger, 0, 0);
-		this.right.connect(this.merger, 0, 1);
-		this.merger.connect(this.output);
-	};
-
-	Tone.extend(Tone.Merge);
-
-	/**
-	 *  clean up
-	 */
-	Tone.Merge.prototype.dispose = function(){
-		this.input.disconnect();
-		this.right.disconnect();
-		this.merger.disconnect();
-		this.input = null;
-		this.right = null;
-		this.merger = null;
-	}; 
-
-	return Tone.Merge;
-});
-
 ///////////////////////////////////////////////////////////////////////////////
 //
 //  PANNER
@@ -2636,47 +2617,23 @@ define('Tone/signal/Merge',["Tone/core/Tone"], function(Tone){
 //	1 = 100% Right
 ///////////////////////////////////////////////////////////////////////////////
 
-define('Tone/component/Panner',["Tone/core/Tone", "Tone/signal/Merge", "Tone/signal/Signal", "Tone/signal/Scale"], 
+define('Tone/component/Panner',["Tone/core/Tone", "Tone/component/DryWet"], 
 function(Tone){
 
+	/**
+	 *  a panner is just a dry/wet knob
+	 */
 	Tone.Panner = function(){
-		Tone.call(this);
-
-		//components
-		//incoming signal is sent to left and right
-		this.left = this.context.createGain();
-		this.right = this.context.createGain();
-		this.control = new Tone.Signal();
-		this.merge = new Tone.Merge();
-		this.invert = new Tone.Scale(1, 0);
-		this.normal = new Tone.Scale(0, 1);
-
-		//connections
-		this.chain(this.input, this.left, this.merge.left);
-		this.chain(this.input, this.right, this.merge.right);
-		this.merge.connect(this.output);
-		//left channel control
-		this.chain(this.control, this.invert, this.left.gain);
-		//right channel control
-		this.chain(this.control, this.normal, this.right.gain);
-
-
-		//setup
-		this.left.gain.value = 0;
-		this.right.gain.value = 0;
-		this.setPan(.5);
+		Tone.DryWet.call(this);
+		this.setPan(0.5);
 	};
 
-	Tone.extend(Tone.Panner);
+	Tone.extend(Tone.Panner, Tone.DryWet);
 
-	Tone.Panner.prototype.setPan = function(val, rampTime){
-		rampTime = this.defaultArg(rampTime, 0);
-		//put val into -1 to 1 range
-		this.control.linearRampToValueAtTime(val, rampTime);
-	};
+	Tone.Panner.prototype.setPan = Tone.Panner.prototype.setDry;
 
 	return Tone.Panner;
-});;
+});
 define('Tone/component/Recorder',["Tone/core/Tone", "Tone/core/Master"], function(Tone){
 
 	/**
@@ -3524,6 +3481,62 @@ define('Tone/signal/BitCrusher',["Tone/core/Tone"], function(Tone){
 
 	return Tone.BitCrusher;
 });
+define('Tone/signal/Merge',["Tone/core/Tone"], function(Tone){
+
+	/**
+	 *  merge a left and a right channel into a single stereo channel
+	 *
+	 *  instead of connecting to the input, connect to either the left, or right input
+	 *
+	 *  default input for connect is left input
+	 *
+	 *  @constructor
+	 *  @extends {Tone}
+	 */
+	Tone.Merge = function(){
+
+		Tone.call(this);
+
+		/**
+		 *  the left input channel
+		 *  also an alias for the input
+		 *  @type {GainNode}
+		 */
+		this.left = this.input;
+		/**
+		 *  the right input channel
+		 *  @type {GainNode}
+		 */
+		this.right = this.context.createGain();
+		/**
+		 *  the merger node for the two channels
+		 *  @type {ChannelMergerNode}
+		 */
+		this.merger = this.context.createChannelMerger(2);
+
+		//connections
+		this.left.connect(this.merger, 0, 0);
+		this.right.connect(this.merger, 0, 1);
+		this.merger.connect(this.output);
+	};
+
+	Tone.extend(Tone.Merge);
+
+	/**
+	 *  clean up
+	 */
+	Tone.Merge.prototype.dispose = function(){
+		this.input.disconnect();
+		this.right.disconnect();
+		this.merger.disconnect();
+		this.input = null;
+		this.right = null;
+		this.merger = null;
+	}; 
+
+	return Tone.Merge;
+});
+
 define('Tone/signal/Split',["Tone/core/Tone"], function(Tone){
 
 	/**
@@ -3791,7 +3804,7 @@ define('Tone/source/Noise',["Tone/core/Tone", "Tone/source/Source"], function(To
 	/**
 	 *  internal start method
 	 *  
-	 *  @type {Tone.Time} time
+	 *  @param {Tone.Time} time
 	 *  @private
 	 */
 	Tone.Noise.prototype._start = function(time){		
@@ -3806,7 +3819,7 @@ define('Tone/source/Noise',["Tone/core/Tone", "Tone/source/Source"], function(To
 	/**
 	 *  start the noise at a specific time
 	 *  
-	 *  @type {Tone.Time} time
+	 *  @param {Tone.Time} time
 	 */
 	Tone.Noise.prototype.start = function(time){
 		if (this.state === Tone.Source.State.STOPPED){
@@ -3819,7 +3832,7 @@ define('Tone/source/Noise',["Tone/core/Tone", "Tone/source/Source"], function(To
 	/**
 	 *  internal stop method
 	 *  
-	 *  @type {Tone.Time} time
+	 *  @param {Tone.Time} time
 	 *  @private
 	 */
 	Tone.Noise.prototype._stop = function(time){
@@ -3830,7 +3843,7 @@ define('Tone/source/Noise',["Tone/core/Tone", "Tone/source/Source"], function(To
 	/**
 	 *  stop the noise at a specific time
 	 *  
-	 *  @type {Tone.Time} time
+	 *  @param {Tone.Time} time
 	 */
 	Tone.Noise.prototype.stop = function(time){
 		if (this.state === Tone.Source.State.STARTED) {

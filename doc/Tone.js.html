@@ -296,11 +296,9 @@ define("Tone/core/Tone", [], function(){
 	/**
 	 *  a dispose method 
 	 *  
-	 *  should be overridden by child classes
+	 *  @abstract
 	 */
-	Tone.prototype.dispose = function(){
-		this.output.disconnect();
-	};
+	Tone.prototype.dispose = function(){};
 
 
 	///////////////////////////////////////////////////////////////////////////
@@ -486,6 +484,8 @@ define('Tone/signal/Signal',["Tone/core/Tone"], function(Tone){
 
 		//set the default value
 		this.setValue(this.defaultArg(value, 0));
+
+		this.output.noGC();
 	};
 
 	Tone.extend(Tone.Signal);
@@ -638,15 +638,25 @@ define('Tone/signal/Signal',["Tone/core/Tone"], function(Tone){
 	/**
 	 *  Sync this to another signal and it will always maintain the 
 	 *  ratio between the two signals until it is unsynced
+	 *
+	 *  Signals can only be synced to one other signal. while syncing, 
+	 *  if a signal's value is changed, the new ratio between the signals
+	 *  is maintained as the syncing signal is changed. 
 	 *  
 	 *  @param  {Tone.Signal} signal to sync to
+	 *  @param {number=} ratio optionally pass in the ratio between 
+	 *                         the two signals, otherwise it will be computed
 	 */
-	Tone.Signal.prototype.sync = function(signal){
-		//get the sync ratio
-		if (signal.getValue() !== 0){
-			this._syncRatio = this.getValue() / signal.getValue();
+	Tone.Signal.prototype.sync = function(signal, ratio){
+		if (ratio){
+			this._syncRatio = ratio;
 		} else {
-			this._syncRatio = 0;
+			//get the sync ratio
+			if (signal.getValue() !== 0){
+				this._syncRatio = this.getValue() / signal.getValue();
+			} else {
+				this._syncRatio = 0;
+			}
 		}
 		//make a new scalar which is not connected to the constant signal
 		this.scalar.disconnect();
@@ -675,8 +685,6 @@ define('Tone/signal/Signal',["Tone/core/Tone"], function(Tone){
 
 	/**
 	 *  internal dispose method to tear down the node
-	 *  
-	 *  @override
 	 */
 	Tone.Signal.prototype.dispose = function(){
 		//disconnect everything
@@ -721,6 +729,18 @@ define('Tone/signal/Add',["Tone/core/Tone", "Tone/signal/Signal"], function(Tone
 		this._value.setValue(value);
 	}; 
 
+	/**
+	 *  dispose method
+	 */
+	Tone.Add.prototype.dispose = function(){
+		this._value.dispose();
+		this.input.disconnect();
+		this.output.disconnect();
+		this._value = null;
+		this.input = null;
+		this.output = null;
+	}; 
+
 	return Tone.Add;
 });
 define('Tone/signal/Multiply',["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
@@ -757,6 +777,14 @@ define('Tone/signal/Multiply',["Tone/core/Tone", "Tone/signal/Signal"], function
 	Tone.Multiply.prototype.setValue = function(value){
 		this.input.gain.value = value;
 	};
+
+	/**
+	 *  clean up
+	 */
+	Tone.Multiply.prototype.dispose = function(){
+		this.input.disconnect();
+		this.input = null;
+	}; 
 
 	return Tone.Multiply;
 });
@@ -870,6 +898,23 @@ define('Tone/signal/Scale',["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Mu
 		this._setScalingParameters();
 	};
 
+	/**
+	 *  clean up
+	 */
+	Tone.Scale.prototype.dispose = function(){
+		this.input.disconnect();
+		this.output.disconnect();
+		this._plusInput.dispose();
+		this._plusOutput.dispose();
+		this._scale.dispose();
+		this.input = null;
+		this.output = null;
+		this._plusInput = null;
+		this._plusOutput = null;
+		this._scale = null;
+	}; 
+
+
 	return Tone.Scale;
 });
 
@@ -879,8 +924,8 @@ define('Tone/component/DryWet',["Tone/core/Tone", "Tone/signal/Signal", "Tone/si
 	 * DRY/WET KNOB
 	 * 
 	 * equal power fading control values:
-	 * 	0 = 100% dry
-	 * 	1 = 100% wet
+	 * 	0 = 100% dry  -    0% wet
+	 * 	1 =   0% dry  -  100% wet
 	 *
 	 * @constructor
 	 * @param {number} initialDry
@@ -888,49 +933,83 @@ define('Tone/component/DryWet',["Tone/core/Tone", "Tone/signal/Signal", "Tone/si
 	Tone.DryWet = function(initialDry){
 		Tone.call(this);
 
-		//components
-		this.dry = this.context.createGain();
+		/**
+		 *  connect this input to the dry signal
+		 *  the dry signal is also the default input
+		 *  
+		 *  @type {GainNode}
+		 */
+		this.dry = this.input;
+
+		/**
+		 *  connect this input to the wet signal
+		 *  
+		 *  @type {GainNode}
+		 */
 		this.wet = this.context.createGain();
-		//control signal
-		this.control = new Tone.Signal();
-		this.invert = new Tone.Scale(1, 0);
-		this.normal = new Tone.Scale(0, 1);
+		/**
+		 *  controls the amount of wet signal 
+		 *  which is mixed into the dry signal
+		 *  
+		 *  @type {GainNode}
+		 */
+		this.wetness = new Tone.Signal(initialDry);
+		/**
+		 *  invert the incoming signal
+		 *  @private
+		 *  @type {Tone}
+		 */
+		this._invert = new Tone.Scale(0, 1, 1, 0);
 
 		//connections
 		this.dry.connect(this.output);
 		this.wet.connect(this.output);
 		//wet control
-		this.chain(this.control, this.invert, this.wet.gain);
+		this.chain(this.wetness, this._invert, this.wet.gain);
 		//dry control
-		this.chain(this.control, this.normal, this.dry.gain);
+		this.chain(this.wetness, this.dry.gain);
 
-		//setup
 		this.dry.gain.value = 0;
 		this.wet.gain.value = 0;
-		this.setDry(0);
 	};
 
 	Tone.extend(Tone.DryWet);
 
 	/**
-	 * Set the dry value of the knob 
+	 * Set the dry value 
 	 * 
 	 * @param {number} val
 	 * @param {Tone.Time} rampTime
 	 */
 	Tone.DryWet.prototype.setDry = function(val, rampTime){
 		rampTime = this.defaultArg(rampTime, 0);
-		this.control.linearRampToValueAtTime(val*2 - 1, this.toSeconds(rampTime));
+		this.wetness.linearRampToValueAtTime(this.equalPowerScale(val), this.toSeconds(rampTime));
 	};
 
 	/**
-	 * Set the wet value of the knob 
+	 * Set the wet value
 	 * 
 	 * @param {number} val
 	 * @param {Tone.Time} rampTime
 	 */
 	Tone.DryWet.prototype.setWet = function(val, rampTime){
 		this.setDry(1-val, rampTime);
+	};
+
+	/**
+	 *  clean up
+	 */
+	Tone.DryWet.prototype.dispose = function(){
+		this.dry.disconnect();
+		this.wet.disconnect();
+		this.wetness.dispose();
+		this._invert.dispose();
+		this.output.disconnect();
+		this.dry = null;
+		this.wet = null;
+		this.wetness = null;
+		this._invert = null;
+		this.output = null;
 	};
 
 	return Tone.DryWet;
@@ -940,7 +1019,7 @@ define('Tone/component/Envelope',["Tone/core/Tone", "Tone/signal/Signal"], funct
 
 	/**
 	 *  Envelope 
-	 *  ADR envelope generator attaches to an AudioParam
+	 *  ADR envelope generator attaches to an AudioParam or AudioNode
 	 *
 	 *  @constructor
 	 *  @extends {Tone}
@@ -955,16 +1034,21 @@ define('Tone/component/Envelope',["Tone/core/Tone", "Tone/signal/Signal"], funct
 		//extend Unit
 		Tone.call(this);
 
-		//set the parameters
+		/** @type {number} */
 		this.attack = this.defaultArg(attack, 0.01);
+		/** @type {number} */
 		this.decay = this.defaultArg(decay, 0.1);
+		/** @type {number} */
 		this.release = this.defaultArg(release, 1);
+		/** @type {number} */
 		this.sustain = this.defaultArg(sustain, 0.5);
 
+		/** @type {number} */
 		this.min = this.defaultArg(minOutput, 0);
+		/** @type {number} */
 		this.max = this.defaultArg(maxOutput, 1);
 		
-		//the control signal
+		/** @type {Tone.Signal} */
 		this.control = new Tone.Signal(this.min);
 
 		//connections
@@ -997,7 +1081,7 @@ define('Tone/component/Envelope',["Tone/core/Tone", "Tone/signal/Signal"], funct
 	 * attack->decay->sustain exponential ramp
 	 * @param  {Tone.Time} time
 	 */
-	Tone.Envelope.prototype.triggerAttackExp = function(time){
+	Tone.Envelope.prototype.triggerExponentialAttack = function(time){
 		var startVal = this.min;
 		if (!time){
 			startVal = this.control.getValue();
@@ -1034,7 +1118,7 @@ define('Tone/component/Envelope',["Tone/core/Tone", "Tone/signal/Signal"], funct
 	 * 
 	 * @param  {Tone.Time} time
 	 */
-	Tone.Envelope.prototype.triggerReleaseExp = function(time){
+	Tone.Envelope.prototype.triggerExponentialRelease = function(time){
 		var startVal = this.control.getValue();
 		if (time){
 			startVal = (this.max - this.min) * this.sustain + this.min;
@@ -1065,6 +1149,14 @@ define('Tone/component/Envelope',["Tone/core/Tone", "Tone/signal/Signal"], funct
 			param.value = 0;
 		} 
 		this._connect(param);
+	};
+
+	/**
+	 *  disconnect and dispose
+	 */
+	Tone.Envelope.prototype.dispose = function(){
+		this.control.dispose();
+		this.control = null;
 	};
 
 	return Tone.Envelope;
@@ -2099,7 +2191,6 @@ define('Tone/source/Source',["Tone/core/Tone", "Tone/core/Transport"], function(
 	Tone.Source.State = {
 		STARTED : "started",
 		PAUSED : "paused",
-		STOP_SCHEDULED : "stopScheduled",
 		STOPPED : "stopped",
 		SYNCED : "synced"
  	};
@@ -2156,7 +2247,7 @@ function(Tone){
 			this.state = Tone.Source.State.STARTED;
 			//get previous values
 			var type = this.oscillator.type;
-			var detune = this.oscillator.frequency.value;
+			var detune = this.oscillator.detune.value;
 			//new oscillator with previous values
 			this.oscillator = this.context.createOscillator();
 			this.oscillator.type = type;
@@ -2247,13 +2338,14 @@ function(Tone){
 	 *  dispose and disconnect
 	 */
 	Tone.Oscillator.prototype.dispose = function(){
-		this.output.disconnect();
-		if (this.state === Tone.Source.State.STARTED){
-			this.stop();
+		if (this.oscillator !== null){
 			this.oscillator.disconnect();
 			this.oscillator = null;
 		}
 		this.frequency.dispose();
+		this.frequency = null;
+		this.output.disconnect();
+		this.output = null;
 	};
 
 	return Tone.Oscillator;
@@ -2274,7 +2366,6 @@ define('Tone/component/LFO',["Tone/core/Tone", "Tone/source/Oscillator", "Tone/s
 	 *  @param {number=} outputMax
 	 */
 	Tone.LFO = function(rate, outputMin, outputMax){
-
 		Tone.call(this);
 
 		/** @type {Tone.Oscillator} */
@@ -2372,6 +2463,18 @@ define('Tone/component/LFO',["Tone/core/Tone", "Tone/source/Oscillator", "Tone/s
 			param.value = 0;
 		} 
 		this._connect(param);
+	};
+
+	/**
+	 *  disconnect and dispose
+	 */
+	Tone.LFO.prototype.dispose = function(){
+		this.oscillator.dispose();
+		this.output.disconnect();
+		this.scaler.dispose();
+		this.oscillator = null;
+		this.output = null;
+		this.scaler = null;
 	};
 
 	return Tone.LFO;
@@ -2532,50 +2635,6 @@ define('Tone/component/Meter',["Tone/core/Tone", "Tone/core/Master"], function(T
 
 	return Tone.Meter;
 });
-define('Tone/signal/Merge',["Tone/core/Tone"], function(Tone){
-
-	/**
-	 *  merge a left and a right channel into a single stereo channel
-	 *
-	 *  instead of connecting to the input, connect to either the left, or right input
-	 *
-	 *  default input for connect is left input
-	 *
-	 *  @constructor
-	 *  @extends {Tone}
-	 */
-	Tone.Merge = function(){
-
-		Tone.call(this);
-
-		/**
-		 *  the left input channel
-		 *  also an alias for the input
-		 *  @type {GainNode}
-		 */
-		this.left = this.input;
-		/**
-		 *  the right input channel
-		 *  @type {GainNode}
-		 */
-		this.right = this.context.createGain();
-		/**
-		 *  the merger node for the two channels
-		 *  @type {ChannelMergerNode}
-		 */
-		this.merger = this.context.createChannelMerger(2);
-
-		//connections
-		this.left.connect(this.merger, 0, 0);
-		this.right.connect(this.merger, 0, 1);
-		this.merger.connect(this.output);
-	};
-
-	Tone.extend(Tone.Merge);
-
-	return Tone.Merge;
-});
-
 ///////////////////////////////////////////////////////////////////////////////
 //
 //  PANNER
@@ -2585,47 +2644,23 @@ define('Tone/signal/Merge',["Tone/core/Tone"], function(Tone){
 //	1 = 100% Right
 ///////////////////////////////////////////////////////////////////////////////
 
-define('Tone/component/Panner',["Tone/core/Tone", "Tone/signal/Merge", "Tone/signal/Signal", "Tone/signal/Scale"], 
+define('Tone/component/Panner',["Tone/core/Tone", "Tone/component/DryWet"], 
 function(Tone){
 
+	/**
+	 *  a panner is just a dry/wet knob
+	 */
 	Tone.Panner = function(){
-		Tone.call(this);
-
-		//components
-		//incoming signal is sent to left and right
-		this.left = this.context.createGain();
-		this.right = this.context.createGain();
-		this.control = new Tone.Signal();
-		this.merge = new Tone.Merge();
-		this.invert = new Tone.Scale(1, 0);
-		this.normal = new Tone.Scale(0, 1);
-
-		//connections
-		this.chain(this.input, this.left, this.merge.left);
-		this.chain(this.input, this.right, this.merge.right);
-		this.merge.connect(this.output);
-		//left channel control
-		this.chain(this.control, this.invert, this.left.gain);
-		//right channel control
-		this.chain(this.control, this.normal, this.right.gain);
-
-
-		//setup
-		this.left.gain.value = 0;
-		this.right.gain.value = 0;
-		this.setPan(.5);
+		Tone.DryWet.call(this);
+		this.setPan(0.5);
 	};
 
-	Tone.extend(Tone.Panner);
+	Tone.extend(Tone.Panner, Tone.DryWet);
 
-	Tone.Panner.prototype.setPan = function(val, rampTime){
-		rampTime = this.defaultArg(rampTime, 0);
-		//put val into -1 to 1 range
-		this.control.linearRampToValueAtTime(val, rampTime);
-	};
+	Tone.Panner.prototype.setPan = Tone.Panner.prototype.setDry;
 
 	return Tone.Panner;
-});;
+});
 define('Tone/component/Recorder',["Tone/core/Tone", "Tone/core/Master"], function(Tone){
 
 	/**
@@ -3205,7 +3240,6 @@ define('Tone/source/Player',["Tone/core/Tone", "Tone/source/Source"], function(T
 			if (this._buffer){
 				this.state = Tone.Source.State.STARTED;
 				//default args
-				startTime = this.defaultArg(startTime, this.now());
 				offset = this.defaultArg(offset, 0);
 				duration = this.defaultArg(duration, this._buffer.duration - offset);
 				//make the source
@@ -3292,13 +3326,13 @@ define('Tone/source/Player',["Tone/core/Tone", "Tone/source/Source"], function(T
 	 *  dispose and disconnect
 	 */
 	Tone.Player.prototype.dispose = function(){
-		this.output.disconnect();
-		if (this.state === Tone.Source.State.STARTED){
-			this.stop();
+		if (this._source !== null){
 			this._source.disconnect();
 			this._source = null;
 		}
 		this._buffer = null;
+		this.output.disconnect();
+		this.output = null;
 	};
 
 	return Tone.Player;
@@ -3460,8 +3494,76 @@ define('Tone/signal/BitCrusher',["Tone/core/Tone"], function(Tone){
 		this._frequency = freq;
 	};
 
+	/**
+	 *  clean up
+	 */
+	Tone.BitCrusher.prototype.dispose = function(){
+		this.input.disconnect();
+		this.output.disconnect();
+		this._crusher.disconnect();
+		this.input = null;
+		this.output = null;
+		this._crusher = null;
+	}; 
+
 	return Tone.BitCrusher;
 });
+define('Tone/signal/Merge',["Tone/core/Tone"], function(Tone){
+
+	/**
+	 *  merge a left and a right channel into a single stereo channel
+	 *
+	 *  instead of connecting to the input, connect to either the left, or right input
+	 *
+	 *  default input for connect is left input
+	 *
+	 *  @constructor
+	 *  @extends {Tone}
+	 */
+	Tone.Merge = function(){
+
+		Tone.call(this);
+
+		/**
+		 *  the left input channel
+		 *  also an alias for the input
+		 *  @type {GainNode}
+		 */
+		this.left = this.input;
+		/**
+		 *  the right input channel
+		 *  @type {GainNode}
+		 */
+		this.right = this.context.createGain();
+		/**
+		 *  the merger node for the two channels
+		 *  @type {ChannelMergerNode}
+		 */
+		this.merger = this.context.createChannelMerger(2);
+
+		//connections
+		this.left.connect(this.merger, 0, 0);
+		this.right.connect(this.merger, 0, 1);
+		this.merger.connect(this.output);
+	};
+
+	Tone.extend(Tone.Merge);
+
+	/**
+	 *  clean up
+	 */
+	Tone.Merge.prototype.dispose = function(){
+		this.input.disconnect();
+		this.right.disconnect();
+		this.merger.disconnect();
+		this.input = null;
+		this.right = null;
+		this.merger = null;
+	}; 
+
+	return Tone.Merge;
+});
+
 define('Tone/signal/Split',["Tone/core/Tone"], function(Tone){
 
 	/**
@@ -3496,6 +3598,18 @@ define('Tone/signal/Split',["Tone/core/Tone"], function(Tone){
 	};
 
 	Tone.extend(Tone.Split);
+
+	/**
+	 *  dispose method
+	 */
+	Tone.Add.prototype.dispose = function(){
+		this._value.dispose();
+		this.input.disconnect();
+		this.output.disconnect();
+		this._value = null;
+		this.input = null;
+		this.output = null;
+	}; 
 
 	return Tone.Split;
 });
@@ -3620,100 +3734,254 @@ define('Tone/source/Microphone',["Tone/core/Tone", "Tone/source/Source"], functi
 		console.error(e);
 	};
 
+	/**
+	 *  clean up
+	 */
+	Tone.Microphone.prototype.dispose = function(e) {
+		this.input.disconnect();
+		this.output.disconnect();
+		this._stream.disconnect();
+		this._mediaStream.disconnect();
+		this.input = null;
+		this.output = null;
+		this._stream = null;
+		this._mediaStream = null;
+	};
+
 	//polyfill
 	navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || 
 		navigator.mozGetUserMedia || navigator.msGetUserMedia;
 
 	return Tone.Microphone;
 });
-///////////////////////////////////////////////////////////////////////////////
-//
-//  NOISE
-//
-///////////////////////////////////////////////////////////////////////////////
-define('Tone/source/Noise',["Tone/core/Tone"], function(Tone){
+define('Tone/source/Noise',["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 
-    //@param {string} type the noise type
-    Tone.Noise = function(type){
-    	//extend Unit
-    	Tone.call(this);
+	var sampleRate = Tone.context.sampleRate;
+	//two seconds per buffer
+	var bufferLength = sampleRate * 4;
 
-    	//components
-    	this.jsNode = this.context.createScriptProcessor(this.bufferSize, 0, 1);
+	/**
+	 *  Noise generator. 
+	 *
+	 *  uses looped noise buffers to save on performance. 
+	 *
+	 *  @constructor
+	 *  @extends {Tone.Source}
+	 *  @param {string} type the noise type (white|pink|brown)
+	 */
+	Tone.Noise = function(type){
 
-    	//connections
-        this.jsNode.connect(this.output);
+		Tone.Source.call(this);
 
-    	this.setType(this.defaultArg(type, "white"));
-    }
+		/**
+		 *  @private
+		 *  @type {AudioBufferSourceNode}
+		 */
+		this._source = null;
+		
+		/**
+		 *  the buffer
+		 *  @private
+		 *  @type {AudioBuffer}
+		 */
+		this._buffer = null;
 
-    Tone.extend(Tone.Noise, Tone);
+		/**
+		 *  set a callback function to invoke when the sample is over
+		 *  
+		 *  @type {function}
+		 */
+		this.onended = function(){};
 
-    //@param {string} type ('white', 'pink', 'brown')
-    Tone.Noise.prototype.setType = function(type){
-    	switch (type){
-    		case "white" : 
-    			this.jsNode.onaudioprocess = this._whiteNoise.bind(this);
-    			break;
-    		case "pink" : 
-    			this.jsNode.onaudioprocess = this._pinkNoise.bind(this);
-    			break;
-    		case "brown" : 
-    			this.jsNode.onaudioprocess = this._brownNoise.bind(this);
-    			break;
-    		default : 
-    			this.jsNode.onaudioprocess = this._whiteNoise.bind(this);
-    	}
-    }
+		this.setType(this.defaultArg(type, "white"));
+	};
 
-    //modified from http://noisehack.com/generate-noise-web-audio-api/
-    Tone.Noise.prototype._pinkNoise = (function() {
-        var b0, b1, b2, b3, b4, b5, b6;
-        b0 = b1 = b2 = b3 = b4 = b5 = b6 = 0.0;
-        return function(e) {
-            var bufferSize = this.jsNode.bufferSize;
-            var output = e.outputBuffer.getChannelData(0);
-            for (var i = 0; i &lt; bufferSize; i++) {
-                var white = Math.random() * 2 - 1;
-                b0 = 0.99886 * b0 + white * 0.0555179;
-                b1 = 0.99332 * b1 + white * 0.0750759;
-                b2 = 0.96900 * b2 + white * 0.1538520;
-                b3 = 0.86650 * b3 + white * 0.3104856;
-                b4 = 0.55000 * b4 + white * 0.5329522;
-                b5 = -0.7616 * b5 - white * 0.0168980;
-                output[i] = b0 + b1 + b2 + b3 + b4 + b5 + b6 + white * 0.5362;
-                output[i] *= 0.11; // (roughly) compensate for gain
-                b6 = white * 0.115926;
-            }
-        }
-    })();
+	Tone.extend(Tone.Noise, Tone.Source);
 
-    //modified from http://noisehack.com/generate-noise-web-audio-api/
-    Tone.Noise.prototype._brownNoise = (function() {
-        var lastOut = 0.0;
-        return function(e) {
-            var bufferSize = this.jsNode.bufferSize;
-            var output = e.outputBuffer.getChannelData(0);
-            for (var i = 0; i &lt; bufferSize; i++) {
-                var white = Math.random() * 2 - 1;
-                output[i] = (lastOut + (0.02 * white)) / 1.02;
-                lastOut = output[i];
-                output[i] *= 3.5; // (roughly) compensate for gain
-            }
-        }
-        return node;
-    })();
+	/**
+	 *  set the noise type
+	 *  
+	 *  @param {string} type the noise type (white|pink|brown)
+	 *  @param {Tone.Time} time (optional) time that the set will occur
+	 */
+	Tone.Noise.prototype.setType = function(type, time){
+		switch (type){
+			case "white" : 
+				this._buffer = _whiteNoise;
+				break;
+			case "pink" : 
+				this._buffer = _pinkNoise;
+				break;
+			case "brown" : 
+				this._buffer = _brownNoise;
+				break;
+			default : 
+				this._buffer = _whiteNoise;
+		}
+		//if it's playing, stop and restart it
+		if (this.state === Tone.Source.State.STARTED){
+			time = this.toSeconds(time);
+			//remove the listener
+			this._source.onended = undefined;
+			this._stop(time);
+			this._start(time);
+		}
+	};
 
-    //modified from http://noisehack.com/generate-noise-web-audio-api/
-    Tone.Noise.prototype._whiteNoise = function(e){
-        var bufferSize = this.jsNode.bufferSize;
-        var output = e.outputBuffer.getChannelData(0);
-        for (var i = 0; i &lt; bufferSize; i++) {
-            output[i] = Math.random() * 2 - 1;
-        }
-    }
+	/**
+	 *  internal start method
+	 *  
+	 *  @param {Tone.Time} time
+	 *  @private
+	 */
+	Tone.Noise.prototype._start = function(time){		
+		this._source = this.context.createBufferSource();
+		this._source.buffer = this._buffer;
+		this._source.loop = true;
+		this._source.start(this.toSeconds(time));
+		this.chain(this._source, this.output);
+		this._source.onended = this._onended.bind(this);
+	};
 
-    return Tone.Noise;
+	/**
+	 *  start the noise at a specific time
+	 *  
+	 *  @param {Tone.Time} time
+	 */
+	Tone.Noise.prototype.start = function(time){
+		if (this.state === Tone.Source.State.STOPPED){
+			this.state = Tone.Source.State.STARTED;
+			//make the source
+			this._start(time);
+		}
+	};
+
+	/**
+	 *  internal stop method
+	 *  
+	 *  @param {Tone.Time} time
+	 *  @private
+	 */
+	Tone.Noise.prototype._stop = function(time){
+		this._source.stop(this.toSeconds(time));
+	};
+
+
+	/**
+	 *  stop the noise at a specific time
+	 *  
+	 *  @param {Tone.Time} time
+	 */
+	Tone.Noise.prototype.stop = function(time){
+		if (this.state === Tone.Source.State.STARTED) {
+			if (this._buffer && this._source){
+				if (!time){
+					this.state = Tone.Source.State.STOPPED;
+				}
+				this._stop(time);
+			}
+		}
+	};
+
+	/**
+	 *  internal call when the buffer is done playing
+	 *  
+	 *  @private
+	 */
+	Tone.Noise.prototype._onended = function(){
+		this.state = Tone.Source.State.STOPPED;
+		this.onended();
+	};
+
+	/**
+	 *  dispose all the components
+	 */
+	Tone.Noise.prototype.dispose = function(){
+		if (this._source !== null){
+			this._source.disconnect();
+			this._source = null;
+		}
+		this._buffer = null;
+		this.output.disconnect();
+		this.output = null;
+	};
+
+
+	///////////////////////////////////////////////////////////////////////////
+	// THE BUFFERS
+	// borred heavily from http://noisehack.com/generate-noise-web-audio-api/
+	///////////////////////////////////////////////////////////////////////////
+
+	/**
+	 *	static brown noise buffer
+	 *  
+	 *  @static
+	 *  @private
+	 *  @type {AudioBuffer}
+	 */
+	var _pinkNoise = (function() {
+		var buffer = Tone.context.createBuffer(2, bufferLength, sampleRate);
+		for (var channelNum = 0; channelNum &lt; buffer.numberOfChannels; channelNum++){
+			var channel = buffer.getChannelData(channelNum);
+			var b0, b1, b2, b3, b4, b5, b6;
+			b0 = b1 = b2 = b3 = b4 = b5 = b6 = 0.0;
+			for (var i = 0; i &lt; bufferLength; i++) {
+				var white = Math.random() * 2 - 1;
+				b0 = 0.99886 * b0 + white * 0.0555179;
+				b1 = 0.99332 * b1 + white * 0.0750759;
+				b2 = 0.96900 * b2 + white * 0.1538520;
+				b3 = 0.86650 * b3 + white * 0.3104856;
+				b4 = 0.55000 * b4 + white * 0.5329522;
+				b5 = -0.7616 * b5 - white * 0.0168980;
+				channel[i] = b0 + b1 + b2 + b3 + b4 + b5 + b6 + white * 0.5362;
+				channel[i] *= 0.11; // (roughly) compensate for gain
+				b6 = white * 0.115926;
+			}
+		}
+		return buffer;
+	}());
+
+	/**
+	 *	static brown noise buffer
+	 *  
+	 *  @static
+	 *  @private
+	 *  @type {AudioBuffer}
+	 */
+	var _brownNoise = (function() {
+		var buffer = Tone.context.createBuffer(2, bufferLength, sampleRate);
+		for (var channelNum = 0; channelNum &lt; buffer.numberOfChannels; channelNum++){
+			var channel = buffer.getChannelData(channelNum);
+			var lastOut = 0.0;
+			for (var i = 0; i &lt; bufferLength; i++) {
+				var white = Math.random() * 2 - 1;
+				channel[i] = (lastOut + (0.02 * white)) / 1.02;
+				lastOut = channel[i];
+				channel[i] *= 3.5; // (roughly) compensate for gain
+			}
+		}
+		return buffer;
+	})();
+
+	/**
+	 *	static white noise buffer
+	 *  
+	 *  @static
+	 *  @private
+	 *  @type {AudioBuffer}
+	 */
+	var _whiteNoise = (function(){
+		var buffer = Tone.context.createBuffer(2, bufferLength, sampleRate);
+		for (var channelNum = 0; channelNum &lt; buffer.numberOfChannels; channelNum++){
+			var channel = buffer.getChannelData(channelNum);
+			for (var i = 0; i &lt; bufferLength; i++){
+				channel[i] =  Math.random() * 2 - 1;
+			}
+		}
+		return buffer;
+	}());
+
+	return Tone.Noise;
 });</code></pre>
         </article>
     </section>
@@ -3724,13 +3992,13 @@ define('Tone/source/Noise',["Tone/core/Tone"], function(Tone){
 </div>
 
 <nav>
-    <h2><a href="index.html">Index</a></h2><h3>Classes</h3><ul><li><a href="Tone.html">Tone</a></li><li><a href="Tone.Add.html">Add</a></li><li><a href="Tone.AutoPanner.html">AutoPanner</a></li><li><a href="Tone.BitCrusher.html">BitCrusher</a></li><li><a href="Tone.DryWet.html">DryWet</a></li><li><a href="Tone.Envelope.html">Envelope</a></li><li><a href="Tone.LFO.html">LFO</a></li><li><a href="Tone.Merge.html">Merge</a></li><li><a href="Tone.Meter.html">Meter</a></li><li><a href="Tone.Microphone.html">Microphone</a></li><li><a href="Tone.Multiply.html">Multiply</a></li><li><a href="Tone.Oscillator.html">Oscillator</a></li><li><a href="Tone.Player.html">Player</a></li><li><a href="Tone.Recorder.html">Recorder</a></li><li><a href="Tone.Scale.html">Scale</a></li><li><a href="Tone.Signal.html">Signal</a></li><li><a href="Tone.Source.html">Source</a></li><li><a href="Tone.Split.html">Split</a></li><li><a href="Tone.Transport.html">Transport</a></li></ul><h3>Global</h3><ul><li><a href="global.html#for the default output">for the default output</a></li><li>{GainNode}</li></ul>
+    <h2><a href="index.html">Index</a></h2><h3>Classes</h3><ul><li><a href="Tone.html">Tone</a></li><li><a href="Tone.Add.html">Add</a></li><li><a href="Tone.AutoPanner.html">AutoPanner</a></li><li><a href="Tone.BitCrusher.html">BitCrusher</a></li><li><a href="Tone.DryWet.html">DryWet</a></li><li><a href="Tone.Envelope.html">Envelope</a></li><li><a href="Tone.LFO.html">LFO</a></li><li><a href="Tone.Merge.html">Merge</a></li><li><a href="Tone.Meter.html">Meter</a></li><li><a href="Tone.Microphone.html">Microphone</a></li><li><a href="Tone.Multiply.html">Multiply</a></li><li><a href="Tone.Noise.html">Noise</a></li><li><a href="Tone.Oscillator.html">Oscillator</a></li><li><a href="Tone.Player.html">Player</a></li><li><a href="Tone.Recorder.html">Recorder</a></li><li><a href="Tone.Scale.html">Scale</a></li><li><a href="Tone.Signal.html">Signal</a></li><li><a href="Tone.Source.html">Source</a></li><li><a href="Tone.Split.html">Split</a></li><li><a href="Tone.Transport.html">Transport</a></li></ul><h3>Global</h3><ul><li><a href="global.html#for the default output">for the default output</a></li><li>{GainNode}</li></ul>
 </nav>
 
 <br clear="both">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.2</a> on Thu Jun 19 2014 13:40:21 GMT-0400 (EDT)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.2</a> on Fri Jun 20 2014 01:43:54 GMT-0400 (EDT)
 </footer>
 
 <script> prettyPrint(); </script>
