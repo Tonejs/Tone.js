@@ -25,6 +25,9 @@
 		square.connect(dryWet.wet);
 		dryWet.toMaster();
 
+		sine.setVolume(0.5);
+		square.setVolume(0.5);
+
 		//meters
 		var dryMeter = new Tone.Meter();
 		var wetMeter = new Tone.Meter();
