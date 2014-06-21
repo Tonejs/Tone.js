@@ -37,14 +37,21 @@ define("Tone/core/Tone", [], function(){
 	//	WEB AUDIO CONTEXT
 	///////////////////////////////////////////////////////////////////////////
 
+	//borrowed from underscore.js
+	function isUndef(val){
+		return val === void 0;
+	}
+
 	//ALIAS
-	if (!AudioContext){
-		AudioContext = webkitAudioContext;
+	if (isUndef(window.AudioContext)){
+		window.AudioContext = window.webkitAudioContext;
 	} 
 
 	var audioContext;
-	if (AudioContext){
+	if (!isUndef(window.AudioContext)){
 		audioContext = new AudioContext();
+	} else {
+		throw new Error("Web Audio is not supported in this browser");
 	}
 
 	//SHIMS////////////////////////////////////////////////////////////////////
@@ -129,12 +136,6 @@ define("Tone/core/Tone", [], function(){
 	 *  @type {number}
 	 */
 	Tone.prototype.bufferSize = 2048;
-
-	/**
-	 *  the default resolution for WaveShaperNodes
-	 *  @type {number}
-	 */
-	Tone.prototype.waveShaperResolution = 1024;
 	
 	///////////////////////////////////////////////////////////////////////////
 	//	CONNECTIONS
@@ -173,11 +174,6 @@ define("Tone/core/Tone", [], function(){
 	///////////////////////////////////////////////////////////////////////////
 	//	UTILITIES / HELPERS / MATHS
 	///////////////////////////////////////////////////////////////////////////
-
-	//borrowed from underscore.js
-	function isUndef(val){
-		return val === void 0;
-	}
 
 	/**
 	 *  if a the given is undefined, use the fallback
@@ -302,7 +298,7 @@ define("Tone/core/Tone", [], function(){
 	 */
 	Tone.prototype.toSamples = function(time){
 		var seconds = this.toSeconds(time);
-		return seconds * this.context.sampleRate;
+		return Math.round(seconds * this.context.sampleRate);
 	};
 
 	/**
@@ -314,20 +310,22 @@ define("Tone/core/Tone", [], function(){
 	 *  notationTime, Frequency, and transportTime
 	 *  
 	 *  @param  {Tone.Time} time 
+	 *  @param {number=} now if passed in, this number will be 
+	 *                       used for all 'now' relative timings
 	 *  @return {number}     
 	 */
-	Tone.prototype.toSeconds = function(time){
+	Tone.prototype.toSeconds = function(time, now){
+		now = this.defaultArg(now, this.now());
 		if (typeof time === "number"){
 			return time; //assuming that it's seconds
 		} else if (typeof time === "string"){
 			var plusTime = 0;
 			if(time.charAt(0) === "+") {
-				plusTime = this.now();
 				time = time.slice(1);				
 			} 
-			return parseFloat(time) + plusTime;
+			return parseFloat(time) + now;
 		} else {
-			return this.now();
+			return now;
 		}
 	};
 
