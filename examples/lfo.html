@@ -2,7 +2,7 @@
 <head>
 	<title>LFO</title>
 
-	<script type="text/javascript" src="../build/Tone.js"></script>
+	<script type="text/javascript" src="../Tone.js"></script>
 	
 </head>
 <body>
@@ -17,7 +17,6 @@
 		lfo.connect(noise.output.gain);
 		
 		//INTERFACE//
-
 		var button = document.querySelector("button");
 
 		var started = false;
@@ -26,9 +25,11 @@
 		function startLFO(){
 			if (!started){
 				lfo.start();
+				noise.start();
 				button.textContent = "stop";
 			} else {
 				lfo.stop();
+				noise.stop();
 				button.textContent = "start";
 			}
 			started = !started;
