@@ -40,6 +40,22 @@ define(["Tone/core/Tone"], function(Tone){
 		}
 	};
 
+	/**
+	 *  @param {number} value 
+	 *  @param {Tone.Time=} fadeTime (optional) time it takes to reach the value
+	 */
+	Master.prototype.setVolume = function(value, fadeTime){
+		var now = this.now();
+		if (fadeTime){
+			var currentVolume = this.output.gain.value;
+			this.output.gain.cancelScheduledValues(now);
+			this.output.gain.setValueAtTime(currentVolume, now);
+			this.output.gain.linearRampToValueAtTime(value, now + this.toSeconds(time));
+		} else {
+			this.output.gain.setValueAtTime(value, now);
+		}
+	};
+
 	///////////////////////////////////////////////////////////////////////////
 	//	AUGMENT TONE's PROTOTYPE
 	///////////////////////////////////////////////////////////////////////////
