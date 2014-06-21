@@ -1,20 +1,15 @@
-///////////////////////////////////////////////////////////////////////////////
-//
-//	PING PONG DELAY
-//
-///////////////////////////////////////////////////////////////////////////////
-
 define(["Tone/core/Tone", "Tone/effects/FeedbackDelay"], function(Tone){
-
-
-	//@param {number=} delayTime
+	/**
+	 * PingPongDelay is a dual delay effect where the echo is heard first in one channel and next in the opposite channel
+	 * 
+	 * @param {Tone.Time} delayTime is the interval between consecutive echos
+	 */
 	Tone.PingPongDelay = function(delayTime){
 		Tone.StereoSplit.call(this);
 
 		//components
 		this.leftDelay = new Tone.FeedbackDelay(delayTime);
 		this.rightDelay = new Tone.FeedbackDelay(delayTime);
-
 
 		//connect it up
 		this.connectLeft(this.leftDelay);
@@ -29,33 +24,49 @@ define(["Tone/core/Tone", "Tone/effects/FeedbackDelay"], function(Tone){
 
 		//initial vals;
 		this.setDelayTime(delayTime);
-	}
+	};
 
 	Tone.extend(Tone.PingPongDelay, Tone.StereoSplit);
 
-	//@param {number} delayTime
+	/**
+	 * setDelayTime
+	 * 
+	 * @param {Tone.Time} delayTime
+	 */
 	Tone.PingPongDelay.prototype.setDelayTime = function(delayTime){
 		this.leftDelay.setDelayTime(delayTime);
 		this.rightDelay.setDelayTime(delayTime * 2);
-	}
+	};
 
-	//@param {number} feedback (0 - 1)
+	/**
+	 * setFeedback
+	 *
+	 * @param {number} feedback (0 - 1)
+	 */
 	Tone.PingPongDelay.prototype.setFeedback = function(feedback){
 		this.leftDelay.setFeedback(feedback);
 		this.rightDelay.setFeedback(feedback);
-	}
+	};
 
-	//@param {number} wet (0 - 1)
+	/**
+	 * setWet
+	 *
+	 * @param {number} wet (0 - 1)
+	 */
 	Tone.PingPongDelay.prototype.setWet = function(wet){
 		this.leftDelay.setWet(wet);
 		this.rightDelay.setWet(wet);
-	}
+	};
 
-	//@param {number} dry (0 - 1)
+	/**
+	 * setDry
+	 *
+	 * @param {number} dry (0 - 1)
+	 */
 	Tone.PingPongDelay.prototype.setDry = function(dry){
 		this.leftDelay.setDry(dry);
 		this.rightDelay.setDry(dry);
-	}
+	};
 
 	return Tone.PingPongDelay;
 });
