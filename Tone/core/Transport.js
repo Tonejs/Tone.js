@@ -103,7 +103,7 @@ function(Tone){
 	 *  @private
 	 *  @type {Tone.Signal}
 	 */
-	var controlSignal = new Tone.Signal(120);
+	var controlSignal = new Tone.Signal(24);
 
 	/** 
 	 *  All of the synced components
@@ -500,7 +500,8 @@ function(Tone){
 	 */
 	Tone.Transport.prototype.setBpm = function(bpm, rampTime){
 		//convert the bpm to frequency
-		var tatumFreq = this.toFrequency(tatum.toString() + "n", bpm, transportTimeSignature);
+		var tatumFreq = this.secondsToFrequency(this.notationToSeconds(tatum.toString() + "n", bpm, transportTimeSignature));
+		// var tatumFreq = this.toFrequency(tatum.toString() + "n", bpm, transportTimeSignature);
 		var freqVal = 4 * tatumFreq;
 		if (!rampTime){
 			controlSignal.cancelScheduledValues(0);
@@ -790,11 +791,11 @@ function(Tone){
 	 *  @param  {Tone.Time} time 
 	 *  @return {number}      the time in hertz
 	 */
-	Tone.prototype.toFrequency = function(time, bpm, timeSignature){
+	Tone.prototype.toFrequency = function(time, now){
 		if (this.isFrequency(time)){
 			return parseFloat(time);
 		} else if (this.isNotation(time) || this.isTransportTime(time)) {
-			return this.secondsToFrequency(this.toSeconds(time, bpm, timeSignature));
+			return this.secondsToFrequency(this.toSeconds(time, now));
 		} else {
 			return time;
 		}
@@ -807,31 +808,32 @@ function(Tone){
 	 *  transporttime and musical notation
 	 *  
 	 *  @param  {Tone.Time} time       
-	 *  @param  {number=} 	bpm 
-	 *  @param  {number=} 	timeSignature   
+	 *  @param {number=} 	now 	if passed in, this number will be 
+	 *                        		used for all 'now' relative timings
 	 *  @return {number} 
 	 */
-	Tone.prototype.toSeconds = function(time, bpm, timeSignature){
+	Tone.prototype.toSeconds = function(time, now){
+		now = this.defaultArg(now, this.now());
 		if (typeof time === "number"){
 			return time; //assuming that it's seconds
 		} else if (typeof time === "string"){
 			var plusTime = 0;
 			if(time.charAt(0) === "+") {
-				plusTime = this.now();
+				plusTime = now;
 				time = time.slice(1);				
 			} 
 			if (this.isNotation(time)){
-				time = this.notationToSeconds(time, bpm, timeSignature);
+				time = this.notationToSeconds(time);
 			} else if (this.isTransportTime(time)){
-				time = this.transportTimeToSeconds(time, bpm, timeSignature);
+				time = this.transportTimeToSeconds(time);
 			} else if (this.isFrequency(time)){
-				time = this.frequencyToSeconds(time, bpm, timeSignature);
+				time = this.frequencyToSeconds(time);
 			} else {
 				time = parseFloat(time);
 			}
 			return time + plusTime;
 		} else {
-			return this.now();
+			return now;
 		}
 	};
 
