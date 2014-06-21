@@ -27,7 +27,7 @@ function(chai, Player, Master, Oscillator, Recorder, Noise){
 		});
 
 		it("has a duration", function(){
-			expect(player.duration).to.equal(0.2361678034067154);
+			expect(player.duration).to.be.closeTo(0.23, 0.01);
 		});
 
 		it("invokes a callback onend", function(done){
@@ -108,11 +108,10 @@ function(chai, Player, Master, Oscillator, Recorder, Noise){
 		it("be scheduled to start in the future", function(done){
 			var recorder = new Recorder();
 			oscillator.connect(recorder);
-			recorder.record(0.1);
 			oscillator.start("+.05");
-			setTimeout(function(){
+			recorder.record(0.1, 0.05, function(buffers){
 				oscillator.stop();
-				var buffer = recorder.getFloat32Array()[0];
+				var buffer = buffers[0];
 				for (var i = 0; i < buffer.length; i++){
 					if (buffer[i] !== 0){
 						expect(oscillator.samplesToSeconds(i)).to.be.closeTo(0.05, 0.01);
@@ -120,7 +119,7 @@ function(chai, Player, Master, Oscillator, Recorder, Noise){
 					}
 				}
 				done();
-			}, 200);
+			});
 		});
 
 		it("can set the frequency", function(done){
@@ -184,19 +183,18 @@ function(chai, Player, Master, Oscillator, Recorder, Noise){
 		it("be scheduled to start in the future", function(done){
 			var recorder = new Recorder();
 			noise.connect(recorder);
-			recorder.record(0.1);
 			noise.start("+.05");
-			setTimeout(function(){
+			recorder.record(0.1, 0.05, function(buffers){
 				noise.stop();
-				var buffer = recorder.getFloat32Array()[0];
+				var buffer = buffers[0];
 				for (var i = 0; i < buffer.length; i++){
 					if (buffer[i] !== 0){
-						expect(noise.samplesToSeconds(i)).to.be.closeTo(0.05, 0.001);
+						expect(noise.samplesToSeconds(i)).to.be.closeTo(0.05, 0.01);
 						break;
 					}
 				}
 				done();
-			}, 200);
+			});
 		});
 
 		it("can set the noise types", function(){

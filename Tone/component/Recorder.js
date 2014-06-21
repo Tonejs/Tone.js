@@ -33,11 +33,41 @@ define(["Tone/core/Tone", "Tone/core/Master"], function(Tone){
 		 */
 		this._recordBuffers = new Array(this.channels);
 
+		/**
+		 *  @type {number}
+		 *  @private
+		 */
+		this._recordStartSample = 0;
+
+		/**
+		 *  @type {number}
+		 *  @private
+		 */
+		this._recordEndSample = 0;
+
+		/**
+		 *  @type {number}
+		 *  @private
+		 */
+		this._recordDuration = 0;
+
+		/**
+		 *  @type {RecordState}
+		 */
+		this.state = RecordState.STOPPED;
+
 		/** 
 		 *  @private
 		 *  @type {number}
 		 */
 		this._recordBufferOffset = 0;
+
+		/** 
+		 *  callback invoked when the recording is over
+		 *  @private
+		 *  @type {function(Float32Array)}
+		 */
+		this._callback = function(){};
 
 		//connect it up
 		this.input.connect(this._jsNode);
@@ -58,46 +88,78 @@ define(["Tone/core/Tone", "Tone/core/Master"], function(Tone){
 	 *  @param   {AudioProcessorEvent} event 
 	 */
 	Tone.Recorder.prototype._audioprocess = function(event){
-		if (this._recordBuffers[0] === null || this._recordBuffers[0].length - this._recordBufferOffset === 0){
+		if (this.state === RecordState.STOPPED){
 			return;
+		} else if (this.state === RecordState.RECORDING){
+			//check if it's time yet
+			var now = this.defaultArg(event.playbackTime, this.now());
+			var processPeriodStart = this.toSamples(now);
+			var bufferSize = this._jsNode.bufferSize;
+			var processPeriodEnd = processPeriodStart + bufferSize;
+			var bufferOffset, len;
+			if (processPeriodStart > this._recordEndSample){
+				this.state = RecordState.STOPPED;
+				this._callback(this._recordBuffers);
+			} else if (processPeriodStart > this._recordStartSample) {
+				bufferOffset = 0;
+				len = Math.min(this._recordEndSample - processPeriodStart, bufferSize);
+				this._recordChannels(event.inputBuffer, bufferOffset, len, bufferSize);
+			} else if (processPeriodEnd > this._recordStartSample) {
+				len = processPeriodEnd - this._recordStartSample;
+				bufferOffset = bufferSize - len;
+				this._recordChannels(event.inputBuffer, bufferOffset, len, bufferSize);
+			} 
+
 		}
-		var input = event.inputBuffer;
-		var totalWrittenToBuffer = 0;
-		var recordBufferLength = this._recordBuffers[0].length;
-		for (var channelNum = 0; channelNum < input.numberOfChannels; channelNum++){
-			var bufferOffset = this._recordBufferOffset;
-			var channel = input.getChannelData(channelNum);
-			var bufferLen = channel.length;
-			if (recordBufferLength - bufferOffset > bufferLen){
-				this._recordBuffers[channelNum].set(channel, bufferOffset);
-				totalWrittenToBuffer += bufferLen;
+	};
+
+	/**
+	 *  record an input channel
+	 *  @param   {AudioBuffer} inputBuffer        
+	 *  @param   {number} from  
+	 *  @param   {number} to  
+	 *  @private
+	 */
+	Tone.Recorder.prototype._recordChannels = function(inputBuffer, from, to, bufferSize){
+		var offset = this._recordBufferOffset;
+		var buffers = this._recordBuffers;
+		for (var channelNum = 0; channelNum < inputBuffer.numberOfChannels; channelNum++){
+			var channel = inputBuffer.getChannelData(channelNum);
+			if ((from === 0) && (to === bufferSize)){
+				//set the whole thing
+				this._recordBuffers[channelNum].set(channel, offset);
 			} else {
-				for (var i = 0; i < bufferLen; i++) {
-					if (recordBufferLength > bufferOffset){
-						this._recordBuffers[channelNum][bufferOffset] = channel[i];
-						bufferOffset++;
-						totalWrittenToBuffer++;
-					} else {
-						break;
-					}
+				for (var i = from; i < from + to; i++){
+					var zeroed = i - from; 
+					buffers[channelNum][zeroed + offset] = channel[i];				
 				}
 			}
 		}
-		this._recordBufferOffset += totalWrittenToBuffer / input.numberOfChannels;
-	};
+		this._recordBufferOffset += to;
+	};	
 
 	/**
 	 *  Record for a certain period of time
 	 *  
 	 *  will clear the internal buffer before starting
 	 *  
-	 *  @param  {Tone.Time} time 
+	 *  @param  {Tone.Time} duration 
+	 *  @param  {Tone.Time} wait the wait time before recording
+	 *  @param {function(Float32Array)} callback the callback to be invoked when the buffer is done recording
 	 */
-	Tone.Recorder.prototype.record = function(time){
-		this.clear();
-		var recordBufferLength = this.toSamples(time);
-		for (var i = 0; i < this.channels; i++){
-			this._recordBuffers[i] = new Float32Array(recordBufferLength);
+	Tone.Recorder.prototype.record = function(duration, startTime, callback){
+		if (this.state === RecordState.STOPPED){
+			this.clear();
+			this._recordBufferOffset = 0;
+			startTime = this.defaultArg(startTime, 0);
+			this._recordDuration = this.toSamples(duration);
+			this._recordStartSample = this.toSamples("+"+startTime);
+			this._recordEndSample = this._recordStartSample + this._recordDuration;
+			for (var i = 0; i < this.channels; i++){
+				this._recordBuffers[i] = new Float32Array(this._recordDuration);
+			}
+			this.state = RecordState.RECORDING;
+			this._callback = this.defaultArg(callback, function(){});
 		}
 	};
 
@@ -147,6 +209,28 @@ define(["Tone/core/Tone", "Tone/core/Master"], function(Tone){
 		}
 	};
 
+	/**
+	 *  clean up
+	 */
+	Tone.Recorder.prototype.dispose = function(){
+		this.output.disconnect();
+		this.input.disconnect();
+		this._jsNode.disconnect();
+		this._jsNode.onaudioprocess = undefined;
+		this.output = null;
+		this.input = null;
+		this._jsNode = null;
+		this._recordBuffers = null;
+	};
+
+	/**
+	 *  @enum {string}
+	 */
+	var RecordState = {
+		STOPPED : "stopped",
+		SCHEDULED : "scheduled",
+		RECORDING : "recording"
+	};
 
 	return Tone.Recorder;
 });
