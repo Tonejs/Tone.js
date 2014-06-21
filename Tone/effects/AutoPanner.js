@@ -5,7 +5,7 @@ define(["Tone/core/Tone", "Tone/source/Oscillator", "Tone/component/Panner", "To
 	*
 	* @constructor
 	* @param { number= } rate (optional) rate in HZ of the left-right pan
-	* @param { number= } amount (optional) of the pan in dB (0 - 1)
+	* @param { number= } amount (optional) of the pan (0 - 1)
 	*/
 	Tone.AutoPanner = function(rate, amount){
 		Tone.Effect.call(this);
