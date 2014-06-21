@@ -1,7 +1,8 @@
 define(["Tone/core/Tone", "Tone/core/Master"], function(Tone){
 
-	//all signals share a common constant signal generator
 	/**
+	 *	all signals share a common constant signal generator
+	 *  
 	 *  @static
 	 *  @private
 	 *  @type {OscillatorNode} 
@@ -49,16 +50,14 @@ define(["Tone/core/Tone", "Tone/core/Master"], function(Tone){
 	 *  @param {number=} value (optional) initial value
 	 */
 	Tone.Signal = function(value){
+
+		Tone.call(this);
+
 		/**
 		 *  scales the constant output to the desired output
 		 *  @type {GainNode}
 		 */
 		this.scalar = this.context.createGain();
-		/**
-		 *  the output node
-		 *  @type {GainNode}
-		 */
-		this.output = this.context.createGain();
 		/**
 		 *  the ratio of the this value to the control signal value
 		 *
@@ -69,6 +68,8 @@ define(["Tone/core/Tone", "Tone/core/Master"], function(Tone){
 
 		//connect the constant 1 output to the node output
 		this.chain(constant, this.scalar, this.output);
+		//signal passes through
+		this.input.connect(this.output);
 
 		//set the default value
 		this.setValue(this.defaultArg(value, 0));
@@ -281,6 +282,22 @@ define(["Tone/core/Tone", "Tone/core/Master"], function(Tone){
 		this.scalar.disconnect();
 		this.output = null;
 		this.scalar = null;
+	};
+
+	/**
+	 *  Signals can connect to other Signals
+	 *
+	 *  @override
+	 *  @param {AudioParam|AudioNode|Tone.Signal|Tone} node 
+	 */
+	Tone.Signal.prototype.connect = function(node){
+		//zero it out so that the signal can have full control
+		if (node instanceof Tone.Signal){
+			node.setValue(0);
+		} else if (node instanceof AudioParam){
+			node.value = 0;
+		} 
+		this.output.connect(node);
 	};
 
 	return Tone.Signal;
