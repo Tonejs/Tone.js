@@ -18,13 +18,13 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 		Tone.call(this);
 
 		/** @type {number} */
-		this.attack = this.defaultArg(attack, 0.01);
+		this.attack = this.toSeconds(this.defaultArg(attack, 0.01));
 		/** @type {number} */
-		this.decay = this.defaultArg(decay, 0.1);
+		this.decay = this.toSeconds(this.defaultArg(decay, 0.1));
 		/** @type {number} */
-		this.release = this.defaultArg(release, 1);
+		this.release = this.toSeconds(this.defaultArg(release, 1));
 		/** @type {number} */
-		this.sustain = this.defaultArg(sustain, 0.5);
+		this.sustain = this.toSeconds(this.defaultArg(sustain, 0.5));
 
 		/** @type {number} */
 		this.min = this.defaultArg(minOutput, 0);
@@ -42,74 +42,77 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 
 	/**
 	 * attack->decay->sustain linear ramp
-	 * @param  {Tone.Time} time
+	 * @param  {Tone.Time=} time
 	 */
 	Tone.Envelope.prototype.triggerAttack = function(time){
-		var startVal = this.min;
-		if (!time){
-			startVal = this.control.getValue();
-		}
-		time = this.defaultArg(time, this.now());
-		time = this.toSeconds(time);
-		this.control.cancelScheduledValues(time);
-		this.control.setValueAtTime(startVal, time);
-		var attackTime = this.toSeconds(this.attack);
-		var decayTime = this.toSeconds(this.decay);
-		this.control.linearRampToValueAtTime(this.max, time + attackTime);
 		var sustainVal = (this.max - this.min) * this.sustain + this.min;
-		this.control.linearRampToValueAtTime(sustainVal, time + attackTime + decayTime);
+		if (!time){
+			this.control.linearRampToValueNow(this.max, this.attack);
+			this.control.linearRampToValueAtTime(sustainVal, this.now() + this.attack + this.decay);	
+		} else {
+			var startVal = this.min;
+			time = this.toSeconds(time);
+			this.control.cancelScheduledValues(time);
+			this.control.setValueAtTime(startVal, time);
+			this.control.linearRampToValueAtTime(this.max, time + this.attack);
+			this.control.linearRampToValueAtTime(sustainVal, time + this.attack + this.decay);
+		}
 	};
 
 	/**
-	 * attack->decay->sustain exponential ramp
-	 * @param  {Tone.Time} time
+	 * attack->decay->sustain exponential attack and linear decay
+	 * @param  {Tone.Time=} time
 	 */
 	Tone.Envelope.prototype.triggerExponentialAttack = function(time){
-		var startVal = this.min;
-		if (!time){
-			startVal = this.control.getValue();
-		}
-		time = this.toSeconds(time);
-		this.control.cancelScheduledValues(time);
-		this.control.setValueAtTime(startVal, time);
-		var attackTime = this.toSeconds(this.attack);
-		var decayTime = this.toSeconds(this.decay);
-		this.control.linearRampToValueAtTime(this.max, time + attackTime);
 		var sustainVal = (this.max - this.min) * this.sustain + this.min;
-		this.control.exponentialRampToValueAtTime(sustainVal, time + attackTime + decayTime);
+		if (!time){
+			this.control.exponentialRampToValueNow(this.max, this.attack);
+			this.control.linearRampToValueAtTime(sustainVal, this.now() + this.attack + this.decay);	
+		} else {
+			var startVal = this.min;
+			time = this.toSeconds(time);
+			this.control.cancelScheduledValues(time);
+			this.control.setValueAtTime(startVal, time);
+			this.control.exponentialRampToValueAtTime(this.max, time + this.attack);
+			this.control.linearRampToValueAtTime(sustainVal, time + this.attack + this.decay);
+		}
 	};
 
 	
 	/**
 	 * triggers the release of the envelope with a linear ramp
-	 * @param  {Tone.Time} time
+	 * @param  {Tone.Time=} time
 	 */
 	Tone.Envelope.prototype.triggerRelease = function(time){
-		var startVal = this.control.getValue();
 		if (time){
+			//if there's a time, start at the sustain value
 			startVal = (this.max - this.min) * this.sustain + this.min;
+			time = this.toSeconds(time);
+			this.control.cancelScheduledValues(time);
+			this.control.setValueAtTime(startVal, time);
+			this.control.linearRampToValueAtTime(this.min, time + this.toSeconds(this.release));
+		} else {
+			this.control.linearRampToValueNow(this.min, this.toSeconds(this.release));
 		}
-		time = this.toSeconds(time);
-		this.control.cancelScheduledValues(time);
-		this.control.setValueAtTime(startVal, time);
-		this.control.linearRampToValueAtTime(this.min, time + this.toSeconds(this.release));
 	};
 
 
 	/**
 	 * triggers the release of the envelope with an exponential ramp
 	 * 
-	 * @param  {Tone.Time} time
+	 * @param  {Tone.Time=} time
 	 */
 	Tone.Envelope.prototype.triggerExponentialRelease = function(time){
-		var startVal = this.control.getValue();
 		if (time){
+			//if there's a time, start at the sustain value
 			startVal = (this.max - this.min) * this.sustain + this.min;
+			time = this.toSeconds(time);
+			this.control.cancelScheduledValues(time);
+			this.control.setValueAtTime(startVal, time);
+			this.control.exponentialRampToValueAtTime(this.min, time + this.toSeconds(this.release));
+		} else {
+			this.control.exponentialRampToValueNow(this.min, this.toSeconds(this.release));
 		}
-		time = this.toSeconds(time);
-		this.control.cancelScheduledValues(time);
-		this.control.setValueAtTime(startVal, time);
-		this.control.exponentialRampToValueAtTime(this.min, time + this.toSeconds(this.release));
 	};
 
 	/**
