@@ -17,7 +17,7 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 	 *  @param {number=} inputNum 
 	 */
 	Tone.Microphone = function(inputNum){
-		Tone.call(this);
+		Tone.Source.call(this);
 
 		/**
 		 *  @type {MediaStreamAudioSourceNode}
@@ -49,64 +49,35 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 	Tone.extend(Tone.Microphone, Tone.Source);
 
 	/**
-	 *  start the _stream. 
-	 *  
-	 *  accepts a time to stay consisten with other sources, even though 
-	 *  it can't be stopped in a sample accurate way. 
-	 *  uses setTimeout to approximate the behavior
-	 * 
-	 *  @param {Tone.Time} time
+	 *  start the stream. 
 	 */
-	Tone.Microphone.prototype.start = function(time){
+	Tone.Microphone.prototype.start = function(){
 		if (this.state === Tone.Source.State.STOPPED){
 			this.state = Tone.Source.State.STARTED;
-			if (time){
-				var self = this;
-				setTimeout(function(){
-					navigator.getUserMedia(self.constraints, 
-						self._onStream.bind(self), self._onStreamError.bind(self));
-				}, this.toSeconds(time) * 1000);
-			} else {
 				navigator.getUserMedia(this.constraints, 
 					this._onStream.bind(this), this._onStreamError.bind(this));
-			}
-			
 		}
 	};
 
 	/**
-	 *  stop the _stream. 
-	 *  
-	 *  accepts a time to stay consisten with other sources, even though 
-	 *  it can't be stopped in a sample accurate way. 
-	 *  uses setTimeout to approximate the behavior
-	 * 
-	 *  @param {Tone.Time} time
+	 *  stop the stream. 
 	 */
-	Tone.Microphone.prototype.stop = function(time){
+	Tone.Microphone.prototype.stop = function(){
 		if (this._stream && this.state === Tone.Source.State.STARTED){
-			if (time){
-				var self = this;
-				setTimeout(function(){
-					self.state = Tone.Source.State.STOPPED;
-					self._stream.stop();
-				}, this.toSeconds(time) * 1000);
-			} else {
-				this.state = Tone.Source.State.STOPPED;
-				this._stream.stop();
-			}
+			this.state = Tone.Source.State.STOPPED;
+			this._stream.stop();
 		}
 	};
 
 	/**
-	 *  called when the _stream is successfully setup
-	 *  @param   {LocalMediaStream} _stream 
+	 *  called when the stream is successfully setup
+	 *  @param   {LocalMediaStream} stream 
 	 *  @private
 	 */
-	Tone.Microphone.prototype._onStream = function(_stream) {
-		this._stream = _stream;
-		// Wrap a MediaStreamSourceNode around the live input _stream.
-		this._mediaStream = this.context.createMediaStreamSource(_stream);
+	Tone.Microphone.prototype._onStream = function(stream) {
+		this._stream = stream;
+		// Wrap a MediaStreamSourceNode around the live input stream.
+		this._mediaStream = this.context.createMediaStreamSource(stream);
 		this._mediaStream.connect(this.output);
 	};
 
