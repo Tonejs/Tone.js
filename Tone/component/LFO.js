@@ -14,19 +14,20 @@ define(["Tone/core/Tone", "Tone/source/Oscillator", "Tone/signal/Scale"], functi
 	 *  @param {number=} outputMax
 	 */
 	Tone.LFO = function(rate, outputMin, outputMax){
-		Tone.call(this);
-
+		/** @type {GainNode} */
+		this.input = this.context.createGain();
 		/** @type {Tone.Oscillator} */
 		this.oscillator = new Tone.Oscillator(rate, "sine");
-		/** @type {Tone.Scale} */
-		this.scaler = new Tone.Scale(this.defaultArg(outputMin, 0), this.defaultArg(outputMax, 1));
+		/** @type {Tone.Scale} @private */
+		this._scaler = new Tone.Scale(this.defaultArg(outputMin, 0), this.defaultArg(outputMax, 1));
+		/** alias for the output */
+		this.output = this._scaler;
 
 		//connect it up
-		this.chain(this.oscillator, this.scaler, this.output);
+		this.chain(this.oscillator, this.output);
 	};
 
 	Tone.extend(Tone.LFO);
-
 
 	/**
 	 *  start the LFO
@@ -73,7 +74,7 @@ define(["Tone/core/Tone", "Tone/source/Oscillator", "Tone/signal/Scale"], functi
 	 *  @param {number} min 
 	 */
 	Tone.LFO.prototype.setMin = function(min){
-		this.scaler.setOutputMin(min);
+		this._scaler.setOutputMin(min);
 	};
 
 	/**
@@ -81,7 +82,7 @@ define(["Tone/core/Tone", "Tone/source/Oscillator", "Tone/signal/Scale"], functi
 	 *  @param {number} min 
 	 */
 	Tone.LFO.prototype.setMax = function(max){
-		this.scaler.setOuputMax(max);
+		this._scaler.setOuputMax(max);
 	};
 
 	/**
@@ -102,16 +103,9 @@ define(["Tone/core/Tone", "Tone/source/Oscillator", "Tone/signal/Scale"], functi
 	 *	override the connect method so that it 0's out the value 
 	 *	if attached to an AudioParam
 	 *	
-	 *  @override
-	 *  @param  {AudioNode|AudioParam|Tone} param 
+	 *  @borrows Tone.Signal.connect as Tone.LFO.connect
 	 */
-	Tone.LFO.prototype.connect = function(param){
-		if (param instanceof AudioParam){
-			//set the initial value
-			param.value = 0;
-		} 
-		this._connect(param);
-	};
+	Tone.LFO.prototype.connect = Tone.Signal.prototype.connect;
 
 	/**
 	 *  disconnect and dispose
@@ -119,10 +113,10 @@ define(["Tone/core/Tone", "Tone/source/Oscillator", "Tone/signal/Scale"], functi
 	Tone.LFO.prototype.dispose = function(){
 		this.oscillator.dispose();
 		this.output.disconnect();
-		this.scaler.dispose();
+		this._scaler.dispose();
 		this.oscillator = null;
 		this.output = null;
-		this.scaler = null;
+		this._scaler = null;
 	};
 
 	return Tone.LFO;
