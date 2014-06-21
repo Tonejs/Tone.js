@@ -70,21 +70,18 @@ define(["Tone/core/Tone", "Tone/core/Transport"], function(Tone){
 
 	/**
 	 *  @param {number} value 
-	 *  @param {Tone.Time} time (relative to 'now')
+	 *  @param {Tone.Time=} fadeTime (optional) time it takes to reach the value
 	 */
-	Tone.Source.prototype.fadeTo = function(value, time){
-		var currentVolume = this.output.gain.value;
+	Tone.Source.prototype.setVolume = function(value, fadeTime){
 		var now = this.now();
-		this.output.gain.cancelScheduledValues(now);
-		this.output.gain.setValueAtTime(currentVolume, now);
-		this.output.gain.linearRampToValueAtTime(value, this.toSeconds(time));
-	};
-
-	/**
-	 *  @param {number} value 
-	 */
-	Tone.Source.prototype.setVolume = function(value){
-		this.output.gain.value = value;
+		if (fadeTime){
+			var currentVolume = this.output.gain.value;
+			this.output.gain.cancelScheduledValues(now);
+			this.output.gain.setValueAtTime(currentVolume, now);
+			this.output.gain.linearRampToValueAtTime(value, now + this.toSeconds(time));
+		} else {
+			this.output.gain.setValueAtTime(value, now);
+		}
 	};
 
 	/**
