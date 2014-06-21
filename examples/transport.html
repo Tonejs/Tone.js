@@ -15,11 +15,10 @@
 		Tone.Transport.setLoopEnd("1:0");
 		Tone.Transport.setBpm(145);
 
-		var player = new Tone.Player("./audio/505/hh.mp3");
-		player.toMaster();
-		player.load(function(){
+		var player = new Tone.Player("./audio/505/hh.mp3", function(){
 			document.querySelector("#loading").remove();
 		});
+		player.toMaster();
 
 		//setting events
 		var output = document.querySelector("#output");

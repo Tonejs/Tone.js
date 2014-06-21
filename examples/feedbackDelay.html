@@ -10,10 +10,7 @@
 	<div id='loading'>loading...<div>
 	<script type="text/javascript">
 		//the player
-		var player = new Tone.Player("./audio/505/snare.mp3");
-		
-		//load it
-		player.load(function(){
+		var player = new Tone.Player("./audio/505/snare.mp3", function(){
 			document.querySelector("#loading").remove();
 		});
 

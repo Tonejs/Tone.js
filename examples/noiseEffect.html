@@ -2,7 +2,7 @@
 <head>
 	<title>Effect Example</title>
 
-	<script type="text/javascript" src="../build/Tone.js"></script>
+	<script type="text/javascript" src="../Tone.js"></script>
 	
 </head>
 <body>
@@ -40,8 +40,7 @@
 
 
 		// play a sound and connect it to the effect?
-		var player = new Tone.Player("../audio/casio/A1.mp3");
-		player.load(doLoop);
+		var player = new Tone.Player("../audio/casio/A1.mp3", doLoop);
 
 		function doLoop() {
 			player.loop(0., .1, .31);

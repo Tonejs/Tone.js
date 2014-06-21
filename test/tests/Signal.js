@@ -260,7 +260,7 @@ function(core, chai, Recorder, Signal, Add, Multiply, Scale, Oscillator, Merge, 
 			var recorderR = new Recorder();
 			split.left.connect(recorderL);
 			split.right.connect(recorderR);
-			recorderL.record(0.05, 0.05, function(buffers){
+			recorderL.record(0.05, 0.1, function(buffers){
 				var lBuffer = buffers[0];
 				for (var i = 0; i < lBuffer.length; i++){
 					expect(lBuffer[i]).to.equal(1);

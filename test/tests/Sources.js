@@ -21,7 +21,7 @@ function(chai, Player, Master, Oscillator, Recorder, Noise){
 
 		it("loads a file", function(done){
 			expect(player.state).to.equal("stopped");
-			player.load(function(){
+			player.load("./testAudio/kick.mp3", function(){
 				done();
 			});
 		});
