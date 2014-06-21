@@ -45,9 +45,9 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Scale"], function(T
 		this.dry.connect(this.output);
 		this.wet.connect(this.output);
 		//wet control
-		this.chain(this.wetness, this._invert, this.wet.gain);
-		//dry control
-		this.chain(this.wetness, this.dry.gain);
+		this.chain(this.wetness, this.wet.gain);
+		//dry control is the inverse of the wet
+		this.chain(this.wetness, this._invert, this.dry.gain);
 
 		this.dry.gain.value = 0;
 		this.wet.gain.value = 0;
@@ -64,11 +64,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Scale"], function(T
 	 * @param {Tone.Time=} rampTime
 	 */
 	Tone.DryWet.prototype.setDry = function(val, rampTime){
-		if (rampTime){
-			this.wetness.linearRampToValueNow(this.equalPowerScale(val), rampTime);
-		} else {
-			this.wetness.setValueAtTime(this.equalPowerScale(val), this.now());
-		}
+		this.setWet(1-val, rampTime);
 	};
 
 	/**
@@ -78,7 +74,11 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Scale"], function(T
 	 * @param {Tone.Time=} rampTime
 	 */
 	Tone.DryWet.prototype.setWet = function(val, rampTime){
-		this.setDry(1-val, rampTime);
+		if (rampTime){
+			this.wetness.linearRampToValueNow(val, rampTime);
+		} else {
+			this.wetness.setValue(val);
+		}
 	};
 
 	/**
