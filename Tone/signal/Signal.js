@@ -1,4 +1,4 @@
-define(["Tone/core/Tone"], function(Tone){
+define(["Tone/core/Tone", "Tone/core/Master"], function(Tone){
 
 	//all signals share a common constant signal generator
 	/**
@@ -28,6 +28,7 @@ define(["Tone/core/Tone"], function(Tone){
 
 	generator.connect(constant);
 	generator.start(0);
+	generator.noGC();
 
 	/**
 	 *  constant audio-rate signal
@@ -137,6 +138,9 @@ define(["Tone/core/Tone"], function(Tone){
 	/**
 	 *  Schedules an exponential continuous change in parameter value from 
 	 *  the previous scheduled parameter value to the given value.
+	 *
+	 *  NOTE: Chrome will throw an error if you try to exponentially ramp to a 
+	 *  value 0 or less. 
 	 *  
 	 *  @param  {number} value   
 	 *  @param  {Tone.Time} endTime 
