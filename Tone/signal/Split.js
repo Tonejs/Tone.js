@@ -15,7 +15,6 @@ define(["Tone/core/Tone"], function(Tone){
 		this.splitter = this.context.createChannelSplitter(2);
 		/** 
 		 *  left channel output
-		 *  @alias for the default output
 		 *  @type {GainNode}
 		 */
 		this.left = this.output;
