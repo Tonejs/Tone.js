@@ -2,7 +2,7 @@
 <head>
 	<title>FEEDBACK DELAY</title>
 
-	<script type="text/javascript" src="../build/Tone.js"></script>
+	<script type="text/javascript" src="../Tone.js"></script>
 	
 </head>
 <body>
@@ -19,12 +19,12 @@
 
 		var feedbackDelay = new Tone.FeedbackDelay(.25);
 		//60% feedback
-		feedbackDelay.setFeedback(.6);
+		feedbackDelay.setFeedback(.2);
 
 		//connections
 		player.connect(feedbackDelay);
-		player.toMaster();
-		feedbackDelay.toMaster();			
+		feedbackDelay.toMaster();	
+		feedbackDelay.setWet(0.5);		
 		
 	</script>
 </body>

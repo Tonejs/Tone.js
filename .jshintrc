@@ -15,6 +15,7 @@
     "AudioContext" : true,
     "AudioBufferSourceNode" : false,
     "OscillatorNode" : false,
+    "DelayNode" : false,
     "GainNode" : false,
     "AudioNode" : false,
     "AudioParam" : false,

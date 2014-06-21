@@ -17,7 +17,7 @@ define(["Tone/core/Tone", "Tone/source/Oscillator", "Tone/signal/Scale"], functi
 		/** @type {GainNode} */
 		this.input = this.context.createGain();
 		/** @type {Tone.Oscillator} */
-		this.oscillator = new Tone.Oscillator(rate, "sine");
+		this.oscillator = new Tone.Oscillator(this.defaultArg(rate, 1), "sine");
 		/** @type {Tone.Scale} @private */
 		this._scaler = new Tone.Scale(this.defaultArg(outputMin, 0), this.defaultArg(outputMax, 1));
 		/** alias for the output */
