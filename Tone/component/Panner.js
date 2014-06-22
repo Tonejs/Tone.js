@@ -1,50 +1,91 @@
-///////////////////////////////////////////////////////////////////////////////
-//
-//  PANNER
-//
-//	Equal Power Gain L/R Panner. Not 3D
-//	0 = 100% Left
-//	1 = 100% Right
-///////////////////////////////////////////////////////////////////////////////
-
-define(["Tone/core/Tone", "Tone/signal/Merge", "Tone/signal/Signal", "Tone/signal/Scale"], 
+define(["Tone/core/Tone", "Tone/component/DryWet", "Tone/signal/Merge", "Tone/signal/Split"], 
 function(Tone){
 
-	Tone.Panner = function(){
+	/**
+	 *  Panner. 
+	 *  
+	 *  Equal Power Gain L/R Panner. Not 3D
+	 *  
+	 *  a panner uses a dry/wet knob internally
+	 *
+	 *  0 = 100% Left
+	 *  1 = 100% Right
+	 *  
+	 *  @constructor
+	 *  @extends {Tone}
+	 *  @param {number=} initialPan the initail panner value (defaults to 0.5 = center)
+	 */
+	Tone.Panner = function(initialPan){
+		
 		Tone.call(this);
 
-		//components
-		//incoming signal is sent to left and right
-		this.left = this.context.createGain();
-		this.right = this.context.createGain();
-		this.control = new Tone.Signal();
-		this.merge = new Tone.Merge();
-		this.invert = new Tone.Scale(1, 0);
-		this.normal = new Tone.Scale(0, 1);
+		/**
+		 *  the dry/wet knob
+		 *  @type {Tone.DryWet}
+		 *  @private
+		 */
+		this._dryWet = new Tone.DryWet();
+		/**
+		 *  @type {Tone.Merge}
+		 *  @private
+		 */
+		this._merger = new Tone.Merge();
+		/**
+		 *  @type {Tone.Split}
+		 *  @private
+		 */
+		this._splitter = new Tone.Split();
+		/**
+		 *  the pan control
+		 *  @type {Tone.Signal}
+		 */	
+		this.panControl = this._dryWet.wetness;
 
-		//connections
-		this.chain(this.input, this.left, this.merge.left);
-		this.chain(this.input, this.right, this.merge.right);
-		this.merge.connect(this.output);
-		//left channel control
-		this.chain(this.control, this.invert, this.left.gain);
-		//right channel control
-		this.chain(this.control, this.normal, this.right.gain);
+		//CONNECTIONS:
+		this.input.connect(this._splitter.left);
+		this.input.connect(this._splitter.right);
+		//left channel is dry, right channel is wet
+		this._splitter.left.connect(this._dryWet.dry);
+		this._splitter.right.connect(this._dryWet.wet);
+		//merge it back together
+		this._dryWet.dry.connect(this._merger.left);
+		this._dryWet.wet.connect(this._merger.right);
+		this._merger.connect(this.output);
 
-
-		//setup
-		this.left.gain.value = 0;
-		this.right.gain.value = 0;
-		this.setPan(.5);
+		//initial value
+		this.setPan(this.defaultArg(initialPan, 0.5));
 	};
 
 	Tone.extend(Tone.Panner);
 
-	Tone.Panner.prototype.setPan = function(val, rampTime){
-		rampTime = this.defaultArg(rampTime, 0);
-		//put val into -1 to 1 range
-		this.control.linearRampToValueAtTime(val, rampTime);
+	/**
+	 *  set the l/r pan.
+	 *  
+	 *  0 = 100% left.
+	 *  1 = 100% right.
+	 *  
+	 *  @param {number} pan 0-1
+	 *  @param {Tone.Time=} rampTime (optionally) ramp to the pan position
+	 */
+	Tone.Panner.prototype.setPan = function(pan, rampTime){
+		this._dryWet.setWet(pan, rampTime);
+	};
+
+	/**
+	 *  clean up
+	 */
+	Tone.Panner.prototype.dispose = function(){
+		this._dryWet.dispose();
+		this._splitter.dispose();
+		this._merger.dispose();
+		this.input.disconnect();
+		this.output.disconnect();
+		this._dryWet = null;
+		this._splitter = null;
+		this._merger = null;
+		this.input = null;
+		this.output = null;
 	};
 
 	return Tone.Panner;
-});;
+});

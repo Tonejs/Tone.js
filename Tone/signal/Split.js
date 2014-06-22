@@ -15,7 +15,6 @@ define(["Tone/core/Tone"], function(Tone){
 		this.splitter = this.context.createChannelSplitter(2);
 		/** 
 		 *  left channel output
-		 *  @alias for the default output
 		 *  @type {GainNode}
 		 */
 		this.left = this.output;
@@ -36,11 +35,11 @@ define(["Tone/core/Tone"], function(Tone){
 	/**
 	 *  dispose method
 	 */
-	Tone.Add.prototype.dispose = function(){
-		this._value.dispose();
+	Tone.Split.prototype.dispose = function(){
+		this.splitter.disconnect();
 		this.input.disconnect();
 		this.output.disconnect();
-		this._value = null;
+		this.splitter = null;
 		this.input = null;
 		this.output = null;
 	}; 

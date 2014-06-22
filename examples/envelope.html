@@ -2,20 +2,33 @@
 <head>
 	<title>Envelope</title>
 
-	<script type="text/javascript" src="../build/Tone.js"></script>
-
+	<script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
+	<script type="text/javascript" src="../Tone.js"></script>
+	<link rel="stylesheet" type="text/css" href="exampleStyle.css">
 </head>
 <body>	
-	<button onmousedown='env.triggerAttack()' onmouseup='env.triggerRelease()' id='Trigger'>trigger</button>
+
+	<button id='Trigger'>trigger</button>
+
 	<script type="text/javascript">
-	</script>
-	<script type="text/javascript">
-		var env = new Tone.Envelope(.05, .01, .7, .4);
+		var env = new Tone.Envelope(.05, .01, .4, .4);
 		var noise = new Tone.Noise();
 		
 		//connect the evnelope to the output gain
-		noise.toMaster();
 		env.connect(noise.output.gain);
+
+		//start the noise
+		noise.toMaster();
+		noise.start();
+
+		//listen for triggers
+		$("#Trigger").mousedown(function(){
+			env.triggerAttack();
+		});
+
+		$("#Trigger").mouseup(function(){
+			env.triggerRelease();
+		});
 	</script>
 </body>
 </html>

@@ -13,6 +13,7 @@ require.config({
 });
 
 var allTests = ["tests/Core", "tests/Timing", "tests/Signal", "tests/Math", "tests/Transport", "tests/Sources"];
+// var allTests = ["tests/Components"];
 
 require(allTests, function(){
 	mocha.run(); 

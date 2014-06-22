@@ -7,16 +7,15 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 	 *  
 	 *  @constructor
 	 *  @extends {Tone.Source} 
-	 *  @param {string} url
+	 *  @param {string=} url if a url is passed in, it will be loaded
+	 *                       and invoke the callback if it also passed
+	 *                       in.
+	 *  @param {function(Tone.Player)=} cb callback to be invoked
+	 *                                     once the url is loaded
 	 */
-	Tone.Player = function(url){
+	Tone.Player = function(url, cb){
 		Tone.Source.call(this);
 
-		/**
-		 *  the url to load
-		 *  @type {string}
-		 */
-		this.url = url;
 		/**
 		 *  @private
 		 *  @type {AudioBufferSourceNode}
@@ -58,6 +57,11 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 		 *  @type {function}
 		 */
 		this.onended = function(){};
+
+		//if there is a url, load it. 
+		if (url){
+			this.load(url, cb);
+		}
 	};
 
 	Tone.extend(Tone.Player, Tone.Source);
@@ -67,20 +71,22 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 	 *  Load the audio file as an audio buffer.
 	 *  Decodes the audio asynchronously and invokes
 	 *  the callback once the audio buffer loads.
-	 *  
-	 *  @param {function(Tone.Player)} callback
+	 *
+	 *  @param {string} url the url of the buffer to load.
+	 *                      filetype support depends on the
+	 *                      browser.
+	 *  @param {function(Tone.Player)=} callback
 	 */
-	Tone.Player.prototype.load = function(callback){
+	Tone.Player.prototype.load = function(url, callback){
 		if (!this._buffer){
 			var request = new XMLHttpRequest();
-			request.open("GET", this.url, true);
+			request.open("GET", url, true);
 			request.responseType = "arraybuffer";
 			// decode asynchronously
 			var self = this;
 			request.onload = function() {
 				self.context.decodeAudioData(request.response, function(buff) {
-					self._buffer = buff;
-					self.duration = buff.duration;
+					self.setBuffer(buff);
 					if (callback){
 						callback(self);
 					}
@@ -93,6 +99,20 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 				callback(this);
 			}
 		}
+	};
+
+	/**
+	 *  set the buffer
+	 *
+	 *  @param {AudioBuffer} buffer the buffer which the player will play.
+	 *                              note: if you switch the buffer after
+	 *                              the player is already started, it will not
+	 *                              take effect until the next time the player
+	 *                              is started.
+	 */
+	Tone.Player.prototype.setBuffer = function(buffer){
+		this._buffer = buffer;
+		this.duration = buffer.duration;
 	};
 
 	/**

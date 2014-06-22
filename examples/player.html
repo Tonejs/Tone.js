@@ -8,15 +8,13 @@
 	<div id='loading'>loading...</button>
 	<script type="text/javascript">
 
-		var player = new Tone.Player("./audio/casio/A1.mp3");
+		var player = new Tone.Player("./audio/casio/A1.mp3", function(){
+			document.querySelector('#loading').remove();
+		});
 
 		//connect it to the output
 		player.toMaster();
 		
-		//once it's loaded, add the event triggers
-		player.load(function(){
-			document.querySelector('#loading').remove();
-		});
 
 		var button = document.querySelector('button');
 
