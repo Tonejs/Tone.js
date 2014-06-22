@@ -15,7 +15,9 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 		 *  @type {GainNode}
 		 */
 		this.input = this.context.createGain();
-		/** @type {GainNode} */
+		/** 
+		 *  @type {GainNode}
+		 */
 		this.output = this.input;
 
 		//apply the inital scale factor
