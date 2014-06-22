@@ -1,30 +1,153 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-    <meta charset="utf-8">
-    <title>JSDoc: Class: Scale</title>
-    
-    <script src="scripts/prettify/prettify.js"> </script>
-    <script src="scripts/prettify/lang-css.js"> </script>
-    <!--[if lt IE 9]>
-      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
-    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+	<meta charset="utf-8">
+	<title>Tone.js Class: Scale</title>
+
+	<!--[if lt IE 9]>
+	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+	<link type="text/css" rel="stylesheet" href="styles/sunlight.default.css">
+
+	
+	<link type="text/css" rel="stylesheet" href="styles/site.flatly.css">
+	
 </head>
 
 <body>
+<div class="container-fluid">
+	<div class="navbar navbar-fixed-top navbar-inverse">
+		<div class="navbar-inner">
+			<a class="brand" href="index.html">Tone.js</a>
+			<ul class="nav">
+				
+				<li class="dropdown">
+					<a href="classes.list.html" class="dropdown-toggle" data-toggle="dropdown">Classes<b
+						class="caret"></b></a>
 
-<div id="main">
-    
-    <h1 class="page-title">Class: Scale</h1>
-    
-    
+					<ul class="dropdown-menu inline">
+						
+						<li>
+							<a href="Tone.html">Tone</a>
+						</li>
+						
+						<li>
+							<a href="Tone.Add.html">Add</a>
+						</li>
+						
+						<li>
+							<a href="Tone.AutoPanner.html">AutoPanner</a>
+						</li>
+						
+						<li>
+							<a href="Tone.BitCrusher.html">BitCrusher</a>
+						</li>
+						
+						<li>
+							<a href="Tone.DryWet.html">DryWet</a>
+						</li>
+						
+						<li>
+							<a href="Tone.Effect.html">Effect</a>
+						</li>
+						
+						<li>
+							<a href="Tone.Envelope.html">Envelope</a>
+						</li>
+						
+						<li>
+							<a href="Tone.FeedbackDelay.html">FeedbackDelay</a>
+						</li>
+						
+						<li>
+							<a href="Tone.FeedbackEffect.html">FeedbackEffect</a>
+						</li>
+						
+						<li>
+							<a href="Tone.LFO.html">LFO</a>
+						</li>
+						
+						<li>
+							<a href="Tone.Merge.html">Merge</a>
+						</li>
+						
+						<li>
+							<a href="Tone.Meter.html">Meter</a>
+						</li>
+						
+						<li>
+							<a href="Tone.Microphone.html">Microphone</a>
+						</li>
+						
+						<li>
+							<a href="Tone.Multiply.html">Multiply</a>
+						</li>
+						
+						<li>
+							<a href="Tone.Noise.html">Noise</a>
+						</li>
+						
+						<li>
+							<a href="Tone.Oscillator.html">Oscillator</a>
+						</li>
+						
+						<li>
+							<a href="Tone.Panner.html">Panner</a>
+						</li>
+						
+						<li>
+							<a href="Tone.PingPongDelay.html">PingPongDelay</a>
+						</li>
+						
+						<li>
+							<a href="Tone.Player.html">Player</a>
+						</li>
+						
+						<li>
+							<a href="Tone.Recorder.html">Recorder</a>
+						</li>
+						
+						<li>
+							<a href="Tone.Scale.html">Scale</a>
+						</li>
+						
+						<li>
+							<a href="Tone.Signal.html">Signal</a>
+						</li>
+						
+						<li>
+							<a href="Tone.Source.html">Source</a>
+						</li>
+						
+						<li>
+							<a href="Tone.Split.html">Split</a>
+						</li>
+						
+						<li>
+							<a href="Tone.Transport.html">Transport</a>
+						</li>
+						
+
+					</ul>
+				</li>
+				
+			</ul>
+		</div>
+	</div>
+
+	<div class="row-fluid">
+
+		
+		<div class="span8">
+			
+				<div id="main">
+					
 
 
-
+	<h1 class="page-title">Class: Scale</h1>
 <section>
-    
+
 <header>
     <h2>
         <span class="ancestors"><a href="Tone.html">Tone</a>.</span>
@@ -32,12 +155,12 @@
     Scale
     </h2>
     
-</header>  
+</header>
 
 <article>
     <div class="container-overview">
     
-    
+
     
         
 <dt>
@@ -49,12 +172,10 @@
     
     
     <div class="description">
-        performs a linear scaling on an input signal
-
- scales from the input range of inputMin to inputMax 
- to the output range of outputMin to outputMax
-
- if only two arguments are provided, the inputMin and inputMax are set to -1 and 1
+        <p>performs a linear scaling on an input signal</p>
+<p> scales from the input range of inputMin to inputMax 
+ to the output range of outputMin to outputMax</p>
+<p> if only two arguments are provided, the inputMin and inputMax are set to -1 and 1</p>
     </div>
     
 
@@ -66,33 +187,33 @@
         <h5>Parameters:</h5>
         
 
-<table class="params">
+<table class="params table table-striped">
     <thead>
 	<tr>
 		
 		<th>Name</th>
 		
-		
+
 		<th>Type</th>
-		
+
 		
 		<th>Argument</th>
 		
+
 		
-		
-		
+
 		<th class="last">Description</th>
 	</tr>
 	</thead>
-	
+
 	<tbody>
 	
-	
+
         <tr>
             
                 <td class="name"><code>inputMin</code></td>
             
-            
+
             <td class="type">
             
                 
@@ -101,29 +222,29 @@
 
             
             </td>
-            
+
             
                 <td class="attributes">
                 
-                    
+
                 
-                    
+
                 
                 </td>
             
+
             
-            
-            
+
             <td class="description last"></td>
         </tr>
+
 	
-	
-	
+
         <tr>
             
                 <td class="name"><code>inputMax</code></td>
             
-            
+
             <td class="type">
             
                 
@@ -132,29 +253,29 @@
 
             
             </td>
-            
+
             
                 <td class="attributes">
                 
-                    
+
                 
-                    
+
                 
                 </td>
             
+
             
-            
-            
+
             <td class="description last"></td>
         </tr>
+
 	
-	
-	
+
         <tr>
             
                 <td class="name"><code>outputMin</code></td>
             
-            
+
             <td class="type">
             
                 
@@ -163,31 +284,31 @@
 
             
             </td>
-            
+
             
                 <td class="attributes">
                 
                     &lt;optional><br>
                 
-                    
+
                 
-                    
+
                 
                 </td>
             
+
             
-            
-            
+
             <td class="description last"></td>
         </tr>
+
 	
-	
-	
+
         <tr>
             
                 <td class="name"><code>outputMax</code></td>
             
-            
+
             <td class="type">
             
                 
@@ -196,60 +317,61 @@
 
             
             </td>
-            
+
             
                 <td class="attributes">
                 
                     &lt;optional><br>
                 
-                    
+
                 
-                    
+
                 
                 </td>
             
+
             
-            
-            
+
             <td class="description last"></td>
         </tr>
-	
+
 	
 	</tbody>
 </table>
+
     
     
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#line780">line 780</a>
+        <a href="Scale.js.html">signal/Scale.js</a>, <a href="Scale.js.html#sunlight-1-line-18">line 18</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -269,26 +391,26 @@
 
     
     </div>
-    
+
     
         <h3 class="subsection-title">Extends</h3>
-        
+
         <ul>
             <li><a href="Tone.html">Tone</a></li>
         </ul>
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
         <h3 class="subsection-title">Members</h3>
-        
+
         <dl>
             
 <dt>
@@ -314,34 +436,34 @@
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#line796">line 796</a>
+        <a href="Scale.js.html">signal/Scale.js</a>, <a href="Scale.js.html#sunlight-1-line-34">line 34</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -374,34 +496,34 @@
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#line793">line 793</a>
+        <a href="Scale.js.html">signal/Scale.js</a>, <a href="Scale.js.html#sunlight-1-line-31">line 31</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -434,34 +556,34 @@
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#line802">line 802</a>
+        <a href="Scale.js.html">signal/Scale.js</a>, <a href="Scale.js.html#sunlight-1-line-40">line 40</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -494,34 +616,34 @@
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#line799">line 799</a>
+        <a href="Scale.js.html">signal/Scale.js</a>, <a href="Scale.js.html#sunlight-1-line-37">line 37</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -554,34 +676,34 @@
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#line807">line 807</a>
+        <a href="Scale.js.html">signal/Scale.js</a>, <a href="Scale.js.html#sunlight-1-line-45">line 45</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -614,34 +736,34 @@
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#line813">line 813</a>
+        <a href="Scale.js.html">signal/Scale.js</a>, <a href="Scale.js.html#sunlight-1-line-51">line 51</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -674,34 +796,34 @@
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#line810">line 810</a>
+        <a href="Scale.js.html">signal/Scale.js</a>, <a href="Scale.js.html#sunlight-1-line-48">line 48</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -719,7 +841,7 @@
 <dd>
     
     <div class="description">
-        the default buffer size
+        <p>the default buffer size</p>
     </div>
     
     
@@ -738,9 +860,9 @@
     
 <dl class="details">
     
-        
+
     
-    
+
     
 
     
@@ -749,28 +871,28 @@
         <a href="Tone.html#bufferSize">Tone#bufferSize</a>
     </li></dd>
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#line131">line 131</a>
+        <a href="Tone.js.html">core/Tone.js</a>, <a href="Tone.js.html#sunlight-1-line-138">line 138</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -788,7 +910,7 @@
 <dd>
     
     <div class="description">
-        A static pointer to the audio context
+        <p>A static pointer to the audio context</p>
     </div>
     
     
@@ -807,9 +929,9 @@
     
 <dl class="details">
     
-        
+
     
-    
+
     
 
     
@@ -818,28 +940,28 @@
         <a href="Tone.html#context">Tone#context</a>
     </li></dd>
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#line125">line 125</a>
+        <a href="Tone.js.html">core/Tone.js</a>, <a href="Tone.js.html#sunlight-1-line-132">line 132</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -857,7 +979,7 @@
 <dd>
     
     <div class="description">
-        default input of the ToneNode
+        <p>default input of the ToneNode</p>
     </div>
     
     
@@ -876,9 +998,9 @@
     
 <dl class="details">
     
-        
+
     
-    
+
     
 
     
@@ -887,28 +1009,28 @@
         <a href="Tone.html#input">Tone#input</a>
     </li></dd>
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#line102">line 102</a>
+        <a href="Tone.js.html">core/Tone.js</a>, <a href="Tone.js.html#sunlight-1-line-109">line 109</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -926,8 +1048,8 @@
 <dd>
     
     <div class="description">
-        true if the input is in the format number+hz
- i.e.: 10hz
+        <p>true if the input is in the format number+hz
+ i.e.: 10hz</p>
     </div>
     
     
@@ -936,9 +1058,9 @@
     
 <dl class="details">
     
-        
+
     
-    
+
     
 
     
@@ -947,28 +1069,28 @@
         <a href="Tone.html#isFrequency">Tone#isFrequency</a>
     </li></dd>
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#line1925">line 1925</a>
+        <a href="Transport.js.html">core/Transport.js</a>, <a href="Transport.js.html#sunlight-1-line-698">line 698</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -986,7 +1108,7 @@
 <dd>
     
     <div class="description">
-        tests if a string is musical notation
+        <p>tests if a string is musical notation
  i.e.:
      4n = quarter note
       2m = two measures
@@ -1024,7 +1146,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#sunlight-1-line-1897">line 1897</a>
+        <a href="Transport.js.html">core/Transport.js</a>, <a href="Transport.js.html#sunlight-1-line-670">line 670</a>
     </li></ul></dd>
     
 
@@ -1051,7 +1173,7 @@
     <div class="description">
         <p>tests if a string is transportTime
  i.e. :
- 	1:2:0 = 1 measure + two quarter notes + 0 sixteenth notes
+     1:2:0 = 1 measure + two quarter notes + 0 sixteenth notes</p>
     </div>
     
     
@@ -1060,9 +1182,9 @@
     
 <dl class="details">
     
-        
+
     
-    
+
     
 
     
@@ -1071,28 +1193,28 @@
         <a href="Tone.html#isTransportTime">Tone#isTransportTime</a>
     </li></dd>
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#line1911">line 1911</a>
+        <a href="Transport.js.html">core/Transport.js</a>, <a href="Transport.js.html#sunlight-1-line-684">line 684</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -1110,7 +1232,7 @@
 <dd>
     
     <div class="description">
-        default output of the ToneNode
+        <p>default output of the ToneNode</p>
     </div>
     
     
@@ -1129,9 +1251,9 @@
     
 <dl class="details">
     
-        
+
     
-    
+
     
 
     
@@ -1140,97 +1262,28 @@
         <a href="Tone.html#output">Tone#output</a>
     </li></dd>
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#line108">line 108</a>
+        <a href="Tone.js.html">core/Tone.js</a>, <a href="Tone.js.html#sunlight-1-line-115">line 115</a>
     </li></ul></dd>
     
-    
-    
-    
-    
-    
-    
-</dl>
 
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <h4 class="name" id="waveShaperResolution"><span class="type-signature"></span>waveShaperResolution<span class="type-signature"> :number</span></h4>
-    
-    
-</dt>
-<dd>
-    
-    <div class="description">
-        the default resolution for WaveShaperNodes
-    </div>
-    
-    
-    
-        <h5>Type:</h5>
-        <ul>
-            <li>
-                
-<span class="param-type">number</span>
-
-
-            </li>
-        </ul>
     
 
     
-<dl class="details">
-    
-        
-    
-    
-    
 
-    
-    <dt class="inherited-from">Inherited From:</dt>
-    <dd class="inherited-from"><ul class="dummy"><li>
-        <a href="Tone.html#waveShaperResolution">Tone#waveShaperResolution</a>
-    </li></dd>
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#line137">line 137</a>
-    </li></ul></dd>
-    
-    
-    
-    
-    
-    
     
 </dl>
 
@@ -1240,10 +1293,10 @@
 
         </dl>
     
-    
+
     
         <h3 class="subsection-title">Methods</h3>
-        
+
         <dl>
             
 <dt>
@@ -1255,7 +1308,7 @@
     
     
     <div class="description">
-        set the scaling parameters
+        <p>set the scaling parameters</p>
     </div>
     
 
@@ -1268,34 +1321,34 @@
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#line829">line 829</a>
+        <a href="Scale.js.html">signal/Scale.js</a>, <a href="Scale.js.html#sunlight-1-line-67">line 67</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -1324,7 +1377,7 @@
     
     
     <div class="description">
-        connect together all of the arguments in series
+        <p>connect together all of the arguments in series</p>
     </div>
     
 
@@ -1336,29 +1389,29 @@
         <h5>Parameters:</h5>
         
 
-<table class="params">
+<table class="params table table-striped">
     <thead>
 	<tr>
 		
-		
+
 		<th>Type</th>
-		
+
 		
 		<th>Argument</th>
 		
+
 		
-		
-		
+
 		<th class="last">Description</th>
 	</tr>
 	</thead>
-	
+
 	<tbody>
 	
-	
+
         <tr>
             
-            
+
             <td class="type">
             
                 
@@ -1370,35 +1423,36 @@
 
             
             </td>
-            
+
             
                 <td class="attributes">
                 
-                    
+
                 
-                    
+
                 
                     &lt;repeatable><br>
                 
                 </td>
             
+
             
-            
-            
+
             <td class="description last"></td>
         </tr>
-	
+
 	
 	</tbody>
 </table>
+
     
     
     
 <dl class="details">
     
-        
+
     
-    
+
     
 
     
@@ -1407,28 +1461,28 @@
         <a href="Tone.html#chain">Tone#chain</a>
     </li></dd>
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#line162">line 162</a>
+        <a href="Tone.js.html">core/Tone.js</a>, <a href="Tone.js.html#sunlight-1-line-163">line 163</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -1457,7 +1511,7 @@
     
     
     <div class="description">
-        connect the output of a ToneNode to an AudioParam, AudioNode, or ToneNode
+        <p>connect the output of a ToneNode to an AudioParam, AudioNode, or ToneNode</p>
     </div>
     
 
@@ -1469,31 +1523,31 @@
         <h5>Parameters:</h5>
         
 
-<table class="params">
+<table class="params table table-striped">
     <thead>
 	<tr>
 		
 		<th>Name</th>
 		
-		
+
 		<th>Type</th>
+
 		
+
 		
-		
-		
-		
+
 		<th class="last">Description</th>
 	</tr>
 	</thead>
-	
+
 	<tbody>
 	
-	
+
         <tr>
             
                 <td class="name"><code>unit</code></td>
             
-            
+
             <td class="type">
             
                 
@@ -1508,25 +1562,26 @@
 
             
             </td>
+
             
+
             
-            
-            
-            
+
             <td class="description last"></td>
         </tr>
-	
+
 	
 	</tbody>
 </table>
+
     
     
     
 <dl class="details">
     
-        
+
     
-    
+
     
 
     
@@ -1535,28 +1590,28 @@
         <a href="Tone.html#connect">Tone#connect</a>
     </li></dd>
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#line147">line 147</a>
+        <a href="Tone.js.html">core/Tone.js</a>, <a href="Tone.js.html#sunlight-1-line-148">line 148</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -1585,7 +1640,7 @@
     
     
     <div class="description">
-        convert db scale to gain scale (0-1)
+        <p>convert db scale to gain scale (0-1)</p>
     </div>
     
 
@@ -1597,31 +1652,31 @@
         <h5>Parameters:</h5>
         
 
-<table class="params">
+<table class="params table table-striped">
     <thead>
 	<tr>
 		
 		<th>Name</th>
 		
-		
+
 		<th>Type</th>
+
 		
+
 		
-		
-		
-		
+
 		<th class="last">Description</th>
 	</tr>
 	</thead>
-	
+
 	<tbody>
 	
-	
+
         <tr>
             
                 <td class="name"><code>db</code></td>
             
-            
+
             <td class="type">
             
                 
@@ -1630,25 +1685,26 @@
 
             
             </td>
+
             
+
             
-            
-            
-            
+
             <td class="description last"></td>
         </tr>
-	
+
 	
 	</tbody>
 </table>
+
     
     
     
 <dl class="details">
     
-        
+
     
-    
+
     
 
     
@@ -1657,28 +1713,28 @@
         <a href="Tone.html#dbToGain">Tone#dbToGain</a>
     </li></dd>
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#line226">line 226</a>
+        <a href="Tone.js.html">core/Tone.js</a>, <a href="Tone.js.html#sunlight-1-line-222">line 222</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -1708,6 +1764,7 @@
 
 	</dd>
 </dl>
+
 
         
     
@@ -1725,7 +1782,7 @@
     
     
     <div class="description">
-        if a the given is undefined, use the fallback
+        <p>if a the given is undefined, use the fallback</p>
     </div>
     
 
@@ -1737,31 +1794,31 @@
         <h5>Parameters:</h5>
         
 
-<table class="params">
+<table class="params table table-striped">
     <thead>
 	<tr>
 		
 		<th>Name</th>
 		
-		
+
 		<th>Type</th>
+
 		
+
 		
-		
-		
-		
+
 		<th class="last">Description</th>
 	</tr>
 	</thead>
-	
+
 	<tbody>
 	
-	
+
         <tr>
             
                 <td class="name"><code>given</code></td>
             
-            
+
             <td class="type">
             
                 
@@ -1770,21 +1827,21 @@
 
             
             </td>
+
             
+
             
-            
-            
-            
+
             <td class="description last"></td>
         </tr>
+
 	
-	
-	
+
         <tr>
             
                 <td class="name"><code>fallback</code></td>
             
-            
+
             <td class="type">
             
                 
@@ -1793,25 +1850,26 @@
 
             
             </td>
+
             
+
             
-            
-            
-            
+
             <td class="description last"></td>
         </tr>
-	
+
 	
 	</tbody>
 </table>
+
     
     
     
 <dl class="details">
     
-        
+
     
-    
+
     
 
     
@@ -1820,28 +1878,28 @@
         <a href="Tone.html#defaultArg">Tone#defaultArg</a>
     </li></dd>
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#line189">line 189</a>
+        <a href="Tone.js.html">core/Tone.js</a>, <a href="Tone.js.html#sunlight-1-line-185">line 185</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -1872,6 +1930,7 @@
 	</dd>
 </dl>
 
+
         
     
     
@@ -1888,7 +1947,7 @@
     
     
     <div class="description">
-        disconnect the output
+        <p>disconnect the output</p>
     </div>
     
 
@@ -1901,9 +1960,9 @@
     
 <dl class="details">
     
-        
+
     
-    
+
     
 
     
@@ -1912,28 +1971,28 @@
         <a href="Tone.html#disconnect">Tone#disconnect</a>
     </li></dd>
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#line154">line 154</a>
+        <a href="Tone.js.html">core/Tone.js</a>, <a href="Tone.js.html#sunlight-1-line-155">line 155</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -1962,7 +2021,7 @@
     
     
     <div class="description">
-        clean up
+        <p>clean up</p>
     </div>
     
 
@@ -1975,34 +2034,34 @@
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#line875">line 875</a>
+        <a href="Scale.js.html">signal/Scale.js</a>, <a href="Scale.js.html#sunlight-1-line-113">line 113</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -2031,8 +2090,8 @@
     
     
     <div class="description">
-        equal power gain scale
- good for cross-fading
+        <p>equal power gain scale
+ good for cross-fading</p>
     </div>
     
 
@@ -2044,31 +2103,31 @@
         <h5>Parameters:</h5>
         
 
-<table class="params">
+<table class="params table table-striped">
     <thead>
 	<tr>
 		
 		<th>Name</th>
 		
-		
+
 		<th>Type</th>
+
 		
+
 		
-		
-		
-		
+
 		<th class="last">Description</th>
 	</tr>
 	</thead>
-	
+
 	<tbody>
 	
-	
+
         <tr>
             
                 <td class="name"><code>percent</code></td>
             
-            
+
             <td class="type">
             
                 
@@ -2077,25 +2136,26 @@
 
             
             </td>
+
             
+
             
-            
-            
-            
-            <td class="description last">(0-1)</td>
+
+            <td class="description last"><p>(0-1)</p></td>
         </tr>
-	
+
 	
 	</tbody>
 </table>
+
     
     
     
 <dl class="details">
     
-        
+
     
-    
+
     
 
     
@@ -2104,28 +2164,28 @@
         <a href="Tone.html#equalPowerScale">Tone#equalPowerScale</a>
     </li></dd>
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#line200">line 200</a>
+        <a href="Tone.js.html">core/Tone.js</a>, <a href="Tone.js.html#sunlight-1-line-196">line 196</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -2143,7 +2203,7 @@
     
             
 <div class="param-desc">
-    output gain (0-1)
+    <p>output gain (0-1)</p>
 </div>
 
 
@@ -2159,6 +2219,7 @@
 
 	</dd>
 </dl>
+
 
         
     
@@ -2184,31 +2245,31 @@
         <h5>Parameters:</h5>
         
 
-<table class="params">
+<table class="params table table-striped">
     <thead>
 	<tr>
 		
 		<th>Name</th>
 		
-		
+
 		<th>Type</th>
+
 		
+
 		
-		
-		
-		
+
 		<th class="last">Description</th>
 	</tr>
 	</thead>
-	
+
 	<tbody>
 	
-	
+
         <tr>
             
                 <td class="name"><code>gain</code></td>
             
-            
+
             <td class="type">
             
                 
@@ -2217,25 +2278,26 @@
 
             
             </td>
+
             
+
             
-            
-            
-            
-            <td class="description last">(0-1)</td>
+
+            <td class="description last"><p>(0-1)</p></td>
         </tr>
-	
+
 	
 	</tbody>
 </table>
+
     
     
     
 <dl class="details">
     
-        
+
     
-    
+
     
 
     
@@ -2244,28 +2306,28 @@
         <a href="Tone.html#expScale">Tone#expScale</a>
     </li></dd>
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#line217">line 217</a>
+        <a href="Tone.js.html">core/Tone.js</a>, <a href="Tone.js.html#sunlight-1-line-213">line 213</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -2283,7 +2345,7 @@
     
             
 <div class="param-desc">
-    gain (decibel scale but betwee 0-1)
+    <p>gain (decibel scale but betwee 0-1)</p>
 </div>
 
 
@@ -2299,6 +2361,7 @@
 
 	</dd>
 </dl>
+
 
         
     
@@ -2316,9 +2379,9 @@
     
     
     <div class="description">
-        convert a frequency into seconds
+        <p>convert a frequency into seconds
  accepts both numbers and strings 
- 	i.e. 10hz or 10 both equal .1
+     i.e. 10hz or 10 both equal .1</p>
     </div>
     
 
@@ -2330,31 +2393,31 @@
         <h5>Parameters:</h5>
         
 
-<table class="params">
+<table class="params table table-striped">
     <thead>
 	<tr>
 		
 		<th>Name</th>
 		
-		
+
 		<th>Type</th>
+
 		
+
 		
-		
-		
-		
+
 		<th class="last">Description</th>
 	</tr>
 	</thead>
-	
+
 	<tbody>
 	
-	
+
         <tr>
             
                 <td class="name"><code>freq</code></td>
             
-            
+
             <td class="type">
             
                 
@@ -2366,25 +2429,26 @@
 
             
             </td>
+
             
+
             
-            
-            
-            
+
             <td class="description last"></td>
         </tr>
-	
+
 	
 	</tbody>
 </table>
+
     
     
     
 <dl class="details">
     
-        
+
     
-    
+
     
 
     
@@ -2393,28 +2457,28 @@
         <a href="Tone.html#frequencyToSeconds">Tone#frequencyToSeconds</a>
     </li></dd>
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#line343">line 343</a>
+        <a href="Tone.js.html">core/Tone.js</a>, <a href="Tone.js.html#sunlight-1-line-341">line 341</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -2444,6 +2508,7 @@
 
 	</dd>
 </dl>
+
 
         
     
@@ -2461,7 +2526,7 @@
     
     
     <div class="description">
-        convert gain scale to decibels
+        <p>convert gain scale to decibels</p>
     </div>
     
 
@@ -2473,31 +2538,31 @@
         <h5>Parameters:</h5>
         
 
-<table class="params">
+<table class="params table table-striped">
     <thead>
 	<tr>
 		
 		<th>Name</th>
 		
-		
+
 		<th>Type</th>
+
 		
+
 		
-		
-		
-		
+
 		<th class="last">Description</th>
 	</tr>
 	</thead>
-	
+
 	<tbody>
 	
-	
+
         <tr>
             
                 <td class="name"><code>gain</code></td>
             
-            
+
             <td class="type">
             
                 
@@ -2506,25 +2571,26 @@
 
             
             </td>
+
             
+
             
-            
-            
-            
-            <td class="description last">(0-1)</td>
+
+            <td class="description last"><p>(0-1)</p></td>
         </tr>
-	
+
 	
 	</tbody>
 </table>
+
     
     
     
 <dl class="details">
     
-        
+
     
-    
+
     
 
     
@@ -2533,28 +2599,28 @@
         <a href="Tone.html#gainToDb">Tone#gainToDb</a>
     </li></dd>
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#line235">line 235</a>
+        <a href="Tone.js.html">core/Tone.js</a>, <a href="Tone.js.html#sunlight-1-line-231">line 231</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -2584,6 +2650,7 @@
 
 	</dd>
 </dl>
+
 
         
     
@@ -2601,7 +2668,7 @@
     
     
     <div class="description">
-        interpolate the input value (0-1) to be between outputMin and outputMax
+        <p>interpolate the input value (0-1) to be between outputMin and outputMax</p>
     </div>
     
 
@@ -2613,31 +2680,31 @@
         <h5>Parameters:</h5>
         
 
-<table class="params">
+<table class="params table table-striped">
     <thead>
 	<tr>
 		
 		<th>Name</th>
 		
-		
+
 		<th>Type</th>
+
 		
+
 		
-		
-		
-		
+
 		<th class="last">Description</th>
 	</tr>
 	</thead>
-	
+
 	<tbody>
 	
-	
+
         <tr>
             
                 <td class="name"><code>input</code></td>
             
-            
+
             <td class="type">
             
                 
@@ -2646,21 +2713,21 @@
 
             
             </td>
+
             
+
             
-            
-            
-            
+
             <td class="description last"></td>
         </tr>
+
 	
-	
-	
+
         <tr>
             
                 <td class="name"><code>outputMin</code></td>
             
-            
+
             <td class="type">
             
                 
@@ -2669,21 +2736,21 @@
 
             
             </td>
+
             
+
             
-            
-            
-            
+
             <td class="description last"></td>
         </tr>
+
 	
-	
-	
+
         <tr>
             
                 <td class="name"><code>outputMax</code></td>
             
-            
+
             <td class="type">
             
                 
@@ -2692,25 +2759,26 @@
 
             
             </td>
+
             
+
             
-            
-            
-            
+
             <td class="description last"></td>
         </tr>
-	
+
 	
 	</tbody>
 </table>
+
     
     
     
 <dl class="details">
     
-        
+
     
-    
+
     
 
     
@@ -2719,28 +2787,28 @@
         <a href="Tone.html#interpolate">Tone#interpolate</a>
     </li></dd>
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#line246">line 246</a>
+        <a href="Tone.js.html">core/Tone.js</a>, <a href="Tone.js.html#sunlight-1-line-242">line 242</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -2770,6 +2838,7 @@
 
 	</dd>
 </dl>
+
 
         
     
@@ -2795,31 +2864,31 @@
         <h5>Parameters:</h5>
         
 
-<table class="params">
+<table class="params table table-striped">
     <thead>
 	<tr>
 		
 		<th>Name</th>
 		
-		
+
 		<th>Type</th>
+
 		
+
 		
-		
-		
-		
+
 		<th class="last">Description</th>
 	</tr>
 	</thead>
-	
+
 	<tbody>
 	
-	
+
         <tr>
             
                 <td class="name"><code>gain</code></td>
             
-            
+
             <td class="type">
             
                 
@@ -2828,25 +2897,26 @@
 
             
             </td>
+
             
+
             
-            
-            
-            
-            <td class="description last">(0-1)</td>
+
+            <td class="description last"><p>(0-1)</p></td>
         </tr>
-	
+
 	
 	</tbody>
 </table>
+
     
     
     
 <dl class="details">
     
-        
+
     
-    
+
     
 
     
@@ -2855,28 +2925,28 @@
         <a href="Tone.html#logScale">Tone#logScale</a>
     </li></dd>
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#line209">line 209</a>
+        <a href="Tone.js.html">core/Tone.js</a>, <a href="Tone.js.html#sunlight-1-line-205">line 205</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -2894,7 +2964,7 @@
     
             
 <div class="param-desc">
-    gain (decibel scale but betwee 0-1)
+    <p>gain (decibel scale but betwee 0-1)</p>
 </div>
 
 
@@ -2910,6 +2980,7 @@
 
 	</dd>
 </dl>
+
 
         
     
@@ -2927,10 +2998,9 @@
     
     
     <div class="description">
-        makes a connection to ensure that the node will not be garbage collected
- until 'dispose' is explicitly called
-
- use carefully. circumvents JS and WebAudio's normal Garbage Collection behavior
+        <p>makes a connection to ensure that the node will not be garbage collected
+ until 'dispose' is explicitly called</p>
+<p> use carefully. circumvents JS and WebAudio's normal Garbage Collection behavior</p>
     </div>
     
 
@@ -2943,9 +3013,9 @@
     
 <dl class="details">
     
-        
+
     
-    
+
     
 
     
@@ -2954,28 +3024,28 @@
         <a href="Tone.html#noGC">Tone#noGC</a>
     </li></dd>
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#line1216">line 1216</a>
+        <a href="Master.js.html">core/Master.js</a>, <a href="Master.js.html#sunlight-1-line-95">line 95</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -3004,7 +3074,7 @@
     
     
     <div class="description">
-        normalize the input to 0-1 from between inputMin to inputMax
+        <p>normalize the input to 0-1 from between inputMin to inputMax</p>
     </div>
     
 
@@ -3016,31 +3086,31 @@
         <h5>Parameters:</h5>
         
 
-<table class="params">
+<table class="params table table-striped">
     <thead>
 	<tr>
 		
 		<th>Name</th>
 		
-		
+
 		<th>Type</th>
+
 		
+
 		
-		
-		
-		
+
 		<th class="last">Description</th>
 	</tr>
 	</thead>
-	
+
 	<tbody>
 	
-	
+
         <tr>
             
                 <td class="name"><code>input</code></td>
             
-            
+
             <td class="type">
             
                 
@@ -3049,21 +3119,21 @@
 
             
             </td>
+
             
+
             
-            
-            
-            
+
             <td class="description last"></td>
         </tr>
+
 	
-	
-	
+
         <tr>
             
                 <td class="name"><code>inputMin</code></td>
             
-            
+
             <td class="type">
             
                 
@@ -3072,21 +3142,21 @@
 
             
             </td>
+
             
+
             
-            
-            
-            
+
             <td class="description last"></td>
         </tr>
+
 	
-	
-	
+
         <tr>
             
                 <td class="name"><code>inputMax</code></td>
             
-            
+
             <td class="type">
             
                 
@@ -3095,25 +3165,26 @@
 
             
             </td>
+
             
+
             
-            
-            
-            
+
             <td class="description last"></td>
         </tr>
-	
+
 	
 	</tbody>
 </table>
+
     
     
     
 <dl class="details">
     
-        
+
     
-    
+
     
 
     
@@ -3122,28 +3193,28 @@
         <a href="Tone.html#normalize">Tone#normalize</a>
     </li></dd>
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#line257">line 257</a>
+        <a href="Tone.js.html">core/Tone.js</a>, <a href="Tone.js.html#sunlight-1-line-253">line 253</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -3173,6 +3244,7 @@
 
 	</dd>
 </dl>
+
 
         
     
@@ -3190,7 +3262,7 @@
     
     
     <div class="description">
-        convert notation format strings to seconds
+        <p>convert notation format strings to seconds</p>
     </div>
     
 
@@ -3202,33 +3274,33 @@
         <h5>Parameters:</h5>
         
 
-<table class="params">
+<table class="params table table-striped">
     <thead>
 	<tr>
 		
 		<th>Name</th>
 		
-		
+
 		<th>Type</th>
-		
+
 		
 		<th>Argument</th>
 		
+
 		
-		
-		
+
 		<th class="last">Description</th>
 	</tr>
 	</thead>
-	
+
 	<tbody>
 	
-	
+
         <tr>
             
                 <td class="name"><code>notation</code></td>
             
-            
+
             <td class="type">
             
                 
@@ -3237,29 +3309,29 @@
 
             
             </td>
-            
+
             
                 <td class="attributes">
                 
-                    
+
                 
-                    
+
                 
                 </td>
             
+
             
-            
-            
+
             <td class="description last"></td>
         </tr>
+
 	
-	
-	
+
         <tr>
             
                 <td class="name"><code>bpm</code></td>
             
-            
+
             <td class="type">
             
                 
@@ -3268,31 +3340,31 @@
 
             
             </td>
-            
+
             
                 <td class="attributes">
                 
                     &lt;optional><br>
                 
-                    
+
                 
-                    
+
                 
                 </td>
             
+
             
-            
-            
+
             <td class="description last"></td>
         </tr>
+
 	
-	
-	
+
         <tr>
             
                 <td class="name"><code>timeSignature</code></td>
             
-            
+
             <td class="type">
             
                 
@@ -3301,35 +3373,36 @@
 
             
             </td>
-            
+
             
                 <td class="attributes">
                 
                     &lt;optional><br>
                 
-                    
+
                 
-                    
+
                 
                 </td>
             
+
             
-            
-            
+
             <td class="description last"></td>
         </tr>
-	
+
 	
 	</tbody>
 </table>
+
     
     
     
 <dl class="details">
     
-        
+
     
-    
+
     
 
     
@@ -3338,28 +3411,28 @@
         <a href="Tone.html#notationToSeconds">Tone#notationToSeconds</a>
     </li></dd>
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#line1940">line 1940</a>
+        <a href="Transport.js.html">core/Transport.js</a>, <a href="Transport.js.html#sunlight-1-line-713">line 713</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -3389,6 +3462,7 @@
 
 	</dd>
 </dl>
+
 
         
     
@@ -3415,9 +3489,9 @@
     
 <dl class="details">
     
-        
+
     
-    
+
     
 
     
@@ -3426,28 +3500,28 @@
         <a href="Tone.html#now">Tone#now</a>
     </li></dd>
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#line284">line 284</a>
+        <a href="Tone.js.html">core/Tone.js</a>, <a href="Tone.js.html#sunlight-1-line-280">line 280</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -3465,7 +3539,7 @@
     
             
 <div class="param-desc">
-    the currentTime from the AudioContext
+    <p>the currentTime from the AudioContext</p>
 </div>
 
 
@@ -3481,6 +3555,7 @@
 
 	</dd>
 </dl>
+
 
         
     
@@ -3498,7 +3573,7 @@
     
     
     <div class="description">
-        recieve the input from the desired channelName to the input gain of 'this' node.
+        <p>recieve the input from the desired channelName to the input gain of 'this' node.</p>
     </div>
     
 
@@ -3510,31 +3585,31 @@
         <h5>Parameters:</h5>
         
 
-<table class="params">
+<table class="params table table-striped">
     <thead>
 	<tr>
 		
 		<th>Name</th>
 		
-		
+
 		<th>Type</th>
+
 		
+
 		
-		
-		
-		
+
 		<th class="last">Description</th>
 	</tr>
 	</thead>
-	
+
 	<tbody>
 	
-	
+
         <tr>
             
                 <td class="name"><code>channelName</code></td>
             
-            
+
             <td class="type">
             
                 
@@ -3543,25 +3618,26 @@
 
             
             </td>
+
             
+
             
-            
-            
-            
+
             <td class="description last"></td>
         </tr>
-	
+
 	
 	</tbody>
 </table>
+
     
     
     
 <dl class="details">
     
-        
+
     
-    
+
     
 
     
@@ -3570,28 +3646,28 @@
         <a href="Tone.html#receive">Tone#receive</a>
     </li></dd>
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#line2832">line 2832</a>
+        <a href="Bus.js.html">core/Bus.js</a>, <a href="Bus.js.html#sunlight-1-line-38">line 38</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -3620,7 +3696,7 @@
     
     
     <div class="description">
-        convert a sample count to seconds
+        <p>convert a sample count to seconds</p>
     </div>
     
 
@@ -3632,31 +3708,31 @@
         <h5>Parameters:</h5>
         
 
-<table class="params">
+<table class="params table table-striped">
     <thead>
 	<tr>
 		
 		<th>Name</th>
 		
-		
+
 		<th>Type</th>
+
 		
+
 		
-		
-		
-		
+
 		<th class="last">Description</th>
 	</tr>
 	</thead>
-	
+
 	<tbody>
 	
-	
+
         <tr>
             
                 <td class="name"><code>samples</code></td>
             
-            
+
             <td class="type">
             
                 
@@ -3665,25 +3741,26 @@
 
             
             </td>
+
             
+
             
-            
-            
-            
+
             <td class="description last"></td>
         </tr>
-	
+
 	
 	</tbody>
 </table>
+
     
     
     
 <dl class="details">
     
-        
+
     
-    
+
     
 
     
@@ -3692,28 +3769,28 @@
         <a href="Tone.html#samplesToSeconds">Tone#samplesToSeconds</a>
     </li></dd>
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#line293">line 293</a>
+        <a href="Tone.js.html">core/Tone.js</a>, <a href="Tone.js.html#sunlight-1-line-289">line 289</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -3743,6 +3820,7 @@
 
 	</dd>
 </dl>
+
 
         
     
@@ -3760,7 +3838,7 @@
     
     
     <div class="description">
-        convert a number in seconds to a frequency
+        <p>convert a number in seconds to a frequency</p>
     </div>
     
 
@@ -3772,31 +3850,31 @@
         <h5>Parameters:</h5>
         
 
-<table class="params">
+<table class="params table table-striped">
     <thead>
 	<tr>
 		
 		<th>Name</th>
 		
-		
+
 		<th>Type</th>
+
 		
+
 		
-		
-		
-		
+
 		<th class="last">Description</th>
 	</tr>
 	</thead>
-	
+
 	<tbody>
 	
-	
+
         <tr>
             
                 <td class="name"><code>seconds</code></td>
             
-            
+
             <td class="type">
             
                 
@@ -3805,25 +3883,26 @@
 
             
             </td>
+
             
+
             
-            
-            
-            
+
             <td class="description last"></td>
         </tr>
-	
+
 	
 	</tbody>
 </table>
+
     
     
     
 <dl class="details">
     
-        
+
     
-    
+
     
 
     
@@ -3832,28 +3911,28 @@
         <a href="Tone.html#secondsToFrequency">Tone#secondsToFrequency</a>
     </li></dd>
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#line352">line 352</a>
+        <a href="Tone.js.html">core/Tone.js</a>, <a href="Tone.js.html#sunlight-1-line-350">line 350</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -3884,6 +3963,7 @@
 	</dd>
 </dl>
 
+
         
     
     
@@ -3900,7 +3980,7 @@
     
     
     <div class="description">
-        send signal to a channel name
+        <p>send signal to a channel name</p>
     </div>
     
 
@@ -3912,31 +3992,31 @@
         <h5>Parameters:</h5>
         
 
-<table class="params">
+<table class="params table table-striped">
     <thead>
 	<tr>
 		
 		<th>Name</th>
 		
-		
+
 		<th>Type</th>
+
 		
+
 		
-		
-		
-		
+
 		<th class="last">Description</th>
 	</tr>
 	</thead>
-	
+
 	<tbody>
 	
-	
+
         <tr>
             
                 <td class="name"><code>channelName</code></td>
             
-            
+
             <td class="type">
             
                 
@@ -3945,21 +4025,21 @@
 
             
             </td>
+
             
+
             
-            
-            
-            
+
             <td class="description last"></td>
         </tr>
+
 	
-	
-	
+
         <tr>
             
                 <td class="name"><code>amount</code></td>
             
-            
+
             <td class="type">
             
                 
@@ -3968,25 +4048,26 @@
 
             
             </td>
+
             
+
             
-            
-            
-            
+
             <td class="description last"></td>
         </tr>
-	
+
 	
 	</tbody>
 </table>
+
     
     
     
 <dl class="details">
     
-        
+
     
-    
+
     
 
     
@@ -3995,28 +4076,28 @@
         <a href="Tone.html#send">Tone#send</a>
     </li></dd>
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#line2817">line 2817</a>
+        <a href="Bus.js.html">core/Bus.js</a>, <a href="Bus.js.html#sunlight-1-line-23">line 23</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -4047,6 +4128,7 @@
 	</dd>
 </dl>
 
+
         
     
     
@@ -4063,7 +4145,7 @@
     
     
     <div class="description">
-        set the input max value
+        <p>set the input max value</p>
     </div>
     
 
@@ -4075,31 +4157,31 @@
         <h5>Parameters:</h5>
         
 
-<table class="params">
+<table class="params table table-striped">
     <thead>
 	<tr>
 		
 		<th>Name</th>
 		
-		
+
 		<th>Type</th>
+
 		
+
 		
-		
-		
-		
+
 		<th class="last">Description</th>
 	</tr>
 	</thead>
-	
+
 	<tbody>
 	
-	
+
         <tr>
             
                 <td class="name"><code>val</code></td>
             
-            
+
             <td class="type">
             
                 
@@ -4108,50 +4190,51 @@
 
             
             </td>
+
             
+
             
-            
-            
-            
+
             <td class="description last"></td>
         </tr>
-	
+
 	
 	</tbody>
 </table>
+
     
     
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#line849">line 849</a>
+        <a href="Scale.js.html">signal/Scale.js</a>, <a href="Scale.js.html#sunlight-1-line-87">line 87</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -4180,7 +4263,7 @@
     
     
     <div class="description">
-        set the input min value
+        <p>set the input min value</p>
     </div>
     
 
@@ -4192,31 +4275,31 @@
         <h5>Parameters:</h5>
         
 
-<table class="params">
+<table class="params table table-striped">
     <thead>
 	<tr>
 		
 		<th>Name</th>
 		
-		
+
 		<th>Type</th>
+
 		
+
 		
-		
-		
-		
+
 		<th class="last">Description</th>
 	</tr>
 	</thead>
-	
+
 	<tbody>
 	
-	
+
         <tr>
             
                 <td class="name"><code>val</code></td>
             
-            
+
             <td class="type">
             
                 
@@ -4225,50 +4308,51 @@
 
             
             </td>
+
             
+
             
-            
-            
-            
+
             <td class="description last"></td>
         </tr>
-	
+
 	
 	</tbody>
 </table>
+
     
     
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#line840">line 840</a>
+        <a href="Scale.js.html">signal/Scale.js</a>, <a href="Scale.js.html#sunlight-1-line-78">line 78</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -4297,7 +4381,7 @@
     
     
     <div class="description">
-        set the output max value
+        <p>set the output max value</p>
     </div>
     
 
@@ -4309,31 +4393,31 @@
         <h5>Parameters:</h5>
         
 
-<table class="params">
+<table class="params table table-striped">
     <thead>
 	<tr>
 		
 		<th>Name</th>
 		
-		
+
 		<th>Type</th>
+
 		
+
 		
-		
-		
-		
+
 		<th class="last">Description</th>
 	</tr>
 	</thead>
-	
+
 	<tbody>
 	
-	
+
         <tr>
             
                 <td class="name"><code>val</code></td>
             
-            
+
             <td class="type">
             
                 
@@ -4342,50 +4426,51 @@
 
             
             </td>
+
             
+
             
-            
-            
-            
+
             <td class="description last"></td>
         </tr>
-	
+
 	
 	</tbody>
 </table>
+
     
     
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#line867">line 867</a>
+        <a href="Scale.js.html">signal/Scale.js</a>, <a href="Scale.js.html#sunlight-1-line-105">line 105</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -4414,7 +4499,7 @@
     
     
     <div class="description">
-        set the output min value
+        <p>set the output min value</p>
     </div>
     
 
@@ -4426,31 +4511,31 @@
         <h5>Parameters:</h5>
         
 
-<table class="params">
+<table class="params table table-striped">
     <thead>
 	<tr>
 		
 		<th>Name</th>
 		
-		
+
 		<th>Type</th>
+
 		
+
 		
-		
-		
-		
+
 		<th class="last">Description</th>
 	</tr>
 	</thead>
-	
+
 	<tbody>
 	
-	
+
         <tr>
             
                 <td class="name"><code>val</code></td>
             
-            
+
             <td class="type">
             
                 
@@ -4459,50 +4544,51 @@
 
             
             </td>
+
             
+
             
-            
-            
-            
+
             <td class="description last"></td>
         </tr>
-	
+
 	
 	</tbody>
 </table>
+
     
     
     
 <dl class="details">
     
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#line858">line 858</a>
+        <a href="Scale.js.html">signal/Scale.js</a>, <a href="Scale.js.html#sunlight-1-line-96">line 96</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -4531,370 +4617,7 @@
     
     
     <div class="description">
-        convert a time to a frequency
-    </div>
-    
-
-    
-    
-    
-    
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params">
-    <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-		
-		<th>Type</th>
-		
-		
-		
-		
-		
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-	
-	<tbody>
-	
-	
-        <tr>
-            
-                <td class="name"><code>time</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">Tone.Time</span>
-
-
-            
-            </td>
-            
-            
-            
-            
-            
-            <td class="description last"></td>
-        </tr>
-	
-	
-	</tbody>
-</table>
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
-
-    
-    <dt class="inherited-from">Inherited From:</dt>
-    <dd class="inherited-from"><ul class="dummy"><li>
-        <a href="Tone.html#toFrequency">Tone#toFrequency</a>
-    </li></dd>
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#line2021">line 2021</a>
-    </li></ul></dd>
-    
-    
-    
-    
-    
-    
-    
-</dl>
-
-    
-    
-
-    
-
-    
-    
-    
-    
-    
-    <h5>Returns:</h5>
-    
-            
-<div class="param-desc">
-    the time in hertz
-</div>
-
-
-
-<dl>
-	<dt>
-		Type
-	</dt>
-	<dd>
-		
-<span class="param-type">number</span>
-
-
-	</dd>
-</dl>
-
-        
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <h4 class="name" id="toMaster"><span class="type-signature"></span>toMaster<span class="signature">()</span><span class="type-signature"></span></h4>
-    
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        connect 'this' to the master output
-    </div>
-    
-
-    
-    
-    
-    
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
-
-    
-    <dt class="inherited-from">Inherited From:</dt>
-    <dd class="inherited-from"><ul class="dummy"><li>
-        <a href="Tone.html#toMaster">Tone#toMaster</a>
-    </li></dd>
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#line1187">line 1187</a>
-    </li></ul></dd>
-    
-    
-    
-    
-    
-    
-    
-</dl>
-
-    
-    
-
-    
-
-    
-    
-    
-    
-    
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <h4 class="name" id="toSamples"><span class="type-signature"></span>toSamples<span class="signature">(time)</span><span class="type-signature"> &rarr; {number}</span></h4>
-    
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        convert a time into samples
-    </div>
-    
-
-    
-    
-    
-    
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params">
-    <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-		
-		<th>Type</th>
-		
-		
-		
-		
-		
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-	
-	<tbody>
-	
-	
-        <tr>
-            
-                <td class="name"><code>time</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">Tone.time</span>
-
-
-            
-            </td>
-            
-            
-            
-            
-            
-            <td class="description last"></td>
-        </tr>
-	
-	
-	</tbody>
-</table>
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
-
-    
-    <dt class="inherited-from">Inherited From:</dt>
-    <dd class="inherited-from"><ul class="dummy"><li>
-        <a href="Tone.html#toSamples">Tone#toSamples</a>
-    </li></dd>
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#line303">line 303</a>
-    </li></ul></dd>
-    
-    
-    
-    
-    
-    
-    
-</dl>
-
-    
-    
-
-    
-
-    
-    
-    
-    
-    
-    <h5>Returns:</h5>
-    
-            
-
-
-<dl>
-	<dt>
-		Type
-	</dt>
-	<dd>
-		
-<span class="param-type">number</span>
-
-
-	</dd>
-</dl>
-
-        
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <h4 class="name" id="toSeconds"><span class="type-signature"></span>toSeconds<span class="signature">(time)</span><span class="type-signature"> &rarr; {number}</span></h4>
-    
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        convert Tone.Time to seconds
-
- this is a simplified version which only handles numbers and 
- 'now' relative numbers. If the Transport is included this 
- method is overridden to include many other features including 
- notationTime, Frequency, and transportTime</p>
+        <p>convert a time to a frequency</p>
     </div>
     
 
@@ -4964,7 +4687,7 @@
     
     <dt class="inherited-from">Inherited From:</dt>
     <dd class="inherited-from"><ul class="dummy"><li>
-        <a href="Tone.html#toSeconds">Tone#toSeconds</a>
+        <a href="Tone.html#toFrequency">Tone#toFrequency</a>
     </li></dd>
     
 
@@ -4981,7 +4704,227 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#sunlight-1-line-319">line 319</a>
+        <a href="Transport.js.html">core/Transport.js</a>, <a href="Transport.js.html#sunlight-1-line-794">line 794</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    <p>the time in hertz</p>
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">number</span>
+
+
+	</dd>
+</dl>
+
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="toMaster"><span class="type-signature"></span>toMaster<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>connect 'this' to the master output</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Tone.html#toMaster">Tone#toMaster</a>
+    </li></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Master.js.html">core/Master.js</a>, <a href="Master.js.html#sunlight-1-line-66">line 66</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="toSamples"><span class="type-signature"></span>toSamples<span class="signature">(time)</span><span class="type-signature"> &rarr; {number}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>convert a time into samples</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+
+		<th>Type</th>
+
+		
+
+		
+
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+
+	<tbody>
+	
+
+        <tr>
+            
+                <td class="name"><code>time</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Tone.time</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+	
+	</tbody>
+</table>
+
+    
+    
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Tone.html#toSamples">Tone#toSamples</a>
+    </li></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Tone.js.html">core/Tone.js</a>, <a href="Tone.js.html#sunlight-1-line-299">line 299</a>
     </li></ul></dd>
     
 
@@ -5028,7 +4971,197 @@
         
             
 <dt>
-    <h4 class="name" id="toSeconds"><span class="type-signature"></span>toSeconds<span class="signature">(time, <span class="optional">bpm</span>, <span class="optional">timeSignature</span>)</span><span class="type-signature"> &rarr; {number}</span></h4>
+    <h4 class="name" id="toSeconds"><span class="type-signature"></span>toSeconds<span class="signature">(time, <span class="optional">now</span>)</span><span class="type-signature"> &rarr; {number}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>convert Tone.Time to seconds</p>
+<p> this is a simplified version which only handles numbers and 
+ 'now' relative numbers. If the Transport is included this 
+ method is overridden to include many other features including 
+ notationTime, Frequency, and transportTime</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+
+		<th>Type</th>
+
+		
+		<th>Argument</th>
+		
+
+		
+
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+
+	<tbody>
+	
+
+        <tr>
+            
+                <td class="name"><code>time</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Tone.Time</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>now</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>if passed in, this number will be 
+                      used for all 'now' relative timings</p></td>
+        </tr>
+
+	
+	</tbody>
+</table>
+
+    
+    
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Tone.html#toSeconds">Tone#toSeconds</a>
+    </li></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Tone.js.html">core/Tone.js</a>, <a href="Tone.js.html#sunlight-1-line-317">line 317</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">number</span>
+
+
+	</dd>
+</dl>
+
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="toSeconds"><span class="type-signature"></span>toSeconds<span class="signature">(time, <span class="optional">now</span>)</span><span class="type-signature"> &rarr; {number}</span></h4>
     
     
 </dt>
@@ -5105,7 +5238,7 @@
 
         <tr>
             
-                <td class="name"><code>bpm</code></td>
+                <td class="name"><code>now</code></td>
             
 
             <td class="type">
@@ -5131,40 +5264,8 @@
 
             
 
-            <td class="description last"></td>
-        </tr>
-
-	
-
-        <tr>
-            
-                <td class="name"><code>timeSignature</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last"></td>
+            <td class="description last"><p>if passed in, this number will be 
+                               used for all 'now' relative timings</p></td>
         </tr>
 
 	
@@ -5201,7 +5302,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#sunlight-1-line-2042">line 2042</a>
+        <a href="Transport.js.html">core/Transport.js</a>, <a href="Transport.js.html#sunlight-1-line-815">line 815</a>
     </li></ul></dd>
     
 
@@ -5420,7 +5521,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#sunlight-1-line-2002">line 2002</a>
+        <a href="Transport.js.html">core/Transport.js</a>, <a href="Transport.js.html#sunlight-1-line-775">line 775</a>
     </li></ul></dd>
     
 
@@ -5477,7 +5578,7 @@
     <div class="description">
         <p>convert transportTime into seconds
  i.e.:
- 	4:2:3 == 4 measures + 2 quarters + 3 sixteenths
+     4:2:3 == 4 measures + 2 quarters + 3 sixteenths</p>
     </div>
     
 
@@ -5489,33 +5590,33 @@
         <h5>Parameters:</h5>
         
 
-<table class="params">
+<table class="params table table-striped">
     <thead>
 	<tr>
 		
 		<th>Name</th>
 		
-		
+
 		<th>Type</th>
-		
+
 		
 		<th>Argument</th>
 		
+
 		
-		
-		
+
 		<th class="last">Description</th>
 	</tr>
 	</thead>
-	
+
 	<tbody>
 	
-	
+
         <tr>
             
                 <td class="name"><code>transportTime</code></td>
             
-            
+
             <td class="type">
             
                 
@@ -5524,29 +5625,29 @@
 
             
             </td>
-            
+
             
                 <td class="attributes">
                 
-                    
+
                 
-                    
+
                 
                 </td>
             
+
             
-            
-            
+
             <td class="description last"></td>
         </tr>
+
 	
-	
-	
+
         <tr>
             
                 <td class="name"><code>bpm</code></td>
             
-            
+
             <td class="type">
             
                 
@@ -5555,31 +5656,31 @@
 
             
             </td>
-            
+
             
                 <td class="attributes">
                 
                     &lt;optional><br>
                 
-                    
+
                 
-                    
+
                 
                 </td>
             
+
             
-            
-            
+
             <td class="description last"></td>
         </tr>
+
 	
-	
-	
+
         <tr>
             
                 <td class="name"><code>timeSignature</code></td>
             
-            
+
             <td class="type">
             
                 
@@ -5588,35 +5689,36 @@
 
             
             </td>
-            
+
             
                 <td class="attributes">
                 
                     &lt;optional><br>
                 
-                    
+
                 
-                    
+
                 
                 </td>
             
+
             
-            
-            
+
             <td class="description last"></td>
         </tr>
-	
+
 	
 	</tbody>
 </table>
+
     
     
     
 <dl class="details">
     
-        
+
     
-    
+
     
 
     
@@ -5625,28 +5727,28 @@
         <a href="Tone.html#transportTimeToSeconds">Tone#transportTimeToSeconds</a>
     </li></dd>
     
+
     
+
     
+
     
+
     
+
     
-    
-    
-    
-    
-    
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#line1972">line 1972</a>
+        <a href="Transport.js.html">core/Transport.js</a>, <a href="Transport.js.html#sunlight-1-line-745">line 745</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
@@ -5664,7 +5766,7 @@
     
             
 <div class="param-desc">
-    seconds
+    <p>seconds</p>
 </div>
 
 
@@ -5681,6 +5783,7 @@
 	</dd>
 </dl>
 
+
         
     
     
@@ -5688,30 +5791,71 @@
 
         </dl>
     
+
     
-    
-    
+
     
 </article>
 
-</section>  
+</section>
 
 
 
 
-</div>
+				</div>
 
-<nav>
-    <h2><a href="index.html">Index</a></h2><h3>Classes</h3><ul><li><a href="Tone.html">Tone</a></li><li><a href="Tone.Add.html">Add</a></li><li><a href="Tone.AutoPanner.html">AutoPanner</a></li><li><a href="Tone.BitCrusher.html">BitCrusher</a></li><li><a href="Tone.DryWet.html">DryWet</a></li><li><a href="Tone.Envelope.html">Envelope</a></li><li><a href="Tone.LFO.html">LFO</a></li><li><a href="Tone.Merge.html">Merge</a></li><li><a href="Tone.Meter.html">Meter</a></li><li><a href="Tone.Microphone.html">Microphone</a></li><li><a href="Tone.Multiply.html">Multiply</a></li><li><a href="Tone.Noise.html">Noise</a></li><li><a href="Tone.Oscillator.html">Oscillator</a></li><li><a href="Tone.Panner.html">Panner</a></li><li><a href="Tone.Player.html">Player</a></li><li><a href="Tone.Recorder.html">Recorder</a></li><li><a href="Tone.Scale.html">Scale</a></li><li><a href="Tone.Signal.html">Signal</a></li><li><a href="Tone.Source.html">Source</a></li><li><a href="Tone.Split.html">Split</a></li><li><a href="Tone.Transport.html">Transport</a></li></ul><h3>Global</h3><ul><li><a href="global.html#for the default output">for the default output</a></li><li>{GainNode}</li></ul>
-</nav>
+				<div class="clearfix"></div>
+				<footer>
+					
+					
+		<span class="copyright">
+		Tone No Tone Copyright © 2014.
+		</span>
+					<br />
+					
+		<span class="jsdoc-message">
+		Documentation generated on Sat Jun 21 2014 22:54:31 GMT-0400 (EDT).
+		</span>
+				</footer>
+			</div>
 
-<br clear="both">
+			
+			<div class="span3">
+				<div id="toc"></div>
+			</div>
+			
+			<br clear="both">
+		</div>
 
-<footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.2</a> on Fri Jun 20 2014 11:03:23 GMT-0400 (EDT)
-</footer>
+	</div>
+	<script src="scripts/sunlight.js"></script>
+	<script src="scripts/sunlight.javascript.js"></script>
+	<script src="scripts/sunlight-plugin.doclinks.js"></script>
+	<script src="scripts/sunlight-plugin.linenumbers.js"></script>
+	<script src="scripts/sunlight-plugin.menu.js"></script>
+	<script src="scripts/jquery.min.js"></script>
+	<script src="scripts/jquery.scrollTo.js"></script>
+	<script src="scripts/jquery.localScroll.js"></script>
+	<script src="scripts/bootstrap-dropdown.js"></script>
+	<script src="scripts/toc.js"></script>
 
-<script> prettyPrint(); </script>
-<script src="scripts/linenumber.js"> </script>
+
+	<script>  Sunlight.highlightAll({lineNumbers:true,  showMenu: true, enableDoclinks :true}); </script>
+
+	<script>
+		$( function () {
+			$( "#toc" ).toc( {
+				selectors   : "h1,h2,h3,h4",
+				showAndHide : false,
+				scrollTo    : 60
+			} );
+			$( "#toc>ul" ).addClass( "nav nav-pills nav-stacked" );
+			$( "#main span[id^='toc']" ).addClass( "toc-shim" );
+
+		} );
+	</script>
+
+	
+
 </body>
 </html>

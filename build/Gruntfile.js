@@ -5,8 +5,8 @@ module.exports = function(grunt) {
   	  	//pkg: grunt.file.readJSON('package.json'),
   	  	jsdoc : {
 	        src : {
-	            // src: ['../Tone/**/*.js'], 
-	            src: ['../Tone.js'],
+	            src: ['../Tone/**/*.js', '../README.md'], 
+	            //src: ['../Tone.js'],
 	            options: {
 	                destination: '../doc',
 	                //configure: './config/jsdoc.conf.json',

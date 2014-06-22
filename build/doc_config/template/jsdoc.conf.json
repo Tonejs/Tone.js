@@ -1,0 +1,25 @@
+{
+	"tags"      : {
+		"allowUnknownTags" : true
+	},
+	"plugins"   : ["plugins/markdown"],
+	"templates" : {
+		"cleverLinks"     : false,
+		"monospaceLinks"  : false,
+		"default"         : {
+			"outputSourceFiles" : true
+		},
+		"systemName"      : "Tone.js",
+		"footer"          : "",
+		"copyright"       : "Tone No Tone Copyright © 2014.",
+		"navType"         : "inline",
+		"theme"           : "flatly",
+		"linenums"        : true,
+		"collapseSymbols" : false,
+		"inverseNav"      : true
+	},
+	"markdown"  : {
+		"parser"   : "gfm",
+		"hardwrap" : true
+	}
+}
