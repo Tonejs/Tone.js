@@ -9,7 +9,10 @@ module.exports = function(grunt) {
 	            src: ['../Tone.js'],
 	            options: {
 	                destination: '../doc',
-	                configure: './config/jsdoc.conf.json',
+	                //configure: './config/jsdoc.conf.json',
+	                template : "./doc_config/template",
+            		configure : "./doc_config/template/jsdoc.conf.json"
+	                //template           : "readable",
 	            }
 	        },
 	        dist : {
