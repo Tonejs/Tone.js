@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>Tone.js Source: component/Recorder.js</title>
+
+	<!--[if lt IE 9]>
+	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+	<link type="text/css" rel="stylesheet" href="styles/sunlight.default.css">
+
+	
+	<link type="text/css" rel="stylesheet" href="styles/site.flatly.css">
+	
+</head>
+
+<body>
+<div class="container-fluid">
+	<div class="navbar navbar-fixed-top navbar-inverse">
+		<div class="navbar-inner">
+			<a class="brand" href="index.html">Tone.js</a>
+			<ul class="nav">
+				
+				<li class="dropdown">
+					<a href="classes.list.html" class="dropdown-toggle" data-toggle="dropdown">Classes<b
+						class="caret"></b></a>
+
+					<ul class="dropdown-menu ">
+						
+						<li>
+							<a href="Tone.html">Tone</a>
+						</li>
+						
+						<li>
+							<a href="Tone.Add.html">Add</a>
+						</li>
+						
+						<li>
+							<a href="Tone.AutoPanner.html">AutoPanner</a>
+						</li>
+						
+						<li>
+							<a href="Tone.BitCrusher.html">BitCrusher</a>
+						</li>
+						
+						<li>
+							<a href="Tone.DryWet.html">DryWet</a>
+						</li>
+						
+						<li>
+							<a href="Tone.Effect.html">Effect</a>
+						</li>
+						
+						<li>
+							<a href="Tone.Envelope.html">Envelope</a>
+						</li>
+						
+						<li>
+							<a href="Tone.FeedbackDelay.html">FeedbackDelay</a>
+						</li>
+						
+						<li>
+							<a href="Tone.FeedbackEffect.html">FeedbackEffect</a>
+						</li>
+						
+						<li>
+							<a href="Tone.LFO.html">LFO</a>
+						</li>
+						
+						<li>
+							<a href="Tone.Merge.html">Merge</a>
+						</li>
+						
+						<li>
+							<a href="Tone.Meter.html">Meter</a>
+						</li>
+						
+						<li>
+							<a href="Tone.Microphone.html">Microphone</a>
+						</li>
+						
+						<li>
+							<a href="Tone.Multiply.html">Multiply</a>
+						</li>
+						
+						<li>
+							<a href="Tone.Noise.html">Noise</a>
+						</li>
+						
+						<li>
+							<a href="Tone.Oscillator.html">Oscillator</a>
+						</li>
+						
+						<li>
+							<a href="Tone.Panner.html">Panner</a>
+						</li>
+						
+						<li>
+							<a href="Tone.PingPongDelay.html">PingPongDelay</a>
+						</li>
+						
+						<li>
+							<a href="Tone.Player.html">Player</a>
+						</li>
+						
+						<li>
+							<a href="Tone.Recorder.html">Recorder</a>
+						</li>
+						
+						<li>
+							<a href="Tone.Scale.html">Scale</a>
+						</li>
+						
+						<li>
+							<a href="Tone.Signal.html">Signal</a>
+						</li>
+						
+						<li>
+							<a href="Tone.Source.html">Source</a>
+						</li>
+						
+						<li>
+							<a href="Tone.Split.html">Split</a>
+						</li>
+						
+						<li>
+							<a href="Tone.Transport.html">Transport</a>
+						</li>
+						
+
+					</ul>
+				</li>
+				
+			</ul>
+		</div>
+	</div>
+
+	<div class="row-fluid">
+
+		
+			<div class="span12">
+				
+				<div id="main">
+					
+
+
+		<h1 class="page-title">Source: component/Recorder.js</h1>
+    
+    <section>
+        <article>
+            <pre class="sunlight-highlight-javascript linenums">define(["Tone/core/Tone", "Tone/core/Master"], function(Tone){
+
+	/**
+	 *  Record an input into an array or AudioBuffer
+	 *
+	 *  it is limited in that the recording length needs to be known beforehand
+	 *
+	 *  @constructor
+	 *  @extends {Tone}
+	 *  @param {number} channels 
+	 */
+	Tone.Recorder = function(channels){
+
+		Tone.call(this);
+
+		/**
+		 *  the number of channels in the recording
+		 *  @type {number}
+		 */
+		this.channels = this.defaultArg(channels, 1);
+
+		/**
+		 *  @private
+		 *  @type {ScriptProcessorNode}
+		 */
+		this._jsNode = this.context.createScriptProcessor(this.bufferSize, this.channels, 1);
+		this._jsNode.onaudioprocess = this._audioprocess.bind(this);
+
+		/**
+		 *  Float32Array for each channel
+		 *  @private
+		 *  @type {Array&lt;Float32Array>}
+		 */
+		this._recordBuffers = new Array(this.channels);
+
+		/**
+		 *  @type {number}
+		 *  @private
+		 */
+		this._recordStartSample = 0;
+
+		/**
+		 *  @type {number}
+		 *  @private
+		 */
+		this._recordEndSample = 0;
+
+		/**
+		 *  @type {number}
+		 *  @private
+		 */
+		this._recordDuration = 0;
+
+		/**
+		 *  @type {RecordState}
+		 */
+		this.state = RecordState.STOPPED;
+
+		/** 
+		 *  @private
+		 *  @type {number}
+		 */
+		this._recordBufferOffset = 0;
+
+		/** 
+		 *  callback invoked when the recording is over
+		 *  @private
+		 *  @type {function(Float32Array)}
+		 */
+		this._callback = function(){};
+
+		//connect it up
+		this.input.connect(this._jsNode);
+		//pass thru audio
+		this.input.connect(this.output);
+		//so it doesn't get garbage collected
+		this._jsNode.noGC();
+		//clear it to start
+		this.clear();
+	};
+
+	Tone.extend(Tone.Recorder);
+
+	/**
+	 *  internal method called on audio process
+	 *  
+	 *  @private
+	 *  @param   {AudioProcessorEvent} event 
+	 */
+	Tone.Recorder.prototype._audioprocess = function(event){
+		if (this.state === RecordState.STOPPED){
+			return;
+		} else if (this.state === RecordState.RECORDING){
+			//check if it's time yet
+			var now = this.defaultArg(event.playbackTime, this.now());
+			var processPeriodStart = this.toSamples(now);
+			var bufferSize = this._jsNode.bufferSize;
+			var processPeriodEnd = processPeriodStart + bufferSize;
+			var bufferOffset, len;
+			if (processPeriodStart > this._recordEndSample){
+				this.state = RecordState.STOPPED;
+				this._callback(this._recordBuffers);
+			} else if (processPeriodStart > this._recordStartSample) {
+				bufferOffset = 0;
+				len = Math.min(this._recordEndSample - processPeriodStart, bufferSize);
+				this._recordChannels(event.inputBuffer, bufferOffset, len, bufferSize);
+			} else if (processPeriodEnd > this._recordStartSample) {
+				len = processPeriodEnd - this._recordStartSample;
+				bufferOffset = bufferSize - len;
+				this._recordChannels(event.inputBuffer, bufferOffset, len, bufferSize);
+			} 
+
+		}
+	};
+
+	/**
+	 *  record an input channel
+	 *  @param   {AudioBuffer} inputBuffer        
+	 *  @param   {number} from  
+	 *  @param   {number} to  
+	 *  @private
+	 */
+	Tone.Recorder.prototype._recordChannels = function(inputBuffer, from, to, bufferSize){
+		var offset = this._recordBufferOffset;
+		var buffers = this._recordBuffers;
+		for (var channelNum = 0; channelNum &lt; inputBuffer.numberOfChannels; channelNum++){
+			var channel = inputBuffer.getChannelData(channelNum);
+			if ((from === 0) && (to === bufferSize)){
+				//set the whole thing
+				this._recordBuffers[channelNum].set(channel, offset);
+			} else {
+				for (var i = from; i &lt; from + to; i++){
+					var zeroed = i - from; 
+					buffers[channelNum][zeroed + offset] = channel[i];				
+				}
+			}
+		}
+		this._recordBufferOffset += to;
+	};	
+
+	/**
+	 *  Record for a certain period of time
+	 *  
+	 *  will clear the internal buffer before starting
+	 *  
+	 *  @param  {Tone.Time} duration 
+	 *  @param  {Tone.Time} wait the wait time before recording
+	 *  @param {function(Float32Array)} callback the callback to be invoked when the buffer is done recording
+	 */
+	Tone.Recorder.prototype.record = function(duration, startTime, callback){
+		if (this.state === RecordState.STOPPED){
+			this.clear();
+			this._recordBufferOffset = 0;
+			startTime = this.defaultArg(startTime, 0);
+			this._recordDuration = this.toSamples(duration);
+			this._recordStartSample = this.toSamples("+"+startTime);
+			this._recordEndSample = this._recordStartSample + this._recordDuration;
+			for (var i = 0; i &lt; this.channels; i++){
+				this._recordBuffers[i] = new Float32Array(this._recordDuration);
+			}
+			this.state = RecordState.RECORDING;
+			this._callback = this.defaultArg(callback, function(){});
+		}
+	};
+
+	/**
+	 *  clears the recording buffer
+	 */
+	Tone.Recorder.prototype.clear = function(){
+		for (var i = 0; i &lt; this.channels; i++){
+			this._recordBuffers[i] = null;
+		}
+		this._recordBufferOffset = 0;
+	};
+
+
+	/**
+	 *  true if there is nothing in the buffers
+	 *  @return {boolean} 
+	 */
+	Tone.Recorder.prototype.isEmpty = function(){
+		return this._recordBuffers[0] === null;
+	};
+
+	/**
+	 *  @return {Array&lt;Float32Array>}
+	 */
+	Tone.Recorder.prototype.getFloat32Array = function(){
+		if (this.isEmpty()){
+			return null;
+		} else {
+			return this._recordBuffers;
+		}
+	};
+
+	/**
+	 *  @return {AudioBuffer}
+	 */
+	Tone.Recorder.prototype.getAudioBuffer = function(){
+		if (this.isEmpty()){
+			return null;
+		} else {
+			var audioBuffer = this.context.createBuffer(this.channels, this._recordBuffers[0].length, this.context.sampleRate);
+			for (var channelNum = 0; channelNum &lt; audioBuffer.numberOfChannels; channelNum++){
+				var channel = audioBuffer.getChannelData(channelNum);
+				channel.set(this._recordBuffers[channelNum]);
+			}
+			return audioBuffer;
+		}
+	};
+
+	/**
+	 *  clean up
+	 */
+	Tone.Recorder.prototype.dispose = function(){
+		this.output.disconnect();
+		this.input.disconnect();
+		this._jsNode.disconnect();
+		this._jsNode.onaudioprocess = undefined;
+		this.output = null;
+		this.input = null;
+		this._jsNode = null;
+		this._recordBuffers = null;
+	};
+
+	/**
+	 *  @enum {string}
+	 */
+	var RecordState = {
+		STOPPED : "stopped",
+		SCHEDULED : "scheduled",
+		RECORDING : "recording"
+	};
+
+	return Tone.Recorder;
+});</pre>
+        </article>
+    </section>
+
+
+
+
+
+				</div>
+
+				<div class="clearfix"></div>
+				<footer>
+					
+					
+		<span class="copyright">
+		Tone No Tone Copyright © 2014.
+		</span>
+					<br />
+					
+		<span class="jsdoc-message">
+		Documentation generated on Sat Jun 21 2014 23:14:26 GMT-0400 (EDT).
+		</span>
+				</footer>
+			</div>
+
+			
+			<br clear="both">
+		</div>
+
+	</div>
+	<script src="scripts/sunlight.js"></script>
+	<script src="scripts/sunlight.javascript.js"></script>
+	<script src="scripts/sunlight-plugin.doclinks.js"></script>
+	<script src="scripts/sunlight-plugin.linenumbers.js"></script>
+	<script src="scripts/sunlight-plugin.menu.js"></script>
+	<script src="scripts/jquery.min.js"></script>
+	<script src="scripts/jquery.scrollTo.js"></script>
+	<script src="scripts/jquery.localScroll.js"></script>
+	<script src="scripts/bootstrap-dropdown.js"></script>
+	<script src="scripts/toc.js"></script>
+
+
+	<script>  Sunlight.highlightAll({lineNumbers:true,  showMenu: true, enableDoclinks :true}); </script>
+
+	<script>
+		$( function () {
+			$( "#toc" ).toc( {
+				selectors   : "h1,h2,h3,h4",
+				showAndHide : false,
+				scrollTo    : 60
+			} );
+			$( "#toc>ul" ).addClass( "nav nav-pills nav-stacked" );
+			$( "#main span[id^='toc']" ).addClass( "toc-shim" );
+
+		} );
+	</script>
+
+	
+
+</body>
+</html>

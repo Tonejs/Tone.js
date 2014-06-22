@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>Tone.js Source: source/Oscillator.js</title>
+
+	<!--[if lt IE 9]>
+	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+	<link type="text/css" rel="stylesheet" href="styles/sunlight.default.css">
+
+	
+	<link type="text/css" rel="stylesheet" href="styles/site.flatly.css">
+	
+</head>
+
+<body>
+<div class="container-fluid">
+	<div class="navbar navbar-fixed-top navbar-inverse">
+		<div class="navbar-inner">
+			<a class="brand" href="index.html">Tone.js</a>
+			<ul class="nav">
+				
+				<li class="dropdown">
+					<a href="classes.list.html" class="dropdown-toggle" data-toggle="dropdown">Classes<b
+						class="caret"></b></a>
+
+					<ul class="dropdown-menu ">
+						
+						<li>
+							<a href="Tone.html">Tone</a>
+						</li>
+						
+						<li>
+							<a href="Tone.Add.html">Add</a>
+						</li>
+						
+						<li>
+							<a href="Tone.AutoPanner.html">AutoPanner</a>
+						</li>
+						
+						<li>
+							<a href="Tone.BitCrusher.html">BitCrusher</a>
+						</li>
+						
+						<li>
+							<a href="Tone.DryWet.html">DryWet</a>
+						</li>
+						
+						<li>
+							<a href="Tone.Effect.html">Effect</a>
+						</li>
+						
+						<li>
+							<a href="Tone.Envelope.html">Envelope</a>
+						</li>
+						
+						<li>
+							<a href="Tone.FeedbackDelay.html">FeedbackDelay</a>
+						</li>
+						
+						<li>
+							<a href="Tone.FeedbackEffect.html">FeedbackEffect</a>
+						</li>
+						
+						<li>
+							<a href="Tone.LFO.html">LFO</a>
+						</li>
+						
+						<li>
+							<a href="Tone.Merge.html">Merge</a>
+						</li>
+						
+						<li>
+							<a href="Tone.Meter.html">Meter</a>
+						</li>
+						
+						<li>
+							<a href="Tone.Microphone.html">Microphone</a>
+						</li>
+						
+						<li>
+							<a href="Tone.Multiply.html">Multiply</a>
+						</li>
+						
+						<li>
+							<a href="Tone.Noise.html">Noise</a>
+						</li>
+						
+						<li>
+							<a href="Tone.Oscillator.html">Oscillator</a>
+						</li>
+						
+						<li>
+							<a href="Tone.Panner.html">Panner</a>
+						</li>
+						
+						<li>
+							<a href="Tone.PingPongDelay.html">PingPongDelay</a>
+						</li>
+						
+						<li>
+							<a href="Tone.Player.html">Player</a>
+						</li>
+						
+						<li>
+							<a href="Tone.Recorder.html">Recorder</a>
+						</li>
+						
+						<li>
+							<a href="Tone.Scale.html">Scale</a>
+						</li>
+						
+						<li>
+							<a href="Tone.Signal.html">Signal</a>
+						</li>
+						
+						<li>
+							<a href="Tone.Source.html">Source</a>
+						</li>
+						
+						<li>
+							<a href="Tone.Split.html">Split</a>
+						</li>
+						
+						<li>
+							<a href="Tone.Transport.html">Transport</a>
+						</li>
+						
+
+					</ul>
+				</li>
+				
+			</ul>
+		</div>
+	</div>
+
+	<div class="row-fluid">
+
+		
+			<div class="span12">
+				
+				<div id="main">
+					
+
+
+		<h1 class="page-title">Source: source/Oscillator.js</h1>
+    
+    <section>
+        <article>
+            <pre class="sunlight-highlight-javascript linenums">define(["Tone/core/Tone", "Tone/core/Transport", "Tone/signal/Signal", "Tone/source/Source"], 
+function(Tone){
+
+	/**
+	 *  Oscillator
+	 *
+	 *  Oscilator with start, pause, stop and sync to Transport
+	 *
+	 *  @constructor
+	 *  @extends {Tone.Source}
+	 *  @param {number|string=} freq starting frequency
+	 *  @param {string=} type type of oscillator (sine|square|triangle|sawtooth)
+	 */
+	Tone.Oscillator = function(freq, type){
+		Tone.Source.call(this);
+
+		/**
+		 *  the main oscillator
+		 *  @type {OscillatorNode}
+		 */
+		this.oscillator = this.context.createOscillator();
+		/**
+		 *  the frequency control signal
+		 *  @type {Tone.Signal}
+		 */
+		this.frequency = new Tone.Signal(this.defaultArg(this.toFrequency(freq), 440));
+
+		/**
+		 *  @type {function()}
+		 */
+		this.onended = function(){};
+
+		//connections
+		this.oscillator.connect(this.output);
+		//setup
+		this.oscillator.type = this.defaultArg(type, "sine");
+	};
+
+	Tone.extend(Tone.Oscillator, Tone.Source);
+
+	/**
+	 *  start the oscillator
+	 *  
+	 *  @param  {Tone.Time} time 
+	 */
+	Tone.Oscillator.prototype.start = function(time){
+		if (this.state === Tone.Source.State.STOPPED){
+			this.state = Tone.Source.State.STARTED;
+			//get previous values
+			var type = this.oscillator.type;
+			var detune = this.oscillator.detune.value;
+			//new oscillator with previous values
+			this.oscillator = this.context.createOscillator();
+			this.oscillator.type = type;
+			this.oscillator.detune.value = detune;
+			//connect the control signal to the oscillator frequency
+			this.oscillator.connect(this.output);
+			this.frequency.connect(this.oscillator.frequency);
+			this.oscillator.frequency.value = 0;
+			//start the oscillator
+			this.oscillator.start(this.toSeconds(time));
+			this.oscillator.onended = this._onended.bind(this);
+		}
+	};
+
+	/**
+	 *  stop the oscillator
+	 *  @param  {Tone.Time=} time (optional) timing parameter
+	 */
+	Tone.Oscillator.prototype.stop = function(time){
+		if (this.state === Tone.Source.State.STARTED){
+			if (!time){
+				this.state = Tone.Source.State.STOPPED;
+			}
+			this.oscillator.stop(this.toSeconds(time));
+		}
+	};
+
+	/**
+	 *  Sync the oscillator to the transport
+	 *
+	 *  the current ratio between the oscillator and the Transport BPM
+	 *  is fixed and any change to the Transport BPM will change this
+	 *  oscillator in that same ratio
+	 *
+	 *  Transport start/pause/stop will also start/pause/stop the oscillator
+	 */
+	Tone.Oscillator.prototype.sync = function(){
+		if (this.state !== Tone.Source.State.SYNCED){
+			this.state = Tone.Source.State.SYNCED;
+			Tone.Transport.sync(this);
+			Tone.Transport.syncSignal(this.frequency);
+		}
+	};
+
+	/**
+	 *  unsync the oscillator from the Transport
+	 */
+	Tone.Oscillator.prototype.unsync = function(){
+		if (this.state === Tone.Source.State.SYNCED){
+			Tone.Transport.unsync(this);
+			this.frequency.unsync();
+		}
+	};
+
+	/**
+	 *  exponentially ramp the frequency of the oscillator over the rampTime
+	 *  
+	 *  @param {Tone.Time}	val
+	 *  @param {Tone.Time=} rampTime when the oscillator will arrive at the frequency
+	 */
+	Tone.Oscillator.prototype.setFrequency = function(val, rampTime){
+		if (rampTime){
+			this.frequency.exponentialRampToValueAtTime(this.toFrequency(val), this.toSeconds(rampTime));
+		} else {
+			this.frequency.setValue(this.toFrequency(val));
+		}
+	};
+
+	/**
+	 *  set the oscillator type
+	 *  
+	 *  @param {string} type (sine|square|triangle|sawtooth)
+	 */
+	Tone.Oscillator.prototype.setType = function(type){
+		this.oscillator.type = type;
+	};
+
+	/**
+	 *  internal on end call
+	 *  @private
+	 */
+	Tone.Oscillator.prototype._onended = function(){
+		this.state = Tone.Source.State.STOPPED;
+		this.onended();
+	};
+
+	/**
+	 *  dispose and disconnect
+	 */
+	Tone.Oscillator.prototype.dispose = function(){
+		if (this.oscillator !== null){
+			this.oscillator.disconnect();
+			this.oscillator = null;
+		}
+		this.frequency.dispose();
+		this.frequency = null;
+		this.output.disconnect();
+		this.output = null;
+	};
+
+	return Tone.Oscillator;
+});</pre>
+        </article>
+    </section>
+
+
+
+
+
+				</div>
+
+				<div class="clearfix"></div>
+				<footer>
+					
+					
+		<span class="copyright">
+		Tone No Tone Copyright © 2014.
+		</span>
+					<br />
+					
+		<span class="jsdoc-message">
+		Documentation generated on Sat Jun 21 2014 23:14:26 GMT-0400 (EDT).
+		</span>
+				</footer>
+			</div>
+
+			
+			<br clear="both">
+		</div>
+
+	</div>
+	<script src="scripts/sunlight.js"></script>
+	<script src="scripts/sunlight.javascript.js"></script>
+	<script src="scripts/sunlight-plugin.doclinks.js"></script>
+	<script src="scripts/sunlight-plugin.linenumbers.js"></script>
+	<script src="scripts/sunlight-plugin.menu.js"></script>
+	<script src="scripts/jquery.min.js"></script>
+	<script src="scripts/jquery.scrollTo.js"></script>
+	<script src="scripts/jquery.localScroll.js"></script>
+	<script src="scripts/bootstrap-dropdown.js"></script>
+	<script src="scripts/toc.js"></script>
+
+
+	<script>  Sunlight.highlightAll({lineNumbers:true,  showMenu: true, enableDoclinks :true}); </script>
+
+	<script>
+		$( function () {
+			$( "#toc" ).toc( {
+				selectors   : "h1,h2,h3,h4",
+				showAndHide : false,
+				scrollTo    : 60
+			} );
+			$( "#toc>ul" ).addClass( "nav nav-pills nav-stacked" );
+			$( "#main span[id^='toc']" ).addClass( "toc-shim" );
+
+		} );
+	</script>
+
+	
+
+</body>
+</html>

@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>Tone.js Source: component/LFO.js</title>
+
+	<!--[if lt IE 9]>
+	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+	<link type="text/css" rel="stylesheet" href="styles/sunlight.default.css">
+
+	
+	<link type="text/css" rel="stylesheet" href="styles/site.flatly.css">
+	
+</head>
+
+<body>
+<div class="container-fluid">
+	<div class="navbar navbar-fixed-top navbar-inverse">
+		<div class="navbar-inner">
+			<a class="brand" href="index.html">Tone.js</a>
+			<ul class="nav">
+				
+				<li class="dropdown">
+					<a href="classes.list.html" class="dropdown-toggle" data-toggle="dropdown">Classes<b
+						class="caret"></b></a>
+
+					<ul class="dropdown-menu ">
+						
+						<li>
+							<a href="Tone.html">Tone</a>
+						</li>
+						
+						<li>
+							<a href="Tone.Add.html">Add</a>
+						</li>
+						
+						<li>
+							<a href="Tone.AutoPanner.html">AutoPanner</a>
+						</li>
+						
+						<li>
+							<a href="Tone.BitCrusher.html">BitCrusher</a>
+						</li>
+						
+						<li>
+							<a href="Tone.DryWet.html">DryWet</a>
+						</li>
+						
+						<li>
+							<a href="Tone.Effect.html">Effect</a>
+						</li>
+						
+						<li>
+							<a href="Tone.Envelope.html">Envelope</a>
+						</li>
+						
+						<li>
+							<a href="Tone.FeedbackDelay.html">FeedbackDelay</a>
+						</li>
+						
+						<li>
+							<a href="Tone.FeedbackEffect.html">FeedbackEffect</a>
+						</li>
+						
+						<li>
+							<a href="Tone.LFO.html">LFO</a>
+						</li>
+						
+						<li>
+							<a href="Tone.Merge.html">Merge</a>
+						</li>
+						
+						<li>
+							<a href="Tone.Meter.html">Meter</a>
+						</li>
+						
+						<li>
+							<a href="Tone.Microphone.html">Microphone</a>
+						</li>
+						
+						<li>
+							<a href="Tone.Multiply.html">Multiply</a>
+						</li>
+						
+						<li>
+							<a href="Tone.Noise.html">Noise</a>
+						</li>
+						
+						<li>
+							<a href="Tone.Oscillator.html">Oscillator</a>
+						</li>
+						
+						<li>
+							<a href="Tone.Panner.html">Panner</a>
+						</li>
+						
+						<li>
+							<a href="Tone.PingPongDelay.html">PingPongDelay</a>
+						</li>
+						
+						<li>
+							<a href="Tone.Player.html">Player</a>
+						</li>
+						
+						<li>
+							<a href="Tone.Recorder.html">Recorder</a>
+						</li>
+						
+						<li>
+							<a href="Tone.Scale.html">Scale</a>
+						</li>
+						
+						<li>
+							<a href="Tone.Signal.html">Signal</a>
+						</li>
+						
+						<li>
+							<a href="Tone.Source.html">Source</a>
+						</li>
+						
+						<li>
+							<a href="Tone.Split.html">Split</a>
+						</li>
+						
+						<li>
+							<a href="Tone.Transport.html">Transport</a>
+						</li>
+						
+
+					</ul>
+				</li>
+				
+			</ul>
+		</div>
+	</div>
+
+	<div class="row-fluid">
+
+		
+			<div class="span12">
+				
+				<div id="main">
+					
+
+
+		<h1 class="page-title">Source: component/LFO.js</h1>
+    
+    <section>
+        <article>
+            <pre class="sunlight-highlight-javascript linenums">define(["Tone/core/Tone", "Tone/source/Oscillator", "Tone/signal/Scale"], function(Tone){
+
+	/**
+	 *  Low Frequency Oscillator
+	 *
+	 *  LFO produces an output signal which can be attached to an AudioParam
+	 *  	for constant control over that parameter
+	 *  	the LFO can also be synced to the transport
+	 *
+	 *  @constructor
+	 *  @extends {Tone}
+	 *  @param {number} rate      
+	 *  @param {number=} outputMin 
+	 *  @param {number=} outputMax
+	 */
+	Tone.LFO = function(rate, outputMin, outputMax){
+		/** @type {GainNode} */
+		this.input = this.context.createGain();
+		/** @type {Tone.Oscillator} */
+		this.oscillator = new Tone.Oscillator(this.defaultArg(rate, 1), "sine");
+		/**
+			@type {Tone.Scale} 
+			@private
+		*/
+		this._scaler = new Tone.Scale(this.defaultArg(outputMin, 0), this.defaultArg(outputMax, 1));
+		/** alias for the output */
+		this.output = this._scaler;
+
+		//connect it up
+		this.chain(this.oscillator, this.output);
+	};
+
+	Tone.extend(Tone.LFO);
+
+	/**
+	 *  start the LFO
+	 *  @param  {Tone.Time} time 
+	 */
+	Tone.LFO.prototype.start = function(time){
+		this.oscillator.start(time);
+	};
+
+	/**
+	 *  stop the LFO
+	 *  @param  {Tone.Time} time 
+	 */
+	Tone.LFO.prototype.stop = function(time){
+		this.oscillator.stop(time);
+	};
+
+	/**
+	 *  Sync the start/stop/pause to the transport 
+	 *  and the frequency to the bpm of the transport
+	 */
+	Tone.LFO.prototype.sync = function(){
+		this.oscillator.sync();
+	};
+
+	/**
+	 *  unsync the LFO from transport control
+	 */
+	Tone.LFO.prototype.unsync = function(){
+		this.oscillator.unsync();
+	};
+
+
+	/**
+	 *  set the frequency
+	 *  @param {number} rate 
+	 */
+	Tone.LFO.prototype.setFrequency = function(rate){
+		this.oscillator.setFrequency(rate);
+	};
+
+	/**
+	 *  set the minimum output of the LFO
+	 *  @param {number} min 
+	 */
+	Tone.LFO.prototype.setMin = function(min){
+		this._scaler.setOutputMin(min);
+	};
+
+	/**
+	 *  set the maximum output of the LFO
+	 *  @param {number} min 
+	 */
+	Tone.LFO.prototype.setMax = function(max){
+		this._scaler.setOuputMax(max);
+	};
+
+	/**
+	 *  set the waveform of the LFO
+	 *  @param {string} type 
+	 */
+	Tone.LFO.prototype.setType = function(type){
+		this.oscillator.setType(type);
+	};
+
+	/**
+	 *  pointer to the parent's connect method
+	 *  @private
+	 */
+	Tone.LFO.prototype._connect = Tone.prototype.connect;
+
+	/**
+	 *	override the connect method so that it 0's out the value 
+	 *	if attached to an AudioParam
+	 *	
+	 *  @borrows Tone.Signal.connect as Tone.LFO.connect
+	 */
+	Tone.LFO.prototype.connect = Tone.Signal.prototype.connect;
+
+	/**
+	 *  disconnect and dispose
+	 */
+	Tone.LFO.prototype.dispose = function(){
+		this.oscillator.dispose();
+		this.output.disconnect();
+		this._scaler.dispose();
+		this.oscillator = null;
+		this.output = null;
+		this._scaler = null;
+	};
+
+	return Tone.LFO;
+});</pre>
+        </article>
+    </section>
+
+
+
+
+
+				</div>
+
+				<div class="clearfix"></div>
+				<footer>
+					
+					
+		<span class="copyright">
+		Tone No Tone Copyright © 2014.
+		</span>
+					<br />
+					
+		<span class="jsdoc-message">
+		Documentation generated on Sat Jun 21 2014 23:14:26 GMT-0400 (EDT).
+		</span>
+				</footer>
+			</div>
+
+			
+			<br clear="both">
+		</div>
+
+	</div>
+	<script src="scripts/sunlight.js"></script>
+	<script src="scripts/sunlight.javascript.js"></script>
+	<script src="scripts/sunlight-plugin.doclinks.js"></script>
+	<script src="scripts/sunlight-plugin.linenumbers.js"></script>
+	<script src="scripts/sunlight-plugin.menu.js"></script>
+	<script src="scripts/jquery.min.js"></script>
+	<script src="scripts/jquery.scrollTo.js"></script>
+	<script src="scripts/jquery.localScroll.js"></script>
+	<script src="scripts/bootstrap-dropdown.js"></script>
+	<script src="scripts/toc.js"></script>
+
+
+	<script>  Sunlight.highlightAll({lineNumbers:true,  showMenu: true, enableDoclinks :true}); </script>
+
+	<script>
+		$( function () {
+			$( "#toc" ).toc( {
+				selectors   : "h1,h2,h3,h4",
+				showAndHide : false,
+				scrollTo    : 60
+			} );
+			$( "#toc>ul" ).addClass( "nav nav-pills nav-stacked" );
+			$( "#main span[id^='toc']" ).addClass( "toc-shim" );
+
+		} );
+	</script>
+
+	
+
+</body>
+</html>

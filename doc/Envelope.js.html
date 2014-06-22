@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>Tone.js Source: component/Envelope.js</title>
+
+	<!--[if lt IE 9]>
+	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+	<link type="text/css" rel="stylesheet" href="styles/sunlight.default.css">
+
+	
+	<link type="text/css" rel="stylesheet" href="styles/site.flatly.css">
+	
+</head>
+
+<body>
+<div class="container-fluid">
+	<div class="navbar navbar-fixed-top navbar-inverse">
+		<div class="navbar-inner">
+			<a class="brand" href="index.html">Tone.js</a>
+			<ul class="nav">
+				
+				<li class="dropdown">
+					<a href="classes.list.html" class="dropdown-toggle" data-toggle="dropdown">Classes<b
+						class="caret"></b></a>
+
+					<ul class="dropdown-menu ">
+						
+						<li>
+							<a href="Tone.html">Tone</a>
+						</li>
+						
+						<li>
+							<a href="Tone.Add.html">Add</a>
+						</li>
+						
+						<li>
+							<a href="Tone.AutoPanner.html">AutoPanner</a>
+						</li>
+						
+						<li>
+							<a href="Tone.BitCrusher.html">BitCrusher</a>
+						</li>
+						
+						<li>
+							<a href="Tone.DryWet.html">DryWet</a>
+						</li>
+						
+						<li>
+							<a href="Tone.Effect.html">Effect</a>
+						</li>
+						
+						<li>
+							<a href="Tone.Envelope.html">Envelope</a>
+						</li>
+						
+						<li>
+							<a href="Tone.FeedbackDelay.html">FeedbackDelay</a>
+						</li>
+						
+						<li>
+							<a href="Tone.FeedbackEffect.html">FeedbackEffect</a>
+						</li>
+						
+						<li>
+							<a href="Tone.LFO.html">LFO</a>
+						</li>
+						
+						<li>
+							<a href="Tone.Merge.html">Merge</a>
+						</li>
+						
+						<li>
+							<a href="Tone.Meter.html">Meter</a>
+						</li>
+						
+						<li>
+							<a href="Tone.Microphone.html">Microphone</a>
+						</li>
+						
+						<li>
+							<a href="Tone.Multiply.html">Multiply</a>
+						</li>
+						
+						<li>
+							<a href="Tone.Noise.html">Noise</a>
+						</li>
+						
+						<li>
+							<a href="Tone.Oscillator.html">Oscillator</a>
+						</li>
+						
+						<li>
+							<a href="Tone.Panner.html">Panner</a>
+						</li>
+						
+						<li>
+							<a href="Tone.PingPongDelay.html">PingPongDelay</a>
+						</li>
+						
+						<li>
+							<a href="Tone.Player.html">Player</a>
+						</li>
+						
+						<li>
+							<a href="Tone.Recorder.html">Recorder</a>
+						</li>
+						
+						<li>
+							<a href="Tone.Scale.html">Scale</a>
+						</li>
+						
+						<li>
+							<a href="Tone.Signal.html">Signal</a>
+						</li>
+						
+						<li>
+							<a href="Tone.Source.html">Source</a>
+						</li>
+						
+						<li>
+							<a href="Tone.Split.html">Split</a>
+						</li>
+						
+						<li>
+							<a href="Tone.Transport.html">Transport</a>
+						</li>
+						
+
+					</ul>
+				</li>
+				
+			</ul>
+		</div>
+	</div>
+
+	<div class="row-fluid">
+
+		
+			<div class="span12">
+				
+				<div id="main">
+					
+
+
+		<h1 class="page-title">Source: component/Envelope.js</h1>
+    
+    <section>
+        <article>
+            <pre class="sunlight-highlight-javascript linenums">define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
+
+	/**
+	 *  Envelope 
+	 *  ADR envelope generator attaches to an AudioParam or AudioNode
+	 *
+	 *  @constructor
+	 *  @extends {Tone}
+	 *  @param {Tone.Time=} attack
+	 *  @param {Tone.Time=} decay
+	 *  @param {number=} sustain 	a percentage (0-1) of the full amplitude
+	 *  @param {Tone.Time=} release
+	 *  @param {number=} minOutput the lowest point of the envelope
+	 *  @param {number=} maxOutput the highest point of the envelope
+	 */
+	Tone.Envelope = function(attack, decay, sustain, release, minOutput, maxOutput){
+		//extend Unit
+		Tone.call(this);
+
+		/** @type {number} */
+		this.attack = this.toSeconds(this.defaultArg(attack, 0.01));
+		/** @type {number} */
+		this.decay = this.toSeconds(this.defaultArg(decay, 0.1));
+		/** @type {number} */
+		this.release = this.toSeconds(this.defaultArg(release, 1));
+		/** @type {number} */
+		this.sustain = this.toSeconds(this.defaultArg(sustain, 0.5));
+
+		/** @type {number} */
+		this.min = this.defaultArg(minOutput, 0);
+		/** @type {number} */
+		this.max = this.defaultArg(maxOutput, 1);
+		
+		/** @type {Tone.Signal} */
+		this.control = new Tone.Signal(this.min);
+
+		//connections
+		this.chain(this.control, this.output);
+	};
+
+	Tone.extend(Tone.Envelope);
+
+	/**
+	 * attack->decay->sustain linear ramp
+	 * @param  {Tone.Time=} time
+	 */
+	Tone.Envelope.prototype.triggerAttack = function(time){
+		var sustainVal = (this.max - this.min) * this.sustain + this.min;
+		if (!time){
+			this.control.linearRampToValueNow(this.max, this.attack);
+			this.control.linearRampToValueAtTime(sustainVal, this.now() + this.attack + this.decay);	
+		} else {
+			var startVal = this.min;
+			time = this.toSeconds(time);
+			this.control.cancelScheduledValues(time);
+			this.control.setValueAtTime(startVal, time);
+			this.control.linearRampToValueAtTime(this.max, time + this.attack);
+			this.control.linearRampToValueAtTime(sustainVal, time + this.attack + this.decay);
+		}
+	};
+
+	/**
+	 * attack->decay->sustain exponential attack and linear decay
+	 * @param  {Tone.Time=} time
+	 */
+	Tone.Envelope.prototype.triggerExponentialAttack = function(time){
+		var sustainVal = (this.max - this.min) * this.sustain + this.min;
+		if (!time){
+			this.control.exponentialRampToValueNow(this.max, this.attack);
+			this.control.linearRampToValueAtTime(sustainVal, this.now() + this.attack + this.decay);	
+		} else {
+			var startVal = this.min;
+			time = this.toSeconds(time);
+			this.control.cancelScheduledValues(time);
+			this.control.setValueAtTime(startVal, time);
+			this.control.exponentialRampToValueAtTime(this.max, time + this.attack);
+			this.control.linearRampToValueAtTime(sustainVal, time + this.attack + this.decay);
+		}
+	};
+
+	
+	/**
+	 * triggers the release of the envelope with a linear ramp
+	 * @param  {Tone.Time=} time
+	 */
+	Tone.Envelope.prototype.triggerRelease = function(time){
+		if (time){
+			//if there's a time, start at the sustain value
+			startVal = (this.max - this.min) * this.sustain + this.min;
+			time = this.toSeconds(time);
+			this.control.cancelScheduledValues(time);
+			this.control.setValueAtTime(startVal, time);
+			this.control.linearRampToValueAtTime(this.min, time + this.toSeconds(this.release));
+		} else {
+			this.control.linearRampToValueNow(this.min, this.toSeconds(this.release));
+		}
+	};
+
+
+	/**
+	 * triggers the release of the envelope with an exponential ramp
+	 * 
+	 * @param  {Tone.Time=} time
+	 */
+	Tone.Envelope.prototype.triggerExponentialRelease = function(time){
+		if (time){
+			//if there's a time, start at the sustain value
+			startVal = (this.max - this.min) * this.sustain + this.min;
+			time = this.toSeconds(time);
+			this.control.cancelScheduledValues(time);
+			this.control.setValueAtTime(startVal, time);
+			this.control.exponentialRampToValueAtTime(this.min, time + this.toSeconds(this.release));
+		} else {
+			this.control.exponentialRampToValueNow(this.min, this.toSeconds(this.release));
+		}
+	};
+
+	/**
+	 * 	pointer to the parent's connect method
+	 * 	@private
+	 */
+	Tone.Envelope.prototype._connect = Tone.prototype.connect;
+
+	/**
+	 * connect the envelope
+	 * 
+	 * if the envelope is connected to a param, the params 
+	 * value will be set to 0 so that it doesn't interfere with the envelope
+	 * 
+	 * @param  {number} param
+	 */
+	Tone.Envelope.prototype.connect = function(param){
+		if (param instanceof AudioParam){
+			//set the initial value
+			param.value = 0;
+		} 
+		this._connect(param);
+	};
+
+	/**
+	 *  disconnect and dispose
+	 */
+	Tone.Envelope.prototype.dispose = function(){
+		this.control.dispose();
+		this.control = null;
+	};
+
+	return Tone.Envelope;
+});
+</pre>
+        </article>
+    </section>
+
+
+
+
+
+				</div>
+
+				<div class="clearfix"></div>
+				<footer>
+					
+					
+		<span class="copyright">
+		Tone No Tone Copyright © 2014.
+		</span>
+					<br />
+					
+		<span class="jsdoc-message">
+		Documentation generated on Sat Jun 21 2014 23:14:26 GMT-0400 (EDT).
+		</span>
+				</footer>
+			</div>
+
+			
+			<br clear="both">
+		</div>
+
+	</div>
+	<script src="scripts/sunlight.js"></script>
+	<script src="scripts/sunlight.javascript.js"></script>
+	<script src="scripts/sunlight-plugin.doclinks.js"></script>
+	<script src="scripts/sunlight-plugin.linenumbers.js"></script>
+	<script src="scripts/sunlight-plugin.menu.js"></script>
+	<script src="scripts/jquery.min.js"></script>
+	<script src="scripts/jquery.scrollTo.js"></script>
+	<script src="scripts/jquery.localScroll.js"></script>
+	<script src="scripts/bootstrap-dropdown.js"></script>
+	<script src="scripts/toc.js"></script>
+
+
+	<script>  Sunlight.highlightAll({lineNumbers:true,  showMenu: true, enableDoclinks :true}); </script>
+
+	<script>
+		$( function () {
+			$( "#toc" ).toc( {
+				selectors   : "h1,h2,h3,h4",
+				showAndHide : false,
+				scrollTo    : 60
+			} );
+			$( "#toc>ul" ).addClass( "nav nav-pills nav-stacked" );
+			$( "#main span[id^='toc']" ).addClass( "toc-shim" );
+
+		} );
+	</script>
+
+	
+
+</body>
+</html>
