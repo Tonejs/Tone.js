@@ -12,7 +12,7 @@
 		"systemName"      : "Tone.js",
 		"footer"          : "",
 		"copyright"       : "Tone No Tone Copyright © 2014.",
-		"navType"         : "inline",
+		"navType"         : "vertical",
 		"theme"           : "flatly",
 		"linenums"        : true,
 		"collapseSymbols" : false,

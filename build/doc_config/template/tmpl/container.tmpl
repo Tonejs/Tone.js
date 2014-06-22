@@ -4,9 +4,6 @@
 ?>
 
 <?js if (doc.kind === 'mainpage' || (doc.kind === 'package')) { ?>
-	<?js if (i === 0){ ?>
-	<span class="page-title"><?js= title ?></span>
-	<?js } ?>
 	<?js= self.partial('mainpage.tmpl', doc) ?>
 
 <?js } else if (doc.kind === 'source') { ?>
