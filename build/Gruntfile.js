@@ -6,19 +6,18 @@ module.exports = function(grunt) {
   	  	jsdoc : {
 	        src : {
 	            src: ['../Tone/**/*.js', '../README.md'], 
-	            //src: ['../Tone.js'],
 	            options: {
 	                destination: '../doc',
-	                //configure: './config/jsdoc.conf.json',
 	                template : "./doc_config/template",
             		configure : "./doc_config/template/jsdoc.conf.json"
-	                //template           : "readable",
 	            }
 	        },
 	        dist : {
 	            src: ['../Tone.js'], 
 	            options: {
-	                destination: '../doc'
+	                destination: '../doc',
+	                template : "./doc_config/template",
+            		configure : "./doc_config/template/jsdoc.conf.json"
 	            }
 	        }
 	    },
