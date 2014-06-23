@@ -2,38 +2,35 @@
 <head>
 	<title>LFO</title>
 
+	<script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
 	<script type="text/javascript" src="../Tone.js"></script>
+	<link rel="stylesheet" type="text/css" href="exampleStyle.css">
 	
 </head>
 <body>
-	<button onclick='startLFO()'>start</button>
+	<div>LFO on the amplitude of a noise signal</div>
+	<br>
+	<button>start</button>
 	<script type="text/javascript">
 		//components
 		var noise = new Tone.Noise("brown");
-		var lfo = new Tone.LFO("4n");
+		var lfo = new Tone.LFO(1, 0.5, 1);
 		
 		//connections
 		noise.toMaster();
 		lfo.connect(noise.output.gain);
-		
-		//INTERFACE//
-		var button = document.querySelector("button");
 
-		var started = false;
-
-		//called when the start button is clicked
-		function startLFO(){
-			if (!started){
+		$("button").click(function(){
+			if (noise.state !== "started"){
 				lfo.start();
 				noise.start();
-				button.textContent = "stop";
+				$(this).text("stop");
 			} else {
 				lfo.stop();
 				noise.stop();
-				button.textContent = "start";
+				$(this).text("start");
 			}
-			started = !started;
-		}
+		});
 	</script>
 </body>
 </html>

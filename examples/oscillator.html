@@ -1,6 +1,6 @@
 <html>
 <head>
-	<title>Basic Player</title>
+	<title>Oscillator</title>
 	
 	<script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
 	<script type="text/javascript" src="../Tone.js"></script>
@@ -8,26 +8,24 @@
 
 </head>
 <body>
-	<div>press and hold the button to play a 10ms grain from the audio file</div>
+	<div>start and stop a sawtooth wave</div>
 	<br>
 	<button>start</button>
-	<div id='loading'>loading...</button>
 	<script type="text/javascript">
 
-		var player = new Tone.Player("./audio/casio/A1.mp3", function(){
-			$("#loading").remove();
-		});
+		var osc = new Tone.Oscillator(440, "sawtooth");
 
 		//connect it to the output
-		player.toMaster();
+		osc.toMaster();
+		osc.setVolume(0.5);
 		
 		$("button").mousedown(function(){
-			player.loop(0, .1, .11);
+			osc.start();
 			$(this).text("stop");
 		});
 
 		$("button").mouseup(function(){
-			player.stop();
+			osc.stop();
 			$(this).text("start");
 		});
 		

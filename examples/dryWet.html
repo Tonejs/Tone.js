@@ -7,6 +7,8 @@
 	<link rel="stylesheet" type="text/css" href="exampleStyle.css">
 </head>
 <body>
+	<div>A sine wave is connected to the dry side and a square wave is connected to the wet side.</div>
+	<br>
 	<button>start</button><br>
 	<input type='range' value='50'>
 	<div id='dry'>0</div>
@@ -36,37 +38,28 @@
 		dryWet.dry.connect(dryMeter);
 		dryWet.wet.connect(wetMeter);
 
-
-		//INTERFACE//
-
-		var dry = document.querySelector("#dry");
-		var wet = document.querySelector("#wet");
-		var output = document.querySelector("#mix");
-	
+		//update the meters
 		setInterval(function(){
-			dry.textContent = "dry: " + dryMeter.getDb().toFixed(2) + " db";
-			wet.textContent = "wet: " + wetMeter.getDb().toFixed(2) + " db";
+			$("#dry").text("dry: " + dryMeter.getDb().toFixed(2) + " db");
+			$("#wet").text("wet: " + wetMeter.getDb().toFixed(2) + " db");
 		}, 100);
 
-		var range = document.querySelector("input");
-		range.oninput = function(){
-			var val = range.value;
+		$("input").on("input", function(){
+			var val = $(this).val();
 			dryWet.setWet(val/100, 0);
-		}
+		});
 
-		var button = document.querySelector("button");
-
-		button.onclick = function(){
+		$("button").click(function(){
 			if (sine.state !== "started"){
 				sine.start();
 				square.start();
-				button.textContent = "stop";
+				$(this).text("stop");
 			} else {
 				sine.stop();
 				square.stop();
-				button.textContent = "start";
+				$(this).text("start");
 			}
-		}
+		});
 
 	</script>
 </body>

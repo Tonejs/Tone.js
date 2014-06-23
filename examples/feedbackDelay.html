@@ -2,11 +2,14 @@
 <head>
 	<title>FEEDBACK DELAY</title>
 
+	<script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
 	<script type="text/javascript" src="../Tone.js"></script>
 	<link rel="stylesheet" type="text/css" href="exampleStyle.css">
 </head>
 <body>
-	<button onclick='player.start()'>hit</button>
+	<div>Pass the sample through a feedback delay</div>
+	<br>
+	<button>hit</button>
 	<div id='loading'>loading...<div>
 	<script type="text/javascript">
 		//the player
@@ -21,7 +24,11 @@
 		//connections
 		player.connect(feedbackDelay);
 		feedbackDelay.toMaster();	
-		feedbackDelay.setWet(0.5);		
+		feedbackDelay.setWet(0.5);	
+
+		$("button").click(function(){
+			player.start();
+		});
 		
 	</script>
 </body>

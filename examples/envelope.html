@@ -8,7 +8,9 @@
 </head>
 <body>	
 
-	<button id='Trigger'>trigger</button>
+	<div>Press down to trigger the attack, release the mouse to trigger the release of the envelope.</div>
+	<br>
+	<button>attack</button>
 
 	<script type="text/javascript">
 		var env = new Tone.Envelope(.05, .01, .4, .4);
@@ -22,12 +24,14 @@
 		noise.start();
 
 		//listen for triggers
-		$("#Trigger").mousedown(function(){
+		$("button").mousedown(function(){
 			env.triggerAttack();
+			$(this).text("release");
 		});
 
-		$("#Trigger").mouseup(function(){
+		$("button").mouseup(function(){
 			env.triggerRelease();
+			$(this).text("attack");
 		});
 	</script>
 </body>

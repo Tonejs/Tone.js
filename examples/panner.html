@@ -2,9 +2,13 @@
 <head>
 	<title>PANNER</title>
 
-	<script type="text/javascript" src="../build/Tone.js"></script>
+	<script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
+	<script type="text/javascript" src="../Tone.js"></script>
+	<link rel="stylesheet" type="text/css" href="exampleStyle.css">
 </head>
 <body>
+	<div>Pan a sine wave Left/Right</div>
+	<br>
 	<button type="button">start</button>
 	<input type='range' value='50'>
 	<div id='left'>0</div>
@@ -26,37 +30,27 @@
 
 		var button = document.querySelector("button");
 
-		button.onclick = function(){
-			if (!sine.started){
+		$("button").click(function(){
+			if (sine.state !== "started"){
 				sine.start();
-				button.textContent = "stop";
+				$(this).text("stop");
 			} else {
 				sine.stop();
-				button.textContent = "start";
+				$(this).text("start");
 			}
-		}
+		});
 
-		var left = document.querySelector("#left");
-		var right = document.querySelector("#right");
-	
+		//update the meters
 		setInterval(function(){
-			left.textContent = "left: " + outputMeter.getDb(0).toFixed(2) + " db";
-			right.textContent = "right: " + outputMeter.getDb(1).toFixed(2) + " db";
+			$("#left").text("left: " + outputMeter.getDb(0).toFixed(2) + " db");
+			$("#right").text("right: " + outputMeter.getDb(1).toFixed(2) + " db");
 		}, 100);
 
 		
-		var range = document.querySelector("input");
-		
-		range.oninput = function(e){
-			var val = e.target.value;
-			pan.setPan(val/100, "+.1");
-		}
-
-		var mouseX, mouseY;
-		window.onmousemove = function(e) {
-			mouseX = e.x;
-			mouseY = e.y;
-		};
+		$("input").on("input", function(e){
+			var val = $(this).val();
+			pan.setPan(val/100, "0.1");
+		});
 
 	</script>
 </body>

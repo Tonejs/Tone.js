@@ -1,0 +1,99 @@
+<html>
+<head>
+	<title>SCRATCH</title>
+
+	<script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
+	<script type="text/javascript" src="../deps/music.js"></script>
+	<script type="text/javascript" src="../Tone.js"></script>
+	<link rel="stylesheet" type="text/css" href="exampleStyle.css">
+
+</head>
+<body>
+
+	<div>
+		Play the second row of the keyboard (A-L). They are the notes
+		C4-D5.
+	</div>
+	<br>
+	<div id="note"></div>
+
+	<script type="text/javascript">
+			
+		var osc0 = new Tone.Oscillator(440, "sine");
+		var osc1 = new Tone.Oscillator(880, "square");
+		//sync the two frequencies
+		osc1.frequency.sync(osc0.frequency);
+
+		//create the envelopes
+		var ampEnvelope = new Tone.Envelope(0.01, 0.1, 0.5, 0.5);
+		var freqEnvelope = new Tone.Envelope(0.4, 0, 1, 0.8, 0, 1200);
+
+		//the filter
+		var lowpass = Tone.context.createBiquadFilter();
+		lowpass.type = "lowpass";
+		lowpass.Q.value = 12;
+
+		//the amplitude
+		var amplitude = Tone.context.createGain();
+		//connect to the amplitudes and the filters
+		osc0.connect(amplitude);
+		osc1.connect(amplitude);
+		osc0.connect(lowpass);
+		osc1.connect(lowpass);
+
+		//connect the envelopes
+		ampEnvelope.connect(amplitude.gain);
+		freqEnvelope.connect(lowpass.frequency);
+
+		//connect it to the output
+		amplitude.toMaster();
+		lowpass.toMaster();
+
+		//start the oscillators
+		osc0.start();
+		osc1.start();
+
+		function triggerAttack(){
+			ampEnvelope.triggerAttack();
+			freqEnvelope.triggerAttack();
+		}
+
+		function triggerRelease(){
+			ampEnvelope.triggerRelease();
+			freqEnvelope.triggerRelease();
+		}
+
+		$(document).keydown(function(e){
+			var note = keyboardKeyboard[String.fromCharCode(e.which).toLowerCase()];
+			if (note){
+				var freq = Note.fromLatin(note).frequency();
+				osc0.frequency.exponentialRampToValueNow(freq, 0.1);
+				triggerAttack();
+				$("#note").text(note);
+			}
+		});
+
+		$(document).keyup(function(e){
+			triggerRelease();
+		});
+
+		var keyboardKeyboard = {
+			"a" : "C4",
+			"w" : "C#4",
+			"s" : "D4",
+			"e" : "D#4",
+			"d" : "E4",
+			"f" : "F4",
+			"t" : "F#4",
+			"g" : "G4",
+			"y" : "G#4",
+			"h" : "A4",
+			"u" : "A#4",
+			"j" : "B4",
+			"k" : "C5",
+			"l" : "D5",
+			"p" : "D#5"
+		};
+	</script>
+</body>
+</html>

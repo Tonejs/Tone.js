@@ -2,35 +2,35 @@
 <head>
 	<title>Bit Crush</title>
 
-	<script type="text/javascript" src='../Tone.js'></script>
+	<script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
+	<script type="text/javascript" src="../Tone.js"></script>
+	<link rel="stylesheet" type="text/css" href="exampleStyle.css">
 
 </head>
 <body>
+	<div>Lower the resolution of the incoming sine wave to 4 bits</div>
+	<br>
 	<button>start</button>
 	<script type="text/javascript">
 	
 		//components
 		var sine = new Tone.Oscillator();
-		var crusher = new Tone.BitCrusher(5);
+		var crusher = new Tone.BitCrusher(4);
 		
-		//connections
 		sine.connect(crusher);
 		crusher.toMaster();
 
-		//INTERFACE//
-
-		var button = document.querySelector("button");
 
 		//called when the start button is clicked
-		button.onclick = function(){
-			if (!sine.started){
+		$("button").click(function(){
+			if (sine.state !== "started"){
 				sine.start();
-				button.textContent = "stop";
+				$(this).text("stop");
 			} else {
 				sine.stop();
-				button.textContent = "start";
+				$(this).text("start");
 			}
-		}
+		});
 		
 	</script>
 </body>

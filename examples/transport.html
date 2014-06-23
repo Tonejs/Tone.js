@@ -2,10 +2,17 @@
 <head>
 	<title>TRANSPORT</title>
 
-	<script type="text/javascript" src="../build/Tone.js"></script>
+	<script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
+	<script type="text/javascript" src="../Tone.js"></script>
+	<link rel="stylesheet" type="text/css" href="exampleStyle.css">
+
 </head>
 <body>
+	<div>Setup a series of events along a 1 bar loop</div>
+	<br>
 	<button>start</button>
+	<div id="transportTime">0:0:0</div>
+	<br><br>
 	<div id="output"></div>
 	<div id="loading">loading...</div>
 	<script type="text/javascript">
@@ -16,50 +23,50 @@
 		Tone.Transport.setBpm(145);
 
 		var player = new Tone.Player("./audio/505/hh.mp3", function(){
-			document.querySelector("#loading").remove();
+			$("#loading").remove();
 		});
+		player.retrigger = true;
 		player.toMaster();
 
-		//setting events
-		var output = document.querySelector("#output");
+		setInterval(function(){
+			$("#transportTime").text(Tone.Transport.getTransportTime());
+		}, 100);
 
-		Tone.Transport.setTimeout(function(time){
+		Tone.Transport.setTimeline(function(time){
 			player.start(time);
-			output.textContent = "a";
+			$("#output").text("a");
 		}, "0:0");
 
-		Tone.Transport.setTimeout(function(time){
+		Tone.Transport.setTimeline(function(time){
 			player.start(time);
-			output.textContent = "series";
+			$("#output").text("series");
 		}, "0:1");
 
-		Tone.Transport.setTimeout(function(time){
+		Tone.Transport.setTimeline(function(time){
 			player.start(time);
-			output.textContent = "of";
+			$("#output").text("of");
 		}, "2n");
 
-		Tone.Transport.setTimeout(function(time){
+		Tone.Transport.setTimeline(function(time){
 			player.start(time);
-			output.textContent = "timed";
+			$("#output").text("timed");
 		}, "0:3");
 
-		Tone.Transport.setTimeout(function(time){
+		Tone.Transport.setTimeline(function(time){
 			player.start(time);
-			output.textContent = "events";
+			$("#output").text("events");
 		}, "0:3:2");
 
-		var button = document.querySelector("button");
-
-		button.onclick = function(){
-			if (Tone.Transport.state === "playing"){
+		$("button").click(function(){
+			if (Tone.Transport.state === "started"){
 				Tone.Transport.stop();
-				button.textContent = "start";
+				$(this).text("start");
+				$("#output").text("");
 			} else {
 				Tone.Transport.start();
-				button.textContent = "stop";
+				$(this).text("stop");
 			}
-		}
-
+		});
 
 	</script>
 </body>

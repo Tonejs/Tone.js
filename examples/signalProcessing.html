@@ -2,10 +2,12 @@
 <head>
 	<title>SIGNAL PROCESSING</title>
 
-	<script type="text/javascript" src='../Tone.js'></script>
+	<script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
+	<script type="text/javascript" src="../Tone.js"></script>
+	<link rel="stylesheet" type="text/css" href="exampleStyle.css">
 </head>
 <body>
-	<div id='description'>An example of audio-rate signal manipulation</div>
+	<div>Process a signal through various methods to alter its value</div>
 	<br><br>
 	<input type='range' value='50'>
 	<div id='signal'>0</div>
@@ -44,17 +46,16 @@
 		var $mult = document.querySelector("#mult");
 
 		setInterval(function(){
-			$signal.textContent = "signal: " + dryMeter.getValue().toFixed(3);
-			$add.textContent = "signal + 100: " + addMeter.getValue().toFixed(3);
-			$scale.textContent = "scaled 5 to 10: " + scaleMeter.getValue().toFixed(3);
-			$mult.textContent = "signal * 10: " + multMeter.getValue().toFixed(3);
+			$("#signal").text("signal: " + dryMeter.getValue().toFixed(3));
+			$("#add").text("signal + 100: " + addMeter.getValue().toFixed(3));
+			$("#scale").text("scaled 5 to 10: " + scaleMeter.getValue().toFixed(3));
+			$("#mult").text("signal * 10: " + multMeter.getValue().toFixed(3));
 		}, 100);
 
-		var range = document.querySelector("input");
-		range.onchange = function(){
-			var val = range.value;
-			signal.linearRampToValueAtTime(val / 50 - 1, "+.1");
-		}
+		$("input").on("input", function(){
+			var val = $(this).val();
+			signal.linearRampToValueAtTime(val / 50 - 1, "+0.1");
+		});
 	</script>
 </body>
 </html>

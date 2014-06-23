@@ -2,12 +2,15 @@
 <head>
 	<title>AUTOPANNER</title>
 
-	<script type="text/javascript" src='../Tone.js'></script>
+	<script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
+	<script type="text/javascript" src="../Tone.js"></script>
+	<link rel="stylesheet" type="text/css" href="exampleStyle.css">
 	
 </head>
 <body>
+	<div>Auto Panner</div>
+	<br>
 	<button>start</button>
-	<input type='range' value='50'>
 	<div id='left'>0</div>
 	<div id='right'>0</div>
 	<script type="text/javascript">
@@ -28,39 +31,24 @@
 
 		//star the panner lfo
 		pan.start();
+		pan.setDry(0);
 
-		var leftMeter = document.querySelector("#left");
-		var rightMeter = document.querySelector("#right");
-	
-		//meter the content
+		//update the meters
 		setInterval(function(){
-			leftMeter.textContent = "left: " + meter.getDb(0).toFixed(2) + " db";
-			rightMeter.textContent = "right: " + meter.getDb(1).toFixed(2) + " db";
+			$("#left").text("left: " + meter.getDb(0).toFixed(2) + " db");
+			$("#right").text("right: " + meter.getDb(1).toFixed(2) + " db");
 		}, 100);
 
 
-		//INTERFACE//
-
-		var button = document.querySelector("button");
-
-		//called when the start button is clicked
-		button.onclick = function(){
-			if (!sine.started){
+		$("button").click(function(){
+			if (sine.state !== "started"){
 				sine.start();
-				button.textContent = "stop";
+				$(this).text("stop");
 			} else {
 				sine.stop();
-				button.textContent = "start";
+				$(this).text("stop");
 			}
-		}
-
-		var range = document.querySelector("input");
-
-		//called when the range is changed
-		range.onchange = function(){
-			var val = range.value;
-			pan.setDry(val / 50 - 1, "+ .1");
-		}
+		});
 		
 	</script>
 </body>
