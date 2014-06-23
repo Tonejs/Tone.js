@@ -25,7 +25,7 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/LFO", "Tone/comp
 
 		//connections
 		this.connectEffect(this.panner);
-		this.chain(this.lfo, this.panner.panControl);
+		this.lfo.connect(this.panner.pan);
 		//default dry value
 		this.setDry(this.defaultArg(amount, 1));
 	};

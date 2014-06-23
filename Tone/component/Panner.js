@@ -39,7 +39,7 @@ function(Tone){
 		 *  the pan control
 		 *  @type {Tone.Signal}
 		 */	
-		this.panControl = this._dryWet.wetness;
+		this.pan = this._dryWet.wetness;
 
 		//CONNECTIONS:
 		this.input.connect(this._splitter.left);
