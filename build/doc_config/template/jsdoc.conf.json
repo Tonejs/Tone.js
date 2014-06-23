@@ -16,6 +16,7 @@
 		"theme"           : "flatly",
 		"linenums"        : true,
 		"collapseSymbols" : true,
+		"private"		  : false,
 		"inverseNav"      : true
 	},
 	"markdown"  : {
