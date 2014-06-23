@@ -857,7 +857,9 @@ define('Tone/signal/Multiply',["Tone/core/Tone", "Tone/signal/Signal"], function
 		 *  @type {GainNode}
 		 */
 		this.input = this.context.createGain();
-		/** @alias {GainNode} */
+		/** 
+		 *  @type {GainNode}
+		 */
 		this.output = this.input;
 
 		//apply the inital scale factor
@@ -1288,7 +1290,9 @@ function(Tone){
 		this._jsNode = this.context.createScriptProcessor(this.bufferSize, 1, 1);
 		this._jsNode.onaudioprocess = this._processBuffer.bind(this);
 
-		/** @type {boolean} */
+		/** 
+		 *  @type {boolean}
+		 */
 		this.loop = false;
 
 		/**
@@ -1302,6 +1306,11 @@ function(Tone){
 
 	Tone.extend(Tone.Transport);
 
+	/** 
+	 * @private 
+	 * @type {number} 
+	 */
+	var timelineTicks = 0;
 	/** 
 	 * @private 
 	 * @type {number} 
@@ -1409,7 +1418,7 @@ function(Tone){
 			var sample = incomingBuffer[i];
 			if (sample > 0 && !upTick){
 				upTick = true;	
-				this._processTick(now + this.samplesToSeconds(i), i);
+				this._processTick(now + this.samplesToSeconds(i));
 			} else if (sample < 0 && upTick){
 				upTick = false;
 			}
@@ -1417,15 +1426,16 @@ function(Tone){
 	};
 
 	//@param {number} tickTime
-	Tone.Transport.prototype._processTick = function(tickTime, i){
+	Tone.Transport.prototype._processTick = function(tickTime){
 		if (oscillator !== null){
-			transportTicks += 1;
 			processIntervals(tickTime);
-			processTimeouts(tickTime, i);
+			processTimeouts(tickTime);
 			processTimeline(tickTime);
+			transportTicks += 1;
+			timelineTicks += 1;
 			if (this.loop){
-				if (transportTicks === loopEnd){
-					this._setTicks(this.loopEnd);
+				if (timelineTicks === loopEnd){
+					this._setTicks(loopStart);
 				}
 			}
 		}
@@ -1433,7 +1443,7 @@ function(Tone){
 
 	//jump to a specific tick in the timeline
 	Tone.Transport.prototype._setTicks = function(ticks){
-		transportTicks = ticks;
+		timelineTicks = ticks;
 		for (var i = 0; i < transportTimeline.length; i++){
 			var timeout = transportTimeline[i];
 			if (timeout.callbackTick() >= ticks){
@@ -1488,10 +1498,10 @@ function(Tone){
 		for (var i = timelineProgress, len = transportTimeline.length; i<len; i++){
 			var evnt = transportTimeline[i];
 			var callbackTick = evnt.callbackTick();
-			if (callbackTick === transportTicks){
+			if (callbackTick === timelineTicks){
 				evnt.doCallback(time);
 				timelineProgress = i;
-			} else if (callbackTick > transportTicks){
+			} else if (callbackTick > timelineTicks){
 				break;
 			} 
 		}
@@ -1617,7 +1627,7 @@ function(Tone){
 	 */
 	Tone.Transport.prototype.setTimeline = function(callback, timeout, ctx){
 		var ticks = this.toTicks(timeout);
-		var timelineEvnt = new TimelineEvent(callback, ctx, ticks + transportTicks, 0);
+		var timelineEvnt = new TimelineEvent(callback, ctx, ticks, 0);
 		//put it in the right spot
 		for (var i = timelineProgress, len = transportTimeline.length; i<len; i++){
 			var testEvnt = transportTimeline[i];
@@ -1679,7 +1689,7 @@ function(Tone){
 	 *  @return {string} in transportTime format (measures:beats:sixteenths)
 	 */
 	Tone.Transport.prototype.getTransportTime = function(){
-		var quarters = transportTicks / tatum;
+		var quarters = timelineTicks / tatum;
 		var measures = Math.floor(quarters / transportTimeSignature);
 		var sixteenths = Math.floor((quarters % 1) * 4);
 		quarters = Math.floor(quarters) % transportTimeSignature;
@@ -2383,7 +2393,10 @@ define('Tone/component/LFO',["Tone/core/Tone", "Tone/source/Oscillator", "Tone/s
 		this.input = this.context.createGain();
 		/** @type {Tone.Oscillator} */
 		this.oscillator = new Tone.Oscillator(this.defaultArg(rate, 1), "sine");
-		/** @type {Tone.Scale} @private */
+		/**
+			@type {Tone.Scale} 
+			@private
+		*/
 		this._scaler = new Tone.Scale(this.defaultArg(outputMin, 0), this.defaultArg(outputMax, 1));
 		/** alias for the output */
 		this.output = this._scaler;
@@ -2711,11 +2724,12 @@ define('Tone/signal/Split',["Tone/core/Tone"], function(Tone){
 	Tone.Split = function(){
 		Tone.call(this);
 
-		/** @type {ChannelSplitterNode} */
+		/** 
+		 *  @type {ChannelSplitterNode}
+		 */
 		this.splitter = this.context.createChannelSplitter(2);
 		/** 
 		 *  left channel output
-		 *  @alias for the default output
 		 *  @type {GainNode}
 		 */
 		this.left = this.output;
@@ -2788,7 +2802,7 @@ function(Tone){
 		 *  the pan control
 		 *  @type {Tone.Signal}
 		 */	
-		this.panControl = this._dryWet.wetness;
+		this.pan = this._dryWet.wetness;
 
 		//CONNECTIONS:
 		this.input.connect(this._splitter.left);
@@ -3250,7 +3264,7 @@ define('Tone/effect/AutoPanner',["Tone/core/Tone", "Tone/effect/Effect", "Tone/c
 
 		//connections
 		this.connectEffect(this.panner);
-		this.chain(this.lfo, this.panner.panControl);
+		this.lfo.connect(this.panner.pan);
 		//default dry value
 		this.setDry(this.defaultArg(amount, 1));
 	};
@@ -3533,273 +3547,6 @@ define('Tone/effect/PingPongDelay',["Tone/core/Tone", "Tone/effect/FeedbackDelay
 
 	return Tone.PingPongDelay;
 });
-
-define('Tone/instrument/MonoSynth',["Tone/core/Tone", "Tone/component/Envelope", "Tone/source/Oscillator"], function(Tone){
-
-
-	Tone.MonoSynth = function(){
-		//one oscillator
-		this.oscillator = this.context.createOscillator();
-		this.glideTime = .01;
-		this.filterEnvelope = new Tone.Envelope();
-	}
-
-	return Tone.MonoSynth;
-});
-define('Tone/source/Player',["Tone/core/Tone", "Tone/source/Source"], function(Tone){
-	
-	/**
-	 *  Audio Player
-	 *  
-	 *  Audio file player with start, loop, stop.
-	 *  
-	 *  @constructor
-	 *  @extends {Tone.Source} 
-	 *  @param {string} url
-	 */
-	Tone.Player = function(url){
-		Tone.Source.call(this);
-
-		/**
-		 *  the url to load
-		 *  @type {string}
-		 */
-		this.url = url;
-		/**
-		 *  @private
-		 *  @type {AudioBufferSourceNode}
-		 */
-		this._source = null;
-		
-		/**
-		 *  the buffer
-		 *  @private
-		 *  @type {AudioBuffer}
-		 */
-		this._buffer = null;
-
-
-		/**
-		 *  the duration of the buffer once it's been loaded
-		 *  @type {number}
-		 */
-		this.duration = 0;
-
-		/**
-		 *  the playback rate
-		 *  @private
-		 *  @type {number}
-		 */
-		this._playbackRate = 1;
-
-		/**
-		 *  enabling retrigger will allow a player to be restarted
-		 *  before the it's is done playing
-		 *  
-		 *  @type {boolean}
-		 */
-		this.retrigger = false;
-
-		/**
-		 *  set a callback function to invoke when the sample is over
-		 *  
-		 *  @type {function}
-		 */
-		this.onended = function(){};
-	};
-
-	Tone.extend(Tone.Player, Tone.Source);
-
-	/**
-	 *  makes an xhr reqest for the selected url
-	 *  Load the audio file as an audio buffer.
-	 *  Decodes the audio asynchronously and invokes
-	 *  the callback once the audio buffer loads.
-	 *  
-	 *  @param {function(Tone.Player)} callback
-	 */
-	Tone.Player.prototype.load = function(callback){
-		if (!this._buffer){
-			var request = new XMLHttpRequest();
-			request.open("GET", this.url, true);
-			request.responseType = "arraybuffer";
-			// decode asynchronously
-			var self = this;
-			request.onload = function() {
-				self.context.decodeAudioData(request.response, function(buff) {
-					self._buffer = buff;
-					self.duration = buff.duration;
-					if (callback){
-						callback(self);
-					}
-				});
-			};
-			//send the request
-			request.send();
-		} else {
-			if (callback){
-				callback(this);
-			}
-		}
-	};
-
-	/**
-	 *  play the buffer between the desired positions
-	 *  	
-	 *  @param  {Tone.Time=} startTime 
-	 *  @param  {Tone.Time=} offset    
-	 *  @param  {Tone.Time=} duration
-	 */
-	Tone.Player.prototype.start = function(startTime, offset, duration){
-		if (this.state === Tone.Source.State.STOPPED || this.retrigger){
-			if (this._buffer){
-				this.state = Tone.Source.State.STARTED;
-				//default args
-				offset = this.defaultArg(offset, 0);
-				duration = this.defaultArg(duration, this._buffer.duration - offset);
-				//make the source
-				this._source = this.context.createBufferSource();
-				this._source.buffer = this._buffer;
-				this._source.loop = false;
-				this._source.playbackRate.value = this._playbackRate;
-				this._source.start(this.toSeconds(startTime), this.toSeconds(offset), this.toSeconds(duration));
-				this._source.onended = this._onended.bind(this);
-				this.chain(this._source, this.output);
-			}
-		}
-	};
-
-	/**
-	 *  Loop the buffer from start to finish at a time
-	 *
-	 *  @param  {Tone.Time=} startTime
-	 *  @param  {Tone.Time=} loopStart
-	 *  @param  {Tone.Time=} loopEnd
-	 *  @param  {Tone.Time=} offset
-	 *  @param  {Tone.Time=} duration
-	 */
-	Tone.Player.prototype.loop = function(startTime, loopStart, loopEnd, offset, duration){
-		if (this._buffer){
-			//default args
-			loopStart = this.defaultArg(loopStart, 0);
-			loopEnd = this.defaultArg(loopEnd, this._buffer.duration);
-			offset = this.defaultArg(offset, loopStart);
-			duration = this.defaultArg(duration, this._buffer.duration - offset);
-			//make/play the source
-			this.start(startTime, offset, duration);
-			this._source.loop = true;
-			this._source.loopStart = this.toSeconds(loopStart);
-			this._source.loopEnd = this.toSeconds(loopEnd);
-		}
-	};
-
-	/**
-	 *  Stop playback.
-	 * 
-	 *  @param  {Tone.Time} time
-	 */
-	Tone.Player.prototype.stop = function(time){
-		if (this.state === Tone.Source.State.STARTED) {
-			if (this._buffer && this._source){
-				if (!time){
-					this.state = Tone.Source.State.STOPPED;
-				}
-				this._source.stop(this.toSeconds(time));
-			}
-		}
-	};
-
-	/**
-	 *  set the rate at which the file plays
-	 *  
-	 *  @param {number} rate
-	 *  @param {Tone.Time=} rampTime (optional) the amount of time it takes to 
-	 *                               reach the rate
-	 */
-	Tone.Player.prototype.setPlaybackRate = function(rate, rampTime){
-		this._playbackRate = rate;
-		if (this._source) {
-			if (rampTime){
-				this._source.playbackRate.exponentialRampToValueAtTime(rate, this.toSeconds(rampTime));
-			} else {
-				this._source.playbackRate.value = rampTime;
-			}
-		} 
-	};
-
-	/**
-	 *  internal call when the buffer is done playing
-	 *  
-	 *  @private
-	 */
-	Tone.Player.prototype._onended = function(){
-		this.state = Tone.Source.State.STOPPED;
-		this.onended();
-	};
-
-	/**
-	 *  dispose and disconnect
-	 */
-	Tone.Player.prototype.dispose = function(){
-		if (this._source !== null){
-			this._source.disconnect();
-			this._source = null;
-		}
-		this._buffer = null;
-		this.output.disconnect();
-		this.output = null;
-	};
-
-	return Tone.Player;
-});
-
-///////////////////////////////////////////////////////////////////////////////
-//
-//  SAMPLE PLAYER
-//
-//	dependencies : Tone, Player, Envelope, LFO
-///////////////////////////////////////////////////////////////////////////////
-
-define('Tone/instrument/Sampler',["Tone/core/Tone", "Tone/component/Envelope", "Tone/source/Player"], function(Tone){
-
-	Tone.Sampler = function(url){
-		Tone.call(this);
-
-		//components
-		this.player = new Tone.Player(url);
-		this.envelope = new Tone.Envelope(.1, .01, .1, 1);
-		this.filter = this.context.createBiquadFilter();
-		this.filter.type = "lowpass";
-		this.filter.Q.value = 12;
-		this.filterEnvelope = new Tone.Envelope(.4, 0, 1, .6, this.filter.frequency, 0, 1200);
-
-		//connect it up
-		this.chain(this.player, this.envelope, this.filter, this.output);
-	}
-
-	Tone.extend(Tone.Sampler, Tone);
-
-
-	//@param {function()=} callback
-	Tone.Sampler.prototype.load = function(callback){
-		this.player.load(callback);
-	}
-
-	Tone.Sampler.prototype.triggerAttack = function(startTime){
-		this.player.start(startTime);
-		this.envelope.triggerAttack(startTime);
-		this.filterEnvelope.triggerAttack(startTime);
-	}
-
-	Tone.Sampler.prototype.triggerRelease = function(stopTime){
-		stopTime = this.defaultArg(stopTime, this.now());
-		this.player.stop(stopTime + Math.max(this.envelope.release, this.filterEnvelope.release));
-		this.envelope.triggerRelease(stopTime);
-		this.filterEnvelope.triggerRelease(stopTime);
-	}
-
-	return Tone.Sampler;
-});
 define('Tone/signal/BitCrusher',["Tone/core/Tone"], function(Tone){
 
 	/**
@@ -3942,7 +3689,7 @@ define('Tone/source/Microphone',["Tone/core/Tone", "Tone/source/Source"], functi
 	 *  @param {number=} inputNum 
 	 */
 	Tone.Microphone = function(inputNum){
-		Tone.call(this);
+		Tone.Source.call(this);
 
 		/**
 		 *  @type {MediaStreamAudioSourceNode}
@@ -3974,64 +3721,35 @@ define('Tone/source/Microphone',["Tone/core/Tone", "Tone/source/Source"], functi
 	Tone.extend(Tone.Microphone, Tone.Source);
 
 	/**
-	 *  start the _stream. 
-	 *  
-	 *  accepts a time to stay consisten with other sources, even though 
-	 *  it can't be stopped in a sample accurate way. 
-	 *  uses setTimeout to approximate the behavior
-	 * 
-	 *  @param {Tone.Time} time
+	 *  start the stream. 
 	 */
-	Tone.Microphone.prototype.start = function(time){
+	Tone.Microphone.prototype.start = function(){
 		if (this.state === Tone.Source.State.STOPPED){
 			this.state = Tone.Source.State.STARTED;
-			if (time){
-				var self = this;
-				setTimeout(function(){
-					navigator.getUserMedia(self.constraints, 
-						self._onStream.bind(self), self._onStreamError.bind(self));
-				}, this.toSeconds(time) * 1000);
-			} else {
 				navigator.getUserMedia(this.constraints, 
 					this._onStream.bind(this), this._onStreamError.bind(this));
-			}
-			
 		}
 	};
 
 	/**
-	 *  stop the _stream. 
-	 *  
-	 *  accepts a time to stay consisten with other sources, even though 
-	 *  it can't be stopped in a sample accurate way. 
-	 *  uses setTimeout to approximate the behavior
-	 * 
-	 *  @param {Tone.Time} time
+	 *  stop the stream. 
 	 */
-	Tone.Microphone.prototype.stop = function(time){
+	Tone.Microphone.prototype.stop = function(){
 		if (this._stream && this.state === Tone.Source.State.STARTED){
-			if (time){
-				var self = this;
-				setTimeout(function(){
-					self.state = Tone.Source.State.STOPPED;
-					self._stream.stop();
-				}, this.toSeconds(time) * 1000);
-			} else {
-				this.state = Tone.Source.State.STOPPED;
-				this._stream.stop();
-			}
+			this.state = Tone.Source.State.STOPPED;
+			this._stream.stop();
 		}
 	};
 
 	/**
-	 *  called when the _stream is successfully setup
-	 *  @param   {LocalMediaStream} _stream 
+	 *  called when the stream is successfully setup
+	 *  @param   {LocalMediaStream} stream 
 	 *  @private
 	 */
-	Tone.Microphone.prototype._onStream = function(_stream) {
-		this._stream = _stream;
-		// Wrap a MediaStreamSourceNode around the live input _stream.
-		this._mediaStream = this.context.createMediaStreamSource(_stream);
+	Tone.Microphone.prototype._onStream = function(stream) {
+		this._stream = stream;
+		// Wrap a MediaStreamSourceNode around the live input stream.
+		this._mediaStream = this.context.createMediaStreamSource(stream);
 		this._mediaStream.connect(this.output);
 	};
 
@@ -4292,4 +4010,230 @@ define('Tone/source/Noise',["Tone/core/Tone", "Tone/source/Source"], function(To
 	}());
 
 	return Tone.Noise;
+});
+define('Tone/source/Player',["Tone/core/Tone", "Tone/source/Source"], function(Tone){
+	
+	/**
+	 *  Audio Player
+	 *  
+	 *  Audio file player with start, loop, stop.
+	 *  
+	 *  @constructor
+	 *  @extends {Tone.Source} 
+	 *  @param {string=} url if a url is passed in, it will be loaded
+	 *                       and invoke the callback if it also passed
+	 *                       in.
+	 *  @param {function(Tone.Player)=} cb callback to be invoked
+	 *                                     once the url is loaded
+	 */
+	Tone.Player = function(url, cb){
+		Tone.Source.call(this);
+
+		/**
+		 *  @private
+		 *  @type {AudioBufferSourceNode}
+		 */
+		this._source = null;
+		
+		/**
+		 *  the buffer
+		 *  @private
+		 *  @type {AudioBuffer}
+		 */
+		this._buffer = null;
+
+
+		/**
+		 *  the duration of the buffer once it's been loaded
+		 *  @type {number}
+		 */
+		this.duration = 0;
+
+		/**
+		 *  the playback rate
+		 *  @private
+		 *  @type {number}
+		 */
+		this._playbackRate = 1;
+
+		/**
+		 *  enabling retrigger will allow a player to be restarted
+		 *  before the it's is done playing
+		 *  
+		 *  @type {boolean}
+		 */
+		this.retrigger = false;
+
+		/**
+		 *  set a callback function to invoke when the sample is over
+		 *  
+		 *  @type {function}
+		 */
+		this.onended = function(){};
+
+		//if there is a url, load it. 
+		if (url){
+			this.load(url, cb);
+		}
+	};
+
+	Tone.extend(Tone.Player, Tone.Source);
+
+	/**
+	 *  makes an xhr reqest for the selected url
+	 *  Load the audio file as an audio buffer.
+	 *  Decodes the audio asynchronously and invokes
+	 *  the callback once the audio buffer loads.
+	 *
+	 *  @param {string} url the url of the buffer to load.
+	 *                      filetype support depends on the
+	 *                      browser.
+	 *  @param {function(Tone.Player)=} callback
+	 */
+	Tone.Player.prototype.load = function(url, callback){
+		if (!this._buffer){
+			var request = new XMLHttpRequest();
+			request.open("GET", url, true);
+			request.responseType = "arraybuffer";
+			// decode asynchronously
+			var self = this;
+			request.onload = function() {
+				self.context.decodeAudioData(request.response, function(buff) {
+					self.setBuffer(buff);
+					if (callback){
+						callback(self);
+					}
+				});
+			};
+			//send the request
+			request.send();
+		} else {
+			if (callback){
+				callback(this);
+			}
+		}
+	};
+
+	/**
+	 *  set the buffer
+	 *
+	 *  @param {AudioBuffer} buffer the buffer which the player will play.
+	 *                              note: if you switch the buffer after
+	 *                              the player is already started, it will not
+	 *                              take effect until the next time the player
+	 *                              is started.
+	 */
+	Tone.Player.prototype.setBuffer = function(buffer){
+		this._buffer = buffer;
+		this.duration = buffer.duration;
+	};
+
+	/**
+	 *  play the buffer between the desired positions
+	 *  	
+	 *  @param  {Tone.Time=} startTime 
+	 *  @param  {Tone.Time=} offset    
+	 *  @param  {Tone.Time=} duration
+	 */
+	Tone.Player.prototype.start = function(startTime, offset, duration){
+		if (this.state === Tone.Source.State.STOPPED || this.retrigger){
+			if (this._buffer){
+				this.state = Tone.Source.State.STARTED;
+				//default args
+				offset = this.defaultArg(offset, 0);
+				duration = this.defaultArg(duration, this._buffer.duration - offset);
+				//make the source
+				this._source = this.context.createBufferSource();
+				this._source.buffer = this._buffer;
+				this._source.loop = false;
+				this._source.playbackRate.value = this._playbackRate;
+				this._source.start(this.toSeconds(startTime), this.toSeconds(offset), this.toSeconds(duration));
+				this._source.onended = this._onended.bind(this);
+				this.chain(this._source, this.output);
+			}
+		}
+	};
+
+	/**
+	 *  Loop the buffer from start to finish at a time
+	 *
+	 *  @param  {Tone.Time=} startTime
+	 *  @param  {Tone.Time=} loopStart
+	 *  @param  {Tone.Time=} loopEnd
+	 *  @param  {Tone.Time=} offset
+	 *  @param  {Tone.Time=} duration
+	 */
+	Tone.Player.prototype.loop = function(startTime, loopStart, loopEnd, offset, duration){
+		if (this._buffer){
+			//default args
+			loopStart = this.defaultArg(loopStart, 0);
+			loopEnd = this.defaultArg(loopEnd, this._buffer.duration);
+			offset = this.defaultArg(offset, loopStart);
+			duration = this.defaultArg(duration, this._buffer.duration - offset);
+			//make/play the source
+			this.start(startTime, offset, duration);
+			this._source.loop = true;
+			this._source.loopStart = this.toSeconds(loopStart);
+			this._source.loopEnd = this.toSeconds(loopEnd);
+		}
+	};
+
+	/**
+	 *  Stop playback.
+	 * 
+	 *  @param  {Tone.Time} time
+	 */
+	Tone.Player.prototype.stop = function(time){
+		if (this.state === Tone.Source.State.STARTED) {
+			if (this._buffer && this._source){
+				if (!time){
+					this.state = Tone.Source.State.STOPPED;
+				}
+				this._source.stop(this.toSeconds(time));
+			}
+		}
+	};
+
+	/**
+	 *  set the rate at which the file plays
+	 *  
+	 *  @param {number} rate
+	 *  @param {Tone.Time=} rampTime (optional) the amount of time it takes to 
+	 *                               reach the rate
+	 */
+	Tone.Player.prototype.setPlaybackRate = function(rate, rampTime){
+		this._playbackRate = rate;
+		if (this._source) {
+			if (rampTime){
+				this._source.playbackRate.exponentialRampToValueAtTime(rate, this.toSeconds(rampTime));
+			} else {
+				this._source.playbackRate.value = rampTime;
+			}
+		} 
+	};
+
+	/**
+	 *  internal call when the buffer is done playing
+	 *  
+	 *  @private
+	 */
+	Tone.Player.prototype._onended = function(){
+		this.state = Tone.Source.State.STOPPED;
+		this.onended();
+	};
+
+	/**
+	 *  dispose and disconnect
+	 */
+	Tone.Player.prototype.dispose = function(){
+		if (this._source !== null){
+			this._source.disconnect();
+			this._source = null;
+		}
+		this._buffer = null;
+		this.output.disconnect();
+		this.output = null;
+	};
+
+	return Tone.Player;
 });
