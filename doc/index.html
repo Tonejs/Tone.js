@@ -168,98 +168,115 @@
         <article><h1>Tone.js</h1>
 <p>A collection of building blocks extending and wrapping the Web Audio API.  </p>
 <h1>Installation</h1>
-<p>Tone.js can be used with or without require.js</p>
-<h3>require.js</h3>
+<p>Tone.js can be used with or without RequireJS</p>
+<h3>RequireJS</h3>
+<p><a href="http://requirejs.org/">RequireJS</a> is a JavaScript module loader which Tone.js uses internally
+for dependency management. It is a powerful tool for development and deploying. Using r.js (RequireJS's optimizer) 
+can bring package size down significantly since it will only load the modules used in your code. </p>
 <p>There are a couple ways to use the tone library with require.js and r.js. </p>
-<p>You can include the Tone.js build (located in the build folder), as one of the deps in your require.config</p>
-<pre><code class="lang-javascript">require.config({
-    baseUrl: './base',
-    deps : [&quot;../deps/Tone.js/build/Tone&quot;],
-});</code></pre>
-<p>or alternatively, keep the directory structure the same and make a path which points to the Tone directory</p>
+<p>The best way to use with  Tone.js is to make a path to the base directory:</p>
 <pre><code class="lang-javascript">require.config({
     baseUrl: './base',
     paths: {
-        &quot;Tone&quot; : &quot;../deps/Tone.js/Tone&quot;
+        &quot;Tone&quot; : &quot;pathto/Tone.js/Tone&quot;
     }
 });</code></pre>
-<h3>without require.js</h3>
-<p>To use Tone.js without require, just add the build source (located at build/Tone.js) to the top of your html page. Tone will add itself as a global. </p>
-<pre><code class="lang-html">&lt;script type=&quot;text/javascript&quot; src=&quot;../build/Tone.js&quot;&gt;&lt;/script&gt;</code></pre>
-<h1>API</h1>
-<h2>Tone()</h2>
-<p>Tone is the base-class of all ToneNode's</p>
-<h3>Properties</h3>
-<h4>.input {GainNode}</h4>
-<p>Connect all inputs to a ToneNode to the Node's input.</p>
-<h4>.output {GainNode}</h4>
-<p>A GainNode which is the output of all of the processing that occurs within the ToneNode</p>
-<h4>.context {AudioContext}</h4>
-<p>A reference to the AudioContext. It is also available globally as Tone.context</p>
-<h3>Methods</h3>
-<h4>.connect(node)</h4>
+<h3>without RequireJS</h3>
+<p>Tone.js can also be used without RequireJS. If you include the <a href="https://raw.githubusercontent.com/TONEnoTONE/Tone.js/master/Tone.js">Tone.js Build</a>
+as a script tag at the top of your page, a global called <code>Tone</code> will be added to the window. </p>
+<pre><code class="lang-html">&lt;script type=&quot;text/javascript&quot; src=&quot;pathto/Tone.js&quot;&gt;&lt;/script&gt;</code></pre>
+<h1>AudioContext</h1>
+<p>Tone.js creates an AudioContext when it loads and shims it for maximum browser compatibility. The AudioContext can be found at
+<code>Tone.context</code> or from within any Node in the Tone library as <code>this.context</code>. For AudioNodes
+to be able to connect together, they need to be created from the same AudioContext. </p>
+<h1>Audio Sources</h1>
+<p>Tone.js simplifies the creation of oscillators and buffer players. </p>
+<pre><code class="lang-javascript">//a square wave at 440hz:
+var osc = new Tone.Oscillator(440, &quot;square&quot;);
+//connect it to the master output
+osc.toMaster();
+osc.start();</code></pre>
+<pre><code class="lang-javascript">//a buffer player which plays as soon as it's loaded
+//the second argument is an onload callback
+var player = new Tone.Player(&quot;./sound.mp3&quot;, function(){
+    player.start();    
+});
+player.toMaster();</code></pre>
+<h1>Transport and Timing</h1>
+<p>A unique feature of the library is the oscillator-based Transport which allows for simple synchronization of 
+sources and signals. The Transport allows you to register callbacks at precise moments along and get a callback
+with the exact time requested. Pass the time to the Node you'd like to start or automate. </p>
+<pre><code class="lang-javascript">//this will start the player on every quarter note
+Tone.Transport.setInterval(function(time){
+    player.start(time);
+}, &quot;4n&quot;);
+//start the Transport for the events to start
+Tone.Transport.start();</code></pre>
+<p>The Transport also allows single events to occur in the future using setTimeout</p>
+<pre><code class="lang-javascript">//this will start an oscillator 5 seconds from now
+Tone.Transport.setTimeout(function(time){
+    osc.start(time);
+}, 5);
+Tone.Transport.start();</code></pre>
+<p>Events can also be arranged on a timeline. Callbacks registered with <code>setTimeline</code> will
+repeat even after the Transport is started, stopped or looped. </p>
+<pre><code class="lang-javascript">//this will start an oscillator 5 seconds from now
+Tone.Transport.setTimeline(function(time){
+    console.log(&quot;first measure&quot;)
+}, &quot;1:0:0&quot;);
+Tone.Transport.setLoopEnd(&quot;4:0:0&quot;);
+Tone.Transport.start();</code></pre>
+<h3>Time</h3>
+<p>In the Tone library, time can be described in a number of ways. Any method
+which takes a time as a parameter will accept any of these forms: </p>
+<p><strong>Number</strong>: these will be taken literally as the time (in seconds). </p>
+<p><strong>Notation</strong>: describes time in BPM and time signature relative values. </p>
+<p> &quot;4n&quot; = quarter note
+ &quot;8t&quot; = eighth note triplet
+ &quot;2m&quot; = two measures</p>
+<p><strong>Transport Time</strong>: will also provide tempo and time signature relative times in the form BARS:QUARTERS:SIXTEENTHS.</p>
+<p>&quot;32:0:0&quot; = start of the 32nd measure. 
+&quot;4:3:2&quot; = 4 bars + 3 quarter notes + 2 sixteenth notes. </p>
+<p><strong>Frequency</strong>: seconds can also be described in Hz. </p>
+<p>&quot;1hz&quot; = 1 second
+&quot;5hz&quot; = 0.2 seconds</p>
+<p><strong>Now-Relative</strong>: prefix any of the above with &quot;+&quot; and it will be interpreted as &quot;the current time + &quot;</p>
+<p>&quot;+1m&quot; = 1 measure from now
+&quot;+0.5&quot; = half a second from now</p>
+<h1>Components</h1>
+<p>Tone.js provides a number number of useful components for building synthesizers and audio applications.</p>
 <ul>
-<li>node - {AudioNode | AudioParam | ToneNode}</li>
+<li><a href="http://tonenotone.github.io/Tone.js/doc/Tone.Envelope.html">Tone.Envelope</a></li>
+<li><a href="http://tonenotone.github.io/Tone.js/doc/Tone.LFO.html">Tone.LFO</a></li>
+<li><a href="http://tonenotone.github.io/Tone.js/doc/Tone.Panner.html">Tone.Panner</a></li>
+<li><a href="http://tonenotone.github.io/Tone.js/doc/Tone.DryWet.html">Tone.DryWet</a></li>
 </ul>
-<p>Connects the node's output to the next node. If it is a ToneNode it will automatically connect to that Node's .input </p>
-<h4>.now() {number}</h4>
-<ul>
-<li>returns context.currentTime</li>
-</ul>
-<h2>Master</h2>
-<p>Tone.Master is a single master output which connects to context.destination (the speakers). Before going to the DestinationNode, audio is run through a limiter (a DynamicsCompressorNode with threshold of 0db and a high ratio) to reduce the chances of blowing any ear drums. </p>
-<h4>.toMaster()</h4>
-<p>.toMaster() can be called on any AudioNode or ToneNode and will send the output audio to the Master channel. </p>
-<h2>Transport</h2>
-<p>The Transport allows events to be triggered along a musical timeline. The clock-source is bound to an Oscillator which allows for smooth tempo-curving and sample-accurate timing. </p>
-<h3>Properties</h3>
-<h4>.state {string}</h4>
-<p>The current state of the transport ('stopped' | 'started' | 'paused')</p>
-<h4>.loop {boolean}</h4>
-<p>Set the transport to loop over a section</p>
-<h3>Methods</h3>
-<h4>.setBpm(bpm)</h4>
-<ul>
-<li>bpm - {number} the new tempo in beats per minute</li>
-</ul>
-<h4>.getBpm()</h4>
-<ul>
-<li>returns - {number} the current bpm</li>
-</ul>
-<h4>.setInterval(callback, interval, context) {Timeout}</h4>
-<ul>
-<li>callback - in the form: function(number)</li>
-<li>interval - {number | Notation | TransportTime} see <a href="#timing-and-musical-notation">Timing and Musical Notation</a> for more information about timing in Tone.js</li>
-<li>context - {Object=} optional context in which the callback is invoked</li>
-<li>returns - a timeout which can be used to clear the interval</li>
-</ul>
-<p>.setInterval is used for repeat events. The callback is invoked before the event will occur and is passed the exact event time as a parameter</p>
-<pre><code class="lang-javascript">Tone.Transport.setInterval(function(time){
-    samplePlayer.start(time);
-}, &quot;4n&quot;);</code></pre>
-<h4>.setTimeout(callback, timeoutTime, context) {Timeout}</h4>
-<ul>
-<li>callback - in the form: function(number)</li>
-<li>timeoutTime - {number | Notation | TransportTime} see <a href="#timing-and-musical-notation">Timing and Musical Notation</a> for more information about timing in Tone.js</li>
-<li>context - {Object=} optional context in which the callback is invoked</li>
-<li>returns - a timeout which can be used to clear the timeout</li>
-</ul>
-<p>.setTimeout is similar to .setInterval but for single occurance events. </p>
-<pre><code class="lang-javascript">Tone.Transport.setTimeout(function(time){
-    samplePlayer.start(time);
-}, &quot;1:0:2&quot;);</code></pre>
-<h1>Timing and Musical Notation</h1>
-<p>All ToneNodes that accept a time as an argument can parse that time in a few ways. </p>
-<h4>'now' relative timing</h4>
-<p>A timing value preceeded by a &quot;+&quot; will be now-relative meaning that the time will be added to the context's currentTime. </p>
-<pre><code class="lang-javascript">oscillator.start(&quot;+1&quot;) //starts exactly 1 second from now</code></pre>
-<h4>Notation</h4>
-<p>Timing can also be described in musical notation. A quarter-note is notated as &quot;4n&quot; and a sixteenth-note triplet is notated as &quot;16t&quot;. Three measures is &quot;3m&quot;. The tempo and time signature is set by Tone.Transport. This can be combined with now-relative timing. </p>
-<pre><code class="lang-javascript">lfo.setFrequency(&quot;4n&quot;) //oscillates at the rate of a quarter note</code></pre>
-<h4>Transport Time</h4>
-<p>Transport Time is described measures:quater-notes:sixteenth-notes. </p>
-<pre><code class="lang-javascript">//Start the chorus 32 measures after the start of the Transport
-Tone.Transport.setTimeline(startChorus, &quot;32:0:0&quot;);</code></pre></article>
+<h1>Control Signals</h1>
+<p>Like the underlying Web Audio API, Tone.js is built to work with audio-rate signal control of many parameters. 
+This is a powerful feature which allows for sample-accurate synchronization of multiple parameters with a single 
+signal and also lets you connect an LFO to nearly anything. </p>
+<pre><code class="lang-javascript">//use the same LFO to create a vibrato on a oscillator and pan the audio L/R
+var lfo = new Tone.LFO(3, 0, 1); //3hz signal between 0-1
+
+var panner = new Tone.Panner();
+lfo.connect(panner.pan); //connect the lfo to the signal which controls panning
+
+var scaler = new Tone.Scale(420, 460); //scale the lfo signal from 0-1 to 420-460
+var osc = new Tone.Oscillator(440, &quot;sine&quot;); //create an oscillator
+
+//route the lfo through the scaler to the oscillator frequency
+lfo.connect(scaler);
+scaler.connect(osc.frequency);
+
+//connect the oscillator to the panner and the panner to master
+osc.connect(panner);
+panner.toMaster();
+
+//start the oscillator and the lfo
+lfo.start();
+osc.start();</code></pre>
+<h1>Examples</h1>
+<h1>Documentation</h1></article>
     </section>
 
 
@@ -280,7 +297,7 @@ Tone.Transport.setTimeline(startChorus, &quot;32:0:0&quot;);</code></pre></artic
 					<br />
 					
 		<span class="jsdoc-message">
-		Documentation generated on Sat Jun 21 2014 23:14:26 GMT-0400 (EDT).
+		Documentation generated on Mon Jun 23 2014 13:34:05 GMT-0400 (EDT).
 		</span>
 				</footer>
 			</div>
@@ -321,6 +338,34 @@ Tone.Transport.setTimeline(startChorus, &quot;32:0:0&quot;);</code></pre></artic
 		} );
 	</script>
 
+	
+	<script>
+		$( function () {
+			$('#main').localScroll({
+				offset: { top: 56 } //offset by the height of your header (give or take a few px, see what works for you)
+			});
+			$( "dt h4.name" ).each( function () {
+				var $this = $( this );
+				var icon = $( "<i/>" ).addClass( "icon-plus-sign" ).addClass( "pull-right" ).addClass( "icon-white" );
+				var dt = $this.parents( "dt" );
+				var children = dt.next( "dd" );
+
+				$this.append( icon ).css( {cursor : "pointer"} );
+				$this.addClass( "member-collapsed" ).addClass( "member" );
+
+				children.hide();
+				$this.toggle( function () {
+					icon.addClass( "icon-minus-sign" ).removeClass( "icon-plus-sign" ).removeClass( "icon-white" );
+					$this.addClass( "member-open" ).removeClass( "member-collapsed" );
+					children.slideDown();
+				}, function () {
+					icon.addClass( "icon-plus-sign" ).removeClass( "icon-minus-sign" ).addClass( "icon-white" );
+					$this.addClass( "member-collapsed" ).removeClass( "member-open" );
+					children.slideUp();
+				} );
+			} );
+		} );
+	</script>
 	
 
 </body>

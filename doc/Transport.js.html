@@ -170,7 +170,9 @@ function(Tone){
 		this._jsNode = this.context.createScriptProcessor(this.bufferSize, 1, 1);
 		this._jsNode.onaudioprocess = this._processBuffer.bind(this);
 
-		/** @type {boolean} */
+		/** 
+		 *  @type {boolean}
+		 */
 		this.loop = false;
 
 		/**
@@ -184,6 +186,11 @@ function(Tone){
 
 	Tone.extend(Tone.Transport);
 
+	/** 
+	 * @private 
+	 * @type {number} 
+	 */
+	var timelineTicks = 0;
 	/** 
 	 * @private 
 	 * @type {number} 
@@ -291,7 +298,7 @@ function(Tone){
 			var sample = incomingBuffer[i];
 			if (sample > 0 && !upTick){
 				upTick = true;	
-				this._processTick(now + this.samplesToSeconds(i), i);
+				this._processTick(now + this.samplesToSeconds(i));
 			} else if (sample &lt; 0 && upTick){
 				upTick = false;
 			}
@@ -299,15 +306,16 @@ function(Tone){
 	};
 
 	//@param {number} tickTime
-	Tone.Transport.prototype._processTick = function(tickTime, i){
+	Tone.Transport.prototype._processTick = function(tickTime){
 		if (oscillator !== null){
-			transportTicks += 1;
 			processIntervals(tickTime);
-			processTimeouts(tickTime, i);
+			processTimeouts(tickTime);
 			processTimeline(tickTime);
+			transportTicks += 1;
+			timelineTicks += 1;
 			if (this.loop){
-				if (transportTicks === loopEnd){
-					this._setTicks(this.loopEnd);
+				if (timelineTicks === loopEnd){
+					this._setTicks(loopStart);
 				}
 			}
 		}
@@ -315,7 +323,7 @@ function(Tone){
 
 	//jump to a specific tick in the timeline
 	Tone.Transport.prototype._setTicks = function(ticks){
-		transportTicks = ticks;
+		timelineTicks = ticks;
 		for (var i = 0; i &lt; transportTimeline.length; i++){
 			var timeout = transportTimeline[i];
 			if (timeout.callbackTick() >= ticks){
@@ -370,10 +378,10 @@ function(Tone){
 		for (var i = timelineProgress, len = transportTimeline.length; i&lt;len; i++){
 			var evnt = transportTimeline[i];
 			var callbackTick = evnt.callbackTick();
-			if (callbackTick === transportTicks){
+			if (callbackTick === timelineTicks){
 				evnt.doCallback(time);
 				timelineProgress = i;
-			} else if (callbackTick > transportTicks){
+			} else if (callbackTick > timelineTicks){
 				break;
 			} 
 		}
@@ -499,7 +507,7 @@ function(Tone){
 	 */
 	Tone.Transport.prototype.setTimeline = function(callback, timeout, ctx){
 		var ticks = this.toTicks(timeout);
-		var timelineEvnt = new TimelineEvent(callback, ctx, ticks + transportTicks, 0);
+		var timelineEvnt = new TimelineEvent(callback, ctx, ticks, 0);
 		//put it in the right spot
 		for (var i = timelineProgress, len = transportTimeline.length; i&lt;len; i++){
 			var testEvnt = transportTimeline[i];
@@ -561,7 +569,7 @@ function(Tone){
 	 *  @return {string} in transportTime format (measures:beats:sixteenths)
 	 */
 	Tone.Transport.prototype.getTransportTime = function(){
-		var quarters = transportTicks / tatum;
+		var quarters = timelineTicks / tatum;
 		var measures = Math.floor(quarters / transportTimeSignature);
 		var sixteenths = Math.floor((quarters % 1) * 4);
 		quarters = Math.floor(quarters) % transportTimeSignature;
@@ -1013,7 +1021,7 @@ function(Tone){
 					<br />
 					
 		<span class="jsdoc-message">
-		Documentation generated on Sat Jun 21 2014 23:14:26 GMT-0400 (EDT).
+		Documentation generated on Mon Jun 23 2014 13:34:05 GMT-0400 (EDT).
 		</span>
 				</footer>
 			</div>
@@ -1050,6 +1058,34 @@ function(Tone){
 		} );
 	</script>
 
+	
+	<script>
+		$( function () {
+			$('#main').localScroll({
+				offset: { top: 56 } //offset by the height of your header (give or take a few px, see what works for you)
+			});
+			$( "dt h4.name" ).each( function () {
+				var $this = $( this );
+				var icon = $( "<i/>" ).addClass( "icon-plus-sign" ).addClass( "pull-right" ).addClass( "icon-white" );
+				var dt = $this.parents( "dt" );
+				var children = dt.next( "dd" );
+
+				$this.append( icon ).css( {cursor : "pointer"} );
+				$this.addClass( "member-collapsed" ).addClass( "member" );
+
+				children.hide();
+				$this.toggle( function () {
+					icon.addClass( "icon-minus-sign" ).removeClass( "icon-plus-sign" ).removeClass( "icon-white" );
+					$this.addClass( "member-open" ).removeClass( "member-collapsed" );
+					children.slideDown();
+				}, function () {
+					icon.addClass( "icon-plus-sign" ).removeClass( "icon-minus-sign" ).addClass( "icon-white" );
+					$this.addClass( "member-collapsed" ).removeClass( "member-open" );
+					children.slideUp();
+				} );
+			} );
+		} );
+	</script>
 	
 
 </body>

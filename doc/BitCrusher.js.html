@@ -291,7 +291,7 @@
 					<br />
 					
 		<span class="jsdoc-message">
-		Documentation generated on Sat Jun 21 2014 23:14:26 GMT-0400 (EDT).
+		Documentation generated on Mon Jun 23 2014 13:34:05 GMT-0400 (EDT).
 		</span>
 				</footer>
 			</div>
@@ -328,6 +328,34 @@
 		} );
 	</script>
 
+	
+	<script>
+		$( function () {
+			$('#main').localScroll({
+				offset: { top: 56 } //offset by the height of your header (give or take a few px, see what works for you)
+			});
+			$( "dt h4.name" ).each( function () {
+				var $this = $( this );
+				var icon = $( "<i/>" ).addClass( "icon-plus-sign" ).addClass( "pull-right" ).addClass( "icon-white" );
+				var dt = $this.parents( "dt" );
+				var children = dt.next( "dd" );
+
+				$this.append( icon ).css( {cursor : "pointer"} );
+				$this.addClass( "member-collapsed" ).addClass( "member" );
+
+				children.hide();
+				$this.toggle( function () {
+					icon.addClass( "icon-minus-sign" ).removeClass( "icon-plus-sign" ).removeClass( "icon-white" );
+					$this.addClass( "member-open" ).removeClass( "member-collapsed" );
+					children.slideDown();
+				}, function () {
+					icon.addClass( "icon-plus-sign" ).removeClass( "icon-minus-sign" ).addClass( "icon-white" );
+					$this.addClass( "member-collapsed" ).removeClass( "member-open" );
+					children.slideUp();
+				} );
+			} );
+		} );
+	</script>
 	
 
 </body>

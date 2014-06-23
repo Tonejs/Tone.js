@@ -15,7 +15,7 @@
 		"navType"         : "vertical",
 		"theme"           : "flatly",
 		"linenums"        : true,
-		"collapseSymbols" : false,
+		"collapseSymbols" : true,
 		"inverseNav"      : true
 	},
 	"markdown"  : {

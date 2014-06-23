@@ -982,7 +982,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Transport.js.html">core/Transport.js</a>, <a href="Transport.js.html#sunlight-1-line-698">line 698</a>
+        <a href="Transport.js.html">core/Transport.js</a>, <a href="Transport.js.html#sunlight-1-line-706">line 706</a>
     </li></ul></dd>
     
 
@@ -1045,7 +1045,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Transport.js.html">core/Transport.js</a>, <a href="Transport.js.html#sunlight-1-line-670">line 670</a>
+        <a href="Transport.js.html">core/Transport.js</a>, <a href="Transport.js.html#sunlight-1-line-678">line 678</a>
     </li></ul></dd>
     
 
@@ -1106,7 +1106,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Transport.js.html">core/Transport.js</a>, <a href="Transport.js.html#sunlight-1-line-684">line 684</a>
+        <a href="Transport.js.html">core/Transport.js</a>, <a href="Transport.js.html#sunlight-1-line-692">line 692</a>
     </li></ul></dd>
     
 
@@ -3991,7 +3991,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Transport.js.html">core/Transport.js</a>, <a href="Transport.js.html#sunlight-1-line-713">line 713</a>
+        <a href="Transport.js.html">core/Transport.js</a>, <a href="Transport.js.html#sunlight-1-line-721">line 721</a>
     </li></ul></dd>
     
 
@@ -4963,7 +4963,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Transport.js.html">core/Transport.js</a>, <a href="Transport.js.html#sunlight-1-line-794">line 794</a>
+        <a href="Transport.js.html">core/Transport.js</a>, <a href="Transport.js.html#sunlight-1-line-802">line 802</a>
     </li></ul></dd>
     
 
@@ -5561,7 +5561,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Transport.js.html">core/Transport.js</a>, <a href="Transport.js.html#sunlight-1-line-815">line 815</a>
+        <a href="Transport.js.html">core/Transport.js</a>, <a href="Transport.js.html#sunlight-1-line-823">line 823</a>
     </li></ul></dd>
     
 
@@ -5780,7 +5780,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Transport.js.html">core/Transport.js</a>, <a href="Transport.js.html#sunlight-1-line-775">line 775</a>
+        <a href="Transport.js.html">core/Transport.js</a>, <a href="Transport.js.html#sunlight-1-line-783">line 783</a>
     </li></ul></dd>
     
 
@@ -6000,7 +6000,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Transport.js.html">core/Transport.js</a>, <a href="Transport.js.html#sunlight-1-line-745">line 745</a>
+        <a href="Transport.js.html">core/Transport.js</a>, <a href="Transport.js.html#sunlight-1-line-753">line 753</a>
     </li></ul></dd>
     
 
@@ -6073,7 +6073,7 @@
 					<br />
 					
 		<span class="jsdoc-message">
-		Documentation generated on Sat Jun 21 2014 23:14:30 GMT-0400 (EDT).
+		Documentation generated on Mon Jun 23 2014 13:34:11 GMT-0400 (EDT).
 		</span>
 				</footer>
 			</div>
@@ -6114,6 +6114,34 @@
 		} );
 	</script>
 
+	
+	<script>
+		$( function () {
+			$('#main').localScroll({
+				offset: { top: 56 } //offset by the height of your header (give or take a few px, see what works for you)
+			});
+			$( "dt h4.name" ).each( function () {
+				var $this = $( this );
+				var icon = $( "<i/>" ).addClass( "icon-plus-sign" ).addClass( "pull-right" ).addClass( "icon-white" );
+				var dt = $this.parents( "dt" );
+				var children = dt.next( "dd" );
+
+				$this.append( icon ).css( {cursor : "pointer"} );
+				$this.addClass( "member-collapsed" ).addClass( "member" );
+
+				children.hide();
+				$this.toggle( function () {
+					icon.addClass( "icon-minus-sign" ).removeClass( "icon-plus-sign" ).removeClass( "icon-white" );
+					$this.addClass( "member-open" ).removeClass( "member-collapsed" );
+					children.slideDown();
+				}, function () {
+					icon.addClass( "icon-plus-sign" ).removeClass( "icon-minus-sign" ).addClass( "icon-white" );
+					$this.addClass( "member-collapsed" ).removeClass( "member-open" );
+					children.slideUp();
+				} );
+			} );
+		} );
+	</script>
 	
 
 </body>
