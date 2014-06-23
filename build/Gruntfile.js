@@ -9,7 +9,8 @@ module.exports = function(grunt) {
 	            options: {
 	                destination: '../doc',
 	                template : "./doc_config/template",
-            		configure : "./doc_config/template/jsdoc.conf.json"
+            		configure : "./doc_config/template/jsdoc.conf.json",
+            		private : false
 	            }
 	        },
 	        dist : {
@@ -17,7 +18,8 @@ module.exports = function(grunt) {
 	            options: {
 	                destination: '../doc',
 	                template : "./doc_config/template",
-            		configure : "./doc_config/template/jsdoc.conf.json"
+            		configure : "./doc_config/template/jsdoc.conf.json",
+            		private : false
 	            }
 	        }
 	    },

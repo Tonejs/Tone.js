@@ -675,6 +675,7 @@ function(Tone){
 	 *  
 	 *  @return {boolean} 
 	 *  @method isNotation
+	 *  @lends Tone.prototype.isNotation
 	 */
 	Tone.prototype.isNotation = (function(){
 		var notationFormat = new RegExp(/[0-9]+[mnt]$/i);
@@ -689,7 +690,8 @@ function(Tone){
 	 *  	1:2:0 = 1 measure + two quarter notes + 0 sixteenth notes
 	 *  	
 	 *  @return {boolean} 
-	 *  @method isTransportTime
+	 *  
+	 *  @lends Tone.prototype.isTransportTime
 	 */
 	Tone.prototype.isTransportTime = (function(){
 		var transportTimeFormat = new RegExp(/^\d+(\.\d+)?:\d+(\.\d+)?(:\d+(\.\d+)?)?$/);
@@ -705,7 +707,7 @@ function(Tone){
 	 *  @param {number} freq 
 	 *  @return {boolean} 
 	 *
-	 *  @method isFrequency
+	 *  @lends Tone.prototype.isFrequency
 	 */
 	Tone.prototype.isFrequency = (function(){
 		var freqFormat = new RegExp(/[0-9]+hz$/i);
@@ -721,7 +723,8 @@ function(Tone){
 	 *  @param  {string} notation     
 	 *  @param {number=} bpm 
 	 *  @param {number=} timeSignature 
-	 *  @return {number}               
+	 *  @return {number} 
+	 *                
 	 */
 	Tone.prototype.notationToSeconds = function(notation, bpm, timeSignature){
 		bpm = this.defaultArg(bpm, Tone.Transport.getBpm());
@@ -747,13 +750,15 @@ function(Tone){
 
 	/**
 	 *  convert transportTime into seconds
-	 *  i.e.:
-	 *  	4:2:3 == 4 measures + 2 quarters + 3 sixteenths
+	 *  
+	 *  ie: 4:2:3 == 4 measures + 2 quarters + 3 sixteenths
 	 *
 	 *  @param  {string} transportTime 
 	 *  @param {number=} bpm 
 	 *  @param {number=} timeSignature
 	 *  @return {number}               seconds
+	 *
+	 *  @lends Tone.prototype.transportTimeToSeconds
 	 */
 	Tone.prototype.transportTimeToSeconds = function(transportTime, bpm, timeSignature){
 		bpm = this.defaultArg(bpm, Tone.Transport.getBpm());
@@ -785,7 +790,9 @@ function(Tone){
 	 *  @param {Tone.Time} seconds 
 	 *  @param {number=} bpm 
 	 *  @param {number=} timeSignature
-	 *  @return {string}         
+	 *  @return {string}  
+	 *  
+	 *  @lends Tone.prototype.toTransportTime
 	 */
 	Tone.prototype.toTransportTime = function(time, bpm, timeSignature){
 		var seconds = this.toSeconds(time, bpm, timeSignature);
@@ -821,7 +828,8 @@ function(Tone){
 	 *  
 	 *  unlike the method which it overrides, this takes into account 
 	 *  transporttime and musical notation
-	 *  
+	 *
+	 *  @override
 	 *  @param  {Tone.Time} time       
 	 *  @param {number=} 	now 	if passed in, this number will be 
 	 *                        		used for all 'now' relative timings

@@ -13,10 +13,9 @@
 		"footer"          : "",
 		"copyright"       : "Tone No Tone Copyright © 2014.",
 		"navType"         : "vertical",
-		"theme"           : "flatly",
+		"theme"           : "spacelab",
 		"linenums"        : true,
 		"collapseSymbols" : true,
-		"private"		  : false,
 		"inverseNav"      : true
 	},
 	"markdown"  : {

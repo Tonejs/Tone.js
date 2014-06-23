@@ -95,6 +95,7 @@ define("Tone/core/Tone", [], function(){
 
 	/**
 	 *  Tone is the baseclass of all ToneNodes
+	 *  
 	 *  From Tone, children inherit timing and math which is used throughout Tone.js
 	 *  
 	 *  @constructor
