@@ -95,6 +95,7 @@ define("Tone/core/Tone", [], function(){
 
 	/**
 	 *  Tone is the baseclass of all ToneNodes
+	 *  
 	 *  From Tone, children inherit timing and math which is used throughout Tone.js
 	 *  
 	 *  @constructor
@@ -128,12 +129,15 @@ define("Tone/core/Tone", [], function(){
 	/**
 	 *  A static pointer to the audio context
 	 *  @type {AudioContext}
+	 *  @static
 	 */
 	Tone.prototype.context = Tone.context;
 
 	/**
 	 *  the default buffer size
 	 *  @type {number}
+	 *  @static
+	 *  @const
 	 */
 	Tone.prototype.bufferSize = 2048;
 	
@@ -312,7 +316,7 @@ define("Tone/core/Tone", [], function(){
 	 *  @param  {Tone.Time} time 
 	 *  @param {number=} now if passed in, this number will be 
 	 *                       used for all 'now' relative timings
-	 *  @return {number}     
+	 *  @return {number}   	seconds in the same timescale as the AudioContext
 	 */
 	Tone.prototype.toSeconds = function(time, now){
 		now = this.defaultArg(now, this.now());
@@ -1945,6 +1949,8 @@ function(Tone){
 	 *    	8t = eighth-note triplet
 	 *  
 	 *  @return {boolean} 
+	 *  @method isNotation
+	 *  @lends Tone.prototype.isNotation
 	 */
 	Tone.prototype.isNotation = (function(){
 		var notationFormat = new RegExp(/[0-9]+[mnt]$/i);
@@ -1959,6 +1965,8 @@ function(Tone){
 	 *  	1:2:0 = 1 measure + two quarter notes + 0 sixteenth notes
 	 *  	
 	 *  @return {boolean} 
+	 *  
+	 *  @lends Tone.prototype.isTransportTime
 	 */
 	Tone.prototype.isTransportTime = (function(){
 		var transportTimeFormat = new RegExp(/^\d+(\.\d+)?:\d+(\.\d+)?(:\d+(\.\d+)?)?$/);
@@ -1973,6 +1981,8 @@ function(Tone){
 	 *
 	 *  @param {number} freq 
 	 *  @return {boolean} 
+	 *
+	 *  @lends Tone.prototype.isFrequency
 	 */
 	Tone.prototype.isFrequency = (function(){
 		var freqFormat = new RegExp(/[0-9]+hz$/i);
@@ -1983,11 +1993,13 @@ function(Tone){
 
 
 	/**
+	 *
 	 *  convert notation format strings to seconds
 	 *  @param  {string} notation     
 	 *  @param {number=} bpm 
 	 *  @param {number=} timeSignature 
-	 *  @return {number}               
+	 *  @return {number} 
+	 *                
 	 */
 	Tone.prototype.notationToSeconds = function(notation, bpm, timeSignature){
 		bpm = this.defaultArg(bpm, Tone.Transport.getBpm());
@@ -2013,13 +2025,15 @@ function(Tone){
 
 	/**
 	 *  convert transportTime into seconds
-	 *  i.e.:
-	 *  	4:2:3 == 4 measures + 2 quarters + 3 sixteenths
 	 *  
+	 *  ie: 4:2:3 == 4 measures + 2 quarters + 3 sixteenths
+	 *
 	 *  @param  {string} transportTime 
 	 *  @param {number=} bpm 
 	 *  @param {number=} timeSignature
 	 *  @return {number}               seconds
+	 *
+	 *  @lends Tone.prototype.transportTimeToSeconds
 	 */
 	Tone.prototype.transportTimeToSeconds = function(transportTime, bpm, timeSignature){
 		bpm = this.defaultArg(bpm, Tone.Transport.getBpm());
@@ -2045,11 +2059,15 @@ function(Tone){
 	/**
 	 *  Convert seconds to the closest transportTime in the form 
 	 *  	measures:quarters:sixteenths
-	 *  	
+	 *
+	 *  @method toTransportTime
+	 *  
 	 *  @param {Tone.Time} seconds 
 	 *  @param {number=} bpm 
 	 *  @param {number=} timeSignature
-	 *  @return {string}         
+	 *  @return {string}  
+	 *  
+	 *  @lends Tone.prototype.toTransportTime
 	 */
 	Tone.prototype.toTransportTime = function(time, bpm, timeSignature){
 		var seconds = this.toSeconds(time, bpm, timeSignature);
@@ -2085,7 +2103,8 @@ function(Tone){
 	 *  
 	 *  unlike the method which it overrides, this takes into account 
 	 *  transporttime and musical notation
-	 *  
+	 *
+	 *  @override
 	 *  @param  {Tone.Time} time       
 	 *  @param {number=} 	now 	if passed in, this number will be 
 	 *                        		used for all 'now' relative timings
@@ -4023,10 +4042,10 @@ define('Tone/source/Player',["Tone/core/Tone", "Tone/source/Source"], function(T
 	 *  @param {string=} url if a url is passed in, it will be loaded
 	 *                       and invoke the callback if it also passed
 	 *                       in.
-	 *  @param {function(Tone.Player)=} cb callback to be invoked
+	 *  @param {function(Tone.Player)=} onload callback to be invoked
 	 *                                     once the url is loaded
 	 */
-	Tone.Player = function(url, cb){
+	Tone.Player = function(url, onload){
 		Tone.Source.call(this);
 
 		/**
@@ -4073,7 +4092,7 @@ define('Tone/source/Player',["Tone/core/Tone", "Tone/source/Source"], function(T
 
 		//if there is a url, load it. 
 		if (url){
-			this.load(url, cb);
+			this.load(url, onload);
 		}
 	};
 
