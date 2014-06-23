@@ -132,6 +132,32 @@
 					</ul>
 				</li>
 				
+				<li class="dropdown">
+					<a href="global.html" class="dropdown-toggle" data-toggle="dropdown">Global<b
+						class="caret"></b></a>
+
+					<ul class="dropdown-menu ">
+						
+						<li>
+							<a href="global.html#isFrequency">isFrequency</a>
+						</li>
+						
+						<li>
+							<a href="global.html#isNotation">isNotation</a>
+						</li>
+						
+						<li>
+							<a href="global.html#isTransportTime">isTransportTime</a>
+						</li>
+						
+						<li>
+							<a href="global.html#toTransportTime">toTransportTime</a>
+						</li>
+						
+
+					</ul>
+				</li>
+				
 			</ul>
 		</div>
 	</div>
@@ -257,144 +283,6 @@
         <dl>
             
 <dt>
-    <h4 class="name" id="bufferSize"><span class="type-signature"></span>bufferSize<span class="type-signature"> :number</span></h4>
-    
-    
-</dt>
-<dd>
-    
-    <div class="description">
-        <p>the default buffer size</p>
-    </div>
-    
-    
-    
-        <h5>Type:</h5>
-        <ul>
-            <li>
-                
-<span class="param-type">number</span>
-
-
-            </li>
-        </ul>
-    
-
-    
-<dl class="details">
-    
-
-    
-
-    
-
-    
-    <dt class="inherited-from">Inherited From:</dt>
-    <dd class="inherited-from"><ul class="dummy"><li>
-        <a href="Tone.html#bufferSize">Tone#bufferSize</a>
-    </li></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Tone.js.html">core/Tone.js</a>, <a href="Tone.js.html#sunlight-1-line-138">line 138</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <h4 class="name" id="context"><span class="type-signature"></span>context<span class="type-signature"> :AudioContext</span></h4>
-    
-    
-</dt>
-<dd>
-    
-    <div class="description">
-        <p>A static pointer to the audio context</p>
-    </div>
-    
-    
-    
-        <h5>Type:</h5>
-        <ul>
-            <li>
-                
-<span class="param-type">AudioContext</span>
-
-
-            </li>
-        </ul>
-    
-
-    
-<dl class="details">
-    
-
-    
-
-    
-
-    
-    <dt class="inherited-from">Inherited From:</dt>
-    <dd class="inherited-from"><ul class="dummy"><li>
-        <a href="Tone.html#context">Tone#context</a>
-    </li></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Tone.js.html">core/Tone.js</a>, <a href="Tone.js.html#sunlight-1-line-132">line 132</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-    
-    
-</dd>
-
-        
-            
-<dt>
     <h4 class="name" id="input"><span class="type-signature"></span>input<span class="type-signature"> :GainNode</span></h4>
     
     
@@ -447,190 +335,6 @@
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="Tone.js.html">core/Tone.js</a>, <a href="Tone.js.html#sunlight-1-line-109">line 109</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <h4 class="name" id="isFrequency"><span class="type-signature"></span>isFrequency<span class="type-signature"></span></h4>
-    
-    
-</dt>
-<dd>
-    
-    <div class="description">
-        <p>true if the input is in the format number+hz
- i.e.: 10hz</p>
-    </div>
-    
-    
-    
-
-    
-<dl class="details">
-    
-
-    
-
-    
-
-    
-    <dt class="inherited-from">Inherited From:</dt>
-    <dd class="inherited-from"><ul class="dummy"><li>
-        <a href="Tone.html#isFrequency">Tone#isFrequency</a>
-    </li></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Transport.js.html">core/Transport.js</a>, <a href="Transport.js.html#sunlight-1-line-706">line 706</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <h4 class="name" id="isNotation"><span class="type-signature"></span>isNotation<span class="type-signature"></span></h4>
-    
-    
-</dt>
-<dd>
-    
-    <div class="description">
-        <p>tests if a string is musical notation
- i.e.:
-     4n = quarter note
-      2m = two measures
-       8t = eighth-note triplet</p>
-    </div>
-    
-    
-    
-
-    
-<dl class="details">
-    
-
-    
-
-    
-
-    
-    <dt class="inherited-from">Inherited From:</dt>
-    <dd class="inherited-from"><ul class="dummy"><li>
-        <a href="Tone.html#isNotation">Tone#isNotation</a>
-    </li></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Transport.js.html">core/Transport.js</a>, <a href="Transport.js.html#sunlight-1-line-678">line 678</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <h4 class="name" id="isTransportTime"><span class="type-signature"></span>isTransportTime<span class="type-signature"></span></h4>
-    
-    
-</dt>
-<dd>
-    
-    <div class="description">
-        <p>tests if a string is transportTime
- i.e. :
-     1:2:0 = 1 measure + two quarter notes + 0 sixteenth notes</p>
-    </div>
-    
-    
-    
-
-    
-<dl class="details">
-    
-
-    
-
-    
-
-    
-    <dt class="inherited-from">Inherited From:</dt>
-    <dd class="inherited-from"><ul class="dummy"><li>
-        <a href="Tone.html#isTransportTime">Tone#isTransportTime</a>
-    </li></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Transport.js.html">core/Transport.js</a>, <a href="Transport.js.html#sunlight-1-line-692">line 692</a>
     </li></ul></dd>
     
 
@@ -1022,7 +726,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Tone.js.html">core/Tone.js</a>, <a href="Tone.js.html#sunlight-1-line-163">line 163</a>
+        <a href="Tone.js.html">core/Tone.js</a>, <a href="Tone.js.html#sunlight-1-line-166">line 166</a>
     </li></ul></dd>
     
 
@@ -1151,7 +855,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Tone.js.html">core/Tone.js</a>, <a href="Tone.js.html#sunlight-1-line-148">line 148</a>
+        <a href="Tone.js.html">core/Tone.js</a>, <a href="Tone.js.html#sunlight-1-line-151">line 151</a>
     </li></ul></dd>
     
 
@@ -1274,7 +978,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Tone.js.html">core/Tone.js</a>, <a href="Tone.js.html#sunlight-1-line-222">line 222</a>
+        <a href="Tone.js.html">core/Tone.js</a>, <a href="Tone.js.html#sunlight-1-line-225">line 225</a>
     </li></ul></dd>
     
 
@@ -1439,7 +1143,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Tone.js.html">core/Tone.js</a>, <a href="Tone.js.html#sunlight-1-line-185">line 185</a>
+        <a href="Tone.js.html">core/Tone.js</a>, <a href="Tone.js.html#sunlight-1-line-188">line 188</a>
     </li></ul></dd>
     
 
@@ -1532,7 +1236,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Tone.js.html">core/Tone.js</a>, <a href="Tone.js.html#sunlight-1-line-155">line 155</a>
+        <a href="Tone.js.html">core/Tone.js</a>, <a href="Tone.js.html#sunlight-1-line-158">line 158</a>
     </li></ul></dd>
     
 
@@ -1725,7 +1429,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Tone.js.html">core/Tone.js</a>, <a href="Tone.js.html#sunlight-1-line-196">line 196</a>
+        <a href="Tone.js.html">core/Tone.js</a>, <a href="Tone.js.html#sunlight-1-line-199">line 199</a>
     </li></ul></dd>
     
 
@@ -1867,7 +1571,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Tone.js.html">core/Tone.js</a>, <a href="Tone.js.html#sunlight-1-line-213">line 213</a>
+        <a href="Tone.js.html">core/Tone.js</a>, <a href="Tone.js.html#sunlight-1-line-216">line 216</a>
     </li></ul></dd>
     
 
@@ -2018,7 +1722,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Tone.js.html">core/Tone.js</a>, <a href="Tone.js.html#sunlight-1-line-341">line 341</a>
+        <a href="Tone.js.html">core/Tone.js</a>, <a href="Tone.js.html#sunlight-1-line-344">line 344</a>
     </li></ul></dd>
     
 
@@ -2160,7 +1864,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Tone.js.html">core/Tone.js</a>, <a href="Tone.js.html#sunlight-1-line-231">line 231</a>
+        <a href="Tone.js.html">core/Tone.js</a>, <a href="Tone.js.html#sunlight-1-line-234">line 234</a>
     </li></ul></dd>
     
 
@@ -2348,7 +2052,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Tone.js.html">core/Tone.js</a>, <a href="Tone.js.html#sunlight-1-line-242">line 242</a>
+        <a href="Tone.js.html">core/Tone.js</a>, <a href="Tone.js.html#sunlight-1-line-245">line 245</a>
     </li></ul></dd>
     
 
@@ -2486,7 +2190,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Tone.js.html">core/Tone.js</a>, <a href="Tone.js.html#sunlight-1-line-205">line 205</a>
+        <a href="Tone.js.html">core/Tone.js</a>, <a href="Tone.js.html#sunlight-1-line-208">line 208</a>
     </li></ul></dd>
     
 
@@ -2754,7 +2458,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Tone.js.html">core/Tone.js</a>, <a href="Tone.js.html#sunlight-1-line-253">line 253</a>
+        <a href="Tone.js.html">core/Tone.js</a>, <a href="Tone.js.html#sunlight-1-line-256">line 256</a>
     </li></ul></dd>
     
 
@@ -2972,7 +2676,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Transport.js.html">core/Transport.js</a>, <a href="Transport.js.html#sunlight-1-line-721">line 721</a>
+        <a href="Transport.js.html">core/Transport.js</a>, <a href="Transport.js.html#sunlight-1-line-726">line 726</a>
     </li></ul></dd>
     
 
@@ -3061,7 +2765,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Tone.js.html">core/Tone.js</a>, <a href="Tone.js.html#sunlight-1-line-280">line 280</a>
+        <a href="Tone.js.html">core/Tone.js</a>, <a href="Tone.js.html#sunlight-1-line-283">line 283</a>
     </li></ul></dd>
     
 
@@ -3330,7 +3034,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Tone.js.html">core/Tone.js</a>, <a href="Tone.js.html#sunlight-1-line-289">line 289</a>
+        <a href="Tone.js.html">core/Tone.js</a>, <a href="Tone.js.html#sunlight-1-line-292">line 292</a>
     </li></ul></dd>
     
 
@@ -3472,7 +3176,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Tone.js.html">core/Tone.js</a>, <a href="Tone.js.html#sunlight-1-line-350">line 350</a>
+        <a href="Tone.js.html">core/Tone.js</a>, <a href="Tone.js.html#sunlight-1-line-353">line 353</a>
     </li></ul></dd>
     
 
@@ -3779,7 +3483,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Transport.js.html">core/Transport.js</a>, <a href="Transport.js.html#sunlight-1-line-802">line 802</a>
+        <a href="Transport.js.html">core/Transport.js</a>, <a href="Transport.js.html#sunlight-1-line-809">line 809</a>
     </li></ul></dd>
     
 
@@ -3999,7 +3703,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Tone.js.html">core/Tone.js</a>, <a href="Tone.js.html#sunlight-1-line-299">line 299</a>
+        <a href="Tone.js.html">core/Tone.js</a>, <a href="Tone.js.html#sunlight-1-line-302">line 302</a>
     </li></ul></dd>
     
 
@@ -4189,7 +3893,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Tone.js.html">core/Tone.js</a>, <a href="Tone.js.html#sunlight-1-line-317">line 317</a>
+        <a href="Tone.js.html">core/Tone.js</a>, <a href="Tone.js.html#sunlight-1-line-320">line 320</a>
     </li></ul></dd>
     
 
@@ -4377,7 +4081,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Transport.js.html">core/Transport.js</a>, <a href="Transport.js.html#sunlight-1-line-823">line 823</a>
+        <a href="Transport.js.html">core/Transport.js</a>, <a href="Transport.js.html#sunlight-1-line-830">line 830</a>
     </li></ul></dd>
     
 
@@ -4410,225 +4114,6 @@
 	<dd>
 		
 <span class="param-type">number</span>
-
-
-	</dd>
-</dl>
-
-
-        
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <h4 class="name" id="toTransportTime"><span class="type-signature"></span>toTransportTime<span class="signature">(seconds, <span class="optional">bpm</span>, <span class="optional">timeSignature</span>)</span><span class="type-signature"> &rarr; {string}</span></h4>
-    
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        <p>Convert seconds to the closest transportTime in the form 
-     measures:quarters:sixteenths</p>
-    </div>
-    
-
-    
-    
-    
-    
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params table table-striped">
-    <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-
-		<th>Type</th>
-
-		
-		<th>Argument</th>
-		
-
-		
-
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-
-	<tbody>
-	
-
-        <tr>
-            
-                <td class="name"><code>seconds</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Tone.Time</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-	
-
-        <tr>
-            
-                <td class="name"><code>bpm</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-	
-
-        <tr>
-            
-                <td class="name"><code>timeSignature</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-	
-	</tbody>
-</table>
-
-    
-    
-    
-<dl class="details">
-    
-
-    
-
-    
-
-    
-    <dt class="inherited-from">Inherited From:</dt>
-    <dd class="inherited-from"><ul class="dummy"><li>
-        <a href="Tone.html#toTransportTime">Tone#toTransportTime</a>
-    </li></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Transport.js.html">core/Transport.js</a>, <a href="Transport.js.html#sunlight-1-line-783">line 783</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-    
-    
-
-    
-
-    
-    
-    
-    
-    
-    <h5>Returns:</h5>
-    
-            
-
-
-<dl>
-	<dt>
-		Type
-	</dt>
-	<dd>
-		
-<span class="param-type">string</span>
 
 
 	</dd>
@@ -4816,7 +4301,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Transport.js.html">core/Transport.js</a>, <a href="Transport.js.html#sunlight-1-line-753">line 753</a>
+        <a href="Transport.js.html">core/Transport.js</a>, <a href="Transport.js.html#sunlight-1-line-758">line 758</a>
     </li></ul></dd>
     
 
@@ -4889,7 +4374,7 @@
 					<br />
 					
 		<span class="jsdoc-message">
-		Documentation generated on Mon Jun 23 2014 13:34:08 GMT-0400 (EDT).
+		Documentation generated on Mon Jun 23 2014 14:12:34 GMT-0400 (EDT).
 		</span>
 				</footer>
 			</div>

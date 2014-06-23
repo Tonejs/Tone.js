@@ -674,6 +674,7 @@ function(Tone){
 	 *    	8t = eighth-note triplet
 	 *  
 	 *  @return {boolean} 
+	 *  @method isNotation
 	 */
 	Tone.prototype.isNotation = (function(){
 		var notationFormat = new RegExp(/[0-9]+[mnt]$/i);
@@ -688,6 +689,7 @@ function(Tone){
 	 *  	1:2:0 = 1 measure + two quarter notes + 0 sixteenth notes
 	 *  	
 	 *  @return {boolean} 
+	 *  @method isTransportTime
 	 */
 	Tone.prototype.isTransportTime = (function(){
 		var transportTimeFormat = new RegExp(/^\d+(\.\d+)?:\d+(\.\d+)?(:\d+(\.\d+)?)?$/);
@@ -702,6 +704,8 @@ function(Tone){
 	 *
 	 *  @param {number} freq 
 	 *  @return {boolean} 
+	 *
+	 *  @method isFrequency
 	 */
 	Tone.prototype.isFrequency = (function(){
 		var freqFormat = new RegExp(/[0-9]+hz$/i);
@@ -712,6 +716,7 @@ function(Tone){
 
 
 	/**
+	 *
 	 *  convert notation format strings to seconds
 	 *  @param  {string} notation     
 	 *  @param {number=} bpm 
@@ -744,7 +749,7 @@ function(Tone){
 	 *  convert transportTime into seconds
 	 *  i.e.:
 	 *  	4:2:3 == 4 measures + 2 quarters + 3 sixteenths
-	 *  
+	 *
 	 *  @param  {string} transportTime 
 	 *  @param {number=} bpm 
 	 *  @param {number=} timeSignature
@@ -774,7 +779,9 @@ function(Tone){
 	/**
 	 *  Convert seconds to the closest transportTime in the form 
 	 *  	measures:quarters:sixteenths
-	 *  	
+	 *
+	 *  @method toTransportTime
+	 *  
 	 *  @param {Tone.Time} seconds 
 	 *  @param {number=} bpm 
 	 *  @param {number=} timeSignature

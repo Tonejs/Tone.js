@@ -128,12 +128,15 @@ define("Tone/core/Tone", [], function(){
 	/**
 	 *  A static pointer to the audio context
 	 *  @type {AudioContext}
+	 *  @static
 	 */
 	Tone.prototype.context = Tone.context;
 
 	/**
 	 *  the default buffer size
 	 *  @type {number}
+	 *  @static
+	 *  @const
 	 */
 	Tone.prototype.bufferSize = 2048;
 	
@@ -312,7 +315,7 @@ define("Tone/core/Tone", [], function(){
 	 *  @param  {Tone.Time} time 
 	 *  @param {number=} now if passed in, this number will be 
 	 *                       used for all 'now' relative timings
-	 *  @return {number}     
+	 *  @return {number}   	seconds in the same timescale as the AudioContext
 	 */
 	Tone.prototype.toSeconds = function(time, now){
 		now = this.defaultArg(now, this.now());

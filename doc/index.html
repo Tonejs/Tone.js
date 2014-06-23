@@ -132,6 +132,32 @@
 					</ul>
 				</li>
 				
+				<li class="dropdown">
+					<a href="global.html" class="dropdown-toggle" data-toggle="dropdown">Global<b
+						class="caret"></b></a>
+
+					<ul class="dropdown-menu ">
+						
+						<li>
+							<a href="global.html#isFrequency">isFrequency</a>
+						</li>
+						
+						<li>
+							<a href="global.html#isNotation">isNotation</a>
+						</li>
+						
+						<li>
+							<a href="global.html#isTransportTime">isTransportTime</a>
+						</li>
+						
+						<li>
+							<a href="global.html#toTransportTime">toTransportTime</a>
+						</li>
+						
+
+					</ul>
+				</li>
+				
 			</ul>
 		</div>
 	</div>
@@ -231,18 +257,26 @@ Tone.Transport.start();</code></pre>
 which takes a time as a parameter will accept any of these forms: </p>
 <p><strong>Number</strong>: these will be taken literally as the time (in seconds). </p>
 <p><strong>Notation</strong>: describes time in BPM and time signature relative values. </p>
-<p> &quot;4n&quot; = quarter note
- &quot;8t&quot; = eighth note triplet
- &quot;2m&quot; = two measures</p>
+<ul>
+<li>&quot;4n&quot; = quarter note</li>
+<li>&quot;8t&quot; = eighth note triplet</li>
+<li>&quot;2m&quot; = two measures</li>
+</ul>
 <p><strong>Transport Time</strong>: will also provide tempo and time signature relative times in the form BARS:QUARTERS:SIXTEENTHS.</p>
-<p>&quot;32:0:0&quot; = start of the 32nd measure. 
-&quot;4:3:2&quot; = 4 bars + 3 quarter notes + 2 sixteenth notes. </p>
+<ul>
+<li>&quot;32:0:0&quot; = start of the 32nd measure. </li>
+<li>&quot;4:3:2&quot; = 4 bars + 3 quarter notes + 2 sixteenth notes. </li>
+</ul>
 <p><strong>Frequency</strong>: seconds can also be described in Hz. </p>
-<p>&quot;1hz&quot; = 1 second
-&quot;5hz&quot; = 0.2 seconds</p>
+<ul>
+<li>&quot;1hz&quot; = 1 second</li>
+<li>&quot;5hz&quot; = 0.2 seconds</li>
+</ul>
 <p><strong>Now-Relative</strong>: prefix any of the above with &quot;+&quot; and it will be interpreted as &quot;the current time + &quot;</p>
-<p>&quot;+1m&quot; = 1 measure from now
-&quot;+0.5&quot; = half a second from now</p>
+<ul>
+<li>&quot;+1m&quot; = 1 measure from now</li>
+<li>&quot;+0.5&quot; = half a second from now</li>
+</ul>
 <h1>Components</h1>
 <p>Tone.js provides a number number of useful components for building synthesizers and audio applications.</p>
 <ul>
@@ -276,7 +310,9 @@ panner.toMaster();
 lfo.start();
 osc.start();</code></pre>
 <h1>Examples</h1>
-<h1>Documentation</h1></article>
+<p>More examples can be found <a href="http://tonenotone.github.io/Tone.js/examples/">here</a>.</p>
+<h1>Documentation</h1>
+<p>JSDocs are <a href="http://tonenotone.github.io/Tone.js/doc/">here</a>.</p></article>
     </section>
 
 
@@ -297,7 +333,7 @@ osc.start();</code></pre>
 					<br />
 					
 		<span class="jsdoc-message">
-		Documentation generated on Mon Jun 23 2014 13:34:05 GMT-0400 (EDT).
+		Documentation generated on Mon Jun 23 2014 14:12:31 GMT-0400 (EDT).
 		</span>
 				</footer>
 			</div>

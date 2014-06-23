@@ -10,10 +10,10 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 	 *  @param {string=} url if a url is passed in, it will be loaded
 	 *                       and invoke the callback if it also passed
 	 *                       in.
-	 *  @param {function(Tone.Player)=} cb callback to be invoked
+	 *  @param {function(Tone.Player)=} onload callback to be invoked
 	 *                                     once the url is loaded
 	 */
-	Tone.Player = function(url, cb){
+	Tone.Player = function(url, onload){
 		Tone.Source.call(this);
 
 		/**
@@ -60,7 +60,7 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 
 		//if there is a url, load it. 
 		if (url){
-			this.load(url, cb);
+			this.load(url, onload);
 		}
 	};
 
