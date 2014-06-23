@@ -107,24 +107,24 @@ __Number__: these will be taken literally as the time (in seconds).
 
 __Notation__: describes time in BPM and time signature relative values. 
 
- "4n" = quarter note
- "8t" = eighth note triplet
- "2m" = two measures
+ * "4n" = quarter note
+ * "8t" = eighth note triplet
+ * "2m" = two measures
 
 __Transport Time__: will also provide tempo and time signature relative times in the form BARS:QUARTERS:SIXTEENTHS.
 
-"32:0:0" = start of the 32nd measure. 
-"4:3:2" = 4 bars + 3 quarter notes + 2 sixteenth notes. 
+* "32:0:0" = start of the 32nd measure. 
+* "4:3:2" = 4 bars + 3 quarter notes + 2 sixteenth notes. 
 
 __Frequency__: seconds can also be described in Hz. 
 
-"1hz" = 1 second
-"5hz" = 0.2 seconds
+* "1hz" = 1 second
+* "5hz" = 0.2 seconds
 
 __Now-Relative__: prefix any of the above with "+" and it will be interpreted as "the current time + "
 
-"+1m" = 1 measure from now
-"+0.5" = half a second from now
+* "+1m" = 1 measure from now
+* "+0.5" = half a second from now
 
 
 # Components
@@ -167,14 +167,8 @@ osc.start();
 
 # Examples
 
-
+More examples can be found [here](http://tonenotone.github.io/Tone.js/examples/).
 
 # Documentation
 
-
-
-
-
-
-
-
+JSDocs are [here](http://tonenotone.github.io/Tone.js/doc/).
