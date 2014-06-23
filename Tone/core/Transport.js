@@ -39,6 +39,11 @@ function(Tone){
 	 * @private 
 	 * @type {number} 
 	 */
+	var timelineTicks = 0;
+	/** 
+	 * @private 
+	 * @type {number} 
+	 */
 	var transportTicks = 0;
 	/** 
 	 * @private
@@ -142,7 +147,7 @@ function(Tone){
 			var sample = incomingBuffer[i];
 			if (sample > 0 && !upTick){
 				upTick = true;	
-				this._processTick(now + this.samplesToSeconds(i), i);
+				this._processTick(now + this.samplesToSeconds(i));
 			} else if (sample < 0 && upTick){
 				upTick = false;
 			}
@@ -150,15 +155,16 @@ function(Tone){
 	};
 
 	//@param {number} tickTime
-	Tone.Transport.prototype._processTick = function(tickTime, i){
+	Tone.Transport.prototype._processTick = function(tickTime){
 		if (oscillator !== null){
-			transportTicks += 1;
 			processIntervals(tickTime);
-			processTimeouts(tickTime, i);
+			processTimeouts(tickTime);
 			processTimeline(tickTime);
+			transportTicks += 1;
+			timelineTicks += 1;
 			if (this.loop){
-				if (transportTicks === loopEnd){
-					this._setTicks(this.loopEnd);
+				if (timelineTicks === loopEnd){
+					this._setTicks(loopStart);
 				}
 			}
 		}
@@ -166,7 +172,7 @@ function(Tone){
 
 	//jump to a specific tick in the timeline
 	Tone.Transport.prototype._setTicks = function(ticks){
-		transportTicks = ticks;
+		timelineTicks = ticks;
 		for (var i = 0; i < transportTimeline.length; i++){
 			var timeout = transportTimeline[i];
 			if (timeout.callbackTick() >= ticks){
@@ -221,10 +227,10 @@ function(Tone){
 		for (var i = timelineProgress, len = transportTimeline.length; i<len; i++){
 			var evnt = transportTimeline[i];
 			var callbackTick = evnt.callbackTick();
-			if (callbackTick === transportTicks){
+			if (callbackTick === timelineTicks){
 				evnt.doCallback(time);
 				timelineProgress = i;
-			} else if (callbackTick > transportTicks){
+			} else if (callbackTick > timelineTicks){
 				break;
 			} 
 		}
@@ -350,7 +356,7 @@ function(Tone){
 	 */
 	Tone.Transport.prototype.setTimeline = function(callback, timeout, ctx){
 		var ticks = this.toTicks(timeout);
-		var timelineEvnt = new TimelineEvent(callback, ctx, ticks + transportTicks, 0);
+		var timelineEvnt = new TimelineEvent(callback, ctx, ticks, 0);
 		//put it in the right spot
 		for (var i = timelineProgress, len = transportTimeline.length; i<len; i++){
 			var testEvnt = transportTimeline[i];
@@ -412,7 +418,7 @@ function(Tone){
 	 *  @return {string} in transportTime format (measures:beats:sixteenths)
 	 */
 	Tone.Transport.prototype.getTransportTime = function(){
-		var quarters = transportTicks / tatum;
+		var quarters = timelineTicks / tatum;
 		var measures = Math.floor(quarters / transportTimeSignature);
 		var sixteenths = Math.floor((quarters % 1) * 4);
 		quarters = Math.floor(quarters) % transportTimeSignature;
