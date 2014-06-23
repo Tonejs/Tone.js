@@ -1,0 +1,75 @@
+<html>
+<head>
+  <title>TRANSPORT</title>
+
+  <script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
+  <script type="text/javascript" src="../Tone.js"></script>
+  <link rel="stylesheet" type="text/css" href="exampleStyle.css">
+
+</head>
+<body>
+  <div>Checkbox Step Sequencer. 1 bar loop. Each box is a 16th note.</div>
+  <br>
+  <button>start</button>
+  <div id="transportTime">0:0:0</div>
+  <br><br>
+  <div id="checkboxes"></div>
+  <div id="output"></div>
+  <div id="loading">loading...</div>
+  <script type="text/javascript">
+
+    Tone.Transport.loop = true;
+    Tone.Transport.setLoopStart("0:0");
+    Tone.Transport.setLoopEnd("1:0");
+    Tone.Transport.setBpm(100);
+
+    var player = new Tone.Player("./audio/505/snare.mp3", function(){
+      $("#loading").remove();
+    });
+    player.retrigger = true;
+    player.toMaster();
+
+    setInterval(function(){
+      $("#transportTime").text(Tone.Transport.getTransportTime());
+    }, 100);
+
+
+    $("button").click(function(){
+      if (Tone.Transport.state === "started"){
+        Tone.Transport.stop();
+        $(this).text("start");
+        $("#output").text("");
+      } else {
+        Tone.Transport.start();
+        $(this).text("stop");
+      }
+    });
+
+    // Create 16 checkboxes with values 0-15.
+    for (i = 0; i<16; i++) {
+      $("#checkboxes").append('<input type="checkbox" timelineEvent="" value="'+i+'" >');
+    }
+
+    // When a checkbox status changes...
+    $('[type="checkbox"]').change(function() {
+      if (this.checked) {
+
+        // Convert this checkbox value into a 16th note in transport time. "5" = "0:1:1".
+        var tSig = Tone.Transport.getTimeSignature();
+        var tTime = "0:"+Math.floor(this.value/ tSig)+":"+this.value % tSig;
+
+        // Register the timelineEvent and save the ID so we can remove it later.
+        this.timelineEvent = Tone.Transport.setTimeline(function(time){
+        player.start(time);
+        }, tTime);
+      }
+
+      else {
+        // Clear a timeline event. Get the event ID that was stored in this checkbox.
+        Tone.Transport.clearTimeline(this.timelineEvent);
+      }
+    });
+
+  </script>
+</body>
+</html>
