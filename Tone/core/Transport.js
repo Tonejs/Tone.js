@@ -19,7 +19,9 @@ function(Tone){
 		this._jsNode = this.context.createScriptProcessor(this.bufferSize, 1, 1);
 		this._jsNode.onaudioprocess = this._processBuffer.bind(this);
 
-		/** @type {boolean} */
+		/** 
+		 *  @type {boolean}
+		 */
 		this.loop = false;
 
 		/**
