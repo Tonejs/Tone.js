@@ -73,6 +73,7 @@
 			$("#checkboxes").append("<br>");
 		}
 
+		//called when the start button is clicked
 		function startTransport(){
 			if (Tone.Transport.state === "started"){
 				Tone.Transport.stop();
@@ -102,6 +103,7 @@
 			stepNumber = stepNumber % 16;
 		}
 
+		//show the current beat on the radio buttons
 		function selectRadio(stepNumber){
 			//unselect the previous one
 			var prev = stepNumber - 1;
@@ -120,10 +122,6 @@
 			//the interface
 			makeRadios();
 			makeCheckboxes();
-			//set the loop points
-			Tone.Transport.loop = true;
-			Tone.Transport.setLoopStart("0:0");
-			Tone.Transport.setLoopEnd("1:0");
 			Tone.Transport.setBpm(120);
 		});
 
