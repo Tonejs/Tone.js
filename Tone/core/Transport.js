@@ -690,7 +690,8 @@ function(Tone){
 	 *  	1:2:0 = 1 measure + two quarter notes + 0 sixteenth notes
 	 *  	
 	 *  @return {boolean} 
-	 *  
+	 *
+	 *  @method isTransportTime
 	 *  @lends Tone.prototype.isTransportTime
 	 */
 	Tone.prototype.isTransportTime = (function(){
@@ -707,6 +708,7 @@ function(Tone){
 	 *  @param {number} freq 
 	 *  @return {boolean} 
 	 *
+	 *  @method isFrequency
 	 *  @lends Tone.prototype.isFrequency
 	 */
 	Tone.prototype.isFrequency = (function(){
