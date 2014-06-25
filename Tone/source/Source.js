@@ -50,21 +50,18 @@ define(["Tone/core/Tone", "Tone/core/Transport"], function(Tone){
 
 	/**
 	 *  sync the source to the Transport
+	 *
+	 *  @param {Tone.Time=} delay optional delay time before starting the source
 	 */
-	Tone.Source.prototype.sync = function(){
-		if (this.state !== Tone.Source.State.SYNCED){
-			this.state = Tone.Source.State.SYNCED;
-			Tone.Transport.sync(this);
-		}
+	Tone.Source.prototype.sync = function(delay){
+		Tone.Transport.sync(this, delay);
 	};
 
 	/**
 	 *  unsync the source to the Transport
 	 */
 	Tone.Source.prototype.unsync = function(){
-		if (this.state === Tone.Source.State.SYNCED){
-			Tone.Transport.unsync(this);
-		}
+		Tone.Transport.unsync(this);
 	};
 
 

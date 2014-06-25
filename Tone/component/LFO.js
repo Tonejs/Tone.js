@@ -54,6 +54,7 @@ define(["Tone/core/Tone", "Tone/source/Oscillator", "Tone/signal/Scale"], functi
 	 */
 	Tone.LFO.prototype.sync = function(){
 		this.oscillator.sync();
+		// Tone.Transport.syncSignal(this.oscillator.frequency);
 	};
 
 	/**
@@ -61,6 +62,7 @@ define(["Tone/core/Tone", "Tone/source/Oscillator", "Tone/signal/Scale"], functi
 	 */
 	Tone.LFO.prototype.unsync = function(){
 		this.oscillator.unsync();
+		// this.oscillator.frequency.unsync();
 	};
 
 

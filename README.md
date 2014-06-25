@@ -167,7 +167,7 @@ osc.start();
 
 # Examples
 
-More examples can be found [here](http://tonenotone.github.io/Tone.js/examples/).
+Examples can be found [here](http://tonenotone.github.io/Tone.js/examples/).
 
 # Documentation
 

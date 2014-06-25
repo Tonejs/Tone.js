@@ -117,7 +117,7 @@ function(Tone){
 	 *  @private 
 	 *  @type {Array<Tone>}
 	 */
-	var SyncedComponents = [];
+	var SyncedSources = [];
 
 
 	/**
@@ -456,9 +456,15 @@ function(Tone){
 			controlSignal.connect(oscillator.frequency);
 			oscillator.frequency.value = 0;
 			upTick = false;
-			oscillator.start(this.toSeconds(time));
 
+			var startTime = this.toSeconds(time);
+			oscillator.start(startTime);
 			//call start on each of the synced sources
+			for (var i = 0; i < SyncedSources.length; i++){
+				var source = SyncedSources[i].source;
+				var delay = SyncedSources[i].delay;
+				source.start(startTime + delay);
+			}
 		}
 	};
 
@@ -471,13 +477,18 @@ function(Tone){
 	Tone.Transport.prototype.stop = function(time){
 		if (this.state === TransportState.STARTED || this.state === TransportState.PAUSED){
 			this.state = TransportState.STOPPED;
-			oscillator.stop(this.toSeconds(time));
+			var stopTime = this.toSeconds(time);
+			oscillator.stop(stopTime);
 			oscillator = null;
 			this._setTicks(0);
 			this.clearTimeouts();
 			this.clearIntervals();
 
-			//call stop on each of the synced sources
+			//call start on each of the synced sources
+			for (var i = 0; i < SyncedSources.length; i++){
+				var source = SyncedSources[i].source;
+				source.stop(stopTime);
+			}
 		}
 	};
 
@@ -489,10 +500,15 @@ function(Tone){
 	Tone.Transport.prototype.pause = function(time){
 		if (this.state === TransportState.STARTED){
 			this.state = TransportState.PAUSED;
-			oscillator.stop(this.toSeconds(time));
+			var stopTime = this.toSeconds(time);
+			oscillator.stop(stopTime);
 			oscillator = null;
 			clearTimelineEvents();
 			//call pause on each of the synced sources
+			for (var i = 0; i < SyncedSources.length; i++){
+				var source = SyncedSources[i].source;
+				source.pause(stopTime);
+			}
 		}
 	};
 
@@ -588,11 +604,27 @@ function(Tone){
 	///////////////////////////////////////////////////////////////////////////////
 	
 
-	Tone.Transport.prototype.sync = function(source, controlSignal){
-		//create a gain node, attach it to the control signal
-		// var ratio = new Tone.Multiply();
-		// controlSignal.connect(ratio);
-		// return ratio;
+	/**
+	 *  Sync a source to the transport so that 
+	 *  @param  {Tone.Source} source the source to sync to the transport
+	 *  @param {Tone.Time} delay (optionally) start the source with a delay from the transport
+	 */
+	Tone.Transport.prototype.sync = function(source, startDelay){
+		SyncedSources.push({
+			source : source,
+			delay : this.toSeconds(this.defaultArg(startDelay, 0))
+		});
+	};
+
+	/**
+	 *  attaches the signal to the tempo control signal so that 
+	 *  any changes in the tempo will change the signal in the same
+	 *  ratio
+	 *  
+	 *  @param  {Tone.Signal} signal 
+	 */
+	Tone.Transport.prototype.syncSignal = function(signal){
+		
 	};
 
 	/**
@@ -601,7 +633,11 @@ function(Tone){
 	 *  @param  {Tone.Source} source [description]
 	 */
 	Tone.Transport.prototype.unsync = function(source){
-		
+		for (var i = 0; i < SyncedSources.length; i++){
+			if (SyncedSources[i].source === source){
+				SyncedSources.splice(i, 1);
+			}
+		}
 	};
 
 

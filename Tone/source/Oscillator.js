@@ -84,23 +84,20 @@ function(Tone){
 	 *  oscillator in that same ratio
 	 *
 	 *  Transport start/pause/stop will also start/pause/stop the oscillator
+	 *
+	 *  @param {Tone.Time=} delay optional delay time before starting the source
 	 */
-	Tone.Oscillator.prototype.sync = function(){
-		if (this.state !== Tone.Source.State.SYNCED){
-			this.state = Tone.Source.State.SYNCED;
-			Tone.Transport.sync(this);
-			Tone.Transport.syncSignal(this.frequency);
-		}
+	Tone.Oscillator.prototype.sync = function(delay){
+		Tone.Transport.sync(this, delay);
+		// Tone.Transport.syncSignal(this.frequency);
 	};
 
 	/**
 	 *  unsync the oscillator from the Transport
 	 */
 	Tone.Oscillator.prototype.unsync = function(){
-		if (this.state === Tone.Source.State.SYNCED){
-			Tone.Transport.unsync(this);
-			this.frequency.unsync();
-		}
+		Tone.Transport.unsync(this);
+		// this.frequency.unsync();
 	};
 
 	/**
