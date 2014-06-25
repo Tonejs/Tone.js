@@ -18,11 +18,15 @@
 			$("#loading").remove();
 		});
 
+		player.loop = true;
+		player.loopStart = 0.1;
+		player.loopEnd = 0.11;
+
 		//connect it to the output
 		player.toMaster();
 		
 		$("button").mousedown(function(){
-			player.loop(0, .1, .11);
+			player.start(0, player.loopStart);
 			$(this).text("stop");
 		});
 
