@@ -486,6 +486,198 @@
         
             
 <dt>
+    <h4 class="name" id="loop"><span class="type-signature"></span>loop<span class="type-signature"> :boolean</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        <p>if the buffer should loop once it's over</p>
+    </div>
+    
+    
+    
+        <h5>Type:</h5>
+        <ul>
+            <li>
+                
+<span class="param-type">boolean</span>
+
+
+            </li>
+        </ul>
+    
+
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#sunlight-1-line-4137">line 4137</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="loopEnd"><span class="type-signature"></span>loopEnd<span class="type-signature"> :number</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        <p>if 'loop' is true, the loop will end at this position</p>
+    </div>
+    
+    
+    
+        <h5>Type:</h5>
+        <ul>
+            <li>
+                
+<span class="param-type">number</span>
+
+
+            </li>
+        </ul>
+    
+
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#sunlight-1-line-4151">line 4151</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="loopStart"><span class="type-signature"></span>loopStart<span class="type-signature"> :number</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        <p>if 'loop' is true, the loop will start at this position</p>
+    </div>
+    
+    
+    
+        <h5>Type:</h5>
+        <ul>
+            <li>
+                
+<span class="param-type">number</span>
+
+
+            </li>
+        </ul>
+    
+
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#sunlight-1-line-4144">line 4144</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+    
+    
+</dd>
+
+        
+            
+<dt>
     <h4 class="name" id="output"><span class="type-signature"></span>output<span class="type-signature"> :GainNode</span></h4>
     
     
@@ -563,7 +755,7 @@
     
     <div class="description">
         <p>enabling retrigger will allow a player to be restarted
- before the it's is done playing</p>
+ before the the previous 'start' is done playing</p>
     </div>
     
     
@@ -602,7 +794,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#sunlight-1-line-4146">line 4146</a>
+        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#sunlight-1-line-4166">line 4166</a>
     </li></ul></dd>
     
 
@@ -1376,7 +1568,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#sunlight-1-line-4309">line 4309</a>
+        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#sunlight-1-line-4310">line 4310</a>
     </li></ul></dd>
     
 
@@ -2308,7 +2500,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#sunlight-1-line-4174">line 4174</a>
+        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#sunlight-1-line-4194">line 4194</a>
     </li></ul></dd>
     
 
@@ -2471,268 +2663,6 @@
 
 
         
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <h4 class="name" id="loop"><span class="type-signature"></span>loop<span class="signature">(<span class="optional">startTime</span>, <span class="optional">loopStart</span>, <span class="optional">loopEnd</span>, <span class="optional">offset</span>, <span class="optional">duration</span>)</span><span class="type-signature"></span></h4>
-    
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        <p>Loop the buffer from start to finish at a time</p>
-    </div>
-    
-
-    
-    
-    
-    
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params table table-striped">
-    <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-
-		<th>Type</th>
-
-		
-		<th>Argument</th>
-		
-
-		
-
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-
-	<tbody>
-	
-
-        <tr>
-            
-                <td class="name"><code>startTime</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Tone.Time</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-	
-
-        <tr>
-            
-                <td class="name"><code>loopStart</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Tone.Time</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-	
-
-        <tr>
-            
-                <td class="name"><code>loopEnd</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Tone.Time</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-	
-
-        <tr>
-            
-                <td class="name"><code>offset</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Tone.Time</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-	
-
-        <tr>
-            
-                <td class="name"><code>duration</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Tone.Time</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-	
-	</tbody>
-</table>
-
-    
-    
-    
-<dl class="details">
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#sunlight-1-line-4247">line 4247</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-    
-    
-
-    
-
-    
-    
-    
-    
-    
     
     
 </dd>
@@ -3356,7 +3286,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#sunlight-1-line-4153">line 4153</a>
+        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#sunlight-1-line-4173">line 4173</a>
     </li></ul></dd>
     
 
@@ -4169,7 +4099,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#sunlight-1-line-4207">line 4207</a>
+        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#sunlight-1-line-4227">line 4227</a>
     </li></ul></dd>
     
 
@@ -4331,7 +4261,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#sunlight-1-line-4285">line 4285</a>
+        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#sunlight-1-line-4286">line 4286</a>
     </li></ul></dd>
     
 
@@ -4689,7 +4619,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#sunlight-1-line-4219">line 4219</a>
+        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#sunlight-1-line-4239">line 4239</a>
     </li></ul></dd>
     
 
@@ -4807,7 +4737,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#sunlight-1-line-4267">line 4267</a>
+        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#sunlight-1-line-4268">line 4268</a>
     </li></ul></dd>
     
 
@@ -5810,7 +5740,7 @@
 					<br />
 					
 		<span class="jsdoc-message">
-		Documentation generated on Wed Jun 25 2014 12:48:44 GMT-0400 (EDT).
+		Documentation generated on Wed Jun 25 2014 13:10:42 GMT-0400 (EDT).
 		</span>
 				</footer>
 			</div>

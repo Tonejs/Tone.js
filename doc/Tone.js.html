@@ -4282,6 +4282,26 @@ define('Tone/source/Player',["Tone/core/Tone", "Tone/source/Source"], function(T
 		this.duration = 0;
 
 		/**
+		 *  if the buffer should loop once it's over
+		 *  @type {boolean}
+		 */
+		this.loop = false;
+
+		/**
+		 *  if 'loop' is true, the loop will start at this position
+		 *  
+		 *  @type {number}
+		 */
+		this.loopStart = 0;
+
+		/**
+		 *  if 'loop' is true, the loop will end at this position
+		 *  
+		 *  @type {number}
+		 */
+		this.loopEnd = 0;
+
+		/**
 		 *  the playback rate
 		 *  @private
 		 *  @type {number}
@@ -4290,7 +4310,7 @@ define('Tone/source/Player',["Tone/core/Tone", "Tone/source/Source"], function(T
 
 		/**
 		 *  enabling retrigger will allow a player to be restarted
-		 *  before the it's is done playing
+		 *  before the the previous 'start' is done playing
 		 *  
 		 *  @type {boolean}
 		 */
@@ -4377,36 +4397,17 @@ define('Tone/source/Player',["Tone/core/Tone", "Tone/source/Source"], function(T
 				//make the source
 				this._source = this.context.createBufferSource();
 				this._source.buffer = this._buffer;
-				this._source.loop = false;
+				//set the looping properties
+				this._source.loop = this.loop;
+				this._source.loopStart = this.loopStart;
+				this._source.loopEnd = this.loopEnd;
+				//and other properties
 				this._source.playbackRate.value = this._playbackRate;
-				this._source.start(this.toSeconds(startTime), this.toSeconds(offset), this.toSeconds(duration));
 				this._source.onended = this._onended.bind(this);
 				this.chain(this._source, this.output);
+				//start it
+				this._source.start(this.toSeconds(startTime), this.toSeconds(offset), this.toSeconds(duration));
 			}
-		}
-	};
-
-	/**
-	 *  Loop the buffer from start to finish at a time
-	 *
-	 *  @param  {Tone.Time=} startTime
-	 *  @param  {Tone.Time=} loopStart
-	 *  @param  {Tone.Time=} loopEnd
-	 *  @param  {Tone.Time=} offset
-	 *  @param  {Tone.Time=} duration
-	 */
-	Tone.Player.prototype.loop = function(startTime, loopStart, loopEnd, offset, duration){
-		if (this._buffer){
-			//default args
-			loopStart = this.defaultArg(loopStart, 0);
-			loopEnd = this.defaultArg(loopEnd, this._buffer.duration);
-			offset = this.defaultArg(offset, loopStart);
-			duration = this.defaultArg(duration, this._buffer.duration - offset);
-			//make/play the source
-			this.start(startTime, offset, duration);
-			this._source.loop = true;
-			this._source.loopStart = this.toSeconds(loopStart);
-			this._source.loopEnd = this.toSeconds(loopEnd);
 		}
 	};
 
@@ -4489,7 +4490,7 @@ define('Tone/source/Player',["Tone/core/Tone", "Tone/source/Source"], function(T
 					<br />
 					
 		<span class="jsdoc-message">
-		Documentation generated on Wed Jun 25 2014 12:48:40 GMT-0400 (EDT).
+		Documentation generated on Wed Jun 25 2014 13:10:38 GMT-0400 (EDT).
 		</span>
 				</footer>
 			</div>
