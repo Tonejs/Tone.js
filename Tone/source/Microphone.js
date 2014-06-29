@@ -33,7 +33,9 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 		 *  @type {Object}
 		 *  @private
 		 */
-		this.constraints = {"audio" : true};
+		this.constraints = {"audio" : {
+			echoCancellation : false
+		}};
 
 		//get the option
 		var self = this;
