@@ -78,7 +78,7 @@ define("Tone/core/Tone", [], function(){
 	//extend the connect function to include Tones
 	AudioNode.prototype._nativeConnect = AudioNode.prototype.connect;
 	AudioNode.prototype.connect = function(B){
-		if (B.input && B.input instanceof GainNode){
+		if (B.input){
 			this._nativeConnect(B.input);
 		} else {
 			try {
@@ -353,6 +353,49 @@ define("Tone/core/Tone", [], function(){
 	 */
 	Tone.prototype.secondsToFrequency = function(seconds){
 		return 1/seconds;
+	};
+
+
+	///////////////////////////////////////////////////////////////////////////
+	//	MUSIC NOTES
+	///////////////////////////////////////////////////////////////////////////
+
+	var noteToIndex = { "a" : 0, "a#" : 1, "bb" : 1, "b" : 2, "c" : 3, "c#" : 4,
+		"db" : 4, "d" : 5, "d#" : 6, "eb" : 6, "e" : 7, "f" : 8, "f#" : 9, 
+		"gb" : 9, "g" : 10, "g#" : 11, "ab" : 11
+	};
+
+	var noteIndexToNote = ["A", "A#", "B", "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#"];
+
+	/**
+	 *  convert a note name to frequency (i.e. A4 to 440)
+	 *  @param  {string} note
+	 *  @return {number}         
+	 */
+	Tone.prototype.noteToFrequency = function(note){
+		//break apart the note by frequency and octave
+		var parts = note.split(/(\d+)/);
+		if (parts.length === 3){
+			var index = noteToIndex[parts[0].toLowerCase()];
+			var octave = parts[1];
+			var noteNumber = index + parseInt(octave, 10) * 12;
+			return Math.pow(2, (noteNumber - 48) / 12) * 440;
+		} else {
+			return 0;
+		}
+	};
+
+	/**
+	 *  convert a note name (i.e. A4, C#5, etc to a frequency)
+	 *  @param  {number} freq
+	 *  @return {string}         
+	 */
+	Tone.prototype.frequencyToNote = function(freq){
+		var log = Math.log(freq / 440) / Math.LN2;
+		var noteNumber = Math.round(12 * log) + 48;
+		var octave = Math.floor(noteNumber/12);
+		var noteName = noteIndexToNote[noteNumber % 12];
+		return noteName + octave.toString();
 	};
 
 	///////////////////////////////////////////////////////////////////////////
