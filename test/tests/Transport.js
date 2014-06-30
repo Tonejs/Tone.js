@@ -81,7 +81,7 @@ define(["chai", "Tone/core/Transport", "tests/Core"], function(chai, Transport){
 		it("invokes the callback with the correct playback time", function(done){
 			var intervalCalls = 0;
 			Transport.setInterval(function(time){
-				expect(time).to.be.greaterThan(Transport.now());
+				expect(time).to.be.at.least(Transport.now());
 				if (lastCall !== -1){
 					expect(time - lastCall).to.be.closeTo(0.3, 0.1);
 				}
