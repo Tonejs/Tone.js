@@ -15,6 +15,7 @@ define(["Tone/core/Tone"], function(Tone){
 	 *  @extends {Tone}
 	 */
 	Tone.Threshold = function(thresh){
+		
 		/**
 		 *  @type {WaveShaperNode}
 		 *  @private
@@ -22,11 +23,24 @@ define(["Tone/core/Tone"], function(Tone){
 		this._thresh = this.context.createWaveShaper();
 
 		/**
+		 *  make doubly sure that the input is thresholded by 
+		 *  passing it through two waveshapers
+		 *  
+		 *  @type {WaveShaperNode}
+		 *  @private
+		 */
+		this._doubleThresh = this.context.createWaveShaper();
+
+		/**
 		 *  @type {WaveShaperNode}
 		 */
-		this.input = this.output = this._thresh;
+		this.input = this._thresh;
+		this.output = this._doubleThresh;
 
-		this._setThresh(this.defaultArg(thresh, 0));
+		this._thresh.connect(this._doubleThresh);
+
+		this._setThresh(this._thresh, this.defaultArg(thresh, 0));
+		this._setThresh(this._doubleThresh, 1);
 	};
 
 	Tone.extend(Tone.Threshold);
@@ -35,11 +49,11 @@ define(["Tone/core/Tone"], function(Tone){
 	 *  @param {number} thresh 
 	 *  @private
 	 */
-	Tone.Threshold.prototype._setThresh = function(thresh){
+	Tone.Threshold.prototype._setThresh = function(component, thresh){
 		var curveLength = 1024;
 		var curve = new Float32Array(curveLength);
 		for (var i = 0; i < curveLength; i++){
-			var normalized = (i / (curveLength - 1));
+			var normalized = (i / (curveLength - 1)) * 2 - 1;
 			var val;
 			if (normalized < thresh){
 				val = 0;
@@ -48,7 +62,16 @@ define(["Tone/core/Tone"], function(Tone){
 			}
 			curve[i] = val;
 		}
-		this._thresh.curve = curve;
+		component.curve = curve;
+	};
+
+	/**
+	 *  sets the threshold value
+	 *  
+	 *  @param {number} thresh number must be between -1 and 1
+	 */
+	Tone.Threshold.prototype.setThreshold = function(thresh){
+		this._setThresh(this._thresh, thresh);
 	};
 
 	/**
@@ -56,7 +79,9 @@ define(["Tone/core/Tone"], function(Tone){
 	 */
 	Tone.Threshold.prototype.dispose = function(){
 		this._thresh.disconnect();
+		this._doubleThresh.disconnect();
 		this._thresh = null;
+		this._doubleThresh = null;
 	};
 
 	return Tone.Threshold;
