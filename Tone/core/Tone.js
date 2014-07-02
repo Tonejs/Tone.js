@@ -79,7 +79,7 @@ define("Tone/core/Tone", [], function(){
 	AudioNode.prototype._nativeConnect = AudioNode.prototype.connect;
 	AudioNode.prototype.connect = function(B){
 		if (B.input){
-			this._nativeConnect(B.input);
+			this.connect(B.input);
 		} else {
 			try {
 				this._nativeConnect.apply(this, arguments);
