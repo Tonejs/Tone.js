@@ -1,6 +1,6 @@
 define(["tests/Core", "chai", "Tone/component/Recorder", "Tone/signal/Signal", "Tone/signal/Add", "Tone/signal/Multiply", 
-	"Tone/signal/Scale", "Tone/source/Oscillator", "Tone/signal/Merge", "Tone/signal/Split","Tone/core/Master"], 
-function(core, chai, Recorder, Signal, Add, Multiply, Scale, Oscillator, Merge, Split, Master){
+	"Tone/signal/Scale", "Tone/source/Oscillator", "Tone/signal/Merge", "Tone/signal/Split","Tone/core/Master", "Tone/signal/EqualsZero"], 
+function(core, chai, Recorder, Signal, Add, Multiply, Scale, Oscillator, Merge, Split, Master, EqualsZero){
 
 	var expect = chai.expect;
 
@@ -275,4 +275,70 @@ function(core, chai, Recorder, Signal, Add, Multiply, Scale, Oscillator, Merge, 
 			});
 		});
 	});
+
+	//EQUALS 0
+	describe("Tone.EqualsZero", function(){
+		this.timeout(500);
+
+		it("can be created and disposed", function(){
+			var ez = new EqualsZero();
+			ez.dispose();
+		});
+
+		it("outputs 1 when the incoming signal is 0", function(done){
+			var signal = new Signal(0);
+			var ez = new EqualsZero();
+			signal.connect(ez);
+			var recorder = new Recorder();
+			ez.connect(recorder);
+			recorder.record(0.05, 0.05, function(buffers){
+				var buffer = buffers[0];
+				//get the left buffer and check that all values are === 1
+				for (var i = 0; i < buffer.length; i++){
+					expect(buffer[i]).to.equal(1);
+				}
+				signal.dispose();
+				ez.dispose();
+				done();
+			}, 100);
+		});
+
+		it("outputs 0 when the incoming signal is not 0", function(done){
+			var signal = new Signal(100);
+			var ez = new EqualsZero();
+			signal.connect(ez);
+			var recorder = new Recorder();
+			ez.connect(recorder);
+			recorder.record(0.05, 0.05, function(buffers){
+				var buffer = buffers[0];
+				//get the left buffer and check that all values are === 1
+				for (var i = 0; i < buffer.length; i++){
+					expect(buffer[i]).to.equal(0);
+				}
+				signal.dispose();
+				ez.dispose();
+				done();
+			}, 100);
+		});
+
+		it("is not fooled by values very close to 0", function(done){
+			var signal = new Signal(0.00001);
+			var ez = new EqualsZero();
+			signal.connect(ez);
+			var recorder = new Recorder();
+			ez.connect(recorder);
+			recorder.record(0.05, 0.05, function(buffers){
+				var buffer = buffers[0];
+				//get the left buffer and check that all values are === 1
+				for (var i = 0; i < buffer.length; i++){
+					expect(buffer[i]).to.equal(0);
+				}
+				signal.dispose();
+				ez.dispose();
+				done();
+			}, 100);
+		});
+
+	});
+
 });
