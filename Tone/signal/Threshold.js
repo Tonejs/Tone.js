@@ -51,5 +51,13 @@ define(["Tone/core/Tone"], function(Tone){
 		this._thresh.curve = curve;
 	};
 
+	/**
+	 *  dispose method
+	 */
+	Tone.Threshold.prototype.dispose = function(){
+		this._thresh.disconnect();
+		this._thresh = null;
+	};
+
 	return Tone.Threshold;
 });

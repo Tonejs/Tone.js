@@ -37,7 +37,7 @@ define(["Tone/core/Tone", "Tone/signal/Threshold"], function(Tone){
 	/**
 	 *  @private
 	 */
-	Tone.EqualsZero.prototype._setEquals = function(angle){
+	Tone.EqualsZero.prototype._setEquals = function(){
 		var curveLength = 1024;
 		var curve = new Float32Array(curveLength);
 		for (var i = 0; i < curveLength; i++){
@@ -51,6 +51,16 @@ define(["Tone/core/Tone", "Tone/signal/Threshold"], function(Tone){
 			curve[i] = val;
 		}
 		this._equals.curve = curve;
+	};
+
+	/**
+	 *  dispose method
+	 */
+	Tone.EqualsZero.prototype.dispose = function(){
+		this._equals.disconnect();
+		this._thresh.dispose();
+		this._equals = null;
+		this._thresh = null;
 	};
 
 	return Tone.EqualsZero;
