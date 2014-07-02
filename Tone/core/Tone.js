@@ -1,11 +1,10 @@
-///////////////////////////////////////////////////////////////////////////////
-//
-//	TONE.js
-//
-//	@author Yotam Mann
-//	
-//	The MIT License (MIT) 2014
-///////////////////////////////////////////////////////////////////////////////
+/**
+ *  Tone.js
+ *
+ *  @author Yotam Mann
+ *
+ *  @license http://opensource.org/licenses/MIT MIT License 2014
+ */
 
 (function (root) {
 	// Tone.js can run with or without requirejs
