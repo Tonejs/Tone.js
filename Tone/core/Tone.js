@@ -1,6 +1,8 @@
 /**
  *  Tone.js
  *
+ *  @version 0.1.1
+ *
  *  @author Yotam Mann
  *
  *  @license http://opensource.org/licenses/MIT MIT License 2014
