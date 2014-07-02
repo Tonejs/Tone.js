@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
 	<meta charset="utf-8">
-	<title>Tone.js Class: Effect</title>
+	<title>Tone.js Class: Follower</title>
 
 	<!--[if lt IE 9]>
 	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -165,14 +165,14 @@
 					
 
 
-	<h1 class="page-title">Class: Effect</h1>
+	<h1 class="page-title">Class: Follower</h1>
 <section>
 
 <header>
     <h2>
         <span class="ancestors"><a href="Tone.html">Tone</a>.</span>
     
-    Effect
+    Follower
     </h2>
     
 </header>
@@ -184,7 +184,7 @@
     
         
 <dt>
-    <h4 class="name" id="Effect"><span class="type-signature"></span>new Effect<span class="signature">(<span class="optional">initalDry</span>)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="Follower"><span class="type-signature"></span>new Follower<span class="signature">()</span><span class="type-signature"></span></h4>
     
     
 </dt>
@@ -192,9 +192,7 @@
     
     
     <div class="description">
-        <p>Effect is the base class for effects. connect the effect between
-    the effectSend and effectReturn GainNodes. then control the amount of
-    effect which goes to the output using the dry/wet control.</p>
+        <p>Follow the envelope of the incoming signal</p>
     </div>
     
 
@@ -202,68 +200,6 @@
     
     
     
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params table table-striped">
-    <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-
-		<th>Type</th>
-
-		
-		<th>Argument</th>
-		
-
-		
-
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-
-	<tbody>
-	
-
-        <tr>
-            
-                <td class="name"><code>initalDry</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last"><p>the starting dry value
-                            defaults to 0.5 (50% dry / 50% wet)</p></td>
-        </tr>
-
-	
-	</tbody>
-</table>
-
     
     
     
@@ -289,7 +225,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#sunlight-1-line-3277">line 3277</a>
+        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#sunlight-1-line-1323">line 1323</a>
     </li></ul></dd>
     
 
@@ -337,198 +273,6 @@
         <h3 class="subsection-title">Members</h3>
 
         <dl>
-            
-<dt>
-    <h4 class="name" id="dryWet"><span class="type-signature"></span>dryWet<span class="type-signature"> :<a href="Tone.DryWet.html">Tone.DryWet</a></span></h4>
-    
-    
-</dt>
-<dd>
-    
-    <div class="description">
-        <p>the drywet knob to control the amount of effect</p>
-    </div>
-    
-    
-    
-        <h5>Type:</h5>
-        <ul>
-            <li>
-                
-<span class="param-type"><a href="Tone.DryWet.html">Tone.DryWet</a></span>
-
-
-            </li>
-        </ul>
-    
-
-    
-<dl class="details">
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#sunlight-1-line-3285">line 3285</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <h4 class="name" id="effectReturn"><span class="type-signature"></span>effectReturn<span class="type-signature"> :GainNode</span></h4>
-    
-    
-</dt>
-<dd>
-    
-    <div class="description">
-        <p>connect the output of the effect to the effectReturn</p>
-    </div>
-    
-    
-    
-        <h5>Type:</h5>
-        <ul>
-            <li>
-                
-<span class="param-type">GainNode</span>
-
-
-            </li>
-        </ul>
-    
-
-    
-<dl class="details">
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#sunlight-1-line-3297">line 3297</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <h4 class="name" id="effectSend"><span class="type-signature"></span>effectSend<span class="type-signature"> :GainNode</span></h4>
-    
-    
-</dt>
-<dd>
-    
-    <div class="description">
-        <p>connect the effectSend to the input of hte effect</p>
-    </div>
-    
-    
-    
-        <h5>Type:</h5>
-        <ul>
-            <li>
-                
-<span class="param-type">GainNode</span>
-
-
-            </li>
-        </ul>
-    
-
-    
-<dl class="details">
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#sunlight-1-line-3291">line 3291</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-    
-    
-</dd>
-
-        
             
 <dt>
     <h4 class="name" id="input"><span class="type-signature"></span>input<span class="type-signature"> :GainNode</span></h4>
@@ -673,75 +417,6 @@
         <h3 class="subsection-title">Methods</h3>
 
         <dl>
-            
-<dt>
-    <h4 class="name" id="bypass"><span class="type-signature"></span>bypass<span class="signature">()</span><span class="type-signature"></span></h4>
-    
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        <p>bypass the effect</p>
-    </div>
-    
-
-    
-    
-    
-    
-    
-    
-    
-<dl class="details">
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#sunlight-1-line-3336">line 3336</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-    
-    
-
-    
-
-    
-    
-    
-    
-    
-    
-    
-</dd>
-
-        
             
 <dt>
     <h4 class="name" id="chain"><span class="type-signature"></span>chain<span class="signature">()</span><span class="type-signature"></span></h4>
@@ -980,124 +655,6 @@
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#sunlight-1-line-153">line 153</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-    
-    
-
-    
-
-    
-    
-    
-    
-    
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <h4 class="name" id="connectEffect"><span class="type-signature"></span>connectEffect<span class="signature">(effect)</span><span class="type-signature"></span></h4>
-    
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        <p>chains the effect in between the effectSend and effectReturn</p>
-    </div>
-    
-
-    
-    
-    
-    
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params table table-striped">
-    <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-
-		<th>Type</th>
-
-		
-
-		
-
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-
-	<tbody>
-	
-
-        <tr>
-            
-                <td class="name"><code>effect</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><a href="Tone.html">Tone</a></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-	
-	</tbody>
-</table>
-
-    
-    
-    
-<dl class="details">
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#sunlight-1-line-3344">line 3344</a>
     </li></ul></dd>
     
 
@@ -1506,7 +1063,7 @@
         
             
 <dt>
-    <h4 class="name" id="dispose"><span class="type-signature"></span>dispose<span class="signature">()</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="dispose"><span class="type-signature">&lt;virtual> </span>dispose<span class="signature">()</span><span class="type-signature"></span></h4>
     
     
 </dt>
@@ -1514,7 +1071,7 @@
     
     
     <div class="description">
-        <p>tear down</p>
+        <p>a dispose method</p>
     </div>
     
 
@@ -1533,6 +1090,11 @@
     
 
     
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Tone.html#dispose">Tone#dispose</a>
+    </li></dd>
+    
 
     
 
@@ -1547,7 +1109,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#sunlight-1-line-3351">line 3351</a>
+        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#sunlight-1-line-275">line 275</a>
     </li></ul></dd>
     
 
@@ -3914,330 +3476,6 @@
         
             
 <dt>
-    <h4 class="name" id="setDry"><span class="type-signature"></span>setDry<span class="signature">(dryness, <span class="optional">rampTime</span>)</span><span class="type-signature"></span></h4>
-    
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        <p>setDry adjusts the dry / wet balance
-dryness is 0 (100% wet) to 1 (100% dry)</p>
-    </div>
-    
-
-    
-    
-    
-    
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params table table-striped">
-    <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-
-		<th>Type</th>
-
-		
-		<th>Argument</th>
-		
-
-		
-
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-
-	<tbody>
-	
-
-        <tr>
-            
-                <td class="name"><code>dryness</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-	
-
-        <tr>
-            
-                <td class="name"><code>rampTime</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Tone.Time</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-	
-	</tbody>
-</table>
-
-    
-    
-    
-<dl class="details">
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#sunlight-1-line-3318">line 3318</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-    
-    
-
-    
-
-    
-    
-    
-    
-    
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <h4 class="name" id="setWet"><span class="type-signature"></span>setWet<span class="signature">(wetness, <span class="optional">rampTime</span>)</span><span class="type-signature"></span></h4>
-    
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        <p>setWet also adjusts the dry / wet balance
-wetVal is 0 (100% dry) to 1 (100% wet)</p>
-    </div>
-    
-
-    
-    
-    
-    
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params table table-striped">
-    <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-
-		<th>Type</th>
-
-		
-		<th>Argument</th>
-		
-
-		
-
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-
-	<tbody>
-	
-
-        <tr>
-            
-                <td class="name"><code>wetness</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-	
-
-        <tr>
-            
-                <td class="name"><code>rampTime</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Tone.Time</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-	
-	</tbody>
-</table>
-
-    
-    
-    
-<dl class="details">
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Tone.js.html">Tone.js</a>, <a href="Tone.js.html#sunlight-1-line-3329">line 3329</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-    
-    
-
-    
-
-    
-    
-    
-    
-    
-    
-    
-</dd>
-
-        
-            
-<dt>
     <h4 class="name" id="toFrequency"><span class="type-signature"></span>toFrequency<span class="signature">(time)</span><span class="type-signature"> &rarr; {number}</span></h4>
     
     
@@ -5004,7 +4242,7 @@ wetVal is 0 (100% dry) to 1 (100% wet)</p>
 					<br />
 					
 		<span class="jsdoc-message">
-		Documentation generated on Wed Jul 02 2014 17:13:24 GMT-0400 (EDT).
+		Documentation generated on Wed Jul 02 2014 17:13:25 GMT-0400 (EDT).
 		</span>
 				</footer>
 			</div>
