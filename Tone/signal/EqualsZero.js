@@ -17,7 +17,7 @@ define(["Tone/core/Tone", "Tone/signal/Threshold"], function(Tone){
 		 *  @type {WaveShaperNode}
 		 *  @private
 		 */
-		this._thresh = new Tone.Threshold(0.99999);
+		this._thresh = new Tone.Threshold(1);
 
 		/**
 		 *  @type {WaveShaperNode}
