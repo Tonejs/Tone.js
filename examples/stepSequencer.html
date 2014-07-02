@@ -15,6 +15,9 @@
 	<div id="checkboxes"></div>
 	<div id="output"></div>
 	<div id="loading">loading...</div>
+	<br><br>
+	<input type='range' value='120' min='100' max='160'>
+	<div id='tempo' >bpm: 120</div>
 	<script type="text/javascript">
 
 		//which beat in the 16 beats
@@ -123,6 +126,11 @@
 			makeRadios();
 			makeCheckboxes();
 			Tone.Transport.setBpm(120);
+			$("input").on("input", function(){
+				var tempo = $(this).val();
+				$("#tempo").text("bpm: "+tempo);
+				Tone.Transport.setBpm(tempo);
+			});
 		});
 
 	</script>
