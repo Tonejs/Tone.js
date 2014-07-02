@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
+define(["Tone/core/Tone"], function(Tone){
 
 	/**
 	 *  Multiply the incoming signal by some factor
@@ -14,12 +14,8 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 		 *  
 		 *  @type {GainNode}
 		 */
-		this.input = this.context.createGain();
-		/** 
-		 *  @type {GainNode}
-		 */
-		this.output = this.input;
-
+		this.input = this.output = this.context.createGain();
+		
 		//apply the inital scale factor
 		this.input.gain.value = this.defaultArg(value, 1);
 	};
