@@ -1,11 +1,12 @@
-///////////////////////////////////////////////////////////////////////////////
-//
-//	TONE.js
-//
-//	@author Yotam Mann
-//	
-//	The MIT License (MIT) 2014
-///////////////////////////////////////////////////////////////////////////////
+/**
+ *  Tone.js
+ *
+ *  @version 0.1.2
+ *
+ *  @author Yotam Mann
+ *
+ *  @license http://opensource.org/licenses/MIT MIT License 2014
+ */
 
 (function (root) {
 	// Tone.js can run with or without requirejs
@@ -78,8 +79,8 @@ define("Tone/core/Tone", [], function(){
 	//extend the connect function to include Tones
 	AudioNode.prototype._nativeConnect = AudioNode.prototype.connect;
 	AudioNode.prototype.connect = function(B){
-		if (B.input && B.input instanceof GainNode){
-			this._nativeConnect(B.input);
+		if (B.input){
+			this.connect(B.input);
 		} else {
 			try {
 				this._nativeConnect.apply(this, arguments);
@@ -353,6 +354,49 @@ define("Tone/core/Tone", [], function(){
 	 */
 	Tone.prototype.secondsToFrequency = function(seconds){
 		return 1/seconds;
+	};
+
+
+	///////////////////////////////////////////////////////////////////////////
+	//	MUSIC NOTES
+	///////////////////////////////////////////////////////////////////////////
+
+	var noteToIndex = { "a" : 0, "a#" : 1, "bb" : 1, "b" : 2, "c" : 3, "c#" : 4,
+		"db" : 4, "d" : 5, "d#" : 6, "eb" : 6, "e" : 7, "f" : 8, "f#" : 9, 
+		"gb" : 9, "g" : 10, "g#" : 11, "ab" : 11
+	};
+
+	var noteIndexToNote = ["A", "A#", "B", "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#"];
+
+	/**
+	 *  convert a note name to frequency (i.e. A4 to 440)
+	 *  @param  {string} note
+	 *  @return {number}         
+	 */
+	Tone.prototype.noteToFrequency = function(note){
+		//break apart the note by frequency and octave
+		var parts = note.split(/(\d+)/);
+		if (parts.length === 3){
+			var index = noteToIndex[parts[0].toLowerCase()];
+			var octave = parts[1];
+			var noteNumber = index + parseInt(octave, 10) * 12;
+			return Math.pow(2, (noteNumber - 48) / 12) * 440;
+		} else {
+			return 0;
+		}
+	};
+
+	/**
+	 *  convert a note name (i.e. A4, C#5, etc to a frequency)
+	 *  @param  {number} freq
+	 *  @return {string}         
+	 */
+	Tone.prototype.frequencyToNote = function(freq){
+		var log = Math.log(freq / 440) / Math.LN2;
+		var noteNumber = Math.round(12 * log) + 48;
+		var octave = Math.floor(noteNumber/12);
+		var noteName = noteIndexToNote[noteNumber % 12];
+		return noteName + octave.toString();
 	};
 
 	///////////////////////////////////////////////////////////////////////////
@@ -844,7 +888,7 @@ define('Tone/signal/Add',["Tone/core/Tone", "Tone/signal/Signal"], function(Tone
 
 	return Tone.Add;
 });
-define('Tone/signal/Multiply',["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
+define('Tone/signal/Multiply',["Tone/core/Tone"], function(Tone){
 
 	/**
 	 *  Multiply the incoming signal by some factor
@@ -860,12 +904,8 @@ define('Tone/signal/Multiply',["Tone/core/Tone", "Tone/signal/Signal"], function
 		 *  
 		 *  @type {GainNode}
 		 */
-		this.input = this.context.createGain();
-		/** 
-		 *  @type {GainNode}
-		 */
-		this.output = this.input;
-
+		this.input = this.output = this.context.createGain();
+		
 		//apply the inital scale factor
 		this.input.gain.value = this.defaultArg(value, 1);
 	};
@@ -1274,10 +1314,13 @@ define('Tone/component/Envelope',["Tone/core/Tone", "Tone/signal/Signal"], funct
 });
 
 define('Tone/component/Follower',["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Scale"], function(Tone){
+
 	/**
 	 *  Follow the envelope of the incoming signal
+	 *  @constructor
+	 *  @extends {Tone}
 	 */
-	Tone.Follower = function(){
+	Tone.Follower = function(attackTime, releaseTime){
 
 		/**
 		 *  scale the incoming signal to 0-1
@@ -1300,6 +1343,8 @@ define('Tone/component/Follower',["Tone/core/Tone", "Tone/signal/Signal", "Tone/
 		 */
 		this._gate = this.context.createWaveShaper();
 	};
+
+	Tone.extend(Tone.Follower);
 });
 define('Tone/core/Transport',["Tone/core/Tone", "Tone/core/Master", "Tone/signal/Signal"], 
 function(Tone){
@@ -3408,6 +3453,129 @@ define('Tone/effect/AutoPanner',["Tone/core/Tone", "Tone/effect/Effect", "Tone/c
 	return Tone.AutoPanner;
 });
 
+define('Tone/effect/BitCrusher',["Tone/core/Tone"], function(Tone){
+
+	/**
+	 *  downsample incoming signal
+	 *  inspiration from https://github.com/jaz303/bitcrusher/blob/master/index.js
+	 *
+	 *  @constructor
+	 *  @extends {Tone}
+	 *  @param {number=} bits   
+	 *  @param {number=} frequency 
+	 */
+	Tone.BitCrusher = function(bits, frequency){
+
+		Tone.call(this);
+
+		/** 
+		 * @private 
+		 * @type {number}
+		 */
+		this._bits = this.defaultArg(bits, 8);
+		
+		/** 
+		 * @private 
+		 * @type {number}
+		 */
+		this._frequency = this.defaultArg(frequency, 0.5);
+		
+		/** 
+		 * @private 
+		 * @type {number}
+		 */
+		this._step = 2 * Math.pow(0.5, this._bits);
+		
+		/** 
+		 * @private 
+		 * @type {number}
+		 */
+		this._invStep = 1/this._step;
+		
+		/** 
+		 * @private 
+		 * @type {number}
+		 */
+		this._phasor = 0;
+		
+		/** 
+		 * @private 
+		 * @type {number}
+		 */
+		this._last = 0;
+		
+		/** 
+		 * @private 
+		 * @type {ScriptProcessorNode}
+		 */
+		this._crusher = this.context.createScriptProcessor(this.bufferSize, 1, 1);
+		this._crusher.onaudioprocess = this._audioprocess.bind(this);
+
+		//connect it up
+		this.chain(this.input, this._crusher, this.output);
+	};
+
+	Tone.extend(Tone.BitCrusher);
+
+	/**
+	 *  @private
+	 *  @param  {AudioProcessingEvent} event
+	 */
+	Tone.BitCrusher.prototype._audioprocess = function(event){
+		//cache the values used in the loop
+		var phasor = this._phasor;
+		var freq = this._frequency;
+		var invStep = this._invStep;
+		var last = this._last;
+		var step = this._step;
+		var input = event.inputBuffer.getChannelData(0);
+		var output = event.outputBuffer.getChannelData(0);
+		for (var i = 0, len = output.length; i < len; i++) {
+			phasor += freq;
+		    if (phasor >= 1) {
+		        phasor -= 1;
+		        last = step * ((input[i] * invStep) | 0 + 0.5);
+		    }
+		    output[i] = last;
+		}
+		//set the values for the next loop
+		this._phasor = phasor;
+		this._last = last;
+	};
+
+	/**
+	 *  set the bit rate
+	 *  
+	 *  @param {number} bits 
+	 */
+	Tone.BitCrusher.prototype.setBits = function(bits){
+		this._bits = bits;
+		this._step = 2 * Math.pow(0.5, this._bits);
+		this._invStep = 1/this._step;
+	};
+
+	/**
+	 *  set the frequency
+	 *  @param {number} freq 
+	 */
+	Tone.BitCrusher.prototype.setFrequency = function(freq){
+		this._frequency = freq;
+	};
+
+	/**
+	 *  clean up
+	 */
+	Tone.BitCrusher.prototype.dispose = function(){
+		this.input.disconnect();
+		this.output.disconnect();
+		this._crusher.disconnect();
+		this.input = null;
+		this.output = null;
+		this._crusher = null;
+	}; 
+
+	return Tone.BitCrusher;
+});
 define('Tone/effect/FeedbackEffect',["Tone/core/Tone", "Tone/effect/Effect", "Tone/signal/Signal"], function(Tone){
 	/**
 	 * Feedback Effect (a sound loop between an audio source and its own output)
@@ -3628,128 +3796,265 @@ define('Tone/effect/PingPongDelay',["Tone/core/Tone", "Tone/effect/FeedbackDelay
 
 	return Tone.PingPongDelay;
 });
-define('Tone/signal/BitCrusher',["Tone/core/Tone"], function(Tone){
+define('Tone/signal/Threshold',["Tone/core/Tone"], function(Tone){
 
 	/**
-	 *  downsample incoming signal
-	 *  inspiration from https://github.com/jaz303/bitcrusher/blob/master/index.js
+	 *  Threshold an incoming signal between -1 to 1
 	 *
+	 *  Set the threshold value such that signal above the value will equal 1, 
+	 *  and below will equal 0.
+	 *  
+	 *  Values below 0.5 will return 0 and values above 0.5 will return 1
+	 *  
 	 *  @constructor
+	 *  @param {number=} thresh threshold value above which the output will equal 1 
+	 *                          and below which the output will equal 0
+	 *                          @default 0
 	 *  @extends {Tone}
-	 *  @param {number=} bits   
-	 *  @param {number=} frequency 
 	 */
-	Tone.BitCrusher = function(bits, frequency){
+	Tone.Threshold = function(thresh){
+		
+		/**
+		 *  @type {WaveShaperNode}
+		 *  @private
+		 */
+		this._thresh = this.context.createWaveShaper();
 
-		Tone.call(this);
+		/**
+		 *  make doubly sure that the input is thresholded by 
+		 *  passing it through two waveshapers
+		 *  
+		 *  @type {WaveShaperNode}
+		 *  @private
+		 */
+		this._doubleThresh = this.context.createWaveShaper();
 
-		/** 
-		 * @private 
-		 * @type {number}
+		/**
+		 *  @type {WaveShaperNode}
 		 */
-		this._bits = this.defaultArg(bits, 8);
-		
-		/** 
-		 * @private 
-		 * @type {number}
-		 */
-		this._frequency = this.defaultArg(frequency, 0.5);
-		
-		/** 
-		 * @private 
-		 * @type {number}
-		 */
-		this._step = 2 * Math.pow(0.5, this._bits);
-		
-		/** 
-		 * @private 
-		 * @type {number}
-		 */
-		this._invStep = 1/this._step;
-		
-		/** 
-		 * @private 
-		 * @type {number}
-		 */
-		this._phasor = 0;
-		
-		/** 
-		 * @private 
-		 * @type {number}
-		 */
-		this._last = 0;
-		
-		/** 
-		 * @private 
-		 * @type {ScriptProcessorNode}
-		 */
-		this._crusher = this.context.createScriptProcessor(this.bufferSize, 1, 1);
-		this._crusher.onaudioprocess = this._audioprocess.bind(this);
+		this.input = this._thresh;
+		this.output = this._doubleThresh;
 
-		//connect it up
-		this.chain(this.input, this._crusher, this.output);
+		this._thresh.connect(this._doubleThresh);
+
+		this._setThresh(this._thresh, this.defaultArg(thresh, 0));
+		this._setThresh(this._doubleThresh, 1);
 	};
 
-	Tone.extend(Tone.BitCrusher);
+	Tone.extend(Tone.Threshold);
+
+	/**
+	 *  @param {number} thresh 
+	 *  @private
+	 */
+	Tone.Threshold.prototype._setThresh = function(component, thresh){
+		var curveLength = 1024;
+		var curve = new Float32Array(curveLength);
+		for (var i = 0; i < curveLength; i++){
+			var normalized = (i / (curveLength - 1)) * 2 - 1;
+			var val;
+			if (normalized < thresh){
+				val = 0;
+			} else {
+				val = 1;
+			}
+			curve[i] = val;
+		}
+		component.curve = curve;
+	};
+
+	/**
+	 *  sets the threshold value
+	 *  
+	 *  @param {number} thresh number must be between -1 and 1
+	 */
+	Tone.Threshold.prototype.setThreshold = function(thresh){
+		this._setThresh(this._thresh, thresh);
+	};
+
+	/**
+	 *  dispose method
+	 */
+	Tone.Threshold.prototype.dispose = function(){
+		this._thresh.disconnect();
+		this._doubleThresh.disconnect();
+		this._thresh = null;
+		this._doubleThresh = null;
+	};
+
+	return Tone.Threshold;
+});
+define('Tone/signal/EqualsZero',["Tone/core/Tone", "Tone/signal/Threshold"], function(Tone){
+
+	/**
+	 *  Output 1 if the signal is equal to 0, otherwise outputs 0
+	 *  
+	 *  @constructor
+	 *  @extends {Tone}
+	 */
+	Tone.EqualsZero = function(){
+		/**
+		 *  @type {WaveShaperNode}
+		 *  @private
+		 */
+		this._equals = this.context.createWaveShaper();
+
+		/**
+		 *  @type {WaveShaperNode}
+		 *  @private
+		 */
+		this._thresh = new Tone.Threshold(1);
+
+		/**
+		 *  @type {WaveShaperNode}
+		 */
+		this.input = this._equals;
+
+		this._equals.connect(this._thresh);
+
+		this.output = this._thresh;
+
+
+		this._setEquals();
+	};
+
+	Tone.extend(Tone.EqualsZero);
 
 	/**
 	 *  @private
-	 *  @param  {AudioProcessingEvent} event
 	 */
-	Tone.BitCrusher.prototype._audioprocess = function(event){
-		//cache the values used in the loop
-		var phasor = this._phasor;
-		var freq = this._frequency;
-		var invStep = this._invStep;
-		var last = this._last;
-		var step = this._step;
-		var input = event.inputBuffer.getChannelData(0);
-		var output = event.outputBuffer.getChannelData(0);
-		for (var i = 0, len = output.length; i < len; i++) {
-			phasor += freq;
-		    if (phasor >= 1) {
-		        phasor -= 1;
-		        last = step * ((input[i] * invStep) | 0 + 0.5);
-		    }
-		    output[i] = last;
+	Tone.EqualsZero.prototype._setEquals = function(){
+		var curveLength = 1024;
+		var curve = new Float32Array(curveLength);
+		for (var i = 0; i < curveLength; i++){
+			var normalized = (i / (curveLength));
+			var val;
+			if (normalized === 0.5){
+				val = 1;
+			} else {
+				val = 0;
+			}
+			curve[i] = val;
 		}
-		//set the values for the next loop
-		this._phasor = phasor;
-		this._last = last;
+		this._equals.curve = curve;
 	};
 
 	/**
-	 *  set the bit rate
-	 *  
-	 *  @param {number} bits 
+	 *  dispose method
 	 */
-	Tone.BitCrusher.prototype.setBits = function(bits){
-		this._bits = bits;
-		this._step = 2 * Math.pow(0.5, this._bits);
-		this._invStep = 1/this._step;
+	Tone.EqualsZero.prototype.dispose = function(){
+		this._equals.disconnect();
+		this._thresh.dispose();
+		this._equals = null;
+		this._thresh = null;
 	};
 
+	return Tone.EqualsZero;
+});
+define('Tone/signal/Negate',["Tone/core/Tone", "Tone/signal/Multiply"], function(Tone){
+
 	/**
-	 *  set the frequency
-	 *  @param {number} freq 
+	 *  Negate the incoming signal. i.e. an input signal of 10 will output -10
+	 *
+	 *  @constructor
+	 *  @extends {Tone}
 	 */
-	Tone.BitCrusher.prototype.setFrequency = function(freq){
-		this._frequency = freq;
+	Tone.Negate = function(value){
+		/**
+		 *  negation is done by multiplying by -1
+		 *  @type {Tone.Multiply}
+		 *  @private
+		 */
+		this._multiply = new Tone.Multiply(-1);
+
+		/**
+		 *  the input and output
+		 */
+		this.input = this.output = this._multiply;
 	};
+
+	Tone.extend(Tone.Negate);
 
 	/**
 	 *  clean up
 	 */
-	Tone.BitCrusher.prototype.dispose = function(){
+	Tone.Negate.prototype.dispose = function(){
 		this.input.disconnect();
-		this.output.disconnect();
-		this._crusher.disconnect();
 		this.input = null;
-		this.output = null;
-		this._crusher = null;
 	}; 
 
-	return Tone.BitCrusher;
+	return Tone.Negate;
+});
+define('Tone/signal/Switch',["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Threshold"], function(Tone){
+
+	/**
+	 *  When the gate is set to 0, the input signal does not pass through to the output. 
+	 *  If the gate is set to 1, the input signal passes through
+	 *
+	 *  the switch will initially be closed.
+	 *
+	 *  @constructor
+	 *  @extends {Tone}
+	 */
+	Tone.Switch = function(){
+		Tone.call(this);
+
+		/**
+		 *  the control signal for the switch
+		 *  when this value is 0, the input signal will not pass through,
+		 *  when it is high (1), the input signal will pass through.
+		 *  
+		 *  @type {Tone.Signal}
+		 */
+		this.gate = new Tone.Signal(0);
+
+		/**
+		 *  thresh the control signal
+		 *  @type {Tone.Threshold}
+		 *  @private
+		 */
+		this._thresh = new Tone.Threshold(0.5);
+
+		this.input.connect(this.output);
+		this.chain(this.gate, this._thresh, this.output.gain);
+		this.output.gain.value = 0;
+	};
+
+	Tone.extend(Tone.Switch);
+
+	/**
+	 *  open the switch at a specific time
+	 *
+	 *  @param {Tone.Time} time the time when the switch will be open
+	 */
+	Tone.Switch.prototype.open = function(time){
+		this.gate.setValueAtTime(1, this.toSeconds(time));
+	}; 
+
+	/**
+	 *  close the switch at a specific time
+	 *
+	 *  @param {Tone.Time} time the time when the switch will be open
+	 */
+	Tone.Switch.prototype.close = function(time){
+		this.gate.setValueAtTime(0, this.toSeconds(time));
+	}; 
+
+	/**
+	 *  clean up
+	 */
+	Tone.Switch.prototype.dispose = function(){
+		this.gate.dispose();
+		this._thresh.dispose();
+		this.input.disconnect();
+		this.output.disconnect();
+		this.signal = null;
+		this._thresh = null;
+		this.input = null;
+		this.output = null;
+	}; 
+
+	return Tone.Switch;
 });
 ///////////////////////////////////////////////////////////////////////////////
 //
@@ -3786,7 +4091,9 @@ define('Tone/source/Microphone',["Tone/core/Tone", "Tone/source/Source"], functi
 		 *  @type {Object}
 		 *  @private
 		 */
-		this.constraints = {"audio" : true};
+		this.constraints = {"audio" : {
+			echoCancellation : false
+		}};
 
 		//get the option
 		var self = this;
