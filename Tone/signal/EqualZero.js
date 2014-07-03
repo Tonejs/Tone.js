@@ -41,14 +41,12 @@ define(["Tone/core/Tone", "Tone/signal/Threshold"], function(Tone){
 		var curveLength = 1024;
 		var curve = new Float32Array(curveLength);
 		for (var i = 0; i < curveLength; i++){
-			var normalized = (i / (curveLength));
-			var val;
-			if (normalized === 0.5){
-				val = 1;
+			var normalized = (i / (curveLength)) * 2 - 1;
+			if (normalized === 0){
+				curve[i] = 1;
 			} else {
-				val = 0;
+				curve[i] = 0;
 			}
-			curve[i] = val;
 		}
 		this._equals.curve = curve;
 	};
