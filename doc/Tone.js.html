@@ -1,4 +1,191 @@
-/**
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>Tone.js Source: Tone.js</title>
+
+	<!--[if lt IE 9]>
+	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+	<link type="text/css" rel="stylesheet" href="styles/sunlight.default.css">
+
+	
+	<link type="text/css" rel="stylesheet" href="styles/site.spacelab.css">
+	
+</head>
+
+<body>
+<div class="container-fluid">
+	<div class="navbar navbar-fixed-top navbar-inverse">
+		<div class="navbar-inner">
+			<a class="brand" href="index.html">Tone.js</a>
+			<ul class="nav">
+				
+				<li class="dropdown">
+					<a href="classes.list.html" class="dropdown-toggle" data-toggle="dropdown">Classes<b
+						class="caret"></b></a>
+
+					<ul class="dropdown-menu ">
+						
+						<li>
+							<a href="Tone.html">Tone</a>
+						</li>
+						
+						<li>
+							<a href="Tone.Abs.html">Abs</a>
+						</li>
+						
+						<li>
+							<a href="Tone.Add.html">Add</a>
+						</li>
+						
+						<li>
+							<a href="Tone.AutoPanner.html">AutoPanner</a>
+						</li>
+						
+						<li>
+							<a href="Tone.BitCrusher.html">BitCrusher</a>
+						</li>
+						
+						<li>
+							<a href="Tone.DryWet.html">DryWet</a>
+						</li>
+						
+						<li>
+							<a href="Tone.Effect.html">Effect</a>
+						</li>
+						
+						<li>
+							<a href="Tone.Envelope.html">Envelope</a>
+						</li>
+						
+						<li>
+							<a href="Tone.Equal.html">Equal</a>
+						</li>
+						
+						<li>
+							<a href="Tone.EqualZero.html">EqualZero</a>
+						</li>
+						
+						<li>
+							<a href="Tone.FeedbackDelay.html">FeedbackDelay</a>
+						</li>
+						
+						<li>
+							<a href="Tone.FeedbackEffect.html">FeedbackEffect</a>
+						</li>
+						
+						<li>
+							<a href="Tone.Follower.html">Follower</a>
+						</li>
+						
+						<li>
+							<a href="Tone.Gate.html">Gate</a>
+						</li>
+						
+						<li>
+							<a href="Tone.GreaterThan.html">GreaterThan</a>
+						</li>
+						
+						<li>
+							<a href="Tone.LessThan.html">LessThan</a>
+						</li>
+						
+						<li>
+							<a href="Tone.LFO.html">LFO</a>
+						</li>
+						
+						<li>
+							<a href="Tone.Merge.html">Merge</a>
+						</li>
+						
+						<li>
+							<a href="Tone.Meter.html">Meter</a>
+						</li>
+						
+						<li>
+							<a href="Tone.Microphone.html">Microphone</a>
+						</li>
+						
+						<li>
+							<a href="Tone.Multiply.html">Multiply</a>
+						</li>
+						
+						<li>
+							<a href="Tone.Negate.html">Negate</a>
+						</li>
+						
+						<li>
+							<a href="Tone.Noise.html">Noise</a>
+						</li>
+						
+						<li>
+							<a href="Tone.Oscillator.html">Oscillator</a>
+						</li>
+						
+						<li>
+							<a href="Tone.Panner.html">Panner</a>
+						</li>
+						
+						<li>
+							<a href="Tone.PingPongDelay.html">PingPongDelay</a>
+						</li>
+						
+						<li>
+							<a href="Tone.Player.html">Player</a>
+						</li>
+						
+						<li>
+							<a href="Tone.Recorder.html">Recorder</a>
+						</li>
+						
+						<li>
+							<a href="Tone.Scale.html">Scale</a>
+						</li>
+						
+						<li>
+							<a href="Tone.Signal.html">Signal</a>
+						</li>
+						
+						<li>
+							<a href="Tone.Source.html">Source</a>
+						</li>
+						
+						<li>
+							<a href="Tone.Split.html">Split</a>
+						</li>
+						
+						<li>
+							<a href="Tone.Threshold.html">Threshold</a>
+						</li>
+						
+						<li>
+							<a href="Tone.Transport.html">Transport</a>
+						</li>
+						
+
+					</ul>
+				</li>
+				
+			</ul>
+		</div>
+	</div>
+
+	<div class="row-fluid">
+
+		
+			<div class="span12">
+				
+				<div id="main">
+					
+
+
+		<h1 class="page-title">Source: Tone.js</h1>
+    
+    <section>
+        <article>
+            <pre class="sunlight-highlight-javascript linenums">/**
  *  Tone.js
  *
  *  @version 0.1.2
@@ -168,7 +355,7 @@ define("Tone/core/Tone", [], function(){
 	Tone.prototype.chain = function(){
 		if (arguments.length > 1){
 			var currentUnit = arguments[0];
-			for (var i = 1; i < arguments.length; i++){
+			for (var i = 1; i &lt; arguments.length; i++){
 				var toUnit = arguments[i];
 				currentUnit.connect(toUnit);
 				currentUnit = toUnit;
@@ -256,7 +443,7 @@ define("Tone/core/Tone", [], function(){
 	 *  @return {number}          
 	 */
 	Tone.prototype.normalize = function(input, inputMin, inputMax){
-		//make sure that min < max
+		//make sure that min &lt; max
 		if (inputMin > inputMax){
 			var tmp = inputMax;
 			inputMax = inputMin;
@@ -559,7 +746,7 @@ define('Tone/signal/Signal',["Tone/core/Tone", "Tone/core/Master"], function(Ton
 	(function(){
 		var len = 8;
 		var curve = new Float32Array(len);
-		for (var i = 0; i < len; i++){
+		for (var i = 0; i &lt; len; i++){
 			//all inputs produce the output value
 			curve[i] = 1;
 		}
@@ -743,12 +930,12 @@ define('Tone/signal/Signal',["Tone/core/Tone", "Tone/core/Master"], function(Ton
 	 *  Sets an array of arbitrary parameter values starting at the given time
 	 *  for the given duration.
 	 *  	
-	 *  @param {Array<number>} values    
+	 *  @param {Array&lt;number>} values    
 	 *  @param {Tone.Time} startTime 
 	 *  @param {Tone.Time} duration  
 	 */
 	Tone.Signal.prototype.setValueCurveAtTime = function(values, startTime, duration){
-		for (var i = 0; i < values.length; i++){
+		for (var i = 0; i &lt; values.length; i++){
 			values[i] *= this._syncRatio;
 		}
 		this.scalar.gain.setValueCurveAtTime(values, this.toSeconds(startTime), this.toSeconds(duration));
@@ -1365,10 +1552,10 @@ define('Tone/signal/Threshold',["Tone/core/Tone"], function(Tone){
 	Tone.Threshold.prototype._setThresh = function(component, thresh){
 		var curveLength = 1024;
 		var curve = new Float32Array(curveLength);
-		for (var i = 0; i < curveLength; i++){
+		for (var i = 0; i &lt; curveLength; i++){
 			var normalized = (i / (curveLength - 1)) * 2 - 1;
 			var val;
-			if (normalized < thresh){
+			if (normalized &lt; thresh){
 				val = 0;
 			} else {
 				val = 1;
@@ -1475,7 +1662,7 @@ define('Tone/signal/EqualZero',["Tone/core/Tone", "Tone/signal/Threshold"], func
 	Tone.EqualZero.prototype._setEquals = function(){
 		var curveLength = 1024;
 		var curve = new Float32Array(curveLength);
-		for (var i = 0; i < curveLength; i++){
+		for (var i = 0; i &lt; curveLength; i++){
 			var normalized = (i / (curveLength)) * 2 - 1;
 			if (normalized === 0){
 				curve[i] = 1;
@@ -1654,10 +1841,10 @@ define('Tone/component/Follower',["Tone/core/Tone", "Tone/signal/Abs", "Tone/sig
 	Tone.Follower.prototype._setAttackRelease = function(attack, release){
 		var curveLength = 1024;
 		var curve = new Float32Array(curveLength);
-		for (var i = 0; i < curveLength; i++){
+		for (var i = 0; i &lt; curveLength; i++){
 			var normalized = (i / (curveLength - 1)) * 2 - 1;
 			var val;
-			if (normalized < 0.5){
+			if (normalized &lt; 0.5){
 				val = attack;
 			} else {
 				val = release;
@@ -1808,7 +1995,7 @@ function(Tone){
 	/** 
 	 *  All of the synced components
 	 *  @private 
-	 *  @type {Array<Tone>}
+	 *  @type {Array&lt;Tone>}
 	 */
 	var SyncedSources = [];
 
@@ -1836,12 +2023,12 @@ function(Tone){
 		var now = this.defaultArg(event.playbackTime, this.now());
 		var bufferSize = this._jsNode.bufferSize;
 		var incomingBuffer = event.inputBuffer.getChannelData(0);
-		for (var i = 0; i < bufferSize; i++){
+		for (var i = 0; i &lt; bufferSize; i++){
 			var sample = incomingBuffer[i];
 			if (sample > 0 && !upTick){
 				upTick = true;	
 				this._processTick(now + this.samplesToSeconds(i));
-			} else if (sample < 0 && upTick){
+			} else if (sample &lt; 0 && upTick){
 				upTick = false;
 			}
 		}
@@ -1866,7 +2053,7 @@ function(Tone){
 	//jump to a specific tick in the timeline
 	Tone.Transport.prototype._setTicks = function(ticks){
 		timelineTicks = ticks;
-		for (var i = 0; i < transportTimeline.length; i++){
+		for (var i = 0; i &lt; transportTimeline.length; i++){
 			var timeout = transportTimeline[i];
 			if (timeout.callbackTick() >= ticks){
 				timelineProgress = i;
@@ -1884,7 +2071,7 @@ function(Tone){
 	 *  @param  {number} time 
 	 */
 	var processIntervals = function(time){
-		for (var i = 0, len = intervals.length; i<len; i++){
+		for (var i = 0, len = intervals.length; i&lt;len; i++){
 			var interval = intervals[i];
 			if (interval.testInterval(transportTicks)){
 				interval.doCallback(time);
@@ -1898,10 +2085,10 @@ function(Tone){
 	 */
 	var processTimeouts = function(time){
 		var removeTimeouts = 0;
-		for (var i = 0, len = timeouts.length; i<len; i++){
+		for (var i = 0, len = timeouts.length; i&lt;len; i++){
 			var timeout = timeouts[i];
 			var callbackTick = timeout.callbackTick();
-			if (callbackTick <= transportTicks){
+			if (callbackTick &lt;= transportTicks){
 				timeout.doCallback(time);
 				removeTimeouts++;
 			} else if (callbackTick > transportTicks){
@@ -1917,7 +2104,7 @@ function(Tone){
 	 *  @param  {number} time 
 	 */
 	var processTimeline = function(time){
-		for (var i = timelineProgress, len = transportTimeline.length; i<len; i++){
+		for (var i = timelineProgress, len = transportTimeline.length; i&lt;len; i++){
 			var evnt = transportTimeline[i];
 			var callbackTick = evnt.callbackTick();
 			if (callbackTick === timelineTicks){
@@ -1962,7 +2149,7 @@ function(Tone){
 	 *  @return {boolean}            	true if the event was removed
 	 */
 	Tone.Transport.prototype.clearInterval = function(rmInterval){
-		for (var i = 0; i < intervals.length; i++){
+		for (var i = 0; i &lt; intervals.length; i++){
 			var interval = intervals[i];
 			if (interval.id === rmInterval){
 				intervals.splice(i, 1);
@@ -1995,7 +2182,7 @@ function(Tone){
 		var ticks = this.toTicks(time);
 		var timeout = new TimelineEvent(callback, ctx, ticks + transportTicks, 0);
 		//put it in the right spot
-		for (var i = 0, len = timeouts.length; i<len; i++){
+		for (var i = 0, len = timeouts.length; i&lt;len; i++){
 			var testEvnt = timeouts[i];
 			if (testEvnt.callbackTick() > timeout.callbackTick()){
 				timeouts.splice(i, 0, timeout);
@@ -2013,7 +2200,7 @@ function(Tone){
 	 *  @return {boolean}           true if the timeout was removed
 	 */
 	Tone.Transport.prototype.clearTimeout = function(timeoutID){
-		for (var i = 0; i < timeouts.length; i++){
+		for (var i = 0; i &lt; timeouts.length; i++){
 			var testTimeout = timeouts[i];
 			if (testTimeout.id === timeoutID){
 				timeouts.splice(i, 1);
@@ -2051,7 +2238,7 @@ function(Tone){
 		var ticks = this.toTicks(timeout);
 		var timelineEvnt = new TimelineEvent(callback, ctx, ticks, 0);
 		//put it in the right spot
-		for (var i = timelineProgress, len = transportTimeline.length; i<len; i++){
+		for (var i = timelineProgress, len = transportTimeline.length; i&lt;len; i++){
 			var testEvnt = transportTimeline[i];
 			if (testEvnt.callbackTick() > timelineEvnt.callbackTick()){
 				transportTimeline.splice(i, 0, timelineEvnt);
@@ -2069,7 +2256,7 @@ function(Tone){
 	 *  @return {boolean} true if it was removed
 	 */
 	Tone.Transport.prototype.clearTimeline = function(timelineID){
-		for (var i = 0; i < transportTimeline.length; i++){
+		for (var i = 0; i &lt; transportTimeline.length; i++){
 			var testTimeline = transportTimeline[i];
 			if (testTimeline.id === timelineID){
 				transportTimeline.splice(i, 1);
@@ -2153,7 +2340,7 @@ function(Tone){
 			var startTime = this.toSeconds(time);
 			oscillator.start(startTime);
 			//call start on each of the synced sources
-			for (var i = 0; i < SyncedSources.length; i++){
+			for (var i = 0; i &lt; SyncedSources.length; i++){
 				var source = SyncedSources[i].source;
 				var delay = SyncedSources[i].delay;
 				source.start(startTime + delay);
@@ -2178,7 +2365,7 @@ function(Tone){
 			this.clearIntervals();
 
 			//call start on each of the synced sources
-			for (var i = 0; i < SyncedSources.length; i++){
+			for (var i = 0; i &lt; SyncedSources.length; i++){
 				var source = SyncedSources[i].source;
 				source.stop(stopTime);
 			}
@@ -2198,7 +2385,7 @@ function(Tone){
 			oscillator = null;
 			clearTimelineEvents();
 			//call pause on each of the synced sources
-			for (var i = 0; i < SyncedSources.length; i++){
+			for (var i = 0; i &lt; SyncedSources.length; i++){
 				var source = SyncedSources[i].source;
 				source.pause(stopTime);
 			}
@@ -2326,7 +2513,7 @@ function(Tone){
 	 *  @param  {Tone.Source} source [description]
 	 */
 	Tone.Transport.prototype.unsync = function(source){
-		for (var i = 0; i < SyncedSources.length; i++){
+		for (var i = 0; i &lt; SyncedSources.length; i++){
 			if (SyncedSources[i].source === source){
 				SyncedSources.splice(i, 1);
 			}
@@ -3002,19 +3189,19 @@ define('Tone/component/Meter',["Tone/core/Tone", "Tone/core/Master"], function(T
 		/** 
 		 *  the rms for each of the channels
 		 *  @private
-		 *  @type {Array<number>}
+		 *  @type {Array&lt;number>}
 		 */
 		this._volume = new Array(this.channels);
 
 		/** 
 		 *  the raw values for each of the channels
 		 *  @private
-		 *  @type {Array<number>}
+		 *  @type {Array&lt;number>}
 		 */
 		this._values = new Array(this.channels);
 
 		//zero out the volume array
-		for (var i = 0; i < this.channels; i++){
+		for (var i = 0; i &lt; this.channels; i++){
 			this._volume[i] = 0;
 			this._values[i] = 0;
 		}
@@ -3050,13 +3237,13 @@ define('Tone/component/Meter',["Tone/core/Tone", "Tone/core/Master"], function(T
 	Tone.Meter.prototype._onprocess = function(event){
 		var bufferSize = this._jsNode.bufferSize;
 		var smoothing = this.smoothing;
-		for (var channel = 0; channel < this.channels; channel++){
+		for (var channel = 0; channel &lt; this.channels; channel++){
 			var input = event.inputBuffer.getChannelData(channel);
 			var sum = 0;
 			var total = 0;
 			var x;
 			var clipped = false;
-			for (var i = 0; i < bufferSize; i++){
+			for (var i = 0; i &lt; bufferSize; i++){
 				x = input[i];
 				if (!clipped && x > 0.95){
 					clipped = true;
@@ -3081,7 +3268,7 @@ define('Tone/component/Meter',["Tone/core/Tone", "Tone/core/Master"], function(T
 	Tone.Meter.prototype.getLevel = function(channel){
 		channel = this.defaultArg(channel, 0);
 		var vol = this._volume[channel];
-		if (vol < 0.00001){
+		if (vol &lt; 0.00001){
 			return 0;
 		} else {
 			return vol;
@@ -3109,7 +3296,7 @@ define('Tone/component/Meter',["Tone/core/Tone", "Tone/core/Master"], function(T
 
 	// @returns {boolean} if the audio has clipped in the last 500ms
 	Tone.Meter.prototype.isClipped = function(){
-		return Date.now() - this._lastClip < this.clipMemory;
+		return Date.now() - this._lastClip &lt; this.clipMemory;
 	};
 
 	/**
@@ -3354,7 +3541,7 @@ define('Tone/component/Recorder',["Tone/core/Tone", "Tone/core/Master"], functio
 		/**
 		 *  Float32Array for each channel
 		 *  @private
-		 *  @type {Array<Float32Array>}
+		 *  @type {Array&lt;Float32Array>}
 		 */
 		this._recordBuffers = new Array(this.channels);
 
@@ -3448,13 +3635,13 @@ define('Tone/component/Recorder',["Tone/core/Tone", "Tone/core/Master"], functio
 	Tone.Recorder.prototype._recordChannels = function(inputBuffer, from, to, bufferSize){
 		var offset = this._recordBufferOffset;
 		var buffers = this._recordBuffers;
-		for (var channelNum = 0; channelNum < inputBuffer.numberOfChannels; channelNum++){
+		for (var channelNum = 0; channelNum &lt; inputBuffer.numberOfChannels; channelNum++){
 			var channel = inputBuffer.getChannelData(channelNum);
 			if ((from === 0) && (to === bufferSize)){
 				//set the whole thing
 				this._recordBuffers[channelNum].set(channel, offset);
 			} else {
-				for (var i = from; i < from + to; i++){
+				for (var i = from; i &lt; from + to; i++){
 					var zeroed = i - from; 
 					buffers[channelNum][zeroed + offset] = channel[i];				
 				}
@@ -3480,7 +3667,7 @@ define('Tone/component/Recorder',["Tone/core/Tone", "Tone/core/Master"], functio
 			this._recordDuration = this.toSamples(duration);
 			this._recordStartSample = this.toSamples("+"+startTime);
 			this._recordEndSample = this._recordStartSample + this._recordDuration;
-			for (var i = 0; i < this.channels; i++){
+			for (var i = 0; i &lt; this.channels; i++){
 				this._recordBuffers[i] = new Float32Array(this._recordDuration);
 			}
 			this.state = RecordState.RECORDING;
@@ -3492,7 +3679,7 @@ define('Tone/component/Recorder',["Tone/core/Tone", "Tone/core/Master"], functio
 	 *  clears the recording buffer
 	 */
 	Tone.Recorder.prototype.clear = function(){
-		for (var i = 0; i < this.channels; i++){
+		for (var i = 0; i &lt; this.channels; i++){
 			this._recordBuffers[i] = null;
 		}
 		this._recordBufferOffset = 0;
@@ -3508,7 +3695,7 @@ define('Tone/component/Recorder',["Tone/core/Tone", "Tone/core/Master"], functio
 	};
 
 	/**
-	 *  @return {Array<Float32Array>}
+	 *  @return {Array&lt;Float32Array>}
 	 */
 	Tone.Recorder.prototype.getFloat32Array = function(){
 		if (this.isEmpty()){
@@ -3526,7 +3713,7 @@ define('Tone/component/Recorder',["Tone/core/Tone", "Tone/core/Master"], functio
 			return null;
 		} else {
 			var audioBuffer = this.context.createBuffer(this.channels, this._recordBuffers[0].length, this.context.sampleRate);
-			for (var channelNum = 0; channelNum < audioBuffer.numberOfChannels; channelNum++){
+			for (var channelNum = 0; channelNum &lt; audioBuffer.numberOfChannels; channelNum++){
 				var channel = audioBuffer.getChannelData(channelNum);
 				channel.set(this._recordBuffers[channelNum]);
 			}
@@ -3875,7 +4062,7 @@ define('Tone/effect/BitCrusher',["Tone/core/Tone"], function(Tone){
 		var step = this._step;
 		var input = event.inputBuffer.getChannelData(0);
 		var output = event.outputBuffer.getChannelData(0);
-		for (var i = 0, len = output.length; i < len; i++) {
+		for (var i = 0, len = output.length; i &lt; len; i++) {
 			phasor += freq;
 		    if (phasor >= 1) {
 		        phasor -= 1;
@@ -4326,7 +4513,7 @@ define('Tone/signal/GreaterThan',["Tone/core/Tone", "Tone/signal/Threshold"], fu
 	Tone.GreaterThan.prototype._setGreaterThanZero = function(){
 		var curveLength = 1024;
 		var curve = new Float32Array(curveLength);
-		for (var i = 0; i < curveLength; i++){
+		for (var i = 0; i &lt; curveLength; i++){
 			var normalized = (i / (curveLength)) * 2 - 1;
 			if (normalized > 0){
 				curve[i] = 1;
@@ -4444,7 +4631,7 @@ define('Tone/source/Microphone',["Tone/core/Tone", "Tone/source/Source"], functi
 		//get the option
 		var self = this;
 		MediaStreamTrack.getSources(function (media_sources) {
-			if (inputNum < media_sources.length){
+			if (inputNum &lt; media_sources.length){
 				self.constraints.audio = {
 					optional : [{ sourceId: media_sources[inputNum].id}]
 				};
@@ -4683,11 +4870,11 @@ define('Tone/source/Noise',["Tone/core/Tone", "Tone/source/Source"], function(To
 	 */
 	var _pinkNoise = (function() {
 		var buffer = Tone.context.createBuffer(2, bufferLength, sampleRate);
-		for (var channelNum = 0; channelNum < buffer.numberOfChannels; channelNum++){
+		for (var channelNum = 0; channelNum &lt; buffer.numberOfChannels; channelNum++){
 			var channel = buffer.getChannelData(channelNum);
 			var b0, b1, b2, b3, b4, b5, b6;
 			b0 = b1 = b2 = b3 = b4 = b5 = b6 = 0.0;
-			for (var i = 0; i < bufferLength; i++) {
+			for (var i = 0; i &lt; bufferLength; i++) {
 				var white = Math.random() * 2 - 1;
 				b0 = 0.99886 * b0 + white * 0.0555179;
 				b1 = 0.99332 * b1 + white * 0.0750759;
@@ -4712,10 +4899,10 @@ define('Tone/source/Noise',["Tone/core/Tone", "Tone/source/Source"], function(To
 	 */
 	var _brownNoise = (function() {
 		var buffer = Tone.context.createBuffer(2, bufferLength, sampleRate);
-		for (var channelNum = 0; channelNum < buffer.numberOfChannels; channelNum++){
+		for (var channelNum = 0; channelNum &lt; buffer.numberOfChannels; channelNum++){
 			var channel = buffer.getChannelData(channelNum);
 			var lastOut = 0.0;
-			for (var i = 0; i < bufferLength; i++) {
+			for (var i = 0; i &lt; bufferLength; i++) {
 				var white = Math.random() * 2 - 1;
 				channel[i] = (lastOut + (0.02 * white)) / 1.02;
 				lastOut = channel[i];
@@ -4734,9 +4921,9 @@ define('Tone/source/Noise',["Tone/core/Tone", "Tone/source/Source"], function(To
 	 */
 	var _whiteNoise = (function(){
 		var buffer = Tone.context.createBuffer(2, bufferLength, sampleRate);
-		for (var channelNum = 0; channelNum < buffer.numberOfChannels; channelNum++){
+		for (var channelNum = 0; channelNum &lt; buffer.numberOfChannels; channelNum++){
 			var channel = buffer.getChannelData(channelNum);
-			for (var i = 0; i < bufferLength; i++){
+			for (var i = 0; i &lt; bufferLength; i++){
 				channel[i] =  Math.random() * 2 - 1;
 			}
 		}
@@ -4972,3 +5159,92 @@ define('Tone/source/Player',["Tone/core/Tone", "Tone/source/Source"], function(T
 
 	return Tone.Player;
 });
+</pre>
+        </article>
+    </section>
+
+
+
+
+
+				</div>
+
+				<div class="clearfix"></div>
+				<footer>
+					
+					
+		<span class="copyright">
+		Tone No Tone Copyright © 2014.
+		</span>
+					<br />
+					
+		<span class="jsdoc-message">
+		Documentation generated on Thu Jul 03 2014 23:49:50 GMT-0400 (EDT).
+		</span>
+				</footer>
+			</div>
+
+			
+			<br clear="both">
+		</div>
+
+	</div>
+	<script src="scripts/sunlight.js"></script>
+	<script src="scripts/sunlight.javascript.js"></script>
+	<script src="scripts/sunlight-plugin.doclinks.js"></script>
+	<script src="scripts/sunlight-plugin.linenumbers.js"></script>
+	<script src="scripts/sunlight-plugin.menu.js"></script>
+	<script src="scripts/jquery.min.js"></script>
+	<script src="scripts/jquery.scrollTo.js"></script>
+	<script src="scripts/jquery.localScroll.js"></script>
+	<script src="scripts/bootstrap-dropdown.js"></script>
+	<script src="scripts/toc.js"></script>
+
+
+	<script>  Sunlight.highlightAll({lineNumbers:true,  showMenu: true, enableDoclinks :true}); </script>
+
+	<script>
+		$( function () {
+			$( "#toc" ).toc( {
+				selectors   : "h1,h2,h3,h4",
+				showAndHide : false,
+				scrollTo    : 60
+			} );
+			$( "#toc>ul" ).addClass( "nav nav-pills nav-stacked" );
+			$( "#main span[id^='toc']" ).addClass( "toc-shim" );
+
+		} );
+	</script>
+
+	
+	<script>
+		$( function () {
+			$('#main').localScroll({
+				offset: { top: 56 } //offset by the height of your header (give or take a few px, see what works for you)
+			});
+			$( "dt h4.name" ).each( function () {
+				var $this = $( this );
+				var icon = $( "<i/>" ).addClass( "icon-plus-sign" ).addClass( "pull-right" ).addClass( "icon-white" );
+				var dt = $this.parents( "dt" );
+				var children = dt.next( "dd" );
+
+				$this.append( icon ).css( {cursor : "pointer"} );
+				$this.addClass( "member-collapsed" ).addClass( "member" );
+
+				children.hide();
+				$this.toggle( function () {
+					icon.addClass( "icon-minus-sign" ).removeClass( "icon-plus-sign" ).removeClass( "icon-white" );
+					$this.addClass( "member-open" ).removeClass( "member-collapsed" );
+					children.slideDown();
+				}, function () {
+					icon.addClass( "icon-plus-sign" ).removeClass( "icon-minus-sign" ).addClass( "icon-white" );
+					$this.addClass( "member-collapsed" ).removeClass( "member-open" );
+					children.slideUp();
+				} );
+			} );
+		} );
+	</script>
+	
+
+</body>
+</html>
