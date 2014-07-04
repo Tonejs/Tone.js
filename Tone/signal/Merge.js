@@ -1,11 +1,9 @@
 define(["Tone/core/Tone"], function(Tone){
 
 	/**
-	 *  merge a left and a right channel into a single stereo channel
-	 *
-	 *  instead of connecting to the input, connect to either the left, or right input
-	 *
-	 *  default input for connect is left input
+	 *  @class  merge a left and a right channel into a single stereo channel
+	 *          instead of connecting to the input, connect to either the left, or right input.
+	 *          default input for connect is left input.
 	 *
 	 *  @constructor
 	 *  @extends {Tone}

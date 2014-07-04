@@ -1,12 +1,11 @@
 define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Multiply"], function(Tone){
 	
 	/**
-	 *  performs a linear scaling on an input signal
+	 *  @class  performs a linear scaling on an input signal.
+	 *          Scales from the input range of inputMin to inputMax 
+	 *          to the output range of outputMin to outputMax.
 	 *
-	 *  scales from the input range of inputMin to inputMax 
-	 *  to the output range of outputMin to outputMax
-	 *
-	 *  if only two arguments are provided, the inputMin and inputMax are set to -1 and 1
+	 *  @description If only two arguments are provided, the inputMin and inputMax are set to -1 and 1
 	 *
 	 *  @constructor
 	 *  @extends {Tone}

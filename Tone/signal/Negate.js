@@ -1,7 +1,7 @@
 define(["Tone/core/Tone", "Tone/signal/Multiply"], function(Tone){
 
 	/**
-	 *  Negate the incoming signal. i.e. an input signal of 10 will output -10
+	 *  @class Negate the incoming signal. i.e. an input signal of 10 will output -10
 	 *
 	 *  @constructor
 	 *  @extends {Tone}

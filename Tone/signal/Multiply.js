@@ -1,7 +1,7 @@
 define(["Tone/core/Tone"], function(Tone){
 
 	/**
-	 *  Multiply the incoming signal by some factor
+	 *  @class  Multiply the incoming signal by some factor
 	 *
 	 *  @constructor
 	 *  @extends {Tone}

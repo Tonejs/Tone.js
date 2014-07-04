@@ -32,18 +32,10 @@ define(["Tone/core/Tone", "Tone/core/Master"], function(Tone){
 	generator.noGC();
 
 	/**
-	 *  constant audio-rate signal
-	 *
-	 *  Tone.Signal is a core component which allows for synchronization of many components. 
-	 *  A single signal can drive multiple parameters by applying Scaling. 
-	 *
-	 *  For example: to synchronize two Tone.Oscillators in octaves of each other, 
-	 *  	Signal --> OscillatorA.frequency
-	 *  		  ^--> Tone.Multiply(2) --> OscillatorB.frequency
-	 *  
-	 *
-	 *  Tone.Signal can be scheduled with all of the functions available to AudioParams
-	 *
+	 *  @class  Constant audio-rate signal.
+	 *          Tone.Signal is a core component which allows for sample-accurate 
+	 *          synchronization of many components. Tone.Signal can be scheduled 
+	 *          with all of the functions available to AudioParams
 	 *
 	 *  @constructor
 	 *  @extends {Tone}

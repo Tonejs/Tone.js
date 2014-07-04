@@ -1,7 +1,7 @@
 define(["Tone/core/Tone", "Tone/signal/Threshold"], function(Tone){
 
 	/**
-	 *  Output 1 if the signal is greater than the value, otherwise outputs 0
+	 *  @class  Output 1 if the signal is greater than the value, otherwise outputs 0
 	 *  
 	 *  @constructor
 	 *  @extends {Tone}

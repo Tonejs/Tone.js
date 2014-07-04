@@ -1,10 +1,8 @@
 define(["Tone/core/Tone"], function(Tone){
 
 	/**
-	 *	split the incoming signal into left and right channels
-	 *
-	 *  the left channel is the default output
-	 *  
+	 *	@class  Split the incoming signal into left and right channels
+	 *	
 	 *  @constructor
 	 *  @extends {Tone}
 	 */
