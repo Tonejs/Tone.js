@@ -16,10 +16,5 @@ var allTests = ["tests/Core", "tests/Timing", "tests/Signal", "tests/SignalCompa
 // var allTests = ["tests/Core", "tests/Signal"];
 
 require(allTests, function(){
-	//mobile browsers will not start hte audio context without users input
-	var startButton = document.querySelector("button");
-	startButton.onclick = function(){
-		mocha.run();
-		startButton.remove(); 
-	};
+	mocha.run(); 
 });
