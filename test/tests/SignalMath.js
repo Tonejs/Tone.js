@@ -1,6 +1,6 @@
-define(["tests/Core", "chai", "Tone/component/Recorder", "Tone/signal/Signal", "Tone/source/Oscillator", 
-	"Tone/signal/Merge", "Tone/signal/Split","Tone/core/Master", "Tone/signal/Threshold", "Tone/signal/Gate"], 
-function(core, chai, Recorder, Signal, Oscillator, Merge, Split, Master, Threshold, Gate){
+define(["tests/Core", "chai", "Tone/component/Recorder", "Tone/signal/Signal", "Tone/signal/Add", "Tone/signal/Multiply", 
+	"Tone/signal/Scale", "Tone/source/Oscillator", "Tone/core/Master", "Tone/signal/Abs", "Tone/signal/Negate"], 
+function(core, chai, Recorder, Signal, Add, Multiply, Scale, Oscillator, Master, Abs, Negate){
 
 	var expect = chai.expect;
 
@@ -104,187 +104,210 @@ function(core, chai, Recorder, Signal, Oscillator, Merge, Split, Master, Thresho
 		});
 	});
 
+	//ADD
+	describe("Tone.Add", function(){
+		this.timeout(500);
 
-	//MERGE
-	describe("Tone.Merge", function(){
+		var recorder = new Recorder();
+
+		after(function(){
+			recorder.dispose();
+		});
+
+		it("can be created and disposed", function(){
+			var a = new Add(1);
+			a.dispose();
+		});
+
+		it("correctly sums a signal and a number", function(done){
+			var signal = new Signal(0);
+			var adder = new Add(3);
+			signal.connect(adder);
+			adder.connect(recorder);
+			recorder.record(0.1, 0.05, function(buffers){
+				var buffer = buffers[0];
+				//get the left buffer and check that all values are === 1
+				for (var i = 0; i < buffer.length; i++){
+					expect(buffer[i]).to.equal(3);
+				}
+				done();
+			});
+		});
+
+		it("can handle negative values", function(done){
+			var signal = new Signal(10);
+			var adder = new Add(-1);
+			signal.connect(adder);
+			var recorder = new Recorder();
+			adder.connect(recorder);
+			recorder.record(0.1, 0.05, function(buffers){
+				var buffer = buffers[0];
+				//get the left buffer and check that all values are === 1
+				for (var i = 0; i < buffer.length; i++){
+					expect(buffer[i]).to.equal(9);
+				}
+				done();
+			});
+		});
+	});
+
+	//MULTIPLY
+	describe("Tone.Multiply", function(){
 		this.timeout(500);
 
 		it("can be created and disposed", function(){
-			var mer = new Merge();
-			mer.dispose();
+			var m = new Multiply(1);
+			m.dispose();
 		});
 
-		it("merge two signal into one stereo signal", function(done){
-			//make an oscillator to drive the signal
-			var sigL = new Signal(1);
-			var sigR = new Signal(2);
-			var merger = new Merge();
-			sigL.connect(merger.left);
-			sigR.connect(merger.right);
-			var recorder = new Recorder(2);
-			merger.connect(recorder);
+		it("correctly multiplys a signal and a scalar", function(done){
+			var signal = new Signal(2);
+			var mult = new Multiply(10);
+			signal.connect(mult);
+			var recorder = new Recorder();
+			mult.connect(recorder);
 			recorder.record(0.05, 0.05, function(buffers){
-				var lBuffer = buffers[0];
-				var rBuffer = buffers[1];
+				var buffer = buffers[0];
 				//get the left buffer and check that all values are === 1
-				for (var i = 0; i < lBuffer.length; i++){
-					expect(lBuffer[i]).to.equal(1);
-					expect(rBuffer[i]).to.equal(2);
+				for (var i = 0; i < buffer.length; i++){
+					expect(buffer[i]).to.equal(20);
 				}
+				signal.dispose();
+				mult.dispose();
 				done();
 			});
 		});
 	});
 
 	//SCALE
-	describe("Tone.Split", function(){
+	describe("Tone.Scale", function(){
 		this.timeout(500);
 
 		it("can be created and disposed", function(){
-			var split = new Split();
-			split.dispose();
+			var s = new Scale(0, 10);
+			s.dispose();
 		});
 
-		it("merges two signal into one stereo signal and then split them back into two signals", function(done){
+		it("scales an input range to an output range", function(done){
 			//make an oscillator to drive the signal
-			var sigL = new Signal(1);
-			var sigR = new Signal(2);
-			var merger = new Merge();
-			var split = new Split();
-			sigL.connect(merger.left);
-			sigR.connect(merger.right);
-			merger.connect(split);
-			var recorderL = new Recorder();
-			var recorderR = new Recorder();
-			split.left.connect(recorderL);
-			split.right.connect(recorderR);
-			recorderL.record(0.05, 0.1, function(buffers){
-				var lBuffer = buffers[0];
-				for (var i = 0; i < lBuffer.length; i++){
-					expect(lBuffer[i]).to.equal(1);
-				}
-			});
-			recorderR.record(0.05, 0.1, function(buffers){
-				var rBuffer = recorderR.getFloat32Array()[0];
-				for (var j = 0; j < rBuffer.length; j++){
-					expect(rBuffer[j]).to.equal(2);
+			var osc = new Oscillator(1000);
+			osc.start();
+			var scale = new Scale(-1, 1, 10, 20);
+			osc.connect(scale);
+			var recorder = new Recorder();
+			scale.connect(recorder);
+			recorder.record(0.05, 0.05, function(buffers){
+				var buffer = buffers[0];
+				//get the left buffer and check that all values are === 1
+				for (var i = 0; i < buffer.length; i++){
+					expect(buffer[i]).to.be.within(10, 20);
 				}
 				done();
 			});
 		});
 	});
 
-
-	//THRESHOLD
-	describe("Tone.Threshold", function(){
+	//ADD
+	describe("Tone.Abs", function(){
 		this.timeout(500);
 
+		var recorder = new Recorder();
+
+		after(function(){
+			recorder.dispose();
+		});
+
 		it("can be created and disposed", function(){
-			var thresh = new Threshold();
-			thresh.dispose();
+			var ab = new Abs();
+			ab.dispose();
 		});
 
-		it("thresholds an incoming signal to 0 when it is below the thresh", function(done){
-			var signal = new Signal(0.1);
-			var thresh = new Threshold(0.5);
-			signal.connect(thresh);
-			var recorder = new Recorder();
-			thresh.connect(recorder);
-			recorder.record(0.05, 0.05, function(buffers){
-				var buffer = buffers[0];
-				//get the left buffer and check that all values are === 1
-				for (var i = 0; i < buffer.length; i++){
-					expect(buffer[i]).to.equal(0);
-				}
-				signal.dispose();
-				thresh.dispose();
-				done();
-			});
-		});
-
-		it("thresholds an incoming signal to 1 when it is above the thresh", function(done){
-			var signal = new Signal(0.8);
-			var thresh = new Threshold(0.5);
-			signal.connect(thresh);
-			var recorder = new Recorder();
-			thresh.connect(recorder);
-			recorder.record(0.05, 0.05, function(buffers){
+		it("outputs the same value for positive values", function(done){
+			var signal = new Signal(1);
+			var abs = new Abs();
+			signal.connect(abs);
+			abs.connect(recorder);
+			recorder.record(0.1, 0.05, function(buffers){
 				var buffer = buffers[0];
 				//get the left buffer and check that all values are === 1
 				for (var i = 0; i < buffer.length; i++){
 					expect(buffer[i]).to.equal(1);
 				}
 				signal.dispose();
-				thresh.dispose();
+				abs.dispose();
 				done();
 			});
 		});
 
-		it("thresholds an incoming signal that is very close to the thresh", function(done){
-			var signal = new Signal(0.4999);
-			var thresh = new Threshold(0.5);
-			signal.connect(thresh);
+		it("outputs the absolute value for negative numbers", function(done){
+			var signal = new Signal(-10);
+			var abs = new Abs();
+			signal.connect(abs);
 			var recorder = new Recorder();
-			thresh.connect(recorder);
-			recorder.record(0.05, 0.05, function(buffers){
-				var buffer = buffers[0];
-				//get the left buffer and check that all values are === 1
-				for (var i = 0; i < buffer.length; i++){
-					expect(buffer[i]).to.equal(0);
-				}
-				signal.dispose();
-				thresh.dispose();
-				done();
-			});
-		});
-
-	});
-
-	//Gate
-	describe("Tone.Gate", function(){
-		this.timeout(500);
-
-		it("can be created and disposed", function(){
-			var sw = new Gate();
-			sw.dispose();
-		});
-
-		it("can stop a signal from passing through", function(done){
-			var signal = new Signal(10);
-			var gate = new Gate();
-			signal.connect(gate);
-			var recorder = new Recorder();
-			gate.connect(recorder);
-			recorder.record(0.05, 0.05, function(buffers){
-				var buffer = buffers[0];
-				//get the left buffer and check that all values are === 1
-				for (var i = 0; i < buffer.length; i++){
-					expect(buffer[i]).to.equal(0);
-				}
-				signal.dispose();
-				gate.dispose();
-				done();
-			});
-		});
-
-		it("can allow a signal to pass through", function(done){
-			var signal = new Signal(10);
-			var gate = new Gate();
-			signal.connect(gate);
-			gate.open();
-			var recorder = new Recorder();
-			gate.connect(recorder);
-			recorder.record(0.05, 0.05, function(buffers){
+			abs.connect(recorder);
+			recorder.record(0.1, 0.05, function(buffers){
 				var buffer = buffers[0];
 				//get the left buffer and check that all values are === 1
 				for (var i = 0; i < buffer.length; i++){
 					expect(buffer[i]).to.equal(10);
 				}
+				abs.dispose();
 				signal.dispose();
-				gate.dispose();
 				done();
 			});
 		});
 	});
+
+	//NEGATE
+	describe("Tone.Negate", function(){
+		this.timeout(500);
+
+		var recorder = new Recorder();
+
+		after(function(){
+			recorder.dispose();
+		});
+
+		it("can be created and disposed", function(){
+			var neg = new Negate();
+			neg.dispose();
+		});
+
+		it("negates a positive value", function(done){
+			var signal = new Signal(1);
+			var neg = new Negate();
+			signal.connect(neg);
+			neg.connect(recorder);
+			recorder.record(0.1, 0.05, function(buffers){
+				var buffer = buffers[0];
+				//get the left buffer and check that all values are === 1
+				for (var i = 0; i < buffer.length; i++){
+					expect(buffer[i]).to.equal(-1);
+				}
+				signal.dispose();
+				neg.dispose();
+				done();
+			});
+		});
+
+		it("makes a negative value positive", function(done){
+			var signal = new Signal(-10);
+			var neg = new Negate();
+			signal.connect(neg);
+			var recorder = new Recorder();
+			neg.connect(recorder);
+			recorder.record(0.1, 0.05, function(buffers){
+				var buffer = buffers[0];
+				//get the left buffer and check that all values are === 1
+				for (var i = 0; i < buffer.length; i++){
+					expect(buffer[i]).to.equal(10);
+				}
+				neg.dispose();
+				signal.dispose();
+				done();
+			});
+		});
+	});
+
 
 });
