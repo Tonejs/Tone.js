@@ -8,16 +8,19 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	 *  @param {number} value
 	 */
 	Tone.Add = function(value){
-		Tone.call(this);
-
 		/**
 		 *  @private
 		 *  @type {Tone}
 		 */
 		this._value = new Tone.Signal(value);
 
+		/**
+		 *  @type {GainNode}
+		 */
+		this.input = this.output = this.context.createGain();
+
 		//connections
-		this.chain(this._value, this.input, this.output);
+		this._value.connect(this.output);
 	};
 
 	Tone.extend(Tone.Add);
@@ -36,10 +39,8 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	 */
 	Tone.Add.prototype.dispose = function(){
 		this._value.dispose();
-		this.input.disconnect();
 		this.output.disconnect();
 		this._value = null;
-		this.input = null;
 		this.output = null;
 	}; 
 

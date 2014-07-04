@@ -1,17 +1,14 @@
 define(["Tone/core/Tone"], function(Tone){
 
 	/**
-	 *  Threshold an incoming signal between -1 to 1
+	 *  Threshold an incoming signal. the signal is assumed to be in the normal range (-1 to 1)
 	 *
-	 *  Set the threshold value such that signal above the value will equal 1, 
+	 *  Sets a threshold value such that signal above the value will equal 1, 
 	 *  and below will equal 0.
 	 *  
-	 *  Values below 0.5 will return 0 and values above 0.5 will return 1
-	 *  
 	 *  @constructor
-	 *  @param {number=} thresh threshold value above which the output will equal 1 
+	 *  @param {number=} [thresh=0] threshold value above which the output will equal 1 
 	 *                          and below which the output will equal 0
-	 *                          @default 0
 	 *  @extends {Tone}
 	 */
 	Tone.Threshold = function(thresh){

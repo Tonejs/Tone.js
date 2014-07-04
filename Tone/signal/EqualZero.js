@@ -6,7 +6,7 @@ define(["Tone/core/Tone", "Tone/signal/Threshold"], function(Tone){
 	 *  @constructor
 	 *  @extends {Tone}
 	 */
-	Tone.EqualsZero = function(){
+	Tone.EqualZero = function(){
 		/**
 		 *  @type {WaveShaperNode}
 		 *  @private
@@ -32,23 +32,21 @@ define(["Tone/core/Tone", "Tone/signal/Threshold"], function(Tone){
 		this._setEquals();
 	};
 
-	Tone.extend(Tone.EqualsZero);
+	Tone.extend(Tone.EqualZero);
 
 	/**
 	 *  @private
 	 */
-	Tone.EqualsZero.prototype._setEquals = function(){
+	Tone.EqualZero.prototype._setEquals = function(){
 		var curveLength = 1024;
 		var curve = new Float32Array(curveLength);
 		for (var i = 0; i < curveLength; i++){
-			var normalized = (i / (curveLength));
-			var val;
-			if (normalized === 0.5){
-				val = 1;
+			var normalized = (i / (curveLength)) * 2 - 1;
+			if (normalized === 0){
+				curve[i] = 1;
 			} else {
-				val = 0;
+				curve[i] = 0;
 			}
-			curve[i] = val;
 		}
 		this._equals.curve = curve;
 	};
@@ -56,12 +54,12 @@ define(["Tone/core/Tone", "Tone/signal/Threshold"], function(Tone){
 	/**
 	 *  dispose method
 	 */
-	Tone.EqualsZero.prototype.dispose = function(){
+	Tone.EqualZero.prototype.dispose = function(){
 		this._equals.disconnect();
 		this._thresh.dispose();
 		this._equals = null;
 		this._thresh = null;
 	};
 
-	return Tone.EqualsZero;
+	return Tone.EqualZero;
 });

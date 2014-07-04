@@ -165,6 +165,13 @@ lfo.start();
 osc.start();
 ```
 
+# Performance
+
+Tone.js uses very few ScriptProcessorNodes. Nearly all of the ToneNodes find a native Web Audio component workaround, making 
+extensive use of the GainNode and WaveShaperNode especially. While the ScripProcessorNode is extremeley powerful, it 
+introduces a lot of latency and the potential for glitches more than any other node. Currently the only ScriptProcessorNodes
+are found in Tone.Transport, Tone.Meter, and Tone.Record.  
+
 # Examples
 
 Examples can be found [here](http://tonenotone.github.io/Tone.js/examples/).

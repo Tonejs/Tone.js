@@ -66,9 +66,11 @@ function(coreTest, chai, DryWet, Master, Signal, Recorder, Panner, LFO){
 			dryWet = new DryWet();
 			dryWet.toMaster();
 			drySignal = new Signal(10);
+			drySignal.noGC();
 			wetSignal = new Signal(20);
 			drySignal.connect(dryWet.dry);
 			wetSignal.connect(dryWet.wet);
+			wetSignal.noGC();
 			recorder = new Recorder();
 			dryWet.connect(recorder);
 			dryWet.setWet(1);
