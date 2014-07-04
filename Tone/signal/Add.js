@@ -1,7 +1,7 @@
 define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 
 	/**
-	 *  Adds a value to an incoming signal
+	 *  @class Adds a value to an incoming signal
 	 *
 	 *  @constructor
 	 *  @extends {Tone}

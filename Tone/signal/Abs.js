@@ -1,13 +1,12 @@
 define(["Tone/core/Tone", "Tone/signal/Threshold", "Tone/signal/Negate", "Tone/signal/EqualZero"], function(Tone){
 
 	/**
-	 *  return the absolute value of an incoming signal
+	 *  @class return the absolute value of an incoming signal
 	 *
 	 *  @constructor
 	 *  @extends {Tone}
-	 *  @param {number} value
 	 */
-	Tone.Abs = function(value){
+	Tone.Abs = function(){
 		Tone.call(this);
 
 		/**
