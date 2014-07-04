@@ -226,6 +226,7 @@ function(core, chai, Recorder, Signal, Add, Multiply, Scale, Oscillator, Master,
 			var signal = new Signal(1);
 			var abs = new Abs();
 			signal.connect(abs);
+			signal.noGC();
 			abs.connect(recorder);
 			recorder.record(0.1, 0.05, function(buffers){
 				var buffer = buffers[0];
@@ -241,6 +242,7 @@ function(core, chai, Recorder, Signal, Add, Multiply, Scale, Oscillator, Master,
 
 		it("outputs the absolute value for negative numbers", function(done){
 			var signal = new Signal(-10);
+			signal.noGC();
 			var abs = new Abs();
 			signal.connect(abs);
 			var recorder = new Recorder();
@@ -275,6 +277,7 @@ function(core, chai, Recorder, Signal, Add, Multiply, Scale, Oscillator, Master,
 
 		it("negates a positive value", function(done){
 			var signal = new Signal(1);
+			signal.noGC();
 			var neg = new Negate();
 			signal.connect(neg);
 			neg.connect(recorder);
@@ -292,6 +295,7 @@ function(core, chai, Recorder, Signal, Add, Multiply, Scale, Oscillator, Master,
 
 		it("makes a negative value positive", function(done){
 			var signal = new Signal(-10);
+			signal.noGC();
 			var neg = new Negate();
 			signal.connect(neg);
 			var recorder = new Recorder();

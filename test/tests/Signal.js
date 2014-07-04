@@ -10,12 +10,6 @@ function(core, chai, Recorder, Signal, Oscillator, Merge, Split, Master, Thresho
 	describe("Tone.Signal", function(){
 		this.timeout(1000);
 
-		var signal = new Signal(0);
-		signal.toMaster();
-
-		after(function(){
-			signal.dispose();
-		});
 
 		it("can be created and disposed", function(){
 			var s = new Signal();
@@ -23,23 +17,38 @@ function(core, chai, Recorder, Signal, Oscillator, Merge, Split, Master, Thresho
 		});
 
 		it("can start with a value initially", function(){
+			var signal = new Signal(0);
 			expect(signal.getValue()).to.equal(0);
+			signal.dispose();
 		});
 
 		it("can set a value", function(){
+			var signal = new Signal(0);
 			signal.setValue(10);
 			expect(signal.getValue()).to.equal(10);
+			signal.dispose();
 		});
 
 		it("can set a value in the future", function(done){
-			signal.setValueAtTime(100, "+0.1");
-			expect(signal.getValue()).to.equal(10);
-			var interval = setInterval(function(){
-				if (signal.getValue() === 100){
-					clearInterval(interval);
-					done();
+			var sig = new Signal(10);
+			sig.noGC();
+			sig.setValueAtTime(100, "+0.1");
+			expect(sig.getValue()).to.equal(10);
+			var recorder = new Recorder();
+			sig.connect(recorder);
+			recorder.record(0.1, 0.05, function(buffers){
+				buffer = buffers[0];
+				var reached100 = false;
+				for (var i = 0; i < buffer.length; i++){
+					if (buffer[i] === 100){
+						reached100 = true;
+						break;
+					} 
 				}
-			}, 10);
+				expect(reached100).to.be.true;
+				sig.dispose();
+				done();
+			});
 		});
 
 		it("can change value with sample accurate timing", function(done){			
@@ -84,19 +93,21 @@ function(core, chai, Recorder, Signal, Oscillator, Merge, Split, Master, Thresho
 		});	
 
 		it("can ramp from the current value", function(done){
-			signal.setValue(-10);
-			signal.noGC();
+			var sig1 = new Signal(0);
+			sig1.setValue(-10);
+			sig1.noGC();
 			var recorder = new Recorder(1);
-			signal.connect(recorder);
+			sig1.connect(recorder);
 			var waitTime = 0.03;
-			expect(signal.getValue()).to.equal(-10);
-			signal.linearRampToValueNow(1, waitTime);
+			expect(sig1.getValue()).to.equal(-10);
+			sig1.linearRampToValueNow(1, waitTime);
 			recorder.record(0.1, 0.05, function(buffers){
 				var buffer = buffers[0];
 				for (var i = 0; i < buffer.length; i++){
 					if (buffer[i] === 1){
-						expect(signal.samplesToSeconds(i)).is.closeTo(waitTime, 0.01);
+						expect(sig1.samplesToSeconds(i)).is.closeTo(waitTime, 0.01);
 						done();
+						sig1.dispose();
 						break;
 					}
 				}
