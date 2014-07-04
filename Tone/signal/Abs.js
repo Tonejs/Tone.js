@@ -62,15 +62,15 @@ define(["Tone/core/Tone", "Tone/signal/Threshold", "Tone/signal/Negate", "Tone/s
 		this._not.dispose();
 		this._positive.disconnect();
 		this._negative.disconnect();
-		this._input.disconnect();
-		this._output.disconnect();
+		this.input.disconnect();
+		this.output.disconnect();
 		this._thresh = null;
 		this._negate = null;
 		this._not = null;
 		this._positive = null;
 		this._negative = null;
-		this._input = null;
-		this._output = null;
+		this.input = null;
+		this.output = null;
 	}; 
 
 	return Tone.Abs;
