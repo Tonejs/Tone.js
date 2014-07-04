@@ -9,7 +9,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Threshold"], functi
 	 *  @constructor
 	 *  @extends {Tone}
 	 */
-	Tone.Switch = function(){
+	Tone.Gate = function(){
 		Tone.call(this);
 
 		/**
@@ -33,14 +33,14 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Threshold"], functi
 		this.output.gain.value = 0;
 	};
 
-	Tone.extend(Tone.Switch);
+	Tone.extend(Tone.Gate);
 
 	/**
 	 *  open the switch at a specific time
 	 *
 	 *  @param {Tone.Time} time the time when the switch will be open
 	 */
-	Tone.Switch.prototype.open = function(time){
+	Tone.Gate.prototype.open = function(time){
 		this.gate.setValueAtTime(1, this.toSeconds(time));
 	}; 
 
@@ -49,14 +49,14 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Threshold"], functi
 	 *
 	 *  @param {Tone.Time} time the time when the switch will be open
 	 */
-	Tone.Switch.prototype.close = function(time){
+	Tone.Gate.prototype.close = function(time){
 		this.gate.setValueAtTime(0, this.toSeconds(time));
 	}; 
 
 	/**
 	 *  clean up
 	 */
-	Tone.Switch.prototype.dispose = function(){
+	Tone.Gate.prototype.dispose = function(){
 		this.gate.dispose();
 		this._thresh.dispose();
 		this.input.disconnect();
@@ -67,5 +67,5 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Threshold"], functi
 		this.output = null;
 	}; 
 
-	return Tone.Switch;
+	return Tone.Gate;
 });
