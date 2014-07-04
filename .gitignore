@@ -8,3 +8,5 @@ examples/scratch.html
 *.sublime-project
 
 build/node_modules/*
+
+TODO.txt
