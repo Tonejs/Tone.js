@@ -1,0 +1,36 @@
+<html>
+<head>
+	<title>PINGPONG DELAY</title>
+
+	<script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
+	<script type="text/javascript" src="../Tone.js"></script>
+	<link rel="stylesheet" type="text/css" href="exampleStyle.css">
+</head>
+<body>
+	<div>Pass the sample through a pingpong delay</div>
+	<br>
+	<button>hit</button>
+	<div id='loading'>loading...<div>
+	<script type="text/javascript">
+		//the player
+		var player = new Tone.Player("./audio/505/agogoHigh.mp3", function(){
+			document.querySelector("#loading").remove();
+		});
+
+		// Create effect with an initial delay time (Tone.Time). Default is .25s
+		var pingPongDelay = new Tone.PingPongDelay("4n");
+		//60% feedback
+		pingPongDelay.setFeedback(.4);
+
+		//connections
+		player.connect(pingPongDelay);
+		pingPongDelay.toMaster();	
+		pingPongDelay.setWet(0.5);	
+
+		$("button").click(function(){
+			player.start();
+		});
+		
+	</script>
+</body>
+</html>
