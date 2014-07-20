@@ -40,11 +40,6 @@
 
 		//INTERFACE//
 
-		var $signal = document.querySelector("#signal");
-		var $add = document.querySelector("#add");
-		var $scale = document.querySelector("#scale");
-		var $mult = document.querySelector("#mult");
-
 		setInterval(function(){
 			$("#signal").text("signal: " + dryMeter.getValue().toFixed(3));
 			$("#add").text("signal + 100: " + addMeter.getValue().toFixed(3));
