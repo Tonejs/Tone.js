@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/signal/Threshold"], function(Tone){
+define(["Tone/core/Tone", "Tone/signal/Threshold", "Tone/signal/Add"], function(Tone){
 
 	/**
 	 *  @class  Output 1 if the signal is greater than the value, otherwise outputs 0
@@ -15,7 +15,7 @@ define(["Tone/core/Tone", "Tone/signal/Threshold"], function(Tone){
 		this._gt = this.context.createWaveShaper();
 
 		/**
-		 *  @type {WaveShaperNode}
+		 *  @type {Tone.Threshold}
 		 *  @private
 		 */
 		this._thresh = new Tone.Threshold(0.001);
