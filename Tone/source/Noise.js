@@ -5,9 +5,8 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 	var bufferLength = sampleRate * 4;
 
 	/**
-	 *  Noise generator. 
-	 *
-	 *  uses looped noise buffers to save on performance. 
+	 *  @class  Noise generator. 
+	 *          Uses looped noise buffers to save on performance. 
 	 *
 	 *  @constructor
 	 *  @extends {Tone.Source}

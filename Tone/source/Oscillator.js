@@ -2,9 +2,7 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/signal/Signal", "Tone/sou
 function(Tone){
 
 	/**
-	 *  Oscillator
-	 *
-	 *  Oscilator with start, pause, stop and sync to Transport
+	 *  @class Oscilator with start, pause, stop and sync to Transport methods
 	 *
 	 *  @constructor
 	 *  @extends {Tone.Source}
@@ -24,6 +22,12 @@ function(Tone){
 		 *  @type {Tone.Signal}
 		 */
 		this.frequency = new Tone.Signal(this.defaultArg(this.toFrequency(freq), 440));
+
+		/**
+		 *  the detune control signal
+		 *  @type {Tone.Signal}
+		 */
+		this.detune = new Tone.Signal(0);
 
 		/**
 		 *  @type {function()}
@@ -48,15 +52,15 @@ function(Tone){
 			this.state = Tone.Source.State.STARTED;
 			//get previous values
 			var type = this.oscillator.type;
-			var detune = this.oscillator.detune.value;
 			//new oscillator with previous values
 			this.oscillator = this.context.createOscillator();
 			this.oscillator.type = type;
-			this.oscillator.detune.value = detune;
-			//connect the control signal to the oscillator frequency
+			//connect the control signal to the oscillator frequency & detune
 			this.oscillator.connect(this.output);
 			this.frequency.connect(this.oscillator.frequency);
 			this.oscillator.frequency.value = 0;
+			this.detune.connect(this.oscillator.detune);
+			this.oscillator.detune.value = 0;
 			//start the oscillator
 			this.oscillator.start(this.toSeconds(time));
 			this.oscillator.onended = this._onended.bind(this);

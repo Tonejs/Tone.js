@@ -1,16 +1,9 @@
-///////////////////////////////////////////////////////////////////////////////
-//
-//	WEB RTC MICROPHONE
-//
-///////////////////////////////////////////////////////////////////////////////
-
 define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 
 	/**
-	 *  WebRTC Microphone
-	 *
-	 *  CHROME ONLY (for now) because of the 
-	 *  use of the MediaStreamAudioSourceNode
+	 *  @class  WebRTC Microphone. 
+	 *          CHROME ONLY (for now) because of the 
+	 *          use of the MediaStreamAudioSourceNode
 	 *
 	 *  @constructor
 	 *  @extends {Tone.Source}

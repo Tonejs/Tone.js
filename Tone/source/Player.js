@@ -1,9 +1,7 @@
 define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 	
 	/**
-	 *  Audio Player
-	 *  
-	 *  Audio file player with start, loop, stop.
+	 *  @class  Audio file player with start, loop, stop.
 	 *  
 	 *  @constructor
 	 *  @extends {Tone.Source} 

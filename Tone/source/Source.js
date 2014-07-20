@@ -1,11 +1,9 @@
 define(["Tone/core/Tone", "Tone/core/Transport"], function(Tone){
 	/**
-	 *  base class for sources
-	 *
-	 *  sources have start/stop/pause
-	 *
-	 *  they also have the ability to be synced to the 
-	 *  start/stop/pause of Tone.Transport
+	 *  @class  Base class for sources.
+	 *          Sources have start/stop/pause and 
+	 *          the ability to be synced to the 
+	 *          start/stop/pause of Tone.Transport.
 	 *
 	 *  @constructor
 	 *  @extends {Tone}
