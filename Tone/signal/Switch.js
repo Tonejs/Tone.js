@@ -47,7 +47,7 @@ define(["Tone/core/Tone", "Tone/signal/Gate", "Tone/signal/Equal", "Tone/signal/
 	 *  @param {number=} [which=0] open one of the gates (closes the other)
 	 *  @param {Tone.Time} time the time when the switch will open
 	 */
-	Tone.Switch.prototype.open = function(which, time){
+	Tone.Switch.prototype.select = function(which, time){
 		//make sure it's an integer
 		which = Math.floor(which);
 		this.gate.setValueAtTime(which, this.toSeconds(time));
