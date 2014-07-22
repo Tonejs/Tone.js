@@ -21,7 +21,7 @@ define(["Tone/core/Tone", "Tone/signal/LessThan", "Tone/signal/Switch"], functio
 		 *  @type {Tone.Switch}
 		 *  @private
 		 */
-		this._switch = new Tone.Switch(this.input, this._minSignal);
+		this._switch = new Tone.Switch(2);
 
 		/**
 		 *  @type {Tone.Switch}
@@ -30,6 +30,8 @@ define(["Tone/core/Tone", "Tone/signal/LessThan", "Tone/signal/Switch"], functio
 		this._lt = new Tone.LessThan(min);
 
 		//connections
+		this._minSignal.connect(this._switch, 0, 0);
+		this.input.connect(this._switch, 0, 1);
 		this.input.connect(this._lt);
 		this._lt.connect(this._switch.gate);
 		this._switch.connect(this.output);

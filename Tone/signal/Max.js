@@ -21,7 +21,7 @@ define(["Tone/core/Tone", "Tone/signal/GreaterThan", "Tone/signal/Switch"], func
 		 *  @type {Tone.Switch}
 		 *  @private
 		 */
-		this._switch = new Tone.Switch(this.input, this._maxSignal);
+		this._switch = new Tone.Switch(2);
 
 		/**
 		 *  @type {Tone.Switch}
@@ -30,6 +30,8 @@ define(["Tone/core/Tone", "Tone/signal/GreaterThan", "Tone/signal/Switch"], func
 		this._gt = new Tone.GreaterThan(max);
 
 		//connections
+		this._maxSignal.connect(this._switch, 0, 0);
+		this.input.connect(this._switch, 0, 1);
 		this.input.connect(this._gt);
 		this._gt.connect(this._switch.gate);
 		this._switch.connect(this.output);
