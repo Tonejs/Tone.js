@@ -1,6 +1,7 @@
 define(["tests/Core", "chai", "Tone/component/Recorder", "Tone/signal/Signal", "Tone/signal/Add", "Tone/signal/Multiply", 
-	"Tone/signal/Scale", "Tone/source/Oscillator", "Tone/core/Master", "Tone/signal/Abs", "Tone/signal/Negate"], 
-function(core, chai, Recorder, Signal, Add, Multiply, Scale, Oscillator, Master, Abs, Negate){
+	"Tone/signal/Scale", "Tone/source/Oscillator", "Tone/core/Master", "Tone/signal/Abs", "Tone/signal/Negate", 
+	 "Tone/signal/Max", "Tone/signal/Min", "Tone/signal/Clip"], 
+function(core, chai, Recorder, Signal, Add, Multiply, Scale, Oscillator, Master, Abs, Negate, Max, Min, Clip){
 
 	var expect = chai.expect;
 
@@ -215,5 +216,178 @@ function(core, chai, Recorder, Signal, Add, Multiply, Scale, Oscillator, Master,
 		});
 	});
 
+	//Max
+	describe("Tone.Max", function(){
+		this.timeout(1000);
+
+		var recorder = new Recorder();
+
+		after(function(){
+			recorder.dispose();
+		});
+
+		it("can be created and disposed", function(){
+			var max = new Max();
+			max.dispose();
+		});
+
+		it("outputs the set value when less than the incoming signal", function(done){
+			var signal = new Signal(1);
+			signal.noGC();
+			var max = new Max(2);
+			signal.connect(max);
+			max.connect(recorder);
+			recorder.record(0.1, 0.1, function(buffers){
+				var buffer = buffers[0];
+				//get the left buffer and check that all values are === 1
+				for (var i = 0; i < buffer.length; i++){
+					expect(buffer[i]).to.equal(2);
+				}
+				signal.dispose();
+				max.dispose();
+				done();
+			});
+		});
+
+		it("outputs the incoming signal when greater than the max", function(done){
+			var signal = new Signal(10);
+			signal.noGC();
+			var max = new Max(-1);
+			signal.connect(max);
+			max.connect(recorder);
+			recorder.record(0.1, 0.1, function(buffers){
+				var buffer = buffers[0];
+				//get the left buffer and check that all values are === 1
+				for (var i = 0; i < buffer.length; i++){
+					expect(buffer[i]).to.equal(10);
+				}
+				signal.dispose();
+				max.dispose();
+				done();
+			});
+		});
+	});
+
+	//Max
+	describe("Tone.Min", function(){
+		this.timeout(1000);
+
+		var recorder = new Recorder();
+
+		after(function(){
+			recorder.dispose();
+		});
+
+		it("can be created and disposed", function(){
+			var min = new Min();
+			min.dispose();
+		});
+
+		it("outputs the set value when greater than the incoming signal", function(done){
+			var signal = new Signal(4);
+			signal.noGC();
+			var min = new Min(2);
+			signal.connect(min);
+			min.connect(recorder);
+			recorder.record(0.1, 0.1, function(buffers){
+				var buffer = buffers[0];
+				//get the left buffer and check that all values are === 1
+				for (var i = 0; i < buffer.length; i++){
+					expect(buffer[i]).to.equal(2);
+				}
+				signal.dispose();
+				min.dispose();
+				done();
+			});
+		});
+
+		it("outputs the incoming signal when less than the min", function(done){
+			var signal = new Signal(-12);
+			signal.noGC();
+			var min = new Min(-4);
+			signal.connect(min);
+			min.connect(recorder);
+			recorder.record(0.1, 0.1, function(buffers){
+				var buffer = buffers[0];
+				//get the left buffer and check that all values are === 1
+				for (var i = 0; i < buffer.length; i++){
+					expect(buffer[i]).to.equal(-12);
+				}
+				signal.dispose();
+				min.dispose();
+				done();
+			});
+		});
+	});
+
+	//Clip
+	describe("Tone.Clip", function(){
+		this.timeout(1000);
+
+		var recorder = new Recorder();
+
+		after(function(){
+			recorder.dispose();
+		});
+
+		it("can be created and disposed", function(){
+			var clip = new Clip(0, 1);
+			clip.dispose();
+		});
+
+		it("output the upper limit when signal is greater than clip", function(done){
+			var signal = new Signal(4);
+			signal.noGC();
+			var clip = new Clip(2, 3);
+			signal.connect(clip);
+			clip.connect(recorder);
+			recorder.record(0.1, 0.1, function(buffers){
+				var buffer = buffers[0];
+				//get the left buffer and check that all values are === 1
+				for (var i = 0; i < buffer.length; i++){
+					expect(buffer[i]).to.equal(3);
+				}
+				signal.dispose();
+				clip.dispose();
+				done();
+			});
+		});
+
+		it("outputs the incoming signal when in between upper and lower limit", function(done){
+			var signal = new Signal(-12);
+			signal.noGC();
+			var clip = new Clip(-14, 14);
+			signal.connect(clip);
+			clip.connect(recorder);
+			recorder.record(0.1, 0.1, function(buffers){
+				var buffer = buffers[0];
+				//get the left buffer and check that all values are === 1
+				for (var i = 0; i < buffer.length; i++){
+					expect(buffer[i]).to.equal(-12);
+				}
+				signal.dispose();
+				clip.dispose();
+				done();
+			});
+		});
+
+		it("outputs the lower limit when incoming signal is less than the lower limit", function(done){
+			var signal = new Signal(-12);
+			signal.noGC();
+			var clip = new Clip(0, 8);
+			signal.connect(clip);
+			clip.connect(recorder);
+			recorder.record(0.1, 0.1, function(buffers){
+				var buffer = buffers[0];
+				//get the left buffer and check that all values are === 1
+				for (var i = 0; i < buffer.length; i++){
+					expect(buffer[i]).to.equal(0);
+				}
+				signal.dispose();
+				clip.dispose();
+				done();
+			});
+		});
+	});
 
 });
