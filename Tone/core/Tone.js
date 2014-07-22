@@ -166,7 +166,7 @@ define("Tone/core/Tone", [], function(){
 	Tone.prototype.connect = function(unit, outputNum, inputNum){
 		if (Array.isArray(this.output)){
 			outputNum = this.defaultArg(outputNum, 0);
-			this.output[outputNum].connect(unit, outputNum, inputNum);
+			this.output[outputNum].connect(unit, 0, inputNum);
 		} else {
 			this.output.connect(unit, outputNum, inputNum);
 		}
