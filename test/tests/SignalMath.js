@@ -6,107 +6,9 @@ function(core, chai, Recorder, Signal, Add, Multiply, Scale, Oscillator, Master,
 
 	Master.mute();
 
-	//SIGNAL
-	describe("Tone.Signal", function(){
-		this.timeout(1000);
-
-		var signal = new Signal(0);
-		signal.toMaster();
-
-		after(function(){
-			signal.dispose();
-		});
-
-		it("can be created and disposed", function(){
-			var s = new Signal();
-			s.dispose();
-		});
-
-		it("can start with a value initially", function(){
-			expect(signal.getValue()).to.equal(0);
-		});
-
-		it("can set a value", function(){
-			signal.setValue(10);
-			expect(signal.getValue()).to.equal(10);
-		});
-
-		it("can set a value in the future", function(done){
-			signal.setValueAtTime(100, "+0.1");
-			expect(signal.getValue()).to.equal(10);
-			var interval = setInterval(function(){
-				if (signal.getValue() === 100){
-					clearInterval(interval);
-					done();
-				}
-			}, 10);
-		});
-
-		it("can change value with sample accurate timing", function(done){			
-			var changeSignal = new Signal(0);
-			var waitTime = 0.03;
-			changeSignal.setValueAtTime(1, "+"+waitTime);//ramp after 50ms
-			var recorder = new Recorder();
-			changeSignal.connect(recorder);
-			var delayTime = 0.05;
-			recorder.record(0.1, delayTime, function(buffers){
-				buffer = buffers[0];
-				for (var i = 0; i < buffer.length; i++){
-					if (buffer[i] === 1){
-						expect(changeSignal.samplesToSeconds(i)).is.closeTo(delayTime - waitTime, 0.01);
-						changeSignal.dispose();
-						recorder.dispose();
-						done();
-						break;
-					}
-				}
-			});
-		});
-		
-		it("can sync to another signal", function(done){
-			var syncTo = new Signal(1);
-			var signalSync = new Signal(2);
-			signalSync.sync(syncTo);
-			syncTo.setValue(2);
-			syncTo.noGC();
-			signalSync.noGC();
-			var recorder = new Recorder();
-			signalSync.connect(recorder);
-			recorder.record(0.1, 0.05, function(buffers){
-				var buffer = buffers[0];
-				for (var i = 0; i < buffer.length; i++){
-					expect(buffer[i]).to.equal(4);
-				}
-				signalSync.dispose();
-				recorder.dispose();
-				done();
-			});
-		});	
-
-		it("can ramp from the current value", function(done){
-			signal.setValue(-10);
-			signal.noGC();
-			var recorder = new Recorder(1);
-			signal.connect(recorder);
-			var waitTime = 0.03;
-			expect(signal.getValue()).to.equal(-10);
-			signal.linearRampToValueNow(1, waitTime);
-			recorder.record(0.1, 0.05, function(buffers){
-				var buffer = buffers[0];
-				for (var i = 0; i < buffer.length; i++){
-					if (buffer[i] === 1){
-						expect(signal.samplesToSeconds(i)).is.closeTo(waitTime, 0.01);
-						done();
-						break;
-					}
-				}
-			});
-		});
-	});
-
 	//ADD
 	describe("Tone.Add", function(){
-		this.timeout(500);
+		this.timeout(1000);
 
 		var recorder = new Recorder();
 
@@ -124,7 +26,7 @@ function(core, chai, Recorder, Signal, Add, Multiply, Scale, Oscillator, Master,
 			var adder = new Add(3);
 			signal.connect(adder);
 			adder.connect(recorder);
-			recorder.record(0.1, 0.05, function(buffers){
+			recorder.record(0.1, 0.1, function(buffers){
 				var buffer = buffers[0];
 				//get the left buffer and check that all values are === 1
 				for (var i = 0; i < buffer.length; i++){
@@ -140,7 +42,7 @@ function(core, chai, Recorder, Signal, Add, Multiply, Scale, Oscillator, Master,
 			signal.connect(adder);
 			var recorder = new Recorder();
 			adder.connect(recorder);
-			recorder.record(0.1, 0.05, function(buffers){
+			recorder.record(0.1, 0.1, function(buffers){
 				var buffer = buffers[0];
 				//get the left buffer and check that all values are === 1
 				for (var i = 0; i < buffer.length; i++){
@@ -153,7 +55,7 @@ function(core, chai, Recorder, Signal, Add, Multiply, Scale, Oscillator, Master,
 
 	//MULTIPLY
 	describe("Tone.Multiply", function(){
-		this.timeout(500);
+		this.timeout(1000);
 
 		it("can be created and disposed", function(){
 			var m = new Multiply(1);
@@ -166,7 +68,7 @@ function(core, chai, Recorder, Signal, Add, Multiply, Scale, Oscillator, Master,
 			signal.connect(mult);
 			var recorder = new Recorder();
 			mult.connect(recorder);
-			recorder.record(0.05, 0.05, function(buffers){
+			recorder.record(0.1, 0.1, function(buffers){
 				var buffer = buffers[0];
 				//get the left buffer and check that all values are === 1
 				for (var i = 0; i < buffer.length; i++){
@@ -181,7 +83,7 @@ function(core, chai, Recorder, Signal, Add, Multiply, Scale, Oscillator, Master,
 
 	//SCALE
 	describe("Tone.Scale", function(){
-		this.timeout(500);
+		this.timeout(1000);
 
 		it("can be created and disposed", function(){
 			var s = new Scale(0, 10);
@@ -196,7 +98,7 @@ function(core, chai, Recorder, Signal, Add, Multiply, Scale, Oscillator, Master,
 			osc.connect(scale);
 			var recorder = new Recorder();
 			scale.connect(recorder);
-			recorder.record(0.05, 0.05, function(buffers){
+			recorder.record(0.1, 0.1, function(buffers){
 				var buffer = buffers[0];
 				//get the left buffer and check that all values are === 1
 				for (var i = 0; i < buffer.length; i++){
@@ -209,7 +111,7 @@ function(core, chai, Recorder, Signal, Add, Multiply, Scale, Oscillator, Master,
 
 	//ADD
 	describe("Tone.Abs", function(){
-		this.timeout(500);
+		this.timeout(1000);
 
 		var recorder = new Recorder();
 
@@ -228,7 +130,7 @@ function(core, chai, Recorder, Signal, Add, Multiply, Scale, Oscillator, Master,
 			signal.connect(abs);
 			signal.noGC();
 			abs.connect(recorder);
-			recorder.record(0.1, 0.05, function(buffers){
+			recorder.record(0.1, 0.1, function(buffers){
 				var buffer = buffers[0];
 				//get the left buffer and check that all values are === 1
 				for (var i = 0; i < buffer.length; i++){
@@ -247,7 +149,7 @@ function(core, chai, Recorder, Signal, Add, Multiply, Scale, Oscillator, Master,
 			signal.connect(abs);
 			var recorder = new Recorder();
 			abs.connect(recorder);
-			recorder.record(0.1, 0.05, function(buffers){
+			recorder.record(0.1, 0.1, function(buffers){
 				var buffer = buffers[0];
 				//get the left buffer and check that all values are === 1
 				for (var i = 0; i < buffer.length; i++){
@@ -262,7 +164,7 @@ function(core, chai, Recorder, Signal, Add, Multiply, Scale, Oscillator, Master,
 
 	//NEGATE
 	describe("Tone.Negate", function(){
-		this.timeout(500);
+		this.timeout(1000);
 
 		var recorder = new Recorder();
 
@@ -281,7 +183,7 @@ function(core, chai, Recorder, Signal, Add, Multiply, Scale, Oscillator, Master,
 			var neg = new Negate();
 			signal.connect(neg);
 			neg.connect(recorder);
-			recorder.record(0.1, 0.05, function(buffers){
+			recorder.record(0.1, 0.1, function(buffers){
 				var buffer = buffers[0];
 				//get the left buffer and check that all values are === 1
 				for (var i = 0; i < buffer.length; i++){
@@ -300,7 +202,7 @@ function(core, chai, Recorder, Signal, Add, Multiply, Scale, Oscillator, Master,
 			signal.connect(neg);
 			var recorder = new Recorder();
 			neg.connect(recorder);
-			recorder.record(0.1, 0.05, function(buffers){
+			recorder.record(0.1, 0.1, function(buffers){
 				var buffer = buffers[0];
 				//get the left buffer and check that all values are === 1
 				for (var i = 0; i < buffer.length; i++){

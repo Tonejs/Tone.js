@@ -36,8 +36,8 @@ function(core, chai, Recorder, Signal, Oscillator, Merge, Split, Master, Thresho
 			expect(sig.getValue()).to.equal(10);
 			var recorder = new Recorder();
 			sig.connect(recorder);
-			recorder.record(0.1, 0.05, function(buffers){
-				buffer = buffers[0];
+			recorder.record(0.1, 0.1, function(buffers){
+				var buffer = buffers[0];
 				var reached100 = false;
 				for (var i = 0; i < buffer.length; i++){
 					if (buffer[i] === 100){
@@ -53,16 +53,14 @@ function(core, chai, Recorder, Signal, Oscillator, Merge, Split, Master, Thresho
 
 		it("can change value with sample accurate timing", function(done){			
 			var changeSignal = new Signal(0);
-			var waitTime = 0.03;
-			changeSignal.setValueAtTime(1, "+"+waitTime);//ramp after 50ms
+			changeSignal.setValueAtTime(1, "+0.15");
 			var recorder = new Recorder();
 			changeSignal.connect(recorder);
-			var delayTime = 0.05;
-			recorder.record(0.1, delayTime, function(buffers){
-				buffer = buffers[0];
+			recorder.record(0.1, 0.1, function(buffers){
+				var buffer = buffers[0];
 				for (var i = 0; i < buffer.length; i++){
 					if (buffer[i] === 1){
-						expect(changeSignal.samplesToSeconds(i)).is.closeTo(delayTime - waitTime, 0.01);
+						expect(changeSignal.samplesToSeconds(i)).is.closeTo(0.1, 0.01);
 						changeSignal.dispose();
 						recorder.dispose();
 						done();
@@ -81,7 +79,7 @@ function(core, chai, Recorder, Signal, Oscillator, Merge, Split, Master, Thresho
 			signalSync.noGC();
 			var recorder = new Recorder();
 			signalSync.connect(recorder);
-			recorder.record(0.1, 0.05, function(buffers){
+			recorder.record(0.1, 0.1, function(buffers){
 				var buffer = buffers[0];
 				for (var i = 0; i < buffer.length; i++){
 					expect(buffer[i]).to.equal(4);
@@ -98,14 +96,14 @@ function(core, chai, Recorder, Signal, Oscillator, Merge, Split, Master, Thresho
 			sig1.noGC();
 			var recorder = new Recorder(1);
 			sig1.connect(recorder);
-			var waitTime = 0.03;
+			var waitTime = 0.15;
 			expect(sig1.getValue()).to.equal(-10);
 			sig1.linearRampToValueNow(1, waitTime);
-			recorder.record(0.1, 0.05, function(buffers){
+			recorder.record(0.1, 0.1, function(buffers){
 				var buffer = buffers[0];
 				for (var i = 0; i < buffer.length; i++){
 					if (buffer[i] === 1){
-						expect(sig1.samplesToSeconds(i)).is.closeTo(waitTime, 0.01);
+						expect(sig1.samplesToSeconds(i)).is.closeTo(0.1, 0.01);
 						done();
 						sig1.dispose();
 						break;
@@ -118,7 +116,7 @@ function(core, chai, Recorder, Signal, Oscillator, Merge, Split, Master, Thresho
 
 	//MERGE
 	describe("Tone.Merge", function(){
-		this.timeout(500);
+		this.timeout(1000);
 
 		it("can be created and disposed", function(){
 			var mer = new Merge();
@@ -134,7 +132,7 @@ function(core, chai, Recorder, Signal, Oscillator, Merge, Split, Master, Thresho
 			sigR.connect(merger.right);
 			var recorder = new Recorder(2);
 			merger.connect(recorder);
-			recorder.record(0.05, 0.05, function(buffers){
+			recorder.record(0.1, 0.1, function(buffers){
 				var lBuffer = buffers[0];
 				var rBuffer = buffers[1];
 				//get the left buffer and check that all values are === 1
@@ -149,7 +147,7 @@ function(core, chai, Recorder, Signal, Oscillator, Merge, Split, Master, Thresho
 
 	//SCALE
 	describe("Tone.Split", function(){
-		this.timeout(500);
+		this.timeout(1000);
 
 		it("can be created and disposed", function(){
 			var split = new Split();
@@ -169,14 +167,14 @@ function(core, chai, Recorder, Signal, Oscillator, Merge, Split, Master, Thresho
 			var recorderR = new Recorder();
 			split.left.connect(recorderL);
 			split.right.connect(recorderR);
-			recorderL.record(0.05, 0.1, function(buffers){
+			recorderL.record(0.1, 0.1, function(buffers){
 				var lBuffer = buffers[0];
 				for (var i = 0; i < lBuffer.length; i++){
 					expect(lBuffer[i]).to.equal(1);
 				}
 			});
-			recorderR.record(0.05, 0.1, function(buffers){
-				var rBuffer = recorderR.getFloat32Array()[0];
+			recorderR.record(0.1, 0.1, function(buffers){
+				var rBuffer = buffers[0];
 				for (var j = 0; j < rBuffer.length; j++){
 					expect(rBuffer[j]).to.equal(2);
 				}
@@ -188,7 +186,7 @@ function(core, chai, Recorder, Signal, Oscillator, Merge, Split, Master, Thresho
 
 	//THRESHOLD
 	describe("Tone.Threshold", function(){
-		this.timeout(500);
+		this.timeout(1000);
 
 		it("can be created and disposed", function(){
 			var thresh = new Threshold();
@@ -201,7 +199,7 @@ function(core, chai, Recorder, Signal, Oscillator, Merge, Split, Master, Thresho
 			signal.connect(thresh);
 			var recorder = new Recorder();
 			thresh.connect(recorder);
-			recorder.record(0.05, 0.05, function(buffers){
+			recorder.record(0.1, 0.1, function(buffers){
 				var buffer = buffers[0];
 				//get the left buffer and check that all values are === 1
 				for (var i = 0; i < buffer.length; i++){
@@ -219,7 +217,7 @@ function(core, chai, Recorder, Signal, Oscillator, Merge, Split, Master, Thresho
 			signal.connect(thresh);
 			var recorder = new Recorder();
 			thresh.connect(recorder);
-			recorder.record(0.05, 0.05, function(buffers){
+			recorder.record(0.1, 0.1, function(buffers){
 				var buffer = buffers[0];
 				//get the left buffer and check that all values are === 1
 				for (var i = 0; i < buffer.length; i++){
@@ -237,7 +235,7 @@ function(core, chai, Recorder, Signal, Oscillator, Merge, Split, Master, Thresho
 			signal.connect(thresh);
 			var recorder = new Recorder();
 			thresh.connect(recorder);
-			recorder.record(0.05, 0.05, function(buffers){
+			recorder.record(0.1, 0.1, function(buffers){
 				var buffer = buffers[0];
 				//get the left buffer and check that all values are === 1
 				for (var i = 0; i < buffer.length; i++){
@@ -253,7 +251,7 @@ function(core, chai, Recorder, Signal, Oscillator, Merge, Split, Master, Thresho
 
 	//Gate
 	describe("Tone.Gate", function(){
-		this.timeout(500);
+		this.timeout(1000);
 
 		it("can be created and disposed", function(){
 			var sw = new Gate();
@@ -266,7 +264,7 @@ function(core, chai, Recorder, Signal, Oscillator, Merge, Split, Master, Thresho
 			signal.connect(gate);
 			var recorder = new Recorder();
 			gate.connect(recorder);
-			recorder.record(0.05, 0.05, function(buffers){
+			recorder.record(0.1, 0.1, function(buffers){
 				var buffer = buffers[0];
 				//get the left buffer and check that all values are === 1
 				for (var i = 0; i < buffer.length; i++){
@@ -285,7 +283,7 @@ function(core, chai, Recorder, Signal, Oscillator, Merge, Split, Master, Thresho
 			gate.open();
 			var recorder = new Recorder();
 			gate.connect(recorder);
-			recorder.record(0.05, 0.05, function(buffers){
+			recorder.record(0.1, 0.1, function(buffers){
 				var buffer = buffers[0];
 				//get the left buffer and check that all values are === 1
 				for (var i = 0; i < buffer.length; i++){
