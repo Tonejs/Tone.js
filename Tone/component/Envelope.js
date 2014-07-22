@@ -86,7 +86,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	Tone.Envelope.prototype.triggerRelease = function(time){
 		if (time){
 			//if there's a time, start at the sustain value
-			startVal = (this.max - this.min) * this.sustain + this.min;
+			var startVal = (this.max - this.min) * this.sustain + this.min;
 			time = this.toSeconds(time);
 			this.control.cancelScheduledValues(time);
 			this.control.setValueAtTime(startVal, time);
@@ -105,7 +105,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	Tone.Envelope.prototype.triggerExponentialRelease = function(time){
 		if (time){
 			//if there's a time, start at the sustain value
-			startVal = (this.max - this.min) * this.sustain + this.min;
+			var startVal = (this.max - this.min) * this.sustain + this.min;
 			time = this.toSeconds(time);
 			this.control.cancelScheduledValues(time);
 			this.control.setValueAtTime(startVal, time);
@@ -128,13 +128,15 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	 * value will be set to 0 so that it doesn't interfere with the envelope
 	 * 
 	 * @param  {number} param
+	 * @param {number=} outputNumber
+	 * @param {number=} inputNumber 
 	 */
-	Tone.Envelope.prototype.connect = function(param){
+	Tone.Envelope.prototype.connect = function(param, outputNumber, inputNumber){
 		if (param instanceof AudioParam){
 			//set the initial value
 			param.value = 0;
 		} 
-		this._connect(param);
+		this._connect(param, outputNumber, inputNumber);
 	};
 
 	/**

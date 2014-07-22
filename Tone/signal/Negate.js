@@ -6,7 +6,7 @@ define(["Tone/core/Tone", "Tone/signal/Multiply"], function(Tone){
 	 *  @constructor
 	 *  @extends {Tone}
 	 */
-	Tone.Negate = function(value){
+	Tone.Negate = function(){
 		/**
 		 *  negation is done by multiplying by -1
 		 *  @type {Tone.Multiply}
