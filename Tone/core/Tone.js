@@ -81,7 +81,9 @@ define("Tone/core/Tone", [], function(){
 	AudioNode.prototype.connect = function(B, outNum, inNum){
 		if (B.input){
 			if (Array.isArray(B.input)){
-				inNum = this.defaultArg(inNum, 0);
+				if (isUndef(inNum)){
+					inNum = 0;
+				}
 				this.connect(B.input[inNum]);
 			} else {
 				this.connect(B.input);

@@ -281,15 +281,17 @@ define(["Tone/core/Tone", "Tone/core/Master"], function(Tone){
 	 *
 	 *  @override
 	 *  @param {AudioParam|AudioNode|Tone.Signal|Tone} node 
+	 *  @param {number=} outputNumber 
+	 *  @param {number=} inputNumber 
 	 */
-	Tone.Signal.prototype.connect = function(node){
+	Tone.Signal.prototype.connect = function(node, outputNumber, inputNumber){
 		//zero it out so that the signal can have full control
 		if (node instanceof Tone.Signal){
 			node.setValue(0);
 		} else if (node instanceof AudioParam){
 			node.value = 0;
 		} 
-		this.output.connect(node);
+		this.output.connect(node, outputNumber, inputNumber);
 	};
 
 	return Tone.Signal;
