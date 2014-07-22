@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/signal/Threshold", "Tone/signal/Negate", "Tone/signal/EqualZero"], function(Tone){
+define(["Tone/core/Tone", "Tone/signal/Switch", "Tone/signal/Negate", "Tone/signal/LessThan"], function(Tone){
 
 	/**
 	 *  @class return the absolute value of an incoming signal
@@ -10,10 +10,16 @@ define(["Tone/core/Tone", "Tone/signal/Threshold", "Tone/signal/Negate", "Tone/s
 		Tone.call(this);
 
 		/**
-		 *  @type {Tone.Threshold}
+		 *  @type {Tone.LessThan}
 		 *  @private
 		 */
-		this._thresh = new Tone.Threshold(0);
+		this._ltz = new Tone.LessThan(0);
+
+		/**
+		 *  @type {Tone.Switch}
+		 *  @private
+		 */
+		this._switch = new Tone.Switch(2);
 		
 		/**
 		 *  @type {Tone.Negate}
@@ -21,33 +27,14 @@ define(["Tone/core/Tone", "Tone/signal/Threshold", "Tone/signal/Negate", "Tone/s
 		 */
 		this._negate = new Tone.Negate();
 
-		/**
-		 *  @type {Tone.EqualZero}
-		 *  @private
-		 */
-		this._not = new Tone.EqualZero();
-
-		/**
-		 *  @type {GainNode}
-		 *  @private
-		 */
-		this._positive = this.context.createGain();
-
-		/**
-		 *  @type {GainNode}
-		 *  @private
-		 */
-		this._negative = this.context.createGain();
-
-		this.input.connect(this._thresh);
-		//two routes, one positive, one negative
-		this.chain(this.input, this._positive, this.output);
-		this.chain(this.input, this._negate, this._negative, this.output);
-		//the switching logic
-		this._thresh.connect(this._positive.gain);
-		this._positive.gain.value = 0;
-		this.chain(this._thresh, this._not, this._negative.gain);
-		this._negative.gain.value = 0;
+		//two signal paths, positive and negative
+		this.input.connect(this._switch, 0, 0);
+		this.input.connect(this._negate);
+		this._negate.connect(this._switch, 0, 1);
+		this._switch.connect(this.output);
+		
+		//the control signal
+		this.chain(this.input, this._ltz, this._switch.gate);
 	};
 
 	Tone.extend(Tone.Abs);
@@ -56,18 +43,14 @@ define(["Tone/core/Tone", "Tone/signal/Threshold", "Tone/signal/Negate", "Tone/s
 	 *  dispose method
 	 */
 	Tone.Abs.prototype.dispose = function(){
-		this._thresh.dispose();
+		this._switch.dispose();
+		this._ltz.dispose();
 		this._negate.dispose();
-		this._not.dispose();
-		this._positive.disconnect();
-		this._negative.disconnect();
 		this.input.disconnect();
 		this.output.disconnect();
-		this._thresh = null;
+		this._switch = null;
+		this._ltz = null;
 		this._negate = null;
-		this._not = null;
-		this._positive = null;
-		this._negative = null;
 		this.input = null;
 		this.output = null;
 	}; 
