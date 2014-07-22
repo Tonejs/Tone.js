@@ -78,14 +78,23 @@ define("Tone/core/Tone", [], function(){
 	}
 	//extend the connect function to include Tones
 	AudioNode.prototype._nativeConnect = AudioNode.prototype.connect;
-	AudioNode.prototype.connect = function(B){
+	AudioNode.prototype.connect = function(B, outNum, inNum){
 		if (B.input){
-			this.connect(B.input);
+			if (Array.isArray(B.input)){
+				inNum = this.defaultArg(inNum, 0);
+				this.connect(B.input[inNum]);
+			} else {
+				this.connect(B.input);
+			}
 		} else {
 			try {
-				this._nativeConnect.apply(this, arguments);
+				if (B instanceof AudioNode){
+					this._nativeConnect(B, outNum, inNum);
+				} else {
+					this._nativeConnect(B, outNum);
+				}
 			} catch (e) {
-				throw new Error("trying to connect to a node with no inputs");
+				throw new Error("error connecting to node: "+B);
 			}
 		}
 	};
@@ -149,9 +158,16 @@ define("Tone/core/Tone", [], function(){
 	/**
 	 *  connect the output of a ToneNode to an AudioParam, AudioNode, or ToneNode
 	 *  @param  {Tone | AudioParam | AudioNode} unit 
+	 *  @param {number=} outputNum optionally which output to connect from
+	 *  @param {number=} inputNum optionally which input to connect to
 	 */
-	Tone.prototype.connect = function(unit){
-		this.output.connect(unit);
+	Tone.prototype.connect = function(unit, outputNum, inputNum){
+		if (Array.isArray(this.output)){
+			outputNum = this.defaultArg(outputNum, 0);
+			this.output[outputNum].connect(unit, outputNum, inputNum);
+		} else {
+			this.output.connect(unit, outputNum, inputNum);
+		}
 	};
 
 	/**
@@ -400,8 +416,27 @@ define("Tone/core/Tone", [], function(){
 	};
 
 	///////////////////////////////////////////////////////////////////////////
-	//	STATIC METHODS
+	//	STATIC METHODS / VARS
 	///////////////////////////////////////////////////////////////////////////
+
+	/**
+	 *  the list of callbacks which should be invoked when the context is set/changed
+	 *  
+ 	 *  @internal internal use only
+	 *  @type {Array<function(AudioContext)>}
+	 */
+	Tone._onContextCallbacks = [];
+
+	/**
+	 *  invokes all of the callbacks with the new context
+	 *  
+	 *  @internal internal use only
+	 */
+	Tone._onContext = function(context){
+		for (var i = 0; i < Tone._onContextCallbacks.length; i++){
+			Tone._onContextCallbacks[i](context);
+		}
+	};
 		
 	/**
 	 *  have a child inherit all of Tone's (or a parent's) prototype
@@ -409,7 +444,8 @@ define("Tone/core/Tone", [], function(){
 	 *  Parent.call(this) in the child's constructor
 	 *
 	 *  based on closure library's inherit function
-	 *  
+	 *
+	 *  @static
 	 *  @param  {function} 	child  
 	 *  @param  {function=} parent (optional) parent to inherit from
 	 *                             if no parent is supplied, the child
@@ -424,6 +460,24 @@ define("Tone/core/Tone", [], function(){
 		child.prototype = new tempConstructor();
 		/** @override */
 		child.prototype.constructor = child;
+	};
+
+	/**
+	 *  bind this to a touchstart event to start the audio
+	 *
+	 *  http://stackoverflow.com/questions/12517000/no-sound-on-ios-6-web-audio-api/12569290#12569290
+	 *  
+	 *  @static
+	 */
+	Tone.startMobile = function(){
+		var osc = Tone.context.createOscillator();
+		var silent = Tone.context.createGain();
+		silent.gain.value = 0;
+		osc.connect(silent);
+		silent.connect(Tone.context.destination);
+		var now = Tone.context.currentTime;
+		osc.start(now);
+		osc.stop(now+1);
 	};
 
 	return Tone;
