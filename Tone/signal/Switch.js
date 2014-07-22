@@ -1,31 +1,23 @@
-define(["Tone/core/Tone", "Tone/signal/Gate", "Tone/signal/EqualZero", "Tone/signal/Signal"], function(Tone){
+define(["Tone/core/Tone", "Tone/signal/Gate", "Tone/signal/Equal", "Tone/signal/Signal"], function(Tone){
 
 	/**
-	 *  @class A single pole, double throw switch. 
-	 *
-	 *  Pass in two Nodes. When the gate is set to 0, only the first Node
-	 *  passes through the output, and when it is set to 1, only the second is passed. 
+	 *  @class Switch between any number of inputs, sending the one 
+	 *         selected by the gate signal to the output
 	 *
 	 *
 	 *  @constructor
 	 *  @extends {Tone}
-	 *  @param {AudioNode | Tone} source0 when gate is 0, this source is passed to the output
-	 *  @param {AudioNode | Tone} source1 when gate is 1, this source is passed to the output
+	 *  @param {number=} [sourceCount=2] the number of inputs the switch accepts
 	 */
-	Tone.Switch = function(source0, source1){
-		/**
-		 *  the gate on source0
-		 *  @type {Tone.Gate}
-		 *  @private
-		 */
-		this._gate0 = this.context.createGain();
+	Tone.Switch = function(sourceCount){
+
+		sourceCount = this.defaultArg(sourceCount, 2);
 
 		/**
-		 *  the gate on source1
-		 *  @type {Tone.Gate}
-		 *  @private
+		 *  the array of inputs
+		 *  @type {Array<SwitchGate>}
 		 */
-		this._gate1 = this.context.createGain();
+		this.input = new Array(sourceCount);
 
 		/**
 		 *  the output
@@ -34,36 +26,18 @@ define(["Tone/core/Tone", "Tone/signal/Gate", "Tone/signal/EqualZero", "Tone/sig
 		this.output = this.context.createGain();
 
 		/**
-		 *  the gate control signal
+		 *  the control signal
+		 *  @type {Tone.Signal}
 		 */
 		this.gate = new Tone.Signal(0);
 
-		/**
-		 *  a logical not, when the gate is 0, this outputs 1
-		 *  @type {Tone}
-		 *  @private
-		 */
-		this._not = new Tone.EqualZero();
-
-		/**
-		 *  thresh the control signal
-		 *  @type {Tone.Threshold}
-		 *  @private
-		 */
-		this._thresh = new Tone.Threshold(0.5);
-
-		
-		//connect the audio paths through the gates
-		this.chain(source0, this._gate0, this.output);
-		this.chain(source1, this._gate1, this.output);
-		//threshold the gate signal
-		this.gate.connect(this._thresh);
-		//connect it to the control points
-		this._thresh.connect(this._gate0.gain);
-		this.chain(this._thresh, this._not, this._gate1.gain);
-		//zero out the gains
-		this._gate0.gain.value = 0;
-		this._gate1.gain.value = 0;
+		//make all the inputs and connect them
+		for (var i = 0; i < sourceCount; i++){
+			var switchGate = new SwitchGate(i);
+			this.input[i] = switchGate;
+			this.gate.connect(switchGate.selecter);
+			switchGate.connect(this.output);
+		}
 	};
 
 	Tone.extend(Tone.Switch);
@@ -74,11 +48,8 @@ define(["Tone/core/Tone", "Tone/signal/Gate", "Tone/signal/EqualZero", "Tone/sig
 	 *  @param {Tone.Time} time the time when the switch will open
 	 */
 	Tone.Switch.prototype.open = function(which, time){
-		if (which < 1){
-			which = 0;
-		} else if (which > 1){
-			which = 1;
-		}
+		//make sure it's an integer
+		which = Math.floor(which);
 		this.gate.setValueAtTime(which, this.toSeconds(time));
 	};
 
@@ -87,16 +58,57 @@ define(["Tone/core/Tone", "Tone/signal/Gate", "Tone/signal/EqualZero", "Tone/sig
 	 */
 	Tone.Switch.prototype.dispose = function(){
 		this.output.disconnect();
-		this._gate0.disconnect();
-		this._gate1.disconnect();
 		this.gate.dispose();
-		this._not.dispose();
+		for (var i = 0; i < this.input.length; i++){
+			this.input[i].dispose();
+			this.input[i] = null;
+		}
 		this.gate = null;
 		this.output = null;
-		this._not = null;
-		this._gate0 = null;
-		this._gate1 = null;
 	}; 
 
+	////////////START HELPER////////////
+
+	/**
+	 *  helper class for Tone.Switch representing a single gate
+	 *  @constructor
+	 *  @extends {Tone}
+	 *  @internal only used by Tone.Switch
+	 */
+	var SwitchGate = function(num){
+
+		/**
+		 *  the selector
+		 *  @type {Tone.Equal}
+		 */
+		this.selecter = new Tone.Equal(num);
+
+		/**
+		 *  the gate
+		 *  @type {GainNode}
+		 */
+		this.gate = this.input = this.output = this.context.createGain();
+
+		//connect the selecter to the gate gain
+		this.selecter.connect(this.gate.gain);
+		this.gate.gain.value = 0;
+	};
+
+	Tone.extend(SwitchGate);
+
+	/**
+	 *  clean up
+	 *  @private
+	 */
+	SwitchGate.prototype.dispose = function(){
+		this.selecter.dispose();
+		this.gate.disconnect();
+		this.selecter = null;
+		this.gate = null;
+	};
+
+	////////////END HELPER////////////
+
+	//return Tone.Switch
 	return Tone.Switch;
 });
