@@ -10,6 +10,13 @@ define(["Tone/core/Tone", "Tone/signal/Max", "Tone/signal/Min"], function(Tone){
 	 */
 	Tone.Clip = function(min, max){
 		Tone.call(this);
+
+		//make sure the args are in the right order
+		if (min > max){
+			var tmp = min;
+			min = max;
+			max = tmp;
+		}
 		
 		/**
 		 *  the min clipper
@@ -28,6 +35,36 @@ define(["Tone/core/Tone", "Tone/signal/Max", "Tone/signal/Min"], function(Tone){
 	};
 
 	Tone.extend(Tone.Clip);
+
+	/**
+	 *  set the minimum value
+	 *  @param {number} min the new min value
+	 */
+	Tone.Clip.prototype.setMin = function(min){
+		this._min.setMin(min);
+	};
+
+	/**
+	 *  set the maximum value
+	 *  @param {number} max the new max value
+	 */
+	Tone.Clip.prototype.setMax = function(max){
+		this._max.setMax(max);	
+	};
+
+	/**
+	 *  clean up
+	 */
+	Tone.Clip.prototype.dispose = function(){
+		this._min.dispose();
+		this._max.dispose();
+		this.input.disconnect();
+		this.output.disconnect();
+		this._min = null;
+		this._max = null;
+		this.input = null;
+		this.output = null;
+	};
 
 	return Tone.Clip;
 });
