@@ -10,3 +10,5 @@ examples/scratch.html
 build/node_modules/*
 
 TODO.txt
+
+Tone/component/FollowerOld.js
