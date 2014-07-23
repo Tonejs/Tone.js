@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/signal/Abs", "Tone/signal/Negate", "Tone/signal/Multiply"], function(Tone){
+define(["Tone/core/Tone", "Tone/signal/Abs"], function(Tone){
 
 	/**
 	 *  @class  Follow the envelope of the incoming signal
