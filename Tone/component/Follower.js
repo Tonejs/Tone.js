@@ -11,7 +11,6 @@ define(["Tone/core/Tone", "Tone/signal/Abs", "Tone/signal/Negate", "Tone/signal/
 	 *  @param {Tone.Time=} [smoothTime = 0.1] 
 	 */
 	Tone.Follower = function(smoothTime){
-
 		Tone.call(this);
 
 		//default values
@@ -30,14 +29,24 @@ define(["Tone/core/Tone", "Tone/signal/Abs", "Tone/signal/Negate", "Tone/signal/
 		 */
 		this._filter = this.context.createBiquadFilter();
 		this._filter.type = "lowpass";
-		this._filter.frequency.value = this.secondsToFrequency(smoothTime);
 		this._filter.Q.value = -10;
 
 		//the connections
 		this.chain(this.input, this._abs, this._filter, this.output);
+		this.setSmoothTime(smoothTime);
 	};
 
 	Tone.extend(Tone.Follower);
+
+	/**
+	 *  set the amount of time it takes to reach the destination value
+	 *  
+	 *  @param {Tone.Time} smoothTime the amount of time it takes 
+	 *                                to reach the destination value
+	 */
+	Tone.Follower.prototype.setSmoothTime = function(smoothTime){
+		this._filter.frequency.value = this.secondsToFrequency(smoothTime * 2);
+	};
 
 	/**
 	 *  dispose
