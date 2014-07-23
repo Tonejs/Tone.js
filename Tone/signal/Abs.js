@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/signal/Switch", "Tone/signal/Negate", "Tone/signal/LessThan"], function(Tone){
+define(["Tone/core/Tone", "Tone/signal/Selector", "Tone/signal/Negate", "Tone/signal/LessThan"], function(Tone){
 
 	/**
 	 *  @class return the absolute value of an incoming signal
@@ -16,10 +16,10 @@ define(["Tone/core/Tone", "Tone/signal/Switch", "Tone/signal/Negate", "Tone/sign
 		this._ltz = new Tone.LessThan(0);
 
 		/**
-		 *  @type {Tone.Switch}
+		 *  @type {Tone.Selector}
 		 *  @private
 		 */
-		this._switch = new Tone.Switch(2);
+		this._switch = new Tone.Selector(2);
 		
 		/**
 		 *  @type {Tone.Negate}

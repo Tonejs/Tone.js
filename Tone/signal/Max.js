@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/signal/GreaterThan", "Tone/signal/Switch"], function(Tone){
+define(["Tone/core/Tone", "Tone/signal/GreaterThan", "Tone/signal/Selector"], function(Tone){
 
 	/**
 	 * 	@class  the output signal is the greater of the incoming signal and max
@@ -18,13 +18,13 @@ define(["Tone/core/Tone", "Tone/signal/GreaterThan", "Tone/signal/Switch"], func
 		this._maxSignal = new Tone.Signal(max);
 
 		/**
-		 *  @type {Tone.Switch}
+		 *  @type {Tone.Selector}
 		 *  @private
 		 */
-		this._switch = new Tone.Switch(2);
+		this._switch = new Tone.Selector(2);
 
 		/**
-		 *  @type {Tone.Switch}
+		 *  @type {Tone.Selector}
 		 *  @private
 		 */
 		this._gt = new Tone.GreaterThan(max);

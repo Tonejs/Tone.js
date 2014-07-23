@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/signal/Gate", "Tone/signal/Equal", "Tone/signal/Signal"], function(Tone){
+define(["Tone/core/Tone", "Tone/signal/Equal", "Tone/signal/Signal"], function(Tone){
 
 	/**
 	 *  @class Route a single input to the specified output

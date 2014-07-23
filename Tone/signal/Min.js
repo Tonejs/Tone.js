@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/signal/LessThan", "Tone/signal/Switch"], function(Tone){
+define(["Tone/core/Tone", "Tone/signal/LessThan", "Tone/signal/Selector"], function(Tone){
 
 	/**
 	 * 	@class  the output signal is the lesser of the incoming signal and min
@@ -18,13 +18,13 @@ define(["Tone/core/Tone", "Tone/signal/LessThan", "Tone/signal/Switch"], functio
 		this._minSignal = new Tone.Signal(min);
 
 		/**
-		 *  @type {Tone.Switch}
+		 *  @type {Tone.Selector}
 		 *  @private
 		 */
-		this._switch = new Tone.Switch(2);
+		this._switch = new Tone.Selector(2);
 
 		/**
-		 *  @type {Tone.Switch}
+		 *  @type {Tone.Selector}
 		 *  @private
 		 */
 		this._lt = new Tone.LessThan(min);

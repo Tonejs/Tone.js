@@ -1,6 +1,6 @@
 define(["tests/Core", "chai", "Tone/component/Recorder", "Tone/signal/Signal", "Tone/source/Oscillator", 
-	"Tone/signal/Merge", "Tone/signal/Split","Tone/core/Master", "Tone/signal/Threshold", "Tone/signal/Gate"], 
-function(core, chai, Recorder, Signal, Oscillator, Merge, Split, Master, Threshold, Gate){
+	"Tone/signal/Merge", "Tone/signal/Split","Tone/core/Master", "Tone/signal/Threshold", "Tone/signal/Switch"], 
+function(core, chai, Recorder, Signal, Oscillator, Merge, Split, Master, Threshold, Switch){
 
 	var expect = chai.expect;
 
@@ -249,18 +249,18 @@ function(core, chai, Recorder, Signal, Oscillator, Merge, Split, Master, Thresho
 
 	});
 
-	//Gate
-	describe("Tone.Gate", function(){
+	//Switch
+	describe("Tone.Switch", function(){
 		this.timeout(1000);
 
 		it("can be created and disposed", function(){
-			var sw = new Gate();
+			var sw = new Switch();
 			sw.dispose();
 		});
 
 		it("can stop a signal from passing through", function(done){
 			var signal = new Signal(10);
-			var gate = new Gate();
+			var gate = new Switch();
 			signal.connect(gate);
 			var recorder = new Recorder();
 			gate.connect(recorder);
@@ -278,7 +278,7 @@ function(core, chai, Recorder, Signal, Oscillator, Merge, Split, Master, Thresho
 
 		it("can allow a signal to pass through", function(done){
 			var signal = new Signal(10);
-			var gate = new Gate();
+			var gate = new Switch();
 			signal.connect(gate);
 			gate.open();
 			var recorder = new Recorder();
