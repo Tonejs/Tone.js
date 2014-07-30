@@ -1,35 +1,5 @@
-define(["Tone/core/Tone", "Tone/core/Master"], function(Tone){
+define(["Tone/core/Tone"], function(Tone){
 
-	/**
-	 *	all signals share a common constant signal generator
-	 *  
-	 *  @static
-	 *  @private
-	 *  @type {OscillatorNode} 
-	 */
-	var generator = Tone.context.createOscillator();
-
-	/**
-	 *  @static
-	 *  @private
-	 *  @type {WaveShaperNode} 
-	 */
-	var constant = Tone.context.createWaveShaper();
-
-	//generate the waveshaper table which outputs 1 for any input value
-	(function(){
-		var len = 8;
-		var curve = new Float32Array(len);
-		for (var i = 0; i < len; i++){
-			//all inputs produce the output value
-			curve[i] = 1;
-		}
-		constant.curve = curve;
-	})();
-
-	generator.connect(constant);
-	generator.start(0);
-	generator.noGC();
 
 	/**
 	 *  @class  Constant audio-rate signal.
@@ -48,6 +18,7 @@ define(["Tone/core/Tone", "Tone/core/Master"], function(Tone){
 		/**
 		 *  scales the constant output to the desired output
 		 *  @type {GainNode}
+		 *  @private
 		 */
 		this.scalar = this.context.createGain();
 		/**
@@ -293,6 +264,46 @@ define(["Tone/core/Tone", "Tone/core/Master"], function(Tone){
 		} 
 		this.output.connect(node, outputNumber, inputNumber);
 	};
+
+	///////////////////////////////////////////////////////////////////////////
+	//	STATIC
+	///////////////////////////////////////////////////////////////////////////
+
+	/**
+	 *	all signals share a common constant signal generator
+	 *  
+	 *  @static
+	 *  @private
+	 *  @type {OscillatorNode} 
+	 */
+	var generator = null;
+
+	/**
+	 *  @static
+	 *  @private
+	 *  @type {WaveShaperNode} 
+	 */
+	var constant = null;
+
+	/**
+	 *  initializer function
+	 */
+	Tone._initAudioContext(function(audioContext){
+		generator = audioContext.createOscillator();
+		constant = audioContext.createWaveShaper();
+		//generate the waveshaper table which outputs 1 for any input value
+		var len = 8;
+		var curve = new Float32Array(len);
+		for (var i = 0; i < len; i++){
+			//all inputs produce the output value
+			curve[i] = 1;
+		}
+		constant.curve = curve;
+		//connect it up
+		generator.connect(constant);
+		generator.start(0);
+		generator.noGC();
+	});
 
 	return Tone.Signal;
 });
