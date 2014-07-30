@@ -1,23 +1,23 @@
-define(["Tone/core/Tone", "Tone/core/Master", "Tone/signal/Signal"], 
+define(["Tone/core/Tone", "Tone/core/Clock", "Tone/signal/Signal"], 
 function(Tone){
 
 	/**
-	 *  oscillator-based transport allows for simple musical timing
-	 *  supports tempo curves and time changes
+	 *  @class  oscillator-based transport allows for simple musical timing
+	 *          supports tempo curves and time changes
 	 *
 	 *  @constructor
 	 *  @extends {Tone}
 	 */
-	Tone.Transport = function(){
+	var Transport = function(){
 
 		/**
 		 *  watches the main oscillator for timing ticks
+		 *  initially starts at 120bpm
 		 *  
 		 *  @private
-		 *  @type {ScriptProcessorNode}
+		 *  @type {Tone.Clock}
 		 */
-		this._jsNode = this.context.createScriptProcessor(this.bufferSize, 1, 1);
-		this._jsNode.onaudioprocess = this._processBuffer.bind(this);
+		this._clock = new Tone.Clock(1, this._processTick.bind(this));
 
 		/** 
 		 *  @type {boolean}
@@ -28,33 +28,28 @@ function(Tone){
 		 *  @type {TransportState}
 		 */
 		this.state = TransportState.STOPPED;
-
-		//so it doesn't get garbage collected
-		this._jsNode.noGC();
 	};
 
-	Tone.extend(Tone.Transport);
+	Tone.extend(Transport);
 
 	/** 
 	 * @private 
 	 * @type {number} 
 	 */
 	var timelineTicks = 0;
+
 	/** 
 	 * @private 
 	 * @type {number} 
 	 */
 	var transportTicks = 0;
+
 	/** 
 	 * @private
 	 * @type {number}
 	 */
 	var tatum = 12;
-	/** 
-	 * @private
-	 * @type {Boolean}
-	 */
-	var upTick = false;
+
 	/** 
 	 * @private
 	 * @type {number}
@@ -96,29 +91,12 @@ function(Tone){
 	 */
 	var timelineProgress = 0;
 
-	/**
-	 *  The main oscillator for the system
-	 *  @private
-	 *  @type {OscillatorNode}
-	 */
-	var oscillator = null;
-
-	/** 
-	 *  controls the oscillator frequency
-	 *  starts at 120bpm
-	 *  
-	 *  @private
-	 *  @type {Tone.Signal}
-	 */
-	var controlSignal = new Tone.Signal(24);
-
 	/** 
 	 *  All of the synced components
 	 *  @private 
 	 *  @type {Array<Tone>}
 	 */
 	var SyncedSources = [];
-
 
 	/**
 	 *  @enum
@@ -129,49 +107,36 @@ function(Tone){
 	 	STOPPED : "stopped"
 	 };
 
-
 	///////////////////////////////////////////////////////////////////////////////
-	//	JS NODE PROCESSING
+	//	TICKS
 	///////////////////////////////////////////////////////////////////////////////
 
 	/**
-	 *  called when a buffer is ready
-	 *  	
-	 *  @param  {AudioProcessingEvent} event
+	 *  called on every tick
+	 *  @param   {number} tickTime clock relative tick time
+	 *  @private
 	 */
-	Tone.Transport.prototype._processBuffer = function(event){
-		var now = this.defaultArg(event.playbackTime, this.now());
-		var bufferSize = this._jsNode.bufferSize;
-		var incomingBuffer = event.inputBuffer.getChannelData(0);
-		for (var i = 0; i < bufferSize; i++){
-			var sample = incomingBuffer[i];
-			if (sample > 0 && !upTick){
-				upTick = true;	
-				this._processTick(now + this.samplesToSeconds(i));
-			} else if (sample < 0 && upTick){
-				upTick = false;
+	Transport.prototype._processTick = function(tickTime){
+		processIntervals(tickTime);
+		processTimeouts(tickTime);
+		processTimeline(tickTime);
+		transportTicks += 1;
+		timelineTicks += 1;
+		if (this.loop){
+			if (timelineTicks === loopEnd){
+				this._setTicks(loopStart);
 			}
 		}
 	};
 
-	//@param {number} tickTime
-	Tone.Transport.prototype._processTick = function(tickTime){
-		if (oscillator !== null){
-			processIntervals(tickTime);
-			processTimeouts(tickTime);
-			processTimeline(tickTime);
-			transportTicks += 1;
-			timelineTicks += 1;
-			if (this.loop){
-				if (timelineTicks === loopEnd){
-					this._setTicks(loopStart);
-				}
-			}
-		}
-	};
-
-	//jump to a specific tick in the timeline
-	Tone.Transport.prototype._setTicks = function(ticks){
+	/**
+	 *  jump to a specific tick in the timeline
+	 *  updates the timeline callbacks
+	 *  
+	 *  @param   {number} ticks the tick to jump to
+	 *  @private
+	 */
+	Transport.prototype._setTicks = function(ticks){
 		timelineTicks = ticks;
 		for (var i = 0; i < transportTimeline.length; i++){
 			var timeout = transportTimeline[i];
@@ -236,14 +201,6 @@ function(Tone){
 		}
 	};
 
-	/**
-	 *  clear the timeouts and intervals
-	 */
-	function clearTimelineEvents(){
-		
-		intervals = [];
-	}
-
 	///////////////////////////////////////////////////////////////////////////////
 	//	INTERVAL
 	///////////////////////////////////////////////////////////////////////////////
@@ -256,7 +213,7 @@ function(Tone){
 	 *  @param {Object}   ctx  the context the function is invoked in
 	 *  @return {number} the id of the interval
 	 */
-	Tone.Transport.prototype.setInterval = function(callback, interval, ctx){
+	Transport.prototype.setInterval = function(callback, interval, ctx){
 		var tickTime = this.toTicks(interval);
 		var timeout = new TimelineEvent(callback, ctx, tickTime, transportTicks);
 		intervals.push(timeout);
@@ -268,7 +225,7 @@ function(Tone){
 	 *  @param  {number} rmInterval 	the interval to remove
 	 *  @return {boolean}            	true if the event was removed
 	 */
-	Tone.Transport.prototype.clearInterval = function(rmInterval){
+	Transport.prototype.clearInterval = function(rmInterval){
 		for (var i = 0; i < intervals.length; i++){
 			var interval = intervals[i];
 			if (interval.id === rmInterval){
@@ -282,7 +239,7 @@ function(Tone){
 	/**
 	 *  removes all of the intervals that are currently set
 	 */
-	Tone.Transport.prototype.clearIntervals = function(){
+	Transport.prototype.clearIntervals = function(){
 		intervals = [];
 	};
 
@@ -298,7 +255,7 @@ function(Tone){
 	 *  @param {Object}   ctx      the context to invoke the callback in
 	 *  @return {number} the id of the timeout for clearing timeouts
 	 */
-	Tone.Transport.prototype.setTimeout = function(callback, time, ctx){
+	Transport.prototype.setTimeout = function(callback, time, ctx){
 		var ticks = this.toTicks(time);
 		var timeout = new TimelineEvent(callback, ctx, ticks + transportTicks, 0);
 		//put it in the right spot
@@ -319,7 +276,7 @@ function(Tone){
 	 *  @param  {number} timeoutID 
 	 *  @return {boolean}           true if the timeout was removed
 	 */
-	Tone.Transport.prototype.clearTimeout = function(timeoutID){
+	Transport.prototype.clearTimeout = function(timeoutID){
 		for (var i = 0; i < timeouts.length; i++){
 			var testTimeout = timeouts[i];
 			if (testTimeout.id === timeoutID){
@@ -335,7 +292,7 @@ function(Tone){
 	 *
 	 *  @todo (optionally) remove events after a certain time
 	 */
-	Tone.Transport.prototype.clearTimeouts = function(){
+	Transport.prototype.clearTimeouts = function(){
 		timeouts = [];
 	};
 
@@ -354,7 +311,7 @@ function(Tone){
 	 *  @param {Object}   	ctx      	the context in which the funtion is called
 	 *  @return {number} 				the id for clearing the transportTimeline event
 	 */
-	Tone.Transport.prototype.setTimeline = function(callback, timeout, ctx){
+	Transport.prototype.setTimeline = function(callback, timeout, ctx){
 		var ticks = this.toTicks(timeout);
 		var timelineEvnt = new TimelineEvent(callback, ctx, ticks, 0);
 		//put it in the right spot
@@ -375,7 +332,7 @@ function(Tone){
 	 *  @param  {number} timelineID 
 	 *  @return {boolean} true if it was removed
 	 */
-	Tone.Transport.prototype.clearTimeline = function(timelineID){
+	Transport.prototype.clearTimeline = function(timelineID){
 		for (var i = 0; i < transportTimeline.length; i++){
 			var testTimeline = transportTimeline[i];
 			if (testTimeline.id === timelineID){
@@ -389,7 +346,7 @@ function(Tone){
 	/**
 	 *  remove all events from the timeline
 	 */
-	Tone.Transport.prototype.clearTimelines = function(){
+	Transport.prototype.clearTimelines = function(){
 		timelineProgress = 0;
 		transportTimeline = [];
 	};
@@ -403,7 +360,7 @@ function(Tone){
 	 *  @param  {Tone.Time} time
 	 *  @return {number}      
 	 */
-	Tone.Transport.prototype.toTicks = function(time){
+	Transport.prototype.toTicks = function(time){
 		//get the seconds
 		var seconds = this.toSeconds(time);
 		var quarter = this.notationToSeconds("4n");
@@ -417,7 +374,7 @@ function(Tone){
 	 *  get the transport time
 	 *  @return {string} in transportTime format (measures:beats:sixteenths)
 	 */
-	Tone.Transport.prototype.getTransportTime = function(){
+	Transport.prototype.getTransportTime = function(){
 		var quarters = timelineTicks / tatum;
 		var measures = Math.floor(quarters / transportTimeSignature);
 		var sixteenths = Math.floor((quarters % 1) * 4);
@@ -431,7 +388,7 @@ function(Tone){
 	 *  	
 	 *  @param {Tone.Time} progress 
 	 */
-	Tone.Transport.prototype.setTransportTime = function(progress){
+	Transport.prototype.setTransportTime = function(progress){
 		var ticks = this.toTicks(progress);
 		this._setTicks(ticks);
 	};
@@ -445,20 +402,11 @@ function(Tone){
 	 *  
 	 *  @param  {Tone.Time} time
 	 */
-	Tone.Transport.prototype.start = function(time){
+	Transport.prototype.start = function(time){
 		if (this.state === TransportState.STOPPED || this.state === TransportState.PAUSED){
 			this.state = TransportState.STARTED;
-			//reset the oscillator
-			oscillator = this.context.createOscillator();
-			oscillator.type = "square";
-			oscillator.connect(this._jsNode);
-			//connect it up
-			controlSignal.connect(oscillator.frequency);
-			oscillator.frequency.value = 0;
-			upTick = false;
-
 			var startTime = this.toSeconds(time);
-			oscillator.start(startTime);
+			this._clock.start(startTime);
 			//call start on each of the synced sources
 			for (var i = 0; i < SyncedSources.length; i++){
 				var source = SyncedSources[i].source;
@@ -474,16 +422,13 @@ function(Tone){
 	 *  
 	 *  @param  {Tone.Time} time
 	 */
-	Tone.Transport.prototype.stop = function(time){
+	Transport.prototype.stop = function(time){
 		if (this.state === TransportState.STARTED || this.state === TransportState.PAUSED){
 			this.state = TransportState.STOPPED;
 			var stopTime = this.toSeconds(time);
-			oscillator.stop(stopTime);
-			oscillator = null;
+			this._clock.stop(stopTime);
 			this._setTicks(0);
 			this.clearTimeouts();
-			this.clearIntervals();
-
 			//call start on each of the synced sources
 			for (var i = 0; i < SyncedSources.length; i++){
 				var source = SyncedSources[i].source;
@@ -497,13 +442,11 @@ function(Tone){
 	 *  
 	 *  @param  {Tone.Time} time
 	 */
-	Tone.Transport.prototype.pause = function(time){
+	Transport.prototype.pause = function(time){
 		if (this.state === TransportState.STARTED){
 			this.state = TransportState.PAUSED;
 			var stopTime = this.toSeconds(time);
-			oscillator.stop(stopTime);
-			oscillator = null;
-			clearTimelineEvents();
+			this._clock.stop(stopTime);
 			//call pause on each of the synced sources
 			for (var i = 0; i < SyncedSources.length; i++){
 				var source = SyncedSources[i].source;
@@ -522,17 +465,9 @@ function(Tone){
 	 *  @param {number} bpm   
 	 *  @param {Tone.Time=} rampTime 
 	 */
-	Tone.Transport.prototype.setBpm = function(bpm, rampTime){
-		//convert the bpm to frequency
-		var tatumFreq = this.secondsToFrequency(this.notationToSeconds(tatum.toString() + "n", bpm, transportTimeSignature));
-		// var tatumFreq = this.toFrequency(tatum.toString() + "n", bpm, transportTimeSignature);
-		var freqVal = 4 * tatumFreq;
-		if (!rampTime){
-			controlSignal.cancelScheduledValues(0);
-			controlSignal.setValue(freqVal);
-		} else {
-			controlSignal.exponentialRampToValueNow(freqVal, rampTime);
-		}
+	Transport.prototype.setBpm = function(bpm, rampTime){
+		var quarterTime = this.notationToSeconds(tatum.toString() + "n", bpm, transportTimeSignature) / 4;
+		this._clock.setRate(quarterTime, rampTime);
 	};
 
 	/**
@@ -540,9 +475,9 @@ function(Tone){
 	 *  
 	 *  @return {number} 
 	 */
-	Tone.Transport.prototype.getBpm = function(){
+	Transport.prototype.getBpm = function(){
 		//convert the current frequency of the oscillator to bpm
-		var freq = controlSignal.getValue();
+		var freq = this._clock.getRate();
 		return 60 * (freq / tatum);
 	};
 
@@ -555,7 +490,7 @@ function(Tone){
 	 *  @param {number} numerator   
 	 *  @param {number=} denominator defaults to 4
 	 */
-	Tone.Transport.prototype.setTimeSignature = function(numerator, denominator){
+	Transport.prototype.setTimeSignature = function(numerator, denominator){
 		denominator = this.defaultArg(denominator, 4);
 		transportTimeSignature = numerator / (denominator / 4);
 	};
@@ -567,7 +502,7 @@ function(Tone){
 	 *  
 	 *  @return {number} 
 	 */
-	Tone.Transport.prototype.getTimeSignature = function(){
+	Transport.prototype.getTimeSignature = function(){
 		return transportTimeSignature;
 	};
 
@@ -576,7 +511,7 @@ function(Tone){
 	 *  
 	 *  @param {Tone.Time} startPosition
 	 */
-	Tone.Transport.prototype.setLoopStart = function(startPosition){
+	Transport.prototype.setLoopStart = function(startPosition){
 		loopStart = this.toTicks(startPosition);
 	};
 
@@ -585,7 +520,7 @@ function(Tone){
 	 *  
 	 *  @param {Tone.Time} endPosition
 	 */
-	Tone.Transport.prototype.setLoopEnd = function(endPosition){
+	Transport.prototype.setLoopEnd = function(endPosition){
 		loopEnd = this.toTicks(endPosition);
 	};
 
@@ -594,7 +529,7 @@ function(Tone){
 	 *  @param {Tone.Time} startPosition 
 	 *  @param {Tone.Time} endPosition   
 	 */
-	Tone.Transport.prototype.setLoopPoint = function(startPosition, endPosition){
+	Transport.prototype.setLoopPoint = function(startPosition, endPosition){
 		this.setLoopStart(startPosition);
 		this.setLoopEnd(endPosition);
 	};
@@ -609,11 +544,24 @@ function(Tone){
 	 *  @param  {Tone.Source} source the source to sync to the transport
 	 *  @param {Tone.Time} delay (optionally) start the source with a delay from the transport
 	 */
-	Tone.Transport.prototype.sync = function(source, startDelay){
+	Transport.prototype.syncSource = function(source, startDelay){
 		SyncedSources.push({
 			source : source,
 			delay : this.toSeconds(this.defaultArg(startDelay, 0))
 		});
+	};
+
+	/**
+	 *  remove the source from the list of Synced Sources
+	 *  
+	 *  @param  {Tone.Source} source [description]
+	 */
+	Transport.prototype.unsyncSource = function(source){
+		for (var i = 0; i < SyncedSources.length; i++){
+			if (SyncedSources[i].source === source){
+				SyncedSources.splice(i, 1);
+			}
+		}
 	};
 
 	/**
@@ -623,23 +571,9 @@ function(Tone){
 	 *  
 	 *  @param  {Tone.Signal} signal 
 	 */
-	Tone.Transport.prototype.syncSignal = function(signal){
+	Transport.prototype.syncSignal = function(signal){
 		
 	};
-
-	/**
-	 *  remove the source from the list of Synced Sources
-	 *  
-	 *  @param  {Tone.Source} source [description]
-	 */
-	Tone.Transport.prototype.unsync = function(source){
-		for (var i = 0; i < SyncedSources.length; i++){
-			if (SyncedSources[i].source === source){
-				SyncedSources.splice(i, 1);
-			}
-		}
-	};
-
 
 	///////////////////////////////////////////////////////////////////////////////
 	//	TIMELINE EVENT
@@ -655,6 +589,7 @@ function(Tone){
 	 *  A Timeline event
 	 *
 	 *  @constructor
+	 *  @internal
 	 *  @param {function(number)} callback   
 	 *  @param {Object}   context    
 	 *  @param {number}   tickTime
@@ -698,6 +633,15 @@ function(Tone){
 	};
 
 
+	/**
+	 *  clean up
+	 */
+	Transport.prototype.dispose = function(){
+		this._clock.dispose();
+		this._clock = null;
+	};
+
+
 	///////////////////////////////////////////////////////////////////////////////
 	//	AUGMENT TONE'S PROTOTYPE TO INCLUDE TRANSPORT TIMING
 	///////////////////////////////////////////////////////////////////////////////
@@ -717,6 +661,19 @@ function(Tone){
 		var notationFormat = new RegExp(/[0-9]+[mnt]$/i);
 		return function(note){
 			return notationFormat.test(note);
+		};
+	})();
+
+	/**
+	 *  tests if a string is in Tick notation
+	 *  @return {boolean} 
+	 *  @method isTicks
+	 *  @lends Tone.prototype.isNotation
+	 */
+	Tone.prototype.isTicks = (function(){
+		var tickFormat = new RegExp(/[0-9]+[i]$/i);
+		return function(tick){
+			return tickFormat.test(tick);
 		};
 	})();
 
@@ -820,6 +777,19 @@ function(Tone){
 	};
 
 	/**
+	 *  convert ticks into seconds
+	 *  @param  {string} transportTime 
+	 *  @param {number=} bpm 
+	 *  @param {number=} timeSignature
+	 *  @return {number}               seconds
+	 */
+	Tone.prototype.ticksToSeconds = function(ticks, bpm, timeSignature){
+		ticks = parseInt(ticks);
+		var measure = this.notationToSeconds("4n", bpm, timeSignature);
+		return (measure * 4) / (tatum / ticks);
+	};
+
+	/**
 	 *  Convert seconds to the closest transportTime in the form 
 	 *  	measures:quarters:sixteenths
 	 *
@@ -867,6 +837,13 @@ function(Tone){
 	 *  unlike the method which it overrides, this takes into account 
 	 *  transporttime and musical notation
 	 *
+	 *  Time : 1.40
+	 *  Notation: 4n|1m|2t
+	 *  TransportTime: 2:4:1 (measure:quarters:sixteens)
+	 *  Now Relative: +3n
+	 *  Math: 3n+16n or even very complicated expressions ((3n*2)/6 + 1)
+	 *  Ticks: "146i"
+	 *
 	 *  @override
 	 *  @param  {Tone.Time} time       
 	 *  @param {number=} 	now 	if passed in, this number will be 
@@ -883,7 +860,24 @@ function(Tone){
 				plusTime = now;
 				time = time.slice(1);				
 			} 
-			if (this.isNotation(time)){
+			var components = time.split(/[\(\)\-\+\/\*]/);
+			if (components.length > 1){
+				var oringalTime = time;
+				for(var i = 0; i < components.length; i++){
+					var symb = components[i];
+					if (symb !== ""){
+						var val = this.toSeconds(symb.trim());
+						time = time.replace(symb, val);
+					}
+				}
+				try {
+					//i know eval is evil, but i think it's safe here
+					time = eval(time); // jshint ignore:line
+				} catch (e){
+					console.log("problem evaluating Tone.Time: "+oringalTime);
+					time = 0;
+				}
+			} else if (this.isNotation(time)){
 				time = this.notationToSeconds(time);
 			} else if (this.isTransportTime(time)){
 				time = this.transportTimeToSeconds(time);
@@ -898,8 +892,14 @@ function(Tone){
 		}
 	};
 
-	//a single transport object
-	Tone.Transport = new Tone.Transport();
+	Tone._initAudioContext(function(){
+		//replace the previous one if it exists
+		if (Tone.Transport){
+			Tone.Transport.dispose();
+		}
+		//a single transport object
+		Tone.Transport = new Transport();
+	});
 
 	return Tone.Transport;
 });
