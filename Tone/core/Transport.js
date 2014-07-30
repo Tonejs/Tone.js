@@ -892,13 +892,12 @@ function(Tone){
 		}
 	};
 
+	//a single transport object
+	Tone.Transport = new Transport();
+
 	Tone._initAudioContext(function(){
-		//replace the previous one if it exists
-		if (Tone.Transport){
-			Tone.Transport.dispose();
-		}
-		//a single transport object
-		Tone.Transport = new Transport();
+		//make a new clocks
+		Tone.Transport._clock = new Tone.Clock(1, Tone.Transport._processTick.bind(Tone.Transport));
 	});
 
 	return Tone.Transport;
