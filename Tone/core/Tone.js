@@ -13,7 +13,7 @@
 	//
 	// this anonymous function checks to see if the 'define'
 	// method exists, if it does not (and there is not already
-	// something called Tone) it will create a function called
+	// a function called Tone) it will create a function called
 	// 'define'. 'define' will invoke the 'core' module and attach
 	// its return value to the root. for all other modules
 	// Tone will be passed in as the argument.
@@ -43,13 +43,17 @@ define("Tone/core/Tone", [], function(){
 		return val === void 0;
 	}
 
-	//ALIAS
+	var audioContext;
+
+	//polyfill for AudioContext and OfflineAudioContext
 	if (isUndef(window.AudioContext)){
 		window.AudioContext = window.webkitAudioContext;
 	} 
+	if (isUndef(window.OfflineAudioContext)){
+		window.OfflineAudioContext = window.webkitOfflineAudioContext;
+	} 
 
-	var audioContext;
-	if (!isUndef(window.AudioContext)){
+	if (!isUndef(AudioContext)){
 		audioContext = new AudioContext();
 	} else {
 		throw new Error("Web Audio is not supported in this browser");
@@ -292,6 +296,28 @@ define("Tone/core/Tone", [], function(){
 	 */
 	Tone.prototype.dispose = function(){};
 
+	/**
+	 *  a silent connection to the DesinationNode
+	 *  which will ensure that anything connected to it
+	 *  will not be garbage collected
+	 *  
+	 *  @private
+	 */
+	var _silentNode = null;
+
+	/**
+	 *  makes a connection to ensure that the node will not be garbage collected
+	 *  until 'dispose' is explicitly called
+	 *
+	 *  use carefully. circumvents JS and WebAudio's normal Garbage Collection behavior
+	 */
+	Tone.prototype.noGC = function(){
+		this.output.connect(_silentNode);
+	};
+
+	AudioNode.prototype.noGC = function(){
+		this.connect(_silentNode);
+	};
 
 	///////////////////////////////////////////////////////////////////////////
 	//	TIMING
@@ -344,14 +370,14 @@ define("Tone/core/Tone", [], function(){
 		} else if (typeof time === "string"){
 			var plusTime = 0;
 			if(time.charAt(0) === "+") {
-				time = time.slice(1);				
+				time = time.slice(1);	
+				plusTime = now;			
 			} 
-			return parseFloat(time) + now;
+			return parseFloat(time) + plusTime;
 		} else {
 			return now;
 		}
 	};
-
 
 	/**
 	 *  convert a frequency into seconds
@@ -373,7 +399,6 @@ define("Tone/core/Tone", [], function(){
 	Tone.prototype.secondsToFrequency = function(seconds){
 		return 1/seconds;
 	};
-
 
 	///////////////////////////////////////////////////////////////////////////
 	//	MUSIC NOTES
@@ -418,25 +443,41 @@ define("Tone/core/Tone", [], function(){
 	};
 
 	///////////////////////////////////////////////////////////////////////////
-	//	STATIC METHODS / VARS
+	//	STATIC METHODS
 	///////////////////////////////////////////////////////////////////////////
 
 	/**
-	 *  the list of callbacks which should be invoked when the context is set/changed
-	 *  
- 	 *  @internal internal use only
-	 *  @type {Array<function(AudioContext)>}
+	 *  array of callbacks to be invoked when a new context is added
+	 *  @internal 
+	 *  @private
 	 */
-	Tone._onContextCallbacks = [];
+	var newContextCallbacks = [];
 
 	/**
-	 *  invokes all of the callbacks with the new context
-	 *  
-	 *  @internal internal use only
+	 *  invoke this callback when a new context is added
+	 *  will be invoked initially with the first context
+	 *  @internal 
+	 *  @static
+	 *  @param {function(AudioContext)} callback the callback to be invoked
+	 *                                           with the audio context
 	 */
-	Tone._onContext = function(context){
-		for (var i = 0; i < Tone._onContextCallbacks.length; i++){
-			Tone._onContextCallbacks[i](context);
+	Tone._initAudioContext = function(callback){
+		//invoke the callback with the existing AudioContext
+		callback(Tone.context);
+		//add it to the array
+		newContextCallbacks.push(callback);
+	};
+
+	/**
+	 *  @static
+	 */
+	Tone.setContext = function(ctx){
+		//set the prototypes
+		Tone.prototype.context = ctx;
+		Tone.context = ctx;
+		//invoke all the callbacks
+		for (var i = 0; i < newContextCallbacks.length; i++){
+			newContextCallbacks[i](ctx);
 		}
 	};
 		
@@ -481,6 +522,13 @@ define("Tone/core/Tone", [], function(){
 		osc.start(now);
 		osc.stop(now+1);
 	};
+
+	//setup the context
+	Tone._initAudioContext(function(audioContext){
+		_silentNode = audioContext.createGain();
+		_silentNode.gain.value = 0;
+		_silentNode.connect(audioContext.destination);
+	});
 
 	return Tone;
 
