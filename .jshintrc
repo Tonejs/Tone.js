@@ -9,7 +9,8 @@
     "require" : false,
     "define" : false,
     //set audio stuff
-    "AudioContext" : true,
+    "AudioContext" : false,
+    "OfflineAudioContext" : false,
     "AudioBufferSourceNode" : false,
     "OscillatorNode" : false,
     "DelayNode" : false,
@@ -17,17 +18,8 @@
     "AudioNode" : false,
     "AudioParam" : false,
     "WaveShaperNode" : false,
-    "DynamicsCompressorNode" : false,
-    //mocha stuff
-    "mocha" : false,
-    "describe"   : false,
-    "it"         : false,
-    "before"     : false,
-    "beforeEach" : false,
-    "after"      : false,
-    "afterEach"  : false
+    "DynamicsCompressorNode" : false
   },
-  "node": true,
   "jquery" : true,
   "globalstrict": false,
   "quotmark": true,
