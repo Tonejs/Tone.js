@@ -7,18 +7,21 @@ define(["Tone/core/Tone", "Tone/component/Follower", "Tone/signal/GreaterThan"],
 	 *  @constructor
 	 *  @extends {Tone}
 	 *  @param {number=} [thresh = -40] the threshold in Decibels
+	 *  @param {number=} [smoothTime = 0.1] the amount of smoothing applied to the 
+	 *                               		incoming signal
 	 */
-	Tone.Gate = function(thresh){
+	Tone.Gate = function(thresh, smoothTime){
 		Tone.call(this);
 
 		//default values
 		thresh = this.defaultArg(thresh, -40);
+		smoothTime = this.defaultArg(smoothTime, 0.1);
 
 		/**
 		 *  @type {Tone.Follower}
 		 *  @private
 		 */
-		this._follower = new Tone.Follower(0.1);
+		this._follower = new Tone.Follower(smoothTime);
 
 		/**
 		 *  @type {Tone.GreaterThan}
