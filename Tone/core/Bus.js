@@ -10,6 +10,8 @@ define(["Tone/core/Tone"], function(Tone){
 	  *  All of the routes
 	  *  
 	  *  @type {Object}
+	  *  @static
+	  *  @private
 	  */
 	var Buses = {};
 
@@ -41,8 +43,4 @@ define(["Tone/core/Tone"], function(Tone){
 		}
 		Buses[channelName].connect(this.input);
 	};
-
-	Tone.Buses = Buses;
-
-	return Buses;
 });
