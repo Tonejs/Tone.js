@@ -1,3 +1,5 @@
+/* global it, describe, beforeEach */
+
 define(["chai", "Tone/core/Transport", "tests/Core"], function(chai, Transport){
 	var expect = chai.expect;
 

@@ -1,3 +1,5 @@
+/* global it, describe, after */
+
 define(["chai", "Tone/source/Player", "Tone/core/Master", "Tone/source/Oscillator", "Tone/component/Recorder", "Tone/source/Noise", "tests/Core"], 
 function(chai, Player, Master, Oscillator, Recorder, Noise){
 

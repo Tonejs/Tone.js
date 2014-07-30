@@ -1,6 +1,9 @@
+/* global it, describe */
+
 define(["tests/Core", "chai", "Tone/component/Recorder", "Tone/signal/Signal", "Tone/source/Oscillator", 
-	"Tone/signal/Merge", "Tone/signal/Split","Tone/core/Master", "Tone/signal/Threshold", "Tone/signal/Switch"], 
-function(core, chai, Recorder, Signal, Oscillator, Merge, Split, Master, Threshold, Switch){
+	"Tone/signal/Merge", "Tone/signal/Split","Tone/core/Master", "Tone/signal/Threshold", "Tone/signal/Switch", 
+	"Tone/signal/Route", "Tone/signal/Selector"], 
+function(core, chai, Recorder, Signal, Oscillator, Merge, Split, Master, Threshold, Switch, Route, Selector){
 
 	var expect = chai.expect;
 
@@ -53,7 +56,7 @@ function(core, chai, Recorder, Signal, Oscillator, Merge, Split, Master, Thresho
 
 		it("can change value with sample accurate timing", function(done){			
 			var changeSignal = new Signal(0);
-			changeSignal.setValueAtTime(1, "+0.15");
+			changeSignal.setValueAtTime(1, "+0.1");
 			var recorder = new Recorder();
 			changeSignal.connect(recorder);
 			recorder.record(0.1, 0.1, function(buffers){
@@ -96,7 +99,7 @@ function(core, chai, Recorder, Signal, Oscillator, Merge, Split, Master, Thresho
 			sig1.noGC();
 			var recorder = new Recorder(1);
 			sig1.connect(recorder);
-			var waitTime = 0.15;
+			var waitTime = 0.1;
 			expect(sig1.getValue()).to.equal(-10);
 			sig1.linearRampToValueNow(1, waitTime);
 			recorder.record(0.1, 0.1, function(buffers){
@@ -294,6 +297,129 @@ function(core, chai, Recorder, Signal, Oscillator, Merge, Split, Master, Thresho
 				done();
 			});
 		});
+	});
+
+	//Route
+	describe("Tone.Route", function(){
+		this.timeout(1000);
+
+		it("can be created and disposed", function(){
+			var r = new Route();
+			r.dispose();
+		});
+
+		it("can route a signal to first output", function(done){
+			var signal = new Signal(10);
+			var route = new Route();
+			signal.connect(route);
+			var recorderL = new Recorder();
+			var recorderR = new Recorder();
+			route.connect(recorderL, 0, 0);
+			route.connect(recorderR, 1, 0);
+			recorderL.record(0.1, 0.1, function(buffers){
+				var buffer = buffers[0];
+				//get the left buffer and check that all values are === 1
+				for (var i = 0; i < buffer.length; i++){
+					expect(buffer[i]).to.equal(10);
+				}
+				signal.dispose();
+				route.dispose();
+				done();
+			});
+			recorderR.record(0.1, 0.1, function(buffers){
+				var buffer = buffers[0];
+				//get the left buffer and check that all values are === 1
+				for (var i = 0; i < buffer.length; i++){
+					expect(buffer[i]).to.equal(0);
+				}
+				done();
+			});
+		});
+
+		it("can route a signal to the second input", function(done){
+			var signal = new Signal(20);
+			var route = new Route();
+			route.select(1);
+			signal.connect(route);
+			var recorderL = new Recorder();
+			var recorderR = new Recorder();
+			route.connect(recorderL, 0, 0);
+			route.connect(recorderR, 1, 0);
+			recorderL.record(0.1, 0.1, function(buffers){
+				var buffer = buffers[0];
+				//get the left buffer and check that all values are === 1
+				for (var i = 0; i < buffer.length; i++){
+					expect(buffer[i]).to.equal(0);
+				}
+				signal.dispose();
+				route.dispose();
+				done();
+			});
+			recorderR.record(0.1, 0.1, function(buffers){
+				var buffer = buffers[0];
+				//get the left buffer and check that all values are === 1
+				for (var i = 0; i < buffer.length; i++){
+					expect(buffer[i]).to.equal(20);
+				}
+				done();
+			});
+		});
+
+	});
+
+	//Selector
+	describe("Tone.Selector", function(){
+		this.timeout(1000);
+
+		it("can be created and disposed", function(){
+			var s = new Selector();
+			s.dispose();
+		});
+
+		it("can select the first signal", function(done){
+			var signal0 = new Signal(10);
+			var signal1 = new Signal(20);
+			var sel = new Selector();
+			signal0.connect(sel, 0, 0);
+			signal1.connect(sel, 0, 1);
+			sel.select(0);
+			var recorder = new Recorder();
+			sel.connect(recorder, 0, 0);
+			recorder.record(0.1, 0.1, function(buffers){
+				var buffer = buffers[0];
+				//get the left buffer and check that all values are === 1
+				for (var i = 0; i < buffer.length; i++){
+					expect(buffer[i]).to.equal(10);
+				}
+				signal0.dispose();
+				signal1.dispose();
+				sel.dispose();
+				done();
+			});
+		});
+
+		it("can select the second signal", function(done){
+			var signal0 = new Signal(11);
+			var signal1 = new Signal(21);
+			var sel = new Selector();
+			signal0.connect(sel, 0, 0);
+			signal1.connect(sel, 0, 1);
+			sel.select(1);
+			var recorder = new Recorder();
+			sel.connect(recorder, 0, 0);
+			recorder.record(0.1, 0.1, function(buffers){
+				var buffer = buffers[0];
+				//get the left buffer and check that all values are === 1
+				for (var i = 0; i < buffer.length; i++){
+					expect(buffer[i]).to.equal(21);
+				}
+				signal0.dispose();
+				signal1.dispose();
+				sel.dispose();
+				done();
+			});
+		});
+
 	});
 
 });

@@ -1,4 +1,6 @@
-define(["chai", "Tone/core/Tone", "Tone/core/Master", "Tone/core/Bus"], function(chai, Tone, Master, Bus){
+/* global it, describe */
+
+define(["chai", "Tone/core/Tone", "Tone/core/Master", "Tone/core/Bus"], function(chai, Tone, Master){
 	var expect = chai.expect;
 
 	describe("AudioContext", function(){
@@ -36,13 +38,26 @@ define(["chai", "Tone/core/Tone", "Tone/core/Master", "Tone/core/Bus"], function
 	});
 
 	describe("Tone.Bus", function(){
-		it ("exists", function(){
-			expect(Bus).to.be.an("object");
-		});
-
 		it ("provides a send and receive method", function(){
 			expect(Tone.prototype.send).is.a("function");
 			expect(Tone.prototype.receive).is.a("function");
 		});
 	});
+
+	/*describe("Tone.setContext", function(){
+		it ("can set a new context", function(){
+			var origCtx = Tone.context;
+			var ctx = new OfflineAudioContext(2, 44100, 44100);
+			Tone.setContext(ctx);
+			expect(Tone.context).to.equal(ctx);
+			expect(Tone.prototype.context).to.equal(ctx);
+			//then set it back
+			Tone.setContext(origCtx);
+			expect(Tone.context).to.equal(origCtx);
+			expect(Tone.prototype.context).to.equal(origCtx);
+			//and a saftey check
+			expect(ctx).to.not.equal(origCtx);
+		});
+	});*/
+
 });

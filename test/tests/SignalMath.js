@@ -1,3 +1,5 @@
+/* global it, describe, after */
+
 define(["tests/Core", "chai", "Tone/component/Recorder", "Tone/signal/Signal", "Tone/signal/Add", "Tone/signal/Multiply", 
 	"Tone/signal/Scale", "Tone/source/Oscillator", "Tone/core/Master", "Tone/signal/Abs", "Tone/signal/Negate", 
 	 "Tone/signal/Max", "Tone/signal/Min", "Tone/signal/Clip"], 

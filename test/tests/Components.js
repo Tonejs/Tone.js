@@ -1,6 +1,9 @@
+/* global it, describe, after */
+
 define(["tests/Core", "chai", "Tone/component/DryWet", "Tone/core/Master", "Tone/signal/Signal", 
-"Tone/component/Recorder", "Tone/component/Panner", "Tone/component/LFO"],
-function(coreTest, chai, DryWet, Master, Signal, Recorder, Panner, LFO){
+"Tone/component/Recorder", "Tone/component/Panner", "Tone/component/LFO", "Tone/component/Gate", 
+"Tone/component/Follower"],
+function(coreTest, chai, DryWet, Master, Signal, Recorder, Panner, LFO, Gate, Follower){
 	var expect = chai.expect;
 
 	Master.mute();
@@ -229,4 +232,80 @@ function(coreTest, chai, DryWet, Master, Signal, Recorder, Panner, LFO){
 			});
 		});
 	});
+
+
+	describe("Tone.Gate", function(){
+		this.timeout(1000);
+
+		it("can be created and disposed", function(){
+			var g = new Gate();
+			g.dispose();
+		});
+
+		it("won't let signals below a db thresh through", function(done){
+			var gate = new Gate(-10, 0.01);
+			var sig = new Signal(gate.dbToGain(-11));
+			var recorder = new Recorder();
+			sig.connect(gate);
+			gate.connect(recorder);
+			recorder.record(0.01, 0.1, function(buffers){
+				var buffer = buffers[0];
+				for (var i = 0; i < buffer.length; i++){
+					expect(buffer[i]).to.equal(0);
+				}
+				gate.dispose();
+				sig.dispose();
+				recorder.dispose();
+				done();
+			});
+		});
+
+		it("lets signals above the db thresh through", function(done){
+			var gate = new Gate(-8, 0.01);
+			var sig = new Signal(gate.dbToGain(-6));
+			var recorder = new Recorder();
+			sig.connect(gate);
+			gate.connect(recorder);
+			recorder.record(0.01, 0.1, function(buffers){
+				var buffer = buffers[0];
+				for (var i = 0; i < buffer.length; i++){
+					expect(buffer[i]).to.greaterThan(0);
+				}
+				gate.dispose();
+				sig.dispose();
+				recorder.dispose();
+				done();
+			});
+		});
+	});
+
+	describe("Tone.Follower", function(){
+		this.timeout(1000);
+
+		it("can be created and disposed", function(){
+			var f = new Follower();
+			f.dispose();
+		});
+
+		it("smoothes the incoming signal", function(done){
+			var foll = new Follower(0.1);
+			var sig = new Signal(0);
+			var recorder = new Recorder();
+			sig.connect(foll);
+			sig.setValue(1);
+			foll.connect(recorder);
+			recorder.record(0.01, 0.1, function(buffers){
+				var buffer = buffers[0];
+				for (var i = 0; i < buffer.length; i++){
+					expect(buffer[i]).to.lessThan(1);
+				}
+				foll.dispose();
+				sig.dispose();
+				recorder.dispose();
+				done();
+			});
+		});
+
+	});
+
 });
