@@ -52,14 +52,14 @@ define(["Tone/core/Tone", "Tone/core/Transport"], function(Tone){
 	 *  @param {Tone.Time=} delay optional delay time before starting the source
 	 */
 	Tone.Source.prototype.sync = function(delay){
-		Tone.Transport.sync(this, delay);
+		Tone.Transport.syncSource(this, delay);
 	};
 
 	/**
 	 *  unsync the source to the Transport
 	 */
 	Tone.Source.prototype.unsync = function(){
-		Tone.Transport.unsync(this);
+		Tone.Transport.unsyncSource(this);
 	};
 
 
@@ -73,7 +73,7 @@ define(["Tone/core/Tone", "Tone/core/Transport"], function(Tone){
 			var currentVolume = this.output.gain.value;
 			this.output.gain.cancelScheduledValues(now);
 			this.output.gain.setValueAtTime(currentVolume, now);
-			this.output.gain.linearRampToValueAtTime(value, now + this.toSeconds(time));
+			this.output.gain.linearRampToValueAtTime(value, now + this.toSeconds(fadeTime));
 		} else {
 			this.output.gain.setValueAtTime(value, now);
 		}
