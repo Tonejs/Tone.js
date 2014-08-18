@@ -1,7 +1,7 @@
 /**
  *  Tone.js
  *
- *  @version 0.1.2
+ *  @version 2
  *
  *  @author Yotam Mann
  *
