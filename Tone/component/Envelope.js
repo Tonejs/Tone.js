@@ -14,8 +14,9 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	 *  @param {number=} maxOutput the highest point of the envelope
 	 */
 	Tone.Envelope = function(attack, decay, sustain, release, minOutput, maxOutput){
-		//extend Unit
-		Tone.call(this);
+		
+		/** @type {GainNode} */
+		this.output = this.context.createGain();
 
 		/** @type {number} */
 		this.attack = this.toSeconds(this.defaultArg(attack, 0.01));
@@ -35,7 +36,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 		this.control = new Tone.Signal(this.min);
 
 		//connections
-		this.chain(this.control, this.output);
+		this.control.connect(this.output);
 	};
 
 	Tone.extend(Tone.Envelope);
@@ -144,7 +145,9 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	 */
 	Tone.Envelope.prototype.dispose = function(){
 		this.control.dispose();
+		this.output.disconnect();
 		this.control = null;
+		this.output = null;
 	};
 
 	return Tone.Envelope;
