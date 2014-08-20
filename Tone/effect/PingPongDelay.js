@@ -3,7 +3,7 @@ define(["Tone/core/Tone", "Tone/effect/FeedbackDelay", "Tone/signal/Split", "Ton
 	 *  PingPongDelay is a dual delay effect where the echo is heard first in one channel and next in the opposite channel
 	 *
 	 * 	@constructor
-	 * 	@extends {Tone.Effect}
+	 * 	@extends {Tone}
 	 *  @param {Tone.Time=} delayTime is the interval between consecutive echos
 	 */
 	Tone.PingPongDelay = function(delayTime){
@@ -83,6 +83,22 @@ define(["Tone/core/Tone", "Tone/effect/FeedbackDelay", "Tone/signal/Split", "Ton
 	Tone.PingPongDelay.prototype.setDry = function(dry){
 		this.leftDelay.setDry(dry);
 		this.rightDelay.setDry(dry);
+	};
+
+	/**
+	 *  clean up
+	 */
+	Tone.PingPongDelay.prototype.dispose = function(){
+		this.leftDelay.dispose();
+		this.rightDelay.dispose();
+		this._merger.dispose();
+		this.input.disconnect();
+		this.output.disconnect();
+		this.leftDelay = null;
+		this.rightDelay = null;
+		this._merger = null;
+		this.input = null;
+		this.output = null;
 	};
 
 	return Tone.PingPongDelay;
