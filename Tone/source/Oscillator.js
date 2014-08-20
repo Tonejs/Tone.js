@@ -81,30 +81,6 @@ function(Tone){
 	};
 
 	/**
-	 *  Sync the oscillator to the transport
-	 *
-	 *  the current ratio between the oscillator and the Transport BPM
-	 *  is fixed and any change to the Transport BPM will change this
-	 *  oscillator in that same ratio
-	 *
-	 *  Transport start/pause/stop will also start/pause/stop the oscillator
-	 *
-	 *  @param {Tone.Time=} delay optional delay time before starting the source
-	 */
-	Tone.Oscillator.prototype.sync = function(delay){
-		Tone.Transport.sync(this, delay);
-		// Tone.Transport.syncSignal(this.frequency);
-	};
-
-	/**
-	 *  unsync the oscillator from the Transport
-	 */
-	Tone.Oscillator.prototype.unsync = function(){
-		Tone.Transport.unsync(this);
-		// this.frequency.unsync();
-	};
-
-	/**
 	 *  exponentially ramp the frequency of the oscillator over the rampTime
 	 *  
 	 *  @param {Tone.Time}	val
