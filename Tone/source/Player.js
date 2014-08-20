@@ -12,6 +12,7 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 	 *                                     once the url is loaded
 	 */
 	Tone.Player = function(url, onload){
+		
 		Tone.Source.call(this);
 
 		/**
@@ -31,6 +32,7 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 		/**
 		 *  the duration of the buffer once it's been loaded
 		 *  @type {number}
+		 *  @readOnly
 		 */
 		this.duration = 0;
 
