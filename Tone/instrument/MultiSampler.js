@@ -2,7 +2,7 @@ define(["Tone/core/Tone", "Tone/instrument/Sampler"],
 function(Tone){
 
 	/**
-	 *  @class Aggregates multiple Tone.MultiSamplers into a single instrument.
+	 *  @class Aggregates multiple Tone.Samplers into a single instrument.
 	 *         Pass in a mapping of names to sample urls and an optional 
 	 *         callback to invoke when all of the samples are loaded. 
 	 *
