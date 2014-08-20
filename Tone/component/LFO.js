@@ -14,16 +14,29 @@ define(["Tone/core/Tone", "Tone/source/Oscillator", "Tone/signal/Scale"], functi
 	 *  @param {number=} outputMax
 	 */
 	Tone.LFO = function(rate, outputMin, outputMax){
-		/** @type {GainNode} */
+
+		/** 
+		 *  the input
+		 *  @type {GainNOde}
+		 */
 		this.input = this.context.createGain();
-		/** @type {Tone.Oscillator} */
+
+		/** 
+		 *  the oscillator
+		 *  @type {Tone.Oscillator}
+		 */
 		this.oscillator = new Tone.Oscillator(this.defaultArg(rate, 1), "sine");
+
 		/**
-			@type {Tone.Scale} 
-			@private
-		*/
+		 *  @type {Tone.Scale} 
+		 *  @private
+		 */
 		this._scaler = new Tone.Scale(this.defaultArg(outputMin, 0), this.defaultArg(outputMax, 1));
-		/** alias for the output */
+
+		/** 
+		 *  alias for the output
+		 *  @type {Tone.Scale}
+		 */
 		this.output = this._scaler;
 
 		//connect it up
@@ -34,7 +47,7 @@ define(["Tone/core/Tone", "Tone/source/Oscillator", "Tone/signal/Scale"], functi
 
 	/**
 	 *  start the LFO
-	 *  @param  {Tone.Time} time 
+	 *  @param  {Tone.Time=} [time=now] the time the LFO will start
 	 */
 	Tone.LFO.prototype.start = function(time){
 		this.oscillator.start(time);
@@ -42,7 +55,7 @@ define(["Tone/core/Tone", "Tone/source/Oscillator", "Tone/signal/Scale"], functi
 
 	/**
 	 *  stop the LFO
-	 *  @param  {Tone.Time} time 
+	 *  @param  {Tone.Time=} [time=now] the time the LFO will stop
 	 */
 	Tone.LFO.prototype.stop = function(time){
 		this.oscillator.stop(time);
@@ -51,18 +64,21 @@ define(["Tone/core/Tone", "Tone/source/Oscillator", "Tone/signal/Scale"], functi
 	/**
 	 *  Sync the start/stop/pause to the transport 
 	 *  and the frequency to the bpm of the transport
+	 *
+	 *  @param {Tone.Time=} [delay=0] the time to delay the start of the
+	 *                                LFO from the start of the transport
 	 */
-	Tone.LFO.prototype.sync = function(){
-		this.oscillator.sync();
-		// Tone.Transport.syncSignal(this.oscillator.frequency);
+	Tone.LFO.prototype.sync = function(delay){
+		Tone.Transport.syncSource(this.oscillator, delay);
+		Tone.Transport.syncSignal(this.oscillator.frequency);
 	};
 
 	/**
 	 *  unsync the LFO from transport control
 	 */
 	Tone.LFO.prototype.unsync = function(){
-		this.oscillator.unsync();
-		// this.oscillator.frequency.unsync();
+		Tone.Transport.unsyncSource(this.oscillator);
+		Tone.Transport.unsyncSignal(this.oscillator.frequency);
 	};
 
 
