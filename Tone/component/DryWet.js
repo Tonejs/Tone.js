@@ -1,13 +1,13 @@
 define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Scale"], function(Tone){
 
 	/**
-	 * DRY/WET KNOB
-	 * 
-	 * equal power fading control values:
-	 * 	0 = 100% dry  -    0% wet
-	 * 	1 =   0% dry  -  100% wet
+	 * @class  dry/wet knob.
+	 *         equal power fading control values:
+	 * 	       0 = 100% wet  -    0% dry
+	 * 	       1 =   0% wet  -  100% dry
 	 *
 	 * @constructor
+	 * @extends {Tone}
 	 * @param {number=} initialDry
 	 */		
 	Tone.DryWet = function(initialDry){
