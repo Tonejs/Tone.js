@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/core/Transport", "Tone/signal/Signal", "Tone/source/Source"], 
+define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/source/Source"], 
 function(Tone){
 
 	/**
@@ -17,6 +17,7 @@ function(Tone){
 		 *  @type {OscillatorNode}
 		 */
 		this.oscillator = this.context.createOscillator();
+		
 		/**
 		 *  the frequency control signal
 		 *  @type {Tone.Signal}
