@@ -19,12 +19,14 @@ define(["Tone/core/Tone", "Tone/component/DryWet"], function(Tone){
 		 *  @type {Tone.DryWet}
 		 */
 		this.dryWet = new Tone.DryWet();
+
 		/**
 		 *  connect the effectSend to the input of hte effect
 		 *  
 		 *  @type {GainNode}
 		 */
 		this.effectSend = this.context.createGain();
+
 		/**
 		 *  connect the output of the effect to the effectReturn
 		 *  
@@ -37,8 +39,7 @@ define(["Tone/core/Tone", "Tone/component/DryWet"], function(Tone){
 		this.input.connect(this.effectSend);
 		this.effectReturn.connect(this.dryWet.wet);
 		this.dryWet.connect(this.output);
-		
-		//setup
+		//setup values
 		this.setDry(this.defaultArg(initialDry, 0.5));
 	};
 
