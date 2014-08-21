@@ -404,12 +404,12 @@ define("Tone/core/Tone", [], function(){
 	//	MUSIC NOTES
 	///////////////////////////////////////////////////////////////////////////
 
-	var noteToIndex = { "a" : 0, "a#" : 1, "bb" : 1, "b" : 2, "c" : 3, "c#" : 4,
-		"db" : 4, "d" : 5, "d#" : 6, "eb" : 6, "e" : 7, "f" : 8, "f#" : 9, 
-		"gb" : 9, "g" : 10, "g#" : 11, "ab" : 11
+	var noteToIndex = { "c" : 0, "c#" : 1, "db" : 1, "d" : 2, "d#" : 3, "eb" : 3, 
+		"e" : 4, "f" : 5, "f#" : 6, "gb" : 6, "g" : 7, "g#" : 8, "ab" : 8, 
+		"a" : 9, "a#" : 10, "bb" : 10, "b" : 11
 	};
 
-	var noteIndexToNote = ["A", "A#", "B", "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#"];
+	var noteIndexToNote = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
 
 	/**
 	 *  convert a note name to frequency (i.e. A4 to 440)
@@ -423,7 +423,7 @@ define("Tone/core/Tone", [], function(){
 			var index = noteToIndex[parts[0].toLowerCase()];
 			var octave = parts[1];
 			var noteNumber = index + parseInt(octave, 10) * 12;
-			return Math.pow(2, (noteNumber - 48) / 12) * 440;
+			return Math.pow(2, (noteNumber - 48) / 12) * 523.251;
 		} else {
 			return 0;
 		}
@@ -435,7 +435,7 @@ define("Tone/core/Tone", [], function(){
 	 *  @return {string}         
 	 */
 	Tone.prototype.frequencyToNote = function(freq){
-		var log = Math.log(freq / 440) / Math.LN2;
+		var log = Math.log(freq / 523.251) / Math.LN2;
 		var noteNumber = Math.round(12 * log) + 48;
 		var octave = Math.floor(noteNumber/12);
 		var noteName = noteIndexToNote[noteNumber % 12];
