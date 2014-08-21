@@ -1,7 +1,7 @@
 define(["Tone/core/Tone"], function(Tone){
 
 	/**
-	 *  downsample incoming signal
+	 *  @class downsample incoming signal
 	 *  inspiration from https://github.com/jaz303/bitcrusher/blob/master/index.js
 	 *
 	 *  @constructor
