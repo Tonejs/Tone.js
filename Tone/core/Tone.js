@@ -203,14 +203,25 @@ define("Tone/core/Tone", [], function(){
 	///////////////////////////////////////////////////////////////////////////
 
 	/**
-	 *  if a the given is undefined, use the fallback
+	 *  if a the given is undefined, use the fallback. 
+	 *  if both given and fallback are objects, given
+	 *  will be augmented with whatever properties it's
+	 *  missing which are in fallback
 	 *  
 	 *  @param  {*} given    
 	 *  @param  {*} fallback 
 	 *  @return {*}          
 	 */
 	Tone.prototype.defaultArg = function(given, fallback){
-		return isUndef(given) ? fallback : given;
+		if (typeof given === "object" && typeof fallback === "object"){
+			var ret = {};
+			for (var prop in fallback) {
+				ret[prop] = isUndef(given[prop]) ? fallback[prop] : given[prop];
+			}
+			return ret;
+		} else {
+			return isUndef(given) ? fallback : given;
+		}
 	};
 
 	/**
