@@ -1,7 +1,7 @@
 /**
  *  Tone.js
  *
- *  @version 2
+ *  @version 1
  *
  *  @author Yotam Mann
  *
@@ -207,6 +207,9 @@ define("Tone/core/Tone", [], function(){
 	 *  if both given and fallback are objects, given
 	 *  will be augmented with whatever properties it's
 	 *  missing which are in fallback
+	 *
+	 *  warning: if object is self referential, it will go into an an 
+	 *  infinite recursive loop. 
 	 *  
 	 *  @param  {*} given    
 	 *  @param  {*} fallback 
@@ -216,7 +219,7 @@ define("Tone/core/Tone", [], function(){
 		if (typeof given === "object" && typeof fallback === "object"){
 			var ret = {};
 			for (var prop in fallback) {
-				ret[prop] = isUndef(given[prop]) ? fallback[prop] : given[prop];
+				ret[prop] = this.defaultArg(given[prop], fallback[prop]);
 			}
 			return ret;
 		} else {
@@ -422,6 +425,8 @@ define("Tone/core/Tone", [], function(){
 
 	var noteIndexToNote = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
 
+	var middleC = 261.6255653005986;
+
 	/**
 	 *  convert a note name to frequency (i.e. A4 to 440)
 	 *  @param  {string} note
@@ -434,7 +439,7 @@ define("Tone/core/Tone", [], function(){
 			var index = noteToIndex[parts[0].toLowerCase()];
 			var octave = parts[1];
 			var noteNumber = index + parseInt(octave, 10) * 12;
-			return Math.pow(2, (noteNumber - 48) / 12) * 523.251;
+			return Math.pow(2, (noteNumber - 48) / 12) * middleC;
 		} else {
 			return 0;
 		}
@@ -446,7 +451,7 @@ define("Tone/core/Tone", [], function(){
 	 *  @return {string}         
 	 */
 	Tone.prototype.frequencyToNote = function(freq){
-		var log = Math.log(freq / 523.251) / Math.LN2;
+		var log = Math.log(freq / middleC) / Math.LN2;
 		var noteNumber = Math.round(12 * log) + 48;
 		var octave = Math.floor(noteNumber/12);
 		var noteName = noteIndexToNote[noteNumber % 12];
