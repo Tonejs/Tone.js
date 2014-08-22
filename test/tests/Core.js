@@ -1,4 +1,4 @@
-/* global it, describe */
+/* global it, describe, after */
 
 define(["chai", "Tone/core/Tone", "Tone/core/Master", "Tone/core/Bus"], function(chai, Tone, Master){
 	var expect = chai.expect;
@@ -29,6 +29,62 @@ define(["chai", "Tone/core/Tone", "Tone/core/Master", "Tone/core/Bus"], function
 			expect(AudioContext.prototype.createGain).to.be.instanceof(Function);
 		});
 
+	});
+
+	describe("Tone", function(){
+
+		var tone = new Tone();
+
+		after(function(){
+			tone.dispose();
+		});
+
+		it("correctly calculates samples to seconds", function(){
+			var sampleRate = tone.context.sampleRate;
+			expect(tone.samplesToSeconds(100)).to.equal(100/sampleRate);
+			expect(tone.samplesToSeconds(800)).to.equal(800/sampleRate);
+		});
+
+		it("can convert gain to db", function(){
+			expect(tone.gainToDb(0)).to.equal(-Infinity);
+			expect(tone.gainToDb(1)).is.closeTo(0, 0.1);
+			expect(tone.gainToDb(0.5)).is.closeTo(-6, 0.1);
+		});
+
+		it("can convert db to gain", function(){
+			expect(tone.dbToGain(0)).is.closeTo(1, 0.1);
+			expect(tone.dbToGain(-12)).is.closeTo(0.25, 0.1);
+			expect(tone.dbToGain(-24)).is.closeTo(0.125, 0.1);
+		});
+
+		it("can convert back and forth between db and gain representations", function(){
+			expect(tone.dbToGain(tone.gainToDb(0))).is.closeTo(0, 0.01);
+			expect(tone.dbToGain(tone.gainToDb(0.5))).is.closeTo(0.5, 0.01);
+			expect(tone.gainToDb(tone.dbToGain(1))).is.closeTo(1, 0.01);
+		});
+
+		it("returns a default argument when the given is not defined", function(){
+			expect(tone.defaultArg(undefined, 0)).is.equal(0);
+			expect(tone.defaultArg(undefined, "also")).is.equal("also");
+			expect(tone.defaultArg("hihi", 100)).is.equal("hihi");
+		});
+
+		it("handles default arguments on an object", function(){
+			expect(tone.defaultArg({"b" : 10}, {"a" : 4, "b" : 10})).has.property("a", 4);
+			expect(tone.defaultArg({"b" : 10}, {"a" : 4, "b" : 10})).has.property("b", 10);
+			expect(tone.defaultArg({"b" : {"c" : 10}}, {"b" : {"c" : 20}})).has.deep.property("b.c", 10);
+			expect(tone.defaultArg({"a" : 10}, {"b" : {"c" : 20}})).has.deep.property("b.c", 20);
+		});
+
+		it("can convert notes into frequencies", function(){
+			expect(tone.noteToFrequency("A4")).to.be.closeTo(440, 0.0001);
+			expect(tone.noteToFrequency("Bb4")).to.be.closeTo(466.163761, 0.0001);
+		});
+
+		it("can convert frequencies into notes", function(){
+			expect(tone.frequencyToNote(440)).to.equal("A4");
+			expect(tone.frequencyToNote(4978.031739553295)).to.equal("D#8");
+		});
 	});
 
 	describe("Tone.Master", function(){
