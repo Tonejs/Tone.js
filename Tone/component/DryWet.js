@@ -27,6 +27,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Scale"], function(T
 		 *  @type {GainNode}
 		 */
 		this.wet = this.context.createGain();
+
 		/**
 		 *  controls the amount of wet signal 
 		 *  which is mixed into the dry signal
@@ -34,6 +35,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Scale"], function(T
 		 *  @type {Tone.Signal}
 		 */
 		this.wetness = new Tone.Signal();
+		
 		/**
 		 *  invert the incoming signal
 		 *  @private
