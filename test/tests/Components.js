@@ -2,8 +2,8 @@
 
 define(["tests/Core", "chai", "Tone/component/DryWet", "Tone/core/Master", "Tone/signal/Signal", 
 "Tone/component/Recorder", "Tone/component/Panner", "Tone/component/LFO", "Tone/component/Gate", 
-"Tone/component/Follower"],
-function(coreTest, chai, DryWet, Master, Signal, Recorder, Panner, LFO, Gate, Follower){
+"Tone/component/Follower", "Tone/component/Envelope"],
+function(coreTest, chai, DryWet, Master, Signal, Recorder, Panner, LFO, Gate, Follower, Envelope){
 	var expect = chai.expect;
 
 	Master.mute();
@@ -304,6 +304,33 @@ function(coreTest, chai, DryWet, Master, Signal, Recorder, Panner, LFO, Gate, Fo
 				recorder.dispose();
 				done();
 			});
+		});
+
+	});
+
+	describe("Tone.Envelope", function(){
+		this.timeout(1000);
+
+		it("can be created and disposed", function(){
+			var e = new Envelope();
+			e.dispose();
+		});
+
+		it ("can take parameters as both an object and as arguments", function(){
+			var e0 = new Envelope({
+				"attack" : 0,
+				"decay" : 0.5,
+				"sustain" : 1
+			});
+			expect(e0.attack).to.equal(0);
+			expect(e0.decay).to.equal(0.5);
+			expect(e0.sustain).to.equal(1);
+			e0.dispose();
+			var e1 = new Envelope(0.1, 0.2, 0.3);
+			expect(e1.attack).to.equal(0.1);
+			expect(e1.decay).to.equal(0.2);
+			expect(e1.sustain).to.equal(0.3);
+			e1.dispose();
 		});
 
 	});
