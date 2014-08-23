@@ -7,13 +7,15 @@ define(["Tone/core/Tone", "Tone/effect/FeedbackEffect", "Tone/signal/Signal"], f
 	 *  @param {Tone.Time=} delayTime
 	 */
 	Tone.FeedbackDelay = function(delayTime){
+		
 		Tone.FeedbackEffect.call(this);
 
 		/**
 		 *  Tone.Signal to control the delay amount
 		 *  @type {Tone.Signal}
 		 */
-		this.delay = new Tone.Signal();
+		this.delayTime = new Tone.Signal();
+
 		/**
 		 *  the delay node
 		 *  @type {DelayNode}
@@ -23,7 +25,7 @@ define(["Tone/core/Tone", "Tone/effect/FeedbackEffect", "Tone/signal/Signal"], f
 
 		// connect it up
 		this.connectEffect(this._delayNode);
-		this.delay.connect(this._delayNode.delayTime);
+		this.delayTime.connect(this._delayNode.delayTime);
 		//set the initial delay
 		this.setDelayTime(this.defaultArg(delayTime, 0.25));
 	};
@@ -38,9 +40,9 @@ define(["Tone/core/Tone", "Tone/effect/FeedbackEffect", "Tone/signal/Signal"], f
 	 */
 	Tone.FeedbackDelay.prototype.setDelayTime = function(delayTime, rampTime){
 		if (rampTime){
-			this.delay.linearRampToValueNow(this.toSeconds(delayTime), rampTime);
+			this.delayTime.linearRampToValueNow(this.toSeconds(delayTime), rampTime);
 		} else {
-			this.delay.setValue(this.toSeconds(delayTime));
+			this.delayTime.setValue(this.toSeconds(delayTime));
 		}
 	};
 
@@ -55,10 +57,10 @@ define(["Tone/core/Tone", "Tone/effect/FeedbackEffect", "Tone/signal/Signal"], f
 	 */
 	Tone.FeedbackDelay.prototype.dispose = function(){
 		this._feedbackEffectDispose();
-		this.delay.dispose();
+		this.delayTime.dispose();
 		this._delayNode.disconnect();
 		this._delayNode = null;
-		this.delay = null;
+		this.delayTime = null;
 	};
 
 	return Tone.FeedbackDelay;
