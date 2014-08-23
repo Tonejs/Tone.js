@@ -7,8 +7,8 @@ define(["Tone/core/Tone", "Tone/component/DryWet"], function(Tone){
 	 *
 	 *  @constructor
 	 *  @extends {Tone}
-	 *  @param {number=} initalDry the starting dry value
-	 *                             defaults to 0.5 (50% dry / 50% wet)
+	 *  @param {number=} [initalDry=0] the starting dry value
+	 *                             defaults to 100% wet
 	 */
 	Tone.Effect = function(initialDry){
 		Tone.call(this);
@@ -40,7 +40,7 @@ define(["Tone/core/Tone", "Tone/component/DryWet"], function(Tone){
 		this.effectReturn.connect(this.dryWet.wet);
 		this.dryWet.connect(this.output);
 		//setup values
-		this.setDry(this.defaultArg(initialDry, 0.5));
+		this.setDry(this.defaultArg(initialDry, 0));
 	};
 
 	Tone.extend(Tone.Effect);
