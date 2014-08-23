@@ -110,17 +110,18 @@ define(["Tone/core/Tone", "Tone/component/Follower", "Tone/signal/ScaleExp", "To
 	};
 
 	/**
-	 *  pointer to parents dispose method
-	 *  @private
-	 */
-	Tone.AutoWah.prototype._effectDispose = Tone.Effect.prototype.dispose;
-
-	/**
 	 *  clean up
-	 *  @return {[type]} [description]
 	 */
 	Tone.AutoWah.prototype.dispose = function(){
-		this._effectDispose();
+		Tone.Effect.prototype.dispose.call(this);
+		this._follower.dispose();
+		this._sweepRange.dispose();
+		this._bandpass.disconnect();
+		this._peaking.disconnect();
+		this._follower = null;
+		this._sweepRange = null;
+		this._bandpass = null;
+		this._peaking = null;
 	};
 
 	return Tone.AutoWah;
