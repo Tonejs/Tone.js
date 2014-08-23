@@ -12,6 +12,8 @@ define(["Tone/core/Tone", "Tone/effect/FeedbackDelay", "Tone/signal/Split", "Ton
 
 		/**
 		 *  merge the delayed signal
+		 *  @type {Tone.Merge}
+		 *  @private
 		 */
 		this._merger = new Tone.Merge();
 
