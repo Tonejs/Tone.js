@@ -7,17 +7,20 @@ define(["Tone/core/Tone", "Tone/effect/FeedbackDelay", "Tone/signal/Split", "Ton
 	 *  @param {Tone.Time=} delayTime is the interval between consecutive echos
 	 */
 	Tone.PingPongDelay = function(delayTime){
+		
 		Tone.call(this);
 
 		/**
 		 *  merge the delayed signal
 		 */
 		this._merger = new Tone.Merge();
+
 		/**
 		 *  each channel (left/right) gets a feedback delay
 		 *  @type {Tone.FeedbackDelay}
 		 */
 		this.leftDelay = new Tone.FeedbackDelay(delayTime);
+
 		/**
 		 *  @type {Tone.FeedbackDelay}
 		 */
@@ -26,19 +29,15 @@ define(["Tone/core/Tone", "Tone/effect/FeedbackDelay", "Tone/signal/Split", "Ton
 		//connect it up
 		this.input.connect(this.leftDelay);
 		this.input.connect(this.rightDelay);
-
 		//disconnect the feedback lines to connect them to the other delay
 		// http://jvzaudio.files.wordpress.com/2011/04/delay-f43.gif
 		this.leftDelay._feedbackGain.disconnect();
 		this.rightDelay._feedbackGain.disconnect();
 		this.leftDelay._feedbackGain.connect(this.rightDelay.effectSend);
 		this.rightDelay._feedbackGain.connect(this.leftDelay.effectSend);
-
 		this.leftDelay.connect(this._merger.left);
 		this.rightDelay.connect(this._merger.right);
-
 		this._merger.connect(this.output);
-
 		//initial vals;
 		this.setDelayTime(this.defaultArg(delayTime, 0.25));
 	};
