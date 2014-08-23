@@ -20,7 +20,7 @@ define(["Tone/core/Tone"], function(Tone){
 		 *  @type {GainNode}
 		 *  @private
 		 */
-		this.scalar = this.context.createGain();
+		this._scalar = this.context.createGain();
 		/**
 		 *  the ratio of the this value to the control signal value
 		 *
@@ -30,7 +30,7 @@ define(["Tone/core/Tone"], function(Tone){
 		this._syncRatio = 1;
 
 		//connect the constant 1 output to the node output
-		this.chain(constant, this.scalar, this.output);
+		this.chain(constant, this._scalar, this.output);
 		//signal passes through
 		this.input.connect(this.output);
 
@@ -44,7 +44,7 @@ define(["Tone/core/Tone"], function(Tone){
 	 *  @return {number} the current value of the signal
 	 */
 	Tone.Signal.prototype.getValue = function(){
-		return this.scalar.gain.value;
+		return this._scalar.gain.value;
 	};
 
 	/**
@@ -59,7 +59,7 @@ define(["Tone/core/Tone"], function(Tone){
 		} else {
 			value *= this._syncRatio;
 		}
-		this.scalar.gain.value = value;
+		this._scalar.gain.value = value;
 	};
 
 	/**
@@ -70,7 +70,7 @@ define(["Tone/core/Tone"], function(Tone){
 	 */
 	Tone.Signal.prototype.setValueAtTime = function(value, time){
 		value *= this._syncRatio;
-		this.scalar.gain.setValueAtTime(value, this.toSeconds(time));
+		this._scalar.gain.setValueAtTime(value, this.toSeconds(time));
 	};
 
 	/**
@@ -83,7 +83,7 @@ define(["Tone/core/Tone"], function(Tone){
 		now = this.defaultArg(now, this.now());
 		var currentVal = this.getValue();
 		this.cancelScheduledValues(now);
-		this.scalar.gain.setValueAtTime(currentVal, now);
+		this._scalar.gain.setValueAtTime(currentVal, now);
 		return currentVal;
 	};
 
@@ -96,7 +96,7 @@ define(["Tone/core/Tone"], function(Tone){
 	 */
 	Tone.Signal.prototype.linearRampToValueAtTime = function(value, endTime){
 		value *= this._syncRatio;
-		this.scalar.gain.linearRampToValueAtTime(value, this.toSeconds(endTime));
+		this._scalar.gain.linearRampToValueAtTime(value, this.toSeconds(endTime));
 	};
 
 	/**
@@ -111,7 +111,7 @@ define(["Tone/core/Tone"], function(Tone){
 	 */
 	Tone.Signal.prototype.exponentialRampToValueAtTime = function(value, endTime){
 		value *= this._syncRatio;
-		this.scalar.gain.exponentialRampToValueAtTime(value, this.toSeconds(endTime));
+		this._scalar.gain.exponentialRampToValueAtTime(value, this.toSeconds(endTime));
 	};
 
 	/**
@@ -129,7 +129,7 @@ define(["Tone/core/Tone"], function(Tone){
 		if (endTime.toString().charAt(0) === "+"){
 			endTime = endTime.substr(1);
 		}
-		this.scalar.gain.exponentialRampToValueAtTime(value, now + this.toSeconds(endTime));
+		this._scalar.gain.exponentialRampToValueAtTime(value, now + this.toSeconds(endTime));
 	};
 
 	/**
@@ -147,7 +147,7 @@ define(["Tone/core/Tone"], function(Tone){
 		if (endTime.toString().charAt(0) === "+"){
 			endTime = endTime.substr(1);
 		}
-		this.scalar.gain.linearRampToValueAtTime(value, now + this.toSeconds(endTime));
+		this._scalar.gain.linearRampToValueAtTime(value, now + this.toSeconds(endTime));
 	};
 
 	/**
@@ -175,7 +175,7 @@ define(["Tone/core/Tone"], function(Tone){
 		for (var i = 0; i < values.length; i++){
 			values[i] *= this._syncRatio;
 		}
-		this.scalar.gain.setValueCurveAtTime(values, this.toSeconds(startTime), this.toSeconds(duration));
+		this._scalar.gain.setValueCurveAtTime(values, this.toSeconds(startTime), this.toSeconds(duration));
 	};
 
 	/**
@@ -185,7 +185,7 @@ define(["Tone/core/Tone"], function(Tone){
 	 *  @param  {Tone.Time} startTime
 	 */
 	Tone.Signal.prototype.cancelScheduledValues = function(startTime){
-		this.scalar.gain.cancelScheduledValues(this.toSeconds(startTime));
+		this._scalar.gain.cancelScheduledValues(this.toSeconds(startTime));
 	};
 
 	/**
@@ -212,11 +212,11 @@ define(["Tone/core/Tone"], function(Tone){
 			}
 		}
 		//make a new scalar which is not connected to the constant signal
-		this.scalar.disconnect();
-		this.scalar = this.context.createGain();
-		this.chain(signal, this.scalar, this.output);
+		this._scalar.disconnect();
+		this._scalar = this.context.createGain();
+		this.chain(signal, this._scalar, this.output);
 		//set it ot the sync ratio
-		this.scalar.gain.value = this._syncRatio;
+		this._scalar.gain.value = this._syncRatio;
 	};
 
 	/**
@@ -228,12 +228,12 @@ define(["Tone/core/Tone"], function(Tone){
 		//make a new scalar so that it's disconnected from the control signal
 		//get the current gain
 		var currentGain = this.getValue();
-		this.scalar.disconnect();
-		this.scalar = this.context.createGain();
-		this.scalar.gain.value = currentGain / this._syncRatio;
+		this._scalar.disconnect();
+		this._scalar = this.context.createGain();
+		this._scalar.gain.value = currentGain / this._syncRatio;
 		this._syncRatio = 1;
 		//reconnect things up
-		this.chain(constant, this.scalar, this.output);
+		this.chain(constant, this._scalar, this.output);
 	};
 
 	/**
@@ -242,9 +242,9 @@ define(["Tone/core/Tone"], function(Tone){
 	Tone.Signal.prototype.dispose = function(){
 		//disconnect everything
 		this.output.disconnect();
-		this.scalar.disconnect();
+		this._scalar.disconnect();
 		this.output = null;
-		this.scalar = null;
+		this._scalar = null;
 	};
 
 	/**
