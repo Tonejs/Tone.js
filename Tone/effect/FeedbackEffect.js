@@ -4,7 +4,7 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/signal/Signal"], function(
 	 *
 	 *  @constructor
 	 *  @extends {Tone.Effect}
-	 *  @param {number=} initialFeedback the initial feedback value (defaults to 0.25)
+	 *  @param {number=} [initialFeedback=0.25] the initial feedback value (defaults to 0.25)
 	 */
 	Tone.FeedbackEffect = function(initialFeedback){
 		Tone.Effect.call(this);
@@ -14,6 +14,7 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/signal/Signal"], function(
 		 *  @type {Tone.Signal}
 		 */
 		this.feedback = new Tone.Signal(this.defaultArg(initialFeedback, 0.25));
+		
 		/**
 		 *  the gain which controls the feedback
 		 *  @type {GainNode}
