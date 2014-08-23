@@ -6,16 +6,16 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/LFO", "Tone/comp
 	 *  @constructor
 	 *  @extends {Tone.Effect}
 	 *  @param { number= } rate (optional) rate in HZ of the left-right pan
-	 *  @param { number= } amount (optional) of the pan (0 - 1)
 	 */
-	Tone.AutoPanner = function(rate, amount){
+	Tone.AutoPanner = function(rate){
 		Tone.Effect.call(this);
 
 		/**
 		 *  the lfo which drives the panning
 		 *  @type {Tone.LFO}
+		 *  @private
 		 */
-		this.lfo = new Tone.LFO(rate, 0, 1);
+		this._lfo = new Tone.LFO(rate, 0, 1);
 
 		/**
 		 *  the panner node which does the panning
@@ -26,9 +26,7 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/LFO", "Tone/comp
 
 		//connections
 		this.connectEffect(this._panner);
-		this.lfo.connect(this._panner.pan);
-		//default dry value
-		this.setDry(this.defaultArg(amount, 1));
+		this._lfo.connect(this._panner.pan);
 	};
 
 	//extend Effect
@@ -40,7 +38,7 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/LFO", "Tone/comp
 	 * @param {Tone.Time=} Time the panner begins.
 	 */
 	Tone.AutoPanner.prototype.start = function(time){
-		this.lfo.start(time);
+		this._lfo.start(time);
 	};
 
 	/**
@@ -49,7 +47,7 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/LFO", "Tone/comp
 	 * @param {Tone.Time=} time the panner stops.
 	 */
 	Tone.AutoPanner.prototype.stop = function(time){
-		this.lfo.stop(time);
+		this._lfo.stop(time);
 	};
 
 	/**
@@ -58,7 +56,7 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/LFO", "Tone/comp
 	 * @param {string} type of oscillator the panner is attached to (sine|sawtooth|triangle|square)
 	 */
 	Tone.AutoPanner.prototype.setType = function(type){
-		this.lfo.setType(type);
+		this._lfo.setType(type);
 	};
 
 	/**
@@ -67,7 +65,7 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/LFO", "Tone/comp
 	 * @param {number|string} rate in HZ of the oscillator's frequency.
 	 */
 	Tone.AutoPanner.prototype.setFrequency = function(rate){
-		this.lfo.setFrequency(rate);
+		this._lfo.setFrequency(rate);
 	};
 
 	/**
@@ -75,9 +73,9 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/LFO", "Tone/comp
 	 */
 	Tone.AutoPanner.prototype.dispose = function(){
 		Tone.Effect.prototype.dispose.call(this);
-		this.lfo.dispose();
+		this._lfo.dispose();
 		this._panner.dispose();
-		this.lfo = null;
+		this._lfo = null;
 		this._panner = null;
 	};
 
