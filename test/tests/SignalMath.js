@@ -2,8 +2,8 @@
 
 define(["tests/Core", "chai", "Tone/component/Recorder", "Tone/signal/Signal", "Tone/signal/Add", "Tone/signal/Multiply", 
 	"Tone/signal/Scale", "Tone/source/Oscillator", "Tone/core/Master", "Tone/signal/Abs", "Tone/signal/Negate", 
-	 "Tone/signal/Max", "Tone/signal/Min", "Tone/signal/Clip"], 
-function(core, chai, Recorder, Signal, Add, Multiply, Scale, Oscillator, Master, Abs, Negate, Max, Min, Clip){
+	 "Tone/signal/Max", "Tone/signal/Min", "Tone/signal/Clip", "Tone/signal/ScaleExp"], 
+function(core, chai, Recorder, Signal, Add, Multiply, Scale, Oscillator, Master, Abs, Negate, Max, Min, Clip, ScaleExp){
 
 	var expect = chai.expect;
 
@@ -106,6 +106,33 @@ function(core, chai, Recorder, Signal, Add, Multiply, Scale, Oscillator, Master,
 				//get the left buffer and check that all values are === 1
 				for (var i = 0; i < buffer.length; i++){
 					expect(buffer[i]).to.be.within(10, 20);
+				}
+				done();
+			});
+		});
+	});
+
+	//SCALE
+	describe("Tone.ScaleExp", function(){
+		this.timeout(1000);
+
+		it("can be created and disposed", function(){
+			var s = new ScaleExp(0, 10, 2);
+			s.dispose();
+		});
+
+		it("scales a signal exponentially", function(done){
+			//make an oscillator to drive the signal
+			var signal = new Signal(0.5);
+			var scale = new ScaleExp(0, 1, 0, 1, 2);
+			signal.connect(scale);
+			var recorder = new Recorder();
+			scale.connect(recorder);
+			recorder.record(0.1, 0.1, function(buffers){
+				var buffer = buffers[0];
+				//get the left buffer and check that all values are === 1
+				for (var i = 0; i < buffer.length; i++){
+					expect(buffer[i]).to.equal(0.25);
 				}
 				done();
 			});
