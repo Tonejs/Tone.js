@@ -2,9 +2,9 @@
 
 define(["tests/Core", "chai", "Tone/component/Recorder", "Tone/core/Master", "Tone/effect/Effect", "Tone/component/DryWet",
 	"Tone/effect/FeedbackEffect", "Tone/signal/Signal", "Tone/effect/AutoPanner", "Tone/effect/AutoWah", "Tone/effect/BitCrusher",
-	"Tone/effect/FeedbackDelay", "Tone/effect/PingPongDelay"], 
+	"Tone/effect/FeedbackDelay", "Tone/effect/PingPongDelay", "Tone/effect/Chorus"], 
 function(Tone, chai, Recorder, Master, Effect, DryWet, FeedbackEffect, Signal, AutoPanner, AutoWah, BitCrusher, 
-	FeedbackDelay, PingPongDelay){
+	FeedbackDelay, PingPongDelay, Chorus){
 
 	var expect = chai.expect;
 
@@ -112,6 +112,21 @@ function(Tone, chai, Recorder, Master, Effect, DryWet, FeedbackEffect, Signal, A
 		it("can be created and disposed", function(){
 			var ppd = new PingPongDelay();
 			ppd.dispose();
+		});
+	});
+
+	//Chorus
+	describe("Tone.Chorus", function(){
+
+		it("can be created and disposed", function(){
+			var chorus = new Chorus();
+			chorus.dispose();
+		});
+		
+		it("extends Tone.Effect", function(){
+			var chorus = new Chorus();
+			expect(chorus).is.instanceof(Effect);
+			chorus.dispose();
 		});
 	});
 });
