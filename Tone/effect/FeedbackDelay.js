@@ -47,16 +47,10 @@ define(["Tone/core/Tone", "Tone/effect/FeedbackEffect", "Tone/signal/Signal"], f
 	};
 
 	/**
-	 *  pointer to the feedback effects dispose method
-	 *  @borrows Tone.FeedbackDelay._feedbackEffectDispose as Tone.FeedbackEffect.dispose;
-	 */
-	Tone.FeedbackDelay.prototype._feedbackEffectDispose = Tone.FeedbackEffect.prototype.dispose;
-
-	/**
 	 *  clean up
 	 */
 	Tone.FeedbackDelay.prototype.dispose = function(){
-		this._feedbackEffectDispose();
+		Tone.FeedbackEffect.prototype.dispose.call(this);
 		this.delayTime.dispose();
 		this._delayNode.disconnect();
 		this._delayNode = null;

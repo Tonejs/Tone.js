@@ -80,17 +80,22 @@ define(["Tone/core/Tone", "Tone/component/LFO", "Tone/effect/FeedbackEffect"], f
 	};
 
 	/**
-	 *  pointer to the parents dispose method
-	 *  @private
-	 *  @function
+	 *  set multiple parameters at once with an object
+	 *  @param {Object} params the parameters as an object
 	 */
-	Tone.Chorus.prototype._feedbackEffectDispose = Tone.FeedbackEffect.prototype.dispose;
+	Tone.Chorus.prototype.set = function(params){
+		if (!this.isUndef(params.rate)) this.setRate(params.rate);
+		if (!this.isUndef(params.delayTime)) this.setDelayTime(params.delayTime);
+		if (!this.isUndef(params.depth)) this.setDepth(params.depth);
+		//call the parent's set method
+		//Tone.FeedbackEffect.prototype.set.call(this, params);
+	};
 
 	/**
 	 *  clean up
 	 */
 	Tone.Chorus.prototype.dispose = function(){
-		this._feedbackEffectDispose();
+		Tone.FeedbackEffect.prototype.dispose.call(this);
 		this._lfo.dispose();
 		this._delayNode.disconnect();
 		this._lfo = null;

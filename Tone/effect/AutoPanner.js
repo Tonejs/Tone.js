@@ -71,16 +71,10 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/LFO", "Tone/comp
 	};
 
 	/**
-	 *  pointer to the parent's dipose method
-	 *  @private
-	 */
-	Tone.AutoPanner.prototype._effectDispose = Tone.Effect.prototype.dispose;
-
-	/**
 	 *  clean up
 	 */
 	Tone.AutoPanner.prototype.dispose = function(){
-		this._effectDispose();
+		Tone.Effect.prototype.dispose.call(this);
 		this.lfo.dispose();
 		this._panner.dispose();
 		this.lfo = null;

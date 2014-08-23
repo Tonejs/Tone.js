@@ -108,16 +108,10 @@ define(["Tone/core/Tone", "Tone/effect/Effect"], function(Tone){
 	};
 
 	/**
-	 *  pointer to the parent's dipose method
-	 *  @private
-	 */
-	Tone.BitCrusher.prototype._effectDispose = Tone.Effect.prototype.dispose;
-
-	/**
 	 *  clean up
 	 */
 	Tone.BitCrusher.prototype.dispose = function(){
-		this._effectDispose();
+		Tone.Effect.prototype.dispose.call(this);
 		this._crusher.disconnect();
 		this._crusher = null;
 	}; 

@@ -86,14 +86,11 @@ define(["Tone/core/Tone", "Tone/component/DryWet"], function(Tone){
 	 *  tear down
 	 */
 	Tone.Effect.prototype.dispose = function(){
+		Tone.prototype.dispose.call(this);
 		this.dryWet.dispose();
-		this.input.disconnect();
-		this.output.disconnect();
 		this.effectSend.disconnect();
 		this.effectReturn.disconnect();
 		this.dryWet = null;
-		this.input = null;
-		this.output = null;
 		this.effectSend = null;
 		this.effectReturn = null;
 	};

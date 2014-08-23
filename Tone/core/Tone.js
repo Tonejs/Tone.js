@@ -228,6 +228,14 @@ define("Tone/core/Tone", [], function(){
 	};
 
 	/**
+	 *  test if the arg is undefined
+	 *  @param {*} arg the argument to test
+	 *  @returns {boolean} true if the arg is undefined
+	 *  @function
+	 */
+	Tone.prototype.isUndef = isUndef;
+
+	/**
 	 *  equal power gain scale
 	 *  good for cross-fading
 	 *  	
@@ -305,10 +313,17 @@ define("Tone/core/Tone", [], function(){
 
 	/**
 	 *  a dispose method 
-	 *  
-	 *  @abstract
 	 */
-	Tone.prototype.dispose = function(){};
+	Tone.prototype.dispose = function(){
+		if (!this.isUndef(this.input)){
+			this.input.disconnect();
+			this.input = null;
+		}
+		if (!this.isUndef(this.output)){
+			this.output.disconnect();
+			this.output = null;
+		}
+	};
 
 	/**
 	 *  a silent connection to the DesinationNode

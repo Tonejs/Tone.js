@@ -45,17 +45,10 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/signal/Signal"], function(
 	};
 
 	/**
-	 *  the parents dispose method
-	 *  @private
-	 *  @borrows Tone.Effect.dispose as Tone.FeedbackEffect._effectDispose
-	 */
-	Tone.FeedbackEffect.prototype._effectDispose = Tone.Effect.prototype.dispose;
-
-	/**
 	 *  clean up
 	 */
 	Tone.FeedbackEffect.prototype.dispose = function(){
-		this._effectDispose();
+		Tone.Effect.prototype.dispose.call(this);
 		this.feedback.dispose();
 		this._feedbackGain.disconnect();
 		this.feedback = null;

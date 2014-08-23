@@ -90,16 +90,13 @@ define(["Tone/core/Tone", "Tone/effect/FeedbackDelay", "Tone/signal/Split", "Ton
 	 *  clean up
 	 */
 	Tone.PingPongDelay.prototype.dispose = function(){
+		Tone.prototype.dispose.call(this);
 		this.leftDelay.dispose();
 		this.rightDelay.dispose();
 		this._merger.dispose();
-		this.input.disconnect();
-		this.output.disconnect();
 		this.leftDelay = null;
 		this.rightDelay = null;
 		this._merger = null;
-		this.input = null;
-		this.output = null;
 	};
 
 	return Tone.PingPongDelay;
