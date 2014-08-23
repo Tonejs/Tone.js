@@ -20,12 +20,13 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/LFO", "Tone/comp
 		/**
 		 *  the panner node which does the panning
 		 *  @type {Tone.Panner}
+		 *  @private
 		 */
-		this.panner = new Tone.Panner();
+		this._panner = new Tone.Panner();
 
 		//connections
-		this.connectEffect(this.panner);
-		this.lfo.connect(this.panner.pan);
+		this.connectEffect(this._panner);
+		this.lfo.connect(this._panner.pan);
 		//default dry value
 		this.setDry(this.defaultArg(amount, 1));
 	};
@@ -71,6 +72,7 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/LFO", "Tone/comp
 
 	/**
 	 *  pointer to the parent's dipose method
+	 *  @private
 	 */
 	Tone.AutoPanner.prototype._effectDispose = Tone.Effect.prototype.dispose;
 
@@ -80,9 +82,9 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/LFO", "Tone/comp
 	Tone.AutoPanner.prototype.dispose = function(){
 		this._effectDispose();
 		this.lfo.dispose();
-		this.panner.dispose();
+		this._panner.dispose();
 		this.lfo = null;
-		this.panner = null;
+		this._panner = null;
 	};
 
 	return Tone.AutoPanner;
