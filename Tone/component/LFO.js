@@ -1,11 +1,14 @@
-define(["Tone/core/Tone", "Tone/source/Oscillator", "Tone/signal/Scale"], function(Tone){
+define(["Tone/core/Tone", "Tone/source/Oscillator", "Tone/signal/Scale", "Tone/signal/Signal"], 
+function(Tone){
 
 	/**
 	 *  Low Frequency Oscillator
 	 *
-	 *  LFO produces an output signal which can be attached to an AudioParam
-	 *  	for constant control over that parameter
-	 *  	the LFO can also be synced to the transport
+	 *  @class  The Low Frequency Oscillator produces an output signal 
+	 *          which can be attached to an AudioParam or Tone.Signal 
+	 *          for constant control over that parameter. the LFO can 
+	 *          also be synced to the transport to start/stop/pause
+	 *          and change when the tempo changes.
 	 *
 	 *  @constructor
 	 *  @extends {Tone}
@@ -14,12 +17,6 @@ define(["Tone/core/Tone", "Tone/source/Oscillator", "Tone/signal/Scale"], functi
 	 *  @param {number=} outputMax
 	 */
 	Tone.LFO = function(rate, outputMin, outputMax){
-
-		/** 
-		 *  the input
-		 *  @type {GainNOde}
-		 */
-		this.input = this.context.createGain();
 
 		/** 
 		 *  the oscillator
@@ -99,7 +96,7 @@ define(["Tone/core/Tone", "Tone/source/Oscillator", "Tone/signal/Scale"], functi
 	};
 
 	/**
-	 *  set the maximum output of the LFO
+	 *  Set the maximum output of the LFO
 	 *  @param {number} min 
 	 */
 	Tone.LFO.prototype.setMax = function(max){
@@ -107,7 +104,7 @@ define(["Tone/core/Tone", "Tone/source/Oscillator", "Tone/signal/Scale"], functi
 	};
 
 	/**
-	 *  set the waveform of the LFO
+	 *  Set the waveform of the LFO
 	 *  @param {string} type 
 	 */
 	Tone.LFO.prototype.setType = function(type){
@@ -115,16 +112,12 @@ define(["Tone/core/Tone", "Tone/source/Oscillator", "Tone/signal/Scale"], functi
 	};
 
 	/**
-	 *  pointer to the parent's connect method
-	 *  @private
-	 */
-	Tone.LFO.prototype._connect = Tone.prototype.connect;
-
-	/**
-	 *	override the connect method so that it 0's out the value 
-	 *	if attached to an AudioParam
+	 *	Override the connect method so that it 0's out the value 
+	 *	if attached to an AudioParam or Tone.Signal. 
 	 *	
-	 *  @borrows Tone.Signal.connect as Tone.LFO.connect
+	 *	Borrowed from {@link Tone.Signal}
+	 *	
+	 *  @function
 	 */
 	Tone.LFO.prototype.connect = Tone.Signal.prototype.connect;
 
@@ -133,11 +126,9 @@ define(["Tone/core/Tone", "Tone/source/Oscillator", "Tone/signal/Scale"], functi
 	 */
 	Tone.LFO.prototype.dispose = function(){
 		this.oscillator.dispose();
-		this.output.disconnect();
 		this._scaler.dispose();
 		this.oscillator = null;
 		this.output = null;
-		this._scaler = null;
 	};
 
 	return Tone.LFO;
