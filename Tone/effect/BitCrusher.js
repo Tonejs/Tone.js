@@ -1,17 +1,17 @@
-define(["Tone/core/Tone"], function(Tone){
+define(["Tone/core/Tone", "Tone/effect/Effect"], function(Tone){
 
 	/**
 	 *  @class downsample incoming signal
 	 *  inspiration from https://github.com/jaz303/bitcrusher/blob/master/index.js
 	 *
 	 *  @constructor
-	 *  @extends {Tone}
+	 *  @extends {Tone.Effect}
 	 *  @param {number=} bits   
 	 *  @param {number=} frequency 
 	 */
 	Tone.BitCrusher = function(bits, frequency){
 
-		Tone.call(this);
+		Tone.Effect.call(this);
 
 		/** 
 		 * @private 
@@ -57,10 +57,10 @@ define(["Tone/core/Tone"], function(Tone){
 		this._crusher.onaudioprocess = this._audioprocess.bind(this);
 
 		//connect it up
-		this.chain(this.input, this._crusher, this.output);
+		this.connectEffect(this._crusher);
 	};
 
-	Tone.extend(Tone.BitCrusher);
+	Tone.extend(Tone.BitCrusher, Tone.Effect);
 
 	/**
 	 *  @private
@@ -108,14 +108,17 @@ define(["Tone/core/Tone"], function(Tone){
 	};
 
 	/**
+	 *  pointer to the parent's dipose method
+	 *  @private
+	 */
+	Tone.BitCrusher.prototype._effectDispose = Tone.Effect.prototype.dispose;
+
+	/**
 	 *  clean up
 	 */
 	Tone.BitCrusher.prototype.dispose = function(){
-		this.input.disconnect();
-		this.output.disconnect();
+		this._effectDispose();
 		this._crusher.disconnect();
-		this.input = null;
-		this.output = null;
 		this._crusher = null;
 	}; 
 
