@@ -117,6 +117,7 @@ function(Tone){
 	 *  dispose and disconnect
 	 */
 	Tone.Oscillator.prototype.dispose = function(){
+		this.stop();
 		if (this.oscillator !== null){
 			this.oscillator.disconnect();
 			this.oscillator = null;

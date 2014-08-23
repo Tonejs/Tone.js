@@ -100,7 +100,7 @@ function(Tone){
 	 *  @param {number} min 
 	 */
 	Tone.LFO.prototype.setMax = function(max){
-		this._scaler.setOuputMax(max);
+		this._scaler.setOutputMax(max);
 	};
 
 	/**
