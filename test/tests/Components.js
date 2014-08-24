@@ -2,8 +2,9 @@
 
 define(["tests/Core", "chai", "Tone/component/DryWet", "Tone/core/Master", "Tone/signal/Signal", 
 "Tone/component/Recorder", "Tone/component/Panner", "Tone/component/LFO", "Tone/component/Gate", 
-"Tone/component/Follower", "Tone/component/Envelope", "Tone/component/Filter"],
-function(coreTest, chai, DryWet, Master, Signal, Recorder, Panner, LFO, Gate, Follower, Envelope, Filter){
+"Tone/component/Follower", "Tone/component/Envelope", "Tone/component/Filter", "Tone/component/EQ"],
+function(coreTest, chai, DryWet, Master, Signal, Recorder, Panner, LFO, Gate, Follower, Envelope, 
+	Filter, EQ){
 	var expect = chai.expect;
 
 	Master.mute();
@@ -355,6 +356,16 @@ function(coreTest, chai, DryWet, Master, Signal, Recorder, Panner, LFO, Gate, Fo
 			expect(f1.frequency.value).to.equal(200);
 			expect(f1.getType()).to.equal("bandpass");
 			f1.dispose();
+		});
+
+	});
+
+	describe("Tone.EQ", function(){
+		this.timeout(1000);
+
+		it("can be created and disposed", function(){
+			var eq = new EQ();
+			eq.dispose();
 		});
 
 	});
