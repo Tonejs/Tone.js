@@ -2,8 +2,8 @@
 
 define(["tests/Core", "chai", "Tone/component/DryWet", "Tone/core/Master", "Tone/signal/Signal", 
 "Tone/component/Recorder", "Tone/component/Panner", "Tone/component/LFO", "Tone/component/Gate", 
-"Tone/component/Follower", "Tone/component/Envelope"],
-function(coreTest, chai, DryWet, Master, Signal, Recorder, Panner, LFO, Gate, Follower, Envelope){
+"Tone/component/Follower", "Tone/component/Envelope", "Tone/component/Filter"],
+function(coreTest, chai, DryWet, Master, Signal, Recorder, Panner, LFO, Gate, Follower, Envelope, Filter){
 	var expect = chai.expect;
 
 	Master.mute();
@@ -331,6 +331,30 @@ function(coreTest, chai, DryWet, Master, Signal, Recorder, Panner, LFO, Gate, Fo
 			expect(e1.decay).to.equal(0.2);
 			expect(e1.sustain).to.equal(0.3);
 			e1.dispose();
+		});
+
+	});
+
+	describe("Tone.Filter", function(){
+		this.timeout(1000);
+
+		it("can be created and disposed", function(){
+			var f = new Filter();
+			f.dispose();
+		});
+
+		it ("can take parameters as both an object and as arguments", function(){
+			var f0 = new Filter({
+				"frequency" : 1000,
+				"type" : "highpass"
+			});
+			expect(f0.frequency.value).to.equal(1000);
+			expect(f0.getType()).to.equal("highpass");
+			f0.dispose();
+			var f1 = new Filter(200, "bandpass");
+			expect(f1.frequency.value).to.equal(200);
+			expect(f1.getType()).to.equal("bandpass");
+			f1.dispose();
 		});
 
 	});
