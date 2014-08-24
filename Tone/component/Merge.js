@@ -54,6 +54,7 @@ define(["Tone/core/Tone"], function(Tone){
 	 *  clean up
 	 */
 	Tone.Merge.prototype.dispose = function(){
+		Tone.prototype.dispose.call(this);
 		this.left.disconnect();
 		this.right.disconnect();
 		this.merger.disconnect();

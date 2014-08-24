@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/effect/FeedbackDelay", "Tone/signal/Split", "Tone/signal/Merge"], function(Tone){
+define(["Tone/core/Tone", "Tone/effect/FeedbackDelay", "Tone/component/Split", "Tone/component/Merge"], function(Tone){
 	/**
 	 *  PingPongDelay is a dual delay effect where the echo is heard first in one channel and next in the opposite channel
 	 *

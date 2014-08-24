@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/component/DryWet", "Tone/signal/Merge", "Tone/signal/Split"], 
+define(["Tone/core/Tone", "Tone/component/DryWet", "Tone/component/Merge", "Tone/component/Split"], 
 function(Tone){
 
 	/**

@@ -1,9 +1,8 @@
 /* global it, describe */
 
 define(["tests/Core", "chai", "Tone/component/Recorder", "Tone/signal/Signal", "Tone/source/Oscillator", 
-	"Tone/signal/Merge", "Tone/signal/Split","Tone/core/Master", "Tone/signal/Threshold", "Tone/signal/Switch", 
-	"Tone/signal/Route", "Tone/signal/Selector"], 
-function(core, chai, Recorder, Signal, Oscillator, Merge, Split, Master, Threshold, Switch, Route, Selector){
+	"Tone/core/Master", "Tone/signal/Threshold", "Tone/signal/Switch", "Tone/signal/Route", "Tone/signal/Selector"], 
+function(core, chai, Recorder, Signal, Oscillator, Master, Threshold, Switch, Route, Selector){
 
 	var expect = chai.expect;
 
@@ -112,76 +111,6 @@ function(core, chai, Recorder, Signal, Oscillator, Merge, Split, Master, Thresho
 						break;
 					}
 				}
-			});
-		});
-	});
-
-
-	//MERGE
-	describe("Tone.Merge", function(){
-		this.timeout(1000);
-
-		it("can be created and disposed", function(){
-			var mer = new Merge();
-			mer.dispose();
-		});
-
-		it("merge two signal into one stereo signal", function(done){
-			//make an oscillator to drive the signal
-			var sigL = new Signal(1);
-			var sigR = new Signal(2);
-			var merger = new Merge();
-			sigL.connect(merger.left);
-			sigR.connect(merger.right);
-			var recorder = new Recorder(2);
-			merger.connect(recorder);
-			recorder.record(0.1, 0.1, function(buffers){
-				var lBuffer = buffers[0];
-				var rBuffer = buffers[1];
-				//get the left buffer and check that all values are === 1
-				for (var i = 0; i < lBuffer.length; i++){
-					expect(lBuffer[i]).to.equal(1);
-					expect(rBuffer[i]).to.equal(2);
-				}
-				done();
-			});
-		});
-	});
-
-	//SCALE
-	describe("Tone.Split", function(){
-		this.timeout(1000);
-
-		it("can be created and disposed", function(){
-			var split = new Split();
-			split.dispose();
-		});
-
-		it("merges two signal into one stereo signal and then split them back into two signals", function(done){
-			//make an oscillator to drive the signal
-			var sigL = new Signal(1);
-			var sigR = new Signal(2);
-			var merger = new Merge();
-			var split = new Split();
-			sigL.connect(merger.left);
-			sigR.connect(merger.right);
-			merger.connect(split);
-			var recorderL = new Recorder();
-			var recorderR = new Recorder();
-			split.left.connect(recorderL);
-			split.right.connect(recorderR);
-			recorderL.record(0.1, 0.1, function(buffers){
-				var lBuffer = buffers[0];
-				for (var i = 0; i < lBuffer.length; i++){
-					expect(lBuffer[i]).to.equal(1);
-				}
-			});
-			recorderR.record(0.1, 0.1, function(buffers){
-				var rBuffer = buffers[0];
-				for (var j = 0; j < rBuffer.length; j++){
-					expect(rBuffer[j]).to.equal(2);
-				}
-				done();
 			});
 		});
 	});
