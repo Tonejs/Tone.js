@@ -26,9 +26,9 @@ function(Tone){
 
 		/**
 		 *  the portamento (glide) time between notes in seconds
-		 *  @type {Tone.Time}
+		 *  @type {number}
 		 */
-		this.portamento = options.portamento;
+		this.portamento = this.toSeconds(options.portamento);
 
 		/**
 		 *  the frequency control signal
@@ -174,6 +174,14 @@ function(Tone){
 	};
 
 	/**
+	 *  set the glide time between notes
+	 *  @param {Tone.Time} port glide time
+	 */
+	Tone.MonoSynth.prototype.setPortamento = function(port){
+		this.portamento = this.toSeconds(port);
+	};
+
+	/**
 	 *  set the members at once
 	 *  @param {Object} params all of the parameters as an object.
 	 *                         params for envelope and filterEnvelope 
@@ -181,6 +189,7 @@ function(Tone){
 	 */
 	Tone.MonoSynth.prototype.set = function(params){
 		if (!this.isUndef(params.detune)) this.setDetune(params.detune);
+		if (!this.isUndef(params.portamento)) this.setPortamento(params.portamento);
 		if (!this.isUndef(params.oscType)) this.setOscType(params.oscType);
 		if (!this.isUndef(params.filterEnvelope)) this.filterEnvelope.set(params.filterEnvelope);
 		if (!this.isUndef(params.envelope)) this.envelope.set(params.envelope);
