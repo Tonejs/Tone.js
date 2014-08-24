@@ -75,16 +75,13 @@ function(Tone){
 	 *  clean up
 	 */
 	Tone.Panner.prototype.dispose = function(){
+		Tone.prototype.dispose.call(this);
 		this._dryWet.dispose();
 		this._splitter.dispose();
 		this._merger.dispose();
-		this.input.disconnect();
-		this.output.disconnect();
 		this._dryWet = null;
 		this._splitter = null;
 		this._merger = null;
-		this.input = null;
-		this.output = null;
 	};
 
 	return Tone.Panner;

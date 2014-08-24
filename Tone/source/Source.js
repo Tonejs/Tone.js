@@ -80,6 +80,14 @@ define(["Tone/core/Tone", "Tone/core/Transport"], function(Tone){
 	};
 
 	/**
+	 *	clean up  
+	 */
+	Tone.Source.prototype.dispose = function(){
+		Tone.prototype.dispose.call(this);
+		this.state = null;
+	};
+
+	/**
 	 *  @enum {string}
 	 */
 	Tone.Source.State = {

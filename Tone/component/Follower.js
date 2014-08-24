@@ -106,8 +106,7 @@ define(["Tone/core/Tone", "Tone/signal/Abs", "Tone/signal/Negate", "Tone/signal/
 	 *  dispose
 	 */
 	Tone.Follower.prototype.dispose = function(){
-		this.input.disconnect();
-		this.output.disconnect();
+		Tone.prototype.dispose.call(this);
 		this._filter.disconnect();
 		this._frequencyValues.disconnect();
 		this._delay.disconnect();
@@ -116,8 +115,6 @@ define(["Tone/core/Tone", "Tone/signal/Abs", "Tone/signal/Negate", "Tone/signal/
 		this._negate.dispose();
 		this._mult.dispose();
 		this._filter = null;
-		this.input = null;
-		this.output = null;
 		this._delay = null;
 		this._frequencyValues = null;
 		this._abs = null;

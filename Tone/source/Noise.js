@@ -136,13 +136,12 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 	 *  dispose all the components
 	 */
 	Tone.Noise.prototype.dispose = function(){
+		Tone.Source.prototype.dispose.call(this);
 		if (this._source !== null){
 			this._source.disconnect();
 			this._source = null;
 		}
 		this._buffer = null;
-		this.output.disconnect();
-		this.output = null;
 	};
 
 

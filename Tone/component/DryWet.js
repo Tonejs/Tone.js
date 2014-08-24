@@ -83,16 +83,15 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Scale"], function(T
 	 *  clean up
 	 */
 	Tone.DryWet.prototype.dispose = function(){
+		Tone.prototype.dispose.call(this);
 		this.dry.disconnect();
 		this.wet.disconnect();
 		this.wetness.dispose();
 		this._invert.dispose();
-		this.output.disconnect();
 		this.dry = null;
 		this.wet = null;
 		this.wetness = null;
 		this._invert = null;
-		this.output = null;
 	};
 
 	return Tone.DryWet;

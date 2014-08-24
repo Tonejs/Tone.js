@@ -87,12 +87,9 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 	 *  clean up
 	 */
 	Tone.Microphone.prototype.dispose = function() {
-		this.input.disconnect();
-		this.output.disconnect();
+		Tone.Source.prototype.dispose.call(this);
 		this._stream.disconnect();
 		this._mediaStream.disconnect();
-		this.input = null;
-		this.output = null;
 		this._stream = null;
 		this._mediaStream = null;
 	};

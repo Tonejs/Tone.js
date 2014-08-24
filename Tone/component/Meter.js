@@ -144,12 +144,11 @@ define(["Tone/core/Tone", "Tone/core/Master"], function(Tone){
 	 *  @override
 	 */
 	Tone.Meter.prototype.dispose = function(){
+		Tone.prototype.dispose.call(this);
 		this._jsNode.disconnect();
 		this._jsNode.onaudioprocess = null;
 		this._volume = null;
 		this._values = null;
-		this.input.disconnect();
-		this.output.disconnect();
 	};
 
 	return Tone.Meter;

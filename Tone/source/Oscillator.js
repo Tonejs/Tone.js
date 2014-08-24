@@ -115,6 +115,7 @@ function(Tone){
 	 *  dispose and disconnect
 	 */
 	Tone.Oscillator.prototype.dispose = function(){
+		Tone.Source.prototype.dispose.call(this);
 		this.stop();
 		if (this.oscillator !== null){
 			this.oscillator.disconnect();
@@ -122,8 +123,6 @@ function(Tone){
 		}
 		this.frequency.dispose();
 		this.frequency = null;
-		this.output.disconnect();
-		this.output = null;
 	};
 
 	return Tone.Oscillator;

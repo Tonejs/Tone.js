@@ -57,14 +57,11 @@ define(["Tone/core/Tone", "Tone/component/Follower", "Tone/signal/GreaterThan"],
 	 *  dispose
 	 */
 	Tone.Gate.prototype.dispose = function(){
+		Tone.prototype.dispose.call(this);
 		this._follower.dispose();
 		this._gt.dispose();
-		this.input.disconnect();
-		this.output.disconnect();
 		this._follower = null;
 		this._gt = null;
-		this.input = null;
-		this.output = null;
 	};
 
 	return Tone.Gate;
