@@ -10,18 +10,23 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	 *  @param {Tone.Time=} decay
 	 *  @param {number=} sustain 	a percentage (0-1) of the full amplitude
 	 *  @param {Tone.Time=} release
-	 *  @param {number=} minOutput the lowest point of the envelope
-	 *  @param {number=} maxOutput the highest point of the envelope
 	 */
-	Tone.Envelope = function(attack, decay, sustain, release, minOutput, maxOutput){
+	Tone.Envelope = function(attack, decay, sustain, release){
 
 		//get all of the defaults
-		var params = this._defaults;
+		var options;
 		if (arguments.length === 1 && typeof attack === "object"){
-			params = this.defaultArg(attack, this._defaults);
-			attack = params.attack;
-		} 
-		
+			options = attack;
+		} else {
+			options = {
+				"attack" : attack,
+				"decay" : decay,
+				"sustain" : sustain,
+				"release" : release
+			};
+		}
+		options = this.defaultArg(options, this._defaults);
+
 		/** 
 		 *  the output
 		 *  @type {GainNode}
@@ -32,37 +37,37 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 		 *  the attack time in seconds
 		 *  @type {number}
 		 */
-		this.attack = this.toSeconds(this.defaultArg(attack, params.attack));
+		this.attack = this.toSeconds(options.attack);
 
 		/**
 		 *  the decay time in seconds
 		 *  @type {number}
 		 */
-		this.decay = this.toSeconds(this.defaultArg(decay, params.decay));
+		this.decay = this.toSeconds(options.decay);
 		
 		/**
 		 *  the sustain is a value between 0-1
 		 *  @type {number}
 		 */
-		this.sustain = this.toSeconds(this.defaultArg(sustain, params.sustain));
+		this.sustain = this.toSeconds(options.sustain);
 
 		/**
 		 *  the release time in seconds
 		 *  @type {number}
 		 */
-		this.release = this.toSeconds(this.defaultArg(release, params.release));
+		this.release = this.toSeconds(options.release);
 
 		/**
 		 *  the minimum output of the envelope
 		 *  @type {number}
 		 */
-		this.min = this.defaultArg(minOutput, params.min);
+		this.min = this.toSeconds(options.min);
 
 		/**
 		 *  the maximum output of the envelope
 		 *  @type {number}
 		 */
-		this.max = this.defaultArg(maxOutput, params.max);
+		this.max = this.toSeconds(options.max);
 		
 		/** 
 		 *  the control signal
@@ -92,19 +97,54 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 		"max" : 1
 	};
 
+	// SETTERS //
+
 	/**
 	 *  set all of the parameters in bulk
 	 *  @param {Object} param the name of member as the key
 	 *                        and the value as the value 
 	 */
 	Tone.Envelope.prototype.set = function(params){
-		if (!this.isUndef(params.attack)) this.attack = params.attack;
-		if (!this.isUndef(params.decay)) this.decay = params.decay;
-		if (!this.isUndef(params.sustain)) this.sustain = params.sustain;
-		if (!this.isUndef(params.release)) this.release = params.release;
+		if (!this.isUndef(params.attack)) this.setAttack(params.attack);
+		if (!this.isUndef(params.decay)) this.setDecay(params.decay);
+		if (!this.isUndef(params.sustain)) this.setSustain(params.sustain);
+		if (!this.isUndef(params.release)) this.setRelease(params.release);
 		if (!this.isUndef(params.min)) this.min = params.min;
 		if (!this.isUndef(params.max)) this.max = params.max;
 	};
+
+	/**
+	 *  set the attack time
+	 *  @param {Tone.Time} time
+	 */
+	Tone.Envelope.prototype.setAttack = function(time){
+		this.attack = this.toSeconds(time);
+	};
+
+	/**
+	 *  set the decay time
+	 *  @param {Tone.Time} time
+	 */
+	Tone.Envelope.prototype.setDecay = function(time){
+		this.decay = this.toSeconds(time);
+	};
+
+	/**
+	 *  set the release time
+	 *  @param {Tone.Time} time
+	 */
+	Tone.Envelope.prototype.setRelease = function(time){
+		this.release = this.toSeconds(time);
+	};
+
+	/**
+	 *  set the sustain amount
+	 *  @param {number} sustain value between 0-1
+	 */
+	Tone.Envelope.prototype.setSustain = function(sustain){
+		this.sustain = sustain;
+	};
+
 
 	/**
 	 * attack->decay->sustain linear ramp
