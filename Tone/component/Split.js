@@ -51,13 +51,13 @@ define(["Tone/core/Tone"], function(Tone){
 	 *  dispose method
 	 */
 	Tone.Split.prototype.dispose = function(){
+		Tone.prototype.dispose.call(this);
 		this.splitter.disconnect();
 		this.left.disconnect();
 		this.right.disconnect();
 		this.left = null;
 		this.right = null;
 		this.splitter = null;
-		this.output = null;
 	}; 
 
 	return Tone.Split;

@@ -61,7 +61,6 @@ define(["Tone/core/Tone"], function(Tone){
 		this.left = null;
 		this.right = null;
 		this.merger = null;
-		this.input = null;
 	}; 
 
 	return Tone.Merge;

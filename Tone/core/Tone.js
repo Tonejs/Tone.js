@@ -329,11 +329,15 @@ define("Tone/core/Tone", [], function(){
 	 */
 	Tone.prototype.dispose = function(){
 		if (!this.isUndef(this.input)){
-			this.input.disconnect();
+			if (this.input instanceof AudioNode){
+				this.input.disconnect();
+			}
 			this.input = null;
 		}
 		if (!this.isUndef(this.output)){
-			this.output.disconnect();
+			if (this.output instanceof AudioNode){
+				this.output.disconnect();
+			}
 			this.output = null;
 		}
 	};
