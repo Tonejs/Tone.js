@@ -101,15 +101,25 @@ function(Tone){
 	};
 
 	/**
+	 *  sets all the samplers with these settings
+	 *  @param {object} params the parameters to be applied 
+	 *                         to all internal samplers
+	 */
+	Tone.MultiSampler.prototype.set = function(params){
+		for (var samp in this.samples){
+			this.samples[samp].set(params);
+		}
+	};
+
+	/**
 	 *  clean up
 	 */
 	Tone.MultiSampler.dispose = function(){
+		Tone.prototype.dispose.call(this);
 		for (var samp in this.samples){
 			this.samples[samp].dispose();
 			this.samples[samp] = null;
 		}
-		this.output.disconnect();
-		this.output = null;
 	};
 
 	return Tone.MultiSampler;
