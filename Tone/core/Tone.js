@@ -185,7 +185,7 @@ define("Tone/core/Tone", [], function(){
 	
 	/**
 	 *  connect together all of the arguments in series
-	 *  @param {...AudioParam|Tone}
+	 *  @param {...AudioParam|Tone|AudioNode}
 	 */
 	Tone.prototype.chain = function(){
 		if (arguments.length > 1){
@@ -194,6 +194,20 @@ define("Tone/core/Tone", [], function(){
 				var toUnit = arguments[i];
 				currentUnit.connect(toUnit);
 				currentUnit = toUnit;
+			}
+		}
+	};
+
+	/**
+	 *  fan out the connection from the first argument to the rest of the arguments
+	 *  @param {...AudioParam|Tone|AudioNode}
+	 */
+	Tone.prototype.fan = function(){
+		var connectFrom = arguments[0];
+		if (arguments.length > 1){
+			for (var i = 1; i < arguments.length; i++){
+				var connectTo = arguments[i];
+				connectFrom.connect(connectTo);
 			}
 		}
 	};
