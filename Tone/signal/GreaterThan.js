@@ -75,6 +75,13 @@ define(["Tone/core/Tone", "Tone/signal/Threshold", "Tone/signal/Add"], function(
 	};
 
 	/**
+	 *  borrows the method from {@link Tone.Signal}
+	 *  
+	 *  @function
+	 */
+	Tone.GreaterThan.prototype.connect = Tone.Signal.prototype.connect;
+
+	/**
 	 *  dispose method
 	 */
 	Tone.GreaterThan.prototype.dispose = function(){

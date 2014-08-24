@@ -1,4 +1,5 @@
-define(["Tone/core/Tone", "Tone/signal/Selector", "Tone/signal/Negate", "Tone/signal/LessThan"], function(Tone){
+define(["Tone/core/Tone", "Tone/signal/Selector", "Tone/signal/Negate", "Tone/signal/LessThan", "Tone/signal/Signal"], 
+function(Tone){
 
 	/**
 	 *  @class return the absolute value of an incoming signal
@@ -38,6 +39,13 @@ define(["Tone/core/Tone", "Tone/signal/Selector", "Tone/signal/Negate", "Tone/si
 	};
 
 	Tone.extend(Tone.Abs);
+
+	/**
+	 *  borrows the method from {@link Tone.Signal}
+	 *  
+	 *  @function
+	 */
+	Tone.Abs.prototype.connect = Tone.Signal.prototype.connect;
 
 	/**
 	 *  dispose method

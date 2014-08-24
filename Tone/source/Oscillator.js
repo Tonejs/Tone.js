@@ -59,9 +59,7 @@ function(Tone){
 			//connect the control signal to the oscillator frequency & detune
 			this.oscillator.connect(this.output);
 			this.frequency.connect(this.oscillator.frequency);
-			this.oscillator.frequency.value = 0;
 			this.detune.connect(this.oscillator.detune);
-			this.oscillator.detune.value = 0;
 			//start the oscillator
 			this.oscillator.start(this.toSeconds(time));
 			this.oscillator.onended = this._onended.bind(this);

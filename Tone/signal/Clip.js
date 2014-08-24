@@ -20,12 +20,14 @@ define(["Tone/core/Tone", "Tone/signal/Max", "Tone/signal/Min"], function(Tone){
 		
 		/**
 		 *  the min clipper
+		 *  @type {Tone.Min}
 		 *  @private
 		 */
 		this._min = new Tone.Min(max);
 
 		/**
 		 *  the max clipper
+		 *  @type {Tone.Max}
 		 *  @private
 		 */
 		this._max = new Tone.Max(min);
@@ -51,6 +53,13 @@ define(["Tone/core/Tone", "Tone/signal/Max", "Tone/signal/Min"], function(Tone){
 	Tone.Clip.prototype.setMax = function(max){
 		this._max.setMax(max);	
 	};
+
+	/**
+	 *  borrows the method from {@link Tone.Signal}
+	 *  
+	 *  @function
+	 */
+	Tone.Clip.prototype.connect = Tone.Signal.prototype.connect;
 
 	/**
 	 *  clean up

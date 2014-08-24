@@ -23,6 +23,13 @@ define(["Tone/core/Tone", "Tone/signal/Multiply"], function(Tone){
 	Tone.extend(Tone.Negate);
 
 	/**
+	 *  borrows the method from {@link Tone.Signal}
+	 *  
+	 *  @function
+	 */
+	Tone.Negate.prototype.connect = Tone.Signal.prototype.connect;
+
+	/**
 	 *  clean up
 	 */
 	Tone.Negate.prototype.dispose = function(){

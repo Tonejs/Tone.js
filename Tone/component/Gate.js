@@ -33,7 +33,6 @@ define(["Tone/core/Tone", "Tone/component/Follower", "Tone/signal/GreaterThan"],
 		this.chain(this.input, this.output);
 		//the control signal
 		this.chain(this.input, this._follower, this._gt, this.output.gain);
-		this.output.gain.value = 0;
 	};
 
 	Tone.extend(Tone.Gate);

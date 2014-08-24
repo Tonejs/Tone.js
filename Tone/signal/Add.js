@@ -35,6 +35,13 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	}; 
 
 	/**
+	 *  borrows the method from {@link Tone.Signal}
+	 *  
+	 *  @function
+	 */
+	Tone.Add.prototype.connect = Tone.Signal.prototype.connect;
+
+	/**
 	 *  dispose method
 	 */
 	Tone.Add.prototype.dispose = function(){

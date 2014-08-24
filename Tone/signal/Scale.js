@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Multiply"], function(Tone){
+define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Multiply", "Tone/signal/Signal"], function(Tone){
 	
 	/**
 	 *  @class  performs a linear scaling on an input signal.
@@ -105,6 +105,13 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Multiply"], function(T
 		this._outputMax = val;
 		this._setScalingParameters();
 	};
+
+	/**
+	 *  borrows connect from {@link Tone.Signal}
+	 *  
+	 *  @function
+	 */
+	Tone.Scale.prototype.connect = Tone.Signal.prototype.connect;
 
 	/**
 	 *  clean up

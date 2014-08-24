@@ -52,6 +52,13 @@ define(["Tone/core/Tone", "Tone/signal/Threshold"], function(Tone){
 	};
 
 	/**
+	 *  borrows the method from {@link Tone.Signal}
+	 *  
+	 *  @function
+	 */
+	Tone.EqualZero.prototype.connect = Tone.Signal.prototype.connect;
+
+	/**
 	 *  dispose method
 	 */
 	Tone.EqualZero.prototype.dispose = function(){

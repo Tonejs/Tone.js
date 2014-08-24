@@ -48,6 +48,13 @@ define(["Tone/core/Tone", "Tone/signal/LessThan", "Tone/signal/Selector"], funct
 	};
 
 	/**
+	 *  borrows the method from {@link Tone.Signal}
+	 *  
+	 *  @function
+	 */
+	Tone.Min.prototype.connect = Tone.Signal.prototype.connect;
+
+	/**
 	 *  clean up
 	 */
 	Tone.Min.prototype.dispose = function(){

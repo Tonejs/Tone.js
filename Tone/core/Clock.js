@@ -91,7 +91,6 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 		this._oscillator.connect(this._jsNode);
 		//connect it up
 		this._controlSignal.connect(this._oscillator.frequency);
-		this._oscillator.frequency.value = 0;
 		this._upTick = false;
 		var startTime = this.toSeconds(time);
 		this._oscillator.start(startTime);

@@ -91,7 +91,6 @@ define(["Tone/core/Tone", "Tone/signal/Equal", "Tone/signal/Signal"], function(T
 
 		//connect the selecter to the gate gain
 		this.selecter.connect(this.gate.gain);
-		this.gate.gain.value = 0;
 	};
 
 	Tone.extend(SelectorGate);

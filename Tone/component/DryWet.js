@@ -50,10 +50,6 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Scale"], function(T
 		this.chain(this.wetness, this.wet.gain);
 		//dry control is the inverse of the wet
 		this.chain(this.wetness, this._invert, this.dry.gain);
-
-		this.dry.gain.value = 0;
-		this.wet.gain.value = 0;
-
 		this.setDry(this.defaultArg(initialDry, 0));
 	};
 
