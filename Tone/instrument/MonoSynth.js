@@ -1,5 +1,8 @@
-define(["Tone/core/Tone", "Tone/component/Envelope", "Tone/source/Oscillator", "Tone/signal/Signal"], 
-	function(Tone){
+define(["Tone/core/Tone", "Tone/component/Envelope", "Tone/source/Oscillator", 
+	"Tone/signal/Signal", "Tone/component/Filter"], 
+function(Tone){
+
+	"use strict";
 
 	/**
 	 *  @class  the MonoSynth is a single oscillator, monophonic synthesizer
@@ -14,8 +17,6 @@ define(["Tone/core/Tone", "Tone/component/Envelope", "Tone/source/Oscillator", "
 
 		//get the defaults
 		options = this.defaultArg(options, this._defaults);
-
-		console.log(options, this._defaults);
 
 		/**
 		 *  the output
@@ -38,49 +39,49 @@ define(["Tone/core/Tone", "Tone/component/Envelope", "Tone/source/Oscillator", "
 		/**
 		 *  the first oscillator
 		 *  @type {Tone.Oscillator}
+		 *  @private
 		 */
-		this.osc0 = new Tone.Oscillator(0, options.oscType);
+		this._osc0 = new Tone.Oscillator(0, options.oscType);
 
 		/**
 		 *  the second oscillator
 		 *  @type {Tone.Oscillator}
+		 *  @private
 		 */
-		this.osc1 = new Tone.Oscillator(0, options.oscType);
-		this.osc1.detune.setValue(options.unison);
+		this._osc1 = new Tone.Oscillator(0, options.oscType);
+		this._osc1.detune.setValue(options.detune);
 
 		/**
 		 *  the filter
-		 *  @type {BiquadFilterNode}
+		 *  @type {Tone.Filter}
+		 *  @private
 		 */
-		this.filter = this.context.createBiquadFilter();
-		this.filter.Q.value = options.filterQ;
+		this._filter = new Tone.Filter(options.filter);
 
 		/**
 		 *  the filter envelope
 		 *  @type {Tone.Envelope}
 		 */
-		this.filterEnvelope = new Tone.Envelope(options.filterAttack, options.filterDecay,
-			options.filterSustain, options.filterRelease, 10, options.filterFrequency);
+		this.filterEnvelope = new Tone.Envelope(options.filterEnvelope);
 
 		/**
 		 *  the amplitude envelope
 		 *  @type {Tone.Envelope}
 		 */
-		this.envelope = new Tone.Envelope(options.ampAttack, options.ampDecay, 
-			options.ampSustain, options.ampRelease);
+		this.envelope = new Tone.Envelope(options.envelope);
 
 		//sync the oscillator frequecies to the master frequency
-		this.osc0.frequency.sync(this.frequency, 1);
-		this.osc1.frequency.sync(this.frequency, 1);
+		this._osc0.frequency.sync(this.frequency, 1);
+		this._osc1.frequency.sync(this.frequency, 1);
 		//connect the oscillators to the output
-		this.osc0.connect(this.filter);
-		this.osc1.connect(this.filter);
-		this.filter.connect(this.output);
+		this._osc0.connect(this._filter);
+		this._osc1.connect(this._filter);
+		this._filter.connect(this.output);
 		//start the oscillators
-		this.osc0.start();
-		this.osc1.start();
+		this._osc0.start();
+		this._osc1.start();
 		//connect the envelopes
-		this.filterEnvelope.connect(this.filter.frequency);
+		this.filterEnvelope.connect(this._filter.frequency);
 		this.envelope.connect(this.output.gain);
 	};
 
@@ -96,27 +97,29 @@ define(["Tone/core/Tone", "Tone/component/Envelope", "Tone/source/Oscillator", "
 		/** @type {string} the type of oscillator */
 		"oscType" : "square",
 		/** @type {number} the detune between the unison oscillators */
-		"unison" : 20,
-		/** @type {Tone.Time} the ampAttack time */ 
-		"ampAttack" : 0.005,
-		/** @type {Tone.Time} the ampDecay time */ 
-		"ampDecay" : 2,
-		/** @type {number} the ampSustain amount (0-1) */
-		"ampSustain" : 0,
-		/** @type {Tone.Time} the ampRelease time */ 
-		"ampRelease" : 0.2, 
-		/** @type {string} the cutoff freq of the lowpass filter */
-		"filterFrequency" : 4000,
-		/** @type {string} the resonance of the filter */
-		"filterQ" : 6,
-		/** @type {Tone.Time} the filter attack time */ 
-		"filterAttack" : 0.06,
-		/** @type {Tone.Time} the filter decay time */ 
-		"filterDecay" : 0.2,
-		/** @type {number} the filter sustain amount (0-1) */
-		"filterSustain" : 0.5,
-		/** @type {Tone.Time} the filter release time */ 
-		"filterRelease" : 0.1, 
+		"detune" : 20,
+		/** @type {Object} the filter properties */
+		"filter" : {
+			"Q" : 6,
+			"frequency" : 4000,
+			"type" : "lowpass"
+		},
+		/** @type {Object} the envelope properties */
+		"envelope" : {
+			"attack" : 0.005,
+			"decay" : 0.1,
+			"sustain" : 0.9,
+			"release" : 1
+		},
+		/** @type {Object} the filter envelope properties */
+		"filterEnvelope" : {
+			"attack" : 0.06,
+			"decay" : 0.2,
+			"sustain" : 0.5,
+			"release" : 2,
+			"min" : 10,
+			"max" : 4000
+		}
 	};
 
 	/**
@@ -154,23 +157,53 @@ define(["Tone/core/Tone", "Tone/component/Envelope", "Tone/source/Oscillator", "
 	};
 
 	/**
+	 *  set the oscillator type
+	 *  @param {string} oscType the type of oscillator
+	 */
+	Tone.MonoSynth.prototype.setOscType = function(type){
+		this._osc0.setType(type);
+		this._osc1.setType(type);
+	};
+
+	/**
+	 *  set the detune between the oscillators
+	 *  @param {number} detune detune value in cents
+	 */
+	Tone.MonoSynth.prototype.setDetune = function(detune){
+		this._osc1.detune.setValue(detune);
+	};
+
+	/**
+	 *  set the members at once
+	 *  @param {Object} params all of the parameters as an object.
+	 *                         params for envelope and filterEnvelope 
+	 *                         should be nested objects. 
+	 */
+	Tone.MonoSynth.prototype.set = function(params){
+		if (!this.isUndef(params.detune)) this.setDetune(params.detune);
+		if (!this.isUndef(params.oscType)) this.setOscType(params.oscType);
+		if (!this.isUndef(params.filterEnvelope)) this.filterEnvelope.set(params.filterEnvelope);
+		if (!this.isUndef(params.envelope)) this.envelope.set(params.envelope);
+		if (!this.isUndef(params.filter)) this._filter.set(params.filter);
+	};
+
+	/**
 	 *  clean up
 	 */
 	Tone.MonoSynth.prototype.dispose = function(){
-		this.osc0.dispose();
-		this.osc1.dispose();
+		Tone.prototype.dispose.call(this);
+		this._osc0.dispose();
+		this._osc1.dispose();
 		this.envelope.dispose();
 		this.filterEnvelope.dispose();
 		this.frequency.dispose();
-		this.output.disconnect();
-		this.filter.disconnect();
-		this.osc0 = null;
-		this.osc1 = null;
+		this._filter.dispose();
+		this._osc0 = null;
+		this._osc1 = null;
 		this.frequency = null;
-		this.output = null;
 		this.filterEnvelope = null;
 		this.envelope = null;
-		this.filter = null;
+		this._filter = null;
 	};
 
 	return Tone.MonoSynth;
