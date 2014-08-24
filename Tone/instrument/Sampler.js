@@ -11,19 +11,9 @@ function(Tone){
 	 *  @param {string|object} url the url of the audio file
 	 *  @param {function} load called when the sample has been loaded
 	 */
-	Tone.Sampler = function(url, load){
+	Tone.Sampler = function(){
 
-		//get all of the defaults
-		var options;
-		if (arguments.length === 1 && typeof url === "object"){
-			options = url;
-		} else {
-			options = {
-				"url" : url,
-				"load" : load
-			};
-		}
-		options = this.defaultArg(options, this._defaults);
+		var options = this.optionsObject(options, ["url", "load"], Tone.Sampler._defaults);
 
 		/**
 		 *  @type {GainNode}
@@ -69,7 +59,7 @@ function(Tone){
 	 *  @static
 	 *  @private
 	 */
-	Tone.Sampler.prototype._defaults = {
+	Tone.Sampler._defaults = {
 		"url" : null,
 		"load" : function(){},
 		"envelope" : {

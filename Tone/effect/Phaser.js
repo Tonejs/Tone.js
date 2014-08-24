@@ -12,22 +12,12 @@ function(Tone){
 	 *	@param {number=} depth the depth of the effect
 	 *	@param {number} baseFrequency the base frequency of the filters
 	 */
-	Tone.Phaser = function(rate, depth, baseFrequency){
+	Tone.Phaser = function(){
 
 		//set the defaults
-		var options;
-		if (arguments.length === 1 && typeof rate === "object"){
-			options = rate;
-		} else {
-			options = {
-				"rate" : rate,
-				"depth" : depth,
-				"baseFrequency" : baseFrequency
-			};
-		}
-		options = this.defaultArg(options, this._defaults);
+		var options = this.optionsObject(arguments, ["rate", "depth", "baseFrequency"], Tone.Phaser._defaults);
 
-		Tone.FeedbackEffect.call(this);
+		Tone.FeedbackEffect.call(this, options);
 
 		/**
 		 *  the lfo which controls the frequency
@@ -84,7 +74,7 @@ function(Tone){
 	 *  @static
 	 *  @type {object}
 	 */
-	Tone.Phaser.prototype._defaults = {
+	Tone.Phaser._defaults = {
 		"rate" : 1,
 		"depth" : 0.6,
 		"stages" : 4,
@@ -119,10 +109,27 @@ function(Tone){
 	};
 
 	/**
+	 *  bulk setter
+	 *  @param {object} params
+	 */
+	Tone.Phaser.prototype.set = function(params){
+		if (!this.isUndef(params.rate)) this.setRate(params.rate);
+		if (!this.isUndef(params.baseFrequency)) this.setBaseFrequency(params.baseFrequency);
+		if (!this.isUndef(params.depth)) this.setDepth(params.depth);
+		Tone.FeedbackEffect.prototype.set.call(this, params);
+	};
+
+	/**
 	 *  clean up
 	 */
 	Tone.Phaser.prototype.dispose = function(){
 		Tone.FeedbackEffect.prototype.dispose.call(this);
+		this._lfo.dispose();
+		for (var i = 0; i < this._filters.length; i++){
+			this._filters[i].dispose();
+			this._filters[i] = null;
+		}
+		this._filters = null;
 	};
 
 	return Tone.Phaser;

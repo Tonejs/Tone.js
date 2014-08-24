@@ -13,16 +13,17 @@ define(["Tone/core/Tone", "Tone/component/Follower", "Tone/signal/ScaleExp", "To
 	 *  @param {number=} [sensitivity=0] the decibel threshold sensitivity for 
 	 *                                   the incoming signal. Normal range of -40 to 0. 
 	 */
-	Tone.AutoWah = function(baseFrequency, octaves, sensitivy){
+	Tone.AutoWah = function(){
 
-		Tone.Effect.call(this);
+		var options = this.optionsObject(arguments, ["baseFrequency", "octaves", "sensitivity"], Tone.AutoWah._defaults);
+		Tone.Effect.call(this, options);
 
 		/**
 		 *  the envelope follower
 		 *  @type {Tone.Follower}
 		 *  @private
 		 */
-		this._follower = new Tone.Follower(0.15, 0.5);
+		this._follower = new Tone.Follower(options.follower);
 
 		/**
 		 *  scales the follower value to the frequency domain
@@ -35,13 +36,13 @@ define(["Tone/core/Tone", "Tone/component/Follower", "Tone/signal/ScaleExp", "To
 		 *  @type {number}
 		 *  @private
 		 */
-		this._baseFrequency = this.defaultArg(baseFrequency, 100);
+		this._baseFrequency = options.baseFrequency;
 
 		/**
 		 *  @type {number}
 		 *  @private
 		 */
-		this._octaves = this.defaultArg(octaves, 5);
+		this._octaves = options.octaves;
 
 		/**
 		 *  @type {BiquadFilterNode}
@@ -67,10 +68,26 @@ define(["Tone/core/Tone", "Tone/component/Follower", "Tone/signal/ScaleExp", "To
 		this.chain(this.effectSend, this._bandpass, this._peaking, this.effectReturn);
 		//set the initial value
 		this._setSweepRange();
-		this.setSensitiviy(this.defaultArg(sensitivy, 0));
+		this.setSensitiviy(options.sensitivity);
 	};
 
 	Tone.extend(Tone.AutoWah, Tone.Effect);
+
+	/**
+	 *  @private
+	 *  @static
+	 *  @type {Object}
+	 */
+	Tone.AutoWah._defaults = {
+		"baseFrequency" : 100,
+		"octaves" : 5,
+		"sensitivity" : 0,
+		/** attributes for the envelope follower */
+		"follower" : {
+			"attack" : 0.15,
+			"release" : 0.5
+		}
+	};
 
 	/**
 	 *  set the number of octaves that the filter will sweep

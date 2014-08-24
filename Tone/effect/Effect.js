@@ -10,8 +10,12 @@ define(["Tone/core/Tone", "Tone/component/DryWet"], function(Tone){
 	 *  @param {number=} [initalDry=0] the starting dry value
 	 *                             defaults to 100% wet
 	 */
-	Tone.Effect = function(initialDry){
+	Tone.Effect = function(){
+
 		Tone.call(this);
+
+		//get all of the defaults
+		var options = this.optionsObject(arguments, ["dry"], Tone.Effect._defaults);
 
 		/**
 		 *  the drywet knob to control the amount of effect
@@ -40,10 +44,19 @@ define(["Tone/core/Tone", "Tone/component/DryWet"], function(Tone){
 		this.effectReturn.connect(this.dryWet.wet);
 		this.dryWet.connect(this.output);
 		//setup values
-		this.setDry(this.defaultArg(initialDry, 0));
+		this.setDry(options.dry);
 	};
 
 	Tone.extend(Tone.Effect);
+
+	/**
+	 *  @private
+	 *  @static
+	 *  @type {Object}
+	 */
+	Tone.Effect._defaults = {
+		"dry" : 0
+	};
 
 	/**
 	 * setDry adjusts the dry / wet balance
@@ -65,6 +78,14 @@ define(["Tone/core/Tone", "Tone/component/DryWet"], function(Tone){
 	 */
 	Tone.Effect.prototype.setWet = function(wetVal, rampTime){
 		this.dryWet.setWet(wetVal, rampTime);
+	};
+
+	/**
+	 *  set in bulk
+	 *  @param {Object} param
+	 */
+	Tone.Effect.prototype.set = function(){
+
 	};
 
 	/**

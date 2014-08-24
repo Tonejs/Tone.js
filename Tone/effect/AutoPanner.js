@@ -7,15 +7,19 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/LFO", "Tone/comp
 	 *  @extends {Tone.Effect}
 	 *  @param { number= } rate (optional) rate in HZ of the left-right pan
 	 */
-	Tone.AutoPanner = function(rate){
-		Tone.Effect.call(this);
+	Tone.AutoPanner = function(){
+
+		//get all of the defaults
+		var options = this.optionsObject(arguments, ["rate"], Tone.AutoPanner._defaults);
+
+		Tone.Effect.call(this, options);
 
 		/**
 		 *  the lfo which drives the panning
 		 *  @type {Tone.LFO}
 		 *  @private
 		 */
-		this._lfo = new Tone.LFO(rate, 0, 1);
+		this._lfo = new Tone.LFO(options.rate, 0, 1);
 
 		/**
 		 *  the panner node which does the panning
@@ -31,6 +35,16 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/LFO", "Tone/comp
 
 	//extend Effect
 	Tone.extend(Tone.AutoPanner, Tone.Effect);
+
+	/**
+	 *  defaults
+	 *  @static
+	 *  @private
+	 *  @type {Object}
+	 */
+	Tone.AutoPanner._defaults = {
+		"rate" : 1
+	};
 	
 	/**
 	 * Start the panner

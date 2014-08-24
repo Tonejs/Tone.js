@@ -16,7 +16,7 @@ function(Tone){
 	Tone.MonoSynth = function(options){
 
 		//get the defaults
-		options = this.defaultArg(options, this._defaults);
+		options = this.defaultArg(options, Tone.MonoSynth._defaults);
 
 		/**
 		 *  the output
@@ -91,7 +91,7 @@ function(Tone){
 	 *  @static
 	 *  @private
 	 */
-	Tone.MonoSynth.prototype._defaults = {
+	Tone.MonoSynth._defaults = {
 		/** @type {Tone.Time} the glide time between notes */
 		"portamento" : 0.05,
 		/** @type {string} the type of oscillator */

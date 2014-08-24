@@ -11,21 +11,10 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	 *  @param {number=} sustain 	a percentage (0-1) of the full amplitude
 	 *  @param {Tone.Time=} release
 	 */
-	Tone.Envelope = function(attack, decay, sustain, release){
+	Tone.Envelope = function(){
 
 		//get all of the defaults
-		var options;
-		if (arguments.length === 1 && typeof attack === "object"){
-			options = attack;
-		} else {
-			options = {
-				"attack" : attack,
-				"decay" : decay,
-				"sustain" : sustain,
-				"release" : release
-			};
-		}
-		options = this.defaultArg(options, this._defaults);
+		var options = this.optionsObject(arguments, ["attack", "decay", "sustain", "release"], Tone.Envelope._defaults);
 
 		/** 
 		 *  the output
@@ -88,7 +77,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	 *  @static
 	 *  @private
 	 */
-	Tone.Envelope.prototype._defaults = {
+	Tone.Envelope._defaults = {
 		"attack" : 0.01,
 		"decay" : 0.1,
 		"sustain" : 0.5,

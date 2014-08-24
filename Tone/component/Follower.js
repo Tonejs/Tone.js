@@ -8,16 +8,13 @@ define(["Tone/core/Tone", "Tone/signal/Abs", "Tone/signal/Negate", "Tone/signal/
 	 *  
 	 *  @constructor
 	 *  @extends {Tone}
-	 *  @param {Tone.Time=} [attackTime = 0.05] 
-	 *  @param {Tone.Time=} [releaseTime = 0.5] 
+	 *  @param {Tone.Time=} [attack = 0.05] 
+	 *  @param {Tone.Time=} [release = 0.5] 
 	 */
-	Tone.Follower = function(attackTime, releaseTime){
+	Tone.Follower = function(){
 
 		Tone.call(this);
-
-		//default values
-		attackTime = this.defaultArg(attackTime, 0.05);
-		releaseTime = this.defaultArg(releaseTime, 0.5);
+		var options = this.optionsObject(arguments, ["attack", "release"], Tone.Follower._defaults);
 
 		/**
 		 *  @type {Tone.Abs}
@@ -75,10 +72,20 @@ define(["Tone/core/Tone", "Tone/signal/Abs", "Tone/signal/Negate", "Tone/signal/
 		//threshold the difference and use the thresh to set the frequency
 		this.chain(this._difference, this._mult, this._frequencyValues, this._filter.frequency);
 		//set the attack and release values in the table
-		this._setAttackRelease(this.secondsToFrequency(attackTime), this.secondsToFrequency(releaseTime));
+		this._setAttackRelease(this.secondsToFrequency(options.attack), this.secondsToFrequency(options.release));
 	};
 
 	Tone.extend(Tone.Follower);
+
+	/**
+	 *  @private
+	 *  @static
+	 *  @type {Object}
+	 */
+	Tone.Follower._defaults = {
+		"attack" : 0.05, 
+		"release" : 0.5
+	};
 
 	/**
 	 *  sets the attack and release times in the wave shaper

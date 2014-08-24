@@ -51,17 +51,8 @@ define(["Tone/core/Tone"], function(Tone){
 		 */
 		this.detune = this._filter.detune;
 
-		//set the defaults
-		var options;
-		if (arguments.length === 1 && typeof freq === "object"){
-			options = freq;
-		} else {
-			options = {
-				"frequency" : freq,
-				"type" : type,
-			};
-		}
-		options = this.defaultArg(options, this._defaults);
+		//set the parameters
+		var options = this.optionsObject(arguments, ["frequency", "type"], Tone.Filter._defaults);
 		this.frequency.value = options.frequency;
 		this._filter.type = options.type;
 		this.detune.value = options.detune;
@@ -77,7 +68,7 @@ define(["Tone/core/Tone"], function(Tone){
 	 *  @static
 	 *  @private
 	 */
-	Tone.Filter.prototype._defaults = {
+	Tone.Filter._defaults = {
 		"type" : "lowpass",
 		"frequency" : 350,
 		"Q" : 1,

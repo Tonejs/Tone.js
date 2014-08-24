@@ -245,12 +245,46 @@ define("Tone/core/Tone", [], function(){
 	Tone.prototype.defaultArg = function(given, fallback){
 		if (typeof given === "object" && typeof fallback === "object"){
 			var ret = {};
+			//make a deep copy of the given object
+			for (var givenProp in given) {
+				ret[givenProp] = this.defaultArg(given[givenProp], given[givenProp]);
+			}
 			for (var prop in fallback) {
 				ret[prop] = this.defaultArg(given[prop], fallback[prop]);
 			}
 			return ret;
 		} else {
 			return isUndef(given) ? fallback : given;
+		}
+	};
+
+	/**
+	 *  returns the args as an options object with given arguments
+	 *  mapped to the names provided. 
+	 *
+	 *  if the args given is an array containing an object, it is assumed
+	 *  that that's already the options object and will just return it. 
+	 *  
+	 *  @param  {Array} values  the 'arguments' object of the function
+	 *  @param  {Array.<string>} keys the names of the arguments as they
+	 *                                 should appear in the options object
+	 *  @param {Object=} defaults optional defaults to mixin to the returned 
+	 *                            options object                              
+	 *  @return {Object}       the options object with the names mapped to the arguments
+	 */
+	Tone.prototype.optionsObject = function(values, keys, defaults){
+		var options = {};
+		if (values.length === 1 && typeof values[0] === "object"){
+			options = values[0];
+		} else {
+			for (var i = 0; i < keys.length; i++){
+				options[keys[i]] = values[i];
+			}
+		}
+		if (!this.isUndef(defaults)){
+			return this.defaultArg(options, defaults);
+		} else {
+			return options;
 		}
 	};
 

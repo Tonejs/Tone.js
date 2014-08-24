@@ -11,22 +11,11 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/component/Filter"], functi
 	 *  @param {number=} [midLevel=1] the gain applied to the mid
 	 *  @param {number=} [highLevel=1] the gain applied to the high
 	 */
-	Tone.EQ = function(lowLevel, midLevel, highLevel){
+	Tone.EQ = function(){
 
 		Tone.call(this);
 
-		//set the defaults
-		var options;
-		if (arguments.length === 1 && typeof freq === "object"){
-			options = lowLevel;
-		} else {
-			options = {
-				"low" : lowLevel,
-				"mid" : midLevel,
-				"high" : highLevel
-			};
-		}
-		options = this.defaultArg(options, this._defaults);
+		var options = this.optionsObject(arguments, ["low", "mid", "high"], Tone.EQ._defaults);
 
 		/**
 		 *  the low band
@@ -108,7 +97,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/component/Filter"], functi
 	 *  @private
 	 *  @static
 	 */
-	Tone.EQ.prototype._defaults = {
+	Tone.EQ._defaults = {
 		"low" : 1,
 		"mid" : 1,
 		"high" : 1,
