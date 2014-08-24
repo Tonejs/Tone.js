@@ -22,8 +22,9 @@ define(["Tone/core/Tone"], function(Tone){
 
 		/** 
 		 *  @type {ChannelSplitterNode}
+		 *  @private
 		 */
-		this.splitter = this.context.createChannelSplitter(2);
+		this._splitter = this.context.createChannelSplitter(2);
 
 		/** 
 		 *  left channel output
@@ -40,9 +41,9 @@ define(["Tone/core/Tone"], function(Tone){
 		this.right = this.output[1] = this.context.createGain();
 		
 		//connections
-		this.input.connect(this.splitter);
-		this.splitter.connect(this.left, 0, 0);
-		this.splitter.connect(this.right, 1, 0);
+		this.input.connect(this._splitter);
+		this._splitter.connect(this.left, 0, 0);
+		this._splitter.connect(this.right, 1, 0);
 	};
 
 	Tone.extend(Tone.Split);
@@ -52,12 +53,12 @@ define(["Tone/core/Tone"], function(Tone){
 	 */
 	Tone.Split.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
-		this.splitter.disconnect();
+		this._splitter.disconnect();
 		this.left.disconnect();
 		this.right.disconnect();
 		this.left = null;
 		this.right = null;
-		this.splitter = null;
+		this._splitter = null;
 	}; 
 
 	return Tone.Split;
