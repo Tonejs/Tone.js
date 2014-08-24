@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/signal/Max", "Tone/signal/Min"], function(Tone){
+define(["Tone/core/Tone", "Tone/signal/Max", "Tone/signal/Min", "Tone/signal/Signal"], function(Tone){
 
 	/**
 	 * 	@class  Clip the incoming signal so that the output is always between min and max

@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/signal/Multiply"], function(Tone){
+define(["Tone/core/Tone", "Tone/signal/Multiply", "Tone/signal/Signal"], function(Tone){
 
 	/**
 	 *  @class Negate the incoming signal. i.e. an input signal of 10 will output -10

@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/signal/LessThan", "Tone/signal/Selector"], function(Tone){
+define(["Tone/core/Tone", "Tone/signal/LessThan", "Tone/signal/Selector", "Tone/signal/Signal"], function(Tone){
 
 	/**
 	 * 	@class  the output signal is the lesser of the incoming signal and min

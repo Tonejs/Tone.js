@@ -1,4 +1,4 @@
-define(["Tone/core/Tone"], function(Tone){
+define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 
 	/**
 	 *  @class  Threshold an incoming signal. the signal is assumed to be in the normal range (-1 to 1)

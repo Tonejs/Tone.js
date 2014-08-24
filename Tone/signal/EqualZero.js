@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/signal/Threshold"], function(Tone){
+define(["Tone/core/Tone", "Tone/signal/Threshold", "Tone/signal/Signal"], function(Tone){
 
 	/**
 	 *  @class  Output 1 if the signal is equal to 0, otherwise outputs 0

@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/signal/GreaterThan", "Tone/signal/Selector"], function(Tone){
+define(["Tone/core/Tone", "Tone/signal/GreaterThan", "Tone/signal/Selector", "Tone/signal/Signal"], function(Tone){
 
 	/**
 	 * 	@class  the output signal is the greater of the incoming signal and max

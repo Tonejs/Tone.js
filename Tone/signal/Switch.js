@@ -53,17 +53,21 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Threshold"], functi
 	}; 
 
 	/**
+	 *  borrows the method from {@link Tone.Signal}
+	 *  
+	 *  @function
+	 */
+	Tone.Switch.prototype.connect = Tone.Signal.prototype.connect;
+
+	/**
 	 *  clean up
 	 */
 	Tone.Switch.prototype.dispose = function(){
+		Tone.prototype.dispose.call(this);
 		this.gate.dispose();
 		this._thresh.dispose();
-		this.input.disconnect();
-		this.output.disconnect();
 		this.signal = null;
 		this._thresh = null;
-		this.input = null;
-		this.output = null;
 	}; 
 
 	return Tone.Switch;

@@ -262,7 +262,7 @@ define(["Tone/core/Tone"], function(Tone){
 		} else if (node instanceof AudioParam){
 			node.value = 0;
 		} 
-		this.output.connect(node, outputNumber, inputNumber);
+		Tone.prototype.connect.call(this, node, outputNumber, inputNumber);
 	};
 
 	///////////////////////////////////////////////////////////////////////////
