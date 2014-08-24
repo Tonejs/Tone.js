@@ -97,7 +97,7 @@ function(Tone){
 		/** @type {string} the type of oscillator */
 		"oscType" : "square",
 		/** @type {number} the detune between the unison oscillators */
-		"detune" : 20,
+		"detune" : 0,
 		/** @type {Object} the filter properties */
 		"filter" : {
 			"Q" : 6,
