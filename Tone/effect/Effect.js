@@ -84,8 +84,9 @@ define(["Tone/core/Tone", "Tone/component/DryWet"], function(Tone){
 	 *  set in bulk
 	 *  @param {Object} param
 	 */
-	Tone.Effect.prototype.set = function(){
-
+	Tone.Effect.prototype.set = function(params){
+		if (!this.isUndef(params.dry)) this.setDry(params.dry);
+		if (!this.isUndef(params.wet)) this.setWet(params.wet);
 	};
 
 	/**

@@ -83,6 +83,16 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/LFO", "Tone/comp
 	};
 
 	/**
+	 *  set all of the parameters with an object
+	 *  @param {Object} params 
+	 */
+	Tone.AutoPanner.prototype.set = function(params){
+		if (!this.isUndef(params.frequency)) this.setFrequency(params.frequency);
+		if (!this.isUndef(params.type)) this.setType(params.type);
+		Tone.Effect.prototype.set.call(this, params);
+	};
+
+	/**
 	 *  clean up
 	 */
 	Tone.AutoPanner.prototype.dispose = function(){

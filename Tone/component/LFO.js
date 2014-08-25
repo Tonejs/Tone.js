@@ -25,6 +25,12 @@ function(Tone){
 		this.oscillator = new Tone.Oscillator(this.defaultArg(rate, 1), "sine");
 
 		/**
+		 *  pointer to the oscillator's frequency
+		 *  @type {Tone.Signal}
+		 */
+		this.frequency = this.oscillator.frequency;
+
+		/**
 		 *  @type {Tone.Scale} 
 		 *  @private
 		 */
@@ -112,6 +118,17 @@ function(Tone){
 	};
 
 	/**
+	 *  set all of the parameters with an object
+	 *  @param {Object} params 
+	 */
+	Tone.LFO.prototype.set = function(params){
+		if (!this.isUndef(params.frequency)) this.setFrequency(params.frequency);
+		if (!this.isUndef(params.type)) this.setType(params.type);
+		if (!this.isUndef(params.min)) this.setMin(params.min);
+		if (!this.isUndef(params.max)) this.setMax(params.max);
+	};
+
+	/**
 	 *	Override the connect method so that it 0's out the value 
 	 *	if attached to an AudioParam or Tone.Signal. 
 	 *	
@@ -128,6 +145,7 @@ function(Tone){
 		this.oscillator.dispose();
 		this._scaler.dispose();
 		this.oscillator = null;
+		this.frequency = null;
 		this.output = null;
 	};
 

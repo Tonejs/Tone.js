@@ -108,6 +108,16 @@ define(["Tone/core/Tone", "Tone/effect/Effect"], function(Tone){
 	};
 
 	/**
+	 *  set all of the parameters with an object
+	 *  @param {Object} params 
+	 */
+	Tone.BitCrusher.prototype.set = function(params){
+		if (!this.isUndef(params.frequency)) this.setFrequency(params.frequency);
+		if (!this.isUndef(params.bits)) this.setBits(params.bits);
+		Tone.Effect.prototype.set.call(this, params);
+	};
+
+	/**
 	 *  clean up
 	 */
 	Tone.BitCrusher.prototype.dispose = function(){

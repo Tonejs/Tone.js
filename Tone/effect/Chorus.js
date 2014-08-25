@@ -87,8 +87,7 @@ define(["Tone/core/Tone", "Tone/component/LFO", "Tone/effect/FeedbackEffect"], f
 		if (!this.isUndef(params.rate)) this.setRate(params.rate);
 		if (!this.isUndef(params.delayTime)) this.setDelayTime(params.delayTime);
 		if (!this.isUndef(params.depth)) this.setDepth(params.depth);
-		//call the parent's set method
-		//Tone.FeedbackEffect.prototype.set.call(this, params);
+		Tone.FeedbackEffect.prototype.set.call(this, params);
 	};
 
 	/**

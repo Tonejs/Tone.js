@@ -127,6 +127,18 @@ define(["Tone/core/Tone", "Tone/component/Follower", "Tone/signal/ScaleExp", "To
 	};
 
 	/**
+	 *  set all of the parameters with an object
+	 *  @param {Object} params 
+	 */
+	Tone.AutoWah.prototype.set = function(params){
+		if (!this.isUndef(params.baseFrequency)) this.setBaseFrequency(params.baseFrequency);
+		if (!this.isUndef(params.sensitivity)) this.setSensitiviy(params.sensitivity);
+		if (!this.isUndef(params.octaves)) this.setOctaves(params.octaves);
+		if (!this.isUndef(params.follower)) this._follower.set(params.follower);
+		Tone.Effect.prototype.set.call(this, params);
+	};
+
+	/**
 	 *  clean up
 	 */
 	Tone.AutoWah.prototype.dispose = function(){

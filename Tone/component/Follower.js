@@ -64,6 +64,18 @@ define(["Tone/core/Tone", "Tone/signal/Abs", "Tone/signal/Negate", "Tone/signal/
 		 */
 		this._mult = new Tone.Multiply(1000);
 
+		/**
+		 *  @private
+		 *  @type {number}
+		 */
+		this._attack = this.secondsToFrequency(options.attack);
+
+		/**
+		 *  @private
+		 *  @type {number}
+		 */
+		this._release = this.secondsToFrequency(options.release);
+
 		//the smoothed signal to get the values
 		this.chain(this.input, this._abs, this._filter, this.output);
 		//the difference path
@@ -72,7 +84,7 @@ define(["Tone/core/Tone", "Tone/signal/Abs", "Tone/signal/Negate", "Tone/signal/
 		//threshold the difference and use the thresh to set the frequency
 		this.chain(this._difference, this._mult, this._frequencyValues, this._filter.frequency);
 		//set the attack and release values in the table
-		this._setAttackRelease(this.secondsToFrequency(options.attack), this.secondsToFrequency(options.release));
+		this._setAttackRelease(this._attack, this._release);
 	};
 
 	Tone.extend(Tone.Follower);
@@ -107,6 +119,34 @@ define(["Tone/core/Tone", "Tone/signal/Abs", "Tone/signal/Negate", "Tone/signal/
 			curve[i] = val;
 		}
 		this._frequencyValues.curve = curve;
+	};
+
+	/**
+	 *  set the attack time
+	 *  @param {Tone.Time} attack
+	 */
+	Tone.Follower.prototype.setAttack = function(attack){
+		this._attack = this.secondsToFrequency(attack);
+		this._setAttackRelease(this._attack, this._release);
+	};
+
+	/**
+	 *  set the release time
+	 *  @param {Tone.Time} release
+	 */
+	Tone.Follower.prototype.setRelease = function(release){
+		this._release = this.secondsToFrequency(release);
+		this._setAttackRelease(this._attack, this._release);
+	};
+
+	/**
+	 *  setter in bulk
+	 *  @param {Object} params 
+	 */
+	Tone.Follower.prototype.set = function(params){
+		if (!this.isUndef(params.attack)) this.setAttack(params.attack);
+		if (!this.isUndef(params.release)) this.setRelease(params.release);
+		Tone.Effect.prototype.set.call(this, params);
 	};
 
 	/**

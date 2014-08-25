@@ -47,6 +47,15 @@ define(["Tone/core/Tone", "Tone/effect/FeedbackEffect", "Tone/signal/Signal"], f
 	};
 
 	/**
+	 *  sets the params in bulk
+	 *  @param {Object} param 
+	 */
+	Tone.FeedbackDelay.prototype.set = function(params){
+		if (!this.isUndef(params.delayTime)) this.setDelayTime(params.delayTime);
+		Tone.FeedbackEffect.prototype.set.call(this, params);
+	};
+
+	/**
 	 *  clean up
 	 */
 	Tone.FeedbackDelay.prototype.dispose = function(){
