@@ -4,10 +4,11 @@ define(["Tone/core/Tone", "Tone/effect/FeedbackDelay", "Tone/component/Split", "
 	 *
 	 * 	@constructor
 	 * 	@extends {Tone}
-	 *  @param {Tone.Time=} delayTime is the interval between consecutive echos
+	 *  @param {Tone.Time|Object=} delayTime is the interval between consecutive echos
 	 */
-	Tone.PingPongDelay = function(delayTime){
+	Tone.PingPongDelay = function(){
 		
+		var options = this.optionsObject(arguments, ["delayTime"], Tone.PingPongDelay.defaults);
 		Tone.call(this);
 
 		/**
@@ -21,12 +22,12 @@ define(["Tone/core/Tone", "Tone/effect/FeedbackDelay", "Tone/component/Split", "
 		 *  each channel (left/right) gets a feedback delay
 		 *  @type {Tone.FeedbackDelay}
 		 */
-		this.leftDelay = new Tone.FeedbackDelay(delayTime);
+		this.leftDelay = new Tone.FeedbackDelay();
 
 		/**
 		 *  @type {Tone.FeedbackDelay}
 		 */
-		this.rightDelay = new Tone.FeedbackDelay(delayTime);
+		this.rightDelay = new Tone.FeedbackDelay();
 
 		//connect it up
 		this.input.connect(this.leftDelay);
@@ -41,10 +42,20 @@ define(["Tone/core/Tone", "Tone/effect/FeedbackDelay", "Tone/component/Split", "
 		this.rightDelay.connect(this._merger.right);
 		this._merger.connect(this.output);
 		//initial vals;
-		this.setDelayTime(this.defaultArg(delayTime, 0.25));
+		this.setDelayTime(options.delayTime);
+		this.setFeedback(options.feedback);
 	};
 
 	Tone.extend(Tone.PingPongDelay);
+
+	/**
+	 *  @static
+	 *  @type {Object}
+	 */
+	Tone.PingPongDelay.defaults = {
+		"delayTime" : 0.25,
+		"feedback" : 0.4,
+	};
 
 	/**
 	 * setDelayTime
@@ -84,6 +95,17 @@ define(["Tone/core/Tone", "Tone/effect/FeedbackDelay", "Tone/component/Split", "
 	Tone.PingPongDelay.prototype.setDry = function(dry){
 		this.leftDelay.setDry(dry);
 		this.rightDelay.setDry(dry);
+	};
+
+	/**
+	 *  set all of the parameters with an object
+	 *  @param {Object} params 
+	 */
+	Tone.PingPongDelay.prototype.set = function(params){
+		if (!this.isUndef(params.feedback)) this.setFeedback(params.feedback);
+		if (!this.isUndef(params.wet)) this.setWet(params.wet);
+		if (!this.isUndef(params.dry)) this.setDry(params.dry);
+		if (!this.isUndef(params.delayTime)) this.setDelayTime(params.delayTime);
 	};
 
 	/**

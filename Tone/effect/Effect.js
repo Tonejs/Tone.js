@@ -15,7 +15,7 @@ define(["Tone/core/Tone", "Tone/component/DryWet"], function(Tone){
 		Tone.call(this);
 
 		//get all of the defaults
-		var options = this.optionsObject(arguments, ["dry"], Tone.Effect._defaults);
+		var options = this.optionsObject(arguments, ["dry"], Tone.Effect.defaults);
 
 		/**
 		 *  the drywet knob to control the amount of effect
@@ -50,11 +50,10 @@ define(["Tone/core/Tone", "Tone/component/DryWet"], function(Tone){
 	Tone.extend(Tone.Effect);
 
 	/**
-	 *  @private
 	 *  @static
 	 *  @type {Object}
 	 */
-	Tone.Effect._defaults = {
+	Tone.Effect.defaults = {
 		"dry" : 0
 	};
 

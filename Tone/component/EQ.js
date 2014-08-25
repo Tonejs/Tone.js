@@ -15,7 +15,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/component/Filter"], functi
 
 		Tone.call(this);
 
-		var options = this.optionsObject(arguments, ["low", "mid", "high"], Tone.EQ._defaults);
+		var options = this.optionsObject(arguments, ["low", "mid", "high"], Tone.EQ.defaults);
 
 		/**
 		 *  the low band
@@ -94,10 +94,9 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/component/Filter"], functi
 	/**
 	 *  the default values
 	 *  @type {Object}
-	 *  @private
 	 *  @static
 	 */
-	Tone.EQ._defaults = {
+	Tone.EQ.defaults = {
 		"low" : 1,
 		"mid" : 1,
 		"high" : 1,

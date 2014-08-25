@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/signal/Signal"], function(Tone){
+define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/signal/Signal", "Tone/signal/Multiply"], function(Tone){
 	/**
 	 * Feedback Effect (a sound loop between an audio source and its own output)
 	 *
@@ -9,7 +9,7 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/signal/Signal"], function(
 	Tone.FeedbackEffect = function(){
 
 		var options = this.optionsObject(arguments, ["feedback"]);
-		options = this.defaultArg(options, Tone.FeedbackEffect._defaults);
+		options = this.defaultArg(options, Tone.FeedbackEffect.defaults);
 
 		Tone.Effect.call(this, options);
 
@@ -18,6 +18,12 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/signal/Signal"], function(
 		 *  @type {Tone.Signal}
 		 */
 		this.feedback = new Tone.Signal(options.feedback);
+
+		/**
+		 *  scales the feedback in half
+		 *  @type {Tone.Multiply}
+		 */
+		this._half = new Tone.Multiply(0.5);
 		
 		/**
 		 *  the gain which controls the feedback
@@ -28,17 +34,16 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/signal/Signal"], function(
 
 		//the feedback loop
 		this.chain(this.effectReturn, this._feedbackGain, this.effectSend);
-		this.feedback.connect(this._feedbackGain.gain);
+		this.chain(this.feedback, this._half, this._feedbackGain);
 	};
 
 	Tone.extend(Tone.FeedbackEffect, Tone.Effect);
 
 	/**
-	 *  @private
 	 *  @static
 	 *  @type {Object}
 	 */
-	Tone.FeedbackEffect._defaults = {
+	Tone.FeedbackEffect.defaults = {
 		"feedback" : 0.25
 	};
 
@@ -72,9 +77,11 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/signal/Signal"], function(
 	Tone.FeedbackEffect.prototype.dispose = function(){
 		Tone.Effect.prototype.dispose.call(this);
 		this.feedback.dispose();
+		this._half.dispose();
 		this._feedbackGain.disconnect();
 		this.feedback = null;
 		this._feedbackGain = null;
+		this._half = null;
 	};
 
 	return Tone.FeedbackEffect;

@@ -14,7 +14,7 @@ define(["Tone/core/Tone", "Tone/signal/Abs", "Tone/signal/Negate", "Tone/signal/
 	Tone.Follower = function(){
 
 		Tone.call(this);
-		var options = this.optionsObject(arguments, ["attack", "release"], Tone.Follower._defaults);
+		var options = this.optionsObject(arguments, ["attack", "release"], Tone.Follower.defaults);
 
 		/**
 		 *  @type {Tone.Abs}
@@ -90,11 +90,10 @@ define(["Tone/core/Tone", "Tone/signal/Abs", "Tone/signal/Negate", "Tone/signal/
 	Tone.extend(Tone.Follower);
 
 	/**
-	 *  @private
 	 *  @static
 	 *  @type {Object}
 	 */
-	Tone.Follower._defaults = {
+	Tone.Follower.defaults = {
 		"attack" : 0.05, 
 		"release" : 0.5
 	};

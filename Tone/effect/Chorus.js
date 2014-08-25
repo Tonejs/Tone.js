@@ -5,34 +5,35 @@ define(["Tone/core/Tone", "Tone/component/LFO", "Tone/effect/FeedbackEffect"], f
 	 *
 	 *	@constructor
 	 *	@extends {Tone.FeedbackEffect}
-	 *	@param {number=} [rate=2] the rate of the effect
-	 *	@param {number=} [delay=3.5] the delay of the chorus effect in ms
+	 *	@param {number|Object=} [rate=2] the rate of the effect
+	 *	@param {number=} [delayTime=3.5] the delay of the chorus effect in ms
 	 *	@param {number=} [depth=0.7] the depth of the chorus
 	 */
-	Tone.Chorus = function(rate, delay, depth){
+	Tone.Chorus = function(){
 
-		Tone.FeedbackEffect.call(this);
+		var options = this.optionsObject(arguments, ["rate", "delayTime", "depth"], Tone.Chorus.defaults);
+		Tone.FeedbackEffect.call(this, options);
 
 		/**
 		 *  the depth of the chorus
 		 *  @type {number}
 		 *  @private
 		 */
-		this._depth = this.defaultArg(depth, 0.7);
+		this._depth = options.depth;
 
 		/**
 		 *  the delayTime
 		 *  @type {number}
 		 *  @private
 		 */
-		this._delayTime = this.defaultArg(delay, 0.0035);
+		this._delayTime = options.delayTime / 1000;
 
 		/**
 		 *  the lfo which controls the delayTime
 		 *  @type {Tone.LFO}
 		 *  @private
 		 */
-		this._lfo = new Tone.LFO(this.defaultArg(rate, 2), 0, 1);
+		this._lfo = new Tone.LFO(options.rate, 0, 1);
 
 		/**
 		 *  @type {DelayNode}
@@ -45,11 +46,20 @@ define(["Tone/core/Tone", "Tone/component/LFO", "Tone/effect/FeedbackEffect"], f
 		this.effectSend.connect(this.effectReturn);
 		this._lfo.connect(this._delayNode.delayTime);
 		this._lfo.start();
-		this.setDepth(this.defaultArg(depth, 0.5));
-		this.setFeedback(0.25);
+		this.setDepth(this._depth);
 	};
 
 	Tone.extend(Tone.Chorus, Tone.FeedbackEffect);
+
+	/**
+	 *  @static
+	 *  @type {Object}
+	 */
+	Tone.Chorus.defaults = {
+		"rate" : 2, 
+		"delayTime" : 3.5,
+		"depth" : 0.7
+	};
 
 	/**
 	 *  set the depth of the chorus

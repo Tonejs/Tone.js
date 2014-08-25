@@ -11,7 +11,7 @@ define(["Tone/core/Tone"], function(Tone){
 	 *  @param {number|Object=} freq the frequency
 	 *  @param {string} type the type of filter
 	 */
-	Tone.Filter = function(freq, type){
+	Tone.Filter = function(){
 
 		/**
 		 *  the filter
@@ -52,7 +52,7 @@ define(["Tone/core/Tone"], function(Tone){
 		this.detune = this._filter.detune;
 
 		//set the parameters
-		var options = this.optionsObject(arguments, ["frequency", "type"], Tone.Filter._defaults);
+		var options = this.optionsObject(arguments, ["frequency", "type"], Tone.Filter.defaults);
 		this.frequency.value = options.frequency;
 		this._filter.type = options.type;
 		this.detune.value = options.detune;
@@ -66,9 +66,9 @@ define(["Tone/core/Tone"], function(Tone){
 	 *  the default parameters
 	 *
 	 *  @static
-	 *  @private
+	 *  @type {Object}
 	 */
-	Tone.Filter._defaults = {
+	Tone.Filter.defaults = {
 		"type" : "lowpass",
 		"frequency" : 350,
 		"Q" : 1,

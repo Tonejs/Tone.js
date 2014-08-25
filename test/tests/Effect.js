@@ -23,6 +23,13 @@ function(Tone, chai, Recorder, Master, Effect, DryWet, FeedbackEffect, Signal, A
 			expect(e.dryWet).is.instanceof(DryWet);
 			e.dispose();
 		});
+
+		it("can be set with options object", function(){
+			var e = new Effect();
+			e.set({"wet" : 0.22});
+			expect(e.dryWet.wetness.getValue()).is.closeTo(0.22, 0.01);
+			e.dispose();
+		});
 	});
 
 	//FEEDBACK EFFECT
@@ -44,6 +51,13 @@ function(Tone, chai, Recorder, Master, Effect, DryWet, FeedbackEffect, Signal, A
 			expect(e.feedback).is.instanceof(Signal);
 			e.dispose();
 		});
+
+		it("can be set with options object", function(){
+			var e = new FeedbackEffect();
+			e.set({"feedback" : 0.22});
+			expect(e.feedback.getValue()).is.closeTo(0.22, 0.01);
+			e.dispose();
+		});
 	});
 
 	//AUTOPANNER
@@ -57,6 +71,13 @@ function(Tone, chai, Recorder, Master, Effect, DryWet, FeedbackEffect, Signal, A
 		it("extends Tone.Effect", function(){
 			var ap = new AutoPanner();
 			expect(ap).is.instanceof(Effect);
+			ap.dispose();
+		});
+
+		it("can be set with options object", function(){
+			var ap = new AutoPanner();
+			ap.set({"wet" : 0.22});
+			expect(ap.dryWet.wetness.getValue()).is.closeTo(0.22, 0.01);
 			ap.dispose();
 		});
 	});

@@ -13,7 +13,7 @@ function(Tone){
 	 */
 	Tone.Sampler = function(){
 
-		var options = this.optionsObject(options, ["url", "load"], Tone.Sampler._defaults);
+		var options = this.optionsObject(options, ["url", "load"], Tone.Sampler.defaults);
 
 		/**
 		 *  @type {GainNode}
@@ -57,9 +57,8 @@ function(Tone){
 	 *  the default parameters
 	 *
 	 *  @static
-	 *  @private
 	 */
-	Tone.Sampler._defaults = {
+	Tone.Sampler.defaults = {
 		"url" : null,
 		"load" : function(){},
 		"envelope" : {

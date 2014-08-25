@@ -15,7 +15,7 @@ define(["Tone/core/Tone", "Tone/component/Follower", "Tone/signal/ScaleExp", "To
 	 */
 	Tone.AutoWah = function(){
 
-		var options = this.optionsObject(arguments, ["baseFrequency", "octaves", "sensitivity"], Tone.AutoWah._defaults);
+		var options = this.optionsObject(arguments, ["baseFrequency", "octaves", "sensitivity"], Tone.AutoWah.defaults);
 		Tone.Effect.call(this, options);
 
 		/**
@@ -74,11 +74,10 @@ define(["Tone/core/Tone", "Tone/component/Follower", "Tone/signal/ScaleExp", "To
 	Tone.extend(Tone.AutoWah, Tone.Effect);
 
 	/**
-	 *  @private
 	 *  @static
 	 *  @type {Object}
 	 */
-	Tone.AutoWah._defaults = {
+	Tone.AutoWah.defaults = {
 		"baseFrequency" : 100,
 		"octaves" : 5,
 		"sensitivity" : 0,

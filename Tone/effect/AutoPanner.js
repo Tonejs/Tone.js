@@ -5,13 +5,11 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/LFO", "Tone/comp
 	 *
 	 *  @constructor
 	 *  @extends {Tone.Effect}
-	 *  @param { number= } rate (optional) rate in HZ of the left-right pan
+	 *  @param { number= } frequency (optional) rate in HZ of the left-right pan
 	 */
 	Tone.AutoPanner = function(){
 
-		//get all of the defaults
-		var options = this.optionsObject(arguments, ["rate"], Tone.AutoPanner._defaults);
-
+		var options = this.optionsObject(arguments, ["frequency"], Tone.AutoPanner.defaults);
 		Tone.Effect.call(this, options);
 
 		/**
@@ -19,7 +17,7 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/LFO", "Tone/comp
 		 *  @type {Tone.LFO}
 		 *  @private
 		 */
-		this._lfo = new Tone.LFO(options.rate, 0, 1);
+		this._lfo = new Tone.LFO(options.frequency, 0, 1);
 
 		/**
 		 *  the panner node which does the panning
@@ -31,6 +29,7 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/LFO", "Tone/comp
 		//connections
 		this.connectEffect(this._panner);
 		this._lfo.connect(this._panner.pan);
+		this.setType(options.type);
 	};
 
 	//extend Effect
@@ -39,11 +38,11 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/LFO", "Tone/comp
 	/**
 	 *  defaults
 	 *  @static
-	 *  @private
 	 *  @type {Object}
 	 */
-	Tone.AutoPanner._defaults = {
-		"rate" : 1
+	Tone.AutoPanner.defaults = {
+		"frequency" : 1,
+		"type" : "sine"
 	};
 	
 	/**
@@ -76,10 +75,10 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/LFO", "Tone/comp
 	/**
 	 * Set frequency of the oscillator attached to the AutoPanner.
 	 * 
-	 * @param {number|string} rate in HZ of the oscillator's frequency.
+	 * @param {number|string} freq in HZ of the oscillator's frequency.
 	 */
-	Tone.AutoPanner.prototype.setFrequency = function(rate){
-		this._lfo.setFrequency(rate);
+	Tone.AutoPanner.prototype.setFrequency = function(freq){
+		this._lfo.setFrequency(freq);
 	};
 
 	/**

@@ -6,24 +6,25 @@ define(["Tone/core/Tone", "Tone/effect/Effect"], function(Tone){
 	 *
 	 *  @constructor
 	 *  @extends {Tone.Effect}
-	 *  @param {number=} bits   
+	 *  @param {number|Object=} bits   
 	 *  @param {number=} frequency 
 	 */
-	Tone.BitCrusher = function(bits, frequency){
+	Tone.BitCrusher = function(){
 
-		Tone.Effect.call(this);
+		var options = this.optionsObject(arguments, ["bits", "frequency"], Tone.BitCrusher.defaults);
+		Tone.Effect.call(this, options);
 
 		/** 
 		 * @private 
 		 * @type {number}
 		 */
-		this._bits = this.defaultArg(bits, 8);
+		this._bits = this.defaultArg(options.bits, 8);
 		
 		/** 
 		 * @private 
 		 * @type {number}
 		 */
-		this._frequency = this.defaultArg(frequency, 0.5);
+		this._frequency = this.defaultArg(options.frequency, 0.5);
 		
 		/** 
 		 * @private 
@@ -61,6 +62,16 @@ define(["Tone/core/Tone", "Tone/effect/Effect"], function(Tone){
 	};
 
 	Tone.extend(Tone.BitCrusher, Tone.Effect);
+
+	/**
+	 *  the default values
+	 *  @static
+	 *  @type {Object}
+	 */
+	Tone.BitCrusher.defaults = {
+		"bits" : 8,
+		"frequency" : 0.5
+	};
 
 	/**
 	 *  @private

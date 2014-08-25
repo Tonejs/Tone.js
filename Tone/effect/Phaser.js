@@ -15,7 +15,7 @@ function(Tone){
 	Tone.Phaser = function(){
 
 		//set the defaults
-		var options = this.optionsObject(arguments, ["rate", "depth", "baseFrequency"], Tone.Phaser._defaults);
+		var options = this.optionsObject(arguments, ["rate", "depth", "baseFrequency"], Tone.Phaser.defaults);
 
 		Tone.FeedbackEffect.call(this, options);
 
@@ -70,11 +70,10 @@ function(Tone){
 
 	/**
 	 *  defaults
-	 *  @private
 	 *  @static
 	 *  @type {object}
 	 */
-	Tone.Phaser._defaults = {
+	Tone.Phaser.defaults = {
 		"rate" : 1,
 		"depth" : 0.6,
 		"stages" : 4,

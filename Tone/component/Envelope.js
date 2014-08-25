@@ -14,7 +14,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	Tone.Envelope = function(){
 
 		//get all of the defaults
-		var options = this.optionsObject(arguments, ["attack", "decay", "sustain", "release"], Tone.Envelope._defaults);
+		var options = this.optionsObject(arguments, ["attack", "decay", "sustain", "release"], Tone.Envelope.defaults);
 
 		/** 
 		 *  the output
@@ -75,9 +75,8 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	 *  the default parameters
 	 *
 	 *  @static
-	 *  @private
 	 */
-	Tone.Envelope._defaults = {
+	Tone.Envelope.defaults = {
 		"attack" : 0.01,
 		"decay" : 0.1,
 		"sustain" : 0.5,
