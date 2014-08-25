@@ -1,8 +1,6 @@
 /**
  *  Tone.js
  *
- *  @version 1
- *
  *  @author Yotam Mann
  *
  *  @license http://opensource.org/licenses/MIT MIT License 2014
@@ -626,6 +624,7 @@ define("Tone/core/Tone", [], function(){
 		_silentNode.connect(audioContext.destination);
 	});
 
-	return Tone;
+	console.log("Tone.js r1-dev");
 
+	return Tone;
 });
