@@ -78,7 +78,7 @@ module.exports = function(grunt) {
   	grunt.loadNpmTasks("grunt-contrib-clean");
   	
   	// Default task(s).
-  	grunt.registerTask("src", ["jsdoc:src"]);
+  	grunt.registerTask("docs", ["jsdoc:src"]);
   	grunt.registerTask("dist", ["concat:dist","requirejs:compile","concat:removeRequireString","clean:dist","jsdoc:dist"]);
   	grunt.registerTask("build", ["concat:dist","requirejs:compile","concat:removeRequireString","clean:dist"]);
   	
