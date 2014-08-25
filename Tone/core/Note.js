@@ -1,5 +1,7 @@
 define(["Tone/core/Tone", "Tone/core/Transport"], function(Tone){
 
+	"use strict";
+
 	/**
 	 *  @class  A timed note. Creating a note will register a callback 
 	 *          which will be invoked on the channel at the time with
@@ -7,7 +9,7 @@ define(["Tone/core/Tone", "Tone/core/Transport"], function(Tone){
 	 *
 	 *  @constructor
 	 *  @param {Tone.Time} time the time when the note will occur
-	 *  @param {*} value the value of the note
+	 *  @param {string|number|Object} value the value of the note
 	 *  @param {number|string} channel the channel name of the note
 	 */
 	Tone.Note = function(time, value, channel){
@@ -16,7 +18,7 @@ define(["Tone/core/Tone", "Tone/core/Transport"], function(Tone){
 		 *  the value of the note. This value is returned
 		 *  when the channel callback is invoked.
 		 *  
-		 *  @type {*}
+		 *  @type {string|number|Object}
 		 */
 		this.value = value;
 
@@ -45,7 +47,7 @@ define(["Tone/core/Tone", "Tone/core/Transport"], function(Tone){
 	 */
 	Tone.Note.prototype._trigger = function(){
 		//invoke the callback
-		ChannelCallbacks(this._channel, this.value);
+		channelCallbacks(this._channel, this.value);
 	};
 
 	/**
@@ -66,11 +68,10 @@ define(["Tone/core/Tone", "Tone/core/Transport"], function(Tone){
 	/**
 	 *  invoke all of the callbacks on a specific channel
 	 *  @private
-	 *  @static
 	 */
-	function ChannelCallbacks(channel, note){
-		var callbacks = NoteChannels[channel];
-		if (callbacks){
+	function channelCallbacks(channel, note){
+		if (NoteChannels.hasOwnProperty(channel)){
+			var callbacks = NoteChannels[channel];
 			for (var i = 0, len = callbacks.length; i < len; i++){
 				callbacks[i](note);
 			}
@@ -85,7 +86,7 @@ define(["Tone/core/Tone", "Tone/core/Transport"], function(Tone){
 	 *                                        on the specified channel
 	 */
 	Tone.Note.route = function(channel, callback){
-		if (NoteChannels[channel]){
+		if (NoteChannels.hasOwnProperty(channel)){
 			NoteChannels[channel].push(callback);
 		} else {
 			NoteChannels[channel] = [callback];
@@ -97,8 +98,8 @@ define(["Tone/core/Tone", "Tone/core/Transport"], function(Tone){
 	 *  @static
 	 */
 	Tone.Note.unroute = function(channel, callback){
-		var channelCallback = NoteChannels[channel];
-		if (channelCallback){
+		if (NoteChannels.hasOwnProperty(channel)){
+			var channelCallback = NoteChannels[channel];
 			var index = channelCallback.indexOf(callback);
 			if (index !== -1){
 				NoteChannels[channel].splice(index, 1);
