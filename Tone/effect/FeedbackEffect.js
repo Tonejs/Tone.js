@@ -34,7 +34,7 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/signal/Signal", "Tone/sign
 
 		//the feedback loop
 		this.chain(this.effectReturn, this._feedbackGain, this.effectSend);
-		this.chain(this.feedback, this._half, this._feedbackGain);
+		this.chain(this.feedback, this._half, this._feedbackGain.gain);
 	};
 
 	Tone.extend(Tone.FeedbackEffect, Tone.Effect);
