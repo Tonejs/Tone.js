@@ -6,7 +6,7 @@ var GUI = GUI || {};
  *  @param {function} callback
  */
 GUI.StartButton = function(callback){
-	this.element = $("<div>", {"id" : "StartButton"})
+	this.element = $("<div>", {"class" : "StartButton"})
 		.appendTo("body");
 	this.button = $("<button>")
 		.button({label: "start"})
@@ -29,7 +29,7 @@ GUI.StartButton.prototype.buttonClicked = function(){
  */
 GUI.Envelope = function(container, envelope, title){
 	this.envelope = envelope;
-	this.element = $("<div>", {"id" : "Envelope"})
+	this.element = $("<div>", {"class" : "Envelope"})
 		.appendTo(container);
 	this.title = $("<div>", {"id" : "Title"})
 		.appendTo(this.element)
@@ -65,4 +65,31 @@ GUI.Envelope.prototype.makeSlider = function(attr, min, max, name){
 		.text(name)
 		.appendTo(slider);
 	return slider;
+};
+
+/**
+ *  Tone.Meter GUI
+ */
+GUI.LevelMeter = function(container, meter){
+
+};
+
+/**
+ *  Tone.Meter GUI but for displaying meter values not levels
+ */
+GUI.ValueMeter = function(container, meter, label){
+	this.meter = meter;
+	this.element = $("<div>", {"class" : "ValueMeter"})
+		.appendTo(container);
+	this.label = $("<div>", {"id" : "Label"})
+		.appendTo(this.element)
+		.text(label);
+	this.value = $("<div>", {"id" : "Value"})
+		.appendTo(this.element)
+		.text(0);
+	setInterval(this.update.bind(this), 100);
+};
+
+GUI.ValueMeter.prototype.update = function(){
+	this.value.text(this.meter.getValue().toFixed(2));
 };

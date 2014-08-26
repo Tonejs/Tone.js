@@ -2,55 +2,106 @@
 <head>
 	<title>SIGNAL PROCESSING</title>
 
-	<script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
+	<script type="text/javascript" src="../deps/jquery.min.js"></script>
+	<script type="text/javascript" src="../deps/jquery-ui.js"></script>
 	<script type="text/javascript" src="../Tone.js"></script>
-	<link rel="stylesheet" type="text/css" href="exampleStyle.css">
+	<script type="text/javascript" src="./Widgets.js"></script>
+	<link rel="stylesheet" type="text/css" href="./style/widgets.css">
+	<link rel="stylesheet" type="text/css" href="./style/jquery-ui.css">
+	<link rel="stylesheet" type="text/css" href="./style/jquery-ui.theme.css">
+	<link rel="stylesheet" type="text/css" href="./style/jquery-ui.structure.css">
+
 </head>
 <body>
-	<div>Process a signal through various methods to alter its value</div>
-	<br><br>
-	<input type='range' value='50'>
-	<div id='signal'>0</div>
-	<div id='add'>0</div>
-	<div id='scale'>0</div>
-	<div id='mult'>0</div>
+	<div id="Explanation">
+		Audio-Rate Math
+		<br>
+		<br>
+		One of the most powerful features of Tone.js is the ability to 
+		perform math and logic on audio-rate signal. These signals
+		can be ramped and scheduled for use as control signals over Audio
+		Parameters and other Tone.Signals making it simple to create elaborate, 
+		interconnected automations.
+	</div>
+	<div id="Container">
+		<div id='Slider'></div>
+	</div>
 	<script type="text/javascript">
+		/* globals Tone, GUI */
+
+		//the driving signal
 		var signal = new Tone.Signal(0);
 		var dryMeter = new Tone.Meter();
 		signal.connect(dryMeter);
 
-
-		//the adder
+		//add a constant value to the dry signal
 		var adder = new Tone.Add(100);
 		var addMeter = new Tone.Meter();
 		adder.connect(addMeter);
-		signal.connect(adder);
 
-		//the scaler
-		var scaler = new Tone.Scale(99, 101, 5, 10);
+		//scale the added value between 5 and 10
+		var scaler = new Tone.Scale(100, 101, 5, 10);
 		var scaleMeter = new Tone.Meter();
 		scaler.connect(scaleMeter);
-		adder.connect(scaler);
 
-		//the multiplier
+		//multiply the output by 10
 		var mult = new Tone.Multiply(10);
 		var multMeter = new Tone.Meter();
 		mult.connect(multMeter);
-		scaler.connect(mult);
 
-		//INTERFACE//
+		//clip the results between 70 and 80
+		var clip = new Tone.Clip(70, 80);
+		var clipMeter = new Tone.Meter();
+		clip.connect(clipMeter);
 
-		setInterval(function(){
-			$("#signal").text("signal: " + dryMeter.getValue().toFixed(3));
-			$("#add").text("signal + 100: " + addMeter.getValue().toFixed(3));
-			$("#scale").text("scaled 5 to 10: " + scaleMeter.getValue().toFixed(3));
-			$("#mult").text("signal * 10: " + multMeter.getValue().toFixed(3));
-		}, 100);
+		//negate the signal
+		var neg = new Tone.Negate();
+		var negpMeter = new Tone.Meter();
+		neg.connect(negpMeter);
 
-		$("input").on("input", function(){
-			var val = $(this).val();
-			signal.linearRampToValueAtTime(val / 50 - 1, "+0.1");
+		//take the absolute value of the signal
+		var abs = new Tone.Abs();
+		var absMeter = new Tone.Meter();
+		abs.connect(absMeter);
+
+		//chain the components together
+		signal.chain(signal, abs, adder, scaler, mult, clip, neg);
+
+
+		// GUI //
+
+		new GUI.StartButton(Tone.startMobile);
+
+		var container = $("#Container");
+
+		$("#Slider").slider({
+			"orientation" : "horizontal",
+			"min" : -100,
+			"max" : 100,
+			"slide" : function(e, ui){
+				signal.linearRampToValueAtTime(ui.value / 100, "+0.1");
+			}
 		});
+
+		new GUI.ValueMeter(container, dryMeter, "Tone.Signal");
+		new GUI.ValueMeter(container, absMeter, "Tone.Abs()");
+		new GUI.ValueMeter(container, addMeter, "Tone.Add(100)");
+		new GUI.ValueMeter(container, scaleMeter, "Tone.Scale(100, 101, 5, 10)");
+		new GUI.ValueMeter(container, multMeter, "Tone.Multiply(10)");
+		new GUI.ValueMeter(container, clipMeter, "Tone.Clip(70, 80)");
+		new GUI.ValueMeter(container, negpMeter, "Tone.Negate()");
+
 	</script>
+	<style type="text/css">
+		#Container {
+			text-align: center;
+			width: 280px;
+			height: 250px;
+		}
+		.ValueMeter {
+			margin-top: 10px;
+			display: block;
+		}
+	</style>
 </body>
 </html>

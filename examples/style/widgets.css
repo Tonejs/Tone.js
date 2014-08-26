@@ -32,25 +32,25 @@
 
 /* ENVELOPE */
 
-#Envelope {
+.Envelope {
 	width: 150px;
 	height: 140px;
 	border: 1px solid black;
 }
 
-#Envelope #Title{
+.Envelope #Title{
 	width: 100%;
 	height: 30px;
 	text-align: center;
 }
 
-#Envelope .Slider {
+.Envelope .Slider {
 	margin-left: 20px;
 	height: 80px;
 	float: left;
 }
 
-#Envelope .Slider .Label{
+.Envelope .Slider .Label{
 	position: absolute;
 	font-size: 8px;
 	text-align: center;
@@ -58,17 +58,17 @@
 	left: -10px;
 }
 
-#Envelope .Slider .Label.Bottom{
+.Envelope .Slider .Label.Bottom{
 	top: 90px;
 }
 
-#Envelope .Slider .Label.Top{
+.Envelope .Slider .Label.Top{
 	top: -10px;
 }
 
 /* START BUTTON */
 
-#StartButton {
+.StartButton {
 	background-color: rgba(0, 0, 0, 0.75);
 	position: absolute;
 	width: 100%;
@@ -79,7 +79,7 @@
 	opacity: 1;
 }
 
-#StartButton button{
+.StartButton button{
 	position: absolute;
 	height: 100px;
 	width: 100px;
@@ -87,4 +87,34 @@
 	left: 50%;
 	margin-top: -50px;
 	margin-left: -50px;
+}
+
+/* VALUE METER */
+
+.ValueMeter {
+	width: auto;
+	height: 20px;
+	border: 1px solid black;
+	display: inline-block;
+	line-height: 20px;
+}
+
+.ValueMeter #Label {
+	margin-left: 10px;
+	margin-right: 5px;
+	position: relative;
+	float: left;
+	height: 100%;
+	font-size: 12px;
+}
+
+.ValueMeter #Value {
+	padding-right: 10px;
+	padding-left: 10px;
+	background-color: #8d8d8d;
+	color: white;
+	position: relative;
+	float: right;
+	height: 100%;
+	font-size: 12px;
 }
