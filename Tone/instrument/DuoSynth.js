@@ -99,16 +99,31 @@ define(["Tone/core/Tone", "Tone/instrument/MonoSynth", "Tone/component/LFO", "To
 		"vibratoRate" : 5,
 		"vibratoDelay" : 1,
 		"portamento" : 0.05,
-		"voiceRatio" : 2,
+		"voiceRatio" : 1.5,
 		"voice0" : {
 			"portamento" : 0,
 			"osc0type" : "sine",
-			"osc1type" : "sawtooth"
+			"osc1type" : "sawtooth",
+			"unison" : 20,
+			"filterEnvelope" : {
+				"attack" : 0.01,
+				"decay" : 0.0,
+				"sustain" : 1,
+				"release" : 0.5
+			}
 		},
 		"voice1" : {
+			"volume" : -6,
 			"portamento" : 0,
-			"osc0type" : "sine",
-			"osc1type" : "sawtooth"
+			"osc0type" : "square",
+			"osc1type" : "square",
+			"unison" : 10,
+			"filterEnvelope" : {
+				"attack" : 0.01,
+				"decay" : 0.0,
+				"sustain" : 1,
+				"release" : 0.5
+			}
 		}
 	};
 
@@ -136,7 +151,9 @@ define(["Tone/core/Tone", "Tone/instrument/MonoSynth", "Tone/component/LFO", "To
 		//the vibrato
 		if (this._vibratoDelay > 0 && this._vibratoAmount > 0){
 			this._vibratoGain.gain.setValueAtTime(0, time);
-			this._vibratoGain.gain.setValueAtTime(this._vibratoAmount, time + this._vibratoDelay);
+			//50 ms ramp to full vibrato
+			this._vibratoGain.gain.setValueAtTime(0, time + this._vibratoDelay - 0.05);
+			this._vibratoGain.gain.linearRampToValueAtTime(this._vibratoAmount, time + this._vibratoDelay);
 		}
 	};
 
