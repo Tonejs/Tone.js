@@ -1,5 +1,5 @@
 define(["Tone/core/Tone", "Tone/component/Envelope", "Tone/source/Oscillator", 
-	"Tone/signal/Signal", "Tone/component/Filter", "Tone/signal/Add"], 
+	"Tone/signal/Signal", "Tone/component/Filter", "Tone/signal/Add", "Tone/source/Source"], 
 function(Tone){
 
 	"use strict";
@@ -200,6 +200,13 @@ function(Tone){
 	};
 
 	/**
+	 *  set the volume of the instrument.
+	 *  borrowed from {@link Tone.Source}
+	 *  @function
+	 */
+	Tone.MonoSynth.prototype.setVolume = Tone.Source.prototype.setVolume;
+
+	/**
 	 *  set the members at once
 	 *  @param {Object} params all of the parameters as an object.
 	 *                         params for envelope and filterEnvelope 
@@ -207,6 +214,7 @@ function(Tone){
 	 */
 	Tone.MonoSynth.prototype.set = function(params){
 		if (!this.isUndef(params.unison)) this.setUnison(params.unison);
+		if (!this.isUndef(params.volume)) this.setVolume(params.volume);
 		if (!this.isUndef(params.portamento)) this.setPortamento(params.portamento);
 		if (!this.isUndef(params.osc0Type)) this.setOscType(params.osc0Type, 0);
 		if (!this.isUndef(params.osc1Type)) this.setOscType(params.osc1Type, 1);
