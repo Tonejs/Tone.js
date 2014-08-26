@@ -1,5 +1,5 @@
 define(["Tone/core/Tone", "Tone/component/Envelope", "Tone/source/Oscillator", 
-	"Tone/signal/Signal", "Tone/component/Filter"], 
+	"Tone/signal/Signal", "Tone/component/Filter", "Tone/signal/Add"], 
 function(Tone){
 
 	"use strict";
@@ -37,19 +37,31 @@ function(Tone){
 		this.frequency = new Tone.Signal(440);
 
 		/**
+		 *  the detune control signal
+		 *  @type {Tone.Signal}
+		 */
+		this.detune = new Tone.Signal(0);
+
+		/**
+		 *  the unison difference between the two oscillators
+		 *  @type {Tone.Add}
+		 *  @private
+		 */
+		this._unison = new Tone.Add(options.unison);
+
+		/**
 		 *  the first oscillator
 		 *  @type {Tone.Oscillator}
 		 *  @private
 		 */
-		this._osc0 = new Tone.Oscillator(0, options.oscType);
+		this._osc0 = new Tone.Oscillator(0, options.osc0Type);
 
 		/**
 		 *  the second oscillator
 		 *  @type {Tone.Oscillator}
 		 *  @private
 		 */
-		this._osc1 = new Tone.Oscillator(0, options.oscType);
-		this._osc1.detune.setValue(options.detune);
+		this._osc1 = new Tone.Oscillator(0, options.osc1Type);
 
 		/**
 		 *  the filter
@@ -71,8 +83,7 @@ function(Tone){
 		this.envelope = new Tone.Envelope(options.envelope);
 
 		//sync the oscillator frequecies to the master frequency
-		this._osc0.frequency.sync(this.frequency, 1);
-		this._osc1.frequency.sync(this.frequency, 1);
+		this.fan(this.frequency, this._osc0.frequency, this._osc1.frequency);
 		//connect the oscillators to the output
 		this._osc0.connect(this._filter);
 		this._osc1.connect(this._filter);
@@ -83,6 +94,8 @@ function(Tone){
 		//connect the envelopes
 		this.filterEnvelope.connect(this._filter.frequency);
 		this.envelope.connect(this.output.gain);
+		this.detune.connect(this._osc0.detune);
+		this.chain(this.detune, this._unison, this._osc1.detune);
 	};
 
 	Tone.extend(Tone.MonoSynth);
@@ -93,10 +106,12 @@ function(Tone){
 	Tone.MonoSynth.defaults = {
 		/** @type {Tone.Time} the glide time between notes */
 		"portamento" : 0.05,
-		/** @type {string} the type of oscillator */
-		"oscType" : "square",
+		/** @type {string} the type of the first oscillator */
+		"osc0Type" : "square",
+		/** @type {string} the type of the first oscillator */
+		"osc1Type" : "sawtooth",
 		/** @type {number} the detune between the unison oscillators */
-		"detune" : 0,
+		"unison" : 0,
 		/** @type {Object} the filter properties */
 		"filter" : {
 			"Q" : 6,
@@ -128,10 +143,6 @@ function(Tone){
 	 *  @param {Tone.Time=} [time=now] the time the attack should start
 	 */
 	Tone.MonoSynth.prototype.triggerAttack = function(note, time){
-		//get the note value
-		if (typeof note === "string"){
-			note = this.noteToFrequency(note);
-		} 
 		//the envelopes
 		this.envelope.triggerAttack(time);
 		this.filterEnvelope.triggerExponentialAttack(time);
@@ -158,18 +169,26 @@ function(Tone){
 	/**
 	 *  set the oscillator type
 	 *  @param {string} oscType the type of oscillator
+	 *  @param {number=} oscNumber which oscillator to set.
+	 *                             no argument will set both
 	 */
-	Tone.MonoSynth.prototype.setOscType = function(type){
-		this._osc0.setType(type);
-		this._osc1.setType(type);
+	Tone.MonoSynth.prototype.setOscType = function(type, oscNumber){
+		if (this.isUndef(oscNumber)){
+			this._osc0.setType(type);
+			this._osc1.setType(type);
+		} else if (oscNumber === 0){
+			this._osc0.setType(type);
+		} else {
+			this._osc1.setType(type);
+		}
 	};
 
 	/**
 	 *  set the detune between the oscillators
-	 *  @param {number} detune detune value in cents
+	 *  @param {number} unisonDetune detune value in cents
 	 */
-	Tone.MonoSynth.prototype.setDetune = function(detune){
-		this._osc1.detune.setValue(detune);
+	Tone.MonoSynth.prototype.setUnison = function(unisonDetune){
+		this._unison.setValue(unisonDetune);
 	};
 
 	/**
@@ -187,9 +206,10 @@ function(Tone){
 	 *                         should be nested objects. 
 	 */
 	Tone.MonoSynth.prototype.set = function(params){
-		if (!this.isUndef(params.detune)) this.setDetune(params.detune);
+		if (!this.isUndef(params.unison)) this.setUnison(params.unison);
 		if (!this.isUndef(params.portamento)) this.setPortamento(params.portamento);
-		if (!this.isUndef(params.oscType)) this.setOscType(params.oscType);
+		if (!this.isUndef(params.osc0Type)) this.setOscType(params.osc0Type, 0);
+		if (!this.isUndef(params.osc1Type)) this.setOscType(params.osc1Type, 1);
 		if (!this.isUndef(params.filterEnvelope)) this.filterEnvelope.set(params.filterEnvelope);
 		if (!this.isUndef(params.envelope)) this.envelope.set(params.envelope);
 		if (!this.isUndef(params.filter)) this._filter.set(params.filter);
@@ -206,12 +226,16 @@ function(Tone){
 		this.filterEnvelope.dispose();
 		this.frequency.dispose();
 		this._filter.dispose();
+		this.detune.dispose();
+		this._unison.dispose();
 		this._osc0 = null;
 		this._osc1 = null;
 		this.frequency = null;
 		this.filterEnvelope = null;
 		this.envelope = null;
 		this._filter = null;
+		this.detune = null;
+		this._unison = null;
 	};
 
 	return Tone.MonoSynth;
