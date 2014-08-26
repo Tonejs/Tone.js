@@ -2,18 +2,34 @@
 <head>
 	<title>Envelope</title>
 
-	<script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
+	<script type="text/javascript" src="../deps/jquery.min.js"></script>
+	<script type="text/javascript" src="../deps/jquery-ui.js"></script>
 	<script type="text/javascript" src="../Tone.js"></script>
-	<link rel="stylesheet" type="text/css" href="exampleStyle.css">
+	<script type="text/javascript" src="./Widgets.js"></script>
+	<link rel="stylesheet" type="text/css" href="./style/widgets.css">
+	<link rel="stylesheet" type="text/css" href="./style/jquery-ui.css">
+	<link rel="stylesheet" type="text/css" href="./style/jquery-ui.theme.css">
+	<link rel="stylesheet" type="text/css" href="./style/jquery-ui.structure.css">
 </head>
 <body>	
 
-	<div>Press down to trigger the attack, release the mouse to trigger the release of the envelope.</div>
-	<br>
-	<button>attack</button>
+	<div id="Explanation">
+		Attack/Decay/Sustain/Release Envelope
+		<br>
+		<br>
+		Click the button to trigger the attack/decay portion of the envelope. 
+		Let go of the button to trigger the release. 
+		<br>
+		<br>
+		<a href="http://en.wikipedia.org/wiki/Synthesizer#ADSR_envelope">Read more about ADSR on Wikipedia</a>
+	</div>
+	<div id="Container"></div>
 
 	<script type="text/javascript">
-		var env = new Tone.Envelope(.05, .01, .4, .4);
+		/* global Tone, GUI*/
+
+		var env = new Tone.Envelope(0.05, 0.01, 0.4, 0.4);
+
 		var noise = new Tone.Noise();
 		
 		//connect the evnelope to the output gain
@@ -23,16 +39,40 @@
 		noise.toMaster();
 		noise.start();
 
-		//listen for triggers
-		$("button").mousedown(function(){
-			env.triggerAttack();
-			$(this).text("release");
-		});
+		// GUI //
 
-		$("button").mouseup(function(){
-			env.triggerRelease();
-			$(this).text("attack");
-		});
+		var container = $("#Container");
+
+		new GUI.StartButton(Tone.startMobile);
+
+		//sliders for the envelope controls
+		new GUI.Envelope(container, env, "envelope");
+
+		//listen for triggers
+		$("<button>").button({ label: "attack" })
+			.mousedown(function(){
+				env.triggerAttack();
+				$(this).button({ label: "release" });
+			})
+			.mouseup(function(){
+				env.triggerRelease();
+				$(this).button({ label: "attack" });
+			})
+			.appendTo(container);
 	</script>
+
+	<style type="text/css">
+		#Container {
+			text-align: center;
+			width: 200px;
+			height: 200px;
+		}
+		#Envelope {
+			margin: auto;
+		}
+		button {
+			margin-top: 10px;
+		}
+	</style>
 </body>
 </html>
