@@ -4,5 +4,8 @@ var ExampleList = {
 	},
 	"Signal" : {
 		"Signal Math" : "signalMath",
+	},
+	"Effects" : {
+		"AutoPanner" : "autoPanner",
 	}
 };

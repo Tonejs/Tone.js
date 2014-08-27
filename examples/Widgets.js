@@ -151,6 +151,25 @@ GUI.LevelMeter.Channel.prototype.setMono = function(){
 };
 
 /**
+ *  shows values
+ */
+GUI.Value = function(container, initial, label, units){
+	this.element = $("<div>", {"class" : "Value"})
+		.appendTo(container);
+	this.label = $("<div>", {"id" : "Label"})
+		.appendTo(this.element)
+		.text(label);
+	this.value = $("<div>", {"id" : "Value"})
+		.appendTo(this.element);
+	this.units = units || "";
+	this.setValue(initial);
+};
+
+GUI.Value.prototype.setValue = function(val){
+	this.value.text(val.toFixed(2) + " " + this.units);
+};
+
+/**
  *  Tone.Meter GUI but for displaying meter values not levels
  */
 GUI.ValueMeter = function(container, meter, label){

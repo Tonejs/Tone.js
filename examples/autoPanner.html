@@ -2,54 +2,120 @@
 <head>
 	<title>AUTOPANNER</title>
 
-	<script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
+	<meta name="viewport" content="width=device-width, initial-scale=0.5">
+
+	<script type="text/javascript" src="../deps/jquery.min.js"></script>
+	<script type="text/javascript" src="../deps/jquery-ui.js"></script>
+	<script type="text/javascript" src="../deps/jquery.ui.touch-punch.js"></script>
 	<script type="text/javascript" src="../Tone.js"></script>
-	<link rel="stylesheet" type="text/css" href="exampleStyle.css">
+	<script type="text/javascript" src="./Widgets.js"></script>
+	<script type="text/javascript" src="./ExampleList.js"></script>
+	<link rel="stylesheet" type="text/css" href="./style/widgets.css">
+	<link rel="stylesheet" type="text/css" href="./style/jquery-ui.css">
 	
 </head>
 <body>
-	<div>Auto Panner</div>
-	<br>
-	<button>start</button>
-	<div id='left'>0</div>
-	<div id='right'>0</div>
+	<div id="Container">
+		<div id="Explanation">
+			Auto Panner
+			<br>
+			<br>
+			An Auto Panner is a left/right panner with an LFO controlling
+			the amount of pan. The effect is much more pronounced with headphones. 
+		</div>
+		<div id="Content">
+			<input type='checkbox' id='StartButton'><label for="StartButton">start</label>
+		</div>
+	</div>
 	<script type="text/javascript">
+
+		/* global Tone, GUI*/
 		
 		//panner	
-		var pan = new Tone.AutoPanner();
+		var panner = new Tone.AutoPanner();
 
 		//input signals
 		var sine = new Tone.Oscillator();
 
 		//connect it up
-		sine.connect(pan);
-		pan.toMaster();
+		sine.connect(panner);
+		sine.setVolume(-6);
+		panner.toMaster();
 
-		//meter
-		var meter = new Tone.Meter(2);
-		pan.connect(meter);
+		//set the initial values
+		panner.setDry(0);
+		panner.setFrequency(1);
 
-		//star the panner lfo
-		pan.start();
-		pan.setDry(0);
+		// GUI //
 
-		//update the meters
-		setInterval(function(){
-			$("#left").text("left: " + meter.getDb(0).toFixed(2) + " db");
-			$("#right").text("right: " + meter.getDb(1).toFixed(2) + " db");
-		}, 100);
-
-
-		$("button").click(function(){
-			if (sine.state !== "started"){
-				sine.start();
-				$(this).text("stop");
-			} else {
-				sine.stop();
-				$(this).text("stop");
-			}
+		new GUI.TopBar(Tone);
+		new GUI.StartButton(function(){
+			Tone.startMobile();
+			panner.start();
 		});
+
+		var container = $("#Content");
+
+		//frequency control
+		$("<div>", {"class" : "Slider"}).slider({
+			"orientation" : "horizontal",
+			"min" : 1,
+			"max" : 50,
+			"value" : 10,
+			"slide" : function(e, ui){
+				var val = ui.value / 10;
+				panner.setFrequency(val);
+				freqValue.setValue(val);
+			}
+		}).appendTo(container);
+
+		var freqValue = new GUI.Value(container, 1, "Rate", "hz");
+
+		//dry wet control
+		$("<div>", {"class" : "Slider"}).slider({
+			"orientation" : "horizontal",
+			"min" : 0,
+			"max" : 100,
+			"value" : 100,
+			"slide" : function(e, ui){
+				panner.setWet(ui.value / 100);
+				wetValue.setValue(ui.value);
+			}
+		}).appendTo(container);
+
+		var wetValue = new GUI.Value(container, 100, "Amount", "%");
+
+		//start/stop button
+		var startButton = $("#StartButton").button({
+				"label" : "start"
+			})
+			.click(function(){
+				if (this.checked){
+					startButton.button({
+						"label" : "stop"
+					});
+					sine.start();
+				} else {
+					startButton.button({
+						"label" : "start"
+					});
+					sine.stop();
+				}
+			});
 		
 	</script>
+	<style type="text/css">
+		#Content {
+			text-align: center;
+		}
+		.Value {
+			margin-top: 5px;
+			display: block;
+		}
+		.Slider {
+			margin-top: 15px;
+		}
+	</style>
+
 </body>
 </html>

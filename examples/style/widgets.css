@@ -152,6 +152,36 @@
 	font-size: 30px;
 }
 
+/* VALUE */
+
+.Value {
+	width: auto;
+	height: 20px;
+	border: 1px solid black;
+	display: inline-block;
+	line-height: 20px;
+}
+
+.Value #Label {
+	margin-left: 10px;
+	margin-right: 5px;
+	position: relative;
+	float: left;
+	height: 100%;
+	font-size: 12px;
+}
+
+.Value #Value {
+	padding-right: 10px;
+	padding-left: 10px;
+	background-color: #8d8d8d;
+	color: white;
+	position: relative;
+	float: right;
+	height: 100%;
+	font-size: 12px;
+}
+
 /* VALUE METER */
 
 .ValueMeter {
