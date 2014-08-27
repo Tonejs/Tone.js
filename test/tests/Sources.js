@@ -1,4 +1,4 @@
-/* global it, describe, after */
+/* global it, describe, after, maxTimeout, recorderDelay, recorderDuration */
 
 define(["chai", "Tone/source/Player", "Tone/core/Master", "Tone/source/Oscillator", "Tone/component/Recorder", "Tone/source/Noise", "tests/Core"], 
 function(chai, Player, Master, Oscillator, Recorder, Noise){
@@ -8,7 +8,7 @@ function(chai, Player, Master, Oscillator, Recorder, Noise){
 	Master.mute();	
 
 	describe("Tone.Player", function(){
-		this.timeout(1000);
+		this.timeout(maxTimeout);
 		var player = new Player("./testAudio/kick.mp3");
 		player.toMaster();
 		
@@ -63,7 +63,7 @@ function(chai, Player, Master, Oscillator, Recorder, Noise){
 	});
 
 	describe("Tone.Oscillator", function(){
-		this.timeout(1000);
+		this.timeout(maxTimeout);
 
 		var oscillator = new Oscillator();
 		oscillator.toMaster();
@@ -110,13 +110,14 @@ function(chai, Player, Master, Oscillator, Recorder, Noise){
 		it("be scheduled to start in the future", function(done){
 			var recorder = new Recorder();
 			oscillator.connect(recorder);
-			oscillator.start("+.05");
-			recorder.record(0.1, 0.05, function(buffers){
+			var startOffset = 0.05;
+			oscillator.start("+"+(recorderDelay + startOffset));
+			recorder.record(recorderDuration + startOffset, recorderDelay, function(buffers){
 				oscillator.stop();
 				var buffer = buffers[0];
 				for (var i = 0; i < buffer.length; i++){
 					if (buffer[i] !== 0){
-						expect(oscillator.samplesToSeconds(i)).to.be.closeTo(0.05, 0.01);
+						expect(oscillator.samplesToSeconds(i)).to.be.closeTo(startOffset, 0.1);
 						break;
 					}
 				}
@@ -138,7 +139,7 @@ function(chai, Player, Master, Oscillator, Recorder, Noise){
 	});
 
 	describe("Tone.Noise", function(){
-		this.timeout(1000);
+		this.timeout(maxTimeout);
 
 		var noise = new Noise();
 		noise.toMaster();
@@ -185,13 +186,14 @@ function(chai, Player, Master, Oscillator, Recorder, Noise){
 		it("be scheduled to start in the future", function(done){
 			var recorder = new Recorder();
 			noise.connect(recorder);
-			noise.start("+.05");
-			recorder.record(0.1, 0.05, function(buffers){
+			var startOffset = 0.1;
+			noise.start("+"+(recorderDelay + startOffset));
+			recorder.record(recorderDuration + startOffset, recorderDelay, function(buffers){
 				noise.stop();
 				var buffer = buffers[0];
 				for (var i = 0; i < buffer.length; i++){
 					if (buffer[i] !== 0){
-						expect(noise.samplesToSeconds(i)).to.be.closeTo(0.05, 0.01);
+						expect(noise.samplesToSeconds(i)).to.be.closeTo(startOffset, 0.1);
 						break;
 					}
 				}
