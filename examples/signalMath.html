@@ -2,29 +2,34 @@
 <head>
 	<title>SIGNAL PROCESSING</title>
 
+	<meta name="viewport" content="width=device-width, initial-scale=0.5">
+
 	<script type="text/javascript" src="../deps/jquery.min.js"></script>
 	<script type="text/javascript" src="../deps/jquery-ui.js"></script>
+	<script type="text/javascript" src="../deps/jquery.ui.touch-punch.js"></script>
 	<script type="text/javascript" src="../Tone.js"></script>
 	<script type="text/javascript" src="./Widgets.js"></script>
+	<script type="text/javascript" src="./ExampleList.js"></script>
 	<link rel="stylesheet" type="text/css" href="./style/widgets.css">
 	<link rel="stylesheet" type="text/css" href="./style/jquery-ui.css">
-	<link rel="stylesheet" type="text/css" href="./style/jquery-ui.theme.css">
-	<link rel="stylesheet" type="text/css" href="./style/jquery-ui.structure.css">
 
 </head>
 <body>
-	<div id="Explanation">
-		Audio-Rate Math
-		<br>
-		<br>
-		One of the most powerful features of Tone.js is the ability to 
-		perform math and logic on audio-rate signal. These signals
-		can be ramped and scheduled for use as control signals over Audio
-		Parameters and other Tone.Signals making it simple to create elaborate, 
-		interconnected automations.
-	</div>
 	<div id="Container">
-		<div id='Slider'></div>
+		<div id="Explanation">
+			Audio-Rate Math
+			<br>
+			<br>
+			One of the most powerful features of Tone.js is the ability to 
+			perform math and logic on audio-rate signal. These signals
+			can be ramped and scheduled for control of Audio Parameters and 
+			other Tone.Signals making it simple to create elaborate, 
+			interconnected automations. Signals and Signal maths use no 
+			ScripProcessorNodes which make them very efficient.
+		</div>
+		<div id="Content">
+			<div id='Slider'></div>
+		</div>
 	</div>
 	<script type="text/javascript">
 		/* globals Tone, GUI */
@@ -56,8 +61,8 @@
 
 		//negate the signal
 		var neg = new Tone.Negate();
-		var negpMeter = new Tone.Meter();
-		neg.connect(negpMeter);
+		var negMeter = new Tone.Meter();
+		neg.connect(negMeter);
 
 		//take the absolute value of the signal
 		var abs = new Tone.Abs();
@@ -70,9 +75,10 @@
 
 		// GUI //
 
+		new GUI.TopBar(Tone);
 		new GUI.StartButton(Tone.startMobile);
 
-		var container = $("#Container");
+		var container = $("#Content");
 
 		$("#Slider").slider({
 			"orientation" : "horizontal",
@@ -89,11 +95,11 @@
 		new GUI.ValueMeter(container, scaleMeter, "Tone.Scale(100, 101, 5, 10)");
 		new GUI.ValueMeter(container, multMeter, "Tone.Multiply(10)");
 		new GUI.ValueMeter(container, clipMeter, "Tone.Clip(70, 80)");
-		new GUI.ValueMeter(container, negpMeter, "Tone.Negate()");
+		new GUI.ValueMeter(container, negMeter, "Tone.Negate()");
 
 	</script>
 	<style type="text/css">
-		#Container {
+		#Content {
 			text-align: center;
 			width: 280px;
 			height: 250px;

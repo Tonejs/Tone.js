@@ -2,72 +2,78 @@
 <head>
 	<title>Envelope</title>
 
+	<meta name="viewport" content="width=device-width, initial-scale=0.5">
+
 	<script type="text/javascript" src="../deps/jquery.min.js"></script>
 	<script type="text/javascript" src="../deps/jquery-ui.js"></script>
+	<script type="text/javascript" src="../deps/jquery.ui.touch-punch.js"></script>
 	<script type="text/javascript" src="../Tone.js"></script>
 	<script type="text/javascript" src="./Widgets.js"></script>
+	<script type="text/javascript" src="./ExampleList.js"></script>
 	<link rel="stylesheet" type="text/css" href="./style/widgets.css">
 	<link rel="stylesheet" type="text/css" href="./style/jquery-ui.css">
-	<link rel="stylesheet" type="text/css" href="./style/jquery-ui.theme.css">
-	<link rel="stylesheet" type="text/css" href="./style/jquery-ui.structure.css">
+
 </head>
 <body>	
-
-	<div id="Explanation">
-		Attack/Decay/Sustain/Release Envelope
-		<br>
-		<br>
-		Click the button to trigger the attack/decay portion of the envelope. 
-		Let go of the button to trigger the release. 
-		<br>
-		<br>
-		<a href="http://en.wikipedia.org/wiki/Synthesizer#ADSR_envelope">Read more about ADSR on Wikipedia</a>
+	<div id="Container">
+		<div id="Explanation">
+			Attack/Decay/Sustain/Release Envelope
+			<br>
+			<br>
+			Click the button to trigger the attack/decay portion of the envelope. 
+			Let go of the button to trigger the release. 
+			<br>
+			<br>
+			<a href="http://en.wikipedia.org/wiki/Synthesizer#ADSR_envelope">Read more about ADSR on Wikipedia</a>
+		</div>
+		<div id="Content"></div>
 	</div>
-	<div id="Container"></div>
 
 	<script type="text/javascript">
 		/* global Tone, GUI*/
 
 		var env = new Tone.Envelope(0.05, 0.01, 0.4, 0.4);
 
-		var noise = new Tone.Noise();
+		var osc = new Tone.Oscillator(440, "square");
 		
-		//connect the evnelope to the output gain
-		env.connect(noise.output.gain);
+		//connect the envelope to the output gain
+		env.connect(osc.output.gain);
 
-		//start the noise
-		noise.toMaster();
-		noise.start();
+		//start the oscillator
+		osc.toMaster();
+		osc.start();
 
 		// GUI //
 
-		var container = $("#Container");
+		var container = $("#Content");
 
 		new GUI.StartButton(Tone.startMobile);
+		new GUI.TopBar(Tone);
 
 		//sliders for the envelope controls
 		new GUI.Envelope(container, env, "envelope");
 
 		//listen for triggers
 		$("<button>").button({ label: "attack" })
-			.mousedown(function(){
+			.on("mousedown touchstart", function(){
 				env.triggerAttack();
 				$(this).button({ label: "release" });
 			})
-			.mouseup(function(){
+			.on("mouseup touchend", function(e){
 				env.triggerRelease();
 				$(this).button({ label: "attack" });
+				e.preventDefault();
 			})
 			.appendTo(container);
 	</script>
 
 	<style type="text/css">
-		#Container {
+		#Content {
 			text-align: center;
 			width: 200px;
 			height: 200px;
 		}
-		#Envelope {
+		.Envelope {
 			margin: auto;
 		}
 		button {

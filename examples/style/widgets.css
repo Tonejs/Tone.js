@@ -1,16 +1,34 @@
-/* CONTAINER */
+* {
+	-webkit-user-select: none; 
+	-moz-user-select: none;  
+	user-select: none; 
+}
 
 #Container {
+	text-size-adjust: none;
+	-webkit-text-size-adjust: none;
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	position: absolute;
+	left: 0px;
+	top: 0px;
+}
+
+/* CONTAINER */
+
+#Content {
 	font-family: monospace;
 	position: absolute;
-	-webkit-transform : translate(-50%, -50%);
-	transform : translate(-50%, -50%);
 	width: 200px;
 	height: 200px;
 	left: 50%;
-	top: 50%;
+	transform : translate(-50%, -50%);
+	-webkit-transform : translate(-50%, -50%);
+	top: calc(50% - 50px);
 	z-index: 0;
 }
+
 
 #Explanation {
 	font-family: monospace;
@@ -23,17 +41,61 @@
 	bottom: 10px;
 	left: 10px;
 	right: 10px;
-	z-index: 1;
+	z-index: 2;
 }
 
 #Explanation a {
 	color: white;
+	font-family: monospace;
+	font-size: 14px;
+}
+
+/* TOP BAR */
+#TopBar {
+	position: fixed;
+	background-color: black;
+	height: 40px;
+	top: 10px;
+	left: 0px;
+	right: 0px;
+	z-index: 2;
+}
+
+#TopBar #HomePage {
+	position: absolute;
+	left: 20px;
+	top: 0px;
+	font-size: 24px;
+	font-family: monospace;
+	line-height: 40px;
+	color: white;
+}
+
+#TopBar #DropDown {
+	position: absolute;
+	right: 10px;
+	margin-left: -60px;
+	top: 5px;
+	/*width: 120px;*/
+	/*font-size: 12px;*/
+}
+
+#TopBar .LevelMeter {
+	position: absolute;
+	left: 130px;
+	top: 5px;
+	height: 25px;
+	width: 20px;
+}
+
+#TopBar .LevelMeterChannel #Level{
+	background-color: black;
 }
 
 /* ENVELOPE */
 
 .Envelope {
-	width: 150px;
+	width: 175px;
 	height: 140px;
 	border: 1px solid black;
 }
@@ -45,14 +107,14 @@
 }
 
 .Envelope .Slider {
-	margin-left: 20px;
+	margin-left: 25px;
 	height: 80px;
 	float: left;
 }
 
 .Envelope .Slider .Label{
 	position: absolute;
-	font-size: 8px;
+	font-size: 9px;
 	text-align: center;
 	width: 30px;
 	left: -10px;
@@ -63,7 +125,7 @@
 }
 
 .Envelope .Slider .Label.Top{
-	top: -10px;
+	top: -15px;
 }
 
 /* START BUTTON */
@@ -75,7 +137,7 @@
 	height: 100%;
 	top: 0px;
 	left: 0px;
-	z-index: 10000;
+	z-index: 1;
 	opacity: 1;
 }
 
@@ -87,6 +149,7 @@
 	left: 50%;
 	margin-top: -50px;
 	margin-left: -50px;
+	font-size: 30px;
 }
 
 /* VALUE METER */
@@ -118,3 +181,67 @@
 	height: 100%;
 	font-size: 12px;
 }
+
+/* LEVEL METER */
+.LevelMeter {
+	width: 40px;
+	height: 100px;
+}
+
+.LevelMeterChannel {
+	position: absolute;
+	top: 0;
+	height: 100%;
+}
+
+.LevelMeterChannel.Mono {
+	width: 100%;
+	height: 100%;
+	left: 0px;
+}
+
+.LevelMeterChannel.Left {
+	width: 45%;
+	left: 0px;
+}
+.LevelMeterChannel.Right {
+	width: 45%;
+	right: 0px;
+}
+
+.LevelMeterChannel #Clip{
+	position: absolute;
+	top: 0;
+	height: 5%;
+	width: 100%;
+	left: 0px;
+	background-color: red;
+	opacity: 0;
+}
+
+.LevelMeterChannel #Background{
+	position: absolute;
+	width: 100%;
+	left: 0px;
+	top: 10%;
+	height: 95%;
+	background: #f75931;
+	background: -moz-linear-gradient(top,  #f75931 0%, #efe826 13%, #3fe02a 27%, #3fe02a 64%, #3fe02a 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#f75931), color-stop(13%,#efe826), color-stop(27%,#3fe02a), color-stop(64%,#3fe02a), color-stop(100%,#3fe02a));
+	background: -webkit-linear-gradient(top,  #f75931 0%,#efe826 13%,#3fe02a 27%,#3fe02a 64%,#3fe02a 100%);
+	background: -o-linear-gradient(top,  #f75931 0%,#efe826 13%,#3fe02a 27%,#3fe02a 64%,#3fe02a 100%);
+	background: -ms-linear-gradient(top,  #f75931 0%,#efe826 13%,#3fe02a 27%,#3fe02a 64%,#3fe02a 100%);
+	background: linear-gradient(to bottom,  #f75931 0%,#efe826 13%,#3fe02a 27%,#3fe02a 64%,#3fe02a 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f75931', endColorstr='#3fe02a',GradientType=0 );	
+}
+
+.LevelMeterChannel #Level {
+	position: absolute;
+	height: 50%;
+	background-color: white;
+	top: 0px;
+	width: 100%;
+	left: 0px;
+	transition: height 0.1s;
+}
+
