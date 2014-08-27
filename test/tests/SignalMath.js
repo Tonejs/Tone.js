@@ -158,7 +158,6 @@ function(core, chai, Recorder, Signal, Add, Multiply, Scale, Oscillator, Master,
 			var signal = new Signal(1);
 			var abs = new Abs();
 			signal.connect(abs);
-			signal.noGC();
 			abs.connect(recorder);
 			recorder.record(recorderDuration, recorderDelay, function(buffers){
 				var buffer = buffers[0];
@@ -174,7 +173,6 @@ function(core, chai, Recorder, Signal, Add, Multiply, Scale, Oscillator, Master,
 
 		it("outputs the absolute value for negative numbers", function(done){
 			var signal = new Signal(-10);
-			signal.noGC();
 			var abs = new Abs();
 			signal.connect(abs);
 			var recorder = new Recorder();
@@ -212,7 +210,6 @@ function(core, chai, Recorder, Signal, Add, Multiply, Scale, Oscillator, Master,
 			var neg = new Negate();
 			signal.connect(neg);
 			neg.connect(recorder);
-			signal.noGC();
 			recorder.record(recorderDuration, recorderDelay, function(buffers){
 				var buffer = buffers[0];
 				//get the left buffer and check that all values are === 1
@@ -227,7 +224,6 @@ function(core, chai, Recorder, Signal, Add, Multiply, Scale, Oscillator, Master,
 
 		it("makes a negative value positive", function(done){
 			var signal = new Signal(-10);
-			signal.noGC();
 			var neg = new Negate();
 			signal.connect(neg);
 			var recorder = new Recorder();
@@ -262,7 +258,6 @@ function(core, chai, Recorder, Signal, Add, Multiply, Scale, Oscillator, Master,
 
 		it("outputs the set value when less than the incoming signal", function(done){
 			var signal = new Signal(1);
-			signal.noGC();
 			var max = new Max(2);
 			signal.connect(max);
 			max.connect(recorder);
@@ -280,7 +275,6 @@ function(core, chai, Recorder, Signal, Add, Multiply, Scale, Oscillator, Master,
 
 		it("outputs the incoming signal when greater than the max", function(done){
 			var signal = new Signal(10);
-			signal.noGC();
 			var max = new Max(-1);
 			signal.connect(max);
 			max.connect(recorder);
@@ -314,7 +308,6 @@ function(core, chai, Recorder, Signal, Add, Multiply, Scale, Oscillator, Master,
 
 		it("outputs the set value when greater than the incoming signal", function(done){
 			var signal = new Signal(4);
-			signal.noGC();
 			var min = new Min(2);
 			signal.connect(min);
 			min.connect(recorder);
@@ -332,7 +325,6 @@ function(core, chai, Recorder, Signal, Add, Multiply, Scale, Oscillator, Master,
 
 		it("outputs the incoming signal when less than the min", function(done){
 			var signal = new Signal(-12);
-			signal.noGC();
 			var min = new Min(-4);
 			signal.connect(min);
 			min.connect(recorder);
@@ -366,7 +358,6 @@ function(core, chai, Recorder, Signal, Add, Multiply, Scale, Oscillator, Master,
 
 		it("output the upper limit when signal is greater than clip", function(done){
 			var signal = new Signal(4);
-			signal.noGC();
 			var clip = new Clip(2, 3);
 			signal.connect(clip);
 			clip.connect(recorder);
@@ -384,7 +375,6 @@ function(core, chai, Recorder, Signal, Add, Multiply, Scale, Oscillator, Master,
 
 		it("outputs the incoming signal when in between upper and lower limit", function(done){
 			var signal = new Signal(-12);
-			signal.noGC();
 			var clip = new Clip(-14, 14);
 			signal.connect(clip);
 			clip.connect(recorder);
@@ -402,7 +392,6 @@ function(core, chai, Recorder, Signal, Add, Multiply, Scale, Oscillator, Master,
 
 		it("outputs the lower limit when incoming signal is less than the lower limit", function(done){
 			var signal = new Signal(-12);
-			signal.noGC();
 			var clip = new Clip(0, 8);
 			signal.connect(clip);
 			clip.connect(recorder);

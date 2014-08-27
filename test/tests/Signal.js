@@ -33,7 +33,6 @@ function(core, chai, Recorder, Signal, Oscillator, Master, Threshold, Switch, Ro
 
 		it("can set a value in the future", function(done){
 			var sig = new Signal(10);
-			sig.noGC();
 			sig.setValueAtTime(100, "+0.1");
 			expect(sig.getValue()).to.equal(10);
 			var recorder = new Recorder();
@@ -77,8 +76,6 @@ function(core, chai, Recorder, Signal, Oscillator, Master, Threshold, Switch, Ro
 			var signalSync = new Signal(2);
 			signalSync.sync(syncTo);
 			syncTo.setValue(2);
-			syncTo.noGC();
-			signalSync.noGC();
 			var recorder = new Recorder();
 			signalSync.connect(recorder);
 			recorder.record(recorderDuration, recorderDelay, function(buffers){
@@ -95,7 +92,6 @@ function(core, chai, Recorder, Signal, Oscillator, Master, Threshold, Switch, Ro
 		it("can ramp from the current value", function(done){
 			var sig1 = new Signal(0);
 			sig1.setValue(-10);
-			sig1.noGC();
 			var recorder = new Recorder(1);
 			sig1.connect(recorder);
 			var waitTime = recorderDelay;
