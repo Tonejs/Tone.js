@@ -1,4 +1,4 @@
-/* global it, describe */
+/* global it, describe, recorderDelay, recorderDuration, maxTimeout */
 
 define(["tests/Core", "chai", "Tone/component/Recorder", "Tone/signal/Signal", "Tone/source/Oscillator", 
 	"Tone/core/Master", "Tone/signal/Threshold", "Tone/signal/Switch", "Tone/signal/Route", "Tone/signal/Selector"], 
@@ -10,7 +10,7 @@ function(core, chai, Recorder, Signal, Oscillator, Master, Threshold, Switch, Ro
 
 	//SIGNAL
 	describe("Tone.Signal", function(){
-		this.timeout(1000);
+		this.timeout(maxTimeout);
 
 
 		it("can be created and disposed", function(){
@@ -38,7 +38,7 @@ function(core, chai, Recorder, Signal, Oscillator, Master, Threshold, Switch, Ro
 			expect(sig.getValue()).to.equal(10);
 			var recorder = new Recorder();
 			sig.connect(recorder);
-			recorder.record(0.1, 0.1, function(buffers){
+			recorder.record(recorderDuration, recorderDelay, function(buffers){
 				var buffer = buffers[0];
 				var reached100 = false;
 				for (var i = 0; i < buffer.length; i++){
@@ -55,14 +55,14 @@ function(core, chai, Recorder, Signal, Oscillator, Master, Threshold, Switch, Ro
 
 		it("can change value with sample accurate timing", function(done){			
 			var changeSignal = new Signal(0);
-			changeSignal.setValueAtTime(1, "+0.1");
+			changeSignal.setValueAtTime(1, "+"+(recorderDelay));
 			var recorder = new Recorder();
 			changeSignal.connect(recorder);
-			recorder.record(0.1, 0.1, function(buffers){
+			recorder.record(recorderDuration, recorderDelay, function(buffers){
 				var buffer = buffers[0];
 				for (var i = 0; i < buffer.length; i++){
 					if (buffer[i] === 1){
-						expect(changeSignal.samplesToSeconds(i)).is.closeTo(0.1, 0.01);
+						expect(changeSignal.samplesToSeconds(i)).is.closeTo(0.0, 0.1);
 						changeSignal.dispose();
 						recorder.dispose();
 						done();
@@ -81,7 +81,7 @@ function(core, chai, Recorder, Signal, Oscillator, Master, Threshold, Switch, Ro
 			signalSync.noGC();
 			var recorder = new Recorder();
 			signalSync.connect(recorder);
-			recorder.record(0.1, 0.1, function(buffers){
+			recorder.record(recorderDuration, recorderDelay, function(buffers){
 				var buffer = buffers[0];
 				for (var i = 0; i < buffer.length; i++){
 					expect(buffer[i]).to.equal(4);
@@ -98,14 +98,14 @@ function(core, chai, Recorder, Signal, Oscillator, Master, Threshold, Switch, Ro
 			sig1.noGC();
 			var recorder = new Recorder(1);
 			sig1.connect(recorder);
-			var waitTime = 0.1;
+			var waitTime = recorderDelay;
 			expect(sig1.getValue()).to.equal(-10);
 			sig1.linearRampToValueNow(1, waitTime);
-			recorder.record(0.1, 0.1, function(buffers){
+			recorder.record(recorderDuration, recorderDelay, function(buffers){
 				var buffer = buffers[0];
 				for (var i = 0; i < buffer.length; i++){
 					if (buffer[i] === 1){
-						expect(sig1.samplesToSeconds(i)).is.closeTo(0.1, 0.01);
+						expect(sig1.samplesToSeconds(i)).is.closeTo(0, 0.1);
 						done();
 						sig1.dispose();
 						break;
@@ -118,7 +118,7 @@ function(core, chai, Recorder, Signal, Oscillator, Master, Threshold, Switch, Ro
 
 	//THRESHOLD
 	describe("Tone.Threshold", function(){
-		this.timeout(1000);
+		this.timeout(maxTimeout);
 
 		it("can be created and disposed", function(){
 			var thresh = new Threshold();
@@ -131,7 +131,7 @@ function(core, chai, Recorder, Signal, Oscillator, Master, Threshold, Switch, Ro
 			signal.connect(thresh);
 			var recorder = new Recorder();
 			thresh.connect(recorder);
-			recorder.record(0.1, 0.1, function(buffers){
+			recorder.record(recorderDuration, recorderDelay, function(buffers){
 				var buffer = buffers[0];
 				//get the left buffer and check that all values are === 1
 				for (var i = 0; i < buffer.length; i++){
@@ -149,7 +149,7 @@ function(core, chai, Recorder, Signal, Oscillator, Master, Threshold, Switch, Ro
 			signal.connect(thresh);
 			var recorder = new Recorder();
 			thresh.connect(recorder);
-			recorder.record(0.1, 0.1, function(buffers){
+			recorder.record(recorderDuration, recorderDelay, function(buffers){
 				var buffer = buffers[0];
 				//get the left buffer and check that all values are === 1
 				for (var i = 0; i < buffer.length; i++){
@@ -167,7 +167,7 @@ function(core, chai, Recorder, Signal, Oscillator, Master, Threshold, Switch, Ro
 			signal.connect(thresh);
 			var recorder = new Recorder();
 			thresh.connect(recorder);
-			recorder.record(0.1, 0.1, function(buffers){
+			recorder.record(recorderDuration, recorderDelay, function(buffers){
 				var buffer = buffers[0];
 				//get the left buffer and check that all values are === 1
 				for (var i = 0; i < buffer.length; i++){
@@ -183,7 +183,7 @@ function(core, chai, Recorder, Signal, Oscillator, Master, Threshold, Switch, Ro
 
 	//Switch
 	describe("Tone.Switch", function(){
-		this.timeout(1000);
+		this.timeout(maxTimeout);
 
 		it("can be created and disposed", function(){
 			var sw = new Switch();
@@ -196,7 +196,7 @@ function(core, chai, Recorder, Signal, Oscillator, Master, Threshold, Switch, Ro
 			signal.connect(gate);
 			var recorder = new Recorder();
 			gate.connect(recorder);
-			recorder.record(0.1, 0.1, function(buffers){
+			recorder.record(recorderDuration, recorderDelay, function(buffers){
 				var buffer = buffers[0];
 				//get the left buffer and check that all values are === 1
 				for (var i = 0; i < buffer.length; i++){
@@ -215,7 +215,7 @@ function(core, chai, Recorder, Signal, Oscillator, Master, Threshold, Switch, Ro
 			gate.open();
 			var recorder = new Recorder();
 			gate.connect(recorder);
-			recorder.record(0.1, 0.1, function(buffers){
+			recorder.record(recorderDuration, recorderDelay, function(buffers){
 				var buffer = buffers[0];
 				//get the left buffer and check that all values are === 1
 				for (var i = 0; i < buffer.length; i++){
@@ -230,7 +230,7 @@ function(core, chai, Recorder, Signal, Oscillator, Master, Threshold, Switch, Ro
 
 	//Route
 	describe("Tone.Route", function(){
-		this.timeout(1000);
+		this.timeout(maxTimeout);
 
 		it("can be created and disposed", function(){
 			var r = new Route();
@@ -241,11 +241,10 @@ function(core, chai, Recorder, Signal, Oscillator, Master, Threshold, Switch, Ro
 			var signal = new Signal(10);
 			var route = new Route();
 			signal.connect(route);
-			var recorderL = new Recorder();
-			var recorderR = new Recorder();
-			route.connect(recorderL, 0, 0);
-			route.connect(recorderR, 1, 0);
-			recorderL.record(0.1, 0.1, function(buffers){
+			route.select(0);
+			var recorder = new Recorder();
+			route.connect(recorder, 0, 0);
+			recorder.record(recorderDuration, recorderDelay, function(buffers){
 				var buffer = buffers[0];
 				//get the left buffer and check that all values are === 1
 				for (var i = 0; i < buffer.length; i++){
@@ -255,26 +254,16 @@ function(core, chai, Recorder, Signal, Oscillator, Master, Threshold, Switch, Ro
 				route.dispose();
 				done();
 			});
-			recorderR.record(0.1, 0.1, function(buffers){
-				var buffer = buffers[0];
-				//get the left buffer and check that all values are === 1
-				for (var i = 0; i < buffer.length; i++){
-					expect(buffer[i]).to.equal(0);
-				}
-				done();
-			});
 		});
 
-		it("can route a signal to the second input", function(done){
-			var signal = new Signal(20);
+		it("can route a signal to first output and not the second one", function(done){
+			var signal = new Signal(10);
 			var route = new Route();
-			route.select(1);
 			signal.connect(route);
-			var recorderL = new Recorder();
-			var recorderR = new Recorder();
-			route.connect(recorderL, 0, 0);
-			route.connect(recorderR, 1, 0);
-			recorderL.record(0.1, 0.1, function(buffers){
+			route.select(0);
+			var recorder = new Recorder();
+			route.connect(recorder, 1, 0);
+			recorder.record(recorderDuration, recorderDelay, function(buffers){
 				var buffer = buffers[0];
 				//get the left buffer and check that all values are === 1
 				for (var i = 0; i < buffer.length; i++){
@@ -284,21 +273,50 @@ function(core, chai, Recorder, Signal, Oscillator, Master, Threshold, Switch, Ro
 				route.dispose();
 				done();
 			});
-			recorderR.record(0.1, 0.1, function(buffers){
+		});
+
+		it("can route a signal to second output", function(done){
+			var signal = new Signal(20);
+			var route = new Route();
+			signal.connect(route);
+			route.select(1);
+			var recorder = new Recorder();
+			route.connect(recorder, 1, 0);
+			recorder.record(recorderDuration, recorderDelay, function(buffers){
 				var buffer = buffers[0];
 				//get the left buffer and check that all values are === 1
 				for (var i = 0; i < buffer.length; i++){
 					expect(buffer[i]).to.equal(20);
 				}
+				signal.dispose();
+				route.dispose();
 				done();
 			});
 		});
 
+		it("can route a signal to second output and not the first one", function(done){
+			var signal = new Signal(20);
+			var route = new Route();
+			signal.connect(route);
+			route.select(1);
+			var recorder = new Recorder();
+			route.connect(recorder, 0, 0);
+			recorder.record(recorderDuration, recorderDelay, function(buffers){
+				var buffer = buffers[0];
+				//get the left buffer and check that all values are === 1
+				for (var i = 0; i < buffer.length; i++){
+					expect(buffer[i]).to.equal(0);
+				}
+				signal.dispose();
+				route.dispose();
+				done();
+			});
+		});
 	});
 
 	//Selector
 	describe("Tone.Selector", function(){
-		this.timeout(1000);
+		this.timeout(maxTimeout);
 
 		it("can be created and disposed", function(){
 			var s = new Selector();
@@ -314,7 +332,7 @@ function(core, chai, Recorder, Signal, Oscillator, Master, Threshold, Switch, Ro
 			sel.select(0);
 			var recorder = new Recorder();
 			sel.connect(recorder, 0, 0);
-			recorder.record(0.1, 0.1, function(buffers){
+			recorder.record(recorderDuration, recorderDelay, function(buffers){
 				var buffer = buffers[0];
 				//get the left buffer and check that all values are === 1
 				for (var i = 0; i < buffer.length; i++){
@@ -336,7 +354,7 @@ function(core, chai, Recorder, Signal, Oscillator, Master, Threshold, Switch, Ro
 			sel.select(1);
 			var recorder = new Recorder();
 			sel.connect(recorder, 0, 0);
-			recorder.record(0.1, 0.1, function(buffers){
+			recorder.record(recorderDuration, recorderDelay, function(buffers){
 				var buffer = buffers[0];
 				//get the left buffer and check that all values are === 1
 				for (var i = 0; i < buffer.length; i++){

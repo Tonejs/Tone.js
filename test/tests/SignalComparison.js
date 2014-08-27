@@ -1,3 +1,5 @@
+/* global it, describe, recorderDelay, recorderDuration, maxTimeout */
+
 define(["tests/Core", "chai", "Tone/component/Recorder", "Tone/signal/Signal", "Tone/core/Master", "Tone/signal/EqualZero",
 	"Tone/signal/Equal", "Tone/signal/GreaterThan", "Tone/signal/LessThan"], 
 function(core, chai, Recorder, Signal, Master, EqualZero, Equal, GreaterThan, LessThan){
@@ -6,10 +8,9 @@ function(core, chai, Recorder, Signal, Master, EqualZero, Equal, GreaterThan, Le
 
 	Master.mute();
 
-
 	//EQUALS 0
 	describe("Tone.EqualZero", function(){
-		this.timeout(1000);
+		this.timeout(maxTimeout);
 
 		it("can be created and disposed", function(){
 			var ez = new EqualZero();
@@ -22,7 +23,7 @@ function(core, chai, Recorder, Signal, Master, EqualZero, Equal, GreaterThan, Le
 			signal.connect(ez);
 			var recorder = new Recorder();
 			ez.connect(recorder);
-			recorder.record(0.1, 0.1, function(buffers){
+			recorder.record(recorderDuration, recorderDelay, function(buffers){
 				var buffer = buffers[0];
 				//get the left buffer and check that all values are === 1
 				for (var i = 0; i < buffer.length; i++){
@@ -40,7 +41,7 @@ function(core, chai, Recorder, Signal, Master, EqualZero, Equal, GreaterThan, Le
 			signal.connect(ez);
 			var recorder = new Recorder();
 			ez.connect(recorder);
-			recorder.record(0.1, 0.1, function(buffers){
+			recorder.record(recorderDuration, recorderDelay, function(buffers){
 				var buffer = buffers[0];
 				//get the left buffer and check that all values are === 1
 				for (var i = 0; i < buffer.length; i++){
@@ -58,7 +59,7 @@ function(core, chai, Recorder, Signal, Master, EqualZero, Equal, GreaterThan, Le
 			signal.connect(ez);
 			var recorder = new Recorder();
 			ez.connect(recorder);
-			recorder.record(0.1, 0.1, function(buffers){
+			recorder.record(recorderDuration, recorderDelay, function(buffers){
 				var buffer = buffers[0];
 				//get the left buffer and check that all values are === 1
 				for (var i = 0; i < buffer.length; i++){
@@ -74,7 +75,7 @@ function(core, chai, Recorder, Signal, Master, EqualZero, Equal, GreaterThan, Le
 
 	//EQUALS
 	describe("Tone.Equal", function(){
-		this.timeout(1000);
+		this.timeout(maxTimeout);
 
 		it("can be created and disposed", function(){
 			var eq = new Equal(3);
@@ -87,7 +88,7 @@ function(core, chai, Recorder, Signal, Master, EqualZero, Equal, GreaterThan, Le
 			signal.connect(eq);
 			var recorder = new Recorder();
 			eq.connect(recorder);
-			recorder.record(0.1, 0.1, function(buffers){
+			recorder.record(recorderDuration, recorderDelay, function(buffers){
 				var buffer = buffers[0];
 				//get the left buffer and check that all values are === 1
 				for (var i = 0; i < buffer.length; i++){
@@ -105,7 +106,7 @@ function(core, chai, Recorder, Signal, Master, EqualZero, Equal, GreaterThan, Le
 			signal.connect(eq);
 			var recorder = new Recorder();
 			eq.connect(recorder);
-			recorder.record(0.1, 0.1, function(buffers){
+			recorder.record(recorderDuration, recorderDelay, function(buffers){
 				var buffer = buffers[0];
 				//get the left buffer and check that all values are === 1
 				for (var i = 0; i < buffer.length; i++){
@@ -121,7 +122,7 @@ function(core, chai, Recorder, Signal, Master, EqualZero, Equal, GreaterThan, Le
 
 	//GREATER THAN
 	describe("Tone.GreaterThan", function(){
-		this.timeout(1000);
+		this.timeout(maxTimeout);
 
 		it("can be created and disposed", function(){
 			var gt = new GreaterThan();
@@ -134,7 +135,7 @@ function(core, chai, Recorder, Signal, Master, EqualZero, Equal, GreaterThan, Le
 			signal.connect(gt);
 			var recorder = new Recorder();
 			gt.connect(recorder);
-			recorder.record(0.1, 0.1, function(buffers){
+			recorder.record(recorderDuration, recorderDelay, function(buffers){
 				var buffer = buffers[0];
 				//get the left buffer and check that all values are === 1
 				for (var i = 0; i < buffer.length; i++){
@@ -152,7 +153,7 @@ function(core, chai, Recorder, Signal, Master, EqualZero, Equal, GreaterThan, Le
 			signal.connect(gt);
 			var recorder = new Recorder();
 			gt.connect(recorder);
-			recorder.record(0.1, 0.1, function(buffers){
+			recorder.record(recorderDuration, recorderDelay, function(buffers){
 				var buffer = buffers[0];
 				//get the left buffer and check that all values are === 1
 				for (var i = 0; i < buffer.length; i++){
@@ -171,7 +172,7 @@ function(core, chai, Recorder, Signal, Master, EqualZero, Equal, GreaterThan, Le
 			gt.setValue(50);
 			var recorder = new Recorder();
 			gt.connect(recorder);
-			recorder.record(0.1, 0.1, function(buffers){
+			recorder.record(recorderDuration, recorderDelay, function(buffers){
 				var buffer = buffers[0];
 				//get the left buffer and check that all values are === 1
 				for (var i = 0; i < buffer.length; i++){
@@ -186,7 +187,7 @@ function(core, chai, Recorder, Signal, Master, EqualZero, Equal, GreaterThan, Le
 
 	//LESS THAN
 	describe("Tone.LessThan", function(){
-		this.timeout(1000);
+		this.timeout(maxTimeout);
 
 		it("can be created and disposed", function(){
 			var lt = new LessThan(2);
@@ -199,7 +200,7 @@ function(core, chai, Recorder, Signal, Master, EqualZero, Equal, GreaterThan, Le
 			signal.connect(lt);
 			var recorder = new Recorder();
 			lt.connect(recorder);
-			recorder.record(0.1, 0.1, function(buffers){
+			recorder.record(recorderDuration, recorderDelay, function(buffers){
 				var buffer = buffers[0];
 				//get the left buffer and check that all values are === 1
 				for (var i = 0; i < buffer.lenlth; i++){
@@ -217,7 +218,7 @@ function(core, chai, Recorder, Signal, Master, EqualZero, Equal, GreaterThan, Le
 			signal.connect(lt);
 			var recorder = new Recorder();
 			lt.connect(recorder);
-			recorder.record(0.1, 0.1, function(buffers){
+			recorder.record(recorderDuration, recorderDelay, function(buffers){
 				var buffer = buffers[0];
 				//get the left buffer and check that all values are === 1
 				for (var i = 0; i < buffer.lenlth; i++){
@@ -235,7 +236,7 @@ function(core, chai, Recorder, Signal, Master, EqualZero, Equal, GreaterThan, Le
 			signal.connect(lt);
 			var recorder = new Recorder();
 			lt.connect(recorder);
-			recorder.record(0.1, 0.1, function(buffers){
+			recorder.record(recorderDuration, recorderDelay, function(buffers){
 				var buffer = buffers[0];
 				//get the left buffer and check that all values are === 1
 				for (var i = 0; i < buffer.lenlth; i++){
