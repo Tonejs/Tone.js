@@ -46,7 +46,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	 *  @private
 	 */
 	Tone.Threshold.prototype._setThresh = function(component, thresh){
-		var curveLength = 1024;
+		var curveLength = 1023;
 		var curve = new Float32Array(curveLength);
 		for (var i = 0; i < curveLength; i++){
 			var normalized = (i / (curveLength - 1)) * 2 - 1;

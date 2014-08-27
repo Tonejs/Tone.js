@@ -1,4 +1,5 @@
-define(["Tone/core/Tone", "Tone/signal/Threshold", "Tone/signal/Signal"], function(Tone){
+define(["Tone/core/Tone", "Tone/signal/Threshold", "Tone/signal/Signal"], 
+function(Tone){
 
 	/**
 	 *  @class  Output 1 if the signal is equal to 0, otherwise outputs 0
@@ -38,10 +39,10 @@ define(["Tone/core/Tone", "Tone/signal/Threshold", "Tone/signal/Signal"], functi
 	 *  @private
 	 */
 	Tone.EqualZero.prototype._setEquals = function(){
-		var curveLength = 1024;
+		var curveLength = 1023;
 		var curve = new Float32Array(curveLength);
 		for (var i = 0; i < curveLength; i++){
-			var normalized = (i / (curveLength)) * 2 - 1;
+			var normalized = (i / (curveLength - 1)) * 2 - 1;
 			if (normalized === 0){
 				curve[i] = 1;
 			} else {

@@ -52,10 +52,10 @@ define(["Tone/core/Tone", "Tone/signal/Threshold", "Tone/signal/Add", "Tone/sign
 	 *  @private
 	 */
 	Tone.GreaterThan.prototype._setGreaterThanZero = function(){
-		var curveLength = 1024;
+		var curveLength = 1023;
 		var curve = new Float32Array(curveLength);
 		for (var i = 0; i < curveLength; i++){
-			var normalized = (i / (curveLength)) * 2 - 1;
+			var normalized = (i / (curveLength - 1)) * 2 - 1;
 			if (normalized > 0){
 				curve[i] = 1;
 			} else {
