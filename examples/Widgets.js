@@ -166,7 +166,10 @@ GUI.Value = function(container, initial, label, units){
 };
 
 GUI.Value.prototype.setValue = function(val){
-	this.value.text(val.toFixed(2) + " " + this.units);
+	if (typeof val === "number"){
+		val = val.toFixed(2);
+	}
+	this.value.text(val + " " + this.units);
 };
 
 /**
@@ -176,17 +179,12 @@ GUI.ValueMeter = function(container, meter, label){
 	this.meter = meter;
 	this.element = $("<div>", {"class" : "ValueMeter"})
 		.appendTo(container);
-	this.label = $("<div>", {"id" : "Label"})
-		.appendTo(this.element)
-		.text(label);
-	this.value = $("<div>", {"id" : "Value"})
-		.appendTo(this.element)
-		.text(0);
+	this.value = new GUI.Value(this.element, 0, label);
 	GUI.onupdate(this.update.bind(this));
 };
 
 GUI.ValueMeter.prototype.update = function(){
-	this.value.text(this.meter.getValue().toFixed(2));
+	this.value.setValue(this.meter.getValue().toFixed(2));
 };
 
 /**
