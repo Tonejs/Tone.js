@@ -259,3 +259,20 @@
 	/*transition: height 0.1s;*/
 }
 
+/* OSCILLATOR */
+
+.Oscillator {
+	border: 1px solid black;
+	height: 30px;
+	width: auto;
+}
+
+.Oscillator #Label{
+	float: left;
+	margin-left: 10px;
+	line-height: 30px;
+} 
+
+.Oscillator .DropDown {
+	float: right;
+}

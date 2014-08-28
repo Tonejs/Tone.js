@@ -1,4 +1,7 @@
 var ExampleList = {
+	"Sources" : {
+		"Oscillators" : "oscillator",
+	},
 	"Components" : {
 		"Envelope" : "envelope",
 	},

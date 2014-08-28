@@ -45,26 +45,24 @@
 
 		// GUI //
 
-		var container = $("#Content");
+		$(function(){
+			var container = $("#Content");
 
-		new GUI.StartButton(Tone.startMobile);
-		new GUI.TopBar(Tone);
+			new GUI.StartButton(Tone.startMobile);
+			new GUI.TopBar(Tone);
 
-		//sliders for the envelope controls
-		new GUI.Envelope(container, env, "envelope");
+			//sliders for the envelope controls
+			new GUI.Envelope(container, env, "envelope");
 
-		//listen for triggers
-		$("<button>").button({ label: "attack" })
-			.on("mousedown touchstart", function(){
-				env.triggerAttack();
-				$(this).button({ label: "release" });
-			})
-			.on("mouseup touchend", function(e){
-				env.triggerRelease();
-				$(this).button({ label: "attack" });
-				e.preventDefault();
-			})
-			.appendTo(container);
+			new GUI.Momentary(container, function(down){
+				if (down){
+					env.triggerAttack();
+				} else {
+					env.triggerRelease();
+				}
+			}, "attack", "release");
+		});
+
 	</script>
 
 	<style type="text/css">
@@ -76,7 +74,7 @@
 		.Envelope {
 			margin: auto;
 		}
-		button {
+		.Momentary {
 			margin-top: 10px;
 		}
 	</style>

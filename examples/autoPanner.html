@@ -24,7 +24,6 @@
 			the amount of pan. The effect is much more pronounced with headphones. 
 		</div>
 		<div id="Content">
-			<input type='checkbox' id='StartButton'><label for="StartButton">start</label>
 		</div>
 	</div>
 	<script type="text/javascript">
@@ -56,6 +55,14 @@
 
 		var container = $("#Content");
 
+		new GUI.Checkbox(container, function(on){
+			if (on){
+				sine.start();
+			} else {
+				sine.stop();
+			}
+		}, "start", "stop");
+
 		//frequency control
 		$("<div>", {"class" : "Slider"}).slider({
 			"orientation" : "horizontal",
@@ -84,24 +91,6 @@
 		}).appendTo(container);
 
 		var wetValue = new GUI.Value(container, 100, "Amount", "%");
-
-		//start/stop button
-		var startButton = $("#StartButton").button({
-				"label" : "start"
-			})
-			.click(function(){
-				if (this.checked){
-					startButton.button({
-						"label" : "stop"
-					});
-					sine.start();
-				} else {
-					startButton.button({
-						"label" : "start"
-					});
-					sine.stop();
-				}
-			});
 		
 	</script>
 	<style type="text/css">

@@ -233,3 +233,97 @@ GUI.TopBar.prototype.makeDropDown = function(){
 			width : 160
 		});
 };
+
+
+/**
+ *  a start stop button
+ */
+GUI.Checkbox = function(container, callback, labelOff, labelOn){
+	var checked = false;
+	this.id = GUI.Checkbox._idCounter++;
+	// var element = $("<input type='checkbox' id='noToneCheckbox"+this.id+"'>\
+	// 	<label for='noToneCheckbox"+this.id+"'>start</label>")
+	var element = $("<div>", {"class" : "Checkbox"})
+		.appendTo(container)
+		.text(labelOff)
+		.click(function(){
+			checked = !checked;
+			if (checked){
+				element.addClass("pressed");
+				element.button({
+					"label" : labelOn
+				});
+			} else {
+				element.removeClass("pressed");
+				element.button({
+					"label" : labelOff
+				});
+			}
+			callback(checked);
+		})
+		.button();
+	this.element = element;
+};
+
+GUI.Checkbox._idCounter = 0; 
+
+/**
+ *  a start stop button
+ */
+GUI.Momentary = function(container, callback, labelOff, labelOn){
+	var element = $("<div>", {"class" : "Momentary"})
+		.text(labelOff)
+		.button()
+		.appendTo(container)
+		.on("mousedown touchstart", function(){
+			element.button({
+				"label" : labelOn
+			});
+			callback(true);
+		})
+		.on("mouseup touchend", function(){
+			element.button({
+				"label" : labelOff
+			});
+			callback(false);
+		});
+	this.element = element;
+};
+
+/**
+ *  A DROPDOWN MENU
+ */
+GUI.DropDown = function(container, options, callback){
+	this.element = $("<div>", {"class" : "DropDown"})
+		.appendTo(container);
+	var list = $("<select>");
+	for (var i = 0; i < options.length; i++) {
+		var optionName = options[i];
+		$("<option>").attr("value", optionName)
+			.appendTo(list)
+			.text(optionName);
+	}
+	// this.dropdown = list.
+	list.appendTo(this.element)
+		.selectmenu({
+			change: function( event, ui ) {
+				callback(ui.item.value);
+			}
+		});
+};
+
+
+/**
+ *  OSCILLATOR
+ */
+GUI.Oscillator = function(container, oscillator, label){
+	this.element = $("<div>", {"class" : "Oscillator"})
+		.appendTo(container);
+	this.oscillator = oscillator;
+	this.label = $("<div>", {"id" : "Label"})
+		.appendTo(this.element)
+		.text(label);
+	this.type = new GUI.DropDown(this.element, ["sine", "square", "sawtooth", "triangle"], function(option){
+		oscillator.setType(option);
+	});
+};
