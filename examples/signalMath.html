@@ -39,6 +39,11 @@
 		var dryMeter = new Tone.Meter();
 		signal.connect(dryMeter);
 
+		//take the absolute value of the signal
+		var abs = new Tone.Abs();
+		var absMeter = new Tone.Meter();
+		abs.connect(absMeter);
+
 		//add a constant value to the dry signal
 		var adder = new Tone.Add(100);
 		var addMeter = new Tone.Meter();
@@ -63,11 +68,6 @@
 		var neg = new Tone.Negate();
 		var negMeter = new Tone.Meter();
 		neg.connect(negMeter);
-
-		//take the absolute value of the signal
-		var abs = new Tone.Abs();
-		var absMeter = new Tone.Meter();
-		abs.connect(absMeter);
 
 		//chain the components together
 		signal.chain(signal, abs, adder, scaler, mult, clip, neg);
