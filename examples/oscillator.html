@@ -20,8 +20,7 @@
 			Oscillator
 			<br>
 			<br>
-			An oscillator with an LFO attached to the detune control. Set the Oscillilator
-			type and the LFO Amount. 
+			An oscillator with an LFO attached to the detune control. 
 		</div>
 		<div id="Content">
 		</div>
@@ -32,16 +31,13 @@
 
 		var osc = new Tone.Oscillator(440, "sine");
 
-		var vibrato = new Tone.LFO(4, -20, 20);
+		var vibrato = new Tone.LFO(6, -25, 25);
 		vibrato.start();
-
-		var vibratoAmount = new Tone.Multiply(1);
 
 		//connect it to the output
 		osc.toMaster();
 		osc.setVolume(-6);
-		vibrato.connect(vibratoAmount);
-		vibratoAmount.connect(osc.detune);
+		vibrato.connect(osc.detune);
 
 		// GUI //
 
@@ -57,21 +53,7 @@
 				}
 			}, "start", "stop");
 			new GUI.Oscillator(content, osc, "oscillator");
-			//vibrato controls
-			$("<div>", {"id" : "VibLabel"}).appendTo(content).text("vibrato controls");
 			new GUI.Oscillator(content, vibrato.oscillator, "vibrato osc");
-			$("<div>", {"class" : "Slider"}).slider({
-				"min" : 0,
-				"max" : 100,
-				"value" : 100,
-				"range" : "min",
-				"slide" : function(e, ui){
-					vibratoAmount.setValue(ui.value / 100);
-					label.setValue(ui.value / 100);
-				}
-			})
-			.appendTo(content);
-			var label = new GUI.Value(content, "1", "vibrato amount");
 		});
 
 		
@@ -80,28 +62,13 @@
 	<style type="text/css">
 		#Content {
 			text-align: left;
-			height: 210px;
-		}
-		#VibLabel {
-			width: 100%;
-			text-align: center;
-			height: 10px;
-			margin-top: 20px;
-			font-weight: bold;
+			height: 110px;
 		}
 		.Checkbox {
 			width: 100%;
 		}
 		.Oscillator {
 			margin-top: 10px;
-		}
-		.Slider {
-			margin-top: 20px;	
-			display: block;
-		}
-		.Value {
-			margin-top: 10px;	
-			display: block;
 		}
 	</style>
 </body>
