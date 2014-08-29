@@ -79,7 +79,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 		if (!this.isUndef(params.frequency)) this.frequency.setValue(params.frequency);
 		if (!this.isUndef(params.Q)) this.Q.setValue(params.Q);
 		if (!this.isUndef(params.gain)) this.gain.setValue(params.gain);
-		if (!this.isUndef(params.rolloff)) this.setRolloff(params.rolloff);;
+		if (!this.isUndef(params.rolloff)) this.setRolloff(params.rolloff);
 	};
 
 	/**
