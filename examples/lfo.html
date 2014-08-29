@@ -2,35 +2,208 @@
 <head>
 	<title>LFO</title>
 
-	<script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
+	<meta name="viewport" content="width=device-width, initial-scale=0.5">
+
+	<script type="text/javascript" src="../deps/jquery.min.js"></script>
+	<script type="text/javascript" src="../deps/jquery-ui.js"></script>
+	<script type="text/javascript" src="../deps/jquery.ui.touch-punch.js"></script>
 	<script type="text/javascript" src="../Tone.js"></script>
-	<link rel="stylesheet" type="text/css" href="exampleStyle.css">
-	
+	<script type="text/javascript" src="./Widgets.js"></script>
+	<script type="text/javascript" src="./ExampleList.js"></script>
+	<link rel="stylesheet" type="text/css" href="./style/widgets.css">
+	<link rel="stylesheet" type="text/css" href="./style/jquery-ui.css">
+
 </head>
 <body>
-	<div>LFO on the amplitude of a noise signal</div>
-	<br>
-	<button>start</button>
-	<script type="text/javascript">
-		//components
-		var noise = new Tone.Noise("brown");
-		var lfo = new Tone.LFO(1, 0.5, 1);
 		
-		//connections
-		noise.toMaster();
-		lfo.connect(noise.output.gain);
+	<div id="Container">
+		<div id="Explanation">
+			Low Frequency Oscillators
+			<br>
+			<br>
+			<a href="http://en.wikipedia.org/wiki/Low-frequency_oscillation">LFOs</a> are a powerful musical tool. 
+			In this example there are 3 square wave LFOs controlling the oscillators frequencies, an LFO controlling
+			the filter frequency, another LFO controlling the envelope of the oscillators which is run through a feedback
+			delay to make the notes repeat. The delayTime of the feedback delay is also on an LFO. 
+		</div>
+		<div id="Content"></div>
+	</div>
 
-		$("button").click(function(){
-			if (noise.state !== "started"){
-				lfo.start();
-				noise.start();
+
+	<script type="text/javascript">
+		/* globals Tone, GUI */
+
+		var osc0 = new Tone.Oscillator(440, "triangle");
+		var osc1 = new Tone.Oscillator(440, "square");
+
+		var oscAmplitude = Tone.context.createGain();
+
+		//lfo on a filter
+		var filterLFO = new Tone.LFO(0.2, 200, 1000);
+		var filter = new Tone.Filter(800, "lowpass");
+		filter.Q.value = 20;
+		filterLFO.connect(filter.frequency);
+
+		//3 LFOs control the pitch of the osc0illator
+		var noteLFO0 = new Tone.LFO(2, 0, 440);
+		noteLFO0.setType("square");
+		noteLFO0.connect(osc0.frequency);
+		noteLFO0.connect(osc1.frequency);
+
+		var noteLFO1 = new Tone.LFO(1, 0, 880);
+		noteLFO1.setType("square");
+		noteLFO1.connect(osc0.frequency);
+		noteLFO1.connect(osc1.frequency);
+
+		var noteLFO2 = new Tone.LFO(0.5, 0, 1760);
+		noteLFO2.setType("square");
+		noteLFO2.connect(osc0.frequency);
+		noteLFO2.connect(osc1.frequency);
+
+		//change the detune of the second osc
+		var detuneOscillator = new Tone.LFO(5, -50, 50);
+		detuneOscillator.connect(osc1.detune);
+
+		//a triangle wave controlling the amplitude
+		var envelopeLFO = new Tone.Oscillator(4, "sine");
+		//when the oscillator goes below 0, just output 0
+		var keeptItPositive = new Tone.Max(0);
+		//run it through a feedback delay to repeat the note
+		var noteRepeater = new Tone.FeedbackDelay(0.25);
+		noteRepeater.setFeedback(0.9);
+		//connect up the chain
+		envelopeLFO.connect(keeptItPositive);
+		keeptItPositive.connect(noteRepeater);
+		noteRepeater.connect(oscAmplitude.gain);
+		oscAmplitude.gain.value = 0;
+
+		//lfo on the note repeater
+		var repeaterLFO = new Tone.LFO(0.04, 0.01, 0.4);
+		repeaterLFO.connect(noteRepeater.delayTime);
+
+		osc0.connect(oscAmplitude);
+		osc1.connect(oscAmplitude);
+		oscAmplitude.connect(filter);
+		filter.toMaster();
+
+		//meters
+		var freqMeter = new Tone.Meter();
+		osc0.frequency.connect(freqMeter);
+
+		var detuneMeter = new Tone.Meter();
+		detuneOscillator.connect(detuneMeter);
+
+		var filterMeter = new Tone.Meter();
+		filterLFO.connect(filterMeter);
+
+		var repeaterMeter = new Tone.Meter();
+		repeaterLFO.connect(repeaterMeter);
+
+		// GUI //
+
+		var content = $("#Content");
+
+		new GUI.TopBar(Tone);
+		new GUI.StartButton(Tone.startMobile);
+
+		new GUI.Checkbox(content, function(on){
+			if (on){
+				filterLFO.start();
+				noteLFO0.start();
+				noteLFO1.start();
+				noteLFO2.start();
+				detuneOscillator.start();
+				osc0.start();
+				osc1.start();
+				envelopeLFO.start();
+				repeaterLFO.start();
 				$(this).text("stop");
 			} else {
-				lfo.stop();
-				noise.stop();
+				osc0.stop();
+				filterLFO.stop();
+				noteLFO0.stop();
+				noteLFO1.stop();
+				noteLFO2.stop();
+				detuneOscillator.stop();
+				osc0.stop();
+				osc1.stop();
+				envelopeLFO.stop();
+				repeaterLFO.stop();
 				$(this).text("start");
 			}
-		});
+		}, "start", "stop");
+
+		//frequency controls
+		$("<div>", {"class" : "Slider"}).slider({
+			"min" : 20, 
+			"max" : 100,
+			"value" : 50,
+			"slide" : function(e, ui){
+				var val = ui.value / 100;
+				envelopeLFO.setFrequency(val * 8);
+				noteLFO0.setFrequency(val * 4);
+				noteLFO1.setFrequency(val * 2);
+				noteLFO1.setFrequency(val);
+				freqValue.setValue(val);
+			}
+		}).appendTo(content);
+		var freqValue = new GUI.Value(content, 0.5, "frequency LFO", "hz");
+		//detune controls
+		$("<div>", {"class" : "Slider"}).slider({
+			"min" : 10, 
+			"max" : 500,
+			"value" : 50,
+			"slide" : function(e, ui){
+				var val = ui.value / 10;
+				detuneOscillator.setFrequency(val);
+				detuneValue.setValue(val);
+			}
+		}).appendTo(content);
+		var detuneValue = new GUI.Value(content, 5, "detune LFO", "hz");
+		//filter controls
+		$("<div>", {"class" : "Slider"}).slider({
+			"min" : 5, 
+			"max" : 500,
+			"value" : 20,
+			"slide" : function(e, ui){
+				var val = ui.value / 100;
+				filterLFO.setFrequency(val);
+				filterValue.setValue(val);
+			}
+		}).appendTo(content);
+		var filterValue = new GUI.Value(content, 0.2, "filter LFO", "hz");
+		//note repeat controls
+		$("<div>", {"class" : "Slider"}).slider({
+			"min" : 1, 
+			"max" : 400,
+			"value" : 40,
+			"slide" : function(e, ui){
+				var val = ui.value / 100;
+				repeaterLFO.setFrequency(val);
+				repeatValue.setValue(val);
+			}
+		}).appendTo(content);
+		var repeatValue = new GUI.Value(content, 0.4, "note repeat LFO", "hz");
+
 	</script>
+
+	<style type="text/css">
+		#Content {
+			text-align: center;
+			width: 220px;
+			height: 250px;
+		}
+		.Value {
+			margin-top: 10px;
+			display: block;
+		}
+		.Slider {
+			margin-top: 10px;
+		}
+		.Checkbox {
+			width: 100%;
+		}
+	</style>
+
 </body>
 </html>

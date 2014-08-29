@@ -4,6 +4,7 @@ var ExampleList = {
 	},
 	"Components" : {
 		"Envelope" : "envelope",
+		"LFO" : "lfo"
 	},
 	"Signal" : {
 		"Signal Math" : "signalMath",
