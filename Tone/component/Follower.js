@@ -1,4 +1,5 @@
-define(["Tone/core/Tone", "Tone/signal/Abs", "Tone/signal/Negate", "Tone/signal/Multiply"], function(Tone){
+define(["Tone/core/Tone", "Tone/signal/Abs", "Tone/signal/Negate", "Tone/signal/Multiply", "Tone/signal/Signal"], 
+function(Tone){
 
 	/**
 	 *  @class  Follow the envelope of the incoming signal. 
@@ -147,6 +148,12 @@ define(["Tone/core/Tone", "Tone/signal/Abs", "Tone/signal/Negate", "Tone/signal/
 		if (!this.isUndef(params.release)) this.setRelease(params.release);
 		Tone.Effect.prototype.set.call(this, params);
 	};
+
+	/**
+	 *  borrows the connect method from Signal so that the output can be used
+	 *  as a control signal {@link Tone.Signal}
+	 */
+	Tone.Follower.prototype.connect = Tone.Signal.prototype.connect;
 
 	/**
 	 *  dispose
