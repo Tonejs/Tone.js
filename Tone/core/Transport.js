@@ -894,10 +894,17 @@ function(Tone){
 
 	//a single transport object
 	Tone.Transport = new Transport();
+	//set the bpm initially
+	Tone.Transport.setBpm(120);
+
 
 	Tone._initAudioContext(function(){
+		//get the previous bpm
+		var bpm = Tone.Transport.getBpm();
 		//make a new clocks
 		Tone.Transport._clock = new Tone.Clock(1, Tone.Transport._processTick.bind(Tone.Transport));
+		//set the bpm
+		Tone.Transport.setBpm(bpm);
 	});
 
 	return Tone.Transport;
