@@ -12,3 +12,9 @@ build/node_modules/*
 TODO.txt
 
 Tone/component/FollowerOld.js
+
+build/npm/Tone
+
+build/npm/Tone.js
+
+build/npm/README.md
