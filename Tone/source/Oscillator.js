@@ -19,6 +19,7 @@ function(Tone){
 		/**
 		 *  the main oscillator
 		 *  @type {OscillatorNode}
+		 *  @private
 		 */
 		this.oscillator = this.context.createOscillator();
 		
@@ -40,10 +41,32 @@ function(Tone){
 		 */
 		this.onended = options.onended;
 
+		/**
+		 *  the periodic wave
+		 *  @type {PeriodicWave}
+		 *  @private
+		 */
+		this._wave = null;
+
+		/**
+		 *  the phase of the oscillator
+		 *  between 0 - 360
+		 *  @type {number}
+		 *  @private
+		 */
+		this._phase = options.phase;
+
+		/**
+		 *  the type of the oscillator
+		 *  @type {string}
+		 *  @private
+		 */
+		this._type = options.type;
+		
 		//connections
 		this.oscillator.connect(this.output);
 		//setup
-		this.oscillator.type = options.type;
+		this.setPhase(this._phase);
 	};
 
 	Tone.extend(Tone.Oscillator, Tone.Source);
@@ -58,7 +81,8 @@ function(Tone){
 		"type" : "sine",
 		"frequency" : 440,
 		"onended" : function(){},
-		"detune" : 0
+		"detune" : 0,
+		"phase" : 0
 	};
 
 	/**
@@ -70,10 +94,9 @@ function(Tone){
 		if (this.state === Tone.Source.State.STOPPED){
 			this.state = Tone.Source.State.STARTED;
 			//get previous values
-			var type = this.oscillator.type;
 			//new oscillator with previous values
 			this.oscillator = this.context.createOscillator();
-			this.oscillator.type = type;
+			this.oscillator.setPeriodicWave(this._wave);
 			//connect the control signal to the oscillator frequency & detune
 			this.oscillator.connect(this.output);
 			this.frequency.connect(this.oscillator.frequency);
@@ -113,19 +136,79 @@ function(Tone){
 
 	/**
 	 *  set the oscillator type
+	 *
+	 *  uses PeriodicWave even for native types so that it can set the phase
+	 *
+	 *  the the PeriodicWave equations are from the Web Audio Source code
+	 *  here: https://code.google.com/p/chromium/codesearch#chromium/src/third_party/WebKit/Source/modules/webaudio/PeriodicWave.cpp&sq=package:chromium
 	 *  
 	 *  @param {string} type (sine|square|triangle|sawtooth)
 	 */
 	Tone.Oscillator.prototype.setType = function(type){
-		this.oscillator.type = type;
+		var fftSize = 4096;
+		var halfSize = fftSize / 2;
+
+		var real = new Float32Array(halfSize);
+		var imag = new Float32Array(halfSize);
+		
+		// Clear DC and Nyquist.
+		real[0] = 0;
+		imag[0] = 0;
+
+		var shift = this._phase;	
+		for (var n = 1; n < halfSize; ++n) {
+			var piFactor = 2 / (n * Math.PI);
+			var b; 
+			switch (type) {
+				case "sine": 
+					b = (n === 1) ? 1 : 0;
+					break;
+				case "square":
+					b = (n & 1) ? 2 * piFactor : 0;
+					break;
+				case "sawtooth":
+					b = piFactor * ((n & 1) ? 1 : -1);
+					break;
+				case "triangle":
+					if (n & 1) {
+						b = 2 * (piFactor * piFactor) * ((((n - 1) >> 1) & 1) ? -1 : 1);
+					} else {
+						b = 0;
+					}
+					break;
+				default:
+					throw new TypeError("invalid oscillator type: "+type);
+			}
+			if (b !== 0){
+				real[n] = -b * Math.sin(shift);
+				imag[n] = b * Math.cos(shift);
+			} else {
+				real[n] = 0;
+				imag[n] = 0;
+			}
+		}
+		var periodicWave = this.context.createPeriodicWave(real, imag);
+		this._wave = periodicWave;
+		this.oscillator.setPeriodicWave(this._wave);
+		this._type = type;
+	};
+
+	/**
+	 *  set the phase of the oscillator (in degrees)
+	 *  @param {number} degrees the phase in degrees
+	 */
+	Tone.Oscillator.prototype.setPhase = function(phase) {
+		this._phase = phase * Math.PI / 180;
+		this.setType(this._type);
 	};
 
 	/**
 	 *  set the parameters at once
 	 *  @param {Object} params
 	 */
-	Tone.Filter.prototype.set = function(params){
+	Tone.Oscillator.prototype.set = function(params){
 		if (!this.isUndef(params.type)) this.setType(params.type);
+		if (!this.isUndef(params.phase)) this.setPhase(params.phase);
 		if (!this.isUndef(params.frequency)) this.frequency.setValue(params.frequency);
 		if (!this.isUndef(params.onended)) this.onended = params.onended;
 		if (!this.isUndef(params.detune)) this.detune.setValue(params.detune);
@@ -152,6 +235,7 @@ function(Tone){
 		}
 		this.frequency.dispose();
 		this.detune.dispose();
+		this._wave = null;
 		this.detune = null;
 		this.frequency = null;
 	};
