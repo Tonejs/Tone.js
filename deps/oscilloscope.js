@@ -80,7 +80,7 @@ Oscilloscope.prototype.draw = function (context) {
 		context.lineTo(j,(256-data[i])*scaling);
 
 	context.stroke();
-}
+};
 
 var MINVAL = 134;  // 128 == zero.  MINVAL is the "minimum detected signal" level.
 
@@ -114,7 +114,7 @@ function findFirstPositiveZeroCrossing(buf, buflen) {
     return 0;
 
   // The first sample might be a zero.  If so, return it.
-  if (last_zero == 0)
+  if (last_zero === 0)
     return 0;
 
   return last_zero;
