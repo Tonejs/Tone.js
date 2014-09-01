@@ -72,7 +72,7 @@ function(Tone){
 		this.input.connect(this._mono, 0, 1);
 		this._mono.connect(this._split);
 		//dry wet connections
-		this.input.connect(this.dryWet.dry);
+		this._mono.connect(this.dryWet.dry);
 		this._merge.connect(this.dryWet.wet);
 		this.dryWet.connect(this.output);
 		//setup values

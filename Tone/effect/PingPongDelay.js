@@ -1,52 +1,57 @@
-define(["Tone/core/Tone", "Tone/effect/FeedbackDelay", "Tone/component/Split", "Tone/component/Merge"], function(Tone){
+define(["Tone/core/Tone", "Tone/effect/StereoXFeedbackEffect", "Tone/signal/Signal", "Tone/signal/Multiply"], 
+function(Tone){
+
 	/**
-	 *  PingPongDelay is a dual delay effect where the echo is heard first in one channel and next in the opposite channel
+	 *  @class  PingPongDelay is a dual delay effect where the echo is heard
+	 *          first in one channel and next in the opposite channel
 	 *
 	 * 	@constructor
-	 * 	@extends {Tone}
+	 * 	@extends {Tone.StereoXFeedbackEffect}
 	 *  @param {Tone.Time|Object=} delayTime is the interval between consecutive echos
 	 */
 	Tone.PingPongDelay = function(){
 		
 		var options = this.optionsObject(arguments, ["delayTime"], Tone.PingPongDelay.defaults);
-		Tone.call(this);
+		Tone.StereoXFeedbackEffect.call(this, options);
 
 		/**
-		 *  merge the delayed signal
-		 *  @type {Tone.Merge}
+		 *  the delay node on the left side
+		 *  @type {DelayNode}
 		 *  @private
 		 */
-		this._merger = new Tone.Merge();
+		this._leftDelay = this.context.createDelay();
 
 		/**
-		 *  each channel (left/right) gets a feedback delay
-		 *  @type {Tone.FeedbackDelay}
+		 *  the delay node on the right side
+		 *  @type {DelayNode}
+		 *  @private
 		 */
-		this.leftDelay = new Tone.FeedbackDelay();
+		this._rightDelay = this.context.createDelay();
 
 		/**
-		 *  @type {Tone.FeedbackDelay}
+		 *  the delay time signal
+		 *  @type {Tone.Signal}
 		 */
-		this.rightDelay = new Tone.FeedbackDelay();
+		this.delayTime = new Tone.Signal(0);
+
+		/**
+		 *  double the delayTime
+		 *  @type {Tone.Multiply}
+		 *  @private
+		 */
+		this._timesTwo = new Tone.Multiply(2);
 
 		//connect it up
-		this.input.connect(this.leftDelay);
-		this.input.connect(this.rightDelay);
-		//disconnect the feedback lines to connect them to the other delay
-		// http://jvzaudio.files.wordpress.com/2011/04/delay-f43.gif
-		this.leftDelay._feedbackGain.disconnect();
-		this.rightDelay._feedbackGain.disconnect();
-		this.leftDelay._feedbackGain.connect(this.rightDelay.effectSend);
-		this.rightDelay._feedbackGain.connect(this.leftDelay.effectSend);
-		this.leftDelay.connect(this._merger.left);
-		this.rightDelay.connect(this._merger.right);
-		this._merger.connect(this.output);
-		//initial vals;
+		this.chain(this.effectSendL, this._leftDelay, this.effectReturnL);
+		this.chain(this.effectSendR, this._rightDelay, this.effectReturnR);
+
+		this.delayTime.connect(this._leftDelay.delayTime);
+		this.chain(this.delayTime, this._timesTwo, this._rightDelay.delayTime);
+
 		this.setDelayTime(options.delayTime);
-		this.setFeedback(options.feedback);
 	};
 
-	Tone.extend(Tone.PingPongDelay);
+	Tone.extend(Tone.PingPongDelay, Tone.StereoXFeedbackEffect);
 
 	/**
 	 *  @static
@@ -54,7 +59,6 @@ define(["Tone/core/Tone", "Tone/effect/FeedbackDelay", "Tone/component/Split", "
 	 */
 	Tone.PingPongDelay.defaults = {
 		"delayTime" : 0.25,
-		"feedback" : 0.4,
 	};
 
 	/**
@@ -63,38 +67,7 @@ define(["Tone/core/Tone", "Tone/effect/FeedbackDelay", "Tone/component/Split", "
 	 * @param {Tone.Time} delayTime
 	 */
 	Tone.PingPongDelay.prototype.setDelayTime = function(delayTime){
-		this.leftDelay.setDelayTime(delayTime);
-		this.rightDelay.setDelayTime(delayTime * 2);
-	};
-
-	/**
-	 * setFeedback
-	 *
-	 * @param {number} feedback (0 - 1)
-	 */
-	Tone.PingPongDelay.prototype.setFeedback = function(feedback){
-		this.leftDelay.setFeedback(feedback);
-		this.rightDelay.setFeedback(feedback);
-	};
-
-	/**
-	 * setWet
-	 *
-	 * @param {number} wet (0 - 1)
-	 */
-	Tone.PingPongDelay.prototype.setWet = function(wet){
-		this.leftDelay.setWet(wet);
-		this.rightDelay.setWet(wet);
-	};
-
-	/**
-	 * setDry
-	 *
-	 * @param {number} dry (0 - 1)
-	 */
-	Tone.PingPongDelay.prototype.setDry = function(dry){
-		this.leftDelay.setDry(dry);
-		this.rightDelay.setDry(dry);
+		this.delayTime.setValue(this.toSeconds(delayTime));
 	};
 
 	/**
@@ -102,23 +75,23 @@ define(["Tone/core/Tone", "Tone/effect/FeedbackDelay", "Tone/component/Split", "
 	 *  @param {Object} params 
 	 */
 	Tone.PingPongDelay.prototype.set = function(params){
-		if (!this.isUndef(params.feedback)) this.setFeedback(params.feedback);
-		if (!this.isUndef(params.wet)) this.setWet(params.wet);
-		if (!this.isUndef(params.dry)) this.setDry(params.dry);
 		if (!this.isUndef(params.delayTime)) this.setDelayTime(params.delayTime);
+		Tone.StereoXFeedbackEffect.prototype.set.call(this, params);
 	};
 
 	/**
 	 *  clean up
 	 */
 	Tone.PingPongDelay.prototype.dispose = function(){
-		Tone.prototype.dispose.call(this);
-		this.leftDelay.dispose();
-		this.rightDelay.dispose();
-		this._merger.dispose();
-		this.leftDelay = null;
-		this.rightDelay = null;
-		this._merger = null;
+		Tone.StereoXFeedbackEffect.prototype.dispose.call(this);
+		this._leftDelay.disconnect();
+		this._rightDelay.disconnect();
+		this._timesTwo.dispose();
+		this.delayTime.dispose();
+		this._leftDelay = null;
+		this._rightDelay = null;
+		this._timesTwo = null;
+		this.delayTime = null;
 	};
 
 	return Tone.PingPongDelay;
