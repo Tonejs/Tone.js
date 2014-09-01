@@ -1,10 +1,13 @@
-define(["Tone/core/Tone", "Tone/component/LFO", "Tone/effect/FeedbackEffect"], function(Tone){
+define(["Tone/core/Tone", "Tone/component/LFO", "Tone/effect/StereoXFeedbackEffect"], 
+function(Tone){
+
+	"use strict";
 
 	/**
-	 *  @class A Chorus effect with feedback
+	 *  @class A Chorus effect with feedback. inspiration from https://github.com/Dinahmoe/tuna/blob/master/tuna.js
 	 *
 	 *	@constructor
-	 *	@extends {Tone.FeedbackEffect}
+	 *	@extends {Tone.StereoXFeedbackEffect}
 	 *	@param {number|Object=} [rate=2] the rate of the effect
 	 *	@param {number=} [delayTime=3.5] the delay of the chorus effect in ms
 	 *	@param {number=} [depth=0.7] the depth of the chorus
@@ -12,7 +15,7 @@ define(["Tone/core/Tone", "Tone/component/LFO", "Tone/effect/FeedbackEffect"], f
 	Tone.Chorus = function(){
 
 		var options = this.optionsObject(arguments, ["rate", "delayTime", "depth"], Tone.Chorus.defaults);
-		Tone.FeedbackEffect.call(this, options);
+		Tone.StereoXFeedbackEffect.call(this, options);
 
 		/**
 		 *  the depth of the chorus
@@ -33,32 +36,60 @@ define(["Tone/core/Tone", "Tone/component/LFO", "Tone/effect/FeedbackEffect"], f
 		 *  @type {Tone.LFO}
 		 *  @private
 		 */
-		this._lfo = new Tone.LFO(options.rate, 0, 1);
+		this._lfoL = new Tone.LFO(options.rate, 0, 1);
 
 		/**
+		 *  another LFO for the right side with a 180 degree phase diff
+		 *  @type {Tone.LFO}
+		 *  @private
+		 */
+		this._lfoR = new Tone.LFO(options.rate, 0, 1);
+		this._lfoR.setPhase(180);
+
+		/**
+		 *  delay for left
 		 *  @type {DelayNode}
 		 *  @private
 		 */
-		this._delayNode = this.context.createDelay();
+		this._delayNodeL = this.context.createDelay();
+
+		/**
+		 *  delay for right
+		 *  @type {DelayNode}
+		 *  @private
+		 */
+		this._delayNodeR = this.context.createDelay();
 
 		//connections
-		this.connectEffect(this._delayNode);
-		this.effectSend.connect(this.effectReturn);
-		this._lfo.connect(this._delayNode.delayTime);
-		this._lfo.start();
+		this.chain(this.effectSendL, this._delayNodeL, this.effectReturnL);
+		this.chain(this.effectSendR, this._delayNodeR, this.effectReturnR);
+		//and pass through
+		this.effectSendL.connect(this.effectReturnL);
+		this.effectSendR.connect(this.effectReturnR);
+		//lfo setup
+		this._lfoL.connect(this._delayNodeL.delayTime);
+		this._lfoR.connect(this._delayNodeR.delayTime);
+		//start the lfo
+		this._lfoL.start();
+		this._lfoR.start();
+		//have one LFO frequency control the other
+		this._lfoL.frequency.connect(this._lfoR.frequency);
+		//set the initial values
 		this.setDepth(this._depth);
+		this.setRate(options.rate);
 	};
 
-	Tone.extend(Tone.Chorus, Tone.FeedbackEffect);
+	Tone.extend(Tone.Chorus, Tone.StereoXFeedbackEffect);
 
 	/**
 	 *  @static
 	 *  @type {Object}
 	 */
 	Tone.Chorus.defaults = {
-		"rate" : 2, 
+		"rate" : 1.5, 
 		"delayTime" : 3.5,
-		"depth" : 0.7
+		"depth" : 0.7,
+		"feedback" : 0.4
 	};
 
 	/**
@@ -68,8 +99,10 @@ define(["Tone/core/Tone", "Tone/component/LFO", "Tone/effect/FeedbackEffect"], f
 	Tone.Chorus.prototype.setDepth = function(depth){
 		this._depth = depth;
 		var deviation = this._delayTime * depth;
-		this._lfo.setMin(this._delayTime - deviation);
-		this._lfo.setMax(this._delayTime + deviation);
+		this._lfoL.setMin(this._delayTime - deviation);
+		this._lfoL.setMax(this._delayTime + deviation);
+		this._lfoR.setMin(this._delayTime - deviation);
+		this._lfoR.setMax(this._delayTime + deviation);
 	};
 
 	/**
@@ -86,7 +119,7 @@ define(["Tone/core/Tone", "Tone/component/LFO", "Tone/effect/FeedbackEffect"], f
 	 *  @param {number} rate in hertz
 	 */
 	Tone.Chorus.prototype.setRate = function(rate){
-		this._lfo.setFrequency(rate);
+		this._lfoL.setFrequency(rate);
 	};
 
 	/**
@@ -104,11 +137,15 @@ define(["Tone/core/Tone", "Tone/component/LFO", "Tone/effect/FeedbackEffect"], f
 	 *  clean up
 	 */
 	Tone.Chorus.prototype.dispose = function(){
-		Tone.FeedbackEffect.prototype.dispose.call(this);
-		this._lfo.dispose();
-		this._delayNode.disconnect();
-		this._lfo = null;
-		this._delayNode = null;
+		Tone.StereoXFeedbackEffect.prototype.dispose.call(this);
+		this._lfoL.dispose();
+		this._lfoR.dispose();
+		this._delayNodeL.disconnect();
+		this._delayNodeR.disconnect();
+		this._lfoL = null;
+		this._lfoR = null;
+		this._delayNodeL = null;
+		this._delayNodeR = null;
 	};
 
 	return Tone.Chorus;

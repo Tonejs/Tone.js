@@ -1,12 +1,12 @@
-define(["Tone/core/Tone", "Tone/component/LFO", "Tone/effect/FeedbackEffect", "Tone/component/Filter"], 
+define(["Tone/core/Tone", "Tone/component/LFO", "Tone/effect/FeedbackEffect", "Tone/component/Filter", "Tone/effect/StereoFeedbackEffect"], 
 function(Tone){
 
 	"use strict";
 
 	/**
-	 *  @class A Phaser effect with feedback
+	 *  @class A Phaser effect with feedback. inspiration from https://github.com/Dinahmoe/tuna/
 	 *
-	 *	@extends {Tone.FeedbackEffect}
+	 *	@extends {Tone.StereoFeedbackEffect}
 	 *	@constructor
 	 *	@param {number|object=} rate the speed of the phasing
 	 *	@param {number=} depth the depth of the effect
@@ -16,15 +16,22 @@ function(Tone){
 
 		//set the defaults
 		var options = this.optionsObject(arguments, ["rate", "depth", "baseFrequency"], Tone.Phaser.defaults);
-
-		Tone.FeedbackEffect.call(this, options);
+		Tone.StereoFeedbackEffect.call(this, options);
 
 		/**
-		 *  the lfo which controls the frequency
+		 *  the lfo which controls the frequency on the left side
 		 *  @type {Tone.LFO}
 		 *  @private
 		 */
-		this._lfo = new Tone.LFO(options.rate, 0, 1);
+		this._lfoL = new Tone.LFO(options.rate, 0, 1);
+
+		/**
+		 *  the lfo which controls the frequency on the right side
+		 *  @type {Tone.LFO}
+		 *  @private
+		 */
+		this._lfoR = new Tone.LFO(options.rate, 0, 1);
+		this._lfoR.setPhase(90);
 
 		/**
 		 *  the base modulation frequency
@@ -41,32 +48,36 @@ function(Tone){
 		this._depth = options.depth;
 		
 		/**
-		 *  the array of filters
+		 *  the array of filters for the left side
 		 *  @type {Array.<Tone.Filter>}
 		 *  @private
 		 */
-		this._filters = new Array(options.stages);
+		this._filtersL = this._makeFilters(options.stages, this._lfoL);
 
-		//make all the filters
-		for (var i = 0; i < options.stages; i++){
-			var filter = new Tone.Filter(0, "allpass");
-			// filter.Q.value = 10;
-			this._lfo.connect(filter.frequency);
-			this._filters[i] = filter;
-		}
+		/**
+		 *  the array of filters for the left side
+		 *  @type {Array.<Tone.Filter>}
+		 *  @private
+		 */
+		this._filtersR = this._makeFilters(options.stages, this._lfoR);
+		
 		//connect them up
-		this.chain.apply(this, this._filters);
-		this.effectSend.connect(this._filters[0]);
-		this.effectSend.connect(this.effectReturn);
-		this._filters[options.stages - 1].connect(this.effectReturn);
+		this.effectSendL.connect(this._filtersL[0]);
+		this.effectSendR.connect(this._filtersR[0]);
+		this._filtersL[options.stages - 1].connect(this.effectReturnL);
+		this._filtersR[options.stages - 1].connect(this.effectReturnR);
+		//control the frequency with one LFO
+		this._lfoL.frequency.connect(this._lfoR.frequency);
 		//set the options
 		this.setBaseFrequency(options.baseFrequency);
 		this.setDepth(options.depth);
+		this.setRate(options.rate);
 		//start the lfo
-		this._lfo.start();
+		this._lfoL.start();
+		this._lfoR.start();
 	};
 
-	Tone.extend(Tone.Phaser, Tone.FeedbackEffect);
+	Tone.extend(Tone.Phaser, Tone.StereoFeedbackEffect);
 
 	/**
 	 *  defaults
@@ -74,10 +85,30 @@ function(Tone){
 	 *  @type {object}
 	 */
 	Tone.Phaser.defaults = {
-		"rate" : 1,
-		"depth" : 0.6,
-		"stages" : 4,
-		"baseFrequency" : 750
+		"rate" : 0.5,
+		"depth" : 1,
+		"stages" : 6,
+		"baseFrequency" : 750,
+		"feedback" : 0.6
+	};
+
+	/**
+	 *  @param {number} stages
+	 *  @returns {Array} the number of filters all connected together
+	 *  @private
+	 */
+	Tone.Phaser.prototype._makeFilters = function(stages, connectToFreq){
+		var filters = new Array(stages);
+		//make all the filters
+		for (var i = 0; i < stages; i++){
+			var filter = this.context.createBiquadFilter();
+			filter.type = "allpass";
+			filter.Q.value = 4;
+			connectToFreq.connect(filter.frequency);
+			filters[i] = filter;
+		}
+		this.chain.apply(this, filters);
+		return filters;
 	};
 
 	/**
@@ -86,7 +117,9 @@ function(Tone){
 	 */
 	Tone.Phaser.prototype.setDepth = function(depth){
 		this._depth = depth;
-		this._lfo.setMax(this._baseFrequency + this._baseFrequency * depth);
+		var max = this._baseFrequency + this._baseFrequency * depth;
+		this._lfoL.setMax(max);
+		this._lfoR.setMax(max);
 	};
 
 	/**
@@ -95,7 +128,8 @@ function(Tone){
 	 */
 	Tone.Phaser.prototype.setBaseFrequency = function(freq){
 		this._baseFrequency = freq;	
-		this._lfo.setMin(freq);
+		this._lfoL.setMin(freq);
+		this._lfoR.setMin(freq);
 		this.setDepth(this._depth);
 	};
 
@@ -104,7 +138,7 @@ function(Tone){
 	 *  @param {number} rate in hertz
 	 */
 	Tone.Phaser.prototype.setRate = function(rate){
-		this._lfo.setFrequency(rate);
+		this._lfoL.setFrequency(rate);
 	};
 
 	/**
@@ -115,20 +149,28 @@ function(Tone){
 		if (!this.isUndef(params.rate)) this.setRate(params.rate);
 		if (!this.isUndef(params.baseFrequency)) this.setBaseFrequency(params.baseFrequency);
 		if (!this.isUndef(params.depth)) this.setDepth(params.depth);
-		Tone.FeedbackEffect.prototype.set.call(this, params);
+		Tone.StereoFeedbackEffect.prototype.set.call(this, params);
 	};
 
 	/**
 	 *  clean up
 	 */
 	Tone.Phaser.prototype.dispose = function(){
-		Tone.FeedbackEffect.prototype.dispose.call(this);
-		this._lfo.dispose();
-		for (var i = 0; i < this._filters.length; i++){
-			this._filters[i].dispose();
-			this._filters[i] = null;
+		Tone.StereoFeedbackEffect.prototype.dispose.call(this);
+		this._lfoL.dispose();
+		this._lfoR.dispose();
+		for (var i = 0; i < this._filtersL.length; i++){
+			this._filtersL[i].disconnect();
+			this._filtersL[i] = null;
 		}
-		this._filters = null;
+		for (var i = 0; i < this._filtersR.length; i++){
+			this._filtersR[i].disconnect();
+			this._filtersR[i] = null;
+		}
+		this._filtersL = null;
+		this._filtersR = null;
+		this._lfoL = null;
+		this._lfoR = null;
 	};
 
 	return Tone.Phaser;
