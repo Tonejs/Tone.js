@@ -94,6 +94,14 @@ function(Tone){
 	};
 
 	/**
+	 *  set the phase
+	 *  @param {number} phase 
+	 */
+	Tone.LFO.prototype.setPhase = function(phase){
+		this.oscillator.setPhase(phase);
+	};
+
+	/**
 	 *  set the minimum output of the LFO
 	 *  @param {number} min 
 	 */
