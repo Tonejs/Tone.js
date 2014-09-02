@@ -106,13 +106,13 @@
 	text-align: center;
 }
 
-.Envelope .Slider {
+.Envelope .EnvelopeSlider {
 	margin-left: 25px;
 	height: 80px;
 	float: left;
 }
 
-.Envelope .Slider .Label{
+.Envelope .EnvelopeSlider .Label{
 	position: absolute;
 	font-size: 9px;
 	text-align: center;
@@ -120,11 +120,11 @@
 	left: -10px;
 }
 
-.Envelope .Slider .Label.Bottom{
+.Envelope .EnvelopeSlider .Label.Bottom{
 	top: 90px;
 }
 
-.Envelope .Slider .Label.Top{
+.Envelope .EnvelopeSlider .Label.Top{
 	top: -15px;
 }
 
@@ -273,6 +273,21 @@
 	line-height: 30px;
 } 
 
-.Oscillator .DropDown {
+.Oscillator .DropDown .ui-selectmenu-button{
 	float: right;
+	width: 100px;
+}
+
+.Oscillator .DropDown .ui-selectmenu-button{
+	width: 100px!important;
+}
+
+/* Slider */
+.Slider .Value {
+	margin-top: 5px;
+	display: block;
+}
+
+.Slider .Input {
+	display: block;
 }

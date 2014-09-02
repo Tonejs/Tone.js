@@ -38,12 +38,21 @@ GUI.Envelope = function(container, envelope, title){
 	this.decay = this.makeSlider("decay", 0.01, 0.4, "D");
 	this.sustain = this.makeSlider("sustain", 0, 1, "S");
 	this.release = this.makeSlider("release", 0.2, 2, "R");
+	this.render();
+};
+
+GUI.Envelope.prototype.render = function(){
+	this.attack.slider({"value" : this.envelope.attack * 1000});
+	this.decay.slider({"value" : this.envelope.decay * 1000});
+	this.sustain.slider({"value" : this.envelope.sustain * 1000});
+	this.release.slider({"value" : this.envelope.release * 1000});
+
 };
 
 GUI.Envelope.prototype.makeSlider = function(attr, min, max, name){
 	var self = this;
 	var startVal = this.envelope[attr]*1000;
-	var slider = $("<div>", {"class" : "Slider"})
+	var slider = $("<div>", {"class" : "EnvelopeSlider"})
 		.slider({
 			orientation: "vertical",
 			range: "min",
@@ -54,6 +63,11 @@ GUI.Envelope.prototype.makeSlider = function(attr, min, max, name){
 				var settings = {};
 				settings[attr] = ui.value / 1000;
 				self.envelope.set(settings);
+				label.text(settings[attr].toFixed(3));
+			},
+			change : function(e, ui){
+				var settings = {};
+				settings[attr] = ui.value / 1000;
 				label.text(settings[attr].toFixed(3));
 			}
 		})
@@ -296,20 +310,25 @@ GUI.Momentary = function(container, callback, labelOff, labelOn){
 GUI.DropDown = function(container, options, callback){
 	this.element = $("<div>", {"class" : "DropDown"})
 		.appendTo(container);
-	var list = $("<select>");
+	this.list = $("<select>");
 	for (var i = 0; i < options.length; i++) {
 		var optionName = options[i];
 		$("<option>").attr("value", optionName)
-			.appendTo(list)
+			.appendTo(this.list)
 			.text(optionName);
 	}
 	// this.dropdown = list.
-	list.appendTo(this.element)
+	this.list.appendTo(this.element)
 		.selectmenu({
 			change: function( event, ui ) {
 				callback(ui.item.value);
 			}
 		});
+};
+
+GUI.DropDown.prototype.select = function(option){
+	this.element.find('option[value="'+option+'"]')[0].selected = true
+	this.list.selectmenu("refresh");
 };
 
 
@@ -326,4 +345,41 @@ GUI.Oscillator = function(container, oscillator, label){
 	this.type = new GUI.DropDown(this.element, ["sine", "square", "sawtooth", "triangle"], function(option){
 		oscillator.setType(option);
 	});
+};
+
+GUI.Oscillator.prototype.render = function(){
+	var type = this.oscillator.getType();
+	this.type.select(type);
+};
+
+/**
+ *  SLIDER + VALUE
+ */
+GUI.Slider = function(container, callback, initial, label, units){
+	this.element = $("<div>", {"class" : "Slider"})
+		.appendTo(container);
+	this.slider = $("<div>", {"id" : "Input"})
+		.appendTo(this.element)
+		.slider({
+			"min" : 0,
+			"max" : 1000,
+			"slide" : this.onslide.bind(this),
+			"change" : this.onslide.bind(this)
+		});
+	this.value = new GUI.Value(this.element, initial, label, units);
+	this.callback = callback;
+};
+
+GUI.Slider.prototype.onslide = function(e, ui){
+	var val = ui.value / 1000;
+	var ret = this.callback(val);
+	if (ret){
+		this.value.setValue(ret);
+	} else {
+		this.value.setValue(val);
+	}
+};
+
+GUI.Slider.prototype.render = function(value){
+	this.slider.slider({"value" : value * 1000});
 };
