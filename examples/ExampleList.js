@@ -14,5 +14,6 @@ var ExampleList = {
 	},
 	"Instruments" : {
 		"MonoSynth" : "monoSynth",
+		"DuoSynth" : "duoSynth",
 	}
 };

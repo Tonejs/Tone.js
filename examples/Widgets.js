@@ -373,7 +373,7 @@ GUI.Slider = function(container, callback, initial, label, units){
 GUI.Slider.prototype.onslide = function(e, ui){
 	var val = ui.value / 1000;
 	var ret = this.callback(val);
-	if (ret){
+	if (ret !== undefined){
 		this.value.setValue(ret);
 	} else {
 		this.value.setValue(val);

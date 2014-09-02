@@ -21,11 +21,10 @@
 
 	<div id="Container">
 		<div id="Explanation">
-			Monophonic Synthesizer
+			DuoSynth
 			<br>
 			<br>
-			MonoSynth is one a few built-in synthesizers. It is composed simply of one oscillator, 
-			a filter and two envelopes (on amplitude and filter). 
+			DuoSynth is a monophonic synthesizer composed of two MonoSyths in parellel. 
 		</div>
 		<div id="Content">
 			<div id="tabs">
@@ -157,12 +156,13 @@
 
 		function setPreset(name){
 			synth.setPreset(name);
+			var preset = Tone.DuoSynth.preset[name];
 			ampEnv0.render();
 			ampEnv1.render();
 			osc0.render();
-			osc0Vol.render(synth.dbToGain(synth.voice0.output.gain.value));
+			osc0Vol.render(synth.dbToGain(preset.voice0.volume));
 			osc1.render();
-			osc1Vol.render(synth.dbToGain(synth.voice1.output.gain.value));
+			osc1Vol.render(synth.dbToGain(preset.voice1.volume));
 			filtEnv0.render();
 			var minVal0 = Math.pow(Math.max((synth.voice0.filterEnvelope.min - min) / (max - min), 0), 0.5);
 			minFilFreq0.render(minVal0);
