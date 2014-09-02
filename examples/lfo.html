@@ -22,9 +22,8 @@
 			<br>
 			<br>
 			<a href="http://en.wikipedia.org/wiki/Low-frequency_oscillation">LFOs</a> are a powerful musical tool. 
-			In this example there are 3 square wave LFOs controlling the oscillators frequencies, an LFO controlling
-			the filter frequency, another LFO controlling the envelope of the oscillators which is run through a feedback
-			delay to make the notes repeat. The delayTime of the feedback delay is also on an LFO. 
+			LFOs can be connected to Tone.Signals and AudioParams to control nearly anything. This example uses LFOs 
+			to control the oscillators pitch, detune, delay time, and filter frequency to make some crazy sounds. 
 		</div>
 		<div id="Content"></div>
 	</div>
@@ -35,13 +34,15 @@
 
 		var osc0 = new Tone.Oscillator(440, "triangle");
 		var osc1 = new Tone.Oscillator(440, "square");
+		osc0.setVolume(-15);
+		osc1.setVolume(-15);
 
 		var oscAmplitude = Tone.context.createGain();
 
 		//lfo on a filter
-		var filterLFO = new Tone.LFO(0.2, 200, 1000);
+		var filterLFO = new Tone.LFO(0.2, 500, 4000);
 		var filter = new Tone.Filter(800, "lowpass");
-		filter.Q.value = 20;
+		filter.Q.value = 10;
 		filterLFO.connect(filter.frequency);
 
 		//3 LFOs control the pitch of the osc0illator
@@ -198,7 +199,7 @@
 			display: block;
 		}
 		.Slider {
-			margin-top: 10px;
+			margin-top: 15px;
 		}
 		.Checkbox {
 			width: 100%;
