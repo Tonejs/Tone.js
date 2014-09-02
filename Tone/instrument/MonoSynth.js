@@ -159,14 +159,6 @@ function(Tone){
 	};
 
 	/**
-	 *  set the detune between the oscillators
-	 *  @param {number} unisonDetune detune value in cents
-	 */
-	Tone.MonoSynth.prototype.setUnison = function(unisonDetune){
-		this._unison.setValue(unisonDetune);
-	};
-
-	/**
 	 *  set the glide time between notes
 	 *  @param {Tone.Time} port glide time
 	 */
@@ -188,7 +180,7 @@ function(Tone){
 	 *                         should be nested objects. 
 	 */
 	Tone.MonoSynth.prototype.set = function(params){
-		if (!this.isUndef(params.unison)) this.setUnison(params.unison);
+		if (!this.isUndef(params.detune)) this.detune.setValue(params.detune);
 		if (!this.isUndef(params.volume)) this.setVolume(params.volume);
 		if (!this.isUndef(params.portamento)) this.setPortamento(params.portamento);
 		if (!this.isUndef(params.oscType)) this.setOscType(params.oscType);
