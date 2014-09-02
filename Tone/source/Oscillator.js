@@ -194,6 +194,13 @@ function(Tone){
 	};
 
 	/**
+	 *  @return {string} the type of oscillator
+	 */
+	Tone.Oscillator.prototype.getType = function() {
+		return this._type;
+	};
+
+	/**
 	 *  set the phase of the oscillator (in degrees)
 	 *  @param {number} degrees the phase in degrees
 	 */
