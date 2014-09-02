@@ -263,23 +263,25 @@
 
 .Oscillator {
 	border: 1px solid black;
-	height: 30px;
+	height: 31px;
 	width: auto;
 }
 
 .Oscillator #Label{
 	float: left;
 	margin-left: 10px;
-	line-height: 30px;
+	line-height: 31px;
 } 
 
 .Oscillator .DropDown .ui-selectmenu-button{
-	float: right;
-	width: 100px;
+	width: 120px!important;
 }
 
-.Oscillator .DropDown .ui-selectmenu-button{
-	width: 100px!important;
+.Oscillator .DropDown {
+	position: relative;
+	float: right;
+	margin-left: 2px;
+	width: 120px;
 }
 
 /* Slider */
@@ -290,4 +292,13 @@
 
 .Slider .Input {
 	display: block;
+}
+
+/* DROP DOWN */
+.DropDown .ui-selectmenu-button{
+	width: 120px!important;
+}
+
+.DropDown {
+	width: 120px;
 }
