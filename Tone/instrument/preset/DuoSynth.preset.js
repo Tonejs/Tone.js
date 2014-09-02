@@ -14,7 +14,7 @@ define(["Tone/core/Tone", "Tone/instrument/DuoSynth"], function(Tone){
 			"portamento" : 0,
 			"voiceRatio" : 1.99,
 			"voice0" : {
-				"volume" : -20,
+				"volume" : -8,
 				"portamento" : 0,
 				"oscType" : "square",
 				"filter" : {
@@ -38,7 +38,7 @@ define(["Tone/core/Tone", "Tone/instrument/DuoSynth"], function(Tone){
 				}
 			},
 			"voice1" : {
-				"volume" : -10,
+				"volume" : -1,
 				"portamento" : 0,
 				"oscType" : "sine",
 				"filter" : {
@@ -69,7 +69,7 @@ define(["Tone/core/Tone", "Tone/instrument/DuoSynth"], function(Tone){
 			"portamento" : 0.1,
 			"voiceRatio" : 1.005,
 			"voice0" : {
-				"volume" : -10,
+				"volume" : -2,
 				"portamento" : 0,
 				"oscType" : "sawtooth",
 				"filter" : {
@@ -93,7 +93,7 @@ define(["Tone/core/Tone", "Tone/instrument/DuoSynth"], function(Tone){
 				}
 			},
 			"voice1" : {
-				"volume" : -100,
+				"volume" : -10,
 				"portamento" : 0,
 				"oscType" : "sawtooth",
 				"filter" : {
