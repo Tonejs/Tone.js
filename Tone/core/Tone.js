@@ -70,7 +70,9 @@ define("Tone/core/Tone", [], function(){
 	if (typeof AudioContext.prototype.createDelay !== "function"){
 		AudioContext.prototype.createDelay = AudioContext.prototype.createDelayNode;
 	}
-
+	if (typeof AudioContext.prototype.createPeriodicWave !== "function"){
+		AudioContext.prototype.createPeriodicWave = AudioContext.prototype.createWaveTable;
+	}
 	if (typeof AudioBufferSourceNode.prototype.start !== "function"){
 		AudioBufferSourceNode.prototype.start = AudioBufferSourceNode.prototype.noteGrainOn;
 	}
@@ -82,6 +84,9 @@ define("Tone/core/Tone", [], function(){
 	}
 	if (typeof OscillatorNode.prototype.stop !== "function"){
 		OscillatorNode.prototype.stop = OscillatorNode.prototype.noteOff;	
+	}
+	if (typeof OscillatorNode.prototype.setPeriodicWave !== "function"){
+		OscillatorNode.prototype.setPeriodicWave = OscillatorNode.prototype.setWaveTable;	
 	}
 	//extend the connect function to include Tones
 	AudioNode.prototype._nativeConnect = AudioNode.prototype.connect;
