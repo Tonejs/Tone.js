@@ -11,5 +11,8 @@ var ExampleList = {
 	},
 	"Effects" : {
 		"AutoPanner" : "autoPanner",
+	},
+	"Instruments" : {
+		"MonoSynth" : "monoSynth",
 	}
 };

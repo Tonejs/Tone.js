@@ -8,6 +8,7 @@
 	<script type="text/javascript" src="../deps/jquery-ui.js"></script>
 	<script type="text/javascript" src="../deps/jquery.ui.touch-punch.js"></script>
 	<script type="text/javascript" src="../Tone.js"></script>
+	<script type="text/javascript" src="../Tone/instrument/preset/MonoSynth.preset.js"></script>
 	<script type="text/javascript" src="./Widgets.js"></script>
 	<script type="text/javascript" src="./ExampleList.js"></script>
 	<link rel="stylesheet" type="text/css" href="./style/widgets.css">
@@ -22,15 +23,15 @@
 			Monophonic Synthesizer
 			<br>
 			<br>
-			MonoSynth is one a few built in synthesizers. It is simply composed of two oscillators 
-			(with control over type and unison detune), a filter, and envelopes on amplitude and the filter. 
+			MonoSynth is one a few built-in synthesizers. It is composed simply of one oscillator, 
+			a filter and two envelopes (on amplitude and filter). 
 		</div>
 		<div id="Content">
 			<div id="tabs">
 			  <ul>
-			    <li><a href="#envelope">Amplitude</a></li>
-			    <li><a href="#filter">Filter</a></li>
-			    <li><a href="#oscillator">Oscillators</a></li>
+			    <li><a href="#envelope">Osc/Env</a></li>
+			    <li><a href="#filter">FilterEnv</a></li>
+			    <li><a href="#presets">Presets</a></li>
 			  </ul>
 			  <div id="envelope">
 			   
@@ -38,7 +39,7 @@
 			  <div id="filter">
 			   
 			  </div>
-			  <div id="oscillator">
+			  <div id="presets">
 			    
 			  </div>
 			</div>
@@ -48,24 +49,31 @@
 	</div>
 
 	<script type="text/javascript">
+
+		/* globals Tone, GUI, QwertyHancock */
 			
 		var synth = new Tone.MonoSynth();
-
+		synth.setVolume(-10);
 		synth.toMaster();
 
 		// GUI //
+
+		new GUI.TopBar(Tone);
+		new GUI.StartButton(Tone.startMobile);
 
 		$("#tabs").tabs();
 
 		var content = $("#Content");
 		var envelope = $("#envelope");
 		var filter = $("#filter");
-		var oscillator = $("#oscillator");
+		var presets = $("#presets");
 
 		//envelopes
-		var ampEnv = new GUI.Envelope(envelope, synth.envelope, "amplitude", true);
-		var filtEnv =new GUI.Envelope(filter, synth.filterEnvelope, "filter", true);
+		var ampEnv = new GUI.Envelope(envelope, synth.envelope, "amplitude");
+		var osc = new GUI.Oscillator(envelope, synth.oscillator, "oscillator");
 
+		//filter
+		var filtEnv =new GUI.Envelope(filter, synth.filterEnvelope, "filter");
 		var min = 20;
 		var max = 20000;
 		var minFilFreq = new GUI.Slider(filter, function(val){
@@ -73,16 +81,23 @@
 			var scaled = freq * (max - min) + min;
 			synth.filterEnvelope.min = scaled;
 			return scaled;
-		}, min, "min freq", "hz");
+		}, min, "start freq", "hz");
 		var maxFilFreq = new GUI.Slider(filter, function(val){
 			var freq = Math.pow(val, 2);
 			var scaled = freq * (max - min) + min;
 			synth.filterEnvelope.max = scaled;
 			return scaled;
-		}, min, "max freq", "hz");
+		}, min, "end freq", "hz");
 
-		//oscillator
-		var osc = new GUI.Oscillator(oscillator, synth.oscillator, "osc");
+		//presets
+		var allPresets = [];
+		for (var name in Tone.MonoSynth.preset){
+			allPresets.push(name);
+		}
+
+		new GUI.DropDown(presets, allPresets, function(name){
+			setPreset(name);
+		});
 
 		//keyboard
 		$("<div>", {"id" : "Keyboard"}).appendTo(content);
@@ -91,7 +106,7 @@
 			width: 350,
 			height: 75,
 			octaves: 2,
-			startNote: "A2",
+			startNote: "A3",
 			whiteNotesColour: "white",
 			blackNotesColour: "black",
 			hoverColour: "#f3e939"
@@ -99,11 +114,9 @@
 		keyboard.keyDown = function(note, freq){
 			synth.triggerAttack(freq);
 		};
-		keyboard.keyUp = function(note, freq){
+		keyboard.keyUp = function(){
 			synth.triggerRelease();
 		};
-
-		// SETUP //
 
 		function setPreset(name){
 			synth.setPreset(name);
@@ -116,7 +129,7 @@
 			maxFilFreq.render(maxVal);
 		}
 
-		setPreset("BrassCircuit");
+		setPreset("Pianoetta");
 		
 	</script>
 
@@ -139,15 +152,20 @@
 	.Oscillator {
 		width: 80%;
 		margin-left: 10%;
-		margin-top: 10px;
+		margin-top: 40px;
 	}
 
 	.Envelope {
 		margin: auto;
 	}
 
-	.Keyboard {
+	#Keyboard {
 		background-color: black;
+	}
+
+	#presets .DropDown {
+		margin: auto;
+		margin-top: 50px;
 	}
 	</style>
 </body>
