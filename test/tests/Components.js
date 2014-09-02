@@ -315,11 +315,11 @@ function(coreTest, chai, DryWet, Master, Signal, Recorder, Panner, LFO, Gate, Fo
 				"frequency" : 1000,
 				"type" : "highpass"
 			});
-			expect(f0.frequency.value).to.equal(1000);
+			expect(f0.frequency.getValue()).to.equal(1000);
 			expect(f0.getType()).to.equal("highpass");
 			f0.dispose();
 			var f1 = new Filter(200, "bandpass");
-			expect(f1.frequency.value).to.equal(200);
+			expect(f1.frequency.getValue()).to.equal(200);
 			expect(f1.getType()).to.equal("bandpass");
 			f1.dispose();
 		});
