@@ -133,6 +133,21 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 		this.sustain = sustain;
 	};
 
+	/**
+	 *  set the envelope max
+	 *  @param {number} max
+	 */
+	Tone.Envelope.prototype.setMax = function(max){
+		this.max = max;
+	};
+
+	/**
+	 *  set the envelope min
+	 *  @param {number} min
+	 */
+	Tone.Envelope.prototype.setMin = function(min){
+		this.min = min;
+	};
 
 	/**
 	 * attack->decay->sustain linear ramp
@@ -140,16 +155,19 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	 */
 	Tone.Envelope.prototype.triggerAttack = function(time){
 		var sustainVal = (this.max - this.min) * this.sustain + this.min;
+		if (sustainVal === 0){
+			sustainVal = 0.0001;
+		}
 		if (!time){
 			this._control.linearRampToValueNow(this.max, this.attack);
-			this._control.linearRampToValueAtTime(sustainVal, this.now() + this.attack + this.decay);	
+			this._control.exponentialRampToValueAtTime(sustainVal, this.now() + this.attack + this.decay);	
 		} else {
 			var startVal = this.min;
 			time = this.toSeconds(time);
 			this._control.cancelScheduledValues(time);
 			this._control.setValueAtTime(startVal, time);
 			this._control.linearRampToValueAtTime(this.max, time + this.attack);
-			this._control.linearRampToValueAtTime(sustainVal, time + this.attack + this.decay);
+			this._control.exponentialRampToValueAtTime(sustainVal, time + this.attack + this.decay);
 		}
 	};
 
