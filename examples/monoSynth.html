@@ -2,98 +2,153 @@
 <head>
 	<title>MONOSYNTH</title>
 
-	<script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
-	<script type="text/javascript" src="../deps/music.js"></script>
+	<meta name="viewport" content="width=device-width, initial-scale=0.5">
+
+	<script type="text/javascript" src="../deps/jquery.min.js"></script>
+	<script type="text/javascript" src="../deps/jquery-ui.js"></script>
+	<script type="text/javascript" src="../deps/jquery.ui.touch-punch.js"></script>
 	<script type="text/javascript" src="../Tone.js"></script>
-	<link rel="stylesheet" type="text/css" href="exampleStyle.css">
+	<script type="text/javascript" src="./Widgets.js"></script>
+	<script type="text/javascript" src="./ExampleList.js"></script>
+	<link rel="stylesheet" type="text/css" href="./style/widgets.css">
+	<link rel="stylesheet" type="text/css" href="./style/jquery-ui.css">
+	<script type="text/javascript" src="../deps/qwerty-hancock.js"></script>
 
 </head>
 <body>
 
-	<div>
-		Play the second row of the keyboard (A-L). They are the notes
-		C4-D5.
+	<div id="Container">
+		<div id="Explanation">
+			Monophonic Synthesizer
+			<br>
+			<br>
+			MonoSynth is one a few built in synthesizers. It is simply composed of two oscillators 
+			(with control over type and unison detune), a filter, and envelopes on amplitude and the filter. 
+		</div>
+		<div id="Content">
+			<div id="tabs">
+			  <ul>
+			    <li><a href="#envelope">Amplitude</a></li>
+			    <li><a href="#filter">Filter</a></li>
+			    <li><a href="#oscillator">Oscillators</a></li>
+			  </ul>
+			  <div id="envelope">
+			   
+			  </div>
+			  <div id="filter">
+			   
+			  </div>
+			  <div id="oscillator">
+			    
+			  </div>
+			</div>
+
+
+		</div>
 	</div>
-	<br>
-	<div id="note"></div>
 
 	<script type="text/javascript">
 			
-		var osc0 = new Tone.Oscillator(440, "sine");
-		var osc1 = new Tone.Oscillator(880, "square");
-		//sync the two frequencies
-		osc1.frequency.sync(osc0.frequency);
+		var synth = new Tone.MonoSynth();
 
-		//create the envelopes
-		var ampEnvelope = new Tone.Envelope(0.01, 0.1, 0.5, 0.5);
-		var freqEnvelope = new Tone.Envelope(0.4, 0, 1, 0.8, 0, 1200);
+		synth.toMaster();
 
-		//the filter
-		var lowpass = Tone.context.createBiquadFilter();
-		lowpass.type = "lowpass";
-		lowpass.Q.value = 12;
+		// GUI //
 
-		//the amplitude
-		var amplitude = Tone.context.createGain();
-		//connect to the amplitudes and the filters
-		osc0.connect(amplitude);
-		osc1.connect(amplitude);
-		osc0.connect(lowpass);
-		osc1.connect(lowpass);
+		$("#tabs").tabs();
 
-		//connect the envelopes
-		ampEnvelope.connect(amplitude.gain);
-		freqEnvelope.connect(lowpass.frequency);
+		var content = $("#Content");
+		var envelope = $("#envelope");
+		var filter = $("#filter");
+		var oscillator = $("#oscillator");
 
-		//connect it to the output
-		amplitude.toMaster();
-		lowpass.toMaster();
+		//envelopes
+		var ampEnv = new GUI.Envelope(envelope, synth.envelope, "amplitude", true);
+		var filtEnv =new GUI.Envelope(filter, synth.filterEnvelope, "filter", true);
 
-		//start the oscillators
-		osc0.start();
-		osc1.start();
+		var min = 20;
+		var max = 20000;
+		var minFilFreq = new GUI.Slider(filter, function(val){
+			var freq = Math.pow(val, 2);
+			var scaled = freq * (max - min) + min;
+			synth.filterEnvelope.min = scaled;
+			return scaled;
+		}, min, "min freq", "hz");
+		var maxFilFreq = new GUI.Slider(filter, function(val){
+			var freq = Math.pow(val, 2);
+			var scaled = freq * (max - min) + min;
+			synth.filterEnvelope.max = scaled;
+			return scaled;
+		}, min, "max freq", "hz");
 
-		function triggerAttack(){
-			ampEnvelope.triggerAttack();
-			freqEnvelope.triggerAttack();
-		}
+		//oscillator
+		var osc = new GUI.Oscillator(oscillator, synth.oscillator, "osc");
 
-		function triggerRelease(){
-			ampEnvelope.triggerRelease();
-			freqEnvelope.triggerRelease();
-		}
-
-		$(document).keydown(function(e){
-			var note = keyboardKeyboard[String.fromCharCode(e.which).toLowerCase()];
-			if (note){
-				var freq = Note.fromLatin(note).frequency();
-				osc0.frequency.exponentialRampToValueNow(freq, 0.1);
-				triggerAttack();
-				$("#note").text(note);
-			}
+		//keyboard
+		$("<div>", {"id" : "Keyboard"}).appendTo(content);
+		var keyboard = new QwertyHancock({
+			id: "Keyboard",
+			width: 350,
+			height: 75,
+			octaves: 2,
+			startNote: "A2",
+			whiteNotesColour: "white",
+			blackNotesColour: "black",
+			hoverColour: "#f3e939"
 		});
-
-		$(document).keyup(function(e){
-			triggerRelease();
-		});
-
-		var keyboardKeyboard = {
-			"a" : "C4",
-			"w" : "C#4",
-			"s" : "D4",
-			"e" : "D#4",
-			"d" : "E4",
-			"f" : "F4",
-			"t" : "F#4",
-			"g" : "G4",
-			"y" : "G#4",
-			"h" : "A4",
-			"u" : "A#4",
-			"j" : "B4",
-			"k" : "C5",
-			"l" : "D5",
-			"p" : "D#5"
+		keyboard.keyDown = function(note, freq){
+			synth.triggerAttack(freq);
 		};
+		keyboard.keyUp = function(note, freq){
+			synth.triggerRelease();
+		};
+
+		// SETUP //
+
+		function setPreset(name){
+			synth.setPreset(name);
+			ampEnv.render();
+			filtEnv.render();
+			osc.render();
+			var minVal = Math.pow(Math.max((synth.filterEnvelope.min - min) / (max - min), 0), 0.5);
+			minFilFreq.render(minVal);
+			var maxVal = Math.pow(Math.max((synth.filterEnvelope.max - min) / (max - min), 0), 0.5);
+			maxFilFreq.render(maxVal);
+		}
+
+		setPreset("BrassCircuit");
+		
 	</script>
+
+	<style type="text/css">
+	#Content {
+		width: 350px;
+		height: 400px;
+	}
+
+	#tabs {
+		height: 300px;
+	}
+
+	.Slider {
+		width: 80%;
+		margin-left: 10%;
+		margin-top: 10px;
+	}
+
+	.Oscillator {
+		width: 80%;
+		margin-left: 10%;
+		margin-top: 10px;
+	}
+
+	.Envelope {
+		margin: auto;
+	}
+
+	.Keyboard {
+		background-color: black;
+	}
+	</style>
 </body>
 </html>
