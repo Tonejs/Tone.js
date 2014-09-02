@@ -26,12 +26,14 @@ define(["Tone/core/Tone", "Tone/instrument/MonoSynth", "Tone/component/LFO", "To
 		 *  @type {Tone.MonoSynth}
 		 */
 		this.voice0 = new Tone.MonoSynth(options.voice0);
+		this.voice0.setVolume(-10);
 
 		/**
 		 *  the second voice
 		 *  @type {Tone.MonoSynth}
 		 */
 		this.voice1 = new Tone.MonoSynth(options.voice1);
+		this.voice1.setVolume(-10);
 
 		/**
 		 *  the vibrato lfo
@@ -101,11 +103,16 @@ define(["Tone/core/Tone", "Tone/instrument/MonoSynth", "Tone/component/LFO", "To
 		"portamento" : 0.05,
 		"voiceRatio" : 1.5,
 		"voice0" : {
+			"volume" : -10,
 			"portamento" : 0,
-			"osc0type" : "sine",
-			"osc1type" : "sawtooth",
-			"unison" : 20,
+			"oscType" : "sine",
 			"filterEnvelope" : {
+				"attack" : 0.01,
+				"decay" : 0.0,
+				"sustain" : 1,
+				"release" : 0.5
+			},
+			"envelope" : {
 				"attack" : 0.01,
 				"decay" : 0.0,
 				"sustain" : 1,
@@ -113,12 +120,16 @@ define(["Tone/core/Tone", "Tone/instrument/MonoSynth", "Tone/component/LFO", "To
 			}
 		},
 		"voice1" : {
-			"volume" : -6,
+			"volume" : -10,
 			"portamento" : 0,
-			"osc0type" : "square",
-			"osc1type" : "square",
-			"unison" : 10,
+			"oscType" : "sine",
 			"filterEnvelope" : {
+				"attack" : 0.01,
+				"decay" : 0.0,
+				"sustain" : 1,
+				"release" : 0.5
+			},
+			"envelope" : {
 				"attack" : 0.01,
 				"decay" : 0.0,
 				"sustain" : 1,
@@ -172,7 +183,7 @@ define(["Tone/core/Tone", "Tone/instrument/MonoSynth", "Tone/component/LFO", "To
 	 *  set the ratio between the two oscillator
 	 *  @param {number} ratio
 	 */
-	Tone.DuoSynth.prototype.setOscRatio = function(ratio){
+	Tone.DuoSynth.prototype.setVoiceRatio = function(ratio){
 		this._frequencyRatio.setValue(ratio);
 	};
 
@@ -210,15 +221,22 @@ define(["Tone/core/Tone", "Tone/instrument/MonoSynth", "Tone/component/LFO", "To
 	};
 
 	/**
+	 *  set the volume of the instrument.
+	 *  borrowed from {@link Tone.Source}
+	 *  @function
+	 */
+	Tone.DuoSynth.prototype.setVolume = Tone.Source.prototype.setVolume;
+
+	/**
 	 *  bulk setter
 	 *  @param {Object} param 
 	 */
 	Tone.DuoSynth.prototype.set = function(params){
-		if (!this.isUndef(params.oscRatio)) this.setOscRatio(params.oscRatio);
+		if (!this.isUndef(params.voiceRatio)) this.setVoiceRatio(params.voiceRatio);
 		if (!this.isUndef(params.vibratoRate)) this.setVibratoRate(params.vibratoRate);
 		if (!this.isUndef(params.vibratoAmount)) this.setVibratoAmount(params.vibratoAmount);
 		if (!this.isUndef(params.vibratoDelay)) this.setVibratoDelay(params.vibratoDelay);
-		if (!this.isUndef(params.portamento)) this.portament = this.toSeconds(params.portamento);
+		if (!this.isUndef(params.portamento)) this.setPortamento(params.portamento);
 		if (!this.isUndef(params.voice0)) this.voice0.set(params.voice0);
 		if (!this.isUndef(params.voice1)) this.voice1.set(params.voice1);
 	};
