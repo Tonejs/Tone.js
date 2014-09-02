@@ -7,52 +7,109 @@ define(["Tone/core/Tone", "Tone/instrument/MonoSynth"], function(Tone){
 	 *  @type {Object}
 	 */
 	Tone.MonoSynth.preset = {
-		"PanFluteSteelDrum" : {
-			"portamento" : 0.05,
+		"Pianoetta" : {
+			"portamento" : 0.0,
 			"oscType" : "square",
-			"detune" : 20,
 			"filter" : {
 				"Q" : 6,
-				"type" : "lowpass"
+				"type" : "lowpass",
+				"rolloff" : -24 
 			},
 			"envelope" : {
 				"attack" : 0.005,
-				"decay" : 0.1,
+				"decay" : 3,
+				"sustain" : 0,
+				"release" : 0.45
+			},
+			"filterEnvelope" : {
+				"attack" : 0.001,
+				"decay" : 0.32,
 				"sustain" : 0.9,
+				"release" : 3,
+				"min" : 700,
+				"max" : 3500
+			}
+		},
+		"Barky" : {
+			"portamento" : 0.01,
+			"oscType" : "triangle",
+			"filter" : {
+				"Q" : 3,
+				"type" : "highpass",
+				"rolloff" : -12
+			},
+			"envelope" : {
+				"attack" : 0.05,
+				"decay" : 0.15,
+				"sustain" : 0.6,
 				"release" : 1
 			},
 			"filterEnvelope" : {
-				"attack" : 0.06,
+				"attack" : 0.02,
 				"decay" : 0.2,
-				"sustain" : 0.5,
-				"release" : 2,
-				"min" : 10,
-				"max" : 4000
+				"sustain" : 0.8,
+				"release" : 1.5,
+				"min" : 3000,
+				"max" : 250
 			}
 		},
-		"CasioPiano" : {
-			"portamento" : 0.00,
-			"oscType" : "sine",
-			"detune" : 0,
+		"Bassy" : {
+			"portamento" : 0.08,
+			"oscType" : "square",
 			"filter" : {
-				"Q" : 3,
-				"type" : "lowpass"
+				"Q" : 4,
+				"type" : "lowpass",
+				"rolloff" : -24
 			},
 			"envelope" : {
-				"attack" : 0.005,
-				"decay" : 0.1,
-				"sustain" : 0.9,
-				"release" : 0.2
+				"attack" : 0.04,
+				"decay" : 0.06,
+				"sustain" : 0.4,
+				"release" : 1
 			},
 			"filterEnvelope" : {
-				"attack" : 0.06,
-				"decay" : 0.2,
-				"sustain" : 1,
-				"release" : 2,
-				"min" : 10,
-				"max" : 8000
+				"attack" : 0.01,
+				"decay" : 0.1,
+				"sustain" : 0.6,
+				"release" : 1.5,
+				"min" : 50,
+				"max" : 350
+			}
+		},
+		"BrassCircuit" : {
+			"portamento" : 0.01,
+			"oscType" : "sawtooth",
+			"filter" : {
+				"Q" : 2,
+				"type" : "lowpass",
+				"rolloff" : -12
+			},
+			"envelope" : {
+				"attack" : 0.1,
+				"decay" : 0.1,
+				"sustain" : 0.6,
+				"release" : 0.5
+			},
+			"filterEnvelope" : {
+				"attack" : 0.05,
+				"decay" : 0.8,
+				"sustain" : 0.4,
+				"release" : 1.5,
+				"min" : 2000,
+				"max" : 5000
 			}
 		}
+	};
+
+	/**
+	 *  augment the prototype to include setPreset
+	 */
+	Tone.MonoSynth.prototype.setPreset = function(presetName){
+		presetName = this.defaultArg(presetName, "CasioPiano");
+		//look up if it exists
+		//TODO
+		//set it
+		this.set(Tone.MonoSynth.preset[presetName]);
 	};
 
 	return Tone.MonoSynth.preset;
