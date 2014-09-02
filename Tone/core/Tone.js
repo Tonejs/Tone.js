@@ -18,13 +18,18 @@
 	if (typeof define !== "function" && 
 		typeof root.Tone !== "function") {
 		//define 'define' to invoke the callbacks with Tone
-		root.define = function(name, deps, func){
-			//grab the one at the root
-			if (name === "Tone/core/Tone"){
-				root.Tone = func();
-			} else {
-				//for all others pass it in
-				func(root.Tone);
+		root.define = function(){
+			//the last argument is the callback
+			var lastArg = arguments[arguments.length - 1];
+			//the first argument is the dependencies or name
+			var firstArg = arguments[0];
+			if (firstArg === "Tone/core/Tone"){
+				//create the root object
+				root.Tone = lastArg();
+			} else if (typeof lastArg === "function"){
+				//if it's not the root, pass in the root
+				//as the parameter
+				lastArg(root.Tone);
 			}
 		};
 	}
