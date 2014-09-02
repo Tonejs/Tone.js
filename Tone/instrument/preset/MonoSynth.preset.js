@@ -98,6 +98,75 @@ define(["Tone/core/Tone", "Tone/instrument/MonoSynth"], function(Tone){
 				"min" : 2000,
 				"max" : 5000
 			}
+		},
+		"Pizz" : {
+			"portamento" : 0.00,
+			"oscType" : "square",
+			"filter" : {
+				"Q" : 2,
+				"type" : "highpass",
+				"rolloff" : -24
+			},
+			"envelope" : {
+				"attack" : 0.01,
+				"decay" : 0.2,
+				"sustain" : 0.0,
+				"release" : 0.2
+			},
+			"filterEnvelope" : {
+				"attack" : 0.01,
+				"decay" : 0.1,
+				"sustain" : 0.0,
+				"release" : 0.1,
+				"min" : 900,
+				"max" : 500
+			}
+		},
+		"Kick" : {
+			"portamento" : 0.00,
+			"oscType" : "square",
+			"filter" : {
+				"Q" : 2,
+				"type" : "bandpass",
+				"rolloff" : -12
+			},
+			"envelope" : {
+				"attack" : 0.01,
+				"decay" : 0.2,
+				"sustain" : 0.0,
+				"release" : 0.2
+			},
+			"filterEnvelope" : {
+				"attack" : 0.01,
+				"decay" : 0.2,
+				"sustain" : 1,
+				"release" : 0.4,
+				"min" : 3000,
+				"max" : 30
+			}
+		},
+		"LaserSteps" : {
+			"portamento" : 0.00,
+			"oscType" : "sawtooth",
+			"filter" : {
+				"Q" : 2,
+				"type" : "bandpass",
+				"rolloff" : -24
+			},
+			"envelope" : {
+				"attack" : 0.01,
+				"decay" : 0.1,
+				"sustain" : 0.2,
+				"release" : 0.6
+			},
+			"filterEnvelope" : {
+				"attack" : 0.02,
+				"decay" : 0.4,
+				"sustain" : 1,
+				"release" : 0.2,
+				"min" : 0,
+				"max" : 7500
+			}
 		}
 	};
 
