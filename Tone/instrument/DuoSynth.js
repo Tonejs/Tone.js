@@ -79,11 +79,11 @@ define(["Tone/core/Tone", "Tone/instrument/MonoSynth", "Tone/component/LFO", "To
 		 *  @type {Tone.Multiply}
 		 *  @private
 		 */
-		this._frequencyRatio = new Tone.Multiply(options.voiceRatio);
+		this._harmonicity = new Tone.Multiply(options.harmonicity);
 
 		//control the two voices frequency
-		this.fan(this.frequency, this.voice0.frequency, this._frequencyRatio);
-		this._frequencyRatio.connect(this.voice1.frequency);
+		this.frequency.connect(this.voice0.frequency);
+		this.chain(this.frequency, this._harmonicity, this.voice1.frequency);
 		this._vibrato.connect(this._vibratoGain);
 		this.fan(this._vibratoGain, this.voice0.detune, this.voice1.detune);
 		this.voice0.connect(this.output);
@@ -101,7 +101,7 @@ define(["Tone/core/Tone", "Tone/instrument/MonoSynth", "Tone/component/LFO", "To
 		"vibratoRate" : 5,
 		"vibratoDelay" : 1,
 		"portamento" : 0.05,
-		"voiceRatio" : 1.5,
+		"harmonicity" : 1.5,
 		"voice0" : {
 			"volume" : -10,
 			"portamento" : 0,
@@ -183,8 +183,8 @@ define(["Tone/core/Tone", "Tone/instrument/MonoSynth", "Tone/component/LFO", "To
 	 *  set the ratio between the two oscillator
 	 *  @param {number} ratio
 	 */
-	Tone.DuoSynth.prototype.setVoiceRatio = function(ratio){
-		this._frequencyRatio.setValue(ratio);
+	Tone.DuoSynth.prototype.setHarmonicity = function(ratio){
+		this._harmonicity.setValue(ratio);
 	};
 
 	/**
@@ -232,7 +232,7 @@ define(["Tone/core/Tone", "Tone/instrument/MonoSynth", "Tone/component/LFO", "To
 	 *  @param {Object} param 
 	 */
 	Tone.DuoSynth.prototype.set = function(params){
-		if (!this.isUndef(params.voiceRatio)) this.setVoiceRatio(params.voiceRatio);
+		if (!this.isUndef(params.harmonicity)) this.setHarmonicity(params.harmonicity);
 		if (!this.isUndef(params.vibratoRate)) this.setVibratoRate(params.vibratoRate);
 		if (!this.isUndef(params.vibratoAmount)) this.setVibratoAmount(params.vibratoAmount);
 		if (!this.isUndef(params.vibratoDelay)) this.setVibratoDelay(params.vibratoDelay);
@@ -250,11 +250,13 @@ define(["Tone/core/Tone", "Tone/instrument/MonoSynth", "Tone/component/LFO", "To
 		this.frequency.dispose();
 		this._vibrato.dispose();
 		this._vibratoGain.disconnect();
+		this._harmonicity.dispose();
 		this.voice0 = null;
 		this.voice1 = null;
 		this.frequency = null;
 		this._vibrato = null;
 		this._vibratoGain = null;
+		this._harmonicity = null;
 	};
 
 	return Tone.DuoSynth;

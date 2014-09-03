@@ -12,7 +12,7 @@ define(["Tone/core/Tone", "Tone/instrument/DuoSynth"], function(Tone){
 			"vibratoRate" : 5,
 			"vibratoDelay" : 1,
 			"portamento" : 0,
-			"voiceRatio" : 1.99,
+			"harmonicity" : 1.99,
 			"voice0" : {
 				"volume" : -8,
 				"portamento" : 0,
@@ -67,7 +67,7 @@ define(["Tone/core/Tone", "Tone/instrument/DuoSynth"], function(Tone){
 			"vibratoRate" : 5,
 			"vibratoDelay" : 1,
 			"portamento" : 0.1,
-			"voiceRatio" : 1.005,
+			"harmonicity" : 1.005,
 			"voice0" : {
 				"volume" : -2,
 				"portamento" : 0,

@@ -33,7 +33,7 @@
 			    <li><a href="#filter0">Filt 0</a></li>
 			    <li><a href="#envelope1">Osc 1</a></li>
 			    <li><a href="#filter1">Filt 1</a></li>
-			    <li><a href="#presets">Presets</a></li>
+			    <li><a href="#presets">Global</a></li>
 			  </ul>
 			  <div id="envelope0">
 			  </div>
@@ -122,15 +122,26 @@
 			synth.voice1.filterEnvelope.max = scaled;
 			return scaled;
 		}, min, "end freq", "hz");
-
-
-
 		
-		//presets
+		//global
+		var harmonicity = new GUI.Slider(presets, function(val){
+			var scaled =  val * 10;
+			synth.setHarmonicity(scaled);
+			return scaled;
+		}, 1, "harmonicity");
+		var vibratoAmount = new GUI.Slider(presets, function(val){
+			synth.setVibratoAmount(val);
+			return val;
+		}, 1, "vibrato amount");
+		var vibratoRate = new GUI.Slider(presets, function(val){
+			synth.setVibratoRate(val * 10);
+			return val * 10;
+		}, 1, "vibrato rate");
 		var allPresets = [];
 		for (var name in Tone.DuoSynth.preset){
 			allPresets.push(name);
 		}
+		$("<div>", {"id" : "PresetText"}).appendTo(presets).text("presets:");
 		new GUI.DropDown(presets, allPresets, function(name){
 			setPreset(name);
 		});
@@ -173,7 +184,9 @@
 			minFilFreq1.render(minVal1);
 			var maxVal1 = Math.pow(Math.max((synth.voice1.filterEnvelope.max - min) / (max - min), 0), 0.5);
 			maxFilFreq1.render(maxVal1);
-			
+			harmonicity.render(preset.harmonicity / 10);
+			vibratoAmount.render(preset.vibratoAmount);
+			vibratoRate.render(preset.vibratoRate / 10);
 			// osc1Ratio.render(synth.)
 		}
 
@@ -215,9 +228,15 @@
 		background-color: black;
 	}
 
+	#presets #PresetText {
+		width: 100%;
+		text-align: center;
+		margin-top: 20px;
+	}
+
 	#presets .DropDown {
 		margin: auto;
-		margin-top: 50px;
+		margin-top: 5px;
 	}
 	</style>
 </body>
