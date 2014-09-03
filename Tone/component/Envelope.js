@@ -97,8 +97,8 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 		if (!this.isUndef(params.decay)) this.setDecay(params.decay);
 		if (!this.isUndef(params.sustain)) this.setSustain(params.sustain);
 		if (!this.isUndef(params.release)) this.setRelease(params.release);
-		if (!this.isUndef(params.min)) this.min = params.min;
-		if (!this.isUndef(params.max)) this.max = params.max;
+		if (!this.isUndef(params.min)) this.setMin(params.min);
+		if (!this.isUndef(params.max)) this.setMax(params.max);
 	};
 
 	/**
@@ -147,6 +147,8 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	 */
 	Tone.Envelope.prototype.setMin = function(min){
 		this.min = min;
+		//should move the signal to the min
+		this._control.setValueAtTime(this.min, this.now());
 	};
 
 	/**
