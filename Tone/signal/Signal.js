@@ -160,7 +160,7 @@ define(["Tone/core/Tone"], function(Tone){
 	 */
 	Tone.Signal.prototype.setTargetAtTime = function(value, startTime, timeConstant){
 		value *= this._syncRatio;
-		this.output.gain.setTargetAtTime(value, this.toSeconds(startTime), timeConstant);
+		this._scalar.gain.setTargetAtTime(value, this.toSeconds(startTime), timeConstant);
 	};
 
 	/**
