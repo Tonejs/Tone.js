@@ -1,15 +1,15 @@
 define(["Tone/core/Tone", "Tone/component/Envelope", "Tone/source/Oscillator", 
-	"Tone/signal/Signal", "Tone/component/Filter", "Tone/signal/Add", "Tone/source/Source"], 
+	"Tone/signal/Signal", "Tone/component/Filter", "Tone/signal/Add", "Tone/instrument/Monophonic"], 
 function(Tone){
 
 	"use strict";
 
 	/**
 	 *  @class  the MonoSynth is a single oscillator, monophonic synthesizer
-	 *          with vibrato, portamento, and a detuned unison
+	 *          with a filter, and two envelopes (on the filter and the amplitude)
 	 *
 	 *  @constructor
-	 *  @extends {Tone}
+	 *  @extends {Tone.Monophonic}
 	 *  @param {Object} options the options available for the synth 
 	 *                          see defaults below
 	 */
@@ -17,18 +17,7 @@ function(Tone){
 
 		//get the defaults
 		options = this.defaultArg(options, Tone.MonoSynth.defaults);
-
-		/**
-		 *  the output
-		 *  @type {GainNode}
-		 */
-		this.output = this.context.createGain();
-
-		/**
-		 *  the portamento (glide) time between notes in seconds
-		 *  @type {number}
-		 */
-		this.portamento = this.toSeconds(options.portamento);
+		Tone.Monophonic.call(this, options);
 
 		/**
 		 *  the first oscillator
@@ -85,14 +74,12 @@ function(Tone){
 		this._amplitude.connect(this.output);
 	};
 
-	Tone.extend(Tone.MonoSynth);
+	Tone.extend(Tone.MonoSynth, Tone.Monophonic);
 
 	/**
 	 *  @static
 	 */
 	Tone.MonoSynth.defaults = {
-		/** @type {Tone.Time} the glide time between notes */
-		"portamento" : 0.05,
 		/** @type {string} the type of the first oscillator */
 		"oscType" : "square",
 		/** @type {Object} the filter properties */
@@ -122,35 +109,20 @@ function(Tone){
 
 	/**
 	 *  start the attack portion of the envelope
-	 *  @param {string|number} note if a string, either a note name
-	 *                              (i.e. C4, A#3) or a number in hertz
 	 *  @param {Tone.Time=} [time=now] the time the attack should start
-	 *  @param {Tone.Time=} duration if provided, a release will trigger
-	 *                               after the duration. 
+	 *  @param {number=} velocity the velocity of the note (0-1)
 	 */
-	Tone.MonoSynth.prototype.triggerAttack = function(note, time, duration){
+	Tone.MonoSynth.prototype.triggerEnvelopeAttack = function(time, velocity){
 		//the envelopes
-		this.envelope.triggerAttack(time);
-		this.filterEnvelope.triggerAttack(time);
-		//the port glide
-		if (this.portamento > 0){
-			var currentNote = this.frequency.getValue();
-			time = this.toSeconds(time);
-			this.frequency.setValueAtTime(currentNote, time);
-			this.frequency.exponentialRampToValueAtTime(note, time + this.portamento);
-		} else {
-			this.frequency.setValueAtTime(note, time);
-		}
-		if (!this.isUndef(duration)){
-			this.triggerRelease(this.toSeconds(time) + this.toSeconds(duration));
-		}
+		this.envelope.triggerAttack(time, velocity);
+		this.filterEnvelope.triggerAttack(time);		
 	};
 
 	/**
 	 *  start the release portion of the envelope
 	 *  @param {Tone.Time=} [time=now] the time the release should start
 	 */
-	Tone.MonoSynth.prototype.triggerRelease = function(time){
+	Tone.MonoSynth.prototype.triggerEnvelopeRelease = function(time){
 		this.envelope.triggerRelease(time);
 		this.filterEnvelope.triggerRelease(time);
 	};
@@ -164,21 +136,6 @@ function(Tone){
 	};
 
 	/**
-	 *  set the glide time between notes
-	 *  @param {Tone.Time} port glide time
-	 */
-	Tone.MonoSynth.prototype.setPortamento = function(port){
-		this.portamento = this.toSeconds(port);
-	};
-
-	/**
-	 *  set the volume of the instrument.
-	 *  borrowed from {@link Tone.Source}
-	 *  @function
-	 */
-	Tone.MonoSynth.prototype.setVolume = Tone.Source.prototype.setVolume;
-
-	/**
 	 *  set the members at once
 	 *  @param {Object} params all of the parameters as an object.
 	 *                         params for envelope and filterEnvelope 
@@ -186,28 +143,25 @@ function(Tone){
 	 */
 	Tone.MonoSynth.prototype.set = function(params){
 		if (!this.isUndef(params.detune)) this.detune.setValue(params.detune);
-		if (!this.isUndef(params.volume)) this.setVolume(params.volume);
-		if (!this.isUndef(params.portamento)) this.setPortamento(params.portamento);
 		if (!this.isUndef(params.oscType)) this.setOscType(params.oscType);
 		if (!this.isUndef(params.filterEnvelope)) this.filterEnvelope.set(params.filterEnvelope);
 		if (!this.isUndef(params.envelope)) this.envelope.set(params.envelope);
 		if (!this.isUndef(params.filter)) this.filter.set(params.filter);
+		Tone.Monophonic.prototype.set.call(this, params);
 	};
 
 	/**
 	 *  clean up
 	 */
 	Tone.MonoSynth.prototype.dispose = function(){
-		Tone.prototype.dispose.call(this);
+		Tone.Monophonic.prototype.dispose.call(this);
 		this.oscillator.dispose();
 		this.envelope.dispose();
 		this.filterEnvelope.dispose();
-		this.frequency.dispose();
 		this.filter.dispose();
 		this.detune.dispose();
 		this._unison.dispose();
 		this.oscillator = null;
-		this.frequency = null;
 		this.filterEnvelope = null;
 		this.envelope = null;
 		this.filter = null;

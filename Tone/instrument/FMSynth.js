@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/instrument/MonoSynth", "Tone/signal/Signal", "Tone/signal/Multiply"], 
+define(["Tone/core/Tone", "Tone/instrument/MonoSynth", "Tone/signal/Signal", "Tone/signal/Multiply", "Tone/instrument/Monophonic"], 
 	function(Tone){
 
 	/**
@@ -6,19 +6,14 @@ define(["Tone/core/Tone", "Tone/instrument/MonoSynth", "Tone/signal/Signal", "To
 	 *          carrier and the second is the modulator.
 	 *
 	 *  @constructor
-	 *  @extends {Tone}
+	 *  @extends {Tone.Monophonic}
 	 *  @param {Object} options the options available for the synth 
 	 *                          see defaults below
 	 */
 	Tone.FMSynth = function(options){
 
 		options = this.defaultArg(options, Tone.FMSynth.defaults);
-
-		/**
-		 *  the output
-		 *  @type {GainNode}
-		 */
-		this.output = this.context.createGain();
+		Tone.Monophonic.call(this, options);
 
 		/**
 		 *  the first voice
@@ -33,16 +28,6 @@ define(["Tone/core/Tone", "Tone/instrument/MonoSynth", "Tone/signal/Signal", "To
 		 */
 		this.modulator = new Tone.MonoSynth(options.modulator);
 		this.modulator.setVolume(-10);
-
-		/**
-		 *  scale the modulated frequency
-		 */
-
-		/**
-		 *  the glide time between notes
-		 *  @type {number}
-		 */
-		this.portamento = this.toSeconds(options.portamento);
 
 		/**
 		 *  the frequency control
@@ -84,14 +69,13 @@ define(["Tone/core/Tone", "Tone/instrument/MonoSynth", "Tone/signal/Signal", "To
 		this.carrier.connect(this.output);
 	};
 
-	Tone.extend(Tone.FMSynth);
+	Tone.extend(Tone.FMSynth, Tone.Monophonic);
 
 	/**
 	 *  @static
 	 *  @type {Object}
 	 */
 	Tone.FMSynth.defaults = {
-		"portamento" : 0.0,
 		"harmonicity" : 3,
 		"modulationIndex" : 10,
 		"carrier" : {
@@ -137,38 +121,25 @@ define(["Tone/core/Tone", "Tone/instrument/MonoSynth", "Tone/signal/Signal", "To
 	/**
 	 *  trigger the attack portion of the note
 	 *  
-	 *  @param  {string|number} note the note frequency or note name
 	 *  @param  {Tone.Time=} [time=now] the time the note will occur
-	 *  @param {Tone.Time=} duration if provided, a release will trigger
-	 *                               after the duration. 
+	 *  @param {number=} velocity the velocity of the note
 	 */
-	Tone.FMSynth.prototype.triggerAttack = function(note, time, duration){
+	Tone.FMSynth.prototype.triggerEnvelopeAttack = function(time, velocity){
 		//the port glide
 		time = this.toSeconds(time);
 		//the envelopes
-		this.carrier.envelope.triggerAttack(time);
+		this.carrier.envelope.triggerAttack(time, velocity);
 		this.modulator.envelope.triggerAttack(time);
 		this.carrier.filterEnvelope.triggerAttack(time);
 		this.modulator.filterEnvelope.triggerAttack(time);
-		if (this.portamento > 0){
-			var currentNote = this.frequency.getValue();
-			this.frequency.setValueAtTime(currentNote, time);
-			this.frequency.exponentialRampToValueAtTime(note, time + this.portamento);
-		} else {
-			this.frequency.setValueAtTime(note, time);
-		}
-		if (!this.isUndef(duration)){
-			this.triggerRelease(time + this.toSeconds(duration));
-		}
 	};
 
 	/**
 	 *  trigger the release portion of the note
 	 *  
-	 *  @param  {string|number} note the note frequency or note name
 	 *  @param  {Tone.Time=} [time=now] the time the note will release
 	 */
-	Tone.FMSynth.prototype.triggerRelease = function(time){
+	Tone.FMSynth.prototype.triggerEnvelopeRelease = function(time){
 		this.carrier.triggerRelease(time);
 		this.modulator.triggerRelease(time);
 	};
@@ -190,36 +161,22 @@ define(["Tone/core/Tone", "Tone/instrument/MonoSynth", "Tone/signal/Signal", "To
 	};
 
 	/**
-	 *  the glide time between frequencies
-	 *  @param {Tone.Time} port
-	 */
-	Tone.FMSynth.prototype.setPortamento = function(port){
-		this.portamento = this.toSeconds(port);
-	};
-
-	/**
-	 *  set the volume of the instrument.
-	 *  borrowed from {@link Tone.Source}
-	 *  @function
-	 */
-	Tone.FMSynth.prototype.setVolume = Tone.Source.prototype.setVolume;
-
-	/**
 	 *  bulk setter
 	 *  @param {Object} param 
 	 */
 	Tone.FMSynth.prototype.set = function(params){
 		if (!this.isUndef(params.harmonicity)) this.setHarmonicity(params.harmonicity);
 		if (!this.isUndef(params.modulationIndex)) this.setModulationIndex(params.modulationIndex);
-		if (!this.isUndef(params.portamento)) this.setPortamento(params.portamento);
 		if (!this.isUndef(params.carrier)) this.carrier.set(params.carrier);
 		if (!this.isUndef(params.modulator)) this.modulator.set(params.modulator);
+		Tone.Monophonic.prototype.set.call(this, params);
 	};
 
 	/**
 	 *  clean up
 	 */
 	Tone.FMSynth.dispose = function(){
+		Tone.Monophonic.prototype.dispose.call(this);
 		this.carrier.dispose();
 		this.modulator.dispose();
 		this.frequency.dispose();

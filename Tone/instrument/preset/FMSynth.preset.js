@@ -115,8 +115,8 @@ define(["Tone/core/Tone", "Tone/instrument/FMSynth"], function(Tone){
 		},
 		"ScratchAttack" : {
 			"portamento" : 0,
-			"harmonicity" : 0.5,
-			"modulationIndex" : 31,
+			"harmonicity" : 10,
+			"modulationIndex" : 50,
 			"carrier" : {
 				"volume" : 0,
 				"portamento" : 0,
@@ -129,7 +129,7 @@ define(["Tone/core/Tone", "Tone/instrument/FMSynth"], function(Tone){
 				"envelope" : {
 					"attack" : 0.08,
 					"decay" : 0.3,
-					"sustain" : 0.35,
+					"sustain" : 0,
 					"release" : 1.2
 				},
 				"filterEnvelope" : {
@@ -151,7 +151,7 @@ define(["Tone/core/Tone", "Tone/instrument/FMSynth"], function(Tone){
 					"rolloff" : -48
 				},
 				"envelope" : {
-					"attack" : 0.2,
+					"attack" : 0.1,
 					"decay" : 0.2,
 					"sustain" : 0.3,
 					"release" : 0.01
