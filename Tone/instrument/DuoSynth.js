@@ -143,13 +143,15 @@ define(["Tone/core/Tone", "Tone/instrument/MonoSynth", "Tone/component/LFO", "To
 	 *  
 	 *  @param  {string|number} note the note frequency or note name
 	 *  @param  {Tone.Time=} [time=now] the time the note will occur
+	 *  @param {Tone.Time=} duration if provided, a release will trigger
+	 *                               after the duration. 
 	 */
-	Tone.DuoSynth.prototype.triggerAttack = function(note, time){
+	Tone.DuoSynth.prototype.triggerAttack = function(note, time, duration){
 		//the envelopes
 		this.voice0.envelope.triggerAttack(time);
 		this.voice1.envelope.triggerAttack(time);
-		this.voice0.filterEnvelope.triggerExponentialAttack(time);
-		this.voice1.filterEnvelope.triggerExponentialAttack(time);
+		this.voice0.filterEnvelope.triggerAttack(time);
+		this.voice1.filterEnvelope.triggerAttack(time);
 		//the port glide
 		time = this.toSeconds(time);
 		if (this.portamento > 0){
@@ -165,6 +167,9 @@ define(["Tone/core/Tone", "Tone/instrument/MonoSynth", "Tone/component/LFO", "To
 			//50 ms ramp to full vibrato
 			this._vibratoGain.gain.setValueAtTime(0, time + this._vibratoDelay - 0.05);
 			this._vibratoGain.gain.linearRampToValueAtTime(this._vibratoAmount, time + this._vibratoDelay);
+		}
+		if (!this.isUndef(duration)){
+			this.triggerRelease(this.toSeconds(time) + this.toSeconds(duration));
 		}
 	};
 

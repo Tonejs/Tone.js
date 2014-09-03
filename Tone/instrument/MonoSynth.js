@@ -125,11 +125,13 @@ function(Tone){
 	 *  @param {string|number} note if a string, either a note name
 	 *                              (i.e. C4, A#3) or a number in hertz
 	 *  @param {Tone.Time=} [time=now] the time the attack should start
+	 *  @param {Tone.Time=} duration if provided, a release will trigger
+	 *                               after the duration. 
 	 */
-	Tone.MonoSynth.prototype.triggerAttack = function(note, time){
+	Tone.MonoSynth.prototype.triggerAttack = function(note, time, duration){
 		//the envelopes
 		this.envelope.triggerAttack(time);
-		this.filterEnvelope.triggerExponentialAttack(time);
+		this.filterEnvelope.triggerAttack(time);
 		//the port glide
 		if (this.portamento > 0){
 			var currentNote = this.frequency.getValue();
@@ -139,6 +141,9 @@ function(Tone){
 		} else {
 			this.frequency.setValueAtTime(note, time);
 		}
+		if (!this.isUndef(duration)){
+			this.triggerRelease(this.toSeconds(time) + this.toSeconds(duration));
+		}
 	};
 
 	/**
@@ -147,7 +152,7 @@ function(Tone){
 	 */
 	Tone.MonoSynth.prototype.triggerRelease = function(time){
 		this.envelope.triggerRelease(time);
-		this.filterEnvelope.triggerExponentialRelease(time);
+		this.filterEnvelope.triggerRelease(time);
 	};
 
 	/**

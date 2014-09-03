@@ -74,8 +74,10 @@ function(Tone){
 	 *  trigger the attack
 	 *  @param  {string|number|Object} value the value of the note to start
 	 *  @param  {Tone.Time=} [time=now]  the start time of the note
+	 *  @param {Tone.Time=} duration if provided, a release will trigger
+	 *                               after the duration. 
 	 */
-	Tone.PolySynth.prototype.triggerAttack = function(value, time){
+	Tone.PolySynth.prototype.triggerAttack = function(value, time, duration){
 		var stringified = JSON.stringify(value);
 		if (this._activeVoices[stringified]){
 			this._activeVoices[stringified].triggerAttack(value, time);
@@ -83,6 +85,9 @@ function(Tone){
 			var voice = this._freeVoices.shift();
 			voice.triggerAttack(value, time);
 			this._activeVoices[stringified] = voice;
+		}
+		if (!this.isUndef(duration)){
+			this.triggerRelease(value, this.toSeconds(time) + this.toSeconds(duration));
 		}
 	};
 

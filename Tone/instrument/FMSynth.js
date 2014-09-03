@@ -139,21 +139,26 @@ define(["Tone/core/Tone", "Tone/instrument/MonoSynth", "Tone/signal/Signal", "To
 	 *  
 	 *  @param  {string|number} note the note frequency or note name
 	 *  @param  {Tone.Time=} [time=now] the time the note will occur
+	 *  @param {Tone.Time=} duration if provided, a release will trigger
+	 *                               after the duration. 
 	 */
-	Tone.FMSynth.prototype.triggerAttack = function(note, time){
+	Tone.FMSynth.prototype.triggerAttack = function(note, time, duration){
+		//the port glide
+		time = this.toSeconds(time);
 		//the envelopes
 		this.carrier.envelope.triggerAttack(time);
 		this.modulator.envelope.triggerAttack(time);
-		this.carrier.filterEnvelope.triggerExponentialAttack(time);
-		this.modulator.filterEnvelope.triggerExponentialAttack(time);
-		//the port glide
-		time = this.toSeconds(time);
+		this.carrier.filterEnvelope.triggerAttack(time);
+		this.modulator.filterEnvelope.triggerAttack(time);
 		if (this.portamento > 0){
 			var currentNote = this.frequency.getValue();
 			this.frequency.setValueAtTime(currentNote, time);
 			this.frequency.exponentialRampToValueAtTime(note, time + this.portamento);
 		} else {
 			this.frequency.setValueAtTime(note, time);
+		}
+		if (!this.isUndef(duration)){
+			this.triggerRelease(time + this.toSeconds(duration));
 		}
 	};
 
