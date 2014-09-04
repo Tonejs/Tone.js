@@ -5,7 +5,7 @@ module.exports = function(grunt) {
 		//pkg: grunt.file.readJSON("package.json"),
 		jsdoc : {
 			src : {
-				src: ["../Tone/**/*.js", "../README.md"], 
+				src: ["../Tone/**/*.js", "!../Tone/*/preset/*", "../README.md"], 
 				options: {
 					destination: "../doc",
 					template : "./doc_config/template",
@@ -13,15 +13,6 @@ module.exports = function(grunt) {
 					private : false
 				}
 			},
-			dist : {
-				src: ["../Tone.js"], 
-				options: {
-					destination: "../doc",
-					template : "./doc_config/template",
-					configure : "./doc_config/template/jsdoc.conf.json",
-					private : false
-				}
-			}
 		},
 		requirejs : {
 			compile: {
@@ -31,38 +22,59 @@ module.exports = function(grunt) {
 					out: "./Tone.js.tmp",
 					optimize : "none"
 				}
+			},
+			min: {
+				options: {
+					baseUrl: "../",
+					name : "main",
+					out: "./Tone.min.js.tmp",
+					optimize : "uglify2"
+				}
 			}
 		},
 		copy : {
 			npm : {
 				files : [{
 					expand : true,
-					src: ["../Tone.js", "../Tone/**", "../README.md"], 
-					dest: "./npm/Tone.js"
+					src: ["../build/Tone.js", "../build/Tone.min.js", "../build/Tone.Presets.js", "../README.md"], 
+					dest: "./npm"
+				}, {
+					src : ["../Tone/**"],
+					dest : "./npm/Tone/"
+				}]
+			},
+			build : {
+				files : [{
+					expand : true,
+					src: ["../Tone.js"], 
+					dest: "../build/Tone.js"
 				}]
 			}
 		},
 		concat: {
 			dist: {
 				options: {
-					// Replace all "use strict" statements in the code with a single one at the top
 					banner: "require([",
 					separator: ",",
 					process: function(src, filepath) {
-						// remove the ".js". h@ckz0rs.
 						return "\"" + filepath.substring(3,(filepath.length-3)) + "\"";
 					},
 					footer: "], function(){});",
 
 				},
 				files: {
-					"../main.js": ["../Tone/**/*.js"],
+					//exclude presets
+					"../main.js" : ["../Tone/**/*.js", "!../Tone/*/preset/*"],
+				}
+			},
+			presets : {
+				files: {
+					"../build/Tone.Presets.js" : ["../Tone/**/preset/*.js"],
 				}
 			},
 			removeRequireString: {
 				options: {
 					process: function(src, filepath) {
-						// remove the ".js". h@ckz0rs.
 						var withoutRequire = src.substr(0, src.indexOf("require([") - 1);
 						return withoutRequire;
 					},
@@ -70,13 +82,25 @@ module.exports = function(grunt) {
 				files: {
 					"../Tone.js": ["./Tone.js.tmp"],
 				}
+			}, 
+			removeRequireStringMin: {
+				options: {
+					process: function(src, filepath) {
+						var withoutRequire = src.substr(0, src.indexOf("require([") - 1);
+						return withoutRequire;
+					},
+				},
+				files: {
+					"../build/Tone.min.js": ["./Tone.min.js.tmp"],
+				}
 			}
 		},
 		clean: {
 			options: {
 				force: true,
 			},
-			dist: ["../main.js","./Tone.js.tmp"]
+			dist: ["../main.js","./Tone.js.tmp"],
+			min: ["../main.js","./Tone.min.js.tmp"],
 		}
 	});
 
@@ -90,7 +114,10 @@ module.exports = function(grunt) {
 	// Default task(s).
 	grunt.registerTask("docs", ["jsdoc:src"]);
 	grunt.registerTask("npm", ["copy:npm"]);
-	grunt.registerTask("dist", ["concat:dist","requirejs:compile","concat:removeRequireString","clean:dist","jsdoc:dist"]);
-	grunt.registerTask("build", ["concat:dist","requirejs:compile","concat:removeRequireString","clean:dist"]);
+	grunt.registerTask("presets", ["concat:presets"]);
+	grunt.registerTask("min", ["concat:dist", "requirejs:min", "concat:removeRequireStringMin", "clean:min"]);
+	grunt.registerTask("build", ["concat:dist","requirejs:compile","concat:removeRequireString","clean:dist", "copy:build"]);
+	grunt.registerTask("buildall", ["build", "min", "presets"]);
+	grunt.registerTask("dist", ["buildall", "docs", "npm"]);
 	
 };
