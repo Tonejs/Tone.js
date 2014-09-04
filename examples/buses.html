@@ -1,0 +1,113 @@
+<html>
+<head>
+	<title>PLAYER</title>
+	
+	<script type="text/javascript" src="../deps/jquery.min.js"></script>
+	<script type="text/javascript" src="../deps/jquery-ui.js"></script>
+	<script type="text/javascript" src="../deps/jquery.ui.touch-punch.js"></script>
+	<script type="text/javascript" src="../Tone.js"></script>
+	<script type="text/javascript" src="./Widgets.js"></script>
+	<script type="text/javascript" src="./ExampleList.js"></script>
+	<link rel="stylesheet" type="text/css" href="./style/widgets.css">
+	<link rel="stylesheet" type="text/css" href="./style/jquery-ui.css">
+	<script type="text/javascript" src="../deps/qwerty-hancock.js"></script>
+
+</head>
+<body>
+	<div id="Container">
+		<div id="Explanation">
+			Buses
+			<br>
+			<br>
+			Buses allow you to send signal using named sends and receives. Buses
+			make it simple to send multiple signals to one place or one signal to
+			multiple places. 
+		</div>
+		<div id="Content">
+			
+		</div>
+	</div>
+	<script type="text/javascript">
+
+	 	/* globals Tone, GUI */
+
+		var synth = new Tone.MonoSynth();
+		var dry = Tone.context.createGain();
+		synth.connect(dry);
+		dry.toMaster();
+		synth.setVolume(-10);
+
+		var chorusSend = synth.send("chorus");
+		chorusSend.gain.value = 0;
+		var phaserSend = synth.send("phaser");
+		phaserSend.gain.value = 0;
+		var autowahSend = synth.send("autowah");
+		autowahSend.gain.value = 0;
+
+		//make some effects
+		var chorus = new Tone.Chorus();
+		chorus.receive("chorus");
+		chorus.toMaster();
+		var phaser = new Tone.Phaser();
+		phaser.receive("phaser");
+		phaser.toMaster();
+		var autoWah = new Tone.AutoWah();
+		autoWah.receive("autowah");
+		autoWah.toMaster();
+		
+		// GUI //
+
+		new GUI.StartButton(Tone.startMobile);
+		new GUI.TopBar(Tone);
+
+		var content = $("#Content");
+
+		//sliders
+		var drySlider = new GUI.Slider(content, function(val){
+			dry.gain.value = val;
+		}, 1, "dry");
+		drySlider.render(1);
+		new GUI.Slider(content, function(val){
+			chorusSend.gain.value = val;
+		}, 0, "chorus");
+		new GUI.Slider(content, function(val){
+			autowahSend.gain.value = val;
+		}, 0, "autowah");
+		new GUI.Slider(content, function(val){
+			phaserSend.gain.value = val;
+		}, 0, "phaser");
+
+		//keyboard
+		$("<div>", {"id" : "Keyboard"}).appendTo(content);
+		var keyboard = new QwertyHancock({
+			id: "Keyboard",
+			width: 200,
+			height: 75,
+			octaves: 1,
+			startNote: "C4",
+			whiteNotesColour: "white",
+			blackNotesColour: "black",
+			hoverColour: "#f3e939"
+		});
+		keyboard.keyDown = function(note, freq){
+			synth.triggerAttack(freq);
+		};
+		keyboard.keyUp = function(){
+			synth.triggerRelease();
+		};
+		
+	</script>
+	<style type="text/css">
+	#Content {
+		width: 200px;
+		height: 250px;
+	}
+	.Slider {
+		margin-bottom: 10px;
+	}
+	#Keyboard {
+		background-color: black;
+	}
+	</style>
+</body>
+</html>
