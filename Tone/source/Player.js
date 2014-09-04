@@ -148,6 +148,9 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 				this.state = Tone.Source.State.STARTED;
 				//default args
 				offset = this.defaultArg(offset, 0);
+				if (this.loop){
+					offset = this.loopStart;
+				}
 				duration = this.defaultArg(duration, this._buffer.duration - offset);
 				//make the source
 				this._source = this.context.createBufferSource();

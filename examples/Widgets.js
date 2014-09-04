@@ -289,6 +289,18 @@ GUI.Checkbox.prototype.disable = function() {
 	this.element.button("disable");
 };
 
+GUI.Checkbox.prototype.check = function(bool){
+	if (bool){
+		this.element.addClass("pressed");
+	} else {
+		this.element.removeClass("pressed");
+	}
+};
+
+GUI.Checkbox.prototype.isChecked = function(){
+	return this.element.hasClass("pressed");
+};
+
 /**
  *  a start stop button
  */

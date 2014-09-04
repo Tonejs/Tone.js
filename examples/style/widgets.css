@@ -302,3 +302,11 @@
 .DropDown {
 	width: 120px;
 }
+
+/* CHECKBOX */
+
+.Checkbox.pressed {
+	border: 1px solid black;
+	background: white!important;
+	color: black;
+}

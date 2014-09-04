@@ -1,10 +1,12 @@
 var ExampleList = {
 	"Core" : {
-		// "Notes / Scores" : "score",
+		"Transport" : "stepSequencer",
 		"Notes / Scores" : "score"
 	},
 	"Sources" : {
 		"Oscillators" : "oscillator",
+		"Noise" : "noises",
+		"Player" : "player"
 	},
 	"Components" : {
 		"Envelope" : "envelope",
@@ -15,6 +17,7 @@ var ExampleList = {
 	},
 	"Effects" : {
 		"AutoPanner" : "autoPanner",
+		"PingPongDelay" : "pingPongDelay"
 	},
 	"Instruments" : {
 		"MonoSynth" : "monoSynth",
