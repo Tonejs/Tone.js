@@ -1,4 +1,7 @@
 define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/signal/Signal", "Tone/signal/Multiply"], function(Tone){
+
+	"use strict";
+	
 	/**
 	 * Feedback Effect (a sound loop between an audio source and its own output)
 	 *

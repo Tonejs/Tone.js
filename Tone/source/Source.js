@@ -1,4 +1,7 @@
 define(["Tone/core/Tone", "Tone/core/Transport"], function(Tone){
+
+	"use strict";
+	
 	/**
 	 *  @class  Base class for sources.
 	 *          Sources have start/stop/pause and 

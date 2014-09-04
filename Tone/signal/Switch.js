@@ -1,5 +1,7 @@
 define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Threshold"], function(Tone){
 
+	"use strict";
+
 	/**
 	 *  @class  When the gate is set to 0, the input signal does not pass through to the output. 
 	 *          If the gate is set to 1, the input signal passes through.

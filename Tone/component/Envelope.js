@@ -1,5 +1,7 @@
 define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 
+	"use strict";
+
 	/**
 	 *  Envelope 
 	 *  ADR envelope generator attaches to an AudioParam or AudioNode

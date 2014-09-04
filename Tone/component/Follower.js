@@ -1,6 +1,8 @@
 define(["Tone/core/Tone", "Tone/signal/Abs", "Tone/signal/Negate", "Tone/signal/Multiply", "Tone/signal/Signal"], 
 function(Tone){
 
+	"use strict";
+
 	/**
 	 *  @class  Follow the envelope of the incoming signal. 
 	 *          Careful with small (< 0.02) attack or decay values. 

@@ -1,6 +1,8 @@
 define(["Tone/core/Tone", "Tone/instrument/MonoSynth", "Tone/source/Source"], 
 function(Tone){
 
+	"use strict";
+
 	/**
 	 *  @class  Creates a polyphonic synthesizer out of 
 	 *          the monophonic voice which is passed in. 

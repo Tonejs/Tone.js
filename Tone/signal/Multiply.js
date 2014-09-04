@@ -1,5 +1,7 @@
 define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 
+	"use strict";
+
 	/**
 	 *  @class  Multiply the incoming signal by some factor
 	 *

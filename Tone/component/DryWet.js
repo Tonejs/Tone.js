@@ -1,5 +1,7 @@
 define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Scale"], function(Tone){
 
+	"use strict";
+
 	/**
 	 * @class  dry/wet knob.
 	 *         equal power fading control values:

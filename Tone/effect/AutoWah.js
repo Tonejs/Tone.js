@@ -1,5 +1,7 @@
 define(["Tone/core/Tone", "Tone/component/Follower", "Tone/signal/ScaleExp", "Tone/effect/Effect"], function(Tone){
 
+	"use strict";
+
 	/**
 	 *  @class  AutoWah connects an envelope follower to a bandpass filter.
 	 *          Some inspiration from Tuna.js https://github.com/Dinahmoe/tuna

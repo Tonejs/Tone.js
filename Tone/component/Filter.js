@@ -1,5 +1,7 @@
 define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 
+	"use strict";
+
 	/**
 	 *  @class  Filter object which allows for all of the same native methods
 	 *          as the BiquadFilter (with AudioParams implemented as Tone.Signals)

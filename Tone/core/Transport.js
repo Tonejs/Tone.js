@@ -1,6 +1,8 @@
 define(["Tone/core/Tone", "Tone/core/Clock", "Tone/signal/Signal"], 
 function(Tone){
 
+	"use strict";
+
 	/**
 	 *  @class  oscillator-based transport allows for simple musical timing
 	 *          supports tempo curves and time changes

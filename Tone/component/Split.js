@@ -1,5 +1,7 @@
 define(["Tone/core/Tone"], function(Tone){
 
+	"use strict";
+
 	/**
 	 *	@class  Split the incoming signal into left and right channels
 	 *	

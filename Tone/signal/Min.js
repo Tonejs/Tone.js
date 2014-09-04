@@ -1,5 +1,7 @@
 define(["Tone/core/Tone", "Tone/signal/LessThan", "Tone/signal/Selector", "Tone/signal/Signal"], function(Tone){
 
+	"use strict";
+
 	/**
 	 * 	@class  the output signal is the lesser of the incoming signal and min
 	 * 	

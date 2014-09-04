@@ -1,5 +1,7 @@
 define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/LFO", "Tone/component/Panner"], function(Tone){
 
+	"use strict";
+
 	/**
 	 *  AutoPanner is a Tone.Panner with an LFO connected to the pan amount
 	 *

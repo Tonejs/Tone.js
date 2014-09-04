@@ -1,6 +1,8 @@
 define(["Tone/core/Tone", "Tone/signal/Selector", "Tone/signal/Negate", "Tone/signal/LessThan", "Tone/signal/Signal"], 
 function(Tone){
 
+	"use strict";
+
 	/**
 	 *  @class return the absolute value of an incoming signal
 	 *

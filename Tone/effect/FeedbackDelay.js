@@ -1,4 +1,7 @@
 define(["Tone/core/Tone", "Tone/effect/FeedbackEffect", "Tone/signal/Signal"], function(Tone){
+
+	"use strict";
+	
 	/**
 	 *  A feedback delay
 	 *

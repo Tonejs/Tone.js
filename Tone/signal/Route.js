@@ -1,5 +1,7 @@
 define(["Tone/core/Tone", "Tone/signal/Equal", "Tone/signal/Signal"], function(Tone){
 
+	"use strict";
+
 	/**
 	 *  @class Route a single input to the specified output
 	 *

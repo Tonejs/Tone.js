@@ -1,5 +1,7 @@
 define(["Tone/core/Tone", "Tone/signal/EqualZero", "Tone/signal/Add", "Tone/signal/Signal"], function(Tone){
 
+	"use strict";
+
 	/**
 	 *  @class  Output 1 if the signal is equal to the value, otherwise outputs 0
 	 *  

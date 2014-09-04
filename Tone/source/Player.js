@@ -1,4 +1,6 @@
 define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
+
+	"use strict";
 	
 	/**
 	 *  @class  Audio file player with start, loop, stop.

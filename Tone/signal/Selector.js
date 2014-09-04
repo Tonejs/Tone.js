@@ -1,5 +1,7 @@
 define(["Tone/core/Tone", "Tone/signal/Equal", "Tone/signal/Signal"], function(Tone){
 
+	"use strict";
+
 	/**
 	 *  @class Selector between any number of inputs, sending the one 
 	 *         selected by the gate signal to the output

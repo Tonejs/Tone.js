@@ -1,5 +1,7 @@
 define(["Tone/core/Tone", "Tone/core/Master"], function(Tone){
 
+	"use strict";
+
 	/**
 	 *  get the rms of the input signal with some averaging
 	 *  can also just get the value of the signal

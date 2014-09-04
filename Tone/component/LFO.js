@@ -1,6 +1,8 @@
 define(["Tone/core/Tone", "Tone/source/Oscillator", "Tone/signal/Scale", "Tone/signal/Signal"], 
 function(Tone){
 
+	"use strict";
+
 	/**
 	 *  Low Frequency Oscillator
 	 *

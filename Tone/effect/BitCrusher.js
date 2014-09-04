@@ -1,5 +1,7 @@
 define(["Tone/core/Tone", "Tone/effect/Effect"], function(Tone){
 
+	"use strict";
+
 	/**
 	 *  @class downsample incoming signal
 	 *  inspiration from https://github.com/jaz303/bitcrusher/blob/master/index.js

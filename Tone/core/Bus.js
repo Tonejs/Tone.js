@@ -1,5 +1,7 @@
 define(["Tone/core/Tone"], function(Tone){
 
+	"use strict";
+
 	/**
 	 *  buses are another way of routing audio
 	 *

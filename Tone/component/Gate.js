@@ -1,5 +1,7 @@
 define(["Tone/core/Tone", "Tone/component/Follower", "Tone/signal/GreaterThan"], function(Tone){
 
+	"use strict";
+
 	/**
 	 *  @class  Only pass signal through when it's signal exceeds the
 	 *          specified threshold.

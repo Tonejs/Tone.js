@@ -1,5 +1,7 @@
 define(["Tone/core/Tone", "Tone/signal/Max", "Tone/signal/Min", "Tone/signal/Signal"], function(Tone){
 
+	"use strict";
+
 	/**
 	 * 	@class  Clip the incoming signal so that the output is always between min and max
 	 * 	

@@ -1,5 +1,7 @@
 define(["Tone/core/Tone", "Tone/signal/Threshold", "Tone/signal/Add", "Tone/signal/Signal"], function(Tone){
 
+	"use strict";
+
 	/**
 	 *  @class  Output 1 if the signal is less than the value, otherwise outputs 0
 	 *  

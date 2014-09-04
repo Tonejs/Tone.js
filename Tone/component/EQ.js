@@ -1,5 +1,7 @@
 define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/component/Filter"], function(Tone){
 
+	"use strict";
+
 	/**
 	 *  @class A 3 band EQ with control over low, mid, and high gain as
 	 *         well as the low and high crossover frequencies. 

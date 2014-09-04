@@ -1,4 +1,6 @@
 define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
+
+	"use strict";
 	
 	/**
 	 *  @class  a sample accurate clock built on an oscillator.

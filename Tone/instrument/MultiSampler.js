@@ -1,6 +1,8 @@
 define(["Tone/core/Tone", "Tone/instrument/Sampler", "Tone/source/Source"], 
 function(Tone){
 
+	"use strict";
+
 	/**
 	 *  @class Aggregates multiple Tone.Samplers into a single instrument.
 	 *         Pass in a mapping of names to sample urls and an optional 

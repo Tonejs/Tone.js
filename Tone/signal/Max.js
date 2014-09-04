@@ -1,5 +1,7 @@
 define(["Tone/core/Tone", "Tone/signal/GreaterThan", "Tone/signal/Selector", "Tone/signal/Signal"], function(Tone){
 
+	"use strict";
+
 	/**
 	 * 	@class  the output signal is the greater of the incoming signal and max
 	 * 	

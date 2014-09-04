@@ -1,5 +1,7 @@
 define(["Tone/core/Tone"], function(Tone){
 
+	"use strict";
+
 	/**
 	 *  @class  merge a left and a right channel into a single stereo channel
 	 *          instead of connecting to the input, connect to either the left, or right input.

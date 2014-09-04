@@ -1,4 +1,6 @@
 define(["Tone/core/Tone", "Tone/component/DryWet"], function(Tone){
+
+	"use strict";
 	
 	/**
 	 * 	@class  Effect is the base class for effects. connect the effect between

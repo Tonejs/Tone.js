@@ -1,6 +1,8 @@
 define(["Tone/core/Tone", "Tone/component/DryWet", "Tone/component/Merge", "Tone/component/Split"], 
 function(Tone){
 
+	"use strict";
+
 	/**
 	 *  Panner. 
 	 *  

@@ -1,4 +1,6 @@
 define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Multiply", "Tone/signal/Signal"], function(Tone){
+
+	"use strict";
 	
 	/**
 	 *  @class  performs a linear scaling on an input signal.

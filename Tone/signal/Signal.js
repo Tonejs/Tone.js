@@ -1,5 +1,6 @@
 define(["Tone/core/Tone"], function(Tone){
 
+	"use strict";
 
 	/**
 	 *  @class  Constant audio-rate signal.

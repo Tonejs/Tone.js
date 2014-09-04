@@ -1,6 +1,8 @@
 define(["Tone/core/Tone", "Tone/source/Player", "Tone/component/Envelope", "Tone/component/Filter"], 
 function(Tone){
 
+	"use strict";
+
 	/**
 	 *  @class A simple sampler instrument which plays an audio buffer 
 	 *         through an amplitude envelope and optionally a filter

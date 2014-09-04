@@ -1,5 +1,7 @@
 define(["Tone/core/Tone", "Tone/instrument/MonoSynth", "Tone/component/LFO", "Tone/signal/Signal", "Tone/signal/Multiply", "Tone/instrument/Monophonic"], 
-	function(Tone){
+function(Tone){
+
+	"use strict";
 
 	/**
 	 *  @class  the DuoSynth is a monophonic synth composed of two 

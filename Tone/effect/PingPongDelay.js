@@ -1,6 +1,8 @@
 define(["Tone/core/Tone", "Tone/effect/StereoXFeedbackEffect", "Tone/signal/Signal", "Tone/signal/Multiply"], 
 function(Tone){
 
+	"use strict";
+
 	/**
 	 *  @class  PingPongDelay is a dual delay effect where the echo is heard
 	 *          first in one channel and next in the opposite channel

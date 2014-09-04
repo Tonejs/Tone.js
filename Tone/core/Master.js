@@ -1,4 +1,6 @@
 define(["Tone/core/Tone"], function(Tone){
+
+	"use strict";
 	
 	/**
 	 *  Master Output

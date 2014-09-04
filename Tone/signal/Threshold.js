@@ -1,5 +1,7 @@
 define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 
+	"use strict";
+
 	/**
 	 *  @class  Threshold an incoming signal. the signal is assumed to be in the normal range (-1 to 1)
 	 *          Creates a threshold value such that signal above the value will equal 1, 

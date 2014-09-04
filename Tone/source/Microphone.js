@@ -1,5 +1,7 @@
 define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 
+	"use strict";
+
 	/**
 	 *  @class  WebRTC Microphone. 
 	 *          CHROME ONLY (for now) because of the 

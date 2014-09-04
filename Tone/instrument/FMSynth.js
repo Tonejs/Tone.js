@@ -1,5 +1,7 @@
 define(["Tone/core/Tone", "Tone/instrument/MonoSynth", "Tone/signal/Signal", "Tone/signal/Multiply", "Tone/instrument/Monophonic"], 
-	function(Tone){
+function(Tone){
+
+	"use strict";
 
 	/**
 	 *  @class  the FMSynth is composed of two MonoSynths where one MonoSynth is the 
