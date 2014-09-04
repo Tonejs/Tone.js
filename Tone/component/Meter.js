@@ -8,7 +8,6 @@ define(["Tone/core/Tone", "Tone/core/Master"], function(Tone){
 	 *  or the value in dB
 	 *  
 	 *  inspired by https://github.com/cwilso/volume-meter/blob/master/volume-meter.js
-	 *  The MIT License (MIT) Copyright (c) 2014 Chris Wilson
 	 *
 	 *  @constructor
 	 *  @extends {Tone}
