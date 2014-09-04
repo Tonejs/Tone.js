@@ -22,7 +22,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 
 		/**
 		 *  the script processor which listens to the oscillator
-		 *  @type {[type]}
+		 *  @type {ScriptProcessorNode}
 		 *  @private
 		 */
 		this._jsNode = this.context.createScriptProcessor(this.bufferSize, 1, 1);
