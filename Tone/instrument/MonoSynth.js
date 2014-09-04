@@ -16,7 +16,7 @@ function(Tone){
 	Tone.MonoSynth = function(options){
 
 		//get the defaults
-		options = this.defaultArg(options, Tone.MonoSynth.defaults);
+		options = this.defaultArg(options, this.defaults);
 		Tone.Monophonic.call(this, options);
 
 		/**
@@ -77,26 +77,23 @@ function(Tone){
 	Tone.extend(Tone.MonoSynth, Tone.Monophonic);
 
 	/**
+	 *  @const
 	 *  @static
 	 */
-	Tone.MonoSynth.defaults = {
-		/** @type {string} the type of the first oscillator */
+	Tone.MonoSynth.prototype.defaults = {
 		"oscType" : "square",
-		/** @type {Object} the filter properties */
 		"filter" : {
 			"Q" : 6,
 			"frequency" : 4000,
 			"type" : "lowpass",
 			"rolloff" : -24
 		},
-		/** @type {Object} the envelope properties */
 		"envelope" : {
 			"attack" : 0.005,
 			"decay" : 0.1,
 			"sustain" : 0.9,
 			"release" : 1
 		},
-		/** @type {Object} the filter envelope properties */
 		"filterEnvelope" : {
 			"attack" : 0.06,
 			"decay" : 0.2,

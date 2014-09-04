@@ -106,6 +106,16 @@ define(["Tone/core/Tone", "Tone/component/DryWet"], function(Tone){
 	};
 
 	/**
+	 *  set the preset if it exists
+	 *  @param {string} presetName the name of the preset
+	 */
+	Tone.Effect.prototype.setPreset = function(presetName){
+		if (!this.isUndef(this.preset) && this.preset.hasOwnProperty(presetName)){
+			this.set(this.preset[presetName]);
+		}
+	};
+
+	/**
 	 *  tear down
 	 */
 	Tone.Effect.prototype.dispose = function(){
