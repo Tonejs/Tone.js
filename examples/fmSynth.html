@@ -134,7 +134,7 @@
 			return val * 50;
 		}, 1, "modulation index");
 		var allPresets = [];
-		for (var name in Tone.FMSynth.preset){
+		for (var name in synth.preset){
 			allPresets.push(name);
 		}
 		$("<div>", {"id" : "PresetText"}).appendTo(presets).text("presets:");
@@ -163,7 +163,7 @@
 
 		function setPreset(name){
 			synth.setPreset(name);
-			var preset = Tone.FMSynth.preset[name];
+			var preset = synth.preset[name];
 			ampEnv0.render();
 			ampEnv1.render();
 			osc0.render();

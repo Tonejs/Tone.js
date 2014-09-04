@@ -137,7 +137,7 @@
 			return val * 10;
 		}, 1, "vibrato rate");
 		var allPresets = [];
-		for (var name in Tone.DuoSynth.preset){
+		for (var name in synth.preset){
 			allPresets.push(name);
 		}
 		$("<div>", {"id" : "PresetText"}).appendTo(presets).text("presets:");
@@ -166,7 +166,7 @@
 
 		function setPreset(name){
 			synth.setPreset(name);
-			var preset = Tone.DuoSynth.preset[name];
+			var preset = synth.preset[name];
 			ampEnv0.render();
 			ampEnv1.render();
 			osc0.render();
@@ -186,10 +186,9 @@
 			harmonicity.render(preset.harmonicity / 10);
 			vibratoAmount.render(preset.vibratoAmount);
 			vibratoRate.render(preset.vibratoRate / 10);
-			// osc1Ratio.render(synth.)
 		}
 
-		setPreset("Rego");
+		setPreset("Steely");
 		
 	</script>
 

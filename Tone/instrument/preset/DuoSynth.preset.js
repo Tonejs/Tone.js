@@ -6,7 +6,7 @@ define(["Tone/core/Tone", "Tone/instrument/DuoSynth"], function(Tone){
 	 *  @static
 	 *  @type {Object}
 	 */
-	Tone.DuoSynth.preset = {
+	Tone.DuoSynth.prototype.preset = {
 		"Steely" : {
 			"vibratoAmount" : 0.0,
 			"vibratoRate" : 5,
@@ -119,17 +119,6 @@ define(["Tone/core/Tone", "Tone/instrument/DuoSynth"], function(Tone){
 		}
 	};
 
-	/**
-	 *  augment the prototype to include setPreset
-	 */
-	Tone.DuoSynth.prototype.setPreset = function(presetName){
-		presetName = this.defaultArg(presetName, "CasioPiano");
-		//look up if it exists
-		//TODO
-		//set it
-		this.set(Tone.DuoSynth.preset[presetName]);
-	};
 
-
-	return Tone.DuoSynth.preset;
+	return Tone.DuoSynth.prototype.preset;
 });

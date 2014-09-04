@@ -6,7 +6,7 @@ define(["Tone/core/Tone", "Tone/instrument/FMSynth"], function(Tone){
 	 *  @static
 	 *  @type {Object}
 	 */
-	Tone.FMSynth.preset = {
+	Tone.FMSynth.prototype.preset = {
 		"Trumpet" : {
 			"portamento" : 0,
 			"harmonicity" : 1,
@@ -221,17 +221,6 @@ define(["Tone/core/Tone", "Tone/instrument/FMSynth"], function(Tone){
 		},
 	};
 
-	/**
-	 *  augment the prototype to include setPreset
-	 */
-	Tone.FMSynth.prototype.setPreset = function(presetName){
-		presetName = this.defaultArg(presetName, "CasioPiano");
-		//look up if it exists
-		//TODO
-		//set it
-		this.set(Tone.FMSynth.preset[presetName]);
-	};
 
-
-	return Tone.FMSynth.preset;
+	return Tone.FMSynth.prototype.preset;
 });
