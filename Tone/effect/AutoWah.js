@@ -79,11 +79,11 @@ define(["Tone/core/Tone", "Tone/component/Follower", "Tone/signal/ScaleExp", "To
 	 */
 	Tone.AutoWah.defaults = {
 		"baseFrequency" : 100,
-		"octaves" : 5,
+		"octaves" : 6,
 		"sensitivity" : 0,
 		/** attributes for the envelope follower */
 		"follower" : {
-			"attack" : 0.15,
+			"attack" : 0.3,
 			"release" : 0.5
 		}
 	};

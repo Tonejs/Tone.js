@@ -31,7 +31,7 @@ function(Tone){
 		 *  @private
 		 */
 		this._lfoR = new Tone.LFO(options.rate, 0, 1);
-		this._lfoR.setPhase(90);
+		this._lfoR.setPhase(180);
 
 		/**
 		 *  the base modulation frequency
@@ -66,6 +66,8 @@ function(Tone){
 		this.effectSendR.connect(this._filtersR[0]);
 		this._filtersL[options.stages - 1].connect(this.effectReturnL);
 		this._filtersR[options.stages - 1].connect(this.effectReturnR);
+		this.effectSendL.connect(this.effectReturnL);
+		this.effectSendR.connect(this.effectReturnR);
 		//control the frequency with one LFO
 		this._lfoL.frequency.connect(this._lfoR.frequency);
 		//set the options
@@ -87,8 +89,8 @@ function(Tone){
 	Tone.Phaser.defaults = {
 		"rate" : 0.5,
 		"depth" : 1,
-		"stages" : 6,
-		"baseFrequency" : 750,
+		"stages" : 4,
+		"baseFrequency" : 400,
 		"feedback" : 0.6
 	};
 
@@ -103,7 +105,7 @@ function(Tone){
 		for (var i = 0; i < stages; i++){
 			var filter = this.context.createBiquadFilter();
 			filter.type = "allpass";
-			filter.Q.value = 4;
+			filter.Q.value = 6;
 			connectToFreq.connect(filter.frequency);
 			filters[i] = filter;
 		}
