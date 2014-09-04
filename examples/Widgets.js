@@ -260,6 +260,7 @@ GUI.Checkbox = function(container, callback, labelOff, labelOn){
 	var element = $("<div>", {"class" : "Checkbox"})
 		.appendTo(container)
 		.text(labelOff)
+		.button()
 		.click(function(){
 			checked = !checked;
 			if (checked){
@@ -274,12 +275,19 @@ GUI.Checkbox = function(container, callback, labelOff, labelOn){
 				});
 			}
 			callback(checked);
-		})
-		.button();
+		});
 	this.element = element;
 };
 
 GUI.Checkbox._idCounter = 0; 
+
+GUI.Checkbox.prototype.enable = function() {
+	this.element.button("enable");
+};
+
+GUI.Checkbox.prototype.disable = function() {
+	this.element.button("disable");
+};
 
 /**
  *  a start stop button
