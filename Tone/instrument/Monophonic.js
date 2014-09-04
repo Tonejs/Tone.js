@@ -92,9 +92,14 @@ define(["Tone/core/Tone", "Tone/source/Source", "Tone/signal/Signal"], function(
 
 	/**
 	 *  set the note to happen at a specific time
-	 *  @param {[type]} note [description]
+	 *  @param {number|string} note if the note is a string, it will be 
+	 *                              parsed as (NoteName)(Octave) i.e. A4, C#3, etc
+	 *                              otherwise it will be considered as the frequency
 	 */
 	Tone.Monophonic.prototype.setNote = function(note, time){
+		if (typeof note === "string"){
+			note = this.noteToFrequency(note);
+		}
 		time = this.toSeconds(time);
 		if (this.portamento > 0){
 			var currentNote = this.frequency.getValue();
