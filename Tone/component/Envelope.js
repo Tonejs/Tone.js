@@ -154,12 +154,16 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	/**
 	 * attack->decay->sustain linear ramp
 	 * @param  {Tone.Time=} time
+	 * @param {number=} [velocity=1] the velocity of the envelope scales the vales.
+	 *                               number between 0-1
 	 */
-	Tone.Envelope.prototype.triggerAttack = function(time){
-		var sustainVal = (this.max - this.min) * this.sustain + this.min;
+	Tone.Envelope.prototype.triggerAttack = function(time, velocity){
+		velocity = this.defaultArg(velocity, 1);
+		var scaledMax = this.max * velocity;
+		var sustainVal = (scaledMax - this.min) * this.sustain + this.min;
 		time = this.toSeconds(time);
 		this._control.cancelScheduledValues(time);
-		this._control.setTargetAtTime(this.max, time, this.attack / 4);
+		this._control.setTargetAtTime(scaledMax, time, this.attack / 4);
 		this._control.setTargetAtTime(sustainVal, time + this.attack, this.decay / 4);	
 	};
 	
