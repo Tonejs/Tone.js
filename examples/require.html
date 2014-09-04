@@ -18,10 +18,10 @@
 
 			var meter = new Meter();
 			
-			var sig1 = new Signal(.5);
+			var sig1 = new Signal(0.5);
 			var scale = new Scale(0, 1, 10, 100);
 
-			sig1.connect(scale)
+			sig1.connect(scale);
 			scale.connect(meter);
 
 			var meterEl = document.querySelector("#meter");
@@ -29,7 +29,6 @@
 			setInterval(function(){
 				meterEl.textContent = meter.getValue();
 			}, 100);
-			window.scale = scale;
 		});
 
 	</script>
