@@ -1,0 +1,135 @@
+<html>
+<head>
+	<title>SCORE</title>
+
+	<meta name="viewport" content="width=device-width, initial-scale=0.5">
+
+	<script type="text/javascript" src="../deps/jquery.min.js"></script>
+	<script type="text/javascript" src="../deps/jquery-ui.js"></script>
+	<script type="text/javascript" src="../deps/jquery.ui.touch-punch.js"></script>
+	<script type="text/javascript" src="../Tone.js"></script>
+	<script type="text/javascript" src="./Widgets.js"></script>
+	<script type="text/javascript" src="./ExampleList.js"></script>
+	<link rel="stylesheet" type="text/css" href="./style/widgets.css">
+	<link rel="stylesheet" type="text/css" href="./style/jquery-ui.css">
+
+</head>
+<body>	
+	<div id="Container">
+		<div id="Explanation">
+			Tone.Note
+			<br>
+			<br>
+			Tone.Note lets you to schedule a note on a particular "channel". Then use Tone.Note.route
+			to listen for events on that channel. Multiple notes can be put into a JSON-friendly score
+			which can be parsed using Tone.Note.parse(score). Take a look at source to see the 
+			score format. 
+		</div>
+		<div id="Content">
+			<div id="Loading">LOADING...</div>
+		</div>
+	</div>
+
+	<script type="text/javascript">
+		/* global Tone, GUI*/
+
+		var bass = new Tone.MonoSynth();
+		bass.setPreset("Bassy");
+		bass.setVolume(-10);
+		bass.toMaster();
+
+		var keys = new Tone.PolySynth(3, Tone.MonoSynth, Tone.MonoSynth.preset.Pianoetta);
+		keys.setVolume(-30);
+		keys.toMaster();
+
+		var kit = new Tone.MultiSampler({
+			"kick" : "./audio/505/kick.mp3",
+			"snare" : "./audio/505/snare.mp3",
+			"hh" : "./audio/505/hh.mp3",
+		}, function(){
+			//after the sounds are loaded, add the transport controls
+			$("#Loading").remove();
+			startButton.enable();
+		});
+		kit.setVolume(-10);
+		kit.toMaster();
+	
+		var Score = {
+			"kick" : ["0", "0:2:2", "0:3:1"],
+			//use any Tone.Time representation or expression
+			"snare" : ["4n*1", "4n*3"],
+			"hh" : ["0*8n", "1*8n", "2*8n", "3*8n", "4*8n", "5*8n", "6*8n", "7*8n"],
+			//if the array is composed of other arrays time is the first value
+			//the rest of the values are given to the callback in order
+			"bass" : [["0:0", "C2", "2n"], ["0:3:2", "C3", "8n"]],
+			"keys" : [["0:0:2", ["E4", "G4", "A4"]], ["0:0:3", ["E4", "G4", "A4"]], ["0:1:3", ["E4", "G4", "A4"]]],
+		};
+
+		//create events for all of the notes
+		Tone.Note.parseScore(Score);
+
+		//route the note channels
+		Tone.Note.route("bass", function(time, note, duration){
+			bass.triggerAttackRelease(note, duration, time);
+		});
+		Tone.Note.route("keys", function(time, value){
+			var velocity = Math.random() * 0.5 + 0.4;
+			for (var i = 0; i < value.length; i++) {
+				var freq = keys.noteToFrequency(value[i]);
+				keys.triggerAttackRelease(freq, "16n", time, velocity);
+			}
+		});
+		Tone.Note.route("kick", function(time){
+			kit.triggerAttack("kick", time);
+		});
+		Tone.Note.route("snare", function(time){
+			kit.triggerAttack("snare", time);
+		});
+		Tone.Note.route("hh", function(time){
+			kit.triggerAttack("hh", time);
+		});
+
+		//setup the transport looping
+		Tone.Transport.setLoopStart(0);
+		Tone.Transport.setLoopEnd("1:0");
+		Tone.Transport.loop = true;
+		Tone.Transport.setBpm(100);
+
+		// GUI //
+
+		var content = $("#Content");
+		new GUI.StartButton(Tone.startMobile);
+		new GUI.TopBar(Tone);
+
+		//the transport controls
+		var startButton = new GUI.Checkbox(content, function(down){
+			if (down){
+				Tone.Transport.start();
+			} else {
+				Tone.Transport.stop();
+			}
+		}, "start", "stop");
+		startButton.disable();
+
+	</script>
+
+	<style type="text/css">
+		#Content {
+			text-align: center;
+			width: 180px;
+			height: 100px;
+		}
+		.Checkbox {
+			margin-top: 10px;
+			width: 100%;
+		}
+		.ValueMeter {
+			margin-top: 10px;
+			width: 100%;
+		}
+		#Score {
+			white-space: pre;
+		}
+	</style>
+</body>
+</html>

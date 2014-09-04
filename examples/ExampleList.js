@@ -1,4 +1,8 @@
 var ExampleList = {
+	"Core" : {
+		// "Notes / Scores" : "score",
+		"Notes / Scores" : "score"
+	},
 	"Sources" : {
 		"Oscillators" : "oscillator",
 	},
@@ -15,5 +19,6 @@ var ExampleList = {
 	"Instruments" : {
 		"MonoSynth" : "monoSynth",
 		"DuoSynth" : "duoSynth",
+		"FMSynth" : "fmSynth",
 	}
 };
