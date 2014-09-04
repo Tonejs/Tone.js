@@ -100,7 +100,7 @@ define(["chai", "Tone/core/Tone", "Tone/core/Master", "Tone/core/Bus"], function
 		});
 	});
 
-	/*describe("Tone.setContext", function(){
+	describe("Tone.setContext", function(){
 		it ("can set a new context", function(){
 			var origCtx = Tone.context;
 			var ctx = new OfflineAudioContext(2, 44100, 44100);
@@ -114,6 +114,6 @@ define(["chai", "Tone/core/Tone", "Tone/core/Master", "Tone/core/Bus"], function
 			//and a saftey check
 			expect(ctx).to.not.equal(origCtx);
 		});
-	});*/
+	});
 
 });

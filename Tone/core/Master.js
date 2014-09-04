@@ -77,12 +77,14 @@ define(["Tone/core/Tone"], function(Tone){
 		this.connect(Tone.Master);
 	};
 
+	Tone.Master = new Master();
+
 	/**
 	 *  initialize the module and listen for new audio contexts
 	 */
 	Tone._initAudioContext(function(){
 		//a single master output
-		Tone.Master = new Master();
+		Master.call(Tone.Master);
 	});
 
 	return Tone.Master;
