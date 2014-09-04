@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/instrument/MonoSynth"], 
+define(["Tone/core/Tone", "Tone/instrument/MonoSynth", "Tone/source/Source"], 
 function(Tone){
 
 	/**
@@ -74,21 +74,31 @@ function(Tone){
 	 *  trigger the attack
 	 *  @param  {string|number|Object} value the value of the note to start
 	 *  @param  {Tone.Time=} [time=now]  the start time of the note
-	 *  @param {Tone.Time=} duration if provided, a release will trigger
-	 *                               after the duration. 
+	 *  @param {number=} velocity the velocity of the note
 	 */
-	Tone.PolySynth.prototype.triggerAttack = function(value, time, duration){
+	Tone.PolySynth.prototype.triggerAttack = function(value, time, velocity){
 		var stringified = JSON.stringify(value);
 		if (this._activeVoices[stringified]){
-			this._activeVoices[stringified].triggerAttack(value, time);
+			this._activeVoices[stringified].triggerAttack(value, time, velocity);
 		} else if (this._freeVoices.length > 0){
 			var voice = this._freeVoices.shift();
 			voice.triggerAttack(value, time);
 			this._activeVoices[stringified] = voice;
 		}
-		if (!this.isUndef(duration)){
-			this.triggerRelease(value, this.toSeconds(time) + this.toSeconds(duration));
-		}
+	};
+
+	/**
+	 *  trigger the attack and release after the specified duration
+	 *  
+	 *  @param  {number|string} note     the note as a number or a string note name
+	 *  @param  {Tone.Time} duration the duration of the note
+	 *  @param  {Tone.Time=} time     if no time is given, defaults to now
+	 *  @param  {number=} velocity the velocity of the attack (0-1)
+	 */
+	Tone.PolySynth.prototype.triggerAttackRelease = function(value, duration, time, velocity){
+		time = this.toSeconds(time);
+		this.triggerAttack(value, time, velocity);
+		this.triggerRelease(time + this.toSeconds(duration));
 	};
 
 	/**
@@ -116,6 +126,12 @@ function(Tone){
 			this._voices[i].set(params);
 		}
 	};
+
+	/**
+	 *  set volume method borrowed form {@link Tone.Source}
+	 *  @function
+	 */
+	Tone.PolySynth.prototype.setVolume = Tone.Source.prototype.setVolume;
 
 	/**
 	 *  clean up
