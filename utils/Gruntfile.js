@@ -42,13 +42,6 @@ module.exports = function(grunt) {
 					src : ["../Tone/**"],
 					dest : "./npm/Tone/"
 				}]
-			},
-			build : {
-				files : [{
-					expand : true,
-					src: ["../Tone.js"], 
-					dest: "../build/Tone.js"
-				}]
 			}
 		},
 		concat: {
@@ -80,7 +73,7 @@ module.exports = function(grunt) {
 					},
 				},
 				files: {
-					"../Tone.js": ["./Tone.js.tmp"],
+					"../build/Tone.js": ["./Tone.js.tmp"],
 				}
 			}, 
 			removeRequireStringMin: {
@@ -116,7 +109,7 @@ module.exports = function(grunt) {
 	grunt.registerTask("npm", ["copy:npm"]);
 	grunt.registerTask("presets", ["concat:presets"]);
 	grunt.registerTask("min", ["concat:dist", "requirejs:min", "concat:removeRequireStringMin", "clean:min"]);
-	grunt.registerTask("build", ["concat:dist","requirejs:compile","concat:removeRequireString","clean:dist", "copy:build"]);
+	grunt.registerTask("build", ["concat:dist","requirejs:compile","concat:removeRequireString","clean:dist"]);
 	grunt.registerTask("buildall", ["build", "min", "presets"]);
 	grunt.registerTask("dist", ["buildall", "docs", "npm"]);
 	

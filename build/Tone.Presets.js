@@ -6,11 +6,11 @@ define(["Tone/core/Tone", "Tone/effect/AutoWah"], function(Tone){
 	 *  @static
 	 *  @type {Object}
 	 */
-	Tone.AutoWah.preset = {
+	Tone.AutoWah.prototype.preset = {
 
 	};
 
-	return Tone.AutoWah.preset;
+	return Tone.AutoWah.prototype.preset;
 });
 define(["Tone/core/Tone", "Tone/instrument/DuoSynth"], function(Tone){
 
@@ -20,7 +20,7 @@ define(["Tone/core/Tone", "Tone/instrument/DuoSynth"], function(Tone){
 	 *  @static
 	 *  @type {Object}
 	 */
-	Tone.DuoSynth.preset = {
+	Tone.DuoSynth.prototype.preset = {
 		"Steely" : {
 			"vibratoAmount" : 0.0,
 			"vibratoRate" : 5,
@@ -133,19 +133,8 @@ define(["Tone/core/Tone", "Tone/instrument/DuoSynth"], function(Tone){
 		}
 	};
 
-	/**
-	 *  augment the prototype to include setPreset
-	 */
-	Tone.DuoSynth.prototype.setPreset = function(presetName){
-		presetName = this.defaultArg(presetName, "CasioPiano");
-		//look up if it exists
-		//TODO
-		//set it
-		this.set(Tone.DuoSynth.preset[presetName]);
-	};
 
-
-	return Tone.DuoSynth.preset;
+	return Tone.DuoSynth.prototype.preset;
 });
 define(["Tone/core/Tone", "Tone/instrument/FMSynth"], function(Tone){
 
@@ -155,7 +144,7 @@ define(["Tone/core/Tone", "Tone/instrument/FMSynth"], function(Tone){
 	 *  @static
 	 *  @type {Object}
 	 */
-	Tone.FMSynth.preset = {
+	Tone.FMSynth.prototype.preset = {
 		"Trumpet" : {
 			"portamento" : 0,
 			"harmonicity" : 1,
@@ -370,19 +359,8 @@ define(["Tone/core/Tone", "Tone/instrument/FMSynth"], function(Tone){
 		},
 	};
 
-	/**
-	 *  augment the prototype to include setPreset
-	 */
-	Tone.FMSynth.prototype.setPreset = function(presetName){
-		presetName = this.defaultArg(presetName, "CasioPiano");
-		//look up if it exists
-		//TODO
-		//set it
-		this.set(Tone.FMSynth.preset[presetName]);
-	};
 
-
-	return Tone.FMSynth.preset;
+	return Tone.FMSynth.prototype.preset;
 });
 define(["Tone/core/Tone", "Tone/instrument/MonoSynth"], function(Tone){
 
@@ -392,7 +370,7 @@ define(["Tone/core/Tone", "Tone/instrument/MonoSynth"], function(Tone){
 	 *  @static
 	 *  @type {Object}
 	 */
-	Tone.MonoSynth.preset = {
+	Tone.MonoSynth.prototype.preset = {
 		"Pianoetta" : {
 			"portamento" : 0.0,
 			"oscType" : "square",
@@ -556,16 +534,5 @@ define(["Tone/core/Tone", "Tone/instrument/MonoSynth"], function(Tone){
 		}
 	};
 
-	/**
-	 *  augment the prototype to include setPreset
-	 */
-	Tone.MonoSynth.prototype.setPreset = function(presetName){
-		presetName = this.defaultArg(presetName, "CasioPiano");
-		//look up if it exists
-		//TODO
-		//set it
-		this.set(Tone.MonoSynth.preset[presetName]);
-	};
-
-	return Tone.MonoSynth.preset;
+	return Tone.MonoSynth.prototype.preset;
 });

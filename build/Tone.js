@@ -4469,7 +4469,7 @@ define('Tone/core/Master',["Tone/core/Tone"], function(Tone){
 	 */
 	Tone._initAudioContext(function(){
 		//a single master output
-		Tone.Master = new Master();
+		Master.call(Tone.Master);
 	});
 
 	return Tone.Master;
