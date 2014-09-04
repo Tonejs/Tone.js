@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/instrument/Sampler"], 
+define(["Tone/core/Tone", "Tone/instrument/Sampler", "Tone/source/Source"], 
 function(Tone){
 
 	/**
@@ -70,7 +70,7 @@ function(Tone){
 		};
 		for (var samp in samples){
 			var url = samples[samp];
-			var sampler = new Tone.Sample(url, onSampleLoad);
+			var sampler = new Tone.Sampler(url, onSampleLoad);
 			sampler.connect(this.output);
 			this.samples[samp] = sampler;
 		}
@@ -110,6 +110,12 @@ function(Tone){
 			this.samples[samp].set(params);
 		}
 	};
+
+	/**
+	 *  set volume method borrowed form {@link Tone.Source}
+	 *  @function
+	 */
+	Tone.MultiSampler.prototype.setVolume = Tone.Source.prototype.setVolume;
 
 	/**
 	 *  clean up

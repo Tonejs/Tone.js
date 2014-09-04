@@ -13,7 +13,7 @@ function(Tone){
 	 */
 	Tone.Sampler = function(){
 
-		var options = this.optionsObject(options, ["url", "load"], Tone.Sampler.defaults);
+		var options = this.optionsObject(arguments, ["url", "load"], Tone.Sampler.defaults);
 
 		/**
 		 *  @type {GainNode}
@@ -47,7 +47,7 @@ function(Tone){
 
 		//connections
 		this.chain(this.player, this.filter, this.output);
-		this.envelope.connect(this.player.output);
+		this.envelope.connect(this.player.output.gain);
 		this.filterEnvelope.connect(this.filter.frequency);
 	};
 
@@ -94,11 +94,12 @@ function(Tone){
 	 *  start the sample
 	 *  
 	 *  @param {Tone.Time=} [time=now] the time when the note should start
+	 *  @param {number=} velocity the velocity of the note
 	 */
-	Tone.Sampler.prototype.triggerAttack = function(time){
+	Tone.Sampler.prototype.triggerAttack = function(time, velocity){
 		this.player.start(time);
-		this.envelope.triggerAttack(time);
-		this.filterEnvelope.triggerRelease(time);
+		this.envelope.triggerAttack(time, velocity);
+		this.filterEnvelope.triggerAttack(time);
 	};
 
 	/**
