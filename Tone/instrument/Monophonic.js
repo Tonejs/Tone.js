@@ -134,6 +134,16 @@ define(["Tone/core/Tone", "Tone/source/Source", "Tone/signal/Signal"], function(
 	};
 
 	/**
+	 *  set the preset if it exists
+	 *  @param {string} presetName the name of the preset
+	 */
+	Tone.Monophonic.prototype.setPreset = function(presetName){
+		if (!this.isUndef(this.preset) && this.preset.hasOwnProperty(presetName)){
+			this.set(this.preset[presetName]);
+		}
+	};
+
+	/**
 	 *  clean up
 	 */
 	Tone.Monophonic.prototype.dispose = function(){
