@@ -8,11 +8,11 @@ define(["Tone/core/Tone", "Tone/core/Transport"], function(Tone){
 	 *          whatever value was specified. 
 	 *
 	 *  @constructor
-	 *  @param {Tone.Time} time the time when the note will occur
-	 *  @param {string|number|Object} value the value of the note
 	 *  @param {number|string} channel the channel name of the note
+	 *  @param {Tone.Time} time the time when the note will occur
+	 *  @param {string|number|Object|Array} value the value of the note
 	 */
-	Tone.Note = function(time, value, channel){
+	Tone.Note = function(channel, time, value){
 
 		/**
 		 *  the value of the note. This value is returned
@@ -45,9 +45,9 @@ define(["Tone/core/Tone", "Tone/core/Transport"], function(Tone){
 	 *  @private
 	 *  @param {number} time the time at which the note should play
 	 */
-	Tone.Note.prototype._trigger = function(){
+	Tone.Note.prototype._trigger = function(time){
 		//invoke the callback
-		channelCallbacks(this._channel, this.value);
+		channelCallbacks(this._channel, time, this.value);
 	};
 
 	/**
@@ -69,11 +69,16 @@ define(["Tone/core/Tone", "Tone/core/Transport"], function(Tone){
 	 *  invoke all of the callbacks on a specific channel
 	 *  @private
 	 */
-	function channelCallbacks(channel, note){
+	function channelCallbacks(channel, time, value){
 		if (NoteChannels.hasOwnProperty(channel)){
 			var callbacks = NoteChannels[channel];
 			for (var i = 0, len = callbacks.length; i < len; i++){
-				callbacks[i](note);
+				var callback = callbacks[i];
+				if (Array.isArray(value)){
+					callback.apply(window, [time].concat(value));
+				} else {
+					callback(time, value);
+				}
 			}
 		}
 	}
@@ -126,10 +131,17 @@ define(["Tone/core/Tone", "Tone/core/Transport"], function(Tone){
 	Tone.Note.parseScore = function(score){
 		var notes = [];
 		for (var inst in score){
-			for (var i = 0; i < inst.length; i++){
-				var time = inst[i][0];
-				var value = inst[i][1];
-				var note = new Tone.Note(time, value, inst);
+			var part = score[inst];
+			for (var i = 0; i < part.length; i++){
+				var noteDescription = part[i];
+				var note;
+				if (Array.isArray(noteDescription)){
+					var time = noteDescription[0];
+					var value = noteDescription.slice(1);
+					note = new Tone.Note(inst, time, value);
+				} else {
+					note = new Tone.Note(inst, noteDescription);
+				}
 				notes.push(note);
 			}
 		}
