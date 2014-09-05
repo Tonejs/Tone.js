@@ -2,7 +2,6 @@
 <head>
 	<title>USING WITH REQUIRE</title>
 
-	<script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
 	<script type="text/javascript" src="./deps/require.js"></script>
 
 </head>
@@ -13,21 +12,23 @@
 		require.config({
 			baseUrl : "../"
 		});
-		require(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Scale", "Tone/component/Meter"], 
-		function(Tone, Signal, Scale, Meter){
+		require(["Tone/core/Tone", "Tone/source/Oscillator", "Tone/signal/Scale", "Tone/component/Meter"], 
+		function(Tone, Oscillator, Scale, Meter){
 
 			var meter = new Meter();
 			
-			var sig1 = new Signal(0.5);
-			var scale = new Scale(0, 1, 10, 100);
+			var osc = new Oscillator(0.5);
+			var scale = new Scale(-1, 1, 10, 100);
 
-			sig1.connect(scale);
+			osc.connect(scale);
 			scale.connect(meter);
+
+			osc.start();
 
 			var meterEl = document.querySelector("#meter");
 
 			setInterval(function(){
-				meterEl.textContent = meter.getValue();
+				meterEl.textContent = meter.getValue().toFixed(2);
 			}, 100);
 		});
 
