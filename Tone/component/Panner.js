@@ -6,12 +6,9 @@ function(Tone){
 	/**
 	 *  Panner. 
 	 *  
-	 *  Equal Power Gain L/R Panner. Not 3D
-	 *  
-	 *  a panner uses a dry/wet knob internally
-	 *
-	 *  0 = 100% Left
-	 *  1 = 100% Right
+	 *  @class  Equal Power Gain L/R Panner. Not 3D. 
+	 *          0 = 100% Left
+	 *          1 = 100% Right
 	 *  
 	 *  @constructor
 	 *  @extends {Tone}

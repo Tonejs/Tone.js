@@ -4,8 +4,8 @@ define(["Tone/core/Tone", "Tone/component/DryWet"], function(Tone){
 	
 	/**
 	 * 	@class  Effect is the base class for effects. connect the effect between
-	 * 	the effectSend and effectReturn GainNodes. then control the amount of
-	 * 	effect which goes to the output using the dry/wet control.
+	 * 	        the effectSend and effectReturn GainNodes. then control the amount of
+	 * 	        effect which goes to the output using the dry/wet control.
 	 *
 	 *  @constructor
 	 *  @extends {Tone}

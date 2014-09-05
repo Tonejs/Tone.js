@@ -3,10 +3,8 @@ define(["Tone/core/Tone"], function(Tone){
 	"use strict";
 	
 	/**
-	 *  Master Output
-	 *  
-	 *  a single master output
-	 *  adds toMaster to Tone
+	 *  @class  A single master output. 
+	 *          adds toMaster to Tone
 	 *
 	 *  @constructor
 	 *  @extends {Tone}

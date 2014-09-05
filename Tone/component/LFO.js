@@ -4,8 +4,6 @@ function(Tone){
 	"use strict";
 
 	/**
-	 *  Low Frequency Oscillator
-	 *
 	 *  @class  The Low Frequency Oscillator produces an output signal 
 	 *          which can be attached to an AudioParam or Tone.Signal 
 	 *          for constant control over that parameter. the LFO can 

@@ -17,6 +17,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 		/**
 		 *  the oscillator
 		 *  @type {OscillatorNode}
+		 *  @private
 		 */
 		this._oscillator = null;
 

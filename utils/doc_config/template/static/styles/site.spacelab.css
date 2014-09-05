@@ -5792,3 +5792,11 @@ code {
   line-height: 15px;
   padding: 12px 4px !important;
 }
+
+
+/*
+ CUSTOM STUFF
+ */
+.inherited-from-class {
+  color: #0099dd;
+}

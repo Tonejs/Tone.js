@@ -16,13 +16,12 @@ function(Tone){
 	Tone.MonoSynth = function(options){
 
 		//get the defaults
-		options = this.defaultArg(options, this.defaults);
+		options = this.defaultArg(options, Tone.MonoSynth.defaults);
 		Tone.Monophonic.call(this, options);
 
 		/**
 		 *  the first oscillator
 		 *  @type {Tone.Oscillator}
-		 *  @private
 		 */
 		this.oscillator = new Tone.Oscillator(0, options.oscType);
 
@@ -41,7 +40,6 @@ function(Tone){
 		/**
 		 *  the filter
 		 *  @type {Tone.Filter}
-		 *  @private
 		 */
 		this.filter = new Tone.Filter(options.filter);
 
@@ -60,6 +58,7 @@ function(Tone){
 		/**
 		 *  the amplitude
 		 *  @type {GainNode}
+		 *  @private
 		 */
 		this._amplitude = this.context.createGain();
 
@@ -80,7 +79,7 @@ function(Tone){
 	 *  @const
 	 *  @static
 	 */
-	Tone.MonoSynth.prototype.defaults = {
+	Tone.MonoSynth.defaults = {
 		"oscType" : "square",
 		"filter" : {
 			"Q" : 6,

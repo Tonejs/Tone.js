@@ -3,8 +3,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	"use strict";
 
 	/**
-	 *  Envelope 
-	 *  ADR envelope generator attaches to an AudioParam or AudioNode
+	 *  @class  ADSR envelope generator attaches to an AudioParam or Signal
 	 *
 	 *  @constructor
 	 *  @extends {Tone}
