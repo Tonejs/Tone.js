@@ -66,9 +66,17 @@
 	left: 20px;
 	top: 0px;
 	font-size: 24px;
-	font-family: monospace;
 	line-height: 40px;
 	color: white;
+}
+
+#TopBar #HomePage a {
+	font-family: monospace;
+	font-size: 24px;
+	color: white;
+	text-transform: none;
+	text-decoration: none;
+	margin-left: 0px;
 }
 
 #TopBar #DropDown {

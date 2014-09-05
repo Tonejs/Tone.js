@@ -1,51 +1,67 @@
-<!DOCTYPE html>
 <html>
 <head>
 	<title>EXAMPLES</title>
-	<link rel="stylesheet" type="text/css" href="./exampleStyle.css">
+	
+	<script type="text/javascript" src="./deps/jquery.min.js"></script>
+	<script type="text/javascript" src="./deps/jquery-ui.js"></script>
+	<script type="text/javascript" src="./deps/jquery.ui.touch-punch.js"></script>
+	<script type="text/javascript" src="../build/Tone.js"></script>
+	<script type="text/javascript" src="../build/Tone.Preset.js"></script>
+	<script type="text/javascript" src="./Widgets.js"></script>
+	<script type="text/javascript" src="./ExampleList.js"></script>
+	<link rel="stylesheet" type="text/css" href="./style/widgets.css">
+	<link rel="stylesheet" type="text/css" href="./style/jquery-ui.css">
+	<script type="text/javascript" src="./deps/qwerty-hancock.js"></script>
+
 </head>
 <body>
+	<div id="Container">
+		<div id='TopBar'>
+			<div id="HomePage">
+				<a href="https://github.com/TONEnoTONE/Tone.js">Tone.js</a>
+			</div>
+		</div>
+		<div id="Explanation">
+			Examples
+		</div>
+		<div id="Content">
+			
+		</div>
+	</div>
+	<script type="text/javascript">
+
+		var content = $("#Content");
+		for (var catName in ExampleList){
+		$("<div>").addClass("Category").text(catName)
+			.appendTo(content);
+		var category = ExampleList[catName];
+		for (var example in category){
+			$("<div>").addClass("Item")
+				.appendTo(content)
+				.html($("<a>").attr("href", category[example]+".html").text(example));
+		}
+	}
+	</script>
 	<style type="text/css">
+	#Content {
+		width: 200px;
+		top: 50%;
+		height: auto;
+	}
+	#Content div{
+		font-size: 14px;
+		margin-top: 5px;
+	}
+	a:visited {
+		color: black;
+	}
 	a {
-		display: block;
+		margin-left: 10px;
+		color: black;
+	}
+	.Category {
+		font-weight: 900;
 	}
 	</style>
-
-	<div>Core</div>
-	<a href="./transport.html">Transport</a>
-	<br>
-	<br>
-
-	<div>Sources</div>
-	<a href="./player.html">Player</a>
-	<a href="./oscillator.html">Oscillator</a>
-	<a href="./noises.html">Noise</a>
-	<br>
-	<br>
-
-	<div>Components</div>
-	<a href="./lfo.html">LFO</a>
-	<a href="./envelope.html">Envelope</a>
-	<a href="./dryWet.html">DryWet</a>
-	<a href="./panner.html">Panner</a>
-	<br>
-	<br>
-
-	<div>Signal</div>
-	<a href="./signalMath.html">Audio-Rate Math</a>
-	<br>
-	<br>
-
-	<div>Effects</div>
-	<a href="./autoPanner.html">Auto Panner</a>
-	<a href="./feedbackDelay.html">Feedback Delay</a>
-	<br>
-	<br>
-
-	<div>Instruments</div>
-	<a href="./monoSynth.html">Monophonic Synthesizer</a>
-	<a href="./stepSequencer.html">Step Sequencer</a>
-	<br>
-	<br>
 </body>
 </html>

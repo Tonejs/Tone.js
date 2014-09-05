@@ -233,7 +233,7 @@ GUI.TopBar = function(Tone){
 		.appendTo("#Container");
 	this.hompage = $("<div>", {"id" : "HomePage"})
 		.appendTo(this.element)
-		.text("Tone.js");
+		.append($("<a>").attr("href", "https://github.com/TONEnoTONE/Tone.js").text("Tone.js"));
 	this.meter = new Tone.Meter(2);
 	Tone.Master.connect(this.meter);
 	this.meterGUI = new GUI.LevelMeter(this.element, this.meter);
