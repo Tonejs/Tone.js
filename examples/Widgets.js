@@ -23,6 +23,29 @@ GUI.StartButton.prototype.buttonClicked = function(){
 };
 
 /**
+ *  a start button for mobile browsers which require a touchstart event
+ *  to start the audio
+ */
+GUI.MobileStart = function(callback){
+	if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
+		this.element = $("<div>", {"class" : "StartButton"})
+			.appendTo("#Container");
+		this.button = $("<button>")
+			.button({label: "\u25B6"})
+			.click(this.buttonClicked.bind(this))
+			.appendTo(this.element);  
+		this.callback = callback;
+	}
+};
+
+GUI.MobileStart.prototype.buttonClicked = function(){
+	this.element.fadeTo(500, 0, function(){
+		$(this).remove();
+	});
+	this.callback();
+};
+
+/**
  *  Tone.Envelope GUI
  *  @param {jQuery} container the jQuery object to put the gui in
  *  @param {Tone.Envelope} envelope  the envelope object

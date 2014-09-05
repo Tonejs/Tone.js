@@ -30,6 +30,7 @@
 		/* globals Tone, GUI */
 
 		var noise = new Tone.Noise();
+		noise.setVolume(-10);
 		noise.toMaster();
 
 		var noiseTypes = ["white", "brown", "pink"];
@@ -54,7 +55,7 @@
 
 		// GUI //
 
-		new GUI.StartButton(Tone.startMobile);
+		new GUI.MobileStart(Tone.startMobile);
 		new GUI.TopBar(Tone);
 
 		new GUI.Momentary($("#Button"), function(){

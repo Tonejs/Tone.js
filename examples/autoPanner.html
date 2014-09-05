@@ -48,16 +48,14 @@
 		// GUI //
 
 		new GUI.TopBar(Tone);
-		new GUI.StartButton(function(){
-			Tone.startMobile();
-			panner.start();
-		});
+		new GUI.MobileStart(Tone.startMobile);
 
 		var container = $("#Content");
 
 		new GUI.Checkbox(container, function(on){
 			if (on){
 				sine.start();
+				panner.start();
 			} else {
 				sine.stop();
 			}
