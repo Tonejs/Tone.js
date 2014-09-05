@@ -1,0 +1,65 @@
+<html>
+<head>
+	<title>PINGPONG DELAY</title>
+	
+	<script type="text/javascript" src="./deps/jquery.min.js"></script>
+	<script type="text/javascript" src="./deps/jquery-ui.js"></script>
+	<script type="text/javascript" src="./deps/jquery.ui.touch-punch.js"></script>
+	<script type="text/javascript" src="../build/Tone.js"></script>
+	<script type="text/javascript" src="./Widgets.js"></script>
+	<script type="text/javascript" src="./ExampleList.js"></script>
+	<link rel="stylesheet" type="text/css" href="./style/widgets.css">
+	<link rel="stylesheet" type="text/css" href="./style/jquery-ui.css">
+
+</head>
+<body>
+	<div id="Container">
+		<div id="Explanation">
+			Ping Pong Delay
+			<br>
+			<br>
+			A Ping Pong Delay is a stereo feedback delay. The stereo effect is more easily heard with headphones. 
+		</div>
+		<div id="Content">
+			<div id="Loading">Loading...</div>
+		</div>
+	</div>
+	<script type="text/javascript">
+		/* globals Tone, GUI */
+
+		var player = new Tone.Player("./audio/505/snare.mp3", function(){
+			$("#Loading").remove();
+		});
+
+		var feedbackDelay = new Tone.PingPongDelay("8n");
+		//60% feedback
+		feedbackDelay.setFeedback(0.6);
+
+		//connections
+		player.connect(feedbackDelay);
+		feedbackDelay.toMaster();	
+		feedbackDelay.setWet(0.5);	
+
+		// GUI //
+
+		new GUI.StartButton(Tone.startMobile);
+		new GUI.TopBar(Tone);
+
+		new GUI.Momentary($("#Content"), function(on){
+			if (on){
+				player.start();
+			}
+		}, "hit", "hit");
+		
+	</script>
+	<style type="text/css">
+		#Content {
+			width: 100px;
+			height: 50px;
+		}
+		.Momentary {
+			width: 100%;
+		}
+	</style>
+</body>
+</html>

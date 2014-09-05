@@ -1,7 +1,9 @@
-define(["Tone/core/Tone", "Tone/signal/Threshold"], function(Tone){
+define(["Tone/core/Tone", "Tone/signal/Threshold", "Tone/signal/Add", "Tone/signal/Signal"], function(Tone){
+
+	"use strict";
 
 	/**
-	 *  Output 1 if the signal is greater than the value, otherwise outputs 0
+	 *  @class  Output 1 if the signal is greater than the value, otherwise outputs 0
 	 *  
 	 *  @constructor
 	 *  @extends {Tone}
@@ -15,7 +17,7 @@ define(["Tone/core/Tone", "Tone/signal/Threshold"], function(Tone){
 		this._gt = this.context.createWaveShaper();
 
 		/**
-		 *  @type {WaveShaperNode}
+		 *  @type {Tone.Threshold}
 		 *  @private
 		 */
 		this._thresh = new Tone.Threshold(0.001);
@@ -52,10 +54,10 @@ define(["Tone/core/Tone", "Tone/signal/Threshold"], function(Tone){
 	 *  @private
 	 */
 	Tone.GreaterThan.prototype._setGreaterThanZero = function(){
-		var curveLength = 1024;
+		var curveLength = 1023;
 		var curve = new Float32Array(curveLength);
 		for (var i = 0; i < curveLength; i++){
-			var normalized = (i / (curveLength)) * 2 - 1;
+			var normalized = (i / (curveLength - 1)) * 2 - 1;
 			if (normalized > 0){
 				curve[i] = 1;
 			} else {
@@ -73,6 +75,13 @@ define(["Tone/core/Tone", "Tone/signal/Threshold"], function(Tone){
 	Tone.GreaterThan.prototype.setValue = function(value){
 		this._adder.setValue(-value);
 	};
+
+	/**
+	 *  borrows the method from {@link Tone.Signal}
+	 *  
+	 *  @function
+	 */
+	Tone.GreaterThan.prototype.connect = Tone.Signal.prototype.connect;
 
 	/**
 	 *  dispose method

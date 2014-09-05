@@ -1,4 +1,6 @@
 define(["Tone/core/Tone"], function(Tone){
+
+	"use strict";
 	
 	/**
 	 *  Master Output
@@ -50,7 +52,7 @@ define(["Tone/core/Tone"], function(Tone){
 			var currentVolume = this.output.gain.value;
 			this.output.gain.cancelScheduledValues(now);
 			this.output.gain.setValueAtTime(currentVolume, now);
-			this.output.gain.linearRampToValueAtTime(value, now + this.toSeconds(time));
+			this.output.gain.linearRampToValueAtTime(value, now + this.toSeconds(fadeTime));
 		} else {
 			this.output.gain.setValueAtTime(value, now);
 		}
@@ -75,33 +77,15 @@ define(["Tone/core/Tone"], function(Tone){
 		this.connect(Tone.Master);
 	};
 
-	/**
-	 *  a silent connection to the DesinationNode
-	 *  which will ensure that anything connected to it
-	 *  will not be garbage collected
-	 *  
-	 *  @private
-	 */
-	var _silentNode = Tone.context.createGain();
-	_silentNode.gain.value = 0;
-	_silentNode.connect(Tone.context.destination);
-
-	/**
-	 *  makes a connection to ensure that the node will not be garbage collected
-	 *  until 'dispose' is explicitly called
-	 *
-	 *  use carefully. circumvents JS and WebAudio's normal Garbage Collection behavior
-	 */
-	Tone.prototype.noGC = function(){
-		this.output.connect(_silentNode);
-	};
-
-	AudioNode.prototype.noGC = function(){
-		this.connect(_silentNode);
-	};
-
-	//a single master output
 	Tone.Master = new Master();
+
+	/**
+	 *  initialize the module and listen for new audio contexts
+	 */
+	Tone._initAudioContext(function(){
+		//a single master output
+		Master.call(Tone.Master);
+	});
 
 	return Tone.Master;
 });

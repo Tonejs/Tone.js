@@ -2,33 +2,75 @@
 <head>
 	<title>Oscillator</title>
 	
-	<script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
-	<script type="text/javascript" src="../Tone.js"></script>
-	<link rel="stylesheet" type="text/css" href="exampleStyle.css">
+	<meta name="viewport" content="width=device-width, initial-scale=0.5">
+
+	<script type="text/javascript" src="./deps/jquery.min.js"></script>
+	<script type="text/javascript" src="./deps/jquery-ui.js"></script>
+	<script type="text/javascript" src="./deps/jquery.ui.touch-punch.js"></script>
+	<script type="text/javascript" src="../build/Tone.js"></script>
+	<script type="text/javascript" src="./Widgets.js"></script>
+	<script type="text/javascript" src="./ExampleList.js"></script>
+	<link rel="stylesheet" type="text/css" href="./style/widgets.css">
+	<link rel="stylesheet" type="text/css" href="./style/jquery-ui.css">
 
 </head>
 <body>
-	<div>start and stop a sawtooth wave</div>
-	<br>
-	<button>start</button>
+	<div id="Container">
+		<div id="Explanation">
+			Oscillator
+			<br>
+			<br>
+			An oscillator with an LFO attached to the detune control. 
+		</div>
+		<div id="Content">
+		</div>
+	</div>
 	<script type="text/javascript">
 
-		var osc = new Tone.Oscillator(440, "sawtooth");
+		/* global Tone, GUI*/
+
+		var osc = new Tone.Oscillator(440, "sine");
+
+		var vibrato = new Tone.LFO(6, -25, 25);
+		vibrato.start();
 
 		//connect it to the output
 		osc.toMaster();
-		osc.setVolume(0.5);
-		
-		$("button").mousedown(function(){
-			osc.start();
-			$(this).text("stop");
+		osc.setVolume(-10);
+		vibrato.connect(osc.detune);
+
+		// GUI //
+
+		$(function(){
+			var content = $("#Content");
+			new GUI.StartButton(Tone.startMobile);
+			new GUI.TopBar(Tone);
+			new GUI.Checkbox(content, function(on){
+				if (on){
+					osc.start();
+				} else {
+					osc.stop();
+				}
+			}, "start", "stop");
+			new GUI.Oscillator(content, osc, "oscillator");
+			new GUI.Oscillator(content, vibrato.oscillator, "vibrato osc");
 		});
 
-		$("button").mouseup(function(){
-			osc.stop();
-			$(this).text("start");
-		});
 		
 	</script>
+
+	<style type="text/css">
+		#Content {
+			text-align: left;
+			height: 110px;
+			width: 240px;
+		}
+		.Checkbox {
+			width: 100%;
+		}
+		.Oscillator {
+			margin-top: 10px;
+		}
+	</style>
 </body>
 </html>

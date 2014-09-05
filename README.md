@@ -1,21 +1,17 @@
 Tone.js
 =========
 
-A collection of building blocks extending and wrapping the Web Audio API.  
+A Web Audio framework for synthesis, playback, timing and effects. 
 
 # Installation
 
-Tone.js can be used with or without RequireJS
+RequireJS is the recommended way to use Tone.js but it can also be used just as well without it. 
 
 ### RequireJS
 
-[RequireJS](http://requirejs.org/) is a JavaScript module loader which Tone.js uses internally
-for dependency management. It is a powerful tool for development and deploying. Using r.js (RequireJS's optimizer) 
-can bring package size down significantly since it will only load the modules used in your code. 
+[RequireJS](http://requirejs.org/) is a JavaScript module loader which Tone.js uses internally for dependency management. It is a powerful tool for development and deploying. Using r.js (RequireJS's optimizer) can bring package size down significantly since it will only include the modules used in your code. 
 
-There are a couple ways to use the tone library with require.js and r.js. 
-
-The best way to use with  Tone.js is to make a path to the base directory:
+To use Tone with RequireJS, add a path to the base directory where the library is stored and then refer all Tone module dependencies starting with "Tone/". 
 
 ```javascript
 require.config({
@@ -24,26 +20,38 @@ require.config({
         "Tone" : "pathto/Tone.js/Tone"
     }
 });
+require(["Tone/core/Transport"], function(Transport){
+    //...
 ```
 
 ### without RequireJS
 
-Tone.js can also be used without RequireJS. If you include the [Tone.js Build](https://raw.githubusercontent.com/TONEnoTONE/Tone.js/master/Tone.js)
-as a script tag at the top of your page, a global called ```Tone``` will be added to the window. 
+Tone.js can also be used like any other script or library by dropping the [Tone.js Build](https://raw.githubusercontent.com/TONEnoTONE/Tone.js/master/build/Tone.js) into the <head> of your page. A global called ```Tone``` will be added to the ```window```. 
 
 ```html
 <script type="text/javascript" src="pathto/Tone.js"></script>
 ```
 
+To use any of the presets on instruments or effects, be sure to grab the [Tone.Presets build](https://raw.githubusercontent.com/TONEnoTONE/Tone.js/master/build/Tone.Preset.js) which is not included in the default build. 
+
 # AudioContext
 
-Tone.js creates an AudioContext when it loads and shims it for maximum browser compatibility. The AudioContext can be found at
-```Tone.context``` or from within any Node in the Tone library as ```this.context```. For AudioNodes
-to be able to connect together, they need to be created from the same AudioContext. 
+Tone.js creates an AudioContext when it loads and shims it for maximum browser compatibility. The AudioContext can be found at ```Tone.context``` or from within any Object extending Tone as ```this.context```. 
 
-# Audio Sources
+Tone also let's you set your own AudioContext using ```Tone.setContext```
 
-Tone.js simplifies the creation of oscillators and buffer players. 
+# Tone.Source
+
+Tone.js has a number of built in audio sources:
+
+* [Sine/Square/Sawtooth/Triangle Waves](http://tonenotone.github.io/Tone.js/doc/Tone.Oscillator.html)
+* [Pulse Wave](http://tonenotone.github.io/Tone.js/doc/Tone.PulseOscillator.html)
+* [Buffer Player](http://tonenotone.github.io/Tone.js/doc/Tone.Player.html)
+* [Noise Generator](http://tonenotone.github.io/Tone.js/doc/Tone.Noise.html)
+
+### Tone.Oscillator
+
+A wrapper around the native OscillatorNode which simplifies starting and stopping and includes additional parameters such as phase rotation. 
 
 ```javascript
 //a square wave at 440hz:
@@ -52,6 +60,8 @@ var osc = new Tone.Oscillator(440, "square");
 osc.toMaster();
 osc.start();
 ```
+
+### Tone.Player
 
 ```javascript
 //a buffer player which plays as soon as it's loaded
@@ -62,11 +72,19 @@ var player = new Tone.Player("./sound.mp3", function(){
 player.toMaster();
 ```
 
-# Transport and Timing
+# Tone.Transport
 
-A unique feature of the library is the oscillator-based Transport which allows for simple synchronization of 
-sources and signals. The Transport allows you to register callbacks at precise moments along and get a callback
-with the exact time requested. Pass the time to the Node you'd like to start or automate. 
+A unique feature of the library is the oscillator-based Transport which allows for application-wide synchronization of sources and signals. The Transport allows you to register callbacks at precise moments along the timeline which are invoked right before the event with the exact time of the event. Additionally, because the Transport is implemented with an oscillator, it is capable of elaborate tempo curves and automation. 
+
+There are three methods for timing events with Tone.Transport:
+
+### Tone.Transport.setTimeline
+
+```Tone.Transport.setTimeline``` will schedule an event relative to the start of the timeline. These events will start, stop and loop with the Transport. 
+
+### Tone.Transport.setInterval
+
+like the native ```setInterval```, ```Tone.Transport.setInterval``` will schedule a repeating event at the interval specified. These events will only be invoked when the Transport is playing. 
 
 ```javascript
 //this will start the player on every quarter note
@@ -77,7 +95,9 @@ Tone.Transport.setInterval(function(time){
 Tone.Transport.start();
 ```
 
-The Transport also allows single events to occur in the future using setTimeout
+### Tone.Transport.setTimeout
+
+Set a single event in the future relative to the current Transport position with ```Tone.Transport.setTimeout```
 
 ```javascript
 //this will start an oscillator 5 seconds from now
@@ -86,22 +106,9 @@ Tone.Transport.setTimeout(function(time){
 }, 5);
 Tone.Transport.start();
 ```
-
-Events can also be arranged on a timeline. Callbacks registered with ```setTimeline``` will
-repeat even after the Transport is started, stopped or looped. 
-
-```javascript
-//this will start an oscillator 5 seconds from now
-Tone.Transport.setTimeline(function(time){
-	console.log("first measure")
-}, "1:0:0");
-Tone.Transport.setLoopEnd("4:0:0");
-Tone.Transport.start();
-```
 ### Time
 
-In the Tone library, time can be described in a number of ways. Any method
-which takes a time as a parameter will accept any of these forms: 
+In the Tone library, time can be described in a number of ways. Any method which takes a time as a parameter will accept any of these forms: 
 
 __Number__: these will be taken literally as the time (in seconds). 
 
@@ -115,62 +122,99 @@ __Transport Time__: will also provide tempo and time signature relative times in
 
 * "32:0:0" = start of the 32nd measure. 
 * "4:3:2" = 4 bars + 3 quarter notes + 2 sixteenth notes. 
+* "1:2" =  1 bar + 2 quarter notes (sixteenth notes omitted)
 
 __Frequency__: seconds can also be described in Hz. 
 
 * "1hz" = 1 second
 * "5hz" = 0.2 seconds
 
-__Now-Relative__: prefix any of the above with "+" and it will be interpreted as "the current time + "
+__Now-Relative__: prefix any of the above with "+" and it will be interpreted as "the current time plus whatever expression follows"
 
 * "+1m" = 1 measure from now
 * "+0.5" = half a second from now
 
+__Expressions__: any of the above can also be combined into a mathematical expression which will be evaluated to compute the desired time.
+
+* "3:0 + 2 - (1m / 7)" = 3 measures + 2 seconds - a 7th note
+* "+1m + 0.002" = the current time + 1 measure and 2 milliseconds. 
+
+__No Argument__: for methods which accept time, no argument will be interpreted as 0 seconds or "now" (i.e. the currentTime) depending on the context.
 
 # Components
 
-Tone.js provides a number number of useful components for building synthesizers and audio applications.
+Tone.js provides a number number of useful components for building synthesizers and effects. 
 
-* [Tone.Envelope](http://tonenotone.github.io/Tone.js/doc/Tone.Envelope.html)
-* [Tone.LFO](http://tonenotone.github.io/Tone.js/doc/Tone.LFO.html)
-* [Tone.Panner](http://tonenotone.github.io/Tone.js/doc/Tone.Panner.html)
 * [Tone.DryWet](http://tonenotone.github.io/Tone.js/doc/Tone.DryWet.html)
+* [Tone.Envelope](http://tonenotone.github.io/Tone.js/doc/Tone.Envelope.html)
+* [Tone.EQ](http://tonenotone.github.io/Tone.js/doc/Tone.EQ.html)
+* [Tone.Filter](http://tonenotone.github.io/Tone.js/doc/Tone.Filter.html)
+* [Tone.Follower](http://tonenotone.github.io/Tone.js/doc/Tone.Follower.html)
+* [Tone.Gate](http://tonenotone.github.io/Tone.js/doc/Tone.Gate.html)
+* [Tone.LFO](http://tonenotone.github.io/Tone.js/doc/Tone.LFO.html)
+* [Tone.Merge](http://tonenotone.github.io/Tone.js/doc/Tone.Merge.html)
+* [Tone.Meter](http://tonenotone.github.io/Tone.js/doc/Tone.Meter.html)
+* [Tone.Panner](http://tonenotone.github.io/Tone.js/doc/Tone.Panner.html)
+* [Tone.Split](http://tonenotone.github.io/Tone.js/doc/Tone.Split.html)
 
-# Control Signals
+# Signals
 
-Like the underlying Web Audio API, Tone.js is built to work with audio-rate signal control of many parameters. 
-This is a powerful feature which allows for sample-accurate synchronization of multiple parameters with a single 
-signal and also lets you connect an LFO to nearly anything. 
+Like the underlying Web Audio API, Tone.js is built with audio-rate signal control over nearly everything. This is a powerful feature which allows for sample-accurate synchronization of multiple parameters with a single signal. Signals are built entirely without any ScriptProcessorNodes, so they do not introduce much latency and processing overhead. Instead, all signal math and logic let GainNodes and WaveShaperNodes do all of the work so that all processing is done in the underlying Assembly/C/C++ provided by the API. Signals are used extensively internally and are also useful for general DSP and control signal logic and transformations. 
 
-```javascript
-//use the same LFO to create a vibrato on a oscillator and pan the audio L/R
-var lfo = new Tone.LFO(3, 0, 1); //3hz signal between 0-1
+### Math
 
-var panner = new Tone.Panner();
-lfo.connect(panner.pan); //connect the lfo to the signal which controls panning
+* [Tone.Abs](http://tonenotone.github.io/Tone.js/doc/Tone.Abs.html)
+* [Tone.Add](http://tonenotone.github.io/Tone.js/doc/Tone.Add.html)
+* [Tone.Clip](http://tonenotone.github.io/Tone.js/doc/Tone.Clip.html)
+* [Tone.Max](http://tonenotone.github.io/Tone.js/doc/Tone.Max.html)
+* [Tone.Min](http://tonenotone.github.io/Tone.js/doc/Tone.Min.html)
+* [Tone.Multiply](http://tonenotone.github.io/Tone.js/doc/Tone.Multiply.html)
+* [Tone.Negate](http://tonenotone.github.io/Tone.js/doc/Tone.Negate.html)
+* [Tone.Scale](http://tonenotone.github.io/Tone.js/doc/Tone.Scale.html)
+* [Tone.ScaleExp](http://tonenotone.github.io/Tone.js/doc/Tone.ScaleExp.html)
+* [Tone.Signal](http://tonenotone.github.io/Tone.js/doc/Tone.Signal.html)
 
-var scaler = new Tone.Scale(420, 460); //scale the lfo signal from 0-1 to 420-460
-var osc = new Tone.Oscillator(440, "sine"); //create an oscillator
+### Logic
 
-//route the lfo through the scaler to the oscillator frequency
-lfo.connect(scaler);
-scaler.connect(osc.frequency);
+Audio-rate logic operator output 1 when true and 0 when false. 
 
-//connect the oscillator to the panner and the panner to master
-osc.connect(panner);
-panner.toMaster();
+* [Tone.Equal](http://tonenotone.github.io/Tone.js/doc/Tone.Equal.html)
+* [Tone.EqualZero](http://tonenotone.github.io/Tone.js/doc/Tone.EqualZero.html)
+* [Tone.GreaterThan](http://tonenotone.github.io/Tone.js/doc/Tone.GreaterThan.html)
+* [Tone.LessThan](http://tonenotone.github.io/Tone.js/doc/Tone.LessThan.html)
+* [Tone.Threshold](http://tonenotone.github.io/Tone.js/doc/Tone.Threshold.html)
 
-//start the oscillator and the lfo
-lfo.start();
-osc.start();
-```
+### Routing
+
+Signal can also be routed and gated for maximum flexibility. 
+
+* [Tone.Route](http://tonenotone.github.io/Tone.js/doc/Tone.Route.html)
+* [Tone.Selector](http://tonenotone.github.io/Tone.js/doc/Tone.Selector.html)
+* [Tone.Switch](http://tonenotone.github.io/Tone.js/doc/Tone.Switch.html)
+
+# Instruments
+
+Tone.js has a few built in synthesizers. 
+
+* [Tone.MonoSynth](http://tonenotone.github.io/Tone.js/doc/Tone.MonoSynth.html)
+* [Tone.DuoSynth](http://tonenotone.github.io/Tone.js/doc/Tone.DuoSynth.html)
+* [Tone.FMSynth](http://tonenotone.github.io/Tone.js/doc/Tone.FMSynth.html)
+
+Each of these synthesizers can be fed to the second argument of [Tone.PolySynth](http://tonenotone.github.io/Tone.js/doc/Tone.PolySynth.html) to turn the monophonic voice into a polyphonic synthesizer. 
+
+### Presets
+
+Each of the instruments also has a number of presets which can be found in the Tone/instrument/presets folder. These named synthesizer configurations are a starting point for exploring the features of each synthesizer. 
+
+# Effects
+
+Tone.js also has a few stereo and mono effects which also have their own presets. 
 
 # Performance
 
 Tone.js uses very few ScriptProcessorNodes. Nearly all of the ToneNodes find a native Web Audio component workaround, making 
-extensive use of the GainNode and WaveShaperNode especially. While the ScripProcessorNode is extremeley powerful, it 
-introduces a lot of latency and the potential for glitches more than any other node. Currently the only ScriptProcessorNodes
-are found in Tone.Transport, Tone.Meter, and Tone.Record.  
+extensive use of the GainNode and WaveShaperNode especially. While the ScripProcessorNode is extremely powerful, it 
+introduces a lot of latency and the potential for glitches more than any other node. The 
 
 # Examples
 
@@ -179,3 +223,9 @@ Examples can be found [here](http://tonenotone.github.io/Tone.js/examples/).
 # Documentation
 
 JSDocs are [here](http://tonenotone.github.io/Tone.js/doc/).
+
+# References and Inspiration
+
+* [Tune.js](https://github.com/Dinahmoe/tuna)
+* [Many of Chris Wilson's Repositories](https://github.com/cwilso)
+* [The Spec](http://webaudio.github.io/web-audio-api/)

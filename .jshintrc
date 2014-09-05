@@ -1,7 +1,4 @@
 {
-  // Details: https://github.com/victorporof/Sublime-JSHint#using-your-own-jshintrc-options
-  // Example: https://github.com/jshint/jshint/blob/master/examples/.jshintrc
-  // Documentation: http://www.jshint.com/docs/
   "browser": true,
   "esnext": true,
   "globals": {
@@ -12,7 +9,8 @@
     "require" : false,
     "define" : false,
     //set audio stuff
-    "AudioContext" : true,
+    "AudioContext" : false,
+    "OfflineAudioContext" : false,
     "AudioBufferSourceNode" : false,
     "OscillatorNode" : false,
     "DelayNode" : false,
@@ -21,16 +19,7 @@
     "AudioParam" : false,
     "WaveShaperNode" : false,
     "DynamicsCompressorNode" : false
-    //mocha stuff
-    "mocha" : false,
-    "describe"   : false,
-    "it"         : false,
-    "before"     : false,
-    "beforeEach" : false,
-    "after"      : false,
-    "afterEach"  : false
   },
-  "node": true,
   "jquery" : true,
   "globalstrict": false,
   "quotmark": true,

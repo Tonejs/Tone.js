@@ -1,7 +1,9 @@
-define(["Tone/core/Tone", "Tone/signal/EqualZero", "Tone/signal/Add"], function(Tone){
+define(["Tone/core/Tone", "Tone/signal/EqualZero", "Tone/signal/Add", "Tone/signal/Signal"], function(Tone){
+
+	"use strict";
 
 	/**
-	 *  Output 1 if the signal is equal to the value, otherwise outputs 0
+	 *  @class  Output 1 if the signal is equal to the value, otherwise outputs 0
 	 *  
 	 *  @constructor
 	 *  @extends {Tone}
@@ -43,6 +45,13 @@ define(["Tone/core/Tone", "Tone/signal/EqualZero", "Tone/signal/Add"], function(
 	Tone.Equal.prototype.setValue = function(value){
 		this._adder.setValue(-value);
 	};
+
+	/**
+	 *  borrows the method from {@link Tone.Signal}
+	 *  
+	 *  @function
+	 */
+	Tone.Equal.prototype.connect = Tone.Signal.prototype.connect;
 
 	/**
 	 *  dispose method

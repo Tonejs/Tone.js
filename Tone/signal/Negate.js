@@ -1,12 +1,14 @@
-define(["Tone/core/Tone", "Tone/signal/Multiply"], function(Tone){
+define(["Tone/core/Tone", "Tone/signal/Multiply", "Tone/signal/Signal"], function(Tone){
+
+	"use strict";
 
 	/**
-	 *  Negate the incoming signal. i.e. an input signal of 10 will output -10
+	 *  @class Negate the incoming signal. i.e. an input signal of 10 will output -10
 	 *
 	 *  @constructor
 	 *  @extends {Tone}
 	 */
-	Tone.Negate = function(value){
+	Tone.Negate = function(){
 		/**
 		 *  negation is done by multiplying by -1
 		 *  @type {Tone.Multiply}
@@ -21,6 +23,13 @@ define(["Tone/core/Tone", "Tone/signal/Multiply"], function(Tone){
 	};
 
 	Tone.extend(Tone.Negate);
+
+	/**
+	 *  borrows the method from {@link Tone.Signal}
+	 *  
+	 *  @function
+	 */
+	Tone.Negate.prototype.connect = Tone.Signal.prototype.connect;
 
 	/**
 	 *  clean up

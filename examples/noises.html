@@ -2,18 +2,33 @@
 <head>
 	<title>NOISES</title>
 
-	<script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
-	<script type="text/javascript" src="../Tone.js"></script>
-	<link rel="stylesheet" type="text/css" href="exampleStyle.css">
+	<script type="text/javascript" src="./deps/jquery.min.js"></script>
+	<script type="text/javascript" src="./deps/jquery-ui.js"></script>
+	<script type="text/javascript" src="./deps/jquery.ui.touch-punch.js"></script>
+	<script type="text/javascript" src="../build/Tone.js"></script>
+	<script type="text/javascript" src="./Widgets.js"></script>
+	<script type="text/javascript" src="./ExampleList.js"></script>
+	<link rel="stylesheet" type="text/css" href="./style/widgets.css">
+	<link rel="stylesheet" type="text/css" href="./style/jquery-ui.css">
 
 </head>
 <body>
 
-	<div>Change switch to random noise type every quarter-second for 8 seconds</div>
-	<br>
-	<button>start</button>
-	<div id='noise'></div>
+	<div id="Container">
+		<div id="Explanation">
+			Noise
+			<br>
+			<br>
+			Tone has 3 different types of noise. Here's a little noise song. 
+		</div>
+		<div id="Content">
+			<div id="Button"></div>
+			<div id='Noise'></div>
+		</div>
 	<script type="text/javascript">
+
+		/* globals Tone, GUI */
+
 		var noise = new Tone.Noise();
 		noise.toMaster();
 
@@ -24,22 +39,41 @@
 			var randomIndex = Math.floor(Math.random()* noiseTypes.length);
 			var randomNoise = noiseTypes[randomIndex];
 			noise.setType(randomNoise, time);
+			$("#Noise").text(randomNoise);
+		}, "8n");
 
-			$("#noise").text(randomNoise);
-		}, 0.25);
-
+		//stop it after 4 measures
 		Tone.Transport.setTimeout(function(time){
 			noise.stop(time);
 			Tone.Transport.stop();
-			$("#noise").text("");
-		}, 8);
+			$("#Noise").text("done");
+			setTimeout(function(){
+				$("#Noise").text("");
+			}, 500);
+		}, "4m");
 
-		$("button").click(function(){
+		// GUI //
+
+		new GUI.StartButton(Tone.startMobile);
+		new GUI.TopBar(Tone);
+
+		new GUI.Momentary($("#Button"), function(){
 			Tone.Transport.start();
 			noise.start();
-			$(this).remove();
-		});
+			$("#Button").remove();
+		}, "start", "");
 
 	</script>
+
+	<style type="text/css">
+	#Content {
+		text-align: center;
+		width: 100px;
+		height: 50px;
+	}
+	#Content #Button{
+		width: 100px;
+	}
+	</style>
 </body>
 </html>

@@ -1,9 +1,9 @@
 define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
+
+	"use strict";
 	
 	/**
-	 *  Audio Player
-	 *  
-	 *  Audio file player with start, loop, stop.
+	 *  @class  Audio file player with start, loop, stop.
 	 *  
 	 *  @constructor
 	 *  @extends {Tone.Source} 
@@ -14,6 +14,7 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 	 *                                     once the url is loaded
 	 */
 	Tone.Player = function(url, onload){
+		
 		Tone.Source.call(this);
 
 		/**
@@ -33,6 +34,7 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 		/**
 		 *  the duration of the buffer once it's been loaded
 		 *  @type {number}
+		 *  @readOnly
 		 */
 		this.duration = 0;
 
@@ -148,6 +150,9 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 				this.state = Tone.Source.State.STARTED;
 				//default args
 				offset = this.defaultArg(offset, 0);
+				if (this.loop){
+					offset = this.loopStart;
+				}
 				duration = this.defaultArg(duration, this._buffer.duration - offset);
 				//make the source
 				this._source = this.context.createBufferSource();
@@ -214,13 +219,12 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 	 *  dispose and disconnect
 	 */
 	Tone.Player.prototype.dispose = function(){
+		Tone.Source.prototype.dispose.call(this);
 		if (this._source !== null){
 			this._source.disconnect();
 			this._source = null;
 		}
 		this._buffer = null;
-		this.output.disconnect();
-		this.output = null;
 	};
 
 	return Tone.Player;

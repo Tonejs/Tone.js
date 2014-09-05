@@ -1,7 +1,10 @@
-define(["Tone/core/Tone", "Tone/signal/Threshold"], function(Tone){
+define(["Tone/core/Tone", "Tone/signal/Threshold", "Tone/signal/Signal"], 
+function(Tone){
+
+	"use strict";
 
 	/**
-	 *  Output 1 if the signal is equal to 0, otherwise outputs 0
+	 *  @class  Output 1 if the signal is equal to 0, otherwise outputs 0
 	 *  
 	 *  @constructor
 	 *  @extends {Tone}
@@ -38,10 +41,10 @@ define(["Tone/core/Tone", "Tone/signal/Threshold"], function(Tone){
 	 *  @private
 	 */
 	Tone.EqualZero.prototype._setEquals = function(){
-		var curveLength = 1024;
+		var curveLength = 1023;
 		var curve = new Float32Array(curveLength);
 		for (var i = 0; i < curveLength; i++){
-			var normalized = (i / (curveLength)) * 2 - 1;
+			var normalized = (i / (curveLength - 1)) * 2 - 1;
 			if (normalized === 0){
 				curve[i] = 1;
 			} else {
@@ -50,6 +53,13 @@ define(["Tone/core/Tone", "Tone/signal/Threshold"], function(Tone){
 		}
 		this._equals.curve = curve;
 	};
+
+	/**
+	 *  borrows the method from {@link Tone.Signal}
+	 *  
+	 *  @function
+	 */
+	Tone.EqualZero.prototype.connect = Tone.Signal.prototype.connect;
 
 	/**
 	 *  dispose method

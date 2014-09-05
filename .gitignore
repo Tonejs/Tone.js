@@ -7,6 +7,14 @@ examples/scratch.html
 
 *.sublime-project
 
-build/node_modules/*
+# grunt modules
+utils/node_modules/*
 
 TODO.txt
+
+# all the npm stuff
+utils/npm/Tone
+utils/npm/Tone.js
+utils/npm/Tone.min.js
+utils/npm/Tone.Preset.js
+utils/npm/README.md

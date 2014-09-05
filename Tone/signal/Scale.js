@@ -1,12 +1,13 @@
-define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Multiply"], function(Tone){
+define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Multiply", "Tone/signal/Signal"], function(Tone){
+
+	"use strict";
 	
 	/**
-	 *  performs a linear scaling on an input signal
+	 *  @class  performs a linear scaling on an input signal.
+	 *          Scales from the input range of inputMin to inputMax 
+	 *          to the output range of outputMin to outputMax.
 	 *
-	 *  scales from the input range of inputMin to inputMax 
-	 *  to the output range of outputMin to outputMax
-	 *
-	 *  if only two arguments are provided, the inputMin and inputMax are set to -1 and 1
+	 *  @description If only two arguments are provided, the inputMin and inputMax are set to -1 and 1
 	 *
 	 *  @constructor
 	 *  @extends {Tone}
@@ -106,6 +107,13 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Multiply"], function(T
 		this._outputMax = val;
 		this._setScalingParameters();
 	};
+
+	/**
+	 *  borrows connect from {@link Tone.Signal}
+	 *  
+	 *  @function
+	 */
+	Tone.Scale.prototype.connect = Tone.Signal.prototype.connect;
 
 	/**
 	 *  clean up

@@ -1,13 +1,15 @@
 define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Scale"], function(Tone){
 
+	"use strict";
+
 	/**
-	 * DRY/WET KNOB
-	 * 
-	 * equal power fading control values:
-	 * 	0 = 100% dry  -    0% wet
-	 * 	1 =   0% dry  -  100% wet
+	 * @class  dry/wet knob.
+	 *         equal power fading control values:
+	 * 	       0 = 100% wet  -    0% dry
+	 * 	       1 =   0% wet  -  100% dry
 	 *
 	 * @constructor
+	 * @extends {Tone}
 	 * @param {number=} initialDry
 	 */		
 	Tone.DryWet = function(initialDry){
@@ -27,6 +29,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Scale"], function(T
 		 *  @type {GainNode}
 		 */
 		this.wet = this.context.createGain();
+
 		/**
 		 *  controls the amount of wet signal 
 		 *  which is mixed into the dry signal
@@ -34,6 +37,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Scale"], function(T
 		 *  @type {Tone.Signal}
 		 */
 		this.wetness = new Tone.Signal();
+		
 		/**
 		 *  invert the incoming signal
 		 *  @private
@@ -48,10 +52,6 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Scale"], function(T
 		this.chain(this.wetness, this.wet.gain);
 		//dry control is the inverse of the wet
 		this.chain(this.wetness, this._invert, this.dry.gain);
-
-		this.dry.gain.value = 0;
-		this.wet.gain.value = 0;
-
 		this.setDry(this.defaultArg(initialDry, 0));
 	};
 
@@ -85,16 +85,15 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Scale"], function(T
 	 *  clean up
 	 */
 	Tone.DryWet.prototype.dispose = function(){
+		Tone.prototype.dispose.call(this);
 		this.dry.disconnect();
 		this.wet.disconnect();
 		this.wetness.dispose();
 		this._invert.dispose();
-		this.output.disconnect();
 		this.dry = null;
 		this.wet = null;
 		this.wetness = null;
 		this._invert = null;
-		this.output = null;
 	};
 
 	return Tone.DryWet;

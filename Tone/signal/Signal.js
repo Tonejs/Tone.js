@@ -1,49 +1,12 @@
-define(["Tone/core/Tone", "Tone/core/Master"], function(Tone){
+define(["Tone/core/Tone"], function(Tone){
+
+	"use strict";
 
 	/**
-	 *	all signals share a common constant signal generator
-	 *  
-	 *  @static
-	 *  @private
-	 *  @type {OscillatorNode} 
-	 */
-	var generator = Tone.context.createOscillator();
-
-	/**
-	 *  @static
-	 *  @private
-	 *  @type {WaveShaperNode} 
-	 */
-	var constant = Tone.context.createWaveShaper();
-
-	//generate the waveshaper table which outputs 1 for any input value
-	(function(){
-		var len = 8;
-		var curve = new Float32Array(len);
-		for (var i = 0; i < len; i++){
-			//all inputs produce the output value
-			curve[i] = 1;
-		}
-		constant.curve = curve;
-	})();
-
-	generator.connect(constant);
-	generator.start(0);
-	generator.noGC();
-
-	/**
-	 *  constant audio-rate signal
-	 *
-	 *  Tone.Signal is a core component which allows for synchronization of many components. 
-	 *  A single signal can drive multiple parameters by applying Scaling. 
-	 *
-	 *  For example: to synchronize two Tone.Oscillators in octaves of each other, 
-	 *  	Signal --> OscillatorA.frequency
-	 *  		  ^--> Tone.Multiply(2) --> OscillatorB.frequency
-	 *  
-	 *
-	 *  Tone.Signal can be scheduled with all of the functions available to AudioParams
-	 *
+	 *  @class  Constant audio-rate signal.
+	 *          Tone.Signal is a core component which allows for sample-accurate 
+	 *          synchronization of many components. Tone.Signal can be scheduled 
+	 *          with all of the functions available to AudioParams
 	 *
 	 *  @constructor
 	 *  @extends {Tone}
@@ -56,8 +19,9 @@ define(["Tone/core/Tone", "Tone/core/Master"], function(Tone){
 		/**
 		 *  scales the constant output to the desired output
 		 *  @type {GainNode}
+		 *  @private
 		 */
-		this.scalar = this.context.createGain();
+		this._scalar = this.context.createGain();
 		/**
 		 *  the ratio of the this value to the control signal value
 		 *
@@ -67,7 +31,7 @@ define(["Tone/core/Tone", "Tone/core/Master"], function(Tone){
 		this._syncRatio = 1;
 
 		//connect the constant 1 output to the node output
-		this.chain(constant, this.scalar, this.output);
+		this.chain(constant, this._scalar, this.output);
 		//signal passes through
 		this.input.connect(this.output);
 
@@ -81,7 +45,7 @@ define(["Tone/core/Tone", "Tone/core/Master"], function(Tone){
 	 *  @return {number} the current value of the signal
 	 */
 	Tone.Signal.prototype.getValue = function(){
-		return this.scalar.gain.value;
+		return this._scalar.gain.value;
 	};
 
 	/**
@@ -96,7 +60,7 @@ define(["Tone/core/Tone", "Tone/core/Master"], function(Tone){
 		} else {
 			value *= this._syncRatio;
 		}
-		this.scalar.gain.value = value;
+		this._scalar.gain.value = value;
 	};
 
 	/**
@@ -107,7 +71,7 @@ define(["Tone/core/Tone", "Tone/core/Master"], function(Tone){
 	 */
 	Tone.Signal.prototype.setValueAtTime = function(value, time){
 		value *= this._syncRatio;
-		this.scalar.gain.setValueAtTime(value, this.toSeconds(time));
+		this._scalar.gain.setValueAtTime(value, this.toSeconds(time));
 	};
 
 	/**
@@ -120,7 +84,7 @@ define(["Tone/core/Tone", "Tone/core/Master"], function(Tone){
 		now = this.defaultArg(now, this.now());
 		var currentVal = this.getValue();
 		this.cancelScheduledValues(now);
-		this.scalar.gain.setValueAtTime(currentVal, now);
+		this._scalar.gain.setValueAtTime(currentVal, now);
 		return currentVal;
 	};
 
@@ -133,7 +97,7 @@ define(["Tone/core/Tone", "Tone/core/Master"], function(Tone){
 	 */
 	Tone.Signal.prototype.linearRampToValueAtTime = function(value, endTime){
 		value *= this._syncRatio;
-		this.scalar.gain.linearRampToValueAtTime(value, this.toSeconds(endTime));
+		this._scalar.gain.linearRampToValueAtTime(value, this.toSeconds(endTime));
 	};
 
 	/**
@@ -148,7 +112,7 @@ define(["Tone/core/Tone", "Tone/core/Master"], function(Tone){
 	 */
 	Tone.Signal.prototype.exponentialRampToValueAtTime = function(value, endTime){
 		value *= this._syncRatio;
-		this.scalar.gain.exponentialRampToValueAtTime(value, this.toSeconds(endTime));
+		this._scalar.gain.exponentialRampToValueAtTime(value, this.toSeconds(endTime));
 	};
 
 	/**
@@ -166,7 +130,7 @@ define(["Tone/core/Tone", "Tone/core/Master"], function(Tone){
 		if (endTime.toString().charAt(0) === "+"){
 			endTime = endTime.substr(1);
 		}
-		this.scalar.gain.exponentialRampToValueAtTime(value, now + this.toSeconds(endTime));
+		this._scalar.gain.exponentialRampToValueAtTime(value, now + this.toSeconds(endTime));
 	};
 
 	/**
@@ -184,7 +148,7 @@ define(["Tone/core/Tone", "Tone/core/Master"], function(Tone){
 		if (endTime.toString().charAt(0) === "+"){
 			endTime = endTime.substr(1);
 		}
-		this.scalar.gain.linearRampToValueAtTime(value, now + this.toSeconds(endTime));
+		this._scalar.gain.linearRampToValueAtTime(value, now + this.toSeconds(endTime));
 	};
 
 	/**
@@ -197,7 +161,7 @@ define(["Tone/core/Tone", "Tone/core/Master"], function(Tone){
 	 */
 	Tone.Signal.prototype.setTargetAtTime = function(value, startTime, timeConstant){
 		value *= this._syncRatio;
-		this.output.gain.setTargetAtTime(value, this.toSeconds(startTime), timeConstant);
+		this._scalar.gain.setTargetAtTime(value, this.toSeconds(startTime), timeConstant);
 	};
 
 	/**
@@ -212,7 +176,7 @@ define(["Tone/core/Tone", "Tone/core/Master"], function(Tone){
 		for (var i = 0; i < values.length; i++){
 			values[i] *= this._syncRatio;
 		}
-		this.scalar.gain.setValueCurveAtTime(values, this.toSeconds(startTime), this.toSeconds(duration));
+		this._scalar.gain.setValueCurveAtTime(values, this.toSeconds(startTime), this.toSeconds(duration));
 	};
 
 	/**
@@ -222,7 +186,7 @@ define(["Tone/core/Tone", "Tone/core/Master"], function(Tone){
 	 *  @param  {Tone.Time} startTime
 	 */
 	Tone.Signal.prototype.cancelScheduledValues = function(startTime){
-		this.scalar.gain.cancelScheduledValues(this.toSeconds(startTime));
+		this._scalar.gain.cancelScheduledValues(this.toSeconds(startTime));
 	};
 
 	/**
@@ -249,11 +213,11 @@ define(["Tone/core/Tone", "Tone/core/Master"], function(Tone){
 			}
 		}
 		//make a new scalar which is not connected to the constant signal
-		this.scalar.disconnect();
-		this.scalar = this.context.createGain();
-		this.chain(signal, this.scalar, this.output);
+		this._scalar.disconnect();
+		this._scalar = this.context.createGain();
+		this.chain(signal, this._scalar, this.output);
 		//set it ot the sync ratio
-		this.scalar.gain.value = this._syncRatio;
+		this._scalar.gain.value = this._syncRatio;
 	};
 
 	/**
@@ -265,12 +229,12 @@ define(["Tone/core/Tone", "Tone/core/Master"], function(Tone){
 		//make a new scalar so that it's disconnected from the control signal
 		//get the current gain
 		var currentGain = this.getValue();
-		this.scalar.disconnect();
-		this.scalar = this.context.createGain();
-		this.scalar.gain.value = currentGain / this._syncRatio;
+		this._scalar.disconnect();
+		this._scalar = this.context.createGain();
+		this._scalar.gain.value = currentGain / this._syncRatio;
 		this._syncRatio = 1;
 		//reconnect things up
-		this.chain(constant, this.scalar, this.output);
+		this.chain(constant, this._scalar, this.output);
 	};
 
 	/**
@@ -279,9 +243,9 @@ define(["Tone/core/Tone", "Tone/core/Master"], function(Tone){
 	Tone.Signal.prototype.dispose = function(){
 		//disconnect everything
 		this.output.disconnect();
-		this.scalar.disconnect();
+		this._scalar.disconnect();
 		this.output = null;
-		this.scalar = null;
+		this._scalar = null;
 	};
 
 	/**
@@ -289,16 +253,58 @@ define(["Tone/core/Tone", "Tone/core/Master"], function(Tone){
 	 *
 	 *  @override
 	 *  @param {AudioParam|AudioNode|Tone.Signal|Tone} node 
+	 *  @param {number=} outputNumber 
+	 *  @param {number=} inputNumber 
 	 */
-	Tone.Signal.prototype.connect = function(node){
+	Tone.Signal.prototype.connect = function(node, outputNumber, inputNumber){
 		//zero it out so that the signal can have full control
 		if (node instanceof Tone.Signal){
 			node.setValue(0);
 		} else if (node instanceof AudioParam){
 			node.value = 0;
 		} 
-		this.output.connect(node);
+		Tone.prototype.connect.call(this, node, outputNumber, inputNumber);
 	};
+
+	///////////////////////////////////////////////////////////////////////////
+	//	STATIC
+	///////////////////////////////////////////////////////////////////////////
+
+	/**
+	 *	all signals share a common constant signal generator
+	 *  
+	 *  @static
+	 *  @private
+	 *  @type {OscillatorNode} 
+	 */
+	var generator = null;
+
+	/**
+	 *  @static
+	 *  @private
+	 *  @type {WaveShaperNode} 
+	 */
+	var constant = null;
+
+	/**
+	 *  initializer function
+	 */
+	Tone._initAudioContext(function(audioContext){
+		generator = audioContext.createOscillator();
+		constant = audioContext.createWaveShaper();
+		//generate the waveshaper table which outputs 1 for any input value
+		var len = 8;
+		var curve = new Float32Array(len);
+		for (var i = 0; i < len; i++){
+			//all inputs produce the output value
+			curve[i] = 1;
+		}
+		constant.curve = curve;
+		//connect it up
+		generator.connect(constant);
+		generator.start(0);
+		generator.noGC();
+	});
 
 	return Tone.Signal;
 });

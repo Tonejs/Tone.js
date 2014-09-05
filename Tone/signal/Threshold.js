@@ -1,10 +1,11 @@
-define(["Tone/core/Tone"], function(Tone){
+define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
+
+	"use strict";
 
 	/**
-	 *  Threshold an incoming signal. the signal is assumed to be in the normal range (-1 to 1)
-	 *
-	 *  Sets a threshold value such that signal above the value will equal 1, 
-	 *  and below will equal 0.
+	 *  @class  Threshold an incoming signal. the signal is assumed to be in the normal range (-1 to 1)
+	 *          Creates a threshold value such that signal above the value will equal 1, 
+	 *          and below will equal 0.
 	 *  
 	 *  @constructor
 	 *  @param {number=} [thresh=0] threshold value above which the output will equal 1 
@@ -47,7 +48,7 @@ define(["Tone/core/Tone"], function(Tone){
 	 *  @private
 	 */
 	Tone.Threshold.prototype._setThresh = function(component, thresh){
-		var curveLength = 1024;
+		var curveLength = 1023;
 		var curve = new Float32Array(curveLength);
 		for (var i = 0; i < curveLength; i++){
 			var normalized = (i / (curveLength - 1)) * 2 - 1;
@@ -70,6 +71,13 @@ define(["Tone/core/Tone"], function(Tone){
 	Tone.Threshold.prototype.setThreshold = function(thresh){
 		this._setThresh(this._thresh, thresh);
 	};
+
+	/**
+	 *  borrows the method from {@link Tone.Signal}
+	 *  
+	 *  @function
+	 */
+	Tone.Threshold.prototype.connect = Tone.Signal.prototype.connect;
 
 	/**
 	 *  dispose method

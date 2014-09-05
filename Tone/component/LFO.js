@@ -1,11 +1,16 @@
-define(["Tone/core/Tone", "Tone/source/Oscillator", "Tone/signal/Scale"], function(Tone){
+define(["Tone/core/Tone", "Tone/source/Oscillator", "Tone/signal/Scale", "Tone/signal/Signal"], 
+function(Tone){
+
+	"use strict";
 
 	/**
 	 *  Low Frequency Oscillator
 	 *
-	 *  LFO produces an output signal which can be attached to an AudioParam
-	 *  	for constant control over that parameter
-	 *  	the LFO can also be synced to the transport
+	 *  @class  The Low Frequency Oscillator produces an output signal 
+	 *          which can be attached to an AudioParam or Tone.Signal 
+	 *          for constant control over that parameter. the LFO can 
+	 *          also be synced to the transport to start/stop/pause
+	 *          and change when the tempo changes.
 	 *
 	 *  @constructor
 	 *  @extends {Tone}
@@ -14,16 +19,29 @@ define(["Tone/core/Tone", "Tone/source/Oscillator", "Tone/signal/Scale"], functi
 	 *  @param {number=} outputMax
 	 */
 	Tone.LFO = function(rate, outputMin, outputMax){
-		/** @type {GainNode} */
-		this.input = this.context.createGain();
-		/** @type {Tone.Oscillator} */
+
+		/** 
+		 *  the oscillator
+		 *  @type {Tone.Oscillator}
+		 */
 		this.oscillator = new Tone.Oscillator(this.defaultArg(rate, 1), "sine");
+
 		/**
-			@type {Tone.Scale} 
-			@private
-		*/
+		 *  pointer to the oscillator's frequency
+		 *  @type {Tone.Signal}
+		 */
+		this.frequency = this.oscillator.frequency;
+
+		/**
+		 *  @type {Tone.Scale} 
+		 *  @private
+		 */
 		this._scaler = new Tone.Scale(this.defaultArg(outputMin, 0), this.defaultArg(outputMax, 1));
-		/** alias for the output */
+
+		/** 
+		 *  alias for the output
+		 *  @type {Tone.Scale}
+		 */
 		this.output = this._scaler;
 
 		//connect it up
@@ -34,7 +52,7 @@ define(["Tone/core/Tone", "Tone/source/Oscillator", "Tone/signal/Scale"], functi
 
 	/**
 	 *  start the LFO
-	 *  @param  {Tone.Time} time 
+	 *  @param  {Tone.Time=} [time=now] the time the LFO will start
 	 */
 	Tone.LFO.prototype.start = function(time){
 		this.oscillator.start(time);
@@ -42,7 +60,7 @@ define(["Tone/core/Tone", "Tone/source/Oscillator", "Tone/signal/Scale"], functi
 
 	/**
 	 *  stop the LFO
-	 *  @param  {Tone.Time} time 
+	 *  @param  {Tone.Time=} [time=now] the time the LFO will stop
 	 */
 	Tone.LFO.prototype.stop = function(time){
 		this.oscillator.stop(time);
@@ -51,18 +69,21 @@ define(["Tone/core/Tone", "Tone/source/Oscillator", "Tone/signal/Scale"], functi
 	/**
 	 *  Sync the start/stop/pause to the transport 
 	 *  and the frequency to the bpm of the transport
+	 *
+	 *  @param {Tone.Time=} [delay=0] the time to delay the start of the
+	 *                                LFO from the start of the transport
 	 */
-	Tone.LFO.prototype.sync = function(){
-		this.oscillator.sync();
-		// Tone.Transport.syncSignal(this.oscillator.frequency);
+	Tone.LFO.prototype.sync = function(delay){
+		Tone.Transport.syncSource(this.oscillator, delay);
+		Tone.Transport.syncSignal(this.oscillator.frequency);
 	};
 
 	/**
 	 *  unsync the LFO from transport control
 	 */
 	Tone.LFO.prototype.unsync = function(){
-		this.oscillator.unsync();
-		// this.oscillator.frequency.unsync();
+		Tone.Transport.unsyncSource(this.oscillator);
+		Tone.Transport.unsyncSignal(this.oscillator.frequency);
 	};
 
 
@@ -75,6 +96,14 @@ define(["Tone/core/Tone", "Tone/source/Oscillator", "Tone/signal/Scale"], functi
 	};
 
 	/**
+	 *  set the phase
+	 *  @param {number} phase 
+	 */
+	Tone.LFO.prototype.setPhase = function(phase){
+		this.oscillator.setPhase(phase);
+	};
+
+	/**
 	 *  set the minimum output of the LFO
 	 *  @param {number} min 
 	 */
@@ -83,15 +112,15 @@ define(["Tone/core/Tone", "Tone/source/Oscillator", "Tone/signal/Scale"], functi
 	};
 
 	/**
-	 *  set the maximum output of the LFO
+	 *  Set the maximum output of the LFO
 	 *  @param {number} min 
 	 */
 	Tone.LFO.prototype.setMax = function(max){
-		this._scaler.setOuputMax(max);
+		this._scaler.setOutputMax(max);
 	};
 
 	/**
-	 *  set the waveform of the LFO
+	 *  Set the waveform of the LFO
 	 *  @param {string} type 
 	 */
 	Tone.LFO.prototype.setType = function(type){
@@ -99,16 +128,23 @@ define(["Tone/core/Tone", "Tone/source/Oscillator", "Tone/signal/Scale"], functi
 	};
 
 	/**
-	 *  pointer to the parent's connect method
-	 *  @private
+	 *  set all of the parameters with an object
+	 *  @param {Object} params 
 	 */
-	Tone.LFO.prototype._connect = Tone.prototype.connect;
+	Tone.LFO.prototype.set = function(params){
+		if (!this.isUndef(params.frequency)) this.setFrequency(params.frequency);
+		if (!this.isUndef(params.type)) this.setType(params.type);
+		if (!this.isUndef(params.min)) this.setMin(params.min);
+		if (!this.isUndef(params.max)) this.setMax(params.max);
+	};
 
 	/**
-	 *	override the connect method so that it 0's out the value 
-	 *	if attached to an AudioParam
+	 *	Override the connect method so that it 0's out the value 
+	 *	if attached to an AudioParam or Tone.Signal. 
 	 *	
-	 *  @borrows Tone.Signal.connect as Tone.LFO.connect
+	 *	Borrowed from {@link Tone.Signal}
+	 *	
+	 *  @function
 	 */
 	Tone.LFO.prototype.connect = Tone.Signal.prototype.connect;
 
@@ -117,11 +153,10 @@ define(["Tone/core/Tone", "Tone/source/Oscillator", "Tone/signal/Scale"], functi
 	 */
 	Tone.LFO.prototype.dispose = function(){
 		this.oscillator.dispose();
-		this.output.disconnect();
 		this._scaler.dispose();
 		this.oscillator = null;
+		this.frequency = null;
 		this.output = null;
-		this._scaler = null;
 	};
 
 	return Tone.LFO;

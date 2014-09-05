@@ -1,8 +1,6 @@
 /**
  *  Tone.js
  *
- *  @version 0.1.2
- *
  *  @author Yotam Mann
  *
  *  @license http://opensource.org/licenses/MIT MIT License 2014
@@ -13,26 +11,33 @@
 	//
 	// this anonymous function checks to see if the 'define'
 	// method exists, if it does not (and there is not already
-	// something called Tone) it will create a function called
+	// a function called Tone) it will create a function called
 	// 'define'. 'define' will invoke the 'core' module and attach
 	// its return value to the root. for all other modules
 	// Tone will be passed in as the argument.
 	if (typeof define !== "function" && 
 		typeof root.Tone !== "function") {
 		//define 'define' to invoke the callbacks with Tone
-		root.define = function(name, deps, func){
-			//grab the one at the root
-			if (name === "Tone/core/Tone"){
-				root.Tone = func();
-			} else {
-				//for all others pass it in
-				func(root.Tone);
+		root.define = function(){
+			//the last argument is the callback
+			var lastArg = arguments[arguments.length - 1];
+			//the first argument is the dependencies or name
+			var firstArg = arguments[0];
+			if (firstArg === "Tone/core/Tone"){
+				//create the root object
+				root.Tone = lastArg();
+			} else if (typeof lastArg === "function"){
+				//if it's not the root, pass in the root
+				//as the parameter
+				lastArg(root.Tone);
 			}
 		};
 	}
 } (this));
 
 define("Tone/core/Tone", [], function(){
+
+	"use strict";
 
 	//////////////////////////////////////////////////////////////////////////
 	//	WEB AUDIO CONTEXT
@@ -43,13 +48,17 @@ define("Tone/core/Tone", [], function(){
 		return val === void 0;
 	}
 
-	//ALIAS
+	var audioContext;
+
+	//polyfill for AudioContext and OfflineAudioContext
 	if (isUndef(window.AudioContext)){
 		window.AudioContext = window.webkitAudioContext;
 	} 
+	if (isUndef(window.OfflineAudioContext)){
+		window.OfflineAudioContext = window.webkitOfflineAudioContext;
+	} 
 
-	var audioContext;
-	if (!isUndef(window.AudioContext)){
+	if (!isUndef(AudioContext)){
 		audioContext = new AudioContext();
 	} else {
 		throw new Error("Web Audio is not supported in this browser");
@@ -63,7 +72,9 @@ define("Tone/core/Tone", [], function(){
 	if (typeof AudioContext.prototype.createDelay !== "function"){
 		AudioContext.prototype.createDelay = AudioContext.prototype.createDelayNode;
 	}
-
+	if (typeof AudioContext.prototype.createPeriodicWave !== "function"){
+		AudioContext.prototype.createPeriodicWave = AudioContext.prototype.createWaveTable;
+	}
 	if (typeof AudioBufferSourceNode.prototype.start !== "function"){
 		AudioBufferSourceNode.prototype.start = AudioBufferSourceNode.prototype.noteGrainOn;
 	}
@@ -76,16 +87,30 @@ define("Tone/core/Tone", [], function(){
 	if (typeof OscillatorNode.prototype.stop !== "function"){
 		OscillatorNode.prototype.stop = OscillatorNode.prototype.noteOff;	
 	}
+	if (typeof OscillatorNode.prototype.setPeriodicWave !== "function"){
+		OscillatorNode.prototype.setPeriodicWave = OscillatorNode.prototype.setWaveTable;	
+	}
 	//extend the connect function to include Tones
 	AudioNode.prototype._nativeConnect = AudioNode.prototype.connect;
-	AudioNode.prototype.connect = function(B){
+	AudioNode.prototype.connect = function(B, outNum, inNum){
 		if (B.input){
-			this.connect(B.input);
+			if (Array.isArray(B.input)){
+				if (isUndef(inNum)){
+					inNum = 0;
+				}
+				this.connect(B.input[inNum]);
+			} else {
+				this.connect(B.input);
+			}
 		} else {
 			try {
-				this._nativeConnect.apply(this, arguments);
+				if (B instanceof AudioNode){
+					this._nativeConnect(B, outNum, inNum);
+				} else {
+					this._nativeConnect(B, outNum);
+				}
 			} catch (e) {
-				throw new Error("trying to connect to a node with no inputs");
+				throw new Error("error connecting to node: "+B);
 			}
 		}
 	};
@@ -149,9 +174,16 @@ define("Tone/core/Tone", [], function(){
 	/**
 	 *  connect the output of a ToneNode to an AudioParam, AudioNode, or ToneNode
 	 *  @param  {Tone | AudioParam | AudioNode} unit 
+	 *  @param {number=} outputNum optionally which output to connect from
+	 *  @param {number=} inputNum optionally which input to connect to
 	 */
-	Tone.prototype.connect = function(unit){
-		this.output.connect(unit);
+	Tone.prototype.connect = function(unit, outputNum, inputNum){
+		if (Array.isArray(this.output)){
+			outputNum = this.defaultArg(outputNum, 0);
+			this.output[outputNum].connect(unit, 0, inputNum);
+		} else {
+			this.output.connect(unit, outputNum, inputNum);
+		}
 	};
 
 	/**
@@ -163,7 +195,7 @@ define("Tone/core/Tone", [], function(){
 	
 	/**
 	 *  connect together all of the arguments in series
-	 *  @param {...AudioParam|Tone}
+	 *  @param {...AudioParam|Tone|AudioNode}
 	 */
 	Tone.prototype.chain = function(){
 		if (arguments.length > 1){
@@ -176,20 +208,90 @@ define("Tone/core/Tone", [], function(){
 		}
 	};
 
+	/**
+	 *  fan out the connection from the first argument to the rest of the arguments
+	 *  @param {...AudioParam|Tone|AudioNode}
+	 */
+	Tone.prototype.fan = function(){
+		var connectFrom = arguments[0];
+		if (arguments.length > 1){
+			for (var i = 1; i < arguments.length; i++){
+				var connectTo = arguments[i];
+				connectFrom.connect(connectTo);
+			}
+		}
+	};
+
 	///////////////////////////////////////////////////////////////////////////
 	//	UTILITIES / HELPERS / MATHS
 	///////////////////////////////////////////////////////////////////////////
 
 	/**
-	 *  if a the given is undefined, use the fallback
+	 *  if a the given is undefined, use the fallback. 
+	 *  if both given and fallback are objects, given
+	 *  will be augmented with whatever properties it's
+	 *  missing which are in fallback
+	 *
+	 *  warning: if object is self referential, it will go into an an 
+	 *  infinite recursive loop. 
 	 *  
 	 *  @param  {*} given    
 	 *  @param  {*} fallback 
 	 *  @return {*}          
 	 */
 	Tone.prototype.defaultArg = function(given, fallback){
-		return isUndef(given) ? fallback : given;
+		if (typeof given === "object" && typeof fallback === "object"){
+			var ret = {};
+			//make a deep copy of the given object
+			for (var givenProp in given) {
+				ret[givenProp] = this.defaultArg(given[givenProp], given[givenProp]);
+			}
+			for (var prop in fallback) {
+				ret[prop] = this.defaultArg(given[prop], fallback[prop]);
+			}
+			return ret;
+		} else {
+			return isUndef(given) ? fallback : given;
+		}
 	};
+
+	/**
+	 *  returns the args as an options object with given arguments
+	 *  mapped to the names provided. 
+	 *
+	 *  if the args given is an array containing an object, it is assumed
+	 *  that that's already the options object and will just return it. 
+	 *  
+	 *  @param  {Array} values  the 'arguments' object of the function
+	 *  @param  {Array.<string>} keys the names of the arguments as they
+	 *                                 should appear in the options object
+	 *  @param {Object=} defaults optional defaults to mixin to the returned 
+	 *                            options object                              
+	 *  @return {Object}       the options object with the names mapped to the arguments
+	 */
+	Tone.prototype.optionsObject = function(values, keys, defaults){
+		var options = {};
+		if (values.length === 1 && typeof values[0] === "object"){
+			options = values[0];
+		} else {
+			for (var i = 0; i < keys.length; i++){
+				options[keys[i]] = values[i];
+			}
+		}
+		if (!this.isUndef(defaults)){
+			return this.defaultArg(options, defaults);
+		} else {
+			return options;
+		}
+	};
+
+	/**
+	 *  test if the arg is undefined
+	 *  @param {*} arg the argument to test
+	 *  @returns {boolean} true if the arg is undefined
+	 *  @function
+	 */
+	Tone.prototype.isUndef = isUndef;
 
 	/**
 	 *  equal power gain scale
@@ -269,11 +371,44 @@ define("Tone/core/Tone", [], function(){
 
 	/**
 	 *  a dispose method 
-	 *  
-	 *  @abstract
 	 */
-	Tone.prototype.dispose = function(){};
+	Tone.prototype.dispose = function(){
+		if (!this.isUndef(this.input)){
+			if (this.input instanceof AudioNode){
+				this.input.disconnect();
+			}
+			this.input = null;
+		}
+		if (!this.isUndef(this.output)){
+			if (this.output instanceof AudioNode){
+				this.output.disconnect();
+			}
+			this.output = null;
+		}
+	};
 
+	/**
+	 *  a silent connection to the DesinationNode
+	 *  which will ensure that anything connected to it
+	 *  will not be garbage collected
+	 *  
+	 *  @private
+	 */
+	var _silentNode = null;
+
+	/**
+	 *  makes a connection to ensure that the node will not be garbage collected
+	 *  until 'dispose' is explicitly called
+	 *
+	 *  use carefully. circumvents JS and WebAudio's normal Garbage Collection behavior
+	 */
+	Tone.prototype.noGC = function(){
+		this.output.connect(_silentNode);
+	};
+
+	AudioNode.prototype.noGC = function(){
+		this.connect(_silentNode);
+	};
 
 	///////////////////////////////////////////////////////////////////////////
 	//	TIMING
@@ -326,14 +461,14 @@ define("Tone/core/Tone", [], function(){
 		} else if (typeof time === "string"){
 			var plusTime = 0;
 			if(time.charAt(0) === "+") {
-				time = time.slice(1);				
+				time = time.slice(1);	
+				plusTime = now;			
 			} 
-			return parseFloat(time) + now;
+			return parseFloat(time) + plusTime;
 		} else {
 			return now;
 		}
 	};
-
 
 	/**
 	 *  convert a frequency into seconds
@@ -356,17 +491,18 @@ define("Tone/core/Tone", [], function(){
 		return 1/seconds;
 	};
 
-
 	///////////////////////////////////////////////////////////////////////////
 	//	MUSIC NOTES
 	///////////////////////////////////////////////////////////////////////////
 
-	var noteToIndex = { "a" : 0, "a#" : 1, "bb" : 1, "b" : 2, "c" : 3, "c#" : 4,
-		"db" : 4, "d" : 5, "d#" : 6, "eb" : 6, "e" : 7, "f" : 8, "f#" : 9, 
-		"gb" : 9, "g" : 10, "g#" : 11, "ab" : 11
+	var noteToIndex = { "c" : 0, "c#" : 1, "db" : 1, "d" : 2, "d#" : 3, "eb" : 3, 
+		"e" : 4, "f" : 5, "f#" : 6, "gb" : 6, "g" : 7, "g#" : 8, "ab" : 8, 
+		"a" : 9, "a#" : 10, "bb" : 10, "b" : 11
 	};
 
-	var noteIndexToNote = ["A", "A#", "B", "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#"];
+	var noteIndexToNote = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
+
+	var middleC = 261.6255653005986;
 
 	/**
 	 *  convert a note name to frequency (i.e. A4 to 440)
@@ -380,7 +516,7 @@ define("Tone/core/Tone", [], function(){
 			var index = noteToIndex[parts[0].toLowerCase()];
 			var octave = parts[1];
 			var noteNumber = index + parseInt(octave, 10) * 12;
-			return Math.pow(2, (noteNumber - 48) / 12) * 440;
+			return Math.pow(2, (noteNumber - 48) / 12) * middleC;
 		} else {
 			return 0;
 		}
@@ -392,7 +528,7 @@ define("Tone/core/Tone", [], function(){
 	 *  @return {string}         
 	 */
 	Tone.prototype.frequencyToNote = function(freq){
-		var log = Math.log(freq / 440) / Math.LN2;
+		var log = Math.log(freq / middleC) / Math.LN2;
 		var noteNumber = Math.round(12 * log) + 48;
 		var octave = Math.floor(noteNumber/12);
 		var noteName = noteIndexToNote[noteNumber % 12];
@@ -402,6 +538,41 @@ define("Tone/core/Tone", [], function(){
 	///////////////////////////////////////////////////////////////////////////
 	//	STATIC METHODS
 	///////////////////////////////////////////////////////////////////////////
+
+	/**
+	 *  array of callbacks to be invoked when a new context is added
+	 *  @internal 
+	 *  @private
+	 */
+	var newContextCallbacks = [];
+
+	/**
+	 *  invoke this callback when a new context is added
+	 *  will be invoked initially with the first context
+	 *  @internal 
+	 *  @static
+	 *  @param {function(AudioContext)} callback the callback to be invoked
+	 *                                           with the audio context
+	 */
+	Tone._initAudioContext = function(callback){
+		//invoke the callback with the existing AudioContext
+		callback(Tone.context);
+		//add it to the array
+		newContextCallbacks.push(callback);
+	};
+
+	/**
+	 *  @static
+	 */
+	Tone.setContext = function(ctx){
+		//set the prototypes
+		Tone.prototype.context = ctx;
+		Tone.context = ctx;
+		//invoke all the callbacks
+		for (var i = 0; i < newContextCallbacks.length; i++){
+			newContextCallbacks[i](ctx);
+		}
+	};
 		
 	/**
 	 *  have a child inherit all of Tone's (or a parent's) prototype
@@ -409,7 +580,8 @@ define("Tone/core/Tone", [], function(){
 	 *  Parent.call(this) in the child's constructor
 	 *
 	 *  based on closure library's inherit function
-	 *  
+	 *
+	 *  @static
 	 *  @param  {function} 	child  
 	 *  @param  {function=} parent (optional) parent to inherit from
 	 *                             if no parent is supplied, the child
@@ -426,6 +598,32 @@ define("Tone/core/Tone", [], function(){
 		child.prototype.constructor = child;
 	};
 
-	return Tone;
+	/**
+	 *  bind this to a touchstart event to start the audio
+	 *
+	 *  http://stackoverflow.com/questions/12517000/no-sound-on-ios-6-web-audio-api/12569290#12569290
+	 *  
+	 *  @static
+	 */
+	Tone.startMobile = function(){
+		var osc = Tone.context.createOscillator();
+		var silent = Tone.context.createGain();
+		silent.gain.value = 0;
+		osc.connect(silent);
+		silent.connect(Tone.context.destination);
+		var now = Tone.context.currentTime;
+		osc.start(now);
+		osc.stop(now+1);
+	};
 
+	//setup the context
+	Tone._initAudioContext(function(audioContext){
+		_silentNode = audioContext.createGain();
+		_silentNode.gain.value = 0;
+		_silentNode.connect(audioContext.destination);
+	});
+
+	console.log("Tone.js r1-dev");
+
+	return Tone;
 });

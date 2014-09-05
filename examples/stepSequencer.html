@@ -2,137 +2,168 @@
 <head>
 	<title>STEP SEQUENCER</title>
 
-	<script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
-	<script type="text/javascript" src="../Tone.js"></script>
-	<link rel="stylesheet" type="text/css" href="exampleStyle.css">
+	<script type="text/javascript" src="./deps/jquery.min.js"></script>
+	<script type="text/javascript" src="./deps/jquery-ui.js"></script>
+	<script type="text/javascript" src="./deps/jquery.ui.touch-punch.js"></script>
+	<script type="text/javascript" src="../build/Tone.js"></script>
+	<script type="text/javascript" src="./Widgets.js"></script>
+	<script type="text/javascript" src="./ExampleList.js"></script>
+	<link rel="stylesheet" type="text/css" href="./style/widgets.css">
+	<link rel="stylesheet" type="text/css" href="./style/jquery-ui.css">
 
 </head>
 <body>
-	<div>16 Step Sequencer. Each column is a 16th note and each row is a different note.</div>
-	<br>
-	<button>start</button>
-	<br><br>
-	<div id="checkboxes"></div>
-	<div id="output"></div>
-	<div id="loading">loading...</div>
-	<br><br>
-	<input type='range' value='120' min='100' max='160'>
-	<div id='tempo' >bpm: 120</div>
+	<div id="Container">
+		<div id="Explanation">
+			Tone.Transport
+			<br>
+			<br>
+			Tone.Transport is the application-wide timekeeper. It uses an OscillatorNode
+			as it's clock source which enables sample-accurate scheduling as well as 
+			tempo-curves and automation. This example uses Tone.Transport.setInterval
+			to invoke a callback every 16th note. 
+		</div>
+		<div id="Content">
+			<div id="Loading">LOADING...</div>
+			<div id = "StartButton"></div>
+			<div id = "Sequencer"></div>
+		</div>
 	<script type="text/javascript">
 
-		//which beat in the 16 beats
+		/* globals Tone, GUI */
+
+		var keys = new Tone.MultiSampler({
+			"A" : "./audio/casio/A1.mp3",
+			"C#" : "./audio/casio/Cs2.mp3",
+			"E" : "./audio/casio/E2.mp3",
+			"F#" : "./audio/casio/Fs2.mp3",
+		}, function(){
+			$("#Loading").remove();
+			startCheckbox.enable();
+		});
+		keys.toMaster();
+
 		var stepNumber = 0;
-		//the number of loaded players
-		var loadedCount = 0;
-		//2d array of checkboxes
+		var noteNames = ["A", "C#", "E", "F#"];
 		var checkboxes = [];
-		//array of radio buttons
-		var radios = [];
+		var indicators = [];
 
-		//all of the audio players
-		var players = [
-			new Tone.Player("./audio/casio/A1.mp3", playerLoaded),
-			new Tone.Player("./audio/casio/Cs2.mp3", playerLoaded),
-			new Tone.Player("./audio/casio/E2.mp3", playerLoaded),
-			new Tone.Player("./audio/casio/Fs2.mp3", playerLoaded)
-		];
-
-		//player onload callback
-		function playerLoaded(player){
-			//able to be retriggered before the file is done playing
-			player.retrigger = true;
-			player.toMaster();
-			loadedCount++;
-			if (loadedCount === players.length){
-				$("#loading").remove();
+		Tone.Transport.setLoopEnd("1m");
+		Tone.Transport.loop = true;
+		Tone.Transport.setInterval(function(time){
+			//remove the old indicator
+			$(".Lit").removeClass("Lit");
+			//light up the new one
+			indicators[stepNumber].addClass("Lit");
+			stepNumber++;
+			stepNumber = stepNumber % 16;
+			//get the current column
+			for (var i = 0; i < checkboxes.length; i++){
+				var box = checkboxes[i][stepNumber];
+				if (box.isChecked()){
+					keys.triggerAttack(noteNames[i], time);
+				}
 			}
+		}, "16n");
+
+		// GUI //
+
+		var sequencer = $("#Sequencer");
+
+		//the indicator of the beat
+		function makeIndicator(){
+			for (var beat = 0; beat < 16; beat++){
+				var indicator = $("<div>", {"class" : "Indicator"}).appendTo(sequencer);
+				indicators.push(indicator);
+			}
+			sequencer.append("<br><br>");
 		}
 
-
-		//make the checkboxes
-		//1 row for each player
+		//1 row for each instrument
 		//16 beats in each row
 		function makeCheckboxes(){
-			for (var row = 0; row < players.length; row++){
+			for (var row = 0; row < 4; row++){
 				checkboxes[row] = [];
 				for (var beat = 0; beat < 16; beat++){
-					var checkbox = $("<input type='checkbox'>").appendTo("#checkboxes");
+					var checkbox = new GUI.Checkbox(sequencer, function(){}, "", "");
 					checkboxes[row].push(checkbox);
 					//randomly set some as checked initially
 					if (Math.random() < 0.25){
-						checkbox.prop("checked", true);
+						checkbox.check(true);
 					}
 				}
-				$("#checkboxes").append("<br>")
+				sequencer.append("<br>");
 			}
 		}
 
-		//make the radio buttons to show which beat we're on
-		function makeRadios(){
-			for (var beat = 0; beat < 16; beat++){
-				var radio = $("<input type='radio' name='step'>").appendTo("#checkboxes");
-				radios.push(radio);
-			}
-			$("#checkboxes").append("<br>");
-		}
+		new GUI.StartButton(Tone.startMobile);
+		new GUI.TopBar(Tone);
 
-		//called when the start button is clicked
-		function startTransport(){
-			if (Tone.Transport.state === "started"){
-				Tone.Transport.stop();
-				$("button").text("start");
-				$("#output").text("");
-			} else {
-				stepNumber = 0;
-				$("button").text("stop");
-				Tone.Transport.setInterval(onStep, "16n");
+		var startButton = $("#StartButton");
+		var startCheckbox = new GUI.Checkbox(startButton, function(on){
+			if (on){
 				Tone.Transport.start();
+			} else {
+				Tone.Transport.stop();
 			}
-		}
+		}, "start", "stop");
+		startCheckbox.disable();
+	
+		makeIndicator();
+		makeCheckboxes();
 
-		//called every sixteenth note
-		function onStep(time){
-			//set the right radio
-			selectRadio(stepNumber);
-			//for each of the rows
-			for (var row = 0; row < players.length; row++){
-				//check each of the checkbox values
-				var box = checkboxes[row][stepNumber];
-				if (box.prop("checked")){
-					players[row].start(time);
-				}
-			}
-			stepNumber++;
-			stepNumber = stepNumber % 16;
-		}
-
-		//show the current beat on the radio buttons
-		function selectRadio(stepNumber){
-			//unselect the previous one
-			var prev = stepNumber - 1;
-			if (prev === -1){
-				prev = 15;
-			}
-			radios[prev].prop("checked", false);
-			//select the current one
-			radios[stepNumber].prop("checked", true);
-		}
-
-		//initialization
-		$(function(){
-			//the start button
-			$("button").click(startTransport);
-			//the interface
-			makeRadios();
-			makeCheckboxes();
-			Tone.Transport.setBpm(120);
-			$("input").on("input", function(){
-				var tempo = $(this).val();
-				$("#tempo").text("bpm: "+tempo);
-				Tone.Transport.setBpm(tempo);
-			});
-		});
+		var slider = new GUI.Slider($("#Content"), function(val){
+			var scaled = val * 30 + 100;
+			Tone.Transport.setBpm(scaled);
+			return scaled;
+		}, 120, "tempo");
+		slider.render(20/30);
 
 	</script>
+
+	<style type="text/css">
+	#Content {
+		/*text-align: center;*/
+		width: 470px;
+		height: 200px;
+	}
+	#Content #Sequencer .Checkbox{
+		margin-top: 0px;
+		width: 25px;
+		height: 25px;
+	}
+	#Content #Sequencer .Checkbox .ui-button-text {
+		height: 100%;
+		width: 100%;
+		padding: 0px;
+	}
+	#Content #Sequencer .Indicator{
+		position: relative;
+		float: left;
+		width: 25px;
+		height: 25px;
+		border-radius: 50%;
+		margin: 1.5px;
+		background-color: yellow;
+		opacity: 0;
+		transition: opacity 0.1s;
+	}
+	#Content #Sequencer .Indicator.Lit{
+		opacity: 1;
+	}
+	.Slider {
+		margin-top: 20px;
+		width: 60%;
+		margin-left: 20%;
+	}
+	#Content #StartButton {
+		margin-bottom: 10px;
+		width: 60%;
+		margin-left: 20%;
+	}
+	#Content #StartButton .Checkbox{
+		width: 100%;
+	}
+	</style>
 </body>
 </html>

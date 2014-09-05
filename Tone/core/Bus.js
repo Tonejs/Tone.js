@@ -1,5 +1,7 @@
 define(["Tone/core/Tone"], function(Tone){
 
+	"use strict";
+
 	/**
 	 *  buses are another way of routing audio
 	 *
@@ -10,6 +12,8 @@ define(["Tone/core/Tone"], function(Tone){
 	  *  All of the routes
 	  *  
 	  *  @type {Object}
+	  *  @static
+	  *  @private
 	  */
 	var Buses = {};
 
@@ -31,18 +35,18 @@ define(["Tone/core/Tone"], function(Tone){
 	};
 
 	/**
-	 *  recieve the input from the desired channelName to the input gain of 'this' node.
+	 *  recieve the input from the desired channelName to the input
 	 *
 	 *  @param  {string} channelName 
+	 *  @param {AudioNode=} [input=this.input] if no input is selected, the
+	 *                                         input of the current node is
+	 *                                         chosen. 
 	 */
-	Tone.prototype.receive = function(channelName){
+	Tone.prototype.receive = function(channelName, input){
 		if (!Buses.hasOwnProperty(channelName)){
 			Buses[channelName] = this.context.createGain();	
 		}
-		Buses[channelName].connect(this.input);
+		input = this.defaultArg(input, this.input);
+		Buses[channelName].connect(input);
 	};
-
-	Tone.Buses = Buses;
-
-	return Buses;
 });

@@ -1,11 +1,12 @@
 define(["Tone/core/Tone", "Tone/core/Transport"], function(Tone){
+
+	"use strict";
+	
 	/**
-	 *  base class for sources
-	 *
-	 *  sources have start/stop/pause
-	 *
-	 *  they also have the ability to be synced to the 
-	 *  start/stop/pause of Tone.Transport
+	 *  @class  Base class for sources.
+	 *          Sources have start/stop/pause and 
+	 *          the ability to be synced to the 
+	 *          start/stop/pause of Tone.Transport.
 	 *
 	 *  @constructor
 	 *  @extends {Tone}
@@ -54,31 +55,41 @@ define(["Tone/core/Tone", "Tone/core/Transport"], function(Tone){
 	 *  @param {Tone.Time=} delay optional delay time before starting the source
 	 */
 	Tone.Source.prototype.sync = function(delay){
-		Tone.Transport.sync(this, delay);
+		Tone.Transport.syncSource(this, delay);
 	};
 
 	/**
 	 *  unsync the source to the Transport
 	 */
 	Tone.Source.prototype.unsync = function(){
-		Tone.Transport.unsync(this);
+		Tone.Transport.unsyncSource(this);
 	};
 
 
 	/**
-	 *  @param {number} value 
+	 *  set the volume in decibels
+	 *  @param {number} db in decibels
 	 *  @param {Tone.Time=} fadeTime (optional) time it takes to reach the value
 	 */
-	Tone.Source.prototype.setVolume = function(value, fadeTime){
+	Tone.Source.prototype.setVolume = function(db, fadeTime){
 		var now = this.now();
+		var gain = this.dbToGain(db);
 		if (fadeTime){
 			var currentVolume = this.output.gain.value;
 			this.output.gain.cancelScheduledValues(now);
 			this.output.gain.setValueAtTime(currentVolume, now);
-			this.output.gain.linearRampToValueAtTime(value, now + this.toSeconds(time));
+			this.output.gain.linearRampToValueAtTime(gain, now + this.toSeconds(fadeTime));
 		} else {
-			this.output.gain.setValueAtTime(value, now);
+			this.output.gain.setValueAtTime(gain, now);
 		}
+	};
+
+	/**
+	 *	clean up  
+	 */
+	Tone.Source.prototype.dispose = function(){
+		Tone.prototype.dispose.call(this);
+		this.state = null;
 	};
 
 	/**

@@ -1,7 +1,9 @@
-define(["Tone/core/Tone"], function(Tone){
+define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
+
+	"use strict";
 
 	/**
-	 *  Multiply the incoming signal by some factor
+	 *  @class  Multiply the incoming signal by some factor
 	 *
 	 *  @constructor
 	 *  @extends {Tone}
@@ -30,6 +32,13 @@ define(["Tone/core/Tone"], function(Tone){
 	Tone.Multiply.prototype.setValue = function(value){
 		this.input.gain.value = value;
 	};
+
+	/**
+	 *  borrows the method from {@link Tone.Signal}
+	 *  
+	 *  @function
+	 */
+	Tone.Multiply.prototype.connect = Tone.Signal.prototype.connect;
 
 	/**
 	 *  clean up

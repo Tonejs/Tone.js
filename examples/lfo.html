@@ -2,35 +2,105 @@
 <head>
 	<title>LFO</title>
 
-	<script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
-	<script type="text/javascript" src="../Tone.js"></script>
-	<link rel="stylesheet" type="text/css" href="exampleStyle.css">
-	
+	<meta name="viewport" content="width=device-width, initial-scale=0.5">
+
+	<script type="text/javascript" src="./deps/jquery.min.js"></script>
+	<script type="text/javascript" src="./deps/jquery-ui.js"></script>
+	<script type="text/javascript" src="./deps/jquery.ui.touch-punch.js"></script>
+	<script type="text/javascript" src="../build/Tone.js"></script>
+	<script type="text/javascript" src="./Widgets.js"></script>
+	<script type="text/javascript" src="./ExampleList.js"></script>
+	<link rel="stylesheet" type="text/css" href="./style/widgets.css">
+	<link rel="stylesheet" type="text/css" href="./style/jquery-ui.css">
+
 </head>
 <body>
-	<div>LFO on the amplitude of a noise signal</div>
-	<br>
-	<button>start</button>
-	<script type="text/javascript">
-		//components
-		var noise = new Tone.Noise("brown");
-		var lfo = new Tone.LFO(1, 0.5, 1);
 		
-		//connections
-		noise.toMaster();
-		lfo.connect(noise.output.gain);
+	<div id="Container">
+		<div id="Explanation">
+			Low Frequency Oscillators
+			<br>
+			<br>
+			<a href="http://en.wikipedia.org/wiki/Low-frequency_oscillation">LFOs</a> are a powerful musical tool. 
+			LFOs can be connected to Tone.Signals and AudioParams to control nearly anything. This example uses LFOs 
+			to control the oscillators pitch, detune, delay time, and filter frequency to make some crazy sounds. 
+		</div>
+		<div id="Content"></div>
+	</div>
 
-		$("button").click(function(){
-			if (noise.state !== "started"){
-				lfo.start();
-				noise.start();
-				$(this).text("stop");
+
+	<script type="text/javascript">
+		/* globals Tone, GUI */
+
+		var osc = new Tone.Oscillator(110, "triangle");
+		osc.toMaster();
+
+		var freqLFO = new Tone.LFO(0.1, 55, 110);
+		freqLFO.setType("square");
+		freqLFO.connect(osc.frequency);
+
+		var detuneLFO = new Tone.LFO(12, -40, 40);
+		detuneLFO.connect(osc.detune);
+		
+		var amplitudeLFO = new Tone.LFO(4, 0.05, 0.5);
+		amplitudeLFO.connect(osc.output.gain);
+
+		// GUI //
+
+		var content = $("#Content");
+
+		new GUI.TopBar(Tone);
+		new GUI.StartButton(Tone.startMobile);
+
+		new GUI.Checkbox(content, function(on){
+			if (on){
+				osc.start();
+				freqLFO.start();
+				detuneLFO.start();
+				amplitudeLFO.start();
 			} else {
-				lfo.stop();
-				noise.stop();
-				$(this).text("start");
+				osc.stop();
+				freqLFO.stop();
+				detuneLFO.stop();
+				amplitudeLFO.stop();
 			}
-		});
+		}, "start", "stop");
+
+		//sliders
+		var freqSlider = new GUI.Slider(content, function(val){
+			var scaled = val * 2 + 0.1;
+			freqLFO.setFrequency(scaled);
+			return scaled;
+		}, 1, "pitch LFO");
+		freqSlider.render(0.1);
+		var detuneSlider = new GUI.Slider(content, function(val){
+			var scaled = val * 20 + 5;
+			detuneLFO.setFrequency(scaled);
+			return scaled;
+		}, 1, "detune LFO");
+		detuneSlider.render(0.5);
+		var amplitudeSlider = new GUI.Slider(content, function(val){
+			var scaled = val * 4 + 1;
+			amplitudeLFO.setFrequency(scaled);
+			return scaled;
+		}, 1, "amplitude LFO");
+		amplitudeSlider.render(0.75);
+
 	</script>
+
+	<style type="text/css">
+		#Content {
+			text-align: center;
+			width: 220px;
+			height: 250px;
+		}
+		.Slider {
+			margin-top: 15px;
+		}
+		.Checkbox {
+			width: 100%;
+		}
+	</style>
+
 </body>
 </html>

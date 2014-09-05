@@ -1,12 +1,13 @@
 define(["Tone/core/Tone", "Tone/core/Master"], function(Tone){
 
+	"use strict";
+
 	/**
 	 *  get the rms of the input signal with some averaging
 	 *  can also just get the value of the signal
 	 *  or the value in dB
 	 *  
 	 *  inspired by https://github.com/cwilso/volume-meter/blob/master/volume-meter.js
-	 *  The MIT License (MIT) Copyright (c) 2014 Chris Wilson
 	 *
 	 *  @constructor
 	 *  @extends {Tone}
@@ -144,12 +145,11 @@ define(["Tone/core/Tone", "Tone/core/Master"], function(Tone){
 	 *  @override
 	 */
 	Tone.Meter.prototype.dispose = function(){
+		Tone.prototype.dispose.call(this);
 		this._jsNode.disconnect();
 		this._jsNode.onaudioprocess = null;
 		this._volume = null;
 		this._values = null;
-		this.input.disconnect();
-		this.output.disconnect();
 	};
 
 	return Tone.Meter;

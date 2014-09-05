@@ -1,19 +1,33 @@
-define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/signal/Signal"], function(Tone){
+define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/signal/Signal", "Tone/signal/Multiply"], function(Tone){
+
+	"use strict";
+	
 	/**
 	 * Feedback Effect (a sound loop between an audio source and its own output)
 	 *
 	 *  @constructor
 	 *  @extends {Tone.Effect}
-	 *  @param {number=} initialFeedback the initial feedback value (defaults to 0.25)
+	 *  @param {number|object=} [initialFeedback=0.25] the initial feedback value (defaults to 0.25)
 	 */
-	Tone.FeedbackEffect = function(initialFeedback){
-		Tone.Effect.call(this);
+	Tone.FeedbackEffect = function(){
+
+		var options = this.optionsObject(arguments, ["feedback"]);
+		options = this.defaultArg(options, Tone.FeedbackEffect.defaults);
+
+		Tone.Effect.call(this, options);
 
 		/**
 		 *  controls the amount of feedback
 		 *  @type {Tone.Signal}
 		 */
-		this.feedback = new Tone.Signal(this.defaultArg(initialFeedback, 0.25));
+		this.feedback = new Tone.Signal(options.feedback);
+
+		/**
+		 *  scales the feedback in half
+		 *  @type {Tone.Multiply}
+		 */
+		this._half = new Tone.Multiply(0.5);
+		
 		/**
 		 *  the gain which controls the feedback
 		 *  @type {GainNode}
@@ -23,10 +37,18 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/signal/Signal"], function(
 
 		//the feedback loop
 		this.chain(this.effectReturn, this._feedbackGain, this.effectSend);
-		this.feedback.connect(this._feedbackGain.gain);
+		this.chain(this.feedback, this._half, this._feedbackGain.gain);
 	};
 
 	Tone.extend(Tone.FeedbackEffect, Tone.Effect);
+
+	/**
+	 *  @static
+	 *  @type {Object}
+	 */
+	Tone.FeedbackEffect.defaults = {
+		"feedback" : 0.25
+	};
 
 	/**
 	 *  set the feedback amount
@@ -44,21 +66,25 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/signal/Signal"], function(
 	};
 
 	/**
-	 *  the parents dispose method
-	 *  @private
-	 *  @borrows Tone.Effect.dispose as Tone.FeedbackEffect._effectDispose
+	 *  set the parameters in bulk
+	 *  @param {Object} params
 	 */
-	Tone.FeedbackEffect.prototype._effectDispose = Tone.Effect.prototype.dispose;
+	Tone.FeedbackEffect.prototype.set = function(params){
+		if (!this.isUndef(params.feedback)) this.setFeedback(params.feedback);
+		Tone.Effect.prototype.set.call(this, params);
+	};
 
 	/**
 	 *  clean up
 	 */
 	Tone.FeedbackEffect.prototype.dispose = function(){
-		this._effectDispose();
+		Tone.Effect.prototype.dispose.call(this);
 		this.feedback.dispose();
+		this._half.dispose();
 		this._feedbackGain.disconnect();
 		this.feedback = null;
 		this._feedbackGain = null;
+		this._half = null;
 	};
 
 	return Tone.FeedbackEffect;

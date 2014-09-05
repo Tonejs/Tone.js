@@ -1,7 +1,9 @@
 define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 
+	"use strict";
+
 	/**
-	 *  Adds a value to an incoming signal
+	 *  @class Adds a value to an incoming signal
 	 *
 	 *  @constructor
 	 *  @extends {Tone}
@@ -33,6 +35,13 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	Tone.Add.prototype.setValue = function(value){
 		this._value.setValue(value);
 	}; 
+
+	/**
+	 *  borrows the method from {@link Tone.Signal}
+	 *  
+	 *  @function
+	 */
+	Tone.Add.prototype.connect = Tone.Signal.prototype.connect;
 
 	/**
 	 *  dispose method

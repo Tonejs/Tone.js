@@ -1,8 +1,11 @@
+/* global it, describe*/
+
 define(["chai", "Tone/core/Tone", "Tone/core/Transport", "tests/Core"], function(chai, Tone, Transport){
 	var expect = chai.expect;
 	var tone = new Tone();
 
 	describe("Tone.notationToSeconds", function(){
+
 		it("handles measures, measure subdivision and triplets", function(){
 			Transport.stop();
 			Transport.setBpm(120);
@@ -27,6 +30,7 @@ define(["chai", "Tone/core/Tone", "Tone/core/Transport", "tests/Core"], function
 	});
 
 	describe("Tone.transportTimeToSeconds", function(){
+
 		it("converts transport time in multiple forms to seconds", function(){
 			Transport.stop();
 			Transport.setBpm(120);
@@ -38,6 +42,7 @@ define(["chai", "Tone/core/Tone", "Tone/core/Transport", "tests/Core"], function
 			expect(tone.transportTimeToSeconds("2")).to.equal(1);
 			expect(tone.transportTimeToSeconds("0:0:2")).to.equal(0.25);
 		});
+
 		it("handles time signature changes", function(){
 			Transport.stop();
 			Transport.setBpm(120);
@@ -48,6 +53,7 @@ define(["chai", "Tone/core/Tone", "Tone/core/Transport", "tests/Core"], function
 	});
 
 	describe("Tone.toTransportTime", function(){
+
 		it("converts seconds to transport time", function(){
 			Transport.stop();
 			Transport.setBpm(120);
@@ -55,6 +61,7 @@ define(["chai", "Tone/core/Tone", "Tone/core/Transport", "tests/Core"], function
 			expect(tone.toTransportTime(3.375)).to.equal("1:2:3");
 			expect(tone.toTransportTime(3)).to.equal("1:2:0");
 		});
+
 		it("handles time signature changes", function(){
 			Transport.stop();
 			Transport.setBpm(120);
@@ -65,6 +72,7 @@ define(["chai", "Tone/core/Tone", "Tone/core/Transport", "tests/Core"], function
 	});
 
 	describe("Tone.frequencyToSeconds", function(){
+
 		it("converts frequencies as a string or number", function(){
 			Transport.stop();
 			Transport.setBpm(120);
@@ -76,6 +84,7 @@ define(["chai", "Tone/core/Tone", "Tone/core/Transport", "tests/Core"], function
 	});
 
 	describe("Tone.toFrequency", function(){
+
 		it("infers type correctly", function(){
 			Transport.stop();
 			Transport.setBpm(120);
@@ -87,6 +96,7 @@ define(["chai", "Tone/core/Tone", "Tone/core/Transport", "tests/Core"], function
 	});
 
 	describe("Tone.toSeconds", function(){
+
 		it("correctly infers type", function(){
 			Transport.stop();
 			Transport.setBpm(120);
@@ -97,6 +107,7 @@ define(["chai", "Tone/core/Tone", "Tone/core/Transport", "tests/Core"], function
 			expect(tone.toSeconds("1:0:0")).to.equal(2);
 			expect(tone.toSeconds("2hz")).to.equal(0.5);
 		});
+
 		it("handles 'now' relative values", function(){
 			Transport.stop();
 			Transport.setBpm(120);
@@ -108,9 +119,18 @@ define(["chai", "Tone/core/Tone", "Tone/core/Transport", "tests/Core"], function
 			now = tone.now();
 			expect(tone.toSeconds("+1:0")).to.be.closeTo(now + 2, 0.01);
 		});
+
 		it("with no arguments returns 'now'", function(){
 			var now = tone.now();
 			expect(tone.toSeconds()).to.be.closeTo(now, 0.01);
+		});
+
+		it("can evaluate mathematical expressions of time", function(){
+			Transport.stop();
+			Transport.setBpm(120);
+			Transport.setTimeSignature(4, 4);
+			expect(tone.toSeconds("1+2+3")).to.equal(6);
+			expect(tone.toSeconds("2*1:2 - 1m")).to.equal(4);
 		});
 	});
 });

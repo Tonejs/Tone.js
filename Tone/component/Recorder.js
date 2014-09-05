@@ -1,5 +1,7 @@
 define(["Tone/core/Tone", "Tone/core/Master"], function(Tone){
 
+	"use strict";
+
 	/**
 	 *  Record an input into an array or AudioBuffer
 	 *
@@ -213,12 +215,9 @@ define(["Tone/core/Tone", "Tone/core/Master"], function(Tone){
 	 *  clean up
 	 */
 	Tone.Recorder.prototype.dispose = function(){
-		this.output.disconnect();
-		this.input.disconnect();
+		Tone.prototype.dispose.call(this);
 		this._jsNode.disconnect();
 		this._jsNode.onaudioprocess = undefined;
-		this.output = null;
-		this.input = null;
 		this._jsNode = null;
 		this._recordBuffers = null;
 	};

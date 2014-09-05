@@ -1,16 +1,11 @@
-///////////////////////////////////////////////////////////////////////////////
-//
-//	WEB RTC MICROPHONE
-//
-///////////////////////////////////////////////////////////////////////////////
-
 define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 
+	"use strict";
+
 	/**
-	 *  WebRTC Microphone
-	 *
-	 *  CHROME ONLY (for now) because of the 
-	 *  use of the MediaStreamAudioSourceNode
+	 *  @class  WebRTC Microphone. 
+	 *          CHROME ONLY (for now) because of the 
+	 *          use of the MediaStreamAudioSourceNode
 	 *
 	 *  @constructor
 	 *  @extends {Tone.Source}
@@ -33,9 +28,7 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 		 *  @type {Object}
 		 *  @private
 		 */
-		this.constraints = {"audio" : {
-			echoCancellation : false
-		}};
+		this.constraints = {"audio" : true};
 
 		//get the option
 		var self = this;
@@ -95,13 +88,10 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 	/**
 	 *  clean up
 	 */
-	Tone.Microphone.prototype.dispose = function(e) {
-		this.input.disconnect();
-		this.output.disconnect();
+	Tone.Microphone.prototype.dispose = function() {
+		Tone.Source.prototype.dispose.call(this);
 		this._stream.disconnect();
 		this._mediaStream.disconnect();
-		this.input = null;
-		this.output = null;
 		this._stream = null;
 		this._mediaStream = null;
 	};

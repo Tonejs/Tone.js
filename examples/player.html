@@ -1,21 +1,35 @@
 <html>
 <head>
-	<title>Basic Player</title>
+	<title>PLAYER</title>
 	
-	<script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
-	<script type="text/javascript" src="../Tone.js"></script>
-	<link rel="stylesheet" type="text/css" href="exampleStyle.css">
+	<script type="text/javascript" src="./deps/jquery.min.js"></script>
+	<script type="text/javascript" src="./deps/jquery-ui.js"></script>
+	<script type="text/javascript" src="./deps/jquery.ui.touch-punch.js"></script>
+	<script type="text/javascript" src="../build/Tone.js"></script>
+	<script type="text/javascript" src="./Widgets.js"></script>
+	<script type="text/javascript" src="./ExampleList.js"></script>
+	<link rel="stylesheet" type="text/css" href="./style/widgets.css">
+	<link rel="stylesheet" type="text/css" href="./style/jquery-ui.css">
 
 </head>
 <body>
-	<div>press and hold the button to play a 10ms grain from the audio file</div>
-	<br>
-	<button>start</button>
-	<div id='loading'>loading...</button>
+	<div id="Container">
+		<div id="Explanation">
+			Player
+			<br>
+			<br>
+			Press and hold to hear a 10ms grain of audio. 
+		</div>
+		<div id="Content">
+			<div id="Loading">Loading...</div>
+		</div>
+	</div>
 	<script type="text/javascript">
 
+	 	/* globals Tone, GUI */
+
 		var player = new Tone.Player("./audio/casio/A1.mp3", function(){
-			$("#loading").remove();
+			$("#Loading").remove();
 		});
 
 		player.loop = true;
@@ -25,16 +39,28 @@
 		//connect it to the output
 		player.toMaster();
 		
-		$("button").mousedown(function(){
-			player.start(0, player.loopStart);
-			$(this).text("stop");
-		});
+		// GUI //
 
-		$("button").mouseup(function(){
-			player.stop();
-			$(this).text("start");
-		});
+		new GUI.StartButton(Tone.startMobile);
+		new GUI.TopBar(Tone);
+
+		new GUI.Momentary($("#Content"), function(on){
+			if (on){
+				player.start();
+			} else {
+				player.stop();
+			}
+		}, "start", "stop");
 		
 	</script>
+	<style type="text/css">
+	#Content {
+		width: 100px;
+		height: 50px;
+	}
+	.Momentary {
+		width: 100%;
+	}
+	</style>
 </body>
 </html>
