@@ -5715,7 +5715,7 @@ define('Tone/effect/AutoWah',["Tone/core/Tone", "Tone/component/Follower", "Tone
 		 *  @private
 		 */
 		this._bandpass = new Tone.Filter("bandpass");
-		this._bandpass.setRolloff(-48);
+		this._bandpass.setRolloff(options.rolloff);
 		// this._bandpass.type = "bandpass";
 		// this._bandpass.Q.value = options.Q;
 
@@ -5750,6 +5750,7 @@ define('Tone/effect/AutoWah',["Tone/core/Tone", "Tone/component/Follower", "Tone
 		"sensitivity" : 0,
 		"Q" : 2,
 		"gain" : 2,
+		"rolloff" : -48,
 		/** attributes for the envelope follower */
 		"follower" : {
 			"attack" : 0.3,
@@ -6312,6 +6313,7 @@ function(Tone){
 		//set the initial values
 		this.setDepth(this._depth);
 		this.setRate(options.rate);
+		this.setType(options.type);
 	};
 
 	Tone.extend(Tone.Chorus, Tone.StereoXFeedbackEffect);
@@ -6324,7 +6326,8 @@ function(Tone){
 		"rate" : 1.5, 
 		"delayTime" : 3.5,
 		"depth" : 0.7,
-		"feedback" : 0.4
+		"feedback" : 0.4,
+		"type" : "sine"
 	};
 
 	/**
@@ -6358,6 +6361,15 @@ function(Tone){
 	};
 
 	/**
+	 *  set the LFO type
+	 *  @param {number} type
+	 */
+	Tone.Chorus.prototype.setType = function(type){
+		this._lfoL.setType(type);
+		this._lfoR.setType(type);
+	};
+
+	/**
 	 *  set multiple parameters at once with an object
 	 *  @param {Object} params the parameters as an object
 	 */
@@ -6365,6 +6377,7 @@ function(Tone){
 		if (!this.isUndef(params.rate)) this.setRate(params.rate);
 		if (!this.isUndef(params.delayTime)) this.setDelayTime(params.delayTime);
 		if (!this.isUndef(params.depth)) this.setDepth(params.depth);
+		if (!this.isUndef(params.type)) this.setType(params.type);
 		Tone.FeedbackEffect.prototype.set.call(this, params);
 	};
 
@@ -6596,7 +6609,7 @@ function(Tone){
 		 *  @type {Array.<Tone.Filter>}
 		 *  @private
 		 */
-		this._filtersR = this._makeFilters(options.stages, this._lfoR);
+		this._filtersR = this._makeFilters(options.stages, this._lfoR, options.Q);
 		
 		//connect them up
 		this.effectSendL.connect(this._filtersL[0]);
@@ -6627,6 +6640,7 @@ function(Tone){
 		"rate" : 0.5,
 		"depth" : 1,
 		"stages" : 4,
+		"Q" : 6,
 		"baseFrequency" : 400,
 		"feedback" : 0.6
 	};
@@ -6636,13 +6650,13 @@ function(Tone){
 	 *  @returns {Array} the number of filters all connected together
 	 *  @private
 	 */
-	Tone.Phaser.prototype._makeFilters = function(stages, connectToFreq){
+	Tone.Phaser.prototype._makeFilters = function(stages, connectToFreq, Q){
 		var filters = new Array(stages);
 		//make all the filters
 		for (var i = 0; i < stages; i++){
 			var filter = this.context.createBiquadFilter();
 			filter.type = "allpass";
-			filter.Q.value = 6;
+			filter.Q.value = Q;
 			connectToFreq.connect(filter.frequency);
 			filters[i] = filter;
 		}

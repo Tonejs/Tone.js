@@ -7,21 +7,119 @@ define(["Tone/core/Tone", "Tone/effect/AutoWah"], function(Tone){
 	 *  @type {Object}
 	 */
 	Tone.AutoWah.prototype.preset = {
+		"talker" : {
+			"baseFrequency" : 100,
+			"octaves" : 4,
+			"sensitivity" : 0,
+			"Q" : 2,
+			"gain" : 10,
+			"rolloff" : -12,
+			/** attributes for the envelope follower */
+			"follower" : {
+				"attack" : 0.05,
+				"release" : 0.2
+			}
+		},
+		"yes" : {
+			"baseFrequency" : 250,
+			"octaves" : 5,
+			"sensitivity" : 0,
+			"Q" : 2,
+			"gain" : 20,
+			"rolloff" : -24,
+			/** attributes for the envelope follower */
+			"follower" : {
+				"attack" : 0.1,
+				"release" : 0.2
+			}
+		},
 		"springy" : {
 			"baseFrequency" : 10,
 			"octaves" : 8,
 			"sensitivity" : 0,
-			"Q" : 20,
+			"Q" : 1,
 			"gain" : 10,
+			"rolloff" : -48,
 			/** attributes for the envelope follower */
 			"follower" : {
-				"attack" : 1,
-				"release" : 2
+				"attack" : 0.02,
+				"release" : 1
 			}
 		}
 	};
 
 	return Tone.AutoWah.prototype.preset;
+});
+define(["Tone/core/Tone", "Tone/effect/AutoWah"], function(Tone){
+
+	/**
+	 *  named presets for the AutoWah
+	 *  @const
+	 *  @static
+	 *  @type {Object}
+	 */
+	Tone.Chorus.prototype.preset = {
+		"ether" : {
+			"rate" : 0.3, 
+			"delayTime" : 8,
+			"type" : "triangle",
+			"depth" : 0.8,
+			"feedback" : 0.7
+		},
+		"harmony" : {
+			"rate" : 12, 
+			"delayTime" : 3.5,
+			"type" : "sine",
+			"depth" : 0.8,
+			"feedback" : 0.2
+		},
+		"rattler" : {
+			"rate" : "16n", 
+			"delayTime" : 15,
+			"type" : "square",
+			"depth" : 0.2,
+			"feedback" : 0.8
+		}
+	};
+
+	return Tone.Chorus.prototype.preset;
+});
+define(["Tone/core/Tone", "Tone/effect/AutoWah"], function(Tone){
+
+	/**
+	 *  named presets for the Phaser
+	 *  @const
+	 *  @static
+	 *  @type {Object}
+	 */
+	Tone.Phaser.prototype.preset = {
+		"testing" : {
+			"rate" : 10,
+			"depth" : 0.2,
+			"stages" : 4,
+			"Q" : 2,
+			"baseFrequency" : 700,
+			"feedback" : 0
+		},
+		"landing" : {
+			"rate" : 0.5,
+			"depth" : 1.2,
+			"stages" : 12,
+			"Q" : 20,
+			"baseFrequency" : 800,
+			"feedback" : 0.9
+		},
+		"bubbles" : {
+			"rate" : 4.5,
+			"depth" : 0.4,
+			"stages" : 6,
+			"Q" : 2,
+			"baseFrequency" : 300,
+			"feedback" : 0.6
+		}
+	};
+
+	return Tone.Phaser.prototype.preset;
 });
 define(["Tone/core/Tone", "Tone/instrument/DuoSynth"], function(Tone){
 
