@@ -36,7 +36,7 @@ module.exports = function(grunt) {
 			npm : {
 				files : [{
 					expand : true,
-					src: ["../build/Tone.js", "../build/Tone.min.js", "../build/Tone.Presets.js", "../README.md"], 
+					src: ["../build/Tone.js", "../build/Tone.min.js", "../build/Tone.Preset.js", "../README.md"], 
 					dest: "./npm"
 				}, {
 					src : ["../Tone/**"],
@@ -62,7 +62,7 @@ module.exports = function(grunt) {
 			},
 			presets : {
 				files: {
-					"../build/Tone.Presets.js" : ["../Tone/**/preset/*.js"],
+					"../build/Tone.Preset.js" : ["../Tone/**/preset/*.js"],
 				}
 			},
 			removeRequireString: {

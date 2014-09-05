@@ -32,7 +32,7 @@ Tone.js can also be used like any other script or library by dropping the [Tone.
 <script type="text/javascript" src="pathto/Tone.js"></script>
 ```
 
-To use any of the presets on instruments or effects, be sure to grab the [Tone.Presets build](https://raw.githubusercontent.com/TONEnoTONE/Tone.js/master/build/Tone.Presets.js) which is not included in the default build. 
+To use any of the presets on instruments or effects, be sure to grab the [Tone.Presets build](https://raw.githubusercontent.com/TONEnoTONE/Tone.js/master/build/Tone.Preset.js) which is not included in the default build. 
 
 # AudioContext
 
