@@ -226,6 +226,6 @@ JSDocs are [here](http://tonenotone.github.io/Tone.js/doc/).
 
 # References and Inspiration
 
-* [Tune.js](https://github.com/Dinahmoe/tuna)
+* [Tuna.js](https://github.com/Dinahmoe/tuna)
 * [Many of Chris Wilson's Repositories](https://github.com/cwilso)
 * [The Spec](http://webaudio.github.io/web-audio-api/)
