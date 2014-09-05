@@ -59,7 +59,7 @@ function(Tone){
 		 *  @type {Array.<Tone.Filter>}
 		 *  @private
 		 */
-		this._filtersR = this._makeFilters(options.stages, this._lfoR);
+		this._filtersR = this._makeFilters(options.stages, this._lfoR, options.Q);
 		
 		//connect them up
 		this.effectSendL.connect(this._filtersL[0]);
@@ -90,6 +90,7 @@ function(Tone){
 		"rate" : 0.5,
 		"depth" : 1,
 		"stages" : 4,
+		"Q" : 6,
 		"baseFrequency" : 400,
 		"feedback" : 0.6
 	};
@@ -99,13 +100,13 @@ function(Tone){
 	 *  @returns {Array} the number of filters all connected together
 	 *  @private
 	 */
-	Tone.Phaser.prototype._makeFilters = function(stages, connectToFreq){
+	Tone.Phaser.prototype._makeFilters = function(stages, connectToFreq, Q){
 		var filters = new Array(stages);
 		//make all the filters
 		for (var i = 0; i < stages; i++){
 			var filter = this.context.createBiquadFilter();
 			filter.type = "allpass";
-			filter.Q.value = 6;
+			filter.Q.value = Q;
 			connectToFreq.connect(filter.frequency);
 			filters[i] = filter;
 		}

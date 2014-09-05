@@ -77,6 +77,7 @@ function(Tone){
 		//set the initial values
 		this.setDepth(this._depth);
 		this.setRate(options.rate);
+		this.setType(options.type);
 	};
 
 	Tone.extend(Tone.Chorus, Tone.StereoXFeedbackEffect);
@@ -89,7 +90,8 @@ function(Tone){
 		"rate" : 1.5, 
 		"delayTime" : 3.5,
 		"depth" : 0.7,
-		"feedback" : 0.4
+		"feedback" : 0.4,
+		"type" : "sine"
 	};
 
 	/**
@@ -123,6 +125,15 @@ function(Tone){
 	};
 
 	/**
+	 *  set the LFO type
+	 *  @param {number} type
+	 */
+	Tone.Chorus.prototype.setType = function(type){
+		this._lfoL.setType(type);
+		this._lfoR.setType(type);
+	};
+
+	/**
 	 *  set multiple parameters at once with an object
 	 *  @param {Object} params the parameters as an object
 	 */
@@ -130,6 +141,7 @@ function(Tone){
 		if (!this.isUndef(params.rate)) this.setRate(params.rate);
 		if (!this.isUndef(params.delayTime)) this.setDelayTime(params.delayTime);
 		if (!this.isUndef(params.depth)) this.setDepth(params.depth);
+		if (!this.isUndef(params.type)) this.setType(params.type);
 		Tone.FeedbackEffect.prototype.set.call(this, params);
 	};
 

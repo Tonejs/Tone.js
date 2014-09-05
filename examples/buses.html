@@ -7,8 +7,6 @@
 	<script type="text/javascript" src="./deps/jquery.ui.touch-punch.js"></script>
 	<script type="text/javascript" src="../build/Tone.js"></script>
 	<script type="text/javascript" src="../build/Tone.Preset.js"></script>
-	<script type="text/javascript" src="../Tone/effect/AutoWah.js"></script>
-	<script type="text/javascript" src="../Tone/effect/preset/AutoWah.preset.js"></script>
 	<script type="text/javascript" src="./Widgets.js"></script>
 	<script type="text/javascript" src="./ExampleList.js"></script>
 	<link rel="stylesheet" type="text/css" href="./style/widgets.css">
@@ -37,13 +35,12 @@
 		var synth = new Tone.MonoSynth();
 		synth.setPreset("Barky");
 		var dry = Tone.context.createGain();
-		dry.gain.value = 0;
 		synth.connect(dry);
 		dry.toMaster();
 		synth.setVolume(-10);
 
 		var chorusSend = synth.send("chorus");
-		chorusSend.gain.value = 1;
+		chorusSend.gain.value = 0;
 		var phaserSend = synth.send("phaser");
 		phaserSend.gain.value = 0;
 		var autowahSend = synth.send("autowah");
@@ -53,13 +50,15 @@
 		var chorus = new Tone.Chorus();
 		chorus.receive("chorus");
 		chorus.toMaster();
+		chorus.setPreset("ether");
 		var phaser = new Tone.Phaser();
 		phaser.receive("phaser");
 		phaser.toMaster();
+		phaser.setPreset("testing");
 		var autoWah = new Tone.AutoWah();
 		autoWah.receive("autowah");
-		autoWah.setPreset("preOne");
 		autoWah.toMaster();
+		autoWah.setPreset("talker");
 		
 		// GUI //
 
@@ -71,14 +70,14 @@
 		//sliders
 		var drySlider = new GUI.Slider(content, function(val){
 			dry.gain.value = val;
-		}, 0, "dry");
-		// drySlider.render(1);
+		}, 1, "dry");
+		drySlider.render(1);
 		new GUI.Slider(content, function(val){
 			chorusSend.gain.value = val;
 		}, 0, "chorus");
 		new GUI.Slider(content, function(val){
 			autowahSend.gain.value = val;
-		}, 1, "autowah");
+		}, 0, "autowah");
 		new GUI.Slider(content, function(val){
 			phaserSend.gain.value = val;
 		}, 0, "phaser");
@@ -90,7 +89,7 @@
 			width: 200,
 			height: 75,
 			octaves: 1,
-			startNote: "C4",
+			startNote: "C3",
 			whiteNotesColour: "white",
 			blackNotesColour: "black",
 			hoverColour: "#f3e939"
