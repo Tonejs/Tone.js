@@ -32,7 +32,7 @@ define(["Tone/core/Tone", "Tone/component/Follower", "Tone/signal/ScaleExp", "To
 		 *  @type {Tone}
 		 *  @private
 		 */
-		this._sweepRange = new Tone.ScaleExp(0, 1, 0, 1, 2);
+		this._sweepRange = new Tone.ScaleExp(0, 1, 0, 1, 0.5);
 
 		/**
 		 *  @type {number}
@@ -50,9 +50,10 @@ define(["Tone/core/Tone", "Tone/component/Follower", "Tone/signal/ScaleExp", "To
 		 *  @type {BiquadFilterNode}
 		 *  @private
 		 */
-		this._bandpass = this.context.createBiquadFilter();
-		this._bandpass.type = "bandpass";
-		this._bandpass.Q.value = 2;
+		this._bandpass = new Tone.Filter("bandpass");
+		this._bandpass.setRolloff(options.rolloff);
+		// this._bandpass.type = "bandpass";
+		// this._bandpass.Q.value = options.Q;
 
 		/**
 		 *  @type {BiquadFilterNode}
@@ -60,7 +61,7 @@ define(["Tone/core/Tone", "Tone/component/Follower", "Tone/signal/ScaleExp", "To
 		 */
 		this._peaking = this.context.createBiquadFilter();
 		this._peaking.type = "peaking";
-		this._peaking.gain.value = 20;
+		this._peaking.gain.value = options.gain;
 
 		//the control signal path
 		this.chain(this.effectSend, this._follower, this._sweepRange);
@@ -83,6 +84,9 @@ define(["Tone/core/Tone", "Tone/component/Follower", "Tone/signal/ScaleExp", "To
 		"baseFrequency" : 100,
 		"octaves" : 6,
 		"sensitivity" : 0,
+		"Q" : 2,
+		"gain" : 2,
+		"rolloff" : -48,
 		/** attributes for the envelope follower */
 		"follower" : {
 			"attack" : 0.3,
@@ -136,6 +140,8 @@ define(["Tone/core/Tone", "Tone/component/Follower", "Tone/signal/ScaleExp", "To
 		if (!this.isUndef(params.sensitivity)) this.setSensitiviy(params.sensitivity);
 		if (!this.isUndef(params.octaves)) this.setOctaves(params.octaves);
 		if (!this.isUndef(params.follower)) this._follower.set(params.follower);
+		if (!this.isUndef(params.Q)) this._bandpass.Q.value = params.Q;
+		if (!this.isUndef(params.gain)) this._peaking.gain.value = params.gain;
 		Tone.Effect.prototype.set.call(this, params);
 	};
 
