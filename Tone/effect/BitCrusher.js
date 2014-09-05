@@ -4,7 +4,7 @@ define(["Tone/core/Tone", "Tone/effect/Effect"], function(Tone){
 
 	/**
 	 *  @class downsample incoming signal. 
-	 *         inspiration from {@link https://github.com/jaz303/bitcrusher/blob/master/index.js|jaz303}
+	 *         inspiration from https://github.com/jaz303/bitcrusher/blob/master/index.js
 	 *
 	 *  @constructor
 	 *  @extends {Tone.Effect}
