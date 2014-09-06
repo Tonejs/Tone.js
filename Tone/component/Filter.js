@@ -104,6 +104,22 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	};
 
 	/**
+	 *  set the frequency
+	 *  @param {number} freq the frequency value
+	 */
+	Tone.Filter.prototype.setFrequency = function(freq){
+		this.frequency.setValue(freq);
+	};
+
+	/**
+	 *  set the quality of the filter
+	 *  @param {number} Q the filter's Q
+	 */
+	Tone.Filter.prototype.setQ = function(Q){
+		this.Q.setValue(Q);
+	};
+
+	/**
 	 *  set the rolloff frequency which is the drop in db
 	 *  per octave. implemented internally by cascading filters
 	 *  
