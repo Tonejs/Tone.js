@@ -1,0 +1,142 @@
+<html>
+<head>
+	<title>INTERACTIVE</title>
+
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+	<script type="text/javascript" src="./deps/jquery.min.js"></script>
+	<script type="text/javascript" src="./deps/interface.js"></script>
+	<script type="text/javascript" src="./deps/jquery-ui.js"></script>
+	<script type="text/javascript" src="./deps/jquery.ui.touch-punch.js"></script>
+	<script type="text/javascript" src="../build/Tone.js"></script>
+	<script type="text/javascript" src="./Widgets.js"></script>
+	<script type="text/javascript" src="./ExampleList.js"></script>
+	<link rel="stylesheet" type="text/css" href="./style/widgets.css">
+	<link rel="stylesheet" type="text/css" href="./style/jquery-ui.css">
+
+</head>
+<body>
+		
+	<div id="Container">
+		<div id="Explanation">
+			Interactive Music
+			<br>
+			<br>
+			The dots' positions control two parameters of the effects. <br>
+			0 : Lowpass Filter -> x = frequency, y = Q <br>
+			1 : Gate -> x = attack/release time, y = threshold<br>
+			2 : Bitcrusher -> x = frequency, y = bits<br>
+		</div>
+		<div id="Content">
+			<div id="Loading">LOADING...</div>
+			<div id="XY"></div>
+		</div>
+	</div>
+
+
+	<script type="text/javascript">
+		/* globals Tone, GUI, Interface */
+
+		var player = new Tone.Player("./audio/FWDL.mp3", function(){
+			$("#Loading").remove();
+			startButton.enable();
+		});
+		player.loop = true;
+
+		//the gate
+		var gate = new Tone.Gate(-20, 0.2, 0.2);
+		player.connect(gate);
+
+		//bit crusher
+		var bitcrusher = new Tone.BitCrusher(8, 0.5);
+		gate.connect(bitcrusher);
+
+		//a lowpass filter
+		var lowpass = new Tone.Filter(600, "lowpass");
+		bitcrusher.connect(lowpass);
+
+		lowpass.toMaster();
+
+
+		// GUI //
+
+
+		$(function(){
+
+			new GUI.TopBar(Tone);
+
+			var panel = new Interface.Panel({ 
+			  container:$("#XY")
+			});
+			var xy = new Interface.XY({
+				childWidth: 25,
+				numChildren: 3,
+				background:"#FFF",
+				fill: "rgba(127,127,127,.2)",
+				bounds:[0,0,1,1],
+				oninit: function() { this.rainbow(); },  
+			});
+			xy.rainbow();
+			panel.background = "white";
+			panel.add(xy);
+
+			//update the values
+			setInterval(function(){
+				var values = xy.values;
+				//lowpass
+				var lpassfreq = lowpass.interpolate(values[0].x, 60, 6000);
+				var lpassQ = lowpass.interpolate(values[0].y, 20, 0);
+				lowpass.setFrequency(lpassfreq);
+				lowpass.setQ(lpassQ);
+				//gate
+				var gateSmooth = gate.interpolate(values[1].x, 0.1, 0.6);
+				var gateThresh = gate.interpolate(values[1].y, -24, -40);
+				gate.setAttack(gateSmooth);
+				gate.setRelease(gateSmooth);
+				gate.setThreshold(gateThresh);
+				//bit crusher
+				var bits = bitcrusher.interpolate(values[2].y, 12, 7);
+				var crushFreq = bitcrusher.interpolate(values[2].y, 0.1, 0.9);
+				bitcrusher.setFrequency(crushFreq);
+				bitcrusher.setBits(bits);
+			}, 100);
+		});
+
+		var content = $("#Content");
+
+		var startButton = new GUI.Checkbox(content, function(on){
+			if (on){
+				player.start();
+			} else {
+				player.stop();
+			}
+		}, "start", "stop");
+		startButton.disable();
+
+	</script>
+
+	<style type="text/css">
+		#Content {
+			text-align: left;
+			width: 320px;
+			height: auto;
+		}
+		#Content #XY{
+			border: 1px solid black;
+			width: 320px;
+			height: 320px;
+		}
+		#Content #XY canvas{
+			width: 100%;
+			height: 100%;
+		}
+
+		.Checkbox {
+			margin-top: 10px;
+			width: 100%;
+		}
+		
+	</style>
+
+</body>
+</html>

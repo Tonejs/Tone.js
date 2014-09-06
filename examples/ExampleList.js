@@ -26,4 +26,8 @@ var ExampleList = {
 		"Notes / Scores" : "score",
 		"Transport" : "stepSequencer"
 	},
+	"Apps" : {
+		"JSON Sandbox" : "json",
+		"Dots" : "interaction"
+	},
 };
