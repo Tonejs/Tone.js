@@ -132,17 +132,21 @@ define(["Tone/core/Tone", "Tone/core/Transport"], function(Tone){
 		var notes = [];
 		for (var inst in score){
 			var part = score[inst];
-			for (var i = 0; i < part.length; i++){
-				var noteDescription = part[i];
-				var note;
-				if (Array.isArray(noteDescription)){
-					var time = noteDescription[0];
-					var value = noteDescription.slice(1);
-					note = new Tone.Note(inst, time, value);
-				} else {
-					note = new Tone.Note(inst, noteDescription);
+			if (Array.isArray(part)){
+				for (var i = 0; i < part.length; i++){
+					var noteDescription = part[i];
+					var note;
+					if (Array.isArray(noteDescription)){
+						var time = noteDescription[0];
+						var value = noteDescription.slice(1);
+						note = new Tone.Note(inst, time, value);
+					} else {
+						note = new Tone.Note(inst, noteDescription);
+					}
+					notes.push(note);
 				}
-				notes.push(note);
+			} else {
+				throw new TypeError("score parts must be Arrays");
 			}
 		}
 		return notes;
