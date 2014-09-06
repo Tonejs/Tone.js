@@ -41,18 +41,19 @@ define(["Tone/core/Tone"], function(Tone){
 	};
 
 	/**
-	 *  @param {number} value 
+	 *  @param {number} db volume in decibels 
 	 *  @param {Tone.Time=} fadeTime (optional) time it takes to reach the value
 	 */
-	Master.prototype.setVolume = function(value, fadeTime){
+	Master.prototype.setVolume = function(db, fadeTime){
 		var now = this.now();
+		var gain = this.dbToGain(db);
 		if (fadeTime){
 			var currentVolume = this.output.gain.value;
 			this.output.gain.cancelScheduledValues(now);
 			this.output.gain.setValueAtTime(currentVolume, now);
-			this.output.gain.linearRampToValueAtTime(value, now + this.toSeconds(fadeTime));
+			this.output.gain.linearRampToValueAtTime(gain, now + this.toSeconds(fadeTime));
 		} else {
-			this.output.gain.setValueAtTime(value, now);
+			this.output.gain.setValueAtTime(gain, now);
 		}
 	};
 
