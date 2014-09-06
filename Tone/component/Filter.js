@@ -90,8 +90,8 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	 */
 	Tone.Filter.prototype.setType = function(type){
 		this._type = type;
-		for (var i = 0; i < this._filters.lenght; i++){
-			this._filter[i].type = type;
+		for (var i = 0; i < this._filters.length; i++){
+			this._filters[i].type = type;
 		}
 	};
 
@@ -111,15 +111,17 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	 *                          -12, -24, and -48. 
 	 */
 	Tone.Filter.prototype.setRolloff = function(rolloff){
+		var cascadingCount = Math.log(rolloff / -12) / Math.LN2 + 1;
+		//check the rolloff is valid
+		if (cascadingCount % 1 !== 0){
+			throw new RangeError("Filter rolloff can only be -12, -24, or -48");
+		}
 		//first disconnect the filters and throw them away
 		this.input.disconnect();
 		for (var i = 0; i < this._filters.length; i++) {
 			this._filters[i].disconnect();
 			this._filters[i] = null;
 		}
-		this._filters = null;
-		//make new filters
-		var cascadingCount = rolloff / -12;
 		this._filters = new Array(cascadingCount);
 		for (var count = 0; count < cascadingCount; count++){
 			var filter = this.context.createBiquadFilter();
