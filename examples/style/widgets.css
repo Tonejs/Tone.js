@@ -4,6 +4,12 @@
 	user-select: none; 
 }
 
+textarea {
+	-webkit-user-select: text!important; 
+	-moz-user-select: text!important
+	user-select: text!important
+}
+
 #Container {
 	text-size-adjust: none;
 	-webkit-text-size-adjust: none;
@@ -34,7 +40,7 @@
 	position: relative;
 	margin: auto;
 	margin-top: 60px;
-	margin-bottom: 80px;
+	margin-bottom: 120px;
 	width: 200px;
 	height: auto;
 	z-index: 0;

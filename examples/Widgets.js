@@ -246,6 +246,8 @@ GUI.TopBar = function(Tone){
 	Tone.Master.connect(this.meter);
 	this.meterGUI = new GUI.LevelMeter(this.element, this.meter);
 	this.makeDropDown();
+	//and the mobile start button
+	new GUI.MobileStart(Tone.startMobile);
 };
 
 GUI.TopBar.prototype.makeDropDown = function(){

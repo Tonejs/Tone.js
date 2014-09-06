@@ -58,6 +58,7 @@
 		};
 
 		var synth = new Tone.MonoSynth(synthOptions);
+		synth.setVolume(-10);
 		synth.toMaster();
 
 		var synthPart = [["0", "C2"], ["1*8n", "C4"], ["2*8n", "E4"], ["3*8n", "B3"], 
@@ -78,7 +79,6 @@
 		// GUI //
 
 		new GUI.TopBar(Tone);
-		new GUI.MobileStart(Tone.startMobile);
 
 		var content = $("#Content");
 
