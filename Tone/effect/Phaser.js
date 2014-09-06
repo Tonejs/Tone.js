@@ -52,7 +52,7 @@ function(Tone){
 		 *  @type {Array.<Tone.Filter>}
 		 *  @private
 		 */
-		this._filtersL = this._makeFilters(options.stages, this._lfoL);
+		this._filtersL = this._makeFilters(options.stages, this._lfoL, options.Q);
 
 		/**
 		 *  the array of filters for the left side
