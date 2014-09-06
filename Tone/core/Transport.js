@@ -531,7 +531,7 @@ function(Tone){
 	 *  @param {Tone.Time} startPosition 
 	 *  @param {Tone.Time} endPosition   
 	 */
-	Transport.prototype.setLoopPoint = function(startPosition, endPosition){
+	Transport.prototype.setLoopPoints = function(startPosition, endPosition){
 		this.setLoopStart(startPosition);
 		this.setLoopEnd(endPosition);
 	};
