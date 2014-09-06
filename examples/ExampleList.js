@@ -20,7 +20,6 @@ var ExampleList = {
 		"MonoSynth" : "monoSynth",
 		"DuoSynth" : "duoSynth",
 		"FMSynth" : "fmSynth",
-		"JSON Sandbox" : "json"
 	},
 	"Timing" : {
 		"Notes / Scores" : "score",
