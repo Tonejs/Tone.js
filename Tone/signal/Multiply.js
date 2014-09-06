@@ -44,8 +44,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	 *  clean up
 	 */
 	Tone.Multiply.prototype.dispose = function(){
-		this.input.disconnect();
-		this.input = null;
+		Tone.prototype.dispose.call(this);
 	}; 
 
 	return Tone.Multiply;

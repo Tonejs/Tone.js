@@ -176,17 +176,17 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Multiply", "Tone/signa
 	 *  clean up
 	 */
 	Tone.ScaleExp.prototype.dispose = function(){
-		this.input.disconnect();
-		this.output.disconnect();
+		Tone.prototype.dispose.call(this);
 		this._plusInput.dispose();
 		this._plusOutput.dispose();
 		this._normalize.dispose();
 		this._scale.dispose();
-		this.input = null;
-		this.output = null;
+		this._expScaler.disconnect();
 		this._plusInput = null;
 		this._plusOutput = null;
 		this._scale = null;
+		this._normalize = null;
+		this._expScaler = null;
 	}; 
 
 

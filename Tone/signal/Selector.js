@@ -66,14 +66,13 @@ define(["Tone/core/Tone", "Tone/signal/Equal", "Tone/signal/Signal"], function(T
 	 *  dispose method
 	 */
 	Tone.Selector.prototype.dispose = function(){
-		this.output.disconnect();
 		this.gate.dispose();
 		for (var i = 0; i < this.input.length; i++){
 			this.input[i].dispose();
 			this.input[i] = null;
 		}
+		Tone.prototype.dispose.call(this);
 		this.gate = null;
-		this.output = null;
 	}; 
 
 	////////////START HELPER////////////
@@ -109,6 +108,7 @@ define(["Tone/core/Tone", "Tone/signal/Equal", "Tone/signal/Signal"], function(T
 	 *  @private
 	 */
 	SelectorGate.prototype.dispose = function(){
+		Tone.prototype.dispose.call(this);
 		this.selecter.dispose();
 		this.gate.disconnect();
 		this.selecter = null;

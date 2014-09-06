@@ -1,7 +1,7 @@
 /* global it, describe, after, maxTimeout, recorderDelay, recorderDuration */
 
-define(["chai", "Tone/source/Player", "Tone/core/Master", "Tone/source/Oscillator", "Tone/component/Recorder", "Tone/source/Noise", "tests/Core"], 
-function(chai, Player, Master, Oscillator, Recorder, Noise){
+define(["chai", "Tone/source/Player", "Tone/core/Master", "Tone/source/Oscillator", "Tone/component/Recorder", "Tone/source/Noise", "tests/Core", "Tone/source/PulseOscillator"], 
+function(chai, Player, Master, Oscillator, Recorder, Noise, core, PulseOscillator){
 
 	var expect = chai.expect;
 
@@ -19,6 +19,7 @@ function(chai, Player, Master, Oscillator, Recorder, Noise){
 		it("can be created and disposed", function(){
 			var p = new Player();
 			p.dispose();
+			wasDisposed(p, expect);
 		});
 
 		it("loads a file", function(done){
@@ -75,6 +76,7 @@ function(chai, Player, Master, Oscillator, Recorder, Noise){
 		it("can be created and disposed", function(){
 			var o = new Oscillator();
 			o.dispose();
+			wasDisposed(o, expect);
 		});
 
 		it("starts and stops", function(done){
@@ -151,6 +153,7 @@ function(chai, Player, Master, Oscillator, Recorder, Noise){
 		it("can be created and disposed", function(){
 			var n = new Noise();
 			n.dispose();
+			wasDisposed(n, expect);
 		});
 
 		it("starts and stops", function(done){
@@ -212,8 +215,16 @@ function(chai, Player, Master, Oscillator, Recorder, Noise){
 			noise.setType("pink");
 			noise.stop();
 		});
+	});
 
+	describe("Tone.PulseOscillator", function(){
+		this.timeout(maxTimeout);
 
+		it("can be created and disposed", function(){
+			var o = new PulseOscillator();
+			o.dispose();
+			wasDisposed(o, expect);
+		});
 	});
 
 });

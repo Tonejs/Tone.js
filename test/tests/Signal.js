@@ -16,6 +16,7 @@ function(core, chai, Recorder, Signal, Oscillator, Master, Threshold, Switch, Ro
 		it("can be created and disposed", function(){
 			var s = new Signal();
 			s.dispose();
+			wasDisposed(s, expect);
 		});
 
 		it("can start with a value initially", function(){
@@ -119,6 +120,7 @@ function(core, chai, Recorder, Signal, Oscillator, Master, Threshold, Switch, Ro
 		it("can be created and disposed", function(){
 			var thresh = new Threshold();
 			thresh.dispose();
+			wasDisposed(thresh, expect);
 		});
 
 		it("thresholds an incoming signal to 0 when it is below the thresh", function(done){
@@ -184,6 +186,7 @@ function(core, chai, Recorder, Signal, Oscillator, Master, Threshold, Switch, Ro
 		it("can be created and disposed", function(){
 			var sw = new Switch();
 			sw.dispose();
+			wasDisposed(sw, expect);
 		});
 
 		it("can stop a signal from passing through", function(done){
@@ -231,6 +234,7 @@ function(core, chai, Recorder, Signal, Oscillator, Master, Threshold, Switch, Ro
 		it("can be created and disposed", function(){
 			var r = new Route();
 			r.dispose();
+			wasDisposed(r, expect);
 		});
 
 		it("can route a signal to first output", function(done){
@@ -317,6 +321,7 @@ function(core, chai, Recorder, Signal, Oscillator, Master, Threshold, Switch, Ro
 		it("can be created and disposed", function(){
 			var s = new Selector();
 			s.dispose();
+			wasDisposed(s, expect);
 		});
 
 		it("can select the first signal", function(done){

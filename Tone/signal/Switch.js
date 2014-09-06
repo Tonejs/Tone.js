@@ -31,7 +31,6 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Threshold"], functi
 
 		this.input.connect(this.output);
 		this.chain(this.gate, this._thresh, this.output.gain);
-		this.output.gain.value = 0;
 	};
 
 	Tone.extend(Tone.Switch);
@@ -68,7 +67,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Threshold"], functi
 		Tone.prototype.dispose.call(this);
 		this.gate.dispose();
 		this._thresh.dispose();
-		this.signal = null;
+		this.gate = null;
 		this._thresh = null;
 	}; 
 

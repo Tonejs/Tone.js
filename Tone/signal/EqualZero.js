@@ -65,6 +65,7 @@ function(Tone){
 	 *  dispose method
 	 */
 	Tone.EqualZero.prototype.dispose = function(){
+		Tone.prototype.dispose.call(this);
 		this._equals.disconnect();
 		this._thresh.dispose();
 		this._equals = null;

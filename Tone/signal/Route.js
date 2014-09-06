@@ -65,14 +65,13 @@ define(["Tone/core/Tone", "Tone/signal/Equal", "Tone/signal/Signal"], function(T
 	 *  dispose method
 	 */
 	Tone.Route.prototype.dispose = function(){
-		this.input.disconnect();
 		this.gate.dispose();
 		for (var i = 0; i < this.output.length; i++){
 			this.output[i].dispose();
 			this.output[i] = null;
 		}
+		Tone.prototype.dispose.call(this);
 		this.gate = null;
-		this.input = null;
 	}; 
 
 	////////////START HELPER////////////
@@ -108,6 +107,7 @@ define(["Tone/core/Tone", "Tone/signal/Equal", "Tone/signal/Signal"], function(T
 	 *  @private
 	 */
 	RouteGate.prototype.dispose = function(){
+		Tone.prototype.dispose.call(this);
 		this.selecter.dispose();
 		this.gate.disconnect();
 		this.selecter = null;

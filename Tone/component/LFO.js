@@ -150,11 +150,12 @@ function(Tone){
 	 *  disconnect and dispose
 	 */
 	Tone.LFO.prototype.dispose = function(){
+		Tone.prototype.dispose.call(this);
 		this.oscillator.dispose();
 		this._scaler.dispose();
+		this._scaler = null;
 		this.oscillator = null;
 		this.frequency = null;
-		this.output = null;
 	};
 
 	return Tone.LFO;

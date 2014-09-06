@@ -87,6 +87,7 @@ define(["Tone/core/Tone", "Tone/signal/Threshold", "Tone/signal/Add", "Tone/sign
 	 *  dispose method
 	 */
 	Tone.LessThan.prototype.dispose = function(){
+		Tone.prototype.dispose.call(this);
 		this._lt.disconnect();
 		this._adder.disconnect();
 		this._thresh.dispose();

@@ -60,13 +60,10 @@ define(["Tone/core/Tone", "Tone/signal/GreaterThan", "Tone/signal/Selector", "To
 	 *  clean up
 	 */
 	Tone.Max.prototype.dispose = function(){
-		this.input.disconnect();
-		this.output.disconnect();
+		Tone.prototype.dispose.call(this);
 		this._maxSignal.dispose();
 		this._switch.dispose();
 		this._gt.dispose();
-		this.input = null;
-		this.output = null;
 		this._maxSignal = null;
 		this._switch = null;
 		this._gt = null;

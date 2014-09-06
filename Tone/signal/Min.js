@@ -60,13 +60,10 @@ define(["Tone/core/Tone", "Tone/signal/LessThan", "Tone/signal/Selector", "Tone/
 	 *  clean up
 	 */
 	Tone.Min.prototype.dispose = function(){
-		this.input.disconnect();
-		this.output.disconnect();
+		Tone.prototype.dispose.call(this);
 		this._minSignal.dispose();
 		this._switch.dispose();
 		this._lt.dispose();
-		this.input = null;
-		this.output = null;
 		this._minSignal = null;
 		this._switch = null;
 		this._lt = null;

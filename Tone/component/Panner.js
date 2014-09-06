@@ -81,6 +81,7 @@ function(Tone){
 		this._dryWet = null;
 		this._splitter = null;
 		this._merger = null;
+		this.pan = null;
 	};
 
 	return Tone.Panner;

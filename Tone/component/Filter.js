@@ -156,6 +156,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	 *  clean up
 	 */
 	Tone.Filter.prototype.dispose = function(){
+		Tone.prototype.dispose.call(this);
 		for (var i = 0; i < this._filters.length; i++) {
 			this._filters[i].disconnect();
 			this._filters[i] = null;

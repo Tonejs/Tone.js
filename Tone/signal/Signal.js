@@ -245,10 +245,8 @@ define(["Tone/core/Tone"], function(Tone){
 	 *  internal dispose method to tear down the node
 	 */
 	Tone.Signal.prototype.dispose = function(){
-		//disconnect everything
-		this.output.disconnect();
+		Tone.prototype.dispose.call(this);
 		this._scalar.disconnect();
-		this.output = null;
 		this._scalar = null;
 	};
 

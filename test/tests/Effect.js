@@ -16,6 +16,7 @@ function(Tone, chai, Recorder, Master, Effect, DryWet, FeedbackEffect, Signal, A
 		it("can be created and disposed", function(){
 			var e = new Effect();
 			e.dispose();
+			wasDisposed(e, expect);
 		});
 
 		it("has a dry/wet control", function(){
@@ -38,6 +39,7 @@ function(Tone, chai, Recorder, Master, Effect, DryWet, FeedbackEffect, Signal, A
 		it("can be created and disposed", function(){
 			var fe = new FeedbackEffect();
 			fe.dispose();
+			wasDisposed(fe, expect);
 		});
 
 		it("has a dry/wet control", function(){
@@ -66,6 +68,7 @@ function(Tone, chai, Recorder, Master, Effect, DryWet, FeedbackEffect, Signal, A
 		it("can be created and disposed", function(){
 			var ap = new AutoPanner();
 			ap.dispose();
+			wasDisposed(ap, expect);
 		});
 
 		it("extends Tone.Effect", function(){
@@ -88,6 +91,7 @@ function(Tone, chai, Recorder, Master, Effect, DryWet, FeedbackEffect, Signal, A
 		it("can be created and disposed", function(){
 			var aw = new AutoWah();
 			aw.dispose();
+			wasDisposed(aw, expect);
 		});
 
 		it("extends Tone.Effect", function(){
@@ -103,6 +107,7 @@ function(Tone, chai, Recorder, Master, Effect, DryWet, FeedbackEffect, Signal, A
 		it("can be created and disposed", function(){
 			var bc = new BitCrusher();
 			bc.dispose();
+			wasDisposed(bc, expect);
 		});
 
 		it("extends Tone.Effect", function(){
@@ -118,6 +123,7 @@ function(Tone, chai, Recorder, Master, Effect, DryWet, FeedbackEffect, Signal, A
 		it("can be created and disposed", function(){
 			var fd = new FeedbackDelay();
 			fd.dispose();
+			wasDisposed(fd, expect);
 		});
 
 		it("extends Tone.FeedbackEffect", function(){
@@ -133,6 +139,7 @@ function(Tone, chai, Recorder, Master, Effect, DryWet, FeedbackEffect, Signal, A
 		it("can be created and disposed", function(){
 			var ppd = new PingPongDelay();
 			ppd.dispose();
+			wasDisposed(ppd, expect);
 		});
 	});
 
@@ -142,6 +149,7 @@ function(Tone, chai, Recorder, Master, Effect, DryWet, FeedbackEffect, Signal, A
 		it("can be created and disposed", function(){
 			var chorus = new Chorus();
 			chorus.dispose();
+			wasDisposed(chorus, expect);
 		});
 		
 		it("extends Tone.Effect", function(){

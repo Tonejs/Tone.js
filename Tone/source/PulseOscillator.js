@@ -110,10 +110,15 @@ function(Tone){
 	 *  clean up method
 	 */
 	Tone.PulseOscillator.prototype.dispose = function(){
+		Tone.Source.prototype.dispose.call(this);
 		this._sawtooth.dispose();
-		this._sawtooth = null;
 		this.width.dispose();
+		this._thresh.disconnect();
+		this._sawtooth = null;
+		this.frequency = null;
+		this.detune = null;
 		this.width = null;
+		this._thresh = null;
 	};
 
 	return Tone.PulseOscillator;
