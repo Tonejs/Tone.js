@@ -37,6 +37,7 @@ function(Tone){
 		/**
 		 *  the sawtooth oscillator
 		 *  @type {Tone.Oscillator}
+		 *  @private
 		 */
 		this._sawtooth = new Tone.Oscillator(frequency, "sawtooth");
 
