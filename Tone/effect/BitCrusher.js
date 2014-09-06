@@ -107,7 +107,7 @@ define(["Tone/core/Tone", "Tone/effect/Effect"], function(Tone){
 	 *  @param {number} bits 
 	 */
 	Tone.BitCrusher.prototype.setBits = function(bits){
-		this._bits = bits;
+		this._bits = Math.floor(bits);
 		this._step = 2 * Math.pow(0.5, this._bits);
 		this._invStep = 1/this._step;
 	};
