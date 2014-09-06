@@ -9,21 +9,22 @@ define(["Tone/core/Tone", "Tone/component/Follower", "Tone/signal/GreaterThan"],
 	 *  @constructor
 	 *  @extends {Tone}
 	 *  @param {number=} [thresh = -40] the threshold in Decibels
-	 *  @param {number=} [smoothTime = 0.1] the amount of smoothing applied to the 
-	 *                               		incoming signal
+	 *  @param {number=} [attackTime = 0.1] the follower's attacktime
+	 *  @param {number=} [releaseTime = 0.1] the follower's release time
 	 */
-	Tone.Gate = function(thresh, smoothTime){
+	Tone.Gate = function(thresh, attackTime, releaseTime){
 		Tone.call(this);
 
 		//default values
 		thresh = this.defaultArg(thresh, -40);
-		smoothTime = this.defaultArg(smoothTime, 0.1);
+		attackTime = this.defaultArg(attackTime, 0.1);
+		releaseTime = this.defaultArg(releaseTime, 0.2);
 
 		/**
 		 *  @type {Tone.Follower}
 		 *  @private
 		 */
-		this._follower = new Tone.Follower(smoothTime);
+		this._follower = new Tone.Follower(attackTime, releaseTime);
 
 		/**
 		 *  @type {Tone.GreaterThan}
@@ -34,7 +35,7 @@ define(["Tone/core/Tone", "Tone/component/Follower", "Tone/signal/GreaterThan"],
 		//the connections
 		this.chain(this.input, this.output);
 		//the control signal
-		this.chain(this.input, this._follower, this._gt, this.output.gain);
+		this.chain(this.input, this._gt, this._follower, this.output.gain);
 	};
 
 	Tone.extend(Tone.Gate);
@@ -48,11 +49,19 @@ define(["Tone/core/Tone", "Tone/component/Follower", "Tone/signal/GreaterThan"],
 	};
 
 	/**
-	 *  set the amount of smoothing applied to the incoming signal
-	 *  @param {Tone.Time} smoothTime 
+	 *  set attack time of the follower
+	 *  @param {Tone.Time} attackTime
 	 */
-	Tone.Gate.prototype.setSmoothTime = function(smoothTime){
-		this._follower.setSmoothTime(smoothTime);
+	Tone.Gate.prototype.setAttack = function(attackTime){
+		this._follower.setAttack(attackTime);
+	};
+
+	/**
+	 *  set attack time of the follower
+	 *  @param {Tone.Time} releaseTime
+	 */
+	Tone.Gate.prototype.setRelease = function(releaseTime){
+		this._follower.setRelease(releaseTime);
 	};
 
 	/**
