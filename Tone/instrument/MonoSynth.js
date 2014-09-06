@@ -78,12 +78,12 @@ function(Tone){
 	/**
 	 *  @const
 	 *  @static
+	 *  @type {Object}
 	 */
 	Tone.MonoSynth.defaults = {
 		"oscType" : "square",
 		"filter" : {
 			"Q" : 6,
-			"frequency" : 4000,
 			"type" : "lowpass",
 			"rolloff" : -24
 		},
