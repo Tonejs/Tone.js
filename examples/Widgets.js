@@ -35,6 +35,14 @@ GUI.MobileStart = function(callback){
 			.click(this.buttonClicked.bind(this))
 			.appendTo(this.element);  
 		this.callback = callback;
+		//also make the explanation collapsed
+		$("#Explanation").on("touchstart", function(){
+			if ($(this).hasClass("Collapsed")){
+				$(this).removeClass("Collapsed");
+			} else {
+				$(this).addClass("Collapsed");
+			}
+		});
 	}
 };
 

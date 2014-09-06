@@ -2,7 +2,7 @@
 <head>
 	<title>DUOSYNTH</title>
 
-	<meta name="viewport" content="width=device-width, initial-scale=0.5">
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
 
 	<script type="text/javascript" src="./deps/jquery.min.js"></script>
 	<script type="text/javascript" src="./deps/jquery-ui.js"></script>
@@ -61,7 +61,7 @@
 		// GUI //
 
 		new GUI.TopBar(Tone);
-		// new GUI.MobileStart(Tone.startMobile);
+		new GUI.MobileStart(Tone.startMobile);
 
 		$("#tabs").tabs();
 
@@ -195,7 +195,6 @@
 	<style type="text/css">
 	#Content {
 		width: 400px;
-		height: 400px;
 	}
 
 	#tabs {

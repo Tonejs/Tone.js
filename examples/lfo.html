@@ -2,7 +2,7 @@
 <head>
 	<title>LFO</title>
 
-	<meta name="viewport" content="width=device-width, initial-scale=0.5">
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
 
 	<script type="text/javascript" src="./deps/jquery.min.js"></script>
 	<script type="text/javascript" src="./deps/jquery-ui.js"></script>
@@ -35,11 +35,11 @@
 		var osc = new Tone.Oscillator(110, "triangle");
 		osc.toMaster();
 
-		var freqLFO = new Tone.LFO(0.1, 55, 110);
+		var freqLFO = new Tone.LFO(0.1, 80, 160);
 		freqLFO.setType("square");
 		freqLFO.connect(osc.frequency);
 
-		var detuneLFO = new Tone.LFO(12, -40, 40);
+		var detuneLFO = new Tone.LFO(12, -80, 80);
 		detuneLFO.connect(osc.detune);
 		
 		var amplitudeLFO = new Tone.LFO(4, 0.05, 0.5);

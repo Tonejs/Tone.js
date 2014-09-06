@@ -2,6 +2,8 @@
 <head>
 	<title>NOISES</title>
 
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
 	<script type="text/javascript" src="./deps/jquery.min.js"></script>
 	<script type="text/javascript" src="./deps/jquery-ui.js"></script>
 	<script type="text/javascript" src="./deps/jquery.ui.touch-punch.js"></script>
@@ -30,7 +32,7 @@
 		/* globals Tone, GUI */
 
 		var noise = new Tone.Noise();
-		noise.setVolume(-10);
+		noise.setVolume(-20);
 		noise.toMaster();
 
 		var noiseTypes = ["white", "brown", "pink"];
@@ -69,11 +71,10 @@
 	<style type="text/css">
 	#Content {
 		text-align: center;
-		width: 100px;
-		height: 50px;
+		width: 120px;
 	}
-	#Content #Button{
-		width: 100px;
+	#Content .Momentary{
+		width: 100%;
 	}
 	</style>
 </body>

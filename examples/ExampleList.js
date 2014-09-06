@@ -1,8 +1,4 @@
 var ExampleList = {
-	"Core" : {
-		"Transport" : "stepSequencer",
-		"Notes / Scores" : "score"
-	},
 	"Sources" : {
 		"Oscillators" : "oscillator",
 		"Noise" : "noises",
@@ -24,5 +20,10 @@ var ExampleList = {
 		"MonoSynth" : "monoSynth",
 		"DuoSynth" : "duoSynth",
 		"FMSynth" : "fmSynth",
-	}
+		"JSON Sandbox" : "json"
+	},
+	"Timing" : {
+		"Notes / Scores" : "score",
+		"Transport" : "stepSequencer"
+	},
 };

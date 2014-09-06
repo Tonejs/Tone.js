@@ -1,6 +1,8 @@
 <html>
 <head>
 	<title>BUSES</title>
+
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
 	
 	<script type="text/javascript" src="./deps/jquery.min.js"></script>
 	<script type="text/javascript" src="./deps/jquery-ui.js"></script>
@@ -36,8 +38,8 @@
 		synth.setPreset("Barky");
 		var dry = Tone.context.createGain();
 		synth.connect(dry);
+		synth.setVolume(-6);
 		dry.toMaster();
-		synth.setVolume(-10);
 
 		var chorusSend = synth.send("chorus");
 		chorusSend.gain.value = 0;
@@ -89,7 +91,7 @@
 			width: 200,
 			height: 75,
 			octaves: 1,
-			startNote: "C3",
+			startNote: "C4",
 			whiteNotesColour: "white",
 			blackNotesColour: "black",
 			hoverColour: "#f3e939"
@@ -105,7 +107,6 @@
 	<style type="text/css">
 	#Content {
 		width: 200px;
-		height: 250px;
 	}
 	.Slider {
 		margin-bottom: 10px;
