@@ -50,7 +50,7 @@ define(["Tone/core/Tone", "Tone/component/Follower", "Tone/signal/ScaleExp", "To
 		 *  @type {BiquadFilterNode}
 		 *  @private
 		 */
-		this._bandpass = new Tone.Filter("bandpass");
+		this._bandpass = new Tone.Filter(0, "bandpass");
 		this._bandpass.setRolloff(options.rolloff);
 		// this._bandpass.type = "bandpass";
 		// this._bandpass.Q.value = options.Q;
