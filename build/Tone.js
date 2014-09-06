@@ -745,6 +745,7 @@ define('Tone/signal/Signal',["Tone/core/Tone"], function(Tone){
 		try {
 			this._scalar.gain.exponentialRampToValueAtTime(value, this.toSeconds(endTime));
 		} catch(e){
+			//firefox won't let the signal ramp past 1, in these cases, revert to linear ramp
 			this._scalar.gain.linearRampToValueAtTime(value, this.toSeconds(endTime));
 		}
 	};
@@ -1392,6 +1393,22 @@ define('Tone/component/Filter',["Tone/core/Tone", "Tone/signal/Signal"], functio
 	 */
 	Tone.Filter.prototype.getType = function(){
 		return this._type;
+	};
+
+	/**
+	 *  set the frequency
+	 *  @param {number} freq the frequency value
+	 */
+	Tone.Filter.prototype.setFrequency = function(freq){
+		this.frequency.setValue(freq);
+	};
+
+	/**
+	 *  set the quality of the filter
+	 *  @param {number} Q the filter's Q
+	 */
+	Tone.Filter.prototype.setQ = function(Q){
+		this.Q.setValue(Q);
 	};
 
 	/**
@@ -2676,21 +2693,22 @@ define('Tone/component/Gate',["Tone/core/Tone", "Tone/component/Follower", "Tone
 	 *  @constructor
 	 *  @extends {Tone}
 	 *  @param {number=} [thresh = -40] the threshold in Decibels
-	 *  @param {number=} [smoothTime = 0.1] the amount of smoothing applied to the 
-	 *                               		incoming signal
+	 *  @param {number=} [attackTime = 0.1] the follower's attacktime
+	 *  @param {number=} [releaseTime = 0.1] the follower's release time
 	 */
-	Tone.Gate = function(thresh, smoothTime){
+	Tone.Gate = function(thresh, attackTime, releaseTime){
 		Tone.call(this);
 
 		//default values
 		thresh = this.defaultArg(thresh, -40);
-		smoothTime = this.defaultArg(smoothTime, 0.1);
+		attackTime = this.defaultArg(attackTime, 0.1);
+		releaseTime = this.defaultArg(releaseTime, 0.2);
 
 		/**
 		 *  @type {Tone.Follower}
 		 *  @private
 		 */
-		this._follower = new Tone.Follower(smoothTime);
+		this._follower = new Tone.Follower(attackTime, releaseTime);
 
 		/**
 		 *  @type {Tone.GreaterThan}
@@ -2698,10 +2716,17 @@ define('Tone/component/Gate',["Tone/core/Tone", "Tone/component/Follower", "Tone
 		 */
 		this._gt = new Tone.GreaterThan(this.dbToGain(thresh));
 
+		/**
+		 *  gate smoother
+		 *  @type {Tone.Follower}
+		 *  @private
+		 */
+		this._gateSmoother = new Tone.Follower(attackTime, releaseTime);
+
 		//the connections
 		this.chain(this.input, this.output);
 		//the control signal
-		this.chain(this.input, this._follower, this._gt, this.output.gain);
+		this.chain(this.input, this._gt, this._follower, this.output.gain);
 	};
 
 	Tone.extend(Tone.Gate);
@@ -2715,11 +2740,19 @@ define('Tone/component/Gate',["Tone/core/Tone", "Tone/component/Follower", "Tone
 	};
 
 	/**
-	 *  set the amount of smoothing applied to the incoming signal
-	 *  @param {Tone.Time} smoothTime 
+	 *  set attack time of the follower
+	 *  @param {Tone.Time} attackTime
 	 */
-	Tone.Gate.prototype.setSmoothTime = function(smoothTime){
-		this._follower.setSmoothTime(smoothTime);
+	Tone.Gate.prototype.setAttack = function(attackTime){
+		this._follower.setAttack(attackTime);
+	};
+
+	/**
+	 *  set attack time of the follower
+	 *  @param {Tone.Time} releaseTime
+	 */
+	Tone.Gate.prototype.setRelease = function(releaseTime){
+		this._follower.setRelease(releaseTime);
 	};
 
 	/**
@@ -5935,7 +5968,7 @@ define('Tone/effect/BitCrusher',["Tone/core/Tone", "Tone/effect/Effect"], functi
 	 *  @param {number} bits 
 	 */
 	Tone.BitCrusher.prototype.setBits = function(bits){
-		this._bits = bits;
+		this._bits = Math.floor(bits);
 		this._step = 2 * Math.pow(0.5, this._bits);
 		this._invStep = 1/this._step;
 	};
