@@ -1,8 +1,8 @@
 /* global it, describe, recorderDelay, recorderDuration, maxTimeout */
 
 define(["tests/Core", "chai", "Tone/component/Recorder", "Tone/signal/Signal", "Tone/source/Oscillator", 
-	"Tone/core/Master", "Tone/signal/Threshold", "Tone/signal/Switch", "Tone/signal/Route", "Tone/signal/Selector"], 
-function(core, chai, Recorder, Signal, Oscillator, Master, Threshold, Switch, Route, Selector){
+	"Tone/core/Master", "Tone/signal/Threshold", "Tone/signal/Switch", "Tone/signal/Route", "Tone/signal/Select"], 
+function(core, chai, Recorder, Signal, Oscillator, Master, Threshold, Switch, Route, Select){
 
 	var expect = chai.expect;
 
@@ -314,12 +314,12 @@ function(core, chai, Recorder, Signal, Oscillator, Master, Threshold, Switch, Ro
 		});
 	});
 
-	//Selector
-	describe("Tone.Selector", function(){
+	//Select
+	describe("Tone.Select", function(){
 		this.timeout(maxTimeout);
 
 		it("can be created and disposed", function(){
-			var s = new Selector();
+			var s = new Select();
 			s.dispose();
 			wasDisposed(s, expect);
 		});
@@ -327,7 +327,7 @@ function(core, chai, Recorder, Signal, Oscillator, Master, Threshold, Switch, Ro
 		it("can select the first signal", function(done){
 			var signal0 = new Signal(10);
 			var signal1 = new Signal(20);
-			var sel = new Selector();
+			var sel = new Select();
 			signal0.connect(sel, 0, 0);
 			signal1.connect(sel, 0, 1);
 			sel.select(0);
@@ -349,7 +349,7 @@ function(core, chai, Recorder, Signal, Oscillator, Master, Threshold, Switch, Ro
 		it("can select the second signal", function(done){
 			var signal0 = new Signal(11);
 			var signal1 = new Signal(21);
-			var sel = new Selector();
+			var sel = new Select();
 			signal0.connect(sel, 0, 0);
 			signal1.connect(sel, 0, 1);
 			sel.select(1);

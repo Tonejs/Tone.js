@@ -189,7 +189,7 @@ Audio-rate logic operator output 1 when true and 0 when false.
 Signal can also be routed and gated for maximum flexibility. 
 
 * [Tone.Route](http://tonenotone.github.io/Tone.js/doc/Tone.Route.html)
-* [Tone.Selector](http://tonenotone.github.io/Tone.js/doc/Tone.Selector.html)
+* [Tone.Select](http://tonenotone.github.io/Tone.js/doc/Tone.Select.html)
 * [Tone.Switch](http://tonenotone.github.io/Tone.js/doc/Tone.Switch.html)
 
 # Instruments

@@ -3,7 +3,7 @@ define(["Tone/core/Tone", "Tone/signal/Equal", "Tone/signal/Signal"], function(T
 	"use strict";
 
 	/**
-	 *  @class Selector between any number of inputs, sending the one 
+	 *  @class Select between any number of inputs, sending the one 
 	 *         selected by the gate signal to the output
 	 *
 	 *
@@ -11,13 +11,13 @@ define(["Tone/core/Tone", "Tone/signal/Equal", "Tone/signal/Signal"], function(T
 	 *  @extends {Tone}
 	 *  @param {number=} [sourceCount=2] the number of inputs the switch accepts
 	 */
-	Tone.Selector = function(sourceCount){
+	Tone.Select = function(sourceCount){
 
 		sourceCount = this.defaultArg(sourceCount, 2);
 
 		/**
 		 *  the array of inputs
-		 *  @type {Array<SelectorGate>}
+		 *  @type {Array<SelectGate>}
 		 */
 		this.input = new Array(sourceCount);
 
@@ -35,21 +35,21 @@ define(["Tone/core/Tone", "Tone/signal/Equal", "Tone/signal/Signal"], function(T
 
 		//make all the inputs and connect them
 		for (var i = 0; i < sourceCount; i++){
-			var switchGate = new SelectorGate(i);
+			var switchGate = new SelectGate(i);
 			this.input[i] = switchGate;
 			this.gate.connect(switchGate.selecter);
 			switchGate.connect(this.output);
 		}
 	};
 
-	Tone.extend(Tone.Selector);
+	Tone.extend(Tone.Select);
 
 	/**
 	 *  open one of the inputs and close the other
 	 *  @param {number=} [which=0] open one of the gates (closes the other)
 	 *  @param {Tone.Time} time the time when the switch will open
 	 */
-	Tone.Selector.prototype.select = function(which, time){
+	Tone.Select.prototype.select = function(which, time){
 		//make sure it's an integer
 		which = Math.floor(which);
 		this.gate.setValueAtTime(which, this.toSeconds(time));
@@ -60,12 +60,12 @@ define(["Tone/core/Tone", "Tone/signal/Equal", "Tone/signal/Signal"], function(T
 	 *  
 	 *  @function
 	 */
-	Tone.Selector.prototype.connect = Tone.Signal.prototype.connect;
+	Tone.Select.prototype.connect = Tone.Signal.prototype.connect;
 
 	/**
 	 *  dispose method
 	 */
-	Tone.Selector.prototype.dispose = function(){
+	Tone.Select.prototype.dispose = function(){
 		this.gate.dispose();
 		for (var i = 0; i < this.input.length; i++){
 			this.input[i].dispose();
@@ -78,12 +78,12 @@ define(["Tone/core/Tone", "Tone/signal/Equal", "Tone/signal/Signal"], function(T
 	////////////START HELPER////////////
 
 	/**
-	 *  helper class for Tone.Selector representing a single gate
+	 *  helper class for Tone.Select representing a single gate
 	 *  @constructor
 	 *  @extends {Tone}
-	 *  @internal only used by Tone.Selector
+	 *  @internal only used by Tone.Select
 	 */
-	var SelectorGate = function(num){
+	var SelectGate = function(num){
 
 		/**
 		 *  the selector
@@ -101,13 +101,13 @@ define(["Tone/core/Tone", "Tone/signal/Equal", "Tone/signal/Signal"], function(T
 		this.selecter.connect(this.gate.gain);
 	};
 
-	Tone.extend(SelectorGate);
+	Tone.extend(SelectGate);
 
 	/**
 	 *  clean up
 	 *  @private
 	 */
-	SelectorGate.prototype.dispose = function(){
+	SelectGate.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
 		this.selecter.dispose();
 		this.gate.disconnect();
@@ -117,6 +117,6 @@ define(["Tone/core/Tone", "Tone/signal/Equal", "Tone/signal/Signal"], function(T
 
 	////////////END HELPER////////////
 
-	//return Tone.Selector
-	return Tone.Selector;
+	//return Tone.Select
+	return Tone.Select;
 });

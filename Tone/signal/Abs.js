@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/signal/Selector", "Tone/signal/Negate", "Tone/signal/LessThan", "Tone/signal/Signal"], 
+define(["Tone/core/Tone", "Tone/signal/Select", "Tone/signal/Negate", "Tone/signal/LessThan", "Tone/signal/Signal"], 
 function(Tone){
 
 	"use strict";
@@ -19,10 +19,10 @@ function(Tone){
 		this._ltz = new Tone.LessThan(0);
 
 		/**
-		 *  @type {Tone.Selector}
+		 *  @type {Tone.Select}
 		 *  @private
 		 */
-		this._switch = new Tone.Selector(2);
+		this._switch = new Tone.Select(2);
 		
 		/**
 		 *  @type {Tone.Negate}
