@@ -8268,7 +8268,7 @@ function(Tone){
 			this._activeVoices[stringified].triggerAttack(value, time, velocity);
 		} else if (this._freeVoices.length > 0){
 			var voice = this._freeVoices.shift();
-			voice.triggerAttack(value, time);
+			voice.triggerAttack(value, time, velocity);
 			this._activeVoices[stringified] = voice;
 		}
 	};
