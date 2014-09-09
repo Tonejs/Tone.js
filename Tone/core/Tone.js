@@ -120,9 +120,7 @@ define("Tone/core/Tone", [], function(){
 	///////////////////////////////////////////////////////////////////////////
 
 	/**
-	 *  Tone is the baseclass of all ToneNodes
-	 *  
-	 *  From Tone, children inherit timing and math which is used throughout Tone.js
+	 *  @class  Tone is the baseclass of all Tone Modules. 
 	 *  
 	 *  @constructor
 	 *  @alias Tone
@@ -148,6 +146,7 @@ define("Tone/core/Tone", [], function(){
 
 	/**
 	 *  A static pointer to the audio context
+	 *  @static
 	 *  @type {AudioContext}
 	 */
 	Tone.context = audioContext;
@@ -155,7 +154,6 @@ define("Tone/core/Tone", [], function(){
 	/**
 	 *  A static pointer to the audio context
 	 *  @type {AudioContext}
-	 *  @static
 	 */
 	Tone.prototype.context = Tone.context;
 
@@ -549,7 +547,7 @@ define("Tone/core/Tone", [], function(){
 	/**
 	 *  invoke this callback when a new context is added
 	 *  will be invoked initially with the first context
-	 *  @internal 
+	 *  @private 
 	 *  @static
 	 *  @param {function(AudioContext)} callback the callback to be invoked
 	 *                                           with the audio context
