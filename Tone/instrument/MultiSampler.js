@@ -122,12 +122,13 @@ function(Tone){
 	/**
 	 *  clean up
 	 */
-	Tone.MultiSampler.dispose = function(){
+	Tone.MultiSampler.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
 		for (var samp in this.samples){
 			this.samples[samp].dispose();
 			this.samples[samp] = null;
 		}
+		this.samples = null;
 	};
 
 	return Tone.MultiSampler;

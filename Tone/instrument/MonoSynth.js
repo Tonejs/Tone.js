@@ -155,14 +155,15 @@ function(Tone){
 		this.envelope.dispose();
 		this.filterEnvelope.dispose();
 		this.filter.dispose();
-		this.detune.dispose();
-		this._unison.dispose();
+		this._amplitude.disconnect();
 		this.oscillator = null;
 		this.filterEnvelope = null;
 		this.envelope = null;
 		this.filter = null;
 		this.detune = null;
-		this._unison = null;
+		this._amplitude = null;
+		this.frequency = null;
+		this.detune = null;
 	};
 
 	return Tone.MonoSynth;

@@ -220,7 +220,7 @@ function(Tone){
 	/**
 	 *  clean up
 	 */
-	Tone.DuoSynth.dispose = function(){
+	Tone.DuoSynth.prototype.dispose = function(){
 		Tone.Monophonic.prototype.dispose.call(this);
 		this.voice0.dispose();
 		this.voice1.dispose();

@@ -177,7 +177,7 @@ function(Tone){
 	/**
 	 *  clean up
 	 */
-	Tone.FMSynth.dispose = function(){
+	Tone.FMSynth.prototype.dispose = function(){
 		Tone.Monophonic.prototype.dispose.call(this);
 		this.carrier.dispose();
 		this.modulator.dispose();

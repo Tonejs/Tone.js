@@ -171,11 +171,13 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 		}
 		this.frequency.dispose();
 		this.Q.dispose();
+		this.detune.dispose();
 		this.gain.dispose();
 		this._filters = null;
 		this.frequency = null;
 		this.Q = null;
 		this.gain = null;
+		this.detune = null;
 	};
 
 	return Tone.Filter;
