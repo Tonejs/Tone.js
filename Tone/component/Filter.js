@@ -34,6 +34,12 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 		this.frequency = new Tone.Signal(options.frequency);
 
 		/**
+		 *  the detune parameter
+		 *  @type {Tone.Signal}
+		 */
+		this.detune = new Tone.Signal(0);
+
+		/**
 		 *  the gain of the filter, only used in certain filter types
 		 *  @type {AudioParam}
 		 */
@@ -78,6 +84,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	 */
 	Tone.Filter.prototype.set = function(params){
 		if (!this.isUndef(params.type)) this.setType(params.type);
+		if (!this.isUndef(params.detune)) this.detune.setValue(params.detune);
 		if (!this.isUndef(params.frequency)) this.frequency.setValue(params.frequency);
 		if (!this.isUndef(params.Q)) this.Q.setValue(params.Q);
 		if (!this.isUndef(params.gain)) this.gain.setValue(params.gain);
@@ -143,6 +150,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 			var filter = this.context.createBiquadFilter();
 			filter.type = this._type;
 			this.frequency.connect(filter.frequency);
+			this.detune.connect(filter.detune);
 			this.Q.connect(filter.Q);
 			this.gain.connect(filter.gain);
 			this._filters[count] = filter;
