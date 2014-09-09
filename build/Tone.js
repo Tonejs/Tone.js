@@ -120,9 +120,7 @@ define("Tone/core/Tone", [], function(){
 	///////////////////////////////////////////////////////////////////////////
 
 	/**
-	 *  Tone is the baseclass of all ToneNodes
-	 *  
-	 *  From Tone, children inherit timing and math which is used throughout Tone.js
+	 *  @class  Tone is the baseclass of all Tone Modules. 
 	 *  
 	 *  @constructor
 	 *  @alias Tone
@@ -148,6 +146,7 @@ define("Tone/core/Tone", [], function(){
 
 	/**
 	 *  A static pointer to the audio context
+	 *  @static
 	 *  @type {AudioContext}
 	 */
 	Tone.context = audioContext;
@@ -155,7 +154,6 @@ define("Tone/core/Tone", [], function(){
 	/**
 	 *  A static pointer to the audio context
 	 *  @type {AudioContext}
-	 *  @static
 	 */
 	Tone.prototype.context = Tone.context;
 
@@ -549,7 +547,7 @@ define("Tone/core/Tone", [], function(){
 	/**
 	 *  invoke this callback when a new context is added
 	 *  will be invoked initially with the first context
-	 *  @internal 
+	 *  @private 
 	 *  @static
 	 *  @param {function(AudioContext)} callback the callback to be invoked
 	 *                                           with the audio context
@@ -875,10 +873,8 @@ define('Tone/signal/Signal',["Tone/core/Tone"], function(Tone){
 	 *  internal dispose method to tear down the node
 	 */
 	Tone.Signal.prototype.dispose = function(){
-		//disconnect everything
-		this.output.disconnect();
+		Tone.prototype.dispose.call(this);
 		this._scalar.disconnect();
-		this.output = null;
 		this._scalar = null;
 	};
 
@@ -991,10 +987,9 @@ define('Tone/signal/Add',["Tone/core/Tone", "Tone/signal/Signal"], function(Tone
 	 *  dispose method
 	 */
 	Tone.Add.prototype.dispose = function(){
+		Tone.prototype.dispose.call(this);
 		this._value.dispose();
-		this.output.disconnect();
 		this._value = null;
-		this.output = null;
 	}; 
 
 	return Tone.Add;
@@ -1045,8 +1040,7 @@ define('Tone/signal/Multiply',["Tone/core/Tone", "Tone/signal/Signal"], function
 	 *  clean up
 	 */
 	Tone.Multiply.prototype.dispose = function(){
-		this.input.disconnect();
-		this.input = null;
+		Tone.prototype.dispose.call(this);
 	}; 
 
 	return Tone.Multiply;
@@ -1173,13 +1167,10 @@ define('Tone/signal/Scale',["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Mu
 	 *  clean up
 	 */
 	Tone.Scale.prototype.dispose = function(){
-		this.input.disconnect();
-		this.output.disconnect();
+		Tone.prototype.dispose.call(this);
 		this._plusInput.dispose();
 		this._plusOutput.dispose();
 		this._scale.dispose();
-		this.input = null;
-		this.output = null;
 		this._plusInput = null;
 		this._plusOutput = null;
 		this._scale = null;
@@ -1326,6 +1317,12 @@ define('Tone/component/Filter',["Tone/core/Tone", "Tone/signal/Signal"], functio
 		this.frequency = new Tone.Signal(options.frequency);
 
 		/**
+		 *  the detune parameter
+		 *  @type {Tone.Signal}
+		 */
+		this.detune = new Tone.Signal(0);
+
+		/**
 		 *  the gain of the filter, only used in certain filter types
 		 *  @type {AudioParam}
 		 */
@@ -1370,6 +1367,7 @@ define('Tone/component/Filter',["Tone/core/Tone", "Tone/signal/Signal"], functio
 	 */
 	Tone.Filter.prototype.set = function(params){
 		if (!this.isUndef(params.type)) this.setType(params.type);
+		if (!this.isUndef(params.detune)) this.detune.setValue(params.detune);
 		if (!this.isUndef(params.frequency)) this.frequency.setValue(params.frequency);
 		if (!this.isUndef(params.Q)) this.Q.setValue(params.Q);
 		if (!this.isUndef(params.gain)) this.gain.setValue(params.gain);
@@ -1435,6 +1433,7 @@ define('Tone/component/Filter',["Tone/core/Tone", "Tone/signal/Signal"], functio
 			var filter = this.context.createBiquadFilter();
 			filter.type = this._type;
 			this.frequency.connect(filter.frequency);
+			this.detune.connect(filter.detune);
 			this.Q.connect(filter.Q);
 			this.gain.connect(filter.gain);
 			this._filters[count] = filter;
@@ -1448,6 +1447,7 @@ define('Tone/component/Filter',["Tone/core/Tone", "Tone/signal/Signal"], functio
 	 *  clean up
 	 */
 	Tone.Filter.prototype.dispose = function(){
+		Tone.prototype.dispose.call(this);
 		for (var i = 0; i < this._filters.length; i++) {
 			this._filters[i].disconnect();
 			this._filters[i] = null;
@@ -1918,6 +1918,7 @@ define('Tone/signal/Threshold',["Tone/core/Tone", "Tone/signal/Signal"], functio
 	 *  dispose method
 	 */
 	Tone.Threshold.prototype.dispose = function(){
+		Tone.prototype.dispose.call(this);
 		this._thresh.disconnect();
 		this._doubleThresh.disconnect();
 		this._thresh = null;
@@ -1993,6 +1994,7 @@ function(Tone){
 	 *  dispose method
 	 */
 	Tone.EqualZero.prototype.dispose = function(){
+		Tone.prototype.dispose.call(this);
 		this._equals.disconnect();
 		this._thresh.dispose();
 		this._equals = null;
@@ -2060,6 +2062,7 @@ define('Tone/signal/Equal',["Tone/core/Tone", "Tone/signal/EqualZero", "Tone/sig
 	 *  dispose method
 	 */
 	Tone.Equal.prototype.dispose = function(){
+		Tone.prototype.dispose.call(this);
 		this._equals.disconnect();
 		this._adder.dispose();
 		this._equals = null;
@@ -2068,12 +2071,12 @@ define('Tone/signal/Equal',["Tone/core/Tone", "Tone/signal/EqualZero", "Tone/sig
 
 	return Tone.Equal;
 });
-define('Tone/signal/Selector',["Tone/core/Tone", "Tone/signal/Equal", "Tone/signal/Signal"], function(Tone){
+define('Tone/signal/Select',["Tone/core/Tone", "Tone/signal/Equal", "Tone/signal/Signal"], function(Tone){
 
 	
 
 	/**
-	 *  @class Selector between any number of inputs, sending the one 
+	 *  @class Select between any number of inputs, sending the one 
 	 *         selected by the gate signal to the output
 	 *
 	 *
@@ -2081,13 +2084,13 @@ define('Tone/signal/Selector',["Tone/core/Tone", "Tone/signal/Equal", "Tone/sign
 	 *  @extends {Tone}
 	 *  @param {number=} [sourceCount=2] the number of inputs the switch accepts
 	 */
-	Tone.Selector = function(sourceCount){
+	Tone.Select = function(sourceCount){
 
 		sourceCount = this.defaultArg(sourceCount, 2);
 
 		/**
 		 *  the array of inputs
-		 *  @type {Array<SelectorGate>}
+		 *  @type {Array<SelectGate>}
 		 */
 		this.input = new Array(sourceCount);
 
@@ -2105,21 +2108,21 @@ define('Tone/signal/Selector',["Tone/core/Tone", "Tone/signal/Equal", "Tone/sign
 
 		//make all the inputs and connect them
 		for (var i = 0; i < sourceCount; i++){
-			var switchGate = new SelectorGate(i);
+			var switchGate = new SelectGate(i);
 			this.input[i] = switchGate;
 			this.gate.connect(switchGate.selecter);
 			switchGate.connect(this.output);
 		}
 	};
 
-	Tone.extend(Tone.Selector);
+	Tone.extend(Tone.Select);
 
 	/**
 	 *  open one of the inputs and close the other
 	 *  @param {number=} [which=0] open one of the gates (closes the other)
 	 *  @param {Tone.Time} time the time when the switch will open
 	 */
-	Tone.Selector.prototype.select = function(which, time){
+	Tone.Select.prototype.select = function(which, time){
 		//make sure it's an integer
 		which = Math.floor(which);
 		this.gate.setValueAtTime(which, this.toSeconds(time));
@@ -2130,31 +2133,30 @@ define('Tone/signal/Selector',["Tone/core/Tone", "Tone/signal/Equal", "Tone/sign
 	 *  
 	 *  @function
 	 */
-	Tone.Selector.prototype.connect = Tone.Signal.prototype.connect;
+	Tone.Select.prototype.connect = Tone.Signal.prototype.connect;
 
 	/**
 	 *  dispose method
 	 */
-	Tone.Selector.prototype.dispose = function(){
-		this.output.disconnect();
+	Tone.Select.prototype.dispose = function(){
 		this.gate.dispose();
 		for (var i = 0; i < this.input.length; i++){
 			this.input[i].dispose();
 			this.input[i] = null;
 		}
+		Tone.prototype.dispose.call(this);
 		this.gate = null;
-		this.output = null;
 	}; 
 
 	////////////START HELPER////////////
 
 	/**
-	 *  helper class for Tone.Selector representing a single gate
+	 *  helper class for Tone.Select representing a single gate
 	 *  @constructor
 	 *  @extends {Tone}
-	 *  @internal only used by Tone.Selector
+	 *  @internal only used by Tone.Select
 	 */
-	var SelectorGate = function(num){
+	var SelectGate = function(num){
 
 		/**
 		 *  the selector
@@ -2172,13 +2174,14 @@ define('Tone/signal/Selector',["Tone/core/Tone", "Tone/signal/Equal", "Tone/sign
 		this.selecter.connect(this.gate.gain);
 	};
 
-	Tone.extend(SelectorGate);
+	Tone.extend(SelectGate);
 
 	/**
 	 *  clean up
 	 *  @private
 	 */
-	SelectorGate.prototype.dispose = function(){
+	SelectGate.prototype.dispose = function(){
+		Tone.prototype.dispose.call(this);
 		this.selecter.dispose();
 		this.gate.disconnect();
 		this.selecter = null;
@@ -2187,8 +2190,8 @@ define('Tone/signal/Selector',["Tone/core/Tone", "Tone/signal/Equal", "Tone/sign
 
 	////////////END HELPER////////////
 
-	//return Tone.Selector
-	return Tone.Selector;
+	//return Tone.Select
+	return Tone.Select;
 });
 define('Tone/signal/Negate',["Tone/core/Tone", "Tone/signal/Multiply", "Tone/signal/Signal"], function(Tone){
 
@@ -2227,13 +2230,22 @@ define('Tone/signal/Negate',["Tone/core/Tone", "Tone/signal/Multiply", "Tone/sig
 	 *  clean up
 	 */
 	Tone.Negate.prototype.dispose = function(){
-		this.input.disconnect();
-		this.input = null;
+		Tone.prototype.dispose.call(this);
+		this._multiply.dispose();
+		this._multiply = null;
 	}; 
 
 	return Tone.Negate;
 });
-define('Tone/signal/LessThan',["Tone/core/Tone", "Tone/signal/Threshold", "Tone/signal/Add", "Tone/signal/Signal"], function(Tone){
+define('Tone/signal/Not',["Tone/core/Tone", "Tone/signal/EqualZero"], function(Tone){
+
+	
+
+	Tone.Not = Tone.EqualZero;
+
+	return Tone.Not;
+});
+define('Tone/signal/LessThan',["Tone/core/Tone", "Tone/signal/Threshold", "Tone/signal/Add", "Tone/signal/Signal", "Tone/signal/Not"], function(Tone){
 
 	
 
@@ -2245,17 +2257,6 @@ define('Tone/signal/LessThan',["Tone/core/Tone", "Tone/signal/Threshold", "Tone/
 	 *  @param {number=} [value=0] the value to compare to the incoming signal
 	 */
 	Tone.LessThan = function(value){
-		/**
-		 *  @type {WaveShaperNode}
-		 *  @private
-		 */
-		this._lt = this.context.createWaveShaper();
-
-		/**
-		 *  @type {Tone.Threshold}
-		 *  @private
-		 */
-		this._thresh = new Tone.Threshold(0.5);
 
 		/**
 		 *  subtract the value from the incoming signal
@@ -2264,6 +2265,18 @@ define('Tone/signal/LessThan',["Tone/core/Tone", "Tone/signal/Threshold", "Tone/
 		 *  @private
 		 */
 		this._adder = new Tone.Add(this.defaultArg(-value, 0));
+
+		/**
+		 *  @type {Tone.Threshold}
+		 *  @private
+		 */
+		this._thresh = new Tone.Threshold(0);
+
+		/**
+		 *  @type {Tone.Not}
+		 *  @private
+		 */
+		this._not = new Tone.Not();
 
 		/**
 	 	 *  alias for the adder
@@ -2275,32 +2288,13 @@ define('Tone/signal/LessThan',["Tone/core/Tone", "Tone/signal/Threshold", "Tone/
 		 *  alias for the thresh
 		 *  @type {Tone.Threshold}
 		 */
-		this.output = this._thresh;
+		this.output = this._not;
 
 		//connect
-		this.chain(this._adder, this._lt, this._thresh);
-		//setup waveshaper
-		this._setLessThanZero();
+		this.chain(this._adder, this._thresh, this._not);
 	};
 
 	Tone.extend(Tone.LessThan);
-
-	/**
-	 *  @private
-	 */
-	Tone.LessThan.prototype._setLessThanZero = function(){
-		var curveLength = 1023;
-		var curve = new Float32Array(curveLength);
-		for (var i = 0; i < curveLength; i++){
-			var normalized = (i / (curveLength - 1)) * 2 - 1;
-			if (normalized < 0){
-				curve[i] = 1;
-			} else {
-				curve[i] = 0;
-			}
-		}
-		this._lt.curve = curve;
-	};
 
 	/**
 	 *  set the value to compare to
@@ -2322,17 +2316,18 @@ define('Tone/signal/LessThan',["Tone/core/Tone", "Tone/signal/Threshold", "Tone/
 	 *  dispose method
 	 */
 	Tone.LessThan.prototype.dispose = function(){
-		this._lt.disconnect();
+		Tone.prototype.dispose.call(this);
 		this._adder.disconnect();
 		this._thresh.dispose();
-		this._lt = null;
+		this._not.dispose();
 		this._adder = null;
 		this._thresh = null;
+		this._not = null;
 	};
 
 	return Tone.LessThan;
 });
-define('Tone/signal/Abs',["Tone/core/Tone", "Tone/signal/Selector", "Tone/signal/Negate", "Tone/signal/LessThan", "Tone/signal/Signal"], 
+define('Tone/signal/Abs',["Tone/core/Tone", "Tone/signal/Select", "Tone/signal/Negate", "Tone/signal/LessThan", "Tone/signal/Signal"], 
 function(Tone){
 
 	
@@ -2353,10 +2348,10 @@ function(Tone){
 		this._ltz = new Tone.LessThan(0);
 
 		/**
-		 *  @type {Tone.Selector}
+		 *  @type {Tone.Select}
 		 *  @private
 		 */
-		this._switch = new Tone.Selector(2);
+		this._switch = new Tone.Select(2);
 		
 		/**
 		 *  @type {Tone.Negate}
@@ -2583,7 +2578,7 @@ function(Tone){
 
 	return Tone.Follower;
 });
-define('Tone/signal/GreaterThan',["Tone/core/Tone", "Tone/signal/Threshold", "Tone/signal/Add", "Tone/signal/Signal"], function(Tone){
+define('Tone/signal/GreaterThan',["Tone/core/Tone", "Tone/signal/LessThan", "Tone/signal/Negate", "Tone/signal/Signal"], function(Tone){
 
 	
 
@@ -2596,61 +2591,34 @@ define('Tone/signal/GreaterThan',["Tone/core/Tone", "Tone/signal/Threshold", "To
 	 */
 	Tone.GreaterThan = function(value){
 		/**
-		 *  @type {WaveShaperNode}
+		 *  @type {Tone.LessThan}
 		 *  @private
 		 */
-		this._gt = this.context.createWaveShaper();
+		this._lt = new Tone.LessThan(-value);
 
 		/**
-		 *  @type {Tone.Threshold}
+		 *  @type {Tone.Negate}
 		 *  @private
 		 */
-		this._thresh = new Tone.Threshold(0.001);
-
-		/**
-		 *  subtract the value from the incoming signal
-		 *  
-		 *  @type {Tone.Add}
-		 *  @private
-		 */
-		this._adder = new Tone.Add(this.defaultArg(-value, 0));
+		this._neg = new Tone.Negate();
 
 		/**
 	 	 *  alias for the adder
 		 *  @type {Tone.Add}
 		 */
-		this.input = this._adder;
+		this.input = this._neg;
 
 		/**
 		 *  alias for the thresh
 		 *  @type {Tone.Threshold}
 		 */
-		this.output = this._thresh;
+		this.output = this._lt;
 
 		//connect
-		this.chain(this._adder, this._gt, this._thresh);
-		//setup waveshaper
-		this._setGreaterThanZero();
+		this._neg.connect(this._lt);
 	};
 
 	Tone.extend(Tone.GreaterThan);
-
-	/**
-	 *  @private
-	 */
-	Tone.GreaterThan.prototype._setGreaterThanZero = function(){
-		var curveLength = 1023;
-		var curve = new Float32Array(curveLength);
-		for (var i = 0; i < curveLength; i++){
-			var normalized = (i / (curveLength - 1)) * 2 - 1;
-			if (normalized > 0){
-				curve[i] = 1;
-			} else {
-				curve[i] = 0;
-			}
-		}
-		this._gt.curve = curve;
-	};
 
 	/**
 	 *  set the value to compare to
@@ -2658,7 +2626,7 @@ define('Tone/signal/GreaterThan',["Tone/core/Tone", "Tone/signal/Threshold", "To
 	 *  @param {number} value
 	 */
 	Tone.GreaterThan.prototype.setValue = function(value){
-		this._adder.setValue(-value);
+		this._lt.setValue(-value);
 	};
 
 	/**
@@ -2672,12 +2640,11 @@ define('Tone/signal/GreaterThan',["Tone/core/Tone", "Tone/signal/Threshold", "To
 	 *  dispose method
 	 */
 	Tone.GreaterThan.prototype.dispose = function(){
-		this._gt.disconnect();
-		this._adder.disconnect();
-		this._thresh.dispose();
-		this._gt = null;
-		this._adder = null;
-		this._thresh = null;
+		Tone.prototype.dispose.call(this);
+		this._lt.disconnect();
+		this._neg.disconnect();
+		this._lt = null;
+		this._neg = null;
 	};
 
 	return Tone.GreaterThan;
@@ -2715,13 +2682,6 @@ define('Tone/component/Gate',["Tone/core/Tone", "Tone/component/Follower", "Tone
 		 *  @private
 		 */
 		this._gt = new Tone.GreaterThan(this.dbToGain(thresh));
-
-		/**
-		 *  gate smoother
-		 *  @type {Tone.Follower}
-		 *  @private
-		 */
-		this._gateSmoother = new Tone.Follower(attackTime, releaseTime);
 
 		//the connections
 		this.chain(this.input, this.output);
@@ -4339,11 +4299,12 @@ function(Tone){
 	 *  disconnect and dispose
 	 */
 	Tone.LFO.prototype.dispose = function(){
+		Tone.prototype.dispose.call(this);
 		this.oscillator.dispose();
 		this._scaler.dispose();
+		this._scaler = null;
 		this.oscillator = null;
 		this.frequency = null;
-		this.output = null;
 	};
 
 	return Tone.LFO;
@@ -4813,6 +4774,7 @@ function(Tone){
 		this._dryWet = null;
 		this._splitter = null;
 		this._merger = null;
+		this.pan = null;
 	};
 
 	return Tone.Panner;
@@ -5678,17 +5640,17 @@ define('Tone/signal/ScaleExp',["Tone/core/Tone", "Tone/signal/Add", "Tone/signal
 	 *  clean up
 	 */
 	Tone.ScaleExp.prototype.dispose = function(){
-		this.input.disconnect();
-		this.output.disconnect();
+		Tone.prototype.dispose.call(this);
 		this._plusInput.dispose();
 		this._plusOutput.dispose();
 		this._normalize.dispose();
 		this._scale.dispose();
-		this.input = null;
-		this.output = null;
+		this._expScaler.disconnect();
 		this._plusInput = null;
 		this._plusOutput = null;
 		this._scale = null;
+		this._normalize = null;
+		this._expScaler = null;
 	}; 
 
 
@@ -5859,69 +5821,185 @@ define('Tone/effect/AutoWah',["Tone/core/Tone", "Tone/component/Follower", "Tone
 
 	return Tone.AutoWah;
 });
-define('Tone/effect/BitCrusher',["Tone/core/Tone", "Tone/effect/Effect"], function(Tone){
+define('Tone/signal/Modulo',["Tone/core/Tone", "Tone/signal/LessThan", "Tone/signal/Select", "Tone/signal/Not"], function(Tone){
+
+	
+
+	/**
+	 *  @class Signal-rate modolu operator. Specify the modulus and the 
+	 *         number of bits of the incoming signal. Because the operator is composed of many components, 
+	 *         fewer bits will improve performance. 
+	 *
+	 *  @constructor
+	 *  @extends {Tone}
+	 *  @param {number} modulus the modolus to apply
+	 *  @param {number=} bits    optionally set the maximum bits the incoming signal can have. 
+	 *                           defaults to 4 meaning that incoming values must be in the range
+	 *                           0-32. (2^4 = 32);
+	 */
+	Tone.Modulo = function(modulus, bits){
+
+		Tone.call(this);
+
+		bits = this.defaultArg(bits, 4);
+
+		/**
+		 *  the array of Modulus Subroutine objects
+		 *  @type {Array.<ModulusSubroutine>}
+		 *  @private
+		 */
+		this._modChain = [];
+
+		//create all of the subroutines
+		for (var i = bits - 1; i >= 0; i--){
+			var mod = new ModuloSubroutine(modulus, Math.pow(2, i));
+			this._modChain.push(mod);
+		}
+
+		//connect them up
+		this.input.connect(this._modChain[0]);
+		this.chain.apply(this, this._modChain);
+		this._modChain[bits - 1].connect(this.output);
+	};
+
+	Tone.extend(Tone.Modulo);
+
+	Tone.Modulo.prototype.dispose = function(){
+		Tone.prototype.dispose.call(this);
+		for (var i = 0; i < this._modChain.length; i++) {
+			this._modChain[i].dispose();
+			this._modChain[i] = null;
+		}
+		this._modChain = null;
+	};
+
+	/**
+	 *  @class applies a modolus at a single bit depth. 
+	 *         uses this operation: http://stackoverflow.com/a/14842954
+	 *
+	 *  
+	 *  @internal helper class for modulo
+	 *  @constructor
+	 *  @extends {Tone}
+	 */
+	var ModuloSubroutine = function(modulus, multiple){
+
+		Tone.call(this);
+
+		var val = modulus * multiple;
+
+		/**
+		 *  @type {Tone.LessThan}
+		 *  @private
+		 */
+		this._lt = new Tone.LessThan(val);
+
+		/**
+		 *  @private
+		 *  @type {Tone.Not}
+		 */
+		this._not = new Tone.Not();
+
+		/**
+		 *  @private
+		 *  @type {Tone.Add}
+		 */
+		this._sub = new Tone.Add(-val);
+
+		/**
+		 *  @private
+		 *  @type {Tone.Select}
+		 */
+		this._select = new Tone.Select(2);
+
+		//connections
+		this.chain(this.input, this._lt, this._not, this._select.gate);
+		this.input.connect(this._sub);
+		this._sub.connect(this._select, 0, 1);
+		this.input.connect(this._select, 0, 0);
+		this._select.connect(this.output);
+	};
+
+	Tone.extend(ModuloSubroutine);
+
+	 /**
+	  *  internal class clean up
+	  */
+	ModuloSubroutine.prototype.dispose = function(){
+		this._lt.dispose();
+		this._not.dispose();
+		this._sub.dispose();
+		this._select.dispose();
+		this._lt = null;
+		this._not = null;
+		this._sub = null;
+		this._select = null;
+	};
+
+	return Tone.Modulo;
+});
+define('Tone/effect/BitCrusher',["Tone/core/Tone", "Tone/effect/Effect", "Tone/signal/Modulo", "Tone/signal/Negate", "Tone/signal/Add"], 
+function(Tone){
 
 	
 
 	/**
 	 *  @class downsample incoming signal. 
-	 *         inspiration from https://github.com/jaz303/bitcrusher/blob/master/index.js
+	 *
+	 *  The algorithm to downsample the incoming signal is to scale the input
+	 *  to between [0, 2^bits) and then apply a Floor function to the scaled value, 
+	 *  then scale it back to audio range [-1, 1]
 	 *
 	 *  @constructor
 	 *  @extends {Tone.Effect}
-	 *  @param {number|Object=} bits   
-	 *  @param {number=} frequency 
+	 *  @param {number} bits 1-8. 
 	 */
 	Tone.BitCrusher = function(){
 
-		var options = this.optionsObject(arguments, ["bits", "frequency"], Tone.BitCrusher.defaults);
+		var options = this.optionsObject(arguments, ["bits"], Tone.BitCrusher.defaults);
 		Tone.Effect.call(this, options);
 
-		/** 
-		 * @private 
-		 * @type {number}
+		/**
+		 *  Used for the floor function
+		 *  @type {Tone.Modulo}
+		 *  @private
 		 */
-		this._bits = this.defaultArg(options.bits, 8);
-		
-		/** 
-		 * @private 
-		 * @type {number}
+		this._modulo = new Tone.Modulo(1, options.bits);
+
+		/**
+		 *  used for the floor function
+		 *  @type {Tone.Negate}
+		 *  @private
 		 */
-		this._frequency = this.defaultArg(options.frequency, 0.5);
-		
-		/** 
-		 * @private 
-		 * @type {number}
+		this._neg = new Tone.Negate();
+
+		/**
+		 *  Node where the subtraction occurs for floor function
+		 *  @type {GainNode}
+		 *  @private
 		 */
-		this._step = 2 * Math.pow(0.5, this._bits);
-		
-		/** 
-		 * @private 
-		 * @type {number}
+		this._sub = this.context.createGain();
+
+		var valueRange = Math.pow(2, options.bits - 1);
+
+		/**
+		 *  scale the incoming signal to [0, valueRange)
+		 *  @type {Tone.Scale}
+		 *  @private
 		 */
-		this._invStep = 1/this._step;
-		
-		/** 
-		 * @private 
-		 * @type {number}
+		this._scale = new Tone.Scale(-1, 1, 0, valueRange);
+
+		/**
+		 *  scale it back to the audio range [-1, 1]
+		 *  @type {Tone.Scale}
+		 *  @private
 		 */
-		this._phasor = 0;
-		
-		/** 
-		 * @private 
-		 * @type {number}
-		 */
-		this._last = 0;
-		
-		/** 
-		 * @private 
-		 * @type {ScriptProcessorNode}
-		 */
-		this._crusher = this.context.createScriptProcessor(this.bufferSize, 1, 1);
-		this._crusher.onaudioprocess = this._audioprocess.bind(this);
+		this._invScale = new Tone.Scale(0, valueRange, -1, 1);
 
 		//connect it up
-		this.connectEffect(this._crusher);
+		this.effectSend.connect(this._scale);
+		this._scale.connect(this._invScale);
+		this.chain(this._scale, this._modulo, this._neg, this._invScale, this.effectReturn);
 	};
 
 	Tone.extend(Tone.BitCrusher, Tone.Effect);
@@ -5932,53 +6010,19 @@ define('Tone/effect/BitCrusher',["Tone/core/Tone", "Tone/effect/Effect"], functi
 	 *  @type {Object}
 	 */
 	Tone.BitCrusher.defaults = {
-		"bits" : 8,
-		"frequency" : 0.5
-	};
-
-	/**
-	 *  @private
-	 *  @param  {AudioProcessingEvent} event
-	 */
-	Tone.BitCrusher.prototype._audioprocess = function(event){
-		//cache the values used in the loop
-		var phasor = this._phasor;
-		var freq = this._frequency;
-		var invStep = this._invStep;
-		var last = this._last;
-		var step = this._step;
-		var input = event.inputBuffer.getChannelData(0);
-		var output = event.outputBuffer.getChannelData(0);
-		for (var i = 0, len = output.length; i < len; i++) {
-			phasor += freq;
-		    if (phasor >= 1) {
-		        phasor -= 1;
-		        last = step * ((input[i] * invStep) | 0 + 0.5);
-		    }
-		    output[i] = last;
-		}
-		//set the values for the next loop
-		this._phasor = phasor;
-		this._last = last;
+		"bits" : 4
 	};
 
 	/**
 	 *  set the bit rate
 	 *  
-	 *  @param {number} bits 
+	 *  @param {number} bits the number of bits in the range [1,8]
 	 */
 	Tone.BitCrusher.prototype.setBits = function(bits){
-		this._bits = Math.floor(bits);
-		this._step = 2 * Math.pow(0.5, this._bits);
-		this._invStep = 1/this._step;
-	};
-
-	/**
-	 *  set the frequency
-	 *  @param {number} freq 
-	 */
-	Tone.BitCrusher.prototype.setFrequency = function(freq){
-		this._frequency = freq;
+		bits = Math.min(bits, 8);
+		var valueRange = Math.pow(2, bits - 1);
+		this._scale.setOutputMax(valueRange);
+		this._invScale.setInputMax(valueRange);
 	};
 
 	/**
@@ -5986,7 +6030,6 @@ define('Tone/effect/BitCrusher',["Tone/core/Tone", "Tone/effect/Effect"], functi
 	 *  @param {Object} params 
 	 */
 	Tone.BitCrusher.prototype.set = function(params){
-		if (!this.isUndef(params.frequency)) this.setFrequency(params.frequency);
 		if (!this.isUndef(params.bits)) this.setBits(params.bits);
 		Tone.Effect.prototype.set.call(this, params);
 	};
@@ -5996,8 +6039,16 @@ define('Tone/effect/BitCrusher',["Tone/core/Tone", "Tone/effect/Effect"], functi
 	 */
 	Tone.BitCrusher.prototype.dispose = function(){
 		Tone.Effect.prototype.dispose.call(this);
-		this._crusher.disconnect();
-		this._crusher = null;
+		this._modulo.dispose();
+		this._neg.dispose();
+		this._sub.disconnect();
+		this._scale.dispose();
+		this._invScale.dispose();
+		this._modulo = null;
+		this._neg = null;
+		this._sub = null;
+		this._scale = null;
+		this._invScale = null;
 	}; 
 
 	return Tone.BitCrusher;
@@ -8134,12 +8185,18 @@ function(Tone){
 	 *  @class  Creates a polyphonic synthesizer out of 
 	 *          the monophonic voice which is passed in. 
 	 *
+	 *  @example
+	 *  //a polysynth composed of 6 Voices of MonoSynth
+	 *  var synth = new Tone.PolySynth(6, Tone.MonoSynth);
+	 *  //set the MonoSynth preset
+	 *  synth.setPreset("Pianoetta");
+	 *
 	 *  @constructor
 	 *  @extends {Tone}
-	 *  @param {number|Object} [polyphony=6] the number of voices to create
+	 *  @param {number|Object=} [polyphony=4] the number of voices to create
 	 *  @param {function=} [voice=Tone.MonoSynth] the constructor of the voices
 	 *                                            uses Tone.MonoSynth by default
-	 *  @param {Object} voiceOptions the options to pass to the voice                                          
+	 *  @param {Object=} voiceOptions the options to pass to the voice                                          
 	 */
 	Tone.PolySynth = function(){
 
@@ -8227,7 +8284,7 @@ function(Tone){
 	Tone.PolySynth.prototype.triggerAttackRelease = function(value, duration, time, velocity){
 		time = this.toSeconds(time);
 		this.triggerAttack(value, time, velocity);
-		this.triggerRelease(time + this.toSeconds(duration));
+		this.triggerRelease(value, time + this.toSeconds(duration));
 	};
 
 	/**
@@ -8257,6 +8314,15 @@ function(Tone){
 	};
 
 	/**
+	 *  @param {string} presetName the preset name
+	 */
+	Tone.PolySynth.prototype.setPreset = function(presetName){
+		for (var i = 0; i < this._voices.length; i++){
+			this._voices[i].setPreset(presetName);
+		}
+	};
+
+	/**
 	 *  set volume method borrowed form {@link Tone.Source}
 	 *  @function
 	 */
@@ -8278,7 +8344,7 @@ function(Tone){
 
 	return Tone.PolySynth;
 });
-define('Tone/signal/Max',["Tone/core/Tone", "Tone/signal/GreaterThan", "Tone/signal/Selector", "Tone/signal/Signal"], function(Tone){
+define('Tone/signal/Max',["Tone/core/Tone", "Tone/signal/GreaterThan", "Tone/signal/Select", "Tone/signal/Signal"], function(Tone){
 
 	
 
@@ -8300,13 +8366,13 @@ define('Tone/signal/Max',["Tone/core/Tone", "Tone/signal/GreaterThan", "Tone/sig
 		this._maxSignal = new Tone.Signal(max);
 
 		/**
-		 *  @type {Tone.Selector}
+		 *  @type {Tone.Select}
 		 *  @private
 		 */
-		this._switch = new Tone.Selector(2);
+		this._switch = new Tone.Select(2);
 
 		/**
-		 *  @type {Tone.Selector}
+		 *  @type {Tone.Select}
 		 *  @private
 		 */
 		this._gt = new Tone.GreaterThan(max);
@@ -8340,13 +8406,10 @@ define('Tone/signal/Max',["Tone/core/Tone", "Tone/signal/GreaterThan", "Tone/sig
 	 *  clean up
 	 */
 	Tone.Max.prototype.dispose = function(){
-		this.input.disconnect();
-		this.output.disconnect();
+		Tone.prototype.dispose.call(this);
 		this._maxSignal.dispose();
 		this._switch.dispose();
 		this._gt.dispose();
-		this.input = null;
-		this.output = null;
 		this._maxSignal = null;
 		this._switch = null;
 		this._gt = null;
@@ -8354,7 +8417,7 @@ define('Tone/signal/Max',["Tone/core/Tone", "Tone/signal/GreaterThan", "Tone/sig
 
 	return Tone.Max;
 });
-define('Tone/signal/Min',["Tone/core/Tone", "Tone/signal/LessThan", "Tone/signal/Selector", "Tone/signal/Signal"], function(Tone){
+define('Tone/signal/Min',["Tone/core/Tone", "Tone/signal/LessThan", "Tone/signal/Select", "Tone/signal/Signal"], function(Tone){
 
 	
 
@@ -8376,13 +8439,13 @@ define('Tone/signal/Min',["Tone/core/Tone", "Tone/signal/LessThan", "Tone/signal
 		this._minSignal = new Tone.Signal(min);
 
 		/**
-		 *  @type {Tone.Selector}
+		 *  @type {Tone.Select}
 		 *  @private
 		 */
-		this._switch = new Tone.Selector(2);
+		this._switch = new Tone.Select(2);
 
 		/**
-		 *  @type {Tone.Selector}
+		 *  @type {Tone.Select}
 		 *  @private
 		 */
 		this._lt = new Tone.LessThan(min);
@@ -8416,13 +8479,10 @@ define('Tone/signal/Min',["Tone/core/Tone", "Tone/signal/LessThan", "Tone/signal
 	 *  clean up
 	 */
 	Tone.Min.prototype.dispose = function(){
-		this.input.disconnect();
-		this.output.disconnect();
+		Tone.prototype.dispose.call(this);
 		this._minSignal.dispose();
 		this._switch.dispose();
 		this._lt.dispose();
-		this.input = null;
-		this.output = null;
 		this._minSignal = null;
 		this._switch = null;
 		this._lt = null;
@@ -8499,14 +8559,11 @@ define('Tone/signal/Clip',["Tone/core/Tone", "Tone/signal/Max", "Tone/signal/Min
 	 *  clean up
 	 */
 	Tone.Clip.prototype.dispose = function(){
+		Tone.prototype.dispose.call(this);
 		this._min.dispose();
 		this._max.dispose();
-		this.input.disconnect();
-		this.output.disconnect();
 		this._min = null;
 		this._max = null;
-		this.input = null;
-		this.output = null;
 	};
 
 	return Tone.Clip;
@@ -8578,14 +8635,13 @@ define('Tone/signal/Route',["Tone/core/Tone", "Tone/signal/Equal", "Tone/signal/
 	 *  dispose method
 	 */
 	Tone.Route.prototype.dispose = function(){
-		this.input.disconnect();
 		this.gate.dispose();
 		for (var i = 0; i < this.output.length; i++){
 			this.output[i].dispose();
 			this.output[i] = null;
 		}
+		Tone.prototype.dispose.call(this);
 		this.gate = null;
-		this.input = null;
 	}; 
 
 	////////////START HELPER////////////
@@ -8621,6 +8677,7 @@ define('Tone/signal/Route',["Tone/core/Tone", "Tone/signal/Equal", "Tone/signal/
 	 *  @private
 	 */
 	RouteGate.prototype.dispose = function(){
+		Tone.prototype.dispose.call(this);
 		this.selecter.dispose();
 		this.gate.disconnect();
 		this.selecter = null;
@@ -8665,7 +8722,6 @@ define('Tone/signal/Switch',["Tone/core/Tone", "Tone/signal/Signal", "Tone/signa
 
 		this.input.connect(this.output);
 		this.chain(this.gate, this._thresh, this.output.gain);
-		this.output.gain.value = 0;
 	};
 
 	Tone.extend(Tone.Switch);
@@ -8702,7 +8758,7 @@ define('Tone/signal/Switch',["Tone/core/Tone", "Tone/signal/Signal", "Tone/signa
 		Tone.prototype.dispose.call(this);
 		this.gate.dispose();
 		this._thresh.dispose();
-		this.signal = null;
+		this.gate = null;
 		this._thresh = null;
 	}; 
 
@@ -9146,10 +9202,15 @@ function(Tone){
 	 *  clean up method
 	 */
 	Tone.PulseOscillator.prototype.dispose = function(){
+		Tone.Source.prototype.dispose.call(this);
 		this._sawtooth.dispose();
-		this._sawtooth = null;
 		this.width.dispose();
+		this._thresh.disconnect();
+		this._sawtooth = null;
+		this.frequency = null;
+		this.detune = null;
 		this.width = null;
+		this._thresh = null;
 	};
 
 	return Tone.PulseOscillator;
