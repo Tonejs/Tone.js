@@ -14,7 +14,8 @@
     "grunt-contrib-requirejs": "~0.4.4"
   },
   "devDependencies": {
-    "grunt-contrib-copy": "~0.5.0"
+    "grunt-contrib-copy": "~0.5.0",
+    "midi-file-parser": "~1.0.0"
   },
   "author": "",
   "license": "ISC"
