@@ -1,7 +1,11 @@
 Tone.js
 =========
 
-A Web Audio framework for synthesis, playback, timing and effects. 
+Tone.js is a Web Audio framework for creating music in the browser. On the application-level, the library is modeled after a DAW (digital audio workstation) with a global transport for timing events, sends and receives, and a master output. Tone also comes with a number of instruments and effects with named presets to get you up and running quickly. Additionally, Tone provides a wealth of building blocks and DSP modules to build your own synths, effects, and control signals while using nearly no ScriptProcessorNodes for the best performance and latency on desktop and mobile browsers. 
+
+[Examples](http://tonenotone.github.io/Tone.js/examples/)
+
+[API](http://tonenotone.github.io/Tone.js/doc/)
 
 # Installation
 
@@ -159,7 +163,7 @@ Tone.js provides a number number of useful components for building synthesizers 
 
 # Signals
 
-Like the underlying Web Audio API, Tone.js is built with audio-rate signal control over nearly everything. This is a powerful feature which allows for sample-accurate synchronization of multiple parameters with a single signal. Signals are built entirely without any ScriptProcessorNodes, so they do not introduce much latency and processing overhead. Instead, all signal math and logic let GainNodes and WaveShaperNodes do all of the work so that all processing is done in the underlying Assembly/C/C++ provided by the API. Signals are used extensively internally and are also useful for general DSP and control signal logic and transformations. 
+Like the underlying Web Audio API, Tone.js is built with audio-rate signal control over nearly everything. This is a powerful feature which allows for sample-accurate synchronization of multiple parameters with a single signal. Signals are built entirely without the ScriptProcessorNode so they do not introduce much latency and processing overhead. Instead, all signal math and logic let GainNodes and WaveShaperNodes do all of the work so that all processing is done in the underlying Assembly/C/C++ provided by the API. Signals are used extensively internally and are also useful for general DSP and control signal logic and transformations. 
 
 ### Math
 
@@ -168,6 +172,7 @@ Like the underlying Web Audio API, Tone.js is built with audio-rate signal contr
 * [Tone.Clip](http://tonenotone.github.io/Tone.js/doc/Tone.Clip.html)
 * [Tone.Max](http://tonenotone.github.io/Tone.js/doc/Tone.Max.html)
 * [Tone.Min](http://tonenotone.github.io/Tone.js/doc/Tone.Min.html)
+* [Tone.Modulo](http://tonenotone.github.io/Tone.js/doc/Tone.Modulo.html)
 * [Tone.Multiply](http://tonenotone.github.io/Tone.js/doc/Tone.Multiply.html)
 * [Tone.Negate](http://tonenotone.github.io/Tone.js/doc/Tone.Negate.html)
 * [Tone.Scale](http://tonenotone.github.io/Tone.js/doc/Tone.Scale.html)
@@ -210,19 +215,20 @@ Each of the instruments also has a number of presets which can be found in the T
 
 Tone.js also has a few stereo and mono effects which also have their own presets. 
 
+* [Tone.AutoPanner](http://tonenotone.github.io/Tone.js/doc/Tone.AutoPanner.html)
+* [Tone.AutoWah](http://tonenotone.github.io/Tone.js/doc/Tone.AutoWah.html)
+* [Tone.BitCrusher](http://tonenotone.github.io/Tone.js/doc/Tone.BitCrusher.html)
+* [Tone.Chorus](http://tonenotone.github.io/Tone.js/doc/Tone.Chorus.html)
+* [Tone.FeedbackDelay](http://tonenotone.github.io/Tone.js/doc/Tone.FeedbackDelay.html)
+* [Tone.Phaser](http://tonenotone.github.io/Tone.js/doc/Tone.Phaser.html)
+* [Tone.PingPongDelay](http://tonenotone.github.io/Tone.js/doc/Tone.PingPongDelay.html)
+
 # Performance
 
 Tone.js uses very few ScriptProcessorNodes. Nearly all of the ToneNodes find a native Web Audio component workaround, making 
 extensive use of the GainNode and WaveShaperNode especially. While the ScripProcessorNode is extremely powerful, it 
-introduces a lot of latency and the potential for glitches more than any other node. The 
+introduces a lot of latency and the potential for glitches more than any other node.  
 
-# Examples
-
-Examples can be found [here](http://tonenotone.github.io/Tone.js/examples/).
-
-# Documentation
-
-JSDocs are [here](http://tonenotone.github.io/Tone.js/doc/).
 
 # References and Inspiration
 
