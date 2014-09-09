@@ -11,7 +11,6 @@
 		},
 		"systemName"      : "Tone.js",
 		"footer"          : "",
-		"copyright"       : "Tone No Tone Copyright © 2014.",
 		"navType"         : "vertical",
 		"theme"           : "spacelab",
 		"linenums"        : true,
