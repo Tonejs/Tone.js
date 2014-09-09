@@ -1,3 +1,11 @@
+/**
+ *  Pass in a MIDI File as the command line argument to this Node.js
+ *  script and it will output a js file in the same directory. 
+ *
+ *  @example
+ *  node MidiToScore.js mySong.mid
+ */
+
 var midiFileParser = require("midi-file-parser");
 var fs = require("fs");
 
