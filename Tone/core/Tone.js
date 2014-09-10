@@ -589,9 +589,9 @@ define("Tone/core/Tone", [], function(){
 		if (isUndef(parent)){
 			parent = Tone;
 		}
-		function tempConstructor(){}
-		tempConstructor.prototype = parent.prototype;
-		child.prototype = new tempConstructor();
+		function TempConstructor(){}
+		TempConstructor.prototype = parent.prototype;
+		child.prototype = new TempConstructor();
 		/** @override */
 		child.prototype.constructor = child;
 	};
