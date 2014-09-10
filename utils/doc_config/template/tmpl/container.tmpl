@@ -120,7 +120,13 @@
             <?js } ?>
         <?js }); ?></dl>
         <!-- THEN INHERITED METHODS -->
-        <h4 class="subsection-title">Inherited Methods</h4>
+        <?js var inheritedMethods = false ?>
+        <?js methods.forEach(function(m) { ?>
+            <?js if (m.inherited && m.inherits && !inheritedMethods) { ?>
+            <?js inheritedMethods = true ?>
+            <h4 class="subsection-title">Inherited Methods</h4>
+            <?js } ?>
+        <?js }); ?>
         <dl><?js methods.forEach(function(m) { ?>
             <?js if (m.inherited && m.inherits) { ?>
             <?js= self.partial('method.tmpl', m) ?>
