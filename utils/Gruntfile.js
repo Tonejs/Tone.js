@@ -36,11 +36,14 @@ module.exports = function(grunt) {
 			npm : {
 				files : [{
 					expand : true,
-					src: ["../build/Tone.js", "../build/Tone.min.js", "../build/Tone.Preset.js", "../README.md"], 
-					dest: "./npm"
+					src: ["../build/Tone.js", "../build/Tone.min.js", "../build/Tone.Preset.js"], 
+					dest: "./npm/Tone.js"
 				}, {
 					src : ["../Tone/**"],
 					dest : "./npm/Tone/"
+				}, {
+					src : ["../README.md"],
+					dest : "./npm/README.md"
 				}]
 			}
 		},

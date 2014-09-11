@@ -14,9 +14,9 @@ TODO.txt
 
 # all the npm stuff
 utils/npm/Tone
-utils/npm/Tone.js
-utils/npm/Tone.min.js
-utils/npm/Tone.Preset.js
+utils/npm/build/Tone.js
+utils/npm/build/Tone.min.js
+utils/npm/build/Tone.Preset.js
 utils/npm/README.md
 
 examples/deps/FileSaver.js
