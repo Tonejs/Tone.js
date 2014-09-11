@@ -113,7 +113,7 @@ function(core, chai, Recorder, Signal, Oscillator, Master, Threshold, Switch, Ro
 
 		it("can ramp exponentially from the current value now", function(){
 			var sig = new Signal(1);
-			sig.exponentialRampToValueNow(10);
+			sig.exponentialRampToValueNow(10, 0.5);
 			sig.dispose();
 		});
 
