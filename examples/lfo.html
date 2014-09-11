@@ -22,8 +22,8 @@
 			<br>
 			<br>
 			<a href="http://en.wikipedia.org/wiki/Low-frequency_oscillation">LFOs</a> are a powerful musical tool. 
-			LFOs can be connected to Tone.Signals and AudioParams to control nearly anything. This example uses LFOs 
-			to control the oscillators pitch, detune, delay time, and filter frequency to make some crazy sounds. 
+			LFOs can be connected to Tone.Signals and AudioParams to control nearly anything. This example uses LFO
+			a slow square wave LFO on the pitch and two sine waves on the detune and amplitude. 
 		</div>
 		<div id="Content"></div>
 	</div>
@@ -33,17 +33,26 @@
 		/* globals Tone, GUI */
 
 		var osc = new Tone.Oscillator(110, "triangle");
-		osc.toMaster();
+		osc.setVolume(-10);
 
 		var freqLFO = new Tone.LFO(0.1, 80, 160);
 		freqLFO.setType("square");
 		freqLFO.connect(osc.frequency);
 
 		var detuneLFO = new Tone.LFO(12, -80, 80);
-		detuneLFO.connect(osc.detune);
+		var detuneAmount = new Tone.Multiply(1);
+		detuneLFO.connect(detuneAmount);
+		detuneAmount.connect(osc.detune);
 		
-		var amplitudeLFO = new Tone.LFO(4, 0.05, 0.5);
-		amplitudeLFO.connect(osc.output.gain);
+		var amplitudeLFO = new Tone.LFO(10, 0.05, 1);
+		var ampAmount = new Tone.DryWet(1);
+		var ampNode = Tone.context.createGain();
+		osc.connect(ampNode);
+		ampNode.connect(ampAmount.wet);
+		osc.connect(ampAmount.dry);
+		amplitudeLFO.connect(ampNode.gain);
+
+		ampAmount.toMaster();
 
 		// GUI //
 
@@ -70,19 +79,17 @@
 			var scaled = val * 2 + 0.1;
 			freqLFO.setFrequency(scaled);
 			return scaled;
-		}, 1, "pitch LFO");
+		}, 1, "pitch LFO", "hz");
 		freqSlider.render(0.1);
 		var detuneSlider = new GUI.Slider(content, function(val){
-			var scaled = val * 20 + 5;
-			detuneLFO.setFrequency(scaled);
-			return scaled;
-		}, 1, "detune LFO");
+			detuneAmount.setValue(val);
+			return val * 100;
+		}, 1, "detune LFO", "%");
 		detuneSlider.render(0.5);
 		var amplitudeSlider = new GUI.Slider(content, function(val){
-			var scaled = val * 4 + 1;
-			amplitudeLFO.setFrequency(scaled);
-			return scaled;
-		}, 1, "amplitude LFO");
+			ampAmount.setWet(val);
+			return val * 100;
+		}, 1, "amplitude LFO", "%");
 		amplitudeSlider.render(0.75);
 
 	</script>
