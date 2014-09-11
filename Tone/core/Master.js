@@ -9,7 +9,7 @@ define(["Tone/core/Tone"], function(Tone){
 	 *  @constructor
 	 *  @extends {Tone}
 	 */
-	var Master = function(){
+	Tone.Master = function(){
 		//extend audio unit
 		Tone.call(this);
 
@@ -25,13 +25,13 @@ define(["Tone/core/Tone"], function(Tone){
 		this.chain(this.input, this.limiter, this.output, this.context.destination);
 	};
 
-	Tone.extend(Master);
+	Tone.extend(Tone.Master);
 
 	/**
 	 *  mute the output
 	 *  @param {boolean} muted
 	 */
-	Master.prototype.mute = function(muted){
+	Tone.Master.prototype.mute = function(muted){
 		muted = this.defaultArg(muted, true);
 		if (muted){
 			this.output.gain.value = 0;
@@ -44,7 +44,7 @@ define(["Tone/core/Tone"], function(Tone){
 	 *  @param {number} db volume in decibels 
 	 *  @param {Tone.Time=} fadeTime (optional) time it takes to reach the value
 	 */
-	Master.prototype.setVolume = function(db, fadeTime){
+	Tone.Master.prototype.setVolume = function(db, fadeTime){
 		var now = this.now();
 		var gain = this.dbToGain(db);
 		if (fadeTime){
@@ -76,14 +76,16 @@ define(["Tone/core/Tone"], function(Tone){
 		this.connect(Tone.Master);
 	};
 
-	Tone.Master = new Master();
+	var MasterConstructor = Tone.Master;
+
+	//a single master output
+	Tone.Master = new Tone.Master();
 
 	/**
 	 *  initialize the module and listen for new audio contexts
 	 */
 	Tone._initAudioContext(function(){
-		//a single master output
-		Master.call(Tone.Master);
+		MasterConstructor.call(Tone.Master);
 	});
 
 	return Tone.Master;
