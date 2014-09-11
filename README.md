@@ -114,7 +114,7 @@ Tone.Transport.start();
 
 In the Tone library, time can be described in a number of ways. Any method which takes a time as a parameter will accept any of these forms: 
 
-__Number__: these will be taken literally as the time (in seconds). 
+__Number__: will be taken literally as the time (in seconds). 
 
 __Notation__: describes time in BPM and time signature relative values. 
 
@@ -229,6 +229,11 @@ Tone.js uses very few ScriptProcessorNodes. Nearly all of the ToneNodes find a n
 extensive use of the GainNode and WaveShaperNode especially. While the ScripProcessorNode is extremely powerful, it 
 introduces a lot of latency and the potential for glitches more than any other node.  
 
+# Demos
+
+* [Camera-based synthesizer created at the Monthly Music Hackathon](http://karenpeng.github.io/yayaya/)
+
+Using Tone.js? To have your application included here email me yotammann@gmail.com
 
 # References and Inspiration
 
