@@ -3,7 +3,7 @@ define(["Tone/core/Tone", "Tone/signal/LessThan", "Tone/signal/Select", "Tone/si
 	"use strict";
 
 	/**
-	 *  @class Signal-rate modolu operator. Specify the modulus and the 
+	 *  @class Signal-rate modulo operator. Specify the modulus and the 
 	 *         number of bits of the incoming signal. Because the operator is composed of many components, 
 	 *         fewer bits will improve performance. 
 	 *

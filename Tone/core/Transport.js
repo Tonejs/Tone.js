@@ -234,6 +234,12 @@ function(Tone){
 
 	/**
 	 *  intervals are recurring events 
+	 *
+	 *  @example
+	 *  //triggers a callback every 8th note with the exact time of the event
+	 *  Tone.Transport.setInterval(function(time){
+	 *  	envelope.triggerAttack(time);
+	 *  }, "8n");
 	 *  
 	 *  @param {function} callback
 	 *  @param {Tone.Time}   interval 
@@ -275,7 +281,15 @@ function(Tone){
 	///////////////////////////////////////////////////////////////////////////////
 
 	/**
-	 *  set a timeout to occur after time from now
+	 *  set a timeout to occur after time from now. NB: the transport must be 
+	 *  running for this to be triggered. All timeout events are cleared when the 
+	 *  transport is stopped. 
+	 *
+	 *  @example
+	 *  //trigger an event to happen 1 second from now
+	 *  Tone.Transport.setTimeout(function(time){
+	 *  	player.start(time);
+	 *  }, 1)
 	 *  
 	 *  @param {function} callback 
 	 *  @param {Tone.Time}   time     
@@ -329,6 +343,12 @@ function(Tone){
 	 *  Timeline events are synced to the transportTimeline of the Tone.Transport
 	 *  Unlike Timeout, Timeline events will restart after the 
 	 *  Tone.Transport has been stopped and restarted. 
+	 *
+	 *  @example
+	 *  //trigger the start of a part on the 16th measure
+	 *  Tone.Transport.setTimeline(function(time){
+	 *  	part.start(time);
+	 *  }, "16m");
 	 *
 	 *  
 	 *  @param {function} 	callback 	
@@ -510,10 +530,12 @@ function(Tone){
 	 *  set the time signature
 	 *  
 	 *  @example
-	 *  this.setTimeSignature(4); //for 4/4
+	 *  this.setTimeSignature(3, 8); // 3/8
+	 *  this.setTimeSignature(4); // 4/4
 	 *  
-	 *  @param {number} numerator   
-	 *  @param {number=} denominator defaults to 4
+	 *  @param {number} numerator  the numerator of the time signature
+	 *  @param {number=} [denominator=4] the denominator of the time signature. this should
+	 *                                   be a multiple of 2. 
 	 */
 	Tone.Transport.prototype.setTimeSignature = function(numerator, denominator){
 		denominator = this.defaultArg(denominator, 4);
@@ -521,8 +543,7 @@ function(Tone){
 	};
 
 	/**
-	 *  return the time signature as just the numerator
-	 *  over 4 is assumed. 
+	 *  return the time signature as just the numerator over 4. 
 	 *  for example 4/4 would return 4 and 6/8 would return 3
 	 *  
 	 *  @return {number} 
@@ -601,6 +622,14 @@ function(Tone){
 		signal.sync(this._clock._controlSignal);
 	};
 
+	/**
+	 *  clean up
+	 */
+	Tone.Transport.prototype.dispose = function(){
+		this._clock.dispose();
+		this._clock = null;
+	};
+
 	///////////////////////////////////////////////////////////////////////////////
 	//	TIMELINE EVENT
 	///////////////////////////////////////////////////////////////////////////////
@@ -656,15 +685,6 @@ function(Tone){
 	 */
 	TimelineEvent.prototype.testInterval = function(tick){
 		return (tick - this.startTicks) % this.tickTime === 0;
-	};
-
-
-	/**
-	 *  clean up
-	 */
-	Tone.Transport.prototype.dispose = function(){
-		this._clock.dispose();
-		this._clock = null;
 	};
 
 
@@ -922,7 +942,6 @@ function(Tone){
 	Tone.Transport = new Tone.Transport();
 	//set the bpm initially
 	Tone.Transport.setBpm(120);
-
 
 	Tone._initAudioContext(function(){
 		//get the previous bpm

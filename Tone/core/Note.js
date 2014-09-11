@@ -113,17 +113,22 @@ define(["Tone/core/Tone", "Tone/core/Transport"], function(Tone){
 	};
 
 	/**
-	 *  parses a score and registers all of the notes
+	 *  Parses a score and registers all of the notes along the timeline. 
 	 *
-	 *  scores are a JSON object with instruments at the top level
-	 *  and an array of time, value tuples
+	 *  Scores are a JSON object with instruments at the top level
+	 *  and an array of time and values. The value of a note can be 0 or more 
+	 *  parameters. 
 	 *
-	 *  i.e. { 
+	 *  To convert MIDI files to score notation, take a look at utils/MidiToScore.js
+	 *
+	 *  @example
+	 *  var score = { 
 	 *  	"synth"  : [["0", "C3"], ["0:1", "D3"], ["0:2", "E3"], ... ],
 	 *  	"bass"  : [["0", "C2"], ["1:0", "A2"], ["2:0", "C2"], ["3:0", "A2"], ... ],
 	 *  	"drums"  : [["0", "kick"], ["0:2", "snare"], ["1:0", "kick"], ["1:2", "snare"], ... ],
 	 *  	...
-	 *  }
+	 *  };
+	 *
 	 *  @static
 	 *  @param {Object} score
 	 *  @return {Array<Tone.Note>} an array of all of the notes that were created
@@ -202,7 +207,7 @@ define(["Tone/core/Tone", "Tone/core/Transport"], function(Tone){
 	 *  convert a midi note number into a note name
 	 *
 	 *  @example
-	 *  tone.midiToNote(60) => "C4"
+	 *  tone.midiToNote(60) => "C3"
 	 *  
 	 *  @param  {[type]} midiNumber [description]
 	 *  @return {[type]}            [description]

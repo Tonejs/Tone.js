@@ -440,14 +440,14 @@ define("Tone/core/Tone", [], function(){
 	};
 
 	/**
-	 *  convert Tone.Time to seconds
+	 *  convert time to seconds
 	 *
 	 *  this is a simplified version which only handles numbers and 
 	 *  'now' relative numbers. If the Transport is included this 
 	 *  method is overridden to include many other features including 
 	 *  notationTime, Frequency, and transportTime
 	 *  
-	 *  @param  {Tone.Time} time 
+	 *  @param  {number=} time 
 	 *  @param {number=} now if passed in, this number will be 
 	 *                       used for all 'now' relative timings
 	 *  @return {number}   	seconds in the same timescale as the AudioContext
