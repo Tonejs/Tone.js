@@ -9,6 +9,7 @@
 	<script type="text/javascript" src="./deps/jquery.ui.touch-punch.js"></script>
 	<script type="text/javascript" src="../build/Tone.js"></script>
 	<script type="text/javascript" src="../build/Tone.Preset.js"></script>
+	<script type="text/javascript" src="../Tone/effect/preset/Phaser.preset.js"></script>
 	<script type="text/javascript" src="./Widgets.js"></script>
 	<script type="text/javascript" src="./ExampleList.js"></script>
 	<link rel="stylesheet" type="text/css" href="./style/widgets.css">
@@ -56,7 +57,7 @@
 		var phaser = new Tone.Phaser();
 		phaser.receive("phaser");
 		phaser.toMaster();
-		phaser.setPreset("testing");
+		phaser.setPreset("bubbles");
 		var autoWah = new Tone.AutoWah();
 		autoWah.receive("autowah");
 		autoWah.toMaster();
