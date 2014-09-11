@@ -1,7 +1,7 @@
 Tone.js
 =========
 
-Tone.js is a Web Audio framework for creating music in the browser. On the application-level, the library is modeled after a DAW (digital audio workstation) with a global transport for timing events, sends and receives, and a master output. Tone also comes with a number of instruments and effects with named presets to get you up and running quickly. Additionally, Tone provides a wealth of building blocks and DSP modules to build your own synths, effects, and control signals while using nearly no ScriptProcessorNodes for the best performance and latency on desktop and mobile browsers. 
+Tone.js is a Web Audio framework for creating interactive music in the browser. On the application-level, the library is modeled after a DAW (digital audio workstation) with a global transport, sends and receives, and a master output. Tone also comes with a number of instruments and effects with named presets to get you up and running quickly. Additionally, Tone provides a wealth of high performance, low latency building blocks and DSP modules to build your own synths, effects, and control signals.
 
 [Examples](http://tonenotone.github.io/Tone.js/examples/)
 
@@ -231,7 +231,7 @@ introduces a lot of latency and the potential for glitches more than any other n
 
 # Demos
 
-* [Camera-based synthesizer created at the Monthly Music Hackathon](http://karenpeng.github.io/yayaya/)
+* [motionEmotion is an emotion & gesture-based arpeggiator and synthesizer.](http://motionemotion.herokuapp.com/)
 
 Using Tone.js? To have your application included here email me yotammann@gmail.com
 
