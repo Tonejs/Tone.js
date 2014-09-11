@@ -123,7 +123,7 @@ GUI._updateList = [];
 
 GUI._update = function(){
 	// requestAnimationFrame(GUI._update);
-	setTimeout(GUI._update, 80);
+	setTimeout(GUI._update, 40);
 	for (var i = GUI._updateList.length - 1; i >= 0; i--) {
 		GUI._updateList[i]();
 	}
@@ -348,7 +348,7 @@ GUI.Momentary = function(container, callback, labelOff, labelOn){
 			});
 			callback(true);
 		})
-		.on("mouseup touchend", function(){
+		.on("mouseup touchend mouseout", function(){
 			element.button({
 				"label" : labelOff
 			});
