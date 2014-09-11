@@ -65,10 +65,10 @@ GUI.Envelope = function(container, envelope, title){
 	this.title = $("<div>", {"id" : "Title"})
 		.appendTo(this.element)
 		.text(title);
-	this.attack = this.makeSlider("attack", 0.01, 0.3, "A");
-	this.decay = this.makeSlider("decay", 0.01, 0.4, "D");
+	this.attack = this.makeSlider("attack", 0.01, 1, "A");
+	this.decay = this.makeSlider("decay", 0.01, 1, "D");
 	this.sustain = this.makeSlider("sustain", 0, 1, "S");
-	this.release = this.makeSlider("release", 0.2, 2, "R");
+	this.release = this.makeSlider("release", 0.2, 4, "R");
 	this.render();
 };
 
@@ -83,22 +83,31 @@ GUI.Envelope.prototype.render = function(){
 GUI.Envelope.prototype.makeSlider = function(attr, min, max, name){
 	var self = this;
 	var startVal = this.envelope[attr]*1000;
+
+	var envelope = this.envelope;
+
+	//slider function
+	function logSliderValue(val){
+		var logged = Math.pow(val / 1000, 2);
+		return envelope.interpolate(logged, min, max);
+	}
+
 	var slider = $("<div>", {"class" : "EnvelopeSlider"})
 		.slider({
 			orientation: "vertical",
 			range: "min",
-			min: min * 1000,
-			max: max * 1000,
+			min: 0,
+			max: 1000,
 			value: startVal,
 			slide: function(event, ui) {
 				var settings = {};
-				settings[attr] = ui.value / 1000;
+				settings[attr] = logSliderValue(ui.value);
 				self.envelope.set(settings);
 				label.text(settings[attr].toFixed(3));
 			},
 			change : function(e, ui){
 				var settings = {};
-				settings[attr] = ui.value / 1000;
+				settings[attr] = logSliderValue(ui.value);
 				label.text(settings[attr].toFixed(3));
 			}
 		})
