@@ -3,11 +3,9 @@ define(["Tone/core/Tone", "Tone/core/Master"], function(Tone){
 	"use strict";
 
 	/**
-	 *  get the rms of the input signal with some averaging
-	 *  can also just get the value of the signal
-	 *  or the value in dB
-	 *  
-	 *  inspired by https://github.com/cwilso/volume-meter/blob/master/volume-meter.js
+	 *  @class  Get the rms of the input signal with some averaging.
+	 *          can also just get the value of the signal
+	 *          or the value in dB. inspired by https://github.com/cwilso/volume-meter/blob/master/volume-meter.js
 	 *
 	 *  @constructor
 	 *  @extends {Tone}

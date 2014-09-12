@@ -23,6 +23,37 @@ GUI.StartButton.prototype.buttonClicked = function(){
 };
 
 /**
+ *  a start button for mobile browsers which require a touchstart event
+ *  to start the audio
+ */
+GUI.MobileStart = function(callback){
+	if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
+		this.element = $("<div>", {"class" : "StartButton"})
+			.appendTo("#Container");
+		this.button = $("<button>")
+			.button({label: "\u25B6"})
+			.click(this.buttonClicked.bind(this))
+			.appendTo(this.element);  
+		this.callback = callback;
+		//also make the explanation collapsed
+		$("#Explanation").on("touchstart", function(){
+			if ($(this).hasClass("Collapsed")){
+				$(this).removeClass("Collapsed");
+			} else {
+				$(this).addClass("Collapsed");
+			}
+		});
+	}
+};
+
+GUI.MobileStart.prototype.buttonClicked = function(){
+	this.element.fadeTo(500, 0, function(){
+		$(this).remove();
+	});
+	this.callback();
+};
+
+/**
  *  Tone.Envelope GUI
  *  @param {jQuery} container the jQuery object to put the gui in
  *  @param {Tone.Envelope} envelope  the envelope object
@@ -34,10 +65,10 @@ GUI.Envelope = function(container, envelope, title){
 	this.title = $("<div>", {"id" : "Title"})
 		.appendTo(this.element)
 		.text(title);
-	this.attack = this.makeSlider("attack", 0.01, 0.3, "A");
-	this.decay = this.makeSlider("decay", 0.01, 0.4, "D");
+	this.attack = this.makeSlider("attack", 0.01, 1, "A");
+	this.decay = this.makeSlider("decay", 0.01, 1, "D");
 	this.sustain = this.makeSlider("sustain", 0, 1, "S");
-	this.release = this.makeSlider("release", 0.2, 2, "R");
+	this.release = this.makeSlider("release", 0.2, 4, "R");
 	this.render();
 };
 
@@ -52,22 +83,31 @@ GUI.Envelope.prototype.render = function(){
 GUI.Envelope.prototype.makeSlider = function(attr, min, max, name){
 	var self = this;
 	var startVal = this.envelope[attr]*1000;
+
+	var envelope = this.envelope;
+
+	//slider function
+	function logSliderValue(val){
+		var logged = Math.pow(val / 1000, 2);
+		return envelope.interpolate(logged, min, max);
+	}
+
 	var slider = $("<div>", {"class" : "EnvelopeSlider"})
 		.slider({
 			orientation: "vertical",
 			range: "min",
-			min: min * 1000,
-			max: max * 1000,
+			min: 0,
+			max: 1000,
 			value: startVal,
 			slide: function(event, ui) {
 				var settings = {};
-				settings[attr] = ui.value / 1000;
+				settings[attr] = logSliderValue(ui.value);
 				self.envelope.set(settings);
 				label.text(settings[attr].toFixed(3));
 			},
 			change : function(e, ui){
 				var settings = {};
-				settings[attr] = ui.value / 1000;
+				settings[attr] = logSliderValue(ui.value);
 				label.text(settings[attr].toFixed(3));
 			}
 		})
@@ -92,7 +132,7 @@ GUI._updateList = [];
 
 GUI._update = function(){
 	// requestAnimationFrame(GUI._update);
-	setTimeout(GUI._update, 80);
+	setTimeout(GUI._update, 40);
 	for (var i = GUI._updateList.length - 1; i >= 0; i--) {
 		GUI._updateList[i]();
 	}
@@ -210,11 +250,13 @@ GUI.TopBar = function(Tone){
 		.appendTo("#Container");
 	this.hompage = $("<div>", {"id" : "HomePage"})
 		.appendTo(this.element)
-		.text("Tone.js");
+		.append($("<a>").attr("href", "https://github.com/TONEnoTONE/Tone.js").text("Tone.js"));
 	this.meter = new Tone.Meter(2);
 	Tone.Master.connect(this.meter);
 	this.meterGUI = new GUI.LevelMeter(this.element, this.meter);
 	this.makeDropDown();
+	//and the mobile start button
+	new GUI.MobileStart(Tone.startMobile);
 };
 
 GUI.TopBar.prototype.makeDropDown = function(){
@@ -315,7 +357,7 @@ GUI.Momentary = function(container, callback, labelOff, labelOn){
 			});
 			callback(true);
 		})
-		.on("mouseup touchend", function(){
+		.on("mouseup touchend mouseout", function(){
 			element.button({
 				"label" : labelOff
 			});

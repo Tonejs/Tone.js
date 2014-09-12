@@ -62,7 +62,7 @@ define(["Tone/core/Tone", "Tone/instrument/DuoSynth"], function(Tone){
 				}
 			}
 		},
-		"Rego" : {
+		"Unicorn" : {
 			"vibratoAmount" : 0.5,
 			"vibratoRate" : 5,
 			"vibratoDelay" : 1,

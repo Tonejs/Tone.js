@@ -3,7 +3,7 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/signal/Signal", "Tone/sign
 	"use strict";
 	
 	/**
-	 * Feedback Effect (a sound loop between an audio source and its own output)
+	 * 	@class  Feedback Effect (a sound loop between an audio source and its own output)
 	 *
 	 *  @constructor
 	 *  @extends {Tone.Effect}
@@ -25,6 +25,7 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/signal/Signal", "Tone/sign
 		/**
 		 *  scales the feedback in half
 		 *  @type {Tone.Multiply}
+		 *  @private
 		 */
 		this._half = new Tone.Multiply(0.5);
 		

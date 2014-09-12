@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/source/Player", "Tone/component/Envelope", "Tone/component/Filter"], 
+define(["Tone/core/Tone", "Tone/source/Player", "Tone/component/Envelope", "Tone/component/Filter", "Tone/source/Source"], 
 function(Tone){
 
 	"use strict";
@@ -36,6 +36,13 @@ function(Tone){
 		this.envelope = new Tone.Envelope(options.envelope);
 
 		/**
+		 *  the amplitude
+		 *  @type {GainNode}
+		 *  @private
+		 */
+		this._amplitude = this.context.createGain();
+
+		/**
 		 *  the filter envelope
 		 *  @type {Tone.Envelope}
 		 */
@@ -48,8 +55,8 @@ function(Tone){
 		this.filter = new Tone.Filter(options.filter);
 
 		//connections
-		this.chain(this.player, this.filter, this.output);
-		this.envelope.connect(this.player.output.gain);
+		this.chain(this.player, this.filter, this._amplitude, this.output);
+		this.envelope.connect(this._amplitude.gain);
 		this.filterEnvelope.connect(this.filter.frequency);
 	};
 
@@ -74,7 +81,7 @@ function(Tone){
 			"decay" : 0.001,
 			"sustain" : 1,
 			"release" : 0.5,
-			"min" : 0,
+			"min" : 20,
 			"max" : 20000
 		},
 		"filter" : {
@@ -113,6 +120,26 @@ function(Tone){
 		this.filterEnvelope.triggerRelease(time);
 		this.envelope.triggerRelease(time);
 	};
+
+	/**
+	 *  trigger the attack and release after the specified duration
+	 *  
+	 *  @param  {number|string} note     the note as a number or a string note name
+	 *  @param  {Tone.Time} duration the duration of the note
+	 *  @param  {Tone.Time=} time     if no time is given, defaults to now
+	 *  @param  {number=} velocity the velocity of the attack (0-1)
+	 */
+	Tone.Sampler.prototype.triggerAttackRelease = function(note, duration, time, velocity) {
+		time = this.toSeconds(time);
+		this.triggerAttack(note, time, velocity);
+		this.triggerRelease(time + this.toSeconds(duration));
+	};
+
+	/**
+	 *  set volume method borrowed form {@link Tone.Source}
+	 *  @function
+	 */
+	Tone.Sampler.prototype.setVolume = Tone.Source.prototype.setVolume;
 
 	/**
 	 *  clean up

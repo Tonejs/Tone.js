@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/signal/Threshold", "Tone/signal/Add", "Tone/signal/Signal"], function(Tone){
+define(["Tone/core/Tone", "Tone/signal/Threshold", "Tone/signal/Add", "Tone/signal/Signal", "Tone/signal/Not"], function(Tone){
 
 	"use strict";
 
@@ -10,17 +10,6 @@ define(["Tone/core/Tone", "Tone/signal/Threshold", "Tone/signal/Add", "Tone/sign
 	 *  @param {number=} [value=0] the value to compare to the incoming signal
 	 */
 	Tone.LessThan = function(value){
-		/**
-		 *  @type {WaveShaperNode}
-		 *  @private
-		 */
-		this._lt = this.context.createWaveShaper();
-
-		/**
-		 *  @type {Tone.Threshold}
-		 *  @private
-		 */
-		this._thresh = new Tone.Threshold(0.5);
 
 		/**
 		 *  subtract the value from the incoming signal
@@ -29,6 +18,18 @@ define(["Tone/core/Tone", "Tone/signal/Threshold", "Tone/signal/Add", "Tone/sign
 		 *  @private
 		 */
 		this._adder = new Tone.Add(this.defaultArg(-value, 0));
+
+		/**
+		 *  @type {Tone.Threshold}
+		 *  @private
+		 */
+		this._thresh = new Tone.Threshold(0);
+
+		/**
+		 *  @type {Tone.Not}
+		 *  @private
+		 */
+		this._not = new Tone.Not();
 
 		/**
 	 	 *  alias for the adder
@@ -40,32 +41,13 @@ define(["Tone/core/Tone", "Tone/signal/Threshold", "Tone/signal/Add", "Tone/sign
 		 *  alias for the thresh
 		 *  @type {Tone.Threshold}
 		 */
-		this.output = this._thresh;
+		this.output = this._not;
 
 		//connect
-		this.chain(this._adder, this._lt, this._thresh);
-		//setup waveshaper
-		this._setLessThanZero();
+		this.chain(this._adder, this._thresh, this._not);
 	};
 
 	Tone.extend(Tone.LessThan);
-
-	/**
-	 *  @private
-	 */
-	Tone.LessThan.prototype._setLessThanZero = function(){
-		var curveLength = 1023;
-		var curve = new Float32Array(curveLength);
-		for (var i = 0; i < curveLength; i++){
-			var normalized = (i / (curveLength - 1)) * 2 - 1;
-			if (normalized < 0){
-				curve[i] = 1;
-			} else {
-				curve[i] = 0;
-			}
-		}
-		this._lt.curve = curve;
-	};
 
 	/**
 	 *  set the value to compare to
@@ -87,12 +69,13 @@ define(["Tone/core/Tone", "Tone/signal/Threshold", "Tone/signal/Add", "Tone/sign
 	 *  dispose method
 	 */
 	Tone.LessThan.prototype.dispose = function(){
-		this._lt.disconnect();
+		Tone.prototype.dispose.call(this);
 		this._adder.disconnect();
 		this._thresh.dispose();
-		this._lt = null;
+		this._not.dispose();
 		this._adder = null;
 		this._thresh = null;
+		this._not = null;
 	};
 
 	return Tone.LessThan;

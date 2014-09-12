@@ -112,7 +112,12 @@ define(["Tone/core/Tone"], function(Tone){
 	 */
 	Tone.Signal.prototype.exponentialRampToValueAtTime = function(value, endTime){
 		value *= this._syncRatio;
-		this._scalar.gain.exponentialRampToValueAtTime(value, this.toSeconds(endTime));
+		try {
+			this._scalar.gain.exponentialRampToValueAtTime(value, this.toSeconds(endTime));
+		} catch(e){
+			//firefox won't let the signal ramp past 1, in these cases, revert to linear ramp
+			this._scalar.gain.linearRampToValueAtTime(value, this.toSeconds(endTime));
+		}
 	};
 
 	/**
@@ -125,12 +130,11 @@ define(["Tone/core/Tone"], function(Tone){
 	Tone.Signal.prototype.exponentialRampToValueNow = function(value, endTime){
 		var now = this.now();
 		this.setCurrentValueNow(now);
-		value *= this._syncRatio;
 		//make sure that the endTime doesn't start with +
 		if (endTime.toString().charAt(0) === "+"){
 			endTime = endTime.substr(1);
 		}
-		this._scalar.gain.exponentialRampToValueAtTime(value, now + this.toSeconds(endTime));
+		this.exponentialRampToValueAtTime(value, now + this.toSeconds(endTime));
 	};
 
 	/**
@@ -241,10 +245,8 @@ define(["Tone/core/Tone"], function(Tone){
 	 *  internal dispose method to tear down the node
 	 */
 	Tone.Signal.prototype.dispose = function(){
-		//disconnect everything
-		this.output.disconnect();
+		Tone.prototype.dispose.call(this);
 		this._scalar.disconnect();
-		this.output = null;
 		this._scalar = null;
 	};
 

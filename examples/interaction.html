@@ -1,0 +1,163 @@
+<html>
+<head>
+	<title>INTERACTIVE</title>
+
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+	<script type="text/javascript" src="./deps/jquery.min.js"></script>
+	<script type="text/javascript" src="./deps/interface.js"></script>
+	<script type="text/javascript" src="./deps/jquery-ui.js"></script>
+	<script type="text/javascript" src="./deps/jquery.ui.touch-punch.js"></script>
+	<script type="text/javascript" src="../build/Tone.js"></script>
+	<script type="text/javascript" src="./Widgets.js"></script>
+	<script type="text/javascript" src="./ExampleList.js"></script>
+	<link rel="stylesheet" type="text/css" href="./style/widgets.css">
+	<link rel="stylesheet" type="text/css" href="./style/jquery-ui.css">
+
+</head>
+<body>
+		
+	<div id="Container">
+		<div id="Explanation">
+			Making it interactive
+			<br>
+			<br>
+			Each of the dots' positions controls two parameters of an effects. <br>
+			<span id="red">Lowpass Filter</span>: x = frequency, y = Q <br>
+			<span id="green">Filter LFO</span>: x = rate, y = depth<br>
+			<span id="blue">Bitcrusher</span>: x = bits, y = amount<br>
+		</div>
+		<div id="Content">
+			<div id="Loading">LOADING...</div>
+			<div id="XY"></div>
+		</div>
+	</div>
+
+
+	<script type="text/javascript">
+		/* globals Tone, GUI, Interface */
+
+		var player = new Tone.Player("./audio/FWDL.mp3", function(){
+			$("#Loading").remove();
+			startButton.enable();
+		});
+		player.loop = true;
+
+		//bit crusher
+		var bitCrushBits = 8;
+		var crusher = new Tone.BitCrusher(bitCrushBits);
+		player.connect(crusher);	
+
+		//a lowpass filter
+		var lowpass = new Tone.Filter(600, "lowpass");
+		crusher.connect(lowpass);
+
+		//filter lfo
+		var filterLFO = new Tone.LFO(5, -1200, 1200);
+		filterLFO.connect(lowpass.detune);
+
+		lowpass.toMaster();
+
+		// GUI //
+
+		var xy;
+
+		$(function(){
+
+			new GUI.TopBar(Tone);
+
+			var panel = new Interface.Panel({ 
+			  container:$("#XY")
+			});
+			xy = new Interface.XY({
+				childWidth: 25,
+				usePhysics : false,
+				numChildren: 3,
+				background:"#FFF",
+				fill: "rgba(127,127,127,.2)",
+				bounds:[0,0,1,1],
+				oninit: function() { 
+					this.rainbow(); 
+				},  
+			});
+			xy.rainbow();
+			panel.background = "white";
+			panel.add(xy);
+			
+			//update the values
+			setInterval(function(){
+				var values = xy.values;
+				//lowpass
+				var lpassfreq = lowpass.interpolate(values[0].x, 500, 6000);
+				var lpassQ = lowpass.interpolate(values[0].y, 20, 0);
+				lowpass.setFrequency(lpassfreq);
+				lowpass.setQ(lpassQ);
+				//filter lfo
+				var filterFeq = filterLFO.interpolate(values[1].x, 0.5, 10);
+				var filterAmount = filterLFO.interpolate(values[1].y, 400, 1200);
+				filterLFO.setMin(-filterAmount);
+				filterLFO.setMax(filterAmount);
+				filterLFO.setFrequency(filterFeq);
+				//bit crusher
+				var crusherMix = crusher.interpolate(values[2].y, 0, 1);
+				var bits = Math.round(crusher.interpolate(values[2].x, 8, 3));
+				if (bits !== bitCrushBits){
+					crusher.setBits(bits);
+					bitCrushBits = bits;
+				}
+				crusher.setDry(crusherMix);
+			}, 100);
+		});
+
+		var content = $("#Content");
+
+		var startButton = new GUI.Checkbox(content, function(on){
+			if (on){
+				player.start();
+				filterLFO.start();
+			} else {
+				player.stop();
+				filterLFO.stop();
+			}
+		}, "start", "stop");
+		startButton.disable();
+
+		// new GUI.ValueMeter(content, meter);
+
+	</script>
+
+	<style type="text/css">
+		#Content {
+			text-align: left;
+			width: 320px;
+			height: auto;
+		}
+		#Content #XY{
+			border: 1px solid black;
+			width: 320px;
+			height: 320px;
+		}
+		#Content #XY canvas{
+			width: 100%;
+			height: 100%;
+		}
+
+		.Checkbox {
+			margin-top: 10px;
+			width: 100%;
+		}
+
+		#red {
+			color: rgb(241, 85, 85);
+		}
+		#green {
+			color: rgb(10, 151, 10);
+		}
+		#blue {
+			color: rgb(63, 63, 255);
+		}
+		
+	</style>
+
+</body>
+</html>

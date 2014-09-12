@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/signal/LessThan", "Tone/signal/Selector", "Tone/signal/Signal"], function(Tone){
+define(["Tone/core/Tone", "Tone/signal/LessThan", "Tone/signal/Select", "Tone/signal/Signal"], function(Tone){
 
 	"use strict";
 
@@ -20,13 +20,13 @@ define(["Tone/core/Tone", "Tone/signal/LessThan", "Tone/signal/Selector", "Tone/
 		this._minSignal = new Tone.Signal(min);
 
 		/**
-		 *  @type {Tone.Selector}
+		 *  @type {Tone.Select}
 		 *  @private
 		 */
-		this._switch = new Tone.Selector(2);
+		this._switch = new Tone.Select(2);
 
 		/**
-		 *  @type {Tone.Selector}
+		 *  @type {Tone.Select}
 		 *  @private
 		 */
 		this._lt = new Tone.LessThan(min);
@@ -60,13 +60,10 @@ define(["Tone/core/Tone", "Tone/signal/LessThan", "Tone/signal/Selector", "Tone/
 	 *  clean up
 	 */
 	Tone.Min.prototype.dispose = function(){
-		this.input.disconnect();
-		this.output.disconnect();
+		Tone.prototype.dispose.call(this);
 		this._minSignal.dispose();
 		this._switch.dispose();
 		this._lt.dispose();
-		this.input = null;
-		this.output = null;
 		this._minSignal = null;
 		this._switch = null;
 		this._lt = null;

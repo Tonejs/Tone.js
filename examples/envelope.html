@@ -2,7 +2,7 @@
 <head>
 	<title>Envelope</title>
 
-	<meta name="viewport" content="width=device-width, initial-scale=0.5">
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
 
 	<script type="text/javascript" src="./deps/jquery.min.js"></script>
 	<script type="text/javascript" src="./deps/jquery-ui.js"></script>
@@ -17,14 +17,11 @@
 <body>	
 	<div id="Container">
 		<div id="Explanation">
-			Attack/Decay/Sustain/Release Envelope
+			ADSR Envelope
 			<br>
 			<br>
 			Click the button to trigger the attack/decay portion of the envelope. 
 			Let go of the button to trigger the release. 
-			<br>
-			<br>
-			<a href="http://en.wikipedia.org/wiki/Synthesizer#ADSR_envelope">Read more about ADSR on Wikipedia</a>
 		</div>
 		<div id="Content"></div>
 	</div>
@@ -48,7 +45,6 @@
 		$(function(){
 			var container = $("#Content");
 
-			new GUI.StartButton(Tone.startMobile);
 			new GUI.TopBar(Tone);
 
 			//sliders for the envelope controls

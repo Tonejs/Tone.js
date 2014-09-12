@@ -1,66 +1,65 @@
-define(["Tone/core/Tone", "Tone/effect/Effect"], function(Tone){
+define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/signal/Modulo", "Tone/signal/Negate", "Tone/signal/Add"], 
+function(Tone){
 
 	"use strict";
 
 	/**
-	 *  @class downsample incoming signal
-	 *  inspiration from https://github.com/jaz303/bitcrusher/blob/master/index.js
+	 *  @class downsample incoming signal. 
+	 *
+	 *  The algorithm to downsample the incoming signal is to scale the input
+	 *  to between [0, 2^bits) and then apply a Floor function to the scaled value, 
+	 *  then scale it back to audio range [-1, 1]
 	 *
 	 *  @constructor
 	 *  @extends {Tone.Effect}
-	 *  @param {number|Object=} bits   
-	 *  @param {number=} frequency 
+	 *  @param {number} bits 1-8. 
 	 */
 	Tone.BitCrusher = function(){
 
-		var options = this.optionsObject(arguments, ["bits", "frequency"], Tone.BitCrusher.defaults);
+		var options = this.optionsObject(arguments, ["bits"], Tone.BitCrusher.defaults);
 		Tone.Effect.call(this, options);
 
-		/** 
-		 * @private 
-		 * @type {number}
+		/**
+		 *  Used for the floor function
+		 *  @type {Tone.Modulo}
+		 *  @private
 		 */
-		this._bits = this.defaultArg(options.bits, 8);
-		
-		/** 
-		 * @private 
-		 * @type {number}
+		this._modulo = new Tone.Modulo(1, options.bits);
+
+		/**
+		 *  used for the floor function
+		 *  @type {Tone.Negate}
+		 *  @private
 		 */
-		this._frequency = this.defaultArg(options.frequency, 0.5);
-		
-		/** 
-		 * @private 
-		 * @type {number}
+		this._neg = new Tone.Negate();
+
+		/**
+		 *  Node where the subtraction occurs for floor function
+		 *  @type {GainNode}
+		 *  @private
 		 */
-		this._step = 2 * Math.pow(0.5, this._bits);
-		
-		/** 
-		 * @private 
-		 * @type {number}
+		this._sub = this.context.createGain();
+
+		var valueRange = Math.pow(2, options.bits - 1);
+
+		/**
+		 *  scale the incoming signal to [0, valueRange)
+		 *  @type {Tone.Scale}
+		 *  @private
 		 */
-		this._invStep = 1/this._step;
-		
-		/** 
-		 * @private 
-		 * @type {number}
+		this._scale = new Tone.Scale(-1, 1, 0, valueRange);
+
+		/**
+		 *  scale it back to the audio range [-1, 1]
+		 *  @type {Tone.Scale}
+		 *  @private
 		 */
-		this._phasor = 0;
-		
-		/** 
-		 * @private 
-		 * @type {number}
-		 */
-		this._last = 0;
-		
-		/** 
-		 * @private 
-		 * @type {ScriptProcessorNode}
-		 */
-		this._crusher = this.context.createScriptProcessor(this.bufferSize, 1, 1);
-		this._crusher.onaudioprocess = this._audioprocess.bind(this);
+		this._invScale = new Tone.Scale(0, valueRange, -1, 1);
 
 		//connect it up
-		this.connectEffect(this._crusher);
+		this.effectSend.connect(this._scale);
+		this._scale.connect(this._invScale);
+		this.chain(this._scale, this._modulo, this._neg, this._invScale, this.effectReturn);
 	};
 
 	Tone.extend(Tone.BitCrusher, Tone.Effect);
@@ -71,53 +70,19 @@ define(["Tone/core/Tone", "Tone/effect/Effect"], function(Tone){
 	 *  @type {Object}
 	 */
 	Tone.BitCrusher.defaults = {
-		"bits" : 8,
-		"frequency" : 0.5
-	};
-
-	/**
-	 *  @private
-	 *  @param  {AudioProcessingEvent} event
-	 */
-	Tone.BitCrusher.prototype._audioprocess = function(event){
-		//cache the values used in the loop
-		var phasor = this._phasor;
-		var freq = this._frequency;
-		var invStep = this._invStep;
-		var last = this._last;
-		var step = this._step;
-		var input = event.inputBuffer.getChannelData(0);
-		var output = event.outputBuffer.getChannelData(0);
-		for (var i = 0, len = output.length; i < len; i++) {
-			phasor += freq;
-		    if (phasor >= 1) {
-		        phasor -= 1;
-		        last = step * ((input[i] * invStep) | 0 + 0.5);
-		    }
-		    output[i] = last;
-		}
-		//set the values for the next loop
-		this._phasor = phasor;
-		this._last = last;
+		"bits" : 4
 	};
 
 	/**
 	 *  set the bit rate
 	 *  
-	 *  @param {number} bits 
+	 *  @param {number} bits the number of bits in the range [1,8]
 	 */
 	Tone.BitCrusher.prototype.setBits = function(bits){
-		this._bits = bits;
-		this._step = 2 * Math.pow(0.5, this._bits);
-		this._invStep = 1/this._step;
-	};
-
-	/**
-	 *  set the frequency
-	 *  @param {number} freq 
-	 */
-	Tone.BitCrusher.prototype.setFrequency = function(freq){
-		this._frequency = freq;
+		bits = Math.min(bits, 8);
+		var valueRange = Math.pow(2, bits - 1);
+		this._scale.setOutputMax(valueRange);
+		this._invScale.setInputMax(valueRange);
 	};
 
 	/**
@@ -125,7 +90,6 @@ define(["Tone/core/Tone", "Tone/effect/Effect"], function(Tone){
 	 *  @param {Object} params 
 	 */
 	Tone.BitCrusher.prototype.set = function(params){
-		if (!this.isUndef(params.frequency)) this.setFrequency(params.frequency);
 		if (!this.isUndef(params.bits)) this.setBits(params.bits);
 		Tone.Effect.prototype.set.call(this, params);
 	};
@@ -135,8 +99,16 @@ define(["Tone/core/Tone", "Tone/effect/Effect"], function(Tone){
 	 */
 	Tone.BitCrusher.prototype.dispose = function(){
 		Tone.Effect.prototype.dispose.call(this);
-		this._crusher.disconnect();
-		this._crusher = null;
+		this._modulo.dispose();
+		this._neg.dispose();
+		this._sub.disconnect();
+		this._scale.dispose();
+		this._invScale.dispose();
+		this._modulo = null;
+		this._neg = null;
+		this._sub = null;
+		this._scale = null;
+		this._invScale = null;
 	}; 
 
 	return Tone.BitCrusher;

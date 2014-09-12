@@ -35,6 +35,7 @@ function(Tone){
 		/**
 		 *  the vibrato lfo
 		 *  @type {Tone.LFO}
+		 *  @private
 		 */
 		this._vibrato = new Tone.LFO(options.vibratoRate, -50, 50);
 		this._vibrato.start();
@@ -50,12 +51,14 @@ function(Tone){
 		/**
 		 *  the delay before the vibrato starts
 		 *  @type {number}
+		 *  @private
 		 */
 		this._vibratoDelay = this.toSeconds(options.vibratoDelay);
 
 		/**
 		 *  the amount before the vibrato starts
 		 *  @type {number}
+		 *  @private
 		 */
 		this._vibratoAmount = options.vibratoAmount;
 
@@ -217,7 +220,7 @@ function(Tone){
 	/**
 	 *  clean up
 	 */
-	Tone.DuoSynth.dispose = function(){
+	Tone.DuoSynth.prototype.dispose = function(){
 		Tone.Monophonic.prototype.dispose.call(this);
 		this.voice0.dispose();
 		this.voice1.dispose();

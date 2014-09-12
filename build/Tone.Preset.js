@@ -96,26 +96,23 @@ define(["Tone/core/Tone", "Tone/effect/AutoWah"], function(Tone){
 		"testing" : {
 			"rate" : 10,
 			"depth" : 0.2,
-			"stages" : 4,
 			"Q" : 2,
 			"baseFrequency" : 700,
 			"feedback" : 0
 		},
 		"landing" : {
-			"rate" : 0.5,
+			"rate" : 4,
 			"depth" : 1.2,
-			"stages" : 12,
 			"Q" : 20,
 			"baseFrequency" : 800,
 			"feedback" : 0.9
 		},
 		"bubbles" : {
-			"rate" : 4.5,
-			"depth" : 0.4,
-			"stages" : 6,
-			"Q" : 2,
-			"baseFrequency" : 300,
-			"feedback" : 0.6
+			"rate" : 0.5,
+			"depth" : 5,
+			"Q" : 8,
+			"baseFrequency" : 250,
+			"feedback" : 0.5
 		}
 	};
 
@@ -185,7 +182,7 @@ define(["Tone/core/Tone", "Tone/instrument/DuoSynth"], function(Tone){
 				}
 			}
 		},
-		"Rego" : {
+		"Unicorn" : {
 			"vibratoAmount" : 0.5,
 			"vibratoRate" : 5,
 			"vibratoDelay" : 1,

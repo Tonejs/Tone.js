@@ -119,13 +119,10 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Multiply", "Tone/signa
 	 *  clean up
 	 */
 	Tone.Scale.prototype.dispose = function(){
-		this.input.disconnect();
-		this.output.disconnect();
+		Tone.prototype.dispose.call(this);
 		this._plusInput.dispose();
 		this._plusOutput.dispose();
 		this._scale.dispose();
-		this.input = null;
-		this.output = null;
 		this._plusInput = null;
 		this._plusOutput = null;
 		this._scale = null;

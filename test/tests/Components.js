@@ -18,6 +18,7 @@ function(coreTest, chai, DryWet, Master, Signal, Recorder, Panner, LFO, Gate, Fo
 		it("can be created and disposed", function(){
 			var dw = new DryWet();
 			dw.dispose();
+			wasDisposed(dw, expect);
 		});
 
 		it("pass 100% dry signal", function(done){
@@ -100,6 +101,7 @@ function(coreTest, chai, DryWet, Master, Signal, Recorder, Panner, LFO, Gate, Fo
 		it("can be created and disposed", function(){
 			var rec = new Recorder();
 			rec.dispose();
+			wasDisposed(rec, expect);
 		});
 
 		it("can record an incoming signal", function(done){
@@ -128,6 +130,7 @@ function(coreTest, chai, DryWet, Master, Signal, Recorder, Panner, LFO, Gate, Fo
 		it("can be created and disposed", function(){
 			var panner = new Panner();
 			panner.dispose();
+			wasDisposed(panner, expect);
 		});
 
 		it("can pan an incoming signal", function(done){
@@ -157,6 +160,7 @@ function(coreTest, chai, DryWet, Master, Signal, Recorder, Panner, LFO, Gate, Fo
 		it("can be created and disposed", function(){
 			var l = new LFO();
 			l.dispose();
+			wasDisposed(l, expect);
 		});
 
 		it("can be started and stopped", function(){
@@ -207,6 +211,7 @@ function(coreTest, chai, DryWet, Master, Signal, Recorder, Panner, LFO, Gate, Fo
 		it("can be created and disposed", function(){
 			var g = new Gate();
 			g.dispose();
+			wasDisposed(g, expect);
 		});
 
 		it("won't let signals below a db thresh through", function(done){
@@ -252,6 +257,7 @@ function(coreTest, chai, DryWet, Master, Signal, Recorder, Panner, LFO, Gate, Fo
 		it("can be created and disposed", function(){
 			var f = new Follower();
 			f.dispose();
+			wasDisposed(f, expect);
 		});
 
 		it("smoothes the incoming signal", function(done){
@@ -281,6 +287,7 @@ function(coreTest, chai, DryWet, Master, Signal, Recorder, Panner, LFO, Gate, Fo
 		it("can be created and disposed", function(){
 			var e = new Envelope();
 			e.dispose();
+			wasDisposed(e, expect);
 		});
 
 		it ("can take parameters as both an object and as arguments", function(){
@@ -308,6 +315,7 @@ function(coreTest, chai, DryWet, Master, Signal, Recorder, Panner, LFO, Gate, Fo
 		it("can be created and disposed", function(){
 			var f = new Filter();
 			f.dispose();
+			wasDisposed(f, expect);
 		});
 
 		it ("can take parameters as both an object and as arguments", function(){
@@ -332,6 +340,7 @@ function(coreTest, chai, DryWet, Master, Signal, Recorder, Panner, LFO, Gate, Fo
 		it("can be created and disposed", function(){
 			var eq = new EQ();
 			eq.dispose();
+			wasDisposed(eq, expect);
 		});
 
 	});
@@ -343,6 +352,7 @@ function(coreTest, chai, DryWet, Master, Signal, Recorder, Panner, LFO, Gate, Fo
 		it("can be created and disposed", function(){
 			var mer = new Merge();
 			mer.dispose();
+			wasDisposed(mer, expect);
 		});
 
 		it("merge two signal into one stereo signal", function(done){

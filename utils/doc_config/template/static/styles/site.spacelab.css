@@ -2994,16 +2994,16 @@ input[type="button"].btn-block {
   color: #ffffff;
   text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
   background-color: #848a94;
-  background-image: -moz-linear-gradient(top, #949aa3, #6c737e);
-  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#949aa3), to(#6c737e));
-  background-image: -webkit-linear-gradient(top, #949aa3, #6c737e);
-  background-image: -o-linear-gradient(top, #949aa3, #6c737e);
-  background-image: linear-gradient(to bottom, #949aa3, #6c737e);
+  background-image: -moz-linear-gradient(top, #949aa3, #000000);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#949aa3), to(#000000));
+  background-image: -webkit-linear-gradient(top, #949aa3, #000000);
+  background-image: -o-linear-gradient(top, #949aa3, #000000);
+  background-image: linear-gradient(to bottom, #949aa3, #000000);
   background-repeat: repeat-x;
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff949aa3', endColorstr='#ff6c737e', GradientType=0);
-  border-color: #6c737e #6c737e #494d55;
+  border-color: #000000 #000000 #494d55;
   border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
-  *background-color: #6c737e;
+  *background-color: #000000;
   /* Darken IE7 buttons by default so they stand out more given they won't have borders */
 
   filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);
@@ -3015,7 +3015,7 @@ input[type="button"].btn-block {
 .btn-inverse.disabled,
 .btn-inverse[disabled] {
   color: #ffffff;
-  background-color: #6c737e;
+  background-color: #000000;
   *background-color: #606670;
 }
 .btn-inverse:active,
@@ -3222,7 +3222,7 @@ input[type="submit"].btn.btn-mini {
   background-color: #3a5d83;
 }
 .btn-group.open .btn-inverse.dropdown-toggle {
-  background-color: #6c737e;
+  background-color: #000000;
 }
 .btn .caret {
   margin-top: 8px;
@@ -3707,14 +3707,7 @@ input[type="submit"].btn.btn-mini {
   min-height: 40px;
   padding-left: 20px;
   padding-right: 20px;
-  background-color: #e9e9e9;
-  background-image: -moz-linear-gradient(top, #eeeeee, #e1e1e1);
-  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#eeeeee), to(#e1e1e1));
-  background-image: -webkit-linear-gradient(top, #eeeeee, #e1e1e1);
-  background-image: -o-linear-gradient(top, #eeeeee, #e1e1e1);
-  background-image: linear-gradient(to bottom, #eeeeee, #e1e1e1);
-  background-repeat: repeat-x;
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffeeeeee', endColorstr='#ffe1e1e1', GradientType=0);
+  background: #000;
   border: 1px solid #cccccc;
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
@@ -4069,14 +4062,7 @@ input[type="submit"].btn.btn-mini {
   border-radius: 6px 0 6px 6px;
 }
 .navbar-inverse .navbar-inner {
-  background-color: #7c828d;
-  background-image: -moz-linear-gradient(top, #868d97, #6c737e);
-  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#868d97), to(#6c737e));
-  background-image: -webkit-linear-gradient(top, #868d97, #6c737e);
-  background-image: -o-linear-gradient(top, #868d97, #6c737e);
-  background-image: linear-gradient(to bottom, #868d97, #6c737e);
-  background-repeat: repeat-x;
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff868d97', endColorstr='#ff6c737e', GradientType=0);
+  background: #000;
   border-color: #656b76;
 }
 .navbar-inverse .brand,
@@ -4105,7 +4091,7 @@ input[type="submit"].btn.btn-mini {
 .navbar-inverse .nav .active > a:hover,
 .navbar-inverse .nav .active > a:focus {
   color: #ffffff;
-  background-color: #6c737e;
+  background-color: #000000;
 }
 .navbar-inverse .navbar-link {
   color: #cccccc;
@@ -4115,13 +4101,13 @@ input[type="submit"].btn.btn-mini {
   color: #ffffff;
 }
 .navbar-inverse .divider-vertical {
-  border-left-color: #6c737e;
+  border-left-color: #000000;
   border-right-color: #868d97;
 }
 .navbar-inverse .nav li.dropdown.open > .dropdown-toggle,
 .navbar-inverse .nav li.dropdown.active > .dropdown-toggle,
 .navbar-inverse .nav li.dropdown.open.active > .dropdown-toggle {
-  background-color: #6c737e;
+  background-color: #000000;
   color: #ffffff;
 }
 .navbar-inverse .nav li.dropdown > a:hover .caret,
@@ -4142,7 +4128,7 @@ input[type="submit"].btn.btn-mini {
 .navbar-inverse .navbar-search .search-query {
   color: #ffffff;
   background-color: #afb3ba;
-  border-color: #6c737e;
+  border-color: #000000;
   -webkit-box-shadow: inset 0 1px 2px rgba(0,0,0,.1), 0 1px 0 rgba(255,255,255,.15);
   -moz-box-shadow: inset 0 1px 2px rgba(0,0,0,.1), 0 1px 0 rgba(255,255,255,.15);
   box-shadow: inset 0 1px 2px rgba(0,0,0,.1), 0 1px 0 rgba(255,255,255,.15);
@@ -5653,7 +5639,7 @@ div.subnav-fixed {
   max-height: 300px;
   overflow: auto;
   width: 300px;
-  background-color: #6c737e;
+  background-color: #000000;
 }
 .navbar .dropdown-menu a,
 .navbar .dropdown-menu a:visited {
@@ -5665,7 +5651,7 @@ div.subnav-fixed {
 }
 .navbar .dropdown-menu a:active {
   color: #ffffff;
-  background-color: #6c737e;
+  background-color: #000000;
 }
 .navbar .dropdown-menu a {
   padding-left: 0;
@@ -5723,20 +5709,20 @@ div.subnav-fixed {
 .copyright {
   font-size: 90%;
   text-align: center;
-  color: #6c737e;
+  color: #000000;
   width: 100%;
   display: block;
 }
 .jsdoc-message {
   font-size: 90%;
   text-align: center;
-  color: #6c737e;
+  color: #000000;
   width: 100%;
   display: block;
 }
 .page-title {
   font-size: 220%;
-  color: #6c737e;
+  color: #000000;
   font-weight: 700;
   padding-top: 10px;
   display: block;
@@ -5755,7 +5741,7 @@ code {
   margin-top: -56px;
 }
 .member-collapsed {
-  background-color: #6c737e;
+  background-color: #000000;
   color: #cccccc;
 }
 .member-open {
@@ -5791,4 +5777,12 @@ code {
   font-size: 12px;
   line-height: 15px;
   padding: 12px 4px !important;
+}
+
+
+/*
+ CUSTOM STUFF
+ */
+.inherited-from-class {
+  color: #0099dd;
 }

@@ -57,6 +57,7 @@ define(["Tone/core/Tone", "Tone/signal/EqualZero", "Tone/signal/Add", "Tone/sign
 	 *  dispose method
 	 */
 	Tone.Equal.prototype.dispose = function(){
+		Tone.prototype.dispose.call(this);
 		this._equals.disconnect();
 		this._adder.dispose();
 		this._equals = null;

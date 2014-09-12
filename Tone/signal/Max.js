@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/signal/GreaterThan", "Tone/signal/Selector", "Tone/signal/Signal"], function(Tone){
+define(["Tone/core/Tone", "Tone/signal/GreaterThan", "Tone/signal/Select", "Tone/signal/Signal"], function(Tone){
 
 	"use strict";
 
@@ -20,13 +20,13 @@ define(["Tone/core/Tone", "Tone/signal/GreaterThan", "Tone/signal/Selector", "To
 		this._maxSignal = new Tone.Signal(max);
 
 		/**
-		 *  @type {Tone.Selector}
+		 *  @type {Tone.Select}
 		 *  @private
 		 */
-		this._switch = new Tone.Selector(2);
+		this._switch = new Tone.Select(2);
 
 		/**
-		 *  @type {Tone.Selector}
+		 *  @type {Tone.Select}
 		 *  @private
 		 */
 		this._gt = new Tone.GreaterThan(max);
@@ -60,13 +60,10 @@ define(["Tone/core/Tone", "Tone/signal/GreaterThan", "Tone/signal/Selector", "To
 	 *  clean up
 	 */
 	Tone.Max.prototype.dispose = function(){
-		this.input.disconnect();
-		this.output.disconnect();
+		Tone.prototype.dispose.call(this);
 		this._maxSignal.dispose();
 		this._switch.dispose();
 		this._gt.dispose();
-		this.input = null;
-		this.output = null;
 		this._maxSignal = null;
 		this._switch = null;
 		this._gt = null;

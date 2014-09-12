@@ -1,11 +1,25 @@
 Tone.js
 =========
 
-A Web Audio framework for synthesis, playback, timing and effects. 
+Tone.js is a Web Audio framework for creating interactive music in the browser. The architecture of Tone.js aims to be familiar to both musicians and audio programmers looking to create web-based audio applications. On the high-level, Tone offers common DAW (digital audio workstation) features like a global transport, prebuilt synths and effects, as well as presets for those synths and effects. For signal-processing programmers (coming from languages like Max/MSP), Tone provides a wealth of high performance, low latency building blocks and DSP modules to build your own synthesizers, effects, and complex control signals.
+
+[Examples](http://tonenotone.github.io/Tone.js/examples/)
+
+[API](http://tonenotone.github.io/Tone.js/doc/Tone.html)
 
 # Installation
 
 RequireJS is the recommended way to use Tone.js but it can also be used just as well without it. 
+
+### without RequireJS
+
+Tone.js can also be used like any other script or library by dropping the [Tone.js Build](https://raw.githubusercontent.com/TONEnoTONE/Tone.js/master/build/Tone.js) into the <head> of your page. A global called ```Tone``` will be added to the ```window```. 
+
+```html
+<script type="text/javascript" src="path/to/Tone.js"></script>
+```
+
+To use any of the presets on instruments or effects, be sure to grab the [Tone.Presets build](https://raw.githubusercontent.com/TONEnoTONE/Tone.js/master/build/Tone.Preset.js) which is not included in the default build. 
 
 ### RequireJS
 
@@ -13,32 +27,24 @@ RequireJS is the recommended way to use Tone.js but it can also be used just as 
 
 To use Tone with RequireJS, add a path to the base directory where the library is stored and then refer all Tone module dependencies starting with "Tone/". 
 
+To get all of the files in their directory structure, you can ```npm install tone```. 
+
 ```javascript
 require.config({
     baseUrl: './base',
     paths: {
-        "Tone" : "pathto/Tone.js/Tone"
+        "Tone" : "path/to/Tone.js/Tone"
     }
 });
 require(["Tone/core/Transport"], function(Transport){
     //...
 ```
 
-### without RequireJS
-
-Tone.js can also be used like any other script or library by dropping the [Tone.js Build](https://raw.githubusercontent.com/TONEnoTONE/Tone.js/master/build/Tone.js) into the <head> of your page. A global called ```Tone``` will be added to the ```window```. 
-
-```html
-<script type="text/javascript" src="pathto/Tone.js"></script>
-```
-
-To use any of the presets on instruments or effects, be sure to grab the [Tone.Presets build](https://raw.githubusercontent.com/TONEnoTONE/Tone.js/master/build/Tone.Preset.js) which is not included in the default build. 
-
 # AudioContext
 
 Tone.js creates an AudioContext when it loads and shims it for maximum browser compatibility. The AudioContext can be found at ```Tone.context``` or from within any Object extending Tone as ```this.context```. 
 
-Tone also let's you set your own AudioContext using ```Tone.setContext```
+Tone also let's you set your own AudioContext using ```Tone.setContext```.
 
 # Tone.Source
 
@@ -110,7 +116,7 @@ Tone.Transport.start();
 
 In the Tone library, time can be described in a number of ways. Any method which takes a time as a parameter will accept any of these forms: 
 
-__Number__: these will be taken literally as the time (in seconds). 
+__Numbers__: will be taken literally as the time (in seconds). 
 
 __Notation__: describes time in BPM and time signature relative values. 
 
@@ -159,7 +165,7 @@ Tone.js provides a number number of useful components for building synthesizers 
 
 # Signals
 
-Like the underlying Web Audio API, Tone.js is built with audio-rate signal control over nearly everything. This is a powerful feature which allows for sample-accurate synchronization of multiple parameters with a single signal. Signals are built entirely without any ScriptProcessorNodes, so they do not introduce much latency and processing overhead. Instead, all signal math and logic let GainNodes and WaveShaperNodes do all of the work so that all processing is done in the underlying Assembly/C/C++ provided by the API. Signals are used extensively internally and are also useful for general DSP and control signal logic and transformations. 
+Like the underlying Web Audio API, Tone.js is built with audio-rate signal control over nearly everything. This is a powerful feature which allows for sample-accurate synchronization of multiple parameters with a single signal. Signals are built entirely without the ScriptProcessorNode so they do not introduce much latency and processing overhead. Instead, all signal math and logic let GainNodes and WaveShaperNodes do all of the work so that all processing is done in the underlying Assembly/C/C++ provided by the API. Signals are used extensively internally and are also useful for general DSP and control signal logic and transformations. 
 
 ### Math
 
@@ -168,6 +174,7 @@ Like the underlying Web Audio API, Tone.js is built with audio-rate signal contr
 * [Tone.Clip](http://tonenotone.github.io/Tone.js/doc/Tone.Clip.html)
 * [Tone.Max](http://tonenotone.github.io/Tone.js/doc/Tone.Max.html)
 * [Tone.Min](http://tonenotone.github.io/Tone.js/doc/Tone.Min.html)
+* [Tone.Modulo](http://tonenotone.github.io/Tone.js/doc/Tone.Modulo.html)
 * [Tone.Multiply](http://tonenotone.github.io/Tone.js/doc/Tone.Multiply.html)
 * [Tone.Negate](http://tonenotone.github.io/Tone.js/doc/Tone.Negate.html)
 * [Tone.Scale](http://tonenotone.github.io/Tone.js/doc/Tone.Scale.html)
@@ -189,7 +196,7 @@ Audio-rate logic operator output 1 when true and 0 when false.
 Signal can also be routed and gated for maximum flexibility. 
 
 * [Tone.Route](http://tonenotone.github.io/Tone.js/doc/Tone.Route.html)
-* [Tone.Selector](http://tonenotone.github.io/Tone.js/doc/Tone.Selector.html)
+* [Tone.Select](http://tonenotone.github.io/Tone.js/doc/Tone.Select.html)
 * [Tone.Switch](http://tonenotone.github.io/Tone.js/doc/Tone.Switch.html)
 
 # Instruments
@@ -210,22 +217,26 @@ Each of the instruments also has a number of presets which can be found in the T
 
 Tone.js also has a few stereo and mono effects which also have their own presets. 
 
+* [Tone.AutoPanner](http://tonenotone.github.io/Tone.js/doc/Tone.AutoPanner.html)
+* [Tone.AutoWah](http://tonenotone.github.io/Tone.js/doc/Tone.AutoWah.html)
+* [Tone.BitCrusher](http://tonenotone.github.io/Tone.js/doc/Tone.BitCrusher.html)
+* [Tone.Chorus](http://tonenotone.github.io/Tone.js/doc/Tone.Chorus.html)
+* [Tone.FeedbackDelay](http://tonenotone.github.io/Tone.js/doc/Tone.FeedbackDelay.html)
+* [Tone.Phaser](http://tonenotone.github.io/Tone.js/doc/Tone.Phaser.html)
+* [Tone.PingPongDelay](http://tonenotone.github.io/Tone.js/doc/Tone.PingPongDelay.html)
+
 # Performance
 
-Tone.js uses very few ScriptProcessorNodes. Nearly all of the ToneNodes find a native Web Audio component workaround, making 
-extensive use of the GainNode and WaveShaperNode especially. While the ScripProcessorNode is extremely powerful, it 
-introduces a lot of latency and the potential for glitches more than any other node. The 
+Tone.js uses very few ScriptProcessorNodes. Nearly all of the Tone Modules find a native Web Audio component workaround, making extensive use of the GainNode and WaveShaperNode especially, which enables Tone.js to work well on both desktop and mobile browsers. While the ScripProcessorNode is extremely powerful, it introduces a lot of latency and the potential for glitches more than any other node.
 
-# Examples
+# Demos
 
-Examples can be found [here](http://tonenotone.github.io/Tone.js/examples/).
+* [motionEmotion is an emotion & gesture-based arpeggiator and synthesizer.](http://motionemotion.herokuapp.com/)
 
-# Documentation
-
-JSDocs are [here](http://tonenotone.github.io/Tone.js/doc/).
+Using Tone.js? To have your application included here email me: yotammann@gmail.com
 
 # References and Inspiration
 
-* [Tune.js](https://github.com/Dinahmoe/tuna)
+* [Tuna.js](https://github.com/Dinahmoe/tuna)
 * [Many of Chris Wilson's Repositories](https://github.com/cwilso)
 * [The Spec](http://webaudio.github.io/web-audio-api/)

@@ -83,6 +83,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	 *  dispose method
 	 */
 	Tone.Threshold.prototype.dispose = function(){
+		Tone.prototype.dispose.call(this);
 		this._thresh.disconnect();
 		this._doubleThresh.disconnect();
 		this._thresh = null;

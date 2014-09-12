@@ -47,10 +47,9 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	 *  dispose method
 	 */
 	Tone.Add.prototype.dispose = function(){
+		Tone.prototype.dispose.call(this);
 		this._value.dispose();
-		this.output.disconnect();
 		this._value = null;
-		this.output = null;
 	}; 
 
 	return Tone.Add;

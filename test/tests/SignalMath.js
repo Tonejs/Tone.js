@@ -22,6 +22,7 @@ function(core, chai, Recorder, Signal, Add, Multiply, Scale, Oscillator, Master,
 		it("can be created and disposed", function(){
 			var a = new Add(1);
 			a.dispose();
+			wasDisposed(a, expect);
 		});
 
 		it("correctly sums a signal and a number", function(done){
@@ -63,6 +64,7 @@ function(core, chai, Recorder, Signal, Add, Multiply, Scale, Oscillator, Master,
 		it("can be created and disposed", function(){
 			var m = new Multiply(1);
 			m.dispose();
+			wasDisposed(m, expect);
 		});
 
 		it("correctly multiplys a signal and a scalar", function(done){
@@ -91,6 +93,7 @@ function(core, chai, Recorder, Signal, Add, Multiply, Scale, Oscillator, Master,
 		it("can be created and disposed", function(){
 			var s = new Scale(0, 10);
 			s.dispose();
+			wasDisposed(s, expect);
 		});
 
 		it("scales an input range to an output range", function(done){
@@ -119,6 +122,7 @@ function(core, chai, Recorder, Signal, Add, Multiply, Scale, Oscillator, Master,
 		it("can be created and disposed", function(){
 			var s = new ScaleExp(0, 10, 2);
 			s.dispose();
+			wasDisposed(s, expect);
 		});
 
 		it("scales a signal exponentially", function(done){
@@ -152,6 +156,7 @@ function(core, chai, Recorder, Signal, Add, Multiply, Scale, Oscillator, Master,
 		it("can be created and disposed", function(){
 			var ab = new Abs();
 			ab.dispose();
+			wasDisposed(ab, expect);
 		});
 
 		it("outputs the same value for positive values", function(done){
@@ -203,6 +208,7 @@ function(core, chai, Recorder, Signal, Add, Multiply, Scale, Oscillator, Master,
 		it("can be created and disposed", function(){
 			var neg = new Negate();
 			neg.dispose();
+			wasDisposed(neg, expect);
 		});
 
 		it("negates a positive value", function(done){
@@ -254,6 +260,7 @@ function(core, chai, Recorder, Signal, Add, Multiply, Scale, Oscillator, Master,
 		it("can be created and disposed", function(){
 			var max = new Max();
 			max.dispose();
+			wasDisposed(max, expect);
 		});
 
 		it("outputs the set value when less than the incoming signal", function(done){
@@ -304,6 +311,7 @@ function(core, chai, Recorder, Signal, Add, Multiply, Scale, Oscillator, Master,
 		it("can be created and disposed", function(){
 			var min = new Min();
 			min.dispose();
+			wasDisposed(min, expect);
 		});
 
 		it("outputs the set value when greater than the incoming signal", function(done){
@@ -354,6 +362,7 @@ function(core, chai, Recorder, Signal, Add, Multiply, Scale, Oscillator, Master,
 		it("can be created and disposed", function(){
 			var clip = new Clip(0, 1);
 			clip.dispose();
+			wasDisposed(clip, expect);
 		});
 
 		it("output the upper limit when signal is greater than clip", function(done){

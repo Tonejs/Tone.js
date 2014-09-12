@@ -16,13 +16,12 @@ function(Tone){
 	Tone.MonoSynth = function(options){
 
 		//get the defaults
-		options = this.defaultArg(options, this.defaults);
+		options = this.defaultArg(options, Tone.MonoSynth.defaults);
 		Tone.Monophonic.call(this, options);
 
 		/**
 		 *  the first oscillator
 		 *  @type {Tone.Oscillator}
-		 *  @private
 		 */
 		this.oscillator = new Tone.Oscillator(0, options.oscType);
 
@@ -41,7 +40,6 @@ function(Tone){
 		/**
 		 *  the filter
 		 *  @type {Tone.Filter}
-		 *  @private
 		 */
 		this.filter = new Tone.Filter(options.filter);
 
@@ -60,6 +58,7 @@ function(Tone){
 		/**
 		 *  the amplitude
 		 *  @type {GainNode}
+		 *  @private
 		 */
 		this._amplitude = this.context.createGain();
 
@@ -79,12 +78,12 @@ function(Tone){
 	/**
 	 *  @const
 	 *  @static
+	 *  @type {Object}
 	 */
-	Tone.MonoSynth.prototype.defaults = {
+	Tone.MonoSynth.defaults = {
 		"oscType" : "square",
 		"filter" : {
 			"Q" : 6,
-			"frequency" : 4000,
 			"type" : "lowpass",
 			"rolloff" : -24
 		},
@@ -99,7 +98,7 @@ function(Tone){
 			"decay" : 0.2,
 			"sustain" : 0.5,
 			"release" : 2,
-			"min" : 10,
+			"min" : 20,
 			"max" : 4000
 		}
 	};
@@ -156,14 +155,15 @@ function(Tone){
 		this.envelope.dispose();
 		this.filterEnvelope.dispose();
 		this.filter.dispose();
-		this.detune.dispose();
-		this._unison.dispose();
+		this._amplitude.disconnect();
 		this.oscillator = null;
 		this.filterEnvelope = null;
 		this.envelope = null;
 		this.filter = null;
 		this.detune = null;
-		this._unison = null;
+		this._amplitude = null;
+		this.frequency = null;
+		this.detune = null;
 	};
 
 	return Tone.MonoSynth;

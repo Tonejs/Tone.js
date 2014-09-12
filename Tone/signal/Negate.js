@@ -35,8 +35,9 @@ define(["Tone/core/Tone", "Tone/signal/Multiply", "Tone/signal/Signal"], functio
 	 *  clean up
 	 */
 	Tone.Negate.prototype.dispose = function(){
-		this.input.disconnect();
-		this.input = null;
+		Tone.prototype.dispose.call(this);
+		this._multiply.dispose();
+		this._multiply = null;
 	}; 
 
 	return Tone.Negate;

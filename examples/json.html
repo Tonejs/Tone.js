@@ -1,0 +1,179 @@
+<html>
+<head>
+	<title>JSON SANDBOX</title>
+
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+	<script type="text/javascript" src="./deps/jquery.min.js"></script>
+	<script type="text/javascript" src="./deps/jquery-ui.js"></script>
+	<script type="text/javascript" src="./deps/jquery.ui.touch-punch.js"></script>
+	<script type="text/javascript" src="../build/Tone.js"></script>
+	<script type="text/javascript" src="./Widgets.js"></script>
+	<script type="text/javascript" src="./ExampleList.js"></script>
+	<link rel="stylesheet" type="text/css" href="./style/widgets.css">
+	<link rel="stylesheet" type="text/css" href="./style/jquery-ui.css">
+
+</head>
+<body>
+		
+	<div id="Container">
+		<div id="Explanation">
+			JSON Sandbox
+			<br>
+			<br>
+			GUIs are limited. The power of a library like Tone comes from being able to set any value you want, 
+			not just the predescribed ranges of a GUI. Instruments and effects can be created and set
+			with object descriptions like the one above. Edit the values of the JSON descriptions for the score 
+			and the MonoSynths then click 'reload' to hear your changes. 
+		</div>
+		<div id="Content"></div>
+	</div>
+
+
+	<script type="text/javascript">
+		/* globals Tone, GUI */
+
+		var synthOptions = {
+			"oscType": "square",
+			"portamento" : 0.05,
+			"filter": {
+				"Q": 6,
+				"type": "lowpass",
+				"rolloff": -24
+			},
+			"envelope": {
+				"attack": 0.005,
+				"decay": 0.01,
+				"sustain": 0.9,
+				"release": 0.001
+			},
+			"filterEnvelope": {
+				"attack": 0.006,
+				"decay": 0.02,
+				"sustain": 0.5,
+				"release": 0.001,
+				"min": 10,
+				"max": 4000
+			}
+		};
+
+		var synth = new Tone.MonoSynth(synthOptions);
+		synth.setVolume(-10);
+		synth.toMaster();
+
+		var synthPart = [["0", "C2"], ["1*8n", "C4"], ["2*8n", "E4"], ["3*8n", "B3"], 
+			["4*8n", "G3"], ["5*8n", "C2"], ["6*8n", "C4"], ["7*8n", "B1"]];
+
+		Tone.Note.parseScore({
+			"synth" : synthPart
+		});
+
+		Tone.Transport.setLoopEnd("1:0");
+		Tone.Transport.loop = true;
+
+		Tone.Note.route("synth", function(time, note){
+			synth.triggerAttackRelease(note, "8n", time);
+		});
+
+
+		// GUI //
+
+		new GUI.TopBar(Tone);
+
+		var content = $("#Content");
+
+		new GUI.Checkbox(content, function(on){
+			if (on){
+				Tone.Transport.start();
+			} else {
+				Tone.Transport.stop();
+			}
+		}, "start", "stop");
+
+		content.append("<br><br>");
+
+		$("<div>", {"class" : "Code"}).appendTo(content).text("var synthOptions = ");
+
+		var synthInput = $("<textarea>", {"id" : "Synth"})
+			.attr("rows", 10)
+			.attr("cols", 50)
+			.appendTo(content)
+			.val(JSON.stringify(synthOptions, null, 4));
+
+		content.append("<br><br>");
+
+		$("<div>", {"class" : "Code"}).appendTo(content).text("var score = {");
+		$("<span>").appendTo(content).text("\"synth\" :");
+		var scoreInput = $("<textarea>", {"id" : "Score"})
+			.attr("rows", 4)
+			.appendTo(content)
+			.keyup(function (e) {
+				if (e.keyCode == 13) {
+					reloadParameters();
+				}
+			})
+			.val(JSON.stringify(synthPart));
+		$("<div>", {"class" : "Code"}).appendTo(content).text("}");
+
+		content.append("<br>");		
+
+		//reload button
+		$("<div>", {"id" : "Reload"})
+			.text("reload parameters")
+			.button()
+			.appendTo(content)
+			.click(reloadParameters);
+		function reloadParameters(){
+			try {
+				synthOptions = JSON.parse(synthInput.val());
+				synth.set(synthOptions);
+				var scorePart = JSON.parse(scoreInput.val());
+				Tone.Transport.clearTimelines();
+				Tone.Note.parseScore({
+					"synth" : scorePart
+				});
+			} catch (e){
+				$("<div id='dialog' title='Reload Error'></div>")
+					.appendTo($("body"))
+					.text(e)
+					.dialog();
+			}	
+		}
+
+
+	</script>
+
+	<style type="text/css">
+		#Content {
+			text-align: left;
+			width: 300px;
+			height: auto;
+		}
+		#Content * {
+			font-family: monospace;
+		}
+		#Synth {
+			margin-left: 10px;
+			width: calc(100% - 10px);
+			height: 305px;
+			resize: none;
+		}
+		#Score {
+			margin-left: 10px;
+			width: 218px;
+			/*height: 25px;*/
+			resize: none;
+		}
+		span {
+			vertical-align: top;
+		}
+		.Checkbox {
+			width: 100%;
+		}
+		#Reload {
+			width: 100%;
+		}
+	</style>
+
+</body>
+</html>

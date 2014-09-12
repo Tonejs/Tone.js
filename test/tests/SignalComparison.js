@@ -15,6 +15,7 @@ function(core, chai, Recorder, Signal, Master, EqualZero, Equal, GreaterThan, Le
 		it("can be created and disposed", function(){
 			var ez = new EqualZero();
 			ez.dispose();
+			wasDisposed(ez, expect);
 		});
 
 		it("outputs 1 when the incoming signal is 0", function(done){
@@ -80,6 +81,7 @@ function(core, chai, Recorder, Signal, Master, EqualZero, Equal, GreaterThan, Le
 		it("can be created and disposed", function(){
 			var eq = new Equal(3);
 			eq.dispose();
+			wasDisposed(eq, expect);
 		});
 
 		it("outputs 1 when the incoming signal is equal to the value", function(done){
@@ -127,6 +129,7 @@ function(core, chai, Recorder, Signal, Master, EqualZero, Equal, GreaterThan, Le
 		it("can be created and disposed", function(){
 			var gt = new GreaterThan();
 			gt.dispose();
+			wasDisposed(gt, expect);
 		});
 
 		it("outputs 1 when the incoming signal is greater than the value", function(done){
@@ -192,6 +195,7 @@ function(core, chai, Recorder, Signal, Master, EqualZero, Equal, GreaterThan, Le
 		it("can be created and disposed", function(){
 			var lt = new LessThan(2);
 			lt.dispose();
+			wasDisposed(lt, expect);
 		});
 
 		it("outputs 1 when the incoming signal is less than the value", function(done){

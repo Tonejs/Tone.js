@@ -2,7 +2,7 @@
 <head>
 	<title>SIGNAL PROCESSING</title>
 
-	<meta name="viewport" content="width=device-width, initial-scale=0.5">
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
 
 	<script type="text/javascript" src="./deps/jquery.min.js"></script>
 	<script type="text/javascript" src="./deps/jquery-ui.js"></script>
@@ -64,19 +64,12 @@
 		var clipMeter = new Tone.Meter();
 		clip.connect(clipMeter);
 
-		//negate the signal
-		var neg = new Tone.Negate();
-		var negMeter = new Tone.Meter();
-		neg.connect(negMeter);
-
 		//chain the components together
-		signal.chain(signal, abs, adder, scaler, mult, clip, neg);
-
+		signal.chain(signal, abs, adder, scaler, mult);
 
 		// GUI //
 
 		new GUI.TopBar(Tone);
-		new GUI.StartButton(Tone.startMobile);
 
 		var container = $("#Content");
 
@@ -94,8 +87,6 @@
 		new GUI.ValueMeter(container, addMeter, "Tone.Add(100)");
 		new GUI.ValueMeter(container, scaleMeter, "Tone.Scale(100, 101, 5, 10)");
 		new GUI.ValueMeter(container, multMeter, "Tone.Multiply(10)");
-		new GUI.ValueMeter(container, clipMeter, "Tone.Clip(70, 80)");
-		new GUI.ValueMeter(container, negMeter, "Tone.Negate()");
 
 	</script>
 	<style type="text/css">

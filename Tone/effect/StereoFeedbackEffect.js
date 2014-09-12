@@ -23,6 +23,7 @@ function(Tone){
 		/**
 		 *  scales the feedback in half
 		 *  @type {Tone.Multiply}
+		 *  @private
 		 */
 		this._half = new Tone.Multiply(0.5);
 

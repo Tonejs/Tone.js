@@ -1,12 +1,15 @@
 <html>
 <head>
 	<title>BUSES</title>
+
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
 	
 	<script type="text/javascript" src="./deps/jquery.min.js"></script>
 	<script type="text/javascript" src="./deps/jquery-ui.js"></script>
 	<script type="text/javascript" src="./deps/jquery.ui.touch-punch.js"></script>
 	<script type="text/javascript" src="../build/Tone.js"></script>
 	<script type="text/javascript" src="../build/Tone.Preset.js"></script>
+	<script type="text/javascript" src="../Tone/effect/preset/Phaser.preset.js"></script>
 	<script type="text/javascript" src="./Widgets.js"></script>
 	<script type="text/javascript" src="./ExampleList.js"></script>
 	<link rel="stylesheet" type="text/css" href="./style/widgets.css">
@@ -20,9 +23,8 @@
 			Buses
 			<br>
 			<br>
-			Buses allow you to send signal using named sends and receives. Buses
-			make it simple to send multiple signals to one place or one signal to
-			multiple places. 
+			Buses allow you to send signal using named sends and receives. Sometimes
+			this is advantageous over directly connecting nodes for modularity and loose coupling. 
 		</div>
 		<div id="Content">
 			
@@ -36,8 +38,8 @@
 		synth.setPreset("Barky");
 		var dry = Tone.context.createGain();
 		synth.connect(dry);
+		synth.setVolume(-6);
 		dry.toMaster();
-		synth.setVolume(-10);
 
 		var chorusSend = synth.send("chorus");
 		chorusSend.gain.value = 0;
@@ -54,7 +56,7 @@
 		var phaser = new Tone.Phaser();
 		phaser.receive("phaser");
 		phaser.toMaster();
-		phaser.setPreset("testing");
+		phaser.setPreset("bubbles");
 		var autoWah = new Tone.AutoWah();
 		autoWah.receive("autowah");
 		autoWah.toMaster();
@@ -62,7 +64,6 @@
 		
 		// GUI //
 
-		new GUI.StartButton(Tone.startMobile);
 		new GUI.TopBar(Tone);
 
 		var content = $("#Content");
@@ -89,7 +90,7 @@
 			width: 200,
 			height: 75,
 			octaves: 1,
-			startNote: "C3",
+			startNote: "C4",
 			whiteNotesColour: "white",
 			blackNotesColour: "black",
 			hoverColour: "#f3e939"
@@ -105,7 +106,6 @@
 	<style type="text/css">
 	#Content {
 		width: 200px;
-		height: 250px;
 	}
 	.Slider {
 		margin-bottom: 10px;

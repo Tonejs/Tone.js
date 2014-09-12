@@ -3,9 +3,8 @@ define(["Tone/core/Tone", "Tone/core/Master"], function(Tone){
 	"use strict";
 
 	/**
-	 *  Record an input into an array or AudioBuffer
-	 *
-	 *  it is limited in that the recording length needs to be known beforehand
+	 *  @class  Record an input into an array or AudioBuffer. 
+	 *          it is limited in that the recording length needs to be known beforehand
 	 *
 	 *  @constructor
 	 *  @extends {Tone}

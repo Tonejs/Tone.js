@@ -4,8 +4,6 @@ function(Tone){
 	"use strict";
 
 	/**
-	 *  Low Frequency Oscillator
-	 *
 	 *  @class  The Low Frequency Oscillator produces an output signal 
 	 *          which can be attached to an AudioParam or Tone.Signal 
 	 *          for constant control over that parameter. the LFO can 
@@ -152,11 +150,12 @@ function(Tone){
 	 *  disconnect and dispose
 	 */
 	Tone.LFO.prototype.dispose = function(){
+		Tone.prototype.dispose.call(this);
 		this.oscillator.dispose();
 		this._scaler.dispose();
+		this._scaler = null;
 		this.oscillator = null;
 		this.frequency = null;
-		this.output = null;
 	};
 
 	return Tone.LFO;

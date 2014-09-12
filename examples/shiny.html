@@ -1,0 +1,336 @@
+<html>
+<head>
+	<title>SHINY</title>
+
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+	<script type="text/javascript" src="./deps/jquery.min.js"></script>
+	<script type="text/javascript" src="./deps/jquery-ui.js"></script>
+	<script type="text/javascript" src="./deps/jquery.ui.touch-punch.js"></script>
+	<script type="text/javascript" src="../build/Tone.js"></script>
+	<script type="text/javascript" src="../build/Tone.Preset.js"></script>
+	<script type="text/javascript" src="./Widgets.js"></script>
+	<script type="text/javascript" src="./ExampleList.js"></script>
+	<link rel="stylesheet" type="text/css" href="./style/widgets.css">
+	<link rel="stylesheet" type="text/css" href="./style/jquery-ui.css">
+
+</head>
+<body>	
+	<div id="Container">
+		<div id="Explanation">
+			Play Along
+			<br>
+			<br>
+			Touch/Mouse and drag to play along with the probabilistic backtrack. X = pitch, Y = modulation.
+		</div>
+		<div id="Content">
+			<div id="Loading">LOADING...</div>
+		</div>
+	</div>
+
+	<script type="text/javascript">
+		/* global Tone, GUI*/
+
+		var loadedCount = 0;
+		function sampleLoaded(){
+			loadedCount++;
+			if (loadedCount == 2){
+				$("#Loading").remove();
+				startButton.enable();
+			}
+		}
+
+		//DRUMS//
+
+		//hats
+		var crusher = new Tone.BitCrusher(5);
+		crusher.setWet(0.4);
+		var hats = new Tone.Sampler({
+			"url" : "./audio/505/hh.mp3",
+			"load" : sampleLoaded,
+			"envelope" : {
+				"attack" : 0.001,
+				"decay" : 0.02,
+				"sustain" : 0.01,
+				"release" : 0.01
+			},
+			"filterEnvelope" : {
+				"attack" : 0.001,
+				"decay" : 0.02,
+				"sustain" : 1,
+				"min" : 6000,
+				"max" : 600
+			},
+			"filter" : {
+				"type" : "highpass"
+			}
+		});
+		hats.connect(crusher);
+		hats.setVolume(-40);
+
+		//snare
+		var snare = new Tone.Sampler({
+			"url" : "./audio/505/snare.mp3",
+			"load" : sampleLoaded,
+			"envelope" : {
+				"attack" : 0.01,
+				"decay" : 0.05,
+				"sustain" : 0
+			},
+			"filterEnvelope" : {
+				"attack" : 0.001,
+				"decay" : 0.01,
+				"sustain" : 0,
+				"min" : 3000,
+				"max" : 10000
+			},
+
+		});
+		snare.connect(crusher);
+
+		//snare
+		var kick = new Tone.MonoSynth();
+		kick.setPreset("Kick");
+		kick.set({
+			"envelope" : {
+				"attack" : 0.001,
+				"decay" : 0.2,
+				"sustain" : 0
+			},
+			"filterEnvelope" : {
+				"attack" : 0.005,
+				"decay" : 0.005,
+				"sustain" : 0,
+				"min" : 60,
+				"max" : 180
+			},
+			"filter" : {
+				"type" : "lowpass",
+				"Q" : 20
+			}
+		});
+		kick.setVolume(-18);
+		var eq = new Tone.EQ(4, -20, 0);
+		kick.connect(eq);
+
+		var drumCompress = Tone.context.createDynamicsCompressor();
+		drumCompress.threshold.value = -30;
+		drumCompress.ratio.value = 6;
+		drumCompress.attack.value = 0.01;
+		drumCompress.release.value = 0.01;
+		drumCompress.toMaster();
+		eq.connect(drumCompress);
+		crusher.connect(drumCompress);
+
+
+		//BASS//
+
+		var bass = new Tone.FMSynth();
+		bass.setPreset("ScratchAttack");
+		bass.set({
+			"harmonicity" : 1,
+			"modulationIndex" : 0.5,
+			"modulator" : {
+				"filter" : {
+					"type" : "lowpass"
+				}
+			},
+			"carrier" : {
+				"envelope" : {
+					"decay" : 1
+				}
+			}
+		});
+		bass.setVolume(-10);
+		bass.toMaster();
+
+		var synth = new Tone.DuoSynth();
+		synth.setPreset("Unicorn");
+		synth.toMaster();
+		synth.setVolume(-10);
+
+		var synthNotes = ["C2", "E2", "G2", "A2", "C3", "D3", "E3", "G3", "A3", "B3", "C4", "D4", "E4", "G4", "A4", "B4", "C5"];
+
+		var highHatNotes = [];
+		for (var i = 0; i < 16*4; i++){
+			var probability = (i % 2) === 0 ? 1 : 0.2;
+			highHatNotes.push([i+"*16n", probability]);
+		}
+	
+		var Score = {
+			"hats" : highHatNotes,
+			"kick" : [["0", 1],["0:2", 1], ["1:0", 1],["1:2", 1], ["1:3:2", 0.3], ["2:0", 1],["2:2", 1], ["3:0", 1],["3:2", 1], ["3:3:2", 0.5]],
+			"snare" : ["0:1", "0:3", "1:1", "1:3", "2:1", "2:3", "3:1", "3:3"],
+			"bass" : [["0:0", "C2", "4n + 8n", 1], ["0:2", "C2", "8n", 0.5], ["0:2 + 4t", "C2", "8n", 0.2], ["0:2 + 4t*2", "C2", "8n", 0.7],
+					["1:0", "C2", "4n + 8n", 1], ["1:2", "C2", "8n", 0.5], ["1:2 + 4t", "C2", "8n", 0.2], ["1:2 + 4t*2", "E2", "8n", 0.7],
+					["2:0", "F2", "4n + 8n", 1], ["2:2", "F2", "8n", 0.5], ["2:2 + 4t", "F2", "8n", 0.2], ["2:2 + 4t*2", "F2", "8n", 0.7],
+					["3:0", "F2", "4n + 8n", 1], ["3:2", "F2", "8n", 0.5], ["3:2 + 4t", "F2", "8n", 0.2], ["3:2 + 4t*2", "B1", "8n", 0.7]]
+		};
+
+		var globalProbability = 0;
+		var probabilityLFO = 0;
+
+		//modulate the globalProbability
+		setInterval(function(){
+			globalProbability = (Math.cos(probabilityLFO + Math.PI) + 1)/2;
+			probabilityLFO += 0.1;
+		}, 1000);
+
+		//16th notes
+		Tone.Note.route("hats", function(time, probability){
+			if (Math.random() < probability + globalProbability / 2){
+				hats.triggerAttackRelease(time, "16n");
+			}
+		});
+		Tone.Note.route("kick", function(time, probability){
+			if (Math.random() < probability + globalProbability){
+				kick.triggerAttack("C2", time);
+			}
+		});
+		Tone.Note.route("snare", function(time){
+			snare.triggerAttack(time);
+		});
+
+		Tone.Note.route("bass", function(time, note, duration, probability){
+			if (Math.random() < probability + globalProbability){
+				bass.triggerAttack(note, time + 0.05);
+			}
+		});
+
+		//create events for all of the notes
+		Tone.Note.parseScore(Score);
+
+		//setup the transport looping
+		Tone.Transport.setLoopStart(0);
+		Tone.Transport.setLoopEnd("4:0");
+		Tone.Transport.loop = true;
+		Tone.Transport.setBpm(125);
+
+		// GUI //
+
+		var content = $("#Content");
+		new GUI.TopBar(Tone);
+
+		//setup the touch interface
+		var size = 300;
+		var canvas = $("<canvas>").appendTo(content).css({
+			"width" : size,
+			"height" : size
+		});
+		var context = canvas[0].getContext("2d");
+		context.canvas.width = size;
+		context.canvas.height = size;
+
+		//setup the events
+		var mouseIsDown = false;
+		var circles = [];
+		canvas.on("mousemove touchmove", function(e){
+			if (mouseIsDown){
+				e.preventDefault();
+				getTouchXY(e);
+				//choose the note
+				var normalizedX = e.offsetX / size;
+				var normalizedY = e.offsetY / size;
+				var note = synthNotes[Math.floor(normalizedX * synthNotes.length)];
+				synth.setNote(note);
+				//set the vibrato amount
+				synth.setVibratoAmount(normalizedY * 1.5);
+				circles.push({
+					x : e.offsetX,
+					y : e.offsetY
+				});
+			}
+		})
+		.on("mousedown touchstart", function(e){
+			mouseIsDown = true;
+			getTouchXY(e);
+			e.preventDefault();
+			var normalizedX = e.offsetX / size;
+			var note = synthNotes[Math.floor(normalizedX * synthNotes.length)];
+			synth.triggerAttack(note);
+			circles = [];
+			circles.push({
+				x : e.offsetX,
+				y : e.offsetY
+			});
+		})
+		.on("mouseup touchend mouseout", function(){
+			mouseIsDown = false;
+			synth.triggerRelease();
+			context.clearRect(0, 0, size, size);
+			circles = [];
+		});
+
+		function getTouchXY(e){
+			var offset = canvas.offset();
+			if (e.originalEvent.touches){
+				e.offsetX = e.originalEvent.touches[0].pageX - offset.left;
+				e.offsetY = e.originalEvent.touches[0].pageY - offset.top;
+			}
+		}
+
+		setInterval(function(){
+			if (circles.length === 0){
+				return;
+			}
+			//draw the points
+			context.clearRect(0, 0, size, size);
+			context.strokeStyle = "black";
+			context.lineWidth = 2;
+			var twoPi = Math.PI * 2;
+			if (circles.length > 1){
+				circles.shift();
+				for (var i = 0, len = circles.length; i < len; i++){
+					var circle = circles[i];
+					context.beginPath();
+					var radius = (i / (len - 1)) * 30 + 1;
+					context.arc(circle.x, circle.y, radius, 0, twoPi, false);
+					context.stroke();
+				}
+			} else if (circles.length === 1){
+				var circle = circles[0];
+				context.beginPath();
+				var radius = 30;
+				context.arc(circle.x, circle.y, radius, 0, twoPi, false);
+				context.stroke();
+			}
+		}, 20);
+
+		//the transport controls
+		var startButton = new GUI.Checkbox(content, function(down){
+			if (down){
+				Tone.Transport.start();
+			} else {
+				Tone.Transport.stop();
+			}
+		}, "start", "stop");
+		startButton.disable();
+
+
+	</script>
+
+	<style type="text/css">
+		#Content {
+			text-align: center;
+			width: 300px;
+		}
+		.Checkbox {
+			margin-top: 10px;
+			width: 100%;
+		}
+		.ValueMeter {
+			margin-top: 10px;
+			width: 100%;
+		}
+		#Score {
+			white-space: pre;
+		}
+		canvas {
+			width: 300px;
+			height: 300px;
+			border: 1px solid black;
+			cursor: pointer;
+		}
+	</style>
+</body>
+</html>
