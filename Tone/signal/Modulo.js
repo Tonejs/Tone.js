@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/signal/LessThan", "Tone/signal/Select", "Tone/signal/Not"], function(Tone){
+define(["Tone/core/Tone", "Tone/signal/Multiply"], function(Tone){
 
 	"use strict";
 
@@ -18,7 +18,7 @@ define(["Tone/core/Tone", "Tone/signal/LessThan", "Tone/signal/Select", "Tone/si
 
 		Tone.call(this);
 
-		bits = this.defaultArg(bits, 4);
+		bits = this.defaultArg(bits, 8);
 
 		/**
 		 *  the array of Modulus Subroutine objects
@@ -32,11 +32,9 @@ define(["Tone/core/Tone", "Tone/signal/LessThan", "Tone/signal/Select", "Tone/si
 			var mod = new ModuloSubroutine(modulus, Math.pow(2, i));
 			this._modChain.push(mod);
 		}
-
-		//connect them up
-		this.input.connect(this._modChain[0]);
 		this.chain.apply(this, this._modChain);
-		this._modChain[bits - 1].connect(this.output);
+		this.input.connect(this._modChain[0]);
+		this._modChain[this._modChain.length - 1].connect(this.output);
 	};
 
 	Tone.extend(Tone.Modulo);
@@ -62,55 +60,68 @@ define(["Tone/core/Tone", "Tone/signal/LessThan", "Tone/signal/Select", "Tone/si
 	var ModuloSubroutine = function(modulus, multiple){
 
 		Tone.call(this);
-
 		var val = modulus * multiple;
 
 		/**
-		 *  @type {Tone.LessThan}
+		 *  divide the incoming signal so it's on a 0 to 1 scale
+		 *  @type {Tone.Multiply}
 		 *  @private
 		 */
-		this._lt = new Tone.LessThan(val);
+		this._div = new Tone.Multiply(1 / val);
 
 		/**
+		 *  apply the equation logic
+		 *  @type {WaveShaperNode}
 		 *  @private
-		 *  @type {Tone.Not}
 		 */
-		this._not = new Tone.Not();
+		this._operator = this.context.createWaveShaper();
 
-		/**
-		 *  @private
-		 *  @type {Tone.Add}
-		 */
-		this._sub = new Tone.Add(-val);
-
-		/**
-		 *  @private
-		 *  @type {Tone.Select}
-		 */
-		this._select = new Tone.Select(2);
-
-		//connections
-		this.chain(this.input, this._lt, this._not, this._select.gate);
-		this.input.connect(this._sub);
-		this._sub.connect(this._select, 0, 1);
-		this.input.connect(this._select, 0, 0);
-		this._select.connect(this.output);
+		//connect it up
+		this.chain(this.input, this._div, this._operator, this.output);
+		this._makeCurve(val);
 	};
 
 	Tone.extend(ModuloSubroutine);
+
+	/**
+	 * make the operator curve
+	 * @param {number} val
+	 * @private 
+	 */
+	ModuloSubroutine.prototype._makeCurve = function(val){
+		var arrayLength = Math.pow(2, 24);
+		var curve = new Float32Array(arrayLength);
+		for (var i = 0; i < curve.length; i++) {
+			if (i === arrayLength - 1){
+				curve[i] = -val;
+			} else if (i === 0){
+				curve[i] = val;
+			} else {
+				curve[i] = 0;
+			}
+		}
+		this._operator.curve = curve;
+		
+	};
+
+	/**
+	 *  @override the default connection to connect the operator and the input to the next node
+	 *  @private
+	 */
+	ModuloSubroutine.prototype.connect = function(node){
+		this._operator.connect(node);
+		this.input.connect(node);
+	};
 
 	 /**
 	  *  internal class clean up
 	  */
 	ModuloSubroutine.prototype.dispose = function(){
-		this._lt.dispose();
-		this._not.dispose();
-		this._sub.dispose();
-		this._select.dispose();
-		this._lt = null;
-		this._not = null;
-		this._sub = null;
-		this._select = null;
+		Tone.prototype.dispose.call(this);
+		this._div.dispose();
+		this._operator.disconnect();
+		this._div = null;
+		this._operator = null;
 	};
 
 	return Tone.Modulo;
