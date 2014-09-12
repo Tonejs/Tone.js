@@ -209,8 +209,8 @@ define(["Tone/core/Tone", "Tone/core/Transport"], function(Tone){
 	 *  @example
 	 *  tone.midiToNote(60) => "C3"
 	 *  
-	 *  @param  {[type]} midiNumber [description]
-	 *  @return {[type]}            [description]
+	 *  @param  {number} midiNumber the midi note number
+	 *  @return {string}            the note's name and octave
 	 */
 	Tone.prototype.midiToNote = function(midiNumber){
 		var octave = Math.floor(midiNumber / 12) - 2;
