@@ -27,6 +27,7 @@ var ExampleList = {
 	},
 	"Apps" : {
 		"JSON Sandbox" : "json",
-		"Dots" : "interaction"
+		"Dots" : "interaction",
+		"Play Along" : "shiny"
 	},
 };
