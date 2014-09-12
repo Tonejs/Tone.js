@@ -9,9 +9,9 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/component/Filter"], functi
 	 *  @constructor
 	 *  @extends {Tone}
 	 *  
-	 *  @param {number|object=} [lowLevel=1] the gain applied to the low
-	 *  @param {number=} [midLevel=1] the gain applied to the mid
-	 *  @param {number=} [highLevel=1] the gain applied to the high
+	 *  @param {number|object} [lowLevel=0] the gain applied to the lows (in db)
+	 *  @param {number} [midLevel=0] the gain applied to the mid (in db)
+	 *  @param {number} [highLevel=0] the gain applied to the high (in db)
 	 */
 	Tone.EQ = function(){
 
@@ -64,21 +64,18 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/component/Filter"], functi
 		 *  @type {GainNode}
 		 */
 		this.lowGain = this.context.createGain();
-		this.lowGain.gain.value = options.low;
 
 		/**
 		 *  the mid gain
 		 *  @type {GainNode}
 		 */
 		this.midGain = this.context.createGain();
-		this.midGain.gain.value = options.mid;
 
 		/**
 		 *  the high gain
 		 *  @type {GainNode}
 		 */
 		this.highGain = this.context.createGain();
-		this.highGain.gain.value = options.high;
 
 		//the frequency bands
 		this.chain(this.input, this._lowFilter, this.lowGain, this.output);
@@ -89,6 +86,10 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/component/Filter"], functi
 		this.lowFrequency.connect(this._lowMidFilter.frequency);
 		this.highFrequency.connect(this._highMidFilter.frequency);
 		this.highFrequency.connect(this._highFilter.frequency);
+		//set the gains
+		this.setLow(options.low);
+		this.setMid(options.mid);
+		this.setHigh(options.high);
 	};
 
 	Tone.extend(Tone.EQ);
@@ -99,9 +100,9 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/component/Filter"], functi
 	 *  @static
 	 */
 	Tone.EQ.defaults = {
-		"low" : 1,
-		"mid" : 1,
-		"high" : 1,
+		"low" : 0,
+		"mid" : 0,
+		"high" : 0,
 		"lowFrequency" : 400,
 		"highFrequency" : 2500
 	};
@@ -120,26 +121,26 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/component/Filter"], functi
 
 	/**
 	 *  set the mid range
-	 *  @param {number} level the level of the mids
+	 *  @param {number} db the db of the mids
 	 */
-	Tone.EQ.prototype.setMid = function(level){
-		this.midGain.gain.value = level;
+	Tone.EQ.prototype.setMid = function(db){
+		this.midGain.gain.value = this.dbToGain(db);
 	};
 
 	/**
 	 *  set the high range
-	 *  @param {number} level the level of the highs
+	 *  @param {number} db the db of the highs
 	 */
-	Tone.EQ.prototype.setHigh = function(level){
-		this.highGain.gain.value = level;
+	Tone.EQ.prototype.setHigh = function(db){
+		this.highGain.gain.value = this.dbToGain(db);
 	};
 
 	/**
 	 *  set the low range
-	 *  @param {number} level the level of the lows
+	 *  @param {number} db the db of the lows
 	 */
-	Tone.EQ.prototype.setLow = function(level){
-		this.lowGain.gain.value = level;
+	Tone.EQ.prototype.setLow = function(db){
+		this.lowGain.gain.value = this.dbToGain(db);
 	};
 
 	/**
