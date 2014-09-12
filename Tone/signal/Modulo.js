@@ -59,8 +59,12 @@ define(["Tone/core/Tone", "Tone/signal/Multiply"], function(Tone){
 	 */
 	var ModuloSubroutine = function(modulus, multiple){
 
-		Tone.call(this);
 		var val = modulus * multiple;
+
+		/**
+		 *  the input node
+		 */
+		this.input = this.context.createGain();
 
 		/**
 		 *  divide the incoming signal so it's on a 0 to 1 scale
@@ -77,7 +81,7 @@ define(["Tone/core/Tone", "Tone/signal/Multiply"], function(Tone){
 		this._operator = this.context.createWaveShaper();
 
 		//connect it up
-		this.chain(this.input, this._div, this._operator, this.output);
+		this.chain(this.input, this._div, this._operator);
 		this._makeCurve(val);
 	};
 
@@ -101,7 +105,6 @@ define(["Tone/core/Tone", "Tone/signal/Multiply"], function(Tone){
 			}
 		}
 		this._operator.curve = curve;
-		
 	};
 
 	/**
