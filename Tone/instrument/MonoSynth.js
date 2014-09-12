@@ -98,7 +98,7 @@ function(Tone){
 			"decay" : 0.2,
 			"sustain" : 0.5,
 			"release" : 2,
-			"min" : 10,
+			"min" : 20,
 			"max" : 4000
 		}
 	};
