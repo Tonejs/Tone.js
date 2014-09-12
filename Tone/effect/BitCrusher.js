@@ -24,7 +24,7 @@ function(Tone){
 		 *  @type {Tone.Modulo}
 		 *  @private
 		 */
-		this._modulo = new Tone.Modulo(1, 8);
+		this._modulo = new Tone.Modulo(1, options.bits);
 
 		/**
 		 *  used for the floor function
