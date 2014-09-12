@@ -440,14 +440,14 @@ define("Tone/core/Tone", [], function(){
 	};
 
 	/**
-	 *  convert Tone.Time to seconds
+	 *  convert time to seconds
 	 *
 	 *  this is a simplified version which only handles numbers and 
 	 *  'now' relative numbers. If the Transport is included this 
 	 *  method is overridden to include many other features including 
 	 *  notationTime, Frequency, and transportTime
 	 *  
-	 *  @param  {Tone.Time} time 
+	 *  @param  {number=} time 
 	 *  @param {number=} now if passed in, this number will be 
 	 *                       used for all 'now' relative timings
 	 *  @return {number}   	seconds in the same timescale as the AudioContext
@@ -487,50 +487,6 @@ define("Tone/core/Tone", [], function(){
 	 */
 	Tone.prototype.secondsToFrequency = function(seconds){
 		return 1/seconds;
-	};
-
-	///////////////////////////////////////////////////////////////////////////
-	//	MUSIC NOTES
-	///////////////////////////////////////////////////////////////////////////
-
-	var noteToIndex = { "c" : 0, "c#" : 1, "db" : 1, "d" : 2, "d#" : 3, "eb" : 3, 
-		"e" : 4, "f" : 5, "f#" : 6, "gb" : 6, "g" : 7, "g#" : 8, "ab" : 8, 
-		"a" : 9, "a#" : 10, "bb" : 10, "b" : 11
-	};
-
-	var noteIndexToNote = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
-
-	var middleC = 261.6255653005986;
-
-	/**
-	 *  convert a note name to frequency (i.e. A4 to 440)
-	 *  @param  {string} note
-	 *  @return {number}         
-	 */
-	Tone.prototype.noteToFrequency = function(note){
-		//break apart the note by frequency and octave
-		var parts = note.split(/(\d+)/);
-		if (parts.length === 3){
-			var index = noteToIndex[parts[0].toLowerCase()];
-			var octave = parts[1];
-			var noteNumber = index + parseInt(octave, 10) * 12;
-			return Math.pow(2, (noteNumber - 48) / 12) * middleC;
-		} else {
-			return 0;
-		}
-	};
-
-	/**
-	 *  convert a note name (i.e. A4, C#5, etc to a frequency)
-	 *  @param  {number} freq
-	 *  @return {string}         
-	 */
-	Tone.prototype.frequencyToNote = function(freq){
-		var log = Math.log(freq / middleC) / Math.LN2;
-		var noteNumber = Math.round(12 * log) + 48;
-		var octave = Math.floor(noteNumber/12);
-		var noteName = noteIndexToNote[noteNumber % 12];
-		return noteName + octave.toString();
 	};
 
 	///////////////////////////////////////////////////////////////////////////
@@ -621,7 +577,7 @@ define("Tone/core/Tone", [], function(){
 		_silentNode.connect(audioContext.destination);
 	});
 
-	console.log("Tone.js r1-dev");
+	console.log("Tone.js r1");
 
 	return Tone;
 });
@@ -1476,9 +1432,9 @@ define('Tone/component/EQ',["Tone/core/Tone", "Tone/signal/Signal", "Tone/compon
 	 *  @constructor
 	 *  @extends {Tone}
 	 *  
-	 *  @param {number|object=} [lowLevel=1] the gain applied to the low
-	 *  @param {number=} [midLevel=1] the gain applied to the mid
-	 *  @param {number=} [highLevel=1] the gain applied to the high
+	 *  @param {number|object} [lowLevel=0] the gain applied to the lows (in db)
+	 *  @param {number} [midLevel=0] the gain applied to the mid (in db)
+	 *  @param {number} [highLevel=0] the gain applied to the high (in db)
 	 */
 	Tone.EQ = function(){
 
@@ -1531,21 +1487,18 @@ define('Tone/component/EQ',["Tone/core/Tone", "Tone/signal/Signal", "Tone/compon
 		 *  @type {GainNode}
 		 */
 		this.lowGain = this.context.createGain();
-		this.lowGain.gain.value = options.low;
 
 		/**
 		 *  the mid gain
 		 *  @type {GainNode}
 		 */
 		this.midGain = this.context.createGain();
-		this.midGain.gain.value = options.mid;
 
 		/**
 		 *  the high gain
 		 *  @type {GainNode}
 		 */
 		this.highGain = this.context.createGain();
-		this.highGain.gain.value = options.high;
 
 		//the frequency bands
 		this.chain(this.input, this._lowFilter, this.lowGain, this.output);
@@ -1556,6 +1509,10 @@ define('Tone/component/EQ',["Tone/core/Tone", "Tone/signal/Signal", "Tone/compon
 		this.lowFrequency.connect(this._lowMidFilter.frequency);
 		this.highFrequency.connect(this._highMidFilter.frequency);
 		this.highFrequency.connect(this._highFilter.frequency);
+		//set the gains
+		this.setLow(options.low);
+		this.setMid(options.mid);
+		this.setHigh(options.high);
 	};
 
 	Tone.extend(Tone.EQ);
@@ -1566,9 +1523,9 @@ define('Tone/component/EQ',["Tone/core/Tone", "Tone/signal/Signal", "Tone/compon
 	 *  @static
 	 */
 	Tone.EQ.defaults = {
-		"low" : 1,
-		"mid" : 1,
-		"high" : 1,
+		"low" : 0,
+		"mid" : 0,
+		"high" : 0,
 		"lowFrequency" : 400,
 		"highFrequency" : 2500
 	};
@@ -1587,26 +1544,26 @@ define('Tone/component/EQ',["Tone/core/Tone", "Tone/signal/Signal", "Tone/compon
 
 	/**
 	 *  set the mid range
-	 *  @param {number} level the level of the mids
+	 *  @param {number} db the db of the mids
 	 */
-	Tone.EQ.prototype.setMid = function(level){
-		this.midGain.gain.value = level;
+	Tone.EQ.prototype.setMid = function(db){
+		this.midGain.gain.value = this.dbToGain(db);
 	};
 
 	/**
 	 *  set the high range
-	 *  @param {number} level the level of the highs
+	 *  @param {number} db the db of the highs
 	 */
-	Tone.EQ.prototype.setHigh = function(level){
-		this.highGain.gain.value = level;
+	Tone.EQ.prototype.setHigh = function(db){
+		this.highGain.gain.value = this.dbToGain(db);
 	};
 
 	/**
 	 *  set the low range
-	 *  @param {number} level the level of the lows
+	 *  @param {number} db the db of the lows
 	 */
-	Tone.EQ.prototype.setLow = function(level){
-		this.lowGain.gain.value = level;
+	Tone.EQ.prototype.setLow = function(db){
+		this.lowGain.gain.value = this.dbToGain(db);
 	};
 
 	/**
@@ -3114,6 +3071,12 @@ function(Tone){
 
 	/**
 	 *  intervals are recurring events 
+	 *
+	 *  @example
+	 *  //triggers a callback every 8th note with the exact time of the event
+	 *  Tone.Transport.setInterval(function(time){
+	 *  	envelope.triggerAttack(time);
+	 *  }, "8n");
 	 *  
 	 *  @param {function} callback
 	 *  @param {Tone.Time}   interval 
@@ -3155,7 +3118,15 @@ function(Tone){
 	///////////////////////////////////////////////////////////////////////////////
 
 	/**
-	 *  set a timeout to occur after time from now
+	 *  set a timeout to occur after time from now. NB: the transport must be 
+	 *  running for this to be triggered. All timeout events are cleared when the 
+	 *  transport is stopped. 
+	 *
+	 *  @example
+	 *  //trigger an event to happen 1 second from now
+	 *  Tone.Transport.setTimeout(function(time){
+	 *  	player.start(time);
+	 *  }, 1)
 	 *  
 	 *  @param {function} callback 
 	 *  @param {Tone.Time}   time     
@@ -3209,6 +3180,12 @@ function(Tone){
 	 *  Timeline events are synced to the transportTimeline of the Tone.Transport
 	 *  Unlike Timeout, Timeline events will restart after the 
 	 *  Tone.Transport has been stopped and restarted. 
+	 *
+	 *  @example
+	 *  //trigger the start of a part on the 16th measure
+	 *  Tone.Transport.setTimeline(function(time){
+	 *  	part.start(time);
+	 *  }, "16m");
 	 *
 	 *  
 	 *  @param {function} 	callback 	
@@ -3390,10 +3367,12 @@ function(Tone){
 	 *  set the time signature
 	 *  
 	 *  @example
-	 *  this.setTimeSignature(4); //for 4/4
+	 *  this.setTimeSignature(3, 8); // 3/8
+	 *  this.setTimeSignature(4); // 4/4
 	 *  
-	 *  @param {number} numerator   
-	 *  @param {number=} denominator defaults to 4
+	 *  @param {number} numerator  the numerator of the time signature
+	 *  @param {number=} [denominator=4] the denominator of the time signature. this should
+	 *                                   be a multiple of 2. 
 	 */
 	Tone.Transport.prototype.setTimeSignature = function(numerator, denominator){
 		denominator = this.defaultArg(denominator, 4);
@@ -3401,8 +3380,7 @@ function(Tone){
 	};
 
 	/**
-	 *  return the time signature as just the numerator
-	 *  over 4 is assumed. 
+	 *  return the time signature as just the numerator over 4. 
 	 *  for example 4/4 would return 4 and 6/8 would return 3
 	 *  
 	 *  @return {number} 
@@ -3481,6 +3459,14 @@ function(Tone){
 		signal.sync(this._clock._controlSignal);
 	};
 
+	/**
+	 *  clean up
+	 */
+	Tone.Transport.prototype.dispose = function(){
+		this._clock.dispose();
+		this._clock = null;
+	};
+
 	///////////////////////////////////////////////////////////////////////////////
 	//	TIMELINE EVENT
 	///////////////////////////////////////////////////////////////////////////////
@@ -3536,15 +3522,6 @@ function(Tone){
 	 */
 	TimelineEvent.prototype.testInterval = function(tick){
 		return (tick - this.startTicks) % this.tickTime === 0;
-	};
-
-
-	/**
-	 *  clean up
-	 */
-	Tone.Transport.prototype.dispose = function(){
-		this._clock.dispose();
-		this._clock = null;
 	};
 
 
@@ -3802,7 +3779,6 @@ function(Tone){
 	Tone.Transport = new Tone.Transport();
 	//set the bpm initially
 	Tone.Transport.setBpm(120);
-
 
 	Tone._initAudioContext(function(){
 		//get the previous bpm
@@ -4417,7 +4393,7 @@ define('Tone/core/Master',["Tone/core/Tone"], function(Tone){
 	 *  @constructor
 	 *  @extends {Tone}
 	 */
-	var Master = function(){
+	Tone.Master = function(){
 		//extend audio unit
 		Tone.call(this);
 
@@ -4433,13 +4409,13 @@ define('Tone/core/Master',["Tone/core/Tone"], function(Tone){
 		this.chain(this.input, this.limiter, this.output, this.context.destination);
 	};
 
-	Tone.extend(Master);
+	Tone.extend(Tone.Master);
 
 	/**
 	 *  mute the output
 	 *  @param {boolean} muted
 	 */
-	Master.prototype.mute = function(muted){
+	Tone.Master.prototype.mute = function(muted){
 		muted = this.defaultArg(muted, true);
 		if (muted){
 			this.output.gain.value = 0;
@@ -4452,7 +4428,7 @@ define('Tone/core/Master',["Tone/core/Tone"], function(Tone){
 	 *  @param {number} db volume in decibels 
 	 *  @param {Tone.Time=} fadeTime (optional) time it takes to reach the value
 	 */
-	Master.prototype.setVolume = function(db, fadeTime){
+	Tone.Master.prototype.setVolume = function(db, fadeTime){
 		var now = this.now();
 		var gain = this.dbToGain(db);
 		if (fadeTime){
@@ -4484,14 +4460,16 @@ define('Tone/core/Master',["Tone/core/Tone"], function(Tone){
 		this.connect(Tone.Master);
 	};
 
-	Tone.Master = new Master();
+	var MasterConstructor = Tone.Master;
+
+	//a single master output
+	Tone.Master = new Tone.Master();
 
 	/**
 	 *  initialize the module and listen for new audio contexts
 	 */
 	Tone._initAudioContext(function(){
-		//a single master output
-		Master.call(Tone.Master);
+		MasterConstructor.call(Tone.Master);
 	});
 
 	return Tone.Master;
@@ -5206,17 +5184,22 @@ define('Tone/core/Note',["Tone/core/Tone", "Tone/core/Transport"], function(Tone
 	};
 
 	/**
-	 *  parses a score and registers all of the notes
+	 *  Parses a score and registers all of the notes along the timeline. 
 	 *
-	 *  scores are a JSON object with instruments at the top level
-	 *  and an array of time, value tuples
+	 *  Scores are a JSON object with instruments at the top level
+	 *  and an array of time and values. The value of a note can be 0 or more 
+	 *  parameters. 
 	 *
-	 *  i.e. { 
+	 *  To convert MIDI files to score notation, take a look at utils/MidiToScore.js
+	 *
+	 *  @example
+	 *  var score = { 
 	 *  	"synth"  : [["0", "C3"], ["0:1", "D3"], ["0:2", "E3"], ... ],
 	 *  	"bass"  : [["0", "C2"], ["1:0", "A2"], ["2:0", "C2"], ["3:0", "A2"], ... ],
 	 *  	"drums"  : [["0", "kick"], ["0:2", "snare"], ["1:0", "kick"], ["1:2", "snare"], ... ],
 	 *  	...
-	 *  }
+	 *  };
+	 *
 	 *  @static
 	 *  @param {Object} score
 	 *  @return {Array<Tone.Note>} an array of all of the notes that were created
@@ -5243,6 +5226,67 @@ define('Tone/core/Note',["Tone/core/Tone", "Tone/core/Transport"], function(Tone
 			}
 		}
 		return notes;
+	};
+
+	///////////////////////////////////////////////////////////////////////////
+	//	MUSIC NOTES
+	//	
+	//	Augments Tone.prototype to include note methods
+	///////////////////////////////////////////////////////////////////////////
+
+	var noteToIndex = { "c" : 0, "c#" : 1, "db" : 1, "d" : 2, "d#" : 3, "eb" : 3, 
+		"e" : 4, "f" : 5, "f#" : 6, "gb" : 6, "g" : 7, "g#" : 8, "ab" : 8, 
+		"a" : 9, "a#" : 10, "bb" : 10, "b" : 11
+	};
+
+	var noteIndexToNote = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
+
+	var middleC = 261.6255653005986;
+
+	/**
+	 *  convert a note name to frequency (i.e. A4 to 440)
+	 *  @param  {string} note
+	 *  @return {number}         
+	 */
+	Tone.prototype.noteToFrequency = function(note){
+		//break apart the note by frequency and octave
+		var parts = note.split(/(\d+)/);
+		if (parts.length === 3){
+			var index = noteToIndex[parts[0].toLowerCase()];
+			var octave = parts[1];
+			var noteNumber = index + parseInt(octave, 10) * 12;
+			return Math.pow(2, (noteNumber - 48) / 12) * middleC;
+		} else {
+			return 0;
+		}
+	};
+
+	/**
+	 *  convert a note name (i.e. A4, C#5, etc to a frequency)
+	 *  @param  {number} freq
+	 *  @return {string}         
+	 */
+	Tone.prototype.frequencyToNote = function(freq){
+		var log = Math.log(freq / middleC) / Math.LN2;
+		var noteNumber = Math.round(12 * log) + 48;
+		var octave = Math.floor(noteNumber/12);
+		var noteName = noteIndexToNote[noteNumber % 12];
+		return noteName + octave.toString();
+	};
+
+	/**
+	 *  convert a midi note number into a note name
+	 *
+	 *  @example
+	 *  tone.midiToNote(60) => "C3"
+	 *  
+	 *  @param  {[type]} midiNumber [description]
+	 *  @return {[type]}            [description]
+	 */
+	Tone.prototype.midiToNote = function(midiNumber){
+		var octave = Math.floor(midiNumber / 12) - 2;
+		var note = midiNumber % 12;
+		return noteIndexToNote[note] + octave;
 	};
 
 	return Tone.Note;
@@ -5852,7 +5896,7 @@ define('Tone/signal/Modulo',["Tone/core/Tone", "Tone/signal/LessThan", "Tone/sig
 	
 
 	/**
-	 *  @class Signal-rate modolu operator. Specify the modulus and the 
+	 *  @class Signal-rate modulo operator. Specify the modulus and the 
 	 *         number of bits of the incoming signal. Because the operator is composed of many components, 
 	 *         fewer bits will improve performance. 
 	 *
@@ -6941,7 +6985,7 @@ function(Tone){
 
 	return Tone.PingPongDelay;
 });
-define('Tone/instrument/Monophonic',["Tone/core/Tone", "Tone/source/Source", "Tone/signal/Signal"], function(Tone){
+define('Tone/instrument/Monophonic',["Tone/core/Tone", "Tone/source/Source", "Tone/signal/Signal", "Tone/core/Note"], function(Tone){
 
 	
 
@@ -7195,7 +7239,7 @@ function(Tone){
 			"decay" : 0.2,
 			"sustain" : 0.5,
 			"release" : 2,
-			"min" : 10,
+			"min" : 20,
 			"max" : 4000
 		}
 	};
@@ -7934,7 +7978,7 @@ define('Tone/source/Player',["Tone/core/Tone", "Tone/source/Source"], function(T
 	return Tone.Player;
 });
 
-define('Tone/instrument/Sampler',["Tone/core/Tone", "Tone/source/Player", "Tone/component/Envelope", "Tone/component/Filter"], 
+define('Tone/instrument/Sampler',["Tone/core/Tone", "Tone/source/Player", "Tone/component/Envelope", "Tone/component/Filter", "Tone/source/Source"], 
 function(Tone){
 
 	
@@ -7972,6 +8016,13 @@ function(Tone){
 		this.envelope = new Tone.Envelope(options.envelope);
 
 		/**
+		 *  the amplitude
+		 *  @type {GainNode}
+		 *  @private
+		 */
+		this._amplitude = this.context.createGain();
+
+		/**
 		 *  the filter envelope
 		 *  @type {Tone.Envelope}
 		 */
@@ -7984,8 +8035,8 @@ function(Tone){
 		this.filter = new Tone.Filter(options.filter);
 
 		//connections
-		this.chain(this.player, this.filter, this.output);
-		this.envelope.connect(this.player.output.gain);
+		this.chain(this.player, this.filter, this._amplitude, this.output);
+		this.envelope.connect(this._amplitude.gain);
 		this.filterEnvelope.connect(this.filter.frequency);
 	};
 
@@ -8010,7 +8061,7 @@ function(Tone){
 			"decay" : 0.001,
 			"sustain" : 1,
 			"release" : 0.5,
-			"min" : 0,
+			"min" : 20,
 			"max" : 20000
 		},
 		"filter" : {
@@ -8049,6 +8100,26 @@ function(Tone){
 		this.filterEnvelope.triggerRelease(time);
 		this.envelope.triggerRelease(time);
 	};
+
+	/**
+	 *  trigger the attack and release after the specified duration
+	 *  
+	 *  @param  {number|string} note     the note as a number or a string note name
+	 *  @param  {Tone.Time} duration the duration of the note
+	 *  @param  {Tone.Time=} time     if no time is given, defaults to now
+	 *  @param  {number=} velocity the velocity of the attack (0-1)
+	 */
+	Tone.Sampler.prototype.triggerAttackRelease = function(note, duration, time, velocity) {
+		time = this.toSeconds(time);
+		this.triggerAttack(note, time, velocity);
+		this.triggerRelease(time + this.toSeconds(duration));
+	};
+
+	/**
+	 *  set volume method borrowed form {@link Tone.Source}
+	 *  @function
+	 */
+	Tone.Sampler.prototype.setVolume = Tone.Source.prototype.setVolume;
 
 	/**
 	 *  clean up
