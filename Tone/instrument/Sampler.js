@@ -150,10 +150,12 @@ function(Tone){
 		this.filterEnvelope.dispose();
 		this.envelope.dispose();
 		this.filter.dispose();
+		this._amplitude.disconnect();
 		this.player = null;
 		this.filterEnvelope = null;
 		this.envelope = null;
 		this.filter = null;
+		this._amplitude = null;
 	};
 
 	return Tone.Sampler;
