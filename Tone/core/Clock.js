@@ -97,14 +97,17 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 		this._upTick = false;
 		var startTime = this.toSeconds(time);
 		this._oscillator.start(startTime);
+		this._oscillator.onended = function(){};
 	};
 
 	/**
 	 *  stop the clock
 	 *  @param {Tone.Time} time the time when the clock should stop
+	 *  @param {function} onend called when the oscilator stops
 	 */
-	Tone.Clock.prototype.stop = function(time){
+	Tone.Clock.prototype.stop = function(time, onend){
 		var stopTime = this.toSeconds(time);
+		this._oscillator.onended = onend;
 		this._oscillator.stop(stopTime);
 	};
 
@@ -117,16 +120,21 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 		var bufferSize = this._jsNode.bufferSize;
 		var incomingBuffer = event.inputBuffer.getChannelData(0);
 		var upTick = this._upTick;
+		var tickTimes = [];
 		for (var i = 0; i < bufferSize; i++){
 			var sample = incomingBuffer[i];
 			if (sample > 0 && !upTick){
 				upTick = true;	
-				this.tick(now + this.samplesToSeconds(i));
+				tickTimes.push(now + this.samplesToSeconds(i));
 			} else if (sample < 0 && upTick){
 				upTick = false;
 			}
 		}
+		//invoke the callbacks
 		this._upTick = upTick;
+		for (var t = 0; t < tickTimes.length; t++) {
+			this.tick(tickTimes[t]);
+		}
 	};
 
 	/**
@@ -136,6 +144,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 		this._jsNode.disconnect();
 		this._controlSignal.dispose();
 		if (this._oscillator){
+			this._oscillator.onended();
 			this._oscillator.disconnect();
 		}
 		this._jsNode.onaudioprocess = function(){};
