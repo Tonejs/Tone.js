@@ -31,7 +31,7 @@ function wasDisposed(obj, expect){
 
 var allTests = ["tests/Core", "tests/Timing", "tests/Signal", "tests/SignalComparison", 
 "tests/SignalMath", "tests/Transport", "tests/Sources", "tests/Components", "tests/Effect", "tests/Instruments"];
-// var allTests = ["tests/Core", "tests/Instruments"];
+// var allTests = ["tests/Core", "tests/Signal", "tests/Transport", "tests/Sources"];
 
 require(allTests, function(){
 	mocha.run(); 

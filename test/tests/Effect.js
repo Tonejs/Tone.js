@@ -2,11 +2,13 @@
 
 define(["tests/Core", "chai", "Tone/component/Recorder", "Tone/core/Master", "Tone/effect/Effect", "Tone/component/DryWet",
 	"Tone/effect/FeedbackEffect", "Tone/signal/Signal", "Tone/effect/AutoPanner", "Tone/effect/AutoWah", "Tone/effect/BitCrusher",
-	"Tone/effect/FeedbackDelay", "Tone/effect/PingPongDelay", "Tone/effect/Chorus"], 
+	"Tone/effect/FeedbackDelay", "Tone/effect/PingPongDelay", "Tone/effect/Chorus", "tests/Common"], 
 function(Tone, chai, Recorder, Master, Effect, DryWet, FeedbackEffect, Signal, AutoPanner, AutoWah, BitCrusher, 
-	FeedbackDelay, PingPongDelay, Chorus){
+	FeedbackDelay, PingPongDelay, Chorus, Test){
 
 	var expect = chai.expect;
+
+	Test.onlineContext();
 
 	Master.mute();
 
@@ -16,7 +18,7 @@ function(Tone, chai, Recorder, Master, Effect, DryWet, FeedbackEffect, Signal, A
 		it("can be created and disposed", function(){
 			var e = new Effect();
 			e.dispose();
-			wasDisposed(e, expect);
+			Test.wasDisposed(e, expect);
 		});
 
 		it("has a dry/wet control", function(){
@@ -39,7 +41,7 @@ function(Tone, chai, Recorder, Master, Effect, DryWet, FeedbackEffect, Signal, A
 		it("can be created and disposed", function(){
 			var fe = new FeedbackEffect();
 			fe.dispose();
-			wasDisposed(fe, expect);
+			Test.wasDisposed(fe, expect);
 		});
 
 		it("has a dry/wet control", function(){
@@ -68,7 +70,7 @@ function(Tone, chai, Recorder, Master, Effect, DryWet, FeedbackEffect, Signal, A
 		it("can be created and disposed", function(){
 			var ap = new AutoPanner();
 			ap.dispose();
-			wasDisposed(ap, expect);
+			Test.wasDisposed(ap, expect);
 		});
 
 		it("extends Tone.Effect", function(){
@@ -91,7 +93,7 @@ function(Tone, chai, Recorder, Master, Effect, DryWet, FeedbackEffect, Signal, A
 		it("can be created and disposed", function(){
 			var aw = new AutoWah();
 			aw.dispose();
-			wasDisposed(aw, expect);
+			Test.wasDisposed(aw, expect);
 		});
 
 		it("extends Tone.Effect", function(){
@@ -107,7 +109,7 @@ function(Tone, chai, Recorder, Master, Effect, DryWet, FeedbackEffect, Signal, A
 		it("can be created and disposed", function(){
 			var bc = new BitCrusher();
 			bc.dispose();
-			wasDisposed(bc, expect);
+			Test.wasDisposed(bc, expect);
 		});
 
 		it("extends Tone.Effect", function(){
@@ -123,7 +125,7 @@ function(Tone, chai, Recorder, Master, Effect, DryWet, FeedbackEffect, Signal, A
 		it("can be created and disposed", function(){
 			var fd = new FeedbackDelay();
 			fd.dispose();
-			wasDisposed(fd, expect);
+			Test.wasDisposed(fd, expect);
 		});
 
 		it("extends Tone.FeedbackEffect", function(){
@@ -139,7 +141,7 @@ function(Tone, chai, Recorder, Master, Effect, DryWet, FeedbackEffect, Signal, A
 		it("can be created and disposed", function(){
 			var ppd = new PingPongDelay();
 			ppd.dispose();
-			wasDisposed(ppd, expect);
+			Test.wasDisposed(ppd, expect);
 		});
 	});
 
@@ -149,7 +151,7 @@ function(Tone, chai, Recorder, Master, Effect, DryWet, FeedbackEffect, Signal, A
 		it("can be created and disposed", function(){
 			var chorus = new Chorus();
 			chorus.dispose();
-			wasDisposed(chorus, expect);
+			Test.wasDisposed(chorus, expect);
 		});
 		
 		it("extends Tone.Effect", function(){

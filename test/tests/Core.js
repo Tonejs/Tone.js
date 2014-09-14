@@ -1,6 +1,6 @@
 /* global it, describe, after */
 
-define(["chai", "Tone/core/Tone", "Tone/core/Master", "Tone/core/Bus"], function(chai, Tone, Master){
+define(["chai", "Tone/core/Tone", "Tone/core/Master", "Tone/core/Bus", "Tone/core/Note"], function(chai, Tone, Master, Note){
 	var expect = chai.expect;
 
 	describe("AudioContext", function(){
@@ -74,6 +74,17 @@ define(["chai", "Tone/core/Tone", "Tone/core/Master", "Tone/core/Bus"], function
 			expect(tone.defaultArg({"b" : 10}, {"a" : 4, "b" : 10})).has.property("b", 10);
 			expect(tone.defaultArg({"b" : {"c" : 10}}, {"b" : {"c" : 20}})).has.deep.property("b.c", 10);
 			expect(tone.defaultArg({"a" : 10}, {"b" : {"c" : 20}})).has.deep.property("b.c", 20);
+		});
+
+
+	});
+
+	describe("Tone.Note", function(){
+
+		var tone = new Tone();
+
+		after(function(){
+			tone.dispose();
 		});
 
 		it("can convert notes into frequencies", function(){
