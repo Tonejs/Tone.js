@@ -10,7 +10,9 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	 * 	@internal
 	 * 	@constructor
 	 * 	@extends {Tone}
-	 * 	@param {number} rate the number of 
+	 * 	@param {number} rate the rate of the callback
+	 * 	@param {function} callback the callback to be invoked with the time of the audio event
+	 * 	                           NB: it is very important that only 
 	 */
 	Tone.Clock = function(rate, callback){
 
@@ -120,21 +122,24 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 		var bufferSize = this._jsNode.bufferSize;
 		var incomingBuffer = event.inputBuffer.getChannelData(0);
 		var upTick = this._upTick;
-		var tickTimes = [];
+		var self = this;
 		for (var i = 0; i < bufferSize; i++){
 			var sample = incomingBuffer[i];
 			if (sample > 0 && !upTick){
 				upTick = true;	
-				tickTimes.push(now + this.samplesToSeconds(i));
+				//get the callback out of audio thread
+				setTimeout(function(){
+					//to account for the double buffering
+					var tickTime = now + self.samplesToSeconds(i + bufferSize * 2);
+					return function(){
+						self.tick(tickTime);
+					};
+				}(), 0); // jshint ignore:line
 			} else if (sample < 0 && upTick){
 				upTick = false;
 			}
 		}
-		//invoke the callbacks
 		this._upTick = upTick;
-		for (var t = 0; t < tickTimes.length; t++) {
-			this.tick(tickTimes[t]);
-		}
 	};
 
 	/**
