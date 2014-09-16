@@ -1,7 +1,32 @@
 /* global it, describe, beforeEach, maxTimeout */
 
-define(["chai", "Tone/core/Transport", "tests/Core", "tests/Common"], function(chai, Transport, Core, Test){
+define(["chai", "Tone/core/Transport", "tests/Core", "tests/Common", "Tone/core/Clock"], function(chai, Transport, Core, Test, Clock){
 	var expect = chai.expect;
+
+	describe("Tone.Clock", function(){
+		this.timeout(maxTimeout);
+
+		it("can be created and destroyed", function(){
+			var c = new Clock();
+			c.dispose();
+			Test.wasDisposed(c);
+		});
+
+		it("invokes a callback at regular intervals", function(done){
+			var tickCount = 0;
+			var clock;
+			Test.offlineTest(11, function(){
+				clock = new Clock(1, function(){
+					tickCount++;
+				});
+				clock.start();
+			}, function(){
+			}, function(){
+				expect(tickCount).to.be.above(9);
+				done();
+			});
+		});
+	});
 
 	describe("Transport.setBpm  / getBpm", function(){
 		this.timeout(maxTimeout);
@@ -116,7 +141,7 @@ define(["chai", "Tone/core/Transport", "tests/Core", "tests/Common"], function(c
 			Transport.clearIntervals();
 		});
 
-		it("invokes the a repeated", function(done){
+		it("invokes a repeated event", function(done){
 			Transport.setBpm(120);
 			var callbackCount = 0;
 			Test.offlineTest(4, function(){
@@ -152,20 +177,16 @@ define(["chai", "Tone/core/Transport", "tests/Core", "tests/Common"], function(c
 			Transport.clearTimelines();
 		});
 
-		it("invokes the callback with the correct playback time", function(done){
+		it("invokes the callback", function(done){
 			Transport.setBpm(240);
-			var firstCallback = 0;
-			var callbackTime = 0;
+			var wasCalled = false;
 			Test.offlineTest(2, function(){
-				Transport.setTimeline(function(time){
-					firstCallback = time;
-				}, 0);
-				Transport.setTimeline(function(time){
-					callbackTime = time;
+				Transport.setTimeline(function(){
+					wasCalled = true;
 				}, "0:3:0");
 				Transport.start();
 			}, undefined, function(){
-				expect(callbackTime - firstCallback).to.be.closeTo(0.75, 0.1);
+				expect(wasCalled).to.be.true;
 				done();
 			});
 		});

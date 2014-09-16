@@ -1,4 +1,4 @@
-/* global it, describe, recorderDelay, recorderDuration, maxTimeout, after*/
+/* global it, describe, maxTimeout, after*/
 
 define(["tests/Core", "chai", "Tone/component/DryWet", "Tone/core/Master", "Tone/signal/Signal", 
 "Tone/component/Recorder", "Tone/component/Panner", "Tone/component/LFO", "Tone/component/Gate", 
@@ -102,7 +102,7 @@ function(coreTest, chai, DryWet, Master, Signal, Recorder, Panner, LFO, Gate, Fo
 			Test.onlineContext();
 			var sig = new Signal(1);
 			sig.connect(recorder);
-			recorder.record(recorderDuration, recorderDelay, function(buffers){
+			recorder.record(0.1, 0.1, function(buffers){
 				var buffer = buffers[0];
 				for (var i = 0; i < buffer.length; i++){
 					expect(buffer[i]).to.equal(1);
