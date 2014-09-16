@@ -8,8 +8,8 @@ module.exports = function(grunt) {
 				src: ["../Tone/**/*.js", "!../Tone/*/preset/*", "../README.md"], 
 				options: {
 					destination: "../doc",
-					template : "./doc_config/vendors",
-					configure : "./doc_config/vendors/jsdoc.conf.json",
+					template : "./doc_config/vendor",
+					configure : "./doc_config/vendor/jsdoc.conf.json",
 					private : false
 				}
 			},
