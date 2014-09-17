@@ -70,10 +70,9 @@ osc.start();
 ### Tone.Player
 
 ```javascript
-//a buffer player which plays as soon as it's loaded
 //the second argument is an onload callback
 var player = new Tone.Player("./sound.mp3", function(){
-	player.start();	
+	//now you can use the player...
 });
 player.toMaster();
 ```
