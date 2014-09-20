@@ -70,7 +70,13 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/source/Noise", "To
 	 *  clean up
 	 */
 	Tone.PluckSynth.prototype.dispose = function(){
-
+		Tone.Instrument.prototype.dispose.call(this);
+		this._noise.dispose();
+		this._lfcf.dispose();
+		this._noise = null;
+		this._lfcf = null;
+		this.dampening = null;
+		this.resonance = null;
 	};
 
 	return Tone.PluckSynth;
