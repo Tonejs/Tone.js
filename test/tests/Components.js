@@ -3,9 +3,9 @@
 define(["tests/Core", "chai", "Tone/component/DryWet", "Tone/core/Master", "Tone/signal/Signal", 
 "Tone/component/Recorder", "Tone/component/Panner", "Tone/component/LFO", "Tone/component/Gate", 
 "Tone/component/Follower", "Tone/component/Envelope", "Tone/component/Filter", "Tone/component/EQ", 
-"Tone/component/Merge", "Tone/component/Split", "tests/Common"],
+"Tone/component/Merge", "Tone/component/Split", "tests/Common", "Tone/component/AmplitudeEnvelope"],
 function(coreTest, chai, DryWet, Master, Signal, Recorder, Panner, LFO, Gate, Follower, Envelope, 
-	Filter, EQ, Merge, Split, Test){
+	Filter, EQ, Merge, Split, Test, AmplitudeEnvelope){
 	var expect = chai.expect;
 
 	Master.mute();
@@ -18,7 +18,7 @@ function(coreTest, chai, DryWet, Master, Signal, Recorder, Panner, LFO, Gate, Fo
 		it("can be created and disposed", function(){
 			var dw = new DryWet();
 			dw.dispose();
-			Test.wasDisposed(dw, expect);
+			Test.wasDisposed(dw);
 		});
 
 		it("pass 100% dry signal", function(done){
@@ -95,7 +95,7 @@ function(coreTest, chai, DryWet, Master, Signal, Recorder, Panner, LFO, Gate, Fo
 		it("can be created and disposed", function(){
 			var rec = new Recorder();
 			rec.dispose();
-			Test.wasDisposed(rec, expect);
+			Test.wasDisposed(rec);
 		});
 
 		it("can record an incoming signal", function(done){
@@ -119,7 +119,7 @@ function(coreTest, chai, DryWet, Master, Signal, Recorder, Panner, LFO, Gate, Fo
 		it("can be created and disposed", function(){
 			var panner = new Panner();
 			panner.dispose();
-			Test.wasDisposed(panner, expect);
+			Test.wasDisposed(panner);
 		});
 
 		it("can pan an incoming signal", function(done){
@@ -149,7 +149,7 @@ function(coreTest, chai, DryWet, Master, Signal, Recorder, Panner, LFO, Gate, Fo
 		it("can be created and disposed", function(){
 			var l = new LFO();
 			l.dispose();
-			Test.wasDisposed(l, expect);
+			Test.wasDisposed(l);
 		});
 
 		it("can be started and stopped", function(){
@@ -197,7 +197,7 @@ function(coreTest, chai, DryWet, Master, Signal, Recorder, Panner, LFO, Gate, Fo
 		it("can be created and disposed", function(){
 			var g = new Gate();
 			g.dispose();
-			Test.wasDisposed(g, expect);
+			Test.wasDisposed(g);
 		});
 
 		it("won't let signals below a db thresh through", function(done){
@@ -242,7 +242,7 @@ function(coreTest, chai, DryWet, Master, Signal, Recorder, Panner, LFO, Gate, Fo
 		it("can be created and disposed", function(){
 			var f = new Follower();
 			f.dispose();
-			Test.wasDisposed(f, expect);
+			Test.wasDisposed(f);
 		});
 
 		it("smoothes the incoming signal", function(done){
@@ -271,7 +271,7 @@ function(coreTest, chai, DryWet, Master, Signal, Recorder, Panner, LFO, Gate, Fo
 		it("can be created and disposed", function(){
 			var e = new Envelope();
 			e.dispose();
-			Test.wasDisposed(e, expect);
+			Test.wasDisposed(e);
 		});
 
 		it ("can take parameters as both an object and as arguments", function(){
@@ -345,7 +345,7 @@ function(coreTest, chai, DryWet, Master, Signal, Recorder, Panner, LFO, Gate, Fo
 		it("can be created and disposed", function(){
 			var f = new Filter();
 			f.dispose();
-			Test.wasDisposed(f, expect);
+			Test.wasDisposed(f);
 		});
 
 		it ("can take parameters as both an object and as arguments", function(){
@@ -370,7 +370,7 @@ function(coreTest, chai, DryWet, Master, Signal, Recorder, Panner, LFO, Gate, Fo
 		it("can be created and disposed", function(){
 			var eq = new EQ();
 			eq.dispose();
-			Test.wasDisposed(eq, expect);
+			Test.wasDisposed(eq);
 		});
 
 	});
@@ -382,7 +382,7 @@ function(coreTest, chai, DryWet, Master, Signal, Recorder, Panner, LFO, Gate, Fo
 		it("can be created and disposed", function(){
 			var mer = new Merge();
 			mer.dispose();
-			Test.wasDisposed(mer, expect);
+			Test.wasDisposed(mer);
 		});
 
 		it("merge two signal into one stereo signal", function(done){
@@ -413,7 +413,7 @@ function(coreTest, chai, DryWet, Master, Signal, Recorder, Panner, LFO, Gate, Fo
 		it("can be created and disposed", function(){
 			var split = new Split();
 			split.dispose();
-			Test.wasDisposed(split, expect);
+			Test.wasDisposed(split);
 		});
 
 		it("merges two signal into one stereo signal and then split them back into two signals on left side", function(done){
@@ -461,4 +461,19 @@ function(coreTest, chai, DryWet, Master, Signal, Recorder, Panner, LFO, Gate, Fo
 		});
 	});
 
+	describe("Tone.AmplitudeEnvelope", function(){
+		this.timeout(maxTimeout);
+
+		it("can be created and disposed", function(){
+			var ampEnv = new AmplitudeEnvelope();
+			ampEnv.dispose();
+			Test.wasDisposed(ampEnv);
+		});
+
+		it("inherits all methods from Envelope", function(){
+			var ampEnv = new AmplitudeEnvelope();
+			expect(ampEnv).to.be.instanceOf(Envelope);
+			ampEnv.dispose();
+		});
+	});
 });
