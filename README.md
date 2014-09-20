@@ -230,9 +230,11 @@ Tone.js uses very few ScriptProcessorNodes. Nearly all of the Tone Modules find 
 
 # Demos
 
-* [motionEmotion is an emotion & gesture-based arpeggiator and synthesizer.](http://motionemotion.herokuapp.com/)
+* [motionEmotion - emotion & gesture-based arpeggiator and synthesizer](http://motionemotion.herokuapp.com/)
+* [A Tone.js Plugin Architecture with GUIs](https://github.com/billautomata/Tone.js.Plugins)
+* [Hypercube by @eddietree](http://eddietree.github.io/hypercube/)
 
-Using Tone.js? To have your application included here email me: yotammann@gmail.com
+Using Tone.js? I'd love to hear it: yotammann@gmail.com
 
 # References and Inspiration
 
