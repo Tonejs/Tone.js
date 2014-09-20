@@ -3,9 +3,9 @@
 define(["tests/Core", "chai", "Tone/component/DryWet", "Tone/core/Master", "Tone/signal/Signal", 
 "Tone/component/Recorder", "Tone/component/Panner", "Tone/component/LFO", "Tone/component/Gate", 
 "Tone/component/Follower", "Tone/component/Envelope", "Tone/component/Filter", "Tone/component/EQ", 
-"Tone/component/Merge", "Tone/component/Split", "tests/Common", "Tone/component/AmplitudeEnvelope"],
+"Tone/component/Merge", "Tone/component/Split", "tests/Common", "Tone/component/AmplitudeEnvelope", "Tone/component/LowpassCombFilter"],
 function(coreTest, chai, DryWet, Master, Signal, Recorder, Panner, LFO, Gate, Follower, Envelope, 
-	Filter, EQ, Merge, Split, Test, AmplitudeEnvelope){
+	Filter, EQ, Merge, Split, Test, AmplitudeEnvelope, LowpassCombFilter){
 	var expect = chai.expect;
 
 	Master.mute();
@@ -474,6 +474,16 @@ function(coreTest, chai, DryWet, Master, Signal, Recorder, Panner, LFO, Gate, Fo
 			var ampEnv = new AmplitudeEnvelope();
 			expect(ampEnv).to.be.instanceOf(Envelope);
 			ampEnv.dispose();
+		});
+	});
+
+	describe("Tone.LowpassCombFilter", function(){
+		this.timeout(maxTimeout);
+
+		it("can be created and disposed", function(){
+			var lfcf = new LowpassCombFilter();
+			lfcf.dispose();
+			Test.wasDisposed(lfcf);
 		});
 	});
 });
