@@ -1,40 +1,46 @@
-define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/source/Noise", "Tone/signal/ScaleExp"], function(Tone){
+define(["Tone/core/Tone", "Tone/signal/ScaleExp", "Tone/signal/Signal"], function(Tone){
 
 	"use strict";
 
 	/**
-	 *  @class Karplus-String string synthesis. 
-	 *  
+	 *  @class A lowpass feedback comb filter. 
+	 *         DelayNode -> Lowpass Filter -> feedback
+	 *
+	 *  @extends {Tone}
 	 *  @constructor
-	 *  @extends {Tone.Instrument}
+	 *  @param {number} [minDelay=0.1] the minimum delay time which the filter can have
 	 */
-	Tone.PluckSynth = function(){
-		Tone.Instrument.call(this);
+	Tone.LowpassCombFilter = function(minDelay){
+
+		Tone.call(this);
+
+		minDelay = this.defaultArg(minDelay, 0.01);
+		//the delay * samplerate = number of samples. 
+		// buffersize / number of samples = number of delays needed per buffer frame
+		var delayCount = Math.ceil(this.bufferSize / (minDelay * this.context.sampleRate));
+		//set some ranges
+		delayCount = Math.min(delayCount, 10);
+		delayCount = Math.max(delayCount, 1);
 
 		/**
-		 *  @type {Tone.Noise}
-		 *  @private
-		 */
-		this._noise = new Tone.Noise("pink");
-
-		/**
-		 *  the number of filter delay
+		 *  the number of filter delays
 		 *  @type {number}
 		 *  @private
 		 */
-		this._filterDelayCount = 8;
+		this._filterDelayCount = delayCount;
 
 		/**
-		 *  @type {Array.<BiquadFilterNode>}
+		 *  @type {Array.<FilterDelay>}
 		 *  @private
 		 */
 		this._filterDelays = new Array(this._filterDelayCount);
 
 		/**
-		 *  the frequency control
+		 *  the delayTime control
 		 *  @type {Tone.Signal}
+		 *  @private
 		 */
-		this.frequency = new Tone.Signal(1);
+		this._delayTime = new Tone.Signal(1);
 
 		/**
 		 *  the dampening control
@@ -43,7 +49,7 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/source/Noise", "To
 		this.dampening = new Tone.Signal(3000);
 
 		/**
-		 *  the dampening control
+		 *  the resonance control
 		 *  @type {Tone.Signal}
 		 */
 		this.resonance = new Tone.Signal(0.5);
@@ -54,13 +60,6 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/source/Noise", "To
 		 *  @private
 		 */
 		this._resScale = new Tone.ScaleExp(0, 1, 0.01, 1 / this._filterDelayCount - 0.001, 0.5);
-
-		/**
-		 *  the amount of noise at the attack. 
-		 *  nominal range of [0.1, 20]
-		 *  @type {number}
-		 */
-		this.attackNoise = 1;
 
 		/**
 		 *  internal flag for keeping track of when frequency
@@ -77,15 +76,17 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/source/Noise", "To
 		 */
 		this._feedback = this.context.createGain();
 
+		console.log(this._filterDelayCount);
+
 		//make the filters
 		for (var i = 0; i < this._filterDelayCount; i++) {
-			var filterDelay = new FilterDelay(this.frequency, this.dampening);
+			var filterDelay = new FilterDelay(this._delayTime, this.dampening);
 			filterDelay.connect(this._feedback);
 			this._filterDelays[i] = filterDelay;
 		}
 
 		//connections
-		this._noise.connect(this._filterDelays[0]);
+		this.input.connect(this._filterDelays[0]);
 		this._feedback.connect(this._filterDelays[0]);
 		this.chain.apply(this, this._filterDelays);
 		//resonance control
@@ -93,21 +94,21 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/source/Noise", "To
 		this._feedback.connect(this.output);
 	};
 
-	Tone.extend(Tone.PluckSynth, Tone.Instrument);
-
+	Tone.extend(Tone.LowpassCombFilter);
 
 	/**
-	 *  trigger the attack portion
+	 *  set the delay time of the comb filter
+	 *  auto corrects for sample offsets for small delay amounts
+	 *  	
+	 *  @param {number} delayAmount the delay amount
+	 *  @param {Tone.Time=} time        when the change should occur
 	 */
-	Tone.PluckSynth.prototype.triggerAttack = function(note, time) {
-		if (typeof note === "string"){
-			note = this.noteToFrequency(note);
-		}
+	Tone.LowpassCombFilter.prototype.setDelayTime = function(delayAmount, time) {
 		time = this.toSeconds(time);
+		//the number of samples to delay by
 		var sampleRate = this.context.sampleRate;
-		var delayAmount = 1 / note;
 		var delaySamples = sampleRate * delayAmount;
-		// frequency corection when frequencies get high
+		// delayTime corection when frequencies get high
 		time = this.toSeconds(time);
 		var cutoff = 100;
 		if (delaySamples < cutoff){
@@ -123,20 +124,28 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/source/Noise", "To
 				this._filterDelays[j].setDelay(0, time);
 			}
 		}
-		this.frequency.setValueAtTime(delayAmount, time);
-		this._noise.start(time);
-		this._noise.stop(time + delayAmount * this.attackNoise);
+		this._delayTime.setValueAtTime(delayAmount, time);
 	};
-
-	/**
-	 *  set the dampening 
-	 */
 
 	/**
 	 *  clean up
 	 */
-	Tone.PluckSynth.prototype.dispose = function(){
-
+	Tone.LowpassCombFilter.prototype.dispose = function(){
+		//dispose the filter delays
+		for (var i = 0; i < this._filterDelays.length; i++) {
+			this._filterDelays[i].dispose();
+			this._filterDelays[i] = null;
+		}
+		this._delayTime.dispose();
+		this.dampening.dispose();
+		this.resonance.dispose();
+		this._resScale.dispose();
+		this._feedback.disconnect();
+		this._filterDelays = null;
+		this.dampening = null;
+		this.resonance = null;
+		this._resScale = null;
+		this._feedback = null;
 	};
 
 	// BEGIN HELPER CLASS //
@@ -166,7 +175,17 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/source/Noise", "To
 		this.delay.delayTime.setValueAtTime(amount, time);
 	};
 
+	/**
+	 *  clean up
+	 */
+	FilterDelay.prototype.dispose = function(){
+		this.delay.disconnect();
+		this.filter.disconnect();
+		this.delay = null;
+		this.filter = null;
+	};
+
 	// END HELPER CLASS //
 
-	return Tone.PluckSynth;
+	return Tone.LowpassCombFilter;
 });
