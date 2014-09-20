@@ -179,7 +179,7 @@
 		//16th notes
 		Tone.Note.route("hats", function(time, probability){
 			if (Math.random() < probability + globalProbability / 2){
-				hats.triggerAttackRelease(time, "8n");
+				hats.triggerAttackRelease(0,"8n", time);
 			}
 		});
 		Tone.Note.route("kick", function(time, probability){
@@ -188,7 +188,7 @@
 			}
 		});
 		Tone.Note.route("snare", function(time){
-			snare.triggerAttack(time);
+			snare.triggerAttack(0, time);
 		});
 
 		Tone.Note.route("bass", function(time, note, duration, probability){
