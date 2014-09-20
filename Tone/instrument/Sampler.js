@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/source/Player", "Tone/component/Envelope", "Tone/component/Filter", "Tone/source/Source"], 
+define(["Tone/core/Tone", "Tone/source/Player", "Tone/component/AmplitudeEnvelope", "Tone/component/Filter", "Tone/source/Source"], 
 function(Tone){
 
 	"use strict";
@@ -33,14 +33,7 @@ function(Tone){
 		 *  the amplitude envelope
 		 *  @type {Tone.Envelope}
 		 */
-		this.envelope = new Tone.Envelope(options.envelope);
-
-		/**
-		 *  the amplitude
-		 *  @type {GainNode}
-		 *  @private
-		 */
-		this._amplitude = this.context.createGain();
+		this.envelope = new Tone.AmplitudeEnvelope(options.envelope);
 
 		/**
 		 *  the filter envelope
@@ -55,8 +48,7 @@ function(Tone){
 		this.filter = new Tone.Filter(options.filter);
 
 		//connections
-		this.chain(this.player, this.filter, this._amplitude, this.output);
-		this.envelope.connect(this._amplitude.gain);
+		this.chain(this.player, this.filter, this.envelope, this.output);
 		this.filterEnvelope.connect(this.filter.frequency);
 	};
 
@@ -101,11 +93,15 @@ function(Tone){
 
 	/**
 	 *  start the sample
-	 *  
-	 *  @param {Tone.Time=} [time=now] the time when the note should start
-	 *  @param {number=} velocity the velocity of the note
+	 *
+	 *  @param {number} [note=0] the interval in the sample should be played at 0 = no change
+	 *  @param {Tone.Time} [time=now] the time when the note should start
+	 *  @param {number} [velocity=1] the velocity of the note
 	 */
-	Tone.Sampler.prototype.triggerAttack = function(time, velocity){
+	Tone.Sampler.prototype.triggerAttack = function(note, time, velocity){
+		time = this.toSeconds(time);
+		note = this.defaultArg(note, 0);
+		this.player.setPlaybackRate(this.intervalToFrequencyRatio(note), time);
 		this.player.start(time);
 		this.envelope.triggerAttack(time, velocity);
 		this.filterEnvelope.triggerAttack(time);
@@ -114,9 +110,10 @@ function(Tone){
 	/**
 	 *  start the release portion of the sample
 	 *  
-	 *  @param {Tone.Time=} [time=now] the time when the note should release
+	 *  @param {Tone.Time} [time=now] the time when the note should release
 	 */
 	Tone.Sampler.prototype.triggerRelease = function(time){
+		time = this.toSeconds(time);
 		this.filterEnvelope.triggerRelease(time);
 		this.envelope.triggerRelease(time);
 	};
@@ -129,9 +126,9 @@ function(Tone){
 	 *  @param  {Tone.Time=} time     if no time is given, defaults to now
 	 *  @param  {number=} velocity the velocity of the attack (0-1)
 	 */
-	Tone.Sampler.prototype.triggerAttackRelease = function(note, duration, time, velocity) {
+	Tone.Sampler.prototype.triggerAttackRelease = function(duration, time, velocity) {
 		time = this.toSeconds(time);
-		this.triggerAttack(note, time, velocity);
+		this.triggerAttack(time, velocity);
 		this.triggerRelease(time + this.toSeconds(duration));
 	};
 
@@ -150,12 +147,10 @@ function(Tone){
 		this.filterEnvelope.dispose();
 		this.envelope.dispose();
 		this.filter.dispose();
-		this._amplitude.disconnect();
 		this.player = null;
 		this.filterEnvelope = null;
 		this.envelope = null;
 		this.filter = null;
-		this._amplitude = null;
 	};
 
 	return Tone.Sampler;
