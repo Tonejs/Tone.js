@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/source/Player", "Tone/component/AmplitudeEnvelope", "Tone/component/Filter", "Tone/source/Source"], 
+define(["Tone/core/Tone", "Tone/source/Player", "Tone/component/AmplitudeEnvelope", "Tone/component/Filter", "Tone/instrument/Instrument"], 
 function(Tone){
 
 	"use strict";
@@ -9,18 +9,15 @@ function(Tone){
 	 *         envelope.
 	 *
 	 *  @constructor
-	 *  @extends {Tone}
+	 *  @extends {Tone.Instrument}
 	 *  @param {string|object} url the url of the audio file
 	 *  @param {function} load called when the sample has been loaded
 	 */
 	Tone.Sampler = function(){
 
-		var options = this.optionsObject(arguments, ["url", "load"], Tone.Sampler.defaults);
+		Tone.Instrument.call(this);
 
-		/**
-		 *  @type {GainNode}
-		 */
-		this.output = this.context.createGain();
+		var options = this.optionsObject(arguments, ["url", "load"], Tone.Sampler.defaults);
 
 		/**
 		 *  the sample player
@@ -52,7 +49,7 @@ function(Tone){
 		this.filterEnvelope.connect(this.filter.frequency);
 	};
 
-	Tone.extend(Tone.Sampler);
+	Tone.extend(Tone.Sampler, Tone.Instrument);
 
 	/**
 	 *  the default parameters
@@ -119,30 +116,10 @@ function(Tone){
 	};
 
 	/**
-	 *  trigger the attack and release after the specified duration
-	 *  
-	 *  @param  {number|string} note     the note as a number or a string note name
-	 *  @param  {Tone.Time} duration the duration of the note
-	 *  @param  {Tone.Time=} time     if no time is given, defaults to now
-	 *  @param  {number=} velocity the velocity of the attack (0-1)
-	 */
-	Tone.Sampler.prototype.triggerAttackRelease = function(duration, time, velocity) {
-		time = this.toSeconds(time);
-		this.triggerAttack(time, velocity);
-		this.triggerRelease(time + this.toSeconds(duration));
-	};
-
-	/**
-	 *  set volume method borrowed form {@link Tone.Source}
-	 *  @function
-	 */
-	Tone.Sampler.prototype.setVolume = Tone.Source.prototype.setVolume;
-
-	/**
 	 *  clean up
 	 */
 	Tone.Sampler.prototype.dispose = function(){
-		Tone.prototype.dispose.call(this);
+		Tone.Instrument.prototype.dispose.call(this);
 		this.player.dispose();
 		this.filterEnvelope.dispose();
 		this.envelope.dispose();
