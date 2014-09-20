@@ -76,8 +76,6 @@ define(["Tone/core/Tone", "Tone/signal/ScaleExp", "Tone/signal/Signal"], functio
 		 */
 		this._feedback = this.context.createGain();
 
-		console.log(this._filterDelayCount);
-
 		//make the filters
 		for (var i = 0; i < this._filterDelayCount; i++) {
 			var filterDelay = new FilterDelay(this._delayTime, this.dampening);
@@ -131,6 +129,7 @@ define(["Tone/core/Tone", "Tone/signal/ScaleExp", "Tone/signal/Signal"], functio
 	 *  clean up
 	 */
 	Tone.LowpassCombFilter.prototype.dispose = function(){
+		Tone.prototype.dispose.call(this);
 		//dispose the filter delays
 		for (var i = 0; i < this._filterDelays.length; i++) {
 			this._filterDelays[i].dispose();
@@ -146,6 +145,7 @@ define(["Tone/core/Tone", "Tone/signal/ScaleExp", "Tone/signal/Signal"], functio
 		this.resonance = null;
 		this._resScale = null;
 		this._feedback = null;
+		this._delayTime = null;
 	};
 
 	// BEGIN HELPER CLASS //
