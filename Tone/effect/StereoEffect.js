@@ -70,6 +70,7 @@ function(Tone){
 		//connections
 		this.input.connect(this._mono, 0, 0);
 		this.input.connect(this._mono, 0, 1);
+		this.input.gain.value = this.dbToGain(-10);
 		this._mono.connect(this._split);
 		//dry wet connections
 		this._mono.connect(this.dryWet.dry);
