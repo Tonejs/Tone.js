@@ -137,7 +137,11 @@ define(["Tone/core/Tone", "Tone/core/Transport"], function(Tone){
 		var notes = [];
 		for (var inst in score){
 			var part = score[inst];
-			if (Array.isArray(part)){
+			if (inst === "tempo"){
+				Tone.Transport.setBpm(part);
+			} else if (inst === "timeSignature"){
+				Tone.Transport.setTimeSignature(part[0], part[1]);
+			} else if (Array.isArray(part)){
 				for (var i = 0; i < part.length; i++){
 					var noteDescription = part[i];
 					var note;
@@ -204,10 +208,24 @@ define(["Tone/core/Tone", "Tone/core/Transport"], function(Tone){
 	};
 
 	/**
+	 *  convert an interval (in semitones) to a frequency ratio
+	 *
+	 *  @example
+	 *  tone.intervalToFrequencyRatio(0); // returns 1
+	 *  tone.intervalToFrequencyRatio(12); // returns 2
+	 *  
+	 *  @param  {number} interval the number of semitones above the base note
+	 *  @return {number}          the frequency ratio
+	 */
+	Tone.prototype.intervalToFrequencyRatio = function(interval){
+		return Math.pow(2,(interval/12));
+	};
+
+	/**
 	 *  convert a midi note number into a note name
 	 *
 	 *  @example
-	 *  tone.midiToNote(60) => "C3"
+	 *  tone.midiToNote(60); // returns "C3"
 	 *  
 	 *  @param  {number} midiNumber the midi note number
 	 *  @return {string}            the note's name and octave
@@ -216,6 +234,27 @@ define(["Tone/core/Tone", "Tone/core/Transport"], function(Tone){
 		var octave = Math.floor(midiNumber / 12) - 2;
 		var note = midiNumber % 12;
 		return noteIndexToNote[note] + octave;
+	};
+
+	/**
+	 *  convert a note to it's midi value
+	 *
+	 *  @example
+	 *  tone.noteToMidi("C3"); // returns 60
+	 *  
+	 *  @param  {string} note the note name (i.e. "C3")
+	 *  @return {number} the midi value of that note
+	 */
+	Tone.prototype.noteToMidi = function(note){
+		//break apart the note by frequency and octave
+		var parts = note.split(/(\d+)/);
+		if (parts.length === 3){
+			var index = noteToIndex[parts[0].toLowerCase()];
+			var octave = parts[1];
+			return index + (parseInt(octave, 10) + 2) * 12;
+		} else {
+			return 0;
+		}
 	};
 
 	return Tone.Note;
