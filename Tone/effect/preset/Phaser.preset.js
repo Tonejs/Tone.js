@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/effect/AutoWah"], function(Tone){
+define(["Tone/core/Tone", "Tone/effect/Phaser"], function(Tone){
 
 	/**
 	 *  named presets for the Phaser
