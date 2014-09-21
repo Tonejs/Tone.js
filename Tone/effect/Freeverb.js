@@ -110,6 +110,32 @@ function(Tone){
 	Tone.extend(Tone.Freeverb, Tone.StereoEffect);
 
 	/**
+	 *  set the room size
+	 *  @param {number} roomsize roomsize value between 0-1
+	 */
+	Tone.Freeverb.prototype.setRoomSize = function(roomsize) {
+		this.roomSize.setValue(roomsize);
+	};
+
+	/**
+	 *  set the dampening
+	 *  @param {number} dampening dampening between 0-1
+	 */
+	Tone.Freeverb.prototype.setDampening = function(dampening) {
+		this.dampening.setValue(dampening);
+	};
+
+	/**
+	 *  set multiple parameters at once with an object
+	 *  @param {Object} params the parameters as an object
+	 */
+	Tone.Freeverb.prototype.set = function(params){
+		if (!this.isUndef(params.dampening)) this.setDampening(params.dampening);
+		if (!this.isUndef(params.roomSize)) this.setRoomSize(params.roomSize);
+		Tone.StereoEffect.prototype.set.call(this, params);
+	};
+
+	/**
 	 *  clean up
 	 */
 	Tone.Freeverb.prototype.dispose = function(){
