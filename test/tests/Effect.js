@@ -2,9 +2,10 @@
 
 define(["tests/Core", "chai", "Tone/component/Recorder", "Tone/core/Master", "Tone/effect/Effect", "Tone/component/DryWet",
 	"Tone/effect/FeedbackEffect", "Tone/signal/Signal", "Tone/effect/AutoPanner", "Tone/effect/AutoWah", "Tone/effect/BitCrusher",
-	"Tone/effect/FeedbackDelay", "Tone/effect/PingPongDelay", "Tone/effect/Chorus", "tests/Common", "Tone/effect/Freeverb"], 
+	"Tone/effect/FeedbackDelay", "Tone/effect/PingPongDelay", "Tone/effect/Chorus", "tests/Common", "Tone/effect/Freeverb", 
+	"Tone/effect/JCReverb", "Tone/effect/StereoEffect"], 
 function(Tone, chai, Recorder, Master, Effect, DryWet, FeedbackEffect, Signal, AutoPanner, AutoWah, BitCrusher, 
-	FeedbackDelay, PingPongDelay, Chorus, Test, Freeverb){
+	FeedbackDelay, PingPongDelay, Chorus, Test, Freeverb, JCReverb, StereoEffect){
 
 	var expect = chai.expect;
 
@@ -12,7 +13,6 @@ function(Tone, chai, Recorder, Master, Effect, DryWet, FeedbackEffect, Signal, A
 
 	Master.mute();
 
-	//EFFECT
 	describe("Tone.Effect", function(){
 
 		it("can be created and disposed", function(){
@@ -35,7 +35,21 @@ function(Tone, chai, Recorder, Master, Effect, DryWet, FeedbackEffect, Signal, A
 		});
 	});
 
-	//FEEDBACK EFFECT
+	describe("Tone.StereoEffect", function(){
+
+		it("can be created and disposed", function(){
+			var stereoEffect = new StereoEffect();
+			stereoEffect.dispose();
+			Test.wasDisposed(stereoEffect);
+		});
+
+		it("extends Tone.Effect", function(){
+			var stereoEffect = new StereoEffect();
+			expect(stereoEffect).is.instanceof(Effect);
+			stereoEffect.dispose();
+		});
+	});
+
 	describe("Tone.FeedbackEffect", function(){
 
 		it("can be created and disposed", function(){
@@ -64,7 +78,6 @@ function(Tone, chai, Recorder, Master, Effect, DryWet, FeedbackEffect, Signal, A
 		});
 	});
 
-	//AUTOPANNER
 	describe("Tone.AutoPanner", function(){
 
 		it("can be created and disposed", function(){
@@ -87,7 +100,6 @@ function(Tone, chai, Recorder, Master, Effect, DryWet, FeedbackEffect, Signal, A
 		});
 	});
 
-	//AUTOWAH
 	describe("Tone.AutoWah", function(){
 
 		it("can be created and disposed", function(){
@@ -103,7 +115,6 @@ function(Tone, chai, Recorder, Master, Effect, DryWet, FeedbackEffect, Signal, A
 		});
 	});
 
-	//BitCrusher
 	describe("Tone.BitCrusher", function(){
 
 		it("can be created and disposed", function(){
@@ -119,7 +130,6 @@ function(Tone, chai, Recorder, Master, Effect, DryWet, FeedbackEffect, Signal, A
 		});
 	});
 
-	//FEEDBACK DELAY
 	describe("Tone.FeedbackDelay", function(){
 
 		it("can be created and disposed", function(){
@@ -135,7 +145,6 @@ function(Tone, chai, Recorder, Master, Effect, DryWet, FeedbackEffect, Signal, A
 		});
 	});
 
-	//PingPongDelay
 	describe("Tone.PingPongDelay", function(){
 
 		it("can be created and disposed", function(){
@@ -145,7 +154,6 @@ function(Tone, chai, Recorder, Master, Effect, DryWet, FeedbackEffect, Signal, A
 		});
 	});
 
-	//Chorus
 	describe("Tone.Chorus", function(){
 
 		it("can be created and disposed", function(){
@@ -161,12 +169,19 @@ function(Tone, chai, Recorder, Master, Effect, DryWet, FeedbackEffect, Signal, A
 		});
 	});
 
-	//Chorus
 	describe("Tone.Freeverb", function(){
 		it("can be created and disposed", function(){
 			var fv = new Freeverb();
 			fv.dispose();
 			Test.wasDisposed(fv);
+		});
+	});
+
+	describe("Tone.JCReverb", function(){
+		it("can be created and disposed", function(){
+			var rev = new JCReverb();
+			rev.dispose();
+			Test.wasDisposed(rev);
 		});
 	});
 });
