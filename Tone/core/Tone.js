@@ -163,7 +163,7 @@ define("Tone/core/Tone", [], function(){
 	 *  @static
 	 *  @const
 	 */
-	Tone.prototype.bufferSize = 1024;
+	Tone.prototype.bufferSize = 2048;
 	
 	///////////////////////////////////////////////////////////////////////////
 	//	CONNECTIONS
