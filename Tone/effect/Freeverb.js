@@ -24,23 +24,28 @@ function(Tone){
 	 *
 	 *  @extends {Tone.Effect}
 	 *  @constructor
+	 *  @param {number} [roomSize=0.7] correlated to the decay time. 
+	 *                                 value between (0,1)
+	 *  @param {number} [dampening=0.5] filtering which is applied to the reverb. 
+	 *                                  value between [0,1]
 	 */
 	Tone.Freeverb = function(){
 
-		Tone.StereoEffect.call(this);
+		var options = this.optionsObject(arguments, ["roomSize", "dampening"], Tone.Freeverb.defaults);
+		Tone.StereoEffect.call(this, options);
 
 		/**
-		 *  the roomSize value between [0,1]
+		 *  the roomSize value between (0,1)
 		 *  @type {Tone.Signal}
 		 */
-		this.roomSize = new Tone.Signal(0.7);
+		this.roomSize = new Tone.Signal(options.roomSize);
 
 		/**
 		 *  the amount of dampening
 		 *  value between [0,1]
 		 *  @type {Tone.Signal}
 		 */
-		this.dampening = new Tone.Signal(0.5);
+		this.dampening = new Tone.Signal(options.dampening);
 
 		/**
 		 *  scale the dampening
@@ -108,6 +113,15 @@ function(Tone){
 	};
 
 	Tone.extend(Tone.Freeverb, Tone.StereoEffect);
+
+	/**
+	 *  @static
+	 *  @type {Object}
+	 */
+	Tone.Freeverb.defaults = {
+		"roomSize" : 0.7, 
+		"dampening" : 0.5
+	};
 
 	/**
 	 *  set the room size
