@@ -9,6 +9,7 @@
 * Sampler with pitch control
 * Instrument inherit from Tone.Instrument base-class
 * LowpassCombFilter
+* Freeverb implementation
 
 
 # r1 - First!
