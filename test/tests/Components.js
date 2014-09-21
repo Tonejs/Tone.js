@@ -3,9 +3,10 @@
 define(["tests/Core", "chai", "Tone/component/DryWet", "Tone/core/Master", "Tone/signal/Signal", 
 "Tone/component/Recorder", "Tone/component/Panner", "Tone/component/LFO", "Tone/component/Gate", 
 "Tone/component/Follower", "Tone/component/Envelope", "Tone/component/Filter", "Tone/component/EQ", 
-"Tone/component/Merge", "Tone/component/Split", "tests/Common", "Tone/component/AmplitudeEnvelope", "Tone/component/LowpassCombFilter"],
+"Tone/component/Merge", "Tone/component/Split", "tests/Common", "Tone/component/AmplitudeEnvelope", 
+"Tone/component/LowpassCombFilter", "Tone/component/FeedbackCombFilter", "Tone/component/Mono"],
 function(coreTest, chai, DryWet, Master, Signal, Recorder, Panner, LFO, Gate, Follower, Envelope, 
-	Filter, EQ, Merge, Split, Test, AmplitudeEnvelope, LowpassCombFilter){
+	Filter, EQ, Merge, Split, Test, AmplitudeEnvelope, LowpassCombFilter, FeedbackCombFilter, Mono){
 	var expect = chai.expect;
 
 	Master.mute();
@@ -484,6 +485,26 @@ function(coreTest, chai, DryWet, Master, Signal, Recorder, Panner, LFO, Gate, Fo
 			var lfcf = new LowpassCombFilter();
 			lfcf.dispose();
 			Test.wasDisposed(lfcf);
+		});
+	});
+
+	describe("Tone.FeedbackCombFilter", function(){
+		this.timeout(maxTimeout);
+
+		it("can be created and disposed", function(){
+			var fbcf = new FeedbackCombFilter();
+			fbcf.dispose();
+			Test.wasDisposed(fbcf);
+		});
+	});
+
+	describe("Tone.Mono", function(){
+		this.timeout(maxTimeout);
+
+		it("can be created and disposed", function(){
+			var mono = new Mono();
+			mono.dispose();
+			Test.wasDisposed(mono);
 		});
 	});
 });
