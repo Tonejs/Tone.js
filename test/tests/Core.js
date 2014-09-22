@@ -96,6 +96,23 @@ define(["chai", "Tone/core/Tone", "Tone/core/Master", "Tone/core/Bus", "Tone/cor
 			expect(tone.frequencyToNote(440)).to.equal("A4");
 			expect(tone.frequencyToNote(4978.031739553295)).to.equal("D#8");
 		});
+
+		it("can convert note to midi values", function(){
+			expect(tone.midiToNote(60)).to.equal("C3");
+			expect(tone.midiToNote(61)).to.equal("C#3");
+		});
+
+		it("can convert midi values to note names", function(){
+			expect(tone.noteToMidi("C3")).to.equal(60);
+			expect(tone.noteToMidi("Bb2")).to.equal(58);
+			expect(tone.noteToMidi("A#2")).to.equal(58);
+		});
+
+		it("can convert semitone intervals to frequency ratios", function(){
+			expect(tone.intervalToFrequencyRatio(0)).to.equal(1);
+			expect(tone.intervalToFrequencyRatio(12)).to.equal(2);
+			expect(tone.intervalToFrequencyRatio(7)).to.be.closeTo(1.5, 0.01);
+		});
 	});
 
 	describe("Tone.Master", function(){
