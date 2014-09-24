@@ -148,9 +148,9 @@ module.exports = function(grunt) {
 	// Default task(s).
 	grunt.registerTask("docs", ["jsdoc:src"]);
 	grunt.registerTask("npm", ["copy:npm"]);
-	grunt.registerTask("presets", ["concat:presets", "indent:presets", "wrap:presets"]);
+	grunt.registerTask("presets", ["concat:presets"]);
 	grunt.registerTask("min", ["concat:dist", "requirejs:min", "concat:removeRequireStringMin", "clean:min"]);
-	grunt.registerTask("build", ["concat:dist","requirejs:compile","concat:removeRequireString", "indent:dist", "wrap:dist", "clean:dist"]);
+	grunt.registerTask("build", ["concat:dist","requirejs:compile","concat:removeRequireString", "clean:dist"]);
 	grunt.registerTask("buildall", ["build", "min", "presets"]);
 	grunt.registerTask("dist", ["buildall", "docs", "npm"]);
 	
