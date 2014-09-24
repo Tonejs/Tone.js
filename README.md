@@ -226,6 +226,8 @@ Tone.js also has a few stereo and mono effects which also have their own presets
 * [Tone.BitCrusher](http://tonenotone.github.io/Tone.js/doc/Tone.BitCrusher.html)
 * [Tone.Chorus](http://tonenotone.github.io/Tone.js/doc/Tone.Chorus.html)
 * [Tone.FeedbackDelay](http://tonenotone.github.io/Tone.js/doc/Tone.FeedbackDelay.html)
+* [Tone.Freeverb](http://tonenotone.github.io/Tone.js/doc/Tone.Freeverb.html)
+* [Tone.JCReverb](http://tonenotone.github.io/Tone.js/doc/Tone.JCReverb.html)
 * [Tone.Phaser](http://tonenotone.github.io/Tone.js/doc/Tone.Phaser.html)
 * [Tone.PingPongDelay](http://tonenotone.github.io/Tone.js/doc/Tone.PingPongDelay.html)
 
