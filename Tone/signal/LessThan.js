@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/signal/Threshold", "Tone/signal/Add", "Tone/signal/Signal", "Tone/signal/Not"], function(Tone){
+define(["Tone/core/Tone", "Tone/signal/Threshold", "Tone/signal/Add", "Tone/signal/Signal", "Tone/signal/NOT"], function(Tone){
 
 	"use strict";
 
@@ -26,10 +26,10 @@ define(["Tone/core/Tone", "Tone/signal/Threshold", "Tone/signal/Add", "Tone/sign
 		this._thresh = new Tone.Threshold(0);
 
 		/**
-		 *  @type {Tone.Not}
+		 *  @type {Tone.NOT}
 		 *  @private
 		 */
-		this._not = new Tone.Not();
+		this._not = new Tone.NOT();
 
 		/**
 	 	 *  alias for the adder
