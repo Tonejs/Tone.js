@@ -15,7 +15,8 @@
   },
   "devDependencies": {
     "grunt-contrib-copy": "~0.5.0",
-    "midi-file-parser": "~1.0.0"
+    "grunt-wrap": "~0.3.0",
+    "grunt-indent": "~0.1.4"
   },
   "author": "",
   "license": "ISC"

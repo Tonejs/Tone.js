@@ -8,8 +8,8 @@ module.exports = function(grunt) {
 				src: ["../Tone/**/*.js", "!../Tone/*/preset/*", "../README.md"], 
 				options: {
 					destination: "../doc",
-					template : "./doc_config/vendor",
-					configure : "./doc_config/vendor/jsdoc.conf.json",
+					template : "./vendor",
+					configure : "./vendor/jsdoc.conf.json",
 					private : false
 				}
 			},
@@ -37,13 +37,13 @@ module.exports = function(grunt) {
 				files : [{
 					expand : true,
 					src: ["../build/Tone.js", "../build/Tone.min.js", "../build/Tone.Preset.js"], 
-					dest: "./npm/Tone.js"
+					dest: "../utils/npm/Tone.js"
 				}, {
 					src : ["../Tone/**"],
-					dest : "./npm/Tone/"
+					dest : "../utils/npm/Tone/"
 				}, {
 					src : ["../README.md"],
-					dest : "./npm/README.md"
+					dest : "../utils/npm/README.md"
 				}]
 			}
 		},
@@ -70,24 +70,24 @@ module.exports = function(grunt) {
 			},
 			removeRequireString: {
 				options: {
-					process: function(src, filepath) {
+					process: function(src) {
 						var withoutRequire = src.substr(0, src.indexOf("require([") - 1);
 						return withoutRequire;
 					},
 				},
 				files: {
-					"../build/Tone.js": ["./Tone.js.tmp"],
+					"./Tone.js.tmp" : ["./Tone.js.tmp"],
 				}
 			}, 
 			removeRequireStringMin: {
 				options: {
-					process: function(src, filepath) {
+					process: function(src) {
 						var withoutRequire = src.substr(0, src.indexOf("require([") - 1);
 						return withoutRequire;
 					},
 				},
 				files: {
-					"../build/Tone.min.js": ["./Tone.min.js.tmp"],
+					"./Tone.min.js.tmp" : ["./Tone.min.js.tmp"],
 				}
 			}
 		},
@@ -97,11 +97,49 @@ module.exports = function(grunt) {
 			},
 			dist: ["../main.js","./Tone.js.tmp"],
 			min: ["../main.js","./Tone.min.js.tmp"],
+		},
+		wrap: {
+			dist: {
+				src: ["./Tone.js.tmp"],
+				dest: "../build/Tone.js",
+				options: {
+					wrapper: [grunt.file.read("./fragments/before.frag"), grunt.file.read("./fragments/after.frag")]
+				}
+			},
+			presets: {
+				src: ["../build/Tone.Preset.js"],
+				dest: "../build/Tone.Preset.js",
+				options: {
+					wrapper: [grunt.file.read("./fragments/before.preset.frag"), grunt.file.read("./fragments/after.frag")]
+				}
+			}
+		},
+		indent: {
+			dist: {
+				src: ["./Tone.js.tmp"],
+				dest: "./Tone.js.tmp",
+				options: {
+					style: "tab",
+					size: 4,
+					change: 1
+				}
+			},
+			presets: {
+				src: ["../build/Tone.Preset.js"],
+				dest: "../build/Tone.Preset.js",
+				options: {
+					style: "tab",
+					size: 1,
+					change: 1
+				}
+			}
 		}
 	});
 
 	// Load the plugin that provides the "uglify" task.
 	grunt.loadNpmTasks("grunt-jsdoc");
+	grunt.loadNpmTasks("grunt-wrap");
+	grunt.loadNpmTasks("grunt-indent");
 	grunt.loadNpmTasks("grunt-contrib-requirejs");
 	grunt.loadNpmTasks("grunt-contrib-concat");
 	grunt.loadNpmTasks("grunt-contrib-clean");
@@ -110,9 +148,9 @@ module.exports = function(grunt) {
 	// Default task(s).
 	grunt.registerTask("docs", ["jsdoc:src"]);
 	grunt.registerTask("npm", ["copy:npm"]);
-	grunt.registerTask("presets", ["concat:presets"]);
+	grunt.registerTask("presets", ["concat:presets", "indent:presets", "wrap:presets"]);
 	grunt.registerTask("min", ["concat:dist", "requirejs:min", "concat:removeRequireStringMin", "clean:min"]);
-	grunt.registerTask("build", ["concat:dist","requirejs:compile","concat:removeRequireString","clean:dist"]);
+	grunt.registerTask("build", ["concat:dist","requirejs:compile","concat:removeRequireString", "indent:dist", "wrap:dist", "clean:dist"]);
 	grunt.registerTask("buildall", ["build", "min", "presets"]);
 	grunt.registerTask("dist", ["buildall", "docs", "npm"]);
 	

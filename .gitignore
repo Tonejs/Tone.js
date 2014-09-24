@@ -8,7 +8,7 @@ examples/scratch.html
 *.sublime-project
 
 # grunt modules
-utils/node_modules/*
+grunt/node_modules/*
 
 TODO.txt
 
