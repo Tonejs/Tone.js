@@ -22,3 +22,5 @@ utils/npm/README.md
 examples/deps/FileSaver.js
 
 examples/oscilloscope.html
+
+.idea

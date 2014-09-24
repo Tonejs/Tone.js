@@ -8,7 +8,7 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/signal/Signal"], f
 	 *
 	 *  @constructor
 	 *  @abstract
-	 *  @extends {Tone}
+	 *  @extends {Tone.Instrument}
 	 */
 	Tone.Monophonic = function(options){
 

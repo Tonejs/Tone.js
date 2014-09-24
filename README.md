@@ -153,12 +153,15 @@ Tone.js provides a number number of useful components for building synthesizers 
 * [Tone.DryWet](http://tonenotone.github.io/Tone.js/doc/Tone.DryWet.html)
 * [Tone.Envelope](http://tonenotone.github.io/Tone.js/doc/Tone.Envelope.html)
 * [Tone.EQ](http://tonenotone.github.io/Tone.js/doc/Tone.EQ.html)
+* [Tone.FeedbackCombFilter](http://tonenotone.github.io/Tone.js/doc/Tone.FeedbackCombFilter.html)
 * [Tone.Filter](http://tonenotone.github.io/Tone.js/doc/Tone.Filter.html)
 * [Tone.Follower](http://tonenotone.github.io/Tone.js/doc/Tone.Follower.html)
 * [Tone.Gate](http://tonenotone.github.io/Tone.js/doc/Tone.Gate.html)
 * [Tone.LFO](http://tonenotone.github.io/Tone.js/doc/Tone.LFO.html)
+* [Tone.LowpassCombFilter](http://tonenotone.github.io/Tone.js/doc/Tone.LowpassCombFilter.html)
 * [Tone.Merge](http://tonenotone.github.io/Tone.js/doc/Tone.Merge.html)
 * [Tone.Meter](http://tonenotone.github.io/Tone.js/doc/Tone.Meter.html)
+* [Tone.Mono](http://tonenotone.github.io/Tone.js/doc/Tone.Mono.html)
 * [Tone.Panner](http://tonenotone.github.io/Tone.js/doc/Tone.Panner.html)
 * [Tone.Split](http://tonenotone.github.io/Tone.js/doc/Tone.Split.html)
 
@@ -205,6 +208,8 @@ Tone.js has a few built in synthesizers.
 * [Tone.MonoSynth](http://tonenotone.github.io/Tone.js/doc/Tone.MonoSynth.html)
 * [Tone.DuoSynth](http://tonenotone.github.io/Tone.js/doc/Tone.DuoSynth.html)
 * [Tone.FMSynth](http://tonenotone.github.io/Tone.js/doc/Tone.FMSynth.html)
+* [Tone.PluckSynth](http://tonenotone.github.io/Tone.js/doc/Tone.PluckSynth.html)
+* [Tone.Sampler](http://tonenotone.github.io/Tone.js/doc/Tone.Sampler.html)
 
 Each of these synthesizers can be fed to the second argument of [Tone.PolySynth](http://tonenotone.github.io/Tone.js/doc/Tone.PolySynth.html) to turn the monophonic voice into a polyphonic synthesizer. 
 

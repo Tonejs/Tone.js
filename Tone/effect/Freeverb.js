@@ -63,14 +63,14 @@ function(Tone){
 
 		/**
 		 *  the allpass filters on the left
-		 *  @type {Array.<BiqaudFilterNode}
+		 *  @type {Array.<BiqaudFilterNode>}
 		 *  @private
 		 */
 		this._allpassFiltersL = [];
 
 		/**
 		 *  the allpass filters on the right
-		 *  @type {Array.<BiqaudFilterNode}
+		 *  @type {Array.<BiqaudFilterNode>}
 		 *  @private
 		 */
 		this._allpassFiltersR = [];
