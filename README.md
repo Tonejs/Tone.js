@@ -158,7 +158,7 @@ Tone.js provides a number number of useful components for building synthesizers 
 * [Tone.Follower](http://tonenotone.github.io/Tone.js/doc/Tone.Follower.html)
 * [Tone.Gate](http://tonenotone.github.io/Tone.js/doc/Tone.Gate.html)
 * [Tone.LFO](http://tonenotone.github.io/Tone.js/doc/Tone.LFO.html)
-* [Tone.LowpassCombFiler](http://tonenotone.github.io/Tone.js/doc/Tone.LowpassCombFiler.html)
+* [Tone.LowpassCombFilter](http://tonenotone.github.io/Tone.js/doc/Tone.LowpassCombFilter.html)
 * [Tone.Merge](http://tonenotone.github.io/Tone.js/doc/Tone.Merge.html)
 * [Tone.Meter](http://tonenotone.github.io/Tone.js/doc/Tone.Meter.html)
 * [Tone.Mono](http://tonenotone.github.io/Tone.js/doc/Tone.Mono.html)
@@ -191,7 +191,6 @@ Audio-rate logic operator output 1 when true and 0 when false.
 * [Tone.EqualZero](http://tonenotone.github.io/Tone.js/doc/Tone.EqualZero.html)
 * [Tone.GreaterThan](http://tonenotone.github.io/Tone.js/doc/Tone.GreaterThan.html)
 * [Tone.LessThan](http://tonenotone.github.io/Tone.js/doc/Tone.LessThan.html)
-* [Tone.Not](http://tonenotone.github.io/Tone.js/doc/Tone.Not.html)
 * [Tone.Threshold](http://tonenotone.github.io/Tone.js/doc/Tone.Threshold.html)
 
 ### Routing
