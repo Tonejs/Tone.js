@@ -2,21 +2,23 @@
 
 define(["tests/Core", "chai", "Tone/component/Recorder", "Tone/core/Master", "Tone/effect/Effect", "Tone/component/DryWet",
 	"Tone/effect/FeedbackEffect", "Tone/signal/Signal", "Tone/effect/AutoPanner", "Tone/effect/AutoWah", "Tone/effect/BitCrusher",
-	"Tone/effect/FeedbackDelay", "Tone/effect/PingPongDelay", "Tone/effect/Chorus"], 
+	"Tone/effect/FeedbackDelay", "Tone/effect/PingPongDelay", "Tone/effect/Chorus", "tests/Common", "Tone/effect/Freeverb", 
+	"Tone/effect/JCReverb", "Tone/effect/StereoEffect"], 
 function(Tone, chai, Recorder, Master, Effect, DryWet, FeedbackEffect, Signal, AutoPanner, AutoWah, BitCrusher, 
-	FeedbackDelay, PingPongDelay, Chorus){
+	FeedbackDelay, PingPongDelay, Chorus, Test, Freeverb, JCReverb, StereoEffect){
 
 	var expect = chai.expect;
 
+	Test.onlineContext();
+
 	Master.mute();
 
-	//EFFECT
 	describe("Tone.Effect", function(){
 
 		it("can be created and disposed", function(){
 			var e = new Effect();
 			e.dispose();
-			wasDisposed(e, expect);
+			Test.wasDisposed(e);
 		});
 
 		it("has a dry/wet control", function(){
@@ -33,13 +35,27 @@ function(Tone, chai, Recorder, Master, Effect, DryWet, FeedbackEffect, Signal, A
 		});
 	});
 
-	//FEEDBACK EFFECT
+	describe("Tone.StereoEffect", function(){
+
+		it("can be created and disposed", function(){
+			var stereoEffect = new StereoEffect();
+			stereoEffect.dispose();
+			Test.wasDisposed(stereoEffect);
+		});
+
+		it("extends Tone.Effect", function(){
+			var stereoEffect = new StereoEffect();
+			expect(stereoEffect).is.instanceof(Effect);
+			stereoEffect.dispose();
+		});
+	});
+
 	describe("Tone.FeedbackEffect", function(){
 
 		it("can be created and disposed", function(){
 			var fe = new FeedbackEffect();
 			fe.dispose();
-			wasDisposed(fe, expect);
+			Test.wasDisposed(fe);
 		});
 
 		it("has a dry/wet control", function(){
@@ -62,13 +78,12 @@ function(Tone, chai, Recorder, Master, Effect, DryWet, FeedbackEffect, Signal, A
 		});
 	});
 
-	//AUTOPANNER
 	describe("Tone.AutoPanner", function(){
 
 		it("can be created and disposed", function(){
 			var ap = new AutoPanner();
 			ap.dispose();
-			wasDisposed(ap, expect);
+			Test.wasDisposed(ap);
 		});
 
 		it("extends Tone.Effect", function(){
@@ -85,13 +100,12 @@ function(Tone, chai, Recorder, Master, Effect, DryWet, FeedbackEffect, Signal, A
 		});
 	});
 
-	//AUTOWAH
 	describe("Tone.AutoWah", function(){
 
 		it("can be created and disposed", function(){
 			var aw = new AutoWah();
 			aw.dispose();
-			wasDisposed(aw, expect);
+			Test.wasDisposed(aw);
 		});
 
 		it("extends Tone.Effect", function(){
@@ -101,13 +115,12 @@ function(Tone, chai, Recorder, Master, Effect, DryWet, FeedbackEffect, Signal, A
 		});
 	});
 
-	//BitCrusher
 	describe("Tone.BitCrusher", function(){
 
 		it("can be created and disposed", function(){
 			var bc = new BitCrusher();
 			bc.dispose();
-			wasDisposed(bc, expect);
+			Test.wasDisposed(bc);
 		});
 
 		it("extends Tone.Effect", function(){
@@ -117,13 +130,12 @@ function(Tone, chai, Recorder, Master, Effect, DryWet, FeedbackEffect, Signal, A
 		});
 	});
 
-	//FEEDBACK DELAY
 	describe("Tone.FeedbackDelay", function(){
 
 		it("can be created and disposed", function(){
 			var fd = new FeedbackDelay();
 			fd.dispose();
-			wasDisposed(fd, expect);
+			Test.wasDisposed(fd);
 		});
 
 		it("extends Tone.FeedbackEffect", function(){
@@ -133,29 +145,43 @@ function(Tone, chai, Recorder, Master, Effect, DryWet, FeedbackEffect, Signal, A
 		});
 	});
 
-	//PingPongDelay
 	describe("Tone.PingPongDelay", function(){
 
 		it("can be created and disposed", function(){
 			var ppd = new PingPongDelay();
 			ppd.dispose();
-			wasDisposed(ppd, expect);
+			Test.wasDisposed(ppd);
 		});
 	});
 
-	//Chorus
 	describe("Tone.Chorus", function(){
 
 		it("can be created and disposed", function(){
 			var chorus = new Chorus();
 			chorus.dispose();
-			wasDisposed(chorus, expect);
+			Test.wasDisposed(chorus);
 		});
 		
 		it("extends Tone.Effect", function(){
 			var chorus = new Chorus();
 			expect(chorus).is.instanceof(Effect);
 			chorus.dispose();
+		});
+	});
+
+	describe("Tone.Freeverb", function(){
+		it("can be created and disposed", function(){
+			var fv = new Freeverb();
+			fv.dispose();
+			Test.wasDisposed(fv);
+		});
+	});
+
+	describe("Tone.JCReverb", function(){
+		it("can be created and disposed", function(){
+			var rev = new JCReverb();
+			rev.dispose();
+			Test.wasDisposed(rev);
 		});
 	});
 });

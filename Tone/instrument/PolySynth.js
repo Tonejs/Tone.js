@@ -14,21 +14,17 @@ function(Tone){
 	 *  synth.setPreset("Pianoetta");
 	 *
 	 *  @constructor
-	 *  @extends {Tone}
-	 *  @param {number|Object=} [polyphony=4] the number of voices to create
-	 *  @param {function=} [voice=Tone.MonoSynth] the constructor of the voices
+	 *  @extends {Tone.Instrument}
+	 *  @param {number|Object} [polyphony=4] the number of voices to create
+	 *  @param {function} [voice=Tone.MonoSynth] the constructor of the voices
 	 *                                            uses Tone.MonoSynth by default
-	 *  @param {Object=} voiceOptions the options to pass to the voice                                          
+	 *  @param {Object} voiceOptions the options to pass to the voice                                          
 	 */
 	Tone.PolySynth = function(){
 
-		var options = this.optionsObject(arguments, ["polyphony", "voice", "voiceOptions"], Tone.PolySynth.defaults);
+		Tone.Instrument.call(this);
 
-		/**
-		 *  the output
-		 *  @type {GainNode}
-		 */
-		this.output = this.context.createGain();
+		var options = this.optionsObject(arguments, ["polyphony", "voice", "voiceOptions"], Tone.PolySynth.defaults);
 
 		/**
 		 *  the array of voices
@@ -62,7 +58,7 @@ function(Tone){
 		this._freeVoices = this._voices.slice(0);
 	};
 
-	Tone.extend(Tone.PolySynth);
+	Tone.extend(Tone.PolySynth, Tone.Instrument);
 
 	/**
 	 *  the defaults
@@ -145,16 +141,10 @@ function(Tone){
 	};
 
 	/**
-	 *  set volume method borrowed form {@link Tone.Source}
-	 *  @function
-	 */
-	Tone.PolySynth.prototype.setVolume = Tone.Source.prototype.setVolume;
-
-	/**
 	 *  clean up
 	 */
 	Tone.PolySynth.prototype.dispose = function(){
-		Tone.prototype.dispose.call(this);
+		Tone.Instrument.prototype.dispose.call(this);
 		for (var i = 0; i < this._voices.length; i++){
 			this._voices[i].dispose();
 			this._voices[i] = null;

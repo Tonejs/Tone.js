@@ -38,7 +38,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 		this._thresh.connect(this._doubleThresh);
 
 		this._setThresh(this._thresh, this.defaultArg(thresh, 0));
-		this._setThresh(this._doubleThresh, 1);
+		this._setThresh(this._doubleThresh, 0.5);
 	};
 
 	Tone.extend(Tone.Threshold);

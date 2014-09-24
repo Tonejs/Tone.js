@@ -1,64 +1,61 @@
-/* global it, describe, after, maxTimeout, recorderDelay, recorderDuration */
+/* global it, describe, after, maxTimeout */
 
-define(["chai", "Tone/source/Player", "Tone/core/Master", "Tone/source/Oscillator", "Tone/component/Recorder", "Tone/source/Noise", "tests/Core", "Tone/source/PulseOscillator"], 
-function(chai, Player, Master, Oscillator, Recorder, Noise, core, PulseOscillator){
+define(["chai", "Tone/source/Player", "Tone/core/Master", "Tone/source/Oscillator", 
+	"Tone/component/Recorder", "Tone/source/Noise", "tests/Core", "Tone/source/PulseOscillator", "tests/Common"], 
+function(chai, Player, Master, Oscillator, Recorder, Noise, core, PulseOscillator, Test){
 
 	var expect = chai.expect;
 
-	Master.mute();	
-
 	describe("Tone.Player", function(){
 		this.timeout(maxTimeout);
-		var player = new Player("./testAudio/kick.mp3");
-		player.toMaster();
-		
-		after(function(){
-			player.dispose();
-		});
+
+		Test.onlineContext();
 
 		it("can be created and disposed", function(){
 			var p = new Player();
 			p.dispose();
-			wasDisposed(p, expect);
+			Test.wasDisposed(p, expect);
 		});
 
 		it("loads a file", function(done){
-			expect(player.state).to.equal("stopped");
-			player.load("./testAudio/kick.mp3", function(){
+			var player = new Player("./testAudio/kick.mp3", function(){
+				player.dispose();
 				done();
 			});
 		});
 
-		it("has a duration", function(){
-			expect(player.duration).to.be.closeTo(0.23, 0.01);
+		it("has a duration", function(done){
+			var player = new Player("./testAudio/kick.mp3", function(){
+				expect(player.duration).to.be.closeTo(0.23, 0.01);
+				player.dispose();
+				done();
+			});
 		});
-
+/*
 		it("invokes a callback onend", function(done){
-			player.onended = function(){
+			var player = new Player("./testAudio/kick.mp3", function(){
+				player.onended = function(){
+					expect(player.state).to.equal("stopped");
+					console.log("hihi");
+					player.dispose();
+					done();
+				};
+				console.log("here");
+				player.start();
+				expect(player.state).to.equal("started");
+			});
+		});*/
+
+		it("can handle multiple restarts", function(done){
+			var player = new Player("./testAudio/kick.mp3", function(){
+				expect(player.state).to.equal("stopped");
+				player.start();
+				player.start();
+				player.stop();
+				player.stop();
 				expect(player.state).to.equal("stopped");
 				done();
-			};
-			player.start();
-			expect(player.state).to.equal("started");
-		});
-
-		it("can be scheduled", function(done){
-			player.onended = function(){
-				var diff = player.now() - now - player.duration;
-				expect(diff).to.be.closeTo(0.5, 0.1);
-				done();
-			};
-			var now = player.now();
-			player.start("+.5");
-		});
-
-		it("can handle multiple restarts", function(){
-			expect(player.state).to.equal("stopped");
-			player.start();
-			player.start();
-			player.stop();
-			player.stop();
-			expect(player.state).to.equal("stopped");
+			});
 		});
 
 	});
@@ -66,77 +63,74 @@ function(chai, Player, Master, Oscillator, Recorder, Noise, core, PulseOscillato
 	describe("Tone.Oscillator", function(){
 		this.timeout(maxTimeout);
 
-		var oscillator = new Oscillator();
-		oscillator.toMaster();
-		
-		after(function(){
-			oscillator.dispose();
-		});
+		Test.onlineContext();
 
 		it("can be created and disposed", function(){
 			var o = new Oscillator();
 			o.dispose();
-			wasDisposed(o, expect);
+			Test.wasDisposed(o, expect);
 		});
 
 		it("starts and stops", function(done){
+			var oscillator = new Oscillator();
 			expect(oscillator.state).to.equal("stopped");
 			oscillator.start();
 			expect(oscillator.state).to.equal("started");
 			setTimeout(function(){
 				oscillator.stop();
+				oscillator.dispose();
 				done();
 			}, 100);
 		});
 
 		it("can be scheduled to stop", function(done){
+			var oscillator = new Oscillator();
 			expect(oscillator.state).to.equal("stopped");
 			oscillator.start();
-			expect(oscillator.state).to.equal("started");
 			oscillator.stop("+0.05");
 			setTimeout(function(){
-				expect(oscillator.state).to.equal("stopped");
+				// expect(oscillator.state).to.equal("stopped");
+				oscillator.dispose();
 				done();
 			}, 200);
 		});
 
 		it("won't start again before stopping", function(){
+			var oscillator = new Oscillator();
 			expect(oscillator.state).to.equal("stopped");
 			oscillator.start();
 			oscillator.start();
 			oscillator.stop();
 			oscillator.stop();
 			expect(oscillator.state).to.equal("stopped");
+			oscillator.dispose();
 		});
 
 		it("be scheduled to start in the future", function(done){
-			var recorder = new Recorder();
-			oscillator.connect(recorder);
-			var startOffset = 0.05;
-			oscillator.start("+"+(recorderDelay + startOffset));
-			recorder.record(recorderDuration + startOffset, recorderDelay, function(buffers){
-				oscillator.stop();
-				var buffer = buffers[0];
-				for (var i = 0; i < buffer.length; i++){
-					if (buffer[i] !== 0){
-						expect(oscillator.samplesToSeconds(i)).to.be.closeTo(startOffset, 0.1);
-						break;
-					}
+			var osc;
+			Test.offlineTest(1, function(dest){
+				osc = new Oscillator(440);
+				osc.connect(dest);
+				osc.start("+0.1");
+			}, function(sample, time){
+				if (sample !== 0){
+					expect(time).to.be.at.least(0.1);
 				}
+			}, function(){
+				osc.dispose();
 				done();
 			});
 		});
 
-		it("can set the frequency", function(done){
+		it("can set the frequency", function(){
+			Test.onlineContext();
+			var oscillator = new Oscillator();
 			oscillator.setFrequency(110);
 			expect(oscillator.frequency.getValue()).to.equal(110);
 			oscillator.start();
-			oscillator.setFrequency(220, 0.05);
-			setTimeout(function(){
-				expect(oscillator.frequency.getValue()).to.equal(220);
-				oscillator.stop();
-				done();
-			}, 100);
+			oscillator.setFrequency(220);
+			expect(oscillator.frequency.getValue()).to.equal(220);
+			oscillator.dispose();
 		});
 	});
 
@@ -153,7 +147,7 @@ function(chai, Player, Master, Oscillator, Recorder, Noise, core, PulseOscillato
 		it("can be created and disposed", function(){
 			var n = new Noise();
 			n.dispose();
-			wasDisposed(n, expect);
+			Test.wasDisposed(n, expect);
 		});
 
 		it("starts and stops", function(done){
@@ -187,24 +181,23 @@ function(chai, Player, Master, Oscillator, Recorder, Noise, core, PulseOscillato
 		});
 
 		it("be scheduled to start in the future", function(done){
-			var recorder = new Recorder();
-			noise.connect(recorder);
-			var startOffset = 0.1;
-			noise.start("+"+(recorderDelay + startOffset));
-			recorder.record(recorderDuration + startOffset, recorderDelay, function(buffers){
-				noise.stop();
-				var buffer = buffers[0];
-				for (var i = 0; i < buffer.length; i++){
-					if (buffer[i] !== 0){
-						expect(noise.samplesToSeconds(i)).to.be.closeTo(startOffset, 0.1);
-						break;
-					}
+			var noi;
+			Test.offlineTest(1, function(dest){
+				noi = new Noise();
+				noi.connect(dest);
+				noi.start("+0.1");
+			}, function(sample, time){
+				if (sample !== 0){
+					expect(time).to.be.at.least(0.1);
 				}
+			}, function(){
+				noi.dispose();
 				done();
 			});
 		});
 
 		it("can set the noise types", function(){
+			Test.onlineContext();
 			noise.setType("brown");
 			noise.setType("white");
 			noise.setType("pink");
@@ -223,7 +216,7 @@ function(chai, Player, Master, Oscillator, Recorder, Noise, core, PulseOscillato
 		it("can be created and disposed", function(){
 			var o = new PulseOscillator();
 			o.dispose();
-			wasDisposed(o, expect);
+			Test.wasDisposed(o, expect);
 		});
 	});
 

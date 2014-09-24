@@ -1,7 +1,7 @@
-define(["Tone/core/Tone", "Tone/effect/AutoWah"], function(Tone){
+define(["Tone/core/Tone", "Tone/effect/Chorus"], function(Tone){
 
 	/**
-	 *  named presets for the AutoWah
+	 *  named presets for the Chorus
 	 *  @const
 	 *  @static
 	 *  @type {Object}

@@ -1,6 +1,6 @@
 /* global it, describe, after */
 
-define(["chai", "Tone/core/Tone", "Tone/core/Master", "Tone/core/Bus"], function(chai, Tone, Master){
+define(["chai", "Tone/core/Tone", "Tone/core/Master", "Tone/core/Bus", "Tone/core/Note"], function(chai, Tone, Master, Note){
 	var expect = chai.expect;
 
 	describe("AudioContext", function(){
@@ -76,6 +76,17 @@ define(["chai", "Tone/core/Tone", "Tone/core/Master", "Tone/core/Bus"], function
 			expect(tone.defaultArg({"a" : 10}, {"b" : {"c" : 20}})).has.deep.property("b.c", 20);
 		});
 
+
+	});
+
+	describe("Tone.Note", function(){
+
+		var tone = new Tone();
+
+		after(function(){
+			tone.dispose();
+		});
+
 		it("can convert notes into frequencies", function(){
 			expect(tone.noteToFrequency("A4")).to.be.closeTo(440, 0.0001);
 			expect(tone.noteToFrequency("Bb4")).to.be.closeTo(466.163761, 0.0001);
@@ -84,6 +95,23 @@ define(["chai", "Tone/core/Tone", "Tone/core/Master", "Tone/core/Bus"], function
 		it("can convert frequencies into notes", function(){
 			expect(tone.frequencyToNote(440)).to.equal("A4");
 			expect(tone.frequencyToNote(4978.031739553295)).to.equal("D#8");
+		});
+
+		it("can convert note to midi values", function(){
+			expect(tone.midiToNote(60)).to.equal("C3");
+			expect(tone.midiToNote(61)).to.equal("C#3");
+		});
+
+		it("can convert midi values to note names", function(){
+			expect(tone.noteToMidi("C3")).to.equal(60);
+			expect(tone.noteToMidi("Bb2")).to.equal(58);
+			expect(tone.noteToMidi("A#2")).to.equal(58);
+		});
+
+		it("can convert semitone intervals to frequency ratios", function(){
+			expect(tone.intervalToFrequencyRatio(0)).to.equal(1);
+			expect(tone.intervalToFrequencyRatio(12)).to.equal(2);
+			expect(tone.intervalToFrequencyRatio(7)).to.be.closeTo(1.5, 0.01);
 		});
 	});
 

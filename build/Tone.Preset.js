@@ -50,10 +50,10 @@ define(["Tone/core/Tone", "Tone/effect/AutoWah"], function(Tone){
 
 	return Tone.AutoWah.prototype.preset;
 });
-define(["Tone/core/Tone", "Tone/effect/AutoWah"], function(Tone){
+define(["Tone/core/Tone", "Tone/effect/Chorus"], function(Tone){
 
 	/**
-	 *  named presets for the AutoWah
+	 *  named presets for the Chorus
 	 *  @const
 	 *  @static
 	 *  @type {Object}
@@ -84,7 +84,32 @@ define(["Tone/core/Tone", "Tone/effect/AutoWah"], function(Tone){
 
 	return Tone.Chorus.prototype.preset;
 });
-define(["Tone/core/Tone", "Tone/effect/AutoWah"], function(Tone){
+define(["Tone/core/Tone", "Tone/effect/Freeverb"], function(Tone){
+
+	/**
+	 *  named presets for Freeverb
+	 *  @const
+	 *  @static
+	 *  @type {Object}
+	 */
+	Tone.Freeverb.prototype.preset = {
+		"sewer" : {
+			"roomSize" : 0.8, 
+			"dampening" : 0.05
+		},
+		"glassroom" : {
+			"roomSize" : 0.6, 
+			"dampening" : 0.9
+		},
+		"bigplate" : {
+			"roomSize" : 0.9, 
+			"dampening" : 0.2
+		}
+	};
+
+	return Tone.Freeverb.prototype.preset;
+});
+define(["Tone/core/Tone", "Tone/effect/Phaser"], function(Tone){
 
 	/**
 	 *  named presets for the Phaser

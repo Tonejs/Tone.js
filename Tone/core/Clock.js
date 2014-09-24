@@ -10,7 +10,9 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	 * 	@internal
 	 * 	@constructor
 	 * 	@extends {Tone}
-	 * 	@param {number} rate the number of 
+	 * 	@param {number} rate the rate of the callback
+	 * 	@param {function} callback the callback to be invoked with the time of the audio event
+	 * 	                           NB: it is very important that only 
 	 */
 	Tone.Clock = function(rate, callback){
 
@@ -97,14 +99,17 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 		this._upTick = false;
 		var startTime = this.toSeconds(time);
 		this._oscillator.start(startTime);
+		this._oscillator.onended = function(){};
 	};
 
 	/**
 	 *  stop the clock
 	 *  @param {Tone.Time} time the time when the clock should stop
+	 *  @param {function} onend called when the oscilator stops
 	 */
-	Tone.Clock.prototype.stop = function(time){
+	Tone.Clock.prototype.stop = function(time, onend){
 		var stopTime = this.toSeconds(time);
+		this._oscillator.onended = onend;
 		this._oscillator.stop(stopTime);
 	};
 
@@ -117,11 +122,19 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 		var bufferSize = this._jsNode.bufferSize;
 		var incomingBuffer = event.inputBuffer.getChannelData(0);
 		var upTick = this._upTick;
+		var self = this;
 		for (var i = 0; i < bufferSize; i++){
 			var sample = incomingBuffer[i];
 			if (sample > 0 && !upTick){
 				upTick = true;	
-				this.tick(now + this.samplesToSeconds(i));
+				//get the callback out of audio thread
+				setTimeout(function(){
+					//to account for the double buffering
+					var tickTime = now + self.samplesToSeconds(i + bufferSize * 2);
+					return function(){
+						self.tick(tickTime);
+					};
+				}(), 0); // jshint ignore:line
 			} else if (sample < 0 && upTick){
 				upTick = false;
 			}
@@ -136,6 +149,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 		this._jsNode.disconnect();
 		this._controlSignal.dispose();
 		if (this._oscillator){
+			this._oscillator.onended();
 			this._oscillator.disconnect();
 		}
 		this._jsNode.onaudioprocess = function(){};

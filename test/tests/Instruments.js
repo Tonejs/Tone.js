@@ -1,16 +1,29 @@
-/* global it, describe, wasDisposed */
+/* global it, describe */
 
 define(["tests/Core", "chai", "Tone/instrument/DuoSynth", "Tone/instrument/MonoSynth", "Tone/instrument/FMSynth",
-	"Tone/instrument/PolySynth", "Tone/instrument/Sampler", "Tone/instrument/MultiSampler"], 
-function(Tone, chai, DuoSynth, MonoSynth, FMSynth, PolySynth, Sampler, MultiSampler){
+	"Tone/instrument/PolySynth", "Tone/instrument/Sampler", "Tone/instrument/MultiSampler", 
+	"tests/Common", "Tone/instrument/Instrument", "Tone/instrument/PluckSynth"], 
+function(Tone, chai, DuoSynth, MonoSynth, FMSynth, PolySynth, Sampler, MultiSampler, Test, Instrument, PluckSynth){
 
 	var expect = chai.expect;
+
+	Test.onlineContext();
+
+	function extendsInstrument(InstrumentFactory){
+		var inst = new InstrumentFactory();
+		expect(inst).to.be.instanceOf(Instrument);
+		inst.dispose();
+	}
 
 	describe("Tone.MonoSynth", function(){
 		it("can be created and disposed", function(){
 			var ms = new MonoSynth();
 			ms.dispose();
-			wasDisposed(ms, expect);
+			Test.wasDisposed(ms);
+		});
+
+		it("extends Instrument", function(){
+			extendsInstrument(MonoSynth);
 		});
 	});
 
@@ -18,7 +31,10 @@ function(Tone, chai, DuoSynth, MonoSynth, FMSynth, PolySynth, Sampler, MultiSamp
 		it("can be created and disposed", function(){
 			var ds = new DuoSynth();
 			ds.dispose();
-			wasDisposed(ds, expect);
+			Test.wasDisposed(ds);
+		});
+		it("extends Instrument", function(){
+			extendsInstrument(DuoSynth);
 		});
 	});
 
@@ -26,7 +42,10 @@ function(Tone, chai, DuoSynth, MonoSynth, FMSynth, PolySynth, Sampler, MultiSamp
 		it("can be created and disposed", function(){
 			var fms = new FMSynth();
 			fms.dispose();
-			wasDisposed(fms, expect);
+			Test.wasDisposed(fms);
+		});
+		it("extends Instrument", function(){
+			extendsInstrument(FMSynth);
 		});
 	});
 
@@ -34,15 +53,22 @@ function(Tone, chai, DuoSynth, MonoSynth, FMSynth, PolySynth, Sampler, MultiSamp
 		it("can be created and disposed", function(){
 			var ps = new PolySynth();
 			ps.dispose();
-			wasDisposed(ps, expect);
+			Test.wasDisposed(ps);
 		});
+		it("extends Instrument", function(){
+			extendsInstrument(PolySynth);
+		});
+
 	});
 
 	describe("Tone.Sampler", function(){
 		it("can be created and disposed", function(){
 			var samp = new Sampler();
 			samp.dispose();
-			wasDisposed(samp, expect);
+			Test.wasDisposed(samp);
+		});
+		it("extends Instrument", function(){
+			extendsInstrument(Sampler);
 		});
 	});
 
@@ -50,7 +76,21 @@ function(Tone, chai, DuoSynth, MonoSynth, FMSynth, PolySynth, Sampler, MultiSamp
 		it("can be created and disposed", function(){
 			var samp = new MultiSampler();
 			samp.dispose();
-			wasDisposed(samp, expect);
+			Test.wasDisposed(samp);
+		});
+		it("extends Instrument", function(){
+			extendsInstrument(MultiSampler);
+		});
+	});
+
+	describe("Tone.PluckSynth", function(){
+		it("can be created and disposed", function(){
+			var pluck = new PluckSynth();
+			pluck.dispose();
+			Test.wasDisposed(pluck);
+		});
+		it("extends Instrument", function(){
+			extendsInstrument(PluckSynth);
 		});
 	});
 });

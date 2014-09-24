@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/instrument/Sampler", "Tone/source/Source"], 
+define(["Tone/core/Tone", "Tone/instrument/Sampler", "Tone/instrument/Instrument"], 
 function(Tone){
 
 	"use strict";
@@ -18,17 +18,14 @@ function(Tone){
 	 *  sampler.triggerAttack("kick");
 	 *
 	 *  @constructor
-	 *  @extends {Tone}
+	 *  @extends {Tone.Instrument}
 	 *  @param {Object} samples the samples used in this
 	 *  @param {function} onload the callback to invoke when all 
 	 *                           of the samples have been loaded
 	 */
 	Tone.MultiSampler = function(samples, onload){
 
-	 	/**
-	 	 *  @type {GainNode}
-	 	 */
-		this.output = this.context.createGain();
+	 	Tone.Instrument.call(this);
 
 	 	/**
 	 	 *  the array of voices
@@ -40,7 +37,7 @@ function(Tone){
 		this._createSamples(samples, onload);
 	};
 
-	Tone.extend(Tone.MultiSampler);
+	Tone.extend(Tone.MultiSampler, Tone.Instrument);
 
 	/**
 	 *  creates all of the samples and tracks their loading
@@ -78,27 +75,46 @@ function(Tone){
 		}
 	};
 
-	 /**
-	  *  start a sample
-	  *  
-	  *  @param  {string} sample the note name to start
-	  *  @param {Tone.Time=} [time=now] the time when the note should start
-	  */
-	Tone.MultiSampler.prototype.triggerAttack = function(sample, time){
+	/**
+	 *  start a sample
+	 *  
+	 *  @param  {string} sample the note name to start
+	 *  @param {Tone.Time=} [time=now] the time when the note should start
+	 *  @param {number} [velocity=1] the velocity of the note
+	 */
+	Tone.MultiSampler.prototype.triggerAttack = function(sample, time, velocity){
 		if (this.samples.hasOwnProperty(sample)){
-			this.samples[sample].triggerAttack(time);
+			this.samples[sample].triggerAttack(0, time, velocity);
 		}
 	};
 
-	 /**
-	  *  start the release portion of the note
-	  *  
-	  *  @param  {string} sample the note name to release
-	  *  @param {Tone.Time=} [time=now] the time when the note should release
-	  */
+	/**
+	 *  start the release portion of the note
+	 *  
+	 *  @param  {string} sample the note name to release
+	 *  @param {Tone.Time=} [time=now] the time when the note should release
+	 */
 	Tone.MultiSampler.prototype.triggerRelease = function(sample, time){
 		if (this.samples.hasOwnProperty(sample)){
 			this.samples[sample].triggerRelease(time);
+		}
+	};
+
+	/**
+	  *  start the release portion of the note
+	  *  
+	  *  @param  {string} sample the note name to release
+	  *  @param {Tone.Time} duration the duration of the note
+	  *  @param {Tone.Time} [time=now] the time when the note should start
+	  *  @param {number} [velocity=1] the velocity of the note
+	  */
+	Tone.MultiSampler.prototype.triggerAttackRelease = function(sample, duration, time, velocity){
+		if (this.samples.hasOwnProperty(sample)){
+			time = this.toSeconds(time);
+			duration = this.toSeconds(duration);
+			var samp = this.samples[sample];
+			samp.triggerAttack(0, time, velocity);
+			samp.triggerRelease(time + duration);
 		}
 	};
 
@@ -123,7 +139,7 @@ function(Tone){
 	 *  clean up
 	 */
 	Tone.MultiSampler.prototype.dispose = function(){
-		Tone.prototype.dispose.call(this);
+		Tone.Instrument.prototype.dispose.call(this);
 		for (var samp in this.samples){
 			this.samples[samp].dispose();
 			this.samples[samp] = null;

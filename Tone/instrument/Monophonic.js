@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/source/Source", "Tone/signal/Signal", "Tone/core/Note"], function(Tone){
+define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/signal/Signal"], function(Tone){
 
 	"use strict";
 
@@ -12,14 +12,10 @@ define(["Tone/core/Tone", "Tone/source/Source", "Tone/signal/Signal", "Tone/core
 	 */
 	Tone.Monophonic = function(options){
 
+		Tone.Instrument.call(this);
+
 		//get the defaults
 		options = this.defaultArg(options, Tone.Monophonic.defaults);
-
-		/**
-		 *  the instrument's output
-		 *  @type {GainNode}
-		 */
-		this.output = this.context.createGain();
 
 		/**
 		 *  the portamento time
@@ -28,7 +24,7 @@ define(["Tone/core/Tone", "Tone/source/Source", "Tone/signal/Signal", "Tone/core
 		this.portamento = options.portamento;
 	};
 
-	Tone.extend(Tone.Monophonic);
+	Tone.extend(Tone.Monophonic, Tone.Instrument);
 
 	/**
 	 *  @static
@@ -53,22 +49,8 @@ define(["Tone/core/Tone", "Tone/source/Source", "Tone/signal/Signal", "Tone/core
 	};
 
 	/**
-	 *  trigger the attack and release after the specified duration
-	 *  
-	 *  @param  {number|string} note     the note as a number or a string note name
-	 *  @param  {Tone.Time} duration the duration of the note
-	 *  @param  {Tone.Time=} time     if no time is given, defaults to now
-	 *  @param  {number=} velocity the velocity of the attack (0-1)
-	 */
-	Tone.Monophonic.prototype.triggerAttackRelease = function(note, duration, time, velocity) {
-		time = this.toSeconds(time);
-		this.triggerAttack(note, time, velocity);
-		this.triggerRelease(time + this.toSeconds(duration));
-	};
-
-	/**
 	 *  trigger the release portion of the envelope
-	 *  @param  {Tone.Time=} [time=now] if no time is given, the release happens immediatly
+	 *  @param  {Tone.Time} [time=now] if no time is given, the release happens immediatly
 	 */
 	Tone.Monophonic.prototype.triggerRelease = function(time){
 		this.triggerEnvelopeRelease(time);
@@ -77,16 +59,16 @@ define(["Tone/core/Tone", "Tone/source/Source", "Tone/signal/Signal", "Tone/core
 	/**
 	 *  override this method with the actual method
 	 *  @abstract
-	 *  @param {Tone.Time=} [time=now] the time the attack should happen
-	 *  @param {number=} [velocity=1] the velocity of the envelope
+	 *  @param {Tone.Time} [time=now] the time the attack should happen
+	 *  @param {number} [velocity=1] the velocity of the envelope
 	 */	
 	Tone.Monophonic.prototype.triggerEnvelopeAttack = function() {};
 
 	/**
 	 *  override this method with the actual method
 	 *  @abstract
-	 *  @param {Tone.Time=} [time=now] the time the attack should happen
-	 *  @param {number=} [velocity=1] the velocity of the envelope
+	 *  @param {Tone.Time} [time=now] the time the attack should happen
+	 *  @param {number} [velocity=1] the velocity of the envelope
 	 */	
 	Tone.Monophonic.prototype.triggerEnvelopeRelease = function() {};
 
@@ -119,12 +101,6 @@ define(["Tone/core/Tone", "Tone/source/Source", "Tone/signal/Signal", "Tone/core
 	};
 
 	/**
-	 *  set volume method borrowed form {@link Tone.Source}
-	 *  @function
-	 */
-	Tone.Monophonic.prototype.setVolume = Tone.Source.prototype.setVolume;
-
-	/**
 	 *  bulk setter
 	 *  @param {Object} params the params
 	 */
@@ -147,7 +123,7 @@ define(["Tone/core/Tone", "Tone/source/Source", "Tone/signal/Signal", "Tone/core
 	 *  clean up
 	 */
 	Tone.Monophonic.prototype.dispose = function(){
-		Tone.prototype.dispose.call(this);
+		Tone.Instrument.prototype.dispose.call(this);
 	};
 
 	return Tone.Monophonic;

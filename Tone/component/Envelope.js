@@ -179,6 +179,18 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	};
 
 	/**
+	 *  trigger the attack and release after a sustain time
+	 *  @param {Tone.Time} duration the duration of the note
+	 *  @param {Tone.Time=} time the time of the attack
+	 *  @param {number=} velocity the velocity of the note
+	 */
+	Tone.Envelope.prototype.triggerAttackRelease = function(duration, time, velocity) {
+		time = this.toSeconds(time);
+		this.triggerAttack(time, velocity);
+		this.triggerRelease(time + this.toSeconds(duration));
+	};
+
+	/**
 	 *  borrows the connect method from {@link Tone.Signal}
 	 *  
 	 *  @function

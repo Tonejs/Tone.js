@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/Split", "Tone/component/Merge"], 
+define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/Split", "Tone/component/Merge", "Tone/component/Mono"], 
 function(Tone){
 
 	"use strict";
@@ -24,10 +24,10 @@ function(Tone){
 
 		/**
 		 *  make the incoming signal mono
-		 *  @type {Tone.Merge}
+		 *  @type {Tone.Mono}
 		 *  @private
 		 */
-		this._mono = new Tone.Merge();
+		this._mono = new Tone.Mono();
 
 		/**
 		 *  then split it
@@ -68,8 +68,7 @@ function(Tone){
 		this.effectReturnR = this._merge.right;
 
 		//connections
-		this.input.connect(this._mono, 0, 0);
-		this.input.connect(this._mono, 0, 1);
+		this.input.connect(this._mono);
 		this._mono.connect(this._split);
 		//dry wet connections
 		this._mono.connect(this.dryWet.dry);
