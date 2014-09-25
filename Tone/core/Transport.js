@@ -77,6 +77,21 @@ function(Tone){
 	 */
 	var tatum = 12;
 
+	/**
+	 *  controls which beat the swing is applied to
+	 *  defaults to an 8th note
+	 *  @private
+	 *  @type {number}
+	 */
+	var swingTatum = 6;
+
+	/**
+	 *  controls which beat the swing is applied to
+	 *  @private
+	 *  @type {number}
+	 */
+	var swingAmount = 0;
+
 	/** 
 	 * @private
 	 * @type {number}
@@ -88,6 +103,7 @@ function(Tone){
 	 * @type {number}
 	 */
 	var loopStart = 0;
+
 	/** 
 	 * @private
 	 * @type {number}
@@ -145,6 +161,10 @@ function(Tone){
 	 */
 	Tone.Transport.prototype._processTick = function(tickTime){
 		if (this.state === TransportState.STARTED){
+			if (swingAmount > 0 && timelineTicks % tatum !== 0 && timelineTicks % swingTatum === 0){
+				//add some swing
+				tickTime += Tone.Transport.ticksToSeconds(swingTatum) * swingAmount;
+			}
 			processIntervals(tickTime);
 			processTimeouts(tickTime);
 			processTimeline(tickTime);
@@ -592,6 +612,27 @@ function(Tone){
 		this.setLoopEnd(endPosition);
 	};
 
+	/**
+	 *  set the amount of swing which is applied to the subdivision (defaults to 16th notes)
+	 *  @param {number} amount a value between 0-1 where 1 equal to the note + half the subdivision
+	 */
+	Tone.Transport.prototype.setSwing = function(amount){
+		//scale the values to a normal range
+		swingAmount = amount * 0.5;
+	};
+
+	/**
+	 *  set the subdivision which the swing will be applied to
+	 *  @example
+	 *  Tone.Transport.setSwingSubdivision("8n"); //the eight note will be swing by the "swing amount"
+	 *  
+	 *  @param {string} subdivision the subdivision in notation (i.e. 8n, 16n, 8t).
+	 *                              value must be less than a quarter note.
+	 */
+	Tone.Transport.prototype.setSwingSubdivision = function(subdivision){
+		swingTatum = this.toTicks(subdivision);
+	};
+
 	///////////////////////////////////////////////////////////////////////////////
 	//	SYNCING
 	///////////////////////////////////////////////////////////////////////////////
@@ -710,6 +751,7 @@ function(Tone){
 	 *  	4n = quarter note
 	 *   	2m = two measures
 	 *    	8t = eighth-note triplet
+	 *  defined in "Tone/core/Transport"
 	 *  
 	 *  @return {boolean} 
 	 *  @method isNotation
@@ -724,6 +766,7 @@ function(Tone){
 
 	/**
 	 *  tests if a string is in Tick notation
+	 *  defined in "Tone/core/Transport"
 	 *  @return {boolean} 
 	 *  @method isTicks
 	 *  @lends Tone.prototype.isNotation
@@ -739,6 +782,7 @@ function(Tone){
 	 *  tests if a string is transportTime
 	 *  i.e. :
 	 *  	1:2:0 = 1 measure + two quarter notes + 0 sixteenth notes
+	 *  defined in "Tone/core/Transport"
 	 *  	
 	 *  @return {boolean} 
 	 *
@@ -755,6 +799,7 @@ function(Tone){
 	/**
 	 *  true if the input is in the format number+hz
 	 *  i.e.: 10hz
+	 *  defined in "Tone/core/Transport"
 	 *
 	 *  @param {number} freq 
 	 *  @return {boolean} 
@@ -773,6 +818,8 @@ function(Tone){
 	/**
 	 *
 	 *  convert notation format strings to seconds
+	 *  defined in "Tone/core/Transport"
+	 *  
 	 *  @param  {string} notation     
 	 *  @param {number=} bpm 
 	 *  @param {number=} timeSignature 
@@ -803,6 +850,7 @@ function(Tone){
 
 	/**
 	 *  convert transportTime into seconds
+	 *  defined in "Tone/core/Transport"
 	 *  
 	 *  ie: 4:2:3 == 4 measures + 2 quarters + 3 sixteenths
 	 *
@@ -836,6 +884,8 @@ function(Tone){
 
 	/**
 	 *  convert ticks into seconds
+	 *  defined in "Tone/core/Transport"
+	 *  
 	 *  @param  {number} ticks 
 	 *  @param {number=} bpm 
 	 *  @param {number=} timeSignature
@@ -850,6 +900,7 @@ function(Tone){
 	/**
 	 *  Convert seconds to the closest transportTime in the form 
 	 *  	measures:quarters:sixteenths
+	 *  defined in "Tone/core/Transport"
 	 *
 	 *  @method toTransportTime
 	 *  
@@ -875,6 +926,7 @@ function(Tone){
 
 	/**
 	 *  convert a time to a frequency
+	 *  defined in "Tone/core/Transport"
 	 *  	
 	 *  @param  {Tone.Time} time 
 	 *  @return {number}      the time in hertz
@@ -891,6 +943,7 @@ function(Tone){
 
 	/**
 	 *  convert Tone.Time into seconds.
+	 *  defined in "Tone/core/Transport"
 	 *  
 	 *  unlike the method which it overrides, this takes into account 
 	 *  transporttime and musical notation
