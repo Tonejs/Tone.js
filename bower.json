@@ -1,7 +1,7 @@
 {
-    "name": "Tone",
+    "name": "tone",
     "description": "A Web Audio framework for making interactive music in the browser.",
-    "main": "../../build/Tone.js",
+    "main": "build/Tone.js",
     "keywords": [
         "tone",
         "tonejs",
@@ -9,7 +9,9 @@
     ],
     "ignore": [
         "examples",
-        "test"
+        "test",
+        "utils",
+        "grunt"
     ],
     "authors": [
         "Yotam Mann", "Yotam Mann <yotammann@gmail.com>"
