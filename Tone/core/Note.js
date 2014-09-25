@@ -178,6 +178,8 @@ define(["Tone/core/Tone", "Tone/core/Transport"], function(Tone){
 
 	/**
 	 *  convert a note name to frequency (i.e. A4 to 440)
+	 *  defined in "Tone/core/Note"
+	 *  
 	 *  @param  {string} note
 	 *  @return {number}         
 	 */
@@ -196,6 +198,8 @@ define(["Tone/core/Tone", "Tone/core/Transport"], function(Tone){
 
 	/**
 	 *  convert a note name (i.e. A4, C#5, etc to a frequency)
+	 *  defined in "Tone/core/Note"
+	 *  
 	 *  @param  {number} freq
 	 *  @return {string}         
 	 */
@@ -209,6 +213,7 @@ define(["Tone/core/Tone", "Tone/core/Transport"], function(Tone){
 
 	/**
 	 *  convert an interval (in semitones) to a frequency ratio
+	 *  defined in "Tone/core/Note"
 	 *
 	 *  @example
 	 *  tone.intervalToFrequencyRatio(0); // returns 1
@@ -223,6 +228,7 @@ define(["Tone/core/Tone", "Tone/core/Transport"], function(Tone){
 
 	/**
 	 *  convert a midi note number into a note name
+	 *  defined in "Tone/core/Note"
 	 *
 	 *  @example
 	 *  tone.midiToNote(60); // returns "C3"
@@ -238,6 +244,7 @@ define(["Tone/core/Tone", "Tone/core/Transport"], function(Tone){
 
 	/**
 	 *  convert a note to it's midi value
+	 *  defined in "Tone/core/Note"
 	 *
 	 *  @example
 	 *  tone.noteToMidi("C3"); // returns 60

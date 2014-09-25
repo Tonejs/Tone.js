@@ -19,6 +19,7 @@ define(["Tone/core/Tone"], function(Tone){
 
 	/**
 	 *  send signal to a channel name
+	 *  defined in "Tone/core/Bus"
 	 *
 	 *  @param  {string} channelName 
 	 *  @param  {number} amount      
@@ -36,6 +37,7 @@ define(["Tone/core/Tone"], function(Tone){
 
 	/**
 	 *  recieve the input from the desired channelName to the input
+	 *  defined in "Tone/core/Bus"
 	 *
 	 *  @param  {string} channelName 
 	 *  @param {AudioNode=} [input=this.input] if no input is selected, the
@@ -49,4 +51,6 @@ define(["Tone/core/Tone"], function(Tone){
 		input = this.defaultArg(input, this.input);
 		Buses[channelName].connect(input);
 	};
+
+	return Tone;
 });

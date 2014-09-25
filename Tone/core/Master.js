@@ -63,6 +63,7 @@ define(["Tone/core/Tone"], function(Tone){
 
 	/**
 	 *  connect 'this' to the master output
+	 *  defined in "Tone/core/Master"
 	 */
 	Tone.prototype.toMaster = function(){
 		this.connect(Tone.Master);
