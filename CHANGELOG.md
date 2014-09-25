@@ -1,3 +1,8 @@
+### r3 - Groove
+
+* Swing parameter on Transport
+* Setters on PluckSynth
+
 ### r2 - Getting Physical
 
 * PluckSynth - Karplus-Strong Plucked String modeling synth
