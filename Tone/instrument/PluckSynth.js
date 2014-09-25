@@ -7,9 +7,11 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/source/Noise", "To
 	 *  
 	 *  @constructor
 	 *  @extends {Tone.Instrument}
+	 *  @param {Object} options see the defaults
 	 */
-	Tone.PluckSynth = function(){
+	Tone.PluckSynth = function(options){
 
+		options = this.defaultArg(options, Tone.PluckSynth.defaults);
 		Tone.Instrument.call(this);
 
 		/**
@@ -51,9 +53,21 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/source/Noise", "To
 
 	Tone.extend(Tone.PluckSynth, Tone.Instrument);
 
+	/**
+	 *  @static
+	 *  @const
+	 *  @type {Object}
+	 */
+	Tone.PluckSynth.defaults = {
+		"attackNoise" : 1,
+		"dampening" : 4000,
+		"resonance" : 0.5
+	};
 
 	/**
 	 *  trigger the attack portion
+	 *  @param {string|number} note the note name or frequency
+	 *  @param {Tone.Time=} time the time of the note
 	 */
 	Tone.PluckSynth.prototype.triggerAttack = function(note, time) {
 		if (typeof note === "string"){
@@ -64,6 +78,42 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/source/Noise", "To
 		this._lfcf.setDelayTime(delayAmount, time);		
 		this._noise.start(time);
 		this._noise.stop(time + delayAmount * this.attackNoise);
+	};
+
+	/**
+	 *  set the resonance of the instrument
+	 *  @param {number} resonance the resonance between (0, 1)
+	 */
+	Tone.PluckSynth.prototype.setResonance = function(resonance) {
+		this.resonance.setValue(resonance);
+	};
+
+	/**
+	 *  set the dampening of the instrument
+	 *  @param {number} dampening a frequency value of the lowpass filter
+	 *                            nominal range of (1000, 10000)
+	 */
+	Tone.PluckSynth.prototype.setDampening = function(dampening) {
+		this.dampening.setValue(dampening);
+	};
+
+	/**
+	 *  set the length of the attack noise
+	 *  @param {number} attackNoise	the length of the attack nosie. 
+	 *                              a value of 1 is normal.
+	 */
+	Tone.PluckSynth.prototype.setAttackNoise = function(attackNoise) {
+		this.attackNoise = attackNoise;
+	};
+
+	/**
+	 *  bulk setter
+	 *  @param {Object} param 
+	 */
+	Tone.PluckSynth.prototype.set = function(params){
+		if (!this.isUndef(params.resonance)) this.setResonance(params.resonance);
+		if (!this.isUndef(params.dampening)) this.setDampening(params.dampening);
+		if (!this.isUndef(params.attackNoise)) this.setAttackNoise(params.attackNoise);
 	};
 
 	/**
