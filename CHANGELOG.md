@@ -2,6 +2,9 @@
 
 * Swing parameter on Transport
 * Setters on PluckSynth
+* Setters on PulseOscillator
+* PWMOscillator
+* OmniOscillator which combines pwm, oscillator, and pulse into one
 
 ### r2 - Getting Physical
 
