@@ -1,0 +1,222 @@
+define(["Tone/core/Tone", "Tone/source/Source", "Tone/source/Oscillator", "Tone/source/PulseOscillator", "Tone/source/PWMOscillator"], 
+function(Tone){
+
+	"use strict";
+
+	/**
+	 *  @class An OmniOscillator can be a sine|square|triangle|sawtooth|pulse|pwm
+	 *
+	 *  @extends {Tone.Source}
+	 *  @constructor
+	 *  @param {frequency} frequency frequency of the oscillator (meaningless for noise types)
+	 *  @param {string} type the type of the oscillator
+	 */
+	Tone.OmniOscillator = function(){
+		var options = this.optionsObject(arguments, ["frequency", "type"], Tone.OmniOscillator.defaults);
+		Tone.Source.call(this);
+
+		/**
+		 *  the frequency control
+		 *  (doesn't do anything for noises)
+		 *  @type {Tone.Signal}
+		 */
+		this.frequency = new Tone.Signal(options.frequency);
+
+		/**
+		 *  the detune control
+		 *  (doesn't do anything for noises)
+		 *  @type {Tone.Signal}
+		 */
+		this.detune = new Tone.Signal(options.detune);
+
+		/**
+		 *  the type of the oscillator source
+		 *  @type {string}
+		 *  @private
+		 */
+		this._sourceType = undefined;
+
+		/**
+		 *  the oscillator
+		 *  @type {Tone.Oscillator|Tone.PWMOscillator|Tone.PulseOscillator}
+		 *  @private
+		 */
+		this._oscillator = null;
+
+		/**
+		 *  callback which is invoked when the oscillator is stoped
+		 *  @type {function()}
+		 */
+		this.onended = options.onended;
+
+		//set the oscillator
+		this.setType(options.type);
+	};
+
+	Tone.extend(Tone.OmniOscillator, Tone.Source);
+
+	/**
+	 *  default values
+	 *  @static
+	 *  @type {Object}
+	 *  @const
+	 */
+	Tone.OmniOscillator.defaults = {
+		"frequency" : 440,
+		"detune" : 0,
+		"type" : "sine",
+		"width" : 0.4, //only applies if the oscillator is set to "pulse",
+		"modulationFrequency" : 0.4, //only applies if the oscillator is set to "pwm",
+		"onended" : function(){}
+	};
+
+	/**
+	 *  start the oscillator
+	 *  @param {Tone.Time} [time=now] the time to start the oscillator
+	 */
+	Tone.OmniOscillator.prototype.start = function(time){
+		if (this.state === Tone.Source.State.STOPPED){
+			this.state = Tone.Source.State.STARTED;
+			this._oscillator.start(time);
+		}
+	};
+
+	/**
+	 *  start the oscillator
+	 *  @param {Tone.Time} [time=now] the time to start the oscillator
+	 */
+	Tone.OmniOscillator.prototype.stop = function(time){
+		if (this.state === Tone.Source.State.STARTED){
+			if (!time){
+				this.state = Tone.Source.State.STOPPED;
+			}
+			this._oscillator.stop(time);
+		}
+	};
+
+	/**
+	 *  internal on end call
+	 *  @private
+	 */
+	Tone.OmniOscillator.prototype._onended = function(){
+		this.state = Tone.Source.State.STOPPED;
+		this.onended();
+	};
+
+	/**
+	 *  exponentially ramp the frequency of the oscillator over the rampTime
+	 *  
+	 *  @param {Tone.Time}	val
+	 *  @param {Tone.Time=} rampTime when the oscillator will arrive at the frequency
+	 */
+	Tone.OmniOscillator.prototype.setFrequency = function(val, rampTime){
+		this._oscillator.setFrequency(val, rampTime);
+	};
+
+	/**
+	 *  set the type of the oscillator
+	 *  @param {string} type sine|square|triangle|sawtooth|pulse|pwm
+	 */
+	Tone.OmniOscillator.prototype.setType = function(type){
+		if (type === "sine" || type === "square" || type === "triangle" || type === "sawtooth"){
+			if (this._sourceType !== "Oscillator"){
+				this._sourceType = "Oscillator";
+				if (this._oscillator !== null){
+					this._oscillator.dispose();
+				}
+				this._oscillator = new Tone.Oscillator();
+				this._connectNewOscillator();
+			}
+			this._oscillator.setType(type);
+		} else if (type === "pwm"){
+			if (this._sourceType !== "PWMOscillator"){
+				this._sourceType = "PWMOscillator";
+				if (this._oscillator !== null){
+					this._oscillator.dispose();
+				}
+				this._oscillator = new Tone.PWMOscillator();
+				this._connectNewOscillator();
+			}
+		} else if (type === "pulse"){
+			if (this._sourceType !== "PulseOscillator"){
+				this._sourceType = "PulseOscillator";
+				if (this._oscillator !== null){
+					this._oscillator.dispose();
+				}
+				this._oscillator = new Tone.PulseOscillator();
+				this._connectNewOscillator();
+			}
+		} else {
+			throw new TypeError("Tone.OmniOscillator does not support type "+type);
+		}
+	};
+
+	/**
+	 *  connect the oscillator to the frequency and detune signals
+	 *  @private
+	 */
+	Tone.OmniOscillator.prototype._connectNewOscillator = function(){
+		this.frequency.connect(this._oscillator.frequency);
+		this.detune.connect(this._oscillator.detune);
+		this._oscillator.connect(this.output);
+		if (this.state === Tone.Source.State.STARTED){
+			this._oscillator.start();
+		}
+		this._oscillator.onended = this._onended.bind(this);
+	};
+
+	/**
+	 *  set the width of the PulseOscillator
+	 *  @throws {Error} If the type of oscillator is not "pulse"
+	 *  @param {number} width the width of the pulse oscillator
+	 */
+	Tone.OmniOscillator.prototype.setWidth = function(width){
+		if (this._sourceType === "PulseOscillator"){
+			this._oscillator.setWidth(width);
+		} else {
+			throw new Error("Invalid call to 'setWidth'. OmniOscillator type must be set to type 'pulse'.");
+		}
+	};
+
+	/**
+	 *  set the modulation frequency of the PWMOscillator
+	 *  @throws {Error} If the type of oscillator is not "pwm"
+	 *  @param {Tone.Time} freq the modulation frequency of the pwm
+	 */
+	Tone.OmniOscillator.prototype.setModulationFrequency = function(freq){
+		if (this._sourceType === "PWMOscillator"){
+			this._oscillator.setModulationFrequency(freq);
+		} else {
+			throw new Error("Invalid call to 'setModulationFrequency'. OmniOscillator type must be set to type 'pwm'.");
+		}
+	};
+
+	/**
+	 *  bulk setter
+	 *  @param {Object} params 
+	 */
+	Tone.OmniOscillator.prototype.set = function(params){
+		if (!this.isUndef(params.frequency)) this.setFrequency(params.frequency);
+		if (!this.isUndef(params.detune)) this.detune.setValue(params.detune);
+		if (!this.isUndef(params.width)) this.detune.setWidth(params.width);
+		if (!this.isUndef(params.onended)) this.onended = params.onended;
+		if (!this.isUndef(params.modulationFrequency)) this.setModulationFrequency(params.modulationFrequency);
+		if (!this.isUndef(params.type)) this.detune.setType(params.type);
+	};
+
+	/**
+	 *  clean up
+	 */
+	Tone.OmniOscillator.prototype.dispose = function(){
+		Tone.Source.prototype.dispose.call(this);
+		this.detune.dispose();
+		this.frequency.dispose();
+		this._oscillator.dispose();
+		this.detune = null;
+		this.frequency = null;
+		this._oscillator = null;
+		this._sourceType = null;
+	};
+
+	return Tone.OmniOscillator;
+});
