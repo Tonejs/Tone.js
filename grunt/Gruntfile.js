@@ -76,7 +76,7 @@ module.exports = function(grunt) {
 					},
 				},
 				files: {
-					"./Tone.js.tmp" : ["./Tone.js.tmp"],
+					"../build/Tone.js" : ["./Tone.js.tmp"],
 				}
 			}, 
 			removeRequireStringMin: {
@@ -87,7 +87,7 @@ module.exports = function(grunt) {
 					},
 				},
 				files: {
-					"./Tone.min.js.tmp" : ["./Tone.min.js.tmp"],
+					"../build/Tone.min.js" : ["./Tone.min.js.tmp"],
 				}
 			}
 		},
