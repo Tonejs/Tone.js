@@ -79,11 +79,11 @@ function(Tone){
 
 	/**
 	 *  controls which beat the swing is applied to
-	 *  defaults to an 8th note
+	 *  defaults to an 16th note
 	 *  @private
 	 *  @type {number}
 	 */
-	var swingTatum = 6;
+	var swingTatum = 3;
 
 	/**
 	 *  controls which beat the swing is applied to
@@ -622,7 +622,8 @@ function(Tone){
 	};
 
 	/**
-	 *  set the subdivision which the swing will be applied to
+	 *  set the subdivision which the swing will be applied to. the starting values is a 16th note. 
+	 *  
 	 *  @example
 	 *  Tone.Transport.setSwingSubdivision("8n"); //the eight note will be swing by the "swing amount"
 	 *  
