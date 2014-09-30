@@ -1,8 +1,9 @@
 /* global it, describe, after, maxTimeout */
 
 define(["chai", "Tone/source/Player", "Tone/core/Master", "Tone/source/Oscillator", 
-	"Tone/component/Recorder", "Tone/source/Noise", "tests/Core", "Tone/source/PulseOscillator", "tests/Common"], 
-function(chai, Player, Master, Oscillator, Recorder, Noise, core, PulseOscillator, Test){
+	"Tone/component/Recorder", "Tone/source/Noise", "tests/Core", "Tone/source/PulseOscillator", "tests/Common", 
+	"Tone/source/PWMOscillator", "Tone/source/OmniOscillator"], 
+function(chai, Player, Master, Oscillator, Recorder, Noise, core, PulseOscillator, Test, PWMOscillator, OmniOscillator){
 
 	var expect = chai.expect;
 
@@ -14,7 +15,7 @@ function(chai, Player, Master, Oscillator, Recorder, Noise, core, PulseOscillato
 		it("can be created and disposed", function(){
 			var p = new Player();
 			p.dispose();
-			Test.wasDisposed(p, expect);
+			Test.wasDisposed(p);
 		});
 
 		it("loads a file", function(done){
@@ -31,20 +32,19 @@ function(chai, Player, Master, Oscillator, Recorder, Noise, core, PulseOscillato
 				done();
 			});
 		});
-/*
+
 		it("invokes a callback onend", function(done){
 			var player = new Player("./testAudio/kick.mp3", function(){
 				player.onended = function(){
 					expect(player.state).to.equal("stopped");
-					console.log("hihi");
 					player.dispose();
 					done();
 				};
-				console.log("here");
 				player.start();
 				expect(player.state).to.equal("started");
 			});
-		});*/
+			player.toMaster();
+		});
 
 		it("can handle multiple restarts", function(done){
 			var player = new Player("./testAudio/kick.mp3", function(){
@@ -68,7 +68,7 @@ function(chai, Player, Master, Oscillator, Recorder, Noise, core, PulseOscillato
 		it("can be created and disposed", function(){
 			var o = new Oscillator();
 			o.dispose();
-			Test.wasDisposed(o, expect);
+			Test.wasDisposed(o);
 		});
 
 		it("starts and stops", function(done){
@@ -104,6 +104,17 @@ function(chai, Player, Master, Oscillator, Recorder, Noise, core, PulseOscillato
 			oscillator.stop();
 			expect(oscillator.state).to.equal("stopped");
 			oscillator.dispose();
+		});
+
+		it("invokes the onended callback on stop", function(done){
+			var oscillator = new Oscillator();
+			oscillator.toMaster();
+			oscillator.onended = function(){
+				oscillator.dispose();
+				done();
+			};
+			oscillator.start();
+			oscillator.stop("+0.2");
 		});
 
 		it("be scheduled to start in the future", function(done){
@@ -147,7 +158,7 @@ function(chai, Player, Master, Oscillator, Recorder, Noise, core, PulseOscillato
 		it("can be created and disposed", function(){
 			var n = new Noise();
 			n.dispose();
-			Test.wasDisposed(n, expect);
+			Test.wasDisposed(n);
 		});
 
 		it("starts and stops", function(done){
@@ -216,7 +227,80 @@ function(chai, Player, Master, Oscillator, Recorder, Noise, core, PulseOscillato
 		it("can be created and disposed", function(){
 			var o = new PulseOscillator();
 			o.dispose();
-			Test.wasDisposed(o, expect);
+			Test.wasDisposed(o);
+		});
+
+		it("can set the width", function(){
+			var pulse = new PulseOscillator();
+			pulse.setWidth(0.2);
+			pulse.dispose();
+		});
+
+		it("can set the frequency", function(){
+			var pulse = new PulseOscillator();
+			pulse.setFrequency(220);
+			pulse.dispose();
+		});
+	});
+
+	describe("Tone.PWMOscillator", function(){
+		this.timeout(maxTimeout);
+
+		it("can be created and disposed", function(){
+			var pwm = new PWMOscillator();
+			pwm.dispose();
+			Test.wasDisposed(pwm);
+		});
+
+		it("can set the modulation frequency", function(){
+			var pwm = new PWMOscillator();
+			pwm.setModulationFrequency(0.2);
+			pwm.dispose();
+		});
+
+		it("can set the frequency", function(){
+			var pwm = new PWMOscillator();
+			pwm.setFrequency(220);
+			pwm.dispose();
+		});
+	});
+
+	describe("Tone.OmniOscillator", function(){
+		this.timeout(maxTimeout);
+
+		it("can be created and disposed", function(){
+			var omni = new OmniOscillator();
+			omni.dispose();
+			Test.wasDisposed(omni);
+		});
+
+		it("invokes the onended callback on stop", function(done){
+			var omni = new OmniOscillator();
+			omni.toMaster();
+			omni.onended = function(){
+				omni.dispose();
+				done();
+			};
+			omni.start();
+			omni.stop("+0.2");
+		});
+
+		it("can set the modulation frequency only when type is pwm", function(){
+			var omni = new OmniOscillator();
+			omni.setType("pwm");
+			expect(omni.setModulationFrequency.bind(omni, 0.2)).to.not.throw(Error);
+			omni.setType("pulse");
+			expect(omni.setModulationFrequency.bind(omni, 0.2)).to.throw(Error);
+			omni.dispose();
+		});
+
+		it("can set the modulation width only when type is pulse", function(){
+			var omni = new OmniOscillator();
+			omni.setType("pulse");
+			expect(omni.setWidth.bind(omni, 0.2)).to.not.throw(Error);
+			omni.setType("sine");
+			expect(omni.setWidth.bind(omni, 0.2)).to.throw(Error);
+			omni.dispose();
 		});
 	});
 
