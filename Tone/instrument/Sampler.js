@@ -11,19 +11,18 @@ function(Tone){
 	 *  @constructor
 	 *  @extends {Tone.Instrument}
 	 *  @param {string|object} url the url of the audio file
-	 *  @param {function} load called when the sample has been loaded
+	 *  @param {function} onload called when the sample has been loaded
 	 */
 	Tone.Sampler = function(){
 
 		Tone.Instrument.call(this);
-
-		var options = this.optionsObject(arguments, ["url", "load"], Tone.Sampler.defaults);
+		var options = this.optionsObject(arguments, ["url", "onload"], Tone.Sampler.defaults);
 
 		/**
 		 *  the sample player
 		 *  @type {Tone.Player}
 		 */
-		this.player = new Tone.Player(options.url, options.load);
+		this.player = new Tone.Player(options.url, options.onload);
 		this.player.retrigger = true;
 
 		/**
@@ -57,8 +56,8 @@ function(Tone){
 	 *  @static
 	 */
 	Tone.Sampler.defaults = {
-		"url" : null,
-		"load" : function(){},
+		"url" : undefined,
+		"onload" : function(){},
 		"envelope" : {
 			"attack" : 0.001,
 			"decay" : 0,
