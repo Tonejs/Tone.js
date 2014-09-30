@@ -131,7 +131,8 @@ function(Tone){
 			"phase" : params.phase,
 			"frequency" : params.frequency,
 			"detune" : params.detune
-		});		
+		});
+		Tone.Source.prototype.set.call(this, params);		
 	};
 
 	/**

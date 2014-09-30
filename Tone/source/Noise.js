@@ -10,9 +10,10 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 	 *  @extends {Tone.Source}
 	 *  @param {string} type the noise type (white|pink|brown)
 	 */
-	Tone.Noise = function(type){
+	Tone.Noise = function(){
 
 		Tone.Source.call(this);
+		var options = this.optionsObject(arguments, ["type"], Tone.Player.defaults);
 
 		/**
 		 *  @private
@@ -32,12 +33,24 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 		 *  
 		 *  @type {function}
 		 */
-		this.onended = function(){};
+		this.onended = options.onended;
 
-		this.setType(this.defaultArg(type, "white"));
+		this.setType(options.type);
 	};
 
 	Tone.extend(Tone.Noise, Tone.Source);
+
+	/**
+	 *  the default parameters
+	 *
+	 *  @static
+	 *  @const
+	 *  @type {Object}
+	 */
+	Tone.Noise.defaults = {
+		"type" : "white",
+		"onended" : function(){}
+	};
 
 	/**
 	 *  set the noise type
@@ -67,6 +80,16 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 			this._stop(time);
 			this._start(time);
 		}
+	};
+
+	/**
+	 *  set the parameters at once
+	 *  @param {Object} params
+	 */
+	Tone.Noise.prototype.set = function(params){
+		if (!this.isUndef(params.type)) this.setType(params.type);
+		if (!this.isUndef(params.onended)) this.onended = params.onended;
+		Tone.Source.prototype.set.call(this, params);
 	};
 
 	/**

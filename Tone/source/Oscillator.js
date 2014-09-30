@@ -220,6 +220,7 @@ function(Tone){
 		if (!this.isUndef(params.frequency)) this.frequency.setValue(params.frequency);
 		if (!this.isUndef(params.onended)) this.onended = params.onended;
 		if (!this.isUndef(params.detune)) this.detune.setValue(params.detune);
+		Tone.Source.prototype.set.call(this, params);
 	};
 
 	/**

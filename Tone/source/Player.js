@@ -13,9 +13,10 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 	 *  @param {function(Tone.Player)=} onload callback to be invoked
 	 *                                     once the url is loaded
 	 */
-	Tone.Player = function(url, onload){
+	Tone.Player = function(){
 		
 		Tone.Source.call(this);
+		var options = this.optionsObject(arguments, ["url", "onload"], Tone.Player.defaults);
 
 		/**
 		 *  @private
@@ -29,7 +30,6 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 		 *  @type {AudioBuffer}
 		 */
 		this._buffer = null;
-
 
 		/**
 		 *  the duration of the buffer once it's been loaded
@@ -78,15 +78,27 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 		 *  
 		 *  @type {function}
 		 */
-		this.onended = function(){};
+		this.onended = options.onended;
 
 		//if there is a url, load it. 
-		if (url){
-			this.load(url, onload);
+		if (!this.isUndef(options.url)){
+			this.load(options.url, options.onload);
 		}
 	};
 
 	Tone.extend(Tone.Player, Tone.Source);
+
+	
+	/**
+	 *  the default parameters
+	 *
+	 *  @static
+	 *  @const
+	 *  @type {Object}
+	 */
+	Tone.Player.defaults = {
+		"onended" : function(){}
+	};
 
 	/**
 	 *  makes an xhr reqest for the selected url
@@ -205,6 +217,16 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 				this._source.playbackRate.value = rampTime;
 			}
 		} 
+	};
+
+	/**
+	 *  set the parameters at once
+	 *  @param {Object} params
+	 */
+	Tone.Player.prototype.set = function(params){
+		if (!this.isUndef(params.playbackRate)) this.setPlaybackRate(params.playbackRate);
+		if (!this.isUndef(params.onended)) this.onended = params.onended;
+		Tone.Source.prototype.set.call(this, params);
 	};
 
 	/**

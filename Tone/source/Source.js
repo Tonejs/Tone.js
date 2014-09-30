@@ -65,7 +65,6 @@ define(["Tone/core/Tone", "Tone/core/Transport"], function(Tone){
 		Tone.Transport.unsyncSource(this);
 	};
 
-
 	/**
 	 *  set the volume in decibels
 	 *  @param {number} db in decibels
@@ -82,6 +81,14 @@ define(["Tone/core/Tone", "Tone/core/Transport"], function(Tone){
 		} else {
 			this.output.gain.setValueAtTime(gain, now);
 		}
+	};
+
+	/**
+	 *  set the parameters at once
+	 *  @param {Object} params
+	 */
+	Tone.Source.prototype.set = function(params){
+		if (!this.isUndef(params.volume)) this.setVolume(params.volume);
 	};
 
 	/**

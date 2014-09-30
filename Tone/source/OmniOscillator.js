@@ -202,6 +202,7 @@ function(Tone){
 		if (!this.isUndef(params.onended)) this.onended = params.onended;
 		if (!this.isUndef(params.modulationFrequency)) this.setModulationFrequency(params.modulationFrequency);
 		if (!this.isUndef(params.type)) this.detune.setType(params.type);
+		Tone.Source.prototype.set.call(this, params);
 	};
 
 	/**
