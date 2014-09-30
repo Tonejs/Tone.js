@@ -75,6 +75,7 @@ function(Tone){
 	 *  the default parameters
 	 *
 	 *  @static
+	 *  @const
 	 *  @type {Object}
 	 */
 	Tone.Oscillator.defaults = {
@@ -102,8 +103,8 @@ function(Tone){
 			this.frequency.connect(this.oscillator.frequency);
 			this.detune.connect(this.oscillator.detune);
 			//start the oscillator
-			this.oscillator.start(this.toSeconds(time));
 			this.oscillator.onended = this._onended.bind(this);
+			this.oscillator.start(this.toSeconds(time));
 		}
 	};
 
