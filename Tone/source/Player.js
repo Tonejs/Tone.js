@@ -148,10 +148,12 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 		if (this.state === Tone.Source.State.STOPPED || this.retrigger){
 			if (this._buffer){
 				this.state = Tone.Source.State.STARTED;
-				//default args
-				offset = this.defaultArg(offset, 0);
+				//if it's a loop the default offset is the loopstart point
 				if (this.loop){
-					offset = this.loopStart;
+					offset = this.defaultArg(offset, this.loopStart);
+				} else {
+					//otherwise the default offset is 0
+					offset = this.defaultArg(offset, 0);
 				}
 				duration = this.defaultArg(duration, this._buffer.duration - offset);
 				//make the source
