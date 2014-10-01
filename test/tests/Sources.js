@@ -1,4 +1,4 @@
-/* global it, describe, after, maxTimeout */
+/* global it, describe, after, maxTimeout, beforeEach */
 
 define(["chai", "Tone/source/Player", "Tone/core/Master", "Tone/source/Oscillator", 
 	"Tone/component/Recorder", "Tone/source/Noise", "tests/Core", "Tone/source/PulseOscillator", "tests/Common", 
@@ -10,7 +10,9 @@ function(chai, Player, Master, Oscillator, Recorder, Noise, core, PulseOscillato
 	describe("Tone.Player", function(){
 		this.timeout(maxTimeout);
 
-		Test.onlineContext();
+		beforeEach(function(){
+			Test.onlineContext();
+		});
 
 		it("can be created and disposed", function(){
 			var p = new Player();
@@ -35,14 +37,14 @@ function(chai, Player, Master, Oscillator, Recorder, Noise, core, PulseOscillato
 
 		it("invokes a callback onend", function(done){
 			var player = new Player("./testAudio/kick.mp3", function(){
-				player.onended = function(){
-					expect(player.state).to.equal("stopped");
-					player.dispose();
-					done();
-				};
 				player.start();
 				expect(player.state).to.equal("started");
 			});
+			player.onended = function(){
+				expect(player.state).to.equal("stopped");
+				player.dispose();
+				done();
+			};
 			player.toMaster();
 		});
 
@@ -63,7 +65,9 @@ function(chai, Player, Master, Oscillator, Recorder, Noise, core, PulseOscillato
 	describe("Tone.Oscillator", function(){
 		this.timeout(maxTimeout);
 
-		Test.onlineContext();
+		beforeEach(function(){
+			Test.onlineContext();
+		});
 
 		it("can be created and disposed", function(){
 			var o = new Oscillator();
@@ -134,7 +138,6 @@ function(chai, Player, Master, Oscillator, Recorder, Noise, core, PulseOscillato
 		});
 
 		it("can set the frequency", function(){
-			Test.onlineContext();
 			var oscillator = new Oscillator();
 			oscillator.setFrequency(110);
 			expect(oscillator.frequency.getValue()).to.equal(110);
@@ -148,11 +151,8 @@ function(chai, Player, Master, Oscillator, Recorder, Noise, core, PulseOscillato
 	describe("Tone.Noise", function(){
 		this.timeout(maxTimeout);
 
-		var noise = new Noise();
-		noise.toMaster();
-
-		after(function(){
-			noise.dispose();
+		beforeEach(function(){
+			Test.onlineContext();
 		});
 
 		it("can be created and disposed", function(){
@@ -162,33 +162,51 @@ function(chai, Player, Master, Oscillator, Recorder, Noise, core, PulseOscillato
 		});
 
 		it("starts and stops", function(done){
+			var noise = new Noise();
 			expect(noise.state).to.equal("stopped");
 			noise.start();
 			expect(noise.state).to.equal("started");
 			setTimeout(function(){
 				noise.stop();
+				noise.dispose();
 				done();
 			}, 100);
 		});
 
+		it("invokes the onended callback on stop", function(done){
+			var noise = new Noise();
+			noise.toMaster();
+			noise.onended = function(){
+				noise.dispose();
+				done();
+			};
+			noise.start();
+			noise.stop("+0.2");
+		});
+
 		it("can be scheduled to stop", function(done){
+			var noise = new Noise();
+			noise.toMaster();
 			expect(noise.state).to.equal("stopped");
 			noise.start();
 			expect(noise.state).to.equal("started");
 			noise.stop("+0.05");
 			setTimeout(function(){
 				expect(noise.state).to.equal("stopped");
+				noise.dispose();
 				done();
 			}, 100);
 		});
 
 		it("won't start again before stopping", function(){
+			var noise = new Noise();
 			expect(noise.state).to.equal("stopped");
 			noise.start();
 			noise.start();
 			noise.stop();
 			noise.stop();
 			expect(noise.state).to.equal("stopped");
+			noise.dispose();
 		});
 
 		it("be scheduled to start in the future", function(done){
@@ -208,7 +226,7 @@ function(chai, Player, Master, Oscillator, Recorder, Noise, core, PulseOscillato
 		});
 
 		it("can set the noise types", function(){
-			Test.onlineContext();
+			var noise = new Noise();
 			noise.setType("brown");
 			noise.setType("white");
 			noise.setType("pink");
@@ -218,11 +236,16 @@ function(chai, Player, Master, Oscillator, Recorder, Noise, core, PulseOscillato
 			noise.setType("white");
 			noise.setType("pink");
 			noise.stop();
+			noise.dispose();
 		});
 	});
 
 	describe("Tone.PulseOscillator", function(){
 		this.timeout(maxTimeout);
+
+		beforeEach(function(){
+			Test.onlineContext();
+		});
 
 		it("can be created and disposed", function(){
 			var o = new PulseOscillator();
@@ -241,10 +264,25 @@ function(chai, Player, Master, Oscillator, Recorder, Noise, core, PulseOscillato
 			pulse.setFrequency(220);
 			pulse.dispose();
 		});
+
+		it("invokes the onended callback on stop", function(done){
+			var oscillator = new PulseOscillator();
+			oscillator.toMaster();
+			oscillator.onended = function(){
+				oscillator.dispose();
+				done();
+			};
+			oscillator.start();
+			oscillator.stop("+0.2");
+		});
 	});
 
 	describe("Tone.PWMOscillator", function(){
 		this.timeout(maxTimeout);
+
+		beforeEach(function(){
+			Test.onlineContext();
+		});
 
 		it("can be created and disposed", function(){
 			var pwm = new PWMOscillator();
@@ -263,10 +301,25 @@ function(chai, Player, Master, Oscillator, Recorder, Noise, core, PulseOscillato
 			pwm.setFrequency(220);
 			pwm.dispose();
 		});
+
+		it("invokes the onended callback on stop", function(done){
+			var oscillator = new PWMOscillator();
+			oscillator.toMaster();
+			oscillator.onended = function(){
+				oscillator.dispose();
+				done();
+			};
+			oscillator.start();
+			oscillator.stop("+0.2");
+		});
 	});
 
 	describe("Tone.OmniOscillator", function(){
 		this.timeout(maxTimeout);
+
+		beforeEach(function(){
+			Test.onlineContext();
+		});
 
 		it("can be created and disposed", function(){
 			var omni = new OmniOscillator();
