@@ -74,7 +74,7 @@
 
 		//osc 0
 		var ampEnv0 = new GUI.Envelope(envelope0, synth.carrier.envelope, "amplitude");
-		var osc0 = new GUI.Oscillator(envelope0, synth.carrier.oscillator, "oscillator");
+		var osc0 = new GUI.OmniOscillator(envelope0, synth.carrier.oscillator, "oscillator");
 		var osc0Vol = new GUI.Slider(envelope0, function(val){
 			var vol = synth.gainToDb(val);
 			synth.carrier.setVolume(vol);
@@ -83,7 +83,7 @@
 
 		//osc 1
 		var ampEnv1 = new GUI.Envelope(envelope1, synth.modulator.envelope, "amplitude");
-		var osc1 = new GUI.Oscillator(envelope1, synth.modulator.oscillator, "oscillator");
+		var osc1 = new GUI.OmniOscillator(envelope1, synth.modulator.oscillator, "oscillator");
 		var osc1Vol = new GUI.Slider(envelope1, function(val){
 			var vol = synth.gainToDb(val);
 			synth.modulator.setVolume(vol);

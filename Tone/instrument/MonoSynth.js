@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/component/Envelope", "Tone/source/Oscillator", 
+define(["Tone/core/Tone", "Tone/component/Envelope", "Tone/source/OmniOscillator", 
 	"Tone/signal/Signal", "Tone/component/Filter", "Tone/signal/Add", "Tone/instrument/Monophonic"], 
 function(Tone){
 
@@ -21,9 +21,9 @@ function(Tone){
 
 		/**
 		 *  the first oscillator
-		 *  @type {Tone.Oscillator}
+		 *  @type {Tone.OmniOscillator}
 		 */
-		this.oscillator = new Tone.Oscillator(0, options.oscType);
+		this.oscillator = new Tone.OmniOscillator(options.oscillator);
 
 		/**
 		 *  the frequency control signal
@@ -81,7 +81,9 @@ function(Tone){
 	 *  @type {Object}
 	 */
 	Tone.MonoSynth.defaults = {
-		"oscType" : "square",
+		"oscillator" : {
+			"type" : "square"
+		},
 		"filter" : {
 			"Q" : 6,
 			"type" : "lowpass",
@@ -139,7 +141,7 @@ function(Tone){
 	 */
 	Tone.MonoSynth.prototype.set = function(params){
 		if (!this.isUndef(params.detune)) this.detune.setValue(params.detune);
-		if (!this.isUndef(params.oscType)) this.setOscType(params.oscType);
+		if (!this.isUndef(params.oscillator)) this.oscillator.set(params.oscillator);
 		if (!this.isUndef(params.filterEnvelope)) this.filterEnvelope.set(params.filterEnvelope);
 		if (!this.isUndef(params.envelope)) this.envelope.set(params.envelope);
 		if (!this.isUndef(params.filter)) this.filter.set(params.filter);

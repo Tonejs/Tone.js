@@ -7,9 +7,37 @@ define(["Tone/core/Tone", "Tone/instrument/MonoSynth"], function(Tone){
 	 *  @type {Object}
 	 */
 	Tone.MonoSynth.prototype.preset = {
+		"CoolGuy" : {
+			"portamento" : 0.0,
+			"oscillator" : {
+				"type" : "pwm",
+				"modulationFrequency" : 1
+			},
+			"filter" : {
+				"Q" : 6,
+				"type" : "lowpass",
+				"rolloff" : -24 
+			},
+			"envelope" : {
+				"attack" : 0.025,
+				"decay" : 0.3,
+				"sustain" : 0.9,
+				"release" : 2
+			},
+			"filterEnvelope" : {
+				"attack" : 0.245,
+				"decay" : 0.131,
+				"sustain" : 0.5,
+				"release" : 2,
+				"min" : 20,
+				"max" : 3000
+			}
+		},
 		"Pianoetta" : {
 			"portamento" : 0.0,
-			"oscType" : "square",
+			"oscillator" : {
+				"type" : "square"
+			},
 			"filter" : {
 				"Q" : 6,
 				"type" : "lowpass",
@@ -32,7 +60,9 @@ define(["Tone/core/Tone", "Tone/instrument/MonoSynth"], function(Tone){
 		},
 		"Barky" : {
 			"portamento" : 0.01,
-			"oscType" : "triangle",
+			"oscillator" : {
+				"type" : "triangle"
+			},
 			"filter" : {
 				"Q" : 3,
 				"type" : "highpass",
@@ -55,7 +85,9 @@ define(["Tone/core/Tone", "Tone/instrument/MonoSynth"], function(Tone){
 		},
 		"Bassy" : {
 			"portamento" : 0.08,
-			"oscType" : "square",
+			"oscillator" : {
+				"type" : "square"
+			},
 			"filter" : {
 				"Q" : 4,
 				"type" : "lowpass",
@@ -78,7 +110,9 @@ define(["Tone/core/Tone", "Tone/instrument/MonoSynth"], function(Tone){
 		},
 		"BrassCircuit" : {
 			"portamento" : 0.01,
-			"oscType" : "sawtooth",
+			"oscillator" : {
+				"type" : "sawtooth"
+			},
 			"filter" : {
 				"Q" : 2,
 				"type" : "lowpass",
@@ -101,7 +135,9 @@ define(["Tone/core/Tone", "Tone/instrument/MonoSynth"], function(Tone){
 		},
 		"Pizz" : {
 			"portamento" : 0.00,
-			"oscType" : "square",
+			"oscillator" : {
+				"type" : "square"
+			},
 			"filter" : {
 				"Q" : 2,
 				"type" : "highpass",
@@ -124,7 +160,9 @@ define(["Tone/core/Tone", "Tone/instrument/MonoSynth"], function(Tone){
 		},
 		"Kick" : {
 			"portamento" : 0.00,
-			"oscType" : "square",
+			"oscillator" : {
+				"type" : "square"
+			},
 			"filter" : {
 				"Q" : 2,
 				"type" : "bandpass",
@@ -147,7 +185,9 @@ define(["Tone/core/Tone", "Tone/instrument/MonoSynth"], function(Tone){
 		},
 		"LaserSteps" : {
 			"portamento" : 0.00,
-			"oscType" : "sawtooth",
+			"oscillator" : {
+				"type" : "sawtooth"
+			},
 			"filter" : {
 				"Q" : 2,
 				"type" : "bandpass",
