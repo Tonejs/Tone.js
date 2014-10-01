@@ -92,7 +92,7 @@ function(Tone){
 		"frequency" : 440,
 		"detune" : 0,
 		"phase" : 0,
-		"width" : 0.5,
+		"width" : 0.2,
 		"onended" : function(){},
 	};
 

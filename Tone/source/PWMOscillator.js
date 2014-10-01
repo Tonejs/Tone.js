@@ -21,7 +21,7 @@ function(Tone){
 		 */
 		this._pulse = new Tone.PulseOscillator(options.modulationFrequency);
 		//change the pulse oscillator type
-		this._pulse._sawtooth.setType("triangle");
+		this._pulse._sawtooth.setType("sine");
 
 		/**
 		 *  the modulator
