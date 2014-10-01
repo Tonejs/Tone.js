@@ -577,7 +577,7 @@ define("Tone/core/Tone", [], function(){
 		_silentNode.connect(audioContext.destination);
 	});
 
-	console.log("Tone.js r3-dev");
+	console.log("%c * Tone.js r3-dev * ", "background: #000; color: #fff");
 
 	return Tone;
 });
