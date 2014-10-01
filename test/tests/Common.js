@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "chai", "Tone/component/Recorder"],function(Tone, chai, Recorder){
+define(["Tone/core/Tone", "chai", "Tone/component/Recorder", "Tone/core/Master"],function(Tone, chai, Recorder, Master){
 
 	var expect = chai.expect;
 
@@ -80,7 +80,10 @@ define(["Tone/core/Tone", "chai", "Tone/component/Recorder"],function(Tone, chai
 		wasDisposed : wasDisposed,
 		onlineTest : onlineTest,
 		onlineContext : function(){
-			Tone.setContext(audioContext);
+			if (Tone.context !== audioContext){
+				Tone.setContext(audioContext);
+			}
+			Master.mute();
 		}
 	};
 });
