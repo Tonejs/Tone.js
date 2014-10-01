@@ -10,7 +10,6 @@ define(["Tone/core/Tone"], function(Tone){
 	 *  @extends {Tone}
 	 */
 	Tone.Master = function(){
-		//extend audio unit
 		Tone.call(this);
 
 		/**
@@ -21,6 +20,7 @@ define(["Tone/core/Tone"], function(Tone){
 		this.limiter = this.context.createDynamicsCompressor();
 		this.limiter.threshold.value = 0;
 		this.limiter.ratio.value = 20;
+		
 		//connect it up
 		this.chain(this.input, this.limiter, this.output, this.context.destination);
 	};
