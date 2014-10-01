@@ -98,7 +98,9 @@ function(Tone){
 		"voice0" : {
 			"volume" : -10,
 			"portamento" : 0,
-			"oscType" : "sine",
+			"oscillator" : {
+				"type" : "sine"
+			},
 			"filterEnvelope" : {
 				"attack" : 0.01,
 				"decay" : 0.0,
@@ -115,7 +117,9 @@ function(Tone){
 		"voice1" : {
 			"volume" : -10,
 			"portamento" : 0,
-			"oscType" : "sine",
+			"oscillator" : {
+				"type" : "sine"
+			},
 			"filterEnvelope" : {
 				"attack" : 0.01,
 				"decay" : 0.0,

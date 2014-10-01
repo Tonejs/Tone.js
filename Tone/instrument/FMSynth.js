@@ -83,7 +83,9 @@ function(Tone){
 		"carrier" : {
 			"volume" : -10,
 			"portamento" : 0,
-			"oscType" : "sine",
+			"oscillator" : {
+				"type" : "sine"
+			},
 			"envelope" : {
 				"attack" : 0.01,
 				"decay" : 0.0,
@@ -102,7 +104,9 @@ function(Tone){
 		"modulator" : {
 			"volume" : -10,
 			"portamento" : 0,
-			"oscType" : "triangle",
+			"oscillator" : {
+				"type" : "triangle"
+			},
 			"envelope" : {
 				"attack" : 0.01,
 				"decay" : 0.0,

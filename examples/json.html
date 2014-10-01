@@ -34,8 +34,10 @@
 		/* globals Tone, GUI */
 
 		var synthOptions = {
-			"oscType": "square",
 			"portamento" : 0.05,
+			"oscillator" : {
+				"type" : "square"
+			},
 			"filter": {
 				"Q": 6,
 				"type": "lowpass",
