@@ -13,7 +13,7 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 	Tone.Noise = function(){
 
 		Tone.Source.call(this);
-		var options = this.optionsObject(arguments, ["type"], Tone.Player.defaults);
+		var options = this.optionsObject(arguments, ["type"], Tone.Noise.defaults);
 
 		/**
 		 *  @private
