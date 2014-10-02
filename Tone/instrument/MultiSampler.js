@@ -53,10 +53,8 @@ function(Tone){
 			loaded : 0
 		};
 		//get the count
-		for (var s in samples){
-			if (typeof samples[s] === "string"){
-				loadCounter.total++;
-			}
+		for (var s in samples){ //jshint ignore:line
+			loadCounter.total++;
 		}
 		//the function to invoke when a sample is loaded
 		var onSampleLoad = function(){
