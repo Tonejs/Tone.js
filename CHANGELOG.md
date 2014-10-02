@@ -7,6 +7,7 @@
 * new PWMOscillator
 * OmniOscillator which combines PWMOscillator, Oscillator, and PulseOscillator into one
 
+
 ### r2 - Getting Physical
 
 * PluckSynth - Karplus-Strong Plucked String modeling synth
