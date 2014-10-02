@@ -47,7 +47,7 @@
 		crusher.setWet(0.4);
 		var hats = new Tone.Sampler({
 			"url" : "./audio/505/hh.mp3",
-			"load" : sampleLoaded,
+			"onload" : sampleLoaded,
 			"envelope" : {
 				"attack" : 0.001,
 				"decay" : 0.02,
@@ -71,7 +71,7 @@
 		//snare
 		var snare = new Tone.Sampler({
 			"url" : "./audio/505/snare.mp3",
-			"load" : sampleLoaded,
+			"onload" : sampleLoaded,
 			"envelope" : {
 				"attack" : 0.01,
 				"decay" : 0.05,
