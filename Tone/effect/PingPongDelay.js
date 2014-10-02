@@ -43,19 +43,10 @@ function(Tone){
 		 */
 		this.delayTime = new Tone.Signal(0);
 
-		/**
-		 *  double the delayTime
-		 *  @type {Tone.Multiply}
-		 *  @private
-		 */
-		this._half = new Tone.Multiply(1);
-
 		//connect it up
 		this.chain(this.effectSendL, this._leftPreDelay, this._leftDelay, this.effectReturnL);
 		this.chain(this.effectSendR, this._rightDelay, this.effectReturnR);
-
-		this.fan(this.delayTime, this._leftDelay.delayTime, this._rightDelay.delayTime, this._half);
-		this._half.connect(this._leftPreDelay.delayTime);
+		this.fan(this.delayTime, this._leftDelay.delayTime, this._rightDelay.delayTime, this._leftPreDelay.delayTime);
 		//rearranged the feedback to be after the leftPreDelay
 		this._feedbackRL.disconnect();
 		this._feedbackRL.connect(this._leftDelay);
@@ -99,11 +90,11 @@ function(Tone){
 		Tone.StereoXFeedbackEffect.prototype.dispose.call(this);
 		this._leftDelay.disconnect();
 		this._rightDelay.disconnect();
-		this._half.dispose();
+		this._leftPreDelay.disconnect();
 		this.delayTime.dispose();
 		this._leftDelay = null;
 		this._rightDelay = null;
-		this._half = null;
+		this._leftPreDelay = null;
 		this.delayTime = null;
 	};
 
