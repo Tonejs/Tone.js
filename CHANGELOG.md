@@ -6,6 +6,7 @@
 * Setters on PluckSynth and PulseOscillator
 * new PWMOscillator
 * OmniOscillator which combines PWMOscillator, Oscillator, and PulseOscillator into one
+* Build cleans up global which it defined - leave no trace
 
 
 ### r2 - Getting Physical
