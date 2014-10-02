@@ -468,9 +468,13 @@ function(Tone){
 	 *  start the transport and all sources synced to the transport
 	 *  
 	 *  @param  {Tone.Time} time
+	 *  @param  {Tone.Time=} offset the offset position to start
 	 */
-	Tone.Transport.prototype.start = function(time){
+	Tone.Transport.prototype.start = function(time, offset){
 		if (this.state === TransportState.STOPPED || this.state === TransportState.PAUSED){
+			if (!this.isUndef(offset)){
+				this._setTicks(this.toTicks(offset));
+			}
 			this.state = TransportState.STARTED;
 			var startTime = this.toSeconds(time);
 			this._clock.start(startTime);
