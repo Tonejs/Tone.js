@@ -1,8 +1,10 @@
 (function (root) {
+	//AMD shim for the presets build
 	if (typeof define !== "function" && 
 		typeof root.Tone === "function") {
 		//define 'define' to invoke the callbacks with Tone
-		var define = function(){
+		root.ToneDefinedDefine = true;
+		root.define = function(){
 			//the last argument is the callback
 			var lastArg = arguments[arguments.length - 1];
 			//the first argument is the dependencies or name
@@ -13,3 +15,5 @@
 			}
 		};
 	}
+} (this));
+

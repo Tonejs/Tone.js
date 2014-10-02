@@ -100,7 +100,7 @@ module.exports = function(grunt) {
 		},
 		wrap: {
 			dist: {
-				src: ["./Tone.js.tmp"],
+				src: ["../build/Tone.js"],
 				dest: "../build/Tone.js",
 				options: {
 					wrapper: [grunt.file.read("./fragments/before.frag"), grunt.file.read("./fragments/after.frag")]
@@ -111,6 +111,13 @@ module.exports = function(grunt) {
 				dest: "../build/Tone.Preset.js",
 				options: {
 					wrapper: [grunt.file.read("./fragments/before.preset.frag"), grunt.file.read("./fragments/after.frag")]
+				}
+			},
+			min: {
+				src: ["../build/Tone.min.js"],
+				dest: "../build/Tone.min.js",
+				options: {
+					wrapper: [grunt.file.read("./fragments/before.frag.min"), grunt.file.read("./fragments/after.frag.min")]
 				}
 			}
 		},
@@ -148,9 +155,9 @@ module.exports = function(grunt) {
 	// Default task(s).
 	grunt.registerTask("docs", ["jsdoc:src"]);
 	grunt.registerTask("npm", ["copy:npm"]);
-	grunt.registerTask("presets", ["concat:presets"]);
-	grunt.registerTask("min", ["concat:dist", "requirejs:min", "concat:removeRequireStringMin", "clean:min"]);
-	grunt.registerTask("build", ["concat:dist","requirejs:compile","concat:removeRequireString", "clean:dist"]);
+	grunt.registerTask("presets", ["concat:presets", "wrap:presets"]);
+	grunt.registerTask("min", ["concat:dist", "requirejs:min", "concat:removeRequireStringMin", "clean:min", "wrap:min"]);
+	grunt.registerTask("build", ["concat:dist","requirejs:compile","concat:removeRequireString", "clean:dist", "wrap:dist"]);
 	grunt.registerTask("buildall", ["build", "min", "presets"]);
 	grunt.registerTask("dist", ["buildall", "docs", "npm"]);
 	
