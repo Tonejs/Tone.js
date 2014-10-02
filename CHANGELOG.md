@@ -1,10 +1,11 @@
 ### r3 - Groove
 
 * Swing parameter on Transport
-* Setters on PluckSynth
-* Setters on PulseOscillator
-* PWMOscillator
-* OmniOscillator which combines pwm, oscillator, and pulse into one
+* Envelope ASDR stay in tempo-relative terms even with tempo changes
+* Player loop positions stay in tempo-relative terms even with tempo changes
+* Setters on PluckSynth and PulseOscillator
+* new PWMOscillator
+* OmniOscillator which combines PWMOscillator, Oscillator, and PulseOscillator into one
 
 ### r2 - Getting Physical
 
