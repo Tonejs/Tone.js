@@ -31,12 +31,24 @@ To get all of the files in their directory structure, you can ```npm install ton
 
 ```javascript
 require.config({
-    baseUrl: './base',
+    baseUrl: "./base",
     paths: {
         "Tone" : "path/to/Tone.js/Tone"
     }
 });
 require(["Tone/core/Transport"], function(Transport){
+    //...
+```
+
+You can also use the [Tone.js Build](https://raw.githubusercontent.com/TONEnoTONE/Tone.js/master/build/Tone.js) with requirejs by adding the build as a dependency in require.config
+
+```javascript
+require.config({
+	deps : ["path/to/build/Tone"],
+    baseUrl: "./base",
+});
+//now pull in the modules individually by name
+require(["Tone/instrument/Sampler"], function(Sampler){
     //...
 ```
 
