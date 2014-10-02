@@ -40,18 +40,6 @@ require(["Tone/core/Transport"], function(Transport){
     //...
 ```
 
-You can also use the [Tone.js Build](https://raw.githubusercontent.com/TONEnoTONE/Tone.js/master/build/Tone.js) with requirejs by adding the build as a dependency in require.config
-
-```javascript
-require.config({
-	deps : ["path/to/build/Tone"],
-    baseUrl: "./base",
-});
-//now pull in the modules individually by name
-require(["Tone/instrument/Sampler"], function(Sampler){
-    //...
-```
-
 # AudioContext
 
 Tone.js creates an AudioContext when it loads and shims it for maximum browser compatibility. The AudioContext can be found at ```Tone.context``` or from within any Object extending Tone as ```this.context```. 
