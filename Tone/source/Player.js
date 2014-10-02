@@ -100,7 +100,7 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 		"onended" : function(){},
 		"loop" : false,
 		"loopStart" : 0,
-		"loopEnd" : "4n",
+		"loopEnd" : -1,
 		"retrigger" : false
 	};
 
@@ -179,7 +179,9 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 				if (this.loop){
 					this._source.loop = this.loop;
 					this._source.loopStart = this.toSeconds(this.loopStart);
-					this._source.loopEnd = this.toSeconds(this.loopEnd);
+					if (this.loopEnd > 0){
+						this._source.loopEnd = this.toSeconds(this.loopEnd);
+					}
 				}
 				//and other properties
 				this._source.playbackRate.value = this._playbackRate;
