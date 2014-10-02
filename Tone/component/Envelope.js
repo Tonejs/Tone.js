@@ -27,37 +27,37 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 		 *  the attack time in seconds
 		 *  @type {number}
 		 */
-		this.attack = this.toSeconds(options.attack);
+		this.attack = options.attack;
 
 		/**
 		 *  the decay time in seconds
 		 *  @type {number}
 		 */
-		this.decay = this.toSeconds(options.decay);
+		this.decay = options.decay;
 		
 		/**
 		 *  the sustain is a value between 0-1
 		 *  @type {number}
 		 */
-		this.sustain = this.toSeconds(options.sustain);
+		this.sustain = options.sustain;
 
 		/**
 		 *  the release time in seconds
 		 *  @type {number}
 		 */
-		this.release = this.toSeconds(options.release);
+		this.release = options.release;
 
 		/**
 		 *  the minimum output of the envelope
 		 *  @type {number}
 		 */
-		this.min = this.toSeconds(options.min);
+		this.min = options.min;
 
 		/**
 		 *  the maximum output of the envelope
 		 *  @type {number}
 		 */
-		this.max = this.toSeconds(options.max);
+		this.max = options.max;
 		
 		/** 
 		 *  the control signal
@@ -107,7 +107,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	 *  @param {Tone.Time} time
 	 */
 	Tone.Envelope.prototype.setAttack = function(time){
-		this.attack = this.toSeconds(time);
+		this.attack = time;
 	};
 
 	/**
@@ -115,7 +115,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	 *  @param {Tone.Time} time
 	 */
 	Tone.Envelope.prototype.setDecay = function(time){
-		this.decay = this.toSeconds(time);
+		this.decay = time;
 	};
 
 	/**
@@ -123,7 +123,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	 *  @param {Tone.Time} time
 	 */
 	Tone.Envelope.prototype.setRelease = function(time){
-		this.release = this.toSeconds(time);
+		this.release = time;
 	};
 
 	/**
@@ -160,12 +160,14 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	 */
 	Tone.Envelope.prototype.triggerAttack = function(time, velocity){
 		velocity = this.defaultArg(velocity, 1);
+		var attack = this.toSeconds(this.attack);
+		var decay = this.toSeconds(this.decay);
 		var scaledMax = this.max * velocity;
 		var sustainVal = (scaledMax - this.min) * this.sustain + this.min;
 		time = this.toSeconds(time);
 		this._control.cancelScheduledValues(time);
-		this._control.setTargetAtTime(scaledMax, time, this.attack / 4);
-		this._control.setTargetAtTime(sustainVal, time + this.attack, this.decay / 4);	
+		this._control.setTargetAtTime(scaledMax, time, attack / 4);
+		this._control.setTargetAtTime(sustainVal, time + attack, decay / 4);	
 	};
 	
 	/**
@@ -175,7 +177,8 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	Tone.Envelope.prototype.triggerRelease = function(time){
 		time = this.toSeconds(time);
 		this._control.cancelScheduledValues(time);
-		this._control.setTargetAtTime(this.min, time, this.toSeconds(this.release) / 4);
+		var release = this.toSeconds(this.release);
+		this._control.setTargetAtTime(this.min, time, release / 4);
 	};
 
 	/**
