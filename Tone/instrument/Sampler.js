@@ -22,8 +22,12 @@ function(Tone){
 		 *  the sample player
 		 *  @type {Tone.Player}
 		 */
-		this.player = new Tone.Player(options.url, options.onload);
-		this.player.retrigger = true;
+		this.player = new Tone.Player({
+			url : options.url, 
+			onload : options.onload,
+			retrigger : true
+		});
+		this.player.set(options.player);
 
 		/**
 		 *  the amplitude envelope
@@ -58,6 +62,9 @@ function(Tone){
 	Tone.Sampler.defaults = {
 		"url" : undefined,
 		"onload" : function(){},
+		"player" : {
+			"loop" : false,
+		},
 		"envelope" : {
 			"attack" : 0.001,
 			"decay" : 0,
@@ -84,6 +91,7 @@ function(Tone){
 	 Tone.Sampler.prototype.set = function(params){
 	 	if (!this.isUndef(params.filterEnvelope)) this.filterEnvelope.set(params.filterEnvelope);
 	 	if (!this.isUndef(params.envelope)) this.envelope.set(params.envelope);
+	 	if (!this.isUndef(params.player)) this.player.set(params.player);
 	 	if (!this.isUndef(params.filter)) this.filter.set(params.filter);
 	 };
 
@@ -98,7 +106,7 @@ function(Tone){
 		time = this.toSeconds(time);
 		note = this.defaultArg(note, 0);
 		this.player.setPlaybackRate(this.intervalToFrequencyRatio(note), time);
-		this.player.start(time);
+		this.player.start(time, 0);
 		this.envelope.triggerAttack(time, velocity);
 		this.filterEnvelope.triggerAttack(time);
 	};
@@ -112,6 +120,7 @@ function(Tone){
 		time = this.toSeconds(time);
 		this.filterEnvelope.triggerRelease(time);
 		this.envelope.triggerRelease(time);
+		this.player.stop(this.toSeconds(this.envelope.release) + time);
 	};
 
 	/**
