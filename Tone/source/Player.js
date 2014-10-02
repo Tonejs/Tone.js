@@ -42,21 +42,21 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 		 *  if the buffer should loop once it's over
 		 *  @type {boolean}
 		 */
-		this.loop = false;
+		this.loop = options.loop;
 
 		/**
 		 *  if 'loop' is true, the loop will start at this position
 		 *  
-		 *  @type {number}
+		 *  @type {Tone.Time}
 		 */
-		this.loopStart = 0;
+		this.loopStart = options.loopStart;
 
 		/**
 		 *  if 'loop' is true, the loop will end at this position
 		 *  
-		 *  @type {number}
+		 *  @type {Tone.Time}
 		 */
-		this.loopEnd = 0;
+		this.loopEnd = options.loopEnd;
 
 		/**
 		 *  the playback rate
@@ -71,7 +71,7 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 		 *  
 		 *  @type {boolean}
 		 */
-		this.retrigger = false;
+		this.retrigger = options.retrigger;
 
 		/**
 		 *  set a callback function to invoke when the sample is over
@@ -97,7 +97,11 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 	 *  @type {Object}
 	 */
 	Tone.Player.defaults = {
-		"onended" : function(){}
+		"onended" : function(){},
+		"loop" : false,
+		"loopStart" : 0,
+		"loopEnd" : "4n",
+		"retrigger" : false
 	};
 
 	/**
@@ -172,9 +176,11 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 				this._source = this.context.createBufferSource();
 				this._source.buffer = this._buffer;
 				//set the looping properties
-				this._source.loop = this.loop;
-				this._source.loopStart = this.loopStart;
-				this._source.loopEnd = this.loopEnd;
+				if (this.loop){
+					this._source.loop = this.loop;
+					this._source.loopStart = this.toSeconds(this.loopStart);
+					this._source.loopEnd = this.toSeconds(this.loopEnd);
+				}
 				//and other properties
 				this._source.playbackRate.value = this._playbackRate;
 				this._source.onended = this._onended.bind(this);
@@ -220,12 +226,41 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 	};
 
 	/**
+	 *  set the loop start position
+	 *  @param {Tone.Time} loopStart the start time
+	 */
+	Tone.Player.prototype.setLoopStart = function(loopStart){
+		this.loopStart = loopStart;
+	};
+
+	/**
+	 *  set the loop end position
+	 *  @param {Tone.Time} loopEnd the loop end time
+	 */
+	Tone.Player.prototype.setLoopEnd = function(loopEnd){
+		this.loopEnd = loopEnd;
+	};
+
+	/**
+	 *  set the loop start and end
+	 *  @param {Tone.Time} loopStart the loop end time
+	 *  @param {Tone.Time} loopEnd the loop end time
+	 */
+	Tone.Player.prototype.setLoopPoints = function(loopStart, loopEnd){
+		this.setLoopStart(loopStart);
+		this.setLoopEnd(loopEnd);
+	};
+
+	/**
 	 *  set the parameters at once
 	 *  @param {Object} params
 	 */
 	Tone.Player.prototype.set = function(params){
 		if (!this.isUndef(params.playbackRate)) this.setPlaybackRate(params.playbackRate);
 		if (!this.isUndef(params.onended)) this.onended = params.onended;
+		if (!this.isUndef(params.loop)) this.loop = params.loop;
+		if (!this.isUndef(params.loopStart)) this.setLoopStart(params.loopStart);
+		if (!this.isUndef(params.loopEnd)) this.setLoopEnd(params.loopEnd);
 		Tone.Source.prototype.set.call(this, params);
 	};
 
