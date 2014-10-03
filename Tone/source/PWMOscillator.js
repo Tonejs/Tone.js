@@ -7,7 +7,7 @@ function(Tone){
 	 *  @class takes an array of Oscillator descriptions and mixes them together
 	 *         with the same detune and frequency controls. 
 	 *
-	 *  @extends {Tone.Source}
+	 *  @extends {Tone.Oscillator}
 	 *  @constructor
 	 *  @param {frequency} frequency frequency of the oscillator (meaningless for noise types)
 	 *  @param {string} type the type of the oscillator
@@ -61,7 +61,7 @@ function(Tone){
 		this._pulse.onended = this._onended.bind(this);
 	};
 
-	Tone.extend(Tone.PWMOscillator, Tone.Source);
+	Tone.extend(Tone.PWMOscillator, Tone.Oscillator);
 
 	/**
 	 *  default values
@@ -104,25 +104,6 @@ function(Tone){
 			this._pulse.stop(time);
 		}
 	};
-
-	/**
-	 *  internal on end call
-	 *  @private
-	 */
-	Tone.PWMOscillator.prototype._onended = function(){
-		this.state = Tone.Source.State.STOPPED;
-		this.onended();
-	};
-
-	/**
-	 *  exponentially ramp the frequency of the oscillator over the rampTime
-	 *  borrows the method from {@link Tone.Oscillator}
-	 *  
-	 *  @param {Tone.Time}	val
-	 *  @param {Tone.Time=} rampTime when the oscillator will arrive at the frequency
-	 *  @function
-	 */
-	Tone.PWMOscillator.prototype.setFrequency = Tone.Oscillator.prototype.setFrequency;
 
 	/**
 	 *  set the phase of the oscillator (in degrees)

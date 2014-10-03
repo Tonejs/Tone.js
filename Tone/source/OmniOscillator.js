@@ -6,7 +6,7 @@ function(Tone){
 	/**
 	 *  @class An OmniOscillator can be a sine|square|triangle|sawtooth|pulse|pwm
 	 *
-	 *  @extends {Tone.Source}
+	 *  @extends {Tone.Oscillator}
 	 *  @constructor
 	 *  @param {frequency} frequency frequency of the oscillator (meaningless for noise types)
 	 *  @param {string} type the type of the oscillator
@@ -53,7 +53,7 @@ function(Tone){
 		this.setType(options.type);
 	};
 
-	Tone.extend(Tone.OmniOscillator, Tone.Source);
+	Tone.extend(Tone.OmniOscillator, Tone.Oscillator);
 
 	/**
 	 *  default values
@@ -93,25 +93,6 @@ function(Tone){
 			this._oscillator.stop(time);
 		}
 	};
-
-	/**
-	 *  internal on end call
-	 *  @private
-	 */
-	Tone.OmniOscillator.prototype._onended = function(){
-		this.state = Tone.Source.State.STOPPED;
-		this.onended();
-	};
-
-	/**
-	 *  exponentially ramp the frequency of the oscillator over the rampTime
-	 *  borrows the method from {@link Tone.Oscillator}
-	 *  
-	 *  @param {Tone.Time}	val
-	 *  @param {Tone.Time=} rampTime when the oscillator will arrive at the frequency
-	 *  @function
-	 */
-	Tone.OmniOscillator.prototype.setFrequency = Tone.Oscillator.prototype.setFrequency;
 
 	/**
 	 *  set the type of the oscillator

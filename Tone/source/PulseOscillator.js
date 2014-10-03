@@ -19,7 +19,7 @@ function(Tone){
 	 *  @class Pulse Oscillator with control over width
 	 *
 	 *  @constructor
-	 *  @extends {Tone.Source}
+	 *  @extends {Tone.Oscillator}
 	 *  @param {number=} frequency the frequency of the oscillator
 	 *  @param {number} [width = 0.5] the width of the pulse
 	 */
@@ -79,7 +79,7 @@ function(Tone){
 		this._sawtooth.onended = this._onended.bind(this);
 	};
 
-	Tone.extend(Tone.PulseOscillator, Tone.Source);
+	Tone.extend(Tone.PulseOscillator, Tone.Oscillator);
 
 	/**
 	 *  the default parameters
@@ -111,16 +111,6 @@ function(Tone){
 	Tone.PulseOscillator.prototype.setPhase = function(phase){
 		this._sawtooth.setPhase(phase);
 	};
-
-	/**
-	 *  exponentially ramp the frequency of the oscillator over the rampTime
-	 *  borrows the method from {@link Tone.Oscillator}
-	 *  
-	 *  @param {Tone.Time}	val
-	 *  @param {Tone.Time=} rampTime when the oscillator will arrive at the frequency
-	 *  @function
-	 */
-	Tone.PulseOscillator.prototype.setFrequency = Tone.Oscillator.prototype.setFrequency;
 
 	/**
 	 *  bulk setter
@@ -164,15 +154,6 @@ function(Tone){
 			this.width.output.gain.setValueAtTime(0, time);
 			this.state = Tone.Source.State.STOPPED;
 		}
-	};
-
-	/**
-	 *  internal on end call
-	 *  @private
-	 */
-	Tone.PulseOscillator.prototype._onended = function(){
-		this.state = Tone.Source.State.STOPPED;
-		this.onended();
 	};
 
 	/**
