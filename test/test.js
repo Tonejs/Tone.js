@@ -16,7 +16,7 @@ var maxTimeout = 1000;
 
 var allTests = ["tests/Core", "tests/Timing", "tests/Signal", "tests/SignalComparison", 
 "tests/SignalMath", "tests/Transport", "tests/Sources", "tests/Components", "tests/Effect", "tests/Instruments"];
-// var allTests = ["tests/Core", "tests/Transport", "tests/Sources"];
+// var allTests = ["tests/Core", "tests/SignalComparison"];
 
 require(allTests, function(){
 	mocha.run(); 

@@ -7,6 +7,7 @@
 * new PWMOscillator
 * OmniOscillator which combines PWMOscillator, Oscillator, and PulseOscillator into one
 * Build cleans up global which it defined - leave no trace
+* Deprecated Tone.Threshold - new class Tone.GreaterThanZero
 
 
 ### r2 - Getting Physical

@@ -1,8 +1,8 @@
 /* global it, describe, maxTimeout */
 
 define(["tests/Core", "chai", "Tone/signal/Signal", "Tone/source/Oscillator", 
-	"Tone/signal/Threshold", "Tone/signal/Switch", "Tone/signal/Route", "Tone/signal/Select", "tests/Common"], 
-function(core, chai, Signal, Oscillator, Threshold, Switch, Route, Select, Test){
+	"Tone/signal/Switch", "Tone/signal/Route", "Tone/signal/Select", "tests/Common"], 
+function(core, chai, Signal, Oscillator, Switch, Route, Select, Test){
 
 	var expect = chai.expect;
 
@@ -89,64 +89,6 @@ function(core, chai, Signal, Oscillator, Threshold, Switch, Route, Select, Test)
 			var sig = new Signal(1);
 			sig.exponentialRampToValueAtTime(10, 0.5);
 			sig.dispose();
-		});
-	});
-
-	describe("Tone.Threshold", function(){
-		this.timeout(maxTimeout);
-
-		it("can be created and disposed", function(){
-			var thresh = new Threshold();
-			thresh.dispose();
-			Test.wasDisposed(thresh, expect);
-		});
-
-		it("thresholds an incoming signal to 0 when it is below the thresh", function(done){
-			var signal, thresh;
-			Test.offlineTest(0.2, function(dest){
-				signal = new Signal(0.1);
-				thresh = new Threshold(0.5);
-				signal.connect(thresh);
-				thresh.connect(dest);
-			}, function(sample){
-				expect(sample).to.equal(0);
-			}, function(){
-				signal.dispose();
-				thresh.dispose();
-				done();
-			});
-		});
-
-		it("thresholds an incoming signal to 1 when it is above the thresh", function(done){
-			var signal, thresh;
-			Test.offlineTest(0.2, function(dest){
-				signal = new Signal(0.8);
-				thresh = new Threshold(0.75);
-				signal.connect(thresh);
-				thresh.connect(dest);
-			}, function(sample){
-				expect(sample).to.equal(1);
-			}, function(){
-				signal.dispose();
-				thresh.dispose();
-				done();
-			});
-		});
-
-		it("outputs 1 when the values are the same", function(done){
-			var signal, thresh;
-			Test.offlineTest(0.2, function(dest){
-				signal = new Signal(0.8);
-				thresh = new Threshold(0.8);
-				signal.connect(thresh);
-				thresh.connect(dest);
-			}, function(sample){
-				expect(sample).to.equal(1);
-			}, function(){
-				signal.dispose();
-				thresh.dispose();
-				done();
-			});
 		});
 	});
 
