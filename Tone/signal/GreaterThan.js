@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/signal/LessThan", "Tone/signal/Negate", "Tone/signal/Signal"], function(Tone){
+define(["Tone/core/Tone", "Tone/signal/GreaterThanZero", "Tone/signal/Add"], function(Tone){
 
 	"use strict";
 
@@ -10,32 +10,35 @@ define(["Tone/core/Tone", "Tone/signal/LessThan", "Tone/signal/Negate", "Tone/si
 	 *  @param {number=} [value=0] the value to compare to the incoming signal
 	 */
 	Tone.GreaterThan = function(value){
+		
 		/**
-		 *  @type {Tone.LessThan}
-		 *  @private
-		 */
-		this._lt = new Tone.LessThan(-value);
-
-		/**
-		 *  @type {Tone.Negate}
-		 *  @private
-		 */
-		this._neg = new Tone.Negate();
-
-		/**
-	 	 *  alias for the adder
+		 *  subtract the amount from the incoming signal
 		 *  @type {Tone.Add}
+		 *  @private
 		 */
-		this.input = this._neg;
+		this._adder = new Tone.Add(-value);
 
 		/**
-		 *  alias for the thresh
-		 *  @type {Tone.Threshold}
+		 *  compare that amount to zero
+		 *  @type {Tone.GreaterThanZero}
+		 *  @private
 		 */
-		this.output = this._lt;
+		this._gtz = new Tone.GreaterThanZero();
+
+		/**
+	 	 *  alias for the negate
+		 *  @type {Tone.Negate}
+		 */
+		this.input = this._adder;
+
+		/**
+		 *  alias for the less than
+		 *  @type {Tone.LessThan}
+		 */
+		this.output = this._gtz;
 
 		//connect
-		this._neg.connect(this._lt);
+		this._adder.connect(this._gtz);
 	};
 
 	Tone.extend(Tone.GreaterThan);
@@ -46,7 +49,7 @@ define(["Tone/core/Tone", "Tone/signal/LessThan", "Tone/signal/Negate", "Tone/si
 	 *  @param {number} value
 	 */
 	Tone.GreaterThan.prototype.setValue = function(value){
-		this._lt.setValue(-value);
+		this._adder.setValue(-value);
 	};
 
 	/**
@@ -61,10 +64,10 @@ define(["Tone/core/Tone", "Tone/signal/LessThan", "Tone/signal/Negate", "Tone/si
 	 */
 	Tone.GreaterThan.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
-		this._lt.disconnect();
-		this._neg.disconnect();
-		this._lt = null;
-		this._neg = null;
+		this._adder.dispose();
+		this._gtz.dispose();
+		this._adder = null;
+		this._gtz = null;
 	};
 
 	return Tone.GreaterThan;

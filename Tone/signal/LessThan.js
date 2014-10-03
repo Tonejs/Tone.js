@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/signal/Threshold", "Tone/signal/Add", "Tone/signal/Signal", "Tone/signal/NOT"], function(Tone){
+define(["Tone/core/Tone", "Tone/signal/GreaterThan", "Tone/signal/Negate"], function(Tone){
 
 	"use strict";
 
@@ -12,39 +12,33 @@ define(["Tone/core/Tone", "Tone/signal/Threshold", "Tone/signal/Add", "Tone/sign
 	Tone.LessThan = function(value){
 
 		/**
-		 *  subtract the value from the incoming signal
-		 *  
-		 *  @type {Tone.Add}
+		 *  negate the incoming signal
+		 *  @type {Tone.Negate}
 		 *  @private
 		 */
-		this._adder = new Tone.Add(this.defaultArg(-value, 0));
+		this._neg = new Tone.Negate();
 
 		/**
-		 *  @type {Tone.Threshold}
+		 *  input < value === -input > -value
+		 *  @type {Tone.GreaterThan}
 		 *  @private
 		 */
-		this._thresh = new Tone.Threshold(0);
-
-		/**
-		 *  @type {Tone.NOT}
-		 *  @private
-		 */
-		this._not = new Tone.NOT();
+		this._gt = new Tone.GreaterThan(-value);
 
 		/**
 	 	 *  alias for the adder
-		 *  @type {Tone.Add}
+		 *  @type {Tone.Negate}
 		 */
-		this.input = this._adder;
+		this.input = this._neg;
 
 		/**
 		 *  alias for the thresh
-		 *  @type {Tone.Threshold}
+		 *  @type {Tone.GreatThan}
 		 */
-		this.output = this._not;
+		this.output = this._gt;
 
 		//connect
-		this.chain(this._adder, this._thresh, this._not);
+		this._neg.connect(this._gt);
 	};
 
 	Tone.extend(Tone.LessThan);
@@ -55,7 +49,7 @@ define(["Tone/core/Tone", "Tone/signal/Threshold", "Tone/signal/Add", "Tone/sign
 	 *  @param {number} value
 	 */
 	Tone.LessThan.prototype.setValue = function(value){
-		this._adder.setValue(-value);
+		this._gt.setValue(-value);
 	};
 
 	/**
@@ -70,12 +64,10 @@ define(["Tone/core/Tone", "Tone/signal/Threshold", "Tone/signal/Add", "Tone/sign
 	 */
 	Tone.LessThan.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
-		this._adder.disconnect();
-		this._thresh.dispose();
-		this._not.dispose();
-		this._adder = null;
-		this._thresh = null;
-		this._not = null;
+		this._neg.dispose();
+		this._gt.dispose();
+		this._neg = null;
+		this._gt = null;
 	};
 
 	return Tone.LessThan;
