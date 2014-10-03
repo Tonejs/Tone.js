@@ -121,30 +121,18 @@ function(Tone){
 		if (type === "sine" || type === "square" || type === "triangle" || type === "sawtooth"){
 			if (this._sourceType !== OmniOscType.Oscillator){
 				this._sourceType = OmniOscType.Oscillator;
-				if (this._oscillator !== null){
-					this._oscillator.dispose();
-				}
-				this._oscillator = new Tone.Oscillator();
-				this._connectNewOscillator();
+				this._createNewOscillator(Tone.Oscillator);
 			}
 			this._oscillator.setType(type);
 		} else if (type === "pwm"){
 			if (this._sourceType !== OmniOscType.PWMOscillator){
 				this._sourceType = OmniOscType.PWMOscillator;
-				if (this._oscillator !== null){
-					this._oscillator.dispose();
-				}
-				this._oscillator = new Tone.PWMOscillator();
-				this._connectNewOscillator();
+				this._createNewOscillator(Tone.PWMOscillator);
 			}
 		} else if (type === "pulse"){
 			if (this._sourceType !== OmniOscType.PulseOscillator){
 				this._sourceType = OmniOscType.PulseOscillator;
-				if (this._oscillator !== null){
-					this._oscillator.dispose();
-				}
-				this._oscillator = new Tone.PulseOscillator();
-				this._connectNewOscillator();
+				this._createNewOscillator(Tone.PulseOscillator);
 			}
 		} else {
 			throw new TypeError("Tone.OmniOscillator does not support type "+type);
@@ -168,7 +156,16 @@ function(Tone){
 	 *  connect the oscillator to the frequency and detune signals
 	 *  @private
 	 */
-	Tone.OmniOscillator.prototype._connectNewOscillator = function(){
+	Tone.OmniOscillator.prototype._createNewOscillator = function(OscillatorConstructor){
+		if (this._oscillator !== null){
+			var oldOsc = this._oscillator;
+			oldOsc.stop();
+			oldOsc.onended = function(){
+				oldOsc.dispose();
+				oldOsc = null;
+			};
+		}
+		this._oscillator = new OscillatorConstructor();
 		this.frequency.connect(this._oscillator.frequency);
 		this.detune.connect(this._oscillator.detune);
 		this._oscillator.connect(this.output);
