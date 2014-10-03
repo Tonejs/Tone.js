@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Threshold"], function(Tone){
+define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/GreaterThan"], function(Tone){
 
 	"use strict";
 
@@ -23,11 +23,11 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Threshold"], functi
 		this.gate = new Tone.Signal(0);
 
 		/**
-		 *  thresh the control signal
-		 *  @type {Tone.Threshold}
+		 *  thresh the control signal to either 0 or 1
+		 *  @type {Tone.GreaterThan}
 		 *  @private
 		 */
-		this._thresh = new Tone.Threshold(0.5);
+		this._thresh = new Tone.GreaterThan(0.5);
 
 		this.input.connect(this.output);
 		this.chain(this.gate, this._thresh, this.output.gain);

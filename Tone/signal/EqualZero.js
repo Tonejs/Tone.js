@@ -1,58 +1,69 @@
-define(["Tone/core/Tone", "Tone/signal/Threshold", "Tone/signal/Signal"], 
-function(Tone){
+define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/GreaterThanZero"], function(Tone){
 
 	"use strict";
 
 	/**
-	 *  @class  Output 1 if the signal is equal to 0, otherwise outputs 0
+	 *  @private
+	 *  @static
+	 *  @type {Float32Array}
+	 */
+	var threshCurve = new Float32Array(2048);
+	//set the value
+	for (var i = 0; i < threshCurve.length; i++){
+		var normalized = (i / (threshCurve.length)) * 2 - 1;
+		var val;
+		if (normalized === 0){
+			val = 1;
+		} else {
+			val = 0;
+		}
+		threshCurve[i] = val;
+	}
+
+	/**
+	 *  @class  EqualZero outputs 1 when the input is strictly greater than zero
 	 *  
 	 *  @constructor
 	 *  @extends {Tone}
 	 */
 	Tone.EqualZero = function(){
+
+		/**
+		 *  scale the incoming signal by a large factor
+		 *  @private
+		 *  @type {Tone.Multiply}
+		 */
+		this._scale = new Tone.Multiply(10000);
+		
 		/**
 		 *  @type {WaveShaperNode}
 		 *  @private
 		 */
-		this._equals = this.context.createWaveShaper();
+		this._thresh = this.context.createWaveShaper();
+		this._thresh.curve = threshCurve;
 
 		/**
-		 *  @type {WaveShaperNode}
+		 *  threshold the output so that it's 0 or 1
+		 *  @type {Tone.GreaterThanZero}
 		 *  @private
 		 */
-		this._thresh = new Tone.Threshold(1);
+		this._gtz = new Tone.GreaterThanZero();
 
 		/**
 		 *  @type {WaveShaperNode}
 		 */
-		this.input = this._equals;
+		this.input = this._scale;
 
-		this._equals.connect(this._thresh);
+		/**
+		 *  @type {WaveShaperNode}
+		 */
+		this.output = this._gtz;
 
-		this.output = this._thresh;
-
-
-		this._setEquals();
+		//connections
+		this.chain(this._scale, this._thresh, this._gtz);
 	};
 
 	Tone.extend(Tone.EqualZero);
-
-	/**
-	 *  @private
-	 */
-	Tone.EqualZero.prototype._setEquals = function(){
-		var curveLength = 1023;
-		var curve = new Float32Array(curveLength);
-		for (var i = 0; i < curveLength; i++){
-			var normalized = (i / (curveLength - 1)) * 2 - 1;
-			if (normalized === 0){
-				curve[i] = 1;
-			} else {
-				curve[i] = 0;
-			}
-		}
-		this._equals.curve = curve;
-	};
 
 	/**
 	 *  borrows the method from {@link Tone.Signal}
@@ -66,10 +77,12 @@ function(Tone){
 	 */
 	Tone.EqualZero.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
-		this._equals.disconnect();
-		this._thresh.dispose();
-		this._equals = null;
+		this._gtz.dispose();
+		this._scale.dispose();
+		this._thresh.disconnect();
 		this._thresh = null;
+		this._scale = null;
+		this._gtz = null;
 	};
 
 	return Tone.EqualZero;
