@@ -56,8 +56,35 @@ function(chai, Player, Master, Oscillator, Recorder, Noise, core, PulseOscillato
 				player.stop();
 				player.stop();
 				expect(player.state).to.equal("stopped");
+				player.dispose();
 				done();
 			});
+		});
+
+		it("can be created with an options object", function(done){
+			var player = new Player({
+				"url" : "./testAudio/kick.mp3",
+				"onload" : function(pl){
+					expect(pl).to.equal(player);
+					expect(player.loop).to.be.true;
+					player.dispose();
+					done();
+				}, 
+				"loop" : true
+			});
+		});
+
+		it("can be set with an options object", function(){
+			var player = new Player();
+			expect(player.loop).to.be.false;
+			expect(player.loopStart).to.equal(0);
+			player.set({
+				"loop" : true,
+				"loopStart" : 0.4
+			});
+			expect(player.loop).to.be.true;
+			expect(player.loopStart).to.equal(0.4);
+			player.dispose();
 		});
 
 	});
@@ -145,6 +172,29 @@ function(chai, Player, Master, Oscillator, Recorder, Noise, core, PulseOscillato
 			oscillator.setFrequency(220);
 			expect(oscillator.frequency.getValue()).to.equal(220);
 			oscillator.dispose();
+		});
+
+		it("can be created with an options object", function(){
+			var osc = new Oscillator({
+				"frequency" : 200,
+				"detune" : -20
+			});
+			expect(osc.frequency.getValue()).to.equal(200);
+			expect(osc.detune.getValue()).to.equal(-20);
+			osc.dispose();
+		});
+
+		it("can be set with an options object", function(){
+			var osc = new Oscillator();
+			osc.set({
+				"frequency" : 231,
+				"detune" : -21,
+				"type" : "square"
+			});
+			expect(osc.frequency.getValue()).to.equal(231);
+			expect(osc.detune.getValue()).to.equal(-21);
+			expect(osc.getType()).to.equal("square");
+			osc.dispose();
 		});
 	});
 
@@ -238,6 +288,23 @@ function(chai, Player, Master, Oscillator, Recorder, Noise, core, PulseOscillato
 			noise.stop();
 			noise.dispose();
 		});
+
+		it("can be created with an options object", function(){
+			var noise = new Noise({
+				"type" : "brown"
+			});
+			expect(noise.getType()).to.equal("brown");
+			noise.dispose();
+		});
+
+		it("can be set with an options object", function(){
+			var noise = new Noise();
+			noise.set({
+				"type" : "pink"
+			});
+			expect(noise.getType()).to.equal("pink");
+			noise.dispose();
+		});
 	});
 
 	describe("Tone.PulseOscillator", function(){
@@ -275,6 +342,29 @@ function(chai, Player, Master, Oscillator, Recorder, Noise, core, PulseOscillato
 			oscillator.start();
 			oscillator.stop("+0.2");
 		});
+
+		it("can be created with an options object", function(){
+			var osc = new PulseOscillator({
+				"frequency" : 200,
+				"detune" : -20,
+			});
+			expect(osc.frequency.getValue()).to.equal(200);
+			expect(osc.detune.getValue()).to.equal(-20);
+			osc.dispose();
+		});
+
+		it("can be set with an options object", function(){
+			var osc = new PulseOscillator();
+			osc.set({
+				"frequency" : 231,
+				"detune" : -21,
+				"width" : 0.2
+			});
+			expect(osc.frequency.getValue()).to.equal(231);
+			expect(osc.detune.getValue()).to.equal(-21);
+			expect(osc.width.getValue()).to.be.closeTo(0.2, 0.001);
+			osc.dispose();
+		});
 	});
 
 	describe("Tone.PWMOscillator", function(){
@@ -311,6 +401,29 @@ function(chai, Player, Master, Oscillator, Recorder, Noise, core, PulseOscillato
 			};
 			oscillator.start();
 			oscillator.stop("+0.2");
+		});
+
+		it("can be created with an options object", function(){
+			var osc = new PWMOscillator({
+				"frequency" : 200,
+				"detune" : -20,
+			});
+			expect(osc.frequency.getValue()).to.equal(200);
+			expect(osc.detune.getValue()).to.equal(-20);
+			osc.dispose();
+		});
+
+		it("can be set with an options object", function(){
+			var osc = new PWMOscillator();
+			osc.set({
+				"frequency" : 231,
+				"detune" : -21,
+				"modulationFrequency" : 0.2
+			});
+			expect(osc.frequency.getValue()).to.equal(231);
+			expect(osc.detune.getValue()).to.equal(-21);
+			expect(osc.modulationFrequency.getValue()).to.be.closeTo(0.2, 0.001);
+			osc.dispose();
 		});
 	});
 
@@ -354,6 +467,31 @@ function(chai, Player, Master, Oscillator, Recorder, Noise, core, PulseOscillato
 			omni.setType("sine");
 			expect(omni.setWidth.bind(omni, 0.2)).to.throw(Error);
 			omni.dispose();
+		});
+
+		it("can be created with an options object", function(){
+			var osc = new OmniOscillator({
+				"frequency" : 210,
+				"detune" : -30,
+				"type" : "square"
+			});
+			expect(osc.frequency.getValue()).to.equal(210);
+			expect(osc.detune.getValue()).to.equal(-30);
+			expect(osc.getType()).to.equal("square");
+			osc.dispose();
+		});
+
+		it("can be set with an options object", function(){
+			var osc = new OmniOscillator();
+			osc.set({
+				"type" : "pwm",
+				"frequency" : 231,
+				"detune" : -21,
+			});
+			expect(osc.frequency.getValue()).to.equal(231);
+			expect(osc.detune.getValue()).to.equal(-21);
+			expect(osc.getType()).to.equal("pwm");
+			osc.dispose();
 		});
 	});
 
