@@ -114,10 +114,11 @@ function(Tone){
 
 	/**
 	 *  exponentially ramp the frequency of the oscillator over the rampTime
-	 *  inherited from Tone.Oscillator
+	 *  borrows the method from {@link Tone.Oscillator}
 	 *  
 	 *  @param {Tone.Time}	val
 	 *  @param {Tone.Time=} rampTime when the oscillator will arrive at the frequency
+	 *  @function
 	 */
 	Tone.PulseOscillator.prototype.setFrequency = Tone.Oscillator.prototype.setFrequency;
 

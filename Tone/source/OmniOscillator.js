@@ -105,13 +105,13 @@ function(Tone){
 
 	/**
 	 *  exponentially ramp the frequency of the oscillator over the rampTime
+	 *  borrows the method from {@link Tone.Oscillator}
 	 *  
 	 *  @param {Tone.Time}	val
 	 *  @param {Tone.Time=} rampTime when the oscillator will arrive at the frequency
+	 *  @function
 	 */
-	Tone.OmniOscillator.prototype.setFrequency = function(val, rampTime){
-		this._oscillator.setFrequency(val, rampTime);
-	};
+	Tone.OmniOscillator.prototype.setFrequency = Tone.Oscillator.prototype.setFrequency;
 
 	/**
 	 *  set the type of the oscillator

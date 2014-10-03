@@ -26,7 +26,10 @@ function(Tone){
 		/**
 		 *  the modulator
 		 */
-		this._modulator = new Tone.Oscillator(options.frequency);
+		this._modulator = new Tone.Oscillator({
+			"frequency" : options.frequency,
+			"detune" : options.detune
+		});
 
 		/**
 		 *  the frequency control
@@ -113,13 +116,13 @@ function(Tone){
 
 	/**
 	 *  exponentially ramp the frequency of the oscillator over the rampTime
+	 *  borrows the method from {@link Tone.Oscillator}
 	 *  
 	 *  @param {Tone.Time}	val
 	 *  @param {Tone.Time=} rampTime when the oscillator will arrive at the frequency
+	 *  @function
 	 */
-	Tone.PWMOscillator.prototype.setFrequency = function(val, rampTime){
-		this._modulator.setFrequency(val, rampTime);
-	};
+	Tone.PWMOscillator.prototype.setFrequency = Tone.Oscillator.prototype.setFrequency;
 
 	/**
 	 *  set the phase of the oscillator (in degrees)
