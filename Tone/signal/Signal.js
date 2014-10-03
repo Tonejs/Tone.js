@@ -22,6 +22,7 @@ define(["Tone/core/Tone"], function(Tone){
 		 *  @private
 		 */
 		this._scalar = this.context.createGain();
+
 		/**
 		 *  the ratio of the this value to the control signal value
 		 *
@@ -30,13 +31,16 @@ define(["Tone/core/Tone"], function(Tone){
 		 */
 		this._syncRatio = 1;
 
+		/**
+		 *  the value of the Signal
+		 *  @type {number}
+		 */
+		this.value = this.defaultArg(value, 0);
+
 		//connect the constant 1 output to the node output
 		this.chain(constant, this._scalar, this.output);
 		//signal passes through
 		this.input.connect(this.output);
-
-		//set the default value
-		this.setValue(this.defaultArg(value, 0));
 	};
 
 	Tone.extend(Tone.Signal);
@@ -267,6 +271,16 @@ define(["Tone/core/Tone"], function(Tone){
 		} 
 		Tone.prototype.connect.call(this, node, outputNumber, inputNumber);
 	};
+
+	//defines getter / setter for value
+	Object.defineProperty(Tone.Signal.prototype, "value", {
+		get : function(){
+			return this.getValue();
+		},
+		set : function(val){
+			this.setValue(val);
+		}
+	});
 
 	///////////////////////////////////////////////////////////////////////////
 	//	STATIC
