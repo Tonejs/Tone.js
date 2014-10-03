@@ -21,7 +21,7 @@ function(Tone){
 		 *  @type {OscillatorNode}
 		 *  @private
 		 */
-		this.oscillator = this.context.createOscillator();
+		this._oscillator = this.context.createOscillator();
 		
 		/**
 		 *  the frequency control signal
@@ -64,7 +64,7 @@ function(Tone){
 		this._type = options.type;
 		
 		//connections
-		this.oscillator.connect(this.output);
+		this._oscillator.connect(this.output);
 		//setup
 		this.setPhase(this._phase);
 	};
@@ -96,15 +96,15 @@ function(Tone){
 			this.state = Tone.Source.State.STARTED;
 			//get previous values
 			//new oscillator with previous values
-			this.oscillator = this.context.createOscillator();
-			this.oscillator.setPeriodicWave(this._wave);
+			this._oscillator = this.context.createOscillator();
+			this._oscillator.setPeriodicWave(this._wave);
 			//connect the control signal to the oscillator frequency & detune
-			this.oscillator.connect(this.output);
-			this.frequency.connect(this.oscillator.frequency);
-			this.detune.connect(this.oscillator.detune);
+			this._oscillator.connect(this.output);
+			this.frequency.connect(this._oscillator.frequency);
+			this.detune.connect(this._oscillator.detune);
 			//start the oscillator
-			this.oscillator.onended = this._onended.bind(this);
-			this.oscillator.start(this.toSeconds(time));
+			this._oscillator.onended = this._onended.bind(this);
+			this._oscillator.start(this.toSeconds(time));
 		}
 	};
 
@@ -117,7 +117,7 @@ function(Tone){
 			if (!time){
 				this.state = Tone.Source.State.STOPPED;
 			}
-			this.oscillator.stop(this.toSeconds(time));
+			this._oscillator.stop(this.toSeconds(time));
 		}
 	};
 
@@ -190,7 +190,7 @@ function(Tone){
 		}
 		var periodicWave = this.context.createPeriodicWave(real, imag);
 		this._wave = periodicWave;
-		this.oscillator.setPeriodicWave(this._wave);
+		this._oscillator.setPeriodicWave(this._wave);
 		this._type = type;
 	};
 
@@ -238,9 +238,9 @@ function(Tone){
 	Tone.Oscillator.prototype.dispose = function(){
 		Tone.Source.prototype.dispose.call(this);
 		this.stop();
-		if (this.oscillator !== null){
-			this.oscillator.disconnect();
-			this.oscillator = null;
+		if (this._oscillator !== null){
+			this._oscillator.disconnect();
+			this._oscillator = null;
 		}
 		this.frequency.dispose();
 		this.detune.dispose();
