@@ -34,15 +34,18 @@ function(Tone){
 	 *
 	 *  @extends {Tone.Effect}
 	 *  @constructor
+	 *  @param {number} roomSize coorelates to the decay time
 	 */
 	Tone.JCReverb = function(){
-		Tone.StereoEffect.call(this);
+
+		var options = this.optionsObject(arguments, ["roomSize"], Tone.JCReverb.defaults);
+		Tone.StereoEffect.call(this, options);
 
 		/**
 		 *  room size control values between [0,1]
 		 *  @type {Tone.Signal}
 		 */
-		this.roomSize = new Tone.Signal(0.5);
+		this.roomSize = new Tone.Signal(options.roomSize);
 
 		/**
 		 *  scale the room size
@@ -95,6 +98,16 @@ function(Tone){
 	};
 
 	Tone.extend(Tone.JCReverb, Tone.StereoEffect);
+
+	/**
+	 *  the default values
+	 *  @static
+	 *  @const
+	 *  @type {Object}
+	 */
+	Tone.JCReverb.defaults = {
+		"roomSize" : 0.5
+	};
 
 	/**
 	 *  set the room size
