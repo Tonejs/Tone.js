@@ -8,6 +8,7 @@
 * OmniOscillator which combines PWMOscillator, Oscillator, and PulseOscillator into one
 * Build cleans up global which it defined - leave no trace
 * Deprecated Tone.Threshold - new class Tone.GreaterThanZero
+* NOT, OR, AND, and IfThenElse signal logic operators and routing
 
 
 ### r2 - Getting Physical

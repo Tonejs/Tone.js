@@ -27,7 +27,7 @@ To use any of the presets on instruments or effects, be sure to grab the [Tone.P
 
 To use Tone with RequireJS, add a path to the base directory where the library is stored and then refer all Tone module dependencies starting with "Tone/". 
 
-To get all of the files in their directory structure, you can ```npm install tone```. 
+To get all of the files in their directory structure, you can ```npm install tone``` or ```bower install tone```. 
 
 ```javascript
 require.config({
@@ -152,6 +152,7 @@ __No Argument__: for methods which accept time, no argument will be interpreted 
 
 Tone.js provides a number number of useful components for building synthesizers and effects. 
 
+* [Tone.AmplitudeEnvelope](http://tonenotone.github.io/Tone.js/doc/Tone.AmplitudeEnvelope.html)
 * [Tone.DryWet](http://tonenotone.github.io/Tone.js/doc/Tone.DryWet.html)
 * [Tone.Envelope](http://tonenotone.github.io/Tone.js/doc/Tone.Envelope.html)
 * [Tone.EQ](http://tonenotone.github.io/Tone.js/doc/Tone.EQ.html)
@@ -189,16 +190,20 @@ Like the underlying Web Audio API, Tone.js is built with audio-rate signal contr
 
 Audio-rate logic operator output 1 when true and 0 when false. 
 
+* [Tone.AND](http://tonenotone.github.io/Tone.js/doc/Tone.AND.html)
 * [Tone.Equal](http://tonenotone.github.io/Tone.js/doc/Tone.Equal.html)
 * [Tone.EqualZero](http://tonenotone.github.io/Tone.js/doc/Tone.EqualZero.html)
 * [Tone.GreaterThan](http://tonenotone.github.io/Tone.js/doc/Tone.GreaterThan.html)
+* [Tone.GreaterThanZero](http://tonenotone.github.io/Tone.js/doc/Tone.GreaterThanZero.html)
 * [Tone.LessThan](http://tonenotone.github.io/Tone.js/doc/Tone.LessThan.html)
-* [Tone.Threshold](http://tonenotone.github.io/Tone.js/doc/Tone.Threshold.html)
+* [Tone.NOT](http://tonenotone.github.io/Tone.js/doc/Tone.NOT.html)
+* [Tone.OR](http://tonenotone.github.io/Tone.js/doc/Tone.OR.html)
 
 ### Routing
 
 Signal can also be routed and gated for maximum flexibility. 
 
+* [Tone.IfThenElse](http://tonenotone.github.io/Tone.js/doc/Tone.IfThenElse.html)
 * [Tone.Route](http://tonenotone.github.io/Tone.js/doc/Tone.Route.html)
 * [Tone.Select](http://tonenotone.github.io/Tone.js/doc/Tone.Select.html)
 * [Tone.Switch](http://tonenotone.github.io/Tone.js/doc/Tone.Switch.html)
