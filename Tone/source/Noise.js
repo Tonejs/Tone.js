@@ -83,6 +83,20 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 	};
 
 	/**
+	 *  get the type of noise
+	 *  @return {string} the type of noise
+	 */
+	Tone.Noise.prototype.getType = function(){
+		if (this._buffer === _whiteNoise){
+			return "white";
+		} else if (this._buffer === _brownNoise){
+			return "brown";
+		} else if (this._buffer === _pinkNoise){
+			return "pink";
+		}
+	};
+
+	/**
 	 *  set the parameters at once
 	 *  @param {Object} params
 	 */
