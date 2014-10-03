@@ -179,7 +179,7 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 				if (this.loop){
 					this._source.loop = this.loop;
 					this._source.loopStart = this.toSeconds(this.loopStart);
-					if (this.loopEnd > 0){
+					if (this.loopEnd !== -1){
 						this._source.loopEnd = this.toSeconds(this.loopEnd);
 					}
 				}
