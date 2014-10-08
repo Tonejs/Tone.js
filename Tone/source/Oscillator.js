@@ -21,7 +21,7 @@ function(Tone){
 		 *  @type {OscillatorNode}
 		 *  @private
 		 */
-		this._oscillator = this.context.createOscillator();
+		this._oscillator = null;
 		
 		/**
 		 *  the frequency control signal
@@ -63,8 +63,6 @@ function(Tone){
 		 */
 		this._type = options.type;
 		
-		//connections
-		this._oscillator.connect(this.output);
 		//setup
 		this.setPhase(this._phase);
 	};
@@ -103,7 +101,7 @@ function(Tone){
 			this.frequency.connect(this._oscillator.frequency);
 			this.detune.connect(this._oscillator.detune);
 			//start the oscillator
-			this._oscillator.onended = this._onended.bind(this);
+			this._oscillator.onended = this.onended;
 			this._oscillator.start(this.toSeconds(time));
 		}
 	};
@@ -114,9 +112,7 @@ function(Tone){
 	 */
 	Tone.Oscillator.prototype.stop = function(time){
 		if (this.state === Tone.Source.State.STARTED){
-			if (!time){
-				this.state = Tone.Source.State.STOPPED;
-			}
+			this.state = Tone.Source.State.STOPPED;
 			this._oscillator.stop(this.toSeconds(time));
 		}
 	};
@@ -190,7 +186,9 @@ function(Tone){
 		}
 		var periodicWave = this.context.createPeriodicWave(real, imag);
 		this._wave = periodicWave;
-		this._oscillator.setPeriodicWave(this._wave);
+		if (this._oscillator !== null){
+			this._oscillator.setPeriodicWave(this._wave);
+		}
 		this._type = type;
 	};
 
@@ -221,15 +219,6 @@ function(Tone){
 		if (!this.isUndef(params.onended)) this.onended = params.onended;
 		if (!this.isUndef(params.detune)) this.detune.setValue(params.detune);
 		Tone.Source.prototype.set.call(this, params);
-	};
-
-	/**
-	 *  internal on end call
-	 *  @private
-	 */
-	Tone.Oscillator.prototype._onended = function(){
-		this.state = Tone.Source.State.STOPPED;
-		this.onended();
 	};
 
 	/**

@@ -118,7 +118,7 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 		this._source.loop = true;
 		this.chain(this._source, this.output);
 		this._source.start(this.toSeconds(time));
-		this._source.onended = this._onended.bind(this);
+		this._source.onended = this.onended;
 	};
 
 	/**
@@ -148,27 +148,15 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 	/**
 	 *  stop the noise at a specific time
 	 *  
-	 *  @param {Tone.Time} time
+	 *  @param {Tone.Time} timetest
 	 */
 	Tone.Noise.prototype.stop = function(time){
 		if (this.state === Tone.Source.State.STARTED) {
 			if (this._buffer && this._source){
-				if (!time){
-					this.state = Tone.Source.State.STOPPED;
-				}
+				this.state = Tone.Source.State.STOPPED;
 				this._stop(time);
 			}
 		}
-	};
-
-	/**
-	 *  internal call when the buffer is done playing
-	 *  
-	 *  @private
-	 */
-	Tone.Noise.prototype._onended = function(){
-		this.state = Tone.Source.State.STOPPED;
-		this.onended();
 	};
 
 	/**

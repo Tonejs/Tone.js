@@ -44,16 +44,16 @@ function(Tone){
 		this.detune = this._modulator.detune;
 
 		/**
-		 *  the modulation rate of the oscillator
-		 *  @type {Tone.Signal}
-		 */
-		this.modulationFrequency = this._pulse.frequency;
-
-		/**
 		 *  callback which is invoked when the oscillator is stoped
 		 *  @type {function()}
 		 */
 		this.onended = options.onended;
+
+		/**
+		 *  the modulation rate of the oscillator
+		 *  @type {Tone.Signal}
+		 */
+		this.modulationFrequency = this._pulse.frequency;	
 
 		//connections
 		this._modulator.connect(this._pulse.width);
@@ -96,13 +96,19 @@ function(Tone){
 	 */
 	Tone.PWMOscillator.prototype.stop = function(time){
 		if (this.state === Tone.Source.State.STARTED){
-			if (!time){
-				this.state = Tone.Source.State.STOPPED;
-			}
+			this.state = Tone.Source.State.STOPPED;
 			time = this.toSeconds(time);
 			this._modulator.stop(time);
 			this._pulse.stop(time);
 		}
+	};
+
+	/**
+	 *  internal onended callback
+	 *  @private
+	 */
+	Tone.PWMOscillator.prototype._onended = function(){
+		this.onended();
 	};
 
 	/**
@@ -131,7 +137,7 @@ function(Tone){
 		if (!this.isUndef(params.modulationFrequency)) this.setModulationFrequency(params.modulationFrequency);
 		if (!this.isUndef(params.phase)) this.setPhase(params.phase);
 		if (!this.isUndef(params.frequency)) this.setFrequency(params.frequency);
-		if (!this.isUndef(params.onended)) this.onended = params.onended;
+		if (!this.isUndef(params.onended)) this._pulse.onended = params.onended;
 		if (!this.isUndef(params.detune)) this.detune.setValue(params.detune);
 		Tone.Source.prototype.set.call(this, params);
 	};

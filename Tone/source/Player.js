@@ -201,12 +201,20 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 	Tone.Player.prototype.stop = function(time){
 		if (this.state === Tone.Source.State.STARTED) {
 			if (this._buffer && this._source){
-				if (!time){
-					this.state = Tone.Source.State.STOPPED;
-				}
+				this.state = Tone.Source.State.STOPPED;
 				this._source.stop(this.toSeconds(time));
 			}
 		}
+	};
+
+	/**
+	 *  internal call when the buffer is done playing
+	 *  
+	 *  @private
+	 */
+	Tone.Player.prototype._onended = function(){
+		this.state = Tone.Source.State.STOPPED;
+		this.onended();
 	};
 
 	/**
@@ -264,16 +272,6 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 		if (!this.isUndef(params.loopStart)) this.setLoopStart(params.loopStart);
 		if (!this.isUndef(params.loopEnd)) this.setLoopEnd(params.loopEnd);
 		Tone.Source.prototype.set.call(this, params);
-	};
-
-	/**
-	 *  internal call when the buffer is done playing
-	 *  
-	 *  @private
-	 */
-	Tone.Player.prototype._onended = function(){
-		this.state = Tone.Source.State.STOPPED;
-		this.onended();
 	};
 
 	/**

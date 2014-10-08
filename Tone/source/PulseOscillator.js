@@ -121,7 +121,8 @@ function(Tone){
 		this._sawtooth.set({
 			"phase" : params.phase,
 			"frequency" : params.frequency,
-			"detune" : params.detune
+			"detune" : params.detune,
+			"onended" : params.onended
 		});
 		Tone.Source.prototype.set.call(this, params);		
 	};
@@ -133,10 +134,10 @@ function(Tone){
 	 */
 	Tone.PulseOscillator.prototype.start = function(time){
 		if (this.state === Tone.Source.State.STOPPED){
+			this.state = Tone.Source.State.STARTED;
 			time = this.toSeconds(time);
 			this._sawtooth.start(time);
 			this.width.output.gain.setValueAtTime(1, time);
-			this.state = Tone.Source.State.STARTED;
 		}
 	};
 
@@ -147,13 +148,21 @@ function(Tone){
 	 */
 	Tone.PulseOscillator.prototype.stop = function(time){
 		if (this.state === Tone.Source.State.STARTED){
+			this.state = Tone.Source.State.STOPPED;
 			time = this.toSeconds(time);
 			this._sawtooth.stop(time);
 			//the width is still connected to the output. 
 			//that needs to be stopped also
 			this.width.output.gain.setValueAtTime(0, time);
-			this.state = Tone.Source.State.STOPPED;
 		}
+	};
+
+	/**
+	 *  internal onended callback
+	 *  @private
+	 */
+	Tone.PulseOscillator.prototype._onended = function(){
+		this.onended();
 	};
 
 	/**

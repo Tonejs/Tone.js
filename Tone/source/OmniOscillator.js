@@ -157,6 +157,14 @@ function(Tone){
 	};
 
 	/**
+	 *  internal onended callback
+	 *  @private
+	 */
+	Tone.OmniOscillator.prototype._onended = function(){
+		this.onended();
+	};
+
+	/**
 	 *  set the width of the PulseOscillator
 	 *  @throws {Error} If the type of oscillator is not "pulse"
 	 *  @param {number} width the width of the pulse oscillator
