@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/signal/GreaterThan", "Tone/signal/Select", "Tone/signal/Signal"], function(Tone){
+define(["Tone/core/Tone", "Tone/signal/GreaterThan", "Tone/signal/IfThenElse", "Tone/signal/Signal"], function(Tone){
 
 	"use strict";
 
@@ -7,10 +7,15 @@ define(["Tone/core/Tone", "Tone/signal/GreaterThan", "Tone/signal/Select", "Tone
 	 * 	
 	 *  @constructor
 	 *  @extends {Tone}
-	 *  @param {number} max the 
+	 *  @param {number} max 
 	 */
 	Tone.Max = function(max){
-		Tone.call(this);
+		
+		/**
+		 *  input node
+		 *  @type {GainNode}
+		 */
+		this.input = this.context.createGain();
 
 		/**
 		 *  the max signal
@@ -23,7 +28,12 @@ define(["Tone/core/Tone", "Tone/signal/GreaterThan", "Tone/signal/Select", "Tone
 		 *  @type {Tone.Select}
 		 *  @private
 		 */
-		this._switch = new Tone.Select(2);
+		this._ifThenElse = new Tone.IfThenElse();
+
+		/**
+		 *  the output node
+		 */
+		this.output = this._ifThenElse;
 
 		/**
 		 *  @type {Tone.Select}
@@ -32,11 +42,9 @@ define(["Tone/core/Tone", "Tone/signal/GreaterThan", "Tone/signal/Select", "Tone
 		this._gt = new Tone.GreaterThan(max);
 
 		//connections
-		this._maxSignal.connect(this._switch, 0, 0);
-		this.input.connect(this._switch, 0, 1);
-		this.input.connect(this._gt);
-		this._gt.connect(this._switch.gate);
-		this._switch.connect(this.output);
+		this.chain(this.input, this._gt, this._ifThenElse.if);
+		this.input.connect(this._ifThenElse.then);
+		this._maxSignal.connect(this._ifThenElse.else);
 	};
 
 	Tone.extend(Tone.Max);
@@ -47,6 +55,7 @@ define(["Tone/core/Tone", "Tone/signal/GreaterThan", "Tone/signal/Select", "Tone
 	 */
 	Tone.Max.prototype.setMax = function(max){
 		this._maxSignal.setValue(max);
+		this._gt.setValue(max);
 	};
 
 	/**
@@ -62,10 +71,10 @@ define(["Tone/core/Tone", "Tone/signal/GreaterThan", "Tone/signal/Select", "Tone
 	Tone.Max.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
 		this._maxSignal.dispose();
-		this._switch.dispose();
+		this._ifThenElse.dispose();
 		this._gt.dispose();
 		this._maxSignal = null;
-		this._switch = null;
+		this._ifThenElse = null;
 		this._gt = null;
 	};
 

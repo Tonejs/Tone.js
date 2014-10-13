@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/signal/LessThan", "Tone/signal/Select", "Tone/signal/Signal"], function(Tone){
+define(["Tone/core/Tone", "Tone/signal/LessThan", "Tone/signal/IfThenElse", "Tone/signal/Signal"], function(Tone){
 
 	"use strict";
 
@@ -10,7 +10,12 @@ define(["Tone/core/Tone", "Tone/signal/LessThan", "Tone/signal/Select", "Tone/si
 	 *  @param {number} min the minimum to compare to the incoming signal
 	 */
 	Tone.Min = function(min){
-		Tone.call(this);
+		
+		/**
+		 *  input node
+		 *  @type {GainNode}
+		 */
+		this.input = this.context.createGain();
 
 		/**
 		 *  the min signal
@@ -23,7 +28,12 @@ define(["Tone/core/Tone", "Tone/signal/LessThan", "Tone/signal/Select", "Tone/si
 		 *  @type {Tone.Select}
 		 *  @private
 		 */
-		this._switch = new Tone.Select(2);
+		this._ifThenElse = new Tone.IfThenElse();
+
+		/**
+		 *  the output node
+		 */
+		this.output = this._ifThenElse;
 
 		/**
 		 *  @type {Tone.Select}
@@ -32,11 +42,9 @@ define(["Tone/core/Tone", "Tone/signal/LessThan", "Tone/signal/Select", "Tone/si
 		this._lt = new Tone.LessThan(min);
 
 		//connections
-		this._minSignal.connect(this._switch, 0, 0);
-		this.input.connect(this._switch, 0, 1);
-		this.input.connect(this._lt);
-		this._lt.connect(this._switch.gate);
-		this._switch.connect(this.output);
+		this.chain(this.input, this._lt, this._ifThenElse.if);
+		this.input.connect(this._ifThenElse.then);
+		this._minSignal.connect(this._ifThenElse.else);
 	};
 
 	Tone.extend(Tone.Min);
@@ -47,6 +55,7 @@ define(["Tone/core/Tone", "Tone/signal/LessThan", "Tone/signal/Select", "Tone/si
 	 */
 	Tone.Min.prototype.setMin = function(min){
 		this._minSignal.setValue(min);
+		this._lt.setValue(min);
 	};
 
 	/**
@@ -62,10 +71,10 @@ define(["Tone/core/Tone", "Tone/signal/LessThan", "Tone/signal/Select", "Tone/si
 	Tone.Min.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
 		this._minSignal.dispose();
-		this._switch.dispose();
+		this._ifThenElse.dispose();
 		this._lt.dispose();
 		this._minSignal = null;
-		this._switch = null;
+		this._ifThenElse = null;
 		this._lt = null;
 	};
 

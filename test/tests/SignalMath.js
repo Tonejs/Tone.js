@@ -259,6 +259,23 @@ function(core, chai, Signal, Add, Multiply, Scale, Oscillator, Master, Abs, Nega
 				done();
 			});
 		});
+
+		it("can be set to a new value", function(done){
+			var signal, max;
+			Test.offlineTest(0.2, function(dest){
+				signal = new Signal(10);
+				max = new Max(-1);
+				signal.connect(max);
+				max.setMax(12);
+				max.connect(dest);
+			}, function(sample){
+				expect(sample).to.equal(12);
+			}, function(){
+				signal.dispose();
+				max.dispose();
+				done();
+			});
+		});
 	});
 	
 
@@ -297,6 +314,23 @@ function(core, chai, Signal, Add, Multiply, Scale, Oscillator, Master, Abs, Nega
 				min.connect(dest);
 			}, function(sample){
 				expect(sample).to.equal(-12);
+			}, function(){
+				signal.dispose();
+				min.dispose();
+				done();
+			});
+		});
+
+		it("can be set to a new value", function(done){
+			var signal, min;
+			Test.offlineTest(0.2, function(dest){
+				signal = new Signal(3);
+				min = new Min(-4);
+				signal.connect(min);
+				min.setMin(4);
+				min.connect(dest);
+			}, function(sample){
+				expect(sample).to.equal(3);
 			}, function(){
 				signal.dispose();
 				min.dispose();
