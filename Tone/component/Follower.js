@@ -110,6 +110,10 @@ function(Tone){
 	Tone.Follower.prototype._setAttackRelease = function(attack, release){
 		var curveLength = 1024;
 		var curve = new Float32Array(curveLength);
+		//the minimum value for attack/release is the bufferSize / sampleRate
+		var minTime = this.bufferSize / this.context.sampleRate;
+		attack = Math.max(attack, minTime);
+		release = Math.max(release, minTime);
 		for (var i = 0; i < curveLength; i++){
 			var normalized = (i / (curveLength - 1)) * 2 - 1;
 			var val;
