@@ -69,6 +69,7 @@ function(Tone, chai, Recorder, Master, Signal){
 				typeof member !== "string" && 
 				typeof member !== "number" &&
 				typeof member !== "boolean" &&
+				prop !== "preset" && 
 				!(member instanceof AudioContext)){
 				expect(obj[prop]).to.equal(null);
 			}
