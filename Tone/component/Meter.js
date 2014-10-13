@@ -6,6 +6,8 @@ define(["Tone/core/Tone", "Tone/core/Master"], function(Tone){
 	 *  @class  Get the rms of the input signal with some averaging.
 	 *          can also just get the value of the signal
 	 *          or the value in dB. inspired by https://github.com/cwilso/volume-meter/blob/master/volume-meter.js
+	 *          Note that for signal processing, it's better to use {@link Tone.Follower} which will produce
+	 *          an audio-rate envelope follower instead of needing to poll the Meter to get the output.
 	 *
 	 *  @constructor
 	 *  @extends {Tone}

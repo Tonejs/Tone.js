@@ -4,7 +4,8 @@ define(["Tone/core/Tone", "Tone/core/Master"], function(Tone){
 
 	/**
 	 *  @class  Record an input into an array or AudioBuffer. 
-	 *          it is limited in that the recording length needs to be known beforehand
+	 *          it is limited in that the recording length needs to be known beforehand. 
+	 *          Mostly used internally for testing. 
 	 *
 	 *  @constructor
 	 *  @extends {Tone}
