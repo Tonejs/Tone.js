@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/component/Filter"], function(Tone){
+define(["Tone/core/Tone", "Tone/component/MultibandSplit"], function(Tone){
 
 	"use strict";
 
@@ -15,49 +15,28 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/component/Filter"], functi
 	 */
 	Tone.EQ = function(){
 
-		Tone.call(this);
-
 		var options = this.optionsObject(arguments, ["low", "mid", "high"], Tone.EQ.defaults);
 
 		/**
-		 *  the low band
-		 *  @type {Tone.Filter}
+		 *  the output node
+		 *  @type {GainNode}
+		 */
+		this.output = this.context.createGain();
+
+		/**
+		 *  the multiband split
+		 *  @type {Tone.MultibandSplit}
 		 *  @private
 		 */
-		this._lowFilter = new Tone.Filter(0, "lowpass");
+		this._multibandSplit = new Tone.MultibandSplit({
+			"lowFrequency" : options.lowFrequency,
+			"highFrequency" : options.highFrequency
+		});
 
 		/**
-		 *  the lower filter of the mid band
-		 *  @type {Tone.Filter}
-		 *  @private
+		 *  input node
 		 */
-		this._lowMidFilter = new Tone.Filter(0, "highpass");
-
-		/**
-		 *  the lower filter of the mid band
-		 *  @type {Tone.Filter}
-		 *  @private
-		 */
-		this._highMidFilter = new Tone.Filter(0, "lowpass");
-
-		/**
-		 *  the high filter
-		 *  @type {Tone.Filter}
-		 *  @private
-		 */
-		this._highFilter = new Tone.Filter(0, "highpass");
-
-		/**
-		 *  the crossover frequency for lows
-		 *  @type {Tone.Signal}
-		 */
-		this.lowFrequency = new Tone.Signal(options.lowFrequency);
-
-		/**
-		 *  the crossover frequency for highs
-		 *  @type {Tone.Signal}
-		 */
-		this.highFrequency = new Tone.Signal(options.highFrequency);
+		this.input = this._multibandSplit;
 
 		/**
 		 *  the low gain
@@ -77,15 +56,22 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/component/Filter"], functi
 		 */
 		this.highGain = this.context.createGain();
 
+		/**
+		 *  the low/mid crossover frequency
+		 *  @type {Tone.Signal}
+		 */
+		this.lowFrequency = this._multibandSplit.lowFrequency;
+
+		/**
+		 *  the mid/high crossover frequency
+		 *  @type {Tone.Signal}
+		 */
+		this.highFrequency = this._multibandSplit.highFrequency;
+
 		//the frequency bands
-		this.chain(this.input, this._lowFilter, this.lowGain, this.output);
-		this.chain(this.input, this._lowMidFilter, this._highMidFilter, this.midGain, this.output);
-		this.chain(this.input, this._highFilter, this.highGain, this.output);
-		//frequency control
-		this.lowFrequency.connect(this._lowFilter.frequency);
-		this.lowFrequency.connect(this._lowMidFilter.frequency);
-		this.highFrequency.connect(this._highMidFilter.frequency);
-		this.highFrequency.connect(this._highFilter.frequency);
+		this.chain(this._multibandSplit.low, this.lowGain, this.output);
+		this.chain(this._multibandSplit.mid, this.midGain, this.output);
+		this.chain(this._multibandSplit.high, this.highGain, this.output);
 		//set the gains
 		this.setLow(options.low);
 		this.setMid(options.mid);
@@ -148,19 +134,11 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/component/Filter"], functi
 	 */
 	Tone.EQ.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
-		this._lowFilter.dispose();
-		this._lowMidFilter.dispose();
-		this._highMidFilter.dispose();
-		this._highFilter.dispose();
-		this.lowFrequency.dispose();
-		this.highFrequency.dispose();
+		this._multibandSplit.dispose();
 		this.lowGain.disconnect();
 		this.midGain.disconnect();
 		this.highGain.disconnect();
-		this._lowFilter = null;
-		this._lowMidFilter = null;
-		this._highMidFilter = null;
-		this._highFilter = null;
+		this._multibandSplit = null;
 		this.lowFrequency = null;
 		this.highFrequency = null;
 		this.lowGain = null;
