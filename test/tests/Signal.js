@@ -298,7 +298,7 @@ function(core, chai, Signal, Oscillator, Switch, Route, Select, Test, NOT, AND, 
 		it("selects the third input (else) when input 0 (if) is not 1", function(done){
 			var signal0, signal1, signal2, ite;
 			Test.offlineTest(0.2, function(dest){
-				signal0 = new Signal(0.3);
+				signal0 = new Signal(0);
 				signal1 = new Signal(11);
 				signal2 = new Signal(21);
 				ite = new IfThenElse();
