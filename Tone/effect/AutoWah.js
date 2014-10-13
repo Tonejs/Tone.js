@@ -142,6 +142,7 @@ function(Tone){
 		if (!this.isUndef(params.sensitivity)) this.setSensitiviy(params.sensitivity);
 		if (!this.isUndef(params.octaves)) this.setOctaves(params.octaves);
 		if (!this.isUndef(params.follower)) this._follower.set(params.follower);
+		if (!this.isUndef(params.rolloff)) this._bandpass.setRolloff(params.rolloff);
 		if (!this.isUndef(params.Q)) this._bandpass.Q.value = params.Q;
 		if (!this.isUndef(params.gain)) this._peaking.gain.value = params.gain;
 		Tone.Effect.prototype.set.call(this, params);
