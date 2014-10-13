@@ -3,9 +3,11 @@
 define(["tests/Core", "chai", "Tone/component/Recorder", "Tone/core/Master", "Tone/effect/Effect", "Tone/component/DryWet",
 	"Tone/effect/FeedbackEffect", "Tone/signal/Signal", "Tone/effect/AutoPanner", "Tone/effect/AutoWah", "Tone/effect/BitCrusher",
 	"Tone/effect/FeedbackDelay", "Tone/effect/PingPongDelay", "Tone/effect/Chorus", "tests/Common", "Tone/effect/Freeverb", 
-	"Tone/effect/JCReverb", "Tone/effect/StereoEffect", "Tone/effect/StereoFeedbackEffect", "Tone/effect/StereoXFeedbackEffect"], 
+	"Tone/effect/JCReverb", "Tone/effect/StereoEffect", "Tone/effect/StereoFeedbackEffect", 
+	"Tone/effect/StereoXFeedbackEffect", "Tone/effect/Phaser"], 
 function(Tone, chai, Recorder, Master, Effect, DryWet, FeedbackEffect, Signal, AutoPanner, AutoWah, BitCrusher, 
-	FeedbackDelay, PingPongDelay, Chorus, Test, Freeverb, JCReverb, StereoEffect, StereoFeedbackEffect, StereoXFeedbackEffect){
+	FeedbackDelay, PingPongDelay, Chorus, Test, Freeverb, JCReverb, StereoEffect, StereoFeedbackEffect, 
+	StereoXFeedbackEffect, Phaser){
 
 	var expect = chai.expect;
 
@@ -419,6 +421,40 @@ function(Tone, chai, Recorder, Master, Effect, DryWet, FeedbackEffect, Signal, A
 				chorus.connect(output);
 			}, function(){
 				chorus.dispose();
+				done();
+			});
+		});
+	});
+
+	describe("Tone.Phaser", function(){
+
+		it("can be created and disposed", function(){
+			var phaser = new Phaser();
+			phaser.dispose();
+			Test.wasDisposed(phaser);
+		});
+		
+		it("extends Tone.Effect", function(){
+			var phaser = new Phaser();
+			expect(phaser).is.instanceof(Effect);
+			phaser.dispose();
+		});
+
+		it("handles input and output connections", function(){
+			Test.onlineContext();
+			var phaser = new Phaser();
+			Test.acceptsInputAndOutput(phaser);
+			phaser.dispose();
+		});
+
+		it("passes the incoming signal through to the output", function(done){
+			var phaser;
+			Test.passesAudio(function(input, output){
+				phaser = new Phaser();
+				input.connect(phaser);
+				phaser.connect(output);
+			}, function(){
+				phaser.dispose();
 				done();
 			});
 		});
