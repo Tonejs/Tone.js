@@ -4,9 +4,10 @@ define(["tests/Core", "chai", "Tone/component/DryWet", "Tone/core/Master", "Tone
 "Tone/component/Recorder", "Tone/component/Panner", "Tone/component/LFO", "Tone/component/Gate", 
 "Tone/component/Follower", "Tone/component/Envelope", "Tone/component/Filter", "Tone/component/EQ", 
 "Tone/component/Merge", "Tone/component/Split", "tests/Common", "Tone/component/AmplitudeEnvelope", 
-"Tone/component/LowpassCombFilter", "Tone/component/FeedbackCombFilter", "Tone/component/Mono"],
+"Tone/component/LowpassCombFilter", "Tone/component/FeedbackCombFilter", "Tone/component/Mono", 
+"Tone/component/MultibandSplit"],
 function(coreTest, chai, DryWet, Master, Signal, Recorder, Panner, LFO, Gate, Follower, Envelope, 
-	Filter, EQ, Merge, Split, Test, AmplitudeEnvelope, LowpassCombFilter, FeedbackCombFilter, Mono){
+	Filter, EQ, Merge, Split, Test, AmplitudeEnvelope, LowpassCombFilter, FeedbackCombFilter, Mono, MultibandSplit){
 	var expect = chai.expect;
 
 	Master.mute();
@@ -82,6 +83,15 @@ function(coreTest, chai, DryWet, Master, Signal, Recorder, Panner, LFO, Gate, Fo
 				done();
 			});
 		});
+
+		it("handles input and output connections", function(){
+			Test.onlineContext();
+			var dryWet = new DryWet();
+			Test.acceptsInput(dryWet.dry);
+			Test.acceptsInput(dryWet.wet);
+			Test.acceptsOutput(dryWet);
+			dryWet.dispose();
+		});
 	});
 
 	describe("Tone.Recorder", function(){
@@ -141,6 +151,13 @@ function(coreTest, chai, DryWet, Master, Signal, Recorder, Panner, LFO, Gate, Fo
 				done();
 			});
 		});
+
+		it("handles input and output connections", function(){
+			Test.onlineContext();
+			var panner = new Panner();
+			Test.acceptsInputAndOutput(panner);
+			panner.dispose();
+		});
 	});
 
 	describe("Tone.LFO", function(){
@@ -190,6 +207,13 @@ function(coreTest, chai, DryWet, Master, Signal, Recorder, Panner, LFO, Gate, Fo
 				done();
 			});
 		});
+
+		it("handles output connections", function(){
+			Test.onlineContext();
+			var lfo = new LFO();
+			Test.acceptsOutput(lfo);
+			lfo.dispose();
+		});
 	});
 
 	describe("Tone.Gate", function(){
@@ -235,6 +259,13 @@ function(coreTest, chai, DryWet, Master, Signal, Recorder, Panner, LFO, Gate, Fo
 				done();
 			});
 		});
+
+		it("handles input and output connections", function(){
+			Test.onlineContext();
+			var gate = new Gate();
+			Test.acceptsInputAndOutput(gate);
+			gate.dispose();
+		});
 	});
 
 	describe("Tone.Follower", function(){
@@ -244,6 +275,13 @@ function(coreTest, chai, DryWet, Master, Signal, Recorder, Panner, LFO, Gate, Fo
 			var f = new Follower();
 			f.dispose();
 			Test.wasDisposed(f);
+		});
+
+		it("handles input and output connections", function(){
+			Test.onlineContext();
+			var foll = new Follower(0.1, 0.5);
+			Test.acceptsInputAndOutput(foll);
+			foll.dispose();
 		});
 
 		it("smoothes the incoming signal", function(done){
@@ -262,7 +300,6 @@ function(coreTest, chai, DryWet, Master, Signal, Recorder, Panner, LFO, Gate, Fo
 				done();
 			});
 		});
-
 	});
 
 
@@ -273,6 +310,13 @@ function(coreTest, chai, DryWet, Master, Signal, Recorder, Panner, LFO, Gate, Fo
 			var e = new Envelope();
 			e.dispose();
 			Test.wasDisposed(e);
+		});
+
+		it("handles output connections", function(){
+			Test.onlineContext();
+			var e = new Envelope();
+			Test.acceptsOutput(e);
+			e.dispose();
 		});
 
 		it ("can take parameters as both an object and as arguments", function(){
@@ -349,6 +393,13 @@ function(coreTest, chai, DryWet, Master, Signal, Recorder, Panner, LFO, Gate, Fo
 			Test.wasDisposed(f);
 		});
 
+		it("handles input and output connections", function(){
+			Test.onlineContext();
+			var f = new Filter();
+			Test.acceptsInputAndOutput(f);
+			f.dispose();
+		});
+
 		it ("can take parameters as both an object and as arguments", function(){
 			Test.onlineContext();
 			var f0 = new Filter({
@@ -374,6 +425,12 @@ function(coreTest, chai, DryWet, Master, Signal, Recorder, Panner, LFO, Gate, Fo
 			Test.wasDisposed(eq);
 		});
 
+		it("handles input and output connections", function(){
+			Test.onlineContext();
+			var eq = new EQ();
+			Test.acceptsInputAndOutput(eq);
+			eq.dispose();
+		});
 	});
 
 	//MERGE
@@ -384,6 +441,15 @@ function(coreTest, chai, DryWet, Master, Signal, Recorder, Panner, LFO, Gate, Fo
 			var mer = new Merge();
 			mer.dispose();
 			Test.wasDisposed(mer);
+		});
+
+		it("handles input and output connections", function(){
+			Test.onlineContext();
+			var mer = new Merge();
+			Test.acceptsInput(mer.left);
+			Test.acceptsInput(mer.right);
+			Test.acceptsOutput(mer);
+			mer.dispose();
 		});
 
 		it("merge two signal into one stereo signal", function(done){
@@ -415,6 +481,15 @@ function(coreTest, chai, DryWet, Master, Signal, Recorder, Panner, LFO, Gate, Fo
 			var split = new Split();
 			split.dispose();
 			Test.wasDisposed(split);
+		});
+
+		it("handles input and output connections", function(){
+			Test.onlineContext();
+			var split = new Split();
+			Test.acceptsInput(split);
+			Test.acceptsOutput(split.left);
+			Test.acceptsOutput(split.right);
+			split.dispose();
 		});
 
 		it("merges two signal into one stereo signal and then split them back into two signals on left side", function(done){
@@ -471,6 +546,13 @@ function(coreTest, chai, DryWet, Master, Signal, Recorder, Panner, LFO, Gate, Fo
 			Test.wasDisposed(ampEnv);
 		});
 
+		it("handles input and output connections", function(){
+			Test.onlineContext();
+			var ampEnv = new AmplitudeEnvelope();
+			Test.acceptsInputAndOutput(ampEnv);
+			ampEnv.dispose();
+		});
+
 		it("inherits all methods from Envelope", function(){
 			var ampEnv = new AmplitudeEnvelope();
 			expect(ampEnv).to.be.instanceOf(Envelope);
@@ -486,6 +568,13 @@ function(coreTest, chai, DryWet, Master, Signal, Recorder, Panner, LFO, Gate, Fo
 			lfcf.dispose();
 			Test.wasDisposed(lfcf);
 		});
+
+		it("handles input and output connections", function(){
+			Test.onlineContext();
+			var lfcf = new LowpassCombFilter();
+			Test.acceptsInputAndOutput(lfcf);
+			lfcf.dispose();
+		});
 	});
 
 	describe("Tone.FeedbackCombFilter", function(){
@@ -496,6 +585,13 @@ function(coreTest, chai, DryWet, Master, Signal, Recorder, Panner, LFO, Gate, Fo
 			fbcf.dispose();
 			Test.wasDisposed(fbcf);
 		});
+
+		it("handles input and output connections", function(){
+			Test.onlineContext();
+			var fbcf = new FeedbackCombFilter();
+			Test.acceptsInputAndOutput(fbcf);
+			fbcf.dispose();
+		});
 	});
 
 	describe("Tone.Mono", function(){
@@ -505,6 +601,33 @@ function(coreTest, chai, DryWet, Master, Signal, Recorder, Panner, LFO, Gate, Fo
 			var mono = new Mono();
 			mono.dispose();
 			Test.wasDisposed(mono);
+		});
+
+		it("handles input and output connections", function(){
+			Test.onlineContext();
+			var mono = new Mono();
+			Test.acceptsInputAndOutput(mono);
+			mono.dispose();
+		});
+	});
+
+	describe("Tone.MultibandSplit", function(){
+		this.timeout(maxTimeout);
+
+		it("can be created and disposed", function(){
+			var mband = new MultibandSplit();
+			mband.dispose();
+			Test.wasDisposed(mband);
+		});
+
+		it("handles input and output connections", function(){
+			Test.onlineContext();
+			var mband = new MultibandSplit();
+			Test.acceptsInput(mband);
+			Test.acceptsOutput(mband.low);
+			Test.acceptsOutput(mband, 1);
+			Test.acceptsOutput(mband, 2);
+			mband.dispose();
 		});
 	});
 });

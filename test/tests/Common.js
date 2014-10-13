@@ -74,6 +74,40 @@ define(["Tone/core/Tone", "chai", "Tone/component/Recorder", "Tone/core/Master"]
 		}
 	}
 
+	function acceptsInput(node, inputNumber){
+		inputNumber = inputNumber || 0;
+		var inputNode = node.context.createGain();
+		inputNode.connect(node, 0, inputNumber);
+		inputNode.disconnect();
+		inputNode = null;		
+	}
+
+	function acceptsOutput(node, outputNumber){
+		outputNumber = outputNumber || 0;
+		var outputNode = node.context.createGain();
+		node.connect(outputNode, outputNumber, 0);
+		node.disconnect(outputNumber);
+		outputNode = null;		
+	}
+
+	function outputsAudio(node, done){
+		var sampleRate = 44100;
+		var offline = new OfflineAudioContext(2, sampleRate * 0.1, sampleRate);
+		offline.oncomplete = function(e){
+			var buffer = e.renderedBuffer.getChannelData(0);
+			for (var i = 0; i < buffer.length; i++){
+				if (buffer[i] !== 0){
+					done();
+					return;
+				}
+			}
+			throw new Error("node outputs silence");
+		};
+		Tone.setContext(offline);
+		node.connect(offline.destination);
+		offline.startRendering();
+	}
+
 	return {
 		offlineTest : offlineTest,
 		offlineStereoTest : offlineStereoTest,
@@ -84,6 +118,13 @@ define(["Tone/core/Tone", "chai", "Tone/component/Recorder", "Tone/core/Master"]
 				Tone.setContext(audioContext);
 			}
 			Master.mute();
-		}
+		},
+		acceptsInput : acceptsInput,
+		acceptsOutput : acceptsOutput,
+		acceptsInputAndOutput : function(node){
+			acceptsInput(node);
+			acceptsOutput(node);
+		},
+		outputsAudio : outputsAudio
 	};
 });
