@@ -90,21 +90,45 @@ define(["Tone/core/Tone", "chai", "Tone/component/Recorder", "Tone/core/Master"]
 		outputNode = null;		
 	}
 
-	function outputsAudio(node, done){
+	function outputsAudio(setup, end){
 		var sampleRate = 44100;
 		var offline = new OfflineAudioContext(2, sampleRate * 0.1, sampleRate);
 		offline.oncomplete = function(e){
 			var buffer = e.renderedBuffer.getChannelData(0);
 			for (var i = 0; i < buffer.length; i++){
 				if (buffer[i] !== 0){
-					done();
+					end();
 					return;
 				}
 			}
 			throw new Error("node outputs silence");
 		};
 		Tone.setContext(offline);
-		node.connect(offline.destination);
+		setup(offline.destination);
+		offline.startRendering();
+	}
+
+	function passesAudio(setup, end){
+		var sampleRate = 44100;
+		var duration = 0.1;
+		var offline = new OfflineAudioContext(2, sampleRate * duration, sampleRate);
+		offline.oncomplete = function(e){
+			var buffer = e.renderedBuffer.getChannelData(0);
+			for (var i = 0; i < buffer.length; i++){
+				if (i > duration / 2 && buffer[i] !== 0){
+					signal.dispose();
+					end();
+					return;
+				} else if (i < duration / 2 && buffer[i] !== 0) {
+					throw new Error("node outputs sound when no signal is fed in");		
+				}
+			}
+			throw new Error("node outputs silence");
+		};
+		Tone.setContext(offline);
+		var signal = new Tone.Signal(0);
+		setup(signal, offline.destination);
+		signal.setValueAtTime(1, duration / 2);
 		offline.startRendering();
 	}
 
@@ -125,6 +149,7 @@ define(["Tone/core/Tone", "chai", "Tone/component/Recorder", "Tone/core/Master"]
 			acceptsInput(node);
 			acceptsOutput(node);
 		},
-		outputsAudio : outputsAudio
+		outputsAudio : outputsAudio,
+		passesAudio : passesAudio
 	};
 });

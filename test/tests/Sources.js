@@ -20,6 +20,12 @@ function(chai, Player, Master, Oscillator, Recorder, Noise, core, PulseOscillato
 			Test.wasDisposed(p);
 		});
 
+		it("handles output connections", function(){
+			var p = new Player();
+			Test.acceptsOutput(p);
+			p.dispose();
+		});
+
 		it("loads a file", function(done){
 			var player = new Player("./testAudio/kick.mp3", function(){
 				player.dispose();
@@ -100,6 +106,24 @@ function(chai, Player, Master, Oscillator, Recorder, Noise, core, PulseOscillato
 			var o = new Oscillator();
 			o.dispose();
 			Test.wasDisposed(o);
+		});
+
+		it("outputs a sound", function(done){
+			var osc;
+			Test.outputsAudio(function(dest){
+				osc = new Oscillator();
+				osc.connect(dest);
+				osc.start();
+			}, function(){
+				osc.dispose();
+				done();
+			});
+		});		
+
+		it("handles output connections", function(){
+			var osc = new Oscillator();
+			Test.acceptsOutput(osc);
+			osc.dispose();
 		});
 
 		it("starts and stops", function(done){
@@ -211,6 +235,24 @@ function(chai, Player, Master, Oscillator, Recorder, Noise, core, PulseOscillato
 			Test.wasDisposed(n);
 		});
 
+		it("handles output connections", function(){
+			var n = new Noise();
+			Test.acceptsOutput(n);
+			n.dispose();
+		});
+
+		it("outputs a sound", function(done){
+			var noise;
+			Test.outputsAudio(function(dest){
+				noise = new Noise();
+				noise.connect(dest);
+				noise.start();
+			}, function(){
+				noise.dispose();
+				done();
+			});
+		});		
+
 		it("starts and stops", function(done){
 			var noise = new Noise();
 			expect(noise.state).to.equal("stopped");
@@ -320,6 +362,24 @@ function(chai, Player, Master, Oscillator, Recorder, Noise, core, PulseOscillato
 			Test.wasDisposed(o);
 		});
 
+		it("handles output connections", function(){
+			var o = new PulseOscillator();
+			Test.acceptsOutput(o);
+			o.dispose();
+		});
+
+		it("outputs a sound", function(done){
+			var osc;
+			Test.outputsAudio(function(dest){
+				osc = new PulseOscillator();
+				osc.connect(dest);
+				osc.start();
+			}, function(){
+				osc.dispose();
+				done();
+			});
+		});		
+
 		it("can set the width", function(){
 			var pulse = new PulseOscillator();
 			pulse.setWidth(0.2);
@@ -380,6 +440,24 @@ function(chai, Player, Master, Oscillator, Recorder, Noise, core, PulseOscillato
 			Test.wasDisposed(pwm);
 		});
 
+		it("handles output connections", function(){
+			var pwm = new PWMOscillator();
+			Test.acceptsOutput(pwm);
+			pwm.dispose();
+		});
+
+		it("outputs a sound", function(done){
+			var osc;
+			Test.outputsAudio(function(dest){
+				osc = new PWMOscillator();
+				osc.connect(dest);
+				osc.start();
+			}, function(){
+				osc.dispose();
+				done();
+			});
+		});		
+
 		it("can set the modulation frequency", function(){
 			var pwm = new PWMOscillator();
 			pwm.setModulationFrequency(0.2);
@@ -438,6 +516,50 @@ function(chai, Player, Master, Oscillator, Recorder, Noise, core, PulseOscillato
 			var omni = new OmniOscillator();
 			omni.dispose();
 			Test.wasDisposed(omni);
+		});
+
+		it("outputs a sound", function(done){
+			var osc;
+			Test.outputsAudio(function(dest){
+				osc = new OmniOscillator();
+				osc.connect(dest);
+				osc.start();
+			}, function(){
+				osc.dispose();
+				done();
+			});
+		});		
+
+		it("outputs a sound when set to a square wave", function(done){
+			var osc;
+			Test.outputsAudio(function(dest){
+				osc = new OmniOscillator();
+				osc.connect(dest);
+				osc.setType("square");
+				osc.start();
+			}, function(){
+				osc.dispose();
+				done();
+			});
+		});		
+
+		it("outputs a sound when set to a pwm wave", function(done){
+			var osc;
+			Test.outputsAudio(function(dest){
+				osc = new OmniOscillator();
+				osc.connect(dest);
+				osc.setType("pwm");
+				osc.start();
+			}, function(){
+				osc.dispose();
+				done();
+			});
+		});		
+
+		it("handles output connections", function(){
+			var omni = new OmniOscillator();
+			Test.acceptsOutput(omni);
+			omni.dispose();
 		});
 
 		it("invokes the onended callback on stop", function(done){
