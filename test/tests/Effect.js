@@ -3,9 +3,9 @@
 define(["tests/Core", "chai", "Tone/component/Recorder", "Tone/core/Master", "Tone/effect/Effect", "Tone/component/DryWet",
 	"Tone/effect/FeedbackEffect", "Tone/signal/Signal", "Tone/effect/AutoPanner", "Tone/effect/AutoWah", "Tone/effect/BitCrusher",
 	"Tone/effect/FeedbackDelay", "Tone/effect/PingPongDelay", "Tone/effect/Chorus", "tests/Common", "Tone/effect/Freeverb", 
-	"Tone/effect/JCReverb", "Tone/effect/StereoEffect"], 
+	"Tone/effect/JCReverb", "Tone/effect/StereoEffect", "Tone/effect/StereoFeedbackEffect", "Tone/effect/StereoXFeedbackEffect"], 
 function(Tone, chai, Recorder, Master, Effect, DryWet, FeedbackEffect, Signal, AutoPanner, AutoWah, BitCrusher, 
-	FeedbackDelay, PingPongDelay, Chorus, Test, Freeverb, JCReverb, StereoEffect){
+	FeedbackDelay, PingPongDelay, Chorus, Test, Freeverb, JCReverb, StereoEffect, StereoFeedbackEffect, StereoXFeedbackEffect){
 
 	var expect = chai.expect;
 
@@ -19,6 +19,27 @@ function(Tone, chai, Recorder, Master, Effect, DryWet, FeedbackEffect, Signal, A
 			var e = new Effect();
 			e.dispose();
 			Test.wasDisposed(e);
+		});
+
+		it("handles input and output connections", function(){
+			Test.onlineContext();
+			var e = new Effect();
+			Test.acceptsInputAndOutput(e);
+			e.dispose();
+		});
+
+		it("passes the incoming signal through to the output", function(done){
+			var effect;
+			Test.passesAudio(function(input, output){
+				effect = new Effect({
+					"dry" : 0.5
+				});
+				input.connect(effect);
+				effect.connect(output);
+			}, function(){
+				effect.dispose();
+				done();
+			});
 		});
 
 		it("has a dry/wet control", function(){
@@ -48,6 +69,99 @@ function(Tone, chai, Recorder, Master, Effect, DryWet, FeedbackEffect, Signal, A
 			expect(stereoEffect).is.instanceof(Effect);
 			stereoEffect.dispose();
 		});
+
+		it("handles input and output connections", function(){
+			Test.onlineContext();
+			var e = new StereoEffect();
+			Test.acceptsInputAndOutput(e);
+			e.dispose();
+		});
+
+		it("passes the incoming signal through to the output", function(done){
+			var effect;
+			Test.passesAudio(function(input, output){
+				effect = new StereoEffect({
+					"dry" : 0.5
+				});
+				input.connect(effect);
+				effect.connect(output);
+			}, function(){
+				effect.dispose();
+				done();
+			});
+		});
+	});
+
+	describe("Tone.StereoFeedbackEffect", function(){
+
+		it("can be created and disposed", function(){
+			var stereoEffect = new StereoFeedbackEffect();
+			stereoEffect.dispose();
+			Test.wasDisposed(stereoEffect);
+		});
+
+		it("extends Tone.Effect", function(){
+			var stereoEffect = new StereoFeedbackEffect();
+			expect(stereoEffect).is.instanceof(Effect);
+			stereoEffect.dispose();
+		});
+
+		it("handles input and output connections", function(){
+			Test.onlineContext();
+			var e = new StereoFeedbackEffect();
+			Test.acceptsInputAndOutput(e);
+			e.dispose();
+		});
+
+		it("passes the incoming signal through to the output", function(done){
+			var effect;
+			Test.passesAudio(function(input, output){
+				effect = new StereoFeedbackEffect({
+					"dry" : 0.5
+				});
+				input.connect(effect);
+				effect.connect(output);
+			}, function(){
+				effect.dispose();
+				done();
+			});
+		});
+	});
+
+	describe("Tone.StereoXFeedbackEffect", function(){
+
+		it("can be created and disposed", function(){
+			var stereoEffect = new StereoXFeedbackEffect();
+			stereoEffect.dispose();
+			Test.wasDisposed(stereoEffect);
+		});
+
+		it("extends Tone.Effect", function(){
+			var stereoEffect = new StereoXFeedbackEffect();
+			expect(stereoEffect).is.instanceof(Effect);
+			stereoEffect.dispose();
+		});
+
+		it("handles input and output connections", function(){
+			Test.onlineContext();
+			var e = new StereoXFeedbackEffect();
+			Test.acceptsInputAndOutput(e);
+			e.dispose();
+		});
+
+		it("passes the incoming signal through to the output", function(done){
+			var effect;
+			Test.passesAudio(function(input, output){
+				effect = new StereoXFeedbackEffect({
+					"dry" : 0.5
+				});
+				input.connect(effect);
+				effect.connect(output);
+			}, function(){
+				effect.dispose();
+				done();
+			});
+		});
 	});
 
 	describe("Tone.FeedbackEffect", function(){
@@ -76,6 +190,27 @@ function(Tone, chai, Recorder, Master, Effect, DryWet, FeedbackEffect, Signal, A
 			expect(e.feedback.getValue()).is.closeTo(0.22, 0.01);
 			e.dispose();
 		});
+
+		it("handles input and output connections", function(){
+			Test.onlineContext();
+			var e = new FeedbackEffect();
+			Test.acceptsInputAndOutput(e);
+			e.dispose();
+		});
+
+		it("passes the incoming signal through to the output", function(done){
+			var effect;
+			Test.passesAudio(function(input, output){
+				effect = new FeedbackEffect({
+					"dry" : 0.5
+				});
+				input.connect(effect);
+				effect.connect(output);
+			}, function(){
+				effect.dispose();
+				done();
+			});
+		});
 	});
 
 	describe("Tone.AutoPanner", function(){
@@ -84,6 +219,25 @@ function(Tone, chai, Recorder, Master, Effect, DryWet, FeedbackEffect, Signal, A
 			var ap = new AutoPanner();
 			ap.dispose();
 			Test.wasDisposed(ap);
+		});
+
+		it("handles input and output connections", function(){
+			Test.onlineContext();
+			var ap = new AutoPanner();
+			Test.acceptsInputAndOutput(ap);
+			ap.dispose();
+		});
+
+		it("passes the incoming signal through to the output", function(done){
+			var ap;
+			Test.passesAudio(function(input, output){
+				ap = new AutoPanner();
+				input.connect(ap);
+				ap.connect(output);
+			}, function(){
+				ap.dispose();
+				done();
+			});
 		});
 
 		it("extends Tone.Effect", function(){
@@ -113,6 +267,25 @@ function(Tone, chai, Recorder, Master, Effect, DryWet, FeedbackEffect, Signal, A
 			expect(aw).is.instanceof(Effect);
 			aw.dispose();
 		});
+
+		it("handles input and output connections", function(){
+			Test.onlineContext();
+			var wah = new AutoWah();
+			Test.acceptsInputAndOutput(wah);
+			wah.dispose();
+		});
+
+		it("passes the incoming signal through to the output", function(done){
+			var aw;
+			Test.passesAudio(function(input, output){
+				aw = new AutoWah();
+				input.connect(aw);
+				aw.connect(output);
+			}, function(){
+				aw.dispose();
+				done();
+			});
+		});
 	});
 
 	describe("Tone.BitCrusher", function(){
@@ -127,6 +300,25 @@ function(Tone, chai, Recorder, Master, Effect, DryWet, FeedbackEffect, Signal, A
 			var bc = new BitCrusher();
 			expect(bc).is.instanceof(Effect);
 			bc.dispose();
+		});
+
+		it("handles input and output connections", function(){
+			Test.onlineContext();
+			var bc = new BitCrusher();
+			Test.acceptsInputAndOutput(bc);
+			bc.dispose();
+		});
+
+		it("passes the incoming signal through to the output", function(done){
+			var bc;
+			Test.passesAudio(function(input, output){
+				bc = new BitCrusher();
+				input.connect(bc);
+				bc.connect(output);
+			}, function(){
+				bc.dispose();
+				done();
+			});
 		});
 	});
 
@@ -143,6 +335,25 @@ function(Tone, chai, Recorder, Master, Effect, DryWet, FeedbackEffect, Signal, A
 			expect(fd).is.instanceof(FeedbackEffect);
 			fd.dispose();
 		});
+
+		it("handles input and output connections", function(){
+			Test.onlineContext();
+			var delay = new FeedbackDelay();
+			Test.acceptsInputAndOutput(delay);
+			delay.dispose();
+		});
+
+		it("passes the incoming signal through to the output", function(done){
+			var delay;
+			Test.passesAudio(function(input, output){
+				delay = new FeedbackDelay(0.01);
+				input.connect(delay);
+				delay.connect(output);
+			}, function(){
+				delay.dispose();
+				done();
+			});
+		});
 	});
 
 	describe("Tone.PingPongDelay", function(){
@@ -151,6 +362,31 @@ function(Tone, chai, Recorder, Master, Effect, DryWet, FeedbackEffect, Signal, A
 			var ppd = new PingPongDelay();
 			ppd.dispose();
 			Test.wasDisposed(ppd);
+		});
+
+		it("handles input and output connections", function(){
+			Test.onlineContext();
+			var delay = new PingPongDelay();
+			Test.acceptsInputAndOutput(delay);
+			delay.dispose();
+		});
+
+		it("extends Tone.StereoXFeedbackEffect", function(){
+			var ppd = new PingPongDelay();
+			expect(ppd).is.instanceof(StereoXFeedbackEffect);
+			ppd.dispose();
+		});
+
+		it("passes the incoming signal through to the output", function(done){
+			var delay;
+			Test.passesAudio(function(input, output){
+				delay = new PingPongDelay(0.01);
+				input.connect(delay);
+				delay.connect(output);
+			}, function(){
+				delay.dispose();
+				done();
+			});
 		});
 	});
 
@@ -167,6 +403,25 @@ function(Tone, chai, Recorder, Master, Effect, DryWet, FeedbackEffect, Signal, A
 			expect(chorus).is.instanceof(Effect);
 			chorus.dispose();
 		});
+
+		it("handles input and output connections", function(){
+			Test.onlineContext();
+			var chorus = new Chorus();
+			Test.acceptsInputAndOutput(chorus);
+			chorus.dispose();
+		});
+
+		it("passes the incoming signal through to the output", function(done){
+			var chorus;
+			Test.passesAudio(function(input, output){
+				chorus = new Chorus();
+				input.connect(chorus);
+				chorus.connect(output);
+			}, function(){
+				chorus.dispose();
+				done();
+			});
+		});
 	});
 
 	describe("Tone.Freeverb", function(){
@@ -175,6 +430,31 @@ function(Tone, chai, Recorder, Master, Effect, DryWet, FeedbackEffect, Signal, A
 			fv.dispose();
 			Test.wasDisposed(fv);
 		});
+
+		it("extends Tone.Effect", function(){
+			var fv = new Freeverb();
+			expect(fv).is.instanceof(Effect);
+			fv.dispose();
+		});
+
+		it("handles input and output connections", function(){
+			Test.onlineContext();
+			var fv = new Freeverb();
+			Test.acceptsInputAndOutput(fv);
+			fv.dispose();
+		});
+
+		it("passes the incoming signal through to the output", function(done){
+			var fv;
+			Test.passesAudio(function(input, output){
+				fv = new Freeverb();
+				input.connect(fv);
+				fv.connect(output);
+			}, function(){
+				fv.dispose();
+				done();
+			});
+		});
 	});
 
 	describe("Tone.JCReverb", function(){
@@ -182,6 +462,31 @@ function(Tone, chai, Recorder, Master, Effect, DryWet, FeedbackEffect, Signal, A
 			var rev = new JCReverb();
 			rev.dispose();
 			Test.wasDisposed(rev);
+		});
+
+		it("extends Tone.Effect", function(){
+			var rev = new JCReverb();
+			expect(rev).is.instanceof(Effect);
+			rev.dispose();
+		});
+
+		it("handles input and output connections", function(){
+			Test.onlineContext();
+			var rev = new JCReverb();
+			Test.acceptsInputAndOutput(rev);
+			rev.dispose();
+		});
+
+		it("passes the incoming signal through to the output", function(done){
+			var rev;
+			Test.passesAudio(function(input, output){
+				rev = new JCReverb();
+				input.connect(rev);
+				rev.connect(output);
+			}, function(){
+				rev.dispose();
+				done();
+			});
 		});
 	});
 });

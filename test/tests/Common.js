@@ -110,7 +110,7 @@ define(["Tone/core/Tone", "chai", "Tone/component/Recorder", "Tone/core/Master"]
 
 	function passesAudio(setup, end){
 		var sampleRate = 44100;
-		var duration = 0.1;
+		var duration = 0.2;
 		var offline = new OfflineAudioContext(2, sampleRate * duration, sampleRate);
 		offline.oncomplete = function(e){
 			var buffer = e.renderedBuffer.getChannelData(0);
