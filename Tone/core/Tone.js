@@ -157,8 +157,13 @@ define(function(){
 	/**
 	 *  disconnect the output
 	 */
-	Tone.prototype.disconnect = function(){
-		this.output.disconnect();
+	Tone.prototype.disconnect = function(outputNum){
+		if (Array.isArray(this.output)){
+			outputNum = this.defaultArg(outputNum, 0);
+			this.output[outputNum].disconnect();
+		} else {
+			this.output.disconnect();
+		}
 	};
 	
 	/**
