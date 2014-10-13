@@ -25,6 +25,24 @@ function(Tone, chai, DuoSynth, MonoSynth, FMSynth, PolySynth, Sampler, MultiSamp
 		it("extends Instrument", function(){
 			extendsInstrument(MonoSynth);
 		});
+
+		it("handles output connections", function(){
+			var ms = new MonoSynth();
+			Test.acceptsOutput(ms);
+			ms.dispose();
+		});
+
+		it("outputs a sound", function(done){
+			var ms;
+			Test.outputsAudio(function(dest){
+				ms = new MonoSynth();
+				ms.connect(dest);
+				ms.triggerAttack("C4");
+			}, function(){
+				ms.dispose();
+				done();
+			});
+		});		
 	});
 
 	describe("Tone.DuoSynth", function(){
@@ -33,9 +51,28 @@ function(Tone, chai, DuoSynth, MonoSynth, FMSynth, PolySynth, Sampler, MultiSamp
 			ds.dispose();
 			Test.wasDisposed(ds);
 		});
+
 		it("extends Instrument", function(){
 			extendsInstrument(DuoSynth);
 		});
+
+		it("handles output connections", function(){
+			var ds = new DuoSynth();
+			Test.acceptsOutput(ds);
+			ds.dispose();
+		});
+
+		it("outputs a sound", function(done){
+			var ds;
+			Test.outputsAudio(function(dest){
+				ds = new DuoSynth();
+				ds.connect(dest);
+				ds.triggerAttack("C4");
+			}, function(){
+				ds.dispose();
+				done();
+			});
+		});		
 	});
 
 	describe("Tone.FMSynth", function(){
@@ -44,9 +81,28 @@ function(Tone, chai, DuoSynth, MonoSynth, FMSynth, PolySynth, Sampler, MultiSamp
 			fms.dispose();
 			Test.wasDisposed(fms);
 		});
+
 		it("extends Instrument", function(){
 			extendsInstrument(FMSynth);
 		});
+
+		it("handles output connections", function(){
+			var fms = new FMSynth();
+			Test.acceptsOutput(fms);
+			fms.dispose();
+		});
+
+		it("outputs a sound", function(done){
+			var fms;
+			Test.outputsAudio(function(dest){
+				fms = new FMSynth();
+				fms.connect(dest);
+				fms.triggerAttack("C4");
+			}, function(){
+				fms.dispose();
+				done();
+			});
+		});		
 	});
 
 	describe("Tone.PolySynth", function(){
@@ -55,10 +111,28 @@ function(Tone, chai, DuoSynth, MonoSynth, FMSynth, PolySynth, Sampler, MultiSamp
 			ps.dispose();
 			Test.wasDisposed(ps);
 		});
+
 		it("extends Instrument", function(){
 			extendsInstrument(PolySynth);
 		});
 
+		it("handles output connections", function(){
+			var psynth = new PolySynth();
+			Test.acceptsOutput(psynth);
+			psynth.dispose();
+		});
+
+		it("outputs a sound", function(done){
+			var psynth;
+			Test.outputsAudio(function(dest){
+				psynth = new PolySynth();
+				psynth.connect(dest);
+				psynth.triggerAttack("C4");
+			}, function(){
+				psynth.dispose();
+				done();
+			});
+		});		
 	});
 
 	describe("Tone.Sampler", function(){
@@ -67,8 +141,15 @@ function(Tone, chai, DuoSynth, MonoSynth, FMSynth, PolySynth, Sampler, MultiSamp
 			samp.dispose();
 			Test.wasDisposed(samp);
 		});
+
 		it("extends Instrument", function(){
 			extendsInstrument(Sampler);
+		});
+
+		it("handles output connections", function(){
+			var samp = new Sampler();
+			Test.acceptsOutput(samp);
+			samp.dispose();
 		});
 	});
 
@@ -78,6 +159,13 @@ function(Tone, chai, DuoSynth, MonoSynth, FMSynth, PolySynth, Sampler, MultiSamp
 			samp.dispose();
 			Test.wasDisposed(samp);
 		});
+
+		it("handles output connections", function(){
+			var samp = new MultiSampler();
+			Test.acceptsOutput(samp);
+			samp.dispose();
+		});
+
 		it("extends Instrument", function(){
 			extendsInstrument(MultiSampler);
 		});
@@ -89,8 +177,27 @@ function(Tone, chai, DuoSynth, MonoSynth, FMSynth, PolySynth, Sampler, MultiSamp
 			pluck.dispose();
 			Test.wasDisposed(pluck);
 		});
+
 		it("extends Instrument", function(){
 			extendsInstrument(PluckSynth);
 		});
+
+		it("handles output connections", function(){
+			var psynth = new PluckSynth();
+			Test.acceptsOutput(psynth);
+			psynth.dispose();
+		});
+
+		it("outputs a sound", function(done){
+			var psynth;
+			Test.outputsAudio(function(dest){
+				psynth = new PluckSynth();
+				psynth.connect(dest);
+				psynth.triggerAttack("C4");
+			}, function(){
+				psynth.dispose();
+				done();
+			});
+		});		
 	});
 });
