@@ -23,6 +23,15 @@ function(coreTest, chai, DryWet, Master, Signal, Recorder, Panner, LFO, Gate, Fo
 			Test.wasDisposed(dw);
 		});
 
+		it("handles input and output connections", function(){
+			Test.onlineContext();
+			var dryWet = new DryWet();
+			Test.acceptsInput(dryWet.dry);
+			Test.acceptsInput(dryWet.wet);
+			Test.acceptsOutput(dryWet);
+			dryWet.dispose();
+		});
+
 		it("pass 100% dry signal", function(done){
 			Test.offlineTest(0.1, function(dest){
 				dryWet = new DryWet();
@@ -42,7 +51,6 @@ function(coreTest, chai, DryWet, Master, Signal, Recorder, Panner, LFO, Gate, Fo
 				done();
 			});
 		});
-
 
 		it("pass 100% wet signal", function(done){
 			Test.offlineTest(0.1, function(dest){
@@ -82,15 +90,6 @@ function(coreTest, chai, DryWet, Master, Signal, Recorder, Panner, LFO, Gate, Fo
 				wetSignal.dispose();
 				done();
 			});
-		});
-
-		it("handles input and output connections", function(){
-			Test.onlineContext();
-			var dryWet = new DryWet();
-			Test.acceptsInput(dryWet.dry);
-			Test.acceptsInput(dryWet.wet);
-			Test.acceptsOutput(dryWet);
-			dryWet.dispose();
 		});
 	});
 
@@ -133,6 +132,25 @@ function(coreTest, chai, DryWet, Master, Signal, Recorder, Panner, LFO, Gate, Fo
 			Test.wasDisposed(panner);
 		});
 
+		it("handles input and output connections", function(){
+			Test.onlineContext();
+			var panner = new Panner();
+			Test.acceptsInputAndOutput(panner);
+			panner.dispose();
+		});
+
+		it("passes the incoming signal through", function(done){
+			var panner;
+			Test.passesAudio(function(input, output){
+				panner = new Panner();
+				input.connect(panner);
+				panner.connect(output);
+			}, function(){
+				panner.dispose();
+				done();
+			});
+		});
+
 		it("can pan an incoming signal", function(done){
 			//pan hard right
 			var signal, panner;
@@ -151,13 +169,6 @@ function(coreTest, chai, DryWet, Master, Signal, Recorder, Panner, LFO, Gate, Fo
 				done();
 			});
 		});
-
-		it("handles input and output connections", function(){
-			Test.onlineContext();
-			var panner = new Panner();
-			Test.acceptsInputAndOutput(panner);
-			panner.dispose();
-		});
 	});
 
 	describe("Tone.LFO", function(){
@@ -175,6 +186,13 @@ function(coreTest, chai, DryWet, Master, Signal, Recorder, Panner, LFO, Gate, Fo
 			var lfo = new LFO();
 			lfo.start();
 			lfo.stop();
+			lfo.dispose();
+		});
+
+		it("handles output connections", function(){
+			Test.onlineContext();
+			var lfo = new LFO();
+			Test.acceptsOutput(lfo);
 			lfo.dispose();
 		});
 
@@ -207,13 +225,6 @@ function(coreTest, chai, DryWet, Master, Signal, Recorder, Panner, LFO, Gate, Fo
 				done();
 			});
 		});
-
-		it("handles output connections", function(){
-			Test.onlineContext();
-			var lfo = new LFO();
-			Test.acceptsOutput(lfo);
-			lfo.dispose();
-		});
 	});
 
 	describe("Tone.Gate", function(){
@@ -223,6 +234,13 @@ function(coreTest, chai, DryWet, Master, Signal, Recorder, Panner, LFO, Gate, Fo
 			var g = new Gate();
 			g.dispose();
 			Test.wasDisposed(g);
+		});
+
+		it("handles input and output connections", function(){
+			Test.onlineContext();
+			var gate = new Gate();
+			Test.acceptsInputAndOutput(gate);
+			gate.dispose();
 		});
 
 		it("won't let signals below a db thresh through", function(done){
@@ -251,20 +269,13 @@ function(coreTest, chai, DryWet, Master, Signal, Recorder, Panner, LFO, Gate, Fo
 				gate.connect(dest);
 			}, function(sample, time){
 				if (time >= 0.1){
-					expect(sample).to.equal(level);
+					expect(sample).to.be.closeTo(level, 0.001);
 				} 
 			}, function(){
 				gate.dispose();
 				sig.dispose();
 				done();
 			});
-		});
-
-		it("handles input and output connections", function(){
-			Test.onlineContext();
-			var gate = new Gate();
-			Test.acceptsInputAndOutput(gate);
-			gate.dispose();
 		});
 	});
 
@@ -400,6 +411,18 @@ function(coreTest, chai, DryWet, Master, Signal, Recorder, Panner, LFO, Gate, Fo
 			f.dispose();
 		});
 
+		it("passes the incoming signal through", function(done){
+			var filter;
+			Test.passesAudio(function(input, output){
+				filter = new Filter();
+				input.connect(filter);
+				filter.connect(output);
+			}, function(){
+				filter.dispose();
+				done();
+			});
+		});
+
 		it ("can take parameters as both an object and as arguments", function(){
 			Test.onlineContext();
 			var f0 = new Filter({
@@ -430,6 +453,18 @@ function(coreTest, chai, DryWet, Master, Signal, Recorder, Panner, LFO, Gate, Fo
 			var eq = new EQ();
 			Test.acceptsInputAndOutput(eq);
 			eq.dispose();
+		});
+
+		it("passes the incoming signal through", function(done){
+			var eq;
+			Test.passesAudio(function(input, output){
+				eq = new EQ();
+				input.connect(eq);
+				eq.connect(output);
+			}, function(){
+				eq.dispose();
+				done();
+			});
 		});
 	});
 
@@ -575,6 +610,18 @@ function(coreTest, chai, DryWet, Master, Signal, Recorder, Panner, LFO, Gate, Fo
 			Test.acceptsInputAndOutput(lfcf);
 			lfcf.dispose();
 		});
+
+		it("passes the incoming signal through", function(done){
+			var lfcf;
+			Test.passesAudio(function(input, output){
+				lfcf = new LowpassCombFilter();
+				input.connect(lfcf);
+				lfcf.connect(output);
+			}, function(){
+				lfcf.dispose();
+				done();
+			});
+		});
 	});
 
 	describe("Tone.FeedbackCombFilter", function(){
@@ -592,6 +639,18 @@ function(coreTest, chai, DryWet, Master, Signal, Recorder, Panner, LFO, Gate, Fo
 			Test.acceptsInputAndOutput(fbcf);
 			fbcf.dispose();
 		});
+
+		it("passes the incoming signal through", function(done){
+			var fbcf;
+			Test.passesAudio(function(input, output){
+				fbcf = new FeedbackCombFilter();
+				input.connect(fbcf);
+				fbcf.connect(output);
+			}, function(){
+				fbcf.dispose();
+				done();
+			});
+		});
 	});
 
 	describe("Tone.Mono", function(){
@@ -608,6 +667,18 @@ function(coreTest, chai, DryWet, Master, Signal, Recorder, Panner, LFO, Gate, Fo
 			var mono = new Mono();
 			Test.acceptsInputAndOutput(mono);
 			mono.dispose();
+		});
+
+		it("passes the incoming signal through", function(done){
+			var mono;
+			Test.passesAudio(function(input, output){
+				mono = new FeedbackCombFilter();
+				input.connect(mono);
+				mono.connect(output);
+			}, function(){
+				mono.dispose();
+				done();
+			});
 		});
 	});
 
