@@ -1,4 +1,5 @@
-define(["Tone/core/Tone", "chai", "Tone/component/Recorder", "Tone/core/Master"],function(Tone, chai, Recorder, Master){
+define(["Tone/core/Tone", "chai", "Tone/component/Recorder", "Tone/core/Master", "Tone/signal/Signal"],
+function(Tone, chai, Recorder, Master, Signal){
 
 	var expect = chai.expect;
 
@@ -126,10 +127,18 @@ define(["Tone/core/Tone", "chai", "Tone/component/Recorder", "Tone/core/Master"]
 			throw new Error("node outputs silence");
 		};
 		Tone.setContext(offline);
-		var signal = new Tone.Signal(0);
+		var signal = new Signal(0);
 		setup(signal, offline.destination);
 		signal.setValueAtTime(1, duration / 2);
 		offline.startRendering();
+	}
+
+	function validatePresets(node){
+		if (node.preset){
+			for (var name in node.preset){
+				node.setPreset(name);
+			}
+		}
 	}
 
 	return {
@@ -150,6 +159,7 @@ define(["Tone/core/Tone", "chai", "Tone/component/Recorder", "Tone/core/Master"]
 			acceptsOutput(node);
 		},
 		outputsAudio : outputsAudio,
-		passesAudio : passesAudio
+		passesAudio : passesAudio,
+		validatePresets : validatePresets,
 	};
 });
