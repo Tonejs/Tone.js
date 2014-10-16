@@ -134,6 +134,14 @@ define(function(){
 	 *  @const
 	 */
 	Tone.prototype.bufferSize = 2048;
+
+	/**
+	 *  the delay time of a single buffer frame
+	 *  @type {number}
+	 *  @static
+	 *  @const
+	 */
+	Tone.prototype.bufferTime = Tone.prototype.bufferSize / Tone.context.sampleRate;
 	
 	///////////////////////////////////////////////////////////////////////////
 	//	CONNECTIONS
@@ -547,6 +555,8 @@ define(function(){
 
 	//setup the context
 	Tone._initAudioContext(function(audioContext){
+		//set the bufferTime
+		Tone.prototype.bufferTime = Tone.prototype.bufferSize / audioContext.sampleRate;
 		_silentNode = audioContext.createGain();
 		_silentNode.gain.value = 0;
 		_silentNode.connect(audioContext.destination);
