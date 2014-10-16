@@ -138,9 +138,11 @@ function(Tone){
 	 *  @private
 	 */
 	Tone.OmniOscillator.prototype._createNewOscillator = function(OscillatorConstructor){
+		//short delay to avoid clicks on the change
+		var now = this.now() + this.bufferTime;
 		if (this._oscillator !== null){
 			var oldOsc = this._oscillator;
-			oldOsc.stop();
+			oldOsc.stop(now);
 			oldOsc.onended = function(){
 				oldOsc.dispose();
 				oldOsc = null;
@@ -151,7 +153,7 @@ function(Tone){
 		this.detune.connect(this._oscillator.detune);
 		this._oscillator.connect(this.output);
 		if (this.state === Tone.Source.State.STARTED){
-			this._oscillator.start();
+			this._oscillator.start(now);
 		}
 		this._oscillator.onended = this._onended.bind(this);
 	};
