@@ -50,12 +50,12 @@ Tone also let's you set your own AudioContext using ```Tone.setContext```.
 
 Tone.js has a number of built in audio sources:
 
-* [Oscillator](http://tonenotone.github.io/Tone.js/doc/Tone.Oscillator.html)
-* [PulseOscillator](http://tonenotone.github.io/Tone.js/doc/Tone.PulseOscillator.html)
-* [PWMOscillator](http://tonenotone.github.io/Tone.js/doc/Tone.PWMOscillator.html)
-* [OmniOscillator](http://tonenotone.github.io/Tone.js/doc/Tone.OmniOscillator.html)
-* [Player](http://tonenotone.github.io/Tone.js/doc/Tone.Player.html)
-* [Noise](http://tonenotone.github.io/Tone.js/doc/Tone.Noise.html)
+* [Tone.Oscillator](http://tonenotone.github.io/Tone.js/doc/Tone.Oscillator.html)
+* [Tone.PulseOscillator](http://tonenotone.github.io/Tone.js/doc/Tone.PulseOscillator.html)
+* [Tone.PWMOscillator](http://tonenotone.github.io/Tone.js/doc/Tone.PWMOscillator.html)
+* [Tone.OmniOscillator](http://tonenotone.github.io/Tone.js/doc/Tone.OmniOscillator.html)
+* [Tone.Player](http://tonenotone.github.io/Tone.js/doc/Tone.Player.html)
+* [Tone.Noise](http://tonenotone.github.io/Tone.js/doc/Tone.Noise.html)
 
 ### Tone.Oscillator
 
