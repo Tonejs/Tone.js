@@ -1008,22 +1008,24 @@ function(Tone){
 	};
 
 	var TransportConstructor = Tone.Transport;
-	//a single transport object
-	Tone.Transport = new Tone.Transport();
-	Tone.Transport.setBpm(120);
 
 	Tone._initAudioContext(function(){
-		//stop the clock
-		Tone.Transport.stop();
-		//get the previous bpm
-		var bpm = Tone.Transport.getBpm();
-		//destory the old clock
-		Tone.Transport._clock.dispose();
-		//make new Transport insides
-		TransportConstructor.call(Tone.Transport);
-		//set the bpm
-		Tone.Transport.setBpm(bpm);
-
+		if (typeof Tone.Transport === "function"){
+			//a single transport object
+			Tone.Transport = new Tone.Transport();
+			Tone.Transport.setBpm(120);
+		} else {
+			//stop the clock
+			Tone.Transport.stop();
+			//get the previous bpm
+			var bpm = Tone.Transport.getBpm();
+			//destory the old clock
+			Tone.Transport._clock.dispose();
+			//make new Transport insides
+			TransportConstructor.call(Tone.Transport);
+			//set the bpm
+			Tone.Transport.setBpm(bpm);
+		}
 	});
 
 	return Tone.Transport;

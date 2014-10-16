@@ -79,14 +79,16 @@ define(["Tone/core/Tone"], function(Tone){
 
 	var MasterConstructor = Tone.Master;
 
-	//a single master output
-	Tone.Master = new Tone.Master();
-
 	/**
 	 *  initialize the module and listen for new audio contexts
 	 */
 	Tone._initAudioContext(function(){
-		MasterConstructor.call(Tone.Master);
+		//a single master output
+		if (!Tone.prototype.isUndef(Tone.Master)){
+			Tone.Master = new Tone.Master();
+		} else {
+			MasterConstructor.call(Tone.Master);
+		}
 	});
 
 	return Tone.Master;
