@@ -105,37 +105,30 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 	};
 
 	/**
-	 *  makes an xhr reqest for the selected url
 	 *  Load the audio file as an audio buffer.
 	 *  Decodes the audio asynchronously and invokes
 	 *  the callback once the audio buffer loads.
-	 *
-	 *  @param {string} url the url of the buffer to load.
-	 *                      filetype support depends on the
-	 *                      browser.
-	 *  @param {function(Tone.Player)=} callback
+	 * @param {string} url the url of the buffer to load.
+	 *        filetype support depends on the
+	 *        browser.
+	 * @param  {function(Tone.Player)=} callback
 	 */
 	Tone.Player.prototype.load = function(url, callback){
-		if (!this._buffer){
-			var request = new XMLHttpRequest();
-			request.open("GET", url, true);
-			request.responseType = "arraybuffer";
-			// decode asynchronously
-			var self = this;
-			request.onload = function() {
-				self.context.decodeAudioData(request.response, function(buff) {
-					self.setBuffer(buff);
-					if (callback){
-						callback(self);
+		var self = this;
+		if (!self._buffer){
+			new Tone.Buffer({
+				"urlList"  : {"first" : url},
+				"callback" :  function (buffers){
+					for(var buffer in buffers){
+						self.setBuffer(buffers[buffer]);
 					}
-				});
-			};
-			//send the request
-			request.send();
-		} else {
+				}
+			});
 			if (callback){
-				callback(this);
+				callback(self);
 			}
+		} else if (callback){
+			callback(self);
 		}
 	};
 
