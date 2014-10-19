@@ -100,6 +100,7 @@ define(["Tone/core/Tone", "Tone/component/DryWet"], function(Tone){
 	/**
 	 *  chains the effect in between the effectSend and effectReturn
 	 *  @param  {Tone} effect
+	 *  @internal
 	 */
 	Tone.Effect.prototype.connectEffect = function(effect){
 		this.chain(this.effectSend, effect, this.effectReturn);
