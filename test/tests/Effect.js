@@ -4,10 +4,10 @@ define(["tests/Core", "chai", "Tone/component/Recorder", "Tone/core/Master", "To
 	"Tone/effect/FeedbackEffect", "Tone/signal/Signal", "Tone/effect/AutoPanner", "Tone/effect/AutoWah", "Tone/effect/BitCrusher",
 	"Tone/effect/FeedbackDelay", "Tone/effect/PingPongDelay", "Tone/effect/Chorus", "tests/Common", "Tone/effect/Freeverb", 
 	"Tone/effect/JCReverb", "Tone/effect/StereoEffect", "Tone/effect/StereoFeedbackEffect", 
-	"Tone/effect/StereoXFeedbackEffect", "Tone/effect/Phaser", "Tone/effect/Distortion"], 
+	"Tone/effect/StereoXFeedbackEffect", "Tone/effect/Phaser", "Tone/effect/Distortion", "Tone/effect/Chebyshev"], 
 function(Tone, chai, Recorder, Master, Effect, DryWet, FeedbackEffect, Signal, AutoPanner, AutoWah, BitCrusher, 
 	FeedbackDelay, PingPongDelay, Chorus, Test, Freeverb, JCReverb, StereoEffect, StereoFeedbackEffect, 
-	StereoXFeedbackEffect, Phaser, Distortion){
+	StereoXFeedbackEffect, Phaser, Distortion, Chebyshev){
 
 	var expect = chai.expect;
 
@@ -554,6 +554,39 @@ function(Tone, chai, Recorder, Master, Effect, DryWet, FeedbackEffect, Signal, A
 				dist.connect(output);
 			}, function(){
 				dist.dispose();
+				done();
+			});
+		});
+	});
+
+	describe("Tone.Chebyshev", function(){
+		it("can be created and disposed", function(){
+			var cheb = new Chebyshev();
+			cheb.dispose();
+			Test.wasDisposed(cheb);
+		});
+
+		it("extends Tone.Effect", function(){
+			var cheb = new Chebyshev();
+			expect(cheb).is.instanceof(Effect);
+			cheb.dispose();
+		});
+
+		it("handles input and output connections", function(){
+			Test.onlineContext();
+			var cheb = new Chebyshev();
+			Test.acceptsInputAndOutput(cheb);
+			cheb.dispose();
+		});
+
+		it("passes the incoming signal through to the output", function(done){
+			var cheb;
+			Test.passesAudio(function(input, output){
+				cheb = new Chebyshev(1);
+				input.connect(cheb);
+				cheb.connect(output);
+			}, function(){
+				cheb.dispose();
 				done();
 			});
 		});
