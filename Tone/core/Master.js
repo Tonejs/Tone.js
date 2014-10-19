@@ -19,6 +19,8 @@ define(["Tone/core/Tone"], function(Tone){
 		 */
 		this.limiter = this.context.createDynamicsCompressor();
 		this.limiter.threshold.value = 0;
+		this.attack = 0.001;
+		this.release = 0.01;
 		this.limiter.ratio.value = 20;
 		
 		//connect it up
@@ -85,7 +87,7 @@ define(["Tone/core/Tone"], function(Tone){
 	Tone._initAudioContext(function(){
 		//a single master output
 		if (!Tone.prototype.isUndef(Tone.Master)){
-			Tone.Master = new Tone.Master();
+			Tone.Master = new MasterConstructor();
 		} else {
 			MasterConstructor.call(Tone.Master);
 		}
