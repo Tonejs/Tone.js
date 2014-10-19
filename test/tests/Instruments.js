@@ -133,6 +133,18 @@ function(Tone, chai, DuoSynth, MonoSynth, FMSynth, PolySynth, Sampler, MultiSamp
 				done();
 			});
 		});		
+
+		it("accepts a chord", function(done){
+			var psynth;
+			Test.outputsAudio(function(dest){
+				psynth = new PolySynth(4, DuoSynth);
+				psynth.connect(dest);
+				psynth.triggerAttackRelease(["C4", "E4", "G4"], "8n");
+			}, function(){
+				psynth.dispose();
+				done();
+			});
+		});		
 	});
 
 	describe("Tone.Sampler", function(){
