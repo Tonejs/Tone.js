@@ -4,10 +4,10 @@ define(["tests/Core", "chai", "Tone/component/Recorder", "Tone/core/Master", "To
 	"Tone/effect/FeedbackEffect", "Tone/signal/Signal", "Tone/effect/AutoPanner", "Tone/effect/AutoWah", "Tone/effect/BitCrusher",
 	"Tone/effect/FeedbackDelay", "Tone/effect/PingPongDelay", "Tone/effect/Chorus", "tests/Common", "Tone/effect/Freeverb", 
 	"Tone/effect/JCReverb", "Tone/effect/StereoEffect", "Tone/effect/StereoFeedbackEffect", 
-	"Tone/effect/StereoXFeedbackEffect", "Tone/effect/Phaser"], 
+	"Tone/effect/StereoXFeedbackEffect", "Tone/effect/Phaser", "Tone/effect/Distortion"], 
 function(Tone, chai, Recorder, Master, Effect, DryWet, FeedbackEffect, Signal, AutoPanner, AutoWah, BitCrusher, 
 	FeedbackDelay, PingPongDelay, Chorus, Test, Freeverb, JCReverb, StereoEffect, StereoFeedbackEffect, 
-	StereoXFeedbackEffect, Phaser){
+	StereoXFeedbackEffect, Phaser, Distortion){
 
 	var expect = chai.expect;
 
@@ -521,6 +521,39 @@ function(Tone, chai, Recorder, Master, Effect, DryWet, FeedbackEffect, Signal, A
 				rev.connect(output);
 			}, function(){
 				rev.dispose();
+				done();
+			});
+		});
+	});
+
+	describe("Tone.Distortion", function(){
+		it("can be created and disposed", function(){
+			var dist = new Distortion();
+			dist.dispose();
+			Test.wasDisposed(dist);
+		});
+
+		it("extends Tone.Effect", function(){
+			var dist = new Distortion();
+			expect(dist).is.instanceof(Effect);
+			dist.dispose();
+		});
+
+		it("handles input and output connections", function(){
+			Test.onlineContext();
+			var dist = new Distortion();
+			Test.acceptsInputAndOutput(dist);
+			dist.dispose();
+		});
+
+		it("passes the incoming signal through to the output", function(done){
+			var dist;
+			Test.passesAudio(function(input, output){
+				dist = new Distortion();
+				input.connect(dist);
+				dist.connect(output);
+			}, function(){
+				dist.dispose();
 				done();
 			});
 		});

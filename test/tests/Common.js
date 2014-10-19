@@ -121,8 +121,9 @@ function(Tone, chai, Recorder, Master, Signal){
 					signal.dispose();
 					end();
 					return;
-				} else if (i < duration / 2 && buffer[i] !== 0) {
-					throw new Error("node outputs sound when no signal is fed in");		
+				} else if (i < duration / 2) {
+					expect(buffer[i]).to.be.closeTo(0, 0.005);
+					// throw new Error("node outputs sound when no signal is fed in");		
 				}
 			}
 			throw new Error("node outputs silence");
