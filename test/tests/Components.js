@@ -5,9 +5,11 @@ define(["tests/Core", "chai", "Tone/component/DryWet", "Tone/core/Master", "Tone
 "Tone/component/Follower", "Tone/component/Envelope", "Tone/component/Filter", "Tone/component/EQ", 
 "Tone/component/Merge", "Tone/component/Split", "tests/Common", "Tone/component/AmplitudeEnvelope", 
 "Tone/component/LowpassCombFilter", "Tone/component/FeedbackCombFilter", "Tone/component/Mono", 
-"Tone/component/MultibandSplit"],
+"Tone/component/MultibandSplit", "Tone/component/Compressor", 
+"Tone/component/MultibandCompressor"],
 function(coreTest, chai, DryWet, Master, Signal, Recorder, Panner, LFO, Gate, Follower, Envelope, 
-	Filter, EQ, Merge, Split, Test, AmplitudeEnvelope, LowpassCombFilter, FeedbackCombFilter, Mono, MultibandSplit){
+	Filter, EQ, Merge, Split, Test, AmplitudeEnvelope, LowpassCombFilter, FeedbackCombFilter,
+	Mono, MultibandSplit, Compressor, MultibandCompressor){
 	var expect = chai.expect;
 
 	Master.mute();
@@ -699,6 +701,64 @@ function(coreTest, chai, DryWet, Master, Signal, Recorder, Panner, LFO, Gate, Fo
 			Test.acceptsOutput(mband, 1);
 			Test.acceptsOutput(mband, 2);
 			mband.dispose();
+		});
+	});
+
+	describe("Tone.Compressor", function(){
+		this.timeout(maxTimeout);
+
+		it("can be created and disposed", function(){
+			var comp = new Compressor();
+			comp.dispose();
+			Test.wasDisposed(comp);
+		});
+
+		it("handles input and output connections", function(){
+			Test.onlineContext();
+			var comp = new Compressor();
+			Test.acceptsInputAndOutput(comp);
+			comp.dispose();
+		});
+
+		it("passes the incoming signal through", function(done){
+			var comp;
+			Test.passesAudio(function(input, output){
+				comp = new Compressor();
+				input.connect(comp);
+				comp.connect(output);
+			}, function(){
+				comp.dispose();
+				done();
+			});
+		});
+	});
+
+	describe("Tone.MultibandCompressor", function(){
+		this.timeout(maxTimeout);
+
+		it("can be created and disposed", function(){
+			var comp = new MultibandCompressor();
+			comp.dispose();
+			Test.wasDisposed(comp);
+		});
+
+		it("handles input and output connections", function(){
+			Test.onlineContext();
+			var comp = new MultibandCompressor();
+			Test.acceptsInputAndOutput(comp);
+			comp.dispose();
+		});
+
+		it("passes the incoming signal through", function(done){
+			var comp;
+			Test.passesAudio(function(input, output){
+				comp = new MultibandCompressor();
+				input.connect(comp);
+				comp.connect(output);
+			}, function(){
+				comp.dispose();
+				done();
+			});
 		});
 	});
 });
