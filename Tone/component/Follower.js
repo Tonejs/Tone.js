@@ -58,7 +58,7 @@ function(Tone){
 		 *  @private
 		 */
 		this._delay = this.context.createDelay();
-		this._delay.delayTime.value = 0.02; //20 ms delay
+		this._delay.delayTime.value = this.bufferTime;
 
 		/**
 		 *  this keeps it far from 0, even for very small differences
@@ -111,7 +111,7 @@ function(Tone){
 		var curveLength = 1024;
 		var curve = new Float32Array(curveLength);
 		//the minimum value for attack/release is the bufferSize / sampleRate
-		var minTime = this.bufferSize / this.context.sampleRate;
+		var minTime = this.bufferTime;
 		attack = Math.max(attack, minTime);
 		release = Math.max(release, minTime);
 		for (var i = 0; i < curveLength; i++){
