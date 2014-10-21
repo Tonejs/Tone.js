@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
+define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(Tone){
 
 	"use strict";
 	
@@ -117,16 +117,14 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 		var self = this;
 		if (!self._buffer){
 			new Tone.Buffer({
-				"urlList"  : {"first" : url},
-				"callback" :  function (buffers){
-					for(var buffer in buffers){
-						self.setBuffer(buffers[buffer]);
+				"url"  : url,
+				"callback" :  function (buffer){
+					self.setBuffer(buffer);
+					if (callback){
+						callback(self);
 					}
 				}
 			});
-			if (callback){
-				callback(self);
-			}
 		} else if (callback){
 			callback(self);
 		}
@@ -225,7 +223,7 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 			} else {
 				this._source.playbackRate.value = rampTime;
 			}
-		} 
+		}
 	};
 
 	/**

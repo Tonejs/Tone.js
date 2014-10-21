@@ -5835,115 +5835,132 @@ define('Tone/component/Recorder',["Tone/core/Tone", "Tone/core/Master"], functio
 });
 define('Tone/core/Buffer',["Tone/core/Tone"], function(Tone){
 
-  
-  /**
-   *  @class  Simple Buffer for use with player and convolution objects.
-   *  
-   *  @constructor 
-   *  @param {Object=} list of urls url if a url is passed in, it will be loaded
-   *                       and invoke the callback if it also passed
-   *                       in.
-   */
-  
-  Tone.Buffer = function(){
-
-	var options = this.optionsObject(arguments, ["urlList", "callback"], Tone.Buffer.defaults);
-  
-	/**
-	 *  @private
-	 *  @type {Object} AudioContext 
-	*/
-	this._context = this.context;
 	
 	/**
-	*  @private
-	*  @type {Object} list of urls and their associated keys
-	*/
-	this._urlList = options.urlList;
-  
+	 *  @class  Simple Buffer for use with Player, Convolver, and Sampler objects.
+	 *  
+	 *  @constructor 
+	 *  @param {Object|Array|string} keyval map of urls for loading into buffers | Array of url strings | url string   
+	 *                                If a url is passed in, it will be converted to Object. loaded
+	 *                                and invoke the callback if it also passed
+	 *                                in.
+	 */
+	
+	Tone.Buffer = function(){
 
-  /**
-   *  @private
-   *  @type {number}
-   */
-  this._loadCount = 0;
+		var options = this.optionsObject(arguments, ["url", "callback"], Tone.Buffer.defaults);
+
+		/**
+		*  the Object array of raw arraybuffers. 
+		*  If a single string is passed into the constructor, this._buffers will remain empty
+		*  @type {Object|Array|string}
+		*/
+		this._buffers = {};
+
+		var self = this;
+		if(typeof options.url !== "object") {
+			this._loadBuffer(options.url, options.callback); //it's a string
+		} else { //otherwise it's an array of object map
+			this._loadBuffers(options.url, function(buffer){
+				self.buffer = buffer;
+				options.callback(buffer);
+			});
+		}
+
+	};
+
+	Tone.extend(Tone.Buffer);
 
 	/**
-	*  the Object array of raw arraybuffers
-	*  @type {Object}
-	*/
-  this.bufferList = {};
-  this.onload = options.callback;
-
-  this.load();
-  };
-
-  Tone.extend(Tone.Buffer);
-
-  /**
-   *  the default parameters
-   *
-   *  @static
-   *  @const
-   *  @type {Object}
-   */
-  Tone.Buffer.defaults = {
-	"context" : this.context,
-	"urlList" : {},
-	"callback" : function(){}
-  };
-
-  /**
-   *  makes an xhr reqest for the selected url
-   *  Load the audio file as an audio buffer.
-   *  Decodes the audio asynchronously and invokes
-   *  the callback once the audio buffer loads.
-   *
-   *  @param {string} url the url of the buffer to load.
-   *                      filetype support depends on the
-   *                      browser.
-   *  @param {string} keyval identifier
-   */
-  Tone.Buffer.prototype.loadBuffer = function(url, key){
-  
-	var request = new XMLHttpRequest();
-	request.open("GET", url, true);
-	request.responseType = "arraybuffer";
-	// decode asynchronously
-	var self = this;
-	request.onload = function() {
-	self._context.decodeAudioData(request.response, function(buff) {
-	  if(!buff){
-		console.log("error in buffer data");
-		return;
-	  }
-	  self.bufferList[key] = buff;
-	  if(++self._loadCount == Object.keys(self._urlList).length){
-		self.onload(self.bufferList);
-	  }
-	});
+	 *  the default parameters
+	 *
+	 *  @static
+	 *  @const
+	 *  @type {Object}
+	 */
+	Tone.Buffer.defaults = {
+		"url" : "",
+		"callback" : function(){ return; }
 	};
-	request.onerror = function() {
-	console.log("error loading buffer");
+
+	/**
+	 *  makes an xhr reqest for the selected url
+	 *  Load the audio file as an audio buffer.
+	 *  Decodes the audio asynchronously and invokes
+	 *  the callback once the audio buffer loads.
+	 *  @private
+	 *  @param {string} url the url of the buffer to load.
+	 *                      filetype support depends on the
+	 *                      browser.
+	 *  @param {function} callback function
+	 */
+	Tone.Buffer.prototype._loadBuffer = function(url, callback){
+	
+		var request = new XMLHttpRequest();
+		request.open("GET", url, true);
+		request.responseType = "arraybuffer";
+		// decode asynchronously
+		var self = this;
+		request.onload = function() {
+			self.context.decodeAudioData(request.response, function(buff) {
+				if(!buff){
+					console.log("error in buffer data");
+					return;
+				}
+				callback(buff);
+			});
+		};
+		request.onerror = function() {
+			console.log("error loading buffer");
+		};
+		//send the request
+		request.send();
 	};
-	//send the request
-	request.send();
-  };
 
-  Tone.Buffer.prototype.load = function(){
-  for (var key in this._urlList){
-	this.loadBuffer(this._urlList[key], key);
-  }
-  };
+	/**
+	 * Loads multiple buffers given a collection of urls
+	 * @private
+	 * @param  {Object|Array}   urls     keyVal object of urls or Array
+	 * @param  {Function} callback
+	 */
+	Tone.Buffer.prototype._loadBuffers = function(urls, callback){
+		var loadCounter = {
+			total : 0,
+			loaded : 0
+		};
+		var buffers = this._buffers;
+		var incrementCount = function(i){
+			var key = i;
+			return function(loadedBuffer){
+				buffers[key] = loadedBuffer;
+				loadCounter.loaded++;
+				if (loadCounter.total === loadCounter.loaded){
+					callback(buffers);
+				}
+			};
+		};
+		if (Array.isArray(urls)){
+			loadCounter.total = urls.length;
+			for (var i = 0; i < urls.length; i++){
+				this._loadBuffer(urls[i], incrementCount(i));
+			}
+		} else {
+			loadCounter.total = Object.keys(urls).length;
+			for (var key in urls){
+				this._loadBuffer(urls[key], incrementCount(key));
+			}
+		}
+	};
 
-  /**
-   *  dispose and disconnect
-   */
-  Tone.Buffer.prototype.dispose = function(){
-	//@todo clean up members here
-  };
+	/**
+	 *  dispose and disconnect
+	 */
+	Tone.Buffer.prototype.dispose = function(){
+		Tone.prototype.dispose.call(this);
+		this._buffers = null;
+	};
 
-  return Tone.Buffer;
+	return Tone.Buffer;
 });
 define('Tone/core/Bus',["Tone/core/Tone"], function(Tone){
 
@@ -7353,11 +7370,11 @@ function(Tone){
 
 	return Tone.Chorus;
 });
-define('Tone/effect/Convolver',["Tone/core/Tone", "Tone/effect/StereoEffect"], function(Tone){
+define('Tone/effect/Convolver',["Tone/core/Tone", "Tone/core/Buffer", "Tone/effect/StereoEffect"], function(Tone){
 
   
-    /**
-   *  @class  Convolver node for reverb and emulation.
+	/**
+   *  @class  Convolver wrapper for reverb and emulation.
    *  
    *  @constructor
    *  @extends {Tone.StereoEffect}
@@ -7365,62 +7382,98 @@ define('Tone/effect/Convolver',["Tone/core/Tone", "Tone/effect/StereoEffect"], f
    *  @param {function} callback function
    */
   Tone.Convolver = function(){
-    Tone.StereoEffect.call(this);
+	Tone.StereoEffect.call(this);
 
-    this._convolver = this.context.createConvolver();
+	//get all of the defaults
+	var options = this.optionsObject(arguments, ["url", "onload"], Tone.Convolver.defaults);
+	//connections
 
-    //get all of the defaults
-    var options = this.optionsObject(arguments, ["url", "callback"], Tone.Convolver.defaults);
-    //connections
-    if (options.url) {
-      // Tone.Player.prototype.load(url);
-      this._convolver.buffer = this._buffer;
-    }
+	/**
+	 * convolver node
+	 * @type {[type]}
+	 * @private
+	 */
+	this._convolver = this.context.createConvolver();
+	
+	/**
+	 * convolution buffer
+	 * @type {ArrayBuffer}
+	 * @private
+	 */
+	this._buffer = null;
 
+
+	//if there is a url, load it. 
+	if (!this.isUndef(options.url)){
+	  this.load(options.url, options.onload);
+	}
   };
+
   Tone.extend(Tone.Convolver, Tone.StereoEffect);
+  
   /**
    *  @static
    *  @type {Object}
   */
   Tone.Convolver.defaults = {
-    url: null,
-    callback: null,
-    highCut: 22050,   // min: 20 max:22050
-    lowCut: 20,       // min: 20 max:22050
-    dryLevel: 1,      // min: 0  max: +1
-    wetLevel: 1,      // min: 0  max: +1
-    outLevel: 1,      // min: 0  max: +1, adjusts total output of both wet and dry
-    bypass: false
+	"url": null,
+	"onload": null,
+	// @todo implement high and low filtering
+	// "highCut": 22050,   // min: 20 max:22050
+	// "lowCut": 20,       // min: 20 max:22050
+	"bypass": false
   };
 
-  Tone.Convolver.prototype.setHighCut = function(highCut){
-    this.highCut.setValue(highCut);
+  /**
+   *  Load the impulse response file as an audio buffer.
+   *  Decodes the audio asynchronously and invokes
+   *  the callback once the audio buffer loads.
+   * @param {string} url the url of the buffer to load.
+   *        filetype support depends on the
+   *        browser.
+   * @param  {function(Tone.Convolver)=} callback
+   */
+  Tone.Convolver.prototype.load = function(url, callback){
+	var self = this;
+	if (!self._buffer){
+	  new Tone.Buffer({
+		"url"  : url,
+		"callback" :  function (buffer){
+		  self.setBuffer(buffer);
+		  if (callback){
+			callback(self);
+		  }
+		}
+	  });
+	} else if (callback){
+	  callback(self);
+	}
   };
 
-  Tone.Convolver.prototype.setLowCut = function(lowCut){
-    this.lowCut.setValue(lowCut);
+  /**
+   *  set the buffer
+   *
+   *  @param {AudioBuffer} buffer the buffer which the player will play.
+   *                              note: if you switch the buffer after
+   *                              the player is already started, it will not
+   *                              take effect until the next time the player
+   *                              is started.
+   */
+  Tone.Convolver.prototype.setBuffer = function(buffer){
+	this._buffer = buffer;
+	this._convolver.buffer = this._buffer;
   };
 
-  Tone.Convolver.prototype.setDryLevel = function(dryLevel){
-    this.dryLevel.setValue(dryLevel);
-  };
+  // Tone.Convolver.prototype.setHighCut = function(highCut){
+  //   this.highCut.setValue(highCut);
+  // };
 
-  Tone.Convolver.prototype.setWetLevel = function(wetLevel){
-    this.wetLevel.setValue(wetLevel);
-  };
-
-  Tone.Convolver.prototype.setOutLevel = function(outLevel){
-    this.outLevel.setValue(outLevel);
-  };
-
-  Tone.Convolver.prototype.setImpulse = function(impulse){
-    this.impulse.setValue(impulse);
-    console.log("set impulse url as " + impulse);
-  };
+  // Tone.Convolver.prototype.setLowCut = function(lowCut){
+  //   this.lowCut.setValue(lowCut);
+  // };
 
   Tone.Convolver.prototype.setBypass = function(bypass){
-    this.bypass.setValue(bypass);
+	this.bypass.setValue(bypass);
   };
 
   /**
@@ -7428,25 +7481,21 @@ define('Tone/effect/Convolver',["Tone/core/Tone", "Tone/effect/StereoEffect"], f
    *  @param {Object} params the parameters as an object
    */
   Tone.Convolver.prototype.set = function(params){
-    if (!this.isUndef(params.highCut)) this.setHighCut(params.highCut);
-    if (!this.isUndef(params.lowCut)) this.setLowCut(params.lowCut);
-    if (!this.isUndef(params.dryLevel)) this.setDryLevel(params.dryLevel);
-    if (!this.isUndef(params.wetLevel)) this.setWetLevel(params.wetLevel);
-    if (!this.isUndef(params.outLevel)) this.setOutLevel(params.outLevel);
-    if (!this.isUndef(params.impulse)) this.setImpulse(params.impulse);
-    if (!this.isUndef(params.bypass)) this.setBypass(params.bypass);
+	// if (!this.isUndef(params.highCut)) this.setHighCut(params.highCut);
+	// if (!this.isUndef(params.lowCut)) this.setLowCut(params.lowCut);
+	if (!this.isUndef(params.bypass)) this.setBypass(params.bypass);
   };
 
-    /**
+	/**
    *  dispose and disconnect
    */
   Tone.Convolver.prototype.dispose = function(){
-    Tone.Source.prototype.dispose.call(this);
-    if (this._source !== null) {
-      this._source.disconnect();
-      this._source = null;
-    }
-    this._buffer = null;
+	Tone.StereoEffect.prototype.dispose.call(this);
+	if (this._source !== null) {
+	  this._source.disconnect();
+	  this._source = null;
+	}
+	this._buffer = null;
   };
   return Tone.Convolver;
 });
@@ -9700,7 +9749,7 @@ function(Tone){
 
 	return Tone.FMSynth;
 });
-define('Tone/source/Player',["Tone/core/Tone", "Tone/source/Source"], function(Tone){
+define('Tone/source/Player',["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(Tone){
 
 	
 	
@@ -9819,16 +9868,14 @@ define('Tone/source/Player',["Tone/core/Tone", "Tone/source/Source"], function(T
 		var self = this;
 		if (!self._buffer){
 			new Tone.Buffer({
-				"urlList"  : {"first" : url},
-				"callback" :  function (buffers){
-					for(var buffer in buffers){
-						self.setBuffer(buffers[buffer]);
+				"url"  : url,
+				"callback" :  function (buffer){
+					self.setBuffer(buffer);
+					if (callback){
+						callback(self);
 					}
 				}
 			});
-			if (callback){
-				callback(self);
-			}
 		} else if (callback){
 			callback(self);
 		}
@@ -9927,7 +9974,7 @@ define('Tone/source/Player',["Tone/core/Tone", "Tone/source/Source"], function(T
 			} else {
 				this._source.playbackRate.value = rampTime;
 			}
-		} 
+		}
 	};
 
 	/**
