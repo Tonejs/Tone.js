@@ -218,11 +218,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 	Tone.Player.prototype.setPlaybackRate = function(rate, rampTime){
 		this._playbackRate = rate;
 		if (this._source) {
-			if (rampTime){
-				this._source.playbackRate.exponentialRampToValueAtTime(rate, this.toSeconds(rampTime));
-			} else {
-				this._source.playbackRate.value = rampTime;
-			}
+			this._source.playbackRate.exponentialRampToValueAtTime(rate, this.toSeconds(rampTime));
 		}
 	};
 
