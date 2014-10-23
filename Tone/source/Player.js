@@ -116,13 +116,10 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 	Tone.Player.prototype.load = function(url, callback){
 		var self = this;
 		if (!self._buffer){
-			new Tone.Buffer({
-				"url"  : url,
-				"callback" :  function (buffer){
-					self.setBuffer(buffer);
-					if (callback){
-						callback(self);
-					}
+			new Tone.Buffer(url, function (buffer){
+				self.setBuffer(buffer);
+				if (callback){
+					callback(self);
 				}
 			});
 		} else if (callback){
