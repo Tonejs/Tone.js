@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
+define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(Tone){
 
 	"use strict";
 	
@@ -105,37 +105,28 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 	};
 
 	/**
-	 *  makes an xhr reqest for the selected url
 	 *  Load the audio file as an audio buffer.
 	 *  Decodes the audio asynchronously and invokes
 	 *  the callback once the audio buffer loads.
-	 *
-	 *  @param {string} url the url of the buffer to load.
-	 *                      filetype support depends on the
-	 *                      browser.
-	 *  @param {function(Tone.Player)=} callback
+	 * @param {string} url the url of the buffer to load.
+	 *        filetype support depends on the
+	 *        browser.
+	 * @param  {function(Tone.Player)=} callback
 	 */
 	Tone.Player.prototype.load = function(url, callback){
-		if (!this._buffer){
-			var request = new XMLHttpRequest();
-			request.open("GET", url, true);
-			request.responseType = "arraybuffer";
-			// decode asynchronously
-			var self = this;
-			request.onload = function() {
-				self.context.decodeAudioData(request.response, function(buff) {
-					self.setBuffer(buff);
+		var self = this;
+		if (!self._buffer){
+			new Tone.Buffer({
+				"url"  : url,
+				"callback" :  function (buffer){
+					self.setBuffer(buffer);
 					if (callback){
 						callback(self);
 					}
-				});
-			};
-			//send the request
-			request.send();
-		} else {
-			if (callback){
-				callback(this);
-			}
+				}
+			});
+		} else if (callback){
+			callback(self);
 		}
 	};
 
@@ -227,12 +218,8 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 	Tone.Player.prototype.setPlaybackRate = function(rate, rampTime){
 		this._playbackRate = rate;
 		if (this._source) {
-			if (rampTime){
-				this._source.playbackRate.exponentialRampToValueAtTime(rate, this.toSeconds(rampTime));
-			} else {
-				this._source.playbackRate.value = rampTime;
-			}
-		} 
+			this._source.playbackRate.exponentialRampToValueAtTime(rate, this.toSeconds(rampTime));
+		}
 	};
 
 	/**
