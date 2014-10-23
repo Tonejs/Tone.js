@@ -137,6 +137,25 @@ define(["chai", "Tone/core/Tone", "Tone/core/Master", "Tone/core/Bus",
 			expect(Tone.prototype.send).is.a("function");
 			expect(Tone.prototype.receive).is.a("function");
 		});
+
+		it ("passes audio from a send to a receive with the same name", function(done){
+			var send, recv;
+			Test.passesAudio(function(input, output){
+				//make them pass through nodes
+				send = new Tone();
+				recv = new Tone();
+				send.input.connect(send.output);
+				recv.input.connect(recv.output);
+				input.connect(send);
+				recv.connect(output);
+				send.send("test");
+				recv.receive("test");
+			}, function(){
+				send.dispose();
+				recv.dispose();
+				done();
+			});
+		});		
 	});
 
 	describe("Tone.Buffer", function(){
