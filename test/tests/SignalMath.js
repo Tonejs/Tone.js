@@ -2,8 +2,10 @@
 
 define(["tests/Core", "chai", "Tone/signal/Signal", "Tone/signal/Add", "Tone/signal/Multiply", 
 	"Tone/signal/Scale", "Tone/source/Oscillator", "Tone/core/Master", "Tone/signal/Abs", "Tone/signal/Negate", 
-	 "Tone/signal/Max", "Tone/signal/Min", "Tone/signal/Clip", "Tone/signal/ScaleExp", "Tone/signal/Modulo", "tests/Common"], 
-function(core, chai, Signal, Add, Multiply, Scale, Oscillator, Master, Abs, Negate, Max, Min, Clip, ScaleExp, Modulo, Test){
+	 "Tone/signal/Max", "Tone/signal/Min", "Tone/signal/Clip", "Tone/signal/ScaleExp", 
+	 "Tone/signal/Modulo", "tests/Common", "Tone/signal/Subtract"], 
+function(core, chai, Signal, Add, Multiply, Scale, Oscillator, Master, Abs, Negate, Max, 
+	Min, Clip, ScaleExp, Modulo, Test, Subtract){
 
 	var expect = chai.expect;
 
@@ -16,7 +18,16 @@ function(core, chai, Signal, Add, Multiply, Scale, Oscillator, Master, Abs, Nega
 		it("can be created and disposed", function(){
 			var a = new Add(1);
 			a.dispose();
-			Test.wasDisposed(a, expect);
+			Test.wasDisposed(a);
+		});
+
+		it("handles input and output connections", function(){
+			Test.onlineContext();
+			var a = new Add();
+			Test.acceptsInput(a, 0);
+			Test.acceptsInput(a, 1);
+			Test.acceptsOutput(a);
+			a.dispose();
 		});
 
 		it("correctly sums a signal and a number", function(done){
@@ -50,7 +61,97 @@ function(core, chai, Signal, Add, Multiply, Scale, Oscillator, Master, Abs, Nega
 				done();
 			});
 		});
+
+		it("can sum two signals", function(done){
+			var sigA, sigB, adder;
+			Test.offlineTest(0.2, function(dest){
+				sigA = new Signal(1);
+				sigB = new Signal(4);
+				adder = new Add();
+				sigA.connect(adder, 0, 0);
+				sigB.connect(adder, 0, 1);
+				adder.connect(dest);
+			}, function(sample){
+				expect(sample).to.equal(5);
+			}, function(){
+				sigA.dispose();
+				sigB.dispose();
+				adder.dispose();
+				done();
+			});
+		});
 	});
+
+	describe("Tone.Subtract", function(){
+		this.timeout(maxTimeout);
+
+		it("can be created and disposed", function(){
+			var a = new Subtract();
+			a.dispose();
+			Test.wasDisposed(a);
+		});
+
+		it("handles input and output connections", function(){
+			Test.onlineContext();
+			var sub = new Subtract();
+			Test.acceptsInput(sub, 0);
+			Test.acceptsInput(sub, 1);
+			Test.acceptsOutput(sub);
+			sub.dispose();
+		});
+
+		it("correctly subtracts a signal and a number", function(done){
+			var signal, sub;
+			Test.offlineTest(0.2, function(dest){
+				signal = new Signal(0);
+				sub = new Subtract(3);
+				signal.connect(sub);
+				sub.connect(dest);
+			}, function(sample){
+				expect(sample).to.equal(-3);
+			}, function(){
+				signal.dispose();
+				sub.dispose();
+				done();
+			});
+		});
+
+		it("can handle negative values", function(done){
+			var signal, sub;
+			Test.offlineTest(0.2, function(dest){
+				signal = new Signal(4);
+				sub = new Subtract(-2);
+				signal.connect(sub);
+				sub.connect(dest);
+			}, function(sample){
+				expect(sample).to.equal(6);
+			}, function(){
+				signal.dispose();
+				sub.dispose();
+				done();
+			});
+		});
+
+		it("can subtract two signals", function(done){
+			var sigA, sigB, sub;
+			Test.offlineTest(0.2, function(dest){
+				sigA = new Signal(1);
+				sigB = new Signal(4);
+				sub = new Subtract();
+				sigA.connect(sub, 0, 0);
+				sigB.connect(sub, 0, 1);
+				sub.connect(dest);
+			}, function(sample){
+				expect(sample).to.equal(-3);
+			}, function(){
+				sigA.dispose();
+				sigB.dispose();
+				sub.dispose();
+				done();
+			});
+		});
+	});
+
 
 	//MULTIPLY
 	describe("Tone.Multiply", function(){
@@ -59,7 +160,16 @@ function(core, chai, Signal, Add, Multiply, Scale, Oscillator, Master, Abs, Nega
 		it("can be created and disposed", function(){
 			var m = new Multiply(1);
 			m.dispose();
-			Test.wasDisposed(m, expect);
+			Test.wasDisposed(m);
+		});
+
+		it("handles input and output connections", function(){
+			Test.onlineContext();
+			var mult = new Multiply();
+			Test.acceptsInput(mult, 0);
+			Test.acceptsInput(mult, 1);
+			Test.acceptsOutput(mult);
+			mult.dispose();
 		});
 
 		it("correctly multiplys a signal and a scalar", function(done){
@@ -77,6 +187,25 @@ function(core, chai, Signal, Add, Multiply, Scale, Oscillator, Master, Abs, Nega
 				done();
 			});
 		});
+
+		it("can multiply two signals", function(done){
+			var sigA, sigB, mult;
+			Test.offlineTest(0.2, function(dest){
+				sigA = new Signal(3);
+				sigB = new Signal(5);
+				mult = new Multiply();
+				sigA.connect(mult, 0, 0);
+				sigB.connect(mult, 0, 1);
+				mult.connect(dest);
+			}, function(sample){
+				expect(sample).to.equal(15);
+			}, function(){
+				sigA.dispose();
+				sigB.dispose();
+				mult.dispose();
+				done();
+			});
+		});
 	});
 
 	describe("Tone.Scale", function(){
@@ -85,7 +214,14 @@ function(core, chai, Signal, Add, Multiply, Scale, Oscillator, Master, Abs, Nega
 		it("can be created and disposed", function(){
 			var s = new Scale(0, 10);
 			s.dispose();
-			Test.wasDisposed(s, expect);
+			Test.wasDisposed(s);
+		});
+
+		it("handles input and output connections", function(){
+			Test.onlineContext();
+			var scale = new Scale(0, 1, 0, 100);
+			Test.acceptsInputAndOutput(scale);
+			scale.dispose();
 		});
 
 		it("scales an input range to an output range", function(done){
@@ -113,7 +249,14 @@ function(core, chai, Signal, Add, Multiply, Scale, Oscillator, Master, Abs, Nega
 		it("can be created and disposed", function(){
 			var s = new ScaleExp(0, 10, 2);
 			s.dispose();
-			Test.wasDisposed(s, expect);
+			Test.wasDisposed(s);
+		});
+
+		it("handles input and output connections", function(){
+			Test.onlineContext();
+			var scale = new ScaleExp(0, 1, 0, 100);
+			Test.acceptsInputAndOutput(scale);
+			scale.dispose();
 		});
 
 		it("scales a signal exponentially", function(done){
@@ -139,7 +282,14 @@ function(core, chai, Signal, Add, Multiply, Scale, Oscillator, Master, Abs, Nega
 		it("can be created and disposed", function(){
 			var ab = new Abs();
 			ab.dispose();
-			Test.wasDisposed(ab, expect);
+			Test.wasDisposed(ab);
+		});
+
+		it("handles input and output connections", function(){
+			Test.onlineContext();
+			var abs = new Abs();
+			Test.acceptsInputAndOutput(abs);
+			abs.dispose();
 		});
 
 		it("outputs the same value for positive values", function(done){
@@ -181,8 +331,16 @@ function(core, chai, Signal, Add, Multiply, Scale, Oscillator, Master, Abs, Nega
 		it("can be created and disposed", function(){
 			var neg = new Negate();
 			neg.dispose();
-			Test.wasDisposed(neg, expect);
+			Test.wasDisposed(neg);
 		});
+
+		it("handles input and output connections", function(){
+			Test.onlineContext();
+			var neg = new Negate();
+			Test.acceptsInputAndOutput(neg);
+			neg.dispose();
+		});
+
 
 		it("negates a positive value", function(done){
 			var signal, neg;
@@ -225,7 +383,16 @@ function(core, chai, Signal, Add, Multiply, Scale, Oscillator, Master, Abs, Nega
 		it("can be created and disposed", function(){
 			var max = new Max();
 			max.dispose();
-			Test.wasDisposed(max, expect);
+			Test.wasDisposed(max);
+		});
+
+		it("handles input and output connections", function(){
+			Test.onlineContext();
+			var max = new Max();
+			Test.acceptsInput(max, 0);
+			Test.acceptsInput(max, 1);
+			Test.acceptsOutput(max);
+			max.dispose();
 		});
 
 		it("outputs the set value when less than the incoming signal", function(done){
@@ -276,6 +443,25 @@ function(core, chai, Signal, Add, Multiply, Scale, Oscillator, Master, Abs, Nega
 				done();
 			});
 		});
+
+		it("can use two signals", function(done){
+			var sigA, sigB, max;
+			Test.offlineTest(0.2, function(dest){
+				sigA = new Signal(3);
+				sigB = new Signal(50);
+				max = new Max();
+				sigA.connect(max, 0, 0);
+				sigB.connect(max, 0, 1);
+				max.connect(dest);
+			}, function(sample){
+				expect(sample).to.equal(50);
+			}, function(){
+				sigA.dispose();
+				sigB.dispose();
+				max.dispose();
+				done();
+			});
+		});
 	});
 	
 
@@ -286,7 +472,16 @@ function(core, chai, Signal, Add, Multiply, Scale, Oscillator, Master, Abs, Nega
 		it("can be created and disposed", function(){
 			var min = new Min();
 			min.dispose();
-			Test.wasDisposed(min, expect);
+			Test.wasDisposed(min);
+		});
+
+		it("handles input and output connections", function(){
+			Test.onlineContext();
+			var min = new Min();
+			Test.acceptsInput(min, 0);
+			Test.acceptsInput(min, 1);
+			Test.acceptsOutput(min);
+			min.dispose();
 		});
 
 		it("outputs the set value when greater than the incoming signal", function(done){
@@ -337,6 +532,25 @@ function(core, chai, Signal, Add, Multiply, Scale, Oscillator, Master, Abs, Nega
 				done();
 			});
 		});
+
+		it("can use two signals", function(done){
+			var sigA, sigB, min;
+			Test.offlineTest(0.2, function(dest){
+				sigA = new Signal(3);
+				sigB = new Signal(5);
+				min = new Min();
+				sigA.connect(min, 0, 0);
+				sigB.connect(min, 0, 1);
+				min.connect(dest);
+			}, function(sample){
+				expect(sample).to.equal(3);
+			}, function(){
+				sigA.dispose();
+				sigB.dispose();
+				min.dispose();
+				done();
+			});
+		});
 	});
 
 	//Clip
@@ -346,7 +560,14 @@ function(core, chai, Signal, Add, Multiply, Scale, Oscillator, Master, Abs, Nega
 		it("can be created and disposed", function(){
 			var clip = new Clip(0, 1);
 			clip.dispose();
-			Test.wasDisposed(clip, expect);
+			Test.wasDisposed(clip);
+		});
+
+		it("handles input and output connections", function(){
+			Test.onlineContext();
+			var clip = new Clip(0, 1);
+			Test.acceptsInputAndOutput(clip);
+			clip.dispose();
 		});
 
 		it("output the upper limit when signal is greater than clip", function(done){
@@ -404,7 +625,14 @@ function(core, chai, Signal, Add, Multiply, Scale, Oscillator, Master, Abs, Nega
 		it("can be created and disposed", function(){
 			var mod = new Modulo(1);
 			mod.dispose();
-			Test.wasDisposed(mod, expect);
+			Test.wasDisposed(mod);
+		});
+
+		it("handles input and output connections", function(){
+			Test.onlineContext();
+			var mod = new Modulo();
+			Test.acceptsInputAndOutput(mod);
+			mod.dispose();
 		});
 
 		it("can evaluate modulus on integers", function(done){

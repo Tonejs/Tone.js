@@ -195,6 +195,25 @@ function(core, chai, Signal, EqualZero, Equal, GreaterThan, LessThan, Test, Grea
 				done();
 			});
 		});
+
+		it("can compare two signals", function(done){
+			var sigA, sigB, eq;
+			Test.offlineTest(0.2, function(dest){
+				sigA = new Signal(5);
+				sigB = new Signal(5);
+				eq = new Equal();
+				sigA.connect(eq, 0, 0);
+				sigB.connect(eq, 0, 1);
+				eq.connect(dest);
+			}, function(sample){
+				expect(sample).to.equal(1);
+			}, function(){
+				sigA.dispose();
+				sigB.dispose();
+				eq.dispose();
+				done();
+			});
+		});
 	});
 	
 	describe("Tone.GreaterThan", function(){
@@ -270,6 +289,25 @@ function(core, chai, Signal, EqualZero, Equal, GreaterThan, LessThan, Test, Grea
 				done();
 			});
 		});
+
+		it("can compare two signals", function(done){
+			var sigA, sigB, gt;
+			Test.offlineTest(0.2, function(dest){
+				sigA = new Signal(3);
+				sigB = new Signal(5);
+				gt = new GreaterThan();
+				sigA.connect(gt, 0, 0);
+				sigB.connect(gt, 0, 1);
+				gt.connect(dest);
+			}, function(sample){
+				expect(sample).to.equal(0);
+			}, function(){
+				sigA.dispose();
+				sigB.dispose();
+				gt.dispose();
+				done();
+			});
+		});
 	});
 
 	describe("Tone.LessThan", function(){
@@ -341,6 +379,25 @@ function(core, chai, Signal, EqualZero, Equal, GreaterThan, LessThan, Test, Grea
 				expect(sample).to.equal(0);
 			}, function(){
 				signal.dispose();
+				lt.dispose();
+				done();
+			});
+		});
+
+		it("can compare two signals", function(done){
+			var sigA, sigB, lt;
+			Test.offlineTest(0.2, function(dest){
+				sigA = new Signal(-3);
+				sigB = new Signal(5);
+				lt = new LessThan();
+				sigA.connect(lt, 0, 0);
+				sigB.connect(lt, 0, 1);
+				lt.connect(dest);
+			}, function(sample){
+				expect(sample).to.equal(1);
+			}, function(){
+				sigA.dispose();
+				sigB.dispose();
 				lt.dispose();
 				done();
 			});
