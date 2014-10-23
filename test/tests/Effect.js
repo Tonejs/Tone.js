@@ -4,10 +4,11 @@ define(["tests/Core", "chai", "Tone/component/Recorder", "Tone/core/Master", "To
 	"Tone/effect/FeedbackEffect", "Tone/signal/Signal", "Tone/effect/AutoPanner", "Tone/effect/AutoWah", "Tone/effect/BitCrusher",
 	"Tone/effect/FeedbackDelay", "Tone/effect/PingPongDelay", "Tone/effect/Chorus", "tests/Common", "Tone/effect/Freeverb", 
 	"Tone/effect/JCReverb", "Tone/effect/StereoEffect", "Tone/effect/StereoFeedbackEffect", 
-	"Tone/effect/StereoXFeedbackEffect", "Tone/effect/Phaser", "Tone/effect/Distortion", "Tone/effect/Chebyshev"], 
+	"Tone/effect/StereoXFeedbackEffect", "Tone/effect/Phaser", "Tone/effect/Distortion", "Tone/effect/Chebyshev", 
+	"Tone/effect/Convolver"], 
 function(Tone, chai, Recorder, Master, Effect, DryWet, FeedbackEffect, Signal, AutoPanner, AutoWah, BitCrusher, 
 	FeedbackDelay, PingPongDelay, Chorus, Test, Freeverb, JCReverb, StereoEffect, StereoFeedbackEffect, 
-	StereoXFeedbackEffect, Phaser, Distortion, Chebyshev){
+	StereoXFeedbackEffect, Phaser, Distortion, Chebyshev, Convolver){
 
 	var expect = chai.expect;
 
@@ -382,7 +383,7 @@ function(Tone, chai, Recorder, Master, Effect, DryWet, FeedbackEffect, Signal, A
 		it("passes the incoming signal through to the output", function(done){
 			var delay;
 			Test.passesAudio(function(input, output){
-				delay = new PingPongDelay(0.01);
+				delay = new PingPongDelay(0.05);
 				input.connect(delay);
 				delay.connect(output);
 			}, function(){
@@ -590,5 +591,38 @@ function(Tone, chai, Recorder, Master, Effect, DryWet, FeedbackEffect, Signal, A
 				done();
 			});
 		});
+	});
+
+	describe("Tone.Convolver", function(){
+		it("can be created and disposed", function(){
+			var conv = new Convolver();
+			conv.dispose();
+			Test.wasDisposed(conv);
+		});
+
+		it("extends Tone.Effect", function(){
+			var conv = new Convolver();
+			expect(conv).is.instanceof(Effect);
+			conv.dispose();
+		});
+
+		it("handles input and output connections", function(){
+			Test.onlineContext();
+			var conv = new Convolver();
+			Test.acceptsInputAndOutput(conv);
+			conv.dispose();
+		});
+
+		/*it("passes the incoming signal through to the output", function(done){
+			var conv;
+			Test.passesAudio(function(input, output){
+				conv = new Convolver(1);
+				input.connect(conv);
+				conv.connect(output);
+			}, function(){
+				conv.dispose();
+				done();
+			});
+		});*/
 	});
 });
