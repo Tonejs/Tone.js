@@ -171,7 +171,7 @@ function(Tone){
 			transportTicks += 1;
 			timelineTicks += 1;
 			if (this.loop){
-				if (timelineTicks === loopEnd){
+				if (timelineTicks >= loopEnd){
 					this._setTicks(loopStart);
 				}
 			}
