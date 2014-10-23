@@ -142,8 +142,8 @@ function(Tone){
 		}
 		this._feedbackCombFilters = null;
 		this.roomSize.dispose();
-		this._scaleRoomSize.dispose();
 		this.roomSize = null;
+		this._scaleRoomSize.dispose();
 		this._scaleRoomSize = null;
 	};
 

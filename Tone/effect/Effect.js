@@ -122,10 +122,10 @@ define(["Tone/core/Tone", "Tone/component/DryWet"], function(Tone){
 	Tone.Effect.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
 		this.dryWet.dispose();
-		this.effectSend.disconnect();
-		this.effectReturn.disconnect();
 		this.dryWet = null;
+		this.effectSend.disconnect();
 		this.effectSend = null;
+		this.effectReturn.disconnect();
 		this.effectReturn = null;
 	};
 

@@ -161,19 +161,19 @@ function(Tone){
 	Tone.Phaser.prototype.dispose = function(){
 		Tone.StereoFeedbackEffect.prototype.dispose.call(this);
 		this._lfoL.dispose();
+		this._lfoL = null;
 		this._lfoR.dispose();
+		this._lfoR = null;
 		for (var i = 0; i < this._filtersL.length; i++){
 			this._filtersL[i].disconnect();
 			this._filtersL[i] = null;
 		}
-		for (var i = 0; i < this._filtersR.length; i++){
-			this._filtersR[i].disconnect();
-			this._filtersR[i] = null;
-		}
 		this._filtersL = null;
+		for (var j = 0; j < this._filtersR.length; j++){
+			this._filtersR[j].disconnect();
+			this._filtersR[j] = null;
+		}
 		this._filtersR = null;
-		this._lfoL = null;
-		this._lfoR = null;
 	};
 
 	return Tone.Phaser;
