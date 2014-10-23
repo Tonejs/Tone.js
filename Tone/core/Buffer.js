@@ -2,13 +2,14 @@ define(["Tone/core/Tone"], function(Tone){
 
 	"use strict";
 	/**
-	 *  @class  Simple Buffer for use with Player, Convolver, and Sampler objects.
+	 *  @class  Buffer loading and storage. Tone.Buffer will load and store the buffers
+	 *          in the same data structure they were given in the argument. If given
+	 *          a string, this.buffer will equal an AudioBuffer. If constructed
+	 *          with an array, the samples will be placed in an array in the same
+	 *          order. 
 	 *  
 	 *  @constructor 
-	 *  @param {Object|Array|string} keyval map of urls for loading into buffers | Array of url strings | url string   
-	 *                                If a url is passed in, it will be converted to Object. loaded
-	 *                                and invoke the callback if it also passed
-	 *                                in.
+	 *  @param {Object|Array|string} url the urls to be loaded
 	 */
 	
 	Tone.Buffer = function(){
@@ -16,11 +17,11 @@ define(["Tone/core/Tone"], function(Tone){
 		var options = this.optionsObject(arguments, ["url", "callback"], Tone.Buffer.defaults);
 
 		/**
-		*  the Object array of raw arraybuffers. 
-		*  If a single string is passed into the constructor, this._buffers will remain empty
-		*  @type {Object|Array|string}
+		*  stores the loaded AudioBuffers in the same format they were
+		*  given in the constructor
+		*  @type {Object|Array|AudioBuffer}
 		*/
-		this._buffers = {};
+		this.buffers = null;
 
 		var self = this;
 		if(typeof options.url !== "object") {
@@ -45,7 +46,7 @@ define(["Tone/core/Tone"], function(Tone){
 	 */
 	Tone.Buffer.defaults = {
 		"url" : "",
-		"callback" : function(){ return; }
+		"callback" : function(){}
 	};
 
 	/**
@@ -93,8 +94,7 @@ define(["Tone/core/Tone"], function(Tone){
 			total : 0,
 			loaded : 0
 		};
-		var buffers = this._buffers;
-		var incrementCount = function(i){
+		var incrementCount = function(i, buffers){
 			var key = i;
 			return function(loadedBuffer){
 				buffers[key] = loadedBuffer;
@@ -105,14 +105,17 @@ define(["Tone/core/Tone"], function(Tone){
 			};
 		};
 		if (Array.isArray(urls)){
-			loadCounter.total = urls.length;
-			for (var i = 0; i < urls.length; i++){
-				this._loadBuffer(urls[i], incrementCount(i));
+			var len = urls.length;
+			loadCounter.total = len;
+			this.buffer = new Array(len);
+			for (var i = 0; i < len; i++){
+				this._loadBuffer(urls[i], incrementCount(i, this.buffer));
 			}
 		} else {
 			loadCounter.total = Object.keys(urls).length;
+			this.buffer = {};
 			for (var key in urls){
-				this._loadBuffer(urls[key], incrementCount(key));
+				this._loadBuffer(urls[key], incrementCount(key, this.buffer));
 			}
 		}
 	};
@@ -122,7 +125,7 @@ define(["Tone/core/Tone"], function(Tone){
 	 */
 	Tone.Buffer.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
-		this._buffers = null;
+		this.buffer = null;
 	};
 
 	return Tone.Buffer;
