@@ -45,7 +45,7 @@ define(["Tone/core/Tone", "Tone/effect/Effect"], function(Tone){
 	 */
 	Tone.Distortion.prototype.setDistortion = function(amount) {
 		var k = amount * 100;
-		var len = Math.pow(2, 14);
+		var len = Math.pow(2, 12);
 		var curve = new Float32Array(len);
 		var deg = Math.PI / 180;
 		for (var i = 0; i < len; ++i) {
