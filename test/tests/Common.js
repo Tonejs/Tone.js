@@ -94,7 +94,7 @@ function(Tone, chai, Recorder, Master, Signal){
 
 	function outputsAudio(setup, end){
 		var sampleRate = 44100;
-		var offline = new OfflineAudioContext(2, sampleRate * 0.1, sampleRate);
+		var offline = new OfflineAudioContext(2, sampleRate * 0.4, sampleRate);
 		offline.oncomplete = function(e){
 			var buffer = e.renderedBuffer.getChannelData(0);
 			for (var i = 0; i < buffer.length; i++){
@@ -112,7 +112,7 @@ function(Tone, chai, Recorder, Master, Signal){
 
 	function passesAudio(setup, end){
 		var sampleRate = 44100;
-		var duration = 0.2;
+		var duration = 0.5;
 		var offline = new OfflineAudioContext(2, sampleRate * duration, sampleRate);
 		offline.oncomplete = function(e){
 			var buffer = e.renderedBuffer.getChannelData(0);
