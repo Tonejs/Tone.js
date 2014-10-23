@@ -93,7 +93,7 @@ define(["Tone/core/Tone", "Tone/signal/Multiply"], function(Tone){
 	 * @private 
 	 */
 	ModuloSubroutine.prototype._makeCurve = function(val){
-		var arrayLength = Math.pow(2, 18);
+		var arrayLength = Math.pow(2, 16);
 		var curve = new Float32Array(arrayLength);
 		for (var i = 0; i < curve.length; i++) {
 			if (i === arrayLength - 1){
