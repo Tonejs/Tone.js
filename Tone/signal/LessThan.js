@@ -3,7 +3,8 @@ define(["Tone/core/Tone", "Tone/signal/GreaterThan", "Tone/signal/Negate"], func
 	"use strict";
 
 	/**
-	 *  @class  Output 1 if the signal is less than the value, otherwise outputs 0
+	 *  @class  Output 1 if the signal is less than the value, otherwise outputs 0.
+	 *          can compare two signals or a signal and a number. 
 	 *  
 	 *  @constructor
 	 *  @extends {Tone}
@@ -12,33 +13,36 @@ define(["Tone/core/Tone", "Tone/signal/GreaterThan", "Tone/signal/Negate"], func
 	Tone.LessThan = function(value){
 
 		/**
+		 *  input 0: left hand side of comparison
+		 *  input 1: right hand side of comparison
+		 *  @type {Array}
+		 */
+		this.input = new Array(2);
+
+		/**
 		 *  negate the incoming signal
 		 *  @type {Tone.Negate}
 		 *  @private
 		 */
-		this._neg = new Tone.Negate();
+		this._neg = this.input[0] = new Tone.Negate();
 
 		/**
 		 *  input < value === -input > -value
 		 *  @type {Tone.GreaterThan}
 		 *  @private
 		 */
-		this._gt = new Tone.GreaterThan(-value);
+		this._gt = this.output = new Tone.GreaterThan(-value);
 
 		/**
-	 	 *  alias for the adder
+		 *  negate the signal coming from the second input
+		 *  @private
 		 *  @type {Tone.Negate}
 		 */
-		this.input = this._neg;
-
-		/**
-		 *  alias for the thresh
-		 *  @type {Tone.GreatThan}
-		 */
-		this.output = this._gt;
+		this._lhNeg = this.input[1] = new Tone.Negate();
 
 		//connect
 		this._neg.connect(this._gt);
+		this._lhNeg.connect(this._gt, 0, 1);
 	};
 
 	Tone.extend(Tone.LessThan);
@@ -65,9 +69,11 @@ define(["Tone/core/Tone", "Tone/signal/GreaterThan", "Tone/signal/Negate"], func
 	Tone.LessThan.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
 		this._neg.dispose();
-		this._gt.dispose();
 		this._neg = null;
+		this._gt.dispose();
 		this._gt = null;
+		this._lhNeg.dispose();
+		this._lhNeg = null;
 	};
 
 	return Tone.LessThan;

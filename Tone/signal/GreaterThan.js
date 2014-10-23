@@ -3,7 +3,7 @@ define(["Tone/core/Tone", "Tone/signal/GreaterThanZero", "Tone/signal/Subtract"]
 	"use strict";
 
 	/**
-	 *  @class  Output 1 if the signal is greater than the value, otherwise outputs 0
+	 *  @class  Output 1 if the signal is greater than the value, otherwise outputs 0.
 	 *          can compare two signals or a signal and a number. 
 	 *  
 	 *  @constructor
