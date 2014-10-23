@@ -3,48 +3,46 @@ define(["Tone/core/Tone", "Tone/signal/LessThan", "Tone/signal/IfThenElse", "Ton
 	"use strict";
 
 	/**
-	 * 	@class  the output signal is the lesser of the incoming signal and min
+	 * 	@class  outputs the lesser of two signals. If a number is given 
+	 * 	        in the constructor, it will use a signal and a number. 
 	 * 	
 	 *  @constructor
 	 *  @extends {Tone}
 	 *  @param {number} min the minimum to compare to the incoming signal
 	 */
 	Tone.Min = function(min){
-		
+
 		/**
-		 *  input node
-		 *  @type {GainNode}
+		 *  the inputs
+		 *  @type {Array}
 		 */
-		this.input = this.context.createGain();
+		this.input = new Array(2);
+		this.input[0] = this.context.createGain();
+
+		/**
+		 *  @type {Tone.Select}
+		 *  @private
+		 */
+		this._ifThenElse = this.output = new Tone.IfThenElse();
+
+		/**
+		 *  @type {Tone.Select}
+		 *  @private
+		 */
+		this._lt = new Tone.LessThan();
 
 		/**
 		 *  the min signal
 		 *  @type {Tone.Signal}
 		 *  @private
 		 */
-		this._minSignal = new Tone.Signal(min);
-
-		/**
-		 *  @type {Tone.Select}
-		 *  @private
-		 */
-		this._ifThenElse = new Tone.IfThenElse();
-
-		/**
-		 *  the output node
-		 */
-		this.output = this._ifThenElse;
-
-		/**
-		 *  @type {Tone.Select}
-		 *  @private
-		 */
-		this._lt = new Tone.LessThan(min);
+		this._minSignal = this.input[1] = new Tone.Signal(min);
 
 		//connections
-		this.chain(this.input, this._lt, this._ifThenElse.if);
-		this.input.connect(this._ifThenElse.then);
+		this.chain(this.input[0], this._lt, this._ifThenElse.if);
+		this.input[0].connect(this._ifThenElse.then);
 		this._minSignal.connect(this._ifThenElse.else);
+		this._minSignal.connect(this._lt, 0, 1);
 	};
 
 	Tone.extend(Tone.Min);
@@ -55,7 +53,6 @@ define(["Tone/core/Tone", "Tone/signal/LessThan", "Tone/signal/IfThenElse", "Ton
 	 */
 	Tone.Min.prototype.setMin = function(min){
 		this._minSignal.setValue(min);
-		this._lt.setValue(min);
 	};
 
 	/**

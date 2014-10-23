@@ -3,48 +3,47 @@ define(["Tone/core/Tone", "Tone/signal/GreaterThan", "Tone/signal/IfThenElse", "
 	"use strict";
 
 	/**
-	 * 	@class  the output signal is the greater of the incoming signal and max
+	 * 	@class  outputs the greater of two signals. If a number is provided in the constructor
+	 * 	        it will use that instead of the signal. 
 	 * 	
 	 *  @constructor
 	 *  @extends {Tone}
-	 *  @param {number} max 
+	 *  @param {number=} max max value if provided. if not provided, it will use the
+	 *                       signal value from input 1. 
 	 */
 	Tone.Max = function(max){
 		
 		/**
-		 *  input node
-		 *  @type {GainNode}
+		 *  the inputs
+		 *  @type {Array}
 		 */
-		this.input = this.context.createGain();
+		this.input = new Array(2);
+		this.input[0] = this.context.createGain();
 
 		/**
 		 *  the max signal
 		 *  @type {Tone.Signal}
 		 *  @private
 		 */
-		this._maxSignal = new Tone.Signal(max);
+		this._maxSignal = this.input[1] = new Tone.Signal(max);
 
 		/**
 		 *  @type {Tone.Select}
 		 *  @private
 		 */
-		this._ifThenElse = new Tone.IfThenElse();
-
-		/**
-		 *  the output node
-		 */
-		this.output = this._ifThenElse;
+		this._ifThenElse = this.output = new Tone.IfThenElse();
 
 		/**
 		 *  @type {Tone.Select}
 		 *  @private
 		 */
-		this._gt = new Tone.GreaterThan(max);
+		this._gt = new Tone.GreaterThan();
 
 		//connections
-		this.chain(this.input, this._gt, this._ifThenElse.if);
-		this.input.connect(this._ifThenElse.then);
+		this.chain(this.input[0], this._gt, this._ifThenElse.if);
+		this.input[0].connect(this._ifThenElse.then);
 		this._maxSignal.connect(this._ifThenElse.else);
+		this._maxSignal.connect(this._gt, 0, 1);
 	};
 
 	Tone.extend(Tone.Max);
@@ -55,7 +54,6 @@ define(["Tone/core/Tone", "Tone/signal/GreaterThan", "Tone/signal/IfThenElse", "
 	 */
 	Tone.Max.prototype.setMax = function(max){
 		this._maxSignal.setValue(max);
-		this._gt.setValue(max);
 	};
 
 	/**
