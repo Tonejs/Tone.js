@@ -9,10 +9,10 @@ define(["Tone/core/Tone", "Tone/signal/Multiply"], function(Tone){
 	 *
 	 *  @constructor
 	 *  @extends {Tone}
-	 *  @param {number} modulus the modolus to apply
+	 *  @param {number} modulus the modulus to apply
 	 *  @param {number} [bits=8]	optionally set the maximum bits the incoming signal can have. 
 	 *                           	defaults to 8 meaning that incoming values must be in the range
-	 *                            	[-255,255]. (2^8 = 256);
+	 *                            	[-255,255].
 	 */
 	Tone.Modulo = function(modulus, bits){
 
