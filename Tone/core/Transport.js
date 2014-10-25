@@ -171,7 +171,7 @@ function(Tone){
 			transportTicks += 1;
 			timelineTicks += 1;
 			if (this.loop){
-				if (timelineTicks >= loopEnd){
+				if (timelineTicks === loopEnd){
 					this._setTicks(loopStart);
 				}
 			}
@@ -980,9 +980,9 @@ function(Tone){
 			if (components.length > 1){
 				var oringalTime = time;
 				for(var i = 0; i < components.length; i++){
-					var symb = components[i];
+					var symb = components[i].trim();
 					if (symb !== ""){
-						var val = this.toSeconds(symb.trim());
+						var val = this.toSeconds(symb);
 						time = time.replace(symb, val);
 					}
 				}
