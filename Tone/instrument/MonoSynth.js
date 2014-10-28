@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/component/Envelope", "Tone/source/OmniOscillator", 
+define(["Tone/core/Tone", "Tone/component/AmplitudeEnvelope", "Tone/source/OmniOscillator", 
 	"Tone/signal/Signal", "Tone/component/Filter", "Tone/signal/Add", "Tone/instrument/Monophonic"], 
 function(Tone){
 
@@ -53,24 +53,14 @@ function(Tone){
 		 *  the amplitude envelope
 		 *  @type {Tone.Envelope}
 		 */
-		this.envelope = new Tone.Envelope(options.envelope);
-
-		/**
-		 *  the amplitude
-		 *  @type {GainNode}
-		 *  @private
-		 */
-		this._amplitude = this.context.createGain();
+		this.envelope = new Tone.AmplitudeEnvelope(options.envelope);
 
 		//connect the oscillators to the output
-		this.oscillator.connect(this.filter);
-		this.filter.connect(this._amplitude);
+		this.chain(this.oscillator, this.filter, this.envelope, this.output);
 		//start the oscillators
 		this.oscillator.start();
-		//connect the envelopes
+		//connect the filter envelope
 		this.filterEnvelope.connect(this.filter.frequency);
-		this.envelope.connect(this._amplitude.gain);
-		this._amplitude.connect(this.output);
 	};
 
 	Tone.extend(Tone.MonoSynth, Tone.Monophonic);
@@ -154,16 +144,14 @@ function(Tone){
 	Tone.MonoSynth.prototype.dispose = function(){
 		Tone.Monophonic.prototype.dispose.call(this);
 		this.oscillator.dispose();
-		this.envelope.dispose();
-		this.filterEnvelope.dispose();
-		this.filter.dispose();
-		this._amplitude.disconnect();
 		this.oscillator = null;
-		this.filterEnvelope = null;
+		this.envelope.dispose();
 		this.envelope = null;
+		this.filterEnvelope.dispose();
+		this.filterEnvelope = null;
+		this.filter.dispose();
 		this.filter = null;
 		this.detune = null;
-		this._amplitude = null;
 		this.frequency = null;
 		this.detune = null;
 	};
