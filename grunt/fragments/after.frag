@@ -1,9 +1,10 @@
 
-(function(root, undef) {
-	//leave no trace
-	//undefine 'define'
-	if (root.ToneDefinedDefine){
-		root.define = undef;
-		root.ToneDefinedDefine = undef;
+	//requirejs compatibility
+	if ( typeof define === "function" && define.amd ) {
+		define( "Tone", [], function() {
+			return Tone;
+		});
+	} else {
+		root.Tone = Tone;
 	}
-}(this, undefined));
+} (this));

@@ -1,1 +1,0 @@
-void function(e,t){if(e.ToneDefinedDefine){e.define=t;e.ToneDefinedDefine=t}}(this,undefined)
