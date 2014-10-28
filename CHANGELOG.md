@@ -11,6 +11,7 @@
 * NOT, OR, AND, and IfThenElse signal logic operators
 * Compressor and MultibandCompressor
 * Distortion and Chebyshev distortion effects
+* Convolver effect and example
 
 
 ### r2 - Getting Physical
