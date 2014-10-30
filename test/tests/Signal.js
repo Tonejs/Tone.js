@@ -479,9 +479,9 @@ function(core, chai, Signal, Oscillator, Switch, Route, Select, Test, NOT, AND, 
 			Test.offlineTest(0.2, function(dest){
 				signal0 = new Signal(1);
 				signal1 = new Signal(1);
-				or = new OR();
-				signal0.connect(or);
-				signal1.connect(or);
+				or = new OR(2);
+				signal0.connect(or, 0, 0);
+				signal1.connect(or, 0, 1);
 				or.connect(dest);
 			}, function(sample){
 				expect(sample).to.equal(1);
@@ -496,11 +496,11 @@ function(core, chai, Signal, Oscillator, Switch, Route, Select, Test, NOT, AND, 
 		it("outputs 1 when only one input is 1", function(done){
 			var signal0, signal1, or;
 			Test.offlineTest(0.2, function(dest){
-				signal0 = new Signal(1);
-				signal1 = new Signal(0);
-				or = new OR();
-				signal0.connect(or);
-				signal1.connect(or);
+				signal0 = new Signal(0);
+				signal1 = new Signal(1);
+				or = new OR(2);
+				signal0.connect(or, 0, 0);
+				signal1.connect(or, 0, 1);
 				or.connect(dest);
 			}, function(sample){
 				expect(sample).to.equal(1);
@@ -517,9 +517,9 @@ function(core, chai, Signal, Oscillator, Switch, Route, Select, Test, NOT, AND, 
 			Test.offlineTest(0.2, function(dest){
 				signal0 = new Signal(0);
 				signal1 = new Signal(0);
-				or = new OR();
-				signal0.connect(or);
-				signal1.connect(or);
+				or = new OR(2);
+				signal0.connect(or, 0, 0);
+				signal1.connect(or, 0, 1);
 				or.connect(dest);
 			}, function(sample){
 				expect(sample).to.equal(0);
@@ -537,10 +537,10 @@ function(core, chai, Signal, Oscillator, Switch, Route, Select, Test, NOT, AND, 
 				signal0 = new Signal(0);
 				signal1 = new Signal(0);
 				signal2 = new Signal(1);
-				or = new OR();
-				signal0.connect(or);
-				signal1.connect(or);
-				signal2.connect(or);
+				or = new OR(3);
+				signal0.connect(or, 0, 0);
+				signal1.connect(or, 0, 1);
+				signal2.connect(or, 0, 2);
 				or.connect(dest);
 			}, function(sample){
 				expect(sample).to.equal(1);
