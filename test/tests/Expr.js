@@ -106,6 +106,32 @@ function(core, chai, Signal, Expr, Test){
 			});
 		});
 
+		it("handles complex precendence", function(done){
+			var exp;
+			Test.offlineTest(0.1, function(dest){
+				exp = new Expr("2 * 2 + 1 > 0 == 0");
+				exp.connect(dest);
+			}, function(sample){
+				expect(sample).to.equal(0);
+			}, function(){
+				exp.dispose();
+				done();
+			});
+		});
+
+		it("tolerates inconsistent spacing", function(done){
+			var exp;
+			Test.offlineTest(0.1, function(dest){
+				exp = new Expr("2 *    3-2 *4 ");
+				exp.connect(dest);
+			}, function(sample){
+				expect(sample).to.equal(-2);
+			}, function(){
+				exp.dispose();
+				done();
+			});
+		});
+
 		it("handles parens", function(done){
 			var exp;
 			Test.offlineTest(0.1, function(dest){
@@ -415,6 +441,171 @@ function(core, chai, Signal, Expr, Test){
 			}, function(sample){
 				expect(sample).to.equal(7);
 			}, function(){
+				exp.dispose();
+				done();
+			});
+		});
+
+		it("handles mod(10, 9)", function(done){
+			var exp;
+			Test.offlineTest(0.1, function(dest){
+				exp = new Expr("mod(10, 9)");
+				exp.connect(dest);
+			}, function(sample){
+				expect(sample).to.equal(1);
+			}, function(){
+				exp.dispose();
+				done();
+			});
+		});
+
+		it("handles mod(1.1, 1, 4)", function(done){
+			var exp;
+			Test.offlineTest(0.1, function(dest){
+				exp = new Expr("mod(1.1, 1)");
+				exp.connect(dest);
+			}, function(sample){
+				expect(sample).to.be.closeTo(0.1, 0.001);
+			}, function(){
+				exp.dispose();
+				done();
+			});
+		});
+
+		it("outputs 1 for gt0(9)", function(done){
+			var exp;
+			Test.offlineTest(0.1, function(dest){
+				exp = new Expr("gt0(9)");
+				exp.connect(dest);
+			}, function(sample){
+				expect(sample).to.equal(1);
+			}, function(){
+				exp.dispose();
+				done();
+			});
+		});
+
+		it("outputs 0 for gt0(-9)", function(done){
+			var exp;
+			Test.offlineTest(0.1, function(dest){
+				exp = new Expr("gt0(-9)");
+				exp.connect(dest);
+			}, function(sample){
+				expect(sample).to.equal(0);
+			}, function(){
+				exp.dispose();
+				done();
+			});
+		});
+
+		it("outputs 1 for eq0(0)", function(done){
+			var exp;
+			Test.offlineTest(0.1, function(dest){
+				exp = new Expr("eq0(0)");
+				exp.connect(dest);
+			}, function(sample){
+				expect(sample).to.equal(1);
+			}, function(){
+				exp.dispose();
+				done();
+			});
+		});
+
+		it("outputs 0 for eq0(-10)", function(done){
+			var exp;
+			Test.offlineTest(0.1, function(dest){
+				exp = new Expr("eq0(-10)");
+				exp.connect(dest);
+			}, function(sample){
+				expect(sample).to.equal(0);
+			}, function(){
+				exp.dispose();
+				done();
+			});
+		});
+
+	});
+
+	describe("Tone.Expr - Nested Operators", function(){
+		this.timeout(maxTimeout);
+
+		it("correctly outputs 1 in if(2 * 4 > 8, max(1, 2), min(1, 2))", function(done){
+			var exp;
+			Test.offlineTest(0.1, function(dest){
+				exp = new Expr("if(2 * 4 > 8, max(1, 2), min(1, 2))");
+				exp.connect(dest);
+			}, function(sample){
+				expect(sample).to.equal(1);
+			}, function(){
+				exp.dispose();
+				done();
+			});
+		});
+
+		it("correctly outputs 1 in if(2 * 4 > 8, max(1, 2), min(1, 2))", function(done){
+			var exp;
+			Test.offlineTest(0.1, function(dest){
+				exp = new Expr("if(2 * 4 > 8, max(1, 2), min(1, 2))");
+				exp.connect(dest);
+			}, function(sample){
+				expect(sample).to.equal(1);
+			}, function(){
+				exp.dispose();
+				done();
+			});
+		});
+
+		it("correctly outputs 29 for abs(if(0 < -2, -10, -29))", function(done){
+			var exp;
+			Test.offlineTest(0.1, function(dest){
+				exp = new Expr("abs(if(0 < -2, -10, -29))");
+				exp.connect(dest);
+			}, function(sample){
+				expect(sample).to.equal(29);
+			}, function(){
+				exp.dispose();
+				done();
+			});
+		});
+
+	});
+
+	describe("Tone.Expr - Signal Inputs", function(){
+		this.timeout(maxTimeout);
+
+		it("correctly outputs 1 in if($0 * $1 > 8, $1, $0) with inputs 1 and 7", function(done){
+			var exp, sig0, sig1;
+			Test.offlineTest(0.1, function(dest){
+				sig0 = new Signal(1);
+				sig1 = new Signal(7);
+				exp = new Expr("if($0 * $1 > 8, $1, $0)");
+				sig0.connect(exp, 0, 0);
+				sig1.connect(exp, 0, 1);
+				exp.connect(dest);
+			}, function(sample){
+				expect(sample).to.equal(1);
+			}, function(){
+				sig0.dispose();
+				sig1.dispose();
+				exp.dispose();
+				done();
+			});
+		});
+
+		it("correctly outputs 3 in max($0 * $1, $0 + $1) with inputs 1 and 2", function(done){
+			var exp, sig0, sig1;
+			Test.offlineTest(0.1, function(dest){
+				sig0 = new Signal(1);
+				sig1 = new Signal(2);
+				exp = new Expr("max($0 * $1, $0 + $1)");
+				sig0.connect(exp, 0, 0);
+				sig1.connect(exp, 0, 1);
+				exp.connect(dest);
+			}, function(sample){
+				expect(sample).to.equal(3);
+			}, function(){
+				sig0.dispose();
+				sig1.dispose();
 				exp.dispose();
 				done();
 			});
