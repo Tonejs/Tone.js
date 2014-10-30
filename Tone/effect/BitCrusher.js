@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/signal/Modulo", "Tone/signal/Negate", "Tone/signal/Add"], 
+define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/signal/Expr"], 
 function(Tone){
 
 	"use strict";
@@ -20,25 +20,11 @@ function(Tone){
 		Tone.Effect.call(this, options);
 
 		/**
-		 *  Used for the floor function
-		 *  @type {Tone.Modulo}
+		 *  floor function
+		 *  @type {Tone.Expr}
 		 *  @private
 		 */
-		this._modulo = new Tone.Modulo(1, options.bits);
-
-		/**
-		 *  used for the floor function
-		 *  @type {Tone.Negate}
-		 *  @private
-		 */
-		this._neg = new Tone.Negate();
-
-		/**
-		 *  Node where the subtraction occurs for floor function
-		 *  @type {GainNode}
-		 *  @private
-		 */
-		this._sub = this.context.createGain();
+		this._floor = new Tone.Expr("$0 - mod($0, 1, 8)");
 
 		var valueRange = Math.pow(2, options.bits - 1);
 
@@ -57,9 +43,7 @@ function(Tone){
 		this._invScale = new Tone.Scale(0, valueRange, -1, 1);
 
 		//connect it up
-		this.effectSend.connect(this._scale);
-		this._scale.connect(this._invScale);
-		this.chain(this._scale, this._modulo, this._neg, this._invScale, this.effectReturn);
+		this.chain(this.effectSend, this._scale, this._floor, this._invScale, this.effectReturn);
 	};
 
 	Tone.extend(Tone.BitCrusher, Tone.Effect);
@@ -99,15 +83,11 @@ function(Tone){
 	 */
 	Tone.BitCrusher.prototype.dispose = function(){
 		Tone.Effect.prototype.dispose.call(this);
-		this._modulo.dispose();
-		this._neg.dispose();
-		this._sub.disconnect();
+		this._floor.dispose();
+		this._floor = null;
 		this._scale.dispose();
-		this._invScale.dispose();
-		this._modulo = null;
-		this._neg = null;
-		this._sub = null;
 		this._scale = null;
+		this._invScale.dispose();
 		this._invScale = null;
 	}; 
 
