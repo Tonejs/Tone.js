@@ -1,6 +1,8 @@
-define(["Tone/core/Tone", "Tone/signal/Abs", "Tone/signal/Negate", "Tone/signal/Multiply", 
-	"Tone/signal/Subtract", "Tone/signal/NOT", "Tone/signal/AND", "Tone/signal/IfThenElse", 
-	"Tone/signal/Max", "Tone/signal/Min", "Tone/signal/Modulo", "Tone/signal/OR"], 
+define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Subtract", "Tone/signal/Multiply", 
+	"Tone/signal/IfThenElse", "Tone/signal/OR", "Tone/signal/AND", "Tone/signal/NOT", 
+	"Tone/signal/GreaterThan", "Tone/signal/LessThan", "Tone/signal/Equal", "Tone/signal/EqualZero", 
+	"Tone/signal/GreaterThanZero", "Tone/signal/Abs", "Tone/signal/Negate", "Tone/signal/Max", 
+	"Tone/signal/Min", "Tone/signal/Modulo"], 
 	function(Tone){
 
 	"use strict";
@@ -8,9 +10,8 @@ define(["Tone/core/Tone", "Tone/signal/Abs", "Tone/signal/Negate", "Tone/signal/
 	/**
 	 *  @class evaluate an expression at audio rate. 
 	 *         i.e. ($0 + ($1 * abs($2)));
-	 *         parsing code: 
+	 *         parsing code modified from https://code.google.com/p/tapdigit/
 	 *         Copyright (C) 2010 - 2011 Ariya Hidayat <ariya.hidayat@gmail.com>
-	 *         https://code.google.com/p/tapdigit/
 	 *         New BSD License {@link http://opensource.org/licenses/BSD-3-Clause}
 	 *
 	 *  @extends {Tone}
@@ -26,8 +27,7 @@ define(["Tone/core/Tone", "Tone/signal/Abs", "Tone/signal/Negate", "Tone/signal/
 		 */
 		this._nodes = [];
 
-
-		var inputCount = this._parseInput(expr);
+		var inputCount = this._parseInputs(expr);
 
 		/**
 		 *  the inputs
@@ -41,99 +41,197 @@ define(["Tone/core/Tone", "Tone/signal/Abs", "Tone/signal/Negate", "Tone/signal/
 
 		var tree = this._parseTree(expr);
 		var result;
-		result = this._eval(tree);
-		/*try {
+		try {
+			result = this._eval(tree);
 		} catch (e){
 			this._disposeNodes();
-			throw new Error("Could not parse expression: "+expr);
-		}*/
+			throw new Error("Could evaluate expression: "+expr);
+		}
 		this.output = result;
 	};
 
 	Tone.extend(Tone.Expr);
 
-	Tone.Expr.prototype._Functions = {
-		"abs" : function(args, _eval){
-			var op = new Tone.Abs();
-			_eval(args[0]).connect(op, 0, 0);
-			return op;
-		},
-		"min" : function(args, _eval){
-			var op = new Tone.Min();
-			_eval(args[0]).connect(op, 0, 0);
-			_eval(args[1]).connect(op, 0, 1);
-			return op;
-		},
-		"max" : function(args, _eval){
-			var op = new Tone.Max();
-			_eval(args[0]).connect(op, 0, 0);
-			_eval(args[1]).connect(op, 0, 1);
-			return op;
-		},
-		"if" : function(args, _eval){
-			var op = new Tone.IfThenElse();
-			_eval(args[0]).connect(op.if);
-			_eval(args[1]).connect(op.then);
-			_eval(args[2]).connect(op.else);
-			return op;
-		},
-		"gt0" : function(args, _eval){
-			var op = new Tone.GreaterThanZero();
-			_eval(args[0]).connect(op);
-			return op;
-		},
-		"eq0" : function(args, _eval){
-			var op = new Tone.EqualZero();
-			_eval(args[0]).connect(op);
-			return op;
-		},
-		"mod" : function(args, _eval){
-			var modulus = parseFloat(args[1].value);
-			var bits = args[2] ? parseFloat(args[2].value) : 16;
-			var op = new Tone.Modulo(modulus, bits);
-			_eval(args[0]).connect(op);
-			return op;
-		},
-		// "pow" : Tone.Pow,
-	};
-
-	Tone.Expr.prototype._BinaryOperators = {
-		"+" : Tone.Add,
-		"*" : Tone.Multiply,
-		"-" : Tone.Subtract,
-		">" : Tone.GreaterThan,
-		"<" : Tone.LessThan,
-		"==" : Tone.Equal,
-		"&&" : Tone.AND,
-		"||" : Tone.OR,
-	};
-
-	Tone.Expr.prototype._UnaryOperators = {
-		"-" : Tone.Negate,
-		"!" : Tone.NOT,
-	};
+	//some helpers to cut down the amount of code
+	function applyBinary(Constructor, args, self){
+		var op = new Constructor();
+		self._eval(args[0]).connect(op, 0, 0);
+		self._eval(args[1]).connect(op, 0, 1);
+		return op;
+	}
+	function applyUnary(Constructor, args, self){
+		var op = new Constructor();
+		self._eval(args[0]).connect(op, 0, 0);
+		return op;
+	}
+	function getNumber(arg){
+		return arg ? parseFloat(arg) : undefined;
+	}
+	function literalNumber(arg){
+		return arg && arg.args ? parseFloat(arg.args) : undefined;
+	}
 
 	/**
-	 *  the RegExps by which the tokens are created
+	 *  the Expressions that Tone.Expr can parse.
+	 *
+	 *  each expression belongs to a group and contains a regexp 
+	 *  for selecting the operator as well as that operators method
+	 *  
 	 *  @type {Object}
+	 *  @private
 	 */
-	Tone.Expr.prototype._operators = {
-		"number" : /^\d+\.\d+|^\d+/,
-		"input" : /^\$\d/,
-		"func" : /^abs|^pow|^min|^max|^if|^mod/,
-		"operator" : /^\-|^\+|^\*|^>|^<|^==|^\(|^\)|^,|^\!|^&&|^\|\|/,
-		"first" : /^\-|^\+/,
-		"second" : /^\*|^>|^<|^==|^\!/,
+	Tone.Expr._Expressions = {
+		//values
+		"value" : {
+			"signal" : {
+				regexp : /^\d+\.\d+|^\d+/,
+				method : function(arg){
+					var sig = new Tone.Signal(getNumber(arg));
+					return sig;
+				}
+			},
+			"input" : {
+				regexp : /^\$\d/,
+				method : function(arg, self){
+					return self.input[getNumber(arg.substr(1))];
+				}
+			}
+		},
+		//syntactic glue
+		"glue" : {
+			"(" : {
+				regexp : /^\(/,
+			},
+			")" : {
+				regexp : /^\)/,
+			},
+			"," : {
+				regexp : /^,/,
+			}
+		},
+		//functions
+		"func" : {
+			"abs" :  {
+				regexp : /^abs/,
+				method : applyUnary.bind(this, Tone.Abs)
+			},
+			"min" : {
+				regexp : /^min/,
+				method : applyBinary.bind(this, Tone.Min)
+			},
+			"max" : {
+				regexp : /^max/,
+				method : applyBinary.bind(this, Tone.Max)
+			},
+			"if" :  {
+				regexp : /^if/,
+				method : function(args, self){
+					var op = new Tone.IfThenElse();
+					self._eval(args[0]).connect(op.if);
+					self._eval(args[1]).connect(op.then);
+					self._eval(args[2]).connect(op.else);
+					return op;
+				}
+			},
+			"gt0" : {
+				regexp : /^gt0/,
+				method : applyUnary.bind(this, Tone.GreaterThanZero)
+			},
+			"eq0" : {
+				regexp : /^eq0/,
+				method : applyUnary.bind(this, Tone.EqualZero)
+			},
+			"mod" : {
+				regexp : /^mod/,
+				method : function(args, self){
+					var modulus = literalNumber(args[1]);
+					var bits = literalNumber(args[2]);
+					var op = new Tone.Modulo(modulus, bits);
+					self._eval(args[0]).connect(op);
+					return op;
+				}
+			},
+			"pow" : {
+				regexp : /^pow/,
+				method : function(args, self){
+					var exp = parseFloat(args[1].value);
+					var op = new Tone.Pow(exp);
+					self._eval(args[0]).connect(op);
+					return op;
+				}
+			},
+		},
+		//binary expressions
+		"binary" : {
+			"+" : {
+				regexp : /^\+/,
+				precedence : 1,
+				method : applyBinary.bind(this, Tone.Add)
+			},
+			"-" : {
+				regexp : /^\-/,
+				precedence : 1,
+				method : function(args, self){
+					//both unary and binary op
+					if (args.length === 1){
+						return applyUnary(Tone.Negate, args, self);
+					} else {
+						return applyBinary(Tone.Subtract, args, self);
+					}
+				}
+			},
+			"*" : {
+				regexp : /^\*/,
+				precedence : 0,
+				method : applyBinary.bind(this, Tone.Multiply)
+			},
+			">" : {
+				regexp : /^\>/,
+				precedence : 2,
+				method : applyBinary.bind(this, Tone.GreaterThan)
+			},
+			"<" : {
+				regexp : /^</,
+				precedence : 2,
+				method : applyBinary.bind(this, Tone.LessThan)
+			},
+			"==" : {
+				regexp : /^==/,
+				precedence : 3,
+				method : applyBinary.bind(this, Tone.Equal)
+			},
+			"&&" : {
+				regexp : /^&&/,
+				precedence : 4,
+				method : applyBinary.bind(this, Tone.AND)
+			},
+			"||" : {
+				regexp : /^\|\|/,
+				precedence : 5,
+				method : applyBinary.bind(this, Tone.OR)
+			},
+		},
+		//unary expressions
+		"unary" : {
+			"-" : {
+				regexp : /^\-/,
+				method : applyUnary.bind(this, Tone.Negate)
+			},
+			"!" : {
+				regexp : /^\!/,
+				method : applyUnary.bind(this, Tone.NOT)
+			},
+		},
 	};
-
+		
 	/**
 	 *  @param   {string} expr the expression string
 	 *  @return  {number}      the input count
 	 *  @private
 	 */
-	Tone.Expr.prototype._parseInput = function(expr){
+	Tone.Expr.prototype._parseInputs = function(expr){
 		var inputArray = expr.match(/\$\d/g);
-		var inputMax = 1;
+		var inputMax = 0;
 		if (inputArray !== null){
 			for (var i = 0; i < inputArray.length; i++){
 				var inputNum = parseInt(inputArray[i].substr(1)) + 1;
@@ -144,6 +242,52 @@ define(["Tone/core/Tone", "Tone/signal/Abs", "Tone/signal/Negate", "Tone/signal/
 	};
 
 	/**
+	 *  tokenize the expression based on the Expressions object
+	 *  @param   {string} expr 
+	 *  @return  {Object}      returns two methods on the tokenized list, next and peek
+	 *  @private
+	 */
+	Tone.Expr.prototype._tokenize = function(expr){
+		var position = -1;
+		var tokens = [];
+
+		while(expr.length > 0){
+			expr = expr.trim();
+			var token =  getNextToken(expr);
+			tokens.push(token);
+			expr = expr.substr(token.value.length);
+		}
+
+		function getNextToken(expr){
+			for (var type in Tone.Expr._Expressions){
+				var group = Tone.Expr._Expressions[type];
+				for (var opName in group){
+					var op = group[opName];
+					var reg = op.regexp;
+					var match = expr.match(reg);
+					if (match !== null){
+						return {
+							type : type,
+							value : match[0],
+							method : op.method
+						};
+					}
+				}
+			}
+			throw new SyntaxError("Unexpected token "+expr);
+		}
+
+		return {
+			next : function(){
+				return tokens[++position];
+			},
+			peek : function(){
+				return tokens[position + 1];
+			}
+		};
+	};
+
+	/**
 	 *  recursively parse the string expression into a syntax tree
 	 *  
 	 *  @param   {string} expr 
@@ -151,48 +295,55 @@ define(["Tone/core/Tone", "Tone/signal/Abs", "Tone/signal/Negate", "Tone/signal/
 	 *  @private
 	 */
 	Tone.Expr.prototype._parseTree = function(expr){
-		var lexer = new Token(expr);
-		var openParen =  /^\(/;
-		var closeParen = /^\)/;
-		var comma = /^,/;
-		var first = /^\-|^\+|^\!|^\|\||^&&/;
-		var second = /^\*|^>|^<|^==/;
+		var lexer = this._tokenize(expr);
+		var isUndef = this.isUndef.bind(this);
 
-		function matchOp(token, op) {
-			var reg = new RegExp(op);
-			return (typeof token !== "undefined") && 
-				token.type === "operator" && 
-				reg.test(token.value);
+		function matchSyntax(token, syn) {
+			return !isUndef(token) && 
+				token.type === "glue" &&
+				token.value === syn;
 		}
 
-		function parseAdditive() {
-			var expr = parseMultiplicative();
-			var token = lexer.peek();
-			while (matchOp(token, first)) {
-				token = lexer.next();
-				expr = {
-					"binary": {
-						operator: token.value,
-						left: expr,
-						right: parseMultiplicative()
+		function matchGroup(token, groupName, prec) {
+			var ret = false;
+			var group = Tone.Expr._Expressions[groupName];
+			if (!isUndef(token)){
+				for (var opName in group){
+					var op = group[opName];
+					if (op.regexp.test(token.value)){
+						if (!isUndef(prec)){
+							if(op.precedence === prec){	
+								return true;
+							}
+						} else {
+							return true;
+						}
 					}
-				};
-				token = lexer.peek();
+				}
 			}
-			return expr;
+			return ret;
 		}
 
-		function parseMultiplicative() {
-			var expr = parseUnary();
+		function parseExpression(precedence) {
+			if (isUndef(precedence)){
+				precedence = 5;
+			}
+			var expr;
+			if (precedence < 0){
+				expr = parseUnary();
+			} else {
+				expr = parseExpression(precedence-1);
+			}
 			var token = lexer.peek();
-			while (matchOp(token, second)) {
+			while (matchGroup(token, "binary", precedence)) {
 				token = lexer.next();
 				expr = {
-					"binary" : {
-						operator: token.value,
-						left: expr,
-						right: parseUnary()
-					}
+					operator: token.value,
+					method : token.method,
+					args : [
+						expr,
+						parseExpression(precedence)
+					]
 				};
 				token = lexer.peek();
 			}
@@ -202,14 +353,13 @@ define(["Tone/core/Tone", "Tone/signal/Abs", "Tone/signal/Negate", "Tone/signal/
 		function parseUnary() {
 			var token, expr;
 			token = lexer.peek();
-			if (matchOp(token, first)) {
+			if (matchGroup(token, "unary")) {
 				token = lexer.next();
 				expr = parseUnary();
 				return {
-					"unary": {
-						operator: token.value,
-						expression: expr
-					}
+					operator: token.value,
+					method : token.method,
+					args : [expr]
 				};
 			}
 			return parsePrimary();
@@ -218,63 +368,64 @@ define(["Tone/core/Tone", "Tone/signal/Abs", "Tone/signal/Negate", "Tone/signal/
 		function parsePrimary() {
 			var token, expr;
 			token = lexer.peek();
-			if (typeof token === "undefined") {
+			if (isUndef(token)) {
 				throw new SyntaxError("Unexpected termination of expression");
 			}
 			if (token.type === "func") {
 				token = lexer.next();
-				return parseFunctionCall(token.value);
+				return parseFunctionCall(token);
 			}
-			if (token.type === "number" || token.type === "input") {
-				return lexer.next();
-			}
-			if (matchOp(token, openParen)) {
-				lexer.next();
-				expr = parseAdditive();
+			if (token.type === "value") {
 				token = lexer.next();
-				if (!matchOp(token, closeParen)) {
-					throw new SyntaxError("Expecting )");
-				}
 				return {
-					"expression": expr
+					method : token.method,
+					args : token.value
 				};
 			}
-			throw new SyntaxError("Parse error, can not process token " + token.value);
+			if (matchSyntax(token, "(")) {
+				lexer.next();
+				expr = parseExpression();
+				token = lexer.next();
+				if (!matchSyntax(token, ")")) {
+					throw new SyntaxError("Expected )");
+				}
+				return expr;
+			}
+			throw new SyntaxError("Parse error, cannot process token " + token.value);
 		}
 
-		function parseFunctionCall(name) {
+		function parseFunctionCall(func) {
 			var token, args = [];
 			token = lexer.next();
-			if (!matchOp(token, openParen)) {
-				throw new SyntaxError("Expecting ( in a function call \"" + name + "\"");
+			if (!matchSyntax(token, "(")) {
+				throw new SyntaxError("Expected ( in a function call \"" + func.value + "\"");
 			}
 			token = lexer.peek();
-			if (!matchOp(token, closeParen)) {
+			if (!matchSyntax(token, ")")) {
 				args = parseArgumentList();
 			}
 			token = lexer.next();
-			if (!matchOp(token, closeParen)) {
-				throw new SyntaxError("Expecting ) in a function call \"" + name + "\"");
+			if (!matchSyntax(token, ")")) {
+				throw new SyntaxError("Expected ) in a function call \"" + func.value + "\"");
 			}
 			return {
-				"func" : {
-					"name": name,
-					"args": args
-				}
+				method : func.method,
+				args : args,
+				name : name
 			};
 		}
 
 		function parseArgumentList() {
 			var token, expr, args = [];
 			while (true) {
-				expr = parseAdditive();
-				if (typeof expr === "undefined") {
+				expr = parseExpression();
+				if (isUndef(expr)) {
 					// TODO maybe throw exception?
 					break;
 				}
 				args.push(expr);
 				token = lexer.peek();
-				if (!matchOp(token, comma)) {
+				if (!matchSyntax(token, ",")) {
 					break;
 				}
 				lexer.next();
@@ -282,7 +433,7 @@ define(["Tone/core/Tone", "Tone/signal/Abs", "Tone/signal/Negate", "Tone/signal/
 			return args;
 		}
 
-		return parseAdditive();
+		return parseExpression();
 	};
 
 	/**
@@ -292,43 +443,11 @@ define(["Tone/core/Tone", "Tone/signal/Abs", "Tone/signal/Negate", "Tone/signal/
 	 *  @private
 	 */
 	Tone.Expr.prototype._eval = function(tree){
-		if (tree.hasOwnProperty("binary")){
-			tree = tree.binary;
-			var left = this._eval(tree.left);
-			var right = this._eval(tree.right);
-			var binaryOp = new this._BinaryOperators[tree.operator]();
-			this._nodes.push(binaryOp);
-			left.connect(binaryOp, 0, 0);
-			right.connect(binaryOp, 0, 1);
-			return binaryOp;
-		} else if (tree.hasOwnProperty("unary")){
-			tree = tree.unary;
-			var expression = this._eval(tree.expression);
-			var unaryOp = new this._UnaryOperators[tree.operator]();
-			this._nodes.push(unaryOp);
-			expression.connect(unaryOp);
-			return unaryOp;
-		} else if (tree.hasOwnProperty("func")){
-			tree = tree.func;
-			var func = this._Functions[tree.name](tree.args, this._eval.bind(this));
-			this._nodes.push(func);
-			return func;
-		} else if (tree.hasOwnProperty("expression")){
-			tree = tree.expression;
-			return this._eval(tree);
-		} else if (tree.hasOwnProperty("type")){
-			var node;
-			if (tree.type === "number"){
-				node = new Tone.Signal(tree.value);
-			} else if (tree.type === "input"){
-				var inputNum = parseInt(tree.value.substr(1));
-				node = this.input[inputNum];
-			}
+		if (!this.isUndef(tree)){
+			var node = tree.method(tree.args, this);
 			this._nodes.push(node);
 			return node;
-		} else {
-			console.log(tree);
-		}
+		} 
 	};
 
 	/**
@@ -356,69 +475,6 @@ define(["Tone/core/Tone", "Tone/signal/Abs", "Tone/signal/Negate", "Tone/signal/
 		Tone.prototype.dispose.call(this);
 		this._disposeNodes();
 	};
-
-	// BEGIN TOKEN HELPER /////////////////////////////////////////////////////
-
-	/**
-	 *  Token helper class
-	 *  @param {string} expr the string to tokenize
-	 *  @private
-	 */
-	var Token = function(expr){
-		this.position = -1;
-		this.tokens = [];
-		while(expr.length > 0){
-			expr = expr.trim();
-			var token =  this._getNextToken(expr);
-			this.tokens.push(token);
-			expr = expr.substr(token.value.length);
-		}
-		
-	};
-
-	/**
-	 *  @return {string} the next token
-	 *  increments the position
-	 */
-	Token.prototype.next = function(){
-		return this.tokens[++this.position];
-	};
-
-	/**
-	 *  @return {string} the next token
-	 *  does not increment the position
-	 */
-	Token.prototype.peek = function(){
-		return this.tokens[this.position + 1];
-	};
-
-	/**
-	 *  the RegExps by which the tokens are created
-	 *  @type {Object}
-	 */
-	Token.prototype._components = Tone.Expr.prototype._operators;
-
-	/**
-	 *  match the next token
-	 *  @param   {string} expr 
-	 *  @return  {[type]}      [description]
-	 *  @private
-	 */
-	Token.prototype._getNextToken = function(expr){
-		for (var comp in this._components){
-			var reg = this._components[comp];
-			var match = expr.match(reg);
-			if (match !== null){
-				return {
-					type : comp,
-					value : match[0]
-				};
-			}
-		} 
-		throw new SyntaxError("Unexpected token "+expr);
-	};
-
-	// END TOKEN HELPER ///////////////////////////////////////////////////////
 
 	return Tone.Expr;
 });
