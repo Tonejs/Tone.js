@@ -42,7 +42,7 @@
 
 		var chorusSend = synth.send("chorus");
 		chorusSend.gain.value = 0;
-		var phaserSend = synth.send("phaser");
+		var phaserSend = synth.send("cheby");
 		phaserSend.gain.value = 0;
 		var autowahSend = synth.send("autowah");
 		autowahSend.gain.value = 0;
@@ -52,10 +52,10 @@
 		chorus.receive("chorus");
 		chorus.toMaster();
 		chorus.setPreset("ether");
-		var phaser = new Tone.Phaser();
-		phaser.receive("phaser");
-		phaser.toMaster();
-		phaser.setPreset("bubbles");
+		var cheby = new Tone.Chebyshev(50);
+		cheby.receive("cheby");
+		cheby.toMaster();
+		cheby.setPreset("bubbles");
 		var autoWah = new Tone.AutoWah();
 		autoWah.receive("autowah");
 		autoWah.toMaster();
@@ -80,7 +80,7 @@
 		}, 0, "autowah");
 		new GUI.Slider(content, function(val){
 			phaserSend.gain.value = val;
-		}, 0, "phaser");
+		}, 0, "chebyshev");
 
 		//keyboard
 		$("<div>", {"id" : "Keyboard"}).appendTo(content);
