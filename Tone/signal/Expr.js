@@ -451,6 +451,13 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Subtract", "Tone/signa
 	};
 
 	/**
+	 *  borrows the method from {@link Tone.Signal}
+	 *  
+	 *  @function
+	 */
+	Tone.Expr.prototype.connect = Tone.Signal.prototype.connect;
+
+	/**
 	 *  dispose all the nodes
 	 *  @private
 	 */
