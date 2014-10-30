@@ -1,6 +1,6 @@
 define(["Tone/core/Tone", "Tone/signal/Abs", "Tone/signal/Negate", "Tone/signal/Multiply", 
 	"Tone/signal/Subtract", "Tone/signal/NOT", "Tone/signal/AND", "Tone/signal/IfThenElse", 
-	"Tone/signal/Max", "Tone/signal/Min", "Tone/signal/Modulo"], 
+	"Tone/signal/Max", "Tone/signal/Min", "Tone/signal/Modulo", "Tone/signal/OR"], 
 	function(Tone){
 
 	"use strict";
@@ -104,7 +104,6 @@ define(["Tone/core/Tone", "Tone/signal/Abs", "Tone/signal/Negate", "Tone/signal/
 		">" : Tone.GreaterThan,
 		"<" : Tone.LessThan,
 		"==" : Tone.Equal,
-		"!=" : Tone.NotEqual,
 		"&&" : Tone.AND,
 		"||" : Tone.OR,
 	};
@@ -122,7 +121,7 @@ define(["Tone/core/Tone", "Tone/signal/Abs", "Tone/signal/Negate", "Tone/signal/
 		"number" : /^\d+\.\d+|^\d+/,
 		"input" : /^\$\d/,
 		"func" : /^abs|^pow|^min|^max|^if|^mod/,
-		"operator" : /^\-|^\+|^\*|^>|^<|^==|^\(|^\)|^,|^\!/,
+		"operator" : /^\-|^\+|^\*|^>|^<|^==|^\(|^\)|^,|^\!|^&&|^\|\|/,
 		"first" : /^\-|^\+/,
 		"second" : /^\*|^>|^<|^==|^\!/,
 	};
@@ -156,7 +155,7 @@ define(["Tone/core/Tone", "Tone/signal/Abs", "Tone/signal/Negate", "Tone/signal/
 		var openParen =  /^\(/;
 		var closeParen = /^\)/;
 		var comma = /^,/;
-		var first = /^\-|^\+|^\!/;
+		var first = /^\-|^\+|^\!|^\|\||^&&/;
 		var second = /^\*|^>|^<|^==/;
 
 		function matchOp(token, op) {
@@ -338,7 +337,13 @@ define(["Tone/core/Tone", "Tone/signal/Abs", "Tone/signal/Negate", "Tone/signal/
 	 */
 	Tone.Expr.prototype._disposeNodes = function(){
 		for (var i = 0; i < this._nodes.length; i++){
-			this._nodes[i].dispose();
+			var node = this._nodes[i];
+			if (typeof node.dispose === "function") {
+				node.dispose();
+			} else if (typeof node.disconnect === "function") {
+				node.disconnect();
+			}
+			node = null;
 			this._nodes[i] = null;
 		}
 		this._nodes = null;
