@@ -3,9 +3,10 @@
 define(["tests/Core", "chai", "Tone/signal/Signal", "Tone/signal/Add", "Tone/signal/Multiply", 
 	"Tone/signal/Scale", "Tone/source/Oscillator", "Tone/core/Master", "Tone/signal/Abs", "Tone/signal/Negate", 
 	 "Tone/signal/Max", "Tone/signal/Min", "Tone/signal/Clip", "Tone/signal/ScaleExp", 
-	 "Tone/signal/Modulo", "tests/Common", "Tone/signal/Subtract"], 
+	 "Tone/signal/Modulo", "tests/Common", "Tone/signal/Subtract", "Tone/signal/Inverse", "Tone/signal/Divide",
+	 "Tone/signal/Pow"], 
 function(core, chai, Signal, Add, Multiply, Scale, Oscillator, Master, Abs, Negate, Max, 
-	Min, Clip, ScaleExp, Modulo, Test, Subtract){
+	Min, Clip, ScaleExp, Modulo, Test, Subtract, Inverse, Divide, Pow){
 
 	var expect = chai.expect;
 
@@ -663,6 +664,188 @@ function(core, chai, Signal, Add, Multiply, Scale, Oscillator, Master, Abs, Nega
 			}, function(){
 				signal.dispose();
 				mod.dispose();
+				done();
+			});
+		});
+	});
+
+	describe("Tone.Inverse", function(){
+		this.timeout(maxTimeout);
+
+		it("can be created and disposed", function(){
+			var inv = new Inverse();
+			inv.dispose();
+			Test.wasDisposed(inv);
+		});
+
+		it("handles input and output connections", function(){
+			Test.onlineContext();
+			var inv = new Inverse();
+			Test.acceptsInputAndOutput(inv);
+			inv.dispose();
+		});
+
+		it("can evaluate the inverse of the incoming signal", function(done){
+			var signal, inv;
+			Test.offlineTest(0.2, function(dest){
+				signal = new Signal(4);
+				inv = new Inverse();
+				signal.connect(inv);
+				inv.connect(dest);
+			}, function(sample){
+				expect(sample).to.be.closeTo(1/4, 0.0001);
+			}, function(){
+				signal.dispose();
+				inv.dispose();
+				done();
+			});
+		});
+
+		it("can evaluate inverse large number", function(done){
+			var signal, inv;
+			Test.offlineTest(0.2, function(dest){
+				signal = new Signal(1000);
+				inv = new Inverse();
+				signal.connect(inv);
+				inv.connect(dest);
+			}, function(sample){
+				expect(sample).to.be.closeTo(1 / 1000, 0.0001);
+			}, function(){
+				signal.dispose();
+				inv.dispose();
+				done();
+			});
+		});
+
+		it("can evaluate inverse negative numbers", function(done){
+			var signal, inv;
+			Test.offlineTest(0.2, function(dest){
+				signal = new Signal(-20);
+				inv = new Inverse();
+				signal.connect(inv);
+				inv.connect(dest);
+			}, function(sample){
+				expect(sample).to.be.closeTo(-1/20, 0.0001);
+			}, function(){
+				signal.dispose();
+				inv.dispose();
+				done();
+			});
+		});
+
+		it("can evaluate inverse on numbers between 0-1", function(done){
+			var signal, inv;
+			Test.offlineTest(0.2, function(dest){
+				signal = new Signal(0.5);
+				inv = new Inverse(6);
+				signal.connect(inv);
+				inv.connect(dest);
+			}, function(sample){
+				expect(sample).to.be.closeTo(1/0.5, 0.001);
+			}, function(){
+				signal.dispose();
+				inv.dispose();
+				done();
+			});
+		});
+	});
+
+	describe("Tone.Divide", function(){
+		this.timeout(maxTimeout);
+
+		it("can be created and disposed", function(){
+			var div = new Divide();
+			div.dispose();
+			Test.wasDisposed(div);
+		});
+
+		it("handles input and output connections", function(){
+			Test.onlineContext();
+			var div = new Divide();
+			Test.acceptsInputAndOutput(div);
+			div.dispose();
+		});
+
+		it("can divide two number", function(done){
+			var signal, div;
+			Test.offlineTest(0.2, function(dest){
+				signal = new Signal(2);
+				div = new Divide(7);
+				signal.connect(div);
+				div.connect(dest);
+			}, function(sample){
+				expect(sample).to.be.closeTo(2/7, 0.001);
+			}, function(){
+				signal.dispose();
+				div.dispose();
+				done();
+			});
+		});
+
+		it("can divide two signals", function(done){
+			var signal0, signal1, div;
+			Test.offlineTest(0.2, function(dest){
+				signal0 = new Signal(2);
+				signal1 = new Signal(21);
+				div = new Divide();
+				signal0.connect(div, 0, 0);
+				signal1.connect(div, 0, 1);
+				div.connect(dest);
+			}, function(sample){
+				expect(sample).to.be.closeTo(2/21, 0.001);
+			}, function(){
+				signal0.dispose();
+				signal1.dispose();
+				div.dispose();
+				done();
+			});
+		});
+	});
+
+	describe("Tone.Pow", function(){
+		this.timeout(maxTimeout);
+
+		it("can be created and disposed", function(){
+			var pow = new Pow();
+			pow.dispose();
+			Test.wasDisposed(pow);
+		});
+
+		it("handles input and output connections", function(){
+			Test.onlineContext();
+			var pow = new Pow();
+			Test.acceptsInputAndOutput(pow);
+			pow.dispose();
+		});
+
+		it("can do powers of 2", function(done){
+			var signal, pow;
+			Test.offlineTest(0.2, function(dest){
+				signal = new Signal(3);
+				pow = new Pow(2);
+				signal.connect(pow);
+				pow.connect(dest);
+			}, function(sample){
+				expect(sample).to.equal(9);
+			}, function(){
+				signal.dispose();
+				pow.dispose();
+				done();
+			});
+		});
+
+		it("can do powers of 4", function(done){
+			var signal, pow;
+			Test.offlineTest(0.2, function(dest){
+				signal = new Signal(2);
+				pow = new Pow(4);
+				signal.connect(pow);
+				pow.connect(dest);
+			}, function(sample){
+				expect(sample).to.equal(16);
+			}, function(){
+				signal.dispose();
+				pow.dispose();
 				done();
 			});
 		});
