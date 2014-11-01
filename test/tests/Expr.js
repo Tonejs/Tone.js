@@ -80,6 +80,19 @@ function(core, chai, Signal, Expr, Test){
 			});
 		});
 
+		it("does signal division", function(done){
+			var exp;
+			Test.offlineTest(0.1, function(dest){
+				exp = new Expr("2 / 6");
+				exp.connect(dest);
+			}, function(sample){
+				expect(sample).to.be.closeTo(1/3, 0.001);
+			}, function(){
+				exp.dispose();
+				done();
+			});
+		});
+
 		it("does signal subtraction", function(done){
 			var exp;
 			Test.offlineTest(0.1, function(dest){
@@ -96,10 +109,10 @@ function(core, chai, Signal, Expr, Test){
 		it("handles precendence", function(done){
 			var exp;
 			Test.offlineTest(0.1, function(dest){
-				exp = new Expr("8 + 16 * 4 - 1");
+				exp = new Expr("8 + 16 * 4 / 2 - 1");
 				exp.connect(dest);
 			}, function(sample){
-				expect(sample).to.equal(71);
+				expect(sample).to.be.closeTo(39, 0.01);
 			}, function(){
 				exp.dispose();
 				done();
@@ -518,6 +531,32 @@ function(core, chai, Signal, Expr, Test){
 				exp.connect(dest);
 			}, function(sample){
 				expect(sample).to.equal(0);
+			}, function(){
+				exp.dispose();
+				done();
+			});
+		});
+
+		it("computes pow(2, 3)", function(done){
+			var exp;
+			Test.offlineTest(0.1, function(dest){
+				exp = new Expr("pow(2, 3)");
+				exp.connect(dest);
+			}, function(sample){
+				expect(sample).to.equal(8);
+			}, function(){
+				exp.dispose();
+				done();
+			});
+		});
+
+		it("computes inv(2)", function(done){
+			var exp;
+			Test.offlineTest(0.1, function(dest){
+				exp = new Expr("inv(2)");
+				exp.connect(dest);
+			}, function(sample){
+				expect(sample).to.be.closeTo(0.5, 0.001);
 			}, function(){
 				exp.dispose();
 				done();
