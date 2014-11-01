@@ -70,7 +70,7 @@ define(function(){
 				}
 				this.connect(B.input[inNum]);
 			} else {
-				this.connect(B.input);
+				this.connect(B.input, outNum, inNum);
 			}
 		} else {
 			try {
