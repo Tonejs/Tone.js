@@ -2,7 +2,7 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Subtract", "Tone/signa
 	"Tone/signal/IfThenElse", "Tone/signal/OR", "Tone/signal/AND", "Tone/signal/NOT", 
 	"Tone/signal/GreaterThan", "Tone/signal/LessThan", "Tone/signal/Equal", "Tone/signal/EqualZero", 
 	"Tone/signal/GreaterThanZero", "Tone/signal/Abs", "Tone/signal/Negate", "Tone/signal/Max", 
-	"Tone/signal/Min", "Tone/signal/Modulo"], 
+	"Tone/signal/Min", "Tone/signal/Modulo", "Tone/signal/Inverse", "Tone/signal/Divide", "Tone/signal/Pow"], 
 	function(Tone){
 
 	"use strict";
@@ -141,6 +141,15 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Subtract", "Tone/signa
 				regexp : /^eq0/,
 				method : applyUnary.bind(this, Tone.EqualZero)
 			},
+			"inv" : {
+				regexp : /^inv/,
+				method : function(args, self){
+					var precision = literalNumber(args[1]);
+					var op = new Tone.Inverse(precision);
+					self._eval(args[0]).connect(op);
+					return op;
+				}
+			},
 			"mod" : {
 				regexp : /^mod/,
 				method : function(args, self){
@@ -154,7 +163,7 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Subtract", "Tone/signa
 			"pow" : {
 				regexp : /^pow/,
 				method : function(args, self){
-					var exp = parseFloat(args[1].value);
+					var exp = literalNumber(args[1]);
 					var op = new Tone.Pow(exp);
 					self._eval(args[0]).connect(op);
 					return op;
@@ -184,6 +193,11 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Subtract", "Tone/signa
 				regexp : /^\*/,
 				precedence : 0,
 				method : applyBinary.bind(this, Tone.Multiply)
+			},
+			"/" : {
+				regexp : /^\//,
+				precedence : 0,
+				method : applyBinary.bind(this, Tone.Divide)
 			},
 			">" : {
 				regexp : /^\>/,
