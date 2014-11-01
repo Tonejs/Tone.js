@@ -9,10 +9,10 @@ define(["Tone/core/Tone", "Tone/signal/Multiply"], function(Tone){
 	 *
 	 *  @constructor
 	 *  @extends {Tone}
-	 *  @param {number} modulus the modolus to apply
+	 *  @param {number} modulus the modulus to apply
 	 *  @param {number} [bits=8]	optionally set the maximum bits the incoming signal can have. 
 	 *                           	defaults to 8 meaning that incoming values must be in the range
-	 *                            	[-255,255]. (2^8 = 256);
+	 *                            	[-255,255].
 	 */
 	Tone.Modulo = function(modulus, bits){
 
@@ -93,7 +93,7 @@ define(["Tone/core/Tone", "Tone/signal/Multiply"], function(Tone){
 	 * @private 
 	 */
 	ModuloSubroutine.prototype._makeCurve = function(val){
-		var arrayLength = Math.pow(2, 16);
+		var arrayLength = Math.pow(2, 10);
 		var curve = new Float32Array(arrayLength);
 		for (var i = 0; i < curve.length; i++) {
 			if (i === arrayLength - 1){

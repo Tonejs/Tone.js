@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Scale"], function(Tone){
+define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Expr"], function(Tone){
 
 	"use strict";
 
@@ -43,7 +43,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Scale"], function(T
 		 *  @private
 		 *  @type {Tone}
 		 */
-		this._invert = new Tone.Scale(0, 1, 1, 0);
+		this._invert = new Tone.Expr("1 - $0");
 
 		//connections
 		this.dry.connect(this.output);

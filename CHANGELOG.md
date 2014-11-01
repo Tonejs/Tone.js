@@ -1,17 +1,21 @@
 ### r3 - Groove
 
 * Swing parameter on Transport
+* Tone.Expr: signal processing expression parser for Tone.Signal math
+* All signal binary operators accept two signals as inputs
 * Envelope ASDR stay in tempo-relative terms even with tempo changes
 * Player loop positions stay in tempo-relative terms even with tempo changes
 * Setters on PluckSynth and PulseOscillator
 * new PWMOscillator
 * OmniOscillator which combines PWMOscillator, Oscillator, and PulseOscillator into one
-* Build cleans up global which it defined - leave no trace
+* Modified build script to accommodate using requirejs with build and min
 * Deprecated Tone.Threshold - new class Tone.GreaterThanZero
 * NOT, OR, AND, and IfThenElse signal logic operators
 * Compressor and MultibandCompressor
 * Distortion and Chebyshev distortion effects
 * Convolver effect and example
+* Additional signal classes: Inverse, Divide, Pow
+* MidSide effect type and StereoWidener (extends MidSide)
 
 
 ### r2 - Getting Physical

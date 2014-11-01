@@ -12,17 +12,30 @@ define(["Tone/core/Tone", "Tone/signal/Equal"], function(Tone){
 	 */
 	Tone.AND = function(inputCount){
 
+		inputCount = this.defaultArg(inputCount, 2);
+
+		/**
+		 *  the inputs
+		 *  @type {Array}
+		 */
+		this.input = new Array(inputCount);
+
 		/**
 		 *  @type {Tone.Equal}
 		 *  @private
 		 */
-		this._equals = new Tone.Equal(this.defaultArg(inputCount, 2));
+		this._equals = new Tone.Equal(inputCount);
 
 		/**
-		 *  input and output node aliases
+		 *  the output
 		 *  @type {Tone.Equal}
 		 */
-		this.input = this.output = this._equals;
+		this.output = this._equals;
+
+		//make each of the inputs an alias
+		for (var i = 0; i < inputCount; i++){
+			this.input[i] = this._equals;
+		}
 	};
 
 	Tone.extend(Tone.AND);
