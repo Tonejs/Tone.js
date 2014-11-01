@@ -26,3 +26,5 @@ examples/oscilloscope.html
 .idea
 
 wiki/
+
+test/performance
