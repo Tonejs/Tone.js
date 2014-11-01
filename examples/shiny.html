@@ -43,7 +43,7 @@
 		//DRUMS//
 
 		//hats
-		var crusher = new Tone.BitCrusher(5);
+		var crusher = new Tone.Distortion(10);
 		crusher.setWet(0.4);
 		var hats = new Tone.Sampler({
 			"url" : "./audio/505/hh.mp3",
