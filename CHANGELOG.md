@@ -13,6 +13,8 @@
 * NOT, OR, AND, and IfThenElse signal logic operators
 * Compressor and MultibandCompressor
 * Distortion and Chebyshev distortion effects
+* Additional signal classes: Inverse, Divide, Pow
+* MidSide effect type and StereoWidener (extends MidSide)
 
 
 ### r2 - Getting Physical
