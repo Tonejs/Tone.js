@@ -4,10 +4,11 @@ define(["tests/Core", "chai", "Tone/component/Recorder", "Tone/core/Master", "To
 	"Tone/effect/FeedbackEffect", "Tone/signal/Signal", "Tone/effect/AutoPanner", "Tone/effect/AutoWah", "Tone/effect/BitCrusher",
 	"Tone/effect/FeedbackDelay", "Tone/effect/PingPongDelay", "Tone/effect/Chorus", "tests/Common", "Tone/effect/Freeverb", 
 	"Tone/effect/JCReverb", "Tone/effect/StereoEffect", "Tone/effect/StereoFeedbackEffect", 
-	"Tone/effect/StereoXFeedbackEffect", "Tone/effect/Phaser", "Tone/effect/Distortion", "Tone/effect/Chebyshev"], 
+	"Tone/effect/StereoXFeedbackEffect", "Tone/effect/Phaser", "Tone/effect/Distortion", "Tone/effect/Chebyshev",
+	"Tone/effect/MidSide", "Tone/effect/StereoWidener"], 
 function(Tone, chai, Recorder, Master, Effect, DryWet, FeedbackEffect, Signal, AutoPanner, AutoWah, BitCrusher, 
 	FeedbackDelay, PingPongDelay, Chorus, Test, Freeverb, JCReverb, StereoEffect, StereoFeedbackEffect, 
-	StereoXFeedbackEffect, Phaser, Distortion, Chebyshev){
+	StereoXFeedbackEffect, Phaser, Distortion, Chebyshev, MidSide, StereoWidener){
 
 	var expect = chai.expect;
 
@@ -587,6 +588,60 @@ function(Tone, chai, Recorder, Master, Effect, DryWet, FeedbackEffect, Signal, A
 				cheb.connect(output);
 			}, function(){
 				cheb.dispose();
+				done();
+			});
+		});
+	});
+
+	describe("Tone.MidSide", function(){
+		it("can be created and disposed", function(){
+			var midside = new MidSide();
+			midside.dispose();
+			Test.wasDisposed(midside);
+		});
+
+		it("extends Tone.StereoEffect", function(){
+			var midside = new MidSide();
+			expect(midside).is.instanceof(StereoEffect);
+			midside.dispose();
+		});
+
+		it("handles input and output connections", function(){
+			Test.onlineContext();
+			var midside = new MidSide();
+			Test.acceptsInputAndOutput(midside);
+			midside.dispose();
+		});
+	});
+
+	describe("Tone.StereoWidener", function(){
+		it("can be created and disposed", function(){
+			var widen = new StereoWidener();
+			widen.dispose();
+			Test.wasDisposed(widen);
+		});
+
+		it("extends Tone.MidSide", function(){
+			var widen = new StereoWidener();
+			expect(widen).is.instanceof(MidSide);
+			widen.dispose();
+		});
+
+		it("handles input and output connections", function(){
+			Test.onlineContext();
+			var widen = new StereoWidener();
+			Test.acceptsInputAndOutput(widen);
+			widen.dispose();
+		});
+
+		it("passes the incoming signal through to the output", function(done){
+			var widen;
+			Test.passesAudio(function(input, output){
+				widen = new StereoWidener(1);
+				input.connect(widen);
+				widen.connect(output);
+			}, function(){
+				widen.dispose();
 				done();
 			});
 		});
