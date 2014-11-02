@@ -3,8 +3,8 @@ define(["Tone/core/Tone", "Tone/signal/Multiply"], function(Tone){
 	"use strict";
 
 	/**
-	 *  @class Pow applies an exponent to the incoming signal. Pow only accepts 
-	 *         positive, integer exponents.  
+	 *  @class Pow applies an exponent to the incoming signal. The incoming signal
+	 *         must be in the range -1,1
 	 *
 	 *  @extends {Tone}
 	 *  @constructor
@@ -12,40 +12,48 @@ define(["Tone/core/Tone", "Tone/signal/Multiply"], function(Tone){
 	 */
 	Tone.Pow = function(exp){
 
-		Tone.call(this);
-
-		exp = this.defaultArg(exp, 2) - 1;
 		/**
-		 *  the array of Tone.Muliply (one for each power)
-		 *  @type {Array}
+		 *  @type {WaveShaperNode}
 		 *  @private
 		 */
-		this._multiplies = new Array(exp);
+		this._expScaler = this.context.createWaveShaper();
 
-		for (var i = 0; i < exp; i++){
-			var mult = new Tone.Multiply();
-			if (i > 0){
-				mult.connect(this._multiplies[i-1], 0, 1);
-			}
-			this._multiplies[i] = mult;
-			this.input.connect(mult);
-		}
-		this.input.connect(this._multiplies[exp-1], 0, 1);
-		this._multiplies[0].connect(this.output);
+		/**
+		 *  the input and output nodes
+		 *  @type {GainNode}
+		 */
+		this.input = this.output = this._expScaler;
+
+		this.setExponent(this.defaultArg(exp, 1));
 	};
 
 	Tone.extend(Tone.Pow);
+
+	/**
+	 *  set the exponential scaling curve
+	 *  @param {number} exp the exponent to raise the incoming signal to
+	 */
+	Tone.Pow.prototype.setExponent = function(exp){
+		var curveLength = Math.pow(2, 12);
+		var curve = new Float32Array(curveLength);
+		for (var i = 0; i < curveLength; i++){
+			var normalized = Math.abs((i / (curveLength - 1)) * 2 - 1);
+			if (normalized < 0.001){
+				curve[i] = 0;
+			} else {
+				curve[i] = Math.pow(normalized, exp);	
+			}
+		}
+		this._expScaler.curve = curve;
+	};
 
 	/**
 	 *  clean up
 	 */
 	Tone.Pow.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
-		for (var i = 0; i < this._multiplies.length; i++){
-			this._multiplies[i].dispose();
-			this._multiplies[i] = null;
-		}
-		this._multiplies = null;
+		this._expScaler.disconnect();
+		this._expScaler = null;
 	};
 
 	return Tone.Pow;
