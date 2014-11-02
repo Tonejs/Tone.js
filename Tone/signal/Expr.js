@@ -18,10 +18,9 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Subtract", "Tone/signa
 	 *  @constructor
 	 *  @param {string} expr the expression to generate
 	 */
-	Tone.Expr = function(expr){
+	Tone.Expr = function(){
 
-		expr = this._replacements(Array.prototype.slice.call(arguments));
-		
+		var expr = this._replacements(Array.prototype.slice.call(arguments));
 		/**
 		 *  hold onto all of the nodes for disposal
 		 *  @type {Array}
