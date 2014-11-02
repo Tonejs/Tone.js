@@ -20,6 +20,8 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Subtract", "Tone/signa
 	 */
 	Tone.Expr = function(expr){
 
+		expr = this._replacements(Array.prototype.slice.call(arguments));
+		
 		/**
 		 *  hold onto all of the nodes for disposal
 		 *  @type {Array}
@@ -253,6 +255,19 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Subtract", "Tone/signa
 			}
 		}
 		return inputMax;
+	};
+
+	/**
+	 *  @param   {Array} args 	an array of arguments
+	 *  @return  {string} the results of the replacements being replaced
+	 *  @private
+	 */
+	Tone.Expr.prototype._replacements = function(args){
+		var expr = args.shift();
+		for (var i = 0; i < args.length; i++){
+			expr = expr.replace(/\%/i, args[i]);
+		}
+		return expr;
 	};
 
 	/**
