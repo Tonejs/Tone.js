@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
+define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/ScaleExp"], function(Tone){
 
 	"use strict";
 
@@ -16,12 +16,6 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 
 		//get all of the defaults
 		var options = this.optionsObject(arguments, ["attack", "decay", "sustain", "release"], Tone.Envelope.defaults);
-
-		/** 
-		 *  the output
-		 *  @type {GainNode}
-		 */
-		this.output = this.context.createGain();
 
 		/** 
 		 *  the attack time in seconds
@@ -48,26 +42,21 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 		this.release = options.release;
 
 		/**
-		 *  the minimum output of the envelope
-		 *  @type {number}
-		 */
-		this.min = options.min;
-
-		/**
-		 *  the maximum output of the envelope
-		 *  @type {number}
-		 */
-		this.max = options.max;
-		
-		/** 
-		 *  the control signal
+		 *  the signal
 		 *  @type {Tone.Signal}
 		 *  @private
 		 */
-		this._control = new Tone.Signal(this.min);
+		this._sig = new Tone.Signal(0);
+		
+		/** 
+		 *  the signal scaler
+		 *  @type {Tone.ScaleExp}
+		 *  @private
+		 */
+		this._scaleExp = this.output = new Tone.ScaleExp(0, 1, options.min, options.max, options.exponent);
 
 		//connections
-		this._control.connect(this.output);
+		this.chain(this._sig, this._scaleExp);
 	};
 
 	Tone.extend(Tone.Envelope);
@@ -83,7 +72,8 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 		"sustain" : 0.5,
 		"release" : 1,
 		"min" : 0,
-		"max" : 1
+		"max" : 1,
+		"exponent" : 1
 	};
 
 	// SETTERS //
@@ -139,7 +129,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	 *  @param {number} max
 	 */
 	Tone.Envelope.prototype.setMax = function(max){
-		this.max = max;
+		this._scaleExp.setOutputMax(max);
 	};
 
 	/**
@@ -147,10 +137,15 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	 *  @param {number} min
 	 */
 	Tone.Envelope.prototype.setMin = function(min){
-		this.min = min;
-		//should move the signal to the min
-		this._control.setValueAtTime(this.min, this.now());
+		this._scaleExp.setOutputMin(min);
 	};
+
+	/**
+	 *  the envelope time multipler
+	 *  @type {number}
+	 *  @private
+	 */
+	Tone.Envelope.prototype._timeMult = 0.25;
 
 	/**
 	 * attack->decay->sustain linear ramp
@@ -162,12 +157,12 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 		velocity = this.defaultArg(velocity, 1);
 		var attack = this.toSeconds(this.attack);
 		var decay = this.toSeconds(this.decay);
-		var scaledMax = this.max * velocity;
-		var sustainVal = (scaledMax - this.min) * this.sustain + this.min;
+		var scaledMax = velocity;
+		var sustainVal = this.sustain;
 		time = this.toSeconds(time);
-		this._control.cancelScheduledValues(time);
-		this._control.setTargetAtTime(scaledMax, time, attack / 4);
-		this._control.setTargetAtTime(sustainVal, time + attack, decay / 4);	
+		this._sig.cancelScheduledValues(time);
+		this._sig.setTargetAtTime(scaledMax, time, attack * this._timeMult);
+		this._sig.setTargetAtTime(sustainVal, time + attack, decay * this._timeMult);	
 	};
 	
 	/**
@@ -176,9 +171,9 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	 */
 	Tone.Envelope.prototype.triggerRelease = function(time){
 		time = this.toSeconds(time);
-		this._control.cancelScheduledValues(time);
+		this._sig.cancelScheduledValues(time);
 		var release = this.toSeconds(this.release);
-		this._control.setTargetAtTime(this.min, time, release / 4);
+		this._sig.setTargetAtTime(0, time, release * this._timeMult);
 	};
 
 	/**
@@ -205,8 +200,10 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	 */
 	Tone.Envelope.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
-		this._control.dispose();
-		this._control = null;
+		this._sig.dispose();
+		this._sig = null;
+		this._scaleExp.dispose();
+		this._scaleExp = null;
 	};
 
 	return Tone.Envelope;
