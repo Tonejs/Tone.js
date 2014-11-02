@@ -49,6 +49,32 @@ function(core, chai, Signal, Expr, Test){
 				done();
 			});
 		});
+
+		it("can do string replacements", function(done){
+			var exp;
+			Test.offlineTest(0.1, function(dest){
+				exp = new Expr("% + %", 0.2, 0.8);
+				exp.connect(dest);
+			}, function(sample){
+				expect(sample).to.be.closeTo(1, 0.001);
+			}, function(){
+				exp.dispose();
+				done();
+			});
+		});
+
+		it("can do string replacements with strings", function(done){
+			var exp;
+			Test.offlineTest(0.1, function(dest){
+				exp = new Expr("%", "1 + 2");
+				exp.connect(dest);
+			}, function(sample){
+				expect(sample).to.be.closeTo(3, 0.001);
+			}, function(){
+				exp.dispose();
+				done();
+			});
+		});
 	});
 
 	describe("Tone.Expr - Signal Math", function(){
@@ -537,13 +563,13 @@ function(core, chai, Signal, Expr, Test){
 			});
 		});
 
-		it("computes pow(2, 3)", function(done){
+		it("computes pow(0.2, 3)", function(done){
 			var exp;
 			Test.offlineTest(0.1, function(dest){
-				exp = new Expr("pow(2, 3)");
+				exp = new Expr("pow(0.2, 3)");
 				exp.connect(dest);
 			}, function(sample){
-				expect(sample).to.equal(8);
+				expect(sample).to.be.closeTo(0.008, 0.001);
 			}, function(){
 				exp.dispose();
 				done();
