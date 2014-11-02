@@ -91,7 +91,8 @@ function(Tone){
 			"sustain" : 0.5,
 			"release" : 2,
 			"min" : 20,
-			"max" : 4000
+			"max" : 4000,
+			"exponent" : 2
 		}
 	};
 
