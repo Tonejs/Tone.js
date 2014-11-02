@@ -821,12 +821,12 @@ function(core, chai, Signal, Add, Multiply, Scale, Oscillator, Master, Abs, Nega
 		it("can do powers of 2", function(done){
 			var signal, pow;
 			Test.offlineTest(0.2, function(dest){
-				signal = new Signal(3);
+				signal = new Signal(0.3);
 				pow = new Pow(2);
 				signal.connect(pow);
 				pow.connect(dest);
 			}, function(sample){
-				expect(sample).to.equal(9);
+				expect(sample).to.be.closeTo(0.09, 0.01);
 			}, function(){
 				signal.dispose();
 				pow.dispose();
@@ -834,15 +834,15 @@ function(core, chai, Signal, Add, Multiply, Scale, Oscillator, Master, Abs, Nega
 			});
 		});
 
-		it("can do powers of 4", function(done){
+		it("can compute negative values and powers less than 1", function(done){
 			var signal, pow;
 			Test.offlineTest(0.2, function(dest){
-				signal = new Signal(2);
-				pow = new Pow(4);
+				signal = new Signal(-0.49);
+				pow = new Pow(0.5);
 				signal.connect(pow);
 				pow.connect(dest);
 			}, function(sample){
-				expect(sample).to.equal(16);
+				expect(sample).to.be.closeTo(0.7, 0.01);
 			}, function(){
 				signal.dispose();
 				pow.dispose();
