@@ -25,7 +25,7 @@ function(Tone){
 		 *  @type {Tone.Expr}
 		 *  @private
 		 */
-		this._floor = new Tone.Expr("$0 - mod($0, "+invStepSize+", "+options.bits+")");
+		this._floor = new Tone.Expr("$0 - mod($0, %, %)", invStepSize, options.bits);
 
 		//connect it up
 		this.connectEffect(this._floor);
