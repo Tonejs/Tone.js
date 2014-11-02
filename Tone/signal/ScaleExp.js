@@ -1,4 +1,5 @@
-define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Multiply", "Tone/signal/Signal"], function(Tone){
+define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Multiply", "Tone/signal/Signal", "Tone/signal/Pow"], 
+function(Tone){
 	
 	/**
 	 *  @class  performs an exponential scaling on an input signal.
@@ -16,8 +17,6 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Multiply", "Tone/signa
 	 *  @param {number=} [exponent=2] the exponent which scales the incoming signal
 	 */
 	Tone.ScaleExp = function(inputMin, inputMax, outputMin, outputMax, exponent){
-
-		Tone.call(this);
 
 		//if there are only two args
 		if (arguments.length === 2){
@@ -63,7 +62,7 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Multiply", "Tone/signa
 		 *  @private
 		 *  @type {Tone.Add}
 		 */
-		this._plusInput = new Tone.Add(0);
+		this._plusInput = this.input = new Tone.Add(0);
 
 		/** 
 		 *  @private
@@ -81,19 +80,18 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Multiply", "Tone/signa
 		 *  @private
 		 *  @type {Tone.Add}
 		 */
-		this._plusOutput = new Tone.Add(0);
+		this._plusOutput = this.output = new Tone.Add(0);
 
 		/**
 		 *  @private
-		 *  @type {WaveShaperNode}
+		 *  @type {Tone.Pow}
 		 */
-		this._expScaler = this.context.createWaveShaper();
+		this._expScaler = new Tone.Pow(this.defaultArg(exponent, 2));
 
 		//connections
-		this.chain(this.input, this._plusInput, this._normalize, this._expScaler, this._scale, this._plusOutput, this.output);
+		this.chain(this._plusInput, this._normalize, this._expScaler, this._scale, this._plusOutput);
 		//set the scaling values
 		this._setScalingParameters();
-		this.setExponent(this.defaultArg(exponent, 2));
 	};
 
 	Tone.extend(Tone.ScaleExp);
@@ -116,17 +114,7 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Multiply", "Tone/signa
 	 *  @param {number} exp the exponent to raise the incoming signal to
 	 */
 	Tone.ScaleExp.prototype.setExponent = function(exp){
-		var curveLength = 1024;
-		var curve = new Float32Array(curveLength);
-		for (var i = 0; i < curveLength; i++){
-			var normalized = (i / (curveLength)) * 2 - 1;
-			if (normalized >= 0){
-				curve[i] = Math.pow(normalized, exp);
-			} else {
-				curve[i] = normalized;
-			}
-		}
-		this._expScaler.curve = curve;
+		this._expScaler.setExponent(exp);
 	};
 
 	/**
