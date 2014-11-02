@@ -20,14 +20,9 @@ define(["Tone/core/Tone", "Tone/component/Envelope"], function(Tone){
 		 *  the input node
 		 *  @type {GainNode}
 		 */
-		this.input = this.context.createGain();
+		this.input = this.output = this.context.createGain();
 
-		//disconenct the signal from the output
-		this._control.disconnect();
-		//connect it to the output gain
-		this._control.connect(this.output.gain);
-		//input -> output
-		this.input.connect(this.output);
+		this._scaleExp.connect(this.output.gain);
 	};
 
 	Tone.extend(Tone.AmplitudeEnvelope, Tone.Envelope);
