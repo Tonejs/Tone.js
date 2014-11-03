@@ -77,7 +77,8 @@ function(Tone){
 			"sustain" : 1,
 			"release" : 0.5,
 			"min" : 20,
-			"max" : 20000
+			"max" : 20000,
+			"exponent" : 2,
 		},
 		"filter" : {
 			"type" : "lowpass"
