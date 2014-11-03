@@ -74,7 +74,6 @@ function(Tone){
 	 */
 	Tone.AMSynth.defaults = {
 		"harmonicity" : 3,
-		"modulationIndex" : 1,
 		"carrier" : {
 			"volume" : -10,
 			"portamento" : 0,
@@ -170,17 +169,17 @@ function(Tone){
 	Tone.AMSynth.prototype.dispose = function(){
 		Tone.Monophonic.prototype.dispose.call(this);
 		this.carrier.dispose();
-		this.modulator.dispose();
-		this.frequency.dispose();
-		this._modulationIndex.dispose();
-		this._harmonicity.dispose();
-		this._modulationScale.disconnect();
 		this.carrier = null;
+		this.modulator.dispose();
 		this.modulator = null;
+		this.frequency.dispose();
 		this.frequency = null;
-		this._modulationIndex = null;
+		this._harmonicity.dispose();
 		this._harmonicity = null;
+		this._modulationScale.dispose();
 		this._modulationScale = null;
+		this._modulationNode.disconnect();
+		this._modulationNode = null;
 	};
 
 	return Tone.AMSynth;

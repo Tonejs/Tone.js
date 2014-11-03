@@ -2,8 +2,9 @@
 
 define(["tests/Core", "chai", "Tone/instrument/DuoSynth", "Tone/instrument/MonoSynth", "Tone/instrument/FMSynth",
 	"Tone/instrument/PolySynth", "Tone/instrument/Sampler", "Tone/instrument/MultiSampler", 
-	"tests/Common", "Tone/instrument/Instrument", "Tone/instrument/PluckSynth"], 
-function(Tone, chai, DuoSynth, MonoSynth, FMSynth, PolySynth, Sampler, MultiSampler, Test, Instrument, PluckSynth){
+	"tests/Common", "Tone/instrument/Instrument", "Tone/instrument/PluckSynth", "Tone/instrument/AMSynth"], 
+function(Tone, chai, DuoSynth, MonoSynth, FMSynth, PolySynth, Sampler, MultiSampler, Test, Instrument, 
+	PluckSynth, AMSynth){
 
 	var expect = chai.expect;
 
@@ -208,6 +209,36 @@ function(Tone, chai, DuoSynth, MonoSynth, FMSynth, PolySynth, Sampler, MultiSamp
 				psynth.triggerAttack("C4");
 			}, function(){
 				psynth.dispose();
+				done();
+			});
+		});		
+	});
+
+	describe("Tone.AMSynth", function(){
+		it("can be created and disposed", function(){
+			var ams = new AMSynth();
+			ams.dispose();
+			Test.wasDisposed(ams);
+		});
+
+		it("extends Instrument", function(){
+			extendsInstrument(AMSynth);
+		});
+
+		it("handles output connections", function(){
+			var ams = new AMSynth();
+			Test.acceptsOutput(ams);
+			ams.dispose();
+		});
+
+		it("outputs a sound", function(done){
+			var ams;
+			Test.outputsAudio(function(dest){
+				ams = new AMSynth();
+				ams.connect(dest);
+				ams.triggerAttack("C4");
+			}, function(){
+				ams.dispose();
 				done();
 			});
 		});		
