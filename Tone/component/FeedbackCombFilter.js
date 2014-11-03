@@ -7,13 +7,15 @@ define(["Tone/core/Tone", "Tone/signal/ScaleExp", "Tone/signal/Signal"], functio
 	 *
 	 *  @extends {Tone}
 	 *  @constructor
-	 *  @param {number} [minDelay=0.1] the minimum delay time which the filter can have
+	 *  @param {number} [minDelay=0.01] the minimum delay time which the filter can have
+	 *  @param {number} [maxDelay=1] the maximum delay time which the filter can have
 	 */
-	Tone.FeedbackCombFilter = function(minDelay){
+	Tone.FeedbackCombFilter = function(minDelay, maxDelay){
 
 		Tone.call(this);
 
 		minDelay = this.defaultArg(minDelay, 0.01);
+		maxDelay = this.defaultArg(maxDelay, 1);
 		//the delay * samplerate = number of samples. 
 		// buffersize / number of samples = number of delays needed per buffer frame
 		var delayCount = Math.ceil(this.bufferSize / (minDelay * this.context.sampleRate));
@@ -71,20 +73,20 @@ define(["Tone/core/Tone", "Tone/signal/ScaleExp", "Tone/signal/Signal"], functio
 
 		//make the filters
 		for (var i = 0; i < this._delayCount; i++) {
-			var delay = this.context.createDelay();
-			delay.connect(this._feedback);
+			var delay = this.context.createDelay(maxDelay);
 			this._delayTime.connect(delay.delayTime);
+			delay.connect(this._feedback);
 			this._delays[i] = delay;
 		}
 
 		//connections
-		this.input.connect(this._delays[0]);
-		this._feedback.connect(this._delays[0]);
 		this.chain.apply(this, this._delays);
+		this.input.connect(this._delays[0]);
+		//set the delay to the min value initially
+		this._feedback.connect(this._delays[0]);
 		//resonance control
 		this.chain(this.resonance, this._resScale, this._feedback.gain);
 		this._feedback.connect(this.output);
-		//set the delay to the min value initially
 		this.setDelayTime(minDelay);
 	};
 

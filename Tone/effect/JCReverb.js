@@ -78,7 +78,7 @@ function(Tone){
 
 		//and the comb filters
 		for (var cf = 0; cf < combFilterDelayTimes.length; cf++) {
-			var fbcf = new Tone.FeedbackCombFilter(combFilterDelayTimes[cf]);
+			var fbcf = new Tone.FeedbackCombFilter(combFilterDelayTimes[cf], 0.1);
 			this._scaleRoomSize.connect(fbcf.resonance);
 			fbcf.resonance.setValue(combFilterResonances[cf]);
 			this._allpassFilters[this._allpassFilters.length - 1].connect(fbcf);
