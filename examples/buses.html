@@ -42,10 +42,14 @@
 		synth.setVolume(-6);
 		dry.toMaster();
 
-		var chorusSend = synth.send("chorus");
+		//need to force 1 channel synth signal into a 2 channels for stereo chorus effect
+		var mono = new Tone.Mono();
+		synth.connect(mono);
+
+		var chorusSend = mono.send("chorus");
 		chorusSend.gain.value = 0;
-		var phaserSend = synth.send("cheby");
-		phaserSend.gain.value = 0;
+		var chebySend = synth.send("cheby");
+		chebySend.gain.value = 0;
 		var autowahSend = synth.send("autowah");
 		autowahSend.gain.value = 0;
 
@@ -81,7 +85,7 @@
 			autowahSend.gain.value = val;
 		}, 0, "autowah");
 		new GUI.Slider(content, function(val){
-			phaserSend.gain.value = val;
+			chebySend.gain.value = val;
 		}, 0, "chebyshev");
 
 		//keyboard
