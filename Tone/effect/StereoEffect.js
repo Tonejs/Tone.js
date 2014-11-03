@@ -23,13 +23,6 @@ function(Tone){
 		this.dryWet = new Tone.DryWet();
 
 		/**
-		 *  make the incoming signal mono
-		 *  @type {Tone.Mono}
-		 *  @private
-		 */
-		this._mono = new Tone.Mono();
-
-		/**
 		 *  then split it
 		 *  @type {Tone.Split}
 		 *  @private
@@ -68,10 +61,9 @@ function(Tone){
 		this.effectReturnR = this._merge.right;
 
 		//connections
-		this.input.connect(this._mono);
-		this._mono.connect(this._split);
+		this.input.connect(this._split);
 		//dry wet connections
-		this._mono.connect(this.dryWet.dry);
+		this.input.connect(this.dryWet.dry);
 		this._merge.connect(this.dryWet.wet);
 		this.dryWet.connect(this.output);
 		//setup values
@@ -86,17 +78,15 @@ function(Tone){
 	Tone.StereoEffect.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
 		this.dryWet.dispose();
-		this._mono.dispose();
+		this.dryWet = null;
 		this._split.dispose();
-		this._merge.dispose();
-		this._mono = null;
 		this._split = null;
+		this._merge.dispose();
 		this._merge = null;
 		this.effectSendL = null;
 		this.effectSendR = null;
 		this.effectReturnL = null;
 		this.effectReturnR = null;
-		this.dryWet = null;
 	};
 
 	return Tone.StereoEffect;
