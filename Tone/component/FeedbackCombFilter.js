@@ -14,7 +14,7 @@ define(["Tone/core/Tone", "Tone/signal/ScaleExp", "Tone/signal/Signal"], functio
 
 		Tone.call(this);
 
-		minDelay = this.defaultArg(minDelay, 0.01);
+		minDelay = this.defaultArg(minDelay, 0.1);
 		maxDelay = this.defaultArg(maxDelay, 1);
 		//the delay * samplerate = number of samples. 
 		// buffersize / number of samples = number of delays needed per buffer frame
@@ -35,13 +35,6 @@ define(["Tone/core/Tone", "Tone/signal/ScaleExp", "Tone/signal/Signal"], functio
 		 *  @private
 		 */
 		this._delays = new Array(this._delayCount);
-
-		/**
-		 *  the delayTime control
-		 *  @type {Tone.Signal}
-		 *  @private
-		 */
-		this._delayTime = new Tone.Signal(1);
 
 		/**
 		 *  the resonance control
@@ -74,7 +67,7 @@ define(["Tone/core/Tone", "Tone/signal/ScaleExp", "Tone/signal/Signal"], functio
 		//make the filters
 		for (var i = 0; i < this._delayCount; i++) {
 			var delay = this.context.createDelay(maxDelay);
-			this._delayTime.connect(delay.delayTime);
+			delay.delayTime.value = minDelay;
 			delay.connect(this._feedback);
 			this._delays[i] = delay;
 		}
@@ -111,16 +104,15 @@ define(["Tone/core/Tone", "Tone/signal/ScaleExp", "Tone/signal/Signal"], functio
 			this._highFrequencies = true;
 			var changeNumber = Math.round((delaySamples / cutoff) * this._delayCount);
 			for (var i = 0; i < changeNumber; i++) {
-				this._delays[i].delayTime.setValueAtTime(1 / sampleRate, time);
+				this._delays[i].delayTime.setValueAtTime(1 / sampleRate + delayAmount, time);
 			}
 			delayAmount = Math.floor(delaySamples) / sampleRate;
 		} else if (this._highFrequencies){
 			this._highFrequencies = false;
 			for (var j = 0; j < this._delays.length; j++) {
-				this._delays[j].delayTime.setValueAtTime(0, time);
+				this._delays[j].delayTime.setValueAtTime(delayAmount, time);
 			}
 		}
-		this._delayTime.setValueAtTime(delayAmount, time);
 	};
 
 	/**
@@ -133,15 +125,13 @@ define(["Tone/core/Tone", "Tone/signal/ScaleExp", "Tone/signal/Signal"], functio
 			this._delays[i].disconnect();
 			this._delays[i] = null;
 		}
-		this._delayTime.dispose();
-		this.resonance.dispose();
-		this._resScale.dispose();
-		this._feedback.disconnect();
 		this._delays = null;
+		this.resonance.dispose();
 		this.resonance = null;
+		this._resScale.dispose();
 		this._resScale = null;
+		this._feedback.disconnect();
 		this._feedback = null;
-		this._delayTime = null;
 	};
 
 	return Tone.FeedbackCombFilter;

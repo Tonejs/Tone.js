@@ -9,12 +9,14 @@ define(["Tone/core/Tone", "Tone/signal/ScaleExp", "Tone/signal/Signal"], functio
 	 *  @extends {Tone}
 	 *  @constructor
 	 *  @param {number} [minDelay=0.1] the minimum delay time which the filter can have
+	 *  @param {number} [maxDelay=1] the maximum delay time which the filter can have
 	 */
-	Tone.LowpassCombFilter = function(minDelay){
+	Tone.LowpassCombFilter = function(minDelay, maxDelay){
 
 		Tone.call(this);
 
 		minDelay = this.defaultArg(minDelay, 0.01);
+		maxDelay = this.defaultArg(maxDelay, 1);
 		//the delay * samplerate = number of samples. 
 		// buffersize / number of samples = number of delays needed per buffer frame
 		var delayCount = Math.ceil(this.bufferSize / (minDelay * this.context.sampleRate));
@@ -34,13 +36,6 @@ define(["Tone/core/Tone", "Tone/signal/ScaleExp", "Tone/signal/Signal"], functio
 		 *  @private
 		 */
 		this._filterDelays = new Array(this._filterDelayCount);
-
-		/**
-		 *  the delayTime control
-		 *  @type {Tone.Signal}
-		 *  @private
-		 */
-		this._delayTime = new Tone.Signal(1);
 
 		/**
 		 *  the dampening control
@@ -78,7 +73,7 @@ define(["Tone/core/Tone", "Tone/signal/ScaleExp", "Tone/signal/Signal"], functio
 
 		//make the filters
 		for (var i = 0; i < this._filterDelayCount; i++) {
-			var filterDelay = new FilterDelay(this._delayTime, this.dampening);
+			var filterDelay = new FilterDelay(minDelay, this.dampening);
 			filterDelay.connect(this._feedback);
 			this._filterDelays[i] = filterDelay;
 		}
@@ -115,16 +110,15 @@ define(["Tone/core/Tone", "Tone/signal/ScaleExp", "Tone/signal/Signal"], functio
 			this._highFrequencies = true;
 			var changeNumber = Math.round((delaySamples / cutoff) * this._filterDelayCount);
 			for (var i = 0; i < changeNumber; i++) {
-				this._filterDelays[i].setDelay(1 / sampleRate, time);
+				this._filterDelays[i].setDelay(1 / sampleRate + delayAmount, time);
 			}
 			delayAmount = Math.floor(delaySamples) / sampleRate;
 		} else if (this._highFrequencies){
 			this._highFrequencies = false;
 			for (var j = 0; j < this._filterDelays.length; j++) {
-				this._filterDelays[j].setDelay(0, time);
+				this._filterDelays[j].setDelay(delayAmount, time);
 			}
 		}
-		this._delayTime.setValueAtTime(delayAmount, time);
 	};
 
 	/**
@@ -137,17 +131,15 @@ define(["Tone/core/Tone", "Tone/signal/ScaleExp", "Tone/signal/Signal"], functio
 			this._filterDelays[i].dispose();
 			this._filterDelays[i] = null;
 		}
-		this._delayTime.dispose();
-		this.dampening.dispose();
-		this.resonance.dispose();
-		this._resScale.dispose();
-		this._feedback.disconnect();
 		this._filterDelays = null;
+		this.dampening.dispose();
 		this.dampening = null;
+		this.resonance.dispose();
 		this.resonance = null;
+		this._resScale.dispose();
 		this._resScale = null;
+		this._feedback.disconnect();
 		this._feedback = null;
-		this._delayTime = null;
 	};
 
 	// BEGIN HELPER CLASS //
@@ -158,9 +150,9 @@ define(["Tone/core/Tone", "Tone/signal/ScaleExp", "Tone/signal/Signal"], functio
 	 *  @constructor
 	 *  @extends {Tone}
 	 */
-	var FilterDelay = function(delayTime, filterFreq){
-		this.delay = this.input = this.context.createDelay();
-		delayTime.connect(this.delay.delayTime);
+	var FilterDelay = function(maxDelay, filterFreq){
+		this.delay = this.input = this.context.createDelay(maxDelay);
+		this.delay.delayTime.value = maxDelay;
 
 		this.filter = this.output = this.context.createBiquadFilter();
 		filterFreq.connect(this.filter.frequency);
@@ -182,8 +174,8 @@ define(["Tone/core/Tone", "Tone/signal/ScaleExp", "Tone/signal/Signal"], functio
 	 */
 	FilterDelay.prototype.dispose = function(){
 		this.delay.disconnect();
-		this.filter.disconnect();
 		this.delay = null;
+		this.filter.disconnect();
 		this.filter = null;
 	};
 
