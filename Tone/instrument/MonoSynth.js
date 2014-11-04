@@ -1,5 +1,5 @@
-define(["Tone/core/Tone", "Tone/component/AmplitudeEnvelope", "Tone/source/OmniOscillator", 
-	"Tone/signal/Signal", "Tone/component/Filter", "Tone/signal/Add", "Tone/instrument/Monophonic"], 
+define(["Tone/core/Tone", "Tone/component/AmplitudeEnvelope", "Tone/component/ScaledEnvelope", 
+	"Tone/source/OmniOscillator", "Tone/signal/Signal", "Tone/component/Filter", "Tone/instrument/Monophonic"], 
 function(Tone){
 
 	"use strict";
@@ -47,7 +47,7 @@ function(Tone){
 		 *  the filter envelope
 		 *  @type {Tone.Envelope}
 		 */
-		this.filterEnvelope = new Tone.Envelope(options.filterEnvelope);
+		this.filterEnvelope = new Tone.ScaledEnvelope(options.filterEnvelope);
 
 		/**
 		 *  the amplitude envelope
