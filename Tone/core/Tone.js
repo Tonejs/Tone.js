@@ -94,20 +94,30 @@ define(function(){
 	 *  
 	 *  @constructor
 	 *  @alias Tone
+	 *  @param {number=} inputs the number of input nodes
+	 *  @param {number=} outputs the number of output nodes
 	 */
-	var Tone = function(){
+	var Tone = function(inputs, outputs){
+
 		/**
-		 *  default input of the ToneNode
-		 *  
-		 *  @type {GainNode}
+		 *  the input node(s)
+		 *  @type {GainNode|Array}
 		 */
-		this.input = this.context.createGain();
+		if (isUndef(inputs) || inputs === 1){
+			this.input = this.context.createGain();
+		} else if (inputs > 1){
+			this.input = new Array(inputs);
+		}
+
 		/**
-		 *  default output of the ToneNode
-		 *  
-		 *  @type {GainNode}
+		 *  the output node(s)
+		 *  @type {GainNode|Array}
 		 */
-		this.output = this.context.createGain();
+		if (isUndef(outputs) || outputs === 1){
+			this.output = this.context.createGain();
+		} else if (outputs > 1){
+			this.output = new Array(inputs);
+		}
 	};
 
 	///////////////////////////////////////////////////////////////////////////
