@@ -1,9 +1,10 @@
-define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/ScaleExp"], function(Tone){
+define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Pow"], function(Tone){
 
 	"use strict";
 
 	/**
-	 *  @class  ADSR envelope generator attaches to an AudioParam or Signal
+	 *  @class  ADSR envelope generator attaches to an AudioParam or Signal. 
+	 *          Includes an optional exponent
 	 *
 	 *  @constructor
 	 *  @extends {Tone}
@@ -49,14 +50,14 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/ScaleExp"], functio
 		this._sig = new Tone.Signal(0);
 		
 		/** 
-		 *  the signal scaler
-		 *  @type {Tone.ScaleExp}
+		 *  scale the incoming signal by an exponent
+		 *  @type {Tone.Pow}
 		 *  @private
 		 */
-		this._scaleExp = this.output = new Tone.ScaleExp(0, 1, options.min, options.max, options.exponent);
+		this._exp = this.output = new Tone.Pow(options.exponent);
 
 		//connections
-		this.chain(this._sig, this._scaleExp);
+		this.chain(this._sig, this._exp);
 	};
 
 	Tone.extend(Tone.Envelope);
@@ -71,12 +72,8 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/ScaleExp"], functio
 		"decay" : 0.1,
 		"sustain" : 0.5,
 		"release" : 1,
-		"min" : 0,
-		"max" : 1,
 		"exponent" : 1
 	};
-
-	// SETTERS //
 
 	/**
 	 *  set all of the parameters in bulk
@@ -88,8 +85,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/ScaleExp"], functio
 		if (!this.isUndef(params.decay)) this.setDecay(params.decay);
 		if (!this.isUndef(params.sustain)) this.setSustain(params.sustain);
 		if (!this.isUndef(params.release)) this.setRelease(params.release);
-		if (!this.isUndef(params.min)) this.setMin(params.min);
-		if (!this.isUndef(params.max)) this.setMax(params.max);
+		if (!this.isUndef(params.exponent)) this.setExponent(params.exponent);
 	};
 
 	/**
@@ -125,19 +121,11 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/ScaleExp"], functio
 	};
 
 	/**
-	 *  set the envelope max
-	 *  @param {number} max
+	 *  set the exponent which scales the signal
+	 *  @param {number} exp
 	 */
-	Tone.Envelope.prototype.setMax = function(max){
-		this._scaleExp.setOutputMax(max);
-	};
-
-	/**
-	 *  set the envelope min
-	 *  @param {number} min
-	 */
-	Tone.Envelope.prototype.setMin = function(min){
-		this._scaleExp.setOutputMin(min);
+	Tone.Envelope.prototype.setExponent = function(exp){
+		this._exp.setExponent(exp);
 	};
 
 	/**
@@ -202,8 +190,8 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/ScaleExp"], functio
 		Tone.prototype.dispose.call(this);
 		this._sig.dispose();
 		this._sig = null;
-		this._scaleExp.dispose();
-		this._scaleExp = null;
+		this._exp.dispose();
+		this._exp = null;
 	};
 
 	return Tone.Envelope;

@@ -22,7 +22,7 @@ define(["Tone/core/Tone", "Tone/component/Envelope"], function(Tone){
 		 */
 		this.input = this.output = this.context.createGain();
 
-		this._scaleExp.connect(this.output.gain);
+		this._sig.connect(this.output.gain);
 	};
 
 	Tone.extend(Tone.AmplitudeEnvelope, Tone.Envelope);
