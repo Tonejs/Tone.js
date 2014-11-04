@@ -15,9 +15,9 @@ function(Tone){
 	 *  @param {number=} initialPan the initail panner value (defaults to 0.5 = center)
 	 */
 	Tone.Panner = function(initialPan){
-		
-		Tone.call(this);
 
+		Tone.call(this, 1, 0);
+		
 		/**
 		 *  the dry/wet knob
 		 *  @type {Tone.DryWet}
@@ -28,7 +28,7 @@ function(Tone){
 		 *  @type {Tone.Merge}
 		 *  @private
 		 */
-		this._merger = new Tone.Merge();
+		this._merger = this.output = new Tone.Merge();
 		/**
 		 *  @type {Tone.Split}
 		 *  @private
@@ -49,7 +49,6 @@ function(Tone){
 		//merge it back together
 		this._dryWet.dry.connect(this._merger.left);
 		this._dryWet.wet.connect(this._merger.right);
-		this._merger.connect(this.output);
 
 		//initial value
 		this.setPan(this.defaultArg(initialPan, 0.5));
