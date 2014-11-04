@@ -4,7 +4,7 @@ define(["Tone/core/Tone", "Tone/signal/EqualZero", "Tone/signal/Subtract", "Tone
 
 	/**
 	 *  @class  Output 1 if the signal is equal to the value, otherwise outputs 0. 
-	 *          Can accept two signals or a signal and a number. 
+	 *          Can accept two signals if connected to inputs 0 and 1.
 	 *  
 	 *  @constructor
 	 *  @extends {Tone}
@@ -12,12 +12,7 @@ define(["Tone/core/Tone", "Tone/signal/EqualZero", "Tone/signal/Subtract", "Tone
 	 */
 	Tone.Equal = function(value){
 
-		/**
-		 *  input 0: the left side operand
-		 *  input 1: the right side operand
-		 *  @type {Array}
-		 */
-		this.input = new Array(2);
+		Tone.call(this, 2, 0);
 
 		/**
 		 *  subtract the value from the incoming signal

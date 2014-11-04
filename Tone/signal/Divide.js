@@ -4,7 +4,8 @@ function(Tone){
 	"use strict";
 
 	/**
-	 *  @class Divide by a value or signal
+	 *  @class Divide by a value or signal. 
+	 *         input 0: numerator. input 1: divisor. 
 	 *
 	 *  @extends {Tone}
 	 *  @constructor
@@ -14,13 +15,7 @@ function(Tone){
 	 */
 	Tone.Divide = function(divisor, precision){
 
-		/**
-		 *  the inputs
-		 *  input 0: numerator
-		 *  input 1: divisor
-		 *  @type {Array}
-		 */
-		this.input = new Array(2);
+		Tone.call(this, 2, 0);
 
 		/**
 		 *  the denominator value

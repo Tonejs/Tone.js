@@ -12,12 +12,7 @@ define(["Tone/core/Tone", "Tone/signal/GreaterThanZero"], function(Tone){
 	Tone.OR = function(inputCount){
 
 		inputCount = this.defaultArg(inputCount, 2);
-
-		/**
-		 *  the inputs
-		 *  @type {Array}
-		 */
-		this.input = new Array(inputCount);
+		Tone.call(this, inputCount, 0);
 
 		/**
 		 *  a private summing node

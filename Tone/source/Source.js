@@ -12,12 +12,8 @@ define(["Tone/core/Tone", "Tone/core/Transport"], function(Tone){
 	 *  @extends {Tone}
 	 */	
 	Tone.Source = function(){
-		/**
-		 *  unlike most ToneNodes, Sources only have an output and no input
-		 *  
-		 *  @type {GainNode}
-		 */
-		this.output = this.context.createGain();
+		//unlike most ToneNodes, Sources only have an output and no input
+		Tone.call(this, 0, 1);
 
 		/**
 		 *  @type {Tone.Source.State}

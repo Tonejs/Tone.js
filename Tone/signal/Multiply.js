@@ -3,7 +3,9 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	"use strict";
 
 	/**
-	 *  @class  Multiply the incoming signal by a number or Multiply two signals
+	 *  @class  Multiply the incoming signal by a number or Multiply two signals.
+	 *          input 0: multiplicand.
+	 *          input 1: multiplier.
 	 *
 	 *  @constructor
 	 *  @extends {Tone}
@@ -11,12 +13,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	 */
 	Tone.Multiply = function(value){
 
-		/**
-		 *  input 0: multiplicand
-		 *  input 1: multiplier
-		 *  @type {Array}
-		 */
-		this.input = new Array(2);
+		Tone.call(this, 2, 0);
 
 		/**
 		 *  the input node is the same as the output node

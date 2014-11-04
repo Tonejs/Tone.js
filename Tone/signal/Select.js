@@ -15,17 +15,7 @@ define(["Tone/core/Tone", "Tone/signal/Equal", "Tone/signal/Signal"], function(T
 
 		sourceCount = this.defaultArg(sourceCount, 2);
 
-		/**
-		 *  the array of inputs
-		 *  @type {Array<SelectGate>}
-		 */
-		this.input = new Array(sourceCount);
-
-		/**
-		 *  the output
-		 *  @type {GainNode}
-		 */
-		this.output = this.context.createGain();
+		Tone.call(this, sourceCount, 1);
 
 		/**
 		 *  the control signal

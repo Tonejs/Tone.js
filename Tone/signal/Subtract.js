@@ -4,7 +4,8 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Negate", "Tone/signal/
 
 	/**
 	 *  @class Subtract a signal and a number or two signals. 
-	 *  
+	 *         input 0 : minuend.
+	 *         input 1 : subtrahend
 	 *
 	 *  @extends {Tone}
 	 *  @constructor
@@ -13,13 +14,7 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Negate", "Tone/signal/
 	 */
 	Tone.Subtract = function(value){
 
-		/**
-		 *  the inputs
-		 *  input 0 : minuend
-		 *  input 1 : subtrahend
-		 *  @type {Array}
-		 */
-		this.input = new Array(2);
+		Tone.call(this, 2, 0);
 
 		/**
 		 *  the adder node

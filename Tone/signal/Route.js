@@ -13,18 +13,7 @@ define(["Tone/core/Tone", "Tone/signal/Equal", "Tone/signal/Signal"], function(T
 	Tone.Route = function(outputCount){
 
 		outputCount = this.defaultArg(outputCount, 2);
-
-		/**
-		 *  the array of outputs
-		 *  @type {Array<RouteGate>}
-		 */
-		this.output = new Array(outputCount);
-
-		/**
-		 *  a single input
-		 *  @type {GainNode}
-		 */
-		this.input = this.context.createGain();
+		Tone.call(this, 1, outputCount);
 
 		/**
 		 *  the control signal

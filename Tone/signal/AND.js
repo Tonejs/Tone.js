@@ -14,23 +14,13 @@ define(["Tone/core/Tone", "Tone/signal/Equal"], function(Tone){
 
 		inputCount = this.defaultArg(inputCount, 2);
 
-		/**
-		 *  the inputs
-		 *  @type {Array}
-		 */
-		this.input = new Array(inputCount);
+		Tone.call(this, inputCount, 0);
 
 		/**
 		 *  @type {Tone.Equal}
 		 *  @private
 		 */
-		this._equals = new Tone.Equal(inputCount);
-
-		/**
-		 *  the output
-		 *  @type {Tone.Equal}
-		 */
-		this.output = this._equals;
+		this._equals = this.output = new Tone.Equal(inputCount);
 
 		//make each of the inputs an alias
 		for (var i = 0; i < inputCount; i++){

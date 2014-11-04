@@ -12,12 +12,8 @@ define(["Tone/core/Tone", "Tone/signal/GreaterThan", "Tone/signal/IfThenElse", "
 	 *                       signal value from input 1. 
 	 */
 	Tone.Max = function(max){
-		
-		/**
-		 *  the inputs
-		 *  @type {Array}
-		 */
-		this.input = new Array(2);
+
+		Tone.call(this, 2, 0);
 		this.input[0] = this.context.createGain();
 
 		/**

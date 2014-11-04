@@ -33,7 +33,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/GreaterThanZero"], 
 		 *  @private
 		 *  @type {Tone.Multiply}
 		 */
-		this._scale = new Tone.Multiply(10000);
+		this._scale = this.input = new Tone.Multiply(10000);
 		
 		/**
 		 *  @type {WaveShaperNode}
@@ -47,17 +47,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/GreaterThanZero"], 
 		 *  @type {Tone.GreaterThanZero}
 		 *  @private
 		 */
-		this._gtz = new Tone.GreaterThanZero();
-
-		/**
-		 *  @type {WaveShaperNode}
-		 */
-		this.input = this._scale;
-
-		/**
-		 *  @type {WaveShaperNode}
-		 */
-		this.output = this._gtz;
+		this._gtz = this.output = new Tone.GreaterThanZero();
 
 		//connections
 		this.chain(this._scale, this._thresh, this._gtz);

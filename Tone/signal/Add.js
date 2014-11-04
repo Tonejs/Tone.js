@@ -4,6 +4,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 
 	/**
 	 *  @class Add a signal and a number or two signals. 
+	 *         input 0: augend. input 1: addend
 	 *
 	 *  @constructor
 	 *  @extends {Tone}
@@ -12,13 +13,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	 */
 	Tone.Add = function(value){
 
-		/**
-		 *  the inputs
-		 *  input 0: augend
-		 *  input 1: addend
-		 *  @type {Array.<GainNode>}
-		 */
-		this.input = new Array(2);
+		Tone.call(this, 2, 0);
 
 		/**
 		 *  the summing node

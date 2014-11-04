@@ -12,11 +12,7 @@ define(["Tone/core/Tone", "Tone/signal/LessThan", "Tone/signal/IfThenElse", "Ton
 	 */
 	Tone.Min = function(min){
 
-		/**
-		 *  the inputs
-		 *  @type {Array}
-		 */
-		this.input = new Array(2);
+		Tone.call(this, 2, 0);
 		this.input[0] = this.context.createGain();
 
 		/**

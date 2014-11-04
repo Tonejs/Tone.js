@@ -27,32 +27,50 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Multiply", "Tone/signa
 			inputMax = 1;
 		}
 
-		/** @private 
-			@type {number} */
+		/** 
+		 *  @private
+		 *  @type {number}
+		 */
 		this._inputMin = inputMin;
-		/** @private 
-			@type {number} */
+		
+		/** 
+		 *  @private
+		 *  @type {number}
+		 */
 		this._inputMax = inputMax;
-		/** @private 
-			@type {number} */
+		
+		/** 
+		 *  @private
+		 *  @type {number}
+		 */
 		this._outputMin = outputMin;
-		/** @private 
-			@type {number} */
+
+		/** 
+		 *  @private
+		 *  @type {number}
+		 */
 		this._outputMax = outputMax;
 
+		/** 
+		 *  @private
+		 *  @type {Tone.Add}
+		 */
+		this._plusInput = this.input = new Tone.Add(0);
 
-		/** @private 
-			@type {Tone.Add} */
-		this._plusInput = new Tone.Add(0);
-		/** @private 
-			@type {Tone.Multiply} */
+		/** 
+		 *  @private
+		 *  @type {Tone.Multiply}
+		 */
 		this._scale = new Tone.Multiply(1);
-		/** @private 
-			@type {Tone.Add} */
-		this._plusOutput = new Tone.Add(0);
+		
+		/** 
+		 *  @private
+		 *  @type {Tone.Add}
+		 */
+		this._plusOutput = this.output = new Tone.Add(0);
 
 		//connections
-		this.chain(this.input, this._plusInput, this._scale, this._plusOutput, this.output);
+		this.chain(this._plusInput, this._scale, this._plusOutput);
 
 		//set the scaling values
 		this._setScalingParameters();

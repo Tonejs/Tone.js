@@ -57,7 +57,6 @@ function(Tone){
 		 */
 		this._outputMax = outputMax;
 
-
 		/** 
 		 *  @private
 		 *  @type {Tone.Add}

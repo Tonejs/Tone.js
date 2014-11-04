@@ -5,6 +5,8 @@ define(["Tone/core/Tone", "Tone/signal/GreaterThan", "Tone/signal/Negate"], func
 	/**
 	 *  @class  Output 1 if the signal is less than the value, otherwise outputs 0.
 	 *          can compare two signals or a signal and a number. 
+	 *          input 0: left hand side of comparison.
+	 *          input 1: right hand side of comparison.
 	 *  
 	 *  @constructor
 	 *  @extends {Tone}
@@ -12,12 +14,7 @@ define(["Tone/core/Tone", "Tone/signal/GreaterThan", "Tone/signal/Negate"], func
 	 */
 	Tone.LessThan = function(value){
 
-		/**
-		 *  input 0: left hand side of comparison
-		 *  input 1: right hand side of comparison
-		 *  @type {Array}
-		 */
-		this.input = new Array(2);
+		Tone.call(this, 2, 0);
 
 		/**
 		 *  negate the incoming signal

@@ -13,24 +13,14 @@ define(["Tone/core/Tone", "Tone/signal/Select", "Tone/signal/Equal"], function(T
 	 */
 	Tone.IfThenElse = function(){
 
-		/**
-		 *  the inputs
-		 *  @type {Array}
-		 */
-		this.input = new Array(3);
+		Tone.call(this, 3, 0);
 
 		/**
 		 *  the selector node which is responsible for the routing
 		 *  @type {Tone.Select}
 		 *  @private
 		 */
-		this._selector = new Tone.Select(2);
-
-		/**
-		 *  the output
-		 *  @type {Tone.Select}
-		 */
-		this.output = this._selector;
+		this._selector = this.output = new Tone.Select(2);
 
 		//the input mapping
 		this.if = this.input[0] = this._selector.gate;
