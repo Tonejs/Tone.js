@@ -16,20 +16,14 @@ define(["Tone/core/Tone", "Tone/signal/Multiply"], function(Tone){
 		 *  @type {WaveShaperNode}
 		 *  @private
 		 */
-		this._expScaler = this.context.createWaveShaper();
-
-		/**
-		 *  the input and output nodes
-		 *  @type {GainNode}
-		 */
-		this.input = this.output = this._expScaler;
+		this._expScaler = this.input = this.output = this.context.createWaveShaper();
 
 		/**
 		 *  the curve that the waveshaper uses
 		 *  @type {Float32Array}
 		 *  @private
 		 */
-		this._curve = new Float32Array(4096);
+		this._curve = new Float32Array(2048);
 
 		this.setExponent(this.defaultArg(exp, 1));
 	};
