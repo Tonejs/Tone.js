@@ -74,6 +74,13 @@ define(["Tone/core/Tone", "Tone/signal/Multiply"], function(Tone){
 		this._div = new Tone.Multiply(1 / val);
 
 		/**
+		 *  the curve that the waveshaper uses
+		 *  @type {Float32Array}
+		 *  @private
+		 */
+		this._curve = new Float32Array(1024);
+
+		/**
 		 *  apply the equation logic
 		 *  @type {WaveShaperNode}
 		 *  @private
@@ -93,18 +100,17 @@ define(["Tone/core/Tone", "Tone/signal/Multiply"], function(Tone){
 	 * @private 
 	 */
 	ModuloSubroutine.prototype._makeCurve = function(val){
-		var arrayLength = Math.pow(2, 10);
-		var curve = new Float32Array(arrayLength);
-		for (var i = 0; i < curve.length; i++) {
+		var arrayLength = this._curve.length;
+		for (var i = 0; i < arrayLength; i++) {
 			if (i === arrayLength - 1){
-				curve[i] = -val;
+				this._curve[i] = -val;
 			} else if (i === 0){
-				curve[i] = val;
+				this._curve[i] = val;
 			} else {
-				curve[i] = 0;
+				this._curve[i] = 0;
 			}
 		}
-		this._operator.curve = curve;
+		this._operator.curve = this._curve;
 	};
 
 	/**
@@ -122,9 +128,10 @@ define(["Tone/core/Tone", "Tone/signal/Multiply"], function(Tone){
 	ModuloSubroutine.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
 		this._div.dispose();
-		this._operator.disconnect();
 		this._div = null;
+		this._operator.disconnect();
 		this._operator = null;
+		this._curve = null;
 	};
 
 	return Tone.Modulo;

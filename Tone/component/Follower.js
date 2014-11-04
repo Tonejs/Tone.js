@@ -73,6 +73,13 @@ function(Tone){
 		 */
 		this._release = this.secondsToFrequency(options.release);
 
+		/**
+		 *  the curve that the waveshaper uses
+		 *  @type {Float32Array}
+		 *  @private
+		 */
+		this._curve = new Float32Array(1024);
+
 		//the smoothed signal to get the values
 		this.chain(this.input, this._abs, this._filter, this.output);
 		//the difference path
@@ -102,8 +109,7 @@ function(Tone){
 	 *  @private
 	 */
 	Tone.Follower.prototype._setAttackRelease = function(attack, release){
-		var curveLength = 1024;
-		var curve = new Float32Array(curveLength);
+		var curveLength = this._curve.length;
 		//the minimum value for attack/release is the bufferSize / sampleRate
 		var minTime = this.bufferTime;
 		attack = Math.max(attack, minTime);
@@ -116,9 +122,9 @@ function(Tone){
 			} else {
 				val = release;
 			} 
-			curve[i] = val;
+			this._curve[i] = val;
 		}
-		this._frequencyValues.curve = curve;
+		this._frequencyValues.curve = this._curve;
 	};
 
 	/**
@@ -172,6 +178,7 @@ function(Tone){
 		this._abs = null;
 		this._mult.dispose();
 		this._mult = null;
+		this._curve = null;
 	};
 
 	return Tone.Follower;

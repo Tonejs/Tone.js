@@ -24,6 +24,13 @@ define(["Tone/core/Tone", "Tone/signal/Multiply"], function(Tone){
 		 */
 		this.input = this.output = this._expScaler;
 
+		/**
+		 *  the curve that the waveshaper uses
+		 *  @type {Float32Array}
+		 *  @private
+		 */
+		this._curve = new Float32Array(4096);
+
 		this.setExponent(this.defaultArg(exp, 1));
 	};
 
@@ -34,17 +41,16 @@ define(["Tone/core/Tone", "Tone/signal/Multiply"], function(Tone){
 	 *  @param {number} exp the exponent to raise the incoming signal to
 	 */
 	Tone.Pow.prototype.setExponent = function(exp){
-		var curveLength = Math.pow(2, 12);
-		var curve = new Float32Array(curveLength);
+		var curveLength = this._curve.length;
 		for (var i = 0; i < curveLength; i++){
 			var normalized = Math.abs((i / (curveLength - 1)) * 2 - 1);
 			if (normalized < 0.001){
-				curve[i] = 0;
+				this._curve[i] = 0;
 			} else {
-				curve[i] = Math.pow(normalized, exp);	
+				this._curve[i] = Math.pow(normalized, exp);	
 			}
 		}
-		this._expScaler.curve = curve;
+		this._expScaler.curve = this._curve;
 	};
 
 	/**
@@ -54,6 +60,7 @@ define(["Tone/core/Tone", "Tone/signal/Multiply"], function(Tone){
 		Tone.prototype.dispose.call(this);
 		this._expScaler.disconnect();
 		this._expScaler = null;
+		this._curve = null;
 	};
 
 	return Tone.Pow;

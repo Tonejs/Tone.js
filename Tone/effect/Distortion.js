@@ -22,6 +22,13 @@ define(["Tone/core/Tone", "Tone/effect/Effect"], function(Tone){
 		 */
 		this._shaper = this.context.createWaveShaper();
 
+		/**
+		 *  the curve that the waveshaper uses
+		 *  @type {Float32Array}
+		 *  @private
+		 */
+		this._curve = new Float32Array(4096);
+
 		this.connectEffect(this._shaper);
 		this.setDistortion(options.distortion);
 		this.setOversample(options.oversample);
@@ -45,19 +52,18 @@ define(["Tone/core/Tone", "Tone/effect/Effect"], function(Tone){
 	 */
 	Tone.Distortion.prototype.setDistortion = function(amount) {
 		var k = amount * 100;
-		var len = Math.pow(2, 12);
-		var curve = new Float32Array(len);
+		var len = this._curve.length;
 		var deg = Math.PI / 180;
 		for (var i = 0; i < len; ++i) {
 			var x = i * 2 / len - 1;
 			if (x === 0){
 				//should output 0 when input is 0
-				curve[i] = 0;
+				this._curve[i] = 0;
 			} else {
-				curve[i] = ( 3 + k ) * x * 20 * deg / ( Math.PI + k * Math.abs(x) );
+				this._curve[i] = ( 3 + k ) * x * 20 * deg / ( Math.PI + k * Math.abs(x) );
 			}
 		}
-		this._shaper.curve = curve;
+		this._shaper.curve = this._curve;
 	};
 
 	/**
@@ -75,6 +81,7 @@ define(["Tone/core/Tone", "Tone/effect/Effect"], function(Tone){
 		Tone.Effect.prototype.dispose.call(this);
 		this._shaper.disconnect();
 		this._shaper = null;
+		this._curve = null;
 	};
 
 	return Tone.Distortion;

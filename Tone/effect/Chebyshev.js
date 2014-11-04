@@ -22,6 +22,13 @@ define(["Tone/core/Tone", "Tone/effect/Effect"], function(Tone){
 		 */
 		this._shaper = this.context.createWaveShaper();
 
+		/**
+		 *  the curve that the waveshaper uses
+		 *  @type {Float32Array}
+		 *  @private
+		 */
+		this._curve = new Float32Array(4096);
+
 		this.connectEffect(this._shaper);
 		this.setOrder(options.order);
 		this.setOversample(options.oversample);
@@ -46,18 +53,17 @@ define(["Tone/core/Tone", "Tone/effect/Effect"], function(Tone){
 	 *  @param   {number} order the order of the Chebyshev nominal range of 1 - 100
 	 */
 	Tone.Chebyshev.prototype.setOrder = function(order) {
-		var len = this.bufferSize * 2;
-		var curve = new Float32Array(len);
+		var len = this._curve.length;
 		for (var i = 0; i < len; ++i) {
 			var x = i * 2 / len - 1;
 			if (x === 0){
 				//should output 0 when input is 0
-				curve[i] = 0;
+				this._curve[i] = 0;
 			} else {
-				curve[i] = this._getCoefficient(x, order, {});
+				this._curve[i] = this._getCoefficient(x, order, {});
 			}
 		}
-		this._shaper.curve = curve;
+		this._shaper.curve = this._curve;
 	};
 
 	/**
@@ -97,6 +103,7 @@ define(["Tone/core/Tone", "Tone/effect/Effect"], function(Tone){
 		Tone.Effect.prototype.dispose.call(this);
 		this._shaper.disconnect();
 		this._shaper = null;
+		this._curve = null;
 	};
 
 	return Tone.Chebyshev;
