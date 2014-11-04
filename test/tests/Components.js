@@ -5,11 +5,11 @@ define(["tests/Core", "chai", "Tone/component/DryWet", "Tone/core/Master", "Tone
 "Tone/component/Follower", "Tone/component/Envelope", "Tone/component/Filter", "Tone/component/EQ", 
 "Tone/component/Merge", "Tone/component/Split", "tests/Common", "Tone/component/AmplitudeEnvelope", 
 "Tone/component/LowpassCombFilter", "Tone/component/FeedbackCombFilter", "Tone/component/Mono", 
-"Tone/component/MultibandSplit", "Tone/component/Compressor", 
-"Tone/component/MultibandCompressor"],
+"Tone/component/MultibandSplit", "Tone/component/Compressor", "Tone/component/PanVol",
+"Tone/component/MultibandCompressor", "Tone/component/ScaledEnvelope"],
 function(coreTest, chai, DryWet, Master, Signal, Recorder, Panner, LFO, Gate, Follower, Envelope, 
 	Filter, EQ, Merge, Split, Test, AmplitudeEnvelope, LowpassCombFilter, FeedbackCombFilter,
-	Mono, MultibandSplit, Compressor, MultibandCompressor){
+	Mono, MultibandSplit, Compressor, PanVol, MultibandCompressor, ScaledEnvelope){
 	var expect = chai.expect;
 
 	Master.mute();
@@ -95,7 +95,7 @@ function(coreTest, chai, DryWet, Master, Signal, Recorder, Panner, LFO, Gate, Fo
 		});
 	});
 
-	describe("Tone.Recorder", function(){
+	/*describe("Tone.Recorder", function(){
 		this.timeout(maxTimeout);
 
 		var recorder = new Recorder();
@@ -124,7 +124,7 @@ function(coreTest, chai, DryWet, Master, Signal, Recorder, Panner, LFO, Gate, Fo
 			});
 		});
 	});
-
+*/
 	describe("Tone.Panner", function(){
 		this.timeout(maxTimeout);
 
@@ -373,27 +373,6 @@ function(coreTest, chai, DryWet, Master, Signal, Recorder, Panner, LFO, Gate, Fo
 				done();
 			});
 		});
-
-		it ("can scale the range", function(done){
-			var env;
-			Test.offlineTest(0.7, function(dest){
-				env = new Envelope(0.1, 0.2, 0.5, 0.1);
-				env.connect(dest);
-				env.setMin(5);
-				env.setMax(10);
-				env.triggerAttack(0.1);
-			}, function(sample, time){
-				if (time < 0.1){
-					expect(sample).to.be.closeTo(5, 0.1);
-				} else if (time < 0.2){
-					expect(sample).to.be.within(5, 10);
-				}
-			}, function(){
-				env.dispose();
-				done();
-			});
-		});
-
 	});
 
 
@@ -733,6 +712,35 @@ function(coreTest, chai, DryWet, Master, Signal, Recorder, Panner, LFO, Gate, Fo
 		});
 	});
 
+	describe("Tone.PanVol", function(){
+		this.timeout(maxTimeout);
+
+		it("can be created and disposed", function(){
+			var panvol = new PanVol();
+			panvol.dispose();
+			Test.wasDisposed(panvol);
+		});
+
+		it("handles input and output connections", function(){
+			Test.onlineContext();
+			var panvol = new PanVol();
+			Test.acceptsInputAndOutput(panvol);
+			panvol.dispose();
+		});
+
+		it("passes the incoming signal through", function(done){
+			var panvol;
+			Test.passesAudio(function(input, output){
+				panvol = new PanVol();
+				input.connect(panvol);
+				panvol.connect(output);
+			}, function(){
+				panvol.dispose();
+				done();
+			});
+		});
+	});
+
 	describe("Tone.MultibandCompressor", function(){
 		this.timeout(maxTimeout);
 
@@ -760,5 +768,89 @@ function(coreTest, chai, DryWet, Master, Signal, Recorder, Panner, LFO, Gate, Fo
 				done();
 			});
 		});
+	});
+
+	describe("Tone.ScaledEnvelope", function(){
+		this.timeout(maxTimeout);
+
+		it("can be created and disposed", function(){
+			var e = new ScaledEnvelope();
+			e.dispose();
+			Test.wasDisposed(e);
+		});
+
+		it("handles output connections", function(){
+			Test.onlineContext();
+			var e = new ScaledEnvelope();
+			Test.acceptsOutput(e);
+			e.dispose();
+		});
+
+		it ("can take parameters as an object", function(){
+			var e0 = new ScaledEnvelope({
+				"attack" : 0,
+				"decay" : 0.5,
+				"sustain" : 1,
+				"min" : 10,
+				"max": 5
+			});
+			expect(e0.attack).to.equal(0);
+			expect(e0.decay).to.equal(0.5);
+			expect(e0.sustain).to.equal(1);
+			e0.dispose();
+		});
+
+		it ("can schedule an ADSR envelope", function(done){
+			var env;
+			Test.offlineTest(0.7, function(dest){
+				env = new ScaledEnvelope({
+					"attack" : 0.1,
+					"decay" : 0.2,
+					"sustain" : 0.5,
+					"release" : 0.1,
+					"min" : 0,
+					"max": 100
+				});
+				env.connect(dest);
+				env.triggerAttack(0);
+				env.triggerRelease(0.4);
+			}, function(sample, time){
+				if (time < 0.1){
+					expect(sample).to.be.within(0, 100);
+				} else if (time < 0.3){
+					expect(sample).to.be.within(0.5, 100);
+				} else if (time < 0.4){
+					expect(sample).to.be.within(0.5, 51);
+				} else if (time < 0.5){
+					expect(sample).to.be.within(0, 51);
+				} else {
+					expect(sample).to.be.below(1);
+				}
+			}, function(){
+				env.dispose();
+				done();
+			});
+		});
+
+		it ("can scale the range", function(done){
+			var env;
+			Test.offlineTest(0.7, function(dest){
+				env = new ScaledEnvelope(0.1, 0.2, 0.5, 0.1);
+				env.connect(dest);
+				env.setMin(5);
+				env.setMax(10);
+				env.triggerAttack(0.1);
+			}, function(sample, time){
+				if (time < 0.1){
+					expect(sample).to.be.closeTo(5, 0.1);
+				} else if (time < 0.2){
+					expect(sample).to.be.within(5, 10);
+				}
+			}, function(){
+				env.dispose();
+				done();
+			});
+		});
+
 	});
 });
