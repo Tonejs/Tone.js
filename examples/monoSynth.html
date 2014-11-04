@@ -80,13 +80,13 @@
 		var minFilFreq = new GUI.Slider(filter, function(val){
 			var freq = Math.pow(val, 2);
 			var scaled = freq * (max - min) + min;
-			synth.filterEnvelope.min = scaled;
+			synth.filterEnvelope.setMin(scaled);
 			return scaled;
 		}, min, "start freq", "hz");
 		var maxFilFreq = new GUI.Slider(filter, function(val){
 			var freq = Math.pow(val, 2);
 			var scaled = freq * (max - min) + min;
-			synth.filterEnvelope.max = scaled;
+			synth.filterEnvelope.setMax(scaled);
 			return scaled;
 		}, min, "end freq", "hz");
 

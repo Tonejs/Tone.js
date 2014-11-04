@@ -98,13 +98,13 @@
 		var minFilFreq0 = new GUI.Slider(filter0, function(val){
 			var freq = Math.pow(val, 2);
 			var scaled = freq * (max - min) + min;
-			synth.voice0.filterEnvelope.min = scaled;
+			synth.voice0.filterEnvelope.setMin(scaled);
 			return scaled;
 		}, min, "start freq", "hz");
 		var maxFilFreq0 = new GUI.Slider(filter0, function(val){
 			var freq = Math.pow(val, 2);
 			var scaled = freq * (max - min) + min;
-			synth.voice0.filterEnvelope.max = scaled;
+			synth.voice0.filterEnvelope.setMax(scaled);
 			return scaled;
 		}, min, "end freq", "hz");
 
@@ -113,13 +113,13 @@
 		var minFilFreq1 = new GUI.Slider(filter1, function(val){
 			var freq = Math.pow(val, 2);
 			var scaled = freq * (max - min) + min;
-			synth.voice1.filterEnvelope.min = scaled;
+			synth.voice1.filterEnvelope.setMin(scaled);
 			return scaled;
 		}, min, "start freq", "hz");
 		var maxFilFreq1 = new GUI.Slider(filter1, function(val){
 			var freq = Math.pow(val, 2);
 			var scaled = freq * (max - min) + min;
-			synth.voice1.filterEnvelope.max = scaled;
+			synth.voice1.filterEnvelope.setMax(scaled);
 			return scaled;
 		}, min, "end freq", "hz");
 		
