@@ -13,7 +13,7 @@ RequireJS is the recommended way to use Tone.js but it can also be used just as 
 
 ### without RequireJS
 
-Tone.js can also be used like any other script or library by dropping the [Tone.js Build](https://raw.githubusercontent.com/TONEnoTONE/Tone.js/master/build/Tone.js) into the <head> of your page. A global called ```Tone``` will be added to the ```window```. 
+Tone.js can be used like any other script or library by dropping the [Tone.js Build](https://raw.githubusercontent.com/TONEnoTONE/Tone.js/master/build/Tone.js) into the <head> of your page. A global called ```Tone``` will be added to the ```window```. 
 
 ```html
 <script type="text/javascript" src="path/to/Tone.js"></script>
