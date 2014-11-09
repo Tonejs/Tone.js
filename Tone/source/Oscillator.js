@@ -27,7 +27,7 @@ function(Tone){
 		 *  the frequency control signal
 		 *  @type {Tone.Signal}
 		 */
-		this.frequency = new Tone.Signal(options.frequency);
+		this.frequency = new Tone.Signal(this.toFrequency(options.frequency));
 
 		/**
 		 *  the detune control signal
