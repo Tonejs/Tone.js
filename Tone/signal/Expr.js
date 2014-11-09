@@ -21,6 +21,8 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Subtract", "Tone/signa
 	Tone.Expr = function(){
 
 		var expr = this._replacements(Array.prototype.slice.call(arguments));
+		var inputCount = this._parseInputs(expr);
+
 		/**
 		 *  hold onto all of the nodes for disposal
 		 *  @type {Array}
@@ -28,19 +30,20 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Subtract", "Tone/signa
 		 */
 		this._nodes = [];
 
-		var inputCount = this._parseInputs(expr);
-
 		/**
 		 *  the inputs
 		 *  @type {Array}
 		 */
 		this.input = new Array(inputCount);
 
+		//create a gain for each input
 		for (var i = 0; i < inputCount; i++){
 			this.input[i] = this.context.createGain();
 		}
 
+		//parse the syntax tree
 		var tree = this._parseTree(expr);
+		//evaluate the results
 		var result;
 		try {
 			result = this._eval(tree);
@@ -48,6 +51,10 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Subtract", "Tone/signa
 			this._disposeNodes();
 			throw new Error("Could evaluate expression: "+expr);
 		}
+
+		/**
+		 *  the output node is the result of the expression
+		 */
 		this.output = result;
 	};
 
