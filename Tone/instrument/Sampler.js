@@ -6,8 +6,7 @@ function(Tone){
 
 	/**
 	 *  @class A simple sampler instrument which plays an audio buffer 
-	 *         through an amplitude envelope and optionally a filter
-	 *         envelope.
+	 *         through an amplitude envelope and a filter envelope.
 	 *
 	 *  @constructor
 	 *  @extends {Tone.Instrument}
