@@ -183,7 +183,7 @@ define(function(){
 			this.output.disconnect();
 		}
 	};
-	
+
 	/**
 	 *  connect together all of the arguments in series
 	 *  @param {...AudioParam|Tone|AudioNode}
@@ -212,6 +212,37 @@ define(function(){
 			}
 		}
 	};
+
+	/**
+	 *  connect the output of this node to the rest of the nodes in series.
+	 *  @param {...AudioParam|Tone|AudioNode}
+	 */
+	Tone.prototype.chain = function(){
+		if (arguments.length > 0){
+			var currentUnit = this;
+			for (var i = 0; i < arguments.length; i++){
+				var toUnit = arguments[i];
+				currentUnit.connect(toUnit);
+				currentUnit = toUnit;
+			}
+		}
+	};
+
+	/**
+	 *  connect the output of this node to the rest of the nodes in parallel.
+	 *  @param {...AudioParam|Tone|AudioNode}
+	 */
+	Tone.prototype.fan = function(){
+		if (arguments.length > 0){
+			for (var i = 1; i < arguments.length; i++){
+				this.connect(arguments[i]);
+			}
+		}
+	};
+
+	//give native nodes chain and fan methods
+	AudioNode.prototype.chain = Tone.prototype.chain;
+	AudioNode.prototype.fan = Tone.prototype.fan;
 
 	///////////////////////////////////////////////////////////////////////////
 	//	UTILITIES / HELPERS / MATHS
