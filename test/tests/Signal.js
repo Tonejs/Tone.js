@@ -2,8 +2,8 @@
 
 define(["tests/Core", "chai", "Tone/signal/Signal", "Tone/source/Oscillator", 
 	"Tone/signal/Switch", "Tone/signal/Route", "Tone/signal/Select", "tests/Common",
-	"Tone/signal/NOT", "Tone/signal/AND", "Tone/signal/OR", "Tone/signal/IfThenElse"], 
-function(core, chai, Signal, Oscillator, Switch, Route, Select, Test, NOT, AND, OR, IfThenElse){
+	"Tone/signal/NOT", "Tone/signal/AND", "Tone/signal/OR", "Tone/signal/IfThenElse", "Tone/signal/WaveShaper"], 
+function(core, chai, Signal, Oscillator, Switch, Route, Select, Test, NOT, AND, OR, IfThenElse, WaveShaper){
 
 	var expect = chai.expect;
 
@@ -551,6 +551,18 @@ function(core, chai, Signal, Oscillator, Switch, Route, Select, Test, NOT, AND, 
 				or.dispose();
 				done();
 			});
+		});
+	});
+
+	describe("Tone.WaveShaper", function(){
+		this.timeout(maxTimeout);
+
+		it("can be created and disposed", function(){
+			var ws = new WaveShaper(function(val){
+				return val;
+			});
+			ws.dispose();
+			Test.wasDisposed(ws);
 		});
 	});
 });
