@@ -934,6 +934,23 @@ function(core, chai, Signal, Add, Multiply, Scale, Oscillator, Master, Abs, Nega
 				done();
 			});
 		});
+
+		it("outputs 0.5 for an input value of 0", function(done){
+			//make an oscillator to drive the signal
+			var sig, a2g;
+			Test.offlineTest(0.2, function(dest){
+				sig = new Signal(0);
+				a2g = new AudioToGain();
+				sig.connect(a2g);
+				a2g.connect(dest);
+			}, function(sample){
+				expect(sample).to.equal(0.5);
+			}, function(){
+				sig.dispose();
+				a2g.dispose();
+				done();
+			});
+		});
 	});
 
 	describe("Tone.EqualPowerGain", function(){
