@@ -1,4 +1,4 @@
-/* global it, describe, maxTimeout, after*/
+/* global it, describe, maxTimeout*/
 
 define(["tests/Core", "chai", "Tone/component/DryWet", "Tone/core/Master", "Tone/signal/Signal", 
 "Tone/component/Recorder", "Tone/component/Panner", "Tone/component/LFO", "Tone/component/Gate", 
@@ -6,10 +6,10 @@ define(["tests/Core", "chai", "Tone/component/DryWet", "Tone/core/Master", "Tone
 "Tone/component/Merge", "Tone/component/Split", "tests/Common", "Tone/component/AmplitudeEnvelope", 
 "Tone/component/LowpassCombFilter", "Tone/component/FeedbackCombFilter", "Tone/component/Mono", 
 "Tone/component/MultibandSplit", "Tone/component/Compressor", "Tone/component/PanVol",
-"Tone/component/MultibandCompressor", "Tone/component/ScaledEnvelope"],
+"Tone/component/MultibandCompressor", "Tone/component/ScaledEnvelope", "Tone/component/Limiter"],
 function(coreTest, chai, DryWet, Master, Signal, Recorder, Panner, LFO, Gate, Follower, Envelope, 
 	Filter, EQ, Merge, Split, Test, AmplitudeEnvelope, LowpassCombFilter, FeedbackCombFilter,
-	Mono, MultibandSplit, Compressor, PanVol, MultibandCompressor, ScaledEnvelope){
+	Mono, MultibandSplit, Compressor, PanVol, MultibandCompressor, ScaledEnvelope, Limiter){
 	var expect = chai.expect;
 
 	Master.mute();
@@ -851,6 +851,34 @@ function(coreTest, chai, DryWet, Master, Signal, Recorder, Panner, LFO, Gate, Fo
 				done();
 			});
 		});
+	});
 
+	describe("Tone.Limiter", function(){
+		this.timeout(maxTimeout);
+
+		it("can be created and disposed", function(){
+			var lim = new Limiter();
+			lim.dispose();
+			Test.wasDisposed(lim);
+		});
+
+		it("handles input and output connections", function(){
+			Test.onlineContext();
+			var lim = new Limiter();
+			Test.acceptsInputAndOutput(lim);
+			lim.dispose();
+		});
+
+		it("passes the incoming signal through", function(done){
+			var lim;
+			Test.passesAudio(function(input, output){
+				lim = new Limiter();
+				input.connect(lim);
+				lim.connect(output);
+			}, function(){
+				lim.dispose();
+				done();
+			});
+		});
 	});
 });
