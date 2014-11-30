@@ -10,11 +10,13 @@ Signal Processing:
 * All signal binary operators accept two signals as inputs
 * Deprecated Tone.Threshold - new class Tone.GreaterThanZero
 * NOT, OR, AND, and IfThenElse signal logic operators
-* Additional signal classes: Inverse, Divide, Pow
+* Additional signal classes: Inverse, Divide, Pow, AudioToGain, Subtract
+* Scale no longer accepts input min/max. Assumes [0,1] range.
+* Normalize class if scaling needs to happen from other input ranges
 Effects:
 * Distortion and Chebyshev distortion effects
 * Compressor and MultibandCompressor
-* MidSide effect type and StereoWidener (extends MidSide)
+* MidSide effect type and StereoWidener
 * Convolver effect and example
 Synths:
 * Setters on PluckSynth and PulseOscillator
