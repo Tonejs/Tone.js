@@ -152,7 +152,6 @@ function(Tone){
 		this.filterEnvelope = null;
 		this.filter.dispose();
 		this.filter = null;
-		this.detune = null;
 		this.frequency = null;
 		this.detune = null;
 	};
