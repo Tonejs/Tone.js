@@ -944,7 +944,7 @@ function(core, chai, Signal, Add, Multiply, Scale, Oscillator, Master, Abs, Nega
 				sig.connect(a2g);
 				a2g.connect(dest);
 			}, function(sample){
-				expect(sample).to.equal(0.5);
+				expect(sample).to.be.closeTo(0.5, 0.01);
 			}, function(){
 				sig.dispose();
 				a2g.dispose();

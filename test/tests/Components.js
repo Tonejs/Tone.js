@@ -362,7 +362,7 @@ function(coreTest, chai, DryWet, Master, Signal, Recorder, Panner, LFO, Gate, Fo
 				} else if (time < 0.3){
 					expect(sample).to.be.within(0.5, 1);
 				} else if (time < 0.4){
-					expect(sample).to.be.within(0.5, 0.51);
+					expect(sample).to.be.within(0.499, 0.51);
 				} else if (time < 0.5){
 					expect(sample).to.be.within(0, 0.51);
 				} else {
