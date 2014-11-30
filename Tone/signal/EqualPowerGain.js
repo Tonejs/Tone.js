@@ -1,19 +1,6 @@
-define(["Tone/core/Tone"], function(Tone){
+define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 
 	"use strict";
-
-	/**
-	 *  the waveshaper curve
-	 *  @type {Float32Array}
-	 *  @private
-	 *  @static
-	 */
-	var curveLength = 1024;
-	var eqPowCurve = new Float32Array(curveLength);
-	for (var i = 0; i < curveLength; i++){
-		var normalized = Math.abs((i / (curveLength - 1)) * 2 - 1);
-		eqPowCurve[i] = Tone.prototype.equalPowerScale(normalized);
-	}
 
 	/**
 	 *  @class Convert an incoming signal between 0,1 to an equal power gain scale.
@@ -24,11 +11,12 @@ define(["Tone/core/Tone"], function(Tone){
 	Tone.EqualPowerGain = function(){
 
 		/**
-		 *  @type {WaveShaperNode}
+		 *  @type {Tone.WaveShaper}
 		 *  @private
 		 */
-		this._eqPower = this.input = this.output = this.context.createWaveShaper();
-		this._eqPower.curve = eqPowCurve;
+		this._eqPower = this.input = this.output = new Tone.WaveShaper(function(val){
+			return Tone.prototype.equalPowerScale(val);
+		});
 	};
 
 	Tone.extend(Tone.EqualPowerGain);
@@ -38,7 +26,7 @@ define(["Tone/core/Tone"], function(Tone){
 	 */
 	Tone.EqualPowerGain.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
-		this._eqPower.disconnect();
+		this._eqPower.dispose();
 		this._eqPower = null;
 	};
 

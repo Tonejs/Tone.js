@@ -1,19 +1,7 @@
-define(["Tone/core/Tone", "Tone/source/Source", "Tone/source/Oscillator", "Tone/signal/Signal"],
+define(["Tone/core/Tone", "Tone/source/Source", "Tone/source/Oscillator", "Tone/signal/Signal", "Tone/signal/WaveShaper"],
 function(Tone){
 
 	"use strict";
-
-	/**
-	 *  
-	 *  @static 
-	 *  @private
-	 *  @type {Float32Array}
-	 */
-	var pulseCurve = new Float32Array(256);
-	for(var i=0; i < 128; i++) {
-		pulseCurve[i] = -1;
-		pulseCurve[i+128] = 1;
-	}
 
 	/**
 	 *  @class Pulse Oscillator with control over width
@@ -67,11 +55,16 @@ function(Tone){
 		/**
 		 *  threshold the signal to turn it into a square
 		 *  
-		 *  @type {WaveShaperNode}
+		 *  @type {Tone.WaveShaper}
 		 *  @private
 		 */
-		this._thresh = this.context.createWaveShaper();
-		this._thresh.curve = pulseCurve;
+		this._thresh = new Tone.WaveShaper(function(val){
+			if (val < 0){
+				return -1;
+			} else {
+				return 1;
+			}
+		});
 
 		//connections
 		this.chain(this._sawtooth, this._thresh, this.output);

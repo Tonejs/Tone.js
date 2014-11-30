@@ -1,4 +1,4 @@
-define(["Tone/core/Tone"], function(Tone){
+define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 
 	"use strict";
 
@@ -38,7 +38,7 @@ define(["Tone/core/Tone"], function(Tone){
 		this.value = this.defaultArg(value, 0);
 
 		//connect the constant 1 output to the node output
-		this.chain(constant, this._scalar, this.output);
+		this.chain(Tone.Signal._constant, this._scalar, this.output);
 		//signal passes through
 		this.input.connect(this.output);
 	};
@@ -287,39 +287,33 @@ define(["Tone/core/Tone"], function(Tone){
 	///////////////////////////////////////////////////////////////////////////
 
 	/**
-	 *	all signals share a common constant signal generator
-	 *  
+	 *  the constant signal generator
 	 *  @static
 	 *  @private
-	 *  @type {OscillatorNode} 
+	 *  @const
+	 *  @type {OscillatorNode}
 	 */
-	var generator = null;
+	Tone.Signal._generator = null;
 
 	/**
+	 *  the signal generator waveshaper. makes the incoming signal
+	 *  only output 1 for all inputs.
 	 *  @static
 	 *  @private
-	 *  @type {WaveShaperNode} 
+	 *  @const
+	 *  @type {Tone.WaveShaper}
 	 */
-	var constant = null;
+	Tone.Signal._constant = null;
 
 	/**
 	 *  initializer function
 	 */
 	Tone._initAudioContext(function(audioContext){
-		generator = audioContext.createOscillator();
-		constant = audioContext.createWaveShaper();
-		//generate the waveshaper table which outputs 1 for any input value
-		var len = 8;
-		var curve = new Float32Array(len);
-		for (var i = 0; i < len; i++){
-			//all inputs produce the output value
-			curve[i] = 1;
-		}
-		constant.curve = curve;
-		//connect it up
-		generator.connect(constant);
-		generator.start(0);
-		generator.noGC();
+		Tone.Signal._generator = audioContext.createOscillator();
+		Tone.Signal._constant = new Tone.WaveShaper([1,1]);
+		Tone.Signal._generator.connect(Tone.Signal._constant);
+		Tone.Signal._generator.start(0);
+		Tone.Signal._generator.noGC();
 	});
 
 	return Tone.Signal;

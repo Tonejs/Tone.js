@@ -1,24 +1,7 @@
-define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/GreaterThanZero"], function(Tone){
+define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/GreaterThanZero", "Tone/signal/WaveShaper"], 
+function(Tone){
 
 	"use strict";
-
-	/**
-	 *  @private
-	 *  @static
-	 *  @type {Float32Array}
-	 */
-	var threshCurve = new Float32Array(2048);
-	//set the value
-	for (var i = 0; i < threshCurve.length; i++){
-		var normalized = (i / (threshCurve.length)) * 2 - 1;
-		var val;
-		if (normalized === 0){
-			val = 1;
-		} else {
-			val = 0;
-		}
-		threshCurve[i] = val;
-	}
 
 	/**
 	 *  @class  EqualZero outputs 1 when the input is strictly greater than zero
@@ -36,11 +19,16 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/GreaterThanZero"], 
 		this._scale = this.input = new Tone.Multiply(10000);
 		
 		/**
-		 *  @type {WaveShaperNode}
+		 *  @type {Tone.WaveShaper}
 		 *  @private
 		 */
-		this._thresh = this.context.createWaveShaper();
-		this._thresh.curve = threshCurve;
+		this._thresh = new Tone.WaveShaper(function(val){
+			if (val === 0){
+				return 1;
+			} else {
+				return 0;
+			}
+		}, 128);
 
 		/**
 		 *  threshold the output so that it's 0 or 1
@@ -68,11 +56,11 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/GreaterThanZero"], 
 	Tone.EqualZero.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
 		this._gtz.dispose();
-		this._scale.dispose();
-		this._thresh.disconnect();
-		this._thresh = null;
-		this._scale = null;
 		this._gtz = null;
+		this._scale.dispose();
+		this._scale = null;
+		this._thresh.dispose();
+		this._thresh = null;
 	};
 
 	return Tone.EqualZero;

@@ -1,4 +1,4 @@
-define(["Tone/core/Tone"], function(Tone){
+define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 
 	"use strict";
 
@@ -12,20 +12,13 @@ define(["Tone/core/Tone"], function(Tone){
 	 */
 	Tone.Pow = function(exp){
 
+		exp = this.defaultArg(exp, 1);
+
 		/**
 		 *  @type {WaveShaperNode}
 		 *  @private
 		 */
-		this._expScaler = this.input = this.output = this.context.createWaveShaper();
-
-		/**
-		 *  the curve that the waveshaper uses
-		 *  @type {Float32Array}
-		 *  @private
-		 */
-		this._curve = new Float32Array(2048);
-
-		this.setExponent(this.defaultArg(exp, 1));
+		this._expScaler = this.input = this.output = new Tone.WaveShaper(this._expFunc(exp));
 	};
 
 	Tone.extend(Tone.Pow);
@@ -35,16 +28,19 @@ define(["Tone/core/Tone"], function(Tone){
 	 *  @param {number} exp the exponent to raise the incoming signal to
 	 */
 	Tone.Pow.prototype.setExponent = function(exp){
-		var curveLength = this._curve.length;
-		for (var i = 0; i < curveLength; i++){
-			var normalized = Math.abs((i / (curveLength - 1)) * 2 - 1);
-			if (normalized < 0.001){
-				this._curve[i] = 0;
-			} else {
-				this._curve[i] = Math.pow(normalized, exp);	
-			}
-		}
-		this._expScaler.curve = this._curve;
+		this._expScaler.setMap(this._expFunc(exp));
+	};
+
+	/**
+	 *  the function which maps the waveshaper
+	 *  @param   {number} exp
+	 *  @return {function}
+	 *  @private
+	 */
+	Tone.Pow.prototype._expFunc = function(exp){
+		return function(val){
+			return Math.pow(Math.abs(val), exp);
+		};
 	};
 
 	/**
@@ -52,9 +48,8 @@ define(["Tone/core/Tone"], function(Tone){
 	 */
 	Tone.Pow.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
-		this._expScaler.disconnect();
+		this._expScaler.dispose();
 		this._expScaler = null;
-		this._curve = null;
 	};
 
 	return Tone.Pow;

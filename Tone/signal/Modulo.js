@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/signal/Multiply"], function(Tone){
+define(["Tone/core/Tone", "Tone/signal/Multiply", "Tone/signal/WaveShaper"], function(Tone){
 
 	"use strict";
 
@@ -60,6 +60,7 @@ define(["Tone/core/Tone", "Tone/signal/Multiply"], function(Tone){
 	var ModuloSubroutine = function(modulus, multiple){
 
 		var val = modulus * multiple;
+		var arrayLength = 1024;
 
 		/**
 		 *  the input node
@@ -85,33 +86,21 @@ define(["Tone/core/Tone", "Tone/signal/Multiply"], function(Tone){
 		 *  @type {WaveShaperNode}
 		 *  @private
 		 */
-		this._operator = this.context.createWaveShaper();
+		this._operator = new Tone.WaveShaper(function(norm, pos){
+			if (pos === arrayLength - 1){
+				return -val;
+			} else if (pos === 0){
+				return val;
+			} else {
+				return 0;
+			}
+		}, arrayLength);
 
 		//connect it up
 		this.chain(this.input, this._div, this._operator);
-		this._makeCurve(val);
 	};
 
 	Tone.extend(ModuloSubroutine);
-
-	/**
-	 * make the operator curve
-	 * @param {number} val
-	 * @private 
-	 */
-	ModuloSubroutine.prototype._makeCurve = function(val){
-		var arrayLength = this._curve.length;
-		for (var i = 0; i < arrayLength; i++) {
-			if (i === arrayLength - 1){
-				this._curve[i] = -val;
-			} else if (i === 0){
-				this._curve[i] = val;
-			} else {
-				this._curve[i] = 0;
-			}
-		}
-		this._operator.curve = this._curve;
-	};
 
 	/**
 	 *  @override the default connection to connect the operator and the input to the next node

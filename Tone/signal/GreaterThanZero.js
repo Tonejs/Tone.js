@@ -1,24 +1,7 @@
-define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Multiply"], function(Tone){
+define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Multiply", "Tone/signal/WaveShaper"], 
+function(Tone){
 
 	"use strict";
-
-	/**
-	 *  @private
-	 *  @static
-	 *  @type {Float32Array}
-	 */
-	var threshCurve = new Float32Array(2048);
-	//set the value
-	for (var i = 0; i < threshCurve.length; i++){
-		var normalized = (i / (threshCurve.length)) * 2 - 1;
-		var val;
-		if (normalized <= 0){
-			val = 0;
-		} else {
-			val = 1;
-		}
-		threshCurve[i] = val;
-	}
 
 	/**
 	 *  @class  GreaterThanZero outputs 1 when the input is strictly greater than zero
@@ -29,11 +12,16 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Multiply"], functio
 	Tone.GreaterThanZero = function(){
 		
 		/**
-		 *  @type {WaveShaperNode}
+		 *  @type {Tone.WaveShaper}
 		 *  @private
 		 */
-		this._thresh = this.context.createWaveShaper();
-		this._thresh.curve = threshCurve;
+		this._thresh = this.output = new Tone.WaveShaper(function(val){
+			if (val <= 0){
+				return 0;
+			} else {
+				return 1;
+			}
+		});
 
 		/**
 		 *  scale the first thresholded signal by a large value.
@@ -41,17 +29,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Multiply"], functio
 		 *  @type {Tone.Multiply}
 		 *  @private
 		 */
-		this._scale = new Tone.Multiply(10000);
-
-		/**
-		 *  @type {WaveShaperNode}
-		 */
-		this.input = this._scale;
-
-		/**
-		 *  @type {WaveShaperNode}
-		 */
-		this.output = this._thresh;
+		this._scale = this.input = new Tone.Multiply(10000);
 
 		//connections
 		this._scale.connect(this._thresh);
@@ -72,9 +50,9 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Multiply"], functio
 	Tone.GreaterThanZero.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
 		this._scale.dispose();
-		this._thresh.disconnect();
-		this._thresh = null;
 		this._scale = null;
+		this._thresh.dispose();
+		this._thresh = null;
 	};
 
 	return Tone.GreaterThanZero;

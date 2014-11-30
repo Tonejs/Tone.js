@@ -1,18 +1,6 @@
-define(["Tone/core/Tone"], function(Tone){
+define(["Tone/core/Tone", "Tone/signal/WaveShaper", "Tone/signal/Signal"], function(Tone){
 
 	"use strict";
-
-	/**
-	 *  the waveshaper's curve
-	 *  @type {Float32Array}
-	 *  @private
-	 *  @static
-	 */
-	var curveLength = 128;
-	var normCurve = new Float32Array(curveLength);
-	for (var i = 0; i < curveLength; i++){
-		normCurve[i] = i / (curveLength - 1);
-	}
 
 	/**
 	 *  @class AudioToGain converts an input range of -1,1 to 0,1
@@ -26,11 +14,17 @@ define(["Tone/core/Tone"], function(Tone){
 		 *  @type {WaveShaperNode}
 		 *  @private
 		 */
-		this._norm = this.input = this.output = this.context.createWaveShaper();
-		this._norm.curve = normCurve;
+		this._norm = this.input = this.output = new Tone.WaveShaper([0,1]);
 	};
 
 	Tone.extend(Tone.AudioToGain);
+
+	/**
+	 *  borrows the method from {@link Tone.Signal}
+	 *  
+	 *  @function
+	 */
+	Tone.AudioToGain.prototype.connect = Tone.Signal.prototype.connect;
 
 	/**
 	 *  clean up
