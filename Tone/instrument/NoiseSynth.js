@@ -104,6 +104,20 @@ function(Tone){
 	};
 
 	/**
+	 *  trigger the attack and then the release
+	 *  @param  {Tone.Time=} duration the duration of the note
+	 *  @param  {Tone.Time=} time     the time of the attack
+	 *  @param  {number=} velocity the velocity
+	 */
+	Tone.NoiseSynth.prototype.triggerAttackRelease = function(duration, time, velocity){
+		time = this.toSeconds(time);
+		duration = this.toSeconds(duration);
+		this.triggerAttack(time, velocity);
+		console.log(time + duration);
+		this.triggerRelease(time + duration);
+	};
+
+	/**
 	 *  set the oscillator type
 	 *  @param {string} oscType the type of oscillator
 	 */
