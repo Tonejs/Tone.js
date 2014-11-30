@@ -4,9 +4,9 @@ define(["tests/Core", "chai", "Tone/signal/Signal", "Tone/signal/Add", "Tone/sig
 	"Tone/signal/Scale", "Tone/source/Oscillator", "Tone/core/Master", "Tone/signal/Abs", "Tone/signal/Negate", 
 	 "Tone/signal/Max", "Tone/signal/Min", "Tone/signal/Clip", "Tone/signal/ScaleExp", 
 	 "Tone/signal/Modulo", "tests/Common", "Tone/signal/Subtract", "Tone/signal/Inverse", "Tone/signal/Divide",
-	 "Tone/signal/Pow", "Tone/signal/Normalize", "Tone/signal/AudioToGain"], 
+	 "Tone/signal/Pow", "Tone/signal/Normalize", "Tone/signal/AudioToGain", "Tone/signal/EqualPowerGain"], 
 function(core, chai, Signal, Add, Multiply, Scale, Oscillator, Master, Abs, Negate, Max, 
-	Min, Clip, ScaleExp, Modulo, Test, Subtract, Inverse, Divide, Pow, Normalize, AudioToGain){
+	Min, Clip, ScaleExp, Modulo, Test, Subtract, Inverse, Divide, Pow, Normalize, AudioToGain, EqualPowerGain){
 
 	var expect = chai.expect;
 
@@ -931,6 +931,35 @@ function(core, chai, Signal, Add, Multiply, Scale, Oscillator, Master, Abs, Nega
 			}, function(){
 				osc.dispose();
 				a2g.dispose();
+				done();
+			});
+		});
+	});
+
+	describe("Tone.EqualPowerGain", function(){
+		this.timeout(maxTimeout);
+
+		it("can be created and disposed", function(){
+			var eqpg = new EqualPowerGain();
+			eqpg.dispose();
+			Test.wasDisposed(eqpg);
+		});
+
+		it("handles input and output connections", function(){
+			Test.onlineContext();
+			var eqpg = new EqualPowerGain();
+			Test.acceptsInputAndOutput(eqpg);
+			eqpg.dispose();
+		});
+
+		it("passes the incoming signal through", function(done){
+			var eqpg;
+			Test.passesAudio(function(input, output){
+				eqpg = new EqualPowerGain();
+				input.connect(eqpg);
+				eqpg.connect(output);
+			}, function(){
+				eqpg.dispose();
 				done();
 			});
 		});
