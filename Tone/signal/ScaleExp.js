@@ -1,179 +1,71 @@
-define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Multiply", "Tone/signal/Signal", "Tone/signal/Pow"], 
+define(["Tone/core/Tone", "Tone/signal/Scale", "Tone/signal/Pow"], 
 function(Tone){
 	
 	/**
 	 *  @class  performs an exponential scaling on an input signal.
-	 *          Scales from the input range of inputMin to inputMax 
+	 *          Scales a normal gain range [0,1] exponentially
 	 *          to the output range of outputMin to outputMax.
 	 *
-	 *  @description If only two arguments are provided, the inputMin and inputMax are set to -1 and 1
-	 *
 	 *  @constructor
-	 *  @extends {Tone}
-	 *  @param {number} inputMin  
-	 *  @param {number} inputMax  
-	 *  @param {number} outputMin 
-	 *  @param {number=} outputMax 
-	 *  @param {number=} [exponent=2] the exponent which scales the incoming signal
+	 *  @extends {Tone.Scale}
+	 *  @param {number} [outputMin=0]
+	 *  @param {number} [outputMax=1]
+	 *  @param {number} [exponent=2] the exponent which scales the incoming signal
 	 */
-	Tone.ScaleExp = function(inputMin, inputMax, outputMin, outputMax, exponent){
+	Tone.ScaleExp = function(outputMin, outputMax, exponent){
 
-		//if there are only two args
-		if (arguments.length === 2){
-			outputMin = inputMin;
-			outputMax = inputMax;
-			exponent = 2;
-			inputMin = -1;
-			inputMax = 1;
-		} else if (arguments.length === 3){
-			exponent = outputMin;
-			outputMin = inputMin;
-			outputMax = inputMax;
-			inputMin = -1;
-			inputMax = 1;
-		}
-
-		/** 
+		/**
+		 *  scale the input to the output range
+		 *  @type {Tone.Scale}
 		 *  @private
-		 *  @type {number}
 		 */
-		this._inputMin = inputMin;
-		
-		/** 
-		 *  @private
-		 *  @type {number}
-		 */
-		this._inputMax = inputMax;
-
-		/** 
-		 *  @private
-		 *  @type {number}
-		 */
-		this._outputMin = outputMin;
-
-		/** 
-		 *  @private
-		 *  @type {number}
-		 */
-		this._outputMax = outputMax;
-
-		/** 
-		 *  @private
-		 *  @type {Tone.Add}
-		 */
-		this._plusInput = this.input = new Tone.Add(0);
-
-		/** 
-		 *  @private
-		 *  @type {Tone.Multiply}
-		 */
-		this._normalize = new Tone.Multiply(1);
-
-		/** 
-		 *  @private
-		 *  @type {Tone.Multiply}
-		 */
-		this._scale = new Tone.Multiply(1);
-
-		/** 
-		 *  @private
-		 *  @type {Tone.Add}
-		 */
-		this._plusOutput = this.output = new Tone.Add(0);
+		this._scale = this.output = new Tone.Scale(outputMin, outputMax);
 
 		/**
 		 *  @private
 		 *  @type {Tone.Pow}
+		 *  @private
 		 */
-		this._expScaler = new Tone.Pow(this.defaultArg(exponent, 2));
+		this._exp = this.input = new Tone.Pow(this.defaultArg(exponent, 2));
 
-		//connections
-		this.chain(this._plusInput, this._normalize, this._expScaler, this._scale, this._plusOutput);
-		//set the scaling values
-		this._setScalingParameters();
+		this._exp.connect(this._scale);
 	};
 
-	Tone.extend(Tone.ScaleExp);
-
-	/**
-	 *  set the scaling parameters
-	 *  
-	 *  @private
-	 */
-	Tone.ScaleExp.prototype._setScalingParameters = function(){
-		//components
-		this._plusInput.setValue(-this._inputMin);
-		this._scale.setValue((this._outputMax - this._outputMin));
-		this._normalize.setValue(1 / (this._inputMax - this._inputMin));
-		this._plusOutput.setValue(this._outputMin);
-	};
+	Tone.extend(Tone.ScaleExp, Tone.Scale);
 
 	/**
 	 *  set the exponential scaling curve
 	 *  @param {number} exp the exponent to raise the incoming signal to
 	 */
 	Tone.ScaleExp.prototype.setExponent = function(exp){
-		this._expScaler.setExponent(exp);
+		this._exp.setExponent(exp);
 	};
 
 	/**
-	 *  set the input min value
-	 *  @param {number} val 
+	 *  set the minimum output value
+	 *  @param {number} min the minimum output value
 	 */
-	Tone.ScaleExp.prototype.setInputMin = function(val){
-		this._inputMin = val;
-		this._setScalingParameters();
+	Tone.ScaleExp.prototype.setMin = function(min){
+		this._scale.setMin(min);
 	};
 
 	/**
-	 *  set the input max value
-	 *  @param {number} val 
+	 *  set the minimum output value
+	 *  @param {number} min the minimum output value
 	 */
-	Tone.ScaleExp.prototype.setInputMax = function(val){
-		this._inputMax = val;
-		this._setScalingParameters();
+	Tone.ScaleExp.prototype.setMax = function(max){
+		this._scale.setMax(max);
 	};
-
-	/**
-	 *  set the output min value
-	 *  @param {number} val 
-	 */
-	Tone.ScaleExp.prototype.setOutputMin = function(val){
-		this._outputMin = val;
-		this._setScalingParameters();
-	};
-
-	/**
-	 *  set the output max value
-	 *  @param {number} val 
-	 */
-	Tone.ScaleExp.prototype.setOutputMax = function(val){
-		this._outputMax = val;
-		this._setScalingParameters();
-	};
-
-	/**
-	 *  borrows connect from {@link Tone.Signal}
-	 *  
-	 *  @function
-	 */
-	Tone.ScaleExp.prototype.connect = Tone.Signal.prototype.connect;
 
 	/**
 	 *  clean up
 	 */
 	Tone.ScaleExp.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
-		this._plusInput.dispose();
-		this._plusOutput.dispose();
-		this._normalize.dispose();
 		this._scale.dispose();
-		this._expScaler.disconnect();
-		this._plusInput = null;
-		this._plusOutput = null;
 		this._scale = null;
-		this._normalize = null;
-		this._expScaler = null;
+		this._exp.dispose();
+		this._exp = null;
 	}; 
 
 

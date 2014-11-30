@@ -4,9 +4,9 @@ define(["tests/Core", "chai", "Tone/signal/Signal", "Tone/signal/Add", "Tone/sig
 	"Tone/signal/Scale", "Tone/source/Oscillator", "Tone/core/Master", "Tone/signal/Abs", "Tone/signal/Negate", 
 	 "Tone/signal/Max", "Tone/signal/Min", "Tone/signal/Clip", "Tone/signal/ScaleExp", 
 	 "Tone/signal/Modulo", "tests/Common", "Tone/signal/Subtract", "Tone/signal/Inverse", "Tone/signal/Divide",
-	 "Tone/signal/Pow"], 
+	 "Tone/signal/Pow", "Tone/signal/Normalize", "Tone/signal/AudioToGain"], 
 function(core, chai, Signal, Add, Multiply, Scale, Oscillator, Master, Abs, Negate, Max, 
-	Min, Clip, ScaleExp, Modulo, Test, Subtract, Inverse, Divide, Pow){
+	Min, Clip, ScaleExp, Modulo, Test, Subtract, Inverse, Divide, Pow, Normalize, AudioToGain){
 
 	var expect = chai.expect;
 
@@ -220,7 +220,7 @@ function(core, chai, Signal, Add, Multiply, Scale, Oscillator, Master, Abs, Nega
 
 		it("handles input and output connections", function(){
 			Test.onlineContext();
-			var scale = new Scale(0, 1, 0, 100);
+			var scale = new Scale(0, 100);
 			Test.acceptsInputAndOutput(scale);
 			scale.dispose();
 		});
@@ -229,12 +229,12 @@ function(core, chai, Signal, Add, Multiply, Scale, Oscillator, Master, Abs, Nega
 			//make an oscillator to drive the signal
 			var osc, scale;
 			Test.offlineTest(0.2, function(dest){
-				osc = new Oscillator(1000);
-				scale = new Scale(-1, 1, 10, 20);
+				osc = new Signal(0.5);
+				scale = new Scale(10, 20);
 				osc.connect(scale);
 				scale.connect(dest);
 			}, function(sample){
-				expect(sample).to.be.within(10, 20);
+				expect(sample).to.equal(15);
 			}, function(){
 				osc.dispose();
 				scale.dispose();
@@ -255,7 +255,7 @@ function(core, chai, Signal, Add, Multiply, Scale, Oscillator, Master, Abs, Nega
 
 		it("handles input and output connections", function(){
 			Test.onlineContext();
-			var scale = new ScaleExp(0, 1, 0, 100);
+			var scale = new ScaleExp(0, 100);
 			Test.acceptsInputAndOutput(scale);
 			scale.dispose();
 		});
@@ -264,7 +264,7 @@ function(core, chai, Signal, Add, Multiply, Scale, Oscillator, Master, Abs, Nega
 			var signal, scale;
 			Test.offlineTest(0.2, function(dest){
 				signal = new Signal(0.5);
-				scale = new ScaleExp(0, 1, 0, 1, 2);
+				scale = new ScaleExp(0, 1, 2);
 				signal.connect(scale);
 				scale.connect(dest);
 			}, function(sample){
@@ -846,6 +846,91 @@ function(core, chai, Signal, Add, Multiply, Scale, Oscillator, Master, Abs, Nega
 			}, function(){
 				signal.dispose();
 				pow.dispose();
+				done();
+			});
+		});
+	});
+
+	describe("Tone.Normalize", function(){
+		this.timeout(maxTimeout);
+
+		it("can be created and disposed", function(){
+			var s = new Normalize();
+			s.dispose();
+			Test.wasDisposed(s);
+		});
+
+		it("handles input and output connections", function(){
+			Test.onlineContext();
+			var norm = new Normalize();
+			Test.acceptsInputAndOutput(norm);
+			norm.dispose();
+		});
+
+		it("normalizes an oscillator to 0,1", function(done){
+			//make an oscillator to drive the signal
+			var osc, norm;
+			Test.offlineTest(0.2, function(dest){
+				osc = new Oscillator(1000);
+				norm = new Normalize(-1, 1);
+				osc.connect(norm);
+				norm.connect(dest);
+			}, function(sample){
+				expect(sample).to.be.within(0, 1);
+			}, function(){
+				osc.dispose();
+				norm.dispose();
+				done();
+			});
+		});
+
+		it("normalizes an input", function(done){
+			//make an oscillator to drive the signal
+			var sig, norm;
+			Test.offlineTest(0.2, function(dest){
+				sig = new Signal(1000);
+				norm = new Normalize(0, 1000);
+				sig.connect(norm);
+				norm.connect(dest);
+			}, function(sample){
+				expect(sample).to.equal(1);
+			}, function(){
+				sig.dispose();
+				norm.dispose();
+				done();
+			});
+		});
+	});
+
+	describe("Tone.AudioToGain", function(){
+		this.timeout(maxTimeout);
+
+		it("can be created and disposed", function(){
+			var a2g = new AudioToGain();
+			a2g.dispose();
+			Test.wasDisposed(a2g);
+		});
+
+		it("handles input and output connections", function(){
+			Test.onlineContext();
+			var a2g = new AudioToGain();
+			Test.acceptsInputAndOutput(a2g);
+			a2g.dispose();
+		});
+
+		it("normalizes an oscillator to 0,1", function(done){
+			//make an oscillator to drive the signal
+			var osc, a2g;
+			Test.offlineTest(0.2, function(dest){
+				osc = new Oscillator(1000);
+				a2g = new AudioToGain();
+				osc.connect(a2g);
+				a2g.connect(dest);
+			}, function(sample){
+				expect(sample).to.be.within(0, 1);
+			}, function(){
+				osc.dispose();
+				a2g.dispose();
 				done();
 			});
 		});

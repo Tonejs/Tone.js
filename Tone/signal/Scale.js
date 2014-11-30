@@ -4,126 +4,74 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Multiply", "Tone/signa
 	
 	/**
 	 *  @class  performs a linear scaling on an input signal.
-	 *          Scales from the input range of inputMin to inputMax 
-	 *          to the output range of outputMin to outputMax.
-	 *
-	 *  @description If only two arguments are provided, the inputMin and inputMax are set to -1 and 1
+	 *          Scales a normal gain input range [0,1] to between
+	 *          outputMin and outputMax
 	 *
 	 *  @constructor
 	 *  @extends {Tone}
-	 *  @param {number} inputMin  
-	 *  @param {number} inputMax  
-	 *  @param {number=} outputMin 
-	 *  @param {number=} outputMax 
+	 *  @param {number} [outputMin=0]
+	 *  @param {number} [outputMax=1]
 	 */
-	Tone.Scale = function(inputMin, inputMax, outputMin, outputMax){
-		Tone.call(this);
-
-		//if there are only two args
-		if (arguments.length == 2){
-			outputMin = inputMin;
-			outputMax = inputMax;
-			inputMin = -1;
-			inputMax = 1;
-		}
+	Tone.Scale = function(outputMin, outputMax){
 
 		/** 
 		 *  @private
 		 *  @type {number}
 		 */
-		this._inputMin = inputMin;
-		
-		/** 
-		 *  @private
-		 *  @type {number}
-		 */
-		this._inputMax = inputMax;
-		
-		/** 
-		 *  @private
-		 *  @type {number}
-		 */
-		this._outputMin = outputMin;
+		this._outputMin = this.defaultArg(outputMin, 0);
 
 		/** 
 		 *  @private
 		 *  @type {number}
 		 */
-		this._outputMax = outputMax;
+		this._outputMax = this.defaultArg(outputMax, 1);
 
-		/** 
-		 *  @private
-		 *  @type {Tone.Add}
-		 */
-		this._plusInput = this.input = new Tone.Add(0);
 
 		/** 
 		 *  @private
 		 *  @type {Tone.Multiply}
+		 *  @private
 		 */
-		this._scale = new Tone.Multiply(1);
+		this._scale = this.input = new Tone.Multiply(1);
 		
 		/** 
 		 *  @private
 		 *  @type {Tone.Add}
+		 *  @private
 		 */
-		this._plusOutput = this.output = new Tone.Add(0);
+		this._add = this.output = new Tone.Add(0);
 
-		//connections
-		this.chain(this._plusInput, this._scale, this._plusOutput);
-
-		//set the scaling values
-		this._setScalingParameters();
+		this._scale.connect(this._add);
+		this._setRange();
 	};
 
 	Tone.extend(Tone.Scale);
 
 	/**
-	 *  set the scaling parameters
-	 *  
+	 *  set the minimum output value
+	 *  @param {number} min the minimum output value
+	 */
+	Tone.Scale.prototype.setMin = function(min){
+		this._outputMin = min;
+		this._setRange();
+	};
+
+	/**
+	 *  set the minimum output value
+	 *  @param {number} min the minimum output value
+	 */
+	Tone.Scale.prototype.setMax = function(max){
+		this._outputMax = max;
+		this._setRange();
+	};
+
+	/**
+	 *  set the values
 	 *  @private
 	 */
-	Tone.Scale.prototype._setScalingParameters = function(){
-		//components
-		this._plusInput.setValue(-this._inputMin);
-		this._scale.setValue((this._outputMax - this._outputMin)/(this._inputMax - this._inputMin));
-		this._plusOutput.setValue(this._outputMin);
-	};
-
-	/**
-	 *  set the input min value
-	 *  @param {number} val 
-	 */
-	Tone.Scale.prototype.setInputMin = function(val){
-		this._inputMin = val;
-		this._setScalingParameters();
-	};
-
-	/**
-	 *  set the input max value
-	 *  @param {number} val 
-	 */
-	Tone.Scale.prototype.setInputMax = function(val){
-		this._inputMax = val;
-		this._setScalingParameters();
-	};
-
-	/**
-	 *  set the output min value
-	 *  @param {number} val 
-	 */
-	Tone.Scale.prototype.setOutputMin = function(val){
-		this._outputMin = val;
-		this._setScalingParameters();
-	};
-
-	/**
-	 *  set the output max value
-	 *  @param {number} val 
-	 */
-	Tone.Scale.prototype.setOutputMax = function(val){
-		this._outputMax = val;
-		this._setScalingParameters();
+	Tone.Scale.prototype._setRange = function() {
+		this._add.setValue(this._outputMin);
+		this._scale.setValue(this._outputMax - this._outputMin);
 	};
 
 	/**
@@ -138,11 +86,9 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Multiply", "Tone/signa
 	 */
 	Tone.Scale.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
-		this._plusInput.dispose();
-		this._plusOutput.dispose();
+		this._add.dispose();
+		this._add = null;
 		this._scale.dispose();
-		this._plusInput = null;
-		this._plusOutput = null;
 		this._scale = null;
 	}; 
 
