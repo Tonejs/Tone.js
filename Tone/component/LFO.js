@@ -16,13 +16,15 @@ function(Tone){
 	 *  @param {number=} outputMin 
 	 *  @param {number=} outputMax
 	 */
-	Tone.LFO = function(rate, outputMin, outputMax){
+	Tone.LFO = function(){
+
+		var options = this.optionsObject(arguments, ["rate", "min", "max"], Tone.LFO.defaults);
 
 		/** 
 		 *  the oscillator
 		 *  @type {Tone.Oscillator}
 		 */
-		this.oscillator = new Tone.Oscillator(this.defaultArg(rate, 1), "sine");
+		this.oscillator = new Tone.Oscillator(options.rate, options.type);
 
 		/**
 		 *  pointer to the oscillator's frequency
@@ -40,13 +42,27 @@ function(Tone){
 		 *  @type {Tone.Scale} 
 		 *  @private
 		 */
-		this._scaler = this.output = new Tone.Scale(outputMin, outputMax);
+		this._scaler = this.output = new Tone.Scale(options.min, options.max);
 
 		//connect it up
 		this.chain(this.oscillator, this._a2g, this._scaler);
 	};
 
 	Tone.extend(Tone.LFO);
+
+	/**
+	 *  the default parameters
+	 *
+	 *  @static
+	 *  @const
+	 *  @type {Object}
+	 */
+	Tone.LFO.defaults = {
+		"type" : "sine",
+		"min" : 0,
+		"max" : 1,
+		"frequency" : "4n",
+	};
 
 	/**
 	 *  start the LFO
