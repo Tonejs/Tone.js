@@ -15,8 +15,13 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 		 *  @private
 		 */
 		this._eqPower = this.input = this.output = new Tone.WaveShaper(function(val){
-			return Tone.prototype.equalPowerScale(val);
-		});
+			if (Math.abs(val) < 0.001){
+				//should output 0 when input is 0
+				return 0;
+			} else {
+				return Tone.prototype.equalPowerScale(val);
+			}
+		}, 4096);
 	};
 
 	Tone.extend(Tone.EqualPowerGain);

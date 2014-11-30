@@ -47,7 +47,7 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/signal/WaveShaper"], funct
 		var k = amount * 100;
 		var deg = Math.PI / 180;
 		this._shaper.setMap(function(x){
-			if (x === 0){
+			if (Math.abs(x) < 0.001){
 				//should output 0 when input is 0
 				return 0;
 			} else {
