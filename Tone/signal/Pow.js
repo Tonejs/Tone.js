@@ -18,7 +18,7 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 		 *  @type {WaveShaperNode}
 		 *  @private
 		 */
-		this._expScaler = this.input = this.output = new Tone.WaveShaper(this._expFunc(exp));
+		this._expScaler = this.input = this.output = new Tone.WaveShaper(this._expFunc(exp), 8192);
 	};
 
 	Tone.extend(Tone.Pow);
