@@ -52,7 +52,7 @@ function(Tone){
 		 *  @type {Tone.ScaleExp}
 		 *  @private
 		 */
-		this._dampeningScale = new Tone.ScaleExp(0, 1, 100, 8000, 0.5);
+		this._dampeningScale = new Tone.ScaleExp(100, 8000, 0.5);
 
 		/**
 		 *  the comb filters

@@ -34,7 +34,7 @@ function(Tone){
 		 *  @type {Tone}
 		 *  @private
 		 */
-		this._sweepRange = new Tone.ScaleExp(0, 1, 0, 1, 0.5);
+		this._sweepRange = new Tone.ScaleExp(0, 1, 0.5);
 
 		/**
 		 *  @type {number}
@@ -121,7 +121,7 @@ function(Tone){
 	 *  @param {number} sensitivy the sensitivity to the input signal in dB
 	 */
 	Tone.AutoWah.prototype.setSensitiviy = function(sensitivy){
-		this._sweepRange.setInputMax(this.dbToGain(sensitivy));
+		this._sweepRange.setMax(this.dbToGain(sensitivy));
 	};
 
 	/**
@@ -129,8 +129,8 @@ function(Tone){
 	 *  @private
 	 */
 	Tone.AutoWah.prototype._setSweepRange = function(){
-		this._sweepRange.setOutputMin(this._baseFrequency);
-		this._sweepRange.setOutputMax(Math.min(this._baseFrequency * Math.pow(2, this._octaves), this.context.sampleRate / 2));
+		this._sweepRange.setMin(this._baseFrequency);
+		this._sweepRange.setMax(Math.min(this._baseFrequency * Math.pow(2, this._octaves), this.context.sampleRate / 2));
 	};
 
 	/**

@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/component/Envelope", "Tone/signal/Multiply", "Tone/signal/Add"], 
+define(["Tone/core/Tone", "Tone/component/Envelope", "Tone/signal/Scale"], 
 	function(Tone){
 
 	"use strict";
@@ -22,35 +22,13 @@ define(["Tone/core/Tone", "Tone/component/Envelope", "Tone/signal/Multiply", "To
 		options = this.defaultArg(options, Tone.ScaledEnvelope.defaults);
 
 		/**
-		 *  the output min.
-		 *  @type {number}
-		 */
-		this.min = options.min;
-
-		/**
-		 *  the output max.
-		 *  @type {number}
-		 */
-		this.max = options.max;
-
-		/**
-		 *  multiply the outgoing signal the range
+		 *  scale the signal to the desired range
 		 *  @type {Tone.Multiply}
 		 *  @private
 		 */
-		this._mult = new Tone.Multiply(1);
+		this._scale = this.output = new Tone.Scale(options.min, options.max);
 
-		/**
-		 *  add the minimum to the outgoing signal
-		 *  @type {Tone.Add}
-		 *  @private
-		 */
-		this._add = this.output = new Tone.Add(0);
-
-
-		this.chain(this._sig, this._mult, this._add);
-		//set the values initially
-		this._setMinMax();
+		this._sig.connect(this._scale);
 	};
 
 	Tone.extend(Tone.ScaledEnvelope, Tone.Envelope);
@@ -80,8 +58,7 @@ define(["Tone/core/Tone", "Tone/component/Envelope", "Tone/signal/Multiply", "To
 	 *  @param {number} max
 	 */
 	Tone.ScaledEnvelope.prototype.setMax = function(max){
-		this.max = max;
-		this._setMinMax();
+		this._scale.setMax(max);
 	};
 
 	/**
@@ -89,29 +66,16 @@ define(["Tone/core/Tone", "Tone/component/Envelope", "Tone/signal/Multiply", "To
 	 *  @param {number} min
 	 */
 	Tone.ScaledEnvelope.prototype.setMin = function(min){
-		this.min = min;
-		this._setMinMax();
+		this._scale.setMin(min);
 	};
-
-	/**
-	 *  set the min and max values
-	 *  @param {number} min
-	 */
-	Tone.ScaledEnvelope.prototype._setMinMax = function(){
-		this._add.setValue(this.min);
-		this._mult.setValue(this.max - this.min);
-	};
-
 
 	/**
 	 *  clean up
 	 */
 	Tone.ScaledEnvelope.prototype.dispose = function(){
 		Tone.Envelope.prototype.dispose.call(this);
-		this._add.dispose();
-		this._add = null;
-		this._mult.dispose();
-		this._mult = null;
+		this._scale.dispose();
+		this._scale = null;
 	};
 
 	return Tone.ScaledEnvelope;

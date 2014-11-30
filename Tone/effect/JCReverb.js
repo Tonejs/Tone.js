@@ -52,7 +52,7 @@ function(Tone){
 		 *  @type {Tone.Scale}
 		 *  @private
 		 */
-		this._scaleRoomSize = new Tone.Scale(0, 1, -0.733, 0.197);
+		this._scaleRoomSize = new Tone.Scale(-0.733, 0.197);
 
 		/**
 		 *  a series of allpass filters

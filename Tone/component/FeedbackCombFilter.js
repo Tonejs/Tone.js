@@ -47,7 +47,7 @@ define(["Tone/core/Tone", "Tone/signal/ScaleExp", "Tone/signal/Signal"], functio
 		 *  @type {Tone.Scale}
 		 *  @private
 		 */
-		this._resScale = new Tone.ScaleExp(0, 1, 0.01, 1 / this._delayCount - 0.001, 0.5);
+		this._resScale = new Tone.ScaleExp(0.01, 1 / this._delayCount - 0.001, 0.5);
 
 		/**
 		 *  internal flag for keeping track of when frequency

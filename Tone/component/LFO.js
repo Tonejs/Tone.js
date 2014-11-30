@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/source/Oscillator", "Tone/signal/Scale", "Tone/signal/Signal"], 
+define(["Tone/core/Tone", "Tone/source/Oscillator", "Tone/signal/Scale", "Tone/signal/Signal", "Tone/signal/AudioToGain"], 
 function(Tone){
 
 	"use strict";
@@ -31,19 +31,19 @@ function(Tone){
 		this.frequency = this.oscillator.frequency;
 
 		/**
+		 *  @type {Tone.AudioToGain} 
+		 *  @private
+		 */
+		this._a2g = new Tone.AudioToGain();
+
+		/**
 		 *  @type {Tone.Scale} 
 		 *  @private
 		 */
-		this._scaler = new Tone.Scale(this.defaultArg(outputMin, 0), this.defaultArg(outputMax, 1));
-
-		/** 
-		 *  alias for the output
-		 *  @type {Tone.Scale}
-		 */
-		this.output = this._scaler;
+		this._scaler = this.output = new Tone.Scale(outputMin, outputMax);
 
 		//connect it up
-		this.chain(this.oscillator, this.output);
+		this.chain(this.oscillator, this._a2g, this._scaler);
 	};
 
 	Tone.extend(Tone.LFO);
@@ -106,7 +106,7 @@ function(Tone){
 	 *  @param {number} min 
 	 */
 	Tone.LFO.prototype.setMin = function(min){
-		this._scaler.setOutputMin(min);
+		this._scaler.setMin(min);
 	};
 
 	/**
@@ -114,7 +114,7 @@ function(Tone){
 	 *  @param {number} min 
 	 */
 	Tone.LFO.prototype.setMax = function(max){
-		this._scaler.setOutputMax(max);
+		this._scaler.setMax(max);
 	};
 
 	/**
@@ -152,9 +152,11 @@ function(Tone){
 	Tone.LFO.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
 		this.oscillator.dispose();
+		this.oscillator = null;
 		this._scaler.dispose();
 		this._scaler = null;
-		this.oscillator = null;
+		this._a2g.dispose();
+		this._a2g = null;
 		this.frequency = null;
 	};
 
