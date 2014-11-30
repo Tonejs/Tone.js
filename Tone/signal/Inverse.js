@@ -61,7 +61,7 @@ function(Tone){
 		 *  @private
 		 */
 		this._guess = new Tone.WaveShaper(guessCurve);
-		this.chain(this.input, this._guessMult, this._guess);
+		this.connectSeries(this.input, this._guessMult, this._guess);
 
 		/**
 		 *  the array of inverse helpers

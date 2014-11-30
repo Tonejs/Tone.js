@@ -38,7 +38,7 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 		this.value = this.defaultArg(value, 0);
 
 		//connect the constant 1 output to the node output
-		this.chain(Tone.Signal._constant, this._scalar, this.output);
+		this.connectSeries(Tone.Signal._constant, this._scalar, this.output);
 		//signal passes through
 		this.input.connect(this.output);
 	};
@@ -223,7 +223,7 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 		//make a new scalar which is not connected to the constant signal
 		this._scalar.disconnect();
 		this._scalar = this.context.createGain();
-		this.chain(signal, this._scalar, this.output);
+		this.connectSeries(signal, this._scalar, this.output);
 		//set it ot the sync ratio
 		this._scalar.gain.value = this._syncRatio;
 	};
@@ -242,7 +242,7 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 		this._scalar.gain.value = currentGain / this._syncRatio;
 		this._syncRatio = 1;
 		//reconnect things up
-		this.chain(constant, this._scalar, this.output);
+		this.connectSeries(constant, this._scalar, this.output);
 	};
 
 	/**

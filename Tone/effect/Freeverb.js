@@ -95,9 +95,9 @@ function(Tone){
 		for (var c = 0; c < combFilterTunings.length; c++){
 			var lfpf = new Tone.LowpassCombFilter(combFilterTunings[c]);
 			if (c < combFilterTunings.length / 2){
-				this.chain(this.effectSendL, lfpf, this._allpassFiltersL[0]);
+				this.connectSeries(this.effectSendL, lfpf, this._allpassFiltersL[0]);
 			} else {
-				this.chain(this.effectSendR, lfpf, this._allpassFiltersR[0]);
+				this.connectSeries(this.effectSendR, lfpf, this._allpassFiltersR[0]);
 			}
 			this.roomSize.connect(lfpf.resonance);
 			this._dampeningScale.connect(lfpf.dampening);
@@ -105,8 +105,8 @@ function(Tone){
 		}
 
 		//chain the allpass filters togetehr
-		this.chain.apply(this, this._allpassFiltersL);
-		this.chain.apply(this, this._allpassFiltersR);
+		this.connectSeries.apply(this, this._allpassFiltersL);
+		this.connectSeries.apply(this, this._allpassFiltersR);
 		this._allpassFiltersL[this._allpassFiltersL.length - 1].connect(this.effectReturnL);
 		this._allpassFiltersR[this._allpassFiltersR.length - 1].connect(this.effectReturnR);
 		this.dampening.connect(this._dampeningScale);

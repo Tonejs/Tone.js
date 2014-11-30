@@ -67,7 +67,7 @@ function(Tone){
 		});
 
 		//connections
-		this.chain(this._sawtooth, this._thresh, this.output);
+		this.connectSeries(this._sawtooth, this._thresh, this.output);
 		this.width.connect(this._thresh);
 		this._sawtooth.onended = this._onended.bind(this);
 	};

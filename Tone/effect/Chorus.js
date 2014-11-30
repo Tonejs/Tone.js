@@ -61,8 +61,8 @@ function(Tone){
 		this._delayNodeR = this.context.createDelay();
 
 		//connections
-		this.chain(this.effectSendL, this._delayNodeL, this.effectReturnL);
-		this.chain(this.effectSendR, this._delayNodeR, this.effectReturnR);
+		this.connectSeries(this.effectSendL, this._delayNodeL, this.effectReturnL);
+		this.connectSeries(this.effectSendR, this._delayNodeR, this.effectReturnR);
 		//and pass through
 		this.effectSendL.connect(this.effectReturnL);
 		this.effectSendR.connect(this.effectReturnR);

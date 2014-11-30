@@ -188,7 +188,7 @@ define(function(){
 	 *  connect together all of the arguments in series
 	 *  @param {...AudioParam|Tone|AudioNode}
 	 */
-	Tone.prototype.chain = function(){
+	Tone.prototype.connectSeries = function(){
 		if (arguments.length > 1){
 			var currentUnit = arguments[0];
 			for (var i = 1; i < arguments.length; i++){
@@ -203,7 +203,7 @@ define(function(){
 	 *  fan out the connection from the first argument to the rest of the arguments
 	 *  @param {...AudioParam|Tone|AudioNode}
 	 */
-	Tone.prototype.fan = function(){
+	Tone.prototype.connectParallel = function(){
 		var connectFrom = arguments[0];
 		if (arguments.length > 1){
 			for (var i = 1; i < arguments.length; i++){

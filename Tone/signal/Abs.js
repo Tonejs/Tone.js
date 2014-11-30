@@ -36,7 +36,7 @@ function(Tone){
 		this._negate.connect(this._switch, 0, 1);
 		
 		//the control signal
-		this.chain(this.input, this._ltz, this._switch.gate);
+		this.connectSeries(this.input, this._ltz, this._switch.gate);
 	};
 
 	Tone.extend(Tone.Abs);

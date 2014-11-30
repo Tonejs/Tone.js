@@ -48,7 +48,7 @@ function(Tone){
 		this.filter = new Tone.Filter(options.filter);
 
 		//connections
-		this.chain(this.player, this.filter, this.envelope, this.output);
+		this.connectSeries(this.player, this.filter, this.envelope, this.output);
 		this.filterEnvelope.connect(this.filter.frequency);
 	};
 

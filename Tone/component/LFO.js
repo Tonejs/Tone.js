@@ -45,7 +45,7 @@ function(Tone){
 		this._scaler = this.output = new Tone.Scale(options.min, options.max);
 
 		//connect it up
-		this.chain(this.oscillator, this._a2g, this._scaler);
+		this.connectSeries(this.oscillator, this._a2g, this._scaler);
 	};
 
 	Tone.extend(Tone.LFO);

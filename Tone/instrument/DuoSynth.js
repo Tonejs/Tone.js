@@ -77,9 +77,9 @@ function(Tone){
 
 		//control the two voices frequency
 		this.frequency.connect(this.voice0.frequency);
-		this.chain(this.frequency, this._harmonicity, this.voice1.frequency);
+		this.connectSeries(this.frequency, this._harmonicity, this.voice1.frequency);
 		this._vibrato.connect(this._vibratoGain);
-		this.fan(this._vibratoGain, this.voice0.detune, this.voice1.detune);
+		this.connectParallel(this._vibratoGain, this.voice0.detune, this.voice1.detune);
 		this.voice0.connect(this.output);
 		this.voice1.connect(this.output);
 	};

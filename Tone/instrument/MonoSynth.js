@@ -56,7 +56,7 @@ function(Tone){
 		this.envelope = new Tone.AmplitudeEnvelope(options.envelope);
 
 		//connect the oscillators to the output
-		this.chain(this.oscillator, this.filter, this.envelope, this.output);
+		this.connectSeries(this.oscillator, this.filter, this.envelope, this.output);
 		//start the oscillators
 		this.oscillator.start();
 		//connect the filter envelope

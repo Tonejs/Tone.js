@@ -103,7 +103,7 @@ define(["Tone/core/Tone", "Tone/component/DryWet"], function(Tone){
 	 *  @internal
 	 */
 	Tone.Effect.prototype.connectEffect = function(effect){
-		this.chain(this.effectSend, effect, this.effectReturn);
+		this.connectSeries(this.effectSend, effect, this.effectReturn);
 	};
 
 	/**

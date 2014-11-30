@@ -32,7 +32,7 @@ define(["Tone/core/Tone", "Tone/signal/Multiply", "Tone/signal/WaveShaper"], fun
 			var mod = new ModuloSubroutine(modulus, Math.pow(2, i));
 			this._modChain.push(mod);
 		}
-		this.chain.apply(this, this._modChain);
+		this.connectSeries.apply(this, this._modChain);
 		this.input.connect(this._modChain[0]);
 		this._modChain[this._modChain.length - 1].connect(this.output);
 	};
@@ -97,7 +97,7 @@ define(["Tone/core/Tone", "Tone/signal/Multiply", "Tone/signal/WaveShaper"], fun
 		}, arrayLength);
 
 		//connect it up
-		this.chain(this.input, this._div, this._operator);
+		this.connectSeries(this.input, this._div, this._operator);
 	};
 
 	Tone.extend(ModuloSubroutine);

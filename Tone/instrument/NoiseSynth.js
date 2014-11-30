@@ -44,7 +44,7 @@ function(Tone){
 		this.envelope = new Tone.AmplitudeEnvelope(options.envelope);
 
 		//connect the noise to the output
-		this.chain(this.noise, this.filter, this.envelope, this.output);
+		this.connectSeries(this.noise, this.filter, this.envelope, this.output);
 		//start the noise
 		this.noise.start();
 		//connect the filter envelope

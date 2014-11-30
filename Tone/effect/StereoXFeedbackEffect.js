@@ -36,9 +36,9 @@ function(Tone){
 		this._feedbackRL = this.context.createGain();
 
 		//connect it up
-		this.chain(this.effectReturnL, this._feedbackLR, this.effectSendR);
-		this.chain(this.effectReturnR, this._feedbackRL, this.effectSendL);
-		this.fan(this.feedback, this._feedbackLR.gain, this._feedbackRL.gain);
+		this.connectSeries(this.effectReturnL, this._feedbackLR, this.effectSendR);
+		this.connectSeries(this.effectReturnR, this._feedbackRL, this.effectSendL);
+		this.connectParallel(this.feedback, this._feedbackLR.gain, this._feedbackRL.gain);
 	};
 
 	Tone.extend(Tone.StereoXFeedbackEffect, Tone.FeedbackEffect);

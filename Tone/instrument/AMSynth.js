@@ -61,9 +61,9 @@ function(Tone){
 
 		//control the two voices frequency
 		this.frequency.connect(this.carrier.frequency);
-		this.chain(this.frequency, this._harmonicity, this.modulator.frequency);
-		this.chain(this.modulator, this._modulationScale, this._modulationNode.gain);
-		this.chain(this.carrier, this._modulationNode, this.output);
+		this.connectSeries(this.frequency, this._harmonicity, this.modulator.frequency);
+		this.connectSeries(this.modulator, this._modulationScale, this._modulationNode.gain);
+		this.connectSeries(this.carrier, this._modulationNode, this.output);
 	};
 
 	Tone.extend(Tone.AMSynth, Tone.Monophonic);

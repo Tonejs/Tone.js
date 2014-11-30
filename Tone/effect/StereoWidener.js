@@ -55,8 +55,8 @@ define(["Tone/core/Tone", "Tone/effect/MidSide", "Tone/signal/Signal",
 		this._two.connect(this._sideMult, 0, 1);
 		this.width.connect(this._sideMult, 0, 2);
 		//connect it to the effect send/return
-		this.chain(this.midSend, this._midMult, this.midReturn);
-		this.chain(this.sideSend, this._sideMult, this.sideReturn);
+		this.connectSeries(this.midSend, this._midMult, this.midReturn);
+		this.connectSeries(this.sideSend, this._sideMult, this.sideReturn);
 	};
 
 	Tone.extend(Tone.StereoWidener, Tone.MidSide);

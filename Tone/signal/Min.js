@@ -35,7 +35,7 @@ define(["Tone/core/Tone", "Tone/signal/LessThan", "Tone/signal/IfThenElse", "Ton
 		this._minSignal = this.input[1] = new Tone.Signal(min);
 
 		//connections
-		this.chain(this.input[0], this._lt, this._ifThenElse.if);
+		this.connectSeries(this.input[0], this._lt, this._ifThenElse.if);
 		this.input[0].connect(this._ifThenElse.then);
 		this._minSignal.connect(this._ifThenElse.else);
 		this._minSignal.connect(this._lt, 0, 1);

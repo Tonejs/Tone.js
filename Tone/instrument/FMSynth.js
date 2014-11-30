@@ -63,8 +63,8 @@ function(Tone){
 
 		//control the two voices frequency
 		this.frequency.connect(this.carrier.frequency);
-		this.chain(this.frequency, this._harmonicity, this.modulator.frequency);
-		this.chain(this.frequency, this._modulationIndex, this._modulationNode);
+		this.connectSeries(this.frequency, this._harmonicity, this.modulator.frequency);
+		this.connectSeries(this.frequency, this._modulationIndex, this._modulationNode);
 		this.modulator.connect(this._modulationNode.gain);
 		this._modulationNode.gain.value = 0;
 		this._modulationNode.connect(this.carrier.frequency);

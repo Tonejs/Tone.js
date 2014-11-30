@@ -24,7 +24,7 @@ define(["Tone/core/Tone"], function(Tone){
 		this.limiter.ratio.value = 20;
 		
 		//connect it up
-		this.chain(this.input, this.limiter, this.output, this.context.destination);
+		this.connectSeries(this.input, this.limiter, this.output, this.context.destination);
 	};
 
 	Tone.extend(Tone.Master);
