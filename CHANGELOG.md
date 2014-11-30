@@ -22,6 +22,7 @@ Synths:
 * Setters on PluckSynth and PulseOscillator
 * new PWMOscillator
 * OmniOscillator which combines PWMOscillator, Oscillator, and PulseOscillator into one
+* NoiseSynth
 
 
 ### r2 - Getting Physical
