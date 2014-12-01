@@ -460,6 +460,23 @@ function(Tone){
 		this._setTicks(ticks);
 	};
 
+	/**
+	 *  returns the time of the next beat
+	 *  @param  {string} [subdivision="4n"]
+	 *  @return {number} 	the time in seconds of the next subdivision
+	 */
+	Tone.Transport.prototype.nextBeat = function(subdivision){
+		subdivision = this.defaultArg(subdivision, "4n");
+		var tickNum = this.toTicks(subdivision);
+		var remainingTicks = (transportTicks % tickNum);
+		var nextTick = remainingTicks;
+		if (remainingTicks > 0){
+			nextTick = tickNum - remainingTicks;
+		}
+		return this.ticksToSeconds(nextTick);
+	};
+
+
 	///////////////////////////////////////////////////////////////////////////////
 	//	START/STOP/PAUSE
 	///////////////////////////////////////////////////////////////////////////////
@@ -819,7 +836,6 @@ function(Tone){
 		};
 	})();
 
-
 	/**
 	 *
 	 *  convert notation format strings to seconds
@@ -958,7 +974,6 @@ function(Tone){
 	 *  TransportTime: 2:4:1 (measure:quarters:sixteens)
 	 *  Now Relative: +3n
 	 *  Math: 3n+16n or even very complicated expressions ((3n*2)/6 + 1)
-	 *  Ticks: "146i"
 	 *
 	 *  @override
 	 *  @param  {Tone.Time} time       
@@ -974,11 +989,11 @@ function(Tone){
 			var plusTime = 0;
 			if(time.charAt(0) === "+") {
 				plusTime = now;
-				time = time.slice(1);				
+				time = time.slice(1);
 			} 
 			var components = time.split(/[\(\)\-\+\/\*]/);
 			if (components.length > 1){
-				var oringalTime = time;
+				var originalTime = time;
 				for(var i = 0; i < components.length; i++){
 					var symb = components[i].trim();
 					if (symb !== ""){
@@ -990,7 +1005,7 @@ function(Tone){
 					//i know eval is evil, but i think it's safe here
 					time = eval(time); // jshint ignore:line
 				} catch (e){
-					throw new EvalError("problem evaluating Tone.Time: "+oringalTime);
+					throw new EvalError("problem evaluating Tone.Time: "+originalTime);
 				}
 			} else if (this.isNotation(time)){
 				time = this.notationToSeconds(time);
