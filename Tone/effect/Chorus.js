@@ -90,7 +90,7 @@ function(Tone){
 		"rate" : 1.5, 
 		"delayTime" : 3.5,
 		"depth" : 0.7,
-		"feedback" : 0.4,
+		"feedback" : 0.2,
 		"type" : "sine"
 	};
 
