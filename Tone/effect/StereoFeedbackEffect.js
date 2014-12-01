@@ -37,7 +37,7 @@ function(Tone){
 		//connect it up
 		this.connectSeries(this.effectReturnL, this._feedbackL, this.effectSendL);
 		this.connectSeries(this.effectReturnR, this._feedbackR, this.effectSendR);
-		this.connectParallel(this.feedback, this._feedbackL.gain, this._feedbackR.gain);
+		this.feedback.fan(this._feedbackL.gain, this._feedbackR.gain);
 	};
 
 	Tone.extend(Tone.StereoFeedbackEffect, Tone.FeedbackEffect);

@@ -46,7 +46,7 @@ function(Tone){
 		//connect it up
 		this.connectSeries(this.effectSendL, this._leftPreDelay, this._leftDelay, this.effectReturnL);
 		this.connectSeries(this.effectSendR, this._rightDelay, this.effectReturnR);
-		this.connectParallel(this.delayTime, this._leftDelay.delayTime, this._rightDelay.delayTime, this._leftPreDelay.delayTime);
+		this.delayTime.fan(this._leftDelay.delayTime, this._rightDelay.delayTime, this._leftPreDelay.delayTime);
 		//rearranged the feedback to be after the leftPreDelay
 		this._feedbackRL.disconnect();
 		this._feedbackRL.connect(this._leftDelay);

@@ -79,7 +79,7 @@ function(Tone){
 		this.frequency.connect(this.voice0.frequency);
 		this.connectSeries(this.frequency, this._harmonicity, this.voice1.frequency);
 		this._vibrato.connect(this._vibratoGain);
-		this.connectParallel(this._vibratoGain, this.voice0.detune, this.voice1.detune);
+		this._vibratoGain.fan(this.voice0.detune, this.voice1.detune);
 		this.voice0.connect(this.output);
 		this.voice1.connect(this.output);
 	};
