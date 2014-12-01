@@ -8,7 +8,7 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Multiply", "Tone/signa
 	 *          outputMin and outputMax
 	 *
 	 *  @constructor
-	 *  @extends {Tone}
+	 *  @extends {Tone.SignalBase}
 	 *  @param {number} [outputMin=0]
 	 *  @param {number} [outputMax=1]
 	 */
@@ -45,7 +45,7 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Multiply", "Tone/signa
 		this._setRange();
 	};
 
-	Tone.extend(Tone.Scale);
+	Tone.extend(Tone.Scale, Tone.SignalBase);
 
 	/**
 	 *  set the minimum output value
@@ -73,13 +73,6 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Multiply", "Tone/signa
 		this._add.setValue(this._outputMin);
 		this._scale.setValue(this._outputMax - this._outputMin);
 	};
-
-	/**
-	 *  borrows connect from {@link Tone.Signal}
-	 *  
-	 *  @function
-	 */
-	Tone.Scale.prototype.connect = Tone.Signal.prototype.connect;
 
 	/**
 	 *  clean up

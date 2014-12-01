@@ -5,7 +5,7 @@ define(["Tone/core/Tone", "Tone/signal/Equal"], function(Tone){
 	/**
 	 *  @class and returns 1 when all the inputs are equal to 1
 	 *
-	 *  @extends {Tone}
+	 *  @extends {Tone.SignalBase}
 	 *  @constructor
 	 *  @param {number} [inputCount=2] the number of inputs. NOTE: all inputs are
 	 *                                 connected to the single AND input node
@@ -28,7 +28,7 @@ define(["Tone/core/Tone", "Tone/signal/Equal"], function(Tone){
 		}
 	};
 
-	Tone.extend(Tone.AND);
+	Tone.extend(Tone.AND, Tone.SignalBase);
 
 	/**
 	 *  the number of inputs to consider

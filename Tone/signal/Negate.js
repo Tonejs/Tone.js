@@ -6,7 +6,7 @@ define(["Tone/core/Tone", "Tone/signal/Multiply", "Tone/signal/Signal"], functio
 	 *  @class Negate the incoming signal. i.e. an input signal of 10 will output -10
 	 *
 	 *  @constructor
-	 *  @extends {Tone}
+	 *  @extends {Tone.SignalBase}
 	 */
 	Tone.Negate = function(){
 		/**
@@ -17,14 +17,7 @@ define(["Tone/core/Tone", "Tone/signal/Multiply", "Tone/signal/Signal"], functio
 		this._multiply = this.input = this.output= new Tone.Multiply(-1);
 	};
 
-	Tone.extend(Tone.Negate);
-
-	/**
-	 *  borrows the method from {@link Tone.Signal}
-	 *  
-	 *  @function
-	 */
-	Tone.Negate.prototype.connect = Tone.Signal.prototype.connect;
+	Tone.extend(Tone.Negate, Tone.SignalBase);
 
 	/**
 	 *  clean up

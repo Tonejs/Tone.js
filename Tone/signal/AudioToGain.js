@@ -5,7 +5,7 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper", "Tone/signal/Signal"], funct
 	/**
 	 *  @class AudioToGain converts an input range of -1,1 to 0,1
 	 *
-	 *  @extends {Tone}
+	 *  @extends {Tone.SignalBase}
 	 *  @constructor
 	 */
 	Tone.AudioToGain = function(){
@@ -17,14 +17,7 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper", "Tone/signal/Signal"], funct
 		this._norm = this.input = this.output = new Tone.WaveShaper([0,1]);
 	};
 
-	Tone.extend(Tone.AudioToGain);
-
-	/**
-	 *  borrows the method from {@link Tone.Signal}
-	 *  
-	 *  @function
-	 */
-	Tone.AudioToGain.prototype.connect = Tone.Signal.prototype.connect;
+	Tone.extend(Tone.AudioToGain, Tone.SignalBase);
 
 	/**
 	 *  clean up

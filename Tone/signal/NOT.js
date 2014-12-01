@@ -7,7 +7,7 @@ define(["Tone/core/Tone", "Tone/signal/EqualZero"], function(Tone){
 	 *          Outputs 1 when input equals 0. 
 	 *  
 	 *  @constructor
-	 *  @extends {Tone}
+	 *  @extends {Tone.SignalBase}
 	 */
 	Tone.NOT = Tone.EqualZero;
 

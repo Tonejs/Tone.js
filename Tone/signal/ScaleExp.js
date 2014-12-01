@@ -7,7 +7,7 @@ function(Tone){
 	 *          to the output range of outputMin to outputMax.
 	 *
 	 *  @constructor
-	 *  @extends {Tone.Scale}
+	 *  @extends {Tone.SignalBase}
 	 *  @param {number} [outputMin=0]
 	 *  @param {number} [outputMax=1]
 	 *  @param {number} [exponent=2] the exponent which scales the incoming signal
@@ -31,7 +31,7 @@ function(Tone){
 		this._exp.connect(this._scale);
 	};
 
-	Tone.extend(Tone.ScaleExp, Tone.Scale);
+	Tone.extend(Tone.ScaleExp, Tone.SignalBase);
 
 	/**
 	 *  set the exponential scaling curve

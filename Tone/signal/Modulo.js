@@ -8,7 +8,7 @@ define(["Tone/core/Tone", "Tone/signal/Multiply", "Tone/signal/WaveShaper"], fun
 	 *         fewer bits will improve performance. 
 	 *
 	 *  @constructor
-	 *  @extends {Tone}
+	 *  @extends {Tone.SignalBase}
 	 *  @param {number} modulus the modulus to apply
 	 *  @param {number} [bits=8]	optionally set the maximum bits the incoming signal can have. 
 	 *                           	defaults to 8 meaning that incoming values must be in the range
@@ -37,7 +37,7 @@ define(["Tone/core/Tone", "Tone/signal/Multiply", "Tone/signal/WaveShaper"], fun
 		this._modChain[this._modChain.length - 1].connect(this.output);
 	};
 
-	Tone.extend(Tone.Modulo);
+	Tone.extend(Tone.Modulo, Tone.SignalBase);
 
 	Tone.Modulo.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);

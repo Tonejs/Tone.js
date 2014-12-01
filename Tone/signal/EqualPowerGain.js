@@ -5,7 +5,7 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 	/**
 	 *  @class Convert an incoming signal between 0,1 to an equal power gain scale.
 	 *
-	 *  @extends {Tone}
+	 *  @extends {Tone.SignalBase}
 	 *  @constructor
 	 */
 	Tone.EqualPowerGain = function(){
@@ -24,7 +24,7 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 		}, 4096);
 	};
 
-	Tone.extend(Tone.EqualPowerGain);
+	Tone.extend(Tone.EqualPowerGain, Tone.SignalBase);
 
 	/**
 	 *  clean up

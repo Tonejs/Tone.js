@@ -5,7 +5,7 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Multiply"], function(T
 	/**
 	 *  @class Normalize takes an input min and max and maps it linearly to [0,1]
 	 *
-	 *  @extends {Tone}
+	 *  @extends {Tone.SignalBase}
 	 *  @constructor
 	 */
 	Tone.Normalize = function(inputMin, inputMax){
@@ -42,7 +42,7 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Multiply"], function(T
 		this._setRange();
 	};
 
-	Tone.extend(Tone.Normalize);
+	Tone.extend(Tone.Normalize, Tone.SignalBase);
 
 	/**
 	 *  set the minimum input value

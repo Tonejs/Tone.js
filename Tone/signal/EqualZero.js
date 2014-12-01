@@ -7,7 +7,7 @@ function(Tone){
 	 *  @class  EqualZero outputs 1 when the input is strictly greater than zero
 	 *  
 	 *  @constructor
-	 *  @extends {Tone}
+	 *  @extends {Tone.SignalBase}
 	 */
 	Tone.EqualZero = function(){
 
@@ -41,14 +41,7 @@ function(Tone){
 		this._scale.chain(this._thresh, this._gtz);
 	};
 
-	Tone.extend(Tone.EqualZero);
-
-	/**
-	 *  borrows the method from {@link Tone.Signal}
-	 *  
-	 *  @function
-	 */
-	Tone.EqualZero.prototype.connect = Tone.Signal.prototype.connect;
+	Tone.extend(Tone.EqualZero, Tone.SignalBase);
 
 	/**
 	 *  dispose method

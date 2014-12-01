@@ -1,4 +1,4 @@
-define(["Tone/core/Tone"], function(Tone){
+define(["Tone/core/Tone", "Tone/signal/SignalBase"], function(Tone){
 
 	"use strict";
 
@@ -10,7 +10,7 @@ define(["Tone/core/Tone"], function(Tone){
 	 *  	return val * 2;
 	 *  }, 2048);
 	 *
-	 *  @extends {Tone}
+	 *  @extends {Tone.SignalBase}
 	 *  @constructor
 	 *  @param {function(number, number)|Array|number} mapping the function used to define the values. 
 	 *                                    The mapping function should take two arguments: 
@@ -46,7 +46,7 @@ define(["Tone/core/Tone"], function(Tone){
 		} 
 	};
 
-	Tone.extend(Tone.WaveShaper);
+	Tone.extend(Tone.WaveShaper, Tone.SignalBase);
 
 	/**
 	 *  uses a mapping function to set the value of the curve

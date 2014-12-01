@@ -14,7 +14,7 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Subtract", "Tone/signa
 	 *         Copyright (C) 2010 - 2011 Ariya Hidayat <ariya.hidayat@gmail.com>
 	 *         New BSD License {@link http://opensource.org/licenses/BSD-3-Clause}
 	 *
-	 *  @extends {Tone}
+	 *  @extends {Tone.SignalBase}
 	 *  @constructor
 	 *  @param {string} expr the expression to generate
 	 */
@@ -58,7 +58,7 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Subtract", "Tone/signa
 		this.output = result;
 	};
 
-	Tone.extend(Tone.Expr);
+	Tone.extend(Tone.Expr, Tone.SignalBase);
 
 	//some helpers to cut down the amount of code
 	function applyBinary(Constructor, args, self){
@@ -484,13 +484,6 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Subtract", "Tone/signa
 			return node;
 		} 
 	};
-
-	/**
-	 *  borrows the method from {@link Tone.Signal}
-	 *  
-	 *  @function
-	 */
-	Tone.Expr.prototype.connect = Tone.Signal.prototype.connect;
 
 	/**
 	 *  dispose all the nodes

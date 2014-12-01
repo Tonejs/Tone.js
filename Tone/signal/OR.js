@@ -6,7 +6,7 @@ define(["Tone/core/Tone", "Tone/signal/GreaterThanZero"], function(Tone){
 	 *  @class OR the inputs together. True if at least one of the inputs is true. 
 	 *         Simply an alias for Tone.GreaterThanZero
 	 *
-	 *  @extends {Tone}
+	 *  @extends {Tone.SignalBase}
 	 *  @constructor
 	 */
 	Tone.OR = function(inputCount){
@@ -40,7 +40,7 @@ define(["Tone/core/Tone", "Tone/signal/GreaterThanZero"], function(Tone){
 		this._sum.connect(this._gtz);
 	};
 
-	Tone.extend(Tone.OR);
+	Tone.extend(Tone.OR, Tone.SignalBase);
 
 	/**
 	 *  clean up

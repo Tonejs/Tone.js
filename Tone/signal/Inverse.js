@@ -31,7 +31,7 @@ function(Tone){
 	 *         Uses this approximation algorithm: 
 	 *         http://en.wikipedia.org/wiki/Multiplicative_inverse#Algorithms
 	 *
-	 *  @extends {Tone}
+	 *  @extends {Tone.SignalBase}
 	 *  @constructor
 	 *  @param {number} [precision=3] the precision of the calculation
 	 */
@@ -85,7 +85,7 @@ function(Tone){
 		this._inverses[precision-1].connect(this.output);
 	};
 
-	Tone.extend(Tone.Inverse);
+	Tone.extend(Tone.Inverse, Tone.SignalBase);
 
 	/**
 	 *  clean up

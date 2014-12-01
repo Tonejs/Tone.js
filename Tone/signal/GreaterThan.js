@@ -7,7 +7,7 @@ define(["Tone/core/Tone", "Tone/signal/GreaterThanZero", "Tone/signal/Subtract"]
 	 *          can compare two signals or a signal and a number. 
 	 *  
 	 *  @constructor
-	 *  @extends {Tone}
+	 *  @extends {Tone.SignalBase}
 	 *  @param {number=} [value=0] the value to compare to the incoming signal
 	 */
 	Tone.GreaterThan = function(value){
@@ -33,7 +33,7 @@ define(["Tone/core/Tone", "Tone/signal/GreaterThanZero", "Tone/signal/Subtract"]
 		this._sub.connect(this._gtz);
 	};
 
-	Tone.extend(Tone.GreaterThan);
+	Tone.extend(Tone.GreaterThan, Tone.SignalBase);
 
 	/**
 	 *  set the value to compare to
@@ -43,13 +43,6 @@ define(["Tone/core/Tone", "Tone/signal/GreaterThanZero", "Tone/signal/Subtract"]
 	Tone.GreaterThan.prototype.setValue = function(value){
 		this._sub.setValue(value);
 	};
-
-	/**
-	 *  borrows the method from {@link Tone.Signal}
-	 *  
-	 *  @function
-	 */
-	Tone.GreaterThan.prototype.connect = Tone.Signal.prototype.connect;
 
 	/**
 	 *  dispose method

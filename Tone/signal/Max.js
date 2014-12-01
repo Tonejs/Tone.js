@@ -7,7 +7,7 @@ define(["Tone/core/Tone", "Tone/signal/GreaterThan", "Tone/signal/IfThenElse", "
 	 * 	        it will use that instead of the signal. 
 	 * 	
 	 *  @constructor
-	 *  @extends {Tone}
+	 *  @extends {Tone.SignalBase}
 	 *  @param {number=} max max value if provided. if not provided, it will use the
 	 *                       signal value from input 1. 
 	 */
@@ -42,7 +42,7 @@ define(["Tone/core/Tone", "Tone/signal/GreaterThan", "Tone/signal/IfThenElse", "
 		this._maxSignal.connect(this._gt, 0, 1);
 	};
 
-	Tone.extend(Tone.Max);
+	Tone.extend(Tone.Max, Tone.SignalBase);
 
 	/**
 	 *  set the max value
@@ -51,13 +51,6 @@ define(["Tone/core/Tone", "Tone/signal/GreaterThan", "Tone/signal/IfThenElse", "
 	Tone.Max.prototype.setMax = function(max){
 		this._maxSignal.setValue(max);
 	};
-
-	/**
-	 *  borrows the method from {@link Tone.Signal}
-	 *  
-	 *  @function
-	 */
-	Tone.Max.prototype.connect = Tone.Signal.prototype.connect;
 
 	/**
 	 *  clean up

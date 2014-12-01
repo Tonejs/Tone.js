@@ -6,7 +6,7 @@ define(["Tone/core/Tone", "Tone/signal/Max", "Tone/signal/Min", "Tone/signal/Sig
 	 * 	@class  Clip the incoming signal so that the output is always between min and max
 	 * 	
 	 *  @constructor
-	 *  @extends {Tone}
+	 *  @extends {Tone.SignalBase}
 	 *  @param {number} min the minimum value of the outgoing signal
 	 *  @param {number} max the maximum value of the outgoing signal
 	 */
@@ -35,7 +35,7 @@ define(["Tone/core/Tone", "Tone/signal/Max", "Tone/signal/Min", "Tone/signal/Sig
 		this._min.connect(this._max);
 	};
 
-	Tone.extend(Tone.Clip);
+	Tone.extend(Tone.Clip, Tone.SignalBase);
 
 	/**
 	 *  set the minimum value
@@ -52,13 +52,6 @@ define(["Tone/core/Tone", "Tone/signal/Max", "Tone/signal/Min", "Tone/signal/Sig
 	Tone.Clip.prototype.setMax = function(max){
 		this._max.setMax(max);	
 	};
-
-	/**
-	 *  borrows the method from {@link Tone.Signal}
-	 *  
-	 *  @function
-	 */
-	Tone.Clip.prototype.connect = Tone.Signal.prototype.connect;
 
 	/**
 	 *  clean up

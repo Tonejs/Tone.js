@@ -7,7 +7,7 @@ define(["Tone/core/Tone", "Tone/signal/EqualZero", "Tone/signal/Subtract", "Tone
 	 *          Can accept two signals if connected to inputs 0 and 1.
 	 *  
 	 *  @constructor
-	 *  @extends {Tone}
+	 *  @extends {Tone.SignalBase}
 	 *  @param {number} value the number to compare the incoming signal to
 	 */
 	Tone.Equal = function(value){
@@ -32,7 +32,7 @@ define(["Tone/core/Tone", "Tone/signal/EqualZero", "Tone/signal/Subtract", "Tone
 		this.input[1] = this._sub.input[1];
 	};
 
-	Tone.extend(Tone.Equal);
+	Tone.extend(Tone.Equal, Tone.SignalBase);
 
 	/**
 	 * 	@param {number} value set the comparison value
@@ -40,13 +40,6 @@ define(["Tone/core/Tone", "Tone/signal/EqualZero", "Tone/signal/Subtract", "Tone
 	Tone.Equal.prototype.setValue = function(value){
 		this._sub.setValue(value);
 	};
-
-	/**
-	 *  borrows the method from {@link Tone.Signal}
-	 *  
-	 *  @function
-	 */
-	Tone.Equal.prototype.connect = Tone.Signal.prototype.connect;
 
 	/**
 	 *  dispose method

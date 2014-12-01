@@ -8,7 +8,7 @@ define(["Tone/core/Tone", "Tone/signal/Select", "Tone/signal/Equal"], function(T
 	 *         if it's not true (i.e. === 0) then it will pass the third input (else) 
 	 *         through to the output. 
 	 *
-	 *  @extends {Tone}
+	 *  @extends {Tone.SignalBase}
 	 *  @constructor
 	 */
 	Tone.IfThenElse = function(){
@@ -28,7 +28,7 @@ define(["Tone/core/Tone", "Tone/signal/Select", "Tone/signal/Equal"], function(T
 		this.else = this.input[2] = this._selector.input[0];
 	};
 
-	Tone.extend(Tone.IfThenElse);
+	Tone.extend(Tone.IfThenElse, Tone.SignalBase);
 
 	/**
 	 *  clean up

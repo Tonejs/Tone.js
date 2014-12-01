@@ -6,7 +6,7 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 	 *  @class Pow applies an exponent to the incoming signal. The incoming signal
 	 *         must be in the range -1,1
 	 *
-	 *  @extends {Tone}
+	 *  @extends {Tone.SignalBase}
 	 *  @constructor
 	 *  @param {number} exp the exponent to apply to the incoming signal, must be at least 2. 
 	 */
@@ -21,7 +21,7 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 		this._expScaler = this.input = this.output = new Tone.WaveShaper(this._expFunc(exp), 8192);
 	};
 
-	Tone.extend(Tone.Pow);
+	Tone.extend(Tone.Pow, Tone.SignalBase);
 
 	/**
 	 *  set the exponential scaling curve

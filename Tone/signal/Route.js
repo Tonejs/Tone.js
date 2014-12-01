@@ -7,7 +7,7 @@ define(["Tone/core/Tone", "Tone/signal/Equal", "Tone/signal/Signal"], function(T
 	 *
 	 *
 	 *  @constructor
-	 *  @extends {Tone}
+	 *  @extends {Tone.SignalBase}
 	 *  @param {number=} [outputCount=2] the number of inputs the switch accepts
 	 */
 	Tone.Route = function(outputCount){
@@ -30,7 +30,7 @@ define(["Tone/core/Tone", "Tone/signal/Equal", "Tone/signal/Signal"], function(T
 		}
 	};
 
-	Tone.extend(Tone.Route);
+	Tone.extend(Tone.Route, Tone.SignalBase);
 
 	/**
 	 *  routes the signal to one of the outputs and close the others
@@ -42,13 +42,6 @@ define(["Tone/core/Tone", "Tone/signal/Equal", "Tone/signal/Signal"], function(T
 		which = Math.floor(which);
 		this.gate.setValueAtTime(which, this.toSeconds(time));
 	};
-
-	/**
-	 *  borrows the method from {@link Tone.Signal}
-	 *  
-	 *  @function
-	 */
-	Tone.Route.prototype.connect = Tone.Signal.prototype.connect;
 
 	/**
 	 *  dispose method

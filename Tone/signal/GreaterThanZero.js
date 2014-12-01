@@ -7,7 +7,7 @@ function(Tone){
 	 *  @class  GreaterThanZero outputs 1 when the input is strictly greater than zero
 	 *  
 	 *  @constructor
-	 *  @extends {Tone}
+	 *  @extends {Tone.SignalBase}
 	 */
 	Tone.GreaterThanZero = function(){
 		
@@ -35,14 +35,7 @@ function(Tone){
 		this._scale.connect(this._thresh);
 	};
 
-	Tone.extend(Tone.GreaterThanZero);
-
-	/**
-	 *  borrows the method from {@link Tone.Signal}
-	 *  
-	 *  @function
-	 */
-	Tone.GreaterThanZero.prototype.connect = Tone.Signal.prototype.connect;
+	Tone.extend(Tone.GreaterThanZero, Tone.SignalBase);
 
 	/**
 	 *  dispose method
