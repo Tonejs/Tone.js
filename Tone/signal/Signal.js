@@ -9,12 +9,10 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 	 *          with all of the functions available to AudioParams
 	 *
 	 *  @constructor
-	 *  @extends {Tone}
+	 *  @extends {Tone.SignalBase}
 	 *  @param {number=} value (optional) initial value
 	 */
 	Tone.Signal = function(value){
-
-		Tone.call(this);
 
 		/**
 		 *  scales the constant output to the desired output
@@ -22,6 +20,11 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 		 *  @private
 		 */
 		this._scalar = this.context.createGain();
+
+		/**
+		 *  @type {GainNode}
+		 */
+		this.input = this.output = this.context.createGain();
 
 		/**
 		 *  the ratio of the this value to the control signal value
@@ -39,11 +42,10 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 
 		//connect the constant 1 output to the node output
 		Tone.Signal._constant.chain(this._scalar, this.output);
-		//signal passes through
-		this.input.connect(this.output);
+		
 	};
 
-	Tone.extend(Tone.Signal);
+	Tone.extend(Tone.Signal, Tone.SignalBase);
 
 	/**
 	 *  @return {number} the current value of the signal
@@ -242,7 +244,7 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 		this._scalar.gain.value = currentGain / this._syncRatio;
 		this._syncRatio = 1;
 		//reconnect things up
-		this.connectSeries(constant, this._scalar, this.output);
+		Tone.Signal._constant.chain(this._scalar, this.output);
 	};
 
 	/**
@@ -252,24 +254,6 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 		Tone.prototype.dispose.call(this);
 		this._scalar.disconnect();
 		this._scalar = null;
-	};
-
-	/**
-	 *  Signals can connect to other Signals
-	 *
-	 *  @override
-	 *  @param {AudioParam|AudioNode|Tone.Signal|Tone} node 
-	 *  @param {number=} outputNumber 
-	 *  @param {number=} inputNumber 
-	 */
-	Tone.Signal.prototype.connect = function(node, outputNumber, inputNumber){
-		//zero it out so that the signal can have full control
-		if (node instanceof Tone.Signal){
-			node.setValue(0);
-		} else if (node instanceof AudioParam){
-			node.value = 0;
-		} 
-		Tone.prototype.connect.call(this, node, outputNumber, inputNumber);
 	};
 
 	//defines getter / setter for value
