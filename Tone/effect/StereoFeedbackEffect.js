@@ -35,8 +35,8 @@ function(Tone){
 		this._feedbackR = this.context.createGain();
 
 		//connect it up
-		this.connectSeries(this.effectReturnL, this._feedbackL, this.effectSendL);
-		this.connectSeries(this.effectReturnR, this._feedbackR, this.effectSendR);
+		this.effectReturnL.chain(this._feedbackL, this.effectSendL);
+		this.effectReturnR.chain(this._feedbackR, this.effectSendR);
 		this.feedback.fan(this._feedbackL.gain, this._feedbackR.gain);
 	};
 

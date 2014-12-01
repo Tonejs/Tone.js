@@ -174,7 +174,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 				//and other properties
 				this._source.playbackRate.value = this._playbackRate;
 				this._source.onended = this._onended.bind(this);
-				this.connectSeries(this._source, this.output);
+				this._source.connect(this.output);
 				//start it
 				this._source.start(this.toSeconds(startTime), this.toSeconds(offset), this.toSeconds(duration));
 			}

@@ -97,7 +97,7 @@ define(["Tone/core/Tone", "Tone/signal/Multiply", "Tone/signal/WaveShaper"], fun
 		}, arrayLength);
 
 		//connect it up
-		this.connectSeries(this.input, this._div, this._operator);
+		this.input.chain(this._div, this._operator);
 	};
 
 	Tone.extend(ModuloSubroutine);

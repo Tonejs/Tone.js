@@ -30,7 +30,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/GreaterThan"], func
 		this._thresh = new Tone.GreaterThan(0.5);
 
 		this.input.connect(this.output);
-		this.connectSeries(this.gate, this._thresh, this.output.gain);
+		this.gate.chain(this._thresh, this.output.gain);
 	};
 
 	Tone.extend(Tone.Switch);

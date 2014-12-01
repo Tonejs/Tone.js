@@ -38,7 +38,7 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 		this.value = this.defaultArg(value, 0);
 
 		//connect the constant 1 output to the node output
-		this.connectSeries(Tone.Signal._constant, this._scalar, this.output);
+		Tone.Signal._constant.chain(this._scalar, this.output);
 		//signal passes through
 		this.input.connect(this.output);
 	};

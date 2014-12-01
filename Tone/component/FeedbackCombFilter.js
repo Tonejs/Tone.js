@@ -78,7 +78,7 @@ define(["Tone/core/Tone", "Tone/signal/ScaleExp", "Tone/signal/Signal"], functio
 		//set the delay to the min value initially
 		this._feedback.connect(this._delays[0]);
 		//resonance control
-		this.connectSeries(this.resonance, this._resScale, this._feedback.gain);
+		this.resonance.chain(this._resScale, this._feedback.gain);
 		this._feedback.connect(this.output);
 		this.setDelayTime(minDelay);
 	};

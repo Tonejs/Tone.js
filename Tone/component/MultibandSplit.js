@@ -64,7 +64,7 @@ define(["Tone/core/Tone", "Tone/component/Filter", "Tone/signal/Signal"], functi
 		this.highFrequency = new Tone.Signal(options.highFrequency);
 
 		this.input.fan(this.low, this.high);
-		this.connectSeries(this.input, this._lowMidFilter, this.mid);
+		this.input.chain(this._lowMidFilter, this.mid);
 		//the frequency control signal
 		this.lowFrequency.connect(this.low.frequency);
 		this.lowFrequency.connect(this._lowMidFilter.frequency);

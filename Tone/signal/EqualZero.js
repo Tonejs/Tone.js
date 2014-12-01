@@ -38,7 +38,7 @@ function(Tone){
 		this._gtz = this.output = new Tone.GreaterThanZero();
 
 		//connections
-		this.connectSeries(this._scale, this._thresh, this._gtz);
+		this._scale.chain(this._thresh, this._gtz);
 	};
 
 	Tone.extend(Tone.EqualZero);

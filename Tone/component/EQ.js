@@ -69,9 +69,9 @@ define(["Tone/core/Tone", "Tone/component/MultibandSplit"], function(Tone){
 		this.highFrequency = this._multibandSplit.highFrequency;
 
 		//the frequency bands
-		this.connectSeries(this._multibandSplit.low, this.lowGain, this.output);
-		this.connectSeries(this._multibandSplit.mid, this.midGain, this.output);
-		this.connectSeries(this._multibandSplit.high, this.highGain, this.output);
+		this._multibandSplit.low.chain(this.lowGain, this.output);
+		this._multibandSplit.mid.chain(this.midGain, this.output);
+		this._multibandSplit.high.chain(this.highGain, this.output);
 		//set the gains
 		this.setLow(options.low);
 		this.setMid(options.mid);

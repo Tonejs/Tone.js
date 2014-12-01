@@ -57,7 +57,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Pow"], function(Ton
 		this._exp = this.output = new Tone.Pow(options.exponent);
 
 		//connections
-		this.connectSeries(this._sig, this._exp);
+		this._sig.connect(this._exp);
 	};
 
 	Tone.extend(Tone.Envelope);

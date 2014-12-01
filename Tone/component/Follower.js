@@ -75,12 +75,12 @@ function(Tone){
 		this._release = this.secondsToFrequency(options.release);
 
 		//the smoothed signal to get the values
-		this.connectSeries(this.input, this._abs, this._filter, this.output);
+		this.input.chain(this._abs, this._filter, this.output);
 		//the difference path
 		this._abs.connect(this._sub, 0, 1);
-		this.connectSeries(this._filter, this._delay, this._sub);
+		this._filter.chain(this._delay, this._sub);
 		//threshold the difference and use the thresh to set the frequency
-		this.connectSeries(this._sub, this._mult, this._frequencyValues, this._filter.frequency);
+		this._sub.chain(this._mult, this._frequencyValues, this._filter.frequency);
 		//set the attack and release values in the table
 		this._setAttackRelease(this._attack, this._release);
 	};

@@ -36,7 +36,7 @@ define(["Tone/core/Tone", "Tone/signal/GreaterThan", "Tone/signal/IfThenElse", "
 		this._gt = new Tone.GreaterThan();
 
 		//connections
-		this.connectSeries(this.input[0], this._gt, this._ifThenElse.if);
+		this.input[0].chain(this._gt, this._ifThenElse.if);
 		this.input[0].connect(this._ifThenElse.then);
 		this._maxSignal.connect(this._ifThenElse.else);
 		this._maxSignal.connect(this._gt, 0, 1);

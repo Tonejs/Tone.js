@@ -31,7 +31,7 @@ define(["Tone/core/Tone"], function(Tone){
 		}
 		var sendKnob = this.context.createGain();
 		sendKnob.gain.value = this.defaultArg(amount, 1);
-		this.connectSeries(this.output, sendKnob, Buses[channelName]);
+		this.output.chain(sendKnob, Buses[channelName]);
 		return sendKnob;		
 	};
 

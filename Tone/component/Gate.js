@@ -33,9 +33,9 @@ define(["Tone/core/Tone", "Tone/component/Follower", "Tone/signal/GreaterThan"],
 		this._gt = new Tone.GreaterThan(this.dbToGain(thresh));
 
 		//the connections
-		this.connectSeries(this.input, this.output);
+		this.input.connect(this.output);
 		//the control signal
-		this.connectSeries(this.input, this._gt, this._follower, this.output.gain);
+		this.input.chain(this._gt, this._follower, this.output.gain);
 	};
 
 	Tone.extend(Tone.Gate);

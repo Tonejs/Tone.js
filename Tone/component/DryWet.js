@@ -49,9 +49,9 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Expr"], function(To
 		this.dry.connect(this.output);
 		this.wet.connect(this.output);
 		//wet control
-		this.connectSeries(this.wetness, this.wet.gain);
+		this.wetness.connect(this.wet.gain);
 		//dry control is the inverse of the wet
-		this.connectSeries(this.wetness, this._invert, this.dry.gain);
+		this.wetness.chain(this._invert, this.dry.gain);
 		this.setDry(this.defaultArg(initialDry, 0));
 	};
 

@@ -66,11 +66,11 @@ function(Tone){
 		this._peaking.gain.value = options.gain;
 
 		//the control signal path
-		this.connectSeries(this.effectSend, this._follower, this._sweepRange);
+		this.effectSend.chain(this._follower, this._sweepRange);
 		this._sweepRange.connect(this._bandpass.frequency);
 		this._sweepRange.connect(this._peaking.frequency);
 		//the filtered path
-		this.connectSeries(this.effectSend, this._bandpass, this._peaking, this.effectReturn);
+		this.effectSend.chain(this._bandpass, this._peaking, this.effectReturn);
 		//set the initial value
 		this._setSweepRange();
 		this.setSensitiviy(options.sensitivity);

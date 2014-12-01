@@ -44,8 +44,8 @@ function(Tone){
 		this.delayTime = new Tone.Signal(0);
 
 		//connect it up
-		this.connectSeries(this.effectSendL, this._leftPreDelay, this._leftDelay, this.effectReturnL);
-		this.connectSeries(this.effectSendR, this._rightDelay, this.effectReturnR);
+		this.effectSendL.chain(this._leftPreDelay, this._leftDelay, this.effectReturnL);
+		this.effectSendR.chain(this._rightDelay, this.effectReturnR);
 		this.delayTime.fan(this._leftDelay.delayTime, this._rightDelay.delayTime, this._leftPreDelay.delayTime);
 		//rearranged the feedback to be after the leftPreDelay
 		this._feedbackRL.disconnect();

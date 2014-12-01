@@ -30,7 +30,7 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/signal/Signal", "Tone/sign
 		this._feedbackGain = this.context.createGain();
 
 		//the feedback loop
-		this.connectSeries(this.effectReturn, this._feedbackGain, this.effectSend);
+		this.effectReturn.chain(this._feedbackGain, this.effectSend);
 		this.feedback.connect(this._feedbackGain.gain);
 	};
 
