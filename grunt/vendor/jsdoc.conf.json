@@ -14,8 +14,8 @@
 		"navType"         : "vertical",
 		"theme"           : "spacelab",
 		"linenums"        : true,
-		"collapseSymbols" : true,
-		"inverseNav"      : true
+		"collapseSymbols" : false,
+		"inverseNav"      : false
 	},
 	"markdown"  : {
 		"parser"   : "gfm",
