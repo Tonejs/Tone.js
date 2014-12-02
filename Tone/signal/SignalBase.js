@@ -6,7 +6,7 @@ define(["Tone/core/Tone"], function(Tone){
 	 *  @class  Base class for all Signals
 	 *
 	 *  @constructor
-	 *  @extends {Tone.SignalBase}
+	 *  @extends {Tone}
 	 */
 	Tone.SignalBase = function(){
 
