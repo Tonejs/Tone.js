@@ -20,13 +20,13 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Pow"], function(Ton
 
 		/** 
 		 *  the attack time in seconds
-		 *  @type {number}
+		 *  @type {Tone.Time}
 		 */
 		this.attack = options.attack;
 
 		/**
 		 *  the decay time in seconds
-		 *  @type {number}
+		 *  @type {Tone.Time}
 		 */
 		this.decay = options.decay;
 		
@@ -38,7 +38,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Pow"], function(Ton
 
 		/**
 		 *  the release time in seconds
-		 *  @type {number}
+		 *  @type {Tone.Time}
 		 */
 		this.release = options.release;
 
