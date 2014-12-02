@@ -122,13 +122,16 @@
         <!-- THEN INHERITED METHODS -->
         <?js var inheritedMethods = false ?>
         <?js methods.forEach(function(m) { ?>
-            <?js if (m.inherited && m.inherits && !inheritedMethods) { ?>
+            <?js if (m.inherited && m.inherits 
+                && !inheritedMethods 
+                && m.inherits.substr(0, m.inherits.indexOf("#")) !== "Tone") { ?>
             <?js inheritedMethods = true ?>
-            <h4 class="subsection-title">Inherited Methods</h4>
+            <h3 class="subsection-title">Inherited Methods</h3>
             <?js } ?>
         <?js }); ?>
         <dl><?js methods.forEach(function(m) { ?>
-            <?js if (m.inherited && m.inherits) { ?>
+            <?js if (m.inherited && m.inherits  
+                && m.inherits.substr(0, m.inherits.indexOf("#")) !== "Tone") { ?>
             <?js= self.partial('method.tmpl', m) ?>
             <?js } ?>
         <?js }); ?></dl>
