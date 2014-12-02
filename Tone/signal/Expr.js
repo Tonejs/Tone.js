@@ -11,7 +11,7 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Subtract", "Tone/signa
 	 *  @class evaluate an expression at audio rate. 
 	 *         i.e. ($0 + ($1 * abs($2)));
 	 *         parsing code modified from https://code.google.com/p/tapdigit/
-	 *         Copyright (C) 2010 - 2011 Ariya Hidayat <ariya.hidayat@gmail.com>
+	 *         Copyright (C) 2010 - 2011 Ariya Hidayat
 	 *         New BSD License {@link http://opensource.org/licenses/BSD-3-Clause}
 	 *
 	 *  @extends {Tone.SignalBase}
