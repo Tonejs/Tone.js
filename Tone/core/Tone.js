@@ -94,8 +94,8 @@ define(function(){
 	 *  
 	 *  @constructor
 	 *  @alias Tone
-	 *  @param {number=} inputs the number of input nodes
-	 *  @param {number=} outputs the number of output nodes
+	 *  @param {number} [inputs=1] the number of input nodes
+	 *  @param {number} [outputs=1] the number of output nodes
 	 */
 	var Tone = function(inputs, outputs){
 
@@ -160,8 +160,8 @@ define(function(){
 	/**
 	 *  connect the output of a ToneNode to an AudioParam, AudioNode, or ToneNode
 	 *  @param  {Tone | AudioParam | AudioNode} unit 
-	 *  @param {number=} outputNum optionally which output to connect from
-	 *  @param {number=} inputNum optionally which input to connect to
+	 *  @param {number} [outputNum=0] optionally which output to connect from
+	 *  @param {number} [inputNum=0] optionally which input to connect to
 	 */
 	Tone.prototype.connect = function(unit, outputNum, inputNum){
 		if (Array.isArray(this.output)){

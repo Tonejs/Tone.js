@@ -8,7 +8,7 @@ define(["Tone/core/Tone", "Tone/signal/GreaterThanZero", "Tone/signal/Subtract"]
 	 *  
 	 *  @constructor
 	 *  @extends {Tone.SignalBase}
-	 *  @param {number=} [value=0] the value to compare to the incoming signal
+	 *  @param {number} [value=0] the value to compare to the incoming signal
 	 */
 	Tone.GreaterThan = function(value){
 

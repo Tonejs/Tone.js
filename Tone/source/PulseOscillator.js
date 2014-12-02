@@ -8,7 +8,7 @@ function(Tone){
 	 *
 	 *  @constructor
 	 *  @extends {Tone.Oscillator}
-	 *  @param {number=} frequency the frequency of the oscillator
+	 *  @param {number} [frequency=440] the frequency of the oscillator
 	 *  @param {number} [width = 0.5] the width of the pulse
 	 */
 	Tone.PulseOscillator = function(){

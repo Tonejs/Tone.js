@@ -10,11 +10,11 @@ function(Tone){
 	 *
 	 *  @constructor
 	 *  @extends {Tone.Effect}
-	 *  @param {number=} [baseFrequency=100] the frequency the filter is set 
+	 *  @param {number} [baseFrequency=100] the frequency the filter is set 
 	 *                                       to at the low point of the wah
-	 *  @param {number=} [octaves=5] the number of octaves above the baseFrequency
+	 *  @param {number} [octaves=5] the number of octaves above the baseFrequency
 	 *                               the filter will sweep to when fully open
-	 *  @param {number=} [sensitivity=0] the decibel threshold sensitivity for 
+	 *  @param {number} [sensitivity=0] the decibel threshold sensitivity for 
 	 *                                   the incoming signal. Normal range of -40 to 0. 
 	 */
 	Tone.AutoWah = function(){

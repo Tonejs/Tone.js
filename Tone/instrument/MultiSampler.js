@@ -77,7 +77,7 @@ function(Tone){
 	 *  start a sample
 	 *  
 	 *  @param  {string} sample the note name to start
-	 *  @param {Tone.Time=} [time=now] the time when the note should start
+	 *  @param {Tone.Time} [time=now] the time when the note should start
 	 *  @param {number} [velocity=1] the velocity of the note
 	 */
 	Tone.MultiSampler.prototype.triggerAttack = function(sample, time, velocity){
@@ -90,7 +90,7 @@ function(Tone){
 	 *  start the release portion of the note
 	 *  
 	 *  @param  {string} sample the note name to release
-	 *  @param {Tone.Time=} [time=now] the time when the note should release
+	 *  @param {Tone.Time} [time=now] the time when the note should release
 	 */
 	Tone.MultiSampler.prototype.triggerRelease = function(sample, time){
 		if (this.samples.hasOwnProperty(sample)){

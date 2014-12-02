@@ -90,7 +90,7 @@ define(["Tone/core/Tone", "Tone/signal/ScaleExp", "Tone/signal/Signal"], functio
 	 *  auto corrects for sample offsets for small delay amounts
 	 *  	
 	 *  @param {number} delayAmount the delay amount
-	 *  @param {Tone.Time=} time        when the change should occur
+	 *  @param {Tone.Time} [time=now]        when the change should occur
 	 */
 	Tone.FeedbackCombFilter.prototype.setDelayTime = function(delayAmount, time) {
 		time = this.toSeconds(time);

@@ -587,7 +587,7 @@ function(Tone){
 	 *  this.setTimeSignature(4); // 4/4
 	 *  
 	 *  @param {number} numerator  the numerator of the time signature
-	 *  @param {number=} [denominator=4] the denominator of the time signature. this should
+	 *  @param {number} [denominator=4] the denominator of the time signature. this should
 	 *                                   be a multiple of 2. 
 	 */
 	Tone.Transport.prototype.setTimeSignature = function(numerator, denominator){

@@ -8,8 +8,8 @@ function(Tone){
 	 *
 	 *  @constructor
 	 *  @extends {Tone.Source}
-	 *  @param {number|string=} frequency starting frequency
-	 *  @param {string=} type type of oscillator (sine|square|triangle|sawtooth)
+	 *  @param {number|string} [frequency=440] starting frequency
+	 *  @param {string} [type="sine"] type of oscillator (sine|square|triangle|sawtooth)
 	 */
 	Tone.Oscillator = function(){
 		
@@ -87,7 +87,7 @@ function(Tone){
 	/**
 	 *  start the oscillator
 	 *  
-	 *  @param  {Tone.Time} time 
+	 *  @param  {Tone.Time} [time=now] 
 	 */
 	Tone.Oscillator.prototype.start = function(time){
 		if (this.state === Tone.Source.State.STOPPED){
@@ -108,7 +108,7 @@ function(Tone){
 
 	/**
 	 *  stop the oscillator
-	 *  @param  {Tone.Time=} time (optional) timing parameter
+	 *  @param  {Tone.Time} [time=now] (optional) timing parameter
 	 */
 	Tone.Oscillator.prototype.stop = function(time){
 		if (this.state === Tone.Source.State.STARTED){

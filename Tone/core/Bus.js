@@ -40,7 +40,7 @@ define(["Tone/core/Tone"], function(Tone){
 	 *  defined in "Tone/core/Bus"
 	 *
 	 *  @param  {string} channelName 
-	 *  @param {AudioNode=} [input=this.input] if no input is selected, the
+	 *  @param {AudioNode} [input=this.input] if no input is selected, the
 	 *                                         input of the current node is
 	 *                                         chosen. 
 	 */

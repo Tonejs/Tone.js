@@ -8,7 +8,7 @@ define(["Tone/core/Tone", "Tone/signal/Equal", "Tone/signal/Signal"], function(T
 	 *
 	 *  @constructor
 	 *  @extends {Tone.SignalBase}
-	 *  @param {number=} [outputCount=2] the number of inputs the switch accepts
+	 *  @param {number} [outputCount=2] the number of inputs the switch accepts
 	 */
 	Tone.Route = function(outputCount){
 

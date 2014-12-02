@@ -9,7 +9,7 @@ function(Tone){
 	 *
 	 * 	@constructor
 	 * 	@extends {Tone.StereoXFeedbackEffect}
-	 *  @param {Tone.Time|Object=} delayTime is the interval between consecutive echos
+	 *  @param {Tone.Time|Object} [delayTime=0.25] is the interval between consecutive echos
 	 */
 	Tone.PingPongDelay = function(){
 		

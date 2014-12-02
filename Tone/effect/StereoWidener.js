@@ -14,7 +14,7 @@ define(["Tone/core/Tone", "Tone/effect/MidSide", "Tone/signal/Signal",
 	 *
 	 *  @extends {Tone.MidSide}
 	 *  @constructor
-	 *  @param {number|Object=} width the stereo width
+	 *  @param {number|Object} [width=0.5] the stereo width. A width of 0 is mono and 1 is stereo. 0.5 is no change.
 	 */
 	Tone.StereoWidener = function(){
 

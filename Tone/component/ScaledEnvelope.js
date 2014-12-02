@@ -9,10 +9,10 @@ define(["Tone/core/Tone", "Tone/component/Envelope", "Tone/signal/Scale"],
 	 *
 	 *  @extends {Tone.Envelope}
 	 *  @constructor
-	 *  @param {Tone.Time|Object=} attack
-	 *  @param {Tone.Time=} decay
-	 *  @param {number=} sustain 	a percentage (0-1) of the full amplitude
-	 *  @param {Tone.Time=} release
+	 *  @param {Tone.Time|Object} [attack=0.01]	the attack time in seconds
+	 *  @param {Tone.Time} [decay=0.1]	the decay time in seconds
+	 *  @param {number} [sustain=0.5] 	a percentage (0-1) of the full amplitude
+	 *  @param {Tone.Time} [release=1]	the release time in seconds
 	 */
 	Tone.ScaledEnvelope = function(){
 

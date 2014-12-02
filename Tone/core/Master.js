@@ -44,7 +44,7 @@ define(["Tone/core/Tone"], function(Tone){
 
 	/**
 	 *  @param {number} db volume in decibels 
-	 *  @param {Tone.Time=} fadeTime (optional) time it takes to reach the value
+	 *  @param {Tone.Time=} fadeTime time it takes to reach the value
 	 */
 	Tone.Master.prototype.setVolume = function(db, fadeTime){
 		var now = this.now();

@@ -11,7 +11,7 @@ function(Tone){
 	 *  @constructor
 	 *  @param {number=} divisor if no value is provided, Tone.Divide will divide the first
 	 *                         and second inputs. 
-	 *  @param {number=} precision the precision of the calculation
+	 *  @param {number} [precision=3] the precision of the calculation
 	 */
 	Tone.Divide = function(divisor, precision){
 

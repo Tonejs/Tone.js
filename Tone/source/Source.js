@@ -48,7 +48,7 @@ define(["Tone/core/Tone", "Tone/core/Transport"], function(Tone){
 	/**
 	 *  sync the source to the Transport
 	 *
-	 *  @param {Tone.Time=} delay optional delay time before starting the source
+	 *  @param {Tone.Time} [delay=0] delay time before starting the source
 	 */
 	Tone.Source.prototype.sync = function(delay){
 		Tone.Transport.syncSource(this, delay);

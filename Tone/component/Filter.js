@@ -10,8 +10,8 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	 *
 	 *  @constructor
 	 *  @extends {Tone}
-	 *  @param {number|Object=} freq the frequency
-	 *  @param {string=} type the type of filter
+	 *  @param {number|Object} [freq=350] the frequency
+	 *  @param {string} [type=lowpass] the type of filter
 	 *  @param {number=} [rolloff=-12] the rolloff which is the drop per octave. 
 	 *                                 3 choices: -12, -24, and -48
 	 */

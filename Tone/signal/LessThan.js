@@ -10,7 +10,7 @@ define(["Tone/core/Tone", "Tone/signal/GreaterThan", "Tone/signal/Negate"], func
 	 *  
 	 *  @constructor
 	 *  @extends {Tone.SignalBase}
-	 *  @param {number=} [value=0] the value to compare to the incoming signal
+	 *  @param {number} [value=0] the value to compare to the incoming signal
 	 */
 	Tone.LessThan = function(value){
 

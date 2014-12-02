@@ -121,8 +121,8 @@ function(Tone){
 	/**
 	 *  trigger the attack portion of the note
 	 *  
-	 *  @param  {Tone.Time=} [time=now] the time the note will occur
-	 *  @param {number=} velocity the velocity of the note
+	 *  @param  {Tone.Time} [time=now] the time the note will occur
+	 *  @param {number} [velocity=1] the velocity of the note
 	 */
 	Tone.AMSynth.prototype.triggerEnvelopeAttack = function(time, velocity){
 		//the port glide
@@ -137,7 +137,7 @@ function(Tone){
 	/**
 	 *  trigger the release portion of the note
 	 *  
-	 *  @param  {Tone.Time=} [time=now] the time the note will release
+	 *  @param  {Tone.Time} [time=now] the time the note will release
 	 */
 	Tone.AMSynth.prototype.triggerEnvelopeRelease = function(time){
 		this.carrier.triggerRelease(time);

@@ -12,9 +12,9 @@ function(Tone){
 	 *
 	 *  @constructor
 	 *  @extends {Tone}
-	 *  @param {number} rate      
-	 *  @param {number=} outputMin 
-	 *  @param {number=} outputMax
+	 *  @param {Tone.Time} [rate="4n"]
+	 *  @param {number} [outputMin=0]
+	 *  @param {number} [outputMax=1]
 	 */
 	Tone.LFO = function(){
 
@@ -66,7 +66,7 @@ function(Tone){
 
 	/**
 	 *  start the LFO
-	 *  @param  {Tone.Time=} [time=now] the time the LFO will start
+	 *  @param  {Tone.Time} [time=now] the time the LFO will start
 	 */
 	Tone.LFO.prototype.start = function(time){
 		this.oscillator.start(time);
@@ -74,7 +74,7 @@ function(Tone){
 
 	/**
 	 *  stop the LFO
-	 *  @param  {Tone.Time=} [time=now] the time the LFO will stop
+	 *  @param  {Tone.Time} [time=now] the time the LFO will stop
 	 */
 	Tone.LFO.prototype.stop = function(time){
 		this.oscillator.stop(time);
@@ -84,7 +84,7 @@ function(Tone){
 	 *  Sync the start/stop/pause to the transport 
 	 *  and the frequency to the bpm of the transport
 	 *
-	 *  @param {Tone.Time=} [delay=0] the time to delay the start of the
+	 *  @param {Tone.Time} [delay=0] the time to delay the start of the
 	 *                                LFO from the start of the transport
 	 */
 	Tone.LFO.prototype.sync = function(delay){
@@ -103,7 +103,7 @@ function(Tone){
 
 	/**
 	 *  set the frequency
-	 *  @param {number} rate 
+	 *  @param {Tone.Time} rate 
 	 */
 	Tone.LFO.prototype.setFrequency = function(rate){
 		this.oscillator.setFrequency(rate);

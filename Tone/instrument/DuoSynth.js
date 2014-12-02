@@ -138,8 +138,8 @@ function(Tone){
 	/**
 	 *  start the attack portion of the envelopes
 	 *  
-	 *  @param {Tone.Time=} [time=now] the time the attack should start
-	 *  @param {number=} velocity the velocity of the note (0-1)
+	 *  @param {Tone.Time} [time=now] the time the attack should start
+	 *  @param {number} [velocity=1] the velocity of the note (0-1)
 	 */
 	Tone.DuoSynth.prototype.triggerEnvelopeAttack = function(time, velocity){
 		time = this.toSeconds(time);
@@ -152,7 +152,7 @@ function(Tone){
 	/**
 	 *  start the release portion of the envelopes
 	 *  
-	 *  @param {Tone.Time=} [time=now] the time the release should start
+	 *  @param {Tone.Time} [time=now] the time the release should start
 	 */
 	Tone.DuoSynth.prototype.triggerEnvelopeRelease = function(time){
 		this.voice0.triggerRelease(time);

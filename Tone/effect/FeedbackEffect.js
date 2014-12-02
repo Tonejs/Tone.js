@@ -7,7 +7,7 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/signal/Signal", "Tone/sign
 	 *
 	 *  @constructor
 	 *  @extends {Tone.Effect}
-	 *  @param {number|object=} [initialFeedback=0.25] the initial feedback value (defaults to 0.25)
+	 *  @param {number|Object=} [initialFeedback=0.125] the initial feedback value
 	 */
 	Tone.FeedbackEffect = function(){
 

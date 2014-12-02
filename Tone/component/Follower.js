@@ -12,8 +12,8 @@ function(Tone){
 	 *  
 	 *  @constructor
 	 *  @extends {Tone}
-	 *  @param {Tone.Time=} [attack = 0.05] 
-	 *  @param {Tone.Time=} [release = 0.5] 
+	 *  @param {Tone.Time} [attack = 0.05] 
+	 *  @param {Tone.Time} [release = 0.5] 
 	 */
 	Tone.Follower = function(){
 

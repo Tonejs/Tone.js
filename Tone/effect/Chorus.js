@@ -8,9 +8,9 @@ function(Tone){
 	 *
 	 *	@constructor
 	 *	@extends {Tone.StereoXFeedbackEffect}
-	 *	@param {number|Object=} [rate=2] the rate of the effect
-	 *	@param {number=} [delayTime=3.5] the delay of the chorus effect in ms
-	 *	@param {number=} [depth=0.7] the depth of the chorus
+	 *	@param {number|Object} [rate=2] the rate of the effect
+	 *	@param {number} [delayTime=3.5] the delay of the chorus effect in ms
+	 *	@param {number} [depth=0.7] the depth of the chorus
 	 */
 	Tone.Chorus = function(){
 

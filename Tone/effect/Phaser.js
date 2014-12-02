@@ -8,9 +8,9 @@ function(Tone){
 	 *
 	 *	@extends {Tone.StereoEffect}
 	 *	@constructor
-	 *	@param {number|object=} rate the speed of the phasing
-	 *	@param {number=} depth the depth of the effect
-	 *	@param {number} baseFrequency the base frequency of the filters
+	 *	@param {number|Object} [rate=0.5] the speed of the phasing
+	 *	@param {number} [depth=10] the depth of the effect
+	 *	@param {number} [baseFrequency=400] the base frequency of the filters
 	 */
 	Tone.Phaser = function(){
 
