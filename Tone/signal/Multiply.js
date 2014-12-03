@@ -9,7 +9,8 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	 *
 	 *  @constructor
 	 *  @extends {Tone.SignalBase}
-	 *  @param {number=} value constant value to multiple
+	 *  @param {number=} value constant value to multiple. if no value is provided
+	 *                         it will be multiplied by the value of input 1.
 	 */
 	Tone.Multiply = function(value){
 

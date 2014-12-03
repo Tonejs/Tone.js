@@ -119,15 +119,20 @@ define(["Tone/core/Tone", "Tone/core/Transport"], function(Tone){
 	 *  and an array of time and values. The value of a note can be 0 or more 
 	 *  parameters. 
 	 *
-	 *  To convert MIDI files to score notation, take a look at utils/MidiToScore.js
+	 *  The only requirement for the score format is that the time is the first (or only)
+	 *  value in the array. All other values are optional and will be passed into the callback
+	 *  function registered using ""
 	 *
-	 *  @example
+	 *  ```javascript
 	 *  var score = { 
 	 *  	"synth"  : [["0", "C3"], ["0:1", "D3"], ["0:2", "E3"], ... ],
 	 *  	"bass"  : [["0", "C2"], ["1:0", "A2"], ["2:0", "C2"], ["3:0", "A2"], ... ],
-	 *  	"drums"  : [["0", "kick"], ["0:2", "snare"], ["1:0", "kick"], ["1:2", "snare"], ... ],
-	 *  	...
+	 *  	"kick"  : ["0", "0:2", "1:0", "1:2", "2:0", ... ],
+	 *  	//...
 	 *  };
+	 *  ```
+	 *  
+	 *  To convert MIDI files to score notation, take a look at utils/MidiToScore.js
 	 *
 	 *  @static
 	 *  @param {Object} score

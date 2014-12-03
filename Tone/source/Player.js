@@ -27,7 +27,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 		/**
 		 *  the buffer
 		 *  @private
-		 *  @type {AudioBuffer}
+		 *  @type {Tone.Buffer}
 		 */
 		this._buffer = null;
 
@@ -144,9 +144,12 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 	/**
 	 *  play the buffer between the desired positions
 	 *  	
-	 *  @param  {Tone.Time=} startTime 
-	 *  @param  {Tone.Time=} offset    
-	 *  @param  {Tone.Time=} duration
+	 *  @param  {Tone.Time} [startTime=now] when the player should start.
+	 *  @param  {Tone.Time} [offset=0] the offset from the beginning of the sample
+	 *                                 to start at. 
+	 *  @param  {Tone.Time=} duration how long the sample should play. If no duration
+	 *                                is given, it will default to the full length 
+	 *                                of the sample (minus any offset)
 	 */
 	Tone.Player.prototype.start = function(startTime, offset, duration){
 		if (this.state === Tone.Source.State.STOPPED || this.retrigger){
@@ -184,7 +187,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 	/**
 	 *  Stop playback.
 	 * 
-	 *  @param  {Tone.Time} time
+	 *  @param  {Tone.Time} [time=now]
 	 */
 	Tone.Player.prototype.stop = function(time){
 		if (this.state === Tone.Source.State.STARTED) {
@@ -209,7 +212,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 	 *  set the rate at which the file plays
 	 *  
 	 *  @param {number} rate
-	 *  @param {Tone.Time=} rampTime (optional) the amount of time it takes to 
+	 *  @param {Tone.Time=} rampTime the amount of time it takes to 
 	 *                               reach the rate
 	 */
 	Tone.Player.prototype.setPlaybackRate = function(rate, rampTime){

@@ -23,7 +23,9 @@ function(Tone){
 	 *  into a mathematical expression which will be evaluated to compute the desired time.
 	 *  
 	 *  No Argument, for methods which accept time, no argument will be interpreted as 
-	 *  0 seconds or "now" (i.e. the currentTime) depending on the context.
+	 *  "now" (i.e. the currentTime).
+	 *
+	 *  [Tone.Time Wiki](https://github.com/TONEnoTONE/Tone.js/wiki/Time)
 	 *  
 	 *  @typedef {number|string|undefined} Tone.Time 
 	 */

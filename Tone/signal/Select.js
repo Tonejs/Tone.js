@@ -9,7 +9,7 @@ define(["Tone/core/Tone", "Tone/signal/Equal", "Tone/signal/Signal"], function(T
 	 *
 	 *  @constructor
 	 *  @extends {Tone.SignalBase}
-	 *  @param {number=} [sourceCount=2] the number of inputs the switch accepts
+	 *  @param {number} [sourceCount=2] the number of inputs the switch accepts
 	 */
 	Tone.Select = function(sourceCount){
 
@@ -36,7 +36,7 @@ define(["Tone/core/Tone", "Tone/signal/Equal", "Tone/signal/Signal"], function(T
 
 	/**
 	 *  open one of the inputs and close the other
-	 *  @param {number=} [which=0] open one of the gates (closes the other)
+	 *  @param {number} [which=0] open one of the gates (closes the other)
 	 *  @param {Tone.Time} time the time when the switch will open
 	 */
 	Tone.Select.prototype.select = function(which, time){

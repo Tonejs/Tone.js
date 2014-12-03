@@ -10,7 +10,7 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 	 *
 	 *  @constructor
 	 *  @extends {Tone.SignalBase}
-	 *  @param {number=} value (optional) initial value
+	 *  @param {number} [value=0] initial value
 	 */
 	Tone.Signal = function(value){
 

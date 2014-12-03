@@ -12,7 +12,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	 *  @extends {Tone}
 	 *  @param {number|Object} [freq=350] the frequency
 	 *  @param {string} [type=lowpass] the type of filter
-	 *  @param {number=} [rolloff=-12] the rolloff which is the drop per octave. 
+	 *  @param {number} [rolloff=-12] the rolloff which is the drop per octave. 
 	 *                                 3 choices: -12, -24, and -48
 	 */
 	Tone.Filter = function(){

@@ -34,7 +34,7 @@ define(["Tone/core/Tone", "Tone/signal/Equal", "Tone/signal/Signal"], function(T
 
 	/**
 	 *  routes the signal to one of the outputs and close the others
-	 *  @param {number=} [which=0] open one of the gates (closes the other)
+	 *  @param {number} [which=0] open one of the gates (closes the other)
 	 *  @param {Tone.Time} time the time when the switch will open
 	 */
 	Tone.Route.prototype.select = function(which, time){
