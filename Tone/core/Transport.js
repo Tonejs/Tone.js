@@ -259,11 +259,12 @@ function(Tone){
 	/**
 	 *  intervals are recurring events 
 	 *
-	 *  @example
+	 *  ```javascript
 	 *  //triggers a callback every 8th note with the exact time of the event
 	 *  Tone.Transport.setInterval(function(time){
 	 *  	envelope.triggerAttack(time);
 	 *  }, "8n");
+	 *  ```
 	 *  
 	 *  @param {function} callback
 	 *  @param {Tone.Time}   interval 
@@ -309,11 +310,12 @@ function(Tone){
 	 *  running for this to be triggered. All timeout events are cleared when the 
 	 *  transport is stopped. 
 	 *
-	 *  @example
+	 *  ```javascript
 	 *  //trigger an event to happen 1 second from now
 	 *  Tone.Transport.setTimeout(function(time){
 	 *  	player.start(time);
 	 *  }, 1)
+	 *  ```
 	 *  
 	 *  @param {function} callback 
 	 *  @param {Tone.Time}   time     
@@ -368,11 +370,12 @@ function(Tone){
 	 *  Unlike Timeout, Timeline events will restart after the 
 	 *  Tone.Transport has been stopped and restarted. 
 	 *
-	 *  @example
+	 *  ```javascript
 	 *  //trigger the start of a part on the 16th measure
 	 *  Tone.Transport.setTimeline(function(time){
 	 *  	part.start(time);
 	 *  }, "16m");
+	 *  ```
 	 *
 	 *  
 	 *  @param {function} 	callback 	
@@ -584,9 +587,10 @@ function(Tone){
 	/**
 	 *  set the time signature
 	 *  
-	 *  @example
+	 *  ```javascript
 	 *  this.setTimeSignature(3, 8); // 3/8
 	 *  this.setTimeSignature(4); // 4/4
+	 *  ```
 	 *  
 	 *  @param {number} numerator  the numerator of the time signature
 	 *  @param {number} [denominator=4] the denominator of the time signature. this should
@@ -647,8 +651,9 @@ function(Tone){
 	/**
 	 *  set the subdivision which the swing will be applied to. the starting values is a 16th note. 
 	 *  
-	 *  @example
+	 *  ```javascript
 	 *  Tone.Transport.setSwingSubdivision("8n"); //the eight note will be swing by the "swing amount"
+	 *  ```
 	 *  
 	 *  @param {string} subdivision the subdivision in notation (i.e. 8n, 16n, 8t).
 	 *                              value must be less than a quarter note.

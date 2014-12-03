@@ -8,7 +8,7 @@ function(Tone){
 	 *         Pass in a mapping of names to sample urls and an optional 
 	 *         callback to invoke when all of the samples are loaded. 
 	 *
-	 *  @example
+	 *  ```javascript
 	 *  var sampler = new Tone.MultiSampler({
 	 *  	"kick" : "../audio/BD.mp3",
 	 *  	"snare" : "../audio/SD.mp3",
@@ -16,6 +16,7 @@ function(Tone){
 	 *  }, onload);
 	 *  //once loaded...
 	 *  sampler.triggerAttack("kick");
+	 *  ```
 	 *
 	 *  @constructor
 	 *  @extends {Tone.Instrument}

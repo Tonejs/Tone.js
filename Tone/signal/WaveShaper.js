@@ -5,10 +5,11 @@ define(["Tone/core/Tone", "Tone/signal/SignalBase"], function(Tone){
 	/**
 	 *  @class Wraps the WaveShaperNode
 	 *
-	 *  @example
-	 *  var timesTwo = new Tone.WaveShaper(function(val, position){
+	 *  ```javascript
+	 *  var timesTwo = new Tone.WaveShaper(function(val){
 	 *  	return val * 2;
 	 *  }, 2048);
+	 *  ```
 	 *
 	 *  @extends {Tone.SignalBase}
 	 *  @constructor

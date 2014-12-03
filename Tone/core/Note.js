@@ -220,9 +220,10 @@ define(["Tone/core/Tone", "Tone/core/Transport"], function(Tone){
 	 *  convert an interval (in semitones) to a frequency ratio
 	 *  defined in "Tone/core/Note"
 	 *
-	 *  @example
+	 *  ```javascript
 	 *  tone.intervalToFrequencyRatio(0); // returns 1
 	 *  tone.intervalToFrequencyRatio(12); // returns 2
+	 *  ```
 	 *  
 	 *  @param  {number} interval the number of semitones above the base note
 	 *  @return {number}          the frequency ratio
@@ -235,8 +236,9 @@ define(["Tone/core/Tone", "Tone/core/Transport"], function(Tone){
 	 *  convert a midi note number into a note name
 	 *  defined in "Tone/core/Note"
 	 *
-	 *  @example
+	 *  ```javascript
 	 *  tone.midiToNote(60); // returns "C3"
+	 *  ```
 	 *  
 	 *  @param  {number} midiNumber the midi note number
 	 *  @return {string}            the note's name and octave
@@ -251,8 +253,9 @@ define(["Tone/core/Tone", "Tone/core/Transport"], function(Tone){
 	 *  convert a note to it's midi value
 	 *  defined in "Tone/core/Note"
 	 *
-	 *  @example
+	 *  ```javascript
 	 *  tone.noteToMidi("C3"); // returns 60
+	 *  ```
 	 *  
 	 *  @param  {string} note the note name (i.e. "C3")
 	 *  @return {number} the midi value of that note
