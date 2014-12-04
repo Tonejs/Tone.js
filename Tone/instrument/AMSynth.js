@@ -5,7 +5,8 @@ function(Tone){
 	"use strict";
 
 	/**
-	 *  @class  the AMSynth is composed of two MonoSynths where one MonoSynth is the 
+	 *  @class  the AMSynth is an amplitude modulation synthesizer
+	 *          composed of two MonoSynths where one MonoSynth is the 
 	 *          carrier and the second is the modulator.
 	 *
 	 *  @constructor

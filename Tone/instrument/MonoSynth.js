@@ -6,7 +6,17 @@ function(Tone){
 
 	/**
 	 *  @class  the MonoSynth is a single oscillator, monophonic synthesizer
-	 *          with a filter, and two envelopes (on the filter and the amplitude)
+	 *          with a filter, and two envelopes (on the filter and the amplitude). 
+	 *
+	 * Flow: 
+	 * 
+	 * <pre>
+	 * OmniOscillator+-->AmplitudeEnvelope+-->Filter 
+	 *                                          ^    
+	 *                                          |    
+	 *                         ScaledEnvelope+--+
+	 * </pre>
+	 *  
 	 *
 	 *  @constructor
 	 *  @extends {Tone.Monophonic}

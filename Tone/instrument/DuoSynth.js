@@ -56,7 +56,7 @@ function(Tone){
 		this._vibratoDelay = this.toSeconds(options.vibratoDelay);
 
 		/**
-		 *  the amount before the vibrato starts
+		 *  the amount of vibrato
 		 *  @type {number}
 		 *  @private
 		 */
