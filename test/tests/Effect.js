@@ -5,7 +5,7 @@ define(["tests/Core", "chai", "Tone/component/Recorder", "Tone/core/Master", "To
 	"Tone/effect/FeedbackDelay", "Tone/effect/PingPongDelay", "Tone/effect/Chorus", "tests/Common", "Tone/effect/Freeverb", 
 	"Tone/effect/JCReverb", "Tone/effect/StereoEffect", "Tone/effect/StereoFeedbackEffect", 
 	"Tone/effect/StereoXFeedbackEffect", "Tone/effect/Phaser", "Tone/effect/Distortion", "Tone/effect/Chebyshev", 
-	"Tone/effect/Convolver", "Tone/effect/MidSide", "Tone/effect/StereoWidener"], 
+	"Tone/effect/Convolver", "Tone/effect/MidSideEffect", "Tone/effect/StereoWidener"], 
 function(Tone, chai, Recorder, Master, Effect, DryWet, FeedbackEffect, Signal, AutoPanner, AutoWah, BitCrusher, 
 	FeedbackDelay, PingPongDelay, Chorus, Test, Freeverb, JCReverb, StereoEffect, StereoFeedbackEffect, 
 	StereoXFeedbackEffect, Phaser, Distortion, Chebyshev, Convolver, MidSide, StereoWidener){

@@ -16,7 +16,7 @@ define(["Tone/core/Tone", "Tone/effect/StereoEffect"], function(Tone){
 	 *  @extends {Tone.StereoEffect}
 	 *  @constructor
 	 */
-	Tone.MidSide = function(){
+	Tone.MidSideEffect = function(){
 		Tone.StereoEffect.call(this);
 
 		/**
@@ -83,12 +83,12 @@ define(["Tone/core/Tone", "Tone/effect/StereoEffect"], function(Tone){
 		this._sqrtTwo.connect(this._right, 0, 2);
 	};
 
-	Tone.extend(Tone.MidSide, Tone.StereoEffect);
+	Tone.extend(Tone.MidSideEffect, Tone.StereoEffect);
 
 	/**
 	 *  clean up
 	 */
-	Tone.MidSide.prototype.dispose = function(){
+	Tone.MidSideEffect.prototype.dispose = function(){
 		Tone.StereoEffect.prototype.dispose.call(this);
 		this._sqrtTwo.dispose();
 		this._sqrtTwo = null;
@@ -106,5 +106,5 @@ define(["Tone/core/Tone", "Tone/effect/StereoEffect"], function(Tone){
 		this.sideReturn = null;
 	};
 
-	return Tone.MidSide;
+	return Tone.MidSideEffect;
 });
