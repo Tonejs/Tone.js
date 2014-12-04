@@ -10,6 +10,7 @@
     "define" : false,
     //set audio stuff
     "AudioContext" : false,
+    "AudioBuffer" : false,
     "OfflineAudioContext" : false,
     "AudioBufferSourceNode" : false,
     "OscillatorNode" : false,

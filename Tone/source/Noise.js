@@ -10,9 +10,10 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 	 *  @extends {Tone.Source}
 	 *  @param {string} type the noise type (white|pink|brown)
 	 */
-	Tone.Noise = function(type){
+	Tone.Noise = function(){
 
 		Tone.Source.call(this);
+		var options = this.optionsObject(arguments, ["type"], Tone.Noise.defaults);
 
 		/**
 		 *  @private
@@ -32,12 +33,24 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 		 *  
 		 *  @type {function}
 		 */
-		this.onended = function(){};
+		this.onended = options.onended;
 
-		this.setType(this.defaultArg(type, "white"));
+		this.setType(options.type);
 	};
 
 	Tone.extend(Tone.Noise, Tone.Source);
+
+	/**
+	 *  the default parameters
+	 *
+	 *  @static
+	 *  @const
+	 *  @type {Object}
+	 */
+	Tone.Noise.defaults = {
+		"type" : "white",
+		"onended" : function(){}
+	};
 
 	/**
 	 *  set the noise type
@@ -70,6 +83,30 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 	};
 
 	/**
+	 *  get the type of noise
+	 *  @return {string} the type of noise
+	 */
+	Tone.Noise.prototype.getType = function(){
+		if (this._buffer === _whiteNoise){
+			return "white";
+		} else if (this._buffer === _brownNoise){
+			return "brown";
+		} else if (this._buffer === _pinkNoise){
+			return "pink";
+		}
+	};
+
+	/**
+	 *  set the parameters at once
+	 *  @param {Object} params
+	 */
+	Tone.Noise.prototype.set = function(params){
+		if (!this.isUndef(params.type)) this.setType(params.type);
+		if (!this.isUndef(params.onended)) this.onended = params.onended;
+		Tone.Source.prototype.set.call(this, params);
+	};
+
+	/**
 	 *  internal start method
 	 *  
 	 *  @param {Tone.Time} time
@@ -79,9 +116,9 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 		this._source = this.context.createBufferSource();
 		this._source.buffer = this._buffer;
 		this._source.loop = true;
-		this.chain(this._source, this.output);
+		this.connectSeries(this._source, this.output);
 		this._source.start(this.toSeconds(time));
-		this._source.onended = this._onended.bind(this);
+		this._source.onended = this.onended;
 	};
 
 	/**
@@ -111,27 +148,15 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 	/**
 	 *  stop the noise at a specific time
 	 *  
-	 *  @param {Tone.Time} time
+	 *  @param {Tone.Time} timetest
 	 */
 	Tone.Noise.prototype.stop = function(time){
 		if (this.state === Tone.Source.State.STARTED) {
 			if (this._buffer && this._source){
-				if (!time){
-					this.state = Tone.Source.State.STOPPED;
-				}
+				this.state = Tone.Source.State.STOPPED;
 				this._stop(time);
 			}
 		}
-	};
-
-	/**
-	 *  internal call when the buffer is done playing
-	 *  
-	 *  @private
-	 */
-	Tone.Noise.prototype._onended = function(){
-		this.state = Tone.Source.State.STOPPED;
-		this.onended();
 	};
 
 	/**

@@ -1,4 +1,5 @@
-define(["Tone/core/Tone", "Tone/signal/Abs", "Tone/signal/Negate", "Tone/signal/Multiply", "Tone/signal/Signal"], 
+define(["Tone/core/Tone", "Tone/signal/Abs", "Tone/signal/Subtract", 
+	"Tone/signal/Multiply", "Tone/signal/Signal", "Tone/signal/WaveShaper"], 
 function(Tone){
 
 	"use strict";
@@ -11,8 +12,8 @@ function(Tone){
 	 *  
 	 *  @constructor
 	 *  @extends {Tone}
-	 *  @param {Tone.Time=} [attack = 0.05] 
-	 *  @param {Tone.Time=} [release = 0.5] 
+	 *  @param {Tone.Time} [attack = 0.05] 
+	 *  @param {Tone.Time} [release = 0.5] 
 	 */
 	Tone.Follower = function(){
 
@@ -39,33 +40,27 @@ function(Tone){
 		 *  @type {WaveShaperNode}
 		 *  @private
 		 */
-		this._frequencyValues = this.context.createWaveShaper();
+		this._frequencyValues = new Tone.WaveShaper();
 		
 		/**
-		 *  @type {Tone.Negate}
+		 *  @type {Tone.Subtract}
 		 *  @private
 		 */
-		this._negate = new Tone.Negate();
-
-		/**
-		 *  @type {GainNode}
-		 *  @private
-		 */
-		this._difference = this.context.createGain();
+		this._sub = new Tone.Subtract();
 
 		/**
 		 *  @type {DelayNode}
 		 *  @private
 		 */
 		this._delay = this.context.createDelay();
-		this._delay.delayTime.value = 0.02; //20 ms delay
+		this._delay.delayTime.value = this.bufferTime;
 
 		/**
 		 *  this keeps it far from 0, even for very small differences
 		 *  @type {Tone.Multiply}
 		 *  @private
 		 */
-		this._mult = new Tone.Multiply(1000);
+		this._mult = new Tone.Multiply(10000);
 
 		/**
 		 *  @private
@@ -80,12 +75,12 @@ function(Tone){
 		this._release = this.secondsToFrequency(options.release);
 
 		//the smoothed signal to get the values
-		this.chain(this.input, this._abs, this._filter, this.output);
+		this.input.chain(this._abs, this._filter, this.output);
 		//the difference path
-		this.chain(this._abs, this._negate, this._difference);
-		this.chain(this._filter, this._delay, this._difference);
+		this._abs.connect(this._sub, 0, 1);
+		this._filter.chain(this._delay, this._sub);
 		//threshold the difference and use the thresh to set the frequency
-		this.chain(this._difference, this._mult, this._frequencyValues, this._filter.frequency);
+		this._sub.chain(this._mult, this._frequencyValues, this._filter.frequency);
 		//set the attack and release values in the table
 		this._setAttackRelease(this._attack, this._release);
 	};
@@ -108,19 +103,16 @@ function(Tone){
 	 *  @private
 	 */
 	Tone.Follower.prototype._setAttackRelease = function(attack, release){
-		var curveLength = 1024;
-		var curve = new Float32Array(curveLength);
-		for (var i = 0; i < curveLength; i++){
-			var normalized = (i / (curveLength - 1)) * 2 - 1;
-			var val;
-			if (normalized <= 0){
-				val = attack;
+		var minTime = this.bufferTime;
+		attack = Math.max(attack, minTime);
+		release = Math.max(release, minTime);
+		this._frequencyValues.setMap(function(val){
+			if (val <= 0){
+				return attack;
 			} else {
-				val = release;
+				return release;
 			} 
-			curve[i] = val;
-		}
-		this._frequencyValues.curve = curve;
+		});
 	};
 
 	/**
@@ -163,19 +155,18 @@ function(Tone){
 	Tone.Follower.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
 		this._filter.disconnect();
-		this._frequencyValues.disconnect();
-		this._delay.disconnect();
-		this._difference.disconnect();
-		this._abs.dispose();
-		this._negate.dispose();
-		this._mult.dispose();
 		this._filter = null;
-		this._delay = null;
+		this._frequencyValues.disconnect();
 		this._frequencyValues = null;
+		this._delay.disconnect();
+		this._delay = null;
+		this._sub.disconnect();
+		this._sub = null;
+		this._abs.dispose();
 		this._abs = null;
-		this._negate = null;
-		this._difference = null;
+		this._mult.dispose();
 		this._mult = null;
+		this._curve = null;
 	};
 
 	return Tone.Follower;

@@ -1,5 +1,7 @@
+<!DOCTYPE html>
 <html>
 <head>
+  <meta charset="utf-8">
 	<title>INTERACTIVE</title>
 
 	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
@@ -25,7 +27,7 @@
 			Each of the dots' positions controls two parameters of an effects. <br>
 			<span id="red">Lowpass Filter</span>: x = frequency, y = Q <br>
 			<span id="green">Filter LFO</span>: x = rate, y = depth<br>
-			<span id="blue">Bitcrusher</span>: x = bits, y = amount<br>
+			<span id="blue">Distortion</span>: x = amount, y = mix<br>
 		</div>
 		<div id="Content">
 			<div id="Loading">LOADING...</div>
@@ -44,8 +46,7 @@
 		player.loop = true;
 
 		//bit crusher
-		var bitCrushBits = 8;
-		var crusher = new Tone.BitCrusher(bitCrushBits);
+		var crusher = new Tone.Distortion(0.7);
 		player.connect(crusher);	
 
 		//a lowpass filter
@@ -100,11 +101,8 @@
 				filterLFO.setFrequency(filterFeq);
 				//bit crusher
 				var crusherMix = crusher.interpolate(values[2].y, 0, 1);
-				var bits = Math.round(crusher.interpolate(values[2].x, 8, 3));
-				if (bits !== bitCrushBits){
-					crusher.setBits(bits);
-					bitCrushBits = bits;
-				}
+				var distortion = crusher.interpolate(values[2].x, 0.2, 1.5);
+				crusher.setDistortion(distortion);
 				crusher.setDry(crusherMix);
 			}, 100);
 		});

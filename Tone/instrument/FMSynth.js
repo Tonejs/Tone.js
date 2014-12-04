@@ -63,8 +63,8 @@ function(Tone){
 
 		//control the two voices frequency
 		this.frequency.connect(this.carrier.frequency);
-		this.chain(this.frequency, this._harmonicity, this.modulator.frequency);
-		this.chain(this.frequency, this._modulationIndex, this._modulationNode);
+		this.frequency.chain(this._harmonicity, this.modulator.frequency);
+		this.frequency.chain(this._modulationIndex, this._modulationNode);
 		this.modulator.connect(this._modulationNode.gain);
 		this._modulationNode.gain.value = 0;
 		this._modulationNode.connect(this.carrier.frequency);
@@ -83,7 +83,9 @@ function(Tone){
 		"carrier" : {
 			"volume" : -10,
 			"portamento" : 0,
-			"oscType" : "sine",
+			"oscillator" : {
+				"type" : "sine"
+			},
 			"envelope" : {
 				"attack" : 0.01,
 				"decay" : 0.0,
@@ -102,7 +104,9 @@ function(Tone){
 		"modulator" : {
 			"volume" : -10,
 			"portamento" : 0,
-			"oscType" : "triangle",
+			"oscillator" : {
+				"type" : "triangle"
+			},
 			"envelope" : {
 				"attack" : 0.01,
 				"decay" : 0.0,
@@ -123,8 +127,8 @@ function(Tone){
 	/**
 	 *  trigger the attack portion of the note
 	 *  
-	 *  @param  {Tone.Time=} [time=now] the time the note will occur
-	 *  @param {number=} velocity the velocity of the note
+	 *  @param  {Tone.Time} [time=now] the time the note will occur
+	 *  @param {number} [velocity=1] the velocity of the note
 	 */
 	Tone.FMSynth.prototype.triggerEnvelopeAttack = function(time, velocity){
 		//the port glide
@@ -139,7 +143,7 @@ function(Tone){
 	/**
 	 *  trigger the release portion of the note
 	 *  
-	 *  @param  {Tone.Time=} [time=now] the time the note will release
+	 *  @param  {Tone.Time} [time=now] the time the note will release
 	 */
 	Tone.FMSynth.prototype.triggerEnvelopeRelease = function(time){
 		this.carrier.triggerRelease(time);

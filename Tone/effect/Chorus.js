@@ -8,9 +8,9 @@ function(Tone){
 	 *
 	 *	@constructor
 	 *	@extends {Tone.StereoXFeedbackEffect}
-	 *	@param {number|Object=} [rate=2] the rate of the effect
-	 *	@param {number=} [delayTime=3.5] the delay of the chorus effect in ms
-	 *	@param {number=} [depth=0.7] the depth of the chorus
+	 *	@param {number|Object} [rate=2] the rate of the effect
+	 *	@param {number} [delayTime=3.5] the delay of the chorus effect in ms
+	 *	@param {number} [depth=0.7] the depth of the chorus
 	 */
 	Tone.Chorus = function(){
 
@@ -61,8 +61,8 @@ function(Tone){
 		this._delayNodeR = this.context.createDelay();
 
 		//connections
-		this.chain(this.effectSendL, this._delayNodeL, this.effectReturnL);
-		this.chain(this.effectSendR, this._delayNodeR, this.effectReturnR);
+		this.connectSeries(this.effectSendL, this._delayNodeL, this.effectReturnL);
+		this.connectSeries(this.effectSendR, this._delayNodeR, this.effectReturnR);
 		//and pass through
 		this.effectSendL.connect(this.effectReturnL);
 		this.effectSendR.connect(this.effectReturnR);
@@ -90,7 +90,7 @@ function(Tone){
 		"rate" : 1.5, 
 		"delayTime" : 3.5,
 		"depth" : 0.7,
-		"feedback" : 0.4,
+		"feedback" : 0.1,
 		"type" : "sine"
 	};
 

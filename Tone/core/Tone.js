@@ -5,37 +5,7 @@
  *
  *  @license http://opensource.org/licenses/MIT MIT License 2014
  */
-
-(function (root) {
-	// Tone.js can run with or without requirejs
-	//
-	// this anonymous function checks to see if the 'define'
-	// method exists, if it does not (and there is not already
-	// a function called Tone) it will create a function called
-	// 'define'. 'define' will invoke the 'core' module and attach
-	// its return value to the root. for all other modules
-	// Tone will be passed in as the argument.
-	if (typeof define !== "function" && 
-		typeof root.Tone !== "function") {
-		//define 'define' to invoke the callbacks with Tone
-		root.define = function(){
-			//the last argument is the callback
-			var lastArg = arguments[arguments.length - 1];
-			//the first argument is the dependencies or name
-			var firstArg = arguments[0];
-			if (firstArg === "Tone/core/Tone"){
-				//create the root object
-				root.Tone = lastArg();
-			} else if (typeof lastArg === "function"){
-				//if it's not the root, pass in the root
-				//as the parameter
-				lastArg(root.Tone);
-			}
-		};
-	}
-} (this));
-
-define("Tone/core/Tone", [], function(){
+define(function(){
 
 	"use strict";
 
@@ -100,7 +70,7 @@ define("Tone/core/Tone", [], function(){
 				}
 				this.connect(B.input[inNum]);
 			} else {
-				this.connect(B.input);
+				this.connect(B.input, outNum, inNum);
 			}
 		} else {
 			try {
@@ -124,20 +94,30 @@ define("Tone/core/Tone", [], function(){
 	 *  
 	 *  @constructor
 	 *  @alias Tone
+	 *  @param {number} [inputs=1] the number of input nodes
+	 *  @param {number} [outputs=1] the number of output nodes
 	 */
-	var Tone = function(){
+	var Tone = function(inputs, outputs){
+
 		/**
-		 *  default input of the ToneNode
-		 *  
-		 *  @type {GainNode}
+		 *  the input node(s)
+		 *  @type {GainNode|Array}
 		 */
-		this.input = this.context.createGain();
+		if (isUndef(inputs) || inputs === 1){
+			this.input = this.context.createGain();
+		} else if (inputs > 1){
+			this.input = new Array(inputs);
+		}
+
 		/**
-		 *  default output of the ToneNode
-		 *  
-		 *  @type {GainNode}
+		 *  the output node(s)
+		 *  @type {GainNode|Array}
 		 */
-		this.output = this.context.createGain();
+		if (isUndef(outputs) || outputs === 1){
+			this.output = this.context.createGain();
+		} else if (outputs > 1){
+			this.output = new Array(inputs);
+		}
 	};
 
 	///////////////////////////////////////////////////////////////////////////
@@ -164,6 +144,14 @@ define("Tone/core/Tone", [], function(){
 	 *  @const
 	 */
 	Tone.prototype.bufferSize = 2048;
+
+	/**
+	 *  the delay time of a single buffer frame
+	 *  @type {number}
+	 *  @static
+	 *  @const
+	 */
+	Tone.prototype.bufferTime = Tone.prototype.bufferSize / Tone.context.sampleRate;
 	
 	///////////////////////////////////////////////////////////////////////////
 	//	CONNECTIONS
@@ -172,8 +160,8 @@ define("Tone/core/Tone", [], function(){
 	/**
 	 *  connect the output of a ToneNode to an AudioParam, AudioNode, or ToneNode
 	 *  @param  {Tone | AudioParam | AudioNode} unit 
-	 *  @param {number=} outputNum optionally which output to connect from
-	 *  @param {number=} inputNum optionally which input to connect to
+	 *  @param {number} [outputNum=0] optionally which output to connect from
+	 *  @param {number} [inputNum=0] optionally which input to connect to
 	 */
 	Tone.prototype.connect = function(unit, outputNum, inputNum){
 		if (Array.isArray(this.output)){
@@ -187,15 +175,20 @@ define("Tone/core/Tone", [], function(){
 	/**
 	 *  disconnect the output
 	 */
-	Tone.prototype.disconnect = function(){
-		this.output.disconnect();
+	Tone.prototype.disconnect = function(outputNum){
+		if (Array.isArray(this.output)){
+			outputNum = this.defaultArg(outputNum, 0);
+			this.output[outputNum].disconnect();
+		} else {
+			this.output.disconnect();
+		}
 	};
-	
+
 	/**
 	 *  connect together all of the arguments in series
 	 *  @param {...AudioParam|Tone|AudioNode}
 	 */
-	Tone.prototype.chain = function(){
+	Tone.prototype.connectSeries = function(){
 		if (arguments.length > 1){
 			var currentUnit = arguments[0];
 			for (var i = 1; i < arguments.length; i++){
@@ -210,7 +203,7 @@ define("Tone/core/Tone", [], function(){
 	 *  fan out the connection from the first argument to the rest of the arguments
 	 *  @param {...AudioParam|Tone|AudioNode}
 	 */
-	Tone.prototype.fan = function(){
+	Tone.prototype.connectParallel = function(){
 		var connectFrom = arguments[0];
 		if (arguments.length > 1){
 			for (var i = 1; i < arguments.length; i++){
@@ -219,6 +212,37 @@ define("Tone/core/Tone", [], function(){
 			}
 		}
 	};
+
+	/**
+	 *  connect the output of this node to the rest of the nodes in series.
+	 *  @param {...AudioParam|Tone|AudioNode}
+	 */
+	Tone.prototype.chain = function(){
+		if (arguments.length > 0){
+			var currentUnit = this;
+			for (var i = 0; i < arguments.length; i++){
+				var toUnit = arguments[i];
+				currentUnit.connect(toUnit);
+				currentUnit = toUnit;
+			}
+		}
+	};
+
+	/**
+	 *  connect the output of this node to the rest of the nodes in parallel.
+	 *  @param {...AudioParam|Tone|AudioNode}
+	 */
+	Tone.prototype.fan = function(){
+		if (arguments.length > 0){
+			for (var i = 1; i < arguments.length; i++){
+				this.connect(arguments[i]);
+			}
+		}
+	};
+
+	//give native nodes chain and fan methods
+	AudioNode.prototype.chain = Tone.prototype.chain;
+	AudioNode.prototype.fan = Tone.prototype.fan;
 
 	///////////////////////////////////////////////////////////////////////////
 	//	UTILITIES / HELPERS / MATHS
@@ -572,12 +596,14 @@ define("Tone/core/Tone", [], function(){
 
 	//setup the context
 	Tone._initAudioContext(function(audioContext){
+		//set the bufferTime
+		Tone.prototype.bufferTime = Tone.prototype.bufferSize / audioContext.sampleRate;
 		_silentNode = audioContext.createGain();
 		_silentNode.gain.value = 0;
 		_silentNode.connect(audioContext.destination);
 	});
 
-	console.log("Tone.js r2");
+	console.log("%c * Tone.js r3 * ", "background: #000; color: #fff");
 
 	return Tone;
 });

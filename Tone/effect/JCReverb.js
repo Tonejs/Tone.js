@@ -34,22 +34,25 @@ function(Tone){
 	 *
 	 *  @extends {Tone.Effect}
 	 *  @constructor
+	 *  @param {number} roomSize coorelates to the decay time
 	 */
 	Tone.JCReverb = function(){
-		Tone.StereoEffect.call(this);
+
+		var options = this.optionsObject(arguments, ["roomSize"], Tone.JCReverb.defaults);
+		Tone.StereoEffect.call(this, options);
 
 		/**
 		 *  room size control values between [0,1]
 		 *  @type {Tone.Signal}
 		 */
-		this.roomSize = new Tone.Signal(0.5);
+		this.roomSize = new Tone.Signal(options.roomSize);
 
 		/**
 		 *  scale the room size
 		 *  @type {Tone.Scale}
 		 *  @private
 		 */
-		this._scaleRoomSize = new Tone.Scale(0, 1, -0.733, 0.197);
+		this._scaleRoomSize = new Tone.Scale(-0.733, 0.197);
 
 		/**
 		 *  a series of allpass filters
@@ -75,7 +78,7 @@ function(Tone){
 
 		//and the comb filters
 		for (var cf = 0; cf < combFilterDelayTimes.length; cf++) {
-			var fbcf = new Tone.FeedbackCombFilter(combFilterDelayTimes[cf]);
+			var fbcf = new Tone.FeedbackCombFilter(combFilterDelayTimes[cf], 0.1);
 			this._scaleRoomSize.connect(fbcf.resonance);
 			fbcf.resonance.setValue(combFilterResonances[cf]);
 			this._allpassFilters[this._allpassFilters.length - 1].connect(fbcf);
@@ -89,12 +92,22 @@ function(Tone){
 
 		//chain the allpass filters together
 		this.roomSize.connect(this._scaleRoomSize);
-		this.chain.apply(this, this._allpassFilters);
+		this.connectSeries.apply(this, this._allpassFilters);
 		this.effectSendL.connect(this._allpassFilters[0]);
 		this.effectSendR.connect(this._allpassFilters[0]);
 	};
 
 	Tone.extend(Tone.JCReverb, Tone.StereoEffect);
+
+	/**
+	 *  the default values
+	 *  @static
+	 *  @const
+	 *  @type {Object}
+	 */
+	Tone.JCReverb.defaults = {
+		"roomSize" : 0.5
+	};
 
 	/**
 	 *  set the room size
@@ -129,8 +142,8 @@ function(Tone){
 		}
 		this._feedbackCombFilters = null;
 		this.roomSize.dispose();
-		this._scaleRoomSize.dispose();
 		this.roomSize = null;
+		this._scaleRoomSize.dispose();
 		this._scaleRoomSize = null;
 	};
 

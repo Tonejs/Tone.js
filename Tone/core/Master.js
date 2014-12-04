@@ -10,7 +10,6 @@ define(["Tone/core/Tone"], function(Tone){
 	 *  @extends {Tone}
 	 */
 	Tone.Master = function(){
-		//extend audio unit
 		Tone.call(this);
 
 		/**
@@ -20,9 +19,12 @@ define(["Tone/core/Tone"], function(Tone){
 		 */
 		this.limiter = this.context.createDynamicsCompressor();
 		this.limiter.threshold.value = 0;
+		this.attack = 0.001;
+		this.release = 0.01;
 		this.limiter.ratio.value = 20;
+		
 		//connect it up
-		this.chain(this.input, this.limiter, this.output, this.context.destination);
+		this.input.chain(this.limiter, this.output, this.context.destination);
 	};
 
 	Tone.extend(Tone.Master);
@@ -42,7 +44,7 @@ define(["Tone/core/Tone"], function(Tone){
 
 	/**
 	 *  @param {number} db volume in decibels 
-	 *  @param {Tone.Time=} fadeTime (optional) time it takes to reach the value
+	 *  @param {Tone.Time=} fadeTime time it takes to reach the value
 	 */
 	Tone.Master.prototype.setVolume = function(db, fadeTime){
 		var now = this.now();
@@ -63,6 +65,7 @@ define(["Tone/core/Tone"], function(Tone){
 
 	/**
 	 *  connect 'this' to the master output
+	 *  defined in "Tone/core/Master"
 	 */
 	Tone.prototype.toMaster = function(){
 		this.connect(Tone.Master);
@@ -78,14 +81,16 @@ define(["Tone/core/Tone"], function(Tone){
 
 	var MasterConstructor = Tone.Master;
 
-	//a single master output
-	Tone.Master = new Tone.Master();
-
 	/**
 	 *  initialize the module and listen for new audio contexts
 	 */
 	Tone._initAudioContext(function(){
-		MasterConstructor.call(Tone.Master);
+		//a single master output
+		if (!Tone.prototype.isUndef(Tone.Master)){
+			Tone.Master = new MasterConstructor();
+		} else {
+			MasterConstructor.call(Tone.Master);
+		}
 	});
 
 	return Tone.Master;

@@ -8,7 +8,7 @@ examples/scratch.html
 *.sublime-project
 
 # grunt modules
-utils/node_modules/*
+grunt/node_modules/*
 
 TODO.txt
 
@@ -24,3 +24,8 @@ examples/deps/FileSaver.js
 examples/oscilloscope.html
 
 .idea
+
+wiki
+test/performance
+
+examples/crashes.html

@@ -1,5 +1,7 @@
+<!DOCTYPE html>
 <html>
 <head>
+  <meta charset="utf-8">
 	<title>DUOSYNTH</title>
 
 	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
@@ -73,7 +75,7 @@
 
 		//osc 0
 		var ampEnv0 = new GUI.Envelope(envelope0, synth.voice0.envelope, "amplitude");
-		var osc0 = new GUI.Oscillator(envelope0, synth.voice0.oscillator, "oscillator");
+		var osc0 = new GUI.OmniOscillator(envelope0, synth.voice0.oscillator, "oscillator");
 		var osc0Vol = new GUI.Slider(envelope0, function(val){
 			var vol = synth.gainToDb(val);
 			synth.voice0.setVolume(vol);
@@ -82,7 +84,7 @@
 
 		//osc 1
 		var ampEnv1 = new GUI.Envelope(envelope1, synth.voice1.envelope, "amplitude");
-		var osc1 = new GUI.Oscillator(envelope1, synth.voice1.oscillator, "oscillator");
+		var osc1 = new GUI.OmniOscillator(envelope1, synth.voice1.oscillator, "oscillator");
 		var osc1Vol = new GUI.Slider(envelope1, function(val){
 			var vol = synth.gainToDb(val);
 			synth.voice1.setVolume(vol);
@@ -96,13 +98,13 @@
 		var minFilFreq0 = new GUI.Slider(filter0, function(val){
 			var freq = Math.pow(val, 2);
 			var scaled = freq * (max - min) + min;
-			synth.voice0.filterEnvelope.min = scaled;
+			synth.voice0.filterEnvelope.setMin(scaled);
 			return scaled;
 		}, min, "start freq", "hz");
 		var maxFilFreq0 = new GUI.Slider(filter0, function(val){
 			var freq = Math.pow(val, 2);
 			var scaled = freq * (max - min) + min;
-			synth.voice0.filterEnvelope.max = scaled;
+			synth.voice0.filterEnvelope.setMax(scaled);
 			return scaled;
 		}, min, "end freq", "hz");
 
@@ -111,13 +113,13 @@
 		var minFilFreq1 = new GUI.Slider(filter1, function(val){
 			var freq = Math.pow(val, 2);
 			var scaled = freq * (max - min) + min;
-			synth.voice1.filterEnvelope.min = scaled;
+			synth.voice1.filterEnvelope.setMin(scaled);
 			return scaled;
 		}, min, "start freq", "hz");
 		var maxFilFreq1 = new GUI.Slider(filter1, function(val){
 			var freq = Math.pow(val, 2);
 			var scaled = freq * (max - min) + min;
-			synth.voice1.filterEnvelope.max = scaled;
+			synth.voice1.filterEnvelope.setMax(scaled);
 			return scaled;
 		}, min, "end freq", "hz");
 		

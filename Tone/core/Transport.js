@@ -23,7 +23,9 @@ function(Tone){
 	 *  into a mathematical expression which will be evaluated to compute the desired time.
 	 *  
 	 *  No Argument, for methods which accept time, no argument will be interpreted as 
-	 *  0 seconds or "now" (i.e. the currentTime) depending on the context.
+	 *  "now" (i.e. the currentTime).
+	 *
+	 *  [Tone.Time Wiki](https://github.com/TONEnoTONE/Tone.js/wiki/Time)
 	 *  
 	 *  @typedef {number|string|undefined} Tone.Time 
 	 */
@@ -77,6 +79,21 @@ function(Tone){
 	 */
 	var tatum = 12;
 
+	/**
+	 *  controls which beat the swing is applied to
+	 *  defaults to an 16th note
+	 *  @private
+	 *  @type {number}
+	 */
+	var swingTatum = 3;
+
+	/**
+	 *  controls which beat the swing is applied to
+	 *  @private
+	 *  @type {number}
+	 */
+	var swingAmount = 0;
+
 	/** 
 	 * @private
 	 * @type {number}
@@ -88,6 +105,7 @@ function(Tone){
 	 * @type {number}
 	 */
 	var loopStart = 0;
+
 	/** 
 	 * @private
 	 * @type {number}
@@ -145,6 +163,10 @@ function(Tone){
 	 */
 	Tone.Transport.prototype._processTick = function(tickTime){
 		if (this.state === TransportState.STARTED){
+			if (swingAmount > 0 && timelineTicks % tatum !== 0 && timelineTicks % swingTatum === 0){
+				//add some swing
+				tickTime += Tone.Transport.ticksToSeconds(swingTatum) * swingAmount;
+			}
 			processIntervals(tickTime);
 			processTimeouts(tickTime);
 			processTimeline(tickTime);
@@ -237,11 +259,12 @@ function(Tone){
 	/**
 	 *  intervals are recurring events 
 	 *
-	 *  @example
+	 *  ```javascript
 	 *  //triggers a callback every 8th note with the exact time of the event
 	 *  Tone.Transport.setInterval(function(time){
 	 *  	envelope.triggerAttack(time);
 	 *  }, "8n");
+	 *  ```
 	 *  
 	 *  @param {function} callback
 	 *  @param {Tone.Time}   interval 
@@ -287,11 +310,12 @@ function(Tone){
 	 *  running for this to be triggered. All timeout events are cleared when the 
 	 *  transport is stopped. 
 	 *
-	 *  @example
+	 *  ```javascript
 	 *  //trigger an event to happen 1 second from now
 	 *  Tone.Transport.setTimeout(function(time){
 	 *  	player.start(time);
 	 *  }, 1)
+	 *  ```
 	 *  
 	 *  @param {function} callback 
 	 *  @param {Tone.Time}   time     
@@ -346,11 +370,12 @@ function(Tone){
 	 *  Unlike Timeout, Timeline events will restart after the 
 	 *  Tone.Transport has been stopped and restarted. 
 	 *
-	 *  @example
+	 *  ```javascript
 	 *  //trigger the start of a part on the 16th measure
 	 *  Tone.Transport.setTimeline(function(time){
 	 *  	part.start(time);
 	 *  }, "16m");
+	 *  ```
 	 *
 	 *  
 	 *  @param {function} 	callback 	
@@ -440,6 +465,23 @@ function(Tone){
 		this._setTicks(ticks);
 	};
 
+	/**
+	 *  returns the time of the next beat
+	 *  @param  {string} [subdivision="4n"]
+	 *  @return {number} 	the time in seconds of the next subdivision
+	 */
+	Tone.Transport.prototype.nextBeat = function(subdivision){
+		subdivision = this.defaultArg(subdivision, "4n");
+		var tickNum = this.toTicks(subdivision);
+		var remainingTicks = (transportTicks % tickNum);
+		var nextTick = remainingTicks;
+		if (remainingTicks > 0){
+			nextTick = tickNum - remainingTicks;
+		}
+		return this.ticksToSeconds(nextTick);
+	};
+
+
 	///////////////////////////////////////////////////////////////////////////////
 	//	START/STOP/PAUSE
 	///////////////////////////////////////////////////////////////////////////////
@@ -448,9 +490,13 @@ function(Tone){
 	 *  start the transport and all sources synced to the transport
 	 *  
 	 *  @param  {Tone.Time} time
+	 *  @param  {Tone.Time=} offset the offset position to start
 	 */
-	Tone.Transport.prototype.start = function(time){
+	Tone.Transport.prototype.start = function(time, offset){
 		if (this.state === TransportState.STOPPED || this.state === TransportState.PAUSED){
+			if (!this.isUndef(offset)){
+				this._setTicks(this.toTicks(offset));
+			}
 			this.state = TransportState.STARTED;
 			var startTime = this.toSeconds(time);
 			this._clock.start(startTime);
@@ -541,12 +587,13 @@ function(Tone){
 	/**
 	 *  set the time signature
 	 *  
-	 *  @example
+	 *  ```javascript
 	 *  this.setTimeSignature(3, 8); // 3/8
 	 *  this.setTimeSignature(4); // 4/4
+	 *  ```
 	 *  
 	 *  @param {number} numerator  the numerator of the time signature
-	 *  @param {number=} [denominator=4] the denominator of the time signature. this should
+	 *  @param {number} [denominator=4] the denominator of the time signature. this should
 	 *                                   be a multiple of 2. 
 	 */
 	Tone.Transport.prototype.setTimeSignature = function(numerator, denominator){
@@ -590,6 +637,29 @@ function(Tone){
 	Tone.Transport.prototype.setLoopPoints = function(startPosition, endPosition){
 		this.setLoopStart(startPosition);
 		this.setLoopEnd(endPosition);
+	};
+
+	/**
+	 *  set the amount of swing which is applied to the subdivision (defaults to 16th notes)
+	 *  @param {number} amount a value between 0-1 where 1 equal to the note + half the subdivision
+	 */
+	Tone.Transport.prototype.setSwing = function(amount){
+		//scale the values to a normal range
+		swingAmount = amount * 0.5;
+	};
+
+	/**
+	 *  set the subdivision which the swing will be applied to. the starting values is a 16th note. 
+	 *  
+	 *  ```javascript
+	 *  Tone.Transport.setSwingSubdivision("8n"); //the eight note will be swing by the "swing amount"
+	 *  ```
+	 *  
+	 *  @param {string} subdivision the subdivision in notation (i.e. 8n, 16n, 8t).
+	 *                              value must be less than a quarter note.
+	 */
+	Tone.Transport.prototype.setSwingSubdivision = function(subdivision){
+		swingTatum = this.toTicks(subdivision);
 	};
 
 	///////////////////////////////////////////////////////////////////////////////
@@ -710,6 +780,7 @@ function(Tone){
 	 *  	4n = quarter note
 	 *   	2m = two measures
 	 *    	8t = eighth-note triplet
+	 *  defined in "Tone/core/Transport"
 	 *  
 	 *  @return {boolean} 
 	 *  @method isNotation
@@ -724,6 +795,7 @@ function(Tone){
 
 	/**
 	 *  tests if a string is in Tick notation
+	 *  defined in "Tone/core/Transport"
 	 *  @return {boolean} 
 	 *  @method isTicks
 	 *  @lends Tone.prototype.isNotation
@@ -739,6 +811,7 @@ function(Tone){
 	 *  tests if a string is transportTime
 	 *  i.e. :
 	 *  	1:2:0 = 1 measure + two quarter notes + 0 sixteenth notes
+	 *  defined in "Tone/core/Transport"
 	 *  	
 	 *  @return {boolean} 
 	 *
@@ -755,6 +828,7 @@ function(Tone){
 	/**
 	 *  true if the input is in the format number+hz
 	 *  i.e.: 10hz
+	 *  defined in "Tone/core/Transport"
 	 *
 	 *  @param {number} freq 
 	 *  @return {boolean} 
@@ -769,10 +843,11 @@ function(Tone){
 		};
 	})();
 
-
 	/**
 	 *
 	 *  convert notation format strings to seconds
+	 *  defined in "Tone/core/Transport"
+	 *  
 	 *  @param  {string} notation     
 	 *  @param {number=} bpm 
 	 *  @param {number=} timeSignature 
@@ -803,6 +878,7 @@ function(Tone){
 
 	/**
 	 *  convert transportTime into seconds
+	 *  defined in "Tone/core/Transport"
 	 *  
 	 *  ie: 4:2:3 == 4 measures + 2 quarters + 3 sixteenths
 	 *
@@ -836,6 +912,8 @@ function(Tone){
 
 	/**
 	 *  convert ticks into seconds
+	 *  defined in "Tone/core/Transport"
+	 *  
 	 *  @param  {number} ticks 
 	 *  @param {number=} bpm 
 	 *  @param {number=} timeSignature
@@ -850,6 +928,7 @@ function(Tone){
 	/**
 	 *  Convert seconds to the closest transportTime in the form 
 	 *  	measures:quarters:sixteenths
+	 *  defined in "Tone/core/Transport"
 	 *
 	 *  @method toTransportTime
 	 *  
@@ -875,6 +954,7 @@ function(Tone){
 
 	/**
 	 *  convert a time to a frequency
+	 *  defined in "Tone/core/Transport"
 	 *  	
 	 *  @param  {Tone.Time} time 
 	 *  @return {number}      the time in hertz
@@ -891,6 +971,7 @@ function(Tone){
 
 	/**
 	 *  convert Tone.Time into seconds.
+	 *  defined in "Tone/core/Transport"
 	 *  
 	 *  unlike the method which it overrides, this takes into account 
 	 *  transporttime and musical notation
@@ -900,7 +981,6 @@ function(Tone){
 	 *  TransportTime: 2:4:1 (measure:quarters:sixteens)
 	 *  Now Relative: +3n
 	 *  Math: 3n+16n or even very complicated expressions ((3n*2)/6 + 1)
-	 *  Ticks: "146i"
 	 *
 	 *  @override
 	 *  @param  {Tone.Time} time       
@@ -916,15 +996,15 @@ function(Tone){
 			var plusTime = 0;
 			if(time.charAt(0) === "+") {
 				plusTime = now;
-				time = time.slice(1);				
+				time = time.slice(1);
 			} 
 			var components = time.split(/[\(\)\-\+\/\*]/);
 			if (components.length > 1){
-				var oringalTime = time;
+				var originalTime = time;
 				for(var i = 0; i < components.length; i++){
-					var symb = components[i];
+					var symb = components[i].trim();
 					if (symb !== ""){
-						var val = this.toSeconds(symb.trim());
+						var val = this.toSeconds(symb);
 						time = time.replace(symb, val);
 					}
 				}
@@ -932,7 +1012,7 @@ function(Tone){
 					//i know eval is evil, but i think it's safe here
 					time = eval(time); // jshint ignore:line
 				} catch (e){
-					throw new EvalError("problem evaluating Tone.Time: "+oringalTime);
+					throw new EvalError("problem evaluating Tone.Time: "+originalTime);
 				}
 			} else if (this.isNotation(time)){
 				time = this.notationToSeconds(time);
@@ -950,22 +1030,24 @@ function(Tone){
 	};
 
 	var TransportConstructor = Tone.Transport;
-	//a single transport object
-	Tone.Transport = new Tone.Transport();
-	Tone.Transport.setBpm(120);
 
 	Tone._initAudioContext(function(){
-		//stop the clock
-		Tone.Transport.stop();
-		//get the previous bpm
-		var bpm = Tone.Transport.getBpm();
-		//destory the old clock
-		Tone.Transport._clock.dispose();
-		//make new Transport insides
-		TransportConstructor.call(Tone.Transport);
-		//set the bpm
-		Tone.Transport.setBpm(bpm);
-
+		if (typeof Tone.Transport === "function"){
+			//a single transport object
+			Tone.Transport = new Tone.Transport();
+			Tone.Transport.setBpm(120);
+		} else {
+			//stop the clock
+			Tone.Transport.stop();
+			//get the previous bpm
+			var bpm = Tone.Transport.getBpm();
+			//destory the old clock
+			Tone.Transport._clock.dispose();
+			//make new Transport insides
+			TransportConstructor.call(Tone.Transport);
+			//set the bpm
+			Tone.Transport.setBpm(bpm);
+		}
 	});
 
 	return Tone.Transport;

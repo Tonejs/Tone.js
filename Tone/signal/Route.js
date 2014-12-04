@@ -7,24 +7,13 @@ define(["Tone/core/Tone", "Tone/signal/Equal", "Tone/signal/Signal"], function(T
 	 *
 	 *
 	 *  @constructor
-	 *  @extends {Tone}
-	 *  @param {number=} [outputCount=2] the number of inputs the switch accepts
+	 *  @extends {Tone.SignalBase}
+	 *  @param {number} [outputCount=2] the number of inputs the switch accepts
 	 */
 	Tone.Route = function(outputCount){
 
 		outputCount = this.defaultArg(outputCount, 2);
-
-		/**
-		 *  the array of outputs
-		 *  @type {Array<RouteGate>}
-		 */
-		this.output = new Array(outputCount);
-
-		/**
-		 *  a single input
-		 *  @type {GainNode}
-		 */
-		this.input = this.context.createGain();
+		Tone.call(this, 1, outputCount);
 
 		/**
 		 *  the control signal
@@ -41,11 +30,11 @@ define(["Tone/core/Tone", "Tone/signal/Equal", "Tone/signal/Signal"], function(T
 		}
 	};
 
-	Tone.extend(Tone.Route);
+	Tone.extend(Tone.Route, Tone.SignalBase);
 
 	/**
 	 *  routes the signal to one of the outputs and close the others
-	 *  @param {number=} [which=0] open one of the gates (closes the other)
+	 *  @param {number} [which=0] open one of the gates (closes the other)
 	 *  @param {Tone.Time} time the time when the switch will open
 	 */
 	Tone.Route.prototype.select = function(which, time){
@@ -53,13 +42,6 @@ define(["Tone/core/Tone", "Tone/signal/Equal", "Tone/signal/Signal"], function(T
 		which = Math.floor(which);
 		this.gate.setValueAtTime(which, this.toSeconds(time));
 	};
-
-	/**
-	 *  borrows the method from {@link Tone.Signal}
-	 *  
-	 *  @function
-	 */
-	Tone.Route.prototype.connect = Tone.Signal.prototype.connect;
 
 	/**
 	 *  dispose method

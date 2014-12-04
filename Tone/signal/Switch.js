@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Threshold"], function(Tone){
+define(["Tone/core/Tone", "Tone/signal/SignalBase", "Tone/signal/GreaterThan"], function(Tone){
 
 	"use strict";
 
@@ -8,7 +8,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Threshold"], functi
 	 *          the gate is initially closed.
 	 *
 	 *  @constructor
-	 *  @extends {Tone}
+	 *  @extends {Tone.SignalBase}
 	 */
 	Tone.Switch = function(){
 		Tone.call(this);
@@ -23,17 +23,17 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Threshold"], functi
 		this.gate = new Tone.Signal(0);
 
 		/**
-		 *  thresh the control signal
-		 *  @type {Tone.Threshold}
+		 *  thresh the control signal to either 0 or 1
+		 *  @type {Tone.GreaterThan}
 		 *  @private
 		 */
-		this._thresh = new Tone.Threshold(0.5);
+		this._thresh = new Tone.GreaterThan(0.5);
 
 		this.input.connect(this.output);
-		this.chain(this.gate, this._thresh, this.output.gain);
+		this.gate.chain(this._thresh, this.output.gain);
 	};
 
-	Tone.extend(Tone.Switch);
+	Tone.extend(Tone.Switch, Tone.SignalBase);
 
 	/**
 	 *  open the switch at a specific time
@@ -52,13 +52,6 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Threshold"], functi
 	Tone.Switch.prototype.close = function(time){
 		this.gate.setValueAtTime(0, this.toSeconds(time));
 	}; 
-
-	/**
-	 *  borrows the method from {@link Tone.Signal}
-	 *  
-	 *  @function
-	 */
-	Tone.Switch.prototype.connect = Tone.Signal.prototype.connect;
 
 	/**
 	 *  clean up

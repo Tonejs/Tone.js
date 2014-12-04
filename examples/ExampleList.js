@@ -14,7 +14,8 @@ var ExampleList = {
 	"Effects" : {
 		"AutoPanner" : "autoPanner",
 		"PingPongDelay" : "pingPongDelay",
-		"Buses" : "buses"
+		"Buses" : "buses",
+		"Convolver" : "convolver"
 	},
 	"Instruments" : {
 		"MonoSynth" : "monoSynth",

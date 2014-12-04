@@ -1,30 +1,33 @@
-define(["Tone/core/Tone", "Tone/source/Player", "Tone/component/AmplitudeEnvelope", "Tone/component/Filter", "Tone/instrument/Instrument"], 
+define(["Tone/core/Tone", "Tone/source/Player", "Tone/component/AmplitudeEnvelope", "Tone/component/ScaledEnvelope",
+	"Tone/component/Filter", "Tone/instrument/Instrument"], 
 function(Tone){
 
 	"use strict";
 
 	/**
 	 *  @class A simple sampler instrument which plays an audio buffer 
-	 *         through an amplitude envelope and optionally a filter
-	 *         envelope.
+	 *         through an amplitude envelope and a filter envelope.
 	 *
 	 *  @constructor
 	 *  @extends {Tone.Instrument}
 	 *  @param {string|object} url the url of the audio file
-	 *  @param {function} load called when the sample has been loaded
+	 *  @param {function} onload called when the sample has been loaded
 	 */
 	Tone.Sampler = function(){
 
 		Tone.Instrument.call(this);
-
-		var options = this.optionsObject(arguments, ["url", "load"], Tone.Sampler.defaults);
+		var options = this.optionsObject(arguments, ["url", "onload"], Tone.Sampler.defaults);
 
 		/**
 		 *  the sample player
 		 *  @type {Tone.Player}
 		 */
-		this.player = new Tone.Player(options.url, options.load);
-		this.player.retrigger = true;
+		this.player = new Tone.Player({
+			url : options.url, 
+			onload : options.onload,
+			retrigger : true
+		});
+		this.player.set(options.player);
 
 		/**
 		 *  the amplitude envelope
@@ -36,7 +39,7 @@ function(Tone){
 		 *  the filter envelope
 		 *  @type {Tone.Envelope}
 		 */
-		this.filterEnvelope = new Tone.Envelope(options.filterEnvelope);
+		this.filterEnvelope = new Tone.ScaledEnvelope(options.filterEnvelope);
 
 		/**
 		 *  the filter
@@ -45,7 +48,7 @@ function(Tone){
 		this.filter = new Tone.Filter(options.filter);
 
 		//connections
-		this.chain(this.player, this.filter, this.envelope, this.output);
+		this.player.chain(this.filter, this.envelope, this.output);
 		this.filterEnvelope.connect(this.filter.frequency);
 	};
 
@@ -57,8 +60,11 @@ function(Tone){
 	 *  @static
 	 */
 	Tone.Sampler.defaults = {
-		"url" : null,
-		"load" : function(){},
+		"url" : undefined,
+		"onload" : function(){},
+		"player" : {
+			"loop" : false,
+		},
 		"envelope" : {
 			"attack" : 0.001,
 			"decay" : 0,
@@ -71,7 +77,8 @@ function(Tone){
 			"sustain" : 1,
 			"release" : 0.5,
 			"min" : 20,
-			"max" : 20000
+			"max" : 20000,
+			"exponent" : 2,
 		},
 		"filter" : {
 			"type" : "lowpass"
@@ -85,6 +92,7 @@ function(Tone){
 	 Tone.Sampler.prototype.set = function(params){
 	 	if (!this.isUndef(params.filterEnvelope)) this.filterEnvelope.set(params.filterEnvelope);
 	 	if (!this.isUndef(params.envelope)) this.envelope.set(params.envelope);
+	 	if (!this.isUndef(params.player)) this.player.set(params.player);
 	 	if (!this.isUndef(params.filter)) this.filter.set(params.filter);
 	 };
 
@@ -99,7 +107,7 @@ function(Tone){
 		time = this.toSeconds(time);
 		note = this.defaultArg(note, 0);
 		this.player.setPlaybackRate(this.intervalToFrequencyRatio(note), time);
-		this.player.start(time);
+		this.player.start(time, 0);
 		this.envelope.triggerAttack(time, velocity);
 		this.filterEnvelope.triggerAttack(time);
 	};
@@ -113,6 +121,7 @@ function(Tone){
 		time = this.toSeconds(time);
 		this.filterEnvelope.triggerRelease(time);
 		this.envelope.triggerRelease(time);
+		this.player.stop(this.toSeconds(this.envelope.release) + time);
 	};
 
 	/**

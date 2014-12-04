@@ -14,7 +14,9 @@ define(["Tone/core/Tone", "Tone/instrument/FMSynth"], function(Tone){
 			"carrier" : {
 				"volume" : 0,
 				"portamento" : 0,
-				"oscType" : "square",
+				"oscillator" : {
+					"type" : "square"
+				},
 				"filter" : {
 					"Q" : 2,
 					"type" : "lowpass",
@@ -38,7 +40,9 @@ define(["Tone/core/Tone", "Tone/instrument/FMSynth"], function(Tone){
 			"modulator" : {
 				"volume" : -6,
 				"portamento" : 0,
-				"oscType" : "triangle",
+				"oscillator" : {
+					"type" : "triangle"
+				},
 				"filter" : {
 					"Q" : 0,
 					"type" : "lowpass",
@@ -67,7 +71,9 @@ define(["Tone/core/Tone", "Tone/instrument/FMSynth"], function(Tone){
 			"carrier" : {
 				"volume" : 0,
 				"portamento" : 0,
-				"oscType" : "triangle",
+				"oscillator" : {
+					"type" : "triangle"
+				},
 				"filter" : {
 					"Q" : 2,
 					"type" : "lowpass",
@@ -91,7 +97,9 @@ define(["Tone/core/Tone", "Tone/instrument/FMSynth"], function(Tone){
 			"modulator" : {
 				"volume" : -1,
 				"portamento" : 0,
-				"oscType" : "sine",
+				"oscillator" : {
+					"type" : "sine"
+				},
 				"filter" : {
 					"Q" : 0,
 					"type" : "lowpass",
@@ -120,7 +128,9 @@ define(["Tone/core/Tone", "Tone/instrument/FMSynth"], function(Tone){
 			"carrier" : {
 				"volume" : 0,
 				"portamento" : 0,
-				"oscType" : "square",
+				"oscillator" : {
+					"type" : "square"
+				},
 				"filter" : {
 					"Q" : 2,
 					"type" : "lowpass",
@@ -144,7 +154,9 @@ define(["Tone/core/Tone", "Tone/instrument/FMSynth"], function(Tone){
 			"modulator" : {
 				"volume" : -6,
 				"portamento" : 0,
-				"oscType" : "sine",
+				"oscillator" : {
+					"type" : "sine"
+				},
 				"filter" : {
 					"Q" : 1,
 					"type" : "highpass",
@@ -173,7 +185,9 @@ define(["Tone/core/Tone", "Tone/instrument/FMSynth"], function(Tone){
 			"carrier" : {
 				"volume" : 0,
 				"portamento" : 0,
-				"oscType" : "square",
+				"oscillator" : {
+					"type" : "square"
+				},
 				"filter" : {
 					"Q" : 2,
 					"type" : "lowpass",
@@ -197,7 +211,9 @@ define(["Tone/core/Tone", "Tone/instrument/FMSynth"], function(Tone){
 			"modulator" : {
 				"volume" : -3,
 				"portamento" : 0,
-				"oscType" : "sine",
+				"oscillator" : {
+					"type" : "sine"
+				},
 				"filter" : {
 					"Q" : 1,
 					"type" : "lowpass",
