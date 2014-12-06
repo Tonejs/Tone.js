@@ -109,21 +109,15 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 	/**
 	 *  Schedules an exponential continuous change in parameter value from 
 	 *  the previous scheduled parameter value to the given value.
-	 *
-	 *  NOTE: Chrome will throw an error if you try to exponentially ramp to a 
-	 *  value 0 or less. 
 	 *  
 	 *  @param  {number} value   
 	 *  @param  {Tone.Time} endTime 
 	 */
 	Tone.Signal.prototype.exponentialRampToValueAtTime = function(value, endTime){
 		value *= this._syncRatio;
-		try {
-			this._scalar.gain.exponentialRampToValueAtTime(value, this.toSeconds(endTime));
-		} catch(e){
-			//firefox won't let the signal ramp past 1, in these cases, revert to linear ramp
-			this._scalar.gain.linearRampToValueAtTime(value, this.toSeconds(endTime));
-		}
+		//can't go below a certain value
+		value = Math.max(0.00001, value);
+		this._scalar.gain.exponentialRampToValueAtTime(value, this.toSeconds(endTime));
 	};
 
 	/**
