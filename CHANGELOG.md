@@ -1,3 +1,8 @@
+### r4 - Cool is cool
+
+* toFrequency accepts notes by name (i.e. "C4")
+* Tone.Envelope no longer accepts exponential scaling, only Tone.ScaledEnvelope
+
 ### r3 - Expressive Signal
 
 Core Change:
