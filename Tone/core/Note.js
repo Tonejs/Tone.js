@@ -202,6 +202,44 @@ define(["Tone/core/Tone", "Tone/core/Transport"], function(Tone){
 	};
 
 	/**
+	 *  test if a string is in note format: i.e. "C4"
+	 *  @param  {string|number}  note the note to test
+	 *  @return {boolean}      true if it's in the form of a note
+	 *  @method isNotation
+	 *  @lends Tone.prototype.isNotation
+	 */
+	Tone.prototype.isNote = ( function(){
+		var noteFormat = new RegExp(/[a-g]{1}([b#]{1}|[b#]{0})[0-9]+$/i);
+		return function(note){
+			if (typeof note === "string"){
+				note = note.toLowerCase();
+			} 
+			return noteFormat.test(note);
+		};
+	})();
+
+	/**
+	 *  a pointer to the previous toFrequency method
+	 *  @private
+	 *  @function
+	 */
+	Tone.prototype._overwrittenToFrequency = Tone.prototype.toFrequency;
+
+	/**
+	 *  a to frequency method which accepts frequencies in the form
+	 *  of notes ("C#4"), frequencies as strings ("49hz"), frequency numbers,
+	 *  or notation ("4n")
+	 *  @param  {string|number} note [description]
+	 *  @return {[type]}      [description]
+	 */
+	Tone.prototype.toFrequency = function(note){
+		if (this.isNote(note)){
+			note = this.noteToFrequency(note);
+		} 
+		return this._overwrittenToFrequency(note);
+	};
+
+	/**
 	 *  convert a note name (i.e. A4, C#5, etc to a frequency)
 	 *  defined in "Tone/core/Note"
 	 *  

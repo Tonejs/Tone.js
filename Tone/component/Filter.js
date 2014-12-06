@@ -31,7 +31,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 		 *  the frequency of the filter
 		 *  @type {Tone.Signal}
 		 */
-		this.frequency = new Tone.Signal(options.frequency);
+		this.frequency = new Tone.Signal(this.toFrequency(options.frequency));
 
 		/**
 		 *  the detune parameter
@@ -85,7 +85,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	Tone.Filter.prototype.set = function(params){
 		if (!this.isUndef(params.type)) this.setType(params.type);
 		if (!this.isUndef(params.detune)) this.detune.setValue(params.detune);
-		if (!this.isUndef(params.frequency)) this.frequency.setValue(params.frequency);
+		if (!this.isUndef(params.frequency)) this.setFrequency(params.frequency);
 		if (!this.isUndef(params.Q)) this.Q.setValue(params.Q);
 		if (!this.isUndef(params.gain)) this.gain.setValue(params.gain);
 		if (!this.isUndef(params.rolloff)) this.setRolloff(params.rolloff);
@@ -112,10 +112,10 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 
 	/**
 	 *  set the frequency
-	 *  @param {number} freq the frequency value
+	 *  @param {number|string} freq the frequency value
 	 */
 	Tone.Filter.prototype.setFrequency = function(freq){
-		this.frequency.setValue(freq);
+		this.frequency.setValue(this.toFrequency(freq));
 	};
 
 	/**

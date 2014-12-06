@@ -124,10 +124,11 @@ function(Tone){
 	 *  @param {Tone.Time=} rampTime when the oscillator will arrive at the frequency
 	 */
 	Tone.Oscillator.prototype.setFrequency = function(val, rampTime){
+		val = this.toFrequency(val);
 		if (rampTime){
-			this.frequency.exponentialRampToValueAtTime(this.toFrequency(val), this.toSeconds(rampTime));
+			this.frequency.exponentialRampToValueAtTime(val, this.toSeconds(rampTime));
 		} else {
-			this.frequency.setValue(this.toFrequency(val));
+			this.frequency.setValue(val);
 		}
 	};
 
