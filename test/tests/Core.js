@@ -120,6 +120,13 @@ define(["chai", "Tone/core/Tone", "Tone/core/Master", "Tone/core/Bus",
 			expect(tone.intervalToFrequencyRatio(12)).to.equal(2);
 			expect(tone.intervalToFrequencyRatio(7)).to.be.closeTo(1.5, 0.01);
 		});
+
+		it("can convert different representations into frequencies", function(){
+			expect(tone.toFrequency("4n")).to.equal(2);
+			expect(tone.toFrequency("4hz")).to.equal(4);
+			expect(tone.toFrequency("A4")).to.be.closeTo(440, 0.001);
+			expect(tone.toFrequency(990)).to.equal(990);
+		});
 	});
 
 	describe("Tone.Master", function(){
