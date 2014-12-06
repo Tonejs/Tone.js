@@ -4,7 +4,6 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Pow"], function(Ton
 
 	/**
 	 *  @class  ADSR envelope generator attaches to an AudioParam or Signal. 
-	 *          Includes an optional exponent
 	 *
 	 *  @constructor
 	 *  @extends {Tone}
@@ -47,17 +46,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Pow"], function(Ton
 		 *  @type {Tone.Signal}
 		 *  @private
 		 */
-		this._sig = new Tone.Signal(0);
-		
-		/** 
-		 *  scale the incoming signal by an exponent
-		 *  @type {Tone.Pow}
-		 *  @private
-		 */
-		this._exp = this.output = new Tone.Pow(options.exponent);
-
-		//connections
-		this._sig.connect(this._exp);
+		this._sig = this.output = new Tone.Signal(0);
 	};
 
 	Tone.extend(Tone.Envelope);
@@ -72,7 +61,6 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Pow"], function(Ton
 		"decay" : 0.1,
 		"sustain" : 0.5,
 		"release" : 1,
-		"exponent" : 1
 	};
 
 	/**
@@ -85,7 +73,6 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Pow"], function(Ton
 		if (!this.isUndef(params.decay)) this.setDecay(params.decay);
 		if (!this.isUndef(params.sustain)) this.setSustain(params.sustain);
 		if (!this.isUndef(params.release)) this.setRelease(params.release);
-		if (!this.isUndef(params.exponent)) this.setExponent(params.exponent);
 	};
 
 	/**
@@ -118,14 +105,6 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Pow"], function(Ton
 	 */
 	Tone.Envelope.prototype.setSustain = function(sustain){
 		this.sustain = sustain;
-	};
-
-	/**
-	 *  set the exponent which scales the signal
-	 *  @param {number} exp
-	 */
-	Tone.Envelope.prototype.setExponent = function(exp){
-		this._exp.setExponent(exp);
 	};
 
 	/**
@@ -190,8 +169,6 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Pow"], function(Ton
 		Tone.prototype.dispose.call(this);
 		this._sig.dispose();
 		this._sig = null;
-		this._exp.dispose();
-		this._exp = null;
 	};
 
 	return Tone.Envelope;

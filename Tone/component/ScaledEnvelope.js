@@ -21,6 +21,13 @@ define(["Tone/core/Tone", "Tone/component/Envelope", "Tone/signal/Scale"],
 		Tone.Envelope.call(this, options);
 		options = this.defaultArg(options, Tone.ScaledEnvelope.defaults);
 
+		/** 
+		 *  scale the incoming signal by an exponent
+		 *  @type {Tone.Pow}
+		 *  @private
+		 */
+		this._exp = this.output = new Tone.Pow(options.exponent);
+
 		/**
 		 *  scale the signal to the desired range
 		 *  @type {Tone.Multiply}
@@ -28,7 +35,7 @@ define(["Tone/core/Tone", "Tone/component/Envelope", "Tone/signal/Scale"],
 		 */
 		this._scale = this.output = new Tone.Scale(options.min, options.max);
 
-		this._sig.connect(this._scale);
+		this._sig.chain(this._exp, this._scale);
 	};
 
 	Tone.extend(Tone.ScaledEnvelope, Tone.Envelope);
@@ -40,6 +47,7 @@ define(["Tone/core/Tone", "Tone/component/Envelope", "Tone/signal/Scale"],
 	Tone.ScaledEnvelope.defaults = {
 		"min" : 0,
 		"max" : 1,
+		"exponent" : 1
 	};
 
 	/**
@@ -70,12 +78,22 @@ define(["Tone/core/Tone", "Tone/component/Envelope", "Tone/signal/Scale"],
 	};
 
 	/**
+	 *  set the exponent which scales the signal
+	 *  @param {number} exp
+	 */
+	Tone.ScaledEnvelope.prototype.setExponent = function(exp){
+		this._exp.setExponent(exp);
+	};
+
+	/**
 	 *  clean up
 	 */
 	Tone.ScaledEnvelope.prototype.dispose = function(){
 		Tone.Envelope.prototype.dispose.call(this);
 		this._scale.dispose();
 		this._scale = null;
+		this._exp.dispose();
+		this._exp = null;
 	};
 
 	return Tone.ScaledEnvelope;
