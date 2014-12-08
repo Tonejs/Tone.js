@@ -1,5 +1,5 @@
 define(["Tone/core/Tone", "Tone/instrument/MonoSynth", "Tone/signal/Signal", "Tone/signal/Multiply", 
-	"Tone/instrument/Monophonic", "Tone/signal/Expr"], 
+	"Tone/instrument/Monophonic", "Tone/signal/AudioToGain"], 
 function(Tone){
 
 	"use strict";
@@ -48,10 +48,10 @@ function(Tone){
 
 		/**
 		 *  convert the -1,1 output to 0,1
-		 *  @type {Tone.Expr}
+		 *  @type {Tone.AudioToGain}
 		 *  @private
 		 */
-		this._modulationScale = new Tone.Expr("($0 + 1) * 0.5");
+		this._modulationScale = new Tone.AudioToGain();
 
 		/**
 		 *  the node where the modulation happens
