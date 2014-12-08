@@ -12,19 +12,19 @@ function(Tone){
 	 *
 	 *  @constructor
 	 *  @extends {Tone}
-	 *  @param {Tone.Time} [rate="4n"]
+	 *  @param {Tone.Time} [frequency="4n"]
 	 *  @param {number} [outputMin=0]
 	 *  @param {number} [outputMax=1]
 	 */
 	Tone.LFO = function(){
 
-		var options = this.optionsObject(arguments, ["rate", "min", "max"], Tone.LFO.defaults);
+		var options = this.optionsObject(arguments, ["frequency", "min", "max"], Tone.LFO.defaults);
 
 		/** 
 		 *  the oscillator
 		 *  @type {Tone.Oscillator}
 		 */
-		this.oscillator = new Tone.Oscillator(options.rate, options.type);
+		this.oscillator = new Tone.Oscillator(options.frequency, options.type);
 
 		/**
 		 *  pointer to the oscillator's frequency
