@@ -7,7 +7,7 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/LFO", "Tone/comp
 	 *
 	 *  @constructor
 	 *  @extends {Tone.Effect}
-	 *  @param { number= } frequency (optional) rate in HZ of the left-right pan
+	 *  @param {number} [frequency=1] (optional) rate in HZ of the left-right pan
 	 */
 	Tone.AutoPanner = function(){
 
@@ -63,6 +63,20 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/LFO", "Tone/comp
 	 */
 	Tone.AutoPanner.prototype.stop = function(time){
 		this._lfo.stop(time);
+	};
+
+	/**
+	 * sync the panner to the transport
+	 */
+	Tone.AutoPanner.prototype.sync = function(){
+		this._lfo.sync();
+	};
+
+	/**
+	 * unsync the panner from the transport
+	 */
+	Tone.AutoPanner.prototype.unsync = function(){
+		this._lfo.unsync();
 	};
 
 	/**
