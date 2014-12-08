@@ -29,10 +29,9 @@ function(Tone){
 
 		/**
 		 *  the array of voices
-		 *  @private
 		 *  @type {Array}
 		 */
-		this._voices = new Array(options.polyphony);
+		this.voices = new Array(options.polyphony);
 
 		/**
 		 *  the queue of free voices
@@ -51,12 +50,12 @@ function(Tone){
 		//create the voices
 		for (var i = 0; i < options.polyphony; i++){
 			var v = new options.voice(options.voiceOptions);
-			this._voices[i] = v;
+			this.voices[i] = v;
 			v.connect(this.output);
 		}
 
 		//make a copy of the voices
-		this._freeVoices = this._voices.slice(0);
+		this._freeVoices = this.voices.slice(0);
 	};
 
 	Tone.extend(Tone.PolySynth, Tone.Instrument);
@@ -144,8 +143,8 @@ function(Tone){
 	 *  @param {Object} params 
 	 */
 	Tone.PolySynth.prototype.set = function(params){
-		for (var i = 0; i < this._voices.length; i++){
-			this._voices[i].set(params);
+		for (var i = 0; i < this.voices.length; i++){
+			this.voices[i].set(params);
 		}
 	};
 
@@ -153,8 +152,8 @@ function(Tone){
 	 *  @param {string} presetName the preset name
 	 */
 	Tone.PolySynth.prototype.setPreset = function(presetName){
-		for (var i = 0; i < this._voices.length; i++){
-			this._voices[i].setPreset(presetName);
+		for (var i = 0; i < this.voices.length; i++){
+			this.voices[i].setPreset(presetName);
 		}
 	};
 
@@ -163,11 +162,11 @@ function(Tone){
 	 */
 	Tone.PolySynth.prototype.dispose = function(){
 		Tone.Instrument.prototype.dispose.call(this);
-		for (var i = 0; i < this._voices.length; i++){
-			this._voices[i].dispose();
-			this._voices[i] = null;
+		for (var i = 0; i < this.voices.length; i++){
+			this.voices[i].dispose();
+			this.voices[i] = null;
 		}
-		this._voices = null;
+		this.voices = null;
 		this._activeVoices = null;
 		this._freeVoices = null;
 	};
