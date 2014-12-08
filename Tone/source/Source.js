@@ -75,7 +75,7 @@ define(["Tone/core/Tone", "Tone/core/Transport"], function(Tone){
 			this.output.gain.setValueAtTime(currentVolume, now);
 			this.output.gain.linearRampToValueAtTime(gain, now + this.toSeconds(fadeTime));
 		} else {
-			this.output.gain.setValueAtTime(gain, now);
+			this.output.gain.value = gain;
 		}
 	};
 
