@@ -1,8 +1,9 @@
 /* global it, describe, maxTimeout */
 
 define(["tests/Core", "chai", "Tone/signal/Signal", "Tone/source/Oscillator", 
-	"Tone/signal/Threshold", "Tone/signal/Switch", "Tone/signal/Route", "Tone/signal/Select", "tests/Common"], 
-function(core, chai, Signal, Oscillator, Threshold, Switch, Route, Select, Test){
+	"Tone/signal/Switch", "Tone/signal/Route", "Tone/signal/Select", "tests/Common",
+	"Tone/signal/NOT", "Tone/signal/AND", "Tone/signal/OR", "Tone/signal/IfThenElse", "Tone/signal/WaveShaper"], 
+function(core, chai, Signal, Oscillator, Switch, Route, Select, Test, NOT, AND, OR, IfThenElse, WaveShaper){
 
 	var expect = chai.expect;
 
@@ -12,7 +13,7 @@ function(core, chai, Signal, Oscillator, Threshold, Switch, Route, Select, Test)
 		it("can be created and disposed", function(){
 			var s = new Signal();
 			s.dispose();
-			Test.wasDisposed(s, expect);
+			Test.wasDisposed(s);
 		});
 
 		it("can start with a value initially", function(){
@@ -92,71 +93,13 @@ function(core, chai, Signal, Oscillator, Threshold, Switch, Route, Select, Test)
 		});
 	});
 
-	describe("Tone.Threshold", function(){
-		this.timeout(maxTimeout);
-
-		it("can be created and disposed", function(){
-			var thresh = new Threshold();
-			thresh.dispose();
-			Test.wasDisposed(thresh, expect);
-		});
-
-		it("thresholds an incoming signal to 0 when it is below the thresh", function(done){
-			var signal, thresh;
-			Test.offlineTest(0.2, function(dest){
-				signal = new Signal(0.1);
-				thresh = new Threshold(0.5);
-				signal.connect(thresh);
-				thresh.connect(dest);
-			}, function(sample){
-				expect(sample).to.equal(0);
-			}, function(){
-				signal.dispose();
-				thresh.dispose();
-				done();
-			});
-		});
-
-		it("thresholds an incoming signal to 1 when it is above the thresh", function(done){
-			var signal, thresh;
-			Test.offlineTest(0.2, function(dest){
-				signal = new Signal(0.8);
-				thresh = new Threshold(0.75);
-				signal.connect(thresh);
-				thresh.connect(dest);
-			}, function(sample){
-				expect(sample).to.equal(1);
-			}, function(){
-				signal.dispose();
-				thresh.dispose();
-				done();
-			});
-		});
-
-		it("outputs 1 when the values are the same", function(done){
-			var signal, thresh;
-			Test.offlineTest(0.2, function(dest){
-				signal = new Signal(0.8);
-				thresh = new Threshold(0.8);
-				signal.connect(thresh);
-				thresh.connect(dest);
-			}, function(sample){
-				expect(sample).to.equal(1);
-			}, function(){
-				signal.dispose();
-				thresh.dispose();
-				done();
-			});
-		});
-	});
-
 	describe("Tone.Switch", function(){
 		this.timeout(maxTimeout);
 
 		it("can be created and disposed", function(){
 			var sw = new Switch();
 			sw.dispose();
-			Test.wasDisposed(sw, expect);
+			Test.wasDisposed(sw);
 		});
 
 		it("can stop a signal from passing through", function(done){
@@ -199,7 +142,7 @@ function(core, chai, Signal, Oscillator, Threshold, Switch, Route, Select, Test)
 		it("can be created and disposed", function(){
 			var r = new Route();
 			r.dispose();
-			Test.wasDisposed(r, expect);
+			Test.wasDisposed(r);
 		});
 
 		it("can route a signal to first output", function(done){
@@ -277,7 +220,7 @@ function(core, chai, Signal, Oscillator, Threshold, Switch, Route, Select, Test)
 		it("can be created and disposed", function(){
 			var s = new Select();
 			s.dispose();
-			Test.wasDisposed(s, expect);
+			Test.wasDisposed(s);
 		});
 
 		it("can select the first signal", function(done){
@@ -321,4 +264,305 @@ function(core, chai, Signal, Oscillator, Threshold, Switch, Route, Select, Test)
 		});
 	});
 
+	describe("Tone.IfThenElse", function(){
+		this.timeout(maxTimeout);
+
+		it("can be created and disposed", function(){
+			var ite = new IfThenElse();
+			ite.dispose();
+			Test.wasDisposed(ite);
+		});
+
+		it("selects the second input (then) when input 0 (if) is 1", function(done){
+			var signal0, signal1, signal2, ite;
+			Test.offlineTest(0.2, function(dest){
+				signal0 = new Signal(1);
+				signal1 = new Signal(10);
+				signal2 = new Signal(20);
+				ite = new IfThenElse();
+				signal0.connect(ite, 0, 0);
+				signal1.connect(ite, 0, 1);
+				signal2.connect(ite, 0, 2);
+				ite.connect(dest);
+			}, function(sample){
+				expect(sample).to.equal(10);
+			}, function(){
+				signal0.dispose();
+				signal1.dispose();
+				signal2.dispose();
+				ite.dispose();
+				done();
+			});
+		});
+
+		it("selects the third input (else) when input 0 (if) is not 1", function(done){
+			var signal0, signal1, signal2, ite;
+			Test.offlineTest(0.2, function(dest){
+				signal0 = new Signal(0);
+				signal1 = new Signal(11);
+				signal2 = new Signal(21);
+				ite = new IfThenElse();
+				signal0.connect(ite.if);
+				signal1.connect(ite.then);
+				signal2.connect(ite.else);
+				ite.connect(dest);
+			}, function(sample){
+				expect(sample).to.equal(21);
+			}, function(){
+				signal0.dispose();
+				signal1.dispose();
+				signal2.dispose();
+				ite.dispose();
+				done();
+			});
+		});
+	});
+
+	describe("Tone.NOT", function(){
+		this.timeout(maxTimeout);
+
+		it("can be created and disposed", function(){
+			var n = new NOT();
+			n.dispose();
+			Test.wasDisposed(n);
+		});
+
+		it("outputs 0 when the input is 1", function(done){
+			var signal, not;
+			Test.offlineTest(0.2, function(dest){
+				signal = new Signal(1);
+				not = new NOT();
+				signal.connect(not);
+				not.connect(dest);
+			}, function(sample){
+				expect(sample).to.equal(0);
+			}, function(){
+				signal.dispose();
+				not.dispose();
+				done();
+			});
+		});
+
+		it("outputs 1 when the input is 0", function(done){
+			var signal, not;
+			Test.offlineTest(0.2, function(dest){
+				signal = new Signal(0);
+				not = new NOT();
+				signal.connect(not);
+				not.connect(dest);
+			}, function(sample){
+				expect(sample).to.equal(1);
+			}, function(){
+				signal.dispose();
+				not.dispose();
+				done();
+			});
+		});
+
+		it("outputs 0 when the input is not 0", function(done){
+			var signal, not;
+			Test.offlineTest(0.2, function(dest){
+				signal = new Signal(0.3);
+				not = new NOT();
+				signal.connect(not);
+				not.connect(dest);
+			}, function(sample){
+				expect(sample).to.equal(0);
+			}, function(){
+				signal.dispose();
+				not.dispose();
+				done();
+			});
+		});
+	});
+
+	describe("Tone.AND", function(){
+		this.timeout(maxTimeout);
+
+		it("can be created and disposed", function(){
+			var a = new AND();
+			a.dispose();
+			Test.wasDisposed(a);
+		});
+
+		it("outputs 1 when both inputs are 1", function(done){
+			var signal0, signal1, and;
+			Test.offlineTest(0.2, function(dest){
+				signal0 = new Signal(1);
+				signal1 = new Signal(1);
+				and = new AND(2);
+				signal0.connect(and);
+				signal1.connect(and);
+				and.connect(dest);
+			}, function(sample){
+				expect(sample).to.equal(1);
+			}, function(){
+				signal0.dispose();
+				signal1.dispose();
+				and.dispose();
+				done();
+			});
+		});
+
+		it("outputs 0 when only one input is 1", function(done){
+			var signal0, signal1, and;
+			Test.offlineTest(0.2, function(dest){
+				signal0 = new Signal(1);
+				signal1 = new Signal(0);
+				and = new AND(2);
+				signal0.connect(and);
+				signal1.connect(and);
+				and.connect(dest);
+			}, function(sample){
+				expect(sample).to.equal(0);
+			}, function(){
+				signal0.dispose();
+				signal1.dispose();
+				and.dispose();
+				done();
+			});
+		});
+
+		it("outputs 0 when only the inputs are 0", function(done){
+			var signal0, signal1, and;
+			Test.offlineTest(0.2, function(dest){
+				signal0 = new Signal(0);
+				signal1 = new Signal(0);
+				and = new AND(2);
+				signal0.connect(and);
+				signal1.connect(and);
+				and.connect(dest);
+			}, function(sample){
+				expect(sample).to.equal(0);
+			}, function(){
+				signal0.dispose();
+				signal1.dispose();
+				and.dispose();
+				done();
+			});
+		});
+
+		it("works with three signals", function(done){
+			var signal0, signal1, signal2, and;
+			Test.offlineTest(0.2, function(dest){
+				signal0 = new Signal(1);
+				signal1 = new Signal(1);
+				signal2 = new Signal(1);
+				and = new AND(3);
+				signal0.connect(and);
+				signal1.connect(and);
+				signal2.connect(and);
+				and.connect(dest);
+			}, function(sample){
+				expect(sample).to.equal(1);
+			}, function(){
+				signal0.dispose();
+				signal1.dispose();
+				signal2.dispose();
+				and.dispose();
+				done();
+			});
+		});
+	});
+
+	describe("Tone.OR", function(){
+		this.timeout(maxTimeout);
+
+		it("can be created or disposed", function(){
+			var a = new OR();
+			a.dispose();
+			Test.wasDisposed(a);
+		});
+
+		it("outputs 1 when at least one input is 1", function(done){
+			var signal0, signal1, or;
+			Test.offlineTest(0.2, function(dest){
+				signal0 = new Signal(1);
+				signal1 = new Signal(1);
+				or = new OR(2);
+				signal0.connect(or, 0, 0);
+				signal1.connect(or, 0, 1);
+				or.connect(dest);
+			}, function(sample){
+				expect(sample).to.equal(1);
+			}, function(){
+				signal0.dispose();
+				signal1.dispose();
+				or.dispose();
+				done();
+			});
+		});
+
+		it("outputs 1 when only one input is 1", function(done){
+			var signal0, signal1, or;
+			Test.offlineTest(0.2, function(dest){
+				signal0 = new Signal(0);
+				signal1 = new Signal(1);
+				or = new OR(2);
+				signal0.connect(or, 0, 0);
+				signal1.connect(or, 0, 1);
+				or.connect(dest);
+			}, function(sample){
+				expect(sample).to.equal(1);
+			}, function(){
+				signal0.dispose();
+				signal1.dispose();
+				or.dispose();
+				done();
+			});
+		});
+
+		it("outputs 0 when all the inputs are 0", function(done){
+			var signal0, signal1, or;
+			Test.offlineTest(0.2, function(dest){
+				signal0 = new Signal(0);
+				signal1 = new Signal(0);
+				or = new OR(2);
+				signal0.connect(or, 0, 0);
+				signal1.connect(or, 0, 1);
+				or.connect(dest);
+			}, function(sample){
+				expect(sample).to.equal(0);
+			}, function(){
+				signal0.dispose();
+				signal1.dispose();
+				or.dispose();
+				done();
+			});
+		});
+
+		it("works with three signals", function(done){
+			var signal0, signal1, signal2, or;
+			Test.offlineTest(0.2, function(dest){
+				signal0 = new Signal(0);
+				signal1 = new Signal(0);
+				signal2 = new Signal(1);
+				or = new OR(3);
+				signal0.connect(or, 0, 0);
+				signal1.connect(or, 0, 1);
+				signal2.connect(or, 0, 2);
+				or.connect(dest);
+			}, function(sample){
+				expect(sample).to.equal(1);
+			}, function(){
+				signal0.dispose();
+				signal1.dispose();
+				signal2.dispose();
+				or.dispose();
+				done();
+			});
+		});
+	});
+
+	describe("Tone.WaveShaper", function(){
+		this.timeout(maxTimeout);
+
+		it("can be created and disposed", function(){
+			var ws = new WaveShaper(function(val){
+				return val;
+			});
+			ws.dispose();
+			Test.wasDisposed(ws);
+		});
+	});
 });

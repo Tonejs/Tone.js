@@ -1,5 +1,7 @@
+<!DOCTYPE html>
 <html>
 <head>
+  <meta charset="utf-8">
 	<title>SIGNAL PROCESSING</title>
 
 	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
@@ -49,8 +51,13 @@
 		var addMeter = new Tone.Meter();
 		adder.connect(addMeter);
 
-		//scale the added value between 5 and 10
-		var scaler = new Tone.Scale(100, 101, 5, 10);
+		//normalize the added value between 0 to 1
+		var norm = new Tone.Normalize(100, 101);
+		var normMeter = new Tone.Meter();
+		norm.connect(normMeter);
+
+		//normalize the added value between 0 to 1
+		var scaler = new Tone.Scale(5, 10);
 		var scaleMeter = new Tone.Meter();
 		scaler.connect(scaleMeter);
 
@@ -65,7 +72,7 @@
 		clip.connect(clipMeter);
 
 		//chain the components together
-		signal.chain(signal, abs, adder, scaler, mult);
+		signal.chain(abs, adder, norm, scaler, mult);
 
 		// GUI //
 
@@ -85,7 +92,8 @@
 		new GUI.ValueMeter(container, dryMeter, "Tone.Signal");
 		new GUI.ValueMeter(container, absMeter, "Tone.Abs()");
 		new GUI.ValueMeter(container, addMeter, "Tone.Add(100)");
-		new GUI.ValueMeter(container, scaleMeter, "Tone.Scale(100, 101, 5, 10)");
+		new GUI.ValueMeter(container, normMeter, "Tone.Normalize(100, 101)");
+		new GUI.ValueMeter(container, scaleMeter, "Tone.Scale(5, 10)");
 		new GUI.ValueMeter(container, multMeter, "Tone.Multiply(10)");
 
 	</script>

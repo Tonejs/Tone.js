@@ -1,5 +1,7 @@
+<!DOCTYPE html>
 <html>
 <head>
+  <meta charset="utf-8">
 	<title>BUSES</title>
 
 	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
@@ -9,7 +11,6 @@
 	<script type="text/javascript" src="./deps/jquery.ui.touch-punch.js"></script>
 	<script type="text/javascript" src="../build/Tone.js"></script>
 	<script type="text/javascript" src="../build/Tone.Preset.js"></script>
-	<script type="text/javascript" src="../Tone/effect/preset/Phaser.preset.js"></script>
 	<script type="text/javascript" src="./Widgets.js"></script>
 	<script type="text/javascript" src="./ExampleList.js"></script>
 	<link rel="stylesheet" type="text/css" href="./style/widgets.css">
@@ -41,10 +42,14 @@
 		synth.setVolume(-6);
 		dry.toMaster();
 
-		var chorusSend = synth.send("chorus");
+		//need to force 1 channel synth signal into a 2 channels for stereo chorus effect
+		var mono = new Tone.Mono();
+		synth.connect(mono);
+
+		var chorusSend = mono.send("chorus");
 		chorusSend.gain.value = 0;
-		var phaserSend = synth.send("phaser");
-		phaserSend.gain.value = 0;
+		var chebySend = synth.send("cheby");
+		chebySend.gain.value = 0;
 		var autowahSend = synth.send("autowah");
 		autowahSend.gain.value = 0;
 
@@ -53,10 +58,10 @@
 		chorus.receive("chorus");
 		chorus.toMaster();
 		chorus.setPreset("ether");
-		var phaser = new Tone.Phaser();
-		phaser.receive("phaser");
-		phaser.toMaster();
-		phaser.setPreset("bubbles");
+		var cheby = new Tone.Chebyshev(50);
+		cheby.receive("cheby");
+		cheby.toMaster();
+		cheby.setPreset("bubbles");
 		var autoWah = new Tone.AutoWah();
 		autoWah.receive("autowah");
 		autoWah.toMaster();
@@ -80,8 +85,8 @@
 			autowahSend.gain.value = val;
 		}, 0, "autowah");
 		new GUI.Slider(content, function(val){
-			phaserSend.gain.value = val;
-		}, 0, "phaser");
+			chebySend.gain.value = val;
+		}, 0, "chebyshev");
 
 		//keyboard
 		$("<div>", {"id" : "Keyboard"}).appendTo(content);

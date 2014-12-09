@@ -8,8 +8,8 @@ function(Tone){
 	 *
 	 *  @constructor
 	 *  @extends {Tone.Source}
-	 *  @param {number|string=} frequency starting frequency
-	 *  @param {string=} type type of oscillator (sine|square|triangle|sawtooth)
+	 *  @param {number|string} [frequency=440] starting frequency
+	 *  @param {string} [type="sine"] type of oscillator (sine|square|triangle|sawtooth)
 	 */
 	Tone.Oscillator = function(){
 		
@@ -21,13 +21,13 @@ function(Tone){
 		 *  @type {OscillatorNode}
 		 *  @private
 		 */
-		this.oscillator = this.context.createOscillator();
+		this._oscillator = null;
 		
 		/**
 		 *  the frequency control signal
 		 *  @type {Tone.Signal}
 		 */
-		this.frequency = new Tone.Signal(options.frequency);
+		this.frequency = new Tone.Signal(this.toFrequency(options.frequency));
 
 		/**
 		 *  the detune control signal
@@ -63,8 +63,6 @@ function(Tone){
 		 */
 		this._type = options.type;
 		
-		//connections
-		this.oscillator.connect(this.output);
 		//setup
 		this.setPhase(this._phase);
 	};
@@ -75,6 +73,7 @@ function(Tone){
 	 *  the default parameters
 	 *
 	 *  @static
+	 *  @const
 	 *  @type {Object}
 	 */
 	Tone.Oscillator.defaults = {
@@ -88,35 +87,33 @@ function(Tone){
 	/**
 	 *  start the oscillator
 	 *  
-	 *  @param  {Tone.Time} time 
+	 *  @param  {Tone.Time} [time=now] 
 	 */
 	Tone.Oscillator.prototype.start = function(time){
 		if (this.state === Tone.Source.State.STOPPED){
 			this.state = Tone.Source.State.STARTED;
 			//get previous values
 			//new oscillator with previous values
-			this.oscillator = this.context.createOscillator();
-			this.oscillator.setPeriodicWave(this._wave);
+			this._oscillator = this.context.createOscillator();
+			this._oscillator.setPeriodicWave(this._wave);
 			//connect the control signal to the oscillator frequency & detune
-			this.oscillator.connect(this.output);
-			this.frequency.connect(this.oscillator.frequency);
-			this.detune.connect(this.oscillator.detune);
+			this._oscillator.connect(this.output);
+			this.frequency.connect(this._oscillator.frequency);
+			this.detune.connect(this._oscillator.detune);
 			//start the oscillator
-			this.oscillator.start(this.toSeconds(time));
-			this.oscillator.onended = this._onended.bind(this);
+			this._oscillator.onended = this.onended;
+			this._oscillator.start(this.toSeconds(time));
 		}
 	};
 
 	/**
 	 *  stop the oscillator
-	 *  @param  {Tone.Time=} time (optional) timing parameter
+	 *  @param  {Tone.Time} [time=now] (optional) timing parameter
 	 */
 	Tone.Oscillator.prototype.stop = function(time){
 		if (this.state === Tone.Source.State.STARTED){
-			if (!time){
-				this.state = Tone.Source.State.STOPPED;
-			}
-			this.oscillator.stop(this.toSeconds(time));
+			this.state = Tone.Source.State.STOPPED;
+			this._oscillator.stop(this.toSeconds(time));
 		}
 	};
 
@@ -189,7 +186,9 @@ function(Tone){
 		}
 		var periodicWave = this.context.createPeriodicWave(real, imag);
 		this._wave = periodicWave;
-		this.oscillator.setPeriodicWave(this._wave);
+		if (this._oscillator !== null){
+			this._oscillator.setPeriodicWave(this._wave);
+		}
 		this._type = type;
 	};
 
@@ -219,15 +218,7 @@ function(Tone){
 		if (!this.isUndef(params.frequency)) this.frequency.setValue(params.frequency);
 		if (!this.isUndef(params.onended)) this.onended = params.onended;
 		if (!this.isUndef(params.detune)) this.detune.setValue(params.detune);
-	};
-
-	/**
-	 *  internal on end call
-	 *  @private
-	 */
-	Tone.Oscillator.prototype._onended = function(){
-		this.state = Tone.Source.State.STOPPED;
-		this.onended();
+		Tone.Source.prototype.set.call(this, params);
 	};
 
 	/**
@@ -236,9 +227,9 @@ function(Tone){
 	Tone.Oscillator.prototype.dispose = function(){
 		Tone.Source.prototype.dispose.call(this);
 		this.stop();
-		if (this.oscillator !== null){
-			this.oscillator.disconnect();
-			this.oscillator = null;
+		if (this._oscillator !== null){
+			this._oscillator.disconnect();
+			this._oscillator = null;
 		}
 		this.frequency.dispose();
 		this.detune.dispose();

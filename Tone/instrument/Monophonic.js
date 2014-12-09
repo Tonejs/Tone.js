@@ -39,8 +39,8 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/signal/Signal"], f
 	 *  trigger the attack. start the note, at the time with the velocity
 	 *  
 	 *  @param  {string|string} note     the note
-	 *  @param  {Tone.Time=} [time=now]     the time, if not given is now
-	 *  @param  {number=} [velocity=1] velocity defaults to 1
+	 *  @param  {Tone.Time} [time=now]     the time, if not given is now
+	 *  @param  {number} [velocity=1] velocity defaults to 1
 	 */
 	Tone.Monophonic.prototype.triggerAttack = function(note, time, velocity) {
 		time = this.toSeconds(time);

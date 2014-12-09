@@ -14,7 +14,6 @@ define(["Tone/core/Tone", "Tone/effect/AutoWah"], function(Tone){
 			"Q" : 2,
 			"gain" : 10,
 			"rolloff" : -12,
-			/** attributes for the envelope follower */
 			"follower" : {
 				"attack" : 0.05,
 				"release" : 0.2
@@ -27,7 +26,6 @@ define(["Tone/core/Tone", "Tone/effect/AutoWah"], function(Tone){
 			"Q" : 2,
 			"gain" : 20,
 			"rolloff" : -24,
-			/** attributes for the envelope follower */
 			"follower" : {
 				"attack" : 0.1,
 				"release" : 0.2
@@ -40,7 +38,6 @@ define(["Tone/core/Tone", "Tone/effect/AutoWah"], function(Tone){
 			"Q" : 1,
 			"gain" : 10,
 			"rolloff" : -48,
-			/** attributes for the envelope follower */
 			"follower" : {
 				"attack" : 0.02,
 				"release" : 1

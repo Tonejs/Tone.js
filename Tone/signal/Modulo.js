@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/signal/Multiply"], function(Tone){
+define(["Tone/core/Tone", "Tone/signal/Multiply", "Tone/signal/WaveShaper"], function(Tone){
 
 	"use strict";
 
@@ -8,11 +8,11 @@ define(["Tone/core/Tone", "Tone/signal/Multiply"], function(Tone){
 	 *         fewer bits will improve performance. 
 	 *
 	 *  @constructor
-	 *  @extends {Tone}
-	 *  @param {number} modulus the modolus to apply
+	 *  @extends {Tone.SignalBase}
+	 *  @param {number} modulus the modulus to apply
 	 *  @param {number} [bits=8]	optionally set the maximum bits the incoming signal can have. 
 	 *                           	defaults to 8 meaning that incoming values must be in the range
-	 *                            	[-255,255]. (2^8 = 256);
+	 *                            	[-255,255].
 	 */
 	Tone.Modulo = function(modulus, bits){
 
@@ -32,12 +32,12 @@ define(["Tone/core/Tone", "Tone/signal/Multiply"], function(Tone){
 			var mod = new ModuloSubroutine(modulus, Math.pow(2, i));
 			this._modChain.push(mod);
 		}
-		this.chain.apply(this, this._modChain);
+		this.connectSeries.apply(this, this._modChain);
 		this.input.connect(this._modChain[0]);
 		this._modChain[this._modChain.length - 1].connect(this.output);
 	};
 
-	Tone.extend(Tone.Modulo);
+	Tone.extend(Tone.Modulo, Tone.SignalBase);
 
 	Tone.Modulo.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
@@ -60,6 +60,7 @@ define(["Tone/core/Tone", "Tone/signal/Multiply"], function(Tone){
 	var ModuloSubroutine = function(modulus, multiple){
 
 		var val = modulus * multiple;
+		var arrayLength = 1024;
 
 		/**
 		 *  the input node
@@ -74,38 +75,32 @@ define(["Tone/core/Tone", "Tone/signal/Multiply"], function(Tone){
 		this._div = new Tone.Multiply(1 / val);
 
 		/**
+		 *  the curve that the waveshaper uses
+		 *  @type {Float32Array}
+		 *  @private
+		 */
+		this._curve = new Float32Array(1024);
+
+		/**
 		 *  apply the equation logic
 		 *  @type {WaveShaperNode}
 		 *  @private
 		 */
-		this._operator = this.context.createWaveShaper();
+		this._operator = new Tone.WaveShaper(function(norm, pos){
+			if (pos === arrayLength - 1){
+				return -val;
+			} else if (pos === 0){
+				return val;
+			} else {
+				return 0;
+			}
+		}, arrayLength);
 
 		//connect it up
-		this.chain(this.input, this._div, this._operator);
-		this._makeCurve(val);
+		this.input.chain(this._div, this._operator);
 	};
 
 	Tone.extend(ModuloSubroutine);
-
-	/**
-	 * make the operator curve
-	 * @param {number} val
-	 * @private 
-	 */
-	ModuloSubroutine.prototype._makeCurve = function(val){
-		var arrayLength = Math.pow(2, 18);
-		var curve = new Float32Array(arrayLength);
-		for (var i = 0; i < curve.length; i++) {
-			if (i === arrayLength - 1){
-				curve[i] = -val;
-			} else if (i === 0){
-				curve[i] = val;
-			} else {
-				curve[i] = 0;
-			}
-		}
-		this._operator.curve = curve;
-	};
 
 	/**
 	 *  @override the default connection to connect the operator and the input to the next node
@@ -122,9 +117,10 @@ define(["Tone/core/Tone", "Tone/signal/Multiply"], function(Tone){
 	ModuloSubroutine.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
 		this._div.dispose();
-		this._operator.disconnect();
 		this._div = null;
+		this._operator.disconnect();
 		this._operator = null;
+		this._curve = null;
 	};
 
 	return Tone.Modulo;

@@ -56,7 +56,7 @@ function(Tone){
 		this._vibratoDelay = this.toSeconds(options.vibratoDelay);
 
 		/**
-		 *  the amount before the vibrato starts
+		 *  the amount of vibrato
 		 *  @type {number}
 		 *  @private
 		 */
@@ -77,9 +77,9 @@ function(Tone){
 
 		//control the two voices frequency
 		this.frequency.connect(this.voice0.frequency);
-		this.chain(this.frequency, this._harmonicity, this.voice1.frequency);
+		this.frequency.chain(this._harmonicity, this.voice1.frequency);
 		this._vibrato.connect(this._vibratoGain);
-		this.fan(this._vibratoGain, this.voice0.detune, this.voice1.detune);
+		this._vibratoGain.fan(this.voice0.detune, this.voice1.detune);
 		this.voice0.connect(this.output);
 		this.voice1.connect(this.output);
 	};
@@ -98,7 +98,9 @@ function(Tone){
 		"voice0" : {
 			"volume" : -10,
 			"portamento" : 0,
-			"oscType" : "sine",
+			"oscillator" : {
+				"type" : "sine"
+			},
 			"filterEnvelope" : {
 				"attack" : 0.01,
 				"decay" : 0.0,
@@ -115,7 +117,9 @@ function(Tone){
 		"voice1" : {
 			"volume" : -10,
 			"portamento" : 0,
-			"oscType" : "sine",
+			"oscillator" : {
+				"type" : "sine"
+			},
 			"filterEnvelope" : {
 				"attack" : 0.01,
 				"decay" : 0.0,
@@ -134,8 +138,8 @@ function(Tone){
 	/**
 	 *  start the attack portion of the envelopes
 	 *  
-	 *  @param {Tone.Time=} [time=now] the time the attack should start
-	 *  @param {number=} velocity the velocity of the note (0-1)
+	 *  @param {Tone.Time} [time=now] the time the attack should start
+	 *  @param {number} [velocity=1] the velocity of the note (0-1)
 	 */
 	Tone.DuoSynth.prototype.triggerEnvelopeAttack = function(time, velocity){
 		time = this.toSeconds(time);
@@ -148,7 +152,7 @@ function(Tone){
 	/**
 	 *  start the release portion of the envelopes
 	 *  
-	 *  @param {Tone.Time=} [time=now] the time the release should start
+	 *  @param {Tone.Time} [time=now] the time the release should start
 	 */
 	Tone.DuoSynth.prototype.triggerEnvelopeRelease = function(time){
 		this.voice0.triggerRelease(time);

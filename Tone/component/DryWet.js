@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Scale"], function(Tone){
+define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Expr"], function(Tone){
 
 	"use strict";
 
@@ -10,7 +10,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Scale"], function(T
 	 *
 	 * @constructor
 	 * @extends {Tone}
-	 * @param {number=} initialDry
+	 * @param {number} [initialDry=0.5]
 	 */		
 	Tone.DryWet = function(initialDry){
 		Tone.call(this);
@@ -43,16 +43,16 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Scale"], function(T
 		 *  @private
 		 *  @type {Tone}
 		 */
-		this._invert = new Tone.Scale(0, 1, 1, 0);
+		this._invert = new Tone.Expr("1 - $0");
 
 		//connections
 		this.dry.connect(this.output);
 		this.wet.connect(this.output);
 		//wet control
-		this.chain(this.wetness, this.wet.gain);
+		this.wetness.connect(this.wet.gain);
 		//dry control is the inverse of the wet
-		this.chain(this.wetness, this._invert, this.dry.gain);
-		this.setDry(this.defaultArg(initialDry, 0));
+		this.wetness.chain(this._invert, this.dry.gain);
+		this.setDry(this.defaultArg(initialDry, 0.5));
 	};
 
 	Tone.extend(Tone.DryWet);

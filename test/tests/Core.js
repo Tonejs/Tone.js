@@ -1,6 +1,7 @@
 /* global it, describe, after */
 
-define(["chai", "Tone/core/Tone", "Tone/core/Master", "Tone/core/Bus", "Tone/core/Note"], function(chai, Tone, Master, Note){
+define(["chai", "Tone/core/Tone", "Tone/core/Master", "Tone/core/Bus", 
+	"Tone/core/Note", "tests/Common", "Tone/core/Buffer"], function(chai, Tone, Master, Bus, Note, Test, Buffer){
 	var expect = chai.expect;
 
 	describe("AudioContext", function(){
@@ -37,6 +38,12 @@ define(["chai", "Tone/core/Tone", "Tone/core/Master", "Tone/core/Bus", "Tone/cor
 
 		after(function(){
 			tone.dispose();
+		});
+
+		it("can be created and disposed", function(){
+			var t = new Tone();
+			t.dispose();
+			Test.wasDisposed(t);
 		});
 
 		it("correctly calculates samples to seconds", function(){
@@ -119,12 +126,70 @@ define(["chai", "Tone/core/Tone", "Tone/core/Master", "Tone/core/Bus", "Tone/cor
 		it ("exists", function(){
 			expect(Tone.Master).to.equal(Master);
 		});
+
+		it ("provides a toMaster method", function(){
+			expect(Tone.prototype.toMaster).is.a("function");
+		});
 	});
 
 	describe("Tone.Bus", function(){
 		it ("provides a send and receive method", function(){
 			expect(Tone.prototype.send).is.a("function");
 			expect(Tone.prototype.receive).is.a("function");
+		});
+
+		it ("passes audio from a send to a receive with the same name", function(done){
+			var send, recv;
+			Test.passesAudio(function(input, output){
+				//make them pass through nodes
+				send = new Tone();
+				recv = new Tone();
+				send.input.connect(send.output);
+				recv.input.connect(recv.output);
+				input.connect(send);
+				recv.connect(output);
+				send.send("test");
+				recv.receive("test");
+			}, function(){
+				send.dispose();
+				recv.dispose();
+				done();
+			});
+		});		
+	});
+
+	describe("Tone.Buffer", function(){
+		it ("can be created and disposed", function(){
+			var buff = new Tone.Buffer("./testAudio/kick.mp3");
+			buff.dispose();
+			Test.wasDisposed(buff);
+		});
+
+		it("loads a file from a string", function(done){
+			var buffer = new Buffer("./testAudio/kick.mp3", function(buff){
+				expect(buff).to.be.instanceof(AudioBuffer);
+				buffer.dispose();
+				done();
+			});
+		});
+
+		it("loads a file from an array", function(done){
+			var buffer = new Buffer(["./testAudio/kick.mp3", "./testAudio/hh.mp3"], function(buff){
+				expect(buff).to.be.instanceof(Array);
+				expect(buff[0]).to.be.instanceof(AudioBuffer);
+				expect(buff[1]).to.be.instanceof(AudioBuffer);
+				buffer.dispose();
+				done();
+			});
+		});
+
+		it("loads a file from an object", function(done){
+			var buffer = new Buffer({"kick" : "./testAudio/kick.mp3"}, function(buff){
+				expect(buff).to.be.instanceof(Object);
+				expect(buff.kick).to.be.instanceof(AudioBuffer);
+				buffer.dispose();
+				done();
+			});
 		});
 	});
 

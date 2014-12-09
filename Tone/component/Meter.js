@@ -6,12 +6,14 @@ define(["Tone/core/Tone", "Tone/core/Master"], function(Tone){
 	 *  @class  Get the rms of the input signal with some averaging.
 	 *          can also just get the value of the signal
 	 *          or the value in dB. inspired by https://github.com/cwilso/volume-meter/blob/master/volume-meter.js
+	 *          Note that for signal processing, it's better to use {@link Tone.Follower} which will produce
+	 *          an audio-rate envelope follower instead of needing to poll the Meter to get the output.
 	 *
 	 *  @constructor
 	 *  @extends {Tone}
-	 *  @param {number=} channels (optional) number of channels being metered
-	 *  @param {number=} smoothing (optional) amount of smoothing applied to the volume
-	 *  @param {number=} clipMemory (optional) number in ms that a "clip" should be remembered
+	 *  @param {number} [channels=1] number of channels being metered
+	 *  @param {number} [smoothing=0.8] amount of smoothing applied to the volume
+	 *  @param {number} [clipMemory=500] number in ms that a "clip" should be remembered
 	 */
 	Tone.Meter = function(channels, smoothing, clipMemory){
 		//extends Unit
@@ -102,7 +104,7 @@ define(["Tone/core/Tone", "Tone/core/Master"], function(Tone){
 	/**
 	 *  get the rms of the signal
 	 *  	
-	 *  @param  {number=} channel which channel
+	 *  @param  {number} [channel=0] which channel
 	 *  @return {number}         the value
 	 */
 	Tone.Meter.prototype.getLevel = function(channel){

@@ -1,5 +1,7 @@
+<!DOCTYPE html>
 <html>
 <head>
+  <meta charset="utf-8">
 	<title>JSON SANDBOX</title>
 
 	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
@@ -34,8 +36,10 @@
 		/* globals Tone, GUI */
 
 		var synthOptions = {
-			"oscType": "square",
 			"portamento" : 0.05,
+			"oscillator" : {
+				"type" : "square"
+			},
 			"filter": {
 				"Q": 6,
 				"type": "lowpass",

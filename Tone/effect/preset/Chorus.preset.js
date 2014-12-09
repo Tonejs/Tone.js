@@ -12,21 +12,21 @@ define(["Tone/core/Tone", "Tone/effect/Chorus"], function(Tone){
 			"delayTime" : 8,
 			"type" : "triangle",
 			"depth" : 0.8,
-			"feedback" : 0.7
+			"feedback" : 0.2
 		},
 		"harmony" : {
 			"rate" : 12, 
 			"delayTime" : 3.5,
 			"type" : "sine",
 			"depth" : 0.8,
-			"feedback" : 0.2
+			"feedback" : 0.1
 		},
 		"rattler" : {
 			"rate" : "16n", 
 			"delayTime" : 15,
 			"type" : "square",
 			"depth" : 0.2,
-			"feedback" : 0.8
+			"feedback" : 0.3
 		}
 	};
 

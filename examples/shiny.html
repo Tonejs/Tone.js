@@ -1,5 +1,7 @@
+<!DOCTYPE html>
 <html>
 <head>
+  <meta charset="utf-8">
 	<title>SHINY</title>
 
 	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
@@ -43,11 +45,11 @@
 		//DRUMS//
 
 		//hats
-		var crusher = new Tone.BitCrusher(5);
+		var crusher = new Tone.Distortion(10);
 		crusher.setWet(0.4);
 		var hats = new Tone.Sampler({
 			"url" : "./audio/505/hh.mp3",
-			"load" : sampleLoaded,
+			"onload" : sampleLoaded,
 			"envelope" : {
 				"attack" : 0.001,
 				"decay" : 0.02,
@@ -71,7 +73,7 @@
 		//snare
 		var snare = new Tone.Sampler({
 			"url" : "./audio/505/snare.mp3",
-			"load" : sampleLoaded,
+			"onload" : sampleLoaded,
 			"envelope" : {
 				"attack" : 0.01,
 				"decay" : 0.05,

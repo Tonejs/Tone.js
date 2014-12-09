@@ -1,74 +1,58 @@
-define(["Tone/core/Tone", "Tone/signal/Threshold", "Tone/signal/Signal"], 
+define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/GreaterThanZero", "Tone/signal/WaveShaper"], 
 function(Tone){
 
 	"use strict";
 
 	/**
-	 *  @class  Output 1 if the signal is equal to 0, otherwise outputs 0
+	 *  @class  EqualZero outputs 1 when the input is strictly greater than zero
 	 *  
 	 *  @constructor
-	 *  @extends {Tone}
+	 *  @extends {Tone.SignalBase}
 	 */
 	Tone.EqualZero = function(){
+
 		/**
-		 *  @type {WaveShaperNode}
+		 *  scale the incoming signal by a large factor
+		 *  @private
+		 *  @type {Tone.Multiply}
+		 */
+		this._scale = this.input = new Tone.Multiply(10000);
+		
+		/**
+		 *  @type {Tone.WaveShaper}
 		 *  @private
 		 */
-		this._equals = this.context.createWaveShaper();
-
-		/**
-		 *  @type {WaveShaperNode}
-		 *  @private
-		 */
-		this._thresh = new Tone.Threshold(1);
-
-		/**
-		 *  @type {WaveShaperNode}
-		 */
-		this.input = this._equals;
-
-		this._equals.connect(this._thresh);
-
-		this.output = this._thresh;
-
-
-		this._setEquals();
-	};
-
-	Tone.extend(Tone.EqualZero);
-
-	/**
-	 *  @private
-	 */
-	Tone.EqualZero.prototype._setEquals = function(){
-		var curveLength = 1023;
-		var curve = new Float32Array(curveLength);
-		for (var i = 0; i < curveLength; i++){
-			var normalized = (i / (curveLength - 1)) * 2 - 1;
-			if (normalized === 0){
-				curve[i] = 1;
+		this._thresh = new Tone.WaveShaper(function(val){
+			if (val === 0){
+				return 1;
 			} else {
-				curve[i] = 0;
+				return 0;
 			}
-		}
-		this._equals.curve = curve;
+		}, 128);
+
+		/**
+		 *  threshold the output so that it's 0 or 1
+		 *  @type {Tone.GreaterThanZero}
+		 *  @private
+		 */
+		this._gtz = this.output = new Tone.GreaterThanZero();
+
+		//connections
+		this._scale.chain(this._thresh, this._gtz);
 	};
 
-	/**
-	 *  borrows the method from {@link Tone.Signal}
-	 *  
-	 *  @function
-	 */
-	Tone.EqualZero.prototype.connect = Tone.Signal.prototype.connect;
+	Tone.extend(Tone.EqualZero, Tone.SignalBase);
 
 	/**
 	 *  dispose method
 	 */
 	Tone.EqualZero.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
-		this._equals.disconnect();
+		this._gtz.dispose();
+		this._gtz = null;
+		this._scale.dispose();
+		this._scale = null;
 		this._thresh.dispose();
-		this._equals = null;
 		this._thresh = null;
 	};
 

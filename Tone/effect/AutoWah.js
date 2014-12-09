@@ -10,11 +10,11 @@ function(Tone){
 	 *
 	 *  @constructor
 	 *  @extends {Tone.Effect}
-	 *  @param {number=} [baseFrequency=100] the frequency the filter is set 
+	 *  @param {number} [baseFrequency=100] the frequency the filter is set 
 	 *                                       to at the low point of the wah
-	 *  @param {number=} [octaves=5] the number of octaves above the baseFrequency
+	 *  @param {number} [octaves=5] the number of octaves above the baseFrequency
 	 *                               the filter will sweep to when fully open
-	 *  @param {number=} [sensitivity=0] the decibel threshold sensitivity for 
+	 *  @param {number} [sensitivity=0] the decibel threshold sensitivity for 
 	 *                                   the incoming signal. Normal range of -40 to 0. 
 	 */
 	Tone.AutoWah = function(){
@@ -34,7 +34,7 @@ function(Tone){
 		 *  @type {Tone}
 		 *  @private
 		 */
-		this._sweepRange = new Tone.ScaleExp(0, 1, 0, 1, 0.5);
+		this._sweepRange = new Tone.ScaleExp(0, 1, 0.5);
 
 		/**
 		 *  @type {number}
@@ -66,11 +66,11 @@ function(Tone){
 		this._peaking.gain.value = options.gain;
 
 		//the control signal path
-		this.chain(this.effectSend, this._follower, this._sweepRange);
+		this.effectSend.chain(this._follower, this._sweepRange);
 		this._sweepRange.connect(this._bandpass.frequency);
 		this._sweepRange.connect(this._peaking.frequency);
 		//the filtered path
-		this.chain(this.effectSend, this._bandpass, this._peaking, this.effectReturn);
+		this.effectSend.chain(this._bandpass, this._peaking, this.effectReturn);
 		//set the initial value
 		this._setSweepRange();
 		this.setSensitiviy(options.sensitivity);
@@ -121,7 +121,7 @@ function(Tone){
 	 *  @param {number} sensitivy the sensitivity to the input signal in dB
 	 */
 	Tone.AutoWah.prototype.setSensitiviy = function(sensitivy){
-		this._sweepRange.setInputMax(this.dbToGain(sensitivy));
+		this._sweepRange.setMax(this.dbToGain(sensitivy));
 	};
 
 	/**
@@ -129,8 +129,8 @@ function(Tone){
 	 *  @private
 	 */
 	Tone.AutoWah.prototype._setSweepRange = function(){
-		this._sweepRange.setOutputMin(this._baseFrequency);
-		this._sweepRange.setOutputMax(Math.min(this._baseFrequency * Math.pow(2, this._octaves), this.context.sampleRate / 2));
+		this._sweepRange.setMin(this._baseFrequency);
+		this._sweepRange.setMax(Math.min(this._baseFrequency * Math.pow(2, this._octaves), this.context.sampleRate / 2));
 	};
 
 	/**
@@ -142,6 +142,7 @@ function(Tone){
 		if (!this.isUndef(params.sensitivity)) this.setSensitiviy(params.sensitivity);
 		if (!this.isUndef(params.octaves)) this.setOctaves(params.octaves);
 		if (!this.isUndef(params.follower)) this._follower.set(params.follower);
+		if (!this.isUndef(params.rolloff)) this._bandpass.setRolloff(params.rolloff);
 		if (!this.isUndef(params.Q)) this._bandpass.Q.value = params.Q;
 		if (!this.isUndef(params.gain)) this._peaking.gain.value = params.gain;
 		Tone.Effect.prototype.set.call(this, params);

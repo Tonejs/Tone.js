@@ -22,13 +22,6 @@ function(Tone){
 		this.feedback = new Tone.Signal(options.feedback);
 
 		/**
-		 *  scales the feedback in half
-		 *  @type {Tone.Multiply}
-		 *  @private
-		 */
-		this._half = new Tone.Multiply(0.5);
-
-		/**
 		 *  the left side feeback
 		 *  @type {GainNode}
 		 *  @private
@@ -43,10 +36,9 @@ function(Tone){
 		this._feedbackRL = this.context.createGain();
 
 		//connect it up
-		this.chain(this.effectReturnL, this._feedbackLR, this.effectSendR);
-		this.chain(this.effectReturnR, this._feedbackRL, this.effectSendL);
-		this.feedback.connect(this._half);
-		this.fan(this._half, this._feedbackLR.gain, this._feedbackRL.gain);
+		this.effectReturnL.chain(this._feedbackLR, this.effectSendR);
+		this.effectReturnR.chain(this._feedbackRL, this.effectSendL);
+		this.feedback.fan(this._feedbackLR.gain, this._feedbackRL.gain);
 	};
 
 	Tone.extend(Tone.StereoXFeedbackEffect, Tone.FeedbackEffect);
@@ -57,13 +49,11 @@ function(Tone){
 	Tone.StereoXFeedbackEffect.prototype.dispose = function(){
 		Tone.StereoEffect.prototype.dispose.call(this);
 		this.feedback.dispose();
-		this._half.dispose();
-		this._feedbackLR.disconnect();
-		this._feedbackRL.disconnect();
 		this.feedback = null;
+		this._feedbackLR.disconnect();
 		this._feedbackLR = null;
+		this._feedbackRL.disconnect();
 		this._feedbackRL = null;
-		this._half = null;
 	};
 
 	return Tone.StereoXFeedbackEffect;

@@ -50,7 +50,7 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/LFO", "Tone/comp
 	/**
 	 * Start the panner
 	 * 
-	 * @param {Tone.Time=} Time the panner begins.
+	 * @param {Tone.Time} [time=now] the panner begins.
 	 */
 	Tone.AutoPanner.prototype.start = function(time){
 		this._lfo.start(time);
@@ -59,7 +59,7 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/LFO", "Tone/comp
 	/**
 	 * Stop the panner
 	 * 
-	 * @param {Tone.Time=} time the panner stops.
+	 * @param {Tone.Time} [time=now] the panner stops.
 	 */
 	Tone.AutoPanner.prototype.stop = function(time){
 		this._lfo.stop(time);

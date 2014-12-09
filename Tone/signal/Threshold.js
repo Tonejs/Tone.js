@@ -6,13 +6,17 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	 *  @class  Threshold an incoming signal. the signal is assumed to be in the normal range (-1 to 1)
 	 *          Creates a threshold value such that signal above the value will equal 1, 
 	 *          and below will equal 0.
+	 *
+	 *  @deprecated use Tone.GreaterThan or Tone.GreaterThanZero instead. Threshold will be removed in r4. 
 	 *  
 	 *  @constructor
 	 *  @param {number=} [thresh=0] threshold value above which the output will equal 1 
 	 *                          and below which the output will equal 0
-	 *  @extends {Tone}
+	 *  @extends {Tone.SignalBase}
 	 */
 	Tone.Threshold = function(thresh){
+
+		console.warn("Tone.Threshold has been deprecated. Use Tone.GreaterThan or Tone.GreaterThanZero");
 		
 		/**
 		 *  @type {WaveShaperNode}
@@ -41,7 +45,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 		this._setThresh(this._doubleThresh, 0.5);
 	};
 
-	Tone.extend(Tone.Threshold);
+	Tone.extend(Tone.Threshold, Tone.SignalBase);
 
 	/**
 	 *  @param {number} thresh 
@@ -71,13 +75,6 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	Tone.Threshold.prototype.setThreshold = function(thresh){
 		this._setThresh(this._thresh, thresh);
 	};
-
-	/**
-	 *  borrows the method from {@link Tone.Signal}
-	 *  
-	 *  @function
-	 */
-	Tone.Threshold.prototype.connect = Tone.Signal.prototype.connect;
 
 	/**
 	 *  dispose method

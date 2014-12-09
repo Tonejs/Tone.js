@@ -415,6 +415,26 @@ GUI.Oscillator.prototype.render = function(){
 };
 
 /**
+ *  OMNIOSCILLATOR
+ */
+GUI.OmniOscillator = function(container, oscillator, label){
+	this.element = $("<div>", {"class" : "Oscillator"})
+		.appendTo(container);
+	this.oscillator = oscillator;
+	this.label = $("<div>", {"id" : "Label"})
+		.appendTo(this.element)
+		.text(label);
+	this.type = new GUI.DropDown(this.element, ["sine", "square", "sawtooth", "triangle", "pwm", "pulse"], function(option){
+		oscillator.setType(option);
+	});
+};
+
+GUI.OmniOscillator.prototype.render = function(){
+	var type = this.oscillator.getType();
+	this.type.select(type);
+};
+
+/**
  *  SLIDER + VALUE
  */
 GUI.Slider = function(container, callback, initial, label, units){

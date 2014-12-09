@@ -12,12 +12,8 @@ define(["Tone/core/Tone", "Tone/core/Transport"], function(Tone){
 	 *  @extends {Tone}
 	 */	
 	Tone.Source = function(){
-		/**
-		 *  unlike most ToneNodes, Sources only have an output and no input
-		 *  
-		 *  @type {GainNode}
-		 */
-		this.output = this.context.createGain();
+		//unlike most ToneNodes, Sources only have an output and no input
+		Tone.call(this, 0, 1);
 
 		/**
 		 *  @type {Tone.Source.State}
@@ -52,7 +48,7 @@ define(["Tone/core/Tone", "Tone/core/Transport"], function(Tone){
 	/**
 	 *  sync the source to the Transport
 	 *
-	 *  @param {Tone.Time=} delay optional delay time before starting the source
+	 *  @param {Tone.Time} [delay=0] delay time before starting the source
 	 */
 	Tone.Source.prototype.sync = function(delay){
 		Tone.Transport.syncSource(this, delay);
@@ -64,7 +60,6 @@ define(["Tone/core/Tone", "Tone/core/Transport"], function(Tone){
 	Tone.Source.prototype.unsync = function(){
 		Tone.Transport.unsyncSource(this);
 	};
-
 
 	/**
 	 *  set the volume in decibels
@@ -82,6 +77,14 @@ define(["Tone/core/Tone", "Tone/core/Transport"], function(Tone){
 		} else {
 			this.output.gain.setValueAtTime(gain, now);
 		}
+	};
+
+	/**
+	 *  set the parameters at once
+	 *  @param {Object} params
+	 */
+	Tone.Source.prototype.set = function(params){
+		if (!this.isUndef(params.volume)) this.setVolume(params.volume);
 	};
 
 	/**
