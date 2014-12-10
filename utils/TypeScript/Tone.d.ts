@@ -6,6 +6,7 @@
 /***
  ---- LIST OF CLASSES DEFINED (A-Z, indentation shows extended classes) ----
  //NOTE: You will also need the Web Audio Definitions file which can be found here: https://github.com/borisyankov/DefinitelyTyped/tree/master/webaudioapi
+
 Tone
     Buffer
     Clip
@@ -103,7 +104,6 @@ Tone
     Split
     Time
     Transport
-
  ***/
 
 
@@ -111,7 +111,7 @@ interface Tone {
     context: AudioContext;
     input: GainNode;
     output: GainNode;
-    chain(...args: any[]): void;
+    connectSeries(...args: any[]): void;
     connect(unit: any, outputNum?:number, inputNum?:number): void;
     dbToGain(db: number): number;
     defaultArg(given: any, fallback: any): any;
@@ -120,7 +120,7 @@ interface Tone {
     equalPowerScale(percent:number): number;
     expScale(gain: number): number;
     extend(child: Function, parent?: Function): void;
-    fan(...args: any[]): void;
+    connectParallel(...args: any[]): void;
     frequencyToNote(freq:number):string;
     frequencyToSeconds(freq:number):number;
     gainToDb(gain: number): number;
@@ -374,7 +374,7 @@ declare module Tone {
 
     var StereoWidener: {
         new(width?: any): Tone.StereoWidener; //TODO change 'any' to 'number | Object'
-    }
+    };
 
     interface StereoWidener extends Tone.MidSideEffect {
         width: Tone.Signal;
@@ -656,7 +656,7 @@ declare module Tone {
     };
 
     interface Merge extends Tone {
-        input: Array<GainNode>;
+        //input: Array<GainNode>;
         left: GainNode;
         right: GainNode;
     }
@@ -704,7 +704,7 @@ declare module Tone {
         low: Tone.Filter;
         lowFrequency: Tone.Signal;
         mid: Tone.Filter;
-        output: Array;
+        //output: Array;
     }
 
     var Note: {
@@ -751,7 +751,7 @@ declare module Tone {
 
     var SignalBase: {
         new(): Tone.SignalBase;
-    }
+    };
 
     interface SignalBase extends Tone {
         connect(node: any, outputNumber?: number, inputNumber?: number): void; //TODO: Change 'any' to 'AudioParam | AudioNode | Tone.Signal | Tone' when available
@@ -820,7 +820,7 @@ declare module Tone {
     };
 
     interface Expr extends Tone.SignalBase {
-        input: Array;
+        //input: Array;
         output: any;
     }
 
@@ -915,7 +915,7 @@ declare module Tone {
     };
 
     interface OR extends Tone.SignalBase {
-        output: Tone.Equal;
+        //output: Tone.Equal;
     }
 
     var Pow: {
@@ -1001,7 +1001,7 @@ declare module Tone {
     };
 
     interface WaveShaper extends Tone.SignalBase {
-        setCurve(mapping: Array): void;
+        setCurve(mapping: Array<any>): void;
         setMap(mapping: Function): void;
         setOversample(oversampling: string): void;
     }
@@ -1127,7 +1127,7 @@ declare module Tone {
         gate: Tone.Signal;
         left: GainNode;
         right: GainNode;
-        output: Array<GainNode>;
+        //output: Array<GainNode>;
     }
 
     interface Time{}
