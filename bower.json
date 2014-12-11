@@ -10,7 +10,6 @@
     "ignore": [
         "examples",
         "test",
-        "utils",
         "grunt"
     ],
     "authors": [

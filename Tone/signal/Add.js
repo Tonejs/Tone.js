@@ -7,7 +7,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	 *         input 0: augend. input 1: addend
 	 *
 	 *  @constructor
-	 *  @extends {Tone}
+	 *  @extends {Tone.SignalBase}
 	 *  @param {number=} value if no value is provided, Tone.Add will sum the first
 	 *                         and second inputs. 
 	 */
@@ -34,7 +34,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 		}
 	};
 
-	Tone.extend(Tone.Add);
+	Tone.extend(Tone.Add, Tone.SignalBase);
 
 	/**
 	 *  set the constant
@@ -48,13 +48,6 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 			throw new Error("cannot switch from signal to number");
 		}
 	}; 
-
-	/**
-	 *  borrows the method from {@link Tone.Signal}
-	 *  
-	 *  @function
-	 */
-	Tone.Add.prototype.connect = Tone.Signal.prototype.connect;
 
 	/**
 	 *  dispose method

@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/signal/Multiply"], function(Tone){
+define(["Tone/core/Tone", "Tone/signal/Multiply", "Tone/signal/WaveShaper"], function(Tone){
 
 	"use strict";
 
@@ -8,7 +8,7 @@ define(["Tone/core/Tone", "Tone/signal/Multiply"], function(Tone){
 	 *         fewer bits will improve performance. 
 	 *
 	 *  @constructor
-	 *  @extends {Tone}
+	 *  @extends {Tone.SignalBase}
 	 *  @param {number} modulus the modulus to apply
 	 *  @param {number} [bits=8]	optionally set the maximum bits the incoming signal can have. 
 	 *                           	defaults to 8 meaning that incoming values must be in the range
@@ -32,12 +32,12 @@ define(["Tone/core/Tone", "Tone/signal/Multiply"], function(Tone){
 			var mod = new ModuloSubroutine(modulus, Math.pow(2, i));
 			this._modChain.push(mod);
 		}
-		this.chain.apply(this, this._modChain);
+		this.connectSeries.apply(this, this._modChain);
 		this.input.connect(this._modChain[0]);
 		this._modChain[this._modChain.length - 1].connect(this.output);
 	};
 
-	Tone.extend(Tone.Modulo);
+	Tone.extend(Tone.Modulo, Tone.SignalBase);
 
 	Tone.Modulo.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
@@ -60,6 +60,7 @@ define(["Tone/core/Tone", "Tone/signal/Multiply"], function(Tone){
 	var ModuloSubroutine = function(modulus, multiple){
 
 		var val = modulus * multiple;
+		var arrayLength = 1024;
 
 		/**
 		 *  the input node
@@ -85,33 +86,21 @@ define(["Tone/core/Tone", "Tone/signal/Multiply"], function(Tone){
 		 *  @type {WaveShaperNode}
 		 *  @private
 		 */
-		this._operator = this.context.createWaveShaper();
+		this._operator = new Tone.WaveShaper(function(norm, pos){
+			if (pos === arrayLength - 1){
+				return -val;
+			} else if (pos === 0){
+				return val;
+			} else {
+				return 0;
+			}
+		}, arrayLength);
 
 		//connect it up
-		this.chain(this.input, this._div, this._operator);
-		this._makeCurve(val);
+		this.input.chain(this._div, this._operator);
 	};
 
 	Tone.extend(ModuloSubroutine);
-
-	/**
-	 * make the operator curve
-	 * @param {number} val
-	 * @private 
-	 */
-	ModuloSubroutine.prototype._makeCurve = function(val){
-		var arrayLength = this._curve.length;
-		for (var i = 0; i < arrayLength; i++) {
-			if (i === arrayLength - 1){
-				this._curve[i] = -val;
-			} else if (i === 0){
-				this._curve[i] = val;
-			} else {
-				this._curve[i] = 0;
-			}
-		}
-		this._operator.curve = this._curve;
-	};
 
 	/**
 	 *  @override the default connection to connect the operator and the input to the next node

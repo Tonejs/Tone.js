@@ -12,7 +12,7 @@ function(Tone){
 	 *  
 	 *  @constructor
 	 *  @extends {Tone}
-	 *  @param {number=} initialPan the initail panner value (defaults to 0.5 = center)
+	 *  @param {number} [initialPan=0.5] the initail panner value (defaults to 0.5 = center)
 	 */
 	Tone.Panner = function(initialPan){
 
@@ -63,7 +63,7 @@ function(Tone){
 	 *  1 = 100% right.
 	 *  
 	 *  @param {number} pan 0-1
-	 *  @param {Tone.Time=} rampTime (optionally) ramp to the pan position
+	 *  @param {Tone.Time=} rampTime ramp to the pan position
 	 */
 	Tone.Panner.prototype.setPan = function(pan, rampTime){
 		this._dryWet.setWet(pan, rampTime);

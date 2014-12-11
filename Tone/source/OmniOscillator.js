@@ -4,7 +4,9 @@ function(Tone){
 	"use strict";
 
 	/**
-	 *  @class An OmniOscillator can be a sine|square|triangle|sawtooth|pulse|pwm
+	 *  @class OmniOscillator aggregates Tone.Oscillator, Tone.PulseOscillator,
+	 *         and Tone.PWMOscillator which allows it to have the types: 
+	 *         sine, square, triangle, sawtooth, pulse or pwm. 
 	 *
 	 *  @extends {Tone.Oscillator}
 	 *  @constructor
@@ -17,14 +19,12 @@ function(Tone){
 
 		/**
 		 *  the frequency control
-		 *  (doesn't do anything for noises)
 		 *  @type {Tone.Signal}
 		 */
 		this.frequency = new Tone.Signal(options.frequency);
 
 		/**
 		 *  the detune control
-		 *  (doesn't do anything for noises)
 		 *  @type {Tone.Signal}
 		 */
 		this.detune = new Tone.Signal(options.detune);
@@ -212,10 +212,10 @@ function(Tone){
 	Tone.OmniOscillator.prototype.dispose = function(){
 		Tone.Source.prototype.dispose.call(this);
 		this.detune.dispose();
-		this.frequency.dispose();
-		this._oscillator.dispose();
 		this.detune = null;
+		this.frequency.dispose();
 		this.frequency = null;
+		this._oscillator.dispose();
 		this._oscillator = null;
 		this._sourceType = null;
 	};

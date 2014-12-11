@@ -8,10 +8,10 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Pow"], function(Ton
 	 *
 	 *  @constructor
 	 *  @extends {Tone}
-	 *  @param {Tone.Time|Object=} attack
-	 *  @param {Tone.Time=} decay
-	 *  @param {number=} sustain 	a percentage (0-1) of the full amplitude
-	 *  @param {Tone.Time=} release
+	 *  @param {Tone.Time|Object} [attack=0.01]	the attack time in seconds
+	 *  @param {Tone.Time} [decay=0.1]	the decay time in seconds
+	 *  @param {number} [sustain=0.5] 	a percentage (0-1) of the full amplitude
+	 *  @param {Tone.Time} [release=1]	the release time in seconds
 	 */
 	Tone.Envelope = function(){
 
@@ -20,13 +20,13 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Pow"], function(Ton
 
 		/** 
 		 *  the attack time in seconds
-		 *  @type {number}
+		 *  @type {Tone.Time}
 		 */
 		this.attack = options.attack;
 
 		/**
 		 *  the decay time in seconds
-		 *  @type {number}
+		 *  @type {Tone.Time}
 		 */
 		this.decay = options.decay;
 		
@@ -38,7 +38,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Pow"], function(Ton
 
 		/**
 		 *  the release time in seconds
-		 *  @type {number}
+		 *  @type {Tone.Time}
 		 */
 		this.release = options.release;
 
@@ -57,7 +57,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Pow"], function(Ton
 		this._exp = this.output = new Tone.Pow(options.exponent);
 
 		//connections
-		this.chain(this._sig, this._exp);
+		this._sig.connect(this._exp);
 	};
 
 	Tone.extend(Tone.Envelope);
@@ -137,8 +137,8 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Pow"], function(Ton
 
 	/**
 	 * attack->decay->sustain linear ramp
-	 * @param  {Tone.Time=} time
-	 * @param {number=} [velocity=1] the velocity of the envelope scales the vales.
+	 * @param  {Tone.Time} [time=now]
+	 * @param {number} [velocity=1] the velocity of the envelope scales the vales.
 	 *                               number between 0-1
 	 */
 	Tone.Envelope.prototype.triggerAttack = function(time, velocity){
@@ -155,7 +155,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Pow"], function(Ton
 	
 	/**
 	 * triggers the release of the envelope with a linear ramp
-	 * @param  {Tone.Time=} time
+	 * @param  {Tone.Time} [time=now]
 	 */
 	Tone.Envelope.prototype.triggerRelease = function(time){
 		time = this.toSeconds(time);
@@ -167,8 +167,8 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Pow"], function(Ton
 	/**
 	 *  trigger the attack and release after a sustain time
 	 *  @param {Tone.Time} duration the duration of the note
-	 *  @param {Tone.Time=} time the time of the attack
-	 *  @param {number=} velocity the velocity of the note
+	 *  @param {Tone.Time} [time=now] the time of the attack
+	 *  @param {number} [velocity=1] the velocity of the note
 	 */
 	Tone.Envelope.prototype.triggerAttackRelease = function(duration, time, velocity) {
 		time = this.toSeconds(time);

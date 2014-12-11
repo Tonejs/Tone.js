@@ -1,22 +1,22 @@
-define(["Tone/core/Tone", "Tone/component/LFO", "Tone/effect/FeedbackEffect", "Tone/component/Filter", "Tone/effect/StereoFeedbackEffect"], 
+define(["Tone/core/Tone", "Tone/component/LFO", "Tone/component/Filter", "Tone/effect/StereoEffect"], 
 function(Tone){
 
 	"use strict";
 
 	/**
-	 *  @class A Phaser effect with feedback. inspiration from https://github.com/Dinahmoe/tuna/
+	 *  @class A Phaser effect. inspiration from https://github.com/Dinahmoe/tuna/
 	 *
-	 *	@extends {Tone.StereoFeedbackEffect}
+	 *	@extends {Tone.StereoEffect}
 	 *	@constructor
-	 *	@param {number|object=} rate the speed of the phasing
-	 *	@param {number=} depth the depth of the effect
-	 *	@param {number} baseFrequency the base frequency of the filters
+	 *	@param {number|Object} [rate=0.5] the speed of the phasing
+	 *	@param {number} [depth=10] the depth of the effect
+	 *	@param {number} [baseFrequency=400] the base frequency of the filters
 	 */
 	Tone.Phaser = function(){
 
 		//set the defaults
 		var options = this.optionsObject(arguments, ["rate", "depth", "baseFrequency"], Tone.Phaser.defaults);
-		Tone.StereoFeedbackEffect.call(this, options);
+		Tone.StereoEffect.call(this, options);
 
 		/**
 		 *  the lfo which controls the frequency on the left side
@@ -79,7 +79,7 @@ function(Tone){
 		this._lfoR.start();
 	};
 
-	Tone.extend(Tone.Phaser, Tone.StereoFeedbackEffect);
+	Tone.extend(Tone.Phaser, Tone.StereoEffect);
 
 	/**
 	 *  defaults
@@ -88,11 +88,10 @@ function(Tone){
 	 */
 	Tone.Phaser.defaults = {
 		"rate" : 0.5,
-		"depth" : 1,
+		"depth" : 10,
 		"stages" : 4,
-		"Q" : 6,
+		"Q" : 100,
 		"baseFrequency" : 400,
-		"feedback" : 0.6
 	};
 
 	/**
@@ -110,7 +109,7 @@ function(Tone){
 			connectToFreq.connect(filter.frequency);
 			filters[i] = filter;
 		}
-		this.chain.apply(this, filters);
+		this.connectSeries.apply(this, filters);
 		return filters;
 	};
 
@@ -152,14 +151,14 @@ function(Tone){
 		if (!this.isUndef(params.rate)) this.setRate(params.rate);
 		if (!this.isUndef(params.baseFrequency)) this.setBaseFrequency(params.baseFrequency);
 		if (!this.isUndef(params.depth)) this.setDepth(params.depth);
-		Tone.StereoFeedbackEffect.prototype.set.call(this, params);
+		Tone.StereoEffect.prototype.set.call(this, params);
 	};
 
 	/**
 	 *  clean up
 	 */
 	Tone.Phaser.prototype.dispose = function(){
-		Tone.StereoFeedbackEffect.prototype.dispose.call(this);
+		Tone.StereoEffect.prototype.dispose.call(this);
 		this._lfoL.dispose();
 		this._lfoL = null;
 		this._lfoR.dispose();

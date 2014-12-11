@@ -11,9 +11,9 @@ define(["Tone/core/Tone", "Tone/core/Master"], function(Tone){
 	 *
 	 *  @constructor
 	 *  @extends {Tone}
-	 *  @param {number=} channels (optional) number of channels being metered
-	 *  @param {number=} smoothing (optional) amount of smoothing applied to the volume
-	 *  @param {number=} clipMemory (optional) number in ms that a "clip" should be remembered
+	 *  @param {number} [channels=1] number of channels being metered
+	 *  @param {number} [smoothing=0.8] amount of smoothing applied to the volume
+	 *  @param {number} [clipMemory=500] number in ms that a "clip" should be remembered
 	 */
 	Tone.Meter = function(channels, smoothing, clipMemory){
 		//extends Unit
@@ -104,7 +104,7 @@ define(["Tone/core/Tone", "Tone/core/Master"], function(Tone){
 	/**
 	 *  get the rms of the signal
 	 *  	
-	 *  @param  {number=} channel which channel
+	 *  @param  {number} [channel=0] which channel
 	 *  @return {number}         the value
 	 */
 	Tone.Meter.prototype.getLevel = function(channel){

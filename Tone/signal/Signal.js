@@ -1,4 +1,4 @@
-define(["Tone/core/Tone"], function(Tone){
+define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 
 	"use strict";
 
@@ -9,12 +9,10 @@ define(["Tone/core/Tone"], function(Tone){
 	 *          with all of the functions available to AudioParams
 	 *
 	 *  @constructor
-	 *  @extends {Tone}
-	 *  @param {number=} value (optional) initial value
+	 *  @extends {Tone.SignalBase}
+	 *  @param {number} [value=0] initial value
 	 */
 	Tone.Signal = function(value){
-
-		Tone.call(this);
 
 		/**
 		 *  scales the constant output to the desired output
@@ -22,6 +20,11 @@ define(["Tone/core/Tone"], function(Tone){
 		 *  @private
 		 */
 		this._scalar = this.context.createGain();
+
+		/**
+		 *  @type {GainNode}
+		 */
+		this.input = this.output = this.context.createGain();
 
 		/**
 		 *  the ratio of the this value to the control signal value
@@ -38,12 +41,11 @@ define(["Tone/core/Tone"], function(Tone){
 		this.value = this.defaultArg(value, 0);
 
 		//connect the constant 1 output to the node output
-		this.chain(constant, this._scalar, this.output);
-		//signal passes through
-		this.input.connect(this.output);
+		Tone.Signal._constant.chain(this._scalar, this.output);
+		
 	};
 
-	Tone.extend(Tone.Signal);
+	Tone.extend(Tone.Signal, Tone.SignalBase);
 
 	/**
 	 *  @return {number} the current value of the signal
@@ -223,7 +225,7 @@ define(["Tone/core/Tone"], function(Tone){
 		//make a new scalar which is not connected to the constant signal
 		this._scalar.disconnect();
 		this._scalar = this.context.createGain();
-		this.chain(signal, this._scalar, this.output);
+		this.connectSeries(signal, this._scalar, this.output);
 		//set it ot the sync ratio
 		this._scalar.gain.value = this._syncRatio;
 	};
@@ -242,7 +244,7 @@ define(["Tone/core/Tone"], function(Tone){
 		this._scalar.gain.value = currentGain / this._syncRatio;
 		this._syncRatio = 1;
 		//reconnect things up
-		this.chain(constant, this._scalar, this.output);
+		Tone.Signal._constant.chain(this._scalar, this.output);
 	};
 
 	/**
@@ -252,24 +254,6 @@ define(["Tone/core/Tone"], function(Tone){
 		Tone.prototype.dispose.call(this);
 		this._scalar.disconnect();
 		this._scalar = null;
-	};
-
-	/**
-	 *  Signals can connect to other Signals
-	 *
-	 *  @override
-	 *  @param {AudioParam|AudioNode|Tone.Signal|Tone} node 
-	 *  @param {number=} outputNumber 
-	 *  @param {number=} inputNumber 
-	 */
-	Tone.Signal.prototype.connect = function(node, outputNumber, inputNumber){
-		//zero it out so that the signal can have full control
-		if (node instanceof Tone.Signal){
-			node.setValue(0);
-		} else if (node instanceof AudioParam){
-			node.value = 0;
-		} 
-		Tone.prototype.connect.call(this, node, outputNumber, inputNumber);
 	};
 
 	//defines getter / setter for value
@@ -287,39 +271,33 @@ define(["Tone/core/Tone"], function(Tone){
 	///////////////////////////////////////////////////////////////////////////
 
 	/**
-	 *	all signals share a common constant signal generator
-	 *  
+	 *  the constant signal generator
 	 *  @static
 	 *  @private
-	 *  @type {OscillatorNode} 
+	 *  @const
+	 *  @type {OscillatorNode}
 	 */
-	var generator = null;
+	Tone.Signal._generator = null;
 
 	/**
+	 *  the signal generator waveshaper. makes the incoming signal
+	 *  only output 1 for all inputs.
 	 *  @static
 	 *  @private
-	 *  @type {WaveShaperNode} 
+	 *  @const
+	 *  @type {Tone.WaveShaper}
 	 */
-	var constant = null;
+	Tone.Signal._constant = null;
 
 	/**
 	 *  initializer function
 	 */
 	Tone._initAudioContext(function(audioContext){
-		generator = audioContext.createOscillator();
-		constant = audioContext.createWaveShaper();
-		//generate the waveshaper table which outputs 1 for any input value
-		var len = 8;
-		var curve = new Float32Array(len);
-		for (var i = 0; i < len; i++){
-			//all inputs produce the output value
-			curve[i] = 1;
-		}
-		constant.curve = curve;
-		//connect it up
-		generator.connect(constant);
-		generator.start(0);
-		generator.noGC();
+		Tone.Signal._generator = audioContext.createOscillator();
+		Tone.Signal._constant = new Tone.WaveShaper([1,1]);
+		Tone.Signal._generator.connect(Tone.Signal._constant);
+		Tone.Signal._generator.start(0);
+		Tone.Signal._generator.noGC();
 	});
 
 	return Tone.Signal;

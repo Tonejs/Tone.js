@@ -7,7 +7,7 @@ function(Tone){
 	 *  @class return the absolute value of an incoming signal
 	 *
 	 *  @constructor
-	 *  @extends {Tone}
+	 *  @extends {Tone.SignalBase}
 	 */
 	Tone.Abs = function(){
 		Tone.call(this, 1, 0);
@@ -36,17 +36,10 @@ function(Tone){
 		this._negate.connect(this._switch, 0, 1);
 		
 		//the control signal
-		this.chain(this.input, this._ltz, this._switch.gate);
+		this.input.chain(this._ltz, this._switch.gate);
 	};
 
-	Tone.extend(Tone.Abs);
-
-	/**
-	 *  borrows the method from {@link Tone.Signal}
-	 *  
-	 *  @function
-	 */
-	Tone.Abs.prototype.connect = Tone.Signal.prototype.connect;
+	Tone.extend(Tone.Abs, Tone.SignalBase);
 
 	/**
 	 *  dispose method

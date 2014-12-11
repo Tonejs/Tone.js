@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/effect/Effect"], function(Tone){
+define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/signal/WaveShaper"], function(Tone){
 
 	"use strict";
 
@@ -17,17 +17,10 @@ define(["Tone/core/Tone", "Tone/effect/Effect"], function(Tone){
 		Tone.Effect.call(this);
 
 		/**
-		 *  @type {WaveShaperNode}
+		 *  @type {Tone.WaveShaper}
 		 *  @private
 		 */
-		this._shaper = this.context.createWaveShaper();
-
-		/**
-		 *  the curve that the waveshaper uses
-		 *  @type {Float32Array}
-		 *  @private
-		 */
-		this._curve = new Float32Array(4096);
+		this._shaper = new Tone.WaveShaper(4096);
 
 		this.connectEffect(this._shaper);
 		this.setDistortion(options.distortion);
@@ -52,18 +45,15 @@ define(["Tone/core/Tone", "Tone/effect/Effect"], function(Tone){
 	 */
 	Tone.Distortion.prototype.setDistortion = function(amount) {
 		var k = amount * 100;
-		var len = this._curve.length;
 		var deg = Math.PI / 180;
-		for (var i = 0; i < len; ++i) {
-			var x = i * 2 / len - 1;
-			if (x === 0){
+		this._shaper.setMap(function(x){
+			if (Math.abs(x) < 0.001){
 				//should output 0 when input is 0
-				this._curve[i] = 0;
+				return 0;
 			} else {
-				this._curve[i] = ( 3 + k ) * x * 20 * deg / ( Math.PI + k * Math.abs(x) );
+				return ( 3 + k ) * x * 20 * deg / ( Math.PI + k * Math.abs(x) );
 			}
-		}
-		this._shaper.curve = this._curve;
+		});
 	};
 
 	/**
@@ -79,9 +69,8 @@ define(["Tone/core/Tone", "Tone/effect/Effect"], function(Tone){
 	 */
 	Tone.Distortion.prototype.dispose = function(){
 		Tone.Effect.prototype.dispose.call(this);
-		this._shaper.disconnect();
+		this._shaper.dispose();
 		this._shaper = null;
-		this._curve = null;
 	};
 
 	return Tone.Distortion;

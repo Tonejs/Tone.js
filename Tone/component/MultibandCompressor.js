@@ -65,9 +65,9 @@ define(["Tone/core/Tone", "Tone/component/MultibandSplit", "Tone/component/Compr
 		this.high = new Tone.Compressor(options.high);
 
 		//connect the compressor
-		this.chain(this._splitter.low, this.low, this.output);
-		this.chain(this._splitter.mid, this.mid, this.output);
-		this.chain(this._splitter.high, this.high, this.output);
+		this._splitter.low.chain(this.low, this.output);
+		this._splitter.mid.chain(this.mid, this.output);
+		this._splitter.high.chain(this.high, this.output);
 	};
 
 	Tone.extend(Tone.MultibandCompressor);

@@ -7,7 +7,7 @@ define(["Tone/core/Tone", "Tone/effect/FeedbackEffect", "Tone/signal/Signal"], f
 	 *
 	 *  @constructor
 	 *  @extends {Tone.FeedbackEffect}
-	 *  @param {Tone.Time|Object=} delayTime
+	 *  @param {Tone.Time|Object} [delayTime=0.25]
 	 */
 	Tone.FeedbackDelay = function(){
 		

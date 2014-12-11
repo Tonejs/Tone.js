@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/effect/MidSide", "Tone/signal/Signal", 
+define(["Tone/core/Tone", "Tone/effect/MidSideEffect", "Tone/signal/Signal", 
 	"Tone/signal/Multiply", "Tone/signal/Expr"], 
 	function(Tone){
 
@@ -12,14 +12,14 @@ define(["Tone/core/Tone", "Tone/effect/MidSide", "Tone/signal/Signal",
 	 *         M *= 2*(1-width);
 	 *         S *= 2*width
 	 *
-	 *  @extends {Tone.MidSide}
+	 *  @extends {Tone.MidSideEffect}
 	 *  @constructor
-	 *  @param {number|Object=} width the stereo width
+	 *  @param {number|Object} [width=0.5] the stereo width. A width of 0 is mono and 1 is stereo. 0.5 is no change.
 	 */
 	Tone.StereoWidener = function(){
 
 		var options = this.optionsObject(arguments, ["width"], Tone.StereoWidener.defaults);
-		Tone.MidSide.call(this, options);
+		Tone.MidSideEffect.call(this, options);
 
 		/**
 		 *  the width control
@@ -55,11 +55,11 @@ define(["Tone/core/Tone", "Tone/effect/MidSide", "Tone/signal/Signal",
 		this._two.connect(this._sideMult, 0, 1);
 		this.width.connect(this._sideMult, 0, 2);
 		//connect it to the effect send/return
-		this.chain(this.midSend, this._midMult, this.midReturn);
-		this.chain(this.sideSend, this._sideMult, this.sideReturn);
+		this.midSend.chain(this._midMult, this.midReturn);
+		this.sideSend.chain(this._sideMult, this.sideReturn);
 	};
 
-	Tone.extend(Tone.StereoWidener, Tone.MidSide);
+	Tone.extend(Tone.StereoWidener, Tone.MidSideEffect);
 
 	/**
 	 *  the default values
@@ -84,14 +84,14 @@ define(["Tone/core/Tone", "Tone/effect/MidSide", "Tone/signal/Signal",
 	 */
 	Tone.StereoWidener.prototype.set = function(params){
 		if (!this.isUndef(params.width)) this.setWidth(params.width);
-		Tone.MidSide.prototype.set.call(this, params);
+		Tone.MidSideEffect.prototype.set.call(this, params);
 	};
 
 	/**
 	 *  clean up
 	 */
 	Tone.StereoWidener.prototype.dispose = function(){
-		Tone.MidSide.prototype.dispose.call(this);
+		Tone.MidSideEffect.prototype.dispose.call(this);
 		this.width.dispose();
 		this.width = null;
 		this._midMult.dispose();

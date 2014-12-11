@@ -122,7 +122,7 @@ function(Tone, chai, Recorder, Master, Signal){
 					end();
 					return;
 				} else if (i < duration / 2) {
-					expect(buffer[i]).to.be.closeTo(0, 0.005);
+					expect(buffer[i]).to.be.closeTo(0, 0.001);
 					// throw new Error("node outputs sound when no signal is fed in");		
 				}
 			}

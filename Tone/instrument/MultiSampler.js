@@ -8,7 +8,7 @@ function(Tone){
 	 *         Pass in a mapping of names to sample urls and an optional 
 	 *         callback to invoke when all of the samples are loaded. 
 	 *
-	 *  @example
+	 *  ```javascript
 	 *  var sampler = new Tone.MultiSampler({
 	 *  	"kick" : "../audio/BD.mp3",
 	 *  	"snare" : "../audio/SD.mp3",
@@ -16,6 +16,7 @@ function(Tone){
 	 *  }, onload);
 	 *  //once loaded...
 	 *  sampler.triggerAttack("kick");
+	 *  ```
 	 *
 	 *  @constructor
 	 *  @extends {Tone.Instrument}
@@ -77,7 +78,7 @@ function(Tone){
 	 *  start a sample
 	 *  
 	 *  @param  {string} sample the note name to start
-	 *  @param {Tone.Time=} [time=now] the time when the note should start
+	 *  @param {Tone.Time} [time=now] the time when the note should start
 	 *  @param {number} [velocity=1] the velocity of the note
 	 */
 	Tone.MultiSampler.prototype.triggerAttack = function(sample, time, velocity){
@@ -90,7 +91,7 @@ function(Tone){
 	 *  start the release portion of the note
 	 *  
 	 *  @param  {string} sample the note name to release
-	 *  @param {Tone.Time=} [time=now] the time when the note should release
+	 *  @param {Tone.Time} [time=now] the time when the note should release
 	 */
 	Tone.MultiSampler.prototype.triggerRelease = function(sample, time){
 		if (this.samples.hasOwnProperty(sample)){

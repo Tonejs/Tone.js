@@ -115,14 +115,28 @@ module.exports = function(grunt) {
 			}
 		},
 		uglify : {
-			dist : {
+			min : {
 				options : {
-					preserveComments : "some"
+					preserveComments : "some",
+					compress: {
+						dead_code : true,
+						evaluate : true,
+						loops : true,
+						if_return : true,
+						hoist_vars : true,
+						booleans : true,
+						conditionals : true,
+						sequences : true,
+						comparisons : true,
+						hoist_funs : true,
+						join_vars : true,
+						cascade : true,
+					},
 				},
 				files: {
 					"../build/Tone.min.js": ["../build/Tone.js"]
 				}
-			}
+			},
 		},
 		replace: {
 			dist: {
@@ -179,7 +193,7 @@ module.exports = function(grunt) {
 	grunt.registerTask("docs", ["jsdoc:src"]);
 	grunt.registerTask("npm", ["copy:npm"]);
 	grunt.registerTask("presets", ["concat:presets", "indent:presets", "replace:presets", "wrap:presets"]);
-	grunt.registerTask("min", ["uglify:dist"]);
+	grunt.registerTask("min", ["uglify:min"]);
 	grunt.registerTask("build", ["concat:dist","requirejs:compile","concat:removeRequireString", "clean:dist", "indent:dist", "replace:dist", "wrap:dist"]);
 	grunt.registerTask("buildall", ["build", "min", "presets"]);
 	grunt.registerTask("dist", ["buildall", "docs", "npm"]);

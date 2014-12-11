@@ -10,7 +10,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/effect/Effect"], function(To
 	 *  @constructor
 	 *  @extends {Tone.Effect}
 	 *  @param {string|Object=} url
-	 *  @param {function} callback function
+	 *  @param {function=} callback function
 	 */
 	Tone.Convolver = function(){
 

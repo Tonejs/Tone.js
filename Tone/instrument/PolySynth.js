@@ -7,11 +7,12 @@ function(Tone){
 	 *  @class  Creates a polyphonic synthesizer out of 
 	 *          the monophonic voice which is passed in. 
 	 *
-	 *  @example
+	 *  ```javascript
 	 *  //a polysynth composed of 6 Voices of MonoSynth
 	 *  var synth = new Tone.PolySynth(6, Tone.MonoSynth);
-	 *  //set the MonoSynth preset
+	 *  //set a MonoSynth preset
 	 *  synth.setPreset("Pianoetta");
+	 *  ```
 	 *
 	 *  @constructor
 	 *  @extends {Tone.Instrument}
@@ -79,8 +80,8 @@ function(Tone){
 	 *  @param  {string|number|Object|Array} value the value of the note(s) to start.
 	 *                                             if the value is an array, it will iterate
 	 *                                             over the array to play each of the notes
-	 *  @param  {Tone.Time=} [time=now]  the start time of the note
-	 *  @param {number=} velocity the velocity of the note
+	 *  @param  {Tone.Time} [time=now]  the start time of the note
+	 *  @param {number} [velocity=1] the velocity of the note
 	 */
 	Tone.PolySynth.prototype.triggerAttack = function(value, time, velocity){
 		if (!Array.isArray(value)){
@@ -106,8 +107,8 @@ function(Tone){
 	 *                                             if the value is an array, it will iterate
 	 *                                             over the array to play each of the notes
 	 *  @param  {Tone.Time} duration the duration of the note
-	 *  @param  {Tone.Time=} time     if no time is given, defaults to now
-	 *  @param  {number=} velocity the velocity of the attack (0-1)
+	 *  @param  {Tone.Time} [time=now]     if no time is given, defaults to now
+	 *  @param  {number} [velocity=1] the velocity of the attack (0-1)
 	 */
 	Tone.PolySynth.prototype.triggerAttackRelease = function(value, duration, time, velocity){
 		time = this.toSeconds(time);
@@ -120,7 +121,7 @@ function(Tone){
 	 *  @param  {string|number|Object|Array} value the value of the note(s) to release.
 	 *                                             if the value is an array, it will iterate
 	 *                                             over the array to play each of the notes
-	 *  @param  {Tone.Time=} [time=now]  the release time of the note
+	 *  @param  {Tone.Time} [time=now]  the release time of the note
 	 */
 	Tone.PolySynth.prototype.triggerRelease = function(value, time){
 		if (!Array.isArray(value)){

@@ -8,8 +8,9 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	 *          input 1: multiplier.
 	 *
 	 *  @constructor
-	 *  @extends {Tone}
-	 *  @param {number=} value constant value to multiple
+	 *  @extends {Tone.SignalBase}
+	 *  @param {number=} value constant value to multiple. if no value is provided
+	 *                         it will be multiplied by the value of input 1.
 	 */
 	Tone.Multiply = function(value){
 
@@ -34,7 +35,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 		this._factor.value = this.defaultArg(value, 0);
 	};
 
-	Tone.extend(Tone.Multiply);
+	Tone.extend(Tone.Multiply, Tone.SignalBase);
 
 	/**
 	 *  set the constant multiple
@@ -44,13 +45,6 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	Tone.Multiply.prototype.setValue = function(value){
 		this._factor.value = value;
 	};
-
-	/**
-	 *  borrows the method from {@link Tone.Signal}
-	 *  
-	 *  @function
-	 */
-	Tone.Multiply.prototype.connect = Tone.Signal.prototype.connect;
 
 	/**
 	 *  clean up

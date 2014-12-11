@@ -94,8 +94,8 @@ define(function(){
 	 *  
 	 *  @constructor
 	 *  @alias Tone
-	 *  @param {number=} inputs the number of input nodes
-	 *  @param {number=} outputs the number of output nodes
+	 *  @param {number} [inputs=1] the number of input nodes
+	 *  @param {number} [outputs=1] the number of output nodes
 	 */
 	var Tone = function(inputs, outputs){
 
@@ -160,8 +160,8 @@ define(function(){
 	/**
 	 *  connect the output of a ToneNode to an AudioParam, AudioNode, or ToneNode
 	 *  @param  {Tone | AudioParam | AudioNode} unit 
-	 *  @param {number=} outputNum optionally which output to connect from
-	 *  @param {number=} inputNum optionally which input to connect to
+	 *  @param {number} [outputNum=0] optionally which output to connect from
+	 *  @param {number} [inputNum=0] optionally which input to connect to
 	 */
 	Tone.prototype.connect = function(unit, outputNum, inputNum){
 		if (Array.isArray(this.output)){
@@ -183,12 +183,12 @@ define(function(){
 			this.output.disconnect();
 		}
 	};
-	
+
 	/**
 	 *  connect together all of the arguments in series
 	 *  @param {...AudioParam|Tone|AudioNode}
 	 */
-	Tone.prototype.chain = function(){
+	Tone.prototype.connectSeries = function(){
 		if (arguments.length > 1){
 			var currentUnit = arguments[0];
 			for (var i = 1; i < arguments.length; i++){
@@ -203,7 +203,7 @@ define(function(){
 	 *  fan out the connection from the first argument to the rest of the arguments
 	 *  @param {...AudioParam|Tone|AudioNode}
 	 */
-	Tone.prototype.fan = function(){
+	Tone.prototype.connectParallel = function(){
 		var connectFrom = arguments[0];
 		if (arguments.length > 1){
 			for (var i = 1; i < arguments.length; i++){
@@ -212,6 +212,37 @@ define(function(){
 			}
 		}
 	};
+
+	/**
+	 *  connect the output of this node to the rest of the nodes in series.
+	 *  @param {...AudioParam|Tone|AudioNode}
+	 */
+	Tone.prototype.chain = function(){
+		if (arguments.length > 0){
+			var currentUnit = this;
+			for (var i = 0; i < arguments.length; i++){
+				var toUnit = arguments[i];
+				currentUnit.connect(toUnit);
+				currentUnit = toUnit;
+			}
+		}
+	};
+
+	/**
+	 *  connect the output of this node to the rest of the nodes in parallel.
+	 *  @param {...AudioParam|Tone|AudioNode}
+	 */
+	Tone.prototype.fan = function(){
+		if (arguments.length > 0){
+			for (var i = 1; i < arguments.length; i++){
+				this.connect(arguments[i]);
+			}
+		}
+	};
+
+	//give native nodes chain and fan methods
+	AudioNode.prototype.chain = Tone.prototype.chain;
+	AudioNode.prototype.fan = Tone.prototype.fan;
 
 	///////////////////////////////////////////////////////////////////////////
 	//	UTILITIES / HELPERS / MATHS
@@ -572,7 +603,7 @@ define(function(){
 		_silentNode.connect(audioContext.destination);
 	});
 
-	console.log("%c * Tone.js r3-dev * ", "background: #000; color: #fff");
+	console.log("%c * Tone.js r3 * ", "background: #000; color: #fff");
 
 	return Tone;
 });

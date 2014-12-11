@@ -1,4 +1,5 @@
-define(["Tone/core/Tone", "Tone/signal/Abs", "Tone/signal/Subtract", "Tone/signal/Multiply", "Tone/signal/Signal"], 
+define(["Tone/core/Tone", "Tone/signal/Abs", "Tone/signal/Subtract", 
+	"Tone/signal/Multiply", "Tone/signal/Signal", "Tone/signal/WaveShaper"], 
 function(Tone){
 
 	"use strict";
@@ -11,8 +12,8 @@ function(Tone){
 	 *  
 	 *  @constructor
 	 *  @extends {Tone}
-	 *  @param {Tone.Time=} [attack = 0.05] 
-	 *  @param {Tone.Time=} [release = 0.5] 
+	 *  @param {Tone.Time} [attack = 0.05] 
+	 *  @param {Tone.Time} [release = 0.5] 
 	 */
 	Tone.Follower = function(){
 
@@ -39,7 +40,7 @@ function(Tone){
 		 *  @type {WaveShaperNode}
 		 *  @private
 		 */
-		this._frequencyValues = this.context.createWaveShaper();
+		this._frequencyValues = new Tone.WaveShaper();
 		
 		/**
 		 *  @type {Tone.Subtract}
@@ -73,20 +74,13 @@ function(Tone){
 		 */
 		this._release = this.secondsToFrequency(options.release);
 
-		/**
-		 *  the curve that the waveshaper uses
-		 *  @type {Float32Array}
-		 *  @private
-		 */
-		this._curve = new Float32Array(1024);
-
 		//the smoothed signal to get the values
-		this.chain(this.input, this._abs, this._filter, this.output);
+		this.input.chain(this._abs, this._filter, this.output);
 		//the difference path
 		this._abs.connect(this._sub, 0, 1);
-		this.chain(this._filter, this._delay, this._sub);
+		this._filter.chain(this._delay, this._sub);
 		//threshold the difference and use the thresh to set the frequency
-		this.chain(this._sub, this._mult, this._frequencyValues, this._filter.frequency);
+		this._sub.chain(this._mult, this._frequencyValues, this._filter.frequency);
 		//set the attack and release values in the table
 		this._setAttackRelease(this._attack, this._release);
 	};
@@ -109,22 +103,16 @@ function(Tone){
 	 *  @private
 	 */
 	Tone.Follower.prototype._setAttackRelease = function(attack, release){
-		var curveLength = this._curve.length;
-		//the minimum value for attack/release is the bufferSize / sampleRate
 		var minTime = this.bufferTime;
 		attack = Math.max(attack, minTime);
 		release = Math.max(release, minTime);
-		for (var i = 0; i < curveLength; i++){
-			var normalized = (i / (curveLength - 1)) * 2 - 1;
-			var val;
-			if (normalized <= 0){
-				val = attack;
+		this._frequencyValues.setMap(function(val){
+			if (val <= 0){
+				return attack;
 			} else {
-				val = release;
+				return release;
 			} 
-			this._curve[i] = val;
-		}
-		this._frequencyValues.curve = this._curve;
+		});
 	};
 
 	/**

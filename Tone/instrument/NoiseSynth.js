@@ -1,51 +1,29 @@
 define(["Tone/core/Tone", "Tone/component/AmplitudeEnvelope", "Tone/component/ScaledEnvelope", 
-	"Tone/source/OmniOscillator", "Tone/signal/Signal", "Tone/component/Filter", "Tone/instrument/Monophonic"], 
+	"Tone/source/Noise", "Tone/signal/Signal", "Tone/component/Filter", "Tone/instrument/Instrument"], 
 function(Tone){
 
 	"use strict";
 
 	/**
-	 *  @class  the MonoSynth is a single oscillator, monophonic synthesizer
-	 *          with a filter, and two envelopes (on the filter and the amplitude). 
-	 *
-	 * Flow: 
-	 * 
-	 * <pre>
-	 * OmniOscillator+-->AmplitudeEnvelope+-->Filter 
-	 *                                          ^    
-	 *                                          |    
-	 *                         ScaledEnvelope+--+
-	 * </pre>
-	 *  
+	 *  @class  the NoiseSynth is a single oscillator, monophonic synthesizer
+	 *          with a filter, and two envelopes (on the filter and the amplitude)
 	 *
 	 *  @constructor
-	 *  @extends {Tone.Monophonic}
+	 *  @extends {Tone.Instrument}
 	 *  @param {Object} options the options available for the synth 
 	 *                          see defaults below
 	 */
-	Tone.MonoSynth = function(options){
+	Tone.NoiseSynth = function(options){
 
 		//get the defaults
-		options = this.defaultArg(options, Tone.MonoSynth.defaults);
-		Tone.Monophonic.call(this, options);
+		options = this.defaultArg(options, Tone.NoiseSynth.defaults);
+		Tone.Instrument.call(this);
 
 		/**
-		 *  the first oscillator
-		 *  @type {Tone.OmniOscillator}
+		 *  the noise source
+		 *  @type {Tone.Noise}
 		 */
-		this.oscillator = new Tone.OmniOscillator(options.oscillator);
-
-		/**
-		 *  the frequency control signal
-		 *  @type {Tone.Signal}
-		 */
-		this.frequency = this.oscillator.frequency;
-
-		/**
-		 *  the detune control signal
-		 *  @type {Tone.Signal}
-		 */
-		this.detune = this.oscillator.detune;
+		this.noise = new Tone.Noise();
 
 		/**
 		 *  the filter
@@ -65,40 +43,39 @@ function(Tone){
 		 */
 		this.envelope = new Tone.AmplitudeEnvelope(options.envelope);
 
-		//connect the oscillators to the output
-		this.oscillator.chain(this.filter, this.envelope, this.output);
-		//start the oscillators
-		this.oscillator.start();
+		//connect the noise to the output
+		this.noise.chain(this.filter, this.envelope, this.output);
+		//start the noise
+		this.noise.start();
 		//connect the filter envelope
 		this.filterEnvelope.connect(this.filter.frequency);
 	};
 
-	Tone.extend(Tone.MonoSynth, Tone.Monophonic);
+	Tone.extend(Tone.NoiseSynth, Tone.Instrument);
 
 	/**
 	 *  @const
 	 *  @static
 	 *  @type {Object}
 	 */
-	Tone.MonoSynth.defaults = {
-		"oscillator" : {
-			"type" : "square"
+	Tone.NoiseSynth.defaults = {
+		"noise" : {
+			"type" : "white"
 		},
 		"filter" : {
 			"Q" : 6,
-			"type" : "lowpass",
+			"type" : "highpass",
 			"rolloff" : -24
 		},
 		"envelope" : {
 			"attack" : 0.005,
 			"decay" : 0.1,
-			"sustain" : 0.9,
-			"release" : 1
+			"sustain" : 0.0,
 		},
 		"filterEnvelope" : {
 			"attack" : 0.06,
 			"decay" : 0.2,
-			"sustain" : 0.5,
+			"sustain" : 0,
 			"release" : 2,
 			"min" : 20,
 			"max" : 4000,
@@ -111,7 +88,7 @@ function(Tone){
 	 *  @param {Tone.Time} [time=now] the time the attack should start
 	 *  @param {number} [velocity=1] the velocity of the note (0-1)
 	 */
-	Tone.MonoSynth.prototype.triggerEnvelopeAttack = function(time, velocity){
+	Tone.NoiseSynth.prototype.triggerAttack = function(time, velocity){
 		//the envelopes
 		this.envelope.triggerAttack(time, velocity);
 		this.filterEnvelope.triggerAttack(time);		
@@ -121,17 +98,31 @@ function(Tone){
 	 *  start the release portion of the envelope
 	 *  @param {Tone.Time} [time=now] the time the release should start
 	 */
-	Tone.MonoSynth.prototype.triggerEnvelopeRelease = function(time){
+	Tone.NoiseSynth.prototype.triggerRelease = function(time){
 		this.envelope.triggerRelease(time);
 		this.filterEnvelope.triggerRelease(time);
+	};
+
+	/**
+	 *  trigger the attack and then the release
+	 *  @param  {Tone.Time} duration the duration of the note
+	 *  @param  {Tone.Time} [time=now]     the time of the attack
+	 *  @param  {number} [velocity=1] the velocity
+	 */
+	Tone.NoiseSynth.prototype.triggerAttackRelease = function(duration, time, velocity){
+		time = this.toSeconds(time);
+		duration = this.toSeconds(duration);
+		this.triggerAttack(time, velocity);
+		console.log(time + duration);
+		this.triggerRelease(time + duration);
 	};
 
 	/**
 	 *  set the oscillator type
 	 *  @param {string} oscType the type of oscillator
 	 */
-	Tone.MonoSynth.prototype.setOscType = function(type){
-		this.oscillator.setType(type);
+	Tone.NoiseSynth.prototype.setNoiseType = function(type){
+		this.noise.setType(type);
 	};
 
 	/**
@@ -140,31 +131,27 @@ function(Tone){
 	 *                         params for envelope and filterEnvelope 
 	 *                         should be nested objects. 
 	 */
-	Tone.MonoSynth.prototype.set = function(params){
-		if (!this.isUndef(params.detune)) this.detune.setValue(params.detune);
-		if (!this.isUndef(params.oscillator)) this.oscillator.set(params.oscillator);
+	Tone.NoiseSynth.prototype.set = function(params){
+		if (!this.isUndef(params.noise)) this.noise.set(params.noise);
 		if (!this.isUndef(params.filterEnvelope)) this.filterEnvelope.set(params.filterEnvelope);
 		if (!this.isUndef(params.envelope)) this.envelope.set(params.envelope);
 		if (!this.isUndef(params.filter)) this.filter.set(params.filter);
-		Tone.Monophonic.prototype.set.call(this, params);
 	};
 
 	/**
 	 *  clean up
 	 */
-	Tone.MonoSynth.prototype.dispose = function(){
-		Tone.Monophonic.prototype.dispose.call(this);
-		this.oscillator.dispose();
-		this.oscillator = null;
+	Tone.NoiseSynth.prototype.dispose = function(){
+		Tone.Instrument.prototype.dispose.call(this);
+		this.noise.dispose();
+		this.noise = null;
 		this.envelope.dispose();
 		this.envelope = null;
 		this.filterEnvelope.dispose();
 		this.filterEnvelope = null;
 		this.filter.dispose();
 		this.filter = null;
-		this.frequency = null;
-		this.detune = null;
 	};
 
-	return Tone.MonoSynth;
+	return Tone.NoiseSynth;
 });

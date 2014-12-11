@@ -9,7 +9,7 @@ define(["Tone/core/Tone", "Tone/component/DryWet"], function(Tone){
 	 *
 	 *  @constructor
 	 *  @extends {Tone}
-	 *  @param {number=} [initalDry=0] the starting dry value
+	 *  @param {number} [initalDry=0] the starting dry value
 	 *                             defaults to 100% wet
 	 */
 	Tone.Effect = function(){
@@ -103,7 +103,7 @@ define(["Tone/core/Tone", "Tone/component/DryWet"], function(Tone){
 	 *  @internal
 	 */
 	Tone.Effect.prototype.connectEffect = function(effect){
-		this.chain(this.effectSend, effect, this.effectReturn);
+		this.effectSend.chain(effect, this.effectReturn);
 	};
 
 	/**

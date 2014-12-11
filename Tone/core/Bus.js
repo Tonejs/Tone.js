@@ -31,7 +31,7 @@ define(["Tone/core/Tone"], function(Tone){
 		}
 		var sendKnob = this.context.createGain();
 		sendKnob.gain.value = this.defaultArg(amount, 1);
-		this.chain(this.output, sendKnob, Buses[channelName]);
+		this.output.chain(sendKnob, Buses[channelName]);
 		return sendKnob;		
 	};
 
@@ -40,7 +40,7 @@ define(["Tone/core/Tone"], function(Tone){
 	 *  defined in "Tone/core/Bus"
 	 *
 	 *  @param  {string} channelName 
-	 *  @param {AudioNode=} [input=this.input] if no input is selected, the
+	 *  @param {AudioNode} [input=this.input] if no input is selected, the
 	 *                                         input of the current node is
 	 *                                         chosen. 
 	 */

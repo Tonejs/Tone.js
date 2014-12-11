@@ -9,8 +9,8 @@ define(["Tone/core/Tone", "Tone/signal/GreaterThan", "Tone/signal/Negate"], func
 	 *          input 1: right hand side of comparison.
 	 *  
 	 *  @constructor
-	 *  @extends {Tone}
-	 *  @param {number=} [value=0] the value to compare to the incoming signal
+	 *  @extends {Tone.SignalBase}
+	 *  @param {number} [value=0] the value to compare to the incoming signal
 	 */
 	Tone.LessThan = function(value){
 
@@ -42,7 +42,7 @@ define(["Tone/core/Tone", "Tone/signal/GreaterThan", "Tone/signal/Negate"], func
 		this._lhNeg.connect(this._gt, 0, 1);
 	};
 
-	Tone.extend(Tone.LessThan);
+	Tone.extend(Tone.LessThan, Tone.SignalBase);
 
 	/**
 	 *  set the value to compare to
@@ -52,13 +52,6 @@ define(["Tone/core/Tone", "Tone/signal/GreaterThan", "Tone/signal/Negate"], func
 	Tone.LessThan.prototype.setValue = function(value){
 		this._gt.setValue(-value);
 	};
-
-	/**
-	 *  borrows the method from {@link Tone.Signal}
-	 *  
-	 *  @function
-	 */
-	Tone.LessThan.prototype.connect = Tone.Signal.prototype.connect;
 
 	/**
 	 *  dispose method

@@ -24,7 +24,7 @@ define(["Tone/core/Tone"], function(Tone){
 		this.limiter.ratio.value = 20;
 		
 		//connect it up
-		this.chain(this.input, this.limiter, this.output, this.context.destination);
+		this.input.chain(this.limiter, this.output, this.context.destination);
 	};
 
 	Tone.extend(Tone.Master);
@@ -44,7 +44,7 @@ define(["Tone/core/Tone"], function(Tone){
 
 	/**
 	 *  @param {number} db volume in decibels 
-	 *  @param {Tone.Time=} fadeTime (optional) time it takes to reach the value
+	 *  @param {Tone.Time=} fadeTime time it takes to reach the value
 	 */
 	Tone.Master.prototype.setVolume = function(db, fadeTime){
 		var now = this.now();

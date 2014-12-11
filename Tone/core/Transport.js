@@ -23,7 +23,9 @@ function(Tone){
 	 *  into a mathematical expression which will be evaluated to compute the desired time.
 	 *  
 	 *  No Argument, for methods which accept time, no argument will be interpreted as 
-	 *  0 seconds or "now" (i.e. the currentTime) depending on the context.
+	 *  "now" (i.e. the currentTime).
+	 *
+	 *  [Tone.Time Wiki](https://github.com/TONEnoTONE/Tone.js/wiki/Time)
 	 *  
 	 *  @typedef {number|string|undefined} Tone.Time 
 	 */
@@ -257,11 +259,12 @@ function(Tone){
 	/**
 	 *  intervals are recurring events 
 	 *
-	 *  @example
+	 *  ```javascript
 	 *  //triggers a callback every 8th note with the exact time of the event
 	 *  Tone.Transport.setInterval(function(time){
 	 *  	envelope.triggerAttack(time);
 	 *  }, "8n");
+	 *  ```
 	 *  
 	 *  @param {function} callback
 	 *  @param {Tone.Time}   interval 
@@ -307,11 +310,12 @@ function(Tone){
 	 *  running for this to be triggered. All timeout events are cleared when the 
 	 *  transport is stopped. 
 	 *
-	 *  @example
+	 *  ```javascript
 	 *  //trigger an event to happen 1 second from now
 	 *  Tone.Transport.setTimeout(function(time){
 	 *  	player.start(time);
 	 *  }, 1)
+	 *  ```
 	 *  
 	 *  @param {function} callback 
 	 *  @param {Tone.Time}   time     
@@ -366,11 +370,12 @@ function(Tone){
 	 *  Unlike Timeout, Timeline events will restart after the 
 	 *  Tone.Transport has been stopped and restarted. 
 	 *
-	 *  @example
+	 *  ```javascript
 	 *  //trigger the start of a part on the 16th measure
 	 *  Tone.Transport.setTimeline(function(time){
 	 *  	part.start(time);
 	 *  }, "16m");
+	 *  ```
 	 *
 	 *  
 	 *  @param {function} 	callback 	
@@ -459,6 +464,23 @@ function(Tone){
 		var ticks = this.toTicks(progress);
 		this._setTicks(ticks);
 	};
+
+	/**
+	 *  returns the time of the next beat
+	 *  @param  {string} [subdivision="4n"]
+	 *  @return {number} 	the time in seconds of the next subdivision
+	 */
+	Tone.Transport.prototype.nextBeat = function(subdivision){
+		subdivision = this.defaultArg(subdivision, "4n");
+		var tickNum = this.toTicks(subdivision);
+		var remainingTicks = (transportTicks % tickNum);
+		var nextTick = remainingTicks;
+		if (remainingTicks > 0){
+			nextTick = tickNum - remainingTicks;
+		}
+		return this.ticksToSeconds(nextTick);
+	};
+
 
 	///////////////////////////////////////////////////////////////////////////////
 	//	START/STOP/PAUSE
@@ -565,12 +587,13 @@ function(Tone){
 	/**
 	 *  set the time signature
 	 *  
-	 *  @example
+	 *  ```javascript
 	 *  this.setTimeSignature(3, 8); // 3/8
 	 *  this.setTimeSignature(4); // 4/4
+	 *  ```
 	 *  
 	 *  @param {number} numerator  the numerator of the time signature
-	 *  @param {number=} [denominator=4] the denominator of the time signature. this should
+	 *  @param {number} [denominator=4] the denominator of the time signature. this should
 	 *                                   be a multiple of 2. 
 	 */
 	Tone.Transport.prototype.setTimeSignature = function(numerator, denominator){
@@ -628,8 +651,9 @@ function(Tone){
 	/**
 	 *  set the subdivision which the swing will be applied to. the starting values is a 16th note. 
 	 *  
-	 *  @example
+	 *  ```javascript
 	 *  Tone.Transport.setSwingSubdivision("8n"); //the eight note will be swing by the "swing amount"
+	 *  ```
 	 *  
 	 *  @param {string} subdivision the subdivision in notation (i.e. 8n, 16n, 8t).
 	 *                              value must be less than a quarter note.
@@ -819,7 +843,6 @@ function(Tone){
 		};
 	})();
 
-
 	/**
 	 *
 	 *  convert notation format strings to seconds
@@ -958,7 +981,6 @@ function(Tone){
 	 *  TransportTime: 2:4:1 (measure:quarters:sixteens)
 	 *  Now Relative: +3n
 	 *  Math: 3n+16n or even very complicated expressions ((3n*2)/6 + 1)
-	 *  Ticks: "146i"
 	 *
 	 *  @override
 	 *  @param  {Tone.Time} time       
@@ -974,11 +996,11 @@ function(Tone){
 			var plusTime = 0;
 			if(time.charAt(0) === "+") {
 				plusTime = now;
-				time = time.slice(1);				
+				time = time.slice(1);
 			} 
 			var components = time.split(/[\(\)\-\+\/\*]/);
 			if (components.length > 1){
-				var oringalTime = time;
+				var originalTime = time;
 				for(var i = 0; i < components.length; i++){
 					var symb = components[i].trim();
 					if (symb !== ""){
@@ -990,7 +1012,7 @@ function(Tone){
 					//i know eval is evil, but i think it's safe here
 					time = eval(time); // jshint ignore:line
 				} catch (e){
-					throw new EvalError("problem evaluating Tone.Time: "+oringalTime);
+					throw new EvalError("problem evaluating Tone.Time: "+originalTime);
 				}
 			} else if (this.isNotation(time)){
 				time = this.notationToSeconds(time);

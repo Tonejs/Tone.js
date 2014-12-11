@@ -7,7 +7,7 @@ define(["Tone/core/Tone", "Tone/signal/LessThan", "Tone/signal/IfThenElse", "Ton
 	 * 	        in the constructor, it will use a signal and a number. 
 	 * 	
 	 *  @constructor
-	 *  @extends {Tone}
+	 *  @extends {Tone.SignalBase}
 	 *  @param {number} min the minimum to compare to the incoming signal
 	 */
 	Tone.Min = function(min){
@@ -35,13 +35,13 @@ define(["Tone/core/Tone", "Tone/signal/LessThan", "Tone/signal/IfThenElse", "Ton
 		this._minSignal = this.input[1] = new Tone.Signal(min);
 
 		//connections
-		this.chain(this.input[0], this._lt, this._ifThenElse.if);
+		this.input[0].chain(this._lt, this._ifThenElse.if);
 		this.input[0].connect(this._ifThenElse.then);
 		this._minSignal.connect(this._ifThenElse.else);
 		this._minSignal.connect(this._lt, 0, 1);
 	};
 
-	Tone.extend(Tone.Min);
+	Tone.extend(Tone.Min, Tone.SignalBase);
 
 	/**
 	 *  set the min value
@@ -50,13 +50,6 @@ define(["Tone/core/Tone", "Tone/signal/LessThan", "Tone/signal/IfThenElse", "Ton
 	Tone.Min.prototype.setMin = function(min){
 		this._minSignal.setValue(min);
 	};
-
-	/**
-	 *  borrows the method from {@link Tone.Signal}
-	 *  
-	 *  @function
-	 */
-	Tone.Min.prototype.connect = Tone.Signal.prototype.connect;
 
 	/**
 	 *  clean up

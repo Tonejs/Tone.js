@@ -7,11 +7,11 @@ function(Tone){
 	 *  @class Divide by a value or signal. 
 	 *         input 0: numerator. input 1: divisor. 
 	 *
-	 *  @extends {Tone}
+	 *  @extends {Tone.SignalBase}
 	 *  @constructor
 	 *  @param {number=} divisor if no value is provided, Tone.Divide will divide the first
 	 *                         and second inputs. 
-	 *  @param {number=} precision the precision of the calculation
+	 *  @param {number} [precision=3] the precision of the calculation
 	 */
 	Tone.Divide = function(divisor, precision){
 
@@ -45,7 +45,7 @@ function(Tone){
 		this.input[0] = this.output = this._mult.input[0];
 	};
 
-	Tone.extend(Tone.Divide);
+	Tone.extend(Tone.Divide, Tone.SignalBase);
 
 	/**
 	 *  set the divisor value

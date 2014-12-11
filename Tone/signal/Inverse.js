@@ -1,4 +1,5 @@
-define(["Tone/core/Tone", "Tone/signal/Subtract", "Tone/signal/Multiply"], function(Tone){
+define(["Tone/core/Tone", "Tone/signal/Subtract", "Tone/signal/Multiply", "Tone/signal/WaveShaper"], 
+function(Tone){
 
 	"use strict";
 
@@ -12,9 +13,9 @@ define(["Tone/core/Tone", "Tone/signal/Subtract", "Tone/signal/Multiply"], funct
 	/**
 	 *  @private
 	 *  @static
-	 *  @type {Float32Array}
+	 *  @type {Array}
 	 */
-	var guessCurve = new Float32Array(MAX_VALUE);
+	var guessCurve = new Array(MAX_VALUE);
 	//set the value
 	for (var i = 0; i < guessCurve.length; i++){
 		var normalized = (i / (guessCurve.length - 1)) * 2 - 1;
@@ -30,7 +31,7 @@ define(["Tone/core/Tone", "Tone/signal/Subtract", "Tone/signal/Multiply"], funct
 	 *         Uses this approximation algorithm: 
 	 *         http://en.wikipedia.org/wiki/Multiplicative_inverse#Algorithms
 	 *
-	 *  @extends {Tone}
+	 *  @extends {Tone.SignalBase}
 	 *  @constructor
 	 *  @param {number} [precision=3] the precision of the calculation
 	 */
@@ -59,9 +60,8 @@ define(["Tone/core/Tone", "Tone/signal/Subtract", "Tone/signal/Multiply"], funct
 		 *  @type {WaveShaperNode}
 		 *  @private
 		 */
-		this._guess = this.context.createWaveShaper();
-		this._guess.curve = guessCurve;
-		this.chain(this.input, this._guessMult, this._guess);
+		this._guess = new Tone.WaveShaper(guessCurve);
+		this.input.chain(this._guessMult, this._guess);
 
 		/**
 		 *  the array of inverse helpers
@@ -85,7 +85,7 @@ define(["Tone/core/Tone", "Tone/signal/Subtract", "Tone/signal/Multiply"], funct
 		this._inverses[precision-1].connect(this.output);
 	};
 
-	Tone.extend(Tone.Inverse);
+	Tone.extend(Tone.Inverse, Tone.SignalBase);
 
 	/**
 	 *  clean up

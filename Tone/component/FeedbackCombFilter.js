@@ -47,7 +47,7 @@ define(["Tone/core/Tone", "Tone/signal/ScaleExp", "Tone/signal/Signal"], functio
 		 *  @type {Tone.Scale}
 		 *  @private
 		 */
-		this._resScale = new Tone.ScaleExp(0, 1, 0.01, 1 / this._delayCount - 0.001, 0.5);
+		this._resScale = new Tone.ScaleExp(0.01, 1 / this._delayCount - 0.001, 0.5);
 
 		/**
 		 *  internal flag for keeping track of when frequency
@@ -73,12 +73,12 @@ define(["Tone/core/Tone", "Tone/signal/ScaleExp", "Tone/signal/Signal"], functio
 		}
 
 		//connections
-		this.chain.apply(this, this._delays);
+		this.connectSeries.apply(this, this._delays);
 		this.input.connect(this._delays[0]);
 		//set the delay to the min value initially
 		this._feedback.connect(this._delays[0]);
 		//resonance control
-		this.chain(this.resonance, this._resScale, this._feedback.gain);
+		this.resonance.chain(this._resScale, this._feedback.gain);
 		this._feedback.connect(this.output);
 		this.setDelayTime(minDelay);
 	};
@@ -90,7 +90,7 @@ define(["Tone/core/Tone", "Tone/signal/ScaleExp", "Tone/signal/Signal"], functio
 	 *  auto corrects for sample offsets for small delay amounts
 	 *  	
 	 *  @param {number} delayAmount the delay amount
-	 *  @param {Tone.Time=} time        when the change should occur
+	 *  @param {Tone.Time} [time=now]        when the change should occur
 	 */
 	Tone.FeedbackCombFilter.prototype.setDelayTime = function(delayAmount, time) {
 		time = this.toSeconds(time);

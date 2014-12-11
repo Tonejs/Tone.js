@@ -52,7 +52,7 @@ function(Tone){
 		 *  @type {Tone.Scale}
 		 *  @private
 		 */
-		this._scaleRoomSize = new Tone.Scale(0, 1, -0.733, 0.197);
+		this._scaleRoomSize = new Tone.Scale(-0.733, 0.197);
 
 		/**
 		 *  a series of allpass filters
@@ -92,7 +92,7 @@ function(Tone){
 
 		//chain the allpass filters together
 		this.roomSize.connect(this._scaleRoomSize);
-		this.chain.apply(this, this._allpassFilters);
+		this.connectSeries.apply(this, this._allpassFilters);
 		this.effectSendL.connect(this._allpassFilters[0]);
 		this.effectSendR.connect(this._allpassFilters[0]);
 	};

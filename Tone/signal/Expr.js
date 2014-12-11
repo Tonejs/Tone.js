@@ -9,18 +9,18 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Subtract", "Tone/signa
 
 	/**
 	 *  @class evaluate an expression at audio rate. 
-	 *         i.e. ($0 + ($1 * abs($2)));
 	 *         parsing code modified from https://code.google.com/p/tapdigit/
-	 *         Copyright (C) 2010 - 2011 Ariya Hidayat <ariya.hidayat@gmail.com>
-	 *         New BSD License {@link http://opensource.org/licenses/BSD-3-Clause}
+	 *         Copyright 2011 2012 Ariya Hidayat, New BSD License
 	 *
-	 *  @extends {Tone}
+	 *  @extends {Tone.SignalBase}
 	 *  @constructor
 	 *  @param {string} expr the expression to generate
 	 */
 	Tone.Expr = function(){
 
 		var expr = this._replacements(Array.prototype.slice.call(arguments));
+		var inputCount = this._parseInputs(expr);
+
 		/**
 		 *  hold onto all of the nodes for disposal
 		 *  @type {Array}
@@ -28,19 +28,20 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Subtract", "Tone/signa
 		 */
 		this._nodes = [];
 
-		var inputCount = this._parseInputs(expr);
-
 		/**
 		 *  the inputs
 		 *  @type {Array}
 		 */
 		this.input = new Array(inputCount);
 
+		//create a gain for each input
 		for (var i = 0; i < inputCount; i++){
 			this.input[i] = this.context.createGain();
 		}
 
+		//parse the syntax tree
 		var tree = this._parseTree(expr);
+		//evaluate the results
 		var result;
 		try {
 			result = this._eval(tree);
@@ -48,10 +49,15 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Subtract", "Tone/signa
 			this._disposeNodes();
 			throw new Error("Could evaluate expression: "+expr);
 		}
+
+		/**
+		 *  the output node is the result of the expression
+		 *  @type {*}
+		 */
 		this.output = result;
 	};
 
-	Tone.extend(Tone.Expr);
+	Tone.extend(Tone.Expr, Tone.SignalBase);
 
 	//some helpers to cut down the amount of code
 	function applyBinary(Constructor, args, self){
@@ -72,7 +78,7 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Subtract", "Tone/signa
 		return arg && arg.args ? parseFloat(arg.args) : undefined;
 	}
 
-	/**
+	/*
 	 *  the Expressions that Tone.Expr can parse.
 	 *
 	 *  each expression belongs to a group and contains a regexp 
@@ -477,13 +483,6 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Subtract", "Tone/signa
 			return node;
 		} 
 	};
-
-	/**
-	 *  borrows the method from {@link Tone.Signal}
-	 *  
-	 *  @function
-	 */
-	Tone.Expr.prototype.connect = Tone.Signal.prototype.connect;
 
 	/**
 	 *  dispose all the nodes

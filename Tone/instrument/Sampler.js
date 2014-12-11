@@ -6,8 +6,7 @@ function(Tone){
 
 	/**
 	 *  @class A simple sampler instrument which plays an audio buffer 
-	 *         through an amplitude envelope and optionally a filter
-	 *         envelope.
+	 *         through an amplitude envelope and a filter envelope.
 	 *
 	 *  @constructor
 	 *  @extends {Tone.Instrument}
@@ -49,7 +48,7 @@ function(Tone){
 		this.filter = new Tone.Filter(options.filter);
 
 		//connections
-		this.chain(this.player, this.filter, this.envelope, this.output);
+		this.player.chain(this.filter, this.envelope, this.output);
 		this.filterEnvelope.connect(this.filter.frequency);
 	};
 

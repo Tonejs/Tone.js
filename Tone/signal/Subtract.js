@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Negate", "Tone/signal/Signal"], function(Tone){
+define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Negate", "Tone/signal/SignalBase"], function(Tone){
 
 	"use strict";
 
@@ -7,7 +7,7 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Negate", "Tone/signal/
 	 *         input 0 : minuend.
 	 *         input 1 : subtrahend
 	 *
-	 *  @extends {Tone}
+	 *  @extends {Tone.SignalBase}
 	 *  @constructor
 	 *  @param {number=} value value to subtract from the incoming signal. If the value
 	 *                         is omitted, it will subtract the second signal from the first
@@ -34,7 +34,7 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Negate", "Tone/signal/
 		this._neg.connect(this._adder, 0, 1);
 	};
 
-	Tone.extend(Tone.Subtract);
+	Tone.extend(Tone.Subtract, Tone.SignalBase);
 
 	/**
 	 *  set the constant
