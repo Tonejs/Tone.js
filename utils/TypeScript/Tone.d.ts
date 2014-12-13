@@ -8,102 +8,103 @@
  //NOTE: You will also need the Web Audio Definitions file which can be found here: https://github.com/borisyankov/DefinitelyTyped/tree/master/webaudioapi
 
  Tone
-     Buffer
-     Clip
-     Clock
-     Compressor
-     DryWet
-     Effect
-         AutoPanner
-         AutoWah
-         BitCrusher
-         Chebyshev
-         Convolver
-         Distortion
-         FeedbackEffect
-             StereoFeedbackEffect
-                 StereoXFeedbackEffect
-                 Chorus
-                 PingPongDelay
-             FeedbackDelay
-         Freeverb
-         JCReverb
-         StereoEffect
-            MidSideEffect
-                StereoWidener
-     Envelope
-         AmplitudeEnvelope
-         ScaledEnvelope
-     EQ
-     FeedbackCombFilter
-     Filter
-     Follower
-     Gate
-     Instrument
-         Monophonic
-             AMSynth
-             MonoSynth
-             DuoSynth
-             FMSynth
-         MultiSampler
-         NoiseSynth
-         PluckSynth
-         PolySynth
-         Sampler
-     Limiter
-     LowpassCombFilter
-     Master
-     Merge
-     Meter
-     Mono
-     MultibandCompressor
-     MultibandSplit
-     Note
-     Panner
-     PanVol
-     Route
-     SignalBase
-         Abs
-         Add
-         AudioToGain
-         Divide
-         Equal
-         EqualPowerGain
-         EqualZero
-         Expr
-         LessThan
-         GreaterThan
-         GreaterThanZero
-         IfThenElse
-         Inverse
-         Max
-         Min
-         Modulo
-         Multiply
-         Negate
-         Normalize
-         NOT
-         OR
-         Pow
-         Scale
-         ScaleEx
-         Select
-         Signal
-         Switch
-         Threshold
-         WaveShaper
-     Source
-         LFO
-         Microphone
-         Noise
-         Oscillator
-             OmniOscillator
-             PulseOscillator
-             PWMOscillator
-         Player
-     Split
-     Time
-     Transport
+ Buffer
+ Clip
+ Clock
+ Compressor
+ DryWet
+ Effect
+ AutoPanner
+ AutoWah
+ BitCrusher
+ Chebyshev
+ Convolver
+ Distortion
+ FeedbackEffect
+ StereoFeedbackEffect
+ StereoXFeedbackEffect
+ Chorus
+ PingPongDelay
+ FeedbackDelay
+ Freeverb
+ JCReverb
+ StereoEffect
+ MidSideEffect
+ StereoWidener
+ Phaser
+ Envelope
+ AmplitudeEnvelope
+ ScaledEnvelope
+ EQ
+ FeedbackCombFilter
+ Filter
+ Follower
+ Gate
+ Instrument
+ Monophonic
+ AMSynth
+ MonoSynth
+ DuoSynth
+ FMSynth
+ MultiSampler
+ NoiseSynth
+ PluckSynth
+ PolySynth
+ Sampler
+ Limiter
+ LowpassCombFilter
+ Master
+ Merge
+ Meter
+ Mono
+ MultibandCompressor
+ MultibandSplit
+ Note
+ Panner
+ PanVol
+ Route
+ SignalBase
+ Abs
+ Add
+ AudioToGain
+ Divide
+ Equal
+ EqualPowerGain
+ EqualZero
+ Expr
+ LessThan
+ GreaterThan
+ GreaterThanZero
+ IfThenElse
+ Inverse
+ Max
+ Min
+ Modulo
+ Multiply
+ Negate
+ Normalize
+ NOT
+ OR
+ Pow
+ Scale
+ ScaleEx
+ Select
+ Signal
+ Switch
+ Threshold
+ WaveShaper
+ Source
+ LFO
+ Microphone
+ Noise
+ Oscillator
+ OmniOscillator
+ PulseOscillator
+ PWMOscillator
+ Player
+ Split
+ Time
+ Transport
  ***/
 
 
@@ -382,6 +383,16 @@ declare module Tone {
         setWidth(width: number): void;
     }
 
+    var Phaser: {
+        new(rate?: any, depth?: number, baseFrequency?: number): Tone.Phaser; //TODO: change 'any' to 'number | Object'
+    };
+
+    interface Phaser extends Tone.StereoEffect {
+        setBaseFrequency(freq: number): void;
+        setDepth(depth: number): void;
+        setRate(rate: number): void;
+    }
+
     var Envelope: {
         new(attack: any, decay?: Tone.Time, sustain?: number, release?: Tone.Time): Tone.Envelope;  //TODO: Change 'any' to 'Tone.Time | Object'
     };
@@ -419,7 +430,7 @@ declare module Tone {
     interface ScaledEnvelope extends Tone.Envelope {}
 
     var EQ: {
-        new(lowLevel?, midLevel?: number, highLevel?: number): Tone.EQ;
+        new(lowLevel?: any, midLevel?: number, highLevel?: number): Tone.EQ; //TODO: Change 'any' to 'number | Object'
     };
 
     interface EQ extends Tone {
