@@ -237,7 +237,7 @@ declare module Tone {
     }
 
     var AutoWah: {
-        new(baseFrequency?: number, octaves?: number, sensitivity?:number): Tone.AutoWah;
+        new(baseFrequency?: any, octaves?: number, sensitivity?:number): Tone.AutoWah; //TODO: Change any to 'number | Object' when available
     };
 
     interface AutoWah extends Tone.Effect {
