@@ -181,7 +181,7 @@ declare module Tone {
     }
 
     var Compressor: {
-        new(threshold?: number, ratio?: number): Tone.Compressor;
+        new(threshold?: any, ratio?: number): Tone.Compressor; //TODO: Number || Object
     };
 
     interface Compressor extends Tone {
@@ -226,7 +226,7 @@ declare module Tone {
     }
 
     var AutoPanner: {
-        new(frequency?: number): Tone.AutoPanner;
+        new(frequency?: any): Tone.AutoPanner; //TODO: Number || Object
     };
 
     interface AutoPanner extends Effect {
@@ -247,13 +247,13 @@ declare module Tone {
     }
 
     var BitCrusher: {
-        new(bits: number): Tone.BitCrusher;
+        new(bits: any): Tone.BitCrusher; //TODO: Number || Object
     };
 
     interface BitCrusher extends Tone.Effect {}
 
     var Chebyshev: {
-        new(order: number): Tone.Chebyshev;
+        new(order: any): Tone.Chebyshev; //TODO: Number || Object
     };
 
     interface Chebyshev extends Tone.Effect {
@@ -271,7 +271,7 @@ declare module Tone {
     }
 
     var Distortion: {
-        new(distortion: number): Tone.Distortion;
+        new(distortion: any): Tone.Distortion; //TODO: Number || Object
     };
 
     interface Distortion extends Tone.Effect {
@@ -312,7 +312,7 @@ declare module Tone {
     }
 
     var PingPongDelay: {
-        new(delayTime: any): Tone.PingPongDelay;
+        new(delayTime: any): Tone.PingPongDelay; //TODO: Tone.Time || Object
     };
 
     interface PingPongDelay extends Tone.StereoXFeedbackEffect {
@@ -343,7 +343,7 @@ declare module Tone {
     }
 
     var JCReverb: {
-        new(): Tone.JCReverb;
+        new(roomSize: any): Tone.JCReverb; //TODO: Number || Object
     };
 
     interface JCReverb extends Tone.Effect {
@@ -457,7 +457,7 @@ declare module Tone {
     }
 
     var Filter: {
-        new(freq: number, type?: string, rolloff?: number): Tone.Filter;
+        new(freq: any, type?: string, rolloff?: number): Tone.Filter; //TODO: Number || Object
     };
 
     interface Filter extends Tone {
@@ -1038,7 +1038,7 @@ declare module Tone {
     }
 
     var LFO: {
-        new(rate: number, outputMin?: number, outputMax?: number): Tone.LFO;
+        new(rate: any, outputMin?: number, outputMax?: number): Tone.LFO; //TODO: Number || Object
     };
 
     interface LFO extends Tone.Source {
@@ -1085,7 +1085,7 @@ declare module Tone {
     }
 
     var OmniOscillator: {
-        new(frequency?: number, type?: string): Tone.OmniOscillator;
+        new(frequency?: any, type?: string): Tone.OmniOscillator; //TODO: Number || Object
     };
 
     interface OmniOscillator extends Tone.Source {
@@ -1096,7 +1096,7 @@ declare module Tone {
     }
 
     var PulseOscillator:  {
-        new(frequency?: number, width?:number): Tone.PulseOscillator;
+        new(frequency?: any, width?:number): Tone.PulseOscillator; //TODO: Number || Object
     };
 
     interface PulseOscillator extends Tone.Oscillator {
@@ -1105,7 +1105,7 @@ declare module Tone {
     }
 
     var PWMOscillator:  {
-        new(frequency?: number, type?: string): Tone.PWMOscillator;
+        new(frequency?: any, type?: string): Tone.PWMOscillator; //TODO: Number || Object
     };
 
     interface PWMOscillator extends Tone.Oscillator {
