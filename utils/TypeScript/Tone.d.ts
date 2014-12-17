@@ -704,6 +704,19 @@ declare module Tone {
         mid: Tone.Compressor;
     }
 
+    var MultibandEQ: {
+        new(options?: any): Tone.MultibandEQ;
+    };
+
+    interface MultibandEQ extends Tone {
+        set(params: Object): void;
+        setType(type: string, band: number): void;
+        getType(band: number): string;
+        setFrequency(freq: number, band: number): void;
+        getFrequency(band: number): void;
+        setQ(Q: number, band: number): void;
+    }
+
     var MultibandSplit: {
         new(lowFrequency: number, highFrequency: number): Tone.MultibandSplit;
     };
