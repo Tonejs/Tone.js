@@ -32,12 +32,5 @@ define(["Tone/core/Tone"], function(Tone){
 		Tone.prototype.connect.call(this, node, outputNumber, inputNumber);
 	};
 
-	/**
-	 *  internal dispose method to tear down the node
-	 */
-	Tone.SignalBase.prototype.dispose = function(){
-		Tone.prototype.dispose.call(this);
-	};
-
 	return Tone.SignalBase;
 });
