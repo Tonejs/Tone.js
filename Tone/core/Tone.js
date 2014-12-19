@@ -603,7 +603,7 @@ define(function(){
 		_silentNode.connect(audioContext.destination);
 	});
 
-	console.log("%c * Tone.js r3 * ", "background: #000; color: #fff");
+	console.log("%c * Tone.js r4-dev * ", "background: #000; color: #fff");
 
 	return Tone;
 });
