@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/source/Source"], 
+define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/source/Source", "Tone/core/Transport"], 
 function(Tone){
 
 	"use strict";
@@ -207,6 +207,20 @@ function(Tone){
 	Tone.Oscillator.prototype.setPhase = function(phase) {
 		this._phase = phase * Math.PI / 180;
 		this.setType(this._type);
+	};
+
+	/**
+	 *  sync the signal to the Transport's bpm
+	 */
+	Tone.Oscillator.prototype.syncFrequency = function(){
+		Tone.Transport.syncSignal(this.frequency);
+	};
+
+	/**
+	 *  unsync the oscillator's frequency from teh transprot
+	 */
+	Tone.Oscillator.prototype.unsyncFrequency = function(){
+		this.frequency.unsync();
 	};
 
 	/**
