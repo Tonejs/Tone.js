@@ -2,8 +2,9 @@
 
 define(["chai", "Tone/source/Player", "Tone/core/Master", "Tone/source/Oscillator", 
 	"Tone/component/Recorder", "Tone/source/Noise", "tests/Core", "Tone/source/PulseOscillator", "tests/Common", 
-	"Tone/source/PWMOscillator", "Tone/source/OmniOscillator"], 
-function(chai, Player, Master, Oscillator, Recorder, Noise, core, PulseOscillator, Test, PWMOscillator, OmniOscillator){
+	"Tone/source/PWMOscillator", "Tone/source/OmniOscillator", "Tone/source/Microphone"], 
+function(chai, Player, Master, Oscillator, Recorder, Noise, core, PulseOscillator, Test, 
+	PWMOscillator, OmniOscillator, Microphone){
 
 	var expect = chai.expect;
 
@@ -617,4 +618,13 @@ function(chai, Player, Master, Oscillator, Recorder, Noise, core, PulseOscillato
 		});
 	});
 
+	describe("Tone.Microphone", function(){
+		this.timeout(maxTimeout);
+
+		it("can be created and disposed", function(){
+			var mic = new Microphone();
+			mic.dispose();
+			Test.wasDisposed(mic);
+		});
+	});
 });

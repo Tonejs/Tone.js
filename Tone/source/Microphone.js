@@ -19,16 +19,18 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 		 *  @private
 		 */
 		this._mediaStream = null;
+		
 		/**
 		 *  @type {LocalMediaStream}
 		 *  @private
 		 */
 		this._stream = null;
+		
 		/**
 		 *  @type {Object}
 		 *  @private
 		 */
-		this.constraints = {"audio" : true};
+		this._constraints = {"audio" : true};
 
 		//get the option
 		var self = this;
@@ -49,7 +51,7 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 	Tone.Microphone.prototype.start = function(){
 		if (this.state === Tone.Source.State.STOPPED){
 			this.state = Tone.Source.State.STARTED;
-				navigator.getUserMedia(this.constraints, 
+				navigator.getUserMedia(this._constraints, 
 					this._onStream.bind(this), this._onStreamError.bind(this));
 		}
 	};
@@ -90,10 +92,12 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 	 */
 	Tone.Microphone.prototype.dispose = function() {
 		Tone.Source.prototype.dispose.call(this);
-		this._stream.disconnect();
-		this._mediaStream.disconnect();
+		if (this._mediaStream){
+			this._mediaStream.disconnect();
+			this._mediaStream = null;
+		}
 		this._stream = null;
-		this._mediaStream = null;
+		this._constraints = null;
 	};
 
 	//polyfill
