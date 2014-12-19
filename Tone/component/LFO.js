@@ -88,16 +88,16 @@ function(Tone){
 	 *                                LFO from the start of the transport
 	 */
 	Tone.LFO.prototype.sync = function(delay){
-		Tone.Transport.syncSource(this.oscillator, delay);
-		Tone.Transport.syncSignal(this.oscillator.frequency);
+		this.oscillator.sync(delay);
+		this.oscillator.syncFrequency();
 	};
 
 	/**
 	 *  unsync the LFO from transport control
 	 */
 	Tone.LFO.prototype.unsync = function(){
-		Tone.Transport.unsyncSource(this.oscillator);
-		Tone.Transport.unsyncSignal(this.oscillator.frequency);
+		this.oscillator.unsync();
+		this.oscillator.unsyncFrequency();
 	};
 
 
