@@ -11,20 +11,9 @@ define(["Tone/core/Tone"], function(Tone){
 	 */
 	Tone.Master = function(){
 		Tone.call(this);
-
-		/**
-		 *  put a hard limiter on the output so we don't blow any eardrums
-		 *  
-		 *  @type {DynamicsCompressorNode}
-		 */
-		this.limiter = this.context.createDynamicsCompressor();
-		this.limiter.threshold.value = 0;
-		this.attack = 0.001;
-		this.release = 0.01;
-		this.limiter.ratio.value = 20;
 		
-		//connect it up
-		this.input.chain(this.limiter, this.output, this.context.destination);
+		//connections
+		this.input.chain(this.output, this.context.destination);
 	};
 
 	Tone.extend(Tone.Master);
@@ -59,6 +48,26 @@ define(["Tone/core/Tone"], function(Tone){
 		}
 	};
 
+	/**
+	 *  route the master signal to the node's input. 
+	 *  NOTE: this will disconnect the previously connected node
+	 *  @param {AudioNode|Tone} node the node to use as the entry
+	 *                               point to the master chain
+	 */
+	Tone.Master.prototype.send = function(node){
+		//disconnect the previous node
+		this.input.disconnect();
+		this.input.connect(node);
+	};
+
+	/**
+	 *  the master effects chain return point
+	 *  @param {AudioNode|Tone} node the node to connect 
+	 */
+	Tone.Master.prototype.receive = function(node){
+		node.connect(this.output);
+	};
+
 	///////////////////////////////////////////////////////////////////////////
 	//	AUGMENT TONE's PROTOTYPE
 	///////////////////////////////////////////////////////////////////////////
@@ -89,6 +98,7 @@ define(["Tone/core/Tone"], function(Tone){
 		if (!Tone.prototype.isUndef(Tone.Master)){
 			Tone.Master = new MasterConstructor();
 		} else {
+			MasterConstructor.prototype.dispose.call(Tone.Master);
 			MasterConstructor.call(Tone.Master);
 		}
 	});
