@@ -65,6 +65,16 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/signal/WaveShaper"], funct
 	};
 
 	/**
+	 *  set in bulk
+	 *  @param {Object} params 
+	 */
+	Tone.Distortion.prototype.setOversample = function(params) {
+		if (!this.isUndef(params.distortion)) this.setDistortion(params.distortion);
+		if (!this.isUndef(params.oversample)) this.setOversample(params.oversample);
+		Tone.Effect.prototype.set.call(this, params);
+	};
+
+	/**
 	 *  clean up
 	 */
 	Tone.Distortion.prototype.dispose = function(){
