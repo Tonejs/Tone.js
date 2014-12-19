@@ -201,13 +201,6 @@ function(Tone){
 	};
 
 	/**
-	 *  set the volume of the instrument.
-	 *  borrowed from {@link Tone.Source}
-	 *  @function
-	 */
-	Tone.DuoSynth.prototype.setVolume = Tone.Source.prototype.setVolume;
-
-	/**
 	 *  bulk setter
 	 *  @param {Object} param 
 	 */

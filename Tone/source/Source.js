@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/core/Transport"], function(Tone){
+define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Master"], function(Tone){
 
 	"use strict";
 	
@@ -62,22 +62,10 @@ define(["Tone/core/Tone", "Tone/core/Transport"], function(Tone){
 	};
 
 	/**
-	 *  set the volume in decibels
-	 *  @param {number} db in decibels
-	 *  @param {Tone.Time=} fadeTime (optional) time it takes to reach the value
+	 *  gets the setVolume method from {@link Tone.Master}
+	 *  @method
 	 */
-	Tone.Source.prototype.setVolume = function(db, fadeTime){
-		var now = this.now();
-		var gain = this.dbToGain(db);
-		if (fadeTime){
-			var currentVolume = this.output.gain.value;
-			this.output.gain.cancelScheduledValues(now);
-			this.output.gain.setValueAtTime(currentVolume, now);
-			this.output.gain.linearRampToValueAtTime(gain, now + this.toSeconds(fadeTime));
-		} else {
-			this.output.gain.value = gain;
-		}
-	};
+	Tone.Source.prototype.setVolume = Tone.Master.setVolume;
 
 	/**
 	 *  set the parameters at once

@@ -129,12 +129,6 @@ function(Tone){
 	};
 
 	/**
-	 *  set volume method borrowed form {@link Tone.Source}
-	 *  @function
-	 */
-	Tone.MultiSampler.prototype.setVolume = Tone.Source.prototype.setVolume;
-
-	/**
 	 *  clean up
 	 */
 	Tone.MultiSampler.prototype.dispose = function(){

@@ -103,8 +103,8 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/signal/Signal"], f
 	 *  @param {Object} params the params
 	 */
 	Tone.Monophonic.prototype.set = function(params) {
-		if (!this.isUndef(params.volume)) this.setVolume(params.volume);
 		if (!this.isUndef(params.portamento)) this.setPortamento(params.portamento);
+		Tone.Instrument.prototype.set.call(this, params);
 	};
 
 	/**

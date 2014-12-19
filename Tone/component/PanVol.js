@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/component/Panner", "Tone/source/Source"], function(Tone){
+define(["Tone/core/Tone", "Tone/component/Panner", "Tone/core/Master"], function(Tone){
 
 	"use strict";
 
@@ -29,10 +29,10 @@ define(["Tone/core/Tone", "Tone/component/Panner", "Tone/source/Source"], functi
 	Tone.extend(Tone.PanVol);
 
 	/**
-	 *  borrows the source's set volume
-	 *  @function
+	 *  gets the setVolume method from {@link Tone.Master}
+	 *  @method
 	 */
-	Tone.PanVol.prototype.setVolume = Tone.Source.prototype.setVolume;
+	Tone.PanVol.prototype.setVolume = Tone.Master.setVolume;
 
 	/**
 	 *  set the panning

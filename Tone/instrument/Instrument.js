@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/source/Source", "Tone/core/Note"], function(Tone){
+define(["Tone/core/Tone", "Tone/core/Master", "Tone/core/Note"], function(Tone){
 
 	"use strict";
 
@@ -48,10 +48,24 @@ define(["Tone/core/Tone", "Tone/source/Source", "Tone/core/Note"], function(Tone
 	};
 
 	/**
-	 *  gets the setVolume method from {@link Tone.Source}
+	 *  bulk setter
+	 *  @param {Object} params the params
+	 */
+	Tone.Instrument.prototype.set = function(params) {
+		if (!this.isUndef(params.volume)) this.setVolume(params.volume);
+	};
+
+	/**
+	 *  gets the setVolume method from {@link Tone.Master}
 	 *  @method
 	 */
-	Tone.Instrument.prototype.setVolume = Tone.Source.prototype.setVolume;
+	Tone.Instrument.prototype.setVolume = Tone.Master.setVolume;
+
+	/**
+	 *  gets the setVolume method from {@link Tone.Master}
+	 *  @method
+	 */
+	Tone.Instrument.prototype.setVolume = Tone.Master.setVolume;
 
 	/**
 	 *  clean up
