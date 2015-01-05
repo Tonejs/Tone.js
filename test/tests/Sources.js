@@ -34,14 +34,6 @@ function(chai, Player, Master, Oscillator, Recorder, Noise, core, PulseOscillato
 			});
 		});
 
-		it("has a duration", function(done){
-			var player = new Player("./testAudio/kick.mp3", function(){
-				expect(player.duration).to.be.closeTo(0.23, 0.01);
-				player.dispose();
-				done();
-			});
-		});
-
 		it("invokes a callback onend", function(done){
 			var player = new Player("./testAudio/kick.mp3", function(){
 				player.start();

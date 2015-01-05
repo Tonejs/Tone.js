@@ -172,31 +172,44 @@ define(["chai", "Tone/core/Tone", "Tone/core/Master", "Tone/core/Bus",
 			Test.wasDisposed(buff);
 		});
 
-		it("loads a file from a string", function(done){
+		it("loads a file from a url string", function(done){
 			var buffer = new Buffer("./testAudio/kick.mp3", function(buff){
-				expect(buff).to.be.instanceof(AudioBuffer);
+				expect(buff).to.be.instanceof(Buffer);
 				buffer.dispose();
 				done();
 			});
 		});
 
-		it("loads a file from an array", function(done){
-			var buffer = new Buffer(["./testAudio/kick.mp3", "./testAudio/hh.mp3"], function(buff){
-				expect(buff).to.be.instanceof(Array);
-				expect(buff[0]).to.be.instanceof(AudioBuffer);
-				expect(buff[1]).to.be.instanceof(AudioBuffer);
+		it("has a duration", function(done){
+			var buffer = new Buffer("./testAudio/kick.mp3", function(){
+				expect(buffer.duration).to.be.closeTo(0.23, 0.01);
 				buffer.dispose();
 				done();
 			});
 		});
 
-		it("loads a file from an object", function(done){
-			var buffer = new Buffer({"kick" : "./testAudio/kick.mp3"}, function(buff){
-				expect(buff).to.be.instanceof(Object);
-				expect(buff.kick).to.be.instanceof(AudioBuffer);
+		it("the static onload method is invoked", function(done){
+			var buffer = new Buffer("./testAudio/hh.mp3");
+			Buffer.onload = function(){
 				buffer.dispose();
 				done();
+				//reset this method for the next one
+				Buffer.onload = function(){};
+			};
+		});
+
+		it("the static onprogress method is invoked", function(done){
+			var progressWasInvoked = false;
+			var buffer = new Buffer("./testAudio/hh.mp3", function(){
+				buffer.dispose();
+				expect(progressWasInvoked).to.be.true;
+				done();
 			});
+			Buffer.onprogress = function(){
+				progressWasInvoked = true;
+				//reset this method for the next one
+				Buffer.onprogress = function(){};
+			};
 		});
 	});
 
