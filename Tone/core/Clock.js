@@ -4,15 +4,13 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	
 	/**
 	 *  @class  a sample accurate clock built on an oscillator.
-	 *          Invokes the onTick method at the set rate
-	 *          NB: can cause audio glitches. use sparingly. 
+	 *          Invokes the tick method at the set rate
 	 *
 	 * 	@internal
 	 * 	@constructor
 	 * 	@extends {Tone}
 	 * 	@param {number} rate the rate of the callback
 	 * 	@param {function} callback the callback to be invoked with the time of the audio event
-	 * 	                           NB: it is very important that only 
 	 */
 	Tone.Clock = function(rate, callback){
 
@@ -90,16 +88,16 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	 *  @param {Tone.Time} time the time when the clock should start
 	 */
 	Tone.Clock.prototype.start = function(time){
-		//reset the oscillator
-		this._oscillator = this.context.createOscillator();
-		this._oscillator.type = "square";
-		this._oscillator.connect(this._jsNode);
-		//connect it up
-		this._controlSignal.connect(this._oscillator.frequency);
-		this._upTick = false;
-		var startTime = this.toSeconds(time);
-		this._oscillator.start(startTime);
-		this._oscillator.onended = function(){};
+		if (!this._oscillator){
+			this._oscillator = this.context.createOscillator();
+			this._oscillator.type = "square";
+			this._oscillator.connect(this._jsNode);
+			//connect it up
+			this._controlSignal.connect(this._oscillator.frequency);
+			this._upTick = false;
+			var startTime = this.toSeconds(time);
+			this._oscillator.start(startTime);
+		}
 	};
 
 	/**
@@ -108,9 +106,18 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	 *  @param {function} onend called when the oscilator stops
 	 */
 	Tone.Clock.prototype.stop = function(time, onend){
-		var stopTime = this.toSeconds(time);
-		this._oscillator.onended = onend;
-		this._oscillator.stop(stopTime);
+		if (this._oscillator){
+			var now = this.now();
+			var stopTime = this.toSeconds(time, now);
+			this._oscillator.stop(stopTime);
+			this._oscillator = null;
+			//set a timeout for when it stops
+			if (time){
+				setTimeout(onend, (stopTime - now) * 1000);
+			} else {
+				onend();
+			}
+		}
 	};
 
 	/**
@@ -149,7 +156,6 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 		this._jsNode.disconnect();
 		this._controlSignal.dispose();
 		if (this._oscillator){
-			this._oscillator.onended();
 			this._oscillator.disconnect();
 		}
 		this._jsNode.onaudioprocess = function(){};
