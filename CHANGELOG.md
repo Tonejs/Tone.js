@@ -2,10 +2,14 @@
 
 * toFrequency accepts notes by name (i.e. "C4")
 * Tone.Envelope no longer accepts exponential scaling, only Tone.ScaledEnvelope
+* Tone.Buffer static progress and load events which tracks the progress of all downloads
+* Tone.Buffer only accepts a single url
+* added [cdn](cdn.tonejs.org/latest/Tone.min.js) - please don't use for production code
 
 ### r3 - Expressive Signal
 
 Core Change:
+
 * Swing parameter on Transport
 * Player loop positions stay in tempo-relative terms even with tempo changes
 * Envelope ASDR stay in tempo-relative terms even with tempo changes
