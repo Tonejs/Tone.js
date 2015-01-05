@@ -1,6 +1,7 @@
 /* global it, describe, beforeEach, maxTimeout */
 
-define(["chai", "Tone/core/Transport", "tests/Core", "tests/Common", "Tone/core/Clock"], function(chai, Transport, Core, Test, Clock){
+define(["chai", "Tone/core/Transport", "tests/Core", "tests/Common", "Tone/core/Clock"], 
+	function(chai, Transport, Core, Test, Clock){
 	var expect = chai.expect;
 
 	describe("Tone.Clock", function(){
@@ -23,6 +24,15 @@ define(["chai", "Tone/core/Transport", "tests/Core", "tests/Common", "Tone/core/
 			}, function(){
 			}, function(){
 				expect(tickCount).to.be.above(9);
+				done();
+			});
+		});
+
+		it("invokes the callback when stopped", function(done){
+			Test.onlineContext();
+			var clock = new Clock(0.5, function(){});
+			clock.start();
+			clock.stop("+0.5", function(){
 				done();
 			});
 		});
