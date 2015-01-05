@@ -7,9 +7,9 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 	 *  
 	 *  @constructor
 	 *  @extends {Tone.Source} 
-	 *  @param {string=} url if a url is passed in, it will be loaded
+	 *  @param {string|AudioBuffer} url if a url is passed in, it will be loaded
 	 *                       and invoke the callback if it also passed
-	 *                       in.
+	 *                       in. if the 
 	 *  @param {function(Tone.Player)=} onload callback to be invoked
 	 *                                     once the url is loaded
 	 */
@@ -29,14 +29,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 		 *  @private
 		 *  @type {Tone.Buffer}
 		 */
-		this._buffer = null;
-
-		/**
-		 *  the duration of the buffer once it's been loaded
-		 *  @type {number}
-		 *  @readOnly
-		 */
-		this.duration = 0;
+		this._buffer = new Tone.Buffer(options.url, options.onload.bind(this, this));
 
 		/**
 		 *  if the buffer should loop once it's over
@@ -79,11 +72,6 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 		 *  @type {function}
 		 */
 		this.onended = options.onended;
-
-		//if there is a url, load it. 
-		if (!this.isUndef(options.url)){
-			this.load(options.url, options.onload);
-		}
 	};
 
 	Tone.extend(Tone.Player, Tone.Source);
@@ -98,6 +86,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 	 */
 	Tone.Player.defaults = {
 		"onended" : function(){},
+		"onload" : function(){},
 		"loop" : false,
 		"loopStart" : 0,
 		"loopEnd" : -1,
@@ -114,17 +103,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 	 * @param  {function(Tone.Player)=} callback
 	 */
 	Tone.Player.prototype.load = function(url, callback){
-		var self = this;
-		if (!self._buffer){
-			new Tone.Buffer(url, function (buffer){
-				self.setBuffer(buffer);
-				if (callback){
-					callback(self);
-				}
-			});
-		} else if (callback){
-			callback(self);
-		}
+		this._buffer.load(url, callback.bind(this, this));
 	};
 
 	/**
@@ -137,8 +116,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 	 *                              is started.
 	 */
 	Tone.Player.prototype.setBuffer = function(buffer){
-		this._buffer = buffer;
-		this.duration = buffer.duration;
+		this._buffer.set(buffer);
 	};
 
 	/**
@@ -165,7 +143,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 				duration = this.defaultArg(duration, this._buffer.duration - offset);
 				//make the source
 				this._source = this.context.createBufferSource();
-				this._source.buffer = this._buffer;
+				this._source.buffer = this._buffer.get();
 				//set the looping properties
 				if (this.loop){
 					this._source.loop = this.loop;
@@ -191,7 +169,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 	 */
 	Tone.Player.prototype.stop = function(time){
 		if (this.state === Tone.Source.State.STARTED) {
-			if (this._buffer && this._source){
+			if (this._source){
 				this.state = Tone.Source.State.STOPPED;
 				this._source.stop(this.toSeconds(time));
 			}
@@ -270,6 +248,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 			this._source.disconnect();
 			this._source = null;
 		}
+		this._buffer.dispose();
 		this._buffer = null;
 	};
 

@@ -9,7 +9,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/effect/Effect"], function(To
 	 *  
 	 *  @constructor
 	 *  @extends {Tone.Effect}
-	 *  @param {string|Object=} url
+	 *  @param {string|Object|AudioBuffer=} url
 	 *  @param {function=} callback function
 	 */
 	Tone.Convolver = function(){
@@ -28,17 +28,12 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/effect/Effect"], function(To
 
 		/**
 		 *  the convolution buffer
-		 *  
-		 *  @type {AudioBuffer}
+		 *  @type {Tone.Buffer}
 		 *  @private
 		 */
-		this._buffer = null;
+		this._buffer = new Tone.Buffer(options.url, this._onload.bind(this, options.onload));
 
 		this.connectEffect(this._convolver);
-		//if there is a url, load it. 
-		if (!this.isUndef(options.url)){
-			this.load(options.url, options.onload);
-		}
 	};
 
 	Tone.extend(Tone.Convolver, Tone.Effect);
@@ -61,27 +56,26 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/effect/Effect"], function(To
 	 *  @param  {function(Tone.Convolver)=} callback
 	 */
 	Tone.Convolver.prototype.load = function(url, callback){
-		if (!this._buffer){
-			var self = this;
-			new Tone.Buffer(url, function (buffer){
-				self.setBuffer(buffer);
-				if (callback){
-					callback(self);
-				}
-			});
-		} else if (callback){
-			callback(this);
-		}
+		this._buffer.load(url, this._onload.bind(this, callback));
+	};
+
+	/**
+	 *  internal onload event, called when the buffer is loaded
+	 *  @param {function} callback pass in the callback to invoke
+	 *  @private
+	 */
+	Tone.Convolver.prototype._onload = function(callback){
+		this.setBuffer(this._buffer.get());
+		callback(this);
 	};
 
 	/**
 	 *  set the buffer
-	 *
 	 *  @param {AudioBuffer} buffer the impulse response
 	 */
 	Tone.Convolver.prototype.setBuffer = function(buffer){
-		this._buffer = buffer;
-		this._convolver.buffer = this._buffer;
+		this._buffer.set(buffer);
+		this._convolver.buffer = this._buffer.get();
 	};
 
 	/**
@@ -100,6 +94,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/effect/Effect"], function(To
 		Tone.Effect.prototype.dispose.call(this);
 		this._convolver.disconnect();
 		this._convolver = null;
+		this._buffer.dispose();
 		this._buffer = null;
 	}; 
 
