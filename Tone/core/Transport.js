@@ -518,14 +518,14 @@ function(Tone){
 	Tone.Transport.prototype.stop = function(time){
 		if (this.state === TransportState.STARTED || this.state === TransportState.PAUSED){
 			var stopTime = this.toSeconds(time);
-			this._clock.stop(stopTime, this._onend.bind(this));
+			this._clock.stop(stopTime, this._onended.bind(this));
 			//call start on each of the synced sources
 			for (var i = 0; i < SyncedSources.length; i++){
 				var source = SyncedSources[i].source;
 				source.stop(stopTime);
 			}
 		} else {
-			this._onend();
+			this._onended();
 		}
 	};
 
@@ -533,7 +533,7 @@ function(Tone){
 	 *  invoked when the transport is stopped
 	 *  @private
 	 */
-	Tone.Transport.prototype._onend = function(){
+	Tone.Transport.prototype._onended = function(){
 		transportTicks = 0;
 		this._setTicks(0);
 		this.clearTimeouts();
@@ -837,7 +837,7 @@ function(Tone){
 	 *  @lends Tone.prototype.isFrequency
 	 */
 	Tone.prototype.isFrequency = (function(){
-		var freqFormat = new RegExp(/[0-9]+hz$/i);
+		var freqFormat = new RegExp(/\d*\.?\d+hz$/i);
 		return function(freq){
 			return freqFormat.test(freq);
 		};
