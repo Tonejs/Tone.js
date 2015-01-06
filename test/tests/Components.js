@@ -248,8 +248,8 @@ function(coreTest, chai, DryWet, Master, Signal, Recorder, Panner, LFO, Gate, Fo
 		it("won't let signals below a db thresh through", function(done){
 			var gate, sig;
 			Test.offlineTest(0.5, function(dest){
-				gate = new Gate("-10db", 0.01);
-				sig = new Signal(gate.toGain("-11db"));
+				gate = new Gate(-10, 0.01);
+				sig = new Signal(gate.dbToGain(-11));
 				sig.connect(gate);
 				gate.connect(dest);
 			}, function(sample){
@@ -264,7 +264,7 @@ function(coreTest, chai, DryWet, Master, Signal, Recorder, Panner, LFO, Gate, Fo
 		it("lets signals above the db thresh through", function(done){
 			var gate, sig, level;
 			Test.offlineTest(0.5, function(dest){
-				gate = new Gate("-8db", 0.01);
+				gate = new Gate(-8, 0.01);
 				level = gate.dbToGain(-6);
 				sig = new Signal(level);
 				sig.connect(gate);

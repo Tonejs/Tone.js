@@ -24,14 +24,14 @@ function(Tone){
 		 *  @type {Tone.MonoSynth}
 		 */
 		this.carrier = new Tone.MonoSynth(options.carrier);
-		this.carrier.setVolume("-10db");
+		this.carrier.setVolume(-10);
 
 		/**
 		 *  the second voice
 		 *  @type {Tone.MonoSynth}
 		 */
 		this.modulator = new Tone.MonoSynth(options.modulator);
-		this.modulator.setVolume("-10db");
+		this.modulator.setVolume(-10);
 
 		/**
 		 *  the frequency control
@@ -76,7 +76,7 @@ function(Tone){
 	Tone.AMSynth.defaults = {
 		"harmonicity" : 3,
 		"carrier" : {
-			"volume" : "-10db",
+			"volume" : -10,
 			"portamento" : 0,
 			"oscillator" : {
 				"type" : "sine"
@@ -97,7 +97,7 @@ function(Tone){
 			}
 		},
 		"modulator" : {
-			"volume" : "-10db",
+			"volume" : -10,
 			"portamento" : 0,
 			"oscillator" : {
 				"type" : "square"

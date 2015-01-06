@@ -8,7 +8,7 @@ define(["Tone/core/Tone", "Tone/component/Follower", "Tone/signal/GreaterThan"],
 	 *  
 	 *  @constructor
 	 *  @extends {Tone}
-	 *  @param {Tone.Volume} [thresh = "-40db"] the threshold in Decibels
+	 *  @param {number} [thresh = -40] the threshold in Decibels
 	 *  @param {number} [attackTime = 0.1] the follower's attacktime
 	 *  @param {number} [releaseTime = 0.1] the follower's release time
 	 */
@@ -16,7 +16,7 @@ define(["Tone/core/Tone", "Tone/component/Follower", "Tone/signal/GreaterThan"],
 		Tone.call(this);
 
 		//default values
-		thresh = this.defaultArg(thresh, "-40db");
+		thresh = this.defaultArg(thresh, -40);
 		attackTime = this.defaultArg(attackTime, 0.1);
 		releaseTime = this.defaultArg(releaseTime, 0.2);
 
@@ -30,7 +30,7 @@ define(["Tone/core/Tone", "Tone/component/Follower", "Tone/signal/GreaterThan"],
 		 *  @type {Tone.GreaterThan}
 		 *  @private
 		 */
-		this._gt = new Tone.GreaterThan(this.toGain(thresh));
+		this._gt = new Tone.GreaterThan(this.dbToGain(thresh));
 
 		//the connections
 		this.input.connect(this.output);

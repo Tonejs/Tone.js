@@ -23,14 +23,14 @@ function(Tone){
 		 *  @type {Tone.MonoSynth}
 		 */
 		this.voice0 = new Tone.MonoSynth(options.voice0);
-		this.voice0.setVolume("-10db");
+		this.voice0.setVolume(-10);
 
 		/**
 		 *  the second voice
 		 *  @type {Tone.MonoSynth}
 		 */
 		this.voice1 = new Tone.MonoSynth(options.voice1);
-		this.voice1.setVolume("-10db");
+		this.voice1.setVolume(-10);
 
 		/**
 		 *  the vibrato lfo
@@ -96,7 +96,7 @@ function(Tone){
 		"vibratoDelay" : 1,
 		"harmonicity" : 1.5,
 		"voice0" : {
-			"volume" : "-10db",
+			"volume" : -10,
 			"portamento" : 0,
 			"oscillator" : {
 				"type" : "sine"
@@ -115,7 +115,7 @@ function(Tone){
 			}
 		},
 		"voice1" : {
-			"volume" : "-10db",
+			"volume" : -10,
 			"portamento" : 0,
 			"oscillator" : {
 				"type" : "sine"

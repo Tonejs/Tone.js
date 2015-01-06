@@ -83,12 +83,6 @@ define(["chai", "Tone/core/Tone", "Tone/core/Master", "Tone/core/Bus",
 			expect(tone.defaultArg({"a" : 10}, {"b" : {"c" : 20}})).has.deep.property("b.c", 20);
 		});
 
-		it("can handle toGain conversions of both gains and decibel strings", function(){
-			expect(tone.toGain(0)).is.equal(0);
-			expect(tone.toGain("0db")).is.equal(1);
-			expect(tone.toGain("-6db")).is.equal(0.5);
-			expect(tone.toGain("-12db")).is.equal(0.25);
-		});
 
 	});
 

@@ -62,6 +62,7 @@ define(["Tone/core/Tone"], function(Tone){
 	/**
 	 *  set the buffer
 	 *  @param {AudioBuffer|Tone.Buffer} buffer the buffer
+	 *  @returns {Tone.Buffer} `this`
 	 */
 	Tone.Buffer.prototype.set = function(buffer){
 		if (buffer instanceof Tone.Buffer){
@@ -84,21 +85,25 @@ define(["Tone/core/Tone"], function(Tone){
 	 *  @param {function=} callback the callback to invoke on load. 
 	 *                              don't need to set if `onload` is
 	 *                              already set.
+	 *  @returns {Tone.Buffer} `this`
 	 */
 	Tone.Buffer.prototype.load = function(url, callback){
 		this.url = url;
 		this.onload = this.defaultArg(callback, this.onload);
 		Tone.Buffer._addToQueue(url, this);
+		return this;
 	};
 
 	/**
 	 *  dispose and disconnect
+	 *  @returns {Tone.Buffer} `this`
 	 */
 	Tone.Buffer.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
 		Tone.Buffer._removeFromQueue(this);
 		this._buffer = null;
 		this.onload = null;
+		return this;
 	};
 
 	//defines getter / setter for value

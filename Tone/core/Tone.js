@@ -156,6 +156,47 @@ define(function(){
 	///////////////////////////////////////////////////////////////////////////
 
 	/**
+	 *  a dispose method 
+	 */
+	Tone.prototype.dispose = function(){
+		if (!this.isUndef(this.input)){
+			if (this.input instanceof AudioNode){
+				this.input.disconnect();
+			}
+			this.input = null;
+		}
+		if (!this.isUndef(this.output)){
+			if (this.output instanceof AudioNode){
+				this.output.disconnect();
+			}
+			this.output = null;
+		}
+	};
+
+	/**
+	 *  a silent connection to the DesinationNode
+	 *  which will ensure that anything connected to it
+	 *  will not be garbage collected
+	 *  
+	 *  @private
+	 */
+	var _silentNode = null;
+
+	/**
+	 *  makes a connection to ensure that the node will not be garbage collected
+	 *  until 'dispose' is explicitly called
+	 *
+	 *  use carefully. circumvents JS and WebAudio's normal Garbage Collection behavior
+	 */
+	Tone.prototype.noGC = function(){
+		this.output.connect(_silentNode);
+	};
+
+	AudioNode.prototype.noGC = function(){
+		this.connect(_silentNode);
+	};
+
+	/**
 	 *  connect the output of a ToneNode to an AudioParam, AudioNode, or ToneNode
 	 *  @param  {Tone | AudioParam | AudioNode} unit 
 	 *  @param {number} [outputNum=0] optionally which output to connect from
@@ -313,20 +354,39 @@ define(function(){
 	 */
 	Tone.prototype.isUndef = isUndef;
 
+	/**
+	 *  interpolate the input value (0-1) to be between outputMin and outputMax
+	 *  @param  {number} input     
+	 *  @param  {number} outputMin 
+	 *  @param  {number} outputMax 
+	 *  @return {number}           
+	 */
+	Tone.prototype.interpolate = function(input, outputMin, outputMax){
+		return input*(outputMax - outputMin) + outputMin;
+	};
+
+	/**
+	 *  normalize the input to 0-1 from between inputMin to inputMax
+	 *  @param  {number} input    
+	 *  @param  {number} inputMin 
+	 *  @param  {number} inputMax 
+	 *  @return {number}          
+	 */
+	Tone.prototype.normalize = function(input, inputMin, inputMax){
+		//make sure that min < max
+		if (inputMin > inputMax){
+			var tmp = inputMax;
+			inputMax = inputMin;
+			inputMin = tmp;
+		} else if (inputMin == inputMax){
+			return 0;
+		}
+		return (input - inputMin) / (inputMax - inputMin);
+	};
 
 	///////////////////////////////////////////////////////////////////////////
 	// GAIN CONVERSIONS
 	///////////////////////////////////////////////////////////////////////////
-
-	/**
-	 *  Volume can be described in gain or in decibels. Any function
-	 *  which takes a gain, will also accept a decibel value as a string
-	 *  followed by the letters "db". i.e. `"-12db"` or `"+6db"`
-	 *
-	 *  `undefined` will return 0
-	 *  
-	 *  @typedef {number|string|undefined} Tone.Volume 
-	 */
 
 	/**
 	 *  equal power gain scale
@@ -371,144 +431,6 @@ define(function(){
 	 */
 	Tone.prototype.gainToDb = function(gain) {
 		return  20 * (Math.log(gain) / Math.LN10);
-	};
-
-	/**
-	 *  test if a representation is in decibel notation. 
-	 *  i.e. `"-12db"`
-	 *  @param  {Tone.Volume} vol
-	 *  @return {boolean}
-	 *  @function
-	 */
-	Tone.prototype.isDb = (function(){
-		var dbMatch = new RegExp(/^[-+]?\d*\.?\d+db$/i);
-		return function(vol){
-			return dbMatch.test(vol);
-		};
-	})();
-
-	/**
-	 *  convert a volume representation to a gain value
-	 *  @param  {Tone.Volume} vol
-	 *  @return {number}         
-	 */
-	Tone.prototype.toGain = function(vol){
-		if (isFinite(vol)){
-			return vol;
-		} else if (typeof vol === "string"){
-			if (this.isDb(vol)){
-				return this.dbToGain(parseFloat(vol));
-			} else {
-				return parseFloat(vol);
-			}
-		} else if (isUndef(vol)){
-			return 0;
-		}
-	};
-
-	///////////////////////////////////////////////////////////////////////////
-	// FREQUENCY CONVERSION
-	///////////////////////////////////////////////////////////////////////////
-
-	/**
-	 *  true if the input is in the format number+hz
-	 *  i.e.: 10hz
-	 *
-	 *  @param {number} freq 
-	 *  @return {boolean} 
-	 *  @function
-	 */
-	Tone.prototype.isFrequency = (function(){
-		var freqFormat = new RegExp(/\d*\.?\d+hz$/i);
-		return function(freq){
-			return freqFormat.test(freq);
-		};
-	})();
-
-	/**
-	 *  convert a time to a frequency
-	 *  defined in "Tone/core/Transport"
-	 *  	
-	 *  @param  {Tone.Frequency} time 
-	 *  @return {number}      the time in hertz
-	 */
-	Tone.prototype.toFrequency = function(time){
-		if (this.isFrequency(time)){
-			return parseFloat(time);
-		} else {
-			return parseFloat(time);
-		}
-	};
-
-	/**
-	 *  interpolate the input value (0-1) to be between outputMin and outputMax
-	 *  @param  {number} input     
-	 *  @param  {number} outputMin 
-	 *  @param  {number} outputMax 
-	 *  @return {number}           
-	 */
-	Tone.prototype.interpolate = function(input, outputMin, outputMax){
-		return input*(outputMax - outputMin) + outputMin;
-	};
-
-	/**
-	 *  normalize the input to 0-1 from between inputMin to inputMax
-	 *  @param  {number} input    
-	 *  @param  {number} inputMin 
-	 *  @param  {number} inputMax 
-	 *  @return {number}          
-	 */
-	Tone.prototype.normalize = function(input, inputMin, inputMax){
-		//make sure that min < max
-		if (inputMin > inputMax){
-			var tmp = inputMax;
-			inputMax = inputMin;
-			inputMin = tmp;
-		} else if (inputMin == inputMax){
-			return 0;
-		}
-		return (input - inputMin) / (inputMax - inputMin);
-	};
-
-	/**
-	 *  a dispose method 
-	 */
-	Tone.prototype.dispose = function(){
-		if (!this.isUndef(this.input)){
-			if (this.input instanceof AudioNode){
-				this.input.disconnect();
-			}
-			this.input = null;
-		}
-		if (!this.isUndef(this.output)){
-			if (this.output instanceof AudioNode){
-				this.output.disconnect();
-			}
-			this.output = null;
-		}
-	};
-
-	/**
-	 *  a silent connection to the DesinationNode
-	 *  which will ensure that anything connected to it
-	 *  will not be garbage collected
-	 *  
-	 *  @private
-	 */
-	var _silentNode = null;
-
-	/**
-	 *  makes a connection to ensure that the node will not be garbage collected
-	 *  until 'dispose' is explicitly called
-	 *
-	 *  use carefully. circumvents JS and WebAudio's normal Garbage Collection behavior
-	 */
-	Tone.prototype.noGC = function(){
-		this.output.connect(_silentNode);
-	};
-
-	AudioNode.prototype.noGC = function(){
-		this.connect(_silentNode);
 	};
 
 	///////////////////////////////////////////////////////////////////////////
@@ -568,6 +490,40 @@ define(function(){
 			return parseFloat(time) + plusTime;
 		} else {
 			return now;
+		}
+	};
+
+	///////////////////////////////////////////////////////////////////////////
+	// FREQUENCY CONVERSION
+	///////////////////////////////////////////////////////////////////////////
+
+	/**
+	 *  true if the input is in the format number+hz
+	 *  i.e.: 10hz
+	 *
+	 *  @param {number} freq 
+	 *  @return {boolean} 
+	 *  @function
+	 */
+	Tone.prototype.isFrequency = (function(){
+		var freqFormat = new RegExp(/\d*\.?\d+hz$/i);
+		return function(freq){
+			return freqFormat.test(freq);
+		};
+	})();
+
+	/**
+	 *  convert a time to a frequency
+	 *  defined in "Tone/core/Transport"
+	 *  	
+	 *  @param  {Tone.Frequency} time 
+	 *  @return {number}      the time in hertz
+	 */
+	Tone.prototype.toFrequency = function(time){
+		if (this.isFrequency(time)){
+			return parseFloat(time);
+		} else {
+			return parseFloat(time);
 		}
 	};
 

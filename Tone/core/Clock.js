@@ -62,6 +62,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	 *  optionally ramp to the rate over the rampTime
 	 *  @param {Tone.Time} rate 
 	 *  @param {Tone.Time=} rampTime 
+	 *  @returns {Tone.Clock} `this`
 	 */
 	Tone.Clock.prototype.setRate = function(rate, rampTime){
 		//convert the time to a to frequency
@@ -72,6 +73,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 		} else {
 			this._controlSignal.exponentialRampToValueNow(freqVal, rampTime);
 		}
+		return this;
 	};
 
 	/**
@@ -86,6 +88,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	/**
 	 *  start the clock
 	 *  @param {Tone.Time} time the time when the clock should start
+	 *  @returns {Tone.Clock} `this`
 	 */
 	Tone.Clock.prototype.start = function(time){
 		if (!this._oscillator){
@@ -98,12 +101,14 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 			var startTime = this.toSeconds(time);
 			this._oscillator.start(startTime);
 		}
+		return this;
 	};
 
 	/**
 	 *  stop the clock
 	 *  @param {Tone.Time} time the time when the clock should stop
 	 *  @param {function} onend called when the oscilator stops
+	 *  @returns {Tone.Clock} `this`
 	 */
 	Tone.Clock.prototype.stop = function(time, onend){
 		if (this._oscillator){
@@ -118,6 +123,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 				onend();
 			}
 		}
+		return this;
 	};
 
 	/**
@@ -151,6 +157,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 
 	/**
 	 *  clean up
+	 *  @returns {Tone.Clock} `this`
 	 */
 	Tone.Clock.prototype.dispose = function(){
 		this._jsNode.disconnect();
@@ -162,6 +169,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 		this._jsNode = null;
 		this._controlSignal = null;
 		this._oscillator = null;
+		return this;
 	};
 
 	return Tone.Clock;

@@ -34,13 +34,13 @@ define(["Tone/core/Tone"], function(Tone){
 	};
 
 	/**
-	 *  @param {Tone.Volume} vol the volume of the output
+	 *  @param {number} db the volume of the output in decibels
 	 *  @param {Tone.Time=} fadeTime time it takes to reach the value
 	 *  @returns {Tone} `this`
 	 */
-	Tone.Master.prototype.setVolume = function(vol, fadeTime){
+	Tone.Master.prototype.setVolume = function(db, fadeTime){
 		var now = this.now();
-		var gain = this.toGain(vol);
+		var gain = this.dbToGain(db);
 		if (fadeTime){
 			var currentVolume = this.output.gain.value;
 			this.output.gain.cancelScheduledValues(now);

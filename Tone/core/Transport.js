@@ -296,9 +296,12 @@ function(Tone){
 
 	/**
 	 *  removes all of the intervals that are currently set
+	 *  @return {boolean}            	true if the event was removed
 	 */
 	Tone.Transport.prototype.clearIntervals = function(){
+		var willRemove = intervals.length > 0;
 		intervals = [];
+		return willRemove;
 	};
 
 	///////////////////////////////////////////////////////////////////////////////
@@ -356,9 +359,12 @@ function(Tone){
 
 	/**
 	 *  removes all of the timeouts that are currently set
+	 *  @return {boolean}            	true if the event was removed
 	 */
 	Tone.Transport.prototype.clearTimeouts = function(){
+		var willRemove = timeouts.length > 0;
 		timeouts = [];
+		return willRemove;
 	};
 
 	///////////////////////////////////////////////////////////////////////////////
@@ -417,10 +423,13 @@ function(Tone){
 
 	/**
 	 *  remove all events from the timeline
+	 *  @returns {boolean} true if the events were removed
 	 */
 	Tone.Transport.prototype.clearTimelines = function(){
 		timelineProgress = 0;
+		var willRemove = transportTimeline.length > 0;
 		transportTimeline = [];
+		return willRemove;
 	};
 
 	///////////////////////////////////////////////////////////////////////////////
@@ -459,10 +468,12 @@ function(Tone){
 	 *  set the transport time, jump to the position right away
 	 *  	
 	 *  @param {Tone.Time} progress 
+	 *  @returns {Tone.Transport} `this`
 	 */
 	Tone.Transport.prototype.setTransportTime = function(progress){
 		var ticks = this.toTicks(progress);
 		this._setTicks(ticks);
+		return this;
 	};
 
 	/**
@@ -491,6 +502,7 @@ function(Tone){
 	 *  
 	 *  @param  {Tone.Time} time
 	 *  @param  {Tone.Time=} offset the offset position to start
+	 *  @returns {Tone.Transport} `this`
 	 */
 	Tone.Transport.prototype.start = function(time, offset){
 		if (this.state === TransportState.STOPPED || this.state === TransportState.PAUSED){
@@ -507,6 +519,7 @@ function(Tone){
 				source.start(startTime + delay);
 			}
 		}
+		return this;
 	};
 
 
@@ -514,6 +527,7 @@ function(Tone){
 	 *  stop the transport and all sources synced to the transport
 	 *  
 	 *  @param  {Tone.Time} time
+	 *  @returns {Tone.Transport} `this`
 	 */
 	Tone.Transport.prototype.stop = function(time){
 		if (this.state === TransportState.STARTED || this.state === TransportState.PAUSED){
@@ -527,6 +541,7 @@ function(Tone){
 		} else {
 			this._onended();
 		}
+		return this;
 	};
 
 	/**
@@ -544,6 +559,7 @@ function(Tone){
 	 *  pause the transport and all sources synced to the transport
 	 *  
 	 *  @param  {Tone.Time} time
+	 *  @returns {Tone.Transport} `this`
 	 */
 	Tone.Transport.prototype.pause = function(time){
 		if (this.state === TransportState.STARTED){
@@ -556,6 +572,7 @@ function(Tone){
 				source.pause(stopTime);
 			}
 		}
+		return this;
 	};
 
 	///////////////////////////////////////////////////////////////////////////////
@@ -567,10 +584,12 @@ function(Tone){
 	 *  optionally ramp to the bpm over some time
 	 *  @param {number} bpm   
 	 *  @param {Tone.Time=} rampTime 
+	 *  @returns {Tone.Transport} `this`
 	 */
 	Tone.Transport.prototype.setBpm = function(bpm, rampTime){
 		var quarterTime = this.notationToSeconds(tatum.toString() + "n", bpm, transportTimeSignature) / 4;
 		this._clock.setRate(quarterTime, rampTime);
+		return this;
 	};
 
 	/**
@@ -595,10 +614,12 @@ function(Tone){
 	 *  @param {number} numerator  the numerator of the time signature
 	 *  @param {number} [denominator=4] the denominator of the time signature. this should
 	 *                                   be a multiple of 2. 
+	 *  @returns {Tone.Transport} `this`
 	 */
 	Tone.Transport.prototype.setTimeSignature = function(numerator, denominator){
 		denominator = this.defaultArg(denominator, 4);
 		transportTimeSignature = numerator / (denominator / 4);
+		return this;
 	};
 
 	/**
@@ -615,37 +636,45 @@ function(Tone){
 	 *  set the loop start position
 	 *  
 	 *  @param {Tone.Time} startPosition
+	 *  @returns {Tone.Transport} `this`
 	 */
 	Tone.Transport.prototype.setLoopStart = function(startPosition){
 		loopStart = this.toTicks(startPosition);
+		return this;
 	};
 
 	/**
 	 *  set the loop start position
 	 *  
 	 *  @param {Tone.Time} endPosition
+	 *  @returns {Tone.Transport} `this`
 	 */
 	Tone.Transport.prototype.setLoopEnd = function(endPosition){
 		loopEnd = this.toTicks(endPosition);
+		return this;
 	};
 
 	/**
 	 *  shorthand loop setting
 	 *  @param {Tone.Time} startPosition 
 	 *  @param {Tone.Time} endPosition   
+	 *  @returns {Tone.Transport} `this`
 	 */
 	Tone.Transport.prototype.setLoopPoints = function(startPosition, endPosition){
 		this.setLoopStart(startPosition);
 		this.setLoopEnd(endPosition);
+		return this;
 	};
 
 	/**
 	 *  set the amount of swing which is applied to the subdivision (defaults to 16th notes)
 	 *  @param {number} amount a value between 0-1 where 1 equal to the note + half the subdivision
+	 *  @returns {Tone.Transport} `this`
 	 */
 	Tone.Transport.prototype.setSwing = function(amount){
 		//scale the values to a normal range
 		swingAmount = amount * 0.5;
+		return this;
 	};
 
 	/**
@@ -657,9 +686,11 @@ function(Tone){
 	 *  
 	 *  @param {string} subdivision the subdivision in notation (i.e. 8n, 16n, 8t).
 	 *                              value must be less than a quarter note.
+	 *  @returns {Tone.Transport} `this`
 	 */
 	Tone.Transport.prototype.setSwingSubdivision = function(subdivision){
 		swingTatum = this.toTicks(subdivision);
+		return this;
 	};
 
 	///////////////////////////////////////////////////////////////////////////////
@@ -671,18 +702,21 @@ function(Tone){
 	 *  Sync a source to the transport so that 
 	 *  @param  {Tone.Source} source the source to sync to the transport
 	 *  @param {Tone.Time} delay (optionally) start the source with a delay from the transport
+	 *  @returns {Tone.Transport} `this`
 	 */
 	Tone.Transport.prototype.syncSource = function(source, startDelay){
 		SyncedSources.push({
 			source : source,
 			delay : this.toSeconds(this.defaultArg(startDelay, 0))
 		});
+		return this;
 	};
 
 	/**
 	 *  remove the source from the list of Synced Sources
 	 *  
 	 *  @param  {Tone.Source} source [description]
+	 *  @returns {Tone.Transport} `this`
 	 */
 	Tone.Transport.prototype.unsyncSource = function(source){
 		for (var i = 0; i < SyncedSources.length; i++){
@@ -690,6 +724,7 @@ function(Tone){
 				SyncedSources.splice(i, 1);
 			}
 		}
+		return this;
 	};
 
 	/**
@@ -698,18 +733,22 @@ function(Tone){
 	 *  ratio
 	 *  
 	 *  @param  {Tone.Signal} signal 
+	 *  @returns {Tone.Transport} `this`
 	 */
 	Tone.Transport.prototype.syncSignal = function(signal){
 		//overreaching. fix this. 
 		signal.sync(this._clock._controlSignal);
+		return this;
 	};
 
 	/**
 	 *  clean up
+	 *  @returns {Tone.Transport} `this`
 	 */
 	Tone.Transport.prototype.dispose = function(){
 		this._clock.dispose();
 		this._clock = null;
+		return this;
 	};
 
 	///////////////////////////////////////////////////////////////////////////////

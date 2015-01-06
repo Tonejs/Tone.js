@@ -43,6 +43,7 @@ define(["Tone/core/Tone"], function(Tone){
 	 *  @param {AudioNode} [input=this.input] if no input is selected, the
 	 *                                         input of the current node is
 	 *                                         chosen. 
+	 *  @returns {Tone} `this`
 	 */
 	Tone.prototype.receive = function(channelName, input){
 		if (!Buses.hasOwnProperty(channelName)){
@@ -52,6 +53,7 @@ define(["Tone/core/Tone"], function(Tone){
 			input = this.input;
 		}
 		Buses[channelName].connect(input);
+		return this;
 	};
 
 	return Tone;
