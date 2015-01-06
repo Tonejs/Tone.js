@@ -21,6 +21,7 @@ define(["Tone/core/Tone"], function(Tone){
 	/**
 	 *  mute the output
 	 *  @param {boolean} muted
+	 *  @returns {Tone.Master} `this`
 	 */
 	Tone.Master.prototype.mute = function(muted){
 		muted = this.defaultArg(muted, true);
@@ -29,15 +30,17 @@ define(["Tone/core/Tone"], function(Tone){
 		} else {
 			this.output.gain.value = 1;
 		}
+		return this;
 	};
 
 	/**
-	 *  @param {number} db volume in decibels 
+	 *  @param {Tone.Volume} vol the volume of the output
 	 *  @param {Tone.Time=} fadeTime time it takes to reach the value
+	 *  @returns {Tone} `this`
 	 */
-	Tone.Master.prototype.setVolume = function(db, fadeTime){
+	Tone.Master.prototype.setVolume = function(vol, fadeTime){
 		var now = this.now();
-		var gain = this.dbToGain(db);
+		var gain = this.toGain(vol);
 		if (fadeTime){
 			var currentVolume = this.output.gain.value;
 			this.output.gain.cancelScheduledValues(now);
@@ -46,6 +49,7 @@ define(["Tone/core/Tone"], function(Tone){
 		} else {
 			this.output.gain.setValueAtTime(gain, now);
 		}
+		return this;
 	};
 
 	/**
@@ -53,19 +57,23 @@ define(["Tone/core/Tone"], function(Tone){
 	 *  NOTE: this will disconnect the previously connected node
 	 *  @param {AudioNode|Tone} node the node to use as the entry
 	 *                               point to the master chain
+	 *  @returns {Tone.Master} `this`
 	 */
 	Tone.Master.prototype.send = function(node){
 		//disconnect the previous node
 		this.input.disconnect();
 		this.input.connect(node);
+		return this;
 	};
 
 	/**
 	 *  the master effects chain return point
 	 *  @param {AudioNode|Tone} node the node to connect 
+	 *  @returns {Tone.Master} `this`
 	 */
 	Tone.Master.prototype.receive = function(node){
 		node.connect(this.output);
+		return this;
 	};
 
 	///////////////////////////////////////////////////////////////////////////
@@ -75,17 +83,21 @@ define(["Tone/core/Tone"], function(Tone){
 	/**
 	 *  connect 'this' to the master output
 	 *  defined in "Tone/core/Master"
+	 *  @returns {Tone} `this`
 	 */
 	Tone.prototype.toMaster = function(){
 		this.connect(Tone.Master);
+		return this;
 	};
 
 	/**
 	 *  Also augment AudioNode's prototype to include toMaster
 	 *  as a convenience
+	 *  @returns {AudioNode} `this`
 	 */
 	AudioNode.prototype.toMaster = function(){
 		this.connect(Tone.Master);
+		return this;
 	};
 
 	var MasterConstructor = Tone.Master;

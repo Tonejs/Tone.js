@@ -86,9 +86,9 @@ define(["Tone/core/Tone", "Tone/component/MultibandSplit"], function(Tone){
 	 *  @static
 	 */
 	Tone.EQ.defaults = {
-		"low" : 0,
-		"mid" : 0,
-		"high" : 0,
+		"low" : 1,
+		"mid" : 1,
+		"high" : 1,
 		"lowFrequency" : 400,
 		"highFrequency" : 2500
 	};
@@ -107,26 +107,26 @@ define(["Tone/core/Tone", "Tone/component/MultibandSplit"], function(Tone){
 
 	/**
 	 *  set the mid range
-	 *  @param {number} db the db of the mids
+	 *  @param {Tone.Volume} vol the level of the mids
 	 */
-	Tone.EQ.prototype.setMid = function(db){
-		this.midGain.gain.value = this.dbToGain(db);
+	Tone.EQ.prototype.setMid = function(vol){
+		this.midGain.gain.value = this.toGain(vol);
 	};
 
 	/**
 	 *  set the high range
-	 *  @param {number} db the db of the highs
+	 *  @param {Tone.Volume} vol the level of the highs
 	 */
-	Tone.EQ.prototype.setHigh = function(db){
-		this.highGain.gain.value = this.dbToGain(db);
+	Tone.EQ.prototype.setHigh = function(vol){
+		this.highGain.gain.value = this.toGain(vol);
 	};
 
 	/**
 	 *  set the low range
-	 *  @param {number} db the db of the lows
+	 *  @param {Tone.Volume} vol the level of the Lows
 	 */
-	Tone.EQ.prototype.setLow = function(db){
-		this.lowGain.gain.value = this.dbToGain(db);
+	Tone.EQ.prototype.setLow = function(vol){
+		this.lowGain.gain.value = this.toGain(vol);
 	};
 
 	/**

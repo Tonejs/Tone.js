@@ -85,7 +85,7 @@ function(Tone){
 	Tone.AutoWah.defaults = {
 		"baseFrequency" : 100,
 		"octaves" : 6,
-		"sensitivity" : 0,
+		"sensitivity" : "0db",
 		"Q" : 2,
 		"gain" : 2,
 		"rolloff" : -48,
@@ -117,11 +117,10 @@ function(Tone){
 	/**
 	 *  set the sensitivity to control how responsive to the input signal
 	 *  the wah is. 
-	 *  
-	 *  @param {number} sensitivy the sensitivity to the input signal in dB
+	 *  @param {Tone.Volume} sensitivy the sensitivity to the input signal
 	 */
 	Tone.AutoWah.prototype.setSensitiviy = function(sensitivy){
-		this._sweepRange.setMax(this.dbToGain(sensitivy));
+		this._sweepRange.setMax(this.toGain(sensitivy));
 	};
 
 	/**

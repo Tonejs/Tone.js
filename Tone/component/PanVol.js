@@ -23,7 +23,7 @@ define(["Tone/core/Tone", "Tone/component/Panner", "Tone/core/Master"], function
 
 		//connections
 		this.pan.connect(this.vol);
-		this.setVolume(this.defaultArg(volume, 0));
+		this.setVolume(this.defaultArg(volume, 1));
 	};
 
 	Tone.extend(Tone.PanVol);
