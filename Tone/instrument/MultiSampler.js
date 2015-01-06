@@ -26,6 +26,7 @@ function(Tone){
 	 */
 	Tone.MultiSampler = function(samples, onload){
 
+		console.warn("Tone.MultiSampler is deprecated - use Tone.PolySynth with Tone.Sampler as the voice");
 	 	Tone.Instrument.call(this);
 
 	 	/**
