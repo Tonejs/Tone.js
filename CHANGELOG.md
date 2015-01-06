@@ -1,9 +1,11 @@
 ### r4 - Cool is cool
 
 * toFrequency accepts notes by name (i.e. "C4")
-* Tone.Envelope no longer accepts exponential scaling, only Tone.ScaledEnvelope
-* Tone.Buffer static progress and load events which tracks the progress of all downloads
-* Tone.Buffer only accepts a single url
+* Envelope no longer accepts exponential scaling, only Tone.ScaledEnvelope
+* Buffer static progress and load events which tracks the progress of all downloads
+* Buffer only accepts a single url
+* Sampler accepts multiple samples as an object and can set using setSample
+* deprecated MultiSampler - use Sampler with PolySynth instead
 * added [cdn](cdn.tonejs.org/latest/Tone.min.js) - please don't use for production code
 
 ### r3 - Expressive Signal
