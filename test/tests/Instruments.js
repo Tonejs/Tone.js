@@ -1,10 +1,10 @@
 /* global it, describe */
 
 define(["tests/Core", "chai", "Tone/instrument/DuoSynth", "Tone/instrument/MonoSynth", "Tone/instrument/FMSynth",
-	"Tone/instrument/PolySynth", "Tone/instrument/Sampler", "Tone/instrument/MultiSampler", 
+	"Tone/instrument/PolySynth", "Tone/instrument/Sampler", 
 	"tests/Common", "Tone/instrument/Instrument", "Tone/instrument/PluckSynth", "Tone/instrument/AMSynth", 
 	"Tone/instrument/NoiseSynth"], 
-function(Tone, chai, DuoSynth, MonoSynth, FMSynth, PolySynth, Sampler, MultiSampler, Test, Instrument, 
+function(Tone, chai, DuoSynth, MonoSynth, FMSynth, PolySynth, Sampler, Test, Instrument, 
 	PluckSynth, AMSynth, NoiseSynth){
 
 	var expect = chai.expect;
@@ -164,24 +164,6 @@ function(Tone, chai, DuoSynth, MonoSynth, FMSynth, PolySynth, Sampler, MultiSamp
 			var samp = new Sampler();
 			Test.acceptsOutput(samp);
 			samp.dispose();
-		});
-	});
-
-	describe("Tone.MultiSampler", function(){
-		it("can be created and disposed", function(){
-			var samp = new MultiSampler();
-			samp.dispose();
-			Test.wasDisposed(samp);
-		});
-
-		it("handles output connections", function(){
-			var samp = new MultiSampler();
-			Test.acceptsOutput(samp);
-			samp.dispose();
-		});
-
-		it("extends Instrument", function(){
-			extendsInstrument(MultiSampler);
 		});
 	});
 
