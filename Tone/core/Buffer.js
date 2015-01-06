@@ -1,10 +1,11 @@
 define(["Tone/core/Tone"], function(Tone){
 
 	"use strict";
+
 	/**
 	 *  @class  Buffer loading and storage. Tone.Buffer will load and store the buffers
 	 *          in the same data structure they were given in the argument. If given
-	 *          a string, this.buffer will equal an AudioBuffer. If constructed
+	 *          a string, this._buffer will equal an AudioBuffer. If constructed
 	 *          with an array, the samples will be placed in an array in the same
 	 *          order. 
 	 *  
@@ -18,15 +19,9 @@ define(["Tone/core/Tone"], function(Tone){
 		/**
 		 *  stores the loaded AudioBuffer
 		 *  @type {AudioBuffer}
+		 *  @private
 		 */
-		this.buffer = null;
-
-		/**
-		 *  the duration of the buffer
-		 *  @type {number}
-		 *  @readOnly
-		 */
-		this.duration = 0;
+		this._buffer = null;
 
 		/**
 		 *  the url of the buffer. 
@@ -42,7 +37,8 @@ define(["Tone/core/Tone"], function(Tone){
 		this.onload = options.onload;
 
 		if (options.url instanceof AudioBuffer){
-			this.buffer.set(options.url);
+			this._buffer.set(options.url);
+			this.onload(this);
 		} else if (typeof options.url === "string"){
 			this.url = options.url;
 			Tone.Buffer._addToQueue(options.url, this);
@@ -65,18 +61,22 @@ define(["Tone/core/Tone"], function(Tone){
 
 	/**
 	 *  set the buffer
-	 *  @param {AudioBuffer} buffer the buffer
+	 *  @param {AudioBuffer|Tone.Buffer} buffer the buffer
 	 */
 	Tone.Buffer.prototype.set = function(buffer){
-		this.buffer = buffer;
-		this.duration = buffer.duration;
+		if (buffer instanceof Tone.Buffer){
+			this._buffer = buffer.get();
+		} else {
+			this._buffer = buffer;
+		}
+		return this;
 	};
 
 	/**
 	 *  @return {AudioBuffer} the audio buffer
 	 */
 	Tone.Buffer.prototype.get = function(){
-		return this.buffer;
+		return this._buffer;
 	};
 
 	/**
@@ -97,9 +97,16 @@ define(["Tone/core/Tone"], function(Tone){
 	Tone.Buffer.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
 		Tone.Buffer._removeFromQueue(this);
-		this.buffer = null;
+		this._buffer = null;
 		this.onload = null;
 	};
+
+	//defines getter / setter for value
+	Object.defineProperty(Tone.Buffer.prototype, "duration", {
+		get : function(){
+			return this._buffer.duration;
+		},
+	});
 
 	///////////////////////////////////////////////////////////////////////////
 	// STATIC METHODS
@@ -202,6 +209,8 @@ define(["Tone/core/Tone"], function(Tone){
 			} 
 		} else if (Tone.Buffer._currentDownloads.length === 0){
 			Tone.Buffer.onload();
+			//reset the downloads
+			Tone.Buffer._totalDownloads = 0;
 		}
 	};
 
