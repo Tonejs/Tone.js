@@ -819,27 +819,9 @@ function(Tone){
 	 *  @lends Tone.prototype.isTransportTime
 	 */
 	Tone.prototype.isTransportTime = (function(){
-		var transportTimeFormat = new RegExp(/^\d+(\.\d+)?:\d+(\.\d+)?(:\d+(\.\d+)?)?$/);
+		var transportTimeFormat = new RegExp(/^\d+(\.\d+)?:\d+(\.\d+)?(:\d+(\.\d+)?)?$/i);
 		return function(transportTime){
 			return transportTimeFormat.test(transportTime);
-		};
-	})();
-
-	/**
-	 *  true if the input is in the format number+hz
-	 *  i.e.: 10hz
-	 *  defined in "Tone/core/Transport"
-	 *
-	 *  @param {number} freq 
-	 *  @return {boolean} 
-	 *
-	 *  @method isFrequency
-	 *  @lends Tone.prototype.isFrequency
-	 */
-	Tone.prototype.isFrequency = (function(){
-		var freqFormat = new RegExp(/\d*\.?\d+hz$/i);
-		return function(freq){
-			return freqFormat.test(freq);
 		};
 	})();
 
