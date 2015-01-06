@@ -7,16 +7,13 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 	 *  
 	 *  @constructor
 	 *  @extends {Tone.Source} 
-	 *  @param {string|AudioBuffer} url if a url is passed in, it will be loaded
-	 *                       and invoke the callback if it also passed
-	 *                       in. if the 
-	 *  @param {function(Tone.Player)=} onload callback to be invoked
-	 *                                     once the url is loaded
+	 *  @param {string|AudioBuffer} url either the AudioBuffer or the url from
+	 *                                  which to load the AudioBuffer
 	 */
 	Tone.Player = function(){
 		
 		Tone.Source.call(this);
-		var options = this.optionsObject(arguments, ["url", "onload"], Tone.Player.defaults);
+		var options = this.optionsObject(arguments, ["url"], Tone.Player.defaults);
 
 		/**
 		 *  @private
@@ -29,7 +26,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 		 *  @private
 		 *  @type {Tone.Buffer}
 		 */
-		this._buffer = new Tone.Buffer(options.url, options.onload.bind(this, this));
+		this._buffer = new Tone.Buffer(options.url);
 
 		/**
 		 *  if the buffer should loop once it's over
@@ -75,18 +72,15 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 	};
 
 	Tone.extend(Tone.Player, Tone.Source);
-
 	
 	/**
 	 *  the default parameters
-	 *
 	 *  @static
 	 *  @const
 	 *  @type {Object}
 	 */
 	Tone.Player.defaults = {
 		"onended" : function(){},
-		"onload" : function(){},
 		"loop" : false,
 		"loopStart" : 0,
 		"loopEnd" : -1,
@@ -164,7 +158,6 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 
 	/**
 	 *  Stop playback.
-	 * 
 	 *  @param  {Tone.Time} [time=now]
 	 */
 	Tone.Player.prototype.stop = function(time){
@@ -236,6 +229,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 		if (!this.isUndef(params.loop)) this.loop = params.loop;
 		if (!this.isUndef(params.loopStart)) this.setLoopStart(params.loopStart);
 		if (!this.isUndef(params.loopEnd)) this.setLoopEnd(params.loopEnd);
+		if (!this.isUndef(params.buffer)) this.setBuffer(params.buffer);
 		Tone.Source.prototype.set.call(this, params);
 	};
 

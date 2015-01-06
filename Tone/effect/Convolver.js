@@ -12,12 +12,9 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/effect/Effect"], function(To
 	 *  @param {string|Object|AudioBuffer=} url
 	 *  @param {function=} callback function
 	 */
-	Tone.Convolver = function(){
+	Tone.Convolver = function(url){
 
-		//get all of the defaults
-		var options = this.optionsObject(arguments, ["url", "onload"], Tone.Convolver.defaults);
-		//connections
-		Tone.Effect.call(this, options);
+		Tone.Effect.apply(this, arguments);
 
 	  	/**
 		 *  convolver node
@@ -31,7 +28,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/effect/Effect"], function(To
 		 *  @type {Tone.Buffer}
 		 *  @private
 		 */
-		this._buffer = new Tone.Buffer(options.url, this._onload.bind(this, options.onload));
+		this._buffer = new Tone.Buffer(url, this.setBuffer.bind(this));
 
 		this.connectEffect(this._convolver);
 	};
@@ -39,12 +36,12 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/effect/Effect"], function(To
 	Tone.extend(Tone.Convolver, Tone.Effect);
 
 	/**
+	 *  the default parameters
 	 *  @static
+	 *  @const
 	 *  @type {Object}
 	 */
-	Tone.Convolver.defaults = {
-		"onload": function(){},
-	};
+	Tone.Convolver.defaults = {};
 
 	/**
 	 *  Load the impulse response url as an audio buffer.
@@ -56,17 +53,13 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/effect/Effect"], function(To
 	 *  @param  {function(Tone.Convolver)=} callback
 	 */
 	Tone.Convolver.prototype.load = function(url, callback){
-		this._buffer.load(url, this._onload.bind(this, callback));
-	};
-
-	/**
-	 *  internal onload event, called when the buffer is loaded
-	 *  @param {function} callback pass in the callback to invoke
-	 *  @private
-	 */
-	Tone.Convolver.prototype._onload = function(callback){
-		this.setBuffer(this._buffer.get());
-		callback(this);
+		var self = this;
+		this._buffer.load(url, function(buff){
+			self.setBuffer(buff);
+			if (callback){
+				callback(this);
+			}
+		});
 	};
 
 	/**
