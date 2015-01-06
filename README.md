@@ -11,6 +11,12 @@ Tone.js is a Web Audio framework for creating interactive music in the browser. 
 
 Tone can be installed in a few of ways. Download Tone.js from github, or user `bower install tone` or `npm install tone`. Additionally, Tone.js can be used with or without RequireJS.
 
+The fastest way to include Tone.js on your page is to use the CDN (not for production use, please):
+
+```html
+<script type="text/javascript" src="http://cdn.tonejs.org/latest/Tone.min.js"></script>
+```
+
 [Full Installation Instruction](https://github.com/TONEnoTONE/Tone.js/wiki/Installation)
 
 # Hello World
