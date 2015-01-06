@@ -2,9 +2,9 @@
 
 define(["chai", "Tone/source/Player", "Tone/core/Master", "Tone/source/Oscillator", 
 	"Tone/component/Recorder", "Tone/source/Noise", "tests/Core", "Tone/source/PulseOscillator", "tests/Common", 
-	"Tone/source/PWMOscillator", "Tone/source/OmniOscillator", "Tone/source/Microphone"], 
+	"Tone/source/PWMOscillator", "Tone/source/OmniOscillator", "Tone/source/Microphone", "Tone/core/Buffer"], 
 function(chai, Player, Master, Oscillator, Recorder, Noise, core, PulseOscillator, Test, 
-	PWMOscillator, OmniOscillator, Microphone){
+	PWMOscillator, OmniOscillator, Microphone, Buffer){
 
 	var expect = chai.expect;
 
@@ -48,7 +48,8 @@ function(chai, Player, Master, Oscillator, Recorder, Noise, core, PulseOscillato
 		});
 
 		it("can handle multiple restarts", function(done){
-			var player = new Player("./testAudio/kick.mp3", function(){
+			var player = new Player("./testAudio/kick.mp3");
+			Buffer.onload = function(){
 				expect(player.state).to.equal("stopped");
 				player.start();
 				player.start();
@@ -57,20 +58,19 @@ function(chai, Player, Master, Oscillator, Recorder, Noise, core, PulseOscillato
 				expect(player.state).to.equal("stopped");
 				player.dispose();
 				done();
-			});
+			};
 		});
 
 		it("can be created with an options object", function(done){
 			var player = new Player({
 				"url" : "./testAudio/kick.mp3",
-				"onload" : function(pl){
-					expect(pl).to.equal(player);
-					expect(player.loop).to.be.true;
-					player.dispose();
-					done();
-				}, 
 				"loop" : true
 			});
+			Buffer.onload = function(){
+				expect(player.loop).to.be.true;
+				player.dispose();
+				done();
+			};
 		});
 
 		it("can be set with an options object", function(){
