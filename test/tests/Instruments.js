@@ -3,9 +3,9 @@
 define(["tests/Core", "chai", "Tone/instrument/DuoSynth", "Tone/instrument/MonoSynth", "Tone/instrument/FMSynth",
 	"Tone/instrument/PolySynth", "Tone/instrument/Sampler", 
 	"tests/Common", "Tone/instrument/Instrument", "Tone/instrument/PluckSynth", "Tone/instrument/AMSynth", 
-	"Tone/instrument/NoiseSynth"], 
+	"Tone/instrument/NoiseSynth", "Tone/core/Buffer"], 
 function(Tone, chai, DuoSynth, MonoSynth, FMSynth, PolySynth, Sampler, Test, Instrument, 
-	PluckSynth, AMSynth, NoiseSynth){
+	PluckSynth, AMSynth, NoiseSynth, Buffer){
 
 	var expect = chai.expect;
 
@@ -164,6 +164,20 @@ function(Tone, chai, DuoSynth, MonoSynth, FMSynth, PolySynth, Sampler, Test, Ins
 			var samp = new Sampler();
 			Test.acceptsOutput(samp);
 			samp.dispose();
+		});
+
+		it("flattens a nested object of samples", function(done){
+			var samp = new Sampler({
+				"A" : {
+					"1" : "./testAudio/kick.mp3"
+				},
+				"B" : "./testAudio/hh.mp3"
+			});
+			Buffer.onload = function(){
+				samp.setSample("A.1");
+				samp.dispose();
+				done();
+			};
 		});
 	});
 
