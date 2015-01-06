@@ -13,7 +13,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 	Tone.Player = function(){
 		
 		Tone.Source.call(this);
-		var options = this.optionsObject(arguments, ["url"], Tone.Player.defaults);
+		var options = this.optionsObject(arguments, ["url", "onload"], Tone.Player.defaults);
 
 		/**
 		 *  @private
@@ -26,7 +26,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 		 *  @private
 		 *  @type {Tone.Buffer}
 		 */
-		this._buffer = new Tone.Buffer(options.url);
+		this._buffer = new Tone.Buffer(options.url, options.onload.bind(null, this));
 
 		/**
 		 *  if the buffer should loop once it's over
@@ -81,6 +81,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 	 */
 	Tone.Player.defaults = {
 		"onended" : function(){},
+		"onload" : function(){},
 		"loop" : false,
 		"loopStart" : 0,
 		"loopEnd" : -1,
