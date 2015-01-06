@@ -1,9 +1,8 @@
 /**
  *  Tone.js
- *
  *  @author Yotam Mann
- *
- *  @license http://opensource.org/licenses/MIT MIT License 2014
+ *  @license http://opensource.org/licenses/MIT MIT License
+ *  @copyright 2014-2015 Yotam Mann
  */
 define(function(){
 
@@ -91,7 +90,6 @@ define(function(){
 
 	/**
 	 *  @class  Tone is the baseclass of all Tone Modules. 
-	 *  
 	 *  @constructor
 	 *  @alias Tone
 	 *  @param {number} [inputs=1] the number of input nodes
@@ -315,10 +313,24 @@ define(function(){
 	 */
 	Tone.prototype.isUndef = isUndef;
 
+
+	///////////////////////////////////////////////////////////////////////////
+	// GAIN CONVERSIONS
+	///////////////////////////////////////////////////////////////////////////
+
+	/**
+	 *  Volume can be described in gain or in decibels. Any function
+	 *  which takes a gain, will also accept a decibel value as a string
+	 *  followed by the letters "db". i.e. `"-12db"` or `"+6db"`
+	 *
+	 *  `undefined` will return 0
+	 *  
+	 *  @typedef {number|string|undefined} Tone.Volume 
+	 */
+
 	/**
 	 *  equal power gain scale
 	 *  good for cross-fading
-	 *  	
 	 *  @param  {number} percent (0-1)
 	 *  @return {number}         output gain (0-1)
 	 */
@@ -359,6 +371,73 @@ define(function(){
 	 */
 	Tone.prototype.gainToDb = function(gain) {
 		return  20 * (Math.log(gain) / Math.LN10);
+	};
+
+	/**
+	 *  test if a representation is in decibel notation. 
+	 *  i.e. `"-12db"`
+	 *  @param  {Tone.Volume} vol
+	 *  @return {boolean}
+	 *  @function
+	 */
+	Tone.prototype.isDb = (function(){
+		var dbMatch = new RegExp(/^[-+]?\d*\.?\d+db$/i);
+		return function(vol){
+			return dbMatch.test(vol);
+		};
+	})();
+
+	/**
+	 *  convert a volume representation to a gain value
+	 *  @param  {Tone.Volume} vol
+	 *  @return {number}         
+	 */
+	Tone.prototype.toGain = function(vol){
+		if (isFinite(vol)){
+			return vol;
+		} else if (typeof vol === "string"){
+			if (this.isDb(vol)){
+				return this.dbToGain(parseFloat(vol));
+			} else {
+				return parseFloat(vol);
+			}
+		} else if (isUndef(vol)){
+			return 0;
+		}
+	};
+
+	///////////////////////////////////////////////////////////////////////////
+	// FREQUENCY CONVERSION
+	///////////////////////////////////////////////////////////////////////////
+
+	/**
+	 *  true if the input is in the format number+hz
+	 *  i.e.: 10hz
+	 *
+	 *  @param {number} freq 
+	 *  @return {boolean} 
+	 *  @function
+	 */
+	Tone.prototype.isFrequency = (function(){
+		var freqFormat = new RegExp(/\d*\.?\d+hz$/i);
+		return function(freq){
+			return freqFormat.test(freq);
+		};
+	})();
+
+	/**
+	 *  convert a time to a frequency
+	 *  defined in "Tone/core/Transport"
+	 *  	
+	 *  @param  {Tone.Frequency} time 
+	 *  @return {number}      the time in hertz
+	 */
+	Tone.prototype.toFrequency = function(time){
+		if (this.isFrequency(time)){
+			return parseFloat(time);
+		} else {
+			return parseFloat(time);
+		}
 	};
 
 	/**
