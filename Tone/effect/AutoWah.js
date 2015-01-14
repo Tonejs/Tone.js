@@ -73,7 +73,7 @@ function(Tone){
 		this.effectSend.chain(this._bandpass, this._peaking, this.effectReturn);
 		//set the initial value
 		this._setSweepRange();
-		this.setSensitiviy(options.sensitivity);
+		this.setSensitivity(options.sensitivity);
 	};
 
 	Tone.extend(Tone.AutoWah, Tone.Effect);
@@ -120,8 +120,8 @@ function(Tone){
 	 *  
 	 *  @param {number} sensitivy the sensitivity to the input signal in dB
 	 */
-	Tone.AutoWah.prototype.setSensitiviy = function(sensitivy){
-		this._sweepRange.setMax(this.dbToGain(sensitivy));
+	Tone.AutoWah.prototype.setSensitivity = function(sensitivity){
+		this._sweepRange.setMax(this.dbToGain(sensitivity));
 	};
 
 	/**
@@ -139,7 +139,7 @@ function(Tone){
 	 */
 	Tone.AutoWah.prototype.set = function(params){
 		if (!this.isUndef(params.baseFrequency)) this.setBaseFrequency(params.baseFrequency);
-		if (!this.isUndef(params.sensitivity)) this.setSensitiviy(params.sensitivity);
+		if (!this.isUndef(params.sensitivity)) this.setSensitivity(params.sensitivity);
 		if (!this.isUndef(params.octaves)) this.setOctaves(params.octaves);
 		if (!this.isUndef(params.follower)) this._follower.set(params.follower);
 		if (!this.isUndef(params.rolloff)) this._bandpass.setRolloff(params.rolloff);
