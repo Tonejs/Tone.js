@@ -97,11 +97,25 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Pow"], function(Ton
 	};
 
 	/**
+	 * @return {Tone.Time} the attack time
+	 */
+	Tone.Envelope.prototype.getAttack = function(){
+		return this.attack;
+	};
+
+	/**
 	 *  set the decay time
 	 *  @param {Tone.Time} time
 	 */
 	Tone.Envelope.prototype.setDecay = function(time){
 		this.decay = time;
+	};
+
+	/**
+	 * @return {Tone.Time} the decay time
+	 */
+	Tone.Envelope.prototype.getDecay = function(){
+		return this.decay;
 	};
 
 	/**
@@ -113,11 +127,25 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Pow"], function(Ton
 	};
 
 	/**
+	 * @return {Tone.Time} the release time
+	 */
+	Tone.Envelope.prototype.getRelease = function(){
+		return this.release;
+	};
+
+	/**
 	 *  set the sustain amount
 	 *  @param {number} sustain value between 0-1
 	 */
 	Tone.Envelope.prototype.setSustain = function(sustain){
 		this.sustain = sustain;
+	};
+
+	/**
+	 * @return {number} the sustain amount
+	 */
+	Tone.Envelope.prototype.getSustain = function(){
+		return this.sustain;
 	};
 
 	/**
