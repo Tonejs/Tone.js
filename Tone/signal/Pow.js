@@ -32,6 +32,13 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 	};
 
 	/**
+	 * @return {number} the minimum output value
+	 */
+	Tone.Pow.prototype.getExponent = function(exp){
+		return this._expScaler.getMap();
+	};
+
+	/**
 	 *  the function which maps the waveshaper
 	 *  @param   {number} exp
 	 *  @return {function}
