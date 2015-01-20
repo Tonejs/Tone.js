@@ -132,11 +132,25 @@ function(Tone){
 	};
 
 	/**
+	 * @return {number} the room size
+	 */
+	Tone.Freeverb.prototype.getRoomSize = function(){
+		return this.roomSize.getValue();
+	};
+
+	/**
 	 *  set the dampening
 	 *  @param {number} dampening dampening between 0-1
 	 */
 	Tone.Freeverb.prototype.setDampening = function(dampening) {
 		this.dampening.setValue(dampening);
+	};
+
+	/**
+	 * @return {number} the dampening
+	 */
+	Tone.Freeverb.prototype.getDampening = function(){
+		return this.dampening.getValue();
 	};
 
 	/**
