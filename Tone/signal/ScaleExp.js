@@ -42,6 +42,13 @@ function(Tone){
 	};
 
 	/**
+	 * @return {number} the minimum output value
+	 */
+	Tone.ScaleExp.prototype.getExponent = function(){
+		return this._exp.getExponent();
+	};
+
+	/**
 	 *  set the minimum output value
 	 *  @param {number} min the minimum output value
 	 */
@@ -50,11 +57,25 @@ function(Tone){
 	};
 
 	/**
+	 * @return {number} the minimum output value
+	 */
+	Tone.ScaleExp.prototype.getMin = function(){
+		return this._scale.getMin();
+	};
+
+	/**
 	 *  set the minimum output value
 	 *  @param {number} min the minimum output value
 	 */
 	Tone.ScaleExp.prototype.setMax = function(max){
 		this._scale.setMax(max);
+	};
+
+	/**
+	 * @return {number} the minimum output value
+	 */
+	Tone.ScaleExp.prototype.getMax = function(){
+		return this._scale.getMax();
 	};
 
 	/**
