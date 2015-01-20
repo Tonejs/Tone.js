@@ -106,7 +106,14 @@ function(Tone){
 	};
 
 	/**
-	 *  set the number of octaves that the filter will sweep
+	 * @return {number} the the number of octaves that the filter will sweep
+	 */
+	Tone.AutoWah.prototype.getOctaves = function(){
+		return this._octaves;
+	};
+
+	/**
+	 *  set the base frequency
 	 *  @param {number} octaves the number of octaves above the base frequency the filter will sweep
 	 */
 	Tone.AutoWah.prototype.setBaseFrequency = function(baseFreq){
@@ -115,13 +122,27 @@ function(Tone){
 	};
 
 	/**
+	 * @return {number} the base frequency
+	 */
+	Tone.AutoWah.prototype.getBaseFrequency = function(){
+		return this._baseFrequency;
+	};
+
+	/**
 	 *  set the sensitivity to control how responsive to the input signal
 	 *  the wah is. 
 	 *  
-	 *  @param {number} sensitivy the sensitivity to the input signal in dB
+	 *  @param {number} sensitivity the sensitivity to the input signal in dB
 	 */
 	Tone.AutoWah.prototype.setSensitivity = function(sensitivity){
 		this._sweepRange.setMax(this.dbToGain(sensitivity));
+	};
+
+	/**
+	 * @return {number} the the sensitivity
+	 */
+	Tone.AutoWah.prototype.getSensitivity = function(){
+		return this._sweepRange.getMax();
 	};
 
 	/**
