@@ -140,7 +140,7 @@ function(Tone){
 	};
 
 	/**
-	 * @return {number} the maximum output of the LFO
+	 * @return {number} the minimum output of the LFO
 	 */
 	Tone.LFO.prototype.getMin = function(){
 		return this._scaler.getMin();
