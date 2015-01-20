@@ -59,6 +59,13 @@ define(["Tone/core/Tone", "Tone/effect/FeedbackEffect", "Tone/signal/Signal"], f
 	};
 
 	/**
+	 * @return {number} the delay time
+	 */
+	Tone.FeedbackDelay.prototype.getDelayTime = function(){
+		return this.delayTime.getValue();
+	};
+
+	/**
 	 *  sets the params in bulk
 	 *  @param {Object} param 
 	 */
