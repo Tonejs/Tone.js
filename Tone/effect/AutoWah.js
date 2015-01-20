@@ -139,7 +139,7 @@ function(Tone){
 	};
 
 	/**
-	 * @return {number} the the sensitivity
+	 * @return {number} the sensitivity
 	 */
 	Tone.AutoWah.prototype.getSensitivity = function(){
 		return this._sweepRange.getMax();

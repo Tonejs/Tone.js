@@ -60,6 +60,13 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/signal/Signal", "Tone/sign
 	};
 
 	/**
+	 * @return {number} the feedback amount
+	 */
+	Tone.FeedbackEffect.prototype.getFeedback = function(){
+		return this.feedback.getValue();
+	};
+
+	/**
 	 *  set the parameters in bulk
 	 *  @param {Object} params
 	 */
