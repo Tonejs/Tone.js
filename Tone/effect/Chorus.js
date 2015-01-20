@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/component/LFO", "Tone/effect/StereoXFeedbackEffect"], 
+define(["Tone/core/Tone", "Tone/component/LFO", "Tone/effect/StereoXFeedbackEffect"],
 function(Tone){
 
 	"use strict";
@@ -87,7 +87,7 @@ function(Tone){
 	 *  @type {Object}
 	 */
 	Tone.Chorus.defaults = {
-		"rate" : 1.5, 
+		"rate" : 1.5,
 		"delayTime" : 3.5,
 		"depth" : 0.7,
 		"feedback" : 0.1,
@@ -108,12 +108,26 @@ function(Tone){
 	};
 
 	/**
+	 * @return {number} the current depth
+	 */
+	Tone.Chorus.prototype.getDepth = function(){
+		return this._depth;
+	};
+
+	/**
 	 *  set the delay time
 	 *  @param {number} delayTime in milliseconds
 	 */
 	Tone.Chorus.prototype.setDelayTime = function(delayTime){
 		this._delayTime = delayTime / 1000;
 		this.setDepth(this._depth);
+	};
+
+	/**
+	 * @return {number} the current delayTime in milliseconds
+	 */
+	Tone.Chorus.prototype.getDelayTime = function(){
+		return this._delayTime * 1000;
 	};
 
 	/**
@@ -125,12 +139,26 @@ function(Tone){
 	};
 
 	/**
+	 * @return {number} the current chorus rate in hertz
+	 */
+	Tone.Chorus.prototype.getRate = function(){
+		return this._lfoL.getFrequency();
+	};
+
+	/**
 	 *  set the LFO type
 	 *  @param {number} type
 	 */
 	Tone.Chorus.prototype.setType = function(type){
 		this._lfoL.setType(type);
 		this._lfoR.setType(type);
+	};
+
+	/**
+	 * @return {string} the LFO type
+	 */
+	Tone.Chorus.prototype.getType = function(){
+		return this._lfoL.getType();
 	};
 
 	/**
