@@ -22,8 +22,10 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/signal/WaveShaper"], funct
 		 */
 		this._shaper = new Tone.WaveShaper(4096);
 
+		this._distortion = options.distortion;
+
 		this.connectEffect(this._shaper);
-		this.setDistortion(options.distortion);
+		this.setDistortion(this._distortion);
 		this.setOversample(options.oversample);
 	};
 
@@ -44,7 +46,8 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/signal/WaveShaper"], funct
 	 *  @param   {number} amount amount of distortion, nominal range of 0-1. 
 	 */
 	Tone.Distortion.prototype.setDistortion = function(amount) {
-		var k = amount * 100;
+		this._distortion = amount;
+		var k = this._distortion * 100;
 		var deg = Math.PI / 180;
 		this._shaper.setMap(function(x){
 			if (Math.abs(x) < 0.001){
@@ -57,11 +60,26 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/signal/WaveShaper"], funct
 	};
 
 	/**
+	 * @return {number} the amount of distortion
+	 */
+	Tone.Distortion.prototype.getDistortion = function(){
+		return this._distortion;
+	};
+
+
+	/**
 	 *  set the oversampling
 	 *  @param {string} oversampling can either be "none", "2x" or "4x"
 	 */
 	Tone.Distortion.prototype.setOversample = function(oversampling) {
 		this._shaper.oversample = oversampling;
+	};
+
+	/**
+	 * @return {string} the oversampling
+	 */
+	Tone.Distortion.prototype.getOversample = function(){
+		return this._shaper.oversample;
 	};
 
 	/**
