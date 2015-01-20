@@ -125,6 +125,13 @@ function(Tone){
 	};
 
 	/**
+	 * @return {number} the depth of the chorus
+	 */
+	Tone.Phaser.prototype.getDepth = function(){
+		return this._depth;
+	};
+
+	/**
 	 *  set the base frequency of the filters
 	 *  @param {number} freq
 	 */
@@ -136,11 +143,25 @@ function(Tone){
 	};
 
 	/**
+	 * @return {number} the base frequency of the filters
+	 */
+	Tone.Phaser.prototype.getBaseFrequency = function(){
+		return this._baseFrequency;
+	};
+
+	/**
 	 *  set the phaser rate
 	 *  @param {number} rate in hertz
 	 */
 	Tone.Phaser.prototype.setRate = function(rate){
 		this._lfoL.setFrequency(rate);
+	};
+
+	/**
+	 * @return {number} the phaser rate
+	 */
+	Tone.Phaser.prototype.getRate = function(){
+		return this._lfoL.getFrequency();
 	};
 
 	/**
