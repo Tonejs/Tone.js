@@ -57,12 +57,26 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Multiply", "Tone/signa
 	};
 
 	/**
-	 *  set the minimum output value
-	 *  @param {number} min the minimum output value
+	 * @return {number} the minimum output value
+	 */
+	Tone.Scale.prototype.getMin = function(){
+		return this._outputMin;
+	};
+
+	/**
+	 *  set the maximum output value
+	 *  @param {number} max the maximum output value
 	 */
 	Tone.Scale.prototype.setMax = function(max){
 		this._outputMax = max;
 		this._setRange();
+	};
+
+	/**
+	 * @return {number} the maximum output value
+	 */
+	Tone.Scale.prototype.getMax = function(){
+		return this._outputMax;
 	};
 
 	/**
