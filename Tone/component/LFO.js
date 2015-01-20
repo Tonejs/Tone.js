@@ -110,11 +110,25 @@ function(Tone){
 	};
 
 	/**
+	 * @return {number} the current frequency
+	 */
+	Tone.LFO.prototype.getFrequency = function(){
+		return this.oscillator.getFrequency();
+	};
+
+	/**
 	 *  set the phase
 	 *  @param {number} phase 
 	 */
 	Tone.LFO.prototype.setPhase = function(phase){
 		this.oscillator.setPhase(phase);
+	};
+
+	/**
+	 * @return {number} the phase
+	 */
+	Tone.LFO.prototype.getPhase = function(){
+		return this.oscillator.getPhase();
 	};
 
 	/**
@@ -139,6 +153,13 @@ function(Tone){
 	 */
 	Tone.LFO.prototype.setType = function(type){
 		this.oscillator.setType(type);
+	};
+
+	/**
+	 * @return {string} the LFO type
+	 */
+	Tone.LFO.prototype.getType = function(){
+		return this.oscillator.getType();
 	};
 
 	/**
