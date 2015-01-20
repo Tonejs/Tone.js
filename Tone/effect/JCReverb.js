@@ -118,6 +118,13 @@ function(Tone){
 	};
 
 	/**
+	 * @return {number} the room size
+	 */
+	Tone.JCReverb.prototype.getRoomSize = function(){
+		return this.roomSize.getValue();
+	};
+
+	/**
 	 *  set multiple parameters at once with an object
 	 *  @param {Object} params the parameters as an object
 	 */
