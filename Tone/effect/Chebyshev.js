@@ -22,8 +22,14 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/signal/WaveShaper"], funct
 		 */
 		this._shaper = new Tone.WaveShaper(4096);
 
+		/**
+		 *  @type {number}
+		 *  @private
+		 */
+		this._order = options.order;
+
 		this.connectEffect(this._shaper);
-		this.setOrder(options.order);
+		this.setOrder(this._order);
 		this.setOversample(options.oversample);
 	};
 
@@ -58,6 +64,14 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/signal/WaveShaper"], funct
 			}
 		}
 		this._shaper.setCurve(curve);
+		this._order = order;
+	};
+
+	/**
+	 * @return {number} the order of the Chebyshev polynomial
+	 */
+	Tone.Chebyshev.prototype.getOrder = function(){
+		return this._order;
 	};
 
 	/**
@@ -88,6 +102,13 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/signal/WaveShaper"], funct
 	 */
 	Tone.Chebyshev.prototype.setOversample = function(oversampling) {
 		this._shaper.setOversample(oversampling);
+	};
+
+	/**
+	 * @return {string} the current oversampling
+	 */
+	Tone.Chebyshev.prototype.getOversample = function() {
+		return this._shaper.getOversample();
 	};
 
 	/**

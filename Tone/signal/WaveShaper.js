@@ -88,7 +88,7 @@ define(["Tone/core/Tone", "Tone/signal/SignalBase"], function(Tone){
 	};
 
 	/**
-	 * @return {number} the current frequency
+	 * @return {string} the current oversampling
 	 */
 	Tone.WaveShaper.prototype.getOversample = function() {
 		return this._shaper.oversample;
