@@ -120,11 +120,7 @@ define(["Tone/core/Tone", "Tone/component/Filter"], function(Tone){
      *  @param {number} the EQ band
      */
     Tone.MultibandEQ.prototype.setType = function(type, band){
-        for (var i = 0; i < this.numberOfBands; i++){
-            if (i == band-1) {
-                this._bands[i].type = type;
-            }
-        }
+        this._bands[band-1].type = type;
     };
 
     /**
@@ -133,11 +129,7 @@ define(["Tone/core/Tone", "Tone/component/Filter"], function(Tone){
      *  @return {string} the type of the filter
      */
     Tone.MultibandEQ.prototype.getType = function(band){
-        for (var i = 0; i < this.numberOfBands; i++){
-            if (i == band-1) {
-                return this._bands[i]._type;
-            }
-        }
+        return this._bands[band-1].type;
     };
 
     /**
@@ -146,11 +138,7 @@ define(["Tone/core/Tone", "Tone/component/Filter"], function(Tone){
      *  @param {number} the EQ band
      */
     Tone.MultibandEQ.prototype.setFrequency = function(freq, band){
-        for (var i = 0; i < this.numberOfBands; i++) {
-            if (i == band-1) {
-                this._bands[i].frequency.setValue(freq);
-            }
-        }
+        this._bands[band-1].frequency.setValue(Q);
     };
 
     /**
@@ -159,11 +147,7 @@ define(["Tone/core/Tone", "Tone/component/Filter"], function(Tone){
      *  @return {number} the frequency of the EQ
      */
     Tone.MultibandEQ.prototype.getFrequency = function(band){
-        for (var i = 0; i < this.numberOfBands; i++) {
-            if (i == band-1) {
-                return this._bands[i].frequency.getValue();
-            }
-        }
+        return this._bands[band-1].frequency.getValue();
     };
 
     /**
@@ -172,13 +156,17 @@ define(["Tone/core/Tone", "Tone/component/Filter"], function(Tone){
      *  @param {number} the EQ band
      */
     Tone.MultibandEQ.prototype.setQ = function(Q, band){
-        for (var i = 0; i < this.numberOfBands; i++) {
-            if (i == band-1) {
-                this._bands[i].Q.setValue(Q);
-            }
-        }
+        this._bands[band-1].Q.setValue(Q);
     };
 
+    /**
+     *  get the Q
+     *  @param {number} the EQ band
+     *  @return {number} the Q value
+     */
+    Tone.MultibandEQ.prototype.getQ = function(band){
+        return this._bands[band-1].Q.getValue();
+    };
 
 
     /**
@@ -193,5 +181,5 @@ define(["Tone/core/Tone", "Tone/component/Filter"], function(Tone){
         this._bands = null;
     };
 
-    return Tone.SixBandEQ;
+    return Tone.MultibandEQ;
 });
