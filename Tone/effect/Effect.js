@@ -71,6 +71,13 @@ define(["Tone/core/Tone", "Tone/component/DryWet"], function(Tone){
 	};
 
 	/**
+	 * @return {number} the dry amount
+	 */
+	Tone.Effect.prototype.getDry = function(){
+		return this.dryWet.getDry();
+	};
+
+	/**
 	 * setWet also adjusts the dry / wet balance
 	 * wetVal is 0 (100% dry) to 1 (100% wet)
 	 * 
@@ -79,6 +86,13 @@ define(["Tone/core/Tone", "Tone/component/DryWet"], function(Tone){
 	 */
 	Tone.Effect.prototype.setWet = function(wetVal, rampTime){
 		this.dryWet.setWet(wetVal, rampTime);
+	};
+
+	/**
+	 * @return {number} the wet amount
+	 */
+	Tone.Effect.prototype.getWet = function(){
+		return this.dryWet.getWet();
 	};
 
 	/**

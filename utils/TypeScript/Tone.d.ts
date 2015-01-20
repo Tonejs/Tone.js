@@ -207,6 +207,8 @@ declare module Tone {
         wetness: Tone.Signal;
         setDry(val: number, rampTime?: Tone.Time): void;
         setWet(val: number, rampTime?: Tone.Time): void;
+        getDry(): number;
+        getWet(): number;
     }
 
     var Effect: {
@@ -221,8 +223,10 @@ declare module Tone {
         connectEffect(effect: Tone): void;
         set(params: Object): void;
         setDry(dryness: number, rampTime?: Tone.Time): void;
+        getDry(): number;
         setPreset(presetName: string): void;
         setWet(wetness: number, rampTime?: Tone.Time): void;
+        getWet(): number;
     }
 
     var AutoPanner: {

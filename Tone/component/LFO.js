@@ -140,11 +140,25 @@ function(Tone){
 	};
 
 	/**
+	 * @return {number} the maximum output of the LFO
+	 */
+	Tone.LFO.prototype.getMin = function(){
+		return this._scaler.getMin();
+	};
+
+	/**
 	 *  Set the maximum output of the LFO
 	 *  @param {number} min 
 	 */
 	Tone.LFO.prototype.setMax = function(max){
 		this._scaler.setMax(max);
+	};
+
+	/**
+	 * @return {number} the maximum output of the LFO
+	 */
+	Tone.LFO.prototype.getMax = function(){
+		return this._scaler.getMax();
 	};
 
 	/**
