@@ -119,11 +119,25 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	};
 
 	/**
+	 * @return {number} the current frequency
+	 */
+	Tone.Filter.prototype.getFrequency = function(){
+		return this.frequency.getValue();
+	};
+
+	/**
 	 *  set the quality of the filter
 	 *  @param {number} Q the filter's Q
 	 */
 	Tone.Filter.prototype.setQ = function(Q){
 		this.Q.setValue(Q);
+	};
+
+	/**
+	 * @return {number} the Q value
+	 */
+	Tone.Filter.prototype.getQ = function(){
+		return this.Q.getValue();
 	};
 
 	/**
