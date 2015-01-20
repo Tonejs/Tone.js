@@ -80,6 +80,13 @@ define(["Tone/core/Tone", "Tone/core/Transport"], function(Tone){
 	};
 
 	/**
+	 * @return {number} the volume in decibels
+	 */
+	Tone.Source.prototype.getVolume = function(){
+		return this.gainToDb(this.output.gain.getValue());
+	};
+
+	/**
 	 *  set the parameters at once
 	 *  @param {Object} params
 	 */
