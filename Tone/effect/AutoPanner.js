@@ -75,12 +75,26 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/LFO", "Tone/comp
 	};
 
 	/**
+	 * @return {string} the LFO type
+	 */
+	Tone.AutoPanner.prototype.getType = function(){
+		return this._lfo.getType();
+	};
+
+	/**
 	 * Set frequency of the oscillator attached to the AutoPanner.
 	 * 
 	 * @param {number|string} freq in HZ of the oscillator's frequency.
 	 */
 	Tone.AutoPanner.prototype.setFrequency = function(freq){
 		this._lfo.setFrequency(freq);
+	};
+
+	/**
+	 * @return {number} the current frequency of the oscillator
+	 */
+	Tone.AutoPanner.prototype.getFrequency = function(){
+		return this._lfo.getFrequency();
 	};
 
 	/**

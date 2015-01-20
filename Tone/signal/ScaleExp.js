@@ -42,13 +42,6 @@ function(Tone){
 	};
 
 	/**
-	 * @return {number} the minimum output value
-	 */
-	Tone.ScaleExp.prototype.getExponent = function(){
-		return this._exp.getExponent();
-	};
-
-	/**
 	 *  set the minimum output value
 	 *  @param {number} min the minimum output value
 	 */
