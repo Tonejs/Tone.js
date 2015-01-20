@@ -79,6 +79,13 @@ define(["Tone/core/Tone", "Tone/effect/MidSideEffect", "Tone/signal/Signal",
 	};
 
 	/**
+	 * @return {number} the sensitivity
+	 */
+	Tone.StereoWidener.prototype.getWidth = function(){
+		return this.width.getValue();
+	};
+
+	/**
 	 *  set the parameters with JSON
 	 *  @param {Object} params 
 	 */
