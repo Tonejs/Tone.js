@@ -19,13 +19,15 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/signal/Expr"],
 			var options = this.optionsObject(arguments, ["bits"], Tone.BitCrusher.defaults);
 			Tone.Effect.call(this, options);
 
-			var invStepSize = 1 / Math.pow(2, options.bits - 1);
+			this._bits = options.bits;
+
+			var invStepSize = 1 / Math.pow(2, this._bits - 1);
 			/**
 			 *  floor function
 			 *  @type {Tone.Expr}
 			 *  @private
 			 */
-			this._floor = new Tone.Expr("$0 - mod($0, %, %)", invStepSize, options.bits);
+			this._floor = new Tone.Expr("$0 - mod($0, %, %)", invStepSize, this._bits);
 
 			//connect it up
 			this.connectEffect(this._floor);
@@ -47,11 +49,19 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/signal/Expr"],
 		 *  @param {number} bits 1-8
 		 */
 		Tone.BitCrusher.prototype.setBits = function(bits){
+			this._bits = bits;
 			var invStepSize = 1 / Math.pow(2, bits - 1);
 			this._floor.dispose();
 			this._floor = null;
 			this._floor = new Tone.Expr("$0 - mod($0, %, %)", invStepSize, bits);
 			this.connectEffect(this._floor);
+		};
+
+		/**
+		 * @return {number} current bits
+		 */
+		Tone.BitCrusher.prototype.getBits = function(){
+			return this._bits;
 		};
 
 		/**
