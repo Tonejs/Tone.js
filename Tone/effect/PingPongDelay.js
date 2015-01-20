@@ -75,6 +75,13 @@ function(Tone){
 	};
 
 	/**
+	 * @return {number} the delay time
+	 */
+	Tone.PingPongDelay.prototype.getDelayTime = function(){
+		return this.delayTime.getValue();
+	};
+
+	/**
 	 *  set all of the parameters with an object
 	 *  @param {Object} params 
 	 */
