@@ -132,6 +132,13 @@ function(Tone){
 	};
 
 	/**
+	 * @return {number} the current frequency
+	 */
+	Tone.Oscillator.prototype.getFrequency = function(){
+		return this.frequency.getValue();
+	};
+
+	/**
 	 *  set the oscillator type
 	 *
 	 *  uses PeriodicWave even for native types so that it can set the phase
@@ -206,6 +213,13 @@ function(Tone){
 	Tone.Oscillator.prototype.setPhase = function(phase) {
 		this._phase = phase * Math.PI / 180;
 		this.setType(this._type);
+	};
+
+	/**
+	 * @return {number} the current phase
+	 */
+	Tone.Oscillator.prototype.getPhase = function(){
+		return this._phase / Math.PI * 180;
 	};
 
 	/**
