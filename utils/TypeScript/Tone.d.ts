@@ -232,6 +232,8 @@ declare module Tone {
     interface AutoPanner extends Effect {
         setFrequency(frequency: number): void;
         setType(type: string): void;
+        getFrequency(): number;
+        getType(): string;
         start(Time?: Tone.Time): void;
         stop(Time?: Tone.Time): void;
     }
@@ -244,13 +246,19 @@ declare module Tone {
         setBaseFrequency(frequency: number): void;
         setOctaves(octaves: number): void;
         setSensitivity(Time?: Tone.Time): void;
+        getBaseFrequency(): number;
+        getOctaves(): number;
+        getSensitivity(): Tone.Time;
     }
 
     var BitCrusher: {
         new(bits: any): Tone.BitCrusher; //TODO: Number || Object
     };
 
-    interface BitCrusher extends Tone.Effect {}
+    interface BitCrusher extends Tone.Effect {
+        setBits(bits: number): void;
+        getBits(): number;
+    }
 
     var Chebyshev: {
         new(order: any): Tone.Chebyshev; //TODO: Number || Object
@@ -259,6 +267,8 @@ declare module Tone {
     interface Chebyshev extends Tone.Effect {
         setOrder(order: number): void;
         setOversample(oversampling: string): void;
+        getOrder(): number;
+        getOversample(): string;
     }
 
     var Convolver: {
@@ -277,6 +287,8 @@ declare module Tone {
     interface Distortion extends Tone.Effect {
         setDistortion(amount: number): void;
         setOversample(oversampling: string): void;
+        getDistortion(): number;
+        getOversample(): string;
     }
 
     var FeedbackEffect: {
@@ -286,6 +298,7 @@ declare module Tone {
     interface FeedbackEffect extends Tone.Effect {
         feedback: Tone.Signal;
         setFeedback(value: number, rampTime?: Tone.Time): void;
+        getFeedback(): number;
     }
 
     var StereoFeedbackEffect: {
@@ -306,9 +319,13 @@ declare module Tone {
 
     interface Chorus extends Tone.StereoXFeedbackEffect {
         setDelayTime(delayTime: number): void;
+        getDelayTime(): number;
         setDepth(depth: number): void;
+        getDepth(): number;
         setRate(rate: number): void;
+        getRate(): number;
         setType(type: number): void;
+        getType(): number;
     }
 
     var PingPongDelay: {
@@ -318,7 +335,8 @@ declare module Tone {
     interface PingPongDelay extends Tone.StereoXFeedbackEffect {
         defaults: Object;
         delayTime: Tone.Signal;
-        setDelayTime(delayTime)
+        setDelayTime(delayTime): void;
+        getDelayTime(): number;
     }
 
     var FeedbackDelay: {
@@ -329,6 +347,7 @@ declare module Tone {
         delayTime: Tone.Signal;
         feedback: Tone.Signal;
         setDelayTime(delayTime: Tone.Time, rampTime?: Tone.Time);
+        getDelayTime(): Tone.Time;
     }
 
     var Freeverb: {
@@ -340,6 +359,8 @@ declare module Tone {
         roomSize: Tone.Signal;
         setDampening(dampening: number): void;
         setRoomSize(roomsize: number): void;
+        getDampening(): number;
+        getRoomSize(): number;
     }
 
     var JCReverb: {
@@ -349,6 +370,7 @@ declare module Tone {
     interface JCReverb extends Tone.Effect {
         roomSize: Tone.Signal;
         setRoomSize(roomsize: number): void;
+        getRoomSize(): number;
     }
 
     var StereoEffect: {
@@ -381,6 +403,7 @@ declare module Tone {
         width: Tone.Signal;
         set(params: Object): void;
         setWidth(width: number): void;
+        getWidth(): number;
     }
 
     var Phaser: {
@@ -391,6 +414,9 @@ declare module Tone {
         setBaseFrequency(freq: number): void;
         setDepth(depth: number): void;
         setRate(rate: number): void;
+        getBaseFrequency(): number;
+        getDepth(): number;
+        getRate(): number;
     }
 
     var Envelope: {
@@ -406,12 +432,17 @@ declare module Tone {
         sustain: number;
         set(params: Object): void;
         setAttack(time: Tone.Time): void;
+        getAttack(): Tone.Time;
         setDecay(time: Tone.Time): void;
+        getDecay(): Tone.Time;
         setExponent(exp: number): void;
+        getExponent(): number;
         setMax(max: number): void;
         setMin(min: number): void;
         setRelease(time: Tone.Time): void;
+        getRelease(): Tone.Time;
         setSustain(time: number): void;
+        getSustain(): number;
         triggerAttack(time?: Tone.Time, velocity?: number): void;
         triggerAttackRelease(duration: Tone.Time, time?: Tone.Time, velocity?: number): void;
         triggerRelease(time?: Tone.Time): void;
@@ -471,6 +502,10 @@ declare module Tone {
         setQ(Q: number): void;
         setRolloff(rolloff: number);
         setType(type: string): void;
+        getFrequency(): number;
+        getQ(): number;
+        getRolloff():number;
+        getType(): string;
     }
 
     var Follower: {
@@ -715,6 +750,7 @@ declare module Tone {
         setFrequency(freq: number, band: number): void;
         getFrequency(band: number): void;
         setQ(Q: number, band: number): void;
+        getQ(band: number): void;
     }
 
     var MultibandSplit: {
@@ -955,10 +991,10 @@ declare module Tone {
     };
 
     interface Scale extends Tone.SignalBase {
-        setInputMax(val: number): void;
-        setInputMin(val: number): void;
-        setOuputMax(val: number): void;
-        setOuputMin(val: number): void;
+        setMax(val: number): void;
+        setMin(val: number): void;
+        getMax(): number;
+        getMin(): number;
     }
 
     var ScaleExp: {
@@ -1028,6 +1064,7 @@ declare module Tone {
         setCurve(mapping: Array<any>): void;
         setMap(mapping: Function): void;
         setOversample(oversampling: string): void;
+        getOversample(): string;
     }
 
 
@@ -1039,6 +1076,7 @@ declare module Tone {
         State: string;
         pause(time: Tone.Time): void;
         setVolume(db: number, fadeTime?: Tone.Time): void;
+        getVolume(): number;
         start(time?: Tone.Time): void;
         stop(time?: Tone.Time): void;
         sync(delay?: Tone.Time): void;
@@ -1059,10 +1097,15 @@ declare module Tone {
         oscillator: Tone.Oscillator;
         set(params: Object): void;
         setFrequency(val: Tone.Time, rampTime?: Tone.Time): void;
+        getFrequency(): number;
         setMax(max: number): void;
+        getMax(): number;
         setMin(min: number): void;
+        getMin(): number;
         setPhase(degrees: number): void;
+        getPhase(): number;
         setType(type: string): void;
+        getType(): string;
     }
 
     var Microphone: {
@@ -1078,6 +1121,7 @@ declare module Tone {
     interface Noise extends Tone.Source {
         onended();
         setType(type: string, time?: Tone.Time);
+        getType(): string;
     }
 
     var Oscillator: {
@@ -1092,8 +1136,11 @@ declare module Tone {
         onended: Function;
         set(params: Object): void;
         setFrequency(val: Tone.Time, rampTime?: Tone.Time): void;
+        getFrequency(): number;
         setPhase(degrees: number): void;
+        getPhase(): number;
         setType(type: string): void;
+        getType(): string;
         oscillator: OscillatorNode;
     }
 
