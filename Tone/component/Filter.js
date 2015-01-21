@@ -92,6 +92,14 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	};
 
 	/**
+	 *  get the gain
+	 *  @return {number} the gain of the filter
+	 */
+	Tone.Filter.prototype.getGain = function(){
+		return this.gain.getValue();
+	};
+
+	/**
 	 *  set the type
 	 *  @param {string} type the filter type
 	 */

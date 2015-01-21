@@ -500,6 +500,7 @@ declare module Tone {
         frequency: Tone.Signal;
         gain: AudioParam;
         Q: Tone.Signal;
+        getGain(): number;
         getType(): string;
         set(params: Object): void;
         setFrequency(val: Tone.Time, rampTime: Tone.Time): void;
