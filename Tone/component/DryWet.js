@@ -70,7 +70,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Expr"], function(To
 	/**
 	 * @return {number} the dry amount
 	 */
-	Tone.Effect.prototype.getDry = function(){
+	Tone.DryWet.prototype.getDry = function(){
 		return 1 - this.wetness.getValue();
 	};
 
@@ -91,7 +91,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Expr"], function(To
 	/**
 	 * @return {number} the wet amount
 	 */
-	Tone.Effect.prototype.getWet = function(){
+	Tone.DryWet.prototype.getWet = function(){
 		return this.wetness.getValue();
 	};
 
