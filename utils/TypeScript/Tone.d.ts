@@ -753,9 +753,11 @@ declare module Tone {
         setType(type: string, band: number): void;
         getType(band: number): string;
         setFrequency(freq: number, band: number): void;
-        getFrequency(band: number): void;
+        getFrequency(band: number): number;
         setQ(Q: number, band: number): void;
-        getQ(band: number): void;
+        getQ(band: number): number;
+        getGain(band: number): number;
+        setGain(gain: number, band: number): void;
     }
 
     var MultibandSplit: {
