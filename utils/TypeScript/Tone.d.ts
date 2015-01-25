@@ -1194,6 +1194,7 @@ declare module Tone {
         onended(): void;
         setBuffer(buffer: AudioBuffer);
         setPlaybackRate(rate: number, rampTime?: Tone.Time): void;
+        getPlaybackRate(): number;
         start(startTime?: Tone.Time, offset?: Tone.Time, duration?: Tone.Time): void;
     }
 
@@ -1232,8 +1233,10 @@ declare module Tone {
         setBpm(bpm: number, rampTime?: Tone.Time): void;
         setInterval(callback: Function, interval: Tone.Time, ctx: Object): number;
         setLoopEnd(endPosition: Tone.Time): void;
+        getLoopEnd(): number;
         setLoopPoints(startPosition: Tone.Time, endPosition: Tone.Time): void;
         setLoopStart(startPosition: Tone.Time): void;
+        getLoopStart(): number
         setSwing(amount: number): void;
         setSwingSubdivision(subdivision: string): void;
         setTimeline(callback: Function, timeout: Tone.Time, ctx: Object): number;

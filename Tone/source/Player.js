@@ -223,6 +223,13 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 	};
 
 	/**
+	 * @return {number} the current playback rate
+	 */
+	Tone.Player.prototype.getPlaybackRate = function(){
+		return this._playbackRate;
+	};
+
+	/**
 	 *  set the loop start position
 	 *  @param {Tone.Time} loopStart the start time
 	 */
@@ -231,11 +238,25 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 	};
 
 	/**
+	 * @return {number} the loop start position
+	 */
+	Tone.Player.prototype.getLoopStart = function(){
+		return this.loopStart;
+	};
+
+	/**
 	 *  set the loop end position
 	 *  @param {Tone.Time} loopEnd the loop end time
 	 */
 	Tone.Player.prototype.setLoopEnd = function(loopEnd){
 		this.loopEnd = loopEnd;
+	};
+
+	/**
+	 * @return {number} the loop end position
+	 */
+	Tone.Player.prototype.getLoopEnd = function(){
+		return this.loopEnd;
 	};
 
 	/**
