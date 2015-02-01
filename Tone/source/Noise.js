@@ -57,6 +57,7 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 	 *  
 	 *  @param {string} type the noise type (white|pink|brown)
 	 *  @param {Tone.Time} time (optional) time that the set will occur
+	 *  @returns {Tone.Noise} `this`
 	 */
 	Tone.Noise.prototype.setType = function(type, time){
 		switch (type){
@@ -80,6 +81,7 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 			this._stop(time);
 			this._start(time);
 		}
+		return this;
 	};
 
 	/**
@@ -99,11 +101,13 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 	/**
 	 *  set the parameters at once
 	 *  @param {Object} params
+	 *  @returns {Tone.Noise} `this`
 	 */
 	Tone.Noise.prototype.set = function(params){
 		if (!this.isUndef(params.type)) this.setType(params.type);
 		if (!this.isUndef(params.onended)) this.onended = params.onended;
 		Tone.Source.prototype.set.call(this, params);
+		return this;
 	};
 
 	/**
@@ -149,6 +153,7 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 	 *  stop the noise at a specific time
 	 *  
 	 *  @param {Tone.Time} timetest
+	 *  @returns {Tone.Noise} `this`
 	 */
 	Tone.Noise.prototype.stop = function(time){
 		if (this.state === Tone.Source.State.STARTED) {
@@ -157,10 +162,12 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 				this._stop(time);
 			}
 		}
+		return this;
 	};
 
 	/**
 	 *  dispose all the components
+	 *  @returns {Tone.Noise} `this`
 	 */
 	Tone.Noise.prototype.dispose = function(){
 		Tone.Source.prototype.dispose.call(this);
@@ -169,6 +176,7 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 			this._source = null;
 		}
 		this._buffer = null;
+		return this;
 	};
 
 

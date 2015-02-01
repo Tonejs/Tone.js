@@ -80,6 +80,7 @@ function(Tone){
 	 *  start the oscillator
 	 *  
 	 *  @param  {Tone.Time} [time=now]
+	 *  @returns {Tone.PWMOscillator} `this`
 	 */
 	Tone.PWMOscillator.prototype.start = function(time){
 		if (this.state === Tone.Source.State.STOPPED){
@@ -88,11 +89,13 @@ function(Tone){
 			this._modulator.start(time);
 			this._pulse.start(time);
 		}
+		return this;
 	};
 
 	/**
 	 *  stop the oscillator
 	 *  @param  {Tone.Time} time (optional) timing parameter
+	 *  @returns {Tone.PWMOscillator} `this`
 	 */
 	Tone.PWMOscillator.prototype.stop = function(time){
 		if (this.state === Tone.Source.State.STARTED){
@@ -101,6 +104,7 @@ function(Tone){
 			this._modulator.stop(time);
 			this._pulse.stop(time);
 		}
+		return this;
 	};
 
 	/**
@@ -114,9 +118,11 @@ function(Tone){
 	/**
 	 *  set the phase of the oscillator (in degrees)
 	 *  @param {number} degrees the phase in degrees
+	 *  @returns {Tone.PulseOscillator} `this`
 	 */
 	Tone.PWMOscillator.prototype.setPhase = function(phase) {
 		this._modulator.setPhase(phase);
+		return this;
 	};
 
 	/**
@@ -124,14 +130,17 @@ function(Tone){
 	 *  
 	 *  @param {number}	freq
 	 *  @param {Tone.Time=} rampTime when the oscillator will arrive at the frequency
+	 *  @returns {Tone.PulseOscillator} `this`
 	 */
 	Tone.PWMOscillator.prototype.setModulationFrequency = function(val, rampTime){
 		this._pulse.setFrequency(val, rampTime);
+		return this;
 	};
 
 	/**
 	 *  set the parameters at once
 	 *  @param {Object} params
+	 *  @returns {Tone.PulseOscillator} `this`
 	 */
 	Tone.PWMOscillator.prototype.set = function(params){
 		if (!this.isUndef(params.modulationFrequency)) this.setModulationFrequency(params.modulationFrequency);
@@ -140,10 +149,12 @@ function(Tone){
 		if (!this.isUndef(params.onended)) this._pulse.onended = params.onended;
 		if (!this.isUndef(params.detune)) this.detune.setValue(params.detune);
 		Tone.Source.prototype.set.call(this, params);
+		return this;
 	};
 
 	/**
 	 *  clean up
+	 *  @returns {Tone.PulseOscillator} `this`
 	 */
 	Tone.PWMOscillator.prototype.dispose = function(){
 		Tone.Source.prototype.dispose.call(this);
@@ -155,6 +166,7 @@ function(Tone){
 		this.frequency = null;
 		this.detune = null;
 		this.modulationFrequency = null;
+		return this;
 	};
 
 	return Tone.PWMOscillator;

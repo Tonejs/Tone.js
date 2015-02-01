@@ -96,9 +96,11 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 	 *        filetype support depends on the
 	 *        browser.
 	 * @param  {function(Tone.Player)=} callback
+	 *  @returns {Tone.Player} `this`
 	 */
 	Tone.Player.prototype.load = function(url, callback){
 		this._buffer.load(url, callback.bind(this, this));
+		return this;
 	};
 
 	/**
@@ -109,9 +111,11 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 	 *                              the player is already started, it will not
 	 *                              take effect until the next time the player
 	 *                              is started.
+	 *  @returns {Tone.Player} `this`
 	 */
 	Tone.Player.prototype.setBuffer = function(buffer){
 		this._buffer.set(buffer);
+		return this;
 	};
 
 	/**
@@ -123,6 +127,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 	 *  @param  {Tone.Time=} duration how long the sample should play. If no duration
 	 *                                is given, it will default to the full length 
 	 *                                of the sample (minus any offset)
+	 *  @returns {Tone.Player} `this`
 	 */
 	Tone.Player.prototype.start = function(startTime, offset, duration){
 		if (this.state === Tone.Source.State.STOPPED || this.retrigger){
@@ -155,11 +160,13 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 				this._source.start(this.toSeconds(startTime), this.toSeconds(offset), this.toSeconds(duration));
 			}
 		}
+		return this;
 	};
 
 	/**
 	 *  Stop playback.
 	 *  @param  {Tone.Time} [time=now]
+	 *  @returns {Tone.Player} `this`
 	 */
 	Tone.Player.prototype.stop = function(time){
 		if (this.state === Tone.Source.State.STARTED) {
@@ -168,6 +175,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 				this._source.stop(this.toSeconds(time));
 			}
 		}
+		return this;
 	};
 
 	/**
@@ -186,49 +194,58 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 	 *  @param {number} rate
 	 *  @param {Tone.Time=} rampTime the amount of time it takes to 
 	 *                               reach the rate
+	 *  @returns {Tone.Player} `this`
 	 */
 	Tone.Player.prototype.setPlaybackRate = function(rate, rampTime){
 		this._playbackRate = rate;
 		if (this._source) {
 			this._source.playbackRate.exponentialRampToValueAtTime(rate, this.toSeconds(rampTime));
 		}
+		return this;
 	};
 
 	/**
 	 *  set the loop start position
 	 *  @param {Tone.Time} loopStart the start time
+	 *  @returns {Tone.Player} `this`
 	 */
 	Tone.Player.prototype.setLoopStart = function(loopStart){
 		this.loopStart = loopStart;
 		if (this._source){
 			this._source.loopStart = this.toSeconds(loopStart);
 		}
+		return this;
 	};
 
 	/**
 	 *  set the loop end position
 	 *  @param {Tone.Time} loopEnd the loop end time
+	 *  @returns {Tone.Player} `this`
 	 */
 	Tone.Player.prototype.setLoopEnd = function(loopEnd){
 		this.loopEnd = loopEnd;
 		if (this._source){
 			this._source.loopEnd = this.toSeconds(loopEnd);
 		}
+		return this;
 	};
 
 	/**
 	 *  set the loop start and end
 	 *  @param {Tone.Time} loopStart the loop end time
 	 *  @param {Tone.Time} loopEnd the loop end time
+	 *  @returns {Tone.Player} `this`
 	 */
 	Tone.Player.prototype.setLoopPoints = function(loopStart, loopEnd){
 		this.setLoopStart(loopStart);
 		this.setLoopEnd(loopEnd);
+		return this;
 	};
 
 	/**
 	 *  set the parameters at once
 	 *  @param {Object} params
+	 *  @returns {Tone.Player} `this`
 	 */
 	Tone.Player.prototype.set = function(params){
 		if (!this.isUndef(params.playbackRate)) this.setPlaybackRate(params.playbackRate);
@@ -238,10 +255,12 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 		if (!this.isUndef(params.loopEnd)) this.setLoopEnd(params.loopEnd);
 		if (!this.isUndef(params.buffer)) this.setBuffer(params.buffer);
 		Tone.Source.prototype.set.call(this, params);
+		return this;
 	};
 
 	/**
 	 *  dispose and disconnect
+	 *  @returns {Tone.Player} `this`
 	 */
 	Tone.Player.prototype.dispose = function(){
 		Tone.Source.prototype.dispose.call(this);
@@ -251,6 +270,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 		}
 		this._buffer.dispose();
 		this._buffer = null;
+		return this;
 	};
 
 	return Tone.Player;

@@ -92,22 +92,27 @@ function(Tone){
 	/**
 	 *  set the width of the oscillators
 	 *  @param {number} width
+	 *  @returns {Tone.PulseOscillator} `this`
 	 */
 	Tone.PulseOscillator.prototype.setWidth = function(width){
 		this.width.setValue(width);
+		return this;
 	};
 
 	/**
 	 *  set the phase of the oscillator
 	 *  @param {number} phase
+	 *  @returns {Tone.PulseOscillator} `this`
 	 */
 	Tone.PulseOscillator.prototype.setPhase = function(phase){
 		this._sawtooth.setPhase(phase);
+		return this;
 	};
 
 	/**
 	 *  bulk setter
 	 *  @param {Object} params 
+	 *  @returns {Tone.PulseOscillator} `this`
 	 */
 	Tone.PulseOscillator.prototype.set = function(params){
 		if (!this.isUndef(params.width)) this.setWidth(params.width);
@@ -117,13 +122,15 @@ function(Tone){
 			"detune" : params.detune,
 			"onended" : params.onended
 		});
-		Tone.Source.prototype.set.call(this, params);		
+		Tone.Source.prototype.set.call(this, params);
+		return this;
 	};
 
 	/**
 	 *  start the oscillator
 	 *  
 	 *  @param  {Tone.Time} time 
+	 *  @returns {Tone.PulseOscillator} `this`
 	 */
 	Tone.PulseOscillator.prototype.start = function(time){
 		if (this.state === Tone.Source.State.STOPPED){
@@ -132,12 +139,13 @@ function(Tone){
 			this._sawtooth.start(time);
 			this.width.output.gain.setValueAtTime(1, time);
 		}
+		return this;
 	};
 
 	/**
 	 *  stop the oscillator
-	 *  
 	 *  @param  {Tone.Time} time 
+	 *  @returns {Tone.PulseOscillator} `this`
 	 */
 	Tone.PulseOscillator.prototype.stop = function(time){
 		if (this.state === Tone.Source.State.STARTED){
@@ -148,6 +156,7 @@ function(Tone){
 			//that needs to be stopped also
 			this.width.output.gain.setValueAtTime(0, time);
 		}
+		return this;
 	};
 
 	/**
@@ -160,6 +169,7 @@ function(Tone){
 
 	/**
 	 *  clean up method
+	 *  @returns {Tone.PulseOscillator} `this`
 	 */
 	Tone.PulseOscillator.prototype.dispose = function(){
 		Tone.Source.prototype.dispose.call(this);
@@ -171,6 +181,7 @@ function(Tone){
 		this.detune = null;
 		this.width = null;
 		this._thresh = null;
+		return this;
 	};
 
 	return Tone.PulseOscillator;

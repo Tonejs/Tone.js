@@ -47,6 +47,7 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 
 	/**
 	 *  start the stream. 
+	 *  @returns {Tone.Microphone} `this`
 	 */
 	Tone.Microphone.prototype.start = function(){
 		if (this.state === Tone.Source.State.STOPPED){
@@ -54,16 +55,19 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 				navigator.getUserMedia(this._constraints, 
 					this._onStream.bind(this), this._onStreamError.bind(this));
 		}
+		return this;
 	};
 
 	/**
 	 *  stop the stream. 
+	 *  @returns {Tone.Microphone} `this`
 	 */
 	Tone.Microphone.prototype.stop = function(){
 		if (this._stream && this.state === Tone.Source.State.STARTED){
 			this.state = Tone.Source.State.STOPPED;
 			this._stream.stop();
 		}
+		return this;
 	};
 
 	/**
@@ -89,6 +93,7 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 
 	/**
 	 *  clean up
+	 *  @returns {Tone.Microphone} `this`
 	 */
 	Tone.Microphone.prototype.dispose = function() {
 		Tone.Source.prototype.dispose.call(this);
@@ -98,6 +103,7 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 		}
 		this._stream = null;
 		this._constraints = null;
+		return this;
 	};
 
 	//polyfill

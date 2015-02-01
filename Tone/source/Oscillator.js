@@ -86,8 +86,8 @@ function(Tone){
 
 	/**
 	 *  start the oscillator
-	 *  
 	 *  @param  {Tone.Time} [time=now] 
+	 *  @returns {Tone.Oscillator} `this`
 	 */
 	Tone.Oscillator.prototype.start = function(time){
 		if (this.state === Tone.Source.State.STOPPED){
@@ -104,17 +104,20 @@ function(Tone){
 			this._oscillator.onended = this.onended;
 			this._oscillator.start(this.toSeconds(time));
 		}
+		return this;
 	};
 
 	/**
 	 *  stop the oscillator
 	 *  @param  {Tone.Time} [time=now] (optional) timing parameter
+	 *  @returns {Tone.Oscillator} `this`
 	 */
 	Tone.Oscillator.prototype.stop = function(time){
 		if (this.state === Tone.Source.State.STARTED){
 			this.state = Tone.Source.State.STOPPED;
 			this._oscillator.stop(this.toSeconds(time));
 		}
+		return this;
 	};
 
 	/**
@@ -122,6 +125,7 @@ function(Tone){
 	 *  
 	 *  @param {Tone.Time}	val
 	 *  @param {Tone.Time=} rampTime when the oscillator will arrive at the frequency
+	 *  @returns {Tone.Oscillator} `this`
 	 */
 	Tone.Oscillator.prototype.setFrequency = function(val, rampTime){
 		val = this.toFrequency(val);
@@ -130,6 +134,7 @@ function(Tone){
 		} else {
 			this.frequency.setValue(val);
 		}
+		return this;
 	};
 
 	/**
@@ -141,6 +146,7 @@ function(Tone){
 	 *  here: https://code.google.com/p/chromium/codesearch#chromium/src/third_party/WebKit/Source/modules/webaudio/PeriodicWave.cpp&sq=package:chromium
 	 *  
 	 *  @param {string} type (sine|square|triangle|sawtooth)
+	 *  @returns {Tone.Oscillator} `this`
 	 */
 	Tone.Oscillator.prototype.setType = function(type){
 		var fftSize = 4096;
@@ -191,6 +197,7 @@ function(Tone){
 			this._oscillator.setPeriodicWave(this._wave);
 		}
 		this._type = type;
+		return this;
 	};
 
 	/**
@@ -215,29 +222,36 @@ function(Tone){
 	/**
 	 *  set the phase of the oscillator (in degrees)
 	 *  @param {number} degrees the phase in degrees
+	 *  @returns {Tone.Oscillator} `this`
 	 */
 	Tone.Oscillator.prototype.setPhase = function(phase) {
 		this._phase = phase * Math.PI / 180;
 		this.setType(this._type);
+		return this;
 	};
 
 	/**
 	 *  sync the signal to the Transport's bpm
+	 *  @returns {Tone.Oscillator} `this`
 	 */
 	Tone.Oscillator.prototype.syncFrequency = function(){
 		Tone.Transport.syncSignal(this.frequency);
+		return this;
 	};
 
 	/**
 	 *  unsync the oscillator's frequency from teh transprot
+	 *  @returns {Tone.Oscillator} `this`
 	 */
 	Tone.Oscillator.prototype.unsyncFrequency = function(){
 		this.frequency.unsync();
+		return this;
 	};
 
 	/**
 	 *  set the parameters at once
 	 *  @param {Object} params
+	 *  @returns {Tone.Oscillator} `this`
 	 */
 	Tone.Oscillator.prototype.set = function(params){
 		if (!this.isUndef(params.type)) this.setType(params.type);
@@ -246,10 +260,12 @@ function(Tone){
 		if (!this.isUndef(params.onended)) this.onended = params.onended;
 		if (!this.isUndef(params.detune)) this.detune.setValue(params.detune);
 		Tone.Source.prototype.set.call(this, params);
+		return this;
 	};
 
 	/**
 	 *  dispose and disconnect
+	 *  @returns {Tone.Oscillator} `this`
 	 */
 	Tone.Oscillator.prototype.dispose = function(){
 		Tone.Source.prototype.dispose.call(this);
@@ -263,6 +279,7 @@ function(Tone){
 		this._wave = null;
 		this.detune = null;
 		this.frequency = null;
+		return this;
 	};
 
 	return Tone.Oscillator;
