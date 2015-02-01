@@ -231,8 +231,8 @@ define(["Tone/core/Tone", "Tone/core/Transport"], function(Tone){
 	 *  a to frequency method which accepts frequencies in the form
 	 *  of notes ("C#4"), frequencies as strings ("49hz"), frequency numbers,
 	 *  or notation ("4n")
-	 *  @param  {string|number} note [description]
-	 *  @return {[type]}      [description]
+	 *  @param  {string|number} note the note name or notation
+	 *  @return {number}      the frequency as a number
 	 */
 	Tone.prototype.toFrequency = function(note){
 		if (this.isNote(note)){

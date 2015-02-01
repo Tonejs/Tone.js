@@ -179,7 +179,7 @@ function(Tone){
 
 	/**
 	 * set the name of the sample to trigger
-	 * @type {string} name the name of the sample
+	 * @param {string} name the name of the sample
 	 * @returns {Tone.Sampler} `this`
 	 */
 	Tone.Sampler.prototype.setSample = function(name){
