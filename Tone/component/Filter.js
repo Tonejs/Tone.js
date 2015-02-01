@@ -111,6 +111,20 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	};
 
 	/**
+	 *  @memberOf Tone.Filter
+	 *  @member {string} type the type of the filter
+	 *  @instance
+	 */
+	Object.defineProperty(Tone.Filter.prototype, "type", {
+		get : function(){
+			return this.getType();
+		},
+		set : function(val){
+			this.setType(val);
+		}
+	});
+
+	/**
 	 *  set the frequency
 	 *  @param {number|string} freq the frequency value
 	 */

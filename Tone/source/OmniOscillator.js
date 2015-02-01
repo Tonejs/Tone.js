@@ -134,6 +134,18 @@ function(Tone){
 	};
 
 	/**
+	 *  getter/setter for type
+	 */
+	Object.defineProperty(Tone.OmniOscillator.prototype, "type", {
+		get : function(){
+			return this.getType();
+		},
+		set : function(val){
+			this.setType(val);
+		}
+	});
+
+	/**
 	 *  connect the oscillator to the frequency and detune signals
 	 *  @private
 	 */

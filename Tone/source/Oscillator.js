@@ -201,6 +201,18 @@ function(Tone){
 	};
 
 	/**
+	 *  getter/setter for type
+	 */
+	Object.defineProperty(Tone.Oscillator.prototype, "type", {
+		get : function(){
+			return this.getType();
+		},
+		set : function(val){
+			this.setType(val);
+		}
+	});
+
+	/**
 	 *  set the phase of the oscillator (in degrees)
 	 *  @param {number} degrees the phase in degrees
 	 */
