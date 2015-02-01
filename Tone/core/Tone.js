@@ -549,7 +549,7 @@ define(function(){
 	};
 
 	///////////////////////////////////////////////////////////////////////////
-	//	STATIC METHODS
+	//	INTERNAL STATIC METHODS
 	///////////////////////////////////////////////////////////////////////////
 
 	/**
@@ -562,7 +562,7 @@ define(function(){
 	/**
 	 *  invoke this callback when a new context is added
 	 *  will be invoked initially with the first context
-	 *  @private 
+	 *  @internal 
 	 *  @static
 	 *  @param {function(AudioContext)} callback the callback to be invoked
 	 *                                           with the audio context
@@ -573,6 +573,41 @@ define(function(){
 		//add it to the array
 		newContextCallbacks.push(callback);
 	};
+
+	/**
+	 * 	Adds an ES5 getter setter to the prototype of the constructor. 
+	 * 	The prototype is expected to have a camelCase function of the 
+	 * 	property with the names getProperty and setProperty
+	 *  @internal
+	 *  @static
+	 *  @param {Object} constr the constructor
+	 *  @param {string} property the property
+	 */
+	Tone._defineGetterSetter = function(constr, property){
+		var proto = constr.prototype;
+		function capitalize(string){
+		    return string.charAt(0).toUpperCase() + string.slice(1);
+		}
+		var getterName = "get"+capitalize(property);
+		var setterName = "set"+capitalize(property);
+		if (proto.hasOwnProperty(getterName) && 
+			typeof proto[getterName] === "function" && 
+			proto.hasOwnProperty(setterName) && 
+			typeof proto[setterName] === "function"){
+			Object.defineProperty(constr.prototype, property, {
+				get : function(){
+					return this[getterName]();
+				},
+				set : function(val){
+					return this[setterName](val);
+				}
+			});
+		}
+	};
+
+	///////////////////////////////////////////////////////////////////////////
+	//	STATIC METHODS
+	///////////////////////////////////////////////////////////////////////////
 
 	/**
 	 *  @static

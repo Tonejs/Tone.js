@@ -17,6 +17,7 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Master"], function(T
 
 		/**
 		 *  @type {Tone.Source.State}
+		 *  @readOnly
 		 */
 		this.state = Tone.Source.State.STOPPED;
 	};

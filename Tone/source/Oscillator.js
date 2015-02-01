@@ -208,18 +208,6 @@ function(Tone){
 	};
 
 	/**
-	 *  getter/setter for type
-	 */
-	Object.defineProperty(Tone.Oscillator.prototype, "type", {
-		get : function(){
-			return this.getType();
-		},
-		set : function(val){
-			this.setType(val);
-		}
-	});
-
-	/**
 	 *  set the phase of the oscillator (in degrees)
 	 *  @param {number} degrees the phase in degrees
 	 *  @returns {Tone.Oscillator} `this`
@@ -228,6 +216,14 @@ function(Tone){
 		this._phase = phase * Math.PI / 180;
 		this.setType(this._type);
 		return this;
+	};
+
+	/**
+	 *  returns the phase in degrees
+	 *  @returns {number} the phase
+	 */
+	Tone.Oscillator.prototype.getPhase = function() {
+		return this._phase * (180 / Math.PI);
 	};
 
 	/**
@@ -264,6 +260,20 @@ function(Tone){
 	};
 
 	/**
+	 * @memberOf Tone.Oscillator#
+	 * @type {string}
+	 * @name type
+	 */
+	Tone._defineGetterSetter(Tone.Oscillator, "type");
+
+	/**
+	 * @memberOf Tone.Oscillator#
+	 * @type {number}
+	 * @name phase
+	 */
+	Tone._defineGetterSetter(Tone.Oscillator, "phase");
+
+	/**
 	 *  dispose and disconnect
 	 *  @returns {Tone.Oscillator} `this`
 	 */
@@ -275,10 +285,10 @@ function(Tone){
 			this._oscillator = null;
 		}
 		this.frequency.dispose();
-		this.detune.dispose();
-		this._wave = null;
-		this.detune = null;
 		this.frequency = null;
+		this.detune.dispose();
+		this.detune = null;
+		this._wave = null;
 		return this;
 	};
 

@@ -166,6 +166,14 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 	};
 
 	/**
+	 * The type of the noise. Can be "white", "brown", or "pink". 
+	 * @memberOf Tone.Noise#
+	 * @type {string}
+	 * @name type
+	 */
+	Tone._defineGetterSetter(Tone.Noise, "type");
+
+	/**
 	 *  dispose all the components
 	 *  @returns {Tone.Noise} `this`
 	 */
