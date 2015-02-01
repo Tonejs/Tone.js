@@ -200,6 +200,9 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 	 */
 	Tone.Player.prototype.setLoopStart = function(loopStart){
 		this.loopStart = loopStart;
+		if (this._source){
+			this._source.loopStart = this.toSeconds(loopStart);
+		}
 	};
 
 	/**
@@ -208,6 +211,9 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 	 */
 	Tone.Player.prototype.setLoopEnd = function(loopEnd){
 		this.loopEnd = loopEnd;
+		if (this._source){
+			this._source.loopEnd = this.toSeconds(loopEnd);
+		}
 	};
 
 	/**
