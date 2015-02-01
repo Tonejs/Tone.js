@@ -9,7 +9,11 @@ Tone.js is a Web Audio framework for creating interactive music in the browser. 
 
 # Installation
 
-Tone can be installed in a few of ways. Download Tone.js from github, or user `bower install tone` or `npm install tone`. Additionally, Tone.js can be used with or without RequireJS.
+Tone can be installed in a few of ways:
+
+* Download Tone.js from Github - [full](https://raw.githubusercontent.com/TONEnoTONE/Tone.js/master/build/Tone.js) | [min](https://raw.githubusercontent.com/TONEnoTONE/Tone.js/master/build/Tone.min.js)
+* [bower](http://bower.io/) - `bower install tone`
+* [npm](https://www.npmjs.org/) - `npm install tone`
 
 The fastest way to include Tone.js on your page is to use the CDN (not for production use, please):
 
@@ -229,6 +233,7 @@ Tone.js uses very few ScriptProcessorNodes. Nearly all of the Tone Modules find 
 * [motionEmotion - emotion & gesture-based arpeggiator and synthesizer](http://motionemotion.herokuapp.com/)
 * [A Tone.js Plugin Architecture with GUIs](https://github.com/billautomata/Tone.js.Plugins)
 * [Hypercube by @eddietree](http://eddietree.github.io/hypercube/)
+* [randomcommander.io by Jake Albaugh](http://randomcommander.io/)
 
 Using Tone.js? I'd love to hear it: yotammann@gmail.com
 
