@@ -126,6 +126,14 @@ function(Tone){
 	};
 
 	/**
+	 *  returns the phase in degrees
+	 *  @returns {number} the phase
+	 */
+	Tone.PWMOscillator.prototype.getPhase = function(){
+		return this._modulator.getPhase();
+	};
+
+	/**
 	 *  set the modulation rate, with an optional ramp time to that 
 	 *  
 	 *  @param {number}	freq

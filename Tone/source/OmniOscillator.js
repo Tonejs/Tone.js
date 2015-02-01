@@ -140,18 +140,6 @@ function(Tone){
 	};
 
 	/**
-	 *  getter/setter for type
-	 */
-	Object.defineProperty(Tone.OmniOscillator.prototype, "type", {
-		get : function(){
-			return this.getType();
-		},
-		set : function(val){
-			this.setType(val);
-		}
-	});
-
-	/**
 	 *  connect the oscillator to the frequency and detune signals
 	 *  @private
 	 */
@@ -174,6 +162,24 @@ function(Tone){
 			this._oscillator.start(now);
 		}
 		this._oscillator.onended = this._onended.bind(this);
+	};
+
+	/**
+	 *  set the phase of the oscillator
+	 *  @param {number} phase
+	 *  @returns {Tone.PulseOscillator} `this`
+	 */
+	Tone.OmniOscillator.prototype.setPhase = function(phase){
+		this._oscillator.setPhase(phase);
+		return this;
+	};
+
+	/**
+	 *  returns the phase in degrees
+	 *  @returns {number} the phase
+	 */
+	Tone.OmniOscillator.prototype.getPhase = function(){
+		return this._oscillator.getPhase();
 	};
 
 	/**

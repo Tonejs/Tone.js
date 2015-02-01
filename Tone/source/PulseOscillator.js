@@ -110,6 +110,14 @@ function(Tone){
 	};
 
 	/**
+	 *  returns the phase in degrees
+	 *  @returns {number} the phase
+	 */
+	Tone.PulseOscillator.prototype.getPhase = function(){
+		return this._sawtooth.getPhase();
+	};
+
+	/**
 	 *  bulk setter
 	 *  @param {Object} params 
 	 *  @returns {Tone.PulseOscillator} `this`
