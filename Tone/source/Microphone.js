@@ -93,10 +93,10 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 
 	/**
 	 *  clean up
-	 *  @returns {Tone.Microphone} `this`
+	 *  @private
 	 */
-	Tone.Microphone.prototype.dispose = function() {
-		Tone.Source.prototype.dispose.call(this);
+	Tone.Microphone.prototype._dispose = function() {
+		Tone.Source.prototype._dispose.call(this);
 		if (this._mediaStream){
 			this._mediaStream.disconnect();
 			this._mediaStream = null;

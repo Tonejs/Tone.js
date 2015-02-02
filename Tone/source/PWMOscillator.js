@@ -162,19 +162,18 @@ function(Tone){
 
 	/**
 	 *  clean up
-	 *  @returns {Tone.PulseOscillator} `this`
+	 *  @private
 	 */
-	Tone.PWMOscillator.prototype.dispose = function(){
-		Tone.Source.prototype.dispose.call(this);
+	Tone.PWMOscillator.prototype._dispose = function(){
+		Tone.Source.prototype._dispose.call(this);
 		this._pulse.dispose();
-		this._modulator.dispose();
 		this._pulse = null;
+		this._modulator.dispose();
 		this._modulator = null;
 		this.onended = null;
 		this.frequency = null;
 		this.detune = null;
 		this.modulationFrequency = null;
-		return this;
 	};
 
 	return Tone.PWMOscillator;

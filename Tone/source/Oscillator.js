@@ -138,6 +138,14 @@ function(Tone){
 	};
 
 	/**
+	 *  get the frequency value
+	 *  @returns {number}
+	 */
+	Tone.Oscillator.prototype.getFrequency = function(){
+		return this.frequency.getValue();
+	};
+
+	/**
 	 *  set the oscillator type
 	 *
 	 *  uses PeriodicWave even for native types so that it can set the phase
@@ -245,40 +253,11 @@ function(Tone){
 	};
 
 	/**
-	 *  set the parameters at once
-	 *  @param {Object} params
-	 *  @returns {Tone.Oscillator} `this`
-	 */
-	Tone.Oscillator.prototype.set = function(params){
-		if (!this.isUndef(params.type)) this.setType(params.type);
-		if (!this.isUndef(params.phase)) this.setPhase(params.phase);
-		if (!this.isUndef(params.frequency)) this.frequency.setValue(params.frequency);
-		if (!this.isUndef(params.onended)) this.onended = params.onended;
-		if (!this.isUndef(params.detune)) this.detune.setValue(params.detune);
-		Tone.Source.prototype.set.call(this, params);
-		return this;
-	};
-
-	/**
-	 * @memberOf Tone.Oscillator#
-	 * @type {string}
-	 * @name type
-	 */
-	Tone._defineGetterSetter(Tone.Oscillator, "type");
-
-	/**
-	 * @memberOf Tone.Oscillator#
-	 * @type {number}
-	 * @name phase
-	 */
-	Tone._defineGetterSetter(Tone.Oscillator, "phase");
-
-	/**
 	 *  dispose and disconnect
-	 *  @returns {Tone.Oscillator} `this`
+	 *  @private
 	 */
-	Tone.Oscillator.prototype.dispose = function(){
-		Tone.Source.prototype.dispose.call(this);
+	Tone.Oscillator.prototype._dispose = function(){
+		Tone.Source.prototype._dispose.call(this);
 		this.stop();
 		if (this._oscillator !== null){
 			this._oscillator.disconnect();
@@ -289,8 +268,23 @@ function(Tone){
 		this.detune.dispose();
 		this.detune = null;
 		this._wave = null;
-		return this;
 	};
+
+	/**
+	 * the type of the oscillator
+	 * @memberOf Tone.Oscillator#
+	 * @type {string}
+	 * @name type
+	 */
+	Tone._defineGetterSetter(Tone.Oscillator, "type");
+
+	/**
+	 * the phase of the oscillator in degrees
+	 * @memberOf Tone.Oscillator#
+	 * @type {number}
+	 * @name phase
+	 */
+	Tone._defineGetterSetter(Tone.Oscillator, "phase");
 
 	return Tone.Oscillator;
 });

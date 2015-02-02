@@ -69,20 +69,26 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Master"], function(T
 	Tone.Source.prototype.setVolume = Tone.Master.setVolume;
 
 	/**
-	 *  set the parameters at once
-	 *  @param {Object} params
+	 *  gets the getVolume method from {@link Tone.Master}
+	 *  @method
 	 */
-	Tone.Source.prototype.set = function(params){
-		if (!this.isUndef(params.volume)) this.setVolume(params.volume);
+	Tone.Source.prototype.getVolume = Tone.Master.getVolume;
+
+	/**
+	 *	clean up
+	 *  @private
+	 */
+	Tone.Source.prototype._dispose = function(){
+		this.state = null;
 	};
 
 	/**
-	 *	clean up  
+	 * the volume of the source
+	 * @memberOf Tone.Source#
+	 * @type {number}
+	 * @name volume
 	 */
-	Tone.Source.prototype.dispose = function(){
-		Tone.prototype.dispose.call(this);
-		this.state = null;
-	};
+	Tone._defineGetterSetter(Tone.Source, "volume");
 
 	/**
 	 *  @enum {string}

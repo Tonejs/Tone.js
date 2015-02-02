@@ -17,6 +17,11 @@ define(function(){
 		return val === void 0;
 	}
 
+	//borrowed from underscore.js
+	function isFunction(val){
+		return typeof val === "function";
+	}
+
 	var audioContext;
 
 	//polyfill for AudioContext and OfflineAudioContext
@@ -118,6 +123,61 @@ define(function(){
 		}
 	};
 
+	/**
+	 *  set the parameters at once
+	 *  @param {Object} params
+	 *  @returns {Tone} `this`
+	 */
+	Tone.prototype.set = function(params){
+		for (var attr in params){
+			var param = this[attr];
+			if (param instanceof Tone.Signal){
+				this[attr].value = params[attr];
+			} else {
+				this[attr] = params[attr];
+			}
+		}
+		return this;
+	};
+
+	/**
+	 *  get a group of parameters
+	 *  @param {Array=} params the parameters to get, otherwise will return 
+	 *  					   all available.
+	 */
+	Tone.prototype.get = function(params){
+		if (isUndef(params)){
+			params = this._collectDefaults(this.constructor);
+		}
+		var ret = {};
+		for (var i = 0; i < params.length; i++){
+			var attr = params[i];
+			if (this[attr] instanceof Tone.Signal){
+				ret[attr] = this[attr].value;
+			} else if (!isFunction(this[attr])){
+				ret[attr] = this[attr];
+			} 
+		}
+		return ret;
+	};
+
+	/**
+	 *  collect all of the default attributes in one
+	 *  @private
+	 *  @param {function} constr the constructor to find the defaults from
+	 *  @return {Array} all of the attributes which belong to the class
+	 */
+	Tone.prototype._collectDefaults = function(constr){
+		var ret = [];
+		if (!isUndef(constr.defaults)){
+			ret = Object.keys(constr.defaults);
+		}
+		if (!isUndef(constr._super)){
+			ret = ret.concat(this._collectDefaults(constr._super));
+		}
+		return ret;
+	};
+
 	///////////////////////////////////////////////////////////////////////////
 	//	CLASS VARS
 	///////////////////////////////////////////////////////////////////////////
@@ -156,7 +216,8 @@ define(function(){
 	///////////////////////////////////////////////////////////////////////////
 
 	/**
-	 *  a dispose method 
+	 *  disconnect and dispose
+	 *  @returns {Tone} `this`
 	 */
 	Tone.prototype.dispose = function(){
 		if (!this.isUndef(this.input)){
@@ -171,6 +232,10 @@ define(function(){
 			}
 			this.output = null;
 		}
+		if (typeof this._dispose === "function"){
+			this._dispose();
+		}
+		return this;
 	};
 
 	/**
@@ -353,6 +418,14 @@ define(function(){
 	 *  @function
 	 */
 	Tone.prototype.isUndef = isUndef;
+
+	/**
+	 *  test if the arg is a function
+	 *  @param {*} arg the argument to test
+	 *  @returns {boolean} true if the arg is a function
+	 *  @function
+	 */
+	Tone.prototype.isFunction = isFunction;
 
 	/**
 	 *  interpolate the input value (0-1) to be between outputMin and outputMax
@@ -553,28 +626,6 @@ define(function(){
 	///////////////////////////////////////////////////////////////////////////
 
 	/**
-	 *  array of callbacks to be invoked when a new context is added
-	 *  @internal 
-	 *  @private
-	 */
-	var newContextCallbacks = [];
-
-	/**
-	 *  invoke this callback when a new context is added
-	 *  will be invoked initially with the first context
-	 *  @internal 
-	 *  @static
-	 *  @param {function(AudioContext)} callback the callback to be invoked
-	 *                                           with the audio context
-	 */
-	Tone._initAudioContext = function(callback){
-		//invoke the callback with the existing AudioContext
-		callback(Tone.context);
-		//add it to the array
-		newContextCallbacks.push(callback);
-	};
-
-	/**
 	 * 	Adds an ES5 getter setter to the prototype of the constructor. 
 	 * 	The prototype is expected to have a camelCase function of the 
 	 * 	property with the names getProperty and setProperty
@@ -602,26 +653,13 @@ define(function(){
 					return this[setterName](val);
 				}
 			});
-		}
+		} 
 	};
 
 	///////////////////////////////////////////////////////////////////////////
-	//	STATIC METHODS
+	//	INHERITANCE
 	///////////////////////////////////////////////////////////////////////////
 
-	/**
-	 *  @static
-	 */
-	Tone.setContext = function(ctx){
-		//set the prototypes
-		Tone.prototype.context = ctx;
-		Tone.context = ctx;
-		//invoke all the callbacks
-		for (var i = 0; i < newContextCallbacks.length; i++){
-			newContextCallbacks[i](ctx);
-		}
-	};
-		
 	/**
 	 *  have a child inherit all of Tone's (or a parent's) prototype
 	 *  to inherit the parent's properties, make sure to call 
@@ -644,6 +682,46 @@ define(function(){
 		child.prototype = new TempConstructor();
 		/** @override */
 		child.prototype.constructor = child;
+		child._super = parent;
+	};
+
+	///////////////////////////////////////////////////////////////////////////
+	//	CONTEXT
+	///////////////////////////////////////////////////////////////////////////
+
+	/**
+	 *  array of callbacks to be invoked when a new context is added
+	 *  @internal 
+	 *  @private
+	 */
+	var newContextCallbacks = [];
+
+	/**
+	 *  invoke this callback when a new context is added
+	 *  will be invoked initially with the first context
+	 *  @internal 
+	 *  @static
+	 *  @param {function(AudioContext)} callback the callback to be invoked
+	 *                                           with the audio context
+	 */
+	Tone._initAudioContext = function(callback){
+		//invoke the callback with the existing AudioContext
+		callback(Tone.context);
+		//add it to the array
+		newContextCallbacks.push(callback);
+	};
+
+	/**
+	 *  @static
+	 */
+	Tone.setContext = function(ctx){
+		//set the prototypes
+		Tone.prototype.context = ctx;
+		Tone.context = ctx;
+		//invoke all the callbacks
+		for (var i = 0; i < newContextCallbacks.length; i++){
+			newContextCallbacks[i](ctx);
+		}
 	};
 
 	/**
