@@ -42,7 +42,6 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 
 		//connect the constant 1 output to the node output
 		Tone.Signal._constant.chain(this._scalar, this.output);
-		
 	};
 
 	Tone.extend(Tone.Signal, Tone.SignalBase);

@@ -65,7 +65,6 @@ function(Tone){
 
 	/**
 	 *  the default parameters
-	 *
 	 *  @static
 	 *  @const
 	 *  @type {Object}

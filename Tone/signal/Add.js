@@ -52,6 +52,17 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	}; 
 
 	/**
+	 *  @returns {number} the current value being added
+	 */
+	Tone.Add.prototype.getValue = function(){
+		if (this._value !== null){
+			return this._value.getValue();
+		} else {
+			return 0;
+		}
+	}; 
+
+	/**
 	 *  dispose method
 	 *  @returns {Tone.Add} `this`
 	 */

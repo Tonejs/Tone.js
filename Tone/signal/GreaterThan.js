@@ -47,6 +47,13 @@ define(["Tone/core/Tone", "Tone/signal/GreaterThanZero", "Tone/signal/Subtract"]
 	};
 
 	/**
+	 *  @returns {number} the value that is set
+	 */
+	Tone.GreaterThan.prototype.getValue = function(){
+		return this._sub.getValue();
+	};
+
+	/**
 	 *  dispose method
 	 *  @returns {Tone.GreaterThan} `this`
 	 */

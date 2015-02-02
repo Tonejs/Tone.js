@@ -12,13 +12,18 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 	 */
 	Tone.Pow = function(exp){
 
-		exp = this.defaultArg(exp, 1);
+		/**
+		 * the exponent
+		 * @private
+		 * @type {number}
+		 */
+		this._exp = this.defaultArg(exp, 1);
 
 		/**
 		 *  @type {WaveShaperNode}
 		 *  @private
 		 */
-		this._expScaler = this.input = this.output = new Tone.WaveShaper(this._expFunc(exp), 8192);
+		this._expScaler = this.input = this.output = new Tone.WaveShaper(this._expFunc(this._exp), 8192);
 	};
 
 	Tone.extend(Tone.Pow, Tone.SignalBase);
@@ -29,8 +34,16 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 	 *  @returns {Tone.Pow} `this`
 	 */
 	Tone.Pow.prototype.setExponent = function(exp){
-		this._expScaler.setMap(this._expFunc(exp));
+		this._exp = exp;
+		this._expScaler.setMap(this._expFunc(this._exp));
 		return this;
+	};
+
+	/**
+	 *  @returns {number} the exponent to raise the incoming signal to
+	 */
+	Tone.Pow.prototype.getExponent = function(){
+		return this._exp;
 	};
 
 	/**
@@ -55,6 +68,14 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 		this._expScaler = null;
 		return this;
 	};
+
+	/**
+	 * the exponent to raise the funciton to
+	 * @memberOf Tone.Pow#
+	 * @type {number}
+	 * @name exponent
+	 */
+	Tone._defineGetterSetter(Tone.Pow, "exponent");
 
 	return Tone.Pow;
 });

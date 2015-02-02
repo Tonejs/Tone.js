@@ -48,6 +48,13 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Negate", "Tone/signal/
 	}; 
 
 	/**
+	 *  @param {number} the current set value 
+	 */
+	Tone.Subtract.prototype.getValue = function(value){
+		return - this._adder.getValue();
+	}; 
+
+	/**
 	 *  clean up
 	 *  @returns {Tone.SignalBase} `this`
 	 */
