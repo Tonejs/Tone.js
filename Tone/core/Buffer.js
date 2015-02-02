@@ -24,9 +24,10 @@ define(["Tone/core/Tone"], function(Tone){
 		this._buffer = null;
 
 		/**
-		 *  the url of the buffer. 
-		 *  `undefined` if it was constructed with a buffer
+		 *  the url of the buffer. `undefined` if it was 
+		 *  constructed with a buffer
 		 *  @type {string}
+		 *  @readOnly
 		 */
 		this.url = undefined;
 
@@ -96,20 +97,28 @@ define(["Tone/core/Tone"], function(Tone){
 
 	/**
 	 *  dispose and disconnect
-	 *  @returns {Tone.Buffer} `this`
+	 *  @private
 	 */
-	Tone.Buffer.prototype.dispose = function(){
-		Tone.prototype.dispose.call(this);
+	Tone.Buffer.prototype._dispose = function(){
 		Tone.Buffer._removeFromQueue(this);
 		this._buffer = null;
 		this.onload = null;
-		return this;
 	};
 
-	//defines getter / setter for value
+	/**
+	 * the duration of the buffer
+	 * @memberOf Tone.Buffer#
+	 * @type {number}
+	 * @name duration
+	 * @readOnly
+	 */
 	Object.defineProperty(Tone.Buffer.prototype, "duration", {
 		get : function(){
-			return this._buffer.duration;
+			if (this._buffer){
+				return this._buffer.duration;
+			} else {
+				return 0;
+			}
 		},
 	});
 
