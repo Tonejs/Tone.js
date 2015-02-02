@@ -242,23 +242,21 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 	};
 
 	/**
-	 *  internal dispose method to tear down the node
+	 *  dispose and disconnect
+	 *  @private
 	 */
-	Tone.Signal.prototype.dispose = function(){
-		Tone.prototype.dispose.call(this);
+	Tone.Signal.prototype._dispose = function(){
 		this._scalar.disconnect();
 		this._scalar = null;
 	};
 
-	//defines getter / setter for value
-	Object.defineProperty(Tone.Signal.prototype, "value", {
-		get : function(){
-			return this.getValue();
-		},
-		set : function(val){
-			this.setValue(val);
-		}
-	});
+	/**
+	 * the value of the 
+	 * @memberOf Tone.Oscillator#
+	 * @type {number}
+	 * @name value
+	 */
+	Tone._defineGetterSetter(Tone.Signal, "value");
 
 	///////////////////////////////////////////////////////////////////////////
 	//	STATIC
