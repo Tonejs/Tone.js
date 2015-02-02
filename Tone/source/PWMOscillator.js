@@ -14,7 +14,7 @@ function(Tone){
 	 */
 	Tone.PWMOscillator = function(){
 		var options = this.optionsObject(arguments, ["frequency", "modulationFrequency"], Tone.PWMOscillator.defaults);
-		Tone.Source.call(this);
+		Tone.Source.call(this, options);
 
 		/**
 		 *  the pulse oscillator
@@ -44,12 +44,6 @@ function(Tone){
 		this.detune = this._modulator.detune;
 
 		/**
-		 *  callback which is invoked when the oscillator is stoped
-		 *  @type {function()}
-		 */
-		this.onended = options.onended;
-
-		/**
 		 *  the modulation rate of the oscillator
 		 *  @type {Tone.Signal}
 		 */
@@ -73,7 +67,6 @@ function(Tone){
 		"frequency" : 440,
 		"detune" : 0,
 		"modulationFrequency" : 0.4,
-		"onended" : function(){}
 	};
 
 	/**
@@ -108,14 +101,6 @@ function(Tone){
 	};
 
 	/**
-	 *  internal onended callback
-	 *  @private
-	 */
-	Tone.PWMOscillator.prototype._onended = function(){
-		this.onended();
-	};
-
-	/**
 	 *  set the phase of the oscillator (in degrees)
 	 *  @param {number} degrees the phase in degrees
 	 *  @returns {Tone.PulseOscillator} `this`
@@ -142,21 +127,6 @@ function(Tone){
 	 */
 	Tone.PWMOscillator.prototype.setModulationFrequency = function(val, rampTime){
 		this._pulse.setFrequency(val, rampTime);
-		return this;
-	};
-
-	/**
-	 *  set the parameters at once
-	 *  @param {Object} params
-	 *  @returns {Tone.PulseOscillator} `this`
-	 */
-	Tone.PWMOscillator.prototype.set = function(params){
-		if (!this.isUndef(params.modulationFrequency)) this.setModulationFrequency(params.modulationFrequency);
-		if (!this.isUndef(params.phase)) this.setPhase(params.phase);
-		if (!this.isUndef(params.frequency)) this.setFrequency(params.frequency);
-		if (!this.isUndef(params.onended)) this._pulse.onended = params.onended;
-		if (!this.isUndef(params.detune)) this.detune.setValue(params.detune);
-		Tone.Source.prototype.set.call(this, params);
 		return this;
 	};
 

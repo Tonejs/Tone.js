@@ -12,8 +12,8 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 	 */
 	Tone.Player = function(){
 		
-		Tone.Source.call(this);
 		var options = this.optionsObject(arguments, ["url", "onload"], Tone.Player.defaults);
+		Tone.Source.call(this, options);
 
 		/**
 		 *  @private
@@ -60,13 +60,6 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 		 *  @type {boolean}
 		 */
 		this.retrigger = options.retrigger;
-
-		/**
-		 *  set a callback function to invoke when the sample is over
-		 *  
-		 *  @type {function}
-		 */
-		this.onended = options.onended;
 	};
 
 	Tone.extend(Tone.Player, Tone.Source);
@@ -78,7 +71,6 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 	 *  @type {Object}
 	 */
 	Tone.Player.defaults = {
-		"onended" : function(){},
 		"onload" : function(){},
 		"loop" : false,
 		"loopStart" : 0,

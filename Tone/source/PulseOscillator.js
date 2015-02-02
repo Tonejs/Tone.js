@@ -13,8 +13,8 @@ function(Tone){
 	 */
 	Tone.PulseOscillator = function(){
 
-		Tone.Source.call(this);
 		var options = this.optionsObject(arguments, ["frequency", "width"], Tone.Oscillator.defaults);
+		Tone.Source.call(this, options);
 
 		/**
 		 *  the width of the pulse
@@ -45,12 +45,6 @@ function(Tone){
 		 *  @type {Tone.Signal}
 		 */
 		this.detune = this._sawtooth.detune;
-
-		/**
-		 *  callback which is invoked when the oscillator is stoped
-		 *  @type {function()}
-		 */
-		this.onended = options.onended;
 
 		/**
 		 *  threshold the signal to turn it into a square
@@ -86,7 +80,6 @@ function(Tone){
 		"detune" : 0,
 		"phase" : 0,
 		"width" : 0.2,
-		"onended" : function(){},
 	};
 
 	/**
@@ -115,23 +108,6 @@ function(Tone){
 	 */
 	Tone.PulseOscillator.prototype.getPhase = function(){
 		return this._sawtooth.getPhase();
-	};
-
-	/**
-	 *  bulk setter
-	 *  @param {Object} params 
-	 *  @returns {Tone.PulseOscillator} `this`
-	 */
-	Tone.PulseOscillator.prototype.set = function(params){
-		if (!this.isUndef(params.width)) this.setWidth(params.width);
-		this._sawtooth.set({
-			"phase" : params.phase,
-			"frequency" : params.frequency,
-			"detune" : params.detune,
-			"onended" : params.onended
-		});
-		Tone.Source.prototype.set.call(this, params);
-		return this;
 	};
 
 	/**
@@ -165,14 +141,6 @@ function(Tone){
 			this.width.output.gain.setValueAtTime(0, time);
 		}
 		return this;
-	};
-
-	/**
-	 *  internal onended callback
-	 *  @private
-	 */
-	Tone.PulseOscillator.prototype._onended = function(){
-		this.onended();
 	};
 
 	/**

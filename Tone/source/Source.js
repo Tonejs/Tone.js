@@ -11,18 +11,36 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Master"], function(T
 	 *  @constructor
 	 *  @extends {Tone}
 	 */	
-	Tone.Source = function(){
+	Tone.Source = function(options){
 		//unlike most ToneNodes, Sources only have an output and no input
 		Tone.call(this, 0, 1);
+		options = this.defaultArg(options, Tone.Source.defaults);
 
 		/**
 		 *  @type {Tone.Source.State}
 		 *  @readOnly
 		 */
 		this.state = Tone.Source.State.STOPPED;
+
+		/**
+		 * the onended callback when the source is done playing
+		 * @type {function}
+		 */
+		this.onended = options.onended;
 	};
 
 	Tone.extend(Tone.Source);
+
+	/**
+	 *  the default parameters
+	 *
+	 *  @static
+	 *  @const
+	 *  @type {Object}
+	 */
+	Tone.Source.defaults = {
+		"onended" : function(){},
+	};
 
 	/**
 	 *  @abstract
@@ -80,6 +98,14 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Master"], function(T
 	 */
 	Tone.Source.prototype._dispose = function(){
 		this.state = null;
+	};
+
+	/**
+	 *  internal onended callback
+	 *  @private
+	 */
+	Tone.Source.prototype._onended = function(){
+		this.onended();
 	};
 
 	/**

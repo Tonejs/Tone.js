@@ -12,8 +12,8 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 	 */
 	Tone.Noise = function(){
 
-		Tone.Source.call(this);
 		var options = this.optionsObject(arguments, ["type"], Tone.Noise.defaults);
+		Tone.Source.call(this, options);
 
 		/**
 		 *  @private
@@ -27,13 +27,6 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 		 *  @type {AudioBuffer}
 		 */
 		this._buffer = null;
-
-		/**
-		 *  set a callback function to invoke when the sample is over
-		 *  
-		 *  @type {function}
-		 */
-		this.onended = options.onended;
 
 		this.setType(options.type);
 	};
@@ -49,7 +42,6 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 	 */
 	Tone.Noise.defaults = {
 		"type" : "white",
-		"onended" : function(){}
 	};
 
 	/**
@@ -96,18 +88,6 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 		} else if (this._buffer === _pinkNoise){
 			return "pink";
 		}
-	};
-
-	/**
-	 *  set the parameters at once
-	 *  @param {Object} params
-	 *  @returns {Tone.Noise} `this`
-	 */
-	Tone.Noise.prototype.set = function(params){
-		if (!this.isUndef(params.type)) this.setType(params.type);
-		if (!this.isUndef(params.onended)) this.onended = params.onended;
-		Tone.Source.prototype.set.call(this, params);
-		return this;
 	};
 
 	/**

@@ -1,4 +1,5 @@
-define(["Tone/core/Tone", "Tone/source/Source", "Tone/source/Oscillator", "Tone/source/PulseOscillator", "Tone/source/PWMOscillator"], 
+define(["Tone/core/Tone", "Tone/source/Source", "Tone/source/Oscillator", 
+	"Tone/source/PulseOscillator", "Tone/source/PWMOscillator"], 
 function(Tone){
 
 	"use strict";
@@ -15,7 +16,7 @@ function(Tone){
 	 */
 	Tone.OmniOscillator = function(){
 		var options = this.optionsObject(arguments, ["frequency", "type"], Tone.OmniOscillator.defaults);
-		Tone.Source.call(this);
+		Tone.Source.call(this, options);
 
 		/**
 		 *  the frequency control
@@ -43,12 +44,6 @@ function(Tone){
 		 */
 		this._oscillator = null;
 
-		/**
-		 *  callback which is invoked when the oscillator is stoped
-		 *  @type {function()}
-		 */
-		this.onended = options.onended;
-
 		//set the oscillator
 		this.setType(options.type);
 	};
@@ -67,7 +62,6 @@ function(Tone){
 		"type" : "sine",
 		"width" : 0.4, //only applies if the oscillator is set to "pulse",
 		"modulationFrequency" : 0.4, //only applies if the oscillator is set to "pwm",
-		"onended" : function(){}
 	};
 
 	/**
@@ -183,14 +177,6 @@ function(Tone){
 	};
 
 	/**
-	 *  internal onended callback
-	 *  @private
-	 */
-	Tone.OmniOscillator.prototype._onended = function(){
-		this.onended();
-	};
-
-	/**
 	 *  set the width of the PulseOscillator
 	 *  @throws {Error} If the type of oscillator is not "pulse"
 	 *  @param {number} width the width of the pulse oscillator
@@ -226,12 +212,9 @@ function(Tone){
 	 *  @returns {Tone.OmniOscillator} `this`
 	 */
 	Tone.OmniOscillator.prototype.set = function(params){
-		if (!this.isUndef(params.type)) this.setType(params.type);
-		if (!this.isUndef(params.onended)) this.onended = params.onended;
-		if (!this.isUndef(params.frequency)) this.setFrequency(params.frequency);
-		if (!this.isUndef(params.detune)) this.detune.setValue(params.detune);
 		if (!this.isUndef(params.width)) this.setWidth(params.width);
 		if (!this.isUndef(params.modulationFrequency)) this.setModulationFrequency(params.modulationFrequency);
+		Tone.Source.prototype.set.call(this, params);
 		return this;
 	};
 

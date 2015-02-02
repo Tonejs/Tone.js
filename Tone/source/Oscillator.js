@@ -13,8 +13,8 @@ function(Tone){
 	 */
 	Tone.Oscillator = function(){
 		
-		Tone.Source.call(this);
 		var options = this.optionsObject(arguments, ["frequency", "type"], Tone.Oscillator.defaults);
+		Tone.Source.call(this, options);
 
 		/**
 		 *  the main oscillator
@@ -34,12 +34,6 @@ function(Tone){
 		 *  @type {Tone.Signal}
 		 */
 		this.detune = new Tone.Signal(options.detune);
-
-		/**
-		 *  callback which is invoked when the oscillator is stoped
-		 *  @type {function()}
-		 */
-		this.onended = options.onended;
 
 		/**
 		 *  the periodic wave
@@ -79,7 +73,6 @@ function(Tone){
 	Tone.Oscillator.defaults = {
 		"type" : "sine",
 		"frequency" : 440,
-		"onended" : function(){},
 		"detune" : 0,
 		"phase" : 0
 	};
