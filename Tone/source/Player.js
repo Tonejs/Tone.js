@@ -283,15 +283,17 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 
 	/**
 	 *  dispose and disconnect
-	 *  @private
+	 *  @return {Tone.Player} `this`
 	 */
-	Tone.Player.prototype._dispose = function(){
+	Tone.Player.prototype.dispose = function(){
+		Tone.Source.prototype.dispose.call(this);
 		if (this._source !== null){
 			this._source.disconnect();
 			this._source = null;
 		}
 		this._buffer.dispose();
 		this._buffer = null;
+		return this;
 	};
 
 	return Tone.Player;

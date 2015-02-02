@@ -137,9 +137,10 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Master"], function(T
 
 	/**
 	 *	clean up
-	 *  @private
+	 *  @return {Tone.Source} `this`
 	 */
-	Tone.Source.prototype._dispose = function(){
+	Tone.Source.prototype.dispose = function(){
+		Tone.prototype.dispose.call(this);
 		this.stop();
 		this.state = null;
 		clearTimeout(this._timeout);

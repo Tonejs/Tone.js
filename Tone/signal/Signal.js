@@ -243,9 +243,9 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 
 	/**
 	 *  dispose and disconnect
-	 *  @private
 	 */
-	Tone.Signal.prototype._dispose = function(){
+	Tone.Signal.prototype.dispose = function(){
+		Tone.prototype.dispose.call(this);
 		this._scalar.disconnect();
 		this._scalar = null;
 	};

@@ -239,10 +239,10 @@ function(Tone){
 
 	/**
 	 *  dispose and disconnect
-	 *  @private
+	 *  @return {Tone.Oscillator} `this`
 	 */
-	Tone.Oscillator.prototype._dispose = function(){
-		Tone.Source.prototype._dispose.call(this);
+	Tone.Oscillator.prototype.dispose = function(){
+		Tone.Source.prototype.dispose.call(this);
 		if (this._oscillator !== null){
 			this._oscillator.disconnect();
 			this._oscillator = null;
@@ -252,6 +252,7 @@ function(Tone){
 		this.detune.dispose();
 		this.detune = null;
 		this._wave = null;
+		return this;
 	};
 
 	/**

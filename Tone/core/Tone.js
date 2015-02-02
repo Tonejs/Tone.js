@@ -232,9 +232,6 @@ define(function(){
 			}
 			this.output = null;
 		}
-		if (typeof this._dispose === "function"){
-			this._dispose();
-		}
 		return this;
 	};
 

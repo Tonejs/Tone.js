@@ -211,9 +211,10 @@ function(Tone){
 	/**
 	 *  clean up
 	 *  @private
+	 *  @return {Tone.OmniOscillator} `this`
 	 */
-	Tone.OmniOscillator.prototype._dispose = function(){
-		Tone.Source.prototype._dispose.call(this);
+	Tone.OmniOscillator.prototype.dispose = function(){
+		Tone.Source.prototype.dispose.call(this);
 		this.detune.dispose();
 		this.detune = null;
 		this.frequency.dispose();

@@ -107,12 +107,14 @@ define(["Tone/core/Tone"], function(Tone){
 
 	/**
 	 *  dispose and disconnect
-	 *  @private
+	 *  @returns {Tone.Buffer} `this`
 	 */
-	Tone.Buffer.prototype._dispose = function(){
+	Tone.Buffer.prototype.dispose = function(){
+		Tone.prototype.dispose.call(this);
 		Tone.Buffer._removeFromQueue(this);
 		this._buffer = null;
 		this.onload = null;
+		return this;
 	};
 
 	/**
