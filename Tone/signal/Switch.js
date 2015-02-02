@@ -39,22 +39,27 @@ define(["Tone/core/Tone", "Tone/signal/SignalBase", "Tone/signal/GreaterThan"], 
 	 *  open the switch at a specific time
 	 *
 	 *  @param {Tone.Time} time the time when the switch will be open
+	 *  @returns {Tone.Switch} `this`
 	 */
 	Tone.Switch.prototype.open = function(time){
 		this.gate.setValueAtTime(1, this.toSeconds(time));
+		return this;
 	}; 
 
 	/**
 	 *  close the switch at a specific time
 	 *
 	 *  @param {Tone.Time} time the time when the switch will be open
+	 *  @returns {Tone.Switch} `this`
 	 */
 	Tone.Switch.prototype.close = function(time){
 		this.gate.setValueAtTime(0, this.toSeconds(time));
+		return this;
 	}; 
 
 	/**
 	 *  clean up
+	 *  @returns {Tone.Switch} `this`
 	 */
 	Tone.Switch.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
@@ -62,6 +67,7 @@ define(["Tone/core/Tone", "Tone/signal/SignalBase", "Tone/signal/GreaterThan"], 
 		this._thresh.dispose();
 		this.gate = null;
 		this._thresh = null;
+		return this;
 	}; 
 
 	return Tone.Switch;

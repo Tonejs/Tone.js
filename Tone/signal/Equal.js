@@ -36,13 +36,16 @@ define(["Tone/core/Tone", "Tone/signal/EqualZero", "Tone/signal/Subtract", "Tone
 
 	/**
 	 * 	@param {number} value set the comparison value
+	 *  @returns {Tone.Equal} `this`
 	 */
 	Tone.Equal.prototype.setValue = function(value){
 		this._sub.setValue(value);
+		return this;
 	};
 
 	/**
 	 *  dispose method
+	 *  @returns {Tone.Equal} `this`
 	 */
 	Tone.Equal.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
@@ -50,6 +53,7 @@ define(["Tone/core/Tone", "Tone/signal/EqualZero", "Tone/signal/Subtract", "Tone
 		this._equals = null;
 		this._sub.dispose();
 		this._sub = null;
+		return this;
 	};
 
 	return Tone.Equal;

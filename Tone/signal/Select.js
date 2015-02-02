@@ -38,15 +38,18 @@ define(["Tone/core/Tone", "Tone/signal/Equal", "Tone/signal/Signal"], function(T
 	 *  open one of the inputs and close the other
 	 *  @param {number} [which=0] open one of the gates (closes the other)
 	 *  @param {Tone.Time} time the time when the switch will open
+	 *  @returns {Tone.Select} `this`
 	 */
 	Tone.Select.prototype.select = function(which, time){
 		//make sure it's an integer
 		which = Math.floor(which);
 		this.gate.setValueAtTime(which, this.toSeconds(time));
+		return this;
 	};
 
 	/**
 	 *  dispose method
+	 *  @returns {Tone.Select} `this`
 	 */
 	Tone.Select.prototype.dispose = function(){
 		this.gate.dispose();
@@ -56,6 +59,7 @@ define(["Tone/core/Tone", "Tone/signal/Equal", "Tone/signal/Signal"], function(T
 		}
 		Tone.prototype.dispose.call(this);
 		this.gate = null;
+		return this;
 	}; 
 
 	////////////START HELPER////////////

@@ -40,6 +40,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	 *  set the constant
 	 *  
 	 *  @param {number} value 
+	 *  @returns {Tone.Add} `this`
 	 */
 	Tone.Add.prototype.setValue = function(value){
 		if (this._value !== null){
@@ -47,10 +48,12 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 		} else {
 			throw new Error("cannot switch from signal to number");
 		}
+		return this;
 	}; 
 
 	/**
 	 *  dispose method
+	 *  @returns {Tone.Add} `this`
 	 */
 	Tone.Add.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
@@ -59,6 +62,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 			this._value.dispose();
 			this._value = null;
 		}
+		return this;
 	}; 
 
 	return Tone.Add;

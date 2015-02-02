@@ -46,13 +46,16 @@ define(["Tone/core/Tone", "Tone/signal/LessThan", "Tone/signal/IfThenElse", "Ton
 	/**
 	 *  set the min value
 	 *  @param {number} min the minimum to compare to the incoming signal
+	 *  @returns {Tone.Min} `this`
 	 */
 	Tone.Min.prototype.setMin = function(min){
 		this._minSignal.setValue(min);
+		return this;
 	};
 
 	/**
 	 *  clean up
+	 *  @returns {Tone.Min} `this`
 	 */
 	Tone.Min.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
@@ -62,6 +65,7 @@ define(["Tone/core/Tone", "Tone/signal/LessThan", "Tone/signal/IfThenElse", "Ton
 		this._minSignal = null;
 		this._ifThenElse = null;
 		this._lt = null;
+		return this;
 	};
 
 	return Tone.Min;

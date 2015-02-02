@@ -33,18 +33,22 @@ define(["Tone/core/Tone", "Tone/signal/Equal"], function(Tone){
 	/**
 	 *  the number of inputs to consider
 	 *  @param {number} inputCount
+	 *  @returns {Tone.AND} `this`
 	 */	
 	Tone.AND.prototype.setInputCount = function(inputCount){
 		this._equals.setValue(inputCount);
+		return this;
 	};
 
 	/**
 	 *  clean up
+	 *  @returns {Tone.AND} `this`
 	 */
 	Tone.AND.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
 		this._equals.dispose();
 		this._equals = null;
+		return this;
 	};
 
 	return Tone.AND;

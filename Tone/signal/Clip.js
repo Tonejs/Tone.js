@@ -40,21 +40,26 @@ define(["Tone/core/Tone", "Tone/signal/Max", "Tone/signal/Min", "Tone/signal/Sig
 	/**
 	 *  set the minimum value
 	 *  @param {number} min the new min value
+	 *  @returns {Tone.Clip} `this`
 	 */
 	Tone.Clip.prototype.setMin = function(min){
 		this._min.setMin(min);
+		return this;
 	};
 
 	/**
 	 *  set the maximum value
 	 *  @param {number} max the new max value
+	 *  @returns {Tone.Clip} `this`
 	 */
 	Tone.Clip.prototype.setMax = function(max){
 		this._max.setMax(max);	
+		return this;
 	};
 
 	/**
 	 *  clean up
+	 *  @returns {Tone.Clip} `this`
 	 */
 	Tone.Clip.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
@@ -62,6 +67,7 @@ define(["Tone/core/Tone", "Tone/signal/Max", "Tone/signal/Min", "Tone/signal/Sig
 		this._min = null;
 		this._max.dispose();
 		this._max = null;
+		return this;
 	};
 
 	return Tone.Clip;

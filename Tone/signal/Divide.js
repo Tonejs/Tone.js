@@ -53,6 +53,7 @@ function(Tone){
 	 *  Division is a computationally expensive operation. 
 	 *  
 	 *  @param {number} value 
+	 *  @returns {Tone.Divide} `this`
 	 */
 	Tone.Divide.prototype.setValue = function(value){
 		if (this._value !== null){
@@ -60,10 +61,12 @@ function(Tone){
 		} else {
 			throw new Error("cannot switch from signal to number");
 		}
+		return this;
 	}; 
 
 	/**
 	 *  clean up
+	 *  @returns {Tone.Divide} `this`
 	 */
 	Tone.Divide.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
@@ -75,6 +78,7 @@ function(Tone){
 		this._inverse = null;
 		this._mult.dispose();
 		this._mult = null;
+		return this;
 	};
 
 	return Tone.Divide;

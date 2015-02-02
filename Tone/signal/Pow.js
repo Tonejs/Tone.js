@@ -26,9 +26,11 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 	/**
 	 *  set the exponential scaling curve
 	 *  @param {number} exp the exponent to raise the incoming signal to
+	 *  @returns {Tone.Pow} `this`
 	 */
 	Tone.Pow.prototype.setExponent = function(exp){
 		this._expScaler.setMap(this._expFunc(exp));
+		return this;
 	};
 
 	/**
@@ -45,11 +47,13 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 
 	/**
 	 *  clean up
+	 *  @returns {Tone.Pow} `this`
 	 */
 	Tone.Pow.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
 		this._expScaler.dispose();
 		this._expScaler = null;
+		return this;
 	};
 
 	return Tone.Pow;

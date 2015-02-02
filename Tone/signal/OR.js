@@ -44,6 +44,7 @@ define(["Tone/core/Tone", "Tone/signal/GreaterThanZero"], function(Tone){
 
 	/**
 	 *  clean up
+	 *  @returns {Tone.OR} `this`
 	 */
 	Tone.OR.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
@@ -51,6 +52,7 @@ define(["Tone/core/Tone", "Tone/signal/GreaterThanZero"], function(Tone){
 		this._gtz = null;
 		this._sum.disconnect();
 		this._sum = null;
+		return this;
 	};
 
 	return Tone.OR;

@@ -47,19 +47,23 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Multiply"], function(T
 	/**
 	 *  set the minimum input value
 	 *  @param {number} min the minimum input value
+	 *  @returns {Tone.Normalize} `this`
 	 */
 	Tone.Normalize.prototype.setMin = function(min){
 		this._inputMin = min;
 		this._setRange();
+		return this;
 	};
 
 	/**
 	 *  set the minimum input value
 	 *  @param {number} min the minimum input value
+	 *  @returns {Tone.Normalize} `this`
 	 */
 	Tone.Normalize.prototype.setMax = function(max){
 		this._inputMax = max;
 		this._setRange();
+		return this;
 	};
 
 	/**
@@ -73,6 +77,7 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Multiply"], function(T
 
 	/**
 	 *  clean up
+	 *  @returns {Tone.Normalize} `this`
 	 */
 	Tone.Normalize.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
@@ -80,6 +85,7 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Multiply"], function(T
 		this._sub = null;
 		this._div.dispose();
 		this._div = null;
+		return this;
 	};
 
 	return Tone.Normalize;

@@ -48,13 +48,16 @@ define(["Tone/core/Tone", "Tone/signal/GreaterThan", "Tone/signal/Negate"], func
 	 *  set the value to compare to
 	 *  
 	 *  @param {number} value
+	 *  @returns {Tone.LessThan} `this`
 	 */
 	Tone.LessThan.prototype.setValue = function(value){
 		this._gt.setValue(-value);
+		return this;
 	};
 
 	/**
 	 *  dispose method
+	 *  @returns {Tone.LessThan} `this`
 	 */
 	Tone.LessThan.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
@@ -64,6 +67,7 @@ define(["Tone/core/Tone", "Tone/signal/GreaterThan", "Tone/signal/Negate"], func
 		this._gt = null;
 		this._lhNeg.dispose();
 		this._lhNeg = null;
+		return this;
 	};
 
 	return Tone.LessThan;

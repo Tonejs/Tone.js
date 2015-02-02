@@ -43,6 +43,7 @@ function(Tone){
 
 	/**
 	 *  dispose method
+	 *  @returns {Tone.Abs} `this`
 	 */
 	Tone.Abs.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
@@ -52,6 +53,7 @@ function(Tone){
 		this._ltz = null;
 		this._negate.dispose();
 		this._negate = null;
+		return this;
 	}; 
 
 	return Tone.Abs;

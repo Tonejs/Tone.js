@@ -39,6 +39,10 @@ define(["Tone/core/Tone", "Tone/signal/Multiply", "Tone/signal/WaveShaper"], fun
 
 	Tone.extend(Tone.Modulo, Tone.SignalBase);
 
+	/**
+	 * clean up
+	 *  @returns {Tone.Modulo} `this`
+	 */
 	Tone.Modulo.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
 		for (var i = 0; i < this._modChain.length; i++) {
@@ -46,6 +50,7 @@ define(["Tone/core/Tone", "Tone/signal/Multiply", "Tone/signal/WaveShaper"], fun
 			this._modChain[i] = null;
 		}
 		this._modChain = null;
+		return this;
 	};
 
 	/**

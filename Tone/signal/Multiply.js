@@ -41,18 +41,22 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	 *  set the constant multiple
 	 *  	
 	 *  @param {number} value 
+	 *  @returns {Tone.Multiply} `this`
 	 */
 	Tone.Multiply.prototype.setValue = function(value){
 		this._factor.value = value;
+		return this;
 	};
 
 	/**
 	 *  clean up
+	 *  @returns {Tone.Multiply} `this`
 	 */
 	Tone.Multiply.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
 		this._mult = null;
 		this._factor = null;
+		return this;
 	}; 
 
 	return Tone.Multiply;

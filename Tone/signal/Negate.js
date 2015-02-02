@@ -21,11 +21,13 @@ define(["Tone/core/Tone", "Tone/signal/Multiply", "Tone/signal/Signal"], functio
 
 	/**
 	 *  clean up
+	 *  @returns {Tone.Negate} `this`
 	 */
 	Tone.Negate.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
 		this._multiply.dispose();
 		this._multiply = null;
+		return this;
 	}; 
 
 	return Tone.Negate;

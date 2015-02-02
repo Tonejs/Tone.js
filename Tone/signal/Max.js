@@ -47,13 +47,16 @@ define(["Tone/core/Tone", "Tone/signal/GreaterThan", "Tone/signal/IfThenElse", "
 	/**
 	 *  set the max value
 	 *  @param {number} max the maximum to compare to the incoming signal
+	 *  @returns {Tone.Max} `this`
 	 */
 	Tone.Max.prototype.setMax = function(max){
 		this._maxSignal.setValue(max);
+		return this;
 	};
 
 	/**
 	 *  clean up
+	 *  @returns {Tone.Max} `this`
 	 */
 	Tone.Max.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
@@ -63,6 +66,7 @@ define(["Tone/core/Tone", "Tone/signal/GreaterThan", "Tone/signal/IfThenElse", "
 		this._maxSignal = null;
 		this._ifThenElse = null;
 		this._gt = null;
+		return this;
 	};
 
 	return Tone.Max;

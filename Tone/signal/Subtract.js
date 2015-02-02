@@ -40,13 +40,16 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Negate", "Tone/signal/
 	 *  set the constant
 	 *  
 	 *  @param {number} value 
+	 *  @returns {Tone.SignalBase} `this`
 	 */
 	Tone.Subtract.prototype.setValue = function(value){
 		this._adder.setValue(-value);
+		return this;
 	}; 
 
 	/**
 	 *  clean up
+	 *  @returns {Tone.SignalBase} `this`
 	 */
 	Tone.Subtract.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
@@ -54,6 +57,7 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Negate", "Tone/signal/
 		this._neg = null;
 		this._adder.dispose();
 		this._adder = null;
+		return this;
 	};
 
 	return Tone.Subtract;

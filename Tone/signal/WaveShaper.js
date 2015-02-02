@@ -55,6 +55,7 @@ define(["Tone/core/Tone", "Tone/signal/SignalBase"], function(Tone){
 	 *                                    The mapping function should take two arguments: 
 	 *                                    the first is the value at the current position 
 	 *                                    and the second is the array position
+	 *  @returns {Tone.WaveShaper} `this`
 	 */
 	Tone.WaveShaper.prototype.setMap = function(mapping){
 		for (var i = 0, len = this._curve.length; i < len; i++){
@@ -63,11 +64,13 @@ define(["Tone/core/Tone", "Tone/signal/SignalBase"], function(Tone){
 			this._curve[i] = mapping(normalized, i, normOffOne);
 		}
 		this._shaper.curve = this._curve;
+		return this;
 	};
 
 	/**
 	 *  use an array to set the waveshaper curve
 	 *  @param {Array} mapping the array to use as the waveshaper
+	 *  @returns {Tone.WaveShaper} `this`
 	 */
 	Tone.WaveShaper.prototype.setCurve = function(mapping){
 		//fixes safari WaveShaperNode bug
@@ -77,14 +80,17 @@ define(["Tone/core/Tone", "Tone/signal/SignalBase"], function(Tone){
 		}
 		this._curve = new Float32Array(mapping);
 		this._shaper.curve = this._curve;
+		return this;
 	};
 
 	/**
 	 *  set the oversampling
 	 *  @param {string} oversampling can either be "none", "2x" or "4x"
+	 *  @returns {Tone.WaveShaper} `this`
 	 */
 	Tone.WaveShaper.prototype.setOversample = function(oversampling) {
 		this._shaper.oversample = oversampling;
+		return this;
 	};
 
 	/**
@@ -99,12 +105,14 @@ define(["Tone/core/Tone", "Tone/signal/SignalBase"], function(Tone){
 
 	/**
 	 *  clean up
+	 *  @returns {Tone.WaveShaper} `this`
 	 */
 	Tone.WaveShaper.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
 		this._shaper.disconnect();
 		this._shaper = null;
 		this._curve = null;
+		return this;
 	};
 
 	return Tone.WaveShaper;

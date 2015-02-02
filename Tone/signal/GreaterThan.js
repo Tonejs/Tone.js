@@ -39,13 +39,16 @@ define(["Tone/core/Tone", "Tone/signal/GreaterThanZero", "Tone/signal/Subtract"]
 	 *  set the value to compare to
 	 *  
 	 *  @param {number} value
+	 *  @returns {Tone.GreaterThan} `this`
 	 */
 	Tone.GreaterThan.prototype.setValue = function(value){
 		this._sub.setValue(value);
+		return this;
 	};
 
 	/**
 	 *  dispose method
+	 *  @returns {Tone.GreaterThan} `this`
 	 */
 	Tone.GreaterThan.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
@@ -53,6 +56,7 @@ define(["Tone/core/Tone", "Tone/signal/GreaterThanZero", "Tone/signal/Subtract"]
 		this._gtz.dispose();
 		this._sub = null;
 		this._gtz = null;
+		return this;
 	};
 
 	return Tone.GreaterThan;

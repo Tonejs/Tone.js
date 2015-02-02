@@ -21,11 +21,13 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper", "Tone/signal/Signal"], funct
 
 	/**
 	 *  clean up
+	 *  @returns {Tone.AND} `this`
 	 */
 	Tone.AudioToGain.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
 		this._norm.disconnect();
 		this._norm = null;
+		return this;
 	};
 
 	return Tone.AudioToGain;

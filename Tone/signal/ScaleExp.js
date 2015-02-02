@@ -36,29 +36,36 @@ function(Tone){
 	/**
 	 *  set the exponential scaling curve
 	 *  @param {number} exp the exponent to raise the incoming signal to
+	 *  @returns {Tone.ScaleExp} `this`
 	 */
 	Tone.ScaleExp.prototype.setExponent = function(exp){
 		this._exp.setExponent(exp);
+		return this;
 	};
 
 	/**
 	 *  set the minimum output value
 	 *  @param {number} min the minimum output value
+	 *  @returns {Tone.ScaleExp} `this`
 	 */
 	Tone.ScaleExp.prototype.setMin = function(min){
 		this._scale.setMin(min);
+		return this;
 	};
 
 	/**
 	 *  set the minimum output value
 	 *  @param {number} min the minimum output value
+	 *  @returns {Tone.ScaleExp} `this`
 	 */
 	Tone.ScaleExp.prototype.setMax = function(max){
 		this._scale.setMax(max);
+		return this;
 	};
 
 	/**
 	 *  clean up
+	 *  @returns {Tone.ScaleExp} `this`
 	 */
 	Tone.ScaleExp.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
@@ -66,6 +73,7 @@ function(Tone){
 		this._scale = null;
 		this._exp.dispose();
 		this._exp = null;
+		return this;
 	}; 
 
 

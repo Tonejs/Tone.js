@@ -59,6 +59,7 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 	 *  will be overwritten if there are previously scheduled automation curves
 	 *  
 	 *  @param {number} value 
+	 *  @returns {Tone.Signal} `this`
 	 */
 	Tone.Signal.prototype.setValue = function(value){
 		if (this._syncRatio === 0){
@@ -67,6 +68,7 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 			value *= this._syncRatio;
 		}
 		this._scalar.gain.value = value;
+		return this;
 	};
 
 	/**
@@ -74,24 +76,26 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 	 *  
 	 *  @param {number}		value 
 	 *  @param {Tone.Time}  time 
+	 *  @returns {Tone.Signal} `this`
 	 */
 	Tone.Signal.prototype.setValueAtTime = function(value, time){
 		value *= this._syncRatio;
 		this._scalar.gain.setValueAtTime(value, this.toSeconds(time));
+		return this;
 	};
 
 	/**
 	 *  creates a schedule point with the current value at the current time
 	 *
 	 *  @param {number=} now (optionally) pass the now value in
-	 *  @returns {number} the current value
+	 *  @returns {Tone.Signal} `this`
 	 */
 	Tone.Signal.prototype.setCurrentValueNow = function(now){
 		now = this.defaultArg(now, this.now());
 		var currentVal = this.getValue();
 		this.cancelScheduledValues(now);
 		this._scalar.gain.setValueAtTime(currentVal, now);
-		return currentVal;
+		return this;
 	};
 
 	/**
@@ -100,10 +104,12 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 	 *  
 	 *  @param  {number} value   
 	 *  @param  {Tone.Time} endTime 
+	 *  @returns {Tone.Signal} `this`
 	 */
 	Tone.Signal.prototype.linearRampToValueAtTime = function(value, endTime){
 		value *= this._syncRatio;
 		this._scalar.gain.linearRampToValueAtTime(value, this.toSeconds(endTime));
+		return this;
 	};
 
 	/**
@@ -112,12 +118,14 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 	 *  
 	 *  @param  {number} value   
 	 *  @param  {Tone.Time} endTime 
+	 *  @returns {Tone.Signal} `this`
 	 */
 	Tone.Signal.prototype.exponentialRampToValueAtTime = function(value, endTime){
 		value *= this._syncRatio;
 		//can't go below a certain value
 		value = Math.max(0.00001, value);
 		this._scalar.gain.exponentialRampToValueAtTime(value, this.toSeconds(endTime));
+		return this;
 	};
 
 	/**
@@ -126,6 +134,7 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 	 *  
 	 *  @param  {number} value   
 	 *  @param  {Tone.Time} endTime 
+	 *  @returns {Tone.Signal} `this`
 	 */
 	Tone.Signal.prototype.exponentialRampToValueNow = function(value, endTime){
 		var now = this.now();
@@ -135,6 +144,7 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 			endTime = endTime.substr(1);
 		}
 		this.exponentialRampToValueAtTime(value, now + this.toSeconds(endTime));
+		return this;
 	};
 
 	/**
@@ -143,6 +153,7 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 	 *  
 	 *  @param  {number} value   
 	 *  @param  {Tone.Time} endTime 
+	 *  @returns {Tone.Signal} `this`
 	 */
 	Tone.Signal.prototype.linearRampToValueNow = function(value, endTime){
 		var now = this.now();
@@ -153,6 +164,7 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 			endTime = endTime.substr(1);
 		}
 		this._scalar.gain.linearRampToValueAtTime(value, now + this.toSeconds(endTime));
+		return this;
 	};
 
 	/**
@@ -162,10 +174,12 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 	 *  @param {number} value        
 	 *  @param {Tone.Time} startTime    
 	 *  @param {number} timeConstant 
+	 *  @returns {Tone.Signal} `this`
 	 */
 	Tone.Signal.prototype.setTargetAtTime = function(value, startTime, timeConstant){
 		value *= this._syncRatio;
 		this._scalar.gain.setTargetAtTime(value, this.toSeconds(startTime), timeConstant);
+		return this;
 	};
 
 	/**
@@ -175,12 +189,14 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 	 *  @param {Array<number>} values    
 	 *  @param {Tone.Time} startTime 
 	 *  @param {Tone.Time} duration  
+	 *  @returns {Tone.Signal} `this`
 	 */
 	Tone.Signal.prototype.setValueCurveAtTime = function(values, startTime, duration){
 		for (var i = 0; i < values.length; i++){
 			values[i] *= this._syncRatio;
 		}
 		this._scalar.gain.setValueCurveAtTime(values, this.toSeconds(startTime), this.toSeconds(duration));
+		return this;
 	};
 
 	/**
@@ -188,9 +204,11 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 	 *  equal to startTime.
 	 *  
 	 *  @param  {Tone.Time} startTime
+	 *  @returns {Tone.Signal} `this`
 	 */
 	Tone.Signal.prototype.cancelScheduledValues = function(startTime){
 		this._scalar.gain.cancelScheduledValues(this.toSeconds(startTime));
+		return this;
 	};
 
 	/**
@@ -204,6 +222,7 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 	 *  @param  {Tone.Signal} signal to sync to
 	 *  @param {number=} ratio optionally pass in the ratio between 
 	 *                         the two signals, otherwise it will be computed
+	 *  @returns {Tone.Signal} `this`
 	 */
 	Tone.Signal.prototype.sync = function(signal, ratio){
 		if (ratio){
@@ -222,12 +241,14 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 		this.connectSeries(signal, this._scalar, this.output);
 		//set it ot the sync ratio
 		this._scalar.gain.value = this._syncRatio;
+		return this;
 	};
 
 	/**
 	 *  unbind the signal control
 	 *
 	 *  will leave the signal value as it was without the influence of the control signal
+	 *  @returns {Tone.Signal} `this`
 	 */
 	Tone.Signal.prototype.unsync = function(){
 		//make a new scalar so that it's disconnected from the control signal
@@ -239,15 +260,18 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 		this._syncRatio = 1;
 		//reconnect things up
 		Tone.Signal._constant.chain(this._scalar, this.output);
+		return this;
 	};
 
 	/**
 	 *  dispose and disconnect
+	 *  @returns {Tone.Signal} `this`
 	 */
 	Tone.Signal.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
 		this._scalar.disconnect();
 		this._scalar = null;
+		return this;
 	};
 
 	/**

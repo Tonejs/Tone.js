@@ -89,6 +89,7 @@ function(Tone){
 
 	/**
 	 *  clean up
+	 *  @returns {Tone.Inverse} `this`
 	 */
 	Tone.Inverse.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
@@ -103,6 +104,7 @@ function(Tone){
 		this._guessMult = null;
 		this._guess.disconnect();
 		this._guess = null;
+		return this;
 	};
 
 	// BEGIN INVERSE HELPER ///////////////////////////////////////////////////
