@@ -75,6 +75,7 @@ function(Tone){
 
 	/**
 	 *  clean up
+	 *  @returns {Tone.StereoEffect} `this`
 	 */
 	Tone.StereoEffect.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
@@ -88,6 +89,7 @@ function(Tone){
 		this.effectSendR = null;
 		this.effectReturnL = null;
 		this.effectReturnR = null;
+		return this;
 	};
 
 	return Tone.StereoEffect;

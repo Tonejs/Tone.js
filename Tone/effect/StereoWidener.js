@@ -73,22 +73,27 @@ define(["Tone/core/Tone", "Tone/effect/MidSideEffect", "Tone/signal/Signal",
 	/**
 	 *  set the stereo width. 0 = 100% mid. 1 = 100% side. 
 	 *  @param {number} width
+	 *  @returns {Tone.StereoWidener} `this`
 	 */
 	Tone.StereoWidener.prototype.setWidth = function(width){
 		this.width.setValue(width);
+		return this;
 	};
 
 	/**
 	 *  set the parameters with JSON
 	 *  @param {Object} params 
+	 *  @returns {Tone.StereoWidener} `this`
 	 */
 	Tone.StereoWidener.prototype.set = function(params){
 		if (!this.isUndef(params.width)) this.setWidth(params.width);
 		Tone.MidSideEffect.prototype.set.call(this, params);
+		return this;
 	};
 
 	/**
 	 *  clean up
+	 *  @returns {Tone.StereoWidener} `this`
 	 */
 	Tone.StereoWidener.prototype.dispose = function(){
 		Tone.MidSideEffect.prototype.dispose.call(this);
@@ -100,6 +105,7 @@ define(["Tone/core/Tone", "Tone/effect/MidSideEffect", "Tone/signal/Signal",
 		this._sideMult = null;
 		this._two.dispose();
 		this._two = null;
+		return this;
 	};
 
 	return Tone.StereoWidener;

@@ -44,6 +44,7 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/signal/WaveShaper"], funct
 	 *  order = 2 -> 2x^2 + 1
 	 *  order = 3 -> 4x^3 + 3x
 	 *  @param   {number} order the order of the Chebyshev nominal range of 1 - 100
+	 *  @returns {Tone.Chebyshev} `this`
 	 */
 	Tone.Chebyshev.prototype.setOrder = function(order) {
 		var curve = new Array(4096);
@@ -58,6 +59,7 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/signal/WaveShaper"], funct
 			}
 		}
 		this._shaper.setCurve(curve);
+		return this;
 	};
 
 	/**
@@ -85,18 +87,22 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/signal/WaveShaper"], funct
 	/**
 	 *  set the oversampling
 	 *  @param {string} oversampling can either be "none", "2x" or "4x"
+	 *  @returns {Tone.Chebyshev} `this`
 	 */
 	Tone.Chebyshev.prototype.setOversample = function(oversampling) {
 		this._shaper.setOversample(oversampling);
+		return this;
 	};
 
 	/**
 	 *  clean up
+	 *  @returns {Tone.Chebyshev} `this`
 	 */
 	Tone.Chebyshev.prototype.dispose = function(){
 		Tone.Effect.prototype.dispose.call(this);
 		this._shaper.dispose();
 		this._shaper = null;
+		return this;
 	};
 
 	return Tone.Chebyshev;

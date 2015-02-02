@@ -51,50 +51,62 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/LFO", "Tone/comp
 	 * Start the panner
 	 * 
 	 * @param {Tone.Time} [time=now] the panner begins.
+	 * @returns {Tone.AutoPanner} `this`
 	 */
 	Tone.AutoPanner.prototype.start = function(time){
 		this._lfo.start(time);
+		return this;
 	};
 
 	/**
 	 * Stop the panner
 	 * 
 	 * @param {Tone.Time} [time=now] the panner stops.
+	 * @returns {Tone.AutoPanner} `this`
 	 */
 	Tone.AutoPanner.prototype.stop = function(time){
 		this._lfo.stop(time);
+		return this;
 	};
 
 	/**
 	 * sync the panner to the transport
+	 * @returns {Tone.AutoPanner} `this`
 	 */
 	Tone.AutoPanner.prototype.sync = function(){
 		this._lfo.sync();
+		return this;
 	};
 
 	/**
 	 * unsync the panner from the transport
+	 * @returns {Tone.AutoPanner} `this`
 	 */
 	Tone.AutoPanner.prototype.unsync = function(){
 		this._lfo.unsync();
+		return this;
 	};
 
 	/**
 	 * Set the type of oscillator attached to the AutoPanner.
 	 * 
 	 * @param {string} type of oscillator the panner is attached to (sine|sawtooth|triangle|square)
+	 * @returns {Tone.AutoPanner} `this`
 	 */
 	Tone.AutoPanner.prototype.setType = function(type){
 		this._lfo.setType(type);
+		return this;
 	};
 
 	/**
 	 * Set frequency of the oscillator attached to the AutoPanner.
 	 * 
 	 * @param {number|string} freq in HZ of the oscillator's frequency.
+	 * @returns {Tone.AutoPanner} `this`
 	 */
 	Tone.AutoPanner.prototype.setFrequency = function(freq){
 		this._lfo.setFrequency(freq);
+		return this;
 	};
 
 	/**
@@ -109,6 +121,7 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/LFO", "Tone/comp
 
 	/**
 	 *  clean up
+	 *  @returns {Tone.AutoPanner} `this`
 	 */
 	Tone.AutoPanner.prototype.dispose = function(){
 		Tone.Effect.prototype.dispose.call(this);
@@ -116,6 +129,7 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/LFO", "Tone/comp
 		this._panner.dispose();
 		this._lfo = null;
 		this._panner = null;
+		return this;
 	};
 
 	return Tone.AutoPanner;

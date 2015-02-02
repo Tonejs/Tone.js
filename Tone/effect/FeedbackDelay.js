@@ -49,6 +49,7 @@ define(["Tone/core/Tone", "Tone/effect/FeedbackEffect", "Tone/signal/Signal"], f
 	 *  
 	 *  @param {Tone.Time} delayTime 
 	 *  @param {Tone.Time=} rampTime time it takes to reach the desired delayTime
+	 *  @returns {Tone.FeedbackDelay} `this`
 	 */
 	Tone.FeedbackDelay.prototype.setDelayTime = function(delayTime, rampTime){
 		if (rampTime){
@@ -56,19 +57,23 @@ define(["Tone/core/Tone", "Tone/effect/FeedbackEffect", "Tone/signal/Signal"], f
 		} else {
 			this.delayTime.setValue(this.toSeconds(delayTime));
 		}
+		return this;
 	};
 
 	/**
 	 *  sets the params in bulk
 	 *  @param {Object} param 
+	 *  @returns {Tone.FeedbackDelay} `this`
 	 */
 	Tone.FeedbackDelay.prototype.set = function(params){
 		if (!this.isUndef(params.delayTime)) this.setDelayTime(params.delayTime);
 		Tone.FeedbackEffect.prototype.set.call(this, params);
+		return this;
 	};
 
 	/**
 	 *  clean up
+	 *  @returns {Tone.FeedbackDelay} `this`
 	 */
 	Tone.FeedbackDelay.prototype.dispose = function(){
 		Tone.FeedbackEffect.prototype.dispose.call(this);
@@ -76,6 +81,7 @@ define(["Tone/core/Tone", "Tone/effect/FeedbackEffect", "Tone/signal/Signal"], f
 		this._delayNode.disconnect();
 		this._delayNode = null;
 		this.delayTime = null;
+		return this;
 	};
 
 	return Tone.FeedbackDelay;

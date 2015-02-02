@@ -97,6 +97,7 @@ function(Tone){
 	/**
 	 *  set the depth of the chorus
 	 *  @param {number} depth
+	 *  @returns {Tone.Chorus} `this`
 	 */
 	Tone.Chorus.prototype.setDepth = function(depth){
 		this._depth = depth;
@@ -105,37 +106,45 @@ function(Tone){
 		this._lfoL.setMax(this._delayTime + deviation);
 		this._lfoR.setMin(this._delayTime - deviation);
 		this._lfoR.setMax(this._delayTime + deviation);
+		return this;
 	};
 
 	/**
 	 *  set the delay time
 	 *  @param {number} delayTime in milliseconds
+	 *  @returns {Tone.Chorus} `this`
 	 */
 	Tone.Chorus.prototype.setDelayTime = function(delayTime){
 		this._delayTime = delayTime / 1000;
 		this.setDepth(this._depth);
+		return this;
 	};
 
 	/**
 	 *  set the chorus rate
 	 *  @param {number} rate in hertz
+	 *  @returns {Tone.Chorus} `this`
 	 */
 	Tone.Chorus.prototype.setRate = function(rate){
 		this._lfoL.setFrequency(rate);
+		return this;
 	};
 
 	/**
 	 *  set the LFO type
 	 *  @param {number} type
+	 *  @returns {Tone.Chorus} `this`
 	 */
 	Tone.Chorus.prototype.setType = function(type){
 		this._lfoL.setType(type);
 		this._lfoR.setType(type);
+		return this;
 	};
 
 	/**
 	 *  set multiple parameters at once with an object
 	 *  @param {Object} params the parameters as an object
+	 *  @returns {Tone.Chorus} `this`
 	 */
 	Tone.Chorus.prototype.set = function(params){
 		if (!this.isUndef(params.rate)) this.setRate(params.rate);
@@ -143,10 +152,12 @@ function(Tone){
 		if (!this.isUndef(params.depth)) this.setDepth(params.depth);
 		if (!this.isUndef(params.type)) this.setType(params.type);
 		Tone.FeedbackEffect.prototype.set.call(this, params);
+		return this;
 	};
 
 	/**
 	 *  clean up
+	 *  @returns {Tone.Chorus} `this`
 	 */
 	Tone.Chorus.prototype.dispose = function(){
 		Tone.StereoXFeedbackEffect.prototype.dispose.call(this);
@@ -158,6 +169,7 @@ function(Tone){
 		this._lfoR = null;
 		this._delayNodeL = null;
 		this._delayNodeR = null;
+		return this;
 	};
 
 	return Tone.Chorus;

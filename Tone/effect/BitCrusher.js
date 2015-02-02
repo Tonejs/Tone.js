@@ -44,11 +44,13 @@ function(Tone){
 
 	/**
 	 *  clean up
+	 *  @returns {Tone.BitCrusher} `this`
 	 */
 	Tone.BitCrusher.prototype.dispose = function(){
 		Tone.Effect.prototype.dispose.call(this);
 		this._floor.dispose();
 		this._floor = null;
+		return this;
 	}; 
 
 	return Tone.BitCrusher;

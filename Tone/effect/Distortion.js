@@ -42,6 +42,7 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/signal/WaveShaper"], funct
 	/**
 	 *  set the amount of distortion
 	 *  @param   {number} amount amount of distortion, nominal range of 0-1. 
+	 *  @returns {Tone.Distortion} `this`
 	 */
 	Tone.Distortion.prototype.setDistortion = function(amount) {
 		var k = amount * 100;
@@ -54,33 +55,40 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/signal/WaveShaper"], funct
 				return ( 3 + k ) * x * 20 * deg / ( Math.PI + k * Math.abs(x) );
 			}
 		});
+		return this;
 	};
 
 	/**
 	 *  set the oversampling
 	 *  @param {string} oversampling can either be "none", "2x" or "4x"
+	 *  @returns {Tone.Distortion} `this`
 	 */
 	Tone.Distortion.prototype.setOversample = function(oversampling) {
 		this._shaper.oversample = oversampling;
+		return this;
 	};
 
 	/**
 	 *  set in bulk
 	 *  @param {Object} params 
+	 *  @returns {Tone.Distortion} `this`
 	 */
 	Tone.Distortion.prototype.setOversample = function(params) {
 		if (!this.isUndef(params.distortion)) this.setDistortion(params.distortion);
 		if (!this.isUndef(params.oversample)) this.setOversample(params.oversample);
 		Tone.Effect.prototype.set.call(this, params);
+		return this;
 	};
 
 	/**
 	 *  clean up
+	 *  @returns {Tone.Distortion} `this`
 	 */
 	Tone.Distortion.prototype.dispose = function(){
 		Tone.Effect.prototype.dispose.call(this);
 		this._shaper.dispose();
 		this._shaper = null;
+		return this;
 	};
 
 	return Tone.Distortion;

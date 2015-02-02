@@ -69,22 +69,27 @@ function(Tone){
 	 * setDelayTime
 	 * 
 	 * @param {Tone.Time} delayTime
+	 * @returns {Tone.PingPongDelay} `this`
 	 */
 	Tone.PingPongDelay.prototype.setDelayTime = function(delayTime){
 		this.delayTime.setValue(this.toSeconds(delayTime));
+		return this;
 	};
 
 	/**
 	 *  set all of the parameters with an object
 	 *  @param {Object} params 
+	 *  @returns {Tone.PingPongDelay} `this`
 	 */
 	Tone.PingPongDelay.prototype.set = function(params){
 		if (!this.isUndef(params.delayTime)) this.setDelayTime(params.delayTime);
 		Tone.StereoXFeedbackEffect.prototype.set.call(this, params);
+		return this;
 	};
 
 	/**
 	 *  clean up
+	 *  @returns {Tone.PingPongDelay} `this`
 	 */
 	Tone.PingPongDelay.prototype.dispose = function(){
 		Tone.StereoXFeedbackEffect.prototype.dispose.call(this);
@@ -96,6 +101,7 @@ function(Tone){
 		this._rightDelay = null;
 		this._leftPreDelay = null;
 		this.delayTime = null;
+		return this;
 	};
 
 	return Tone.PingPongDelay;

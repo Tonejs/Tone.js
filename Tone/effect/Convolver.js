@@ -36,14 +36,6 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/effect/Effect"], function(To
 	Tone.extend(Tone.Convolver, Tone.Effect);
 
 	/**
-	 *  the default parameters
-	 *  @static
-	 *  @const
-	 *  @type {Object}
-	 */
-	Tone.Convolver.defaults = {};
-
-	/**
 	 *  Load the impulse response url as an audio buffer.
 	 *  Decodes the audio asynchronously and invokes
 	 *  the callback once the audio buffer loads.
@@ -51,6 +43,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/effect/Effect"], function(To
 	 *                      filetype support depends on the
 	 *                      browser.
 	 *  @param  {function(Tone.Convolver)=} callback
+	 *  @returns {Tone.Convolver} `this`
 	 */
 	Tone.Convolver.prototype.load = function(url, callback){
 		var self = this;
@@ -60,20 +53,24 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/effect/Effect"], function(To
 				callback(this);
 			}
 		});
+		return this;
 	};
 
 	/**
 	 *  set the buffer
 	 *  @param {AudioBuffer} buffer the impulse response
+	 *  @returns {Tone.Convolver} `this`
 	 */
 	Tone.Convolver.prototype.setBuffer = function(buffer){
 		this._buffer.set(buffer);
 		this._convolver.buffer = this._buffer.get();
+		return this;
 	};
 
 	/**
 	 *  set multiple parameters at once with an object
 	 *  @param {Object} params the parameters as an object
+	 *  @returns {Tone.Convolver} `this`
 	 */
 	Tone.Convolver.prototype.set = function(params){
 		if (!this.isUndef(params.buffer)) this.setBuffer(params.buffer);
@@ -82,6 +79,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/effect/Effect"], function(To
 
 	/**
 	 *  dispose and disconnect
+	 *  @returns {Tone.Convolver} `this`
 	 */
 	Tone.Convolver.prototype.dispose = function(){
 		Tone.Effect.prototype.dispose.call(this);
@@ -89,6 +87,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/effect/Effect"], function(To
 		this._convolver = null;
 		this._buffer.dispose();
 		this._buffer = null;
+		return this;
 	}; 
 
 	return Tone.Convolver;

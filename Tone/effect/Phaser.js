@@ -116,46 +116,55 @@ function(Tone){
 	/**
 	 *  set the depth of the chorus
 	 *  @param {number} depth
+	 *  @returns {Tone.Phaser} `this`
 	 */
 	Tone.Phaser.prototype.setDepth = function(depth){
 		this._depth = depth;
 		var max = this._baseFrequency + this._baseFrequency * depth;
 		this._lfoL.setMax(max);
 		this._lfoR.setMax(max);
+		return this;
 	};
 
 	/**
 	 *  set the base frequency of the filters
 	 *  @param {number} freq
+	 *  @returns {Tone.Phaser} `this`
 	 */
 	Tone.Phaser.prototype.setBaseFrequency = function(freq){
 		this._baseFrequency = freq;	
 		this._lfoL.setMin(freq);
 		this._lfoR.setMin(freq);
 		this.setDepth(this._depth);
+		return this;
 	};
 
 	/**
 	 *  set the phaser rate
 	 *  @param {number} rate in hertz
+	 *  @returns {Tone.Phaser} `this`
 	 */
 	Tone.Phaser.prototype.setRate = function(rate){
 		this._lfoL.setFrequency(rate);
+		return this;
 	};
 
 	/**
 	 *  bulk setter
 	 *  @param {object} params
+	 *  @returns {Tone.Phaser} `this`
 	 */
 	Tone.Phaser.prototype.set = function(params){
 		if (!this.isUndef(params.rate)) this.setRate(params.rate);
 		if (!this.isUndef(params.baseFrequency)) this.setBaseFrequency(params.baseFrequency);
 		if (!this.isUndef(params.depth)) this.setDepth(params.depth);
 		Tone.StereoEffect.prototype.set.call(this, params);
+		return this;
 	};
 
 	/**
 	 *  clean up
+	 *  @returns {Tone.Phaser} `this`
 	 */
 	Tone.Phaser.prototype.dispose = function(){
 		Tone.StereoEffect.prototype.dispose.call(this);
@@ -173,6 +182,7 @@ function(Tone){
 			this._filtersR[j] = null;
 		}
 		this._filtersR = null;
+		return this;
 	};
 
 	return Tone.Phaser;
