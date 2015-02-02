@@ -124,6 +124,7 @@ function(Tone){
 	 *  
 	 *  @param  {Tone.Time} [time=now] the time the note will occur
 	 *  @param {number} [velocity=1] the velocity of the note
+	 *  @returns {Tone.AMSynth} `this`
 	 */
 	Tone.AMSynth.prototype.triggerEnvelopeAttack = function(time, velocity){
 		//the port glide
@@ -133,39 +134,47 @@ function(Tone){
 		this.modulator.envelope.triggerAttack(time);
 		this.carrier.filterEnvelope.triggerAttack(time);
 		this.modulator.filterEnvelope.triggerAttack(time);
+		return this;
 	};
 
 	/**
 	 *  trigger the release portion of the note
 	 *  
 	 *  @param  {Tone.Time} [time=now] the time the note will release
+	 *  @returns {Tone.AMSynth} `this`
 	 */
 	Tone.AMSynth.prototype.triggerEnvelopeRelease = function(time){
 		this.carrier.triggerRelease(time);
 		this.modulator.triggerRelease(time);
+		return this;
 	};
 
 	/**
 	 *  set the ratio between the two carrier and the modulator
 	 *  @param {number} ratio
+	 *  @returns {Tone.AMSynth} `this`
 	 */
 	Tone.AMSynth.prototype.setHarmonicity = function(ratio){
 		this._harmonicity.setValue(ratio);
+		return this;
 	};
 
 	/**
 	 *  bulk setter
 	 *  @param {Object} param 
+	 *  @returns {Tone.AMSynth} `this`
 	 */
 	Tone.AMSynth.prototype.set = function(params){
 		if (!this.isUndef(params.harmonicity)) this.setHarmonicity(params.harmonicity);
 		if (!this.isUndef(params.carrier)) this.carrier.set(params.carrier);
 		if (!this.isUndef(params.modulator)) this.modulator.set(params.modulator);
 		Tone.Monophonic.prototype.set.call(this, params);
+		return this;
 	};
 
 	/**
 	 *  clean up
+	 *  @returns {Tone.AMSynth} `this`
 	 */
 	Tone.AMSynth.prototype.dispose = function(){
 		Tone.Monophonic.prototype.dispose.call(this);
@@ -181,6 +190,7 @@ function(Tone){
 		this._modulationScale = null;
 		this._modulationNode.disconnect();
 		this._modulationNode = null;
+		return this;
 	};
 
 	return Tone.AMSynth;

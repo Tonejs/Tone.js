@@ -39,20 +39,24 @@ define(["Tone/core/Tone", "Tone/core/Master", "Tone/core/Note"], function(Tone){
 	 *  @param  {Tone.Time} duration the duration of the note
 	 *  @param {Tone.Time} [time=now]     the time of the attack
 	 *  @param  {number} velocity the velocity
+	 *  @returns {Tone.Instrument} `this`
 	 */
 	Tone.Instrument.prototype.triggerAttackRelease = function(note, duration, time, velocity){
 		time = this.toSeconds(time);
 		duration = this.toSeconds(duration);
 		this.triggerAttack(note, time, velocity);
 		this.triggerRelease(time + duration);
+		return this;
 	};
 
 	/**
 	 *  bulk setter
 	 *  @param {Object} params the params
+	 *  @returns {Tone.Instrument} `this`
 	 */
 	Tone.Instrument.prototype.set = function(params) {
 		if (!this.isUndef(params.volume)) this.setVolume(params.volume);
+		return this;
 	};
 
 	/**
@@ -69,9 +73,11 @@ define(["Tone/core/Tone", "Tone/core/Master", "Tone/core/Note"], function(Tone){
 
 	/**
 	 *  clean up
+	 *  @returns {Tone.Instrument} `this`
 	 */
 	Tone.Instrument.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
+		return this;
 	};
 
 	return Tone.Instrument;

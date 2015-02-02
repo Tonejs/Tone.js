@@ -81,6 +81,7 @@ function(Tone){
 	 *                                             over the array to play each of the notes
 	 *  @param  {Tone.Time} [time=now]  the start time of the note
 	 *  @param {number} [velocity=1] the velocity of the note
+	 *  @returns {Tone.PolySynth} `this`
 	 */
 	Tone.PolySynth.prototype.triggerAttack = function(value, time, velocity){
 		if (!Array.isArray(value)){
@@ -97,6 +98,7 @@ function(Tone){
 				this._activeVoices[stringified] = voice;
 			}
 		}
+		return this;
 	};
 
 	/**
@@ -108,11 +110,13 @@ function(Tone){
 	 *  @param  {Tone.Time} duration the duration of the note
 	 *  @param  {Tone.Time} [time=now]     if no time is given, defaults to now
 	 *  @param  {number} [velocity=1] the velocity of the attack (0-1)
+	 *  @returns {Tone.PolySynth} `this`
 	 */
 	Tone.PolySynth.prototype.triggerAttackRelease = function(value, duration, time, velocity){
 		time = this.toSeconds(time);
 		this.triggerAttack(value, time, velocity);
 		this.triggerRelease(value, time + this.toSeconds(duration));
+		return this;
 	};
 
 	/**
@@ -121,6 +125,7 @@ function(Tone){
 	 *                                             if the value is an array, it will iterate
 	 *                                             over the array to play each of the notes
 	 *  @param  {Tone.Time} [time=now]  the release time of the note
+	 *  @returns {Tone.PolySynth} `this`
 	 */
 	Tone.PolySynth.prototype.triggerRelease = function(value, time){
 		if (!Array.isArray(value)){
@@ -136,29 +141,35 @@ function(Tone){
 				this._activeVoices[stringified] = null;
 			}
 		}
+		return this;
 	};
 
 	/**
 	 *  set the options on all of the voices
 	 *  @param {Object} params 
+	 *  @returns {Tone.PolySynth} `this`
 	 */
 	Tone.PolySynth.prototype.set = function(params){
 		for (var i = 0; i < this.voices.length; i++){
 			this.voices[i].set(params);
 		}
+		return this;
 	};
 
 	/**
 	 *  @param {string} presetName the preset name
+	 *  @returns {Tone.PolySynth} `this`
 	 */
 	Tone.PolySynth.prototype.setPreset = function(presetName){
 		for (var i = 0; i < this.voices.length; i++){
 			this.voices[i].setPreset(presetName);
 		}
+		return this;
 	};
 
 	/**
 	 *  clean up
+	 *  @returns {Tone.PolySynth} `this`
 	 */
 	Tone.PolySynth.prototype.dispose = function(){
 		Tone.Instrument.prototype.dispose.call(this);
@@ -169,6 +180,7 @@ function(Tone){
 		this.voices = null;
 		this._activeVoices = null;
 		this._freeVoices = null;
+		return this;
 	};
 
 	return Tone.PolySynth;

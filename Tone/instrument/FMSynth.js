@@ -129,6 +129,7 @@ function(Tone){
 	 *  
 	 *  @param  {Tone.Time} [time=now] the time the note will occur
 	 *  @param {number} [velocity=1] the velocity of the note
+	 *  @returns {Tone.FMSynth} `this`
 	 */
 	Tone.FMSynth.prototype.triggerEnvelopeAttack = function(time, velocity){
 		//the port glide
@@ -138,37 +139,45 @@ function(Tone){
 		this.modulator.envelope.triggerAttack(time);
 		this.carrier.filterEnvelope.triggerAttack(time);
 		this.modulator.filterEnvelope.triggerAttack(time);
+		return this;
 	};
 
 	/**
 	 *  trigger the release portion of the note
 	 *  
 	 *  @param  {Tone.Time} [time=now] the time the note will release
+	 *  @returns {Tone.FMSynth} `this`
 	 */
 	Tone.FMSynth.prototype.triggerEnvelopeRelease = function(time){
 		this.carrier.triggerRelease(time);
 		this.modulator.triggerRelease(time);
+		return this;
 	};
 
 	/**
 	 *  set the ratio between the two carrier and the modulator
 	 *  @param {number} ratio
+	 *  @returns {Tone.FMSynth} `this`
 	 */
 	Tone.FMSynth.prototype.setHarmonicity = function(ratio){
 		this._harmonicity.setValue(ratio);
+		return this;
 	};
 
 	/**
 	 *  set the modulation index
 	 *  @param {number} index
+	 *  @returns {Tone.FMSynth} `this`
 	 */
 	Tone.FMSynth.prototype.setModulationIndex = function(index){
 		this._modulationIndex.setValue(index);
+		return this;
 	};
 
 	/**
 	 *  bulk setter
 	 *  @param {Object} param 
+	 *  @returns {Tone.FMSynth} `this`
 	 */
 	Tone.FMSynth.prototype.set = function(params){
 		if (!this.isUndef(params.harmonicity)) this.setHarmonicity(params.harmonicity);
@@ -176,10 +185,12 @@ function(Tone){
 		if (!this.isUndef(params.carrier)) this.carrier.set(params.carrier);
 		if (!this.isUndef(params.modulator)) this.modulator.set(params.modulator);
 		Tone.Monophonic.prototype.set.call(this, params);
+		return this;
 	};
 
 	/**
 	 *  clean up
+	 *  @returns {Tone.FMSynth} `this`
 	 */
 	Tone.FMSynth.prototype.dispose = function(){
 		Tone.Monophonic.prototype.dispose.call(this);
@@ -195,6 +206,7 @@ function(Tone){
 		this._modulationIndex = null;
 		this._harmonicity = null;
 		this._modulationNode = null;
+		return this;
 	};
 
 	return Tone.FMSynth;
