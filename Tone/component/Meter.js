@@ -136,13 +136,16 @@ define(["Tone/core/Tone", "Tone/core/Master"], function(Tone){
 		return this.gainToDb(this.getLevel(channel));
 	};
 
-	// @returns {boolean} if the audio has clipped in the last 500ms
+	/**
+	 * @returns {boolean} if the audio has clipped in the last 500ms
+	 */
 	Tone.Meter.prototype.isClipped = function(){
 		return Date.now() - this._lastClip < this.clipMemory;
 	};
 
 	/**
-	 *  @override
+	 *  clean up
+	 *  @returns {Tone.Meter} `this`
 	 */
 	Tone.Meter.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
@@ -150,6 +153,7 @@ define(["Tone/core/Tone", "Tone/core/Master"], function(Tone){
 		this._jsNode.onaudioprocess = null;
 		this._volume = null;
 		this._values = null;
+		return this;
 	};
 
 	return Tone.Meter;

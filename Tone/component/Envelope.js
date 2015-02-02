@@ -64,47 +64,43 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Pow"], function(Ton
 	};
 
 	/**
-	 *  set all of the parameters in bulk
-	 *  @param {Object} param the name of member as the key
-	 *                        and the value as the value 
-	 */
-	Tone.Envelope.prototype.set = function(params){
-		if (!this.isUndef(params.attack)) this.setAttack(params.attack);
-		if (!this.isUndef(params.decay)) this.setDecay(params.decay);
-		if (!this.isUndef(params.sustain)) this.setSustain(params.sustain);
-		if (!this.isUndef(params.release)) this.setRelease(params.release);
-	};
-
-	/**
 	 *  set the attack time
 	 *  @param {Tone.Time} time
+	 *  @returns {Tone.Envelope} `this`
 	 */
 	Tone.Envelope.prototype.setAttack = function(time){
 		this.attack = time;
+		return this;
 	};
 
 	/**
 	 *  set the decay time
 	 *  @param {Tone.Time} time
+	 *  @returns {Tone.Envelope} `this`
 	 */
 	Tone.Envelope.prototype.setDecay = function(time){
 		this.decay = time;
+		return this;
 	};
 
 	/**
 	 *  set the release time
 	 *  @param {Tone.Time} time
+	 *  @returns {Tone.Envelope} `this`
 	 */
 	Tone.Envelope.prototype.setRelease = function(time){
 		this.release = time;
+		return this;
 	};
 
 	/**
 	 *  set the sustain amount
 	 *  @param {number} sustain value between 0-1
+	 *  @returns {Tone.Envelope} `this`
 	 */
 	Tone.Envelope.prototype.setSustain = function(sustain){
 		this.sustain = sustain;
+		return this;
 	};
 
 	/**
@@ -115,10 +111,11 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Pow"], function(Ton
 	Tone.Envelope.prototype._timeMult = 0.25;
 
 	/**
-	 * attack->decay->sustain linear ramp
-	 * @param  {Tone.Time} [time=now]
-	 * @param {number} [velocity=1] the velocity of the envelope scales the vales.
+	 *  attack->decay->sustain linear ramp
+	 *  @param  {Tone.Time} [time=now]
+	 *  @param {number} [velocity=1] the velocity of the envelope scales the vales.
 	 *                               number between 0-1
+	 *  @returns {Tone.Envelope} `this`
 	 */
 	Tone.Envelope.prototype.triggerAttack = function(time, velocity){
 		velocity = this.defaultArg(velocity, 1);
@@ -130,17 +127,20 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Pow"], function(Ton
 		this._sig.cancelScheduledValues(time);
 		this._sig.setTargetAtTime(scaledMax, time, attack * this._timeMult);
 		this._sig.setTargetAtTime(sustainVal, time + attack, decay * this._timeMult);	
+		return this;
 	};
 	
 	/**
-	 * triggers the release of the envelope with a linear ramp
-	 * @param  {Tone.Time} [time=now]
+	 *  triggers the release of the envelope with a linear ramp
+	 *  @param  {Tone.Time} [time=now]
+	 *  @returns {Tone.Envelope} `this`
 	 */
 	Tone.Envelope.prototype.triggerRelease = function(time){
 		time = this.toSeconds(time);
 		this._sig.cancelScheduledValues(time);
 		var release = this.toSeconds(this.release);
 		this._sig.setTargetAtTime(0, time, release * this._timeMult);
+		return this;
 	};
 
 	/**
@@ -148,11 +148,13 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Pow"], function(Ton
 	 *  @param {Tone.Time} duration the duration of the note
 	 *  @param {Tone.Time} [time=now] the time of the attack
 	 *  @param {number} [velocity=1] the velocity of the note
+	 *  @returns {Tone.Envelope} `this`
 	 */
 	Tone.Envelope.prototype.triggerAttackRelease = function(duration, time, velocity) {
 		time = this.toSeconds(time);
 		this.triggerAttack(time, velocity);
 		this.triggerRelease(time + this.toSeconds(duration));
+		return this;
 	};
 
 	/**
@@ -164,11 +166,13 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Pow"], function(Ton
 
 	/**
 	 *  disconnect and dispose
+	 *  @returns {Tone.Envelope} `this`
 	 */
 	Tone.Envelope.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
 		this._sig.dispose();
 		this._sig = null;
+		return this;
 	};
 
 	return Tone.Envelope;

@@ -35,15 +35,24 @@ define(["Tone/core/Tone", "Tone/component/Panner", "Tone/core/Master"], function
 	Tone.PanVol.prototype.setVolume = Tone.Master.setVolume;
 
 	/**
+	 *  gets the getVolume method from {@link Tone.Master}
+	 *  @method
+	 */
+	Tone.PanVol.prototype.getVolume = Tone.Master.getVolume;
+
+	/**
 	 *  set the panning
 	 *  @param {number} pan 0-1 L-R
+	 *  @returns {Tone.PanVol} `this`
 	 */
 	Tone.PanVol.prototype.setPan = function(pan){
 		this.pan.setPan(pan);
+		return this;
 	};
 
 	/**
 	 *  clean up
+	 *  @returns {Tone.PanVol} `this`
 	 */
 	Tone.PanVol.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
@@ -51,6 +60,7 @@ define(["Tone/core/Tone", "Tone/component/Panner", "Tone/core/Master"], function
 		this.pan = null;
 		this.vol.disconnect();
 		this.vol = null;
+		return this;
 	};
 
 	return Tone.PanVol;

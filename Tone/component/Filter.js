@@ -58,6 +58,13 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 		 */
 		this._type = options.type;
 
+		/**
+		 *  the rolloff value of the filter
+		 *  @type {number}
+		 *  @private
+		 */
+		this._rolloff = options.rolloff;
+
 		//set the rolloff and make the connections
 		this.setRolloff(options.rolloff);
 	};
@@ -79,27 +86,16 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	};
 
 	/**
-	 *  set the parameters at once
-	 *  @param {Object} params
-	 */
-	Tone.Filter.prototype.set = function(params){
-		if (!this.isUndef(params.type)) this.setType(params.type);
-		if (!this.isUndef(params.detune)) this.detune.setValue(params.detune);
-		if (!this.isUndef(params.frequency)) this.setFrequency(params.frequency);
-		if (!this.isUndef(params.Q)) this.Q.setValue(params.Q);
-		if (!this.isUndef(params.gain)) this.gain.setValue(params.gain);
-		if (!this.isUndef(params.rolloff)) this.setRolloff(params.rolloff);
-	};
-
-	/**
 	 *  set the type
 	 *  @param {string} type the filter type
+	 *  @return {Tone.Filter} `this`
 	 */
 	Tone.Filter.prototype.setType = function(type){
 		this._type = type;
 		for (var i = 0; i < this._filters.length; i++){
 			this._filters[i].type = type;
 		}
+		return this;
 	};
 
 	/**
@@ -111,33 +107,23 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	};
 
 	/**
-	 *  @memberOf Tone.Filter
-	 *  @member {string} type the type of the filter
-	 *  @instance
-	 */
-	Object.defineProperty(Tone.Filter.prototype, "type", {
-		get : function(){
-			return this.getType();
-		},
-		set : function(val){
-			this.setType(val);
-		}
-	});
-
-	/**
 	 *  set the frequency
 	 *  @param {number|string} freq the frequency value
+	 *  @return {Tone.Filter} `this`
 	 */
 	Tone.Filter.prototype.setFrequency = function(freq){
 		this.frequency.setValue(this.toFrequency(freq));
+		return this;
 	};
 
 	/**
 	 *  set the quality of the filter
 	 *  @param {number} Q the filter's Q
+	 *  @return {Tone.Filter} `this`
 	 */
 	Tone.Filter.prototype.setQ = function(Q){
 		this.Q.setValue(Q);
+		return this;
 	};
 
 	/**
@@ -146,6 +132,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	 *  
 	 *  @param {number} rolloff the slope of the rolloff. only accepts
 	 *                          -12, -24, and -48. 
+	 *  @return {Tone.Filter} `this`
 	 */
 	Tone.Filter.prototype.setRolloff = function(rolloff){
 		var cascadingCount = Math.log(rolloff / -12) / Math.LN2 + 1;
@@ -153,6 +140,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 		if (cascadingCount % 1 !== 0){
 			throw new RangeError("Filter rolloff can only be -12, -24, or -48");
 		}
+		this._rolloff = rolloff;
 		//first disconnect the filters and throw them away
 		this.input.disconnect();
 		for (var i = 0; i < this._filters.length; i++) {
@@ -172,10 +160,20 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 		//connect them up
 		var connectionChain = [this.input].concat(this._filters).concat([this.output]);
 		this.connectSeries.apply(this, connectionChain);
+		return this;
+	};
+
+	/**
+	 * get the rolloff value
+	 * @return {number} the rolloff
+	 */
+	Tone.Filter.prototype.getRolloff = function(){
+		return this._rolloff;
 	};
 
 	/**
 	 *  clean up
+	 *  @return {Tone.Filter} `this`
 	 */
 	Tone.Filter.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
@@ -192,7 +190,24 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 		this.Q = null;
 		this.gain = null;
 		this.detune = null;
+		return this;
 	};
+
+	/**
+	 * the type of the filter
+	 * @memberOf Tone.Filter#
+	 * @type {string}
+	 * @name type
+	 */
+	Tone._defineGetterSetter(Tone.Filter, "type");
+
+	/**
+	 * the rolloff of the filter
+	 * @memberOf Tone.Filter#
+	 * @type {number}
+	 * @name rolloff
+	 */
+	Tone._defineGetterSetter(Tone.Filter, "rolloff");
 
 	return Tone.Filter;
 });

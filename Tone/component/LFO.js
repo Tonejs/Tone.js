@@ -11,7 +11,7 @@ function(Tone){
 	 *          and change when the tempo changes.
 	 *
 	 *  @constructor
-	 *  @extends {Tone}
+	 *  @extends {Tone.Oscillator}
 	 *  @param {Tone.Time} [frequency="4n"]
 	 *  @param {number} [outputMin=0]
 	 *  @param {number} [outputMax=1]
@@ -24,10 +24,14 @@ function(Tone){
 		 *  the oscillator
 		 *  @type {Tone.Oscillator}
 		 */
-		this.oscillator = new Tone.Oscillator(options.frequency, options.type);
+		this.oscillator = new Tone.Oscillator({
+			"frequency" : options.frequency, 
+			"type" : options.type, 
+			"phase" : options.phase
+		});
 
 		/**
-		 *  pointer to the oscillator's frequency
+		 *  the lfo's frequency
 		 *  @type {Tone.Signal}
 		 */
 		this.frequency = this.oscillator.frequency;
@@ -48,7 +52,7 @@ function(Tone){
 		this.oscillator.chain(this._a2g, this._scaler);
 	};
 
-	Tone.extend(Tone.LFO);
+	Tone.extend(Tone.LFO, Tone.Oscillator);
 
 	/**
 	 *  the default parameters
@@ -61,23 +65,28 @@ function(Tone){
 		"type" : "sine",
 		"min" : 0,
 		"max" : 1,
+		"phase" : 0,
 		"frequency" : "4n",
 	};
 
 	/**
 	 *  start the LFO
 	 *  @param  {Tone.Time} [time=now] the time the LFO will start
+	 *  @returns {Tone.LFO} `this`
 	 */
 	Tone.LFO.prototype.start = function(time){
 		this.oscillator.start(time);
+		return this;
 	};
 
 	/**
 	 *  stop the LFO
 	 *  @param  {Tone.Time} [time=now] the time the LFO will stop
+	 *  @returns {Tone.LFO} `this`
 	 */
 	Tone.LFO.prototype.stop = function(time){
 		this.oscillator.stop(time);
+		return this;
 	};
 
 	/**
@@ -86,70 +95,90 @@ function(Tone){
 	 *
 	 *  @param {Tone.Time} [delay=0] the time to delay the start of the
 	 *                                LFO from the start of the transport
+	 *  @returns {Tone.LFO} `this`
 	 */
 	Tone.LFO.prototype.sync = function(delay){
 		this.oscillator.sync(delay);
 		this.oscillator.syncFrequency();
+		return this;
 	};
 
 	/**
 	 *  unsync the LFO from transport control
+	 *  @returns {Tone.LFO} `this`
 	 */
 	Tone.LFO.prototype.unsync = function(){
 		this.oscillator.unsync();
 		this.oscillator.unsyncFrequency();
-	};
-
-
-	/**
-	 *  set the frequency
-	 *  @param {Tone.Time} rate 
-	 */
-	Tone.LFO.prototype.setFrequency = function(rate){
-		this.oscillator.setFrequency(rate);
+		return this;
 	};
 
 	/**
 	 *  set the phase
 	 *  @param {number} phase 
+	 *  @returns {Tone.LFO} `this`
 	 */
 	Tone.LFO.prototype.setPhase = function(phase){
 		this.oscillator.setPhase(phase);
+		return this;
+	};
+
+	/**
+	 *  @returns {number} the phase
+	 */
+	Tone.LFO.prototype.getPhase = function(){
+		return this.oscillator.getPhase();
 	};
 
 	/**
 	 *  set the minimum output of the LFO
 	 *  @param {number} min 
+	 *  @returns {Tone.LFO} `this`
 	 */
 	Tone.LFO.prototype.setMin = function(min){
 		this._scaler.setMin(min);
+		return this;
+	};
+
+	/**
+	 *  @return {number} the minimum output of the LFO
+	 */
+	Tone.LFO.prototype.getMin = function(){
+		return this._scaler.min;
 	};
 
 	/**
 	 *  Set the maximum output of the LFO
 	 *  @param {number} min 
+	 *  @returns {Tone.LFO} `this`
 	 */
 	Tone.LFO.prototype.setMax = function(max){
 		this._scaler.setMax(max);
+		return this;
+	};
+
+	/**
+	 *  @return {number} the maximum output of the LFO
+	 */
+	Tone.LFO.prototype.getMax = function(){
+		return this._scaler.max;
 	};
 
 	/**
 	 *  Set the waveform of the LFO
 	 *  @param {string} type 
+	 *  @returns {Tone.LFO} `this`
 	 */
 	Tone.LFO.prototype.setType = function(type){
 		this.oscillator.setType(type);
+		return this;
 	};
 
 	/**
-	 *  set all of the parameters with an object
-	 *  @param {Object} params 
+	 *  @returns {string} the type
 	 */
-	Tone.LFO.prototype.set = function(params){
-		if (!this.isUndef(params.frequency)) this.setFrequency(params.frequency);
-		if (!this.isUndef(params.type)) this.setType(params.type);
-		if (!this.isUndef(params.min)) this.setMin(params.min);
-		if (!this.isUndef(params.max)) this.setMax(params.max);
+	Tone.LFO.prototype.getType = function(){
+		return this.oscillator.getType();
 	};
 
 	/**
@@ -164,6 +193,7 @@ function(Tone){
 
 	/**
 	 *  disconnect and dispose
+	 *  @returns {Tone.LFO} `this`
 	 */
 	Tone.LFO.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
@@ -174,7 +204,24 @@ function(Tone){
 		this._a2g.dispose();
 		this._a2g = null;
 		this.frequency = null;
+		return this;
 	};
+
+	/**
+	 * the miniumum output of the scale
+	 * @memberOf Tone.LFO#
+	 * @type {number}
+	 * @name min
+	 */
+	Tone._defineGetterSetter(Tone.LFO, "min");
+
+	/**
+	 * the maximum output of the scale
+	 * @memberOf Tone.LFO#
+	 * @type {number}
+	 * @name max
+	 */
+	Tone._defineGetterSetter(Tone.LFO, "max");
 
 	return Tone.LFO;
 });

@@ -29,18 +29,22 @@ define(["Tone/core/Tone", "Tone/component/Compressor"], function(Tone){
 	/**
 	 *  set the threshold value
 	 *  @param {number} value the threshold in decibels
+	 *  @returns {Tone.Limiter} `this`
 	 */
 	Tone.Limiter.prototype.setThreshold = function(value) {
 		this._compressor.setThreshold(value);
+		return this;
 	};
 
 	/**
 	 *  clean up
+	 *  @returns {Tone.Limiter} `this`
 	 */
 	Tone.Limiter.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
 		this._compressor.dispose();
 		this._compressor = null;
+		return this;
 	};
 
 	return Tone.Limiter;

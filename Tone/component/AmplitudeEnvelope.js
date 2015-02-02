@@ -27,12 +27,5 @@ define(["Tone/core/Tone", "Tone/component/Envelope"], function(Tone){
 
 	Tone.extend(Tone.AmplitudeEnvelope, Tone.Envelope);
 
-	/**
-	 *  clean up
-	 */
-	Tone.AmplitudeEnvelope.prototype.dispose = function(){
-		Tone.Envelope.prototype.dispose.call(this);
-	};
-
 	return Tone.AmplitudeEnvelope;
 });

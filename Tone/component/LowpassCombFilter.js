@@ -97,6 +97,7 @@ define(["Tone/core/Tone", "Tone/signal/ScaleExp", "Tone/signal/Signal"], functio
 	 *  	
 	 *  @param {number} delayAmount the delay amount
 	 *  @param {Tone.Time} [time=now]        when the change should occur
+	 *  @returns {Tone.LowpassCombFilter} `this`
 	 */
 	Tone.LowpassCombFilter.prototype.setDelayTime = function(delayAmount, time) {
 		time = this.toSeconds(time);
@@ -119,10 +120,12 @@ define(["Tone/core/Tone", "Tone/signal/ScaleExp", "Tone/signal/Signal"], functio
 				this._filterDelays[j].setDelay(delayAmount, time);
 			}
 		}
+		return this;
 	};
 
 	/**
 	 *  clean up
+	 *  @returns {Tone.LowpassCombFilter} `this`
 	 */
 	Tone.LowpassCombFilter.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
@@ -140,6 +143,7 @@ define(["Tone/core/Tone", "Tone/signal/ScaleExp", "Tone/signal/Signal"], functio
 		this._resScale = null;
 		this._feedback.disconnect();
 		this._feedback = null;
+		return this;
 	};
 
 	// BEGIN HELPER CLASS //

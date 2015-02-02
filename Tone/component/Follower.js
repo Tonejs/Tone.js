@@ -98,12 +98,14 @@ function(Tone){
 
 	/**
 	 *  sets the attack and release times in the wave shaper
-	 *  @param   {number} attack  
-	 *  @param   {number} release 
+	 *  @param   {Tone.Time} attack  
+	 *  @param   {Tone.Time} release 
 	 *  @private
 	 */
 	Tone.Follower.prototype._setAttackRelease = function(attack, release){
 		var minTime = this.bufferTime;
+		attack = this.toFrequency(attack);
+		release = this.toFrequency(release);
 		attack = Math.max(attack, minTime);
 		release = Math.max(release, minTime);
 		this._frequencyValues.setMap(function(val){
@@ -118,29 +120,39 @@ function(Tone){
 	/**
 	 *  set the attack time
 	 *  @param {Tone.Time} attack
+	 *  @returns {Tone.Follower} `this`
 	 */
 	Tone.Follower.prototype.setAttack = function(attack){
-		this._attack = this.secondsToFrequency(attack);
+		this._attack = attack;
 		this._setAttackRelease(this._attack, this._release);
+		return this;
+	};
+
+	/**
+	 *  get the attack time
+	 *  @returns {Tone.Time} the attack time
+	 */
+	Tone.Follower.prototype.getAttack = function(){
+		return this._attack;
 	};
 
 	/**
 	 *  set the release time
 	 *  @param {Tone.Time} release
+	 *  @returns {Tone.Follower} `this`
 	 */
 	Tone.Follower.prototype.setRelease = function(release){
-		this._release = this.secondsToFrequency(release);
+		this._release = release;
 		this._setAttackRelease(this._attack, this._release);
+		return this;
 	};
 
 	/**
-	 *  setter in bulk
-	 *  @param {Object} params 
+	 *  get the release time
+	 *  @returns {Tone.Time} the release time
 	 */
-	Tone.Follower.prototype.set = function(params){
-		if (!this.isUndef(params.attack)) this.setAttack(params.attack);
-		if (!this.isUndef(params.release)) this.setRelease(params.release);
-		Tone.Effect.prototype.set.call(this, params);
+	Tone.Follower.prototype.getRelease = function(){
+		return this._release;
 	};
 
 	/**
@@ -151,6 +163,7 @@ function(Tone){
 
 	/**
 	 *  dispose
+	 *  @returns {Tone.Follower} `this`
 	 */
 	Tone.Follower.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
@@ -167,7 +180,24 @@ function(Tone){
 		this._mult.dispose();
 		this._mult = null;
 		this._curve = null;
+		return this;
 	};
+
+	/**
+	 * the attack time
+	 * @memberOf Tone.Follower#
+	 * @type {Tone.Time}
+	 * @name attack
+	 */
+	Tone._defineGetterSetter(Tone.Follower, "attack");
+
+	/**
+	 * the release time
+	 * @memberOf Tone.Follower#
+	 * @type {Tone.Time}
+	 * @name release
+	 */
+	Tone._defineGetterSetter(Tone.Follower, "release");
 
 	return Tone.Follower;
 });

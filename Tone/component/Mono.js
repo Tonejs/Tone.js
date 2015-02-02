@@ -28,11 +28,13 @@ define(["Tone/core/Tone", "Tone/component/Merge"], function(Tone){
 
 	/**
 	 *  clean up
+	 *  @returns {Tone.Mono} `this`
 	 */
 	Tone.Mono.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
 		this._merge.dispose();
 		this._merge = null;
+		return this;
 	};
 
 	return Tone.Mono;
