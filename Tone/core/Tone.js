@@ -132,7 +132,7 @@ define(function(){
 		for (var attr in params){
 			var param = this[attr];
 			if (param instanceof Tone.Signal){
-				this[attr].value = params[attr];
+				this[attr].setValue(params[attr]);
 			} else {
 				this[attr] = params[attr];
 			}
@@ -153,7 +153,7 @@ define(function(){
 		for (var i = 0; i < params.length; i++){
 			var attr = params[i];
 			if (this[attr] instanceof Tone.Signal){
-				ret[attr] = this[attr].value;
+				ret[attr] = this[attr].getValue();
 			} else if (!isFunction(this[attr])){
 				ret[attr] = this[attr];
 			} 
