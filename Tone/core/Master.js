@@ -53,6 +53,14 @@ define(["Tone/core/Tone"], function(Tone){
 	};
 
 	/**
+	 * get the volume in decibels
+	 * @return {Tone.Volume}
+	 */
+	Tone.Master.prototype.getVolume = function(){
+		return this.gainToDb(this.output.gain.value);
+	};
+
+	/**
 	 *  route the master signal to the node's input. 
 	 *  NOTE: this will disconnect the previously connected node
 	 *  @param {AudioNode|Tone} node the node to use as the entry
