@@ -1,53 +1,53 @@
 /* global it, describe, maxTimeout*/
 
-define(["tests/Core", "chai", "Tone/component/DryWet", "Tone/core/Master", "Tone/signal/Signal", 
+define(["tests/Core", "chai", "Tone/component/CrossFade", "Tone/core/Master", "Tone/signal/Signal", 
 "Tone/component/Recorder", "Tone/component/Panner", "Tone/component/LFO", "Tone/component/Gate", 
 "Tone/component/Follower", "Tone/component/Envelope", "Tone/component/Filter", "Tone/component/EQ", 
 "Tone/component/Merge", "Tone/component/Split", "tests/Common", "Tone/component/AmplitudeEnvelope", 
 "Tone/component/LowpassCombFilter", "Tone/component/FeedbackCombFilter", "Tone/component/Mono", 
 "Tone/component/MultibandSplit", "Tone/component/Compressor", "Tone/component/PanVol",
 "Tone/component/MultibandCompressor", "Tone/component/ScaledEnvelope", "Tone/component/Limiter"],
-function(coreTest, chai, DryWet, Master, Signal, Recorder, Panner, LFO, Gate, Follower, Envelope, 
+function(coreTest, chai, CrossFade, Master, Signal, Recorder, Panner, LFO, Gate, Follower, Envelope, 
 	Filter, EQ, Merge, Split, Test, AmplitudeEnvelope, LowpassCombFilter, FeedbackCombFilter,
 	Mono, MultibandSplit, Compressor, PanVol, MultibandCompressor, ScaledEnvelope, Limiter){
 	var expect = chai.expect;
 
 	Master.mute();
 
-	describe("Tone.DryWet", function(){
+	describe("Tone.CrossFade", function(){
 		this.timeout(maxTimeout);
 
-		var dryWet, drySignal, wetSignal, recorder;
+		var crossFade, drySignal, wetSignal, recorder;
 
 		it("can be created and disposed", function(){
-			var dw = new DryWet();
+			var dw = new CrossFade();
 			dw.dispose();
 			Test.wasDisposed(dw);
 		});
 
 		it("handles input and output connections", function(){
 			Test.onlineContext();
-			var dryWet = new DryWet();
-			Test.acceptsInput(dryWet.dry);
-			Test.acceptsInput(dryWet.wet);
-			Test.acceptsOutput(dryWet);
-			dryWet.dispose();
+			var crossFade = new CrossFade();
+			Test.acceptsInput(crossFade, 0);
+			Test.acceptsInput(crossFade, 1);
+			Test.acceptsOutput(crossFade);
+			crossFade.dispose();
 		});
 
 		it("pass 100% dry signal", function(done){
 			Test.offlineTest(0.1, function(dest){
-				dryWet = new DryWet();
+				crossFade = new CrossFade();
 				drySignal = new Signal(10);
 				wetSignal = new Signal(20);
-				drySignal.connect(dryWet.dry);
-				wetSignal.connect(dryWet.wet);
+				drySignal.connect(crossFade, 0, 0);
+				wetSignal.connect(crossFade, 0, 1);
 				recorder = new Recorder();
-				dryWet.setDry(1);
-				dryWet.connect(dest);
+				crossFade.setFade(0);
+				crossFade.connect(dest);
 			}, function(sample){
-				expect(sample).to.equal(10);
+				expect(sample).to.closeTo(10, 0.01);
 			}, function(){
-				dryWet.dispose();
+				crossFade.dispose();
 				drySignal.dispose();
 				wetSignal.dispose();
 				done();
@@ -56,18 +56,18 @@ function(coreTest, chai, DryWet, Master, Signal, Recorder, Panner, LFO, Gate, Fo
 
 		it("pass 100% wet signal", function(done){
 			Test.offlineTest(0.1, function(dest){
-				dryWet = new DryWet();
+				crossFade = new CrossFade();
 				drySignal = new Signal(10);
 				wetSignal = new Signal(20);
-				drySignal.connect(dryWet.dry);
-				wetSignal.connect(dryWet.wet);
+				drySignal.connect(crossFade, 0, 0);
+				wetSignal.connect(crossFade, 0, 1);
 				recorder = new Recorder();
-				dryWet.setWet(1);
-				dryWet.connect(dest);
+				crossFade.setFade(1);
+				crossFade.connect(dest);
 			}, function(sample){
-				expect(sample).to.equal(20);
+				expect(sample).to.closeTo(20, 0.01);
 			}, function(){
-				dryWet.dispose();
+				crossFade.dispose();
 				drySignal.dispose();
 				wetSignal.dispose();
 				done();
@@ -76,18 +76,18 @@ function(coreTest, chai, DryWet, Master, Signal, Recorder, Panner, LFO, Gate, Fo
 		
 		it("can mix two signals", function(done){
 			Test.offlineTest(0.1, function(dest){
-				dryWet = new DryWet();
+				crossFade = new CrossFade();
 				drySignal = new Signal(10);
 				wetSignal = new Signal(20);
-				drySignal.connect(dryWet.dry);
-				wetSignal.connect(dryWet.wet);
+				drySignal.connect(crossFade, 0, 0);
+				wetSignal.connect(crossFade, 0, 1);
 				recorder = new Recorder();
-				dryWet.setWet(0.5);
-				dryWet.connect(dest);
+				crossFade.setFade(0.5);
+				crossFade.connect(dest);
 			}, function(sample){
-				expect(sample).to.equal(15);
+				expect(sample).to.closeTo(17.06, 0.01);
 			}, function(){
-				dryWet.dispose();
+				crossFade.dispose();
 				drySignal.dispose();
 				wetSignal.dispose();
 				done();
@@ -163,8 +163,8 @@ function(coreTest, chai, DryWet, Master, Signal, Recorder, Panner, LFO, Gate, Fo
 				panner.setPan(1);
 				panner.connect(dest);
 			}, function(L, R){
-				expect(L).to.equal(0);
-				expect(R).to.equal(1);
+				expect(L).to.be.closeTo(0, 0.01);
+				expect(R).to.be.closeTo(1, 0.01);
 			}, function(){
 				panner.dispose();
 				signal.dispose();

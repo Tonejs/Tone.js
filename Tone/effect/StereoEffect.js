@@ -1,4 +1,5 @@
-define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/Split", "Tone/component/Merge"], 
+define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/Split", 
+	"Tone/component/Merge", "Tone/component/CrossFade"], 
 function(Tone){
 
 	"use strict";
@@ -13,14 +14,14 @@ function(Tone){
 
 		Tone.call(this);
 		//get the defaults
-		var options = this.optionsObject(arguments, ["dry"], Tone.Effect.defaults);
+		var options = this.optionsObject(arguments, ["wet"], Tone.Effect.defaults);
 
 		/**
 		 *  the drywet knob to control the amount of effect
 		 *  
-		 *  @type {Tone.DryWet}
+		 *  @type {Tone.CrossFade}
 		 */
-		this.dryWet = new Tone.DryWet();
+		this.dryWet = new Tone.CrossFade();
 
 		/**
 		 *  then split it
@@ -63,11 +64,11 @@ function(Tone){
 		//connections
 		this.input.connect(this._split);
 		//dry wet connections
-		this.input.connect(this.dryWet.dry);
-		this._merge.connect(this.dryWet.wet);
+		this.input.connect(this.dryWet, 0, 0);
+		this._merge.connect(this.dryWet, 0, 1);
 		this.dryWet.connect(this.output);
 		//setup values
-		this.setDry(options.dry);
+		this.setWet(options.wet);
 	};
 
 	Tone.extend(Tone.StereoEffect, Tone.Effect);

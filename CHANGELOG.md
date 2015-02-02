@@ -7,6 +7,8 @@
 * Sampler accepts multiple samples as an object and can set using setSample
 * deprecated MultiSampler - use Sampler with PolySynth instead
 * added [cdn](cdn.tonejs.org/latest/Tone.min.js) - please don't use for production code
+* Renamed DryWet to CrossFade
+* functions return `this` to allow for chaining
 
 ### r3 - Expressive Signal
 

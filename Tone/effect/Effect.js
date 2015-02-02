@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/component/DryWet"], function(Tone){
+define(["Tone/core/Tone", "Tone/component/CrossFade"], function(Tone){
 
 	"use strict";
 	
@@ -9,22 +9,27 @@ define(["Tone/core/Tone", "Tone/component/DryWet"], function(Tone){
 	 *
 	 *  @constructor
 	 *  @extends {Tone}
-	 *  @param {number} [initalDry=0] the starting dry value
-	 *                             defaults to 100% wet
+	 *  @param {number} [initialWet=0] the starting wet value
+	 *                                 defaults to 100% wet
 	 */
 	Tone.Effect = function(){
 
 		Tone.call(this);
 
 		//get all of the defaults
-		var options = this.optionsObject(arguments, ["dry"], Tone.Effect.defaults);
+		var options = this.optionsObject(arguments, ["wet"], Tone.Effect.defaults);
 
 		/**
 		 *  the drywet knob to control the amount of effect
-		 *  
-		 *  @type {Tone.DryWet}
+		 *  @type {Tone.CrossFade}
 		 */
-		this.dryWet = new Tone.DryWet();
+		this.dryWet = new Tone.CrossFade();
+
+		/**
+		 *  the wet control
+		 *  @type {Tone.Signal}
+		 */
+		this.wet = this.dryWet.fade;
 
 		/**
 		 *  connect the effectSend to the input of hte effect
@@ -41,12 +46,12 @@ define(["Tone/core/Tone", "Tone/component/DryWet"], function(Tone){
 		this.effectReturn = this.context.createGain();
 
 		//connections
-		this.input.connect(this.dryWet.dry);
+		this.input.connect(this.dryWet.a);
 		this.input.connect(this.effectSend);
-		this.effectReturn.connect(this.dryWet.wet);
+		this.effectReturn.connect(this.dryWet.b);
 		this.dryWet.connect(this.output);
 		//setup values
-		this.setDry(options.dry);
+		this.setWet(options.wet);
 	};
 
 	Tone.extend(Tone.Effect);
@@ -56,18 +61,7 @@ define(["Tone/core/Tone", "Tone/component/DryWet"], function(Tone){
 	 *  @type {Object}
 	 */
 	Tone.Effect.defaults = {
-		"dry" : 0
-	};
-
-	/**
-	 * setDry adjusts the dry / wet balance
-	 * dryness is 0 (100% wet) to 1 (100% dry)
-	 * 
-	 * @param {number} dryness
-	 * @param {Tone.Time=} rampTime
-	 */
-	Tone.Effect.prototype.setDry = function(dryness, rampTime){
-		this.dryWet.setDry(dryness, rampTime);
+		"wet" : 1
 	};
 
 	/**
@@ -76,48 +70,48 @@ define(["Tone/core/Tone", "Tone/component/DryWet"], function(Tone){
 	 * 
 	 * @param {number} wetness
 	 * @param {Tone.Time=} rampTime
+	 * @returns {Tone.Effect} `this`
 	 */
 	Tone.Effect.prototype.setWet = function(wetVal, rampTime){
-		this.dryWet.setWet(wetVal, rampTime);
-	};
-
-	/**
-	 *  set in bulk
-	 *  @param {Object} param
-	 */
-	Tone.Effect.prototype.set = function(params){
-		if (!this.isUndef(params.dry)) this.setDry(params.dry);
-		if (!this.isUndef(params.wet)) this.setWet(params.wet);
+		this.dryWet.setFade(wetVal, rampTime);
+		return this;
 	};
 
 	/**
 	 *  bypass the effect
+	 *  @returns {Tone.Effect} `this`
 	 */
 	Tone.Effect.prototype.bypass = function(){
-		this.setDry(1);
+		this.setWet(0);
+		return this;
 	};
 
 	/**
 	 *  chains the effect in between the effectSend and effectReturn
 	 *  @param  {Tone} effect
 	 *  @internal
+	 *  @returns {Tone.Effect} `this`
 	 */
 	Tone.Effect.prototype.connectEffect = function(effect){
 		this.effectSend.chain(effect, this.effectReturn);
+		return this;
 	};
 
 	/**
 	 *  set the preset if it exists
 	 *  @param {string} presetName the name of the preset
+	 *  @returns {Tone.Effect} `this`
 	 */
 	Tone.Effect.prototype.setPreset = function(presetName){
 		if (!this.isUndef(this.preset) && this.preset.hasOwnProperty(presetName)){
 			this.set(this.preset[presetName]);
 		}
+		return this;
 	};
 
 	/**
 	 *  tear down
+	 *  @returns {Tone.Effect} `this`
 	 */
 	Tone.Effect.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
@@ -127,6 +121,8 @@ define(["Tone/core/Tone", "Tone/component/DryWet"], function(Tone){
 		this.effectSend = null;
 		this.effectReturn.disconnect();
 		this.effectReturn = null;
+		this.wet = null;
+		return this;
 	};
 
 	return Tone.Effect;

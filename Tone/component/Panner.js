@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/component/DryWet", "Tone/component/Merge", "Tone/component/Split"], 
+define(["Tone/core/Tone", "Tone/component/CrossFade", "Tone/component/Merge", "Tone/component/Split"], 
 function(Tone){
 
 	"use strict";
@@ -20,10 +20,10 @@ function(Tone){
 		
 		/**
 		 *  the dry/wet knob
-		 *  @type {Tone.DryWet}
+		 *  @type {Tone.CrossFade}
 		 *  @private
 		 */
-		this._dryWet = new Tone.DryWet();
+		this._crossFade = new Tone.CrossFade();
 		/**
 		 *  @type {Tone.Merge}
 		 *  @private
@@ -38,17 +38,17 @@ function(Tone){
 		 *  the pan control
 		 *  @type {Tone.Signal}
 		 */	
-		this.pan = this._dryWet.wetness;
+		this.pan = this._crossFade.fade;
 
 		//CONNECTIONS:
 		this.input.connect(this._splitter.left);
 		this.input.connect(this._splitter.right);
 		//left channel is dry, right channel is wet
-		this._splitter.left.connect(this._dryWet.dry);
-		this._splitter.right.connect(this._dryWet.wet);
+		this._splitter.connect(this._crossFade, 0, 0);
+		this._splitter.connect(this._crossFade, 1, 1);
 		//merge it back together
-		this._dryWet.dry.connect(this._merger.left);
-		this._dryWet.wet.connect(this._merger.right);
+		this._crossFade.a.connect(this._merger.left);
+		this._crossFade.b.connect(this._merger.right);
 
 		//initial value
 		this.setPan(this.defaultArg(initialPan, 0.5));
@@ -64,23 +64,27 @@ function(Tone){
 	 *  
 	 *  @param {number} pan 0-1
 	 *  @param {Tone.Time=} rampTime ramp to the pan position
+	 *  @returns {Tone.Panner} `this`
 	 */
 	Tone.Panner.prototype.setPan = function(pan, rampTime){
-		this._dryWet.setWet(pan, rampTime);
+		this._crossFade.setFade(pan, rampTime);
+		return this;
 	};
 
 	/**
 	 *  clean up
+	 *  @returns {Tone.Panner} `this`
 	 */
 	Tone.Panner.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
-		this._dryWet.dispose();
+		this._crossFade.dispose();
+		this._crossFade = null;
 		this._splitter.dispose();
-		this._merger.dispose();
-		this._dryWet = null;
 		this._splitter = null;
+		this._merger.dispose();
 		this._merger = null;
 		this.pan = null;
+		return this;
 	};
 
 	return Tone.Panner;
