@@ -491,9 +491,9 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Subtract", "Tone/signa
 	Tone.Expr.prototype._disposeNodes = function(){
 		for (var i = 0; i < this._nodes.length; i++){
 			var node = this._nodes[i];
-			if (typeof node.dispose === "function") {
+			if (this.isFunction(node.dispose)) {
 				node.dispose();
-			} else if (typeof node.disconnect === "function") {
+			} else if (this.isFunction(node.disconnect)) {
 				node.disconnect();
 			}
 			node = null;

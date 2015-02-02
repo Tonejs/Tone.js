@@ -40,28 +40,28 @@ define(function(){
 
 	//SHIMS////////////////////////////////////////////////////////////////////
 
-	if (typeof AudioContext.prototype.createGain !== "function"){
+	if (!isFunction(AudioContext.prototype.createGain)){
 		AudioContext.prototype.createGain = AudioContext.prototype.createGainNode;
 	}
-	if (typeof AudioContext.prototype.createDelay !== "function"){
+	if (!isFunction(AudioContext.prototype.createDelay)){
 		AudioContext.prototype.createDelay = AudioContext.prototype.createDelayNode;
 	}
-	if (typeof AudioContext.prototype.createPeriodicWave !== "function"){
+	if (!isFunction(AudioContext.prototype.createPeriodicWave)){
 		AudioContext.prototype.createPeriodicWave = AudioContext.prototype.createWaveTable;
 	}
-	if (typeof AudioBufferSourceNode.prototype.start !== "function"){
+	if (!isFunction(AudioBufferSourceNode.prototype.start)){
 		AudioBufferSourceNode.prototype.start = AudioBufferSourceNode.prototype.noteGrainOn;
 	}
-	if (typeof AudioBufferSourceNode.prototype.stop !== "function"){
+	if (!isFunction(AudioBufferSourceNode.prototype.stop)){
 		AudioBufferSourceNode.prototype.stop = AudioBufferSourceNode.prototype.noteOff;
 	}
-	if (typeof OscillatorNode.prototype.start !== "function"){
+	if (!isFunction(OscillatorNode.prototype.start)){
 		OscillatorNode.prototype.start = OscillatorNode.prototype.noteOn;
 	}
-	if (typeof OscillatorNode.prototype.stop !== "function"){
+	if (!isFunction(OscillatorNode.prototype.stop)){
 		OscillatorNode.prototype.stop = OscillatorNode.prototype.noteOff;	
 	}
-	if (typeof OscillatorNode.prototype.setPeriodicWave !== "function"){
+	if (!isFunction(OscillatorNode.prototype.setPeriodicWave)){
 		OscillatorNode.prototype.setPeriodicWave = OscillatorNode.prototype.setWaveTable;	
 	}
 	//extend the connect function to include Tones
@@ -639,9 +639,9 @@ define(function(){
 		var getterName = "get"+capitalize(property);
 		var setterName = "set"+capitalize(property);
 		if (proto.hasOwnProperty(getterName) && 
-			typeof proto[getterName] === "function" && 
+			isFunction(proto[getterName]) && 
 			proto.hasOwnProperty(setterName) && 
-			typeof proto[setterName] === "function"){
+			isFunction(proto[setterName])){
 			Object.defineProperty(constr.prototype, property, {
 				get : function(){
 					return this[getterName]();
