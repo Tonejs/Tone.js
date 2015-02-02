@@ -117,7 +117,8 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 
 	/**
 	 *  play the buffer between the desired positions
-	 *  	
+	 *  
+	 *  @private
 	 *  @param  {Tone.Time} [startTime=now] when the player should start.
 	 *  @param  {Tone.Time} [offset=0] the offset from the beginning of the sample
 	 *                                 to start at. 
@@ -126,63 +127,48 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 	 *                                of the sample (minus any offset)
 	 *  @returns {Tone.Player} `this`
 	 */
-	Tone.Player.prototype.start = function(startTime, offset, duration){
-		if (this.state === Tone.Source.State.STOPPED || this.retrigger){
-			if (this._buffer){
-				this.state = Tone.Source.State.STARTED;
-				//if it's a loop the default offset is the loopstart point
-				if (this.loop){
-					offset = this.defaultArg(offset, this._loopStart);
-				} else {
-					//otherwise the default offset is 0
-					offset = this.defaultArg(offset, 0);
-				}
-				duration = this.defaultArg(duration, this._buffer.duration - offset);
-				//make the source
-				this._source = this.context.createBufferSource();
-				this._source.buffer = this._buffer.get();
-				//set the looping properties
-				if (this.loop){
-					this._source.loop = this.loop;
-					this._source.loopStart = this.toSeconds(this._loopStart);
-					if (this._loopEnd !== -1){
-						this._source.loopEnd = this.toSeconds(this._loopEnd);
-					}
-				}
-				//and other properties
-				this._source.playbackRate.value = this._playbackRate;
-				this._source.onended = this._onended.bind(this);
-				this._source.connect(this.output);
-				//start it
-				this._source.start(this.toSeconds(startTime), this.toSeconds(offset), this.toSeconds(duration));
+	Tone.Player.prototype._start = function(startTime, offset, duration){
+		if (this._buffer.loaded){
+			//if it's a loop the default offset is the loopstart point
+			if (this.loop){
+				offset = this.defaultArg(offset, this._loopStart);
+			} else {
+				//otherwise the default offset is 0
+				offset = this.defaultArg(offset, 0);
 			}
+			duration = this.defaultArg(duration, this._buffer.duration - offset);
+			//make the source
+			this._source = this.context.createBufferSource();
+			this._source.buffer = this._buffer.get();
+			//set the looping properties
+			if (this.loop){
+				this._source.loop = this.loop;
+				this._source.loopStart = this.toSeconds(this._loopStart);
+				this._source.loopEnd = this.toSeconds(this._loopEnd);
+			}
+			//and other properties
+			this._source.playbackRate.value = this._playbackRate;
+			this._source.onended = this._onended.bind(this);
+			this._source.connect(this.output);
+			//start it
+			this._source.start(this.toSeconds(startTime), this.toSeconds(offset), this.toSeconds(duration));
+		} else {
+			throw Error("tried to start Player before the buffer was loaded");
 		}
 		return this;
 	};
 
 	/**
 	 *  Stop playback.
+	 *  @private
 	 *  @param  {Tone.Time} [time=now]
 	 *  @returns {Tone.Player} `this`
 	 */
-	Tone.Player.prototype.stop = function(time){
-		if (this.state === Tone.Source.State.STARTED) {
-			if (this._source){
-				this.state = Tone.Source.State.STOPPED;
-				this._source.stop(this.toSeconds(time));
-			}
+	Tone.Player.prototype._stop = function(time){
+		if (this._source){
+			this._source.stop(this.toSeconds(time));
 		}
 		return this;
-	};
-
-	/**
-	 *  internal call when the buffer is done playing
-	 *  
-	 *  @private
-	 */
-	Tone.Player.prototype._onended = function(){
-		this.state = Tone.Source.State.STOPPED;
-		this.onended();
 	};
 
 	/**

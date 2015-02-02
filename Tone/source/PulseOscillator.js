@@ -112,18 +112,13 @@ function(Tone){
 
 	/**
 	 *  start the oscillator
-	 *  
 	 *  @param  {Tone.Time} time 
-	 *  @returns {Tone.PulseOscillator} `this`
+	 *  @private
 	 */
-	Tone.PulseOscillator.prototype.start = function(time){
-		if (this.state === Tone.Source.State.STOPPED){
-			this.state = Tone.Source.State.STARTED;
-			time = this.toSeconds(time);
-			this._sawtooth.start(time);
-			this.width.output.gain.setValueAtTime(1, time);
-		}
-		return this;
+	Tone.PulseOscillator.prototype._start = function(time){
+		time = this.toSeconds(time);
+		this._sawtooth.start(time);
+		this.width.output.gain.setValueAtTime(1, time);
 	};
 
 	/**
@@ -131,16 +126,12 @@ function(Tone){
 	 *  @param  {Tone.Time} time 
 	 *  @returns {Tone.PulseOscillator} `this`
 	 */
-	Tone.PulseOscillator.prototype.stop = function(time){
-		if (this.state === Tone.Source.State.STARTED){
-			this.state = Tone.Source.State.STOPPED;
-			time = this.toSeconds(time);
-			this._sawtooth.stop(time);
-			//the width is still connected to the output. 
-			//that needs to be stopped also
-			this.width.output.gain.setValueAtTime(0, time);
-		}
-		return this;
+	Tone.PulseOscillator.prototype._stop = function(time){
+		time = this.toSeconds(time);
+		this._sawtooth.stop(time);
+		//the width is still connected to the output. 
+		//that needs to be stopped also
+		this.width.output.gain.setValueAtTime(0, time);
 	};
 
 	/**

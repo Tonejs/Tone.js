@@ -67,29 +67,19 @@ function(Tone){
 	/**
 	 *  start the oscillator
 	 *  @param {Tone.Time} [time=now] the time to start the oscillator
-	 *  @returns {Tone.OmniOscillator} `this`
+	 *  @private
 	 */
-	Tone.OmniOscillator.prototype.start = function(time){
-		if (this.state === Tone.Source.State.STOPPED){
-			this.state = Tone.Source.State.STARTED;
-			this._oscillator.start(time);
-		}
-		return this;
+	Tone.OmniOscillator.prototype._start = function(time){
+		this._oscillator.start(time);
 	};
 
 	/**
 	 *  start the oscillator
 	 *  @param {Tone.Time} [time=now] the time to start the oscillator
-	 *  @returns {Tone.OmniOscillator} `this`
+	 *  @private
 	 */
-	Tone.OmniOscillator.prototype.stop = function(time){
-		if (this.state === Tone.Source.State.STARTED){
-			if (!time){
-				this.state = Tone.Source.State.STOPPED;
-			}
-			this._oscillator.stop(time);
-		}
-		return this;
+	Tone.OmniOscillator.prototype._stop = function(time){
+		this._oscillator.stop(time);
 	};
 
 	/**
@@ -212,9 +202,9 @@ function(Tone){
 	 *  @returns {Tone.OmniOscillator} `this`
 	 */
 	Tone.OmniOscillator.prototype.set = function(params){
+		Tone.Source.prototype.set.call(this, params);
 		if (!this.isUndef(params.width)) this.setWidth(params.width);
 		if (!this.isUndef(params.modulationFrequency)) this.setModulationFrequency(params.modulationFrequency);
-		Tone.Source.prototype.set.call(this, params);
 		return this;
 	};
 

@@ -106,43 +106,15 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 	};
 
 	/**
-	 *  start the noise at a specific time
-	 *  
-	 *  @param {Tone.Time} time
-	 */
-	Tone.Noise.prototype.start = function(time){
-		if (this.state === Tone.Source.State.STOPPED){
-			this.state = Tone.Source.State.STARTED;
-			//make the source
-			this._start(time);
-		}
-	};
-
-	/**
 	 *  internal stop method
 	 *  
 	 *  @param {Tone.Time} time
 	 *  @private
 	 */
 	Tone.Noise.prototype._stop = function(time){
-		this._source.stop(this.toSeconds(time));
-	};
-
-
-	/**
-	 *  stop the noise at a specific time
-	 *  
-	 *  @param {Tone.Time} timetest
-	 *  @returns {Tone.Noise} `this`
-	 */
-	Tone.Noise.prototype.stop = function(time){
-		if (this.state === Tone.Source.State.STARTED) {
-			if (this._buffer && this._source){
-				this.state = Tone.Source.State.STOPPED;
-				this._stop(time);
-			}
+		if (this._source){
+			this._source.stop(this.toSeconds(time));
 		}
-		return this;
 	};
 
 	/**

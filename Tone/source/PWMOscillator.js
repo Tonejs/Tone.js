@@ -71,33 +71,24 @@ function(Tone){
 
 	/**
 	 *  start the oscillator
-	 *  
 	 *  @param  {Tone.Time} [time=now]
-	 *  @returns {Tone.PWMOscillator} `this`
+	 *  @private
 	 */
-	Tone.PWMOscillator.prototype.start = function(time){
-		if (this.state === Tone.Source.State.STOPPED){
-			this.state = Tone.Source.State.STARTED;
-			time = this.toSeconds(time);
-			this._modulator.start(time);
-			this._pulse.start(time);
-		}
-		return this;
+	Tone.PWMOscillator.prototype._start = function(time){
+		time = this.toSeconds(time);
+		this._modulator.start(time);
+		this._pulse.start(time);
 	};
 
 	/**
 	 *  stop the oscillator
 	 *  @param  {Tone.Time} time (optional) timing parameter
-	 *  @returns {Tone.PWMOscillator} `this`
+	 *  @private
 	 */
-	Tone.PWMOscillator.prototype.stop = function(time){
-		if (this.state === Tone.Source.State.STARTED){
-			this.state = Tone.Source.State.STOPPED;
-			time = this.toSeconds(time);
-			this._modulator.stop(time);
-			this._pulse.stop(time);
-		}
-		return this;
+	Tone.PWMOscillator.prototype._stop = function(time){
+		time = this.toSeconds(time);
+		this._modulator.stop(time);
+		this._pulse.stop(time);
 	};
 
 	/**
@@ -140,7 +131,6 @@ function(Tone){
 		this._pulse = null;
 		this._modulator.dispose();
 		this._modulator = null;
-		this.onended = null;
 		this.frequency = null;
 		this.detune = null;
 		this.modulationFrequency = null;

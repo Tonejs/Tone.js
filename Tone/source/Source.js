@@ -27,6 +27,14 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Master"], function(T
 		 * @type {function}
 		 */
 		this.onended = options.onended;
+
+		/**
+		 * 	keeps track of the timeout for chaning the state
+		 * 	and calling the onended
+		 *  @type {number}
+		 *  @private
+		 */
+		this._timeout = -1;
 	};
 
 	Tone.extend(Tone.Source);
@@ -43,16 +51,51 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Master"], function(T
 	};
 
 	/**
-	 *  @abstract
+	 *  star thte source
 	 *  @param  {Tone.Time} time 
+	 *  @returns {Tone.Source} `this`
 	 */
-	Tone.Source.prototype.start = function(){};
+	Tone.Source.prototype.start = function(time){
+		if (this.state !== Tone.Source.State.STARTED || this.retrigger){
+			var now = this.now();
+			time = this.toSeconds(time, now);
+			var diff = now - time;
+			if (diff !== 0){
+				this._timeout = setTimeout(function(){
+					this.state = Tone.Source.State.STARTED;
+				}.bind(this), diff * 1000);
+			} else {
+				this.state = Tone.Source.State.STARTED;
+			}
+			this._start.apply(this, arguments);
+		}
+		return this;
+	};
 
 	/**
- 	 *  @abstract
+	 * 	stop the source
 	 *  @param  {Tone.Time} time 
+	 *  @returns {Tone.Source} `this`
 	 */
-	Tone.Source.prototype.stop = function(){};
+	Tone.Source.prototype.stop = function(time){
+		if (this.state !== Tone.Source.State.STOPPED){
+			clearTimeout(this._timeout);
+			var now = this.now();
+			time = this.toSeconds(time, now);
+			var diff = now - time;
+			if (diff !== 0){
+				this._timeout = setTimeout(function(){
+					this.state = Tone.Source.State.STOPPED;
+					this.onended();
+				}.bind(this), diff * 1000);
+			} else {
+				this.state = Tone.Source.State.STOPPED;
+				this.onended();
+			}
+			this._stop.apply(this, arguments);
+		}
+		return this;
+	};
 
 
 	/**
@@ -97,7 +140,10 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Master"], function(T
 	 *  @private
 	 */
 	Tone.Source.prototype._dispose = function(){
+		this.stop();
 		this.state = null;
+		clearTimeout(this._timeout);
+		this.onended = function(){};
 	};
 
 	/**
@@ -105,6 +151,7 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Master"], function(T
 	 *  @private
 	 */
 	Tone.Source.prototype._onended = function(){
+		this.state = Tone.Source.State.STOPPED;
 		this.onended();
 	};
 
@@ -123,7 +170,7 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Master"], function(T
 		STARTED : "started",
 		PAUSED : "paused",
 		STOPPED : "stopped",
-		SYNCED : "synced"
+		WAITING : "waiting"
  	};
 
 	return Tone.Source;

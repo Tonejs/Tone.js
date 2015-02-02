@@ -80,24 +80,19 @@ function(Tone){
 	/**
 	 *  start the oscillator
 	 *  @param  {Tone.Time} [time=now] 
-	 *  @returns {Tone.Oscillator} `this`
+	 *  @private
 	 */
-	Tone.Oscillator.prototype.start = function(time){
-		if (this.state === Tone.Source.State.STOPPED){
-			this.state = Tone.Source.State.STARTED;
-			//get previous values
-			//new oscillator with previous values
-			this._oscillator = this.context.createOscillator();
-			this._oscillator.setPeriodicWave(this._wave);
-			//connect the control signal to the oscillator frequency & detune
-			this._oscillator.connect(this.output);
-			this.frequency.connect(this._oscillator.frequency);
-			this.detune.connect(this._oscillator.detune);
-			//start the oscillator
-			this._oscillator.onended = this.onended;
-			this._oscillator.start(this.toSeconds(time));
-		}
-		return this;
+	Tone.Oscillator.prototype._start = function(time){
+		//new oscillator with previous values
+		this._oscillator = this.context.createOscillator();
+		this._oscillator.setPeriodicWave(this._wave);
+		//connect the control signal to the oscillator frequency & detune
+		this._oscillator.connect(this.output);
+		this.frequency.connect(this._oscillator.frequency);
+		this.detune.connect(this._oscillator.detune);
+		//start the oscillator
+		this._oscillator.onended = this._onended.bind(this);
+		this._oscillator.start(this.toSeconds(time));
 	};
 
 	/**
@@ -105,11 +100,8 @@ function(Tone){
 	 *  @param  {Tone.Time} [time=now] (optional) timing parameter
 	 *  @returns {Tone.Oscillator} `this`
 	 */
-	Tone.Oscillator.prototype.stop = function(time){
-		if (this.state === Tone.Source.State.STARTED){
-			this.state = Tone.Source.State.STOPPED;
-			this._oscillator.stop(this.toSeconds(time));
-		}
+	Tone.Oscillator.prototype._stop = function(time){
+		this._oscillator.stop(this.toSeconds(time));
 		return this;
 	};
 
@@ -251,7 +243,6 @@ function(Tone){
 	 */
 	Tone.Oscillator.prototype._dispose = function(){
 		Tone.Source.prototype._dispose.call(this);
-		this.stop();
 		if (this._oscillator !== null){
 			this._oscillator.disconnect();
 			this._oscillator = null;
