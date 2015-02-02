@@ -32,10 +32,20 @@ define(["Tone/core/Tone"], function(Tone){
 		this.url = undefined;
 
 		/**
+		 *  indicates if the buffer is loaded or not
+		 *  @type {boolean}
+		 *  @readOnly
+		 */
+		this.loaded = false;
+
+		/**
 		 *  the callback to invoke when everything is loaded
 		 *  @type {function}
 		 */
-		this.onload = options.onload;
+		this.onload = function(arg){
+			this.loaded = true;
+			options.onload(arg);
+		}.bind(this);
 
 		if (options.url instanceof AudioBuffer){
 			this._buffer.set(options.url);
