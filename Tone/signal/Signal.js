@@ -88,6 +88,10 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 				return this.toFrequency(val);
 			case Tone.Signal.Units.Decibels: 
 				return this.dbToGain(val);
+			case Tone.Signal.Units.Normal: 
+				return Math.min(Math.max(val, 0), 1);
+			case Tone.Signal.Units.Audio: 
+				return Math.min(Math.max(val, -1), 1);
 			default:
 				return val;
 		}
@@ -359,7 +363,8 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 		Time : "time",
 		Frequency : "frequency",
 		Gain : "gain",
-		EqualPowerGain : "equalPower",
+		Normal : "normal",
+		Audio : "audio",
 		Decibels : "db"
 	};
 
