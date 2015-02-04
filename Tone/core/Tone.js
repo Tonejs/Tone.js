@@ -131,10 +131,15 @@ define(function(){
 	Tone.prototype.set = function(params){
 		for (var attr in params){
 			var param = this[attr];
+			var value = params[attr];
 			if (param instanceof Tone.Signal){
-				this[attr].setValue(params[attr]);
+				param.value = value;
+			} else if (param instanceof AudioParam){
+				param.value = value;
+			} else if (param instanceof Tone){
+				param.set(value);
 			} else {
-				this[attr] = params[attr];
+				this[attr] = value;
 			}
 		}
 		return this;
@@ -153,7 +158,11 @@ define(function(){
 		for (var i = 0; i < params.length; i++){
 			var attr = params[i];
 			if (this[attr] instanceof Tone.Signal){
-				ret[attr] = this[attr].getValue();
+				ret[attr] = this[attr].value;
+			} else if (this[attr] instanceof AudioParam){
+				ret[attr] = this[attr].value;
+			} else if (this[attr] instanceof Tone){
+				ret[attr] = this[attr].get();
 			} else if (!isFunction(this[attr])){
 				ret[attr] = this[attr];
 			} 
@@ -223,13 +232,13 @@ define(function(){
 		if (!this.isUndef(this.input)){
 			if (this.input instanceof AudioNode){
 				this.input.disconnect();
-			}
+			} 
 			this.input = null;
 		}
 		if (!this.isUndef(this.output)){
 			if (this.output instanceof AudioNode){
 				this.output.disconnect();
-			}
+			} 
 			this.output = null;
 		}
 		return this;
