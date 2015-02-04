@@ -31,8 +31,9 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 		/**
 		 *  if the buffer should loop once it's over
 		 *  @type {boolean}
+		 *  @private
 		 */
-		this.loop = options.loop;
+		this._loop = options.loop;
 
 		/**
 		 *  if 'loop' is true, the loop will start at this position
@@ -94,28 +95,6 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 	};
 
 	/**
-	 *  set the buffer
-	 *  @param {AudioBuffer} buffer the buffer which the player will play.
-	 *                              note: if you switch the buffer after
-	 *                              the player is already started, it will not
-	 *                              take effect until the next time the player
-	 *                              is started.
-	 *  @returns {Tone.Player} `this`
-	 */
-	Tone.Player.prototype.setBuffer = function(buffer){
-		this._buffer.set(buffer);
-		return this;
-	};
-
-	/**
-	 *  get the buffer
-	 *  @returns {AudioBuffer} the buffer
-	 */
-	Tone.Player.prototype.getBuffer = function(){
-		return this._buffer.get();
-	};
-
-	/**
 	 *  play the buffer between the desired positions
 	 *  
 	 *  @private
@@ -130,7 +109,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 	Tone.Player.prototype._start = function(startTime, offset, duration){
 		if (this._buffer.loaded){
 			//if it's a loop the default offset is the loopstart point
-			if (this.loop){
+			if (this._loop){
 				offset = this.defaultArg(offset, this._loopStart);
 			} else {
 				//otherwise the default offset is 0
@@ -141,8 +120,8 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 			this._source = this.context.createBufferSource();
 			this._source.buffer = this._buffer.get();
 			//set the looping properties
-			if (this.loop){
-				this._source.loop = this.loop;
+			if (this._loop){
+				this._source.loop = this._loop;
 				this._source.loopStart = this.toSeconds(this._loopStart);
 				this._source.loopEnd = this.toSeconds(this._loopEnd);
 			}
@@ -172,80 +151,14 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 	};
 
 	/**
-	 *  set the rate at which the file plays
-	 *  
-	 *  @param {number} rate
-	 *  @param {Tone.Time=} rampTime the amount of time it takes to 
-	 *                               reach the rate
-	 *  @returns {Tone.Player} `this`
-	 */
-	Tone.Player.prototype.setPlaybackRate = function(rate, rampTime){
-		this._playbackRate = rate;
-		if (this._source) {
-			this._source.playbackRate.exponentialRampToValueAtTime(rate, this.toSeconds(rampTime));
-		}
-		return this;
-	};
-
-	/**
-	 *  get the playback rate
-	 *  @returns {number} the playback rate
-	 */
-	Tone.Player.prototype.getPlaybackRate = function(){
-		return this._playbackRate;
-	};
-
-	/**
-	 *  set the loop start position
-	 *  @param {Tone.Time} loopStart the start time
-	 *  @returns {Tone.Player} `this`
-	 */
-	Tone.Player.prototype.setLoopStart = function(loopStart){
-		this._loopStart = loopStart;
-		if (this._source){
-			this._source.loopStart = this.toSeconds(loopStart);
-		}
-		return this;
-	};
-
-	/**
-	 *  returns the loop start position
-	 *  @returns {Tone.Time} the start time
-	 */
-	Tone.Player.prototype.getLoopStart = function(){
-		return this._loopStart;
-	};
-
-	/**
-	 *  returns the loop end position
-	 *  @returns {Tone.Time} the start time
-	 */
-	Tone.Player.prototype.getLoopEnd = function(){
-		return this._loopEnd;
-	};
-
-	/**
-	 *  set the loop end position
-	 *  @param {Tone.Time} loopEnd the loop end time
-	 *  @returns {Tone.Player} `this`
-	 */
-	Tone.Player.prototype.setLoopEnd = function(loopEnd){
-		this._loopEnd = loopEnd;
-		if (this._source){
-			this._source.loopEnd = this.toSeconds(loopEnd);
-		}
-		return this;
-	};
-
-	/**
 	 *  set the loop start and end
 	 *  @param {Tone.Time} loopStart the loop end time
 	 *  @param {Tone.Time} loopEnd the loop end time
 	 *  @returns {Tone.Player} `this`
 	 */
 	Tone.Player.prototype.setLoopPoints = function(loopStart, loopEnd){
-		this.setLoopStart(loopStart);
-		this.setLoopEnd(loopEnd);
+		this._loopStart = loopStart;
+		this._loopEnd = loopEnd;
 		return this;
 	};
 
@@ -255,7 +168,17 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 	 * @type {Tone.Time}
 	 * @name loopStart
 	 */
-	Tone._defineGetterSetter(Tone.Player, "loopStart");
+	Object.defineProperty(Tone.Player.prototype, "loopStart", {
+		get : function(){
+			return this._loopStart;
+		}, 
+		set : function(loopStart){
+			this._loopStart = loopStart;
+			if (this._source){
+				this._source.loopStart = this.toSeconds(loopStart);
+			}
+		}
+	});
 
 	/**
 	 * if 'loop' is true, the loop will end at this position
@@ -263,15 +186,17 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 	 * @type {Tone.Time}
 	 * @name loopEnd
 	 */
-	Tone._defineGetterSetter(Tone.Player, "loopEnd");
-
-	/**
-	 * The playback speed. 1 is normal speed. 
-	 * @memberOf Tone.Player#
-	 * @type {number}
-	 * @name playbackRate
-	 */
-	Tone._defineGetterSetter(Tone.Player, "playbackRate");
+	Object.defineProperty(Tone.Player.prototype, "loopEnd", {
+		get : function(){
+			return this._loopEnd;
+		}, 
+		set : function(loopEnd){
+			this._loopEnd = loopEnd;
+			if (this._source){
+				this._source.loopEnd = this.toSeconds(loopEnd);
+			}
+		}
+	});
 
 	/**
 	 * The audio buffer belonging to the player. 
@@ -279,7 +204,50 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 	 * @type {AudioBuffer}
 	 * @name buffer
 	 */
-	Tone._defineGetterSetter(Tone.Player, "buffer");
+	Object.defineProperty(Tone.Player.prototype, "buffer", {
+		get : function(){
+			return this._buffer;
+		}, 
+		set : function(buffer){
+			this._buffer.set(buffer);
+		}
+	});
+
+	/**
+	 * if the buffer should loop once it's over
+	 * @memberOf Tone.Player#
+	 * @type {boolean}
+	 * @name loop
+	 */
+	Object.defineProperty(Tone.Player.prototype, "loop", {
+		get : function(){
+			return this._loop;
+		}, 
+		set : function(loop){
+			this._loop = loop;
+			if (this._source){
+				this._source.loop = loop;
+			}
+		}
+	});
+
+	/**
+	 * The playback speed. 1 is normal speed. 
+	 * @memberOf Tone.Player#
+	 * @type {number}
+	 * @name playbackRate
+	 */
+	Object.defineProperty(Tone.Player.prototype, "playbackRate", {
+		get : function(){
+			return this._playbackRate;
+		}, 
+		set : function(rate){
+			this._playbackRate = rate;
+			if (this._source) {
+				this._source.playbackRate.value = rate;
+			}
+		}
+	});
 
 	/**
 	 *  dispose and disconnect
