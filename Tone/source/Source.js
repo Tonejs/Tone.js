@@ -29,6 +29,12 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Master"], function(T
 		this.onended = options.onended;
 
 		/**
+		 * the volume of the output in decibels
+		 * @type {Tone.Signal}
+		 */
+		this.volume = new Tone.Signal(this.output.gain, Tone.Signal.Units.Decibels);
+
+		/**
 		 * 	keeps track of the timeout for chaning the state
 		 * 	and calling the onended
 		 *  @type {number}
@@ -48,6 +54,7 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Master"], function(T
 	 */
 	Tone.Source.defaults = {
 		"onended" : function(){},
+		"volume" : 0,
 	};
 
 	/**
@@ -124,18 +131,6 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Master"], function(T
 	};
 
 	/**
-	 *  gets the setVolume method from {@link Tone.Master}
-	 *  @method
-	 */
-	Tone.Source.prototype.setVolume = Tone.Master.setVolume;
-
-	/**
-	 *  gets the getVolume method from {@link Tone.Master}
-	 *  @method
-	 */
-	Tone.Source.prototype.getVolume = Tone.Master.getVolume;
-
-	/**
 	 *	clean up
 	 *  @return {Tone.Source} `this`
 	 */
@@ -155,14 +150,6 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Master"], function(T
 		this.state = Tone.Source.State.STOPPED;
 		this.onended();
 	};
-
-	/**
-	 * the volume of the source
-	 * @memberOf Tone.Source#
-	 * @type {number}
-	 * @name volume
-	 */
-	Tone._defineGetterSetter(Tone.Source, "volume");
 
 	/**
 	 *  @enum {string}
