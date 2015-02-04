@@ -22,7 +22,7 @@ function(Tone){
 		 *  the frequency control
 		 *  @type {Tone.Signal}
 		 */
-		this.frequency = new Tone.Signal(options.frequency);
+		this.frequency = new Tone.Signal(options.frequency, Tone.Signal.Units.Frequency);
 
 		/**
 		 *  the detune control
@@ -45,7 +45,7 @@ function(Tone){
 		this._oscillator = null;
 
 		//set the oscillator
-		this.setType(options.type);
+		this.type = options.type;
 	};
 
 	Tone.extend(Tone.OmniOscillator, Tone.Oscillator);
@@ -83,45 +83,38 @@ function(Tone){
 	};
 
 	/**
-	 *  set the type of the oscillator
-	 *  @param {string} type sine|square|triangle|sawtooth|pulse|pwm
-	 *  @returns {Tone.OmniOscillator} `this`
+	 * The type of the oscillator. sine, square, triangle, sawtooth, pwm, or pulse. 
+	 *  
+	 * @memberOf Tone.OmniOscillator#
+	 * @type {string}
+	 * @name type
 	 */
-	Tone.OmniOscillator.prototype.setType = function(type){
-		if (type === "sine" || type === "square" || type === "triangle" || type === "sawtooth"){
-			if (this._sourceType !== OmniOscType.Oscillator){
-				this._sourceType = OmniOscType.Oscillator;
-				this._createNewOscillator(Tone.Oscillator);
+	Object.defineProperty(Tone.OmniOscillator.prototype, "type", {
+		get : function(){
+			return this._oscillator.type;
+		}, 
+		set : function(type){
+			if (type === "sine" || type === "square" || type === "triangle" || type === "sawtooth"){
+				if (this._sourceType !== OmniOscType.Oscillator){
+					this._sourceType = OmniOscType.Oscillator;
+					this._createNewOscillator(Tone.Oscillator);
+				}
+				this._oscillator.type = type;
+			} else if (type === "pwm"){
+				if (this._sourceType !== OmniOscType.PWMOscillator){
+					this._sourceType = OmniOscType.PWMOscillator;
+					this._createNewOscillator(Tone.PWMOscillator);
+				}
+			} else if (type === "pulse"){
+				if (this._sourceType !== OmniOscType.PulseOscillator){
+					this._sourceType = OmniOscType.PulseOscillator;
+					this._createNewOscillator(Tone.PulseOscillator);
+				}
+			} else {
+				throw new TypeError("Tone.OmniOscillator does not support type "+type);
 			}
-			this._oscillator.setType(type);
-		} else if (type === "pwm"){
-			if (this._sourceType !== OmniOscType.PWMOscillator){
-				this._sourceType = OmniOscType.PWMOscillator;
-				this._createNewOscillator(Tone.PWMOscillator);
-			}
-		} else if (type === "pulse"){
-			if (this._sourceType !== OmniOscType.PulseOscillator){
-				this._sourceType = OmniOscType.PulseOscillator;
-				this._createNewOscillator(Tone.PulseOscillator);
-			}
-		} else {
-			throw new TypeError("Tone.OmniOscillator does not support type "+type);
 		}
-		return this;
-	};
-
-	/**
-	 *  @returns {string} the type of oscillator
-	 */
-	Tone.OmniOscillator.prototype.getType = function(){
-		if (this._sourceType === OmniOscType.PulseOscillator){
-			return "pulse";
-		} else if (this._sourceType === OmniOscType.PWMOscillator){
-			return "pwm";
-		} else if (this._sourceType === OmniOscType.Oscillator){
-			return this._oscillator.getType();
-		} 
-	};
+	});
 
 	/**
 	 *  connect the oscillator to the frequency and detune signals
@@ -149,64 +142,52 @@ function(Tone){
 	};
 
 	/**
-	 *  set the phase of the oscillator
-	 *  @param {number} phase
-	 *  @returns {Tone.PulseOscillator} `this`
+	 * the phase of the oscillator in degrees
+	 * @memberOf Tone.OmniOscillator#
+	 * @type {number}
+	 * @name phase
 	 */
-	Tone.OmniOscillator.prototype.setPhase = function(phase){
-		this._oscillator.setPhase(phase);
-		return this;
-	};
-
-	/**
-	 *  returns the phase in degrees
-	 *  @returns {number} the phase
-	 */
-	Tone.OmniOscillator.prototype.getPhase = function(){
-		return this._oscillator.getPhase();
-	};
-
-	/**
-	 *  set the width of the PulseOscillator
-	 *  @throws {Error} If the type of oscillator is not "pulse"
-	 *  @param {number} width the width of the pulse oscillator
-	 *  @returns {Tone.OmniOscillator} `this`
-	 */
-	Tone.OmniOscillator.prototype.setWidth = function(width){
-		if (this._sourceType === OmniOscType.PulseOscillator){
-			this._oscillator.setWidth(width);
-		} else {
-			throw new Error("Invalid call to 'setWidth'. OmniOscillator type must be set to type 'pulse'.");
+	Object.defineProperty(Tone.OmniOscillator.prototype, "phase", {
+		get : function(){
+			return this._oscillator.phase;
+		}, 
+		set : function(phase){
+			this._oscillator.phase = phase;
 		}
-		return this;
-	};
+	});
 
 	/**
-	 *  set the modulation frequency of the PWMOscillator
-	 *  @throws {Error} If the type of oscillator is not "pwm"
-	 *  @param {Tone.Time} freq the modulation frequency of the pwm
-	 *  @returns {Tone.OmniOscillator} `this`
+	 * The width Signal of the oscillator (only if the oscillator is set to pulse)
+	 * @memberOf Tone.PulseOscillator#
+	 * @type {Tone.Signal}
+	 * @name width
 	 */
-	Tone.OmniOscillator.prototype.setModulationFrequency = function(freq){
-		if (this._sourceType === OmniOscType.PWMOscillator){
-			this._oscillator.setModulationFrequency(freq);
-		} else {
-			throw new Error("Invalid call to 'setModulationFrequency'. OmniOscillator type must be set to type 'pwm'.");
+	Object.defineProperty(Tone.OmniOscillator.prototype, "width", {
+		get : function(){
+			if (this._sourceType === OmniOscType.PulseOscillator){
+				return this._oscillator.width;
+			} else {
+				throw new Error("OmniOscillator type must be set to type 'pulse' in order to modify the 'width'");
+			}
 		}
-		return this;
-	};
+	});
 
 	/**
-	 *  bulk setter
-	 *  @param {Object} params 
-	 *  @returns {Tone.OmniOscillator} `this`
+	 * The modulationFrequency Signal of the oscillator 
+	 * (only if the oscillator type is set to pwm)
+	 * @memberOf Tone.PulseOscillator#
+	 * @type {Tone.Signal}
+	 * @name width
 	 */
-	Tone.OmniOscillator.prototype.set = function(params){
-		Tone.Source.prototype.set.call(this, params);
-		if (!this.isUndef(params.width)) this.setWidth(params.width);
-		if (!this.isUndef(params.modulationFrequency)) this.setModulationFrequency(params.modulationFrequency);
-		return this;
-	};
+	Object.defineProperty(Tone.OmniOscillator.prototype, "modulationFrequency", {
+		get : function(){
+			if (this._sourceType === OmniOscType.PWMOscillator){
+				return this._oscillator.modulationFrequency;
+			} else {
+				throw new Error("OmniOscillator type must be set to type 'pwm' in order to modify the 'modulationFrequency'");
+			}
+		}
+	});
 
 	/**
 	 *  clean up

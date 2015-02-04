@@ -21,7 +21,7 @@ function(Tone){
 		 */
 		this._pulse = new Tone.PulseOscillator(options.modulationFrequency);
 		//change the pulse oscillator type
-		this._pulse._sawtooth.setType("sine");
+		this._pulse._sawtooth.type = "sine";
 
 		/**
 		 *  the modulator
@@ -92,34 +92,32 @@ function(Tone){
 	};
 
 	/**
-	 *  set the phase of the oscillator (in degrees)
-	 *  @param {number} degrees the phase in degrees
-	 *  @returns {Tone.PulseOscillator} `this`
-	 */
-	Tone.PWMOscillator.prototype.setPhase = function(phase) {
-		this._modulator.setPhase(phase);
-		return this;
-	};
-
-	/**
-	 *  returns the phase in degrees
-	 *  @returns {number} the phase
-	 */
-	Tone.PWMOscillator.prototype.getPhase = function(){
-		return this._modulator.getPhase();
-	};
-
-	/**
-	 *  set the modulation rate, with an optional ramp time to that 
+	 * The type of the oscillator.
 	 *  
-	 *  @param {number}	freq
-	 *  @param {Tone.Time=} rampTime when the oscillator will arrive at the frequency
-	 *  @returns {Tone.PulseOscillator} `this`
+	 * @memberOf Tone.PWMOscillator#
+	 * @type {string}
+	 * @name type
 	 */
-	Tone.PWMOscillator.prototype.setModulationFrequency = function(val, rampTime){
-		this._pulse.setFrequency(val, rampTime);
-		return this;
-	};
+	Object.defineProperty(Tone.PWMOscillator.prototype, "type", {
+		get : function(){
+			return "pwm";
+		}
+	});
+
+	/**
+	 * the phase of the oscillator in degrees
+	 * @memberOf Tone.PWMOscillator#
+	 * @type {number}
+	 * @name phase
+	 */
+	Object.defineProperty(Tone.PWMOscillator.prototype, "phase", {
+		get : function(){
+			return this._modulator.phase;
+		}, 
+		set : function(phase){
+			this._modulator.phase = phase;
+		}
+	});
 
 	/**
 	 *  clean up

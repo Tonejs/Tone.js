@@ -83,34 +83,6 @@ function(Tone){
 	};
 
 	/**
-	 *  set the width of the oscillators
-	 *  @param {number} width
-	 *  @returns {Tone.PulseOscillator} `this`
-	 */
-	Tone.PulseOscillator.prototype.setWidth = function(width){
-		this.width.setValue(width);
-		return this;
-	};
-
-	/**
-	 *  set the phase of the oscillator
-	 *  @param {number} phase
-	 *  @returns {Tone.PulseOscillator} `this`
-	 */
-	Tone.PulseOscillator.prototype.setPhase = function(phase){
-		this._sawtooth.setPhase(phase);
-		return this;
-	};
-
-	/**
-	 *  returns the phase in degrees
-	 *  @returns {number} the phase
-	 */
-	Tone.PulseOscillator.prototype.getPhase = function(){
-		return this._sawtooth.getPhase();
-	};
-
-	/**
 	 *  start the oscillator
 	 *  @param  {Tone.Time} time 
 	 *  @private
@@ -133,6 +105,33 @@ function(Tone){
 		//that needs to be stopped also
 		this.width.output.gain.setValueAtTime(0, time);
 	};
+
+	/**
+	 * the phase of the oscillator in degrees
+	 * @memberOf Tone.PulseOscillator#
+	 * @type {number}
+	 * @name phase
+	 */
+	Object.defineProperty(Tone.PulseOscillator.prototype, "phase", {
+		get : function(){
+			return this._sawtooth.phase;
+		}, 
+		set : function(phase){
+			this._sawtooth.phase = phase;
+		}
+	});
+
+	/**
+	 * The type of the oscillator.
+	 * @memberOf Tone.PulseOscillator#
+	 * @type {string}
+	 * @name type
+	 */
+	Object.defineProperty(Tone.PulseOscillator.prototype, "type", {
+		get : function(){
+			return "pulse";
+		}
+	});
 
 	/**
 	 *  clean up method
