@@ -42,10 +42,7 @@ define(["Tone/core/Tone"], function(Tone){
 		 *  the callback to invoke when everything is loaded
 		 *  @type {function}
 		 */
-		this.onload = function(arg){
-			this.loaded = true;
-			options.onload(arg);
-		}.bind(this);
+		this.onload = options.onload.bind(this, this);
 
 		if (options.url instanceof AudioBuffer){
 			this._buffer.set(options.url);
@@ -81,6 +78,7 @@ define(["Tone/core/Tone"], function(Tone){
 		} else {
 			this._buffer = buffer;
 		}
+		this.loaded = true;
 		return this;
 	};
 
