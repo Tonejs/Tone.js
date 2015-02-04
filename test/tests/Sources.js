@@ -183,11 +183,11 @@ function(chai, Player, Master, Oscillator, Recorder, Noise, core, PulseOscillato
 
 		it("can set the frequency", function(){
 			var oscillator = new Oscillator();
-			oscillator.setFrequency(110);
-			expect(oscillator.frequency.getValue()).to.equal(110);
+			oscillator.frequency.value = 110;
+			expect(oscillator.frequency.value).to.equal(110);
 			oscillator.start();
-			oscillator.setFrequency(220);
-			expect(oscillator.frequency.getValue()).to.equal(220);
+			oscillator.frequency.value = 220;
+			expect(oscillator.frequency.value).to.equal(220);
 			oscillator.dispose();
 		});
 
@@ -196,8 +196,8 @@ function(chai, Player, Master, Oscillator, Recorder, Noise, core, PulseOscillato
 				"frequency" : 200,
 				"detune" : -20
 			});
-			expect(osc.frequency.getValue()).to.equal(200);
-			expect(osc.detune.getValue()).to.equal(-20);
+			expect(osc.frequency.value).to.equal(200);
+			expect(osc.detune.value).to.equal(-20);
 			osc.dispose();
 		});
 
@@ -208,9 +208,9 @@ function(chai, Player, Master, Oscillator, Recorder, Noise, core, PulseOscillato
 				"detune" : -21,
 				"type" : "square"
 			});
-			expect(osc.frequency.getValue()).to.equal(231);
-			expect(osc.detune.getValue()).to.equal(-21);
-			expect(osc.getType()).to.equal("square");
+			expect(osc.frequency.value).to.equal(231);
+			expect(osc.detune.value).to.equal(-21);
+			expect(osc.type).to.equal("square");
 			osc.dispose();
 		});
 	});
@@ -312,14 +312,14 @@ function(chai, Player, Master, Oscillator, Recorder, Noise, core, PulseOscillato
 
 		it("can set the noise types", function(){
 			var noise = new Noise();
-			noise.setType("brown");
-			noise.setType("white");
-			noise.setType("pink");
+			noise.type = "brown";
+			noise.type = "white";
+			noise.type = "pink";
 			//even after started
 			noise.start();
-			noise.setType("brown");
-			noise.setType("white");
-			noise.setType("pink");
+			noise.type = "brown";
+			noise.type = "white";
+			noise.type = "pink";
 			noise.stop();
 			noise.dispose();
 		});
@@ -328,7 +328,7 @@ function(chai, Player, Master, Oscillator, Recorder, Noise, core, PulseOscillato
 			var noise = new Noise({
 				"type" : "brown"
 			});
-			expect(noise.getType()).to.equal("brown");
+			expect(noise.type).to.equal("brown");
 			noise.dispose();
 		});
 
@@ -337,7 +337,7 @@ function(chai, Player, Master, Oscillator, Recorder, Noise, core, PulseOscillato
 			noise.set({
 				"type" : "pink"
 			});
-			expect(noise.getType()).to.equal("pink");
+			expect(noise.type).to.equal("pink");
 			noise.dispose();
 		});
 	});
@@ -375,13 +375,13 @@ function(chai, Player, Master, Oscillator, Recorder, Noise, core, PulseOscillato
 
 		it("can set the width", function(){
 			var pulse = new PulseOscillator();
-			pulse.setWidth(0.2);
+			pulse.width.value = 0.2;
 			pulse.dispose();
 		});
 
 		it("can set the frequency", function(){
 			var pulse = new PulseOscillator();
-			pulse.setFrequency(220);
+			pulse.frequency.value = 220;
 			pulse.dispose();
 		});
 
@@ -401,8 +401,8 @@ function(chai, Player, Master, Oscillator, Recorder, Noise, core, PulseOscillato
 				"frequency" : 200,
 				"detune" : -20,
 			});
-			expect(osc.frequency.getValue()).to.equal(200);
-			expect(osc.detune.getValue()).to.equal(-20);
+			expect(osc.frequency.value).to.equal(200);
+			expect(osc.detune.value).to.equal(-20);
 			osc.dispose();
 		});
 
@@ -413,9 +413,9 @@ function(chai, Player, Master, Oscillator, Recorder, Noise, core, PulseOscillato
 				"detune" : -21,
 				"width" : 0.2
 			});
-			expect(osc.frequency.getValue()).to.equal(231);
-			expect(osc.detune.getValue()).to.equal(-21);
-			expect(osc.width.getValue()).to.be.closeTo(0.2, 0.001);
+			expect(osc.frequency.value).to.equal(231);
+			expect(osc.detune.value).to.equal(-21);
+			expect(osc.width.value).to.be.closeTo(0.2, 0.001);
 			osc.dispose();
 		});
 	});
@@ -453,13 +453,13 @@ function(chai, Player, Master, Oscillator, Recorder, Noise, core, PulseOscillato
 
 		it("can set the modulation frequency", function(){
 			var pwm = new PWMOscillator();
-			pwm.setModulationFrequency(0.2);
+			pwm.modulationFrequency.value = 0.2;
 			pwm.dispose();
 		});
 
 		it("can set the frequency", function(){
 			var pwm = new PWMOscillator();
-			pwm.setFrequency(220);
+			pwm.frequency.value = 220;
 			pwm.dispose();
 		});
 
@@ -479,8 +479,8 @@ function(chai, Player, Master, Oscillator, Recorder, Noise, core, PulseOscillato
 				"frequency" : 200,
 				"detune" : -20,
 			});
-			expect(osc.frequency.getValue()).to.equal(200);
-			expect(osc.detune.getValue()).to.equal(-20);
+			expect(osc.frequency.value).to.equal(200);
+			expect(osc.detune.value).to.equal(-20);
 			osc.dispose();
 		});
 
@@ -491,9 +491,9 @@ function(chai, Player, Master, Oscillator, Recorder, Noise, core, PulseOscillato
 				"detune" : -21,
 				"modulationFrequency" : 0.2
 			});
-			expect(osc.frequency.getValue()).to.equal(231);
-			expect(osc.detune.getValue()).to.equal(-21);
-			expect(osc.modulationFrequency.getValue()).to.be.closeTo(0.2, 0.001);
+			expect(osc.frequency.value).to.equal(231);
+			expect(osc.detune.value).to.equal(-21);
+			expect(osc.modulationFrequency.value).to.be.closeTo(0.2, 0.001);
 			osc.dispose();
 		});
 	});
@@ -528,7 +528,7 @@ function(chai, Player, Master, Oscillator, Recorder, Noise, core, PulseOscillato
 			Test.outputsAudio(function(dest){
 				osc = new OmniOscillator();
 				osc.connect(dest);
-				osc.setType("square");
+				osc.type = "square";
 				osc.start();
 			}, function(){
 				osc.dispose();
@@ -541,7 +541,7 @@ function(chai, Player, Master, Oscillator, Recorder, Noise, core, PulseOscillato
 			Test.outputsAudio(function(dest){
 				osc = new OmniOscillator();
 				osc.connect(dest);
-				osc.setType("pwm");
+				osc.type = "pwm";
 				osc.start();
 			}, function(){
 				osc.dispose();
@@ -568,19 +568,27 @@ function(chai, Player, Master, Oscillator, Recorder, Noise, core, PulseOscillato
 
 		it("can set the modulation frequency only when type is pwm", function(){
 			var omni = new OmniOscillator();
-			omni.setType("pwm");
-			expect(omni.setModulationFrequency.bind(omni, 0.2)).to.not.throw(Error);
-			omni.setType("pulse");
-			expect(omni.setModulationFrequency.bind(omni, 0.2)).to.throw(Error);
+			omni.type = "pwm";
+			expect(function(){
+				omni.modulationFrequency.value = 0.2;
+			}).to.not.throw(Error);
+			omni.type = "pulse";
+			expect(function(){
+				omni.modulationFrequency.value = 0.2;
+			}).to.throw(Error);
 			omni.dispose();
 		});
 
 		it("can set the modulation width only when type is pulse", function(){
 			var omni = new OmniOscillator();
-			omni.setType("pulse");
-			expect(omni.setWidth.bind(omni, 0.2)).to.not.throw(Error);
-			omni.setType("sine");
-			expect(omni.setWidth.bind(omni, 0.2)).to.throw(Error);
+			omni.type = "pulse";
+			expect(function(){
+				omni.width.value = 0.2;
+			}).to.not.throw(Error);
+			omni.type = "sine";
+			expect(function(){
+				omni.width.value = 0.2;
+			}).to.throw(Error);
 			omni.dispose();
 		});
 
@@ -590,9 +598,9 @@ function(chai, Player, Master, Oscillator, Recorder, Noise, core, PulseOscillato
 				"detune" : -30,
 				"type" : "square"
 			});
-			expect(osc.frequency.getValue()).to.equal(210);
-			expect(osc.detune.getValue()).to.equal(-30);
-			expect(osc.getType()).to.equal("square");
+			expect(osc.frequency.value).to.equal(210);
+			expect(osc.detune.value).to.equal(-30);
+			expect(osc.type).to.equal("square");
 			osc.dispose();
 		});
 
@@ -603,9 +611,9 @@ function(chai, Player, Master, Oscillator, Recorder, Noise, core, PulseOscillato
 				"frequency" : 231,
 				"detune" : -21,
 			});
-			expect(osc.frequency.getValue()).to.equal(231);
-			expect(osc.detune.getValue()).to.equal(-21);
-			expect(osc.getType()).to.equal("pwm");
+			expect(osc.frequency.value).to.equal(231);
+			expect(osc.detune.value).to.equal(-21);
+			expect(osc.type).to.equal("pwm");
 			osc.dispose();
 		});
 	});
