@@ -28,7 +28,7 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 		 */
 		this._buffer = null;
 
-		this.setType(options.type);
+		this.type = options.type;
 	};
 
 	Tone.extend(Tone.Noise, Tone.Source);
@@ -45,50 +45,45 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 	};
 
 	/**
-	 *  set the noise type
-	 *  
-	 *  @param {string} type the noise type (white|pink|brown)
-	 *  @param {Tone.Time} time (optional) time that the set will occur
-	 *  @returns {Tone.Noise} `this`
+	 * The type of the noise. Can be "white", "brown", or "pink". 
+	 * @memberOf Tone.Noise#
+	 * @type {string}
+	 * @name type
 	 */
-	Tone.Noise.prototype.setType = function(type, time){
-		switch (type){
-			case "white" : 
-				this._buffer = _whiteNoise;
-				break;
-			case "pink" : 
-				this._buffer = _pinkNoise;
-				break;
-			case "brown" : 
-				this._buffer = _brownNoise;
-				break;
-			default : 
-				this._buffer = _whiteNoise;
+	Object.defineProperty(Tone.Noise.prototype, "type", {
+		get : function(){
+			if (this._buffer === _whiteNoise){
+				return "white";
+			} else if (this._buffer === _brownNoise){
+				return "brown";
+			} else if (this._buffer === _pinkNoise){
+				return "pink";
+			}
+		}, 
+		set : function(type){
+			switch (type){
+				case "white" : 
+					this._buffer = _whiteNoise;
+					break;
+				case "pink" : 
+					this._buffer = _pinkNoise;
+					break;
+				case "brown" : 
+					this._buffer = _brownNoise;
+					break;
+				default : 
+					this._buffer = _whiteNoise;
+			}
+			//if it's playing, stop and restart it
+			if (this.state === Tone.Source.State.STARTED){
+				var now = this.now() + this.bufferTime;
+				//remove the listener
+				this._source.onended = undefined;
+				this._stop(now);
+				this._start(now);
+			}
 		}
-		//if it's playing, stop and restart it
-		if (this.state === Tone.Source.State.STARTED){
-			time = this.toSeconds(time);
-			//remove the listener
-			this._source.onended = undefined;
-			this._stop(time);
-			this._start(time);
-		}
-		return this;
-	};
-
-	/**
-	 *  get the type of noise
-	 *  @return {string} the type of noise
-	 */
-	Tone.Noise.prototype.getType = function(){
-		if (this._buffer === _whiteNoise){
-			return "white";
-		} else if (this._buffer === _brownNoise){
-			return "brown";
-		} else if (this._buffer === _pinkNoise){
-			return "pink";
-		}
-	};
+	});
 
 	/**
 	 *  internal start method
@@ -116,14 +111,6 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 			this._source.stop(this.toSeconds(time));
 		}
 	};
-
-	/**
-	 * The type of the noise. Can be "white", "brown", or "pink". 
-	 * @memberOf Tone.Noise#
-	 * @type {string}
-	 * @name type
-	 */
-	Tone._defineGetterSetter(Tone.Noise, "type");
 
 	/**
 	 *  dispose all the components
