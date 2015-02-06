@@ -44,14 +44,20 @@ define(["Tone/core/Tone", "Tone/signal/LessThan", "Tone/signal/IfThenElse", "Ton
 	Tone.extend(Tone.Min, Tone.SignalBase);
 
 	/**
-	 *  set the min value
-	 *  @param {number} min the minimum to compare to the incoming signal
-	 *  @returns {Tone.Min} `this`
+	 * Will output the minimum between the incoming signal
+	 * and `value`.
+	 * @memberOf Tone.Min#
+	 * @type {number}
+	 * @name value
 	 */
-	Tone.Min.prototype.setMin = function(min){
-		this._minSignal.setValue(min);
-		return this;
-	};
+	Object.defineProperty(Tone.Min.prototype, "value", {
+		get : function(){
+			return this._minSignal.value;
+		},
+		set : function(max){
+			this._minSignal.value = max;
+		}
+	});
 
 	/**
 	 *  clean up

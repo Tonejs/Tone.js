@@ -36,22 +36,20 @@ define(["Tone/core/Tone", "Tone/signal/GreaterThanZero", "Tone/signal/Subtract"]
 	Tone.extend(Tone.GreaterThan, Tone.SignalBase);
 
 	/**
-	 *  set the value to compare to
-	 *  
-	 *  @param {number} value
-	 *  @returns {Tone.GreaterThan} `this`
+	 * The value to compare to the incoming signal.
+	 * 
+	 * @memberOf Tone.GreaterThan#
+	 * @type {number}
+	 * @name value
 	 */
-	Tone.GreaterThan.prototype.setValue = function(value){
-		this._sub.setValue(value);
-		return this;
-	};
-
-	/**
-	 *  @returns {number} the value that is set
-	 */
-	Tone.GreaterThan.prototype.getValue = function(){
-		return this._sub.getValue();
-	};
+	Object.defineProperty(Tone.GreaterThan.prototype, "value", {
+		get : function(){
+			return this._sub.value;
+		},
+		set : function(value){
+			this._sub.value = value;
+		}
+	});
 
 	/**
 	 *  dispose method

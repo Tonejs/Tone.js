@@ -45,15 +45,20 @@ define(["Tone/core/Tone", "Tone/signal/GreaterThan", "Tone/signal/Negate"], func
 	Tone.extend(Tone.LessThan, Tone.SignalBase);
 
 	/**
-	 *  set the value to compare to
-	 *  
-	 *  @param {number} value
-	 *  @returns {Tone.LessThan} `this`
+	 * The value to compare to the incoming signal.
+	 * 
+	 * @memberOf Tone.LessThan#
+	 * @type {number}
+	 * @name value
 	 */
-	Tone.LessThan.prototype.setValue = function(value){
-		this._gt.setValue(-value);
-		return this;
-	};
+	Object.defineProperty(Tone.LessThan.prototype, "value", {
+		get : function(){
+			return -this._gt.value;
+		},
+		set : function(value){
+			this._gt.value = -value;
+		}
+	});
 
 	/**
 	 *  dispose method

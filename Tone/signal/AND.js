@@ -31,16 +31,6 @@ define(["Tone/core/Tone", "Tone/signal/Equal"], function(Tone){
 	Tone.extend(Tone.AND, Tone.SignalBase);
 
 	/**
-	 *  the number of inputs to consider
-	 *  @param {number} inputCount
-	 *  @returns {Tone.AND} `this`
-	 */	
-	Tone.AND.prototype.setInputCount = function(inputCount){
-		this._equals.setValue(inputCount);
-		return this;
-	};
-
-	/**
 	 *  clean up
 	 *  @returns {Tone.AND} `this`
 	 */

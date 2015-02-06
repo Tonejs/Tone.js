@@ -38,7 +38,7 @@ define(["Tone/core/Tone", "Tone/signal/SignalBase"], function(Tone){
 		this._curve = null;
 
 		if (Array.isArray(mapping)){
-			this.setCurve(mapping);
+			this.curve = mapping;
 		} else if (isFinite(mapping) || this.isUndef(mapping)){
 			this._curve = new Float32Array(this.defaultArg(mapping, 1024));
 		} else if (this.isFunction(mapping)){
@@ -68,30 +68,40 @@ define(["Tone/core/Tone", "Tone/signal/SignalBase"], function(Tone){
 	};
 
 	/**
-	 *  use an array to set the waveshaper curve
-	 *  @param {Array} mapping the array to use as the waveshaper
-	 *  @returns {Tone.WaveShaper} `this`
+	 * The array to set as the waveshaper curve
+	 * @memberOf Tone.WaveShaper#
+	 * @type {Array}
+	 * @name curve
 	 */
-	Tone.WaveShaper.prototype.setCurve = function(mapping){
-		//fixes safari WaveShaperNode bug
-		if (this._isSafari()){
-			var first = mapping[0];
-			mapping.unshift(first);	
+	Object.defineProperty(Tone.WaveShaper.prototype, "curve", {
+		get : function(){
+			return this._shaper.curve;
+		},
+		set : function(mapping){
+			//fixes safari WaveShaperNode bug
+			if (this._isSafari()){
+				var first = mapping[0];
+				mapping.unshift(first);	
+			}
+			this._curve = new Float32Array(mapping);
+			this._shaper.curve = this._curve;
 		}
-		this._curve = new Float32Array(mapping);
-		this._shaper.curve = this._curve;
-		return this;
-	};
+	});
 
 	/**
-	 *  set the oversampling
-	 *  @param {string} oversampling can either be "none", "2x" or "4x"
-	 *  @returns {Tone.WaveShaper} `this`
+	 * The oversampling. Can either be "none", "2x" or "4x"
+	 * @memberOf Tone.WaveShaper#
+	 * @type {string}
+	 * @name curve
 	 */
-	Tone.WaveShaper.prototype.setOversample = function(oversampling) {
-		this._shaper.oversample = oversampling;
-		return this;
-	};
+	Object.defineProperty(Tone.WaveShaper.prototype, "oversample", {
+		get : function(){
+			return this._shaper.oversample;
+		},
+		set : function(oversampling){
+			this._shaper.oversample = oversampling;
+		}
+	});
 
 	/**
 	 *  returns true if the browser is safari

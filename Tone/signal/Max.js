@@ -45,14 +45,20 @@ define(["Tone/core/Tone", "Tone/signal/GreaterThan", "Tone/signal/IfThenElse", "
 	Tone.extend(Tone.Max, Tone.SignalBase);
 
 	/**
-	 *  set the max value
-	 *  @param {number} max the maximum to compare to the incoming signal
-	 *  @returns {Tone.Max} `this`
+	 * Will output the maximum between the incoming signal
+	 * and `value`.
+	 * @memberOf Tone.Max#
+	 * @type {number}
+	 * @name value
 	 */
-	Tone.Max.prototype.setMax = function(max){
-		this._maxSignal.setValue(max);
-		return this;
-	};
+	Object.defineProperty(Tone.Max.prototype, "value", {
+		get : function(){
+			return this._maxSignal.value;
+		},
+		set : function(max){
+			this._maxSignal.value = max;
+		}
+	});
 
 	/**
 	 *  clean up

@@ -29,22 +29,21 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 	Tone.extend(Tone.Pow, Tone.SignalBase);
 
 	/**
-	 *  set the exponential scaling curve
-	 *  @param {number} exp the exponent to raise the incoming signal to
-	 *  @returns {Tone.Pow} `this`
+	 * The value of the exponent
+	 * @memberOf Tone.Pow#
+	 * @type {number}
+	 * @name value
 	 */
-	Tone.Pow.prototype.setExponent = function(exp){
-		this._exp = exp;
-		this._expScaler.setMap(this._expFunc(this._exp));
-		return this;
-	};
+	Object.defineProperty(Tone.Pow.prototype, "value", {
+		get : function(){
+			return this._exp;
+		},
+		set : function(exp){
+			this._exp = exp;
+			this._expScaler.setMap(this._expFunc(this._exp));
+		}
+	});
 
-	/**
-	 *  @returns {number} the exponent to raise the incoming signal to
-	 */
-	Tone.Pow.prototype.getExponent = function(){
-		return this._exp;
-	};
 
 	/**
 	 *  the function which maps the waveshaper

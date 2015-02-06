@@ -38,15 +38,19 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	Tone.extend(Tone.Multiply, Tone.SignalBase);
 
 	/**
-	 *  set the constant multiple
-	 *  	
-	 *  @param {number} value 
-	 *  @returns {Tone.Multiply} `this`
+	 * The value being multiplied to the incoming signal.
+	 * @memberOf Tone.Multiply#
+	 * @type {number}
+	 * @name value
 	 */
-	Tone.Multiply.prototype.setValue = function(value){
-		this._factor.value = value;
-		return this;
-	};
+	Object.defineProperty(Tone.Multiply.prototype, "value", {
+		get : function(){
+			return this._factor.value;
+		},
+		set : function(value){
+			this._factor.value = value;	
+		}
+	});
 
 	/**
 	 *  clean up

@@ -22,7 +22,7 @@ function(Tone){
 		 *  @type {Tone.Signal}
 		 *  @private
 		 */
-		this._value = null;
+		this._denominator = null;
 
 		/**
 		 *  the inverse
@@ -37,8 +37,8 @@ function(Tone){
 		this._mult = new Tone.Multiply();
 
 		if (isFinite(divisor)){
-			this._value = new Tone.Signal(divisor);
-			this._value.connect(this._inverse);
+			this._denominator = new Tone.Signal(divisor);
+			this._denominator.connect(this._inverse);
 		}
 		this.input[1] = this._inverse;
 		this._inverse.connect(this._mult, 0, 1);
@@ -48,21 +48,32 @@ function(Tone){
 	Tone.extend(Tone.Divide, Tone.SignalBase);
 
 	/**
-	 *  set the divisor value
-	 *  NB: if the value is known, use Tone.Multiply with the inverse of the value
-	 *  Division is a computationally expensive operation. 
-	 *  
-	 *  @param {number} value 
-	 *  @returns {Tone.Divide} `this`
+	 * The value being divided from the incoming signal. Note, that
+	 * if Divide was constructed without a divisor, it expects
+	 * that the signals to numberator will be connected to input 0 and 
+	 * the denominator to input 1 and therefore will throw an error when 
+	 * trying to set/get the value. 
+	 * 
+	 * @memberOf Tone.Divide#
+	 * @type {number}
+	 * @name value
 	 */
-	Tone.Divide.prototype.setValue = function(value){
-		if (this._value !== null){
-			this._value.setValue(value);
-		} else {
-			throw new Error("cannot switch from signal to number");
+	Object.defineProperty(Tone.Divide.prototype, "value", {
+		get : function(){
+			if (this._denominator !== null){
+				return this._denominator.value;
+			} else {
+				throw new Error("cannot switch from signal to number");
+			}
+		},
+		set : function(value){
+			if (this._denominator !== null){
+				this._denominator.value = value;
+			} else {
+				throw new Error("cannot switch from signal to number");
+			}
 		}
-		return this;
-	}; 
+	});
 
 	/**
 	 *  clean up
@@ -70,9 +81,9 @@ function(Tone){
 	 */
 	Tone.Divide.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
-		if (this._value){
-			this._value.dispose();
-			this._value = null;
+		if (this._denominator){
+			this._denominator.dispose();
+			this._denominator = null;
 		}
 		this._inverse.dispose();
 		this._inverse = null;

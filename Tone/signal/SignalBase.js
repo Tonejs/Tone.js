@@ -25,9 +25,7 @@ define(["Tone/core/Tone"], function(Tone){
 	 */
 	Tone.SignalBase.prototype.connect = function(node, outputNumber, inputNumber){
 		//zero it out so that the signal can have full control
-		if (node instanceof Tone.Signal){
-			node.setValue(0);
-		} else if (node instanceof AudioParam){
+		if (node instanceof Tone.Signal || node instanceof AudioParam){
 			node.value = 0;
 		} 
 		Tone.prototype.connect.call(this, node, outputNumber, inputNumber);

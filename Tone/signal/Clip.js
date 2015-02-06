@@ -38,24 +38,34 @@ define(["Tone/core/Tone", "Tone/signal/Max", "Tone/signal/Min", "Tone/signal/Sig
 	Tone.extend(Tone.Clip, Tone.SignalBase);
 
 	/**
-	 *  set the minimum value
-	 *  @param {number} min the new min value
-	 *  @returns {Tone.Clip} `this`
+	 * The minimum value which Clip will output.
+	 * @memberOf Tone.Clip#
+	 * @type {number}
+	 * @name min
 	 */
-	Tone.Clip.prototype.setMin = function(min){
-		this._min.setMin(min);
-		return this;
-	};
+	Object.defineProperty(Tone.Clip.prototype, "min", {
+		get : function(){
+			return this._min.value;
+		},
+		set : function(min){
+			this._min.value = min;
+		}
+	});
 
 	/**
-	 *  set the maximum value
-	 *  @param {number} max the new max value
-	 *  @returns {Tone.Clip} `this`
+	 * The maximum value which Clip will output.
+	 * @memberOf Tone.Clip#
+	 * @type {number}
+	 * @name max
 	 */
-	Tone.Clip.prototype.setMax = function(max){
-		this._max.setMax(max);	
-		return this;
-	};
+	Object.defineProperty(Tone.Clip.prototype, "max", {
+		get : function(){
+			return this._max.value;
+		},
+		set : function(max){
+			this._max.value = max;
+		}
+	});
 
 	/**
 	 *  clean up

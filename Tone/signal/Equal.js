@@ -35,13 +35,20 @@ define(["Tone/core/Tone", "Tone/signal/EqualZero", "Tone/signal/Subtract", "Tone
 	Tone.extend(Tone.Equal, Tone.SignalBase);
 
 	/**
-	 * 	@param {number} value set the comparison value
-	 *  @returns {Tone.Equal} `this`
+	 * The value to compare to the incoming signal.
+	 * 
+	 * @memberOf Tone.Equal#
+	 * @type {number}
+	 * @name value
 	 */
-	Tone.Equal.prototype.setValue = function(value){
-		this._sub.setValue(value);
-		return this;
-	};
+	Object.defineProperty(Tone.Equal.prototype, "value", {
+		get : function(){
+			return this._sub.value;
+		},
+		set : function(value){
+			this._sub.value = value;
+		}
+	});
 
 	/**
 	 *  dispose method

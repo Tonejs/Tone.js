@@ -48,48 +48,44 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Multiply", "Tone/signa
 	Tone.extend(Tone.Scale, Tone.SignalBase);
 
 	/**
-	 *  set the minimum output value
-	 *  @param {number} min the minimum output value
-	 *  @returns {Tone.Scale} `this`
+	 * The minimum output value.
+	 * @memberOf Tone.Scale#
+	 * @type {number}
+	 * @name min
 	 */
-	Tone.Scale.prototype.setMin = function(min){
-		this._outputMin = min;
-		this._setRange();
-		return this;
-	};
+	Object.defineProperty(Tone.Scale.prototype, "min", {
+		get : function(){
+			return this._outputMin;
+		},
+		set : function(min){
+			this._outputMin = min;
+			this._setRange();
+		}
+	});
 
 	/**
-	 *  @returns {number} the minimum output value
+	 * The maximum output value.
+	 * @memberOf Tone.Scale#
+	 * @type {number}
+	 * @name max
 	 */
-	Tone.Scale.prototype.getMin = function(){
-		return this._outputMin;
-	};
-
-	/**
-	 *  set the minimum output value
-	 *  @param {number} min the minimum output value
-	 *  @returns {Tone.Scale} `this`
-	 */
-	Tone.Scale.prototype.setMax = function(max){
-		this._outputMax = max;
-		this._setRange();
-		return this;
-	};
-
-	/**
-	 *  @returns {number} the maximum output value
-	 */
-	Tone.Scale.prototype.getMax = function(){
-		return this._outputMax;
-	};
+	Object.defineProperty(Tone.Scale.prototype, "max", {
+		get : function(){
+			return this._outputMax;
+		},
+		set : function(max){
+			this._outputMax = max;
+			this._setRange();
+		}
+	});
 
 	/**
 	 *  set the values
 	 *  @private
 	 */
 	Tone.Scale.prototype._setRange = function() {
-		this._add.setValue(this._outputMin);
-		this._scale.setValue(this._outputMax - this._outputMin);
+		this._add.value = this._outputMin;
+		this._scale.value = this._outputMax - this._outputMin;
 	};
 
 	/**
@@ -104,22 +100,6 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Multiply", "Tone/signa
 		this._scale = null;
 		return this;
 	}; 
-
-	/**
-	 * the miniumum output of the scale
-	 * @memberOf Tone.Scale#
-	 * @type {number}
-	 * @name min
-	 */
-	Tone._defineGetterSetter(Tone.Scale, "min");
-
-	/**
-	 * the maximum output of the scale
-	 * @memberOf Tone.Scale#
-	 * @type {number}
-	 * @name max
-	 */
-	Tone._defineGetterSetter(Tone.Scale, "max");
 
 	return Tone.Scale;
 });

@@ -4,7 +4,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 
 	/**
 	 *  @class Add a signal and a number or two signals. 
-	 *         input 0: augend. input 1: addend
+	 *         input 0: augend. input 1: addend. 
 	 *
 	 *  @constructor
 	 *  @extends {Tone.SignalBase}
@@ -26,41 +26,42 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 		 *  @private
 		 *  @type {Tone.Signal}
 		 */
-		this._value = null;
+		this._addend = null;
 
 		if (isFinite(value)){
-			this._value = new Tone.Signal(value);
-			this._value.connect(this._sum);
-		}
+			this._addend = new Tone.Signal(value);
+			this._addend.connect(this._sum);
+		} 
 	};
 
 	Tone.extend(Tone.Add, Tone.SignalBase);
 
 	/**
-	 *  set the constant
-	 *  
-	 *  @param {number} value 
-	 *  @returns {Tone.Add} `this`
+	 * The value being added to the incoming signal. Note, that
+	 * if Add was constructed without any arguments, it expects
+	 * that the signals to add will be connected to input 0 and input 1
+	 * and therefore will throw an error when trying to set the value. 
+	 * 
+	 * @memberOf Tone.Add#
+	 * @type {number}
+	 * @name value
 	 */
-	Tone.Add.prototype.setValue = function(value){
-		if (this._value !== null){
-			this._value.setValue(value);
-		} else {
-			throw new Error("cannot switch from signal to number");
+	Object.defineProperty(Tone.Add.prototype, "value", {
+		get : function(){
+			if (this._addend !== null){
+				return this._addend.value;
+			} else {
+				throw new Error("cannot switch from signal to number");
+			}
+		},
+		set : function(value){
+			if (this._addend !== null){
+				this._addend.value = value;
+			} else {
+				throw new Error("cannot switch from signal to number");
+			}
 		}
-		return this;
-	}; 
-
-	/**
-	 *  @returns {number} the current value being added
-	 */
-	Tone.Add.prototype.getValue = function(){
-		if (this._value !== null){
-			return this._value.getValue();
-		} else {
-			return 0;
-		}
-	}; 
+	});
 
 	/**
 	 *  dispose method
@@ -69,9 +70,9 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	Tone.Add.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
 		this._sum = null;
-		if (this._value){
-			this._value.dispose();
-			this._value = null;
+		if (this._addend){
+			this._addend.dispose();
+			this._addend = null;
 		}
 		return this;
 	}; 

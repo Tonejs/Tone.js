@@ -166,9 +166,7 @@ function(Tone){
 		get : function(){
 			if (this._sourceType === OmniOscType.PulseOscillator){
 				return this._oscillator.width;
-			} else {
-				throw new Error("OmniOscillator type must be set to type 'pulse' in order to modify the 'width'");
-			}
+			} 
 		}
 	});
 
@@ -183,9 +181,7 @@ function(Tone){
 		get : function(){
 			if (this._sourceType === OmniOscType.PWMOscillator){
 				return this._oscillator.modulationFrequency;
-			} else {
-				throw new Error("OmniOscillator type must be set to type 'pwm' in order to modify the 'modulationFrequency'");
-			}
+			} 
 		}
 	});
 

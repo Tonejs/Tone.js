@@ -45,34 +45,44 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Multiply"], function(T
 	Tone.extend(Tone.Normalize, Tone.SignalBase);
 
 	/**
-	 *  set the minimum input value
-	 *  @param {number} min the minimum input value
-	 *  @returns {Tone.Normalize} `this`
+	 * The minimum value the input signal will reach.
+	 * @memberOf Tone.Normalize#
+	 * @type {number}
+	 * @name min
 	 */
-	Tone.Normalize.prototype.setMin = function(min){
-		this._inputMin = min;
-		this._setRange();
-		return this;
-	};
+	Object.defineProperty(Tone.Normalize.prototype, "min", {
+		get : function(){
+			return this._inputMin;
+		},
+		set : function(min){
+			this._inputMin = min;
+			this._setRange();
+		}
+	});
 
 	/**
-	 *  set the minimum input value
-	 *  @param {number} min the minimum input value
-	 *  @returns {Tone.Normalize} `this`
+	 * The maximum value the input signal will reach.
+	 * @memberOf Tone.Normalize#
+	 * @type {number}
+	 * @name max
 	 */
-	Tone.Normalize.prototype.setMax = function(max){
-		this._inputMax = max;
-		this._setRange();
-		return this;
-	};
+	Object.defineProperty(Tone.Normalize.prototype, "max", {
+		get : function(){
+			return this._inputMax;
+		},
+		set : function(max){
+			this._inputMax = max;
+			this._setRange();
+		}
+	});
 
 	/**
 	 *  set the values
 	 *  @private
 	 */
 	Tone.Normalize.prototype._setRange = function() {
-		this._sub.setValue(-this._inputMin);
-		this._div.setValue(1 / (this._inputMax - this._inputMin));
+		this._sub.value = -this._inputMin;
+		this._div.value = 1 / (this._inputMax - this._inputMin);
 	};
 
 	/**

@@ -34,34 +34,49 @@ function(Tone){
 	Tone.extend(Tone.ScaleExp, Tone.SignalBase);
 
 	/**
-	 *  set the exponential scaling curve
-	 *  @param {number} exp the exponent to raise the incoming signal to
-	 *  @returns {Tone.ScaleExp} `this`
+	 * The minimum output value.
+	 * @memberOf Tone.ScaleExp#
+	 * @type {number}
+	 * @name exponent
 	 */
-	Tone.ScaleExp.prototype.setExponent = function(exp){
-		this._exp.setExponent(exp);
-		return this;
-	};
+	Object.defineProperty(Tone.ScaleExp.prototype, "exponent", {
+		get : function(){
+			return this._exp.value;
+		},
+		set : function(exp){
+			this._exp.value = exp;
+		}
+	});
 
 	/**
-	 *  set the minimum output value
-	 *  @param {number} min the minimum output value
-	 *  @returns {Tone.ScaleExp} `this`
+	 * The minimum output value.
+	 * @memberOf Tone.ScaleExp#
+	 * @type {number}
+	 * @name min
 	 */
-	Tone.ScaleExp.prototype.setMin = function(min){
-		this._scale.setMin(min);
-		return this;
-	};
+	Object.defineProperty(Tone.ScaleExp.prototype, "min", {
+		get : function(){
+			return this._scale.min;
+		},
+		set : function(min){
+			this._scale.min = min;
+		}
+	});
 
 	/**
-	 *  set the minimum output value
-	 *  @param {number} min the minimum output value
-	 *  @returns {Tone.ScaleExp} `this`
+	 * The maximum output value.
+	 * @memberOf Tone.ScaleExp#
+	 * @type {number}
+	 * @name max
 	 */
-	Tone.ScaleExp.prototype.setMax = function(max){
-		this._scale.setMax(max);
-		return this;
-	};
+	Object.defineProperty(Tone.ScaleExp.prototype, "max", {
+		get : function(){
+			return this._scale.max;
+		},
+		set : function(max){
+			this._scale.max = max;
+		}
+	});
 
 	/**
 	 *  clean up

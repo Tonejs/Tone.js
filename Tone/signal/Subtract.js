@@ -37,22 +37,19 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Negate", "Tone/signal/
 	Tone.extend(Tone.Subtract, Tone.SignalBase);
 
 	/**
-	 *  set the constant
-	 *  
-	 *  @param {number} value 
-	 *  @returns {Tone.SignalBase} `this`
+	 * The value being subtracted from the incoming signal. 
+	 * @memberOf Tone.Subtract#
+	 * @type {number}
+	 * @name value
 	 */
-	Tone.Subtract.prototype.setValue = function(value){
-		this._adder.setValue(-value);
-		return this;
-	}; 
-
-	/**
-	 *  @param {number} the current set value 
-	 */
-	Tone.Subtract.prototype.getValue = function(value){
-		return - this._adder.getValue();
-	}; 
+	Object.defineProperty(Tone.Subtract.prototype, "value", {
+		get : function(){
+			return -this._adder.value;
+		},
+		set : function(value){
+			this._adder.value = -value;
+		}
+	});
 
 	/**
 	 *  clean up
