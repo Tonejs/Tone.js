@@ -434,7 +434,7 @@ function(core, chai, Signal, Add, Multiply, Scale, Oscillator, Master, Abs, Nega
 				signal = new Signal(10);
 				max = new Max(-1);
 				signal.connect(max);
-				max.setMax(12);
+				max.value = 12;
 				max.connect(dest);
 			}, function(sample){
 				expect(sample).to.equal(12);
@@ -523,7 +523,7 @@ function(core, chai, Signal, Add, Multiply, Scale, Oscillator, Master, Abs, Nega
 				signal = new Signal(3);
 				min = new Min(-4);
 				signal.connect(min);
-				min.setMin(4);
+				min.value = 4;
 				min.connect(dest);
 			}, function(sample){
 				expect(sample).to.equal(3);
