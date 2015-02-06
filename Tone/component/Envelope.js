@@ -18,13 +18,13 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Pow"], function(Ton
 		var options = this.optionsObject(arguments, ["attack", "decay", "sustain", "release"], Tone.Envelope.defaults);
 
 		/** 
-		 *  the attack time in seconds
+		 *  The attack time
 		 *  @type {Tone.Time}
 		 */
 		this.attack = options.attack;
 
 		/**
-		 *  the decay time in seconds
+		 *  The decay time
 		 *  @type {Tone.Time}
 		 */
 		this.decay = options.decay;
@@ -36,7 +36,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Pow"], function(Ton
 		this.sustain = options.sustain;
 
 		/**
-		 *  the release time in seconds
+		 *  The release time
 		 *  @type {Tone.Time}
 		 */
 		this.release = options.release;
@@ -53,54 +53,14 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Pow"], function(Ton
 
 	/**
 	 *  the default parameters
-	 *
 	 *  @static
+	 *  @const
 	 */
 	Tone.Envelope.defaults = {
 		"attack" : 0.01,
 		"decay" : 0.1,
 		"sustain" : 0.5,
 		"release" : 1,
-	};
-
-	/**
-	 *  set the attack time
-	 *  @param {Tone.Time} time
-	 *  @returns {Tone.Envelope} `this`
-	 */
-	Tone.Envelope.prototype.setAttack = function(time){
-		this.attack = time;
-		return this;
-	};
-
-	/**
-	 *  set the decay time
-	 *  @param {Tone.Time} time
-	 *  @returns {Tone.Envelope} `this`
-	 */
-	Tone.Envelope.prototype.setDecay = function(time){
-		this.decay = time;
-		return this;
-	};
-
-	/**
-	 *  set the release time
-	 *  @param {Tone.Time} time
-	 *  @returns {Tone.Envelope} `this`
-	 */
-	Tone.Envelope.prototype.setRelease = function(time){
-		this.release = time;
-		return this;
-	};
-
-	/**
-	 *  set the sustain amount
-	 *  @param {number} sustain value between 0-1
-	 *  @returns {Tone.Envelope} `this`
-	 */
-	Tone.Envelope.prototype.setSustain = function(sustain){
-		this.sustain = sustain;
-		return this;
 	};
 
 	/**

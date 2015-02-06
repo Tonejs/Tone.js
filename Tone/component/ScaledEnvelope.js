@@ -51,56 +51,50 @@ define(["Tone/core/Tone", "Tone/component/Envelope", "Tone/signal/Scale"],
 	};
 
 	/**
-	 *  set the envelope max
-	 *  @param {number} max
-	 *  @returns {Tone.ScaledEnvelope} `this`
+	 * The envelope's min output value.
+	 * @memberOf Tone.ScaledEnvelope#
+	 * @type {number}
+	 * @name min
 	 */
-	Tone.ScaledEnvelope.prototype.setMax = function(max){
-		this._scale.setMax(max);
-		return this;
-	};
+	Object.defineProperty(Tone.ScaledEnvelope.prototype, "min", {
+		get : function(){
+			return this._scale.min;
+		},
+		set : function(min){
+			this._scale.min = min;
+		}
+	});
 
 	/**
-	 *  set the envelope min
-	 *  @param {number} min
-	 *  @returns {Tone.ScaledEnvelope} `this`
+	 * The envelope's max output value. 
+	 * @memberOf Tone.ScaledEnvelope#
+	 * @type {number}
+	 * @name max
 	 */
-	Tone.ScaledEnvelope.prototype.setMin = function(min){
-		this._scale.setMin(min);
-		return this;
-	};
+	Object.defineProperty(Tone.ScaledEnvelope.prototype, "max", {
+		get : function(){
+			return this._scale.max;
+		},
+		set : function(max){
+			this._scale.max = max;
+		}
+	});
 
 	/**
-	 *  @returns {number} the envelope's max
+	 * the envelope's exponent
+	 * @memberOf Tone.ScaledEnvelope#
+	 * @type {number}
+	 * @name exponent
 	 */
-	Tone.ScaledEnvelope.prototype.getMax = function(){
-		return this._scale.getMax();
-	};
-
-	/**
-	 *  @returns {number} the envelope's min
-	 */
-	Tone.ScaledEnvelope.prototype.getMin = function(){
-		return this._scale.getMin();
-	};
-
-	/**
-	 *  set the exponent which scales the signal
-	 *  @param {number} exp
-	 *  @returns {Tone.ScaledEnvelope} `this`
-	 */
-	Tone.ScaledEnvelope.prototype.setExponent = function(exp){
-		this._exp.setExponent(exp);
-		return this;
-	};
-
-	/**
-	 *  @returns {number} the exponent which scales the signal
-	 */
-	Tone.ScaledEnvelope.prototype.getExponent = function(){
-		return this._exp.getExponent();
-	};
-
+	Object.defineProperty(Tone.ScaledEnvelope.prototype, "exponent", {
+		get : function(){
+			return this._exp.value;
+		},
+		set : function(exp){
+			this._exp.value = exp;
+		}
+	});
+	
 	/**
 	 *  clean up
 	 *  @returns {Tone.ScaledEnvelope} `this`
@@ -113,30 +107,6 @@ define(["Tone/core/Tone", "Tone/component/Envelope", "Tone/signal/Scale"],
 		this._exp = null;
 		return this;
 	};
-
-	/**
-	 * the envelope's min
-	 * @memberOf Tone.ScaledEnvelope#
-	 * @type {number}
-	 * @name min
-	 */
-	Tone._defineGetterSetter(Tone.ScaledEnvelope, "min");
-
-	/**
-	 * the envelope's max
-	 * @memberOf Tone.ScaledEnvelope#
-	 * @type {number}
-	 * @name max
-	 */
-	Tone._defineGetterSetter(Tone.ScaledEnvelope, "max");
-
-	/**
-	 * the envelope's exponent
-	 * @memberOf Tone.ScaledEnvelope#
-	 * @type {number}
-	 * @name exponent
-	 */
-	Tone._defineGetterSetter(Tone.ScaledEnvelope, "exponent");
 
 	return Tone.ScaledEnvelope;
 });

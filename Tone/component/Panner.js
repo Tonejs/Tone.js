@@ -51,25 +51,10 @@ function(Tone){
 		this._crossFade.b.connect(this._merger.right);
 
 		//initial value
-		this.setPan(this.defaultArg(initialPan, 0.5));
+		this.pan.value = this.defaultArg(initialPan, 0.5);
 	};
 
 	Tone.extend(Tone.Panner);
-
-	/**
-	 *  set the l/r pan.
-	 *  
-	 *  0 = 100% left.
-	 *  1 = 100% right.
-	 *  
-	 *  @param {number} pan 0-1
-	 *  @param {Tone.Time=} rampTime ramp to the pan position
-	 *  @returns {Tone.Panner} `this`
-	 */
-	Tone.Panner.prototype.setPan = function(pan, rampTime){
-		this._crossFade.setFade(pan, rampTime);
-		return this;
-	};
 
 	/**
 	 *  clean up

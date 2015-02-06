@@ -12,43 +12,35 @@ define(["Tone/core/Tone", "Tone/component/Panner", "Tone/core/Master"], function
 		/**
 		 *  the panning node
 		 *  @type {Tone.Panner}
+		 *  @private
 		 */
-		this.pan = this.input = new Tone.Panner(pan);
+		this._panner = this.input = new Tone.Panner(pan);
+
+		/**
+		 * the output node
+		 * @type {GainNode}
+		 */
+		this.output = this.context.createGain();
 
 		/**
 		 *  the volume node
 		 *  @type {GainNode}
+		 *  @private
 		 */
-		this.vol = this.output = this.context.createGain();
+		this.volume = new Tone.Signal(this.defaultArg(volume, 0), Tone.Signal.Units.Decibels);
+
+		/**
+		 *  the panning control
+		 *  @type {Tone.Panner}
+		 *  @private
+		 */
+		this.pan = this._panner.pan;
 
 		//connections
-		this.pan.connect(this.vol);
-		this.setVolume(this.defaultArg(volume, 0));
+		this._panner.connect(this.output);
 	};
 
 	Tone.extend(Tone.PanVol);
-
-	/**
-	 *  gets the setVolume method from {@link Tone.Master}
-	 *  @method
-	 */
-	Tone.PanVol.prototype.setVolume = Tone.Master.setVolume;
-
-	/**
-	 *  gets the getVolume method from {@link Tone.Master}
-	 *  @method
-	 */
-	Tone.PanVol.prototype.getVolume = Tone.Master.getVolume;
-
-	/**
-	 *  set the panning
-	 *  @param {number} pan 0-1 L-R
-	 *  @returns {Tone.PanVol} `this`
-	 */
-	Tone.PanVol.prototype.setPan = function(pan){
-		this.pan.setPan(pan);
-		return this;
-	};
 
 	/**
 	 *  clean up
@@ -56,10 +48,11 @@ define(["Tone/core/Tone", "Tone/component/Panner", "Tone/core/Master"], function
 	 */
 	Tone.PanVol.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
-		this.pan.dispose();
+		this._panner.dispose();
+		this._panner = null;
+		this.volume.dispose();
+		this.volume = null;
 		this.pan = null;
-		this.vol.disconnect();
-		this.vol = null;
 		return this;
 	};
 

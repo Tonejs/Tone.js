@@ -22,19 +22,15 @@ define(["Tone/core/Tone", "Tone/component/Compressor"], function(Tone){
 			"decay" : 0.001,
 			"threshold" : threshold
 		});
+
+		/**
+		 * The threshold of of the limiter
+		 * @type {AudioParam}
+		 */
+		this.threshold = this._compressor.threshold;
 	};
 
 	Tone.extend(Tone.Limiter);
-
-	/**
-	 *  set the threshold value
-	 *  @param {number} value the threshold in decibels
-	 *  @returns {Tone.Limiter} `this`
-	 */
-	Tone.Limiter.prototype.setThreshold = function(value) {
-		this._compressor.setThreshold(value);
-		return this;
-	};
 
 	/**
 	 *  clean up
@@ -44,6 +40,7 @@ define(["Tone/core/Tone", "Tone/component/Compressor"], function(Tone){
 		Tone.prototype.dispose.call(this);
 		this._compressor.dispose();
 		this._compressor = null;
+		this.threshold = null;
 		return this;
 	};
 

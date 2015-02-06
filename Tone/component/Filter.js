@@ -31,7 +31,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 		 *  the frequency of the filter
 		 *  @type {Tone.Signal}
 		 */
-		this.frequency = new Tone.Signal(this.toFrequency(options.frequency));
+		this.frequency = new Tone.Signal(options.frequency, Tone.Signal.Units.Frequency);
 
 		/**
 		 *  the detune parameter
@@ -43,7 +43,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 		 *  the gain of the filter, only used in certain filter types
 		 *  @type {AudioParam}
 		 */
-		this.gain = new Tone.Signal(options.gain);
+		this.gain = new Tone.Signal(options.gain, Tone.Signal.Units.Decibels);
 
 		/**
 		 *  the Q or Quality of the filter
@@ -65,8 +65,8 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 		 */
 		this._rolloff = options.rolloff;
 
-		//set the rolloff and make the connections
-		this.setRolloff(options.rolloff);
+		//set the rolloff;
+		this.rolloff = options.rolloff;
 	};
 
 	Tone.extend(Tone.Filter);
@@ -86,90 +86,63 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	};
 
 	/**
-	 *  set the type
-	 *  @param {string} type the filter type
-	 *  @return {Tone.Filter} `this`
+	 * The type of the filter
+	 * @memberOf Tone.Filter#
+	 * @type {string}
+	 * @name type
 	 */
-	Tone.Filter.prototype.setType = function(type){
-		this._type = type;
-		for (var i = 0; i < this._filters.length; i++){
-			this._filters[i].type = type;
+	Object.defineProperty(Tone.Filter.prototype, "type", {
+		get : function(){
+			return this._type;
+		},
+		set : function(type){
+			this._type = type;
+			for (var i = 0; i < this._filters.length; i++){
+				this._filters[i].type = type;
+			}
 		}
-		return this;
-	};
+	});
 
 	/**
-	 *  get the type
-	 *  @return {string} the type of the filter
+	 * The rolloff of the filter which is the drop in db
+	 * per octave. Implemented internally by cascading filters.
+	 * Only accepts the values -12, -24, and -48.
+	 * @memberOf Tone.Filter#
+	 * @type {number}
+	 * @name rolloff
 	 */
-	Tone.Filter.prototype.getType = function(){
-		return this._type;
-	};
-
-	/**
-	 *  set the frequency
-	 *  @param {number|string} freq the frequency value
-	 *  @return {Tone.Filter} `this`
-	 */
-	Tone.Filter.prototype.setFrequency = function(freq){
-		this.frequency.setValue(this.toFrequency(freq));
-		return this;
-	};
-
-	/**
-	 *  set the quality of the filter
-	 *  @param {number} Q the filter's Q
-	 *  @return {Tone.Filter} `this`
-	 */
-	Tone.Filter.prototype.setQ = function(Q){
-		this.Q.setValue(Q);
-		return this;
-	};
-
-	/**
-	 *  set the rolloff frequency which is the drop in db
-	 *  per octave. implemented internally by cascading filters
-	 *  
-	 *  @param {number} rolloff the slope of the rolloff. only accepts
-	 *                          -12, -24, and -48. 
-	 *  @return {Tone.Filter} `this`
-	 */
-	Tone.Filter.prototype.setRolloff = function(rolloff){
-		var cascadingCount = Math.log(rolloff / -12) / Math.LN2 + 1;
-		//check the rolloff is valid
-		if (cascadingCount % 1 !== 0){
-			throw new RangeError("Filter rolloff can only be -12, -24, or -48");
+	Object.defineProperty(Tone.Filter.prototype, "rolloff", {
+		get : function(){
+			return this._rolloff;
+		},
+		set : function(rolloff){
+			var cascadingCount = Math.log(rolloff / -12) / Math.LN2 + 1;
+			//check the rolloff is valid
+			if (cascadingCount % 1 !== 0){
+				throw new RangeError("Filter rolloff can only be -12, -24, or -48");
+			}
+			this._rolloff = rolloff;
+			//first disconnect the filters and throw them away
+			this.input.disconnect();
+			for (var i = 0; i < this._filters.length; i++) {
+				this._filters[i].disconnect();
+				this._filters[i] = null;
+			}
+			this._filters = new Array(cascadingCount);
+			for (var count = 0; count < cascadingCount; count++){
+				var filter = this.context.createBiquadFilter();
+				filter.type = this._type;
+				this.frequency.connect(filter.frequency);
+				this.detune.connect(filter.detune);
+				this.Q.connect(filter.Q);
+				this.gain.connect(filter.gain);
+				this._filters[count] = filter;
+			}
+			//connect them up
+			var connectionChain = [this.input].concat(this._filters).concat([this.output]);
+			this.connectSeries.apply(this, connectionChain);
 		}
-		this._rolloff = rolloff;
-		//first disconnect the filters and throw them away
-		this.input.disconnect();
-		for (var i = 0; i < this._filters.length; i++) {
-			this._filters[i].disconnect();
-			this._filters[i] = null;
-		}
-		this._filters = new Array(cascadingCount);
-		for (var count = 0; count < cascadingCount; count++){
-			var filter = this.context.createBiquadFilter();
-			filter.type = this._type;
-			this.frequency.connect(filter.frequency);
-			this.detune.connect(filter.detune);
-			this.Q.connect(filter.Q);
-			this.gain.connect(filter.gain);
-			this._filters[count] = filter;
-		}
-		//connect them up
-		var connectionChain = [this.input].concat(this._filters).concat([this.output]);
-		this.connectSeries.apply(this, connectionChain);
-		return this;
-	};
-
-	/**
-	 * get the rolloff value
-	 * @return {number} the rolloff
-	 */
-	Tone.Filter.prototype.getRolloff = function(){
-		return this._rolloff;
-	};
+	});
 
 	/**
 	 *  clean up
@@ -181,33 +154,17 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 			this._filters[i].disconnect();
 			this._filters[i] = null;
 		}
+		this._filters = null;
 		this.frequency.dispose();
 		this.Q.dispose();
-		this.detune.dispose();
-		this.gain.dispose();
-		this._filters = null;
 		this.frequency = null;
 		this.Q = null;
-		this.gain = null;
+		this.detune.dispose();
 		this.detune = null;
+		this.gain.dispose();
+		this.gain = null;
 		return this;
 	};
-
-	/**
-	 * the type of the filter
-	 * @memberOf Tone.Filter#
-	 * @type {string}
-	 * @name type
-	 */
-	Tone._defineGetterSetter(Tone.Filter, "type");
-
-	/**
-	 * the rolloff of the filter
-	 * @memberOf Tone.Filter#
-	 * @type {number}
-	 * @name rolloff
-	 */
-	Tone._defineGetterSetter(Tone.Filter, "rolloff");
 
 	return Tone.Filter;
 });

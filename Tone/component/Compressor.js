@@ -33,25 +33,25 @@ define(["Tone/core/Tone"], function(Tone){
 		this.threshold = this._compressor.threshold;
 
 		/**
-		 *  the attack vaue
-		 *  @type {AudioParam}
+		 *  The attack parameter
+		 *  @type {Tone.Signal}
 		 */
-		this.attack = this._compressor.attack;
+		this.attack = new Tone.Signal(this._compressor.attack, Tone.Signal.Units.Time);
 
 		/**
-		 *  the release vaue
-		 *  @type {AudioParam}
+		 *  The release parameter
+		 *  @type {Tone.Signal}
 		 */
-		this.release = this._compressor.release;
+		this.release = new Tone.Signal(this._compressor.release, Tone.Signal.Units.Time);
 
 		/**
-		 *  the knee vaue
+		 *  The knee parameter
 		 *  @type {AudioParam}
 		 */
 		this.knee = this._compressor.knee;
 
 		/**
-		 *  the ratio vaue
+		 *  The ratio value
 		 *  @type {AudioParam}
 		 */
 		this.ratio = this._compressor.ratio;
@@ -76,55 +76,6 @@ define(["Tone/core/Tone"], function(Tone){
 	};
 
 	/**
-	 *  set the attack time
-	 *  @param {Tone.Time} time the attack time
-	 *  @returns {Tone.Compressor} `this`
-	 */
-	Tone.Compressor.prototype.setAttack = function(time) {
-		this._compressor.attack.value = this.toSeconds(time);
-		return this;
-	};
-	/**
-	 *  set the release time
-	 *  @param {Tone.Time} time the release time
-	 *  @returns {Tone.Compressor} `this`
-	 */
-	Tone.Compressor.prototype.setRelease = function(time) {
-		this._compressor.release.value = this.toSeconds(time);
-		return this;
-	};
-
-	/**
-	 *  set the threshold value
-	 *  @param {number} value the threshold in decibels
-	 *  @returns {Tone.Compressor} `this`
-	 */
-	Tone.Compressor.prototype.setThreshold = function(value) {
-		this._compressor.threshold.value = value;
-		return this;
-	};
-
-	/**
-	 *  set the knee value
-	 *  @param {number} knee
-	 *  @returns {Tone.Compressor} `this`
-	 */
-	Tone.Compressor.prototype.setKnee = function(knee) {
-		this._compressor.knee.value = knee;
-		return this;
-	};
-
-	/**
-	 *  set the ratio value
-	 *  @param {number} ratio
-	 *  @returns {Tone.Compressor} `this`
-	 */
-	Tone.Compressor.prototype.setRatio = function(ratio) {
-		this._compressor.ratio.value = ratio;
-		return this;
-	};
-
-	/**
 	 *  clean up
 	 *  @returns {Tone.Compressor} `this`
 	 */
@@ -132,7 +83,9 @@ define(["Tone/core/Tone"], function(Tone){
 		Tone.prototype.dispose.call(this);
 		this._compressor.disconnect();
 		this._compressor = null;
+		this.attack.dispose();
 		this.attack = null;
+		this.release.dispose();
 		this.release = null;
 		this.threshold = null;
 		this.ratio = null;

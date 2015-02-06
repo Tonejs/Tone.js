@@ -9,8 +9,8 @@ define(["Tone/core/Tone", "Tone/component/Follower", "Tone/signal/GreaterThan"],
 	 *  @constructor
 	 *  @extends {Tone}
 	 *  @param {number} [threshold = -40] the threshold in Decibels
-	 *  @param {number} [attackTime = 0.1] the follower's attacktime
-	 *  @param {number} [releaseTime = 0.1] the follower's release time
+	 *  @param {number} [attack = 0.1] the follower's attack time
+	 *  @param {number} [release = 0.1] the follower's release time
 	 */
 	Tone.Gate = function(){
 		
@@ -49,55 +49,49 @@ define(["Tone/core/Tone", "Tone/component/Follower", "Tone/signal/GreaterThan"],
 	};
 
 	/**
-	 *  set the gating threshold
-	 *  @param {number} thresh the gating threshold
-	 *  @returns {Tone.Gate} `this`
+	 * The threshold of the gate in decibels
+	 * @memberOf Tone.Gate#
+	 * @type {number}
+	 * @name threshold
 	 */
-	Tone.Gate.prototype.setThreshold = function(thresh){
-		this._gt.setValue(this.dbToGain(thresh));
-		return this;
-	};
+	Object.defineProperty(Tone.Gate.prototype, "threshold", {
+		get : function(){
+			return this.gainToDb(this._gt.value);
+		}, 
+		set : function(thresh){
+			this._gt.value = this.dbToGain(thresh);
+		}
+	});
 
 	/**
-	 *  @returns {number} the gating threshold in db
+	 * The attack speed of the gate
+	 * @memberOf Tone.Gate#
+	 * @type {Tone.Time}
+	 * @name attack
 	 */
-	Tone.Gate.prototype.getThreshold = function(){
-		return this.gainToDb(this._gt.getValue());
-	};
+	Object.defineProperty(Tone.Gate.prototype, "attack", {
+		get : function(){
+			return this._follower.attack;
+		}, 
+		set : function(attackTime){
+			this._follower.attack = attackTime;
+		}
+	});
 
 	/**
-	 *  set attack time of the follower
-	 *  @param {Tone.Time} attackTime
-	 *  @returns {Tone.Gate} `this`
+	 * The release speed of the gate
+	 * @memberOf Tone.Gate#
+	 * @type {Tone.Time}
+	 * @name release
 	 */
-	Tone.Gate.prototype.setAttack = function(attackTime){
-		this._follower.setAttack(attackTime);
-		return this;
-	};
-
-	/**
-	 *  @returns {Tone.Time} the attack time
-	 */
-	Tone.Gate.prototype.getAttack = function(){
-		return this._follower.attack;
-	};
-
-	/**
-	 *  set attack time of the follower
-	 *  @param {Tone.Time} releaseTime
-	 *  @returns {Tone.Gate} `this`
-	 */
-	Tone.Gate.prototype.setRelease = function(releaseTime){
-		this._follower.setRelease(releaseTime);
-		return this;
-	};
-
-	/**
-	 *  @returns {Tone.Time} the release time
-	 */
-	Tone.Gate.prototype.getRelease = function(){
-		return this._follower.release;
-	};
+	Object.defineProperty(Tone.Gate.prototype, "release", {
+		get : function(){
+			return this._follower.release;
+		}, 
+		set : function(releaseTime){
+			this._follower.release = releaseTime;
+		}
+	});
 
 	/**
 	 *  dispose
@@ -111,30 +105,6 @@ define(["Tone/core/Tone", "Tone/component/Follower", "Tone/signal/GreaterThan"],
 		this._gt = null;
 		return this;
 	};
-
-	/**
-	 * the threshold of the gate in decibels
-	 * @memberOf Tone.Gate#
-	 * @type {number}
-	 * @name threshold
-	 */
-	Tone._defineGetterSetter(Tone.Gate, "threshold");
-
-	/**
-	 * the attack speed of the gate
-	 * @memberOf Tone.Gate#
-	 * @type {Tone.Time}
-	 * @name attack
-	 */
-	Tone._defineGetterSetter(Tone.Gate, "attack");
-
-	/**
-	 * the release speed of the gate
-	 * @memberOf Tone.Gate#
-	 * @type {Tone.Time}
-	 * @name release
-	 */
-	Tone._defineGetterSetter(Tone.Gate, "release");
 
 	return Tone.Gate;
 });

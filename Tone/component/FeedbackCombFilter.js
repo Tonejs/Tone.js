@@ -41,7 +41,7 @@ define(["Tone/core/Tone", "Tone/signal/ScaleExp", "Tone/signal/Signal"], functio
 		 *  the resonance control
 		 *  @type {Tone.Signal}
 		 */
-		this.resonance = new Tone.Signal(options.resonance);
+		this.resonance = new Tone.Signal(options.resonance, Tone.Signal.Units.Normal);
 
 		/**
 		 *  scale the resonance value to the normal range
@@ -60,7 +60,7 @@ define(["Tone/core/Tone", "Tone/signal/ScaleExp", "Tone/signal/Signal"], functio
 
 		/**
 		 *  internal counter of delayTime
-		 *  @type {number}
+		 *  @type {Tone.TIme}
 		 *  @private
 		 */
 		this._delayTime = options.delayTime;
@@ -88,7 +88,7 @@ define(["Tone/core/Tone", "Tone/signal/ScaleExp", "Tone/signal/Signal"], functio
 		//resonance control
 		this.resonance.chain(this._resScale, this._feedback.gain);
 		this._feedback.connect(this.output);
-		this.setDelayTime(options.delayTime);
+		this.delayTime = options.delayTime;
 	};
 
 	Tone.extend(Tone.FeedbackCombFilter);
@@ -107,53 +107,39 @@ define(["Tone/core/Tone", "Tone/signal/ScaleExp", "Tone/signal/Signal"], functio
 	};
 
 	/**
-	 *  set the delay time of the comb filter
-	 *  auto corrects for sample offsets for small delay amounts
-	 *  	
-	 *  @param {number} delayAmount the delay amount
-	 *  @param {Tone.Time} [time=now]        when the change should occur
-	 *  @returns {Tone.FeedbackCombFilter} `this`
-	 */
-	Tone.FeedbackCombFilter.prototype.setDelayTime = function(delayAmount, time) {
-		this._delayTime = delayAmount;
-		time = this.toSeconds(time);
-		//the number of samples to delay by
-		var sampleRate = this.context.sampleRate;
-		var delaySamples = sampleRate * delayAmount;
-		// delayTime corection when frequencies get high
-		time = this.toSeconds(time);
-		var cutoff = 100;
-		if (delaySamples < cutoff){
-			this._highFrequencies = true;
-			var changeNumber = Math.round((delaySamples / cutoff) * this._delayCount);
-			for (var i = 0; i < changeNumber; i++) {
-				this._delays[i].delayTime.setValueAtTime(1 / sampleRate + delayAmount, time);
-			}
-			delayAmount = Math.floor(delaySamples) / sampleRate;
-		} else if (this._highFrequencies){
-			this._highFrequencies = false;
-			for (var j = 0; j < this._delays.length; j++) {
-				this._delays[j].delayTime.setValueAtTime(delayAmount, time);
-			}
-		}
-		return this;
-	};
-
-	/**
-	 * return the delay time
-	 * @return {number} the delay time
-	 */	
-	Tone.FeedbackCombFilter.prototype.getDelayTime = function(){
-		return this._delayTime;
-	};
-
-	/**
 	 * the delay time of the FeedbackCombFilter
 	 * @memberOf Tone.FeedbackCombFilter#
-	 * @type {number}
+	 * @type {Tone.Time}
 	 * @name delayTime
 	 */
-	Tone._defineGetterSetter(Tone.FeedbackCombFilter, "delayTime");
+	Object.defineProperty(Tone.FeedbackCombFilter.prototype, "delayTime", {
+		get : function(){
+			return this._delayTime;
+		},
+		set : function(delayAmount){
+			this._delayTime = delayAmount;
+			delayAmount = this.toSeconds(delayAmount);
+			//the number of samples to delay by
+			var sampleRate = this.context.sampleRate;
+			var delaySamples = sampleRate * delayAmount;
+			// delayTime corection when frequencies get high
+			var now = this.now() + this.bufferTime;
+			var cutoff = 100;
+			if (delaySamples < cutoff){
+				this._highFrequencies = true;
+				var changeNumber = Math.round((delaySamples / cutoff) * this._delayCount);
+				for (var i = 0; i < changeNumber; i++) {
+					this._delays[i].delayTime.setValueAtTime(1 / sampleRate + delayAmount, now);
+				}
+				delayAmount = Math.floor(delaySamples) / sampleRate;
+			} else if (this._highFrequencies){
+				this._highFrequencies = false;
+				for (var j = 0; j < this._delays.length; j++) {
+					this._delays[j].delayTime.setValueAtTime(delayAmount, now);
+				}
+			}
+		}
+	});
 
 	/**
 	 *  clean up

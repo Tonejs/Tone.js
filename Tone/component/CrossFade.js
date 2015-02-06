@@ -28,12 +28,13 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Expr", "Tone/signal
 		this.b = this.input[1] = this.context.createGain();
 
 		/**
-		 *  controls the amount of wet signal 
-		 *  which is mixed into the dry signal
+		 *  Controls the amount of wet signal 
+		 *  which is mixed into the dry signal. 
+		 *  Values between 0-1.
 		 *  
 		 *  @type {Tone.Signal}
 		 */
-		this.fade = new Tone.Signal();
+		this.fade = new Tone.Signal(this.defaultArg(initialFade, 0.5), Tone.Signal.Units.Normal);
 
 		/**
 		 *  equal power gain cross fade
@@ -55,26 +56,9 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Expr", "Tone/signal
 		this.fade.connect(this._equalPower);
 		this._equalPower.chain(this.b.gain);
 		this._equalPower.chain(this._invert, this.a.gain);
-		this.setFade(this.defaultArg(initialFade, 0.5));
 	};
 
 	Tone.extend(Tone.CrossFade);
-
-	/**
-	 * Set the wet value
-	 * 
-	 * @param {number} val
-	 * @param {Tone.Time=} rampTime
-	 * @returns {Tone.CrossFade} `this`
-	 */
-	Tone.CrossFade.prototype.setFade = function(val, rampTime){
-		if (rampTime){
-			this.fade.linearRampToValueNow(val, rampTime);
-		} else {
-			this.fade.setValue(val);
-		}
-		return this;
-	};
 
 	/**
 	 *  clean up

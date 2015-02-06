@@ -114,72 +114,64 @@ function(Tone){
 	};
 
 	/**
-	 *  set the phase
-	 *  @param {number} phase 
-	 *  @returns {Tone.LFO} `this`
+	 * the miniumum output of the scale
+	 * @memberOf Tone.LFO#
+	 * @type {number}
+	 * @name min
 	 */
-	Tone.LFO.prototype.setPhase = function(phase){
-		this.oscillator.setPhase(phase);
-		return this;
-	};
+	Object.defineProperty(Tone.LFO.prototype, "min", {
+		get : function(){
+			return this._scaler.min;
+		},
+		set : function(min){
+			this._scaler.min = min;
+		}
+	});
 
 	/**
-	 *  @returns {number} the phase
+	 * the maximum output of the scale
+	 * @memberOf Tone.LFO#
+	 * @type {number}
+	 * @name max
 	 */
-	Tone.LFO.prototype.getPhase = function(){
-		return this.oscillator.getPhase();
-	};
+	Object.defineProperty(Tone.LFO.prototype, "max", {
+		get : function(){
+			return this._scaler.max;
+		},
+		set : function(max){
+			this._scaler.max = max;
+		}
+	});
 
 	/**
-	 *  set the minimum output of the LFO
-	 *  @param {number} min 
-	 *  @returns {Tone.LFO} `this`
+	 * the type of the oscillator
+	 * @memberOf Tone.LFO#
+	 * @type {string}
+	 * @name type
 	 */
-	Tone.LFO.prototype.setMin = function(min){
-		this._scaler.setMin(min);
-		return this;
-	};
+	 Object.defineProperty(Tone.LFO.prototype, "type", {
+		get : function(){
+			return this.oscillator.type;
+		},
+		set : function(type){
+			this.oscillator.type = type;
+		}
+	});
 
-	/**
-	 *  @return {number} the minimum output of the LFO
+	 /**
+	 * the phase of the LFO
+	 * @memberOf Tone.LFO#
+	 * @type {string}
+	 * @name phase
 	 */
-	Tone.LFO.prototype.getMin = function(){
-		return this._scaler.min;
-	};
-
-	/**
-	 *  Set the maximum output of the LFO
-	 *  @param {number} min 
-	 *  @returns {Tone.LFO} `this`
-	 */
-	Tone.LFO.prototype.setMax = function(max){
-		this._scaler.setMax(max);
-		return this;
-	};
-
-	/**
-	 *  @return {number} the maximum output of the LFO
-	 */
-	Tone.LFO.prototype.getMax = function(){
-		return this._scaler.max;
-	};
-
-	/**
-	 *  Set the waveform of the LFO
-	 *  @param {string} type 
-	 *  @returns {Tone.LFO} `this`
-	 */
-	Tone.LFO.prototype.setType = function(type){
-		this.oscillator.setType(type);
-		return this;
-	};
-
-	/**
-	 *  @returns {string} the type
-	 */
-	Tone.LFO.prototype.getType = function(){
-		return this.oscillator.getType();
-	};
+	 Object.defineProperty(Tone.LFO.prototype, "phase", {
+		get : function(){
+			return this.oscillator.phase;
+		},
+		set : function(phase){
+			this.oscillator.phase = phase;
+		}
+	});
 
 	/**
 	 *	Override the connect method so that it 0's out the value 
@@ -206,22 +198,6 @@ function(Tone){
 		this.frequency = null;
 		return this;
 	};
-
-	/**
-	 * the miniumum output of the scale
-	 * @memberOf Tone.LFO#
-	 * @type {number}
-	 * @name min
-	 */
-	Tone._defineGetterSetter(Tone.LFO, "min");
-
-	/**
-	 * the maximum output of the scale
-	 * @memberOf Tone.LFO#
-	 * @type {number}
-	 * @name max
-	 */
-	Tone._defineGetterSetter(Tone.LFO, "max");
 
 	return Tone.LFO;
 });

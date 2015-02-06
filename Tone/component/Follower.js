@@ -118,42 +118,36 @@ function(Tone){
 	};
 
 	/**
-	 *  set the attack time
-	 *  @param {Tone.Time} attack
-	 *  @returns {Tone.Follower} `this`
+	 * The attack time.
+	 * @memberOf Tone.Follower#
+	 * @type {Tone.Time}
+	 * @name attack
 	 */
-	Tone.Follower.prototype.setAttack = function(attack){
-		this._attack = attack;
-		this._setAttackRelease(this._attack, this._release);
-		return this;
-	};
+	Object.defineProperty(Tone.Follower.prototype, "attack", {
+		get : function(){
+			return this._attack;
+		},
+		set : function(attack){
+			this._attack = attack;
+			this._setAttackRelease(this._attack, this._release);	
+		}
+	});
 
 	/**
-	 *  get the attack time
-	 *  @returns {Tone.Time} the attack time
+	 * The release time.
+	 * @memberOf Tone.Follower#
+	 * @type {Tone.Time}
+	 * @name release
 	 */
-	Tone.Follower.prototype.getAttack = function(){
-		return this._attack;
-	};
-
-	/**
-	 *  set the release time
-	 *  @param {Tone.Time} release
-	 *  @returns {Tone.Follower} `this`
-	 */
-	Tone.Follower.prototype.setRelease = function(release){
-		this._release = release;
-		this._setAttackRelease(this._attack, this._release);
-		return this;
-	};
-
-	/**
-	 *  get the release time
-	 *  @returns {Tone.Time} the release time
-	 */
-	Tone.Follower.prototype.getRelease = function(){
-		return this._release;
-	};
+	Object.defineProperty(Tone.Follower.prototype, "release", {
+		get : function(){
+			return this._release;
+		},
+		set : function(release){
+			this._release = release;
+			this._setAttackRelease(this._attack, this._release);	
+		}
+	});
 
 	/**
 	 *  borrows the connect method from Signal so that the output can be used
@@ -182,22 +176,6 @@ function(Tone){
 		this._curve = null;
 		return this;
 	};
-
-	/**
-	 * the attack time
-	 * @memberOf Tone.Follower#
-	 * @type {Tone.Time}
-	 * @name attack
-	 */
-	Tone._defineGetterSetter(Tone.Follower, "attack");
-
-	/**
-	 * the release time
-	 * @memberOf Tone.Follower#
-	 * @type {Tone.Time}
-	 * @name release
-	 */
-	Tone._defineGetterSetter(Tone.Follower, "release");
 
 	return Tone.Follower;
 });
