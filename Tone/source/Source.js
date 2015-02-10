@@ -140,6 +140,8 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Master"], function(T
 		this.state = null;
 		clearTimeout(this._timeout);
 		this.onended = function(){};
+		this.volume.dispose();
+		this.volume = null;
 	};
 
 	/**
