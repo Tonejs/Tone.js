@@ -3,13 +3,8 @@ require.config({
 	paths : {
 		"Tone" : "../Tone",
 		"chai" : "./testDeps/chai",
-		"Recorder" : "./testDeps/recorder"
+		"Recorder" : "./testDeps/Tone.Recorder"
 	},
-	shim : {
-		"Recorder" : {
-			exports : "Recorder"
-		}
-	}
 });
 
 var maxTimeout = 1000;
@@ -17,7 +12,7 @@ var maxTimeout = 1000;
 var allTests = ["tests/Core", "tests/Timing", "tests/Signal", "tests/SignalComparison", 
 "tests/SignalMath", "tests/Transport", "tests/Sources", "tests/Components", 
 "tests/Effect", "tests/Instruments", "tests/EffectPresets", "tests/InstrumentPresets", "tests/Expr"];
-// var allTests = ["tests/Core", "tests/Expr"];
+// var allTests = ["tests/Core", "tests/Signal"];
 
 require(allTests, function(){
 	mocha.run(); 
