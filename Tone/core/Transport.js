@@ -29,6 +29,15 @@ function(Tone){
 	 *  
 	 *  @typedef {number|string|undefined} Tone.Time 
 	 */
+	
+	/**
+	 *  Frequency can be described similar to time, except ultimately the
+	 *  values are converted to frequency instead of seconds. A number
+	 *  is taken literally as the value in hertz, or any of the Tone.Time
+	 *  encodings can be used. 
+	 *  
+	 *  @typedef {number|Tone.Time} Tone.Frequency
+	 */
 
 	/**
 	 *  @class  oscillator-based transport allows for simple musical timing
