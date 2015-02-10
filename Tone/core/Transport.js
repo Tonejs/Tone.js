@@ -597,7 +597,12 @@ function(Tone){
 	 */
 	Tone.Transport.prototype.setBpm = function(bpm, rampTime){
 		var quarterTime = this.notationToSeconds(tatum.toString() + "n", bpm, transportTimeSignature) / 4;
-		this._clock.setRate(quarterTime, rampTime);
+		quarterTime = this.secondsToFrequency(quarterTime);
+		if (this.isUndef(rampTime)){
+			this._clock.frequency.value = quarterTime;
+		} else {
+			this._clock.frequency.rampTo(quarterTime, rampTime);
+		}
 		return this;
 	};
 
@@ -608,7 +613,7 @@ function(Tone){
 	 */
 	Tone.Transport.prototype.getBpm = function(){
 		//convert the current frequency of the oscillator to bpm
-		var freq = this._clock.getRate();
+		var freq = this._clock.frequency.value;
 		return 60 * (freq / tatum);
 	};
 
@@ -746,7 +751,7 @@ function(Tone){
 	 */
 	Tone.Transport.prototype.syncSignal = function(signal){
 		//overreaching. fix this. 
-		signal.sync(this._clock._controlSignal);
+		signal.sync(this._clock.frequency);
 		return this;
 	};
 
