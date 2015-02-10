@@ -124,28 +124,37 @@ define(["Tone/core/Tone", "Tone/signal/ScaleExp", "Tone/signal/Signal"], functio
 			return this._delayTime;
 		},
 		set : function(delayAmount){
-			this._delayTime = this.toSeconds(delayAmount);
-			//the number of samples to delay by
-			var sampleRate = this.context.sampleRate;
-			var delaySamples = sampleRate * this._delayTime;
-			// delayTime corection when frequencies get high
-			var now = this.now();
-			var cutoff = 100;
-			if (delaySamples < cutoff){
-				this._highFrequencies = true;
-				var changeNumber = Math.round((delaySamples / cutoff) * this._filterDelayCount);
-				for (var i = 0; i < changeNumber; i++) {
-					this._filterDelays[i].setDelay(1 / sampleRate + this._delayTime, now);
-				}
-				this._delayTime = Math.floor(delaySamples) / sampleRate;
-			} else if (this._highFrequencies){
-				this._highFrequencies = false;
-				for (var j = 0; j < this._filterDelays.length; j++) {
-					this._filterDelays[j].setDelay(this._delayTime, now);
-				}
-			}
+			this.setDelayTimeAtTime(delayAmount);
 		}
 	});
+
+	/**
+	 * set the delay time for the comb filter at a specific time. 
+	 * @param {Tone.Time} delayAmount the amount of delay time
+	 * @param {Tone.Time} [time=now] when the delay time should be set
+	 */
+	Tone.LowpassCombFilter.prototype.setDelayTimeAtTime = function(delayAmount, time){
+		this._delayTime = this.toSeconds(delayAmount);
+		//the number of samples to delay by
+		var sampleRate = this.context.sampleRate;
+		var delaySamples = sampleRate * this._delayTime;
+		// delayTime corection when frequencies get high
+		time = this.toSeconds(time);
+		var cutoff = 100;
+		if (delaySamples < cutoff){
+			this._highFrequencies = true;
+			var changeNumber = Math.round((delaySamples / cutoff) * this._filterDelayCount);
+			for (var i = 0; i < changeNumber; i++) {
+				this._filterDelays[i].setDelay(1 / sampleRate + this._delayTime, time);
+			}
+			this._delayTime = Math.floor(delaySamples) / sampleRate;
+		} else if (this._highFrequencies){
+			this._highFrequencies = false;
+			for (var j = 0; j < this._filterDelays.length; j++) {
+				this._filterDelays[j].setDelay(this._delayTime, time);
+			}
+		}
+	};
 
 	/**
 	 *  clean up
