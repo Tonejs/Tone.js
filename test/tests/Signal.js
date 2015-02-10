@@ -18,14 +18,14 @@ function(core, chai, Signal, Oscillator, Switch, Route, Select, Test, NOT, AND, 
 
 		it("can start with a value initially", function(){
 			var signal = new Signal(0);
-			expect(signal.getValue()).to.equal(0);
+			expect(signal.value).to.equal(0);
 			signal.dispose();
 		});
 
 		it("can set a value", function(){
 			var signal = new Signal(0);
-			signal.setValue(10);
-			expect(signal.getValue()).to.equal(10);
+			signal.value = 10;
+			expect(signal.value).to.equal(10);
 			signal.dispose();
 		});
 
@@ -34,7 +34,7 @@ function(core, chai, Signal, Oscillator, Switch, Route, Select, Test, NOT, AND, 
 			Test.offlineTest(0.1, function(dest){
 				sig = new Signal(10);
 				sig.setValueAtTime(100, "+0.1");
-				expect(sig.getValue()).to.equal(10);
+				expect(sig.value).to.equal(10);
 				sig.connect(dest);
 			}, function(sample, time){
 				if (sample === 100){
@@ -52,7 +52,7 @@ function(core, chai, Signal, Oscillator, Switch, Route, Select, Test, NOT, AND, 
 				syncTo = new Signal(1);
 				signalSync = new Signal(2);
 				signalSync.sync(syncTo);
-				syncTo.setValue(2);
+				syncTo.value = 2;
 				signalSync.connect(dest);
 			}, function(sample){
 				expect(sample).to.equal(4);
@@ -67,9 +67,9 @@ function(core, chai, Signal, Oscillator, Switch, Route, Select, Test, NOT, AND, 
 			var sig;
 			Test.offlineTest(0.1, function(dest){
 				sig = new Signal(0);
-				sig.setValue(-10);
+				sig.value = -10;
 				sig.linearRampToValueNow(1, "+0.1");
-				expect(sig.getValue()).to.equal(-10);
+				expect(sig.value).to.equal(-10);
 				sig.connect(dest);
 			}, function(sample, time){
 				if (sample === 1){

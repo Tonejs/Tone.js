@@ -113,25 +113,6 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 	};
 
 	/**
-	 *  @return {number} the current value of the signal
-	 */
-	Tone.Signal.prototype.getValue = function(){
-		return this.value;
-	};
-
-	/**
-	 *  set the value of the signal right away
-	 *  will be overwritten if there are previously scheduled automation curves
-	 *  
-	 *  @param {number} value 
-	 *  @returns {Tone.Signal} `this`
-	 */
-	Tone.Signal.prototype.setValue = function(value){
-		this.value = value;
-		return this;
-	};
-
-	/**
 	 *  Schedules a parameter value change at the given time.
 	 *  
 	 *  @param {number}		value 
