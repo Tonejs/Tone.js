@@ -3,7 +3,6 @@ define(["Tone/core/Tone", "Tone/core/Master"], function(Tone){
 	"use strict";
 
 	/**
-	 *  @deprecated
 	 *  @class  Record an input into an array or AudioBuffer. 
 	 *          it is limited in that the recording length needs to be known beforehand. 
 	 *          Mostly used internally for testing. 
@@ -13,9 +12,7 @@ define(["Tone/core/Tone", "Tone/core/Master"], function(Tone){
 	 *  @param {number} channels 
 	 */
 	Tone.Recorder = function(channels){
-
-		console.warn("Tone.Recorder is deprecated. It will be removed in next version");
-
+		
 		Tone.call(this);
 
 		/**
