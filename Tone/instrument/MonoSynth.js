@@ -130,32 +130,6 @@ function(Tone){
 		return this;
 	};
 
-	/**
-	 *  set the oscillator type
-	 *  @param {string} oscType the type of oscillator
-	 *  @returns {Tone.MonoSynth} `this`
-	 */
-	Tone.MonoSynth.prototype.setOscType = function(type){
-		this.oscillator.setType(type);
-		return this;
-	};
-
-	/**
-	 *  set the members at once
-	 *  @param {Object} params all of the parameters as an object.
-	 *                         params for envelope and filterEnvelope 
-	 *                         should be nested objects. 
-	 *  @returns {Tone.MonoSynth} `this`
-	 */
-	Tone.MonoSynth.prototype.set = function(params){
-		if (!this.isUndef(params.detune)) this.detune.setValue(params.detune);
-		if (!this.isUndef(params.oscillator)) this.oscillator.set(params.oscillator);
-		if (!this.isUndef(params.filterEnvelope)) this.filterEnvelope.set(params.filterEnvelope);
-		if (!this.isUndef(params.envelope)) this.envelope.set(params.envelope);
-		if (!this.isUndef(params.filter)) this.filter.set(params.filter);
-		Tone.Monophonic.prototype.set.call(this, params);
-		return this;
-	};
 
 	/**
 	 *  clean up

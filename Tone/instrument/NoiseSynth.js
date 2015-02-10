@@ -20,25 +20,26 @@ function(Tone){
 		Tone.Instrument.call(this);
 
 		/**
-		 *  the noise source
+		 *  The noise source. Set the type by setting
+		 *  `noiseSynth.noise.type`. 
 		 *  @type {Tone.Noise}
 		 */
 		this.noise = new Tone.Noise();
 
 		/**
-		 *  the filter
+		 *  The filter .
 		 *  @type {Tone.Filter}
 		 */
 		this.filter = new Tone.Filter(options.filter);
 
 		/**
-		 *  the filter envelope
+		 *  The filter envelope. 
 		 *  @type {Tone.Envelope}
 		 */
 		this.filterEnvelope = new Tone.ScaledEnvelope(options.filterEnvelope);
 
 		/**
-		 *  the amplitude envelope
+		 *  The amplitude envelope. 
 		 *  @type {Tone.Envelope}
 		 */
 		this.envelope = new Tone.AmplitudeEnvelope(options.envelope);
@@ -120,31 +121,6 @@ function(Tone){
 		this.triggerAttack(time, velocity);
 		console.log(time + duration);
 		this.triggerRelease(time + duration);
-		return this;
-	};
-
-	/**
-	 *  set the oscillator type
-	 *  @param {string} oscType the type of oscillator
-	 *  @returns {Tone.NoiseSynth} `this`
-	 */
-	Tone.NoiseSynth.prototype.setNoiseType = function(type){
-		this.noise.setType(type);
-		return this;
-	};
-
-	/**
-	 *  set the members at once
-	 *  @param {Object} params all of the parameters as an object.
-	 *                         params for envelope and filterEnvelope 
-	 *                         should be nested objects. 
-	 *  @returns {Tone.NoiseSynth} `this`
-	 */
-	Tone.NoiseSynth.prototype.set = function(params){
-		if (!this.isUndef(params.noise)) this.noise.set(params.noise);
-		if (!this.isUndef(params.filterEnvelope)) this.filterEnvelope.set(params.filterEnvelope);
-		if (!this.isUndef(params.envelope)) this.envelope.set(params.envelope);
-		if (!this.isUndef(params.filter)) this.filter.set(params.filter);
 		return this;
 	};
 

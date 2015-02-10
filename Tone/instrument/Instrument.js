@@ -15,6 +15,12 @@ define(["Tone/core/Tone", "Tone/core/Master", "Tone/core/Note"], function(Tone){
 		 *  @type {GainNode}
 		 */
 		this.output = this.context.createGain();
+
+		/**
+		 * the volume of the output in decibels
+		 * @type {Tone.Signal}
+		 */
+		this.volume = new Tone.Signal(this.output.gain, Tone.Signal.Units.Decibels);
 	};
 
 	Tone.extend(Tone.Instrument);
@@ -50,33 +56,13 @@ define(["Tone/core/Tone", "Tone/core/Master", "Tone/core/Note"], function(Tone){
 	};
 
 	/**
-	 *  bulk setter
-	 *  @param {Object} params the params
-	 *  @returns {Tone.Instrument} `this`
-	 */
-	Tone.Instrument.prototype.set = function(params) {
-		if (!this.isUndef(params.volume)) this.setVolume(params.volume);
-		return this;
-	};
-
-	/**
-	 *  gets the setVolume method from {@link Tone.Master}
-	 *  @method
-	 */
-	Tone.Instrument.prototype.setVolume = Tone.Master.setVolume;
-
-	/**
-	 *  gets the setVolume method from {@link Tone.Master}
-	 *  @method
-	 */
-	Tone.Instrument.prototype.setVolume = Tone.Master.setVolume;
-
-	/**
 	 *  clean up
 	 *  @returns {Tone.Instrument} `this`
 	 */
 	Tone.Instrument.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
+		this.volume.dispose();
+		this.volume = null;
 		return this;
 	};
 

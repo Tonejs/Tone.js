@@ -45,25 +45,25 @@ function(Tone){
 		this._buffers = {};
 
 		/**
-		 *  the amplitude envelope
+		 *  The amplitude envelope. 
 		 *  @type {Tone.Envelope}
 		 */
 		this.envelope = new Tone.AmplitudeEnvelope(options.envelope);
 
 		/**
-		 *  the filter envelope
+		 *  The filter envelope. 
 		 *  @type {Tone.Envelope}
 		 */
 		this.filterEnvelope = new Tone.ScaledEnvelope(options.filterEnvelope);
 
 		/**
-		 *  the name of the current sample
+		 *  The name of the current sample. 
 		 *  @type {string}
 		 */
-		this.sample = options.sample;
+		this._sample = options.sample;
 
 		/**
-		 *  the filter
+		 *  The filter.
 		 *  @type {BiquadFilterNode}
 		 */
 		this.filter = new Tone.Filter(options.filter);
@@ -116,8 +116,9 @@ function(Tone){
 		} else {
 			urls = this._flattenUrls(urls);
 			for (var buffName in urls){
+				this._sample = buffName;
 				var urlString = urls[buffName];
-				this._buffers[buffName] = new Tone.Buffer(urlString, this.setSample.bind(this, buffName));
+				this._buffers[buffName] = new Tone.Buffer(urlString);
 			}
 		}
 	};
@@ -147,48 +148,18 @@ function(Tone){
 	};
 
 	/**
-	 *  set the parameters in bulk
-	 *  @param {Object} param
-	 *  @returns {Tone.Sampler} `this`
-	 */
-	Tone.Sampler.prototype.set = function(params){
-		if (!this.isUndef(params.filterEnvelope)) this.filterEnvelope.set(params.filterEnvelope);
-		if (!this.isUndef(params.envelope)) this.envelope.set(params.envelope);
-		if (!this.isUndef(params.player)) this.player.set(params.player);
-		if (!this.isUndef(params.filter)) this.filter.set(params.filter);
-		if (!this.isUndef(params.sample)) this.setSample(params.sample);
-		if (!this.isUndef(params.pitch)) this.setPitch(params.pitch);
-		return this;
-	};
-
-	/**
 	 *  repitch the sampled note by some interval.
 	 *  ```javascript
-	 *  sampler.setPitch(12); //one octave higher
-	 *  sampler.setPitch(-7); //down a fifth
+	 *  sampler.setNote(12); //one octave higher
+	 *  sampler.setNote(-7); //down a fifth
 	 *  ```
 	 *  @param {number} interval the interval in half-steps.
 	 *                           0 indicates no change.
 	 *  @returns {Tone.Sampler} `this`
 	 */
-	Tone.Sampler.prototype.setPitch = function(interval, time){
+	Tone.Sampler.prototype.setNote = function(interval, time){
 		time = this.toSeconds(time);
 		this.player.setPlaybackRate(this.intervalToFrequencyRatio(interval), time);
-		return this;
-	};
-
-	/**
-	 * set the name of the sample to trigger
-	 * @param {string} name the name of the sample
-	 * @returns {Tone.Sampler} `this`
-	 */
-	Tone.Sampler.prototype.setSample = function(name){
-		if (this._buffers.hasOwnProperty(name)){
-			this._sample = name;
-			this.player.setBuffer(this._buffers[name]);
-		} else {
-			throw new Error("Sampler does not have a sample named "+name);
-		}
 		return this;
 	};
 
@@ -224,6 +195,25 @@ function(Tone){
 		this.player.stop(this.toSeconds(this.envelope.release) + time);
 		return this;
 	};
+
+	/**
+	 * set the name of the sample to trigger
+	 * @param {string} name the name of the sample
+	 * @returns {Tone.Sampler} `this`
+	 */
+	Object.defineProperty(Tone.Sampler.prototype, "sample", {
+		get : function(){
+			return this._sample;
+		},
+		set : function(name){
+			if (this._buffers.hasOwnProperty(name)){
+				this._sample = name;
+				this.player.buffer = this._buffers[name];
+			} else {
+				throw new Error("Sampler does not have a sample named "+name);
+			}
+		}
+	});
 
 	/**
 	 *  clean up

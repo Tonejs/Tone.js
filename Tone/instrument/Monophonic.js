@@ -18,8 +18,8 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/signal/Signal"], f
 		options = this.defaultArg(options, Tone.Monophonic.defaults);
 
 		/**
-		 *  the portamento time
-		 *  @type {number}
+		 *  The glide time between notes. 
+		 *  @type {Tone.Time}
 		 */
 		this.portamento = options.portamento;
 	};
@@ -86,36 +86,15 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/signal/Signal"], f
 	 *  @returns {Tone.Monophonic} `this`
 	 */
 	Tone.Monophonic.prototype.setNote = function(note, time){
-		note = this.toFrequency(note);
 		time = this.toSeconds(time);
 		if (this.portamento > 0){
-			var currentNote = this.frequency.getValue();
+			var currentNote = this.frequency.value;
 			this.frequency.setValueAtTime(currentNote, time);
-			this.frequency.exponentialRampToValueAtTime(note, time + this.portamento);
+			var portTime = this.toSeconds(this.portamento);
+			this.frequency.exponentialRampToValueAtTime(note, time + portTime);
 		} else {
 			this.frequency.setValueAtTime(note, time);
 		}
-		return this;
-	};
-
-	/**
-	 *  set the glide time between notes
-	 *  @param {Tone.Time} port glide time
-	 *  @returns {Tone.Monophonic} `this`
-	 */
-	Tone.Monophonic.prototype.setPortamento = function(port){
-		this.portamento = this.toSeconds(port);
-		return this;
-	};
-
-	/**
-	 *  bulk setter
-	 *  @param {Object} params the params
-	 *  @returns {Tone.Monophonic} `this`
-	 */
-	Tone.Monophonic.prototype.set = function(params) {
-		if (!this.isUndef(params.portamento)) this.setPortamento(params.portamento);
-		Tone.Instrument.prototype.set.call(this, params);
 		return this;
 	};
 

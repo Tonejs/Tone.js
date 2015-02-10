@@ -24,20 +24,20 @@ function(Tone){
 		 *  @type {Tone.MonoSynth}
 		 */
 		this.carrier = new Tone.MonoSynth(options.carrier);
-		this.carrier.setVolume(-10);
+		this.carrier.volume.value = -10;
 
 		/**
 		 *  the second voice
 		 *  @type {Tone.MonoSynth}
 		 */
 		this.modulator = new Tone.MonoSynth(options.modulator);
-		this.modulator.setVolume(-10);
+		this.modulator.volume.value = -10;
 
 		/**
 		 *  the frequency control
 		 *  @type {Tone.Signal}
 		 */
-		this.frequency = new Tone.Signal(440);
+		this.frequency = new Tone.Signal(440, Tone.Signal.Units.Frequency);
 
 		/**
 		 *  the ratio between the two voices
@@ -150,27 +150,19 @@ function(Tone){
 	};
 
 	/**
-	 *  set the ratio between the two carrier and the modulator
-	 *  @param {number} ratio
-	 *  @returns {Tone.AMSynth} `this`
+	 * The ratio between the two carrier and the modulator. 
+	 * @memberOf Tone.AMSynth#
+	 * @type {number}
+	 * @name harmonicity
 	 */
-	Tone.AMSynth.prototype.setHarmonicity = function(ratio){
-		this._harmonicity.setValue(ratio);
-		return this;
-	};
-
-	/**
-	 *  bulk setter
-	 *  @param {Object} param 
-	 *  @returns {Tone.AMSynth} `this`
-	 */
-	Tone.AMSynth.prototype.set = function(params){
-		if (!this.isUndef(params.harmonicity)) this.setHarmonicity(params.harmonicity);
-		if (!this.isUndef(params.carrier)) this.carrier.set(params.carrier);
-		if (!this.isUndef(params.modulator)) this.modulator.set(params.modulator);
-		Tone.Monophonic.prototype.set.call(this, params);
-		return this;
-	};
+	Object.defineProperty(Tone.AMSynth.prototype, "harmonicity", {
+		get : function(){
+			return this._harmonicity.value;
+		},
+		set : function(harm){
+			this._harmonicity.value = harm;
+		}
+	});
 
 	/**
 	 *  clean up
