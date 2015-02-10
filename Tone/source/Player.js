@@ -52,7 +52,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 		 *  @private
 		 *  @type {number}
 		 */
-		this._playbackRate = 1;
+		this._playbackRate = options.playbackRate;
 
 		/**
 		 *  enabling retrigger will allow a player to be restarted
@@ -73,6 +73,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 	 */
 	Tone.Player.defaults = {
 		"onload" : function(){},
+		"playbackRate" : 1,
 		"loop" : false,
 		"loopStart" : 0,
 		"loopEnd" : 0,
@@ -157,8 +158,8 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 	 *  @returns {Tone.Player} `this`
 	 */
 	Tone.Player.prototype.setLoopPoints = function(loopStart, loopEnd){
-		this._loopStart = loopStart;
-		this._loopEnd = loopEnd;
+		this.loopStart = loopStart;
+		this.loopEnd = loopEnd;
 		return this;
 	};
 
@@ -233,6 +234,10 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 
 	/**
 	 * The playback speed. 1 is normal speed. 
+	 * Note that this is not a Tone.Signal because of a bug in Blink. 
+	 * Please star this issue if this an important thing to you: 
+	 * https://code.google.com/p/chromium/issues/detail?id=311284
+	 * 
 	 * @memberOf Tone.Player#
 	 * @type {number}
 	 * @name playbackRate
