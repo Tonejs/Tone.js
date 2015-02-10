@@ -1,25 +1,24 @@
 {
-  "name": "build",
-  "version": "0.0.0",
-  "description": "",
+  "name": "Tone.Build",
+  "version": "0.0.1",
+  "description": "grunt tools for Tone.js",
   "main": "Gruntfile.js",
-  "directories": {
-    "doc": "doc"
+  "repository" : { 
+    "type" : "git", 
+    "url" : "https://github.com/TONEnoTONE/Tone.js.git"
   },
   "dependencies": {
     "grunt": "~0.4.5",
     "grunt-jsdoc": "~0.5.4",
     "grunt-contrib-clean": "~0.5.0",
     "grunt-contrib-concat": "~0.4.0",
-    "grunt-contrib-requirejs": "~0.4.4"
-  },
-  "devDependencies": {
+    "grunt-contrib-requirejs": "~0.4.4",
     "grunt-contrib-copy": "~0.5.0",
     "grunt-wrap": "~0.3.0",
     "grunt-indent": "~0.1.4",
     "grunt-replace": "~0.8.0",
     "grunt-contrib-uglify": "~0.6.0"
   },
-  "author": "",
-  "license": "ISC"
+  "author": "Yotam Mann",
+  "license": "MIT"
 }
