@@ -41,7 +41,7 @@ function(Tone){
 		 *  the delay time signal
 		 *  @type {Tone.Signal}
 		 */
-		this.delayTime = new Tone.Signal(0);
+		this.delayTime = new Tone.Signal(options.delayTime, Tone.Signal.Units.Time);
 
 		//connect it up
 		this.effectSendL.chain(this._leftPreDelay, this._leftDelay, this.effectReturnL);
@@ -50,8 +50,6 @@ function(Tone){
 		//rearranged the feedback to be after the leftPreDelay
 		this._feedbackRL.disconnect();
 		this._feedbackRL.connect(this._leftDelay);
-
-		this.setDelayTime(options.delayTime);
 	};
 
 	Tone.extend(Tone.PingPongDelay, Tone.StereoXFeedbackEffect);
@@ -63,28 +61,6 @@ function(Tone){
 	Tone.PingPongDelay.defaults = {
 		"delayTime" : 0.25,
 		"maxDelayTime" : 1
-	};
-
-	/**
-	 * setDelayTime
-	 * 
-	 * @param {Tone.Time} delayTime
-	 * @returns {Tone.PingPongDelay} `this`
-	 */
-	Tone.PingPongDelay.prototype.setDelayTime = function(delayTime){
-		this.delayTime.setValue(this.toSeconds(delayTime));
-		return this;
-	};
-
-	/**
-	 *  set all of the parameters with an object
-	 *  @param {Object} params 
-	 *  @returns {Tone.PingPongDelay} `this`
-	 */
-	Tone.PingPongDelay.prototype.set = function(params){
-		if (!this.isUndef(params.delayTime)) this.setDelayTime(params.delayTime);
-		Tone.StereoXFeedbackEffect.prototype.set.call(this, params);
-		return this;
 	};
 
 	/**

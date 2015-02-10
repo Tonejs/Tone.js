@@ -124,38 +124,6 @@ function(Tone){
 	};
 
 	/**
-	 *  set the room size
-	 *  @param {number} roomsize roomsize value between 0-1
-	 *  @returns {Tone.Freeverb} `this`
-	 */
-	Tone.Freeverb.prototype.setRoomSize = function(roomsize) {
-		this.roomSize.setValue(roomsize);
-		return this;
-	};
-
-	/**
-	 *  set the dampening
-	 *  @param {number} dampening dampening between 0-1
-	 *  @returns {Tone.Freeverb} `this`
-	 */
-	Tone.Freeverb.prototype.setDampening = function(dampening) {
-		this.dampening.setValue(dampening);
-		return this;
-	};
-
-	/**
-	 *  set multiple parameters at once with an object
-	 *  @param {Object} params the parameters as an object
-	 *  @returns {Tone.Freeverb} `this`
-	 */
-	Tone.Freeverb.prototype.set = function(params){
-		if (!this.isUndef(params.dampening)) this.setDampening(params.dampening);
-		if (!this.isUndef(params.roomSize)) this.setRoomSize(params.roomSize);
-		Tone.StereoEffect.prototype.set.call(this, params);
-		return this;
-	};
-
-	/**
 	 *  clean up
 	 *  @returns {Tone.Freeverb} `this`
 	 */

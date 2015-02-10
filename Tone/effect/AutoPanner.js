@@ -28,10 +28,16 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/LFO", "Tone/comp
 		 */
 		this._panner = new Tone.Panner();
 
+		/**
+		 * How fast the panner modulates
+		 * @type {Tone.Signal}
+		 */
+		this.frequency = this._lfo.frequency;
+
 		//connections
 		this.connectEffect(this._panner);
 		this._lfo.connect(this._panner.pan);
-		this.setType(options.type);
+		this.type = options.type;
 	};
 
 	//extend Effect
@@ -88,36 +94,19 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/LFO", "Tone/comp
 	};
 
 	/**
-	 * Set the type of oscillator attached to the AutoPanner.
-	 * 
-	 * @param {string} type of oscillator the panner is attached to (sine|sawtooth|triangle|square)
-	 * @returns {Tone.AutoPanner} `this`
+	 * Type of oscillator attached to the AutoPanner.
+	 * @memberOf Tone.AutoPanner#
+	 * @type {string}
+	 * @name type
 	 */
-	Tone.AutoPanner.prototype.setType = function(type){
-		this._lfo.setType(type);
-		return this;
-	};
-
-	/**
-	 * Set frequency of the oscillator attached to the AutoPanner.
-	 * 
-	 * @param {number|string} freq in HZ of the oscillator's frequency.
-	 * @returns {Tone.AutoPanner} `this`
-	 */
-	Tone.AutoPanner.prototype.setFrequency = function(freq){
-		this._lfo.setFrequency(freq);
-		return this;
-	};
-
-	/**
-	 *  set all of the parameters with an object
-	 *  @param {Object} params 
-	 */
-	Tone.AutoPanner.prototype.set = function(params){
-		if (!this.isUndef(params.frequency)) this.setFrequency(params.frequency);
-		if (!this.isUndef(params.type)) this.setType(params.type);
-		Tone.Effect.prototype.set.call(this, params);
-	};
+	Object.defineProperty(Tone.AutoPanner.prototype, "type", {
+		get : function(){
+			return this._lfo.type;
+		},
+		set : function(type){
+			this._lfo.type = type;
+		}
+	});
 
 	/**
 	 *  clean up
@@ -126,9 +115,10 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/LFO", "Tone/comp
 	Tone.AutoPanner.prototype.dispose = function(){
 		Tone.Effect.prototype.dispose.call(this);
 		this._lfo.dispose();
-		this._panner.dispose();
 		this._lfo = null;
+		this._panner.dispose();
 		this._panner = null;
+		this.frequency = null;
 		return this;
 	};
 

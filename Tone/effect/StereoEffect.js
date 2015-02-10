@@ -18,10 +18,16 @@ function(Tone){
 
 		/**
 		 *  the drywet knob to control the amount of effect
-		 *  
 		 *  @type {Tone.CrossFade}
 		 */
-		this.dryWet = new Tone.CrossFade();
+		this.dryWet = new Tone.CrossFade(options.wet);
+
+		/**
+		 *  The wet control, i.e. how much of the effected
+		 *  will pass through to the output. 
+		 *  @type {Tone.Signal}
+		 */
+		this.wet = this.dryWet.fade;
 
 		/**
 		 *  then split it
@@ -67,8 +73,6 @@ function(Tone){
 		this.input.connect(this.dryWet, 0, 0);
 		this._merge.connect(this.dryWet, 0, 1);
 		this.dryWet.connect(this.output);
-		//setup values
-		this.setWet(options.wet);
 	};
 
 	Tone.extend(Tone.StereoEffect, Tone.Effect);
@@ -89,6 +93,7 @@ function(Tone){
 		this.effectSendR = null;
 		this.effectReturnL = null;
 		this.effectReturnR = null;
+		this.wet = null;
 		return this;
 	};
 

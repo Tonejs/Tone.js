@@ -27,7 +27,7 @@ function(Tone){
 		 *  @type {Tone.Follower}
 		 *  @private
 		 */
-		this._follower = new Tone.Follower(options.follower);
+		this.follower = new Tone.Follower(options.follower);
 
 		/**
 		 *  scales the follower value to the frequency domain
@@ -52,28 +52,40 @@ function(Tone){
 		 *  @type {BiquadFilterNode}
 		 *  @private
 		 */
-		this._bandpass = new Tone.Filter(0, "bandpass");
-		this._bandpass.setRolloff(options.rolloff);
-		// this._bandpass.type = "bandpass";
-		// this._bandpass.Q.value = options.Q;
-
+		this._bandpass = new Tone.Filter({
+			"rolloff" : -48,
+			"frequency" : 0,
+			"Q" : options.Q,
+		});
+	
 		/**
-		 *  @type {BiquadFilterNode}
+		 *  @type {Tone.Filter}
 		 *  @private
 		 */
-		this._peaking = this.context.createBiquadFilter();
-		this._peaking.type = "peaking";
+		this._peaking = new Tone.Filter(0, "peaking");
 		this._peaking.gain.value = options.gain;
 
+		/**
+		 * the gain of the filter.
+		 * @type {Tone.Signal}
+		 */
+		this.gain = this._peaking.gain;
+
+		/**
+		 * The quality of the filter.
+		 * @type {Tone.Signal}
+		 */
+		this.Q = this._bandpass.Q;
+
 		//the control signal path
-		this.effectSend.chain(this._follower, this._sweepRange);
+		this.effectSend.chain(this.follower, this._sweepRange);
 		this._sweepRange.connect(this._bandpass.frequency);
 		this._sweepRange.connect(this._peaking.frequency);
 		//the filtered path
 		this.effectSend.chain(this._bandpass, this._peaking, this.effectReturn);
 		//set the initial value
 		this._setSweepRange();
-		this.setSensitiviy(options.sensitivity);
+		this.sensitivity = options.sensitivity;
 	};
 
 	Tone.extend(Tone.AutoWah, Tone.Effect);
@@ -88,8 +100,6 @@ function(Tone){
 		"sensitivity" : 0,
 		"Q" : 2,
 		"gain" : 2,
-		"rolloff" : -48,
-		/** attributes for the envelope follower */
 		"follower" : {
 			"attack" : 0.3,
 			"release" : 0.5
@@ -97,61 +107,60 @@ function(Tone){
 	};
 
 	/**
-	 *  set the number of octaves that the filter will sweep
-	 *  @param {number} octaves the number of octaves above the base frequency the filter will sweep
-	 *  @returns {Tone.AutoWah} `this`
+	 * The number of octaves that the filter will sweep.
+	 * @memberOf Tone.AutoWah#
+	 * @type {number}
+	 * @name octaves
 	 */
-	Tone.AutoWah.prototype.setOctaves = function(octaves){
-		this._octaves = octaves;
-		this._setSweepRange();
-		return this;
-	};
+	Object.defineProperty(Tone.AutoWah.prototype, "octaves", {
+		get : function(){
+			return this._octaves;
+		}, 
+		set : function(octaves){
+			this._octaves = octaves;
+			this._setSweepRange();
+		}
+	});
 
 	/**
-	 *  set the number of octaves that the filter will sweep
-	 *  @param {number} octaves the number of octaves above the base frequency the filter will sweep
-	 *  @returns {Tone.AutoWah} `this`
+	 * The base frequency from which the sweep will start from.
+	 * @memberOf Tone.AutoWah#
+	 * @type {Tone.Frequency}
+	 * @name baseFrequency
 	 */
-	Tone.AutoWah.prototype.setBaseFrequency = function(baseFreq){
-		this._baseFrequency = baseFreq;
-		this._setSweepRange();
-		return this;
-	};
+	Object.defineProperty(Tone.AutoWah.prototype, "baseFrequency", {
+		get : function(){
+			return this._baseFrequency;
+		}, 
+		set : function(baseFreq){
+			this._baseFrequency = baseFreq;
+			this._setSweepRange();
+		}
+	});
 
 	/**
-	 *  set the sensitivity to control how responsive to the input signal
-	 *  the wah is. 
-	 *  
-	 *  @param {number} sensitivy the sensitivity to the input signal in dB
-	 *  @returns {Tone.AutoWah} `this`
+	 * The sensitivity to control how responsive to the input signal the filter is. 
+	 * in Decibels. 
+	 * @memberOf Tone.AutoWah#
+	 * @type {number}
+	 * @name sensitivity
 	 */
-	Tone.AutoWah.prototype.setSensitiviy = function(sensitivy){
-		this._sweepRange.setMax(this.dbToGain(sensitivy));
-		return this;
-	};
+	Object.defineProperty(Tone.AutoWah.prototype, "sensitivity", {
+		get : function(){
+			return this.gainToDb(this._sweepRange.max);
+		}, 
+		set : function(sensitivy){
+			this._sweepRange.max = this.dbToGain(sensitivy);
+		}
+	});
 
 	/**
 	 *  sets the sweep range of the scaler
 	 *  @private
 	 */
 	Tone.AutoWah.prototype._setSweepRange = function(){
-		this._sweepRange.setMin(this._baseFrequency);
-		this._sweepRange.setMax(Math.min(this._baseFrequency * Math.pow(2, this._octaves), this.context.sampleRate / 2));
-	};
-
-	/**
-	 *  set all of the parameters with an object
-	 *  @param {Object} params 
-	 */
-	Tone.AutoWah.prototype.set = function(params){
-		if (!this.isUndef(params.baseFrequency)) this.setBaseFrequency(params.baseFrequency);
-		if (!this.isUndef(params.sensitivity)) this.setSensitiviy(params.sensitivity);
-		if (!this.isUndef(params.octaves)) this.setOctaves(params.octaves);
-		if (!this.isUndef(params.follower)) this._follower.set(params.follower);
-		if (!this.isUndef(params.rolloff)) this._bandpass.setRolloff(params.rolloff);
-		if (!this.isUndef(params.Q)) this._bandpass.Q.value = params.Q;
-		if (!this.isUndef(params.gain)) this._peaking.gain.value = params.gain;
-		Tone.Effect.prototype.set.call(this, params);
+		this._sweepRange.min = this._baseFrequency;
+		this._sweepRange.max = Math.min(this._baseFrequency * Math.pow(2, this._octaves), this.context.sampleRate / 2);
 	};
 
 	/**
@@ -160,14 +169,16 @@ function(Tone){
 	 */
 	Tone.AutoWah.prototype.dispose = function(){
 		Tone.Effect.prototype.dispose.call(this);
-		this._follower.dispose();
+		this.follower.dispose();
+		this.follower = null;
 		this._sweepRange.dispose();
-		this._bandpass.disconnect();
-		this._peaking.disconnect();
-		this._follower = null;
 		this._sweepRange = null;
+		this._bandpass.dispose();
 		this._bandpass = null;
+		this._peaking.dispose();
 		this._peaking = null;
+		this.gain = null;
+		this.Q = null;
 		return this;
 	};
 

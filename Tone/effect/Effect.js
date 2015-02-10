@@ -23,10 +23,11 @@ define(["Tone/core/Tone", "Tone/component/CrossFade"], function(Tone){
 		 *  the drywet knob to control the amount of effect
 		 *  @type {Tone.CrossFade}
 		 */
-		this.dryWet = new Tone.CrossFade();
+		this.dryWet = new Tone.CrossFade(options.wet);
 
 		/**
-		 *  the wet control
+		 *  The wet control, i.e. how much of the effected
+		 *  will pass through to the output. 
 		 *  @type {Tone.Signal}
 		 */
 		this.wet = this.dryWet.fade;
@@ -50,8 +51,6 @@ define(["Tone/core/Tone", "Tone/component/CrossFade"], function(Tone){
 		this.input.connect(this.effectSend);
 		this.effectReturn.connect(this.dryWet.b);
 		this.dryWet.connect(this.output);
-		//setup values
-		this.setWet(options.wet);
 	};
 
 	Tone.extend(Tone.Effect);
@@ -62,19 +61,6 @@ define(["Tone/core/Tone", "Tone/component/CrossFade"], function(Tone){
 	 */
 	Tone.Effect.defaults = {
 		"wet" : 1
-	};
-
-	/**
-	 * setWet also adjusts the dry / wet balance
-	 * wetVal is 0 (100% dry) to 1 (100% wet)
-	 * 
-	 * @param {number} wetness
-	 * @param {Tone.Time=} rampTime
-	 * @returns {Tone.Effect} `this`
-	 */
-	Tone.Effect.prototype.setWet = function(wetVal, rampTime){
-		this.dryWet.setFade(wetVal, rampTime);
-		return this;
 	};
 
 	/**

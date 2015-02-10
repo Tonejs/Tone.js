@@ -18,7 +18,7 @@ define(["Tone/core/Tone", "Tone/effect/FeedbackEffect", "Tone/signal/Signal"], f
 		 *  Tone.Signal to control the delay amount
 		 *  @type {Tone.Signal}
 		 */
-		this.delayTime = new Tone.Signal();
+		this.delayTime = new Tone.Signal(options.delayTime, Tone.Signal.Units.Time);
 
 		/**
 		 *  the delay node
@@ -30,8 +30,6 @@ define(["Tone/core/Tone", "Tone/effect/FeedbackEffect", "Tone/signal/Signal"], f
 		// connect it up
 		this.connectEffect(this._delayNode);
 		this.delayTime.connect(this._delayNode.delayTime);
-		//set the initial delay
-		this.setDelayTime(options.delayTime);
 	};
 
 	Tone.extend(Tone.FeedbackDelay, Tone.FeedbackEffect);
@@ -43,34 +41,7 @@ define(["Tone/core/Tone", "Tone/effect/FeedbackEffect", "Tone/signal/Signal"], f
 	Tone.FeedbackDelay.defaults = {
 		"delayTime" : 0.25
 	};
-
-	/**
-	 *  Sets the delay time
-	 *  
-	 *  @param {Tone.Time} delayTime 
-	 *  @param {Tone.Time=} rampTime time it takes to reach the desired delayTime
-	 *  @returns {Tone.FeedbackDelay} `this`
-	 */
-	Tone.FeedbackDelay.prototype.setDelayTime = function(delayTime, rampTime){
-		if (rampTime){
-			this.delayTime.linearRampToValueNow(this.toSeconds(delayTime), rampTime);
-		} else {
-			this.delayTime.setValue(this.toSeconds(delayTime));
-		}
-		return this;
-	};
-
-	/**
-	 *  sets the params in bulk
-	 *  @param {Object} param 
-	 *  @returns {Tone.FeedbackDelay} `this`
-	 */
-	Tone.FeedbackDelay.prototype.set = function(params){
-		if (!this.isUndef(params.delayTime)) this.setDelayTime(params.delayTime);
-		Tone.FeedbackEffect.prototype.set.call(this, params);
-		return this;
-	};
-
+	
 	/**
 	 *  clean up
 	 *  @returns {Tone.FeedbackDelay} `this`

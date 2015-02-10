@@ -8,14 +8,14 @@ function(Tone){
 	 *
 	 *	@extends {Tone.StereoEffect}
 	 *	@constructor
-	 *	@param {number|Object} [rate=0.5] the speed of the phasing
+	 *	@param {number|Object} [frequency=0.5] the speed of the phasing
 	 *	@param {number} [depth=10] the depth of the effect
 	 *	@param {number} [baseFrequency=400] the base frequency of the filters
 	 */
 	Tone.Phaser = function(){
 
 		//set the defaults
-		var options = this.optionsObject(arguments, ["rate", "depth", "baseFrequency"], Tone.Phaser.defaults);
+		var options = this.optionsObject(arguments, ["frequency", "depth", "baseFrequency"], Tone.Phaser.defaults);
 		Tone.StereoEffect.call(this, options);
 
 		/**
@@ -23,15 +23,15 @@ function(Tone){
 		 *  @type {Tone.LFO}
 		 *  @private
 		 */
-		this._lfoL = new Tone.LFO(options.rate, 0, 1);
+		this._lfoL = new Tone.LFO(options.frequency, 0, 1);
 
 		/**
 		 *  the lfo which controls the frequency on the right side
 		 *  @type {Tone.LFO}
 		 *  @private
 		 */
-		this._lfoR = new Tone.LFO(options.rate, 0, 1);
-		this._lfoR.setPhase(180);
+		this._lfoR = new Tone.LFO(options.frequency, 0, 1);
+		this._lfoR.phase = 180;
 
 		/**
 		 *  the base modulation frequency
@@ -60,6 +60,13 @@ function(Tone){
 		 *  @private
 		 */
 		this._filtersR = this._makeFilters(options.stages, this._lfoR, options.Q);
+
+		/**
+		 * the frequency of the effect
+		 * @type {Tone.Signal}
+		 */
+		this.frequency = this._lfoL.frequency;
+		this.frequency.value = options.frequency;
 		
 		//connect them up
 		this.effectSendL.connect(this._filtersL[0]);
@@ -71,9 +78,8 @@ function(Tone){
 		//control the frequency with one LFO
 		this._lfoL.frequency.connect(this._lfoR.frequency);
 		//set the options
-		this.setBaseFrequency(options.baseFrequency);
-		this.setDepth(options.depth);
-		this.setRate(options.rate);
+		this.baseFrequency = options.baseFrequency;
+		this.depth = options.depth;
 		//start the lfo
 		this._lfoL.start();
 		this._lfoR.start();
@@ -87,7 +93,7 @@ function(Tone){
 	 *  @type {object}
 	 */
 	Tone.Phaser.defaults = {
-		"rate" : 0.5,
+		"frequency" : 0.5,
 		"depth" : 10,
 		"stages" : 4,
 		"Q" : 100,
@@ -114,53 +120,40 @@ function(Tone){
 	};
 
 	/**
-	 *  set the depth of the chorus
-	 *  @param {number} depth
-	 *  @returns {Tone.Phaser} `this`
+	 * The depth of the effect. 
+	 * @memberOf Tone.Phaser#
+	 * @type {number}
+	 * @name depth
 	 */
-	Tone.Phaser.prototype.setDepth = function(depth){
-		this._depth = depth;
-		var max = this._baseFrequency + this._baseFrequency * depth;
-		this._lfoL.setMax(max);
-		this._lfoR.setMax(max);
-		return this;
-	};
+	Object.defineProperty(Tone.Phaser.prototype, "depth", {
+		get : function(){
+			return this._depth;
+		},
+		set : function(depth){
+			this._depth = depth;
+			var max = this._baseFrequency + this._baseFrequency * depth;
+			this._lfoL.max = max;
+			this._lfoR.max = max;
+		}
+	});
 
 	/**
-	 *  set the base frequency of the filters
-	 *  @param {number} freq
-	 *  @returns {Tone.Phaser} `this`
+	 * The the base frequency of the filters. 
+	 * @memberOf Tone.Phaser#
+	 * @type {string}
+	 * @name baseFrequency
 	 */
-	Tone.Phaser.prototype.setBaseFrequency = function(freq){
-		this._baseFrequency = freq;	
-		this._lfoL.setMin(freq);
-		this._lfoR.setMin(freq);
-		this.setDepth(this._depth);
-		return this;
-	};
-
-	/**
-	 *  set the phaser rate
-	 *  @param {number} rate in hertz
-	 *  @returns {Tone.Phaser} `this`
-	 */
-	Tone.Phaser.prototype.setRate = function(rate){
-		this._lfoL.setFrequency(rate);
-		return this;
-	};
-
-	/**
-	 *  bulk setter
-	 *  @param {object} params
-	 *  @returns {Tone.Phaser} `this`
-	 */
-	Tone.Phaser.prototype.set = function(params){
-		if (!this.isUndef(params.rate)) this.setRate(params.rate);
-		if (!this.isUndef(params.baseFrequency)) this.setBaseFrequency(params.baseFrequency);
-		if (!this.isUndef(params.depth)) this.setDepth(params.depth);
-		Tone.StereoEffect.prototype.set.call(this, params);
-		return this;
-	};
+	Object.defineProperty(Tone.Phaser.prototype, "baseFrequency", {
+		get : function(){
+			return this._baseFrequency;
+		},
+		set : function(freq){
+			this._baseFrequency = freq;	
+			this._lfoL.min = freq;
+			this._lfoR.min = freq;
+			this.depth = this._depth;
+		}
+	});
 
 	/**
 	 *  clean up
@@ -182,6 +175,7 @@ function(Tone){
 			this._filtersR[j] = null;
 		}
 		this._filtersR = null;
+		this.frequency = null;
 		return this;
 	};
 

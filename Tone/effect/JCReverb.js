@@ -45,7 +45,7 @@ function(Tone){
 		 *  room size control values between [0,1]
 		 *  @type {Tone.Signal}
 		 */
-		this.roomSize = new Tone.Signal(options.roomSize);
+		this.roomSize = new Tone.Signal(options.roomSize, Tone.Signal.Units.Normal);
 
 		/**
 		 *  scale the room size
@@ -107,27 +107,6 @@ function(Tone){
 	 */
 	Tone.JCReverb.defaults = {
 		"roomSize" : 0.5
-	};
-
-	/**
-	 *  set the room size
-	 *  @param {number} roomsize roomsize value between 0-1
-	 *  @returns {Tone.JCReverb} `this`
-	 */
-	Tone.JCReverb.prototype.setRoomSize = function(roomsize) {
-		this.roomSize.setValue(roomsize);
-		return this;
-	};
-
-	/**
-	 *  set multiple parameters at once with an object
-	 *  @param {Object} params the parameters as an object
-	 *  @returns {Tone.JCReverb} `this`
-	 */
-	Tone.JCReverb.prototype.set = function(params){
-		if (!this.isUndef(params.roomSize)) this.setRoomSize(params.roomSize);
-		Tone.StereoEffect.prototype.set.call(this, params);
-		return this;
 	};
 
 	/**

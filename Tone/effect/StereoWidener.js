@@ -22,10 +22,10 @@ define(["Tone/core/Tone", "Tone/effect/MidSideEffect", "Tone/signal/Signal",
 		Tone.MidSideEffect.call(this, options);
 
 		/**
-		 *  the width control
+		 *  The width control. 0 = 100% mid. 1 = 100% side. 
 		 *  @type {Tone.Signal}
 		 */
-		this.width = new Tone.Signal(0.5);
+		this.width = new Tone.Signal(0.5, Tone.Signal.Units.Normal);
 
 		/**
 		 *  Mid multiplier
@@ -68,27 +68,6 @@ define(["Tone/core/Tone", "Tone/effect/MidSideEffect", "Tone/signal/Signal",
 	 */
 	Tone.StereoWidener.defaults = {
 		"width" : 0.5
-	};
-
-	/**
-	 *  set the stereo width. 0 = 100% mid. 1 = 100% side. 
-	 *  @param {number} width
-	 *  @returns {Tone.StereoWidener} `this`
-	 */
-	Tone.StereoWidener.prototype.setWidth = function(width){
-		this.width.setValue(width);
-		return this;
-	};
-
-	/**
-	 *  set the parameters with JSON
-	 *  @param {Object} params 
-	 *  @returns {Tone.StereoWidener} `this`
-	 */
-	Tone.StereoWidener.prototype.set = function(params){
-		if (!this.isUndef(params.width)) this.setWidth(params.width);
-		Tone.MidSideEffect.prototype.set.call(this, params);
-		return this;
 	};
 
 	/**

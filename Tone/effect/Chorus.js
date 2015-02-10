@@ -8,13 +8,13 @@ function(Tone){
 	 *
 	 *	@constructor
 	 *	@extends {Tone.StereoXFeedbackEffect}
-	 *	@param {number|Object} [rate=2] the rate of the effect
+	 *	@param {number|Object} [frequency=2] the frequency of the effect
 	 *	@param {number} [delayTime=3.5] the delay of the chorus effect in ms
 	 *	@param {number} [depth=0.7] the depth of the chorus
 	 */
 	Tone.Chorus = function(){
 
-		var options = this.optionsObject(arguments, ["rate", "delayTime", "depth"], Tone.Chorus.defaults);
+		var options = this.optionsObject(arguments, ["frequency", "delayTime", "depth"], Tone.Chorus.defaults);
 		Tone.StereoXFeedbackEffect.call(this, options);
 
 		/**
@@ -44,7 +44,7 @@ function(Tone){
 		 *  @private
 		 */
 		this._lfoR = new Tone.LFO(options.rate, 0, 1);
-		this._lfoR.setPhase(180);
+		this._lfoR.phase = 180;
 
 		/**
 		 *  delay for left
@@ -59,6 +59,12 @@ function(Tone){
 		 *  @private
 		 */
 		this._delayNodeR = this.context.createDelay();
+
+		/**
+		 * The frequency the chorus will modulate at. 
+		 * @type {Tone.Signal}
+		 */
+		this.frequency = this._lfoL.frequency;
 
 		//connections
 		this.connectSeries(this.effectSendL, this._delayNodeL, this.effectReturnL);
@@ -75,9 +81,9 @@ function(Tone){
 		//have one LFO frequency control the other
 		this._lfoL.frequency.connect(this._lfoR.frequency);
 		//set the initial values
-		this.setDepth(this._depth);
-		this.setRate(options.rate);
-		this.setType(options.type);
+		this.depth = this._depth;
+		this.frequency.value = options.frequency;
+		this.type = options.type;
 	};
 
 	Tone.extend(Tone.Chorus, Tone.StereoXFeedbackEffect);
@@ -87,7 +93,7 @@ function(Tone){
 	 *  @type {Object}
 	 */
 	Tone.Chorus.defaults = {
-		"rate" : 1.5, 
+		"frequency" : 1.5, 
 		"delayTime" : 3.5,
 		"depth" : 0.7,
 		"feedback" : 0.1,
@@ -95,65 +101,56 @@ function(Tone){
 	};
 
 	/**
-	 *  set the depth of the chorus
-	 *  @param {number} depth
-	 *  @returns {Tone.Chorus} `this`
+	 * The depth of the effect. 
+	 * @memberOf Tone.Chorus#
+	 * @type {number}
+	 * @name depth
 	 */
-	Tone.Chorus.prototype.setDepth = function(depth){
-		this._depth = depth;
-		var deviation = this._delayTime * depth;
-		this._lfoL.setMin(this._delayTime - deviation);
-		this._lfoL.setMax(this._delayTime + deviation);
-		this._lfoR.setMin(this._delayTime - deviation);
-		this._lfoR.setMax(this._delayTime + deviation);
-		return this;
-	};
+	Object.defineProperty(Tone.Chorus.prototype, "depth", {
+		get : function(){
+			return this._depth;
+		},
+		set : function(depth){
+			this._depth = depth;
+			var deviation = this._delayTime * depth;
+			this._lfoL.min = this._delayTime - deviation;
+			this._lfoL.max = this._delayTime + deviation;
+			this._lfoR.min = this._delayTime - deviation;
+			this._lfoR.max = this._delayTime + deviation;
+		}
+	});
 
 	/**
-	 *  set the delay time
-	 *  @param {number} delayTime in milliseconds
-	 *  @returns {Tone.Chorus} `this`
+	 * The delayTime in milliseconds
+	 * @memberOf Tone.Chorus#
+	 * @type {number}
+	 * @name delayTime
 	 */
-	Tone.Chorus.prototype.setDelayTime = function(delayTime){
-		this._delayTime = delayTime / 1000;
-		this.setDepth(this._depth);
-		return this;
-	};
+	Object.defineProperty(Tone.Chorus.prototype, "delayTime", {
+		get : function(){
+			return this._delayTime * 1000;
+		},
+		set : function(delayTime){
+			this._delayTime = delayTime / 1000;
+			this.depth = this._depth;
+		}
+	});
 
 	/**
-	 *  set the chorus rate
-	 *  @param {number} rate in hertz
-	 *  @returns {Tone.Chorus} `this`
+	 * The lfo type for the chorus. 
+	 * @memberOf Tone.Chorus#
+	 * @type {string}
+	 * @name type
 	 */
-	Tone.Chorus.prototype.setRate = function(rate){
-		this._lfoL.setFrequency(rate);
-		return this;
-	};
-
-	/**
-	 *  set the LFO type
-	 *  @param {number} type
-	 *  @returns {Tone.Chorus} `this`
-	 */
-	Tone.Chorus.prototype.setType = function(type){
-		this._lfoL.setType(type);
-		this._lfoR.setType(type);
-		return this;
-	};
-
-	/**
-	 *  set multiple parameters at once with an object
-	 *  @param {Object} params the parameters as an object
-	 *  @returns {Tone.Chorus} `this`
-	 */
-	Tone.Chorus.prototype.set = function(params){
-		if (!this.isUndef(params.rate)) this.setRate(params.rate);
-		if (!this.isUndef(params.delayTime)) this.setDelayTime(params.delayTime);
-		if (!this.isUndef(params.depth)) this.setDepth(params.depth);
-		if (!this.isUndef(params.type)) this.setType(params.type);
-		Tone.FeedbackEffect.prototype.set.call(this, params);
-		return this;
-	};
+	Object.defineProperty(Tone.Chorus.prototype, "type", {
+		get : function(){
+			return this._lfoL.type;
+		},
+		set : function(type){
+			this._lfoL.type = type;
+			this._lfoR.type = type;
+		}
+	});
 
 	/**
 	 *  clean up
@@ -162,13 +159,14 @@ function(Tone){
 	Tone.Chorus.prototype.dispose = function(){
 		Tone.StereoXFeedbackEffect.prototype.dispose.call(this);
 		this._lfoL.dispose();
-		this._lfoR.dispose();
-		this._delayNodeL.disconnect();
-		this._delayNodeR.disconnect();
 		this._lfoL = null;
+		this._lfoR.dispose();
 		this._lfoR = null;
+		this._delayNodeL.disconnect();
 		this._delayNodeL = null;
+		this._delayNodeR.disconnect();
 		this._delayNodeR = null;
+		this.frequency = null;
 		return this;
 	};
 

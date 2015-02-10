@@ -22,9 +22,16 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/signal/WaveShaper"], funct
 		 */
 		this._shaper = new Tone.WaveShaper(4096);
 
+		/**
+		 * holds the distortion amount
+		 * @type {number}
+		 * @private
+		 */
+		this._distortion = options.distortion;
+
 		this.connectEffect(this._shaper);
-		this.setDistortion(options.distortion);
-		this.setOversample(options.oversample);
+		this.distortion = options.distortion;
+		this.oversample = options.oversample;
 	};
 
 	Tone.extend(Tone.Distortion, Tone.Effect);
@@ -40,45 +47,44 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/signal/WaveShaper"], funct
 	};
 
 	/**
-	 *  set the amount of distortion
-	 *  @param   {number} amount amount of distortion, nominal range of 0-1. 
-	 *  @returns {Tone.Distortion} `this`
+	 * The amount of distortion. Range between 0-1. 
+	 * @memberOf Tone.Distortion#
+	 * @type {number}
+	 * @name distortion
 	 */
-	Tone.Distortion.prototype.setDistortion = function(amount) {
-		var k = amount * 100;
-		var deg = Math.PI / 180;
-		this._shaper.setMap(function(x){
-			if (Math.abs(x) < 0.001){
-				//should output 0 when input is 0
-				return 0;
-			} else {
-				return ( 3 + k ) * x * 20 * deg / ( Math.PI + k * Math.abs(x) );
-			}
-		});
-		return this;
-	};
+	Object.defineProperty(Tone.Distortion.prototype, "distortion", {
+		get : function(){
+			return this._distortion;
+		},
+		set : function(amount){
+			this._distortion = amount;
+			var k = amount * 100;
+			var deg = Math.PI / 180;
+			this._shaper.setMap(function(x){
+				if (Math.abs(x) < 0.001){
+					//should output 0 when input is 0
+					return 0;
+				} else {
+					return ( 3 + k ) * x * 20 * deg / ( Math.PI + k * Math.abs(x) );
+				}
+			});
+		} 
+	});
 
 	/**
-	 *  set the oversampling
-	 *  @param {string} oversampling can either be "none", "2x" or "4x"
-	 *  @returns {Tone.Distortion} `this`
+	 * The oversampling of the effect. Can either be "none", "2x" or "4x".
+	 * @memberOf Tone.Distortion#
+	 * @type {string}
+	 * @name oversample
 	 */
-	Tone.Distortion.prototype.setOversample = function(oversampling) {
-		this._shaper.oversample = oversampling;
-		return this;
-	};
-
-	/**
-	 *  set in bulk
-	 *  @param {Object} params 
-	 *  @returns {Tone.Distortion} `this`
-	 */
-	Tone.Distortion.prototype.setOversample = function(params) {
-		if (!this.isUndef(params.distortion)) this.setDistortion(params.distortion);
-		if (!this.isUndef(params.oversample)) this.setOversample(params.oversample);
-		Tone.Effect.prototype.set.call(this, params);
-		return this;
-	};
+	Object.defineProperty(Tone.Distortion.prototype, "oversample", {
+		get : function(){
+			return this._shaper.oversample;
+		},
+		set : function(oversampling){
+			this._shaper.oversample = oversampling;
+		} 
+	});
 
 	/**
 	 *  clean up

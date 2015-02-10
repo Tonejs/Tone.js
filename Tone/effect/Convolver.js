@@ -68,16 +68,6 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/effect/Effect"], function(To
 	};
 
 	/**
-	 *  set multiple parameters at once with an object
-	 *  @param {Object} params the parameters as an object
-	 *  @returns {Tone.Convolver} `this`
-	 */
-	Tone.Convolver.prototype.set = function(params){
-		if (!this.isUndef(params.buffer)) this.setBuffer(params.buffer);
-		Tone.Effect.prototype.set.call(this, params);
-	};
-
-	/**
 	 *  dispose and disconnect
 	 *  @returns {Tone.Convolver} `this`
 	 */
