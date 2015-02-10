@@ -283,6 +283,7 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 	 *  @returns {Tone.Signal} `this`
 	 */
 	Tone.Signal.prototype.rampTo = function(value, rampTime){
+		rampTime = this.defaultArg(rampTime, 0);
 		if (this.units === Tone.Signal.Units.Frequency){
 			this.exponentialRampToValueNow(value, rampTime);
 		} else {
