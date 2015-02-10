@@ -63,13 +63,21 @@ function(Tone){
 		this._sample = options.sample;
 
 		/**
+		 * the private reference to the pitch
+		 * @type {number}
+		 * @private
+		 */
+		this._pitch = options.pitch;
+
+		/**
 		 *  The filter.
 		 *  @type {BiquadFilterNode}
 		 */
 		this.filter = new Tone.Filter(options.filter);
 
+		//connections / setup
 		this._loadBuffers(urls);
-		//connections
+		this.pitch = options.pitch;
 		this.player.chain(this.filter, this.envelope, this.output);
 		this.filterEnvelope.connect(this.filter.frequency);
 	};
@@ -82,6 +90,7 @@ function(Tone){
 	 */
 	Tone.Sampler.defaults = {
 		"sample" : 0,
+		"pitch" : 0,
 		"player" : {
 			"loop" : false,
 		},
@@ -148,22 +157,6 @@ function(Tone){
 	};
 
 	/**
-	 *  repitch the sampled note by some interval.
-	 *  ```javascript
-	 *  sampler.setNote(12); //one octave higher
-	 *  sampler.setNote(-7); //down a fifth
-	 *  ```
-	 *  @param {number} interval the interval in half-steps.
-	 *                           0 indicates no change.
-	 *  @returns {Tone.Sampler} `this`
-	 */
-	Tone.Sampler.prototype.setNote = function(interval, time){
-		time = this.toSeconds(time);
-		this.player.setPlaybackRate(this.intervalToFrequencyRatio(interval), time);
-		return this;
-	};
-
-	/**
 	 *  start the sample.
 	 *  @param {string=} sample the name of the samle to trigger, defaults to
 	 *                          the last sample used
@@ -197,9 +190,10 @@ function(Tone){
 	};
 
 	/**
-	 * set the name of the sample to trigger
-	 * @param {string} name the name of the sample
-	 * @returns {Tone.Sampler} `this`
+	 * The name of the sample to trigger.
+	 * @memberOf Tone.Sampler#
+	 * @type {number|string}
+	 * @name sample
 	 */
 	Object.defineProperty(Tone.Sampler.prototype, "sample", {
 		get : function(){
@@ -212,6 +206,27 @@ function(Tone){
 			} else {
 				throw new Error("Sampler does not have a sample named "+name);
 			}
+		}
+	});
+
+	/**
+	 * Repitch the sampled note by some interval (measured
+	 * in semi-tones). 
+	 * ```javascript
+	 * sampler.pitch = -12; //down one octave
+	 * sampler.pitch = 7; //up a fifth
+	 * ```
+	 * @memberOf Tone.Sampler#
+	 * @type {number}
+	 * @name pitch
+	 */
+	Object.defineProperty(Tone.Sampler.prototype, "pitch", {
+		get : function(){
+			return this._pitch;
+		},
+		set : function(interval){
+			this._pitch = interval;
+			this.player.playbackRate = this.intervalToFrequencyRatio(interval);
 		}
 	});
 
