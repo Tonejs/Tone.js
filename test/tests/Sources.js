@@ -1,7 +1,7 @@
 /* global it, describe, after, maxTimeout, beforeEach */
 
 define(["chai", "Tone/source/Player", "Tone/core/Master", "Tone/source/Oscillator", 
-	"Tone/component/Recorder", "Tone/source/Noise", "tests/Core", "Tone/source/PulseOscillator", "tests/Common", 
+	"Recorder", "Tone/source/Noise", "tests/Core", "Tone/source/PulseOscillator", "tests/Common", 
 	"Tone/source/PWMOscillator", "Tone/source/OmniOscillator", "Tone/source/Microphone", "Tone/core/Buffer"], 
 function(chai, Player, Master, Oscillator, Recorder, Noise, core, PulseOscillator, Test, 
 	PWMOscillator, OmniOscillator, Microphone, Buffer){

@@ -1,13 +1,14 @@
 /* global it, describe*/
 
-define(["chai", "Tone/core/Tone", "Tone/core/Transport", "tests/Core"], function(chai, Tone, Transport){
+define(["chai", "Tone/core/Tone", "Tone/core/Transport", "tests/Core", "tests/Common"], 
+function(chai, Tone, Transport, Core, Test){
 	var expect = chai.expect;
 	var tone = new Tone();
 
 	describe("Tone.notationToSeconds", function(){
 
+
 		it("handles measures, measure subdivision and triplets", function(){
-			Transport.stop();
 			Transport.setBpm(120);
 			Transport.setTimeSignature(4, 4);
 			expect(tone.notationToSeconds("1m")).to.equal(2);
@@ -19,7 +20,6 @@ define(["chai", "Tone/core/Tone", "Tone/core/Transport", "tests/Core"], function
 		});
 
 		it("handles setting different BPM", function(){
-			Transport.stop();
 			Transport.setBpm(240);
 			Transport.setTimeSignature(4, 4);
 			expect(tone.notationToSeconds("4n")).to.equal(0.25);

@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "chai", "Tone/component/Recorder", "Tone/core/Master", "Tone/signal/Signal"],
+define(["Tone/core/Tone", "chai", "Recorder", "Tone/core/Master", "Tone/signal/Signal"],
 function(Tone, chai, Recorder, Master, Signal){
 
 	var expect = chai.expect;

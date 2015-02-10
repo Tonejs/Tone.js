@@ -45,6 +45,23 @@ function(Tone, chai, DuoSynth, MonoSynth, FMSynth, PolySynth, Sampler, Test, Ins
 				done();
 			});
 		});		
+
+		it("can be get/set", function(){
+			var ms = new MonoSynth();
+			var values = {
+				"oscillator" : {
+					"type" : "triangle"
+				},
+				"filter" : {
+					"Q" : 8,
+				},
+			};
+			ms.set(values);
+			expect(ms.get()).to.contain.keys(Object.keys(values));
+			expect(ms.oscillator.type).to.equal(values.oscillator.type);
+			expect(ms.filter.Q.value).to.equal(values.filter.Q);
+			ms.dispose();
+		});
 	});
 
 	describe("Tone.DuoSynth", function(){
@@ -75,6 +92,26 @@ function(Tone, chai, DuoSynth, MonoSynth, FMSynth, PolySynth, Sampler, Test, Ins
 				done();
 			});
 		});		
+		it("can be get/set", function(){
+			var ds = new DuoSynth();
+			var values = {
+				"voice0" : {
+					"oscillator" : {
+						"type" : "triangle"
+					},
+				},
+				"voice1" : {
+					"oscillator" : {
+						"type" : "sine"
+					},
+				}
+			};
+			ds.set(values);
+			expect(ds.get()).to.contain.keys(Object.keys(values));
+			expect(ds.voice0.oscillator.type).to.equal(values.voice0.oscillator.type);
+			expect(ds.voice1.oscillator.type).to.equal(values.voice1.oscillator.type);
+			ds.dispose();
+		});
 	});
 
 	describe("Tone.FMSynth", function(){
@@ -104,7 +141,28 @@ function(Tone, chai, DuoSynth, MonoSynth, FMSynth, PolySynth, Sampler, Test, Ins
 				fms.dispose();
 				done();
 			});
-		});		
+		});	
+
+		it("can be get/set", function(){
+			var fms = new FMSynth();
+			var values = {
+				"carrier" : {
+					"oscillator" : {
+						"type" : "triangle"
+					},
+				},
+				"modulator" : {
+					"oscillator" : {
+						"type" : "sine"
+					},
+				}
+			};
+			fms.set(values);
+			expect(fms.get()).to.contain.keys(Object.keys(values));
+			expect(fms.carrier.oscillator.type).to.equal(values.carrier.oscillator.type);
+			expect(fms.modulator.oscillator.type).to.equal(values.modulator.oscillator.type);
+			fms.dispose();
+		});	
 	});
 
 	describe("Tone.PolySynth", function(){
@@ -174,7 +232,7 @@ function(Tone, chai, DuoSynth, MonoSynth, FMSynth, PolySynth, Sampler, Test, Ins
 				"B" : "./testAudio/hh.mp3"
 			});
 			Buffer.onload = function(){
-				samp.setSample("A.1");
+				samp.sample = "A.1";
 				samp.dispose();
 				done();
 			};
@@ -208,7 +266,22 @@ function(Tone, chai, DuoSynth, MonoSynth, FMSynth, PolySynth, Sampler, Test, Ins
 				psynth.dispose();
 				done();
 			});
-		});		
+		});	
+
+		it("handles getter/setter", function(){
+			var psynth = new PluckSynth();
+			var values = {
+				"attackNoise" : 3,
+				"dampening" : 5000,
+				"resonance" : 0.3
+			};
+			psynth.set(values);
+			expect(psynth.get()).to.contain.keys(Object.keys(values));
+			expect(psynth.attackNoise).to.equal(values.attackNoise);
+			expect(psynth.dampening.value).to.equal(values.dampening);
+			expect(psynth.resonance.value).to.be.closeTo(values.resonance, 0.05);
+			psynth.dispose();
+		});	
 	});
 
 	describe("Tone.AMSynth", function(){
@@ -238,7 +311,30 @@ function(Tone, chai, DuoSynth, MonoSynth, FMSynth, PolySynth, Sampler, Test, Ins
 				ams.dispose();
 				done();
 			});
-		});		
+		});	
+
+		it("handles getters/setters", function(){
+			var ams = new AMSynth();
+			var values = {
+				"harmonicity" : 3,
+				"carrier" : {
+					"filterEnvelope" : {
+						"min" : 20,
+					}
+				},
+				"modulator" : {
+					"filterEnvelope" : {
+						"min" : 400,
+					}
+				}
+			};
+			ams.set(values);
+			expect(ams.get()).to.contain.keys(Object.keys(values));
+			expect(ams.harmonicity).to.be.closeTo(values.harmonicity, 0.05);
+			expect(ams.carrier.filterEnvelope.min).to.be.closeTo(values.carrier.filterEnvelope.min, 0.05);
+			expect(ams.modulator.filterEnvelope.min).to.be.closeTo(values.modulator.filterEnvelope.min, 0.05);
+			ams.dispose();
+		});	
 	});
 
 	describe("Tone.NoiseSynth", function(){

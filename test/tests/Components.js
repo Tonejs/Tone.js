@@ -1,7 +1,7 @@
 /* global it, describe, maxTimeout*/
 
 define(["tests/Core", "chai", "Tone/component/CrossFade", "Tone/core/Master", "Tone/signal/Signal", 
-"Tone/component/Recorder", "Tone/component/Panner", "Tone/component/LFO", "Tone/component/Gate", 
+"Recorder", "Tone/component/Panner", "Tone/component/LFO", "Tone/component/Gate", 
 "Tone/component/Follower", "Tone/component/Envelope", "Tone/component/Filter", "Tone/component/EQ", 
 "Tone/component/Merge", "Tone/component/Split", "tests/Common", "Tone/component/AmplitudeEnvelope", 
 "Tone/component/LowpassCombFilter", "Tone/component/FeedbackCombFilter", "Tone/component/Mono", 
@@ -42,7 +42,7 @@ function(coreTest, chai, CrossFade, Master, Signal, Recorder, Panner, LFO, Gate,
 				drySignal.connect(crossFade, 0, 0);
 				wetSignal.connect(crossFade, 0, 1);
 				recorder = new Recorder();
-				crossFade.setFade(0);
+				crossFade.fade.value = 0;
 				crossFade.connect(dest);
 			}, function(sample){
 				expect(sample).to.closeTo(10, 0.01);
@@ -62,7 +62,7 @@ function(coreTest, chai, CrossFade, Master, Signal, Recorder, Panner, LFO, Gate,
 				drySignal.connect(crossFade, 0, 0);
 				wetSignal.connect(crossFade, 0, 1);
 				recorder = new Recorder();
-				crossFade.setFade(1);
+				crossFade.fade.value = 1;
 				crossFade.connect(dest);
 			}, function(sample){
 				expect(sample).to.closeTo(20, 0.01);
@@ -82,7 +82,7 @@ function(coreTest, chai, CrossFade, Master, Signal, Recorder, Panner, LFO, Gate,
 				drySignal.connect(crossFade, 0, 0);
 				wetSignal.connect(crossFade, 0, 1);
 				recorder = new Recorder();
-				crossFade.setFade(0.5);
+				crossFade.fade.value = 0.5;
 				crossFade.connect(dest);
 			}, function(sample){
 				expect(sample).to.closeTo(17.06, 0.01);
@@ -95,36 +95,6 @@ function(coreTest, chai, CrossFade, Master, Signal, Recorder, Panner, LFO, Gate,
 		});
 	});
 
-	/*describe("Tone.Recorder", function(){
-		this.timeout(maxTimeout);
-
-		var recorder = new Recorder();
-
-		after(function(){
-			recorder.dispose();
-		});
-
-		it("can be created and disposed", function(){
-			var rec = new Recorder();
-			rec.dispose();
-			Test.wasDisposed(rec);
-		});
-
-		it("can record an incoming signal", function(done){
-			Test.onlineContext();
-			var sig = new Signal(1);
-			sig.connect(recorder);
-			recorder.record(0.1, 0.1, function(buffers){
-				var buffer = buffers[0];
-				for (var i = 0; i < buffer.length; i++){
-					expect(buffer[i]).to.equal(1);
-				}
-				sig.dispose();
-				done();
-			});
-		});
-	});
-*/
 	describe("Tone.Panner", function(){
 		this.timeout(maxTimeout);
 
@@ -160,7 +130,7 @@ function(coreTest, chai, CrossFade, Master, Signal, Recorder, Panner, LFO, Gate,
 				signal = new Signal(1);
 				panner = new Panner();
 				signal.connect(panner);
-				panner.setPan(1);
+				panner.pan.value = 1;
 				panner.connect(dest);
 			}, function(L, R){
 				expect(L).to.be.closeTo(0, 0.01);
@@ -218,14 +188,32 @@ function(coreTest, chai, CrossFade, Master, Signal, Recorder, Panner, LFO, Gate,
 				lfo = new LFO(100, 10, 20);
 				lfo.connect(dest);
 				lfo.start();
-				lfo.setMin(15);
-				lfo.setMax(18);
+				lfo.min = 15;
+				lfo.max  = 18;
 			}, function(sample){
 				expect(sample).to.be.within(15, 18);
 			}, function(){
 				lfo.dispose();
 				done();
 			});
+		});
+
+		it("handles getters/setters as objects", function(){
+			var lfo = new LFO();
+			var values = {
+				"type" : "square",
+				"min" : -1,
+				"max" : 2,
+				"phase" : 180,
+				"frequency" : "8n",
+			};
+			lfo.set(values);
+			expect(lfo.get()).to.have.keys(["type", "min", "max", "phase", "frequency"]);
+			expect(lfo.type).to.equal(values.type);
+			expect(lfo.min).to.equal(values.min);
+			expect(lfo.max).to.equal(values.max);
+			expect(lfo.phase).to.equal(values.phase);
+			lfo.dispose();
 		});
 	});
 
@@ -242,6 +230,22 @@ function(coreTest, chai, CrossFade, Master, Signal, Recorder, Panner, LFO, Gate,
 			Test.onlineContext();
 			var gate = new Gate();
 			Test.acceptsInputAndOutput(gate);
+			gate.dispose();
+		});
+
+		it("handles getter/setters", function(){
+			Test.onlineContext();
+			var gate = new Gate();
+			var values = {
+				"attack" : "4n",
+				"release" : "8n",
+				"threshold" : -25,
+			};
+			gate.set(values);
+			expect(gate.get()).to.have.keys(["attack", "release", "threshold"]);
+			expect(gate.attack).to.equal(values.attack);
+			expect(gate.decay).to.equal(values.decay);
+			expect(gate.threshold).to.be.closeTo(values.threshold, 0.1);
 			gate.dispose();
 		});
 
@@ -313,6 +317,18 @@ function(coreTest, chai, CrossFade, Master, Signal, Recorder, Panner, LFO, Gate,
 				done();
 			});
 		});
+
+		it("handles getter/setter as Object", function(){
+			var foll = new Follower();
+			var values = {
+				"attack" : "8n",
+				"release" : "4n"
+			};
+			foll.set(values);
+			expect(foll.get()).to.have.keys(["attack", "release"]);
+			expect(foll.get()).to.deep.equal(values);
+			foll.dispose();
+		});
 	});
 
 
@@ -373,6 +389,19 @@ function(coreTest, chai, CrossFade, Master, Signal, Recorder, Panner, LFO, Gate,
 				done();
 			});
 		});
+
+		it ("can get and set values an Objects", function(){
+			var env = new Envelope();
+			var values = {
+				"attack" : 0,
+				"decay" : 0.5,
+				"sustain" : 1,
+				"release" : "4n"
+			};
+			env.set(values);
+			expect(env.get()).to.deep.equal(values);
+			env.dispose();
+		});
 	});
 
 
@@ -389,6 +418,25 @@ function(coreTest, chai, CrossFade, Master, Signal, Recorder, Panner, LFO, Gate,
 			Test.onlineContext();
 			var f = new Filter();
 			Test.acceptsInputAndOutput(f);
+			f.dispose();
+		});
+
+		it("can set/get values as an Object", function(){
+			var f = new Filter();
+			var values = {
+				"type" : "highpass",
+				"frequency" : 440,
+				"rolloff" : -24,
+				"Q" : 2,
+				"gain" : -6,
+			};
+			f.set(values);
+			expect(f.get()).to.have.keys(["type", "frequency", "rolloff", "Q", "gain"]);
+			expect(f.type).to.equal(values.type);
+			expect(f.frequency.value).to.equal(values.frequency);
+			expect(f.rolloff).to.equal(values.rolloff);
+			expect(f.Q.value).to.equal(values.Q);
+			expect(f.gain.value).to.be.closeTo(values.gain, 0.04);
 			f.dispose();
 		});
 
@@ -410,12 +458,12 @@ function(coreTest, chai, CrossFade, Master, Signal, Recorder, Panner, LFO, Gate,
 				"frequency" : 1000,
 				"type" : "highpass"
 			});
-			expect(f0.frequency.getValue()).to.equal(1000);
-			expect(f0.getType()).to.equal("highpass");
+			expect(f0.frequency.value).to.equal(1000);
+			expect(f0.type).to.equal("highpass");
 			f0.dispose();
 			var f1 = new Filter(200, "bandpass");
-			expect(f1.frequency.getValue()).to.equal(200);
-			expect(f1.getType()).to.equal("bandpass");
+			expect(f1.frequency.value).to.equal(200);
+			expect(f1.type).to.equal("bandpass");
 			f1.dispose();
 		});
 	});
@@ -446,6 +494,21 @@ function(coreTest, chai, CrossFade, Master, Signal, Recorder, Panner, LFO, Gate,
 				eq.dispose();
 				done();
 			});
+		});
+
+		it("can set/get values as an Object", function(){
+			Test.onlineContext();
+			var eq = new EQ();
+			var values = {
+				"high" : -12,
+				"mid" : -24,
+				"low" : -1
+			};
+			eq.set(values);
+			expect(eq.high).to.be.closeTo(values.high, 0.1);
+			expect(eq.mid).to.be.closeTo(values.mid, 0.1);
+			expect(eq.low).to.be.closeTo(values.low, 0.1);
+			eq.dispose();
 		});
 	});
 
@@ -603,6 +666,19 @@ function(coreTest, chai, CrossFade, Master, Signal, Recorder, Panner, LFO, Gate,
 				done();
 			});
 		});
+
+		it("handles getters/setters", function(){
+			Test.onlineContext();
+			var lfcf = new LowpassCombFilter();
+			var values = {
+				"resonance" : 0.4,
+				"dampening" : 4000,
+				"delayTime" : "4n"
+			};
+			lfcf.set(values);
+			expect(lfcf.get()).to.have.keys(["resonance", "dampening", "delayTime"]);
+			lfcf.dispose();
+		});
 	});
 
 	describe("Tone.FeedbackCombFilter", function(){
@@ -618,6 +694,14 @@ function(coreTest, chai, CrossFade, Master, Signal, Recorder, Panner, LFO, Gate,
 			Test.onlineContext();
 			var fbcf = new FeedbackCombFilter();
 			Test.acceptsInputAndOutput(fbcf);
+			fbcf.dispose();
+		});
+
+		it("can set delayTime", function(){
+			Test.onlineContext();
+			var fbcf = new FeedbackCombFilter();
+			fbcf.delayTime = "4n";
+			expect(fbcf.delayTime).to.equal("4n");
 			fbcf.dispose();
 		});
 
@@ -710,6 +794,42 @@ function(coreTest, chai, CrossFade, Master, Signal, Recorder, Panner, LFO, Gate,
 				done();
 			});
 		});
+
+		it("can be get and set through object", function(){
+			var comp = new Compressor();
+			var values = {
+				"ratio" : 22,
+				"threshold" : -30,
+				"release" : 0.5,
+				"attack" : 0.03,
+				"knee" : 20
+			};
+			comp.set(values);
+			expect(comp.get()).to.have.keys(["ratio", "threshold", "release", "attack", "ratio"]);
+			comp.dispose();
+		});
+
+		it("can get/set all interfaces", function(){
+			var comp = new Compressor();
+			var values = {
+				"ratio" : 22,
+				"threshold" : -30,
+				"release" : 0.5,
+				"attack" : 0.03,
+				"knee" : 20
+			};
+			comp.ratio.value = values.ratio;
+			comp.threshold.value = values.threshold;
+			comp.release.value = values.release;
+			comp.attack.value = values.attack;
+			comp.knee.value = values.knee;
+			expect(comp.ratio.value).to.equal(values.ratio);
+			expect(comp.threshold.value).to.equal(values.threshold);
+			expect(comp.release.value).to.equal(values.release);
+			expect(comp.attack.value).to.be.closeTo(values.attack, 0.01);
+			expect(comp.knee.value).to.equal(values.knee);
+			comp.dispose();
+		});
 	});
 
 	describe("Tone.PanVol", function(){
@@ -739,6 +859,14 @@ function(coreTest, chai, CrossFade, Master, Signal, Recorder, Panner, LFO, Gate,
 				done();
 			});
 		});
+
+		it("can set the pan and volume", function(){
+			var panvol = new PanVol();
+			panvol.volume.value = -12;
+			panvol.pan.value = 0;
+			expect(panvol.volume.value).to.be.closeTo(-12, 0.1);
+			expect(panvol.pan.value).to.be.equal(0);
+		});
 	});
 
 	describe("Tone.MultibandCompressor", function(){
@@ -767,6 +895,25 @@ function(coreTest, chai, CrossFade, Master, Signal, Recorder, Panner, LFO, Gate,
 				comp.dispose();
 				done();
 			});
+		});
+
+		it("handles getters/setters", function(){
+			Test.onlineContext();
+			var comp = new MultibandCompressor();
+			var values = {
+				"low" : {
+					"attack" : 0.3
+				},
+				"mid" : {
+					"threshold" : -12
+				}
+			};
+			comp.set(values);
+			expect(comp.get()).to.have.deep.property("low.attack");
+			expect(comp.get()).to.have.deep.property("mid.threshold");
+			expect(comp.low.attack.value).to.be.closeTo(0.3, 0.05);
+			expect(comp.mid.threshold.value).to.be.closeTo(-12, 0.05);
+			comp.dispose();
 		});
 	});
 
@@ -837,8 +984,8 @@ function(coreTest, chai, CrossFade, Master, Signal, Recorder, Panner, LFO, Gate,
 			Test.offlineTest(0.7, function(dest){
 				env = new ScaledEnvelope(0.1, 0.2, 0.5, 0.1);
 				env.connect(dest);
-				env.setMin(5);
-				env.setMax(10);
+				env.min = 5;
+				env.max = 10;
 				env.triggerAttack(0.1);
 			}, function(sample, time){
 				if (time < 0.1){
@@ -866,6 +1013,14 @@ function(coreTest, chai, CrossFade, Master, Signal, Recorder, Panner, LFO, Gate,
 			Test.onlineContext();
 			var lim = new Limiter();
 			Test.acceptsInputAndOutput(lim);
+			lim.dispose();
+		});
+
+		it("can get and set values", function(){
+			Test.onlineContext();
+			var lim = new Limiter();
+			lim.threshold.value = -12;
+			expect(lim.threshold.value).to.be.closeTo(-12, 0.05);
 			lim.dispose();
 		});
 
