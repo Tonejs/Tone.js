@@ -157,14 +157,15 @@ define(function(){
 		var ret = {};
 		for (var i = 0; i < params.length; i++){
 			var attr = params[i];
-			if (this[attr] instanceof Tone.Signal){
-				ret[attr] = this[attr].value;
-			} else if (this[attr] instanceof AudioParam){
-				ret[attr] = this[attr].value;
-			} else if (this[attr] instanceof Tone){
-				ret[attr] = this[attr].get();
-			} else if (!isFunction(this[attr])){
-				ret[attr] = this[attr];
+			var param = this[attr];
+			if (param instanceof Tone.Signal){
+				ret[attr] = param.value;
+			} else if (param instanceof AudioParam){
+				ret[attr] = param.value;
+			} else if (param instanceof Tone){
+				ret[attr] = param.get();
+			} else if (!isFunction(param) && !isUndef(param)){
+				ret[attr] = param;
 			} 
 		}
 		return ret;
@@ -258,13 +259,16 @@ define(function(){
 	 *  until 'dispose' is explicitly called
 	 *
 	 *  use carefully. circumvents JS and WebAudio's normal Garbage Collection behavior
+	 *  @returns {Tone} `this`
 	 */
 	Tone.prototype.noGC = function(){
 		this.output.connect(_silentNode);
+		return this;
 	};
 
 	AudioNode.prototype.noGC = function(){
 		this.connect(_silentNode);
+		return this;
 	};
 
 	/**
@@ -272,6 +276,7 @@ define(function(){
 	 *  @param  {Tone | AudioParam | AudioNode} unit 
 	 *  @param {number} [outputNum=0] optionally which output to connect from
 	 *  @param {number} [inputNum=0] optionally which input to connect to
+	 *  @returns {Tone} `this`
 	 */
 	Tone.prototype.connect = function(unit, outputNum, inputNum){
 		if (Array.isArray(this.output)){
@@ -280,10 +285,12 @@ define(function(){
 		} else {
 			this.output.connect(unit, outputNum, inputNum);
 		}
+		return this;
 	};
 
 	/**
 	 *  disconnect the output
+	 *  @returns {Tone} `this`
 	 */
 	Tone.prototype.disconnect = function(outputNum){
 		if (Array.isArray(this.output)){
@@ -292,11 +299,13 @@ define(function(){
 		} else {
 			this.output.disconnect();
 		}
+		return this;
 	};
 
 	/**
 	 *  connect together all of the arguments in series
 	 *  @param {...AudioParam|Tone|AudioNode}
+	 *  @returns {Tone} `this`
 	 */
 	Tone.prototype.connectSeries = function(){
 		if (arguments.length > 1){
@@ -307,11 +316,13 @@ define(function(){
 				currentUnit = toUnit;
 			}
 		}
+		return this;
 	};
 
 	/**
 	 *  fan out the connection from the first argument to the rest of the arguments
 	 *  @param {...AudioParam|Tone|AudioNode}
+	 *  @returns {Tone} `this`
 	 */
 	Tone.prototype.connectParallel = function(){
 		var connectFrom = arguments[0];
@@ -321,11 +332,13 @@ define(function(){
 				connectFrom.connect(connectTo);
 			}
 		}
+		return this;
 	};
 
 	/**
 	 *  connect the output of this node to the rest of the nodes in series.
 	 *  @param {...AudioParam|Tone|AudioNode}
+	 *  @returns {Tone} `this`
 	 */
 	Tone.prototype.chain = function(){
 		if (arguments.length > 0){
@@ -336,11 +349,13 @@ define(function(){
 				currentUnit = toUnit;
 			}
 		}
+		return this;
 	};
 
 	/**
 	 *  connect the output of this node to the rest of the nodes in parallel.
 	 *  @param {...AudioParam|Tone|AudioNode}
+	 *  @returns {Tone} `this`
 	 */
 	Tone.prototype.fan = function(){
 		if (arguments.length > 0){
@@ -348,6 +363,7 @@ define(function(){
 				this.connect(arguments[i]);
 			}
 		}
+		return this;
 	};
 
 	//give native nodes chain and fan methods
