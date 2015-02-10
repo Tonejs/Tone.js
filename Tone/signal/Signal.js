@@ -359,13 +359,22 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 	 * @enum {string}
 	 */
 	Tone.Signal.Units = {
+		/** The default type. */
 		Number : "number",
+		/** Tone.Time will be converted into seconds. */
 		Time : "time",
+		/** Tone.Frequency will be converted into hertz. */
 		Frequency : "frequency",
+		/** A Gain value. */
 		Gain : "gain",
+		/** Within normal range [0,1]. */
 		Normal : "normal",
+		/** Within normal range [-1,1]. */
 		Audio : "audio",
-		Decibels : "db"
+		/** In decibels. */
+		Decibels : "db",
+		/** In half-step increments, i.e. 12 is an octave above the root. */
+		Interval : "interval"
 	};
 
 	///////////////////////////////////////////////////////////////////////////
