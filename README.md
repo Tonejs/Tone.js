@@ -234,6 +234,7 @@ Tone.js uses very few ScriptProcessorNodes. Nearly all of the Tone Modules find 
 * [A Tone.js Plugin Architecture with GUIs](https://github.com/billautomata/Tone.js.Plugins)
 * [Hypercube by @eddietree](http://eddietree.github.io/hypercube/)
 * [randomcommander.io by Jake Albaugh](http://randomcommander.io/)
+* [Tone.js + NexusUI by taylorbf](http://taylorbf.github.io/Tone-Rack/)
 
 Using Tone.js? I'd love to hear it: yotammann@gmail.com
 
