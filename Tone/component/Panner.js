@@ -24,16 +24,19 @@ function(Tone){
 		 *  @private
 		 */
 		this._crossFade = new Tone.CrossFade();
+		
 		/**
 		 *  @type {Tone.Merge}
 		 *  @private
 		 */
 		this._merger = this.output = new Tone.Merge();
+		
 		/**
 		 *  @type {Tone.Split}
 		 *  @private
 		 */
 		this._splitter = new Tone.Split();
+		
 		/**
 		 *  the pan control
 		 *  @type {Tone.Signal}

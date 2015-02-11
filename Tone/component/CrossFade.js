@@ -41,7 +41,14 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Expr", "Tone/signal
 		 *  @private
 		 *  @type {Tone.EqualPowerGain}
 		 */
-		this._equalPower = new Tone.EqualPowerGain();
+		this._equalPowerA = new Tone.EqualPowerGain();
+
+		/**
+		 *  equal power gain cross fade
+		 *  @private
+		 *  @type {Tone.EqualPowerGain}
+		 */
+		this._equalPowerB = new Tone.EqualPowerGain();
 		
 		/**
 		 *  invert the incoming signal
@@ -53,9 +60,8 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Expr", "Tone/signal
 		//connections
 		this.a.connect(this.output);
 		this.b.connect(this.output);
-		this.fade.connect(this._equalPower);
-		this._equalPower.chain(this.b.gain);
-		this._equalPower.chain(this._invert, this.a.gain);
+		this.fade.chain(this._equalPowerB, this.b.gain);
+		this.fade.chain(this._invert, this._equalPowerA, this.a.gain);
 	};
 
 	Tone.extend(Tone.CrossFade);
@@ -66,8 +72,10 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Expr", "Tone/signal
 	 */
 	Tone.CrossFade.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
-		this._equalPower.dispose();
-		this._equalPower = null;
+		this._equalPowerA.dispose();
+		this._equalPowerA = null;
+		this._equalPowerB.dispose();
+		this._equalPowerB = null;
 		this.fade.dispose();
 		this.fade = null;
 		this._invert.dispose();
