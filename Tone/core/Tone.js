@@ -194,7 +194,6 @@ define(function(){
 
 	/**
 	 *  A static pointer to the audio context
-	 *  @static
 	 *  @type {AudioContext}
 	 */
 	Tone.context = audioContext;
