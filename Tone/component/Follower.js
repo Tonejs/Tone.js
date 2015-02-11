@@ -104,8 +104,8 @@ function(Tone){
 	 */
 	Tone.Follower.prototype._setAttackRelease = function(attack, release){
 		var minTime = this.bufferTime;
-		attack = this.toFrequency(attack);
-		release = this.toFrequency(release);
+		attack = this.secondsToFrequency(this.toSeconds(attack));
+		release = this.secondsToFrequency(this.toSeconds(release));
 		attack = Math.max(attack, minTime);
 		release = Math.max(release, minTime);
 		this._frequencyValues.setMap(function(val){
