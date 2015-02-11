@@ -22,6 +22,13 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/LFO", "Tone/comp
 		this._lfo = new Tone.LFO(options.frequency, 0, 1);
 
 		/**
+		 * The amount of panning between left and right. 
+		 * 0 = always center. 1 = full range between left and right. 
+		 * @type {Tone.Signal}
+		 */
+		this.amount = this._lfo.amplitude;
+
+		/**
 		 *  the panner node which does the panning
 		 *  @type {Tone.Panner}
 		 *  @private
@@ -50,7 +57,8 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/LFO", "Tone/comp
 	 */
 	Tone.AutoPanner.defaults = {
 		"frequency" : 1,
-		"type" : "sine"
+		"type" : "sine",
+		"amount" : 1
 	};
 	
 	/**
