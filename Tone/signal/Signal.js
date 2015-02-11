@@ -182,7 +182,6 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 	 *  @returns {Tone.Signal} `this`
 	 */
 	Tone.Signal.prototype.exponentialRampToValueNow = function(value, rampTime ){
-		value = this._fromUnits(value);
 		var now = this.now();
 		this.setCurrentValueNow(now);
 		this.exponentialRampToValueAtTime(value, now + this.toSeconds(rampTime ));
