@@ -7,106 +7,71 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
 
 	<script type="text/javascript" src="./deps/jquery.min.js"></script>
-	<script type="text/javascript" src="./deps/jquery-ui.js"></script>
-	<script type="text/javascript" src="./deps/jquery.ui.touch-punch.js"></script>
 	<script type="text/javascript" src="../build/Tone.js"></script>
-	<script type="text/javascript" src="./Widgets.js"></script>
-	<script type="text/javascript" src="./ExampleList.js"></script>
-	<link rel="stylesheet" type="text/css" href="./style/widgets.css">
-	<link rel="stylesheet" type="text/css" href="./style/jquery-ui.css">
-	
+	<script type="text/javascript" src="./deps/nexusUI.js"></script>
+	<script type="text/javascript" src="./deps/prism.js"></script>
+	<script type="text/javascript" src="./scripts/Interface.js"></script>
+
+	<link rel="stylesheet" type="text/css" href="./style/examples.css">
+	<link rel="stylesheet" type="text/css" href="./style/prism.css">
+
+	<script type="text/javascript">
+		// jshint ignore: start
+	</script>
 </head>
 <body>
-	<div id="Container">
-		<div id="Explanation">
-			Auto Panner
-			<br>
-			<br>
-			An Auto Panner is a left/right panner with an LFO controlling
-			the amount of pan. The effect is much more pronounced with headphones. 
-		</div>
-		<div id="Content">
-		</div>
-	</div>
-	<script type="text/javascript">
-
-		/* global Tone, GUI*/
-		
-		//panner	
-		var panner = new Tone.AutoPanner();
-
-		//input signals
-		var sine = new Tone.Oscillator();
-
-		//connect it up
-		sine.connect(panner);
-		sine.setVolume(-6);
-		panner.toMaster();
-
-		//set the initial values
-		panner.setDry(0);
-		panner.setFrequency(1);
-
-		// GUI //
-
-		new GUI.TopBar(Tone);
-
-		var container = $("#Content");
-
-		new GUI.Checkbox(container, function(on){
-			if (on){
-				sine.start();
-				panner.start();
-			} else {
-				sine.stop();
-			}
-		}, "start", "stop");
-
-		//frequency control
-		$("<div>", {"class" : "Slider"}).slider({
-			"orientation" : "horizontal",
-			"min" : 1,
-			"max" : 50,
-			"value" : 10,
-			"slide" : function(e, ui){
-				var val = ui.value / 10;
-				panner.setFrequency(val);
-				freqValue.setValue(val);
-			}
-		}).appendTo(container);
-
-		var freqValue = new GUI.Value(container, 1, "Rate", "hz");
-
-		//dry wet control
-		$("<div>", {"class" : "Slider"}).slider({
-			"orientation" : "horizontal",
-			"min" : 0,
-			"max" : 100,
-			"value" : 100,
-			"slide" : function(e, ui){
-				panner.setWet(ui.value / 100);
-				wetValue.setValue(ui.value);
-			}
-		}).appendTo(container);
-
-		var wetValue = new GUI.Value(container, 100, "Amount", "%");
-		
-	</script>
 	<style type="text/css">
-		#Content {
-			text-align: center;
-		}
-		.Value {
-			margin-top: 5px;
-			display: block;
-		}
-		.Checkbox {
+		[nx="slider"] {
 			width: 100%;
+			height: 20px;
 		}
-		.Slider {
-			margin-top: 15px;
+		[nx="toggle"] {
+			width: 100%;
+			height: 50px;
 		}
 	</style>
+	<div id="Explanation">
+		Auto Panner
+		<br>
+		<br>
+		An Auto Panner is a left/right panner with an LFO controlling
+		the amount of pan. The effect is much more pronounced with headphones. 
+	</div>
+	<div id="Content">
+		<div id="Rack"></div>
+		<div id="Code"></div>
+	</div>
+	<script id="JSCode" type="text/javascript">
+		//the panner
+		var panner = new Tone.AutoPanner({
+			"frequency" : 4,
+			"amount" : 1
+		}).toMaster();
+
+		//the input signal
+		var osc = new Tone.Oscillator({ 
+			"volume" : -6, 
+			"type" : "triangle"
+		}).connect(panner);
+	</script>
+	<script id="gui" type="text/javascript">
+
+		Interface.Rack("Rack", "AutoPanner");
+
+		Interface.Toggle("Rack", function(on){
+			if (on){
+				panner.start();
+				osc.start();
+			} else {
+				panner.stop();
+				osc.stop();
+			}
+		})
+		Interface.HorizontalSlider("Rack", panner, "amount");
+		Interface.HorizontalSlider("Rack", panner, "frequency", 0.4, 10);
+		Interface.Code("Code", "JSCode");
+		
+	</script>
 
 </body>
 </html>

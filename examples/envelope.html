@@ -5,77 +5,73 @@
 	<title>Envelope</title>
 
 	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-
-	<script type="text/javascript" src="./deps/jquery.min.js"></script>
-	<script type="text/javascript" src="./deps/jquery-ui.js"></script>
-	<script type="text/javascript" src="./deps/jquery.ui.touch-punch.js"></script>
+	
 	<script type="text/javascript" src="../build/Tone.js"></script>
-	<script type="text/javascript" src="./Widgets.js"></script>
-	<script type="text/javascript" src="./ExampleList.js"></script>
-	<link rel="stylesheet" type="text/css" href="./style/widgets.css">
-	<link rel="stylesheet" type="text/css" href="./style/jquery-ui.css">
+	<script type="text/javascript" src="../build/Tone.Preset.js"></script>
+	<script type="text/javascript" src="./deps/jquery.min.js"></script>
+	<script type="text/javascript" src="./deps/nexusUI.js"></script>
+	<script type="text/javascript" src="./deps/prism.js"></script>
+	<script type="text/javascript" src="./scripts/Interface.js"></script>
+
+	<link rel="stylesheet" type="text/css" href="./style/examples.css">
+	<link rel="stylesheet" type="text/css" href="./style/prism.css">
+
+	<script type="text/javascript">
+		// jshint ignore: start
+	</script>
 
 </head>
 <body>	
-	<div id="Container">
-		<div id="Explanation">
-			ADSR Envelope
-			<br>
-			<br>
-			Click the button to trigger the attack/decay portion of the envelope. 
-			Let go of the button to trigger the release. 
-		</div>
-		<div id="Content"></div>
-	</div>
-
-	<script type="text/javascript">
-		/* global Tone, GUI*/
-
-		var env = new Tone.Envelope(0.05, 0.01, 0.4, 0.4);
-
-		var osc = new Tone.Oscillator(440, "square");
-		
-		//connect the envelope to the output gain
-		env.connect(osc.output.gain);
-
-		//start the oscillator
-		osc.toMaster();
-		osc.start();
-
-		// GUI //
-
-		$(function(){
-			var container = $("#Content");
-
-			new GUI.TopBar(Tone);
-
-			//sliders for the envelope controls
-			new GUI.Envelope(container, env, "envelope");
-
-			new GUI.Momentary(container, function(down){
-				if (down){
-					env.triggerAttack();
-				} else {
-					env.triggerRelease();
-				}
-			}, "attack", "release");
-		});
-
-	</script>
-
 	<style type="text/css">
-		#Content {
-			text-align: center;
-			width: 180px;
-			height: 200px;
+		[nx="button"] {
+			width: 20%;
+			height: 80px;
 		}
 		.Envelope {
-			margin: auto;
+			width: 80%;
+			height: 80px;
 		}
-		.Momentary {
-			margin-top: 10px;
-			width: 100%;
-		}
+	</style>
+	<div id="Explanation">
+		ADSR Envelope
+		<br>
+		<br>
+		Click the button to trigger the attack/decay portion of the envelope. 
+		Let go of the button to trigger the release. 
+	</div>
+	<div id="Content">
+		<div id="Rack"></div>
+		<div id="CodeBlock"></div>
+	</div>
+
+	<script id="ToneCode" type="text/javascript">
+		var env = new Tone.AmplitudeEnvelope({
+			"attack" : 0.01,
+			"decay" : 0.02,
+			"sustain" : 0.09,
+			"release" : 1.2
+		}).toMaster();
+
+		var osc = new Tone.Oscillator(440, "square")
+			.connect(env)
+			.start();
+
+		//just so it's not soo loud.
+		osc.volume.value = -6;
+	</script>
+	<script id="GUI" type="text/javascript">
+		Interface.Rack("Rack", "Envelope");
+		Interface.Momentary("Rack", function(down){
+			if (down){
+				env.triggerAttack();
+			} else {
+				env.triggerRelease();
+			}
+		});
+		Interface.AmplitudeEnvelope("Rack", env);
+		Interface.Code("CodeBlock", "ToneCode");
+	</script>
+
 	</style>
 </body>
 </html>

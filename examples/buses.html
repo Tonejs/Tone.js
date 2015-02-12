@@ -6,99 +6,89 @@
 
 	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
 	
-	<script type="text/javascript" src="./deps/jquery.min.js"></script>
-	<script type="text/javascript" src="./deps/jquery-ui.js"></script>
-	<script type="text/javascript" src="./deps/jquery.ui.touch-punch.js"></script>
 	<script type="text/javascript" src="../build/Tone.js"></script>
 	<script type="text/javascript" src="../build/Tone.Preset.js"></script>
-	<script type="text/javascript" src="./Widgets.js"></script>
-	<script type="text/javascript" src="./ExampleList.js"></script>
-	<link rel="stylesheet" type="text/css" href="./style/widgets.css">
-	<link rel="stylesheet" type="text/css" href="./style/jquery-ui.css">
+	<script type="text/javascript" src="./deps/jquery.min.js"></script>
 	<script type="text/javascript" src="./deps/qwerty-hancock.js"></script>
+	<script type="text/javascript" src="./deps/nexusUI.js"></script>
+	<script type="text/javascript" src="./deps/prism.js"></script>
+	<script type="text/javascript" src="./scripts/Interface.js"></script>
+
+	<link rel="stylesheet" type="text/css" href="./style/examples.css">
+	<link rel="stylesheet" type="text/css" href="./style/prism.css">
+
+	<script type="text/javascript">
+		// jshint ignore: start
+	</script>
 
 </head>
 <body>
-	<div id="Container">
-		<div id="Explanation">
-			Buses
-			<br>
-			<br>
-			Buses allow you to send signal using named sends and receives. Sometimes
-			this is advantageous over directly connecting nodes for modularity and loose coupling. 
-		</div>
-		<div id="Content">
-			
-		</div>
+	<style type="text/css">
+		[nx="slider"] {
+			width: 100%;
+			height: 20px;
+		}
+		[nx="keyboard"] {
+			width: 100%;
+			height: 75px;
+		}
+	</style>
+	<div id="Explanation">
+		Buses
+		<br>
+		<br>
+		Buses allow you to send signal using named sends and receives. Sometimes
+		this is advantageous over directly connecting nodes for modularity and loose coupling. 
 	</div>
-	<script type="text/javascript">
+	<div id="Content">
+		<div id="KeyRack">
+			<div id="Keyboard"></div>
+		</div>
+		<div id="Rack"></div>
+		<div id="CodeBlock"></div>
+	</div>
+	<script id="ToneCode" type="text/javascript">
+		//the dry signal which goes to the master output
+		var dry = Tone.context.createGain()
+			.toMaster();
 
-	 	/* globals Tone, GUI */
+		//the synth
+		var synth = new Tone.MonoSynth()
+			.setPreset("Barky")
+			.connect(dry);
 
-		var synth = new Tone.MonoSynth();
-		synth.setPreset("Barky");
-		var dry = Tone.context.createGain();
-		synth.connect(dry);
-		synth.setVolume(-6);
-		dry.toMaster();
-
-		//need to force 1 channel synth signal into a 2 channels for stereo chorus effect
+		//need to force the single channel synth 
+		//signal a stereo signal for the the chorus
 		var mono = new Tone.Mono();
 		synth.connect(mono);
 
-		var chorusSend = mono.send("chorus");
-		chorusSend.gain.value = 0;
-		var chebySend = synth.send("cheby");
-		chebySend.gain.value = 0;
-		var autowahSend = synth.send("autowah");
-		autowahSend.gain.value = 0;
+		var chorusSend = mono.send("chorus", 0);
+		var chebySend = synth.send("cheby", 0);
+		var autowahSend = synth.send("autowah", 0);
 
 		//make some effects
-		var chorus = new Tone.Chorus();
-		chorus.receive("chorus");
-		chorus.toMaster();
-		chorus.setPreset("ether");
-		var cheby = new Tone.Chebyshev(50);
-		cheby.receive("cheby");
-		cheby.toMaster();
-		cheby.setPreset("bubbles");
-		var autoWah = new Tone.AutoWah();
-		autoWah.receive("autowah");
-		autoWah.toMaster();
-		autoWah.setPreset("talker");
-		
-		// GUI //
+		var chorus = new Tone.Chorus()
+			.receive("chorus")
+			.setPreset("ether")
+			.toMaster();
+		var cheby = new Tone.Chebyshev(50)
+			.receive("cheby")
+			.toMaster();
+		var autoWah = new Tone.AutoWah()
+			.receive("autowah")
+			.setPreset("talker")
+			.toMaster();
+	</script>
+	<script id="gui" type="text/javascript">
 
-		new GUI.TopBar(Tone);
-
-		var content = $("#Content");
-
-		//sliders
-		var drySlider = new GUI.Slider(content, function(val){
-			dry.gain.value = val;
-		}, 1, "dry");
-		drySlider.render(1);
-		new GUI.Slider(content, function(val){
-			chorusSend.gain.value = val;
-		}, 0, "chorus");
-		new GUI.Slider(content, function(val){
-			autowahSend.gain.value = val;
-		}, 0, "autowah");
-		new GUI.Slider(content, function(val){
-			chebySend.gain.value = val;
-		}, 0, "chebyshev");
-
-		//keyboard
-		$("<div>", {"id" : "Keyboard"}).appendTo(content);
+		Interface.Rack("KeyRack", "MonoSynth");
+		Interface.Rack("Rack", "Sends");
 		var keyboard = new QwertyHancock({
 			id: "Keyboard",
-			width: 200,
+			width: $("#KeyRack").width(),
 			height: 75,
-			octaves: 1,
-			startNote: "C4",
-			whiteNotesColour: "white",
-			blackNotesColour: "black",
-			hoverColour: "#f3e939"
+			octaves : 3,
+			startNote: "A2",
 		});
 		keyboard.keyDown = function(note, freq){
 			synth.triggerAttack(freq);
@@ -106,18 +96,18 @@
 		keyboard.keyUp = function(){
 			synth.triggerRelease();
 		};
+		Interface.HorizontalSlider("Rack", dry, "gain", 0, 1, 2).label = "dry";
+		var chorusSlider = Interface.HorizontalSlider("Rack", chorusSend, "gain");
+		var chebySlider = Interface.HorizontalSlider("Rack", chebySend, "gain");
+		var autoSlider = Interface.HorizontalSlider("Rack", autowahSend, "gain");
+		chorusSlider.label = "chorus";
+		chebySlider.label = "chebyshev";
+		autoSlider.label = "autowah";
+		chorusSlider.draw();
+		chebySlider.draw();
+		autoSlider.draw();
+		Interface.Code("CodeBlock", "ToneCode");
 		
 	</script>
-	<style type="text/css">
-	#Content {
-		width: 200px;
-	}
-	.Slider {
-		margin-bottom: 10px;
-	}
-	#Keyboard {
-		background-color: black;
-	}
-	</style>
 </body>
 </html>

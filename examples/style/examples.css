@@ -1,0 +1,173 @@
+/**
+ * GLOBAL
+ */
+canvas {
+  border-radius: 0px !important;
+  margin-top: 5px; }
+
+/* FOR MOBILES */
+@media (max-width: 320px) {
+  #TopBar #Homepage a {
+    font-size: 16px !important; }
+
+  #Content {
+    font-size: 10px !important;
+    max-width: 100% !important; } }
+body {
+  margin: 0px; }
+
+#Explanation {
+  font-family: monospace;
+  background-color: #EAEAEA;
+  padding: 10px;
+  color: black;
+  font-size: 14px;
+  margin: 10px;
+  width: calc(100% - 4 * 10px); }
+
+#Explanation a {
+  color: white;
+  font-family: monospace;
+  font-size: 14px; }
+
+/* TOP BAR */
+#TopBar {
+  background-color: black;
+  height: 40px;
+  margin: 10px;
+  position: relative;
+  width: calc(100% - 2 * 10px);
+  font-family: monospace; }
+  #TopBar #Homepage {
+    position: relative;
+    float: left;
+    margin-left: 20px;
+    font-size: 24px;
+    line-height: 40px;
+    color: white; }
+    #TopBar #Homepage a {
+      font-size: 24px;
+      color: white;
+      text-transform: none;
+      text-decoration: none;
+      margin-left: 0px; }
+  #TopBar #Examples {
+    left: 50%;
+    height: 40px;
+    line-height: 40px;
+    position: absolute; }
+    #TopBar #Examples a {
+      position: absolute;
+      font-size: 14px;
+      left: 50%;
+      transform: translate(-50%, 0);
+      text-align: center;
+      color: white;
+      text-transform: none;
+      text-decoration: none;
+      margin-left: 0px; }
+  #TopBar #Meter {
+    width: 50px;
+    height: 90%;
+    position: absolute;
+    right: 10px;
+    top: 5%; }
+    #TopBar #Meter .Level {
+      height: 100%;
+      position: absolute;
+      width: 47%;
+      background-color: #59d72e;
+      bottom: 0px; }
+    #TopBar #Meter #Left {
+      left: 0px; }
+    #TopBar #Meter #Right {
+      right: 0px; }
+
+#Content {
+  font-family: monospace;
+  position: relative;
+  margin: auto;
+  height: auto;
+  margin-top: 20px;
+  width: 75%;
+  min-width: 320px;
+  max-width: 640px;
+  height: auto;
+  /**
+   * THE RACK
+   */
+  /**
+   * CODE BLOCK
+   */
+  /**
+   * ENVELOPE
+   */
+  /**
+   * LOADING BAR
+   */ }
+  #Content .Rack {
+    width: 100%;
+    margin-bottom: 10px;
+    background-color: #EAEAEA;
+    border: 10px solid #EAEAEA;
+    position: relative; }
+    #Content .Rack .Title {
+      width: 100%;
+      height: 20px;
+      line-height: 20px;
+      margin: 0px 0 5px;
+      background-color: black;
+      font-size: 1.2em;
+      color: white;
+      cursor: pointer;
+      text-align: center; }
+  #Content .Rack.Collapsible .Title:after {
+    content: "\25B2";
+    position: absolute;
+    right: 5px; }
+  #Content .Rack.Collapsible.Expanded .Title:after {
+    transform: rotate(-180deg); }
+  #Content .Rack.Collapsible {
+    overflow: hidden;
+    height: 20px; }
+  #Content .Rack.Collapsible.Expanded {
+    height: auto; }
+  #Content .Code {
+    width: 100%;
+    font-family: monospace;
+    height: auto;
+    text-align: left;
+    display: inline-block;
+    font-size: 14px;
+    /*padding: $Margin;*/
+    /*line-height: ;*/
+    background-color: #EAEAEA; }
+  #Content .Envelope {
+    display: inline-block; }
+    #Content .Envelope canvas {
+      width: 25%;
+      height: calc(100% - 8px - 10px);
+      position: relative; }
+    #Content .Envelope #Labels {
+      width: 100%;
+      height: 8px; }
+      #Content .Envelope #Labels .Label {
+        text-transform: uppercase;
+        width: 25%;
+        text-align: center;
+        font-size: 8px;
+        display: inline-block; }
+  #Content .LoadingBar {
+    width: 100%;
+    height: 20px;
+    margin: 10px;
+    text-align: center;
+    border: 1px solid black;
+    transition: all 0.4s; }
+    #Content .LoadingBar #Loader {
+      height: 100%;
+      width: 0%;
+      background-color: #EAEAEA;
+      transition: width 0.2s; }
+
+/*# sourceMappingURL=examples.css.map */

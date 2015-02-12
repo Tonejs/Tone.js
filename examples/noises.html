@@ -6,77 +6,62 @@
 
 	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
 
-	<script type="text/javascript" src="./deps/jquery.min.js"></script>
-	<script type="text/javascript" src="./deps/jquery-ui.js"></script>
-	<script type="text/javascript" src="./deps/jquery.ui.touch-punch.js"></script>
 	<script type="text/javascript" src="../build/Tone.js"></script>
-	<script type="text/javascript" src="./Widgets.js"></script>
-	<script type="text/javascript" src="./ExampleList.js"></script>
-	<link rel="stylesheet" type="text/css" href="./style/widgets.css">
-	<link rel="stylesheet" type="text/css" href="./style/jquery-ui.css">
+	<script type="text/javascript" src="../build/Tone.Preset.js"></script>
+	<script type="text/javascript" src="./deps/jquery.min.js"></script>
+	<script type="text/javascript" src="./deps/nexusUI.js"></script>
+	<script type="text/javascript" src="./deps/prism.js"></script>
+	<script type="text/javascript" src="./scripts/Interface.js"></script>
+
+	<link rel="stylesheet" type="text/css" href="./style/examples.css">
+	<link rel="stylesheet" type="text/css" href="./style/prism.css">
+
+	<script type="text/javascript">
+		// jshint ignore: start
+	</script>
 
 </head>
 <body>
-
-	<div id="Container">
-		<div id="Explanation">
-			Noise
-			<br>
-			<br>
-			Tone has 3 different types of noise. Here's a little noise song. 
-		</div>
-		<div id="Content">
-			<div id="Button"></div>
-			<div id='Noise'></div>
-		</div>
-	<script type="text/javascript">
-
-		/* globals Tone, GUI */
-
-		var noise = new Tone.Noise();
-		noise.setVolume(-20);
-		noise.toMaster();
-
-		var noiseTypes = ["white", "brown", "pink"];
-
-		Tone.Transport.setInterval(function(time){
-			//set a random noise type
-			var randomIndex = Math.floor(Math.random()* noiseTypes.length);
-			var randomNoise = noiseTypes[randomIndex];
-			noise.setType(randomNoise, time);
-			$("#Noise").text(randomNoise);
-		}, "8n");
-
-		//stop it after 4 measures
-		Tone.Transport.setTimeout(function(time){
-			noise.stop(time);
-			Tone.Transport.stop();
-			$("#Noise").text("done");
-			setTimeout(function(){
-				$("#Noise").text("");
-			}, 500);
-		}, "4m");
-
-		// GUI //
-
-		new GUI.TopBar(Tone);
-
-		new GUI.Momentary($("#Button"), function(){
-			Tone.Transport.start();
-			noise.start();
-			$("#Button").remove();
-		}, "start", "");
-
+	<style type="text/css">
+		[nx="toggle"]{
+			width: 100%;
+			height: 40px;
+		}
+		[nx="select"]{
+			width: 100%;
+			height: 30px;
+		}
+	</style>
+	<div id="Explanation">
+		Noise
+		<br>
+		<br>
+		Tone has 3 different types of noise. Careful, it's loud!
+	</div>
+	<div id="Content">
+		<div id="Rack"></div>
+		<div id="CodeRack"></div>
+	</div>
+	<script id="ToneCode" type="text/javascript">
+		//make the noise and connect it to the output
+		var noise = new Tone.Noise().toMaster();
+		//so it's not too loud
+		noise.volume.value = -20;
 	</script>
 
-	<style type="text/css">
-	#Content {
-		text-align: center;
-		width: 120px;
-	}
-	#Content .Momentary{
-		width: 100%;
-	}
-	</style>
+	<script id="GUI" type="text/javascript">
+		Interface.Rack("Rack", "Noise");
+		Interface.Toggle("Rack", function(on){
+			if (on){
+				noise.start();
+			} else {
+				noise.stop();
+			}
+		});
+		Interface.DropDown("Rack", ["white", "brown", "pink"], function(which){
+			noise.type = which;
+		});
+		Interface.Code("CodeRack", "ToneCode");
+	</script>
 </body>
 </html>

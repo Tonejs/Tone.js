@@ -177,7 +177,7 @@
         key.el.style.borderRight = 0;
         key.el.style.height = settings.height + 'px';
         key.el.style.width = key.width + 'px';
-        key.el.style.borderRadius = '0 0 5px 5px';
+        key.el.style.borderRadius = '0 0 2px 2px';
     };
 
     /**
