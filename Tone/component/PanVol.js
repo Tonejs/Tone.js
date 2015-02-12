@@ -23,11 +23,11 @@ define(["Tone/core/Tone", "Tone/component/Panner", "Tone/core/Master"], function
 		this.output = this.context.createGain();
 
 		/**
-		 *  the volume node
-		 *  @type {GainNode}
-		 *  @private
+		 *  The volume control in decibels. 
+		 *  @type {Tone.Signal}
 		 */
-		this.volume = new Tone.Signal(this.defaultArg(volume, 0), Tone.Signal.Units.Decibels);
+		this.volume = new Tone.Signal(this.output.gain, Tone.Signal.Units.Decibels);
+		this.volume.value = this.defaultArg(volume, 0);
 
 		/**
 		 *  the panning control
