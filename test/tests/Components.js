@@ -77,15 +77,15 @@ function(coreTest, chai, CrossFade, Master, Signal, Recorder, Panner, LFO, Gate,
 		it("can mix two signals", function(done){
 			Test.offlineTest(0.1, function(dest){
 				crossFade = new CrossFade();
-				drySignal = new Signal(10);
-				wetSignal = new Signal(20);
+				drySignal = new Signal(0.5);
+				wetSignal = new Signal(0.5);
 				drySignal.connect(crossFade, 0, 0);
 				wetSignal.connect(crossFade, 0, 1);
 				recorder = new Recorder();
 				crossFade.fade.value = 0.5;
 				crossFade.connect(dest);
 			}, function(sample){
-				expect(sample).to.closeTo(17.06, 0.01);
+				expect(sample).to.closeTo(0.707, 0.01);
 			}, function(){
 				crossFade.dispose();
 				drySignal.dispose();
@@ -208,7 +208,7 @@ function(coreTest, chai, CrossFade, Master, Signal, Recorder, Panner, LFO, Gate,
 				"frequency" : "8n",
 			};
 			lfo.set(values);
-			expect(lfo.get()).to.have.keys(["type", "min", "max", "phase", "frequency"]);
+			expect(lfo.get()).to.contain.keys(Object.keys(values));
 			expect(lfo.type).to.equal(values.type);
 			expect(lfo.min).to.equal(values.min);
 			expect(lfo.max).to.equal(values.max);
