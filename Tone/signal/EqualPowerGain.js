@@ -19,9 +19,9 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 				//should output 0 when input is 0
 				return 0;
 			} else {
-				return Tone.prototype.equalPowerScale(val);
+				return this.equalPowerScale(val);
 			}
-		}, 4096);
+		}.bind(this), 4096);
 	};
 
 	Tone.extend(Tone.EqualPowerGain, Tone.SignalBase);
