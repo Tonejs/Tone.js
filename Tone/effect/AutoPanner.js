@@ -127,6 +127,7 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/LFO", "Tone/comp
 		this._panner.dispose();
 		this._panner = null;
 		this.frequency = null;
+		this.amount = null;
 		return this;
 	};
 

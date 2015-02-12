@@ -208,6 +208,7 @@ function(Tone){
 		this._a2g.dispose();
 		this._a2g = null;
 		this.frequency = null;
+		this.amplitude = null;
 		return this;
 	};
 
