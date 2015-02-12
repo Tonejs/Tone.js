@@ -66,13 +66,13 @@ function(Tone){
 		 *  @private
 		 *  @type {number}
 		 */
-		this._attack = this.secondsToFrequency(options.attack);
+		this._attack = options.attack;
 
 		/**
 		 *  @private
 		 *  @type {number}
 		 */
-		this._release = this.secondsToFrequency(options.release);
+		this._release = options.release;
 
 		//the smoothed signal to get the values
 		this.input.chain(this._abs, this._filter, this.output);
