@@ -29,3 +29,7 @@ wiki
 test/performance
 
 examples/crashes.html
+
+examples/style/examples.css.map
+
+examples/style/examples.scss
