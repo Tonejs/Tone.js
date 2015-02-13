@@ -155,6 +155,12 @@ Interface.ContinuousControl = function(container, type, node, parameter, min, ma
 			}
 		}
 		Interface._updateList.push(update);
+		return slider;
+	};
+	slider.name = function(label){
+		slider.label = label;
+		slider.draw();
+		return slider;
 	};
 	return slider;
 };

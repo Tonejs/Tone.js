@@ -26,7 +26,7 @@ body {
   width: calc(100% - 4 * 10px); }
 
 #Explanation a {
-  color: white;
+  color: black;
   font-family: monospace;
   font-size: 14px; }
 
