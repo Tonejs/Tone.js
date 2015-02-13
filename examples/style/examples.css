@@ -18,7 +18,7 @@ body {
 
 #Explanation {
   font-family: monospace;
-  background-color: #EAEAEA;
+  background-color: #D0D0D0;
   padding: 10px;
   color: black;
   font-size: 14px;
@@ -126,8 +126,8 @@ body {
   #Content .Rack {
     width: 100%;
     margin-bottom: 10px;
-    background-color: #EAEAEA;
-    border: 10px solid #EAEAEA;
+    background-color: #D0D0D0;
+    border: 10px solid #D0D0D0;
     position: relative; }
     #Content .Rack .Title {
       width: 100%;
@@ -159,7 +159,7 @@ body {
     font-size: 14px;
     /*padding: $Margin;*/
     /*line-height: ;*/
-    background-color: #EAEAEA; }
+    background-color: #F2F2F2; }
   #Content .Envelope {
     display: inline-block; }
     #Content .Envelope canvas {
@@ -188,7 +188,7 @@ body {
     #Content .LoadingBar #Loader {
       height: 100%;
       width: 0%;
-      background-color: #EAEAEA;
+      background-color: #D0D0D0;
       transition: width 0.2s; }
   #Content .Meter {
     width: 100%;
@@ -218,7 +218,7 @@ body {
     #Content .Meter #Units {
       right: 10px;
       text-align: right;
-      color: #EAEAEA; }
+      color: #D0D0D0; }
   #Content .DropDown {
     position: relative;
     width: 100%;
