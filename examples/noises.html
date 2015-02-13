@@ -48,9 +48,7 @@
 				noise.stop();
 			}
 		});
-		Interface.DropDown("Rack", ["white", "brown", "pink"], function(which){
-			noise.type = which;
-		});
+		Interface.DropDown("Rack", noise, "type", ["white", "brown", "pink"]);
 		Interface.Code("CodeRack", "ToneCode");
 	</script>
 </body>

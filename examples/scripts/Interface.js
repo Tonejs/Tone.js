@@ -4,6 +4,7 @@
 nx.showLabels = true;
 nx.colorize("accent", "#D76767");
 nx.colorize("fill", "#fff");
+// nx.colorize("border", "#000");
 
 var Interface = {};
 
@@ -49,6 +50,16 @@ $(window).resize(function(){
 	}
 });
 
+Interface._updateList = [];
+
+Interface.update = function(){
+	requestAnimationFrame(Interface.update);
+	for (var i = 0; i < Interface._updateList.length; i++){
+		Interface._updateList[i]();
+	}
+};
+Interface.update();
+
 Interface.Rack = function(id, name, collapsible){
 	var element = $("#"+id);
 	element.addClass("Rack");
@@ -79,15 +90,32 @@ Interface.Toggle = function(container, callback){
 	});
 };
 
-Interface.DropDown = function(container, options, callback){
-	var select = nx.add("select", {
-		parent : container
+Interface.DropDown = function(container, node, parameter, options, label){
+	var element = $("<div>").appendTo("#"+container)
+		.addClass("DropDown");
+	label = label || parameter;
+	$("<div>").appendTo(element)
+		.text(label)
+		.attr("id", "Label");
+	var selectList = $("<select>").appendTo(element);
+	for (var i = 0; i < options.length; i++){
+		$("<option>").text(options[i]).appendTo(selectList);
+	}
+	//set the initial value
+	selectList.val(node[parameter]);
+	selectList.on("change", function(){
+		node[parameter] = selectList.val();
 	});
-	select.choices = options;
-	select.init();
-	select.on("text", function(val){
-		callback(val);
-	});
+	return {
+		listen : function(){
+			function update(){
+				if (selectList.val() !== node[parameter]){
+					selectList.val(node[parameter]);
+				}
+			}
+			Interface._updateList.push(update);
+		}
+	};
 };
 
 Interface.ContinuousControl = function(container, type, node, parameter, min, max, exp){
@@ -114,17 +142,19 @@ Interface.ContinuousControl = function(container, type, node, parameter, min, ma
 	});
 	slider.draw();
 	slider.listen = function(){
-		requestAnimationFrame(slider.listen);
-		var val = node[parameter];
-		if (isTone){
-			val = node[parameter].value;
-		} 
-		val = nx.scale(val, min, max, 0, 1);
-		val = Math.pow(val, 1/exp);
-		if (val !== slider.val.value){
-			slider.val.value = val;
-			slider.draw();
+		function update(){
+			var val = node[parameter];
+			if (isTone){
+				val = node[parameter].value;
+			} 
+			val = nx.scale(val, min, max, 0, 1);
+			val = Math.pow(val, 1/exp);
+			if (val !== slider.val.value){
+				slider.val.value = val;
+				slider.draw();
+			}
 		}
+		Interface._updateList.push(update);
 	};
 	return slider;
 };
