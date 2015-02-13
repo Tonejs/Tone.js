@@ -31,22 +31,15 @@ function(Tone){
 		this._rightDelay = this.context.createDelay(options.maxDelayTime);
 
 		/**
-		 *  the predelay on the left side
-		 *  @private
-		 *  @type {DelayNode}
-		 */
-		this._leftPreDelay = this.context.createDelay(options.maxDelayTime);
-
-		/**
 		 *  the delay time signal
 		 *  @type {Tone.Signal}
 		 */
 		this.delayTime = new Tone.Signal(options.delayTime, Tone.Signal.Units.Time);
 
 		//connect it up
-		this.effectSendL.chain(this._leftPreDelay, this._leftDelay, this.effectReturnL);
+		this.effectSendL.chain(this._leftDelay, this.effectReturnL);
 		this.effectSendR.chain(this._rightDelay, this.effectReturnR);
-		this.delayTime.fan(this._leftDelay.delayTime, this._rightDelay.delayTime, this._leftPreDelay.delayTime);
+		this.delayTime.fan(this._leftDelay.delayTime, this._rightDelay.delayTime);
 		//rearranged the feedback to be after the leftPreDelay
 		this._feedbackRL.disconnect();
 		this._feedbackRL.connect(this._leftDelay);
@@ -70,12 +63,10 @@ function(Tone){
 	Tone.PingPongDelay.prototype.dispose = function(){
 		Tone.StereoXFeedbackEffect.prototype.dispose.call(this);
 		this._leftDelay.disconnect();
-		this._rightDelay.disconnect();
-		this._leftPreDelay.disconnect();
-		this.delayTime.dispose();
 		this._leftDelay = null;
+		this._rightDelay.disconnect();
 		this._rightDelay = null;
-		this._leftPreDelay = null;
+		this.delayTime.dispose();
 		this.delayTime = null;
 		return this;
 	};
