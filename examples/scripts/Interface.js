@@ -170,7 +170,6 @@ Interface.Momentary = function(container, callback){
 	button.on("press", function(val){
 		callback(val === 1);
 	});
-
 };
 
 Interface.AmplitudeEnvelope = function(container, node){
@@ -228,4 +227,26 @@ Interface.Range = function(containerID, callback){
 	range.label = "";
 	range.on("*", callback);
 	return range;
+};
+
+Interface.Meter = function(container, node, label, units){
+	var meter = new Tone.Meter();
+	node.connect(meter);
+	var element = $("<div>").appendTo("#"+container)
+		.addClass("Meter");
+	label = label || "";
+	units = units || "";
+	$("<div>").appendTo(element)
+		.text(label)
+		.attr("id", "Label");
+	var value = $("<div>").appendTo(element)
+		.attr("id", "Value");
+	$("<div>").appendTo(element)
+		.text(units)
+		.attr("id", "Units");
+	function update(){
+		requestAnimationFrame(update);
+		value.text(meter.getValue().toFixed(3));
+	}
+	update();
 };

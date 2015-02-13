@@ -6,107 +6,76 @@
 
 	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
 
-	<script type="text/javascript" src="./deps/jquery.min.js"></script>
-	<script type="text/javascript" src="./deps/jquery-ui.js"></script>
-	<script type="text/javascript" src="./deps/jquery.ui.touch-punch.js"></script>
+		<script type="text/javascript" src="./deps/jquery.min.js"></script>
 	<script type="text/javascript" src="../build/Tone.js"></script>
-	<script type="text/javascript" src="./Widgets.js"></script>
-	<script type="text/javascript" src="./scripts/ExampleList.js"></script>
-	<link rel="stylesheet" type="text/css" href="./style/widgets.css">
-	<link rel="stylesheet" type="text/css" href="./style/jquery-ui.css">
+	<script type="text/javascript" src="./deps/nexusUI.js"></script>
+	<script type="text/javascript" src="./deps/prism.js"></script>
+	<script type="text/javascript" src="./scripts/Interface.js"></script>
+
+	<link rel="stylesheet" type="text/css" href="./style/examples.css">
+	<link rel="stylesheet" type="text/css" href="./style/prism.css">
+
+	<script type="text/javascript">
+		// jshint ignore: start
+	</script>
 
 </head>
 <body>
-	<div id="Container">
-		<div id="Explanation">
-			Audio-Rate Math
-			<br>
-			<br>
-			One of the most powerful features of Tone.js is the ability to 
-			perform math and logic on audio-rate signal. Signals
-			can be ramped and scheduled to control Audio Parameters and 
-			other Signals making it simple to create elaborate, 
-			interconnected automations. Additionally, Signals and Signal maths use no 
-			ScriptProcessorNodes which make them very efficient.
-		</div>
-		<div id="Content">
-			<div id='Slider'></div>
-		</div>
+	<div id="Explanation">
+		Audio-Rate Math
+		<br>
+		<br>
+		One of the most powerful features of Tone.js is the ability to 
+		perform math and logic on audio-rate signal. Signals
+		can be ramped and scheduled to control Audio Parameters and 
+		other Signals making it simple to create elaborate, 
+		interconnected automations. Additionally, Signals and Signal maths use no 
+		ScriptProcessorNodes which make them very efficient.
 	</div>
-	<script type="text/javascript">
-		/* globals Tone, GUI */
-
+	<div id="Content">
+		<div id='Rack'></div>
+		<div id='CodeRack'></div>
+	</div>
+	<script id="ToneCode" type="text/javascript">
 		//the driving signal
 		var signal = new Tone.Signal(0);
-		var dryMeter = new Tone.Meter();
-		signal.connect(dryMeter);
 
 		//take the absolute value of the signal
 		var abs = new Tone.Abs();
-		var absMeter = new Tone.Meter();
-		abs.connect(absMeter);
 
 		//add a constant value to the dry signal
 		var adder = new Tone.Add(100);
-		var addMeter = new Tone.Meter();
-		adder.connect(addMeter);
 
 		//normalize the added value between 0 to 1
 		var norm = new Tone.Normalize(100, 101);
-		var normMeter = new Tone.Meter();
-		norm.connect(normMeter);
-
-		//normalize the added value between 0 to 1
+		
+		//scale the normalized value between 5 and 10
 		var scaler = new Tone.Scale(5, 10);
-		var scaleMeter = new Tone.Meter();
-		scaler.connect(scaleMeter);
-
+		
 		//multiply the output by 10
 		var mult = new Tone.Multiply(10);
-		var multMeter = new Tone.Meter();
-		mult.connect(multMeter);
-
+		
 		//clip the results between 70 and 80
 		var clip = new Tone.Clip(70, 80);
-		var clipMeter = new Tone.Meter();
-		clip.connect(clipMeter);
-
+		
 		//chain the components together
-		signal.chain(abs, adder, norm, scaler, mult);
+		signal.chain(abs, adder, norm, scaler, mult, clip);
+	</script>
+	<script id="ToneCode" type="text/javascript">
+		Interface.Rack("Rack", "Signals");
+		var signalSlider = Interface.Slider("Rack", signal, "value", -1, 1);
+		signalSlider.label = ""
+		signalSlider.draw();
+		Interface.Meter("Rack", signal, "Tone.Signal");
+		Interface.Meter("Rack", abs, "Tone.Abs()");
+		Interface.Meter("Rack", adder, "Tone.Add(100)");
+		Interface.Meter("Rack", norm, "Tone.Normalize(100, 101)");
+		Interface.Meter("Rack", scaler, "Tone.Scale(5, 10)");
+		Interface.Meter("Rack", mult, "Tone.Multiply(10)");
+		Interface.Meter("Rack", clip, "Tone.Clip(70, 80)");
 
-		// GUI //
-
-		new GUI.TopBar(Tone);
-
-		var container = $("#Content");
-
-		$("#Slider").slider({
-			"orientation" : "horizontal",
-			"min" : -100,
-			"max" : 100,
-			"slide" : function(e, ui){
-				signal.linearRampToValueAtTime(ui.value / 100, "+0.1");
-			}
-		});
-
-		new GUI.ValueMeter(container, dryMeter, "Tone.Signal");
-		new GUI.ValueMeter(container, absMeter, "Tone.Abs()");
-		new GUI.ValueMeter(container, addMeter, "Tone.Add(100)");
-		new GUI.ValueMeter(container, normMeter, "Tone.Normalize(100, 101)");
-		new GUI.ValueMeter(container, scaleMeter, "Tone.Scale(5, 10)");
-		new GUI.ValueMeter(container, multMeter, "Tone.Multiply(10)");
+		Interface.Code("CodeRack", "ToneCode");
 
 	</script>
-	<style type="text/css">
-		#Content {
-			text-align: center;
-			width: 280px;
-			height: 250px;
-		}
-		.ValueMeter {
-			margin-top: 10px;
-			display: block;
-		}
-	</style>
 </body>
 </html>
