@@ -358,7 +358,7 @@ define(function(){
 	 */
 	Tone.prototype.fan = function(){
 		if (arguments.length > 0){
-			for (var i = 1; i < arguments.length; i++){
+			for (var i = 0; i < arguments.length; i++){
 				this.connect(arguments[i]);
 			}
 		}
