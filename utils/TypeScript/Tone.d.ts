@@ -276,7 +276,7 @@ declare module Tone {
     }
 
     var Convolver: {
-        new(url: any, callback: Function): Tone.Convolver; //TODO: Change any to 'string | Object' when available
+        new(url: any, callback?: Function): Tone.Convolver; //TODO: Change any to 'string | Object' when available
     };
 
     interface Convolver extends Tone.Effect {
