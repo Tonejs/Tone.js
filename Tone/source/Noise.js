@@ -3,8 +3,8 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 	"use strict";
 
 	/**
-	 *  @class  Noise generator. 
-	 *          Uses looped noise buffers to save on performance. 
+	 *  @class  Noise generator.
+	 *          Uses looped noise buffers to save on performance.
 	 *
 	 *  @constructor
 	 *  @extends {Tone.Source}
@@ -20,7 +20,7 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 		 *  @type {AudioBufferSourceNode}
 		 */
 		this._source = null;
-		
+
 		/**
 		 *  the buffer
 		 *  @private
@@ -30,10 +30,17 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 
 		/**
 		 *  set a callback function to invoke when the sample is over
-		 *  
+		 *
 		 *  @type {function}
 		 */
 		this.onended = options.onended;
+
+		/**
+		 *  the playback rate for pitching the noise
+		 *  @private
+		 *  @type {number}
+		 */
+		this._playbackRate = 1;
 
 		this.setType(options.type);
 	};
@@ -54,22 +61,22 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 
 	/**
 	 *  set the noise type
-	 *  
+	 *
 	 *  @param {string} type the noise type (white|pink|brown)
 	 *  @param {Tone.Time} time (optional) time that the set will occur
 	 */
 	Tone.Noise.prototype.setType = function(type, time){
 		switch (type){
-			case "white" : 
+			case "white" :
 				this._buffer = _whiteNoise;
 				break;
-			case "pink" : 
+			case "pink" :
 				this._buffer = _pinkNoise;
 				break;
-			case "brown" : 
+			case "brown" :
 				this._buffer = _brownNoise;
 				break;
-			default : 
+			default :
 				this._buffer = _whiteNoise;
 		}
 		//if it's playing, stop and restart it
@@ -97,10 +104,32 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 	};
 
 	/**
+	 *  set the rate at which the noise buffer plays
+	 *
+	 *  @param {number} rate
+	 *  @param {Tone.Time=} rampTime the amount of time it takes to
+	 *                               reach the rate
+	 */
+	Tone.Noise.prototype.setPlaybackRate = function(rate, rampTime){
+		this._playbackRate = rate;
+		if (this._source) {
+			this._source.playbackRate.exponentialRampToValueAtTime(rate, this.toSeconds(rampTime));
+		}
+	};
+
+	/**
+	 * @return {number} the current playback rate
+	 */
+	Tone.Noise.prototype.getPlaybackRate = function(){
+		return this._playbackRate;
+	};
+
+	/**
 	 *  set the parameters at once
 	 *  @param {Object} params
 	 */
 	Tone.Noise.prototype.set = function(params){
+		if (!this.isUndef(params.playbackRate)) this.setPlaybackRate(params.playbackRate);
 		if (!this.isUndef(params.type)) this.setType(params.type);
 		if (!this.isUndef(params.onended)) this.onended = params.onended;
 		Tone.Source.prototype.set.call(this, params);
@@ -108,14 +137,15 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 
 	/**
 	 *  internal start method
-	 *  
+	 *
 	 *  @param {Tone.Time} time
 	 *  @private
 	 */
-	Tone.Noise.prototype._start = function(time){		
+	Tone.Noise.prototype._start = function(time){
 		this._source = this.context.createBufferSource();
 		this._source.buffer = this._buffer;
 		this._source.loop = true;
+		this._source.playbackRate.value = this._playbackRate;
 		this.connectSeries(this._source, this.output);
 		this._source.start(this.toSeconds(time));
 		this._source.onended = this.onended;
@@ -123,7 +153,7 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 
 	/**
 	 *  start the noise at a specific time
-	 *  
+	 *
 	 *  @param {Tone.Time} time
 	 */
 	Tone.Noise.prototype.start = function(time){
@@ -136,7 +166,7 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 
 	/**
 	 *  internal stop method
-	 *  
+	 *
 	 *  @param {Tone.Time} time
 	 *  @private
 	 */
@@ -147,7 +177,7 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 
 	/**
 	 *  stop the noise at a specific time
-	 *  
+	 *
 	 *  @param {Tone.Time} timetest
 	 */
 	Tone.Noise.prototype.stop = function(time){
@@ -174,12 +204,12 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 
 	///////////////////////////////////////////////////////////////////////////
 	// THE BUFFERS
-	// borred heavily from http://noisehack.com/generate-noise-web-audio-api/
+	// borrowed heavily from http://noisehack.com/generate-noise-web-audio-api/
 	///////////////////////////////////////////////////////////////////////////
 
 	/**
 	 *	static noise buffers
-	 *  
+	 *
 	 *  @static
 	 *  @private
 	 *  @type {AudioBuffer}
@@ -189,7 +219,7 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 	Tone._initAudioContext(function(audioContext){
 
 		var sampleRate = audioContext.sampleRate;
-		
+
 		//four seconds per buffer
 		var bufferLength = sampleRate * 4;
 
