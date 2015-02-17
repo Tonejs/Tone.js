@@ -131,14 +131,17 @@ define(function(){
 	Tone.prototype.set = function(params){
 		for (var attr in params){
 			var param = this[attr];
+			if (isUndef(param)){
+				continue;
+			}
 			var value = params[attr];
-			if (param instanceof Tone.Signal){
-				param.value = value;
-			} else if (param instanceof AudioParam){
-				param.value = value;
+			if (param instanceof Tone.Signal || param instanceof AudioParam){
+				if (param.value !== value){
+					param.value = value;
+				}
 			} else if (param instanceof Tone){
 				param.set(value);
-			} else {
+			} else if (param !== value){
 				this[attr] = value;
 			}
 		}
