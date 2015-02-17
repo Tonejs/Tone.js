@@ -96,6 +96,10 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 			return this._type;
 		},
 		set : function(type){
+			var types = ["lowpass", "highpass", "bandpass", "lowshelf", "highshelf", "notch", "allpass", "peaking"];
+			if (types.indexOf(type)=== -1){
+				throw new TypeError("Tone.Filter does not have filter type "+type);
+			}
 			this._type = type;
 			for (var i = 0; i < this._filters.length; i++){
 				this._filters[i].type = type;
