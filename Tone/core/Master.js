@@ -1,16 +1,33 @@
-define(["Tone/core/Tone"], function(Tone){
+define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 
 	"use strict";
 	
 	/**
-	 *  @class  A single master output. 
-	 *          adds toMaster to Tone
+	 *  @class  A single master output which is connected to the
+	 *          AudioDestinationNode. It provides useful conveniences
+	 *          such as the ability to set the global volume and mute
+	 *          the entire application. Additionally, it accepts
+	 *          a master send/receive for adding final compression, 
+	 *          limiting or effects to your application. 
 	 *
 	 *  @constructor
 	 *  @extends {Tone}
 	 */
 	Tone.Master = function(){
 		Tone.call(this);
+
+		/**
+		 * the unmuted volume
+		 * @type {number}
+		 * @private
+		 */
+		this._unmutedVolume = 1;
+
+		/**
+		 * the volume of the output in decibels
+		 * @type {Tone.Signal}
+		 */
+		this.volume = new Tone.Signal(this.output.gain, Tone.Signal.Units.Decibels);
 		
 		//connections
 		this.input.chain(this.output, this.context.destination);
@@ -19,45 +36,24 @@ define(["Tone/core/Tone"], function(Tone){
 	Tone.extend(Tone.Master);
 
 	/**
-	 *  mute the output
-	 *  @param {boolean} muted
+	 *  Mutethe output
 	 *  @returns {Tone.Master} `this`
 	 */
-	Tone.Master.prototype.mute = function(muted){
-		muted = this.defaultArg(muted, true);
-		if (muted){
-			this.output.gain.value = 0;
-		} else {
-			this.output.gain.value = 1;
-		}
+	Tone.Master.prototype.mute = function(){
+		this._unmutedVolume = this.volume.value;
+		//maybe it should ramp here?
+		this.volume.value = -Infinity;
 		return this;
 	};
 
 	/**
-	 *  @param {number} db the volume of the output in decibels
-	 *  @param {Tone.Time=} fadeTime time it takes to reach the value
-	 *  @returns {Tone} `this`
+	 *  Unmute the output. Will return the volume to it's value before 
+	 *  the output was muted. 
+	 *  @returns {Tone.Master} `this`
 	 */
-	Tone.Master.prototype.setVolume = function(db, fadeTime){
-		var now = this.now();
-		var gain = this.dbToGain(db);
-		if (fadeTime){
-			var currentVolume = this.output.gain.value;
-			this.output.gain.cancelScheduledValues(now);
-			this.output.gain.setValueAtTime(currentVolume, now);
-			this.output.gain.linearRampToValueAtTime(gain, now + this.toSeconds(fadeTime));
-		} else {
-			this.output.gain.setValueAtTime(gain, now);
-		}
+	Tone.Master.prototype.mute = function(){
+		this.volume.value = this._unmutedVolume;
 		return this;
-	};
-
-	/**
-	 * get the volume in decibels
-	 * @return {Tone.Volume}
-	 */
-	Tone.Master.prototype.getVolume = function(){
-		return this.gainToDb(this.output.gain.value);
 	};
 
 	/**
