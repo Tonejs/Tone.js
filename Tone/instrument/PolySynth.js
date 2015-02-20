@@ -19,13 +19,12 @@ function(Tone){
 	 *  @param {number|Object} [polyphony=4] the number of voices to create
 	 *  @param {function} [voice=Tone.MonoSynth] the constructor of the voices
 	 *                                            uses Tone.MonoSynth by default
-	 *  @param {Object} voiceOptions the options to pass to the voice                                          
 	 */
 	Tone.PolySynth = function(){
 
 		Tone.Instrument.call(this);
 
-		var options = this.optionsObject(arguments, ["polyphony", "voice", "voiceOptions"], Tone.PolySynth.defaults);
+		var options = this.optionsObject(arguments, ["polyphony", "voice"], Tone.PolySynth.defaults);
 
 		/**
 		 *  the array of voices
@@ -49,13 +48,14 @@ function(Tone){
 
 		//create the voices
 		for (var i = 0; i < options.polyphony; i++){
-			var v = new options.voice(options.voiceOptions);
+			var v = new options.voice(arguments[2], arguments[3]);
 			this.voices[i] = v;
 			v.connect(this.output);
 		}
 
 		//make a copy of the voices
 		this._freeVoices = this.voices.slice(0);
+		//get the prototypes and properties
 	};
 
 	Tone.extend(Tone.PolySynth, Tone.Instrument);
@@ -68,11 +68,12 @@ function(Tone){
 	 */
 	Tone.PolySynth.defaults = {
 		"polyphony" : 4,
-		"voice" : Tone.MonoSynth,
-		"voiceOptions" : {
-			"portamento" : 0
-		}
+		"voice" : Tone.MonoSynth
 	};
+
+	/**
+	 * Pull properties from the 
+	 */
 
 	/**
 	 *  trigger the attack
@@ -154,6 +155,15 @@ function(Tone){
 			this.voices[i].set(params);
 		}
 		return this;
+	};
+
+	/**
+	 *  get a group of parameters
+	 *  @param {Array=} params the parameters to get, otherwise will return 
+	 *  					   all available.
+	 */
+	Tone.PolySynth.prototype.get = function(params){
+		return this.voices[0].get(params);
 	};
 
 	/**
