@@ -35,7 +35,7 @@ function(Tone){
 		 *  @type {Tone.Player}
 		 */
 		this.player = new Tone.Player(options.player);
-		this.player.retrigger = true;
+		this.player.retrigger = false;
 
 		/**
 		 *  the buffers
@@ -121,7 +121,9 @@ function(Tone){
 	 */
 	Tone.Sampler.prototype._loadBuffers = function(urls){
 		if (typeof urls === "string"){
-			this._buffers["0"] = new Tone.Buffer(urls, this.setSample.bind(this, "0"));
+			this._buffers["0"] = new Tone.Buffer(urls, function(){
+				this.sample = "0";
+			}.bind(this));
 		} else {
 			urls = this._flattenUrls(urls);
 			for (var buffName in urls){
@@ -167,7 +169,7 @@ function(Tone){
 	Tone.Sampler.prototype.triggerAttack = function(name, time, velocity){
 		time = this.toSeconds(time);
 		if (name){
-			this.setSample(name);
+			this.sample = name;
 		}
 		this.player.start(time, 0);
 		this.envelope.triggerAttack(time, velocity);
