@@ -60,8 +60,16 @@ Interface.update = function(){
 };
 Interface.update();
 
+Interface.getElement = function(el){
+	if (typeof el === "string"){
+		return $("#"+el);
+	} else {
+		return $(el);
+	}
+};
+
 Interface.Rack = function(id, name, collapsible){
-	var element = $("#"+id);
+	var element = Interface.getElement(id);
 	element.addClass("Rack");
 	var title = $("<div>").addClass("Title").text(name);
 	element.prepend(title);
@@ -81,6 +89,13 @@ Interface.Rack = function(id, name, collapsible){
 	};
 };
 
+Interface.Group = function(containerID, name){
+	var container = Interface.getElement(containerID);
+	var element = container.addClass("Group");
+	$("<div>").text(name).appendTo(element).attr("id", "Label");
+	return element;
+};
+
 Interface.Toggle = function(container, callback){
 	var toggle = nx.add("toggle", {
 		parent : container
@@ -91,7 +106,7 @@ Interface.Toggle = function(container, callback){
 };
 
 Interface.DropDown = function(container, node, parameter, options, label){
-	var element = $("<div>").appendTo("#"+container)
+	var element = $("<div>").appendTo(Interface.getElement(container))
 		.addClass("DropDown");
 	label = label || parameter;
 	$("<div>").appendTo(element)
@@ -119,6 +134,7 @@ Interface.DropDown = function(container, node, parameter, options, label){
 };
 
 Interface.ContinuousControl = function(container, type, node, parameter, min, max, exp){
+	container = Interface.getElement(container);
 	min = min || 0;
 	max = max || 1;
 	exp = exp || 1;
@@ -177,10 +193,10 @@ Interface.HorizontalSlider = function(container, node, parameter, min, max, exp)
 
 Interface.Code = function(container, codeID){
 	Interface.Rack(container, "Code", true);
-	var element = $("#"+container);
+	var element = Interface.getElement(container);
 	var codeContainer = $("<code>").addClass("language-javascript Code");
 	element.append(codeContainer);
-	var code = $("#"+codeID);
+	var code = Interface.getElement(codeID);
 	var codeText = code.text();
 	var lines = codeText.split("\n");
 	//remove the same level of indentation for everyone
@@ -209,19 +225,19 @@ Interface.Momentary = function(container, callback){
 };
 
 Interface.AmplitudeEnvelope = function(container, node){
-	var element = $("#"+container);
+	var element = Interface.getElement(container, "Amplitude");
 	var group = $("<div>").addClass("Envelope")
 		.appendTo(element);
-	var attack = Interface.Knob(group[0], node, "attack", 0.001, 2, 2);
-	var decay = Interface.Knob(group[0], node, "decay", 0.0, 2, 2);
-	var sustain = Interface.Knob(group[0], node, "sustain", 0, 1, 2);
-	var release = Interface.Knob(group[0], node, "release", 0.001, 4, 2);
-	var labels = $("<div>").attr("id", "Labels")
-		.appendTo(group);
-	$("<div>").appendTo(labels).addClass("Label").text("attack");
-	$("<div>").appendTo(labels).addClass("Label").text("decay");
-	$("<div>").appendTo(labels).addClass("Label").text("sustain");
-	$("<div>").appendTo(labels).addClass("Label").text("release");
+	var attack = Interface.Slider(group, node, "attack", 0.001, 2, 2);
+	var decay = Interface.Slider(group, node, "decay", 0.0, 2, 2);
+	var sustain = Interface.Slider(group, node, "sustain", 0, 1, 2);
+	var release = Interface.Slider(group, node, "release", 0.001, 4, 2);
+	// var labels = $("<div>").attr("id", "Labels")
+	// 	.appendTo(group);
+	// $("<div>").appendTo(labels).addClass("Label").text("attack");
+	// $("<div>").appendTo(labels).addClass("Label").text("decay");
+	// $("<div>").appendTo(labels).addClass("Label").text("sustain");
+	// $("<div>").appendTo(labels).addClass("Label").text("release");
 	
 	return {
 		listen : function(){
@@ -233,8 +249,30 @@ Interface.AmplitudeEnvelope = function(container, node){
 	};
 };
 
+Interface.FilterEnvelope = function(container, node){
+	var element = $("<div>").addClass("FilterEnvelope")
+		.appendTo(Interface.getElement(container));
+	var ampEnv = Interface.AmplitudeEnvelope(element, node);
+	// var freqGroup = $("<div>").appendTo(element).addClass("FreqGroup");
+	// var minSlider = Interface.Slider(freqGroup, node, "min", 20, 20000, 2);
+	// var maxSlider = Interface.Slider(freqGroup, node, "max", 20, 20000, 2);
+	return {
+		listen : function(){
+			ampEnv.listen();
+			maxSlider.listen();
+			minSlider.listen();
+		}
+	};
+};
+
+Interface.Filter = function(containerID, node){
+	var element = $("<div>").addClass("Filter")
+		.appendTo(Interface.getElement(containerID));
+	
+};
+
 Interface.Loading = function(containerID, callback){
-	var element = $("#"+containerID);
+	var element = Interface.getElement(containerID);
 	element.addClass("LoadingBar");
 	var loader = $("<div>").appendTo(element)
 		.attr("id", "Loader");
@@ -268,7 +306,7 @@ Interface.Range = function(containerID, callback){
 Interface.Meter = function(container, node, label, units){
 	var meter = new Tone.Meter();
 	node.connect(meter);
-	var element = $("<div>").appendTo("#"+container)
+	var element = $("<div>").appendTo(Interface.getElement(container))
 		.addClass("Meter");
 	label = label || "";
 	units = units || "";

@@ -78,12 +78,6 @@
 				"max": 4000
 			}
 		};
-	</script>
-
-	<script id="ToneCode" type="text/javascript">
-		
-		//use the synth presets defined in the JSON 
-		var synth = new Tone.MonoSynth(synthOptions).toMaster();
 
 		//define a score to start with
 		var score = [["0", "C2"], ["1*8n", "C4"], ["2*8n", "E4"], ["3*8n", "B3"], 
@@ -93,7 +87,14 @@
 		Tone.Note.parseScore({
 			"synth" : score
 		});
-		//listen for callbacks on that channel and trigger the synth
+	</script>
+
+	<script id="ToneCode" type="text/javascript">
+		
+		//use the synth presets defined in the JSON 
+		var synth = new Tone.MonoSynth(synthOptions).toMaster();
+
+		//listen for callbacks on the "synth" channel and trigger the synth
 		Tone.Note.route("synth", function(time, note){
 			synth.triggerAttackRelease(note, "8n", time);
 		});

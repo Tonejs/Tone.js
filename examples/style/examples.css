@@ -68,10 +68,10 @@ body {
       margin-left: 0px; }
   #TopBar #Meter {
     width: 50px;
-    height: 90%;
+    height: calc(100% - 10px);
     position: absolute;
     right: 10px;
-    top: 5%; }
+    top: 5px; }
     #TopBar #Meter .Level {
       height: 100%;
       position: absolute;
@@ -90,7 +90,7 @@ body {
   height: auto;
   margin-top: 20px;
   width: 75%;
-  min-width: 320px;
+  min-width: 340px;
   max-width: 640px;
   height: auto;
   /**
@@ -98,6 +98,9 @@ body {
    */
   /**
    * THE RACK
+   */
+  /**
+   * GROUP
    */
   /**
    * CODE BLOCK
@@ -128,7 +131,10 @@ body {
     margin-bottom: 10px;
     background-color: #D0D0D0;
     border: 10px solid #D0D0D0;
-    position: relative; }
+    position: relative;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box; }
     #Content .Rack .Title {
       width: 100%;
       height: 20px;
@@ -147,9 +153,28 @@ body {
     transform: rotate(-180deg); }
   #Content .Rack.Collapsible {
     overflow: hidden;
-    height: 20px; }
+    height: 40px; }
   #Content .Rack.Collapsible.Expanded {
     height: auto; }
+  #Content .Group {
+    width: auto;
+    height: auto;
+    background-color: inherit;
+    border: 1px solid black;
+    border-radius: 3px;
+    position: relative;
+    display: inline-block; }
+    #Content .Group #Label {
+      height: 10px;
+      line-height: 10px;
+      background-color: inherit;
+      font-size: 10px;
+      color: black;
+      position: absolute;
+      left: 50%;
+      transform: translate(-50%, 0);
+      top: -5px;
+      text-align: center; }
   #Content .Code {
     width: 100%;
     font-family: monospace;
@@ -161,23 +186,41 @@ body {
     /*line-height: ;*/
     background-color: #F2F2F2; }
   #Content .Envelope {
-    display: inline-block; }
-    #Content .Envelope canvas {
-      width: 25%;
-      height: calc(100% - 8px - 10px);
-      position: relative; }
+    height: 120px;
+    width: 120px; }
+    #Content .Envelope [nx="slider"] {
+      width: calc(25% - 10px);
+      margin: 5px;
+      height: calc(100% - 10px); }
     #Content .Envelope #Labels {
       width: 100%;
-      height: 8px; }
+      height: 8px;
+      margin-top: -4px; }
       #Content .Envelope #Labels .Label {
         text-transform: uppercase;
         width: 25%;
         text-align: center;
         font-size: 8px;
         display: inline-block; }
-  #Content .HorizontalSlider {
+  #Content .FilterEnvelope {
+    position: relative;
+    height: 80px;
     width: 100%;
-    height: 20px; }
+    margin-bottom: 10px; }
+    #Content .FilterEnvelope .Envelope {
+      position: absolute;
+      width: 75%;
+      height: 80px;
+      left: 0px; }
+    #Content .FilterEnvelope .FreqGroup {
+      position: absolute;
+      width: 25%;
+      height: 80px;
+      right: 0px; }
+      #Content .FilterEnvelope .FreqGroup [nx="slider"] {
+        height: 100%;
+        margin-left: 10%;
+        width: 40%; }
   #Content .LoadingBar {
     width: 100%;
     height: 20px;

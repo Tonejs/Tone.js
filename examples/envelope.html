@@ -24,12 +24,11 @@
 <body>	
 	<style type="text/css">
 		[nx="button"] {
-			width: 20%;
-			height: 80px;
+			height: 120px;
+			width: 50%;
 		}
-		.Envelope {
-			width: 80%;
-			height: 80px;
+		#Envelope {
+			width: 50%!important;
 		}
 	</style>
 	<div id="Explanation">
@@ -40,7 +39,8 @@
 		Let go of the button to trigger the release. 
 	</div>
 	<div id="Content">
-		<div id="Rack"></div>
+		<div id="Rack">
+		</div>
 		<div id="CodeBlock"></div>
 	</div>
 
@@ -68,7 +68,9 @@
 				env.triggerRelease();
 			}
 		});
-		Interface.AmplitudeEnvelope("Rack", env);
+		var envGroup = Interface.Group($("<div>").appendTo("#Rack"), "Envelope");
+		Interface.AmplitudeEnvelope(envGroup, env);
+		Interface.Meter("Rack", env._sig);
 		Interface.Code("CodeBlock", "ToneCode");
 	</script>
 
