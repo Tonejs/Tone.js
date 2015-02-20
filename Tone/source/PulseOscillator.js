@@ -20,7 +20,13 @@ function(Tone){
 		 *  the width of the pulse
 		 *  @type {Tone.Signal}
 		 */
-		this.width = new Tone.Signal(options.width);
+		this.width = new Tone.Signal(options.width, Tone.Signal.Units.Normal);
+
+		/**
+		 *  gate the width amount
+		 *  @type {GainNode}
+		 */
+		this._widthGate = this.context.createGain();
 
 		/**
 		 *  the sawtooth oscillator
@@ -62,7 +68,7 @@ function(Tone){
 
 		//connections
 		this._sawtooth.chain(this._thresh, this.output);
-		this.width.connect(this._thresh);
+		this.width.chain(this._widthGate, this._thresh);
 		this._sawtooth.onended = this._onended.bind(this);
 	};
 
@@ -90,7 +96,7 @@ function(Tone){
 	Tone.PulseOscillator.prototype._start = function(time){
 		time = this.toSeconds(time);
 		this._sawtooth.start(time);
-		this.width.output.gain.setValueAtTime(1, time);
+		this._widthGate.gain.setValueAtTime(1, time);
 	};
 
 	/**
@@ -103,7 +109,7 @@ function(Tone){
 		this._sawtooth.stop(time);
 		//the width is still connected to the output. 
 		//that needs to be stopped also
-		this.width.output.gain.setValueAtTime(0, time);
+		this._widthGate.gain.setValueAtTime(0, time);
 	};
 
 	/**
@@ -143,6 +149,8 @@ function(Tone){
 		this._sawtooth = null;
 		this.width.dispose();
 		this.width = null;
+		this._widthGate.disconnect();
+		this._widthGate = null;
 		this._thresh.disconnect();
 		this._thresh = null;
 		this.frequency = null;
