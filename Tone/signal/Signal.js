@@ -18,49 +18,35 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 	Tone.Signal = function(value, units){
 
 		/**
-		 *  scales the constant output to the desired output
-		 *  @type {GainNode}
-		 *  @private
-		 */
-		this._scalar = this.context.createGain();
-
-		/**
-		 * The node where the value is set
-		 * @type {AudioParam}
-		 * @private
-		 */
-		this._value = this._scalar.gain;
-
-		/**
-		 *  the ratio of the this value to the control signal value
-		 *
-		 *  @private
-		 *  @type {number}
-		 */
-		this._syncRatio = 1;
-
-		/**
 		 * the units the signal is in
 		 * @type {Tone.Signal.Type}
 		 */
 		this.units = this.defaultArg(units, Tone.Signal.Units.Number);
 
-		var destination;
+		/**
+		 * The node where the constant signal value is scaled.
+		 * @type {AudioParam}
+		 * @private
+		 */
+		this.output = this._scaler = this.context.createGain();
+
+		/**
+		 * The node where the value is set.
+		 * @type {AudioParam}
+		 * @private
+		 */
+		this.input = this._value = this._scaler.gain;
+
 		if (value instanceof AudioParam){
-			destination = value;
-			destination.value = 0;
+			this._scaler.connect(value);
+			//zero out the value
+			value.value = 0;
 		} else {
-			destination = this.context.createGain();
 			this.value = this.defaultArg(value, 0);
 		}
 
-		/**
-		 *  @type {GainNode|AudioParam}
-		 */
-		this.input = this.output = destination;
-
 		//connect the constant 1 output to the node output
-		Tone.Signal._constant.chain(this._scalar, this.output);
+		Tone.Signal._constant.chain(this._scaler);
 	};
 
 	Tone.extend(Tone.Signal, Tone.SignalBase);
@@ -77,7 +63,8 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 		},
 		set : function(value){
 			var convertedVal = this._fromUnits(value);
-			convertedVal *= this._syncRatio;
+			//is this what you want?
+			this.cancelScheduledValues(0);
 			this._value.value = convertedVal;
 		}
 	});
@@ -128,7 +115,6 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 	 */
 	Tone.Signal.prototype.setValueAtTime = function(value, time){
 		value = this._fromUnits(value);
-		value *= this._syncRatio;
 		this._value.setValueAtTime(value, this.toSeconds(time));
 		return this;
 	};
@@ -157,7 +143,6 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 	 */
 	Tone.Signal.prototype.linearRampToValueAtTime = function(value, endTime){
 		value = this._fromUnits(value);
-		value *= this._syncRatio;
 		this._value.linearRampToValueAtTime(value, this.toSeconds(endTime));
 		return this;
 	};
@@ -172,7 +157,6 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 	 */
 	Tone.Signal.prototype.exponentialRampToValueAtTime = function(value, endTime){
 		value = this._fromUnits(value);
-		value *= this._syncRatio;
 		//can't go below a certain value
 		value = Math.max(0.00001, value);
 		this._value.exponentialRampToValueAtTime(value, this.toSeconds(endTime));
@@ -222,7 +206,6 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 	 */
 	Tone.Signal.prototype.setTargetAtTime = function(value, startTime, timeConstant){
 		value = this._fromUnits(value);
-		value *= this._syncRatio;
 		this._value.setTargetAtTime(value, this.toSeconds(startTime), timeConstant);
 		return this;
 	};
@@ -239,7 +222,6 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 	Tone.Signal.prototype.setValueCurveAtTime = function(values, startTime, duration){
 		for (var i = 0; i < values.length; i++){
 			values[i] = this._fromUnits(values[i]);
-			values[i] *= this._syncRatio;
 		}
 		this._value.setValueCurveAtTime(values, this.toSeconds(startTime), this.toSeconds(duration));
 		return this;
@@ -269,65 +251,11 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 	 */
 	Tone.Signal.prototype.rampTo = function(value, rampTime){
 		rampTime = this.defaultArg(rampTime, 0);
-		if (this.units === Tone.Signal.Units.Frequency){
+		if (this.units === Tone.Signal.Units.Frequency || this.units === Tone.Signal.Units.BPM){
 			this.exponentialRampToValueNow(value, rampTime);
 		} else {
 			this.linearRampToValueNow(value, rampTime);
 		}
-		return this;
-	};
-
-	/**
-	 *  Sync this to another signal and it will always maintain the 
-	 *  ratio between the two signals until it is unsynced
-	 *
-	 *  Signals can only be synced to one other signal. while syncing, 
-	 *  if a signal's value is changed, the new ratio between the signals
-	 *  is maintained as the syncing signal is changed. 
-	 *  
-	 *  @param  {Tone.Signal} signal to sync to
-	 *  @param {number=} ratio optionally pass in the ratio between 
-	 *                         the two signals, otherwise it will be computed
-	 *  @returns {Tone.Signal} `this`
-	 */
-	Tone.Signal.prototype.sync = function(signal, ratio){
-		if (ratio){
-			this._syncRatio = ratio;
-		} else {
-			//get the sync ratio
-			if (signal._value.value !== 0){
-				this._syncRatio = this._value.value / signal._value.value;
-			} else {
-				this._syncRatio = 0;
-			}
-		}
-		//make a new scalar which is not connected to the constant signal
-		this._scalar.disconnect();
-		this._scalar = this.context.createGain();
-		this._value = this._scalar.gain;
-		this.connectSeries(signal, this._scalar, this.output);
-		//set it ot the sync ratio
-		this._value.value = this._syncRatio;
-		return this;
-	};
-
-	/**
-	 *  unbind the signal control
-	 *
-	 *  will leave the signal value as it was without the influence of the control signal
-	 *  @returns {Tone.Signal} `this`
-	 */
-	Tone.Signal.prototype.unsync = function(){
-		//make a new scalar so that it's disconnected from the control signal
-		//get the current gain
-		var currentGain = this._value.value;
-		this._scalar.disconnect();
-		this._scalar = this.context.createGain();
-		this._value = this._scalar.gain;
-		this._value.value = currentGain / this._syncRatio;
-		this._syncRatio = 1;
-		//reconnect things up
-		Tone.Signal._constant.chain(this._scalar, this.output);
 		return this;
 	};
 
@@ -337,9 +265,8 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 	 */
 	Tone.Signal.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
-		this._scalar.disconnect();
-		this._scalar = null;
 		this._value = null;
+		this._scaler = null;
 		return this;
 	};
 
@@ -363,7 +290,9 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 		/** In decibels. */
 		Decibels : "db",
 		/** In half-step increments, i.e. 12 is an octave above the root. */
-		Interval : "interval"
+		Interval : "interval",
+		/** Beats per minute. */
+		BPM : "bpm"
 	};
 
 	///////////////////////////////////////////////////////////////////////////

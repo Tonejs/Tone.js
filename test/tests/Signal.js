@@ -46,23 +46,6 @@ function(core, chai, Signal, Oscillator, Switch, Route, Select, Test, NOT, AND, 
 			});
 		});
 
-		it("can sync to another signal", function(done){
-			var syncTo, signalSync;
-			Test.offlineTest(0.1, function(dest){
-				syncTo = new Signal(1);
-				signalSync = new Signal(2);
-				signalSync.sync(syncTo);
-				syncTo.value = 2;
-				signalSync.connect(dest);
-			}, function(sample){
-				expect(sample).to.equal(4);
-			}, function(){
-				syncTo.dispose();
-				signalSync.dispose();
-				done();
-			});
-		});	
-
 		it("can ramp from the current value", function(done){
 			var sig;
 			Test.offlineTest(0.1, function(dest){
