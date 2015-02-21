@@ -118,7 +118,7 @@ function(Tone){
 	 *  @returns {Tone.Oscillator} `this`
 	 */
 	Tone.Oscillator.prototype.unsyncFrequency = function(){
-		this.frequency.unsync();
+		Tone.Transport.unsyncSignal(this.frequency);
 		return this;
 	};
 
