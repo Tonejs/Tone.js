@@ -4,15 +4,28 @@
 * Envelope no longer accepts exponential scaling, only Tone.ScaledEnvelope
 * Buffer progress and load events which tracks the progress of all downloads
 * Buffer only accepts a single url
-* Sampler accepts multiple samples as an object and can set using setSample
+* Sampler accepts multiple samples as an object.
 * `setPitch` in sampler -> `setNote`
 * Deprecated MultiSampler - use Sampler with PolySynth instead
 * Added [cdn](cdn.tonejs.org/latest/Tone.min.js) - please don't use for production code
 * Renamed DryWet to CrossFade
 * Functions return `this` to allow for chaining. i.e. `player.toMaster().start(2)`.
-* Removed a lot of set/get method in favor of ES5 dot notation. i.e. `player.setVolume(-10)` is now `player.volume.value = -10`.
+* Added `units` to Signal class which allows signals to be set in terms of Tone.Time, Tone.Frequency, Numbers, or Decibels.
+* Replaced set/get method with ES5 dot notation. i.e. `player.setVolume(-10)` is now `player.volume.value = -10`.
 	To ramp the volume use either `player.volume.linearRampToValueNow(-10, "4n")`, or the new `rampTo` method which automaically selects the ramp (linear|exponential) based on the type of data. 
-* Added `units` to Signal class which allows signals to be set in terms of Tone.Time, Tone.Frequency, numbers, or decibels. 
+* set/get methods for all Effects and Instruments
+* syncSignal and unsyncSignal moved from Signal to Transport
+
+BREAKING API CHANGES:
+
+The API has been changed consistently to use `.attribute` for getting and setting instead of `getAttribute` and `setAttribute` methods. The reasoning for this is twofold: firstly, Tone.Signal attributes were previously limited in their scheduling capabilities when set through a setter function. For exactly, it was not possible to do a setValueAtTime on the `bpm` of the Transport. Secondly, the new EcmaScript 5 getter/setter approach resembles the Web Audio API much more closely, which will make intermixing the two APIs even easier. 
+
+If you're using Sublime Text, one way to transition from the old API to the new one is with a regex find/replace:
+	find `Tone.Transport.setBpm\((\d+)\)` and replace it with `Tone.Transport.bpm.value = $1`.
+
+Or if setBpm was being invoked with a rampTime:
+	find `Tone.Transport.setBpm\((\d+)\, (\d+)\)` and replace it with `Tone.Transport.bpm.rampTo($1, $2)`.
+
 
 ### r3 - Expressive Signal
 
