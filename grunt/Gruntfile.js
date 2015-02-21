@@ -144,11 +144,11 @@ module.exports = function(grunt) {
 					patterns: [
 					{
 						match: /define\('([^']*)'\w*,\w*\[([^\]]*)\]\w*,\w*/g,
-						replacement: "toneModule("
+						replacement: "ToneModule("
 					},
 					{
 						match: /define\('Tone\/core\/Tone',\[\],/gi,
-						replacement: "mainModule("
+						replacement: "MainModule("
 					},
 					{
 						match: /\n"use strict";\n/g,
@@ -166,7 +166,7 @@ module.exports = function(grunt) {
 					patterns: [
 					{
 						match: /define\(\w*\[([^\]]*)\]\w*,\w*/g,
-						replacement: "tonePreset("
+						replacement: "TonePreset("
 					}
 				]
 				},
