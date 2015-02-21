@@ -64,16 +64,9 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Master"], function(T
 	 */
 	Tone.Source.prototype.start = function(time){
 		if (this.state !== Tone.Source.State.STARTED || this.retrigger){
+			this.state = Tone.Source.State.STARTED;
 			var now = this.now();
 			time = this.toSeconds(time, now);
-			var diff = now - time;
-			if (diff !== 0){
-				this._timeout = setTimeout(function(){
-					this.state = Tone.Source.State.STARTED;
-				}.bind(this), diff * 1000);
-			} else {
-				this.state = Tone.Source.State.STARTED;
-			}
 			this._start.apply(this, arguments);
 		}
 		return this;
@@ -108,26 +101,32 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Master"], function(T
 	/**
  	 *  @abstract
 	 *  @param  {Tone.Time} time 
+	 *  @returns {Tone.Source} `this`
 	 */
 	Tone.Source.prototype.pause = function(time){
 		//if there is no pause, just stop it
 		this.stop(time);
+		return this;
 	};
 
 	/**
 	 *  sync the source to the Transport
 	 *
 	 *  @param {Tone.Time} [delay=0] delay time before starting the source
+	 *  @returns {Tone.Source} `this`
 	 */
 	Tone.Source.prototype.sync = function(delay){
 		Tone.Transport.syncSource(this, delay);
+		return this;
 	};
 
 	/**
 	 *  unsync the source to the Transport
+	 *  @returns {Tone.Source} `this`
 	 */
 	Tone.Source.prototype.unsync = function(){
 		Tone.Transport.unsyncSource(this);
+		return this;
 	};
 
 	/**
