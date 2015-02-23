@@ -126,21 +126,31 @@ define(function(){
 	/**
 	 *  Set the parameters at once. Either pass in an
 	 *  object mapping parameters to values, or to set a
-	 *  single parameter, by passing in a string and value
+	 *  single parameter, by passing in a string and value.
 	 *  ```javascript
-	 *  tone.set({
-	 *  	"parameter0" : value0
-	 *  	"parameter1" : value1
+	 *  filter.set({
+	 *  	"frequency" : 300,
+	 *  	"type" : highpass
 	 *  });
 	 *  //or
-	 *  tone.set("parameter", value);
+	 *  filter.set("type", "highpass");
+	 *  ```
+	 *  The setter also supports ramping a value
+	 *  ```javascript
+	 *  oscillator.set({
+	 *  	"frequency" : 220
+	 *  }, 3);
+	 *  //ramp to the value 220 over 3 seconds. 
 	 *  ```
 	 *  @param {Object|string} params
 	 *  @param {number=} value
+	 *  @param {Tone.Time=} rampTime
 	 *  @returns {Tone} `this`
 	 */
-	Tone.prototype.set = function(params, value){
-		if (!isUndef(value)){
+	Tone.prototype.set = function(params, value, rampTime){
+		if (typeof params === "object"){
+			rampTime = value;
+		} else if (typeof params === "string"){
 			var tmpObj = {};
 			tmpObj[params] = value;
 			params = tmpObj;
@@ -151,10 +161,18 @@ define(function(){
 				continue;
 			}
 			value = params[attr];
-			if (param instanceof Tone.Signal || param instanceof AudioParam){
+			if (param instanceof Tone.Signal){
+				if (param.value !== value){
+					if (isUndef(rampTime)){
+						param.value = value;
+					} else {
+						param.rampTo(value, rampTime);
+					}
+				}
+			} else if (param instanceof AudioParam){
 				if (param.value !== value){
 					param.value = value;
-				}
+				}				
 			} else if (param instanceof Tone){
 				param.set(value);
 			} else if (param !== value){
