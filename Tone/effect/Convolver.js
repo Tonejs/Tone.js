@@ -4,13 +4,10 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/effect/Effect"], function(To
 
 	/**
 	 *  @class  Convolver wrapper for reverb and emulation.
-	 *          NB: currently, this class only supports 1 buffer member.
-	 *          Future iterations will include a this.buffers collection for multi buffer mode.
 	 *  
 	 *  @constructor
 	 *  @extends {Tone.Effect}
-	 *  @param {string|Object|AudioBuffer=} url
-	 *  @param {function=} callback function
+	 *  @param {string|AudioBuffer=} url
 	 */
 	Tone.Convolver = function(url){
 
@@ -28,12 +25,30 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/effect/Effect"], function(To
 		 *  @type {Tone.Buffer}
 		 *  @private
 		 */
-		this._buffer = new Tone.Buffer(url, this.setBuffer.bind(this));
+		this._buffer = new Tone.Buffer(url, function(buffer){
+			this.buffer = buffer;
+		}.bind(this));
 
 		this.connectEffect(this._convolver);
 	};
 
 	Tone.extend(Tone.Convolver, Tone.Effect);
+
+	/**
+	 *  The convolver's buffer
+	 *  @memberOf Tone.Convolver#
+	 *  @type {AudioBuffer}
+	 *  @name buffer
+	 */
+	Object.defineProperty(Tone.Convolver.prototype, "buffer", {
+		get : function(){
+			return this._buffer.get();
+		},
+		set : function(buffer){
+			this._buffer.set(buffer);
+			this._convolver.buffer = buffer;
+		}
+	});
 
 	/**
 	 *  Load the impulse response url as an audio buffer.
@@ -42,28 +57,16 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/effect/Effect"], function(To
 	 *  @param {string} url the url of the buffer to load.
 	 *                      filetype support depends on the
 	 *                      browser.
-	 *  @param  {function(Tone.Convolver)=} callback
+	 *  @param  {function=} callback
 	 *  @returns {Tone.Convolver} `this`
 	 */
 	Tone.Convolver.prototype.load = function(url, callback){
-		var self = this;
 		this._buffer.load(url, function(buff){
-			self.setBuffer(buff);
+			this.buffer = buff;
 			if (callback){
-				callback(this);
+				callback();
 			}
-		});
-		return this;
-	};
-
-	/**
-	 *  set the buffer
-	 *  @param {AudioBuffer} buffer the impulse response
-	 *  @returns {Tone.Convolver} `this`
-	 */
-	Tone.Convolver.prototype.setBuffer = function(buffer){
-		this._buffer.set(buffer);
-		this._convolver.buffer = this._buffer.get();
+		}.bind(this));
 		return this;
 	};
 
