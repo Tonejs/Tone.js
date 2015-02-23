@@ -42,7 +42,7 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 			//zero out the value
 			value.value = 0;
 		} else {
-			this.value = this.defaultArg(value, 0);
+			this.value = this.defaultArg(value, Tone.Signal.defaults.value);
 		}
 
 		//connect the constant 1 output to the node output
@@ -50,6 +50,16 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 	};
 
 	Tone.extend(Tone.Signal, Tone.SignalBase);
+
+	/**
+	 *  The default values
+	 *  @type  {Object}
+	 *  @static
+	 *  @const
+	 */
+	Tone.Signal.defaults = {
+		"value" : 0
+	};
 
 	/**
 	 * The value of the signal. 
