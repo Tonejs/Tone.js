@@ -7,7 +7,7 @@ define(["Tone/core/Tone", "Tone/signal/LessThan", "Tone/signal/IfThenElse", "Ton
 	 * 	        in the constructor, it will use a signal and a number. 
 	 * 	
 	 *  @constructor
-	 *  @extends {Tone.SignalBase}
+	 *  @extends {Tone.Signal}
 	 *  @param {number} min the minimum to compare to the incoming signal
 	 */
 	Tone.Min = function(min){
@@ -32,32 +32,16 @@ define(["Tone/core/Tone", "Tone/signal/LessThan", "Tone/signal/IfThenElse", "Ton
 		 *  @type {Tone.Signal}
 		 *  @private
 		 */
-		this._minSignal = this.input[1] = new Tone.Signal(min);
+		this._value = this.input[1] = new Tone.Signal(min);
 
 		//connections
 		this.input[0].chain(this._lt, this._ifThenElse.if);
 		this.input[0].connect(this._ifThenElse.then);
-		this._minSignal.connect(this._ifThenElse.else);
-		this._minSignal.connect(this._lt, 0, 1);
+		this._value.connect(this._ifThenElse.else);
+		this._value.connect(this._lt, 0, 1);
 	};
 
-	Tone.extend(Tone.Min, Tone.SignalBase);
-
-	/**
-	 * Will output the minimum between the incoming signal
-	 * and `value`.
-	 * @memberOf Tone.Min#
-	 * @type {number}
-	 * @name value
-	 */
-	Object.defineProperty(Tone.Min.prototype, "value", {
-		get : function(){
-			return this._minSignal.value;
-		},
-		set : function(max){
-			this._minSignal.value = max;
-		}
-	});
+	Tone.extend(Tone.Min, Tone.Signal);
 
 	/**
 	 *  clean up
@@ -65,10 +49,10 @@ define(["Tone/core/Tone", "Tone/signal/LessThan", "Tone/signal/IfThenElse", "Ton
 	 */
 	Tone.Min.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
-		this._minSignal.dispose();
+		this._value.dispose();
 		this._ifThenElse.dispose();
 		this._lt.dispose();
-		this._minSignal = null;
+		this._value = null;
 		this._ifThenElse = null;
 		this._lt = null;
 		return this;

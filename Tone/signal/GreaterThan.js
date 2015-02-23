@@ -1,4 +1,5 @@
-define(["Tone/core/Tone", "Tone/signal/GreaterThanZero", "Tone/signal/Subtract"], function(Tone){
+define(["Tone/core/Tone", "Tone/signal/GreaterThanZero", "Tone/signal/Subtract", "Tone/signal/Signal"], 
+	function(Tone){
 
 	"use strict";
 
@@ -7,7 +8,7 @@ define(["Tone/core/Tone", "Tone/signal/GreaterThanZero", "Tone/signal/Subtract"]
 	 *          can compare two signals or a signal and a number. 
 	 *  
 	 *  @constructor
-	 *  @extends {Tone.SignalBase}
+	 *  @extends {Tone.Signal}
 	 *  @param {number} [value=0] the value to compare to the incoming signal
 	 */
 	Tone.GreaterThan = function(value){
@@ -19,8 +20,8 @@ define(["Tone/core/Tone", "Tone/signal/GreaterThanZero", "Tone/signal/Subtract"]
 		 *  @type {Tone.Subtract}
 		 *  @private
 		 */
-		this._sub = this.input[0] = new Tone.Subtract(value);
-		this.input[1] = this._sub.input[1];
+		this._value = this.input[0] = new Tone.Subtract(value);
+		this.input[1] = this._value.input[1];
 
 		/**
 		 *  compare that amount to zero
@@ -30,26 +31,10 @@ define(["Tone/core/Tone", "Tone/signal/GreaterThanZero", "Tone/signal/Subtract"]
 		this._gtz = this.output = new Tone.GreaterThanZero();
 
 		//connect
-		this._sub.connect(this._gtz);
+		this._value.connect(this._gtz);
 	};
 
-	Tone.extend(Tone.GreaterThan, Tone.SignalBase);
-
-	/**
-	 * The value to compare to the incoming signal.
-	 * 
-	 * @memberOf Tone.GreaterThan#
-	 * @type {number}
-	 * @name value
-	 */
-	Object.defineProperty(Tone.GreaterThan.prototype, "value", {
-		get : function(){
-			return this._sub.value;
-		},
-		set : function(value){
-			this._sub.value = value;
-		}
-	});
+	Tone.extend(Tone.GreaterThan, Tone.Signal);
 
 	/**
 	 *  dispose method
@@ -57,9 +42,9 @@ define(["Tone/core/Tone", "Tone/signal/GreaterThanZero", "Tone/signal/Subtract"]
 	 */
 	Tone.GreaterThan.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
-		this._sub.dispose();
+		this._value.dispose();
+		this._value = null;
 		this._gtz.dispose();
-		this._sub = null;
 		this._gtz = null;
 		return this;
 	};

@@ -7,7 +7,7 @@ define(["Tone/core/Tone", "Tone/signal/GreaterThan", "Tone/signal/IfThenElse", "
 	 * 	        it will use that instead of the signal. 
 	 * 	
 	 *  @constructor
-	 *  @extends {Tone.SignalBase}
+	 *  @extends {Tone.Signal}
 	 *  @param {number=} max max value if provided. if not provided, it will use the
 	 *                       signal value from input 1. 
 	 */
@@ -21,7 +21,7 @@ define(["Tone/core/Tone", "Tone/signal/GreaterThan", "Tone/signal/IfThenElse", "
 		 *  @type {Tone.Signal}
 		 *  @private
 		 */
-		this._maxSignal = this.input[1] = new Tone.Signal(max);
+		this._value = this.input[1] = new Tone.Signal(max);
 
 		/**
 		 *  @type {Tone.Select}
@@ -38,27 +38,11 @@ define(["Tone/core/Tone", "Tone/signal/GreaterThan", "Tone/signal/IfThenElse", "
 		//connections
 		this.input[0].chain(this._gt, this._ifThenElse.if);
 		this.input[0].connect(this._ifThenElse.then);
-		this._maxSignal.connect(this._ifThenElse.else);
-		this._maxSignal.connect(this._gt, 0, 1);
+		this._value.connect(this._ifThenElse.else);
+		this._value.connect(this._gt, 0, 1);
 	};
 
-	Tone.extend(Tone.Max, Tone.SignalBase);
-
-	/**
-	 * Will output the maximum between the incoming signal
-	 * and `value`.
-	 * @memberOf Tone.Max#
-	 * @type {number}
-	 * @name value
-	 */
-	Object.defineProperty(Tone.Max.prototype, "value", {
-		get : function(){
-			return this._maxSignal.value;
-		},
-		set : function(max){
-			this._maxSignal.value = max;
-		}
-	});
+	Tone.extend(Tone.Max, Tone.Signal);
 
 	/**
 	 *  clean up
@@ -66,10 +50,10 @@ define(["Tone/core/Tone", "Tone/signal/GreaterThan", "Tone/signal/IfThenElse", "
 	 */
 	Tone.Max.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
-		this._maxSignal.dispose();
+		this._value.dispose();
 		this._ifThenElse.dispose();
 		this._gt.dispose();
-		this._maxSignal = null;
+		this._value = null;
 		this._ifThenElse = null;
 		this._gt = null;
 		return this;

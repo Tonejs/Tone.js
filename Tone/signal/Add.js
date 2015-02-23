@@ -5,9 +5,13 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	/**
 	 *  @class Add a signal and a number or two signals. 
 	 *         input 0: augend. input 1: addend. 
+	 *         The value being added to the incoming signal. Note, that
+	 *         if Add was constructed without any arguments, it expects
+	 *         that the signals to add will be connected to input 0 and input 1
+	 *         and therefore will throw an error when trying to set the value. 
 	 *
 	 *  @constructor
-	 *  @extends {Tone.SignalBase}
+	 *  @extends {Tone.Signal}
 	 *  @param {number=} value if no value is provided, Tone.Add will sum the first
 	 *                         and second inputs. 
 	 */
@@ -26,54 +30,23 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 		 *  @private
 		 *  @type {Tone.Signal}
 		 */
-		this._addend = null;
+		this._value = this.input[1] = new Tone.Signal(value);
 
-		if (isFinite(value)){
-			this._addend = new Tone.Signal(value);
-			this._addend.connect(this._sum);
-		} 
+		this._value.connect(this._sum);
 	};
 
-	Tone.extend(Tone.Add, Tone.SignalBase);
-
-	/**
-	 * The value being added to the incoming signal. Note, that
-	 * if Add was constructed without any arguments, it expects
-	 * that the signals to add will be connected to input 0 and input 1
-	 * and therefore will throw an error when trying to set the value. 
-	 * 
-	 * @memberOf Tone.Add#
-	 * @type {number}
-	 * @name value
-	 */
-	Object.defineProperty(Tone.Add.prototype, "value", {
-		get : function(){
-			if (this._addend !== null){
-				return this._addend.value;
-			} else {
-				throw new Error("cannot switch from signal to number");
-			}
-		},
-		set : function(value){
-			if (this._addend !== null){
-				this._addend.value = value;
-			} else {
-				throw new Error("cannot switch from signal to number");
-			}
-		}
-	});
-
+	Tone.extend(Tone.Add, Tone.Signal);
+	
 	/**
 	 *  dispose method
 	 *  @returns {Tone.Add} `this`
 	 */
 	Tone.Add.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
+		this._sum.disconnect();
 		this._sum = null;
-		if (this._addend){
-			this._addend.dispose();
-			this._addend = null;
-		}
+		this._value.dispose();
+		this._value = null;
 		return this;
 	}; 
 

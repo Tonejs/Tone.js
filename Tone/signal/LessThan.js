@@ -1,4 +1,5 @@
-define(["Tone/core/Tone", "Tone/signal/GreaterThan", "Tone/signal/Negate"], function(Tone){
+define(["Tone/core/Tone", "Tone/signal/GreaterThan", "Tone/signal/Negate", "Tone/signal/Signal"], 
+function(Tone){
 
 	"use strict";
 
@@ -9,7 +10,7 @@ define(["Tone/core/Tone", "Tone/signal/GreaterThan", "Tone/signal/Negate"], func
 	 *          input 1: right hand side of comparison.
 	 *  
 	 *  @constructor
-	 *  @extends {Tone.SignalBase}
+	 *  @extends {Tone.Signal}
 	 *  @param {number} [value=0] the value to compare to the incoming signal
 	 */
 	Tone.LessThan = function(value){
@@ -28,37 +29,29 @@ define(["Tone/core/Tone", "Tone/signal/GreaterThan", "Tone/signal/Negate"], func
 		 *  @type {Tone.GreaterThan}
 		 *  @private
 		 */
-		this._gt = this.output = new Tone.GreaterThan(-value);
+		this._gt = this.output = new Tone.GreaterThan();
 
 		/**
 		 *  negate the signal coming from the second input
 		 *  @private
 		 *  @type {Tone.Negate}
 		 */
-		this._lhNeg = this.input[1] = new Tone.Negate();
+		this._rhNeg = new Tone.Negate();
+
+		/**
+		 *  the node where the value is set
+		 *  @private
+		 *  @type {Tone.Signal}
+		 */
+		this._value = this.input[1] = new Tone.Signal(value);
 
 		//connect
 		this._neg.connect(this._gt);
-		this._lhNeg.connect(this._gt, 0, 1);
+		this._value.connect(this._rhNeg);	
+		this._rhNeg.connect(this._gt, 0, 1);
 	};
 
-	Tone.extend(Tone.LessThan, Tone.SignalBase);
-
-	/**
-	 * The value to compare to the incoming signal.
-	 * 
-	 * @memberOf Tone.LessThan#
-	 * @type {number}
-	 * @name value
-	 */
-	Object.defineProperty(Tone.LessThan.prototype, "value", {
-		get : function(){
-			return -this._gt.value;
-		},
-		set : function(value){
-			this._gt.value = -value;
-		}
-	});
+	Tone.extend(Tone.LessThan, Tone.Signal);
 
 	/**
 	 *  dispose method
@@ -70,8 +63,10 @@ define(["Tone/core/Tone", "Tone/signal/GreaterThan", "Tone/signal/Negate"], func
 		this._neg = null;
 		this._gt.dispose();
 		this._gt = null;
-		this._lhNeg.dispose();
-		this._lhNeg = null;
+		this._rhNeg.dispose();
+		this._rhNeg = null;
+		this._value.dispose();
+		this._value = null;
 		return this;
 	};
 

@@ -19,53 +19,21 @@ define(["Tone/core/Tone", "Tone/signal/Max", "Tone/signal/Min", "Tone/signal/Sig
 		}
 		
 		/**
-		 *  the min clipper
-		 *  @type {Tone.Min}
-		 *  @private
+		 *  The min clip value
+		 *  @type {Tone.Signal}
 		 */
-		this._min = this.input = new Tone.Min(max);
+		this.min = this.input = new Tone.Min(max);
 
 		/**
-		 *  the max clipper
-		 *  @type {Tone.Max}
-		 *  @private
+		 *  The max clip value
+		 *  @type {Tone.Signal}
 		 */
-		this._max = this.output = new Tone.Max(min);
+		this.max = this.output = new Tone.Max(min);
 
-		this._min.connect(this._max);
+		this.min.connect(this.max);
 	};
 
 	Tone.extend(Tone.Clip, Tone.SignalBase);
-
-	/**
-	 * The minimum value which Clip will output.
-	 * @memberOf Tone.Clip#
-	 * @type {number}
-	 * @name min
-	 */
-	Object.defineProperty(Tone.Clip.prototype, "min", {
-		get : function(){
-			return this._min.value;
-		},
-		set : function(min){
-			this._min.value = min;
-		}
-	});
-
-	/**
-	 * The maximum value which Clip will output.
-	 * @memberOf Tone.Clip#
-	 * @type {number}
-	 * @name max
-	 */
-	Object.defineProperty(Tone.Clip.prototype, "max", {
-		get : function(){
-			return this._max.value;
-		},
-		set : function(max){
-			this._max.value = max;
-		}
-	});
 
 	/**
 	 *  clean up
@@ -73,10 +41,10 @@ define(["Tone/core/Tone", "Tone/signal/Max", "Tone/signal/Min", "Tone/signal/Sig
 	 */
 	Tone.Clip.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
-		this._min.dispose();
-		this._min = null;
-		this._max.dispose();
-		this._max = null;
+		this.min.dispose();
+		this.min = null;
+		this.max.dispose();
+		this.max = null;
 		return this;
 	};
 
