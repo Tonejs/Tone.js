@@ -124,17 +124,33 @@ define(function(){
 	};
 
 	/**
-	 *  set the parameters at once
-	 *  @param {Object} params
+	 *  Set the parameters at once. Either pass in an
+	 *  object mapping parameters to values, or to set a
+	 *  single parameter, by passing in a string and value
+	 *  ```javascript
+	 *  tone.set({
+	 *  	"parameter0" : value0
+	 *  	"parameter1" : value1
+	 *  });
+	 *  //or
+	 *  tone.set("parameter", value);
+	 *  ```
+	 *  @param {Object|string} params
+	 *  @param {number=} value
 	 *  @returns {Tone} `this`
 	 */
-	Tone.prototype.set = function(params){
+	Tone.prototype.set = function(params, value){
+		if (!isUndef(value)){
+			var tmpObj = {};
+			tmpObj[params] = value;
+			params = tmpObj;
+		}
 		for (var attr in params){
 			var param = this[attr];
 			if (isUndef(param)){
 				continue;
 			}
-			var value = params[attr];
+			value = params[attr];
 			if (param instanceof Tone.Signal || param instanceof AudioParam){
 				if (param.value !== value){
 					param.value = value;
@@ -189,6 +205,18 @@ define(function(){
 			ret = ret.concat(this._collectDefaults(constr._super));
 		}
 		return ret;
+	};
+
+	/**
+	 *  Set the preset if it exists. 
+	 *  @param {string} presetName the name of the preset
+	 *  @returns {Tone} `this`
+	 */
+	Tone.prototype.setPreset = function(presetName){
+		if (!this.isUndef(this.preset) && this.preset.hasOwnProperty(presetName)){
+			this.set(this.preset[presetName]);
+		}
+		return this;
 	};
 
 	///////////////////////////////////////////////////////////////////////////

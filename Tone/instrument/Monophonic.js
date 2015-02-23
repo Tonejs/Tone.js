@@ -98,17 +98,5 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/signal/Signal"], f
 		return this;
 	};
 
-	/**
-	 *  set the preset if it exists
-	 *  @param {string} presetName the name of the preset
-	 *  @returns {Tone.Monophonic} `this`
-	 */
-	Tone.Monophonic.prototype.setPreset = function(presetName){
-		if (!this.isUndef(this.preset) && this.preset.hasOwnProperty(presetName)){
-			this.set(this.preset[presetName]);
-		}
-		return this;
-	};
-
 	return Tone.Monophonic;
 });

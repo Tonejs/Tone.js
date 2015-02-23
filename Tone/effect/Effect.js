@@ -68,7 +68,7 @@ define(["Tone/core/Tone", "Tone/component/CrossFade"], function(Tone){
 	 *  @returns {Tone.Effect} `this`
 	 */
 	Tone.Effect.prototype.bypass = function(){
-		this.setWet(0);
+		this.wet.value = 0;
 		return this;
 	};
 
@@ -80,18 +80,6 @@ define(["Tone/core/Tone", "Tone/component/CrossFade"], function(Tone){
 	 */
 	Tone.Effect.prototype.connectEffect = function(effect){
 		this.effectSend.chain(effect, this.effectReturn);
-		return this;
-	};
-
-	/**
-	 *  set the preset if it exists
-	 *  @param {string} presetName the name of the preset
-	 *  @returns {Tone.Effect} `this`
-	 */
-	Tone.Effect.prototype.setPreset = function(presetName){
-		if (!this.isUndef(this.preset) && this.preset.hasOwnProperty(presetName)){
-			this.set(this.preset[presetName]);
-		}
 		return this;
 	};
 
