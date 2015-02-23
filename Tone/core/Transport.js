@@ -1104,7 +1104,6 @@ function(Tone){
 		if (typeof Tone.Transport === "function"){
 			//a single transport object
 			Tone.Transport = new Tone.Transport();
-			// Tone.Transport.setBpm(120);
 		} else {
 			//stop the clock
 			Tone.Transport.stop();

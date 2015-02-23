@@ -145,9 +145,9 @@ define(["Tone/core/Tone", "Tone/core/Transport"], function(Tone){
 		for (var inst in score){
 			var part = score[inst];
 			if (inst === "tempo"){
-				Tone.Transport.setBpm(part);
+				Tone.Transport.bpm.value = part;
 			} else if (inst === "timeSignature"){
-				Tone.Transport.setTimeSignature(part[0], part[1]);
+				Tone.Transport.timeSignature = part[0] / (part[1] / 4);
 			} else if (Array.isArray(part)){
 				for (var i = 0; i < part.length; i++){
 					var noteDescription = part[i];
