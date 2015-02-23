@@ -17,16 +17,24 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Master"], function(T
 		options = this.defaultArg(options, Tone.Source.defaults);
 
 		/**
-		 *  @type {Tone.Source.State}
-		 *  @readOnly
-		 */
-		this.state = Tone.Source.State.STOPPED;
-
-		/**
 		 * the onended callback when the source is done playing
 		 * @type {function}
 		 */
 		this.onended = options.onended;
+
+		/**
+		 *  the next time the source is started
+		 *  @type {number}
+		 *  @private
+		 */
+		this._nextStart = Infinity;
+
+		/**
+		 *  the next time the source is stopped
+		 *  @type {number}
+		 *  @private
+		 */
+		this._nextStop = Infinity;
 
 		/**
 		 * the volume of the output in decibels
@@ -58,15 +66,45 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Master"], function(T
 	};
 
 	/**
-	 *  star thte source
-	 *  @param  {Tone.Time} time 
+	 *  The state of the source.
+	 *  @type {Tone.Source.State}
+	 *  @readOnly
+	 *  @memberOf Tone.Source#
+	 *  @name state
+	 */
+	Object.defineProperty(Tone.Source.prototype, "state", {
+		get : function(){
+			return this._stateAtTime(this.now());
+		}
+	});
+
+	/**
+	 *  Get the state of the source at the specified time.
+	 *  @param  {Tone.Time}  time
+	 *  @return  {Tone.Source.State} 
+	 *  @private
+	 */
+	Tone.Source.prototype._stateAtTime = function(time){
+		time = this.toSeconds(time);
+		if (this._nextStart <= time && this._nextStop > time){
+			return Tone.Source.State.STARTED;
+		} else if (this._nextStop <= time){
+			return Tone.Source.State.STOPPED;
+		} else {
+			return Tone.Source.State.STOPPED;
+		}
+	};
+
+	/**
+	 *  Start the source at the time.
+	 *  @param  {Tone.Time} [time=now]
 	 *  @returns {Tone.Source} `this`
 	 */
 	Tone.Source.prototype.start = function(time){
-		if (this.state !== Tone.Source.State.STARTED || this.retrigger){
-			this.state = Tone.Source.State.STARTED;
-			var now = this.now();
-			time = this.toSeconds(time, now);
+		time = this.toSeconds(time);
+		if (this._stateAtTime(time) !== Tone.Source.State.STARTED || this.retrigger){
+			this._nextStart = time;
+			this._nextStop = Infinity;
 			this._start.apply(this, arguments);
 		}
 		return this;
@@ -74,29 +112,26 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Master"], function(T
 
 	/**
 	 * 	stop the source
-	 *  @param  {Tone.Time} time 
+	 *  @param  {Tone.Time} [time=now]
 	 *  @returns {Tone.Source} `this`
 	 */
 	Tone.Source.prototype.stop = function(time){
-		if (this.state !== Tone.Source.State.STOPPED){
+		var now = this.now();
+		time = this.toSeconds(time, now);
+		if (this._stateAtTime(time) === Tone.Source.State.STARTED){
+			this._nextStop = this.toSeconds(time);
 			clearTimeout(this._timeout);
-			var now = this.now();
-			time = this.toSeconds(time, now);
-			var diff = now - time;
-			if (diff !== 0){
-				this._timeout = setTimeout(function(){
-					this.state = Tone.Source.State.STOPPED;
-					this.onended();
-				}.bind(this), diff * 1000);
+			var diff = time - now;
+			if (diff > 0){
+				//add a small buffer before invoking the callback
+				this._timeout = setTimeout(this.onended, diff * 1000 + 20);
 			} else {
-				this.state = Tone.Source.State.STOPPED;
 				this.onended();
 			}
 			this._stop.apply(this, arguments);
 		}
 		return this;
 	};
-
 
 	/**
  	 *  @abstract
@@ -136,20 +171,10 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Master"], function(T
 	Tone.Source.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
 		this.stop();
-		this.state = null;
 		clearTimeout(this._timeout);
 		this.onended = function(){};
 		this.volume.dispose();
 		this.volume = null;
-	};
-
-	/**
-	 *  internal onended callback
-	 *  @private
-	 */
-	Tone.Source.prototype._onended = function(){
-		this.state = Tone.Source.State.STOPPED;
-		this.onended();
 	};
 
 	/**
