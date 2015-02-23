@@ -90,7 +90,6 @@ function(Tone){
 		this.frequency.connect(this._oscillator.frequency);
 		this.detune.connect(this._oscillator.detune);
 		//start the oscillator
-		this._oscillator.onended = this._onended.bind(this);
 		this._oscillator.start(this.toSeconds(time));
 	};
 
@@ -100,7 +99,10 @@ function(Tone){
 	 *  @returns {Tone.Oscillator} `this`
 	 */
 	Tone.Oscillator.prototype._stop = function(time){
-		this._oscillator.stop(this.toSeconds(time));
+		if (this._oscillator){
+			this._oscillator.stop(this.toSeconds(time));
+			this._oscillator = null;
+		}
 		return this;
 	};
 

@@ -47,26 +47,19 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 
 	/**
 	 *  start the stream. 
-	 *  @returns {Tone.Microphone} `this`
+	 *  @private
 	 */
-	Tone.Microphone.prototype.start = function(){
-		if (this.state === Tone.Source.State.STOPPED){
-			this.state = Tone.Source.State.STARTED;
-				navigator.getUserMedia(this._constraints, 
-					this._onStream.bind(this), this._onStreamError.bind(this));
-		}
-		return this;
+	Tone.Microphone.prototype._start = function(){
+		navigator.getUserMedia(this._constraints, 
+			this._onStream.bind(this), this._onStreamError.bind(this));
 	};
 
 	/**
 	 *  stop the stream. 
-	 *  @returns {Tone.Microphone} `this`
+	 *  @private
 	 */
-	Tone.Microphone.prototype.stop = function(){
-		if (this._stream && this.state === Tone.Source.State.STARTED){
-			this.state = Tone.Source.State.STOPPED;
-			this._stream.stop();
-		}
+	Tone.Microphone.prototype._stop = function(){
+		this._stream.stop();
 		return this;
 	};
 

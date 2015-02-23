@@ -112,11 +112,15 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 			//if it's a loop the default offset is the loopstart point
 			if (this._loop){
 				offset = this.defaultArg(offset, this._loopStart);
+				offset = this.toSeconds(offset);
 			} else {
 				//otherwise the default offset is 0
 				offset = this.defaultArg(offset, 0);
 			}
 			duration = this.defaultArg(duration, this._buffer.duration - offset);
+			//the values in seconds
+			startTime = this.toSeconds(startTime);
+			duration = this.toSeconds(duration);
 			//make the source
 			this._source = this.context.createBufferSource();
 			this._source.buffer = this._buffer.get();
@@ -125,13 +129,15 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 				this._source.loop = this._loop;
 				this._source.loopStart = this.toSeconds(this._loopStart);
 				this._source.loopEnd = this.toSeconds(this._loopEnd);
+			} else {
+				this._nextStop = startTime + duration;
 			}
 			//and other properties
 			this._source.playbackRate.value = this._playbackRate;
-			this._source.onended = this._onended.bind(this);
+			this._source.onended = this.onended;
 			this._source.connect(this.output);
 			//start it
-			this._source.start(this.toSeconds(startTime), this.toSeconds(offset), this.toSeconds(duration));
+			this._source.start(startTime, offset, duration);
 		} else {
 			throw Error("tried to start Player before the buffer was loaded");
 		}
@@ -147,6 +153,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 	Tone.Player.prototype._stop = function(time){
 		if (this._source){
 			this._source.stop(this.toSeconds(time));
+			this._source = null;
 		}
 		return this;
 	};

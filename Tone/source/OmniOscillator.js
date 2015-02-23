@@ -138,7 +138,6 @@ function(Tone){
 		if (this.state === Tone.Source.State.STARTED){
 			this._oscillator.start(now);
 		}
-		this._oscillator.onended = this._onended.bind(this);
 	};
 
 	/**

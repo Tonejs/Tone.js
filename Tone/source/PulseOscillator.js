@@ -69,7 +69,6 @@ function(Tone){
 		//connections
 		this._sawtooth.chain(this._thresh, this.output);
 		this.width.chain(this._widthGate, this._thresh);
-		this._sawtooth.onended = this._onended.bind(this);
 	};
 
 	Tone.extend(Tone.PulseOscillator, Tone.Oscillator);

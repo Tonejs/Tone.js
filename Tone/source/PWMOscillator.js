@@ -52,7 +52,6 @@ function(Tone){
 		//connections
 		this._modulator.connect(this._pulse.width);
 		this._pulse.connect(this.output);
-		this._pulse.onended = this._onended.bind(this);
 	};
 
 	Tone.extend(Tone.PWMOscillator, Tone.Oscillator);
