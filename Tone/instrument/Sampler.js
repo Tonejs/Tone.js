@@ -35,7 +35,7 @@ function(Tone){
 		 *  @type {Tone.Player}
 		 */
 		this.player = new Tone.Player(options.player);
-		this.player.retrigger = false;
+		this.player.retrigger = true;
 
 		/**
 		 *  the buffers
