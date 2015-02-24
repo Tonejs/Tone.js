@@ -25,8 +25,19 @@
 <body>
 	<style type="text/css">
 	#Amplitude {
-		position: relative;
-		
+		/*position: relative;*/
+		width: calc(40% - 10px)!important;
+	}
+	#FilterEnvelope {
+		/*position: relative;*/
+		width: calc(60% - 10px)!important;
+	}
+	.FilterEnvelope.Envelope {
+		width: 100%!important;
+	}
+
+	.Envelope {
+		width: 100%!important;
 	}
 	</style>
 	<div id="Explanation">
@@ -44,7 +55,7 @@
 			<div id="Amplitude"></div>
 			<div id="FilterEnvelope"></div>
 		</div>
-		<div id="FilterEnv"></div>
+		<div id="Filter"></div>
 	</div>
 
 	<script id="ToneCode" type="text/javascript">			
@@ -77,10 +88,9 @@
 		Interface.AmplitudeEnvelope(ampGroup, synth.envelope);
 		var filtGroup = Interface.Group("FilterEnvelope", "Filter");
 		Interface.FilterEnvelope(filtGroup, synth.filterEnvelope);
-		// var filtGroup = Interface.Group("Envelope", "Filter");
-		// Interface.Rack("FilterEnv", "Filter Envelope", true);
-		// var Q = Interface.Slider("FilterEnv", synth.filter, "Q", 0.1, 20);
-		// var type = Interface.DropDown("FilterEnv", synth.filter, "type", ["lowpass", "highpass", "bandpass", "notch"]);
+		Interface.Rack("Filter", "Filter", true);
+		var type = Interface.DropDown("Filter", synth.filter, "type", ["lowpass", "highpass", "bandpass"]);
+		var Q = Interface.Slider("Filter", synth.filter, "Q", 0.1, 20);
 		
 	</script>
 </body>

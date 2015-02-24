@@ -133,6 +133,24 @@ Interface.DropDown = function(container, node, parameter, options, label){
 	};
 };
 
+Interface.Presets = function(container, node){
+	var element = $("<div>").appendTo(Interface.getElement(container))
+		.addClass("DropDown");
+	$("<div>").appendTo(element)
+		.text("preset")
+		.attr("id", "Label");
+	var options = Object.keys(node.preset);
+	options.unshift("none");
+	var selectList = $("<select>").appendTo(element);
+	for (var i = 0; i < options.length; i++){
+		$("<option>").text(options[i]).appendTo(selectList);
+	}
+	//set the initial value
+	selectList.on("change", function(){
+		node.setPreset(selectList.val());
+	});
+};
+
 Interface.ContinuousControl = function(container, type, node, parameter, min, max, exp){
 	container = Interface.getElement(container);
 	min = min || 0;
@@ -250,15 +268,22 @@ Interface.AmplitudeEnvelope = function(container, node){
 };
 
 Interface.FilterEnvelope = function(container, node){
-	var element = $("<div>").addClass("FilterEnvelope")
-		.appendTo(Interface.getElement(container));
-	var ampEnv = Interface.AmplitudeEnvelope(element, node);
+	var element = Interface.getElement(container, "Filter");
+	var group = $("<div>").addClass("Envelope FilterEnvelope")
+		.appendTo(element);
+	var attack = Interface.Slider(group, node, "attack", 0.001, 2, 2);
+	var decay = Interface.Slider(group, node, "decay", 0.0, 2, 2);
+	var sustain = Interface.Slider(group, node, "sustain", 0, 1, 2);
+	var release = Interface.Slider(group, node, "release", 0.001, 4, 2);
 	// var freqGroup = $("<div>").appendTo(element).addClass("FreqGroup");
-	// var minSlider = Interface.Slider(freqGroup, node, "min", 20, 20000, 2);
-	// var maxSlider = Interface.Slider(freqGroup, node, "max", 20, 20000, 2);
+	var minSlider = Interface.Slider(group, node, "min", 20, 20000, 2);
+	var maxSlider = Interface.Slider(group, node, "max", 20, 20000, 2);
 	return {
 		listen : function(){
-			ampEnv.listen();
+			attack.listen();
+			decay.listen();
+			release.listen();
+			sustain.listen();
 			maxSlider.listen();
 			minSlider.listen();
 		}
@@ -268,6 +293,7 @@ Interface.FilterEnvelope = function(container, node){
 Interface.Filter = function(containerID, node){
 	var element = $("<div>").addClass("Filter")
 		.appendTo(Interface.getElement(containerID));
+	
 	
 };
 
