@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/component/MultibandSplit"], function(Tone){
+define(["Tone/core/Tone", "Tone/component/MultibandSplit", "Tone/signal/Signal"], function(Tone){
 
 	"use strict";
 
@@ -60,6 +60,24 @@ define(["Tone/core/Tone", "Tone/component/MultibandSplit"], function(Tone){
 		this._highGain = this.context.createGain();
 
 		/**
+		 * The gain in decibels of the low part
+		 * @type {Tone.Signal}
+		 */
+		this.low = new Tone.Signal(this._lowGain.gain, Tone.Signal.Units.Decibels);
+
+		/**
+		 * The gain in decibels of the mid part
+		 * @type {Tone.Signal}
+		 */
+		this.mid = new Tone.Signal(this._midGain.gain, Tone.Signal.Units.Decibels);
+
+		/**
+		 * The gain in decibels of the high part
+		 * @type {Tone.Signal}
+		 */
+		this.high = new Tone.Signal(this._highGain.gain, Tone.Signal.Units.Decibels);
+
+		/**
 		 *  the low/mid crossover frequency
 		 *  @type {Tone.Signal}
 		 */
@@ -76,9 +94,9 @@ define(["Tone/core/Tone", "Tone/component/MultibandSplit"], function(Tone){
 		this._multibandSplit.mid.chain(this._midGain, this.output);
 		this._multibandSplit.high.chain(this._highGain, this.output);
 		//set the gains
-		this.high = options.low;
-		this.mid = options.mid;
-		this.low = options.high;
+		this.high.value = options.low;
+		this.mid.value = options.mid;
+		this.low.value = options.high;
 	};
 
 	Tone.extend(Tone.EQ);
@@ -97,66 +115,27 @@ define(["Tone/core/Tone", "Tone/component/MultibandSplit"], function(Tone){
 	};
 
 	/**
-	 * The gain in decibels of the low part
-	 * @memberOf Tone.EQ#
-	 * @type {number}
-	 * @name low
-	 */
-	Object.defineProperty(Tone.EQ.prototype, "low", {
-		get : function(){
-			return this.gainToDb(this._lowGain.gain.value);
-		},
-		set : function(db){
-			this._lowGain.gain.value = this.dbToGain(db);
-		}
-	});
-
-	/**
-	 * the gain in decibels of the mid
-	 * @memberOf Tone.EQ#
-	 * @type {number}
-	 * @name mid
-	 */
-	Object.defineProperty(Tone.EQ.prototype, "mid", {
-		get : function(){
-			return this.gainToDb(this._midGain.gain.value);
-		},
-		set : function(db){
-			this._midGain.gain.value = this.dbToGain(db);
-		}
-	});
-
-	/**
-	 * the gain in decibels of the high
-	 * @memberOf Tone.EQ#
-	 * @type {number}
-	 * @name high
-	 */
-	Object.defineProperty(Tone.EQ.prototype, "high", {
-		get : function(){
-			return this.gainToDb(this._highGain.gain.value);
-		},
-		set : function(db){
-			this._highGain.gain.value = this.dbToGain(db);
-		}
-	});
-
-	/**
 	 *  clean up
 	 *  @returns {Tone.EQ} `this`
 	 */
 	Tone.EQ.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
 		this._multibandSplit.dispose();
-		this._lowGain.disconnect();
-		this._midGain.disconnect();
-		this._highGain.disconnect();
 		this._multibandSplit = null;
 		this.lowFrequency = null;
 		this.highFrequency = null;
+		this._lowGain.disconnect();
 		this._lowGain = null;
+		this._midGain.disconnect();
 		this._midGain = null;
+		this._highGain.disconnect();
 		this._highGain = null;
+		this.low.dispose();
+		this.low = null;
+		this.mid.dispose();
+		this.mid = null;
+		this.high.dispose();
+		this.high = null;
 		return this;
 	};
 

@@ -402,6 +402,30 @@ function(coreTest, chai, CrossFade, Master, Signal, Recorder, Panner, LFO, Gate,
 			expect(env.get()).to.deep.equal(values);
 			env.dispose();
 		});
+
+		it ("can schedule an attackRelease", function(done){
+			var env;
+			Test.offlineTest(0.7, function(dest){
+				env = new Envelope(0.1, 0.2, 0.5, 0.1);
+				env.connect(dest);
+				env.triggerAttackRelease(0.4, 0);
+			}, function(sample, time){
+				if (time < 0.1){
+					expect(sample).to.be.within(0, 1);
+				} else if (time < 0.3){
+					expect(sample).to.be.within(0.5, 1);
+				} else if (time < 0.4){
+					expect(sample).to.be.within(0.499, 0.51);
+				} else if (time < 0.5){
+					expect(sample).to.be.within(0, 0.51);
+				} else {
+					expect(sample).to.be.below(0.1);
+				}
+			}, function(){
+				env.dispose();
+				done();
+			});
+		});
 	});
 
 
@@ -505,9 +529,9 @@ function(coreTest, chai, CrossFade, Master, Signal, Recorder, Panner, LFO, Gate,
 				"low" : -1
 			};
 			eq.set(values);
-			expect(eq.high).to.be.closeTo(values.high, 0.1);
-			expect(eq.mid).to.be.closeTo(values.mid, 0.1);
-			expect(eq.low).to.be.closeTo(values.low, 0.1);
+			expect(eq.high.value).to.be.closeTo(values.high, 0.1);
+			expect(eq.mid.value).to.be.closeTo(values.mid, 0.1);
+			expect(eq.low.value).to.be.closeTo(values.low, 0.1);
 			eq.dispose();
 		});
 	});
