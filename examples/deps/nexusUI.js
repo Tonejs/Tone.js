@@ -143,6 +143,8 @@ manager.prototype.add = function(type, args) {
           var parent;
           if (args.parent instanceof HTMLElement){
             parent = args.parent;
+          } else if (args.parent instanceof jQuery){
+            parent = args.parent[0];            
           } else {            
             parent = document.getElementById(args.parent);
           }
