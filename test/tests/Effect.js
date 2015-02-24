@@ -24,6 +24,13 @@ function(Tone, chai, Recorder, Master, Effect, CrossFade, FeedbackEffect, Signal
 			Test.wasDisposed(e);
 		});
 
+		it("can by bypassed", function(){
+			var e = new Effect();
+			e.bypass();
+			expect(e.wet.value).to.equal(0);
+			e.dispose();
+		});
+
 		it("handles input and output connections", function(){
 			Test.onlineContext();
 			var e = new Effect();
