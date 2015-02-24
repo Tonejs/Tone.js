@@ -16,6 +16,7 @@
 * set/get methods for all components
 * syncSignal and unsyncSignal moved from Signal to Transport
 * Add/Multiply/Subtract/Min/Max/GreaterThan/LessThan all extend Tone.Signal which allows them to be scheduled and automated just like Tone.Signal.
+* Deprecated Tone.Divide and Tone.Inverse. They were more complicated than they were useful.
 
 BREAKING CHANGES:
 
