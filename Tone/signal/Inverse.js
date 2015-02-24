@@ -31,11 +31,14 @@ function(Tone){
 	 *         Uses this approximation algorithm: 
 	 *         http://en.wikipedia.org/wiki/Multiplicative_inverse#Algorithms
 	 *
+	 *  @deprecated
 	 *  @extends {Tone.SignalBase}
 	 *  @constructor
 	 *  @param {number} [precision=3] the precision of the calculation
 	 */
 	Tone.Inverse = function(precision){
+
+		console.warn("Tone.Inverse has been deprecated. Multiply is always more efficient than dividing.");
 
 		Tone.call(this);
 
