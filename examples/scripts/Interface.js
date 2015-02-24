@@ -350,3 +350,32 @@ Interface.Meter = function(container, node, label, units){
 	}
 	update();
 };
+
+
+Interface.StepSequencer = function(container, width, height){
+	var element = Interface.getElement(container);
+	element.addClass("StepSequencer");
+	var matrix = nx.add("matrix", {
+		"parent" : element,
+	});
+	matrix.row = height;
+    matrix.col = width;
+    matrix.init();	
+    matrix.draw();
+    return {
+    	randomize : function(){
+    		var boxes = [];
+    		for (var i = 0; i < width; i++){
+    			var row = [];
+    			for (var j = 0; j < height; j++){
+    				row.push(Math.round(Math.random()));
+    			}
+    			boxes.push(row);
+    		}
+    		// console.log(boxes);
+    		// debugger;
+    		matrix.matrix = boxes;
+    		matrix.draw();
+    	}
+    };
+};

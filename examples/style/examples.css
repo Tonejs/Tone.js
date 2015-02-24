@@ -116,6 +116,9 @@ body {
    */
   /**
    * DROP DOWN
+   */
+  /**
+   * STEP SEQUENCER
    */ }
   #Content [nx="slider"] {
     width: 100%;
@@ -278,5 +281,9 @@ body {
       border: 0px;
       background-color: black;
       color: white; }
+  #Content .StepSequencer [nx="matrix"] {
+    position: relative;
+    width: 100%;
+    height: 120px; }
 
 /*# sourceMappingURL=examples.css.map */
