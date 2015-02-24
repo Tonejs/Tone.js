@@ -88,6 +88,21 @@ function(Tone){
 
 	Tone.extend(Tone.Transport);
 
+	/**
+	 *  the defaults
+	 *  @type {Object}
+	 *  @const
+	 *  @static
+	 */
+	Tone.Transport.defaults = {
+		"bpm" : 120,
+		"swing" : 0,
+		"swingSubdivision" : "16n",
+		"timeSignature" : 4,
+		"loopStart" : 0,
+		"loopEnd" : "4m"
+	};
+
 	/** 
 	 * @private
 	 * @type {number}
