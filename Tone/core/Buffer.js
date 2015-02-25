@@ -3,12 +3,14 @@ define(["Tone/core/Tone"], function(Tone){
 	"use strict";
 
 	/**
-	 *  @class  Buffer loading and storage. Tone.Buffer will load and store the buffers
-	 *          in the same data structure they were given in the argument. If given
-	 *          a string, this._buffer will equal an AudioBuffer. If constructed
-	 *          with an array, the samples will be placed in an array in the same
-	 *          order. 
-	 *  
+	 *  @class  Buffer loading and storage. Tone.Buffer is used internally by all 
+	 *          classes that make requests for audio files such as {@link Tone.Player},
+	 *          {@link Tone.Sampler} and {@link Tone.Convolver} .
+	 *          <br><br>Aside from load callbacks from individual buffers, Tone.Buffer 
+	 *  		provides static methods which keep track of the loading progress 
+	 *  		of all of the buffers. These methods are `onload`, `onprogress`,
+	 *  		and `onerror`. 
+	 *
 	 *  @constructor 
 	 *  @param {AudioBuffer|string} url the url to load, or the audio buffer to set
 	 */
@@ -291,20 +293,35 @@ define(["Tone/core/Tone"], function(Tone){
 	 *  callback when all of the buffers in the queue have loaded
 	 *  @static
 	 *  @type {function}
+	 *  @example
+	 * //invoked when all of the queued samples are done loading
+	 * Tone.Buffer.onload = function(){
+	 * 	console.log("everything is loaded");
+	 * };
 	 */
 	Tone.Buffer.onload = function(){};
 
 	/**
-	 *  callback with the progress of all of the loads in the queue
+	 *  Callback function is invoked with the progress of all of the loads in the queue. 
+	 *  The value passed to the callback is between 0-1.
 	 *  @static
 	 *  @type {function}
+	 *  @example
+	 * Tone.Buffer.onprogress = function(percent){
+	 * 	console.log("progress:" + (percent * 100).toFixed(1) + "%");
+	 * };
 	 */
 	Tone.Buffer.onprogress = function(){};
 
 	/**
-	 *  callback if one of the buffers in the queue encounters an error
+	 *  Callback if one of the buffers in the queue encounters an error. The error
+	 *  is passed in as the argument. 
 	 *  @static
 	 *  @type {function}
+	 *  @example
+	 * Tone.Buffer.onerror = function(e){
+	 * 	console.log("there was an error while loading the buffers: "+e);
+	 * }
 	 */
 	Tone.Buffer.onerror = function(){};
 

@@ -94,7 +94,8 @@ define(function(){
 	///////////////////////////////////////////////////////////////////////////
 
 	/**
-	 *  @class  Tone is the baseclass of all Tone Modules. 
+	 *  @class  Tone is the base class of all other classes.  
+	 *  
 	 *  @constructor
 	 *  @alias Tone
 	 *  @param {number} [inputs=1] the number of input nodes
@@ -127,21 +128,18 @@ define(function(){
 	 *  Set the parameters at once. Either pass in an
 	 *  object mapping parameters to values, or to set a
 	 *  single parameter, by passing in a string and value.
-	 *  ```javascript
+	 *  @example
+	 *  //set values using an object
 	 *  filter.set({
 	 *  	"frequency" : 300,
 	 *  	"type" : highpass
 	 *  });
 	 *  //or
 	 *  filter.set("type", "highpass");
-	 *  ```
-	 *  The setter also supports ramping a value
-	 *  ```javascript
+	 *  //ramp to the value 220 over 3 seconds. 
 	 *  oscillator.set({
 	 *  	"frequency" : 220
 	 *  }, 3);
-	 *  //ramp to the value 220 over 3 seconds. 
-	 *  ```
 	 *  @param {Object|string} params
 	 *  @param {number=} value
 	 *  @param {Tone.Time=} rampTime
@@ -248,7 +246,7 @@ define(function(){
 	Tone.context = audioContext;
 
 	/**
-	 *  A static pointer to the audio context
+	 *  The audio context.
 	 *  @type {AudioContext}
 	 */
 	Tone.prototype.context = Tone.context;
@@ -384,8 +382,11 @@ define(function(){
 	};
 
 	/**
-	 *  connect the output of this node to the rest of the nodes in series.
-	 *  @param {...AudioParam|Tone|AudioNode}
+	 *  Connect the output of this node to the rest of the nodes in series.
+	 *  @example
+	 *  //connect a node to an effect, panVol and then to the master output
+	 *  node.chain(effect, panVol, Tone.Master);
+	 *  @param {...AudioParam|Tone|AudioNode} nodes
 	 *  @returns {Tone} `this`
 	 */
 	Tone.prototype.chain = function(){
@@ -699,7 +700,7 @@ define(function(){
 	 * 	Adds an ES5 getter setter to the prototype of the constructor. 
 	 * 	The prototype is expected to have a camelCase function of the 
 	 * 	property with the names getProperty and setProperty
-	 *  @internal
+	 *  @private
 	 *  @static
 	 *  @param {Object} constr the constructor
 	 *  @param {string} property the property
@@ -761,7 +762,7 @@ define(function(){
 
 	/**
 	 *  array of callbacks to be invoked when a new context is added
-	 *  @internal 
+	 *  @private 
 	 *  @private
 	 */
 	var newContextCallbacks = [];
@@ -769,7 +770,7 @@ define(function(){
 	/**
 	 *  invoke this callback when a new context is added
 	 *  will be invoked initially with the first context
-	 *  @internal 
+	 *  @private 
 	 *  @static
 	 *  @param {function(AudioContext)} callback the callback to be invoked
 	 *                                           with the audio context
@@ -782,7 +783,12 @@ define(function(){
 	};
 
 	/**
+	 *  Tone.js automatically creates a context on init, but if you are working
+	 *  with other libraries which also create an AudioContext, it can be
+	 *  useful to set your own. If you are going to set your own context, 
+	 *  be sure to do it at the start of your code, before creating any objects.
 	 *  @static
+	 *  @param {AudioContext} ctx The new audio context to set
 	 */
 	Tone.setContext = function(ctx){
 		//set the prototypes
@@ -795,10 +801,9 @@ define(function(){
 	};
 
 	/**
-	 *  bind this to a touchstart event to start the audio
-	 *
+	 *  Bind this to a touchstart event to start the audio on mobile devices. 
+	 *  <br>
 	 *  http://stackoverflow.com/questions/12517000/no-sound-on-ios-6-web-audio-api/12569290#12569290
-	 *  
 	 *  @static
 	 */
 	Tone.startMobile = function(){
