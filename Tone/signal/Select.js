@@ -68,7 +68,7 @@ define(["Tone/core/Tone", "Tone/signal/Equal", "Tone/signal/Signal"], function(T
 	 *  helper class for Tone.Select representing a single gate
 	 *  @constructor
 	 *  @extends {Tone}
-	 *  @internal only used by Tone.Select
+	 *  @private
 	 */
 	var SelectGate = function(num){
 

@@ -58,7 +58,7 @@ define(["Tone/core/Tone", "Tone/signal/Multiply", "Tone/signal/WaveShaper"], fun
 	 *         uses this operation: http://stackoverflow.com/a/14842954
 	 *
 	 *  
-	 *  @internal helper class for modulo
+	 *  @private
 	 *  @constructor
 	 *  @extends {Tone}
 	 */

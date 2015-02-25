@@ -6,7 +6,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	 *  @class  a sample accurate clock built on an oscillator.
 	 *          Invokes the tick method at the set rate
 	 *
-	 * 	@internal
+	 * 	@private
 	 * 	@constructor
 	 * 	@extends {Tone}
 	 * 	@param {Tone.Frequency} frequency the rate of the callback

@@ -116,7 +116,7 @@ function(Tone){
 	 *  internal helper function for computing the inverse of a signal
 	 *  @extends {Tone}
 	 *  @constructor
-	 *  @internal
+	 *  @private
 	 */
 	var InverseHelper = function(guess, two){
 		this._outerMultiply = new Tone.Multiply();

@@ -66,7 +66,7 @@ define(["Tone/core/Tone", "Tone/signal/Equal", "Tone/signal/Signal"], function(T
 	 *  helper class for Tone.Route representing a single gate
 	 *  @constructor
 	 *  @extends {Tone}
-	 *  @internal only used by Tone.Route
+	 *  @private
 	 */
 	var RouteGate = function(num){
 

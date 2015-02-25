@@ -76,7 +76,7 @@ define(["Tone/core/Tone", "Tone/component/CrossFade"], function(Tone){
 	/**
 	 *  chains the effect in between the effectSend and effectReturn
 	 *  @param  {Tone} effect
-	 *  @internal
+	 *  @private
 	 *  @returns {Tone.Effect} `this`
 	 */
 	Tone.Effect.prototype.connectEffect = function(effect){

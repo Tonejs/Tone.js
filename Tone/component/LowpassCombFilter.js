@@ -183,7 +183,7 @@ define(["Tone/core/Tone", "Tone/signal/ScaleExp", "Tone/signal/Signal"], functio
 
 	/**
 	 *  FilterDelay
-	 *  @internal
+	 *  @private
 	 *  @constructor
 	 *  @extends {Tone}
 	 */
