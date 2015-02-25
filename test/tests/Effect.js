@@ -54,14 +54,14 @@ function(Tone, chai, Recorder, Master, Effect, CrossFade, FeedbackEffect, Signal
 
 		it("has a dry/wet control", function(){
 			var e = new Effect();
-			expect(e.dryWet).is.instanceof(CrossFade);
+			expect(e.wet).is.instanceof(Signal);
 			e.dispose();
 		});
 
 		it("can be set with options object", function(){
 			var e = new Effect();
 			e.set({"wet" : 0.22});
-			expect(e.dryWet.fade.value).is.closeTo(0.22, 0.01);
+			expect(e.wet.value).is.closeTo(0.22, 0.01);
 			e.dispose();
 		});
 	});
@@ -195,7 +195,7 @@ function(Tone, chai, Recorder, Master, Effect, CrossFade, FeedbackEffect, Signal
 
 		it("has a dry/wet control", function(){
 			var e = new FeedbackEffect();
-			expect(e.dryWet).is.instanceof(CrossFade);
+			expect(e.wet).is.instanceof(Signal);
 			e.dispose();
 		});
 
@@ -270,7 +270,7 @@ function(Tone, chai, Recorder, Master, Effect, CrossFade, FeedbackEffect, Signal
 		it("can be set with options object", function(){
 			var ap = new AutoPanner();
 			ap.set({"wet" : 0.22});
-			expect(ap.dryWet.fade.value).is.closeTo(0.22, 0.01);
+			expect(ap.wet.value).is.closeTo(0.22, 0.01);
 			ap.dispose();
 		});
 	});
