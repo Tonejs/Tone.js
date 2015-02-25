@@ -40,10 +40,13 @@ function(Tone){
 	 */
 
 	/**
-	 *  @class  oscillator-based transport allows for simple musical timing
-	 *          supports tempo curves and time changes
+	 *  @class  Oscillator-based transport allows for simple musical timing
+	 *          supports tempo curves and time changes. Do not construct
+	 *          an instance of the transport. One is automatically created 
+	 *          on init and additional transports cannot be created. <br><br>
+	 *          If you need to schedule highly independent callback functions,
+	 *          check out {@link Tone.Clock}.
 	 *
-	 *  @constructor
 	 *  @extends {Tone}
 	 */
 	Tone.Transport = function(){
@@ -224,7 +227,7 @@ function(Tone){
 				timelineTicks % tatum !== 0 && //not on a downbeat
 				timelineTicks % swingTatum === 0){
 				//add some swing
-				tickTime += this.ticksToSeconds(swingTatum) * swingAmount;
+				tickTime += this._ticksToSeconds(swingTatum) * swingAmount;
 			}
 			processIntervals(tickTime);
 			processTimeouts(tickTime);
@@ -331,7 +334,7 @@ function(Tone){
 	 *  @return {number} the id of the interval
 	 */
 	Tone.Transport.prototype.setInterval = function(callback, interval, ctx){
-		var tickTime = this.toTicks(interval);
+		var tickTime = this._toTicks(interval);
 		var timeout = new TimelineEvent(callback, ctx, tickTime, transportTicks);
 		intervals.push(timeout);
 		return timeout.id;
@@ -385,7 +388,7 @@ function(Tone){
 	 *  @return {number} the id of the timeout for clearing timeouts
 	 */
 	Tone.Transport.prototype.setTimeout = function(callback, time, ctx){
-		var ticks = this.toTicks(time);
+		var ticks = this._toTicks(time);
 		var timeout = new TimelineEvent(callback, ctx, ticks + transportTicks, 0);
 		//put it in the right spot
 		for (var i = 0, len = timeouts.length; i<len; i++){
@@ -449,7 +452,7 @@ function(Tone){
 	 *  @return {number} 				the id for clearing the transportTimeline event
 	 */
 	Tone.Transport.prototype.setTimeline = function(callback, timeout, ctx){
-		var ticks = this.toTicks(timeout);
+		var ticks = this._toTicks(timeout);
 		var timelineEvnt = new TimelineEvent(callback, ctx, ticks, 0);
 		//put it in the right spot
 		for (var i = timelineProgress, len = transportTimeline.length; i<len; i++){
@@ -498,9 +501,10 @@ function(Tone){
 	/**
 	 *  turns the time into
 	 *  @param  {Tone.Time} time
-	 *  @return {number}      
+	 *  @return {number}   
+	 *  @private   
 	 */
-	Tone.Transport.prototype.toTicks = function(time){
+	Tone.Transport.prototype._toTicks = function(time){
 		//get the seconds
 		var seconds = this.toSeconds(time);
 		var quarter = this.notationToSeconds("4n");
@@ -517,8 +521,9 @@ function(Tone){
 	 *  @param {number=} bpm 
 	 *  @param {number=} timeSignature
 	 *  @return {number}               seconds
+	 *  @private
 	 */
-	Tone.Transport.prototype.ticksToSeconds = function(ticks, bpm, timeSignature){
+	Tone.Transport.prototype._ticksToSeconds = function(ticks, bpm, timeSignature){
 		ticks = Math.floor(ticks);
 		var quater = this.notationToSeconds("4n", bpm, timeSignature);
 		return (quater * ticks) / (tatum);
@@ -531,13 +536,13 @@ function(Tone){
 	 */
 	Tone.Transport.prototype.nextBeat = function(subdivision){
 		subdivision = this.defaultArg(subdivision, "4n");
-		var tickNum = this.toTicks(subdivision);
+		var tickNum = this._toTicks(subdivision);
 		var remainingTicks = (transportTicks % tickNum);
 		var nextTick = remainingTicks;
 		if (remainingTicks > 0){
 			nextTick = tickNum - remainingTicks;
 		}
-		return this.ticksToSeconds(nextTick);
+		return this._ticksToSeconds(nextTick);
 	};
 
 
@@ -555,7 +560,7 @@ function(Tone){
 	Tone.Transport.prototype.start = function(time, offset){
 		if (this.state === TransportState.STOPPED || this.state === TransportState.PAUSED){
 			if (!this.isUndef(offset)){
-				this._setTicks(this.toTicks(offset));
+				this._setTicks(this._toTicks(offset));
 			}
 			this.state = TransportState.STARTED;
 			var startTime = this.toSeconds(time);
@@ -652,10 +657,10 @@ function(Tone){
 	 */
 	Object.defineProperty(Tone.Transport.prototype, "loopStart", {
 		get : function(){
-			return this.ticksToSeconds(loopStart);
+			return this._ticksToSeconds(loopStart);
 		},
 		set : function(startPosition){
-			loopStart = this.toTicks(startPosition);
+			loopStart = this._toTicks(startPosition);
 		}
 	});
 
@@ -667,10 +672,10 @@ function(Tone){
 	 */
 	Object.defineProperty(Tone.Transport.prototype, "loopEnd", {
 		get : function(){
-			return this.ticksToSeconds(loopEnd);
+			return this._ticksToSeconds(loopEnd);
 		},
 		set : function(endPosition){
-			loopEnd = this.toTicks(endPosition);
+			loopEnd = this._toTicks(endPosition);
 		}
 	});
 
@@ -720,7 +725,7 @@ function(Tone){
 		set : function(subdivision){
 			//scale the values to a normal range
 			swingSubdivision = subdivision;
-			swingTatum = this.toTicks(subdivision);
+			swingTatum = this._toTicks(subdivision);
 		}
 	});
 
@@ -742,7 +747,7 @@ function(Tone){
 			return progress.join(":");
 		},
 		set : function(progress){
-			var ticks = this.toTicks(progress);
+			var ticks = this._toTicks(progress);
 			this._setTicks(ticks);
 		}
 	});
@@ -857,7 +862,7 @@ function(Tone){
 	 *  A Timeline event
 	 *
 	 *  @constructor
-	 *  @internal
+	 *  @private
 	 *  @param {function(number)} callback   
 	 *  @param {Object}   context    
 	 *  @param {number}   tickTime
