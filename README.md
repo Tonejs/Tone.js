@@ -33,7 +33,7 @@ The fastest way to include Tone.js on your page is to use the CDN (not for produ
 
 It's always much safer to use a specific version rather than just "latest".
 
-[Full Installation Instruction](Installation)
+[Full Installation Instruction](https://github.com/TONEnoTONE/Tone.js/wiki/Installation)
 
 # Hello World
 
@@ -58,43 +58,43 @@ Tone.Transport.start();
 
 A unique feature of the library is the oscillator-based Transport which allows for application-wide synchronization of sources and signals. The Transport allows you to register callbacks at precise moments along the timeline which are invoked right before the event with the exact time of the event. Additionally, because the Transport is implemented with an oscillator, it is capable of elaborate tempo curves and automation. 
 
-[Read more](Transport).
+[Read more](https://github.com/TONEnoTONE/Tone.js/wiki/Transport).
 
 ### Time
 
 In the Tone library, time can be described in a number of ways. Any method which takes a time as a parameter will accept the number in seconds as well as a tempo-relative form. 
 
-[Read more about Tone.Time](Time).
+[Read more about Tone.Time](https://github.com/TONEnoTONE/Tone.js/wiki/Time).
 
 # Sources
 
 Aside from the 4 basic oscillator types (sine, square, triangle, sawtooth), Tone.js provides a few other sources such as a buffer player (Tone.Player), a noise generator, and two additional oscillator types (pwm, pulse). 
 
-[Read more](Sources).
+[Read more](https://github.com/TONEnoTONE/Tone.js/wiki/Sources).
 
 # Instruments
 
 Tone has a few prebuilt synthesizers. 
 
-[Read more about how to use them](Instruments).
+[Read more about how to use them](https://github.com/TONEnoTONE/Tone.js/wiki/Instruments).
 
 # Effects
 
 Tone.js also has a few stereo and mono effects some of which also have their own presets. 
 
-[Read more](Effects).
+[Read more](https://github.com/TONEnoTONE/Tone.js/wiki/Effects).
 
 # Components
 
 Tone.js provides a number number of useful components for building synthesizers and effects. 
 
-[Read more](Components).
+[Read more](https://github.com/TONEnoTONE/Tone.js/wiki/Components).
 
 # Signals
 
 Like the underlying Web Audio API, Tone.js is built with audio-rate signal control over nearly everything. This is a powerful feature which allows for sample-accurate synchronization of multiple parameters with a single signal. Signals are built entirely without the ScriptProcessorNode so they do not introduce much latency and processing overhead. Instead, all signal math and logic let GainNodes and WaveShaperNodes do all of the work so that all processing is done in the underlying Assembly/C/C++ provided by the API. Signals are used extensively internally and are also useful for general DSP and control signal logic and transformations. 
 
-Read more about [signals](Signals) and [signal operators](Signal Math).
+Read more about [signals](https://github.com/TONEnoTONE/Tone.js/wiki/Signals) and [signal operators](https://github.com/TONEnoTONE/Tone.js/wiki/Signal Math).
 
 # AudioContext
 
