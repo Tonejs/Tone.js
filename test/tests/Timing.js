@@ -1,7 +1,7 @@
 /* global it, describe*/
 
-define(["chai", "Tone/core/Tone", "Tone/core/Transport", "tests/Core", "tests/Common"], 
-function(chai, Tone, Transport, Core, Test){
+define(["chai", "Tone/core/Tone", "Tone/core/Transport", "tests/Core", "tests/Common", "Tone/core/Note"], 
+function(chai, Tone, Transport, Core, Test, Note){
 	var expect = chai.expect;
 	var tone = new Tone();
 
