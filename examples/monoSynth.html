@@ -56,6 +56,7 @@
 			<div id="FilterEnvelope"></div>
 		</div>
 		<div id="Filter"></div>
+		<div id="Presets"></div>
 	</div>
 
 	<script id="ToneCode" type="text/javascript">			
@@ -91,6 +92,8 @@
 		Interface.Rack("Filter", "Filter", true);
 		var type = Interface.DropDown("Filter", synth.filter, "type", ["lowpass", "highpass", "bandpass"]);
 		var Q = Interface.Slider("Filter", synth.filter, "Q", 0.1, 20);
+		Interface.Rack("Presets", "Presets", true);
+		Interface.Presets("Presets", synth);
 		
 	</script>
 </body>
