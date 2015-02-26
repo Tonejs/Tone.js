@@ -2,16 +2,21 @@ module.exports = function(grunt) {
 
 	// Project configuration.
 	grunt.initConfig({
-		//pkg: grunt.file.readJSON("package.json"),
 		jsdoc : {
 			src : {
-				src: ["../Tone/**/*.js", "!../Tone/*/preset/*", "../README.md"], 
+				src: ["../Tone/core/*.js", "!../Tone/*/preset/*", "../README.md"], 
 				options: {
+					destination: "../docs",
+					configure : "./jsdoc.conf.json",
+					template: "./node_modules/jsdoc-oblivion/template",
+					private : false
+				},
+				/*options: {
 					destination: "../doc",
 					template : "./vendor",
 					configure : "./vendor/jsdoc.conf.json",
 					private : false
-				}
+				}*/
 			},
 		},
 		requirejs : {
@@ -143,11 +148,11 @@ module.exports = function(grunt) {
 				options: {
 					patterns: [
 					{
-						match: /define\('([^']*)'\w*,\w*\[([^\]]*)\]\w*,\w*/g,
+						match: /define\("([^"]*)"\w*,\w*\[([^\]]*)\]\w*,\w*/g,
 						replacement: "ToneModule("
 					},
 					{
-						match: /define\('Tone\/core\/Tone',\[\],/gi,
+						match: /define\("Tone\/core\/Tone",\[\],/gi,
 						replacement: "MainModule("
 					},
 					{
