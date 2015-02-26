@@ -66,33 +66,31 @@ In the Tone library, time can be described in a number of ways. Any method which
 
 [Read more about Tone.Time](Time).
 
-# Classes
-
-## Sources
+# Sources
 
 Aside from the 4 basic oscillator types (sine, square, triangle, sawtooth), Tone.js provides a few other sources such as a buffer player (Tone.Player), a noise generator, and two additional oscillator types (pwm, pulse). 
 
 [Read more](Sources).
 
-## Instruments
+# Instruments
 
 Tone has a few prebuilt synthesizers. 
 
 [Read more about how to use them](Instruments).
 
-## Effects
+# Effects
 
 Tone.js also has a few stereo and mono effects some of which also have their own presets. 
 
 [Read more](Effects).
 
-## Components
+# Components
 
 Tone.js provides a number number of useful components for building synthesizers and effects. 
 
 [Read more](Components).
 
-## Signals
+# Signals
 
 Like the underlying Web Audio API, Tone.js is built with audio-rate signal control over nearly everything. This is a powerful feature which allows for sample-accurate synchronization of multiple parameters with a single signal. Signals are built entirely without the ScriptProcessorNode so they do not introduce much latency and processing overhead. Instead, all signal math and logic let GainNodes and WaveShaperNodes do all of the work so that all processing is done in the underlying Assembly/C/C++ provided by the API. Signals are used extensively internally and are also useful for general DSP and control signal logic and transformations. 
 
