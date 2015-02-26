@@ -3,9 +3,9 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Expr", "Tone/signal
 	"use strict";
 
 	/**
-	 * @class  Equal power fading control values:
-	 * 	       0 = 100% input 0
-	 * 	       1 = 100% input 1
+	 * @class  Equal power fading control values:<br>
+	 * 	       0 = 100% input 0<br>
+	 * 	       1 = 100% input 1<br>
 	 *
 	 * @constructor
 	 * @extends {Tone}
@@ -28,8 +28,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Expr", "Tone/signal
 		this.b = this.input[1] = this.context.createGain();
 
 		/**
-		 *  Controls the amount of wet signal 
-		 *  which is mixed into the dry signal. 
+		 *  0 is 100% signal `a` (input 0) and 1 is 100% signal `b` (input 1).
 		 *  Values between 0-1.
 		 *  
 		 *  @type {Tone.Signal}

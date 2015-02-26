@@ -4,7 +4,7 @@ module.exports = function(grunt) {
 	grunt.initConfig({
 		jsdoc : {
 			src : {
-				src: ["../Tone/core/*.js", "!../Tone/*/preset/*", "../README.md"], 
+				src: ["../Tone/*/*.js", "!../Tone/*/preset/*", "../README.md"], 
 				options: {
 					destination: "../docs",
 					configure : "./jsdoc.conf.json",
