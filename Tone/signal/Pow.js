@@ -68,13 +68,5 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 		return this;
 	};
 
-	/**
-	 * the exponent to raise the funciton to
-	 * @memberOf Tone.Pow#
-	 * @type {number}
-	 * @name exponent
-	 */
-	Tone._defineGetterSetter(Tone.Pow, "exponent");
-
 	return Tone.Pow;
 });

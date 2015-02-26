@@ -181,9 +181,13 @@ define(function(){
 	};
 
 	/**
-	 *  get a group of parameters
+	 *  Get the object's attributes. 
+	 *  @example
+	 *  osc.get();
+	 *  //returns {"type" : "sine", "frequency" : 440, ...etc}
+	 *  osc.get("type"); //returns { "type" : "sine"}
 	 *  @param {Array=} params the parameters to get, otherwise will return 
-	 *  					   all available.
+	 *  					   all available.r
 	 */
 	Tone.prototype.get = function(params){
 		if (isUndef(params)){
@@ -240,7 +244,7 @@ define(function(){
 	///////////////////////////////////////////////////////////////////////////
 
 	/**
-	 *  A static pointer to the audio context
+	 *  A static pointer to the audio context accessible as `Tone.context`. 
 	 *  @type {AudioContext}
 	 */
 	Tone.context = audioContext;
@@ -544,22 +548,6 @@ define(function(){
 	};
 
 	/**
-	 *  @param  {number} gain (0-1)
-	 *  @return {number}      gain (decibel scale but betwee 0-1)
-	 */
-	Tone.prototype.logScale = function(gain) {
-		return  Math.max(this.normalize(this.gainToDb(gain), -100, 0), 0);
-	};
-
-	/**
-	 *  @param  {number} gain (0-1)
-	 *  @return {number}      gain (decibel scale but betwee 0-1)
-	 */
-	Tone.prototype.expScale = function(gain) {
-		return this.dbToGain(this.interpolate(gain, -100, 0));
-	};
-
-	/**
 	 *  convert db scale to gain scale (0-1)
 	 *  @param  {number} db
 	 *  @return {number}   
@@ -657,24 +645,9 @@ define(function(){
 	})();
 
 	/**
-	 *  convert a time to a frequency
-	 *  defined in "Tone/core/Transport"
-	 *  	
-	 *  @param  {Tone.Frequency} time 
-	 *  @return {number}      the time in hertz
-	 */
-	Tone.prototype.toFrequency = function(time){
-		if (this.isFrequency(time)){
-			return parseFloat(time);
-		} else {
-			return parseFloat(time);
-		}
-	};
-
-	/**
-	 *  convert a frequency into seconds
-	 *  accepts both numbers and strings 
-	 *  	i.e. 10hz or 10 both equal .1
+	 *  Convert a frequency into seconds.
+	 *  Accepts numbers and strings: i.e. `"10hz"` or 
+	 *  `10` both return `0.1`. 
 	 *  
 	 *  @param  {number|string} freq 
 	 *  @return {number}      
@@ -684,47 +657,12 @@ define(function(){
 	};
 
 	/**
-	 *  convert a number in seconds to a frequency
+	 *  Convert a number in seconds to a frequency.
 	 *  @param  {number} seconds 
 	 *  @return {number}         
 	 */
 	Tone.prototype.secondsToFrequency = function(seconds){
 		return 1/seconds;
-	};
-
-	///////////////////////////////////////////////////////////////////////////
-	//	INTERNAL STATIC METHODS
-	///////////////////////////////////////////////////////////////////////////
-
-	/**
-	 * 	Adds an ES5 getter setter to the prototype of the constructor. 
-	 * 	The prototype is expected to have a camelCase function of the 
-	 * 	property with the names getProperty and setProperty
-	 *  @private
-	 *  @static
-	 *  @param {Object} constr the constructor
-	 *  @param {string} property the property
-	 */
-	Tone._defineGetterSetter = function(constr, property){
-		var proto = constr.prototype;
-		function capitalize(string){
-		    return string.charAt(0).toUpperCase() + string.slice(1);
-		}
-		var getterName = "get"+capitalize(property);
-		var setterName = "set"+capitalize(property);
-		if (proto.hasOwnProperty(getterName) && 
-			isFunction(proto[getterName]) && 
-			proto.hasOwnProperty(setterName) && 
-			isFunction(proto[setterName])){
-			Object.defineProperty(constr.prototype, property, {
-				get : function(){
-					return this[getterName]();
-				},
-				set : function(val){
-					return this[setterName](val);
-				}
-			});
-		} 
 	};
 
 	///////////////////////////////////////////////////////////////////////////
