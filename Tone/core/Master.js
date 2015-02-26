@@ -8,7 +8,9 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	 *          such as the ability to set the global volume and mute
 	 *          the entire application. Additionally, it accepts
 	 *          a master send/receive for adding final compression, 
-	 *          limiting or effects to your application. 
+	 *          limiting or effects to your application. <br><br>
+	 *          Like the Transport, the Master output is created for you
+	 *          on initialization. It does not need to be created.
 	 *
 	 *  @constructor
 	 *  @extends {Tone}

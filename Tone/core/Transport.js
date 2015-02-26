@@ -29,15 +29,6 @@ function(Tone){
 	 *  
 	 *  @typedef {number|string|undefined} Tone.Time 
 	 */
-	
-	/**
-	 *  Frequency can be described similar to time, except ultimately the
-	 *  values are converted to frequency instead of seconds. A number
-	 *  is taken literally as the value in hertz, or any of the Tone.Time
-	 *  encodings can be used. 
-	 *  
-	 *  @typedef {number|Tone.Time} Tone.Frequency
-	 */
 
 	/**
 	 *  @class  Oscillator-based transport allows for simple musical timing
@@ -1042,28 +1033,30 @@ function(Tone){
 	};
 
 	/**
-	 *  convert a time to a frequency
-	 *  defined in "Tone/core/Transport"
+	 *  Convert a frequency representation into a number.
+	 *  Defined in "Tone/core/Transport".
 	 *  	
-	 *  @param  {Tone.Time} time 
-	 *  @return {number}      the time in hertz
+	 *  @param  {Tone.Frequency} freq 
+	 *  @param {number=} 	now 	if passed in, this number will be 
+	 *                        		used for all 'now' relative timings
+	 *  @return {number}      the frequency in hertz
 	 */
-	Tone.prototype.toFrequency = function(time, now){
-		if (this.isFrequency(time)){
-			return parseFloat(time);
-		} else if (this.isNotation(time) || this.isTransportTime(time)) {
-			return this.secondsToFrequency(this.toSeconds(time, now));
+	Tone.prototype.toFrequency = function(freq, now){
+		if (this.isFrequency(freq)){
+			return parseFloat(freq);
+		} else if (this.isNotation(freq) || this.isTransportTime(freq)) {
+			return this.secondsToFrequency(this.toSeconds(freq, now));
 		} else {
-			return time;
+			return freq;
 		}
 	};
 
 	/**
-	 *  convert Tone.Time into seconds.
-	 *  defined in "Tone/core/Transport"
+	 *  Convert Tone.Time into seconds.
+	 *  Defined in "Tone/core/Transport".
 	 *  
-	 *  unlike the method which it overrides, this takes into account 
-	 *  transporttime and musical notation
+	 *  Unlike the method which it overrides, this takes into account 
+	 *  transporttime and musical notation.
 	 *
 	 *  Time : 1.40
 	 *  Notation: 4n|1m|2t
