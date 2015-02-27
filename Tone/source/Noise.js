@@ -9,6 +9,8 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 	 *  @constructor
 	 *  @extends {Tone.Source}
 	 *  @param {string} type the noise type (white|pink|brown)
+	 *  @example
+	 *  var noise = new Tone.Noise("pink");
 	 */
 	Tone.Noise = function(){
 
@@ -49,6 +51,8 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 	 * @memberOf Tone.Noise#
 	 * @type {string}
 	 * @name type
+	 * @example
+	 * noise.type = "white";
 	 */
 	Object.defineProperty(Tone.Noise.prototype, "type", {
 		get : function(){

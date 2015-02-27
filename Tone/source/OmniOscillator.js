@@ -13,6 +13,8 @@ function(Tone){
 	 *  @constructor
 	 *  @param {frequency} frequency frequency of the oscillator (meaningless for noise types)
 	 *  @param {string} type the type of the oscillator
+	 *  @example
+	 *  var omniOsc = new Tone.OmniOscillator("C#4", "pwm");
 	 */
 	Tone.OmniOscillator = function(){
 		var options = this.optionsObject(arguments, ["frequency", "type"], Tone.OmniOscillator.defaults);
@@ -62,6 +64,16 @@ function(Tone){
 		"type" : "sine",
 		"width" : 0.4, //only applies if the oscillator is set to "pulse",
 		"modulationFrequency" : 0.4, //only applies if the oscillator is set to "pwm",
+	};
+
+	/**
+	 *  @enum {string}
+	 *  @private
+	 */
+	var OmniOscType = {
+		PulseOscillator : "PulseOscillator",
+		PWMOscillator : "PWMOscillator",
+		Oscillator : "Oscillator"
 	};
 
 	/**
@@ -141,7 +153,7 @@ function(Tone){
 	};
 
 	/**
-	 * the phase of the oscillator in degrees
+	 * The phase of the oscillator in degrees
 	 * @memberOf Tone.OmniOscillator#
 	 * @type {number}
 	 * @name phase
@@ -156,10 +168,14 @@ function(Tone){
 	});
 
 	/**
-	 * The width Signal of the oscillator (only if the oscillator is set to pulse)
-	 * @memberOf Tone.PulseOscillator#
+	 * The width of the oscillator (only if the oscillator is set to pulse)
+	 * @memberOf Tone.OmniOscillator#
 	 * @type {Tone.Signal}
 	 * @name width
+	 * @example
+	 * var omniOsc = new Tone.OmniOscillator(440, "pulse");
+	 * //can access the width attribute only if type === "pulse"
+	 * omniOsc.width.value = 0.2; 
 	 */
 	Object.defineProperty(Tone.OmniOscillator.prototype, "width", {
 		get : function(){
@@ -171,10 +187,14 @@ function(Tone){
 
 	/**
 	 * The modulationFrequency Signal of the oscillator 
-	 * (only if the oscillator type is set to pwm)
-	 * @memberOf Tone.PulseOscillator#
+	 * (only if the oscillator type is set to pwm).
+	 * @memberOf Tone.OmniOscillator#
 	 * @type {Tone.Signal}
-	 * @name width
+	 * @name modulationFrequency
+	 * @example
+	 * var omniOsc = new Tone.OmniOscillator(440, "pwm");
+	 * //can access the modulationFrequency attribute only if type === "pwm"
+	 * omniOsc.modulationFrequency.value = 0.2; 
 	 */
 	Object.defineProperty(Tone.OmniOscillator.prototype, "modulationFrequency", {
 		get : function(){
@@ -186,7 +206,6 @@ function(Tone){
 
 	/**
 	 *  clean up
-	 *  @private
 	 *  @return {Tone.OmniOscillator} `this`
 	 */
 	Tone.OmniOscillator.prototype.dispose = function(){
@@ -199,15 +218,6 @@ function(Tone){
 		this._oscillator = null;
 		this._sourceType = null;
 		return this;
-	};
-
-	/**
-	 *  @enum {string}
-	 */
-	var OmniOscType = {
-		PulseOscillator : "PulseOscillator",
-		PWMOscillator : "PWMOscillator",
-		Oscillator : "Oscillator"
 	};
 
 	return Tone.OmniOscillator;

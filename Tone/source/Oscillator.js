@@ -10,6 +10,8 @@ function(Tone){
 	 *  @extends {Tone.Source}
 	 *  @param {number|string} [frequency=440] starting frequency
 	 *  @param {string} [type="sine"] type of oscillator (sine|square|triangle|sawtooth)
+	 *  @example
+	 *  var osc = new Tone.Oscillator(440, "sine");
 	 */
 	Tone.Oscillator = function(){
 		
@@ -24,13 +26,13 @@ function(Tone){
 		this._oscillator = null;
 		
 		/**
-		 *  the frequency control signal
+		 *  The frequency control signal in hertz.
 		 *  @type {Tone.Signal}
 		 */
 		this.frequency = new Tone.Signal(options.frequency, Tone.Signal.Units.Frequency);
 
 		/**
-		 *  the detune control signal
+		 *  The detune control signal in cents. 
 		 *  @type {Tone.Signal}
 		 */
 		this.detune = new Tone.Signal(options.detune);
@@ -95,6 +97,7 @@ function(Tone){
 
 	/**
 	 *  stop the oscillator
+	 *  @private
 	 *  @param  {Tone.Time} [time=now] (optional) timing parameter
 	 *  @returns {Tone.Oscillator} `this`
 	 */
@@ -107,8 +110,15 @@ function(Tone){
 	};
 
 	/**
-	 *  sync the signal to the Transport's bpm
+	 *  Sync the signal to the Transport's bpm. Any changes to the transports bpm,
+	 *  will also affect the oscillators frequency. 
 	 *  @returns {Tone.Oscillator} `this`
+	 *  @example
+	 *  Tone.Transport.bpm.value = 120;
+	 *  osc.frequency.value = 440;
+	 *  osc.syncFrequency();
+	 *  Tone.Transport.bpm.value = 240; 
+	 *  // the frequency of the oscillator is doubled to 880
 	 */
 	Tone.Oscillator.prototype.syncFrequency = function(){
 		Tone.Transport.syncSignal(this.frequency);
@@ -116,7 +126,8 @@ function(Tone){
 	};
 
 	/**
-	 *  unsync the oscillator's frequency from teh transprot
+	 *  Unsync the oscillator's frequency from the Transport. 
+	 *  See {@link Tone.Oscillator#syncFrequency}.
 	 *  @returns {Tone.Oscillator} `this`
 	 */
 	Tone.Oscillator.prototype.unsyncFrequency = function(){
@@ -125,16 +136,19 @@ function(Tone){
 	};
 
 	/**
-	 * The type of the oscillator. sine, square, triangle, sawtooth
+	 * The type of the oscillator: either sine, square, triangle, or sawtooth.
 	 *
-	 * uses PeriodicWave even for native types so that it can set the phase
+	 * Uses PeriodicWave internally even for native types so that it can set the phase.
 	 *
-	 * the the PeriodicWave equations are from the Web Audio Source code
-	 * here: https://code.google.com/p/chromium/codesearch#chromium/src/third_party/WebKit/Source/modules/webaudio/PeriodicWave.cpp&sq=package:chromium
+	 * PeriodicWave equations are from the Web Audio Source code:
+	 * https://code.google.com/p/chromium/codesearch#chromium/src/third_party/WebKit/Source/modules/webaudio/PeriodicWave.cpp&sq=package:chromium
 	 *  
 	 * @memberOf Tone.Oscillator#
 	 * @type {string}
 	 * @name type
+	 * @example
+	 * osc.type = "square";
+	 * osc.type; //returns "square"
 	 */
 	Object.defineProperty(Tone.Oscillator.prototype, "type", {
 		get : function(){
@@ -193,10 +207,12 @@ function(Tone){
 	});
 
 	/**
-	 * the phase of the oscillator in degrees
+	 * The phase of the oscillator in degrees. 
 	 * @memberOf Tone.Oscillator#
 	 * @type {number}
 	 * @name phase
+	 * @example
+	 * osc.phase = 180; //flips the phase of the oscillator
 	 */
 	Object.defineProperty(Tone.Oscillator.prototype, "phase", {
 		get : function(){

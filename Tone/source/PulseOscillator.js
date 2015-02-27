@@ -9,7 +9,9 @@ function(Tone){
 	 *  @constructor
 	 *  @extends {Tone.Oscillator}
 	 *  @param {number} [frequency=440] the frequency of the oscillator
-	 *  @param {number} [width = 0.5] the width of the pulse
+	 *  @param {number} [width = 0.2] the width of the pulse
+	 *  @example
+	 *  var pulse = new Tone.PulseOscillator("E5", 0.4);
 	 */
 	Tone.PulseOscillator = function(){
 
@@ -25,6 +27,7 @@ function(Tone){
 		/**
 		 *  gate the width amount
 		 *  @type {GainNode}
+		 *  @private
 		 */
 		this._widthGate = this.context.createGain();
 
@@ -41,20 +44,19 @@ function(Tone){
 		});
 
 		/**
-		 *  the oscillators frequency
+		 *  The frequency in hertz
 		 *  @type {Tone.Signal}
 		 */
 		this.frequency = this._sawtooth.frequency;
 
 		/**
-		 *  the oscillators detune
+		 *  The detune in cents. 
 		 *  @type {Tone.Signal}
 		 */
 		this.detune = this._sawtooth.detune;
 
 		/**
-		 *  threshold the signal to turn it into a square
-		 *  
+		 *  Threshold the signal to turn it into a square
 		 *  @type {Tone.WaveShaper}
 		 *  @private
 		 */
@@ -74,8 +76,7 @@ function(Tone){
 	Tone.extend(Tone.PulseOscillator, Tone.Oscillator);
 
 	/**
-	 *  the default parameters
-	 *
+	 *  The default parameters.
 	 *  @static
 	 *  @const
 	 *  @type {Object}
@@ -101,7 +102,7 @@ function(Tone){
 	/**
 	 *  stop the oscillator
 	 *  @param  {Tone.Time} time 
-	 *  @returns {Tone.PulseOscillator} `this`
+	 *  @private
 	 */
 	Tone.PulseOscillator.prototype._stop = function(time){
 		time = this.toSeconds(time);
@@ -112,7 +113,7 @@ function(Tone){
 	};
 
 	/**
-	 * the phase of the oscillator in degrees
+	 * The phase of the oscillator in degrees.
 	 * @memberOf Tone.PulseOscillator#
 	 * @type {number}
 	 * @name phase
@@ -127,7 +128,8 @@ function(Tone){
 	});
 
 	/**
-	 * The type of the oscillator.
+	 * The type of the oscillator. Always returns "pulse".
+	 * @readOnly
 	 * @memberOf Tone.PulseOscillator#
 	 * @type {string}
 	 * @name type
@@ -139,7 +141,7 @@ function(Tone){
 	});
 
 	/**
-	 *  clean up method
+	 *  Clean up method
 	 *  @return {Tone.PulseOscillator} `this`
 	 */
 	Tone.PulseOscillator.prototype.dispose = function(){

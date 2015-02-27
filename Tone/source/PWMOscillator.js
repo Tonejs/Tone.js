@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/source/Source", "Tone/source/PulseOscillator", "Tone/source/Oscillator"], 
+define(["Tone/core/Tone", "Tone/source/Source", "Tone/source/PulseOscillator", "Tone/source/Oscillator", "Tone/signal/Multiply"], 
 function(Tone){
 
 	"use strict";
@@ -10,7 +10,9 @@ function(Tone){
 	 *  @extends {Tone.Oscillator}
 	 *  @constructor
 	 *  @param {frequency} frequency frequency of the oscillator (meaningless for noise types)
-	 *  @param {string} type the type of the oscillator
+	 *  @param {number} modulationFrequency the modulation frequency of the oscillator
+	 *  @example
+	 *  var pwm = new Tone.PWMOscillator("Ab3", 0.3);
 	 */
 	Tone.PWMOscillator = function(){
 		var options = this.optionsObject(arguments, ["frequency", "modulationFrequency"], Tone.PWMOscillator.defaults);
@@ -25,11 +27,21 @@ function(Tone){
 
 		/**
 		 *  the modulator
+		 *  @type {Tone.Oscillator}
+		 *  @private
 		 */
 		this._modulator = new Tone.Oscillator({
 			"frequency" : options.frequency,
 			"detune" : options.detune
 		});
+
+		/**
+		 *  Scale the oscillator so it doesn't go silent 
+		 *  at the extreme values.
+		 *  @type {Tone.Multiply}
+		 *  @private
+		 */
+		this._scale = new Tone.Multiply(1.01);
 
 		/**
 		 *  the frequency control
@@ -50,7 +62,7 @@ function(Tone){
 		this.modulationFrequency = this._pulse.frequency;	
 
 		//connections
-		this._modulator.connect(this._pulse.width);
+		this._modulator.chain(this._scale, this._pulse.width);
 		this._pulse.connect(this.output);
 	};
 
@@ -91,8 +103,8 @@ function(Tone){
 	};
 
 	/**
-	 * The type of the oscillator.
-	 *  
+	 * The type of the oscillator. Always returns "pwm".
+	 * @readOnly
 	 * @memberOf Tone.PWMOscillator#
 	 * @type {string}
 	 * @name type
@@ -104,7 +116,7 @@ function(Tone){
 	});
 
 	/**
-	 * the phase of the oscillator in degrees
+	 * The phase of the oscillator in degrees.
 	 * @memberOf Tone.PWMOscillator#
 	 * @type {number}
 	 * @name phase
@@ -126,6 +138,8 @@ function(Tone){
 		Tone.Source.prototype.dispose.call(this);
 		this._pulse.dispose();
 		this._pulse = null;
+		this._scale.dispose();
+		this._scale = null;
 		this._modulator.dispose();
 		this._modulator = null;
 		this.frequency = null;

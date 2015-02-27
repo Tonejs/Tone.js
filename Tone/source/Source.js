@@ -17,8 +17,12 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Master"], function(T
 		options = this.defaultArg(options, Tone.Source.defaults);
 
 		/**
-		 * the onended callback when the source is done playing
+		 * The onended callback when the source is done playing.
 		 * @type {function}
+		 * @example
+		 *  source.onended = function(){
+		 *  	console.log("the source is done playing");
+		 *  }
 		 */
 		this.onended = options.onended;
 
@@ -37,8 +41,10 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Master"], function(T
 		this._nextStop = Infinity;
 
 		/**
-		 * the volume of the output in decibels
+		 * The volume of the output in decibels.
 		 * @type {Tone.Signal}
+		 * @example
+		 * source.volume.value = -6;
 		 */
 		this.volume = new Tone.Signal(this.output.gain, Tone.Signal.Units.Decibels);
 
@@ -54,8 +60,7 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Master"], function(T
 	Tone.extend(Tone.Source);
 
 	/**
-	 *  the default parameters
-	 *
+	 *  The default parameters
 	 *  @static
 	 *  @const
 	 *  @type {Object}
@@ -66,7 +71,16 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Master"], function(T
 	};
 
 	/**
-	 *  The state of the source.
+	 *  @enum {string}
+	 */
+	Tone.Source.State = {
+		STARTED : "started",
+		PAUSED : "paused",
+		STOPPED : "stopped",
+ 	};
+
+	/**
+	 *  Returns the playback state of the source, either "started" or "stopped".
 	 *  @type {Tone.Source.State}
 	 *  @readOnly
 	 *  @memberOf Tone.Source#
@@ -99,6 +113,8 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Master"], function(T
 	 *  Start the source at the time.
 	 *  @param  {Tone.Time} [time=now]
 	 *  @returns {Tone.Source} `this`
+	 *  @example
+	 *  source.start("+0.5"); //starts the source 0.5 seconds from now
 	 */
 	Tone.Source.prototype.start = function(time){
 		time = this.toSeconds(time);
@@ -114,6 +130,8 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Master"], function(T
 	 * 	stop the source
 	 *  @param  {Tone.Time} [time=now]
 	 *  @returns {Tone.Source} `this`
+	 *  @example
+	 *  source.stop(); // stops the source immediately
 	 */
 	Tone.Source.prototype.stop = function(time){
 		var now = this.now();
@@ -134,6 +152,8 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Master"], function(T
 	};
 
 	/**
+	 *  Not ready yet. 
+ 	 *  @private
  	 *  @abstract
 	 *  @param  {Tone.Time} time 
 	 *  @returns {Tone.Source} `this`
@@ -145,9 +165,12 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Master"], function(T
 	};
 
 	/**
-	 *  sync the source to the Transport
+	 *  Sync the source to the Transport so that when the transport
+	 *  is started, this source is started and when the transport is stopped
+	 *  or paused, so is the source. 
 	 *
-	 *  @param {Tone.Time} [delay=0] delay time before starting the source
+	 *  @param {Tone.Time} [delay=0] Delay time before starting the source after the
+	 *                               Transport has started. 
 	 *  @returns {Tone.Source} `this`
 	 */
 	Tone.Source.prototype.sync = function(delay){
@@ -156,7 +179,7 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Master"], function(T
 	};
 
 	/**
-	 *  unsync the source to the Transport
+	 *  Unsync the source to the Transport. See {@link Tone.Source#sync}
 	 *  @returns {Tone.Source} `this`
 	 */
 	Tone.Source.prototype.unsync = function(){
@@ -176,16 +199,6 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Master"], function(T
 		this.volume.dispose();
 		this.volume = null;
 	};
-
-	/**
-	 *  @enum {string}
-	 */
-	Tone.Source.State = {
-		STARTED : "started",
-		PAUSED : "paused",
-		STOPPED : "stopped",
-		WAITING : "waiting"
- 	};
 
 	return Tone.Source;
 });

@@ -7,8 +7,12 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 	 *  
 	 *  @constructor
 	 *  @extends {Tone.Source} 
-	 *  @param {string|AudioBuffer} url either the AudioBuffer or the url from
+	 *  @param {string|AudioBuffer} url Either the AudioBuffer or the url from
 	 *                                  which to load the AudioBuffer
+	 *  @param {function=} onload The function to invoke when the buffer is loaded. 
+	 *                            Recommended to use {@link Tone.Buffer#onload} instead.
+	 *  @example
+	 *  var player = new Tone.Player("./path/to/sample.mp3");
 	 */
 	Tone.Player = function(){
 		
@@ -38,12 +42,14 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 		/**
 		 *  if 'loop' is true, the loop will start at this position
 		 *  @type {Tone.Time}
+		 *  @private
 		 */
 		this._loopStart = options.loopStart;
 
 		/**
 		 *  if 'loop' is true, the loop will end at this position
 		 *  @type {Tone.Time}
+		 *  @private
 		 */
 		this._loopEnd = options.loopEnd;
 
@@ -55,9 +61,8 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 		this._playbackRate = options.playbackRate;
 
 		/**
-		 *  enabling retrigger will allow a player to be restarted
-		 *  before the the previous 'start' is done playing
-		 *  
+		 *  Enabling retrigger will allow a player to be restarted
+		 *  before the the previous 'start' is done playing.
 		 *  @type {boolean}
 		 */
 		this.retrigger = options.retrigger;
@@ -77,17 +82,20 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 		"loop" : false,
 		"loopStart" : 0,
 		"loopEnd" : 0,
-		"retrigger" : false
+		"retrigger" : false,
 	};
 
 	/**
 	 *  Load the audio file as an audio buffer.
 	 *  Decodes the audio asynchronously and invokes
-	 *  the callback once the audio buffer loads.
-	 * @param {string} url the url of the buffer to load.
-	 *        filetype support depends on the
-	 *        browser.
-	 * @param  {function(Tone.Player)=} callback
+	 *  the callback once the audio buffer loads. 
+	 *  Note: this does not need to be called, if a url
+	 *  was passed in to the constructor. Only use this
+	 *  if you want to manually load a new url. 
+	 * @param {string} url The url of the buffer to load.
+	 *                     filetype support depends on the
+	 *                     browser.
+	 *  @param  {function(Tone.Player)=} callback
 	 *  @returns {Tone.Player} `this`
 	 */
 	Tone.Player.prototype.load = function(url, callback){
@@ -159,10 +167,14 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 	};
 
 	/**
-	 *  set the loop start and end
-	 *  @param {Tone.Time} loopStart the loop end time
-	 *  @param {Tone.Time} loopEnd the loop end time
+	 *  Set the loop start and end. Will only loop if `loop` is 
+	 *  set to `true`. 
+	 *  @param {Tone.Time} loopStart The loop end time
+	 *  @param {Tone.Time} loopEnd The loop end time
 	 *  @returns {Tone.Player} `this`
+	 *  @example
+	 *  player.setLoopPoints(0.2, 0.3);
+	 *  player.loop = true;
 	 */
 	Tone.Player.prototype.setLoopPoints = function(loopStart, loopEnd){
 		this.loopStart = loopStart;
@@ -171,7 +183,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 	};
 
 	/**
-	 * if 'loop' is true, the loop will start at this position
+	 * If `loop` is true, the loop will start at this position. 
 	 * @memberOf Tone.Player#
 	 * @type {Tone.Time}
 	 * @name loopStart
@@ -189,7 +201,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 	});
 
 	/**
-	 * if 'loop' is true, the loop will end at this position
+	 * If `loop` is true, the loop will end at this position.
 	 * @memberOf Tone.Player#
 	 * @type {Tone.Time}
 	 * @name loopEnd
@@ -222,7 +234,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 	});
 
 	/**
-	 * if the buffer should loop once it's over
+	 * If the buffer should loop once it's over. 
 	 * @memberOf Tone.Player#
 	 * @type {boolean}
 	 * @name loop
