@@ -624,7 +624,7 @@ function(core, chai, Signal, Add, Multiply, Scale, Oscillator, Master, Abs, Nega
 		this.timeout(maxTimeout);
 
 		it("can be created and disposed", function(){
-			var mod = new Modulo(1);
+			var mod = new Modulo(0.1);
 			mod.dispose();
 			Test.wasDisposed(mod);
 		});
@@ -636,15 +636,15 @@ function(core, chai, Signal, Add, Multiply, Scale, Oscillator, Master, Abs, Nega
 			mod.dispose();
 		});
 
-		it("can evaluate modulus on integers", function(done){
+		it("can evaluate 0.45 % 0.3", function(done){
 			var signal, mod;
 			Test.offlineTest(0.2, function(dest){
-				signal = new Signal(4);
-				mod = new Modulo(3);
+				signal = new Signal(0.45);
+				mod = new Modulo(0.3);
 				signal.connect(mod);
 				mod.connect(dest);
 			}, function(sample){
-				expect(sample).to.equal(1);
+				expect(sample).to.be.closeTo(0.15, 0.0001);
 			}, function(){
 				signal.dispose();
 				mod.dispose();
@@ -652,11 +652,11 @@ function(core, chai, Signal, Add, Multiply, Scale, Oscillator, Master, Abs, Nega
 			});
 		});
 
-		it("can evaluate modulus on floats", function(done){
+		it("can evaluate 0.1 % 0.2", function(done){
 			var signal, mod;
 			Test.offlineTest(0.2, function(dest){
-				signal = new Signal(1.1);
-				mod = new Modulo(1);
+				signal = new Signal(0.1);
+				mod = new Modulo(0.2);
 				signal.connect(mod);
 				mod.connect(dest);
 			}, function(sample){

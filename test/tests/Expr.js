@@ -472,26 +472,26 @@ function(core, chai, Signal, Expr, Test){
 			});
 		});
 
-		it("handles mod(10, 9)", function(done){
+		it("handles mod(0.1, 0.9)", function(done){
 			var exp;
 			Test.offlineTest(0.1, function(dest){
-				exp = new Expr("mod(10, 9)");
+				exp = new Expr("mod(0.1, 0.9)");
 				exp.connect(dest);
 			}, function(sample){
-				expect(sample).to.equal(1);
+				expect(sample).to.be.closeTo(0.1, 0.0001);
 			}, function(){
 				exp.dispose();
 				done();
 			});
 		});
 
-		it("handles mod(1.1, 1, 4)", function(done){
+		it("handles mod(0.5, 0.25)", function(done){
 			var exp;
 			Test.offlineTest(0.1, function(dest){
-				exp = new Expr("mod(1.1, 1)");
+				exp = new Expr("mod(0.6, 0.25)");
 				exp.connect(dest);
 			}, function(sample){
-				expect(sample).to.be.closeTo(0.1, 0.001);
+				expect(sample).to.be.closeTo(0.1, 0.0001);
 			}, function(){
 				exp.dispose();
 				done();
