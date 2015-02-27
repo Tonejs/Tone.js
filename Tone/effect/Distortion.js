@@ -9,6 +9,8 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/signal/WaveShaper"], funct
 	 *  @extends {Tone.Effect}
 	 *  @constructor
 	 *  @param {number} distortion the amount of distortion (nominal range of 0-1)
+	 *  @example
+	 *  var dist = new Tone.Distortion(0.8);
 	 */
 	Tone.Distortion = function(){
 

@@ -8,6 +8,8 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/LFO", "Tone/comp
 	 *  @constructor
 	 *  @extends {Tone.Effect}
 	 *  @param {number} [frequency=1] (optional) rate in HZ of the left-right pan
+	 *  @example
+	 *  var autoPanner = new Tone.AutoPanner("4n");
 	 */
 	Tone.AutoPanner = function(){
 
@@ -62,8 +64,7 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/LFO", "Tone/comp
 	};
 	
 	/**
-	 * Start the panner
-	 * 
+	 * Start the panner.
 	 * @param {Tone.Time} [time=now] the panner begins.
 	 * @returns {Tone.AutoPanner} `this`
 	 */
@@ -73,8 +74,7 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/LFO", "Tone/comp
 	};
 
 	/**
-	 * Stop the panner
-	 * 
+	 * Stop the panner.
 	 * @param {Tone.Time} [time=now] the panner stops.
 	 * @returns {Tone.AutoPanner} `this`
 	 */
@@ -84,7 +84,7 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/LFO", "Tone/comp
 	};
 
 	/**
-	 * sync the panner to the transport
+	 * Sync the panner to the transport.
 	 * @returns {Tone.AutoPanner} `this`
 	 */
 	Tone.AutoPanner.prototype.sync = function(){
@@ -93,7 +93,7 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/LFO", "Tone/comp
 	};
 
 	/**
-	 * unsync the panner from the transport
+	 * Unsync the panner from the transport
 	 * @returns {Tone.AutoPanner} `this`
 	 */
 	Tone.AutoPanner.prototype.unsync = function(){

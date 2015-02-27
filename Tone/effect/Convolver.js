@@ -8,6 +8,8 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/effect/Effect"], function(To
 	 *  @constructor
 	 *  @extends {Tone.Effect}
 	 *  @param {string|AudioBuffer=} url
+	 *  @example
+	 *  var convolver = new Tone.Convolver("./path/to/ir.wav");
 	 */
 	Tone.Convolver = function(url){
 
@@ -51,7 +53,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/effect/Effect"], function(To
 	});
 
 	/**
-	 *  Load the impulse response url as an audio buffer.
+	 *  Load an impulse response url as an audio buffer.
 	 *  Decodes the audio asynchronously and invokes
 	 *  the callback once the audio buffer loads.
 	 *  @param {string} url the url of the buffer to load.

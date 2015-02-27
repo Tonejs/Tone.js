@@ -3,27 +3,29 @@ define(["Tone/core/Tone"], function(Tone){
 	"use strict";
 
 	/**
-	 *  @class  merge a left and a right channel into a single stereo channel
-	 *          instead of connecting to the input, connect to either the left, or right input.
-	 *          default input for connect is left input.
+	 *  @class  Merge a left and a right channel into a single stereo channel.
 	 *
 	 *  @constructor
 	 *  @extends {Tone}
+	 *  @example
+	 *  var merge = new Tone.Merge();
+	 *  sigLeft.connect(merge.left);
+	 *  sigRight.connect(merge.right);
 	 */
 	Tone.Merge = function(){
 
 		Tone.call(this, 2, 1);
 
 		/**
-		 *  the left input channel
-		 *  alias for input 0
+		 *  The left input channel.
+		 *  Alias for input 0
 		 *  @type {GainNode}
 		 */
 		this.left = this.input[0] = this.context.createGain();
 
 		/**
-		 *  the right input channel
-		 *  alias for input 1
+		 *  The right input channel.
+		 *  Alias for input 1.
 		 *  @type {GainNode}
 		 */
 		this.right = this.input[1] = this.context.createGain();

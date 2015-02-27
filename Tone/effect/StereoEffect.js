@@ -40,12 +40,14 @@ function(Tone){
 		/**
 		 *  the effects send LEFT
 		 *  @type {GainNode}
+		 *  @private
 		 */
 		this.effectSendL = this._split.left;
 
 		/**
 		 *  the effects send RIGHT
 		 *  @type {GainNode}
+		 *  @private
 		 */
 		this.effectSendR = this._split.right;
 

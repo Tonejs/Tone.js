@@ -9,8 +9,10 @@ define(["Tone/core/Tone", "Tone/component/Follower", "Tone/signal/GreaterThan"],
 	 *  @constructor
 	 *  @extends {Tone}
 	 *  @param {number} [threshold = -40] the threshold in Decibels
-	 *  @param {number} [attack = 0.1] the follower's attack time
-	 *  @param {number} [release = 0.1] the follower's release time
+	 *  @param {Tone.Time} [attack = 0.1] the follower's attack time
+	 *  @param {Tone.Time} [release = 0.1] the follower's release time
+	 *  @example
+	 *  var gate = new Tone.Gate(-30, 0.2, 0.3);
 	 */
 	Tone.Gate = function(){
 		

@@ -7,6 +7,9 @@ define(["Tone/core/Tone"], function(Tone){
 	 *	
 	 *  @constructor
 	 *  @extends {Tone}
+	 *  @example
+	 *  var split = new Tone.Split();
+	 *  stereoSignal.connect(split);
 	 */
 	Tone.Split = function(){
 

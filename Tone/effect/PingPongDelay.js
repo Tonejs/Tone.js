@@ -10,10 +10,14 @@ function(Tone){
 	 * 	@constructor
 	 * 	@extends {Tone.StereoXFeedbackEffect}
 	 *  @param {Tone.Time|Object} [delayTime=0.25] is the interval between consecutive echos
+	 *  @param {number=} feedback The amount of the effected signal which 
+	 *                            is fed back through the delay.
+	 *  @example
+	 *  var pingPong = new Tone.PingPongDelay("4n", 0.2);
 	 */
 	Tone.PingPongDelay = function(){
 		
-		var options = this.optionsObject(arguments, ["delayTime"], Tone.PingPongDelay.defaults);
+		var options = this.optionsObject(arguments, ["delayTime", "feedback"], Tone.PingPongDelay.defaults);
 		Tone.StereoXFeedbackEffect.call(this, options);
 
 		/**

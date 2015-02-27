@@ -13,6 +13,9 @@ function(Tone){
 	 *  @constructor
 	 *  @extends {Tone}
 	 *  @param {number} [initialPan=0.5] the initail panner value (defaults to 0.5 = center)
+	 *  @example
+	 *  var panner = new Tone.Panner(1);
+	 *  // ^ pan the input signal hard right. 
 	 */
 	Tone.Panner = function(initialPan){
 

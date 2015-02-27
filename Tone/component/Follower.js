@@ -14,6 +14,8 @@ function(Tone){
 	 *  @extends {Tone}
 	 *  @param {Tone.Time} [attack = 0.05] 
 	 *  @param {Tone.Time} [release = 0.5] 
+	 *  @example
+	 *  var follower = new Tone.Follower(0.2, 0.4);
 	 */
 	Tone.Follower = function(){
 
@@ -152,6 +154,7 @@ function(Tone){
 	/**
 	 *  borrows the connect method from Signal so that the output can be used
 	 *  as a control signal {@link Tone.Signal}
+	 *  @function
 	 */
 	Tone.Follower.prototype.connect = Tone.Signal.prototype.connect;
 

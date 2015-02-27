@@ -14,6 +14,8 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	 *  @param {string} [type=lowpass] the type of filter
 	 *  @param {number} [rolloff=-12] the rolloff which is the drop per octave. 
 	 *                                 3 choices: -12, -24, and -48
+	 *  @example
+	 *  var filter = new Tone.Filter(200, "highpass");
 	 */
 	Tone.Filter = function(){
 		Tone.call(this);
@@ -86,7 +88,8 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	};
 
 	/**
-	 * The type of the filter
+	 * The type of the filter. Types: "lowpass", "highpass", 
+	 * "bandpass", "lowshelf", "highshelf", "notch", "allpass", or "peaking". 
 	 * @memberOf Tone.Filter#
 	 * @type {string}
 	 * @name type

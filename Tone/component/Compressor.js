@@ -9,6 +9,8 @@ define(["Tone/core/Tone"], function(Tone){
 	 *  @constructor
 	 *  @param {number} [threshold=-24] threshold in decibels
 	 *  @param {number} [ratio=12] gain reduction ratio
+	 *  @example
+	 *  var comp = new Tone.Compressor(-30, 3);
 	 */
 	Tone.Compressor = function(){
 

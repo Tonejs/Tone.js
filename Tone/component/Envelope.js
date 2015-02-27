@@ -11,6 +11,15 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Pow"], function(Ton
 	 *  @param {Tone.Time} [decay=0.1]	the decay time in seconds
 	 *  @param {number} [sustain=0.5] 	a percentage (0-1) of the full amplitude
 	 *  @param {Tone.Time} [release=1]	the release time in seconds
+	 *  @example
+	 *  var gainNode = Tone.context.createGain();
+	 *  var env = new Tone.Envelope({
+	 *  	"attack" : 0.1,
+	 *  	"decay" : 0.2,
+	 *  	"sustain" : 1,
+	 *  	"release" : 0.8,
+	 *  });
+	 *  env.connect(gainNode.gain);
 	 */
 	Tone.Envelope = function(){
 
@@ -71,11 +80,14 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Pow"], function(Ton
 	Tone.Envelope.prototype._timeMult = 0.25;
 
 	/**
-	 *  attack->decay->sustain linear ramp
+	 *  Trigger the attack/decay portion of the ADSR envelope. 
 	 *  @param  {Tone.Time} [time=now]
 	 *  @param {number} [velocity=1] the velocity of the envelope scales the vales.
 	 *                               number between 0-1
 	 *  @returns {Tone.Envelope} `this`
+	 *  @example
+	 *  //trigger the attack 0.5 seconds from now with a velocity of 0.2
+	 *  env.triggerAttack("+0.5", 0.2);
 	 */
 	Tone.Envelope.prototype.triggerAttack = function(time, velocity){
 		velocity = this.defaultArg(velocity, 1);
@@ -91,9 +103,12 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Pow"], function(Ton
 	};
 	
 	/**
-	 *  triggers the release of the envelope with a linear ramp
+	 *  Triggers the release of the envelope.
 	 *  @param  {Tone.Time} [time=now]
 	 *  @returns {Tone.Envelope} `this`
+	 *  @example
+	 *  //trigger release immediately
+	 *  env.triggerRelease();
 	 */
 	Tone.Envelope.prototype.triggerRelease = function(time){
 		time = this.toSeconds(time);
@@ -104,11 +119,14 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Pow"], function(Ton
 	};
 
 	/**
-	 *  trigger the attack and release after a sustain time
+	 *  Trigger the attack and release after a sustain time
 	 *  @param {Tone.Time} duration the duration of the note
 	 *  @param {Tone.Time} [time=now] the time of the attack
 	 *  @param {number} [velocity=1] the velocity of the note
 	 *  @returns {Tone.Envelope} `this`
+	 *  @example
+	 *  //trigger the attack and then the release after 0.6 seconds.
+	 *  env.triggerAttackRelease(0.6);
 	 */
 	Tone.Envelope.prototype.triggerAttackRelease = function(duration, time, velocity) {
 		time = this.toSeconds(time);
@@ -118,8 +136,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Pow"], function(Ton
 	};
 
 	/**
-	 *  borrows the connect method from {@link Tone.Signal}
-	 *  
+	 *  Borrows the connect method from {@link Tone.Signal}
 	 *  @function
 	 */
 	Tone.Envelope.prototype.connect = Tone.Signal.prototype.connect;

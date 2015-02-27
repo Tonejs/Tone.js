@@ -28,6 +28,8 @@ function(Tone){
 	 *                                 value between (0,1)
 	 *  @param {number} [dampening=0.5] filtering which is applied to the reverb. 
 	 *                                  value between [0,1]
+	 *  @example
+	 *  var freeverb = new Tone.Freeverb(0.4, 0.2);
 	 */
 	Tone.Freeverb = function(){
 

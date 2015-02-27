@@ -37,6 +37,7 @@ define(["Tone/core/Tone", "Tone/component/CrossFade"], function(Tone){
 		 *  connect the effectSend to the input of hte effect
 		 *  
 		 *  @type {GainNode}
+		 *  @private
 		 */
 		this.effectSend = this.context.createGain();
 
@@ -44,6 +45,7 @@ define(["Tone/core/Tone", "Tone/component/CrossFade"], function(Tone){
 		 *  connect the output of the effect to the effectReturn
 		 *  
 		 *  @type {GainNode}
+		 *  @private
 		 */
 		this.effectReturn = this.context.createGain();
 

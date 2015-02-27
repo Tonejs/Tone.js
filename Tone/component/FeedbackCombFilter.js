@@ -3,7 +3,7 @@ define(["Tone/core/Tone", "Tone/signal/ScaleExp", "Tone/signal/Signal"], functio
 	"use strict";
 
 	/**
-	 *  @class A comb filter with feedback
+	 *  @class A comb filter with feedback.
 	 *
 	 *  @extends {Tone}
 	 *  @constructor

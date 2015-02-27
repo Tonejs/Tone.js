@@ -16,6 +16,8 @@ function(Tone){
 	 *                               the filter will sweep to when fully open
 	 *  @param {number} [sensitivity=0] the decibel threshold sensitivity for 
 	 *                                   the incoming signal. Normal range of -40 to 0. 
+	 *  @example
+	 *  var autoWah = new Tone.AutoWah(100, 6, -20);
 	 */
 	Tone.AutoWah = function(){
 

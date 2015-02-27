@@ -11,6 +11,8 @@ function(Tone){
 	 *	@param {number|Object} [frequency=2] the frequency of the effect
 	 *	@param {number} [delayTime=3.5] the delay of the chorus effect in ms
 	 *	@param {number} [depth=0.7] the depth of the chorus
+	 *	@example
+	 * 	var chorus = new Tone.Chorus(4, 2.5, 0.5);
 	 */
 	Tone.Chorus = function(){
 

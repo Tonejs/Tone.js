@@ -9,7 +9,9 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/signal/WaveShaper"], funct
 	 *
 	 *  @extends {Tone.Effect}
 	 *  @constructor
-	 *  @param {number} order the order of the chebyshev polynomial
+	 *  @param {number} order The order of the chebyshev polynomial. Normal range between 1-100. 
+	 *  @example
+	 *  var cheby = new Tone.Chebyshev(50);
 	 */
 	Tone.Chebyshev = function(){
 

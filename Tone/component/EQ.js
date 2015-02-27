@@ -12,6 +12,8 @@ define(["Tone/core/Tone", "Tone/component/MultibandSplit", "Tone/signal/Signal"]
 	 *  @param {number|object} [lowLevel=0] the gain applied to the lows (in db)
 	 *  @param {number} [midLevel=0] the gain applied to the mid (in db)
 	 *  @param {number} [highLevel=0] the gain applied to the high (in db)
+	 *  @example
+	 *  var eq = new Tone.EQ(-10, 3, -20);
 	 */
 	Tone.EQ = function(){
 
@@ -20,6 +22,7 @@ define(["Tone/core/Tone", "Tone/component/MultibandSplit", "Tone/signal/Signal"]
 		/**
 		 *  the output node
 		 *  @type {GainNode}
+		 *  @private
 		 */
 		this.output = this.context.createGain();
 
@@ -28,15 +31,10 @@ define(["Tone/core/Tone", "Tone/component/MultibandSplit", "Tone/signal/Signal"]
 		 *  @type {Tone.MultibandSplit}
 		 *  @private
 		 */
-		this._multibandSplit = new Tone.MultibandSplit({
+		this._multibandSplit = this.input = new Tone.MultibandSplit({
 			"lowFrequency" : options.lowFrequency,
 			"highFrequency" : options.highFrequency
 		});
-
-		/**
-		 *  input node
-		 */
-		this.input = this._multibandSplit;
 
 		/**
 		 *  the low gain

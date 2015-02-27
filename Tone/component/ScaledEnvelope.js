@@ -13,6 +13,13 @@ define(["Tone/core/Tone", "Tone/component/Envelope", "Tone/signal/Scale"],
 	 *  @param {Tone.Time} [decay=0.1]	the decay time in seconds
 	 *  @param {number} [sustain=0.5] 	a percentage (0-1) of the full amplitude
 	 *  @param {Tone.Time} [release=1]	the release time in seconds
+	 *  @example
+	 *  var scaledEnv = new Tone.ScaledEnvelope({
+	 *  	"attack" : 0.2,
+	 *  	"min" : 200,
+	 *  	"max" : 2000
+	 *  });
+	 *  scaledEnv.connect(oscillator.frequency);
 	 */
 	Tone.ScaledEnvelope = function(){
 
@@ -51,7 +58,8 @@ define(["Tone/core/Tone", "Tone/component/Envelope", "Tone/signal/Scale"],
 	};
 
 	/**
-	 * The envelope's min output value.
+	 * The envelope's min output value. This is the value which it
+	 * starts at. 
 	 * @memberOf Tone.ScaledEnvelope#
 	 * @type {number}
 	 * @name min
@@ -66,7 +74,8 @@ define(["Tone/core/Tone", "Tone/component/Envelope", "Tone/signal/Scale"],
 	});
 
 	/**
-	 * The envelope's max output value. 
+	 * The envelope's max output value. In other words, the value
+	 * at the peak of the attack portion of the envelope. 
 	 * @memberOf Tone.ScaledEnvelope#
 	 * @type {number}
 	 * @name max
@@ -81,7 +90,7 @@ define(["Tone/core/Tone", "Tone/component/Envelope", "Tone/signal/Scale"],
 	});
 
 	/**
-	 * the envelope's exponent
+	 * The envelope's exponent value. 
 	 * @memberOf Tone.ScaledEnvelope#
 	 * @type {number}
 	 * @name exponent

@@ -9,6 +9,8 @@ function(Tone){
 	 *  @constructor
 	 *  @extends {Tone.Effect}
 	 *  @param {number} bits 1-8. 
+	 *  @example
+	 *  var crusher = new Tone.BitCrusher(4);
 	 */
 	Tone.BitCrusher = function(){
 

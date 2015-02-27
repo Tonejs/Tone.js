@@ -3,10 +3,12 @@ define(["Tone/core/Tone", "Tone/component/Panner", "Tone/core/Master"], function
 	"use strict";
 
 	/**
-	 *  @class A Panner and volume in one
+	 *  @class A Panner and volume in one.
 	 *
 	 *  @extends {Tone}
 	 *  @constructor
+	 *  @example
+	 *  var panVol = new Tone.PanVol(0.25, -12);
 	 */
 	Tone.PanVol = function(pan, volume){
 		/**

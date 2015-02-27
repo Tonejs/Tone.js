@@ -34,7 +34,9 @@ function(Tone){
 	 *
 	 *  @extends {Tone.Effect}
 	 *  @constructor
-	 *  @param {number} roomSize coorelates to the decay time
+	 *  @param {number} roomSize Coorelates to the decay time. Value between 0,1
+	 *  @example
+	 *  var freeverb = new Tone.Freeverb(0.4);
 	 */
 	Tone.JCReverb = function(){
 

@@ -10,6 +10,16 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Expr", "Tone/signal
 	 * @constructor
 	 * @extends {Tone}
 	 * @param {number} [initialFade=0.5]
+	 * @example
+	 * var crossFade = new Tone.CrossFade(0.5);
+	 * effectA.connect(crossFade, 0, 0);
+	 * effectB.connect(crossFade, 0, 1);
+	 * crossFade.fade.value = 0;
+	 * // ^ only effectA is output
+	 * crossFade.fade.value = 1;
+	 * // ^ only effectB is output
+	 * crossFade.fade.value = 0.5;
+	 * // ^ the two signals are mixed equally. 
 	 */		
 	Tone.CrossFade = function(initialFade){
 

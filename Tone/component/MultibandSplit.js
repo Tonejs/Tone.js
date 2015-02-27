@@ -17,12 +17,14 @@ define(["Tone/core/Tone", "Tone/component/Filter", "Tone/signal/Signal"], functi
 		/**
 		 *  the input
 		 *  @type {GainNode}
+		 *  @private
 		 */
 		this.input = this.context.createGain();
 
 		/**
 		 *  the outputs
 		 *  @type {Array}
+		 *  @private
 		 */
 		this.output = new Array(3);
 

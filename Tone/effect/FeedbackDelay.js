@@ -7,11 +7,15 @@ define(["Tone/core/Tone", "Tone/effect/FeedbackEffect", "Tone/signal/Signal"], f
 	 *
 	 *  @constructor
 	 *  @extends {Tone.FeedbackEffect}
-	 *  @param {Tone.Time|Object} [delayTime=0.25]
+	 *  @param {Tone.Time} [delayTime=0.25] The delay time in seconds. 
+	 *  @param {number=} feedback The amount of the effected signal which 
+	 *                            is fed back through the delay.
+	 *  @example
+	 *  var feedbackDelay = new Tone.FeedbackDelay("8n", 0.25);
 	 */
 	Tone.FeedbackDelay = function(){
 		
-		var options = this.optionsObject(arguments, ["delayTime"], Tone.FeedbackDelay.defaults);
+		var options = this.optionsObject(arguments, ["delayTime", "feedback"], Tone.FeedbackDelay.defaults);
 		Tone.FeedbackEffect.call(this, options);
 
 		/**
@@ -35,11 +39,13 @@ define(["Tone/core/Tone", "Tone/effect/FeedbackEffect", "Tone/signal/Signal"], f
 	Tone.extend(Tone.FeedbackDelay, Tone.FeedbackEffect);
 
 	/**
-	 *  [defaults description]
+	 *  The default values. 
+	 *  @const
+	 *  @static
 	 *  @type {Object}
 	 */
 	Tone.FeedbackDelay.defaults = {
-		"delayTime" : 0.25
+		"delayTime" : 0.25,
 	};
 	
 	/**

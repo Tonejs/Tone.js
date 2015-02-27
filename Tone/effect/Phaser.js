@@ -11,6 +11,8 @@ function(Tone){
 	 *	@param {number|Object} [frequency=0.5] the speed of the phasing
 	 *	@param {number} [depth=10] the depth of the effect
 	 *	@param {number} [baseFrequency=400] the base frequency of the filters
+	 *	@example
+	 * 	var phaser = new Tone.Phaser(0.4, 12, 550);
 	 */
 	Tone.Phaser = function(){
 

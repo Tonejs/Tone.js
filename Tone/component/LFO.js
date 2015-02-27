@@ -15,6 +15,9 @@ function(Tone){
 	 *  @param {Tone.Time} [frequency="4n"]
 	 *  @param {number} [outputMin=0]
 	 *  @param {number} [outputMax=1]
+	 *  @example
+	 *  var lfo = new Tone.LFO("4n", 400, 4000);
+	 *  lfo.connect(filter.frequency);
 	 */
 	Tone.LFO = function(){
 
@@ -82,7 +85,7 @@ function(Tone){
 	};
 
 	/**
-	 *  start the LFO
+	 *  Start the LFO. 
 	 *  @param  {Tone.Time} [time=now] the time the LFO will start
 	 *  @returns {Tone.LFO} `this`
 	 */
@@ -92,7 +95,7 @@ function(Tone){
 	};
 
 	/**
-	 *  stop the LFO
+	 *  Stop the LFO. 
 	 *  @param  {Tone.Time} [time=now] the time the LFO will stop
 	 *  @returns {Tone.LFO} `this`
 	 */
@@ -108,6 +111,11 @@ function(Tone){
 	 *  @param {Tone.Time} [delay=0] the time to delay the start of the
 	 *                                LFO from the start of the transport
 	 *  @returns {Tone.LFO} `this`
+	 *  @example
+	 *  lfo.frequency.value = "8n";
+	 *  lfo.sync();
+	 *  // the rate of the LFO will always be an eighth note, 
+	 *  // even as the tempo changes
 	 */
 	Tone.LFO.prototype.sync = function(delay){
 		this.oscillator.sync(delay);
@@ -126,7 +134,7 @@ function(Tone){
 	};
 
 	/**
-	 * the miniumum output of the scale
+	 * The miniumum output of the LFO.
 	 * @memberOf Tone.LFO#
 	 * @type {number}
 	 * @name min
@@ -141,7 +149,7 @@ function(Tone){
 	});
 
 	/**
-	 * the maximum output of the scale
+	 * The maximum output of the LFO.
 	 * @memberOf Tone.LFO#
 	 * @type {number}
 	 * @name max
@@ -156,7 +164,7 @@ function(Tone){
 	});
 
 	/**
-	 * the type of the oscillator
+	 * The type of the oscillator: sine, square, sawtooth, triangle. 
 	 * @memberOf Tone.LFO#
 	 * @type {string}
 	 * @name type
@@ -170,8 +178,8 @@ function(Tone){
 		}
 	});
 
-	 /**
-	 * the phase of the LFO
+	/**
+	 * The phase of the LFO
 	 * @memberOf Tone.LFO#
 	 * @type {string}
 	 * @name phase
@@ -187,10 +195,7 @@ function(Tone){
 
 	/**
 	 *	Override the connect method so that it 0's out the value 
-	 *	if attached to an AudioParam or Tone.Signal. 
-	 *	
-	 *	Borrowed from {@link Tone.Signal}
-	 *	
+	 *	if attached to an AudioParam or Tone.Signal. Borrowed from {@link Tone.Signal}
 	 *  @function
 	 */
 	Tone.LFO.prototype.connect = Tone.Signal.prototype.connect;
