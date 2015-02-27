@@ -5,12 +5,6 @@ define(["Tone/core/Tone", "Tone/signal/SignalBase"], function(Tone){
 	/**
 	 *  @class Wraps the WaveShaperNode
 	 *
-	 *  ```javascript
-	 *  var timesTwo = new Tone.WaveShaper(function(val){
-	 *  	return val * 2;
-	 *  }, 2048);
-	 *  ```
-	 *
 	 *  @extends {Tone.SignalBase}
 	 *  @constructor
 	 *  @param {function(number, number)|Array|number} mapping the function used to define the values. 
@@ -20,6 +14,10 @@ define(["Tone/core/Tone", "Tone/signal/SignalBase"], function(Tone){
 	 *                                    If the argument is an array, that array will be
 	 *                                    set as the wave shapping function
 	 *  @param {number} [bufferLen=1024] the length of the WaveShaperNode buffer.
+	 *  @example
+	 *  var timesTwo = new Tone.WaveShaper(function(val){
+	 *  	return val * 2;
+	 *  }, 2048);
 	 */
 	Tone.WaveShaper = function(mapping, bufferLen){
 
@@ -60,8 +58,7 @@ define(["Tone/core/Tone", "Tone/signal/SignalBase"], function(Tone){
 	Tone.WaveShaper.prototype.setMap = function(mapping){
 		for (var i = 0, len = this._curve.length; i < len; i++){
 			var normalized = (i / (len)) * 2 - 1;
-			var normOffOne = (i / (len - 1)) * 2 - 1;
-			this._curve[i] = mapping(normalized, i, normOffOne);
+			this._curve[i] = mapping(normalized, i);
 		}
 		this._shaper.curve = this._curve;
 		return this;

@@ -3,17 +3,28 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	"use strict";
 
 	/**
-	 *  @class Add a signal and a number or two signals. 
-	 *         input 0: augend. input 1: addend. 
-	 *         The value being added to the incoming signal. Note, that
-	 *         if Add was constructed without any arguments, it expects
-	 *         that the signals to add will be connected to input 0 and input 1
-	 *         and therefore will throw an error when trying to set the value. 
+	 *  @class Add a signal and a number or two signals. <br><br>
+	 *         input 0: augend. input 1: addend. <br><br>
+	 *         Add can be used in two ways, either constructed with a value,
+	 *         or constructed with no initial value and with signals connected
+	 *         to each of its two inputs. 
 	 *
 	 *  @constructor
 	 *  @extends {Tone.Signal}
 	 *  @param {number=} value if no value is provided, Tone.Add will sum the first
 	 *                         and second inputs. 
+	 *  @example
+	 *  var signal = new Tone.Signal(2);
+	 *  var add = new Tone.Add(2);
+	 *  signal.connect(add);
+	 *  //the output of add equals 4
+	 *
+	 *  //if constructed with no arguments
+	 *  //it will add the first and second inputs
+	 *  var add = new Tone.Add();
+	 *  var sig0 = new Tone.Signal(3).connect(add, 0, 0);
+	 *  var sig1 = new Tone.Signal(4).connect(add, 0, 1);
+	 *  //the output of add equals 7. 
 	 */
 	Tone.Add = function(value){
 

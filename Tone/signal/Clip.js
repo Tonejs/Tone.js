@@ -9,6 +9,10 @@ define(["Tone/core/Tone", "Tone/signal/Max", "Tone/signal/Min", "Tone/signal/Sig
 	 *  @extends {Tone.SignalBase}
 	 *  @param {number} min the minimum value of the outgoing signal
 	 *  @param {number} max the maximum value of the outgoing signal
+	 *  @example
+	 *  var clip = new Tone.Clip(0.5, 1);
+	 *  var osc = new Tone.Oscillator().connect(clip);
+	 *  //clips the output of the oscillator to between 0.5 and 1.
 	 */
 	Tone.Clip = function(min, max){
 		//make sure the args are in the right order

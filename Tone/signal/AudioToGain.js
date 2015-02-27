@@ -7,6 +7,8 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper", "Tone/signal/Signal"], funct
 	 *
 	 *  @extends {Tone.SignalBase}
 	 *  @constructor
+	 *  @example
+	 *  var a2g = new Tone.AudioToGain();
 	 */
 	Tone.AudioToGain = function(){
 

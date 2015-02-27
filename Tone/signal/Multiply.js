@@ -11,6 +11,10 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	 *  @extends {Tone.Signal}
 	 *  @param {number=} value constant value to multiple. if no value is provided
 	 *                         it will be multiplied by the value of input 1.
+	 *  @example
+	 *  var mult = new Tone.Multiply(3);
+	 *  var sig = new Tone.Signal(2).connect(mult);
+	 *  //output of mult is 6. 
 	 */
 	Tone.Multiply = function(value){
 

@@ -10,6 +10,10 @@ define(["Tone/core/Tone", "Tone/signal/GreaterThanZero", "Tone/signal/Subtract",
 	 *  @constructor
 	 *  @extends {Tone.Signal}
 	 *  @param {number} [value=0] the value to compare to the incoming signal
+	 *  @example
+	 *  var gt = new Tone.GreaterThan(2);
+	 *  var sig = new Tone.Signal(4).connect(gt);
+	 *  //output of gt is equal 1. 
 	 */
 	Tone.GreaterThan = function(value){
 

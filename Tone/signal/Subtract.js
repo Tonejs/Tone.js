@@ -11,6 +11,10 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Negate", "Tone/signal/
 	 *  @constructor
 	 *  @param {number=} value value to subtract from the incoming signal. If the value
 	 *                         is omitted, it will subtract the second signal from the first
+	 *  @example
+	 *  var sub = new Tone.Subtract(1);
+	 *  var sig = new Tone.Signal(4).connect(sub);
+	 *  //the output of sub is 3. 
 	 */
 	Tone.Subtract = function(value){
 

@@ -15,6 +15,9 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Subtract", "Tone/signa
 	 *  @extends {Tone.SignalBase}
 	 *  @constructor
 	 *  @param {string} expr the expression to generate
+	 *  @example
+	 *  //adds the signals from input 0 and input 1.
+	 *  var expr = new Tone.Expr("$0 + $1");
 	 */
 	Tone.Expr = function(){
 
@@ -29,7 +32,7 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Subtract", "Tone/signa
 		this._nodes = [];
 
 		/**
-		 *  the inputs
+		 *  The inputs. The length is determined by the expression. 
 		 *  @type {Array}
 		 */
 		this.input = new Array(inputCount);
@@ -51,8 +54,8 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Subtract", "Tone/signa
 		}
 
 		/**
-		 *  the output node is the result of the expression
-		 *  @type {*}
+		 *  The output node is the result of the expression
+		 *  @type {Tone}
 		 */
 		this.output = result;
 	};
@@ -152,8 +155,7 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Subtract", "Tone/signa
 				regexp : /^mod/,
 				method : function(args, self){
 					var modulus = literalNumber(args[1]);
-					var bits = literalNumber(args[2]);
-					var op = new Tone.Modulo(modulus, bits);
+					var op = new Tone.Modulo(modulus);
 					self._eval(args[0]).connect(op);
 					return op;
 				}

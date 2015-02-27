@@ -9,6 +9,10 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 	 *  @extends {Tone.SignalBase}
 	 *  @constructor
 	 *  @param {number} exp the exponent to apply to the incoming signal, must be at least 2. 
+	 *  @example
+	 *  var pow = new Tone.Pow(2);
+	 *  var sig = new Tone.Signal(0.5).connect(pow);
+	 *  //output of pow is 0.25. 
 	 */
 	Tone.Pow = function(exp){
 

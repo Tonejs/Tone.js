@@ -9,6 +9,11 @@ define(["Tone/core/Tone", "Tone/signal/Equal"], function(Tone){
 	 *  @constructor
 	 *  @param {number} [inputCount=2] the number of inputs. NOTE: all inputs are
 	 *                                 connected to the single AND input node
+	 *  @example
+	 *  var and = new Tone.AND(2);
+	 *  var sigA = new Tone.Signal(0).connect(and, 0, 0);
+	 *  var sigB = new Tone.Signal(1).connect(and, 0, 1);
+	 *  //the output of and is 0. 
 	 */
 	Tone.AND = function(inputCount){
 

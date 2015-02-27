@@ -3,10 +3,12 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 	"use strict";
 
 	/**
-	 *  @class Convert an incoming signal between 0,1 to an equal power gain scale.
+	 *  @class Convert an incoming signal between 0, 1 to an equal power gain scale.
 	 *
 	 *  @extends {Tone.SignalBase}
 	 *  @constructor
+	 *  @example
+	 *  var eqPowGain = new Tone.EqualPowerGain();
 	 */
 	Tone.EqualPowerGain = function(){
 

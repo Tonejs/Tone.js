@@ -7,6 +7,10 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Multiply"], function(T
 	 *
 	 *  @extends {Tone.SignalBase}
 	 *  @constructor
+	 *  @example
+	 *  var norm = new Tone.Normalize(2, 4);
+	 *  var sig = new Tone.Signal(3).connect(norm);
+	 *  //output of norm is 0.5. 
 	 */
 	Tone.Normalize = function(inputMin, inputMax){
 

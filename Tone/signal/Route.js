@@ -5,10 +5,16 @@ define(["Tone/core/Tone", "Tone/signal/Equal", "Tone/signal/Signal"], function(T
 	/**
 	 *  @class Route a single input to the specified output
 	 *
-	 *
 	 *  @constructor
 	 *  @extends {Tone.SignalBase}
 	 *  @param {number} [outputCount=2] the number of inputs the switch accepts
+	 *  @example
+	 *  var route = new Tone.Route(4);
+	 *  var signal = new Tone.Signal(3).connect(route);
+	 *  route.gate.value = 0;
+	 *  //signal is routed through output 0
+	 *  route.gate.value = 3;
+	 *  //signal is now routed through output 3
 	 */
 	Tone.Route = function(outputCount){
 

@@ -10,6 +10,12 @@ define(["Tone/core/Tone", "Tone/signal/GreaterThan", "Tone/signal/IfThenElse", "
 	 *  @extends {Tone.Signal}
 	 *  @param {number=} max max value if provided. if not provided, it will use the
 	 *                       signal value from input 1. 
+	 *  @example
+	 *  var max = new Tone.Max(2);
+	 *  var sig = new Tone.Signal(3).connect(max);
+	 *  //max outputs 3
+	 *  sig.value = 1;
+	 *  //max outputs 2
 	 */
 	Tone.Max = function(max){
 

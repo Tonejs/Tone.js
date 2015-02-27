@@ -15,7 +15,9 @@ define(["Tone/core/Tone"], function(Tone){
 	Tone.extend(Tone.SignalBase);
 
 	/**
-	 *  Signals can connect to other Signals
+	 *  When signals connect to other signals or AudioParams, 
+	 *  they take over the output value of that signal or AudioParam. 
+	 *  For all other nodes, the behavior is the same as a normal `connect`. 
 	 *
 	 *  @override
 	 *  @param {AudioParam|AudioNode|Tone.Signal|Tone} node 

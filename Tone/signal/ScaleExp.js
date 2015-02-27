@@ -2,7 +2,7 @@ define(["Tone/core/Tone", "Tone/signal/Scale", "Tone/signal/Pow"],
 function(Tone){
 	
 	/**
-	 *  @class  performs an exponential scaling on an input signal.
+	 *  @class  Performs an exponential scaling on an input signal.
 	 *          Scales a normal gain range [0,1] exponentially
 	 *          to the output range of outputMin to outputMax.
 	 *

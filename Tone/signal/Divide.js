@@ -30,12 +30,14 @@ function(Tone){
 		/**
 		 *  the inverse
 		 *  @type {Tone}
+		 *  @private
 		 */
 		this._inverse = new Tone.Inverse(precision);
 
 		/**
 		 *  multiply input 0 by the inverse
 		 *  @type {Tone.Multiply}
+		 *  @private
 		 */
 		this._mult = new Tone.Multiply();
 

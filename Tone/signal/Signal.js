@@ -14,6 +14,8 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 	 *                                       note that the signal has no output
 	 *                                       if an AudioParam is passed in.
 	 *  @param {Tone.Signal.Unit} [units=Number] unit the units the signal is in
+	 *  @example
+	 *  var signal = new Tone.Signal(10);
 	 */
 	Tone.Signal = function(value, units){
 
@@ -118,7 +120,6 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 
 	/**
 	 *  Schedules a parameter value change at the given time.
-	 *  
 	 *  @param {number}		value 
 	 *  @param {Tone.Time}  time 
 	 *  @returns {Tone.Signal} `this`
@@ -130,7 +131,7 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 	};
 
 	/**
-	 *  creates a schedule point with the current value at the current time
+	 *  Creates a schedule point with the current value at the current time.
 	 *
 	 *  @param {number=} now (optionally) pass the now value in
 	 *  @returns {Tone.Signal} `this`
@@ -181,6 +182,9 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 	 *  @param  {Tone.Time} rampTime the time that it takes the 
 	 *                               value to ramp from it's current value
 	 *  @returns {Tone.Signal} `this`
+	 *  @example
+	 *  //exponentially ramp to the value 2 over 4 seconds. 
+	 *  signal.exponentialRampToValueNow(2, 4);
 	 */
 	Tone.Signal.prototype.exponentialRampToValueNow = function(value, rampTime ){
 		var now = this.now();
@@ -197,6 +201,9 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 	 *  @param  {Tone.Time} rampTime the time that it takes the 
 	 *                               value to ramp from it's current value
 	 *  @returns {Tone.Signal} `this`
+	 *  @example
+	 *  //linearly ramp to the value 4 over 3 seconds. 
+	 *  signal.linearRampToValueNow(4, 3);
 	 */
 	Tone.Signal.prototype.linearRampToValueNow = function(value, rampTime){
 		var now = this.now();
@@ -208,7 +215,6 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 	/**
 	 *  Start exponentially approaching the target value at the given time with
 	 *  a rate having the given time constant.
-	 *  	
 	 *  @param {number} value        
 	 *  @param {Tone.Time} startTime    
 	 *  @param {number} timeConstant 
@@ -258,6 +264,10 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 	 *  @param  {Tone.Time} rampTime the time that it takes the 
 	 *                               value to ramp from it's current value
 	 *  @returns {Tone.Signal} `this`
+	 *  @example
+	 *  //ramp to the value either linearly or exponentially 
+	 *  //depending on the "units" value of the signal
+	 *  signal.rampTo(0, 10);
 	 */
 	Tone.Signal.prototype.rampTo = function(value, rampTime){
 		rampTime = this.defaultArg(rampTime, 0);

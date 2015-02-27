@@ -5,13 +5,17 @@ function(Tone){
 
 	/**
 	 *  @class  Output 1 if the signal is less than the value, otherwise outputs 0.
-	 *          can compare two signals or a signal and a number. 
-	 *          input 0: left hand side of comparison.
+	 *          Can compare two signals or a signal and a number. <br><br>
+	 *          input 0: left hand side of comparison.<br><br>
 	 *          input 1: right hand side of comparison.
 	 *  
 	 *  @constructor
 	 *  @extends {Tone.Signal}
 	 *  @param {number} [value=0] the value to compare to the incoming signal
+	 *  @example
+	 *  var lt = new Tone.LessThan(2);
+	 *  var sig = new Tone.Signal(-1).connect(lt);
+	 *  //lt outputs 1 because sig < 2
 	 */
 	Tone.LessThan = function(value){
 
