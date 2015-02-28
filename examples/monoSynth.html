@@ -82,15 +82,15 @@
 
 		//the oscillator
 		Interface.Rack("Oscillator", "Oscillator", true);
-		Interface.DropDown("Oscillator", synth.oscillator, "type", ["sine", "square", "triangle", "sawtooth", "pwm", "pulse"]);
+		Interface.DropDown("Oscillator", synth.oscillator, "type", ["sine", "square", "triangle", "sawtooth", "pwm", "pulse"]).listen();
 		//the envelopes
 		Interface.Rack("Envelope", "Envelopes", true);
 		var ampGroup = Interface.Group("Amplitude", "Amplitude");
-		Interface.AmplitudeEnvelope(ampGroup, synth.envelope);
+		Interface.AmplitudeEnvelope(ampGroup, synth.envelope).listen();
 		var filtGroup = Interface.Group("FilterEnvelope", "Filter");
-		Interface.FilterEnvelope(filtGroup, synth.filterEnvelope);
+		Interface.FilterEnvelope(filtGroup, synth.filterEnvelope).listen();
 		Interface.Rack("Filter", "Filter", true);
-		var type = Interface.DropDown("Filter", synth.filter, "type", ["lowpass", "highpass", "bandpass"]);
+		var type = Interface.DropDown("Filter", synth.filter, "type", ["lowpass", "highpass", "bandpass"]).listen();
 		var Q = Interface.Slider("Filter", synth.filter, "Q", 0.1, 20);
 		Interface.Rack("Presets", "Presets", true);
 		Interface.Presets("Presets", synth);

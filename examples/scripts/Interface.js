@@ -21,6 +21,19 @@ $(function(){
 		.attr("title", "examples")
 		.html("<a href='./index.html'>examples</a>")
 		.appendTo(topbar);
+	//mobile start
+	if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
+		console.log("is mobile")
+		var element = $("<div>", {"id" : "MobileStart"}).appendTo("body");
+		var button = $("<div>").attr("id", "Button")
+			.text("\u25B6")
+			.on("touchstart", function(e){
+				e.preventDefault();
+				Tone.startMobile();
+				element.remove();
+			})
+			.appendTo(element);  
+	}
 	//get the master output
 	if (Tone && Tone.Master){
 		var meter = new Tone.Meter(2);
