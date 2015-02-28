@@ -65,26 +65,28 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 			}
 		}, 
 		set : function(type){
-			switch (type){
-				case "white" : 
-					this._buffer = _whiteNoise;
-					break;
-				case "pink" : 
-					this._buffer = _pinkNoise;
-					break;
-				case "brown" : 
-					this._buffer = _brownNoise;
-					break;
-				default : 
-					this._buffer = _whiteNoise;
-			}
-			//if it's playing, stop and restart it
-			if (this.state === Tone.Source.State.STARTED){
-				var now = this.now() + this.bufferTime;
-				//remove the listener
-				this._source.onended = undefined;
-				this._stop(now);
-				this._start(now);
+			if (this.type !== type){
+				switch (type){
+					case "white" : 
+						this._buffer = _whiteNoise;
+						break;
+					case "pink" : 
+						this._buffer = _pinkNoise;
+						break;
+					case "brown" : 
+						this._buffer = _brownNoise;
+						break;
+					default : 
+						this._buffer = _whiteNoise;
+				}
+				//if it's playing, stop and restart it
+				if (this.state === Tone.Source.State.STARTED){
+					var now = this.now() + this.bufferTime;
+					//remove the listener
+					this._source.onended = undefined;
+					this._stop(now);
+					this._start(now);
+				}
 			}
 		}
 	});
