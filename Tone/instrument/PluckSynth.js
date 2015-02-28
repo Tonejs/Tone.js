@@ -8,6 +8,8 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/source/Noise", "To
 	 *  @constructor
 	 *  @extends {Tone.Instrument}
 	 *  @param {Object} options see the defaults
+	 *  @example
+	 *  var plucky = new Tone.PluckSynth();
 	 */
 	Tone.PluckSynth = function(options){
 

@@ -7,23 +7,22 @@ function(Tone){
 	/**
 	 *  @class A simple sampler instrument which plays an audio buffer 
 	 *         through an amplitude envelope and a filter envelope. Nested
-	 *         lists will be flattened like so: 
-	 *         ```javascript
-	 *         var sampler = new Sampler({
-	 *         	A : {
-	 *         		1 : {"./audio/casio/A1.mp3",
-	 *         		2 : "./audio/casio/A2.mp3",
-	 *         	},
-	 *         	"B.1" : "./audio/casio/B1.mp3",
-	 *         });
-	 *         //...once samples have loaded
-	 *         sampler.triggerAttack("A.1", time, velocity);
-	 *         ```
+	 *         lists will be flattened.
 	 *
 	 *  @constructor
 	 *  @extends {Tone.Instrument}
 	 *  @param {Object|string} urls the urls of the audio file
 	 *  @param {Object} options the options object for the synth
+	 *  @example
+	 *  var sampler = new Sampler({
+	 *  	A : {
+	 *  		1 : {"./audio/casio/A1.mp3",
+	 *  		2 : "./audio/casio/A2.mp3",
+	 *  	},
+	 *  	"B.1" : "./audio/casio/B1.mp3",
+	 *  });
+	 *  //...once samples have loaded
+	 *  sampler.triggerAttack("A.1", time, velocity);
 	 */
 	Tone.Sampler = function(urls, options){
 
@@ -214,13 +213,12 @@ function(Tone){
 	/**
 	 * Repitch the sampled note by some interval (measured
 	 * in semi-tones). 
-	 * ```javascript
-	 * sampler.pitch = -12; //down one octave
-	 * sampler.pitch = 7; //up a fifth
-	 * ```
 	 * @memberOf Tone.Sampler#
 	 * @type {number}
 	 * @name pitch
+	 * @example
+	 * sampler.pitch = -12; //down one octave
+	 * sampler.pitch = 7; //up a fifth
 	 */
 	Object.defineProperty(Tone.Sampler.prototype, "pitch", {
 		get : function(){

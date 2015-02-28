@@ -310,19 +310,16 @@ function(Tone){
 	///////////////////////////////////////////////////////////////////////////////
 
 	/**
-	 *  intervals are recurring events 
+	 *  Set a callback for a recurring event.
 	 *
-	 *  ```javascript
+	 *  @param {function} callback
+	 *  @param {Tone.Time}   interval 
+	 *  @return {number} the id of the interval
+	 *  @example
 	 *  //triggers a callback every 8th note with the exact time of the event
 	 *  Tone.Transport.setInterval(function(time){
 	 *  	envelope.triggerAttack(time);
 	 *  }, "8n");
-	 *  ```
-	 *  
-	 *  @param {function} callback
-	 *  @param {Tone.Time}   interval 
-	 *  @param {Object}   ctx  the context the function is invoked in
-	 *  @return {number} the id of the interval
 	 */
 	Tone.Transport.prototype.setInterval = function(callback, interval, ctx){
 		var tickTime = this._toTicks(interval);
@@ -362,21 +359,18 @@ function(Tone){
 	///////////////////////////////////////////////////////////////////////////////
 
 	/**
-	 *  set a timeout to occur after time from now. NB: the transport must be 
+	 *  Set a timeout to occur after time from now. NB: the transport must be 
 	 *  running for this to be triggered. All timeout events are cleared when the 
 	 *  transport is stopped. 
 	 *
-	 *  ```javascript
+	 *  @param {function} callback 
+	 *  @param {Tone.Time}   time     
+	 *  @return {number} the id of the timeout for clearing timeouts
+	 *  @example
 	 *  //trigger an event to happen 1 second from now
 	 *  Tone.Transport.setTimeout(function(time){
 	 *  	player.start(time);
 	 *  }, 1)
-	 *  ```
-	 *  
-	 *  @param {function} callback 
-	 *  @param {Tone.Time}   time     
-	 *  @param {Object}   ctx      the context to invoke the callback in
-	 *  @return {number} the id of the timeout for clearing timeouts
 	 */
 	Tone.Transport.prototype.setTimeout = function(callback, time, ctx){
 		var ticks = this._toTicks(time);
@@ -429,18 +423,14 @@ function(Tone){
 	 *  Unlike Timeout, Timeline events will restart after the 
 	 *  Tone.Transport has been stopped and restarted. 
 	 *
-	 *  ```javascript
+	 *  @param {function} 	callback 	
+	 *  @param {Tome.Time}  timeout  
+	 *  @return {number} 				the id for clearing the transportTimeline event
+	 *  @example
 	 *  //trigger the start of a part on the 16th measure
 	 *  Tone.Transport.setTimeline(function(time){
 	 *  	part.start(time);
 	 *  }, "16m");
-	 *  ```
-	 *
-	 *  
-	 *  @param {function} 	callback 	
-	 *  @param {Tome.Time}  timeout  
-	 *  @param {Object}   	ctx      	the context in which the funtion is called
-	 *  @return {number} 				the id for clearing the transportTimeline event
 	 */
 	Tone.Transport.prototype.setTimeline = function(callback, timeout, ctx){
 		var ticks = this._toTicks(timeout);

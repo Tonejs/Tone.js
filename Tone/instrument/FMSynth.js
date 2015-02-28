@@ -11,6 +11,8 @@ function(Tone){
 	 *  @extends {Tone.Monophonic}
 	 *  @param {Object} options the options available for the synth 
 	 *                          see defaults below
+	 *  @example
+	 *  var fmSynth = new Tone.FMSynth();
 	 */
 	Tone.FMSynth = function(options){
 

@@ -13,6 +13,7 @@ define(["Tone/core/Tone", "Tone/core/Master", "Tone/core/Note"], function(Tone){
 		/**
 		 *  the output
 		 *  @type {GainNode}
+		 *  @private
 		 */
 		this.output = this.context.createGain();
 

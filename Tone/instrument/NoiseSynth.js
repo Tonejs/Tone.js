@@ -12,6 +12,8 @@ function(Tone){
 	 *  @extends {Tone.Instrument}
 	 *  @param {Object} options the options available for the synth 
 	 *                          see defaults below
+	 * @example
+	 * var noiseSynth = new Tone.NoiseSynth();
 	 */
 	Tone.NoiseSynth = function(options){
 

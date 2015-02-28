@@ -12,6 +12,8 @@ function(Tone){
 	 *  @extends {Tone.Monophonic}
 	 *  @param {Object} options the options available for the synth 
 	 *                          see defaults below
+	 *  @example
+	 *  var duoSynth = new Tone.DuoSynth();
 	 */
 	Tone.DuoSynth = function(options){
 

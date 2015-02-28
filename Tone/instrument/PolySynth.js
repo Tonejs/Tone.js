@@ -7,18 +7,16 @@ function(Tone){
 	 *  @class  Creates a polyphonic synthesizer out of 
 	 *          the monophonic voice which is passed in. 
 	 *
-	 *  ```javascript
-	 *  //a polysynth composed of 6 Voices of MonoSynth
-	 *  var synth = new Tone.PolySynth(6, Tone.MonoSynth);
-	 *  //set a MonoSynth preset
-	 *  synth.setPreset("Pianoetta");
-	 *  ```
-	 *
 	 *  @constructor
 	 *  @extends {Tone.Instrument}
 	 *  @param {number|Object} [polyphony=4] the number of voices to create
 	 *  @param {function} [voice=Tone.MonoSynth] the constructor of the voices
 	 *                                            uses Tone.MonoSynth by default
+	 *  @example
+	 *  //a polysynth composed of 6 Voices of MonoSynth
+	 *  var synth = new Tone.PolySynth(6, Tone.MonoSynth);
+	 *  //set a MonoSynth preset
+	 *  synth.setPreset("Pianoetta");
 	 */
 	Tone.PolySynth = function(){
 

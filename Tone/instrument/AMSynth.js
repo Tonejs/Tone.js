@@ -13,6 +13,8 @@ function(Tone){
 	 *  @extends {Tone.Monophonic}
 	 *  @param {Object} options the options available for the synth 
 	 *                          see defaults below
+	 *  @example
+	 *  var synth = new Tone.AMSynth();
 	 */
 	Tone.AMSynth = function(options){
 
