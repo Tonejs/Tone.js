@@ -2,9 +2,10 @@
 
 define(["chai", "Tone/source/Player", "Tone/core/Master", "Tone/source/Oscillator", 
 	"Recorder", "Tone/source/Noise", "tests/Core", "Tone/source/PulseOscillator", "tests/Common", 
-	"Tone/source/PWMOscillator", "Tone/source/OmniOscillator", "Tone/source/Microphone", "Tone/core/Buffer"], 
+	"Tone/source/PWMOscillator", "Tone/source/OmniOscillator", "Tone/source/Microphone", "Tone/core/Buffer", 
+	"Tone/core/Transport"], 
 function(chai, Player, Master, Oscillator, Recorder, Noise, core, PulseOscillator, Test, 
-	PWMOscillator, OmniOscillator, Microphone, Buffer){
+	PWMOscillator, OmniOscillator, Microphone, Buffer, Transport){
 
 	var expect = chai.expect;
 
@@ -86,6 +87,24 @@ function(chai, Player, Master, Oscillator, Recorder, Noise, core, PulseOscillato
 			player.dispose();
 		});
 
+		it("can sync to the Transport", function(done){
+			var player = new Player("./testAudio/kick.mp3");
+			player.sync();
+			Buffer.onload = function(){
+				expect(player.state).to.equal("stopped");
+				Transport.start();
+				setTimeout(function(){
+					expect(player.state).to.equal("started");
+					Transport.stop();
+					setTimeout(function(){
+						expect(player.state).to.equal("stopped");
+						player.dispose();
+						player = null;
+						done();
+					}, 100);
+				}, 100);
+			};
+		});
 	});
 
 	describe("Tone.Oscillator", function(){
@@ -212,6 +231,39 @@ function(chai, Player, Master, Oscillator, Recorder, Noise, core, PulseOscillato
 			expect(osc.detune.value).to.equal(-21);
 			expect(osc.type).to.equal("square");
 			osc.dispose();
+		});
+
+		it("can sync the frequency to Transport", function(done){
+			var osc;
+			Test.offlineTest(0.1, function(dest){
+				Transport.bpm.value = 120;
+				osc = new Oscillator(2);
+				osc.frequency.connect(dest);
+				osc.syncFrequency();
+				Transport.bpm.value = 240;
+			}, function(freq){
+				expect(freq).to.be.closeTo(4, 0.001);
+			}, function(){
+				osc.dispose();
+				done();
+			});
+		});
+
+		it("can unsync the frequency to Transport", function(done){
+			var osc;
+			Test.offlineTest(0.1, function(dest){
+				Transport.bpm.value = 120;
+				osc = new Oscillator(2);
+				osc.frequency.connect(dest);
+				osc.syncFrequency();
+				Transport.bpm.value = 240;
+				osc.unsyncFrequency();
+			}, function(freq){
+				expect(freq).to.be.closeTo(2, 0.001);
+			}, function(){
+				osc.dispose();
+				done();
+			});
 		});
 	});
 

@@ -1,7 +1,8 @@
 /* global it, describe, after */
 
 define(["chai", "Tone/core/Tone", "Tone/core/Master", "Tone/core/Bus", 
-	"Tone/core/Note", "tests/Common", "Tone/core/Buffer"], function(chai, Tone, Master, Bus, Note, Test, Buffer){
+	"Tone/core/Note", "tests/Common", "Tone/core/Buffer", "Tone/source/Oscillator"], 
+function(chai, Tone, Master, Bus, Note, Test, Buffer, Oscillator){
 	var expect = chai.expect;
 
 	describe("AudioContext", function(){
@@ -83,6 +84,119 @@ define(["chai", "Tone/core/Tone", "Tone/core/Master", "Tone/core/Bus",
 			expect(tone.defaultArg({"a" : 10}, {"b" : {"c" : 20}})).has.deep.property("b.c", 20);
 		});
 
+		it("can connect and disconnect", function(){
+			var node = Tone.context.createGain();
+			tone.connect(node, 0, 0);
+			tone.disconnect();
+		});
+
+		it("can chain connections", function(done){
+			var node0, node1, node2;
+			Test.passesAudio(function(input, output){
+				node0 = new Tone(1, 1);
+				//internal connection
+				node0.input.connect(node0.output);
+				//two other nodes to pass audio through
+				node1 = Tone.context.createGain();
+				node2 = Tone.context.createGain();
+				input.connect(node0);
+				node0.chain(node1, node2, output);
+			}, function(){
+				node0.dispose();
+				node1.disconnect();
+				node2.disconnect();
+				done();
+			});
+		});
+
+		it("can fan connections", function(done){
+			var node0, node1, node2;
+			Test.passesAudio(function(input, output){
+				node0 = new Tone(1, 1);
+				//internal connection
+				node0.input.connect(node0.output);
+				//two other nodes to pass audio through
+				node1 = Tone.context.createGain();
+				node2 = Tone.context.createGain();
+				input.connect(node0);
+				node0.fan(node1, node2, output);
+			}, function(){
+				node0.dispose();
+				node1.disconnect();
+				node2.disconnect();
+				done();
+			});
+		});
+	});
+
+	describe("Tone.prototype.set / get", function(){
+
+		it("sets a value given an object", function(){
+			var osc = new Oscillator(0);
+			osc.set({
+				"frequency" : 30
+			});
+			expect(osc.frequency.value).to.be.closeTo(30, 0.001);
+			osc.dispose();
+		});	
+
+		it("sets a value given a string and a value", function(){
+			var osc = new Oscillator(0);
+			osc.set("frequency", 2);
+			expect(osc.frequency.value).to.be.closeTo(2, 0.001);
+			osc.dispose();
+		});		
+
+		it("ramps to a value given an object a ramp time", function(done){
+			var osc;
+			var setValue = 30;
+			Test.offlineTest(0.6, function(dest){
+				osc = new Oscillator(0);
+				osc.frequency.connect(dest);
+				osc.set({
+					"frequency" : setValue
+				}, 0.5);
+				expect(osc.frequency.value).to.not.be.closeTo(setValue, 0.001);
+			}, function(sample, time){
+				if (time > 0.5){
+					expect(sample).to.closeTo(setValue, 0.01);
+				}
+			}, function(){
+				osc.dispose();
+				done();
+			});
+		});		
+
+		it("ramps to a value given a string and a value and a ramp time", function(done){
+			var osc;
+			var setValue = 30;
+			Test.offlineTest(0.6, function(dest){
+				osc = new Oscillator(0);
+				osc.frequency.connect(dest);
+				osc.set("frequency", setValue, 0.5);
+				expect(osc.frequency.value).to.not.be.closeTo(setValue, 0.001);
+			}, function(sample, time){
+				if (time > 0.5){
+					expect(sample).to.closeTo(setValue, 0.01);
+				}
+			}, function(){
+				osc.dispose();
+				done();
+			});
+		});		
+
+		it("gets all defaults of the object with no arguments", function(){
+			var osc = new Oscillator(0);
+			expect(osc.get()).to.contain.keys(Object.keys(Oscillator.defaults));
+			osc.dispose();
+		});	
+
+		it("can 'get' only the given keys", function(){
+			var osc = new Oscillator(0);
+			var keys = ["frequency", "type"];
+			expect(Object.keys(osc.get(keys))).to.deep.equal(keys);
+			osc.dispose();
+		});	
 
 	});
 
@@ -131,7 +245,7 @@ define(["chai", "Tone/core/Tone", "Tone/core/Master", "Tone/core/Bus",
 
 	describe("Tone.Master", function(){
 		it ("exists", function(){
-			expect(Tone.Master).to.equal(Master);
+			expect(Tone.Master).to.exist;
 		});
 
 		it ("provides a toMaster method", function(){

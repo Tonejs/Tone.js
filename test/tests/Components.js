@@ -6,10 +6,10 @@ define(["tests/Core", "chai", "Tone/component/CrossFade", "Tone/core/Master", "T
 "Tone/component/Merge", "Tone/component/Split", "tests/Common", "Tone/component/AmplitudeEnvelope", 
 "Tone/component/LowpassCombFilter", "Tone/component/FeedbackCombFilter", "Tone/component/Mono", 
 "Tone/component/MultibandSplit", "Tone/component/Compressor", "Tone/component/PanVol",
-"Tone/component/MultibandCompressor", "Tone/component/ScaledEnvelope", "Tone/component/Limiter"],
+"Tone/component/MultibandCompressor", "Tone/component/ScaledEnvelope", "Tone/component/Limiter", "Tone/core/Transport"],
 function(coreTest, chai, CrossFade, Master, Signal, Recorder, Panner, LFO, Gate, Follower, Envelope, 
 	Filter, EQ, Merge, Split, Test, AmplitudeEnvelope, LowpassCombFilter, FeedbackCombFilter,
-	Mono, MultibandSplit, Compressor, PanVol, MultibandCompressor, ScaledEnvelope, Limiter){
+	Mono, MultibandSplit, Compressor, PanVol, MultibandCompressor, ScaledEnvelope, Limiter, Transport){
 	var expect = chai.expect;
 
 	Master.mute();
@@ -166,6 +166,39 @@ function(coreTest, chai, CrossFade, Master, Signal, Recorder, Panner, LFO, Gate,
 			var lfo = new LFO();
 			Test.acceptsOutput(lfo);
 			lfo.dispose();
+		});
+
+		it("can sync to Transport", function(done){
+			var lfo;
+			Test.offlineTest(0.1, function(dest){
+				Transport.bpm.value = 120;
+				lfo = new LFO(2);
+				lfo.frequency.connect(dest);
+				lfo.sync();
+				Transport.bpm.value = 240;
+			}, function(freq){
+				expect(freq).to.be.closeTo(4, 0.001);
+			}, function(){
+				lfo.dispose();
+				done();
+			});
+		});
+
+		it("can unsync to Transport", function(done){
+			var lfo;
+			Test.offlineTest(0.1, function(dest){
+				Transport.bpm.value = 120;
+				lfo = new LFO(2);
+				lfo.frequency.connect(dest);
+				lfo.sync();
+				Transport.bpm.value = 240;
+				lfo.unsync();
+			}, function(freq){
+				expect(freq).to.be.closeTo(2, 0.001);
+			}, function(){
+				lfo.dispose();
+				done();
+			});
 		});
 
 		it("can be creates an oscillation in a specific range", function(done){
