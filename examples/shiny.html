@@ -98,24 +98,30 @@
 		}).connect(crusher);
 
 		var kick = new Tone.MonoSynth({
-			"volume" : -18,
-			"envelope" : {
-				"attack" : 0.001,
-				"decay" : 0.2,
-				"sustain" : 0
-			},
-			"filterEnvelope" : {
-				"attack" : 0.005,
-				"decay" : 0.005,
-				"sustain" : 0,
-				"min" : 60,
-				"max" : 180
+			"portamento" : 0.00,
+			"oscillator" : {
+				"type" : "square"
 			},
 			"filter" : {
-				"type" : "lowpass",
-				"Q" : 20
+				"Q" : 2,
+				"type" : "bandpass",
+				"rolloff" : -12
+			},
+			"envelope" : {
+				"attack" : 0.01,
+				"decay" : 0.2,
+				"sustain" : 0.0,
+				"release" : 0.2
+			},
+			"filterEnvelope" : {
+				"attack" : 0.01,
+				"decay" : 0.2,
+				"sustain" : 1,
+				"release" : 0.4,
+				"min" : 3000,
+				"max" : 30
 			}
-		}).setPreset("Kick");
+		});
 
 		//an EQ for the kick
 		var eq = new Tone.EQ(4, -20, 0);
