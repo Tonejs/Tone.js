@@ -57,9 +57,10 @@ function(Tone){
 		 *  @type {string}
 		 *  @private
 		 */
-		this._type = options.type;
+		this._type = null;
 		
 		//setup
+		this.type = options.type;
 		this.phase = this._phase;
 	};
 
