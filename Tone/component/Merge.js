@@ -14,7 +14,7 @@ define(["Tone/core/Tone"], function(Tone){
 	 */
 	Tone.Merge = function(){
 
-		Tone.call(this, 2, 1);
+		Tone.call(this, 2, 0);
 
 		/**
 		 *  The left input channel.
@@ -35,12 +35,11 @@ define(["Tone/core/Tone"], function(Tone){
 		 *  @type {ChannelMergerNode}
 		 *  @private
 		 */
-		this._merger = this.context.createChannelMerger(2);
+		this._merger = this.output = this.context.createChannelMerger(2);
 
 		//connections
 		this.left.connect(this._merger, 0, 0);
 		this.right.connect(this._merger, 0, 1);
-		this._merger.connect(this.output);
 	};
 
 	Tone.extend(Tone.Merge);
@@ -52,10 +51,10 @@ define(["Tone/core/Tone"], function(Tone){
 	Tone.Merge.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
 		this.left.disconnect();
-		this.right.disconnect();
-		this._merger.disconnect();
 		this.left = null;
+		this.right.disconnect();
 		this.right = null;
+		this._merger.disconnect();
 		this._merger = null;
 		return this;
 	}; 
