@@ -280,7 +280,7 @@ function(core, chai, Signal, EqualZero, Equal, GreaterThan, LessThan, Test, Grea
 				gt = new GreaterThan(200);
 				signal.connect(gt);
 				gt.connect(dest);
-				gt.setValue(50);
+				gt.value = 50;
 			}, function(sample){
 				expect(sample).to.equal(1);
 			}, function(){
@@ -374,7 +374,7 @@ function(core, chai, Signal, EqualZero, Equal, GreaterThan, LessThan, Test, Grea
 				lt = new LessThan(200);
 				signal.connect(lt);
 				lt.connect(dest);
-				lt.setValue(50);
+				lt.value = 50;
 			}, function(sample){
 				expect(sample).to.equal(0);
 			}, function(){

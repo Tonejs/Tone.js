@@ -11,15 +11,15 @@ define(["Tone/core/Tone", "Tone/signal/ScaleExp", "Tone/signal/Signal"], functio
 	 *  @param {number} [minDelay=0.1] the minimum delay time which the filter can have
 	 *  @param {number} [maxDelay=1] the maximum delay time which the filter can have
 	 */
-	Tone.LowpassCombFilter = function(minDelay, maxDelay){
+	Tone.LowpassCombFilter = function(){
 
 		Tone.call(this);
 
-		minDelay = this.defaultArg(minDelay, 0.01);
-		maxDelay = this.defaultArg(maxDelay, 1);
+		var options = this.optionsObject(arguments, ["minDelay", "maxDelay"], Tone.LowpassCombFilter.defaults);
+
 		//the delay * samplerate = number of samples. 
 		// buffersize / number of samples = number of delays needed per buffer frame
-		var delayCount = Math.ceil(this.bufferSize / (minDelay * this.context.sampleRate));
+		var delayCount = Math.ceil(this.bufferSize / (options.minDelay * this.context.sampleRate));
 		//set some ranges
 		delayCount = Math.min(delayCount, 10);
 		delayCount = Math.max(delayCount, 1);
@@ -41,13 +41,13 @@ define(["Tone/core/Tone", "Tone/signal/ScaleExp", "Tone/signal/Signal"], functio
 		 *  the dampening control
 		 *  @type {Tone.Signal}
 		 */
-		this.dampening = new Tone.Signal(3000);
+		this.dampening = new Tone.Signal(options.dampening, Tone.Signal.Units.Frequency);
 
 		/**
 		 *  the resonance control
 		 *  @type {Tone.Signal}
 		 */
-		this.resonance = new Tone.Signal(0.5);
+		this.resonance = new Tone.Signal(options.resonance, Tone.Signal.Units.Normal);
 
 		/**
 		 *  scale the resonance value to the normal range
@@ -65,6 +65,13 @@ define(["Tone/core/Tone", "Tone/signal/ScaleExp", "Tone/signal/Signal"], functio
 		this._highFrequencies = false;
 
 		/**
+		 *  internal counter of delayTime
+		 *  @type {Tone.Time}
+		 *  @private
+		 */
+		this._delayTime = options.delayTime;
+
+		/**
 		 *  the feedback node
 		 *  @type {GainNode}
 		 *  @private
@@ -73,7 +80,7 @@ define(["Tone/core/Tone", "Tone/signal/ScaleExp", "Tone/signal/Signal"], functio
 
 		//make the filters
 		for (var i = 0; i < this._filterDelayCount; i++) {
-			var filterDelay = new FilterDelay(minDelay, this.dampening);
+			var filterDelay = new FilterDelay(options.minDelay, this.dampening);
 			filterDelay.connect(this._feedback);
 			this._filterDelays[i] = filterDelay;
 		}
@@ -86,23 +93,51 @@ define(["Tone/core/Tone", "Tone/signal/ScaleExp", "Tone/signal/Signal"], functio
 		this.resonance.chain(this._resScale, this._feedback.gain);
 		this._feedback.connect(this.output);
 		//set the delay to the min value initially
-		this.setDelayTime(minDelay);
+		this.delayTime = options.delayTime;
 	};
 
 	Tone.extend(Tone.LowpassCombFilter);
 
 	/**
-	 *  set the delay time of the comb filter
-	 *  auto corrects for sample offsets for small delay amounts
-	 *  	
-	 *  @param {number} delayAmount the delay amount
-	 *  @param {Tone.Time} [time=now]        when the change should occur
+	 *  the default parameters
+	 *  @static
+	 *  @const
+	 *  @type {Object}
 	 */
-	Tone.LowpassCombFilter.prototype.setDelayTime = function(delayAmount, time) {
-		time = this.toSeconds(time);
+	Tone.LowpassCombFilter.defaults = {
+		"resonance" : 0.5,
+		"dampening" : 3000,
+		"minDelay" : 0.1,
+		"maxDelay" : 1,
+		"delayTime" : 0.1
+	};
+
+	/**
+	 * The delay time of the LowpassCombFilter. Auto corrects
+	 * for sample offsets for small delay amounts.
+	 * @memberOf Tone.LowpassCombFilter#
+	 * @type {Tone.Time}
+	 * @name delayTime
+	 */
+	Object.defineProperty(Tone.LowpassCombFilter.prototype, "delayTime", {
+		get : function(){
+			return this._delayTime;
+		},
+		set : function(delayAmount){
+			this.setDelayTimeAtTime(delayAmount);
+		}
+	});
+
+	/**
+	 * set the delay time for the comb filter at a specific time. 
+	 * @param {Tone.Time} delayAmount the amount of delay time
+	 * @param {Tone.Time} [time=now] when the delay time should be set
+	 */
+	Tone.LowpassCombFilter.prototype.setDelayTimeAtTime = function(delayAmount, time){
+		this._delayTime = this.toSeconds(delayAmount);
 		//the number of samples to delay by
 		var sampleRate = this.context.sampleRate;
-		var delaySamples = sampleRate * delayAmount;
+		var delaySamples = sampleRate * this._delayTime;
 		// delayTime corection when frequencies get high
 		time = this.toSeconds(time);
 		var cutoff = 100;
@@ -110,19 +145,20 @@ define(["Tone/core/Tone", "Tone/signal/ScaleExp", "Tone/signal/Signal"], functio
 			this._highFrequencies = true;
 			var changeNumber = Math.round((delaySamples / cutoff) * this._filterDelayCount);
 			for (var i = 0; i < changeNumber; i++) {
-				this._filterDelays[i].setDelay(1 / sampleRate + delayAmount, time);
+				this._filterDelays[i].setDelay(1 / sampleRate + this._delayTime, time);
 			}
-			delayAmount = Math.floor(delaySamples) / sampleRate;
+			this._delayTime = Math.floor(delaySamples) / sampleRate;
 		} else if (this._highFrequencies){
 			this._highFrequencies = false;
 			for (var j = 0; j < this._filterDelays.length; j++) {
-				this._filterDelays[j].setDelay(delayAmount, time);
+				this._filterDelays[j].setDelay(this._delayTime, time);
 			}
 		}
 	};
 
 	/**
 	 *  clean up
+	 *  @returns {Tone.LowpassCombFilter} `this`
 	 */
 	Tone.LowpassCombFilter.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
@@ -140,13 +176,14 @@ define(["Tone/core/Tone", "Tone/signal/ScaleExp", "Tone/signal/Signal"], functio
 		this._resScale = null;
 		this._feedback.disconnect();
 		this._feedback = null;
+		return this;
 	};
 
 	// BEGIN HELPER CLASS //
 
 	/**
 	 *  FilterDelay
-	 *  @internal
+	 *  @private
 	 *  @constructor
 	 *  @extends {Tone}
 	 */

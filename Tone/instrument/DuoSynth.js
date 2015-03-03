@@ -12,6 +12,8 @@ function(Tone){
 	 *  @extends {Tone.Monophonic}
 	 *  @param {Object} options the options available for the synth 
 	 *                          see defaults below
+	 *  @example
+	 *  var duoSynth = new Tone.DuoSynth();
 	 */
 	Tone.DuoSynth = function(options){
 
@@ -23,17 +25,17 @@ function(Tone){
 		 *  @type {Tone.MonoSynth}
 		 */
 		this.voice0 = new Tone.MonoSynth(options.voice0);
-		this.voice0.setVolume(-10);
+		this.voice0.volume.value = -10;
 
 		/**
 		 *  the second voice
 		 *  @type {Tone.MonoSynth}
 		 */
 		this.voice1 = new Tone.MonoSynth(options.voice1);
-		this.voice1.setVolume(-10);
+		this.voice1.volume.value = -10;
 
 		/**
-		 *  the vibrato lfo
+		 *  The vibrato LFO. 
 		 *  @type {Tone.LFO}
 		 *  @private
 		 */
@@ -41,12 +43,24 @@ function(Tone){
 		this._vibrato.start();
 
 		/**
+		 * the vibrato frequency
+		 * @type {Tone.Signal}
+		 */
+		this.vibratoRate = this._vibrato.frequency;
+
+		/**
 		 *  the vibrato gain
 		 *  @type {GainNode}
 		 *  @private
 		 */
 		this._vibratoGain = this.context.createGain();
-		this._vibratoGain.gain.value = options.vibratoAmount;
+
+		/**
+		 * The amount of vibrato
+		 * @type {Tone.Signal}
+		 */
+		this.vibratoAmount = new Tone.Signal(this._vibratoGain.gain, Tone.Signal.Units.Gain);
+		this.vibratoAmount.value = options.vibratoAmount;
 
 		/**
 		 *  the delay before the vibrato starts
@@ -56,17 +70,10 @@ function(Tone){
 		this._vibratoDelay = this.toSeconds(options.vibratoDelay);
 
 		/**
-		 *  the amount of vibrato
-		 *  @type {number}
-		 *  @private
-		 */
-		this._vibratoAmount = options.vibratoAmount;
-
-		/**
 		 *  the frequency control
 		 *  @type {Tone.Signal}
 		 */
-		this.frequency = new Tone.Signal(440);
+		this.frequency = new Tone.Signal(440, Tone.Signal.Units.Frequency);
 
 		/**
 		 *  the ratio between the two voices
@@ -140,6 +147,7 @@ function(Tone){
 	 *  
 	 *  @param {Tone.Time} [time=now] the time the attack should start
 	 *  @param {number} [velocity=1] the velocity of the note (0-1)
+	 *  @returns {Tone.DuoSynth} `this`
 	 */
 	Tone.DuoSynth.prototype.triggerEnvelopeAttack = function(time, velocity){
 		time = this.toSeconds(time);
@@ -147,97 +155,58 @@ function(Tone){
 		this.voice1.envelope.triggerAttack(time, velocity);
 		this.voice0.filterEnvelope.triggerAttack(time);
 		this.voice1.filterEnvelope.triggerAttack(time);
+		return this;
 	};
 
 	/**
 	 *  start the release portion of the envelopes
 	 *  
 	 *  @param {Tone.Time} [time=now] the time the release should start
+	 *  @returns {Tone.DuoSynth} `this`
 	 */
 	Tone.DuoSynth.prototype.triggerEnvelopeRelease = function(time){
 		this.voice0.triggerRelease(time);
 		this.voice1.triggerRelease(time);
+		return this;
 	};
 
 	/**
-	 *  set the ratio between the two oscillator
-	 *  @param {number} ratio
+	 * The ratio between the two carrier and the modulator. 
+	 * @memberOf Tone.DuoSynth#
+	 * @type {number}
+	 * @name harmonicity
 	 */
-	Tone.DuoSynth.prototype.setHarmonicity = function(ratio){
-		this._harmonicity.setValue(ratio);
-	};
-
-	/**
-	 *  the glide time between frequencies
-	 *  @param {Tone.Time} port
-	 */
-	Tone.DuoSynth.prototype.setPortamento = function(port){
-		this.portamento = this.toSeconds(port);
-	};
-
-	/**
-	 *  the delay before the vibrato kicks in
-	 *  @param {Tone.Time} delay
-	 */
-	Tone.DuoSynth.prototype.setVibratoDelay = function(delay){
-		this._vibratoDelay = this.toSeconds(delay);
-	};
-
-	/**
-	 *  the vibrato amount. 1 is full vib. 0 is none.
-	 *  @param {number} amount an amount between 0-1
-	 */
-	Tone.DuoSynth.prototype.setVibratoAmount = function(amount){
-		this._vibratoAmount = amount;
-		this._vibratoGain.gain.setValueAtTime(amount, this.now());
-	};
-
-	/**
-	 *  the rate of the vibrato
-	 *  @param {number} rate
-	 */
-	Tone.DuoSynth.prototype.setVibratoRate = function(rate){
-		this._vibrato.setFrequency(rate);
-	};
-
-	/**
-	 *  set the volume of the instrument.
-	 *  borrowed from {@link Tone.Source}
-	 *  @function
-	 */
-	Tone.DuoSynth.prototype.setVolume = Tone.Source.prototype.setVolume;
-
-	/**
-	 *  bulk setter
-	 *  @param {Object} param 
-	 */
-	Tone.DuoSynth.prototype.set = function(params){
-		if (!this.isUndef(params.harmonicity)) this.setHarmonicity(params.harmonicity);
-		if (!this.isUndef(params.vibratoRate)) this.setVibratoRate(params.vibratoRate);
-		if (!this.isUndef(params.vibratoAmount)) this.setVibratoAmount(params.vibratoAmount);
-		if (!this.isUndef(params.vibratoDelay)) this.setVibratoDelay(params.vibratoDelay);
-		if (!this.isUndef(params.voice0)) this.voice0.set(params.voice0);
-		if (!this.isUndef(params.voice1)) this.voice1.set(params.voice1);
-		Tone.Monophonic.prototype.set.call(this, params);
-	};
+	Object.defineProperty(Tone.DuoSynth.prototype, "harmonicity", {
+		get : function(){
+			return this._harmonicity.value;
+		},
+		set : function(harm){
+			this._harmonicity.value = harm;
+		}
+	});
 
 	/**
 	 *  clean up
+	 *  @returns {Tone.DuoSynth} `this`
 	 */
 	Tone.DuoSynth.prototype.dispose = function(){
 		Tone.Monophonic.prototype.dispose.call(this);
 		this.voice0.dispose();
-		this.voice1.dispose();
-		this.frequency.dispose();
-		this._vibrato.dispose();
-		this._vibratoGain.disconnect();
-		this._harmonicity.dispose();
 		this.voice0 = null;
+		this.voice1.dispose();
 		this.voice1 = null;
+		this.frequency.dispose();
 		this.frequency = null;
+		this._vibrato.dispose();
 		this._vibrato = null;
+		this._vibratoGain.disconnect();
 		this._vibratoGain = null;
+		this._harmonicity.dispose();
 		this._harmonicity = null;
+		this.vibratoAmount.dispose();
+		this.vibratoAmount = null;
+		this.vibratoRate = null;
+		return this;
 	};
 
 	return Tone.DuoSynth;

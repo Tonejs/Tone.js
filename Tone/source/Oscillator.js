@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/source/Source"], 
+define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/source/Source", "Tone/core/Transport"], 
 function(Tone){
 
 	"use strict";
@@ -10,11 +10,13 @@ function(Tone){
 	 *  @extends {Tone.Source}
 	 *  @param {number|string} [frequency=440] starting frequency
 	 *  @param {string} [type="sine"] type of oscillator (sine|square|triangle|sawtooth)
+	 *  @example
+	 *  var osc = new Tone.Oscillator(440, "sine");
 	 */
 	Tone.Oscillator = function(){
 		
-		Tone.Source.call(this);
 		var options = this.optionsObject(arguments, ["frequency", "type"], Tone.Oscillator.defaults);
+		Tone.Source.call(this, options);
 
 		/**
 		 *  the main oscillator
@@ -24,22 +26,16 @@ function(Tone){
 		this._oscillator = null;
 		
 		/**
-		 *  the frequency control signal
+		 *  The frequency control signal in hertz.
 		 *  @type {Tone.Signal}
 		 */
-		this.frequency = new Tone.Signal(this.toFrequency(options.frequency));
+		this.frequency = new Tone.Signal(options.frequency, Tone.Signal.Units.Frequency);
 
 		/**
-		 *  the detune control signal
+		 *  The detune control signal in cents. 
 		 *  @type {Tone.Signal}
 		 */
 		this.detune = new Tone.Signal(options.detune);
-
-		/**
-		 *  callback which is invoked when the oscillator is stoped
-		 *  @type {function()}
-		 */
-		this.onended = options.onended;
 
 		/**
 		 *  the periodic wave
@@ -61,17 +57,17 @@ function(Tone){
 		 *  @type {string}
 		 *  @private
 		 */
-		this._type = options.type;
+		this._type = null;
 		
 		//setup
-		this.setPhase(this._phase);
+		this.type = options.type;
+		this.phase = this._phase;
 	};
 
 	Tone.extend(Tone.Oscillator, Tone.Source);
 
 	/**
 	 *  the default parameters
-	 *
 	 *  @static
 	 *  @const
 	 *  @type {Object}
@@ -79,163 +75,176 @@ function(Tone){
 	Tone.Oscillator.defaults = {
 		"type" : "sine",
 		"frequency" : 440,
-		"onended" : function(){},
 		"detune" : 0,
 		"phase" : 0
 	};
 
 	/**
 	 *  start the oscillator
-	 *  
 	 *  @param  {Tone.Time} [time=now] 
+	 *  @private
 	 */
-	Tone.Oscillator.prototype.start = function(time){
-		if (this.state === Tone.Source.State.STOPPED){
-			this.state = Tone.Source.State.STARTED;
-			//get previous values
-			//new oscillator with previous values
-			this._oscillator = this.context.createOscillator();
-			this._oscillator.setPeriodicWave(this._wave);
-			//connect the control signal to the oscillator frequency & detune
-			this._oscillator.connect(this.output);
-			this.frequency.connect(this._oscillator.frequency);
-			this.detune.connect(this._oscillator.detune);
-			//start the oscillator
-			this._oscillator.onended = this.onended;
-			this._oscillator.start(this.toSeconds(time));
-		}
+	Tone.Oscillator.prototype._start = function(time){
+		//new oscillator with previous values
+		this._oscillator = this.context.createOscillator();
+		this._oscillator.setPeriodicWave(this._wave);
+		//connect the control signal to the oscillator frequency & detune
+		this._oscillator.connect(this.output);
+		this.frequency.connect(this._oscillator.frequency);
+		this.detune.connect(this._oscillator.detune);
+		//start the oscillator
+		this._oscillator.start(this.toSeconds(time));
 	};
 
 	/**
 	 *  stop the oscillator
+	 *  @private
 	 *  @param  {Tone.Time} [time=now] (optional) timing parameter
+	 *  @returns {Tone.Oscillator} `this`
 	 */
-	Tone.Oscillator.prototype.stop = function(time){
-		if (this.state === Tone.Source.State.STARTED){
-			this.state = Tone.Source.State.STOPPED;
+	Tone.Oscillator.prototype._stop = function(time){
+		if (this._oscillator){
 			this._oscillator.stop(this.toSeconds(time));
+			this._oscillator = null;
 		}
+		return this;
 	};
 
 	/**
-	 *  exponentially ramp the frequency of the oscillator over the rampTime
-	 *  
-	 *  @param {Tone.Time}	val
-	 *  @param {Tone.Time=} rampTime when the oscillator will arrive at the frequency
+	 *  Sync the signal to the Transport's bpm. Any changes to the transports bpm,
+	 *  will also affect the oscillators frequency. 
+	 *  @returns {Tone.Oscillator} `this`
+	 *  @example
+	 *  Tone.Transport.bpm.value = 120;
+	 *  osc.frequency.value = 440;
+	 *  osc.syncFrequency();
+	 *  Tone.Transport.bpm.value = 240; 
+	 *  // the frequency of the oscillator is doubled to 880
 	 */
-	Tone.Oscillator.prototype.setFrequency = function(val, rampTime){
-		if (rampTime){
-			this.frequency.exponentialRampToValueAtTime(this.toFrequency(val), this.toSeconds(rampTime));
-		} else {
-			this.frequency.setValue(this.toFrequency(val));
-		}
+	Tone.Oscillator.prototype.syncFrequency = function(){
+		Tone.Transport.syncSignal(this.frequency);
+		return this;
 	};
 
 	/**
-	 *  set the oscillator type
-	 *
-	 *  uses PeriodicWave even for native types so that it can set the phase
-	 *
-	 *  the the PeriodicWave equations are from the Web Audio Source code
-	 *  here: https://code.google.com/p/chromium/codesearch#chromium/src/third_party/WebKit/Source/modules/webaudio/PeriodicWave.cpp&sq=package:chromium
-	 *  
-	 *  @param {string} type (sine|square|triangle|sawtooth)
+	 *  Unsync the oscillator's frequency from the Transport. 
+	 *  See {@link Tone.Oscillator#syncFrequency}.
+	 *  @returns {Tone.Oscillator} `this`
 	 */
-	Tone.Oscillator.prototype.setType = function(type){
-		var fftSize = 4096;
-		var halfSize = fftSize / 2;
+	Tone.Oscillator.prototype.unsyncFrequency = function(){
+		Tone.Transport.unsyncSignal(this.frequency);
+		return this;
+	};
 
-		var real = new Float32Array(halfSize);
-		var imag = new Float32Array(halfSize);
-		
-		// Clear DC and Nyquist.
-		real[0] = 0;
-		imag[0] = 0;
+	/**
+	 * The type of the oscillator: either sine, square, triangle, or sawtooth.
+	 *
+	 * Uses PeriodicWave internally even for native types so that it can set the phase.
+	 *
+	 * PeriodicWave equations are from the Web Audio Source code:
+	 * https://code.google.com/p/chromium/codesearch#chromium/src/third_party/WebKit/Source/modules/webaudio/PeriodicWave.cpp&sq=package:chromium
+	 *  
+	 * @memberOf Tone.Oscillator#
+	 * @type {string}
+	 * @name type
+	 * @example
+	 * osc.type = "square";
+	 * osc.type; //returns "square"
+	 */
+	Object.defineProperty(Tone.Oscillator.prototype, "type", {
+		get : function(){
+			return this._type;
+		},
+		set : function(type){
+			if (this.type !== type){
 
-		var shift = this._phase;	
-		for (var n = 1; n < halfSize; ++n) {
-			var piFactor = 2 / (n * Math.PI);
-			var b; 
-			switch (type) {
-				case "sine": 
-					b = (n === 1) ? 1 : 0;
-					break;
-				case "square":
-					b = (n & 1) ? 2 * piFactor : 0;
-					break;
-				case "sawtooth":
-					b = piFactor * ((n & 1) ? 1 : -1);
-					break;
-				case "triangle":
-					if (n & 1) {
-						b = 2 * (piFactor * piFactor) * ((((n - 1) >> 1) & 1) ? -1 : 1);
-					} else {
-						b = 0;
+				var fftSize = 4096;
+				var halfSize = fftSize / 2;
+
+				var real = new Float32Array(halfSize);
+				var imag = new Float32Array(halfSize);
+				
+				// Clear DC and Nyquist.
+				real[0] = 0;
+				imag[0] = 0;
+
+				var shift = this._phase;	
+				for (var n = 1; n < halfSize; ++n) {
+					var piFactor = 2 / (n * Math.PI);
+					var b; 
+					switch (type) {
+						case "sine": 
+							b = (n === 1) ? 1 : 0;
+							break;
+						case "square":
+							b = (n & 1) ? 2 * piFactor : 0;
+							break;
+						case "sawtooth":
+							b = piFactor * ((n & 1) ? 1 : -1);
+							break;
+						case "triangle":
+							if (n & 1) {
+								b = 2 * (piFactor * piFactor) * ((((n - 1) >> 1) & 1) ? -1 : 1);
+							} else {
+								b = 0;
+							}
+							break;
+						default:
+							throw new TypeError("invalid oscillator type: "+type);
 					}
-					break;
-				default:
-					throw new TypeError("invalid oscillator type: "+type);
-			}
-			if (b !== 0){
-				real[n] = -b * Math.sin(shift);
-				imag[n] = b * Math.cos(shift);
-			} else {
-				real[n] = 0;
-				imag[n] = 0;
+					if (b !== 0){
+						real[n] = -b * Math.sin(shift);
+						imag[n] = b * Math.cos(shift);
+					} else {
+						real[n] = 0;
+						imag[n] = 0;
+					}
+				}
+				var periodicWave = this.context.createPeriodicWave(real, imag);
+				this._wave = periodicWave;
+				if (this._oscillator !== null){
+					this._oscillator.setPeriodicWave(this._wave);
+				}
+				this._type = type;
 			}
 		}
-		var periodicWave = this.context.createPeriodicWave(real, imag);
-		this._wave = periodicWave;
-		if (this._oscillator !== null){
-			this._oscillator.setPeriodicWave(this._wave);
+	});
+
+	/**
+	 * The phase of the oscillator in degrees. 
+	 * @memberOf Tone.Oscillator#
+	 * @type {number}
+	 * @name phase
+	 * @example
+	 * osc.phase = 180; //flips the phase of the oscillator
+	 */
+	Object.defineProperty(Tone.Oscillator.prototype, "phase", {
+		get : function(){
+			return this._phase * (180 / Math.PI);
+		}, 
+		set : function(phase){
+			this._phase = phase * Math.PI / 180;
+			//reset the type
+			this.type = this._type;
 		}
-		this._type = type;
-	};
-
-	/**
-	 *  @return {string} the type of oscillator
-	 */
-	Tone.Oscillator.prototype.getType = function() {
-		return this._type;
-	};
-
-	/**
-	 *  set the phase of the oscillator (in degrees)
-	 *  @param {number} degrees the phase in degrees
-	 */
-	Tone.Oscillator.prototype.setPhase = function(phase) {
-		this._phase = phase * Math.PI / 180;
-		this.setType(this._type);
-	};
-
-	/**
-	 *  set the parameters at once
-	 *  @param {Object} params
-	 */
-	Tone.Oscillator.prototype.set = function(params){
-		if (!this.isUndef(params.type)) this.setType(params.type);
-		if (!this.isUndef(params.phase)) this.setPhase(params.phase);
-		if (!this.isUndef(params.frequency)) this.frequency.setValue(params.frequency);
-		if (!this.isUndef(params.onended)) this.onended = params.onended;
-		if (!this.isUndef(params.detune)) this.detune.setValue(params.detune);
-		Tone.Source.prototype.set.call(this, params);
-	};
+	});
 
 	/**
 	 *  dispose and disconnect
+	 *  @return {Tone.Oscillator} `this`
 	 */
 	Tone.Oscillator.prototype.dispose = function(){
 		Tone.Source.prototype.dispose.call(this);
-		this.stop();
 		if (this._oscillator !== null){
 			this._oscillator.disconnect();
 			this._oscillator = null;
 		}
 		this.frequency.dispose();
-		this.detune.dispose();
-		this._wave = null;
-		this.detune = null;
 		this.frequency = null;
+		this.detune.dispose();
+		this.detune = null;
+		this._wave = null;
+		return this;
 	};
 
 	return Tone.Oscillator;

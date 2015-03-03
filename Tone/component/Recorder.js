@@ -3,6 +3,7 @@ define(["Tone/core/Tone", "Tone/core/Master"], function(Tone){
 	"use strict";
 
 	/**
+	 *  @deprecated
 	 *  @class  Record an input into an array or AudioBuffer. 
 	 *          it is limited in that the recording length needs to be known beforehand. 
 	 *          Mostly used internally for testing. 
@@ -12,6 +13,8 @@ define(["Tone/core/Tone", "Tone/core/Master"], function(Tone){
 	 *  @param {number} channels 
 	 */
 	Tone.Recorder = function(channels){
+
+		console.warn("Tone.Recorder is deprecated. It will be removed in next version");
 
 		Tone.call(this);
 
@@ -148,6 +151,7 @@ define(["Tone/core/Tone", "Tone/core/Master"], function(Tone){
 	 *  @param  {Tone.Time} duration 
 	 *  @param  {Tone.Time} wait the wait time before recording
 	 *  @param {function(Float32Array)} callback the callback to be invoked when the buffer is done recording
+	 *  @returns {Tone.Recorder} `this`
 	 */
 	Tone.Recorder.prototype.record = function(duration, startTime, callback){
 		if (this.state === RecordState.STOPPED){
@@ -163,16 +167,19 @@ define(["Tone/core/Tone", "Tone/core/Master"], function(Tone){
 			this.state = RecordState.RECORDING;
 			this._callback = this.defaultArg(callback, function(){});
 		}
+		return this;
 	};
 
 	/**
 	 *  clears the recording buffer
+	 *  @returns {Tone.PanVol} `this`
 	 */
 	Tone.Recorder.prototype.clear = function(){
 		for (var i = 0; i < this.channels; i++){
 			this._recordBuffers[i] = null;
 		}
 		this._recordBufferOffset = 0;
+		return this;
 	};
 
 
@@ -213,6 +220,7 @@ define(["Tone/core/Tone", "Tone/core/Master"], function(Tone){
 
 	/**
 	 *  clean up
+	 *  @returns {Tone.PanVol} `this`
 	 */
 	Tone.Recorder.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
@@ -220,6 +228,7 @@ define(["Tone/core/Tone", "Tone/core/Master"], function(Tone){
 		this._jsNode.onaudioprocess = undefined;
 		this._jsNode = null;
 		this._recordBuffers = null;
+		return this;
 	};
 
 	/**

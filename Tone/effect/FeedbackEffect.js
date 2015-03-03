@@ -20,7 +20,7 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/signal/Signal", "Tone/sign
 		 *  controls the amount of feedback
 		 *  @type {Tone.Signal}
 		 */
-		this.feedback = new Tone.Signal(options.feedback);
+		this.feedback = new Tone.Signal(options.feedback, Tone.Signal.Units.Normal);
 		
 		/**
 		 *  the gain which controls the feedback
@@ -45,31 +45,8 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/signal/Signal", "Tone/sign
 	};
 
 	/**
-	 *  set the feedback amount
-	 *
-	 *  @param {number} value  the amount of feedback
-	 *  @param {Tone.Time=} rampTime (optionally) set the ramp time it takes 
-	 *                               to reach the new feedback value
-	 */
-	Tone.FeedbackEffect.prototype.setFeedback = function(value, rampTime){
-		if (rampTime){
-			this.feedback.linearRampToValueNow(value, rampTime);
-		} else {
-			this.feedback.setValue(value);
-		}
-	};
-
-	/**
-	 *  set the parameters in bulk
-	 *  @param {Object} params
-	 */
-	Tone.FeedbackEffect.prototype.set = function(params){
-		if (!this.isUndef(params.feedback)) this.setFeedback(params.feedback);
-		Tone.Effect.prototype.set.call(this, params);
-	};
-
-	/**
 	 *  clean up
+	 *  @returns {Tone.FeedbackEffect} `this`
 	 */
 	Tone.FeedbackEffect.prototype.dispose = function(){
 		Tone.Effect.prototype.dispose.call(this);
@@ -77,6 +54,7 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/signal/Signal", "Tone/sign
 		this.feedback = null;
 		this._feedbackGain.disconnect();
 		this._feedbackGain = null;
+		return this;
 	};
 
 	return Tone.FeedbackEffect;

@@ -124,6 +124,65 @@ define(["Tone/core/Tone", "Tone/instrument/DuoSynth"], function(Tone){
 					"max" : 2000
 				}
 			}
+		},
+		"Organic" : {
+			"vibratoAmount": 0.3,
+			"vibratoRate": 3.5,
+			"harmonicity": 1.5,
+			"voice0": {
+				"volume" : -6,
+				"oscillator": {
+					"frequency": 0,
+					"type": "sine",
+				},
+				"filter": {
+					"type": "lowpass",
+					"rolloff": -12,
+					"Q": 2.8,
+				},
+				"envelope": {
+					"attack": 0.0070,
+					"decay": 0,
+					"sustain": 1,
+					"release": 0.056682076
+				},
+				"filterEnvelope": {
+					"min": 219.80,
+					"max": 1049.54942,
+					"exponent": 2,
+					"attack": 0.00704,
+					"decay": 0.0278,
+					"sustain": 0.065,
+					"release": 0.0749
+				},
+			},
+			"voice1": {
+				"volume" : -20,
+				"oscillator": {
+					"type": "sine",
+				},
+				"filter": {
+					"type": "highpass",
+					"rolloff": -12,
+					"Q": 4.55,
+				},
+				"envelope": {
+					"attack": 0.011,
+					"decay": 0.016,
+					"sustain": 0.7464,
+					"release": 0.074
+				},
+				"filterEnvelope": {
+					"min": 298.20,
+					"max": 80.43,
+					"exponent": 2,
+					"attack": 0.0035,
+					"decay": 0.0060,
+					"sustain": 1,
+					"release": 0.108
+				},
+			},
+			"portamento": 0
 		}
 	};
 

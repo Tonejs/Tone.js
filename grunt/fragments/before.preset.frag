@@ -2,6 +2,6 @@
 	
 	"use strict";
 
-	function tonePreset(func){
+	function TonePreset(func){
 		func(root.Tone);
 	}

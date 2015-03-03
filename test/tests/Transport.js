@@ -1,6 +1,7 @@
 /* global it, describe, beforeEach, maxTimeout */
 
-define(["chai", "Tone/core/Transport", "tests/Core", "tests/Common", "Tone/core/Clock"], function(chai, Transport, Core, Test, Clock){
+define(["chai", "Tone/core/Transport", "tests/Core", "tests/Common", "Tone/core/Clock", "Tone/signal/Signal"], 
+	function(chai, Transport, Core, Test, Clock, Signal){
 	var expect = chai.expect;
 
 	describe("Tone.Clock", function(){
@@ -26,6 +27,15 @@ define(["chai", "Tone/core/Transport", "tests/Core", "tests/Common", "Tone/core/
 				done();
 			});
 		});
+
+		it("invokes the callback when stopped", function(done){
+			Test.onlineContext();
+			var clock = new Clock(0.5, function(){});
+			clock.start();
+			clock.stop("+0.5", function(){
+				done();
+			});
+		});
 	});
 
 	describe("Transport.setBpm  / getBpm", function(){
@@ -37,7 +47,7 @@ define(["chai", "Tone/core/Transport", "tests/Core", "tests/Common", "Tone/core/
 				Transport.start();
 			}, function(){
 			}, function(){
-				expect(Transport.getBpm()).to.equal(120);
+				expect(Transport.bpm.value).to.equal(120);
 				done();
 			});
 		});
@@ -47,7 +57,7 @@ define(["chai", "Tone/core/Transport", "tests/Core", "tests/Common", "Tone/core/
 			Test.offlineTest(0.2, function(){
 			}, function(){
 			}, function(){
-				expect(Transport.getBpm()).to.equal(120);
+				expect(Transport.bpm.value).to.equal(120);
 				done();
 			});
 		});
@@ -55,15 +65,31 @@ define(["chai", "Tone/core/Transport", "tests/Core", "tests/Common", "Tone/core/
 		it("ramps to the right value", function(done){
 			var duration = 2;
 			Test.offlineTest(duration, function(){
-				expect(Transport.getBpm()).to.equal(120);
+				expect(Transport.bpm.value).to.equal(120);
 				Transport.start();
-				Transport.setBpm(200, 0.05);
+				Transport.bpm.rampTo(200, 0.05);
 			}, function(){
 			}, function(){
-				expect(Transport.getBpm()).to.equal(200);
+				expect(Transport.bpm.value).to.equal(200);
 				done();
 			});
 		});
+
+		it("can sync a signal to the bpm", function(done){
+			var signalSync;
+			Test.offlineTest(0.1, function(dest){
+				Transport.bpm.value = 120;
+				signalSync = new Signal(5);
+				Transport.syncSignal(signalSync);
+				Transport.bpm.value = 240;
+				signalSync.connect(dest);
+			}, function(sample){
+				expect(sample).to.equal(10);
+			}, function(){
+				signalSync.dispose();
+				done();
+			});
+		});	
 	});
 
 	describe("Transport.setTimeout", function(){
@@ -74,7 +100,7 @@ define(["chai", "Tone/core/Transport", "tests/Core", "tests/Common", "Tone/core/
 		});
 
 		it("invokes a callback at the start", function(done){
-			Transport.setBpm(240);
+			Transport.bpm.value = 240;
 			var wasCalled = false;
 			var duration = 2;
 			Test.offlineTest(duration, function(){
@@ -89,7 +115,7 @@ define(["chai", "Tone/core/Transport", "tests/Core", "tests/Common", "Tone/core/
 		});
 
 		it("invokes the callback in the future", function(done){
-			Transport.setBpm(240);
+			Transport.bpm.value = 240;
 			var duration = 4;
 			var firstCallback = 0;
 			var callbackTime = 0;
@@ -121,7 +147,7 @@ define(["chai", "Tone/core/Transport", "tests/Core", "tests/Common", "Tone/core/
 		});
 
 		it("can clear a timeout", function(done){
-			Transport.setBpm(120);
+			Transport.bpm.value = 120;
 			Test.offlineTest(2, function(){
 				var timeoutId = Transport.setTimeout(function(){
 					throw new Error("should not have called this");
@@ -142,7 +168,7 @@ define(["chai", "Tone/core/Transport", "tests/Core", "tests/Common", "Tone/core/
 		});
 
 		it("invokes a repeated event", function(done){
-			Transport.setBpm(120);
+			Transport.bpm.value = 120;
 			var callbackCount = 0;
 			Test.offlineTest(4, function(){
 				Transport.setInterval(function(){
@@ -156,7 +182,7 @@ define(["chai", "Tone/core/Transport", "tests/Core", "tests/Common", "Tone/core/
 		});
 
 		it("can clear an interval", function(done){
-			Transport.setBpm(120);
+			Transport.bpm.value = 120;
 			Test.offlineTest(2, function(){
 				var timeoutId = Transport.setInterval(function(){
 					throw new Error("should not have called this");
@@ -178,7 +204,7 @@ define(["chai", "Tone/core/Transport", "tests/Core", "tests/Common", "Tone/core/
 		});
 
 		it("invokes the callback", function(done){
-			Transport.setBpm(240);
+			Transport.bpm.value = 240;
 			var wasCalled = false;
 			Test.offlineTest(2, function(){
 				Transport.setTimeline(function(){
@@ -193,7 +219,7 @@ define(["chai", "Tone/core/Transport", "tests/Core", "tests/Common", "Tone/core/
 
 		
 		it("can clear a timeline event", function(done){
-			Transport.setBpm(120);
+			Transport.bpm.value = 120;
 			Test.offlineTest(2, function(){
 				var timeoutId = Transport.setTimeline(function(){
 					throw new Error("should not have called this");

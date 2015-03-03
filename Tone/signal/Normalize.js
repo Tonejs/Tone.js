@@ -7,6 +7,10 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Multiply"], function(T
 	 *
 	 *  @extends {Tone.SignalBase}
 	 *  @constructor
+	 *  @example
+	 *  var norm = new Tone.Normalize(2, 4);
+	 *  var sig = new Tone.Signal(3).connect(norm);
+	 *  //output of norm is 0.5. 
 	 */
 	Tone.Normalize = function(inputMin, inputMax){
 
@@ -45,34 +49,49 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Multiply"], function(T
 	Tone.extend(Tone.Normalize, Tone.SignalBase);
 
 	/**
-	 *  set the minimum input value
-	 *  @param {number} min the minimum input value
+	 * The minimum value the input signal will reach.
+	 * @memberOf Tone.Normalize#
+	 * @type {number}
+	 * @name min
 	 */
-	Tone.Normalize.prototype.setMin = function(min){
-		this._inputMin = min;
-		this._setRange();
-	};
+	Object.defineProperty(Tone.Normalize.prototype, "min", {
+		get : function(){
+			return this._inputMin;
+		},
+		set : function(min){
+			this._inputMin = min;
+			this._setRange();
+		}
+	});
 
 	/**
-	 *  set the minimum input value
-	 *  @param {number} min the minimum input value
+	 * The maximum value the input signal will reach.
+	 * @memberOf Tone.Normalize#
+	 * @type {number}
+	 * @name max
 	 */
-	Tone.Normalize.prototype.setMax = function(max){
-		this._inputMax = max;
-		this._setRange();
-	};
+	Object.defineProperty(Tone.Normalize.prototype, "max", {
+		get : function(){
+			return this._inputMax;
+		},
+		set : function(max){
+			this._inputMax = max;
+			this._setRange();
+		}
+	});
 
 	/**
 	 *  set the values
 	 *  @private
 	 */
 	Tone.Normalize.prototype._setRange = function() {
-		this._sub.setValue(-this._inputMin);
-		this._div.setValue(1 / (this._inputMax - this._inputMin));
+		this._sub.value = -this._inputMin;
+		this._div.value = 1 / (this._inputMax - this._inputMin);
 	};
 
 	/**
 	 *  clean up
+	 *  @returns {Tone.Normalize} `this`
 	 */
 	Tone.Normalize.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
@@ -80,6 +99,7 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Multiply"], function(T
 		this._sub = null;
 		this._div.dispose();
 		this._div = null;
+		return this;
 	};
 
 	return Tone.Normalize;

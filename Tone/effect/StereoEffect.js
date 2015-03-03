@@ -1,4 +1,5 @@
-define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/Split", "Tone/component/Merge", "Tone/component/Mono"], 
+define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/Split", 
+	"Tone/component/Merge", "Tone/component/CrossFade"], 
 function(Tone){
 
 	"use strict";
@@ -13,14 +14,21 @@ function(Tone){
 
 		Tone.call(this);
 		//get the defaults
-		var options = this.optionsObject(arguments, ["dry"], Tone.Effect.defaults);
+		var options = this.optionsObject(arguments, ["wet"], Tone.Effect.defaults);
 
 		/**
 		 *  the drywet knob to control the amount of effect
-		 *  
-		 *  @type {Tone.DryWet}
+		 *  @type {Tone.CrossFade}
+		 *  @private
 		 */
-		this.dryWet = new Tone.DryWet();
+		this._dryWet = new Tone.CrossFade(options.wet);
+
+		/**
+		 *  The wet control, i.e. how much of the effected
+		 *  will pass through to the output. 
+		 *  @type {Tone.Signal}
+		 */
+		this.wet = this._dryWet.fade;
 
 		/**
 		 *  then split it
@@ -32,12 +40,14 @@ function(Tone){
 		/**
 		 *  the effects send LEFT
 		 *  @type {GainNode}
+		 *  @private
 		 */
 		this.effectSendL = this._split.left;
 
 		/**
 		 *  the effects send RIGHT
 		 *  @type {GainNode}
+		 *  @private
 		 */
 		this.effectSendR = this._split.right;
 
@@ -63,22 +73,21 @@ function(Tone){
 		//connections
 		this.input.connect(this._split);
 		//dry wet connections
-		this.input.connect(this.dryWet.dry);
-		this._merge.connect(this.dryWet.wet);
-		this.dryWet.connect(this.output);
-		//setup values
-		this.setDry(options.dry);
+		this.input.connect(this._dryWet, 0, 0);
+		this._merge.connect(this._dryWet, 0, 1);
+		this._dryWet.connect(this.output);
 	};
 
 	Tone.extend(Tone.StereoEffect, Tone.Effect);
 
 	/**
 	 *  clean up
+	 *  @returns {Tone.StereoEffect} `this`
 	 */
 	Tone.StereoEffect.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
-		this.dryWet.dispose();
-		this.dryWet = null;
+		this._dryWet.dispose();
+		this._dryWet = null;
 		this._split.dispose();
 		this._split = null;
 		this._merge.dispose();
@@ -87,6 +96,8 @@ function(Tone){
 		this.effectSendR = null;
 		this.effectReturnL = null;
 		this.effectReturnR = null;
+		this.wet = null;
+		return this;
 	};
 
 	return Tone.StereoEffect;

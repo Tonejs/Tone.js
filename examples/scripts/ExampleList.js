@@ -15,7 +15,6 @@ var ExampleList = {
 		"AutoPanner" : "autoPanner",
 		"PingPongDelay" : "pingPongDelay",
 		"Buses" : "buses",
-		"Convolver" : "convolver"
 	},
 	"Instruments" : {
 		"MonoSynth" : "monoSynth",

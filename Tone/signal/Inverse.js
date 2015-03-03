@@ -31,11 +31,14 @@ function(Tone){
 	 *         Uses this approximation algorithm: 
 	 *         http://en.wikipedia.org/wiki/Multiplicative_inverse#Algorithms
 	 *
+	 *  @deprecated
 	 *  @extends {Tone.SignalBase}
 	 *  @constructor
 	 *  @param {number} [precision=3] the precision of the calculation
 	 */
 	Tone.Inverse = function(precision){
+
+		console.warn("Tone.Inverse has been deprecated. Multiply is always more efficient than dividing.");
 
 		Tone.call(this);
 
@@ -89,6 +92,7 @@ function(Tone){
 
 	/**
 	 *  clean up
+	 *  @returns {Tone.Inverse} `this`
 	 */
 	Tone.Inverse.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
@@ -103,6 +107,7 @@ function(Tone){
 		this._guessMult = null;
 		this._guess.disconnect();
 		this._guess = null;
+		return this;
 	};
 
 	// BEGIN INVERSE HELPER ///////////////////////////////////////////////////
@@ -111,7 +116,7 @@ function(Tone){
 	 *  internal helper function for computing the inverse of a signal
 	 *  @extends {Tone}
 	 *  @constructor
-	 *  @internal
+	 *  @private
 	 */
 	var InverseHelper = function(guess, two){
 		this._outerMultiply = new Tone.Multiply();

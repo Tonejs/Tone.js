@@ -7,71 +7,52 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
 
 	<script type="text/javascript" src="./deps/jquery.min.js"></script>
-	<script type="text/javascript" src="./deps/jquery-ui.js"></script>
-	<script type="text/javascript" src="./deps/jquery.ui.touch-punch.js"></script>
 	<script type="text/javascript" src="../build/Tone.js"></script>
-	<script type="text/javascript" src="./Widgets.js"></script>
-	<script type="text/javascript" src="./ExampleList.js"></script>
-	<link rel="stylesheet" type="text/css" href="./style/widgets.css">
-	<link rel="stylesheet" type="text/css" href="./style/jquery-ui.css">
+	<script type="text/javascript" src="./deps/nexusUI.js"></script>
+	<script type="text/javascript" src="./deps/prism.js"></script>
+	<script type="text/javascript" src="./scripts/Interface.js"></script>
+
+	<link rel="stylesheet" type="text/css" href="./style/examples.css">
+	<link rel="stylesheet" type="text/css" href="./style/prism.css">
+
+	<script type="text/javascript">
+		// jshint ignore: start
+	</script>
 
 </head>
 <body>
-	<div id="Container">
-		<div id="Explanation">
-			Oscillator
-			<br>
-			<br>
-			An oscillator with an LFO attached to the detune control. 
-		</div>
-		<div id="Content">
-		</div>
+	<div id="Explanation">
+		Oscillator
+		<br>
+		<br>
+		An oscillator with an LFO attached to the detune control. 
 	</div>
-	<script type="text/javascript">
+	<div id="Content">
+		<div id="Rack"></div>
+		<div id="Code"></div>
+	</div>
+	<script id="ToneCode" type="text/javascript">
+		var osc = new Tone.Oscillator(440, "sine").toMaster();
+		osc.volume.value = -10;
 
-		/* global Tone, GUI*/
-
-		var osc = new Tone.Oscillator(440, "sine");
-
-		var vibrato = new Tone.LFO(6, -25, 25);
-		vibrato.start();
-
-		//connect it to the output
-		osc.toMaster();
-		osc.setVolume(-10);
-		vibrato.connect(osc.detune);
-
-		// GUI //
-
-		$(function(){
-			var content = $("#Content");
-			new GUI.TopBar(Tone);
-			new GUI.Checkbox(content, function(on){
-				if (on){
-					osc.start();
-				} else {
-					osc.stop();
-				}
-			}, "start", "stop");
-			new GUI.Oscillator(content, osc, "oscillator");
-			new GUI.Oscillator(content, vibrato.oscillator, "vibrato osc");
+		var vibrato = new Tone.LFO(6, -25, 25)
+			.connect(osc.detune)
+			.start();
+	</script>
+	<script id="GUI" type="text/javascript">
+		Interface.Rack("Rack", "Oscillator");
+		Interface.Toggle("Rack", function(on){
+			if (on){
+				osc.start();
+			} else {
+				osc.stop();
+			}
 		});
+		Interface.DropDown("Rack", osc, "type", ["sine", "square", "triangle", "sawtooth"], "Oscillator Type");
+		Interface.DropDown("Rack", vibrato, "type", ["sine", "square", "triangle", "sawtooth"], "LFO Type");
+		Interface.Code("Code", "ToneCode");
 
 		
 	</script>
-
-	<style type="text/css">
-		#Content {
-			text-align: left;
-			height: 110px;
-			width: 240px;
-		}
-		.Checkbox {
-			width: 100%;
-		}
-		.Oscillator {
-			margin-top: 10px;
-		}
-	</style>
 </body>
 </html>

@@ -3,37 +3,29 @@ define(["Tone/core/Tone"], function(Tone){
 	"use strict";
 
 	/**
-	 *  @class  merge a left and a right channel into a single stereo channel
-	 *          instead of connecting to the input, connect to either the left, or right input.
-	 *          default input for connect is left input.
+	 *  @class  Merge a left and a right channel into a single stereo channel.
 	 *
 	 *  @constructor
 	 *  @extends {Tone}
+	 *  @example
+	 *  var merge = new Tone.Merge();
+	 *  sigLeft.connect(merge.left);
+	 *  sigRight.connect(merge.right);
 	 */
 	Tone.Merge = function(){
 
-		/**
-		 *  the output node
-		 *  @type {GainNode}
-		 */
-		this.output = this.context.createGain();
+		Tone.call(this, 2, 0);
 
 		/**
-		 *  the two input nodes
-		 *  @type {Array.<GainNode>}
-		 */
-		this.input = new Array(2);
-
-		/**
-		 *  the left input channel
-		 *  alias for input 0
+		 *  The left input channel.
+		 *  Alias for input 0
 		 *  @type {GainNode}
 		 */
 		this.left = this.input[0] = this.context.createGain();
 
 		/**
-		 *  the right input channel
-		 *  alias for input 1
+		 *  The right input channel.
+		 *  Alias for input 1.
 		 *  @type {GainNode}
 		 */
 		this.right = this.input[1] = this.context.createGain();
@@ -43,27 +35,28 @@ define(["Tone/core/Tone"], function(Tone){
 		 *  @type {ChannelMergerNode}
 		 *  @private
 		 */
-		this._merger = this.context.createChannelMerger(2);
+		this._merger = this.output = this.context.createChannelMerger(2);
 
 		//connections
 		this.left.connect(this._merger, 0, 0);
 		this.right.connect(this._merger, 0, 1);
-		this._merger.connect(this.output);
 	};
 
 	Tone.extend(Tone.Merge);
 
 	/**
 	 *  clean up
+	 *  @returns {Tone.Merge} `this`
 	 */
 	Tone.Merge.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
 		this.left.disconnect();
-		this.right.disconnect();
-		this._merger.disconnect();
 		this.left = null;
+		this.right.disconnect();
 		this.right = null;
+		this._merger.disconnect();
 		this._merger = null;
+		return this;
 	}; 
 
 	return Tone.Merge;

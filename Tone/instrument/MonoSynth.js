@@ -110,47 +110,30 @@ function(Tone){
 	 *  start the attack portion of the envelope
 	 *  @param {Tone.Time} [time=now] the time the attack should start
 	 *  @param {number} [velocity=1] the velocity of the note (0-1)
+	 *  @returns {Tone.MonoSynth} `this`
 	 */
 	Tone.MonoSynth.prototype.triggerEnvelopeAttack = function(time, velocity){
 		//the envelopes
 		this.envelope.triggerAttack(time, velocity);
-		this.filterEnvelope.triggerAttack(time);		
+		this.filterEnvelope.triggerAttack(time);	
+		return this;	
 	};
 
 	/**
 	 *  start the release portion of the envelope
 	 *  @param {Tone.Time} [time=now] the time the release should start
+	 *  @returns {Tone.MonoSynth} `this`
 	 */
 	Tone.MonoSynth.prototype.triggerEnvelopeRelease = function(time){
 		this.envelope.triggerRelease(time);
 		this.filterEnvelope.triggerRelease(time);
+		return this;
 	};
 
-	/**
-	 *  set the oscillator type
-	 *  @param {string} oscType the type of oscillator
-	 */
-	Tone.MonoSynth.prototype.setOscType = function(type){
-		this.oscillator.setType(type);
-	};
-
-	/**
-	 *  set the members at once
-	 *  @param {Object} params all of the parameters as an object.
-	 *                         params for envelope and filterEnvelope 
-	 *                         should be nested objects. 
-	 */
-	Tone.MonoSynth.prototype.set = function(params){
-		if (!this.isUndef(params.detune)) this.detune.setValue(params.detune);
-		if (!this.isUndef(params.oscillator)) this.oscillator.set(params.oscillator);
-		if (!this.isUndef(params.filterEnvelope)) this.filterEnvelope.set(params.filterEnvelope);
-		if (!this.isUndef(params.envelope)) this.envelope.set(params.envelope);
-		if (!this.isUndef(params.filter)) this.filter.set(params.filter);
-		Tone.Monophonic.prototype.set.call(this, params);
-	};
 
 	/**
 	 *  clean up
+	 *  @returns {Tone.MonoSynth} `this`
 	 */
 	Tone.MonoSynth.prototype.dispose = function(){
 		Tone.Monophonic.prototype.dispose.call(this);
@@ -164,6 +147,7 @@ function(Tone){
 		this.filter = null;
 		this.frequency = null;
 		this.detune = null;
+		return this;
 	};
 
 	return Tone.MonoSynth;

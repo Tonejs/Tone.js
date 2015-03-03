@@ -138,7 +138,7 @@ function(Master, MonoSynth, DuoSynth, FMSynth, AMSynth, NoiseSynth, Oscillator,
 	describe("Tone.PluckSynth", function(){
 		it("makes sound", function(done){
 			var synth = new PluckSynth();
-			synth.setVolume(12);
+			synth.volume.value = 12;
 			synth.toMaster();
 			synth.triggerAttack("C3");
 			setTimeout(function(){

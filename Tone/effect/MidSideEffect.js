@@ -87,6 +87,7 @@ define(["Tone/core/Tone", "Tone/effect/StereoEffect"], function(Tone){
 
 	/**
 	 *  clean up
+	 *  @returns {Tone.MidSideEffect} `this`
 	 */
 	Tone.MidSideEffect.prototype.dispose = function(){
 		Tone.StereoEffect.prototype.dispose.call(this);
@@ -104,6 +105,7 @@ define(["Tone/core/Tone", "Tone/effect/StereoEffect"], function(Tone){
 		this.midReturn = null;
 		this.sideReturn.disconnect();
 		this.sideReturn = null;
+		return this;
 	};
 
 	return Tone.MidSideEffect;

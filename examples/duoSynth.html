@@ -2,161 +2,89 @@
 <html>
 <head>
   <meta charset="utf-8">
-	<title>DUOSYNTH</title>
+	<title>MONOSYNTH</title>
 
 	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
 
 	<script type="text/javascript" src="./deps/jquery.min.js"></script>
-	<script type="text/javascript" src="./deps/jquery-ui.js"></script>
-	<script type="text/javascript" src="./deps/jquery.ui.touch-punch.js"></script>
 	<script type="text/javascript" src="../build/Tone.js"></script>
 	<script type="text/javascript" src="../build/Tone.Preset.js"></script>
-	<script type="text/javascript" src="./Widgets.js"></script>
-	<script type="text/javascript" src="./ExampleList.js"></script>
-	<link rel="stylesheet" type="text/css" href="./style/widgets.css">
-	<link rel="stylesheet" type="text/css" href="./style/jquery-ui.css">
+	<script type="text/javascript" src="./deps/nexusUI.js"></script>
+	<script type="text/javascript" src="./deps/prism.js"></script>
+	<script type="text/javascript" src="./scripts/Interface.js"></script>
 	<script type="text/javascript" src="./deps/qwerty-hancock.js"></script>
+
+	<link rel="stylesheet" type="text/css" href="./style/examples.css">
+	<link rel="stylesheet" type="text/css" href="./style/prism.css">
+
+	<script type="text/javascript">
+		// jshint ignore: start
+	</script>
 
 </head>
 <body>
+	<style type="text/css">
+	#Amplitude0, #Amplitude1 {
+		/*position: relative;*/
+		width: calc(40% - 10px)!important;
+	}
+	#FilterEnvelope0, #FilterEnvelope1 {
+		/*position: relative;*/
+		width: calc(60% - 10px)!important;
+	}
+	.FilterEnvelope.Envelope {
+		width: 100%!important;
+	}
 
-	<div id="Container">
-		<div id="Explanation">
-			DuoSynth
-			<br>
-			<br>
-			DuoSynth is a monophonic synthesizer composed of two MonoSyths in parellel. 
+	.Envelope {
+		width: 100%!important;
+	}
+	.Label {
+		width: 100%;
+		font-size : 10px;
+		line-height: 7px;
+		text-align:  center;
+		margin-top: 10px;
+		margin-bottom: 5px;
+		border-bottom: 1px solid black;
+	}
+	</style>
+	<div id="Explanation">
+		DuoSynth
+		<br>
+		<br>
+		A DuoSynth is two MonoSynths run in parallel with additional control over the voices harmonicity and vibrato.
+	</div>
+	<div id="Content">
+		<div id="KeyRack">
+			<div id="Keyboard"></div>
 		</div>
-		<div id="Content">
-			<div id="tabs">
-			  <ul>
-			    <li><a href="#envelope0">Osc 0</a></li>
-			    <li><a href="#filter0">Filt 0</a></li>
-			    <li><a href="#envelope1">Osc 1</a></li>
-			    <li><a href="#filter1">Filt 1</a></li>
-			    <li><a href="#presets">Global</a></li>
-			  </ul>
-			  <div id="envelope0">
-			  </div>
-			  <div id="filter0">
-			  </div>
-			  <div id="envelope1">
-			  </div>
-			  <div id="filter1">
-			  </div>
-			  <div id="presets">
-			  </div>
-			</div>
-
-
+		<div id="Oscillator">
 		</div>
+		<div id="Envelope">
+			<div id="Amplitude0"></div>
+			<div id="FilterEnvelope0"></div>
+			<div id="Amplitude1"></div>
+			<div id="FilterEnvelope1"></div>
+		</div>
+		<div id="Filter"></div>
+		<div id="Voices"></div>
+		<div id="Presets"></div>
 	</div>
 
-	<script type="text/javascript">
+	<script id="ToneCode" type="text/javascript">			
+		var synth = new Tone.DuoSynth().toMaster();
+	</script>
+	<script id="GUI" type="text/javascript">
 
-		/* globals Tone, GUI, QwertyHancock */
-			
-		var synth = new Tone.DuoSynth();
-		synth.setVolume(-10);
-		synth.toMaster();
-
-		// GUI //
-
-		new GUI.TopBar(Tone);
-
-		$("#tabs").tabs();
-
-		var content = $("#Content");
-		var envelope0 = $("#envelope0");
-		var envelope1 = $("#envelope1");
-		var filter0 = $("#filter0");
-		var filter1 = $("#filter1");
-		var presets = $("#presets");
-
-		//osc 0
-		var ampEnv0 = new GUI.Envelope(envelope0, synth.voice0.envelope, "amplitude");
-		var osc0 = new GUI.OmniOscillator(envelope0, synth.voice0.oscillator, "oscillator");
-		var osc0Vol = new GUI.Slider(envelope0, function(val){
-			var vol = synth.gainToDb(val);
-			synth.voice0.setVolume(vol);
-			return vol;
-		}, 1, "volume", "db");
-
-		//osc 1
-		var ampEnv1 = new GUI.Envelope(envelope1, synth.voice1.envelope, "amplitude");
-		var osc1 = new GUI.OmniOscillator(envelope1, synth.voice1.oscillator, "oscillator");
-		var osc1Vol = new GUI.Slider(envelope1, function(val){
-			var vol = synth.gainToDb(val);
-			synth.voice1.setVolume(vol);
-			return vol;
-		}, 1, "volume", "db");
-
-		//filt 0
-		var min = 20;
-		var max = 20000;
-		var filtEnv0 =new GUI.Envelope(filter0, synth.voice0.filterEnvelope, "filter");
-		var minFilFreq0 = new GUI.Slider(filter0, function(val){
-			var freq = Math.pow(val, 2);
-			var scaled = freq * (max - min) + min;
-			synth.voice0.filterEnvelope.setMin(scaled);
-			return scaled;
-		}, min, "start freq", "hz");
-		var maxFilFreq0 = new GUI.Slider(filter0, function(val){
-			var freq = Math.pow(val, 2);
-			var scaled = freq * (max - min) + min;
-			synth.voice0.filterEnvelope.setMax(scaled);
-			return scaled;
-		}, min, "end freq", "hz");
-
-		//filt 1
-		var filtEnv1 =new GUI.Envelope(filter1, synth.voice1.filterEnvelope, "filter");
-		var minFilFreq1 = new GUI.Slider(filter1, function(val){
-			var freq = Math.pow(val, 2);
-			var scaled = freq * (max - min) + min;
-			synth.voice1.filterEnvelope.setMin(scaled);
-			return scaled;
-		}, min, "start freq", "hz");
-		var maxFilFreq1 = new GUI.Slider(filter1, function(val){
-			var freq = Math.pow(val, 2);
-			var scaled = freq * (max - min) + min;
-			synth.voice1.filterEnvelope.setMax(scaled);
-			return scaled;
-		}, min, "end freq", "hz");
-		
-		//global
-		var harmonicity = new GUI.Slider(presets, function(val){
-			var scaled =  val * 10;
-			synth.setHarmonicity(scaled);
-			return scaled;
-		}, 1, "harmonicity");
-		var vibratoAmount = new GUI.Slider(presets, function(val){
-			synth.setVibratoAmount(val);
-			return val;
-		}, 1, "vibrato amount");
-		var vibratoRate = new GUI.Slider(presets, function(val){
-			synth.setVibratoRate(val * 10);
-			return val * 10;
-		}, 1, "vibrato rate");
-		var allPresets = [];
-		for (var name in synth.preset){
-			allPresets.push(name);
-		}
-		$("<div>", {"id" : "PresetText"}).appendTo(presets).text("presets:");
-		new GUI.DropDown(presets, allPresets, function(name){
-			setPreset(name);
-		});
-
-		//keyboard
-		$("<div>", {"id" : "Keyboard"}).appendTo(content);
+		Interface.Rack("KeyRack", "Keyboard", true).open();
+		//the keyboard
 		var keyboard = new QwertyHancock({
 			id: "Keyboard",
-			width: 400,
+			width: $("#KeyRack").width(),
 			height: 75,
-			octaves: 2,
-			startNote: "A3",
-			whiteNotesColour: "white",
-			blackNotesColour: "black",
-			hoverColour: "#f3e939"
+			octaves : 3,
+			startNote: "A2",
 		});
 		keyboard.keyDown = function(note, freq){
 			synth.triggerAttack(freq);
@@ -165,77 +93,39 @@
 			synth.triggerRelease();
 		};
 
-		function setPreset(name){
-			synth.setPreset(name);
-			var preset = synth.preset[name];
-			ampEnv0.render();
-			ampEnv1.render();
-			osc0.render();
-			osc0Vol.render(synth.dbToGain(preset.voice0.volume));
-			osc1.render();
-			osc1Vol.render(synth.dbToGain(preset.voice1.volume));
-			filtEnv0.render();
-			var minVal0 = Math.pow(Math.max((synth.voice0.filterEnvelope.min - min) / (max - min), 0), 0.5);
-			minFilFreq0.render(minVal0);
-			var maxVal0 = Math.pow(Math.max((synth.voice0.filterEnvelope.max - min) / (max - min), 0), 0.5);
-			maxFilFreq0.render(maxVal0);
-			filtEnv1.render();
-			var minVal1 = Math.pow(Math.max((synth.voice1.filterEnvelope.min - min) / (max - min), 0), 0.5);
-			minFilFreq1.render(minVal1);
-			var maxVal1 = Math.pow(Math.max((synth.voice1.filterEnvelope.max - min) / (max - min), 0), 0.5);
-			maxFilFreq1.render(maxVal1);
-			harmonicity.render(preset.harmonicity / 10);
-			vibratoAmount.render(preset.vibratoAmount);
-			vibratoRate.render(preset.vibratoRate / 10);
-		}
-
-		setPreset("Steely");
-		
+		//the oscillator
+		Interface.Rack("Oscillator", "Oscillators", true);
+		$("<div>").addClass("Label").appendTo("#Oscillator").text("Voice 0");
+		Interface.DropDown("Oscillator", synth.voice0.oscillator, "type", ["sine", "square", "triangle", "sawtooth", "pwm", "pulse"]).listen();
+		$("<div>").addClass("Label").appendTo("#Oscillator").text("Voice 1");
+		Interface.DropDown("Oscillator", synth.voice1.oscillator, "type", ["sine", "square", "triangle", "sawtooth", "pwm", "pulse"]).listen();
+		//the envelopes
+		Interface.Rack("Envelope", "Envelopes", true);
+		var ampGroup0 = Interface.Group("Amplitude0", "Voice 0 Amplitude");
+		Interface.AmplitudeEnvelope(ampGroup0, synth.voice0.envelope).listen();
+		var filtGroup0 = Interface.Group("FilterEnvelope0", "Voice 0 Filter");
+		Interface.FilterEnvelope(filtGroup0, synth.voice0.filterEnvelope).listen();
+		var ampGroup1 = Interface.Group("Amplitude1", "Voice 1 Amplitude");
+		Interface.AmplitudeEnvelope(ampGroup1, synth.voice1.envelope).listen();
+		var filtGroup1 = Interface.Group("FilterEnvelope1", "Voice 1 Filter");
+		Interface.FilterEnvelope(filtGroup1, synth.voice1.filterEnvelope).listen();
+		//the filters
+		Interface.Rack("Filter", "Filter", true);
+		$("<div>").addClass("Label").appendTo("#Filter").text("Voice 0");
+		var type = Interface.DropDown("Filter", synth.voice0.filter, "type", ["lowpass", "highpass", "bandpass"]).listen();
+		var Q = Interface.Slider("Filter", synth.voice0.filter, "Q", 0.1, 20).listen();
+		$("<div>").addClass("Label").appendTo("#Filter").text("Voice 0");
+		var type = Interface.DropDown("Filter", synth.voice1.filter, "type", ["lowpass", "highpass", "bandpass"]).listen();
+		var Q = Interface.Slider("Filter", synth.voice1.filter, "Q", 0.1, 20).listen();
+		//other settings
+		Interface.Rack("Voices", "Voices", true);
+		Interface.Slider("Voices", synth, "harmonicity", 0.25, 5).listen();
+		$("<div>").addClass("Label").appendTo("#Voices").text("Vibrato");
+		Interface.Slider("Voices", synth, "vibratoRate", 0.25, 10).listen();
+		Interface.Slider("Voices", synth, "vibratoAmount", 0, 1).listen();
+		//presets
+		Interface.Rack("Presets", "Presets", true);
+		Interface.Presets("Presets", synth);
 	</script>
-
-	<style type="text/css">
-	#Content {
-		width: 400px;
-	}
-
-	#tabs {
-		height: 300px;
-	}
-
-	.Slider {
-		width: 80%;
-		margin-left: 10%;
-		margin-top: 10px;
-	}
-
-	.Oscillator {
-		width: 80%;
-		margin-left: 10%;
-		margin-top: 10px;
-	}
-
-	#envelope1 .Oscillator {
-		margin-top: 10px;
-	}
-
-	.Envelope {
-		margin: auto;
-	}
-
-	#Keyboard {
-		background-color: black;
-	}
-
-	#presets #PresetText {
-		width: 100%;
-		text-align: center;
-		margin-top: 20px;
-	}
-
-	#presets .DropDown {
-		margin: auto;
-		margin-top: 5px;
-	}
-	</style>
 </body>
 </html>

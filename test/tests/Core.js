@@ -1,7 +1,8 @@
 /* global it, describe, after */
 
 define(["chai", "Tone/core/Tone", "Tone/core/Master", "Tone/core/Bus", 
-	"Tone/core/Note", "tests/Common", "Tone/core/Buffer"], function(chai, Tone, Master, Bus, Note, Test, Buffer){
+	"Tone/core/Note", "tests/Common", "Tone/core/Buffer", "Tone/source/Oscillator"], 
+function(chai, Tone, Master, Bus, Note, Test, Buffer, Oscillator){
 	var expect = chai.expect;
 
 	describe("AudioContext", function(){
@@ -83,6 +84,119 @@ define(["chai", "Tone/core/Tone", "Tone/core/Master", "Tone/core/Bus",
 			expect(tone.defaultArg({"a" : 10}, {"b" : {"c" : 20}})).has.deep.property("b.c", 20);
 		});
 
+		it("can connect and disconnect", function(){
+			var node = Tone.context.createGain();
+			tone.connect(node, 0, 0);
+			tone.disconnect();
+		});
+
+		it("can chain connections", function(done){
+			var node0, node1, node2;
+			Test.passesAudio(function(input, output){
+				node0 = new Tone(1, 1);
+				//internal connection
+				node0.input.connect(node0.output);
+				//two other nodes to pass audio through
+				node1 = Tone.context.createGain();
+				node2 = Tone.context.createGain();
+				input.connect(node0);
+				node0.chain(node1, node2, output);
+			}, function(){
+				node0.dispose();
+				node1.disconnect();
+				node2.disconnect();
+				done();
+			});
+		});
+
+		it("can fan connections", function(done){
+			var node0, node1, node2;
+			Test.passesAudio(function(input, output){
+				node0 = new Tone(1, 1);
+				//internal connection
+				node0.input.connect(node0.output);
+				//two other nodes to pass audio through
+				node1 = Tone.context.createGain();
+				node2 = Tone.context.createGain();
+				input.connect(node0);
+				node0.fan(node1, node2, output);
+			}, function(){
+				node0.dispose();
+				node1.disconnect();
+				node2.disconnect();
+				done();
+			});
+		});
+	});
+
+	describe("Tone.prototype.set / get", function(){
+
+		it("sets a value given an object", function(){
+			var osc = new Oscillator(0);
+			osc.set({
+				"frequency" : 30
+			});
+			expect(osc.frequency.value).to.be.closeTo(30, 0.001);
+			osc.dispose();
+		});	
+
+		it("sets a value given a string and a value", function(){
+			var osc = new Oscillator(0);
+			osc.set("frequency", 2);
+			expect(osc.frequency.value).to.be.closeTo(2, 0.001);
+			osc.dispose();
+		});		
+
+		it("ramps to a value given an object a ramp time", function(done){
+			var osc;
+			var setValue = 30;
+			Test.offlineTest(0.6, function(dest){
+				osc = new Oscillator(0);
+				osc.frequency.connect(dest);
+				osc.set({
+					"frequency" : setValue
+				}, 0.5);
+				expect(osc.frequency.value).to.not.be.closeTo(setValue, 0.001);
+			}, function(sample, time){
+				if (time > 0.5){
+					expect(sample).to.closeTo(setValue, 0.01);
+				}
+			}, function(){
+				osc.dispose();
+				done();
+			});
+		});		
+
+		it("ramps to a value given a string and a value and a ramp time", function(done){
+			var osc;
+			var setValue = 30;
+			Test.offlineTest(0.6, function(dest){
+				osc = new Oscillator(0);
+				osc.frequency.connect(dest);
+				osc.set("frequency", setValue, 0.5);
+				expect(osc.frequency.value).to.not.be.closeTo(setValue, 0.001);
+			}, function(sample, time){
+				if (time > 0.5){
+					expect(sample).to.closeTo(setValue, 0.01);
+				}
+			}, function(){
+				osc.dispose();
+				done();
+			});
+		});		
+
+		it("gets all defaults of the object with no arguments", function(){
+			var osc = new Oscillator(0);
+			expect(osc.get()).to.contain.keys(Object.keys(Oscillator.defaults));
+			osc.dispose();
+		});	
+
+		it("can 'get' only the given keys", function(){
+			var osc = new Oscillator(0);
+			var keys = ["frequency", "type"];
+			expect(Object.keys(osc.get(keys))).to.deep.equal(keys);
+			osc.dispose();
+		});	
 
 	});
 
@@ -120,11 +234,18 @@ define(["chai", "Tone/core/Tone", "Tone/core/Master", "Tone/core/Bus",
 			expect(tone.intervalToFrequencyRatio(12)).to.equal(2);
 			expect(tone.intervalToFrequencyRatio(7)).to.be.closeTo(1.5, 0.01);
 		});
+
+		it("can convert different representations into frequencies", function(){
+			expect(tone.toFrequency("4n")).to.equal(2);
+			expect(tone.toFrequency("4hz")).to.equal(4);
+			expect(tone.toFrequency("A4")).to.be.closeTo(440, 0.001);
+			expect(tone.toFrequency(990)).to.equal(990);
+		});
 	});
 
 	describe("Tone.Master", function(){
 		it ("exists", function(){
-			expect(Tone.Master).to.equal(Master);
+			expect(Tone.Master).to.exist;
 		});
 
 		it ("provides a toMaster method", function(){
@@ -165,31 +286,44 @@ define(["chai", "Tone/core/Tone", "Tone/core/Master", "Tone/core/Bus",
 			Test.wasDisposed(buff);
 		});
 
-		it("loads a file from a string", function(done){
+		it("loads a file from a url string", function(done){
 			var buffer = new Buffer("./testAudio/kick.mp3", function(buff){
-				expect(buff).to.be.instanceof(AudioBuffer);
+				expect(buff).to.be.instanceof(Buffer);
 				buffer.dispose();
 				done();
 			});
 		});
 
-		it("loads a file from an array", function(done){
-			var buffer = new Buffer(["./testAudio/kick.mp3", "./testAudio/hh.mp3"], function(buff){
-				expect(buff).to.be.instanceof(Array);
-				expect(buff[0]).to.be.instanceof(AudioBuffer);
-				expect(buff[1]).to.be.instanceof(AudioBuffer);
+		it("has a duration", function(done){
+			var buffer = new Buffer("./testAudio/kick.mp3", function(){
+				expect(buffer.duration).to.be.closeTo(0.23, 0.01);
 				buffer.dispose();
 				done();
 			});
 		});
 
-		it("loads a file from an object", function(done){
-			var buffer = new Buffer({"kick" : "./testAudio/kick.mp3"}, function(buff){
-				expect(buff).to.be.instanceof(Object);
-				expect(buff.kick).to.be.instanceof(AudioBuffer);
+		it("the static onload method is invoked", function(done){
+			var buffer = new Buffer("./testAudio/hh.mp3");
+			Buffer.onload = function(){
 				buffer.dispose();
 				done();
+				//reset this method for the next one
+				Buffer.onload = function(){};
+			};
+		});
+
+		it("the static onprogress method is invoked", function(done){
+			var progressWasInvoked = false;
+			var buffer = new Buffer("./testAudio/hh.mp3", function(){
+				buffer.dispose();
+				expect(progressWasInvoked).to.be.true;
+				done();
 			});
+			Buffer.onprogress = function(){
+				progressWasInvoked = true;
+				//reset this method for the next one
+				Buffer.onprogress = function(){};
+			};
 		});
 	});
 

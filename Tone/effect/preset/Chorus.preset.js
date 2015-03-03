@@ -7,21 +7,21 @@ define(["Tone/core/Tone", "Tone/effect/Chorus"], function(Tone){
 	 *  @type {Object}
 	 */
 	Tone.Chorus.prototype.preset = {
-		"ether" : {
+		"Ether" : {
 			"rate" : 0.3, 
 			"delayTime" : 8,
 			"type" : "triangle",
 			"depth" : 0.8,
 			"feedback" : 0.2
 		},
-		"harmony" : {
+		"Harmony" : {
 			"rate" : 12, 
 			"delayTime" : 3.5,
 			"type" : "sine",
 			"depth" : 0.8,
 			"feedback" : 0.1
 		},
-		"rattler" : {
+		"Rattler" : {
 			"rate" : "16n", 
 			"delayTime" : 15,
 			"type" : "square",

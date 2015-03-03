@@ -5,10 +5,16 @@ define(["Tone/core/Tone", "Tone/signal/Equal", "Tone/signal/Signal"], function(T
 	/**
 	 *  @class Route a single input to the specified output
 	 *
-	 *
 	 *  @constructor
 	 *  @extends {Tone.SignalBase}
 	 *  @param {number} [outputCount=2] the number of inputs the switch accepts
+	 *  @example
+	 *  var route = new Tone.Route(4);
+	 *  var signal = new Tone.Signal(3).connect(route);
+	 *  route.gate.value = 0;
+	 *  //signal is routed through output 0
+	 *  route.gate.value = 3;
+	 *  //signal is now routed through output 3
 	 */
 	Tone.Route = function(outputCount){
 
@@ -36,15 +42,18 @@ define(["Tone/core/Tone", "Tone/signal/Equal", "Tone/signal/Signal"], function(T
 	 *  routes the signal to one of the outputs and close the others
 	 *  @param {number} [which=0] open one of the gates (closes the other)
 	 *  @param {Tone.Time} time the time when the switch will open
+	 *  @returns {Tone.Route} `this`
 	 */
 	Tone.Route.prototype.select = function(which, time){
 		//make sure it's an integer
 		which = Math.floor(which);
 		this.gate.setValueAtTime(which, this.toSeconds(time));
+		return this;
 	};
 
 	/**
 	 *  dispose method
+	 *  @returns {Tone.Route} `this`
 	 */
 	Tone.Route.prototype.dispose = function(){
 		this.gate.dispose();
@@ -54,6 +63,7 @@ define(["Tone/core/Tone", "Tone/signal/Equal", "Tone/signal/Signal"], function(T
 		}
 		Tone.prototype.dispose.call(this);
 		this.gate = null;
+		return this;
 	}; 
 
 	////////////START HELPER////////////
@@ -62,7 +72,7 @@ define(["Tone/core/Tone", "Tone/signal/Equal", "Tone/signal/Signal"], function(T
 	 *  helper class for Tone.Route representing a single gate
 	 *  @constructor
 	 *  @extends {Tone}
-	 *  @internal only used by Tone.Route
+	 *  @private
 	 */
 	var RouteGate = function(num){
 

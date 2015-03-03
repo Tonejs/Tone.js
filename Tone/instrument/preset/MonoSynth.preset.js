@@ -158,31 +158,6 @@ define(["Tone/core/Tone", "Tone/instrument/MonoSynth"], function(Tone){
 				"max" : 500
 			}
 		},
-		"Kick" : {
-			"portamento" : 0.00,
-			"oscillator" : {
-				"type" : "square"
-			},
-			"filter" : {
-				"Q" : 2,
-				"type" : "bandpass",
-				"rolloff" : -12
-			},
-			"envelope" : {
-				"attack" : 0.01,
-				"decay" : 0.2,
-				"sustain" : 0.0,
-				"release" : 0.2
-			},
-			"filterEnvelope" : {
-				"attack" : 0.01,
-				"decay" : 0.2,
-				"sustain" : 1,
-				"release" : 0.4,
-				"min" : 3000,
-				"max" : 30
-			}
-		},
 		"LaserSteps" : {
 			"portamento" : 0.00,
 			"oscillator" : {

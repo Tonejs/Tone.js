@@ -1,0 +1,24 @@
+{
+	"tags"      : {
+		"allowUnknownTags" : true
+	},
+	"plugins"   : ["plugins/markdown"],
+	"markdown"  : {
+		"parser"   : "gfm",
+		"hardwrap" : true
+	},
+	"private" : false,
+	"templates": {
+		"cleverLinks": false,
+		"monospaceLinks": false,
+		"outputSourceFiles" : false,
+		"systemName"      : "Tone.js",
+		"footer"          : "",
+		"navType"         : "vertical",
+		"theme"           : "oblivion",
+		"linenums"        : false,
+		"collapseSymbols" : false,
+		"inverseNav"      : false,
+		"syntaxTheme" : "default"
+	}
+}
