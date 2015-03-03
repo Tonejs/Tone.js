@@ -51,6 +51,13 @@ function(Tone){
 		this._octaves = options.octaves;
 
 		/**
+		 *  the input gain to adjust the senstivity
+		 *  @type {GainNode}
+		 *  @private
+		 */
+		this._inputBoost = this.context.createGain();
+
+		/**
 		 *  @type {BiquadFilterNode}
 		 *  @private
 		 */
@@ -80,7 +87,7 @@ function(Tone){
 		this.Q = this._bandpass.Q;
 
 		//the control signal path
-		this.effectSend.chain(this.follower, this._sweepRange);
+		this.effectSend.chain(this._inputBoost, this.follower, this._sweepRange);
 		this._sweepRange.connect(this._bandpass.frequency);
 		this._sweepRange.connect(this._peaking.frequency);
 		//the filtered path
@@ -149,10 +156,10 @@ function(Tone){
 	 */
 	Object.defineProperty(Tone.AutoWah.prototype, "sensitivity", {
 		get : function(){
-			return this.gainToDb(this._sweepRange.max);
+			return this.gainToDb(1 / this._inputBoost.gain.value);
 		}, 
 		set : function(sensitivy){
-			this._sweepRange.max = this.dbToGain(sensitivy);
+			this._inputBoost.gain.value = 1 / this.dbToGain(sensitivy);
 		}
 	});
 
@@ -162,6 +169,7 @@ function(Tone){
 	 */
 	Tone.AutoWah.prototype._setSweepRange = function(){
 		this._sweepRange.min = this._baseFrequency;
+		console.log(Math.min(this._baseFrequency * Math.pow(2, this._octaves), this.context.sampleRate / 2));
 		this._sweepRange.max = Math.min(this._baseFrequency * Math.pow(2, this._octaves), this.context.sampleRate / 2);
 	};
 
