@@ -11,12 +11,6 @@ module.exports = function(grunt) {
 					template: "./node_modules/jsdoc-oblivion/template",
 					private : false
 				},
-				/*options: {
-					destination: "../doc",
-					template : "./vendor",
-					configure : "./vendor/jsdoc.conf.json",
-					private : false
-				}*/
 			},
 		},
 		requirejs : {
