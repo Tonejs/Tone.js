@@ -169,7 +169,6 @@ function(Tone){
 	 */
 	Tone.AutoWah.prototype._setSweepRange = function(){
 		this._sweepRange.min = this._baseFrequency;
-		console.log(Math.min(this._baseFrequency * Math.pow(2, this._octaves), this.context.sampleRate / 2));
 		this._sweepRange.max = Math.min(this._baseFrequency * Math.pow(2, this._octaves), this.context.sampleRate / 2);
 	};
 
@@ -187,6 +186,8 @@ function(Tone){
 		this._bandpass = null;
 		this._peaking.dispose();
 		this._peaking = null;
+		this._inputBoost.disconnect();
+		this._inputBoost = null;
 		this.gain = null;
 		this.Q = null;
 		return this;
