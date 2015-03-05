@@ -7,7 +7,9 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/LFO", "Tone/comp
 	 *
 	 *  @constructor
 	 *  @extends {Tone.Effect}
-	 *  @param { number= } frequency (optional) rate in HZ of the left-right pan
+	 *  @param {number} [frequency=1] (optional) rate in HZ of the left-right pan
+	 *  @example
+	 *  var autoPanner = new Tone.AutoPanner("4n");
 	 */
 	Tone.AutoPanner = function(){
 
@@ -22,16 +24,29 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/LFO", "Tone/comp
 		this._lfo = new Tone.LFO(options.frequency, 0, 1);
 
 		/**
+		 * The amount of panning between left and right. 
+		 * 0 = always center. 1 = full range between left and right. 
+		 * @type {Tone.Signal}
+		 */
+		this.amount = this._lfo.amplitude;
+
+		/**
 		 *  the panner node which does the panning
 		 *  @type {Tone.Panner}
 		 *  @private
 		 */
 		this._panner = new Tone.Panner();
 
+		/**
+		 * How fast the panner modulates
+		 * @type {Tone.Signal}
+		 */
+		this.frequency = this._lfo.frequency;
+
 		//connections
 		this.connectEffect(this._panner);
 		this._lfo.connect(this._panner.pan);
-		this.setType(options.type);
+		this.type = options.type;
 	};
 
 	//extend Effect
@@ -44,78 +59,76 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/LFO", "Tone/comp
 	 */
 	Tone.AutoPanner.defaults = {
 		"frequency" : 1,
-		"type" : "sine"
+		"type" : "sine",
+		"amount" : 1
 	};
 	
 	/**
-	 * Start the panner
-	 * 
+	 * Start the panner.
 	 * @param {Tone.Time} [time=now] the panner begins.
+	 * @returns {Tone.AutoPanner} `this`
 	 */
 	Tone.AutoPanner.prototype.start = function(time){
 		this._lfo.start(time);
+		return this;
 	};
 
 	/**
-	 * Stop the panner
-	 * 
+	 * Stop the panner.
 	 * @param {Tone.Time} [time=now] the panner stops.
+	 * @returns {Tone.AutoPanner} `this`
 	 */
 	Tone.AutoPanner.prototype.stop = function(time){
 		this._lfo.stop(time);
+		return this;
 	};
 
 	/**
-	 * Set the type of oscillator attached to the AutoPanner.
-	 * 
-	 * @param {string} type of oscillator the panner is attached to (sine|sawtooth|triangle|square)
+	 * Sync the panner to the transport.
+	 * @returns {Tone.AutoPanner} `this`
 	 */
-	Tone.AutoPanner.prototype.setType = function(type){
-		this._lfo.setType(type);
+	Tone.AutoPanner.prototype.sync = function(){
+		this._lfo.sync();
+		return this;
 	};
 
 	/**
-	 * @return {string} the LFO type
+	 * Unsync the panner from the transport
+	 * @returns {Tone.AutoPanner} `this`
 	 */
-	Tone.AutoPanner.prototype.getType = function(){
-		return this._lfo.getType();
+	Tone.AutoPanner.prototype.unsync = function(){
+		this._lfo.unsync();
+		return this;
 	};
 
 	/**
-	 * Set frequency of the oscillator attached to the AutoPanner.
-	 * 
-	 * @param {number|string} freq in HZ of the oscillator's frequency.
+	 * Type of oscillator attached to the AutoPanner.
+	 * @memberOf Tone.AutoPanner#
+	 * @type {string}
+	 * @name type
 	 */
-	Tone.AutoPanner.prototype.setFrequency = function(freq){
-		this._lfo.setFrequency(freq);
-	};
-
-	/**
-	 * @return {number} the current frequency of the oscillator
-	 */
-	Tone.AutoPanner.prototype.getFrequency = function(){
-		return this._lfo.getFrequency();
-	};
-
-	/**
-	 *  set all of the parameters with an object
-	 *  @param {Object} params 
-	 */
-	Tone.AutoPanner.prototype.set = function(params){
-		if (!this.isUndef(params.frequency)) this.setFrequency(params.frequency);
-		if (!this.isUndef(params.type)) this.setType(params.type);
-		Tone.Effect.prototype.set.call(this, params);
-	};
+	Object.defineProperty(Tone.AutoPanner.prototype, "type", {
+		get : function(){
+			return this._lfo.type;
+		},
+		set : function(type){
+			this._lfo.type = type;
+		}
+	});
 
 	/**
 	 *  clean up
+	 *  @returns {Tone.AutoPanner} `this`
 	 */
 	Tone.AutoPanner.prototype.dispose = function(){
 		Tone.Effect.prototype.dispose.call(this);
 		this._lfo.dispose();
-		this._panner.dispose();
 		this._lfo = null;
+		this._panner.dispose();
 		this._panner = null;
+		this.frequency = null;
+		this.amount = null;
+		return this;
 	};
 
 	return Tone.AutoPanner;

@@ -29,3 +29,11 @@ wiki
 test/performance
 
 examples/crashes.html
+
+examples/style/examples.css.map
+
+examples/style/examples.scss
+
+examples/deps/Tone.dat.gui.js
+
+examples/deps/dat.gui.js

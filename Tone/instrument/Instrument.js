@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/source/Source", "Tone/core/Note"], function(Tone){
+define(["Tone/core/Tone", "Tone/core/Master", "Tone/core/Note"], function(Tone){
 
 	"use strict";
 
@@ -13,8 +13,15 @@ define(["Tone/core/Tone", "Tone/source/Source", "Tone/core/Note"], function(Tone
 		/**
 		 *  the output
 		 *  @type {GainNode}
+		 *  @private
 		 */
 		this.output = this.context.createGain();
+
+		/**
+		 * the volume of the output in decibels
+		 * @type {Tone.Signal}
+		 */
+		this.volume = new Tone.Signal(this.output.gain, Tone.Signal.Units.Decibels);
 	};
 
 	Tone.extend(Tone.Instrument);
@@ -39,25 +46,25 @@ define(["Tone/core/Tone", "Tone/source/Source", "Tone/core/Note"], function(Tone
 	 *  @param  {Tone.Time} duration the duration of the note
 	 *  @param {Tone.Time} [time=now]     the time of the attack
 	 *  @param  {number} velocity the velocity
+	 *  @returns {Tone.Instrument} `this`
 	 */
 	Tone.Instrument.prototype.triggerAttackRelease = function(note, duration, time, velocity){
 		time = this.toSeconds(time);
 		duration = this.toSeconds(duration);
 		this.triggerAttack(note, time, velocity);
 		this.triggerRelease(time + duration);
+		return this;
 	};
 
 	/**
-	 *  gets the setVolume method from {@link Tone.Source}
-	 *  @method
-	 */
-	Tone.Instrument.prototype.setVolume = Tone.Source.prototype.setVolume;
-
-	/**
 	 *  clean up
+	 *  @returns {Tone.Instrument} `this`
 	 */
 	Tone.Instrument.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
+		this.volume.dispose();
+		this.volume = null;
+		return this;
 	};
 
 	return Tone.Instrument;

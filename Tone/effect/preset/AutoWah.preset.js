@@ -7,7 +7,7 @@ define(["Tone/core/Tone", "Tone/effect/AutoWah"], function(Tone){
 	 *  @type {Object}
 	 */
 	Tone.AutoWah.prototype.preset = {
-		"talker" : {
+		"Talker" : {
 			"baseFrequency" : 100,
 			"octaves" : 4,
 			"sensitivity" : 0,
@@ -19,7 +19,7 @@ define(["Tone/core/Tone", "Tone/effect/AutoWah"], function(Tone){
 				"release" : 0.2
 			}
 		},
-		"yes" : {
+		"Yes" : {
 			"baseFrequency" : 250,
 			"octaves" : 5,
 			"sensitivity" : 0,
@@ -31,7 +31,7 @@ define(["Tone/core/Tone", "Tone/effect/AutoWah"], function(Tone){
 				"release" : 0.2
 			}
 		},
-		"springy" : {
+		"Springy" : {
 			"baseFrequency" : 10,
 			"octaves" : 8,
 			"sensitivity" : 0,

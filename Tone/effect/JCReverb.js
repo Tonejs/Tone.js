@@ -34,7 +34,9 @@ function(Tone){
 	 *
 	 *  @extends {Tone.Effect}
 	 *  @constructor
-	 *  @param {number} roomSize coorelates to the decay time
+	 *  @param {number} roomSize Coorelates to the decay time. Value between 0,1
+	 *  @example
+	 *  var freeverb = new Tone.Freeverb(0.4);
 	 */
 	Tone.JCReverb = function(){
 
@@ -45,7 +47,7 @@ function(Tone){
 		 *  room size control values between [0,1]
 		 *  @type {Tone.Signal}
 		 */
-		this.roomSize = new Tone.Signal(options.roomSize);
+		this.roomSize = new Tone.Signal(options.roomSize, Tone.Signal.Units.Normal);
 
 		/**
 		 *  scale the room size
@@ -80,7 +82,7 @@ function(Tone){
 		for (var cf = 0; cf < combFilterDelayTimes.length; cf++) {
 			var fbcf = new Tone.FeedbackCombFilter(combFilterDelayTimes[cf], 0.1);
 			this._scaleRoomSize.connect(fbcf.resonance);
-			fbcf.resonance.setValue(combFilterResonances[cf]);
+			fbcf.resonance.value = combFilterResonances[cf];
 			this._allpassFilters[this._allpassFilters.length - 1].connect(fbcf);
 			if (cf < combFilterDelayTimes.length / 2){
 				fbcf.connect(this.effectReturnL);
@@ -110,31 +112,8 @@ function(Tone){
 	};
 
 	/**
-	 *  set the room size
-	 *  @param {number} roomsize roomsize value between 0-1
-	 */
-	Tone.JCReverb.prototype.setRoomSize = function(roomsize) {
-		this.roomSize.setValue(roomsize);
-	};
-
-	/**
-	 * @return {number} the room size
-	 */
-	Tone.JCReverb.prototype.getRoomSize = function(){
-		return this.roomSize.getValue();
-	};
-
-	/**
-	 *  set multiple parameters at once with an object
-	 *  @param {Object} params the parameters as an object
-	 */
-	Tone.JCReverb.prototype.set = function(params){
-		if (!this.isUndef(params.roomSize)) this.setRoomSize(params.roomSize);
-		Tone.StereoEffect.prototype.set.call(this, params);
-	};
-
-	/**
 	 *  clean up
+	 *  @returns {Tone.JCReverb} `this`
 	 */
 	Tone.JCReverb.prototype.dispose = function(){
 		Tone.StereoEffect.prototype.dispose.call(this);
@@ -152,6 +131,7 @@ function(Tone){
 		this.roomSize = null;
 		this._scaleRoomSize.dispose();
 		this._scaleRoomSize = null;
+		return this;
 	};
 
 	return Tone.JCReverb;

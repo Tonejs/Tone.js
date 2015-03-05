@@ -8,6 +8,14 @@ define(["Tone/core/Tone", "Tone/component/MultibandSplit", "Tone/component/Compr
 	 *  @extends {Tone}
 	 *  @constructor
 	 *  @param {Object} options the low/mid/high compressor settings in a single object
+	 *  @example
+	 *  var multiband = new Tone.MultibandCompressor({
+	 *  	"lowFrequency" : 200,
+	 *  	"highFrequency" : 1300
+	 *  	"low" : {
+	 *  		"threshold" : -12
+	 *  	}
+	 *  })
 	 */
 	Tone.MultibandCompressor = function(options){
 
@@ -18,7 +26,7 @@ define(["Tone/core/Tone", "Tone/component/MultibandSplit", "Tone/component/Compr
 		 *  @type {Tone.MultibandSplit}
 		 *  @private
 		 */
-		this._splitter = new Tone.MultibandSplit({
+		this._splitter = this.input = new Tone.MultibandSplit({
 			"lowFrequency" : options.lowFrequency,
 			"highFrequency" : options.highFrequency
 		});
@@ -36,13 +44,9 @@ define(["Tone/core/Tone", "Tone/component/MultibandSplit", "Tone/component/Compr
 		this.highFrequency = this._splitter.highFrequency;
 
 		/**
-		 *  the input
-		 */
-		this.input = this._splitter;
-
-		/**
 		 *  the output
 		 *  @type {GainNode}
+		 *  @private
 		 */
 		this.output = this.context.createGain();
 
@@ -87,6 +91,7 @@ define(["Tone/core/Tone", "Tone/component/MultibandSplit", "Tone/component/Compr
 
 	/**
 	 *  clean up
+	 *  @returns {Tone.MultibandCompressor} `this`
 	 */
 	Tone.MultibandCompressor.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
@@ -100,6 +105,7 @@ define(["Tone/core/Tone", "Tone/component/MultibandSplit", "Tone/component/Compr
 		this.high = null;
 		this.lowFrequency = null;
 		this.highFrequency = null;
+		return this;
 	};
 
 	return Tone.MultibandCompressor;

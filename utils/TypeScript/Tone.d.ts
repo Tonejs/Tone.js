@@ -423,6 +423,16 @@ declare module Tone {
         getRate(): number;
     }
 
+    var Phaser: {
+        new(rate?: any, depth?: number, baseFrequency?: number): Tone.Phaser; //TODO: change 'any' to 'number | Object'
+    };
+
+    interface Phaser extends Tone.StereoEffect {
+        setBaseFrequency(freq: number): void;
+        setDepth(depth: number): void;
+        setRate(rate: number): void;
+    }
+
     var Envelope: {
         new(attack: any, decay?: Tone.Time, sustain?: number, release?: Tone.Time): Tone.Envelope;  //TODO: Change 'any' to 'Tone.Time | Object'
     };

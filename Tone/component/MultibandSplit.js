@@ -17,12 +17,14 @@ define(["Tone/core/Tone", "Tone/component/Filter", "Tone/signal/Signal"], functi
 		/**
 		 *  the input
 		 *  @type {GainNode}
+		 *  @private
 		 */
 		this.input = this.context.createGain();
 
 		/**
 		 *  the outputs
 		 *  @type {Array}
+		 *  @private
 		 */
 		this.output = new Array(3);
 
@@ -86,6 +88,7 @@ define(["Tone/core/Tone", "Tone/component/Filter", "Tone/signal/Signal"], functi
 
 	/**
 	 *  clean up
+	 *  @returns {Tone.MultibandSplit} `this`
 	 */
 	Tone.MultibandSplit.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
@@ -101,6 +104,7 @@ define(["Tone/core/Tone", "Tone/component/Filter", "Tone/signal/Signal"], functi
 		this.high = null;
 		this.lowFrequency = null;
 		this.highFrequency = null;
+		return this;
 	};
 
 	return Tone.MultibandSplit;

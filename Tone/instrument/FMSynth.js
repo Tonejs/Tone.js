@@ -11,6 +11,8 @@ function(Tone){
 	 *  @extends {Tone.Monophonic}
 	 *  @param {Object} options the options available for the synth 
 	 *                          see defaults below
+	 *  @example
+	 *  var fmSynth = new Tone.FMSynth();
 	 */
 	Tone.FMSynth = function(options){
 
@@ -22,20 +24,20 @@ function(Tone){
 		 *  @type {Tone.MonoSynth}
 		 */
 		this.carrier = new Tone.MonoSynth(options.carrier);
-		this.carrier.setVolume(-10);
+		this.carrier.volume.value = -10;
 
 		/**
 		 *  the second voice
 		 *  @type {Tone.MonoSynth}
 		 */
 		this.modulator = new Tone.MonoSynth(options.modulator);
-		this.modulator.setVolume(-10);
+		this.modulator.volume.value = -10;
 
 		/**
 		 *  the frequency control
 		 *  @type {Tone.Signal}
 		 */
-		this.frequency = new Tone.Signal(440);
+		this.frequency = new Tone.Signal(440, Tone.Signal.Units.Frequency);
 
 		/**
 		 *  the ratio between the two voices
@@ -45,9 +47,7 @@ function(Tone){
 		this._harmonicity = new Tone.Multiply(options.harmonicity);
 
 		/**
-		 *  which is in essence the depth or amount of the modulation. In other terms it is the 
-		 *  ratio of the frequency of the modulating signal (mf) to the amplitude of the 
-		 *  modulating signal (ma) -- as in ma/mf. 
+		 *  
 		 *
 		 *	@type {Tone.Multiply}
 		 *	@private
@@ -129,6 +129,7 @@ function(Tone){
 	 *  
 	 *  @param  {Tone.Time} [time=now] the time the note will occur
 	 *  @param {number} [velocity=1] the velocity of the note
+	 *  @returns {Tone.FMSynth} `this`
 	 */
 	Tone.FMSynth.prototype.triggerEnvelopeAttack = function(time, velocity){
 		//the port glide
@@ -138,63 +139,72 @@ function(Tone){
 		this.modulator.envelope.triggerAttack(time);
 		this.carrier.filterEnvelope.triggerAttack(time);
 		this.modulator.filterEnvelope.triggerAttack(time);
+		return this;
 	};
 
 	/**
 	 *  trigger the release portion of the note
 	 *  
 	 *  @param  {Tone.Time} [time=now] the time the note will release
+	 *  @returns {Tone.FMSynth} `this`
 	 */
 	Tone.FMSynth.prototype.triggerEnvelopeRelease = function(time){
 		this.carrier.triggerRelease(time);
 		this.modulator.triggerRelease(time);
+		return this;
 	};
 
 	/**
-	 *  set the ratio between the two carrier and the modulator
-	 *  @param {number} ratio
+	 * The ratio between the two carrier and the modulator. 
+	 * @memberOf Tone.FMSynth#
+	 * @type {number}
+	 * @name harmonicity
 	 */
-	Tone.FMSynth.prototype.setHarmonicity = function(ratio){
-		this._harmonicity.setValue(ratio);
-	};
+	Object.defineProperty(Tone.FMSynth.prototype, "harmonicity", {
+		get : function(){
+			return this._harmonicity.value;
+		},
+		set : function(harm){
+			this._harmonicity.value = harm;
+		}
+	});
 
 	/**
-	 *  set the modulation index
-	 *  @param {number} index
+	 * The modulation index which is in essence the depth or amount of the modulation. In other terms it is the 
+	 *  ratio of the frequency of the modulating signal (mf) to the amplitude of the 
+	 *  modulating signal (ma) -- as in ma/mf. 
+	 * @memberOf Tone.FMSynth#
+	 * @type {number}
+	 * @name modulationIndex
 	 */
-	Tone.FMSynth.prototype.setModulationIndex = function(index){
-		this._modulationIndex.setValue(index);
-	};
-
-	/**
-	 *  bulk setter
-	 *  @param {Object} param 
-	 */
-	Tone.FMSynth.prototype.set = function(params){
-		if (!this.isUndef(params.harmonicity)) this.setHarmonicity(params.harmonicity);
-		if (!this.isUndef(params.modulationIndex)) this.setModulationIndex(params.modulationIndex);
-		if (!this.isUndef(params.carrier)) this.carrier.set(params.carrier);
-		if (!this.isUndef(params.modulator)) this.modulator.set(params.modulator);
-		Tone.Monophonic.prototype.set.call(this, params);
-	};
+	Object.defineProperty(Tone.FMSynth.prototype, "modulationIndex", {
+		get : function(){
+			return this._modulationIndex.value;
+		},
+		set : function(mod){
+			this._modulationIndex.value = mod;
+		}
+	});
 
 	/**
 	 *  clean up
+	 *  @returns {Tone.FMSynth} `this`
 	 */
 	Tone.FMSynth.prototype.dispose = function(){
 		Tone.Monophonic.prototype.dispose.call(this);
 		this.carrier.dispose();
-		this.modulator.dispose();
-		this.frequency.dispose();
-		this._modulationIndex.dispose();
-		this._harmonicity.dispose();
-		this._modulationNode.disconnect();
 		this.carrier = null;
+		this.modulator.dispose();
 		this.modulator = null;
+		this.frequency.dispose();
 		this.frequency = null;
+		this._modulationIndex.dispose();
 		this._modulationIndex = null;
+		this._harmonicity.dispose();
 		this._harmonicity = null;
+		this._modulationNode.disconnect();
 		this._modulationNode = null;
+		return this;
 	};
 
 	return Tone.FMSynth;

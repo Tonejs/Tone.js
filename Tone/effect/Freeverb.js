@@ -28,6 +28,8 @@ function(Tone){
 	 *                                 value between (0,1)
 	 *  @param {number} [dampening=0.5] filtering which is applied to the reverb. 
 	 *                                  value between [0,1]
+	 *  @example
+	 *  var freeverb = new Tone.Freeverb(0.4, 0.2);
 	 */
 	Tone.Freeverb = function(){
 
@@ -124,47 +126,8 @@ function(Tone){
 	};
 
 	/**
-	 *  set the room size
-	 *  @param {number} roomsize roomsize value between 0-1
-	 */
-	Tone.Freeverb.prototype.setRoomSize = function(roomsize) {
-		this.roomSize.setValue(roomsize);
-	};
-
-	/**
-	 * @return {number} the room size
-	 */
-	Tone.Freeverb.prototype.getRoomSize = function(){
-		return this.roomSize.getValue();
-	};
-
-	/**
-	 *  set the dampening
-	 *  @param {number} dampening dampening between 0-1
-	 */
-	Tone.Freeverb.prototype.setDampening = function(dampening) {
-		this.dampening.setValue(dampening);
-	};
-
-	/**
-	 * @return {number} the dampening
-	 */
-	Tone.Freeverb.prototype.getDampening = function(){
-		return this.dampening.getValue();
-	};
-
-	/**
-	 *  set multiple parameters at once with an object
-	 *  @param {Object} params the parameters as an object
-	 */
-	Tone.Freeverb.prototype.set = function(params){
-		if (!this.isUndef(params.dampening)) this.setDampening(params.dampening);
-		if (!this.isUndef(params.roomSize)) this.setRoomSize(params.roomSize);
-		Tone.StereoEffect.prototype.set.call(this, params);
-	};
-
-	/**
 	 *  clean up
+	 *  @returns {Tone.Freeverb} `this`
 	 */
 	Tone.Freeverb.prototype.dispose = function(){
 		Tone.StereoEffect.prototype.dispose.call(this);
@@ -189,6 +152,7 @@ function(Tone){
 		this.roomSize = null;
 		this.dampening = null;
 		this._dampeningScale = null;
+		return this;
 	};
 
 	return Tone.Freeverb;

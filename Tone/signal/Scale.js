@@ -3,7 +3,7 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Multiply", "Tone/signa
 	"use strict";
 	
 	/**
-	 *  @class  performs a linear scaling on an input signal.
+	 *  @class  Performs a linear scaling on an input signal.
 	 *          Scales a normal gain input range [0,1] to between
 	 *          outputMin and outputMax
 	 *
@@ -11,6 +11,10 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Multiply", "Tone/signa
 	 *  @extends {Tone.SignalBase}
 	 *  @param {number} [outputMin=0]
 	 *  @param {number} [outputMax=1]
+	 *  @example
+	 *  var scale = new Tone.Scale(50, 100);
+	 *  var signal = new Tone.Signal(0.5).connect(scale);
+	 *  //the output of scale equals 75
 	 */
 	Tone.Scale = function(outputMin, outputMax){
 
@@ -48,29 +52,36 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Multiply", "Tone/signa
 	Tone.extend(Tone.Scale, Tone.SignalBase);
 
 	/**
-	 *  set the minimum output value
-	 *  @param {number} min the minimum output value
+	 * The minimum output value.
+	 * @memberOf Tone.Scale#
+	 * @type {number}
+	 * @name min
 	 */
-	Tone.Scale.prototype.setMin = function(min){
-		this._outputMin = min;
-		this._setRange();
-	};
+	Object.defineProperty(Tone.Scale.prototype, "min", {
+		get : function(){
+			return this._outputMin;
+		},
+		set : function(min){
+			this._outputMin = min;
+			this._setRange();
+		}
+	});
 
 	/**
-	 * @return {number} the minimum output value
+	 * The maximum output value.
+	 * @memberOf Tone.Scale#
+	 * @type {number}
+	 * @name max
 	 */
-	Tone.Scale.prototype.getMin = function(){
-		return this._outputMin;
-	};
-
-	/**
-	 *  set the maximum output value
-	 *  @param {number} max the maximum output value
-	 */
-	Tone.Scale.prototype.setMax = function(max){
-		this._outputMax = max;
-		this._setRange();
-	};
+	Object.defineProperty(Tone.Scale.prototype, "max", {
+		get : function(){
+			return this._outputMax;
+		},
+		set : function(max){
+			this._outputMax = max;
+			this._setRange();
+		}
+	});
 
 	/**
 	 * @return {number} the maximum output value
@@ -84,12 +95,13 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Multiply", "Tone/signa
 	 *  @private
 	 */
 	Tone.Scale.prototype._setRange = function() {
-		this._add.setValue(this._outputMin);
-		this._scale.setValue(this._outputMax - this._outputMin);
+		this._add.value = this._outputMin;
+		this._scale.value = this._outputMax - this._outputMin;
 	};
 
 	/**
 	 *  clean up
+	 *  @returns {Tone.Scale} `this`
 	 */
 	Tone.Scale.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
@@ -97,8 +109,8 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Multiply", "Tone/signa
 		this._add = null;
 		this._scale.dispose();
 		this._scale = null;
+		return this;
 	}; 
-
 
 	return Tone.Scale;
 });

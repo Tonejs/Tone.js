@@ -8,6 +8,8 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/source/Noise", "To
 	 *  @constructor
 	 *  @extends {Tone.Instrument}
 	 *  @param {Object} options see the defaults
+	 *  @example
+	 *  var plucky = new Tone.PluckSynth();
 	 */
 	Tone.PluckSynth = function(options){
 
@@ -21,8 +23,8 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/source/Noise", "To
 		this._noise = new Tone.Noise("pink");
 
 		/**
-		 *  the amount of noise at the attack. 
-		 *  nominal range of [0.1, 20]
+		 *  The amount of noise at the attack. 
+		 *  Nominal range of [0.1, 20]
 		 *  @type {number}
 		 */
 		this.attackNoise = 1;
@@ -68,56 +70,21 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/source/Noise", "To
 	 *  trigger the attack portion
 	 *  @param {string|number} note the note name or frequency
 	 *  @param {Tone.Time} [time=now] the time of the note
+	 *  @returns {Tone.PluckSynth} `this`
 	 */
 	Tone.PluckSynth.prototype.triggerAttack = function(note, time) {
-		if (typeof note === "string"){
-			note = this.noteToFrequency(note);
-		}
+		note = this.toFrequency(note);
 		time = this.toSeconds(time);
 		var delayAmount = 1 / note;
-		this._lfcf.setDelayTime(delayAmount, time);		
+		this._lfcf.setDelayTimeAtTime(delayAmount, time);		
 		this._noise.start(time);
 		this._noise.stop(time + delayAmount * this.attackNoise);
-	};
-
-	/**
-	 *  set the resonance of the instrument
-	 *  @param {number} resonance the resonance between (0, 1)
-	 */
-	Tone.PluckSynth.prototype.setResonance = function(resonance) {
-		this.resonance.setValue(resonance);
-	};
-
-	/**
-	 *  set the dampening of the instrument
-	 *  @param {number} dampening a frequency value of the lowpass filter
-	 *                            nominal range of (1000, 10000)
-	 */
-	Tone.PluckSynth.prototype.setDampening = function(dampening) {
-		this.dampening.setValue(dampening);
-	};
-
-	/**
-	 *  set the length of the attack noise
-	 *  @param {number} attackNoise	the length of the attack nosie. 
-	 *                              a value of 1 is normal.
-	 */
-	Tone.PluckSynth.prototype.setAttackNoise = function(attackNoise) {
-		this.attackNoise = attackNoise;
-	};
-
-	/**
-	 *  bulk setter
-	 *  @param {Object} param 
-	 */
-	Tone.PluckSynth.prototype.set = function(params){
-		if (!this.isUndef(params.resonance)) this.setResonance(params.resonance);
-		if (!this.isUndef(params.dampening)) this.setDampening(params.dampening);
-		if (!this.isUndef(params.attackNoise)) this.setAttackNoise(params.attackNoise);
+		return this;
 	};
 
 	/**
 	 *  clean up
+	 *  @returns {Tone.PluckSynth} `this`
 	 */
 	Tone.PluckSynth.prototype.dispose = function(){
 		Tone.Instrument.prototype.dispose.call(this);
@@ -127,6 +94,7 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/source/Noise", "To
 		this._lfcf = null;
 		this.dampening = null;
 		this.resonance = null;
+		return this;
 	};
 
 	return Tone.PluckSynth;

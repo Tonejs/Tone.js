@@ -1,9 +1,8 @@
 /**
  *  Tone.js
- *
  *  @author Yotam Mann
- *
- *  @license http://opensource.org/licenses/MIT MIT License 2014
+ *  @license http://opensource.org/licenses/MIT MIT License
+ *  @copyright 2014-2015 Yotam Mann
  */
 define(function(){
 
@@ -16,6 +15,11 @@ define(function(){
 	//borrowed from underscore.js
 	function isUndef(val){
 		return val === void 0;
+	}
+
+	//borrowed from underscore.js
+	function isFunction(val){
+		return typeof val === "function";
 	}
 
 	var audioContext;
@@ -36,28 +40,28 @@ define(function(){
 
 	//SHIMS////////////////////////////////////////////////////////////////////
 
-	if (typeof AudioContext.prototype.createGain !== "function"){
+	if (!isFunction(AudioContext.prototype.createGain)){
 		AudioContext.prototype.createGain = AudioContext.prototype.createGainNode;
 	}
-	if (typeof AudioContext.prototype.createDelay !== "function"){
+	if (!isFunction(AudioContext.prototype.createDelay)){
 		AudioContext.prototype.createDelay = AudioContext.prototype.createDelayNode;
 	}
-	if (typeof AudioContext.prototype.createPeriodicWave !== "function"){
+	if (!isFunction(AudioContext.prototype.createPeriodicWave)){
 		AudioContext.prototype.createPeriodicWave = AudioContext.prototype.createWaveTable;
 	}
-	if (typeof AudioBufferSourceNode.prototype.start !== "function"){
+	if (!isFunction(AudioBufferSourceNode.prototype.start)){
 		AudioBufferSourceNode.prototype.start = AudioBufferSourceNode.prototype.noteGrainOn;
 	}
-	if (typeof AudioBufferSourceNode.prototype.stop !== "function"){
+	if (!isFunction(AudioBufferSourceNode.prototype.stop)){
 		AudioBufferSourceNode.prototype.stop = AudioBufferSourceNode.prototype.noteOff;
 	}
-	if (typeof OscillatorNode.prototype.start !== "function"){
+	if (!isFunction(OscillatorNode.prototype.start)){
 		OscillatorNode.prototype.start = OscillatorNode.prototype.noteOn;
 	}
-	if (typeof OscillatorNode.prototype.stop !== "function"){
+	if (!isFunction(OscillatorNode.prototype.stop)){
 		OscillatorNode.prototype.stop = OscillatorNode.prototype.noteOff;	
 	}
-	if (typeof OscillatorNode.prototype.setPeriodicWave !== "function"){
+	if (!isFunction(OscillatorNode.prototype.setPeriodicWave)){
 		OscillatorNode.prototype.setPeriodicWave = OscillatorNode.prototype.setWaveTable;	
 	}
 	//extend the connect function to include Tones
@@ -90,7 +94,7 @@ define(function(){
 	///////////////////////////////////////////////////////////////////////////
 
 	/**
-	 *  @class  Tone is the baseclass of all Tone Modules. 
+	 *  @class  Tone is the base class of all other classes.  
 	 *  
 	 *  @constructor
 	 *  @alias Tone
@@ -120,19 +124,133 @@ define(function(){
 		}
 	};
 
+	/**
+	 *  Set the parameters at once. Either pass in an
+	 *  object mapping parameters to values, or to set a
+	 *  single parameter, by passing in a string and value.
+	 *  @example
+	 *  //set values using an object
+	 *  filter.set({
+	 *  	"frequency" : 300,
+	 *  	"type" : highpass
+	 *  });
+	 *  //or
+	 *  filter.set("type", "highpass");
+	 *  //ramp to the value 220 over 3 seconds. 
+	 *  oscillator.set({
+	 *  	"frequency" : 220
+	 *  }, 3);
+	 *  @param {Object|string} params
+	 *  @param {number=} value
+	 *  @param {Tone.Time=} rampTime
+	 *  @returns {Tone} `this`
+	 */
+	Tone.prototype.set = function(params, value, rampTime){
+		if (typeof params === "object"){
+			rampTime = value;
+		} else if (typeof params === "string"){
+			var tmpObj = {};
+			tmpObj[params] = value;
+			params = tmpObj;
+		}
+		for (var attr in params){
+			var param = this[attr];
+			if (isUndef(param)){
+				continue;
+			}
+			value = params[attr];
+			if (param instanceof Tone.Signal){
+				if (param.value !== value){
+					if (isUndef(rampTime)){
+						param.value = value;
+					} else {
+						param.rampTo(value, rampTime);
+					}
+				}
+			} else if (param instanceof AudioParam){
+				if (param.value !== value){
+					param.value = value;
+				}				
+			} else if (param instanceof Tone){
+				param.set(value);
+			} else if (param !== value){
+				this[attr] = value;
+			}
+		}
+		return this;
+	};
+
+	/**
+	 *  Get the object's attributes. 
+	 *  @example
+	 *  osc.get();
+	 *  //returns {"type" : "sine", "frequency" : 440, ...etc}
+	 *  osc.get("type"); //returns { "type" : "sine"}
+	 *  @param {Array=} params the parameters to get, otherwise will return 
+	 *  					   all available.r
+	 */
+	Tone.prototype.get = function(params){
+		if (isUndef(params)){
+			params = this._collectDefaults(this.constructor);
+		}
+		var ret = {};
+		for (var i = 0; i < params.length; i++){
+			var attr = params[i];
+			var param = this[attr];
+			if (param instanceof Tone.Signal){
+				ret[attr] = param.value;
+			} else if (param instanceof AudioParam){
+				ret[attr] = param.value;
+			} else if (param instanceof Tone){
+				ret[attr] = param.get();
+			} else if (!isFunction(param) && !isUndef(param)){
+				ret[attr] = param;
+			} 
+		}
+		return ret;
+	};
+
+	/**
+	 *  collect all of the default attributes in one
+	 *  @private
+	 *  @param {function} constr the constructor to find the defaults from
+	 *  @return {Array} all of the attributes which belong to the class
+	 */
+	Tone.prototype._collectDefaults = function(constr){
+		var ret = [];
+		if (!isUndef(constr.defaults)){
+			ret = Object.keys(constr.defaults);
+		}
+		if (!isUndef(constr._super)){
+			ret = ret.concat(this._collectDefaults(constr._super));
+		}
+		return ret;
+	};
+
+	/**
+	 *  Set the preset if it exists. 
+	 *  @param {string} presetName the name of the preset
+	 *  @returns {Tone} `this`
+	 */
+	Tone.prototype.setPreset = function(presetName){
+		if (!this.isUndef(this.preset) && this.preset.hasOwnProperty(presetName)){
+			this.set(this.preset[presetName]);
+		}
+		return this;
+	};
+
 	///////////////////////////////////////////////////////////////////////////
 	//	CLASS VARS
 	///////////////////////////////////////////////////////////////////////////
 
 	/**
-	 *  A static pointer to the audio context
-	 *  @static
+	 *  A static pointer to the audio context accessible as `Tone.context`. 
 	 *  @type {AudioContext}
 	 */
 	Tone.context = audioContext;
 
 	/**
-	 *  A static pointer to the audio context
+	 *  The audio context.
 	 *  @type {AudioContext}
 	 */
 	Tone.prototype.context = Tone.context;
@@ -158,10 +276,57 @@ define(function(){
 	///////////////////////////////////////////////////////////////////////////
 
 	/**
+	 *  disconnect and dispose
+	 *  @returns {Tone} `this`
+	 */
+	Tone.prototype.dispose = function(){
+		if (!this.isUndef(this.input)){
+			if (this.input instanceof AudioNode){
+				this.input.disconnect();
+			} 
+			this.input = null;
+		}
+		if (!this.isUndef(this.output)){
+			if (this.output instanceof AudioNode){
+				this.output.disconnect();
+			} 
+			this.output = null;
+		}
+		return this;
+	};
+
+	/**
+	 *  a silent connection to the DesinationNode
+	 *  which will ensure that anything connected to it
+	 *  will not be garbage collected
+	 *  
+	 *  @private
+	 */
+	var _silentNode = null;
+
+	/**
+	 *  makes a connection to ensure that the node will not be garbage collected
+	 *  until 'dispose' is explicitly called
+	 *
+	 *  use carefully. circumvents JS and WebAudio's normal Garbage Collection behavior
+	 *  @returns {Tone} `this`
+	 */
+	Tone.prototype.noGC = function(){
+		this.output.connect(_silentNode);
+		return this;
+	};
+
+	AudioNode.prototype.noGC = function(){
+		this.connect(_silentNode);
+		return this;
+	};
+
+	/**
 	 *  connect the output of a ToneNode to an AudioParam, AudioNode, or ToneNode
 	 *  @param  {Tone | AudioParam | AudioNode} unit 
 	 *  @param {number} [outputNum=0] optionally which output to connect from
 	 *  @param {number} [inputNum=0] optionally which input to connect to
+	 *  @returns {Tone} `this`
 	 */
 	Tone.prototype.connect = function(unit, outputNum, inputNum){
 		if (Array.isArray(this.output)){
@@ -170,10 +335,12 @@ define(function(){
 		} else {
 			this.output.connect(unit, outputNum, inputNum);
 		}
+		return this;
 	};
 
 	/**
 	 *  disconnect the output
+	 *  @returns {Tone} `this`
 	 */
 	Tone.prototype.disconnect = function(outputNum){
 		if (Array.isArray(this.output)){
@@ -182,11 +349,13 @@ define(function(){
 		} else {
 			this.output.disconnect();
 		}
+		return this;
 	};
 
 	/**
 	 *  connect together all of the arguments in series
 	 *  @param {...AudioParam|Tone|AudioNode}
+	 *  @returns {Tone} `this`
 	 */
 	Tone.prototype.connectSeries = function(){
 		if (arguments.length > 1){
@@ -197,11 +366,13 @@ define(function(){
 				currentUnit = toUnit;
 			}
 		}
+		return this;
 	};
 
 	/**
 	 *  fan out the connection from the first argument to the rest of the arguments
 	 *  @param {...AudioParam|Tone|AudioNode}
+	 *  @returns {Tone} `this`
 	 */
 	Tone.prototype.connectParallel = function(){
 		var connectFrom = arguments[0];
@@ -211,11 +382,16 @@ define(function(){
 				connectFrom.connect(connectTo);
 			}
 		}
+		return this;
 	};
 
 	/**
-	 *  connect the output of this node to the rest of the nodes in series.
-	 *  @param {...AudioParam|Tone|AudioNode}
+	 *  Connect the output of this node to the rest of the nodes in series.
+	 *  @example
+	 *  //connect a node to an effect, panVol and then to the master output
+	 *  node.chain(effect, panVol, Tone.Master);
+	 *  @param {...AudioParam|Tone|AudioNode} nodes
+	 *  @returns {Tone} `this`
 	 */
 	Tone.prototype.chain = function(){
 		if (arguments.length > 0){
@@ -226,18 +402,21 @@ define(function(){
 				currentUnit = toUnit;
 			}
 		}
+		return this;
 	};
 
 	/**
 	 *  connect the output of this node to the rest of the nodes in parallel.
 	 *  @param {...AudioParam|Tone|AudioNode}
+	 *  @returns {Tone} `this`
 	 */
 	Tone.prototype.fan = function(){
 		if (arguments.length > 0){
-			for (var i = 1; i < arguments.length; i++){
+			for (var i = 0; i < arguments.length; i++){
 				this.connect(arguments[i]);
 			}
 		}
+		return this;
 	};
 
 	//give native nodes chain and fan methods
@@ -316,50 +495,12 @@ define(function(){
 	Tone.prototype.isUndef = isUndef;
 
 	/**
-	 *  equal power gain scale
-	 *  good for cross-fading
-	 *  	
-	 *  @param  {number} percent (0-1)
-	 *  @return {number}         output gain (0-1)
+	 *  test if the arg is a function
+	 *  @param {*} arg the argument to test
+	 *  @returns {boolean} true if the arg is a function
+	 *  @function
 	 */
-	Tone.prototype.equalPowerScale = function(percent){
-		var piFactor = 0.5 * Math.PI;
-		return Math.sin(percent * piFactor);
-	};
-
-	/**
-	 *  @param  {number} gain (0-1)
-	 *  @return {number}      gain (decibel scale but betwee 0-1)
-	 */
-	Tone.prototype.logScale = function(gain) {
-		return  Math.max(this.normalize(this.gainToDb(gain), -100, 0), 0);
-	};
-
-	/**
-	 *  @param  {number} gain (0-1)
-	 *  @return {number}      gain (decibel scale but betwee 0-1)
-	 */
-	Tone.prototype.expScale = function(gain) {
-		return this.dbToGain(this.interpolate(gain, -100, 0));
-	};
-
-	/**
-	 *  convert db scale to gain scale (0-1)
-	 *  @param  {number} db
-	 *  @return {number}   
-	 */
-	Tone.prototype.dbToGain = function(db) {
-		return Math.pow(2, db / 6);
-	};
-
-	/**
-	 *  convert gain scale to decibels
-	 *  @param  {number} gain (0-1)
-	 *  @return {number}   
-	 */
-	Tone.prototype.gainToDb = function(gain) {
-		return  20 * (Math.log(gain) / Math.LN10);
-	};
+	Tone.prototype.isFunction = isFunction;
 
 	/**
 	 *  interpolate the input value (0-1) to be between outputMin and outputMax
@@ -391,45 +532,37 @@ define(function(){
 		return (input - inputMin) / (inputMax - inputMin);
 	};
 
+	///////////////////////////////////////////////////////////////////////////
+	// GAIN CONVERSIONS
+	///////////////////////////////////////////////////////////////////////////
+
 	/**
-	 *  a dispose method 
+	 *  equal power gain scale
+	 *  good for cross-fading
+	 *  @param  {number} percent (0-1)
+	 *  @return {number}         output gain (0-1)
 	 */
-	Tone.prototype.dispose = function(){
-		if (!this.isUndef(this.input)){
-			if (this.input instanceof AudioNode){
-				this.input.disconnect();
-			}
-			this.input = null;
-		}
-		if (!this.isUndef(this.output)){
-			if (this.output instanceof AudioNode){
-				this.output.disconnect();
-			}
-			this.output = null;
-		}
+	Tone.prototype.equalPowerScale = function(percent){
+		var piFactor = 0.5 * Math.PI;
+		return Math.sin(percent * piFactor);
 	};
 
 	/**
-	 *  a silent connection to the DesinationNode
-	 *  which will ensure that anything connected to it
-	 *  will not be garbage collected
-	 *  
-	 *  @private
+	 *  convert db scale to gain scale (0-1)
+	 *  @param  {number} db
+	 *  @return {number}   
 	 */
-	var _silentNode = null;
-
-	/**
-	 *  makes a connection to ensure that the node will not be garbage collected
-	 *  until 'dispose' is explicitly called
-	 *
-	 *  use carefully. circumvents JS and WebAudio's normal Garbage Collection behavior
-	 */
-	Tone.prototype.noGC = function(){
-		this.output.connect(_silentNode);
+	Tone.prototype.dbToGain = function(db) {
+		return Math.pow(2, db / 6);
 	};
 
-	AudioNode.prototype.noGC = function(){
-		this.connect(_silentNode);
+	/**
+	 *  convert gain scale to decibels
+	 *  @param  {number} gain (0-1)
+	 *  @return {number}   
+	 */
+	Tone.prototype.gainToDb = function(gain) {
+		return  20 * (Math.log(gain) / Math.LN10);
 	};
 
 	///////////////////////////////////////////////////////////////////////////
@@ -492,10 +625,29 @@ define(function(){
 		}
 	};
 
+	///////////////////////////////////////////////////////////////////////////
+	// FREQUENCY CONVERSION
+	///////////////////////////////////////////////////////////////////////////
+
 	/**
-	 *  convert a frequency into seconds
-	 *  accepts both numbers and strings 
-	 *  	i.e. 10hz or 10 both equal .1
+	 *  true if the input is in the format number+hz
+	 *  i.e.: 10hz
+	 *
+	 *  @param {number} freq 
+	 *  @return {boolean} 
+	 *  @function
+	 */
+	Tone.prototype.isFrequency = (function(){
+		var freqFormat = new RegExp(/\d*\.?\d+hz$/i);
+		return function(freq){
+			return freqFormat.test(freq);
+		};
+	})();
+
+	/**
+	 *  Convert a frequency into seconds.
+	 *  Accepts numbers and strings: i.e. `"10hz"` or 
+	 *  `10` both return `0.1`. 
 	 *  
 	 *  @param  {number|string} freq 
 	 *  @return {number}      
@@ -505,7 +657,7 @@ define(function(){
 	};
 
 	/**
-	 *  convert a number in seconds to a frequency
+	 *  Convert a number in seconds to a frequency.
 	 *  @param  {number} seconds 
 	 *  @return {number}         
 	 */
@@ -514,44 +666,9 @@ define(function(){
 	};
 
 	///////////////////////////////////////////////////////////////////////////
-	//	STATIC METHODS
+	//	INHERITANCE
 	///////////////////////////////////////////////////////////////////////////
 
-	/**
-	 *  array of callbacks to be invoked when a new context is added
-	 *  @internal 
-	 *  @private
-	 */
-	var newContextCallbacks = [];
-
-	/**
-	 *  invoke this callback when a new context is added
-	 *  will be invoked initially with the first context
-	 *  @private 
-	 *  @static
-	 *  @param {function(AudioContext)} callback the callback to be invoked
-	 *                                           with the audio context
-	 */
-	Tone._initAudioContext = function(callback){
-		//invoke the callback with the existing AudioContext
-		callback(Tone.context);
-		//add it to the array
-		newContextCallbacks.push(callback);
-	};
-
-	/**
-	 *  @static
-	 */
-	Tone.setContext = function(ctx){
-		//set the prototypes
-		Tone.prototype.context = ctx;
-		Tone.context = ctx;
-		//invoke all the callbacks
-		for (var i = 0; i < newContextCallbacks.length; i++){
-			newContextCallbacks[i](ctx);
-		}
-	};
-		
 	/**
 	 *  have a child inherit all of Tone's (or a parent's) prototype
 	 *  to inherit the parent's properties, make sure to call 
@@ -574,13 +691,57 @@ define(function(){
 		child.prototype = new TempConstructor();
 		/** @override */
 		child.prototype.constructor = child;
+		child._super = parent;
+	};
+
+	///////////////////////////////////////////////////////////////////////////
+	//	CONTEXT
+	///////////////////////////////////////////////////////////////////////////
+
+	/**
+	 *  array of callbacks to be invoked when a new context is added
+	 *  @private 
+	 *  @private
+	 */
+	var newContextCallbacks = [];
+
+	/**
+	 *  invoke this callback when a new context is added
+	 *  will be invoked initially with the first context
+	 *  @private 
+	 *  @static
+	 *  @param {function(AudioContext)} callback the callback to be invoked
+	 *                                           with the audio context
+	 */
+	Tone._initAudioContext = function(callback){
+		//invoke the callback with the existing AudioContext
+		callback(Tone.context);
+		//add it to the array
+		newContextCallbacks.push(callback);
 	};
 
 	/**
-	 *  bind this to a touchstart event to start the audio
-	 *
+	 *  Tone.js automatically creates a context on init, but if you are working
+	 *  with other libraries which also create an AudioContext, it can be
+	 *  useful to set your own. If you are going to set your own context, 
+	 *  be sure to do it at the start of your code, before creating any objects.
+	 *  @static
+	 *  @param {AudioContext} ctx The new audio context to set
+	 */
+	Tone.setContext = function(ctx){
+		//set the prototypes
+		Tone.prototype.context = ctx;
+		Tone.context = ctx;
+		//invoke all the callbacks
+		for (var i = 0; i < newContextCallbacks.length; i++){
+			newContextCallbacks[i](ctx);
+		}
+	};
+
+	/**
+	 *  Bind this to a touchstart event to start the audio on mobile devices. 
+	 *  <br>
 	 *  http://stackoverflow.com/questions/12517000/no-sound-on-ios-6-web-audio-api/12569290#12569290
-	 *  
 	 *  @static
 	 */
 	Tone.startMobile = function(){
@@ -603,7 +764,7 @@ define(function(){
 		_silentNode.connect(audioContext.destination);
 	});
 
-	console.log("%c * Tone.js r3 * ", "background: #000; color: #fff");
+	console.log("%c * Tone.js r4 * ", "background: #000; color: #fff");
 
 	return Tone;
 });

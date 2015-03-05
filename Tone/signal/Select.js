@@ -6,10 +6,17 @@ define(["Tone/core/Tone", "Tone/signal/Equal", "Tone/signal/Signal"], function(T
 	 *  @class Select between any number of inputs, sending the one 
 	 *         selected by the gate signal to the output
 	 *
-	 *
 	 *  @constructor
 	 *  @extends {Tone.SignalBase}
 	 *  @param {number} [sourceCount=2] the number of inputs the switch accepts
+	 *  @example
+	 *  var sel = new Tone.Select(2);
+	 *  var sigA = new Tone.Signal(10).connect(sel, 0, 0);
+	 *  var sigB = new Tone.Signal(20).connect(sel, 0, 1);
+	 *  sel.gate.value = 0;
+	 *  //sel outputs 10 (the value of sigA);
+	 *  sel.gate.value = 1;
+	 *  //sel outputs 20 (the value of sigB);
 	 */
 	Tone.Select = function(sourceCount){
 
@@ -36,17 +43,23 @@ define(["Tone/core/Tone", "Tone/signal/Equal", "Tone/signal/Signal"], function(T
 
 	/**
 	 *  open one of the inputs and close the other
-	 *  @param {number} [which=0] open one of the gates (closes the other)
-	 *  @param {Tone.Time} time the time when the switch will open
+	 *  @param {number} which open one of the gates (closes the other)
+	 *  @param {Tone.Time=} time the time when the switch will open
+	 *  @returns {Tone.Select} `this`
+	 *  @example
+	 *  //open input 1 in a half second from now
+	 *  sel.select(1, "+0.5");
 	 */
 	Tone.Select.prototype.select = function(which, time){
 		//make sure it's an integer
 		which = Math.floor(which);
 		this.gate.setValueAtTime(which, this.toSeconds(time));
+		return this;
 	};
 
 	/**
 	 *  dispose method
+	 *  @returns {Tone.Select} `this`
 	 */
 	Tone.Select.prototype.dispose = function(){
 		this.gate.dispose();
@@ -56,6 +69,7 @@ define(["Tone/core/Tone", "Tone/signal/Equal", "Tone/signal/Signal"], function(T
 		}
 		Tone.prototype.dispose.call(this);
 		this.gate = null;
+		return this;
 	}; 
 
 	////////////START HELPER////////////
@@ -64,7 +78,7 @@ define(["Tone/core/Tone", "Tone/signal/Equal", "Tone/signal/Signal"], function(T
 	 *  helper class for Tone.Select representing a single gate
 	 *  @constructor
 	 *  @extends {Tone}
-	 *  @internal only used by Tone.Select
+	 *  @private
 	 */
 	var SelectGate = function(num){
 

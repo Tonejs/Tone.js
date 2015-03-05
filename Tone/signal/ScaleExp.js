@@ -2,7 +2,7 @@ define(["Tone/core/Tone", "Tone/signal/Scale", "Tone/signal/Pow"],
 function(Tone){
 	
 	/**
-	 *  @class  performs an exponential scaling on an input signal.
+	 *  @class  Performs an exponential scaling on an input signal.
 	 *          Scales a normal gain range [0,1] exponentially
 	 *          to the output range of outputMin to outputMax.
 	 *
@@ -34,35 +34,49 @@ function(Tone){
 	Tone.extend(Tone.ScaleExp, Tone.SignalBase);
 
 	/**
-	 *  set the exponential scaling curve
-	 *  @param {number} exp the exponent to raise the incoming signal to
+	 * The minimum output value.
+	 * @memberOf Tone.ScaleExp#
+	 * @type {number}
+	 * @name exponent
 	 */
-	Tone.ScaleExp.prototype.setExponent = function(exp){
-		this._exp.setExponent(exp);
-	};
+	Object.defineProperty(Tone.ScaleExp.prototype, "exponent", {
+		get : function(){
+			return this._exp.value;
+		},
+		set : function(exp){
+			this._exp.value = exp;
+		}
+	});
 
 	/**
-	 *  set the minimum output value
-	 *  @param {number} min the minimum output value
+	 * The minimum output value.
+	 * @memberOf Tone.ScaleExp#
+	 * @type {number}
+	 * @name min
 	 */
-	Tone.ScaleExp.prototype.setMin = function(min){
-		this._scale.setMin(min);
-	};
+	Object.defineProperty(Tone.ScaleExp.prototype, "min", {
+		get : function(){
+			return this._scale.min;
+		},
+		set : function(min){
+			this._scale.min = min;
+		}
+	});
 
 	/**
-	 * @return {number} the minimum output value
+	 * The maximum output value.
+	 * @memberOf Tone.ScaleExp#
+	 * @type {number}
+	 * @name max
 	 */
-	Tone.ScaleExp.prototype.getMin = function(){
-		return this._scale.getMin();
-	};
-
-	/**
-	 *  set the minimum output value
-	 *  @param {number} min the minimum output value
-	 */
-	Tone.ScaleExp.prototype.setMax = function(max){
-		this._scale.setMax(max);
-	};
+	Object.defineProperty(Tone.ScaleExp.prototype, "max", {
+		get : function(){
+			return this._scale.max;
+		},
+		set : function(max){
+			this._scale.max = max;
+		}
+	});
 
 	/**
 	 * @return {number} the minimum output value
@@ -73,6 +87,7 @@ function(Tone){
 
 	/**
 	 *  clean up
+	 *  @returns {Tone.ScaleExp} `this`
 	 */
 	Tone.ScaleExp.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
@@ -80,6 +95,7 @@ function(Tone){
 		this._scale = null;
 		this._exp.dispose();
 		this._exp = null;
+		return this;
 	}; 
 
 

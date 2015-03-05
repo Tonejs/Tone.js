@@ -7,20 +7,13 @@ define(["Tone/core/Tone"], function(Tone){
 	 *	
 	 *  @constructor
 	 *  @extends {Tone}
+	 *  @example
+	 *  var split = new Tone.Split();
+	 *  stereoSignal.connect(split);
 	 */
 	Tone.Split = function(){
-		
-		/**
-		 *  the input node
-		 *  @type {GainNode}
-		 */
-		this.input = this.context.createGain();
 
-		/**
-		 *  the output nodes
-		 *  @type {Array.<GainNode>}
-		 */
-		this.output = new Array(2);
+		Tone.call(this, 1, 2);
 
 		/** 
 		 *  @type {ChannelSplitterNode}
@@ -52,6 +45,7 @@ define(["Tone/core/Tone"], function(Tone){
 
 	/**
 	 *  dispose method
+	 *  @returns {Tone.Split} `this`
 	 */
 	Tone.Split.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
@@ -61,6 +55,7 @@ define(["Tone/core/Tone"], function(Tone){
 		this.left = null;
 		this.right = null;
 		this._splitter = null;
+		return this;
 	}; 
 
 	return Tone.Split;

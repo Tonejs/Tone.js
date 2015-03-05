@@ -9,6 +9,10 @@ define(["Tone/core/Tone", "Tone/signal/Max", "Tone/signal/Min", "Tone/signal/Sig
 	 *  @extends {Tone.SignalBase}
 	 *  @param {number} min the minimum value of the outgoing signal
 	 *  @param {number} max the maximum value of the outgoing signal
+	 *  @example
+	 *  var clip = new Tone.Clip(0.5, 1);
+	 *  var osc = new Tone.Oscillator().connect(clip);
+	 *  //clips the output of the oscillator to between 0.5 and 1.
 	 */
 	Tone.Clip = function(min, max){
 		//make sure the args are in the right order
@@ -19,49 +23,33 @@ define(["Tone/core/Tone", "Tone/signal/Max", "Tone/signal/Min", "Tone/signal/Sig
 		}
 		
 		/**
-		 *  the min clipper
-		 *  @type {Tone.Min}
-		 *  @private
+		 *  The min clip value
+		 *  @type {Tone.Signal}
 		 */
-		this._min = this.input = new Tone.Min(max);
+		this.min = this.input = new Tone.Min(max);
 
 		/**
-		 *  the max clipper
-		 *  @type {Tone.Max}
-		 *  @private
+		 *  The max clip value
+		 *  @type {Tone.Signal}
 		 */
-		this._max = this.output = new Tone.Max(min);
+		this.max = this.output = new Tone.Max(min);
 
-		this._min.connect(this._max);
+		this.min.connect(this.max);
 	};
 
 	Tone.extend(Tone.Clip, Tone.SignalBase);
 
 	/**
-	 *  set the minimum value
-	 *  @param {number} min the new min value
-	 */
-	Tone.Clip.prototype.setMin = function(min){
-		this._min.setMin(min);
-	};
-
-	/**
-	 *  set the maximum value
-	 *  @param {number} max the new max value
-	 */
-	Tone.Clip.prototype.setMax = function(max){
-		this._max.setMax(max);	
-	};
-
-	/**
 	 *  clean up
+	 *  @returns {Tone.Clip} `this`
 	 */
 	Tone.Clip.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
-		this._min.dispose();
-		this._min = null;
-		this._max.dispose();
-		this._max = null;
+		this.min.dispose();
+		this.min = null;
+		this.max.dispose();
+		this.max = null;
+		return this;
 	};
 
 	return Tone.Clip;

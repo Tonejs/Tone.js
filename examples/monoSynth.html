@@ -7,110 +7,71 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
 
 	<script type="text/javascript" src="./deps/jquery.min.js"></script>
-	<script type="text/javascript" src="./deps/jquery-ui.js"></script>
-	<script type="text/javascript" src="./deps/jquery.ui.touch-punch.js"></script>
 	<script type="text/javascript" src="../build/Tone.js"></script>
 	<script type="text/javascript" src="../build/Tone.Preset.js"></script>
-	<script type="text/javascript" src="./Widgets.js"></script>
-	<script type="text/javascript" src="./ExampleList.js"></script>
-	<link rel="stylesheet" type="text/css" href="./style/widgets.css">
-	<link rel="stylesheet" type="text/css" href="./style/jquery-ui.css">
+	<script type="text/javascript" src="./deps/nexusUI.js"></script>
+	<script type="text/javascript" src="./deps/prism.js"></script>
+	<script type="text/javascript" src="./scripts/Interface.js"></script>
 	<script type="text/javascript" src="./deps/qwerty-hancock.js"></script>
+
+	<link rel="stylesheet" type="text/css" href="./style/examples.css">
+	<link rel="stylesheet" type="text/css" href="./style/prism.css">
+
+	<script type="text/javascript">
+		// jshint ignore: start
+	</script>
 
 </head>
 <body>
+	<style type="text/css">
+	#Amplitude {
+		/*position: relative;*/
+		width: calc(40% - 10px)!important;
+	}
+	#FilterEnvelope {
+		/*position: relative;*/
+		width: calc(60% - 10px)!important;
+	}
+	.FilterEnvelope.Envelope {
+		width: 100%!important;
+	}
 
-	<div id="Container">
-		<div id="Explanation">
-			MonoSynth
-			<br>
-			<br>
-			MonoSynth is a monophonic synthesizer composed simply of one oscillator, 
-			a filter and two envelopes (on amplitude and filter). 
+	.Envelope {
+		width: 100%!important;
+	}
+	</style>
+	<div id="Explanation">
+		MonoSynth
+		<br>
+		<br>
+		MonoSynth is a monophonic synthesizer composed simply of one oscillator and one filter each with their own independent envelope. 
+	</div>
+	<div id="Content">
+		<div id="KeyRack">
+			<div id="Keyboard"></div>
 		</div>
-		<div id="Content">
-			<div id="tabs">
-			  <ul>
-			    <li><a href="#envelope">Osc/Env</a></li>
-			    <li><a href="#filter">FilterEnv</a></li>
-			    <li><a href="#presets">Presets</a></li>
-			  </ul>
-			  <div id="envelope">
-			   
-			  </div>
-			  <div id="filter">
-			   
-			  </div>
-			  <div id="presets">
-			    
-			  </div>
-			</div>
-
-
+		<div id="Oscillator"></div>
+		<div id="Envelope">
+			<div id="Amplitude"></div>
+			<div id="FilterEnvelope"></div>
 		</div>
+		<div id="Filter"></div>
+		<div id="Presets"></div>
 	</div>
 
-	<script type="text/javascript">
+	<script id="ToneCode" type="text/javascript">			
+		var synth = new Tone.MonoSynth().toMaster();
+	</script>
+	<script id="GUI" type="text/javascript">
 
-		/* globals Tone, GUI, QwertyHancock */
-			
-		var synth = new Tone.MonoSynth();
-		synth.setVolume(-10);
-		synth.toMaster();
-
-		// GUI //
-
-		new GUI.TopBar(Tone);
-
-		$("#tabs").tabs();
-
-		var content = $("#Content");
-		var envelope = $("#envelope");
-		var filter = $("#filter");
-		var presets = $("#presets");
-
-		//envelopes
-		var ampEnv = new GUI.Envelope(envelope, synth.envelope, "amplitude");
-		var osc = new GUI.OmniOscillator(envelope, synth.oscillator, "oscillator");
-
-		//filter
-		var filtEnv =new GUI.Envelope(filter, synth.filterEnvelope, "filter");
-		var min = 20;
-		var max = 20000;
-		var minFilFreq = new GUI.Slider(filter, function(val){
-			var freq = Math.pow(val, 2);
-			var scaled = freq * (max - min) + min;
-			synth.filterEnvelope.setMin(scaled);
-			return scaled;
-		}, min, "start freq", "hz");
-		var maxFilFreq = new GUI.Slider(filter, function(val){
-			var freq = Math.pow(val, 2);
-			var scaled = freq * (max - min) + min;
-			synth.filterEnvelope.setMax(scaled);
-			return scaled;
-		}, min, "end freq", "hz");
-
-		//presets
-		var allPresets = [];
-		for (var name in synth.preset){
-			allPresets.push(name);
-		}
-
-		new GUI.DropDown(presets, allPresets, function(name){
-			setPreset(name);
-		});
-
-		//keyboard
-		$("<div>", {"id" : "Keyboard"}).appendTo(content);
+		Interface.Rack("KeyRack", "Keyboard", true).open();
+		//the keyboard
 		var keyboard = new QwertyHancock({
 			id: "Keyboard",
-			width: 350,
+			width: $("#KeyRack").width(),
 			height: 75,
-			octaves: 2,
-			startNote: "A3",
-			whiteNotesColour: "white",
-			blackNotesColour: "black",
-			hoverColour: "#f3e939"
+			octaves : 3,
+			startNote: "A2",
 		});
 		keyboard.keyDown = function(note, freq){
 			synth.triggerAttack(freq);
@@ -119,54 +80,21 @@
 			synth.triggerRelease();
 		};
 
-		function setPreset(name){
-			synth.setPreset(name);
-			ampEnv.render();
-			filtEnv.render();
-			osc.render();
-			var minVal = Math.pow(Math.max((synth.filterEnvelope.min - min) / (max - min), 0), 0.5);
-			minFilFreq.render(minVal);
-			var maxVal = Math.pow(Math.max((synth.filterEnvelope.max - min) / (max - min), 0), 0.5);
-			maxFilFreq.render(maxVal);
-		}
-
-		setPreset("CoolGuy");
+		//the oscillator
+		Interface.Rack("Oscillator", "Oscillator", true);
+		Interface.DropDown("Oscillator", synth.oscillator, "type", ["sine", "square", "triangle", "sawtooth", "pwm", "pulse"]).listen();
+		//the envelopes
+		Interface.Rack("Envelope", "Envelopes", true);
+		var ampGroup = Interface.Group("Amplitude", "Amplitude");
+		Interface.AmplitudeEnvelope(ampGroup, synth.envelope).listen();
+		var filtGroup = Interface.Group("FilterEnvelope", "Filter");
+		Interface.FilterEnvelope(filtGroup, synth.filterEnvelope).listen();
+		Interface.Rack("Filter", "Filter", true);
+		var type = Interface.DropDown("Filter", synth.filter, "type", ["lowpass", "highpass", "bandpass"]).listen();
+		var Q = Interface.Slider("Filter", synth.filter, "Q", 0.1, 20);
+		Interface.Rack("Presets", "Presets", true);
+		Interface.Presets("Presets", synth);
 		
 	</script>
-
-	<style type="text/css">
-	#Content {
-		width: 350px;
-	}
-
-	#tabs {
-		height: 300px;
-	}
-
-	.Slider {
-		width: 80%;
-		margin-left: 10%;
-		margin-top: 10px;
-	}
-
-	.Oscillator {
-		width: 80%;
-		margin-left: 10%;
-		margin-top: 40px;
-	}
-
-	.Envelope {
-		margin: auto;
-	}
-
-	#Keyboard {
-		background-color: black;
-	}
-
-	#presets .DropDown {
-		margin: auto;
-		margin-top: 50px;
-	}
-	</style>
 </body>
 </html>

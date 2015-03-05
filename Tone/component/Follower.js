@@ -14,6 +14,8 @@ function(Tone){
 	 *  @extends {Tone}
 	 *  @param {Tone.Time} [attack = 0.05] 
 	 *  @param {Tone.Time} [release = 0.5] 
+	 *  @example
+	 *  var follower = new Tone.Follower(0.2, 0.4);
 	 */
 	Tone.Follower = function(){
 
@@ -66,13 +68,13 @@ function(Tone){
 		 *  @private
 		 *  @type {number}
 		 */
-		this._attack = this.secondsToFrequency(options.attack);
+		this._attack = options.attack;
 
 		/**
 		 *  @private
 		 *  @type {number}
 		 */
-		this._release = this.secondsToFrequency(options.release);
+		this._release = options.release;
 
 		//the smoothed signal to get the values
 		this.input.chain(this._abs, this._filter, this.output);
@@ -98,12 +100,14 @@ function(Tone){
 
 	/**
 	 *  sets the attack and release times in the wave shaper
-	 *  @param   {number} attack  
-	 *  @param   {number} release 
+	 *  @param   {Tone.Time} attack  
+	 *  @param   {Tone.Time} release 
 	 *  @private
 	 */
 	Tone.Follower.prototype._setAttackRelease = function(attack, release){
 		var minTime = this.bufferTime;
+		attack = this.secondsToFrequency(this.toSeconds(attack));
+		release = this.secondsToFrequency(this.toSeconds(release));
 		attack = Math.max(attack, minTime);
 		release = Math.max(release, minTime);
 		this._frequencyValues.setMap(function(val){
@@ -116,41 +120,47 @@ function(Tone){
 	};
 
 	/**
-	 *  set the attack time
-	 *  @param {Tone.Time} attack
+	 * The attack time.
+	 * @memberOf Tone.Follower#
+	 * @type {Tone.Time}
+	 * @name attack
 	 */
-	Tone.Follower.prototype.setAttack = function(attack){
-		this._attack = this.secondsToFrequency(attack);
-		this._setAttackRelease(this._attack, this._release);
-	};
+	Object.defineProperty(Tone.Follower.prototype, "attack", {
+		get : function(){
+			return this._attack;
+		},
+		set : function(attack){
+			this._attack = attack;
+			this._setAttackRelease(this._attack, this._release);	
+		}
+	});
 
 	/**
-	 *  set the release time
-	 *  @param {Tone.Time} release
+	 * The release time.
+	 * @memberOf Tone.Follower#
+	 * @type {Tone.Time}
+	 * @name release
 	 */
-	Tone.Follower.prototype.setRelease = function(release){
-		this._release = this.secondsToFrequency(release);
-		this._setAttackRelease(this._attack, this._release);
-	};
-
-	/**
-	 *  setter in bulk
-	 *  @param {Object} params 
-	 */
-	Tone.Follower.prototype.set = function(params){
-		if (!this.isUndef(params.attack)) this.setAttack(params.attack);
-		if (!this.isUndef(params.release)) this.setRelease(params.release);
-		Tone.Effect.prototype.set.call(this, params);
-	};
+	Object.defineProperty(Tone.Follower.prototype, "release", {
+		get : function(){
+			return this._release;
+		},
+		set : function(release){
+			this._release = release;
+			this._setAttackRelease(this._attack, this._release);	
+		}
+	});
 
 	/**
 	 *  borrows the connect method from Signal so that the output can be used
 	 *  as a control signal {@link Tone.Signal}
+	 *  @function
 	 */
 	Tone.Follower.prototype.connect = Tone.Signal.prototype.connect;
 
 	/**
 	 *  dispose
+	 *  @returns {Tone.Follower} `this`
 	 */
 	Tone.Follower.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
@@ -167,6 +177,7 @@ function(Tone){
 		this._mult.dispose();
 		this._mult = null;
 		this._curve = null;
+		return this;
 	};
 
 	return Tone.Follower;

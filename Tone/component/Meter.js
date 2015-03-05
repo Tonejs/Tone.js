@@ -4,8 +4,8 @@ define(["Tone/core/Tone", "Tone/core/Master"], function(Tone){
 
 	/**
 	 *  @class  Get the rms of the input signal with some averaging.
-	 *          can also just get the value of the signal
-	 *          or the value in dB. inspired by https://github.com/cwilso/volume-meter/blob/master/volume-meter.js
+	 *          Can also just get the value of the signal
+	 *          or the value in dB. inspired by https://github.com/cwilso/volume-meter/blob/master/volume-meter.js<br><br>
 	 *          Note that for signal processing, it's better to use {@link Tone.Follower} which will produce
 	 *          an audio-rate envelope follower instead of needing to poll the Meter to get the output.
 	 *
@@ -13,37 +13,49 @@ define(["Tone/core/Tone", "Tone/core/Master"], function(Tone){
 	 *  @extends {Tone}
 	 *  @param {number} [channels=1] number of channels being metered
 	 *  @param {number} [smoothing=0.8] amount of smoothing applied to the volume
-	 *  @param {number} [clipMemory=500] number in ms that a "clip" should be remembered
+	 *  @param {number} [clipMemory=0.5] number in seconds that a "clip" should be remembered
 	 */
 	Tone.Meter = function(channels, smoothing, clipMemory){
 		//extends Unit
 		Tone.call(this);
 
-		/** @type {number} */
-		this.channels = this.defaultArg(channels, 1);
+		/** 
+		 *  The channel count
+		 *  @type  {number}
+		 *  @private
+		 */
+		this._channels = this.defaultArg(channels, 1);
 
-		/** @type {number} */
-		this.smoothing = this.defaultArg(smoothing, 0.8);
+		/** 
+		 *  the smoothing value
+		 *  @type  {number}
+		 *  @private
+		 */
+		this._smoothing = this.defaultArg(smoothing, 0.8);
 
-		/** @type {number} */
-		this.clipMemory = this.defaultArg(clipMemory, 500);
+		/** 
+		 *  the amount of time a clip is remember for. 
+		 *  @type  {number}
+		 *  @private
+		 */
+		this._clipMemory = this.defaultArg(clipMemory, 0.5) * 1000;
 
 		/** 
 		 *  the rms for each of the channels
 		 *  @private
 		 *  @type {Array<number>}
 		 */
-		this._volume = new Array(this.channels);
+		this._volume = new Array(this._channels);
 
 		/** 
 		 *  the raw values for each of the channels
 		 *  @private
 		 *  @type {Array<number>}
 		 */
-		this._values = new Array(this.channels);
+		this._values = new Array(this._channels);
 
 		//zero out the volume array
-		for (var i = 0; i < this.channels; i++){
+		for (var i = 0; i < this._channels; i++){
 			this._volume[i] = 0;
 			this._values[i] = 0;
 		}
@@ -59,7 +71,7 @@ define(["Tone/core/Tone", "Tone/core/Master"], function(Tone){
 		 *  @private
 		 *  @type {ScriptProcessorNode}
 		 */
-		this._jsNode = this.context.createScriptProcessor(this.bufferSize, this.channels, 1);
+		this._jsNode = this.context.createScriptProcessor(this.bufferSize, this._channels, 1);
 		this._jsNode.onaudioprocess = this._onprocess.bind(this);
 		//so it doesn't get garbage collected
 		this._jsNode.noGC();
@@ -78,8 +90,8 @@ define(["Tone/core/Tone", "Tone/core/Master"], function(Tone){
 	 */
 	Tone.Meter.prototype._onprocess = function(event){
 		var bufferSize = this._jsNode.bufferSize;
-		var smoothing = this.smoothing;
-		for (var channel = 0; channel < this.channels; channel++){
+		var smoothing = this._smoothing;
+		for (var channel = 0; channel < this._channels; channel++){
 			var input = event.inputBuffer.getChannelData(channel);
 			var sum = 0;
 			var total = 0;
@@ -136,13 +148,16 @@ define(["Tone/core/Tone", "Tone/core/Master"], function(Tone){
 		return this.gainToDb(this.getLevel(channel));
 	};
 
-	// @returns {boolean} if the audio has clipped in the last 500ms
+	/**
+	 * @returns {boolean} if the audio has clipped in the last 500ms
+	 */
 	Tone.Meter.prototype.isClipped = function(){
-		return Date.now() - this._lastClip < this.clipMemory;
+		return Date.now() - this._lastClip < this._clipMemory;
 	};
 
 	/**
-	 *  @override
+	 *  clean up
+	 *  @returns {Tone.Meter} `this`
 	 */
 	Tone.Meter.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
@@ -150,6 +165,7 @@ define(["Tone/core/Tone", "Tone/core/Master"], function(Tone){
 		this._jsNode.onaudioprocess = null;
 		this._volume = null;
 		this._values = null;
+		return this;
 	};
 
 	return Tone.Meter;

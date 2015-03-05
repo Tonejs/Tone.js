@@ -9,6 +9,11 @@ define(["Tone/core/Tone", "Tone/signal/Equal"], function(Tone){
 	 *  @constructor
 	 *  @param {number} [inputCount=2] the number of inputs. NOTE: all inputs are
 	 *                                 connected to the single AND input node
+	 *  @example
+	 *  var and = new Tone.AND(2);
+	 *  var sigA = new Tone.Signal(0).connect(and, 0, 0);
+	 *  var sigB = new Tone.Signal(1).connect(and, 0, 1);
+	 *  //the output of and is 0. 
 	 */
 	Tone.AND = function(inputCount){
 
@@ -31,20 +36,14 @@ define(["Tone/core/Tone", "Tone/signal/Equal"], function(Tone){
 	Tone.extend(Tone.AND, Tone.SignalBase);
 
 	/**
-	 *  the number of inputs to consider
-	 *  @param {number} inputCount
-	 */	
-	Tone.AND.prototype.setInputCount = function(inputCount){
-		this._equals.setValue(inputCount);
-	};
-
-	/**
 	 *  clean up
+	 *  @returns {Tone.AND} `this`
 	 */
 	Tone.AND.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
 		this._equals.dispose();
 		this._equals = null;
+		return this;
 	};
 
 	return Tone.AND;

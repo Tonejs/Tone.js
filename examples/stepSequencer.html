@@ -2,169 +2,96 @@
 <html>
 <head>
   <meta charset="utf-8">
-	<title>STEP SEQUENCER</title>
+	<title>SCORE</title>
 
-	<!-- <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"> -->
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
 
-	<script type="text/javascript" src="./deps/jquery.min.js"></script>
-	<script type="text/javascript" src="./deps/jquery-ui.js"></script>
-	<script type="text/javascript" src="./deps/jquery.ui.touch-punch.js"></script>
 	<script type="text/javascript" src="../build/Tone.js"></script>
-	<script type="text/javascript" src="./Widgets.js"></script>
-	<script type="text/javascript" src="./ExampleList.js"></script>
-	<link rel="stylesheet" type="text/css" href="./style/widgets.css">
-	<link rel="stylesheet" type="text/css" href="./style/jquery-ui.css">
+	<script type="text/javascript" src="../build/Tone.Preset.js"></script>
+	<script type="text/javascript" src="./deps/jquery.min.js"></script>
+	<script type="text/javascript" src="./deps/qwerty-hancock.js"></script>
+	<script type="text/javascript" src="./deps/nexusUI.js"></script>
+	<script type="text/javascript" src="./deps/prism.js"></script>
+	<script type="text/javascript" src="./scripts/Interface.js"></script>
+
+	<link rel="stylesheet" type="text/css" href="./style/examples.css">
+	<link rel="stylesheet" type="text/css" href="./style/prism.css">
+
+	<script type="text/javascript">
+		// jshint ignore: start
+	</script>
 
 </head>
-<body>
-	<div id="Container">
-		<div id="Explanation">
-			Tone.Transport
-			<br>
-			<br>
-			Tone.Transport is the application-wide timekeeper. It uses an OscillatorNode
-			as it's clock source which enables sample-accurate scheduling as well as 
-			tempo-curves and automation. This example uses Tone.Transport.setInterval
-			to invoke a callback every 16th note. 
-		</div>
-		<div id="Content">
-			<div id="Loading">LOADING...</div>
-			<div id = "StartButton"></div>
-			<div id = "Sequencer"></div>
-		</div>
-	<script type="text/javascript">
+<body>	
+	<style type="text/css">
+	
+	</style>
+	<div id="Explanation">
+		Tone.Transport
+		<br>
+		<br>
+		Tone.Transport is the application-wide timekeeper. It uses an OscillatorNode
+		as it's clock source which enables sample-accurate scheduling as well as 
+		tempo-curves and automation. This example uses Tone.Transport.setInterval
+		to invoke a callback every 16th note.
+	</div>
+	<div id="Content">
+		<div id="LoadingBar"></div>
+		<div id="Controls"></div>
+		<div id="Rack">
 
-		/* globals Tone, GUI */
-
-		var keys = new Tone.MultiSampler({
+		</div>
+		<div id="Code"></div>
+	</div>
+	<script id="ToneCode" type="text/javascript">
+		//setup a polyphonic sampler
+		var keys = new Tone.PolySynth(4, Tone.Sampler, {
 			"A" : "./audio/casio/A1.mp3",
 			"C#" : "./audio/casio/Cs2.mp3",
 			"E" : "./audio/casio/E2.mp3",
 			"F#" : "./audio/casio/Fs2.mp3",
-		}, function(){
-			$("#Loading").remove();
-			startCheckbox.enable();
-		});
-		keys.toMaster();
+		}, {
+			"envelope" : {
+				"release" : 0.2
+			}
+		}).toMaster();
+		keys.volume.value = -15;
 
+		//keep track of steps and notes
 		var stepNumber = 0;
 		var noteNames = ["A", "C#", "E", "F#"];
-		var checkboxes = [];
-		var indicators = [];
 
-		Tone.Transport.setLoopEnd("1m");
-		Tone.Transport.loop = true;
+		//the repeated callback
 		Tone.Transport.setInterval(function(time){
-			//remove the old indicator
-			$(".Lit").removeClass("Lit");
-			//light up the new one
-			indicators[stepNumber].addClass("Lit");
+			//get the notes at the step
+			var column = matrix1.matrix[stepNumber];
+			for (var i = 0; i < 4; i++){
+				if (column[i] === 1){
+					keys.triggerAttackRelease(noteNames[i], "32n", time);
+				}
+			}
 			stepNumber++;
 			stepNumber = stepNumber % 16;
-			//get the current column
-			for (var i = 0; i < checkboxes.length; i++){
-				var box = checkboxes[i][stepNumber];
-				if (box.isChecked()){
-					keys.triggerAttack(noteNames[i], time);
-				}
-			}
 		}, "16n");
 
-		// GUI //
-
-		var sequencer = $("#Sequencer");
-
-		//the indicator of the beat
-		function makeIndicator(){
-			for (var beat = 0; beat < 16; beat++){
-				var indicator = $("<div>", {"class" : "Indicator"}).appendTo(sequencer);
-				indicators.push(indicator);
-			}
-			sequencer.append("<br><br>");
-		}
-
-		//1 row for each instrument
-		//16 beats in each row
-		function makeCheckboxes(){
-			for (var row = 0; row < 4; row++){
-				checkboxes[row] = [];
-				for (var beat = 0; beat < 16; beat++){
-					var checkbox = new GUI.Checkbox(sequencer, function(){}, "", "");
-					checkboxes[row].push(checkbox);
-					//randomly set some as checked initially
-					if (Math.random() < 0.25){
-						checkbox.check(true);
-					}
-				}
-				sequencer.append("<br>");
-			}
-		}
-
-		new GUI.TopBar(Tone);
-
-		var startButton = $("#StartButton");
-		var startCheckbox = new GUI.Checkbox(startButton, function(on){
+		//transport settings
+		Tone.Transport.loopEnd = "1m";
+		Tone.Transport.loop = true;
+	</script>
+	<script type="text/javascript">
+		Interface.Loading("LoadingBar");
+		Interface.Rack("Rack", "Step Sequencer");
+		Interface.StepSequencer("Rack", 32, 8).randomize();
+		Interface.Slider("Rack", Tone.Transport, "bpm", 100, 150);
+		Interface.Toggle("Rack", function(on){
 			if (on){
 				Tone.Transport.start();
 			} else {
 				Tone.Transport.stop();
 			}
-		}, "start", "stop");
-		startCheckbox.disable();
-	
-		makeIndicator();
-		makeCheckboxes();
-
-		var slider = new GUI.Slider($("#Content"), function(val){
-			var scaled = val * 30 + 100;
-			Tone.Transport.setBpm(scaled);
-			return scaled;
-		}, 120, "tempo");
-		slider.render(20/30);
+		});
+		Interface.Code("Code", "ToneCode");
 
 	</script>
-
-	<style type="text/css">
-	#Content {
-		width: 470px;
-	}
-	#Content #Sequencer .Checkbox{
-		margin-top: 0px;
-		width: 25px;
-		height: 25px;
-	}
-	#Content #Sequencer .Checkbox .ui-button-text {
-		height: 100%;
-		width: 100%;
-		padding: 0px;
-	}
-	#Content #Sequencer .Indicator{
-		position: relative;
-		float: left;
-		width: 25px;
-		height: 25px;
-		border-radius: 50%;
-		margin: 1.5px;
-		background-color: yellow;
-		opacity: 0;
-		transition: opacity 0.1s;
-	}
-	#Content #Sequencer .Indicator.Lit{
-		opacity: 1;
-	}
-	.Slider {
-		margin-top: 20px;
-		width: 60%;
-		margin-left: 20%;
-	}
-	#Content #StartButton {
-		margin-bottom: 10px;
-		width: 60%;
-		margin-left: 20%;
-	}
-	#Content #StartButton .Checkbox{
-		width: 100%;
-	}
-	</style>
 </body>
 </html>

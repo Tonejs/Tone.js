@@ -4,20 +4,16 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/effect/Effect"], function(To
 
 	/**
 	 *  @class  Convolver wrapper for reverb and emulation.
-	 *          NB: currently, this class only supports 1 buffer member.
-	 *          Future iterations will include a this.buffers collection for multi buffer mode.
 	 *  
 	 *  @constructor
 	 *  @extends {Tone.Effect}
-	 *  @param {string|Object=} url
-	 *  @param {function=} callback function
+	 *  @param {string|AudioBuffer=} url
+	 *  @example
+	 *  var convolver = new Tone.Convolver("./path/to/ir.wav");
 	 */
-	Tone.Convolver = function(){
+	Tone.Convolver = function(url){
 
-		//get all of the defaults
-		var options = this.optionsObject(arguments, ["url", "onload"], Tone.Convolver.defaults);
-		//connections
-		Tone.Effect.call(this, options);
+		Tone.Effect.apply(this, arguments);
 
 	  	/**
 		 *  convolver node
@@ -28,79 +24,65 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/effect/Effect"], function(To
 
 		/**
 		 *  the convolution buffer
-		 *  
-		 *  @type {AudioBuffer}
+		 *  @type {Tone.Buffer}
 		 *  @private
 		 */
-		this._buffer = null;
+		this._buffer = new Tone.Buffer(url, function(buffer){
+			this.buffer = buffer;
+		}.bind(this));
 
 		this.connectEffect(this._convolver);
-		//if there is a url, load it. 
-		if (!this.isUndef(options.url)){
-			this.load(options.url, options.onload);
-		}
 	};
 
 	Tone.extend(Tone.Convolver, Tone.Effect);
 
 	/**
-	 *  @static
-	 *  @type {Object}
+	 *  The convolver's buffer
+	 *  @memberOf Tone.Convolver#
+	 *  @type {AudioBuffer}
+	 *  @name buffer
 	 */
-	Tone.Convolver.defaults = {
-		"onload": function(){},
-	};
+	Object.defineProperty(Tone.Convolver.prototype, "buffer", {
+		get : function(){
+			return this._buffer.get();
+		},
+		set : function(buffer){
+			this._buffer.set(buffer);
+			this._convolver.buffer = buffer;
+		}
+	});
 
 	/**
-	 *  Load the impulse response url as an audio buffer.
+	 *  Load an impulse response url as an audio buffer.
 	 *  Decodes the audio asynchronously and invokes
 	 *  the callback once the audio buffer loads.
 	 *  @param {string} url the url of the buffer to load.
 	 *                      filetype support depends on the
 	 *                      browser.
-	 *  @param  {function(Tone.Convolver)=} callback
+	 *  @param  {function=} callback
+	 *  @returns {Tone.Convolver} `this`
 	 */
 	Tone.Convolver.prototype.load = function(url, callback){
-		if (!this._buffer){
-			var self = this;
-			new Tone.Buffer(url, function (buffer){
-				self.setBuffer(buffer);
-				if (callback){
-					callback(self);
-				}
-			});
-		} else if (callback){
-			callback(this);
-		}
-	};
-
-	/**
-	 *  set the buffer
-	 *
-	 *  @param {AudioBuffer} buffer the impulse response
-	 */
-	Tone.Convolver.prototype.setBuffer = function(buffer){
-		this._buffer = buffer;
-		this._convolver.buffer = this._buffer;
-	};
-
-	/**
-	 *  set multiple parameters at once with an object
-	 *  @param {Object} params the parameters as an object
-	 */
-	Tone.Convolver.prototype.set = function(params){
-		if (!this.isUndef(params.buffer)) this.setBuffer(params.buffer);
-		Tone.Effect.prototype.set.call(this, params);
+		this._buffer.load(url, function(buff){
+			this.buffer = buff;
+			if (callback){
+				callback();
+			}
+		}.bind(this));
+		return this;
 	};
 
 	/**
 	 *  dispose and disconnect
+	 *  @returns {Tone.Convolver} `this`
 	 */
 	Tone.Convolver.prototype.dispose = function(){
 		Tone.Effect.prototype.dispose.call(this);
 		this._convolver.disconnect();
 		this._convolver = null;
+		this._buffer.dispose();
 		this._buffer = null;
+		return this;
 	}; 
 
 	return Tone.Convolver;

@@ -1,10 +1,16 @@
-define(["Tone/core/Tone"], function(Tone){
+define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 
 	"use strict";
 	
 	/**
-	 *  @class  A single master output. 
-	 *          adds toMaster to Tone
+	 *  @class  A single master output which is connected to the
+	 *          AudioDestinationNode. It provides useful conveniences
+	 *          such as the ability to set the global volume and mute
+	 *          the entire application. Additionally, it accepts
+	 *          a master send/receive for adding final compression, 
+	 *          limiting or effects to your application. <br><br>
+	 *          Like the Transport, the Master output is created for you
+	 *          on initialization. It does not need to be created.
 	 *
 	 *  @constructor
 	 *  @extends {Tone}
@@ -13,50 +19,67 @@ define(["Tone/core/Tone"], function(Tone){
 		Tone.call(this);
 
 		/**
-		 *  put a hard limiter on the output so we don't blow any eardrums
-		 *  
-		 *  @type {DynamicsCompressorNode}
+		 * the unmuted volume
+		 * @type {number}
+		 * @private
 		 */
-		this.limiter = this.context.createDynamicsCompressor();
-		this.limiter.threshold.value = 0;
-		this.attack = 0.001;
-		this.release = 0.01;
-		this.limiter.ratio.value = 20;
+		this._unmutedVolume = 1;
+
+		/**
+		 * the volume of the output in decibels
+		 * @type {Tone.Signal}
+		 */
+		this.volume = new Tone.Signal(this.output.gain, Tone.Signal.Units.Decibels);
 		
-		//connect it up
-		this.input.chain(this.limiter, this.output, this.context.destination);
+		//connections
+		this.input.chain(this.output, this.context.destination);
 	};
 
 	Tone.extend(Tone.Master);
 
 	/**
-	 *  mute the output
-	 *  @param {boolean} muted
+	 *  Mutethe output
+	 *  @returns {Tone.Master} `this`
 	 */
-	Tone.Master.prototype.mute = function(muted){
-		muted = this.defaultArg(muted, true);
-		if (muted){
-			this.output.gain.value = 0;
-		} else {
-			this.output.gain.value = 1;
-		}
+	Tone.Master.prototype.mute = function(){
+		this._unmutedVolume = this.volume.value;
+		//maybe it should ramp here?
+		this.volume.value = -Infinity;
+		return this;
 	};
 
 	/**
-	 *  @param {number} db volume in decibels 
-	 *  @param {Tone.Time=} fadeTime time it takes to reach the value
+	 *  Unmute the output. Will return the volume to it's value before 
+	 *  the output was muted. 
+	 *  @returns {Tone.Master} `this`
 	 */
-	Tone.Master.prototype.setVolume = function(db, fadeTime){
-		var now = this.now();
-		var gain = this.dbToGain(db);
-		if (fadeTime){
-			var currentVolume = this.output.gain.value;
-			this.output.gain.cancelScheduledValues(now);
-			this.output.gain.setValueAtTime(currentVolume, now);
-			this.output.gain.linearRampToValueAtTime(gain, now + this.toSeconds(fadeTime));
-		} else {
-			this.output.gain.setValueAtTime(gain, now);
-		}
+	Tone.Master.prototype.mute = function(){
+		this.volume.value = this._unmutedVolume;
+		return this;
+	};
+
+	/**
+	 *  route the master signal to the node's input. 
+	 *  NOTE: this will disconnect the previously connected node
+	 *  @param {AudioNode|Tone} node the node to use as the entry
+	 *                               point to the master chain
+	 *  @returns {Tone.Master} `this`
+	 */
+	Tone.Master.prototype.send = function(node){
+		//disconnect the previous node
+		this.input.disconnect();
+		this.input.connect(node);
+		return this;
+	};
+
+	/**
+	 *  the master effects chain return point
+	 *  @param {AudioNode|Tone} node the node to connect 
+	 *  @returns {Tone.Master} `this`
+	 */
+	Tone.Master.prototype.receive = function(node){
+		node.connect(this.output);
+		return this;
 	};
 
 	///////////////////////////////////////////////////////////////////////////
@@ -66,17 +89,21 @@ define(["Tone/core/Tone"], function(Tone){
 	/**
 	 *  connect 'this' to the master output
 	 *  defined in "Tone/core/Master"
+	 *  @returns {Tone} `this`
 	 */
 	Tone.prototype.toMaster = function(){
 		this.connect(Tone.Master);
+		return this;
 	};
 
 	/**
 	 *  Also augment AudioNode's prototype to include toMaster
 	 *  as a convenience
+	 *  @returns {AudioNode} `this`
 	 */
 	AudioNode.prototype.toMaster = function(){
 		this.connect(Tone.Master);
+		return this;
 	};
 
 	var MasterConstructor = Tone.Master;
@@ -89,6 +116,7 @@ define(["Tone/core/Tone"], function(Tone){
 		if (!Tone.prototype.isUndef(Tone.Master)){
 			Tone.Master = new MasterConstructor();
 		} else {
+			MasterConstructor.prototype.dispose.call(Tone.Master);
 			MasterConstructor.call(Tone.Master);
 		}
 	});

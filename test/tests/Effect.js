@@ -1,12 +1,12 @@
 /* global it, describe */
 
-define(["tests/Core", "chai", "Tone/component/Recorder", "Tone/core/Master", "Tone/effect/Effect", "Tone/component/DryWet",
+define(["tests/Core", "chai", "Recorder", "Tone/core/Master", "Tone/effect/Effect", "Tone/component/CrossFade",
 	"Tone/effect/FeedbackEffect", "Tone/signal/Signal", "Tone/effect/AutoPanner", "Tone/effect/AutoWah", "Tone/effect/BitCrusher",
 	"Tone/effect/FeedbackDelay", "Tone/effect/PingPongDelay", "Tone/effect/Chorus", "tests/Common", "Tone/effect/Freeverb", 
 	"Tone/effect/JCReverb", "Tone/effect/StereoEffect", "Tone/effect/StereoFeedbackEffect", 
 	"Tone/effect/StereoXFeedbackEffect", "Tone/effect/Phaser", "Tone/effect/Distortion", "Tone/effect/Chebyshev", 
 	"Tone/effect/Convolver", "Tone/effect/MidSideEffect", "Tone/effect/StereoWidener"], 
-function(Tone, chai, Recorder, Master, Effect, DryWet, FeedbackEffect, Signal, AutoPanner, AutoWah, BitCrusher, 
+function(Tone, chai, Recorder, Master, Effect, CrossFade, FeedbackEffect, Signal, AutoPanner, AutoWah, BitCrusher, 
 	FeedbackDelay, PingPongDelay, Chorus, Test, Freeverb, JCReverb, StereoEffect, StereoFeedbackEffect, 
 	StereoXFeedbackEffect, Phaser, Distortion, Chebyshev, Convolver, MidSide, StereoWidener){
 
@@ -24,6 +24,13 @@ function(Tone, chai, Recorder, Master, Effect, DryWet, FeedbackEffect, Signal, A
 			Test.wasDisposed(e);
 		});
 
+		it("can by bypassed", function(){
+			var e = new Effect();
+			e.bypass();
+			expect(e.wet.value).to.equal(0);
+			e.dispose();
+		});
+
 		it("handles input and output connections", function(){
 			Test.onlineContext();
 			var e = new Effect();
@@ -35,7 +42,7 @@ function(Tone, chai, Recorder, Master, Effect, DryWet, FeedbackEffect, Signal, A
 			var effect;
 			Test.passesAudio(function(input, output){
 				effect = new Effect({
-					"dry" : 0.5
+					"wet" : 0.5
 				});
 				input.connect(effect);
 				effect.connect(output);
@@ -47,14 +54,14 @@ function(Tone, chai, Recorder, Master, Effect, DryWet, FeedbackEffect, Signal, A
 
 		it("has a dry/wet control", function(){
 			var e = new Effect();
-			expect(e.dryWet).is.instanceof(DryWet);
+			expect(e.wet).is.instanceof(Signal);
 			e.dispose();
 		});
 
 		it("can be set with options object", function(){
 			var e = new Effect();
 			e.set({"wet" : 0.22});
-			expect(e.dryWet.wetness.getValue()).is.closeTo(0.22, 0.01);
+			expect(e.wet.value).is.closeTo(0.22, 0.01);
 			e.dispose();
 		});
 	});
@@ -84,7 +91,7 @@ function(Tone, chai, Recorder, Master, Effect, DryWet, FeedbackEffect, Signal, A
 			var effect;
 			Test.passesAudio(function(input, output){
 				effect = new StereoEffect({
-					"dry" : 0.5
+					"wet" : 0.5
 				});
 				input.connect(effect);
 				effect.connect(output);
@@ -120,7 +127,7 @@ function(Tone, chai, Recorder, Master, Effect, DryWet, FeedbackEffect, Signal, A
 			var effect;
 			Test.passesAudio(function(input, output){
 				effect = new StereoFeedbackEffect({
-					"dry" : 0.5
+					"wet" : 0.5
 				});
 				input.connect(effect);
 				effect.connect(output);
@@ -128,6 +135,17 @@ function(Tone, chai, Recorder, Master, Effect, DryWet, FeedbackEffect, Signal, A
 				effect.dispose();
 				done();
 			});
+		});
+
+		it("can be set with options object", function(){
+			var e = new StereoFeedbackEffect();
+			var values = {
+				"feedback" : 0.22
+			};
+			e.set(values);
+			expect(e.get()).to.contain.keys(Object.keys(values));
+			expect(e.feedback.value).is.closeTo(values.feedback, 0.05);
+			e.dispose();
 		});
 	});
 
@@ -156,7 +174,7 @@ function(Tone, chai, Recorder, Master, Effect, DryWet, FeedbackEffect, Signal, A
 			var effect;
 			Test.passesAudio(function(input, output){
 				effect = new StereoXFeedbackEffect({
-					"dry" : 0.5
+					"wet" : 0.5
 				});
 				input.connect(effect);
 				effect.connect(output);
@@ -177,7 +195,7 @@ function(Tone, chai, Recorder, Master, Effect, DryWet, FeedbackEffect, Signal, A
 
 		it("has a dry/wet control", function(){
 			var e = new FeedbackEffect();
-			expect(e.dryWet).is.instanceof(DryWet);
+			expect(e.wet).is.instanceof(Signal);
 			e.dispose();
 		});
 
@@ -190,7 +208,7 @@ function(Tone, chai, Recorder, Master, Effect, DryWet, FeedbackEffect, Signal, A
 		it("can be set with options object", function(){
 			var e = new FeedbackEffect();
 			e.set({"feedback" : 0.22});
-			expect(e.feedback.getValue()).is.closeTo(0.22, 0.01);
+			expect(e.feedback.value).is.closeTo(0.22, 0.01);
 			e.dispose();
 		});
 
@@ -205,7 +223,7 @@ function(Tone, chai, Recorder, Master, Effect, DryWet, FeedbackEffect, Signal, A
 			var effect;
 			Test.passesAudio(function(input, output){
 				effect = new FeedbackEffect({
-					"dry" : 0.5
+					"wet" : 0.5
 				});
 				input.connect(effect);
 				effect.connect(output);
@@ -252,7 +270,7 @@ function(Tone, chai, Recorder, Master, Effect, DryWet, FeedbackEffect, Signal, A
 		it("can be set with options object", function(){
 			var ap = new AutoPanner();
 			ap.set({"wet" : 0.22});
-			expect(ap.dryWet.wetness.getValue()).is.closeTo(0.22, 0.01);
+			expect(ap.wet.value).is.closeTo(0.22, 0.01);
 			ap.dispose();
 		});
 	});
@@ -289,6 +307,29 @@ function(Tone, chai, Recorder, Master, Effect, DryWet, FeedbackEffect, Signal, A
 				done();
 			});
 		});
+
+		it("handles getter/setter", function(){
+			Test.onlineContext();
+			var wah = new AutoWah();
+			var values = {
+				"baseFrequency" : 200,
+				"octaves" : 4,
+				"sensitivity" : 1,
+				"Q" : 3,
+				"gain" : 0,
+				"follower" : {
+					"attack" : 0.4,
+					"release" : 0.6
+				}
+			};
+			wah.set(values);
+			expect(wah.get()).to.contain.keys(Object.keys(values));
+			expect(wah.baseFrequency).to.equal(values.baseFrequency);
+			expect(wah.octaves).to.equal(values.octaves);
+			expect(wah.Q.value).to.be.closeTo(values.Q, 0.05);
+			expect(wah.gain.value).to.be.closeTo(values.gain, 0.05);
+			wah.dispose();
+		});
 	});
 
 	describe("Tone.BitCrusher", function(){
@@ -323,6 +364,7 @@ function(Tone, chai, Recorder, Master, Effect, DryWet, FeedbackEffect, Signal, A
 				done();
 			});
 		});
+
 	});
 
 	describe("Tone.FeedbackDelay", function(){
@@ -356,6 +398,17 @@ function(Tone, chai, Recorder, Master, Effect, DryWet, FeedbackEffect, Signal, A
 				delay.dispose();
 				done();
 			});
+		});
+
+		it("can be created and disposed", function(){
+			var fd = new FeedbackDelay();
+			var values = {
+				"delayTime" : 0.5
+			};
+			fd.set(values);
+			expect(fd.get()).to.contain.keys(Object.keys(values));
+			expect(fd.delayTime.value).to.be.closeTo(values.delayTime, 0.05);
+			fd.dispose();
 		});
 	});
 
@@ -391,6 +444,17 @@ function(Tone, chai, Recorder, Master, Effect, DryWet, FeedbackEffect, Signal, A
 				done();
 			});
 		});
+
+		it("handles getter/setters", function(){
+			var ppd = new PingPongDelay();
+			var values = {
+				"delayTime" : 0.5
+			};
+			ppd.set(values);
+			expect(ppd.get()).to.contain.keys(Object.keys(values));
+			expect(ppd.delayTime.value).to.be.closeTo(values.delayTime, 0.05);
+			ppd.dispose();
+		});
 	});
 
 	describe("Tone.Chorus", function(){
@@ -424,6 +488,25 @@ function(Tone, chai, Recorder, Master, Effect, DryWet, FeedbackEffect, Signal, A
 				chorus.dispose();
 				done();
 			});
+		});
+
+		it("has getter/setters", function(){
+			var chorus = new Chorus();
+			var values = {
+				"frequency" : 1.5, 
+				"delayTime" : 3.5,
+				"depth" : 0.7,
+				"feedback" : 0.1,
+				"type" : "sine"
+			};
+			chorus.set(values);
+			expect(chorus.get()).to.contain.keys(Object.keys(values));
+			expect(chorus.frequency.value).to.be.closeTo(values.frequency, 0.05);
+			expect(chorus.delayTime).to.equal(values.delayTime);
+			expect(chorus.depth).to.equal(values.depth);
+			expect(chorus.feedback.value).to.be.closeTo(values.feedback, 0.05);
+			expect(chorus.type).to.equal(values.type);
+			chorus.dispose();
 		});
 	});
 
@@ -459,6 +542,20 @@ function(Tone, chai, Recorder, Master, Effect, DryWet, FeedbackEffect, Signal, A
 				done();
 			});
 		});
+
+		it("can get/set values as an object", function(){
+			var phaser = new Phaser();
+			var values = {
+				"frequency" : 0.5,
+				"depth" : 10,
+				"baseFrequency" : 400,
+			};
+			phaser.set(values);
+			expect(phaser.get()).to.contain.keys(Object.keys(values));
+			expect(phaser.frequency.value).to.be.closeTo(values.frequency, 0.05);
+			expect(phaser.depth).to.be.closeTo(values.depth, 0.05);
+			phaser.dispose();
+		});
 	});
 
 	describe("Tone.Freeverb", function(){
@@ -492,6 +589,19 @@ function(Tone, chai, Recorder, Master, Effect, DryWet, FeedbackEffect, Signal, A
 				done();
 			});
 		});
+
+		it("can get/set values as an object", function(){
+			var fv = new Freeverb();
+			var values = {
+				"roomSize" : 0.6, 
+				"dampening" : 0.4
+			};
+			fv.set(values);
+			expect(fv.get()).to.contain.keys(Object.keys(values));
+			expect(fv.roomSize.value).to.be.closeTo(values.roomSize, 0.05);
+			expect(fv.dampening.value).to.be.closeTo(values.dampening, 0.05);
+			fv.dispose();
+		});
 	});
 
 	describe("Tone.JCReverb", function(){
@@ -511,6 +621,17 @@ function(Tone, chai, Recorder, Master, Effect, DryWet, FeedbackEffect, Signal, A
 			Test.onlineContext();
 			var rev = new JCReverb();
 			Test.acceptsInputAndOutput(rev);
+			rev.dispose();
+		});
+
+		it("can get/set values as an object", function(){
+			var rev = new JCReverb();
+			var values = {
+				"roomSize" : 0.6, 
+			};
+			rev.set(values);
+			expect(rev.get()).to.contain.keys(Object.keys(values));
+			expect(rev.roomSize.value).to.be.closeTo(values.roomSize, 0.05);
 			rev.dispose();
 		});
 
@@ -558,6 +679,19 @@ function(Tone, chai, Recorder, Master, Effect, DryWet, FeedbackEffect, Signal, A
 				done();
 			});
 		});
+
+		it("has getter/setters", function(){
+			var dist = new Distortion();
+			var values = {
+				"distortion" : 0.5,
+				"oversample" : "2x"
+			};
+			dist.set(values);
+			expect(dist.get()).to.contain.keys(Object.keys(values));
+			expect(dist.oversample).to.equal(values.oversample);
+			expect(dist.distortion).to.equal(values.distortion);
+			dist.dispose();
+		});
 	});
 
 	describe("Tone.Chebyshev", function(){
@@ -590,6 +724,19 @@ function(Tone, chai, Recorder, Master, Effect, DryWet, FeedbackEffect, Signal, A
 				cheb.dispose();
 				done();
 			});
+		});
+
+		it("handles getter/setters", function(){
+			var cheb = new Chebyshev();
+			var values = {
+				"order" : 2,
+				"oversample" : "2x"
+			};
+			cheb.set(values);
+			expect(cheb.get()).to.contain.keys(Object.keys(values));
+			expect(cheb.order).to.equal(values.order);
+			expect(cheb.oversample).to.equal(values.oversample);
+			cheb.dispose();
 		});
 	});
 
@@ -677,6 +824,17 @@ function(Tone, chai, Recorder, Master, Effect, DryWet, FeedbackEffect, Signal, A
 				widen.dispose();
 				done();
 			});
+		});
+
+		it("handles getter/setters", function(){
+			var widen = new StereoWidener();
+			var values = {
+				"width" : 0.75,
+			};
+			widen.set(values);
+			expect(widen.get()).to.contain.keys(Object.keys(values));
+			expect(widen.width.value).to.equal(values.width);
+			widen.dispose();
 		});
 	});
 });

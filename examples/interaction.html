@@ -6,156 +6,140 @@
 
 	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
 
-	<script type="text/javascript" src="./deps/jquery.min.js"></script>
-	<script type="text/javascript" src="./deps/interface.js"></script>
-	<script type="text/javascript" src="./deps/jquery-ui.js"></script>
-	<script type="text/javascript" src="./deps/jquery.ui.touch-punch.js"></script>
 	<script type="text/javascript" src="../build/Tone.js"></script>
-	<script type="text/javascript" src="./Widgets.js"></script>
-	<script type="text/javascript" src="./ExampleList.js"></script>
-	<link rel="stylesheet" type="text/css" href="./style/widgets.css">
-	<link rel="stylesheet" type="text/css" href="./style/jquery-ui.css">
+	<script type="text/javascript" src="../build/Tone.Preset.js"></script>
+	<script type="text/javascript" src="./deps/jquery.min.js"></script>
+	<script type="text/javascript" src="./deps/qwerty-hancock.js"></script>
+	<script type="text/javascript" src="./deps/nexusUI.js"></script>
+	<script type="text/javascript" src="./deps/prism.js"></script>
+	<script type="text/javascript" src="./scripts/Interface.js"></script>
+
+	<link rel="stylesheet" type="text/css" href="./style/examples.css">
+	<link rel="stylesheet" type="text/css" href="./style/prism.css">
+
+	<script type="text/javascript">
+		// jshint ignore: start
+	</script>
 
 </head>
 <body>
+	<style type="text/css">
+		[nx="joints"] {
+			width: 100%;
+			height: 300px;
+		}
+	</style>
 		
+	<div id="Explanation">
+		Making it interactive
+		<br>
+		<br>
+		The big dots proximity to each of the smaller dots controls the amount of an effect.
+	</div>
+	<div id="Content">
+		<div id="LoadingBar"></div>
+		<div id="Rack">
+			<canvas nx="joints"></canvas>
+		</div>
+		<div id="Code"></div>
+	</div>
 	<div id="Container">
-		<div id="Explanation">
-			Making it interactive
-			<br>
-			<br>
-			Each of the dots' positions controls two parameters of an effects. <br>
-			<span id="red">Lowpass Filter</span>: x = frequency, y = Q <br>
-			<span id="green">Filter LFO</span>: x = rate, y = depth<br>
-			<span id="blue">Distortion</span>: x = amount, y = mix<br>
-		</div>
-		<div id="Content">
-			<div id="Loading">LOADING...</div>
-			<div id="XY"></div>
-		</div>
 	</div>
 
 
-	<script type="text/javascript">
-		/* globals Tone, GUI, Interface */
-
-		var player = new Tone.Player("./audio/FWDL.mp3", function(){
-			$("#Loading").remove();
-			startButton.enable();
-		});
+	<script id="ToneCode" type="text/javascript">
+		//the sound source
+		var player = new Tone.Player("./audio/FWDL.mp3");
 		player.loop = true;
 
-		//bit crusher
+		//distortion effect
 		var crusher = new Tone.Distortion(0.7);
-		player.connect(crusher);	
 
 		//a lowpass filter
-		var lowpass = new Tone.Filter(600, "lowpass");
-		crusher.connect(lowpass);
-
-		//filter lfo
-		var filterLFO = new Tone.LFO(5, -1200, 1200);
-		filterLFO.connect(lowpass.detune);
-
-		lowpass.toMaster();
-
-		// GUI //
-
-		var xy;
-
-		$(function(){
-
-			new GUI.TopBar(Tone);
-
-			var panel = new Interface.Panel({ 
-			  container:$("#XY")
-			});
-			xy = new Interface.XY({
-				childWidth: 25,
-				usePhysics : false,
-				numChildren: 3,
-				background:"#FFF",
-				fill: "rgba(127,127,127,.2)",
-				bounds:[0,0,1,1],
-				oninit: function() { 
-					this.rainbow(); 
-				},  
-			});
-			xy.rainbow();
-			panel.background = "white";
-			panel.add(xy);
-			
-			//update the values
-			setInterval(function(){
-				var values = xy.values;
-				//lowpass
-				var lpassfreq = lowpass.interpolate(values[0].x, 500, 6000);
-				var lpassQ = lowpass.interpolate(values[0].y, 20, 0);
-				lowpass.setFrequency(lpassfreq);
-				lowpass.setQ(lpassQ);
-				//filter lfo
-				var filterFeq = filterLFO.interpolate(values[1].x, 0.5, 10);
-				var filterAmount = filterLFO.interpolate(values[1].y, 400, 1200);
-				filterLFO.setMin(-filterAmount);
-				filterLFO.setMax(filterAmount);
-				filterLFO.setFrequency(filterFeq);
-				//bit crusher
-				var crusherMix = crusher.interpolate(values[2].y, 0, 1);
-				var distortion = crusher.interpolate(values[2].x, 0.2, 1.5);
-				crusher.setDistortion(distortion);
-				crusher.setDry(crusherMix);
-			}, 100);
+		var lowpass = new Tone.Filter({
+			"type" : "lowpass",
+			"frequency" : 400,
+			"Q" : 3
 		});
 
-		var content = $("#Content");
+		//high pass filter
+		var highpass = new Tone.Filter({
+			"type" : "highpass",
+			"frequency" : 1200,
+			"Q" : 5
+		});
 
-		var startButton = new GUI.Checkbox(content, function(on){
-			if (on){
-				player.start();
-				filterLFO.start();
-			} else {
-				player.stop();
-				filterLFO.stop();
-			}
-		}, "start", "stop");
-		startButton.disable();
+		//a chorus effect
+		var chorus = new Tone.Chorus(3, 2);
 
-		// new GUI.ValueMeter(content, meter);
+		//reverb
+		var freeverb = new Tone.Freeverb(0.8, 0.05);
+
+		//delay
+		var feedbackDelay = new Tone.PingPongDelay("4n");
+
+		//widener
+		var widener = new Tone.StereoWidener(1);
+
+		//make a gain matrix
+		var volumes = {
+			"node0" : Tone.context.createGain().toMaster(),
+			"node1" : Tone.context.createGain().toMaster(),
+			"node2" : Tone.context.createGain().toMaster(),
+			"node3" : Tone.context.createGain().toMaster(),
+			"node4" : Tone.context.createGain().toMaster(),
+			"node5" : Tone.context.createGain().toMaster(),
+			"node6" : Tone.context.createGain().toMaster(),
+			"node7" : Tone.context.createGain().toMaster(),
+		}
+
+		player.connect(volumes.node0);
+		player.chain(crusher, volumes.node1);
+		player.chain(lowpass, volumes.node2);
+		player.chain(highpass, volumes.node3);
+		player.chain(chorus, volumes.node4);
+		player.chain(freeverb, volumes.node5);
+		player.chain(feedbackDelay, volumes.node6);
+		player.chain(widener, volumes.node7);
 
 	</script>
+	<script type="text/javascript">
 
-	<style type="text/css">
-		#Content {
-			text-align: left;
-			width: 320px;
-			height: auto;
-		}
-		#Content #XY{
-			border: 1px solid black;
-			width: 320px;
-			height: 320px;
-		}
-		#Content #XY canvas{
-			width: 100%;
-			height: 100%;
-		}
+		Interface.Loading("LoadingBar");
+		Interface.Rack("Rack", "Playing with effects");
+		Interface.Toggle("Rack", function(on){
+			if (on){
+				player.start();
+			} else {
+				player.stop();
+			}
+		});
 
-		.Checkbox {
-			margin-top: 10px;
-			width: 100%;
-		}
+		Interface.Code("Code", "ToneCode");
 
-		#red {
-			color: rgb(241, 85, 85);
+		nx.onload = function(){
+			var width = joints1.width;
+			var height = joints1.height;
+			joints1.nodeSize = 30
+			joints1.val.x = Math.random();
+			joints1.val.y = Math.random();
+			joints1.draw();
+
+			function setValues(data){
+				for (var n in volumes){
+					if (data.hasOwnProperty(n)){
+						volumes[n].gain.value = Math.pow(data[n], 2);
+					} else {
+						volumes[n].gain.value = 0;
+					}
+				}
+			}
+
+			setValues(joints1.val);
+			joints1.on("*", setValues);
+
 		}
-		#green {
-			color: rgb(10, 151, 10);
-		}
-		#blue {
-			color: rgb(63, 63, 255);
-		}
-		
-	</style>
+	</script>
 
 </body>
 </html>

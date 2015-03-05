@@ -7,31 +7,27 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
 	
 	<script type="text/javascript" src="./deps/jquery.min.js"></script>
-	<script type="text/javascript" src="./deps/jquery-ui.js"></script>
-	<script type="text/javascript" src="./deps/jquery.ui.touch-punch.js"></script>
-	<script type="text/javascript" src="../build/Tone.js"></script>
-	<script type="text/javascript" src="../build/Tone.Preset.js"></script>
-	<script type="text/javascript" src="./Widgets.js"></script>
-	<script type="text/javascript" src="./ExampleList.js"></script>
-	<link rel="stylesheet" type="text/css" href="./style/widgets.css">
-	<link rel="stylesheet" type="text/css" href="./style/jquery-ui.css">
-	<script type="text/javascript" src="./deps/qwerty-hancock.js"></script>
+	<script type="text/javascript" src="./scripts/ExampleList.js"></script>
+
+	<link rel="stylesheet" type="text/css" href="./style/examples.css">	
 
 </head>
 <body>
-	<div id="Container">
-		<div id='TopBar'>
-			<div id="HomePage">
-				<a href="https://github.com/TONEnoTONE/Tone.js">Tone.js</a>
-			</div>
+	<style type="text/css">
+	#Content {
+		width: 300px;
+		margin-bottom: 30px;
+	}
+	</style>
+	<div id="TopBar">
+		<div id="Homepage" title="github">
+			<a href="http://github.com/TONEnoTONE/Tone.js">Tone.js</a>
 		</div>
-		<div id="Explanation">
-			Examples
-		</div>
-		<div id="Content">
-			
+		<div id="Examples" title="examples">
+			<a href="./index.html">examples</a>
 		</div>
 	</div>
+	<div id="Content"></div>
 	<script type="text/javascript">
 
 		var content = $("#Content");

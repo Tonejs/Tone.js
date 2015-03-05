@@ -7,62 +7,60 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
 	
 	<script type="text/javascript" src="./deps/jquery.min.js"></script>
-	<script type="text/javascript" src="./deps/jquery-ui.js"></script>
-	<script type="text/javascript" src="./deps/jquery.ui.touch-punch.js"></script>
 	<script type="text/javascript" src="../build/Tone.js"></script>
-	<script type="text/javascript" src="./Widgets.js"></script>
-	<script type="text/javascript" src="./ExampleList.js"></script>
-	<link rel="stylesheet" type="text/css" href="./style/widgets.css">
-	<link rel="stylesheet" type="text/css" href="./style/jquery-ui.css">
+	<script type="text/javascript" src="./deps/nexusUI.js"></script>
+	<script type="text/javascript" src="./deps/prism.js"></script>
+	<script type="text/javascript" src="./scripts/Interface.js"></script>
 
+	<link rel="stylesheet" type="text/css" href="./style/examples.css">
+	<link rel="stylesheet" type="text/css" href="./style/prism.css">
+
+	<script type="text/javascript">
+		// jshint ignore: start
+	</script>
 </head>
 <body>
-	<div id="Container">
-		<div id="Explanation">
-			Ping Pong Delay
-			<br>
-			<br>
-			A Ping Pong Delay is a stereo feedback delay. The stereo effect is more easily heard with headphones. 
-		</div>
-		<div id="Content">
-			<div id="Loading">Loading...</div>
-		</div>
+	<style type="text/css">
+	[nx="button"]{
+		margin: auto;
+		position: relative;
+		display: block;
+	}
+	</style>
+	<div id="Explanation">
+		Ping Pong Delay
+		<br>
+		<br>
+		A Ping Pong Delay is a stereo feedback delay where the delay bounces back and forth between the left and right channels. Hit the button to trigger a snare sample into the effect. 
 	</div>
+	<div id="Content">
+		<div id="LoadingBar"></div>
+		<div id="Rack"></div>
+		<div id="Code"></div>
+	</div>
+	<script id="ToneCode" type="text/javascript">
+		//the feedback delay
+		var feedbackDelay = new Tone.PingPongDelay({
+			"delayTime" : "8n",
+			"feedback" : 0.6,
+			"wet" : 0.5
+		}).toMaster();
+
+		//play a snare sound through it
+		var player = new Tone.Player("./audio/505/snare.mp3")
+			.connect(feedbackDelay);
+	</script>
 	<script type="text/javascript">
-		/* globals Tone, GUI */
-
-		var player = new Tone.Player("./audio/505/snare.mp3", function(){
-			$("#Loading").remove();
-		});
-
-		var feedbackDelay = new Tone.PingPongDelay("8n");
-		//60% feedback
-		feedbackDelay.setFeedback(0.6);
-
-		//connections
-		player.connect(feedbackDelay);
-		feedbackDelay.toMaster();	
-		feedbackDelay.setWet(0.5);	
-
-		// GUI //
-
-		new GUI.TopBar(Tone);
-
-		new GUI.Momentary($("#Content"), function(on){
+		Interface.Loading("LoadingBar");
+		Interface.Rack("Rack", "PingPongDelay");
+		Interface.Momentary("Rack", function(on){
 			if (on){
 				player.start();
 			}
-		}, "hit", "hit");
-		
+		});
+		Interface.Slider("Rack", feedbackDelay, "feedback", 0, 0.95);
+		Interface.Slider("Rack", feedbackDelay, "delayTime", 0.1, 0.5);
+		Interface.Code("Code", "ToneCode");
 	</script>
-	<style type="text/css">
-		#Content {
-			width: 100px;
-			height: 50px;
-		}
-		.Momentary {
-			width: 100%;
-		}
-	</style>
 </body>
 </html>

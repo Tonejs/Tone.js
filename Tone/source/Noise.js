@@ -9,11 +9,13 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 	 *  @constructor
 	 *  @extends {Tone.Source}
 	 *  @param {string} type the noise type (white|pink|brown)
+	 *  @example
+	 *  var noise = new Tone.Noise("pink");
 	 */
 	Tone.Noise = function(){
 
-		Tone.Source.call(this);
 		var options = this.optionsObject(arguments, ["type"], Tone.Noise.defaults);
+		Tone.Source.call(this, options);
 
 		/**
 		 *  @private
@@ -29,20 +31,13 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 		this._buffer = null;
 
 		/**
-		 *  set a callback function to invoke when the sample is over
-		 *
-		 *  @type {function}
-		 */
-		this.onended = options.onended;
-
-		/**
 		 *  the playback rate for pitching the noise
 		 *  @private
 		 *  @type {number}
 		 */
 		this._playbackRate = 1;
 
-		this.setType(options.type);
+		this.type = options.type;
 	};
 
 	Tone.extend(Tone.Noise, Tone.Source);
@@ -56,84 +51,74 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 	 */
 	Tone.Noise.defaults = {
 		"type" : "white",
-		"onended" : function(){}
 	};
 
 	/**
-	 *  set the noise type
+	 * The type of the noise. Can be "white", "brown", or "pink". 
+	 * @memberOf Tone.Noise#
+	 * @type {string}
+	 * @name type
+	 * @example
+	 * noise.type = "white";
+	 */
+	Object.defineProperty(Tone.Noise.prototype, "type", {
+		get : function(){
+			if (this._buffer === _whiteNoise){
+				return "white";
+			} else if (this._buffer === _brownNoise){
+				return "brown";
+			} else if (this._buffer === _pinkNoise){
+				return "pink";
+			}
+		}, 
+		set : function(type){
+			if (this.type !== type){
+				switch (type){
+					case "white" : 
+						this._buffer = _whiteNoise;
+						break;
+					case "pink" : 
+						this._buffer = _pinkNoise;
+						break;
+					case "brown" : 
+						this._buffer = _brownNoise;
+						break;
+					default : 
+						this._buffer = _whiteNoise;
+				}
+				//if it's playing, stop and restart it
+				if (this.state === Tone.Source.State.STARTED){
+					var now = this.now() + this.bufferTime;
+					//remove the listener
+					this._source.onended = undefined;
+					this._stop(now);
+					this._start(now);
+				}
+			}
+		}
+	});
+
+	/**
+	 * The playback speed. 1 is normal speed.
+	 * Note that this is not a Tone.Signal because of a bug in Blink.
+	 * Please star this issue if this an important thing to you:
+	 * https://code.google.com/p/chromium/issues/detail?id=311284
 	 *
-	 *  @param {string} type the noise type (white|pink|brown)
-	 *  @param {Tone.Time} time (optional) time that the set will occur
+	 * @memberOf Tone.Noise#
+	 * @type {number}
+	 * @name playbackRate
 	 */
-	Tone.Noise.prototype.setType = function(type, time){
-		switch (type){
-			case "white" :
-				this._buffer = _whiteNoise;
-				break;
-			case "pink" :
-				this._buffer = _pinkNoise;
-				break;
-			case "brown" :
-				this._buffer = _brownNoise;
-				break;
-			default :
-				this._buffer = _whiteNoise;
+	Object.defineProperty(Tone.Player.prototype, "playbackRate", {
+		get : function(){
+			return this._playbackRate;
+		},
+		set : function(rate){
+			this._playbackRate = rate;
+			if (this._source) {
+				this._source.playbackRate.value = rate;
+			}
 		}
-		//if it's playing, stop and restart it
-		if (this.state === Tone.Source.State.STARTED){
-			time = this.toSeconds(time);
-			//remove the listener
-			this._source.onended = undefined;
-			this._stop(time);
-			this._start(time);
-		}
-	};
-
-	/**
-	 *  get the type of noise
-	 *  @return {string} the type of noise
-	 */
-	Tone.Noise.prototype.getType = function(){
-		if (this._buffer === _whiteNoise){
-			return "white";
-		} else if (this._buffer === _brownNoise){
-			return "brown";
-		} else if (this._buffer === _pinkNoise){
-			return "pink";
-		}
-	};
-
-	/**
-	 *  set the rate at which the noise buffer plays
-	 *
-	 *  @param {number} rate
-	 *  @param {Tone.Time=} rampTime the amount of time it takes to
-	 *                               reach the rate
-	 */
-	Tone.Noise.prototype.setPlaybackRate = function(rate, rampTime){
-		this._playbackRate = rate;
-		if (this._source) {
-			this._source.playbackRate.exponentialRampToValueAtTime(rate, this.toSeconds(rampTime));
-		}
-	};
-
-	/**
-	 * @return {number} the current playback rate
-	 */
-	Tone.Noise.prototype.getPlaybackRate = function(){
-		return this._playbackRate;
-	};
-
-	/**
-	 *  set the parameters at once
-	 *  @param {Object} params
-	 */
-	Tone.Noise.prototype.set = function(params){
-		if (!this.isUndef(params.playbackRate)) this.setPlaybackRate(params.playbackRate);
-		if (!this.isUndef(params.type)) this.setType(params.type);
-		if (!this.isUndef(params.onended)) this.onended = params.onended;
-		Tone.Source.prototype.set.call(this, params);
-	};
+	});
 
 	/**
 	 *  internal start method
@@ -152,45 +137,20 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 	};
 
 	/**
-	 *  start the noise at a specific time
-	 *
-	 *  @param {Tone.Time} time
-	 */
-	Tone.Noise.prototype.start = function(time){
-		if (this.state === Tone.Source.State.STOPPED){
-			this.state = Tone.Source.State.STARTED;
-			//make the source
-			this._start(time);
-		}
-	};
-
-	/**
 	 *  internal stop method
 	 *
 	 *  @param {Tone.Time} time
 	 *  @private
 	 */
 	Tone.Noise.prototype._stop = function(time){
-		this._source.stop(this.toSeconds(time));
-	};
-
-
-	/**
-	 *  stop the noise at a specific time
-	 *
-	 *  @param {Tone.Time} timetest
-	 */
-	Tone.Noise.prototype.stop = function(time){
-		if (this.state === Tone.Source.State.STARTED) {
-			if (this._buffer && this._source){
-				this.state = Tone.Source.State.STOPPED;
-				this._stop(time);
-			}
+		if (this._source){
+			this._source.stop(this.toSeconds(time));
 		}
 	};
 
 	/**
 	 *  dispose all the components
+	 *  @returns {Tone.Noise} `this`
 	 */
 	Tone.Noise.prototype.dispose = function(){
 		Tone.Source.prototype.dispose.call(this);
@@ -199,6 +159,7 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 			this._source = null;
 		}
 		this._buffer = null;
+		return this;
 	};
 
 

@@ -4,21 +4,10 @@ function(Tone){
 	"use strict";
 
 	/**
-	 *  @class Aggregates multiple Tone.Samplers into a single instrument.
-	 *         Pass in a mapping of names to sample urls and an optional 
-	 *         callback to invoke when all of the samples are loaded. 
-	 *
-	 *  ```javascript
-	 *  var sampler = new Tone.MultiSampler({
-	 *  	"kick" : "../audio/BD.mp3",
-	 *  	"snare" : "../audio/SD.mp3",
-	 *  	"hat" : "../audio/hh.mp3"
-	 *  }, onload);
-	 *  //once loaded...
-	 *  sampler.triggerAttack("kick");
-	 *  ```
+	 *  @class Deprecated.
 	 *
 	 *  @constructor
+	 *  @deprecated Use Tone.PolySynth with Tone.Sampler as the voice.
 	 *  @extends {Tone.Instrument}
 	 *  @param {Object} samples the samples used in this
 	 *  @param {function} onload the callback to invoke when all 
@@ -26,6 +15,7 @@ function(Tone){
 	 */
 	Tone.MultiSampler = function(samples, onload){
 
+		console.warn("Tone.MultiSampler is deprecated - use Tone.PolySynth with Tone.Sampler as the voice");
 	 	Tone.Instrument.call(this);
 
 	 	/**
@@ -127,12 +117,6 @@ function(Tone){
 			this.samples[samp].set(params);
 		}
 	};
-
-	/**
-	 *  set volume method borrowed form {@link Tone.Source}
-	 *  @function
-	 */
-	Tone.MultiSampler.prototype.setVolume = Tone.Source.prototype.setVolume;
 
 	/**
 	 *  clean up

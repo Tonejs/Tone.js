@@ -2,7 +2,7 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Subtract", "Tone/signa
 	"Tone/signal/IfThenElse", "Tone/signal/OR", "Tone/signal/AND", "Tone/signal/NOT", 
 	"Tone/signal/GreaterThan", "Tone/signal/LessThan", "Tone/signal/Equal", "Tone/signal/EqualZero", 
 	"Tone/signal/GreaterThanZero", "Tone/signal/Abs", "Tone/signal/Negate", "Tone/signal/Max", 
-	"Tone/signal/Min", "Tone/signal/Modulo", "Tone/signal/Inverse", "Tone/signal/Divide", "Tone/signal/Pow"], 
+	"Tone/signal/Min", "Tone/signal/Modulo", "Tone/signal/Pow"], 
 	function(Tone){
 
 	"use strict";
@@ -15,6 +15,9 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Subtract", "Tone/signa
 	 *  @extends {Tone.SignalBase}
 	 *  @constructor
 	 *  @param {string} expr the expression to generate
+	 *  @example
+	 *  //adds the signals from input 0 and input 1.
+	 *  var expr = new Tone.Expr("$0 + $1");
 	 */
 	Tone.Expr = function(){
 
@@ -29,7 +32,7 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Subtract", "Tone/signa
 		this._nodes = [];
 
 		/**
-		 *  the inputs
+		 *  The inputs. The length is determined by the expression. 
 		 *  @type {Array}
 		 */
 		this.input = new Array(inputCount);
@@ -51,8 +54,8 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Subtract", "Tone/signa
 		}
 
 		/**
-		 *  the output node is the result of the expression
-		 *  @type {*}
+		 *  The output node is the result of the expression
+		 *  @type {Tone}
 		 */
 		this.output = result;
 	};
@@ -148,21 +151,11 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Subtract", "Tone/signa
 				regexp : /^eq0/,
 				method : applyUnary.bind(this, Tone.EqualZero)
 			},
-			"inv" : {
-				regexp : /^inv/,
-				method : function(args, self){
-					var precision = literalNumber(args[1]);
-					var op = new Tone.Inverse(precision);
-					self._eval(args[0]).connect(op);
-					return op;
-				}
-			},
 			"mod" : {
 				regexp : /^mod/,
 				method : function(args, self){
 					var modulus = literalNumber(args[1]);
-					var bits = literalNumber(args[2]);
-					var op = new Tone.Modulo(modulus, bits);
+					var op = new Tone.Modulo(modulus);
 					self._eval(args[0]).connect(op);
 					return op;
 				}
@@ -200,11 +193,6 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Subtract", "Tone/signa
 				regexp : /^\*/,
 				precedence : 0,
 				method : applyBinary.bind(this, Tone.Multiply)
-			},
-			"/" : {
-				regexp : /^\//,
-				precedence : 0,
-				method : applyBinary.bind(this, Tone.Divide)
 			},
 			">" : {
 				regexp : /^\>/,
@@ -491,9 +479,9 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Subtract", "Tone/signa
 	Tone.Expr.prototype._disposeNodes = function(){
 		for (var i = 0; i < this._nodes.length; i++){
 			var node = this._nodes[i];
-			if (typeof node.dispose === "function") {
+			if (this.isFunction(node.dispose)) {
 				node.dispose();
-			} else if (typeof node.disconnect === "function") {
+			} else if (this.isFunction(node.disconnect)) {
 				node.disconnect();
 			}
 			node = null;

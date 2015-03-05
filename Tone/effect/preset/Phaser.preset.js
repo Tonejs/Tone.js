@@ -7,19 +7,19 @@ define(["Tone/core/Tone", "Tone/effect/Phaser"], function(Tone){
 	 *  @type {Object}
 	 */
 	Tone.Phaser.prototype.preset = {
-		"testing" : {
+		"Testing" : {
 			"rate" : 10,
 			"depth" : 0.2,
 			"Q" : 2,
 			"baseFrequency" : 700,
 		},
-		"landing" : {
+		"Landing" : {
 			"rate" : 4,
 			"depth" : 1.2,
 			"Q" : 20,
 			"baseFrequency" : 800,
 		},
-		"bubbles" : {
+		"Bubbles" : {
 			"rate" : 0.5,
 			"depth" : 5,
 			"Q" : 8,

@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/component/MultibandSplit"], function(Tone){
+define(["Tone/core/Tone", "Tone/component/MultibandSplit", "Tone/signal/Signal"], function(Tone){
 
 	"use strict";
 
@@ -12,6 +12,8 @@ define(["Tone/core/Tone", "Tone/component/MultibandSplit"], function(Tone){
 	 *  @param {number|object} [lowLevel=0] the gain applied to the lows (in db)
 	 *  @param {number} [midLevel=0] the gain applied to the mid (in db)
 	 *  @param {number} [highLevel=0] the gain applied to the high (in db)
+	 *  @example
+	 *  var eq = new Tone.EQ(-10, 3, -20);
 	 */
 	Tone.EQ = function(){
 
@@ -20,6 +22,7 @@ define(["Tone/core/Tone", "Tone/component/MultibandSplit"], function(Tone){
 		/**
 		 *  the output node
 		 *  @type {GainNode}
+		 *  @private
 		 */
 		this.output = this.context.createGain();
 
@@ -28,33 +31,49 @@ define(["Tone/core/Tone", "Tone/component/MultibandSplit"], function(Tone){
 		 *  @type {Tone.MultibandSplit}
 		 *  @private
 		 */
-		this._multibandSplit = new Tone.MultibandSplit({
+		this._multibandSplit = this.input = new Tone.MultibandSplit({
 			"lowFrequency" : options.lowFrequency,
 			"highFrequency" : options.highFrequency
 		});
 
 		/**
-		 *  input node
-		 */
-		this.input = this._multibandSplit;
-
-		/**
 		 *  the low gain
 		 *  @type {GainNode}
+		 *  @private
 		 */
-		this.lowGain = this.context.createGain();
+		this._lowGain = this.context.createGain();
 
 		/**
 		 *  the mid gain
 		 *  @type {GainNode}
+		 *  @private
 		 */
-		this.midGain = this.context.createGain();
+		this._midGain = this.context.createGain();
 
 		/**
 		 *  the high gain
 		 *  @type {GainNode}
+		 *  @private
 		 */
-		this.highGain = this.context.createGain();
+		this._highGain = this.context.createGain();
+
+		/**
+		 * The gain in decibels of the low part
+		 * @type {Tone.Signal}
+		 */
+		this.low = new Tone.Signal(this._lowGain.gain, Tone.Signal.Units.Decibels);
+
+		/**
+		 * The gain in decibels of the mid part
+		 * @type {Tone.Signal}
+		 */
+		this.mid = new Tone.Signal(this._midGain.gain, Tone.Signal.Units.Decibels);
+
+		/**
+		 * The gain in decibels of the high part
+		 * @type {Tone.Signal}
+		 */
+		this.high = new Tone.Signal(this._highGain.gain, Tone.Signal.Units.Decibels);
 
 		/**
 		 *  the low/mid crossover frequency
@@ -69,13 +88,13 @@ define(["Tone/core/Tone", "Tone/component/MultibandSplit"], function(Tone){
 		this.highFrequency = this._multibandSplit.highFrequency;
 
 		//the frequency bands
-		this._multibandSplit.low.chain(this.lowGain, this.output);
-		this._multibandSplit.mid.chain(this.midGain, this.output);
-		this._multibandSplit.high.chain(this.highGain, this.output);
+		this._multibandSplit.low.chain(this._lowGain, this.output);
+		this._multibandSplit.mid.chain(this._midGain, this.output);
+		this._multibandSplit.high.chain(this._highGain, this.output);
 		//set the gains
-		this.setLow(options.low);
-		this.setMid(options.mid);
-		this.setHigh(options.high);
+		this.high.value = options.low;
+		this.mid.value = options.mid;
+		this.low.value = options.high;
 	};
 
 	Tone.extend(Tone.EQ);
@@ -94,56 +113,28 @@ define(["Tone/core/Tone", "Tone/component/MultibandSplit"], function(Tone){
 	};
 
 	/**
-	 *  set the values in bulk
-	 *  @param {object} params the parameters
-	 */
-	Tone.EQ.prototype.set = function(params){
-		if (!this.isUndef(params.mid)) this.setMid(params.mid);
-		if (!this.isUndef(params.high)) this.setHigh(params.high);
-		if (!this.isUndef(params.low)) this.setLow(params.low);
-		if (!this.isUndef(params.lowFrequency)) this.lowFrequency.setValue(params.lowFrequency);
-		if (!this.isUndef(params.highFrequency)) this.highFrequency.setValue(params.highFrequency);
-	};
-
-	/**
-	 *  set the mid range
-	 *  @param {number} db the db of the mids
-	 */
-	Tone.EQ.prototype.setMid = function(db){
-		this.midGain.gain.value = this.dbToGain(db);
-	};
-
-	/**
-	 *  set the high range
-	 *  @param {number} db the db of the highs
-	 */
-	Tone.EQ.prototype.setHigh = function(db){
-		this.highGain.gain.value = this.dbToGain(db);
-	};
-
-	/**
-	 *  set the low range
-	 *  @param {number} db the db of the lows
-	 */
-	Tone.EQ.prototype.setLow = function(db){
-		this.lowGain.gain.value = this.dbToGain(db);
-	};
-
-	/**
 	 *  clean up
+	 *  @returns {Tone.EQ} `this`
 	 */
 	Tone.EQ.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
 		this._multibandSplit.dispose();
-		this.lowGain.disconnect();
-		this.midGain.disconnect();
-		this.highGain.disconnect();
 		this._multibandSplit = null;
 		this.lowFrequency = null;
 		this.highFrequency = null;
-		this.lowGain = null;
-		this.midGain = null;
-		this.highGain = null;
+		this._lowGain.disconnect();
+		this._lowGain = null;
+		this._midGain.disconnect();
+		this._midGain = null;
+		this._highGain.disconnect();
+		this._highGain = null;
+		this.low.dispose();
+		this.low = null;
+		this.mid.dispose();
+		this.mid = null;
+		this.high.dispose();
+		this.high = null;
+		return this;
 	};
 
 	return Tone.EQ;

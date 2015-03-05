@@ -6,11 +6,11 @@ define(["Tone/core/Tone", "Tone/effect/MidSideEffect", "Tone/signal/Signal",
 
 	/**
 	 *  @class Applies a width factor (0-1) to the mid/side seperation. 
-	 *         0 is all mid and 1 is all side. 
-	 *         http://musicdsp.org/showArchiveComment.php?ArchiveID=173
-	 *         http://www.kvraudio.com/forum/viewtopic.php?t=212587
-	 *         M *= 2*(1-width);
-	 *         S *= 2*width
+	 *         0 is all mid and 1 is all side. <br><br>
+	 *         http://musicdsp.org/showArchiveComment.php?ArchiveID=173<br><br>
+	 *         http://www.kvraudio.com/forum/viewtopic.php?t=212587<br><br>
+	 *         M *= 2*(1-width)<br><br>
+	 *         S *= 2*width<br><br>
 	 *
 	 *  @extends {Tone.MidSideEffect}
 	 *  @constructor
@@ -22,10 +22,10 @@ define(["Tone/core/Tone", "Tone/effect/MidSideEffect", "Tone/signal/Signal",
 		Tone.MidSideEffect.call(this, options);
 
 		/**
-		 *  the width control
+		 *  The width control. 0 = 100% mid. 1 = 100% side. 
 		 *  @type {Tone.Signal}
 		 */
-		this.width = new Tone.Signal(0.5);
+		this.width = new Tone.Signal(0.5, Tone.Signal.Units.Normal);
 
 		/**
 		 *  Mid multiplier
@@ -71,31 +71,8 @@ define(["Tone/core/Tone", "Tone/effect/MidSideEffect", "Tone/signal/Signal",
 	};
 
 	/**
-	 *  set the stereo width. 0 = 100% mid. 1 = 100% side. 
-	 *  @param {number} width
-	 */
-	Tone.StereoWidener.prototype.setWidth = function(width){
-		this.width.setValue(width);
-	};
-
-	/**
-	 * @return {number} the stereo width
-	 */
-	Tone.StereoWidener.prototype.getWidth = function(){
-		return this.width.getValue();
-	};
-
-	/**
-	 *  set the parameters with JSON
-	 *  @param {Object} params 
-	 */
-	Tone.StereoWidener.prototype.set = function(params){
-		if (!this.isUndef(params.width)) this.setWidth(params.width);
-		Tone.MidSideEffect.prototype.set.call(this, params);
-	};
-
-	/**
 	 *  clean up
+	 *  @returns {Tone.StereoWidener} `this`
 	 */
 	Tone.StereoWidener.prototype.dispose = function(){
 		Tone.MidSideEffect.prototype.dispose.call(this);
@@ -107,6 +84,7 @@ define(["Tone/core/Tone", "Tone/effect/MidSideEffect", "Tone/signal/Signal",
 		this._sideMult = null;
 		this._two.dispose();
 		this._two = null;
+		return this;
 	};
 
 	return Tone.StereoWidener;

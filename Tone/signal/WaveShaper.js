@@ -5,12 +5,6 @@ define(["Tone/core/Tone", "Tone/signal/SignalBase"], function(Tone){
 	/**
 	 *  @class Wraps the WaveShaperNode
 	 *
-	 *  ```javascript
-	 *  var timesTwo = new Tone.WaveShaper(function(val){
-	 *  	return val * 2;
-	 *  }, 2048);
-	 *  ```
-	 *
 	 *  @extends {Tone.SignalBase}
 	 *  @constructor
 	 *  @param {function(number, number)|Array|number} mapping the function used to define the values. 
@@ -20,6 +14,10 @@ define(["Tone/core/Tone", "Tone/signal/SignalBase"], function(Tone){
 	 *                                    If the argument is an array, that array will be
 	 *                                    set as the wave shapping function
 	 *  @param {number} [bufferLen=1024] the length of the WaveShaperNode buffer.
+	 *  @example
+	 *  var timesTwo = new Tone.WaveShaper(function(val){
+	 *  	return val * 2;
+	 *  }, 2048);
 	 */
 	Tone.WaveShaper = function(mapping, bufferLen){
 
@@ -38,10 +36,10 @@ define(["Tone/core/Tone", "Tone/signal/SignalBase"], function(Tone){
 		this._curve = null;
 
 		if (Array.isArray(mapping)){
-			this.setCurve(mapping);
+			this.curve = mapping;
 		} else if (isFinite(mapping) || this.isUndef(mapping)){
 			this._curve = new Float32Array(this.defaultArg(mapping, 1024));
-		} else if (typeof mapping === "function"){
+		} else if (this.isFunction(mapping)){
 			this._curve = new Float32Array(this.defaultArg(bufferLen, 1024));
 			this.setMap(mapping);
 		} 
@@ -55,37 +53,52 @@ define(["Tone/core/Tone", "Tone/signal/SignalBase"], function(Tone){
 	 *                                    The mapping function should take two arguments: 
 	 *                                    the first is the value at the current position 
 	 *                                    and the second is the array position
+	 *  @returns {Tone.WaveShaper} `this`
 	 */
 	Tone.WaveShaper.prototype.setMap = function(mapping){
 		for (var i = 0, len = this._curve.length; i < len; i++){
 			var normalized = (i / (len)) * 2 - 1;
-			var normOffOne = (i / (len - 1)) * 2 - 1;
-			this._curve[i] = mapping(normalized, i, normOffOne);
+			this._curve[i] = mapping(normalized, i);
 		}
 		this._shaper.curve = this._curve;
+		return this;
 	};
 
 	/**
-	 *  use an array to set the waveshaper curve
-	 *  @param {Array} mapping the array to use as the waveshaper
+	 * The array to set as the waveshaper curve
+	 * @memberOf Tone.WaveShaper#
+	 * @type {Array}
+	 * @name curve
 	 */
-	Tone.WaveShaper.prototype.setCurve = function(mapping){
-		//fixes safari WaveShaperNode bug
-		if (this._isSafari()){
-			var first = mapping[0];
-			mapping.unshift(first);	
+	Object.defineProperty(Tone.WaveShaper.prototype, "curve", {
+		get : function(){
+			return this._shaper.curve;
+		},
+		set : function(mapping){
+			//fixes safari WaveShaperNode bug
+			if (this._isSafari()){
+				var first = mapping[0];
+				mapping.unshift(first);	
+			}
+			this._curve = new Float32Array(mapping);
+			this._shaper.curve = this._curve;
 		}
-		this._curve = new Float32Array(mapping);
-		this._shaper.curve = this._curve;
-	};
+	});
 
 	/**
-	 *  set the oversampling
-	 *  @param {string} oversampling can either be "none", "2x" or "4x"
+	 * The oversampling. Can either be "none", "2x" or "4x"
+	 * @memberOf Tone.WaveShaper#
+	 * @type {string}
+	 * @name curve
 	 */
-	Tone.WaveShaper.prototype.setOversample = function(oversampling) {
-		this._shaper.oversample = oversampling;
-	};
+	Object.defineProperty(Tone.WaveShaper.prototype, "oversample", {
+		get : function(){
+			return this._shaper.oversample;
+		},
+		set : function(oversampling){
+			this._shaper.oversample = oversampling;
+		}
+	});
 
 	/**
 	 * @return {string} the current oversampling
@@ -106,12 +119,14 @@ define(["Tone/core/Tone", "Tone/signal/SignalBase"], function(Tone){
 
 	/**
 	 *  clean up
+	 *  @returns {Tone.WaveShaper} `this`
 	 */
 	Tone.WaveShaper.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
 		this._shaper.disconnect();
 		this._shaper = null;
 		this._curve = null;
+		return this;
 	};
 
 	return Tone.WaveShaper;

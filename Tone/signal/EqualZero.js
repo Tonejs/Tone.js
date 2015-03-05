@@ -8,6 +8,10 @@ function(Tone){
 	 *  
 	 *  @constructor
 	 *  @extends {Tone.SignalBase}
+	 *  @example
+	 *  var eq0 = new Tone.EqualZero();
+	 *  var sig = new Tone.Signal(0).connect(eq0);
+	 *  //the output of eq0 is 1. 
 	 */
 	Tone.EqualZero = function(){
 
@@ -45,6 +49,7 @@ function(Tone){
 
 	/**
 	 *  dispose method
+	 *  @returns {Tone.EqualZero} `this`
 	 */
 	Tone.EqualZero.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
@@ -54,6 +59,7 @@ function(Tone){
 		this._scale = null;
 		this._thresh.dispose();
 		this._thresh = null;
+		return this;
 	};
 
 	return Tone.EqualZero;

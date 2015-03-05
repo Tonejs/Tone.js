@@ -434,7 +434,7 @@ function(core, chai, Signal, Add, Multiply, Scale, Oscillator, Master, Abs, Nega
 				signal = new Signal(10);
 				max = new Max(-1);
 				signal.connect(max);
-				max.setMax(12);
+				max.value = 12;
 				max.connect(dest);
 			}, function(sample){
 				expect(sample).to.equal(12);
@@ -523,7 +523,7 @@ function(core, chai, Signal, Add, Multiply, Scale, Oscillator, Master, Abs, Nega
 				signal = new Signal(3);
 				min = new Min(-4);
 				signal.connect(min);
-				min.setMin(4);
+				min.value = 4;
 				min.connect(dest);
 			}, function(sample){
 				expect(sample).to.equal(3);
@@ -624,7 +624,7 @@ function(core, chai, Signal, Add, Multiply, Scale, Oscillator, Master, Abs, Nega
 		this.timeout(maxTimeout);
 
 		it("can be created and disposed", function(){
-			var mod = new Modulo(1);
+			var mod = new Modulo(0.1);
 			mod.dispose();
 			Test.wasDisposed(mod);
 		});
@@ -636,15 +636,15 @@ function(core, chai, Signal, Add, Multiply, Scale, Oscillator, Master, Abs, Nega
 			mod.dispose();
 		});
 
-		it("can evaluate modulus on integers", function(done){
+		it("can evaluate 0.45 % 0.3", function(done){
 			var signal, mod;
 			Test.offlineTest(0.2, function(dest){
-				signal = new Signal(4);
-				mod = new Modulo(3);
+				signal = new Signal(0.45);
+				mod = new Modulo(0.3);
 				signal.connect(mod);
 				mod.connect(dest);
 			}, function(sample){
-				expect(sample).to.equal(1);
+				expect(sample).to.be.closeTo(0.15, 0.0001);
 			}, function(){
 				signal.dispose();
 				mod.dispose();
@@ -652,11 +652,11 @@ function(core, chai, Signal, Add, Multiply, Scale, Oscillator, Master, Abs, Nega
 			});
 		});
 
-		it("can evaluate modulus on floats", function(done){
+		it("can evaluate 0.1 % 0.2", function(done){
 			var signal, mod;
 			Test.offlineTest(0.2, function(dest){
-				signal = new Signal(1.1);
-				mod = new Modulo(1);
+				signal = new Signal(0.1);
+				mod = new Modulo(0.2);
 				signal.connect(mod);
 				mod.connect(dest);
 			}, function(sample){
@@ -664,139 +664,6 @@ function(core, chai, Signal, Add, Multiply, Scale, Oscillator, Master, Abs, Nega
 			}, function(){
 				signal.dispose();
 				mod.dispose();
-				done();
-			});
-		});
-	});
-
-	describe("Tone.Inverse", function(){
-		this.timeout(maxTimeout);
-
-		it("can be created and disposed", function(){
-			var inv = new Inverse();
-			inv.dispose();
-			Test.wasDisposed(inv);
-		});
-
-		it("handles input and output connections", function(){
-			Test.onlineContext();
-			var inv = new Inverse();
-			Test.acceptsInputAndOutput(inv);
-			inv.dispose();
-		});
-
-		it("can evaluate the inverse of the incoming signal", function(done){
-			var signal, inv;
-			Test.offlineTest(0.2, function(dest){
-				signal = new Signal(4);
-				inv = new Inverse();
-				signal.connect(inv);
-				inv.connect(dest);
-			}, function(sample){
-				expect(sample).to.be.closeTo(1/4, 0.0001);
-			}, function(){
-				signal.dispose();
-				inv.dispose();
-				done();
-			});
-		});
-
-		it("can evaluate inverse large number", function(done){
-			var signal, inv;
-			Test.offlineTest(0.2, function(dest){
-				signal = new Signal(1000);
-				inv = new Inverse();
-				signal.connect(inv);
-				inv.connect(dest);
-			}, function(sample){
-				expect(sample).to.be.closeTo(1 / 1000, 0.0001);
-			}, function(){
-				signal.dispose();
-				inv.dispose();
-				done();
-			});
-		});
-
-		it("can evaluate inverse negative numbers", function(done){
-			var signal, inv;
-			Test.offlineTest(0.2, function(dest){
-				signal = new Signal(-20);
-				inv = new Inverse();
-				signal.connect(inv);
-				inv.connect(dest);
-			}, function(sample){
-				expect(sample).to.be.closeTo(-1/20, 0.0001);
-			}, function(){
-				signal.dispose();
-				inv.dispose();
-				done();
-			});
-		});
-
-		it("can evaluate inverse on numbers between 0-1", function(done){
-			var signal, inv;
-			Test.offlineTest(0.2, function(dest){
-				signal = new Signal(0.5);
-				inv = new Inverse(6);
-				signal.connect(inv);
-				inv.connect(dest);
-			}, function(sample){
-				expect(sample).to.be.closeTo(1/0.5, 0.001);
-			}, function(){
-				signal.dispose();
-				inv.dispose();
-				done();
-			});
-		});
-	});
-
-	describe("Tone.Divide", function(){
-		this.timeout(maxTimeout);
-
-		it("can be created and disposed", function(){
-			var div = new Divide();
-			div.dispose();
-			Test.wasDisposed(div);
-		});
-
-		it("handles input and output connections", function(){
-			Test.onlineContext();
-			var div = new Divide();
-			Test.acceptsInputAndOutput(div);
-			div.dispose();
-		});
-
-		it("can divide two number", function(done){
-			var signal, div;
-			Test.offlineTest(0.2, function(dest){
-				signal = new Signal(2);
-				div = new Divide(7);
-				signal.connect(div);
-				div.connect(dest);
-			}, function(sample){
-				expect(sample).to.be.closeTo(2/7, 0.001);
-			}, function(){
-				signal.dispose();
-				div.dispose();
-				done();
-			});
-		});
-
-		it("can divide two signals", function(done){
-			var signal0, signal1, div;
-			Test.offlineTest(0.2, function(dest){
-				signal0 = new Signal(2);
-				signal1 = new Signal(21);
-				div = new Divide();
-				signal0.connect(div, 0, 0);
-				signal1.connect(div, 0, 1);
-				div.connect(dest);
-			}, function(sample){
-				expect(sample).to.be.closeTo(2/21, 0.001);
-			}, function(){
-				signal0.dispose();
-				signal1.dispose();
-				div.dispose();
 				done();
 			});
 		});

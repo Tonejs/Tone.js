@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/effect/StereoXFeedbackEffect", "Tone/signal/Signal", "Tone/signal/Multiply"], 
+define(["Tone/core/Tone", "Tone/effect/StereoXFeedbackEffect", "Tone/signal/Signal"], 
 function(Tone){
 
 	"use strict";
@@ -10,10 +10,14 @@ function(Tone){
 	 * 	@constructor
 	 * 	@extends {Tone.StereoXFeedbackEffect}
 	 *  @param {Tone.Time|Object} [delayTime=0.25] is the interval between consecutive echos
+	 *  @param {number=} feedback The amount of the effected signal which 
+	 *                            is fed back through the delay.
+	 *  @example
+	 *  var pingPong = new Tone.PingPongDelay("4n", 0.2);
 	 */
 	Tone.PingPongDelay = function(){
 		
-		var options = this.optionsObject(arguments, ["delayTime"], Tone.PingPongDelay.defaults);
+		var options = this.optionsObject(arguments, ["delayTime", "feedback"], Tone.PingPongDelay.defaults);
 		Tone.StereoXFeedbackEffect.call(this, options);
 
 		/**
@@ -31,27 +35,25 @@ function(Tone){
 		this._rightDelay = this.context.createDelay(options.maxDelayTime);
 
 		/**
-		 *  the predelay on the left side
-		 *  @private
+		 *  the predelay on the right side
 		 *  @type {DelayNode}
+		 *  @private
 		 */
-		this._leftPreDelay = this.context.createDelay(options.maxDelayTime);
+		this._rightPreDelay = this.context.createDelay(options.maxDelayTime);
 
 		/**
 		 *  the delay time signal
 		 *  @type {Tone.Signal}
 		 */
-		this.delayTime = new Tone.Signal(0);
+		this.delayTime = new Tone.Signal(options.delayTime, Tone.Signal.Units.Time);
 
 		//connect it up
-		this.effectSendL.chain(this._leftPreDelay, this._leftDelay, this.effectReturnL);
-		this.effectSendR.chain(this._rightDelay, this.effectReturnR);
-		this.delayTime.fan(this._leftDelay.delayTime, this._rightDelay.delayTime, this._leftPreDelay.delayTime);
-		//rearranged the feedback to be after the leftPreDelay
-		this._feedbackRL.disconnect();
-		this._feedbackRL.connect(this._leftDelay);
-
-		this.setDelayTime(options.delayTime);
+		this.effectSendL.chain(this._leftDelay, this.effectReturnL);
+		this.effectSendR.chain(this._rightPreDelay, this._rightDelay, this.effectReturnR);
+		this.delayTime.fan(this._leftDelay.delayTime, this._rightDelay.delayTime, this._rightPreDelay.delayTime);
+		//rearranged the feedback to be after the rightPreDelay
+		this._feedbackLR.disconnect();
+		this._feedbackLR.connect(this._rightDelay);
 	};
 
 	Tone.extend(Tone.PingPongDelay, Tone.StereoXFeedbackEffect);
@@ -66,43 +68,20 @@ function(Tone){
 	};
 
 	/**
-	 * setDelayTime
-	 * 
-	 * @param {Tone.Time} delayTime
-	 */
-	Tone.PingPongDelay.prototype.setDelayTime = function(delayTime){
-		this.delayTime.setValue(this.toSeconds(delayTime));
-	};
-
-	/**
-	 * @return {number} the delay time
-	 */
-	Tone.PingPongDelay.prototype.getDelayTime = function(){
-		return this.delayTime.getValue();
-	};
-
-	/**
-	 *  set all of the parameters with an object
-	 *  @param {Object} params 
-	 */
-	Tone.PingPongDelay.prototype.set = function(params){
-		if (!this.isUndef(params.delayTime)) this.setDelayTime(params.delayTime);
-		Tone.StereoXFeedbackEffect.prototype.set.call(this, params);
-	};
-
-	/**
 	 *  clean up
+	 *  @returns {Tone.PingPongDelay} `this`
 	 */
 	Tone.PingPongDelay.prototype.dispose = function(){
 		Tone.StereoXFeedbackEffect.prototype.dispose.call(this);
 		this._leftDelay.disconnect();
-		this._rightDelay.disconnect();
-		this._leftPreDelay.disconnect();
-		this.delayTime.dispose();
 		this._leftDelay = null;
+		this._rightDelay.disconnect();
 		this._rightDelay = null;
-		this._leftPreDelay = null;
+		this._rightPreDelay.disconnect();
+		this._rightPreDelay = null;
+		this.delayTime.dispose();
 		this.delayTime = null;
+		return this;
 	};
 
 	return Tone.PingPongDelay;

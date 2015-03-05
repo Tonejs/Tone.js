@@ -11,6 +11,12 @@ define(["Tone/core/Tone", "Tone/component/Envelope"], function(Tone){
 	 *  @param {Tone.Time} [decay=0.1]	the decay time in seconds
 	 *  @param {number} [sustain=0.5] 	a percentage (0-1) of the full amplitude
 	 *  @param {Tone.Time} [release=1]	the release time in seconds
+	 *  @example
+	 *  
+	 *  var ampEnv = new Tone.AmplitudeEnvelope(0.1, 0.2, 1, 0.8);
+	 *  var osc = new Tone.Oscillator();
+	 *  //or with an object
+	 *  osc.chain(ampEnv, Tone.Master);
 	 */
 	Tone.AmplitudeEnvelope = function(){
 
@@ -19,6 +25,7 @@ define(["Tone/core/Tone", "Tone/component/Envelope"], function(Tone){
 		/**
 		 *  the input node
 		 *  @type {GainNode}
+		 *  @private
 		 */
 		this.input = this.output = this.context.createGain();
 
@@ -26,13 +33,6 @@ define(["Tone/core/Tone", "Tone/component/Envelope"], function(Tone){
 	};
 
 	Tone.extend(Tone.AmplitudeEnvelope, Tone.Envelope);
-
-	/**
-	 *  clean up
-	 */
-	Tone.AmplitudeEnvelope.prototype.dispose = function(){
-		Tone.Envelope.prototype.dispose.call(this);
-	};
 
 	return Tone.AmplitudeEnvelope;
 });

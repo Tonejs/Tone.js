@@ -3,6 +3,17 @@ define(["Tone/core/Tone", "Tone/core/Transport"], function(Tone){
 	"use strict";
 
 	/**
+	 *  Frequency can be described similar to time, except ultimately the
+	 *  values are converted to frequency instead of seconds. A number
+	 *  is taken literally as the value in hertz. Additionally any of the 
+	 *  {@link Tone.Time} encodings can be used. Note names in the form
+	 *  of NOTE OCTAVE (i.e. `C4`) are also accepted and converted to their
+	 *  frequency value. 
+	 *  
+	 *  @typedef {number|string|Tone.Time} Tone.Frequency
+	 */
+
+	/**
 	 *  @class  A timed note. Creating a note will register a callback 
 	 *          which will be invoked on the channel at the time with
 	 *          whatever value was specified. 
@@ -52,10 +63,12 @@ define(["Tone/core/Tone", "Tone/core/Transport"], function(Tone){
 
 	/**
 	 *  clean up
+	 *  @returns {Tone.Note} `this`
 	 */
 	Tone.Note.prototype.dispose = function(){ 
 		Tone.Tranport.clearTimeline(this._timelineID);
 		this.value = null;
+		return this;
 	};
 
 	/**
@@ -99,8 +112,10 @@ define(["Tone/core/Tone", "Tone/core/Transport"], function(Tone){
 	};
 
 	/**
-	 *  remove a callback from a channel
+	 *  Remove a previously routed callback from a channel. 
 	 *  @static
+	 *  @param {string|number} channel The channel to unroute note events from
+	 *  @param {function(*)} callback Callback which was registered to the channel.
 	 */
 	Tone.Note.unroute = function(channel, callback){
 		if (NoteChannels.hasOwnProperty(channel)){
@@ -121,19 +136,24 @@ define(["Tone/core/Tone", "Tone/core/Transport"], function(Tone){
 	 *
 	 *  The only requirement for the score format is that the time is the first (or only)
 	 *  value in the array. All other values are optional and will be passed into the callback
-	 *  function registered using ""
+	 *  function registered using `Note.route(channelName, callback)`.
 	 *
-	 *  ```javascript
+	 *  To convert MIDI files to score notation, take a look at utils/MidiToScore.js
+	 *
+	 *  @example
+	 *  //an example JSON score which sets up events on channels
 	 *  var score = { 
 	 *  	"synth"  : [["0", "C3"], ["0:1", "D3"], ["0:2", "E3"], ... ],
 	 *  	"bass"  : [["0", "C2"], ["1:0", "A2"], ["2:0", "C2"], ["3:0", "A2"], ... ],
 	 *  	"kick"  : ["0", "0:2", "1:0", "1:2", "2:0", ... ],
 	 *  	//...
 	 *  };
-	 *  ```
-	 *  
-	 *  To convert MIDI files to score notation, take a look at utils/MidiToScore.js
-	 *
+	 *  //parse the score into Notes
+	 *  Tone.Note.parseScore(score);
+	 *  //route all notes on the "synth" channel
+	 *  Tone.Note.route("synth", function(time, note){
+	 *  	//trigger synth
+	 *  });
 	 *  @static
 	 *  @param {Object} score
 	 *  @return {Array<Tone.Note>} an array of all of the notes that were created
@@ -143,9 +163,9 @@ define(["Tone/core/Tone", "Tone/core/Transport"], function(Tone){
 		for (var inst in score){
 			var part = score[inst];
 			if (inst === "tempo"){
-				Tone.Transport.setBpm(part);
+				Tone.Transport.bpm.value = part;
 			} else if (inst === "timeSignature"){
-				Tone.Transport.setTimeSignature(part[0], part[1]);
+				Tone.Transport.timeSignature = part[0] / (part[1] / 4);
 			} else if (Array.isArray(part)){
 				for (var i = 0; i < part.length; i++){
 					var noteDescription = part[i];
@@ -202,9 +222,48 @@ define(["Tone/core/Tone", "Tone/core/Transport"], function(Tone){
 	};
 
 	/**
-	 *  convert a note name (i.e. A4, C#5, etc to a frequency)
-	 *  defined in "Tone/core/Note"
-	 *  
+	 *  test if a string is in note format: i.e. "C4"
+	 *  @param  {string|number}  note the note to test
+	 *  @return {boolean}      true if it's in the form of a note
+	 *  @method isNotation
+	 *  @lends Tone.prototype.isNotation
+	 */
+	Tone.prototype.isNote = ( function(){
+		var noteFormat = new RegExp(/[a-g]{1}([b#]{1}|[b#]{0})[0-9]+$/i);
+		return function(note){
+			if (typeof note === "string"){
+				note = note.toLowerCase();
+			} 
+			return noteFormat.test(note);
+		};
+	})();
+
+	/**
+	 *  a pointer to the previous toFrequency method
+	 *  @private
+	 *  @function
+	 */
+	Tone.prototype._overwrittenToFrequency = Tone.prototype.toFrequency;
+
+	/**
+	 *  A method which accepts frequencies in the form
+	 *  of notes (`"C#4"`), frequencies as strings ("49hz"), frequency numbers,
+	 *  or Tone.Time and converts them to their frequency as a number in hertz.
+	 *  @param  {Tone.Frequency} note the note name or notation
+	 *  @param {number=} 	now 	if passed in, this number will be 
+	 *                        		used for all 'now' relative timings
+	 *  @return {number}      the frequency as a number
+	 */
+	Tone.prototype.toFrequency = function(note, now){
+		if (this.isNote(note)){
+			note = this.noteToFrequency(note);
+		} 
+		return this._overwrittenToFrequency(note, now);
+	};
+
+	/**
+	 *  Convert a note name (i.e. A4, C#5, etc to a frequency).
+	 *  Defined in "Tone/core/Note"
 	 *  @param  {number} freq
 	 *  @return {string}         
 	 */
@@ -217,31 +276,25 @@ define(["Tone/core/Tone", "Tone/core/Transport"], function(Tone){
 	};
 
 	/**
-	 *  convert an interval (in semitones) to a frequency ratio
-	 *  defined in "Tone/core/Note"
+	 *  Convert an interval (in semitones) to a frequency ratio.
 	 *
-	 *  ```javascript
-	 *  tone.intervalToFrequencyRatio(0); // returns 1
-	 *  tone.intervalToFrequencyRatio(12); // returns 2
-	 *  ```
-	 *  
 	 *  @param  {number} interval the number of semitones above the base note
 	 *  @return {number}          the frequency ratio
+	 *  @example
+	 *  tone.intervalToFrequencyRatio(0); // returns 1
+	 *  tone.intervalToFrequencyRatio(12); // returns 2
 	 */
 	Tone.prototype.intervalToFrequencyRatio = function(interval){
 		return Math.pow(2,(interval/12));
 	};
 
 	/**
-	 *  convert a midi note number into a note name
-	 *  defined in "Tone/core/Note"
+	 *  Convert a midi note number into a note name/
 	 *
-	 *  ```javascript
-	 *  tone.midiToNote(60); // returns "C3"
-	 *  ```
-	 *  
 	 *  @param  {number} midiNumber the midi note number
 	 *  @return {string}            the note's name and octave
+	 *  @example
+	 *  tone.midiToNote(60); // returns "C3"
 	 */
 	Tone.prototype.midiToNote = function(midiNumber){
 		var octave = Math.floor(midiNumber / 12) - 2;
@@ -253,12 +306,10 @@ define(["Tone/core/Tone", "Tone/core/Transport"], function(Tone){
 	 *  convert a note to it's midi value
 	 *  defined in "Tone/core/Note"
 	 *
-	 *  ```javascript
-	 *  tone.noteToMidi("C3"); // returns 60
-	 *  ```
-	 *  
 	 *  @param  {string} note the note name (i.e. "C3")
 	 *  @return {number} the midi value of that note
+	 *  @example
+	 *  tone.noteToMidi("C3"); // returns 60
 	 */
 	Tone.prototype.noteToMidi = function(note){
 		//break apart the note by frequency and octave

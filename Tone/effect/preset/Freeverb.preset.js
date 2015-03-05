@@ -7,15 +7,15 @@ define(["Tone/core/Tone", "Tone/effect/Freeverb"], function(Tone){
 	 *  @type {Object}
 	 */
 	Tone.Freeverb.prototype.preset = {
-		"sewer" : {
+		"Sewer" : {
 			"roomSize" : 0.8, 
 			"dampening" : 0.05
 		},
-		"glassroom" : {
+		"Glassroom" : {
 			"roomSize" : 0.6, 
 			"dampening" : 0.9
 		},
-		"bigplate" : {
+		"Bigplate" : {
 			"roomSize" : 0.9, 
 			"dampening" : 0.2
 		}

@@ -1,53 +1,53 @@
 /* global it, describe, maxTimeout*/
 
-define(["tests/Core", "chai", "Tone/component/DryWet", "Tone/core/Master", "Tone/signal/Signal", 
-"Tone/component/Recorder", "Tone/component/Panner", "Tone/component/LFO", "Tone/component/Gate", 
+define(["tests/Core", "chai", "Tone/component/CrossFade", "Tone/core/Master", "Tone/signal/Signal", 
+"Recorder", "Tone/component/Panner", "Tone/component/LFO", "Tone/component/Gate", 
 "Tone/component/Follower", "Tone/component/Envelope", "Tone/component/Filter", "Tone/component/EQ", 
 "Tone/component/Merge", "Tone/component/Split", "tests/Common", "Tone/component/AmplitudeEnvelope", 
 "Tone/component/LowpassCombFilter", "Tone/component/FeedbackCombFilter", "Tone/component/Mono", 
 "Tone/component/MultibandSplit", "Tone/component/Compressor", "Tone/component/PanVol",
-"Tone/component/MultibandCompressor", "Tone/component/ScaledEnvelope", "Tone/component/Limiter"],
-function(coreTest, chai, DryWet, Master, Signal, Recorder, Panner, LFO, Gate, Follower, Envelope, 
+"Tone/component/MultibandCompressor", "Tone/component/ScaledEnvelope", "Tone/component/Limiter", "Tone/core/Transport"],
+function(coreTest, chai, CrossFade, Master, Signal, Recorder, Panner, LFO, Gate, Follower, Envelope, 
 	Filter, EQ, Merge, Split, Test, AmplitudeEnvelope, LowpassCombFilter, FeedbackCombFilter,
-	Mono, MultibandSplit, Compressor, PanVol, MultibandCompressor, ScaledEnvelope, Limiter){
+	Mono, MultibandSplit, Compressor, PanVol, MultibandCompressor, ScaledEnvelope, Limiter, Transport){
 	var expect = chai.expect;
 
 	Master.mute();
 
-	describe("Tone.DryWet", function(){
+	describe("Tone.CrossFade", function(){
 		this.timeout(maxTimeout);
 
-		var dryWet, drySignal, wetSignal, recorder;
+		var crossFade, drySignal, wetSignal, recorder;
 
 		it("can be created and disposed", function(){
-			var dw = new DryWet();
+			var dw = new CrossFade();
 			dw.dispose();
 			Test.wasDisposed(dw);
 		});
 
 		it("handles input and output connections", function(){
 			Test.onlineContext();
-			var dryWet = new DryWet();
-			Test.acceptsInput(dryWet.dry);
-			Test.acceptsInput(dryWet.wet);
-			Test.acceptsOutput(dryWet);
-			dryWet.dispose();
+			var crossFade = new CrossFade();
+			Test.acceptsInput(crossFade, 0);
+			Test.acceptsInput(crossFade, 1);
+			Test.acceptsOutput(crossFade);
+			crossFade.dispose();
 		});
 
 		it("pass 100% dry signal", function(done){
 			Test.offlineTest(0.1, function(dest){
-				dryWet = new DryWet();
+				crossFade = new CrossFade();
 				drySignal = new Signal(10);
 				wetSignal = new Signal(20);
-				drySignal.connect(dryWet.dry);
-				wetSignal.connect(dryWet.wet);
+				drySignal.connect(crossFade, 0, 0);
+				wetSignal.connect(crossFade, 0, 1);
 				recorder = new Recorder();
-				dryWet.setDry(1);
-				dryWet.connect(dest);
+				crossFade.fade.value = 0;
+				crossFade.connect(dest);
 			}, function(sample){
-				expect(sample).to.equal(10);
+				expect(sample).to.closeTo(10, 0.01);
 			}, function(){
-				dryWet.dispose();
+				crossFade.dispose();
 				drySignal.dispose();
 				wetSignal.dispose();
 				done();
@@ -56,18 +56,18 @@ function(coreTest, chai, DryWet, Master, Signal, Recorder, Panner, LFO, Gate, Fo
 
 		it("pass 100% wet signal", function(done){
 			Test.offlineTest(0.1, function(dest){
-				dryWet = new DryWet();
+				crossFade = new CrossFade();
 				drySignal = new Signal(10);
 				wetSignal = new Signal(20);
-				drySignal.connect(dryWet.dry);
-				wetSignal.connect(dryWet.wet);
+				drySignal.connect(crossFade, 0, 0);
+				wetSignal.connect(crossFade, 0, 1);
 				recorder = new Recorder();
-				dryWet.setWet(1);
-				dryWet.connect(dest);
+				crossFade.fade.value = 1;
+				crossFade.connect(dest);
 			}, function(sample){
-				expect(sample).to.equal(20);
+				expect(sample).to.closeTo(20, 0.01);
 			}, function(){
-				dryWet.dispose();
+				crossFade.dispose();
 				drySignal.dispose();
 				wetSignal.dispose();
 				done();
@@ -76,18 +76,18 @@ function(coreTest, chai, DryWet, Master, Signal, Recorder, Panner, LFO, Gate, Fo
 		
 		it("can mix two signals", function(done){
 			Test.offlineTest(0.1, function(dest){
-				dryWet = new DryWet();
-				drySignal = new Signal(10);
-				wetSignal = new Signal(20);
-				drySignal.connect(dryWet.dry);
-				wetSignal.connect(dryWet.wet);
+				crossFade = new CrossFade();
+				drySignal = new Signal(0.5);
+				wetSignal = new Signal(0.5);
+				drySignal.connect(crossFade, 0, 0);
+				wetSignal.connect(crossFade, 0, 1);
 				recorder = new Recorder();
-				dryWet.setWet(0.5);
-				dryWet.connect(dest);
+				crossFade.fade.value = 0.5;
+				crossFade.connect(dest);
 			}, function(sample){
-				expect(sample).to.equal(15);
+				expect(sample).to.closeTo(0.707, 0.01);
 			}, function(){
-				dryWet.dispose();
+				crossFade.dispose();
 				drySignal.dispose();
 				wetSignal.dispose();
 				done();
@@ -95,36 +95,6 @@ function(coreTest, chai, DryWet, Master, Signal, Recorder, Panner, LFO, Gate, Fo
 		});
 	});
 
-	/*describe("Tone.Recorder", function(){
-		this.timeout(maxTimeout);
-
-		var recorder = new Recorder();
-
-		after(function(){
-			recorder.dispose();
-		});
-
-		it("can be created and disposed", function(){
-			var rec = new Recorder();
-			rec.dispose();
-			Test.wasDisposed(rec);
-		});
-
-		it("can record an incoming signal", function(done){
-			Test.onlineContext();
-			var sig = new Signal(1);
-			sig.connect(recorder);
-			recorder.record(0.1, 0.1, function(buffers){
-				var buffer = buffers[0];
-				for (var i = 0; i < buffer.length; i++){
-					expect(buffer[i]).to.equal(1);
-				}
-				sig.dispose();
-				done();
-			});
-		});
-	});
-*/
 	describe("Tone.Panner", function(){
 		this.timeout(maxTimeout);
 
@@ -160,11 +130,11 @@ function(coreTest, chai, DryWet, Master, Signal, Recorder, Panner, LFO, Gate, Fo
 				signal = new Signal(1);
 				panner = new Panner();
 				signal.connect(panner);
-				panner.setPan(1);
+				panner.pan.value = 1;
 				panner.connect(dest);
 			}, function(L, R){
-				expect(L).to.equal(0);
-				expect(R).to.equal(1);
+				expect(L).to.be.closeTo(0, 0.01);
+				expect(R).to.be.closeTo(1, 0.01);
 			}, function(){
 				panner.dispose();
 				signal.dispose();
@@ -198,6 +168,39 @@ function(coreTest, chai, DryWet, Master, Signal, Recorder, Panner, LFO, Gate, Fo
 			lfo.dispose();
 		});
 
+		it("can sync to Transport", function(done){
+			var lfo;
+			Test.offlineTest(0.1, function(dest){
+				Transport.bpm.value = 120;
+				lfo = new LFO(2);
+				lfo.frequency.connect(dest);
+				lfo.sync();
+				Transport.bpm.value = 240;
+			}, function(freq){
+				expect(freq).to.be.closeTo(4, 0.001);
+			}, function(){
+				lfo.dispose();
+				done();
+			});
+		});
+
+		it("can unsync to Transport", function(done){
+			var lfo;
+			Test.offlineTest(0.1, function(dest){
+				Transport.bpm.value = 120;
+				lfo = new LFO(2);
+				lfo.frequency.connect(dest);
+				lfo.sync();
+				Transport.bpm.value = 240;
+				lfo.unsync();
+			}, function(freq){
+				expect(freq).to.be.closeTo(2, 0.001);
+			}, function(){
+				lfo.dispose();
+				done();
+			});
+		});
+
 		it("can be creates an oscillation in a specific range", function(done){
 			var lfo;
 			Test.offlineTest(0.1, function(dest){
@@ -218,14 +221,32 @@ function(coreTest, chai, DryWet, Master, Signal, Recorder, Panner, LFO, Gate, Fo
 				lfo = new LFO(100, 10, 20);
 				lfo.connect(dest);
 				lfo.start();
-				lfo.setMin(15);
-				lfo.setMax(18);
+				lfo.min = 15;
+				lfo.max  = 18;
 			}, function(sample){
 				expect(sample).to.be.within(15, 18);
 			}, function(){
 				lfo.dispose();
 				done();
 			});
+		});
+
+		it("handles getters/setters as objects", function(){
+			var lfo = new LFO();
+			var values = {
+				"type" : "square",
+				"min" : -1,
+				"max" : 2,
+				"phase" : 180,
+				"frequency" : "8n",
+			};
+			lfo.set(values);
+			expect(lfo.get()).to.contain.keys(Object.keys(values));
+			expect(lfo.type).to.equal(values.type);
+			expect(lfo.min).to.equal(values.min);
+			expect(lfo.max).to.equal(values.max);
+			expect(lfo.phase).to.equal(values.phase);
+			lfo.dispose();
 		});
 	});
 
@@ -242,6 +263,22 @@ function(coreTest, chai, DryWet, Master, Signal, Recorder, Panner, LFO, Gate, Fo
 			Test.onlineContext();
 			var gate = new Gate();
 			Test.acceptsInputAndOutput(gate);
+			gate.dispose();
+		});
+
+		it("handles getter/setters", function(){
+			Test.onlineContext();
+			var gate = new Gate();
+			var values = {
+				"attack" : "4n",
+				"release" : "8n",
+				"threshold" : -25,
+			};
+			gate.set(values);
+			expect(gate.get()).to.have.keys(["attack", "release", "threshold"]);
+			expect(gate.attack).to.equal(values.attack);
+			expect(gate.decay).to.equal(values.decay);
+			expect(gate.threshold).to.be.closeTo(values.threshold, 0.1);
 			gate.dispose();
 		});
 
@@ -313,6 +350,18 @@ function(coreTest, chai, DryWet, Master, Signal, Recorder, Panner, LFO, Gate, Fo
 				done();
 			});
 		});
+
+		it("handles getter/setter as Object", function(){
+			var foll = new Follower();
+			var values = {
+				"attack" : "8n",
+				"release" : "4n"
+			};
+			foll.set(values);
+			expect(foll.get()).to.have.keys(["attack", "release"]);
+			expect(foll.get()).to.deep.equal(values);
+			foll.dispose();
+		});
 	});
 
 
@@ -373,6 +422,43 @@ function(coreTest, chai, DryWet, Master, Signal, Recorder, Panner, LFO, Gate, Fo
 				done();
 			});
 		});
+
+		it ("can get and set values an Objects", function(){
+			var env = new Envelope();
+			var values = {
+				"attack" : 0,
+				"decay" : 0.5,
+				"sustain" : 1,
+				"release" : "4n"
+			};
+			env.set(values);
+			expect(env.get()).to.deep.equal(values);
+			env.dispose();
+		});
+
+		it ("can schedule an attackRelease", function(done){
+			var env;
+			Test.offlineTest(0.7, function(dest){
+				env = new Envelope(0.1, 0.2, 0.5, 0.1);
+				env.connect(dest);
+				env.triggerAttackRelease(0.4, 0);
+			}, function(sample, time){
+				if (time < 0.1){
+					expect(sample).to.be.within(0, 1);
+				} else if (time < 0.3){
+					expect(sample).to.be.within(0.5, 1);
+				} else if (time < 0.4){
+					expect(sample).to.be.within(0.499, 0.51);
+				} else if (time < 0.5){
+					expect(sample).to.be.within(0, 0.51);
+				} else {
+					expect(sample).to.be.below(0.1);
+				}
+			}, function(){
+				env.dispose();
+				done();
+			});
+		});
 	});
 
 
@@ -389,6 +475,25 @@ function(coreTest, chai, DryWet, Master, Signal, Recorder, Panner, LFO, Gate, Fo
 			Test.onlineContext();
 			var f = new Filter();
 			Test.acceptsInputAndOutput(f);
+			f.dispose();
+		});
+
+		it("can set/get values as an Object", function(){
+			var f = new Filter();
+			var values = {
+				"type" : "highpass",
+				"frequency" : 440,
+				"rolloff" : -24,
+				"Q" : 2,
+				"gain" : -6,
+			};
+			f.set(values);
+			expect(f.get()).to.have.keys(["type", "frequency", "rolloff", "Q", "gain"]);
+			expect(f.type).to.equal(values.type);
+			expect(f.frequency.value).to.equal(values.frequency);
+			expect(f.rolloff).to.equal(values.rolloff);
+			expect(f.Q.value).to.equal(values.Q);
+			expect(f.gain.value).to.be.closeTo(values.gain, 0.04);
 			f.dispose();
 		});
 
@@ -410,12 +515,12 @@ function(coreTest, chai, DryWet, Master, Signal, Recorder, Panner, LFO, Gate, Fo
 				"frequency" : 1000,
 				"type" : "highpass"
 			});
-			expect(f0.frequency.getValue()).to.equal(1000);
-			expect(f0.getType()).to.equal("highpass");
+			expect(f0.frequency.value).to.equal(1000);
+			expect(f0.type).to.equal("highpass");
 			f0.dispose();
 			var f1 = new Filter(200, "bandpass");
-			expect(f1.frequency.getValue()).to.equal(200);
-			expect(f1.getType()).to.equal("bandpass");
+			expect(f1.frequency.value).to.equal(200);
+			expect(f1.type).to.equal("bandpass");
 			f1.dispose();
 		});
 	});
@@ -446,6 +551,21 @@ function(coreTest, chai, DryWet, Master, Signal, Recorder, Panner, LFO, Gate, Fo
 				eq.dispose();
 				done();
 			});
+		});
+
+		it("can set/get values as an Object", function(){
+			Test.onlineContext();
+			var eq = new EQ();
+			var values = {
+				"high" : -12,
+				"mid" : -24,
+				"low" : -1
+			};
+			eq.set(values);
+			expect(eq.high.value).to.be.closeTo(values.high, 0.1);
+			expect(eq.mid.value).to.be.closeTo(values.mid, 0.1);
+			expect(eq.low.value).to.be.closeTo(values.low, 0.1);
+			eq.dispose();
 		});
 	});
 
@@ -603,6 +723,19 @@ function(coreTest, chai, DryWet, Master, Signal, Recorder, Panner, LFO, Gate, Fo
 				done();
 			});
 		});
+
+		it("handles getters/setters", function(){
+			Test.onlineContext();
+			var lfcf = new LowpassCombFilter();
+			var values = {
+				"resonance" : 0.4,
+				"dampening" : 4000,
+				"delayTime" : "4n"
+			};
+			lfcf.set(values);
+			expect(lfcf.get()).to.have.keys(["resonance", "dampening", "delayTime"]);
+			lfcf.dispose();
+		});
 	});
 
 	describe("Tone.FeedbackCombFilter", function(){
@@ -618,6 +751,14 @@ function(coreTest, chai, DryWet, Master, Signal, Recorder, Panner, LFO, Gate, Fo
 			Test.onlineContext();
 			var fbcf = new FeedbackCombFilter();
 			Test.acceptsInputAndOutput(fbcf);
+			fbcf.dispose();
+		});
+
+		it("can set delayTime", function(){
+			Test.onlineContext();
+			var fbcf = new FeedbackCombFilter();
+			fbcf.delayTime = "4n";
+			expect(fbcf.delayTime).to.equal("4n");
 			fbcf.dispose();
 		});
 
@@ -710,6 +851,42 @@ function(coreTest, chai, DryWet, Master, Signal, Recorder, Panner, LFO, Gate, Fo
 				done();
 			});
 		});
+
+		it("can be get and set through object", function(){
+			var comp = new Compressor();
+			var values = {
+				"ratio" : 22,
+				"threshold" : -30,
+				"release" : 0.5,
+				"attack" : 0.03,
+				"knee" : 20
+			};
+			comp.set(values);
+			expect(comp.get()).to.have.keys(["ratio", "threshold", "release", "attack", "ratio"]);
+			comp.dispose();
+		});
+
+		it("can get/set all interfaces", function(){
+			var comp = new Compressor();
+			var values = {
+				"ratio" : 22,
+				"threshold" : -30,
+				"release" : 0.5,
+				"attack" : 0.03,
+				"knee" : 20
+			};
+			comp.ratio.value = values.ratio;
+			comp.threshold.value = values.threshold;
+			comp.release.value = values.release;
+			comp.attack.value = values.attack;
+			comp.knee.value = values.knee;
+			expect(comp.ratio.value).to.equal(values.ratio);
+			expect(comp.threshold.value).to.equal(values.threshold);
+			expect(comp.release.value).to.equal(values.release);
+			expect(comp.attack.value).to.be.closeTo(values.attack, 0.01);
+			expect(comp.knee.value).to.equal(values.knee);
+			comp.dispose();
+		});
 	});
 
 	describe("Tone.PanVol", function(){
@@ -739,6 +916,14 @@ function(coreTest, chai, DryWet, Master, Signal, Recorder, Panner, LFO, Gate, Fo
 				done();
 			});
 		});
+
+		it("can set the pan and volume", function(){
+			var panvol = new PanVol();
+			panvol.volume.value = -12;
+			panvol.pan.value = 0;
+			expect(panvol.volume.value).to.be.closeTo(-12, 0.1);
+			expect(panvol.pan.value).to.be.equal(0);
+		});
 	});
 
 	describe("Tone.MultibandCompressor", function(){
@@ -767,6 +952,25 @@ function(coreTest, chai, DryWet, Master, Signal, Recorder, Panner, LFO, Gate, Fo
 				comp.dispose();
 				done();
 			});
+		});
+
+		it("handles getters/setters", function(){
+			Test.onlineContext();
+			var comp = new MultibandCompressor();
+			var values = {
+				"low" : {
+					"attack" : 0.3
+				},
+				"mid" : {
+					"threshold" : -12
+				}
+			};
+			comp.set(values);
+			expect(comp.get()).to.have.deep.property("low.attack");
+			expect(comp.get()).to.have.deep.property("mid.threshold");
+			expect(comp.low.attack.value).to.be.closeTo(0.3, 0.05);
+			expect(comp.mid.threshold.value).to.be.closeTo(-12, 0.05);
+			comp.dispose();
 		});
 	});
 
@@ -837,8 +1041,8 @@ function(coreTest, chai, DryWet, Master, Signal, Recorder, Panner, LFO, Gate, Fo
 			Test.offlineTest(0.7, function(dest){
 				env = new ScaledEnvelope(0.1, 0.2, 0.5, 0.1);
 				env.connect(dest);
-				env.setMin(5);
-				env.setMax(10);
+				env.min = 5;
+				env.max = 10;
 				env.triggerAttack(0.1);
 			}, function(sample, time){
 				if (time < 0.1){
@@ -866,6 +1070,14 @@ function(coreTest, chai, DryWet, Master, Signal, Recorder, Panner, LFO, Gate, Fo
 			Test.onlineContext();
 			var lim = new Limiter();
 			Test.acceptsInputAndOutput(lim);
+			lim.dispose();
+		});
+
+		it("can get and set values", function(){
+			Test.onlineContext();
+			var lim = new Limiter();
+			lim.threshold.value = -12;
+			expect(lim.threshold.value).to.be.closeTo(-12, 0.05);
 			lim.dispose();
 		});
 
