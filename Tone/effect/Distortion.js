@@ -89,13 +89,6 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/signal/WaveShaper"], funct
 	});
 
 	/**
-	 * @return {string} the oversampling
-	 */
-	Tone.Distortion.prototype.getOversample = function(){
-		return this._shaper.oversample;
-	};
-
-	/**
 	 *  clean up
 	 *  @returns {Tone.Distortion} `this`
 	 */

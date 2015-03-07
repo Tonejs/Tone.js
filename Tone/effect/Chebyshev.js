@@ -113,14 +113,6 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/signal/WaveShaper"], funct
 		} 
 	});
 
-
-	/**
-	 * @return {string} the current oversampling
-	 */
-	Tone.Chebyshev.prototype.getOversample = function() {
-		return this._shaper.getOversample();
-	};
-
 	/**
 	 *  clean up
 	 *  @returns {Tone.Chebyshev} `this`
