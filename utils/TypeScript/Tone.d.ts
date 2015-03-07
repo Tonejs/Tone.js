@@ -5,7 +5,12 @@
 // Definitions by: Luke Phillips <https://github.com/lukephills>
 // Definitions: https://github.com/borisyankov/DefinitelyTyped
 
+//var Tone: {
+//    new(inputs?: number, outputs?: number): Tone;
+//}
+
 interface Tone {
+    new(inputs?: number, outputs?: number): Tone;
     context: AudioContext;
     input: GainNode;
     output: GainNode;
@@ -51,10 +56,6 @@ interface Tone {
     toSeconds(time?: number, now?: number): number;
 }
 
-var Tone: {
-    new(inputs?: number, outputs?: number): Tone;
-}
-
 declare module Tone {
 
     var Abs: {
@@ -77,7 +78,9 @@ declare module Tone {
         new(attack?: any, decay?: Tone.Time, sustain?: number, release?:Tone.Time): Tone.AmplitudeEnvelope; //TODO: Change 'any' to 'Tone.Time | Object'
     };
 
-    interface AmplitudeEnvelope extends Tone.Envelope {}
+    interface AmplitudeEnvelope extends Tone.Envelope {
+        dispose(): Tone.AmplitudeEnvelope;
+    }
 
     var AMSynth: {
         new(options?: Object): Tone.AMSynth;
@@ -125,7 +128,7 @@ declare module Tone {
     }
 
     var AutoWah: {
-        new(baseFrequency?: number, octaves?: number, sensitivity?:number): Tone.AutoWah;
+        new(baseFrequency?: any, octaves?: number, sensitivity?:number): Tone.AutoWah; //Todo number | Object
     };
 
     interface AutoWah extends Tone.Effect {
@@ -154,11 +157,10 @@ declare module Tone {
         MAX_SIMULTANEOUS_DOWNLOADS: number;
         duration: number; // Readonly
         loaded: boolean; // Readonly
-        onload: ()=>any;
+        onload: (e: any)=>any;
         url: string; // Readonly
-        load(url:string, callback?: ()=>any): Tone.Buffer;
+        load(url:string, callback?: (e: any)=>any): Tone.Buffer;
         onerror();
-        onload();
         onprogress();
         dispose(): Tone.Buffer;
         get(): AudioBuffer;
@@ -216,7 +218,7 @@ declare module Tone {
 
     interface Convolver extends Tone.Effect {
         buffer: AudioBuffer;
-        load(url: string, callback?: ()=>any): Tone.Convolver;
+        load(url: string, callback?: (e: any)=>any): Tone.Convolver;
         dispose(): Tone.Convolver;
     }
 
@@ -264,7 +266,7 @@ declare module Tone {
         wet: Tone.Signal;
         bypass(): Tone.Effect;
         dispose(): Tone.Effect;
-    };
+    }
 
     var Envelope: {
         new(attack: any, decay?: Tone.Time, sustain?: number, release?: Tone.Time): Tone.Envelope;  //TODO: Change 'any' to 'Tone.Time | Object'
@@ -511,9 +513,7 @@ declare module Tone {
         setDelayTimeAtTime(delayAmount: Tone.Time, time?: Tone.Time): Tone.LowpassCombFilter;
     }
 
-    var Master: {
-        new(): Tone.Master;
-    };
+    var Master: Tone.Master;
 
     interface Master extends Tone {
         volume: Tone.Signal;
@@ -722,8 +722,8 @@ declare module Tone {
     interface Note {
         value: any; //todo: string | number | Object
         parseScore(score: Object): Tone.Note[];
-        route(channel:any, callback?: ()=>any): void; //todo: string | number
-        unroute(channel: any, callback?: ()=>any): void; //todo: string | number;
+        route(channel:any, callback?: (e: any)=>any): void; //todo: string | number
+        unroute(channel: any, callback?: (e: any)=>any): void; //todo: string | number;
         dispose(): Tone.Note;
     }
 
@@ -803,7 +803,7 @@ declare module Tone {
     }
 
     var Player: {
-        new(url?: string, onload?: ()=>any): Tone.Player; //todo: string | AudioBuffer
+        new(url?: string, onload?: (e: any)=>any): Tone.Player; //todo: string | AudioBuffer
     };
 
     interface Player extends Tone.Source {
@@ -815,7 +815,7 @@ declare module Tone {
         playbackRate: number;
         retrigger: boolean;
         dispose(): Tone.Player;
-        load(url:string, callback?:()=>any):  Tone.Player;
+        load(url:string, callback?:(e: any)=>any):  Tone.Player;
         setLoopPoints(loopStart:Tone.Time, loopEnd:Tone.Time): Tone.Player;
     }
 
@@ -946,6 +946,11 @@ declare module Tone {
         gate: Tone.Signal;
         dispose(): Tone.Select;
         select(which: number, time?: Tone.Time): Tone.Select;
+    }
+
+    module Signal {
+        interface Unit{}
+        interface Type{}
     }
 
     var Signal: {
@@ -1079,10 +1084,10 @@ declare module Tone {
         dispose(): Tone.Transport;
         nextBeat(subdivision?: string): number;
         pause(time: Tone.Time): Tone.Transport;
-        setInterval(callback: ()=>any, interval: Tone.Time): number;
+        setInterval(callback: (e: any)=>any, interval: Tone.Time): number;
         setLoopPoints(startPosition: Tone.Time, endPosition: Tone.Time): Tone.Transport;
-        setTimeline(callback: ()=>any, timeout: Tone.Time): number;
-        setTimeout(callback: ()=>any, time: Tone.Time): number;
+        setTimeline(callback: (e: any)=>any, timeout: Tone.Time): number;
+        setTimeout(callback: (e: any)=>any, time: Tone.Time): number;
         start(time: Tone.Time, offset?: Tone.Time): Tone.Transport;
         stop(time: Tone.Time): Tone.Transport;
         syncSignal(signal: Tone.Signal, ratio?: number): Tone.Transport;
@@ -1098,7 +1103,7 @@ declare module Tone {
     };
 
     interface WaveShaper extends Tone.SignalBase {
-        curve: Array;
+        curve: number[];
         oversample: string;
     }
 }
@@ -1107,8 +1112,8 @@ declare module Tone {
 /***
  * NOTES
  * LFO.phase should be type number
-   OmniOscillator frequency type should be Tone.Frequency
-   PWMOscillator frequency type should be Tone.Frequency
+ OmniOscillator frequency type should be Tone.Frequency
+ PWMOscillator frequency type should be Tone.Frequency
 
  WaveShaper oversample @name is wrong
  AudioGain returns this (Tone.AudioGain)
@@ -1118,5 +1123,7 @@ declare module Tone {
  OR is missing constructor in docs: new(inputCount?:number)
  PanVol is missing constructor in docs: new(pan: number, volume: number)
  Phaser.baseFrequency should be type number not string. (Or is it meant to be Tone.Frequency?)
+ AmplitudeEnvelope should have its own dispose.
+ Convolution Reverb not working
  *
  */

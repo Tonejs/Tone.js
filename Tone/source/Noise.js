@@ -108,7 +108,7 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 	 * @type {number}
 	 * @name playbackRate
 	 */
-	Object.defineProperty(Tone.Player.prototype, "playbackRate", {
+	Object.defineProperty(Tone.Noise.prototype, "playbackRate", {
 		get : function(){
 			return this._playbackRate;
 		},

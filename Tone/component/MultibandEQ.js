@@ -134,7 +134,7 @@ define(["Tone/core/Tone", "Tone/component/Filter"], function(Tone){
      *  @param {number} the EQ band
      */
     Tone.MultibandEQ.prototype.setFrequency = function(freq, band){
-        this._bands[band-1].frequency.setValue(freq);
+        this._bands[band-1].frequency.value = freq;
     };
 
     /**
@@ -143,7 +143,7 @@ define(["Tone/core/Tone", "Tone/component/Filter"], function(Tone){
      *  @return {number} the frequency of the EQ
      */
     Tone.MultibandEQ.prototype.getFrequency = function(band){
-        return this._bands[band-1].frequency.getValue();
+        return this._bands[band-1].frequency.value;
     };
 
     /**
@@ -152,7 +152,7 @@ define(["Tone/core/Tone", "Tone/component/Filter"], function(Tone){
      *  @param {number} the EQ band
      */
     Tone.MultibandEQ.prototype.setQ = function(Q, band){
-        this._bands[band-1].Q.setValue(Q);
+        this._bands[band-1].Q.value = Q;
     };
 
     /**
@@ -161,7 +161,7 @@ define(["Tone/core/Tone", "Tone/component/Filter"], function(Tone){
      *  @return {number} the Q value
      */
     Tone.MultibandEQ.prototype.getQ = function(band){
-        return this._bands[band-1].Q.getValue();
+        return this._bands[band-1].Q.value;
     };
 
     /**
@@ -170,7 +170,7 @@ define(["Tone/core/Tone", "Tone/component/Filter"], function(Tone){
      *  @param {number} the EQ band
      */
     Tone.MultibandEQ.prototype.setGain = function(gain, band){
-        this._bands[band-1].gain.setValue(gain);
+        this._bands[band-1].gain.value = gain;
     };
 
     /**
@@ -179,7 +179,7 @@ define(["Tone/core/Tone", "Tone/component/Filter"], function(Tone){
      *  @return {number} the current gain value
      */
     Tone.MultibandEQ.prototype.getGain = function(band){
-        return this._bands[band-1].gain.getValue();
+        return this._bands[band-1].gain.value;
     };
 
 
