@@ -30,13 +30,6 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 		 */
 		this._buffer = null;
 
-		/**
-		 *  the playback rate for pitching the noise
-		 *  @private
-		 *  @type {number}
-		 */
-		this._playbackRate = 1;
-
 		this.type = options.type;
 	};
 
@@ -94,28 +87,6 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 					this._stop(now);
 					this._start(now);
 				}
-			}
-		}
-	});
-
-	/**
-	 * The playback speed. 1 is normal speed.
-	 * Note that this is not a Tone.Signal because of a bug in Blink.
-	 * Please star this issue if this an important thing to you:
-	 * https://code.google.com/p/chromium/issues/detail?id=311284
-	 *
-	 * @memberOf Tone.Noise#
-	 * @type {number}
-	 * @name playbackRate
-	 */
-	Object.defineProperty(Tone.Noise.prototype, "playbackRate", {
-		get : function(){
-			return this._playbackRate;
-		},
-		set : function(rate){
-			this._playbackRate = rate;
-			if (this._source) {
-				this._source.playbackRate.value = rate;
 			}
 		}
 	});
