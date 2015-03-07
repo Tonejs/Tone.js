@@ -218,7 +218,6 @@ function(Tone){
 	 * @example
 	 * osc.phase = 180; //flips the phase of the oscillator
 	 */
-
 	Object.defineProperty(Tone.Oscillator.prototype, "phase", {
 		get : function(){
 			return this._phase * (180 / Math.PI);

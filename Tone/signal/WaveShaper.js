@@ -101,13 +101,6 @@ define(["Tone/core/Tone", "Tone/signal/SignalBase"], function(Tone){
 	});
 
 	/**
-	 * @return {string} the current oversampling
-	 */
-	Tone.WaveShaper.prototype.getOversample = function() {
-		return this._shaper.oversample;
-	};
-
-	/**
 	 *  returns true if the browser is safari
 	 *  @return  {boolean} 
 	 *  @private

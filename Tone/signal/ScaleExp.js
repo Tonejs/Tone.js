@@ -79,13 +79,6 @@ function(Tone){
 	});
 
 	/**
-	 * @return {number} the minimum output value
-	 */
-	Tone.ScaleExp.prototype.getMax = function(){
-		return this._scale.getMax();
-	};
-
-	/**
 	 *  clean up
 	 *  @returns {Tone.ScaleExp} `this`
 	 */

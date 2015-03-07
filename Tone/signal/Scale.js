@@ -84,13 +84,6 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Multiply", "Tone/signa
 	});
 
 	/**
-	 * @return {number} the maximum output value
-	 */
-	Tone.Scale.prototype.getMax = function(){
-		return this._outputMax;
-	};
-
-	/**
 	 *  set the values
 	 *  @private
 	 */
