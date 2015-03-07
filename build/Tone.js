@@ -14336,6 +14336,8 @@
 		define( "Tone", [], function() {
 			return Tone;
 		});
+	} else if (typeof module === "object") {
+		module.exports = Tone;
 	} else {
 		root.Tone = Tone;
 	}
