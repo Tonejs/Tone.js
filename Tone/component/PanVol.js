@@ -7,6 +7,8 @@ define(["Tone/core/Tone", "Tone/component/Panner", "Tone/core/Master"], function
 	 *
 	 *  @extends {Tone}
 	 *  @constructor
+	 *  @param {number} pan the initial pan
+	 *  @param {number} volume the volume
 	 *  @example
 	 *  var panVol = new Tone.PanVol(0.25, -12);
 	 */

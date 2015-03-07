@@ -1107,23 +1107,3 @@ declare module Tone {
         oversample: string;
     }
 }
-
-
-/***
- * NOTES
- * LFO.phase should be type number
- OmniOscillator frequency type should be Tone.Frequency
- PWMOscillator frequency type should be Tone.Frequency
-
- WaveShaper oversample @name is wrong
- AudioGain returns this (Tone.AudioGain)
- LowpassCombFilter.setDelayTimeAtTime() should return this
- Master has two mute methods. One of them should be unmute.
- Normalize is missing constructor in docs: new(min?: number, max?: number)
- OR is missing constructor in docs: new(inputCount?:number)
- PanVol is missing constructor in docs: new(pan: number, volume: number)
- Phaser.baseFrequency should be type number not string. (Or is it meant to be Tone.Frequency?)
- AmplitudeEnvelope should have its own dispose.
- Convolution Reverb not working
- *
- */

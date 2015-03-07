@@ -7,6 +7,8 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Multiply"], function(T
 	 *
 	 *  @extends {Tone.SignalBase}
 	 *  @constructor
+	 *  @param {number} inputMin the min input value
+	 *  @param {number} inputMax the max input value
 	 *  @example
 	 *  var norm = new Tone.Normalize(2, 4);
 	 *  var sig = new Tone.Signal(3).connect(norm);

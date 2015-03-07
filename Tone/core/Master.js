@@ -38,7 +38,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	Tone.extend(Tone.Master);
 
 	/**
-	 *  Mutethe output
+	 *  Mute the output
 	 *  @returns {Tone.Master} `this`
 	 */
 	Tone.Master.prototype.mute = function(){
@@ -53,7 +53,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	 *  the output was muted. 
 	 *  @returns {Tone.Master} `this`
 	 */
-	Tone.Master.prototype.mute = function(){
+	Tone.Master.prototype.unmute = function(){
 		this.volume.value = this._unmutedVolume;
 		return this;
 	};

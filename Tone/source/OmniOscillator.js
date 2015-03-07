@@ -11,7 +11,7 @@ function(Tone){
 	 *
 	 *  @extends {Tone.Oscillator}
 	 *  @constructor
-	 *  @param {frequency} frequency frequency of the oscillator (meaningless for noise types)
+	 *  @param {frequency} Tone.Frequency frequency of the oscillator (meaningless for noise types)
 	 *  @param {string} type the type of the oscillator
 	 *  @example
 	 *  var omniOsc = new Tone.OmniOscillator("C#4", "pwm");
