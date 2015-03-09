@@ -5,7 +5,7 @@
 			return Tone;
 		});
 	} else if (typeof module === "object") {
-+		module.exports = Tone;
+		module.exports = Tone;
  	} else {
 		root.Tone = Tone;
 	}
