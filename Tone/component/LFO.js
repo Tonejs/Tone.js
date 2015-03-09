@@ -181,7 +181,7 @@ function(Tone){
 	/**
 	 * The phase of the LFO
 	 * @memberOf Tone.LFO#
-	 * @type {string}
+	 * @type {number}
 	 * @name phase
 	 */
 	 Object.defineProperty(Tone.LFO.prototype, "phase", {

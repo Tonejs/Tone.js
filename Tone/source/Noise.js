@@ -3,8 +3,8 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 	"use strict";
 
 	/**
-	 *  @class  Noise generator. 
-	 *          Uses looped noise buffers to save on performance. 
+	 *  @class  Noise generator.
+	 *          Uses looped noise buffers to save on performance.
 	 *
 	 *  @constructor
 	 *  @extends {Tone.Source}
@@ -22,7 +22,7 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 		 *  @type {AudioBufferSourceNode}
 		 */
 		this._source = null;
-		
+
 		/**
 		 *  the buffer
 		 *  @private
@@ -93,14 +93,15 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 
 	/**
 	 *  internal start method
-	 *  
+	 *
 	 *  @param {Tone.Time} time
 	 *  @private
 	 */
-	Tone.Noise.prototype._start = function(time){		
+	Tone.Noise.prototype._start = function(time){
 		this._source = this.context.createBufferSource();
 		this._source.buffer = this._buffer;
 		this._source.loop = true;
+		this._source.playbackRate.value = this._playbackRate;
 		this.connectSeries(this._source, this.output);
 		this._source.start(this.toSeconds(time));
 		this._source.onended = this.onended;
@@ -108,7 +109,7 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 
 	/**
 	 *  internal stop method
-	 *  
+	 *
 	 *  @param {Tone.Time} time
 	 *  @private
 	 */
@@ -135,12 +136,12 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 
 	///////////////////////////////////////////////////////////////////////////
 	// THE BUFFERS
-	// borred heavily from http://noisehack.com/generate-noise-web-audio-api/
+	// borrowed heavily from http://noisehack.com/generate-noise-web-audio-api/
 	///////////////////////////////////////////////////////////////////////////
 
 	/**
 	 *	static noise buffers
-	 *  
+	 *
 	 *  @static
 	 *  @private
 	 *  @type {AudioBuffer}
@@ -150,7 +151,7 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 	Tone._initAudioContext(function(audioContext){
 
 		var sampleRate = audioContext.sampleRate;
-		
+
 		//four seconds per buffer
 		var bufferLength = sampleRate * 4;
 

@@ -89,7 +89,7 @@ define(["Tone/core/Tone", "Tone/signal/SignalBase"], function(Tone){
 	 * The oversampling. Can either be "none", "2x" or "4x"
 	 * @memberOf Tone.WaveShaper#
 	 * @type {string}
-	 * @name curve
+	 * @name oversample
 	 */
 	Object.defineProperty(Tone.WaveShaper.prototype, "oversample", {
 		get : function(){

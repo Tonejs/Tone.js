@@ -142,7 +142,7 @@ function(Tone){
 	/**
 	 * The the base frequency of the filters. 
 	 * @memberOf Tone.Phaser#
-	 * @type {string}
+	 * @type {number}
 	 * @name baseFrequency
 	 */
 	Object.defineProperty(Tone.Phaser.prototype, "baseFrequency", {

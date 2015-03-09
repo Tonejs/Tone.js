@@ -47,7 +47,7 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/signal/WaveShaper"], funct
 		"order" : 1,
 		"oversample" : "none"
 	};
-	
+
 	/**
 	 *  get the coefficient for that degree
 	 *  @param {number} x the x value
@@ -112,7 +112,6 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/signal/WaveShaper"], funct
 			this._shaper.oversample = oversampling;
 		} 
 	});
-
 
 	/**
 	 *  clean up

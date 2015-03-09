@@ -132,6 +132,7 @@ define(["Tone/core/Tone", "Tone/signal/ScaleExp", "Tone/signal/Signal"], functio
 	 * set the delay time for the comb filter at a specific time. 
 	 * @param {Tone.Time} delayAmount the amount of delay time
 	 * @param {Tone.Time} [time=now] when the delay time should be set
+	 * @returns {Tone.LowpassCombFilter} `this`
 	 */
 	Tone.LowpassCombFilter.prototype.setDelayTimeAtTime = function(delayAmount, time){
 		this._delayTime = this.toSeconds(delayAmount);
@@ -154,6 +155,7 @@ define(["Tone/core/Tone", "Tone/signal/ScaleExp", "Tone/signal/Signal"], functio
 				this._filterDelays[j].setDelay(this._delayTime, time);
 			}
 		}
+		return this;
 	};
 
 	/**

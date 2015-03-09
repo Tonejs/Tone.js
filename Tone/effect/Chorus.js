@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/component/LFO", "Tone/effect/StereoXFeedbackEffect"], 
+define(["Tone/core/Tone", "Tone/component/LFO", "Tone/effect/StereoXFeedbackEffect"],
 function(Tone){
 
 	"use strict";
@@ -95,7 +95,7 @@ function(Tone){
 	 *  @type {Object}
 	 */
 	Tone.Chorus.defaults = {
-		"frequency" : 1.5, 
+		"frequency" : 1.5,
 		"delayTime" : 3.5,
 		"depth" : 0.7,
 		"feedback" : 0.1,

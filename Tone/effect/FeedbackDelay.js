@@ -47,7 +47,7 @@ define(["Tone/core/Tone", "Tone/effect/FeedbackEffect", "Tone/signal/Signal"], f
 	Tone.FeedbackDelay.defaults = {
 		"delayTime" : 0.25,
 	};
-	
+
 	/**
 	 *  clean up
 	 *  @returns {Tone.FeedbackDelay} `this`

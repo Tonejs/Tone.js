@@ -51,7 +51,7 @@ function(Tone){
 		this._octaves = options.octaves;
 
 		/**
-		 *  the input gain to adjust the senstivity
+		 *  the input gain to adjust the sensitivity
 		 *  @type {GainNode}
 		 *  @private
 		 */

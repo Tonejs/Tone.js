@@ -7,6 +7,7 @@ define(["Tone/core/Tone", "Tone/signal/GreaterThanZero"], function(Tone){
 	 *
 	 *  @extends {Tone.SignalBase}
 	 *  @constructor
+	 *  @param {number} inputCount the input count
 	 *  @example
 	 *  var or = new Tone.OR(2);
 	 *  var sigA = new Tone.Signal(0)connect(or, 0, 0);

@@ -94,6 +94,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	 * @type {string}
 	 * @name type
 	 */
+
 	Object.defineProperty(Tone.Filter.prototype, "type", {
 		get : function(){
 			return this._type;
@@ -118,6 +119,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	 * @type {number}
 	 * @name rolloff
 	 */
+
 	Object.defineProperty(Tone.Filter.prototype, "rolloff", {
 		get : function(){
 			return this._rolloff;
