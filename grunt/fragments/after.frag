@@ -4,7 +4,9 @@
 		define( "Tone", [], function() {
 			return Tone;
 		});
-	} else {
+	} else if (typeof module === "object") {
++		module.exports = Tone;
+ 	} else {
 		root.Tone = Tone;
 	}
 } (this));
