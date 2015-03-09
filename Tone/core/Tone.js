@@ -764,7 +764,7 @@ define(function(){
 		_silentNode.connect(audioContext.destination);
 	});
 
-	console.log("%c * Tone.js r4 * ", "background: #000; color: #fff");
+	console.log("%c * Tone.js r5-dev * ", "background: #000; color: #fff");
 
 	return Tone;
 });
