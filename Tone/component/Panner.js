@@ -47,8 +47,7 @@ function(Tone){
 		this.pan = this._crossFade.fade;
 
 		//CONNECTIONS:
-		this.input.connect(this._splitter.left);
-		this.input.connect(this._splitter.right);
+		this.input.connect(this._splitter);
 		//left channel is dry, right channel is wet
 		this._splitter.connect(this._crossFade, 0, 0);
 		this._splitter.connect(this._crossFade, 1, 1);
