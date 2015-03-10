@@ -48,7 +48,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/effect/Effect"], function(To
 		},
 		set : function(buffer){
 			this._buffer.set(buffer);
-			this._convolver.buffer = buffer;
+			this._convolver.buffer = this._buffer.get();
 		}
 	});
 
