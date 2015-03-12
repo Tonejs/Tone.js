@@ -121,7 +121,6 @@ function(Tone){
 		time = this.toSeconds(time);
 		duration = this.toSeconds(duration);
 		this.triggerAttack(time, velocity);
-		console.log(time + duration);
 		this.triggerRelease(time + duration);
 		return this;
 	};
