@@ -147,7 +147,7 @@ function(chai, Tone, Master, Bus, Note, Test, Buffer, Oscillator){
 			osc.dispose();
 		});		
 
-		it("ramps to a value given an object a ramp time", function(done){
+		it("ramps to a value given an object and ramp time", function(done){
 			var osc;
 			var setValue = 30;
 			Test.offlineTest(0.6, function(dest){

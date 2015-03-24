@@ -170,6 +170,11 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 		value = this._fromUnits(value);
 		//can't go below a certain value
 		value = Math.max(0.00001, value);
+		// exponentialRampToValueAt cannot ever ramp from 0, apparently.
+		// More info: https://bugzilla.mozilla.org/show_bug.cgi?id=1125600#c2
+		if (this._value.value === 0) {
+			this._value.setValueAtTime(0.00001, this.now());
+		}
 		this._value.exponentialRampToValueAtTime(value, this.toSeconds(endTime));
 		return this;
 	};
@@ -222,6 +227,10 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 	 */
 	Tone.Signal.prototype.setTargetAtTime = function(value, startTime, timeConstant){
 		value = this._fromUnits(value);
+		// The value will never be able to approach without timeConstant > 0.
+		// http://www.w3.org/TR/webaudio/#dfn-setTargetAtTime, where the equation
+		// is described. 0 results in a division by 0.
+		timeConstant = Math.max(0.00001, timeConstant);
 		this._value.setTargetAtTime(value, this.toSeconds(startTime), timeConstant);
 		return this;
 	};
