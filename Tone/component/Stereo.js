@@ -3,13 +3,13 @@ define(["Tone/core/Tone", "Tone/component/Merge"], function(Tone){
 	"use strict";
 
 	/**
-	 *  @class Coerces the incoming mono or stereo signal into a mono signal
+	 *  @class Coerces the incoming mono signal into a stereo signal
 	 *         where both left and right channels have the same value. 
 	 *
 	 *  @extends {Tone}
 	 *  @constructor
 	 */
-	Tone.Mono = function(){
+	Tone.Stereo = function(){
 		Tone.call(this, 1, 0);
 
 		/**
@@ -21,21 +21,20 @@ define(["Tone/core/Tone", "Tone/component/Merge"], function(Tone){
 
 		this.input.connect(this._merge, 0, 0);
 		this.input.connect(this._merge, 0, 1);
-		this.input.gain.value = this.dbToGain(-10);
 	};
 
-	Tone.extend(Tone.Mono);
+	Tone.extend(Tone.Stereo);
 
 	/**
 	 *  clean up
-	 *  @returns {Tone.Mono} `this`
+	 *  @returns {Tone.Stereo} `this`
 	 */
-	Tone.Mono.prototype.dispose = function(){
+	Tone.Stereo.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
 		this._merge.dispose();
 		this._merge = null;
 		return this;
 	};
 
-	return Tone.Mono;
+	return Tone.Stereo;
 });
