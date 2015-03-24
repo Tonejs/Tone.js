@@ -6,10 +6,11 @@ define(["tests/Core", "chai", "Tone/component/CrossFade", "Tone/core/Master", "T
 "Tone/component/Merge", "Tone/component/Split", "tests/Common", "Tone/component/AmplitudeEnvelope", 
 "Tone/component/LowpassCombFilter", "Tone/component/FeedbackCombFilter", "Tone/component/Mono", 
 "Tone/component/MultibandSplit", "Tone/component/Compressor", "Tone/component/PanVol",
-"Tone/component/MultibandCompressor", "Tone/component/ScaledEnvelope", "Tone/component/Limiter", "Tone/core/Transport"],
+"Tone/component/MultibandCompressor", "Tone/component/ScaledEnvelope", "Tone/component/Limiter", 
+"Tone/core/Transport", "Tone/component/Volume", "Tone/component/Stereo"],
 function(coreTest, chai, CrossFade, Master, Signal, Recorder, Panner, LFO, Gate, Follower, Envelope, 
 	Filter, EQ, Merge, Split, Test, AmplitudeEnvelope, LowpassCombFilter, FeedbackCombFilter,
-	Mono, MultibandSplit, Compressor, PanVol, MultibandCompressor, ScaledEnvelope, Limiter, Transport){
+	Mono, MultibandSplit, Compressor, PanVol, MultibandCompressor, ScaledEnvelope, Limiter, Transport, Volume, Stereo){
 	var expect = chai.expect;
 
 	Master.mute();
@@ -125,11 +126,16 @@ function(coreTest, chai, CrossFade, Master, Signal, Recorder, Panner, LFO, Gate,
 
 		it("can pan an incoming signal", function(done){
 			//pan hard right
-			var signal, panner;
+			var signal, stereo, panner;
 			Test.offlineStereoTest(0.1, function(dest){
-				signal = new Signal(1);
+				stereo = new Stereo();
 				panner = new Panner();
-				signal.connect(panner);
+				signal = new Signal(1);
+				if (panner._hasStereoPanner){
+					signal.connect(panner);
+				} else {
+					signal.chain(stereo, panner);
+				}
 				panner.pan.value = 1;
 				panner.connect(dest);
 			}, function(L, R){
@@ -138,6 +144,7 @@ function(coreTest, chai, CrossFade, Master, Signal, Recorder, Panner, LFO, Gate,
 			}, function(){
 				panner.dispose();
 				signal.dispose();
+				stereo.dispose();
 				done();
 			});
 		});
@@ -1089,6 +1096,72 @@ function(coreTest, chai, CrossFade, Master, Signal, Recorder, Panner, LFO, Gate,
 				lim.connect(output);
 			}, function(){
 				lim.dispose();
+				done();
+			});
+		});
+	});
+
+	describe("Tone.Volume", function(){
+		this.timeout(maxTimeout);
+
+		it("can be created and disposed", function(){
+			var vol = new Volume();
+			vol.dispose();
+			Test.wasDisposed(vol);
+		});
+
+		it("handles input and output connections", function(){
+			Test.onlineContext();
+			var vol = new Volume();
+			Test.acceptsInputAndOutput(vol);
+			vol.dispose();
+		});
+
+		it("can get and set values", function(){
+			Test.onlineContext();
+			var vol = new Volume();
+			vol.volume.value = -12;
+			expect(vol.volume.value).to.be.closeTo(-12, 0.05);
+			vol.dispose();
+		});
+
+		it("passes the incoming signal through", function(done){
+			var vol;
+			Test.passesAudio(function(input, output){
+				vol = new Volume();
+				input.connect(vol);
+				vol.connect(output);
+			}, function(){
+				vol.dispose();
+				done();
+			});
+		});
+	});
+
+	describe("Tone.Stereo", function(){
+		this.timeout(maxTimeout);
+
+		it("can be created and disposed", function(){
+			var stereo = new Stereo();
+			stereo.dispose();
+			Test.wasDisposed(stereo);
+		});
+
+		it("handles input and output connections", function(){
+			Test.onlineContext();
+			var stereo = new Stereo();
+			Test.acceptsInputAndOutput(stereo);
+			stereo.dispose();
+		});
+
+		it("passes the incoming signal through", function(done){
+			var stereo;
+			Test.passesAudio(function(input, output){
+				stereo = new FeedbackCombFilter();
+				input.connect(stereo);
+				stereo.connect(output);
+			}, function(){
+				stereo.dispose();
 				done();
 			});
 		});
