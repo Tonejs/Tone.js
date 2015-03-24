@@ -22,7 +22,7 @@ define(["Tone/core/Tone"], function(Tone){
 	 *  defined in "Tone/core/Bus"
 	 *
 	 *  @param  {string} channelName 
-	 *  @param  {number} amount      
+	 *  @param  {number} amount the amount of the source to send to the bus. in Decibels. 
 	 *  @return {GainNode}             
 	 */
 	Tone.prototype.send = function(channelName, amount){
@@ -30,7 +30,7 @@ define(["Tone/core/Tone"], function(Tone){
 			Buses[channelName] = this.context.createGain();
 		}
 		var sendKnob = this.context.createGain();
-		sendKnob.gain.value = this.defaultArg(amount, 1);
+		sendKnob.gain.value = this.dbToGain(this.defaultArg(amount, 1));
 		this.output.chain(sendKnob, Buses[channelName]);
 		return sendKnob;		
 	};
