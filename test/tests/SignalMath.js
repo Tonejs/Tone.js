@@ -3,10 +3,10 @@
 define(["tests/Core", "chai", "Tone/signal/Signal", "Tone/signal/Add", "Tone/signal/Multiply", 
 	"Tone/signal/Scale", "Tone/source/Oscillator", "Tone/core/Master", "Tone/signal/Abs", "Tone/signal/Negate", 
 	 "Tone/signal/Max", "Tone/signal/Min", "Tone/signal/Clip", "Tone/signal/ScaleExp", 
-	 "Tone/signal/Modulo", "tests/Common", "Tone/signal/Subtract", "Tone/signal/Inverse", "Tone/signal/Divide",
+	 "Tone/signal/Modulo", "tests/Common", "Tone/signal/Subtract",
 	 "Tone/signal/Pow", "Tone/signal/Normalize", "Tone/signal/AudioToGain", "Tone/signal/EqualPowerGain"], 
 function(core, chai, Signal, Add, Multiply, Scale, Oscillator, Master, Abs, Negate, Max, 
-	Min, Clip, ScaleExp, Modulo, Test, Subtract, Inverse, Divide, Pow, Normalize, AudioToGain, EqualPowerGain){
+	Min, Clip, ScaleExp, Modulo, Test, Subtract, Pow, Normalize, AudioToGain, EqualPowerGain){
 
 	var expect = chai.expect;
 
