@@ -26,6 +26,13 @@ define(["Tone/core/Tone"], function(Tone){
 		this._buffer = null;
 
 		/**
+		 *  indicates if the buffer should be reversed or not
+		 *  @type {boolean}
+		 *  @private
+		 */
+		this._reversed = options.reverse;
+
+		/**
 		 *  the url of the buffer. `undefined` if it was 
 		 *  constructed with a buffer
 		 *  @type {string}
@@ -67,6 +74,7 @@ define(["Tone/core/Tone"], function(Tone){
 	Tone.Buffer.defaults = {
 		"url" : undefined,
 		"onload" : function(){},
+		"reverse" : false
 	};
 
 	/**
@@ -81,6 +89,9 @@ define(["Tone/core/Tone"], function(Tone){
 			this._buffer = buffer;
 		}
 		this.loaded = true;
+		if (this._reversed){
+			this._reverse();
+		}
 		return this;
 	};
 
@@ -130,6 +141,38 @@ define(["Tone/core/Tone"], function(Tone){
 				return this._buffer.duration;
 			} else {
 				return 0;
+			}
+		},
+	});
+
+	/**
+	 *  reverse the buffer
+	 *  @private
+	 *  @return {Tone.Buffer} `this`
+	 */
+	Tone.Buffer.prototype._reverse = function(){
+		if (this.loaded){
+			for (var i = 0; i < this._buffer.numberOfChannels; i++){
+				Array.prototype.reverse.call(this._buffer.getChannelData(i));
+			}
+		}
+		return this;
+	};
+
+	/**
+	 * if the buffer is reversed or not
+	 * @memberOf Tone.Buffer#
+	 * @type {boolean}
+	 * @name reverse
+	 */
+	Object.defineProperty(Tone.Buffer.prototype, "reverse", {
+		get : function(){
+			return this._reversed;
+		},
+		set : function(rev){
+			if (this._reversed !== rev){
+				this._reversed = rev;
+				this._reverse();
 			}
 		},
 	});

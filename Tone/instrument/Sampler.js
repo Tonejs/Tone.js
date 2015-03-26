@@ -92,6 +92,7 @@ function(Tone){
 		"pitch" : 0,
 		"player" : {
 			"loop" : false,
+			"reverse" : false
 		},
 		"envelope" : {
 			"attack" : 0.001,

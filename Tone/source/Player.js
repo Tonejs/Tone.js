@@ -30,7 +30,11 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 		 *  @private
 		 *  @type {Tone.Buffer}
 		 */
-		this._buffer = new Tone.Buffer(options.url, options.onload.bind(null, this));
+		this._buffer = new Tone.Buffer({
+			"url" : options.url, 
+			"onload" : options.onload.bind(null, this),
+			"reverse" : options.reverse
+		});
 
 		/**
 		 *  if the buffer should loop once it's over
@@ -83,6 +87,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 		"loopStart" : 0,
 		"loopEnd" : 0,
 		"retrigger" : false,
+		"reverse" : false,
 	};
 
 	/**
@@ -270,6 +275,21 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 			if (this._source) {
 				this._source.playbackRate.value = rate;
 			}
+		}
+	});
+
+	/**
+	 * The direction the buffer should play in
+	 * @memberOf Tone.Player#
+	 * @type {boolean}
+	 * @name reverse
+	 */
+	Object.defineProperty(Tone.Player.prototype, "reverse", {
+		get : function(){
+			return this._buffer.reverse;
+		}, 
+		set : function(rev){
+			this._buffer.reverse = rev;
 		}
 	});
 
