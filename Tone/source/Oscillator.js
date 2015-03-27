@@ -193,8 +193,8 @@ function(Tone){
 							throw new TypeError("invalid oscillator type: "+type);
 					}
 					if (b !== 0){
-						real[n] = -b * Math.sin(shift);
-						imag[n] = b * Math.cos(shift);
+						real[n] = -b * Math.sin(shift * n);
+						imag[n] = b * Math.cos(shift * n);
 					} else {
 						real[n] = 0;
 						imag[n] = 0;
