@@ -505,12 +505,23 @@ define(function(){
 	/**
 	 *  Make the property not writable. Internal use only. 
 	 *  @private
-	 *  @param  {string}  property  the property to make not writeable
+	 *  @param  {string}  property  the property to make not writable
 	 */
 	Tone.prototype._readOnly = function(property){
 		Object.defineProperty(this, property, { 
 			writable: false,
 			enumerable : true,
+		});
+	};
+
+	/**
+	 *  Make an attribute writeable. Interal use only. 
+	 *  @private
+	 *  @param  {string}  property  the property to make writable
+	 */
+	Tone.prototype._writable = function(property){
+		Object.defineProperty(this, property, { 
+			writable: true,
 		});
 	};
 
