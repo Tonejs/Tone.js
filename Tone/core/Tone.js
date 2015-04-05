@@ -503,33 +503,15 @@ define(function(){
 	Tone.prototype.isFunction = isFunction;
 
 	/**
-	 *  interpolate the input value (0-1) to be between outputMin and outputMax
-	 *  @param  {number} input     
-	 *  @param  {number} outputMin 
-	 *  @param  {number} outputMax 
-	 *  @return {number}           
+	 *  Make the property not writable. Internal use only. 
+	 *  @private
+	 *  @param  {string}  property  the property to make not writeable
 	 */
-	Tone.prototype.interpolate = function(input, outputMin, outputMax){
-		return input*(outputMax - outputMin) + outputMin;
-	};
-
-	/**
-	 *  normalize the input to 0-1 from between inputMin to inputMax
-	 *  @param  {number} input    
-	 *  @param  {number} inputMin 
-	 *  @param  {number} inputMax 
-	 *  @return {number}          
-	 */
-	Tone.prototype.normalize = function(input, inputMin, inputMax){
-		//make sure that min < max
-		if (inputMin > inputMax){
-			var tmp = inputMax;
-			inputMax = inputMin;
-			inputMin = tmp;
-		} else if (inputMin == inputMax){
-			return 0;
-		}
-		return (input - inputMin) / (inputMax - inputMin);
+	Tone.prototype._readOnly = function(property){
+		Object.defineProperty(this, property, { 
+			writable: false,
+			enumerable : true,
+		});
 	};
 
 	///////////////////////////////////////////////////////////////////////////

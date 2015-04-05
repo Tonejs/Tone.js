@@ -48,18 +48,21 @@ function(Tone){
 		 *  @type {Tone.Signal}
 		 */
 		this.frequency = this._modulator.frequency;
+		this._readOnly("frequency");
 
 		/**
 		 *  the detune control
 		 *  @type {Tone.Signal}
 		 */
 		this.detune = this._modulator.detune;
+		this._readOnly("detune");
 
 		/**
 		 *  the modulation rate of the oscillator
 		 *  @type {Tone.Signal}
 		 */
 		this.modulationFrequency = this._pulse.frequency;	
+		this._readOnly("modulationFrequency");
 
 		//connections
 		this._modulator.chain(this._scale, this._pulse.width);
@@ -137,14 +140,8 @@ function(Tone){
 	Tone.PWMOscillator.prototype.dispose = function(){
 		Tone.Source.prototype.dispose.call(this);
 		this._pulse.dispose();
-		this._pulse = null;
 		this._scale.dispose();
-		this._scale = null;
 		this._modulator.dispose();
-		this._modulator = null;
-		this.frequency = null;
-		this.detune = null;
-		this.modulationFrequency = null;
 		return this;
 	};
 

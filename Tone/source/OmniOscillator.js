@@ -25,12 +25,14 @@ function(Tone){
 		 *  @type {Tone.Signal}
 		 */
 		this.frequency = new Tone.Signal(options.frequency, Tone.Signal.Units.Frequency);
+		this._readOnly("frequency");
 
 		/**
 		 *  the detune control
 		 *  @type {Tone.Signal}
 		 */
 		this.detune = new Tone.Signal(options.detune);
+		this._readOnly("detune");
 
 		/**
 		 *  the type of the oscillator source
@@ -211,11 +213,8 @@ function(Tone){
 	Tone.OmniOscillator.prototype.dispose = function(){
 		Tone.Source.prototype.dispose.call(this);
 		this.detune.dispose();
-		this.detune = null;
 		this.frequency.dispose();
-		this.frequency = null;
 		this._oscillator.dispose();
-		this._oscillator = null;
 		this._sourceType = null;
 		return this;
 	};

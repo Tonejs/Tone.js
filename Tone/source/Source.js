@@ -47,6 +47,7 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Master"], function(T
 		 * source.volume.value = -6;
 		 */
 		this.volume = new Tone.Signal(this.output.gain, Tone.Signal.Units.Decibels);
+		this._readOnly("volume");
 
 		/**
 		 * 	keeps track of the timeout for chaning the state
@@ -197,7 +198,6 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Master"], function(T
 		clearTimeout(this._timeout);
 		this.onended = function(){};
 		this.volume.dispose();
-		this.volume = null;
 	};
 
 	return Tone.Source;

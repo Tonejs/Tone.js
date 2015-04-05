@@ -124,7 +124,7 @@ define(["Tone/core/Tone"], function(Tone){
 		Tone.prototype.dispose.call(this);
 		Tone.Buffer._removeFromQueue(this);
 		this._buffer = null;
-		this.onload = null;
+		this.onload = Tone.Buffer.defaults.onload;
 		return this;
 	};
 
