@@ -89,6 +89,7 @@ define(["Tone/core/Tone", "Tone/signal/ScaleExp", "Tone/signal/Signal"], functio
 		this.resonance.chain(this._resScale, this._feedback.gain);
 		this._feedback.connect(this.output);
 		this.delayTime = options.delayTime;
+		this._readOnly("resonance");
 	};
 
 	Tone.extend(Tone.FeedbackCombFilter);
@@ -153,6 +154,7 @@ define(["Tone/core/Tone", "Tone/signal/ScaleExp", "Tone/signal/Signal"], functio
 			this._delays[i] = null;
 		}
 		this._delays = null;
+		this._writable("resonance");
 		this.resonance.dispose();
 		this.resonance = null;
 		this._resScale.dispose();

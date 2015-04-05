@@ -71,6 +71,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Expr", "Tone/signal
 		this.b.connect(this.output);
 		this.fade.chain(this._equalPowerB, this.b.gain);
 		this.fade.chain(this._invert, this._equalPowerA, this.a.gain);
+		this._readOnly("fade");
 	};
 
 	Tone.extend(Tone.CrossFade);
@@ -81,6 +82,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Expr", "Tone/signal
 	 */
 	Tone.CrossFade.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
+		this._writable("fade");
 		this._equalPowerA.dispose();
 		this._equalPowerA = null;
 		this._equalPowerB.dispose();

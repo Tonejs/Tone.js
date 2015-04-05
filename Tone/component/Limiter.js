@@ -30,6 +30,8 @@ define(["Tone/core/Tone", "Tone/component/Compressor"], function(Tone){
 		 * @type {AudioParam}
 		 */
 		this.threshold = this._compressor.threshold;
+
+		this._readOnly("threshold");
 	};
 
 	Tone.extend(Tone.Limiter);
@@ -42,6 +44,7 @@ define(["Tone/core/Tone", "Tone/component/Compressor"], function(Tone){
 		Tone.prototype.dispose.call(this);
 		this._compressor.dispose();
 		this._compressor = null;
+		this._writable("threshold");
 		this.threshold = null;
 		return this;
 	};

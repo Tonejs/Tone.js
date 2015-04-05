@@ -95,6 +95,7 @@ define(["Tone/core/Tone", "Tone/component/MultibandSplit", "Tone/signal/Signal"]
 		this.high.value = options.low;
 		this.mid.value = options.mid;
 		this.low.value = options.high;
+		this._readOnly(["low", "mid", "high", "lowFrequency", "highFrequency"]);
 	};
 
 	Tone.extend(Tone.EQ);
@@ -118,6 +119,7 @@ define(["Tone/core/Tone", "Tone/component/MultibandSplit", "Tone/signal/Signal"]
 	 */
 	Tone.EQ.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
+		this._writable(["low", "mid", "high", "lowFrequency", "highFrequency"]);
 		this._multibandSplit.dispose();
 		this._multibandSplit = null;
 		this.lowFrequency = null;

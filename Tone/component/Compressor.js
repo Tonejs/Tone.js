@@ -59,6 +59,9 @@ define(["Tone/core/Tone"], function(Tone){
 		this.ratio = this._compressor.ratio;
 
 		//set the defaults
+		this.attack.connect(this._compressor.attack);
+		this.release.connect(this._compressor.release);
+		this._readOnly(["knee", "release", "attack", "ratio", "threshold"]);
 		this.set(options);
 	};
 
@@ -83,6 +86,7 @@ define(["Tone/core/Tone"], function(Tone){
 	 */
 	Tone.Compressor.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
+		this._writable(["knee", "release", "attack", "ratio", "threshold"]);
 		this._compressor.disconnect();
 		this._compressor = null;
 		this.attack.dispose();

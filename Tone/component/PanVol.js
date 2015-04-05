@@ -43,6 +43,8 @@ define(["Tone/core/Tone", "Tone/component/Panner", "Tone/component/Volume"], fun
 
 		//connections
 		this._panner.connect(this._volume);
+
+		this._readOnly(["pan", "volume"]);
 	};
 
 	Tone.extend(Tone.PanVol);
@@ -53,6 +55,7 @@ define(["Tone/core/Tone", "Tone/component/Panner", "Tone/component/Volume"], fun
 	 */
 	Tone.PanVol.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
+		this._writable(["pan", "volume"]);
 		this._panner.dispose();
 		this._panner = null;
 		this._volume.dispose();

@@ -94,6 +94,7 @@ define(["Tone/core/Tone", "Tone/signal/ScaleExp", "Tone/signal/Signal"], functio
 		this._feedback.connect(this.output);
 		//set the delay to the min value initially
 		this.delayTime = options.delayTime;
+		this._readOnly(["dampening", "resonance"]);
 	};
 
 	Tone.extend(Tone.LowpassCombFilter);
@@ -170,6 +171,7 @@ define(["Tone/core/Tone", "Tone/signal/ScaleExp", "Tone/signal/Signal"], functio
 			this._filterDelays[i] = null;
 		}
 		this._filterDelays = null;
+		this._writable(["dampening", "resonance"]);
 		this.dampening.dispose();
 		this.dampening = null;
 		this.resonance.dispose();

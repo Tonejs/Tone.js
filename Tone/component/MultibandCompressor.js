@@ -72,6 +72,8 @@ define(["Tone/core/Tone", "Tone/component/MultibandSplit", "Tone/component/Compr
 		this._splitter.low.chain(this.low, this.output);
 		this._splitter.mid.chain(this.mid, this.output);
 		this._splitter.high.chain(this.high, this.output);
+
+		this._readOnly(["high", "mid", "low", "highFrequency", "lowFrequency"]);
 	};
 
 	Tone.extend(Tone.MultibandCompressor);
@@ -96,6 +98,7 @@ define(["Tone/core/Tone", "Tone/component/MultibandSplit", "Tone/component/Compr
 	Tone.MultibandCompressor.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
 		this._splitter.dispose();
+		this._writable(["high", "mid", "low", "highFrequency", "lowFrequency"]);
 		this.low.dispose();
 		this.mid.dispose();
 		this.high.dispose();

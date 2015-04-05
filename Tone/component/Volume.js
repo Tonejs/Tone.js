@@ -27,6 +27,8 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Master"], function(To
 		 */
 		this.volume = new Tone.Signal(this.output.gain, Tone.Signal.Units.Decibels);
 		this.volume.value = this.defaultArg(volume, 0);
+
+		this._readOnly("volume");
 	};
 
 	Tone.extend(Tone.Volume);
@@ -37,6 +39,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Master"], function(To
 	 */
 	Tone.Volume.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
+		this._writable("volume");
 		this.volume.dispose();
 		this.volume = null;
 		return this;

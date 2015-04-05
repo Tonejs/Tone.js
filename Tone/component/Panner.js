@@ -92,6 +92,7 @@ function(Tone){
 
 		//initial value
 		this.pan.value = this.defaultArg(initialPan, 0.5);
+		this._readOnly("pan");
 	};
 
 	Tone.extend(Tone.Panner);
@@ -102,6 +103,7 @@ function(Tone){
 	 */
 	Tone.Panner.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
+		this._writable("pan");
 		if (this._hasStereoPanner){
 			this._panner.disconnect();
 			this._panner = null;

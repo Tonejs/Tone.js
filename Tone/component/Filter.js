@@ -69,6 +69,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 
 		//set the rolloff;
 		this.rolloff = options.rolloff;
+		this._readOnly(["detune", "frequency", "gain", "Q"]);
 	};
 
 	Tone.extend(Tone.Filter);
@@ -164,6 +165,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 			this._filters[i] = null;
 		}
 		this._filters = null;
+		this._writable(["detune", "frequency", "gain", "Q"]);
 		this.frequency.dispose();
 		this.Q.dispose();
 		this.frequency = null;
