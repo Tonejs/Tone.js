@@ -31,14 +31,7 @@ define(["Tone/core/Tone", "Tone/signal/GreaterThanZero"], function(Tone){
 		 *  @type {Tone.Equal}
 		 *  @private
 		 */
-		this._gtz = new Tone.GreaterThanZero();
-
-		/**
-		 *  the output
-		 *  @type {Tone.Equal}
-		 *  @private
-		 */
-		this.output = this._gtz;
+		this._gtz = this.output = new Tone.GreaterThanZero();
 
 		//make each of the inputs an alias
 		for (var i = 0; i < inputCount; i++){
