@@ -105,7 +105,7 @@ Tone also let's you set your own AudioContext using `Tone.setContext`.
 
 # Performance
 
-Tone.js uses very few ScriptProcessorNodes. Nearly all of the Tone Modules find a native Web Audio component workaround, making extensive use of the GainNode and WaveShaperNode especially, which enables Tone.js to work well on both desktop and mobile browsers. While the ScripProcessorNode is extremely powerful, it introduces a lot of latency and the potential for glitches more than any other node.
+Tone.js uses very few ScriptProcessorNodes. Nearly all of the Tone Modules find a native Web Audio component workaround, making extensive use of the GainNode and WaveShaperNode especially, which enables Tone.js to work well on both desktop and mobile browsers. While the ScriptProcessorNode is extremely powerful, it introduces a lot of latency and the potential for glitches more than any other node.
 
 # References and Inspiration
 
