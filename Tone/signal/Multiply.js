@@ -47,6 +47,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	 */
 	Tone.Multiply.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
+		this._mult.disconnect();
 		this._mult = null;
 		this._value = null;
 		return this;

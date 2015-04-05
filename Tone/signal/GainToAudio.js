@@ -29,7 +29,7 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper", "Tone/signal/Signal"], funct
 	 */
 	Tone.GainToAudio.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
-		this._norm.disconnect();
+		this._norm.dispose();
 		this._norm = null;
 		return this;
 	};
