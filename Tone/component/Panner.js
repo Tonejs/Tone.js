@@ -1,5 +1,5 @@
 define(["Tone/core/Tone", "Tone/component/CrossFade", "Tone/component/Merge", 
-	"Tone/component/Split", "Tone/signal/Signal", "Tone/signal/WaveShaper"], 
+	"Tone/component/Split", "Tone/signal/Signal", "Tone/signal/GainToAudio"], 
 function(Tone){
 
 	"use strict";
@@ -49,7 +49,7 @@ function(Tone){
 			 *  @type {Tone.WaveShaper}
 			 *  @private
 			 */
-			this._scalePan = new Tone.WaveShaper([-1, -1, 1]);
+			this._scalePan = new Tone.GainToAudio();
 
 			//connections
 			this.pan.chain(this._scalePan, this._panner.pan);
