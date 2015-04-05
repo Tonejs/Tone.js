@@ -4,9 +4,10 @@ define(["tests/Core", "chai", "Tone/signal/Signal", "Tone/signal/Add", "Tone/sig
 	"Tone/signal/Scale", "Tone/source/Oscillator", "Tone/core/Master", "Tone/signal/Abs", "Tone/signal/Negate", 
 	 "Tone/signal/Max", "Tone/signal/Min", "Tone/signal/Clip", "Tone/signal/ScaleExp", 
 	 "Tone/signal/Modulo", "tests/Common", "Tone/signal/Subtract",
-	 "Tone/signal/Pow", "Tone/signal/Normalize", "Tone/signal/AudioToGain", "Tone/signal/EqualPowerGain"], 
+	 "Tone/signal/Pow", "Tone/signal/Normalize", "Tone/signal/AudioToGain", "Tone/signal/EqualPowerGain", 
+	 "Tone/signal/GainToAudio"], 
 function(core, chai, Signal, Add, Multiply, Scale, Oscillator, Master, Abs, Negate, Max, 
-	Min, Clip, ScaleExp, Modulo, Test, Subtract, Pow, Normalize, AudioToGain, EqualPowerGain){
+	Min, Clip, ScaleExp, Modulo, Test, Subtract, Pow, Normalize, AudioToGain, EqualPowerGain, GainToAudio){
 
 	var expect = chai.expect;
 
@@ -815,6 +816,74 @@ function(core, chai, Signal, Add, Multiply, Scale, Oscillator, Master, Abs, Nega
 			}, function(){
 				sig.dispose();
 				a2g.dispose();
+				done();
+			});
+		});
+	});
+
+	describe("Tone.GainToAudio", function(){
+		this.timeout(maxTimeout);
+
+		it("can be created and disposed", function(){
+			var g2a = new GainToAudio();
+			g2a.dispose();
+			Test.wasDisposed(g2a);
+		});
+
+		it("handles input and output connections", function(){
+			Test.onlineContext();
+			var g2a = new GainToAudio();
+			Test.acceptsInputAndOutput(g2a);
+			g2a.dispose();
+		});
+
+		it("outputs 0 for an input value of 0.5", function(done){
+			//make an oscillator to drive the signal
+			var sig, g2a;
+			Test.offlineTest(0.2, function(dest){
+				sig = new Signal(0.5);
+				g2a = new GainToAudio();
+				sig.connect(g2a);
+				g2a.connect(dest);
+			}, function(sample){
+				expect(sample).to.be.closeTo(0, 0.01);
+			}, function(){
+				sig.dispose();
+				g2a.dispose();
+				done();
+			});
+		});
+
+		it("outputs 1 for an input value of 1", function(done){
+			//make an oscillator to drive the signal
+			var sig, g2a;
+			Test.offlineTest(0.2, function(dest){
+				sig = new Signal(1);
+				g2a = new GainToAudio();
+				sig.connect(g2a);
+				g2a.connect(dest);
+			}, function(sample){
+				expect(sample).to.be.closeTo(1, 0.01);
+			}, function(){
+				sig.dispose();
+				g2a.dispose();
+				done();
+			});
+		});
+
+		it("outputs -1 for an input value of 0", function(done){
+			//make an oscillator to drive the signal
+			var sig, g2a;
+			Test.offlineTest(0.2, function(dest){
+				sig = new Signal(0);
+				g2a = new GainToAudio();
+				sig.connect(g2a);
+				g2a.connect(dest);
+			}, function(sample){
+				expect(sample).to.be.closeTo(-1, 0.01);
+			}, function(){
+				sig.dispose();
+				g2a.dispose();
 				done();
 			});
 		});
