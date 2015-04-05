@@ -28,6 +28,7 @@ define(["Tone/core/Tone", "Tone/signal/SignalBase", "Tone/signal/GreaterThan"], 
 		 *  @type {Tone.Signal}
 		 */
 		this.gate = new Tone.Signal(0);
+		this._readOnly("gate");
 
 		/**
 		 *  thresh the control signal to either 0 or 1
@@ -78,7 +79,6 @@ define(["Tone/core/Tone", "Tone/signal/SignalBase", "Tone/signal/GreaterThan"], 
 		Tone.prototype.dispose.call(this);
 		this.gate.dispose();
 		this._thresh.dispose();
-		this.gate = null;
 		this._thresh = null;
 		return this;
 	}; 

@@ -27,12 +27,14 @@ define(["Tone/core/Tone", "Tone/signal/Max", "Tone/signal/Min", "Tone/signal/Sig
 		 *  @type {Tone.Signal}
 		 */
 		this.min = this.input = new Tone.Min(max);
+		this._readOnly("min");
 
 		/**
 		 *  The max clip value
 		 *  @type {Tone.Signal}
 		 */
 		this.max = this.output = new Tone.Max(min);
+		this._readOnly("max");
 
 		this.min.connect(this.max);
 	};
@@ -46,9 +48,7 @@ define(["Tone/core/Tone", "Tone/signal/Max", "Tone/signal/Min", "Tone/signal/Sig
 	Tone.Clip.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
 		this.min.dispose();
-		this.min = null;
 		this.max.dispose();
-		this.max = null;
 		return this;
 	};
 
