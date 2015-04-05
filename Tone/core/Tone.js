@@ -508,10 +508,16 @@ define(function(){
 	 *  @param  {string}  property  the property to make not writable
 	 */
 	Tone.prototype._readOnly = function(property){
-		Object.defineProperty(this, property, { 
-			writable: false,
-			enumerable : true,
-		});
+		if (Array.isArray(property)){
+			for (var i = 0; i < property.length; i++){
+				this._readOnly(property[i]);
+			}
+		} else {
+			Object.defineProperty(this, property, { 
+				writable: false,
+				enumerable : true,
+			});
+		}
 	};
 
 	/**
@@ -520,9 +526,15 @@ define(function(){
 	 *  @param  {string}  property  the property to make writable
 	 */
 	Tone.prototype._writable = function(property){
-		Object.defineProperty(this, property, { 
-			writable: true,
-		});
+		if (Array.isArray(property)){
+			for (var i = 0; i < property.length; i++){
+				this._writable(property[i]);
+			}
+		} else {
+			Object.defineProperty(this, property, { 
+				writable: true,
+			});
+		}
 	};
 
 	///////////////////////////////////////////////////////////////////////////

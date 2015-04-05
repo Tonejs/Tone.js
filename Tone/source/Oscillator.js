@@ -30,14 +30,12 @@ function(Tone){
 		 *  @type {Tone.Signal}
 		 */
 		this.frequency = new Tone.Signal(options.frequency, Tone.Signal.Units.Frequency);
-		this._readOnly("frequency");
 
 		/**
 		 *  The detune control signal in cents. 
 		 *  @type {Tone.Signal}
 		 */
 		this.detune = new Tone.Signal(options.detune);
-		this._readOnly("detune");
 
 		/**
 		 *  the periodic wave
@@ -64,6 +62,7 @@ function(Tone){
 		//setup
 		this.type = options.type;
 		this.phase = this._phase;
+		this._readOnly(["frequency", "detune"]);
 	};
 
 	Tone.extend(Tone.Oscillator, Tone.Source);
@@ -238,13 +237,12 @@ function(Tone){
 			this._oscillator.disconnect();
 			this._oscillator = null;
 		}
-		this._writable("frequency");
+		this._wave = null;
+		this._writable(["frequency", "detune"]);
 		this.frequency.dispose();
 		this.frequency = null;
-		this._writable("detune");
 		this.detune.dispose();
 		this.detune = null;
-		this._wave = null;
 		return this;
 	};
 

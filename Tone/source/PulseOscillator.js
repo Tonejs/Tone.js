@@ -23,7 +23,6 @@ function(Tone){
 		 *  @type {Tone.Signal}
 		 */
 		this.width = new Tone.Signal(options.width, Tone.Signal.Units.Normal);
-		this._readOnly("width");
 
 		/**
 		 *  gate the width amount
@@ -49,14 +48,12 @@ function(Tone){
 		 *  @type {Tone.Signal}
 		 */
 		this.frequency = this._sawtooth.frequency;
-		this._readOnly("frequency");
 
 		/**
 		 *  The detune in cents. 
 		 *  @type {Tone.Signal}
 		 */
 		this.detune = this._sawtooth.detune;
-		this._readOnly("detune");
 
 		/**
 		 *  Threshold the signal to turn it into a square
@@ -74,6 +71,7 @@ function(Tone){
 		//connections
 		this._sawtooth.chain(this._thresh, this.output);
 		this.width.chain(this._widthGate, this._thresh);
+		this._readOnly(["width", "frequency", "detune"]);
 	};
 
 	Tone.extend(Tone.PulseOscillator, Tone.Oscillator);
@@ -151,7 +149,7 @@ function(Tone){
 		Tone.Source.prototype.dispose.call(this);
 		this._sawtooth.dispose();
 		this._sawtooth = null;
-		this._writable("width");
+		this._writable(["width", "frequency", "detune"]);
 		this.width.dispose();
 		this.width = null;
 		this._widthGate.disconnect();
@@ -159,9 +157,7 @@ function(Tone){
 		this._widthGate = null;
 		this._thresh.disconnect();
 		this._thresh = null;
-		this._writable("frequency");
 		this.frequency = null;
-		this._writable("detune");
 		this.detune = null;
 		return this;
 	};
