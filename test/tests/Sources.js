@@ -41,9 +41,11 @@ function(chai, Player, Master, Oscillator, Recorder, Noise, core, PulseOscillato
 				expect(player.state).to.equal("started");
 			});
 			player.onended = function(){
-				expect(player.state).to.equal("stopped");
-				player.dispose();
-				done();
+				setTimeout(function(){
+					expect(player.state).to.equal("stopped");
+					player.dispose();
+					done();
+				}, 100);
 			};
 			player.toMaster();
 		});
