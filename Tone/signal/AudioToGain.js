@@ -16,7 +16,9 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper", "Tone/signal/Signal"], funct
 		 *  @type {WaveShaperNode}
 		 *  @private
 		 */
-		this._norm = this.input = this.output = new Tone.WaveShaper([0,1]);
+		this._norm = this.input = this.output = new Tone.WaveShaper(function(x){
+			return (x + 1) / 2;
+		});
 	};
 
 	Tone.extend(Tone.AudioToGain, Tone.SignalBase);
