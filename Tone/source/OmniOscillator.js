@@ -212,9 +212,14 @@ function(Tone){
 	 */
 	Tone.OmniOscillator.prototype.dispose = function(){
 		Tone.Source.prototype.dispose.call(this);
+		this._writable("detune");
 		this.detune.dispose();
+		this.detune = null;
+		this._writable("frequency");
 		this.frequency.dispose();
+		this.frequency = null;
 		this._oscillator.dispose();
+		this._oscillator = null;
 		this._sourceType = null;
 		return this;
 	};

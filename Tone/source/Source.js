@@ -197,7 +197,9 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Master"], function(T
 		this.stop();
 		clearTimeout(this._timeout);
 		this.onended = function(){};
+		this._writable("volume");
 		this.volume.dispose();
+		this.volume = null;
 	};
 
 	return Tone.Source;

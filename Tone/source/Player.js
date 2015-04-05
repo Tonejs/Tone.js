@@ -304,6 +304,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 			this._source = null;
 		}
 		this._buffer.dispose();
+		this._buffer = null;
 		return this;
 	};
 

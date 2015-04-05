@@ -238,8 +238,12 @@ function(Tone){
 			this._oscillator.disconnect();
 			this._oscillator = null;
 		}
+		this._writable("frequency");
 		this.frequency.dispose();
+		this.frequency = null;
+		this._writable("detune");
 		this.detune.dispose();
+		this.detune = null;
 		this._wave = null;
 		return this;
 	};

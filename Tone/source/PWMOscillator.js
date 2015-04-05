@@ -140,8 +140,17 @@ function(Tone){
 	Tone.PWMOscillator.prototype.dispose = function(){
 		Tone.Source.prototype.dispose.call(this);
 		this._pulse.dispose();
+		this._pulse = null;
 		this._scale.dispose();
+		this._scale = null;
 		this._modulator.dispose();
+		this._modulator = null;
+		this._writable("frequency");
+		this.frequency = null;
+		this._writable("detune");
+		this.detune = null;
+		this._writable("modulationFrequency");
+		this.modulationFrequency = null;
 		return this;
 	};
 
