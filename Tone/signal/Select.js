@@ -63,7 +63,9 @@ define(["Tone/core/Tone", "Tone/signal/Equal", "Tone/signal/Signal"], function(T
 	 *  @returns {Tone.Select} `this`
 	 */
 	Tone.Select.prototype.dispose = function(){
+		this._writable("gate");
 		this.gate.dispose();
+		this.gate = null;
 		for (var i = 0; i < this.input.length; i++){
 			this.input[i].dispose();
 			this.input[i] = null;

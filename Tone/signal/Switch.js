@@ -77,7 +77,9 @@ define(["Tone/core/Tone", "Tone/signal/SignalBase", "Tone/signal/GreaterThan"], 
 	 */
 	Tone.Switch.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
+		this._writable("gate");
 		this.gate.dispose();
+		this.gate = null;
 		this._thresh.dispose();
 		this._thresh = null;
 		return this;

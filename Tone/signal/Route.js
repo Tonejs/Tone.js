@@ -57,7 +57,9 @@ define(["Tone/core/Tone", "Tone/signal/Equal", "Tone/signal/Signal"], function(T
 	 *  @returns {Tone.Route} `this`
 	 */
 	Tone.Route.prototype.dispose = function(){
+		this._writable("gate");
 		this.gate.dispose();
+		this.gate = null;
 		for (var i = 0; i < this.output.length; i++){
 			this.output[i].dispose();
 			this.output[i] = null;
