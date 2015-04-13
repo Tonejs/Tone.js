@@ -325,6 +325,17 @@ function(chai, Tone, Master, Bus, Note, Test, Buffer, Oscillator){
 				Buffer.onprogress = function(){};
 			};
 		});
+
+		it("can reverse a buffer", function(done){
+			var buffer = new Buffer("./testAudio/kick.mp3", function(){
+				var buffArray = buffer.get();
+				var lastSample = buffArray[buffArray.length - 1];
+				buffer.reverse = true;
+				expect(buffer.get()[0]).to.equal(lastSample);
+				buffer.dispose();
+				done();
+			});
+		});
 	});
 
 	describe("Tone.setContext", function(){
