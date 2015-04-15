@@ -167,6 +167,12 @@ function(Tone){
 	 * @type {Array}
 	 */
 	var timeouts = [];
+
+	/** 
+	 * @private
+	 * @type {Array}
+	 */
+	var listeners = [];
 	
 	/** 
 	 * @private
@@ -223,6 +229,7 @@ function(Tone){
 			processIntervals(tickTime);
 			processTimeouts(tickTime);
 			processTimeline(tickTime);
+			processListeners(tickTime);
 			transportTicks += 1;
 			timelineTicks += 1;
 			if (this.loop){
@@ -304,6 +311,17 @@ function(Tone){
 			} 
 		}
 	};
+
+	/**
+	 *  send tick to all listeners
+	 *  @param  {number} time 
+	 */
+	var processListeners = function(time) {
+		for (var i = 0, len = listeners.length; i < len; i++) {
+			var listener = listeners[i];
+			listener();
+		}
+	}
 
 	///////////////////////////////////////////////////////////////////////////////
 	//	INTERVAL
@@ -473,6 +491,29 @@ function(Tone){
 		var willRemove = transportTimeline.length > 0;
 		transportTimeline = [];
 		return willRemove;
+	};
+
+	///////////////////////////////////////////////////////////////////////////////
+	//	LISTENING
+	///////////////////////////////////////////////////////////////////////////////
+
+	/**
+	 *  A listener receives all ticks from the Transport
+	 *  @param  {function} 			callback
+	 *  @returns {Tone.Transport} 	`this`
+	 */
+	Tone.Transport.prototype.setListener = function(callback){
+		if(typeof callback === 'function')
+			return listeners.push(callback);
+		return false;
+	};
+
+	/**
+	 *  clear the listener based on it's ID
+	 *  @param  {number}	listenerID 
+	 */
+	Tone.Transport.prototype.clearListener = function(listenerID){
+		listeners[listenerID] = null;
 	};
 
 	///////////////////////////////////////////////////////////////////////////////
