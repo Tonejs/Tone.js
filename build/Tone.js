@@ -18,7 +18,7 @@
 	 */
 	MainModule(function(){
 
-		
+		"use strict";
 
 		//////////////////////////////////////////////////////////////////////////
 		//	WEB AUDIO CONTEXT
@@ -783,7 +783,7 @@
 
 	ToneModule( function(Tone){
 
-		
+		"use strict";
 
 		/**
 		 *  @class  Base class for all Signals
@@ -827,7 +827,7 @@
 	});
 	ToneModule( function(Tone){
 
-		
+		"use strict";
 
 		/**
 		 *  @class Wraps the WaveShaperNode
@@ -953,7 +953,7 @@
 	});
 	ToneModule( function(Tone){
 
-		
+		"use strict";
 
 		/**
 		 *  @class  Constant audio-rate signal.
@@ -1306,7 +1306,7 @@
 	});
 	ToneModule( function(Tone){
 
-		
+		"use strict";
 
 		/**
 		 *  @class Pow applies an exponent to the incoming signal. The incoming signal
@@ -1382,7 +1382,7 @@
 	});
 	ToneModule( function(Tone){
 
-		
+		"use strict";
 
 		/**
 		 *  @class  ADSR envelope generator attaches to an AudioParam or Signal. 
@@ -1539,7 +1539,7 @@
 
 	ToneModule( function(Tone){
 
-		
+		"use strict";
 
 		/**
 		 *  @class  An Envelope connected to a gain node which can be used as an amplitude envelope.
@@ -1577,7 +1577,7 @@
 	});
 	ToneModule( function(Tone){
 
-		
+		"use strict";
 
 		/**
 		 *  @class A thin wrapper around the DynamicsCompressorNode
@@ -1676,7 +1676,7 @@
 	});
 	ToneModule( function(Tone){
 
-		
+		"use strict";
 
 		/**
 		 *  @class Add a signal and a number or two signals. <br><br>
@@ -1741,7 +1741,7 @@
 	});
 	ToneModule( function(Tone){
 
-		
+		"use strict";
 
 		/**
 		 *  @class  Multiply the incoming signal by a number or Multiply two signals.
@@ -1798,7 +1798,7 @@
 
 	ToneModule( function(Tone){
 
-		
+		"use strict";
 
 		/**
 		 *  @class Negate the incoming signal. i.e. an input signal of 10 will output -10
@@ -1836,7 +1836,7 @@
 	});
 	ToneModule( function(Tone){
 
-		
+		"use strict";
 
 		/**
 		 *  @class Subtract a signal and a number or two signals. 
@@ -1903,7 +1903,7 @@
 	ToneModule( 
 	function(Tone){
 
-		
+		"use strict";
 
 		/**
 		 *  @class  GreaterThanZero outputs 1 when the input is strictly greater than zero
@@ -1963,7 +1963,7 @@
 	ToneModule( 
 	function(Tone){
 
-		
+		"use strict";
 
 		/**
 		 *  @class  EqualZero outputs 1 when the input is strictly greater than zero
@@ -2028,7 +2028,7 @@
 	});
 	ToneModule( function(Tone){
 
-		
+		"use strict";
 
 		/**
 		 *  @class  Output 1 if the signal is equal to the value, otherwise outputs 0. 
@@ -2098,7 +2098,7 @@
 	});
 	ToneModule( function(Tone){
 
-		
+		"use strict";
 
 		/**
 		 *  @class Select between any number of inputs, sending the one 
@@ -2217,7 +2217,7 @@
 	});
 	ToneModule( function(Tone){
 
-		
+		"use strict";
 
 		/**
 		 *  @class IfThenElse has three inputs. When the first input (if) is true (i.e. === 1), 
@@ -2273,7 +2273,7 @@
 	});
 	ToneModule( function(Tone){
 
-		
+		"use strict";
 
 		/**
 		 *  @class OR the inputs together. True if at least one of the inputs is true. 
@@ -2338,7 +2338,7 @@
 	});
 	ToneModule( function(Tone){
 
-		
+		"use strict";
 
 		/**
 		 *  @class and returns 1 when all the inputs are equal to 1
@@ -2388,7 +2388,7 @@
 	});
 	ToneModule( function(Tone){
 
-		
+		"use strict";
 
 		/**
 		 *  @class  Just an alias for EqualZero. but has the same effect as a NOT operator. 
@@ -2410,7 +2410,7 @@
 	ToneModule( 
 		function(Tone){
 
-		
+		"use strict";
 
 		/**
 		 *  @class  Output 1 if the signal is greater than the value, otherwise outputs 0.
@@ -2467,7 +2467,7 @@
 	ToneModule( 
 	function(Tone){
 
-		
+		"use strict";
 
 		/**
 		 *  @class  Output 1 if the signal is less than the value, otherwise outputs 0.
@@ -2545,7 +2545,7 @@
 	ToneModule( 
 	function(Tone){
 
-		
+		"use strict";
 
 		/**
 		 *  @class return the absolute value of an incoming signal
@@ -2608,7 +2608,7 @@
 	});
 	ToneModule( function(Tone){
 
-		
+		"use strict";
 
 		/**
 		 * 	@class  outputs the greater of two signals. If a number is provided in the constructor
@@ -2677,7 +2677,7 @@
 	});
 	ToneModule( function(Tone){
 
-		
+		"use strict";
 
 		/**
 		 * 	@class  Outputs the lesser of two signals. If a number is given 
@@ -2746,7 +2746,7 @@
 	ToneModule( 
 	function(Tone){
 
-		
+		"use strict";
 
 		/**
 		 *  @class Signal-rate modulo operator. Only works in audio range [-1, 1] and for modulus
@@ -2852,7 +2852,7 @@
 	ToneModule( 
 		function(Tone){
 
-		
+		"use strict";
 
 		/**
 		 *  @class evaluate an expression at audio rate. 
@@ -3349,7 +3349,7 @@
 	});
 	ToneModule( function(Tone){
 
-		
+		"use strict";
 
 		/**
 		 *  @class Convert an incoming signal between 0, 1 to an equal power gain scale.
@@ -3392,7 +3392,7 @@
 	});
 	ToneModule( function(Tone){
 
-		
+		"use strict";
 
 		/**
 		 * @class  Equal power fading control values:<br>
@@ -3493,7 +3493,7 @@
 
 	ToneModule( function(Tone){
 
-		
+		"use strict";
 
 		/**
 		 *  @class  Filter object which allows for all of the same native methods
@@ -3670,7 +3670,7 @@
 	});
 	ToneModule( function(Tone){
 
-		
+		"use strict";
 
 		/**
 		 *  @class Split the incoming signal into three bands (low, mid, high)
@@ -3781,7 +3781,7 @@
 	});
 	ToneModule( function(Tone){
 
-		
+		"use strict";
 
 		/**
 		 *  @class A 3 band EQ with control over low, mid, and high gain as
@@ -3922,7 +3922,7 @@
 	});
 	ToneModule( function(Tone){
 
-		
+		"use strict";
 		
 		/**
 		 *  @class  Performs a linear scaling on an input signal.
@@ -4129,7 +4129,7 @@
 
 	ToneModule( function(Tone){
 
-		
+		"use strict";
 
 		/**
 		 *  @class A comb filter with feedback.
@@ -4296,7 +4296,7 @@
 	ToneModule( 
 	function(Tone){
 
-		
+		"use strict";
 
 		/**
 		 *  @class  Follow the envelope of the incoming signal. 
@@ -4478,7 +4478,7 @@
 	});
 	ToneModule( function(Tone){
 
-		
+		"use strict";
 
 		/**
 		 *  @class  Only pass signal through when it's signal exceeds the
@@ -4590,7 +4590,7 @@
 	});
 	ToneModule( function(Tone){
 
-		
+		"use strict";
 		
 		/**
 		 *  @class  a sample accurate clock built on an oscillator.
@@ -4740,7 +4740,7 @@
 	ToneModule( 
 	function(Tone){
 
-		
+		"use strict";
 
 		/**
 		 *  Time can be descibed in a number of ways. 
@@ -4906,6 +4906,12 @@
 		 * @type {Array}
 		 */
 		var timeouts = [];
+
+		/** 
+		 * @private
+		 * @type {Array}
+		 */
+		var listeners = [];
 		
 		/** 
 		 * @private
@@ -4962,6 +4968,7 @@
 				processIntervals(tickTime);
 				processTimeouts(tickTime);
 				processTimeline(tickTime);
+				processListeners(tickTime);
 				transportTicks += 1;
 				timelineTicks += 1;
 				if (this.loop){
@@ -5043,6 +5050,17 @@
 				} 
 			}
 		};
+
+		/**
+		 *  send tick to all listeners
+		 *  @param  {number} time 
+		 */
+		var processListeners = function(time) {
+			for (var i = 0, len = listeners.length; i < len; i++) {
+				var listener = listeners[i];
+				listener();
+			}
+		}
 
 		///////////////////////////////////////////////////////////////////////////////
 		//	INTERVAL
@@ -5212,6 +5230,29 @@
 			var willRemove = transportTimeline.length > 0;
 			transportTimeline = [];
 			return willRemove;
+		};
+
+		///////////////////////////////////////////////////////////////////////////////
+		//	LISTENING
+		///////////////////////////////////////////////////////////////////////////////
+
+		/**
+		 *  A listener receives all ticks from the Transport
+		 *  @param  {function} 			callback
+		 *  @returns {Tone.Transport} 	`this`
+		 */
+		Tone.Transport.prototype.setListener = function(callback){
+			if(typeof callback === 'function')
+				return listeners.push(callback);
+			return false;
+		};
+
+		/**
+		 *  clear the listener based on it's ID
+		 *  @param  {number}	listenerID 
+		 */
+		Tone.Transport.prototype.clearListener = function(listenerID){
+			listeners[listenerID] = null;
 		};
 
 		///////////////////////////////////////////////////////////////////////////////
@@ -5865,7 +5906,7 @@
 
 	ToneModule( function(Tone){
 
-		
+		"use strict";
 		
 		/**
 		 *  @class  A single master output which is connected to the
@@ -5990,7 +6031,7 @@
 	});
 	ToneModule( function(Tone){
 
-		
+		"use strict";
 		
 		/**
 		 *  @class  Base class for sources.
@@ -6195,7 +6236,7 @@
 	ToneModule( 
 	function(Tone){
 
-		
+		"use strict";
 
 		/**
 		 *  @class Oscilator with start, pause, stop and sync to Transport methods
@@ -6445,7 +6486,7 @@
 	});
 	ToneModule( function(Tone){
 
-		
+		"use strict";
 
 		/**
 		 *  @class AudioToGain converts an input range of -1,1 to 0,1
@@ -6482,7 +6523,7 @@
 	ToneModule( 
 	function(Tone){
 
-		
+		"use strict";
 
 		/**
 		 *  @class  The Low Frequency Oscillator produces an output signal 
@@ -6702,7 +6743,7 @@
 	});
 	ToneModule( function(Tone){
 
-		
+		"use strict";
 
 		/**
 		 *  @class A limiter on the incoming signal. Composed of a Tone.Compressor
@@ -6752,7 +6793,7 @@
 	});
 	ToneModule( function(Tone){
 
-		
+		"use strict";
 
 		/**
 		 *  @class A lowpass feedback comb filter. 
@@ -6974,7 +7015,7 @@
 	});
 	ToneModule( function(Tone){
 
-		
+		"use strict";
 
 		/**
 		 *  @class  Merge a left and a right channel into a single stereo channel.
@@ -7038,7 +7079,7 @@
 
 	ToneModule( function(Tone){
 
-		
+		"use strict";
 
 		/**
 		 *  @class  Get the rms of the input signal with some averaging.
@@ -7210,7 +7251,7 @@
 	});
 	ToneModule( function(Tone){
 
-		
+		"use strict";
 
 		/**
 		 *  @class Coerces the incoming mono or stereo signal into a stereo signal
@@ -7251,7 +7292,7 @@
 	});
 	ToneModule( function(Tone){
 
-		
+		"use strict";
 
 		/**
 		 *  @class A compressor with seperate controls over low/mid/high dynamics
@@ -7363,7 +7404,7 @@
 	});
 	ToneModule( function(Tone){
 
-		
+		"use strict";
 
 		/**
 		 *	@class  Split the incoming signal into left and right channels
@@ -7426,7 +7467,7 @@
 	ToneModule( 
 	function(Tone){
 
-		
+		"use strict";
 
 		/**
 		 *  Panner. 
@@ -7507,7 +7548,7 @@
 	});
 	ToneModule( function(Tone){
 
-		
+		"use strict";
 
 		/**
 		 *  @class A Panner and volume in one.
@@ -7569,7 +7610,7 @@
 	});
 	ToneModule( function(Tone){
 
-		
+		"use strict";
 
 		/**
 		 *  @deprecated
@@ -7814,7 +7855,7 @@
 	ToneModule( 
 		function(Tone){
 
-		
+		"use strict";
 
 		/**
 		 *  @class An envelope which can be scaled to any range. 
@@ -7934,7 +7975,7 @@
 	});
 	ToneModule( function(Tone){
 
-		
+		"use strict";
 
 		/**
 		 *  @class  Buffer loading and storage. Tone.Buffer is used internally by all 
@@ -8263,7 +8304,7 @@
 	});
 	ToneModule( function(Tone){
 
-		
+		"use strict";
 
 		/**
 		 *  buses are another way of routing audio
@@ -8323,7 +8364,7 @@
 	});
 	ToneModule( function(Tone){
 
-		
+		"use strict";
 
 		/**
 		 *  Frequency can be described similar to time, except ultimately the
@@ -8650,7 +8691,7 @@
 	});
 	ToneModule( function(Tone){
 
-		
+		"use strict";
 		
 		/**
 		 * 	@class  Effect is the base class for effects. connect the effect between
@@ -8756,7 +8797,7 @@
 	});
 	ToneModule( function(Tone){
 
-		
+		"use strict";
 
 		/**
 		 *  @class AutoPanner is a Tone.Panner with an LFO connected to the pan amount
@@ -8893,7 +8934,7 @@
 	ToneModule( 
 	function(Tone){
 
-		
+		"use strict";
 
 		/**
 		 *  @class  AutoWah connects an envelope follower to a bandpass filter.
@@ -9089,7 +9130,7 @@
 	ToneModule( 
 	function(Tone){
 
-		
+		"use strict";
 
 		/**
 		 *  @class Downsample incoming signal to a different bitdepth. 
@@ -9179,7 +9220,7 @@
 	});
 	ToneModule( function(Tone){
 
-		
+		"use strict";
 
 		/**
 		 *  @class A Chebyshev waveshaper. Good for making different types of distortion sounds.
@@ -9309,7 +9350,7 @@
 	ToneModule( 
 	function(Tone){
 
-		
+		"use strict";
 
 		/**
 		 *  @class Creates an effect with an effectSendL/R and effectReturnL/R
@@ -9411,7 +9452,7 @@
 	});
 	ToneModule( function(Tone){
 
-		
+		"use strict";
 		
 		/**
 		 * 	@class  Feedback Effect (a sound loop between an audio source and its own output)
@@ -9474,7 +9515,7 @@
 	ToneModule( 
 	function(Tone){
 
-		
+		"use strict";
 
 		/**
 		 *  @class Just like a stereo feedback effect, but the feedback is routed from left to right
@@ -9536,7 +9577,7 @@
 	ToneModule( 
 	function(Tone){
 
-		
+		"use strict";
 
 		/**
 		 *  @class A Chorus effect with feedback. inspiration from https://github.com/Dinahmoe/tuna/blob/master/tuna.js
@@ -9711,7 +9752,7 @@
 	});
 	ToneModule( function(Tone){
 
-		
+		"use strict";
 
 		/**
 		 *  @class  Convolver wrapper for reverb and emulation.
@@ -9800,7 +9841,7 @@
 	});
 	ToneModule( function(Tone){
 
-		
+		"use strict";
 
 		/**
 		 *  @class A simple distortion effect using the waveshaper node
@@ -9903,7 +9944,7 @@
 	});
 	ToneModule( function(Tone){
 
-		
+		"use strict";
 		
 		/**
 		 *  @class  A feedback delay
@@ -9969,7 +10010,7 @@
 	ToneModule( 
 	function(Tone){
 
-		
+		"use strict";
 
 		/**
 		 *  an array of comb filter delay values from Freeverb implementation
@@ -10128,7 +10169,7 @@
 	ToneModule( 
 	function(Tone){
 
-		
+		"use strict";
 
 		/**
 		 *  an array of the comb filter delay time values
@@ -10265,7 +10306,7 @@
 	});
 	ToneModule( function(Tone){
 
-		
+		"use strict";
 
 		/**
 		 *  @class Applies a Mid/Side seperation and recombination
@@ -10378,7 +10419,7 @@
 	ToneModule( 
 	function(Tone){
 
-		
+		"use strict";
 
 		/**
 		 *  @class A Phaser effect. inspiration from https://github.com/Dinahmoe/tuna/
@@ -10563,7 +10604,7 @@
 	ToneModule( 
 	function(Tone){
 
-		
+		"use strict";
 
 		/**
 		 *  @class  PingPongDelay is a dual delay effect where the echo is heard
@@ -10651,7 +10692,7 @@
 	ToneModule( 
 	function(Tone){
 
-		
+		"use strict";
 
 		/**
 		 *  @class A stereo feedback effect where the feedback is on the same channel
@@ -10712,7 +10753,7 @@
 	ToneModule( 
 		function(Tone){
 
-		
+		"use strict";
 
 		/**
 		 *  @class Applies a width factor (0-1) to the mid/side seperation. 
@@ -10802,7 +10843,7 @@
 	ToneModule(
 	function(Tone){
 
-		
+		"use strict";
 
 		/**
 		 *  @class Pulse Oscillator with control over width
@@ -10965,7 +11006,7 @@
 	ToneModule( 
 	function(Tone){
 
-		
+		"use strict";
 
 		/**
 		 *  @class takes an array of Oscillator descriptions and mixes them together
@@ -11117,7 +11158,7 @@
 	ToneModule( 
 	function(Tone){
 
-		
+		"use strict";
 
 		/**
 		 *  @class OmniOscillator aggregates Tone.Oscillator, Tone.PulseOscillator,
@@ -11339,7 +11380,7 @@
 	});
 	ToneModule( function(Tone){
 
-		
+		"use strict";
 
 		/**
 		 *  @class  Base-class for all instruments
@@ -11410,7 +11451,7 @@
 	});
 	ToneModule( function(Tone){
 
-		
+		"use strict";
 
 		/**
 		 *  @class  this is a base class for monophonic instruments. 
@@ -11513,7 +11554,7 @@
 	ToneModule( 
 	function(Tone){
 
-		
+		"use strict";
 
 		/**
 		 *  @class  the MonoSynth is a single oscillator, monophonic synthesizer
@@ -11666,7 +11707,7 @@
 	ToneModule( 
 	function(Tone){
 
-		
+		"use strict";
 
 		/**
 		 *  @class  the AMSynth is an amplitude modulation synthesizer
@@ -11856,7 +11897,7 @@
 	ToneModule( 
 	function(Tone){
 
-		
+		"use strict";
 
 		/**
 		 *  @class  the DuoSynth is a monophonic synth composed of two 
@@ -12069,7 +12110,7 @@
 	ToneModule( 
 	function(Tone){
 
-		
+		"use strict";
 
 		/**
 		 *  @class  the FMSynth is composed of two MonoSynths where one MonoSynth is the 
@@ -12279,7 +12320,7 @@
 	});
 	ToneModule( function(Tone){
 
-		
+		"use strict";
 		
 		/**
 		 *  @class  Audio file player with start, loop, stop.
@@ -12573,7 +12614,7 @@
 	ToneModule( 
 	function(Tone){
 
-		
+		"use strict";
 
 		/**
 		 *  @class A simple sampler instrument which plays an audio buffer 
@@ -12829,7 +12870,7 @@
 	ToneModule( 
 	function(Tone){
 
-		
+		"use strict";
 
 		/**
 		 *  @class Deprecated.
@@ -12963,7 +13004,7 @@
 
 	ToneModule( function(Tone){
 
-		
+		"use strict";
 
 		/**
 		 *  @class  Noise generator. 
@@ -13172,7 +13213,7 @@
 	ToneModule( 
 	function(Tone){
 
-		
+		"use strict";
 
 		/**
 		 *  @class  the NoiseSynth is a single oscillator, monophonic synthesizer
@@ -13317,7 +13358,7 @@
 	});
 	ToneModule( function(Tone){
 
-		
+		"use strict";
 
 		/**
 		 *  @class Karplus-String string synthesis. 
@@ -13419,7 +13460,7 @@
 	ToneModule( 
 	function(Tone){
 
-		
+		"use strict";
 
 		/**
 		 *  @class  Creates a polyphonic synthesizer out of 
@@ -13613,7 +13654,7 @@
 	});
 	ToneModule( function(Tone){
 
-		
+		"use strict";
 
 		/**
 		 * 	@class  Clip the incoming signal so that the output is always between min and max
@@ -13670,7 +13711,7 @@
 	ToneModule( 
 	function(Tone){
 
-		
+		"use strict";
 
 		/**
 		 *  this is the maximum value that the divide can handle	
@@ -13819,7 +13860,7 @@
 	ToneModule( 
 	function(Tone){
 
-		
+		"use strict";
 
 		/**
 		 *  @class Divide by a value or signal. 
@@ -13919,7 +13960,7 @@
 	});
 	ToneModule( function(Tone){
 
-		
+		"use strict";
 
 		/**
 		 *  @class Normalize takes an input min and max and maps it linearly to [0,1]
@@ -14025,7 +14066,7 @@
 	});
 	ToneModule( function(Tone){
 
-		
+		"use strict";
 
 		/**
 		 *  @class Route a single input to the specified output
@@ -14138,7 +14179,7 @@
 	});
 	ToneModule( function(Tone){
 
-		
+		"use strict";
 
 		/**
 		 *  @class  When the gate is set to 0, the input signal does not pass through to the output. 
@@ -14225,7 +14266,7 @@
 	});
 	ToneModule( function(Tone){
 
-		
+		"use strict";
 
 		/**
 		 *  @class  WebRTC Microphone. 
