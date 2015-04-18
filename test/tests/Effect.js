@@ -5,10 +5,10 @@ define(["tests/Core", "chai", "Recorder", "Tone/core/Master", "Tone/effect/Effec
 	"Tone/effect/FeedbackDelay", "Tone/effect/PingPongDelay", "Tone/effect/Chorus", "tests/Common", "Tone/effect/Freeverb", 
 	"Tone/effect/JCReverb", "Tone/effect/StereoEffect", "Tone/effect/StereoFeedbackEffect", 
 	"Tone/effect/StereoXFeedbackEffect", "Tone/effect/Phaser", "Tone/effect/Distortion", "Tone/effect/Chebyshev", 
-	"Tone/effect/Convolver", "Tone/effect/MidSideEffect", "Tone/effect/StereoWidener"], 
+	"Tone/effect/Convolver", "Tone/effect/MidSideEffect", "Tone/effect/StereoWidener", "Tone/effect/AutoFilter"], 
 function(Tone, chai, Recorder, Master, Effect, CrossFade, FeedbackEffect, Signal, AutoPanner, AutoWah, BitCrusher, 
 	FeedbackDelay, PingPongDelay, Chorus, Test, Freeverb, JCReverb, StereoEffect, StereoFeedbackEffect, 
-	StereoXFeedbackEffect, Phaser, Distortion, Chebyshev, Convolver, MidSide, StereoWidener){
+	StereoXFeedbackEffect, Phaser, Distortion, Chebyshev, Convolver, MidSide, StereoWidener, AutoFilter){
 
 	var expect = chai.expect;
 
@@ -835,6 +835,47 @@ function(Tone, chai, Recorder, Master, Effect, CrossFade, FeedbackEffect, Signal
 			expect(widen.get()).to.contain.keys(Object.keys(values));
 			expect(widen.width.value).to.equal(values.width);
 			widen.dispose();
+		});
+	});
+
+	describe("Tone.AutoFilter", function(){
+
+		it("can be created and disposed", function(){
+			var af = new AutoFilter();
+			af.dispose();
+			Test.wasDisposed(af);
+		});
+
+		it("handles input and output connections", function(){
+			Test.onlineContext();
+			var af = new AutoFilter();
+			Test.acceptsInputAndOutput(af);
+			af.dispose();
+		});
+
+		it("passes the incoming signal through to the output", function(done){
+			var af;
+			Test.passesAudio(function(input, output){
+				af = new AutoFilter();
+				input.connect(af);
+				af.connect(output);
+			}, function(){
+				af.dispose();
+				done();
+			});
+		});
+
+		it("extends Tone.Effect", function(){
+			var af = new AutoFilter();
+			expect(af).is.instanceof(Effect);
+			af.dispose();
+		});
+
+		it("can be set with options object", function(){
+			var ap = new AutoPanner();
+			ap.set({"wet" : 0.22});
+			expect(ap.wet.value).is.closeTo(0.22, 0.01);
+			ap.dispose();
 		});
 	});
 });
