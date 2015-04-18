@@ -76,6 +76,7 @@ function(Tone){
 		this.input.connect(this._dryWet, 0, 0);
 		this._merge.connect(this._dryWet, 0, 1);
 		this._dryWet.connect(this.output);
+		this._readOnly(["wet"]);
 	};
 
 	Tone.extend(Tone.StereoEffect, Tone.Effect);
@@ -96,6 +97,7 @@ function(Tone){
 		this.effectSendR = null;
 		this.effectReturnL = null;
 		this.effectReturnR = null;
+		this._writable(["wet"]);
 		this.wet = null;
 		return this;
 	};

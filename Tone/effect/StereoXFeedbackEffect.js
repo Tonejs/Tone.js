@@ -39,6 +39,7 @@ function(Tone){
 		this.effectReturnL.chain(this._feedbackLR, this.effectSendR);
 		this.effectReturnR.chain(this._feedbackRL, this.effectSendL);
 		this.feedback.fan(this._feedbackLR.gain, this._feedbackRL.gain);
+		this._readOnly(["feedback"]);
 	};
 
 	Tone.extend(Tone.StereoXFeedbackEffect, Tone.FeedbackEffect);
@@ -49,6 +50,7 @@ function(Tone){
 	 */
 	Tone.StereoXFeedbackEffect.prototype.dispose = function(){
 		Tone.StereoEffect.prototype.dispose.call(this);
+		this._writable(["feedback"]);
 		this.feedback.dispose();
 		this.feedback = null;
 		this._feedbackLR.disconnect();

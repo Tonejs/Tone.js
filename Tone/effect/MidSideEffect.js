@@ -3,15 +3,19 @@ define(["Tone/core/Tone", "Tone/effect/StereoEffect"], function(Tone){
 	"use strict";
 
 	/**
-	 *  @class Applies a Mid/Side seperation and recombination
-	 *         http://musicdsp.org/showArchiveComment.php?ArchiveID=173
-	 *         http://www.kvraudio.com/forum/viewtopic.php?t=212587
-	 *         M = (L+R)/sqrt(2);   // obtain mid-signal from left and right
-	 *         S = (L-R)/sqrt(2);   // obtain side-signal from left and righ
-	 *         // amplify mid and side signal seperately:
-	 *         M/S send/return
-	 *         L = (M+S)/sqrt(2);   // obtain left signal from mid and side
-	 *         R = (M-S)/sqrt(2);   // obtain right signal from mid and side
+	 *  @class Mid/Side processing separates the the 'mid' signal 
+	 *         (which comes out of both the left and the right channel) 
+	 *         and the 'side' (which only comes out of the the side channels) 
+	 *         and effects them separately before being recombined. <br>
+	 *         Applies a Mid/Side seperation and recombination. <br>
+	 *         http://musicdsp.org/showArchiveComment.php?ArchiveID=173<br>
+	 *         http://www.kvraudio.com/forum/viewtopic.php?t=212587<br>
+	 *         M = (L+R)/sqrt(2);   // obtain mid-signal from left and right<br>
+	 *         S = (L-R)/sqrt(2);   // obtain side-signal from left and righ<br>
+	 *         // amplify mid and side signal seperately:<br>
+	 *         M/S send/return<br>
+	 *         L = (M+S)/sqrt(2);   // obtain left signal from mid and side<br>
+	 *         R = (M-S)/sqrt(2);   // obtain right signal from mid and side<br>
 	 *
 	 *  @extends {Tone.StereoEffect}
 	 *  @constructor

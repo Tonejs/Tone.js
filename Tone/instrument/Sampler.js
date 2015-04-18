@@ -79,6 +79,7 @@ function(Tone){
 		this.pitch = options.pitch;
 		this.player.chain(this.filter, this.envelope, this.output);
 		this.filterEnvelope.connect(this.filter.frequency);
+		this._readOnly(["player", "filterEnvelope", "envelope", "filter"]);
 	};
 
 	Tone.extend(Tone.Sampler, Tone.Instrument);
@@ -237,6 +238,7 @@ function(Tone){
 	 */
 	Tone.Sampler.prototype.dispose = function(){
 		Tone.Instrument.prototype.dispose.call(this);
+		this._writable(["player", "filterEnvelope", "envelope", "filter"]);
 		this.player.dispose();
 		this.filterEnvelope.dispose();
 		this.envelope.dispose();

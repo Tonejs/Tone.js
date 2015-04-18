@@ -86,6 +86,8 @@ function(Tone){
 		this.depth = this._depth;
 		this.frequency.value = options.frequency;
 		this.type = options.type;
+
+		this._readOnly(["frequency"]);
 	};
 
 	Tone.extend(Tone.Chorus, Tone.StereoXFeedbackEffect);
@@ -168,6 +170,7 @@ function(Tone){
 		this._delayNodeL = null;
 		this._delayNodeR.disconnect();
 		this._delayNodeR = null;
+		this._writable("frequency");
 		this.frequency = null;
 		return this;
 	};

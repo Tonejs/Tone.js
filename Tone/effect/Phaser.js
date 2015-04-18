@@ -85,6 +85,7 @@ function(Tone){
 		//start the lfo
 		this._lfoL.start();
 		this._lfoR.start();
+		this._readOnly(["frequency"]);
 	};
 
 	Tone.extend(Tone.Phaser, Tone.StereoEffect);
@@ -177,6 +178,7 @@ function(Tone){
 			this._filtersR[j] = null;
 		}
 		this._filtersR = null;
+		this._writable(["frequency"]);
 		this.frequency = null;
 		return this;
 	};

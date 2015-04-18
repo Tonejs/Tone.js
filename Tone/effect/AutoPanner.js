@@ -47,6 +47,7 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/LFO", "Tone/comp
 		this.connectEffect(this._panner);
 		this._lfo.connect(this._panner.pan);
 		this.type = options.type;
+		this._readOnly(["amount", "frequency"]);
 	};
 
 	//extend Effect
@@ -126,6 +127,7 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/LFO", "Tone/comp
 		this._lfo = null;
 		this._panner.dispose();
 		this._panner = null;
+		this._writable(["amount", "frequency"]);
 		this.frequency = null;
 		this.amount = null;
 		return this;

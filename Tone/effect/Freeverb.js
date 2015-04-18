@@ -112,6 +112,8 @@ function(Tone){
 		this._allpassFiltersL[this._allpassFiltersL.length - 1].connect(this.effectReturnL);
 		this._allpassFiltersR[this._allpassFiltersR.length - 1].connect(this.effectReturnR);
 		this.dampening.connect(this._dampeningScale);
+
+		this._readOnly(["roomSize", "dampening"]);
 	};
 
 	Tone.extend(Tone.Freeverb, Tone.StereoEffect);
@@ -146,6 +148,7 @@ function(Tone){
 			this._combFilters[cf] = null;
 		}
 		this._combFilters = null;
+		this._writable(["roomSize", "dampening"]);
 		this.roomSize.dispose();
 		this.dampening.dispose();
 		this._dampeningScale.dispose();

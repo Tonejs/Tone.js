@@ -137,7 +137,8 @@ function(Tone){
 			if (voice){
 				voice.triggerRelease(time);
 				this._freeVoices.push(voice);
-				this._activeVoices[stringified] = null;
+				delete this._activeVoices[stringified];
+				voice = null;
 			}
 		}
 		return this;

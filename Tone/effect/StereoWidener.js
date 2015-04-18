@@ -57,6 +57,7 @@ define(["Tone/core/Tone", "Tone/effect/MidSideEffect", "Tone/signal/Signal",
 		//connect it to the effect send/return
 		this.midSend.chain(this._midMult, this.midReturn);
 		this.sideSend.chain(this._sideMult, this.sideReturn);
+		this._readOnly(["width"]);
 	};
 
 	Tone.extend(Tone.StereoWidener, Tone.MidSideEffect);
@@ -76,6 +77,7 @@ define(["Tone/core/Tone", "Tone/effect/MidSideEffect", "Tone/signal/Signal",
 	 */
 	Tone.StereoWidener.prototype.dispose = function(){
 		Tone.MidSideEffect.prototype.dispose.call(this);
+		this._writable(["width"]);
 		this.width.dispose();
 		this.width = null;
 		this._midMult.dispose();
