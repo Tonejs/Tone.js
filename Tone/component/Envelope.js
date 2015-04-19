@@ -104,7 +104,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Pow"], function(Ton
 		 *  @type {number}
 		 *  @private
 		 */
-		this._minOutput = 0;
+		this._minOutput = 0.0001;
 
 		/**
 		 *  the signal
@@ -155,7 +155,6 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Pow"], function(Ton
 			if (type === Tone.Envelope.Type.LINEAR || 
 				type === Tone.Envelope.Type.EXPONENTIAL){
 				this._attackType = type;
-				this._minOutput = this._attackType === Tone.Envelope.Type.LINEAR ? 0 : 0.0001;
 			} else {
 				throw Error("attackType must be either \"linear\" or \"exponential\". Invalid type: ", type);
 			}
@@ -266,7 +265,6 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Pow"], function(Ton
 		this._sig.setValueAtTime(valueAtTime, time);
 		if (this._attackType === Tone.Envelope.Type.LINEAR){
 			this._sig.linearRampToValueAtTime(scaledMax, this._nextDecay);
-			// this._sig.setTargetAtTime(scaledMax, this._nextAttack, attack * this._timeMult);
 		} else {
 			this._sig.exponentialRampToValueAtTime(scaledMax, this._nextDecay);
 		}
