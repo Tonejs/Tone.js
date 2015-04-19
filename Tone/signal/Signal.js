@@ -168,13 +168,9 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 	 */
 	Tone.Signal.prototype.exponentialRampToValueAtTime = function(value, endTime){
 		value = this._fromUnits(value);
-		//can't go below a certain value
-		value = Math.max(0.00001, value);
 		// exponentialRampToValueAt cannot ever ramp from 0, apparently.
 		// More info: https://bugzilla.mozilla.org/show_bug.cgi?id=1125600#c2
-		if (this._value.value === 0) {
-			this._value.setValueAtTime(0.00001, this.now());
-		}
+		value = Math.max(0.00001, value);
 		this._value.exponentialRampToValueAtTime(value, this.toSeconds(endTime));
 		return this;
 	};
