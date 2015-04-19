@@ -439,7 +439,7 @@ function(coreTest, chai, CrossFade, Master, Signal, Recorder, Panner, LFO, Gate,
 				"release" : "4n"
 			};
 			env.set(values);
-			expect(env.get()).to.deep.equal(values);
+			expect(env.get()).to.contain.keys(Object.keys(values));
 			env.dispose();
 		});
 
