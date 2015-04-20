@@ -782,7 +782,7 @@ function(Tone, chai, Recorder, Master, Effect, CrossFade, FeedbackEffect, Signal
 
 		it("extends Tone.StereoEffect", function(){
 			var midside = new MidSide();
-			expect(midside).is.instanceof(StereoEffect);
+			expect(midside).is.instanceof(Effect);
 			midside.dispose();
 		});
 

@@ -2,15 +2,17 @@
 
 define(["tests/Core", "chai", "Tone/component/CrossFade", "Tone/core/Master", "Tone/signal/Signal", 
 "Recorder", "Tone/component/Panner", "Tone/component/LFO", "Tone/component/Gate", 
-"Tone/component/Follower", "Tone/component/Envelope", "Tone/component/Filter", "Tone/component/EQ", 
+"Tone/component/Follower", "Tone/component/Envelope", "Tone/component/Filter", "Tone/component/EQ3", 
 "Tone/component/Merge", "Tone/component/Split", "tests/Common", "Tone/component/AmplitudeEnvelope", 
 "Tone/component/LowpassCombFilter", "Tone/component/FeedbackCombFilter", "Tone/component/Mono", 
 "Tone/component/MultibandSplit", "Tone/component/Compressor", "Tone/component/PanVol",
 "Tone/component/MultibandCompressor", "Tone/component/ScaledEnvelope", "Tone/component/Limiter", 
-"Tone/core/Transport", "Tone/component/Volume", "Tone/component/Stereo"],
+"Tone/core/Transport", "Tone/component/Volume", "Tone/component/Stereo", "Tone/component/MidSideSplit",
+"Tone/component/MidSideMerge", "Tone/component/MidSideCompressor"],
 function(coreTest, chai, CrossFade, Master, Signal, Recorder, Panner, LFO, Gate, Follower, Envelope, 
-	Filter, EQ, Merge, Split, Test, AmplitudeEnvelope, LowpassCombFilter, FeedbackCombFilter,
-	Mono, MultibandSplit, Compressor, PanVol, MultibandCompressor, ScaledEnvelope, Limiter, Transport, Volume, Stereo){
+	Filter, EQ3, Merge, Split, Test, AmplitudeEnvelope, LowpassCombFilter, FeedbackCombFilter,
+	Mono, MultibandSplit, Compressor, PanVol, MultibandCompressor, ScaledEnvelope, Limiter, Transport, 
+	Volume, Stereo, MidSideSplit, MidSideMerge, MidSideCompressor){
 	var expect = chai.expect;
 
 	Master.mute();
@@ -532,18 +534,18 @@ function(coreTest, chai, CrossFade, Master, Signal, Recorder, Panner, LFO, Gate,
 		});
 	});
 
-	describe("Tone.EQ3", function(){
+	describe("Tone.EQ33", function(){
 		this.timeout(maxTimeout);
 
 		it("can be created and disposed", function(){
-			var eq = new EQ();
+			var eq = new EQ3();
 			eq.dispose();
 			Test.wasDisposed(eq);
 		});
 
 		it("handles input and output connections", function(){
 			Test.onlineContext();
-			var eq = new EQ();
+			var eq = new EQ3();
 			Test.acceptsInputAndOutput(eq);
 			eq.dispose();
 		});
@@ -551,7 +553,7 @@ function(coreTest, chai, CrossFade, Master, Signal, Recorder, Panner, LFO, Gate,
 		it("passes the incoming signal through", function(done){
 			var eq;
 			Test.passesAudio(function(input, output){
-				eq = new EQ();
+				eq = new EQ3();
 				input.connect(eq);
 				eq.connect(output);
 			}, function(){
@@ -562,7 +564,7 @@ function(coreTest, chai, CrossFade, Master, Signal, Recorder, Panner, LFO, Gate,
 
 		it("can set/get values as an Object", function(){
 			Test.onlineContext();
-			var eq = new EQ();
+			var eq = new EQ3();
 			var values = {
 				"high" : -12,
 				"mid" : -24,
@@ -1162,6 +1164,98 @@ function(coreTest, chai, CrossFade, Master, Signal, Recorder, Panner, LFO, Gate,
 				stereo.connect(output);
 			}, function(){
 				stereo.dispose();
+				done();
+			});
+		});
+	});
+
+	describe("Tone.MidSideSplit", function(){
+		this.timeout(maxTimeout);
+
+		it("can be created and disposed", function(){
+			var split = new MidSideSplit();
+			split.dispose();
+			Test.wasDisposed(split);
+		});
+
+		it("handles input and output connections", function(){
+			Test.onlineContext();
+			var split = new MidSideSplit();
+			Test.acceptsInput(split);
+			Test.acceptsOutput(split.mid);
+			Test.acceptsOutput(split.side);
+			split.dispose();
+		});
+	});
+
+	describe("Tone.MidSideMerge", function(){
+		this.timeout(maxTimeout);
+
+		it("can be created and disposed", function(){
+			var merge = new MidSideMerge();
+			merge.dispose();
+			Test.wasDisposed(merge);
+		});
+
+		it("handles input and output connections", function(){
+			Test.onlineContext();
+			var merge = new MidSideMerge();
+			Test.acceptsInput(merge.side);
+			Test.acceptsInput(merge.mid);
+			Test.acceptsOutput(merge);
+			merge.dispose();
+		});
+
+		it("passes the mid signal through", function(done){
+			var merge;
+			Test.passesAudio(function(input, output){
+				merge = new MidSideMerge();
+				input.connect(merge.mid);
+				merge.connect(output);
+			}, function(){
+				merge.dispose();
+				done();
+			});
+		});
+
+		it("passes the side signal through", function(done){
+			var merge;
+			Test.passesAudio(function(input, output){
+				merge = new MidSideMerge();
+				input.connect(merge.side);
+				merge.connect(output);
+			}, function(){
+				merge.dispose();
+				done();
+			});
+		});
+	});
+
+	describe("Tone.MidSideCompressor", function(){
+		this.timeout(maxTimeout);
+
+		it("can be created and disposed", function(){
+			var comp = new MidSideCompressor();
+			comp.dispose();
+			Test.wasDisposed(comp);
+		});
+
+		it("handles input and output connections", function(){
+			Test.onlineContext();
+			var comp = new MidSideCompressor();
+			Test.acceptsInput(comp);
+			Test.acceptsOutput(comp);
+			comp.dispose();
+		});
+
+		it("passes signal through", function(done){
+			var comp;
+			Test.passesAudio(function(input, output){
+				comp = new MidSideCompressor();
+				input.connect(comp);
+				comp.connect(output);
+			}, function(){
+				comp.dispose();
 				done();
 			});
 		});
