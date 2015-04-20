@@ -90,7 +90,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Pow"], function(Ton
 		 *  @type {number}
 		 *  @private
 		 */
-		this._attackType = Tone.Envelope.Type.LINEAR;
+		this._attackCurve = Tone.Envelope.Type.LINEAR;
 
 		/** 
 		 *  the last recorded velocity value
@@ -113,8 +113,8 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Pow"], function(Ton
 		 */
 		this._sig = this.output = new Tone.Signal(0);
 
-		//set the attackType initially
-		this.attackType = options.attackType;
+		//set the attackCurve initially
+		this.attackCurve = options.attackCurve;
 	};
 
 	Tone.extend(Tone.Envelope);
@@ -129,7 +129,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Pow"], function(Ton
 		"decay" : 0.1,
 		"sustain" : 0.5,
 		"release" : 1,
-		"attackType" : "linear"
+		"attackCurve" : "linear"
 	};
 
 	/**
@@ -143,20 +143,20 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Pow"], function(Ton
 	 * The slope of the attack. Either "linear" or "exponential"
 	 * @memberOf Tone.Envelope#
 	 * @type {number}
-	 * @name attackType
+	 * @name attackCurve
 	 * @example
-	 * env.attackType = "linear";
+	 * env.attackCurve = "linear";
 	 */
-	Object.defineProperty(Tone.Envelope.prototype, "attackType", {
+	Object.defineProperty(Tone.Envelope.prototype, "attackCurve", {
 		get : function(){
-			return this._attackType;
+			return this._attackCurve;
 		}, 
 		set : function(type){
 			if (type === Tone.Envelope.Type.LINEAR || 
 				type === Tone.Envelope.Type.EXPONENTIAL){
-				this._attackType = type;
+				this._attackCurve = type;
 			} else {
-				throw Error("attackType must be either \"linear\" or \"exponential\". Invalid type: ", type);
+				throw Error("attackCurve must be either \"linear\" or \"exponential\". Invalid type: ", type);
 			}
 		}
 	});
@@ -212,7 +212,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Pow"], function(Ton
 		var release = this.toSeconds(this.release);
 		switch(this._phaseAtTime(time)){
 			case Tone.Envelope.Phase.ATTACK: 
-				if (this._attackType === Tone.Envelope.Type.LINEAR){
+				if (this._attackCurve === Tone.Envelope.Type.LINEAR){
 					return this._linearInterpolate(this._nextAttack, this._minOutput, this._nextAttack + attack, this._peakValue, time);
 				} else {
 					return this._exponentialInterpolate(this._nextAttack, this._minOutput, this._nextAttack + attack, this._peakValue, time);
@@ -263,7 +263,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Pow"], function(Ton
 		//set the curve		
 		this._sig.cancelScheduledValues(time);
 		this._sig.setValueAtTime(valueAtTime, time);
-		if (this._attackType === Tone.Envelope.Type.LINEAR){
+		if (this._attackCurve === Tone.Envelope.Type.LINEAR){
 			this._sig.linearRampToValueAtTime(scaledMax, this._nextDecay);
 		} else {
 			this._sig.exponentialRampToValueAtTime(scaledMax, this._nextDecay);
@@ -298,7 +298,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Pow"], function(Ton
 		//if the phase is in the attack still, must reschedule the rest of the attack
 		if (phase === Tone.Envelope.Phase.ATTACK){
 			this._sig.setCurrentValueNow();
-			if (this.attackType === Tone.Envelope.Type.LINEAR){
+			if (this.attackCurve === Tone.Envelope.Type.LINEAR){
 				this._sig.linearRampToValueAtTime(this._peakValue, this._nextRelease);
 			} else {
 				this._sig.exponentialRampToValueAtTime(this._peakValue, this._nextRelease);
