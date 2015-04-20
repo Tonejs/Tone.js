@@ -532,7 +532,7 @@ function(coreTest, chai, CrossFade, Master, Signal, Recorder, Panner, LFO, Gate,
 		});
 	});
 
-	describe("Tone.EQ", function(){
+	describe("Tone.EQ3", function(){
 		this.timeout(maxTimeout);
 
 		it("can be created and disposed", function(){

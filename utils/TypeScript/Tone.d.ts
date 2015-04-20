@@ -283,17 +283,17 @@ declare module Tone {
         triggerRelease(time?: Tone.Time): Tone.Envelope;
     }
 
-    var EQ: {
-        new(lowLevel?: any, midLevel?: number, highLevel?: number): Tone.EQ; //TODO: Change 'any' to 'number | Object'
+    var EQ3: {
+        new(lowLevel?: any, midLevel?: number, highLevel?: number): Tone.EQ3; //TODO: Change 'any' to 'number | Object'
     };
 
-    interface EQ extends Tone {
+    interface EQ3 extends Tone {
         highFrequency: Tone.Signal;
         high: GainNode;
         lowFrequency: Tone.Signal;
         low: GainNode;
         mid: GainNode;
-        dispose(): Tone.EQ;
+        dispose(): Tone.EQ3;
     }
 
     var Equal: {
