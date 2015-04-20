@@ -17,7 +17,7 @@ define(["Tone/core/Tone", "Tone/component/Merge"], function(Tone){
 		 *  @type {Tone.Merge}
 		 *  @private
 		 */
-		this._merge = this.output = new Tone.Merge();
+		this._merge = this.output = this.context.createChannelMerger(2);
 
 		this.input.connect(this._merge, 0, 0);
 		this.input.connect(this._merge, 0, 1);
@@ -31,7 +31,7 @@ define(["Tone/core/Tone", "Tone/component/Merge"], function(Tone){
 	 */
 	Tone.Stereo.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
-		this._merge.dispose();
+		this._merge.disconnect();
 		this._merge = null;
 		return this;
 	};
