@@ -1,4 +1,5 @@
-define(["Tone/core/Tone", "Tone/effect/StereoEffect"], function(Tone){
+define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/MidSideSplit", "Tone/component/MidSideMerge"], 
+	function(Tone){
 
 	"use strict";
 
@@ -17,97 +18,70 @@ define(["Tone/core/Tone", "Tone/effect/StereoEffect"], function(Tone){
 	 *         L = (M+S)/sqrt(2);   // obtain left signal from mid and side<br>
 	 *         R = (M-S)/sqrt(2);   // obtain right signal from mid and side<br>
 	 *
-	 *  @extends {Tone.StereoEffect}
+	 *  @extends {Tone.Effect}
 	 *  @constructor
 	 */
 	Tone.MidSideEffect = function(){
-		Tone.StereoEffect.call(this);
+		Tone.Effect.call(this);
 
 		/**
-		 *  a constant signal equal to 1 / sqrt(2)
-		 *  @type {Tone.Signal}
+		 *  The mid/side split
+		 *  @type  {Tone.MidSideSplit}
 		 *  @private
 		 */
-		this._sqrtTwo = new Tone.Signal(1 / Math.sqrt(2));
+		this._midSideSplit = new Tone.MidSideSplit();
 
 		/**
-		 *  the mid send.
-		 *  connect to mid processing
-		 *  @type {Tone.Expr}
-		 */
-		this.midSend = new Tone.Expr("($0 + $1) * $2");
-
-		/**
-		 *  the side send.
-		 *  connect to side processing
-		 *  @type {Tone.Expr}
-		 */
-		this.sideSend = new Tone.Expr("($0 - $1) * $2");
-
-		/**
-		 *  recombine the mid/side into Left
-		 *  @type {Tone.Expr}
+		 *  The mid/side merge
+		 *  @type  {Tone.MidSideMerge}
 		 *  @private
 		 */
-		this._left = new Tone.Expr("($0 + $1) * $2");
+		this._midSideMerge = new Tone.MidSideMerge();
 
 		/**
-		 *  recombine the mid/side into Right
+		 *  The mid send. Connect to mid processing
 		 *  @type {Tone.Expr}
-		 *  @private
 		 */
-		this._right = new Tone.Expr("($0 - $1) * $2");
+		this.midSend = this._midSideSplit.mid;
 
 		/**
-		 *  the mid return connection
+		 *  The side send. Connect to side processing
+		 *  @type {Tone.Expr}
+		 */
+		this.sideSend = this._midSideSplit.side;
+
+		/**
+		 *  The mid return connection
 		 *  @type {GainNode}
 		 */
-		this.midReturn = this.context.createGain();
+		this.midReturn = this._midSideMerge.mid;
 
 		/**
-		 *  the side return connection
+		 *  The side return connection
 		 *  @type {GainNode}
 		 */
-		this.sideReturn = this.context.createGain();
+		this.sideReturn = this._midSideMerge.side;
 
-		//connections
-		this.effectSendL.connect(this.midSend, 0, 0);
-		this.effectSendR.connect(this.midSend, 0, 1);
-		this.effectSendL.connect(this.sideSend, 0, 0);
-		this.effectSendR.connect(this.sideSend, 0, 1);
-		this._left.connect(this.effectReturnL);
-		this._right.connect(this.effectReturnR);
-		this.midReturn.connect(this._left, 0, 0);
-		this.sideReturn.connect(this._left, 0, 1);
-		this.midReturn.connect(this._right, 0, 0);
-		this.sideReturn.connect(this._right, 0, 1);
-		this._sqrtTwo.connect(this.midSend, 0, 2);
-		this._sqrtTwo.connect(this.sideSend, 0, 2);
-		this._sqrtTwo.connect(this._left, 0, 2);
-		this._sqrtTwo.connect(this._right, 0, 2);
+		//the connections
+		this.effectSend.connect(this._midSideSplit);
+		this._midSideMerge.connect(this.effectReturn);
 	};
 
-	Tone.extend(Tone.MidSideEffect, Tone.StereoEffect);
+	Tone.extend(Tone.MidSideEffect, Tone.Effect);
 
 	/**
 	 *  clean up
 	 *  @returns {Tone.MidSideEffect} `this`
 	 */
 	Tone.MidSideEffect.prototype.dispose = function(){
-		Tone.StereoEffect.prototype.dispose.call(this);
-		this._sqrtTwo.dispose();
-		this._sqrtTwo = null;
-		this.midSend.dispose();
+		Tone.Effect.prototype.dispose.call(this);
+		this._midSideSplit.dispose();
+		this._midSideSplit = null;
+		this._midSideMerge.dispose();
+		this._midSideMerge = null;
 		this.midSend = null;
-		this.sideSend.dispose();
 		this.sideSend = null;
-		this._left.dispose();
-		this._left = null;
-		this._right.dispose();
-		this._right = null;
-		this.midReturn.disconnect();
 		this.midReturn = null;
-		this.sideReturn.disconnect();
 		this.sideReturn = null;
 		return this;
 	};
