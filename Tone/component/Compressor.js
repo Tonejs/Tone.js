@@ -21,12 +21,7 @@ define(["Tone/core/Tone"], function(Tone){
 		 *  @type {DynamicsCompressorNode}
 		 *  @private
 		 */
-		this._compressor = this.context.createDynamicsCompressor();
-
-		/**
-		 *  the input and output
-		 */
-		this.input = this.output = this._compressor;
+		this._compressor = this.input = this.output = this.context.createDynamicsCompressor();
 
 		/**
 		 *  the threshold vaue
