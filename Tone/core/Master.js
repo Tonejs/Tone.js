@@ -26,6 +26,13 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 		this._unmutedVolume = 1;
 
 		/**
+		 *  if the master is muted
+		 *  @type {boolean}
+		 *  @private
+		 */
+		this._muted = false;
+
+		/**
 		 * the volume of the output in decibels
 		 * @type {Tone.Signal}
 		 */
@@ -42,9 +49,12 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	 *  @returns {Tone.Master} `this`
 	 */
 	Tone.Master.prototype.mute = function(){
-		this._unmutedVolume = this.volume.value;
-		//maybe it should ramp here?
-		this.volume.value = -Infinity;
+		if (!this._muted){
+			this._muted = true;
+			this._unmutedVolume = this.volume.value;
+			//maybe it should ramp here?
+			this.volume.value = -Infinity;
+		}
 		return this;
 	};
 
@@ -54,7 +64,10 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	 *  @returns {Tone.Master} `this`
 	 */
 	Tone.Master.prototype.unmute = function(){
-		this.volume.value = this._unmutedVolume;
+		if (this._muted){
+			this._muted = false;
+			this.volume.value = this._unmutedVolume;
+		}
 		return this;
 	};
 
