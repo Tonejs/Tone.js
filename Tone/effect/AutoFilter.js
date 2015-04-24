@@ -7,7 +7,8 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/LFO", "Tone/comp
 	 *
 	 *  @constructor
 	 *  @extends {Tone.Effect}
-	 *  @param {number} [frequency=1] (optional) rate in HZ of the filter
+	 *  @param {Tone.Time} [frequency=1] (optional) rate in HZ of the filter
+	 *  @param {number} [depth=0.5] The depth of the effect
 	 *  @example
 	 *  var autoPanner = new Tone.AutoFilter("4n");
 	 */
@@ -28,7 +29,7 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/LFO", "Tone/comp
 		 * 0 = always center. 1 = full range between left and right. 
 		 * @type {Tone.Signal}
 		 */
-		this.amount = this._lfo.amplitude;
+		this.depth = this._lfo.amplitude;
 
 		/**
 		 * How fast the filter modulates between min and max. 
@@ -47,7 +48,7 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/LFO", "Tone/comp
 		this.connectEffect(this._filter);
 		this._lfo.connect(this._filter.frequency);
 		this.type = options.type;
-		this._readOnly(["frequency", "amount"]);
+		this._readOnly(["frequency", "depth"]);
 	};
 
 	//extend Effect
@@ -61,7 +62,7 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/LFO", "Tone/comp
 	Tone.AutoFilter.defaults = {
 		"frequency" : 1,
 		"type" : "sine",
-		"amount" : 1,
+		"depth" : 1,
 		"min" : 200,
 		"max" : 1200,
 		"filter" : {
@@ -93,10 +94,12 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/LFO", "Tone/comp
 
 	/**
 	 * Sync the filter to the transport.
+	 * @param {Tone.Time} [delay=0] Delay time before starting the effect after the
+	 *                               Transport has started. 
 	 * @returns {Tone.AutoFilter} `this`
 	 */
-	Tone.AutoFilter.prototype.sync = function(){
-		this._lfo.sync();
+	Tone.AutoFilter.prototype.sync = function(delay){
+		this._lfo.sync(delay);
 		return this;
 	};
 
@@ -164,9 +167,9 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/LFO", "Tone/comp
 		this._lfo = null;
 		this._filter.dispose();
 		this._filter = null;
-		this._writable(["frequency", "amount"]);
+		this._writable(["frequency", "depth"]);
 		this.frequency = null;
-		this.amount = null;
+		this.depth = null;
 		return this;
 	};
 
