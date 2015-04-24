@@ -766,8 +766,9 @@ function(coreTest, chai, CrossFade, Master, Signal, Recorder, Panner, LFO, Gate,
 		it("can set delayTime", function(){
 			Test.onlineContext();
 			var fbcf = new FeedbackCombFilter();
-			fbcf.delayTime = "4n";
-			expect(fbcf.delayTime).to.equal("4n");
+			fbcf.delayTime.value = "4n";
+			var quarterSeconds = fbcf.toSeconds("4n");
+			expect(fbcf.delayTime.value).to.equal(quarterSeconds);
 			fbcf.dispose();
 		});
 
