@@ -11,9 +11,10 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/effect/Effect"], function(To
 	 *  @example
 	 *  var convolver = new Tone.Convolver("./path/to/ir.wav");
 	 */
-	Tone.Convolver = function(url){
+	Tone.Convolver = function(){
 
-		Tone.Effect.apply(this, arguments);
+		var options = this.optionsObject(arguments, ["url"], Tone.Convolver.defaults);
+		Tone.Effect.call(this, options);
 
 	  	/**
 		 *  convolver node
@@ -27,14 +28,25 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/effect/Effect"], function(To
 		 *  @type {Tone.Buffer}
 		 *  @private
 		 */
-		this._buffer = new Tone.Buffer(url, function(buffer){
+		this._buffer = new Tone.Buffer(options.url, function(buffer){
 			this.buffer = buffer;
+			options.onload();
 		}.bind(this));
 
 		this.connectEffect(this._convolver);
 	};
 
 	Tone.extend(Tone.Convolver, Tone.Effect);
+
+	/**
+	 *  @static
+	 *  @const
+	 *  @type  {Object}
+	 */
+	Tone.Convolver.defaults = {
+		"url" : "",
+		"onload" : function(){}
+	};
 
 	/**
 	 *  The convolver's buffer
