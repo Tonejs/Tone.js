@@ -77,7 +77,7 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/source/Noise", "To
 		note = this.toFrequency(note);
 		time = this.toSeconds(time);
 		var delayAmount = 1 / note;
-		this._lfcf.setDelayTimeAtTime(delayAmount, time);		
+		this._lfcf.delayTime.setValueAtTime(delayAmount, time);		
 		this._noise.start(time);
 		this._noise.stop(time + delayAmount * this.attackNoise);
 		return this;
