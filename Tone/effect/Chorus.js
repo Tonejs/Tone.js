@@ -117,9 +117,9 @@ function(Tone){
 		set : function(depth){
 			this._depth = depth;
 			var deviation = this._delayTime * depth;
-			this._lfoL.min = this._delayTime - deviation;
+			this._lfoL.min = Math.max(this._delayTime - deviation, 0);
 			this._lfoL.max = this._delayTime + deviation;
-			this._lfoR.min = this._delayTime - deviation;
+			this._lfoR.min = Math.max(this._delayTime - deviation, 0);
 			this._lfoR.max = this._delayTime + deviation;
 		}
 	});
