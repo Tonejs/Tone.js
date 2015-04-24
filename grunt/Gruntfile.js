@@ -147,7 +147,7 @@ module.exports = function(grunt) {
 					},
 					{
 						match: /define\('Tone\/core\/Tone',\[\],/gi,
-						replacement: "MainModule("
+						replacement: "ToneCore("
 					},
 					{
 						match: /\n"use strict";\n/g,
