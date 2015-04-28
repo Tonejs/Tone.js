@@ -89,9 +89,6 @@ define(["Tone/core/Tone"], function(Tone){
 			this._buffer = buffer;
 		}
 		this.loaded = true;
-		if (this._reversed){
-			this._reverse();
-		}
 		return this;
 	};
 
@@ -266,6 +263,9 @@ define(["Tone/core/Tone"], function(Tone){
 					var index = Tone.Buffer._currentDownloads.indexOf(next);
 					Tone.Buffer._currentDownloads.splice(index, 1);
 					next.Buffer.set(buffer);
+					if (next.Buffer._reversed){
+						next.Buffer._reverse();
+					}
 					next.Buffer.onload(next.Buffer);
 					Tone.Buffer._onprogress();
 					Tone.Buffer._next();
