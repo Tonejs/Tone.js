@@ -56,6 +56,10 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Master"], function(T
 		 *  @private
 		 */
 		this._timeout = -1;
+
+		//make the output explicitly stereo
+		this.output.channelCount = 2;
+		this.output.channelCountMode = "explicit";
 	};
 
 	Tone.extend(Tone.Source);
