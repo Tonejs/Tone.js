@@ -24,6 +24,13 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 		 *  @type {AudioBufferSourceNode}
 		 */
 		this._source = null;
+
+		/**
+		 *  If the file should play as soon
+		 *  as the buffer is loaded. 
+		 *  @type {boolean}
+		 */
+		this.autostart = options.autostart;
 		
 		/**
 		 *  the buffer
@@ -32,7 +39,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 		 */
 		this._buffer = new Tone.Buffer({
 			"url" : options.url, 
-			"onload" : options.onload.bind(null, this),
+			"onload" : this._onload.bind(this, options.onload),
 			"reverse" : options.reverse
 		});
 
@@ -84,6 +91,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 		"onload" : function(){},
 		"playbackRate" : 1,
 		"loop" : false,
+		"autostart" : false,
 		"loopStart" : 0,
 		"loopEnd" : 0,
 		"retrigger" : false,
@@ -104,8 +112,19 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 	 *  @returns {Tone.Player} `this`
 	 */
 	Tone.Player.prototype.load = function(url, callback){
-		this._buffer.load(url, callback.bind(this, this));
+		this._buffer.load(url, this._onload.bind(this, callback));
 		return this;
+	};
+
+	/**
+	 * Internal callback when the buffer is loaded.
+	 * @private
+	 */
+	Tone.Player.prototype._onload = function(callback){
+		callback(this);
+		if (this.autostart){
+			this.start();
+		}
 	};
 
 	/**
@@ -125,11 +144,11 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 			//if it's a loop the default offset is the loopstart point
 			if (this._loop){
 				offset = this.defaultArg(offset, this._loopStart);
-				offset = this.toSeconds(offset);
 			} else {
 				//otherwise the default offset is 0
 				offset = this.defaultArg(offset, 0);
 			}
+			offset = this.toSeconds(offset);
 			duration = this.defaultArg(duration, this._buffer.duration - offset);
 			//the values in seconds
 			startTime = this.toSeconds(startTime);
