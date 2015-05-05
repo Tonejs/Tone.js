@@ -32,9 +32,10 @@ define(["chai", "Tone/core/Transport", "tests/Core", "tests/Common", "Tone/core/
 			Test.onlineContext();
 			var clock = new Clock(0.5, function(){});
 			clock.start();
-			clock.stop("+0.5", function(){
+			clock.onended = function(){
 				done();
-			});
+			};
+			clock.stop("+0.5");
 		});
 	});
 

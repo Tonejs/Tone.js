@@ -50,6 +50,7 @@ function(Tone){
 		 *  @type {Tone.Clock}
 		 */
 		this._clock = new Tone.Clock(0, this._processTick.bind(this));
+		this._clock.onended = this._onended.bind(this);
 
 		/** 
 		 * 	If the transport loops or not.
@@ -566,7 +567,7 @@ function(Tone){
 	Tone.Transport.prototype.stop = function(time){
 		if (this.state === TransportState.STARTED || this.state === TransportState.PAUSED){
 			var stopTime = this.toSeconds(time);
-			this._clock.stop(stopTime, this._onended.bind(this));
+			this._clock.stop(stopTime);
 			//call start on each of the synced sources
 			for (var i = 0; i < SyncedSources.length; i++){
 				var source = SyncedSources[i].source;
