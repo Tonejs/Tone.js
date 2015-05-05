@@ -26,8 +26,17 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 		this.units = this.defaultArg(units, Tone.Signal.Units.Number);
 
 		/**
+		 *  When true, converts the set value
+		 *  based on the units given. When false,
+		 *  applies no conversion and the units
+		 *  are merely used as a label. 
+		 *  @type  {boolean}
+		 */
+		this.convert = true;
+
+		/**
 		 * The node where the constant signal value is scaled.
-		 * @type {AudioParam}
+		 * @type {GainNode}
 		 * @private
 		 */
 		this.output = this._scaler = this.context.createGain();
@@ -87,19 +96,23 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 	 * @return {number}     the number which the value should be set to
 	 */
 	Tone.Signal.prototype._fromUnits = function(val){
-		switch(this.units){
-			case Tone.Signal.Units.Time: 
-				return this.toSeconds(val);
-			case Tone.Signal.Units.Frequency: 
-				return this.toFrequency(val);
-			case Tone.Signal.Units.Decibels: 
-				return this.dbToGain(val);
-			case Tone.Signal.Units.Normal: 
-				return Math.min(Math.max(val, 0), 1);
-			case Tone.Signal.Units.Audio: 
-				return Math.min(Math.max(val, -1), 1);
-			default:
-				return val;
+		if (this.convert){
+			switch(this.units){
+				case Tone.Signal.Units.Time: 
+					return this.toSeconds(val);
+				case Tone.Signal.Units.Frequency: 
+					return this.toFrequency(val);
+				case Tone.Signal.Units.Decibels: 
+					return this.dbToGain(val);
+				case Tone.Signal.Units.Normal: 
+					return Math.min(Math.max(val, 0), 1);
+				case Tone.Signal.Units.Audio: 
+					return Math.min(Math.max(val, -1), 1);
+				default:
+					return val;
+			}
+		} else {
+			return val;
 		}
 	};
 
@@ -110,11 +123,15 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 	 * @return {number}
 	 */
 	Tone.Signal.prototype._toUnits = function(val){
-		switch(this.units){
-			case Tone.Signal.Units.Decibels: 
-				return this.gainToDb(val);
-			default:
-				return val;
+		if (this.convert){
+			switch(this.units){
+				case Tone.Signal.Units.Decibels: 
+					return this.gainToDb(val);
+				default:
+					return val;
+			}
+		} else {
+			return val;
 		}
 	};
 
@@ -168,8 +185,6 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 	 */
 	Tone.Signal.prototype.exponentialRampToValueAtTime = function(value, endTime){
 		value = this._fromUnits(value);
-		// exponentialRampToValueAt cannot ever ramp from 0, apparently.
-		// More info: https://bugzilla.mozilla.org/show_bug.cgi?id=1125600#c2
 		value = Math.max(0.00001, value);
 		this._value.exponentialRampToValueAtTime(value, this.toSeconds(endTime));
 		return this;
@@ -187,10 +202,13 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 	 *  //exponentially ramp to the value 2 over 4 seconds. 
 	 *  signal.exponentialRampToValueNow(2, 4);
 	 */
-	Tone.Signal.prototype.exponentialRampToValueNow = function(value, rampTime ){
+	Tone.Signal.prototype.exponentialRampToValueNow = function(value, rampTime){
 		var now = this.now();
-		this.setCurrentValueNow(now);
-		this.exponentialRampToValueAtTime(value, now + this.toSeconds(rampTime ));
+		// exponentialRampToValueAt cannot ever ramp from 0, apparently.
+		// More info: https://bugzilla.mozilla.org/show_bug.cgi?id=1125600#c2
+		var currentVal = this.value;
+		this.setValueAtTime(Math.max(currentVal, 0.0001), now);
+		this.exponentialRampToValueAtTime(value, now + this.toSeconds(rampTime));
 		return this;
 	};
 
@@ -317,7 +335,9 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 		/** In half-step increments, i.e. 12 is an octave above the root. */
 		Interval : "interval",
 		/** Beats per minute. */
-		BPM : "bpm"
+		BPM : "bpm",
+		/** A value greater than 0 */
+		Positive : "positive"
 	};
 
 	///////////////////////////////////////////////////////////////////////////
