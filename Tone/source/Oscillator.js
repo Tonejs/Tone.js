@@ -74,9 +74,13 @@ function(Tone){
 	 *  @type {Object}
 	 */
 	Tone.Oscillator.defaults = {
+		/** @type {string} */
 		"type" : "sine",
+		/** @type {Tone.Frequency} */
 		"frequency" : 440,
+		/** @type {number} */
 		"detune" : 0,
+		/** @type {number} */
 		"phase" : 0
 	};
 
@@ -148,6 +152,7 @@ function(Tone){
 	 * @memberOf Tone.Oscillator#
 	 * @type {string}
 	 * @name type
+	 * @options ["sine", "square", "sawtooth", "triangle"]
 	 * @example
 	 * osc.type = "square";
 	 * osc.type; //returns "square"

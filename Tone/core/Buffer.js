@@ -12,6 +12,7 @@ define(["Tone/core/Tone"], function(Tone){
 	 *  		and `onerror`. 
 	 *
 	 *  @constructor 
+	 *  @extends {Tone}
 	 *  @param {AudioBuffer|string} url the url to load, or the audio buffer to set
 	 */
 	Tone.Buffer = function(){

@@ -20,6 +20,8 @@ function(Tone){
 
 		/**
 		 *  the pulse oscillator
+		 *  @type {Tone.PulseOscillator}
+		 *  @private
 		 */
 		this._pulse = new Tone.PulseOscillator(options.modulationFrequency);
 		//change the pulse oscillator type

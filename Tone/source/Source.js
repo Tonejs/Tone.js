@@ -17,7 +17,7 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Master"], function(T
 		options = this.defaultArg(options, Tone.Source.defaults);
 
 		/**
-		 * The onended callback when the source is done playing.
+		 * Callback is invoked when the source is done playing.
 		 * @type {function}
 		 * @example
 		 *  source.onended = function(){
