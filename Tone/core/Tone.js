@@ -128,6 +128,10 @@ define(function(){
 	 *  Set the parameters at once. Either pass in an
 	 *  object mapping parameters to values, or to set a
 	 *  single parameter, by passing in a string and value.
+	 *  @param {Object|string} params
+	 *  @param {number=} value
+	 *  @param {Tone.Time=} rampTime
+	 *  @returns {Tone} `this`
 	 *  @example
 	 *  //set values using an object
 	 *  filter.set({
@@ -140,10 +144,6 @@ define(function(){
 	 *  oscillator.set({
 	 *  	"frequency" : 220
 	 *  }, 3);
-	 *  @param {Object|string} params
-	 *  @param {number=} value
-	 *  @param {Tone.Time=} rampTime
-	 *  @returns {Tone} `this`
 	 */
 	Tone.prototype.set = function(params, value, rampTime){
 		if (typeof params === "object"){
@@ -186,18 +186,30 @@ define(function(){
 	 *  osc.get();
 	 *  //returns {"type" : "sine", "frequency" : 440, ...etc}
 	 *  osc.get("type"); //returns { "type" : "sine"}
-	 *  @param {Array=} params the parameters to get, otherwise will return 
-	 *  					   all available.r
+	 *  @param {Array=|string|Object} params the parameters to get, otherwise will return 
+	 *  					                  all available.
 	 */
 	Tone.prototype.get = function(params){
 		if (isUndef(params)){
 			params = this._collectDefaults(this.constructor);
+		} else if (typeof params === "string"){
+			var obj = {};
+			obj[params] = 0;
+			params = obj;
+		} else if (Array.isArray(params)){
+			//use the objects as keys
+			var keyObj = {};
+			for (var i = 0; i < params.length; i++){
+				keyObj[params[i]] = 0;
+			}
+			params = keyObj;
 		}
 		var ret = {};
-		for (var i = 0; i < params.length; i++){
-			var attr = params[i];
+		for (var attr in params){
 			var param = this[attr];
-			if (param instanceof Tone.Signal){
+			if (typeof params[attr] === "object"){
+				ret[attr] = param.get(params[attr]);
+			} else if (param instanceof Tone.Signal){
 				ret[attr] = param.value;
 			} else if (param instanceof AudioParam){
 				ret[attr] = param.value;
@@ -214,15 +226,18 @@ define(function(){
 	 *  collect all of the default attributes in one
 	 *  @private
 	 *  @param {function} constr the constructor to find the defaults from
-	 *  @return {Array} all of the attributes which belong to the class
+	 *  @return {Object} all of the attributes which belong to the class
 	 */
 	Tone.prototype._collectDefaults = function(constr){
-		var ret = [];
+		var ret = {};
 		if (!isUndef(constr.defaults)){
-			ret = Object.keys(constr.defaults);
+			ret = constr.defaults;
 		}
 		if (!isUndef(constr._super)){
-			ret = ret.concat(this._collectDefaults(constr._super));
+			var superDefs = this._collectDefaults(constr._super);
+			for (var attr in superDefs){
+				ret[attr] = superDefs[attr];
+			}
 		}
 		return ret;
 	};
@@ -237,6 +252,20 @@ define(function(){
 			this.set(this.preset[presetName]);
 		}
 		return this;
+	};
+
+	/**
+	 *  @returns {string} returns the name of the class as a string
+	 */
+	Tone.prototype.toString = function(){
+		for (var className in Tone){
+			var isLetter = className[0].match(/^[A-Z]$/);
+			var sameConstructor =  Tone[className] === this.constructor;
+			if (isFunction(Tone[className]) && isLetter && sameConstructor){
+				return className;
+			}
+		}
+		return "Tone";
 	};
 
 	///////////////////////////////////////////////////////////////////////////
