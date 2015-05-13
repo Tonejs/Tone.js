@@ -186,29 +186,21 @@ define(function(){
 	 *  osc.get();
 	 *  //returns {"type" : "sine", "frequency" : 440, ...etc}
 	 *  osc.get("type"); //returns { "type" : "sine"}
-	 *  @param {Array=|string|Object} params the parameters to get, otherwise will return 
+	 *  @param {Array=|string} params the parameters to get, otherwise will return 
 	 *  					                  all available.
 	 */
 	Tone.prototype.get = function(params){
 		if (isUndef(params)){
 			params = this._collectDefaults(this.constructor);
 		} else if (typeof params === "string"){
-			var obj = {};
-			obj[params] = 0;
-			params = obj;
-		} else if (Array.isArray(params)){
-			//use the objects as keys
-			var keyObj = {};
-			for (var i = 0; i < params.length; i++){
-				keyObj[params[i]] = 0;
-			}
-			params = keyObj;
-		}
+			params = [params];
+		} 
 		var ret = {};
-		for (var attr in params){
+		for (var i = 0; i < params.length; i++){
+			var attr = params[i];
 			var param = this[attr];
 			if (typeof params[attr] === "object"){
-				ret[attr] = param.get(params[attr]);
+				ret[attr] = param.get();
 			} else if (param instanceof Tone.Signal){
 				ret[attr] = param.value;
 			} else if (param instanceof AudioParam){
@@ -226,18 +218,16 @@ define(function(){
 	 *  collect all of the default attributes in one
 	 *  @private
 	 *  @param {function} constr the constructor to find the defaults from
-	 *  @return {Object} all of the attributes which belong to the class
+	 *  @return {Array} all of the attributes which belong to the class
 	 */
 	Tone.prototype._collectDefaults = function(constr){
-		var ret = {};
+		var ret = [];
 		if (!isUndef(constr.defaults)){
-			ret = constr.defaults;
+			ret = Object.keys(constr.defaults);
 		}
 		if (!isUndef(constr._super)){
 			var superDefs = this._collectDefaults(constr._super);
-			for (var attr in superDefs){
-				ret[attr] = superDefs[attr];
-			}
+			ret = ret.concat(superDefs);
 		}
 		return ret;
 	};
