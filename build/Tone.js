@@ -2,7 +2,7 @@
 	"use strict";
 	var Tone;
 	//constructs the main Tone object
-	function MainModule(func){
+	function ToneCore(func){
 		Tone = func();
 	}
 	//invokes each of the modules with the main Tone object as the argument
@@ -16,7 +16,7 @@
 	 *  @license http://opensource.org/licenses/MIT MIT License
 	 *  @copyright 2014-2015 Yotam Mann
 	 */
-	MainModule(function(){
+	ToneCore(function(){
 
 		
 
@@ -140,6 +140,10 @@
 		 *  Set the parameters at once. Either pass in an
 		 *  object mapping parameters to values, or to set a
 		 *  single parameter, by passing in a string and value.
+		 *  @param {Object|string} params
+		 *  @param {number=} value
+		 *  @param {Tone.Time=} rampTime
+		 *  @returns {Tone} `this`
 		 *  @example
 		 *  //set values using an object
 		 *  filter.set({
@@ -152,10 +156,6 @@
 		 *  oscillator.set({
 		 *  	"frequency" : 220
 		 *  }, 3);
-		 *  @param {Object|string} params
-		 *  @param {number=} value
-		 *  @param {Tone.Time=} rampTime
-		 *  @returns {Tone} `this`
 		 */
 		Tone.prototype.set = function(params, value, rampTime){
 			if (typeof params === "object"){
@@ -198,18 +198,30 @@
 		 *  osc.get();
 		 *  //returns {"type" : "sine", "frequency" : 440, ...etc}
 		 *  osc.get("type"); //returns { "type" : "sine"}
-		 *  @param {Array=} params the parameters to get, otherwise will return 
-		 *  					   all available.r
+		 *  @param {Array=|string|Object} params the parameters to get, otherwise will return 
+		 *  					                  all available.
 		 */
 		Tone.prototype.get = function(params){
 			if (isUndef(params)){
 				params = this._collectDefaults(this.constructor);
+			} else if (typeof params === "string"){
+				var obj = {};
+				obj[params] = 0;
+				params = obj;
+			} else if (Array.isArray(params)){
+				//use the objects as keys
+				var keyObj = {};
+				for (var i = 0; i < params.length; i++){
+					keyObj[params[i]] = 0;
+				}
+				params = keyObj;
 			}
 			var ret = {};
-			for (var i = 0; i < params.length; i++){
-				var attr = params[i];
+			for (var attr in params){
 				var param = this[attr];
-				if (param instanceof Tone.Signal){
+				if (typeof params[attr] === "object"){
+					ret[attr] = param.get(params[attr]);
+				} else if (param instanceof Tone.Signal){
 					ret[attr] = param.value;
 				} else if (param instanceof AudioParam){
 					ret[attr] = param.value;
@@ -226,15 +238,18 @@
 		 *  collect all of the default attributes in one
 		 *  @private
 		 *  @param {function} constr the constructor to find the defaults from
-		 *  @return {Array} all of the attributes which belong to the class
+		 *  @return {Object} all of the attributes which belong to the class
 		 */
 		Tone.prototype._collectDefaults = function(constr){
-			var ret = [];
+			var ret = {};
 			if (!isUndef(constr.defaults)){
-				ret = Object.keys(constr.defaults);
+				ret = constr.defaults;
 			}
 			if (!isUndef(constr._super)){
-				ret = ret.concat(this._collectDefaults(constr._super));
+				var superDefs = this._collectDefaults(constr._super);
+				for (var attr in superDefs){
+					ret[attr] = superDefs[attr];
+				}
 			}
 			return ret;
 		};
@@ -249,6 +264,20 @@
 				this.set(this.preset[presetName]);
 			}
 			return this;
+		};
+
+		/**
+		 *  @returns {string} returns the name of the class as a string
+		 */
+		Tone.prototype.toString = function(){
+			for (var className in Tone){
+				var isLetter = className[0].match(/^[A-Z]$/);
+				var sameConstructor =  Tone[className] === this.constructor;
+				if (isFunction(Tone[className]) && isLetter && sameConstructor){
+					return className;
+				}
+			}
+			return "Tone";
 		};
 
 		///////////////////////////////////////////////////////////////////////////
@@ -515,33 +544,38 @@
 		Tone.prototype.isFunction = isFunction;
 
 		/**
-		 *  interpolate the input value (0-1) to be between outputMin and outputMax
-		 *  @param  {number} input     
-		 *  @param  {number} outputMin 
-		 *  @param  {number} outputMax 
-		 *  @return {number}           
+		 *  Make the property not writable. Internal use only. 
+		 *  @private
+		 *  @param  {string}  property  the property to make not writable
 		 */
-		Tone.prototype.interpolate = function(input, outputMin, outputMax){
-			return input*(outputMax - outputMin) + outputMin;
+		Tone.prototype._readOnly = function(property){
+			if (Array.isArray(property)){
+				for (var i = 0; i < property.length; i++){
+					this._readOnly(property[i]);
+				}
+			} else {
+				Object.defineProperty(this, property, { 
+					writable: false,
+					enumerable : true,
+				});
+			}
 		};
 
 		/**
-		 *  normalize the input to 0-1 from between inputMin to inputMax
-		 *  @param  {number} input    
-		 *  @param  {number} inputMin 
-		 *  @param  {number} inputMax 
-		 *  @return {number}          
+		 *  Make an attribute writeable. Interal use only. 
+		 *  @private
+		 *  @param  {string}  property  the property to make writable
 		 */
-		Tone.prototype.normalize = function(input, inputMin, inputMax){
-			//make sure that min < max
-			if (inputMin > inputMax){
-				var tmp = inputMax;
-				inputMax = inputMin;
-				inputMin = tmp;
-			} else if (inputMin == inputMax){
-				return 0;
+		Tone.prototype._writable = function(property){
+			if (Array.isArray(property)){
+				for (var i = 0; i < property.length; i++){
+					this._writable(property[i]);
+				}
+			} else {
+				Object.defineProperty(this, property, { 
+					writable: true,
+				});
 			}
-			return (input - inputMin) / (inputMax - inputMin);
 		};
 
 		///////////////////////////////////////////////////////////////////////////
@@ -776,7 +810,7 @@
 			_silentNode.connect(audioContext.destination);
 		});
 
-		console.log("%c * Tone.js r4 * ", "background: #000; color: #fff");
+		console.log("%c * Tone.js r5-dev * ", "background: #000; color: #fff");
 
 		return Tone;
 	});
@@ -815,6 +849,8 @@
 				node._value.cancelScheduledValues(0);
 				//reset the value
 				node._value.value = 0;
+				//mark the value as overridden
+				node.overridden = true;
 			} else if (node instanceof AudioParam){
 				node.cancelScheduledValues(0);
 				node.value = 0;
@@ -916,7 +952,7 @@
 		 * The oversampling. Can either be "none", "2x" or "4x"
 		 * @memberOf Tone.WaveShaper#
 		 * @type {string}
-		 * @name curve
+		 * @name oversample
 		 */
 		Object.defineProperty(Tone.WaveShaper.prototype, "oversample", {
 			get : function(){
@@ -979,8 +1015,25 @@
 			this.units = this.defaultArg(units, Tone.Signal.Units.Number);
 
 			/**
+			 *  When true, converts the set value
+			 *  based on the units given. When false,
+			 *  applies no conversion and the units
+			 *  are merely used as a label. 
+			 *  @type  {boolean}
+			 */
+			this.convert = true;
+
+			/**
+			 *  True if the signal value is being overridden by 
+			 *  a connected signal.
+			 *  @readOnly
+			 *  @type  {boolean}
+			 */
+			this.overridden = false;
+
+			/**
 			 * The node where the constant signal value is scaled.
-			 * @type {AudioParam}
+			 * @type {GainNode}
 			 * @private
 			 */
 			this.output = this._scaler = this.context.createGain();
@@ -1040,19 +1093,23 @@
 		 * @return {number}     the number which the value should be set to
 		 */
 		Tone.Signal.prototype._fromUnits = function(val){
-			switch(this.units){
-				case Tone.Signal.Units.Time: 
-					return this.toSeconds(val);
-				case Tone.Signal.Units.Frequency: 
-					return this.toFrequency(val);
-				case Tone.Signal.Units.Decibels: 
-					return this.dbToGain(val);
-				case Tone.Signal.Units.Normal: 
-					return Math.min(Math.max(val, 0), 1);
-				case Tone.Signal.Units.Audio: 
-					return Math.min(Math.max(val, -1), 1);
-				default:
-					return val;
+			if (this.convert){
+				switch(this.units){
+					case Tone.Signal.Units.Time: 
+						return this.toSeconds(val);
+					case Tone.Signal.Units.Frequency: 
+						return this.toFrequency(val);
+					case Tone.Signal.Units.Decibels: 
+						return this.dbToGain(val);
+					case Tone.Signal.Units.Normal: 
+						return Math.min(Math.max(val, 0), 1);
+					case Tone.Signal.Units.Audio: 
+						return Math.min(Math.max(val, -1), 1);
+					default:
+						return val;
+				}
+			} else {
+				return val;
 			}
 		};
 
@@ -1063,11 +1120,15 @@
 		 * @return {number}
 		 */
 		Tone.Signal.prototype._toUnits = function(val){
-			switch(this.units){
-				case Tone.Signal.Units.Decibels: 
-					return this.gainToDb(val);
-				default:
-					return val;
+			if (this.convert){
+				switch(this.units){
+					case Tone.Signal.Units.Decibels: 
+						return this.gainToDb(val);
+					default:
+						return val;
+				}
+			} else {
+				return val;
 			}
 		};
 
@@ -1121,7 +1182,6 @@
 		 */
 		Tone.Signal.prototype.exponentialRampToValueAtTime = function(value, endTime){
 			value = this._fromUnits(value);
-			//can't go below a certain value
 			value = Math.max(0.00001, value);
 			this._value.exponentialRampToValueAtTime(value, this.toSeconds(endTime));
 			return this;
@@ -1139,10 +1199,13 @@
 		 *  //exponentially ramp to the value 2 over 4 seconds. 
 		 *  signal.exponentialRampToValueNow(2, 4);
 		 */
-		Tone.Signal.prototype.exponentialRampToValueNow = function(value, rampTime ){
+		Tone.Signal.prototype.exponentialRampToValueNow = function(value, rampTime){
 			var now = this.now();
-			this.setCurrentValueNow(now);
-			this.exponentialRampToValueAtTime(value, now + this.toSeconds(rampTime ));
+			// exponentialRampToValueAt cannot ever ramp from 0, apparently.
+			// More info: https://bugzilla.mozilla.org/show_bug.cgi?id=1125600#c2
+			var currentVal = this.value;
+			this.setValueAtTime(Math.max(currentVal, 0.0001), now);
+			this.exponentialRampToValueAtTime(value, now + this.toSeconds(rampTime));
 			return this;
 		};
 
@@ -1175,6 +1238,10 @@
 		 */
 		Tone.Signal.prototype.setTargetAtTime = function(value, startTime, timeConstant){
 			value = this._fromUnits(value);
+			// The value will never be able to approach without timeConstant > 0.
+			// http://www.w3.org/TR/webaudio/#dfn-setTargetAtTime, where the equation
+			// is described. 0 results in a division by 0.
+			timeConstant = Math.max(0.00001, timeConstant);
 			this._value.setTargetAtTime(value, this.toSeconds(startTime), timeConstant);
 			return this;
 		};
@@ -1265,7 +1332,9 @@
 			/** In half-step increments, i.e. 12 is an octave above the root. */
 			Interval : "interval",
 			/** Beats per minute. */
-			BPM : "bpm"
+			BPM : "bpm",
+			/** A value greater than 0 */
+			Positive : "positive"
 		};
 
 		///////////////////////////////////////////////////////////////////////////
@@ -1433,11 +1502,70 @@
 			this.release = options.release;
 
 			/**
+			 *  the next time the envelope is attacked
+			 *  @type {number}
+			 *  @private
+			 */
+			this._nextAttack = Infinity;
+
+			/**
+			 *  the next time the envelope is decayed
+			 *  @type {number}
+			 *  @private
+			 */
+			this._nextDecay = Infinity;
+
+			/**
+			 *  the next time the envelope is sustain
+			 *  @type {number}
+			 *  @private
+			 */
+			this._nextSustain = Infinity;
+
+			/**
+			 *  the next time the envelope is released
+			 *  @type {number}
+			 *  @private
+			 */
+			this._nextRelease = Infinity;
+
+			/**
+			 *  the next time the envelope is at standby
+			 *  @type {number}
+			 *  @private
+			 */
+			this._nextStandby = Infinity;
+
+			/**
+			 *  the next time the envelope is at standby
+			 *  @type {number}
+			 *  @private
+			 */
+			this._attackCurve = Tone.Envelope.Type.LINEAR;
+
+			/** 
+			 *  the last recorded velocity value
+			 *  @type {number}
+			 *  @private
+			 */
+			this._peakValue = 1;
+
+			/**
+			 *  the minimum output value
+			 *  @type {number}
+			 *  @private
+			 */
+			this._minOutput = 0.0001;
+
+			/**
 			 *  the signal
 			 *  @type {Tone.Signal}
 			 *  @private
 			 */
 			this._sig = this.output = new Tone.Signal(0);
+
+			//set the attackCurve initially
+			this.attackCurve = options.attackCurve;
 		};
 
 		Tone.extend(Tone.Envelope);
@@ -1452,6 +1580,7 @@
 			"decay" : 0.1,
 			"sustain" : 0.5,
 			"release" : 1,
+			"attackCurve" : "linear"
 		};
 
 		/**
@@ -1460,6 +1589,96 @@
 		 *  @private
 		 */
 		Tone.Envelope.prototype._timeMult = 0.25;
+
+		/**
+		 * The slope of the attack. Either "linear" or "exponential"
+		 * @memberOf Tone.Envelope#
+		 * @type {number}
+		 * @name attackCurve
+		 * @example
+		 * env.attackCurve = "linear";
+		 */
+		Object.defineProperty(Tone.Envelope.prototype, "attackCurve", {
+			get : function(){
+				return this._attackCurve;
+			}, 
+			set : function(type){
+				if (type === Tone.Envelope.Type.LINEAR || 
+					type === Tone.Envelope.Type.EXPONENTIAL){
+					this._attackCurve = type;
+				} else {
+					throw Error("attackCurve must be either \"linear\" or \"exponential\". Invalid type: ", type);
+				}
+			}
+		});
+
+		/**
+		 *  Get the phase of the envelope at the specified time.
+		 *  @param  {number}  time
+		 *  @return  {Tone.Envelope.Phase} 
+		 *  @private
+		 */
+		Tone.Envelope.prototype._phaseAtTime = function(time){
+			if (this._nextRelease > time){
+				if (this._nextAttack <= time && this._nextDecay > time){
+					return Tone.Envelope.Phase.ATTACK;
+				} else if (this._nextDecay <= time && this._nextSustain > time){
+					return Tone.Envelope.Phase.DECAY;
+				} else if (this._nextSustain <= time && this._nextRelease > time){
+					return Tone.Envelope.Phase.SUSTAIN;
+				} else {
+					return Tone.Envelope.Phase.STANDBY;	
+				}
+			} else if (this._nextRelease < time && this._nextStandby > time){
+				return Tone.Envelope.Phase.RELEASE;
+			} else {
+				return Tone.Envelope.Phase.STANDBY;
+			}
+		};
+
+		// https://github.com/jsantell/web-audio-automation-timeline
+		// MIT License, copyright (c) 2014 Jordan Santell
+		Tone.Envelope.prototype._exponentialApproach = function (t0, v0, v1, timeConstant, t) {
+			return v1 + (v0 - v1) * Math.exp(-(t - t0) / timeConstant);
+		};
+
+		Tone.Envelope.prototype._linearInterpolate = function (t0, v0, t1, v1, t) {
+			return v0 + (v1 - v0) * ((t - t0) / (t1 - t0));
+		};
+
+		Tone.Envelope.prototype._exponentialInterpolate = function (t0, v0, t1, v1, t) {
+			return v0 * Math.pow(v1 / v0, (t - t0) / (t1 - t0));
+		};
+
+		/**
+		 *  Get the envelopes value at the given time
+		 *  @param  {number}  time
+		 *  @param  {number}  velocity
+		 *  @return  {number} 
+		 *  @private
+		 */
+		Tone.Envelope.prototype._valueAtTime = function(time){
+			var attack = this.toSeconds(this.attack);
+			var decay = this.toSeconds(this.decay);
+			var release = this.toSeconds(this.release);
+			switch(this._phaseAtTime(time)){
+				case Tone.Envelope.Phase.ATTACK: 
+					if (this._attackCurve === Tone.Envelope.Type.LINEAR){
+						return this._linearInterpolate(this._nextAttack, this._minOutput, this._nextAttack + attack, this._peakValue, time);
+					} else {
+						return this._exponentialInterpolate(this._nextAttack, this._minOutput, this._nextAttack + attack, this._peakValue, time);
+					}
+					break;
+				case Tone.Envelope.Phase.DECAY: 
+					return this._exponentialApproach(this._nextDecay, this._peakValue, this.sustain * this._peakValue, decay * this._timeMult, time);
+				case Tone.Envelope.Phase.RELEASE: 
+					return this._exponentialApproach(this._nextRelease, this._peakValue, this._minOutput, release * this._timeMult, time);
+				case Tone.Envelope.Phase.SUSTAIN: 
+					return this.sustain * this._peakValue;
+				case Tone.Envelope.Phase.STANDBY: 
+					return this._minOutput;
+			}
+		};
 
 		/**
 		 *  Trigger the attack/decay portion of the ADSR envelope. 
@@ -1472,15 +1691,35 @@
 		 *  env.triggerAttack("+0.5", 0.2);
 		 */
 		Tone.Envelope.prototype.triggerAttack = function(time, velocity){
-			velocity = this.defaultArg(velocity, 1);
+			//to seconds
+			time = this.toSeconds(time);
 			var attack = this.toSeconds(this.attack);
 			var decay = this.toSeconds(this.decay);
-			var scaledMax = velocity;
+
+			//get the phase and position
+			var valueAtTime = this._valueAtTime(time);
+			var attackPast = valueAtTime * attack;
+
+			//compute the timing
+			this._nextAttack = time - attackPast;
+			this._nextDecay = this._nextAttack + attack;
+			this._nextSustain = this._nextDecay + decay;
+			this._nextRelease = Infinity;
+
+			//get the values
+			this._peakValue = this.defaultArg(velocity, 1);
+			var scaledMax = this._peakValue;
 			var sustainVal = this.sustain * scaledMax;
-			time = this.toSeconds(time);
+
+			//set the curve		
 			this._sig.cancelScheduledValues(time);
-			this._sig.setTargetAtTime(scaledMax, time, attack * this._timeMult);
-			this._sig.setTargetAtTime(sustainVal, time + attack, decay * this._timeMult);	
+			this._sig.setValueAtTime(valueAtTime, time);
+			if (this._attackCurve === Tone.Envelope.Type.LINEAR){
+				this._sig.linearRampToValueAtTime(scaledMax, this._nextDecay);
+			} else {
+				this._sig.exponentialRampToValueAtTime(scaledMax, this._nextDecay);
+			}
+			this._sig.setTargetAtTime(sustainVal, this._nextDecay, decay * this._timeMult);	
 			return this;
 		};
 		
@@ -1494,9 +1733,31 @@
 		 */
 		Tone.Envelope.prototype.triggerRelease = function(time){
 			time = this.toSeconds(time);
-			this._sig.cancelScheduledValues(time);
+			var phase = this._phaseAtTime(time);
 			var release = this.toSeconds(this.release);
-			this._sig.setTargetAtTime(0, time, release * this._timeMult);
+
+			//computer the value at the start of the next release
+			var valueAtTime = this._valueAtTime(time);
+			this._peakValue = valueAtTime;
+
+			this._nextRelease = time;
+			this._nextStandby = this._nextRelease + release;
+			
+			//set the values
+			this._sig.cancelScheduledValues(this._nextRelease);
+
+			//if the phase is in the attack still, must reschedule the rest of the attack
+			if (phase === Tone.Envelope.Phase.ATTACK){
+				this._sig.setCurrentValueNow();
+				if (this.attackCurve === Tone.Envelope.Type.LINEAR){
+					this._sig.linearRampToValueAtTime(this._peakValue, this._nextRelease);
+				} else {
+					this._sig.exponentialRampToValueAtTime(this._peakValue, this._nextRelease);
+				}
+			} else {
+				this._sig.setValueAtTime(this._peakValue, this._nextRelease);
+			}
+			this._sig.setTargetAtTime(this._minOutput, this._nextRelease, release * this._timeMult);
 			return this;
 		};
 
@@ -1533,6 +1794,27 @@
 			this._sig = null;
 			return this;
 		};
+
+		/**
+		 *  The phase of the envelope. 
+		 *  @enum {string}
+		 */
+		Tone.Envelope.Phase = {
+			ATTACK : "attack",
+			DECAY : "decay",
+			SUSTAIN : "sustain",
+			RELEASE : "release",
+			STANDBY : "standby",
+	 	};
+
+	 	/**
+		 *  The phase of the envelope. 
+		 *  @enum {string}
+		 */
+		Tone.Envelope.Type = {
+			LINEAR : "linear",
+			EXPONENTIAL : "exponential",
+	 	};
 
 		return Tone.Envelope;
 	});
@@ -1598,12 +1880,7 @@
 			 *  @type {DynamicsCompressorNode}
 			 *  @private
 			 */
-			this._compressor = this.context.createDynamicsCompressor();
-
-			/**
-			 *  the input and output
-			 */
-			this.input = this.output = this._compressor;
+			this._compressor = this.input = this.output = this.context.createDynamicsCompressor();
 
 			/**
 			 *  the threshold vaue
@@ -1636,6 +1913,9 @@
 			this.ratio = this._compressor.ratio;
 
 			//set the defaults
+			this.attack.connect(this._compressor.attack);
+			this.release.connect(this._compressor.release);
+			this._readOnly(["knee", "release", "attack", "ratio", "threshold"]);
 			this.set(options);
 		};
 
@@ -1660,6 +1940,7 @@
 		 */
 		Tone.Compressor.prototype.dispose = function(){
 			Tone.prototype.dispose.call(this);
+			this._writable(["knee", "release", "attack", "ratio", "threshold"]);
 			this._compressor.disconnect();
 			this._compressor = null;
 			this.attack.dispose();
@@ -1788,6 +2069,7 @@
 		 */
 		Tone.Multiply.prototype.dispose = function(){
 			Tone.prototype.dispose.call(this);
+			this._mult.disconnect();
 			this._mult = null;
 			this._value = null;
 			return this;
@@ -1816,7 +2098,7 @@
 			 *  @type {Tone.Multiply}
 			 *  @private
 			 */
-			this._multiply = this.input = this.output= new Tone.Multiply(-1);
+			this._multiply = this.input = this.output = new Tone.Multiply(-1);
 		};
 
 		Tone.extend(Tone.Negate, Tone.SignalBase);
@@ -2087,7 +2369,7 @@
 		 */
 		Tone.Equal.prototype.dispose = function(){
 			Tone.prototype.dispose.call(this);
-			this._equals.disconnect();
+			this._equals.dispose();
 			this._equals = null;
 			this._sub.dispose();
 			this._sub = null;
@@ -2127,6 +2409,7 @@
 			 *  @type {Tone.Signal}
 			 */
 			this.gate = new Tone.Signal(0);
+			this._readOnly("gate");
 
 			//make all the inputs and connect them
 			for (var i = 0; i < sourceCount; i++){
@@ -2160,13 +2443,14 @@
 		 *  @returns {Tone.Select} `this`
 		 */
 		Tone.Select.prototype.dispose = function(){
+			this._writable("gate");
 			this.gate.dispose();
+			this.gate = null;
 			for (var i = 0; i < this.input.length; i++){
 				this.input[i].dispose();
 				this.input[i] = null;
 			}
 			Tone.prototype.dispose.call(this);
-			this.gate = null;
 			return this;
 		}; 
 
@@ -2280,6 +2564,7 @@
 		 *
 		 *  @extends {Tone.SignalBase}
 		 *  @constructor
+		 *  @param {number} inputCount the input count
 		 *  @example
 		 *  var or = new Tone.OR(2);
 		 *  var sigA = new Tone.Signal(0)connect(or, 0, 0);
@@ -2303,14 +2588,7 @@
 			 *  @type {Tone.Equal}
 			 *  @private
 			 */
-			this._gtz = new Tone.GreaterThanZero();
-
-			/**
-			 *  the output
-			 *  @type {Tone.Equal}
-			 *  @private
-			 */
-			this.output = this._gtz;
+			this._gtz = this.output = new Tone.GreaterThanZero();
 
 			//make each of the inputs an alias
 			for (var i = 0; i < inputCount; i++){
@@ -3463,6 +3741,7 @@
 			this.b.connect(this.output);
 			this.fade.chain(this._equalPowerB, this.b.gain);
 			this.fade.chain(this._invert, this._equalPowerA, this.a.gain);
+			this._readOnly("fade");
 		};
 
 		Tone.extend(Tone.CrossFade);
@@ -3473,6 +3752,7 @@
 		 */
 		Tone.CrossFade.prototype.dispose = function(){
 			Tone.prototype.dispose.call(this);
+			this._writable("fade");
 			this._equalPowerA.dispose();
 			this._equalPowerA = null;
 			this._equalPowerB.dispose();
@@ -3536,7 +3816,7 @@
 
 			/**
 			 *  the gain of the filter, only used in certain filter types
-			 *  @type {AudioParam}
+			 *  @type {Tone.Signal}
 			 */
 			this.gain = new Tone.Signal(options.gain, Tone.Signal.Units.Decibels);
 
@@ -3562,6 +3842,7 @@
 
 			//set the rolloff;
 			this.rolloff = options.rolloff;
+			this._readOnly(["detune", "frequency", "gain", "Q"]);
 		};
 
 		Tone.extend(Tone.Filter);
@@ -3587,6 +3868,7 @@
 		 * @type {string}
 		 * @name type
 		 */
+
 		Object.defineProperty(Tone.Filter.prototype, "type", {
 			get : function(){
 				return this._type;
@@ -3611,6 +3893,7 @@
 		 * @type {number}
 		 * @name rolloff
 		 */
+
 		Object.defineProperty(Tone.Filter.prototype, "rolloff", {
 			get : function(){
 				return this._rolloff;
@@ -3655,6 +3938,7 @@
 				this._filters[i] = null;
 			}
 			this._filters = null;
+			this._writable(["detune", "frequency", "gain", "Q"]);
 			this.frequency.dispose();
 			this.Q.dispose();
 			this.frequency = null;
@@ -3742,6 +4026,8 @@
 			this.lowFrequency.connect(this._lowMidFilter.frequency);
 			this.highFrequency.connect(this.mid.frequency);
 			this.highFrequency.connect(this.high.frequency);
+
+			this._readOnly(["high", "mid", "low", "highFrequency", "lowFrequency"]);
 		};
 
 		Tone.extend(Tone.MultibandSplit);
@@ -3762,6 +4048,7 @@
 		 */
 		Tone.MultibandSplit.prototype.dispose = function(){
 			Tone.prototype.dispose.call(this);
+			this._writable(["high", "mid", "low", "highFrequency", "lowFrequency"]);
 			this.low.dispose();
 			this._lowMidFilter.dispose();
 			this.mid.dispose();
@@ -3794,11 +4081,11 @@
 		 *  @param {number} [midLevel=0] the gain applied to the mid (in db)
 		 *  @param {number} [highLevel=0] the gain applied to the high (in db)
 		 *  @example
-		 *  var eq = new Tone.EQ(-10, 3, -20);
+		 *  var eq = new Tone.EQ3(-10, 3, -20);
 		 */
-		Tone.EQ = function(){
+		Tone.EQ3 = function(){
 
-			var options = this.optionsObject(arguments, ["low", "mid", "high"], Tone.EQ.defaults);
+			var options = this.optionsObject(arguments, ["low", "mid", "high"], Tone.EQ3.defaults);
 
 			/**
 			 *  the output node
@@ -3876,16 +4163,17 @@
 			this.high.value = options.low;
 			this.mid.value = options.mid;
 			this.low.value = options.high;
+			this._readOnly(["low", "mid", "high", "lowFrequency", "highFrequency"]);
 		};
 
-		Tone.extend(Tone.EQ);
+		Tone.extend(Tone.EQ3);
 
 		/**
 		 *  the default values
 		 *  @type {Object}
 		 *  @static
 		 */
-		Tone.EQ.defaults = {
+		Tone.EQ3.defaults = {
 			"low" : 0,
 			"mid" : 0,
 			"high" : 0,
@@ -3895,10 +4183,11 @@
 
 		/**
 		 *  clean up
-		 *  @returns {Tone.EQ} `this`
+		 *  @returns {Tone.EQ3} `this`
 		 */
-		Tone.EQ.prototype.dispose = function(){
+		Tone.EQ3.prototype.dispose = function(){
 			Tone.prototype.dispose.call(this);
+			this._writable(["low", "mid", "high", "lowFrequency", "highFrequency"]);
 			this._multibandSplit.dispose();
 			this._multibandSplit = null;
 			this.lowFrequency = null;
@@ -3918,7 +4207,7 @@
 			return this;
 		};
 
-		return Tone.EQ;
+		return Tone.EQ3;
 	});
 	ToneModule( function(Tone){
 
@@ -4136,35 +4425,13 @@
 		 *
 		 *  @extends {Tone}
 		 *  @constructor
-		 *  @param {number} [minDelay=0.01] the minimum delay time which the filter can have
-		 *  @param {number} [maxDelay=1] the maximum delay time which the filter can have
+		 *  @param {number} [delayTime=0.1] the minimum delay time which the filter can have
+		 *  @param {number} [resonance=0.5] the maximum delay time which the filter can have
 		 */
 		Tone.FeedbackCombFilter = function(){
 
 			Tone.call(this);
-			var options = this.optionsObject(arguments, ["minDelay", "maxDelay"], Tone.FeedbackCombFilter.defaults);
-
-			var minDelay = options.minDelay;
-			var maxDelay = options.maxDelay;
-			//the delay * samplerate = number of samples. 
-			// buffersize / number of samples = number of delays needed per buffer frame
-			var delayCount = Math.ceil(this.bufferSize / (minDelay * this.context.sampleRate));
-			//set some ranges
-			delayCount = Math.min(delayCount, 10);
-			delayCount = Math.max(delayCount, 1);
-
-			/**
-			 *  the number of filter delays
-			 *  @type {number}
-			 *  @private
-			 */
-			this._delayCount = delayCount;
-
-			/**
-			 *  @type {Array.<FilterDelay>}
-			 *  @private
-			 */
-			this._delays = new Array(this._delayCount);
+			var options = this.optionsObject(arguments, ["delayTime", "resonance"], Tone.FeedbackCombFilter.defaults);
 
 			/**
 			 *  the resonance control
@@ -4173,26 +4440,17 @@
 			this.resonance = new Tone.Signal(options.resonance, Tone.Signal.Units.Normal);
 
 			/**
-			 *  scale the resonance value to the normal range
-			 *  @type {Tone.Scale}
+			 *  the delay node
+			 *  @type {DelayNode}
 			 *  @private
 			 */
-			this._resScale = new Tone.ScaleExp(0.01, 1 / this._delayCount - 0.001, 0.5);
+			this._delay = this.input = this.output = this.context.createDelay(1);
 
 			/**
-			 *  internal flag for keeping track of when frequency
-			 *  correction has been used
-			 *  @type {boolean}
-			 *  @private
+			 *  the delayTime
+			 *  @type {Tone.Signal}
 			 */
-			this._highFrequencies = false;
-
-			/**
-			 *  internal counter of delayTime
-			 *  @type {Tone.TIme}
-			 *  @private
-			 */
-			this._delayTime = options.delayTime;
+			this.delayTime = new Tone.Signal(options.delayTime, Tone.Signal.Units.Time);
 
 			/**
 			 *  the feedback node
@@ -4201,23 +4459,10 @@
 			 */
 			this._feedback = this.context.createGain();
 
-			//make the filters
-			for (var i = 0; i < this._delayCount; i++) {
-				var delay = this.context.createDelay(maxDelay);
-				delay.delayTime.value = minDelay;
-				delay.connect(this._feedback);
-				this._delays[i] = delay;
-			}
-
-			//connections
-			this.connectSeries.apply(this, this._delays);
-			this.input.connect(this._delays[0]);
-			//set the delay to the min value initially
-			this._feedback.connect(this._delays[0]);
-			//resonance control
-			this.resonance.chain(this._resScale, this._feedback.gain);
-			this._feedback.connect(this.output);
-			this.delayTime = options.delayTime;
+			this._delay.chain(this._feedback, this._delay);
+			this.resonance.connect(this._feedback.gain);
+			this.delayTime.connect(this._delay.delayTime);
+			this._readOnly(["resonance", "delayTime"]);
 		};
 
 		Tone.extend(Tone.FeedbackCombFilter);
@@ -4229,46 +4474,9 @@
 		 *  @type {Object}
 		 */
 		Tone.FeedbackCombFilter.defaults = {
-			"resonance" : 0.5,
-			"minDelay" : 0.1,
-			"maxDelay" : 1,
-			"delayTime" : 0.1
+			"delayTime" : 0.1,
+			"resonance" : 0.5
 		};
-
-		/**
-		 * the delay time of the FeedbackCombFilter
-		 * @memberOf Tone.FeedbackCombFilter#
-		 * @type {Tone.Time}
-		 * @name delayTime
-		 */
-		Object.defineProperty(Tone.FeedbackCombFilter.prototype, "delayTime", {
-			get : function(){
-				return this._delayTime;
-			},
-			set : function(delayAmount){
-				this._delayTime = delayAmount;
-				delayAmount = this.toSeconds(delayAmount);
-				//the number of samples to delay by
-				var sampleRate = this.context.sampleRate;
-				var delaySamples = sampleRate * delayAmount;
-				// delayTime corection when frequencies get high
-				var now = this.now() + this.bufferTime;
-				var cutoff = 100;
-				if (delaySamples < cutoff){
-					this._highFrequencies = true;
-					var changeNumber = Math.round((delaySamples / cutoff) * this._delayCount);
-					for (var i = 0; i < changeNumber; i++) {
-						this._delays[i].delayTime.setValueAtTime(1 / sampleRate + delayAmount, now);
-					}
-					delayAmount = Math.floor(delaySamples) / sampleRate;
-				} else if (this._highFrequencies){
-					this._highFrequencies = false;
-					for (var j = 0; j < this._delays.length; j++) {
-						this._delays[j].delayTime.setValueAtTime(delayAmount, now);
-					}
-				}
-			}
-		});
 
 		/**
 		 *  clean up
@@ -4276,16 +4484,13 @@
 		 */
 		Tone.FeedbackCombFilter.prototype.dispose = function(){
 			Tone.prototype.dispose.call(this);
-			//dispose the filter delays
-			for (var i = 0; i < this._delays.length; i++) {
-				this._delays[i].disconnect();
-				this._delays[i] = null;
-			}
-			this._delays = null;
+			this._writable(["resonance", "delayTime"]);
+			this._delay.disconnect();
+			this._delay = null;
+			this.delayTime.dispose();
+			this.delayTime = null;
 			this.resonance.dispose();
 			this.resonance = null;
-			this._resScale.dispose();
-			this._resScale = null;
 			this._feedback.disconnect();
 			this._feedback = null;
 			return this;
@@ -4596,7 +4801,6 @@
 		 *  @class  a sample accurate clock built on an oscillator.
 		 *          Invokes the tick method at the set rate
 		 *
-		 * 	@private
 		 * 	@constructor
 		 * 	@extends {Tone}
 		 * 	@param {Tone.Frequency} frequency the rate of the callback
@@ -4623,7 +4827,7 @@
 			 *  the rate control signal
 			 *  @type {Tone.Signal}
 			 */
-			this.frequency = new Tone.Signal(frequency);
+			this.frequency = new Tone.Signal(frequency, Tone.Signal.Units.Frequency);
 
 			/**
 			 *  whether the tick is on the up or down
@@ -4639,6 +4843,16 @@
 			 */
 			this.tick = callback;
 
+			/**
+			 * Callback is invoked when the clock is stopped.
+			 * @type {function}
+			 * @example
+			 *  clock.onended = function(){
+			 *  	console.log("the clock is stopped");
+			 *  }
+			 */
+			this.onended = function(){};
+
 			//setup
 			this._jsNode.noGC();
 		};
@@ -4647,7 +4861,7 @@
 
 		/**
 		 *  start the clock
-		 *  @param {Tone.Time} time the time when the clock should start
+		 *  @param {Tone.Time} [time=now] the time when the clock should start
 		 *  @returns {Tone.Clock} `this`
 		 */
 		Tone.Clock.prototype.start = function(time){
@@ -4666,21 +4880,20 @@
 
 		/**
 		 *  stop the clock
-		 *  @param {Tone.Time} time the time when the clock should stop
-		 *  @param {function} onend called when the oscilator stops
+		 *  @param {Tone.Time} [time=now] The time when the clock should stop.
 		 *  @returns {Tone.Clock} `this`
 		 */
-		Tone.Clock.prototype.stop = function(time, onend){
+		Tone.Clock.prototype.stop = function(time){
 			if (this._oscillator){
 				var now = this.now();
 				var stopTime = this.toSeconds(time, now);
 				this._oscillator.stop(stopTime);
 				this._oscillator = null;
-				//set a timeout for when it stops
 				if (time){
-					setTimeout(onend, (stopTime - now) * 1000);
+					//set a timeout for when it stops
+					setTimeout(this.onended.bind(this), (stopTime - now) * 1000);
 				} else {
-					onend();
+					this.onended();
 				}
 			}
 			return this;
@@ -4732,6 +4945,7 @@
 			this._jsNode.onaudioprocess = function(){};
 			this._jsNode = null;
 			this.tick = null;
+			this.onended = function(){};
 			return this;
 		};
 
@@ -4789,6 +5003,7 @@
 			 *  @type {Tone.Clock}
 			 */
 			this._clock = new Tone.Clock(0, this._processTick.bind(this));
+			this._clock.onended = this._onended.bind(this);
 
 			/** 
 			 * 	If the transport loops or not.
@@ -5305,7 +5520,7 @@
 		Tone.Transport.prototype.stop = function(time){
 			if (this.state === TransportState.STARTED || this.state === TransportState.PAUSED){
 				var stopTime = this.toSeconds(time);
-				this._clock.stop(stopTime, this._onended.bind(this));
+				this._clock.stop(stopTime);
 				//call start on each of the synced sources
 				for (var i = 0; i < SyncedSources.length; i++){
 					var source = SyncedSources[i].source;
@@ -5891,6 +6106,13 @@
 			this._unmutedVolume = 1;
 
 			/**
+			 *  if the master is muted
+			 *  @type {boolean}
+			 *  @private
+			 */
+			this._muted = false;
+
+			/**
 			 * the volume of the output in decibels
 			 * @type {Tone.Signal}
 			 */
@@ -5903,13 +6125,16 @@
 		Tone.extend(Tone.Master);
 
 		/**
-		 *  Mutethe output
+		 *  Mute the output
 		 *  @returns {Tone.Master} `this`
 		 */
 		Tone.Master.prototype.mute = function(){
-			this._unmutedVolume = this.volume.value;
-			//maybe it should ramp here?
-			this.volume.value = -Infinity;
+			if (!this._muted){
+				this._muted = true;
+				this._unmutedVolume = this.volume.value;
+				//maybe it should ramp here?
+				this.volume.value = -Infinity;
+			}
 			return this;
 		};
 
@@ -5918,8 +6143,11 @@
 		 *  the output was muted. 
 		 *  @returns {Tone.Master} `this`
 		 */
-		Tone.Master.prototype.mute = function(){
-			this.volume.value = this._unmutedVolume;
+		Tone.Master.prototype.unmute = function(){
+			if (this._muted){
+				this._muted = false;
+				this.volume.value = this._unmutedVolume;
+			}
 			return this;
 		};
 
@@ -6007,7 +6235,7 @@
 			options = this.defaultArg(options, Tone.Source.defaults);
 
 			/**
-			 * The onended callback when the source is done playing.
+			 * Callback is invoked when the source is done playing.
 			 * @type {function}
 			 * @example
 			 *  source.onended = function(){
@@ -6037,6 +6265,7 @@
 			 * source.volume.value = -6;
 			 */
 			this.volume = new Tone.Signal(this.output.gain, Tone.Signal.Units.Decibels);
+			this._readOnly("volume");
 
 			/**
 			 * 	keeps track of the timeout for chaning the state
@@ -6045,6 +6274,10 @@
 			 *  @private
 			 */
 			this._timeout = -1;
+
+			//make the output explicitly stereo
+			this.output.channelCount = 2;
+			this.output.channelCountMode = "explicit";
 		};
 
 		Tone.extend(Tone.Source);
@@ -6186,6 +6419,7 @@
 			this.stop();
 			clearTimeout(this._timeout);
 			this.onended = function(){};
+			this._writable("volume");
 			this.volume.dispose();
 			this.volume = null;
 		};
@@ -6256,6 +6490,7 @@
 			//setup
 			this.type = options.type;
 			this.phase = this._phase;
+			this._readOnly(["frequency", "detune"]);
 		};
 
 		Tone.extend(Tone.Oscillator, Tone.Source);
@@ -6267,9 +6502,13 @@
 		 *  @type {Object}
 		 */
 		Tone.Oscillator.defaults = {
+			/** @type {string} */
 			"type" : "sine",
+			/** @type {Tone.Frequency} */
 			"frequency" : 440,
+			/** @type {number} */
 			"detune" : 0,
+			/** @type {number} */
 			"phase" : 0
 		};
 
@@ -6341,6 +6580,7 @@
 		 * @memberOf Tone.Oscillator#
 		 * @type {string}
 		 * @name type
+		 * @options ["sine", "square", "sawtooth", "triangle"]
 		 * @example
 		 * osc.type = "square";
 		 * osc.type; //returns "square"
@@ -6350,57 +6590,62 @@
 				return this._type;
 			},
 			set : function(type){
-				if (this.type !== type){
 
-					var fftSize = 4096;
-					var halfSize = fftSize / 2;
+				var originalType = type;
 
-					var real = new Float32Array(halfSize);
-					var imag = new Float32Array(halfSize);
-					
-					// Clear DC and Nyquist.
-					real[0] = 0;
-					imag[0] = 0;
+				var fftSize = 4096;
+				var periodicWaveSize = fftSize / 2;
 
-					var shift = this._phase;	
-					for (var n = 1; n < halfSize; ++n) {
-						var piFactor = 2 / (n * Math.PI);
-						var b; 
-						switch (type) {
-							case "sine": 
-								b = (n === 1) ? 1 : 0;
-								break;
-							case "square":
-								b = (n & 1) ? 2 * piFactor : 0;
-								break;
-							case "sawtooth":
-								b = piFactor * ((n & 1) ? 1 : -1);
-								break;
-							case "triangle":
-								if (n & 1) {
-									b = 2 * (piFactor * piFactor) * ((((n - 1) >> 1) & 1) ? -1 : 1);
-								} else {
-									b = 0;
-								}
-								break;
-							default:
-								throw new TypeError("invalid oscillator type: "+type);
-						}
-						if (b !== 0){
-							real[n] = -b * Math.sin(shift);
-							imag[n] = b * Math.cos(shift);
-						} else {
-							real[n] = 0;
-							imag[n] = 0;
-						}
-					}
-					var periodicWave = this.context.createPeriodicWave(real, imag);
-					this._wave = periodicWave;
-					if (this._oscillator !== null){
-						this._oscillator.setPeriodicWave(this._wave);
-					}
-					this._type = type;
+				var real = new Float32Array(periodicWaveSize);
+				var imag = new Float32Array(periodicWaveSize);
+				
+				var partialCount = 1;
+				var partial = /(sine|triangle|square|sawtooth)(\d+)$/.exec(type);
+				if (partial){
+					partialCount = parseInt(partial[2]);
+					type = partial[1];
+					partialCount = Math.max(partialCount, 2);
+					periodicWaveSize = partialCount;
 				}
+
+				var shift = this._phase;	
+				for (var n = 1; n < periodicWaveSize; ++n) {
+					var piFactor = 2 / (n * Math.PI);
+					var b; 
+					switch (type) {
+						case "sine": 
+							b = (n <= partialCount) ? 1 : 0;
+							break;
+						case "square":
+							b = (n & 1) ? 2 * piFactor : 0;
+							break;
+						case "sawtooth":
+							b = piFactor * ((n & 1) ? 1 : -1);
+							break;
+						case "triangle":
+							if (n & 1) {
+								b = 2 * (piFactor * piFactor) * ((((n - 1) >> 1) & 1) ? -1 : 1);
+							} else {
+								b = 0;
+							}
+							break;
+						default:
+							throw new TypeError("invalid oscillator type: "+type);
+					}
+					if (b !== 0){
+						real[n] = -b * Math.sin(shift * n);
+						imag[n] = b * Math.cos(shift * n);
+					} else {
+						real[n] = 0;
+						imag[n] = 0;
+					}
+				}
+				var periodicWave = this.context.createPeriodicWave(real, imag);
+				this._wave = periodicWave;
+				if (this._oscillator !== null){
+					this._oscillator.setPeriodicWave(this._wave);
+				}
+				this._type = originalType;
 			}
 		});
 
@@ -6433,11 +6678,12 @@
 				this._oscillator.disconnect();
 				this._oscillator = null;
 			}
+			this._wave = null;
+			this._writable(["frequency", "detune"]);
 			this.frequency.dispose();
 			this.frequency = null;
 			this.detune.dispose();
 			this.detune = null;
-			this._wave = null;
 			return this;
 		};
 
@@ -6461,18 +6707,20 @@
 			 *  @type {WaveShaperNode}
 			 *  @private
 			 */
-			this._norm = this.input = this.output = new Tone.WaveShaper([0,1]);
+			this._norm = this.input = this.output = new Tone.WaveShaper(function(x){
+				return (x + 1) / 2;
+			});
 		};
 
 		Tone.extend(Tone.AudioToGain, Tone.SignalBase);
 
 		/**
 		 *  clean up
-		 *  @returns {Tone.AND} `this`
+		 *  @returns {Tone.AudioToGain} `this`
 		 */
 		Tone.AudioToGain.prototype.dispose = function(){
 			Tone.prototype.dispose.call(this);
-			this._norm.disconnect();
+			this._norm.dispose();
 			this._norm = null;
 			return this;
 		};
@@ -6545,6 +6793,7 @@
 
 			//connect it up
 			this.oscillator.chain(this._a2g, this._scaler);
+			this._readOnly(["amplitude", "frequency", "oscillator"]);
 		};
 
 		Tone.extend(Tone.LFO, Tone.Oscillator);
@@ -6662,7 +6911,7 @@
 		/**
 		 * The phase of the LFO
 		 * @memberOf Tone.LFO#
-		 * @type {string}
+		 * @type {number}
 		 * @name phase
 		 */
 		 Object.defineProperty(Tone.LFO.prototype, "phase", {
@@ -6687,6 +6936,7 @@
 		 */
 		Tone.LFO.prototype.dispose = function(){
 			Tone.prototype.dispose.call(this);
+			this._writable(["amplitude", "frequency", "oscillator"]);
 			this.oscillator.dispose();
 			this.oscillator = null;
 			this._scaler.dispose();
@@ -6732,6 +6982,8 @@
 			 * @type {AudioParam}
 			 */
 			this.threshold = this._compressor.threshold;
+
+			this._readOnly("threshold");
 		};
 
 		Tone.extend(Tone.Limiter);
@@ -6744,6 +6996,7 @@
 			Tone.prototype.dispose.call(this);
 			this._compressor.dispose();
 			this._compressor = null;
+			this._writable("threshold");
 			this.threshold = null;
 			return this;
 		};
@@ -6760,40 +7013,51 @@
 		 *
 		 *  @extends {Tone}
 		 *  @constructor
-		 *  @param {number} [minDelay=0.1] the minimum delay time which the filter can have
-		 *  @param {number} [maxDelay=1] the maximum delay time which the filter can have
+		 *  @param {number} [delayTime=0.1] The delay time of the comb filter
+		 *  @param {number} [resonance=0.5] The resonance (feedback) of the comb filter
+		 *  @param {Tone.Frequency} [dampening=3000] The dampending cutoff of the lowpass filter
 		 */
 		Tone.LowpassCombFilter = function(){
 
 			Tone.call(this);
 
-			var options = this.optionsObject(arguments, ["minDelay", "maxDelay"], Tone.LowpassCombFilter.defaults);
-
-			//the delay * samplerate = number of samples. 
-			// buffersize / number of samples = number of delays needed per buffer frame
-			var delayCount = Math.ceil(this.bufferSize / (options.minDelay * this.context.sampleRate));
-			//set some ranges
-			delayCount = Math.min(delayCount, 10);
-			delayCount = Math.max(delayCount, 1);
+			var options = this.optionsObject(arguments, ["delayTime", "resonance", "dampening"], Tone.LowpassCombFilter.defaults);
 
 			/**
-			 *  the number of filter delays
-			 *  @type {number}
+			 *  the delay node
+			 *  @type {DelayNode}
 			 *  @private
 			 */
-			this._filterDelayCount = delayCount;
+			this._delay = this.input = this.context.createDelay(1);
 
 			/**
-			 *  @type {Array.<FilterDelay>}
+			 *  the delayTime
+			 *  @type {Tone.Signal}
+			 */
+			this.delayTime = new Tone.Signal(options.delayTime, Tone.Signal.Units.Time);
+
+			/**
+			 *  the lowpass filter
+			 *  @type  {BiquadFilterNode}
 			 *  @private
 			 */
-			this._filterDelays = new Array(this._filterDelayCount);
+			this._lowpass = this.output = this.context.createBiquadFilter();
+			this._lowpass.Q.value = 0;
+			this._lowpass.type = "lowpass";
+			this._lowpass.frequency.value = options.dampening;
 
 			/**
 			 *  the dampening control
 			 *  @type {Tone.Signal}
 			 */
-			this.dampening = new Tone.Signal(options.dampening, Tone.Signal.Units.Frequency);
+			this.dampening = new Tone.Signal(this._lowpass.frequency, Tone.Signal.Units.Frequency);
+
+			/**
+			 *  the feedback gain
+			 *  @type {GainNode}
+			 *  @private
+			 */
+			this._feedback = this.context.createGain();
 
 			/**
 			 *  the resonance control
@@ -6801,51 +7065,11 @@
 			 */
 			this.resonance = new Tone.Signal(options.resonance, Tone.Signal.Units.Normal);
 
-			/**
-			 *  scale the resonance value to the normal range
-			 *  @type {Tone.Scale}
-			 *  @private
-			 */
-			this._resScale = new Tone.ScaleExp(0.01, 1 / this._filterDelayCount - 0.001, 0.5);
-
-			/**
-			 *  internal flag for keeping track of when frequency
-			 *  correction has been used
-			 *  @type {boolean}
-			 *  @private
-			 */
-			this._highFrequencies = false;
-
-			/**
-			 *  internal counter of delayTime
-			 *  @type {Tone.Time}
-			 *  @private
-			 */
-			this._delayTime = options.delayTime;
-
-			/**
-			 *  the feedback node
-			 *  @type {GainNode}
-			 *  @private
-			 */
-			this._feedback = this.context.createGain();
-
-			//make the filters
-			for (var i = 0; i < this._filterDelayCount; i++) {
-				var filterDelay = new FilterDelay(options.minDelay, this.dampening);
-				filterDelay.connect(this._feedback);
-				this._filterDelays[i] = filterDelay;
-			}
-
 			//connections
-			this.input.connect(this._filterDelays[0]);
-			this._feedback.connect(this._filterDelays[0]);
-			this.connectSeries.apply(this, this._filterDelays);
-			//resonance control
-			this.resonance.chain(this._resScale, this._feedback.gain);
-			this._feedback.connect(this.output);
-			//set the delay to the min value initially
-			this.delayTime = options.delayTime;
+			this._delay.chain(this._lowpass, this._feedback, this._delay);
+			this.delayTime.connect(this._delay.delayTime);
+			this.resonance.connect(this._feedback.gain);
+			this._readOnly(["dampening", "resonance", "delayTime"]);
 		};
 
 		Tone.extend(Tone.LowpassCombFilter);
@@ -6857,55 +7081,9 @@
 		 *  @type {Object}
 		 */
 		Tone.LowpassCombFilter.defaults = {
+			"delayTime" : 0.1,
 			"resonance" : 0.5,
-			"dampening" : 3000,
-			"minDelay" : 0.1,
-			"maxDelay" : 1,
-			"delayTime" : 0.1
-		};
-
-		/**
-		 * The delay time of the LowpassCombFilter. Auto corrects
-		 * for sample offsets for small delay amounts.
-		 * @memberOf Tone.LowpassCombFilter#
-		 * @type {Tone.Time}
-		 * @name delayTime
-		 */
-		Object.defineProperty(Tone.LowpassCombFilter.prototype, "delayTime", {
-			get : function(){
-				return this._delayTime;
-			},
-			set : function(delayAmount){
-				this.setDelayTimeAtTime(delayAmount);
-			}
-		});
-
-		/**
-		 * set the delay time for the comb filter at a specific time. 
-		 * @param {Tone.Time} delayAmount the amount of delay time
-		 * @param {Tone.Time} [time=now] when the delay time should be set
-		 */
-		Tone.LowpassCombFilter.prototype.setDelayTimeAtTime = function(delayAmount, time){
-			this._delayTime = this.toSeconds(delayAmount);
-			//the number of samples to delay by
-			var sampleRate = this.context.sampleRate;
-			var delaySamples = sampleRate * this._delayTime;
-			// delayTime corection when frequencies get high
-			time = this.toSeconds(time);
-			var cutoff = 100;
-			if (delaySamples < cutoff){
-				this._highFrequencies = true;
-				var changeNumber = Math.round((delaySamples / cutoff) * this._filterDelayCount);
-				for (var i = 0; i < changeNumber; i++) {
-					this._filterDelays[i].setDelay(1 / sampleRate + this._delayTime, time);
-				}
-				this._delayTime = Math.floor(delaySamples) / sampleRate;
-			} else if (this._highFrequencies){
-				this._highFrequencies = false;
-				for (var j = 0; j < this._filterDelays.length; j++) {
-					this._filterDelays[j].setDelay(this._delayTime, time);
-				}
-			}
+			"dampening" : 3000
 		};
 
 		/**
@@ -6914,61 +7092,21 @@
 		 */
 		Tone.LowpassCombFilter.prototype.dispose = function(){
 			Tone.prototype.dispose.call(this);
-			//dispose the filter delays
-			for (var i = 0; i < this._filterDelays.length; i++) {
-				this._filterDelays[i].dispose();
-				this._filterDelays[i] = null;
-			}
-			this._filterDelays = null;
+			this._writable(["dampening", "resonance", "delayTime"]);
 			this.dampening.dispose();
 			this.dampening = null;
 			this.resonance.dispose();
 			this.resonance = null;
-			this._resScale.dispose();
-			this._resScale = null;
+			this._delay.disconnect();
+			this._delay = null;
+			this._lowpass.disconnect();
+			this._lowpass = null;
 			this._feedback.disconnect();
 			this._feedback = null;
+			this.delayTime.dispose();
+			this.delayTime = null;
 			return this;
 		};
-
-		// BEGIN HELPER CLASS //
-
-		/**
-		 *  FilterDelay
-		 *  @private
-		 *  @constructor
-		 *  @extends {Tone}
-		 */
-		var FilterDelay = function(maxDelay, filterFreq){
-			this.delay = this.input = this.context.createDelay(maxDelay);
-			this.delay.delayTime.value = maxDelay;
-
-			this.filter = this.output = this.context.createBiquadFilter();
-			filterFreq.connect(this.filter.frequency);
-
-			this.filter.type = "lowpass";
-			this.filter.Q.value = 0;
-
-			this.delay.connect(this.filter);
-		};
-
-		Tone.extend(FilterDelay);
-
-		FilterDelay.prototype.setDelay = function(amount, time) {
-			this.delay.delayTime.setValueAtTime(amount, time);
-		};
-
-		/**
-		 *  clean up
-		 */
-		FilterDelay.prototype.dispose = function(){
-			this.delay.disconnect();
-			this.delay = null;
-			this.filter.disconnect();
-			this.filter = null;
-		};
-
-		// END HELPER CLASS //
 
 		return Tone.LowpassCombFilter;
 	});
@@ -7213,7 +7351,334 @@
 		
 
 		/**
-		 *  @class Coerces the incoming mono or stereo signal into a stereo signal
+		 *	@class  Split the incoming signal into left and right channels
+		 *	
+		 *  @constructor
+		 *  @extends {Tone}
+		 *  @example
+		 *  var split = new Tone.Split();
+		 *  stereoSignal.connect(split);
+		 */
+		Tone.Split = function(){
+
+			Tone.call(this, 0, 2);
+
+			/** 
+			 *  @type {ChannelSplitterNode}
+			 *  @private
+			 */
+			this._splitter = this.input = this.context.createChannelSplitter(2);
+
+			/** 
+			 *  left channel output
+			 *  alais for the first output
+			 *  @type {GainNode}
+			 */
+			this.left = this.output[0] = this.context.createGain();
+
+			/**
+			 *  the right channel output
+			 *  alais for the second output
+			 *  @type {GainNode}
+			 */
+			this.right = this.output[1] = this.context.createGain();
+			
+			//connections
+			this._splitter.connect(this.left, 0, 0);
+			this._splitter.connect(this.right, 1, 0);
+		};
+
+		Tone.extend(Tone.Split);
+
+		/**
+		 *  dispose method
+		 *  @returns {Tone.Split} `this`
+		 */
+		Tone.Split.prototype.dispose = function(){
+			Tone.prototype.dispose.call(this);
+			this._splitter.disconnect();
+			this.left.disconnect();
+			this.right.disconnect();
+			this.left = null;
+			this.right = null;
+			this._splitter = null;
+			return this;
+		}; 
+
+		return Tone.Split;
+	});
+	ToneModule( 
+		function(Tone){
+
+		
+
+		/**
+		 *  @class Seperates the mid channel from the side channel. Has two outputs labeled 
+		 *         `mid` and `side` or `output[0]` and `output[1]`. <br>
+		 *         http://musicdsp.org/showArchiveComment.php?ArchiveID=173<br>
+		 *         http://www.kvraudio.com/forum/viewtopic.php?t=212587<br>
+		 *         M = (L+R)/sqrt(2);   // obtain mid-signal from left and right<br>
+		 *         S = (L-R)/sqrt(2);   // obtain side-signal from left and righ<br>
+		 *
+		 *  @extends {Tone}
+		 *  @constructor
+		 */
+		Tone.MidSideSplit = function(){
+			Tone.call(this, 0, 2);
+
+			/**
+			 *  split the incoming signal into left and right channels
+			 *  @type  {Tone.Split}
+			 *  @private
+			 */
+			this._split = this.input = new Tone.Split();
+
+			/**
+			 *  The mid send. Connect to mid processing.
+			 *  @type {Tone.Expr}
+			 */
+			this.mid = this.output[0] = new Tone.Expr("($0 + $1) * $2");
+
+			/**
+			 *  The side output. Connect to side processing.
+			 *  @type {Tone.Expr}
+			 */
+			this.side = this.output[1] = new Tone.Expr("($0 - $1) * $2");
+
+			this._split.connect(this.mid, 0, 0);
+			this._split.connect(this.mid, 1, 1);
+			this._split.connect(this.side, 0, 0);
+			this._split.connect(this.side, 1, 1);
+			sqrtTwo.connect(this.mid, 0, 2);
+			sqrtTwo.connect(this.side, 0, 2);
+		};
+
+		Tone.extend(Tone.MidSideSplit);
+
+		/**
+		 *  a constant signal equal to 1 / sqrt(2)
+		 *  @type {Tone.Signal}
+		 *  @private
+		 *  @static
+		 */
+		var sqrtTwo = null;
+
+		Tone._initAudioContext(function(){
+			sqrtTwo = new Tone.Signal(1 / Math.sqrt(2));
+		});
+
+		/**
+		 *  clean up
+		 *  @returns {Tone.MidSideSplit} `this`
+		 */
+		Tone.MidSideSplit.prototype.dispose = function(){
+			Tone.prototype.dispose.call(this);
+			this.mid.dispose();
+			this.mid = null;
+			this.side.dispose();
+			this.side = null;
+			this._split.dispose();
+			this._split = null;
+			return this;
+		};
+
+		return Tone.MidSideSplit;
+	});
+	ToneModule( 
+		function(Tone){
+
+		
+
+		/**
+		 *  @class Mid/Side processing separates the the 'mid' signal 
+		 *         (which comes out of both the left and the right channel) 
+		 *         and the 'side' (which only comes out of the the side channels). 
+		 *         MidSideMerge merges the mid and side signal after they've been seperated
+		 *         by {@link Tone.MidSideSplit}.<br>
+		 *         M/S send/return<br>
+		 *         L = (M+S)/sqrt(2);   // obtain left signal from mid and side<br>
+		 *         R = (M-S)/sqrt(2);   // obtain right signal from mid and side<br>
+		 *
+		 *  @extends {Tone.StereoEffect}
+		 *  @constructor
+		 */
+		Tone.MidSideMerge = function(){
+			Tone.call(this, 2, 0);
+
+			/**
+			 *  The mid signal input.
+			 *  @type  {GainNode}
+			 */
+			this.mid = this.input[0] = this.context.createGain();
+
+			/**
+			 *  recombine the mid/side into Left
+			 *  @type {Tone.Expr}
+			 *  @private
+			 */
+			this._left = new Tone.Expr("($0 + $1) * $2");
+
+			/**
+			 *  The side signal input.
+			 *  @type  {GainNode}
+			 */
+			this.side = this.input[1] = this.context.createGain();
+
+			/**
+			 *  recombine the mid/side into Right
+			 *  @type {Tone.Expr}
+			 *  @private
+			 */
+			this._right = new Tone.Expr("($0 - $1) * $2");
+
+			/**
+			 *  Merge the left/right signal back into a stereo signal.
+			 *  @type {Tone.Merge}
+			 *  @private
+			 */
+			this._merge = this.output = new Tone.Merge();
+
+			this.mid.connect(this._left, 0, 0);
+			this.side.connect(this._left, 0, 1);
+			this.mid.connect(this._right, 0, 0);
+			this.side.connect(this._right, 0, 1);
+			this._left.connect(this._merge, 0, 0);
+			this._right.connect(this._merge, 0, 1);
+			sqrtTwo.connect(this._left, 0, 2);
+			sqrtTwo.connect(this._right, 0, 2);
+		};
+
+		Tone.extend(Tone.MidSideMerge);
+
+		/**
+		 *  A constant signal equal to 1 / sqrt(2).
+		 *  @type {Tone.Signal}
+		 *  @private
+		 *  @static
+		 */
+		var sqrtTwo = null;
+
+		Tone._initAudioContext(function(){
+			sqrtTwo = new Tone.Signal(1 / Math.sqrt(2));
+		});
+
+		/**
+		 *  clean up
+		 *  @returns {Tone.MidSideMerge} `this`
+		 */
+		Tone.MidSideMerge.prototype.dispose = function(){
+			Tone.prototype.dispose.call(this);
+			this.mid.disconnect();
+			this.mid = null;
+			this.side.disconnect();
+			this.side = null;
+			this._left.dispose();
+			this._left = null;
+			this._right.dispose();
+			this._right = null;
+			this._merge.dispose();
+			this._merge = null;
+			return this;
+		};
+
+		return Tone.MidSideMerge;
+	});
+	ToneModule( function(Tone){
+
+		
+
+		/**
+		 *  @class MidSideCompressor applies two different compressors to the mid
+		 *         and side signal components.
+		 *
+		 *  @extends {Tone.MidSideEffect}
+		 *  @constructor
+		 */
+		Tone.MidSideCompressor = function(options){
+
+			options = this.defaultArg(options, Tone.MidSideCompressor.defaults);
+
+			/**
+			 *  the mid/side split
+			 *  @type  {Tone.MidSideSplit}
+			 *  @private
+			 */
+			this._midSideSplit = this.input = new Tone.MidSideSplit();
+
+			/**
+			 *  the mid/side recombination
+			 *  @type  {Tone.MidSideMerge}
+			 *  @private
+			 */
+			this._midSideMerge = this.output = new Tone.MidSideMerge();
+
+			/**
+			 *  The compressor applied to the mid signal
+			 *  @type  {Tone.Compressor}
+			 */
+			this.mid = new Tone.Compressor(options.mid);
+
+			/**
+			 *  The compressor applied to the side signal
+			 *  @type  {Tone.Compressor}
+			 */
+			this.side = new Tone.Compressor(options.side);
+
+			this._midSideSplit.mid.chain(this.mid, this._midSideMerge.mid);
+			this._midSideSplit.side.chain(this.side, this._midSideMerge.side);
+			this._readOnly(["mid", "side"]);
+		};
+
+		Tone.extend(Tone.MidSideCompressor);
+
+		/**
+		 *  @const
+		 *  @static
+		 *  @type {Object}
+		 */
+		Tone.MidSideCompressor.defaults = {
+			"mid" : {
+				"ratio" : 3,
+				"threshold" : -24,
+				"release" : 0.03,
+				"attack" : 0.02,
+				"knee" : 16
+			},
+			"side" : {
+				"ratio" : 6,
+				"threshold" : -30,
+				"release" : 0.25,
+				"attack" : 0.03,
+				"knee" : 10
+			}
+		};
+
+		/**
+		 *  clean up
+		 *  @returns {Tone.MidSideCompressor} `this`
+		 */
+		Tone.MidSideCompressor.prototype.dispose = function(){
+			Tone.prototype.dispose.call(this);
+			this._writable(["mid", "side"]);
+			this.mid.dispose();
+			this.mid = null;
+			this.side.dispose();
+			this.side = null;
+			this._midSideSplit.dispose();
+			this._midSideSplit = null;
+			this._midSideMerge.dispose();
+			this._midSideMerge = null;
+			return this;
+		};
+
+		return Tone.MidSideCompressor;
+	});
+	ToneModule( function(Tone){
+
+		
+
+		/**
+		 *  @class Coerces the incoming mono or stereo signal into a mono signal
 		 *         where both left and right channels have the same value. 
 		 *
 		 *  @extends {Tone}
@@ -7323,6 +7788,8 @@
 			this._splitter.low.chain(this.low, this.output);
 			this._splitter.mid.chain(this.mid, this.output);
 			this._splitter.high.chain(this.high, this.output);
+
+			this._readOnly(["high", "mid", "low", "highFrequency", "lowFrequency"]);
 		};
 
 		Tone.extend(Tone.MultibandCompressor);
@@ -7347,6 +7814,7 @@
 		Tone.MultibandCompressor.prototype.dispose = function(){
 			Tone.prototype.dispose.call(this);
 			this._splitter.dispose();
+			this._writable(["high", "mid", "low", "highFrequency", "lowFrequency"]);
 			this.low.dispose();
 			this.mid.dispose();
 			this.high.dispose();
@@ -7366,62 +7834,38 @@
 		
 
 		/**
-		 *	@class  Split the incoming signal into left and right channels
-		 *	
+		 *  @class Maps a gain value [0, 1] to an audio value [-1, 1]
+		 *
+		 *  @extends {Tone.SignalBase}
 		 *  @constructor
-		 *  @extends {Tone}
 		 *  @example
-		 *  var split = new Tone.Split();
-		 *  stereoSignal.connect(split);
+		 *  var g2a = new Tone.GainToAudio();
 		 */
-		Tone.Split = function(){
-
-			Tone.call(this, 1, 2);
-
-			/** 
-			 *  @type {ChannelSplitterNode}
-			 *  @private
-			 */
-			this._splitter = this.context.createChannelSplitter(2);
-
-			/** 
-			 *  left channel output
-			 *  alais for the first output
-			 *  @type {GainNode}
-			 */
-			this.left = this.output[0] = this.context.createGain();
+		Tone.GainToAudio = function(){
 
 			/**
-			 *  the right channel output
-			 *  alais for the second output
-			 *  @type {GainNode}
+			 *  @type {WaveShaperNode}
+			 *  @private
 			 */
-			this.right = this.output[1] = this.context.createGain();
-			
-			//connections
-			this.input.connect(this._splitter);
-			this._splitter.connect(this.left, 0, 0);
-			this._splitter.connect(this.right, 1, 0);
+			this._norm = this.input = this.output = new Tone.WaveShaper(function(x){
+				return Math.abs(x) * 2 - 1;
+			});
 		};
 
-		Tone.extend(Tone.Split);
+		Tone.extend(Tone.GainToAudio, Tone.SignalBase);
 
 		/**
-		 *  dispose method
-		 *  @returns {Tone.Split} `this`
+		 *  clean up
+		 *  @returns {Tone.GainToAudio} `this`
 		 */
-		Tone.Split.prototype.dispose = function(){
+		Tone.GainToAudio.prototype.dispose = function(){
 			Tone.prototype.dispose.call(this);
-			this._splitter.disconnect();
-			this.left.disconnect();
-			this.right.disconnect();
-			this.left = null;
-			this.right = null;
-			this._splitter = null;
+			this._norm.dispose();
+			this._norm = null;
 			return this;
-		}; 
+		};
 
-		return Tone.Split;
+		return Tone.GainToAudio;
 	});
 	ToneModule( 
 	function(Tone){
@@ -7444,45 +7888,79 @@
 		 */
 		Tone.Panner = function(initialPan){
 
-			Tone.call(this, 1, 0);
-			
-			/**
-			 *  the dry/wet knob
-			 *  @type {Tone.CrossFade}
-			 *  @private
-			 */
-			this._crossFade = new Tone.CrossFade();
-			
-			/**
-			 *  @type {Tone.Merge}
-			 *  @private
-			 */
-			this._merger = this.output = new Tone.Merge();
-			
-			/**
-			 *  @type {Tone.Split}
-			 *  @private
-			 */
-			this._splitter = new Tone.Split();
-			
-			/**
-			 *  the pan control
-			 *  @type {Tone.Signal}
-			 */	
-			this.pan = this._crossFade.fade;
+			Tone.call(this);
 
-			//CONNECTIONS:
-			this.input.connect(this._splitter.left);
-			this.input.connect(this._splitter.right);
-			//left channel is dry, right channel is wet
-			this._splitter.connect(this._crossFade, 0, 0);
-			this._splitter.connect(this._crossFade, 1, 1);
-			//merge it back together
-			this._crossFade.a.connect(this._merger.left);
-			this._crossFade.b.connect(this._merger.right);
+			/**
+			 *  indicates if the panner is using the new StereoPannerNode internally
+			 *  @type  {boolean}
+			 *  @private
+			 */
+			this._hasStereoPanner = this.isFunction(this.context.createStereoPanner);
+
+			if (this._hasStereoPanner){
+
+				/**
+				 *  the panner node
+				 *  @type {StereoPannerNode}
+				 *  @private
+				 */
+				this._panner = this.input = this.output = this.context.createStereoPanner();
+
+				/**
+				 *  the pan control
+				 *  @type {Tone.Signal}
+				 */	
+				this.pan = new Tone.Signal(0, Tone.Signal.Units.Normal);
+
+				/**
+				 *  scale the pan signal to between -1 and 1
+				 *  @type {Tone.WaveShaper}
+				 *  @private
+				 */
+				this._scalePan = new Tone.GainToAudio();
+
+				//connections
+				this.pan.chain(this._scalePan, this._panner.pan);
+				
+			} else {
+
+				/**
+				 *  the dry/wet knob
+				 *  @type {Tone.CrossFade}
+				 *  @private
+				 */
+				this._crossFade = new Tone.CrossFade();
+				
+				/**
+				 *  @type {Tone.Merge}
+				 *  @private
+				 */
+				this._merger = this.output = new Tone.Merge();
+				
+				/**
+				 *  @type {Tone.Split}
+				 *  @private
+				 */
+				this._splitter = this.input = new Tone.Split();
+				
+				/**
+				 *  the pan control
+				 *  @type {Tone.Signal}
+				 */	
+				this.pan = this._crossFade.fade;
+
+				//CONNECTIONS:
+				//left channel is a, right channel is b
+				this._splitter.connect(this._crossFade, 0, 0);
+				this._splitter.connect(this._crossFade, 1, 1);
+				//merge it back together
+				this._crossFade.a.connect(this._merger, 0, 0);
+				this._crossFade.b.connect(this._merger, 0, 1);
+			}
 
 			//initial value
 			this.pan.value = this.defaultArg(initialPan, 0.5);
+			this._readOnly("pan");
 		};
 
 		Tone.extend(Tone.Panner);
@@ -7493,13 +7971,23 @@
 		 */
 		Tone.Panner.prototype.dispose = function(){
 			Tone.prototype.dispose.call(this);
-			this._crossFade.dispose();
-			this._crossFade = null;
-			this._splitter.dispose();
-			this._splitter = null;
-			this._merger.dispose();
-			this._merger = null;
-			this.pan = null;
+			this._writable("pan");
+			if (this._hasStereoPanner){
+				this._panner.disconnect();
+				this._panner = null;
+				this.pan.dispose();
+				this.pan = null;
+				this._scalePan.dispose();
+				this._scalePan = null;
+			} else {
+				this._crossFade.dispose();
+				this._crossFade = null;
+				this._splitter.dispose();
+				this._splitter = null;
+				this._merger.dispose();
+				this._merger = null;
+				this.pan = null;
+			}
 			return this;
 		};
 
@@ -7510,26 +7998,23 @@
 		
 
 		/**
-		 *  @class A Panner and volume in one.
+		 *  @class A simple volume node. Volume value in decibels. 
 		 *
 		 *  @extends {Tone}
 		 *  @constructor
+		 *  @param {number} [volume=0] the initial volume
 		 *  @example
-		 *  var panVol = new Tone.PanVol(0.25, -12);
+		 *  var vol = new Tone.Volume(-12);
+		 *  instrument.chain(vol, Tone.Master);
 		 */
-		Tone.PanVol = function(pan, volume){
-			/**
-			 *  the panning node
-			 *  @type {Tone.Panner}
-			 *  @private
-			 */
-			this._panner = this.input = new Tone.Panner(pan);
+		Tone.Volume = function(pan, volume){
 
 			/**
 			 * the output node
 			 * @type {GainNode}
+			 * @private
 			 */
-			this.output = this.context.createGain();
+			this.output = this.input = this.context.createGain();
 
 			/**
 			 *  The volume control in decibels. 
@@ -7538,6 +8023,48 @@
 			this.volume = new Tone.Signal(this.output.gain, Tone.Signal.Units.Decibels);
 			this.volume.value = this.defaultArg(volume, 0);
 
+			this._readOnly("volume");
+		};
+
+		Tone.extend(Tone.Volume);
+
+		/**
+		 *  clean up
+		 *  @returns {Tone.Volume} `this`
+		 */
+		Tone.Volume.prototype.dispose = function(){
+			Tone.prototype.dispose.call(this);
+			this._writable("volume");
+			this.volume.dispose();
+			this.volume = null;
+			return this;
+		};
+
+		return Tone.Volume;
+	});
+	ToneModule( function(Tone){
+
+		
+
+		/**
+		 *  @class A Panner and volume in one.
+		 *
+		 *  @extends {Tone}
+		 *  @constructor
+		 *  @param {number} pan the initial pan
+		 *  @param {number} volume the volume
+		 *  @example
+		 *  var panVol = new Tone.PanVol(0.25, -12);
+		 */
+		Tone.PanVol = function(pan, volume){
+			
+			/**
+			 *  the panning node
+			 *  @type {Tone.Panner}
+			 *  @private
+			 */
+			this._panner = this.input = new Tone.Panner(pan);
+
 			/**
 			 *  the panning control
 			 *  @type {Tone.Panner}
@@ -7545,8 +8072,23 @@
 			 */
 			this.pan = this._panner.pan;
 
+			/**
+			 * the volume control
+			 * @type {Tone.Volume}
+			 * @private
+			 */
+			this._volume = this.output = new Tone.Volume(volume);
+
+			/**
+			 *  The volume control in decibels. 
+			 *  @type {Tone.Signal}
+			 */
+			this.volume = this._volume.volume;
+
 			//connections
-			this._panner.connect(this.output);
+			this._panner.connect(this._volume);
+
+			this._readOnly(["pan", "volume"]);
 		};
 
 		Tone.extend(Tone.PanVol);
@@ -7557,259 +8099,17 @@
 		 */
 		Tone.PanVol.prototype.dispose = function(){
 			Tone.prototype.dispose.call(this);
+			this._writable(["pan", "volume"]);
 			this._panner.dispose();
 			this._panner = null;
-			this.volume.dispose();
-			this.volume = null;
+			this._volume.dispose();
+			this._volume = null;
 			this.pan = null;
+			this.volume = null;
 			return this;
 		};
 
 		return Tone.PanVol;
-	});
-	ToneModule( function(Tone){
-
-		
-
-		/**
-		 *  @deprecated
-		 *  @class  Record an input into an array or AudioBuffer. 
-		 *          it is limited in that the recording length needs to be known beforehand. 
-		 *          Mostly used internally for testing. 
-		 *
-		 *  @constructor
-		 *  @extends {Tone}
-		 *  @param {number} channels 
-		 */
-		Tone.Recorder = function(channels){
-
-			console.warn("Tone.Recorder is deprecated. It will be removed in next version");
-
-			Tone.call(this);
-
-			/**
-			 *  the number of channels in the recording
-			 *  @type {number}
-			 */
-			this.channels = this.defaultArg(channels, 1);
-
-			/**
-			 *  @private
-			 *  @type {ScriptProcessorNode}
-			 */
-			this._jsNode = this.context.createScriptProcessor(this.bufferSize, this.channels, 1);
-			this._jsNode.onaudioprocess = this._audioprocess.bind(this);
-
-			/**
-			 *  Float32Array for each channel
-			 *  @private
-			 *  @type {Array<Float32Array>}
-			 */
-			this._recordBuffers = new Array(this.channels);
-
-			/**
-			 *  @type {number}
-			 *  @private
-			 */
-			this._recordStartSample = 0;
-
-			/**
-			 *  @type {number}
-			 *  @private
-			 */
-			this._recordEndSample = 0;
-
-			/**
-			 *  @type {number}
-			 *  @private
-			 */
-			this._recordDuration = 0;
-
-			/**
-			 *  @type {RecordState}
-			 */
-			this.state = RecordState.STOPPED;
-
-			/** 
-			 *  @private
-			 *  @type {number}
-			 */
-			this._recordBufferOffset = 0;
-
-			/** 
-			 *  callback invoked when the recording is over
-			 *  @private
-			 *  @type {function(Float32Array)}
-			 */
-			this._callback = function(){};
-
-			//connect it up
-			this.input.connect(this._jsNode);
-			//pass thru audio
-			this.input.connect(this.output);
-			//so it doesn't get garbage collected
-			this._jsNode.noGC();
-			//clear it to start
-			this.clear();
-		};
-
-		Tone.extend(Tone.Recorder);
-
-		/**
-		 *  internal method called on audio process
-		 *  
-		 *  @private
-		 *  @param   {AudioProcessorEvent} event 
-		 */
-		Tone.Recorder.prototype._audioprocess = function(event){
-			if (this.state === RecordState.STOPPED){
-				return;
-			} else if (this.state === RecordState.RECORDING){
-				//check if it's time yet
-				var now = this.defaultArg(event.playbackTime, this.now());
-				var processPeriodStart = this.toSamples(now);
-				var bufferSize = this._jsNode.bufferSize;
-				var processPeriodEnd = processPeriodStart + bufferSize;
-				var bufferOffset, len;
-				if (processPeriodStart > this._recordEndSample){
-					this.state = RecordState.STOPPED;
-					this._callback(this._recordBuffers);
-				} else if (processPeriodStart > this._recordStartSample) {
-					bufferOffset = 0;
-					len = Math.min(this._recordEndSample - processPeriodStart, bufferSize);
-					this._recordChannels(event.inputBuffer, bufferOffset, len, bufferSize);
-				} else if (processPeriodEnd > this._recordStartSample) {
-					len = processPeriodEnd - this._recordStartSample;
-					bufferOffset = bufferSize - len;
-					this._recordChannels(event.inputBuffer, bufferOffset, len, bufferSize);
-				} 
-
-			}
-		};
-
-		/**
-		 *  record an input channel
-		 *  @param   {AudioBuffer} inputBuffer        
-		 *  @param   {number} from  
-		 *  @param   {number} to  
-		 *  @private
-		 */
-		Tone.Recorder.prototype._recordChannels = function(inputBuffer, from, to, bufferSize){
-			var offset = this._recordBufferOffset;
-			var buffers = this._recordBuffers;
-			for (var channelNum = 0; channelNum < inputBuffer.numberOfChannels; channelNum++){
-				var channel = inputBuffer.getChannelData(channelNum);
-				if ((from === 0) && (to === bufferSize)){
-					//set the whole thing
-					this._recordBuffers[channelNum].set(channel, offset);
-				} else {
-					for (var i = from; i < from + to; i++){
-						var zeroed = i - from; 
-						buffers[channelNum][zeroed + offset] = channel[i];				
-					}
-				}
-			}
-			this._recordBufferOffset += to;
-		};	
-
-		/**
-		 *  Record for a certain period of time
-		 *  
-		 *  will clear the internal buffer before starting
-		 *  
-		 *  @param  {Tone.Time} duration 
-		 *  @param  {Tone.Time} wait the wait time before recording
-		 *  @param {function(Float32Array)} callback the callback to be invoked when the buffer is done recording
-		 *  @returns {Tone.Recorder} `this`
-		 */
-		Tone.Recorder.prototype.record = function(duration, startTime, callback){
-			if (this.state === RecordState.STOPPED){
-				this.clear();
-				this._recordBufferOffset = 0;
-				startTime = this.defaultArg(startTime, 0);
-				this._recordDuration = this.toSamples(duration);
-				this._recordStartSample = this.toSamples("+"+startTime);
-				this._recordEndSample = this._recordStartSample + this._recordDuration;
-				for (var i = 0; i < this.channels; i++){
-					this._recordBuffers[i] = new Float32Array(this._recordDuration);
-				}
-				this.state = RecordState.RECORDING;
-				this._callback = this.defaultArg(callback, function(){});
-			}
-			return this;
-		};
-
-		/**
-		 *  clears the recording buffer
-		 *  @returns {Tone.PanVol} `this`
-		 */
-		Tone.Recorder.prototype.clear = function(){
-			for (var i = 0; i < this.channels; i++){
-				this._recordBuffers[i] = null;
-			}
-			this._recordBufferOffset = 0;
-			return this;
-		};
-
-
-		/**
-		 *  true if there is nothing in the buffers
-		 *  @return {boolean} 
-		 */
-		Tone.Recorder.prototype.isEmpty = function(){
-			return this._recordBuffers[0] === null;
-		};
-
-		/**
-		 *  @return {Array<Float32Array>}
-		 */
-		Tone.Recorder.prototype.getFloat32Array = function(){
-			if (this.isEmpty()){
-				return null;
-			} else {
-				return this._recordBuffers;
-			}
-		};
-
-		/**
-		 *  @return {AudioBuffer}
-		 */
-		Tone.Recorder.prototype.getAudioBuffer = function(){
-			if (this.isEmpty()){
-				return null;
-			} else {
-				var audioBuffer = this.context.createBuffer(this.channels, this._recordBuffers[0].length, this.context.sampleRate);
-				for (var channelNum = 0; channelNum < audioBuffer.numberOfChannels; channelNum++){
-					var channel = audioBuffer.getChannelData(channelNum);
-					channel.set(this._recordBuffers[channelNum]);
-				}
-				return audioBuffer;
-			}
-		};
-
-		/**
-		 *  clean up
-		 *  @returns {Tone.PanVol} `this`
-		 */
-		Tone.Recorder.prototype.dispose = function(){
-			Tone.prototype.dispose.call(this);
-			this._jsNode.disconnect();
-			this._jsNode.onaudioprocess = undefined;
-			this._jsNode = null;
-			this._recordBuffers = null;
-			return this;
-		};
-
-		/**
-		 *  @enum {string}
-		 */
-		var RecordState = {
-			STOPPED : "stopped",
-			SCHEDULED : "scheduled",
-			RECORDING : "recording"
-		};
-
-		return Tone.Recorder;
 	});
 	ToneModule( 
 		function(Tone){
@@ -7946,6 +8246,7 @@
 		 *  		and `onerror`. 
 		 *
 		 *  @constructor 
+		 *  @extends {Tone}
 		 *  @param {AudioBuffer|string} url the url to load, or the audio buffer to set
 		 */
 		Tone.Buffer = function(){
@@ -7958,6 +8259,13 @@
 			 *  @private
 			 */
 			this._buffer = null;
+
+			/**
+			 *  indicates if the buffer should be reversed or not
+			 *  @type {boolean}
+			 *  @private
+			 */
+			this._reversed = options.reverse;
 
 			/**
 			 *  the url of the buffer. `undefined` if it was 
@@ -8001,6 +8309,7 @@
 		Tone.Buffer.defaults = {
 			"url" : undefined,
 			"onload" : function(){},
+			"reverse" : false
 		};
 
 		/**
@@ -8047,7 +8356,7 @@
 			Tone.prototype.dispose.call(this);
 			Tone.Buffer._removeFromQueue(this);
 			this._buffer = null;
-			this.onload = null;
+			this.onload = Tone.Buffer.defaults.onload;
 			return this;
 		};
 
@@ -8064,6 +8373,38 @@
 					return this._buffer.duration;
 				} else {
 					return 0;
+				}
+			},
+		});
+
+		/**
+		 *  reverse the buffer
+		 *  @private
+		 *  @return {Tone.Buffer} `this`
+		 */
+		Tone.Buffer.prototype._reverse = function(){
+			if (this.loaded){
+				for (var i = 0; i < this._buffer.numberOfChannels; i++){
+					Array.prototype.reverse.call(this._buffer.getChannelData(i));
+				}
+			}
+			return this;
+		};
+
+		/**
+		 * if the buffer is reversed or not
+		 * @memberOf Tone.Buffer#
+		 * @type {boolean}
+		 * @name reverse
+		 */
+		Object.defineProperty(Tone.Buffer.prototype, "reverse", {
+			get : function(){
+				return this._reversed;
+			},
+			set : function(rev){
+				if (this._reversed !== rev){
+					this._reversed = rev;
+					this._reverse();
 				}
 			},
 		});
@@ -8157,6 +8498,9 @@
 						var index = Tone.Buffer._currentDownloads.indexOf(next);
 						Tone.Buffer._currentDownloads.splice(index, 1);
 						next.Buffer.set(buffer);
+						if (next.Buffer._reversed){
+							next.Buffer._reverse();
+						}
 						next.Buffer.onload(next.Buffer);
 						Tone.Buffer._onprogress();
 						Tone.Buffer._next();
@@ -8285,7 +8629,7 @@
 		 *  defined in "Tone/core/Bus"
 		 *
 		 *  @param  {string} channelName 
-		 *  @param  {number} amount      
+		 *  @param  {number} amount the amount of the source to send to the bus. in Decibels. 
 		 *  @return {GainNode}             
 		 */
 		Tone.prototype.send = function(channelName, amount){
@@ -8293,7 +8637,7 @@
 				Buses[channelName] = this.context.createGain();
 			}
 			var sendKnob = this.context.createGain();
-			sendKnob.gain.value = this.defaultArg(amount, 1);
+			sendKnob.gain.value = this.dbToGain(this.defaultArg(amount, 1));
 			this.output.chain(sendKnob, Buses[channelName]);
 			return sendKnob;		
 		};
@@ -8549,7 +8893,8 @@
 		 *  @param  {string|number}  note the note to test
 		 *  @return {boolean}      true if it's in the form of a note
 		 *  @method isNotation
-		 *  @lends Tone.prototype.isNotation
+		 *  @lends Tone.prototype.isNote
+		 *  @function
 		 */
 		Tone.prototype.isNote = ( function(){
 			var noteFormat = new RegExp(/[a-g]{1}([b#]{1}|[b#]{0})[0-9]+$/i);
@@ -8704,6 +9049,7 @@
 			this.input.connect(this.effectSend);
 			this.effectReturn.connect(this._dryWet.b);
 			this._dryWet.connect(this.output);
+			this._readOnly(["wet"]);
 		};
 
 		Tone.extend(Tone.Effect);
@@ -8748,12 +9094,191 @@
 			this.effectSend = null;
 			this.effectReturn.disconnect();
 			this.effectReturn = null;
+			this._writable(["wet"]);
 			this.wet = null;
 			return this;
 		};
 
 		return Tone.Effect;
 	});
+	ToneModule( function(Tone){
+
+		
+
+		/**
+		 *  @class AutoFilter is a Tone.Panner with an LFO connected to the pan amount
+		 *
+		 *  @constructor
+		 *  @extends {Tone.Effect}
+		 *  @param {Tone.Time} [frequency=1] (optional) rate in HZ of the filter
+		 *  @param {number} [depth=0.5] The depth of the effect
+		 *  @example
+		 *  var autoPanner = new Tone.AutoFilter("4n");
+		 */
+		Tone.AutoFilter = function(){
+
+			var options = this.optionsObject(arguments, ["frequency"], Tone.AutoFilter.defaults);
+			Tone.Effect.call(this, options);
+
+			/**
+			 *  the lfo which drives the panning
+			 *  @type {Tone.LFO}
+			 *  @private
+			 */
+			this._lfo = new Tone.LFO(options.frequency, options.min, options.max);
+
+			/**
+			 * The amount of panning between left and right. 
+			 * 0 = always center. 1 = full range between left and right. 
+			 * @type {Tone.Signal}
+			 */
+			this.depth = this._lfo.amplitude;
+
+			/**
+			 * How fast the filter modulates between min and max. 
+			 * @type {Tone.Signal}
+			 */
+			this.frequency = this._lfo.frequency;
+
+			/**
+			 *  the filter node
+			 *  @type {Tone.Filter}
+			 *  @private
+			 */
+			this._filter = new Tone.Filter(options.filter);
+
+			//connections
+			this.connectEffect(this._filter);
+			this._lfo.connect(this._filter.frequency);
+			this.type = options.type;
+			this._readOnly(["frequency", "depth"]);
+		};
+
+		//extend Effect
+		Tone.extend(Tone.AutoFilter, Tone.Effect);
+
+		/**
+		 *  defaults
+		 *  @static
+		 *  @type {Object}
+		 */
+		Tone.AutoFilter.defaults = {
+			"frequency" : 1,
+			"type" : "sine",
+			"depth" : 1,
+			"min" : 200,
+			"max" : 1200,
+			"filter" : {
+				"type" : "lowpass",
+				"rolloff" : -12,
+				"Q" : 1,
+			}
+		};
+		
+		/**
+		 * Start the filter.
+		 * @param {Tone.Time} [time=now] the filter begins.
+		 * @returns {Tone.AutoFilter} `this`
+		 */
+		Tone.AutoFilter.prototype.start = function(time){
+			this._lfo.start(time);
+			return this;
+		};
+
+		/**
+		 * Stop the filter.
+		 * @param {Tone.Time} [time=now] the filter stops.
+		 * @returns {Tone.AutoFilter} `this`
+		 */
+		Tone.AutoFilter.prototype.stop = function(time){
+			this._lfo.stop(time);
+			return this;
+		};
+
+		/**
+		 * Sync the filter to the transport.
+		 * @param {Tone.Time} [delay=0] Delay time before starting the effect after the
+		 *                               Transport has started. 
+		 * @returns {Tone.AutoFilter} `this`
+		 */
+		Tone.AutoFilter.prototype.sync = function(delay){
+			this._lfo.sync(delay);
+			return this;
+		};
+
+		/**
+		 * Unsync the filter from the transport
+		 * @returns {Tone.AutoFilter} `this`
+		 */
+		Tone.AutoFilter.prototype.unsync = function(){
+			this._lfo.unsync();
+			return this;
+		};
+
+		/**
+		 * Type of oscillator attached to the AutoFilter.
+		 * @memberOf Tone.AutoFilter#
+		 * @type {string}
+		 * @name type
+		 */
+		Object.defineProperty(Tone.AutoFilter.prototype, "type", {
+			get : function(){
+				return this._lfo.type;
+			},
+			set : function(type){
+				this._lfo.type = type;
+			}
+		});
+
+		/**
+		 * The miniumum output of the AutoFilter.
+		 * @memberOf Tone.AutoFilter#
+		 * @type {number}
+		 * @name min
+		 */
+		Object.defineProperty(Tone.AutoFilter.prototype, "min", {
+			get : function(){
+				return this._lfo.min;
+			},
+			set : function(min){
+				this._lfo.min = min;
+			}
+		});
+
+		/**
+		 * The maximum output of the AutoFilter.
+		 * @memberOf Tone.AutoFilter#
+		 * @type {number}
+		 * @name max
+		 */
+		Object.defineProperty(Tone.AutoFilter.prototype, "max", {
+			get : function(){
+				return this._lfo.max;
+			},
+			set : function(max){
+				this._lfo.max = max;
+			}
+		});
+
+		/**
+		 *  clean up
+		 *  @returns {Tone.AutoFilter} `this`
+		 */
+		Tone.AutoFilter.prototype.dispose = function(){
+			Tone.Effect.prototype.dispose.call(this);
+			this._lfo.dispose();
+			this._lfo = null;
+			this._filter.dispose();
+			this._filter = null;
+			this._writable(["frequency", "depth"]);
+			this.frequency = null;
+			this.depth = null;
+			return this;
+		};
+
+		return Tone.AutoFilter;
+	});
+
 	ToneModule( function(Tone){
 
 		
@@ -8784,7 +9309,7 @@
 			 * 0 = always center. 1 = full range between left and right. 
 			 * @type {Tone.Signal}
 			 */
-			this.amount = this._lfo.amplitude;
+			this.depth = this._lfo.amplitude;
 
 			/**
 			 *  the panner node which does the panning
@@ -8803,6 +9328,7 @@
 			this.connectEffect(this._panner);
 			this._lfo.connect(this._panner.pan);
 			this.type = options.type;
+			this._readOnly(["depth", "frequency"]);
 		};
 
 		//extend Effect
@@ -8816,7 +9342,7 @@
 		Tone.AutoPanner.defaults = {
 			"frequency" : 1,
 			"type" : "sine",
-			"amount" : 1
+			"depth" : 1
 		};
 		
 		/**
@@ -8841,10 +9367,12 @@
 
 		/**
 		 * Sync the panner to the transport.
-		 * @returns {Tone.AutoPanner} `this`
+		 * @param {Tone.Time} [delay=0] Delay time before starting the effect after the
+		 *                               Transport has started. 
+		 * @returns {Tone.AutoFilter} `this`
 		 */
-		Tone.AutoPanner.prototype.sync = function(){
-			this._lfo.sync();
+		Tone.AutoPanner.prototype.sync = function(delay){
+			this._lfo.sync(delay);
 			return this;
 		};
 
@@ -8882,8 +9410,9 @@
 			this._lfo = null;
 			this._panner.dispose();
 			this._panner = null;
+			this._writable(["depth", "frequency"]);
 			this.frequency = null;
-			this.amount = null;
+			this.depth = null;
 			return this;
 		};
 
@@ -8942,7 +9471,7 @@
 			this._octaves = options.octaves;
 
 			/**
-			 *  the input gain to adjust the senstivity
+			 *  the input gain to adjust the sensitivity
 			 *  @type {GainNode}
 			 *  @private
 			 */
@@ -8986,6 +9515,8 @@
 			//set the initial value
 			this._setSweepRange();
 			this.sensitivity = options.sensitivity;
+
+			this._readOnly(["gain", "Q"]);
 		};
 
 		Tone.extend(Tone.AutoWah, Tone.Effect);
@@ -9079,6 +9610,7 @@
 			this._peaking = null;
 			this._inputBoost.disconnect();
 			this._inputBoost = null;
+			this._writable(["gain", "Q"]);
 			this.gain = null;
 			this.Q = null;
 			return this;
@@ -9086,7 +9618,7 @@
 
 		return Tone.AutoWah;
 	});
-	ToneModule( 
+	ToneModule(
 	function(Tone){
 
 		
@@ -9177,6 +9709,7 @@
 
 		return Tone.BitCrusher;
 	});
+
 	ToneModule( function(Tone){
 
 		
@@ -9226,7 +9759,7 @@
 			"order" : 1,
 			"oversample" : "none"
 		};
-		
+
 		/**
 		 *  get the coefficient for that degree
 		 *  @param {number} x the x value
@@ -9291,7 +9824,6 @@
 				this._shaper.oversample = oversampling;
 			} 
 		});
-
 
 		/**
 		 *  clean up
@@ -9383,6 +9915,7 @@
 			this.input.connect(this._dryWet, 0, 0);
 			this._merge.connect(this._dryWet, 0, 1);
 			this._dryWet.connect(this.output);
+			this._readOnly(["wet"]);
 		};
 
 		Tone.extend(Tone.StereoEffect, Tone.Effect);
@@ -9403,6 +9936,7 @@
 			this.effectSendR = null;
 			this.effectReturnL = null;
 			this.effectReturnR = null;
+			this._writable(["wet"]);
 			this.wet = null;
 			return this;
 		};
@@ -9443,6 +9977,7 @@
 			//the feedback loop
 			this.effectReturn.chain(this._feedbackGain, this.effectSend);
 			this.feedback.connect(this._feedbackGain.gain);
+			this._readOnly(["feedback"]);
 		};
 
 		Tone.extend(Tone.FeedbackEffect, Tone.Effect);
@@ -9461,6 +9996,7 @@
 		 */
 		Tone.FeedbackEffect.prototype.dispose = function(){
 			Tone.Effect.prototype.dispose.call(this);
+			this._writable(["feedback"]);
 			this.feedback.dispose();
 			this.feedback = null;
 			this._feedbackGain.disconnect();
@@ -9512,6 +10048,7 @@
 			this.effectReturnL.chain(this._feedbackLR, this.effectSendR);
 			this.effectReturnR.chain(this._feedbackRL, this.effectSendL);
 			this.feedback.fan(this._feedbackLR.gain, this._feedbackRL.gain);
+			this._readOnly(["feedback"]);
 		};
 
 		Tone.extend(Tone.StereoXFeedbackEffect, Tone.FeedbackEffect);
@@ -9522,6 +10059,7 @@
 		 */
 		Tone.StereoXFeedbackEffect.prototype.dispose = function(){
 			Tone.StereoEffect.prototype.dispose.call(this);
+			this._writable(["feedback"]);
 			this.feedback.dispose();
 			this.feedback = null;
 			this._feedbackLR.disconnect();
@@ -9533,7 +10071,7 @@
 
 		return Tone.StereoXFeedbackEffect;
 	});
-	ToneModule( 
+	ToneModule(
 	function(Tone){
 
 		
@@ -9621,6 +10159,8 @@
 			this.depth = this._depth;
 			this.frequency.value = options.frequency;
 			this.type = options.type;
+
+			this._readOnly(["frequency"]);
 		};
 
 		Tone.extend(Tone.Chorus, Tone.StereoXFeedbackEffect);
@@ -9630,7 +10170,7 @@
 		 *  @type {Object}
 		 */
 		Tone.Chorus.defaults = {
-			"frequency" : 1.5, 
+			"frequency" : 1.5,
 			"delayTime" : 3.5,
 			"depth" : 0.7,
 			"feedback" : 0.1,
@@ -9650,9 +10190,9 @@
 			set : function(depth){
 				this._depth = depth;
 				var deviation = this._delayTime * depth;
-				this._lfoL.min = this._delayTime - deviation;
+				this._lfoL.min = Math.max(this._delayTime - deviation, 0);
 				this._lfoL.max = this._delayTime + deviation;
-				this._lfoR.min = this._delayTime - deviation;
+				this._lfoR.min = Math.max(this._delayTime - deviation, 0);
 				this._lfoR.max = this._delayTime + deviation;
 			}
 		});
@@ -9703,6 +10243,7 @@
 			this._delayNodeL = null;
 			this._delayNodeR.disconnect();
 			this._delayNodeR = null;
+			this._writable("frequency");
 			this.frequency = null;
 			return this;
 		};
@@ -9722,9 +10263,10 @@
 		 *  @example
 		 *  var convolver = new Tone.Convolver("./path/to/ir.wav");
 		 */
-		Tone.Convolver = function(url){
+		Tone.Convolver = function(){
 
-			Tone.Effect.apply(this, arguments);
+			var options = this.optionsObject(arguments, ["url"], Tone.Convolver.defaults);
+			Tone.Effect.call(this, options);
 
 		  	/**
 			 *  convolver node
@@ -9738,14 +10280,25 @@
 			 *  @type {Tone.Buffer}
 			 *  @private
 			 */
-			this._buffer = new Tone.Buffer(url, function(buffer){
+			this._buffer = new Tone.Buffer(options.url, function(buffer){
 				this.buffer = buffer;
+				options.onload();
 			}.bind(this));
 
 			this.connectEffect(this._convolver);
 		};
 
 		Tone.extend(Tone.Convolver, Tone.Effect);
+
+		/**
+		 *  @static
+		 *  @const
+		 *  @type  {Object}
+		 */
+		Tone.Convolver.defaults = {
+			"url" : "",
+			"onload" : function(){}
+		};
 
 		/**
 		 *  The convolver's buffer
@@ -9759,7 +10312,7 @@
 			},
 			set : function(buffer){
 				this._buffer.set(buffer);
-				this._convolver.buffer = buffer;
+				this._convolver.buffer = this._buffer.get();
 			}
 		});
 
@@ -9937,6 +10490,7 @@
 			// connect it up
 			this.connectEffect(this._delayNode);
 			this.delayTime.connect(this._delayNode.delayTime);
+			this._readOnly(["delayTime"]);
 		};
 
 		Tone.extend(Tone.FeedbackDelay, Tone.FeedbackEffect);
@@ -9950,7 +10504,7 @@
 		Tone.FeedbackDelay.defaults = {
 			"delayTime" : 0.25,
 		};
-		
+
 		/**
 		 *  clean up
 		 *  @returns {Tone.FeedbackDelay} `this`
@@ -9960,6 +10514,7 @@
 			this.delayTime.dispose();
 			this._delayNode.disconnect();
 			this._delayNode = null;
+			this._writable(["delayTime"]);
 			this.delayTime = null;
 			return this;
 		};
@@ -9994,10 +10549,10 @@
 		 *  @constructor
 		 *  @param {number} [roomSize=0.7] correlated to the decay time. 
 		 *                                 value between (0,1)
-		 *  @param {number} [dampening=0.5] filtering which is applied to the reverb. 
-		 *                                  value between [0,1]
+		 *  @param {number} [dampening=3000] filtering which is applied to the reverb. 
+		 *                                  Value is a lowpass frequency value in hertz. 
 		 *  @example
-		 *  var freeverb = new Tone.Freeverb(0.4, 0.2);
+		 *  var freeverb = new Tone.Freeverb(0.4, 2000);
 		 */
 		Tone.Freeverb = function(){
 
@@ -10005,24 +10560,16 @@
 			Tone.StereoEffect.call(this, options);
 
 			/**
-			 *  the roomSize value between (0,1)
+			 *  The roomSize value between (0,1)
 			 *  @type {Tone.Signal}
 			 */
-			this.roomSize = new Tone.Signal(options.roomSize);
+			this.roomSize = new Tone.Signal(options.roomSize, Tone.Signal.Units.Normal);
 
 			/**
-			 *  the amount of dampening
-			 *  value between [0,1]
+			 *  The amount of dampening as a value in Hertz.
 			 *  @type {Tone.Signal}
 			 */
-			this.dampening = new Tone.Signal(options.dampening);
-
-			/**
-			 *  scale the dampening
-			 *  @type {Tone.ScaleExp}
-			 *  @private
-			 */
-			this._dampeningScale = new Tone.ScaleExp(100, 8000, 0.5);
+			this.dampening = new Tone.Signal(options.dampening, Tone.Signal.Units.Frequency);
 
 			/**
 			 *  the comb filters
@@ -10070,7 +10617,7 @@
 					this.effectSendR.chain(lfpf, this._allpassFiltersR[0]);
 				}
 				this.roomSize.connect(lfpf.resonance);
-				this._dampeningScale.connect(lfpf.dampening);
+				this.dampening.connect(lfpf.dampening);
 				this._combFilters.push(lfpf);
 			}
 
@@ -10079,7 +10626,7 @@
 			this.connectSeries.apply(this, this._allpassFiltersR);
 			this._allpassFiltersL[this._allpassFiltersL.length - 1].connect(this.effectReturnL);
 			this._allpassFiltersR[this._allpassFiltersR.length - 1].connect(this.effectReturnR);
-			this.dampening.connect(this._dampeningScale);
+			this._readOnly(["roomSize", "dampening"]);
 		};
 
 		Tone.extend(Tone.Freeverb, Tone.StereoEffect);
@@ -10090,7 +10637,7 @@
 		 */
 		Tone.Freeverb.defaults = {
 			"roomSize" : 0.7, 
-			"dampening" : 0.5
+			"dampening" : 3000
 		};
 
 		/**
@@ -10114,12 +10661,11 @@
 				this._combFilters[cf] = null;
 			}
 			this._combFilters = null;
+			this._writable(["roomSize", "dampening"]);
 			this.roomSize.dispose();
-			this.dampening.dispose();
-			this._dampeningScale.dispose();
 			this.roomSize = null;
+			this.dampening.dispose();
 			this.dampening = null;
-			this._dampeningScale = null;
 			return this;
 		};
 
@@ -10224,6 +10770,7 @@
 			this.connectSeries.apply(this, this._allpassFilters);
 			this.effectSendL.connect(this._allpassFilters[0]);
 			this.effectSendR.connect(this._allpassFilters[0]);
+			this._readOnly(["roomSize"]);
 		};
 
 		Tone.extend(Tone.JCReverb, Tone.StereoEffect);
@@ -10254,6 +10801,7 @@
 				this._feedbackCombFilters[fbcf] = null;
 			}
 			this._feedbackCombFilters = null;
+			this._writable(["roomSize"]);
 			this.roomSize.dispose();
 			this.roomSize = null;
 			this._scaleRoomSize.dispose();
@@ -10263,112 +10811,90 @@
 
 		return Tone.JCReverb;
 	});
-	ToneModule( function(Tone){
+	ToneModule( 
+		function(Tone){
 
 		
 
 		/**
-		 *  @class Applies a Mid/Side seperation and recombination
-		 *         http://musicdsp.org/showArchiveComment.php?ArchiveID=173
-		 *         http://www.kvraudio.com/forum/viewtopic.php?t=212587
-		 *         M = (L+R)/sqrt(2);   // obtain mid-signal from left and right
-		 *         S = (L-R)/sqrt(2);   // obtain side-signal from left and righ
-		 *         // amplify mid and side signal seperately:
-		 *         M/S send/return
-		 *         L = (M+S)/sqrt(2);   // obtain left signal from mid and side
-		 *         R = (M-S)/sqrt(2);   // obtain right signal from mid and side
+		 *  @class Mid/Side processing separates the the 'mid' signal 
+		 *         (which comes out of both the left and the right channel) 
+		 *         and the 'side' (which only comes out of the the side channels) 
+		 *         and effects them separately before being recombined. <br>
+		 *         Applies a Mid/Side seperation and recombination. <br>
+		 *         http://musicdsp.org/showArchiveComment.php?ArchiveID=173<br>
+		 *         http://www.kvraudio.com/forum/viewtopic.php?t=212587<br>
+		 *         M = (L+R)/sqrt(2);   // obtain mid-signal from left and right<br>
+		 *         S = (L-R)/sqrt(2);   // obtain side-signal from left and righ<br>
+		 *         // amplify mid and side signal seperately:<br>
+		 *         M/S send/return<br>
+		 *         L = (M+S)/sqrt(2);   // obtain left signal from mid and side<br>
+		 *         R = (M-S)/sqrt(2);   // obtain right signal from mid and side<br>
 		 *
-		 *  @extends {Tone.StereoEffect}
+		 *  @extends {Tone.Effect}
 		 *  @constructor
 		 */
 		Tone.MidSideEffect = function(){
-			Tone.StereoEffect.call(this);
+			Tone.Effect.call(this);
 
 			/**
-			 *  a constant signal equal to 1 / sqrt(2)
-			 *  @type {Tone.Signal}
+			 *  The mid/side split
+			 *  @type  {Tone.MidSideSplit}
 			 *  @private
 			 */
-			this._sqrtTwo = new Tone.Signal(1 / Math.sqrt(2));
+			this._midSideSplit = new Tone.MidSideSplit();
 
 			/**
-			 *  the mid send.
-			 *  connect to mid processing
-			 *  @type {Tone.Expr}
-			 */
-			this.midSend = new Tone.Expr("($0 + $1) * $2");
-
-			/**
-			 *  the side send.
-			 *  connect to side processing
-			 *  @type {Tone.Expr}
-			 */
-			this.sideSend = new Tone.Expr("($0 - $1) * $2");
-
-			/**
-			 *  recombine the mid/side into Left
-			 *  @type {Tone.Expr}
+			 *  The mid/side merge
+			 *  @type  {Tone.MidSideMerge}
 			 *  @private
 			 */
-			this._left = new Tone.Expr("($0 + $1) * $2");
+			this._midSideMerge = new Tone.MidSideMerge();
 
 			/**
-			 *  recombine the mid/side into Right
+			 *  The mid send. Connect to mid processing
 			 *  @type {Tone.Expr}
-			 *  @private
 			 */
-			this._right = new Tone.Expr("($0 - $1) * $2");
+			this.midSend = this._midSideSplit.mid;
 
 			/**
-			 *  the mid return connection
+			 *  The side send. Connect to side processing
+			 *  @type {Tone.Expr}
+			 */
+			this.sideSend = this._midSideSplit.side;
+
+			/**
+			 *  The mid return connection
 			 *  @type {GainNode}
 			 */
-			this.midReturn = this.context.createGain();
+			this.midReturn = this._midSideMerge.mid;
 
 			/**
-			 *  the side return connection
+			 *  The side return connection
 			 *  @type {GainNode}
 			 */
-			this.sideReturn = this.context.createGain();
+			this.sideReturn = this._midSideMerge.side;
 
-			//connections
-			this.effectSendL.connect(this.midSend, 0, 0);
-			this.effectSendR.connect(this.midSend, 0, 1);
-			this.effectSendL.connect(this.sideSend, 0, 0);
-			this.effectSendR.connect(this.sideSend, 0, 1);
-			this._left.connect(this.effectReturnL);
-			this._right.connect(this.effectReturnR);
-			this.midReturn.connect(this._left, 0, 0);
-			this.sideReturn.connect(this._left, 0, 1);
-			this.midReturn.connect(this._right, 0, 0);
-			this.sideReturn.connect(this._right, 0, 1);
-			this._sqrtTwo.connect(this.midSend, 0, 2);
-			this._sqrtTwo.connect(this.sideSend, 0, 2);
-			this._sqrtTwo.connect(this._left, 0, 2);
-			this._sqrtTwo.connect(this._right, 0, 2);
+			//the connections
+			this.effectSend.connect(this._midSideSplit);
+			this._midSideMerge.connect(this.effectReturn);
 		};
 
-		Tone.extend(Tone.MidSideEffect, Tone.StereoEffect);
+		Tone.extend(Tone.MidSideEffect, Tone.Effect);
 
 		/**
 		 *  clean up
 		 *  @returns {Tone.MidSideEffect} `this`
 		 */
 		Tone.MidSideEffect.prototype.dispose = function(){
-			Tone.StereoEffect.prototype.dispose.call(this);
-			this._sqrtTwo.dispose();
-			this._sqrtTwo = null;
-			this.midSend.dispose();
+			Tone.Effect.prototype.dispose.call(this);
+			this._midSideSplit.dispose();
+			this._midSideSplit = null;
+			this._midSideMerge.dispose();
+			this._midSideMerge = null;
 			this.midSend = null;
-			this.sideSend.dispose();
 			this.sideSend = null;
-			this._left.dispose();
-			this._left = null;
-			this._right.dispose();
-			this._right = null;
-			this.midReturn.disconnect();
 			this.midReturn = null;
-			this.sideReturn.disconnect();
 			this.sideReturn = null;
 			return this;
 		};
@@ -10462,6 +10988,7 @@
 			//start the lfo
 			this._lfoL.start();
 			this._lfoR.start();
+			this._readOnly(["frequency"]);
 		};
 
 		Tone.extend(Tone.Phaser, Tone.StereoEffect);
@@ -10519,7 +11046,7 @@
 		/**
 		 * The the base frequency of the filters. 
 		 * @memberOf Tone.Phaser#
-		 * @type {string}
+		 * @type {number}
 		 * @name baseFrequency
 		 */
 		Object.defineProperty(Tone.Phaser.prototype, "baseFrequency", {
@@ -10554,6 +11081,7 @@
 				this._filtersR[j] = null;
 			}
 			this._filtersR = null;
+			this._writable(["frequency"]);
 			this.frequency = null;
 			return this;
 		};
@@ -10616,6 +11144,7 @@
 			//rearranged the feedback to be after the rightPreDelay
 			this._feedbackLR.disconnect();
 			this._feedbackLR.connect(this._rightDelay);
+			this._readOnly(["delayTime"]);
 		};
 
 		Tone.extend(Tone.PingPongDelay, Tone.StereoXFeedbackEffect);
@@ -10641,6 +11170,7 @@
 			this._rightDelay = null;
 			this._rightPreDelay.disconnect();
 			this._rightPreDelay = null;
+			this._writable(["delayTime"]);
 			this.delayTime.dispose();
 			this.delayTime = null;
 			return this;
@@ -10688,6 +11218,7 @@
 			this.effectReturnL.chain(this._feedbackL, this.effectSendL);
 			this.effectReturnR.chain(this._feedbackR, this.effectSendR);
 			this.feedback.fan(this._feedbackL.gain, this._feedbackR.gain);
+			this._readOnly(["feedback"]);
 		};
 
 		Tone.extend(Tone.StereoFeedbackEffect, Tone.FeedbackEffect);
@@ -10698,6 +11229,7 @@
 		 */
 		Tone.StereoFeedbackEffect.prototype.dispose = function(){
 			Tone.StereoEffect.prototype.dispose.call(this);
+			this._writable(["feedback"]);
 			this.feedback.dispose();
 			this.feedback = null;
 			this._feedbackL.disconnect();
@@ -10767,6 +11299,7 @@
 			//connect it to the effect send/return
 			this.midSend.chain(this._midMult, this.midReturn);
 			this.sideSend.chain(this._sideMult, this.sideReturn);
+			this._readOnly(["width"]);
 		};
 
 		Tone.extend(Tone.StereoWidener, Tone.MidSideEffect);
@@ -10786,6 +11319,7 @@
 		 */
 		Tone.StereoWidener.prototype.dispose = function(){
 			Tone.MidSideEffect.prototype.dispose.call(this);
+			this._writable(["width"]);
 			this.width.dispose();
 			this.width = null;
 			this._midMult.dispose();
@@ -10798,6 +11332,144 @@
 		};
 
 		return Tone.StereoWidener;
+	});
+	ToneModule( function(Tone){
+
+		
+
+		/**
+		 *  @class A tremolo is a modulation in the amplitude of the incoming signal using an LFO. 
+		 *         The type, frequency, and depth of the LFO is controllable. 
+		 *
+		 *  @extends {Tone.Effect}
+		 *  @constructor
+		 *  @param {Tone.Time} [frequency=10] The rate of the effect. 
+		 *  @param {number} [depth=0.5] The depth of the wavering.
+		 *  @example
+		 *  var tremolo = new Tone.Tremolo(9, 0.75);
+		 */
+		Tone.Tremolo = function(){
+
+			var options = this.optionsObject(arguments, ["frequency", "depth"], Tone.Tremolo.defaults);
+			Tone.Effect.call(this, options);
+
+			/**
+			 *  The tremelo LFO
+			 *  @type  {Tone.LFO}
+			 *  @private
+			 */
+			this._lfo = new Tone.LFO(options.frequency, 1, 0);
+
+			/**
+			 *  Where the gain is multiplied
+			 *  @type  {GainNode}
+			 *  @private
+			 */
+			this._amplitude = this.context.createGain();
+
+			/**
+			 *  The frequency of the tremolo.	
+			 *  @type  {Tone.Signal}
+			 */
+			this.frequency = this._lfo.frequency;
+
+			/**
+			 *  The depth of the effect.	
+			 *  @type  {Tone.Signal}
+			 */
+			this.depth = this._lfo.amplitude;
+
+			this._readOnly(["frequency", "depth"]);
+			this.connectEffect(this._amplitude);
+			this._lfo.connect(this._amplitude.gain);
+			this.type = options.type;
+		};
+
+		Tone.extend(Tone.Tremolo, Tone.Effect);
+
+		/**
+		 *  @static
+		 *  @const
+		 *  @type {Object}
+		 */
+		Tone.Tremolo.defaults = {
+			"frequency" : 10,
+			"type" : "sine",
+			"depth" : 0.5
+		};
+
+		/**
+		 * Start the tremolo.
+		 * @param {Tone.Time} [time=now] When the tremolo begins.
+		 * @returns {Tone.Tremolo} `this`
+		 */
+		Tone.Tremolo.prototype.start = function(time){
+			this._lfo.start(time);
+			return this;
+		};
+
+		/**
+		 * Stop the tremolo.
+		 * @param {Tone.Time} [time=now] the tremolo stops.
+		 * @returns {Tone.Tremolo} `this`
+		 */
+		Tone.Tremolo.prototype.stop = function(time){
+			this._lfo.stop(time);
+			return this;
+		};
+
+		/**
+		 * Sync the effect to the transport.
+		 * @param {Tone.Time} [delay=0] Delay time before starting the effect after the
+		 *                              Transport has started. 
+		 * @returns {Tone.AutoFilter} `this`
+		 */
+		Tone.Tremolo.prototype.sync = function(delay){
+			this._lfo.sync(delay);
+			return this;
+		};
+
+		/**
+		 * Unsync the filter from the transport
+		 * @returns {Tone.Tremolo} `this`
+		 */
+		Tone.Tremolo.prototype.unsync = function(){
+			this._lfo.unsync();
+			return this;
+		};
+
+		/**
+		 * Type of oscillator attached to the Tremolo.
+		 * @memberOf Tone.Tremolo#
+		 * @type {string}
+		 * @name type
+		 */
+		Object.defineProperty(Tone.Tremolo.prototype, "type", {
+			get : function(){
+				return this._lfo.type;
+			},
+			set : function(type){
+				this._lfo.type = type;
+			}
+		});
+
+		/**
+		 *  clean up
+		 *  @returns {Tone.Tremolo} `this`
+		 */
+		Tone.Tremolo.prototype.dispose = function(){
+			Tone.Effect.prototype.dispose.call(this);
+			this._writable(["frequency", "depth"]);
+			this._lfo.dispose();
+			this._lfo = null;
+			this._amplitude.disconnect();
+			this._amplitude = null;
+			this.frequency = null;
+			this.depth = null;
+			return this;
+		};
+
+		return Tone.Tremolo;
 	});
 	ToneModule(
 	function(Tone){
@@ -10872,6 +11544,7 @@
 			//connections
 			this._sawtooth.chain(this._thresh, this.output);
 			this.width.chain(this._widthGate, this._thresh);
+			this._readOnly(["width", "frequency", "detune"]);
 		};
 
 		Tone.extend(Tone.PulseOscillator, Tone.Oscillator);
@@ -10949,9 +11622,11 @@
 			Tone.Source.prototype.dispose.call(this);
 			this._sawtooth.dispose();
 			this._sawtooth = null;
+			this._writable(["width", "frequency", "detune"]);
 			this.width.dispose();
 			this.width = null;
 			this._widthGate.disconnect();
+			this._widthGate = null;
 			this._widthGate = null;
 			this._thresh.disconnect();
 			this._thresh = null;
@@ -10973,7 +11648,7 @@
 		 *
 		 *  @extends {Tone.Oscillator}
 		 *  @constructor
-		 *  @param {frequency} frequency frequency of the oscillator (meaningless for noise types)
+		 *  @param {frequency} Tone.Frequency frequency of the oscillator (meaningless for noise types)
 		 *  @param {number} modulationFrequency the modulation frequency of the oscillator
 		 *  @example
 		 *  var pwm = new Tone.PWMOscillator("Ab3", 0.3);
@@ -10984,6 +11659,8 @@
 
 			/**
 			 *  the pulse oscillator
+			 *  @type {Tone.PulseOscillator}
+			 *  @private
 			 */
 			this._pulse = new Tone.PulseOscillator(options.modulationFrequency);
 			//change the pulse oscillator type
@@ -11028,6 +11705,7 @@
 			//connections
 			this._modulator.chain(this._scale, this._pulse.width);
 			this._pulse.connect(this.output);
+			this._readOnly(["modulationFrequency", "frequency", "detune"]);
 		};
 
 		Tone.extend(Tone.PWMOscillator, Tone.Oscillator);
@@ -11106,6 +11784,7 @@
 			this._scale = null;
 			this._modulator.dispose();
 			this._modulator = null;
+			this._writable(["modulationFrequency", "frequency", "detune"]);
 			this.frequency = null;
 			this.detune = null;
 			this.modulationFrequency = null;
@@ -11126,7 +11805,7 @@
 		 *
 		 *  @extends {Tone.Oscillator}
 		 *  @constructor
-		 *  @param {frequency} frequency frequency of the oscillator (meaningless for noise types)
+		 *  @param {frequency} Tone.Frequency frequency of the oscillator (meaningless for noise types)
 		 *  @param {string} type the type of the oscillator
 		 *  @example
 		 *  var omniOsc = new Tone.OmniOscillator("C#4", "pwm");
@@ -11163,6 +11842,7 @@
 
 			//set the oscillator
 			this.type = options.type;
+			this._readOnly(["frequency", "detune"]);
 		};
 
 		Tone.extend(Tone.OmniOscillator, Tone.Oscillator);
@@ -11325,6 +12005,7 @@
 		 */
 		Tone.OmniOscillator.prototype.dispose = function(){
 			Tone.Source.prototype.dispose.call(this);
+			this._writable(["frequency", "detune"]);
 			this.detune.dispose();
 			this.detune = null;
 			this.frequency.dispose();
@@ -11361,6 +12042,7 @@
 			 * @type {Tone.Signal}
 			 */
 			this.volume = new Tone.Signal(this.output.gain, Tone.Signal.Units.Decibels);
+			this._readOnly(["volume"]);
 		};
 
 		Tone.extend(Tone.Instrument);
@@ -11401,6 +12083,7 @@
 		 */
 		Tone.Instrument.prototype.dispose = function(){
 			Tone.prototype.dispose.call(this);
+			this._writable(["volume"]);
 			this.volume.dispose();
 			this.volume = null;
 			return this;
@@ -11582,6 +12265,7 @@
 			this.oscillator.start();
 			//connect the filter envelope
 			this.filterEnvelope.connect(this.filter.frequency);
+			this._readOnly(["oscillator", "frequency", "detune", "filter", "filterEnvelope", "envelope"]);
 		};
 
 		Tone.extend(Tone.MonoSynth, Tone.Monophonic);
@@ -11592,6 +12276,8 @@
 		 *  @type {Object}
 		 */
 		Tone.MonoSynth.defaults = {
+			"frequency" : "C4",
+			"detune" : 0,
 			"oscillator" : {
 				"type" : "square"
 			},
@@ -11648,6 +12334,7 @@
 		 */
 		Tone.MonoSynth.prototype.dispose = function(){
 			Tone.Monophonic.prototype.dispose.call(this);
+			this._writable(["oscillator", "frequency", "detune", "filter", "filterEnvelope", "envelope"]);
 			this.oscillator.dispose();
 			this.oscillator = null;
 			this.envelope.dispose();
@@ -11731,6 +12418,7 @@
 			this.frequency.chain(this._harmonicity, this.modulator.frequency);
 			this.modulator.chain(this._modulationScale, this._modulationNode.gain);
 			this.carrier.chain(this._modulationNode, this.output);
+			this._readOnly(["carrier", "modulator", "frequency"]);
 		};
 
 		Tone.extend(Tone.AMSynth, Tone.Monophonic);
@@ -11743,7 +12431,6 @@
 			"harmonicity" : 3,
 			"carrier" : {
 				"volume" : -10,
-				"portamento" : 0,
 				"oscillator" : {
 					"type" : "sine"
 				},
@@ -11760,11 +12447,15 @@
 					"release" : 0.5,
 					"min" : 20000,
 					"max" : 20000
-				}
+				},
+				"filter" : {
+					"Q" : 6,
+					"type" : "lowpass",
+					"rolloff" : -24
+				},
 			},
 			"modulator" : {
 				"volume" : -10,
-				"portamento" : 0,
 				"oscillator" : {
 					"type" : "square"
 				},
@@ -11781,7 +12472,12 @@
 					"release" : 0.5,
 					"min" : 20,
 					"max" : 1500
-				}
+				},
+				"filter" : {
+					"Q" : 6,
+					"type" : "lowpass",
+					"rolloff" : -24
+				},
 			}
 		};
 
@@ -11836,6 +12532,7 @@
 		 */
 		Tone.AMSynth.prototype.dispose = function(){
 			Tone.Monophonic.prototype.dispose.call(this);
+			this._writable(["carrier", "modulator", "frequency"]);
 			this.carrier.dispose();
 			this.carrier = null;
 			this.modulator.dispose();
@@ -11852,6 +12549,234 @@
 		};
 
 		return Tone.AMSynth;
+	});
+	ToneModule( 
+	function(Tone){
+
+		
+
+		/**
+		 *  @class  the DroneSynth is a single oscillator, monophonic synthesizer
+		 *          with an OmniOscillator and an Amplitude Envelope
+		 *
+		 *  @constructor
+		 *  @extends {Tone.Monophonic}
+		 *  @param {Object} options the options available for the synth 
+		 *                          see defaults below
+		 */
+		Tone.DroneSynth = function(options){
+
+			//get the defaults
+			options = this.defaultArg(options, Tone.DroneSynth.defaults);
+			Tone.Monophonic.call(this, options);
+
+			/**
+			 *  the first oscillator
+			 *  @type {Tone.OmniOscillator}
+			 */
+			this.oscillator = new Tone.OmniOscillator(options.oscillator);
+
+			/**
+			 *  the frequency control signal
+			 *  @type {Tone.Signal}
+			 */
+			this.frequency = this.oscillator.frequency;
+
+			/**
+			 *  the detune control signal
+			 *  @type {Tone.Signal}
+			 */
+			this.detune = this.oscillator.detune;
+
+			/**
+			 *  the amplitude envelope
+			 *  @type {Tone.Envelope}
+			 */
+			this.envelope = new Tone.AmplitudeEnvelope(options.envelope);
+
+			//connect the oscillators to the output
+			this.oscillator.chain(this.envelope, this.output);
+			//start the oscillators
+			this.oscillator.start();
+			this._readOnly(["oscillator", "frequency", "detune", "envelope"]);
+		};
+
+		Tone.extend(Tone.DroneSynth, Tone.Monophonic);
+
+		/**
+		 *  @const
+		 *  @static
+		 *  @type {Object}
+		 */
+		Tone.DroneSynth.defaults = {
+			"oscillator" : {
+				"type" : "triangle"
+			},
+			"envelope" : {
+				"attack" : 0.005,
+				"decay" : 0.1,
+				"sustain" : 0.3,
+				"release" : 1
+			}
+		};
+
+		/**
+		 *  start the attack portion of the envelope
+		 *  @param {Tone.Time} [time=now] the time the attack should start
+		 *  @param {number} [velocity=1] the velocity of the note (0-1)
+		 *  @returns {Tone.DroneSynth} `this`
+		 */
+		Tone.DroneSynth.prototype.triggerEnvelopeAttack = function(time, velocity){
+			//the envelopes
+			this.envelope.triggerAttack(time, velocity);
+			return this;	
+		};
+
+		/**
+		 *  start the release portion of the envelope
+		 *  @param {Tone.Time} [time=now] the time the release should start
+		 *  @returns {Tone.DroneSynth} `this`
+		 */
+		Tone.DroneSynth.prototype.triggerEnvelopeRelease = function(time){
+			this.envelope.triggerRelease(time);
+			return this;
+		};
+
+
+		/**
+		 *  clean up
+		 *  @returns {Tone.DroneSynth} `this`
+		 */
+		Tone.DroneSynth.prototype.dispose = function(){
+			Tone.Monophonic.prototype.dispose.call(this);
+			this._writable(["oscillator", "frequency", "detune", "envelope"]);
+			this.oscillator.dispose();
+			this.oscillator = null;
+			this.envelope.dispose();
+			this.envelope = null;
+			this.frequency = null;
+			this.detune = null;
+			return this;
+		};
+
+		return Tone.DroneSynth;
+	});
+	ToneModule(
+	function(Tone){
+
+		
+
+		/**
+		 *  @class  DrumSynth makes kick and tom sounds using a single oscillator
+		 *          with an amplitude envelope and frequency ramp.
+		 *
+		 *  @constructor
+		 *  @extends {Tone.Instrument}
+		 *  @param {Object} options the options available for the synth 
+		 *                          see defaults below
+		 *  @example
+		 *  var synth = new Tone.DrumSynth();
+		 */
+		Tone.DrumSynth = function(options){
+
+			options = this.defaultArg(options, Tone.DrumSynth.defaults);
+			Tone.Instrument.call(this, options);
+
+			/**
+			 *  The oscillator.
+			 *  @type {Tone.Oscillator}
+			 */
+			this.oscillator = new Tone.Oscillator(options.oscillator).start();
+
+			/**
+			 *  The envelope.
+			 *  @type {Tone.AmplitudeEnvelope}
+			 */
+			this.envelope = new Tone.AmplitudeEnvelope(options.envelope);
+
+			/**
+			 *  The number of octaves the pitch envelope ramps.
+			 *  @type {number}
+			 */
+			this.octaves = options.octaves;
+
+			/**
+			 *  The amount of time of the pitch decay.
+			 *  @type {Tone.Time}
+			 */
+			this.pitchDecay = options.pitchDecay;
+
+			this.oscillator.chain(this.envelope, this.output);
+			this._readOnly(["oscillator", "envelope"]);
+		};
+
+		Tone.extend(Tone.DrumSynth, Tone.Instrument);
+
+		/**
+		 *  @static
+		 *  @type {Object}
+		 */
+		Tone.DrumSynth.defaults = {
+			"pitchDecay" : 0.05,
+			"octaves" : 10,
+			"oscillator" : {
+				"type" : "sine",
+			},
+			"envelope" : {
+				"attack" : 0.001,
+				"decay" : 0.4,
+				"sustain" : 0.01,
+				"release" : 1.4,
+				"attackCurve" : "exponential"
+			}
+		};
+
+		/**
+		 *  trigger the attack. start the note, at the time with the velocity
+		 *  
+		 *  @param  {string|string} note     the note
+		 *  @param  {Tone.Time} [time=now]     the time, if not given is now
+		 *  @param  {number} [velocity=1] velocity defaults to 1
+		 *  @returns {Tone.DrumSynth} `this`
+		 *  @example
+		 *  kick.triggerAttack(60);
+		 */
+		Tone.DrumSynth.prototype.triggerAttack = function(note, time, velocity) {
+			time = this.toSeconds(time);
+			note = this.toFrequency(note);
+			var maxNote = note * this.octaves;
+			this.oscillator.frequency.setValueAtTime(maxNote, time);
+			this.oscillator.frequency.exponentialRampToValueAtTime(note, time + this.toSeconds(this.pitchDecay));
+			this.envelope.triggerAttack(time, velocity);
+			return this;
+		};
+
+		/**
+		 *  trigger the release portion of the note
+		 *  
+		 *  @param  {Tone.Time} [time=now] the time the note will release
+		 *  @returns {Tone.DrumSynth} `this`
+		 */
+		Tone.DrumSynth.prototype.triggerRelease = function(time){
+			this.envelope.triggerRelease(time);
+			return this;
+		};
+
+		/**
+		 *  clean up
+		 *  @returns {Tone.DrumSynth} `this`
+		 */
+		Tone.DrumSynth.prototype.dispose = function(){
+			Tone.Instrument.prototype.dispose.call(this);
+			this._writable(["oscillator", "envelope"]);
+			this.oscillator.dispose();
+			this.oscillator = null;
+			this.envelope.dispose();
+			this.envelope = null;
+			return this;
+		};
+
+		return Tone.DrumSynth;
 	});
 	ToneModule( 
 	function(Tone){
@@ -11944,6 +12869,7 @@
 			this._vibratoGain.fan(this.voice0.detune, this.voice1.detune);
 			this.voice0.connect(this.output);
 			this.voice1.connect(this.output);
+			this._readOnly(["voice0", "voice1", "frequency", "vibratoAmount", "vibratoRate"]);
 		};
 
 		Tone.extend(Tone.DuoSynth, Tone.Monophonic);
@@ -12046,6 +12972,7 @@
 		 */
 		Tone.DuoSynth.prototype.dispose = function(){
 			Tone.Monophonic.prototype.dispose.call(this);
+			this._writable(["voice0", "voice1", "frequency", "vibratoAmount", "vibratoRate"]);
 			this.voice0.dispose();
 			this.voice0 = null;
 			this.voice1.dispose();
@@ -12137,6 +13064,7 @@
 			this._modulationNode.gain.value = 0;
 			this._modulationNode.connect(this.carrier.frequency);
 			this.carrier.connect(this.output);
+			this._readOnly(["carrier", "modulator", "frequency"]);
 		};
 
 		Tone.extend(Tone.FMSynth, Tone.Monophonic);
@@ -12260,6 +13188,7 @@
 		 */
 		Tone.FMSynth.prototype.dispose = function(){
 			Tone.Monophonic.prototype.dispose.call(this);
+			this._writable(["carrier", "modulator", "frequency"]);
 			this.carrier.dispose();
 			this.carrier = null;
 			this.modulator.dispose();
@@ -12280,694 +13209,10 @@
 	ToneModule( function(Tone){
 
 		
-		
-		/**
-		 *  @class  Audio file player with start, loop, stop.
-		 *  
-		 *  @constructor
-		 *  @extends {Tone.Source} 
-		 *  @param {string|AudioBuffer} url Either the AudioBuffer or the url from
-		 *                                  which to load the AudioBuffer
-		 *  @param {function=} onload The function to invoke when the buffer is loaded. 
-		 *                            Recommended to use {@link Tone.Buffer#onload} instead.
-		 *  @example
-		 *  var player = new Tone.Player("./path/to/sample.mp3");
-		 */
-		Tone.Player = function(){
-			
-			var options = this.optionsObject(arguments, ["url", "onload"], Tone.Player.defaults);
-			Tone.Source.call(this, options);
-
-			/**
-			 *  @private
-			 *  @type {AudioBufferSourceNode}
-			 */
-			this._source = null;
-			
-			/**
-			 *  the buffer
-			 *  @private
-			 *  @type {Tone.Buffer}
-			 */
-			this._buffer = new Tone.Buffer(options.url, options.onload.bind(null, this));
-
-			/**
-			 *  if the buffer should loop once it's over
-			 *  @type {boolean}
-			 *  @private
-			 */
-			this._loop = options.loop;
-
-			/**
-			 *  if 'loop' is true, the loop will start at this position
-			 *  @type {Tone.Time}
-			 *  @private
-			 */
-			this._loopStart = options.loopStart;
-
-			/**
-			 *  if 'loop' is true, the loop will end at this position
-			 *  @type {Tone.Time}
-			 *  @private
-			 */
-			this._loopEnd = options.loopEnd;
-
-			/**
-			 *  the playback rate
-			 *  @private
-			 *  @type {number}
-			 */
-			this._playbackRate = options.playbackRate;
-
-			/**
-			 *  Enabling retrigger will allow a player to be restarted
-			 *  before the the previous 'start' is done playing.
-			 *  @type {boolean}
-			 */
-			this.retrigger = options.retrigger;
-		};
-
-		Tone.extend(Tone.Player, Tone.Source);
-		
-		/**
-		 *  the default parameters
-		 *  @static
-		 *  @const
-		 *  @type {Object}
-		 */
-		Tone.Player.defaults = {
-			"onload" : function(){},
-			"playbackRate" : 1,
-			"loop" : false,
-			"loopStart" : 0,
-			"loopEnd" : 0,
-			"retrigger" : false,
-		};
 
 		/**
-		 *  Load the audio file as an audio buffer.
-		 *  Decodes the audio asynchronously and invokes
-		 *  the callback once the audio buffer loads. 
-		 *  Note: this does not need to be called, if a url
-		 *  was passed in to the constructor. Only use this
-		 *  if you want to manually load a new url. 
-		 * @param {string} url The url of the buffer to load.
-		 *                     filetype support depends on the
-		 *                     browser.
-		 *  @param  {function(Tone.Player)=} callback
-		 *  @returns {Tone.Player} `this`
-		 */
-		Tone.Player.prototype.load = function(url, callback){
-			this._buffer.load(url, callback.bind(this, this));
-			return this;
-		};
-
-		/**
-		 *  play the buffer between the desired positions
-		 *  
-		 *  @private
-		 *  @param  {Tone.Time} [startTime=now] when the player should start.
-		 *  @param  {Tone.Time} [offset=0] the offset from the beginning of the sample
-		 *                                 to start at. 
-		 *  @param  {Tone.Time=} duration how long the sample should play. If no duration
-		 *                                is given, it will default to the full length 
-		 *                                of the sample (minus any offset)
-		 *  @returns {Tone.Player} `this`
-		 */
-		Tone.Player.prototype._start = function(startTime, offset, duration){
-			if (this._buffer.loaded){
-				//if it's a loop the default offset is the loopstart point
-				if (this._loop){
-					offset = this.defaultArg(offset, this._loopStart);
-					offset = this.toSeconds(offset);
-				} else {
-					//otherwise the default offset is 0
-					offset = this.defaultArg(offset, 0);
-				}
-				duration = this.defaultArg(duration, this._buffer.duration - offset);
-				//the values in seconds
-				startTime = this.toSeconds(startTime);
-				duration = this.toSeconds(duration);
-				//make the source
-				this._source = this.context.createBufferSource();
-				this._source.buffer = this._buffer.get();
-				//set the looping properties
-				if (this._loop){
-					this._source.loop = this._loop;
-					this._source.loopStart = this.toSeconds(this._loopStart);
-					this._source.loopEnd = this.toSeconds(this._loopEnd);
-				} else {
-					this._nextStop = startTime + duration;
-				}
-				//and other properties
-				this._source.playbackRate.value = this._playbackRate;
-				this._source.onended = this.onended;
-				this._source.connect(this.output);
-				//start it
-				this._source.start(startTime, offset, duration);
-			} else {
-				throw Error("tried to start Player before the buffer was loaded");
-			}
-			return this;
-		};
-
-		/**
-		 *  Stop playback.
-		 *  @private
-		 *  @param  {Tone.Time} [time=now]
-		 *  @returns {Tone.Player} `this`
-		 */
-		Tone.Player.prototype._stop = function(time){
-			if (this._source){
-				this._source.stop(this.toSeconds(time));
-				this._source = null;
-			}
-			return this;
-		};
-
-		/**
-		 *  Set the loop start and end. Will only loop if `loop` is 
-		 *  set to `true`. 
-		 *  @param {Tone.Time} loopStart The loop end time
-		 *  @param {Tone.Time} loopEnd The loop end time
-		 *  @returns {Tone.Player} `this`
-		 *  @example
-		 *  player.setLoopPoints(0.2, 0.3);
-		 *  player.loop = true;
-		 */
-		Tone.Player.prototype.setLoopPoints = function(loopStart, loopEnd){
-			this.loopStart = loopStart;
-			this.loopEnd = loopEnd;
-			return this;
-		};
-
-		/**
-		 * If `loop` is true, the loop will start at this position. 
-		 * @memberOf Tone.Player#
-		 * @type {Tone.Time}
-		 * @name loopStart
-		 */
-		Object.defineProperty(Tone.Player.prototype, "loopStart", {
-			get : function(){
-				return this._loopStart;
-			}, 
-			set : function(loopStart){
-				this._loopStart = loopStart;
-				if (this._source){
-					this._source.loopStart = this.toSeconds(loopStart);
-				}
-			}
-		});
-
-		/**
-		 * If `loop` is true, the loop will end at this position.
-		 * @memberOf Tone.Player#
-		 * @type {Tone.Time}
-		 * @name loopEnd
-		 */
-		Object.defineProperty(Tone.Player.prototype, "loopEnd", {
-			get : function(){
-				return this._loopEnd;
-			}, 
-			set : function(loopEnd){
-				this._loopEnd = loopEnd;
-				if (this._source){
-					this._source.loopEnd = this.toSeconds(loopEnd);
-				}
-			}
-		});
-
-		/**
-		 * The audio buffer belonging to the player. 
-		 * @memberOf Tone.Player#
-		 * @type {AudioBuffer}
-		 * @name buffer
-		 */
-		Object.defineProperty(Tone.Player.prototype, "buffer", {
-			get : function(){
-				return this._buffer;
-			}, 
-			set : function(buffer){
-				this._buffer.set(buffer);
-			}
-		});
-
-		/**
-		 * If the buffer should loop once it's over. 
-		 * @memberOf Tone.Player#
-		 * @type {boolean}
-		 * @name loop
-		 */
-		Object.defineProperty(Tone.Player.prototype, "loop", {
-			get : function(){
-				return this._loop;
-			}, 
-			set : function(loop){
-				this._loop = loop;
-				if (this._source){
-					this._source.loop = loop;
-				}
-			}
-		});
-
-		/**
-		 * The playback speed. 1 is normal speed. 
-		 * Note that this is not a Tone.Signal because of a bug in Blink. 
-		 * Please star this issue if this an important thing to you: 
-		 * https://code.google.com/p/chromium/issues/detail?id=311284
-		 * 
-		 * @memberOf Tone.Player#
-		 * @type {number}
-		 * @name playbackRate
-		 */
-		Object.defineProperty(Tone.Player.prototype, "playbackRate", {
-			get : function(){
-				return this._playbackRate;
-			}, 
-			set : function(rate){
-				this._playbackRate = rate;
-				if (this._source) {
-					this._source.playbackRate.value = rate;
-				}
-			}
-		});
-
-		/**
-		 *  dispose and disconnect
-		 *  @return {Tone.Player} `this`
-		 */
-		Tone.Player.prototype.dispose = function(){
-			Tone.Source.prototype.dispose.call(this);
-			if (this._source !== null){
-				this._source.disconnect();
-				this._source = null;
-			}
-			this._buffer.dispose();
-			this._buffer = null;
-			return this;
-		};
-
-		return Tone.Player;
-	});
-
-	ToneModule( 
-	function(Tone){
-
-		
-
-		/**
-		 *  @class A simple sampler instrument which plays an audio buffer 
-		 *         through an amplitude envelope and a filter envelope. Nested
-		 *         lists will be flattened.
-		 *
-		 *  @constructor
-		 *  @extends {Tone.Instrument}
-		 *  @param {Object|string} urls the urls of the audio file
-		 *  @param {Object} options the options object for the synth
-		 *  @example
-		 *  var sampler = new Sampler({
-		 *  	A : {
-		 *  		1 : {"./audio/casio/A1.mp3",
-		 *  		2 : "./audio/casio/A2.mp3",
-		 *  	},
-		 *  	"B.1" : "./audio/casio/B1.mp3",
-		 *  });
-		 *  //...once samples have loaded
-		 *  sampler.triggerAttack("A.1", time, velocity);
-		 */
-		Tone.Sampler = function(urls, options){
-
-			Tone.Instrument.call(this);
-			options = this.defaultArg(options, Tone.Sampler.defaults);
-
-			/**
-			 *  the sample player
-			 *  @type {Tone.Player}
-			 */
-			this.player = new Tone.Player(options.player);
-			this.player.retrigger = true;
-
-			/**
-			 *  the buffers
-			 *  @type {Object<Tone.Buffer>}
-			 *  @private
-			 */
-			this._buffers = {};
-
-			/**
-			 *  The amplitude envelope. 
-			 *  @type {Tone.Envelope}
-			 */
-			this.envelope = new Tone.AmplitudeEnvelope(options.envelope);
-
-			/**
-			 *  The filter envelope. 
-			 *  @type {Tone.Envelope}
-			 */
-			this.filterEnvelope = new Tone.ScaledEnvelope(options.filterEnvelope);
-
-			/**
-			 *  The name of the current sample. 
-			 *  @type {string}
-			 */
-			this._sample = options.sample;
-
-			/**
-			 * the private reference to the pitch
-			 * @type {number}
-			 * @private
-			 */
-			this._pitch = options.pitch;
-
-			/**
-			 *  The filter.
-			 *  @type {BiquadFilterNode}
-			 */
-			this.filter = new Tone.Filter(options.filter);
-
-			//connections / setup
-			this._loadBuffers(urls);
-			this.pitch = options.pitch;
-			this.player.chain(this.filter, this.envelope, this.output);
-			this.filterEnvelope.connect(this.filter.frequency);
-		};
-
-		Tone.extend(Tone.Sampler, Tone.Instrument);
-
-		/**
-		 *  the default parameters
-		 *  @static
-		 */
-		Tone.Sampler.defaults = {
-			"sample" : 0,
-			"pitch" : 0,
-			"player" : {
-				"loop" : false,
-			},
-			"envelope" : {
-				"attack" : 0.001,
-				"decay" : 0,
-				"sustain" : 1,
-				"release" : 0.1
-			},
-			"filterEnvelope" : {
-				"attack" : 0.001,
-				"decay" : 0.001,
-				"sustain" : 1,
-				"release" : 0.5,
-				"min" : 20,
-				"max" : 20000,
-				"exponent" : 2,
-			},
-			"filter" : {
-				"type" : "lowpass"
-			}
-		};
-
-		/**
-		 *  load the buffers
-		 *  @param   {Object} urls   the urls
-		 *  @private
-		 */
-		Tone.Sampler.prototype._loadBuffers = function(urls){
-			if (typeof urls === "string"){
-				this._buffers["0"] = new Tone.Buffer(urls, function(){
-					this.sample = "0";
-				}.bind(this));
-			} else {
-				urls = this._flattenUrls(urls);
-				for (var buffName in urls){
-					this._sample = buffName;
-					var urlString = urls[buffName];
-					this._buffers[buffName] = new Tone.Buffer(urlString);
-				}
-			}
-		};
-
-		/**
-		 *  flatten an object into a single depth object
-		 *  https://gist.github.com/penguinboy/762197
-		 *  @param   {Object} ob 	
-		 *  @return  {Object}    
-		 *  @private
-		 */
-		Tone.Sampler.prototype._flattenUrls = function(ob) {
-			var toReturn = {};
-			for (var i in ob) {
-				if (!ob.hasOwnProperty(i)) continue;
-				if ((typeof ob[i]) == "object") {
-					var flatObject = this._flattenUrls(ob[i]);
-					for (var x in flatObject) {
-						if (!flatObject.hasOwnProperty(x)) continue;
-						toReturn[i + "." + x] = flatObject[x];
-					}
-				} else {
-					toReturn[i] = ob[i];
-				}
-			}
-			return toReturn;
-		};
-
-		/**
-		 *  start the sample.
-		 *  @param {string=} sample the name of the samle to trigger, defaults to
-		 *                          the last sample used
-		 *  @param {Tone.Time} [time=now] the time when the note should start
-		 *  @param {number} [velocity=1] the velocity of the note
-		 *  @returns {Tone.Sampler} `this`
-		 */
-		Tone.Sampler.prototype.triggerAttack = function(name, time, velocity){
-			time = this.toSeconds(time);
-			if (name){
-				this.sample = name;
-			}
-			this.player.start(time, 0);
-			this.envelope.triggerAttack(time, velocity);
-			this.filterEnvelope.triggerAttack(time);
-			return this;
-		};
-
-		/**
-		 *  start the release portion of the sample
-		 *  
-		 *  @param {Tone.Time} [time=now] the time when the note should release
-		 *  @returns {Tone.Sampler} `this`
-		 */
-		Tone.Sampler.prototype.triggerRelease = function(time){
-			time = this.toSeconds(time);
-			this.filterEnvelope.triggerRelease(time);
-			this.envelope.triggerRelease(time);
-			this.player.stop(this.toSeconds(this.envelope.release) + time);
-			return this;
-		};
-
-		/**
-		 * The name of the sample to trigger.
-		 * @memberOf Tone.Sampler#
-		 * @type {number|string}
-		 * @name sample
-		 */
-		Object.defineProperty(Tone.Sampler.prototype, "sample", {
-			get : function(){
-				return this._sample;
-			},
-			set : function(name){
-				if (this._buffers.hasOwnProperty(name)){
-					this._sample = name;
-					this.player.buffer = this._buffers[name];
-				} else {
-					throw new Error("Sampler does not have a sample named "+name);
-				}
-			}
-		});
-
-		/**
-		 * Repitch the sampled note by some interval (measured
-		 * in semi-tones). 
-		 * @memberOf Tone.Sampler#
-		 * @type {number}
-		 * @name pitch
-		 * @example
-		 * sampler.pitch = -12; //down one octave
-		 * sampler.pitch = 7; //up a fifth
-		 */
-		Object.defineProperty(Tone.Sampler.prototype, "pitch", {
-			get : function(){
-				return this._pitch;
-			},
-			set : function(interval){
-				this._pitch = interval;
-				this.player.playbackRate = this.intervalToFrequencyRatio(interval);
-			}
-		});
-
-		/**
-		 *  clean up
-		 *  @returns {Tone.Sampler} `this`
-		 */
-		Tone.Sampler.prototype.dispose = function(){
-			Tone.Instrument.prototype.dispose.call(this);
-			this.player.dispose();
-			this.filterEnvelope.dispose();
-			this.envelope.dispose();
-			this.filter.dispose();
-			this.player = null;
-			this.filterEnvelope = null;
-			this.envelope = null;
-			this.filter = null;
-			for (var sample in this._buffers){
-				this._buffers[sample].dispose();
-				this._buffers[sample] = null;
-			}
-			this._buffers = null;
-			return this;
-		};
-
-		return Tone.Sampler;
-	});
-
-	ToneModule( 
-	function(Tone){
-
-		
-
-		/**
-		 *  @class Deprecated.
-		 *
-		 *  @constructor
-		 *  @deprecated Use Tone.PolySynth with Tone.Sampler as the voice.
-		 *  @extends {Tone.Instrument}
-		 *  @param {Object} samples the samples used in this
-		 *  @param {function} onload the callback to invoke when all 
-		 *                           of the samples have been loaded
-		 */
-		Tone.MultiSampler = function(samples, onload){
-
-			console.warn("Tone.MultiSampler is deprecated - use Tone.PolySynth with Tone.Sampler as the voice");
-		 	Tone.Instrument.call(this);
-
-		 	/**
-		 	 *  the array of voices
-		 	 *  @type {Tone.Sampler}
-		 	 */
-			this.samples = {};
-
-			//make the samples
-			this._createSamples(samples, onload);
-		};
-
-		Tone.extend(Tone.MultiSampler, Tone.Instrument);
-
-		/**
-		 *  creates all of the samples and tracks their loading
-		 *  
-		 *  @param   {Object} samples the samples
-		 *  @param   {function} onload  the onload callback
-		 *  @private
-		 */
-		Tone.MultiSampler.prototype._createSamples = function(samples, onload){
-			//object which tracks the number of loaded samples
-			var loadCounter = {
-				total : 0,
-				loaded : 0
-			};
-			//get the count
-			for (var s in samples){ //jshint ignore:line
-				loadCounter.total++;
-			}
-			//the function to invoke when a sample is loaded
-			var onSampleLoad = function(){
-				loadCounter.loaded++;
-				if (loadCounter.loaded === loadCounter.total){
-					if (onload){
-						onload();
-					}
-				}
-			};
-			for (var samp in samples){
-				var url = samples[samp];
-				var sampler = new Tone.Sampler(url, onSampleLoad);
-				sampler.connect(this.output);
-				this.samples[samp] = sampler;
-			}
-		};
-
-		/**
-		 *  start a sample
-		 *  
-		 *  @param  {string} sample the note name to start
-		 *  @param {Tone.Time} [time=now] the time when the note should start
-		 *  @param {number} [velocity=1] the velocity of the note
-		 */
-		Tone.MultiSampler.prototype.triggerAttack = function(sample, time, velocity){
-			if (this.samples.hasOwnProperty(sample)){
-				this.samples[sample].triggerAttack(0, time, velocity);
-			}
-		};
-
-		/**
-		 *  start the release portion of the note
-		 *  
-		 *  @param  {string} sample the note name to release
-		 *  @param {Tone.Time} [time=now] the time when the note should release
-		 */
-		Tone.MultiSampler.prototype.triggerRelease = function(sample, time){
-			if (this.samples.hasOwnProperty(sample)){
-				this.samples[sample].triggerRelease(time);
-			}
-		};
-
-		/**
-		  *  start the release portion of the note
-		  *  
-		  *  @param  {string} sample the note name to release
-		  *  @param {Tone.Time} duration the duration of the note
-		  *  @param {Tone.Time} [time=now] the time when the note should start
-		  *  @param {number} [velocity=1] the velocity of the note
-		  */
-		Tone.MultiSampler.prototype.triggerAttackRelease = function(sample, duration, time, velocity){
-			if (this.samples.hasOwnProperty(sample)){
-				time = this.toSeconds(time);
-				duration = this.toSeconds(duration);
-				var samp = this.samples[sample];
-				samp.triggerAttack(0, time, velocity);
-				samp.triggerRelease(time + duration);
-			}
-		};
-
-		/**
-		 *  sets all the samplers with these settings
-		 *  @param {object} params the parameters to be applied 
-		 *                         to all internal samplers
-		 */
-		Tone.MultiSampler.prototype.set = function(params){
-			for (var samp in this.samples){
-				this.samples[samp].set(params);
-			}
-		};
-
-		/**
-		 *  clean up
-		 */
-		Tone.MultiSampler.prototype.dispose = function(){
-			Tone.Instrument.prototype.dispose.call(this);
-			for (var samp in this.samples){
-				this.samples[samp].dispose();
-				this.samples[samp] = null;
-			}
-			this.samples = null;
-		};
-
-		return Tone.MultiSampler;
-	});
-
-	ToneModule( function(Tone){
-
-		
-
-		/**
-		 *  @class  Noise generator. 
-		 *          Uses looped noise buffers to save on performance. 
+		 *  @class  Noise generator.
+		 *          Uses looped noise buffers to save on performance.
 		 *
 		 *  @constructor
 		 *  @extends {Tone.Source}
@@ -12985,7 +13230,7 @@
 			 *  @type {AudioBufferSourceNode}
 			 */
 			this._source = null;
-			
+
 			/**
 			 *  the buffer
 			 *  @private
@@ -13014,6 +13259,7 @@
 		 * @memberOf Tone.Noise#
 		 * @type {string}
 		 * @name type
+		 * @options ["white", "brown", "pink"]
 		 * @example
 		 * noise.type = "white";
 		 */
@@ -13056,11 +13302,11 @@
 
 		/**
 		 *  internal start method
-		 *  
+		 *
 		 *  @param {Tone.Time} time
 		 *  @private
 		 */
-		Tone.Noise.prototype._start = function(time){		
+		Tone.Noise.prototype._start = function(time){
 			this._source = this.context.createBufferSource();
 			this._source.buffer = this._buffer;
 			this._source.loop = true;
@@ -13071,7 +13317,7 @@
 
 		/**
 		 *  internal stop method
-		 *  
+		 *
 		 *  @param {Tone.Time} time
 		 *  @private
 		 */
@@ -13098,12 +13344,12 @@
 
 		///////////////////////////////////////////////////////////////////////////
 		// THE BUFFERS
-		// borred heavily from http://noisehack.com/generate-noise-web-audio-api/
+		// borrowed heavily from http://noisehack.com/generate-noise-web-audio-api/
 		///////////////////////////////////////////////////////////////////////////
 
 		/**
 		 *	static noise buffers
-		 *  
+		 *
 		 *  @static
 		 *  @private
 		 *  @type {AudioBuffer}
@@ -13113,7 +13359,7 @@
 		Tone._initAudioContext(function(audioContext){
 
 			var sampleRate = audioContext.sampleRate;
-			
+
 			//four seconds per buffer
 			var bufferLength = sampleRate * 4;
 
@@ -13222,6 +13468,7 @@
 			this.noise.start();
 			//connect the filter envelope
 			this.filterEnvelope.connect(this.filter.frequency);
+			this._readOnly(["noise", "filter", "filterEnvelope", "envelope"]);
 		};
 
 		Tone.extend(Tone.NoiseSynth, Tone.Instrument);
@@ -13291,7 +13538,6 @@
 			time = this.toSeconds(time);
 			duration = this.toSeconds(duration);
 			this.triggerAttack(time, velocity);
-			console.log(time + duration);
 			this.triggerRelease(time + duration);
 			return this;
 		};
@@ -13302,6 +13548,7 @@
 		 */
 		Tone.NoiseSynth.prototype.dispose = function(){
 			Tone.Instrument.prototype.dispose.call(this);
+			this._writable(["noise", "filter", "filterEnvelope", "envelope"]);
 			this.noise.dispose();
 			this.noise = null;
 			this.envelope.dispose();
@@ -13368,6 +13615,7 @@
 			//connections
 			this._noise.connect(this._lfcf);
 			this._lfcf.connect(this.output);
+			this._readOnly(["resonance", "dampening"]);
 		};
 
 		Tone.extend(Tone.PluckSynth, Tone.Instrument);
@@ -13393,7 +13641,7 @@
 			note = this.toFrequency(note);
 			time = this.toSeconds(time);
 			var delayAmount = 1 / note;
-			this._lfcf.setDelayTimeAtTime(delayAmount, time);		
+			this._lfcf.delayTime.setValueAtTime(delayAmount, time);		
 			this._noise.start(time);
 			this._noise.stop(time + delayAmount * this.attackNoise);
 			return this;
@@ -13409,6 +13657,7 @@
 			this._lfcf.dispose();
 			this._noise = null;
 			this._lfcf = null;
+			this._writable(["resonance", "dampening"]);
 			this.dampening = null;
 			this.resonance = null;
 			return this;
@@ -13555,7 +13804,8 @@
 				if (voice){
 					voice.triggerRelease(time);
 					this._freeVoices.push(voice);
-					this._activeVoices[stringified] = null;
+					delete this._activeVoices[stringified];
+					voice = null;
 				}
 			}
 			return this;
@@ -13563,12 +13813,14 @@
 
 		/**
 		 *  set the options on all of the voices
-		 *  @param {Object} params 
+		 *  @param {Object|string} params
+		 *  @param {number=} value
+		 *  @param {Tone.Time=} rampTime
 		 *  @returns {Tone.PolySynth} `this`
 		 */
-		Tone.PolySynth.prototype.set = function(params){
+		Tone.PolySynth.prototype.set = function(params, value, rampTime){
 			for (var i = 0; i < this.voices.length; i++){
-				this.voices[i].set(params);
+				this.voices[i].set(params, value, rampTime);
 			}
 			return this;
 		};
@@ -13614,6 +13866,1098 @@
 	ToneModule( function(Tone){
 
 		
+		
+		/**
+		 *  @class  Audio file player with start, loop, stop.
+		 *  
+		 *  @constructor
+		 *  @extends {Tone.Source} 
+		 *  @param {string|AudioBuffer} url Either the AudioBuffer or the url from
+		 *                                  which to load the AudioBuffer
+		 *  @param {function=} onload The function to invoke when the buffer is loaded. 
+		 *                            Recommended to use {@link Tone.Buffer#onload} instead.
+		 *  @example
+		 *  var player = new Tone.Player("./path/to/sample.mp3");
+		 */
+		Tone.Player = function(){
+			
+			var options = this.optionsObject(arguments, ["url", "onload"], Tone.Player.defaults);
+			Tone.Source.call(this, options);
+
+			/**
+			 *  @private
+			 *  @type {AudioBufferSourceNode}
+			 */
+			this._source = null;
+
+			/**
+			 *  If the file should play as soon
+			 *  as the buffer is loaded. 
+			 *  @type {boolean}
+			 */
+			this.autostart = options.autostart;
+			
+			/**
+			 *  the buffer
+			 *  @private
+			 *  @type {Tone.Buffer}
+			 */
+			this._buffer = new Tone.Buffer({
+				"url" : options.url, 
+				"onload" : this._onload.bind(this, options.onload),
+				"reverse" : options.reverse
+			});
+
+			/**
+			 *  if the buffer should loop once it's over
+			 *  @type {boolean}
+			 *  @private
+			 */
+			this._loop = options.loop;
+
+			/**
+			 *  if 'loop' is true, the loop will start at this position
+			 *  @type {Tone.Time}
+			 *  @private
+			 */
+			this._loopStart = options.loopStart;
+
+			/**
+			 *  if 'loop' is true, the loop will end at this position
+			 *  @type {Tone.Time}
+			 *  @private
+			 */
+			this._loopEnd = options.loopEnd;
+
+			/**
+			 *  the playback rate
+			 *  @private
+			 *  @type {number}
+			 */
+			this._playbackRate = options.playbackRate;
+
+			/**
+			 *  Enabling retrigger will allow a player to be restarted
+			 *  before the the previous 'start' is done playing.
+			 *  @type {boolean}
+			 */
+			this.retrigger = options.retrigger;
+		};
+
+		Tone.extend(Tone.Player, Tone.Source);
+		
+		/**
+		 *  the default parameters
+		 *  @static
+		 *  @const
+		 *  @type {Object}
+		 */
+		Tone.Player.defaults = {
+			"onload" : function(){},
+			"playbackRate" : 1,
+			"loop" : false,
+			"autostart" : false,
+			"loopStart" : 0,
+			"loopEnd" : 0,
+			"retrigger" : false,
+			"reverse" : false,
+		};
+
+		/**
+		 *  Load the audio file as an audio buffer.
+		 *  Decodes the audio asynchronously and invokes
+		 *  the callback once the audio buffer loads. 
+		 *  Note: this does not need to be called, if a url
+		 *  was passed in to the constructor. Only use this
+		 *  if you want to manually load a new url. 
+		 * @param {string} url The url of the buffer to load.
+		 *                     filetype support depends on the
+		 *                     browser.
+		 *  @param  {function(Tone.Player)=} callback
+		 *  @returns {Tone.Player} `this`
+		 */
+		Tone.Player.prototype.load = function(url, callback){
+			this._buffer.load(url, this._onload.bind(this, callback));
+			return this;
+		};
+
+		/**
+		 * Internal callback when the buffer is loaded.
+		 * @private
+		 */
+		Tone.Player.prototype._onload = function(callback){
+			callback(this);
+			if (this.autostart){
+				this.start();
+			}
+		};
+
+		/**
+		 *  play the buffer between the desired positions
+		 *  
+		 *  @private
+		 *  @param  {Tone.Time} [startTime=now] when the player should start.
+		 *  @param  {Tone.Time} [offset=0] the offset from the beginning of the sample
+		 *                                 to start at. 
+		 *  @param  {Tone.Time=} duration how long the sample should play. If no duration
+		 *                                is given, it will default to the full length 
+		 *                                of the sample (minus any offset)
+		 *  @returns {Tone.Player} `this`
+		 */
+		Tone.Player.prototype._start = function(startTime, offset, duration){
+			if (this._buffer.loaded){
+				//if it's a loop the default offset is the loopstart point
+				if (this._loop){
+					offset = this.defaultArg(offset, this._loopStart);
+				} else {
+					//otherwise the default offset is 0
+					offset = this.defaultArg(offset, 0);
+				}
+				offset = this.toSeconds(offset);
+				duration = this.defaultArg(duration, this._buffer.duration - offset);
+				//the values in seconds
+				startTime = this.toSeconds(startTime);
+				duration = this.toSeconds(duration);
+				//make the source
+				this._source = this.context.createBufferSource();
+				this._source.buffer = this._buffer.get();
+				//set the looping properties
+				if (this._loop){
+					this._source.loop = this._loop;
+					this._source.loopStart = this.toSeconds(this._loopStart);
+					this._source.loopEnd = this.toSeconds(this._loopEnd);
+					// this fixes a bug in chrome 42 that breaks looping
+					// https://code.google.com/p/chromium/issues/detail?id=457099
+					duration = 65536;
+				} else {
+					this._nextStop = startTime + duration;
+				}
+				//and other properties
+				this._source.playbackRate.value = this._playbackRate;
+				this._source.onended = this.onended;
+				this._source.connect(this.output);
+				//start it
+				this._source.start(startTime, offset, duration);
+			} else {
+				throw Error("tried to start Player before the buffer was loaded");
+			}
+			return this;
+		};
+
+		/**
+		 *  Stop playback.
+		 *  @private
+		 *  @param  {Tone.Time} [time=now]
+		 *  @returns {Tone.Player} `this`
+		 */
+		Tone.Player.prototype._stop = function(time){
+			if (this._source){
+				this._source.stop(this.toSeconds(time));
+				this._source = null;
+			}
+			return this;
+		};
+
+		/**
+		 *  Set the loop start and end. Will only loop if `loop` is 
+		 *  set to `true`. 
+		 *  @param {Tone.Time} loopStart The loop end time
+		 *  @param {Tone.Time} loopEnd The loop end time
+		 *  @returns {Tone.Player} `this`
+		 *  @example
+		 *  player.setLoopPoints(0.2, 0.3);
+		 *  player.loop = true;
+		 */
+		Tone.Player.prototype.setLoopPoints = function(loopStart, loopEnd){
+			this.loopStart = loopStart;
+			this.loopEnd = loopEnd;
+			return this;
+		};
+
+		/**
+		 * If `loop` is true, the loop will start at this position. 
+		 * @memberOf Tone.Player#
+		 * @type {Tone.Time}
+		 * @name loopStart
+		 */
+		Object.defineProperty(Tone.Player.prototype, "loopStart", {
+			get : function(){
+				return this._loopStart;
+			}, 
+			set : function(loopStart){
+				this._loopStart = loopStart;
+				if (this._source){
+					this._source.loopStart = this.toSeconds(loopStart);
+				}
+			}
+		});
+
+		/**
+		 * If `loop` is true, the loop will end at this position.
+		 * @memberOf Tone.Player#
+		 * @type {Tone.Time}
+		 * @name loopEnd
+		 */
+		Object.defineProperty(Tone.Player.prototype, "loopEnd", {
+			get : function(){
+				return this._loopEnd;
+			}, 
+			set : function(loopEnd){
+				this._loopEnd = loopEnd;
+				if (this._source){
+					this._source.loopEnd = this.toSeconds(loopEnd);
+				}
+			}
+		});
+
+		/**
+		 * The audio buffer belonging to the player. 
+		 * @memberOf Tone.Player#
+		 * @type {AudioBuffer}
+		 * @name buffer
+		 */
+		Object.defineProperty(Tone.Player.prototype, "buffer", {
+			get : function(){
+				return this._buffer;
+			}, 
+			set : function(buffer){
+				this._buffer.set(buffer);
+			}
+		});
+
+		/**
+		 * If the buffer should loop once it's over. 
+		 * @memberOf Tone.Player#
+		 * @type {boolean}
+		 * @name loop
+		 */
+		Object.defineProperty(Tone.Player.prototype, "loop", {
+			get : function(){
+				return this._loop;
+			}, 
+			set : function(loop){
+				this._loop = loop;
+				if (this._source){
+					this._source.loop = loop;
+				}
+			}
+		});
+
+		/**
+		 * The playback speed. 1 is normal speed. 
+		 * Note that this is not a Tone.Signal because of a bug in Blink. 
+		 * Please star this issue if this an important thing to you: 
+		 * https://code.google.com/p/chromium/issues/detail?id=311284
+		 * 
+		 * @memberOf Tone.Player#
+		 * @type {number}
+		 * @name playbackRate
+		 */
+		Object.defineProperty(Tone.Player.prototype, "playbackRate", {
+			get : function(){
+				return this._playbackRate;
+			}, 
+			set : function(rate){
+				this._playbackRate = rate;
+				if (this._source) {
+					this._source.playbackRate.value = rate;
+				}
+			}
+		});
+
+		/**
+		 * The direction the buffer should play in
+		 * @memberOf Tone.Player#
+		 * @type {boolean}
+		 * @name reverse
+		 */
+		Object.defineProperty(Tone.Player.prototype, "reverse", {
+			get : function(){
+				return this._buffer.reverse;
+			}, 
+			set : function(rev){
+				this._buffer.reverse = rev;
+			}
+		});
+
+		/**
+		 *  dispose and disconnect
+		 *  @return {Tone.Player} `this`
+		 */
+		Tone.Player.prototype.dispose = function(){
+			Tone.Source.prototype.dispose.call(this);
+			if (this._source !== null){
+				this._source.disconnect();
+				this._source = null;
+			}
+			this._buffer.dispose();
+			this._buffer = null;
+			return this;
+		};
+
+		return Tone.Player;
+	});
+
+	ToneModule( 
+	function(Tone){
+
+		
+
+		/**
+		 *  @class A simple sampler instrument which plays an audio buffer 
+		 *         through an amplitude envelope and a filter envelope. Nested
+		 *         lists will be flattened.
+		 *
+		 *  @constructor
+		 *  @extends {Tone.Instrument}
+		 *  @param {Object|string} urls the urls of the audio file
+		 *  @param {Object} options the options object for the synth
+		 *  @example
+		 *  var sampler = new Sampler({
+		 *  	A : {
+		 *  		1 : {"./audio/casio/A1.mp3",
+		 *  		2 : "./audio/casio/A2.mp3",
+		 *  	},
+		 *  	"B.1" : "./audio/casio/B1.mp3",
+		 *  });
+		 *  //...once samples have loaded
+		 *  sampler.triggerAttack("A.1", time, velocity);
+		 */
+		Tone.Sampler = function(urls, options){
+
+			Tone.Instrument.call(this);
+			options = this.defaultArg(options, Tone.Sampler.defaults);
+
+			/**
+			 *  the sample player
+			 *  @type {Tone.Player}
+			 */
+			this.player = new Tone.Player(options.player);
+			this.player.retrigger = true;
+
+			/**
+			 *  the buffers
+			 *  @type {Object<Tone.Buffer>}
+			 *  @private
+			 */
+			this._buffers = {};
+
+			/**
+			 *  The amplitude envelope. 
+			 *  @type {Tone.Envelope}
+			 */
+			this.envelope = new Tone.AmplitudeEnvelope(options.envelope);
+
+			/**
+			 *  The filter envelope. 
+			 *  @type {Tone.Envelope}
+			 */
+			this.filterEnvelope = new Tone.ScaledEnvelope(options.filterEnvelope);
+
+			/**
+			 *  The name of the current sample. 
+			 *  @type {string}
+			 */
+			this._sample = options.sample;
+
+			/**
+			 * the private reference to the pitch
+			 * @type {number}
+			 * @private
+			 */
+			this._pitch = options.pitch;
+
+			/**
+			 *  The filter.
+			 *  @type {BiquadFilterNode}
+			 */
+			this.filter = new Tone.Filter(options.filter);
+
+			//connections / setup
+			this._loadBuffers(urls);
+			this.pitch = options.pitch;
+			this.player.chain(this.filter, this.envelope, this.output);
+			this.filterEnvelope.connect(this.filter.frequency);
+			this._readOnly(["player", "filterEnvelope", "envelope", "filter"]);
+		};
+
+		Tone.extend(Tone.Sampler, Tone.Instrument);
+
+		/**
+		 *  the default parameters
+		 *  @static
+		 */
+		Tone.Sampler.defaults = {
+			"sample" : 0,
+			"pitch" : 0,
+			"player" : {
+				"loop" : false,
+			},
+			"envelope" : {
+				"attack" : 0.001,
+				"decay" : 0,
+				"sustain" : 1,
+				"release" : 0.1
+			},
+			"filterEnvelope" : {
+				"attack" : 0.001,
+				"decay" : 0.001,
+				"sustain" : 1,
+				"release" : 0.5,
+				"min" : 20,
+				"max" : 20000,
+				"exponent" : 2,
+			},
+			"filter" : {
+				"type" : "lowpass"
+			}
+		};
+
+		/**
+		 *  load the buffers
+		 *  @param   {Object} urls   the urls
+		 *  @private
+		 */
+		Tone.Sampler.prototype._loadBuffers = function(urls){
+			if (typeof urls === "string"){
+				this._buffers["0"] = new Tone.Buffer(urls, function(){
+					this.sample = "0";
+				}.bind(this));
+			} else {
+				urls = this._flattenUrls(urls);
+				for (var buffName in urls){
+					this._sample = buffName;
+					var urlString = urls[buffName];
+					this._buffers[buffName] = new Tone.Buffer(urlString);
+				}
+			}
+		};
+
+		/**
+		 *  flatten an object into a single depth object
+		 *  https://gist.github.com/penguinboy/762197
+		 *  @param   {Object} ob 	
+		 *  @return  {Object}    
+		 *  @private
+		 */
+		Tone.Sampler.prototype._flattenUrls = function(ob) {
+			var toReturn = {};
+			for (var i in ob) {
+				if (!ob.hasOwnProperty(i)) continue;
+				if ((typeof ob[i]) == "object") {
+					var flatObject = this._flattenUrls(ob[i]);
+					for (var x in flatObject) {
+						if (!flatObject.hasOwnProperty(x)) continue;
+						toReturn[i + "." + x] = flatObject[x];
+					}
+				} else {
+					toReturn[i] = ob[i];
+				}
+			}
+			return toReturn;
+		};
+
+		/**
+		 *  start the sample.
+		 *  @param {string=} sample the name of the samle to trigger, defaults to
+		 *                          the last sample used
+		 *  @param {Tone.Time} [time=now] the time when the note should start
+		 *  @param {number} [velocity=1] the velocity of the note
+		 *  @returns {Tone.Sampler} `this`
+		 */
+		Tone.Sampler.prototype.triggerAttack = function(name, time, velocity){
+			time = this.toSeconds(time);
+			if (name){
+				this.sample = name;
+			}
+			this.player.start(time);
+			this.envelope.triggerAttack(time, velocity);
+			this.filterEnvelope.triggerAttack(time);
+			return this;
+		};
+
+		/**
+		 *  start the release portion of the sample
+		 *  
+		 *  @param {Tone.Time} [time=now] the time when the note should release
+		 *  @returns {Tone.Sampler} `this`
+		 */
+		Tone.Sampler.prototype.triggerRelease = function(time){
+			time = this.toSeconds(time);
+			this.filterEnvelope.triggerRelease(time);
+			this.envelope.triggerRelease(time);
+			this.player.stop(this.toSeconds(this.envelope.release) + time);
+			return this;
+		};
+
+		/**
+		 * The name of the sample to trigger.
+		 * @memberOf Tone.Sampler#
+		 * @type {number|string}
+		 * @name sample
+		 */
+		Object.defineProperty(Tone.Sampler.prototype, "sample", {
+			get : function(){
+				return this._sample;
+			},
+			set : function(name){
+				if (this._buffers.hasOwnProperty(name)){
+					this._sample = name;
+					this.player.buffer = this._buffers[name];
+				} else {
+					throw new Error("Sampler does not have a sample named "+name);
+				}
+			}
+		});
+
+		/**
+		 * The direction the buffer should play in
+		 * @memberOf Tone.Sampler#
+		 * @type {boolean}
+		 * @name reverse
+		 */
+		Object.defineProperty(Tone.Sampler.prototype, "reverse", {
+			get : function(){
+				for (var i in this._buffers){
+					return this._buffers[i].reverse;
+				}
+			}, 
+			set : function(rev){
+				for (var i in this._buffers){
+					this._buffers[i].reverse = rev;
+				}
+			}
+		});
+
+		/**
+		 * Repitch the sampled note by some interval (measured
+		 * in semi-tones). 
+		 * @memberOf Tone.Sampler#
+		 * @type {number}
+		 * @name pitch
+		 * @example
+		 * sampler.pitch = -12; //down one octave
+		 * sampler.pitch = 7; //up a fifth
+		 */
+		Object.defineProperty(Tone.Sampler.prototype, "pitch", {
+			get : function(){
+				return this._pitch;
+			},
+			set : function(interval){
+				this._pitch = interval;
+				this.player.playbackRate = this.intervalToFrequencyRatio(interval);
+			}
+		});
+
+		/**
+		 *  clean up
+		 *  @returns {Tone.Sampler} `this`
+		 */
+		Tone.Sampler.prototype.dispose = function(){
+			Tone.Instrument.prototype.dispose.call(this);
+			this._writable(["player", "filterEnvelope", "envelope", "filter"]);
+			this.player.dispose();
+			this.filterEnvelope.dispose();
+			this.envelope.dispose();
+			this.filter.dispose();
+			this.player = null;
+			this.filterEnvelope = null;
+			this.envelope = null;
+			this.filter = null;
+			for (var sample in this._buffers){
+				this._buffers[sample].dispose();
+				this._buffers[sample] = null;
+			}
+			this._buffers = null;
+			return this;
+		};
+
+		return Tone.Sampler;
+	});
+
+	ToneModule( 
+	function(Tone){
+
+		
+
+		/**
+		 *  @class  the SimpleSynth is a single oscillator, monophonic synthesizer
+		 *          with an OmniOscillator and an Amplitude Envelope
+		 *
+		 *  @constructor
+		 *  @extends {Tone.Monophonic}
+		 *  @param {Object} options the options available for the synth 
+		 *                          see defaults below
+		 */
+		Tone.SimpleSynth = function(options){
+
+			//get the defaults
+			options = this.defaultArg(options, Tone.SimpleSynth.defaults);
+			Tone.Monophonic.call(this, options);
+
+			/**
+			 *  the first oscillator
+			 *  @type {Tone.OmniOscillator}
+			 */
+			this.oscillator = new Tone.OmniOscillator(options.oscillator);
+
+			/**
+			 *  the frequency control signal
+			 *  @type {Tone.Signal}
+			 */
+			this.frequency = this.oscillator.frequency;
+
+			/**
+			 *  the detune control signal
+			 *  @type {Tone.Signal}
+			 */
+			this.detune = this.oscillator.detune;
+
+			/**
+			 *  the amplitude envelope
+			 *  @type {Tone.Envelope}
+			 */
+			this.envelope = new Tone.AmplitudeEnvelope(options.envelope);
+
+			//connect the oscillators to the output
+			this.oscillator.chain(this.envelope, this.output);
+			//start the oscillators
+			this.oscillator.start();
+			this._readOnly(["oscillator", "frequency", "detune", "envelope"]);
+		};
+
+		Tone.extend(Tone.SimpleSynth, Tone.Monophonic);
+
+		/**
+		 *  @const
+		 *  @static
+		 *  @type {Object}
+		 */
+		Tone.SimpleSynth.defaults = {
+			"oscillator" : {
+				"type" : "triangle"
+			},
+			"envelope" : {
+				"attack" : 0.005,
+				"decay" : 0.1,
+				"sustain" : 0.3,
+				"release" : 1
+			}
+		};
+
+		/**
+		 *  start the attack portion of the envelope
+		 *  @param {Tone.Time} [time=now] the time the attack should start
+		 *  @param {number} [velocity=1] the velocity of the note (0-1)
+		 *  @returns {Tone.SimpleSynth} `this`
+		 */
+		Tone.SimpleSynth.prototype.triggerEnvelopeAttack = function(time, velocity){
+			//the envelopes
+			this.envelope.triggerAttack(time, velocity);
+			return this;	
+		};
+
+		/**
+		 *  start the release portion of the envelope
+		 *  @param {Tone.Time} [time=now] the time the release should start
+		 *  @returns {Tone.SimpleSynth} `this`
+		 */
+		Tone.SimpleSynth.prototype.triggerEnvelopeRelease = function(time){
+			this.envelope.triggerRelease(time);
+			return this;
+		};
+
+
+		/**
+		 *  clean up
+		 *  @returns {Tone.SimpleSynth} `this`
+		 */
+		Tone.SimpleSynth.prototype.dispose = function(){
+			Tone.Monophonic.prototype.dispose.call(this);
+			this._writable(["oscillator", "frequency", "detune", "envelope"]);
+			this.oscillator.dispose();
+			this.oscillator = null;
+			this.envelope.dispose();
+			this.envelope = null;
+			this.frequency = null;
+			this.detune = null;
+			return this;
+		};
+
+		return Tone.SimpleSynth;
+	});
+	ToneModule( 
+	function(Tone){
+
+		
+
+		/**
+		 *  @class  the SimpleAM is an amplitude modulation synthesizer
+		 *          composed of two SimpleSynths where one SimpleSynth is the 
+		 *          carrier and the second is the modulator.
+		 *
+		 *  @constructor
+		 *  @extends {Tone.Monophonic}
+		 *  @param {Object} options the options available for the synth 
+		 *                          see defaults below
+		 *  @example
+		 *  var synth = new Tone.SimpleAM();
+		 */
+		Tone.SimpleAM = function(options){
+
+			options = this.defaultArg(options, Tone.SimpleAM.defaults);
+			Tone.Monophonic.call(this, options);
+
+			/**
+			 *  the first voice
+			 *  @type {Tone.SimpleSynth}
+			 */
+			this.carrier = new Tone.SimpleSynth(options.carrier);
+			this.carrier.volume.value = -10;
+
+			/**
+			 *  the second voice
+			 *  @type {Tone.SimpleSynth}
+			 */
+			this.modulator = new Tone.SimpleSynth(options.modulator);
+			this.modulator.volume.value = -10;
+
+			/**
+			 *  the frequency control
+			 *  @type {Tone.Signal}
+			 */
+			this.frequency = new Tone.Signal(440, Tone.Signal.Units.Frequency);
+
+			/**
+			 *  the ratio between the two voices
+			 *  @type {Tone.Multiply}
+			 *  @private
+			 */
+			this._harmonicity = new Tone.Multiply(options.harmonicity);
+
+			/**
+			 *  convert the -1,1 output to 0,1
+			 *  @type {Tone.AudioToGain}
+			 *  @private
+			 */
+			this._modulationScale = new Tone.AudioToGain();
+
+			/**
+			 *  the node where the modulation happens
+			 *  @type {GainNode}
+			 *  @private
+			 */
+			this._modulationNode = this.context.createGain();
+
+			//control the two voices frequency
+			this.frequency.connect(this.carrier.frequency);
+			this.frequency.chain(this._harmonicity, this.modulator.frequency);
+			this.modulator.chain(this._modulationScale, this._modulationNode.gain);
+			this.carrier.chain(this._modulationNode, this.output);
+			this._readOnly(["carrier", "modulator", "frequency"]);
+		};
+
+		Tone.extend(Tone.SimpleAM, Tone.Monophonic);
+
+		/**
+		 *  @static
+		 *  @type {Object}
+		 */
+		Tone.SimpleAM.defaults = {
+			"harmonicity" : 3,
+			"carrier" : {
+				"volume" : -10,
+				"portamento" : 0,
+				"oscillator" : {
+					"type" : "sine"
+				},
+				"envelope" : {
+					"attack" : 0.01,
+					"decay" : 0.01,
+					"sustain" : 1,
+					"release" : 0.5
+				},
+			},
+			"modulator" : {
+				"volume" : -10,
+				"portamento" : 0,
+				"oscillator" : {
+					"type" : "square"
+				},
+				"envelope" : {
+					"attack" : 2,
+					"decay" : 0.0,
+					"sustain" : 1,
+					"release" : 0.5
+				}
+			}
+		};
+
+		/**
+		 *  trigger the attack portion of the note
+		 *  
+		 *  @param  {Tone.Time} [time=now] the time the note will occur
+		 *  @param {number} [velocity=1] the velocity of the note
+		 *  @returns {Tone.SimpleAM} `this`
+		 */
+		Tone.SimpleAM.prototype.triggerEnvelopeAttack = function(time, velocity){
+			//the port glide
+			time = this.toSeconds(time);
+			//the envelopes
+			this.carrier.envelope.triggerAttack(time, velocity);
+			this.modulator.envelope.triggerAttack(time);
+			return this;
+		};
+
+		/**
+		 *  trigger the release portion of the note
+		 *  
+		 *  @param  {Tone.Time} [time=now] the time the note will release
+		 *  @returns {Tone.SimpleAM} `this`
+		 */
+		Tone.SimpleAM.prototype.triggerEnvelopeRelease = function(time){
+			this.carrier.triggerRelease(time);
+			this.modulator.triggerRelease(time);
+			return this;
+		};
+
+		/**
+		 * The ratio between the two carrier and the modulator. 
+		 * @memberOf Tone.SimpleAM#
+		 * @type {number}
+		 * @name harmonicity
+		 */
+		Object.defineProperty(Tone.SimpleAM.prototype, "harmonicity", {
+			get : function(){
+				return this._harmonicity.value;
+			},
+			set : function(harm){
+				this._harmonicity.value = harm;
+			}
+		});
+
+		/**
+		 *  clean up
+		 *  @returns {Tone.SimpleAM} `this`
+		 */
+		Tone.SimpleAM.prototype.dispose = function(){
+			Tone.Monophonic.prototype.dispose.call(this);
+			this._writable(["carrier", "modulator", "frequency"]);
+			this.carrier.dispose();
+			this.carrier = null;
+			this.modulator.dispose();
+			this.modulator = null;
+			this.frequency.dispose();
+			this.frequency = null;
+			this._harmonicity.dispose();
+			this._harmonicity = null;
+			this._modulationScale.dispose();
+			this._modulationScale = null;
+			this._modulationNode.disconnect();
+			this._modulationNode = null;
+			return this;
+		};
+
+		return Tone.SimpleAM;
+	});
+	ToneModule( 
+	function(Tone){
+
+		
+
+		/**
+		 *  @class  SimpleFM is composed of two SimpleSynths where one SimpleSynth is the 
+		 *          carrier and the second is the modulator.
+		 *
+		 *  @constructor
+		 *  @extends {Tone.Monophonic}
+		 *  @param {Object} options the options available for the synth 
+		 *                          see defaults below
+		 *  @example
+		 *  var fmSynth = new Tone.SimpleFM();
+		 */
+		Tone.SimpleFM = function(options){
+
+			options = this.defaultArg(options, Tone.SimpleFM.defaults);
+			Tone.Monophonic.call(this, options);
+
+			/**
+			 *  the first voice
+			 *  @type {Tone.SimpleSynth}
+			 */
+			this.carrier = new Tone.SimpleSynth(options.carrier);
+			this.carrier.volume.value = -10;
+
+			/**
+			 *  the second voice
+			 *  @type {Tone.SimpleSynth}
+			 */
+			this.modulator = new Tone.SimpleSynth(options.modulator);
+			this.modulator.volume.value = -10;
+
+			/**
+			 *  the frequency control
+			 *  @type {Tone.Signal}
+			 */
+			this.frequency = new Tone.Signal(440, Tone.Signal.Units.Frequency);
+
+			/**
+			 *  the ratio between the two voices
+			 *  @type {Tone.Multiply}
+			 *  @private
+			 */
+			this._harmonicity = new Tone.Multiply(options.harmonicity);
+
+			/**
+			 *  
+			 *
+			 *	@type {Tone.Multiply}
+			 *	@private
+			 */
+			this._modulationIndex = new Tone.Multiply(options.modulationIndex);
+
+			/**
+			 *  the node where the modulation happens
+			 *  @type {GainNode}
+			 *  @private
+			 */
+			this._modulationNode = this.context.createGain();
+
+			//control the two voices frequency
+			this.frequency.connect(this.carrier.frequency);
+			this.frequency.chain(this._harmonicity, this.modulator.frequency);
+			this.frequency.chain(this._modulationIndex, this._modulationNode);
+			this.modulator.connect(this._modulationNode.gain);
+			this._modulationNode.gain.value = 0;
+			this._modulationNode.connect(this.carrier.frequency);
+			this.carrier.connect(this.output);
+			this._readOnly(["carrier", "modulator", "frequency"]);
+		};
+
+		Tone.extend(Tone.SimpleFM, Tone.Monophonic);
+
+		/**
+		 *  @static
+		 *  @type {Object}
+		 */
+		Tone.SimpleFM.defaults = {
+			"harmonicity" : 3,
+			"modulationIndex" : 10,
+			"carrier" : {
+				"volume" : -10,
+				"portamento" : 0,
+				"oscillator" : {
+					"type" : "sine"
+				},
+				"envelope" : {
+					"attack" : 0.01,
+					"decay" : 0.0,
+					"sustain" : 1,
+					"release" : 0.5
+				}
+			},
+			"modulator" : {
+				"volume" : -10,
+				"portamento" : 0,
+				"oscillator" : {
+					"type" : "triangle"
+				},
+				"envelope" : {
+					"attack" : 0.01,
+					"decay" : 0.0,
+					"sustain" : 1,
+					"release" : 0.5
+				}
+			}
+		};
+
+		/**
+		 *  trigger the attack portion of the note
+		 *  
+		 *  @param  {Tone.Time} [time=now] the time the note will occur
+		 *  @param {number} [velocity=1] the velocity of the note
+		 *  @returns {Tone.SimpleFM} `this`
+		 */
+		Tone.SimpleFM.prototype.triggerEnvelopeAttack = function(time, velocity){
+			//the port glide
+			time = this.toSeconds(time);
+			//the envelopes
+			this.carrier.envelope.triggerAttack(time, velocity);
+			this.modulator.envelope.triggerAttack(time);
+			return this;
+		};
+
+		/**
+		 *  trigger the release portion of the note
+		 *  
+		 *  @param  {Tone.Time} [time=now] the time the note will release
+		 *  @returns {Tone.SimpleFM} `this`
+		 */
+		Tone.SimpleFM.prototype.triggerEnvelopeRelease = function(time){
+			this.carrier.triggerRelease(time);
+			this.modulator.triggerRelease(time);
+			return this;
+		};
+
+		/**
+		 * The ratio between the two carrier and the modulator. 
+		 * @memberOf Tone.SimpleFM#
+		 * @type {number}
+		 * @name harmonicity
+		 */
+		Object.defineProperty(Tone.SimpleFM.prototype, "harmonicity", {
+			get : function(){
+				return this._harmonicity.value;
+			},
+			set : function(harm){
+				this._harmonicity.value = harm;
+			}
+		});
+
+		/**
+		 * The modulation index which is in essence the depth or amount of the modulation. In other terms it is the 
+		 *  ratio of the frequency of the modulating signal (mf) to the amplitude of the 
+		 *  modulating signal (ma) -- as in ma/mf. 
+		 * @memberOf Tone.SimpleFM#
+		 * @type {number}
+		 * @name modulationIndex
+		 */
+		Object.defineProperty(Tone.SimpleFM.prototype, "modulationIndex", {
+			get : function(){
+				return this._modulationIndex.value;
+			},
+			set : function(mod){
+				this._modulationIndex.value = mod;
+			}
+		});
+
+		/**
+		 *  clean up
+		 *  @returns {Tone.SimpleFM} `this`
+		 */
+		Tone.SimpleFM.prototype.dispose = function(){
+			Tone.Monophonic.prototype.dispose.call(this);
+			this._writable(["carrier", "modulator", "frequency"]);
+			this.carrier.dispose();
+			this.carrier = null;
+			this.modulator.dispose();
+			this.modulator = null;
+			this.frequency.dispose();
+			this.frequency = null;
+			this._modulationIndex.dispose();
+			this._modulationIndex = null;
+			this._harmonicity.dispose();
+			this._harmonicity = null;
+			this._modulationNode.disconnect();
+			this._modulationNode = null;
+			return this;
+		};
+
+		return Tone.SimpleFM;
+	});
+	ToneModule( function(Tone){
+
+		
 
 		/**
 		 * 	@class  Clip the incoming signal so that the output is always between min and max
@@ -13640,12 +14984,14 @@
 			 *  @type {Tone.Signal}
 			 */
 			this.min = this.input = new Tone.Min(max);
+			this._readOnly("min");
 
 			/**
 			 *  The max clip value
 			 *  @type {Tone.Signal}
 			 */
 			this.max = this.output = new Tone.Max(min);
+			this._readOnly("max");
 
 			this.min.connect(this.max);
 		};
@@ -13658,264 +15004,16 @@
 		 */
 		Tone.Clip.prototype.dispose = function(){
 			Tone.prototype.dispose.call(this);
+			this._writable("min");
 			this.min.dispose();
 			this.min = null;
+			this._writable("max");
 			this.max.dispose();
 			this.max = null;
 			return this;
 		};
 
 		return Tone.Clip;
-	});
-	ToneModule( 
-	function(Tone){
-
-		
-
-		/**
-		 *  this is the maximum value that the divide can handle	
-		 *  @type {number}
-		 *  @const
-		 */
-		var MAX_VALUE = Math.pow(2, 13);
-
-		/**
-		 *  @private
-		 *  @static
-		 *  @type {Array}
-		 */
-		var guessCurve = new Array(MAX_VALUE);
-		//set the value
-		for (var i = 0; i < guessCurve.length; i++){
-			var normalized = (i / (guessCurve.length - 1)) * 2 - 1;
-			if (normalized === 0){
-				guessCurve[i] = 0;
-			} else {
-				guessCurve[i] = 1 / (normalized * MAX_VALUE);
-			}
-		}
-
-		/**
-		 *  @class Compute the inverse of the input.
-		 *         Uses this approximation algorithm: 
-		 *         http://en.wikipedia.org/wiki/Multiplicative_inverse#Algorithms
-		 *
-		 *  @deprecated
-		 *  @extends {Tone.SignalBase}
-		 *  @constructor
-		 *  @param {number} [precision=3] the precision of the calculation
-		 */
-		Tone.Inverse = function(precision){
-
-			console.warn("Tone.Inverse has been deprecated. Multiply is always more efficient than dividing.");
-
-			Tone.call(this);
-
-			precision = this.defaultArg(precision, 3);
-
-			/**
-			 *  a constant generator of the value 2
-			 *  @private
-			 *  @type {Tone.Signal}
-			 */
-			this._two = new Tone.Signal(2);
-
-			/**
-			 *  starting guess is 0.1 times the input
-			 *  @type {Tone.Multiply}
-			 *  @private
-			 */
-			this._guessMult = new Tone.Multiply(1/MAX_VALUE);
-
-			/**
-			 *  produces a starting guess based on the input
-			 *  @type {WaveShaperNode}
-			 *  @private
-			 */
-			this._guess = new Tone.WaveShaper(guessCurve);
-			this.input.chain(this._guessMult, this._guess);
-
-			/**
-			 *  the array of inverse helpers
-			 *  @type {Array}
-			 *  @private
-			 */
-			this._inverses = new Array(precision);
-
-			//create the helpers
-			for (var i = 0; i < precision; i++){
-				var guess;
-				if (i === 0){
-					guess = this._guess;
-				} else {
-					guess = this._inverses[i-1];
-				}
-				var inv = new InverseHelper(guess, this._two);
-				this.input.connect(inv);
-				this._inverses[i] = inv;
-			}
-			this._inverses[precision-1].connect(this.output);
-		};
-
-		Tone.extend(Tone.Inverse, Tone.SignalBase);
-
-		/**
-		 *  clean up
-		 *  @returns {Tone.Inverse} `this`
-		 */
-		Tone.Inverse.prototype.dispose = function(){
-			Tone.prototype.dispose.call(this);
-			for (var i = 0; i < this._inverses.length; i++){
-				this._inverses[i].dispose();
-				this._inverses[i] = null;
-			}
-			this._inverses = null;
-			this._two.dispose();
-			this._two = null;
-			this._guessMult.dispose();
-			this._guessMult = null;
-			this._guess.disconnect();
-			this._guess = null;
-			return this;
-		};
-
-		// BEGIN INVERSE HELPER ///////////////////////////////////////////////////
-
-		/**
-		 *  internal helper function for computing the inverse of a signal
-		 *  @extends {Tone}
-		 *  @constructor
-		 *  @private
-		 */
-		var InverseHelper = function(guess, two){
-			this._outerMultiply = new Tone.Multiply();
-			this._innerMultiply = new Tone.Multiply();
-			this._subtract = new Tone.Subtract();
-			//connections
-			guess.connect(this._innerMultiply, 0, 1);
-			two.connect(this._subtract, 0, 0);
-			this._innerMultiply.connect(this._subtract, 0, 1);
-			this._subtract.connect(this._outerMultiply, 0, 1);
-			guess.connect(this._outerMultiply, 0, 0);
-			this.output = this._outerMultiply;
-			this.input = this._innerMultiply;
-		};
-
-		Tone.extend(InverseHelper);
-
-		InverseHelper.prototype.dispose = function(){
-			this._outerMultiply.dispose();
-			this._outerMultiply = null;
-			this._innerMultiply.dispose();
-			this._innerMultiply = null;
-			this._subtract.dispose();
-			this._subtract = null;
-		};
-		
-		// END INVERSE HELPER /////////////////////////////////////////////////////
-
-		return Tone.Inverse;
-	});
-	ToneModule( 
-	function(Tone){
-
-		
-
-		/**
-		 *  @class Divide by a value or signal. 
-		 *         input 0: numerator. input 1: divisor. 
-		 *
-		 *  @deprecated
-		 *  @extends {Tone.SignalBase}
-		 *  @constructor
-		 *  @param {number=} divisor if no value is provided, Tone.Divide will divide the first
-		 *                         and second inputs. 
-		 *  @param {number} [precision=3] the precision of the calculation
-		 */
-		Tone.Divide = function(divisor, precision){
-
-			console.warn("Tone.Divide has been deprecated. If possible, it's much more efficient to multiply by the inverse value.");
-
-			Tone.call(this, 2, 0);
-
-			/**
-			 *  the denominator value
-			 *  @type {Tone.Signal}
-			 *  @private
-			 */
-			this._denominator = null;
-
-			/**
-			 *  the inverse
-			 *  @type {Tone}
-			 *  @private
-			 */
-			this._inverse = new Tone.Inverse(precision);
-
-			/**
-			 *  multiply input 0 by the inverse
-			 *  @type {Tone.Multiply}
-			 *  @private
-			 */
-			this._mult = new Tone.Multiply();
-
-			if (isFinite(divisor)){
-				this._denominator = new Tone.Signal(divisor);
-				this._denominator.connect(this._inverse);
-			}
-			this.input[1] = this._inverse;
-			this._inverse.connect(this._mult, 0, 1);
-			this.input[0] = this.output = this._mult.input[0];
-		};
-
-		Tone.extend(Tone.Divide, Tone.SignalBase);
-
-		/**
-		 * The value being divided from the incoming signal. Note, that
-		 * if Divide was constructed without a divisor, it expects
-		 * that the signals to numberator will be connected to input 0 and 
-		 * the denominator to input 1 and therefore will throw an error when 
-		 * trying to set/get the value. 
-		 * 
-		 * @memberOf Tone.Divide#
-		 * @type {number}
-		 * @name value
-		 */
-		Object.defineProperty(Tone.Divide.prototype, "value", {
-			get : function(){
-				if (this._denominator !== null){
-					return this._denominator.value;
-				} else {
-					throw new Error("cannot switch from signal to number");
-				}
-			},
-			set : function(value){
-				if (this._denominator !== null){
-					this._denominator.value = value;
-				} else {
-					throw new Error("cannot switch from signal to number");
-				}
-			}
-		});
-
-		/**
-		 *  clean up
-		 *  @returns {Tone.Divide} `this`
-		 */
-		Tone.Divide.prototype.dispose = function(){
-			Tone.prototype.dispose.call(this);
-			if (this._denominator){
-				this._denominator.dispose();
-				this._denominator = null;
-			}
-			this._inverse.dispose();
-			this._inverse = null;
-			this._mult.dispose();
-			this._mult = null;
-			return this;
-		};
-
-		return Tone.Divide;
 	});
 	ToneModule( function(Tone){
 
@@ -13926,6 +15024,8 @@
 		 *
 		 *  @extends {Tone.SignalBase}
 		 *  @constructor
+		 *  @param {number} inputMin the min input value
+		 *  @param {number} inputMax the max input value
 		 *  @example
 		 *  var norm = new Tone.Normalize(2, 4);
 		 *  var sig = new Tone.Signal(3).connect(norm);
@@ -14051,6 +15151,7 @@
 			 *  @type {Tone.Signal}
 			 */
 			this.gate = new Tone.Signal(0);
+			this._readOnly("gate");
 
 			//make all the inputs and connect them
 			for (var i = 0; i < outputCount; i++){
@@ -14081,13 +15182,14 @@
 		 *  @returns {Tone.Route} `this`
 		 */
 		Tone.Route.prototype.dispose = function(){
+			this._writable("gate");
 			this.gate.dispose();
+			this.gate = null;
 			for (var i = 0; i < this.output.length; i++){
 				this.output[i].dispose();
 				this.output[i] = null;
 			}
 			Tone.prototype.dispose.call(this);
-			this.gate = null;
 			return this;
 		}; 
 
@@ -14126,8 +15228,8 @@
 		RouteGate.prototype.dispose = function(){
 			Tone.prototype.dispose.call(this);
 			this.selecter.dispose();
-			this.gate.disconnect();
 			this.selecter = null;
+			this.gate.disconnect();
 			this.gate = null;
 		};
 
@@ -14166,6 +15268,7 @@
 			 *  @type {Tone.Signal}
 			 */
 			this.gate = new Tone.Signal(0);
+			this._readOnly("gate");
 
 			/**
 			 *  thresh the control signal to either 0 or 1
@@ -14214,9 +15317,10 @@
 		 */
 		Tone.Switch.prototype.dispose = function(){
 			Tone.prototype.dispose.call(this);
+			this._writable("gate");
 			this.gate.dispose();
-			this._thresh.dispose();
 			this.gate = null;
+			this._thresh.dispose();
 			this._thresh = null;
 			return this;
 		}; 
@@ -14336,7 +15440,9 @@
 		define( "Tone", [], function() {
 			return Tone;
 		});
-	} else {
+	} else if (typeof module === "object") {
+		module.exports = Tone;
+ 	} else {
 		root.Tone = Tone;
 	}
 } (this));
