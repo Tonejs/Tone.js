@@ -162,23 +162,31 @@ function(Tone){
 			return this._type;
 		},
 		set : function(type){
-			var fftSize = 4096;
-			var halfSize = fftSize / 2;
 
-			var real = new Float32Array(halfSize);
-			var imag = new Float32Array(halfSize);
+			var originalType = type;
+
+			var fftSize = 4096;
+			var periodicWaveSize = fftSize / 2;
+
+			var real = new Float32Array(periodicWaveSize);
+			var imag = new Float32Array(periodicWaveSize);
 			
-			// Clear DC and Nyquist.
-			real[0] = 0;
-			imag[0] = 0;
+			var partialCount = 1;
+			var partial = /(sine|triangle|square|sawtooth)(\d+)$/.exec(type);
+			if (partial){
+				partialCount = parseInt(partial[2]);
+				type = partial[1];
+				partialCount = Math.max(partialCount, 2);
+				periodicWaveSize = partialCount;
+			}
 
 			var shift = this._phase;	
-			for (var n = 1; n < halfSize; ++n) {
+			for (var n = 1; n < periodicWaveSize; ++n) {
 				var piFactor = 2 / (n * Math.PI);
 				var b; 
 				switch (type) {
 					case "sine": 
-						b = (n === 1) ? 1 : 0;
+						b = (n <= partialCount) ? 1 : 0;
 						break;
 					case "square":
 						b = (n & 1) ? 2 * piFactor : 0;
@@ -209,7 +217,7 @@ function(Tone){
 			if (this._oscillator !== null){
 				this._oscillator.setPeriodicWave(this._wave);
 			}
-			this._type = type;
+			this._type = originalType;
 		}
 	});
 
