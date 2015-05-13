@@ -3,7 +3,7 @@ Tone.js
 
 Tone.js is a Web Audio framework for creating interactive music in the browser. The architecture of Tone.js aims to be familiar to both musicians and audio programmers looking to create web-based audio applications. On the high-level, Tone offers common DAW (digital audio workstation) features like a global transport, prebuilt synths and effects, as well as presets for those synths and effects. For signal-processing programmers (coming from languages like Max/MSP), Tone provides a wealth of high performance, low latency building blocks and DSP modules to build your own synthesizers, effects, and complex control signals.
 
-[Examples](http://tonenotone.github.io/Tone.js/examples/)
+[Examples](http://tonejs.org/examples/)
 
 [API](http://tonejs.org/docs/Tone.html)
 
