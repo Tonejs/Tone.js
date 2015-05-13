@@ -1,4 +1,4 @@
-### r5
+### r5-dev
 
 * reverse buffer for Player and Sampler.
 * Tone.Volume for simple volume control in Decibels.
@@ -9,6 +9,7 @@
 * Renamed Tone.EQ -> Tone.EQ3. 
 * Tone.DrumSynth makes kick and tom sounds.
 * Tone.MidSideCompressor and Tone.MidSideSplit/Tone.MidSideMerge
+* Tone.Oscillator - can specify the number of partials in the type: i.e. "sine10", "triangle3", "square4", etc.
 
 ### r4 - Cool is cool
 
