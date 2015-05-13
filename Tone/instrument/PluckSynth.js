@@ -34,7 +34,10 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/source/Noise", "To
 		 *  @type {Tone.LowpassCombFilter}
 		 *  @private
 		 */
-		this._lfcf = new Tone.LowpassCombFilter(1 / 440);
+		this._lfcf = new Tone.LowpassCombFilter({
+			"resonance" : options.resonance,
+			"dampening" : options.dampening
+		});
 
 		/**
 		 *  the resonance control
@@ -64,7 +67,7 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/source/Noise", "To
 	Tone.PluckSynth.defaults = {
 		"attackNoise" : 1,
 		"dampening" : 4000,
-		"resonance" : 0.5
+		"resonance" : 0.9
 	};
 
 	/**

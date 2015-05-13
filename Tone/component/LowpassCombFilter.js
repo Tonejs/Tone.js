@@ -39,13 +39,13 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/component/Filter"], functi
 		this._lowpass = this.output = this.context.createBiquadFilter();
 		this._lowpass.Q.value = 0;
 		this._lowpass.type = "lowpass";
-		this._lowpass.frequency.value = options.dampening;
 
 		/**
 		 *  the dampening control
 		 *  @type {Tone.Signal}
 		 */
 		this.dampening = new Tone.Signal(this._lowpass.frequency, Tone.Signal.Units.Frequency);
+		this.dampening.value = options.dampening;
 
 		/**
 		 *  the feedback gain
@@ -64,6 +64,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/component/Filter"], functi
 		this._delay.chain(this._lowpass, this._feedback, this._delay);
 		this.delayTime.connect(this._delay.delayTime);
 		this.resonance.connect(this._feedback.gain);
+		this.dampening.connect(this._lowpass.frequency);
 		this._readOnly(["dampening", "resonance", "delayTime"]);
 	};
 
