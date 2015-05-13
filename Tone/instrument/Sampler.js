@@ -93,7 +93,6 @@ function(Tone){
 		"pitch" : 0,
 		"player" : {
 			"loop" : false,
-			"reverse" : false
 		},
 		"envelope" : {
 			"attack" : 0.001,
@@ -172,7 +171,7 @@ function(Tone){
 		if (name){
 			this.sample = name;
 		}
-		this.player.start(time, 0);
+		this.player.start(time);
 		this.envelope.triggerAttack(time, velocity);
 		this.filterEnvelope.triggerAttack(time);
 		return this;
@@ -208,6 +207,25 @@ function(Tone){
 				this.player.buffer = this._buffers[name];
 			} else {
 				throw new Error("Sampler does not have a sample named "+name);
+			}
+		}
+	});
+
+	/**
+	 * The direction the buffer should play in
+	 * @memberOf Tone.Sampler#
+	 * @type {boolean}
+	 * @name reverse
+	 */
+	Object.defineProperty(Tone.Sampler.prototype, "reverse", {
+		get : function(){
+			for (var i in this._buffers){
+				return this._buffers[i].reverse;
+			}
+		}, 
+		set : function(rev){
+			for (var i in this._buffers){
+				this._buffers[i].reverse = rev;
 			}
 		}
 	});

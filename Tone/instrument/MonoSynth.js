@@ -82,6 +82,8 @@ function(Tone){
 	 *  @type {Object}
 	 */
 	Tone.MonoSynth.defaults = {
+		"frequency" : "C4",
+		"detune" : 0,
 		"oscillator" : {
 			"type" : "square"
 		},

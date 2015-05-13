@@ -80,7 +80,6 @@ function(Tone){
 		"harmonicity" : 3,
 		"carrier" : {
 			"volume" : -10,
-			"portamento" : 0,
 			"oscillator" : {
 				"type" : "sine"
 			},
@@ -97,11 +96,15 @@ function(Tone){
 				"release" : 0.5,
 				"min" : 20000,
 				"max" : 20000
-			}
+			},
+			"filter" : {
+				"Q" : 6,
+				"type" : "lowpass",
+				"rolloff" : -24
+			},
 		},
 		"modulator" : {
 			"volume" : -10,
-			"portamento" : 0,
 			"oscillator" : {
 				"type" : "square"
 			},
@@ -118,7 +121,12 @@ function(Tone){
 				"release" : 0.5,
 				"min" : 20,
 				"max" : 1500
-			}
+			},
+			"filter" : {
+				"Q" : 6,
+				"type" : "lowpass",
+				"rolloff" : -24
+			},
 		}
 	};
 
