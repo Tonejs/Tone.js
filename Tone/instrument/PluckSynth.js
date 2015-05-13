@@ -51,6 +51,7 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/source/Noise", "To
 		//connections
 		this._noise.connect(this._lfcf);
 		this._lfcf.connect(this.output);
+		this._readOnly(["resonance", "dampening"]);
 	};
 
 	Tone.extend(Tone.PluckSynth, Tone.Instrument);
@@ -76,7 +77,7 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/source/Noise", "To
 		note = this.toFrequency(note);
 		time = this.toSeconds(time);
 		var delayAmount = 1 / note;
-		this._lfcf.setDelayTimeAtTime(delayAmount, time);		
+		this._lfcf.delayTime.setValueAtTime(delayAmount, time);		
 		this._noise.start(time);
 		this._noise.stop(time + delayAmount * this.attackNoise);
 		return this;
@@ -92,6 +93,7 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/source/Noise", "To
 		this._lfcf.dispose();
 		this._noise = null;
 		this._lfcf = null;
+		this._writable(["resonance", "dampening"]);
 		this.dampening = null;
 		this.resonance = null;
 		return this;

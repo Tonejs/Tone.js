@@ -64,6 +64,7 @@ function(Tone){
 
 		//connect it up
 		this.oscillator.chain(this._a2g, this._scaler);
+		this._readOnly(["amplitude", "frequency", "oscillator"]);
 	};
 
 	Tone.extend(Tone.LFO, Tone.Oscillator);
@@ -181,7 +182,7 @@ function(Tone){
 	/**
 	 * The phase of the LFO
 	 * @memberOf Tone.LFO#
-	 * @type {string}
+	 * @type {number}
 	 * @name phase
 	 */
 	 Object.defineProperty(Tone.LFO.prototype, "phase", {
@@ -206,6 +207,7 @@ function(Tone){
 	 */
 	Tone.LFO.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
+		this._writable(["amplitude", "frequency", "oscillator"]);
 		this.oscillator.dispose();
 		this.oscillator = null;
 		this._scaler.dispose();

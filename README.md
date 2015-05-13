@@ -3,7 +3,7 @@ Tone.js
 
 Tone.js is a Web Audio framework for creating interactive music in the browser. The architecture of Tone.js aims to be familiar to both musicians and audio programmers looking to create web-based audio applications. On the high-level, Tone offers common DAW (digital audio workstation) features like a global transport, prebuilt synths and effects, as well as presets for those synths and effects. For signal-processing programmers (coming from languages like Max/MSP), Tone provides a wealth of high performance, low latency building blocks and DSP modules to build your own synthesizers, effects, and complex control signals.
 
-[Examples](http://tonenotone.github.io/Tone.js/examples/)
+[Examples](http://tonejs.org/examples/)
 
 [API](http://tonejs.org/docs/Tone.html)
 
@@ -14,6 +14,7 @@ Tone.js is a Web Audio framework for creating interactive music in the browser. 
 * [Hypercube by @eddietree](http://eddietree.github.io/hypercube/)
 * [randomcommander.io by Jake Albaugh](http://randomcommander.io/)
 * [Tone.js + NexusUI by taylorbf](http://taylorbf.github.io/Tone-Rack/)
+* [Solarbeat - Luke Twyman](http://www.whitevinyldesign.com/solarbeat/)
 
 Using Tone.js? I'd love to hear it: yotammann@gmail.com
 
@@ -104,7 +105,7 @@ Tone also let's you set your own AudioContext using `Tone.setContext`.
 
 # Performance
 
-Tone.js uses very few ScriptProcessorNodes. Nearly all of the Tone Modules find a native Web Audio component workaround, making extensive use of the GainNode and WaveShaperNode especially, which enables Tone.js to work well on both desktop and mobile browsers. While the ScripProcessorNode is extremely powerful, it introduces a lot of latency and the potential for glitches more than any other node.
+Tone.js uses very few ScriptProcessorNodes. Nearly all of the Tone Modules find a native Web Audio component workaround, making extensive use of the GainNode and WaveShaperNode especially, which enables Tone.js to work well on both desktop and mobile browsers. While the ScriptProcessorNode is extremely powerful, it introduces a lot of latency and the potential for glitches more than any other node.
 
 # References and Inspiration
 

@@ -3,9 +3,9 @@
 define(["tests/Core", "chai", "Tone/instrument/DuoSynth", "Tone/instrument/MonoSynth", "Tone/instrument/FMSynth",
 	"Tone/instrument/PolySynth", "Tone/instrument/Sampler", 
 	"tests/Common", "Tone/instrument/Instrument", "Tone/instrument/PluckSynth", "Tone/instrument/AMSynth", 
-	"Tone/instrument/NoiseSynth", "Tone/core/Buffer"], 
+	"Tone/instrument/NoiseSynth", "Tone/core/Buffer", "Tone/instrument/DrumSynth"], 
 function(Tone, chai, DuoSynth, MonoSynth, FMSynth, PolySynth, Sampler, Test, Instrument, 
-	PluckSynth, AMSynth, NoiseSynth, Buffer){
+	PluckSynth, AMSynth, NoiseSynth, Buffer, DrumSynth){
 
 	var expect = chai.expect;
 
@@ -364,6 +364,56 @@ function(Tone, chai, DuoSynth, MonoSynth, FMSynth, PolySynth, Sampler, Test, Ins
 				noiseSynth.dispose();
 				done();
 			});
+		});		
+	});
+
+	describe("Tone.DrumSynth", function(){
+		it("can be created and disposed", function(){
+			var drumSynth = new DrumSynth();
+			drumSynth.dispose();
+			Test.wasDisposed(drumSynth);
+		});
+
+		it("extends Instrument", function(){
+			extendsInstrument(DrumSynth);
+		});
+
+		it("handles output connections", function(){
+			var drumSynth = new DrumSynth();
+			Test.acceptsOutput(drumSynth);
+			drumSynth.dispose();
+		});
+
+		it("outputs a sound", function(done){
+			var drumSynth;
+			Test.outputsAudio(function(dest){
+				drumSynth = new DrumSynth();
+				drumSynth.connect(dest);
+				drumSynth.triggerAttack("C2");
+			}, function(){
+				drumSynth.dispose();
+				done();
+			});
+		});	
+
+		it("handles getters/setters", function(){
+			var drumSynth = new DrumSynth();
+			var values = {
+				"pitchDecay" : 0.06,
+				"octaves" : 9,
+				"oscillator" : {
+					"type" : "triangle",
+				},
+				"envelope" : {
+					"attack" : 0.01,
+				}
+			};
+			drumSynth.set(values);
+			expect(drumSynth.get()).to.contain.keys(Object.keys(values));
+			expect(drumSynth.pitchDecay).to.be.closeTo(values.pitchDecay, 0.001);
+			expect(drumSynth.octaves).to.be.closeTo(values.octaves, 0.001);
+			expect(drumSynth.envelope.attack).to.be.closeTo(drumSynth.envelope.attack, 0.001);
+			drumSynth.dispose();
 		});		
 	});
 });

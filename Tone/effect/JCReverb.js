@@ -97,6 +97,7 @@ function(Tone){
 		this.connectSeries.apply(this, this._allpassFilters);
 		this.effectSendL.connect(this._allpassFilters[0]);
 		this.effectSendR.connect(this._allpassFilters[0]);
+		this._readOnly(["roomSize"]);
 	};
 
 	Tone.extend(Tone.JCReverb, Tone.StereoEffect);
@@ -127,6 +128,7 @@ function(Tone){
 			this._feedbackCombFilters[fbcf] = null;
 		}
 		this._feedbackCombFilters = null;
+		this._writable(["roomSize"]);
 		this.roomSize.dispose();
 		this.roomSize = null;
 		this._scaleRoomSize.dispose();

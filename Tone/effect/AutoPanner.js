@@ -28,7 +28,7 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/LFO", "Tone/comp
 		 * 0 = always center. 1 = full range between left and right. 
 		 * @type {Tone.Signal}
 		 */
-		this.amount = this._lfo.amplitude;
+		this.depth = this._lfo.amplitude;
 
 		/**
 		 *  the panner node which does the panning
@@ -47,6 +47,7 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/LFO", "Tone/comp
 		this.connectEffect(this._panner);
 		this._lfo.connect(this._panner.pan);
 		this.type = options.type;
+		this._readOnly(["depth", "frequency"]);
 	};
 
 	//extend Effect
@@ -60,7 +61,7 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/LFO", "Tone/comp
 	Tone.AutoPanner.defaults = {
 		"frequency" : 1,
 		"type" : "sine",
-		"amount" : 1
+		"depth" : 1
 	};
 	
 	/**
@@ -85,10 +86,12 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/LFO", "Tone/comp
 
 	/**
 	 * Sync the panner to the transport.
-	 * @returns {Tone.AutoPanner} `this`
+	 * @param {Tone.Time} [delay=0] Delay time before starting the effect after the
+	 *                               Transport has started. 
+	 * @returns {Tone.AutoFilter} `this`
 	 */
-	Tone.AutoPanner.prototype.sync = function(){
-		this._lfo.sync();
+	Tone.AutoPanner.prototype.sync = function(delay){
+		this._lfo.sync(delay);
 		return this;
 	};
 
@@ -126,8 +129,9 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/LFO", "Tone/comp
 		this._lfo = null;
 		this._panner.dispose();
 		this._panner = null;
+		this._writable(["depth", "frequency"]);
 		this.frequency = null;
-		this.amount = null;
+		this.depth = null;
 		return this;
 	};
 

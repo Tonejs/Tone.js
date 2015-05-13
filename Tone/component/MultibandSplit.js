@@ -72,6 +72,8 @@ define(["Tone/core/Tone", "Tone/component/Filter", "Tone/signal/Signal"], functi
 		this.lowFrequency.connect(this._lowMidFilter.frequency);
 		this.highFrequency.connect(this.mid.frequency);
 		this.highFrequency.connect(this.high.frequency);
+
+		this._readOnly(["high", "mid", "low", "highFrequency", "lowFrequency"]);
 	};
 
 	Tone.extend(Tone.MultibandSplit);
@@ -92,6 +94,7 @@ define(["Tone/core/Tone", "Tone/component/Filter", "Tone/signal/Signal"], functi
 	 */
 	Tone.MultibandSplit.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
+		this._writable(["high", "mid", "low", "highFrequency", "lowFrequency"]);
 		this.low.dispose();
 		this._lowMidFilter.dispose();
 		this.mid.dispose();

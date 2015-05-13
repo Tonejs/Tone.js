@@ -26,6 +26,7 @@ define(["Tone/core/Tone", "Tone/signal/Equal", "Tone/signal/Signal"], function(T
 		 *  @type {Tone.Signal}
 		 */
 		this.gate = new Tone.Signal(0);
+		this._readOnly("gate");
 
 		//make all the inputs and connect them
 		for (var i = 0; i < outputCount; i++){
@@ -56,13 +57,14 @@ define(["Tone/core/Tone", "Tone/signal/Equal", "Tone/signal/Signal"], function(T
 	 *  @returns {Tone.Route} `this`
 	 */
 	Tone.Route.prototype.dispose = function(){
+		this._writable("gate");
 		this.gate.dispose();
+		this.gate = null;
 		for (var i = 0; i < this.output.length; i++){
 			this.output[i].dispose();
 			this.output[i] = null;
 		}
 		Tone.prototype.dispose.call(this);
-		this.gate = null;
 		return this;
 	}; 
 
@@ -101,8 +103,8 @@ define(["Tone/core/Tone", "Tone/signal/Equal", "Tone/signal/Signal"], function(T
 	RouteGate.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
 		this.selecter.dispose();
-		this.gate.disconnect();
 		this.selecter = null;
+		this.gate.disconnect();
 		this.gate = null;
 	};
 

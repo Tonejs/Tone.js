@@ -5,10 +5,11 @@ define(["tests/Core", "chai", "Recorder", "Tone/core/Master", "Tone/effect/Effec
 	"Tone/effect/FeedbackDelay", "Tone/effect/PingPongDelay", "Tone/effect/Chorus", "tests/Common", "Tone/effect/Freeverb", 
 	"Tone/effect/JCReverb", "Tone/effect/StereoEffect", "Tone/effect/StereoFeedbackEffect", 
 	"Tone/effect/StereoXFeedbackEffect", "Tone/effect/Phaser", "Tone/effect/Distortion", "Tone/effect/Chebyshev", 
-	"Tone/effect/Convolver", "Tone/effect/MidSideEffect", "Tone/effect/StereoWidener"], 
+	"Tone/effect/Convolver", "Tone/effect/MidSideEffect", "Tone/effect/StereoWidener", 
+	"Tone/effect/AutoFilter", "Tone/effect/Tremolo"], 
 function(Tone, chai, Recorder, Master, Effect, CrossFade, FeedbackEffect, Signal, AutoPanner, AutoWah, BitCrusher, 
 	FeedbackDelay, PingPongDelay, Chorus, Test, Freeverb, JCReverb, StereoEffect, StereoFeedbackEffect, 
-	StereoXFeedbackEffect, Phaser, Distortion, Chebyshev, Convolver, MidSide, StereoWidener){
+	StereoXFeedbackEffect, Phaser, Distortion, Chebyshev, Convolver, MidSide, StereoWidener, AutoFilter, Tremolo){
 
 	var expect = chai.expect;
 
@@ -782,7 +783,7 @@ function(Tone, chai, Recorder, Master, Effect, CrossFade, FeedbackEffect, Signal
 
 		it("extends Tone.StereoEffect", function(){
 			var midside = new MidSide();
-			expect(midside).is.instanceof(StereoEffect);
+			expect(midside).is.instanceof(Effect);
 			midside.dispose();
 		});
 
@@ -835,6 +836,100 @@ function(Tone, chai, Recorder, Master, Effect, CrossFade, FeedbackEffect, Signal
 			expect(widen.get()).to.contain.keys(Object.keys(values));
 			expect(widen.width.value).to.equal(values.width);
 			widen.dispose();
+		});
+	});
+
+	describe("Tone.AutoFilter", function(){
+
+		it("can be created and disposed", function(){
+			var af = new AutoFilter();
+			af.dispose();
+			Test.wasDisposed(af);
+		});
+
+		it("handles input and output connections", function(){
+			Test.onlineContext();
+			var af = new AutoFilter();
+			Test.acceptsInputAndOutput(af);
+			af.dispose();
+		});
+
+		it("passes the incoming signal through to the output", function(done){
+			var af;
+			Test.passesAudio(function(input, output){
+				af = new AutoFilter();
+				input.connect(af);
+				af.connect(output);
+			}, function(){
+				af.dispose();
+				done();
+			});
+		});
+
+		it("extends Tone.Effect", function(){
+			var af = new AutoFilter();
+			expect(af).is.instanceof(Effect);
+			af.dispose();
+		});
+
+		it("can be set with options object", function(){
+			var af = new AutoFilter();
+			af.set({
+				"wet" : 0.22,
+				"frequency" : 2,
+				"depth" : 0.6,
+			});
+			expect(af.wet.value).is.closeTo(0.22, 0.01);
+			expect(af.frequency.value).is.closeTo(2, 0.01);
+			expect(af.depth.value).is.closeTo(0.6, 0.01);
+			af.dispose();
+		});
+	});
+
+	describe("Tone.Tremolo", function(){
+
+		it("can be created and disposed", function(){
+			var trem = new Tremolo();
+			trem.dispose();
+			Test.wasDisposed(trem);
+		});
+
+		it("handles input and output connections", function(){
+			Test.onlineContext();
+			var trem = new Tremolo();
+			Test.acceptsInputAndOutput(trem);
+			trem.dispose();
+		});
+
+		it("passes the incoming signal through to the output", function(done){
+			var trem;
+			Test.passesAudio(function(input, output){
+				trem = new Tremolo().start();
+				input.connect(trem);
+				trem.connect(output);
+			}, function(){
+				trem.dispose();
+				done();
+			});
+		});
+
+		it("extends Tone.Effect", function(){
+			var trem = new Tremolo();
+			expect(trem).is.instanceof(Effect);
+			trem.dispose();
+		});
+
+		it("can be set with options object", function(){
+			var trem = new Tremolo();
+			trem.set({
+				"wet" : 0.22,
+				"frequency" : 12,
+				"depth" : 0.6,
+			});
+			expect(trem.wet.value).is.closeTo(0.22, 0.01);
+			expect(trem.frequency.value).is.closeTo(12, 0.01);
+			expect(trem.depth.value).is.closeTo(0.6, 0.01);
+			trem.dispose();
 		});
 	});
 });

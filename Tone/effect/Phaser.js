@@ -85,6 +85,7 @@ function(Tone){
 		//start the lfo
 		this._lfoL.start();
 		this._lfoR.start();
+		this._readOnly(["frequency"]);
 	};
 
 	Tone.extend(Tone.Phaser, Tone.StereoEffect);
@@ -142,7 +143,7 @@ function(Tone){
 	/**
 	 * The the base frequency of the filters. 
 	 * @memberOf Tone.Phaser#
-	 * @type {string}
+	 * @type {number}
 	 * @name baseFrequency
 	 */
 	Object.defineProperty(Tone.Phaser.prototype, "baseFrequency", {
@@ -177,6 +178,7 @@ function(Tone){
 			this._filtersR[j] = null;
 		}
 		this._filtersR = null;
+		this._writable(["frequency"]);
 		this.frequency = null;
 		return this;
 	};

@@ -32,6 +32,7 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/signal/Signal", "Tone/sign
 		//the feedback loop
 		this.effectReturn.chain(this._feedbackGain, this.effectSend);
 		this.feedback.connect(this._feedbackGain.gain);
+		this._readOnly(["feedback"]);
 	};
 
 	Tone.extend(Tone.FeedbackEffect, Tone.Effect);
@@ -50,6 +51,7 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/signal/Signal", "Tone/sign
 	 */
 	Tone.FeedbackEffect.prototype.dispose = function(){
 		Tone.Effect.prototype.dispose.call(this);
+		this._writable(["feedback"]);
 		this.feedback.dispose();
 		this.feedback = null;
 		this._feedbackGain.disconnect();

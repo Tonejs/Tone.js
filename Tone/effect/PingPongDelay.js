@@ -54,6 +54,7 @@ function(Tone){
 		//rearranged the feedback to be after the rightPreDelay
 		this._feedbackLR.disconnect();
 		this._feedbackLR.connect(this._rightDelay);
+		this._readOnly(["delayTime"]);
 	};
 
 	Tone.extend(Tone.PingPongDelay, Tone.StereoXFeedbackEffect);
@@ -79,6 +80,7 @@ function(Tone){
 		this._rightDelay = null;
 		this._rightPreDelay.disconnect();
 		this._rightPreDelay = null;
+		this._writable(["delayTime"]);
 		this.delayTime.dispose();
 		this.delayTime = null;
 		return this;

@@ -52,6 +52,7 @@ function(Tone){
 		this.noise.start();
 		//connect the filter envelope
 		this.filterEnvelope.connect(this.filter.frequency);
+		this._readOnly(["noise", "filter", "filterEnvelope", "envelope"]);
 	};
 
 	Tone.extend(Tone.NoiseSynth, Tone.Instrument);
@@ -121,7 +122,6 @@ function(Tone){
 		time = this.toSeconds(time);
 		duration = this.toSeconds(duration);
 		this.triggerAttack(time, velocity);
-		console.log(time + duration);
 		this.triggerRelease(time + duration);
 		return this;
 	};
@@ -132,6 +132,7 @@ function(Tone){
 	 */
 	Tone.NoiseSynth.prototype.dispose = function(){
 		Tone.Instrument.prototype.dispose.call(this);
+		this._writable(["noise", "filter", "filterEnvelope", "envelope"]);
 		this.noise.dispose();
 		this.noise = null;
 		this.envelope.dispose();

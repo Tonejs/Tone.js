@@ -71,6 +71,7 @@ function(Tone){
 		this.oscillator.start();
 		//connect the filter envelope
 		this.filterEnvelope.connect(this.filter.frequency);
+		this._readOnly(["oscillator", "frequency", "detune", "filter", "filterEnvelope", "envelope"]);
 	};
 
 	Tone.extend(Tone.MonoSynth, Tone.Monophonic);
@@ -81,6 +82,8 @@ function(Tone){
 	 *  @type {Object}
 	 */
 	Tone.MonoSynth.defaults = {
+		"frequency" : "C4",
+		"detune" : 0,
 		"oscillator" : {
 			"type" : "square"
 		},
@@ -137,6 +140,7 @@ function(Tone){
 	 */
 	Tone.MonoSynth.prototype.dispose = function(){
 		Tone.Monophonic.prototype.dispose.call(this);
+		this._writable(["oscillator", "frequency", "detune", "filter", "filterEnvelope", "envelope"]);
 		this.oscillator.dispose();
 		this.oscillator = null;
 		this.envelope.dispose();

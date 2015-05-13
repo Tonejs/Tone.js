@@ -9,7 +9,7 @@ function(Tone){
 	 *
 	 *  @extends {Tone.Oscillator}
 	 *  @constructor
-	 *  @param {frequency} frequency frequency of the oscillator (meaningless for noise types)
+	 *  @param {frequency} Tone.Frequency frequency of the oscillator (meaningless for noise types)
 	 *  @param {number} modulationFrequency the modulation frequency of the oscillator
 	 *  @example
 	 *  var pwm = new Tone.PWMOscillator("Ab3", 0.3);
@@ -20,6 +20,8 @@ function(Tone){
 
 		/**
 		 *  the pulse oscillator
+		 *  @type {Tone.PulseOscillator}
+		 *  @private
 		 */
 		this._pulse = new Tone.PulseOscillator(options.modulationFrequency);
 		//change the pulse oscillator type
@@ -64,6 +66,7 @@ function(Tone){
 		//connections
 		this._modulator.chain(this._scale, this._pulse.width);
 		this._pulse.connect(this.output);
+		this._readOnly(["modulationFrequency", "frequency", "detune"]);
 	};
 
 	Tone.extend(Tone.PWMOscillator, Tone.Oscillator);
@@ -142,6 +145,7 @@ function(Tone){
 		this._scale = null;
 		this._modulator.dispose();
 		this._modulator = null;
+		this._writable(["modulationFrequency", "frequency", "detune"]);
 		this.frequency = null;
 		this.detune = null;
 		this.modulationFrequency = null;

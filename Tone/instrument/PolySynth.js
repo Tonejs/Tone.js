@@ -137,7 +137,8 @@ function(Tone){
 			if (voice){
 				voice.triggerRelease(time);
 				this._freeVoices.push(voice);
-				this._activeVoices[stringified] = null;
+				delete this._activeVoices[stringified];
+				voice = null;
 			}
 		}
 		return this;
@@ -145,12 +146,14 @@ function(Tone){
 
 	/**
 	 *  set the options on all of the voices
-	 *  @param {Object} params 
+	 *  @param {Object|string} params
+	 *  @param {number=} value
+	 *  @param {Tone.Time=} rampTime
 	 *  @returns {Tone.PolySynth} `this`
 	 */
-	Tone.PolySynth.prototype.set = function(params){
+	Tone.PolySynth.prototype.set = function(params, value, rampTime){
 		for (var i = 0; i < this.voices.length; i++){
-			this.voices[i].set(params);
+			this.voices[i].set(params, value, rampTime);
 		}
 		return this;
 	};

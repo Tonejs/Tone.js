@@ -69,6 +69,7 @@ function(Tone){
 		this._modulationNode.gain.value = 0;
 		this._modulationNode.connect(this.carrier.frequency);
 		this.carrier.connect(this.output);
+		this._readOnly(["carrier", "modulator", "frequency"]);
 	};
 
 	Tone.extend(Tone.FMSynth, Tone.Monophonic);
@@ -192,6 +193,7 @@ function(Tone){
 	 */
 	Tone.FMSynth.prototype.dispose = function(){
 		Tone.Monophonic.prototype.dispose.call(this);
+		this._writable(["carrier", "modulator", "frequency"]);
 		this.carrier.dispose();
 		this.carrier = null;
 		this.modulator.dispose();

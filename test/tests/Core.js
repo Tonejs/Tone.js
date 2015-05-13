@@ -147,7 +147,7 @@ function(chai, Tone, Master, Bus, Note, Test, Buffer, Oscillator){
 			osc.dispose();
 		});		
 
-		it("ramps to a value given an object a ramp time", function(done){
+		it("ramps to a value given an object and ramp time", function(done){
 			var osc;
 			var setValue = 30;
 			Test.offlineTest(0.6, function(dest){
@@ -187,7 +187,8 @@ function(chai, Tone, Master, Bus, Note, Test, Buffer, Oscillator){
 
 		it("gets all defaults of the object with no arguments", function(){
 			var osc = new Oscillator(0);
-			expect(osc.get()).to.contain.keys(Object.keys(Oscillator.defaults));
+			expect(Oscillator.defaults).to.contain.keys(Object.keys(osc.get()));
+			// expect(osc.get()).to.contain.keys(Object.keys(Oscillator.defaults));
 			osc.dispose();
 		});	
 
@@ -324,6 +325,17 @@ function(chai, Tone, Master, Bus, Note, Test, Buffer, Oscillator){
 				//reset this method for the next one
 				Buffer.onprogress = function(){};
 			};
+		});
+
+		it("can reverse a buffer", function(done){
+			var buffer = new Buffer("./testAudio/kick.mp3", function(){
+				var buffArray = buffer.get();
+				var lastSample = buffArray[buffArray.length - 1];
+				buffer.reverse = true;
+				expect(buffer.get()[0]).to.equal(lastSample);
+				buffer.dispose();
+				done();
+			});
 		});
 	});
 

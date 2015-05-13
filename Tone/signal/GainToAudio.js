@@ -3,36 +3,36 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper", "Tone/signal/Signal"], funct
 	"use strict";
 
 	/**
-	 *  @class AudioToGain converts an input range of -1,1 to 0,1
+	 *  @class Maps a gain value [0, 1] to an audio value [-1, 1]
 	 *
 	 *  @extends {Tone.SignalBase}
 	 *  @constructor
 	 *  @example
-	 *  var a2g = new Tone.AudioToGain();
+	 *  var g2a = new Tone.GainToAudio();
 	 */
-	Tone.AudioToGain = function(){
+	Tone.GainToAudio = function(){
 
 		/**
 		 *  @type {WaveShaperNode}
 		 *  @private
 		 */
 		this._norm = this.input = this.output = new Tone.WaveShaper(function(x){
-			return (x + 1) / 2;
+			return Math.abs(x) * 2 - 1;
 		});
 	};
 
-	Tone.extend(Tone.AudioToGain, Tone.SignalBase);
+	Tone.extend(Tone.GainToAudio, Tone.SignalBase);
 
 	/**
 	 *  clean up
-	 *  @returns {Tone.AudioToGain} `this`
+	 *  @returns {Tone.GainToAudio} `this`
 	 */
-	Tone.AudioToGain.prototype.dispose = function(){
+	Tone.GainToAudio.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
 		this._norm.dispose();
 		this._norm = null;
 		return this;
 	};
 
-	return Tone.AudioToGain;
+	return Tone.GainToAudio;
 });

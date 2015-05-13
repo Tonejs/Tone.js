@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/component/Panner", "Tone/core/Master"], function(Tone){
+define(["Tone/core/Tone", "Tone/component/Panner", "Tone/component/Volume"], function(Tone){
 
 	"use strict";
 
@@ -7,10 +7,13 @@ define(["Tone/core/Tone", "Tone/component/Panner", "Tone/core/Master"], function
 	 *
 	 *  @extends {Tone}
 	 *  @constructor
+	 *  @param {number} pan the initial pan
+	 *  @param {number} volume the volume
 	 *  @example
 	 *  var panVol = new Tone.PanVol(0.25, -12);
 	 */
 	Tone.PanVol = function(pan, volume){
+		
 		/**
 		 *  the panning node
 		 *  @type {Tone.Panner}
@@ -19,27 +22,29 @@ define(["Tone/core/Tone", "Tone/component/Panner", "Tone/core/Master"], function
 		this._panner = this.input = new Tone.Panner(pan);
 
 		/**
-		 * the output node
-		 * @type {GainNode}
-		 */
-		this.output = this.context.createGain();
-
-		/**
-		 *  The volume control in decibels. 
-		 *  @type {Tone.Signal}
-		 */
-		this.volume = new Tone.Signal(this.output.gain, Tone.Signal.Units.Decibels);
-		this.volume.value = this.defaultArg(volume, 0);
-
-		/**
 		 *  the panning control
 		 *  @type {Tone.Panner}
 		 *  @private
 		 */
 		this.pan = this._panner.pan;
 
+		/**
+		 * the volume control
+		 * @type {Tone.Volume}
+		 * @private
+		 */
+		this._volume = this.output = new Tone.Volume(volume);
+
+		/**
+		 *  The volume control in decibels. 
+		 *  @type {Tone.Signal}
+		 */
+		this.volume = this._volume.volume;
+
 		//connections
-		this._panner.connect(this.output);
+		this._panner.connect(this._volume);
+
+		this._readOnly(["pan", "volume"]);
 	};
 
 	Tone.extend(Tone.PanVol);
@@ -50,11 +55,13 @@ define(["Tone/core/Tone", "Tone/component/Panner", "Tone/core/Master"], function
 	 */
 	Tone.PanVol.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
+		this._writable(["pan", "volume"]);
 		this._panner.dispose();
 		this._panner = null;
-		this.volume.dispose();
-		this.volume = null;
+		this._volume.dispose();
+		this._volume = null;
 		this.pan = null;
+		this.volume = null;
 		return this;
 	};
 

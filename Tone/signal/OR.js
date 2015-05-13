@@ -7,6 +7,7 @@ define(["Tone/core/Tone", "Tone/signal/GreaterThanZero"], function(Tone){
 	 *
 	 *  @extends {Tone.SignalBase}
 	 *  @constructor
+	 *  @param {number} inputCount the input count
 	 *  @example
 	 *  var or = new Tone.OR(2);
 	 *  var sigA = new Tone.Signal(0)connect(or, 0, 0);
@@ -30,14 +31,7 @@ define(["Tone/core/Tone", "Tone/signal/GreaterThanZero"], function(Tone){
 		 *  @type {Tone.Equal}
 		 *  @private
 		 */
-		this._gtz = new Tone.GreaterThanZero();
-
-		/**
-		 *  the output
-		 *  @type {Tone.Equal}
-		 *  @private
-		 */
-		this.output = this._gtz;
+		this._gtz = this.output = new Tone.GreaterThanZero();
 
 		//make each of the inputs an alias
 		for (var i = 0; i < inputCount; i++){

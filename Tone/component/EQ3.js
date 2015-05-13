@@ -13,11 +13,11 @@ define(["Tone/core/Tone", "Tone/component/MultibandSplit", "Tone/signal/Signal"]
 	 *  @param {number} [midLevel=0] the gain applied to the mid (in db)
 	 *  @param {number} [highLevel=0] the gain applied to the high (in db)
 	 *  @example
-	 *  var eq = new Tone.EQ(-10, 3, -20);
+	 *  var eq = new Tone.EQ3(-10, 3, -20);
 	 */
-	Tone.EQ = function(){
+	Tone.EQ3 = function(){
 
-		var options = this.optionsObject(arguments, ["low", "mid", "high"], Tone.EQ.defaults);
+		var options = this.optionsObject(arguments, ["low", "mid", "high"], Tone.EQ3.defaults);
 
 		/**
 		 *  the output node
@@ -95,16 +95,17 @@ define(["Tone/core/Tone", "Tone/component/MultibandSplit", "Tone/signal/Signal"]
 		this.high.value = options.low;
 		this.mid.value = options.mid;
 		this.low.value = options.high;
+		this._readOnly(["low", "mid", "high", "lowFrequency", "highFrequency"]);
 	};
 
-	Tone.extend(Tone.EQ);
+	Tone.extend(Tone.EQ3);
 
 	/**
 	 *  the default values
 	 *  @type {Object}
 	 *  @static
 	 */
-	Tone.EQ.defaults = {
+	Tone.EQ3.defaults = {
 		"low" : 0,
 		"mid" : 0,
 		"high" : 0,
@@ -114,10 +115,11 @@ define(["Tone/core/Tone", "Tone/component/MultibandSplit", "Tone/signal/Signal"]
 
 	/**
 	 *  clean up
-	 *  @returns {Tone.EQ} `this`
+	 *  @returns {Tone.EQ3} `this`
 	 */
-	Tone.EQ.prototype.dispose = function(){
+	Tone.EQ3.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
+		this._writable(["low", "mid", "high", "lowFrequency", "highFrequency"]);
 		this._multibandSplit.dispose();
 		this._multibandSplit = null;
 		this.lowFrequency = null;
@@ -137,5 +139,5 @@ define(["Tone/core/Tone", "Tone/component/MultibandSplit", "Tone/signal/Signal"]
 		return this;
 	};
 
-	return Tone.EQ;
+	return Tone.EQ3;
 });

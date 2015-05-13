@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/component/LFO", "Tone/effect/StereoXFeedbackEffect"], 
+define(["Tone/core/Tone", "Tone/component/LFO", "Tone/effect/StereoXFeedbackEffect"],
 function(Tone){
 
 	"use strict";
@@ -86,6 +86,8 @@ function(Tone){
 		this.depth = this._depth;
 		this.frequency.value = options.frequency;
 		this.type = options.type;
+
+		this._readOnly(["frequency"]);
 	};
 
 	Tone.extend(Tone.Chorus, Tone.StereoXFeedbackEffect);
@@ -95,7 +97,7 @@ function(Tone){
 	 *  @type {Object}
 	 */
 	Tone.Chorus.defaults = {
-		"frequency" : 1.5, 
+		"frequency" : 1.5,
 		"delayTime" : 3.5,
 		"depth" : 0.7,
 		"feedback" : 0.1,
@@ -115,9 +117,9 @@ function(Tone){
 		set : function(depth){
 			this._depth = depth;
 			var deviation = this._delayTime * depth;
-			this._lfoL.min = this._delayTime - deviation;
+			this._lfoL.min = Math.max(this._delayTime - deviation, 0);
 			this._lfoL.max = this._delayTime + deviation;
-			this._lfoR.min = this._delayTime - deviation;
+			this._lfoR.min = Math.max(this._delayTime - deviation, 0);
 			this._lfoR.max = this._delayTime + deviation;
 		}
 	});
@@ -168,6 +170,7 @@ function(Tone){
 		this._delayNodeL = null;
 		this._delayNodeR.disconnect();
 		this._delayNodeR = null;
+		this._writable("frequency");
 		this.frequency = null;
 		return this;
 	};

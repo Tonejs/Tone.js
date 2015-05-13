@@ -1,3 +1,16 @@
+### r5-dev
+
+* reverse buffer for Player and Sampler.
+* Tone.Volume for simple volume control in Decibels.
+* Panner uses StereoPannerNode when available.
+* AutoFilter effect
+* Made many attributes read-only. preventing this common type of error: `oscillator.frequency = 200` when it should be `oscillator.frequency.value = 200`.
+* Envelope supports "linear" and "exponential" attack curves. 
+* Renamed Tone.EQ -> Tone.EQ3. 
+* Tone.DrumSynth makes kick and tom sounds.
+* Tone.MidSideCompressor and Tone.MidSideSplit/Tone.MidSideMerge
+* Tone.Oscillator - can specify the number of partials in the type: i.e. "sine10", "triangle3", "square4", etc.
+
 ### r4 - Cool is cool
 
 * `toFrequency` accepts notes by name (i.e. `"C4"`)
@@ -7,7 +20,7 @@
 * Sampler accepts multiple samples as an object.
 * `setPitch` in sampler -> `setNote`
 * Deprecated MultiSampler - use Sampler with PolySynth instead
-* Added [cdn](cdn.tonejs.org/latest/Tone.min.js) - please don't use for production code
+* Added [cdn](http://cdn.tonejs.org/latest/Tone.min.js) - please don't use for production code
 * Renamed DryWet to CrossFade
 * Functions return `this` to allow for chaining. i.e. `player.toMaster().start(2)`.
 * Added `units` to Signal class which allows signals to be set in terms of Tone.Time, Tone.Frequency, Numbers, or Decibels.

@@ -6,7 +6,6 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	 *  @class  a sample accurate clock built on an oscillator.
 	 *          Invokes the tick method at the set rate
 	 *
-	 * 	@private
 	 * 	@constructor
 	 * 	@extends {Tone}
 	 * 	@param {Tone.Frequency} frequency the rate of the callback
@@ -33,7 +32,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 		 *  the rate control signal
 		 *  @type {Tone.Signal}
 		 */
-		this.frequency = new Tone.Signal(frequency);
+		this.frequency = new Tone.Signal(frequency, Tone.Signal.Units.Frequency);
 
 		/**
 		 *  whether the tick is on the up or down
@@ -49,6 +48,16 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 		 */
 		this.tick = callback;
 
+		/**
+		 * Callback is invoked when the clock is stopped.
+		 * @type {function}
+		 * @example
+		 *  clock.onended = function(){
+		 *  	console.log("the clock is stopped");
+		 *  }
+		 */
+		this.onended = function(){};
+
 		//setup
 		this._jsNode.noGC();
 	};
@@ -57,7 +66,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 
 	/**
 	 *  start the clock
-	 *  @param {Tone.Time} time the time when the clock should start
+	 *  @param {Tone.Time} [time=now] the time when the clock should start
 	 *  @returns {Tone.Clock} `this`
 	 */
 	Tone.Clock.prototype.start = function(time){
@@ -76,21 +85,20 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 
 	/**
 	 *  stop the clock
-	 *  @param {Tone.Time} time the time when the clock should stop
-	 *  @param {function} onend called when the oscilator stops
+	 *  @param {Tone.Time} [time=now] The time when the clock should stop.
 	 *  @returns {Tone.Clock} `this`
 	 */
-	Tone.Clock.prototype.stop = function(time, onend){
+	Tone.Clock.prototype.stop = function(time){
 		if (this._oscillator){
 			var now = this.now();
 			var stopTime = this.toSeconds(time, now);
 			this._oscillator.stop(stopTime);
 			this._oscillator = null;
-			//set a timeout for when it stops
 			if (time){
-				setTimeout(onend, (stopTime - now) * 1000);
+				//set a timeout for when it stops
+				setTimeout(this.onended.bind(this), (stopTime - now) * 1000);
 			} else {
-				onend();
+				this.onended();
 			}
 		}
 		return this;
@@ -142,6 +150,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 		this._jsNode.onaudioprocess = function(){};
 		this._jsNode = null;
 		this.tick = null;
+		this.onended = function(){};
 		return this;
 	};
 

@@ -12,6 +12,7 @@ define(["Tone/core/Tone"], function(Tone){
 	 *  		and `onerror`. 
 	 *
 	 *  @constructor 
+	 *  @extends {Tone}
 	 *  @param {AudioBuffer|string} url the url to load, or the audio buffer to set
 	 */
 	Tone.Buffer = function(){
@@ -24,6 +25,13 @@ define(["Tone/core/Tone"], function(Tone){
 		 *  @private
 		 */
 		this._buffer = null;
+
+		/**
+		 *  indicates if the buffer should be reversed or not
+		 *  @type {boolean}
+		 *  @private
+		 */
+		this._reversed = options.reverse;
 
 		/**
 		 *  the url of the buffer. `undefined` if it was 
@@ -67,6 +75,7 @@ define(["Tone/core/Tone"], function(Tone){
 	Tone.Buffer.defaults = {
 		"url" : undefined,
 		"onload" : function(){},
+		"reverse" : false
 	};
 
 	/**
@@ -113,7 +122,7 @@ define(["Tone/core/Tone"], function(Tone){
 		Tone.prototype.dispose.call(this);
 		Tone.Buffer._removeFromQueue(this);
 		this._buffer = null;
-		this.onload = null;
+		this.onload = Tone.Buffer.defaults.onload;
 		return this;
 	};
 
@@ -130,6 +139,38 @@ define(["Tone/core/Tone"], function(Tone){
 				return this._buffer.duration;
 			} else {
 				return 0;
+			}
+		},
+	});
+
+	/**
+	 *  reverse the buffer
+	 *  @private
+	 *  @return {Tone.Buffer} `this`
+	 */
+	Tone.Buffer.prototype._reverse = function(){
+		if (this.loaded){
+			for (var i = 0; i < this._buffer.numberOfChannels; i++){
+				Array.prototype.reverse.call(this._buffer.getChannelData(i));
+			}
+		}
+		return this;
+	};
+
+	/**
+	 * if the buffer is reversed or not
+	 * @memberOf Tone.Buffer#
+	 * @type {boolean}
+	 * @name reverse
+	 */
+	Object.defineProperty(Tone.Buffer.prototype, "reverse", {
+		get : function(){
+			return this._reversed;
+		},
+		set : function(rev){
+			if (this._reversed !== rev){
+				this._reversed = rev;
+				this._reverse();
 			}
 		},
 	});
@@ -223,6 +264,9 @@ define(["Tone/core/Tone"], function(Tone){
 					var index = Tone.Buffer._currentDownloads.indexOf(next);
 					Tone.Buffer._currentDownloads.splice(index, 1);
 					next.Buffer.set(buffer);
+					if (next.Buffer._reversed){
+						next.Buffer._reverse();
+					}
 					next.Buffer.onload(next.Buffer);
 					Tone.Buffer._onprogress();
 					Tone.Buffer._next();

@@ -51,7 +51,7 @@ function(Tone){
 		this._octaves = options.octaves;
 
 		/**
-		 *  the input gain to adjust the senstivity
+		 *  the input gain to adjust the sensitivity
 		 *  @type {GainNode}
 		 *  @private
 		 */
@@ -95,6 +95,8 @@ function(Tone){
 		//set the initial value
 		this._setSweepRange();
 		this.sensitivity = options.sensitivity;
+
+		this._readOnly(["gain", "Q"]);
 	};
 
 	Tone.extend(Tone.AutoWah, Tone.Effect);
@@ -188,6 +190,7 @@ function(Tone){
 		this._peaking = null;
 		this._inputBoost.disconnect();
 		this._inputBoost = null;
+		this._writable(["gain", "Q"]);
 		this.gain = null;
 		this.Q = null;
 		return this;

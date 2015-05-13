@@ -18,7 +18,7 @@ define(["Tone/core/Tone", "Tone/signal/Multiply", "Tone/signal/Signal"], functio
 		 *  @type {Tone.Multiply}
 		 *  @private
 		 */
-		this._multiply = this.input = this.output= new Tone.Multiply(-1);
+		this._multiply = this.input = this.output = new Tone.Multiply(-1);
 	};
 
 	Tone.extend(Tone.Negate, Tone.SignalBase);

@@ -71,6 +71,7 @@ function(Tone){
 		//connections
 		this._sawtooth.chain(this._thresh, this.output);
 		this.width.chain(this._widthGate, this._thresh);
+		this._readOnly(["width", "frequency", "detune"]);
 	};
 
 	Tone.extend(Tone.PulseOscillator, Tone.Oscillator);
@@ -148,9 +149,11 @@ function(Tone){
 		Tone.Source.prototype.dispose.call(this);
 		this._sawtooth.dispose();
 		this._sawtooth = null;
+		this._writable(["width", "frequency", "detune"]);
 		this.width.dispose();
 		this.width = null;
 		this._widthGate.disconnect();
+		this._widthGate = null;
 		this._widthGate = null;
 		this._thresh.disconnect();
 		this._thresh = null;

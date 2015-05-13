@@ -147,7 +147,7 @@ module.exports = function(grunt) {
 					},
 					{
 						match: /define\('Tone\/core\/Tone',\[\],/gi,
-						replacement: "MainModule("
+						replacement: "ToneCore("
 					},
 					{
 						match: /\n"use strict";\n/g,
@@ -196,5 +196,6 @@ module.exports = function(grunt) {
 	grunt.registerTask("build", ["concat:dist","requirejs:compile","concat:removeRequireString", "clean:dist", "indent:dist", "replace:dist", "wrap:dist"]);
 	grunt.registerTask("buildall", ["build", "min", "presets"]);
 	grunt.registerTask("dist", ["buildall", "docs", "npm"]);
+	grunt.registerTask("default", ["buildall"]);
 	
 };

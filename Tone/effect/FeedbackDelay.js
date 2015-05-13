@@ -34,6 +34,7 @@ define(["Tone/core/Tone", "Tone/effect/FeedbackEffect", "Tone/signal/Signal"], f
 		// connect it up
 		this.connectEffect(this._delayNode);
 		this.delayTime.connect(this._delayNode.delayTime);
+		this._readOnly(["delayTime"]);
 	};
 
 	Tone.extend(Tone.FeedbackDelay, Tone.FeedbackEffect);
@@ -47,7 +48,7 @@ define(["Tone/core/Tone", "Tone/effect/FeedbackEffect", "Tone/signal/Signal"], f
 	Tone.FeedbackDelay.defaults = {
 		"delayTime" : 0.25,
 	};
-	
+
 	/**
 	 *  clean up
 	 *  @returns {Tone.FeedbackDelay} `this`
@@ -57,6 +58,7 @@ define(["Tone/core/Tone", "Tone/effect/FeedbackEffect", "Tone/signal/Signal"], f
 		this.delayTime.dispose();
 		this._delayNode.disconnect();
 		this._delayNode = null;
+		this._writable(["delayTime"]);
 		this.delayTime = null;
 		return this;
 	};

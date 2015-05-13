@@ -1,4 +1,4 @@
-define(["Tone/core/Tone"], function(Tone){
+define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 
 	"use strict";
 
@@ -21,12 +21,7 @@ define(["Tone/core/Tone"], function(Tone){
 		 *  @type {DynamicsCompressorNode}
 		 *  @private
 		 */
-		this._compressor = this.context.createDynamicsCompressor();
-
-		/**
-		 *  the input and output
-		 */
-		this.input = this.output = this._compressor;
+		this._compressor = this.input = this.output = this.context.createDynamicsCompressor();
 
 		/**
 		 *  the threshold vaue
@@ -59,6 +54,9 @@ define(["Tone/core/Tone"], function(Tone){
 		this.ratio = this._compressor.ratio;
 
 		//set the defaults
+		this.attack.connect(this._compressor.attack);
+		this.release.connect(this._compressor.release);
+		this._readOnly(["knee", "release", "attack", "ratio", "threshold"]);
 		this.set(options);
 	};
 
@@ -83,6 +81,7 @@ define(["Tone/core/Tone"], function(Tone){
 	 */
 	Tone.Compressor.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
+		this._writable(["knee", "release", "attack", "ratio", "threshold"]);
 		this._compressor.disconnect();
 		this._compressor = null;
 		this.attack.dispose();

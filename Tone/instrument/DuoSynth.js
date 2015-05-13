@@ -89,6 +89,7 @@ function(Tone){
 		this._vibratoGain.fan(this.voice0.detune, this.voice1.detune);
 		this.voice0.connect(this.output);
 		this.voice1.connect(this.output);
+		this._readOnly(["voice0", "voice1", "frequency", "vibratoAmount", "vibratoRate"]);
 	};
 
 	Tone.extend(Tone.DuoSynth, Tone.Monophonic);
@@ -191,6 +192,7 @@ function(Tone){
 	 */
 	Tone.DuoSynth.prototype.dispose = function(){
 		Tone.Monophonic.prototype.dispose.call(this);
+		this._writable(["voice0", "voice1", "frequency", "vibratoAmount", "vibratoRate"]);
 		this.voice0.dispose();
 		this.voice0 = null;
 		this.voice1.dispose();

@@ -54,6 +54,7 @@ define(["Tone/core/Tone", "Tone/component/CrossFade"], function(Tone){
 		this.input.connect(this.effectSend);
 		this.effectReturn.connect(this._dryWet.b);
 		this._dryWet.connect(this.output);
+		this._readOnly(["wet"]);
 	};
 
 	Tone.extend(Tone.Effect);
@@ -98,6 +99,7 @@ define(["Tone/core/Tone", "Tone/component/CrossFade"], function(Tone){
 		this.effectSend = null;
 		this.effectReturn.disconnect();
 		this.effectReturn = null;
+		this._writable(["wet"]);
 		this.wet = null;
 		return this;
 	};

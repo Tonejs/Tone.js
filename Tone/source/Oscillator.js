@@ -62,6 +62,7 @@ function(Tone){
 		//setup
 		this.type = options.type;
 		this.phase = this._phase;
+		this._readOnly(["frequency", "detune"]);
 	};
 
 	Tone.extend(Tone.Oscillator, Tone.Source);
@@ -73,9 +74,13 @@ function(Tone){
 	 *  @type {Object}
 	 */
 	Tone.Oscillator.defaults = {
+		/** @type {string} */
 		"type" : "sine",
+		/** @type {Tone.Frequency} */
 		"frequency" : 440,
+		/** @type {number} */
 		"detune" : 0,
+		/** @type {number} */
 		"phase" : 0
 	};
 
@@ -147,6 +152,7 @@ function(Tone){
 	 * @memberOf Tone.Oscillator#
 	 * @type {string}
 	 * @name type
+	 * @options ["sine", "square", "sawtooth", "triangle"]
 	 * @example
 	 * osc.type = "square";
 	 * osc.type; //returns "square"
@@ -156,57 +162,62 @@ function(Tone){
 			return this._type;
 		},
 		set : function(type){
-			if (this.type !== type){
 
-				var fftSize = 4096;
-				var halfSize = fftSize / 2;
+			var originalType = type;
 
-				var real = new Float32Array(halfSize);
-				var imag = new Float32Array(halfSize);
-				
-				// Clear DC and Nyquist.
-				real[0] = 0;
-				imag[0] = 0;
+			var fftSize = 4096;
+			var periodicWaveSize = fftSize / 2;
 
-				var shift = this._phase;	
-				for (var n = 1; n < halfSize; ++n) {
-					var piFactor = 2 / (n * Math.PI);
-					var b; 
-					switch (type) {
-						case "sine": 
-							b = (n === 1) ? 1 : 0;
-							break;
-						case "square":
-							b = (n & 1) ? 2 * piFactor : 0;
-							break;
-						case "sawtooth":
-							b = piFactor * ((n & 1) ? 1 : -1);
-							break;
-						case "triangle":
-							if (n & 1) {
-								b = 2 * (piFactor * piFactor) * ((((n - 1) >> 1) & 1) ? -1 : 1);
-							} else {
-								b = 0;
-							}
-							break;
-						default:
-							throw new TypeError("invalid oscillator type: "+type);
-					}
-					if (b !== 0){
-						real[n] = -b * Math.sin(shift);
-						imag[n] = b * Math.cos(shift);
-					} else {
-						real[n] = 0;
-						imag[n] = 0;
-					}
-				}
-				var periodicWave = this.context.createPeriodicWave(real, imag);
-				this._wave = periodicWave;
-				if (this._oscillator !== null){
-					this._oscillator.setPeriodicWave(this._wave);
-				}
-				this._type = type;
+			var real = new Float32Array(periodicWaveSize);
+			var imag = new Float32Array(periodicWaveSize);
+			
+			var partialCount = 1;
+			var partial = /(sine|triangle|square|sawtooth)(\d+)$/.exec(type);
+			if (partial){
+				partialCount = parseInt(partial[2]);
+				type = partial[1];
+				partialCount = Math.max(partialCount, 2);
+				periodicWaveSize = partialCount;
 			}
+
+			var shift = this._phase;	
+			for (var n = 1; n < periodicWaveSize; ++n) {
+				var piFactor = 2 / (n * Math.PI);
+				var b; 
+				switch (type) {
+					case "sine": 
+						b = (n <= partialCount) ? 1 : 0;
+						break;
+					case "square":
+						b = (n & 1) ? 2 * piFactor : 0;
+						break;
+					case "sawtooth":
+						b = piFactor * ((n & 1) ? 1 : -1);
+						break;
+					case "triangle":
+						if (n & 1) {
+							b = 2 * (piFactor * piFactor) * ((((n - 1) >> 1) & 1) ? -1 : 1);
+						} else {
+							b = 0;
+						}
+						break;
+					default:
+						throw new TypeError("invalid oscillator type: "+type);
+				}
+				if (b !== 0){
+					real[n] = -b * Math.sin(shift * n);
+					imag[n] = b * Math.cos(shift * n);
+				} else {
+					real[n] = 0;
+					imag[n] = 0;
+				}
+			}
+			var periodicWave = this.context.createPeriodicWave(real, imag);
+			this._wave = periodicWave;
+			if (this._oscillator !== null){
+				this._oscillator.setPeriodicWave(this._wave);
+			}
+			this._type = originalType;
 		}
 	});
 
@@ -239,11 +250,12 @@ function(Tone){
 			this._oscillator.disconnect();
 			this._oscillator = null;
 		}
+		this._wave = null;
+		this._writable(["frequency", "detune"]);
 		this.frequency.dispose();
 		this.frequency = null;
 		this.detune.dispose();
 		this.detune = null;
-		this._wave = null;
 		return this;
 	};
 

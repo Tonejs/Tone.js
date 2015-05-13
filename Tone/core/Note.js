@@ -226,7 +226,8 @@ define(["Tone/core/Tone", "Tone/core/Transport"], function(Tone){
 	 *  @param  {string|number}  note the note to test
 	 *  @return {boolean}      true if it's in the form of a note
 	 *  @method isNotation
-	 *  @lends Tone.prototype.isNotation
+	 *  @lends Tone.prototype.isNote
+	 *  @function
 	 */
 	Tone.prototype.isNote = ( function(){
 		var noteFormat = new RegExp(/[a-g]{1}([b#]{1}|[b#]{0})[0-9]+$/i);

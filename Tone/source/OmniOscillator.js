@@ -11,7 +11,7 @@ function(Tone){
 	 *
 	 *  @extends {Tone.Oscillator}
 	 *  @constructor
-	 *  @param {frequency} frequency frequency of the oscillator (meaningless for noise types)
+	 *  @param {frequency} Tone.Frequency frequency of the oscillator (meaningless for noise types)
 	 *  @param {string} type the type of the oscillator
 	 *  @example
 	 *  var omniOsc = new Tone.OmniOscillator("C#4", "pwm");
@@ -48,6 +48,7 @@ function(Tone){
 
 		//set the oscillator
 		this.type = options.type;
+		this._readOnly(["frequency", "detune"]);
 	};
 
 	Tone.extend(Tone.OmniOscillator, Tone.Oscillator);
@@ -210,6 +211,7 @@ function(Tone){
 	 */
 	Tone.OmniOscillator.prototype.dispose = function(){
 		Tone.Source.prototype.dispose.call(this);
+		this._writable(["frequency", "detune"]);
 		this.detune.dispose();
 		this.detune = null;
 		this.frequency.dispose();

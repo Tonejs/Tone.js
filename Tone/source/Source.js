@@ -17,7 +17,7 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Master"], function(T
 		options = this.defaultArg(options, Tone.Source.defaults);
 
 		/**
-		 * The onended callback when the source is done playing.
+		 * Callback is invoked when the source is done playing.
 		 * @type {function}
 		 * @example
 		 *  source.onended = function(){
@@ -47,6 +47,7 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Master"], function(T
 		 * source.volume.value = -6;
 		 */
 		this.volume = new Tone.Signal(this.output.gain, Tone.Signal.Units.Decibels);
+		this._readOnly("volume");
 
 		/**
 		 * 	keeps track of the timeout for chaning the state
@@ -55,6 +56,10 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Master"], function(T
 		 *  @private
 		 */
 		this._timeout = -1;
+
+		//make the output explicitly stereo
+		this.output.channelCount = 2;
+		this.output.channelCountMode = "explicit";
 	};
 
 	Tone.extend(Tone.Source);
@@ -196,6 +201,7 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Master"], function(T
 		this.stop();
 		clearTimeout(this._timeout);
 		this.onended = function(){};
+		this._writable("volume");
 		this.volume.dispose();
 		this.volume = null;
 	};

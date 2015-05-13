@@ -79,6 +79,7 @@ function(Tone){
 		this.pitch = options.pitch;
 		this.player.chain(this.filter, this.envelope, this.output);
 		this.filterEnvelope.connect(this.filter.frequency);
+		this._readOnly(["player", "filterEnvelope", "envelope", "filter"]);
 	};
 
 	Tone.extend(Tone.Sampler, Tone.Instrument);
@@ -170,7 +171,7 @@ function(Tone){
 		if (name){
 			this.sample = name;
 		}
-		this.player.start(time, 0);
+		this.player.start(time);
 		this.envelope.triggerAttack(time, velocity);
 		this.filterEnvelope.triggerAttack(time);
 		return this;
@@ -211,6 +212,25 @@ function(Tone){
 	});
 
 	/**
+	 * The direction the buffer should play in
+	 * @memberOf Tone.Sampler#
+	 * @type {boolean}
+	 * @name reverse
+	 */
+	Object.defineProperty(Tone.Sampler.prototype, "reverse", {
+		get : function(){
+			for (var i in this._buffers){
+				return this._buffers[i].reverse;
+			}
+		}, 
+		set : function(rev){
+			for (var i in this._buffers){
+				this._buffers[i].reverse = rev;
+			}
+		}
+	});
+
+	/**
 	 * Repitch the sampled note by some interval (measured
 	 * in semi-tones). 
 	 * @memberOf Tone.Sampler#
@@ -236,6 +256,7 @@ function(Tone){
 	 */
 	Tone.Sampler.prototype.dispose = function(){
 		Tone.Instrument.prototype.dispose.call(this);
+		this._writable(["player", "filterEnvelope", "envelope", "filter"]);
 		this.player.dispose();
 		this.filterEnvelope.dispose();
 		this.envelope.dispose();

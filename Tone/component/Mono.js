@@ -3,7 +3,7 @@ define(["Tone/core/Tone", "Tone/component/Merge"], function(Tone){
 	"use strict";
 
 	/**
-	 *  @class Coerces the incoming mono or stereo signal into a stereo signal
+	 *  @class Coerces the incoming mono or stereo signal into a mono signal
 	 *         where both left and right channels have the same value. 
 	 *
 	 *  @extends {Tone}
