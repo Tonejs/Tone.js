@@ -12,7 +12,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Master"], function(To
 	 *  var vol = new Tone.Volume(-12);
 	 *  instrument.chain(vol, Tone.Master);
 	 */
-	Tone.Volume = function(pan, volume){
+	Tone.Volume = function(volume){
 
 		/**
 		 * the output node
