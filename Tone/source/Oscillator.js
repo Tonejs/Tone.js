@@ -35,7 +35,7 @@ function(Tone){
 		 *  The detune control signal in cents. 
 		 *  @type {Tone.Signal}
 		 */
-		this.detune = new Tone.Signal(options.detune);
+		this.detune = new Tone.Signal(options.detune, Tone.Signal.Units.Cents);
 
 		/**
 		 *  the periodic wave

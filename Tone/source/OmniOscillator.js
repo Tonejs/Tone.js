@@ -30,7 +30,7 @@ function(Tone){
 		 *  the detune control
 		 *  @type {Tone.Signal}
 		 */
-		this.detune = new Tone.Signal(options.detune);
+		this.detune = new Tone.Signal(options.detune, Tone.Signal.Units.Cents);
 
 		/**
 		 *  the type of the oscillator source
@@ -107,7 +107,8 @@ function(Tone){
 			return this._oscillator.type;
 		}, 
 		set : function(type){
-			if (type === "sine" || type === "square" || type === "triangle" || type === "sawtooth"){
+			if (type.indexOf("sine") === 0 || type.indexOf("square") === 0 || 
+				type.indexOf("triangle") === 0 || type.indexOf("sawtooth") === 0){
 				if (this._sourceType !== OmniOscType.Oscillator){
 					this._sourceType = OmniOscType.Oscillator;
 					this._createNewOscillator(Tone.Oscillator);
