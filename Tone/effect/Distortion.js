@@ -16,7 +16,7 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/signal/WaveShaper"], funct
 
 		var options = this.optionsObject(arguments, ["distortion"], Tone.Distortion.defaults);
 
-		Tone.Effect.call(this);
+		Tone.Effect.call(this, options);
 
 		/**
 		 *  @type {Tone.WaveShaper}
