@@ -3,30 +3,31 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/LFO", "Tone/comp
 	"use strict";
 
 	/**
-	 *  @class AutoFilter is a Tone.Panner with an LFO connected to the pan amount
+	 *  @class AutoFilter is a Tone.Filter with an LFO connected to the filter cutoff frequency.
 	 *
 	 *  @constructor
 	 *  @extends {Tone.Effect}
 	 *  @param {Tone.Time} [frequency=1] (optional) rate in HZ of the filter
-	 *  @param {number} [depth=0.5] The depth of the effect
+	 *  @param {number} [min=200] min 
+ 	 *  @param {number} [max=1200] max
 	 *  @example
-	 *  var autoPanner = new Tone.AutoFilter("4n");
+	 *  var autoFilter = new Tone.AutoFilter("4n");
 	 */
 	Tone.AutoFilter = function(){
 
-		var options = this.optionsObject(arguments, ["frequency"], Tone.AutoFilter.defaults);
+		var options = this.optionsObject(arguments, ["frequency", "min", "max"], Tone.AutoFilter.defaults);
 		Tone.Effect.call(this, options);
 
 		/**
-		 *  the lfo which drives the panning
+		 *  the lfo which drives the filter cutoff
 		 *  @type {Tone.LFO}
 		 *  @private
 		 */
 		this._lfo = new Tone.LFO(options.frequency, options.min, options.max);
 
 		/**
-		 * The amount of panning between left and right. 
-		 * 0 = always center. 1 = full range between left and right. 
+		 * The range of the filter modulating between the min and max frequency. 
+		 * 0 = no modulation. 1 = full modulation.
 		 * @type {Tone.Signal}
 		 */
 		this.depth = this._lfo.amplitude;
