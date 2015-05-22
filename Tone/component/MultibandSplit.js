@@ -65,6 +65,12 @@ define(["Tone/core/Tone", "Tone/component/Filter", "Tone/signal/Signal"], functi
 		 */
 		this.highFrequency = new Tone.Signal(options.highFrequency);
 
+		/**
+		 *  the quality of all the fitlers
+		 *  @type {Tone.Signal}
+		 */
+		this.Q = new Tone.Signal(options.Q);
+
 		this.input.fan(this.low, this.high);
 		this.input.chain(this._lowMidFilter, this.mid);
 		//the frequency control signal
@@ -72,6 +78,11 @@ define(["Tone/core/Tone", "Tone/component/Filter", "Tone/signal/Signal"], functi
 		this.lowFrequency.connect(this._lowMidFilter.frequency);
 		this.highFrequency.connect(this.mid.frequency);
 		this.highFrequency.connect(this.high.frequency);
+		//the Q value
+		this.Q.connect(this.low.Q);
+		this.Q.connect(this._lowMidFilter.Q);
+		this.Q.connect(this.mid.Q);
+		this.Q.connect(this.high.Q);
 
 		this._readOnly(["high", "mid", "low", "highFrequency", "lowFrequency"]);
 	};
@@ -85,7 +96,8 @@ define(["Tone/core/Tone", "Tone/component/Filter", "Tone/signal/Signal"], functi
 	 */
 	Tone.MultibandSplit.defaults = {
 		"lowFrequency" : 400,
-		"highFrequency" : 2500
+		"highFrequency" : 2500,
+		"Q" : 1,
 	};
 
 	/**
@@ -96,17 +108,19 @@ define(["Tone/core/Tone", "Tone/component/Filter", "Tone/signal/Signal"], functi
 		Tone.prototype.dispose.call(this);
 		this._writable(["high", "mid", "low", "highFrequency", "lowFrequency"]);
 		this.low.dispose();
-		this._lowMidFilter.dispose();
-		this.mid.dispose();
-		this.high.dispose();
-		this.lowFrequency.dispose();
-		this.highFrequency.dispose();
 		this.low = null;
+		this._lowMidFilter.dispose();
 		this._lowMidFilter = null;
+		this.mid.dispose();
 		this.mid = null;
+		this.high.dispose();
 		this.high = null;
+		this.lowFrequency.dispose();
 		this.lowFrequency = null;
+		this.highFrequency.dispose();
 		this.highFrequency = null;
+		this.Q.dispose();
+		this.Q = null;
 		return this;
 	};
 

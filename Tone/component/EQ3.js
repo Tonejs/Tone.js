@@ -76,6 +76,12 @@ define(["Tone/core/Tone", "Tone/component/MultibandSplit", "Tone/signal/Signal"]
 		this.high = new Tone.Signal(this._highGain.gain, Tone.Signal.Units.Decibels);
 
 		/**
+		 *  the Q value
+		 *  @type {Tone.Signal}
+		 */
+		this.Q = this._multibandSplit.Q;
+
+		/**
 		 *  the low/mid crossover frequency
 		 *  @type {Tone.Signal}
 		 */
@@ -92,9 +98,9 @@ define(["Tone/core/Tone", "Tone/component/MultibandSplit", "Tone/signal/Signal"]
 		this._multibandSplit.mid.chain(this._midGain, this.output);
 		this._multibandSplit.high.chain(this._highGain, this.output);
 		//set the gains
-		this.high.value = options.low;
+		this.low.value = options.low;
 		this.mid.value = options.mid;
-		this.low.value = options.high;
+		this.high.value = options.high;
 		this._readOnly(["low", "mid", "high", "lowFrequency", "highFrequency"]);
 	};
 
@@ -136,6 +142,7 @@ define(["Tone/core/Tone", "Tone/component/MultibandSplit", "Tone/signal/Signal"]
 		this.mid = null;
 		this.high.dispose();
 		this.high = null;
+		this.Q = null;
 		return this;
 	};
 
