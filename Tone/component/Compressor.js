@@ -54,8 +54,6 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 		this.ratio = this._compressor.ratio;
 
 		//set the defaults
-		this.attack.connect(this._compressor.attack);
-		this.release.connect(this._compressor.release);
 		this._readOnly(["knee", "release", "attack", "ratio", "threshold"]);
 		this.set(options);
 	};
