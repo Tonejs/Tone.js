@@ -28,6 +28,15 @@ define(["Tone/core/Tone", "Tone/core/Master", "Tone/core/Note"], function(Tone){
 	Tone.extend(Tone.Instrument);
 
 	/**
+	 *  the default attributes
+	 *  @type {object}
+	 */
+	Tone.Instrument.defaults = {
+		/** the volume of the output in decibels */
+		"volume" : 0
+	};
+
+	/**
 	 *  @abstract
 	 *  @param {string|number} note the note to trigger
 	 *  @param {Tone.Time} [time=now] the time to trigger the ntoe
