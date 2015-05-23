@@ -3,9 +3,10 @@
 define(["tests/Core", "chai", "Tone/instrument/DuoSynth", "Tone/instrument/MonoSynth", "Tone/instrument/FMSynth",
 	"Tone/instrument/PolySynth", "Tone/instrument/Sampler", 
 	"tests/Common", "Tone/instrument/Instrument", "Tone/instrument/PluckSynth", "Tone/instrument/AMSynth", 
-	"Tone/instrument/NoiseSynth", "Tone/core/Buffer", "Tone/instrument/DrumSynth"], 
+	"Tone/instrument/NoiseSynth", "Tone/core/Buffer", "Tone/instrument/DrumSynth", "Tone/instrument/SimpleSynth", 
+	"Tone/instrument/SimpleAM", "Tone/instrument/SimpleFM"], 
 function(Tone, chai, DuoSynth, MonoSynth, FMSynth, PolySynth, Sampler, Test, Instrument, 
-	PluckSynth, AMSynth, NoiseSynth, Buffer, DrumSynth){
+	PluckSynth, AMSynth, NoiseSynth, Buffer, DrumSynth, SimpleSynth, SimpleAM, SimpleFM){
 
 	var expect = chai.expect;
 
@@ -412,8 +413,156 @@ function(Tone, chai, DuoSynth, MonoSynth, FMSynth, PolySynth, Sampler, Test, Ins
 			expect(drumSynth.get()).to.contain.keys(Object.keys(values));
 			expect(drumSynth.pitchDecay).to.be.closeTo(values.pitchDecay, 0.001);
 			expect(drumSynth.octaves).to.be.closeTo(values.octaves, 0.001);
-			expect(drumSynth.envelope.attack).to.be.closeTo(drumSynth.envelope.attack, 0.001);
+			expect(drumSynth.envelope.attack).to.be.closeTo(values.envelope.attack, 0.001);
 			drumSynth.dispose();
+		});		
+	});
+
+	describe("Tone.SimpleSynth", function(){
+		it("can be created and disposed", function(){
+			var simpleSynth = new SimpleSynth();
+			simpleSynth.dispose();
+			Test.wasDisposed(simpleSynth);
+		});
+
+		it("extends Instrument", function(){
+			extendsInstrument(SimpleSynth);
+		});
+
+		it("handles output connections", function(){
+			var simpleSynth = new SimpleSynth();
+			Test.acceptsOutput(simpleSynth);
+			simpleSynth.dispose();
+		});
+
+		it("outputs a sound", function(done){
+			var simpleSynth;
+			Test.outputsAudio(function(dest){
+				simpleSynth = new SimpleSynth();
+				simpleSynth.connect(dest);
+				simpleSynth.triggerAttack("C2");
+			}, function(){
+				simpleSynth.dispose();
+				done();
+			});
+		});	
+
+		it("handles getters/setters", function(){
+			var simpleSynth = new SimpleSynth();
+			var values = {
+				"oscillator" : {
+					"type" : "triangle",
+				},
+				"envelope" : {
+					"attack" : 0.01,
+				}
+			};
+			simpleSynth.set(values);
+			expect(simpleSynth.get()).to.contain.keys(Object.keys(values));
+			expect(simpleSynth.envelope.attack).to.be.closeTo(values.envelope.attack, 0.001);
+			simpleSynth.dispose();
+		});		
+	});
+
+	describe("Tone.SimpleAM", function(){
+		it("can be created and disposed", function(){
+			var simpleAM = new SimpleAM();
+			simpleAM.dispose();
+			Test.wasDisposed(simpleAM);
+		});
+
+		it("extends Instrument", function(){
+			extendsInstrument(SimpleAM);
+		});
+
+		it("handles output connections", function(){
+			var simpleAM = new SimpleAM();
+			Test.acceptsOutput(simpleAM);
+			simpleAM.dispose();
+		});
+
+		it("outputs a sound", function(done){
+			var simpleAM;
+			Test.outputsAudio(function(dest){
+				simpleAM = new SimpleAM();
+				simpleAM.connect(dest);
+				simpleAM.triggerAttack("C2");
+			}, function(){
+				simpleAM.dispose();
+				done();
+			});
+		});	
+
+		it("handles getters/setters", function(){
+			var simpleAM = new SimpleAM();
+			var values = {
+				"carrier" : {
+					"envelope" : {
+						"attack" : 0.01,
+					}
+				},
+				"modulator" : {
+					"oscillator" : {
+						"type" : "triangle",
+					},
+				}
+			};
+			simpleAM.set(values);
+			expect(simpleAM.get()).to.contain.keys(Object.keys(values));
+			expect(simpleAM.carrier.envelope.attack).to.be.closeTo(values.carrier.envelope.attack, 0.001);
+			expect(simpleAM.modulator.oscillator.type).to.equal(values.modulator.oscillator.type);
+			simpleAM.dispose();
+		});		
+	});
+
+	describe("Tone.SimpleFM", function(){
+		it("can be created and disposed", function(){
+			var simpleFM = new SimpleFM();
+			simpleFM.dispose();
+			Test.wasDisposed(simpleFM);
+		});
+
+		it("extends Instrument", function(){
+			extendsInstrument(SimpleFM);
+		});
+
+		it("handles output connections", function(){
+			var simpleFM = new SimpleFM();
+			Test.acceptsOutput(simpleFM);
+			simpleFM.dispose();
+		});
+
+		it("outputs a sound", function(done){
+			var simpleFM;
+			Test.outputsAudio(function(dest){
+				simpleFM = new SimpleFM();
+				simpleFM.connect(dest);
+				simpleFM.triggerAttack("C2");
+			}, function(){
+				simpleFM.dispose();
+				done();
+			});
+		});	
+
+		it("handles getters/setters", function(){
+			var simpleFM = new SimpleFM();
+			var values = {
+				"carrier" : {
+					"envelope" : {
+						"attack" : 0.01,
+					}
+				},
+				"modulator" : {
+					"oscillator" : {
+						"type" : "triangle",
+					},
+				}
+			};
+			simpleFM.set(values);
+			expect(simpleFM.get()).to.contain.keys(Object.keys(values));
+			expect(simpleFM.carrier.envelope.attack).to.be.closeTo(values.carrier.envelope.attack, 0.001);
+			expect(simpleFM.modulator.oscillator.type).to.equal(values.modulator.oscillator.type);
+			simpleFM.dispose();
 		});		
 	});
 });

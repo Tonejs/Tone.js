@@ -187,8 +187,7 @@ function(chai, Tone, Master, Bus, Note, Test, Buffer, Oscillator){
 
 		it("gets all defaults of the object with no arguments", function(){
 			var osc = new Oscillator(0);
-			expect(Oscillator.defaults).to.contain.keys(Object.keys(osc.get()));
-			// expect(osc.get()).to.contain.keys(Object.keys(Oscillator.defaults));
+			expect(osc.get()).to.contain.keys(Object.keys(Oscillator.defaults));
 			osc.dispose();
 		});	
 
