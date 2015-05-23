@@ -8,9 +8,9 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/component/Filter"], functi
 	 *
 	 *  @extends {Tone}
 	 *  @constructor
-	 *  @param {number} [delayTime=0.1] The delay time of the comb filter
-	 *  @param {number} [resonance=0.5] The resonance (feedback) of the comb filter
-	 *  @param {Tone.Frequency} [dampening=3000] The dampending cutoff of the lowpass filter
+	 *  @param {Tone.Type.Time} [delayTime=0.1] The delay time of the comb filter
+	 *  @param {Tone.Type.Normal} [resonance=0.5] The resonance (feedback) of the comb filter
+	 *  @param {Tone.Type.Frequency} [dampening=3000] The dampending cutoff of the lowpass filter
 	 */
 	Tone.LowpassCombFilter = function(){
 

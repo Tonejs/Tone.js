@@ -991,7 +991,7 @@ function(Tone){
 	 *  Convert a frequency representation into a number.
 	 *  Defined in "Tone/core/Transport".
 	 *  	
-	 *  @param  {Tone.Frequency} freq 
+	 *  @param  {Tone.Type.Frequency} freq 
 	 *  @param {number=} 	now 	if passed in, this number will be 
 	 *                        		used for all 'now' relative timings
 	 *  @return {number}      the frequency in hertz

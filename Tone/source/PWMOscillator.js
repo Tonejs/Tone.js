@@ -9,8 +9,8 @@ function(Tone){
 	 *
 	 *  @extends {Tone.Oscillator}
 	 *  @constructor
-	 *  @param {frequency} Tone.Frequency frequency of the oscillator (meaningless for noise types)
-	 *  @param {number} modulationFrequency the modulation frequency of the oscillator
+	 *  @param {Tone.Type.Frequency} frequency of the oscillator (meaningless for noise types)
+	 *  @param {Tone.Type.Frequency} modulationFrequency the modulation frequency of the oscillator
 	 *  @example
 	 *  var pwm = new Tone.PWMOscillator("Ab3", 0.3);
 	 */

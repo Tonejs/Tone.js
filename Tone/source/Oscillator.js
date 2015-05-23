@@ -8,7 +8,7 @@ function(Tone){
 	 *
 	 *  @constructor
 	 *  @extends {Tone.Source}
-	 *  @param {number|string} [frequency=440] starting frequency
+	 *  @param {Tone.Type.Frequency} [frequency=440] starting frequency
 	 *  @param {string} [type="sine"] type of oscillator (sine|square|triangle|sawtooth)
 	 *  @example
 	 *  var osc = new Tone.Oscillator(440, "sine");
@@ -76,7 +76,7 @@ function(Tone){
 	Tone.Oscillator.defaults = {
 		/** @type {string} */
 		"type" : "sine",
-		/** @type {Tone.Frequency} */
+		/** @type {Tone.Type.Frequency} */
 		"frequency" : 440,
 		/** @type {number} */
 		"detune" : 0,
@@ -152,10 +152,8 @@ function(Tone){
 	 * @memberOf Tone.Oscillator#
 	 * @type {string}
 	 * @name type
-	 * @options ["sine", "square", "sawtooth", "triangle"]
 	 * @example
 	 * osc.type = "square";
-	 * osc.type; //returns "square"
 	 */
 	Object.defineProperty(Tone.Oscillator.prototype, "type", {
 		get : function(){

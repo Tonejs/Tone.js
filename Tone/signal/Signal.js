@@ -92,7 +92,7 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 	/**
 	 * The value of the signal. 
 	 * @memberOf Tone.Signal#
-	 * @type {Tone.Type.Time|Tone.Frequency|number}
+	 * @type {*}
 	 * @name value
 	 */
 	Object.defineProperty(Tone.Signal.prototype, "value", {
@@ -109,7 +109,7 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 
 	/**
 	 * @private
-	 * @param  {Tone.Type.Time|Tone.Frequency|number|string|undefined} val the value to convert
+	 * @param  {Tone.Type.*} val the value to convert
 	 * @return {number}     the number which the value should be set to
 	 */
 	Tone.Signal.prototype._fromUnits = function(val){

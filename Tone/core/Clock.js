@@ -8,7 +8,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	 *
 	 * 	@constructor
 	 * 	@extends {Tone}
-	 * 	@param {Tone.Frequency} frequency the rate of the callback
+	 * 	@param {Tone.Type.Frequency} frequency the rate of the callback
 	 * 	@param {function} callback the callback to be invoked with the time of the audio event
 	 */
 	Tone.Clock = function(frequency, callback){

@@ -239,7 +239,7 @@ define(["Tone/core/Tone", "Tone/core/Transport"], function(Tone){
 	 *  A method which accepts frequencies in the form
 	 *  of notes (`"C#4"`), frequencies as strings ("49hz"), frequency numbers,
 	 *  or Tone.Type.Time and converts them to their frequency as a number in hertz.
-	 *  @param  {Tone.Frequency} note the note name or notation
+	 *  @param  {Tone.Type.Frequency} note the note name or notation
 	 *  @param {number=} 	now 	if passed in, this number will be 
 	 *                        		used for all 'now' relative timings
 	 *  @return {number}      the frequency as a number
