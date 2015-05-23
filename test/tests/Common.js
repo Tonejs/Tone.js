@@ -154,7 +154,7 @@ function(Tone, chai, Recorder, Master, Signal){
 			if (Tone.context !== audioContext){
 				Tone.setContext(audioContext);
 			}
-			Master.mute();
+			Master.mute = true;
 		},
 		acceptsInput : acceptsInput,
 		acceptsOutput : acceptsOutput,

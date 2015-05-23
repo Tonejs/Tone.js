@@ -15,7 +15,7 @@ function(coreTest, chai, CrossFade, Master, Signal, Recorder, Panner, LFO, Gate,
 	Volume, MidSideSplit, MidSideMerge, MidSideCompressor){
 	var expect = chai.expect;
 
-	Master.mute();
+	Master.mute = true;
 
 	describe("Tone.CrossFade", function(){
 		this.timeout(maxTimeout);

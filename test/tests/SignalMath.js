@@ -11,7 +11,7 @@ function(core, chai, Signal, Add, Multiply, Scale, Oscillator, Master, Abs, Nega
 
 	var expect = chai.expect;
 
-	Master.mute();
+	Master.mute = true;
 
 	//ADD
 	describe("Tone.Add", function(){
