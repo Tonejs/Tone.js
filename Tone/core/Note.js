@@ -3,17 +3,6 @@ define(["Tone/core/Tone", "Tone/core/Transport"], function(Tone){
 	"use strict";
 
 	/**
-	 *  Frequency can be described similar to time, except ultimately the
-	 *  values are converted to frequency instead of seconds. A number
-	 *  is taken literally as the value in hertz. Additionally any of the 
-	 *  {@link Tone.Time} encodings can be used. Note names in the form
-	 *  of NOTE OCTAVE (i.e. `C4`) are also accepted and converted to their
-	 *  frequency value. 
-	 *  
-	 *  @typedef {number|string|Tone.Time} Tone.Frequency
-	 */
-
-	/**
 	 *  @class  A timed note. Creating a note will register a callback 
 	 *          which will be invoked on the channel at the time with
 	 *          whatever value was specified. 
