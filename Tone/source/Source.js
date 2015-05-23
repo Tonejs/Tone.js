@@ -46,7 +46,7 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Master"], function(T
 		 * @example
 		 * source.volume.value = -6;
 		 */
-		this.volume = new Tone.Signal(this.output.gain, Tone.Signal.Units.Decibels);
+		this.volume = new Tone.Signal(this.output.gain, Tone.Type.Decibels);
 		this._readOnly("volume");
 
 		/**
@@ -76,17 +76,8 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Master"], function(T
 	};
 
 	/**
-	 *  @enum {string}
-	 */
-	Tone.Source.State = {
-		STARTED : "started",
-		PAUSED : "paused",
-		STOPPED : "stopped",
- 	};
-
-	/**
 	 *  Returns the playback state of the source, either "started" or "stopped".
-	 *  @type {Tone.Source.State}
+	 *  @type {Tone.State}
 	 *  @readOnly
 	 *  @memberOf Tone.Source#
 	 *  @name state
@@ -100,17 +91,17 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Master"], function(T
 	/**
 	 *  Get the state of the source at the specified time.
 	 *  @param  {Tone.Time}  time
-	 *  @return  {Tone.Source.State} 
+	 *  @return  {Tone.State} 
 	 *  @private
 	 */
 	Tone.Source.prototype._stateAtTime = function(time){
 		time = this.toSeconds(time);
 		if (this._nextStart <= time && this._nextStop > time){
-			return Tone.Source.State.STARTED;
+			return Tone.State.Started;
 		} else if (this._nextStop <= time){
-			return Tone.Source.State.STOPPED;
+			return Tone.State.Stopped;
 		} else {
-			return Tone.Source.State.STOPPED;
+			return Tone.State.Stopped;
 		}
 	};
 
@@ -123,7 +114,7 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Master"], function(T
 	 */
 	Tone.Source.prototype.start = function(time){
 		time = this.toSeconds(time);
-		if (this._stateAtTime(time) !== Tone.Source.State.STARTED || this.retrigger){
+		if (this._stateAtTime(time) !== Tone.State.Started || this.retrigger){
 			this._nextStart = time;
 			this._nextStop = Infinity;
 			this._start.apply(this, arguments);
@@ -141,7 +132,7 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Master"], function(T
 	Tone.Source.prototype.stop = function(time){
 		var now = this.now();
 		time = this.toSeconds(time, now);
-		if (this._stateAtTime(time) === Tone.Source.State.STARTED){
+		if (this._stateAtTime(time) === Tone.State.Started){
 			this._nextStop = this.toSeconds(time);
 			clearTimeout(this._timeout);
 			var diff = time - now;

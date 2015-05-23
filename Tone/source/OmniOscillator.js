@@ -24,13 +24,13 @@ function(Tone){
 		 *  the frequency control
 		 *  @type {Tone.Signal}
 		 */
-		this.frequency = new Tone.Signal(options.frequency, Tone.Signal.Units.Frequency);
+		this.frequency = new Tone.Signal(options.frequency, Tone.Type.Frequency);
 
 		/**
 		 *  the detune control
 		 *  @type {Tone.Signal}
 		 */
-		this.detune = new Tone.Signal(options.detune, Tone.Signal.Units.Cents);
+		this.detune = new Tone.Signal(options.detune, Tone.Type.Cents);
 
 		/**
 		 *  the type of the oscillator source
@@ -149,7 +149,7 @@ function(Tone){
 		this.frequency.connect(this._oscillator.frequency);
 		this.detune.connect(this._oscillator.detune);
 		this._oscillator.connect(this.output);
-		if (this.state === Tone.Source.State.STARTED){
+		if (this.state === Tone.State.Started){
 			this._oscillator.start(now);
 		}
 	};

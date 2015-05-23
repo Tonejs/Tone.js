@@ -29,13 +29,13 @@ function(Tone){
 		 *  The frequency control signal in hertz.
 		 *  @type {Tone.Signal}
 		 */
-		this.frequency = new Tone.Signal(options.frequency, Tone.Signal.Units.Frequency);
+		this.frequency = new Tone.Signal(options.frequency, Tone.Type.Frequency);
 
 		/**
 		 *  The detune control signal in cents. 
 		 *  @type {Tone.Signal}
 		 */
-		this.detune = new Tone.Signal(options.detune, Tone.Signal.Units.Cents);
+		this.detune = new Tone.Signal(options.detune, Tone.Type.Cents);
 
 		/**
 		 *  the periodic wave

@@ -39,7 +39,7 @@ function(Tone){
 		 *  the frequency control
 		 *  @type {Tone.Signal}
 		 */
-		this.frequency = new Tone.Signal(440, Tone.Signal.Units.Frequency);
+		this.frequency = new Tone.Signal(440, Tone.Type.Frequency);
 
 		/**
 		 *  the ratio between the two voices
@@ -47,6 +47,7 @@ function(Tone){
 		 *  @private
 		 */
 		this._harmonicity = new Tone.Multiply(options.harmonicity);
+		this._harmonicity.units = Tone.Type.Positive;
 
 		/**
 		 *  convert the -1,1 output to 0,1

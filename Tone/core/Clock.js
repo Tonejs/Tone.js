@@ -32,7 +32,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 		 *  the rate control signal
 		 *  @type {Tone.Signal}
 		 */
-		this.frequency = new Tone.Signal(frequency, Tone.Signal.Units.Frequency);
+		this.frequency = new Tone.Signal(frequency, Tone.Type.Frequency);
 
 		/**
 		 *  whether the tick is on the up or down

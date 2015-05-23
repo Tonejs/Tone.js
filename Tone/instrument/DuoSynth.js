@@ -59,7 +59,7 @@ function(Tone){
 		 * The amount of vibrato
 		 * @type {Tone.Signal}
 		 */
-		this.vibratoAmount = new Tone.Signal(this._vibratoGain.gain, Tone.Signal.Units.Gain);
+		this.vibratoAmount = new Tone.Signal(this._vibratoGain.gain, Tone.Type.Gain);
 		this.vibratoAmount.value = options.vibratoAmount;
 
 		/**
@@ -73,7 +73,7 @@ function(Tone){
 		 *  the frequency control
 		 *  @type {Tone.Signal}
 		 */
-		this.frequency = new Tone.Signal(440, Tone.Signal.Units.Frequency);
+		this.frequency = new Tone.Signal(440, Tone.Type.Frequency);
 
 		/**
 		 *  the ratio between the two voices

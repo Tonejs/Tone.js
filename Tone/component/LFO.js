@@ -48,7 +48,7 @@ function(Tone){
 		 * @type {Tone.Signal}
 		 */
 		this.amplitude = this.oscillator.volume;
-		this.amplitude.units = Tone.Signal.Units.Normal;
+		this.amplitude.units = Tone.Type.Normal;
 		this.amplitude.value = options.amplitude;
 
 		/**
@@ -68,7 +68,7 @@ function(Tone){
 		 *  @type {string} 
 		 *  @private
 		 */
-		this._units = Tone.Signal.Units.Number;
+		this._units = Tone.Type.Number;
 
 		//connect it up
 		this.oscillator.chain(this._a2g, this._scaler);

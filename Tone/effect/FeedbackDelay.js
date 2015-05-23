@@ -22,7 +22,7 @@ define(["Tone/core/Tone", "Tone/effect/FeedbackEffect", "Tone/signal/Signal"], f
 		 *  Tone.Signal to control the delay amount
 		 *  @type {Tone.Signal}
 		 */
-		this.delayTime = new Tone.Signal(options.delayTime, Tone.Signal.Units.Time);
+		this.delayTime = new Tone.Signal(options.delayTime, Tone.Type.Time);
 
 		/**
 		 *  the delay node

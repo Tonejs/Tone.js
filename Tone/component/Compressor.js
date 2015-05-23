@@ -33,13 +33,13 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 		 *  The attack parameter
 		 *  @type {Tone.Signal}
 		 */
-		this.attack = new Tone.Signal(this._compressor.attack, Tone.Signal.Units.Time);
+		this.attack = new Tone.Signal(this._compressor.attack, Tone.Type.Time);
 
 		/**
 		 *  The release parameter
 		 *  @type {Tone.Signal}
 		 */
-		this.release = new Tone.Signal(this._compressor.release, Tone.Signal.Units.Time);
+		this.release = new Tone.Signal(this._compressor.release, Tone.Type.Time);
 
 		/**
 		 *  The knee parameter

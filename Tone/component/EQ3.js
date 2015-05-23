@@ -61,19 +61,19 @@ define(["Tone/core/Tone", "Tone/component/MultibandSplit", "Tone/signal/Signal"]
 		 * The gain in decibels of the low part
 		 * @type {Tone.Signal}
 		 */
-		this.low = new Tone.Signal(this._lowGain.gain, Tone.Signal.Units.Decibels);
+		this.low = new Tone.Signal(this._lowGain.gain, Tone.Type.Decibels);
 
 		/**
 		 * The gain in decibels of the mid part
 		 * @type {Tone.Signal}
 		 */
-		this.mid = new Tone.Signal(this._midGain.gain, Tone.Signal.Units.Decibels);
+		this.mid = new Tone.Signal(this._midGain.gain, Tone.Type.Decibels);
 
 		/**
 		 * The gain in decibels of the high part
 		 * @type {Tone.Signal}
 		 */
-		this.high = new Tone.Signal(this._highGain.gain, Tone.Signal.Units.Decibels);
+		this.high = new Tone.Signal(this._highGain.gain, Tone.Type.Decibels);
 
 		/**
 		 *  the Q value

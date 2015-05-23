@@ -227,7 +227,12 @@ define(function(){
 		}
 		if (!isUndef(constr._super)){
 			var superDefs = this._collectDefaults(constr._super);
-			ret = ret.concat(superDefs);
+			//filter out repeats
+			for (var i = 0; i < superDefs.length; i++){
+				if (ret.indexOf(superDefs[i]) === -1){
+					ret.push(superDefs[i]);
+				}
+			}
 		}
 		return ret;
 	};
@@ -719,6 +724,102 @@ define(function(){
 	};
 
 	///////////////////////////////////////////////////////////////////////////
+	//	TYPES / STATES
+	///////////////////////////////////////////////////////////////////////////
+
+	/**
+	 * Possible types which a value can take on
+	 * @enum {string}
+	 */
+	Tone.Type = {
+		/** 
+		 *  A number which can take on any value between [-Infinity, Infinity]
+		 */
+		Number : "number",
+		/**
+		 *  Time can be descibed in a number of ways. 
+		 *  Any Method which accepts Tone.Time as a parameter will accept: 
+		 *  <ul>
+		 *  <li>Numbers, which will be taken literally as the time (in seconds). </li>
+		 *  
+		 *  <li>Notation, ("4n", "8t") describes time in BPM and time signature relative values. </li>
+		 *  
+		 *  <li>Transport Time, ("4:3:2") will also provide tempo and time signature relative times 
+		 *  in the form BARS:QUARTERS:SIXTEENTHS.</li>
+		 *  
+		 *  <li>Frequency, ("8hz") is converted to the length of the cycle in seconds.</li>
+		 *  
+		 *  <li>Now-Relative, ("+1") prefix any of the above with "+" and it will be interpreted as 
+		 *  "the current time plus whatever expression follows".</li>
+		 *  
+		 *  <li>Expressions, ("3:0 + 2 - (1m / 7)") any of the above can also be combined 
+		 *  into a mathematical expression which will be evaluated to compute the desired time.</li>
+		 *  
+		 *  <li>No Argument, for methods which accept time, no argument will be interpreted as 
+		 *  "now" (i.e. the currentTime).</li>
+		 *  </ul>
+		 *  [Tone.Time Wiki](https://github.com/TONEnoTONE/Tone.js/wiki/Time)
+		 */
+		Time : "time",
+		/**
+		 *  Frequency can be described similar to time, except ultimately the
+		 *  values are converted to frequency instead of seconds. A number
+		 *  is taken literally as the value in hertz. Additionally any of the 
+		 *  {@link Tone.Time} encodings can be used. Note names in the form
+		 *  of NOTE OCTAVE (i.e. `C4`) are also accepted and converted to their
+		 *  frequency value. 
+		 */
+		Frequency : "frequency",
+		/**
+		 * Gain is the ratio between the input and the output value of a signal.
+		 */
+		Gain : "gain",
+		/** 
+		 *  Normal values are within the range of [0-1].
+		 */
+		Normal : "normal",
+		/** 
+		 * AudioRange values are between [-1, 1].
+		 */
+		AudioRange : "audiorange",
+		/** 
+		 *  Decibels are a logarithmic unit of measurement representing a 10th of a bel. 
+		 */
+		Decibels : "db",
+		/** 
+		 *  Half-step note increments, i.e. 12 is an octave above the root. and 1 is a half-step up.
+		 */
+		Interval : "interval",
+		/** 
+		 *  Beats per minute. 
+		 */
+		BPM : "bpm",
+		/** 
+		 *  The value must be greater than 0.
+		 */
+		Positive : "positive",
+		/** 
+		 *  A cent is a hundreth of a semitone. 
+		 *  @type  {String}
+		 */
+		Cents : "cents",
+		/** 
+		 *  Degrees (0 - 360)
+		 */
+		Degrees : "degrees"
+	};
+
+	/**
+	 * Possible play states. 
+	 * @enum {string}
+	 */
+	Tone.State = {
+		Started : "started",
+		Stopped : "stopped",
+		Paused : "paused",
+ 	};
+
+	///////////////////////////////////////////////////////////////////////////
 	//	CONTEXT
 	///////////////////////////////////////////////////////////////////////////
 
@@ -788,7 +889,9 @@ define(function(){
 		_silentNode.connect(audioContext.destination);
 	});
 
-	console.log("%c * Tone.js r5-dev * ", "background: #000; color: #fff");
+	Tone.version = "r5-dev";
+
+	console.log("%c * Tone.js " + Tone.version + " * ", "background: #000; color: #fff");
 
 	return Tone;
 });

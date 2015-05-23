@@ -29,7 +29,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/component/Filter"], functi
 		 *  the delayTime
 		 *  @type {Tone.Signal}
 		 */
-		this.delayTime = new Tone.Signal(options.delayTime, Tone.Signal.Units.Time);
+		this.delayTime = new Tone.Signal(options.delayTime, Tone.Type.Time);
 
 		/**
 		 *  the lowpass filter
@@ -44,7 +44,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/component/Filter"], functi
 		 *  the dampening control
 		 *  @type {Tone.Signal}
 		 */
-		this.dampening = new Tone.Signal(this._lowpass.frequency, Tone.Signal.Units.Frequency);
+		this.dampening = new Tone.Signal(this._lowpass.frequency, Tone.Type.Frequency);
 		this.dampening.value = options.dampening;
 
 		/**
@@ -58,7 +58,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/component/Filter"], functi
 		 *  the resonance control
 		 *  @type {Tone.Signal}
 		 */
-		this.resonance = new Tone.Signal(options.resonance, Tone.Signal.Units.Normal);
+		this.resonance = new Tone.Signal(options.resonance, Tone.Type.Normal);
 
 		//connections
 		this._delay.chain(this._lowpass, this._feedback, this._delay);

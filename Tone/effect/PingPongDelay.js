@@ -45,7 +45,7 @@ function(Tone){
 		 *  the delay time signal
 		 *  @type {Tone.Signal}
 		 */
-		this.delayTime = new Tone.Signal(options.delayTime, Tone.Signal.Units.Time);
+		this.delayTime = new Tone.Signal(options.delayTime, Tone.Type.Time);
 
 		//connect it up
 		this.effectSendL.chain(this._leftDelay, this.effectReturnL);

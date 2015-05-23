@@ -35,7 +35,7 @@ function(Tone){
 		 *  the bpm value
 		 *  @type {Tone.Signal}
 		 */
-		this.bpm = new Tone.Signal(120, Tone.Signal.Units.BPM);
+		this.bpm = new Tone.Signal(120, Tone.Type.BPM);
 
 		/**
 		 *  the signal scalar
@@ -46,9 +46,9 @@ function(Tone){
 
 		/**
 		 * 	The state of the transport. 
-		 *  @type {TransportState}
+		 *  @type {Tone.State}
 		 */
-		this.state = TransportState.STOPPED;
+		this.state = Tone.State.Stopped;
 
 		//connect it all up
 		this.bpm.chain(this._bpmMult, this._clock.frequency);
@@ -168,15 +168,6 @@ function(Tone){
 	 */
 	var SyncedSignals = [];
 
-	/**
-	 *  @enum
-	 */
-	 var TransportState = {
-	 	STARTED : "started",
-	 	PAUSED : "paused",
-	 	STOPPED : "stopped"
-	 };
-
 	///////////////////////////////////////////////////////////////////////////////
 	//	TICKS
 	///////////////////////////////////////////////////////////////////////////////
@@ -187,7 +178,7 @@ function(Tone){
 	 *  @private
 	 */
 	Tone.Transport.prototype._processTick = function(tickTime){
-		if (this.state === TransportState.STARTED){
+		if (this.state === Tone.State.Started){
 			if (swingAmount > 0 && 
 				timelineTicks % tatum !== 0 && //not on a downbeat
 				timelineTicks % swingTatum === 0){
@@ -513,11 +504,11 @@ function(Tone){
 	 *  @returns {Tone.Transport} `this`
 	 */
 	Tone.Transport.prototype.start = function(time, offset){
-		if (this.state === TransportState.STOPPED || this.state === TransportState.PAUSED){
+		if (this.state === Tone.State.Stopped || this.state === Tone.State.Paused){
 			if (!this.isUndef(offset)){
 				this._setTicks(this._toTicks(offset));
 			}
-			this.state = TransportState.STARTED;
+			this.state = Tone.State.Started;
 			var startTime = this.toSeconds(time);
 			this._clock.start(startTime);
 			//call start on each of the synced sources
@@ -538,7 +529,7 @@ function(Tone){
 	 *  @returns {Tone.Transport} `this`
 	 */
 	Tone.Transport.prototype.stop = function(time){
-		if (this.state === TransportState.STARTED || this.state === TransportState.PAUSED){
+		if (this.state === Tone.State.Started || this.state === Tone.State.Paused){
 			var stopTime = this.toSeconds(time);
 			this._clock.stop(stopTime);
 			//call start on each of the synced sources
@@ -560,7 +551,7 @@ function(Tone){
 		transportTicks = 0;
 		this._setTicks(0);
 		this.clearTimeouts();
-		this.state = TransportState.STOPPED;
+		this.state = Tone.State.Stopped;
 	};
 
 	/**
@@ -570,8 +561,8 @@ function(Tone){
 	 *  @returns {Tone.Transport} `this`
 	 */
 	Tone.Transport.prototype.pause = function(time){
-		if (this.state === TransportState.STARTED){
-			this.state = TransportState.PAUSED;
+		if (this.state === Tone.State.Started){
+			this.state = Tone.State.Paused;
 			var stopTime = this.toSeconds(time);
 			this._clock.stop(stopTime);
 			//call pause on each of the synced sources

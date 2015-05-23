@@ -21,7 +21,7 @@ define(["Tone/core/Tone", "Tone/core/Master", "Tone/core/Note"], function(Tone){
 		 * the volume of the output in decibels
 		 * @type {Tone.Signal}
 		 */
-		this.volume = new Tone.Signal(this.output.gain, Tone.Signal.Units.Decibels);
+		this.volume = new Tone.Signal(this.output.gain, Tone.Type.Decibels);
 		this._readOnly(["volume"]);
 	};
 

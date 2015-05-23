@@ -37,7 +37,7 @@ function(Tone){
 		 *  the frequency control
 		 *  @type {Tone.Signal}
 		 */
-		this.frequency = new Tone.Signal(440, Tone.Signal.Units.Frequency);
+		this.frequency = new Tone.Signal(440, Tone.Type.Frequency);
 
 		/**
 		 *  the ratio between the two voices

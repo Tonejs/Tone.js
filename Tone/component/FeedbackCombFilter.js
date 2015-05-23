@@ -19,7 +19,7 @@ define(["Tone/core/Tone", "Tone/signal/ScaleExp", "Tone/signal/Signal"], functio
 		 *  the resonance control
 		 *  @type {Tone.Signal}
 		 */
-		this.resonance = new Tone.Signal(options.resonance, Tone.Signal.Units.Normal);
+		this.resonance = new Tone.Signal(options.resonance, Tone.Type.Normal);
 
 		/**
 		 *  the delay node
@@ -32,7 +32,7 @@ define(["Tone/core/Tone", "Tone/signal/ScaleExp", "Tone/signal/Signal"], functio
 		 *  the delayTime
 		 *  @type {Tone.Signal}
 		 */
-		this.delayTime = new Tone.Signal(options.delayTime, Tone.Signal.Units.Time);
+		this.delayTime = new Tone.Signal(options.delayTime, Tone.Type.Time);
 
 		/**
 		 *  the feedback node

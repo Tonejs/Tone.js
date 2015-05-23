@@ -32,6 +32,8 @@ define(["Tone/core/Tone"], function(Tone){
 			node._value.cancelScheduledValues(0);
 			//reset the value
 			node._value.value = 0;
+			//mark the value as overridden
+			node.overridden = true;
 		} else if (node instanceof AudioParam){
 			node.cancelScheduledValues(0);
 			node.value = 0;

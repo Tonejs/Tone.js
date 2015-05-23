@@ -17,13 +17,15 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 	 *  @example
 	 *  var signal = new Tone.Signal(10);
 	 */
-	Tone.Signal = function(value, units){
+	Tone.Signal = function(){
+
+		var options = this.optionsObject(arguments, ["value", "units"], Tone.Signal.defaults);
 
 		/**
 		 * the units the signal is in
-		 * @type {Tone.Signal.Type}
+		 * @type {string}
 		 */
-		this.units = this.defaultArg(units, Tone.Signal.Units.Number);
+		this.units = options.units;
 
 		/**
 		 *  When true, converts the set value
@@ -32,7 +34,15 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 		 *  are merely used as a label. 
 		 *  @type  {boolean}
 		 */
-		this.convert = true;
+		this.convert = options.convert;
+
+		/**
+		 *  True if the signal value is being overridden by 
+		 *  a connected signal.
+		 *  @readOnly
+		 *  @type  {boolean}
+		 */
+		this.overridden = false;
 
 		/**
 		 * The node where the constant signal value is scaled.
@@ -48,12 +58,16 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 		 */
 		this.input = this._value = this._scaler.gain;
 
-		if (value instanceof AudioParam){
-			this._scaler.connect(value);
+		if (options.value instanceof AudioParam){
+			this._scaler.connect(options.value);
 			//zero out the value
-			value.value = 0;
+			options.value.value = 0;
 		} else {
-			this.value = this.defaultArg(value, Tone.Signal.defaults.value);
+			if (options.param !== null){
+				this._scaler.connect(options.param);
+				options.param.value = 0;
+			}
+			this.value = options.value;
 		}
 
 		//connect the constant 1 output to the node output
@@ -69,7 +83,10 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 	 *  @const
 	 */
 	Tone.Signal.defaults = {
-		"value" : 0
+		"value" : 0,
+		"param" : null,
+		"units" : Tone.Type.Number,
+		"convert" : true,
 	};
 
 	/**
@@ -92,22 +109,24 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 
 	/**
 	 * @private
-	 * @param  {Tone.Time|Tone.Volume|Tone.Frequency|number|undefined} val the value to convert
+	 * @param  {Tone.Time|Tone.Frequency|number|string|undefined} val the value to convert
 	 * @return {number}     the number which the value should be set to
 	 */
 	Tone.Signal.prototype._fromUnits = function(val){
-		if (this.convert){
+		if (this.convert || this.isUndef(this.convert)){
 			switch(this.units){
-				case Tone.Signal.Units.Time: 
+				case Tone.Type.Time: 
 					return this.toSeconds(val);
-				case Tone.Signal.Units.Frequency: 
+				case Tone.Type.Frequency: 
 					return this.toFrequency(val);
-				case Tone.Signal.Units.Decibels: 
+				case Tone.Type.Decibels: 
 					return this.dbToGain(val);
-				case Tone.Signal.Units.Normal: 
+				case Tone.Type.Normal: 
 					return Math.min(Math.max(val, 0), 1);
-				case Tone.Signal.Units.Audio: 
+				case Tone.Type.AudioRange: 
 					return Math.min(Math.max(val, -1), 1);
+				case Tone.Type.Positive: 
+					return Math.max(val, 0);
 				default:
 					return val;
 			}
@@ -123,9 +142,9 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 	 * @return {number}
 	 */
 	Tone.Signal.prototype._toUnits = function(val){
-		if (this.convert){
+		if (this.convert || this.isUndef(this.convert)){
 			switch(this.units){
-				case Tone.Signal.Units.Decibels: 
+				case Tone.Type.Decibels: 
 					return this.gainToDb(val);
 				default:
 					return val;
@@ -294,7 +313,7 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 	 */
 	Tone.Signal.prototype.rampTo = function(value, rampTime){
 		rampTime = this.defaultArg(rampTime, 0);
-		if (this.units === Tone.Signal.Units.Frequency || this.units === Tone.Signal.Units.BPM){
+		if (this.units === Tone.Type.Frequency || this.units === Tone.Type.BPM){
 			this.exponentialRampToValueNow(value, rampTime);
 		} else {
 			this.linearRampToValueNow(value, rampTime);
@@ -311,33 +330,6 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 		this._value = null;
 		this._scaler = null;
 		return this;
-	};
-
-	/**
-	 * The units the Signal is in
-	 * @enum {string}
-	 */
-	Tone.Signal.Units = {
-		/** The default type. */
-		Number : "number",
-		/** Tone.Time will be converted into seconds. */
-		Time : "time",
-		/** Tone.Frequency will be converted into hertz. */
-		Frequency : "frequency",
-		/** A Gain value. */
-		Gain : "gain",
-		/** Within normal range [0,1]. */
-		Normal : "normal",
-		/** Within normal range [-1,1]. */
-		Audio : "audio",
-		/** In decibels. */
-		Decibels : "db",
-		/** In half-step increments, i.e. 12 is an octave above the root. */
-		Interval : "interval",
-		/** Beats per minute. */
-		BPM : "bpm",
-		/** A value greater than 0 */
-		Positive : "positive"
 	};
 
 	///////////////////////////////////////////////////////////////////////////
