@@ -45,7 +45,11 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 		 *  the gain of the filter, only used in certain filter types
 		 *  @type {Tone.Signal}
 		 */
-		this.gain = new Tone.Signal(options.gain, Tone.Signal.Units.Decibels);
+		this.gain = new Tone.Signal({
+			"value" : options.gain, 
+			"units" : Tone.Signal.Units.Decibels,
+			"convert" : false
+		});
 
 		/**
 		 *  the Q or Quality of the filter
