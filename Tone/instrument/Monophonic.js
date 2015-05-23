@@ -38,7 +38,7 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/signal/Signal"], f
 	/**
 	 *  trigger the attack. start the note, at the time with the velocity
 	 *  
-	 *  @param  {string|string} note     the note
+	 *  @param  {Tone.Frequency} note     the note
 	 *  @param  {Tone.Time} [time=now]     the time, if not given is now
 	 *  @param  {number} [velocity=1] velocity defaults to 1
 	 *  @returns {Tone.Monophonic} `this`
@@ -80,7 +80,7 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/signal/Signal"], f
 
 	/**
 	 *  set the note to happen at a specific time
-	 *  @param {number|string} note if the note is a string, it will be 
+	 *  @param {Tone.Frequency} note if the note is a string, it will be 
 	 *                              parsed as (NoteName)(Octave) i.e. A4, C#3, etc
 	 *                              otherwise it will be considered as the frequency
 	 *  @returns {Tone.Monophonic} `this`
