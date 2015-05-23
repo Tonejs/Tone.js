@@ -8,7 +8,8 @@ function(Tone){
 	 *          which can be attached to an AudioParam or Tone.Signal 
 	 *          for constant control over that parameter. the LFO can 
 	 *          also be synced to the transport to start/stop/pause
-	 *          and change when the tempo changes.
+	 *          and change when the tempo changes. The LFO starts at 
+	 *          it's minimal value.
 	 *
 	 *  @constructor
 	 *  @extends {Tone.Oscillator}
@@ -30,7 +31,7 @@ function(Tone){
 		this.oscillator = new Tone.Oscillator({
 			"frequency" : options.frequency, 
 			"type" : options.type, 
-			"phase" : options.phase
+			"phase" : options.phase + 90
 		});
 
 		/**
@@ -61,6 +62,13 @@ function(Tone){
 		 *  @private
 		 */
 		this._scaler = this.output = new Tone.Scale(options.min, options.max);
+
+		/**
+		 *  the units of the LFO (used for converting)
+		 *  @type {string} 
+		 *  @private
+		 */
+		this._units = Tone.Signal.Units.Number;
 
 		//connect it up
 		this.oscillator.chain(this._a2g, this._scaler);
@@ -142,9 +150,10 @@ function(Tone){
 	 */
 	Object.defineProperty(Tone.LFO.prototype, "min", {
 		get : function(){
-			return this._scaler.min;
+			return this._toUnits(this._scaler.min);
 		},
 		set : function(min){
+			min = this._fromUnits(min);
 			this._scaler.min = min;
 		}
 	});
@@ -157,9 +166,10 @@ function(Tone){
 	 */
 	Object.defineProperty(Tone.LFO.prototype, "max", {
 		get : function(){
-			return this._scaler.max;
+			return this._toUnits(this._scaler.max);
 		},
 		set : function(max){
+			max = this._fromUnits(max);
 			this._scaler.max = max;
 		}
 	});
@@ -187,19 +197,65 @@ function(Tone){
 	 */
 	 Object.defineProperty(Tone.LFO.prototype, "phase", {
 		get : function(){
-			return this.oscillator.phase;
+			return this.oscillator.phase - 90;
 		},
 		set : function(phase){
-			this.oscillator.phase = phase;
+			this.oscillator.phase = phase + 90;
 		}
 	});
 
 	/**
-	 *	Override the connect method so that it 0's out the value 
-	 *	if attached to an AudioParam or Tone.Signal. Borrowed from {@link Tone.Signal}
-	 *  @function
+	 * The output units of the LFO
+	 * @memberOf Tone.LFO#
+	 * @type {string}
+	 * @name units
 	 */
-	Tone.LFO.prototype.connect = Tone.Signal.prototype.connect;
+	 Object.defineProperty(Tone.LFO.prototype, "units", {
+		get : function(){
+			return this._units;
+		},
+		set : function(val){
+			var currentMin = this.min;
+			var currentMax = this.max;
+			//convert the min and the max
+			this._units = val;
+			this.min = currentMin;
+			this.max = currentMax;
+		}
+	});
+
+	/**
+	 *  Connect the output of a ToneNode to an AudioParam, AudioNode, or Tone Node. 
+	 *  will get the units from the connected node.
+	 *  @param  {Tone | AudioParam | AudioNode} node 
+	 *  @param {number} [outputNum=0] optionally which output to connect from
+	 *  @param {number} [inputNum=0] optionally which input to connect to
+	 *  @returns {Tone.LFO} `this`
+	 */
+	Tone.LFO.prototype.connect = function(node){
+		if (node.constructor === Tone.Signal){
+			this.convert = node.convert;
+			this.units = node.units;
+		}
+		Tone.Signal.prototype.connect.apply(this, arguments);
+		return this;
+	};
+
+	/**
+	 *  private method borroed from Signal converts 
+	 *  units from their destination value
+	 *  @function
+	 *  @private
+	 */
+	Tone.LFO.prototype._fromUnits = Tone.Signal.prototype._fromUnits;
+
+	/**
+	 *  private method borroed from Signal converts 
+	 *  units to their destination value
+	 *  @function
+	 *  @private
+	 */
+	Tone.LFO.prototype._toUnits = Tone.Signal.prototype._toUnits;
 
 	/**
 	 *  disconnect and dispose
