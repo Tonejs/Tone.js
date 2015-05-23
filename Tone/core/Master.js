@@ -45,54 +45,63 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	Tone.extend(Tone.Master);
 
 	/**
-	 *  Mute the output
-	 *  @returns {Tone.Master} `this`
+	 *  @type {Object}
+	 *  @const
 	 */
-	Tone.Master.prototype.mute = function(){
-		if (!this._muted){
-			this._muted = true;
-			this._unmutedVolume = this.volume.value;
-			//maybe it should ramp here?
-			this.volume.value = -Infinity;
-		}
-		return this;
+	Tone.Master.defaults = {
+		"volume" : 0,
+		"mute" : false
 	};
 
 	/**
-	 *  Unmute the output. Will return the volume to it's value before 
-	 *  the output was muted. 
-	 *  @returns {Tone.Master} `this`
+	 * Set `mute` to true to stop all output
+	 * @memberOf Tone.Master#
+	 * @type {boolean}
+	 * @name mute
+	 * @example
+	 * //mute the output
+	 * Tone.Master.mute = true;
 	 */
-	Tone.Master.prototype.unmute = function(){
-		if (this._muted){
-			this._muted = false;
-			this.volume.value = this._unmutedVolume;
+	Object.defineProperty(Tone.Master.prototype, "mute", {
+		get : function(){
+			return this._muted;
+		}, 
+		set : function(mute){
+			this._muted = mute;
+			if (!this._muted && mute){
+				this._unmutedVolume = this.volume.value;
+				//maybe it should ramp here?
+				this.volume.value = -Infinity;
+			} else if (this._muted && !mute){
+				this.volume.value = this._unmutedVolume;
+			}
 		}
-		return this;
-	};
+	});
 
 	/**
-	 *  route the master signal to the node's input. 
-	 *  NOTE: this will disconnect the previously connected node
-	 *  @param {AudioNode|Tone} node the node to use as the entry
-	 *                               point to the master chain
-	 *  @returns {Tone.Master} `this`
+	 *  Add a master effects chain. This will disconnect any nodes which were previously 
+	 *  chained. 
+	 *  @param {AudioNode|Tone...} args All arguments will be connected in a row
+	 *                                  and the Master will be routed through it
+	 *  @return  {Tone.Master}  `this`
+	 *  @example
+	 * //some overall compression to keep the levels in check
+	 * var masterCompressor = new Tone.Compressor({
+	 * 	"threshold" : -6,
+	 * 	"ratio" : 3,
+	 * 	"attack" : 0.5,
+	 * 	"release" : 0.1
+	 * });
+	 * //give a little boost to the lows
+	 * var lowBump = new Tone.Filter(200, "lowshelf");
+	 * //route everything through the filter 
+	 * //and compressor before going to the speakers
+	 * Tone.Master.chain(lowBump, masterCompressor);
 	 */
-	Tone.Master.prototype.send = function(node){
-		//disconnect the previous node
+	Tone.Master.prototype.chain = function(){
 		this.input.disconnect();
-		this.input.connect(node);
-		return this;
-	};
-
-	/**
-	 *  the master effects chain return point
-	 *  @param {AudioNode|Tone} node the node to connect 
-	 *  @returns {Tone.Master} `this`
-	 */
-	Tone.Master.prototype.receive = function(node){
-		node.connect(this.output);
-		return this;
+		this.input.chain.apply(this.input, arguments);
+		arguments[arguments.length - 1].connect(this.output);
 	};
 
 	///////////////////////////////////////////////////////////////////////////
