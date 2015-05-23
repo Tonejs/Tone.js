@@ -1,22 +1,23 @@
 var child_process = require("child_process");
 var fs = require("fs");
 
-var folders = ["../../Tone/core", "../../Tone/source", "../../Tone/instrument", "../../Tone/effect", "../../Tone/component", "../../Tone/signal"];
-// var folders = ["../../Tone/core", "../../Tone/source"];
-var outputFile = "./out.json";
+var outputFile = "/out.json";
 
-child_process.exec("jsdoc -X "+folders.join(" ") + " > "+outputFile, function(){
-	var file = fs.readFileSync(outputFile);
-	var json = JSON.parse(file);
-	getClassList(json);
-	getClassHierarchy(json);
-	getClassDescription(json);
-});
+module.exports = function(files, outfolder, onend){
+	child_process.exec("jsdoc -X "+files.join(" ") + " > "+outfolder+outputFile, function(){
+		var file = fs.readFileSync(outfolder+outputFile);
+		var json = JSON.parse(file);
+		getClassList(json, outfolder);
+		getClassHierarchy(json, outfolder);
+		getClassDescription(json, outfolder);
+		onend();
+	});
+};
 
 /**
  *  CLASS LIST
  */
-function getClassList(json){
+function getClassList(json, outfolder){
 	console.log("making class list");
 
 	var classList = {};
@@ -32,13 +33,13 @@ function getClassList(json){
 			classList[level].push(item.name);
 		}
 	}
-	fs.writeFileSync("classList.json", JSON.stringify(classList, undefined, "\t"));
+	fs.writeFileSync(outfolder+"/classList.json", JSON.stringify(classList, undefined, "\t"));
 }
 
 /**
  *  CLASS HEIRARCHY
  */
-function getClassHierarchy(json){
+function getClassHierarchy(json, outfolder){
 
 	console.log("making class heirarchy");
 
@@ -59,7 +60,7 @@ function getClassHierarchy(json){
 	}
 	//starting from the top
 	getChildren("Tone", parents, classHierarchy);
-	fs.writeFileSync("classHierarchy.json", JSON.stringify(classHierarchy, undefined, "\t"));
+	fs.writeFileSync(outfolder+"/classHierarchy.json", JSON.stringify(classHierarchy, undefined, "\t"));
 }
 
 function getChildren(parent, parentList, heirarchy){
@@ -79,7 +80,7 @@ function getChildren(parent, parentList, heirarchy){
 /**
  *  CLASS DESCRIPTIONS
  */
-function getClassDescription(json){
+function getClassDescription(json, outfolder){
 
 	console.log("parsing descriptions");
 
@@ -99,7 +100,7 @@ function getClassDescription(json){
 			}
 		}
 	}
-	fs.writeFileSync("constructors.json", JSON.stringify(constructors, undefined, "\t"));
+	fs.writeFileSync(outfolder+"/constructors.json", JSON.stringify(constructors, undefined, "\t"));
 
 	//functions
 	var functions = {};
@@ -127,7 +128,7 @@ function getClassDescription(json){
 			};
 		}
 	}
-	fs.writeFileSync("methods.json", JSON.stringify(functions, undefined, "\t"));
+	fs.writeFileSync(outfolder+"/methods.json", JSON.stringify(functions, undefined, "\t"));
 
 	//members
 	var members = {};
@@ -162,7 +163,7 @@ function getClassDescription(json){
 			members[cls][item.name] = memberDesc;
 		}
 	}
-	fs.writeFileSync("members.json", JSON.stringify(members, undefined, "\t"));
+	fs.writeFileSync(outfolder+"/members.json", JSON.stringify(members, undefined, "\t"));
 
 	//typedef
 	var typedefs = {};
@@ -175,7 +176,7 @@ function getClassDescription(json){
 			};
 		}
 	}
-	fs.writeFileSync("typedefs.json", JSON.stringify(typedefs, undefined, "\t"));
+	fs.writeFileSync(outfolder+"/types.json", JSON.stringify(typedefs, undefined, "\t"));
 
 	//defaults
 	var defaults = {};
@@ -196,5 +197,5 @@ function getClassDescription(json){
 			}
 		}
 	}
-	fs.writeFileSync("defaults.json", JSON.stringify(defaults, undefined, "\t"));
+	fs.writeFileSync(outfolder+"/defaults.json", JSON.stringify(defaults, undefined, "\t"));
 }

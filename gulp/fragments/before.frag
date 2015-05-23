@@ -2,10 +2,10 @@
 	"use strict";
 	var Tone;
 	//constructs the main Tone object
-	function ToneCore(func){
+	function Main(func){
 		Tone = func();
 	}
 	//invokes each of the modules with the main Tone object as the argument
-	function ToneModule(func){
+	function Module(func){
 		func(Tone);
 	}
