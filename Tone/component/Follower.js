@@ -12,8 +12,8 @@ function(Tone){
 	 *  
 	 *  @constructor
 	 *  @extends {Tone}
-	 *  @param {Tone.Time} [attack = 0.05] 
-	 *  @param {Tone.Time} [release = 0.5] 
+	 *  @param {Tone.Type.Time} [attack = 0.05] 
+	 *  @param {Tone.Type.Time} [release = 0.5] 
 	 *  @example
 	 *  var follower = new Tone.Follower(0.2, 0.4);
 	 */
@@ -100,8 +100,8 @@ function(Tone){
 
 	/**
 	 *  sets the attack and release times in the wave shaper
-	 *  @param   {Tone.Time} attack  
-	 *  @param   {Tone.Time} release 
+	 *  @param   {Tone.Type.Time} attack  
+	 *  @param   {Tone.Type.Time} release 
 	 *  @private
 	 */
 	Tone.Follower.prototype._setAttackRelease = function(attack, release){
@@ -122,7 +122,7 @@ function(Tone){
 	/**
 	 * The attack time.
 	 * @memberOf Tone.Follower#
-	 * @type {Tone.Time}
+	 * @type {Tone.Type.Time}
 	 * @name attack
 	 */
 	Object.defineProperty(Tone.Follower.prototype, "attack", {
@@ -138,7 +138,7 @@ function(Tone){
 	/**
 	 * The release time.
 	 * @memberOf Tone.Follower#
-	 * @type {Tone.Time}
+	 * @type {Tone.Type.Time}
 	 * @name release
 	 */
 	Object.defineProperty(Tone.Follower.prototype, "release", {

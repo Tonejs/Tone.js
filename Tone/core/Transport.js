@@ -278,7 +278,7 @@ function(Tone){
 	 *  Set a callback for a recurring event.
 	 *
 	 *  @param {function} callback
-	 *  @param {Tone.Time}   interval 
+	 *  @param {Tone.Type.Time}   interval 
 	 *  @return {number} the id of the interval
 	 *  @example
 	 *  //triggers a callback every 8th note with the exact time of the event
@@ -329,7 +329,7 @@ function(Tone){
 	 *  transport is stopped. 
 	 *
 	 *  @param {function} callback 
-	 *  @param {Tone.Time}   time     
+	 *  @param {Tone.Type.Time}   time     
 	 *  @return {number} the id of the timeout for clearing timeouts
 	 *  @example
 	 *  //trigger an event to happen 1 second from now
@@ -446,7 +446,7 @@ function(Tone){
 
 	/**
 	 *  turns the time into
-	 *  @param  {Tone.Time} time
+	 *  @param  {Tone.Type.Time} time
 	 *  @return {number}   
 	 *  @private   
 	 */
@@ -499,8 +499,8 @@ function(Tone){
 	/**
 	 *  start the transport and all sources synced to the transport
 	 *  
-	 *  @param  {Tone.Time} time
-	 *  @param  {Tone.Time=} offset the offset position to start
+	 *  @param  {Tone.Type.Time} time
+	 *  @param  {Tone.Type.Time=} offset the offset position to start
 	 *  @returns {Tone.Transport} `this`
 	 */
 	Tone.Transport.prototype.start = function(time, offset){
@@ -525,7 +525,7 @@ function(Tone){
 	/**
 	 *  stop the transport and all sources synced to the transport
 	 *  
-	 *  @param  {Tone.Time} time
+	 *  @param  {Tone.Type.Time} time
 	 *  @returns {Tone.Transport} `this`
 	 */
 	Tone.Transport.prototype.stop = function(time){
@@ -557,7 +557,7 @@ function(Tone){
 	/**
 	 *  pause the transport and all sources synced to the transport
 	 *  
-	 *  @param  {Tone.Time} time
+	 *  @param  {Tone.Type.Time} time
 	 *  @returns {Tone.Transport} `this`
 	 */
 	Tone.Transport.prototype.pause = function(time){
@@ -598,7 +598,7 @@ function(Tone){
 	/**
 	 * The loop start point
 	 * @memberOf Tone.Transport#
-	 * @type {Tone.Time}
+	 * @type {Tone.Type.Time}
 	 * @name loopStart
 	 */
 	Object.defineProperty(Tone.Transport.prototype, "loopStart", {
@@ -613,7 +613,7 @@ function(Tone){
 	/**
 	 * The loop end point
 	 * @memberOf Tone.Transport#
-	 * @type {Tone.Time}
+	 * @type {Tone.Type.Time}
 	 * @name loopEnd
 	 */
 	Object.defineProperty(Tone.Transport.prototype, "loopEnd", {
@@ -627,8 +627,8 @@ function(Tone){
 
 	/**
 	 *  shorthand loop setting
-	 *  @param {Tone.Time} startPosition 
-	 *  @param {Tone.Time} endPosition   
+	 *  @param {Tone.Type.Time} startPosition 
+	 *  @param {Tone.Type.Time} endPosition   
 	 *  @returns {Tone.Transport} `this`
 	 */
 	Tone.Transport.prototype.setLoopPoints = function(startPosition, endPosition){
@@ -661,7 +661,7 @@ function(Tone){
 	 *  
 	 *  
 	 *  @memberOf Tone.Transport#
-	 *  @type {Tone.Time}
+	 *  @type {Tone.Type.Time}
 	 *  @name swingSubdivision
 	 */
 	Object.defineProperty(Tone.Transport.prototype, "swingSubdivision", {
@@ -705,7 +705,7 @@ function(Tone){
 	/**
 	 *  Sync a source to the transport so that 
 	 *  @param  {Tone.Source} source the source to sync to the transport
-	 *  @param {Tone.Time} delay (optionally) start the source with a delay from the transport
+	 *  @param {Tone.Type.Time} delay (optionally) start the source with a delay from the transport
 	 *  @returns {Tone.Transport} `this`
 	 */
 	Tone.Transport.prototype.syncSource = function(source, startDelay){
@@ -967,7 +967,7 @@ function(Tone){
 	 *
 	 *  @method toTransportTime
 	 *  
-	 *  @param {Tone.Time} seconds 
+	 *  @param {Tone.Type.Time} seconds 
 	 *  @param {number=} bpm 
 	 *  @param {number=} timeSignature
 	 *  @return {string}  
@@ -1007,7 +1007,7 @@ function(Tone){
 	};
 
 	/**
-	 *  Convert Tone.Time into seconds.
+	 *  Convert Tone.Type.Time into seconds.
 	 *  Defined in "Tone/core/Transport".
 	 *  
 	 *  Unlike the method which it overrides, this takes into account 
@@ -1020,7 +1020,7 @@ function(Tone){
 	 *  Math: 3n+16n or even very complicated expressions ((3n*2)/6 + 1)
 	 *
 	 *  @override
-	 *  @param  {Tone.Time} time       
+	 *  @param  {Tone.Type.Time} time       
 	 *  @param {number=} 	now 	if passed in, this number will be 
 	 *                        		used for all 'now' relative timings
 	 *  @return {number} 
@@ -1049,7 +1049,7 @@ function(Tone){
 					//i know eval is evil, but i think it's safe here
 					time = eval(time); // jshint ignore:line
 				} catch (e){
-					throw new EvalError("problem evaluating Tone.Time: "+originalTime);
+					throw new EvalError("problem evaluating Tone.Type.Time: "+originalTime);
 				}
 			} else if (this.isNotation(time)){
 				time = this.notationToSeconds(time);

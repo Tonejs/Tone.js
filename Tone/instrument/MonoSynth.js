@@ -111,7 +111,7 @@ function(Tone){
 
 	/**
 	 *  start the attack portion of the envelope
-	 *  @param {Tone.Time} [time=now] the time the attack should start
+	 *  @param {Tone.Type.Time} [time=now] the time the attack should start
 	 *  @param {number} [velocity=1] the velocity of the note (0-1)
 	 *  @returns {Tone.MonoSynth} `this`
 	 */
@@ -124,7 +124,7 @@ function(Tone){
 
 	/**
 	 *  start the release portion of the envelope
-	 *  @param {Tone.Time} [time=now] the time the release should start
+	 *  @param {Tone.Type.Time} [time=now] the time the release should start
 	 *  @returns {Tone.MonoSynth} `this`
 	 */
 	Tone.MonoSynth.prototype.triggerEnvelopeRelease = function(time){

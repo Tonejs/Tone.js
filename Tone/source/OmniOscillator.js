@@ -79,7 +79,7 @@ function(Tone){
 
 	/**
 	 *  start the oscillator
-	 *  @param {Tone.Time} [time=now] the time to start the oscillator
+	 *  @param {Tone.Type.Time} [time=now] the time to start the oscillator
 	 *  @private
 	 */
 	Tone.OmniOscillator.prototype._start = function(time){
@@ -88,7 +88,7 @@ function(Tone){
 
 	/**
 	 *  start the oscillator
-	 *  @param {Tone.Time} [time=now] the time to start the oscillator
+	 *  @param {Tone.Type.Time} [time=now] the time to start the oscillator
 	 *  @private
 	 */
 	Tone.OmniOscillator.prototype._stop = function(time){

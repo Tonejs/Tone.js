@@ -66,7 +66,7 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/LFO", "Tone/comp
 	
 	/**
 	 * Start the panner.
-	 * @param {Tone.Time} [time=now] the panner begins.
+	 * @param {Tone.Type.Time} [time=now] the panner begins.
 	 * @returns {Tone.AutoPanner} `this`
 	 */
 	Tone.AutoPanner.prototype.start = function(time){
@@ -76,7 +76,7 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/LFO", "Tone/comp
 
 	/**
 	 * Stop the panner.
-	 * @param {Tone.Time} [time=now] the panner stops.
+	 * @param {Tone.Type.Time} [time=now] the panner stops.
 	 * @returns {Tone.AutoPanner} `this`
 	 */
 	Tone.AutoPanner.prototype.stop = function(time){
@@ -86,7 +86,7 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/LFO", "Tone/comp
 
 	/**
 	 * Sync the panner to the transport.
-	 * @param {Tone.Time} [delay=0] Delay time before starting the effect after the
+	 * @param {Tone.Type.Time} [delay=0] Delay time before starting the effect after the
 	 *                               Transport has started. 
 	 * @returns {Tone.AutoFilter} `this`
 	 */

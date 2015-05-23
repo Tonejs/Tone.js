@@ -89,7 +89,7 @@ function(Tone){
 
 	/**
 	 *  start the attack portion of the envelope
-	 *  @param {Tone.Time} [time=now] the time the attack should start
+	 *  @param {Tone.Type.Time} [time=now] the time the attack should start
 	 *  @param {number} [velocity=1] the velocity of the note (0-1)
 	 *  @returns {Tone.NoiseSynth} `this`
 	 */
@@ -102,7 +102,7 @@ function(Tone){
 
 	/**
 	 *  start the release portion of the envelope
-	 *  @param {Tone.Time} [time=now] the time the release should start
+	 *  @param {Tone.Type.Time} [time=now] the time the release should start
 	 *  @returns {Tone.NoiseSynth} `this`
 	 */
 	Tone.NoiseSynth.prototype.triggerRelease = function(time){
@@ -113,8 +113,8 @@ function(Tone){
 
 	/**
 	 *  trigger the attack and then the release
-	 *  @param  {Tone.Time} duration the duration of the note
-	 *  @param  {Tone.Time} [time=now]     the time of the attack
+	 *  @param  {Tone.Type.Time} duration the duration of the note
+	 *  @param  {Tone.Type.Time} [time=now]     the time of the attack
 	 *  @param  {number} [velocity=1] the velocity
 	 *  @returns {Tone.NoiseSynth} `this`
 	 */

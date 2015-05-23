@@ -78,7 +78,7 @@ function(Tone){
 	 *  @param  {string|number|Object|Array} value the value of the note(s) to start.
 	 *                                             if the value is an array, it will iterate
 	 *                                             over the array to play each of the notes
-	 *  @param  {Tone.Time} [time=now]  the start time of the note
+	 *  @param  {Tone.Type.Time} [time=now]  the start time of the note
 	 *  @param {number} [velocity=1] the velocity of the note
 	 *  @returns {Tone.PolySynth} `this`
 	 */
@@ -106,8 +106,8 @@ function(Tone){
 	 *  @param  {string|number|Object|Array} value the note(s).
 	 *                                             if the value is an array, it will iterate
 	 *                                             over the array to play each of the notes
-	 *  @param  {Tone.Time} duration the duration of the note
-	 *  @param  {Tone.Time} [time=now]     if no time is given, defaults to now
+	 *  @param  {Tone.Type.Time} duration the duration of the note
+	 *  @param  {Tone.Type.Time} [time=now]     if no time is given, defaults to now
 	 *  @param  {number} [velocity=1] the velocity of the attack (0-1)
 	 *  @returns {Tone.PolySynth} `this`
 	 */
@@ -123,7 +123,7 @@ function(Tone){
 	 *  @param  {string|number|Object|Array} value the value of the note(s) to release.
 	 *                                             if the value is an array, it will iterate
 	 *                                             over the array to play each of the notes
-	 *  @param  {Tone.Time} [time=now]  the release time of the note
+	 *  @param  {Tone.Type.Time} [time=now]  the release time of the note
 	 *  @returns {Tone.PolySynth} `this`
 	 */
 	Tone.PolySynth.prototype.triggerRelease = function(value, time){
@@ -148,7 +148,7 @@ function(Tone){
 	 *  set the options on all of the voices
 	 *  @param {Object|string} params
 	 *  @param {number=} value
-	 *  @param {Tone.Time=} rampTime
+	 *  @param {Tone.Type.Time=} rampTime
 	 *  @returns {Tone.PolySynth} `this`
 	 */
 	Tone.PolySynth.prototype.set = function(params, value, rampTime){

@@ -66,7 +66,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 
 	/**
 	 *  start the clock
-	 *  @param {Tone.Time} [time=now] the time when the clock should start
+	 *  @param {Tone.Type.Time} [time=now] the time when the clock should start
 	 *  @returns {Tone.Clock} `this`
 	 */
 	Tone.Clock.prototype.start = function(time){
@@ -85,7 +85,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 
 	/**
 	 *  stop the clock
-	 *  @param {Tone.Time} [time=now] The time when the clock should stop.
+	 *  @param {Tone.Type.Time} [time=now] The time when the clock should stop.
 	 *  @returns {Tone.Clock} `this`
 	 */
 	Tone.Clock.prototype.stop = function(time){

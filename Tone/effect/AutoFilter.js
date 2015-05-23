@@ -7,7 +7,7 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/LFO", "Tone/comp
 	 *
 	 *  @constructor
 	 *  @extends {Tone.Effect}
-	 *  @param {Tone.Time} [frequency=1] (optional) rate in HZ of the filter
+	 *  @param {Tone.Type.Time} [frequency=1] (optional) rate in HZ of the filter
 	 *  @param {number} [min=200] min 
  	 *  @param {number} [max=1200] max
 	 *  @example
@@ -75,7 +75,7 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/LFO", "Tone/comp
 	
 	/**
 	 * Start the filter.
-	 * @param {Tone.Time} [time=now] the filter begins.
+	 * @param {Tone.Type.Time} [time=now] the filter begins.
 	 * @returns {Tone.AutoFilter} `this`
 	 */
 	Tone.AutoFilter.prototype.start = function(time){
@@ -85,7 +85,7 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/LFO", "Tone/comp
 
 	/**
 	 * Stop the filter.
-	 * @param {Tone.Time} [time=now] the filter stops.
+	 * @param {Tone.Type.Time} [time=now] the filter stops.
 	 * @returns {Tone.AutoFilter} `this`
 	 */
 	Tone.AutoFilter.prototype.stop = function(time){
@@ -95,7 +95,7 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/LFO", "Tone/comp
 
 	/**
 	 * Sync the filter to the transport.
-	 * @param {Tone.Time} [delay=0] Delay time before starting the effect after the
+	 * @param {Tone.Type.Time} [delay=0] Delay time before starting the effect after the
 	 *                               Transport has started. 
 	 * @returns {Tone.AutoFilter} `this`
 	 */

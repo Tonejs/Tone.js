@@ -46,7 +46,7 @@ define(["Tone/core/Tone", "Tone/signal/SignalBase", "Tone/signal/GreaterThan"], 
 	/**
 	 *  open the switch at a specific time
 	 *
-	 *  @param {Tone.Time=} time the time when the switch will be open
+	 *  @param {Tone.Type.Time=} time the time when the switch will be open
 	 *  @returns {Tone.Switch} `this`
 	 *  @example
 	 *  //open the switch to let the signal through
@@ -60,7 +60,7 @@ define(["Tone/core/Tone", "Tone/signal/SignalBase", "Tone/signal/GreaterThan"], 
 	/**
 	 *  close the switch at a specific time
 	 *
-	 *  @param {Tone.Time} time the time when the switch will be open
+	 *  @param {Tone.Type.Time} time the time when the switch will be open
 	 *  @returns {Tone.Switch} `this`
 	 *  @example
 	 *  //close the switch a half second from now

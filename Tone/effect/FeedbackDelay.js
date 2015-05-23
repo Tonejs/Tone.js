@@ -7,7 +7,7 @@ define(["Tone/core/Tone", "Tone/effect/FeedbackEffect", "Tone/signal/Signal"], f
 	 *
 	 *  @constructor
 	 *  @extends {Tone.FeedbackEffect}
-	 *  @param {Tone.Time} [delayTime=0.25] The delay time in seconds. 
+	 *  @param {Tone.Type.Time} [delayTime=0.25] The delay time in seconds. 
 	 *  @param {number=} feedback The amount of the effected signal which 
 	 *                            is fed back through the delay.
 	 *  @example

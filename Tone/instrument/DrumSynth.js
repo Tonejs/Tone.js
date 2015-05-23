@@ -40,7 +40,7 @@ function(Tone){
 
 		/**
 		 *  The amount of time of the pitch decay.
-		 *  @type {Tone.Time}
+		 *  @type {Tone.Type.Time}
 		 */
 		this.pitchDecay = options.pitchDecay;
 
@@ -73,7 +73,7 @@ function(Tone){
 	 *  trigger the attack. start the note, at the time with the velocity
 	 *  
 	 *  @param  {string|string} note     the note
-	 *  @param  {Tone.Time} [time=now]     the time, if not given is now
+	 *  @param  {Tone.Type.Time} [time=now]     the time, if not given is now
 	 *  @param  {number} [velocity=1] velocity defaults to 1
 	 *  @returns {Tone.DrumSynth} `this`
 	 *  @example
@@ -92,7 +92,7 @@ function(Tone){
 	/**
 	 *  trigger the release portion of the note
 	 *  
-	 *  @param  {Tone.Time} [time=now] the time the note will release
+	 *  @param  {Tone.Type.Time} [time=now] the time the note will release
 	 *  @returns {Tone.DrumSynth} `this`
 	 */
 	Tone.DrumSynth.prototype.triggerRelease = function(time){

@@ -19,7 +19,7 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/signal/Signal"], f
 
 		/**
 		 *  The glide time between notes. 
-		 *  @type {Tone.Time}
+		 *  @type {Tone.Type.Time}
 		 */
 		this.portamento = options.portamento;
 	};
@@ -39,7 +39,7 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/signal/Signal"], f
 	 *  trigger the attack. start the note, at the time with the velocity
 	 *  
 	 *  @param  {Tone.Frequency} note     the note
-	 *  @param  {Tone.Time} [time=now]     the time, if not given is now
+	 *  @param  {Tone.Type.Time} [time=now]     the time, if not given is now
 	 *  @param  {number} [velocity=1] velocity defaults to 1
 	 *  @returns {Tone.Monophonic} `this`
 	 */
@@ -52,7 +52,7 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/signal/Signal"], f
 
 	/**
 	 *  trigger the release portion of the envelope
-	 *  @param  {Tone.Time} [time=now] if no time is given, the release happens immediatly
+	 *  @param  {Tone.Type.Time} [time=now] if no time is given, the release happens immediatly
 	 *  @returns {Tone.Monophonic} `this`
 	 */
 	Tone.Monophonic.prototype.triggerRelease = function(time){
@@ -63,7 +63,7 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/signal/Signal"], f
 	/**
 	 *  override this method with the actual method
 	 *  @abstract
-	 *  @param {Tone.Time} [time=now] the time the attack should happen
+	 *  @param {Tone.Type.Time} [time=now] the time the attack should happen
 	 *  @param {number} [velocity=1] the velocity of the envelope
 	 *  @returns {Tone.Monophonic} `this`
 	 */	
@@ -72,7 +72,7 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/signal/Signal"], f
 	/**
 	 *  override this method with the actual method
 	 *  @abstract
-	 *  @param {Tone.Time} [time=now] the time the attack should happen
+	 *  @param {Tone.Type.Time} [time=now] the time the attack should happen
 	 *  @param {number} [velocity=1] the velocity of the envelope
 	 *  @returns {Tone.Monophonic} `this`
 	 */	

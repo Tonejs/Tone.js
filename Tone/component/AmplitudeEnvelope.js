@@ -7,10 +7,10 @@ define(["Tone/core/Tone", "Tone/component/Envelope"], function(Tone){
 	 *  
 	 *  @constructor
 	 *  @extends {Tone.Envelope}
-	 *  @param {Tone.Time|Object} [attack=0.01]	the attack time in seconds
-	 *  @param {Tone.Time} [decay=0.1]	the decay time in seconds
+	 *  @param {Tone.Type.Time|Object} [attack=0.01]	the attack time in seconds
+	 *  @param {Tone.Type.Time} [decay=0.1]	the decay time in seconds
 	 *  @param {number} [sustain=0.5] 	a percentage (0-1) of the full amplitude
-	 *  @param {Tone.Time} [release=1]	the release time in seconds
+	 *  @param {Tone.Type.Time} [release=1]	the release time in seconds
 	 *  @example
 	 *  
 	 *  var ampEnv = new Tone.AmplitudeEnvelope(0.1, 0.2, 1, 0.8);

@@ -85,7 +85,7 @@ function(Tone){
 
 	/**
 	 *  start the oscillator
-	 *  @param  {Tone.Time} [time=now]
+	 *  @param  {Tone.Type.Time} [time=now]
 	 *  @private
 	 */
 	Tone.PWMOscillator.prototype._start = function(time){
@@ -96,7 +96,7 @@ function(Tone){
 
 	/**
 	 *  stop the oscillator
-	 *  @param  {Tone.Time} time (optional) timing parameter
+	 *  @param  {Tone.Type.Time} time (optional) timing parameter
 	 *  @private
 	 */
 	Tone.PWMOscillator.prototype._stop = function(time){

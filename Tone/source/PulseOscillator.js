@@ -91,7 +91,7 @@ function(Tone){
 
 	/**
 	 *  start the oscillator
-	 *  @param  {Tone.Time} time 
+	 *  @param  {Tone.Type.Time} time 
 	 *  @private
 	 */
 	Tone.PulseOscillator.prototype._start = function(time){
@@ -102,7 +102,7 @@ function(Tone){
 
 	/**
 	 *  stop the oscillator
-	 *  @param  {Tone.Time} time 
+	 *  @param  {Tone.Type.Time} time 
 	 *  @private
 	 */
 	Tone.PulseOscillator.prototype._stop = function(time){

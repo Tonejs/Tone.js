@@ -7,10 +7,10 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Pow"], function(Ton
 	 *
 	 *  @constructor
 	 *  @extends {Tone}
-	 *  @param {Tone.Time|Object} [attack=0.01]	the attack time in seconds
-	 *  @param {Tone.Time} [decay=0.1]	the decay time in seconds
+	 *  @param {Tone.Type.Time|Object} [attack=0.01]	the attack time in seconds
+	 *  @param {Tone.Type.Time} [decay=0.1]	the decay time in seconds
 	 *  @param {number} [sustain=0.5] 	a percentage (0-1) of the full amplitude
-	 *  @param {Tone.Time} [release=1]	the release time in seconds
+	 *  @param {Tone.Type.Time} [release=1]	the release time in seconds
 	 *  @example
 	 *  var gainNode = Tone.context.createGain();
 	 *  var env = new Tone.Envelope({
@@ -28,13 +28,13 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Pow"], function(Ton
 
 		/** 
 		 *  The attack time
-		 *  @type {Tone.Time}
+		 *  @type {Tone.Type.Time}
 		 */
 		this.attack = options.attack;
 
 		/**
 		 *  The decay time
-		 *  @type {Tone.Time}
+		 *  @type {Tone.Type.Time}
 		 */
 		this.decay = options.decay;
 		
@@ -46,7 +46,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Pow"], function(Ton
 
 		/**
 		 *  The release time
-		 *  @type {Tone.Time}
+		 *  @type {Tone.Type.Time}
 		 */
 		this.release = options.release;
 
@@ -231,7 +231,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Pow"], function(Ton
 
 	/**
 	 *  Trigger the attack/decay portion of the ADSR envelope. 
-	 *  @param  {Tone.Time} [time=now]
+	 *  @param  {Tone.Type.Time} [time=now]
 	 *  @param {number} [velocity=1] the velocity of the envelope scales the vales.
 	 *                               number between 0-1
 	 *  @returns {Tone.Envelope} `this`
@@ -274,7 +274,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Pow"], function(Ton
 	
 	/**
 	 *  Triggers the release of the envelope.
-	 *  @param  {Tone.Time} [time=now]
+	 *  @param  {Tone.Type.Time} [time=now]
 	 *  @returns {Tone.Envelope} `this`
 	 *  @example
 	 *  //trigger release immediately
@@ -312,8 +312,8 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Pow"], function(Ton
 
 	/**
 	 *  Trigger the attack and release after a sustain time
-	 *  @param {Tone.Time} duration the duration of the note
-	 *  @param {Tone.Time} [time=now] the time of the attack
+	 *  @param {Tone.Type.Time} duration the duration of the note
+	 *  @param {Tone.Type.Time} [time=now] the time of the attack
 	 *  @param {number} [velocity=1] the velocity of the note
 	 *  @returns {Tone.Envelope} `this`
 	 *  @example

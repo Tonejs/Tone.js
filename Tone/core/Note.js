@@ -9,7 +9,7 @@ define(["Tone/core/Tone", "Tone/core/Transport"], function(Tone){
 	 *
 	 *  @constructor
 	 *  @param {number|string} channel the channel name of the note
-	 *  @param {Tone.Time} time the time when the note will occur
+	 *  @param {Tone.Type.Time} time the time when the note will occur
 	 *  @param {string|number|Object|Array} value the value of the note
 	 */
 	Tone.Note = function(channel, time, value){
@@ -238,7 +238,7 @@ define(["Tone/core/Tone", "Tone/core/Transport"], function(Tone){
 	/**
 	 *  A method which accepts frequencies in the form
 	 *  of notes (`"C#4"`), frequencies as strings ("49hz"), frequency numbers,
-	 *  or Tone.Time and converts them to their frequency as a number in hertz.
+	 *  or Tone.Type.Time and converts them to their frequency as a number in hertz.
 	 *  @param  {Tone.Frequency} note the note name or notation
 	 *  @param {number=} 	now 	if passed in, this number will be 
 	 *                        		used for all 'now' relative timings

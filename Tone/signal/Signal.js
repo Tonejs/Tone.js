@@ -92,7 +92,7 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 	/**
 	 * The value of the signal. 
 	 * @memberOf Tone.Signal#
-	 * @type {Tone.Time|Tone.Frequency|number}
+	 * @type {Tone.Type.Time|Tone.Frequency|number}
 	 * @name value
 	 */
 	Object.defineProperty(Tone.Signal.prototype, "value", {
@@ -109,7 +109,7 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 
 	/**
 	 * @private
-	 * @param  {Tone.Time|Tone.Frequency|number|string|undefined} val the value to convert
+	 * @param  {Tone.Type.Time|Tone.Frequency|number|string|undefined} val the value to convert
 	 * @return {number}     the number which the value should be set to
 	 */
 	Tone.Signal.prototype._fromUnits = function(val){
@@ -157,7 +157,7 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 	/**
 	 *  Schedules a parameter value change at the given time.
 	 *  @param {number}		value 
-	 *  @param {Tone.Time}  time 
+	 *  @param {Tone.Type.Time}  time 
 	 *  @returns {Tone.Signal} `this`
 	 */
 	Tone.Signal.prototype.setValueAtTime = function(value, time){
@@ -185,7 +185,7 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 	 *  previous scheduled parameter value to the given value.
 	 *  
 	 *  @param  {number} value   
-	 *  @param  {Tone.Time} endTime 
+	 *  @param  {Tone.Type.Time} endTime 
 	 *  @returns {Tone.Signal} `this`
 	 */
 	Tone.Signal.prototype.linearRampToValueAtTime = function(value, endTime){
@@ -199,7 +199,7 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 	 *  the previous scheduled parameter value to the given value.
 	 *  
 	 *  @param  {number} value   
-	 *  @param  {Tone.Time} endTime 
+	 *  @param  {Tone.Type.Time} endTime 
 	 *  @returns {Tone.Signal} `this`
 	 */
 	Tone.Signal.prototype.exponentialRampToValueAtTime = function(value, endTime){
@@ -214,7 +214,7 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 	 *  the current time and current value to the given value.
 	 *  
 	 *  @param  {number} value   
-	 *  @param  {Tone.Time} rampTime the time that it takes the 
+	 *  @param  {Tone.Type.Time} rampTime the time that it takes the 
 	 *                               value to ramp from it's current value
 	 *  @returns {Tone.Signal} `this`
 	 *  @example
@@ -236,7 +236,7 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 	 *  the current time and current value to the given value at the given time.
 	 *  
 	 *  @param  {number} value   
-	 *  @param  {Tone.Time} rampTime the time that it takes the 
+	 *  @param  {Tone.Type.Time} rampTime the time that it takes the 
 	 *                               value to ramp from it's current value
 	 *  @returns {Tone.Signal} `this`
 	 *  @example
@@ -254,7 +254,7 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 	 *  Start exponentially approaching the target value at the given time with
 	 *  a rate having the given time constant.
 	 *  @param {number} value        
-	 *  @param {Tone.Time} startTime    
+	 *  @param {Tone.Type.Time} startTime    
 	 *  @param {number} timeConstant 
 	 *  @returns {Tone.Signal} `this`
 	 */
@@ -273,8 +273,8 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 	 *  for the given duration.
 	 *  	
 	 *  @param {Array<number>} values    
-	 *  @param {Tone.Time} startTime 
-	 *  @param {Tone.Time} duration  
+	 *  @param {Tone.Type.Time} startTime 
+	 *  @param {Tone.Type.Time} duration  
 	 *  @returns {Tone.Signal} `this`
 	 */
 	Tone.Signal.prototype.setValueCurveAtTime = function(values, startTime, duration){
@@ -289,7 +289,7 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 	 *  Cancels all scheduled parameter changes with times greater than or 
 	 *  equal to startTime.
 	 *  
-	 *  @param  {Tone.Time} startTime
+	 *  @param  {Tone.Type.Time} startTime
 	 *  @returns {Tone.Signal} `this`
 	 */
 	Tone.Signal.prototype.cancelScheduledValues = function(startTime){
@@ -303,7 +303,7 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 	 *  depending on the `units` of the signal
 	 *  
 	 *  @param  {number} value   
-	 *  @param  {Tone.Time} rampTime the time that it takes the 
+	 *  @param  {Tone.Type.Time} rampTime the time that it takes the 
 	 *                               value to ramp from it's current value
 	 *  @returns {Tone.Signal} `this`
 	 *  @example

@@ -130,7 +130,7 @@ define(function(){
 	 *  single parameter, by passing in a string and value.
 	 *  @param {Object|string} params
 	 *  @param {number=} value
-	 *  @param {Tone.Time=} rampTime
+	 *  @param {Tone.Type.Time=} rampTime
 	 *  @returns {Tone} `this`
 	 *  @example
 	 *  //set values using an object
@@ -738,7 +738,7 @@ define(function(){
 		Number : "number",
 		/**
 		 *  Time can be descibed in a number of ways. 
-		 *  Any Method which accepts Tone.Time as a parameter will accept: 
+		 *  Any Method which accepts Tone.Type.Time as a parameter will accept: 
 		 *  <ul>
 		 *  <li>Numbers, which will be taken literally as the time (in seconds). </li>
 		 *  
@@ -758,14 +758,14 @@ define(function(){
 		 *  <li>No Argument, for methods which accept time, no argument will be interpreted as 
 		 *  "now" (i.e. the currentTime).</li>
 		 *  </ul>
-		 *  [Tone.Time Wiki](https://github.com/TONEnoTONE/Tone.js/wiki/Time)
+		 *  [Time Wiki](https://github.com/TONEnoTONE/Tone.js/wiki/Time)
 		 */
 		Time : "time",
 		/**
 		 *  Frequency can be described similar to time, except ultimately the
 		 *  values are converted to frequency instead of seconds. A number
 		 *  is taken literally as the value in hertz. Additionally any of the 
-		 *  {@link Tone.Time} encodings can be used. Note names in the form
+		 *  Tone.Type.Time encodings can be used. Note names in the form
 		 *  of NOTE OCTAVE (i.e. `C4`) are also accepted and converted to their
 		 *  frequency value. 
 		 */
