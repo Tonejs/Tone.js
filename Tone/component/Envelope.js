@@ -40,7 +40,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Pow"], function(Ton
 		
 		/**
 		 *  the sustain is a value between 0-1
-		 *  @type {number}
+		 *  @type {Tone.Type.NormalRange}
 		 */
 		this.sustain = options.sustain;
 
@@ -90,7 +90,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Pow"], function(Ton
 		 *  @type {number}
 		 *  @private
 		 */
-		this._attackCurve = Tone.Envelope.Type.LINEAR;
+		this._attackCurve = Tone.Envelope.Type.Linear;
 
 		/** 
 		 *  the last recorded velocity value
@@ -140,9 +140,9 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Pow"], function(Ton
 	Tone.Envelope.prototype._timeMult = 0.25;
 
 	/**
-	 * The slope of the attack. Either "linear" or "exponential"
+	 * The slope of the attack. Either "linear" or "exponential". 
 	 * @memberOf Tone.Envelope#
-	 * @type {number}
+	 * @type {string}
 	 * @name attackCurve
 	 * @example
 	 * env.attackCurve = "linear";
@@ -152,8 +152,8 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Pow"], function(Ton
 			return this._attackCurve;
 		}, 
 		set : function(type){
-			if (type === Tone.Envelope.Type.LINEAR || 
-				type === Tone.Envelope.Type.EXPONENTIAL){
+			if (type === Tone.Envelope.Type.Linear || 
+				type === Tone.Envelope.Type.Exponential){
 				this._attackCurve = type;
 			} else {
 				throw Error("attackCurve must be either \"linear\" or \"exponential\". Invalid type: ", type);
@@ -170,18 +170,18 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Pow"], function(Ton
 	Tone.Envelope.prototype._phaseAtTime = function(time){
 		if (this._nextRelease > time){
 			if (this._nextAttack <= time && this._nextDecay > time){
-				return Tone.Envelope.Phase.ATTACK;
+				return Tone.Envelope.Phase.Attack;
 			} else if (this._nextDecay <= time && this._nextSustain > time){
-				return Tone.Envelope.Phase.DECAY;
+				return Tone.Envelope.Phase.Decay;
 			} else if (this._nextSustain <= time && this._nextRelease > time){
-				return Tone.Envelope.Phase.SUSTAIN;
+				return Tone.Envelope.Phase.Sustain;
 			} else {
-				return Tone.Envelope.Phase.STANDBY;	
+				return Tone.Envelope.Phase.Standby;	
 			}
 		} else if (this._nextRelease < time && this._nextStandby > time){
-			return Tone.Envelope.Phase.RELEASE;
+			return Tone.Envelope.Phase.Release;
 		} else {
-			return Tone.Envelope.Phase.STANDBY;
+			return Tone.Envelope.Phase.Standby;
 		}
 	};
 
@@ -211,20 +211,20 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Pow"], function(Ton
 		var decay = this.toSeconds(this.decay);
 		var release = this.toSeconds(this.release);
 		switch(this._phaseAtTime(time)){
-			case Tone.Envelope.Phase.ATTACK: 
-				if (this._attackCurve === Tone.Envelope.Type.LINEAR){
+			case Tone.Envelope.Phase.Attack: 
+				if (this._attackCurve === Tone.Envelope.Type.Linear){
 					return this._linearInterpolate(this._nextAttack, this._minOutput, this._nextAttack + attack, this._peakValue, time);
 				} else {
 					return this._exponentialInterpolate(this._nextAttack, this._minOutput, this._nextAttack + attack, this._peakValue, time);
 				}
 				break;
-			case Tone.Envelope.Phase.DECAY: 
+			case Tone.Envelope.Phase.Decay: 
 				return this._exponentialApproach(this._nextDecay, this._peakValue, this.sustain * this._peakValue, decay * this._timeMult, time);
-			case Tone.Envelope.Phase.RELEASE: 
+			case Tone.Envelope.Phase.Release: 
 				return this._exponentialApproach(this._nextRelease, this._peakValue, this._minOutput, release * this._timeMult, time);
-			case Tone.Envelope.Phase.SUSTAIN: 
+			case Tone.Envelope.Phase.Sustain: 
 				return this.sustain * this._peakValue;
-			case Tone.Envelope.Phase.STANDBY: 
+			case Tone.Envelope.Phase.Standby: 
 				return this._minOutput;
 		}
 	};
@@ -263,7 +263,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Pow"], function(Ton
 		//set the curve		
 		this._sig.cancelScheduledValues(time);
 		this._sig.setValueAtTime(valueAtTime, time);
-		if (this._attackCurve === Tone.Envelope.Type.LINEAR){
+		if (this._attackCurve === Tone.Envelope.Type.Linear){
 			this._sig.linearRampToValueAtTime(scaledMax, this._nextDecay);
 		} else {
 			this._sig.exponentialRampToValueAtTime(scaledMax, this._nextDecay);
@@ -296,9 +296,9 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Pow"], function(Ton
 		this._sig.cancelScheduledValues(this._nextRelease);
 
 		//if the phase is in the attack still, must reschedule the rest of the attack
-		if (phase === Tone.Envelope.Phase.ATTACK){
+		if (phase === Tone.Envelope.Phase.Attack){
 			this._sig.setCurrentValueNow();
-			if (this.attackCurve === Tone.Envelope.Type.LINEAR){
+			if (this.attackCurve === Tone.Envelope.Type.Linear){
 				this._sig.linearRampToValueAtTime(this._peakValue, this._nextRelease);
 			} else {
 				this._sig.exponentialRampToValueAtTime(this._peakValue, this._nextRelease);
@@ -349,11 +349,11 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Pow"], function(Ton
 	 *  @enum {string}
 	 */
 	Tone.Envelope.Phase = {
-		ATTACK : "attack",
-		DECAY : "decay",
-		SUSTAIN : "sustain",
-		RELEASE : "release",
-		STANDBY : "standby",
+		Attack : "attack",
+		Decay : "decay",
+		Sustain : "sustain",
+		Release : "release",
+		Standby : "standby",
  	};
 
  	/**
@@ -361,8 +361,8 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Pow"], function(Ton
 	 *  @enum {string}
 	 */
 	Tone.Envelope.Type = {
-		LINEAR : "linear",
-		EXPONENTIAL : "exponential",
+		Linear : "linear",
+		Exponential : "exponential",
  	};
 
 	return Tone.Envelope;
