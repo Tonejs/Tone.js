@@ -128,6 +128,9 @@ define(function(){
 	 *  Set the parameters at once. Either pass in an
 	 *  object mapping parameters to values, or to set a
 	 *  single parameter, by passing in a string and value.
+	 *  The last argument is an optional ramp time which 
+	 *  will ramp any signal values to their destination value
+	 *  over the duration of the rampTime.
 	 *  @param {Object|string} params
 	 *  @param {number=} value
 	 *  @param {Tone.Type.Time=} rampTime
@@ -154,11 +157,19 @@ define(function(){
 			params = tmpObj;
 		}
 		for (var attr in params){
-			var param = this[attr];
+			value = params[attr];
+			var parent = this;
+			if (attr.indexOf(".") !== -1){
+				var attrSplit = attr.split(".");
+				for (var i = 0; i < attrSplit.length - 1; i++){
+					parent = parent[attrSplit[i]];
+				}
+				attr = attrSplit[attrSplit.length - 1];
+			}
+			var param = parent[attr];
 			if (isUndef(param)){
 				continue;
 			}
-			value = params[attr];
 			if (param instanceof Tone.Signal){
 				if (param.value !== value){
 					if (isUndef(rampTime)){
@@ -174,20 +185,31 @@ define(function(){
 			} else if (param instanceof Tone){
 				param.set(value);
 			} else if (param !== value){
-				this[attr] = value;
+				parent[attr] = value;
 			}
 		}
 		return this;
 	};
 
 	/**
-	 *  Get the object's attributes. 
+	 *  Get the object's attributes. Given no arguments `get`
+	 *  will return all available object properties and their corresponding
+	 *  values. Pass in a single attribute to retrieve or an array
+	 *  of attributes. The attribute strings can also include a "."
+	 *  to access deeper properties.
 	 *  @example
-	 *  osc.get();
-	 *  //returns {"type" : "sine", "frequency" : 440, ...etc}
-	 *  osc.get("type"); //returns { "type" : "sine"}
-	 *  @param {Array=|string} params the parameters to get, otherwise will return 
+	 * osc.get();
+	 * //returns {"type" : "sine", "frequency" : 440, ...etc}
+	 *  @example
+	 * osc.get("type");
+	 * //returns { "type" : "sine"}
+	 * @example
+	 * //use dot notation to access deep properties
+	 * synth.get(["envelope.attack", "envelope.release"]);
+	 * //returns {"envelope" : {"attack" : 0.2, "release" : 0.4}}
+	 *  @param {Array=|string|undefined} params the parameters to get, otherwise will return 
 	 *  					                  all available.
+	 *  @returns {Object}
 	 */
 	Tone.prototype.get = function(params){
 		if (isUndef(params)){
@@ -198,17 +220,29 @@ define(function(){
 		var ret = {};
 		for (var i = 0; i < params.length; i++){
 			var attr = params[i];
-			var param = this[attr];
+			var parent = this;
+			var subRet = ret;
+			if (attr.indexOf(".") !== -1){
+				var attrSplit = attr.split(".");
+				for (var j = 0; j < attrSplit.length - 1; j++){
+					var subAttr = attrSplit[j];
+					subRet[subAttr] = subRet[subAttr] || {};
+					subRet = subRet[subAttr];
+					parent = parent[subAttr];
+				}
+				attr = attrSplit[attrSplit.length - 1];
+			}
+			var param = parent[attr];
 			if (typeof params[attr] === "object"){
-				ret[attr] = param.get();
+				subRet[attr] = param.get();
 			} else if (param instanceof Tone.Signal){
-				ret[attr] = param.value;
+				subRet[attr] = param.value;
 			} else if (param instanceof AudioParam){
-				ret[attr] = param.value;
+				subRet[attr] = param.value;
 			} else if (param instanceof Tone){
-				ret[attr] = param.get();
+				subRet[attr] = param.get();
 			} else if (!isFunction(param) && !isUndef(param)){
-				ret[attr] = param;
+				subRet[attr] = param;
 			} 
 		}
 		return ret;
