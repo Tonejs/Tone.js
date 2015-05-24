@@ -9,7 +9,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/component/Filter"], functi
 	 *  @extends {Tone}
 	 *  @constructor
 	 *  @param {Tone.Type.Time} [delayTime=0.1] The delay time of the comb filter
-	 *  @param {Tone.Type.Normal} [resonance=0.5] The resonance (feedback) of the comb filter
+	 *  @param {Tone.Type.NormalRange} [resonance=0.5] The resonance (feedback) of the comb filter
 	 *  @param {Tone.Type.Frequency} [dampening=3000] The dampending cutoff of the lowpass filter
 	 */
 	Tone.LowpassCombFilter = function(){
@@ -58,7 +58,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/component/Filter"], functi
 		 *  the resonance control
 		 *  @type {Tone.Signal}
 		 */
-		this.resonance = new Tone.Signal(options.resonance, Tone.Type.Normal);
+		this.resonance = new Tone.Signal(options.resonance, Tone.Type.NormalRange);
 
 		//connections
 		this._delay.chain(this._lowpass, this._feedback, this._delay);

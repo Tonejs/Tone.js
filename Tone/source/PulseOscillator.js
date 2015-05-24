@@ -22,7 +22,7 @@ function(Tone){
 		 *  the width of the pulse
 		 *  @type {Tone.Signal}
 		 */
-		this.width = new Tone.Signal(options.width, Tone.Type.Normal);
+		this.width = new Tone.Signal(options.width, Tone.Type.NormalRange);
 
 		/**
 		 *  gate the width amount

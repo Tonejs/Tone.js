@@ -19,7 +19,7 @@ define(["Tone/core/Tone", "Tone/signal/ScaleExp", "Tone/signal/Signal"], functio
 		 *  the resonance control
 		 *  @type {Tone.Signal}
 		 */
-		this.resonance = new Tone.Signal(options.resonance, Tone.Type.Normal);
+		this.resonance = new Tone.Signal(options.resonance, Tone.Type.NormalRange);
 
 		/**
 		 *  the delay node

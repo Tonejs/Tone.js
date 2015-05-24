@@ -20,7 +20,7 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/signal/Signal", "Tone/sign
 		 *  controls the amount of feedback
 		 *  @type {Tone.Signal}
 		 */
-		this.feedback = new Tone.Signal(options.feedback, Tone.Type.Normal);
+		this.feedback = new Tone.Signal(options.feedback, Tone.Type.NormalRange);
 		
 		/**
 		 *  the gain which controls the feedback

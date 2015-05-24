@@ -767,9 +767,9 @@ define(function(){
 	 */
 	Tone.Type = {
 		/** 
-		 *  A number which can take on any value between [-Infinity, Infinity]
+		 *  The default value is a number which can take on any value between [-Infinity, Infinity]
 		 */
-		Number : "number",
+		Default : "number",
 		/**
 		 *  Time can be descibed in a number of ways. 
 		 *  Any Method which accepts Tone.Type.Time as a parameter will accept: 
@@ -811,7 +811,7 @@ define(function(){
 		/** 
 		 *  Normal values are within the range of [0-1].
 		 */
-		Normal : "normal",
+		NormalRange : "normalrange",
 		/** 
 		 * AudioRange values are between [-1, 1].
 		 */

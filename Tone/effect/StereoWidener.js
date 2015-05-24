@@ -25,7 +25,7 @@ define(["Tone/core/Tone", "Tone/effect/MidSideEffect", "Tone/signal/Signal",
 		 *  The width control. 0 = 100% mid. 1 = 100% side. 
 		 *  @type {Tone.Signal}
 		 */
-		this.width = new Tone.Signal(0.5, Tone.Type.Normal);
+		this.width = new Tone.Signal(0.5, Tone.Type.NormalRange);
 
 		/**
 		 *  Mid multiplier

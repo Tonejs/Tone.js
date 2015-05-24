@@ -42,7 +42,7 @@ function(Tone){
 			 *  the pan control
 			 *  @type {Tone.Signal}
 			 */	
-			this.pan = new Tone.Signal(0, Tone.Type.Normal);
+			this.pan = new Tone.Signal(0, Tone.Type.NormalRange);
 
 			/**
 			 *  scale the pan signal to between -1 and 1

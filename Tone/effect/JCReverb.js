@@ -47,7 +47,7 @@ function(Tone){
 		 *  room size control values between [0,1]
 		 *  @type {Tone.Signal}
 		 */
-		this.roomSize = new Tone.Signal(options.roomSize, Tone.Type.Normal);
+		this.roomSize = new Tone.Signal(options.roomSize, Tone.Type.NormalRange);
 
 		/**
 		 *  scale the room size

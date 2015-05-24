@@ -41,7 +41,7 @@ function(Tone){
 		 *  The roomSize value between (0,1)
 		 *  @type {Tone.Signal}
 		 */
-		this.roomSize = new Tone.Signal(options.roomSize, Tone.Type.Normal);
+		this.roomSize = new Tone.Signal(options.roomSize, Tone.Type.NormalRange);
 
 		/**
 		 *  The amount of dampening as a value in Hertz.

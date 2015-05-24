@@ -43,7 +43,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Expr", "Tone/signal
 		 *  
 		 *  @type {Tone.Signal}
 		 */
-		this.fade = new Tone.Signal(this.defaultArg(initialFade, 0.5), Tone.Type.Normal);
+		this.fade = new Tone.Signal(this.defaultArg(initialFade, 0.5), Tone.Type.NormalRange);
 
 		/**
 		 *  equal power gain cross fade

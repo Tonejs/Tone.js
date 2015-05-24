@@ -13,7 +13,7 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 	 *  @param {number|AudioParam} [value=0] initial value or the AudioParam to control
 	 *                                       note that the signal has no output
 	 *                                       if an AudioParam is passed in.
-	 *  @param {Tone.Signal.Unit} [units=Number] unit the units the signal is in
+	 *  @param {Tone.Type} [units=Tone.Type.Default] unit the units the signal is in
 	 *  @example
 	 *  var signal = new Tone.Signal(10);
 	 */
@@ -85,7 +85,7 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 	Tone.Signal.defaults = {
 		"value" : 0,
 		"param" : null,
-		"units" : Tone.Type.Number,
+		"units" : Tone.Type.Default,
 		"convert" : true,
 	};
 
@@ -121,7 +121,7 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 					return this.toFrequency(val);
 				case Tone.Type.Decibels: 
 					return this.dbToGain(val);
-				case Tone.Type.Normal: 
+				case Tone.Type.NormalRange: 
 					return Math.min(Math.max(val, 0), 1);
 				case Tone.Type.AudioRange: 
 					return Math.min(Math.max(val, -1), 1);
