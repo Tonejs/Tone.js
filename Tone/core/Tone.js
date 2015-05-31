@@ -522,7 +522,7 @@ define(function(){
 	 *  that that's already the options object and will just return it. 
 	 *  
 	 *  @param  {Array} values  the 'arguments' object of the function
-	 *  @param  {Array.<string>} keys the names of the arguments as they
+	 *  @param  {Array} keys the names of the arguments as they
 	 *                                 should appear in the options object
 	 *  @param {Object=} defaults optional defaults to mixin to the returned 
 	 *                            options object                              
@@ -793,6 +793,7 @@ define(function(){
 		 *  "now" (i.e. the currentTime).</li>
 		 *  </ul>
 		 *  [Time Wiki](https://github.com/TONEnoTONE/Tone.js/wiki/Time)
+		 *  @typedef {Tone.Type.Time}
 		 */
 		Time : "time",
 		/**
@@ -802,43 +803,55 @@ define(function(){
 		 *  Tone.Type.Time encodings can be used. Note names in the form
 		 *  of NOTE OCTAVE (i.e. `C4`) are also accepted and converted to their
 		 *  frequency value. 
+		 *  @typedef {Tone.Type.Frequency}
 		 */
 		Frequency : "frequency",
 		/**
 		 * Gain is the ratio between the input and the output value of a signal.
+		 *  @typedef {Tone.Type.Gain}
 		 */
 		Gain : "gain",
 		/** 
 		 *  Normal values are within the range of [0-1].
+		 *  @typedef {Tone.Type.NormalRange}
 		 */
 		NormalRange : "normalrange",
 		/** 
-		 * AudioRange values are between [-1, 1].
+		 *  AudioRange values are between [-1, 1].
+		 *  @typedef {Tone.Type.AudioRange}
 		 */
 		AudioRange : "audiorange",
 		/** 
-		 *  Decibels are a logarithmic unit of measurement representing a 10th of a bel. 
+		 *  Decibels are a logarithmic unit of measurement which is useful for volume
+		 *  because of the logarithmic way that we perceive loudness. 0 decibels 
+		 *  means no change in volume. -10db is approximately half as loud and 10db 
+		 *  is twice is loud. 
+		 *  @typedef {Tone.Type.Decibels}
 		 */
 		Decibels : "db",
 		/** 
 		 *  Half-step note increments, i.e. 12 is an octave above the root. and 1 is a half-step up.
+		 *  @typedef {Tone.Type.Interval}
 		 */
 		Interval : "interval",
 		/** 
 		 *  Beats per minute. 
+		 *  @typedef {Tone.Type.BPM}
 		 */
 		BPM : "bpm",
 		/** 
 		 *  The value must be greater than 0.
+		 *  @typedef {Tone.Type.Positive}
 		 */
 		Positive : "positive",
 		/** 
 		 *  A cent is a hundreth of a semitone. 
-		 *  @type  {String}
+		 *  @typedef {Tone.Type.Cents}
 		 */
 		Cents : "cents",
 		/** 
 		 *  Degrees (0 - 360)
+		 *  @typedef {Tone.Type.Degrees}
 		 */
 		Degrees : "degrees"
 	};
