@@ -66,7 +66,7 @@ gulp.task("buildrequire", ["makerequire"], function(done){
 		//clean up the files
 		.pipe(gulp.dest("../build/"));
 	stream.on("end", function(){
-		del(["toneMain"], done);
+		del(["./toneMain.js"], done);
 	});
 });
 
