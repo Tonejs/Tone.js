@@ -8,8 +8,8 @@ examples/scratch.html
 *.sublime-project
 
 # grunt modules
-grunt/node_modules/*
-grunt/jsdoc/
+node_modules
+gulp/description
 
 TODO.txt
 
