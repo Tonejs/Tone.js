@@ -172,7 +172,8 @@ function getClassDescription(json, outfolder){
 		if (item.kind === "typedef" && item.access !== "private"){
 			typedefs[item.name] = {
 				description : item.description,
-				type : item.type,
+				name : item.type.names[0],
+				value : item.defaultvalue
 			};
 		}
 	}
