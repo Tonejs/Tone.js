@@ -641,7 +641,7 @@ function(Tone){
 	 *  The swing value. Between 0-1 where 1 equal to 
 	 *  the note + half the subdivision.
 	 *  @memberOf Tone.Transport#
-	 *  @type {number}
+	 *  @type {Tone.Type.NormalRange}
 	 *  @name swing
 	 */
 	Object.defineProperty(Tone.Transport.prototype, "swing", {

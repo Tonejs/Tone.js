@@ -53,7 +53,7 @@ define(["Tone/core/Tone", "Tone/component/Follower", "Tone/signal/GreaterThan"],
 	/**
 	 * The threshold of the gate in decibels
 	 * @memberOf Tone.Gate#
-	 * @type {number}
+	 * @type {Tone.Type.Decibels}
 	 * @name threshold
 	 */
 	Object.defineProperty(Tone.Gate.prototype, "threshold", {

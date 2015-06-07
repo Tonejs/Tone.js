@@ -222,7 +222,7 @@ function(Tone){
 	/**
 	 * The phase of the oscillator in degrees. 
 	 * @memberOf Tone.Oscillator#
-	 * @type {number}
+	 * @type {Tone.Type.Degrees}
 	 * @name phase
 	 * @example
 	 * osc.phase = 180; //flips the phase of the oscillator

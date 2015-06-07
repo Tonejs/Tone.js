@@ -207,7 +207,7 @@ function(Tone){
 	/**
 	 * The output units of the LFO
 	 * @memberOf Tone.LFO#
-	 * @type {string}
+	 * @type {Tone.Type}
 	 * @name units
 	 */
 	 Object.defineProperty(Tone.LFO.prototype, "units", {
