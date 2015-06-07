@@ -63,7 +63,7 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 			//zero out the value
 			options.value.value = 0;
 		} else {
-			if (options.param !== null){
+			if (!this.isUndef(options.param)){
 				this._scaler.connect(options.param);
 				options.param.value = 0;
 			}
@@ -84,7 +84,7 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 	 */
 	Tone.Signal.defaults = {
 		"value" : 0,
-		"param" : null,
+		"param" : undefined,
 		"units" : Tone.Type.Default,
 		"convert" : true,
 	};
