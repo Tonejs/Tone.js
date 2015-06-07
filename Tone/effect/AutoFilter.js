@@ -44,15 +44,14 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/LFO", "Tone/comp
 		this.frequency = this._lfo.frequency;
 
 		/**
-		 *  the filter node
+		 *  The filter node
 		 *  @type {Tone.Filter}
-		 *  @private
 		 */
-		this._filter = new Tone.Filter(options.filter);
+		this.filter = new Tone.Filter(options.filter);
 
 		//connections
-		this.connectEffect(this._filter);
-		this._lfo.connect(this._filter.frequency);
+		this.connectEffect(this.filter);
+		this._lfo.connect(this.filter.frequency);
 		this.type = options.type;
 		this._readOnly(["frequency", "depth"]);
 	};
@@ -171,8 +170,8 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/LFO", "Tone/comp
 		Tone.Effect.prototype.dispose.call(this);
 		this._lfo.dispose();
 		this._lfo = null;
-		this._filter.dispose();
-		this._filter = null;
+		this.filter.dispose();
+		this.filter = null;
 		this._writable(["frequency", "depth"]);
 		this.frequency = null;
 		this.depth = null;
