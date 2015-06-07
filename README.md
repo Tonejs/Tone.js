@@ -9,12 +9,16 @@ Tone.js is a Web Audio framework for creating interactive music in the browser. 
 
 # Demos
 
+* [Jazz.Computer - Yotam Mann](http://jazz.computer/)
 * [motionEmotion - emotion & gesture-based arpeggiator and synthesizer](http://motionemotion.herokuapp.com/)
 * [A Tone.js Plugin Architecture with GUIs](https://github.com/billautomata/Tone.js.Plugins)
+* [p5.sound - build with Tone.js](https://github.com/processing/p5.js-sound)
 * [Hypercube by @eddietree](http://eddietree.github.io/hypercube/)
 * [randomcommander.io by Jake Albaugh](http://randomcommander.io/)
 * [Tone.js + NexusUI by taylorbf](http://taylorbf.github.io/Tone-Rack/)
 * [Solarbeat - Luke Twyman](http://www.whitevinyldesign.com/solarbeat/)
+* [João Costa - Wind](http://wind.joaocosta.co)
+* [Abe Rubenstein - Block Chords](http://dev.abe.sh/block-chords/)
 
 Using Tone.js? I'd love to hear it: yotammann@gmail.com
 
