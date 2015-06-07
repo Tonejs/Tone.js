@@ -46,7 +46,11 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Master"], function(T
 		 * @example
 		 * source.volume.value = -6;
 		 */
-		this.volume = new Tone.Signal(this.output.gain, Tone.Type.Decibels);
+		this.volume = new Tone.Signal({
+			"param" : this.output.gain,
+			"value" : options.volume,
+			"units" : Tone.Type.Decibels
+		});
 		this._readOnly("volume");
 
 		/**
