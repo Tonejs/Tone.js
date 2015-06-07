@@ -23,7 +23,12 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/LFO", "Tone/comp
 		 *  @type {Tone.LFO}
 		 *  @private
 		 */
-		this._lfo = new Tone.LFO(options.frequency, options.min, options.max);
+		this._lfo = new Tone.LFO({
+			"frequency" : options.frequency,
+			"amplitude" : options.depth,
+			"min" : options.min,
+			"max" : options.max
+		});
 
 		/**
 		 * The range of the filter modulating between the min and max frequency. 
@@ -129,9 +134,9 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/LFO", "Tone/comp
 	});
 
 	/**
-	 * The miniumum output of the AutoFilter.
+	 * The minimum value of the LFO attached to the cutoff frequency of the filter.
 	 * @memberOf Tone.AutoFilter#
-	 * @type {number}
+	 * @type {Tone.Type.Frequency}
 	 * @name min
 	 */
 	Object.defineProperty(Tone.AutoFilter.prototype, "min", {
@@ -144,9 +149,9 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/LFO", "Tone/comp
 	});
 
 	/**
-	 * The maximum output of the AutoFilter.
+	 * The minimum value of the LFO attached to the cutoff frequency of the filter.
 	 * @memberOf Tone.AutoFilter#
-	 * @type {number}
+	 * @type {Tone.Type.Frequency}
 	 * @name max
 	 */
 	Object.defineProperty(Tone.AutoFilter.prototype, "max", {

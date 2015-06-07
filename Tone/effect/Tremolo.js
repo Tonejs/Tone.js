@@ -23,7 +23,12 @@ define(["Tone/core/Tone", "Tone/component/LFO", "Tone/effect/Effect"], function(
 		 *  @type  {Tone.LFO}
 		 *  @private
 		 */
-		this._lfo = new Tone.LFO(options.frequency, 1, 0);
+		this._lfo = new Tone.LFO({
+			"frequency" : options.frequency,
+			"amplitude" : options.depth,
+			"min" : 1,
+			"max" : 0
+		});
 
 		/**
 		 *  Where the gain is multiplied

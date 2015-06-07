@@ -21,7 +21,14 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/LFO", "Tone/comp
 		 *  @type {Tone.LFO}
 		 *  @private
 		 */
-		this._lfo = new Tone.LFO(options.frequency, 0, 1);
+		this._lfo = new Tone.LFO({
+			"frequency" : options.frequency,
+			"amplitude" : options.depth,
+			"min" : 0,
+			"max" : 1,
+			//start at the middle of the cycle
+			"phase" : 90
+		});
 
 		/**
 		 * The amount of panning between left and right. 
