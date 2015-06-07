@@ -130,11 +130,13 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 			return this._rolloff;
 		},
 		set : function(rolloff){
-			var cascadingCount = Math.log(rolloff / -12) / Math.LN2 + 1;
+			var possibilities = [-12, -24, -48];
+			var cascadingCount = possibilities.indexOf(rolloff);
 			//check the rolloff is valid
-			if (cascadingCount % 1 !== 0){
+			if (cascadingCount === -1){
 				throw new RangeError("Filter rolloff can only be -12, -24, or -48");
-			}
+			} 
+			cascadingCount++;
 			this._rolloff = rolloff;
 			//first disconnect the filters and throw them away
 			this.input.disconnect();
