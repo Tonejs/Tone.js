@@ -11,6 +11,8 @@ var del = require("del");
 var uglify = require("gulp-uglify");
 var rename = require("gulp-rename");
 var extractAttributes = require("./attributes");
+var sass = require("gulp-ruby-sass");
+var prefix = require("gulp-autoprefixer");
 
 /**
  *  BUILDING
@@ -109,4 +111,17 @@ gulp.task("attributes", function(done){
 	task.on("end", function(){
 		extractAttributes(allFiles, "./description", done);
 	});
+});
+
+/**
+ *  Sass
+ */
+gulp.task("sass", function () {
+    sass("../examples/style/examples.scss", {sourcemap: false})
+        .pipe(prefix("last 2 version"))
+        .pipe(gulp.dest("../examples/style/"));
+});
+
+gulp.task("example", function() {
+  gulp.watch(["examples/style/examples.scss"], ["sass"]);
 });
