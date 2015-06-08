@@ -1,12 +1,16 @@
 /* globals Tone, nx */
 
 //nexusUI setup
-nx.showLabels = true;
-nx.colorize("accent", "#D76767");
-nx.colorize("fill", "#fff");
+// nx.showLabels = true;
+// nx.colorize("accent", "#D76767");
+// nx.colorize("fill", "#fff");
 // nx.colorize("border", "#000");
 
-var Interface = {};
+var dragContainer = "#DragContainer";
+
+var Interface = {
+	isMobile : false
+};
 
 $(function(){
 	var topbar = $("<div>").attr("id", "TopBar");
@@ -23,7 +27,8 @@ $(function(){
 		.appendTo(topbar);
 	//mobile start
 	if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
-		console.log("is mobile")
+		Interface.isMobile = true;
+		$("body").addClass("Mobile");
 		var element = $("<div>", {"id" : "MobileStart"}).appendTo("body");
 		var button = $("<div>").attr("id", "Button")
 			.text("\u25B6")
@@ -54,173 +59,11 @@ $(function(){
 		}
 		update();
 	}
+
+	//subtract the explaination from the dragger container
+	$(dragContainer).height($(dragContainer).height() - $("#Explanation").height());
 });
 
-$(window).resize(function(){
-	for (var name in nx.widgets){
-		var widg = nx.widgets[name];
-		widg.init();
-	}
-});
-
-Interface._updateList = [];
-
-Interface.update = function(){
-	requestAnimationFrame(Interface.update);
-	for (var i = 0; i < Interface._updateList.length; i++){
-		Interface._updateList[i]();
-	}
-};
-Interface.update();
-
-Interface.getElement = function(el){
-	if (typeof el === "string"){
-		return $("#"+el);
-	} else {
-		return $(el);
-	}
-};
-
-Interface.Rack = function(id, name, collapsible){
-	var element = Interface.getElement(id);
-	element.addClass("Rack");
-	var title = $("<div>").addClass("Title").text(name);
-	element.prepend(title);
-	title.on("click touch", function(){
-		element.toggleClass("Expanded");
-	});
-	if (collapsible){
-		element.addClass("Collapsible");
-	}
-	return {
-		close : function(){
-			element.removeClass("Expanded");
-		},
-		open : function(){
-			element.addClass("Expanded");
-		}
-	};
-};
-
-Interface.Group = function(containerID, name){
-	var container = Interface.getElement(containerID);
-	var element = container.addClass("Group");
-	$("<div>").text(name).appendTo(element).attr("id", "Label");
-	return element;
-};
-
-Interface.Toggle = function(container, callback){
-	var toggle = nx.add("toggle", {
-		parent : container
-	});
-	toggle.on("value", function(val){
-		callback(val === 1);
-	});
-};
-
-Interface.DropDown = function(container, node, parameter, options, label){
-	var element = $("<div>").appendTo(Interface.getElement(container))
-		.addClass("DropDown");
-	label = label || parameter;
-	$("<div>").appendTo(element)
-		.text(label)
-		.attr("id", "Label");
-	var selectList = $("<select>").appendTo(element);
-	for (var i = 0; i < options.length; i++){
-		$("<option>").text(options[i]).appendTo(selectList);
-	}
-	//set the initial value
-	selectList.val(node[parameter]);
-	selectList.on("change", function(){
-		node[parameter] = selectList.val();
-	});
-	return {
-		listen : function(){
-			function update(){
-				if (selectList.val() !== node[parameter]){
-					selectList.val(node[parameter]);
-				}
-			}
-			Interface._updateList.push(update);
-		}
-	};
-};
-
-Interface.Presets = function(container, node){
-	var element = $("<div>").appendTo(Interface.getElement(container))
-		.addClass("DropDown");
-	$("<div>").appendTo(element)
-		.text("preset")
-		.attr("id", "Label");
-	var options = Object.keys(node.preset);
-	options.unshift("none");
-	var selectList = $("<select>").appendTo(element);
-	for (var i = 0; i < options.length; i++){
-		$("<option>").text(options[i]).appendTo(selectList);
-	}
-	//set the initial value
-	selectList.on("change", function(){
-		node.setPreset(selectList.val());
-	});
-};
-
-Interface.ContinuousControl = function(container, type, node, parameter, min, max, exp){
-	container = Interface.getElement(container);
-	min = min || 0;
-	max = max || 1;
-	exp = exp || 1;
-	var isTone = (node[parameter] instanceof Tone || node[parameter] instanceof AudioParam);
-	var currentValue = isTone?node[parameter].value : node[parameter];
-	currentValue = nx.scale(currentValue, min, max, 0, 1);
-	currentValue = Math.pow(currentValue, 1/exp);
-	var slider = nx.add(type, {
-		parent : container,
-	});
-	slider.val.value = currentValue;
-	slider.label = parameter;
-	slider.on("value", function(val){
-		val = Math.pow(val, exp);
-		var scaledVal = nx.scale(val, 0, 1, min, max);
-		if (isTone){
-			node[parameter].value = scaledVal;
-		} else {
-			node[parameter] = scaledVal;
-		}
-	});
-	slider.draw();
-	slider.listen = function(){
-		function update(){
-			var val = node[parameter];
-			if (isTone){
-				val = node[parameter].value;
-			} 
-			val = nx.scale(val, min, max, 0, 1);
-			val = Math.pow(val, 1/exp);
-			if (val !== slider.val.value){
-				slider.val.value = val;
-				slider.draw();
-			}
-		}
-		Interface._updateList.push(update);
-		return slider;
-	};
-	slider.name = function(label){
-		slider.label = label;
-		slider.draw();
-		return slider;
-	};
-	return slider;
-};
-
-Interface.Slider = function(container, node, parameter, min, max, exp){
-	return Interface.ContinuousControl(container, "slider", node, parameter, min, max, exp);
-};
-
-Interface.HorizontalSlider = function(container, node, parameter, min, max, exp){
-	var slider = Interface.Slider(container, node, parameter, min, max, exp);
-	$(slider.canvas).addClass("HorizontalSlider");
-	return slider;
-};
 
 Interface.Code = function(container, codeID){
 	Interface.Rack(container, "Code", true);
@@ -242,153 +85,207 @@ Interface.Code = function(container, codeID){
 	codeContainer.addClass("Code");
 };
 
-Interface.Knob = function(container, node, parameter, min, max, exp){
-	return Interface.ContinuousControl(container, "dial", node, parameter, min, max, exp);
-};
 
-Interface.Momentary = function(container, callback){
-	var button = nx.add("button", {
-		"parent" : container
-	});
-	button.on("press", function(val){
-		callback(val === 1);
-	});
-};
+Interface.Dragger = function(gui, params){
 
-Interface.AmplitudeEnvelope = function(container, node){
-	var element = Interface.getElement(container, "Amplitude");
-	var group = $("<div>").addClass("Envelope")
-		.appendTo(element);
-	var attack = Interface.Slider(group, node, "attack", 0.001, 2, 2);
-	var decay = Interface.Slider(group, node, "decay", 0.0, 2, 2);
-	var sustain = Interface.Slider(group, node, "sustain", 0, 1, 2);
-	var release = Interface.Slider(group, node, "release", 0.001, 4, 2);
-	// var labels = $("<div>").attr("id", "Labels")
-	// 	.appendTo(group);
-	// $("<div>").appendTo(labels).addClass("Label").text("attack");
-	// $("<div>").appendTo(labels).addClass("Label").text("decay");
-	// $("<div>").appendTo(labels).addClass("Label").text("sustain");
-	// $("<div>").appendTo(labels).addClass("Label").text("release");
-	
-	return {
-		listen : function(){
-			attack.listen();
-			decay.listen();
-			release.listen();
-			sustain.listen();
+	this.container = $(dragContainer);
+
+	this.gui = gui;
+
+	this.element = $("<div>", {
+		"class" : "Dragger",
+		"id" : this.gui.name
+	}).appendTo(dragContainer)
+		.on("dragMove", this._ondrag.bind(this))
+		.on("touchstart mousedown", params.start)
+		.on("mouseup touchend", params.end);
+
+	this.name = $("<div>", {
+		"id" : "Name",
+		"text" : this.gui.name
+	}).appendTo(this.element);
+
+	this.xaxis = $("<div>", {
+		"id" : "xAxis",
+		"class" : "Axis"
+	}).appendTo(this.container);
+
+	this.yaxis = $("<div>", {
+		"id" : "yAxis",
+		"class" : "Axis"
+	}).appendTo(this.container);
+
+	this.halfSize = this.element.width() / 2;
+
+	this.top = this.container.offset().top + 40;
+
+	this.left = this.container.offset().left;
+
+	/**
+	 *  the parameters
+	 */
+	if (params.x){
+
+		if (typeof params.x === "string"){
+			this.xParam = params.x;
+			//default values
+			this.xMin = 0;
+			this.xMax = 1;
+			this.xExp = 1;
+		} else if (typeof params.x === "object"){
+			this.xParam =  params.x.param;
+			this.xMin = typeof params.x.min === "undefined" ? 0 : params.x.min;
+			this.xMax = typeof params.x.max === "undefined" ? 1 : params.x.max;
+			this.xExp = typeof params.x.exp === "undefined" ? 1 : params.x.exp;
+			if (params.x.options){
+				this.xOptions = params.x.options;
+				this.xMin = 0;
+				this.xMax = this.xOptions.length - 1;
+			}
+		} 
+
+		//set the original position
+		var width = this.container.width()  - this.element.width();
+		var xParamVal = this.gui.params[this.xParam].get();
+		if (this.xOptions){
+			xParamVal = this.xOptions.indexOf(xParamVal);
 		}
-	};
-};
+		var left = (xParamVal - this.xMin) / (this.xMax - this.xMin);
+		left = Math.pow(left, 1 / this.xExp) * width;
+		this.element.css("left", left);
+		this.xaxis.css("left",left + this.halfSize);
 
-Interface.FilterEnvelope = function(container, node){
-	var element = Interface.getElement(container, "Filter");
-	var group = $("<div>").addClass("Envelope FilterEnvelope")
-		.appendTo(element);
-	var attack = Interface.Slider(group, node, "attack", 0.001, 2, 2);
-	var decay = Interface.Slider(group, node, "decay", 0.0, 2, 2);
-	var sustain = Interface.Slider(group, node, "sustain", 0, 1, 2);
-	var release = Interface.Slider(group, node, "release", 0.001, 4, 2);
-	// var freqGroup = $("<div>").appendTo(element).addClass("FreqGroup");
-	var minSlider = Interface.Slider(group, node, "min", 20, 20000, 2);
-	var maxSlider = Interface.Slider(group, node, "max", 20, 20000, 2);
-	return {
-		listen : function(){
-			attack.listen();
-			decay.listen();
-			release.listen();
-			sustain.listen();
-			maxSlider.listen();
-			minSlider.listen();
+		if (this.xOptions){
+			this._setParam(this.xParam, this.xOptions[xParamVal]);
+		} else {
+			this._setParam(this.xParam, xParamVal);
 		}
-	};
-};
-
-Interface.Filter = function(containerID, node){
-	var element = $("<div>").addClass("Filter")
-		.appendTo(Interface.getElement(containerID));
-	
-	
-};
-
-Interface.Loading = function(containerID, callback){
-	var element = Interface.getElement(containerID);
-	element.addClass("LoadingBar");
-	var loader = $("<div>").appendTo(element)
-		.attr("id", "Loader");
-	Tone.Buffer.onprogress = function(percent){
-		loader.width((percent * 100) + "%");
-	};
-	Tone.Buffer.onload = function(){
-		element.css({
-			height: 0,
-			opacity : 0,
-			margin: 0
-		});
-		setTimeout(function(){
-			element.remove();
-		}, 500);
-		if (callback){
-			callback();
-		}
-	};
-};
-
-Interface.Range = function(containerID, callback){
-	var range = nx.add("range", {
-		"parent" : containerID
-	});
-	range.label = "";
-	range.on("*", callback);
-	return range;
-};
-
-Interface.Meter = function(container, node, label, units){
-	var meter = new Tone.Meter();
-	node.connect(meter);
-	var element = $("<div>").appendTo(Interface.getElement(container))
-		.addClass("Meter");
-	label = label || "";
-	units = units || "";
-	$("<div>").appendTo(element)
-		.text(label)
-		.attr("id", "Label");
-	var value = $("<div>").appendTo(element)
-		.attr("id", "Value");
-	$("<div>").appendTo(element)
-		.text(units)
-		.attr("id", "Units");
-	function update(){
-		requestAnimationFrame(update);
-		value.text(meter.getValue().toFixed(3));
+	} else {
+		this.xParam = false;
 	}
-	update();
+
+	if (params.y){
+		
+		if (typeof params.y === "string"){
+			this.yParam = params.y;
+			//default values
+			this.yMin = 0;
+			this.yMax = 1;
+			this.yExp = 1;
+		} else {
+			this.yParam =  params.y.param;
+			this.yMin = typeof params.y.min === "undefined" ? 0 : params.y.min;
+			this.yMax = typeof params.y.max === "undefined" ? 1 : params.y.max;
+			this.yExp = typeof params.y.exp === "undefined" ? 1 : params.y.exp;
+			if (params.y.options){
+				this.yOptions = params.y.options;
+				this.yMin = 0;
+				this.yMax = this.yOptions.length - 1;
+			}
+		}
+
+		var height = this.container.height() - this.element.height();
+		var yParamVal = this.gui.params[this.yParam].get();
+		if (this.yOptions){
+			yParamVal = this.yOptions.indexOf(yParamVal);
+		}
+		var top = (yParamVal - this.yMin) / (this.yMax - this.yMin);
+		top = Math.pow(1 - top, 1 / this.yExp) * height;
+		this.element.css("top", top);
+		this.yaxis.css("top", top + this.halfSize);
+
+		if (this.yOptions){
+			this._setParam(this.yParam, this.yOptions[yParamVal]);
+		} else {
+			this._setParam(this.yParam, yParamVal);
+		}
+	} else {
+		this.yParam = false;
+	}
+
+	if (!(this.yParam && this.xParam)){
+		var axis = "x";
+		if (this.yParam){
+			axis = "y";
+		}
+		this.element.draggabilly({
+			"axis" : axis,
+			"containment": dragContainer
+		});
+	} else {
+		this.element.draggabilly({
+			"containment": dragContainer
+		});
+	}
+
 };
 
+Interface.Dragger.prototype._ondrag = function(e, pointer){
+	var normX = (pointer.pageX - this.left) / this.container.width();
+	var normY = (pointer.pageY - this.top) / this.container.height();
+	normX = Math.pow(normX, this.xExp);
+	normY = 1 - Math.pow(normY, this.yExp);	
+	var resX = normX * (this.xMax - this.xMin) + this.xMin;
+	var resY = normY * (this.yMax - this.yMin) + this.yMin;
 
-Interface.StepSequencer = function(container, width, height){
-	var element = Interface.getElement(container);
-	element.addClass("StepSequencer");
-	var matrix = nx.add("matrix", {
-		"parent" : element,
-	});
-	matrix.row = height;
-    matrix.col = width;
-    matrix.init();	
-    matrix.draw();
-    return {
-    	randomize : function(){
-    		var boxes = [];
-    		for (var i = 0; i < width; i++){
-    			var row = [];
-    			for (var j = 0; j < height; j++){
-    				row.push(Math.round(Math.random()));
-    			}
-    			boxes.push(row);
-    		}
-    		// console.log(boxes);
-    		// debugger;
-    		matrix.matrix = boxes;
-    		matrix.draw();
-    	}
-    };
+	var xVal = resX;
+	if (this.xOptions){
+		xVal = this.xOptions[Math.round(resX)];
+	}
+
+	var yVal = resY;
+	if (this.yOptions){
+		yVal = this.yOptions[Math.round(resY)];
+	}
+
+	this._setParam(this.xParam, xVal);
+	this._setParam(this.yParam, yVal);
+	//set the line positions
+	var position = this.element.position();
+	this.xaxis.css("left", position.left + this.halfSize);
+	this.yaxis.css("top", position.top + this.halfSize);
+};
+
+Interface.Dragger.prototype._setParam = function(param, value){
+	if (param){
+		this.gui.params[param].set(value);
+	}
+};
+
+/**
+ *  A Slider
+ */
+Interface.Slider = function(gui, params){
+	this.container = $(dragContainer);
+
+	this.gui = gui;
+
+	this.element = $("<div>", {
+		"class" : "Dragger",
+		"id" : this.gui.name
+	}).appendTo(dragContainer)
+		.on("dragMove", this._ondrag.bind(this))
+		.on("touchstart mousedown", params.start)
+		.on("mouseup touchend", params.end);
+
+	this.name = $("<div>", {
+		"id" : "Name",
+		"text" : this.gui.name
+	}).appendTo(this.element);
+
+	this.xaxis = $("<div>", {
+		"id" : "xAxis",
+		"class" : "Axis"
+	}).appendTo(this.container);
+
+	this.yaxis = $("<div>", {
+		"id" : "yAxis",
+		"class" : "Axis"
+	}).appendTo(this.container);
+
+	this.halfSize = this.element.width() / 2;
+
+	this.top = this.container.offset().top + 40;
+
+	this.left = this.container.offset().left;
 };

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+	<title>Signals</title>
+
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+	<script type="text/javascript" src="../build/Tone.js"></script>
+	<script type="text/javascript" src="./deps/jquery.min.js"></script>
+	<script type="text/javascript" src="../../Notone.js/build/Notone.GUI.js"></script>
+	<script type="text/javascript" src="./scripts/Interface.js"></script>
+
+	<link rel="stylesheet" type="text/css" href="./style/examples.css">
+
+	<script type="text/javascript">
+		// jshint ignore: start
+	</script>
+
+</head>
+<body>
+	<div id="Content">
+		<div id="Explanation">
+			Audio-Rate Math
+			<br>
+			<br>
+			One of the most powerful features of Tone.js is the ability to 
+			perform math and logic on audio-rate signal. Signals
+			can be ramped and scheduled to control Audio Parameters and 
+			other Signals making it simple to create elaborate, 
+			interconnected automations. Additionally, Signals and Signal maths use no 
+			ScriptProcessorNodes which make them very efficient.
+		</div>	
+	</div>
+	<script id="ToneCode" type="text/javascript">
+		//the driving signal
+		var signal = new Tone.Signal(0);
+
+		//take the absolute value of the signal
+		var abs = new Tone.Abs();
+
+		//add a constant value to the dry signal
+		var adder = new Tone.Add(100);
+		
+		//multiply the output by 10
+		var mult = new Tone.Multiply(10);
+		
+		//chain the components together
+		// signal.chain(abs, adder, norm, scaler, mult, clip);
+	</script>
+	<script id="ToneCode" type="text/javascript">
+
+		$(function(){
+			Notone.config({
+				"search" : false,
+				"expandInDrawer" : true,
+				"hideDrawer" : Interface.isMobile,
+				"drawer" : true,
+				"container" : "body"
+			});
+
+			var signalMeter = Notone.create(Tone.Meter, "signal");
+			signal.connect(signalMeter);
+
+			var signalMeter = Notone.create(Tone.Meter, "signal2");
+			signal.connect(signalMeter);
+
+		})
+
+		
+	</script>
+</body>
+</html>
