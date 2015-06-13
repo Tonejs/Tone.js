@@ -74,13 +74,9 @@ function(Tone){
 	 *  @type {Object}
 	 */
 	Tone.Oscillator.defaults = {
-		/** @type {string} */
 		"type" : "sine",
-		/** @type {Tone.Type.Frequency} */
 		"frequency" : 440,
-		/** @type {number} */
 		"detune" : 0,
-		/** @type {number} */
 		"phase" : 0
 	};
 
