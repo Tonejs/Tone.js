@@ -25,7 +25,8 @@ define(["Tone/core/Tone", "Tone/signal/SignalBase", "Tone/signal/GreaterThan"], 
 		 *  when this value is 0, the input signal will not pass through,
 		 *  when it is high (1), the input signal will pass through.
 		 *  
-		 *  @type {Tone.Signal}
+		 *  @type {Number}
+		 *  @signal
 		 */
 		this.gate = new Tone.Signal(0);
 		this._readOnly("gate");

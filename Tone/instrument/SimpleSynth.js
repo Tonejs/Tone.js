@@ -26,13 +26,15 @@ function(Tone){
 
 		/**
 		 *  the frequency control signal
-		 *  @type {Tone.Signal}
+		 *  @type {Frequency}
+		 *  @signal
 		 */
 		this.frequency = this.oscillator.frequency;
 
 		/**
 		 *  the detune control signal
-		 *  @type {Tone.Signal}
+		 *  @type {Cents}
+		 *  @signal
 		 */
 		this.detune = this.oscillator.detune;
 

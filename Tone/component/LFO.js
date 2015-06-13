@@ -36,7 +36,8 @@ function(Tone){
 
 		/**
 		 *  the lfo's frequency
-		 *  @type {Tone.Signal}
+		 *  @type {Frequency}
+		 *  @signal
 		 */
 		this.frequency = this.oscillator.frequency;
 
@@ -45,7 +46,8 @@ function(Tone){
 		 * the min and max output. For example if the min is -10 and the max 
 		 * is 10, setting the amplitude to 0.5 would make the LFO modulate
 		 * between -5 and 5. 
-		 * @type {Tone.Signal}
+		 * @type {Number}
+		 * @signal
 		 */
 		this.amplitude = this.oscillator.volume;
 		this.amplitude.units = Tone.Type.NormalRange;

@@ -55,19 +55,22 @@ define(["Tone/core/Tone", "Tone/component/Filter", "Tone/signal/Signal"], functi
 
 		/**
 		 *  the low/mid crossover frequency
-		 *  @type {Tone.Signal}
+		 *  @type {Frequency}
+		 *  @signal
 		 */
-		this.lowFrequency = new Tone.Signal(options.lowFrequency);
+		this.lowFrequency = new Tone.Signal(options.lowFrequency, Tone.Type.Frequency);
 
 		/**
 		 *  the mid/high crossover frequency
-		 *  @type {Tone.Signal}
+		 *  @type {Frequency}
+		 *  @signal
 		 */
-		this.highFrequency = new Tone.Signal(options.highFrequency);
+		this.highFrequency = new Tone.Signal(options.highFrequency, Tone.Type.Frequency);
 
 		/**
 		 *  the quality of all the fitlers
-		 *  @type {Tone.Signal}
+		 *  @type {Number}
+		 *  @signal
 		 */
 		this.Q = new Tone.Signal(options.Q);
 

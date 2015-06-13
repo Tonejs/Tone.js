@@ -43,7 +43,8 @@ function(Tone){
 
 		/**
 		 *  the delay time signal
-		 *  @type {Tone.Signal}
+		 *  @type {Time}
+		 *  @signal
 		 */
 		this.delayTime = new Tone.Signal(options.delayTime, Tone.Type.Time);
 

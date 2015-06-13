@@ -41,13 +41,15 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/source/Noise", "To
 
 		/**
 		 *  the resonance control
-		 *  @type {Tone.Signal}
+		 *  @type {NormalRange}
+		 *  @signal
 		 */
 		this.resonance = this._lfcf.resonance;
 
 		/**
 		 *  the dampening control. i.e. the lowpass filter frequency of the comb filter
-		 *  @type {Tone.Signal}
+		 *  @type {Frequency}
+		 *  @signal
 		 */
 		this.dampening = this._lfcf.dampening;
 

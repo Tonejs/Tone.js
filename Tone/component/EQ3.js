@@ -94,7 +94,6 @@ define(["Tone/core/Tone", "Tone/component/MultibandSplit", "Tone/signal/Signal"]
 
 		/**
 		 *  the mid/high crossover frequency
-		 *  @type {Tone.Signal}
 		 *  @type {Frequency}
 		 *  @signal
 		 */

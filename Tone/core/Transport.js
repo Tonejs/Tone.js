@@ -33,7 +33,8 @@ function(Tone){
 
 		/**
 		 *  the bpm value
-		 *  @type {Tone.Signal}
+		 *  @type {BPM}
+		 *  @signal
 		 */
 		this.bpm = new Tone.Signal(120, Tone.Type.BPM);
 

@@ -42,7 +42,8 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Master"], function(T
 
 		/**
 		 * The volume of the output in decibels.
-		 * @type {Tone.Signal}
+		 * @type {Decibels}
+		 * @signal
 		 * @example
 		 * source.volume.value = -6;
 		 */

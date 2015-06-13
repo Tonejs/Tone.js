@@ -48,7 +48,8 @@ define(["Tone/core/Tone", "Tone/signal/Expr", "Tone/signal/Signal", "Tone/compon
 
 	/**
 	 *  a constant signal equal to 1 / sqrt(2)
-	 *  @type {Tone.Signal}
+	 *  @type {Number}
+	 *  @signal
 	 *  @private
 	 *  @static
 	 */

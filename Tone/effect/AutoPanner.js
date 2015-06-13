@@ -33,7 +33,8 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/LFO", "Tone/comp
 		/**
 		 * The amount of panning between left and right. 
 		 * 0 = always center. 1 = full range between left and right. 
-		 * @type {Tone.Signal}
+		 * @type {NormalRange}
+		 * @signal
 		 */
 		this.depth = this._lfo.amplitude;
 
@@ -46,7 +47,8 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/LFO", "Tone/comp
 
 		/**
 		 * How fast the panner modulates
-		 * @type {Tone.Signal}
+		 * @type {Frequency}
+		 * @signal
 		 */
 		this.frequency = this._lfo.frequency;
 

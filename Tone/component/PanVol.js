@@ -37,7 +37,8 @@ define(["Tone/core/Tone", "Tone/component/Panner", "Tone/component/Volume"], fun
 
 		/**
 		 *  The volume control in decibels. 
-		 *  @type {Tone.Signal}
+		 *  @type {Decibels}
+		 *  @signal
 		 */
 		this.volume = this._volume.volume;
 

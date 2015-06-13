@@ -26,7 +26,8 @@ function(Tone){
 		/**
 		 *  The wet control, i.e. how much of the effected
 		 *  will pass through to the output. 
-		 *  @type {Tone.Signal}
+		 *  @type {NormalRange}
+		 *  @signal
 		 */
 		this.wet = this._dryWet.fade;
 

@@ -39,13 +39,15 @@ define(["Tone/core/Tone", "Tone/component/LFO", "Tone/effect/Effect"], function(
 
 		/**
 		 *  The frequency of the tremolo.	
-		 *  @type  {Tone.Signal}
+		 *  @type  {Frequency}
+		 *  @signal
 		 */
 		this.frequency = this._lfo.frequency;
 
 		/**
 		 *  The depth of the effect.	
-		 *  @type  {Tone.Signal}
+		 *  @type  {NormalRange}
+		 *  @signal
 		 */
 		this.depth = this._lfo.amplitude;
 

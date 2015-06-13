@@ -33,13 +33,15 @@ define(["Tone/core/Tone", "Tone/component/MultibandSplit", "Tone/component/Compr
 
 		/**
 		 *  low/mid crossover frequency
-		 *  @type {Tone.Signal}
+		 *  @type {Frequency}
+		 *  @signal
 		 */
 		this.lowFrequency = this._splitter.lowFrequency;
 
 		/**
 		 *  mid/high crossover frequency
-		 *  @type {Tone.Signal}
+		 *  @type {Frequency}
+		 *  @signal
 		 */
 		this.highFrequency = this._splitter.highFrequency;
 

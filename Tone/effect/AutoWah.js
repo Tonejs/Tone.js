@@ -76,13 +76,15 @@ function(Tone){
 
 		/**
 		 * the gain of the filter.
-		 * @type {Tone.Signal}
+		 * @type {Gain}
+		 * @signal
 		 */
 		this.gain = this._peaking.gain;
 
 		/**
 		 * The quality of the filter.
-		 * @type {Tone.Signal}
+		 * @type {Number}
+		 * @signal
 		 */
 		this.Q = this._bandpass.Q;
 

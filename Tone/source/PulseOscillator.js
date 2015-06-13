@@ -20,7 +20,8 @@ function(Tone){
 
 		/**
 		 *  the width of the pulse
-		 *  @type {Tone.Signal}
+		 *  @type {NormalRange}
+		 *  @signal
 		 */
 		this.width = new Tone.Signal(options.width, Tone.Type.NormalRange);
 
@@ -45,13 +46,15 @@ function(Tone){
 
 		/**
 		 *  The frequency in hertz
-		 *  @type {Tone.Signal}
+		 *  @type {Frequency}
+		 *  @signal
 		 */
 		this.frequency = this._sawtooth.frequency;
 
 		/**
 		 *  The detune in cents. 
-		 *  @type {Tone.Signal}
+		 *  @type {Cents}
+		 *  @signal
 		 */
 		this.detune = this._sawtooth.detune;
 

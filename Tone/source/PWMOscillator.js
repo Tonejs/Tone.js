@@ -47,19 +47,22 @@ function(Tone){
 
 		/**
 		 *  the frequency control
-		 *  @type {Tone.Signal}
+		 *  @type {Frequency}
+		 *  @signal
 		 */
 		this.frequency = this._modulator.frequency;
 
 		/**
 		 *  the detune control
-		 *  @type {Tone.Signal}
+		 *  @type {Cents}
+		 *  @signal
 		 */
 		this.detune = this._modulator.detune;
 
 		/**
 		 *  the modulation rate of the oscillator
-		 *  @type {Tone.Signal}
+		 *  @type {Frequency}
+		 *  @signal
 		 */
 		this.modulationFrequency = this._pulse.frequency;	
 

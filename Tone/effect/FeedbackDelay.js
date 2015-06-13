@@ -20,7 +20,8 @@ define(["Tone/core/Tone", "Tone/effect/FeedbackEffect", "Tone/signal/Signal"], f
 
 		/**
 		 *  Tone.Signal to control the delay amount
-		 *  @type {Tone.Signal}
+		 *  @type {Time}
+		 *  @signal
 		 */
 		this.delayTime = new Tone.Signal(options.delayTime, Tone.Type.Time);
 

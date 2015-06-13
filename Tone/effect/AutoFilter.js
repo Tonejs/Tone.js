@@ -33,13 +33,15 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/LFO", "Tone/comp
 		/**
 		 * The range of the filter modulating between the min and max frequency. 
 		 * 0 = no modulation. 1 = full modulation.
-		 * @type {Tone.Signal}
+		 * @type {NormalRange}
+		 * @signal
 		 */
 		this.depth = this._lfo.amplitude;
 
 		/**
 		 * How fast the filter modulates between min and max. 
-		 * @type {Tone.Signal}
+		 * @type {Frequency}
+		 * @signal
 		 */
 		this.frequency = this._lfo.frequency;
 

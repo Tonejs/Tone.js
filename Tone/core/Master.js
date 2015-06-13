@@ -34,7 +34,8 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 
 		/**
 		 * the volume of the output in decibels
-		 * @type {Tone.Signal}
+		 * @type {Decibels}
+		 * @signal
 		 */
 		this.volume = new Tone.Signal(this.output.gain, Tone.Type.Decibels);
 		

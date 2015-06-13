@@ -16,9 +16,10 @@ function(Tone){
 
 		/**
 		 *  controls the amount of feedback
-		 *  @type {Tone.Signal}
+		 *  @type {NormalRange}
+		 *  @signal
 		 */
-		this.feedback = new Tone.Signal(options.feedback);
+		this.feedback = new Tone.Signal(options.feedback, Tone.Type.NormalRange);
 
 		/**
 		 *  the left side feeback

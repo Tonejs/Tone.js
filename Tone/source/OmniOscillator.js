@@ -22,13 +22,15 @@ function(Tone){
 
 		/**
 		 *  the frequency control
-		 *  @type {Tone.Signal}
+		 *  @type {Frequency}
+		 *  @signal
 		 */
 		this.frequency = new Tone.Signal(options.frequency, Tone.Type.Frequency);
 
 		/**
 		 *  the detune control
-		 *  @type {Tone.Signal}
+		 *  @type {Cents}
+		 *  @signal
 		 */
 		this.detune = new Tone.Signal(options.detune, Tone.Type.Cents);
 
@@ -172,7 +174,8 @@ function(Tone){
 	/**
 	 * The width of the oscillator (only if the oscillator is set to pulse)
 	 * @memberOf Tone.OmniOscillator#
-	 * @type {Tone.Signal}
+	 * @type {NormalRange}
+	 * @signal
 	 * @name width
 	 * @example
 	 * var omniOsc = new Tone.OmniOscillator(440, "pulse");
@@ -191,7 +194,8 @@ function(Tone){
 	 * The modulationFrequency Signal of the oscillator 
 	 * (only if the oscillator type is set to pwm).
 	 * @memberOf Tone.OmniOscillator#
-	 * @type {Tone.Signal}
+	 * @type {Frequency}
+	 * @signal
 	 * @name modulationFrequency
 	 * @example
 	 * var omniOsc = new Tone.OmniOscillator(440, "pwm");

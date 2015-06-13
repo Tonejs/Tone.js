@@ -24,14 +24,16 @@ define(["Tone/core/Tone", "Tone/signal/Max", "Tone/signal/Min", "Tone/signal/Sig
 		
 		/**
 		 *  The min clip value
-		 *  @type {Tone.Signal}
+		 *  @type {Number}
+		 *  @signal
 		 */
 		this.min = this.input = new Tone.Min(max);
 		this._readOnly("min");
 
 		/**
 		 *  The max clip value
-		 *  @type {Tone.Signal}
+		 *  @type {Number}
+		 *  @signal
 		 */
 		this.max = this.output = new Tone.Max(min);
 		this._readOnly("max");

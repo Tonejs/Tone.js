@@ -26,7 +26,8 @@ define(["Tone/core/Tone", "Tone/signal/Equal", "Tone/signal/Signal"], function(T
 
 		/**
 		 *  the control signal
-		 *  @type {Tone.Signal}
+		 *  @type {Number}
+		 *  @signal
 		 */
 		this.gate = new Tone.Signal(0);
 		this._readOnly("gate");

@@ -31,19 +31,22 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 
 		/**
 		 *  the frequency of the filter
-		 *  @type {Tone.Signal}
+		 *  @type {Frequency}
+		 *  @signal
 		 */
 		this.frequency = new Tone.Signal(options.frequency, Tone.Type.Frequency);
 
 		/**
 		 *  the detune parameter
-		 *  @type {Tone.Signal}
+		 *  @type {Cents}
+		 *  @signal
 		 */
-		this.detune = new Tone.Signal(0);
+		this.detune = new Tone.Signal(0, Tone.Type.Cents);
 
 		/**
 		 *  the gain of the filter, only used in certain filter types
-		 *  @type {Tone.Signal}
+		 *  @type {Gain}
+		 *  @signal
 		 */
 		this.gain = new Tone.Signal({
 			"value" : options.gain, 
@@ -53,7 +56,8 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 
 		/**
 		 *  the Q or Quality of the filter
-		 *  @type {Tone.Signal}
+		 *  @type {Positive}
+		 *  @signal
 		 */
 		this.Q = new Tone.Signal(options.Q);
 

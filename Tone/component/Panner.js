@@ -40,7 +40,8 @@ function(Tone){
 
 			/**
 			 *  the pan control
-			 *  @type {Tone.Signal}
+			 *  @type {NormalRange}
+			 *  @signal
 			 */	
 			this.pan = new Tone.Signal(0, Tone.Type.NormalRange);
 
@@ -77,7 +78,8 @@ function(Tone){
 			
 			/**
 			 *  the pan control
-			 *  @type {Tone.Signal}
+			 *  @type {NormalRange}
+			 *  @signal
 			 */	
 			this.pan = this._crossFade.fade;
 

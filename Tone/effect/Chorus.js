@@ -64,7 +64,8 @@ function(Tone){
 
 		/**
 		 * The frequency the chorus will modulate at. 
-		 * @type {Tone.Signal}
+		 * @type {Frequency}
+		 * @signal
 		 */
 		this.frequency = this._lfoL.frequency;
 
