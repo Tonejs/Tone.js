@@ -59,37 +59,44 @@ define(["Tone/core/Tone", "Tone/component/MultibandSplit", "Tone/signal/Signal"]
 
 		/**
 		 * The gain in decibels of the low part
-		 * @type {Tone.Signal}
+		 * @type {Decibels}
+		 * @signal
 		 */
 		this.low = new Tone.Signal(this._lowGain.gain, Tone.Type.Decibels);
 
 		/**
 		 * The gain in decibels of the mid part
-		 * @type {Tone.Signal}
+		 * @type {Decibels}
+		 * @signal
 		 */
 		this.mid = new Tone.Signal(this._midGain.gain, Tone.Type.Decibels);
 
 		/**
 		 * The gain in decibels of the high part
-		 * @type {Tone.Signal}
+		 * @type {Decibels}
+		 * @signal
 		 */
 		this.high = new Tone.Signal(this._highGain.gain, Tone.Type.Decibels);
 
 		/**
 		 *  the Q value
-		 *  @type {Tone.Signal}
+		 *  @type {Positive}
+		 *  @signal
 		 */
 		this.Q = this._multibandSplit.Q;
 
 		/**
 		 *  the low/mid crossover frequency
-		 *  @type {Tone.Signal}
+		 *  @type {Frequency}
+		 *  @signal
 		 */
 		this.lowFrequency = this._multibandSplit.lowFrequency;
 
 		/**
 		 *  the mid/high crossover frequency
 		 *  @type {Tone.Signal}
+		 *  @type {Frequency}
+		 *  @signal
 		 */
 		this.highFrequency = this._multibandSplit.highFrequency;
 
@@ -108,8 +115,6 @@ define(["Tone/core/Tone", "Tone/component/MultibandSplit", "Tone/signal/Signal"]
 
 	/**
 	 *  the default values
-	 *  @type {Object}
-	 *  @static
 	 */
 	Tone.EQ3.defaults = {
 		"low" : 0,

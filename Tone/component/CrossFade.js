@@ -41,7 +41,8 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Expr", "Tone/signal
 		 *  0 is 100% signal `a` (input 0) and 1 is 100% signal `b` (input 1).
 		 *  Values between 0-1.
 		 *  
-		 *  @type {Tone.Signal}
+		 *  @type {NormalRange}
+		 *  @signal
 		 */
 		this.fade = new Tone.Signal(this.defaultArg(initialFade, 0.5), Tone.Type.NormalRange);
 

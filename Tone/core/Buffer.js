@@ -4,12 +4,13 @@ define(["Tone/core/Tone"], function(Tone){
 
 	/**
 	 *  @class  Buffer loading and storage. Tone.Buffer is used internally by all 
-	 *          classes that make requests for audio files such as {@link Tone.Player},
-	 *          {@link Tone.Sampler} and {@link Tone.Convolver} .
-	 *          <br><br>Aside from load callbacks from individual buffers, Tone.Buffer 
+	 *          classes that make requests for audio files such as Tone.Player,
+	 *          Tone.Sampler and Tone.Convolver.
+	 *          <br><br>
+	 *          Aside from load callbacks from individual buffers, Tone.Buffer 
 	 *  		provides static methods which keep track of the loading progress 
-	 *  		of all of the buffers. These methods are `onload`, `onprogress`,
-	 *  		and `onerror`. 
+	 *  		of all of the buffers. These methods are <code>onload</code>, <code>onprogress</code>,
+	 *  		and <code>onerror</code>. 
 	 *
 	 *  @constructor 
 	 *  @extends {Tone}
@@ -74,7 +75,7 @@ define(["Tone/core/Tone"], function(Tone){
 	 */
 	Tone.Buffer.defaults = {
 		"url" : undefined,
-		"onload" : function(){},
+		"onload" : Tone.noOp,
 		"reverse" : false
 	};
 

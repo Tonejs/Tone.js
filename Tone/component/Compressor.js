@@ -7,8 +7,8 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	 *
 	 *  @extends {Tone}
 	 *  @constructor
-	 *  @param {number} [threshold=-24] threshold in decibels
-	 *  @param {number} [ratio=12] gain reduction ratio
+	 *  @param {Decibels=} threshold The value above which the compression starts to be applied.
+	 *  @param {Positive=} ratio The gain reduction ratio.
 	 *  @example
 	 *  var comp = new Tone.Compressor(-30, 3);
 	 */
@@ -25,31 +25,36 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 
 		/**
 		 *  the threshold vaue
-		 *  @type {AudioParam}
+		 *  @type {Decibels}
+		 *  @signal
 		 */
 		this.threshold = this._compressor.threshold;
 
 		/**
 		 *  The attack parameter
-		 *  @type {Tone.Signal}
+		 *  @type {Time}
+		 *  @signal
 		 */
 		this.attack = new Tone.Signal(this._compressor.attack, Tone.Type.Time);
 
 		/**
 		 *  The release parameter
-		 *  @type {Tone.Signal}
+		 *  @type {Time}
+		 *  @signal
 		 */
 		this.release = new Tone.Signal(this._compressor.release, Tone.Type.Time);
 
 		/**
 		 *  The knee parameter
-		 *  @type {AudioParam}
+		 *  @type {Decibels}
+		 *  @signal
 		 */
 		this.knee = this._compressor.knee;
 
 		/**
 		 *  The ratio value
-		 *  @type {AudioParam}
+		 *  @type {Number}
+		 *  @signal
 		 */
 		this.ratio = this._compressor.ratio;
 
