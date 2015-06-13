@@ -10,9 +10,9 @@ var insert = require("gulp-insert");
 var del = require("del");
 var uglify = require("gulp-uglify");
 var rename = require("gulp-rename");
-var extractAttributes = require("./attributes");
 var sass = require("gulp-ruby-sass");
 var prefix = require("gulp-autoprefixer");
+var concatCss = require("gulp-concat-css");
 
 /**
  *  BUILDING
@@ -123,5 +123,5 @@ gulp.task("sass", function () {
 });
 
 gulp.task("example", function() {
-  gulp.watch(["examples/style/examples.scss"], ["sass"]);
+  gulp.watch(["../examples/style/examples.scss"], ["sass"]);
 });
