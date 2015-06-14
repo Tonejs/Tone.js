@@ -52,12 +52,15 @@ define(["Tone/core/Tone", "Tone/core/Master", "Tone/core/Note"], function(Tone){
 	Tone.Instrument.prototype.triggerRelease = function(){};
 
 	/**
-	 *  trigger the attack and then the release
+	 *  Trigger the attack and then the release after the duration. 
 	 *  @param  {string|number} note     the note to trigger
 	 *  @param  {Time} duration the duration of the note
 	 *  @param {Time} [time=now]     the time of the attack
 	 *  @param  {NormalRange} [velocity=1] the velocity
 	 *  @returns {Tone.Instrument} this
+	 *  @example
+	 * //trigger "C4" for the duration of an 8th note
+	 * synth.triggerAttackRelease("C4", "8n");
 	 */
 	Tone.Instrument.prototype.triggerAttackRelease = function(note, duration, time, velocity){
 		time = this.toSeconds(time);

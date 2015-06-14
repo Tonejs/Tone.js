@@ -11,8 +11,8 @@ function(Tone){
 	 *
 	 *  @constructor
 	 *  @extends {Tone.Monophonic}
-	 *  @param {Object} options the options available for the synth 
-	 *                          see defaults below
+	 *  @param {Object} [options] the options available for the synth 
+	 *                            see defaults below
 	 *  @example
 	 *  var synth = new Tone.AMSynth();
 	 */
@@ -22,28 +22,28 @@ function(Tone){
 		Tone.Monophonic.call(this, options);
 
 		/**
-		 *  the first voice
+		 *  The carrier voice. 
 		 *  @type {Tone.MonoSynth}
 		 */
 		this.carrier = new Tone.MonoSynth(options.carrier);
 		this.carrier.volume.value = -10;
 
 		/**
-		 *  the second voice
+		 *  The modulator voice. 
 		 *  @type {Tone.MonoSynth}
 		 */
 		this.modulator = new Tone.MonoSynth(options.modulator);
 		this.modulator.volume.value = -10;
 
 		/**
-		 *  the frequency control
+		 *  The frequency.
 		 *  @type {Frequency}
 		 *  @signal
 		 */
 		this.frequency = new Tone.Signal(440, Tone.Type.Frequency);
 
 		/**
-		 *  the ratio between the two voices
+		 *  The ratio between the two voices. 
 		 *  @type {Positive}
 		 *  @signal
 		 */

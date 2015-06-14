@@ -9,7 +9,7 @@ function(Tone){
 	 *
 	 *  @constructor
 	 *  @extends {Tone.Monophonic}
-	 *  @param {Object} options the options available for the synth 
+	 *  @param {Object} [options] the options available for the synth 
 	 *                          see defaults below
 	 *  @example
 	 *  var fmSynth = new Tone.FMSynth();
@@ -20,14 +20,14 @@ function(Tone){
 		Tone.Monophonic.call(this, options);
 
 		/**
-		 *  the first voice
+		 *  The carrier voice.
 		 *  @type {Tone.MonoSynth}
 		 */
 		this.carrier = new Tone.MonoSynth(options.carrier);
 		this.carrier.volume.value = -10;
 
 		/**
-		 *  the second voice
+		 *  The modulator voice.
 		 *  @type {Tone.MonoSynth}
 		 */
 		this.modulator = new Tone.MonoSynth(options.modulator);

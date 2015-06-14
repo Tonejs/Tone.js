@@ -12,7 +12,7 @@ function(Tone){
 	 *  @constructor
 	 *  @extends {Tone.Instrument}
 	 *  @param {Object|string} urls the urls of the audio file
-	 *  @param {Object} options the options object for the synth
+	 *  @param {Object} [options] the options object for the synth
 	 *  @example
 	 *  var sampler = new Sampler({
 	 *  	A : {
@@ -58,6 +58,7 @@ function(Tone){
 		/**
 		 *  The name of the current sample. 
 		 *  @type {string}
+		 *  @private
 		 */
 		this._sample = options.sample;
 

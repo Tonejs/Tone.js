@@ -9,7 +9,7 @@ function(Tone){
 	 *
 	 *  @constructor
 	 *  @extends {Tone.Monophonic}
-	 *  @param {Object} options the options available for the synth 
+	 *  @param {Object} [options] the options available for the synth 
 	 *                          see defaults below
 	 */
 	Tone.SimpleSynth = function(options){
@@ -19,27 +19,27 @@ function(Tone){
 		Tone.Monophonic.call(this, options);
 
 		/**
-		 *  the first oscillator
+		 *  The oscillator.
 		 *  @type {Tone.OmniOscillator}
 		 */
 		this.oscillator = new Tone.OmniOscillator(options.oscillator);
 
 		/**
-		 *  the frequency control signal
+		 *  The frequency control.
 		 *  @type {Frequency}
 		 *  @signal
 		 */
 		this.frequency = this.oscillator.frequency;
 
 		/**
-		 *  the detune control signal
+		 *  The detune control.
 		 *  @type {Cents}
 		 *  @signal
 		 */
 		this.detune = this.oscillator.detune;
 
 		/**
-		 *  the amplitude envelope
+		 *  The amplitude envelope.
 		 *  @type {Tone.Envelope}
 		 */
 		this.envelope = new Tone.AmplitudeEnvelope(options.envelope);

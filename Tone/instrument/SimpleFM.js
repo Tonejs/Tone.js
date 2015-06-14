@@ -9,7 +9,7 @@ function(Tone){
 	 *
 	 *  @constructor
 	 *  @extends {Tone.Monophonic}
-	 *  @param {Object} options the options available for the synth 
+	 *  @param {Object} [options] the options available for the synth 
 	 *                          see defaults below
 	 *  @example
 	 *  var fmSynth = new Tone.SimpleFM();
@@ -20,14 +20,14 @@ function(Tone){
 		Tone.Monophonic.call(this, options);
 
 		/**
-		 *  the first voice
+		 *  The carrier voice. 
 		 *  @type {Tone.SimpleSynth}
 		 */
 		this.carrier = new Tone.SimpleSynth(options.carrier);
 		this.carrier.volume.value = -10;
 
 		/**
-		 *  the second voice
+		 *  The modulator voice. 
 		 *  @type {Tone.SimpleSynth}
 		 */
 		this.modulator = new Tone.SimpleSynth(options.modulator);
@@ -49,8 +49,6 @@ function(Tone){
 		this.harmonicity.units = Tone.Type.Positive;
 
 		/**
-		 *  
-		 *
 		 *	@type {Tone.Multiply}
 		 *	@private
 		 */

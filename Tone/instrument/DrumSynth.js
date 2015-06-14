@@ -10,7 +10,7 @@ function(Tone){
 	 *
 	 *  @constructor
 	 *  @extends {Tone.Instrument}
-	 *  @param {Object} options the options available for the synth 
+	 *  @param {Object} [options] the options available for the synth 
 	 *                          see defaults below
 	 *  @example
 	 *  var synth = new Tone.DrumSynth();
