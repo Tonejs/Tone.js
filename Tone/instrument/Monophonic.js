@@ -19,7 +19,7 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/signal/Signal"], f
 
 		/**
 		 *  The glide time between notes. 
-		 *  @type {Tone.Type.Time}
+		 *  @type {Time}
 		 */
 		this.portamento = options.portamento;
 	};
@@ -38,8 +38,8 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/signal/Signal"], f
 	/**
 	 *  trigger the attack. start the note, at the time with the velocity
 	 *  
-	 *  @param  {Tone.Type.Frequency} note     the note
-	 *  @param  {Tone.Type.Time} [time=now]     the time, if not given is now
+	 *  @param  {Frequency} note     the note
+	 *  @param  {Time} [time=now]     the time, if not given is now
 	 *  @param  {number} [velocity=1] velocity defaults to 1
 	 *  @returns {Tone.Monophonic} `this`
 	 */
@@ -52,7 +52,7 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/signal/Signal"], f
 
 	/**
 	 *  trigger the release portion of the envelope
-	 *  @param  {Tone.Type.Time} [time=now] if no time is given, the release happens immediatly
+	 *  @param  {Time} [time=now] if no time is given, the release happens immediatly
 	 *  @returns {Tone.Monophonic} `this`
 	 */
 	Tone.Monophonic.prototype.triggerRelease = function(time){
@@ -63,7 +63,7 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/signal/Signal"], f
 	/**
 	 *  override this method with the actual method
 	 *  @abstract
-	 *  @param {Tone.Type.Time} [time=now] the time the attack should happen
+	 *  @param {Time} [time=now] the time the attack should happen
 	 *  @param {number} [velocity=1] the velocity of the envelope
 	 *  @returns {Tone.Monophonic} `this`
 	 */	
@@ -72,7 +72,7 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/signal/Signal"], f
 	/**
 	 *  override this method with the actual method
 	 *  @abstract
-	 *  @param {Tone.Type.Time} [time=now] the time the attack should happen
+	 *  @param {Time} [time=now] the time the attack should happen
 	 *  @param {number} [velocity=1] the velocity of the envelope
 	 *  @returns {Tone.Monophonic} `this`
 	 */	
@@ -80,7 +80,7 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/signal/Signal"], f
 
 	/**
 	 *  set the note to happen at a specific time
-	 *  @param {Tone.Type.Frequency} note if the note is a string, it will be 
+	 *  @param {Frequency} note if the note is a string, it will be 
 	 *                              parsed as (NoteName)(Octave) i.e. A4, C#3, etc
 	 *                              otherwise it will be considered as the frequency
 	 *  @returns {Tone.Monophonic} `this`

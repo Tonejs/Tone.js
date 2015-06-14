@@ -11,7 +11,7 @@ function(Tone){
 	 *
 	 *  @extends {Tone.Oscillator}
 	 *  @constructor
-	 *  @param {Tone.Type.Frequency} frequency of the oscillator (meaningless for noise types)
+	 *  @param {Frequency} frequency of the oscillator (meaningless for noise types)
 	 *  @param {string} type the type of the oscillator
 	 *  @example
 	 *  var omniOsc = new Tone.OmniOscillator("C#4", "pwm");
@@ -81,7 +81,7 @@ function(Tone){
 
 	/**
 	 *  start the oscillator
-	 *  @param {Tone.Type.Time} [time=now] the time to start the oscillator
+	 *  @param {Time} [time=now] the time to start the oscillator
 	 *  @private
 	 */
 	Tone.OmniOscillator.prototype._start = function(time){
@@ -90,7 +90,7 @@ function(Tone){
 
 	/**
 	 *  start the oscillator
-	 *  @param {Tone.Type.Time} [time=now] the time to start the oscillator
+	 *  @param {Time} [time=now] the time to start the oscillator
 	 *  @private
 	 */
 	Tone.OmniOscillator.prototype._stop = function(time){
@@ -159,7 +159,7 @@ function(Tone){
 	/**
 	 * The phase of the oscillator in degrees
 	 * @memberOf Tone.OmniOscillator#
-	 * @type {Tone.Type.Degrees}
+	 * @type {Degrees}
 	 * @name phase
 	 */
 	Object.defineProperty(Tone.OmniOscillator.prototype, "phase", {

@@ -129,7 +129,7 @@ function(Tone){
 	/**
 	 *  trigger the attack portion of the note
 	 *  
-	 *  @param  {Tone.Type.Time} [time=now] the time the note will occur
+	 *  @param  {Time} [time=now] the time the note will occur
 	 *  @param {number} [velocity=1] the velocity of the note
 	 *  @returns {Tone.FMSynth} `this`
 	 */
@@ -147,7 +147,7 @@ function(Tone){
 	/**
 	 *  trigger the release portion of the note
 	 *  
-	 *  @param  {Tone.Type.Time} [time=now] the time the note will release
+	 *  @param  {Time} [time=now] the time the note will release
 	 *  @returns {Tone.FMSynth} `this`
 	 */
 	Tone.FMSynth.prototype.triggerEnvelopeRelease = function(time){

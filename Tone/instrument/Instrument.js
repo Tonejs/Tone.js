@@ -19,7 +19,8 @@ define(["Tone/core/Tone", "Tone/core/Master", "Tone/core/Note"], function(Tone){
 
 		/**
 		 * the volume of the output in decibels
-		 * @type {Tone.Signal}
+		 * @type {Decibels}
+		 * @signal
 		 */
 		this.volume = new Tone.Signal(this.output.gain, Tone.Type.Decibels);
 		this._readOnly(["volume"]);
@@ -39,23 +40,23 @@ define(["Tone/core/Tone", "Tone/core/Master", "Tone/core/Note"], function(Tone){
 	/**
 	 *  @abstract
 	 *  @param {string|number} note the note to trigger
-	 *  @param {Tone.Type.Time} [time=now] the time to trigger the ntoe
+	 *  @param {Time} [time=now] the time to trigger the ntoe
 	 *  @param {number} [velocity=1] the velocity to trigger the note
 	 */
 	Tone.Instrument.prototype.triggerAttack = function(){};
 
 	/**
 	 *  @abstract
-	 *  @param {Tone.Type.Time} [time=now] when to trigger the release
+	 *  @param {Time} [time=now] when to trigger the release
 	 */
 	Tone.Instrument.prototype.triggerRelease = function(){};
 
 	/**
 	 *  trigger the attack and then the release
 	 *  @param  {string|number} note     the note to trigger
-	 *  @param  {Tone.Type.Time} duration the duration of the note
-	 *  @param {Tone.Type.Time} [time=now]     the time of the attack
-	 *  @param  {number} velocity the velocity
+	 *  @param  {Time} duration the duration of the note
+	 *  @param {Time} [time=now]     the time of the attack
+	 *  @param  {NormalRange} [velocity=1] the velocity
 	 *  @returns {Tone.Instrument} `this`
 	 */
 	Tone.Instrument.prototype.triggerAttackRelease = function(note, duration, time, velocity){

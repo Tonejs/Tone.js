@@ -95,7 +95,7 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 	/**
 	 *  internal start method
 	 *
-	 *  @param {Tone.Type.Time} time
+	 *  @param {Time} time
 	 *  @private
 	 */
 	Tone.Noise.prototype._start = function(time){
@@ -110,7 +110,7 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 	/**
 	 *  internal stop method
 	 *
-	 *  @param {Tone.Type.Time} time
+	 *  @param {Time} time
 	 *  @private
 	 */
 	Tone.Noise.prototype._stop = function(time){

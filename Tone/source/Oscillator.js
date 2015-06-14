@@ -8,7 +8,7 @@ function(Tone){
 	 *
 	 *  @constructor
 	 *  @extends {Tone.Source}
-	 *  @param {Tone.Type.Frequency} [frequency=440] starting frequency
+	 *  @param {Frequency} [frequency=440] starting frequency
 	 *  @param {string} [type="sine"] type of oscillator (sine|square|triangle|sawtooth)
 	 *  @example
 	 *  var osc = new Tone.Oscillator(440, "sine");
@@ -84,7 +84,7 @@ function(Tone){
 
 	/**
 	 *  start the oscillator
-	 *  @param  {Tone.Type.Time} [time=now] 
+	 *  @param  {Time} [time=now] 
 	 *  @private
 	 */
 	Tone.Oscillator.prototype._start = function(time){
@@ -102,7 +102,7 @@ function(Tone){
 	/**
 	 *  stop the oscillator
 	 *  @private
-	 *  @param  {Tone.Type.Time} [time=now] (optional) timing parameter
+	 *  @param  {Time} [time=now] (optional) timing parameter
 	 *  @returns {Tone.Oscillator} `this`
 	 */
 	Tone.Oscillator.prototype._stop = function(time){
@@ -220,7 +220,7 @@ function(Tone){
 	/**
 	 * The phase of the oscillator in degrees. 
 	 * @memberOf Tone.Oscillator#
-	 * @type {Tone.Type.Degrees}
+	 * @type {Degrees}
 	 * @name phase
 	 * @example
 	 * osc.phase = 180; //flips the phase of the oscillator

@@ -95,7 +95,7 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Master"], function(T
 
 	/**
 	 *  Get the state of the source at the specified time.
-	 *  @param  {Tone.Type.Time}  time
+	 *  @param  {Time}  time
 	 *  @return  {Tone.State} 
 	 *  @private
 	 */
@@ -112,7 +112,7 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Master"], function(T
 
 	/**
 	 *  Start the source at the time.
-	 *  @param  {Tone.Type.Time} [time=now]
+	 *  @param  {Time} [time=now]
 	 *  @returns {Tone.Source} `this`
 	 *  @example
 	 *  source.start("+0.5"); //starts the source 0.5 seconds from now
@@ -129,7 +129,7 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Master"], function(T
 
 	/**
 	 * 	stop the source
-	 *  @param  {Tone.Type.Time} [time=now]
+	 *  @param  {Time} [time=now]
 	 *  @returns {Tone.Source} `this`
 	 *  @example
 	 *  source.stop(); // stops the source immediately
@@ -156,7 +156,7 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Master"], function(T
 	 *  Not ready yet. 
  	 *  @private
  	 *  @abstract
-	 *  @param  {Tone.Type.Time} time 
+	 *  @param  {Time} time 
 	 *  @returns {Tone.Source} `this`
 	 */
 	Tone.Source.prototype.pause = function(time){
@@ -170,7 +170,7 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Master"], function(T
 	 *  is started, this source is started and when the transport is stopped
 	 *  or paused, so is the source. 
 	 *
-	 *  @param {Tone.Type.Time} [delay=0] Delay time before starting the source after the
+	 *  @param {Time} [delay=0] Delay time before starting the source after the
 	 *                               Transport has started. 
 	 *  @returns {Tone.Source} `this`
 	 */

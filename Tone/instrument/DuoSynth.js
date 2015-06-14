@@ -44,7 +44,8 @@ function(Tone){
 
 		/**
 		 * the vibrato frequency
-		 * @type {Tone.Signal}
+		 * @type {Frequency}
+		 * @signal
 		 */
 		this.vibratoRate = this._vibrato.frequency;
 
@@ -57,7 +58,8 @@ function(Tone){
 
 		/**
 		 * The amount of vibrato
-		 * @type {Tone.Signal}
+		 * @type {Gain}
+		 * @signal
 		 */
 		this.vibratoAmount = new Tone.Signal(this._vibratoGain.gain, Tone.Type.Gain);
 		this.vibratoAmount.value = options.vibratoAmount;
@@ -71,7 +73,8 @@ function(Tone){
 
 		/**
 		 *  the frequency control
-		 *  @type {Tone.Signal}
+		 *  @type {Frequency}
+		 *  @signal
 		 */
 		this.frequency = new Tone.Signal(440, Tone.Type.Frequency);
 
@@ -146,8 +149,8 @@ function(Tone){
 	/**
 	 *  start the attack portion of the envelopes
 	 *  
-	 *  @param {Tone.Type.Time} [time=now] the time the attack should start
-	 *  @param {number} [velocity=1] the velocity of the note (0-1)
+	 *  @param {Time} [time=now] the time the attack should start
+	 *  @param {NormalRange} [velocity=1] the velocity of the note (0-1)
 	 *  @returns {Tone.DuoSynth} `this`
 	 */
 	Tone.DuoSynth.prototype.triggerEnvelopeAttack = function(time, velocity){
@@ -162,7 +165,7 @@ function(Tone){
 	/**
 	 *  start the release portion of the envelopes
 	 *  
-	 *  @param {Tone.Type.Time} [time=now] the time the release should start
+	 *  @param {Time} [time=now] the time the release should start
 	 *  @returns {Tone.DuoSynth} `this`
 	 */
 	Tone.DuoSynth.prototype.triggerEnvelopeRelease = function(time){
@@ -174,7 +177,7 @@ function(Tone){
 	/**
 	 * The ratio between the two carrier and the modulator. 
 	 * @memberOf Tone.DuoSynth#
-	 * @type {number}
+	 * @type {Positive}
 	 * @name harmonicity
 	 */
 	Object.defineProperty(Tone.DuoSynth.prototype, "harmonicity", {

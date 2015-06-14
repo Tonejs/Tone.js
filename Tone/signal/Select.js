@@ -46,7 +46,7 @@ define(["Tone/core/Tone", "Tone/signal/Equal", "Tone/signal/Signal"], function(T
 	/**
 	 *  open one of the inputs and close the other
 	 *  @param {number} which open one of the gates (closes the other)
-	 *  @param {Tone.Type.Time=} time the time when the switch will open
+	 *  @param {Time=} time the time when the switch will open
 	 *  @returns {Tone.Select} `this`
 	 *  @example
 	 *  //open input 1 in a half second from now

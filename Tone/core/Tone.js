@@ -133,7 +133,7 @@ define(function(){
 	 *  over the duration of the rampTime.
 	 *  @param {Object|string} params
 	 *  @param {number=} value
-	 *  @param {Tone.Type.Time=} rampTime
+	 *  @param {Time=} rampTime
 	 *  @returns {Tone} `this`
 	 *  @example
 	 *  //set values using an object
@@ -771,54 +771,49 @@ define(function(){
 		 */
 		Default : "number",
 		/**
-		 *  Time can be descibed in a number of ways. 
-		 *  Any Method which accepts Tone.Type.Time as a parameter will accept: 
-		 *  <ul>
-		 *  <li>Numbers, which will be taken literally as the time (in seconds). </li>
+		 *  Time can be described in a number of ways. Read more [here](https://github.com/TONEnoTONE/Tone.js/wiki/Time)
+		 *
 		 *  
-		 *  <li>Notation, ("4n", "8t") describes time in BPM and time signature relative values. </li>
+		 *  * Numbers, which will be taken literally as the time (in seconds).
+		 *  * Notation, (`"4n"`, `"8t"`) describes time in BPM and time signature relative values.
+		 *  * Transport Time, (`"4:3:2"`) will also provide tempo and time signature relative times 
+		 *  in the form BARS:QUARTERS:SIXTEENTHS.
+		 *  * Frequency, (`"8hz"`) is converted to the length of the cycle in seconds.
+		 *  * Now-Relative, ("+1") prefix any of the above with "+" and it will be interpreted as 
+		 *  "the current time plus whatever expression follows".
+		 *  * Expressions, ("3:0 + 2 - (1m / 7)") any of the above can also be combined 
+		 *  into a mathematical expression which will be evaluated to compute the desired time.
+		 *  * No Argument, for methods which accept time, no argument will be interpreted as 
+		 *  "now" (i.e. the currentTime).
+		 *
 		 *  
-		 *  <li>Transport Time, ("4:3:2") will also provide tempo and time signature relative times 
-		 *  in the form BARS:QUARTERS:SIXTEENTHS.</li>
 		 *  
-		 *  <li>Frequency, ("8hz") is converted to the length of the cycle in seconds.</li>
-		 *  
-		 *  <li>Now-Relative, ("+1") prefix any of the above with "+" and it will be interpreted as 
-		 *  "the current time plus whatever expression follows".</li>
-		 *  
-		 *  <li>Expressions, ("3:0 + 2 - (1m / 7)") any of the above can also be combined 
-		 *  into a mathematical expression which will be evaluated to compute the desired time.</li>
-		 *  
-		 *  <li>No Argument, for methods which accept time, no argument will be interpreted as 
-		 *  "now" (i.e. the currentTime).</li>
-		 *  </ul>
-		 *  [Time Wiki](https://github.com/TONEnoTONE/Tone.js/wiki/Time)
-		 *  @typedef {Tone.Type.Time}
+		 *  @typedef {Time}
 		 */
 		Time : "time",
 		/**
 		 *  Frequency can be described similar to time, except ultimately the
 		 *  values are converted to frequency instead of seconds. A number
 		 *  is taken literally as the value in hertz. Additionally any of the 
-		 *  Tone.Type.Time encodings can be used. Note names in the form
+		 *  Time encodings can be used. Note names in the form
 		 *  of NOTE OCTAVE (i.e. `C4`) are also accepted and converted to their
 		 *  frequency value. 
-		 *  @typedef {Tone.Type.Frequency}
+		 *  @typedef {Frequency}
 		 */
 		Frequency : "frequency",
 		/**
 		 * Gain is the ratio between the input and the output value of a signal.
-		 *  @typedef {Tone.Type.Gain}
+		 *  @typedef {Gain}
 		 */
 		Gain : "gain",
 		/** 
 		 *  Normal values are within the range of [0-1].
-		 *  @typedef {Tone.Type.NormalRange}
+		 *  @typedef {NormalRange}
 		 */
 		NormalRange : "normalrange",
 		/** 
 		 *  AudioRange values are between [-1, 1].
-		 *  @typedef {Tone.Type.AudioRange}
+		 *  @typedef {AudioRange}
 		 */
 		AudioRange : "audiorange",
 		/** 
@@ -826,32 +821,32 @@ define(function(){
 		 *  because of the logarithmic way that we perceive loudness. 0 decibels 
 		 *  means no change in volume. -10db is approximately half as loud and 10db 
 		 *  is twice is loud. 
-		 *  @typedef {Tone.Type.Decibels}
+		 *  @typedef {Decibels}
 		 */
 		Decibels : "db",
 		/** 
 		 *  Half-step note increments, i.e. 12 is an octave above the root. and 1 is a half-step up.
-		 *  @typedef {Tone.Type.Interval}
+		 *  @typedef {Interval}
 		 */
 		Interval : "interval",
 		/** 
 		 *  Beats per minute. 
-		 *  @typedef {Tone.Type.BPM}
+		 *  @typedef {BPM}
 		 */
 		BPM : "bpm",
 		/** 
 		 *  The value must be greater than 0.
-		 *  @typedef {Tone.Type.Positive}
+		 *  @typedef {Positive}
 		 */
 		Positive : "positive",
 		/** 
 		 *  A cent is a hundreth of a semitone. 
-		 *  @typedef {Tone.Type.Cents}
+		 *  @typedef {Cents}
 		 */
 		Cents : "cents",
 		/** 
 		 *  Degrees (0 - 360)
-		 *  @typedef {Tone.Type.Degrees}
+		 *  @typedef {Degrees}
 		 */
 		Degrees : "degrees"
 	};
@@ -865,6 +860,12 @@ define(function(){
 		Stopped : "stopped",
 		Paused : "paused",
  	};
+
+ 	/**
+	 *  An empty function.
+	 *  @static
+	 */
+	Tone.noOp = function(){};
 
 	///////////////////////////////////////////////////////////////////////////
 	//	CONTEXT

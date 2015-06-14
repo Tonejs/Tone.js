@@ -162,7 +162,7 @@ function(Tone){
 	 *  start the sample.
 	 *  @param {string=} sample the name of the samle to trigger, defaults to
 	 *                          the last sample used
-	 *  @param {Tone.Type.Time} [time=now] the time when the note should start
+	 *  @param {Time} [time=now] the time when the note should start
 	 *  @param {number} [velocity=1] the velocity of the note
 	 *  @returns {Tone.Sampler} `this`
 	 */
@@ -180,7 +180,7 @@ function(Tone){
 	/**
 	 *  start the release portion of the sample
 	 *  
-	 *  @param {Tone.Type.Time} [time=now] the time when the note should release
+	 *  @param {Time} [time=now] the time when the note should release
 	 *  @returns {Tone.Sampler} `this`
 	 */
 	Tone.Sampler.prototype.triggerRelease = function(time){

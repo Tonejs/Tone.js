@@ -26,25 +26,30 @@ function(Tone){
 		 *  @type {Tone.SimpleSynth}
 		 */
 		this.carrier = new Tone.SimpleSynth(options.carrier);
-		this.carrier.volume.value = -10;
 
 		/**
 		 *  the second voice
 		 *  @type {Tone.SimpleSynth}
 		 */
 		this.modulator = new Tone.SimpleSynth(options.modulator);
-		this.modulator.volume.value = -10;
 
 		/**
 		 *  the frequency control
-		 *  @type {Tone.Signal}
+		 *  @type {Frequency}
+		 *  @signal
 		 */
 		this.frequency = new Tone.Signal(440, Tone.Type.Frequency);
 
 		/**
-		 *  the ratio between the two voices
-		 *  @type {Tone.Multiply}
+		 *  The ratio between the carrier and the modulator frequencies. A value of 1
+		 *  makes both voices in unison, a value of 0.5 puts the modulator an octave below
+		 *  the carrier.
+		 *  @type {Positive}
+		 *  @signal
 		 *  @private
+		 *  @example
+		 * //set the modulator an octave above the carrier frequency
+		 * simpleAM.harmonicity.value = 2;
 		 */
 		this._harmonicity = new Tone.Multiply(options.harmonicity);
 		this._harmonicity.units = Tone.Type.Positive;
@@ -110,7 +115,7 @@ function(Tone){
 	/**
 	 *  trigger the attack portion of the note
 	 *  
-	 *  @param  {Tone.Type.Time} [time=now] the time the note will occur
+	 *  @param  {Time} [time=now] the time the note will occur
 	 *  @param {number} [velocity=1] the velocity of the note
 	 *  @returns {Tone.SimpleAM} `this`
 	 */
@@ -126,7 +131,7 @@ function(Tone){
 	/**
 	 *  trigger the release portion of the note
 	 *  
-	 *  @param  {Tone.Type.Time} [time=now] the time the note will release
+	 *  @param  {Time} [time=now] the time the note will release
 	 *  @returns {Tone.SimpleAM} `this`
 	 */
 	Tone.SimpleAM.prototype.triggerEnvelopeRelease = function(time){

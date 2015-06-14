@@ -9,8 +9,8 @@ define(["Tone/core/Tone", "Tone/component/Follower", "Tone/signal/GreaterThan"],
 	 *  @constructor
 	 *  @extends {Tone}
 	 *  @param {number} [threshold = -40] the threshold in Decibels
-	 *  @param {Tone.Type.Time} [attack = 0.1] the follower's attack time
-	 *  @param {Tone.Type.Time} [release = 0.1] the follower's release time
+	 *  @param {Time} [attack = 0.1] the follower's attack time
+	 *  @param {Time} [release = 0.1] the follower's release time
 	 *  @example
 	 *  var gate = new Tone.Gate(-30, 0.2, 0.3);
 	 */
@@ -53,7 +53,7 @@ define(["Tone/core/Tone", "Tone/component/Follower", "Tone/signal/GreaterThan"],
 	/**
 	 * The threshold of the gate in decibels
 	 * @memberOf Tone.Gate#
-	 * @type {Tone.Type.Decibels}
+	 * @type {Decibels}
 	 * @name threshold
 	 */
 	Object.defineProperty(Tone.Gate.prototype, "threshold", {
@@ -68,7 +68,7 @@ define(["Tone/core/Tone", "Tone/component/Follower", "Tone/signal/GreaterThan"],
 	/**
 	 * The attack speed of the gate
 	 * @memberOf Tone.Gate#
-	 * @type {Tone.Type.Time}
+	 * @type {Time}
 	 * @name attack
 	 */
 	Object.defineProperty(Tone.Gate.prototype, "attack", {
@@ -83,7 +83,7 @@ define(["Tone/core/Tone", "Tone/component/Follower", "Tone/signal/GreaterThan"],
 	/**
 	 * The release speed of the gate
 	 * @memberOf Tone.Gate#
-	 * @type {Tone.Type.Time}
+	 * @type {Time}
 	 * @name release
 	 */
 	Object.defineProperty(Tone.Gate.prototype, "release", {

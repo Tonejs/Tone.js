@@ -6,21 +6,11 @@ function(Tone){
 
 	/**
 	 *  @class  the MonoSynth is a single oscillator, monophonic synthesizer
-	 *          with a filter, and two envelopes (on the filter and the amplitude). 
-	 *
-	 * Flow: 
-	 * 
-	 * <pre>
-	 * OmniOscillator+-->AmplitudeEnvelope+-->Filter 
-	 *                                          ^    
-	 *                                          |    
-	 *                         ScaledEnvelope+--+
-	 * </pre>
-	 *  
-	 *
+	 *          with a filter, and two envelopes (on the filter and the amplitude).
+	 *          
 	 *  @constructor
 	 *  @extends {Tone.Monophonic}
-	 *  @param {Object} options the options available for the synth 
+	 *  @param {Object=} options the options available for the synth 
 	 *                          see defaults below
 	 */
 	Tone.MonoSynth = function(options){
@@ -37,13 +27,15 @@ function(Tone){
 
 		/**
 		 *  the frequency control signal
-		 *  @type {Tone.Signal}
+		 *  @type {Frequency}
+		 *  @signal
 		 */
 		this.frequency = this.oscillator.frequency;
 
 		/**
 		 *  the detune control signal
-		 *  @type {Tone.Signal}
+		 *  @type {Cents}
+		 *  @signal
 		 */
 		this.detune = this.oscillator.detune;
 
@@ -111,8 +103,8 @@ function(Tone){
 
 	/**
 	 *  start the attack portion of the envelope
-	 *  @param {Tone.Type.Time} [time=now] the time the attack should start
-	 *  @param {number} [velocity=1] the velocity of the note (0-1)
+	 *  @param {Time} [time=now] the time the attack should start
+	 *  @param {NormalRange} [velocity=1] the velocity of the note (0-1)
 	 *  @returns {Tone.MonoSynth} `this`
 	 */
 	Tone.MonoSynth.prototype.triggerEnvelopeAttack = function(time, velocity){
@@ -124,7 +116,7 @@ function(Tone){
 
 	/**
 	 *  start the release portion of the envelope
-	 *  @param {Tone.Type.Time} [time=now] the time the release should start
+	 *  @param {Time} [time=now] the time the release should start
 	 *  @returns {Tone.MonoSynth} `this`
 	 */
 	Tone.MonoSynth.prototype.triggerEnvelopeRelease = function(time){

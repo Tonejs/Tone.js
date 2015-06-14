@@ -8,8 +8,14 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	 *
 	 * 	@constructor
 	 * 	@extends {Tone}
-	 * 	@param {Tone.Type.Frequency} frequency the rate of the callback
+	 * 	@param {Frequency} frequency the rate of the callback
 	 * 	@param {function} callback the callback to be invoked with the time of the audio event
+	 * 	@example
+	 * //the callback will be invoked approximately once a second
+	 * //and will print the time exactly once a second apart.
+	 * var clock = new Tone.Clock(1, function(time){
+	 * 	console.log(time);
+	 * });
 	 */
 	Tone.Clock = function(frequency, callback){
 
@@ -30,7 +36,8 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 
 		/**
 		 *  the rate control signal
-		 *  @type {Tone.Signal}
+		 *  @type {Frequency}
+		 *  @signal
 		 */
 		this.frequency = new Tone.Signal(frequency, Tone.Type.Frequency);
 
@@ -66,8 +73,10 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 
 	/**
 	 *  start the clock
-	 *  @param {Tone.Type.Time} [time=now] the time when the clock should start
+	 *  @param {Time} [time=now] the time when the clock should start
 	 *  @returns {Tone.Clock} `this`
+	 *  @example
+	 * clock.start();
 	 */
 	Tone.Clock.prototype.start = function(time){
 		if (!this._oscillator){
@@ -85,8 +94,10 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 
 	/**
 	 *  stop the clock
-	 *  @param {Tone.Type.Time} [time=now] The time when the clock should stop.
+	 *  @param {Time} [time=now] The time when the clock should stop.
 	 *  @returns {Tone.Clock} `this`
+	 *  @example
+	 * clock.stop();
 	 */
 	Tone.Clock.prototype.stop = function(time){
 		if (this._oscillator){
@@ -96,7 +107,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 			this._oscillator = null;
 			if (time){
 				//set a timeout for when it stops
-				setTimeout(this.onended.bind(this), (stopTime - now) * 1000);
+				setTimeout(this.onended, (stopTime - now) * 1000);
 			} else {
 				this.onended();
 			}

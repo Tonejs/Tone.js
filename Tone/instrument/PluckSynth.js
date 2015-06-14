@@ -75,7 +75,7 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/source/Noise", "To
 	/**
 	 *  trigger the attack portion
 	 *  @param {string|number} note the note name or frequency
-	 *  @param {Tone.Type.Time} [time=now] the time of the note
+	 *  @param {Time} [time=now] the time of the note
 	 *  @returns {Tone.PluckSynth} `this`
 	 */
 	Tone.PluckSynth.prototype.triggerAttack = function(note, time) {

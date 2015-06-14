@@ -52,14 +52,14 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 
 		/**
 		 *  if 'loop' is true, the loop will start at this position
-		 *  @type {Tone.Type.Time}
+		 *  @type {Time}
 		 *  @private
 		 */
 		this._loopStart = options.loopStart;
 
 		/**
 		 *  if 'loop' is true, the loop will end at this position
-		 *  @type {Tone.Type.Time}
+		 *  @type {Time}
 		 *  @private
 		 */
 		this._loopEnd = options.loopEnd;
@@ -131,10 +131,10 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 	 *  play the buffer between the desired positions
 	 *  
 	 *  @private
-	 *  @param  {Tone.Type.Time} [startTime=now] when the player should start.
-	 *  @param  {Tone.Type.Time} [offset=0] the offset from the beginning of the sample
+	 *  @param  {Time} [startTime=now] when the player should start.
+	 *  @param  {Time} [offset=0] the offset from the beginning of the sample
 	 *                                 to start at. 
-	 *  @param  {Tone.Type.Time=} duration how long the sample should play. If no duration
+	 *  @param  {Time=} duration how long the sample should play. If no duration
 	 *                                is given, it will default to the full length 
 	 *                                of the sample (minus any offset)
 	 *  @returns {Tone.Player} `this`
@@ -182,7 +182,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 	/**
 	 *  Stop playback.
 	 *  @private
-	 *  @param  {Tone.Type.Time} [time=now]
+	 *  @param  {Time} [time=now]
 	 *  @returns {Tone.Player} `this`
 	 */
 	Tone.Player.prototype._stop = function(time){
@@ -196,8 +196,8 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 	/**
 	 *  Set the loop start and end. Will only loop if `loop` is 
 	 *  set to `true`. 
-	 *  @param {Tone.Type.Time} loopStart The loop end time
-	 *  @param {Tone.Type.Time} loopEnd The loop end time
+	 *  @param {Time} loopStart The loop end time
+	 *  @param {Time} loopEnd The loop end time
 	 *  @returns {Tone.Player} `this`
 	 *  @example
 	 *  player.setLoopPoints(0.2, 0.3);
@@ -212,7 +212,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 	/**
 	 * If `loop` is true, the loop will start at this position. 
 	 * @memberOf Tone.Player#
-	 * @type {Tone.Type.Time}
+	 * @type {Time}
 	 * @name loopStart
 	 */
 	Object.defineProperty(Tone.Player.prototype, "loopStart", {
@@ -230,7 +230,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 	/**
 	 * If `loop` is true, the loop will end at this position.
 	 * @memberOf Tone.Player#
-	 * @type {Tone.Type.Time}
+	 * @type {Time}
 	 * @name loopEnd
 	 */
 	Object.defineProperty(Tone.Player.prototype, "loopEnd", {

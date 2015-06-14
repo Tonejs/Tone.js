@@ -9,7 +9,7 @@ function(Tone){
 	 *
 	 * 	@constructor
 	 * 	@extends {Tone.StereoXFeedbackEffect}
-	 *  @param {Tone.Type.Time|Object} [delayTime=0.25] is the interval between consecutive echos
+	 *  @param {Time|Object} [delayTime=0.25] is the interval between consecutive echos
 	 *  @param {number=} feedback The amount of the effected signal which 
 	 *                            is fed back through the delay.
 	 *  @example

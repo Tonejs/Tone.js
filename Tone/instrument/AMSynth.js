@@ -37,7 +37,8 @@ function(Tone){
 
 		/**
 		 *  the frequency control
-		 *  @type {Tone.Signal}
+		 *  @type {Frequency}
+		 *  @signal
 		 */
 		this.frequency = new Tone.Signal(440, Tone.Type.Frequency);
 
@@ -134,8 +135,8 @@ function(Tone){
 	/**
 	 *  trigger the attack portion of the note
 	 *  
-	 *  @param  {Tone.Type.Time} [time=now] the time the note will occur
-	 *  @param {number} [velocity=1] the velocity of the note
+	 *  @param  {Time} [time=now] the time the note will occur
+	 *  @param {NormalRange} [velocity=1] the velocity of the note
 	 *  @returns {Tone.AMSynth} `this`
 	 */
 	Tone.AMSynth.prototype.triggerEnvelopeAttack = function(time, velocity){
@@ -152,7 +153,7 @@ function(Tone){
 	/**
 	 *  trigger the release portion of the note
 	 *  
-	 *  @param  {Tone.Type.Time} [time=now] the time the note will release
+	 *  @param  {Time} [time=now] the time the note will release
 	 *  @returns {Tone.AMSynth} `this`
 	 */
 	Tone.AMSynth.prototype.triggerEnvelopeRelease = function(time){
@@ -164,7 +165,7 @@ function(Tone){
 	/**
 	 * The ratio between the two carrier and the modulator. 
 	 * @memberOf Tone.AMSynth#
-	 * @type {number}
+	 * @type {Positive}
 	 * @name harmonicity
 	 */
 	Object.defineProperty(Tone.AMSynth.prototype, "harmonicity", {

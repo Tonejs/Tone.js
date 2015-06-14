@@ -7,7 +7,7 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/LFO", "Tone/comp
 	 *
 	 *  @constructor
 	 *  @extends {Tone.Effect}
-	 *  @param {Tone.Type.Time} [frequency=1] (optional) rate in HZ of the filter
+	 *  @param {Time} [frequency=1] (optional) rate in HZ of the filter
 	 *  @param {number} [min=200] min 
  	 *  @param {number} [max=1200] max
 	 *  @example
@@ -81,7 +81,7 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/LFO", "Tone/comp
 	
 	/**
 	 * Start the filter.
-	 * @param {Tone.Type.Time} [time=now] the filter begins.
+	 * @param {Time} [time=now] the filter begins.
 	 * @returns {Tone.AutoFilter} `this`
 	 */
 	Tone.AutoFilter.prototype.start = function(time){
@@ -91,7 +91,7 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/LFO", "Tone/comp
 
 	/**
 	 * Stop the filter.
-	 * @param {Tone.Type.Time} [time=now] the filter stops.
+	 * @param {Time} [time=now] the filter stops.
 	 * @returns {Tone.AutoFilter} `this`
 	 */
 	Tone.AutoFilter.prototype.stop = function(time){
@@ -101,7 +101,7 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/LFO", "Tone/comp
 
 	/**
 	 * Sync the filter to the transport.
-	 * @param {Tone.Type.Time} [delay=0] Delay time before starting the effect after the
+	 * @param {Time} [delay=0] Delay time before starting the effect after the
 	 *                               Transport has started. 
 	 * @returns {Tone.AutoFilter} `this`
 	 */
@@ -137,7 +137,7 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/LFO", "Tone/comp
 	/**
 	 * The minimum value of the LFO attached to the cutoff frequency of the filter.
 	 * @memberOf Tone.AutoFilter#
-	 * @type {Tone.Type.Frequency}
+	 * @type {Frequency}
 	 * @name min
 	 */
 	Object.defineProperty(Tone.AutoFilter.prototype, "min", {
@@ -152,7 +152,7 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/LFO", "Tone/comp
 	/**
 	 * The minimum value of the LFO attached to the cutoff frequency of the filter.
 	 * @memberOf Tone.AutoFilter#
-	 * @type {Tone.Type.Frequency}
+	 * @type {Frequency}
 	 * @name max
 	 */
 	Object.defineProperty(Tone.AutoFilter.prototype, "max", {

@@ -13,7 +13,7 @@ function(Tone){
 	 *
 	 *  @constructor
 	 *  @extends {Tone.Oscillator}
-	 *  @param {Tone.Type.Time} [frequency="4n"]
+	 *  @param {Time} [frequency="4n"]
 	 *  @param {number} [outputMin=0]
 	 *  @param {number} [outputMax=1]
 	 *  @example
@@ -97,7 +97,7 @@ function(Tone){
 
 	/**
 	 *  Start the LFO. 
-	 *  @param  {Tone.Type.Time} [time=now] the time the LFO will start
+	 *  @param  {Time} [time=now] the time the LFO will start
 	 *  @returns {Tone.LFO} `this`
 	 */
 	Tone.LFO.prototype.start = function(time){
@@ -107,7 +107,7 @@ function(Tone){
 
 	/**
 	 *  Stop the LFO. 
-	 *  @param  {Tone.Type.Time} [time=now] the time the LFO will stop
+	 *  @param  {Time} [time=now] the time the LFO will stop
 	 *  @returns {Tone.LFO} `this`
 	 */
 	Tone.LFO.prototype.stop = function(time){
@@ -119,7 +119,7 @@ function(Tone){
 	 *  Sync the start/stop/pause to the transport 
 	 *  and the frequency to the bpm of the transport
 	 *
-	 *  @param {Tone.Type.Time} [delay=0] the time to delay the start of the
+	 *  @param {Time} [delay=0] the time to delay the start of the
 	 *                                LFO from the start of the transport
 	 *  @returns {Tone.LFO} `this`
 	 *  @example

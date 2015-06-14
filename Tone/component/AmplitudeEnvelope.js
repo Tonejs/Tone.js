@@ -7,12 +7,14 @@ define(["Tone/core/Tone", "Tone/component/Envelope"], function(Tone){
 	 *  
 	 *  @constructor
 	 *  @extends {Tone.Envelope}
-	 *  @param {Tone.Type.Time|Object} [attack=0.01]	the attack time in seconds
-	 *  @param {Tone.Type.Time} [decay=0.1]	the decay time in seconds
-	 *  @param {number} [sustain=0.5] 	a percentage (0-1) of the full amplitude
-	 *  @param {Tone.Type.Time} [release=1]	the release time in seconds
+	 *  @param {Time|Object} [attack] The amount of time it takes for the envelope to go from 
+	 *                               0 to it's maximum value. 
+	 *  @param {Time} [decay]	The period of time after the attack that it takes for the envelope
+	 *                       	to fall to the sustain value. 
+	 *  @param {NormalRange} [sustain]	The percent of the maximum value that the envelope rests at until
+	 *                                	the release is triggered. 
+	 *  @param {Time} [release]	The amount of time after the release is triggered it takes to reach 0. 
 	 *  @example
-	 *  
 	 *  var ampEnv = new Tone.AmplitudeEnvelope(0.1, 0.2, 1, 0.8);
 	 *  var osc = new Tone.Oscillator();
 	 *  //or with an object

@@ -8,7 +8,7 @@ define(["Tone/core/Tone", "Tone/component/LFO", "Tone/effect/Effect"], function(
 	 *
 	 *  @extends {Tone.Effect}
 	 *  @constructor
-	 *  @param {Tone.Type.Time} [frequency=10] The rate of the effect. 
+	 *  @param {Time} [frequency=10] The rate of the effect. 
 	 *  @param {number} [depth=0.5] The depth of the wavering.
 	 *  @example
 	 *  var tremolo = new Tone.Tremolo(9, 0.75);
@@ -72,7 +72,7 @@ define(["Tone/core/Tone", "Tone/component/LFO", "Tone/effect/Effect"], function(
 
 	/**
 	 * Start the tremolo.
-	 * @param {Tone.Type.Time} [time=now] When the tremolo begins.
+	 * @param {Time} [time=now] When the tremolo begins.
 	 * @returns {Tone.Tremolo} `this`
 	 */
 	Tone.Tremolo.prototype.start = function(time){
@@ -82,7 +82,7 @@ define(["Tone/core/Tone", "Tone/component/LFO", "Tone/effect/Effect"], function(
 
 	/**
 	 * Stop the tremolo.
-	 * @param {Tone.Type.Time} [time=now] the tremolo stops.
+	 * @param {Time} [time=now] the tremolo stops.
 	 * @returns {Tone.Tremolo} `this`
 	 */
 	Tone.Tremolo.prototype.stop = function(time){
@@ -92,7 +92,7 @@ define(["Tone/core/Tone", "Tone/component/LFO", "Tone/effect/Effect"], function(
 
 	/**
 	 * Sync the effect to the transport.
-	 * @param {Tone.Type.Time} [delay=0] Delay time before starting the effect after the
+	 * @param {Time} [delay=0] Delay time before starting the effect after the
 	 *                              Transport has started. 
 	 * @returns {Tone.AutoFilter} `this`
 	 */
