@@ -11,7 +11,7 @@ function(Tone){
 	 *  @param {Frequency} [frequency=440] starting frequency
 	 *  @param {string} [type="sine"] type of oscillator (sine|square|triangle|sawtooth)
 	 *  @example
-	 *  var osc = new Tone.Oscillator(440, "sine");
+	 * var osc = new Tone.Oscillator(440, "sine");
 	 */
 	Tone.Oscillator = function(){
 		
@@ -138,7 +138,10 @@ function(Tone){
 	};
 
 	/**
-	 * The type of the oscillator: either sine, square, triangle, or sawtooth.
+	 * The type of the oscillator: either sine, square, triangle, or sawtooth. Also capable of
+	 * setting the first x number of partials of the oscillator. For example: "sine4" would
+	 * would set be the first 4 partials of the sine wave and "triangle8" would set the first
+	 * 8 partials of the triangle wave.
 	 * <br><br> 
 	 * Uses PeriodicWave internally even for native types so that it can set the phase. 
 	 * PeriodicWave equations are from the 

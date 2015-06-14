@@ -4,14 +4,14 @@ function(Tone){
 	"use strict";
 
 	/**
-	 *  @class Pulse Oscillator with control over width
+	 *  @class Pulse Oscillator with control over width. 
 	 *
 	 *  @constructor
 	 *  @extends {Tone.Oscillator}
-	 *  @param {number} [frequency=440] the frequency of the oscillator
-	 *  @param {number} [width = 0.2] the width of the pulse
+	 *  @param {Frequency} [frequency=440] the frequency of the oscillator
+	 *  @param {NormalRange} [width = 0.2] the width of the pulse
 	 *  @example
-	 *  var pulse = new Tone.PulseOscillator("E5", 0.4);
+	 * var pulse = new Tone.PulseOscillator("E5", 0.4);
 	 */
 	Tone.PulseOscillator = function(){
 
@@ -45,7 +45,7 @@ function(Tone){
 		});
 
 		/**
-		 *  The frequency in hertz
+		 *  The frequency in of the oscillator. 
 		 *  @type {Frequency}
 		 *  @signal
 		 */

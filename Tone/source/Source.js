@@ -3,10 +3,9 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Master"], function(T
 	"use strict";
 	
 	/**
-	 *  @class  Base class for sources.
-	 *          Sources have start/stop/pause and 
-	 *          the ability to be synced to the 
-	 *          start/stop/pause of Tone.Transport.
+	 *  @class  Base class for sources. Sources have start/stop methods
+	 *          and the ability to be synced to the 
+	 *          start/stop of Tone.Transport.
 	 *
 	 *  @constructor
 	 *  @extends {Tone}
@@ -20,9 +19,9 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Master"], function(T
 		 * Callback is invoked when the source is done playing.
 		 * @type {function}
 		 * @example
-		 *  source.onended = function(){
-		 *  	console.log("the source is done playing");
-		 *  }
+		 * source.onended = function(){
+		 * 	console.log("the source is done playing");
+		 * }
 		 */
 		this.onended = options.onended;
 
@@ -115,7 +114,7 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Master"], function(T
 	 *  @param  {Time} [time=now]
 	 *  @returns {Tone.Source} this
 	 *  @example
-	 *  source.start("+0.5"); //starts the source 0.5 seconds from now
+	 * source.start("+0.5"); //starts the source 0.5 seconds from now
 	 */
 	Tone.Source.prototype.start = function(time){
 		time = this.toSeconds(time);
@@ -132,7 +131,7 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Master"], function(T
 	 *  @param  {Time} [time=now]
 	 *  @returns {Tone.Source} this
 	 *  @example
-	 *  source.stop(); // stops the source immediately
+	 * source.stop(); // stops the source immediately
 	 */
 	Tone.Source.prototype.stop = function(time){
 		var now = this.now();

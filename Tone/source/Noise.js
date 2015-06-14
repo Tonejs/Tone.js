@@ -51,7 +51,6 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 	 * @memberOf Tone.Noise#
 	 * @type {string}
 	 * @name type
-	 * @options ["white", "brown", "pink"]
 	 * @example
 	 * noise.type = "white";
 	 */

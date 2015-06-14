@@ -99,7 +99,6 @@ function(Tone){
 
 	/**
 	 * The type of the oscillator. sine, square, triangle, sawtooth, pwm, or pulse. 
-	 *  
 	 * @memberOf Tone.OmniOscillator#
 	 * @type {string}
 	 * @name type
@@ -157,7 +156,7 @@ function(Tone){
 	};
 
 	/**
-	 * The phase of the oscillator in degrees
+	 * The phase of the oscillator in degrees. 
 	 * @memberOf Tone.OmniOscillator#
 	 * @type {Degrees}
 	 * @name phase
