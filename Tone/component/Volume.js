@@ -9,8 +9,8 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Master"], function(To
 	 *  @constructor
 	 *  @param {number} [volume=0] the initial volume
 	 *  @example
-	 *  var vol = new Tone.Volume(-12);
-	 *  instrument.chain(vol, Tone.Master);
+	 * var vol = new Tone.Volume(-12);
+	 * instrument.chain(vol, Tone.Master);
 	 */
 	Tone.Volume = function(volume){
 

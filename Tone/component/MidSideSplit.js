@@ -6,8 +6,6 @@ define(["Tone/core/Tone", "Tone/signal/Expr", "Tone/signal/Signal", "Tone/compon
 	/**
 	 *  @class Seperates the mid channel from the side channel. Has two outputs labeled 
 	 *         `mid` and `side` or `output[0]` and `output[1]`. <br>
-	 *         http://musicdsp.org/showArchiveComment.php?ArchiveID=173<br>
-	 *         http://www.kvraudio.com/forum/viewtopic.php?t=212587<br>
 	 *         M = (L+R)/sqrt(2);   // obtain mid-signal from left and right<br>
 	 *         S = (L-R)/sqrt(2);   // obtain side-signal from left and righ<br>
 	 *

@@ -15,10 +15,10 @@ define(["Tone/core/Tone", "Tone/component/Envelope"], function(Tone){
 	 *                                	the release is triggered. 
 	 *  @param {Time} [release]	The amount of time after the release is triggered it takes to reach 0. 
 	 *  @example
-	 *  var ampEnv = new Tone.AmplitudeEnvelope(0.1, 0.2, 1, 0.8);
-	 *  var osc = new Tone.Oscillator();
-	 *  //or with an object
-	 *  osc.chain(ampEnv, Tone.Master);
+	 * var ampEnv = new Tone.AmplitudeEnvelope(0.1, 0.2, 1, 0.8);
+	 * var osc = new Tone.Oscillator();
+	 * //or with an object
+	 * osc.chain(ampEnv, Tone.Master);
 	 */
 	Tone.AmplitudeEnvelope = function(){
 

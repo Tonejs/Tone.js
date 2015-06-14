@@ -3,7 +3,9 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	"use strict";
 
 	/**
-	 *  @class A thin wrapper around the DynamicsCompressorNode
+	 *  @class A thin wrapper around the DynamicsCompressorNode. Compression reduces the 
+	 *         volume of loud sounds or amplifies quiet sounds by narrowing or "compressing" 
+	 *         an audio signal's dynamic range. [<a href="https://en.wikipedia.org/wiki/Dynamic_range_compression">Wikipedia</a>]
 	 *
 	 *  @extends {Tone}
 	 *  @constructor
