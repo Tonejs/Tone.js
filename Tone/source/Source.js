@@ -172,6 +172,11 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Master"], function(T
 	 *  @param {Time} [delay=0] Delay time before starting the source after the
 	 *                               Transport has started. 
 	 *  @returns {Tone.Source} this
+	 *  @example
+	 * //sync the source to start 1 measure after the transport starts
+	 * source.sync("1m");
+	 * //start the transport. the source will start 1 measure later. 
+	 * Tone.Transport.start();
 	 */
 	Tone.Source.prototype.sync = function(delay){
 		Tone.Transport.syncSource(this, delay);
@@ -188,7 +193,7 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Master"], function(T
 	};
 
 	/**
-	 *	clean up
+	 *	Clean up.
 	 *  @return {Tone.Source} this
 	 */
 	Tone.Source.prototype.dispose = function(){

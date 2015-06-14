@@ -129,7 +129,7 @@ function(Tone){
 
 	/**
 	 *  Unsync the oscillator's frequency from the Transport. 
-	 *  See Tone.Oscillator#syncFrequency.
+	 *  See Tone.Oscillator.syncFrequency
 	 *  @returns {Tone.Oscillator} this
 	 */
 	Tone.Oscillator.prototype.unsyncFrequency = function(){
@@ -237,7 +237,7 @@ function(Tone){
 	});
 
 	/**
-	 *  dispose and disconnect
+	 *  Dispose and disconnect.
 	 *  @return {Tone.Oscillator} this
 	 */
 	Tone.Oscillator.prototype.dispose = function(){

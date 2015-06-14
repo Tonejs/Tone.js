@@ -19,7 +19,7 @@ function(Tone){
 		Tone.Source.call(this, options);
 
 		/**
-		 *  the width of the pulse
+		 *  The width of the pulse. 
 		 *  @type {NormalRange}
 		 *  @signal
 		 */
@@ -119,7 +119,7 @@ function(Tone){
 	/**
 	 * The phase of the oscillator in degrees.
 	 * @memberOf Tone.PulseOscillator#
-	 * @type {number}
+	 * @type {Degrees}
 	 * @name phase
 	 */
 	Object.defineProperty(Tone.PulseOscillator.prototype, "phase", {
@@ -145,7 +145,7 @@ function(Tone){
 	});
 
 	/**
-	 *  Clean up method
+	 *  Clean up method.
 	 *  @return {Tone.PulseOscillator} this
 	 */
 	Tone.PulseOscillator.prototype.dispose = function(){

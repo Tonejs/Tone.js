@@ -4,8 +4,7 @@ function(Tone){
 	"use strict";
 
 	/**
-	 *  @class takes an array of Oscillator descriptions and mixes them together
-	 *         with the same detune and frequency controls. 
+	 *  @class PWM oscillator modulates the width of the Tone.PulseOscillator at the modulationFrequency.
 	 *
 	 *  @extends {Tone.Oscillator}
 	 *  @constructor
@@ -46,21 +45,21 @@ function(Tone){
 		this._scale = new Tone.Multiply(1.01);
 
 		/**
-		 *  the frequency control
+		 *  The frequency control.
 		 *  @type {Frequency}
 		 *  @signal
 		 */
 		this.frequency = this._modulator.frequency;
 
 		/**
-		 *  the detune control
+		 *  The detune of the oscillator.
 		 *  @type {Cents}
 		 *  @signal
 		 */
 		this.detune = this._modulator.detune;
 
 		/**
-		 *  the modulation rate of the oscillator
+		 *  The modulation rate of the oscillator. 
 		 *  @type {Frequency}
 		 *  @signal
 		 */
@@ -137,7 +136,7 @@ function(Tone){
 	});
 
 	/**
-	 *  clean up
+	 *  Clean up.
 	 *  @return {Tone.PWMOscillator} this
 	 */
 	Tone.PWMOscillator.prototype.dispose = function(){

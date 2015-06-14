@@ -315,7 +315,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 	});
 
 	/**
-	 *  dispose and disconnect
+	 *  Dispose and disconnect.
 	 *  @return {Tone.Player} this
 	 */
 	Tone.Player.prototype.dispose = function(){
