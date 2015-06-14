@@ -15,8 +15,6 @@ function(Tone){
 	 *  @example
 	 *  //a polysynth composed of 6 Voices of MonoSynth
 	 *  var synth = new Tone.PolySynth(6, Tone.MonoSynth);
-	 *  //set a MonoSynth preset
-	 *  synth.setPreset("Pianoetta");
 	 */
 	Tone.PolySynth = function(){
 

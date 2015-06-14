@@ -41,11 +41,12 @@ function(Tone){
 		this.frequency = new Tone.Signal(440, Tone.Type.Frequency);
 
 		/**
-		 *  the ratio between the two voices
-		 *  @type {Tone.Multiply}
-		 *  @private
+		 *  The ratio between the two carrier and the modulator. 
+		 *  @type {Positive}
+		 *  @signal
 		 */
-		this._harmonicity = new Tone.Multiply(options.harmonicity);
+		this.harmonicity = new Tone.Multiply(options.harmonicity);
+		this.harmonicity.units = Tone.Type.Positive;
 
 		/**
 		 *  
@@ -64,7 +65,7 @@ function(Tone){
 
 		//control the two voices frequency
 		this.frequency.connect(this.carrier.frequency);
-		this.frequency.chain(this._harmonicity, this.modulator.frequency);
+		this.frequency.chain(this.harmonicity, this.modulator.frequency);
 		this.frequency.chain(this._modulationIndex, this._modulationNode);
 		this.modulator.connect(this._modulationNode.gain);
 		this._modulationNode.gain.value = 0;
@@ -157,21 +158,6 @@ function(Tone){
 	};
 
 	/**
-	 * The ratio between the two carrier and the modulator. 
-	 * @memberOf Tone.FMSynth#
-	 * @type {number}
-	 * @name harmonicity
-	 */
-	Object.defineProperty(Tone.FMSynth.prototype, "harmonicity", {
-		get : function(){
-			return this._harmonicity.value;
-		},
-		set : function(harm){
-			this._harmonicity.value = harm;
-		}
-	});
-
-	/**
 	 * The modulation index which is in essence the depth or amount of the modulation. In other terms it is the 
 	 *  ratio of the frequency of the modulating signal (mf) to the amplitude of the 
 	 *  modulating signal (ma) -- as in ma/mf. 
@@ -203,8 +189,8 @@ function(Tone){
 		this.frequency = null;
 		this._modulationIndex.dispose();
 		this._modulationIndex = null;
-		this._harmonicity.dispose();
-		this._harmonicity = null;
+		this.harmonicity.dispose();
+		this.harmonicity = null;
 		this._modulationNode.disconnect();
 		this._modulationNode = null;
 		return this;

@@ -80,14 +80,15 @@ function(Tone){
 
 		/**
 		 *  the ratio between the two voices
-		 *  @type {Tone.Multiply}
-		 *  @private
+		 *  @type {Positive}
+		 *  @signal
 		 */
-		this._harmonicity = new Tone.Multiply(options.harmonicity);
+		this.harmonicity = new Tone.Multiply(options.harmonicity);
+		this.harmonicity.units = Tone.Type.Positive;
 
 		//control the two voices frequency
 		this.frequency.connect(this.voice0.frequency);
-		this.frequency.chain(this._harmonicity, this.voice1.frequency);
+		this.frequency.chain(this.harmonicity, this.voice1.frequency);
 		this._vibrato.connect(this._vibratoGain);
 		this._vibratoGain.fan(this.voice0.detune, this.voice1.detune);
 		this.voice0.connect(this.output);
@@ -175,21 +176,6 @@ function(Tone){
 	};
 
 	/**
-	 * The ratio between the two carrier and the modulator. 
-	 * @memberOf Tone.DuoSynth#
-	 * @type {Positive}
-	 * @name harmonicity
-	 */
-	Object.defineProperty(Tone.DuoSynth.prototype, "harmonicity", {
-		get : function(){
-			return this._harmonicity.value;
-		},
-		set : function(harm){
-			this._harmonicity.value = harm;
-		}
-	});
-
-	/**
 	 *  clean up
 	 *  @returns {Tone.DuoSynth} this
 	 */
@@ -206,8 +192,8 @@ function(Tone){
 		this._vibrato = null;
 		this._vibratoGain.disconnect();
 		this._vibratoGain = null;
-		this._harmonicity.dispose();
-		this._harmonicity = null;
+		this.harmonicity.dispose();
+		this.harmonicity = null;
 		this.vibratoAmount.dispose();
 		this.vibratoAmount = null;
 		this.vibratoRate = null;

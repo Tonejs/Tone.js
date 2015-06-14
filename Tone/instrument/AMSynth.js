@@ -44,11 +44,11 @@ function(Tone){
 
 		/**
 		 *  the ratio between the two voices
-		 *  @type {Tone.Multiply}
-		 *  @private
+		 *  @type {Positive}
+		 *  @signal
 		 */
-		this._harmonicity = new Tone.Multiply(options.harmonicity);
-		this._harmonicity.units = Tone.Type.Positive;
+		this.harmonicity = new Tone.Multiply(options.harmonicity);
+		this.harmonicity.units = Tone.Type.Positive;
 
 		/**
 		 *  convert the -1,1 output to 0,1
@@ -66,7 +66,7 @@ function(Tone){
 
 		//control the two voices frequency
 		this.frequency.connect(this.carrier.frequency);
-		this.frequency.chain(this._harmonicity, this.modulator.frequency);
+		this.frequency.chain(this.harmonicity, this.modulator.frequency);
 		this.modulator.chain(this._modulationScale, this._modulationNode.gain);
 		this.carrier.chain(this._modulationNode, this.output);
 		this._readOnly(["carrier", "modulator", "frequency"]);
@@ -163,21 +163,6 @@ function(Tone){
 	};
 
 	/**
-	 * The ratio between the two carrier and the modulator. 
-	 * @memberOf Tone.AMSynth#
-	 * @type {Positive}
-	 * @name harmonicity
-	 */
-	Object.defineProperty(Tone.AMSynth.prototype, "harmonicity", {
-		get : function(){
-			return this._harmonicity.value;
-		},
-		set : function(harm){
-			this._harmonicity.value = harm;
-		}
-	});
-
-	/**
 	 *  clean up
 	 *  @returns {Tone.AMSynth} this
 	 */
@@ -190,8 +175,8 @@ function(Tone){
 		this.modulator = null;
 		this.frequency.dispose();
 		this.frequency = null;
-		this._harmonicity.dispose();
-		this._harmonicity = null;
+		this.harmonicity.dispose();
+		this.harmonicity = null;
 		this._modulationScale.dispose();
 		this._modulationScale = null;
 		this._modulationNode.disconnect();

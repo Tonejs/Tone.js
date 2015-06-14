@@ -13,6 +13,7 @@
 * mute/unmute the master output: `Tone.Master.mute = true`. 
 * 3 new simplified synths: SimpleSynth, SimpleAM and SimpleFM
 * [new docs](http://tonejs.org/docs)
+* `harmonicity` is a signal-rate value for all instruments now. 
 
 ### r4 - Cool is cool
 
