@@ -9,14 +9,7 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/MidSideSplit", "
 	 *         and the 'side' (which only comes out of the the side channels) 
 	 *         and effects them separately before being recombined. <br>
 	 *         Applies a Mid/Side seperation and recombination. <br>
-	 *         http://musicdsp.org/showArchiveComment.php?ArchiveID=173<br>
-	 *         http://www.kvraudio.com/forum/viewtopic.php?t=212587<br>
-	 *         M = (L+R)/sqrt(2);   // obtain mid-signal from left and right<br>
-	 *         S = (L-R)/sqrt(2);   // obtain side-signal from left and righ<br>
-	 *         // amplify mid and side signal seperately:<br>
-	 *         M/S send/return<br>
-	 *         L = (M+S)/sqrt(2);   // obtain left signal from mid and side<br>
-	 *         R = (M-S)/sqrt(2);   // obtain right signal from mid and side<br>
+	 *         Algorithm found in <a href="http://www.kvraudio.com/forum/viewtopic.php?t=212587">kvraudio forums</a>
 	 *
 	 *  @extends {Tone.Effect}
 	 *  @constructor

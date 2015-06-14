@@ -4,7 +4,7 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/signal/WaveShaper"], funct
 
 	/**
 	 *  @class A simple distortion effect using the waveshaper node
-	 *         algorithm from http://stackoverflow.com/a/22313408
+	 *         algorithm from <a href="http://stackoverflow.com/a/22313408">a stackoverflow answer</a>.
 	 *
 	 *  @extends {Tone.Effect}
 	 *  @constructor

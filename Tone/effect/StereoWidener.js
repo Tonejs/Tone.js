@@ -6,11 +6,12 @@ define(["Tone/core/Tone", "Tone/effect/MidSideEffect", "Tone/signal/Signal",
 
 	/**
 	 *  @class Applies a width factor (0-1) to the mid/side seperation. 
-	 *         0 is all mid and 1 is all side. <br><br>
-	 *         http://musicdsp.org/showArchiveComment.php?ArchiveID=173<br><br>
-	 *         http://www.kvraudio.com/forum/viewtopic.php?t=212587<br><br>
-	 *         M *= 2*(1-width)<br><br>
-	 *         S *= 2*width<br><br>
+	 *         0 is all mid and 1 is all side. <br>
+	 *          Applies a Mid/Side seperation and recombination. <br>
+	 *         Algorithm found in <a href="http://www.kvraudio.com/forum/viewtopic.php?t=212587">kvraudio forums</a>
+	 *         <br>
+	 *         M *= 2*(1-width)<br>
+	 *         S *= 2*width
 	 *
 	 *  @extends {Tone.MidSideEffect}
 	 *  @constructor

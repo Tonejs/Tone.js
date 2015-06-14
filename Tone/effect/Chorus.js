@@ -4,7 +4,8 @@ function(Tone){
 	"use strict";
 
 	/**
-	 *  @class A Chorus effect with feedback. inspiration from https://github.com/Dinahmoe/tuna/blob/master/tuna.js
+	 *  @class A Chorus effect with feedback. 
+	 *         Inspiration from <a href="https://github.com/Dinahmoe/tuna/blob/master/tuna.js">tuna.js</a>.
 	 *
 	 *	@constructor
 	 *	@extends {Tone.StereoXFeedbackEffect}

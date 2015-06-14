@@ -4,7 +4,7 @@ function(Tone){
 	"use strict";
 
 	/**
-	 *  @class A Phaser effect. inspiration from https://github.com/Dinahmoe/tuna/
+	 *  @class A Phaser effect. Inspiration from <a href="https://github.com/Dinahmoe/tuna/">tuna.js</a>
 	 *
 	 *	@extends {Tone.StereoEffect}
 	 *	@constructor

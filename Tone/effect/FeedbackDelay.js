@@ -3,7 +3,7 @@ define(["Tone/core/Tone", "Tone/effect/FeedbackEffect", "Tone/signal/Signal"], f
 	"use strict";
 	
 	/**
-	 *  @class  A feedback delay
+	 *  @class  A feedback delay.
 	 *
 	 *  @constructor
 	 *  @extends {Tone.FeedbackEffect}

@@ -5,7 +5,7 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/signal/WaveShaper"], funct
 	/**
 	 *  @class A Chebyshev waveshaper. Good for making different types of distortion sounds.
 	 *         Note that odd orders sound very different from even ones. order = 1 is no change. 
-	 *         http://music.columbia.edu/cmc/musicandcomputers/chapter4/04_06.php
+	 *         Read more <a href="http://music.columbia.edu/cmc/musicandcomputers/chapter4/04_06.php">here</a>
 	 *
 	 *  @extends {Tone.Effect}
 	 *  @constructor

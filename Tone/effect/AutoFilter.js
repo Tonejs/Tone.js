@@ -3,7 +3,7 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/LFO", "Tone/comp
 	"use strict";
 
 	/**
-	 *  @class AutoFilter is a Tone.Filter with an LFO connected to the filter cutoff frequency.
+	 *  @class AutoFilter is a Tone.Filter with a Tone.LFO connected to the filter cutoff frequency.
 	 *
 	 *  @constructor
 	 *  @extends {Tone.Effect}
@@ -11,7 +11,7 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/LFO", "Tone/comp
 	 *  @param {number} [min=200] min 
  	 *  @param {number} [max=1200] max
 	 *  @example
-	 *  var autoFilter = new Tone.AutoFilter("4n");
+	 * var autoFilter = new Tone.AutoFilter("4n");
 	 */
 	Tone.AutoFilter = function(){
 

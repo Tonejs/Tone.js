@@ -3,7 +3,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/effect/Effect"], function(To
 	"use strict";
 
 	/**
-	 *  @class  Convolver wrapper for reverb and emulation.
+	 *  @class  ConvolverNode wrapper for reverb and emulation.
 	 *  
 	 *  @constructor
 	 *  @extends {Tone.Effect}
