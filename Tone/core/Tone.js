@@ -193,7 +193,7 @@ define(function(){
 	};
 
 	/**
-	 *  Get the object's attributes. Given no arguments `get`
+	 *  Get the object's attributes. Given no arguments get
 	 *  will return all available object properties and their corresponding
 	 *  values. Pass in a single attribute to retrieve or an array
 	 *  of attributes. The attribute strings can also include a "."
@@ -303,7 +303,7 @@ define(function(){
 	///////////////////////////////////////////////////////////////////////////
 
 	/**
-	 *  A static pointer to the audio context accessible as `Tone.context`. 
+	 *  A static pointer to the audio context accessible as Tone.context. 
 	 *  @type {AudioContext}
 	 */
 	Tone.context = audioContext;
@@ -710,8 +710,8 @@ define(function(){
 
 	/**
 	 *  Convert a frequency into seconds.
-	 *  Accepts numbers and strings: i.e. `"10hz"` or 
-	 *  `10` both return `0.1`. 
+	 *  Accepts numbers and strings: i.e. "10hz" or 
+	 *  10 both return 0.1. 
 	 *  
 	 *  @param  {number|string} freq 
 	 *  @return {number}      
@@ -772,22 +772,21 @@ define(function(){
 		 */
 		Default : "number",
 		/**
-		 *  Time can be described in a number of ways. Read more [here](https://github.com/TONEnoTONE/Tone.js/wiki/Time)
+		 *  Time can be described in a number of ways. Read more <a href="https://github.com/TONEnoTONE/Tone.js/wiki/Time">here</>.
 		 *
-		 *  
-		 *  * Numbers, which will be taken literally as the time (in seconds).
-		 *  * Notation, (`"4n"`, `"8t"`) describes time in BPM and time signature relative values.
-		 *  * Transport Time, (`"4:3:2"`) will also provide tempo and time signature relative times 
-		 *  in the form BARS:QUARTERS:SIXTEENTHS.
-		 *  * Frequency, (`"8hz"`) is converted to the length of the cycle in seconds.
-		 *  * Now-Relative, ("+1") prefix any of the above with "+" and it will be interpreted as 
-		 *  "the current time plus whatever expression follows".
-		 *  * Expressions, ("3:0 + 2 - (1m / 7)") any of the above can also be combined 
-		 *  into a mathematical expression which will be evaluated to compute the desired time.
-		 *  * No Argument, for methods which accept time, no argument will be interpreted as 
-		 *  "now" (i.e. the currentTime).
-		 *
-		 *  
+		 *  <ul>
+		 *  <li>Numbers, which will be taken literally as the time (in seconds).</li>
+		 *  <li>Notation, ("4n", "8t") describes time in BPM and time signature relative values.</li>
+		 *  <li>Transport Time, ("4:3:2") will also provide tempo and time signature relative times 
+		 *  in the form BARS:QUARTERS:SIXTEENTHS.</li>
+		 *  <li>Frequency, ("8hz") is converted to the length of the cycle in seconds.</li>
+		 *  <li>Now-Relative, ("+1") prefix any of the above with "+" and it will be interpreted as 
+		 *  "the current time plus whatever expression follows".</li>
+		 *  <li>Expressions, ("3:0 + 2 - (1m / 7)") any of the above can also be combined 
+		 *  into a mathematical expression which will be evaluated to compute the desired time.</li>
+		 *  <li>No Argument, for methods which accept time, no argument will be interpreted as 
+		 *  "now" (i.e. the currentTime).</li>
+		 *  </ul>
 		 *  
 		 *  @typedef {Time}
 		 */
@@ -797,7 +796,7 @@ define(function(){
 		 *  values are converted to frequency instead of seconds. A number
 		 *  is taken literally as the value in hertz. Additionally any of the 
 		 *  Time encodings can be used. Note names in the form
-		 *  of NOTE OCTAVE (i.e. `C4`) are also accepted and converted to their
+		 *  of NOTE OCTAVE (i.e. C4) are also accepted and converted to their
 		 *  frequency value. 
 		 *  @typedef {Frequency}
 		 */
@@ -808,7 +807,7 @@ define(function(){
 		 */
 		Gain : "gain",
 		/** 
-		 *  Normal values are within the range of [0-1].
+		 *  Normal values are within the range [0, 1].
 		 *  @typedef {NormalRange}
 		 */
 		NormalRange : "normalrange",
@@ -846,7 +845,7 @@ define(function(){
 		 */
 		Cents : "cents",
 		/** 
-		 *  Degrees (0 - 360)
+		 *  Angle between 0 and 360. 
 		 *  @typedef {Degrees}
 		 */
 		Degrees : "degrees"
