@@ -1,4 +1,4 @@
-### r5-dev
+### r5
 
 * reverse buffer for Player and Sampler.
 * Tone.Volume for simple volume control in Decibels.
@@ -12,6 +12,7 @@
 * Tone.Oscillator - can specify the number of partials in the type: i.e. "sine10", "triangle3", "square4", etc.
 * mute/unmute the master output: `Tone.Master.mute = true`. 
 * 3 new simplified synths: SimpleSynth, SimpleAM and SimpleFM
+* [new docs](http://tonejs.org/docs)
 
 ### r4 - Cool is cool
 
