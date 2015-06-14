@@ -4,14 +4,29 @@ function(Tone){
 	"use strict";
 
 	/**
-	 *  @class  Oscillator-based transport allows for simple musical timing
-	 *          supports tempo curves and time changes. Do not construct
-	 *          an instance of the transport. One is automatically created 
-	 *          on init and additional transports cannot be created. <br><br>
-	 *          If you need to schedule highly independent callback functions,
-	 *          check out Tone.Clock.
+	 *  @class  Oscillator-based transport allows for timing musical events.
+	 *          Supports tempo curves and time changes. A single transport is created
+	 *          on initialization. Unlike browser-based timing (setInterval, requestAnimationFrame)
+	 *          Tone.Transport timing events pass in the exact time of the scheduled event
+	 *          in the argument of the callback function. Pass that time value to the object
+	 *          you're scheduling. 
 	 *
 	 *  @extends {Tone}
+	 *  @example
+	 * //repeated event every 8th note
+	 * Tone.Transport.setInterval(function(time){
+	 * 	//do something with the time
+	 * }, "8n");
+	 *  @example
+	 * //one time event 1 second in the future
+	 * Tone.Transport.setTimeout(function(time){
+	 * 	//do something with the time
+	 * }, 1);
+	 *  @example
+	 * //event fixed to the Transports timeline. 
+	 * Tone.Transport.setTimeline(function(time){
+	 * 	//do something with the time
+	 * }, "16:0:0");
 	 */
 	Tone.Transport = function(){
 

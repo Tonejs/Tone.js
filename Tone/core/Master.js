@@ -9,8 +9,8 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	 *          to set the volume and mute the entire application. 
 	 *          It also gives you the ability to apply master effects like compression, 
 	 *          limiting or effects to your application. <br><br>
-	 *          Like Tone.Transport, Tone.Master is created for you
-	 *          on initialization. It does not need to be created.
+	 *          Like Tone.Transport, Tone.Master is created
+	 *          on initialization. You don't need to constuct it.
 	 *
 	 *  @constructor
 	 *  @extends {Tone}
