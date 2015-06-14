@@ -70,12 +70,12 @@ function(Tone){
 		//control the two voices frequency
 		this.frequency.connect(this.carrier.frequency);
 		this.frequency.chain(this.harmonicity, this.modulator.frequency);
-		this.frequency.chain(this._modulationIndex, this._modulationNode);
+		this.frequency.chain(this.modulationIndex, this._modulationNode);
 		this.modulator.connect(this._modulationNode.gain);
 		this._modulationNode.gain.value = 0;
 		this._modulationNode.connect(this.carrier.frequency);
 		this.carrier.connect(this.output);
-		this._readOnly(["carrier", "modulator", "frequency"]);
+		this._readOnly(["carrier", "modulator", "frequency", "harmonicity", "modulationIndex"]);;
 	};
 
 	Tone.extend(Tone.SimpleFM, Tone.Monophonic);
@@ -151,15 +151,15 @@ function(Tone){
 	 */
 	Tone.SimpleFM.prototype.dispose = function(){
 		Tone.Monophonic.prototype.dispose.call(this);
-		this._writable(["carrier", "modulator", "frequency"]);
+		this._writable(["carrier", "modulator", "frequency", "harmonicity", "modulationIndex"]);
 		this.carrier.dispose();
 		this.carrier = null;
 		this.modulator.dispose();
 		this.modulator = null;
 		this.frequency.dispose();
 		this.frequency = null;
-		this._modulationIndex.dispose();
-		this._modulationIndex = null;
+		this.modulationIndex.dispose();
+		this.modulationIndex = null;
 		this.harmonicity.dispose();
 		this.harmonicity = null;
 		this._modulationNode.disconnect();

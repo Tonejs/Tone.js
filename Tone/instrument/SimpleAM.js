@@ -74,7 +74,7 @@ function(Tone){
 		this.frequency.chain(this.harmonicity, this.modulator.frequency);
 		this.modulator.chain(this._modulationScale, this._modulationNode.gain);
 		this.carrier.chain(this._modulationNode, this.output);
-		this._readOnly(["carrier", "modulator", "frequency"]);
+		this._readOnly(["carrier", "modulator", "frequency", "harmonicity"]);
 	};
 
 	Tone.extend(Tone.SimpleAM, Tone.Monophonic);
@@ -149,7 +149,7 @@ function(Tone){
 	 */
 	Tone.SimpleAM.prototype.dispose = function(){
 		Tone.Monophonic.prototype.dispose.call(this);
-		this._writable(["carrier", "modulator", "frequency"]);
+		this._writable(["carrier", "modulator", "frequency", "harmonicity"]);
 		this.carrier.dispose();
 		this.carrier = null;
 		this.modulator.dispose();
