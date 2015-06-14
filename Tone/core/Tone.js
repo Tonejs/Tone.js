@@ -136,17 +136,18 @@ define(function(){
 	 *  @param {Time=} rampTime
 	 *  @returns {Tone} this
 	 *  @example
-	 *  //set values using an object
-	 *  filter.set({
-	 *  	"frequency" : 300,
-	 *  	"type" : highpass
-	 *  });
-	 *  //or
-	 *  filter.set("type", "highpass");
-	 *  //ramp to the value 220 over 3 seconds. 
-	 *  oscillator.set({
-	 *  	"frequency" : 220
-	 *  }, 3);
+	 * //set values using an object
+	 * filter.set({
+	 * 	"frequency" : 300,
+	 * 	"type" : highpass
+	 * });
+	 *  @example
+	 * filter.set("type", "highpass");
+	 *  @example
+	 * //ramp to the value 220 over 3 seconds. 
+	 * oscillator.set({
+	 * 	"frequency" : 220
+	 * }, 3);
 	 */
 	Tone.prototype.set = function(params, value, rampTime){
 		if (typeof params === "object"){
