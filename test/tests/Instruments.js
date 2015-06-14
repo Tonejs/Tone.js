@@ -331,7 +331,7 @@ function(Tone, chai, DuoSynth, MonoSynth, FMSynth, PolySynth, Sampler, Test, Ins
 			};
 			ams.set(values);
 			expect(ams.get()).to.contain.keys(Object.keys(values));
-			expect(ams.harmonicity).to.be.closeTo(values.harmonicity, 0.05);
+			expect(ams.harmonicity.value).to.be.closeTo(values.harmonicity, 0.05);
 			expect(ams.carrier.filterEnvelope.min).to.be.closeTo(values.carrier.filterEnvelope.min, 0.05);
 			expect(ams.modulator.filterEnvelope.min).to.be.closeTo(values.modulator.filterEnvelope.min, 0.05);
 			ams.dispose();
