@@ -133,8 +133,9 @@ function(Tone){
 	 *  @param  {Time} [time=now] the time the note will occur
 	 *  @param {number} [velocity=1] the velocity of the note
 	 *  @returns {Tone.FMSynth} this
+	 *  @private
 	 */
-	Tone.FMSynth.prototype.triggerEnvelopeAttack = function(time, velocity){
+	Tone.FMSynth.prototype._triggerEnvelopeAttack = function(time, velocity){
 		//the port glide
 		time = this.toSeconds(time);
 		//the envelopes
@@ -150,8 +151,9 @@ function(Tone){
 	 *  
 	 *  @param  {Time} [time=now] the time the note will release
 	 *  @returns {Tone.FMSynth} this
+	 *  @private
 	 */
-	Tone.FMSynth.prototype.triggerEnvelopeRelease = function(time){
+	Tone.FMSynth.prototype._triggerEnvelopeRelease = function(time){
 		this.carrier.triggerRelease(time);
 		this.modulator.triggerRelease(time);
 		return this;

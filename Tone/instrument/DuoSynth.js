@@ -153,8 +153,9 @@ function(Tone){
 	 *  @param {Time} [time=now] the time the attack should start
 	 *  @param {NormalRange} [velocity=1] the velocity of the note (0-1)
 	 *  @returns {Tone.DuoSynth} this
+	 *  @private
 	 */
-	Tone.DuoSynth.prototype.triggerEnvelopeAttack = function(time, velocity){
+	Tone.DuoSynth.prototype._triggerEnvelopeAttack = function(time, velocity){
 		time = this.toSeconds(time);
 		this.voice0.envelope.triggerAttack(time, velocity);
 		this.voice1.envelope.triggerAttack(time, velocity);
@@ -168,8 +169,9 @@ function(Tone){
 	 *  
 	 *  @param {Time} [time=now] the time the release should start
 	 *  @returns {Tone.DuoSynth} this
+	 *  @private
 	 */
-	Tone.DuoSynth.prototype.triggerEnvelopeRelease = function(time){
+	Tone.DuoSynth.prototype._triggerEnvelopeRelease = function(time){
 		this.voice0.triggerRelease(time);
 		this.voice1.triggerRelease(time);
 		return this;

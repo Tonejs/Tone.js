@@ -45,7 +45,7 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/signal/Signal"], f
 	 */
 	Tone.Monophonic.prototype.triggerAttack = function(note, time, velocity) {
 		time = this.toSeconds(time);
-		this.triggerEnvelopeAttack(time, velocity);
+		this._triggerEnvelopeAttack(time, velocity);
 		this.setNote(note, time);
 		return this;
 	};
@@ -56,27 +56,23 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/signal/Signal"], f
 	 *  @returns {Tone.Monophonic} this
 	 */
 	Tone.Monophonic.prototype.triggerRelease = function(time){
-		this.triggerEnvelopeRelease(time);
+		this._triggerEnvelopeRelease(time);
 		return this;
 	};
 
 	/**
 	 *  override this method with the actual method
 	 *  @abstract
-	 *  @param {Time} [time=now] the time the attack should happen
-	 *  @param {number} [velocity=1] the velocity of the envelope
-	 *  @returns {Tone.Monophonic} this
+	 *  @private
 	 */	
-	Tone.Monophonic.prototype.triggerEnvelopeAttack = function() {};
+	Tone.Monophonic.prototype._triggerEnvelopeAttack = function() {};
 
 	/**
 	 *  override this method with the actual method
 	 *  @abstract
-	 *  @param {Time} [time=now] the time the attack should happen
-	 *  @param {number} [velocity=1] the velocity of the envelope
-	 *  @returns {Tone.Monophonic} this
+	 *  @private
 	 */	
-	Tone.Monophonic.prototype.triggerEnvelopeRelease = function() {};
+	Tone.Monophonic.prototype._triggerEnvelopeRelease = function() {};
 
 	/**
 	 *  set the note to happen at a specific time
