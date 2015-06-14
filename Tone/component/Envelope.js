@@ -331,7 +331,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Pow"], function(Ton
 	};
 
 	/**
-	 *  Borrows the connect method from {@link Tone.Signal}
+	 *  Borrows the connect method from Tone.Signal. 
 	 *  @function
 	 */
 	Tone.Envelope.prototype.connect = Tone.Signal.prototype.connect;

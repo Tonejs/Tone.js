@@ -218,8 +218,8 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 	 *                               value to ramp from it's current value
 	 *  @returns {Tone.Signal} this
 	 *  @example
-	 *  //exponentially ramp to the value 2 over 4 seconds. 
-	 *  signal.exponentialRampToValueNow(2, 4);
+	 * //exponentially ramp to the value 2 over 4 seconds. 
+	 * signal.exponentialRampToValueNow(2, 4);
 	 */
 	Tone.Signal.prototype.exponentialRampToValueNow = function(value, rampTime){
 		var now = this.now();
@@ -240,8 +240,8 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 	 *                               value to ramp from it's current value
 	 *  @returns {Tone.Signal} this
 	 *  @example
-	 *  //linearly ramp to the value 4 over 3 seconds. 
-	 *  signal.linearRampToValueNow(4, 3);
+	 * //linearly ramp to the value 4 over 3 seconds. 
+	 * signal.linearRampToValueNow(4, 3);
 	 */
 	Tone.Signal.prototype.linearRampToValueNow = function(value, rampTime){
 		var now = this.now();
@@ -307,9 +307,9 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 	 *                               value to ramp from it's current value
 	 *  @returns {Tone.Signal} this
 	 *  @example
-	 *  //ramp to the value either linearly or exponentially 
-	 *  //depending on the "units" value of the signal
-	 *  signal.rampTo(0, 10);
+	 * //ramp to the value either linearly or exponentially 
+	 * //depending on the "units" value of the signal
+	 * signal.rampTo(0, 10);
 	 */
 	Tone.Signal.prototype.rampTo = function(value, rampTime){
 		rampTime = this.defaultArg(rampTime, 0);

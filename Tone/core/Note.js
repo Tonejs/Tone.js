@@ -118,31 +118,31 @@ define(["Tone/core/Tone", "Tone/core/Transport"], function(Tone){
 
 	/**
 	 *  Parses a score and registers all of the notes along the timeline. 
-	 *
+	 *  <br><br>
 	 *  Scores are a JSON object with instruments at the top level
 	 *  and an array of time and values. The value of a note can be 0 or more 
 	 *  parameters. 
-	 *
+	 *  <br><br>
 	 *  The only requirement for the score format is that the time is the first (or only)
 	 *  value in the array. All other values are optional and will be passed into the callback
 	 *  function registered using `Note.route(channelName, callback)`.
-	 *
+	 *  <br><br>
 	 *  To convert MIDI files to score notation, take a look at utils/MidiToScore.js
 	 *
 	 *  @example
-	 *  //an example JSON score which sets up events on channels
-	 *  var score = { 
-	 *  	"synth"  : [["0", "C3"], ["0:1", "D3"], ["0:2", "E3"], ... ],
-	 *  	"bass"  : [["0", "C2"], ["1:0", "A2"], ["2:0", "C2"], ["3:0", "A2"], ... ],
-	 *  	"kick"  : ["0", "0:2", "1:0", "1:2", "2:0", ... ],
-	 *  	//...
-	 *  };
-	 *  //parse the score into Notes
-	 *  Tone.Note.parseScore(score);
-	 *  //route all notes on the "synth" channel
-	 *  Tone.Note.route("synth", function(time, note){
-	 *  	//trigger synth
-	 *  });
+	 * //an example JSON score which sets up events on channels
+	 * var score = { 
+	 * 	"synth"  : [["0", "C3"], ["0:1", "D3"], ["0:2", "E3"], ... ],
+	 * 	"bass"  : [["0", "C2"], ["1:0", "A2"], ["2:0", "C2"], ["3:0", "A2"], ... ],
+	 * 	"kick"  : ["0", "0:2", "1:0", "1:2", "2:0", ... ],
+	 * 	//...
+	 * };
+	 * //parse the score into Notes
+	 * Tone.Note.parseScore(score);
+	 * //route all notes on the "synth" channel
+	 * Tone.Note.route("synth", function(time, note){
+	 * 	//trigger synth
+	 * });
 	 *  @static
 	 *  @param {Object} score
 	 *  @return {Array} an array of all of the notes that were created
@@ -191,11 +191,11 @@ define(["Tone/core/Tone", "Tone/core/Transport"], function(Tone){
 	var middleC = 261.6255653005986;
 
 	/**
-	 *  convert a note name to frequency (i.e. A4 to 440)
-	 *  defined in "Tone/core/Note"
-	 *  
+	 *  Convert a note name to frequency. 
 	 *  @param  {string} note
-	 *  @return {number}         
+	 *  @return {number}     
+	 *  @example
+	 * var freq = tone.noteToFrequency("A4"); //returns 440
 	 */
 	Tone.prototype.noteToFrequency = function(note){
 		//break apart the note by frequency and octave
@@ -211,8 +211,8 @@ define(["Tone/core/Tone", "Tone/core/Transport"], function(Tone){
 	};
 
 	/**
-	 *  test if a string is in note format: i.e. "C4"
-	 *  @param  {string|number}  note the note to test
+	 *  Test if a string is in note format: i.e. "C4". 
+	 *  @param  {string|number}  note The note to test
 	 *  @return {boolean}      true if it's in the form of a note
 	 *  @method isNotation
 	 *  @lends Tone.prototype.isNote
@@ -229,7 +229,7 @@ define(["Tone/core/Tone", "Tone/core/Transport"], function(Tone){
 	})();
 
 	/**
-	 *  a pointer to the previous toFrequency method
+	 *  A pointer to the previous toFrequency method
 	 *  @private
 	 *  @function
 	 */
@@ -253,7 +253,6 @@ define(["Tone/core/Tone", "Tone/core/Transport"], function(Tone){
 
 	/**
 	 *  Convert a note name (i.e. A4, C#5, etc to a frequency).
-	 *  Defined in "Tone/core/Note"
 	 *  @param  {number} freq
 	 *  @return {string}         
 	 */
@@ -279,7 +278,7 @@ define(["Tone/core/Tone", "Tone/core/Transport"], function(Tone){
 	};
 
 	/**
-	 *  Convert a midi note number into a note name/
+	 *  Convert a midi note number into a note name. 
 	 *
 	 *  @param  {number} midiNumber the midi note number
 	 *  @return {string}            the note's name and octave
@@ -293,8 +292,7 @@ define(["Tone/core/Tone", "Tone/core/Transport"], function(Tone){
 	};
 
 	/**
-	 *  convert a note to it's midi value
-	 *  defined in "Tone/core/Note"
+	 *  Convert a note to it's midi value. 
 	 *
 	 *  @param  {string} note the note name (i.e. "C3")
 	 *  @return {number} the midi value of that note

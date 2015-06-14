@@ -72,7 +72,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	Tone.extend(Tone.Clock);
 
 	/**
-	 *  start the clock
+	 *  Start the clock.
 	 *  @param {Time} [time=now] the time when the clock should start
 	 *  @returns {Tone.Clock} this
 	 *  @example
@@ -93,7 +93,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	};
 
 	/**
-	 *  stop the clock
+	 *  Stop the clock.
 	 *  @param {Time} [time=now] The time when the clock should stop.
 	 *  @returns {Tone.Clock} this
 	 *  @example
@@ -147,7 +147,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	};
 
 	/**
-	 *  clean up
+	 *  Clean up.
 	 *  @returns {Tone.Clock} this
 	 */
 	Tone.Clock.prototype.dispose = function(){

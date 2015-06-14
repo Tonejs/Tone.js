@@ -8,7 +8,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Expr", "Tone/compon
 	 *         (which comes out of both the left and the right channel) 
 	 *         and the 'side' (which only comes out of the the side channels). 
 	 *         MidSideMerge merges the mid and side signal after they've been seperated
-	 *         by {@link Tone.MidSideSplit}.<br>
+	 *         by Tone.MidSideSplit.<br>
 	 *         M/S send/return<br>
 	 *         L = (M+S)/sqrt(2);   // obtain left signal from mid and side<br>
 	 *         R = (M-S)/sqrt(2);   // obtain right signal from mid and side<br>

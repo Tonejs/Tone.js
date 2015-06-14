@@ -71,8 +71,6 @@ function(Tone){
 
 	/**
 	 *  the default parameters
-	 *  @static
-	 *  @const
 	 *  @type {Object}
 	 */
 	Tone.Oscillator.defaults = {
@@ -118,11 +116,11 @@ function(Tone){
 	 *  will also affect the oscillators frequency. 
 	 *  @returns {Tone.Oscillator} this
 	 *  @example
-	 *  Tone.Transport.bpm.value = 120;
-	 *  osc.frequency.value = 440;
-	 *  osc.syncFrequency();
-	 *  Tone.Transport.bpm.value = 240; 
-	 *  // the frequency of the oscillator is doubled to 880
+	 * Tone.Transport.bpm.value = 120;
+	 * osc.frequency.value = 440;
+	 * osc.syncFrequency();
+	 * Tone.Transport.bpm.value = 240; 
+	 * // the frequency of the oscillator is doubled to 880
 	 */
 	Tone.Oscillator.prototype.syncFrequency = function(){
 		Tone.Transport.syncSignal(this.frequency);
@@ -131,7 +129,7 @@ function(Tone){
 
 	/**
 	 *  Unsync the oscillator's frequency from the Transport. 
-	 *  See {@link Tone.Oscillator#syncFrequency}.
+	 *  See Tone.Oscillator#syncFrequency.
 	 *  @returns {Tone.Oscillator} this
 	 */
 	Tone.Oscillator.prototype.unsyncFrequency = function(){
@@ -141,11 +139,10 @@ function(Tone){
 
 	/**
 	 * The type of the oscillator: either sine, square, triangle, or sawtooth.
-	 *
-	 * Uses PeriodicWave internally even for native types so that it can set the phase.
-	 *
-	 * PeriodicWave equations are from the Web Audio Source code:
-	 * https://code.google.com/p/chromium/codesearch#chromium/src/third_party/WebKit/Source/modules/webaudio/PeriodicWave.cpp&sq=package:chromium
+	 * <br><br> 
+	 * Uses PeriodicWave internally even for native types so that it can set the phase. 
+	 * PeriodicWave equations are from the 
+	 * <a href="https://code.google.com/p/chromium/codesearch#chromium/src/third_party/WebKit/Source/modules/webaudio/PeriodicWave.cpp&sq=package:chromium">Web Audio Source code</a>
 	 *  
 	 * @memberOf Tone.Oscillator#
 	 * @type {string}

@@ -10,9 +10,9 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 	 *  @param {string|AudioBuffer} url Either the AudioBuffer or the url from
 	 *                                  which to load the AudioBuffer
 	 *  @param {function=} onload The function to invoke when the buffer is loaded. 
-	 *                            Recommended to use {@link Tone.Buffer#onload} instead.
+	 *                            Recommended to use Tone.Buffer.onload instead.
 	 *  @example
-	 *  var player = new Tone.Player("./path/to/sample.mp3");
+	 * var player = new Tone.Player("./path/to/sample.mp3");
 	 */
 	Tone.Player = function(){
 		
@@ -194,14 +194,14 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 	};
 
 	/**
-	 *  Set the loop start and end. Will only loop if `loop` is 
-	 *  set to `true`. 
+	 *  Set the loop start and end. Will only loop if loop is 
+	 *  set to true. 
 	 *  @param {Time} loopStart The loop end time
 	 *  @param {Time} loopEnd The loop end time
 	 *  @returns {Tone.Player} this
 	 *  @example
-	 *  player.setLoopPoints(0.2, 0.3);
-	 *  player.loop = true;
+	 * player.setLoopPoints(0.2, 0.3);
+	 * player.loop = true;
 	 */
 	Tone.Player.prototype.setLoopPoints = function(loopStart, loopEnd){
 		this.loopStart = loopStart;
@@ -210,7 +210,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 	};
 
 	/**
-	 * If `loop` is true, the loop will start at this position. 
+	 * If loop is true, the loop will start at this position. 
 	 * @memberOf Tone.Player#
 	 * @type {Time}
 	 * @name loopStart
@@ -228,7 +228,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 	});
 
 	/**
-	 * If `loop` is true, the loop will end at this position.
+	 * If loop is true, the loop will end at this position.
 	 * @memberOf Tone.Player#
 	 * @type {Time}
 	 * @name loopEnd
@@ -281,9 +281,8 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 	/**
 	 * The playback speed. 1 is normal speed. 
 	 * Note that this is not a Tone.Signal because of a bug in Blink. 
-	 * Please star this issue if this an important thing to you: 
-	 * https://code.google.com/p/chromium/issues/detail?id=311284
-	 * 
+	 * Please star <a href="https://code.google.com/p/chromium/issues/detail?id=311284">this</a>
+	 * issue if this an important thing to you.
 	 * @memberOf Tone.Player#
 	 * @type {number}
 	 * @name playbackRate

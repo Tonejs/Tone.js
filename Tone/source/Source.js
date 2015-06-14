@@ -111,7 +111,7 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Master"], function(T
 	};
 
 	/**
-	 *  Start the source at the time.
+	 *  Start the source.
 	 *  @param  {Time} [time=now]
 	 *  @returns {Tone.Source} this
 	 *  @example
@@ -128,7 +128,7 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Master"], function(T
 	};
 
 	/**
-	 * 	stop the source
+	 *  Stop the source.
 	 *  @param  {Time} [time=now]
 	 *  @returns {Tone.Source} this
 	 *  @example
@@ -180,7 +180,7 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Master"], function(T
 	};
 
 	/**
-	 *  Unsync the source to the Transport. See {@link Tone.Source#sync}
+	 *  Unsync the source to the Transport. See Tone.Source.sync
 	 *  @returns {Tone.Source} this
 	 */
 	Tone.Source.prototype.unsync = function(){

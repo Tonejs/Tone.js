@@ -4,12 +4,12 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	
 	/**
 	 *  @class  A single master output which is connected to the
-	 *          AudioDestinationNode. It provides useful conveniences
-	 *          such as the ability to set the global volume and mute
-	 *          the entire application. Additionally, it accepts
-	 *          a master send/receive for adding final compression, 
+	 *          AudioDestinationNode (aka your speakers). 
+	 *          It provides useful conveniences such as the ability 
+	 *          to set the volume and mute the entire application. 
+	 *          It also gives you the ability to apply master effects like compression, 
 	 *          limiting or effects to your application. <br><br>
-	 *          Like the Transport, the Master output is created for you
+	 *          Like Tone.Transport, Tone.Master is created for you
 	 *          on initialization. It does not need to be created.
 	 *
 	 *  @constructor
@@ -83,7 +83,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	 *  Add a master effects chain. This will disconnect any nodes which were previously 
 	 *  chained. 
 	 *  @param {AudioNode|Tone...} args All arguments will be connected in a row
-	 *                                  and the Master will be routed through it
+	 *                                  and the Master will be routed through it.
 	 *  @return  {Tone.Master}  this
 	 *  @example
 	 * //some overall compression to keep the levels in check
@@ -110,9 +110,11 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	///////////////////////////////////////////////////////////////////////////
 
 	/**
-	 *  connect 'this' to the master output
-	 *  defined in "Tone/core/Master"
+	 *  Connect 'this' to the master output. Shorthand for <code>.connect(Tone.Master)</code>
 	 *  @returns {Tone} this
+	 *  @example
+	 * //connect an oscillator to the master output
+	 * var osc = new Tone.Oscillator().toMaster();
 	 */
 	Tone.prototype.toMaster = function(){
 		this.connect(Tone.Master);

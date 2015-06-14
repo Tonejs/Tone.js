@@ -9,7 +9,7 @@ function(Tone){
 	 *          an instance of the transport. One is automatically created 
 	 *          on init and additional transports cannot be created. <br><br>
 	 *          If you need to schedule highly independent callback functions,
-	 *          check out {@link Tone.Clock}.
+	 *          check out Tone.Clock.
 	 *
 	 *  @extends {Tone}
 	 */
