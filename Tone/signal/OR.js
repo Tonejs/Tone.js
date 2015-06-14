@@ -9,11 +9,11 @@ define(["Tone/core/Tone", "Tone/signal/GreaterThanZero"], function(Tone){
 	 *  @constructor
 	 *  @param {number} inputCount the input count
 	 *  @example
-	 *  var or = new Tone.OR(2);
-	 *  var sigA = new Tone.Signal(0)connect(or, 0, 0);
-	 *  var sigB = new Tone.Signal(1)connect(or, 0, 1);
-	 *  //output of or is 1 because at least
-	 *  //one of the inputs is equal to 1. 
+	 * var or = new Tone.OR(2);
+	 * var sigA = new Tone.Signal(0)connect(or, 0, 0);
+	 * var sigB = new Tone.Signal(1)connect(or, 0, 1);
+	 * //output of or is 1 because at least
+	 * //one of the inputs is equal to 1. 
 	 */
 	Tone.OR = function(inputCount){
 

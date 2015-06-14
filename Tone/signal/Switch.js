@@ -10,12 +10,12 @@ define(["Tone/core/Tone", "Tone/signal/SignalBase", "Tone/signal/GreaterThan"], 
 	 *  @constructor
 	 *  @extends {Tone.SignalBase}
 	 *  @example
-	 *  var sigSwitch = new Tone.Switch();
-	 *  var signal = new Tone.Signal(2).connect(sigSwitch);
-	 *  //initially no output from sigSwitch
-	 *  sigSwitch.gate.value = 1;
-	 *  //open the switch and allow the signal through
-	 *  //the output of sigSwitch is now 2. 
+	 * var sigSwitch = new Tone.Switch();
+	 * var signal = new Tone.Signal(2).connect(sigSwitch);
+	 * //initially no output from sigSwitch
+	 * sigSwitch.gate.value = 1;
+	 * //open the switch and allow the signal through
+	 * //the output of sigSwitch is now 2. 
 	 */
 	Tone.Switch = function(){
 		Tone.call(this);

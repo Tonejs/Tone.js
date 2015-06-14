@@ -14,17 +14,17 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	 *  @param {number=} value if no value is provided, Tone.Add will sum the first
 	 *                         and second inputs. 
 	 *  @example
-	 *  var signal = new Tone.Signal(2);
-	 *  var add = new Tone.Add(2);
-	 *  signal.connect(add);
-	 *  //the output of add equals 4
-	 *
-	 *  //if constructed with no arguments
-	 *  //it will add the first and second inputs
-	 *  var add = new Tone.Add();
-	 *  var sig0 = new Tone.Signal(3).connect(add, 0, 0);
-	 *  var sig1 = new Tone.Signal(4).connect(add, 0, 1);
-	 *  //the output of add equals 7. 
+	 * var signal = new Tone.Signal(2);
+	 * var add = new Tone.Add(2);
+	 * signal.connect(add);
+	 * //the output of add equals 4
+	 *  @example
+	 * //if constructed with no arguments
+	 * //it will add the first and second inputs
+	 * var add = new Tone.Add();
+	 * var sig0 = new Tone.Signal(3).connect(add, 0, 0);
+	 * var sig1 = new Tone.Signal(4).connect(add, 0, 1);
+	 * //the output of add equals 7. 
 	 */
 	Tone.Add = function(value){
 

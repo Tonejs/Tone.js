@@ -13,9 +13,9 @@ function(Tone){
 	 *  @extends {Tone.Signal}
 	 *  @param {number} [value=0] the value to compare to the incoming signal
 	 *  @example
-	 *  var lt = new Tone.LessThan(2);
-	 *  var sig = new Tone.Signal(-1).connect(lt);
-	 *  //lt outputs 1 because sig < 2
+	 * var lt = new Tone.LessThan(2);
+	 * var sig = new Tone.Signal(-1).connect(lt);
+	 * //lt outputs 1 because sig < 2
 	 */
 	Tone.LessThan = function(value){
 

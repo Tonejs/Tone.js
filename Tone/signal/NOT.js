@@ -9,11 +9,11 @@ define(["Tone/core/Tone", "Tone/signal/EqualZero"], function(Tone){
 	 *  @constructor
 	 *  @extends {Tone.SignalBase}
 	 *  @example
-	 *  var not = new Tone.NOT();
-	 *  var sig = new Tone.Signal(1).connect(not);
-	 *  //output of not equals 0. 
-	 *  sig.value = 0;
-	 *  //output of not equals 1.
+	 * var not = new Tone.NOT();
+	 * var sig = new Tone.Signal(1).connect(not);
+	 * //output of not equals 0. 
+	 * sig.value = 0;
+	 * //output of not equals 1.
 	 */
 	Tone.NOT = Tone.EqualZero;
 

@@ -10,13 +10,13 @@ define(["Tone/core/Tone", "Tone/signal/Equal", "Tone/signal/Signal"], function(T
 	 *  @extends {Tone.SignalBase}
 	 *  @param {number} [sourceCount=2] the number of inputs the switch accepts
 	 *  @example
-	 *  var sel = new Tone.Select(2);
-	 *  var sigA = new Tone.Signal(10).connect(sel, 0, 0);
-	 *  var sigB = new Tone.Signal(20).connect(sel, 0, 1);
-	 *  sel.gate.value = 0;
-	 *  //sel outputs 10 (the value of sigA);
-	 *  sel.gate.value = 1;
-	 *  //sel outputs 20 (the value of sigB);
+	 * var sel = new Tone.Select(2);
+	 * var sigA = new Tone.Signal(10).connect(sel, 0, 0);
+	 * var sigB = new Tone.Signal(20).connect(sel, 0, 1);
+	 * sel.gate.value = 0;
+	 * //sel outputs 10 (the value of sigA);
+	 * sel.gate.value = 1;
+	 * //sel outputs 20 (the value of sigB);
 	 */
 	Tone.Select = function(sourceCount){
 

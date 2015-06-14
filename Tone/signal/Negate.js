@@ -8,9 +8,9 @@ define(["Tone/core/Tone", "Tone/signal/Multiply", "Tone/signal/Signal"], functio
 	 *  @constructor
 	 *  @extends {Tone.SignalBase}
 	 *  @example
-	 *  var neg = new Tone.Negate();
-	 *  var sig = new Tone.Signal(-2).connect(neg);
-	 *  //output of neg is positive 2. 
+	 * var neg = new Tone.Negate();
+	 * var sig = new Tone.Signal(-2).connect(neg);
+	 * //output of neg is positive 2. 
 	 */
 	Tone.Negate = function(){
 		/**

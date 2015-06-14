@@ -11,9 +11,9 @@ function(Tone){
 	 *  @extends {Tone.SignalBase}
 	 *  @param {number} modulus the modulus to apply
 	 *  @example
-	 *  var mod = new Tone.Modulo(0.2)
-	 *  var sig = new Tone.Signal(0.5).connect(mod);
-	 *  //mod outputs 0.1
+	 * var mod = new Tone.Modulo(0.2)
+	 * var sig = new Tone.Signal(0.5).connect(mod);
+	 * //mod outputs 0.1
 	 */
 	Tone.Modulo = function(modulus){
 

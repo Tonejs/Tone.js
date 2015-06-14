@@ -15,7 +15,7 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 	 *                                       if an AudioParam is passed in.
 	 *  @param {Tone.Type} [units=Tone.Type.Default] unit the units the signal is in
 	 *  @example
-	 *  var signal = new Tone.Signal(10);
+	 * var signal = new Tone.Signal(10);
 	 */
 	Tone.Signal = function(){
 

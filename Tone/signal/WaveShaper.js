@@ -15,9 +15,9 @@ define(["Tone/core/Tone", "Tone/signal/SignalBase"], function(Tone){
 	 *                                    set as the wave shapping function
 	 *  @param {number} [bufferLen=1024] the length of the WaveShaperNode buffer.
 	 *  @example
-	 *  var timesTwo = new Tone.WaveShaper(function(val){
-	 *  	return val * 2;
-	 *  }, 2048);
+	 * var timesTwo = new Tone.WaveShaper(function(val){
+	 * 	return val * 2;
+	 * }, 2048);
 	 */
 	Tone.WaveShaper = function(mapping, bufferLen){
 

@@ -10,11 +10,11 @@ define(["Tone/core/Tone", "Tone/signal/LessThan", "Tone/signal/IfThenElse", "Ton
 	 *  @extends {Tone.Signal}
 	 *  @param {number} min the minimum to compare to the incoming signal
 	 *  @example
-	 *  var min = new Tone.Min(2);
-	 *  var sig = new Tone.Signal(3).connect(min);
-	 *  //min outputs 2
-	 *  sig.value = 1;
-	 *  //min outputs 1
+	 * var min = new Tone.Min(2);
+	 * var sig = new Tone.Signal(3).connect(min);
+	 * //min outputs 2
+	 * sig.value = 1;
+	 * //min outputs 1
 	 */
 	Tone.Min = function(min){
 

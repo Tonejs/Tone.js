@@ -8,10 +8,10 @@ function(Tone){
 	 *  @constructor
 	 *  @extends {Tone.SignalBase}
 	 *  @example
-	 *  var signal = new Tone.Signal(-1);
-	 *  var abs = new Tone.Abs();
-	 *  signal.connect(abs);
-	 *  //the output of abs is 1. 
+	 * var signal = new Tone.Signal(-1);
+	 * var abs = new Tone.Abs();
+	 * signal.connect(abs);
+	 * //the output of abs is 1. 
 	 */
 	Tone.Abs = function(){
 		Tone.call(this, 1, 0);

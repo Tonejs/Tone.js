@@ -12,9 +12,9 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Multiply", "Tone/signa
 	 *  @param {number} [outputMin=0]
 	 *  @param {number} [outputMax=1]
 	 *  @example
-	 *  var scale = new Tone.Scale(50, 100);
-	 *  var signal = new Tone.Signal(0.5).connect(scale);
-	 *  //the output of scale equals 75
+	 * var scale = new Tone.Scale(50, 100);
+	 * var signal = new Tone.Signal(0.5).connect(scale);
+	 * //the output of scale equals 75
 	 */
 	Tone.Scale = function(outputMin, outputMax){
 

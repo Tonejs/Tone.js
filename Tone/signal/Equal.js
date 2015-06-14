@@ -10,9 +10,9 @@ define(["Tone/core/Tone", "Tone/signal/EqualZero", "Tone/signal/Subtract", "Tone
 	 *  @extends {Tone.SignalBase}
 	 *  @param {number} value the number to compare the incoming signal to
 	 *  @example
-	 *  var eq = new Tone.Equal(3);
-	 *  var sig = new Tone.Signal(3).connect(eq);
-	 *  //the output of eq is 1. 
+	 * var eq = new Tone.Equal(3);
+	 * var sig = new Tone.Signal(3).connect(eq);
+	 * //the output of eq is 1. 
 	 */
 	Tone.Equal = function(value){
 

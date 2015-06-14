@@ -9,9 +9,9 @@ function(Tone){
 	 *  @constructor
 	 *  @extends {Tone.SignalBase}
 	 *  @example
-	 *  var eq0 = new Tone.EqualZero();
-	 *  var sig = new Tone.Signal(0).connect(eq0);
-	 *  //the output of eq0 is 1. 
+	 * var eq0 = new Tone.EqualZero();
+	 * var sig = new Tone.Signal(0).connect(eq0);
+	 * //the output of eq0 is 1. 
 	 */
 	Tone.EqualZero = function(){
 

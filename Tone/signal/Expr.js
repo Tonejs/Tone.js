@@ -16,8 +16,8 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Subtract", "Tone/signa
 	 *  @constructor
 	 *  @param {string} expr the expression to generate
 	 *  @example
-	 *  //adds the signals from input 0 and input 1.
-	 *  var expr = new Tone.Expr("$0 + $1");
+	 * //adds the signals from input 0 and input 1.
+	 * var expr = new Tone.Expr("$0 + $1");
 	 */
 	Tone.Expr = function(){
 

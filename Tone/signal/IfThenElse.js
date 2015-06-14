@@ -11,13 +11,13 @@ define(["Tone/core/Tone", "Tone/signal/Select", "Tone/signal/Equal"], function(T
 	 *  @extends {Tone.SignalBase}
 	 *  @constructor
 	 *  @example
-	 *  var ifThenElse = new Tone.IfThenElse();
-	 *  var ifSignal = new Tone.Signal(1).connect(ifThenElse, 0, 0);
-	 *  var thenSignal = new Tone.PWMOscillator().connect(ifThenElse, 0, 1);
-	 *  var elseSignal = new Tone.PulseOscillator().connect(ifThenElse, 0, 2);
-	 *  //ifThenElse outputs thenSignal
-	 *  signal.value = 0;
-	 *  //now ifThenElse outputs elseSignal
+	 * var ifThenElse = new Tone.IfThenElse();
+	 * var ifSignal = new Tone.Signal(1).connect(ifThenElse, 0, 0);
+	 * var thenSignal = new Tone.PWMOscillator().connect(ifThenElse, 0, 1);
+	 * var elseSignal = new Tone.PulseOscillator().connect(ifThenElse, 0, 2);
+	 * //ifThenElse outputs thenSignal
+	 * signal.value = 0;
+	 * //now ifThenElse outputs elseSignal
 	 */
 	Tone.IfThenElse = function(){
 
