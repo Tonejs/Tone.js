@@ -5,9 +5,11 @@ function(Tone){
 	"use strict";
 
 	/**
-	 *  @class  the AMSynth is an amplitude modulation synthesizer
-	 *          composed of two MonoSynths where one MonoSynth is the 
-	 *          carrier and the second is the modulator.
+	 *  @class  AMSynth uses the output of one Tone.MonoSynth to modulate the
+	 *          amplitude of another Tone.MonoSynth. The harmonicity (the ratio between
+	 *          the two signals) affects the timbre of the output signal the most.
+	 *          Read more about Amplitude Modulation Synthesis on 
+	 *          <a href="http://www.soundonsound.com/sos/mar00/articles/synthsecrets.htm" target="_blank">SoundOnSound</a>. 
 	 *
 	 *  @constructor
 	 *  @extends {Tone.Monophonic}

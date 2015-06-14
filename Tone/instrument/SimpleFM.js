@@ -4,8 +4,10 @@ function(Tone){
 	"use strict";
 
 	/**
-	 *  @class  SimpleFM is composed of two SimpleSynths where one SimpleSynth is the 
-	 *          carrier and the second is the modulator.
+	 *  @class  SimpleFM is composed of two Tone.SimpleSynths where one Tone.SimpleSynth modulates
+	 *          the frequency of a second Tone.SimpleSynth. A lot of spectral content 
+	 *          can be acheived using the modulationIndex parameter. Read more about
+	 *          Frequency Modulation Synthesis on <a href="http://www.soundonsound.com/sos/apr00/articles/synthsecrets.htm">SoundOnSound</a>
 	 *
 	 *  @constructor
 	 *  @extends {Tone.Monophonic}
@@ -49,10 +51,14 @@ function(Tone){
 		this.harmonicity.units = Tone.Type.Positive;
 
 		/**
-		 *	@type {Tone.Multiply}
-		 *	@private
+		 *  The modulation index which is in essence the depth or amount of the modulation. In other terms it is the 
+		 *  ratio of the frequency of the modulating signal (mf) to the amplitude of the 
+		 *  modulating signal (ma) -- as in ma/mf. 
+		 *	@type {Positive}
+		 *	@signal
 		 */
-		this._modulationIndex = new Tone.Multiply(options.modulationIndex);
+		this.modulationIndex = new Tone.Multiply(options.modulationIndex);
+		this.modulationIndex.units = Tone.Type.Positive;
 
 		/**
 		 *  the node where the modulation happens
@@ -138,23 +144,6 @@ function(Tone){
 		this.modulator.triggerRelease(time);
 		return this;
 	};
-
-	/**
-	 * The modulation index which is in essence the depth or amount of the modulation. In other terms it is the 
-	 *  ratio of the frequency of the modulating signal (mf) to the amplitude of the 
-	 *  modulating signal (ma) -- as in ma/mf. 
-	 * @memberOf Tone.SimpleFM#
-	 * @type {number}
-	 * @name modulationIndex
-	 */
-	Object.defineProperty(Tone.SimpleFM.prototype, "modulationIndex", {
-		get : function(){
-			return this._modulationIndex.value;
-		},
-		set : function(mod){
-			this._modulationIndex.value = mod;
-		}
-	});
 
 	/**
 	 *  clean up

@@ -4,8 +4,8 @@ function(Tone){
 	"use strict";
 
 	/**
-	 *  @class  Creates a polyphonic synthesizer out of 
-	 *          the monophonic voice which is passed in. 
+	 *  @class  Tone.PolySynth handles voice creation and allocation for any
+	 *          instruments passed in as the second paramter. 
 	 *
 	 *  @constructor
 	 *  @extends {Tone.Instrument}
@@ -13,8 +13,10 @@ function(Tone){
 	 *  @param {function} [voice=Tone.MonoSynth] the constructor of the voices
 	 *                                            uses Tone.MonoSynth by default
 	 *  @example
-	 *  //a polysynth composed of 6 Voices of MonoSynth
-	 *  var synth = new Tone.PolySynth(6, Tone.MonoSynth);
+	 * //a polysynth composed of 6 Voices of MonoSynth
+	 * var synth = new Tone.PolySynth(6, Tone.MonoSynth);
+	 * //set the attributes using the set interface
+	 * synth.set("detune", -1200);
 	 */
 	Tone.PolySynth = function(){
 

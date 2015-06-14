@@ -5,8 +5,9 @@ function(Tone){
 	"use strict";
 
 	/**
-	 *  @class  the NoiseSynth is a single oscillator, monophonic synthesizer
-	 *          with a filter, and two envelopes (on the filter and the amplitude)
+	 *  @class  Tone.NoiseSynth is composed of a noise generator, one filter, and two envelopes.
+	 *          The amplitude of the Tone.Noise and the cutoff frequency of the 
+	 *          Tone.Filter are controlled by Tone.Envelopes. 
 	 *
 	 *  @constructor
 	 *  @extends {Tone.Instrument}

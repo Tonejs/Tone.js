@@ -4,8 +4,10 @@ function(Tone){
 	"use strict";
 
 	/**
-	 *  @class  the FMSynth is composed of two MonoSynths where one MonoSynth is the 
-	 *          carrier and the second is the modulator.
+	 *  @class  FMSynth is composed of two Tone.MonoSynths where one Tone.MonoSynth modulates
+	 *          the frequency of a second Tone.MonoSynth. A lot of spectral content 
+	 *          can be acheived using the modulationIndex parameter. Read more about
+	 *          Frequency Modulation Synthesis on <a href="http://www.soundonsound.com/sos/apr00/articles/synthsecrets.htm">SoundOnSound</a>
 	 *
 	 *  @constructor
 	 *  @extends {Tone.Monophonic}
@@ -49,12 +51,14 @@ function(Tone){
 		this.harmonicity.units = Tone.Type.Positive;
 
 		/**
-		 *  
-		 *
-		 *	@type {Tone.Multiply}
-		 *	@private
+		 *  The modulation index which is in essence the depth or amount of the modulation. In other terms it is the 
+		 *  ratio of the frequency of the modulating signal (mf) to the amplitude of the 
+		 *  modulating signal (ma) -- as in ma/mf. 
+		 *	@type {Positive}
+		 *	@signal
 		 */
-		this._modulationIndex = new Tone.Multiply(options.modulationIndex);
+		this.modulationIndex = new Tone.Multiply(options.modulationIndex);
+		this.modulationIndex.units = Tone.Type.Positive;
 
 		/**
 		 *  the node where the modulation happens
@@ -66,7 +70,7 @@ function(Tone){
 		//control the two voices frequency
 		this.frequency.connect(this.carrier.frequency);
 		this.frequency.chain(this.harmonicity, this.modulator.frequency);
-		this.frequency.chain(this._modulationIndex, this._modulationNode);
+		this.frequency.chain(this.modulationIndex, this._modulationNode);
 		this.modulator.connect(this._modulationNode.gain);
 		this._modulationNode.gain.value = 0;
 		this._modulationNode.connect(this.carrier.frequency);
@@ -160,23 +164,6 @@ function(Tone){
 	};
 
 	/**
-	 * The modulation index which is in essence the depth or amount of the modulation. In other terms it is the 
-	 *  ratio of the frequency of the modulating signal (mf) to the amplitude of the 
-	 *  modulating signal (ma) -- as in ma/mf. 
-	 * @memberOf Tone.FMSynth#
-	 * @type {number}
-	 * @name modulationIndex
-	 */
-	Object.defineProperty(Tone.FMSynth.prototype, "modulationIndex", {
-		get : function(){
-			return this._modulationIndex.value;
-		},
-		set : function(mod){
-			this._modulationIndex.value = mod;
-		}
-	});
-
-	/**
 	 *  clean up
 	 *  @returns {Tone.FMSynth} this
 	 */
@@ -189,8 +176,8 @@ function(Tone){
 		this.modulator = null;
 		this.frequency.dispose();
 		this.frequency = null;
-		this._modulationIndex.dispose();
-		this._modulationIndex = null;
+		this.modulationIndex.dispose();
+		this.modulationIndex = null;
 		this.harmonicity.dispose();
 		this.harmonicity = null;
 		this._modulationNode.disconnect();

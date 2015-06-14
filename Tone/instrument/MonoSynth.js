@@ -5,8 +5,9 @@ function(Tone){
 	"use strict";
 
 	/**
-	 *  @class  the MonoSynth is a single oscillator, monophonic synthesizer
-	 *          with a filter, and two envelopes (on the filter and the amplitude).
+	 *  @class  Tone.MonoSynth is composed of one oscillator, one filter, and two envelopes.
+	 *          The amplitude of the Tone.Oscillator and the cutoff frequency of the 
+	 *          Tone.Filter are controlled by Tone.Envelopes. 
 	 *          
 	 *  @constructor
 	 *  @extends {Tone.Monophonic}

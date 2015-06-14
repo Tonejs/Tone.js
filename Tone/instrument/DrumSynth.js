@@ -5,7 +5,7 @@ function(Tone){
 	"use strict";
 
 	/**
-	 *  @class  DrumSynth makes kick and tom sounds using a single oscillator
+	 *  @class  Tone.DrumSynth makes kick and tom sounds using a single oscillator
 	 *          with an amplitude envelope and frequency ramp.
 	 *
 	 *  @constructor

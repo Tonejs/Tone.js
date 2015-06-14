@@ -3,13 +3,15 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/source/Noise", "To
 	"use strict";
 
 	/**
-	 *  @class Karplus-String string synthesis. 
+	 *  @class Karplus-String string synthesis. Often out of tune. 
+	 *         Will change when the AudioWorkerNode is available across
+	 *         browsers. 
 	 *  
 	 *  @constructor
 	 *  @extends {Tone.Instrument}
 	 *  @param {Object} [options] see the defaults
 	 *  @example
-	 *  var plucky = new Tone.PluckSynth();
+	 * var plucky = new Tone.PluckSynth();
 	 */
 	Tone.PluckSynth = function(options){
 

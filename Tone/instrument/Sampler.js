@@ -14,15 +14,15 @@ function(Tone){
 	 *  @param {Object|string} urls the urls of the audio file
 	 *  @param {Object} [options] the options object for the synth
 	 *  @example
-	 *  var sampler = new Sampler({
-	 *  	A : {
-	 *  		1 : {"./audio/casio/A1.mp3",
-	 *  		2 : "./audio/casio/A2.mp3",
-	 *  	},
-	 *  	"B.1" : "./audio/casio/B1.mp3",
-	 *  });
-	 *  //...once samples have loaded
-	 *  sampler.triggerAttack("A.1", time, velocity);
+	 * var sampler = new Sampler({
+	 * 	A : {
+	 * 		1 : {"./audio/casio/A1.mp3",
+	 * 		2 : "./audio/casio/A2.mp3",
+	 * 	},
+	 * 	"B.1" : "./audio/casio/B1.mp3",
+	 * });
+	 * //...once samples have loaded
+	 * sampler.triggerAttack("A.1", time, velocity);
 	 */
 	Tone.Sampler = function(urls, options){
 
