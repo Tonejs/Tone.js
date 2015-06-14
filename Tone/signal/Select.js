@@ -47,7 +47,7 @@ define(["Tone/core/Tone", "Tone/signal/Equal", "Tone/signal/Signal"], function(T
 	 *  open one of the inputs and close the other
 	 *  @param {number} which open one of the gates (closes the other)
 	 *  @param {Time=} time the time when the switch will open
-	 *  @returns {Tone.Select} `this`
+	 *  @returns {Tone.Select} this
 	 *  @example
 	 *  //open input 1 in a half second from now
 	 *  sel.select(1, "+0.5");
@@ -61,7 +61,7 @@ define(["Tone/core/Tone", "Tone/signal/Equal", "Tone/signal/Signal"], function(T
 
 	/**
 	 *  dispose method
-	 *  @returns {Tone.Select} `this`
+	 *  @returns {Tone.Select} this
 	 */
 	Tone.Select.prototype.dispose = function(){
 		this._writable("gate");

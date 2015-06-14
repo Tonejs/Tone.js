@@ -53,7 +53,7 @@ define(["Tone/core/Tone", "Tone/signal/SignalBase"], function(Tone){
 	 *                                    The mapping function should take two arguments: 
 	 *                                    the first is the value at the current position 
 	 *                                    and the second is the array position
-	 *  @returns {Tone.WaveShaper} `this`
+	 *  @returns {Tone.WaveShaper} this
 	 */
 	Tone.WaveShaper.prototype.setMap = function(mapping){
 		for (var i = 0, len = this._curve.length; i < len; i++){
@@ -112,7 +112,7 @@ define(["Tone/core/Tone", "Tone/signal/SignalBase"], function(Tone){
 
 	/**
 	 *  clean up
-	 *  @returns {Tone.WaveShaper} `this`
+	 *  @returns {Tone.WaveShaper} this
 	 */
 	Tone.WaveShaper.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);

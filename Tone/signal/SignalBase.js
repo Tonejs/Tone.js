@@ -23,7 +23,7 @@ define(["Tone/core/Tone"], function(Tone){
 	 *  @param {AudioParam|AudioNode|Tone.Signal|Tone} node 
 	 *  @param {number} [outputNumber=0] 
 	 *  @param {number} [inputNumber=0] 
-	 *  @returns {Tone.SignalBase} `this`
+	 *  @returns {Tone.SignalBase} this
 	 */
 	Tone.SignalBase.prototype.connect = function(node, outputNumber, inputNumber){
 		//zero it out so that the signal can have full control

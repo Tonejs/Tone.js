@@ -101,7 +101,7 @@ function(Tone){
 
 	/**
 	 *  clean up
-	 *  @returns {Tone.Panner} `this`
+	 *  @returns {Tone.Panner} this
 	 */
 	Tone.Panner.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);

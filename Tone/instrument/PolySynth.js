@@ -80,7 +80,7 @@ function(Tone){
 	 *                                             over the array to play each of the notes
 	 *  @param  {Time} [time=now]  the start time of the note
 	 *  @param {number} [velocity=1] the velocity of the note
-	 *  @returns {Tone.PolySynth} `this`
+	 *  @returns {Tone.PolySynth} this
 	 */
 	Tone.PolySynth.prototype.triggerAttack = function(value, time, velocity){
 		if (!Array.isArray(value)){
@@ -109,7 +109,7 @@ function(Tone){
 	 *  @param  {Time} duration the duration of the note
 	 *  @param  {Time} [time=now]     if no time is given, defaults to now
 	 *  @param  {number} [velocity=1] the velocity of the attack (0-1)
-	 *  @returns {Tone.PolySynth} `this`
+	 *  @returns {Tone.PolySynth} this
 	 */
 	Tone.PolySynth.prototype.triggerAttackRelease = function(value, duration, time, velocity){
 		time = this.toSeconds(time);
@@ -124,7 +124,7 @@ function(Tone){
 	 *                                             if the value is an array, it will iterate
 	 *                                             over the array to play each of the notes
 	 *  @param  {Time} [time=now]  the release time of the note
-	 *  @returns {Tone.PolySynth} `this`
+	 *  @returns {Tone.PolySynth} this
 	 */
 	Tone.PolySynth.prototype.triggerRelease = function(value, time){
 		if (!Array.isArray(value)){
@@ -149,7 +149,7 @@ function(Tone){
 	 *  @param {Object|string} params
 	 *  @param {number=} value
 	 *  @param {Time=} rampTime
-	 *  @returns {Tone.PolySynth} `this`
+	 *  @returns {Tone.PolySynth} this
 	 */
 	Tone.PolySynth.prototype.set = function(params, value, rampTime){
 		for (var i = 0; i < this.voices.length; i++){
@@ -169,7 +169,7 @@ function(Tone){
 
 	/**
 	 *  @param {string} presetName the preset name
-	 *  @returns {Tone.PolySynth} `this`
+	 *  @returns {Tone.PolySynth} this
 	 */
 	Tone.PolySynth.prototype.setPreset = function(presetName){
 		for (var i = 0; i < this.voices.length; i++){
@@ -180,7 +180,7 @@ function(Tone){
 
 	/**
 	 *  clean up
-	 *  @returns {Tone.PolySynth} `this`
+	 *  @returns {Tone.PolySynth} this
 	 */
 	Tone.PolySynth.prototype.dispose = function(){
 		Tone.Instrument.prototype.dispose.call(this);

@@ -113,7 +113,7 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Master"], function(T
 	/**
 	 *  Start the source at the time.
 	 *  @param  {Time} [time=now]
-	 *  @returns {Tone.Source} `this`
+	 *  @returns {Tone.Source} this
 	 *  @example
 	 *  source.start("+0.5"); //starts the source 0.5 seconds from now
 	 */
@@ -130,7 +130,7 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Master"], function(T
 	/**
 	 * 	stop the source
 	 *  @param  {Time} [time=now]
-	 *  @returns {Tone.Source} `this`
+	 *  @returns {Tone.Source} this
 	 *  @example
 	 *  source.stop(); // stops the source immediately
 	 */
@@ -157,7 +157,7 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Master"], function(T
  	 *  @private
  	 *  @abstract
 	 *  @param  {Time} time 
-	 *  @returns {Tone.Source} `this`
+	 *  @returns {Tone.Source} this
 	 */
 	Tone.Source.prototype.pause = function(time){
 		//if there is no pause, just stop it
@@ -172,7 +172,7 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Master"], function(T
 	 *
 	 *  @param {Time} [delay=0] Delay time before starting the source after the
 	 *                               Transport has started. 
-	 *  @returns {Tone.Source} `this`
+	 *  @returns {Tone.Source} this
 	 */
 	Tone.Source.prototype.sync = function(delay){
 		Tone.Transport.syncSource(this, delay);
@@ -181,7 +181,7 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Master"], function(T
 
 	/**
 	 *  Unsync the source to the Transport. See {@link Tone.Source#sync}
-	 *  @returns {Tone.Source} `this`
+	 *  @returns {Tone.Source} this
 	 */
 	Tone.Source.prototype.unsync = function(){
 		Tone.Transport.unsyncSource(this);
@@ -190,7 +190,7 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Master"], function(T
 
 	/**
 	 *	clean up
-	 *  @return {Tone.Source} `this`
+	 *  @return {Tone.Source} this
 	 */
 	Tone.Source.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);

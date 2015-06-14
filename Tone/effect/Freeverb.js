@@ -122,7 +122,7 @@ function(Tone){
 
 	/**
 	 *  clean up
-	 *  @returns {Tone.Freeverb} `this`
+	 *  @returns {Tone.Freeverb} this
 	 */
 	Tone.Freeverb.prototype.dispose = function(){
 		Tone.StereoEffect.prototype.dispose.call(this);

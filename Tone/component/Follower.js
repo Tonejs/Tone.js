@@ -160,7 +160,7 @@ function(Tone){
 
 	/**
 	 *  dispose
-	 *  @returns {Tone.Follower} `this`
+	 *  @returns {Tone.Follower} this
 	 */
 	Tone.Follower.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);

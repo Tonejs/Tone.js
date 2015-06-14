@@ -41,7 +41,7 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/signal/Signal"], f
 	 *  @param  {Frequency} note     the note
 	 *  @param  {Time} [time=now]     the time, if not given is now
 	 *  @param  {number} [velocity=1] velocity defaults to 1
-	 *  @returns {Tone.Monophonic} `this`
+	 *  @returns {Tone.Monophonic} this
 	 */
 	Tone.Monophonic.prototype.triggerAttack = function(note, time, velocity) {
 		time = this.toSeconds(time);
@@ -53,7 +53,7 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/signal/Signal"], f
 	/**
 	 *  trigger the release portion of the envelope
 	 *  @param  {Time} [time=now] if no time is given, the release happens immediatly
-	 *  @returns {Tone.Monophonic} `this`
+	 *  @returns {Tone.Monophonic} this
 	 */
 	Tone.Monophonic.prototype.triggerRelease = function(time){
 		this.triggerEnvelopeRelease(time);
@@ -65,7 +65,7 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/signal/Signal"], f
 	 *  @abstract
 	 *  @param {Time} [time=now] the time the attack should happen
 	 *  @param {number} [velocity=1] the velocity of the envelope
-	 *  @returns {Tone.Monophonic} `this`
+	 *  @returns {Tone.Monophonic} this
 	 */	
 	Tone.Monophonic.prototype.triggerEnvelopeAttack = function() {};
 
@@ -74,7 +74,7 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/signal/Signal"], f
 	 *  @abstract
 	 *  @param {Time} [time=now] the time the attack should happen
 	 *  @param {number} [velocity=1] the velocity of the envelope
-	 *  @returns {Tone.Monophonic} `this`
+	 *  @returns {Tone.Monophonic} this
 	 */	
 	Tone.Monophonic.prototype.triggerEnvelopeRelease = function() {};
 
@@ -83,7 +83,7 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/signal/Signal"], f
 	 *  @param {Frequency} note if the note is a string, it will be 
 	 *                              parsed as (NoteName)(Octave) i.e. A4, C#3, etc
 	 *                              otherwise it will be considered as the frequency
-	 *  @returns {Tone.Monophonic} `this`
+	 *  @returns {Tone.Monophonic} this
 	 */
 	Tone.Monophonic.prototype.setNote = function(note, time){
 		time = this.toSeconds(time);

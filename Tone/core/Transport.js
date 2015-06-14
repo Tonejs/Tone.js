@@ -502,7 +502,7 @@ function(Tone){
 	 *  
 	 *  @param  {Time} time
 	 *  @param  {Time=} offset the offset position to start
-	 *  @returns {Tone.Transport} `this`
+	 *  @returns {Tone.Transport} this
 	 */
 	Tone.Transport.prototype.start = function(time, offset){
 		if (this.state === Tone.State.Stopped || this.state === Tone.State.Paused){
@@ -527,7 +527,7 @@ function(Tone){
 	 *  stop the transport and all sources synced to the transport
 	 *  
 	 *  @param  {Time} time
-	 *  @returns {Tone.Transport} `this`
+	 *  @returns {Tone.Transport} this
 	 */
 	Tone.Transport.prototype.stop = function(time){
 		if (this.state === Tone.State.Started || this.state === Tone.State.Paused){
@@ -559,7 +559,7 @@ function(Tone){
 	 *  pause the transport and all sources synced to the transport
 	 *  
 	 *  @param  {Time} time
-	 *  @returns {Tone.Transport} `this`
+	 *  @returns {Tone.Transport} this
 	 */
 	Tone.Transport.prototype.pause = function(time){
 		if (this.state === Tone.State.Started){
@@ -630,7 +630,7 @@ function(Tone){
 	 *  shorthand loop setting
 	 *  @param {Time} startPosition 
 	 *  @param {Time} endPosition   
-	 *  @returns {Tone.Transport} `this`
+	 *  @returns {Tone.Transport} this
 	 */
 	Tone.Transport.prototype.setLoopPoints = function(startPosition, endPosition){
 		this.loopStart = startPosition;
@@ -707,7 +707,7 @@ function(Tone){
 	 *  Sync a source to the transport so that 
 	 *  @param  {Tone.Source} source the source to sync to the transport
 	 *  @param {Time} delay (optionally) start the source with a delay from the transport
-	 *  @returns {Tone.Transport} `this`
+	 *  @returns {Tone.Transport} this
 	 */
 	Tone.Transport.prototype.syncSource = function(source, startDelay){
 		SyncedSources.push({
@@ -721,7 +721,7 @@ function(Tone){
 	 *  remove the source from the list of Synced Sources
 	 *  
 	 *  @param  {Tone.Source} source [description]
-	 *  @returns {Tone.Transport} `this`
+	 *  @returns {Tone.Transport} this
 	 */
 	Tone.Transport.prototype.unsyncSource = function(source){
 		for (var i = 0; i < SyncedSources.length; i++){
@@ -741,7 +741,7 @@ function(Tone){
 	 *  @param {number=} ratio Optionally pass in the ratio between
 	 *                         the two signals. Otherwise it will be computed
 	 *                         based on their current values. 
-	 *  @returns {Tone.Transport} `this`
+	 *  @returns {Tone.Transport} this
 	 */
 	Tone.Transport.prototype.syncSignal = function(signal, ratio){
 		if (!ratio){
@@ -767,7 +767,7 @@ function(Tone){
 	/**
 	 *  Unsyncs a previously synced signal from the transport's control
 	 *  @param  {Tone.Signal} signal 
-	 *  @returns {Tone.Transport} `this`
+	 *  @returns {Tone.Transport} this
 	 */
 	Tone.Transport.prototype.unsyncSignal = function(signal){
 		for (var i = 0; i < SyncedSignals.length; i++){
@@ -783,7 +783,7 @@ function(Tone){
 
 	/**
 	 *  clean up
-	 *  @returns {Tone.Transport} `this`
+	 *  @returns {Tone.Transport} this
 	 */
 	Tone.Transport.prototype.dispose = function(){
 		this._clock.dispose();

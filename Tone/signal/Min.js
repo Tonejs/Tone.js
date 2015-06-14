@@ -51,7 +51,7 @@ define(["Tone/core/Tone", "Tone/signal/LessThan", "Tone/signal/IfThenElse", "Ton
 
 	/**
 	 *  clean up
-	 *  @returns {Tone.Min} `this`
+	 *  @returns {Tone.Min} this
 	 */
 	Tone.Min.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);

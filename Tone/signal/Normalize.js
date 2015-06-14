@@ -93,7 +93,7 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Multiply"], function(T
 
 	/**
 	 *  clean up
-	 *  @returns {Tone.Normalize} `this`
+	 *  @returns {Tone.Normalize} this
 	 */
 	Tone.Normalize.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);

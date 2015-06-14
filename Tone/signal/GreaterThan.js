@@ -42,7 +42,7 @@ define(["Tone/core/Tone", "Tone/signal/GreaterThanZero", "Tone/signal/Subtract",
 
 	/**
 	 *  dispose method
-	 *  @returns {Tone.GreaterThan} `this`
+	 *  @returns {Tone.GreaterThan} this
 	 */
 	Tone.GreaterThan.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);

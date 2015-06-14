@@ -74,7 +74,7 @@ define(["Tone/core/Tone", "Tone/effect/MidSideEffect", "Tone/signal/Signal",
 
 	/**
 	 *  clean up
-	 *  @returns {Tone.StereoWidener} `this`
+	 *  @returns {Tone.StereoWidener} this
 	 */
 	Tone.StereoWidener.prototype.dispose = function(){
 		Tone.MidSideEffect.prototype.dispose.call(this);

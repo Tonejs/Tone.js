@@ -160,7 +160,7 @@ function(Tone){
 
 	/**
 	 *  clean up
-	 *  @returns {Tone.Phaser} `this`
+	 *  @returns {Tone.Phaser} this
 	 */
 	Tone.Phaser.prototype.dispose = function(){
 		Tone.StereoEffect.prototype.dispose.call(this);

@@ -30,7 +30,7 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 
 	/**
 	 *  clean up
-	 *  @returns {Tone.EqualPowerGain} `this`
+	 *  @returns {Tone.EqualPowerGain} this
 	 */
 	Tone.EqualPowerGain.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);

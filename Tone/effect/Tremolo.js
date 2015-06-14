@@ -73,7 +73,7 @@ define(["Tone/core/Tone", "Tone/component/LFO", "Tone/effect/Effect"], function(
 	/**
 	 * Start the tremolo.
 	 * @param {Time} [time=now] When the tremolo begins.
-	 * @returns {Tone.Tremolo} `this`
+	 * @returns {Tone.Tremolo} this
 	 */
 	Tone.Tremolo.prototype.start = function(time){
 		this._lfo.start(time);
@@ -83,7 +83,7 @@ define(["Tone/core/Tone", "Tone/component/LFO", "Tone/effect/Effect"], function(
 	/**
 	 * Stop the tremolo.
 	 * @param {Time} [time=now] the tremolo stops.
-	 * @returns {Tone.Tremolo} `this`
+	 * @returns {Tone.Tremolo} this
 	 */
 	Tone.Tremolo.prototype.stop = function(time){
 		this._lfo.stop(time);
@@ -94,7 +94,7 @@ define(["Tone/core/Tone", "Tone/component/LFO", "Tone/effect/Effect"], function(
 	 * Sync the effect to the transport.
 	 * @param {Time} [delay=0] Delay time before starting the effect after the
 	 *                              Transport has started. 
-	 * @returns {Tone.AutoFilter} `this`
+	 * @returns {Tone.AutoFilter} this
 	 */
 	Tone.Tremolo.prototype.sync = function(delay){
 		this._lfo.sync(delay);
@@ -103,7 +103,7 @@ define(["Tone/core/Tone", "Tone/component/LFO", "Tone/effect/Effect"], function(
 
 	/**
 	 * Unsync the filter from the transport
-	 * @returns {Tone.Tremolo} `this`
+	 * @returns {Tone.Tremolo} this
 	 */
 	Tone.Tremolo.prototype.unsync = function(){
 		this._lfo.unsync();
@@ -127,7 +127,7 @@ define(["Tone/core/Tone", "Tone/component/LFO", "Tone/effect/Effect"], function(
 
 	/**
 	 *  clean up
-	 *  @returns {Tone.Tremolo} `this`
+	 *  @returns {Tone.Tremolo} this
 	 */
 	Tone.Tremolo.prototype.dispose = function(){
 		Tone.Effect.prototype.dispose.call(this);

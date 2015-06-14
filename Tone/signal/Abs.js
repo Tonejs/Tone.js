@@ -47,7 +47,7 @@ function(Tone){
 
 	/**
 	 *  dispose method
-	 *  @returns {Tone.Abs} `this`
+	 *  @returns {Tone.Abs} this
 	 */
 	Tone.Abs.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);

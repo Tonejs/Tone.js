@@ -157,7 +157,7 @@ define(["Tone/core/Tone", "Tone/core/Master"], function(Tone){
 
 	/**
 	 *  clean up
-	 *  @returns {Tone.Meter} `this`
+	 *  @returns {Tone.Meter} this
 	 */
 	Tone.Meter.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);

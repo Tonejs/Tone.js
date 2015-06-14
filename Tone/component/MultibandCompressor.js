@@ -95,7 +95,7 @@ define(["Tone/core/Tone", "Tone/component/MultibandSplit", "Tone/component/Compr
 
 	/**
 	 *  clean up
-	 *  @returns {Tone.MultibandCompressor} `this`
+	 *  @returns {Tone.MultibandCompressor} this
 	 */
 	Tone.MultibandCompressor.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);

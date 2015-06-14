@@ -45,7 +45,7 @@ function(Tone){
 
 	/**
 	 *  dispose method
-	 *  @returns {Tone.GreaterThanZero} `this`
+	 *  @returns {Tone.GreaterThanZero} this
 	 */
 	Tone.GreaterThanZero.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);

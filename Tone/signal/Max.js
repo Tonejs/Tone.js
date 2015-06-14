@@ -52,7 +52,7 @@ define(["Tone/core/Tone", "Tone/signal/GreaterThan", "Tone/signal/IfThenElse", "
 
 	/**
 	 *  clean up
-	 *  @returns {Tone.Max} `this`
+	 *  @returns {Tone.Max} this
 	 */
 	Tone.Max.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);

@@ -63,7 +63,7 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 
 	/**
 	 *  clean up
-	 *  @returns {Tone.Pow} `this`
+	 *  @returns {Tone.Pow} this
 	 */
 	Tone.Pow.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);

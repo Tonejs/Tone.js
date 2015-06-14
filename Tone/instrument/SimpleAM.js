@@ -117,7 +117,7 @@ function(Tone){
 	 *  
 	 *  @param  {Time} [time=now] the time the note will occur
 	 *  @param {number} [velocity=1] the velocity of the note
-	 *  @returns {Tone.SimpleAM} `this`
+	 *  @returns {Tone.SimpleAM} this
 	 */
 	Tone.SimpleAM.prototype.triggerEnvelopeAttack = function(time, velocity){
 		//the port glide
@@ -132,7 +132,7 @@ function(Tone){
 	 *  trigger the release portion of the note
 	 *  
 	 *  @param  {Time} [time=now] the time the note will release
-	 *  @returns {Tone.SimpleAM} `this`
+	 *  @returns {Tone.SimpleAM} this
 	 */
 	Tone.SimpleAM.prototype.triggerEnvelopeRelease = function(time){
 		this.carrier.triggerRelease(time);
@@ -157,7 +157,7 @@ function(Tone){
 
 	/**
 	 *  clean up
-	 *  @returns {Tone.SimpleAM} `this`
+	 *  @returns {Tone.SimpleAM} this
 	 */
 	Tone.SimpleAM.prototype.dispose = function(){
 		Tone.Monophonic.prototype.dispose.call(this);

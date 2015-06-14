@@ -121,7 +121,7 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 
 	/**
 	 *  dispose all the components
-	 *  @returns {Tone.Noise} `this`
+	 *  @returns {Tone.Noise} this
 	 */
 	Tone.Noise.prototype.dispose = function(){
 		Tone.Source.prototype.dispose.call(this);

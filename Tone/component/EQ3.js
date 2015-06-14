@@ -125,7 +125,7 @@ define(["Tone/core/Tone", "Tone/component/MultibandSplit", "Tone/signal/Signal"]
 
 	/**
 	 *  clean up
-	 *  @returns {Tone.EQ3} `this`
+	 *  @returns {Tone.EQ3} this
 	 */
 	Tone.EQ3.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);

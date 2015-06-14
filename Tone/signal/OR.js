@@ -44,7 +44,7 @@ define(["Tone/core/Tone", "Tone/signal/GreaterThanZero"], function(Tone){
 
 	/**
 	 *  clean up
-	 *  @returns {Tone.OR} `this`
+	 *  @returns {Tone.OR} this
 	 */
 	Tone.OR.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);

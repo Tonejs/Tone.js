@@ -38,7 +38,7 @@ define(["Tone/core/Tone", "Tone/component/Compressor"], function(Tone){
 
 	/**
 	 *  clean up
-	 *  @returns {Tone.Limiter} `this`
+	 *  @returns {Tone.Limiter} this
 	 */
 	Tone.Limiter.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);

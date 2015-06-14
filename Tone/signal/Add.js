@@ -50,7 +50,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	
 	/**
 	 *  dispose method
-	 *  @returns {Tone.Add} `this`
+	 *  @returns {Tone.Add} this
 	 */
 	Tone.Add.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);

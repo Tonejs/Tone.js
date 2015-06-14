@@ -76,7 +76,7 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/source/Noise", "To
 	 *  trigger the attack portion
 	 *  @param {string|number} note the note name or frequency
 	 *  @param {Time} [time=now] the time of the note
-	 *  @returns {Tone.PluckSynth} `this`
+	 *  @returns {Tone.PluckSynth} this
 	 */
 	Tone.PluckSynth.prototype.triggerAttack = function(note, time) {
 		note = this.toFrequency(note);
@@ -90,7 +90,7 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/source/Noise", "To
 
 	/**
 	 *  clean up
-	 *  @returns {Tone.PluckSynth} `this`
+	 *  @returns {Tone.PluckSynth} this
 	 */
 	Tone.PluckSynth.prototype.dispose = function(){
 		Tone.Instrument.prototype.dispose.call(this);

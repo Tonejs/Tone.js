@@ -146,7 +146,7 @@ function(Tone){
 
 	/**
 	 *  Clean up method
-	 *  @return {Tone.PulseOscillator} `this`
+	 *  @return {Tone.PulseOscillator} this
 	 */
 	Tone.PulseOscillator.prototype.dispose = function(){
 		Tone.Source.prototype.dispose.call(this);

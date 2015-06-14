@@ -82,7 +82,7 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/LFO", "Tone/comp
 	/**
 	 * Start the filter.
 	 * @param {Time} [time=now] the filter begins.
-	 * @returns {Tone.AutoFilter} `this`
+	 * @returns {Tone.AutoFilter} this
 	 */
 	Tone.AutoFilter.prototype.start = function(time){
 		this._lfo.start(time);
@@ -92,7 +92,7 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/LFO", "Tone/comp
 	/**
 	 * Stop the filter.
 	 * @param {Time} [time=now] the filter stops.
-	 * @returns {Tone.AutoFilter} `this`
+	 * @returns {Tone.AutoFilter} this
 	 */
 	Tone.AutoFilter.prototype.stop = function(time){
 		this._lfo.stop(time);
@@ -103,7 +103,7 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/LFO", "Tone/comp
 	 * Sync the filter to the transport.
 	 * @param {Time} [delay=0] Delay time before starting the effect after the
 	 *                               Transport has started. 
-	 * @returns {Tone.AutoFilter} `this`
+	 * @returns {Tone.AutoFilter} this
 	 */
 	Tone.AutoFilter.prototype.sync = function(delay){
 		this._lfo.sync(delay);
@@ -112,7 +112,7 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/LFO", "Tone/comp
 
 	/**
 	 * Unsync the filter from the transport
-	 * @returns {Tone.AutoFilter} `this`
+	 * @returns {Tone.AutoFilter} this
 	 */
 	Tone.AutoFilter.prototype.unsync = function(){
 		this._lfo.unsync();
@@ -166,7 +166,7 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/LFO", "Tone/comp
 
 	/**
 	 *  clean up
-	 *  @returns {Tone.AutoFilter} `this`
+	 *  @returns {Tone.AutoFilter} this
 	 */
 	Tone.AutoFilter.prototype.dispose = function(){
 		Tone.Effect.prototype.dispose.call(this);

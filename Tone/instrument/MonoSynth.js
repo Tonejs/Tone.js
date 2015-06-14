@@ -105,7 +105,7 @@ function(Tone){
 	 *  start the attack portion of the envelope
 	 *  @param {Time} [time=now] the time the attack should start
 	 *  @param {NormalRange} [velocity=1] the velocity of the note (0-1)
-	 *  @returns {Tone.MonoSynth} `this`
+	 *  @returns {Tone.MonoSynth} this
 	 */
 	Tone.MonoSynth.prototype.triggerEnvelopeAttack = function(time, velocity){
 		//the envelopes
@@ -117,7 +117,7 @@ function(Tone){
 	/**
 	 *  start the release portion of the envelope
 	 *  @param {Time} [time=now] the time the release should start
-	 *  @returns {Tone.MonoSynth} `this`
+	 *  @returns {Tone.MonoSynth} this
 	 */
 	Tone.MonoSynth.prototype.triggerEnvelopeRelease = function(time){
 		this.envelope.triggerRelease(time);
@@ -128,7 +128,7 @@ function(Tone){
 
 	/**
 	 *  clean up
-	 *  @returns {Tone.MonoSynth} `this`
+	 *  @returns {Tone.MonoSynth} this
 	 */
 	Tone.MonoSynth.prototype.dispose = function(){
 		Tone.Monophonic.prototype.dispose.call(this);

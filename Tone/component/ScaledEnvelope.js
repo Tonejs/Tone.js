@@ -106,7 +106,7 @@ define(["Tone/core/Tone", "Tone/component/Envelope", "Tone/signal/Scale"],
 	
 	/**
 	 *  clean up
-	 *  @returns {Tone.ScaledEnvelope} `this`
+	 *  @returns {Tone.ScaledEnvelope} this
 	 */
 	Tone.ScaledEnvelope.prototype.dispose = function(){
 		Tone.Envelope.prototype.dispose.call(this);

@@ -57,7 +57,7 @@ define(["Tone/core/Tone", "Tone/core/Master", "Tone/core/Note"], function(Tone){
 	 *  @param  {Time} duration the duration of the note
 	 *  @param {Time} [time=now]     the time of the attack
 	 *  @param  {NormalRange} [velocity=1] the velocity
-	 *  @returns {Tone.Instrument} `this`
+	 *  @returns {Tone.Instrument} this
 	 */
 	Tone.Instrument.prototype.triggerAttackRelease = function(note, duration, time, velocity){
 		time = this.toSeconds(time);
@@ -69,7 +69,7 @@ define(["Tone/core/Tone", "Tone/core/Master", "Tone/core/Note"], function(Tone){
 
 	/**
 	 *  clean up
-	 *  @returns {Tone.Instrument} `this`
+	 *  @returns {Tone.Instrument} this
 	 */
 	Tone.Instrument.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);

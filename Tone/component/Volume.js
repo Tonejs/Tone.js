@@ -35,7 +35,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Master"], function(To
 
 	/**
 	 *  clean up
-	 *  @returns {Tone.Volume} `this`
+	 *  @returns {Tone.Volume} this
 	 */
 	Tone.Volume.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);

@@ -48,7 +48,7 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/signal/Signal", "Tone/sign
 
 	/**
 	 *  clean up
-	 *  @returns {Tone.FeedbackEffect} `this`
+	 *  @returns {Tone.FeedbackEffect} this
 	 */
 	Tone.FeedbackEffect.prototype.dispose = function(){
 		Tone.Effect.prototype.dispose.call(this);

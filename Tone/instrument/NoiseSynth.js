@@ -91,7 +91,7 @@ function(Tone){
 	 *  start the attack portion of the envelope
 	 *  @param {Time} [time=now] the time the attack should start
 	 *  @param {number} [velocity=1] the velocity of the note (0-1)
-	 *  @returns {Tone.NoiseSynth} `this`
+	 *  @returns {Tone.NoiseSynth} this
 	 */
 	Tone.NoiseSynth.prototype.triggerAttack = function(time, velocity){
 		//the envelopes
@@ -103,7 +103,7 @@ function(Tone){
 	/**
 	 *  start the release portion of the envelope
 	 *  @param {Time} [time=now] the time the release should start
-	 *  @returns {Tone.NoiseSynth} `this`
+	 *  @returns {Tone.NoiseSynth} this
 	 */
 	Tone.NoiseSynth.prototype.triggerRelease = function(time){
 		this.envelope.triggerRelease(time);
@@ -116,7 +116,7 @@ function(Tone){
 	 *  @param  {Time} duration the duration of the note
 	 *  @param  {Time} [time=now]     the time of the attack
 	 *  @param  {number} [velocity=1] the velocity
-	 *  @returns {Tone.NoiseSynth} `this`
+	 *  @returns {Tone.NoiseSynth} this
 	 */
 	Tone.NoiseSynth.prototype.triggerAttackRelease = function(duration, time, velocity){
 		time = this.toSeconds(time);
@@ -128,7 +128,7 @@ function(Tone){
 
 	/**
 	 *  clean up
-	 *  @returns {Tone.NoiseSynth} `this`
+	 *  @returns {Tone.NoiseSynth} this
 	 */
 	Tone.NoiseSynth.prototype.dispose = function(){
 		Tone.Instrument.prototype.dispose.call(this);

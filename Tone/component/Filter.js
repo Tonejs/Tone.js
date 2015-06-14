@@ -166,7 +166,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 
 	/**
 	 *  clean up
-	 *  @return {Tone.Filter} `this`
+	 *  @return {Tone.Filter} this
 	 */
 	Tone.Filter.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);

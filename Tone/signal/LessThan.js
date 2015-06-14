@@ -59,7 +59,7 @@ function(Tone){
 
 	/**
 	 *  dispose method
-	 *  @returns {Tone.LessThan} `this`
+	 *  @returns {Tone.LessThan} this
 	 */
 	Tone.LessThan.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);

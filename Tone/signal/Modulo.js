@@ -87,7 +87,7 @@ function(Tone){
 
 	/**
 	 * clean up
-	 *  @returns {Tone.Modulo} `this`
+	 *  @returns {Tone.Modulo} this
 	 */
 	Tone.Modulo.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);

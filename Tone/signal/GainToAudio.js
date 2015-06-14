@@ -25,7 +25,7 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper", "Tone/signal/Signal"], funct
 
 	/**
 	 *  clean up
-	 *  @returns {Tone.GainToAudio} `this`
+	 *  @returns {Tone.GainToAudio} this
 	 */
 	Tone.GainToAudio.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);

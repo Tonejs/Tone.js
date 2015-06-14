@@ -71,7 +71,7 @@ define(["Tone/core/Tone", "Tone/component/MidSideSplit", "Tone/component/MidSide
 
 	/**
 	 *  clean up
-	 *  @returns {Tone.MidSideCompressor} `this`
+	 *  @returns {Tone.MidSideCompressor} this
 	 */
 	Tone.MidSideCompressor.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);

@@ -80,7 +80,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 
 	/**
 	 *  clean up
-	 *  @returns {Tone.Compressor} `this`
+	 *  @returns {Tone.Compressor} this
 	 */
 	Tone.Compressor.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);

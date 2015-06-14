@@ -164,7 +164,7 @@ function(Tone){
 	 *                          the last sample used
 	 *  @param {Time} [time=now] the time when the note should start
 	 *  @param {number} [velocity=1] the velocity of the note
-	 *  @returns {Tone.Sampler} `this`
+	 *  @returns {Tone.Sampler} this
 	 */
 	Tone.Sampler.prototype.triggerAttack = function(name, time, velocity){
 		time = this.toSeconds(time);
@@ -181,7 +181,7 @@ function(Tone){
 	 *  start the release portion of the sample
 	 *  
 	 *  @param {Time} [time=now] the time when the note should release
-	 *  @returns {Tone.Sampler} `this`
+	 *  @returns {Tone.Sampler} this
 	 */
 	Tone.Sampler.prototype.triggerRelease = function(time){
 		time = this.toSeconds(time);
@@ -252,7 +252,7 @@ function(Tone){
 
 	/**
 	 *  clean up
-	 *  @returns {Tone.Sampler} `this`
+	 *  @returns {Tone.Sampler} this
 	 */
 	Tone.Sampler.prototype.dispose = function(){
 		Tone.Instrument.prototype.dispose.call(this);

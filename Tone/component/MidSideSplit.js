@@ -61,7 +61,7 @@ define(["Tone/core/Tone", "Tone/signal/Expr", "Tone/signal/Signal", "Tone/compon
 
 	/**
 	 *  clean up
-	 *  @returns {Tone.MidSideSplit} `this`
+	 *  @returns {Tone.MidSideSplit} this
 	 */
 	Tone.MidSideSplit.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);

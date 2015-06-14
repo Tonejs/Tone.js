@@ -52,7 +52,7 @@ define(["Tone/core/Tone", "Tone/core/Transport"], function(Tone){
 
 	/**
 	 *  clean up
-	 *  @returns {Tone.Note} `this`
+	 *  @returns {Tone.Note} this
 	 */
 	Tone.Note.prototype.dispose = function(){ 
 		Tone.Tranport.clearTimeline(this._timelineID);

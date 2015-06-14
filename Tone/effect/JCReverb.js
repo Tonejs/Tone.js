@@ -115,7 +115,7 @@ function(Tone){
 
 	/**
 	 *  clean up
-	 *  @returns {Tone.JCReverb} `this`
+	 *  @returns {Tone.JCReverb} this
 	 */
 	Tone.JCReverb.prototype.dispose = function(){
 		Tone.StereoEffect.prototype.dispose.call(this);

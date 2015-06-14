@@ -52,7 +52,7 @@ define(["Tone/core/Tone", "Tone/effect/FeedbackEffect", "Tone/signal/Signal"], f
 
 	/**
 	 *  clean up
-	 *  @returns {Tone.FeedbackDelay} `this`
+	 *  @returns {Tone.FeedbackDelay} this
 	 */
 	Tone.FeedbackDelay.prototype.dispose = function(){
 		Tone.FeedbackEffect.prototype.dispose.call(this);

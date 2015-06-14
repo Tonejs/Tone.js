@@ -79,7 +79,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Expr", "Tone/compon
 
 	/**
 	 *  clean up
-	 *  @returns {Tone.MidSideMerge} `this`
+	 *  @returns {Tone.MidSideMerge} this
 	 */
 	Tone.MidSideMerge.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);

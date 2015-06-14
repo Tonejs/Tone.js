@@ -134,7 +134,7 @@ define(function(){
 	 *  @param {Object|string} params
 	 *  @param {number=} value
 	 *  @param {Time=} rampTime
-	 *  @returns {Tone} `this`
+	 *  @returns {Tone} this
 	 *  @example
 	 *  //set values using an object
 	 *  filter.set({
@@ -274,7 +274,7 @@ define(function(){
 	/**
 	 *  Set the preset if it exists. 
 	 *  @param {string} presetName the name of the preset
-	 *  @returns {Tone} `this`
+	 *  @returns {Tone} this
 	 */
 	Tone.prototype.setPreset = function(presetName){
 		if (!this.isUndef(this.preset) && this.preset.hasOwnProperty(presetName)){
@@ -335,7 +335,7 @@ define(function(){
 
 	/**
 	 *  disconnect and dispose
-	 *  @returns {Tone} `this`
+	 *  @returns {Tone} this
 	 */
 	Tone.prototype.dispose = function(){
 		if (!this.isUndef(this.input)){
@@ -367,7 +367,7 @@ define(function(){
 	 *  until 'dispose' is explicitly called
 	 *
 	 *  use carefully. circumvents JS and WebAudio's normal Garbage Collection behavior
-	 *  @returns {Tone} `this`
+	 *  @returns {Tone} this
 	 */
 	Tone.prototype.noGC = function(){
 		this.output.connect(_silentNode);
@@ -384,7 +384,7 @@ define(function(){
 	 *  @param  {Tone | AudioParam | AudioNode} unit 
 	 *  @param {number} [outputNum=0] optionally which output to connect from
 	 *  @param {number} [inputNum=0] optionally which input to connect to
-	 *  @returns {Tone} `this`
+	 *  @returns {Tone} this
 	 */
 	Tone.prototype.connect = function(unit, outputNum, inputNum){
 		if (Array.isArray(this.output)){
@@ -398,7 +398,7 @@ define(function(){
 
 	/**
 	 *  disconnect the output
-	 *  @returns {Tone} `this`
+	 *  @returns {Tone} this
 	 */
 	Tone.prototype.disconnect = function(outputNum){
 		if (Array.isArray(this.output)){
@@ -413,7 +413,7 @@ define(function(){
 	/**
 	 *  connect together all of the arguments in series
 	 *  @param {...AudioParam|Tone|AudioNode}
-	 *  @returns {Tone} `this`
+	 *  @returns {Tone} this
 	 */
 	Tone.prototype.connectSeries = function(){
 		if (arguments.length > 1){
@@ -430,7 +430,7 @@ define(function(){
 	/**
 	 *  fan out the connection from the first argument to the rest of the arguments
 	 *  @param {...AudioParam|Tone|AudioNode}
-	 *  @returns {Tone} `this`
+	 *  @returns {Tone} this
 	 */
 	Tone.prototype.connectParallel = function(){
 		var connectFrom = arguments[0];
@@ -449,7 +449,7 @@ define(function(){
 	 *  //connect a node to an effect, panVol and then to the master output
 	 *  node.chain(effect, panVol, Tone.Master);
 	 *  @param {...AudioParam|Tone|AudioNode} nodes
-	 *  @returns {Tone} `this`
+	 *  @returns {Tone} this
 	 */
 	Tone.prototype.chain = function(){
 		if (arguments.length > 0){
@@ -466,7 +466,7 @@ define(function(){
 	/**
 	 *  connect the output of this node to the rest of the nodes in parallel.
 	 *  @param {...AudioParam|Tone|AudioNode}
-	 *  @returns {Tone} `this`
+	 *  @returns {Tone} this
 	 */
 	Tone.prototype.fan = function(){
 		if (arguments.length > 0){

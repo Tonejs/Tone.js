@@ -97,7 +97,7 @@ define(["Tone/core/Tone", "Tone/component/Follower", "Tone/signal/GreaterThan"],
 
 	/**
 	 *  dispose
-	 *  @returns {Tone.Gate} `this`
+	 *  @returns {Tone.Gate} this
 	 */
 	Tone.Gate.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);

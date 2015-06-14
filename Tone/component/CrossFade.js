@@ -79,7 +79,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Expr", "Tone/signal
 
 	/**
 	 *  clean up
-	 *  @returns {Tone.CrossFade} `this`
+	 *  @returns {Tone.CrossFade} this
 	 */
 	Tone.CrossFade.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);

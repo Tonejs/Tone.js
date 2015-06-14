@@ -115,7 +115,7 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/signal/WaveShaper"], funct
 
 	/**
 	 *  clean up
-	 *  @returns {Tone.Chebyshev} `this`
+	 *  @returns {Tone.Chebyshev} this
 	 */
 	Tone.Chebyshev.prototype.dispose = function(){
 		Tone.Effect.prototype.dispose.call(this);

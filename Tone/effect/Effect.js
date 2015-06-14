@@ -70,7 +70,7 @@ define(["Tone/core/Tone", "Tone/component/CrossFade"], function(Tone){
 
 	/**
 	 *  bypass the effect
-	 *  @returns {Tone.Effect} `this`
+	 *  @returns {Tone.Effect} this
 	 */
 	Tone.Effect.prototype.bypass = function(){
 		this.wet.value = 0;
@@ -81,7 +81,7 @@ define(["Tone/core/Tone", "Tone/component/CrossFade"], function(Tone){
 	 *  chains the effect in between the effectSend and effectReturn
 	 *  @param  {Tone} effect
 	 *  @private
-	 *  @returns {Tone.Effect} `this`
+	 *  @returns {Tone.Effect} this
 	 */
 	Tone.Effect.prototype.connectEffect = function(effect){
 		this.effectSend.chain(effect, this.effectReturn);
@@ -90,7 +90,7 @@ define(["Tone/core/Tone", "Tone/component/CrossFade"], function(Tone){
 
 	/**
 	 *  tear down
-	 *  @returns {Tone.Effect} `this`
+	 *  @returns {Tone.Effect} this
 	 */
 	Tone.Effect.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);

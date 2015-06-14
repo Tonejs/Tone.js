@@ -76,7 +76,7 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/LFO", "Tone/comp
 	/**
 	 * Start the panner.
 	 * @param {Time} [time=now] the panner begins.
-	 * @returns {Tone.AutoPanner} `this`
+	 * @returns {Tone.AutoPanner} this
 	 */
 	Tone.AutoPanner.prototype.start = function(time){
 		this._lfo.start(time);
@@ -86,7 +86,7 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/LFO", "Tone/comp
 	/**
 	 * Stop the panner.
 	 * @param {Time} [time=now] the panner stops.
-	 * @returns {Tone.AutoPanner} `this`
+	 * @returns {Tone.AutoPanner} this
 	 */
 	Tone.AutoPanner.prototype.stop = function(time){
 		this._lfo.stop(time);
@@ -97,7 +97,7 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/LFO", "Tone/comp
 	 * Sync the panner to the transport.
 	 * @param {Time} [delay=0] Delay time before starting the effect after the
 	 *                               Transport has started. 
-	 * @returns {Tone.AutoFilter} `this`
+	 * @returns {Tone.AutoFilter} this
 	 */
 	Tone.AutoPanner.prototype.sync = function(delay){
 		this._lfo.sync(delay);
@@ -106,7 +106,7 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/LFO", "Tone/comp
 
 	/**
 	 * Unsync the panner from the transport
-	 * @returns {Tone.AutoPanner} `this`
+	 * @returns {Tone.AutoPanner} this
 	 */
 	Tone.AutoPanner.prototype.unsync = function(){
 		this._lfo.unsync();
@@ -130,7 +130,7 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/LFO", "Tone/comp
 
 	/**
 	 *  clean up
-	 *  @returns {Tone.AutoPanner} `this`
+	 *  @returns {Tone.AutoPanner} this
 	 */
 	Tone.AutoPanner.prototype.dispose = function(){
 		Tone.Effect.prototype.dispose.call(this);

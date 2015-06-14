@@ -49,7 +49,7 @@ function(Tone){
 
 	/**
 	 *  dispose method
-	 *  @returns {Tone.EqualZero} `this`
+	 *  @returns {Tone.EqualZero} this
 	 */
 	Tone.EqualZero.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);

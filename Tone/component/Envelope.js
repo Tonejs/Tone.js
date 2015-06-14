@@ -237,7 +237,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Pow"], function(Ton
 	 *  @param  {Time} [time=now]
 	 *  @param {number} [velocity=1] the velocity of the envelope scales the vales.
 	 *                               number between 0-1
-	 *  @returns {Tone.Envelope} `this`
+	 *  @returns {Tone.Envelope} this
 	 *  @example
 	 *  //trigger the attack 0.5 seconds from now with a velocity of 0.2
 	 *  env.triggerAttack("+0.5", 0.2);
@@ -278,7 +278,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Pow"], function(Ton
 	/**
 	 *  Triggers the release of the envelope.
 	 *  @param  {Time} [time=now]
-	 *  @returns {Tone.Envelope} `this`
+	 *  @returns {Tone.Envelope} this
 	 *  @example
 	 *  //trigger release immediately
 	 *  env.triggerRelease();
@@ -318,7 +318,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Pow"], function(Ton
 	 *  @param {Time} duration the duration of the note
 	 *  @param {Time} [time=now] the time of the attack
 	 *  @param {number} [velocity=1] the velocity of the note
-	 *  @returns {Tone.Envelope} `this`
+	 *  @returns {Tone.Envelope} this
 	 *  @example
 	 *  //trigger the attack and then the release after 0.6 seconds.
 	 *  env.triggerAttackRelease(0.6);
@@ -338,7 +338,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Pow"], function(Ton
 
 	/**
 	 *  disconnect and dispose
-	 *  @returns {Tone.Envelope} `this`
+	 *  @returns {Tone.Envelope} this
 	 */
 	Tone.Envelope.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);

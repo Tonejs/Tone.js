@@ -71,7 +71,7 @@ function(Tone){
 
 	/**
 	 *  clean up
-	 *  @returns {Tone.PingPongDelay} `this`
+	 *  @returns {Tone.PingPongDelay} this
 	 */
 	Tone.PingPongDelay.prototype.dispose = function(){
 		Tone.StereoXFeedbackEffect.prototype.dispose.call(this);

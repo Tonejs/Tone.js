@@ -49,7 +49,7 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Negate", "Tone/signal/
 
 	/**
 	 *  clean up
-	 *  @returns {Tone.SignalBase} `this`
+	 *  @returns {Tone.SignalBase} this
 	 */
 	Tone.Subtract.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);

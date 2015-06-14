@@ -103,7 +103,7 @@ function(Tone){
 	 *  stop the oscillator
 	 *  @private
 	 *  @param  {Time} [time=now] (optional) timing parameter
-	 *  @returns {Tone.Oscillator} `this`
+	 *  @returns {Tone.Oscillator} this
 	 */
 	Tone.Oscillator.prototype._stop = function(time){
 		if (this._oscillator){
@@ -116,7 +116,7 @@ function(Tone){
 	/**
 	 *  Sync the signal to the Transport's bpm. Any changes to the transports bpm,
 	 *  will also affect the oscillators frequency. 
-	 *  @returns {Tone.Oscillator} `this`
+	 *  @returns {Tone.Oscillator} this
 	 *  @example
 	 *  Tone.Transport.bpm.value = 120;
 	 *  osc.frequency.value = 440;
@@ -132,7 +132,7 @@ function(Tone){
 	/**
 	 *  Unsync the oscillator's frequency from the Transport. 
 	 *  See {@link Tone.Oscillator#syncFrequency}.
-	 *  @returns {Tone.Oscillator} `this`
+	 *  @returns {Tone.Oscillator} this
 	 */
 	Tone.Oscillator.prototype.unsyncFrequency = function(){
 		Tone.Transport.unsyncSignal(this.frequency);
@@ -238,7 +238,7 @@ function(Tone){
 
 	/**
 	 *  dispose and disconnect
-	 *  @return {Tone.Oscillator} `this`
+	 *  @return {Tone.Oscillator} this
 	 */
 	Tone.Oscillator.prototype.dispose = function(){
 		Tone.Source.prototype.dispose.call(this);

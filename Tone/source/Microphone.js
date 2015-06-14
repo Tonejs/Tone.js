@@ -86,7 +86,7 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 
 	/**
 	 *  clean up
-	 *  @return {Tone.Microphone} `this`
+	 *  @return {Tone.Microphone} this
 	 */
 	Tone.Microphone.prototype.dispose = function() {
 		Tone.Source.prototype.dispose.call(this);

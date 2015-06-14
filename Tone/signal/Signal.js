@@ -158,7 +158,7 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 	 *  Schedules a parameter value change at the given time.
 	 *  @param {number}		value 
 	 *  @param {Time}  time 
-	 *  @returns {Tone.Signal} `this`
+	 *  @returns {Tone.Signal} this
 	 */
 	Tone.Signal.prototype.setValueAtTime = function(value, time){
 		value = this._fromUnits(value);
@@ -170,7 +170,7 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 	 *  Creates a schedule point with the current value at the current time.
 	 *
 	 *  @param {number=} now (optionally) pass the now value in
-	 *  @returns {Tone.Signal} `this`
+	 *  @returns {Tone.Signal} this
 	 */
 	Tone.Signal.prototype.setCurrentValueNow = function(now){
 		now = this.defaultArg(now, this.now());
@@ -186,7 +186,7 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 	 *  
 	 *  @param  {number} value   
 	 *  @param  {Time} endTime 
-	 *  @returns {Tone.Signal} `this`
+	 *  @returns {Tone.Signal} this
 	 */
 	Tone.Signal.prototype.linearRampToValueAtTime = function(value, endTime){
 		value = this._fromUnits(value);
@@ -200,7 +200,7 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 	 *  
 	 *  @param  {number} value   
 	 *  @param  {Time} endTime 
-	 *  @returns {Tone.Signal} `this`
+	 *  @returns {Tone.Signal} this
 	 */
 	Tone.Signal.prototype.exponentialRampToValueAtTime = function(value, endTime){
 		value = this._fromUnits(value);
@@ -216,7 +216,7 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 	 *  @param  {number} value   
 	 *  @param  {Time} rampTime the time that it takes the 
 	 *                               value to ramp from it's current value
-	 *  @returns {Tone.Signal} `this`
+	 *  @returns {Tone.Signal} this
 	 *  @example
 	 *  //exponentially ramp to the value 2 over 4 seconds. 
 	 *  signal.exponentialRampToValueNow(2, 4);
@@ -238,7 +238,7 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 	 *  @param  {number} value   
 	 *  @param  {Time} rampTime the time that it takes the 
 	 *                               value to ramp from it's current value
-	 *  @returns {Tone.Signal} `this`
+	 *  @returns {Tone.Signal} this
 	 *  @example
 	 *  //linearly ramp to the value 4 over 3 seconds. 
 	 *  signal.linearRampToValueNow(4, 3);
@@ -256,7 +256,7 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 	 *  @param {number} value        
 	 *  @param {Time} startTime    
 	 *  @param {number} timeConstant 
-	 *  @returns {Tone.Signal} `this`
+	 *  @returns {Tone.Signal} this
 	 */
 	Tone.Signal.prototype.setTargetAtTime = function(value, startTime, timeConstant){
 		value = this._fromUnits(value);
@@ -275,7 +275,7 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 	 *  @param {Array<number>} values    
 	 *  @param {Time} startTime 
 	 *  @param {Time} duration  
-	 *  @returns {Tone.Signal} `this`
+	 *  @returns {Tone.Signal} this
 	 */
 	Tone.Signal.prototype.setValueCurveAtTime = function(values, startTime, duration){
 		for (var i = 0; i < values.length; i++){
@@ -290,7 +290,7 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 	 *  equal to startTime.
 	 *  
 	 *  @param  {Time} startTime
-	 *  @returns {Tone.Signal} `this`
+	 *  @returns {Tone.Signal} this
 	 */
 	Tone.Signal.prototype.cancelScheduledValues = function(startTime){
 		this._value.cancelScheduledValues(this.toSeconds(startTime));
@@ -305,7 +305,7 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 	 *  @param  {number} value   
 	 *  @param  {Time} rampTime the time that it takes the 
 	 *                               value to ramp from it's current value
-	 *  @returns {Tone.Signal} `this`
+	 *  @returns {Tone.Signal} this
 	 *  @example
 	 *  //ramp to the value either linearly or exponentially 
 	 *  //depending on the "units" value of the signal
@@ -323,7 +323,7 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 
 	/**
 	 *  dispose and disconnect
-	 *  @returns {Tone.Signal} `this`
+	 *  @returns {Tone.Signal} this
 	 */
 	Tone.Signal.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);

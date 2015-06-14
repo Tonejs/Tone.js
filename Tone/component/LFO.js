@@ -98,7 +98,7 @@ function(Tone){
 	/**
 	 *  Start the LFO. 
 	 *  @param  {Time} [time=now] the time the LFO will start
-	 *  @returns {Tone.LFO} `this`
+	 *  @returns {Tone.LFO} this
 	 */
 	Tone.LFO.prototype.start = function(time){
 		this.oscillator.start(time);
@@ -108,7 +108,7 @@ function(Tone){
 	/**
 	 *  Stop the LFO. 
 	 *  @param  {Time} [time=now] the time the LFO will stop
-	 *  @returns {Tone.LFO} `this`
+	 *  @returns {Tone.LFO} this
 	 */
 	Tone.LFO.prototype.stop = function(time){
 		this.oscillator.stop(time);
@@ -121,7 +121,7 @@ function(Tone){
 	 *
 	 *  @param {Time} [delay=0] the time to delay the start of the
 	 *                                LFO from the start of the transport
-	 *  @returns {Tone.LFO} `this`
+	 *  @returns {Tone.LFO} this
 	 *  @example
 	 *  lfo.frequency.value = "8n";
 	 *  lfo.sync();
@@ -136,7 +136,7 @@ function(Tone){
 
 	/**
 	 *  unsync the LFO from transport control
-	 *  @returns {Tone.LFO} `this`
+	 *  @returns {Tone.LFO} this
 	 */
 	Tone.LFO.prototype.unsync = function(){
 		this.oscillator.unsync();
@@ -232,7 +232,7 @@ function(Tone){
 	 *  @param  {Tone | AudioParam | AudioNode} node 
 	 *  @param {number} [outputNum=0] optionally which output to connect from
 	 *  @param {number} [inputNum=0] optionally which input to connect to
-	 *  @returns {Tone.LFO} `this`
+	 *  @returns {Tone.LFO} this
 	 */
 	Tone.LFO.prototype.connect = function(node){
 		if (node.constructor === Tone.Signal){
@@ -261,7 +261,7 @@ function(Tone){
 
 	/**
 	 *  disconnect and dispose
-	 *  @returns {Tone.LFO} `this`
+	 *  @returns {Tone.LFO} this
 	 */
 	Tone.LFO.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);

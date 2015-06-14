@@ -80,7 +80,7 @@ function(Tone){
 
 	/**
 	 *  clean up
-	 *  @returns {Tone.ScaleExp} `this`
+	 *  @returns {Tone.ScaleExp} this
 	 */
 	Tone.ScaleExp.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);

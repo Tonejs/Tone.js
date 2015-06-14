@@ -37,7 +37,7 @@ define(["Tone/core/Tone", "Tone/signal/Equal"], function(Tone){
 
 	/**
 	 *  clean up
-	 *  @returns {Tone.AND} `this`
+	 *  @returns {Tone.AND} this
 	 */
 	Tone.AND.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);

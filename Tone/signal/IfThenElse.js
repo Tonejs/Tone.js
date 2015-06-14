@@ -40,7 +40,7 @@ define(["Tone/core/Tone", "Tone/signal/Select", "Tone/signal/Equal"], function(T
 
 	/**
 	 *  clean up
-	 *  @returns {Tone.IfThenElse} `this`
+	 *  @returns {Tone.IfThenElse} this
 	 */
 	Tone.IfThenElse.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);

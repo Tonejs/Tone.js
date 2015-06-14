@@ -84,7 +84,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	 *  chained. 
 	 *  @param {AudioNode|Tone...} args All arguments will be connected in a row
 	 *                                  and the Master will be routed through it
-	 *  @return  {Tone.Master}  `this`
+	 *  @return  {Tone.Master}  this
 	 *  @example
 	 * //some overall compression to keep the levels in check
 	 * var masterCompressor = new Tone.Compressor({
@@ -112,7 +112,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	/**
 	 *  connect 'this' to the master output
 	 *  defined in "Tone/core/Master"
-	 *  @returns {Tone} `this`
+	 *  @returns {Tone} this
 	 */
 	Tone.prototype.toMaster = function(){
 		this.connect(Tone.Master);
@@ -122,7 +122,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	/**
 	 *  Also augment AudioNode's prototype to include toMaster
 	 *  as a convenience
-	 *  @returns {AudioNode} `this`
+	 *  @returns {AudioNode} this
 	 */
 	AudioNode.prototype.toMaster = function(){
 		this.connect(Tone.Master);

@@ -138,7 +138,7 @@ function(Tone){
 
 	/**
 	 *  clean up
-	 *  @return {Tone.PWMOscillator} `this`
+	 *  @return {Tone.PWMOscillator} this
 	 */
 	Tone.PWMOscillator.prototype.dispose = function(){
 		Tone.Source.prototype.dispose.call(this);

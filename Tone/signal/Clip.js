@@ -45,7 +45,7 @@ define(["Tone/core/Tone", "Tone/signal/Max", "Tone/signal/Min", "Tone/signal/Sig
 
 	/**
 	 *  clean up
-	 *  @returns {Tone.Clip} `this`
+	 *  @returns {Tone.Clip} this
 	 */
 	Tone.Clip.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);

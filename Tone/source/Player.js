@@ -109,7 +109,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 	 *                     filetype support depends on the
 	 *                     browser.
 	 *  @param  {function(Tone.Player)=} callback
-	 *  @returns {Tone.Player} `this`
+	 *  @returns {Tone.Player} this
 	 */
 	Tone.Player.prototype.load = function(url, callback){
 		this._buffer.load(url, this._onload.bind(this, callback));
@@ -137,7 +137,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 	 *  @param  {Time=} duration how long the sample should play. If no duration
 	 *                                is given, it will default to the full length 
 	 *                                of the sample (minus any offset)
-	 *  @returns {Tone.Player} `this`
+	 *  @returns {Tone.Player} this
 	 */
 	Tone.Player.prototype._start = function(startTime, offset, duration){
 		if (this._buffer.loaded){
@@ -183,7 +183,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 	 *  Stop playback.
 	 *  @private
 	 *  @param  {Time} [time=now]
-	 *  @returns {Tone.Player} `this`
+	 *  @returns {Tone.Player} this
 	 */
 	Tone.Player.prototype._stop = function(time){
 		if (this._source){
@@ -198,7 +198,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 	 *  set to `true`. 
 	 *  @param {Time} loopStart The loop end time
 	 *  @param {Time} loopEnd The loop end time
-	 *  @returns {Tone.Player} `this`
+	 *  @returns {Tone.Player} this
 	 *  @example
 	 *  player.setLoopPoints(0.2, 0.3);
 	 *  player.loop = true;
@@ -317,7 +317,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 
 	/**
 	 *  dispose and disconnect
-	 *  @return {Tone.Player} `this`
+	 *  @return {Tone.Player} this
 	 */
 	Tone.Player.prototype.dispose = function(){
 		Tone.Source.prototype.dispose.call(this);

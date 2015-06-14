@@ -212,7 +212,7 @@ function(Tone){
 
 	/**
 	 *  clean up
-	 *  @return {Tone.OmniOscillator} `this`
+	 *  @return {Tone.OmniOscillator} this
 	 */
 	Tone.OmniOscillator.prototype.dispose = function(){
 		Tone.Source.prototype.dispose.call(this);

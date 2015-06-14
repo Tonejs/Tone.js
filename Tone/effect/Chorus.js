@@ -159,7 +159,7 @@ function(Tone){
 
 	/**
 	 *  clean up
-	 *  @returns {Tone.Chorus} `this`
+	 *  @returns {Tone.Chorus} this
 	 */
 	Tone.Chorus.prototype.dispose = function(){
 		Tone.StereoXFeedbackEffect.prototype.dispose.call(this);

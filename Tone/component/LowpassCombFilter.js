@@ -87,7 +87,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/component/Filter"], functi
 
 	/**
 	 *  clean up
-	 *  @returns {Tone.LowpassCombFilter} `this`
+	 *  @returns {Tone.LowpassCombFilter} this
 	 */
 	Tone.LowpassCombFilter.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);

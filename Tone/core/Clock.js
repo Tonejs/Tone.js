@@ -74,7 +74,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	/**
 	 *  start the clock
 	 *  @param {Time} [time=now] the time when the clock should start
-	 *  @returns {Tone.Clock} `this`
+	 *  @returns {Tone.Clock} this
 	 *  @example
 	 * clock.start();
 	 */
@@ -95,7 +95,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	/**
 	 *  stop the clock
 	 *  @param {Time} [time=now] The time when the clock should stop.
-	 *  @returns {Tone.Clock} `this`
+	 *  @returns {Tone.Clock} this
 	 *  @example
 	 * clock.stop();
 	 */
@@ -148,7 +148,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 
 	/**
 	 *  clean up
-	 *  @returns {Tone.Clock} `this`
+	 *  @returns {Tone.Clock} this
 	 */
 	Tone.Clock.prototype.dispose = function(){
 		this._jsNode.disconnect();

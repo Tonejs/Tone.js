@@ -43,7 +43,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 
 	/**
 	 *  clean up
-	 *  @returns {Tone.Multiply} `this`
+	 *  @returns {Tone.Multiply} this
 	 */
 	Tone.Multiply.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);

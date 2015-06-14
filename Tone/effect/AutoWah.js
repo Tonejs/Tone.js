@@ -178,7 +178,7 @@ function(Tone){
 
 	/**
 	 *  clean up
-	 *  @returns {Tone.AutoWah} `this`
+	 *  @returns {Tone.AutoWah} this
 	 */
 	Tone.AutoWah.prototype.dispose = function(){
 		Tone.Effect.prototype.dispose.call(this);

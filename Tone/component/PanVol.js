@@ -52,7 +52,7 @@ define(["Tone/core/Tone", "Tone/component/Panner", "Tone/component/Volume"], fun
 
 	/**
 	 *  clean up
-	 *  @returns {Tone.PanVol} `this`
+	 *  @returns {Tone.PanVol} this
 	 */
 	Tone.PanVol.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);

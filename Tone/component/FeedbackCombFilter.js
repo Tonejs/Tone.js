@@ -64,7 +64,7 @@ define(["Tone/core/Tone", "Tone/signal/ScaleExp", "Tone/signal/Signal"], functio
 
 	/**
 	 *  clean up
-	 *  @returns {Tone.FeedbackCombFilter} `this`
+	 *  @returns {Tone.FeedbackCombFilter} this
 	 */
 	Tone.FeedbackCombFilter.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);

@@ -44,7 +44,7 @@ define(["Tone/core/Tone"], function(Tone){
 
 	/**
 	 *  dispose method
-	 *  @returns {Tone.Split} `this`
+	 *  @returns {Tone.Split} this
 	 */
 	Tone.Split.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);

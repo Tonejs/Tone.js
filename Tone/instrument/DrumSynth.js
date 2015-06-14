@@ -75,7 +75,7 @@ function(Tone){
 	 *  @param  {string|string} note     the note
 	 *  @param  {Time} [time=now]     the time, if not given is now
 	 *  @param  {number} [velocity=1] velocity defaults to 1
-	 *  @returns {Tone.DrumSynth} `this`
+	 *  @returns {Tone.DrumSynth} this
 	 *  @example
 	 *  kick.triggerAttack(60);
 	 */
@@ -93,7 +93,7 @@ function(Tone){
 	 *  trigger the release portion of the note
 	 *  
 	 *  @param  {Time} [time=now] the time the note will release
-	 *  @returns {Tone.DrumSynth} `this`
+	 *  @returns {Tone.DrumSynth} this
 	 */
 	Tone.DrumSynth.prototype.triggerRelease = function(time){
 		this.envelope.triggerRelease(time);
@@ -102,7 +102,7 @@ function(Tone){
 
 	/**
 	 *  clean up
-	 *  @returns {Tone.DrumSynth} `this`
+	 *  @returns {Tone.DrumSynth} this
 	 */
 	Tone.DrumSynth.prototype.dispose = function(){
 		Tone.Instrument.prototype.dispose.call(this);

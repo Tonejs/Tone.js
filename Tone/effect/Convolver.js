@@ -72,7 +72,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/effect/Effect"], function(To
 	 *                      filetype support depends on the
 	 *                      browser.
 	 *  @param  {function=} callback
-	 *  @returns {Tone.Convolver} `this`
+	 *  @returns {Tone.Convolver} this
 	 */
 	Tone.Convolver.prototype.load = function(url, callback){
 		this._buffer.load(url, function(buff){
@@ -86,7 +86,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/effect/Effect"], function(To
 
 	/**
 	 *  dispose and disconnect
-	 *  @returns {Tone.Convolver} `this`
+	 *  @returns {Tone.Convolver} this
 	 */
 	Tone.Convolver.prototype.dispose = function(){
 		Tone.Effect.prototype.dispose.call(this);

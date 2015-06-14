@@ -44,7 +44,7 @@ define(["Tone/core/Tone", "Tone/signal/Equal", "Tone/signal/Signal"], function(T
 	 *  routes the signal to one of the outputs and close the others
 	 *  @param {number} [which=0] open one of the gates (closes the other)
 	 *  @param {Time} time the time when the switch will open
-	 *  @returns {Tone.Route} `this`
+	 *  @returns {Tone.Route} this
 	 */
 	Tone.Route.prototype.select = function(which, time){
 		//make sure it's an integer
@@ -55,7 +55,7 @@ define(["Tone/core/Tone", "Tone/signal/Equal", "Tone/signal/Signal"], function(T
 
 	/**
 	 *  dispose method
-	 *  @returns {Tone.Route} `this`
+	 *  @returns {Tone.Route} this
 	 */
 	Tone.Route.prototype.dispose = function(){
 		this._writable("gate");
