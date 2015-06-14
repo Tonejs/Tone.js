@@ -863,7 +863,6 @@ function(Tone){
 	 *  	4n = quarter note
 	 *   	2m = two measures
 	 *    	8t = eighth-note triplet
-	 *  defined in "Tone/core/Transport"
 	 *  
 	 *  @return {boolean} 
 	 *  @method isNotation
@@ -880,7 +879,6 @@ function(Tone){
 	 *  tests if a string is transportTime
 	 *  i.e. :
 	 *  	1:2:0 = 1 measure + two quarter notes + 0 sixteenth notes
-	 *  defined in "Tone/core/Transport"
 	 *  	
 	 *  @return {boolean} 
 	 *
@@ -897,7 +895,6 @@ function(Tone){
 	/**
 	 *
 	 *  convert notation format strings to seconds
-	 *  defined in "Tone/core/Transport"
 	 *  
 	 *  @param  {string} notation     
 	 *  @param {number=} bpm 
@@ -928,8 +925,7 @@ function(Tone){
 	};
 
 	/**
-	 *  convert transportTime into seconds
-	 *  defined in "Tone/core/Transport"
+	 *  convert transportTime into seconds.
 	 *  
 	 *  ie: 4:2:3 == 4 measures + 2 quarters + 3 sixteenths
 	 *
@@ -964,7 +960,6 @@ function(Tone){
 	/**
 	 *  Convert seconds to the closest transportTime in the form 
 	 *  	measures:quarters:sixteenths
-	 *  defined in "Tone/core/Transport"
 	 *
 	 *  @method toTransportTime
 	 *  
@@ -990,7 +985,6 @@ function(Tone){
 
 	/**
 	 *  Convert a frequency representation into a number.
-	 *  Defined in "Tone/core/Transport".
 	 *  	
 	 *  @param  {Frequency} freq 
 	 *  @param {number=} 	now 	if passed in, this number will be 
@@ -1009,7 +1003,6 @@ function(Tone){
 
 	/**
 	 *  Convert Time into seconds.
-	 *  Defined in "Tone/core/Transport".
 	 *  
 	 *  Unlike the method which it overrides, this takes into account 
 	 *  transporttime and musical notation.

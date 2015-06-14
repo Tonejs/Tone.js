@@ -62,12 +62,14 @@ function(Tone){
 		/**
 		 *  the effect return LEFT
 		 *  @type {GainNode}
+		 *  @private
 		 */
 		this.effectReturnL = this._merge.left;
 
 		/**
 		 *  the effect return RIGHT
 		 *  @type {GainNode}
+		 *  @private
 		 */
 		this.effectReturnR = this._merge.right;
 

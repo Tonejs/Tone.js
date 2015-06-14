@@ -110,7 +110,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	///////////////////////////////////////////////////////////////////////////
 
 	/**
-	 *  Connect 'this' to the master output. Shorthand for <code>.connect(Tone.Master)</code>
+	 *  Connect 'this' to the master output. Shorthand for this.connect(Tone.Master)
 	 *  @returns {Tone} this
 	 *  @example
 	 * //connect an oscillator to the master output

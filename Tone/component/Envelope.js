@@ -15,14 +15,14 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Pow"], function(Ton
 	 *                                	the release is triggered. 
 	 *  @param {Time} [release]	The amount of time after the release is triggered it takes to reach 0. 
 	 *  @example
-	 *  var gainNode = Tone.context.createGain();
-	 *  var env = new Tone.Envelope({
-	 *  	"attack" : 0.1,
-	 *  	"decay" : 0.2,
-	 *  	"sustain" : 1,
-	 *  	"release" : 0.8,
-	 *  });
-	 *  env.connect(gainNode.gain);
+	 * var gainNode = Tone.context.createGain();
+	 * var env = new Tone.Envelope({
+	 * 	"attack" : 0.1,
+	 * 	"decay" : 0.2,
+	 * 	"sustain" : 1,
+	 * 	"release" : 0.8,
+	 * });
+	 * env.connect(gainNode.gain);
 	 */
 	Tone.Envelope = function(){
 
@@ -188,16 +188,23 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Pow"], function(Ton
 		}
 	};
 
-	// https://github.com/jsantell/web-audio-automation-timeline
-	// MIT License, copyright (c) 2014 Jordan Santell
+	/**
+	 *  https://github.com/jsantell/web-audio-automation-timeline
+	 *  MIT License, copyright (c) 2014 Jordan Santell
+	 *  @private
+	 */
 	Tone.Envelope.prototype._exponentialApproach = function (t0, v0, v1, timeConstant, t) {
 		return v1 + (v0 - v1) * Math.exp(-(t - t0) / timeConstant);
 	};
-
+	/**
+	 *  @private
+	 */
 	Tone.Envelope.prototype._linearInterpolate = function (t0, v0, t1, v1, t) {
 		return v0 + (v1 - v0) * ((t - t0) / (t1 - t0));
 	};
-
+	/**
+	 *  @private
+	 */
 	Tone.Envelope.prototype._exponentialInterpolate = function (t0, v0, t1, v1, t) {
 		return v0 * Math.pow(v1 / v0, (t - t0) / (t1 - t0));
 	};
