@@ -45,7 +45,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/effect/Effect"], function(To
 	 */
 	Tone.Convolver.defaults = {
 		"url" : "",
-		"onload" : function(){}
+		"onload" : Tone.noOp
 	};
 
 	/**

@@ -350,7 +350,7 @@ define(["Tone/core/Tone"], function(Tone){
 	 * 	console.log("everything is loaded");
 	 * };
 	 */
-	Tone.Buffer.onload = function(){};
+	Tone.Buffer.onload = Tone.noOp;
 
 	/**
 	 *  Callback function is invoked with the progress of all of the loads in the queue. 
@@ -362,7 +362,7 @@ define(["Tone/core/Tone"], function(Tone){
 	 * 	console.log("progress:" + (percent * 100).toFixed(1) + "%");
 	 * };
 	 */
-	Tone.Buffer.onprogress = function(){};
+	Tone.Buffer.onprogress = Tone.noOp;
 
 	/**
 	 *  Callback if one of the buffers in the queue encounters an error. The error
@@ -374,7 +374,7 @@ define(["Tone/core/Tone"], function(Tone){
 	 * 	console.log("there was an error while loading the buffers: "+e);
 	 * }
 	 */
-	Tone.Buffer.onerror = function(){};
+	Tone.Buffer.onerror = Tone.noOp;
 
 	return Tone.Buffer;
 });

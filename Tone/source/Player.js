@@ -88,7 +88,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 	 *  @type {Object}
 	 */
 	Tone.Player.defaults = {
-		"onload" : function(){},
+		"onload" : Tone.noOp,
 		"playbackRate" : 1,
 		"loop" : false,
 		"autostart" : false,

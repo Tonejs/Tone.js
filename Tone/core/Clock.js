@@ -63,7 +63,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 		 *  	console.log("the clock is stopped");
 		 *  }
 		 */
-		this.onended = function(){};
+		this.onended = Tone.noOp;
 
 		//setup
 		this._jsNode.noGC();
@@ -158,10 +158,10 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 			this._oscillator.disconnect();
 			this._oscillator = null;
 		}
-		this._jsNode.onaudioprocess = function(){};
+		this._jsNode.onaudioprocess = Tone.noOp;
 		this._jsNode = null;
 		this.tick = null;
-		this.onended = function(){};
+		this.onended = Tone.noOp;
 		return this;
 	};
 

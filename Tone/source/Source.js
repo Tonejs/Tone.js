@@ -75,7 +75,7 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Master"], function(T
 	 *  @type {Object}
 	 */
 	Tone.Source.defaults = {
-		"onended" : function(){},
+		"onended" : Tone.noOp,
 		"volume" : 0,
 	};
 
@@ -200,7 +200,7 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Master"], function(T
 		Tone.prototype.dispose.call(this);
 		this.stop();
 		clearTimeout(this._timeout);
-		this.onended = function(){};
+		this.onended = Tone.noOp;
 		this._writable("volume");
 		this.volume.dispose();
 		this.volume = null;

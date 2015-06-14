@@ -43,13 +43,13 @@ define(["Tone/core/Tone", "Tone/core/Master", "Tone/core/Note"], function(Tone){
 	 *  @param {Time} [time=now] the time to trigger the ntoe
 	 *  @param {number} [velocity=1] the velocity to trigger the note
 	 */
-	Tone.Instrument.prototype.triggerAttack = function(){};
+	Tone.Instrument.prototype.triggerAttack = Tone.noOp;
 
 	/**
 	 *  @abstract
 	 *  @param {Time} [time=now] when to trigger the release
 	 */
-	Tone.Instrument.prototype.triggerRelease = function(){};
+	Tone.Instrument.prototype.triggerRelease = Tone.noOp;
 
 	/**
 	 *  Trigger the attack and then the release after the duration. 
