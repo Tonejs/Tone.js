@@ -53,21 +53,21 @@ function(Tone){
 
 		/**
 		 *  the comb filters
-		 *  @type {Array.<Tone.LowpassCombFilter>}
+		 *  @type {Array}
 		 *  @private
 		 */
 		this._combFilters = [];
 
 		/**
 		 *  the allpass filters on the left
-		 *  @type {Array.<BiqaudFilterNode>}
+		 *  @type {Array}
 		 *  @private
 		 */
 		this._allpassFiltersL = [];
 
 		/**
 		 *  the allpass filters on the right
-		 *  @type {Array.<BiqaudFilterNode>}
+		 *  @type {Array}
 		 *  @private
 		 */
 		this._allpassFiltersR = [];

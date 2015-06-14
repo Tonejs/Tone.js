@@ -272,7 +272,7 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 	 *  Sets an array of arbitrary parameter values starting at the given time
 	 *  for the given duration.
 	 *  	
-	 *  @param {Array<number>} values    
+	 *  @param {Array} values    
 	 *  @param {Time} startTime 
 	 *  @param {Time} duration  
 	 *  @returns {Tone.Signal} this

@@ -59,14 +59,14 @@ function(Tone){
 
 		/**
 		 *  a series of allpass filters
-		 *  @type {Array.<BiquadFilterNode>}
+		 *  @type {Array}
 		 *  @private
 		 */
 		this._allpassFilters = [];
 
 		/**
 		 *  parallel feedback comb filters
-		 *  @type {Array.<Tone.FeedbackCombFilter>}
+		 *  @type {Array}
 		 *  @private
 		 */
 		this._feedbackCombFilters = [];

@@ -24,7 +24,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 
 		/**
 		 *  the filter(s)
-		 *  @type {Array.<BiquadFilterNode>}
+		 *  @type {Array}
 		 *  @private
 		 */
 		this._filters = [];

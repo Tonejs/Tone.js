@@ -145,7 +145,7 @@ define(["Tone/core/Tone", "Tone/core/Transport"], function(Tone){
 	 *  });
 	 *  @static
 	 *  @param {Object} score
-	 *  @return {Array<Tone.Note>} an array of all of the notes that were created
+	 *  @return {Array} an array of all of the notes that were created
 	 */
 	Tone.Note.parseScore = function(score){
 		var notes = [];

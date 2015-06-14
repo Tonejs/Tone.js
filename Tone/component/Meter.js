@@ -43,14 +43,14 @@ define(["Tone/core/Tone", "Tone/core/Master"], function(Tone){
 		/** 
 		 *  the rms for each of the channels
 		 *  @private
-		 *  @type {Array<number>}
+		 *  @type {Array}
 		 */
 		this._volume = new Array(this._channels);
 
 		/** 
 		 *  the raw values for each of the channels
 		 *  @private
-		 *  @type {Array<number>}
+		 *  @type {Array}
 		 */
 		this._values = new Array(this._channels);
 

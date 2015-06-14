@@ -158,14 +158,14 @@ function(Tone){
 	/** 
 	 *  All of the synced components
 	 *  @private 
-	 *  @type {Array<Tone>}
+	 *  @type {Array}
 	 */
 	var SyncedSources = [];
 
 	/** 
 	 *  All of the synced Signals
 	 *  @private 
-	 *  @type {Array<Tone.Signal>}
+	 *  @type {Array}
 	 */
 	var SyncedSignals = [];
 
