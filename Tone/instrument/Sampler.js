@@ -20,9 +20,12 @@ function(Tone){
 	 * 		2 : "./audio/casio/A2.mp3",
 	 * 	},
 	 * 	"B.1" : "./audio/casio/B1.mp3",
-	 * });
-	 * //...once samples have loaded
-	 * sampler.triggerAttack("A.1", time, velocity);
+	 * }).toMaster();
+	 * 
+	 * //listen for when all the samples have loaded
+	 * Tone.Buffer.onload = function(){
+	 * 	sampler.triggerAttack("A.1", time, velocity);
+	 * };
 	 */
 	Tone.Sampler = function(urls, options){
 
@@ -38,20 +41,20 @@ function(Tone){
 
 		/**
 		 *  the buffers
-		 *  @type {Object<Tone.Buffer>}
+		 *  @type {Object}
 		 *  @private
 		 */
 		this._buffers = {};
 
 		/**
 		 *  The amplitude envelope. 
-		 *  @type {Tone.Envelope}
+		 *  @type {Tone.AmplitudeEnvelope}
 		 */
 		this.envelope = new Tone.AmplitudeEnvelope(options.envelope);
 
 		/**
 		 *  The filter envelope. 
-		 *  @type {Tone.Envelope}
+		 *  @type {Tone.ScaledEnvelope}
 		 */
 		this.filterEnvelope = new Tone.ScaledEnvelope(options.filterEnvelope);
 

@@ -894,7 +894,7 @@ define(function(){
 	};
 
 	/**
-	 *  Tone.js automatically creates a context on init, but if you are working
+	 *  Tone automatically creates a context on init, but if you are working
 	 *  with other libraries which also create an AudioContext, it can be
 	 *  useful to set your own. If you are going to set your own context, 
 	 *  be sure to do it at the start of your code, before creating any objects.

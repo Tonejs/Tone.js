@@ -8,8 +8,8 @@ function(Tone){
 	 *
 	 *  @extends {Tone.Oscillator}
 	 *  @constructor
-	 *  @param {Frequency} frequency of the oscillator (meaningless for noise types)
-	 *  @param {Frequency} modulationFrequency the modulation frequency of the oscillator
+	 *  @param {Frequency} frequency The starting frequency of the oscillator. 
+	 *  @param {Frequency} modulationFrequency The modulation frequency of the width of the pulse. 
 	 *  @example
 	 *  var pwm = new Tone.PWMOscillator("Ab3", 0.3);
 	 */

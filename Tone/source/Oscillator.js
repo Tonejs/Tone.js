@@ -4,12 +4,12 @@ function(Tone){
 	"use strict";
 
 	/**
-	 *  @class Oscilator with start, pause, stop and sync to Transport methods
+	 *  @class Oscilator with start, stop and sync to Transport methods
 	 *
 	 *  @constructor
 	 *  @extends {Tone.Source}
-	 *  @param {Frequency} [frequency=440] starting frequency
-	 *  @param {string} [type="sine"] type of oscillator (sine|square|triangle|sawtooth)
+	 *  @param {Frequency} [frequency] starting frequency
+	 *  @param {string} [type] The oscillator type. Read more about type below.
 	 *  @example
 	 * var osc = new Tone.Oscillator(440, "sine");
 	 */
@@ -145,13 +145,17 @@ function(Tone){
 	 * <br><br> 
 	 * Uses PeriodicWave internally even for native types so that it can set the phase. 
 	 * PeriodicWave equations are from the 
-	 * <a href="https://code.google.com/p/chromium/codesearch#chromium/src/third_party/WebKit/Source/modules/webaudio/PeriodicWave.cpp&sq=package:chromium">Web Audio Source code</a>
+	 * <a href="https://code.google.com/p/chromium/codesearch#chromium/src/third_party/WebKit/Source/modules/webaudio/PeriodicWave.cpp&sq=package:chromium">Webkit Web Audio implementation</a>.
 	 *  
 	 * @memberOf Tone.Oscillator#
 	 * @type {string}
 	 * @name type
 	 * @example
+	 * //set it to a square wave
 	 * osc.type = "square";
+	 * @example
+	 * //set the first 6 partials of a sawtooth wave
+	 * osc.type = "sawtooth6";
 	 */
 	Object.defineProperty(Tone.Oscillator.prototype, "type", {
 		get : function(){

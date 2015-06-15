@@ -37,13 +37,13 @@ function(Tone){
 
 		/**
 		 *  The filter envelope. 
-		 *  @type {Tone.Envelope}
+		 *  @type {Tone.ScaledEnvelope}
 		 */
 		this.filterEnvelope = new Tone.ScaledEnvelope(options.filterEnvelope);
 
 		/**
 		 *  The amplitude envelope. 
-		 *  @type {Tone.Envelope}
+		 *  @type {Tone.AmplitudeEnvelope}
 		 */
 		this.envelope = new Tone.AmplitudeEnvelope(options.envelope);
 

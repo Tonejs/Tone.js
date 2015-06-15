@@ -4,8 +4,8 @@ function(Tone){
 	"use strict";
 
 	/**
-	 *  @class  the SimpleSynth is a single oscillator, monophonic synthesizer
-	 *          with an OmniOscillator and an Amplitude Envelope
+	 *  @class  Tone.SimpleSynth is composed simply of a Tone.OmniOscillator
+	 *          routed through a Tone.AmplitudeEnvelope. 
 	 *
 	 *  @constructor
 	 *  @extends {Tone.Monophonic}
@@ -40,7 +40,7 @@ function(Tone){
 
 		/**
 		 *  The amplitude envelope.
-		 *  @type {Tone.Envelope}
+		 *  @type {Tone.AmplitudeEnvelope}
 		 */
 		this.envelope = new Tone.AmplitudeEnvelope(options.envelope);
 
