@@ -16,7 +16,8 @@ function(Tone){
 	 *  @param {Object} [options] the options available for the synth 
 	 *                          see defaults below
 	 *  @example
-	 *  var synth = new Tone.SimpleAM();
+	 * var synth = new Tone.SimpleAM().toMaster();
+	 * synth.triggerAttackRelease("C4", "8n");
 	 */
 	Tone.SimpleAM = function(options){
 

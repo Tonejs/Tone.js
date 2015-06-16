@@ -14,9 +14,11 @@ function(Tone){
 	 *                                            uses Tone.MonoSynth by default
 	 *  @example
 	 * //a polysynth composed of 6 Voices of MonoSynth
-	 * var synth = new Tone.PolySynth(6, Tone.MonoSynth);
+	 * var synth = new Tone.PolySynth(6, Tone.MonoSynth).toMaster();
 	 * //set the attributes using the set interface
 	 * synth.set("detune", -1200);
+	 * //play a chord
+	 * synth.triggerAttackRelease(["C4", "E4", "A4"], "4n");
 	 */
 	Tone.PolySynth = function(){
 

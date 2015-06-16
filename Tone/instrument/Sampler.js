@@ -74,7 +74,7 @@ function(Tone){
 
 		/**
 		 *  The filter.
-		 *  @type {BiquadFilterNode}
+		 *  @type {Tone.Filter}
 		 */
 		this.filter = new Tone.Filter(options.filter);
 

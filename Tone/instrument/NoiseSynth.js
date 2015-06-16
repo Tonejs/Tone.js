@@ -14,7 +14,8 @@ function(Tone){
 	 *  @param {Object} [options] the options available for the synth 
 	 *                          see defaults below
 	 * @example
-	 * var noiseSynth = new Tone.NoiseSynth();
+	 * var noiseSynth = new Tone.NoiseSynth().toMaster();
+	 * noiseSynth.triggerAttackRelease("8n");
 	 */
 	Tone.NoiseSynth = function(options){
 

@@ -13,7 +13,8 @@ function(Tone){
 	 *  @param {Object} [options] the options available for the synth 
 	 *                          see defaults below
 	 *  @example
-	 *  var duoSynth = new Tone.DuoSynth();
+	 * var duoSynth = new Tone.DuoSynth().toMaster();
+	 * duoSynth.triggerAttackRelease("C4", "2n");
 	 */
 	Tone.DuoSynth = function(options){
 

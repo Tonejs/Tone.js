@@ -11,6 +11,9 @@ function(Tone){
 	 *  @extends {Tone.Monophonic}
 	 *  @param {Object} [options] the options available for the synth 
 	 *                          see defaults below
+	 *  @example
+	 * var synth = new Tone.SimpleSynth().toMaster();
+	 * synth.triggerAttackRelease("C4", "8n");
 	 */
 	Tone.SimpleSynth = function(options){
 

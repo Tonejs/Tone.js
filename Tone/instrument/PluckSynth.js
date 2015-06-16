@@ -11,7 +11,8 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/source/Noise", "To
 	 *  @extends {Tone.Instrument}
 	 *  @param {Object} [options] see the defaults
 	 *  @example
-	 * var plucky = new Tone.PluckSynth();
+	 * var plucky = new Tone.PluckSynth().toMaster();
+	 * plucky.triggerAttackRelease("C4", "8n");
 	 */
 	Tone.PluckSynth = function(options){
 

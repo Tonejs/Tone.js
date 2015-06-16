@@ -13,7 +13,8 @@ function(Tone){
 	 *  @param {Object} [options] the options available for the synth 
 	 *                          see defaults below
 	 *  @example
-	 *  var synth = new Tone.DrumSynth();
+	 * var synth = new Tone.DrumSynth().toMaster();
+	 * synth.triggerAttackRelease("C2", "8n");
 	 */
 	Tone.DrumSynth = function(options){
 
