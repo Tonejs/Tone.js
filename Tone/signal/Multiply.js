@@ -3,18 +3,20 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	"use strict";
 
 	/**
-	 *  @class  Multiply the incoming signal by a number or Multiply two signals.
-	 *          input 0: multiplicand.
-	 *          input 1: multiplier.
+	 *  @class  Multiply two incoming signals. Or, if a number is given in the constructor, 
+	 *          multiplies the incoming signal by that value. 
 	 *
 	 *  @constructor
 	 *  @extends {Tone.Signal}
-	 *  @param {number=} value constant value to multiple. if no value is provided
-	 *                         it will be multiplied by the value of input 1.
+	 *  @param {number=} value Constant value to multiple. If no value is provided,
+	 *                         it will return the product of the first and second inputs
 	 *  @example
-	 * var mult = new Tone.Multiply(3);
-	 * var sig = new Tone.Signal(2).connect(mult);
-	 * //output of mult is 6. 
+	 * var mult = new Tone.Multiply();
+	 * var sigA = new Tone.Signal(3);
+	 * var sigB = new Tone.Signal(4);
+	 * sigA.connect(mult, 0, 0);
+	 * sigB.connect(mult, 0, 1);
+	 * //output of mult is 12.
 	 */
 	Tone.Multiply = function(value){
 

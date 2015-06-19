@@ -4,12 +4,12 @@ function(Tone){
 	"use strict";
 
 	/**
-	 *  @class Signal-rate modulo operator. Only works in audio range [-1, 1] and for modulus
-	 *         values less than 1. 
+	 *  @class Signal-rate modulo operator. Only works in AudioRange [-1, 1] and for modulus
+	 *         values in the NormalRange. 
 	 *
 	 *  @constructor
 	 *  @extends {Tone.SignalBase}
-	 *  @param {number} modulus the modulus to apply
+	 *  @param {NormalRange} modulus The modulus to apply.
 	 *  @example
 	 * var mod = new Tone.Modulo(0.2)
 	 * var sig = new Tone.Signal(0.5).connect(mod);
@@ -72,7 +72,7 @@ function(Tone){
 	/**
 	 * The modulus value.
 	 * @memberOf Tone.Modulo#
-	 * @type {number}
+	 * @type {NormalRange}
 	 * @name value
 	 */
 	Object.defineProperty(Tone.Modulo.prototype, "value", {

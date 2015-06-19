@@ -3,17 +3,18 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 	"use strict";
 
 	/**
-	 *  @class  Constant audio-rate signal.
-	 *          Tone.Signal is a core component which allows for sample-accurate 
-	 *          synchronization of many components. Tone.Signal can be scheduled 
-	 *          with all of the functions available to AudioParams
+	 *  @class  Audio-rate value. Tone.Signal is a core component of the library.
+	 *          Signals can be scheduled with sample-level accuracy. Tone.Signal
+	 *          has all of the methods available to native Web Audio 
+	 *          <a href="http://webaudio.github.io/web-audio-api/#the-audioparam-interface" target="_blank">AudioParams</a> 
+	 *          as well as additional conveniences. 
 	 *
 	 *  @constructor
 	 *  @extends {Tone.SignalBase}
-	 *  @param {number|AudioParam} [value=0] initial value or the AudioParam to control
-	 *                                       note that the signal has no output
-	 *                                       if an AudioParam is passed in.
-	 *  @param {Tone.Type} [units=Tone.Type.Default] unit the units the signal is in
+	 *  @param {Number|AudioParam} [value] Initial value of the signal. If an AudioParam
+	 *                                     is passed in, that parameter will be wrapped
+	 *                                     and controlled by the Signal. 
+	 *  @param {string} [units=Number] unit The units the signal is in. 
 	 *  @example
 	 * var signal = new Tone.Signal(10);
 	 */
@@ -22,7 +23,7 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 		var options = this.optionsObject(arguments, ["value", "units"], Tone.Signal.defaults);
 
 		/**
-		 * the units the signal is in
+		 * The units of the signal.
 		 * @type {string}
 		 */
 		this.units = options.units;
@@ -41,6 +42,7 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 		 *  a connected signal.
 		 *  @readOnly
 		 *  @type  {boolean}
+		 *  @private
 		 */
 		this.overridden = false;
 
@@ -92,7 +94,7 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 	/**
 	 * The value of the signal. 
 	 * @memberOf Tone.Signal#
-	 * @type {*}
+	 * @type {Number}
 	 * @name value
 	 */
 	Object.defineProperty(Tone.Signal.prototype, "value", {
@@ -156,9 +158,12 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 
 	/**
 	 *  Schedules a parameter value change at the given time.
-	 *  @param {number}		value 
-	 *  @param {Time}  time 
+	 *  @param {*}	value The value to set the signal.
+	 *  @param {Time}  time The time when the change should occur.
 	 *  @returns {Tone.Signal} this
+	 *  @example
+	 * //set the frequency to "G4" in exactly 1 second from now. 
+	 * freq.setValueAtTime("G4", "+1");
 	 */
 	Tone.Signal.prototype.setValueAtTime = function(value, time){
 		value = this._fromUnits(value);
@@ -168,8 +173,10 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 
 	/**
 	 *  Creates a schedule point with the current value at the current time.
+	 *  This is useful for creating an automation anchor point in order to 
+	 *  schedule changes from the current value. 
 	 *
-	 *  @param {number=} now (optionally) pass the now value in
+	 *  @param {number=} now (Optionally) pass the now value in. 
 	 *  @returns {Tone.Signal} this
 	 */
 	Tone.Signal.prototype.setCurrentValueNow = function(now){

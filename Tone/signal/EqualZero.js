@@ -4,7 +4,8 @@ function(Tone){
 	"use strict";
 
 	/**
-	 *  @class  EqualZero outputs 1 when the input is strictly greater than zero
+	 *  @class  EqualZero outputs 1 when the input is equal to 
+	 *          0 and outputs 0 otherwise. 
 	 *  
 	 *  @constructor
 	 *  @extends {Tone.SignalBase}
@@ -48,7 +49,7 @@ function(Tone){
 	Tone.extend(Tone.EqualZero, Tone.SignalBase);
 
 	/**
-	 *  dispose method
+	 *  Clean up.
 	 *  @returns {Tone.EqualZero} this
 	 */
 	Tone.EqualZero.prototype.dispose = function(){

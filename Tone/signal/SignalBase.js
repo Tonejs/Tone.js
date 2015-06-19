@@ -3,7 +3,7 @@ define(["Tone/core/Tone"], function(Tone){
 	"use strict";
 
 	/**
-	 *  @class  Base class for all Signals
+	 *  @class  Base class for all Signals. Used Internally. 
 	 *
 	 *  @constructor
 	 *  @extends {Tone}
@@ -17,12 +17,12 @@ define(["Tone/core/Tone"], function(Tone){
 	/**
 	 *  When signals connect to other signals or AudioParams, 
 	 *  they take over the output value of that signal or AudioParam. 
-	 *  For all other nodes, the behavior is the same as a normal `connect`. 
+	 *  For all other nodes, the behavior is the same as a default <code>connect</code>. 
 	 *
 	 *  @override
 	 *  @param {AudioParam|AudioNode|Tone.Signal|Tone} node 
-	 *  @param {number} [outputNumber=0] 
-	 *  @param {number} [inputNumber=0] 
+	 *  @param {number} [outputNumber=0] The output number to connect from.
+	 *  @param {number} [inputNumber=0] The input number to connect to.
 	 *  @returns {Tone.SignalBase} this
 	 */
 	Tone.SignalBase.prototype.connect = function(node, outputNumber, inputNumber){

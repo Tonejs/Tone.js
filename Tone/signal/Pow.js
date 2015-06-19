@@ -4,11 +4,11 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 
 	/**
 	 *  @class Pow applies an exponent to the incoming signal. The incoming signal
-	 *         must be in the range -1,1
+	 *         must be AudioRange.
 	 *
 	 *  @extends {Tone.SignalBase}
 	 *  @constructor
-	 *  @param {number} exp the exponent to apply to the incoming signal, must be at least 2. 
+	 *  @param {number} exp The exponent to apply to the incoming signal, must be at least 2. 
 	 *  @example
 	 * var pow = new Tone.Pow(2);
 	 * var sig = new Tone.Signal(0.5).connect(pow);
@@ -33,7 +33,7 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 	Tone.extend(Tone.Pow, Tone.SignalBase);
 
 	/**
-	 * The value of the exponent
+	 * The value of the exponent.
 	 * @memberOf Tone.Pow#
 	 * @type {number}
 	 * @name value
@@ -62,7 +62,7 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 	};
 
 	/**
-	 *  clean up
+	 *  Clean up.
 	 *  @returns {Tone.Pow} this
 	 */
 	Tone.Pow.prototype.dispose = function(){

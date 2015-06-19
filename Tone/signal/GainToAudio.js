@@ -3,7 +3,8 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper", "Tone/signal/Signal"], funct
 	"use strict";
 
 	/**
-	 *  @class Maps a gain value [0, 1] to an audio value [-1, 1]
+	 *  @class Maps a NormalRange [0, 1] to an AudioRange [-1, 1]. 
+	 *         See also Tone.AudioToGain. 
 	 *
 	 *  @extends {Tone.SignalBase}
 	 *  @constructor

@@ -45,9 +45,9 @@ define(["Tone/core/Tone", "Tone/signal/SignalBase", "Tone/signal/GreaterThan"], 
 	Tone.extend(Tone.Switch, Tone.SignalBase);
 
 	/**
-	 *  open the switch at a specific time
+	 *  Open the switch at a specific time. 
 	 *
-	 *  @param {Time=} time the time when the switch will be open
+	 *  @param {Time} [time=now] The time when the switch will be open. 
 	 *  @returns {Tone.Switch} this
 	 *  @example
 	 *  //open the switch to let the signal through
@@ -59,9 +59,9 @@ define(["Tone/core/Tone", "Tone/signal/SignalBase", "Tone/signal/GreaterThan"], 
 	}; 
 
 	/**
-	 *  close the switch at a specific time
+	 *  Close the switch at a specific time. 
 	 *
-	 *  @param {Time} time the time when the switch will be open
+	 *  @param {Time} [time=now] The time when the switch will be closed.
 	 *  @returns {Tone.Switch} this
 	 *  @example
 	 *  //close the switch a half second from now
@@ -73,7 +73,7 @@ define(["Tone/core/Tone", "Tone/signal/SignalBase", "Tone/signal/GreaterThan"], 
 	}; 
 
 	/**
-	 *  clean up
+	 *  Clean up.
 	 *  @returns {Tone.Switch} this
 	 */
 	Tone.Switch.prototype.dispose = function(){

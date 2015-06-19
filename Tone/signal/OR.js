@@ -3,11 +3,12 @@ define(["Tone/core/Tone", "Tone/signal/GreaterThanZero"], function(Tone){
 	"use strict";
 
 	/**
-	 *  @class OR the inputs together. True if at least one of the inputs is true. 
+	 *  @class <a href="https://en.wikipedia.org/wiki/OR_gate" target="_blank">OR</a> 
+	 *         the inputs together. True if at least one of the inputs is true. 
 	 *
 	 *  @extends {Tone.SignalBase}
 	 *  @constructor
-	 *  @param {number} inputCount the input count
+	 *  @param {number} [inputCount=2] the input count
 	 *  @example
 	 * var or = new Tone.OR(2);
 	 * var sigA = new Tone.Signal(0)connect(or, 0, 0);

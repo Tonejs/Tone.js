@@ -3,7 +3,7 @@ define(["Tone/core/Tone", "Tone/signal/Equal", "Tone/signal/Signal"], function(T
 	"use strict";
 
 	/**
-	 *  @class Route a single input to the specified output
+	 *  @class Route a single input to the specified output. 
 	 *
 	 *  @constructor
 	 *  @extends {Tone.SignalBase}
@@ -11,9 +11,9 @@ define(["Tone/core/Tone", "Tone/signal/Equal", "Tone/signal/Signal"], function(T
 	 *  @example
 	 * var route = new Tone.Route(4);
 	 * var signal = new Tone.Signal(3).connect(route);
-	 * route.gate.value = 0;
+	 * route.select(0);
 	 * //signal is routed through output 0
-	 * route.gate.value = 3;
+	 * route.select(3);
 	 * //signal is now routed through output 3
 	 */
 	Tone.Route = function(outputCount){
@@ -22,7 +22,7 @@ define(["Tone/core/Tone", "Tone/signal/Equal", "Tone/signal/Signal"], function(T
 		Tone.call(this, 1, outputCount);
 
 		/**
-		 *  the control signal
+		 *  The control signal.
 		 *  @type {Number}
 		 *  @signal
 		 */
@@ -41,9 +41,9 @@ define(["Tone/core/Tone", "Tone/signal/Equal", "Tone/signal/Signal"], function(T
 	Tone.extend(Tone.Route, Tone.SignalBase);
 
 	/**
-	 *  routes the signal to one of the outputs and close the others
-	 *  @param {number} [which=0] open one of the gates (closes the other)
-	 *  @param {Time} time the time when the switch will open
+	 *  Routes the signal to one of the outputs and close the others.
+	 *  @param {number} [which=0] Open one of the gates (closes the other).
+	 *  @param {Time} [time=now] The time when the switch will open.
 	 *  @returns {Tone.Route} this
 	 */
 	Tone.Route.prototype.select = function(which, time){
@@ -54,7 +54,7 @@ define(["Tone/core/Tone", "Tone/signal/Equal", "Tone/signal/Signal"], function(T
 	};
 
 	/**
-	 *  dispose method
+	 *  Clean up.
 	 *  @returns {Tone.Route} this
 	 */
 	Tone.Route.prototype.dispose = function(){

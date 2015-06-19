@@ -4,7 +4,8 @@ function(Tone){
 	"use strict";
 
 	/**
-	 *  @class return the absolute value of an incoming signal
+	 *  @class Return the absolute value of an incoming signal. 
+	 *  
 	 *  @constructor
 	 *  @extends {Tone.SignalBase}
 	 *  @example

@@ -3,14 +3,14 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Negate", "Tone/signal/
 	"use strict";
 
 	/**
-	 *  @class Subtract a signal and a number or two signals. 
-	 *         input 0 : minuend.
-	 *         input 1 : subtrahend
+	 *  @class Subtract the signal connected to <code>input 1</code> from the signal connected 
+	 *         to <code>input 0</code>. If no signal is connected to <code>input 1</code>, the 
+	 *         signals <code>.value</code> will be subtracted from the incoming signal.
 	 *
 	 *  @extends {Tone.Signal}
 	 *  @constructor
-	 *  @param {number=} value value to subtract from the incoming signal. If the value
-	 *                         is omitted, it will subtract the second signal from the first
+	 *  @param {number=} value The value to subtract from the incoming signal. If the value
+	 *                         is omitted, it will subtract the second signal from the first.
 	 *  @example
 	 * var sub = new Tone.Subtract(1);
 	 * var sig = new Tone.Signal(4).connect(sub);
@@ -48,7 +48,7 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Negate", "Tone/signal/
 	Tone.extend(Tone.Subtract, Tone.Signal);
 
 	/**
-	 *  clean up
+	 *  Clean up.
 	 *  @returns {Tone.SignalBase} this
 	 */
 	Tone.Subtract.prototype.dispose = function(){

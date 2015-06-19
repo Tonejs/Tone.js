@@ -3,7 +3,7 @@ define(["Tone/core/Tone", "Tone/signal/Max", "Tone/signal/Min", "Tone/signal/Sig
 	"use strict";
 
 	/**
-	 * 	@class  Clip the incoming signal so that the output is always between min and max
+	 * 	@class  Clip the incoming signal so that the output is always between min and max.
 	 * 	
 	 *  @constructor
 	 *  @extends {Tone.SignalBase}

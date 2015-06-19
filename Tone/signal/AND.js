@@ -3,7 +3,7 @@ define(["Tone/core/Tone", "Tone/signal/Equal"], function(Tone){
 	"use strict";
 
 	/**
-	 *  @class and returns 1 when all the inputs are equal to 1
+	 *  @class AND returns 1 when all the inputs are equal to 1 and returns 0 otherwise.
 	 *
 	 *  @extends {Tone.SignalBase}
 	 *  @constructor

@@ -3,7 +3,7 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Multiply"], function(T
 	"use strict";
 
 	/**
-	 *  @class Normalize takes an input min and max and maps it linearly to [0,1]
+	 *  @class Normalize takes an input min and max and maps it linearly to NormalRange [0,1]
 	 *
 	 *  @extends {Tone.SignalBase}
 	 *  @constructor

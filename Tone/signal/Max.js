@@ -3,7 +3,7 @@ define(["Tone/core/Tone", "Tone/signal/GreaterThan", "Tone/signal/IfThenElse", "
 	"use strict";
 
 	/**
-	 * 	@class  outputs the greater of two signals. If a number is provided in the constructor
+	 * 	@class  Outputs the greater of two signals. If a number is provided in the constructor
 	 * 	        it will use that instead of the signal. 
 	 * 	
 	 *  @constructor
@@ -51,7 +51,7 @@ define(["Tone/core/Tone", "Tone/signal/GreaterThan", "Tone/signal/IfThenElse", "
 	Tone.extend(Tone.Max, Tone.Signal);
 
 	/**
-	 *  clean up
+	 * 	Clean up.
 	 *  @returns {Tone.Max} this
 	 */
 	Tone.Max.prototype.dispose = function(){

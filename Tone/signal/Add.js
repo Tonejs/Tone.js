@@ -3,15 +3,14 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	"use strict";
 
 	/**
-	 *  @class Add a signal and a number or two signals. <br><br>
-	 *         input 0: augend. input 1: addend. <br><br>
-	 *         Add can be used in two ways, either constructed with a value,
-	 *         or constructed with no initial value and with signals connected
-	 *         to each of its two inputs. 
-	 *
+	 *  @class Add a signal and a number or two signals. When no value is
+	 *         passed into the constructor, Tone.Add will sum <code>input0</code>
+	 *         and <code>input1</code>. If a value is passed into the constructor, 
+	 *         the it will be added to the input.
+	 *  
 	 *  @constructor
 	 *  @extends {Tone.Signal}
-	 *  @param {number=} value if no value is provided, Tone.Add will sum the first
+	 *  @param {number=} value If no value is provided, Tone.Add will sum the first
 	 *                         and second inputs. 
 	 *  @example
 	 * var signal = new Tone.Signal(2);
@@ -49,7 +48,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	Tone.extend(Tone.Add, Tone.Signal);
 	
 	/**
-	 *  dispose method
+	 *  Clean up.
 	 *  @returns {Tone.Add} this
 	 */
 	Tone.Add.prototype.dispose = function(){

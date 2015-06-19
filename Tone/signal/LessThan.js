@@ -11,7 +11,9 @@ function(Tone){
 	 *  
 	 *  @constructor
 	 *  @extends {Tone.Signal}
-	 *  @param {number} [value=0] the value to compare to the incoming signal
+	 *  @param {number=} value The value to compare to the incoming signal. 
+	 *                            If no value is provided, it will compare 
+	 *                            <code>input0</code> and <code>input1</code>
 	 *  @example
 	 * var lt = new Tone.LessThan(2);
 	 * var sig = new Tone.Signal(-1).connect(lt);
@@ -58,7 +60,7 @@ function(Tone){
 	Tone.extend(Tone.LessThan, Tone.Signal);
 
 	/**
-	 *  dispose method
+	 *  Clean up.
 	 *  @returns {Tone.LessThan} this
 	 */
 	Tone.LessThan.prototype.dispose = function(){

@@ -54,7 +54,7 @@ define(["Tone/core/Tone", "Tone/signal/EqualZero", "Tone/signal/Subtract", "Tone
 	});
 
 	/**
-	 *  dispose method
+	 *  Clean up.
 	 *  @returns {Tone.Equal} this
 	 */
 	Tone.Equal.prototype.dispose = function(){

@@ -8,8 +8,8 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Subtract", "Tone/signa
 	"use strict";
 
 	/**
-	 *  @class evaluate an expression at audio rate. 
-	 *         parsing code modified from https://code.google.com/p/tapdigit/
+	 *  @class Evaluate an expression at audio rate. <br><br>
+	 *         Parsing code modified from https://code.google.com/p/tapdigit/
 	 *         Copyright 2011 2012 Ariya Hidayat, New BSD License
 	 *
 	 *  @extends {Tone.SignalBase}
