@@ -6,8 +6,9 @@ function(Tone){
 	/**
 	 *  @class  SimpleFM is composed of two Tone.SimpleSynths where one Tone.SimpleSynth modulates
 	 *          the frequency of a second Tone.SimpleSynth. A lot of spectral content 
-	 *          can be explored using the modulationIndex parameter. Read more about
-	 *          Frequency Modulation Synthesis on <a href="http://www.soundonsound.com/sos/apr00/articles/synthsecrets.htm">SoundOnSound</a>
+	 *          can be explored using the Tone.SimpleSynth.modulationIndex parameter. Read more about
+	 *          frequency modulation synthesis on <a href="http://www.soundonsound.com/sos/apr00/articles/synthsecrets.htm">SoundOnSound</a>
+	 *          <img src="https://docs.google.com/drawings/d/17yyEo9rsYbhr1U6poyZXdZ0wvvFFJX1A0Axq8Dc7NoM/pub?w=902&h=462">
 	 *
 	 *  @constructor
 	 *  @extends {Tone.Monophonic}
@@ -44,9 +45,13 @@ function(Tone){
 		this.frequency = new Tone.Signal(440, Tone.Type.Frequency);
 
 		/**
-		 *  The ratio between the two carrier and the modulator. 
+		 *  Harmonicity is the ratio between the two voices. A harmonicity of
+		 *  1 is no change. Harmonicity = 2 means a change of an octave. 
 		 *  @type {Positive}
 		 *  @signal
+		 *  @example
+		 * //pitch voice1 an octave below voice0
+		 * synth.harmonicity.value = 0.5;
 		 */
 		this.harmonicity = new Tone.Multiply(options.harmonicity);
 		this.harmonicity.units = Tone.Type.Positive;

@@ -6,7 +6,12 @@ function(Tone){
 
 	/**
 	 *  @class  Tone.DrumSynth makes kick and tom sounds using a single oscillator
-	 *          with an amplitude envelope and frequency ramp.
+	 *          with an amplitude envelope and frequency ramp. A Tone.Oscillator
+	 *          is routed through a Tone.AmplitudeEnvelope to the output. The drum
+	 *          quality of the sound comes from the frequency envelope applied
+	 *          during during Tone.DrumSynth.triggerAttack(note). The frequency
+	 *          envelope starts at <code>note * Tone.DrumSynth.octaves</code> and ramps to 
+	 *          <code>note</code> over the duration of <code>Tone.DrumSynth.pitchDecay</code>. 
 	 *
 	 *  @constructor
 	 *  @extends {Tone.Instrument}
@@ -28,7 +33,7 @@ function(Tone){
 		this.oscillator = new Tone.Oscillator(options.oscillator).start();
 
 		/**
-		 *  The envelope.
+		 *  The amplitude envelope.
 		 *  @type {Tone.AmplitudeEnvelope}
 		 */
 		this.envelope = new Tone.AmplitudeEnvelope(options.envelope);
@@ -40,7 +45,7 @@ function(Tone){
 		this.octaves = options.octaves;
 
 		/**
-		 *  The amount of time of the pitch decay.
+		 *  The amount of time the frequency envelope takes. 
 		 *  @type {Time}
 		 */
 		this.pitchDecay = options.pitchDecay;
@@ -71,7 +76,7 @@ function(Tone){
 	};
 
 	/**
-	 *  trigger the attack. start the note, at the time with the velocity
+	 *  Trigger the note at the given time with the given velocity. 
 	 *  
 	 *  @param  {string|string} note     the note
 	 *  @param  {Time} [time=now]     the time, if not given is now
@@ -91,7 +96,7 @@ function(Tone){
 	};
 
 	/**
-	 *  trigger the release portion of the note
+	 *  Trigger the release portion of the note.
 	 *  
 	 *  @param  {Time} [time=now] the time the note will release
 	 *  @returns {Tone.DrumSynth} this
@@ -102,7 +107,7 @@ function(Tone){
 	};
 
 	/**
-	 *  clean up
+	 *  Clean up.
 	 *  @returns {Tone.DrumSynth} this
 	 */
 	Tone.DrumSynth.prototype.dispose = function(){

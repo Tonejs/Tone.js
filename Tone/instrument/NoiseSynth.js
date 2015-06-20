@@ -5,9 +5,10 @@ function(Tone){
 	"use strict";
 
 	/**
-	 *  @class  Tone.NoiseSynth is composed of a noise generator, one filter, and two envelopes.
-	 *          The amplitude of the Tone.Noise and the cutoff frequency of the 
-	 *          Tone.Filter are controlled by Tone.Envelopes. 
+	 *  @class  Tone.NoiseSynth is composed of a noise generator (Tone.Noise), one filter (Tone.Filter), 
+	 *          and two envelopes (Tone.Envelop). One envelope controls the amplitude
+	 *          of the noise and the other is controls the cutoff frequency of the filter. 
+	 *          <img src="https://docs.google.com/drawings/d/1rqzuX9rBlhT50MRvD2TKml9bnZhcZmzXF1rf_o7vdnE/pub?w=918&h=242">
 	 *
 	 *  @constructor
 	 *  @extends {Tone.Instrument}
@@ -24,14 +25,15 @@ function(Tone){
 		Tone.Instrument.call(this);
 
 		/**
-		 *  The noise source. Set the type by setting
-		 *  `noiseSynth.noise.type`. 
+		 *  The noise source.
 		 *  @type {Tone.Noise}
+		 *  @example
+		 * noiseSynth.set("noise.type", "brown");
 		 */
 		this.noise = new Tone.Noise();
 
 		/**
-		 *  The filter .
+		 *  The filter. 
 		 *  @type {Tone.Filter}
 		 */
 		this.filter = new Tone.Filter(options.filter);
@@ -90,10 +92,13 @@ function(Tone){
 	};
 
 	/**
-	 *  start the attack portion of the envelope
+	 *  Start the attack portion of the envelopes. Unlike other 
+	 *  instruments, Tone.NoiseSynth doesn't have a note. 
 	 *  @param {Time} [time=now] the time the attack should start
 	 *  @param {number} [velocity=1] the velocity of the note (0-1)
 	 *  @returns {Tone.NoiseSynth} this
+	 *  @example
+	 * noiseSynth.triggerAttack();
 	 */
 	Tone.NoiseSynth.prototype.triggerAttack = function(time, velocity){
 		//the envelopes
@@ -103,7 +108,7 @@ function(Tone){
 	};
 
 	/**
-	 *  start the release portion of the envelope
+	 *  Start the release portion of the envelopes.
 	 *  @param {Time} [time=now] the time the release should start
 	 *  @returns {Tone.NoiseSynth} this
 	 */
@@ -114,7 +119,7 @@ function(Tone){
 	};
 
 	/**
-	 *  trigger the attack and then the release
+	 *  Trigger the attack and then the release. 
 	 *  @param  {Time} duration the duration of the note
 	 *  @param  {Time} [time=now]     the time of the attack
 	 *  @param  {number} [velocity=1] the velocity
@@ -129,7 +134,7 @@ function(Tone){
 	};
 
 	/**
-	 *  clean up
+	 *  Clean up. 
 	 *  @returns {Tone.NoiseSynth} this
 	 */
 	Tone.NoiseSynth.prototype.dispose = function(){

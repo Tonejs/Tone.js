@@ -10,6 +10,7 @@ function(Tone){
 	 *          the two signals) affects the timbre of the output signal the most.
 	 *          Read more about Amplitude Modulation Synthesis on 
 	 *          <a href="http://www.soundonsound.com/sos/mar00/articles/synthsecrets.htm" target="_blank">SoundOnSound</a>. 
+	 *          <img src="https://docs.google.com/drawings/d/1TQu8Ed4iFr1YTLKpB3U1_hur-UwBrh5gdBXc8BxfGKw/pub?w=1009&h=457">
 	 *
 	 *  @constructor
 	 *  @extends {Tone.Monophonic}
@@ -46,9 +47,13 @@ function(Tone){
 		this.frequency = new Tone.Signal(440, Tone.Type.Frequency);
 
 		/**
-		 *  The ratio between the two voices. 
+		 *  Harmonicity is the ratio between the two voices. A harmonicity of
+		 *  1 is no change. Harmonicity = 2 means a change of an octave. 
 		 *  @type {Positive}
 		 *  @signal
+		 *  @example
+		 * //pitch voice1 an octave below voice0
+		 * synth.harmonicity.value = 0.5;
 		 */
 		this.harmonicity = new Tone.Multiply(options.harmonicity);
 		this.harmonicity.units = Tone.Type.Positive;
