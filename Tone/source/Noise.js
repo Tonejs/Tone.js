@@ -3,8 +3,10 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 	"use strict";
 
 	/**
-	 *  @class  Noise generator.
-	 *          Uses looped noise buffers to save on performance.
+	 *  @class  Noise generator. Uses looped noise buffers to save on performance.
+	 *          Supports noise types: "pink", "white", and "brown". Read more about
+	 *          colors of noise on 
+	 *          <a href="https://en.wikipedia.org/wiki/Colors_of_noise" target="_blank">Wikipedia</a>.
 	 *
 	 *  @constructor
 	 *  @extends {Tone.Source}
@@ -119,7 +121,7 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 	};
 
 	/**
-	 *  Dispose all the components.
+	 *  Clean up.
 	 *  @returns {Tone.Noise} this
 	 */
 	Tone.Noise.prototype.dispose = function(){

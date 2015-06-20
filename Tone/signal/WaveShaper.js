@@ -3,26 +3,27 @@ define(["Tone/core/Tone", "Tone/signal/SignalBase"], function(Tone){
 	"use strict";
 
 	/**
-	 *  @class Wraps the native Web Audio API <a href="interface" target="_blank">WaveShaperNode</a>.
+	 *  @class Wraps the native Web Audio API <a href="http://webaudio.github.io/web-audio-api/#the-waveshapernode-interface" target="_blank">WaveShaperNode</a>.
 	 *
 	 *  @extends {Tone.SignalBase}
 	 *  @constructor
-	 *  @param {function(number, number)|Array|number} mapping the function used to define the values. 
+	 *  @param {function|Array|Number} mapping The function used to define the values. 
 	 *                                    The mapping function should take two arguments: 
 	 *                                    the first is the value at the current position 
 	 *                                    and the second is the array position. 
 	 *                                    If the argument is an array, that array will be
 	 *                                    set as the wave shaping function. The input
 	 *                                    signal is an AudioRange [-1, 1] value and the output
-	 *                                    signal can take on any numerical values. Read more 
-	 *                                    about the waveshaper in the 
-	 *                                    <a href='http://webaudio.github.io/web-audio-api/#the-waveshapernode-interface' target='_blank'>Web Audio API</a>. 
+	 *                                    signal can take on any numerical values. 
 	 *                                    
-	 *  @param {number} [bufferLen=1024] the length of the WaveShaperNode buffer.
+	 *  @param {Number} [bufferLen=1024] The length of the WaveShaperNode buffer.
 	 *  @example
 	 * var timesTwo = new Tone.WaveShaper(function(val){
 	 * 	return val * 2;
 	 * }, 2048);
+	 *  @example
+	 * //a waveshaper can also be constructed with an array of values
+	 * var invert = new Tone.WaveShaper([1, -1]);
 	 */
 	Tone.WaveShaper = function(mapping, bufferLen){
 

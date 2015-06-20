@@ -17,6 +17,10 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	 * sigA.connect(mult, 0, 0);
 	 * sigB.connect(mult, 0, 1);
 	 * //output of mult is 12.
+	 *  @example
+	 * var mult = new Tone.Multiply(10);
+	 * var sig = new Tone.Signal(2).connect(mult);
+	 * //the output of mult is 20. 
 	 */
 	Tone.Multiply = function(value){
 

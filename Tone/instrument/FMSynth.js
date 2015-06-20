@@ -7,7 +7,7 @@ function(Tone){
 	 *  @class  FMSynth is composed of two Tone.MonoSynths where one Tone.MonoSynth modulates
 	 *          the frequency of a second Tone.MonoSynth. A lot of spectral content 
 	 *          can be explored using the modulationIndex parameter. Read more about
-	 *          Frequency Modulation Synthesis on <a href="http://www.soundonsound.com/sos/apr00/articles/synthsecrets.htm">SoundOnSound</a>
+	 *          frequency modulation synthesis on <a href="http://www.soundonsound.com/sos/apr00/articles/synthsecrets.htm">SoundOnSound</a>
 	 *
 	 *  @constructor
 	 *  @extends {Tone.Monophonic}
@@ -37,14 +37,14 @@ function(Tone){
 		this.modulator.volume.value = -10;
 
 		/**
-		 *  the frequency control
+		 *  The frequency control.
 		 *  @type {Frequency}
 		 *  @signal
 		 */
 		this.frequency = new Tone.Signal(440, Tone.Type.Frequency);
 
 		/**
-		 *  The ratio between the two carrier and the modulator. 
+		 *  The ratio between the carrier and the modulator. 
 		 *  @type {Positive}
 		 *  @signal
 		 */
@@ -133,7 +133,7 @@ function(Tone){
 	};
 
 	/**
-	 *  trigger the attack portion of the note
+	 * 	trigger the attack portion of the note
 	 *  
 	 *  @param  {Time} [time=now] the time the note will occur
 	 *  @param {number} [velocity=1] the velocity of the note

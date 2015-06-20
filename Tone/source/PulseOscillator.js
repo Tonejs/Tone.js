@@ -8,10 +8,10 @@ function(Tone){
 	 *
 	 *  @constructor
 	 *  @extends {Tone.Oscillator}
-	 *  @param {Frequency} [frequency=440] the frequency of the oscillator
-	 *  @param {NormalRange} [width = 0.2] the width of the pulse
+	 *  @param {Frequency} [frequency] The frequency of the oscillator
+	 *  @param {NormalRange} [width] The width of the pulse
 	 *  @example
-	 * var pulse = new Tone.PulseOscillator("E5", 0.4);
+	 * var pulse = new Tone.PulseOscillator("E5", 0.4).toMaster().start();
 	 */
 	Tone.PulseOscillator = function(){
 
@@ -45,7 +45,7 @@ function(Tone){
 		});
 
 		/**
-		 *  The frequency in of the oscillator. 
+		 *  The frequency control.
 		 *  @type {Frequency}
 		 *  @signal
 		 */

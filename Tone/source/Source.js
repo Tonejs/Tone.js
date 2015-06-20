@@ -110,8 +110,9 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Master"], function(T
 	};
 
 	/**
-	 *  Start the source.
-	 *  @param  {Time} [time=now]
+	 *  Start the source at the specified time. If no time is given, 
+	 *  start the source now.
+	 *  @param  {Time} [time=now] When the source should be started.
 	 *  @returns {Tone.Source} this
 	 *  @example
 	 * source.start("+0.5"); //starts the source 0.5 seconds from now
@@ -127,8 +128,9 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Master"], function(T
 	};
 
 	/**
-	 *  Stop the source.
-	 *  @param  {Time} [time=now]
+	 *  Stop the source at the specified time. If no time is given, 
+	 *  stop the source now.
+	 *  @param  {Time} [time=now] When the source should be stopped. 
 	 *  @returns {Tone.Source} this
 	 *  @example
 	 * source.stop(); // stops the source immediately

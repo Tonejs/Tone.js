@@ -11,8 +11,8 @@ function(Tone){
 	 *
 	 *  @extends {Tone.Oscillator}
 	 *  @constructor
-	 *  @param {Frequency} frequency of the oscillator (meaningless for noise types)
-	 *  @param {string} type the type of the oscillator
+	 *  @param {Frequency} frequency The initial frequency of the oscillator.
+	 *  @param {string} type The type of the oscillator.
 	 *  @example
 	 *  var omniOsc = new Tone.OmniOscillator("C#4", "pwm");
 	 */
@@ -21,14 +21,14 @@ function(Tone){
 		Tone.Source.call(this, options);
 
 		/**
-		 *  the frequency control
+		 *  The frequency control.
 		 *  @type {Frequency}
 		 *  @signal
 		 */
 		this.frequency = new Tone.Signal(options.frequency, Tone.Type.Frequency);
 
 		/**
-		 *  the detune control
+		 *  The detune control
 		 *  @type {Cents}
 		 *  @signal
 		 */
@@ -210,7 +210,7 @@ function(Tone){
 	});
 
 	/**
-	 *  clean up
+	 *  Clean up.
 	 *  @return {Tone.OmniOscillator} this
 	 */
 	Tone.OmniOscillator.prototype.dispose = function(){

@@ -252,7 +252,7 @@ define(["Tone/core/Tone", "Tone/core/Transport"], function(Tone){
 	};
 
 	/**
-	 *  Convert a note name (i.e. A4, C#5, etc to a frequency).
+	 *  Convert a frequency to a note name (i.e. A4, C#5).
 	 *  @param  {number} freq
 	 *  @return {string}         
 	 */
@@ -267,11 +267,11 @@ define(["Tone/core/Tone", "Tone/core/Transport"], function(Tone){
 	/**
 	 *  Convert an interval (in semitones) to a frequency ratio.
 	 *
-	 *  @param  {number} interval the number of semitones above the base note
+	 *  @param  {Interval} interval the number of semitones above the base note
 	 *  @return {number}          the frequency ratio
 	 *  @example
-	 *  tone.intervalToFrequencyRatio(0); // returns 1
-	 *  tone.intervalToFrequencyRatio(12); // returns 2
+	 * tone.intervalToFrequencyRatio(0); // returns 1
+	 * tone.intervalToFrequencyRatio(12); // returns 2
 	 */
 	Tone.prototype.intervalToFrequencyRatio = function(interval){
 		return Math.pow(2,(interval/12));
@@ -280,10 +280,10 @@ define(["Tone/core/Tone", "Tone/core/Transport"], function(Tone){
 	/**
 	 *  Convert a midi note number into a note name. 
 	 *
-	 *  @param  {number} midiNumber the midi note number
+	 *  @param  {MIDI} midiNumber the midi note number
 	 *  @return {string}            the note's name and octave
 	 *  @example
-	 *  tone.midiToNote(60); // returns "C3"
+	 * tone.midiToNote(60); // returns "C3"
 	 */
 	Tone.prototype.midiToNote = function(midiNumber){
 		var octave = Math.floor(midiNumber / 12) - 2;
@@ -295,9 +295,9 @@ define(["Tone/core/Tone", "Tone/core/Transport"], function(Tone){
 	 *  Convert a note to it's midi value. 
 	 *
 	 *  @param  {string} note the note name (i.e. "C3")
-	 *  @return {number} the midi value of that note
+	 *  @return {MIDI} the midi value of that note
 	 *  @example
-	 *  tone.noteToMidi("C3"); // returns 60
+	 * tone.noteToMidi("C3"); // returns 60
 	 */
 	Tone.prototype.noteToMidi = function(note){
 		//break apart the note by frequency and octave

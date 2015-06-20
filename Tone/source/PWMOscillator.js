@@ -11,7 +11,7 @@ function(Tone){
 	 *  @param {Frequency} frequency The starting frequency of the oscillator. 
 	 *  @param {Frequency} modulationFrequency The modulation frequency of the width of the pulse. 
 	 *  @example
-	 *  var pwm = new Tone.PWMOscillator("Ab3", 0.3);
+	 *  var pwm = new Tone.PWMOscillator("Ab3", 0.3).toMaster().start();
 	 */
 	Tone.PWMOscillator = function(){
 		var options = this.optionsObject(arguments, ["frequency", "modulationFrequency"], Tone.PWMOscillator.defaults);

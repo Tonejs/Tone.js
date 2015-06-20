@@ -9,6 +9,7 @@ define(["Tone/core/Tone", "Tone/signal/SignalBase", "Tone/signal/GreaterThan"], 
 	 *
 	 *  @constructor
 	 *  @extends {Tone.SignalBase}
+	 *  @param {Boolean} [open=false] If the gate is initially open or closed.
 	 *  @example
 	 * var sigSwitch = new Tone.Switch();
 	 * var signal = new Tone.Signal(2).connect(sigSwitch);
@@ -17,12 +18,15 @@ define(["Tone/core/Tone", "Tone/signal/SignalBase", "Tone/signal/GreaterThan"], 
 	 * //open the switch and allow the signal through
 	 * //the output of sigSwitch is now 2. 
 	 */
-	Tone.Switch = function(){
+	Tone.Switch = function(open){
+
+		open = this.defaultArg(open, false);
+
 		Tone.call(this);
 
 		/**
-		 *  the control signal for the switch
-		 *  when this value is 0, the input signal will not pass through,
+		 *  The control signal for the switch.
+		 *  When this value is 0, the input signal will NOT pass through,
 		 *  when it is high (1), the input signal will pass through.
 		 *  
 		 *  @type {Number}
@@ -40,6 +44,11 @@ define(["Tone/core/Tone", "Tone/signal/SignalBase", "Tone/signal/GreaterThan"], 
 
 		this.input.connect(this.output);
 		this.gate.chain(this._thresh, this.output.gain);
+
+		//initially open
+		if (open){
+			this.open();
+		}
 	};
 
 	Tone.extend(Tone.Switch, Tone.SignalBase);

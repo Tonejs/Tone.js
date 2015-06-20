@@ -8,7 +8,7 @@ define(["Tone/core/Tone", "Tone/signal/GreaterThan", "Tone/signal/IfThenElse", "
 	 * 	
 	 *  @constructor
 	 *  @extends {Tone.Signal}
-	 *  @param {number=} max max value if provided. if not provided, it will use the
+	 *  @param {number=} max Max value if provided. if not provided, it will use the
 	 *                       signal value from input 1. 
 	 *  @example
 	 * var max = new Tone.Max(2);
@@ -16,6 +16,13 @@ define(["Tone/core/Tone", "Tone/signal/GreaterThan", "Tone/signal/IfThenElse", "
 	 * //max outputs 3
 	 * sig.value = 1;
 	 * //max outputs 2
+	 *  @example
+	 * var max = new Tone.Max();
+	 * var sigA = new Tone.Signal(3);
+	 * var sigB = new Tone.Signal(4);
+	 * sigA.connect(max, 0, 0);
+	 * sigB.connect(max, 0, 1);
+	 * //output of max is 4.
 	 */
 	Tone.Max = function(max){
 

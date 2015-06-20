@@ -4,14 +4,17 @@ function(Tone){
 	"use strict";
 
 	/**
-	 *  @class Oscilator with start, stop and sync to Transport methods
+	 *  @class An oscillator which supports a number of features including
+	 *         phase rotation, multiple oscillator types (see Tone.Oscillator.type), 
+	 *         and Transport syncing (see Tone.Oscillator.syncFrequency).
 	 *
 	 *  @constructor
 	 *  @extends {Tone.Source}
-	 *  @param {Frequency} [frequency] starting frequency
+	 *  @param {Frequency} [frequency] Starting frequency
 	 *  @param {string} [type] The oscillator type. Read more about type below.
 	 *  @example
-	 * var osc = new Tone.Oscillator(440, "sine");
+	 * //make and start a 440hz sine tone
+	 * var osc = new Tone.Oscillator(440, "sine").toMaster().start();
 	 */
 	Tone.Oscillator = function(){
 		
@@ -26,14 +29,14 @@ function(Tone){
 		this._oscillator = null;
 		
 		/**
-		 *  The frequency control signal in hertz.
+		 *  The frequency control.
 		 *  @type {Frequency}
 		 *  @signal
 		 */
 		this.frequency = new Tone.Signal(options.frequency, Tone.Type.Frequency);
 
 		/**
-		 *  The detune control signal in cents. 
+		 *  The detune control signal.
 		 *  @type {Cents}
 		 *  @signal
 		 */
@@ -118,6 +121,7 @@ function(Tone){
 	 *  @example
 	 * Tone.Transport.bpm.value = 120;
 	 * osc.frequency.value = 440;
+	 * //the ration between the bpm and the frequency will be maintained
 	 * osc.syncFrequency();
 	 * Tone.Transport.bpm.value = 240; 
 	 * // the frequency of the oscillator is doubled to 880

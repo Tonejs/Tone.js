@@ -12,7 +12,10 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 	 *  @param {function=} onload The function to invoke when the buffer is loaded. 
 	 *                            Recommended to use Tone.Buffer.onload instead.
 	 *  @example
-	 * var player = new Tone.Player("./path/to/sample.mp3");
+	 * var player = new Tone.Player("./path/to/sample.mp3").toMaster();
+	 * Tone.Buffer.onload = function(){
+	 * 	player.start();
+	 * }
 	 */
 	Tone.Player = function(){
 		
@@ -29,6 +32,12 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 		 *  If the file should play as soon
 		 *  as the buffer is loaded. 
 		 *  @type {boolean}
+		 *  @example
+		 * //will play as soon as it's loaded
+		 * var player = new Tone.Player({
+		 * 	"url" : "./path/to/sample.mp3",
+		 * 	"autostart" : true,
+		 * }).toMaster();
 		 */
 		this.autostart = options.autostart;
 		
@@ -73,7 +82,9 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 
 		/**
 		 *  Enabling retrigger will allow a player to be restarted
-		 *  before the the previous 'start' is done playing.
+		 *  before the the previous 'start' is done playing. Otherwise, 
+		 *  successive calls to Tone.Player.start, will only start
+		 *  the sample if it had played all the way through. 
 		 *  @type {boolean}
 		 */
 		this.retrigger = options.retrigger;
@@ -106,9 +117,10 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 	 *  was passed in to the constructor. Only use this
 	 *  if you want to manually load a new url. 
 	 * @param {string} url The url of the buffer to load.
-	 *                     filetype support depends on the
+	 *                     Filetype support depends on the
 	 *                     browser.
-	 *  @param  {function(Tone.Player)=} callback
+	 *  @param  {function=} callback The function to invoke once
+	 *                               the sample is loaded.
 	 *  @returns {Tone.Player} this
 	 */
 	Tone.Player.prototype.load = function(url, callback){
@@ -200,6 +212,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 	 *  @param {Time} loopEnd The loop end time
 	 *  @returns {Tone.Player} this
 	 *  @example
+	 * //loop 0.1 seconds of the file. 
 	 * player.setLoopPoints(0.2, 0.3);
 	 * player.loop = true;
 	 */
