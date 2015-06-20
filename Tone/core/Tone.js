@@ -94,7 +94,9 @@ define(function(){
 	///////////////////////////////////////////////////////////////////////////
 
 	/**
-	 *  @class  Tone is the base class of all other classes.  
+	 *  @class  Tone is the base class of all other classes. It provides 
+	 *          a lot of methods and functionality to all classes that extend
+	 *          it. 
 	 *  
 	 *  @constructor
 	 *  @alias Tone
@@ -772,12 +774,12 @@ define(function(){
 		 */
 		Default : "number",
 		/**
-		 *  Time can be described in a number of ways. Read more <a href="https://github.com/TONEnoTONE/Tone.js/wiki/Time">here</>.
+		 *  Time can be described in a number of ways. Read more <a href="https://github.com/TONEnoTONE/Tone.js/wiki/Time">here</a>.
 		 *
 		 *  <ul>
 		 *  <li>Numbers, which will be taken literally as the time (in seconds).</li>
 		 *  <li>Notation, ("4n", "8t") describes time in BPM and time signature relative values.</li>
-		 *  <li>Transport Time, ("4:3:2") will also provide tempo and time signature relative times 
+		 *  <li>TransportTime, ("4:3:2") will also provide tempo and time signature relative times 
 		 *  in the form BARS:QUARTERS:SIXTEENTHS.</li>
 		 *  <li>Frequency, ("8hz") is converted to the length of the cycle in seconds.</li>
 		 *  <li>Now-Relative, ("+1") prefix any of the above with "+" and it will be interpreted as 
@@ -840,7 +842,7 @@ define(function(){
 		 */
 		Positive : "positive",
 		/** 
-		 *  A cent is a hundreth of a semitone. 
+		 *  A cent is a hundredth of a semitone. 
 		 *  @typedef {Cents}
 		 */
 		Cents : "cents",
@@ -848,7 +850,18 @@ define(function(){
 		 *  Angle between 0 and 360. 
 		 *  @typedef {Degrees}
 		 */
-		Degrees : "degrees"
+		Degrees : "degrees",
+		/** 
+		 *  A number representing a midi note.
+		 *  @typedef {MIDI}
+		 */
+		MIDI : "midi",
+		/** 
+		 *  A colon-separated representation of time in the form of
+		 *  BARS:QUARTERS:SIXTEENTHS. 
+		 *  @typedef {TransportTime}
+		 */
+		TransportTime : "transporttime"
 	};
 
 	/**
