@@ -4,10 +4,11 @@ define(["Tone/core/Tone", "Tone/signal/Expr", "Tone/signal/Signal", "Tone/compon
 	"use strict";
 
 	/**
-	 *  @class Seperates the mid channel from the side channel. Has two outputs labeled 
-	 *         `mid` and `side` or `output[0]` and `output[1]`. <br>
-	 *         M = (L+R)/sqrt(2);   // obtain mid-signal from left and right<br>
-	 *         S = (L-R)/sqrt(2);   // obtain side-signal from left and righ<br>
+	 *  @class Mid/Side processing separates the the 'mid' signal 
+	 *         (which comes out of both the left and the right channel) 
+	 *         and the 'side' (which only comes out of the the side channels). <br><br>
+	 *         Mid = (Left+Right)/sqrt(2);   // obtain mid-signal from left and right<br>
+	 *         Side = (Left-Right)/sqrt(2);   // obtain side-signal from left and righ<br>
 	 *
 	 *  @extends {Tone}
 	 *  @constructor
@@ -23,13 +24,15 @@ define(["Tone/core/Tone", "Tone/signal/Expr", "Tone/signal/Signal", "Tone/compon
 		this._split = this.input = new Tone.Split();
 
 		/**
-		 *  The mid send. Connect to mid processing.
+		 *  The mid send. Connect to mid processing. Alias for
+		 *  <code>output[0]</code>
 		 *  @type {Tone.Expr}
 		 */
 		this.mid = this.output[0] = new Tone.Expr("($0 + $1) * $2");
 
 		/**
-		 *  The side output. Connect to side processing.
+		 *  The side output. Connect to side processing. Alias for
+		 *  <code>output[1]</code>
 		 *  @type {Tone.Expr}
 		 */
 		this.side = this.output[1] = new Tone.Expr("($0 - $1) * $2");

@@ -3,9 +3,11 @@ define(["Tone/core/Tone", "Tone/core/Master"], function(Tone){
 	"use strict";
 
 	/**
-	 *  @class  Get the rms of the input signal with some averaging.
-	 *          Can also just get the value of the signal
-	 *          or the value in dB. inspired by https://github.com/cwilso/volume-meter/blob/master/volume-meter.js<br><br>
+	 *  @class  Get the <a href="https://en.wikipedia.org/wiki/Root_mean_square" target="blank">RMS</a> 
+	 *          of the input signal with some averaging. Can also get the raw value of the signal
+	 *          or the value in dB. inspired by 
+	 *          <a href=" https://github.com/cwilso/volume-meter/blob/master/volume-meter.js" target="_blank">Chris Wilsons Volume Meter</a>
+	 *         <br><br>
 	 *          Note that for signal processing, it's better to use Tone.Follower which will produce
 	 *          an audio-rate envelope follower instead of needing to poll the Meter to get the output.
 	 *
@@ -114,8 +116,7 @@ define(["Tone/core/Tone", "Tone/core/Master"], function(Tone){
 	};
 
 	/**
-	 *  get the rms of the signal
-	 *  	
+	 *  Get the rms of the signal.
 	 *  @param  {number} [channel=0] which channel
 	 *  @return {number}         the value
 	 */
@@ -130,7 +131,7 @@ define(["Tone/core/Tone", "Tone/core/Master"], function(Tone){
 	};
 
 	/**
-	 *  get the value of the signal
+	 *  Get the raw value of the signal. 
 	 *  @param  {number=} channel 
 	 *  @return {number}         
 	 */
@@ -140,23 +141,24 @@ define(["Tone/core/Tone", "Tone/core/Master"], function(Tone){
 	};
 
 	/**
-	 *  get the volume of the signal in dB
+	 *  Get the volume of the signal in dB
 	 *  @param  {number=} channel 
-	 *  @return {number}         
+	 *  @return {Decibels}         
 	 */
 	Tone.Meter.prototype.getDb = function(channel){
 		return this.gainToDb(this.getLevel(channel));
 	};
 
 	/**
-	 * @returns {boolean} if the audio has clipped in the last 500ms
+	 * @returns {boolean} if the audio has clipped. The value resets
+	 *                       based on the clipMemory defined. 
 	 */
 	Tone.Meter.prototype.isClipped = function(){
 		return Date.now() - this._lastClip < this._clipMemory;
 	};
 
 	/**
-	 *  clean up
+	 *  Clean up.
 	 *  @returns {Tone.Meter} this
 	 */
 	Tone.Meter.prototype.dispose = function(){

@@ -3,18 +3,21 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Pow"], function(Ton
 	"use strict";
 
 	/**
-	 *  @class  ADSR envelope generator attaches to an AudioParam or Signal. 
+	 *  @class  <a href="https://en.wikipedia.org/wiki/Synthesizer#ADSR_envelope" target="_blank">ADSR</a>
+	 *          envelope generator. Tone.Envelope outputs a signal which can be connected to an AudioParam
+	 *          or Tone.Signal. 
 	 *
 	 *  @constructor
 	 *  @extends {Tone}
-	 *  @param {Time|Object} [attack] The amount of time it takes for the envelope to go from 
-	 *                               0 to it's maximum value. 
+	 *  @param {Time} [attack] The amount of time it takes for the envelope to go from 
+	 *                         0 to it's maximum value. 
 	 *  @param {Time} [decay]	The period of time after the attack that it takes for the envelope
 	 *                       	to fall to the sustain value. 
 	 *  @param {NormalRange} [sustain]	The percent of the maximum value that the envelope rests at until
 	 *                                	the release is triggered. 
 	 *  @param {Time} [release]	The amount of time after the release is triggered it takes to reach 0. 
 	 *  @example
+	 * //an amplitude envelope
 	 * var gainNode = Tone.context.createGain();
 	 * var env = new Tone.Envelope({
 	 * 	"attack" : 0.1,
@@ -30,25 +33,31 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Pow"], function(Ton
 		var options = this.optionsObject(arguments, ["attack", "decay", "sustain", "release"], Tone.Envelope.defaults);
 
 		/** 
-		 *  The attack time
+		 *  When triggerAttack is called, the attack time is the amount of
+		 *  time it takes for the envelope to reach it's maximum value. 
 		 *  @type {Time}
 		 */
 		this.attack = options.attack;
 
 		/**
-		 *  The decay time
+		 *  After the attack portion of the envelope, the value will fall
+		 *  over the duration of the decay time to it's sustain value. 
 		 *  @type {Time}
 		 */
 		this.decay = options.decay;
 		
 		/**
-		 *  the sustain is a value between 0-1
+		 * 	The sustain value is the value 
+		 * 	which the envelope rests at after triggerAttack is
+		 * 	called, but before triggerRelease is invoked. 
 		 *  @type {NormalRange}
 		 */
 		this.sustain = options.sustain;
 
 		/**
-		 *  The release time
+		 *  After triggerRelease is called, the envelope's
+		 *  value will fall to it's miminum value over the
+		 *  duration of the release time. 
 		 *  @type {Time}
 		 */
 		this.release = options.release;
@@ -241,8 +250,8 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Pow"], function(Ton
 
 	/**
 	 *  Trigger the attack/decay portion of the ADSR envelope. 
-	 *  @param  {Time} [time=now]
-	 *  @param {number} [velocity=1] the velocity of the envelope scales the vales.
+	 *  @param  {Time} [time=now] When the attack should start.
+	 *  @param {NormalRange} [velocity=1] The velocity of the envelope scales the vales.
 	 *                               number between 0-1
 	 *  @returns {Tone.Envelope} this
 	 *  @example
@@ -284,7 +293,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Pow"], function(Ton
 	
 	/**
 	 *  Triggers the release of the envelope.
-	 *  @param  {Time} [time=now]
+	 *  @param  {Time} [time=now] When the release portion of the envelope should start. 
 	 *  @returns {Tone.Envelope} this
 	 *  @example
 	 *  //trigger release immediately
@@ -321,14 +330,15 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Pow"], function(Ton
 	};
 
 	/**
-	 *  Trigger the attack and release after a sustain time
-	 *  @param {Time} duration the duration of the note
-	 *  @param {Time} [time=now] the time of the attack
-	 *  @param {number} [velocity=1] the velocity of the note
+	 *  triggerAttackRelease is shorthand for triggerAttack, then waiting
+	 *  some duration, then triggerRelease. 
+	 *  @param {Time} duration The duration of the sustain.
+	 *  @param {Time} [time=now] When the attack should be triggered.
+	 *  @param {number} [velocity=1] The velocity of the envelope. 
 	 *  @returns {Tone.Envelope} this
 	 *  @example
-	 *  //trigger the attack and then the release after 0.6 seconds.
-	 *  env.triggerAttackRelease(0.6);
+	 * //trigger the attack and then the release after 0.6 seconds.
+	 * env.triggerAttackRelease(0.6);
 	 */
 	Tone.Envelope.prototype.triggerAttackRelease = function(duration, time, velocity) {
 		time = this.toSeconds(time);
@@ -340,11 +350,12 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Pow"], function(Ton
 	/**
 	 *  Borrows the connect method from Tone.Signal. 
 	 *  @function
+	 *  @private
 	 */
 	Tone.Envelope.prototype.connect = Tone.Signal.prototype.connect;
 
 	/**
-	 *  disconnect and dispose
+	 *  Disconnect and dispose.
 	 *  @returns {Tone.Envelope} this
 	 */
 	Tone.Envelope.prototype.dispose = function(){

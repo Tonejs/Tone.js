@@ -5,14 +5,15 @@ define(["Tone/core/Tone", "Tone/component/Envelope", "Tone/signal/Scale"],
 
 	/**
 	 *  @class An envelope which can be scaled to any range. 
-	 *         Useful for applying an envelope to a filter
+	 *         Useful for applying an envelope to a frequency or 
+	 *         any other non-NormalRange signal parameter. 
 	 *
 	 *  @extends {Tone.Envelope}
 	 *  @constructor
-	 *  @param {Time|Object} [attack=0.01]	the attack time in seconds
-	 *  @param {Time} [decay=0.1]	the decay time in seconds
-	 *  @param {number} [sustain=0.5] 	a percentage (0-1) of the full amplitude
-	 *  @param {Time} [release=1]	the release time in seconds
+	 *  @param {Time|Object} [attack]	the attack time in seconds
+	 *  @param {Time} [decay]	the decay time in seconds
+	 *  @param {number} [sustain] 	a percentage (0-1) of the full amplitude
+	 *  @param {Time} [release]	the release time in seconds
 	 *  @example
 	 *  var scaledEnv = new Tone.ScaledEnvelope({
 	 *  	"attack" : 0.2,

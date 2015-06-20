@@ -9,11 +9,11 @@ define(["Tone/core/Tone", "Tone/component/MultibandSplit", "Tone/signal/Signal"]
 	 *  @constructor
 	 *  @extends {Tone}
 	 *  
-	 *  @param {number|object} [lowLevel=0] the gain applied to the lows (in db)
-	 *  @param {number} [midLevel=0] the gain applied to the mid (in db)
-	 *  @param {number} [highLevel=0] the gain applied to the high (in db)
+	 *  @param {Decibels|Object} [lowLevel] The gain applied to the lows.
+	 *  @param {Decibels} [midLevel] The gain applied to the mid.
+	 *  @param {Decibels} [highLevel] The gain applied to the high.
 	 *  @example
-	 *  var eq = new Tone.EQ3(-10, 3, -20);
+	 * var eq = new Tone.EQ3(-10, 3, -20);
 	 */
 	Tone.EQ3 = function(){
 
@@ -79,21 +79,21 @@ define(["Tone/core/Tone", "Tone/component/MultibandSplit", "Tone/signal/Signal"]
 		this.high = new Tone.Signal(this._highGain.gain, Tone.Type.Decibels);
 
 		/**
-		 *  the Q value
+		 *  The Q value for all of the filters. 
 		 *  @type {Positive}
 		 *  @signal
 		 */
 		this.Q = this._multibandSplit.Q;
 
 		/**
-		 *  the low/mid crossover frequency
+		 *  The low/mid crossover frequency. 
 		 *  @type {Frequency}
 		 *  @signal
 		 */
 		this.lowFrequency = this._multibandSplit.lowFrequency;
 
 		/**
-		 *  the mid/high crossover frequency
+		 *  The mid/high crossover frequency. 
 		 *  @type {Frequency}
 		 *  @signal
 		 */

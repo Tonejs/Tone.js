@@ -3,14 +3,15 @@ define(["Tone/core/Tone"], function(Tone){
 	"use strict";
 
 	/**
-	 *  @class  Merge a left and a right channel into a single stereo channel.
+	 *  @class  Merge two signals into the left and right 
+	 *          channels of a single, stereo channel.
 	 *
 	 *  @constructor
 	 *  @extends {Tone}
 	 *  @example
-	 *  var merge = new Tone.Merge();
-	 *  sigLeft.connect(merge.left);
-	 *  sigRight.connect(merge.right);
+	 * var merge = new Tone.Merge();
+	 * sigLeft.connect(merge.left);
+	 * sigRight.connect(merge.right);
 	 */
 	Tone.Merge = function(){
 
@@ -18,14 +19,14 @@ define(["Tone/core/Tone"], function(Tone){
 
 		/**
 		 *  The left input channel.
-		 *  Alias for input 0
+		 *  Alias for <code>input[0]</code>
 		 *  @type {GainNode}
 		 */
 		this.left = this.input[0] = this.context.createGain();
 
 		/**
 		 *  The right input channel.
-		 *  Alias for input 1.
+		 *  Alias for <code>input[1]</code>.
 		 *  @type {GainNode}
 		 */
 		this.right = this.input[1] = this.context.createGain();
@@ -45,7 +46,7 @@ define(["Tone/core/Tone"], function(Tone){
 	Tone.extend(Tone.Merge);
 
 	/**
-	 *  clean up
+	 *  Clean up.
 	 *  @returns {Tone.Merge} this
 	 */
 	Tone.Merge.prototype.dispose = function(){

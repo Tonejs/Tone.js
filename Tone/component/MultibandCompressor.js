@@ -7,7 +7,7 @@ define(["Tone/core/Tone", "Tone/component/MultibandSplit", "Tone/component/Compr
 	 *
 	 *  @extends {Tone}
 	 *  @constructor
-	 *  @param {Object} options the low/mid/high compressor settings in a single object
+	 *  @param {Object} options The low/mid/high compressor settings.
 	 *  @example
 	 *  var multiband = new Tone.MultibandCompressor({
 	 *  	"lowFrequency" : 200,
@@ -32,14 +32,14 @@ define(["Tone/core/Tone", "Tone/component/MultibandSplit", "Tone/component/Compr
 		});
 
 		/**
-		 *  low/mid crossover frequency
+		 *  low/mid crossover frequency.
 		 *  @type {Frequency}
 		 *  @signal
 		 */
 		this.lowFrequency = this._splitter.lowFrequency;
 
 		/**
-		 *  mid/high crossover frequency
+		 *  mid/high crossover frequency.
 		 *  @type {Frequency}
 		 *  @signal
 		 */
@@ -53,19 +53,19 @@ define(["Tone/core/Tone", "Tone/component/MultibandSplit", "Tone/component/Compr
 		this.output = this.context.createGain();
 
 		/**
-		 *  the low compressor
+		 *  The compressor applied to the low frequencies.
 		 *  @type {Tone.Compressor}
 		 */
 		this.low = new Tone.Compressor(options.low);
 
 		/**
-		 *  the mid compressor
+		 *  The compressor applied to the mid frequencies.
 		 *  @type {Tone.Compressor}
 		 */
 		this.mid = new Tone.Compressor(options.mid);
 
 		/**
-		 *  the high compressor
+		 *  The compressor applied to the high frequencies.
 		 *  @type {Tone.Compressor}
 		 */
 		this.high = new Tone.Compressor(options.high);

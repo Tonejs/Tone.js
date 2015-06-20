@@ -5,17 +5,18 @@ function(Tone){
 	"use strict";
 
 	/**
-	 *  @class  Follow the envelope of the incoming signal. 
+	 *  @class  A crude envelope follower which will follow the amplitude
+	 *          of the incoming signal. 
 	 *          Careful with small (< 0.02) attack or decay values. 
 	 *          The follower has some ripple which gets exaggerated
 	 *          by small values. 
 	 *  
 	 *  @constructor
 	 *  @extends {Tone}
-	 *  @param {Time=} attack
-	 *  @param {Time=} release
+	 *  @param {Time|Object} [attack] The rate at which the follower rises.
+	 *  @param {Time=} release The rate at which the folower falls. 
 	 *  @example
-	 *  var follower = new Tone.Follower(0.2, 0.4);
+	 * var follower = new Tone.Follower(0.2, 0.4);
 	 */
 	Tone.Follower = function(){
 

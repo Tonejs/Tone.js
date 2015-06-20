@@ -3,12 +3,13 @@ define(["Tone/core/Tone", "Tone/signal/ScaleExp", "Tone/signal/Signal"], functio
 	"use strict";
 
 	/**
-	 *  @class A comb filter with feedback.
+	 *  @class Comb filters are basic building blocks for digital audio effects. Read more
+	 *         about comb filters on <a href="https://ccrma.stanford.edu/~jos/pasp/Feedback_Comb_Filters.html" target="_blank">CCRMA's website</a>. 
 	 *
 	 *  @extends {Tone}
 	 *  @constructor
-	 *  @param {number} [delayTime=0.1] the minimum delay time which the filter can have
-	 *  @param {number} [resonance=0.5] the maximum delay time which the filter can have
+	 *  @param {Time|Object} [delayTime] The delay time of the filter. 
+	 *  @param {NormalRange=} resonance The amount of feedback the filter has. 
 	 */
 	Tone.FeedbackCombFilter = function(){
 
@@ -16,7 +17,7 @@ define(["Tone/core/Tone", "Tone/signal/ScaleExp", "Tone/signal/Signal"], functio
 		var options = this.optionsObject(arguments, ["delayTime", "resonance"], Tone.FeedbackCombFilter.defaults);
 
 		/**
-		 *  the resonance control
+		 *  The amount of feedback of the delayed signal. 
 		 *  @type {NormalRange}
 		 *  @signal
 		 */
@@ -30,7 +31,7 @@ define(["Tone/core/Tone", "Tone/signal/ScaleExp", "Tone/signal/Signal"], functio
 		this._delay = this.input = this.output = this.context.createDelay(1);
 
 		/**
-		 *  the delayTime
+		 *  The amount of delay of the comb filter. 
 		 *  @type {Time}
 		 *  @signal
 		 */

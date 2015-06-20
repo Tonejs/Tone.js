@@ -3,16 +3,18 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	"use strict";
 
 	/**
-	 *  @class A thin wrapper around the DynamicsCompressorNode. Compression reduces the 
-	 *         volume of loud sounds or amplifies quiet sounds by narrowing or "compressing" 
-	 *         an audio signal's dynamic range. [<a href="https://en.wikipedia.org/wiki/Dynamic_range_compression">Wikipedia</a>]
+	 *  @class A thin wrapper around the Web Audio 
+	 *         <a href="http://webaudio.github.io/web-audio-api/#the-dynamicscompressornode-interface" target="_blank">DynamicsCompressorNode</a>. 
+	 *         Compression reduces the volume of loud sounds or amplifies quiet sounds 
+	 *         by narrowing or "compressing" an audio signal's dynamic range. 
+	 *         Read more on <a href="https://en.wikipedia.org/wiki/Dynamic_range_compression">Wikipedia</a>.
 	 *
 	 *  @extends {Tone}
 	 *  @constructor
-	 *  @param {Decibels=} threshold The value above which the compression starts to be applied.
-	 *  @param {Positive=} ratio The gain reduction ratio.
+	 *  @param {Decibels|Object} [threshold] The value above which the compression starts to be applied.
+	 *  @param {Positive} [ratio] The gain reduction ratio.
 	 *  @example
-	 *  var comp = new Tone.Compressor(-30, 3);
+	 * var comp = new Tone.Compressor(-30, 3);
 	 */
 	Tone.Compressor = function(){
 
