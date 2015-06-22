@@ -4,16 +4,16 @@ function(Tone){
 	"use strict";
 
 	/**
-	 *  @class  PingPongDelay is a dual delay effect where the echo is heard
+	 *  @class  PingPongDelay is a feedback delay effect where the echo is heard
 	 *          first in one channel and next in the opposite channel
 	 *
 	 * 	@constructor
 	 * 	@extends {Tone.StereoXFeedbackEffect}
-	 *  @param {Time|Object} [delayTime=0.25] is the interval between consecutive echos
-	 *  @param {number=} feedback The amount of the effected signal which 
-	 *                            is fed back through the delay.
+	 *  @param {Time|Object} [delayTime] The delayTime between consecutive echos.
+	 *  @param {NormalRange=} feedback The amount of the effected signal which 
+	 *                                 is fed back through the delay.
 	 *  @example
-	 *  var pingPong = new Tone.PingPongDelay("4n", 0.2);
+	 * var pingPong = new Tone.PingPongDelay("4n", 0.2);
 	 */
 	Tone.PingPongDelay = function(){
 		
@@ -70,7 +70,7 @@ function(Tone){
 	};
 
 	/**
-	 *  clean up
+	 *  Clean up. 
 	 *  @returns {Tone.PingPongDelay} this
 	 */
 	Tone.PingPongDelay.prototype.dispose = function(){

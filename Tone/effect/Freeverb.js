@@ -25,10 +25,9 @@ function(Tone){
 	 *
 	 *  @extends {Tone.Effect}
 	 *  @constructor
-	 *  @param {number} [roomSize=0.7] correlated to the decay time. 
-	 *                                 value between (0,1)
-	 *  @param {number} [dampening=3000] filtering which is applied to the reverb. 
-	 *                                  Value is a lowpass frequency value in hertz. 
+	 *  @param {NormalRange|Object} [roomSize] Correlated to the decay time. 
+	 *  @param {Frequency} [dampening] The cutoff frequency of a lowpass filter as part 
+	 *                                 of the reverb. 
 	 *  @example
 	 *  var freeverb = new Tone.Freeverb(0.4, 2000);
 	 */
@@ -38,14 +37,15 @@ function(Tone){
 		Tone.StereoEffect.call(this, options);
 
 		/**
-		 *  The roomSize value between (0,1)
+		 *  The roomSize value between. A larger roomSize
+		 *  will result in a longer decay. 
 		 *  @type {NormalRange}
 		 *  @signal
 		 */
 		this.roomSize = new Tone.Signal(options.roomSize, Tone.Type.NormalRange);
 
 		/**
-		 *  The amount of dampening as a value in Hertz.
+		 *  The amount of dampening of the reverberant signal. 
 		 *  @type {Frequency}
 		 *  @signal
 		 */
@@ -121,7 +121,7 @@ function(Tone){
 	};
 
 	/**
-	 *  clean up
+	 *  Clean up. 
 	 *  @returns {Tone.Freeverb} this
 	 */
 	Tone.Freeverb.prototype.dispose = function(){

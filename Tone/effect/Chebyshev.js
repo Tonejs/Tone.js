@@ -9,7 +9,7 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/signal/WaveShaper"], funct
 	 *
 	 *  @extends {Tone.Effect}
 	 *  @constructor
-	 *  @param {number} order The order of the chebyshev polynomial. Normal range between 1-100. 
+	 *  @param {Positive|Object} [order] The order of the chebyshev polynomial. Normal range between 1-100. 
 	 *  @example
 	 *  var cheby = new Tone.Chebyshev(50);
 	 */
@@ -71,10 +71,14 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/signal/WaveShaper"], funct
 	};
 
 	/**
-	 * The order of the Chebyshev polynomial i.e.
-	 * order = 2 -> 2x^2 + 1. order = 3 -> 4x^3 + 3x. 
+	 * The order of the Chebyshev polynomial which creates
+	 * the equation which is applied to the incoming 
+	 * signal through a Tone.WaveShaper. The equations
+	 * are in the form:<br>
+	 * order 2: 2x^2 + 1<br>
+	 * order 3: 4x^3 + 3x <br>
 	 * @memberOf Tone.Chebyshev#
-	 * @type {number}
+	 * @type {Positive}
 	 * @name order
 	 */
 	Object.defineProperty(Tone.Chebyshev.prototype, "order", {
@@ -114,7 +118,7 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/signal/WaveShaper"], funct
 	});
 
 	/**
-	 *  clean up
+	 *  Clean up. 
 	 *  @returns {Tone.Chebyshev} this
 	 */
 	Tone.Chebyshev.prototype.dispose = function(){

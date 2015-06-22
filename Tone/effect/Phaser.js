@@ -8,11 +8,15 @@ function(Tone){
 	 *
 	 *	@extends {Tone.StereoEffect}
 	 *	@constructor
-	 *	@param {number|Object} [frequency=0.5] the speed of the phasing
-	 *	@param {number} [depth=10] the depth of the effect
-	 *	@param {number} [baseFrequency=400] the base frequency of the filters
+	 *	@param {Frequency|Object} [frequency] The speed of the phasing. 
+	 *	@param {number} [depth] The depth of the effect. 
+	 *	@param {Frequency} [baseFrequency] The base frequency of the filters. 
 	 *	@example
-	 * 	var phaser = new Tone.Phaser(0.4, 12, 550);
+	 * var phaser = new Tone.Phaser({
+	 * 	"frequency" : 0.4, 
+	 * 	"depth" : 12, 
+	 * 	"baseFrequency" : 550
+	 * });
 	 */
 	Tone.Phaser = function(){
 

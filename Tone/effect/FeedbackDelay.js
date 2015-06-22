@@ -3,15 +3,16 @@ define(["Tone/core/Tone", "Tone/effect/FeedbackEffect", "Tone/signal/Signal"], f
 	"use strict";
 	
 	/**
-	 *  @class  A feedback delay.
+	 *  @class  Tone.FeedbackDelay is a DelayNode in which part of output
+	 *          signal is fed back into the delay. 
 	 *
 	 *  @constructor
 	 *  @extends {Tone.FeedbackEffect}
-	 *  @param {Time} [delayTime=0.25] The delay time in seconds. 
-	 *  @param {number=} feedback The amount of the effected signal which 
+	 *  @param {Time|Object} [delayTime] The delay applied to the incoming signal. 
+	 *  @param {NormalRange=} feedback The amount of the effected signal which 
 	 *                            is fed back through the delay.
 	 *  @example
-	 *  var feedbackDelay = new Tone.FeedbackDelay("8n", 0.25);
+	 * var feedbackDelay = new Tone.FeedbackDelay("8n", 0.25);
 	 */
 	Tone.FeedbackDelay = function(){
 		
@@ -19,7 +20,7 @@ define(["Tone/core/Tone", "Tone/effect/FeedbackEffect", "Tone/signal/Signal"], f
 		Tone.FeedbackEffect.call(this, options);
 
 		/**
-		 *  Tone.Signal to control the delay amount
+		 *  The delayTime of the DelayNode. 
 		 *  @type {Time}
 		 *  @signal
 		 */

@@ -5,7 +5,7 @@ function(Tone){
 	"use strict";
 
 	/**
-	 *  @class Creates an effect with an effectSendL/R and effectReturnL/R
+	 *  @class Base class for Stereo effects. Provides effectSendL/R and effectReturnL/R. 
 	 *
 	 *	@constructor
 	 *	@extends {Tone.Effect}
@@ -85,7 +85,7 @@ function(Tone){
 	Tone.extend(Tone.StereoEffect, Tone.Effect);
 
 	/**
-	 *  clean up
+	 *  Clean up. 
 	 *  @returns {Tone.StereoEffect} this
 	 */
 	Tone.StereoEffect.prototype.dispose = function(){

@@ -7,9 +7,12 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/LFO", "Tone/comp
 	 *
 	 *  @constructor
 	 *  @extends {Tone.Effect}
-	 *  @param {number} [frequency=1] (optional) rate in HZ of the left-right pan
+	 *  @param {Frequency|Object} [frequency] Rate of left-right oscillation. 
 	 *  @example
-	 *  var autoPanner = new Tone.AutoPanner("4n");
+	 * //create an autopanner and start it's LFO
+	 * var autoPanner = new Tone.AutoPanner("4n").toMaster().start();
+	 * //route an oscillator through the panner and start it
+	 * var oscillator = new Tone.Oscillator().connect(autoPanner).start();
 	 */
 	Tone.AutoPanner = function(){
 
@@ -46,7 +49,7 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/LFO", "Tone/comp
 		this._panner = new Tone.Panner();
 
 		/**
-		 * How fast the panner modulates
+		 * How fast the panner modulates between left and right. 
 		 * @type {Frequency}
 		 * @signal
 		 */
@@ -74,8 +77,8 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/LFO", "Tone/comp
 	};
 	
 	/**
-	 * Start the panner.
-	 * @param {Time} [time=now] the panner begins.
+	 * Start the effect.
+	 * @param {Time} [time=now] When the LFO will start. 
 	 * @returns {Tone.AutoPanner} this
 	 */
 	Tone.AutoPanner.prototype.start = function(time){
@@ -83,9 +86,9 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/LFO", "Tone/comp
 		return this;
 	};
 
-	/**
-	 * Stop the panner.
-	 * @param {Time} [time=now] the panner stops.
+/**
+	 * Stop the effect.
+	 * @param {Time} [time=now] When the LFO will stop. 
 	 * @returns {Tone.AutoPanner} this
 	 */
 	Tone.AutoPanner.prototype.stop = function(time){
@@ -97,7 +100,7 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/LFO", "Tone/comp
 	 * Sync the panner to the transport.
 	 * @param {Time} [delay=0] Delay time before starting the effect after the
 	 *                               Transport has started. 
-	 * @returns {Tone.AutoFilter} this
+	 * @returns {Tone.AutoPanner} this
 	 */
 	Tone.AutoPanner.prototype.sync = function(delay){
 		this._lfo.sync(delay);
@@ -114,8 +117,9 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/LFO", "Tone/comp
 	};
 
 	/**
-	 * Type of oscillator attached to the AutoPanner.
-	 * @memberOf Tone.AutoPanner#
+	 * Type of oscillator attached to the AutoFilter. 
+	 * Possible values: "sine", "square", "triangle", "sawtooth".
+	 * @memberOf Tone.AutoFilter#
 	 * @type {string}
 	 * @name type
 	 */

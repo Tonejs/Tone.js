@@ -4,14 +4,15 @@ function(Tone){
 	"use strict";
 
 	/**
-	 *  @class A Chorus effect with feedback. 
-	 *         Inspiration from <a href="https://github.com/Dinahmoe/tuna/blob/master/tuna.js">tuna.js</a>.
+	 *  @class A stereo chorus effect with feedback composed of a left and right
+	 *         delay with LFOs applied to the delayTime. 
+	 *         Inspiration from <a href="https://github.com/Dinahmoe/tuna/blob/master/tuna.js">Tuna.js</a>.
 	 *
 	 *	@constructor
 	 *	@extends {Tone.StereoXFeedbackEffect}
-	 *	@param {number|Object} [frequency=2] the frequency of the effect
-	 *	@param {number} [delayTime=3.5] the delay of the chorus effect in ms
-	 *	@param {number} [depth=0.7] the depth of the chorus
+	 *	@param {Frequency|Object} [frequency] The frequency of the LFO.
+	 *	@param {Number} [delayTime] The delay of the chorus effect in ms. 
+	 *	@param {NormalRange} [depth] The depth of the chorus.
 	 *	@example
 	 * 	var chorus = new Tone.Chorus(4, 2.5, 0.5);
 	 */
@@ -64,7 +65,7 @@ function(Tone){
 		this._delayNodeR = this.context.createDelay();
 
 		/**
-		 * The frequency the chorus will modulate at. 
+		 * The frequency of the LFO which modulates the delayTime. 
 		 * @type {Frequency}
 		 * @signal
 		 */
@@ -107,9 +108,10 @@ function(Tone){
 	};
 
 	/**
-	 * The depth of the effect. 
+	 * The depth of the effect. A depth of 1 makes the delayTime
+	 * modulate between 0 and 2*delayTime (centered around the delayTime). 
 	 * @memberOf Tone.Chorus#
-	 * @type {number}
+	 * @type {NormalRange}
 	 * @name depth
 	 */
 	Object.defineProperty(Tone.Chorus.prototype, "depth", {
@@ -127,9 +129,11 @@ function(Tone){
 	});
 
 	/**
-	 * The delayTime in milliseconds
+	 * The delayTime in milliseconds of the chorus. A larger delayTime
+	 * will give a more pronounced effect. Nominal range a delayTime
+	 * is between 2 and 20ms. 
 	 * @memberOf Tone.Chorus#
-	 * @type {number}
+	 * @type {Number}
 	 * @name delayTime
 	 */
 	Object.defineProperty(Tone.Chorus.prototype, "delayTime", {
@@ -143,7 +147,7 @@ function(Tone){
 	});
 
 	/**
-	 * The lfo type for the chorus. 
+	 * The oscillator type of the LFO. 
 	 * @memberOf Tone.Chorus#
 	 * @type {string}
 	 * @name type
@@ -159,7 +163,7 @@ function(Tone){
 	});
 
 	/**
-	 *  clean up
+	 *  Clean up. 
 	 *  @returns {Tone.Chorus} this
 	 */
 	Tone.Chorus.prototype.dispose = function(){
