@@ -144,7 +144,7 @@ function(Tone){
 	/**
 	 * The type of the oscillator: either sine, square, triangle, or sawtooth. Also capable of
 	 * setting the first x number of partials of the oscillator. For example: "sine4" would
-	 * would set be the first 4 partials of the sine wave and "triangle8" would set the first
+	 * set be the first 4 partials of the sine wave and "triangle8" would set the first
 	 * 8 partials of the triangle wave.
 	 * <br><br> 
 	 * Uses PeriodicWave internally even for native types so that it can set the phase. 

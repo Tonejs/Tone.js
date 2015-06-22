@@ -54,7 +54,7 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Multiply", "Tone/signa
 	/**
 	 * The minimum output value. This number is output when 
 	 * the value input value is 0. 
-	 * @memberOf Tone.ScaleExp#
+	 * @memberOf Tone.Scale#
 	 * @type {number}
 	 * @name min
 	 */
@@ -71,7 +71,7 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Multiply", "Tone/signa
 	/**
 	 * The maximum output value. This number is output when 
 	 * the value input value is 1. 
-	 * @memberOf Tone.ScaleExp#
+	 * @memberOf Tone.Scale#
 	 * @type {number}
 	 * @name max
 	 */

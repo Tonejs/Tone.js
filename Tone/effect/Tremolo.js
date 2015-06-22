@@ -8,10 +8,13 @@ define(["Tone/core/Tone", "Tone/component/LFO", "Tone/effect/Effect"], function(
 	 *
 	 *  @extends {Tone.Effect}
 	 *  @constructor
-	 *  @param {Time} [frequency=10] The rate of the effect. 
-	 *  @param {number} [depth=0.5] The depth of the wavering.
+	 *  @param {Frequency|Object} [frequency] The rate of the effect. 
+	 *  @param {NormalRange} [depth] The depth of the wavering.
 	 *  @example
-	 *  var tremolo = new Tone.Tremolo(9, 0.75);
+	 * //create an tremolo and start it's LFO
+	 * var tremolo = new Tone.Tremolo(9, 0.75).toMaster().start();
+	 * //route an oscillator through the tremolo and start it
+	 * var oscillator = new Tone.Oscillator().connect(tremolo).start();
 	 */
 	Tone.Tremolo = function(){
 
@@ -45,7 +48,9 @@ define(["Tone/core/Tone", "Tone/component/LFO", "Tone/effect/Effect"], function(
 		this.frequency = this._lfo.frequency;
 
 		/**
-		 *  The depth of the effect.	
+		 *  The depth of the effect. A depth of 0, has no effect
+		 *  on the amplitude, and a depth of 1 makes the amplitude
+		 *  modulate fully between 0 and 1. 
 		 *  @type  {NormalRange}
 		 *  @signal
 		 */
@@ -82,7 +87,7 @@ define(["Tone/core/Tone", "Tone/component/LFO", "Tone/effect/Effect"], function(
 
 	/**
 	 * Stop the tremolo.
-	 * @param {Time} [time=now] the tremolo stops.
+	 * @param {Time} [time=now] When the tremolo stops.
 	 * @returns {Tone.Tremolo} this
 	 */
 	Tone.Tremolo.prototype.stop = function(time){
