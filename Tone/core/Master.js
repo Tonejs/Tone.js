@@ -75,7 +75,6 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 			return this._muted;
 		}, 
 		set : function(mute){
-			this._muted = mute;
 			if (!this._muted && mute){
 				this._unmutedVolume = this.volume.value;
 				//maybe it should ramp here?
@@ -83,6 +82,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 			} else if (this._muted && !mute){
 				this.volume.value = this._unmutedVolume;
 			}
+			this._muted = mute;
 		}
 	});
 
