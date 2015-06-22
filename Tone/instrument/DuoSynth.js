@@ -7,7 +7,7 @@ function(Tone){
 	 *  @class  Tone.DuoSynth is a monophonic synth composed of two 
 	 *          MonoSynths run in parallel with control over the 
 	 *          frequency ratio between the two voices and vibrato effect.
-	 *          <img src="https://docs.google.com/drawings/d/1bL4GXvfRMMlqS7XyBm9CjL9KJPSUKbcdBNpqOlkFLxk/pub?w=982&h=450">
+	 *          <img src="https://docs.google.com/drawings/d/1bL4GXvfRMMlqS7XyBm9CjL9KJPSUKbcdBNpqOlkFLxk/pub?w=1012&h=448">
 	 *
 	 *  @constructor
 	 *  @extends {Tone.Monophonic}

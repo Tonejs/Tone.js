@@ -8,7 +8,7 @@ function(Tone){
 	 *          the frequency of a second Tone.SimpleSynth. A lot of spectral content 
 	 *          can be explored using the Tone.SimpleSynth.modulationIndex parameter. Read more about
 	 *          frequency modulation synthesis on <a href="http://www.soundonsound.com/sos/apr00/articles/synthsecrets.htm">SoundOnSound</a>
-	 *          <img src="https://docs.google.com/drawings/d/17yyEo9rsYbhr1U6poyZXdZ0wvvFFJX1A0Axq8Dc7NoM/pub?w=902&h=462">
+	 *          <img src="https://docs.google.com/drawings/d/1hSU25lLjDk_WJ59DSitQm6iCRpcMWVEAYqBjwmqtRVw/pub?w=902&h=462">
 	 *
 	 *  @constructor
 	 *  @extends {Tone.Monophonic}

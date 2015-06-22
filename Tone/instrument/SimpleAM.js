@@ -10,7 +10,7 @@ function(Tone){
 	 *          the two signals) affects the timbre of the output signal the most.
 	 *          Read more about Amplitude Modulation Synthesis on 
 	 *          <a href="http://www.soundonsound.com/sos/mar00/articles/synthsecrets.htm" target="_blank">SoundOnSound</a>. 
-	 *          <img src="https://docs.google.com/drawings/d/1DKiL-Bw8nI8q2en3-iliZxSD1yfxxquO5NDj_NenplE/pub?w=1009&h=457">
+	 *          <img src="https://docs.google.com/drawings/d/1p_os_As-N1bpnK8u55gXlgVw3U7BfquLX0Wj57kSZXY/pub?w=1009&h=457">
 	 *
 	 *  @constructor
 	 *  @extends {Tone.Monophonic}
