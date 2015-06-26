@@ -86,11 +86,11 @@ function(Tone){
 	 * poly.triggerAttack(["Ab3", "C4", "F5"], undefined, 0.2);
 	 */
 	Tone.PolySynth.prototype.triggerAttack = function(notes, time, velocity){
-		if (!Array.isArray(value)){
-			value = [value];
+		if (!Array.isArray(notes)){
+			notes = [notes];
 		}
-		for (var i = 0; i < value.length; i++){
-			var val = value[i];
+		for (var i = 0; i < notes.length; i++){
+			var val = notes[i];
 			var stringified = JSON.stringify(val);
 			if (this._activeVoices[stringified]){
 				this._activeVoices[stringified].triggerAttack(val, time, velocity);
@@ -118,8 +118,8 @@ function(Tone){
 	 */
 	Tone.PolySynth.prototype.triggerAttackRelease = function(notes, duration, time, velocity){
 		time = this.toSeconds(time);
-		this.triggerAttack(value, time, velocity);
-		this.triggerRelease(value, time + this.toSeconds(duration));
+		this.triggerAttack(notes, time, velocity);
+		this.triggerRelease(notes, time + this.toSeconds(duration));
 		return this;
 	};
 
