@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+	<title>CYMBAL</title>
+
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+	<script type="text/javascript" src="./deps/jquery.min.js"></script>
+	<script type="text/javascript" src="../build/Tone.js"></script>
+	<script type="text/javascript" src="../build/Tone.Preset.js"></script>
+	<script type="text/javascript" src="./deps/nexusUI.js"></script>
+	<script type="text/javascript" src="./deps/prism.js"></script>
+	<script type="text/javascript" src="./scripts/Interface.js"></script>
+	<script type="text/javascript" src="./deps/qwerty-hancock.js"></script>
+
+	<link rel="stylesheet" type="text/css" href="./style/examples.css">
+	<link rel="stylesheet" type="text/css" href="./style/prism.css">
+
+	<script type="text/javascript">
+	var filter = new Tone.Filter({
+		"type" : "lowpass",
+		"frequency" : 16000,
+		"rolloff" : -24
+	}).toMaster();
+	var cymbal = new Tone.CymbalSynth().connect(filter);
+	</script>
+
+	<style type="text/css">
+
+	.wrapper {
+		width: 524px;
+		padding: 10px;
+		border: 1px solid black;
+		margin: 10px auto;
+	}
+
+	.comp-div {
+		width: 150px;
+		display: inline-block;
+		border: 1px solid black;
+		padding: 10px;
+	}
+
+	#bandpass0 {
+	}
+	#bandpass1 {
+	}
+	#bandpass2 {
+	}
+
+	</style>
+</head>
+
+<body>
+	<div class = "wrapper">
+		<div id="bandpass0" class="comp-div">
+			<p>Bandpass0</p>
+			<br>
+			<p>Frequency</p>
+			<input type="range" id="bpfreq0" value="0"/>
+			<br>
+			<p>Q</p>
+			<input type="range" id="bpq0" value="0"/>
+			<br>
+			<p>Gain</p>
+			<input type="range" id="bpg0" value="0"/>
+			<br>
+			<p>Rolloff</p>
+			<select id="bpr0"	value="=-24">
+				<option selected="selected" value="-12">-12</option>
+				<option value="-24">-24</option>
+				<option value="-48">-48</option>
+			</select>
+		</div>
+		<div id="bandpass1" class="comp-div">
+			<p>Bandpass1</p>
+			<br>
+			<p>Frequency</p>
+			<input type="range" id="bpfreq1" value="0"/>
+			<br>
+			<p>Q</p>
+			<input type="range" id="bpq1" value="0"/>
+			<br>
+			<p>Gain</p>
+			<input type="range" id="bpg1" value="0"/>
+			<br>
+			<p>Rolloff</p>
+			<select id="bpr1"	value="=-24">
+				<option selected="selected" value="-12">-12</option>
+				<option value="-24">-24</option>
+				<option value="-48">-48</option>
+			</select>
+		</div>
+		<div id="trigger" class="comp-div">
+			<p>Trigger</p>
+			<button type="button" onclick="cymbal.triggerAttack()">CYMBAL</button>
+
+		</div>
+	</div>
+	<div class = "wrapper">
+		<div id="highpass0" class="comp-div">
+			<p>highpass0</p>
+			<br>
+			<p>Frequency</p>
+			<input type="range" id="hpfreq0" value="0"/>
+			<br>
+			<p>Q</p>
+			<input type="range" id="hpq0" value="0"/>
+			<br>
+			<p>Gain</p>
+			<input type="range" id="hpg0" value="0"/>
+			<br>
+			<p>Rolloff</p>
+			<select id="hpr0"	value="=-24">
+				<option selected="selected" value="-12">-12</option>
+				<option value="-24">-24</option>
+				<option value="-48">-48</option>
+			</select>
+		</div>
+		<div id="highpass1" class="comp-div">
+			<p>highpass1</p>
+			<br>
+			<p>Frequency</p>
+			<input type="range" id="hpfreq1" value="0"/>
+			<br>
+			<p>Q</p>
+			<input type="range" id="hpq1" value="0"/>
+			<br>
+			<p>Gain</p>
+			<input type="range" id="hpg1" value="0"/>
+			<br>
+			<p>Rolloff</p>
+			<select id="hpr1"	value="=-24">
+				<option selected="selected" value="-12">-12</option>
+				<option value="-24">-24</option>
+				<option value="-48">-48</option>
+			</select>
+		</div>
+		<div id="highpass2" class="comp-div">
+			<p>highpass2</p>
+			<br>
+			<p>Frequency</p>
+			<input type="range" id="hpfreq2" value="0"/>
+			<br>
+			<p>Q</p>
+			<input type="range" id="hpq2" value="0"/>
+			<br>
+			<p>Gain</p>
+			<input type="range" id="hpg2" value="0"/>
+			<br>
+			<p>Rolloff</p>
+			<select id="hpr2"	value="=-24">
+				<option selected="selected" value="-12">-12</option>
+				<option value="-24">-24</option>
+				<option value="-48">-48</option>
+			</select>
+		</div>
+	</div>
+	<div class = "wrapper">
+		<div id="envelope0" class="comp-div">
+			<p>envelope0</p>
+			<br>
+			<p>Decay</p>
+			<input type="range" id="decay0" value="0"/>
+			<br>
+			<p>Attack</p>
+			<input type="range" id="attack0" value="0"/>
+			<p>Trigger</p>
+			<button type="button" onclick="cymbal.envelope0.triggerAttack()">env 0</button>
+		</div>
+		<div id="envelope1" class="comp-div">
+			<p>envelope1</p>
+			<br>
+			<p>Decay</p>
+			<input type="range" id="decay1" value="0"/>
+			<br>
+			<p>Attack</p>
+			<input type="range" id="attack1" value="0"/>
+			<p>Trigger</p>
+			<button type="button" onclick="cymbal.envelope1.triggerAttack()">env 1</button>
+		</div>
+		<div id="envelope2" class="comp-div">
+			<p>envelope2</p>
+			<br>
+			<p>Decay</p>
+			<input type="range" id="decay2" value="0"/>
+			<br>
+			<p>Attack</p>
+			<input type="range" id="attack2" value="0"/>
+			<p>Trigger</p>
+			<button type="button" onclick="cymbal.envelope2.triggerAttack()">env 2</button>
+		</div>
+	</div>
+	<script type="text/javascript">
+
+	window.onkeypress=function(){
+		cymbal.triggerAttack(Tone.context.currentTime)
+	};
+
+	for(var i = 0; i < 2; i ++){
+		var freq = document.getElementById("bpfreq" + i);
+		freq.max = 22050;
+		freq.value = cymbal["bandPass" + i].frequency.value;
+		freq.step = 50;
+
+		var q = document.getElementById("bpq" + i);
+		q.max = 20;
+		q.value = cymbal["bandPass" + i].Q.value;
+		q.step = 0.1;
+
+		var gain = document.getElementById("bpg" + i);
+		gain.max = 40;
+		gain.value = cymbal["bandPass" + i].gain.value;
+		gain.step = 0.1;
+
+		var decay = document.getElementById("decay" + i);
+		decay.max = 6;
+		decay.value = cymbal["envelope" + i].decay;
+		decay.step = 0.01;
+
+		var attack = document.getElementById("attack" + i);
+		attack.max = 2;
+		attack.value = cymbal["envelope" + i].attack;
+		attack.step = 0.001;
+	}
+
+	for(var i = 0; i < 3; i ++){
+		var freq = document.getElementById("hpfreq" + i);
+		freq.max = 22050;
+		freq.value = cymbal["highPass" + i].frequency.value;
+		freq.step = 50;
+
+		var q = document.getElementById("hpq" + i);
+		q.max = 20;
+		q.value = cymbal["highPass" + i].Q.value;
+		q.step = 0.01;
+
+		var gain = document.getElementById("hpg" + i);
+		gain.max = 40;
+		gain.value = cymbal["highPass" + i].gain.value;
+		gain.step = 0.01;
+	}
+	
+	$("#hpfreq0").on("change", function(){
+		cymbal["highPass0"].frequency.value = $("#hpfreq0").val();
+	});
+
+	$("#hpfreq1").on("change", function(){
+		cymbal["highPass1"].frequency.value = $("#hpfreq1").val();
+	});
+
+	$("#hpfreq2").on("change", function(){
+		cymbal["highPass2"].frequency.value = $("#hpfreq2").val();
+	});
+
+	$("#hpq0").on("change", function(){
+		cymbal["highPass0"].Q.value = $("#hpq0").val();
+	});
+
+	$("#hpq1").on("change", function(){
+		cymbal["highPass1"].Q.value = $("#hpq1").val();
+	});
+
+	$("#hpq2").on("change", function(){
+		cymbal["highPass2"].Q.value = $("#hpq2").val();
+	});
+
+	$("#hpg0").on("change", function(){
+		cymbal["highPass0"].gain.value = $("#hpg0").val();
+	});
+
+	$("#hpg1").on("change", function(){
+		cymbal["highPass1"].gain.value = $("#hpg1").val();
+	});
+
+	$("#hpg2").on("change", function(){
+		cymbal["highPass2"].gain.value = $("#hpg2").val();
+	});
+
+	$("#hpr0").on("change", function(){
+		cymbal["highPass0"].rolloff = parseInt($("#hpr0").val());
+	});
+
+	$("#hpr1").on("change", function(){
+		cymbal["highPass1"].rolloff = parseInt($("#hpr1").val());
+	});
+
+	$("#hpr2").on("change", function(){
+		cymbal["highPass2"].rolloff = parseInt($("#hpr2").val());
+	});
+
+	$("#bpfreq0").on("change", function(){
+		cymbal["bandPass0"].frequency.value = $("#bpfreq0").val();
+	});
+
+	$("#bpg0").on("change", function(){
+		cymbal["bandPass0"].gain.value = $("#bpg0").val();
+	});
+
+	$("#bpq0").on("change", function(){
+		cymbal["bandPass0"].Q.value = $("#bpq0").val();
+	});
+
+	$("#bpfreq1").on("change", function(){
+		cymbal["bandPass1"].frequency.value = $("#bpfreq1").val();
+	});
+
+	$("#bpg1").on("change", function(){
+		cymbal["bandPass1"].gain.value = $("#bpg1").val();
+	});
+
+	$("#bpq1").on("change", function(){
+		cymbal["bandPass1"].Q.value = $("#bpq1").val();
+	});
+
+	$("#bpr0").on("change", function(){
+		cymbal["bandPass0"].rolloff = parseInt($("#bpr0").val());
+	});
+
+	$("#bpr1").on("change", function(){
+		cymbal["bandPass1"].rolloff = parseInt($("#bpr1").val());
+	});
+
+	$("#decay0").on("change", function(){
+		cymbal["envelope0"].decay = $("#decay0").val();
+	});
+
+	$("#decay1").on("change", function(){
+		cymbal["envelope1"].decay = $("#decay1").val();
+	});
+
+	$("#decay2").on("change", function(){
+		cymbal["envelope2"].decay = $("#decay2").val();
+	});
+
+	$("#attack0").on("change", function(){
+		cymbal["envelope0"].attack = $("#attack0").val();
+	});
+
+	$("#attack1").on("change", function(){
+		cymbal["envelope1"].attack = $("#attack1").val();
+	});
+
+	$("#attack2").on("change", function(){
+		cymbal["envelope2"].attack = $("#attack2").val();
+	});
+
+	</script>
+</body>
+</html>

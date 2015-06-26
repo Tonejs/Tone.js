@@ -125,3 +125,7 @@ gulp.task("sass", function () {
 gulp.task("example", function() {
   gulp.watch(["../examples/style/examples.scss"], ["sass"]);
 });
+
+gulp.task("watch", function(){
+	gulp.watch(["../Tone/*/*.js"], ["build"]);
+});
