@@ -6,14 +6,12 @@
 
 	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
 	
-	<script type="text/javascript" src="./deps/jquery.min.js"></script>
 	<script type="text/javascript" src="../build/Tone.js"></script>
-	<script type="text/javascript" src="./deps/nexusUI.js"></script>
-	<script type="text/javascript" src="./deps/prism.js"></script>
+	<script type="text/javascript" src="./scripts/jquery.min.js"></script>
+	<script type="text/javascript" src="../../Notone.js/build/Notone.GUI.js"></script>
 	<script type="text/javascript" src="./scripts/Interface.js"></script>
 
 	<link rel="stylesheet" type="text/css" href="./style/examples.css">
-	<link rel="stylesheet" type="text/css" href="./style/prism.css">
 
 	<script type="text/javascript">
 		// jshint ignore: start
@@ -21,47 +19,70 @@
 
 </head>
 <body>
-	<div id="Explanation">
-		Player
-		<br>
-		<br>
-		Press "on" to hear a grain from the player. Change the start and end points of the grain by adjusting the range slider. 
-	</div>
 	<div id="Content">
-		<div id="LoadingBar"></div>
-		<div id="Rack"></div>
-		<div id="Code"></div>
+		<div id="Title">Grains</div>
+		<div id="Explanation">
+			Click on the dragger to play a grain from the Tone.Player. A grain is a short, looped
+			piece of audio. When the loop becomes very small, it takes on another pitch value. Drag
+			the circle to the bottom to hear this. The x-axis controls the starting position of the loop,
+			and the y-axis controls the grain size. 
+		</div>
+		<div id="DragContainer"></div>
 	</div>
-	<script id="ToneCode" type="text/javascript">
+	<script type="text/javascript">
+		//muted until you click
+		Tone.Master.volume.value = -Infinity;
+
 		//the player
-		var player = new Tone.Player("./audio/casio/A1.mp3")
-			.toMaster();
-		//loop setting
-		player.loop = true;
-		player.loopStart = 0.1;
-		player.loopEnd = 0.11;
+		var player = new Tone.Player({
+			"url" : "./audio/casio/A1.mp3",
+			"loop" : true,
+			"loopStart" : 0.201,
+			"loopEnd" : 0.211,
+			"autostart" : true
+		}).toMaster();
 	</script>
 	
 	<script id="GUI" type="text/javascript">
-		var duration = 2.521655328798186;
-		Interface.Loading("LoadingBar");
-		Interface.Toggle("Rack", function(on){
-			if (on){
-				player.start();
-			} else {
-				player.stop();
-			}
-		});
-		Interface.Rack("Rack", "Player");
-		var range = Interface.Range("Rack", function(data){
-			player.loopStart = data.start * duration;
-			player.loopEnd = data.stop * duration;
-		});
-		range.label = "grain";
-		range.val.start = duration * player.loopStart;
-		range.val.stop = duration * player.loopEnd;
-		range.draw();
-		Interface.Code("Code", "ToneCode");
+		$(function(){
+			Notone.config({
+				"search" : false,
+				"expandInDrawer" : true,
+				"hideDrawer" : Interface.isMobile,
+				"drawer" : true,
+				"container" : "body"
+			});
+
+			var playerGUI = Notone.add(player, "player", ["loopStart", "loopEnd"]);
+
+			new Interface.Dragger({
+				gui: playerGUI,
+				x : {
+					param : "loopStart",
+					min : 0.1,
+					max : 1,
+				},
+				y : {
+					min : 0.003,
+					max : 0.5,
+					exp : 4,
+					value : player.loopEnd - player.loopStart,
+					drag : function(y){
+						//loopStart
+						playerGUI.set({
+							"loopStart" : player.loopStart,
+							"loopEnd" : player.loopStart + y,
+						});
+					}
+				},
+				start : function(){
+					Tone.Master.volume.rampTo(0, 0.05);
+				},
+				end : function(){
+					Tone.Master.volume.rampTo(-Infinity, 0.05);
+				}
+			});
+		})
 	</script>
 </body>
 </html>

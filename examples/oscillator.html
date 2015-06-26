@@ -7,7 +7,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
 
 	<script type="text/javascript" src="../build/Tone.js"></script>
-	<script type="text/javascript" src="./deps/jquery.min.js"></script>
+	<script type="text/javascript" src="./scripts/jquery.min.js"></script>
 	<script type="text/javascript" src="../../Notone.js/build/Notone.GUI.js"></script>
 	<script type="text/javascript" src="./scripts/Interface.js"></script>
 
@@ -20,10 +20,8 @@
 </head>
 <body>
 	<div id="Content">
+		<div id="Title">Oscillator</div>
 		<div id="Explanation">
-			Oscillator
-			<br>
-			<br>
 			Click and drag the dot to hear the oscillator. The x-axis controls the freqency of the oscillator and the y-axis controls the amplitude.
 		</div>
 		<div id="DragContainer"></div>
@@ -46,10 +44,11 @@
 
 			var oscGUI = Notone.add(osc, "Oscillator");
 
-			new Interface.Dragger(oscGUI, {
+			new Interface.Dragger({
+				gui: oscGUI,
 				x : {
 					param : "frequency",
-					min : 20,
+					min : 40,
 					max : 2000,
 					exp : 2
 				},

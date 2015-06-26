@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="utf-8">
-	<title>MonoSynth</title>
+	<title>SimpleSynth</title>
 
 	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
 	
@@ -35,18 +35,20 @@
 		}
 	</style>
 	<div id="Content">
-		<div id="Title">MonoSynth</div>
+		<div id="Title">SimpleSynth</div>
 		<div id="Explanation">
-			 Tone.MonoSynth is composed of one oscillator, one filter, and two envelopes.
-	 		Both envelopes are triggered simultaneously when a note is triggered. 
-	 	   	<img src="https://docs.google.com/drawings/d/1gaY1DF9_Hzkodqf8JI1Cg2VZfwSElpFQfI94IQwad38/pub?w=924&h=240">
+			<a href="http://tonejs.org/docs/#SimpleSynth" target="_blank">Tone.SimpleSynth</a> is composed simply of a 
+			<a href="http://tonejs.org/docs/#OmniOscillator" target="_blank">Tone.OmniOscillator</a>
+			routed through a 
+			<a href="http://tonejs.org/docs/#AmplitudeEnvelope" target="_blank">Tone.AmplitudeEnvelope</a>.
+			<img src="https://docs.google.com/drawings/d/1-1_0YW2Z1J2EPI36P8fNCMcZG7N1w1GZluPs4og4evo/pub?w=1163&h=231">
 		</div>
 		<div id="Keyboard"></div>
 	</div>
 
 	<script type="text/javascript">
 
-		var synth = new Tone.MonoSynth({
+		var synth = new Tone.SimpleSynth({
 			"oscillator" : {
 				"type" : "square"
 			},
@@ -65,6 +67,7 @@
 			Notone.config({
 				"search" : false,
 				"expandInDrawer" : true,
+				"expandChildren" : true,
 				"hideDrawer" : Interface.isMobile,
 				"drawer" : true,
 				"container" : "body"
@@ -76,11 +79,12 @@
 				id: "Keyboard",
 				width: $("#Content").width(),
 				height: 150,
-				octaves: Interface.isMobile ? 1.26 : 3,
-				startNote: "C3",
+				octaves: Interface.isMobile ? 1.26 : 2,
+				startNote: "C4",
 				whiteKeyColour: "white",
-				blackKeyColour: "#1EDF3E",
-				activeColour : "#3833ED"
+				blackKeyColour: "#22DBC0",
+				hoverColour: "#1EDF3E",
+				activeColour : "#ED33CF"
 			});
 
 			keyboard.keyDown = function (note, frequency) {

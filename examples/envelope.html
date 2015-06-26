@@ -7,14 +7,11 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
 	
 	<script type="text/javascript" src="../build/Tone.js"></script>
-	<script type="text/javascript" src="../build/Tone.Preset.js"></script>
-	<script type="text/javascript" src="./deps/jquery.min.js"></script>
-	<script type="text/javascript" src="./deps/nexusUI.js"></script>
-	<script type="text/javascript" src="./deps/prism.js"></script>
+	<script type="text/javascript" src="./scripts/jquery.min.js"></script>
+	<script type="text/javascript" src="../../Notone.js/build/Notone.GUI.js"></script>
 	<script type="text/javascript" src="./scripts/Interface.js"></script>
 
 	<link rel="stylesheet" type="text/css" href="./style/examples.css">
-	<link rel="stylesheet" type="text/css" href="./style/prism.css">
 
 	<script type="text/javascript">
 		// jshint ignore: start
@@ -23,54 +20,124 @@
 </head>
 <body>	
 	<style type="text/css">
-		[nx="button"] {
-			height: 120px;
-			width: 50%;
+		img {
+			width: 300px;
+			margin-left: auto;
+    		margin-right: auto;
+    		display: block;
 		}
-		#Envelope {
-			width: 50%!important;
+
+		.y {
+			float: left;
+			height: 290px!important;
+		}
+
+		#Sliders {
+			float: left;
+			position: relative;
+			width: calc(100% - 100px);
+		}
+
+		.Button {
+			clear: both;
 		}
 	</style>
-	<div id="Explanation">
-		ADSR Envelope
-		<br>
-		<br>
-		Click the button to trigger the attack/decay portion of the envelope. 
-		Let go of the button to trigger the release. 
-	</div>
 	<div id="Content">
-		<div id="Rack">
+		<div id="Title">Envelope</div>
+		<div id="Explanation">
+			Envelopes ramp amplitude, frequency or any other parameter over time. Tone.Envelope and the classes that extend it
+			implement an <a href="https://en.wikipedia.org/wiki/Synthesizer#ADSR_envelope" target="_blank">ADSR</a> envelope type
+			which splits its ramp into four distinct phases: Attack, Decay, Sustain, Release.
+			<img src="https://upload.wikimedia.org/wikipedia/commons/e/ea/ADSR_parameter.svg">
 		</div>
-		<div id="CodeBlock"></div>
+		<div id="Sliders"></div>
 	</div>
 
-	<script id="ToneCode" type="text/javascript">
+	<script type="text/javascript">
 		var env = new Tone.AmplitudeEnvelope({
-			"attack" : 0.01,
-			"decay" : 0.02,
+			"attack" : 0.11,
+			"decay" : 0.21,
 			"sustain" : 0.09,
 			"release" : 1.2
 		}).toMaster();
 
-		var osc = new Tone.Oscillator(440, "square")
-			.connect(env)
-			.start();
+		//create an oscillator and connect it to the envelope
+		var osc = new Tone.Oscillator({
+			"type" : "triangle",
+			"frequency" : "C#4",
+			"volume" : -8,
+		}).connect(env).start();
 
-		//just so it's not soo loud.
-		osc.volume.value = -6;
 	</script>
+
 	<script id="GUI" type="text/javascript">
-		Interface.Rack("Rack", "Envelope");
-		Interface.Momentary("Rack", function(down){
-			if (down){
-				env.triggerAttack();
-			} else {
-				env.triggerRelease();
-			}
+		$(function(){
+			Notone.config({
+				"search" : false,
+				"expandInDrawer" : true,
+				"hideDrawer" : Interface.isMobile,
+				"drawer" : true,
+				"container" : "body"
+			});
+
+			var oscGUI = Notone.add(osc, "Oscillator");
+
+			var envGUI = Notone.add(env, "Envelope");
+
+			console.log($("#Sliders").get(0));
+
+			new Interface.Slider({
+				param : "attack",
+				name : "attack",
+				parent : $("#Sliders"),
+				gui : envGUI,
+				min : 0.005,
+				max : 0.5,
+				exp : 2,
+			});
+
+			new Interface.Slider({
+				param : "decay",
+				name : "decay",
+				parent : $("#Sliders"),
+				gui : envGUI,
+				min : 0.005,
+				max : 1,
+				exp : 2,
+			});
+
+			new Interface.Slider({
+				param : "release",
+				name : "release",
+				parent : $("#Sliders"),
+				gui : envGUI,
+				min : 0.2,
+				max : 2,
+				exp : 2,
+			});
+
+			new Interface.Slider({
+				param : "sustain",
+				name : "sustain",
+				gui : envGUI,
+				axis : "y",
+				min : 0.0,
+				max : 1,
+				exp : 2,
+			});
+
+			new Interface.Button({
+				text : "Trigger Attack",
+				activeText : "Trigger Release",
+				key : 32, //spacebar
+				start : function(){
+					env.triggerAttack();
+				},
+				end : function(){
+					env.triggerRelease();
+				},
+			});
 		});
-		var envGroup = Interface.Group($("<div>").appendTo("#Rack"), "Envelope");
-		Interface.AmplitudeEnvelope(envGroup, env);
-		Interface.Code("CodeBlock", "ToneCode");
 	</script>
 
 	</style>

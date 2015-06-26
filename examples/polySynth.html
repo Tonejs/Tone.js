@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="utf-8">
-	<title>MonoSynth</title>
+	<title>PolySynth</title>
 
 	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
 	
@@ -22,12 +22,9 @@
 <body>	
 	<style type="text/css">
 
-		img {
-			width: 80%;
-			max-width: 700px;
-			margin-left: auto;
-    		margin-right: auto;
-    		display: block;
+		#Content {
+			width: calc(100% - 6px)!important;
+			max-width: calc(100% - 6px)!important;
 		}
 
 		#Keyboard {
@@ -35,42 +32,25 @@
 		}
 	</style>
 	<div id="Content">
-		<div id="Title">MonoSynth</div>
+		<div id="Title">PolySynth</div>
 		<div id="Explanation">
-			 Tone.MonoSynth is composed of one oscillator, one filter, and two envelopes.
-	 		Both envelopes are triggered simultaneously when a note is triggered. 
-	 	   	<img src="https://docs.google.com/drawings/d/1gaY1DF9_Hzkodqf8JI1Cg2VZfwSElpFQfI94IQwad38/pub?w=924&h=240">
+			Tone.PolySynth handles voice creation and allocation for any
+	 		instruments passed in as the second paramter. PolySynth is 
+	 		not a synthesizer by itself, it merely manages voices of 
+	 		one of the other types of synths, allowing any of the 
+	 		monophonic synthesizers to be polyphonic. 
 		</div>
 		<div id="Keyboard"></div>
 	</div>
 
 	<script type="text/javascript">
 
-		var synth = new Tone.MonoSynth({
-			"oscillator" : {
-				"type" : "square"
-			},
-			"envelope" : {
-				"attack" : 0.01,
-				"decay" : 0.2,
-				"sustain" : 0.4,
-				"release" : 0.2,
-			}
-		}).toMaster();
+		var synth = new Tone.PolySynth(6, Tone.SimpleSynth).toMaster();
 
 	</script>
 
 	<script id="GUI" type="text/javascript">
 		$(function(){
-			Notone.config({
-				"search" : false,
-				"expandInDrawer" : true,
-				"hideDrawer" : Interface.isMobile,
-				"drawer" : true,
-				"container" : "body"
-			});
-
-			Notone.add(synth);
 
 			var keyboard = new QwertyHancock({
 				id: "Keyboard",
@@ -79,16 +59,16 @@
 				octaves: Interface.isMobile ? 1.26 : 3,
 				startNote: "C3",
 				whiteKeyColour: "white",
-				blackKeyColour: "#1EDF3E",
-				activeColour : "#3833ED"
+				blackKeyColour: "#7F33ED",
+				activeColour : "#ED3333"
 			});
 
-			keyboard.keyDown = function (note, frequency) {
-			    synth.triggerAttack(frequency);
+			keyboard.keyDown = function (note) {
+			    synth.triggerAttack(note);
 			};
 
-			keyboard.keyUp = function () {
-			    synth.triggerRelease();
+			keyboard.keyUp = function (note) {
+			    synth.triggerRelease(note);
 			};
 
 		});

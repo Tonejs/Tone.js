@@ -1,17 +1,16 @@
-/* globals Tone, nx */
+/* globals Tone */
 
-//nexusUI setup
-// nx.showLabels = true;
-// nx.colorize("accent", "#D76767");
-// nx.colorize("fill", "#fff");
-// nx.colorize("border", "#000");
-
-var dragContainer = "#DragContainer";
 
 var Interface = {
 	isMobile : false
 };
 
+/**
+ *
+ *
+ *  INIT
+ *  
+ */
 $(function(){
 	var topbar = $("<div>").attr("id", "TopBar");
 	$("body").prepend(topbar);
@@ -30,7 +29,7 @@ $(function(){
 		Interface.isMobile = true;
 		$("body").addClass("Mobile");
 		var element = $("<div>", {"id" : "MobileStart"}).appendTo("body");
-		var button = $("<div>").attr("id", "Button")
+		$("<div>").attr("id", "Button")
 			.text("\u25B6")
 			.on("touchstart", function(e){
 				e.preventDefault();
@@ -59,9 +58,6 @@ $(function(){
 		}
 		update();
 	}
-
-	//subtract the explaination from the dragger container
-	$(dragContainer).height($(dragContainer).height() - $("#Explanation").height());
 });
 
 
@@ -86,206 +82,360 @@ Interface.Code = function(container, codeID){
 };
 
 
-Interface.Dragger = function(gui, params){
 
-	this.container = $(dragContainer);
+/**
+ *
+ *  
+ *  DRAGGER
+ *
+ */
+Interface.Dragger = function(params){
 
-	this.gui = gui;
+	if ($("#DragContainer").length === 0){
+		$("<div>", {
+			"class" : "DragContainer"
+		}).appendTo(params.parent || "#Content");	
+	}
 
+	this.container = $("#DragContainer");
+
+	/**
+	 *  the gui
+	 */
+	this.gui = params.gui;
+
+	/**
+	 *  callbacks
+	 */
+	this.start = params.start;
+
+	this.end = params.end;
+
+	this.drag = params.drag;
+
+	/**
+	 *  the name
+	 */
+	var name = params.name || this.gui ? this.gui.name : "";
+
+	/**
+	 *  elements
+	 */
 	this.element = $("<div>", {
 		"class" : "Dragger",
-		"id" : this.gui.name
-	}).appendTo(dragContainer)
+		"id" : name
+	}).appendTo(this.container)
 		.on("dragMove", this._ondrag.bind(this))
-		.on("touchstart mousedown", params.start)
-		.on("mouseup touchend", params.end);
+		.on("touchstart mousedown", this._onstart.bind(this))
+		.on("dragEnd touchend mouseup", this._onend.bind(this));
 
 	this.name = $("<div>", {
 		"id" : "Name",
-		"text" : this.gui.name
+		"text" : name
 	}).appendTo(this.element);
 
-	this.xaxis = $("<div>", {
-		"id" : "xAxis",
-		"class" : "Axis"
-	}).appendTo(this.container);
-
-	this.yaxis = $("<div>", {
-		"id" : "yAxis",
-		"class" : "Axis"
-	}).appendTo(this.container);
-
-	this.halfSize = this.element.width() / 2;
-
-	this.top = this.container.offset().top + 40;
-
-	this.left = this.container.offset().left;
+	this.element.draggabilly({
+		"axis" : this.axis,
+		"containment": this.container
+	});
 
 	/**
-	 *  the parameters
+	 *  x slider
 	 */
-	if (params.x){
+	var xParams = params.x;
+	xParams.axis = "x";
+	xParams.element = this.element;
+	xParams.gui = this.gui;
+	xParams.container = this.container;
+	this.xAxis = new Interface.Slider(xParams);
 
-		if (typeof params.x === "string"){
-			this.xParam = params.x;
-			//default values
-			this.xMin = 0;
-			this.xMax = 1;
-			this.xExp = 1;
-		} else if (typeof params.x === "object"){
-			this.xParam =  params.x.param;
-			this.xMin = typeof params.x.min === "undefined" ? 0 : params.x.min;
-			this.xMax = typeof params.x.max === "undefined" ? 1 : params.x.max;
-			this.xExp = typeof params.x.exp === "undefined" ? 1 : params.x.exp;
-			if (params.x.options){
-				this.xOptions = params.x.options;
-				this.xMin = 0;
-				this.xMax = this.xOptions.length - 1;
-			}
-		} 
+	/**
+	 *  y slider
+	 */
+	var yParams = params.y;
+	yParams.axis = "y";
+	yParams.element = this.element;
+	yParams.gui = this.gui;
+	yParams.container = this.container;
+	this.yAxis = new Interface.Slider(yParams);
 
-		//set the original position
-		var width = this.container.width()  - this.element.width();
-		var xParamVal = this.gui.params[this.xParam].get();
-		if (this.xOptions){
-			xParamVal = this.xOptions.indexOf(xParamVal);
-		}
-		var left = (xParamVal - this.xMin) / (this.xMax - this.xMin);
-		left = Math.pow(left, 1 / this.xExp) * width;
-		this.element.css("left", left);
-		this.xaxis.css("left",left + this.halfSize);
-
-		if (this.xOptions){
-			this._setParam(this.xParam, this.xOptions[xParamVal]);
-		} else {
-			this._setParam(this.xParam, xParamVal);
-		}
-	} else {
-		this.xParam = false;
-	}
-
-	if (params.y){
-		
-		if (typeof params.y === "string"){
-			this.yParam = params.y;
-			//default values
-			this.yMin = 0;
-			this.yMax = 1;
-			this.yExp = 1;
-		} else {
-			this.yParam =  params.y.param;
-			this.yMin = typeof params.y.min === "undefined" ? 0 : params.y.min;
-			this.yMax = typeof params.y.max === "undefined" ? 1 : params.y.max;
-			this.yExp = typeof params.y.exp === "undefined" ? 1 : params.y.exp;
-			if (params.y.options){
-				this.yOptions = params.y.options;
-				this.yMin = 0;
-				this.yMax = this.yOptions.length - 1;
-			}
-		}
-
-		var height = this.container.height() - this.element.height();
-		var yParamVal = this.gui.params[this.yParam].get();
-		if (this.yOptions){
-			yParamVal = this.yOptions.indexOf(yParamVal);
-		}
-		var top = (yParamVal - this.yMin) / (this.yMax - this.yMin);
-		top = Math.pow(1 - top, 1 / this.yExp) * height;
-		this.element.css("top", top);
-		this.yaxis.css("top", top + this.halfSize);
-
-		if (this.yOptions){
-			this._setParam(this.yParam, this.yOptions[yParamVal]);
-		} else {
-			this._setParam(this.yParam, yParamVal);
-		}
-	} else {
-		this.yParam = false;
-	}
-
-	if (!(this.yParam && this.xParam)){
-		var axis = "x";
-		if (this.yParam){
-			axis = "y";
-		}
-		this.element.draggabilly({
-			"axis" : axis,
-			"containment": dragContainer
-		});
-	} else {
-		this.element.draggabilly({
-			"containment": dragContainer
-		});
-	}
-
+	//set the axis indicator
+	var position = this.element.position();
+	this.halfSize = this.xAxis.halfSize;
+	this.xAxis.axisIndicator.css("top", position.top + this.halfSize);
+	this.yAxis.axisIndicator.css("left", position.left + this.halfSize);
 };
 
 Interface.Dragger.prototype._ondrag = function(e, pointer){
-	var normX = (pointer.pageX - this.left) / this.container.width();
-	var normY = (pointer.pageY - this.top) / this.container.height();
-	normX = Math.pow(normX, this.xExp);
-	normY = 1 - Math.pow(normY, this.yExp);	
-	var resX = normX * (this.xMax - this.xMin) + this.xMin;
-	var resY = normY * (this.yMax - this.yMin) + this.yMin;
-
-	var xVal = resX;
-	if (this.xOptions){
-		xVal = this.xOptions[Math.round(resX)];
+	if (this.drag){
+		this.drag();
 	}
-
-	var yVal = resY;
-	if (this.yOptions){
-		yVal = this.yOptions[Math.round(resY)];
-	}
-
-	this._setParam(this.xParam, xVal);
-	this._setParam(this.yParam, yVal);
-	//set the line positions
+	this.xAxis._ondrag(e, pointer);
+	this.yAxis._ondrag(e, pointer);
 	var position = this.element.position();
-	this.xaxis.css("left", position.left + this.halfSize);
-	this.yaxis.css("top", position.top + this.halfSize);
+	this.xAxis.axisIndicator.css("top", position.top + this.halfSize);
+	this.yAxis.axisIndicator.css("left", position.left + this.halfSize);
 };
 
-Interface.Dragger.prototype._setParam = function(param, value){
-	if (param){
-		this.gui.params[param].set(value);
+Interface.Dragger.prototype._onstart = function(e){
+	if (this.start){
+		this.start();
+	}
+	this.xAxis._onstart(e);
+	this.yAxis._onstart(e);
+};
+
+Interface.Dragger.prototype._onend = function(e){
+	if (this.end){
+		this.end();
+	}
+	this.xAxis._onend(e);
+	this.yAxis._onend(e);
+	var position = this.element.position();
+	this.xAxis.axisIndicator.css("top", position.top + this.halfSize);
+	this.yAxis.axisIndicator.css("left", position.left + this.halfSize);
+};
+
+
+
+/**
+ *
+ *  
+ *  SLIDER
+ *
+ */
+Interface.Slider = function(params){
+
+	this.gui = params.gui;
+
+	var name = params.name ? params.name : this.gui ? this.gui.name : "";
+
+	/**
+	 *  callback functions
+	 */
+	this.start = params.start;
+
+	this.end = params.end;
+
+	this.drag = params.drag;
+
+	/**
+	 *  the axis indicator
+	 */
+	this.axis = params.axis || "x";
+
+	if (!params.element){
+
+		this.container = $("<div>", {
+			"class" : "Slider "+this.axis,
+		}).appendTo(params.parent || "#Content");
+
+		this.element = $("<div>", {
+			"class" : "Dragger",
+			"id" : name
+		}).appendTo(this.container)
+			.on("dragMove", this._ondrag.bind(this))
+			.on("touchstart mousedown", this._onstart.bind(this))
+			.on("dragEnd touchend mouseup", this._onend.bind(this));
+
+		this.name = $("<div>", {
+			"id" : "Name",
+			"text" : name
+		}).appendTo(this.element);
+
+		this.element.draggabilly({
+			"axis" : this.axis,
+			"containment": this.container.get(0)
+		});
+	} else {
+		this.element = params.element;
+
+		this.container = params.container;
+	}
+
+	this.axisIndicator = $("<div>", {
+		"id" : this.axis + "Axis",
+		"class" : "Axis"
+	}).appendTo(this.container);
+
+	/**
+	 *  the initial value / position
+	 */
+	this.parameter = params.param || false;
+	//default values
+	this.min = typeof params.min === "undefined" ? 0 : params.min;
+	this.max = typeof params.max === "undefined" ? 1 : params.max;
+	this.exp = typeof params.exp === "undefined" ? 1 : params.exp;
+	if (params.options){
+		this.options = params.options;
+		this.min = 0;
+		this.max = this.options.length - 1;
+		this.exp = params.exp || 1;
+	}
+
+	/**
+	 *  cache some measurements for later
+	 */
+	this.halfSize = this.element.width() / 2;
+	this.top = this.container.offset().top;
+	this.left = this.container.offset().left;
+
+	this.maxAxis = this.axis === "x" ? "width" : "height";
+	this.posAxis = this.axis === "x" ? "left" : "top";
+	this.oppositeAxis = this.axis === "x" ? "top" : "left";
+
+	/**
+	 *  initial value
+	 */
+	if (this.parameter || typeof params.value !== "undefined"){
+
+		var maxSize = this.container[this.maxAxis]() - this.element[this.maxAxis]();
+
+		//y gets inverted
+		if (this.axis === "y"){
+			maxSize = this.container[this.maxAxis]() - maxSize;
+		}
+
+		var paramValue = typeof params.value !== "undefined" ? params.value : this.gui.params[this.parameter].get();
+
+		if (this.options){
+			paramValue = this.options.indexOf(paramValue);
+		}
+
+		var pos = (paramValue - this.min) / (this.max - this.min);
+		pos = Math.pow(pos, 1 / this.exp) * (maxSize );
+		this.element.css(this.posAxis, pos);
+
+		if (this.options){
+			this._setParam(this.options[paramValue]);
+		} 
+	}
+};
+
+Interface.Slider.prototype._ondrag = function(e, pointer){
+	var normPos;
+	if (this.axis === "x"){
+		var xVal = Math.max((pointer.pageX - this.left), 0);
+		normPos =  xVal / (this.container.width());
+	}  else {
+		var yVal = Math.max((pointer.pageY - this.top ), 0);
+		normPos =  yVal / (this.container.height());
+		normPos = 1 - normPos;
+	}
+	normPos = Math.pow(normPos, this.exp);
+
+	var result = normPos * (this.max - this.min) + this.min;
+
+	result = Math.max(Math.min(this.max, result), this.min);
+
+	var value = result;
+
+	if (this.options){
+		value = this.options[Math.round(result)];
+	}
+
+	if (this.drag){
+		this.drag(value);
+	}
+
+	this._setParam(value);
+};
+
+Interface.Slider.prototype._onstart = function(e){
+	e.preventDefault();
+	if (this.start){
+		this.start();
+	}
+};
+
+Interface.Slider.prototype._onend = function(){
+	if (this.end){
+		this.end();
+	}
+};
+
+Interface.Slider.prototype._setParam = function(value){
+	if (this.parameter && this.gui){
+		this.gui.params[this.parameter].set(value);
 	}
 };
 
 /**
- *  A Slider
+ *
+ * BUTTON
+ *  
  */
-Interface.Slider = function(gui, params){
-	this.container = $(dragContainer);
+Interface.Button = function(params){
 
-	this.gui = gui;
+	this.activeText = params.activeText || false;
+
+	this.text = params.text || "Button";
 
 	this.element = $("<div>", {
-		"class" : "Dragger",
-		"id" : this.gui.name
-	}).appendTo(dragContainer)
-		.on("dragMove", this._ondrag.bind(this))
-		.on("touchstart mousedown", params.start)
-		.on("mouseup touchend", params.end);
+		"class" : "Button",
+		"text" : this.text
+	}).appendTo(params.parent || "#Content")
+		.on("mousedown touchstart", this._start.bind(this))
+		.on("mouseup touchend", this._end.bind(this));
 
-	this.name = $("<div>", {
-		"id" : "Name",
-		"text" : this.gui.name
-	}).appendTo(this.element);
+	/**
+	 *  the button state
+	 */
+	this.active = false;
 
-	this.xaxis = $("<div>", {
-		"id" : "xAxis",
-		"class" : "Axis"
-	}).appendTo(this.container);
+	/**
+	 *  callbacks
+	 */
+	this.start = params.start;
+	this.end = params.end;
 
-	this.yaxis = $("<div>", {
-		"id" : "yAxis",
-		"class" : "Axis"
-	}).appendTo(this.container);
-
-	this.halfSize = this.element.width() / 2;
-
-	this.top = this.container.offset().top + 40;
-
-	this.left = this.container.offset().left;
+	/**
+	 *  key presses
+	 */
+	if (params.key){
+		this.key = params.key;
+		$(window).on("keydown", this._keydown.bind(this));
+		$(window).on("keyup", this._keyup.bind(this));
+	}
 };
+
+Interface.Button.prototype._start = function(){
+	if (!this.active){
+		this.active = true;
+		this.element.addClass("Active");
+		if (this.activeText){
+			this.element.text(this.activeText);
+		}
+		if (this.start){
+			this.start();
+		}
+	}
+};
+
+Interface.Button.prototype._end = function(){
+	if (this.active){
+		this.active = false;
+		this.element.removeClass("Active");
+		this.element.text(this.text);
+		if (this.end){
+			this.end();
+		}
+	}
+};
+
+Interface.Button.prototype._keydown = function(e){
+	if (e.which === this.key){
+		e.preventDefault();
+		this._start();
+	}
+};
+
+Interface.Button.prototype._keyup = function(e){
+	if (e.which === this.key){
+		e.preventDefault();
+		this._end();
+	}
+};
+
+
+

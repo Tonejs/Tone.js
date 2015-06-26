@@ -1,54 +1,55 @@
 /**
- * GLOBAL
+ *  COLORS
  */
-canvas {
-  border-radius: 0px !important;
-  margin-top: 5px; }
-
+/** 
+ *  SIZING
+ */
 /* FOR MOBILES */
-@media (max-width: 320px) {
+@media (max-width: 400px) {
   #TopBar #Homepage a {
     font-size: 16px !important; }
 
   #Content {
     font-size: 10px !important;
-    max-width: 100% !important; }
+    max-width: calc(100% - 32px) !important; }
 
   #Content * {
-    font-size: 10px !important; } }
-body {
-  margin: 0px; }
+    font-size: 14px !important; } }
+html, body {
+  padding: 0px;
+  margin: 0px;
+  height: calc(100% - 4px); }
 
-#Explanation {
-  font-family: monospace;
-  background-color: #D0D0D0;
-  padding: 10px;
-  color: black;
-  font-size: 14px;
-  margin: 10px;
-  width: calc(100% - 4 * 10px); }
+#NotoneDrawer {
+  top: 40.5px;
+  z-index: 2; }
 
-#Explanation a {
-  color: black;
-  font-family: monospace;
-  font-size: 14px; }
+.Notone {
+  z-index: 3 !important; }
 
-/* TOP BAR */
+/**
+ *  
+ *  TOP BAR
+ *  
+ */
 #TopBar {
   background-color: black;
-  height: 40px;
-  margin: 10px;
+  height: 34.5px;
+  margin: 3px;
   position: relative;
-  width: calc(100% - 2 * 10px);
+  width: calc(100% - 2 * 3px);
   font-family: monospace; }
   #TopBar #Homepage {
     position: relative;
     float: left;
     margin-left: 20px;
     font-size: 24px;
-    line-height: 40px;
+    line-height: 34.5px;
     color: white; }
     #TopBar #Homepage a {
+      line-height: inherit;
+      height: 100%;
+      position: absolute;
       font-size: 24px;
       color: white;
       text-transform: none;
@@ -56,14 +57,16 @@ body {
       margin-left: 0px; }
   #TopBar #Examples {
     left: 50%;
-    height: 40px;
-    line-height: 40px;
+    height: 34.5px;
+    line-height: 34.5px;
     position: absolute; }
     #TopBar #Examples a {
       position: absolute;
       font-size: 14px;
       left: 50%;
-      transform: translate(-50%, 0);
+      -webkit-transform: translate(-50%, 0);
+          -ms-transform: translate(-50%, 0);
+              transform: translate(-50%, 0);
       text-align: center;
       color: white;
       text-transform: none;
@@ -73,7 +76,7 @@ body {
     width: 50px;
     height: calc(100% - 10px);
     position: absolute;
-    right: 10px;
+    right: 3px;
     top: 5px; }
     #TopBar #Meter .Level {
       height: 100%;
@@ -108,208 +111,126 @@ body {
     height: 80px;
     text-align: center;
     line-height: 80px; }
+  #MobileStart #Button:hover {
+    background-color: #7F33ED;
+    color: white; }
+  #MobileStart #Button:hover:active {
+    background-color: #ED33CF;
+    color: #22DBC0; }
+
+.Mobile #Content {
+  width: calc(100% - 28px); }
 
 #Content {
   font-family: monospace;
-  position: relative;
-  margin: auto;
-  height: auto;
-  margin-top: 20px;
-  width: 75%;
-  min-width: 300px;
-  max-width: 640px;
-  height: auto;
-  /**
-   * NX STUFF
-   */
-  /**
-   * THE RACK
-   */
-  /**
-   * GROUP
-   */
-  /**
-   * CODE BLOCK
-   */
-  /**
-   * ENVELOPE
-   */
-  /**
-   * LOADING BAR
-   */
-  /**
-   * METER
-   */
-  /**
-   * DROP DOWN
-   */
-  /**
-   * STEP SEQUENCER
-   */ }
-  #Content [nx="slider"] {
-    width: 100%;
-    height: 20px; }
-  #Content [nx="range"] {
-    width: 100%;
-    height: 20px; }
-  #Content [nx="toggle"] {
-    width: 100%;
-    height: 40px; }
-  #Content .Rack {
-    width: 100%;
-    margin-bottom: 10px;
-    background-color: #D0D0D0;
-    border: 10px solid #D0D0D0;
+  position: absolute;
+  right: 3px;
+  width: calc(100% - 280px);
+  margin-bottom: 15px; }
+  #Content #Title {
+    height: 23px;
+    line-height: 23px;
+    font-size: 1.2em;
+    color: white;
+    width: calc(100% - padding);
+    padding-left: 15px;
+    background-color: black; }
+  #Content #Explanation {
     position: relative;
-    box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    -webkit-box-sizing: border-box; }
-    #Content .Rack .Title {
-      width: 100%;
-      height: 20px;
-      line-height: 20px;
-      margin: 0px 0 5px;
-      background-color: black;
-      font-size: 1.2em;
-      color: white;
-      cursor: pointer;
-      text-align: center; }
-  #Content .Rack.Collapsible .Title:after {
-    content: "\25B2";
-    position: absolute;
-    right: 5px; }
-  #Content .Rack.Collapsible.Expanded .Title:after {
-    transform: rotate(-180deg); }
-  #Content .Rack.Collapsible {
-    overflow: hidden;
-    height: 40px; }
-  #Content .Rack.Collapsible.Expanded {
-    height: auto; }
-  #Content .Group {
-    width: auto;
-    height: auto;
-    background-color: inherit;
-    border: 1px solid black;
-    border-radius: 3px;
-    position: relative;
-    display: inline-block; }
-    #Content .Group #Label {
-      height: 10px;
-      line-height: 10px;
-      background-color: inherit;
-      font-size: 10px;
-      color: black;
-      position: absolute;
-      left: 50%;
-      transform: translate(-50%, 0);
-      top: -5px;
-      text-align: center; }
-  #Content .Code {
-    width: 100%;
     font-family: monospace;
-    height: auto;
-    text-align: left;
-    display: inline-block;
+    padding: 15px;
+    color: black;
     font-size: 14px;
-    /*padding: $Margin;*/
-    /*line-height: ;*/
-    background-color: #F2F2F2; }
-  #Content .Envelope {
-    height: 120px;
-    width: 100px; }
-    #Content .Envelope [nx="slider"] {
-      width: calc(25% - 11px);
-      margin: 5px;
-      height: calc(100% - 10px); }
-    #Content .Envelope #Labels {
-      width: 100%;
-      height: 8px;
-      margin-top: -4px; }
-      #Content .Envelope #Labels .Label {
-        text-transform: uppercase;
-        width: 25%;
-        text-align: center;
-        font-size: 8px;
-        display: inline-block; }
-  #Content .FilterEnvelope {
-    width: 160px; }
-    #Content .FilterEnvelope [nx="slider"] {
-      width: calc(100% / 6 - 11px);
-      margin: 5px;
-      height: calc(100% - 10px); }
-  #Content .LoadingBar {
-    width: 100%;
-    height: 20px;
-    margin: 10px;
-    text-align: center;
-    border: 1px solid black;
-    transition: all 0.4s; }
-    #Content .LoadingBar #Loader {
-      height: 100%;
-      width: 0%;
-      background-color: #D0D0D0;
-      transition: width 0.2s; }
-  #Content .Meter {
-    width: 100%;
-    height: 20px;
-    margin-top: 5px;
-    position: relative; }
-    #Content .Meter * {
-      line-height: 20px;
-      text-align: center;
-      position: absolute;
-      top: 0px;
-      height: 100%; }
-    #Content .Meter #Label {
-      left: 0px;
-      width: 60%;
-      background-color: white;
-      border: 1px solid black;
-      box-sizing: border-box;
-      -moz-box-sizing: border-box;
-      -webkit-box-sizing: border-box; }
-    #Content .Meter #Value {
-      right: 0px;
-      width: 40%;
-      background-color: black;
-      color: white;
-      font-weight: bold; }
-    #Content .Meter #Units {
-      right: 10px;
-      text-align: right;
-      color: #D0D0D0; }
-  #Content .DropDown {
-    position: relative;
-    width: 100%;
-    height: 35px;
-    border: 1px solid black;
     box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    -webkit-box-sizing: border-box;
-    margin-top: 5px; }
-    #Content .DropDown * {
-      line-height: 35px;
-      text-align: center;
-      position: absolute;
-      top: 0px;
-      height: 100%; }
-    #Content .DropDown #Label {
-      left: 0px;
-      width: 60%;
-      background-color: white; }
-    #Content .DropDown select {
-      right: 0px;
-      width: 40%;
-      line-height: 17.5px;
-      text-align: center;
-      font-style: monospace;
-      border-radius: 0px;
-      border: 0px;
-      background-color: black;
-      color: white; }
-  #Content .StepSequencer [nx="matrix"] {
+    border: 3px solid black;
+    border-top-width: 0px;
+    width: 100%; }
+    #Content #Explanation a {
+      color: black;
+      font-family: monospace;
+      font-size: 14px;
+      font-weight: bold;
+      text-decoration: none; }
+    #Content #Explanation a:hover {
+      color: #1EDF3E; }
+    #Content #Explanation a:hover:active {
+      color: #ED33CF; }
+  #Content #DragContainer {
+    margin-left: 3px;
+    margin-top: 3px;
+    margin-bottom: 15px;
+    width: calc(100% - 3px);
+    height: 400px;
     position: relative;
+    color: white; }
+  #Content .Slider.x {
+    position: relative;
+    height: 94px;
     width: 100%;
-    height: 120px; }
-
-/*# sourceMappingURL=examples.css.map */
+    margin-top: 3px; }
+    #Content .Slider.x .Axis {
+      top: 50%;
+      margin-top: -1.5px; }
+  #Content .Slider.y {
+    position: relative;
+    width: 94px;
+    height: 400px; }
+    #Content .Slider.y .Axis {
+      left: 50%;
+      margin-left: -1.5px; }
+  #Content .Dragger {
+    width: 90px;
+    height: 90px;
+    position: absolute;
+    background-color: black;
+    border-radius: 50%;
+    z-index: 1;
+    margin-top: -2px;
+    border: 2px solid white;
+    cursor: -webkit-grab; }
+    #Content .Dragger #Name {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      text-align: center;
+      font-size: 12px;
+      font-family: monospace;
+      line-height: 90px;
+      color: white; }
+  #Content .Dragger:hover {
+    background-color: #3833ED;
+    color: white; }
+  #Content .Dragger.is-pointer-down {
+    cursor: -webkit-grabbing;
+    background-color: #ED33CF; }
+    #Content .Dragger.is-pointer-down #Name {
+      color: #1EDF3E; }
+  #Content .Axis {
+    position: absolute;
+    background-color: black;
+    width: 3px;
+    height: 3px;
+    top: 3px;
+    left: 3px;
+    border-radius: 1.5px;
+    z-index: 0; }
+  #Content #xAxis {
+    width: calc(100% - 6px); }
+  #Content #yAxis {
+    height: calc(100% - 6px); }
+  #Content .Button {
+    width: 100%;
+    margin-top: 3px;
+    height: 90px;
+    background-color: black;
+    line-height: 90px;
+    color: white;
+    border-radius: 10px;
+    text-align: center;
+    cursor: pointer; }
+  #Content .Button:hover {
+    color: white;
+    background-color: #3833ED; }
+  #Content .Button.Active {
+    color: #22DBC0;
+    background-color: #ED33CF; }

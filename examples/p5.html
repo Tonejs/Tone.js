@@ -6,8 +6,8 @@
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
 
-	<script type="text/javascript" src="./deps/p5.js"></script>
-	<script type="text/javascript" src="../build/p5.Tone.js"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.4.5/p5.js"></script>
+	<script type="text/javascript" src="http://cdn.tonejs.org/r4/Tone.js"></script>
 
 	<script type="text/javascript">
 		// jshint ignore: start
@@ -19,12 +19,14 @@
 
 		var player;
 
+		p5.prototype.registerPreloadMethod(Tone.Buffer.load);
+
 		function preload(){
-			player = new Tone.Player("./audio/FWDL.mp3");
+			player = new Tone.Player("./A1.mp3").toMaster();
 		}
 
 		function setup(){
-			console.log("setup");
+			player.start();
 		}
 
 		function draw(){
