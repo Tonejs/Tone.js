@@ -104,11 +104,11 @@ function(Tone){
 			"volume" : -10,
 			"portamento" : 0,
 			"oscillator" : {
-				"type" : "square"
+				"type" : "sine"
 			},
 			"envelope" : {
-				"attack" : 2,
-				"decay" : 0.0,
+				"attack" : 0.5,
+				"decay" : 0.1,
 				"sustain" : 1,
 				"release" : 0.5
 			}
