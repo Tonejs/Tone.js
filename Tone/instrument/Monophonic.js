@@ -11,10 +11,10 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/signal/Signal"], f
 	 */
 	Tone.Monophonic = function(options){
 
-		Tone.Instrument.call(this);
-
 		//get the defaults
 		options = this.defaultArg(options, Tone.Monophonic.defaults);
+
+		Tone.Instrument.call(this, options);
 
 		/**
 		 *  The glide time between notes. 

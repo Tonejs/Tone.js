@@ -8,7 +8,10 @@ define(["Tone/core/Tone", "Tone/core/Master", "Tone/core/Note"], function(Tone){
 	 *  @constructor
 	 *  @extends {Tone}
 	 */
-	Tone.Instrument = function(){
+	Tone.Instrument = function(options){
+
+		//get the defaults
+		options = this.defaultArg(options, Tone.Instrument.defaults);
 
 		/**
 		 *  the output
@@ -22,7 +25,11 @@ define(["Tone/core/Tone", "Tone/core/Master", "Tone/core/Note"], function(Tone){
 		 * @type {Decibels}
 		 * @signal
 		 */
-		this.volume = new Tone.Signal(this.output.gain, Tone.Type.Decibels);
+		this.volume = new Tone.Signal({
+			"param" : this.output.gain, 
+			"units" : Tone.Type.Decibels,
+			"value" : options.volume
+		});
 		this._readOnly(["volume"]);
 	};
 
