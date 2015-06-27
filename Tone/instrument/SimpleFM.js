@@ -6,7 +6,7 @@ function(Tone){
 	/**
 	 *  @class  SimpleFM is composed of two Tone.SimpleSynths where one Tone.SimpleSynth modulates
 	 *          the frequency of a second Tone.SimpleSynth. A lot of spectral content 
-	 *          can be explored using the Tone.SimpleSynth.modulationIndex parameter. Read more about
+	 *          can be explored using the Tone.FMSynth.modulationIndex parameter. Read more about
 	 *          frequency modulation synthesis on <a href="http://www.soundonsound.com/sos/apr00/articles/synthsecrets.htm">SoundOnSound</a>
 	 *          <img src="https://docs.google.com/drawings/d/1hSU25lLjDk_WJ59DSitQm6iCRpcMWVEAYqBjwmqtRVw/pub?w=902&h=462">
 	 *
