@@ -7,15 +7,11 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
 
 	<script type="text/javascript" src="../build/Tone.js"></script>
-	<script type="text/javascript" src="../build/Tone.Preset.js"></script>
 	<script type="text/javascript" src="./scripts/jquery.min.js"></script>
-	<script type="text/javascript" src="./deps/qwerty-hancock.js"></script>
-	<script type="text/javascript" src="./deps/nexusUI.js"></script>
-	<script type="text/javascript" src="./deps/prism.js"></script>
+	<script type="text/javascript" src="../../Notone.js/build/Notone.GUI.js"></script>
 	<script type="text/javascript" src="./scripts/Interface.js"></script>
 
 	<link rel="stylesheet" type="text/css" href="./style/examples.css">
-	<link rel="stylesheet" type="text/css" href="./style/prism.css">
 
 	<script type="text/javascript">
 		// jshint ignore: start
@@ -23,93 +19,142 @@
 
 </head>
 <body>	
-	<div id="Explanation">
-		Tone.Note
-		<br>
-		<br>
-		Tone.Note lets you to schedule a note on a particular "channel". Then use Tone.Note.route
-		to listen for events on that channel. Multiple notes can be put into a JSON-friendly score
-		which can be parsed using Tone.Note.parseScore(). Take a look at source to see the 
-		score format. MIDI files can also be converted to JSON score format using utils/MidiToScore.js.
-	</div>
 	<div id="Content">
-		<div id="LoadingBar"></div>
-		<div id="Rack"></div>
-		<div id="Code"></div>
+		<div id="Title">Scores</div>
+		<div id="Explanation">
+			Scores lets you to schedule a note on a particular "channel". Then use <code>Tone.Note.route</code>
+			to listen for events on that channel. Multiple notes can be put into a JSON-friendly score
+			which can be parsed using <code>Tone.Note.parseScore</code>.
+			<br><br>
+			Take a look at source to see the score format. 
+			MIDI files can also be converted to JSON score format using utils/MidiToScore.js.
+		</div>
 	</div>
 
 	<script id="ToneCode" type="text/javascript">
-		var bass = new Tone.MonoSynth()
-			.toMaster()
-			.setPreset("Bassy");
-		bass.volume.value = -10;
+		/*
+		 KICK
+		 */
+		var kick = new Tone.DrumSynth({
+			"envelope" : {
+				"sustain" : 0,
+				"attack" : 0.02,
+				"decay" : 0.8
+			},
+			"octaves" : 10
+		}).toMaster();
 
-		var keys = new Tone.PolySynth(3, Tone.MonoSynth)
-			.toMaster()
-			.setPreset("Pianoetta");
-		keys.volume.value = -30;
+		Tone.Note.route("Kick", function(time){
+			kick.triggerAttackRelease("C2", "8n", time);
+		});
 
-		var kick = new Tone.Player("./audio/505/kick.mp3")
-			.toMaster();
+		/*
+		 SNARE
+		 */
+		var snare = new Tone.NoiseSynth().toMaster();
 
-		var snare = new Tone.Player("./audio/505/snare.mp3")
-			.toMaster();
+		Tone.Note.route("Snare", function(time){
+			snare.triggerAttackRelease("8n", time);
+		});
 
-		var hh = new Tone.Player("./audio/505/hh.mp3")
-			.toMaster();
-	
-		var Score = {
-			"kick" : ["0", "0:2:2", "0:3:1"],
-			//use any Tone.Time representation or expression
-			"snare" : ["4n*1", "4n*3"],
-			"hh" : ["0*8n", "1*8n", "2*8n", "3*8n", "4*8n", "5*8n", "6*8n", "7*8n"],
-			//if the array is composed of other arrays time is the first value
-			//the rest of the values are given to the callback in order
-			"bass" : [["0:0", "C2", "2n"], ["0:3:2", "C3", "8n"]],
-			"keys" : [["0:0:2", ["E4", "G4", "A4"]], ["0:0:3", ["E4", "G4", "A4"]], ["0:1:3", ["E4", "G4", "A4"]]],
-		};
+		/**
+		 *  PIANO
+		 */
+		var piano = new Tone.PolySynth(4, Tone.SimpleSynth).toMaster();
 
-		//create events for all of the notes
-		Tone.Note.parseScore(Score);
+		Tone.Note.route("Piano", function(time){
+			piano.triggerAttackRelease(["c4", "e4", "a4"], "8n", time);
+		});
 
-		//route the note channels
-		Tone.Note.route("bass", function(time, note, duration){
+		/*
+		 BASS
+		 */
+		var bass = new Tone.MonoSynth({
+			"volume" : -10,
+			"envelope" : {
+				"attack" : 0.1,
+				"decay" : 0.3,
+				"release" : 2,
+			},
+			"filterEnvelope" : {
+				"attack" : 0.01,
+				"decay" : 0.1,
+				"sustain" : 0.5,
+				"min" : 200,
+				"max" : 1200
+			}
+		}).toMaster();
+
+		Tone.Note.route("Bass", function(time, note, duration){
 			bass.triggerAttackRelease(note, duration, time);
 		});
-		Tone.Note.route("keys", function(time, value){
-			var velocity = Math.random() * 0.5 + 0.4;
-			for (var i = 0; i < value.length; i++) {
-				keys.triggerAttackRelease(value[i], "16n", time, velocity);
-			}
-		});
-		Tone.Note.route("kick", function(time){
-			kick.start(time);
-		});
-		Tone.Note.route("snare", function(time){
-			snare.start(time);
-		});
-		Tone.Note.route("hh", function(time){
-			hh.start(time);
-		});
 
-		//setup the transport values
-		Tone.Transport.loopStart = 0;
-		Tone.Transport.loopEnd = "1:0";
+		/**
+		 *  SCORE
+		 */
+		var Score = {
+			"Kick" : [
+				"0:0", "0:2" ,
+				"1:0", "1:2" ,
+				"2:0", "2:2" ,
+				"3:0", "3:2" ,
+			],
+			"Snare" : [
+				"0:1", "0:3",
+				"1:1", "1:3",
+				"2:1", "2:3",
+				"3:1", "3:3"
+			],
+			"Piano" : [
+				"0:0", "0:0:3",
+				"1:0", "1:0:3",
+				"2:0", "2:0:3",
+				"3:0", "3:0:3"
+			],
+			//additional arguments to the array format are
+			//passed back to the route's callback function
+			"Bass" : [
+				["0:0", "C2", "4n"], 
+				["1:0", "F2", "2n"], 
+				["2:0", "C2", "4n"], 
+				["3:0", "F2", "2n"], 
+			]
+		};
+
+		Tone.Note.parseScore(Score);
+
 		Tone.Transport.loop = true;
-		Tone.Transport.bpm.value = 100;
-		Tone.Transport.swing = 0.2;
+		Tone.Transport.bpm.value = 90;
+		Tone.Transport.setLoopPoints(0, "4m");
 	</script>
 	<script type="text/javascript">
-		Interface.Loading("LoadingBar");
-		Interface.Rack("Rack", "Transport");
-		Interface.Toggle("Rack", function(on){
-			if (on){
-				Tone.Transport.start();
-			} else {
-				Tone.Transport.stop();
-			}
+
+		$(function(){
+			Notone.config({
+				"search" : false,
+				"expandInDrawer" : true,
+				"hideDrawer" : Interface.isMobile,
+				"drawer" : true,
+				"container" : "body"
+			});
+
+			Notone.add(kick, "Kick");
+			Notone.add(snare, "Snare");
+			Notone.add(bass, "Bass");
+
+			new Interface.Button({
+				key : 32,
+				type : "toggle",
+				text : "Start",
+				activeText : "Stop",
+				start : function(){
+					Tone.Transport.start();
+				},
+				end : function(){
+					Tone.Transport.stop();
+				}
+			});
 		});
-		Interface.Code("Code", "ToneCode");
 	</script>
 </body>
 </html>

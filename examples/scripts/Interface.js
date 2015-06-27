@@ -39,7 +39,7 @@ $(function(){
 			.appendTo(element);  
 	}
 	//get the master output
-	if (Tone && Tone.Master){
+	if (typeof Tone !== "undefined"){
 		var meter = new Tone.Meter(2);
 		Tone.Master.connect(meter);
 		var meterElement = $("<div>").attr("id", "Meter").appendTo(topbar);
@@ -60,28 +60,25 @@ $(function(){
 	}
 });
 
+/**
+ *
+ *	LOADING INDICATOR
+ *  
+ */
+Interface.Loader = function(){
+	this.element = $("<div>", {
+		"id" : "Loading",
+	}).appendTo("body");
 
-Interface.Code = function(container, codeID){
-	Interface.Rack(container, "Code", true);
-	var element = Interface.getElement(container);
-	var codeContainer = $("<code>").addClass("language-javascript Code");
-	element.append(codeContainer);
-	var code = Interface.getElement(codeID);
-	var codeText = code.text();
-	var lines = codeText.split("\n");
-	//remove the same level of indentation for everyone
-	while(lines[1].charAt(0)==="\t"){
-		for (var i = 0; i < lines.length; i++){
-			var line = lines[i];
-			lines[i] = line.substr(1);
-		}
-	}
-	codeText = lines.join("\n");
-	codeContainer.text(codeText);
-	codeContainer.addClass("Code");
+	this.text = $("<div>", {
+		"id" : "Text",
+		"text" : "Loading"
+	}).appendTo(this.element);
+
+	Tone.Buffer.onload = function(){
+		this.element.addClass("Loaded");
+	}.bind(this);
 };
-
-
 
 /**
  *
@@ -93,7 +90,7 @@ Interface.Dragger = function(params){
 
 	if ($("#DragContainer").length === 0){
 		$("<div>", {
-			"class" : "DragContainer"
+			"id" : "DragContainer"
 		}).appendTo(params.parent || "#Content");	
 	}
 
@@ -116,7 +113,7 @@ Interface.Dragger = function(params){
 	/**
 	 *  the name
 	 */
-	var name = params.name || this.gui ? this.gui.name : "";
+	var name = params.name ? params.name : this.gui.name ? this.gui.name : "";
 
 	/**
 	 *  elements
@@ -371,12 +368,19 @@ Interface.Button = function(params){
 
 	this.text = params.text || "Button";
 
+	this.type = params.type || "moment";
+
 	this.element = $("<div>", {
 		"class" : "Button",
 		"text" : this.text
 	}).appendTo(params.parent || "#Content")
-		.on("mousedown touchstart", this._start.bind(this))
-		.on("mouseup touchend", this._end.bind(this));
+		.on("mousedown touchstart", this._start.bind(this));
+
+	if (this.type === "moment"){
+		this.element.on("mouseup touchend", this._end.bind(this));
+	} else {
+		this.element.addClass("Toggle");
+	}
 
 	/**
 	 *  the button state
@@ -395,7 +399,9 @@ Interface.Button = function(params){
 	if (params.key){
 		this.key = params.key;
 		$(window).on("keydown", this._keydown.bind(this));
-		$(window).on("keyup", this._keyup.bind(this));
+		if (this.type === "moment"){
+			$(window).on("keyup", this._keyup.bind(this));
+		}
 	}
 };
 
@@ -409,6 +415,8 @@ Interface.Button.prototype._start = function(){
 		if (this.start){
 			this.start();
 		}
+	} else if (this.type === "toggle" && this.active){
+		this._end();
 	}
 };
 
@@ -436,6 +444,3 @@ Interface.Button.prototype._keyup = function(e){
 		this._end();
 	}
 };
-
-
-

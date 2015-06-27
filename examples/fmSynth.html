@@ -2,20 +2,17 @@
 <html>
 <head>
   <meta charset="utf-8">
-	<title>MONOSYNTH</title>
+	<title>SimpleFM</title>
 
 	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-
-	<script type="text/javascript" src="./scripts/jquery.min.js"></script>
+	
 	<script type="text/javascript" src="../build/Tone.js"></script>
-	<script type="text/javascript" src="../build/Tone.Preset.js"></script>
-	<script type="text/javascript" src="./deps/nexusUI.js"></script>
-	<script type="text/javascript" src="./deps/prism.js"></script>
+	<script type="text/javascript" src="./scripts/jquery.min.js"></script>
+	<script type="text/javascript" src="../../Notone.js/build/Notone.GUI.js"></script>
 	<script type="text/javascript" src="./scripts/Interface.js"></script>
-	<script type="text/javascript" src="./deps/qwerty-hancock.js"></script>
+	<script type="text/javascript" src="./scripts/qwerty-hancock.js"></script>
 
 	<link rel="stylesheet" type="text/css" href="./style/examples.css">
-	<link rel="stylesheet" type="text/css" href="./style/prism.css">
 
 	<script type="text/javascript">
 		// jshint ignore: start
@@ -23,107 +20,63 @@
 
 </head>
 <body>
-	<style type="text/css">
-	#Amplitude0, #Amplitude1 {
-		/*position: relative;*/
-		width: calc(40% - 10px)!important;
-	}
-	#FilterEnvelope0, #FilterEnvelope1 {
-		/*position: relative;*/
-		width: calc(60% - 10px)!important;
-	}
-	.FilterEnvelope.Envelope {
-		width: 100%!important;
-	}
-
-	.Envelope {
-		width: 100%!important;
-	}
-	.Label {
-		width: 100%;
-		font-size : 10px;
-		line-height: 7px;
-		text-align:  center;
-		margin-top: 10px;
-		margin-bottom: 5px;
-		border-bottom: 1px solid black;
-	}
-	</style>
-	<div id="Explanation">
-		FMSynth
-		<br>
-		<br>
-		FMSynth is a monophonic Frequency Modulation Synthesizer composed of two MonoSyths: one as the carrier and one as the frequency modulator.
-	</div>
 	<div id="Content">
-		<div id="KeyRack">
-			<div id="Keyboard"></div>
+		<div id="Title">FMSynth</div>
+		<div id="Explanation">	
+			SimpleFM is composed of two Tone.SimpleSynths where one Tone.SimpleSynth modulates
+			the frequency of a second Tone.SimpleSynth. 
 		</div>
-		<div id="Oscillator">
-		</div>
-		<div id="Envelope">
-			<div id="Amplitude0"></div>
-			<div id="FilterEnvelope0"></div>
-			<div id="Amplitude1"></div>
-			<div id="FilterEnvelope1"></div>
-		</div>
-		<div id="Filter"></div>
-		<div id="Voices"></div>
-		<div id="Presets"></div>
 	</div>
 
-	<script id="ToneCode" type="text/javascript">			
-		var synth = new Tone.FMSynth().toMaster();
+	<script type="text/javascript">			
+		var synth = new Tone.SimpleFM({
+			"modulationIndex" : 12.22
+		}).toMaster();
 	</script>
-	<script id="GUI" type="text/javascript">
 
-		Interface.Rack("KeyRack", "Keyboard", true).open();
-		//the keyboard
-		var keyboard = new QwertyHancock({
-			id: "Keyboard",
-			width: $("#KeyRack").width(),
-			height: 75,
-			octaves : 3,
-			startNote: "A2",
+	<script type="text/javascript">
+
+		$(function(){
+			Notone.config({
+				"search" : false,
+				"expandInDrawer" : true,
+				"hideDrawer" : Interface.isMobile,
+				"drawer" : true,
+				"container" : "body"
+			});
+
+			var fmGUI = Notone.add(synth, "SimpleFM");
+
+			new Interface.Slider({
+				gui : fmGUI,
+				param : "modulationIndex",
+				name : "mod index",
+				max : 100
+			});
+
+			$("<div>", {
+				"id" : "Keyboard"
+			}).appendTo("#Content");
+
+			var keyboard = new QwertyHancock({
+				id: "Keyboard",
+				width: $("#Content").width(),
+				height: 150,
+				octaves: Interface.isMobile ? 1.26 : 3,
+				startNote: "C3",
+				whiteKeyColour: "white",
+				blackKeyColour: "#ECECEC",
+				activeColour : "#FFFC0C"
+			});
+
+			keyboard.keyDown = function (note) {
+			    synth.triggerAttack(note);
+			};
+
+			keyboard.keyUp = function (note) {
+			    synth.triggerRelease();
+			};
 		});
-		keyboard.keyDown = function(note, freq){
-			synth.triggerAttack(freq);
-		};
-		keyboard.keyUp = function(){
-			synth.triggerRelease();
-		};
-
-		//the oscillator
-		Interface.Rack("Oscillator", "Oscillators", true);
-		$("<div>").addClass("Label").appendTo("#Oscillator").text("carrier");
-		Interface.DropDown("Oscillator", synth.carrier.oscillator, "type", ["sine", "square", "triangle", "sawtooth", "pwm", "pulse"]).listen();
-		$("<div>").addClass("Label").appendTo("#Oscillator").text("modulator");
-		Interface.DropDown("Oscillator", synth.modulator.oscillator, "type", ["sine", "square", "triangle", "sawtooth", "pwm", "pulse"]).listen();
-		//the envelopes
-		Interface.Rack("Envelope", "Envelopes", true);
-		var ampGroup0 = Interface.Group("Amplitude0", "Carrier Amplitude");
-		Interface.AmplitudeEnvelope(ampGroup0, synth.carrier.envelope).listen();
-		var filtGroup0 = Interface.Group("FilterEnvelope0", "Carrier Filter");
-		Interface.FilterEnvelope(filtGroup0, synth.carrier.filterEnvelope).listen();
-		var ampGroup1 = Interface.Group("Amplitude1", "Modulator Amplitude");
-		Interface.AmplitudeEnvelope(ampGroup1, synth.modulator.envelope).listen();
-		var filtGroup1 = Interface.Group("FilterEnvelope1", "Modulator Filter");
-		Interface.FilterEnvelope(filtGroup1, synth.modulator.filterEnvelope).listen();
-		//the filters
-		Interface.Rack("Filter", "Filter", true);
-		$("<div>").addClass("Label").appendTo("#Filter").text("Carrier");
-		var type = Interface.DropDown("Filter", synth.carrier.filter, "type", ["lowpass", "highpass", "bandpass"]).listen();
-		var Q = Interface.Slider("Filter", synth.carrier.filter, "Q", 0.1, 20).listen();
-		$("<div>").addClass("Label").appendTo("#Filter").text("Modulator");
-		var type = Interface.DropDown("Filter", synth.modulator.filter, "type", ["lowpass", "highpass", "bandpass"]).listen();
-		var Q = Interface.Slider("Filter", synth.modulator.filter, "Q", 0.1, 20).listen();
-		//other settings
-		Interface.Rack("Voices", "Voices", true);
-		Interface.Slider("Voices", synth, "harmonicity", 0.25, 5).listen();
-		Interface.Slider("Voices", synth, "modulationIndex", 1, 20).listen();
-		//presets
-		Interface.Rack("Presets", "Presets", true);
-		Interface.Presets("Presets", synth);
 	</script>
 </body>
 </html>
