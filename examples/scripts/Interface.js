@@ -274,8 +274,6 @@ Interface.Slider = function(params){
 	 *  cache some measurements for later
 	 */
 	this.halfSize = this.element.width() / 2;
-	this.top = this.container.offset().top;
-	this.left = this.container.offset().left;
 
 	this.maxAxis = this.axis === "x" ? "width" : "height";
 	this.posAxis = this.axis === "x" ? "left" : "top";
@@ -310,6 +308,11 @@ Interface.Slider = function(params){
 };
 
 Interface.Slider.prototype._ondrag = function(e, pointer){
+	if (typeof this.top === "undefined"){
+		this.top = this.container.offset().top;
+		this.left = this.container.offset().left;
+	}
+
 	var normPos;
 	if (this.axis === "x"){
 		var xVal = Math.max((pointer.pageX - this.left), 0);

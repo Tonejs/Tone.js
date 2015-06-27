@@ -21,10 +21,7 @@
 <body>	
 	<style type="text/css">
 		img {
-			width: 300px;
-			margin-left: auto;
-    		margin-right: auto;
-    		display: block;
+			width: 300px!important;
 		}
 
 		.y {
@@ -46,7 +43,7 @@
 		<div id="Title">Envelope</div>
 		<div id="Explanation">
 			Envelopes ramp amplitude, frequency or any other parameter over time. 
-			Tone.Envelope and the classes that extend it
+			<a href="http://tonejs.org/docs/#Envelope">Tone.Envelope</a> and the classes that extend it
 			implement an <a href="https://en.wikipedia.org/wiki/Synthesizer#ADSR_envelope" target="_blank">ADSR</a> envelope type
 			which splits its ramp into four distinct phases: Attack, Decay, Sustain, Release.
 			<img src="https://upload.wikimedia.org/wikipedia/commons/e/ea/ADSR_parameter.svg">
@@ -91,7 +88,7 @@
 				parent : $("#Sliders"),
 				gui : envGUI,
 				min : 0.005,
-				max : 0.5,
+				max : 1,
 				exp : 2,
 			});
 

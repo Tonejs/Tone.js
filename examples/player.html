@@ -22,24 +22,23 @@
 	<div id="Content">
 		<div id="Title">Grains</div>
 		<div id="Explanation">
-			Click on the dragger to play a grain from the Tone.Player. A grain is a short, looped
-			piece of audio. When the loop becomes very small, it takes on another pitch value. Drag
-			the circle to the bottom to hear this. The x-axis controls the starting position of the loop,
-			and the y-axis controls the grain size. 
+			Click on the button to play short looped section (also called a grain)
+			using <a href="http://tonejs.org/docs/#Player">Tone.Player</a>. 
+			When the loop becomes very small, it takes on another pitch value. 
+			<br><br>
+			The duration of the sample is &#8275;2.5 seconds. Any values for loopStart or loopEnd 
+			larger than the duration will just loop to the end of the sample. Also make sure 
+			that loopStart is smaller than loopEnd. 
 		</div>
-		<div id="DragContainer"></div>
 	</div>
 	<script type="text/javascript">
-		//muted until you click
-		Tone.Master.volume.value = -Infinity;
 
 		//the player
 		var player = new Tone.Player({
-			"url" : "./audio/casio/A1.mp3",
+			"url" : "./audio/FWDL.mp3",
 			"loop" : true,
-			"loopStart" : 0.201,
+			"loopStart" : 0.101,
 			"loopEnd" : 0.211,
-			"autostart" : true
 		}).toMaster();
 	</script>
 	
@@ -55,34 +54,20 @@
 
 			var playerGUI = Notone.add(player, "player", ["loopStart", "loopEnd"]);
 
-			new Interface.Dragger({
-				gui: playerGUI,
-				x : {
-					param : "loopStart",
-					min : 0.1,
-					max : 1,
-				},
-				y : {
-					min : 0.003,
-					max : 0.5,
-					exp : 4,
-					value : player.loopEnd - player.loopStart,
-					drag : function(y){
-						//loopStart
-						playerGUI.set({
-							"loopStart" : player.loopStart,
-							"loopEnd" : player.loopStart + y,
-						});
-					}
-				},
+			new Interface.Loader();
+
+			new Interface.Button({
+				text : "Start Grain",
+				activeText : "Stop Grain",
 				start : function(){
-					Tone.Master.volume.rampTo(0, 0.05);
+					player.start();
 				},
 				end : function(){
-					Tone.Master.volume.rampTo(-Infinity, 0.05);
+					player.stop();
 				}
 			});
-		})
+
+		});
 	</script>
 </body>
 </html>
