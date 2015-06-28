@@ -409,7 +409,9 @@ Interface.Button = function(params){
 };
 
 Interface.Button.prototype._start = function(e){
-	e.preventDefault();
+	if (e){
+		e.preventDefault();
+	}
 	if (!this.active){
 		this.active = true;
 		this.element.addClass("Active");
@@ -425,7 +427,9 @@ Interface.Button.prototype._start = function(e){
 };
 
 Interface.Button.prototype._end = function(e){
-	e.preventDefault();
+	if (e){
+		e.preventDefault();
+	}
 	if (this.active){
 		this.active = false;
 		this.element.removeClass("Active");
