@@ -5,7 +5,7 @@ Tone.js is a Web Audio framework for creating interactive music in the browser. 
 
 [Examples](http://tonejs.org/examples/)
 
-[API](http://tonejs.org/docs/Tone.html)
+[API](http://tonejs.org/docs/)
 
 # Demos
 
