@@ -12,8 +12,9 @@
 * Tone.Oscillator - can specify the number of partials in the type: i.e. "sine10", "triangle3", "square4", etc.
 * mute/unmute the master output: `Tone.Master.mute = true`. 
 * 3 new simplified synths: SimpleSynth, SimpleAM and SimpleFM
-* [new docs](http://tonejs.org/docs)
 * `harmonicity` is a signal-rate value for all instruments now. 
+* [new docs](http://tonejs.org/docs)
+* [updated examples](http://tonejs.org/docs)
 
 ### r4 - Cool is cool
 
