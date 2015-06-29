@@ -74,9 +74,8 @@ function(Tone){
 		//connections
 		this.connectSeries(this.effectSendL, this._delayNodeL, this.effectReturnL);
 		this.connectSeries(this.effectSendR, this._delayNodeR, this.effectReturnR);
-		//and pass through
-		this.effectSendL.connect(this.effectReturnL);
-		this.effectSendR.connect(this.effectReturnR);
+		//and pass through to make the detune apparent
+		this.input.connect(this.output);
 		//lfo setup
 		this._lfoL.connect(this._delayNodeL.delayTime);
 		this._lfoR.connect(this._delayNodeR.delayTime);
