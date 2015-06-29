@@ -99,21 +99,6 @@ gulp.task("build", ["buildrequire"], function(){
 gulp.task("default", ["build"], function(){});
 
 /**
- *  DOCS
- */
-
-gulp.task("attributes", function(done){
-	var allFiles = [];
-	var task = gulp.src(["../Tone/*/*.js"])
-		.pipe(tap(function(file){
-			allFiles.push(file.path);
-		}));
-	task.on("end", function(){
-		extractAttributes(allFiles, "./description", done);
-	});
-});
-
-/**
  *  Sass
  */
 gulp.task("sass", function () {
