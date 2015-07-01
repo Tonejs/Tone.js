@@ -6,7 +6,8 @@ function(Tone){
 	/**
 	 *  @class A stereo chorus effect with feedback composed of a left and right
 	 *         delay with LFOs applied to the delayTime. 
-	 *         Inspiration from <a href="https://github.com/Dinahmoe/tuna/blob/master/tuna.js">Tuna.js</a>.
+	 *         Inspiration from <a href="https://github.com/Dinahmoe/tuna/blob/master/tuna.js" target="_blank">Tuna.js</a>.
+	 *         More on the chorus effect <a href = "http://www.soundonsound.com/sos/jun04/articles/synthsecrets.htm" target="_blank">here</a>.
 	 *
 	 *	@constructor
 	 *	@extends {Tone.StereoXFeedbackEffect}
@@ -15,6 +16,8 @@ function(Tone){
 	 *	@param {NormalRange} [depth] The depth of the chorus.
 	 *	@example
 	 * 	var chorus = new Tone.Chorus(4, 2.5, 0.5);
+	 * 	synth = new Tone.PolySynth(4, Tone.MonoSynth).connect(chorus);
+	 * 	synth.triggerAttackRelease(["C3","E3","G3"], "8n");
 	 */
 	Tone.Chorus = function(){
 

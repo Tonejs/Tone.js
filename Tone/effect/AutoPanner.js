@@ -3,7 +3,8 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/LFO", "Tone/comp
 	"use strict";
 
 	/**
-	 *  @class AutoPanner is a Tone.Panner with an LFO connected to the pan amount
+	 *  @class AutoPanner is a Tone.Panner with an LFO connected to the pan amount. 
+	 *         More on using autopanners <a href="https://www.ableton.com/en/blog/autopan-chopper-effect-and-more-liveschool/" target="_blank">here</a> 
 	 *
 	 *  @constructor
 	 *  @extends {Tone.Effect}

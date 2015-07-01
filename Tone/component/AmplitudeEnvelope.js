@@ -5,6 +5,8 @@ define(["Tone/core/Tone", "Tone/component/Envelope"], function(Tone){
 	/**
 	 *  @class  A Tone.Envelope connected to a gain node which can be used as an amplitude envelope. Unlike
 	 *          the Tone.Envelope, a signal can be connected to the input of Tone.AmplitudeEnvelope. 
+	 *          Read more about ADSR Envelopes on 
+	 *          <a href="https://en.wikipedia.org/wiki/Synthesizer#ADSR_envelope" target="_blank">Wikipedia</a>.
 	 *  
 	 *  @constructor
 	 *  @extends {Tone.Envelope}
@@ -16,7 +18,12 @@ define(["Tone/core/Tone", "Tone/component/Envelope"], function(Tone){
 	 *                                	the release is triggered. 
 	 *  @param {Time} [release]	The amount of time after the release is triggered it takes to reach 0. 
 	 *  @example
-	 * var ampEnv = new Tone.AmplitudeEnvelope(0.1, 0.2, 1, 0.8).toMaster();
+	 * var ampEnv = new Tone.AmplitudeEnvelope({
+	 * 	"attack": 0.1,
+	 * 	"decay": 0.2,
+	 * 	"sustain": 1.0,
+	 * 	"release": 0.8
+	 * }).toMaster();
 	 * var osc = new Tone.Oscillator().connect(ampEnv).start();
 	 * ampEnv.triggerAttackRelease("8t");
 	 */

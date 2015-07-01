@@ -13,10 +13,12 @@ function(Tone){
 	 *	@param {Frequency} [baseFrequency] The base frequency of the filters. 
 	 *	@example
 	 * var phaser = new Tone.Phaser({
-	 * 	"frequency" : 0.4, 
-	 * 	"depth" : 12, 
-	 * 	"baseFrequency" : 550
-	 * });
+	 * 	"frequency" : 15, 
+	 * 	"depth" : 5, 
+	 * 	"baseFrequency" : 1000
+	 * }).toMaster();
+	 * var synth = new Tone.FMSynth().connect(phaser);
+	 * synth.triggerAttackRelease("E3", "2n");
 	 */
 	Tone.Phaser = function(){
 

@@ -13,7 +13,9 @@ function(Tone){
 	 *  @param {Number} bits The number of bits to downsample the signal. Nominal range
 	 *                       of 1 to 8. 
 	 *  @example
-	 *  var crusher = new Tone.BitCrusher(4);
+	 *  //initialize crusher and route a synth through it
+	 *  var crusher = new Tone.BitCrusher(4).toMaster();
+	 *  var synth = new Tone.MonoSynth().connect(crusher);
 	 */
 	Tone.BitCrusher = function(){
 

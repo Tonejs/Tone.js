@@ -10,7 +10,10 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/signal/WaveShaper"], funct
 	 *  @constructor
 	 *  @param {Number|Object} [distortion] The amount of distortion (nominal range of 0-1)
 	 *  @example
-	 * var dist = new Tone.Distortion(0.8);
+	 * var dist = new Tone.Distortion(0.8).toMaster();
+	 * var fm = new Tone.SimpleFM().connect(dist);
+	 * //this sounds good on bass notes
+	 * fm.triggerAttackRelease("A1", "8n");
 	 */
 	Tone.Distortion = function(){
 

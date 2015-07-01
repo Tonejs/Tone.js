@@ -21,7 +21,8 @@ function(Tone){
 	var allpassFilterFrequencies = [225, 556, 441, 341];
 
 	/**
-	 *  @class Reverb based on <a href="https://ccrma.stanford.edu/~jos/pasp/Freeverb.html">Freeverb</a>.
+	 *  @class Reverb based on <a href="https://ccrma.stanford.edu/~jos/pasp/Freeverb.html" target="_blank">Freeverb</a>.
+	 *  More on reverb <a href="http://www.soundonsound.com/sos/may00/articles/reverb.htm" target="_blank">here</a>.
 	 *
 	 *  @extends {Tone.Effect}
 	 *  @constructor
@@ -29,7 +30,10 @@ function(Tone){
 	 *  @param {Frequency} [dampening] The cutoff frequency of a lowpass filter as part 
 	 *                                 of the reverb. 
 	 *  @example
-	 *  var freeverb = new Tone.Freeverb(0.4, 2000);
+	 * var freeverb = new Tone.Freeverb().toMaster();
+	 * freeverb.dampening.value = 1000;
+	 * //routing synth through the reverb
+	 * var synth = new Tone.AMSynth().connect(freeverb);
 	 */
 	Tone.Freeverb = function(){
 

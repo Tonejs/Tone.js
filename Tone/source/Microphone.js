@@ -3,12 +3,16 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 	"use strict";
 
 	/**
-	 *  @class  WebRTC Microphone. Check <a href="https://developer.mozilla.org/en-US/docs/Web/API/MediaStream_API">Media Stream API Support</a>
+	 *  @class  Tone.Microphone is a WebRTC Microphone. Check <a href="https://developer.mozilla.org/en-US/docs/Web/API/MediaStream_API">Media Stream API Support</a>
 	 *          to see which browsers are supported. 
 	 *
 	 *  @constructor
 	 *  @extends {Tone.Source}
 	 *  @param {number} [inputNum=0] If multiple inputs are present, select the input number.
+	 *  @example
+	 * //mic will feedback if played through master
+	 * var mic = new Tone.Microphone();
+	 * mic.start();
 	 */
 	Tone.Microphone = function(inputNum){
 		Tone.Source.call(this);

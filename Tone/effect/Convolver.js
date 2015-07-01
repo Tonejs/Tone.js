@@ -13,7 +13,12 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/effect/Effect"], function(To
 	 *  @param {string|Tone.Buffer|Object} [url] The URL of the impulse response or the Tone.Buffer
 	 *                                           contianing the impulse response. 
 	 *  @example
-	 *  var convolver = new Tone.Convolver("./path/to/ir.wav");
+	 * //initializing the convolver with an impulse response
+	 * var convolver = new Tone.Convolver("./path/to/ir.wav");
+	 * convolver.toMaster();
+	 * //testing out convolution with a noise burst
+	 * var burst = new Tone.NoiseSynth().connect(convolver);
+	 * burst.triggerAttackRelease("16n");
 	 */
 	Tone.Convolver = function(){
 

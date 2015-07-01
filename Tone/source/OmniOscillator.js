@@ -6,8 +6,12 @@ function(Tone){
 
 	/**
 	 *  @class OmniOscillator aggregates Tone.Oscillator, Tone.PulseOscillator,
-	 *         and Tone.PWMOscillator which allows it to have the types: 
-	 *         sine, square, triangle, sawtooth, pulse or pwm. 
+	 *         and Tone.PWMOscillator into one class, allowing it to have the 
+	 *         types: sine, square, triangle, sawtooth, pulse or pwm. Additionally,
+	 *         OmniOscillator is capable of setting the first x number of partials 
+	 *         of the oscillator. For example: "sine4" would set be the first 4 
+	 *         partials of the sine wave and "triangle8" would set the first 
+	 *         8 partials of the triangle wave. 
 	 *
 	 *  @extends {Tone.Oscillator}
 	 *  @constructor
