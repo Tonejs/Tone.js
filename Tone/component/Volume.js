@@ -3,7 +3,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Master"], function(To
 	"use strict";
 
 	/**
-	 *  @class A simple volume node. Useful for creating a volume fader. 
+	 *  @class Tone.Volume is a simple volume node, useful for creating a volume fader. 
 	 *
 	 *  @extends {Tone}
 	 *  @constructor

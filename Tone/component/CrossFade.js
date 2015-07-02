@@ -10,7 +10,11 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Expr", "Tone/signal
 	 * @param {NormalRange} [initialFade=0.5]
 	 * @example
 	 * var crossFade = new Tone.CrossFade(0.5);
+	 * //connect effect A to crossfade from
+	 * //effect output 0 to crossfade input 0
 	 * effectA.connect(crossFade, 0, 0);
+	 * //connect effect B to crossfade from
+	 * //effect output 0 to crossfade input 1
 	 * effectB.connect(crossFade, 0, 1);
 	 * crossFade.fade.value = 0;
 	 * // ^ only effectA is output

@@ -3,7 +3,7 @@ define(["Tone/core/Tone", "Tone/component/Panner", "Tone/component/Volume"], fun
 	"use strict";
 
 	/**
-	 *  @class A Tone.Panner and Tone.Volume in one.
+	 *  @class Tone.PanVol is a Tone.Panner and Tone.Volume in one.
 	 *
 	 *  @extends {Tone}
 	 *  @constructor

@@ -4,9 +4,10 @@ define(["Tone/core/Tone", "Tone/component/Envelope", "Tone/signal/Scale"],
 	"use strict";
 
 	/**
-	 *  @class An envelope which can be scaled to any range. 
-	 *         Useful for applying an envelope to a frequency or 
-	 *         any other non-NormalRange signal parameter. 
+	 *  @class Tone.ScaledEnvelop is an envelope which can be scaled 
+	 *         to any range. It's useful for applying an envelope 
+	 *         to a frequency or any other non-NormalRange signal 
+	 *         parameter. 
 	 *
 	 *  @extends {Tone.Envelope}
 	 *  @constructor
