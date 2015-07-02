@@ -78,7 +78,7 @@ function(Tone){
 	/**
 	 *  Trigger the note at the given time with the given velocity. 
 	 *  
-	 *  @param  {string|string} note     the note
+	 *  @param  {Frequency} note     the note
 	 *  @param  {Time} [time=now]     the time, if not given is now
 	 *  @param  {number} [velocity=1] velocity defaults to 1
 	 *  @returns {Tone.DrumSynth} this
