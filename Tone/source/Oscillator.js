@@ -4,7 +4,7 @@ function(Tone){
 	"use strict";
 
 	/**
-	 *  @class An oscillator which supports a number of features including
+	 *  @class Tone.Oscillator supports a number of features including
 	 *         phase rotation, multiple oscillator types (see Tone.Oscillator.type), 
 	 *         and Transport syncing (see Tone.Oscillator.syncFrequency).
 	 *

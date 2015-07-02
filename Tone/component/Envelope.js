@@ -3,9 +3,9 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Pow"], function(Ton
 	"use strict";
 
 	/**
-	 *  @class  <a href="https://en.wikipedia.org/wiki/Synthesizer#ADSR_envelope" target="_blank">ADSR</a>
-	 *          envelope generator. Tone.Envelope outputs a signal which can be connected to an AudioParam
-	 *          or Tone.Signal. 
+	 *  @class  Tone.Envelope is an <a href="https://en.wikipedia.org/wiki/Synthesizer#ADSR_envelope" 
+	 *          target="_blank">ADSR</a> envelope generator. Tone.Envelope outputs a signal which 
+	 *          can be connected to an AudioParam or Tone.Signal. 
 	 *
 	 *  @constructor
 	 *  @extends {Tone}

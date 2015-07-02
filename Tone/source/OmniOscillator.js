@@ -5,7 +5,7 @@ function(Tone){
 	"use strict";
 
 	/**
-	 *  @class OmniOscillator aggregates Tone.Oscillator, Tone.PulseOscillator,
+	 *  @class Tone.OmniOscillator aggregates Tone.Oscillator, Tone.PulseOscillator,
 	 *         and Tone.PWMOscillator into one class, allowing it to have the 
 	 *         types: sine, square, triangle, sawtooth, pulse or pwm. Additionally,
 	 *         OmniOscillator is capable of setting the first x number of partials 

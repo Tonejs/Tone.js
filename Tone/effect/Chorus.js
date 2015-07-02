@@ -4,10 +4,10 @@ function(Tone){
 	"use strict";
 
 	/**
-	 *  @class A stereo chorus effect with feedback composed of a left and right
-	 *         delay with LFOs applied to the delayTime. 
+	 *  @class Tone.Chorus is a stereo chorus effect with feedback composed of 
+	 *         a left and right delay with a Tone.LFO applied to the delayTime of each channel. 
 	 *         Inspiration from <a href="https://github.com/Dinahmoe/tuna/blob/master/tuna.js" target="_blank">Tuna.js</a>.
-	 *         More on the chorus effect <a href = "http://www.soundonsound.com/sos/jun04/articles/synthsecrets.htm" target="_blank">here</a>.
+	 *         Read more on the chorus effect <a href = "http://www.soundonsound.com/sos/jun04/articles/synthsecrets.htm" target="_blank">here</a>.
 	 *
 	 *	@constructor
 	 *	@extends {Tone.StereoXFeedbackEffect}

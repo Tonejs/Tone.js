@@ -3,9 +3,9 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/effect/Effect"], function(To
 	"use strict";
 
 	/**
-	 *  @class  Wrapper around the Native Web Audio 
+	 *  @class  Tone.Convolver is a wrapper around the Native Web Audio 
 	 *          <a href="http://webaudio.github.io/web-audio-api/#the-convolvernode-interface" target="_blank">ConvolverNode</a>. 
-	 *          Useful for reverb and filter emulation. Read more about convolution reverb on
+	 *          Convolution is useful for reverb and filter emulation. Read more about convolution reverb on
 	 *          <a href="https://en.wikipedia.org/wiki/Convolution_reverb" target="_blank">Wikipedia</a>
 	 *  
 	 *  @constructor

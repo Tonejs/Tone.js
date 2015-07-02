@@ -28,9 +28,9 @@ function(Tone){
 	var allpassFilterFreqs = [347, 113, 37];
 
 	/**
-	 *  @class A simple <a href="https://ccrma.stanford.edu/~jos/pasp/Schroeder_Reverberators.html" target="_blank">
-	 *         Schroeder Reverberators</a> tuned by John Chowning in 1970
-	 *         Made up of 3 allpass filters and 4 feedback comb filters. 
+	 *  @class Tone.JCReverb is a simple <a href="https://ccrma.stanford.edu/~jos/pasp/Schroeder_Reverberators.html" target="_blank">
+	 *         Schroeder Reverberator</a> tuned by John Chowning in 1970
+	 *         It is made up of three allpass filters and four Tone.FeedbackCombFilter. 
 	 *         
 	 *
 	 *  @extends {Tone.Effect}

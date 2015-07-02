@@ -3,7 +3,7 @@ define(["Tone/core/Tone", "Tone/component/MultibandSplit", "Tone/signal/Signal"]
 	"use strict";
 
 	/**
-	 *  @class EQ3 is a three band EQ with control over low, mid, and high gain as
+	 *  @class Tone.EQ3 is a three band EQ with control over low, mid, and high gain as
 	 *         well as the low and high crossover frequencies.
 	 *
 	 *  @constructor

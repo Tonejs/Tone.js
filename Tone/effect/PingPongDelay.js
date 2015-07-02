@@ -4,10 +4,10 @@ function(Tone){
 	"use strict";
 
 	/**
-	 *  @class  PingPongDelay is a feedback delay effect where the echo is heard
+	 *  @class  Tone.PingPongDelay is a feedback delay effect where the echo is heard
 	 *          first in one channel and next in the opposite channel. In a stereo
 	 *          system these are the right and left channels.
-	 *          PingPongDelay in more simplified terms is two FeedbackDelays 
+	 *          PingPongDelay in more simplified terms is two Tone.FeedbackDelays 
 	 *          with independent delay values. Each delay is routed to one channel
 	 *          (left or right), and the channel triggered second will always 
 	 *          trigger at the same interval after the first.

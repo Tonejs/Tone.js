@@ -3,7 +3,10 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Expr", "Tone/signal
 	"use strict";
 
 	/**
-	 * @class  Equal power fading between two inputs. 
+	 * @class  Tone.Crossfade provides equal power fading between two inputs. 
+	 *         More on crossfading technique 
+	 *         <a href="https://en.wikipedia.org/wiki/Fade_(audio_engineering)#Crossfading"
+	 *         target="_blank">here</a>.
 	 *
 	 * @constructor
 	 * @extends {Tone}

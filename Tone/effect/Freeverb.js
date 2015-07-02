@@ -21,8 +21,9 @@ function(Tone){
 	var allpassFilterFrequencies = [225, 556, 441, 341];
 
 	/**
-	 *  @class Reverb based on <a href="https://ccrma.stanford.edu/~jos/pasp/Freeverb.html" target="_blank">Freeverb</a>.
-	 *  More on reverb <a href="http://www.soundonsound.com/sos/may00/articles/reverb.htm" target="_blank">here</a>.
+	 *  @class Tone.Freeverb is a reverb based on 
+	 *         <a href="https://ccrma.stanford.edu/~jos/pasp/Freeverb.html" target="_blank">Freeverb</a>.
+	 *         Read more on reverb <a href="http://www.soundonsound.com/sos/may00/articles/reverb.htm" target="_blank">here</a>.
 	 *
 	 *  @extends {Tone.Effect}
 	 *  @constructor

@@ -5,11 +5,11 @@ function(Tone){
 	"use strict";
 
 	/**
-	 *  @class  Follower is a  crude envelope follower which will follow 
+	 *  @class  Tone.Follower is a  crude envelope follower which will follow 
 	 *          the amplitude of an incoming signal. 
 	 *          Take care with small (< 0.02) attack or decay values 
 	 *          as follower has some ripple which is exaggerated
-	 *          at these values. More on envelop followers (also known 
+	 *          at these values. Read more about envelope followers (also known 
 	 *          as envelope detectors) on
 	 *          <a href="https://en.wikipedia.org/wiki/Envelope_detector" 
 	 *          target="_blank">Wikipedia</a>.

@@ -4,7 +4,10 @@ function(Tone){
 	"use strict";
 
 	/**
-	 *  @class PWM oscillator modulates the width of the Tone.PulseOscillator at the modulationFrequency.
+	 *  @class Tone.PWMOscillator modulates the width of a Tone.PulseOscillator 
+	 *         at the modulationFrequency. This has the effect of continuously
+	 *         changing the timbre of the oscillator by altering the harmonics 
+	 *         generated.
 	 *
 	 *  @extends {Tone.Oscillator}
 	 *  @constructor

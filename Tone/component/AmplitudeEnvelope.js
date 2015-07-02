@@ -3,8 +3,9 @@ define(["Tone/core/Tone", "Tone/component/Envelope"], function(Tone){
 	"use strict";
 
 	/**
-	 *  @class  A Tone.Envelope connected to a gain node which can be used as an amplitude envelope. Unlike
-	 *          the Tone.Envelope, a signal can be connected to the input of Tone.AmplitudeEnvelope. 
+	 *  @class  Tone.AmplitudeEnvelope is a Tone.Envelope connected to a gain node 
+	 *          which allows it be used as an amplitude envelope. Unlike Tone.Envelope, 
+	 *          a signal can be connected to the input of Tone.AmplitudeEnvelope. 
 	 *          Read more about ADSR Envelopes on 
 	 *          <a href="https://en.wikipedia.org/wiki/Synthesizer#ADSR_envelope" target="_blank">Wikipedia</a>.
 	 *  

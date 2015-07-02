@@ -3,9 +3,10 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	"use strict";
 
 	/**
-	 *  @class  Filter which allows for all of the same native methods
-	 *          as the <a href="http://webaudio.github.io/web-audio-api/#the-biquadfilternode-interface" target="_blank">BiquadFilterNode</a>. 
-	 *          Adds the ability to set the filter rolloff at -12 
+	 *  @class  Tone.Filter is a filter which allows for all of the same native methods
+	 *          as the <a href="http://webaudio.github.io/web-audio-api/#the-biquadfilternode-interface" 
+	 *          target="_blank">BiquadFilterNode</a>. 
+	 *          Tone.Filter has the added ability to set the filter rolloff at -12 
 	 *          (default), -24 and -48. 
 	 *
 	 *  @constructor
