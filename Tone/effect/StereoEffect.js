@@ -5,7 +5,7 @@ function(Tone){
 	"use strict";
 
 	/**
-	 *  @class Creates an effect with an effectSendL/R and effectReturnL/R
+	 *  @class Base class for Stereo effects. Provides effectSendL/R and effectReturnL/R. 
 	 *
 	 *	@constructor
 	 *	@extends {Tone.Effect}
@@ -26,7 +26,8 @@ function(Tone){
 		/**
 		 *  The wet control, i.e. how much of the effected
 		 *  will pass through to the output. 
-		 *  @type {Tone.Signal}
+		 *  @type {NormalRange}
+		 *  @signal
 		 */
 		this.wet = this._dryWet.fade;
 
@@ -61,12 +62,14 @@ function(Tone){
 		/**
 		 *  the effect return LEFT
 		 *  @type {GainNode}
+		 *  @private
 		 */
 		this.effectReturnL = this._merge.left;
 
 		/**
 		 *  the effect return RIGHT
 		 *  @type {GainNode}
+		 *  @private
 		 */
 		this.effectReturnR = this._merge.right;
 
@@ -82,8 +85,8 @@ function(Tone){
 	Tone.extend(Tone.StereoEffect, Tone.Effect);
 
 	/**
-	 *  clean up
-	 *  @returns {Tone.StereoEffect} `this`
+	 *  Clean up. 
+	 *  @returns {Tone.StereoEffect} this
 	 */
 	Tone.StereoEffect.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);

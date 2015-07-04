@@ -9,23 +9,28 @@ define(["Tone/core/Tone", "Tone/signal/SignalBase", "Tone/signal/GreaterThan"], 
 	 *
 	 *  @constructor
 	 *  @extends {Tone.SignalBase}
+	 *  @param {Boolean} [open=false] If the gate is initially open or closed.
 	 *  @example
-	 *  var sigSwitch = new Tone.Switch();
-	 *  var signal = new Tone.Signal(2).connect(sigSwitch);
-	 *  //initially no output from sigSwitch
-	 *  sigSwitch.gate.value = 1;
-	 *  //open the switch and allow the signal through
-	 *  //the output of sigSwitch is now 2. 
+	 * var sigSwitch = new Tone.Switch();
+	 * var signal = new Tone.Signal(2).connect(sigSwitch);
+	 * //initially no output from sigSwitch
+	 * sigSwitch.gate.value = 1;
+	 * //open the switch and allow the signal through
+	 * //the output of sigSwitch is now 2. 
 	 */
-	Tone.Switch = function(){
+	Tone.Switch = function(open){
+
+		open = this.defaultArg(open, false);
+
 		Tone.call(this);
 
 		/**
-		 *  the control signal for the switch
-		 *  when this value is 0, the input signal will not pass through,
+		 *  The control signal for the switch.
+		 *  When this value is 0, the input signal will NOT pass through,
 		 *  when it is high (1), the input signal will pass through.
 		 *  
-		 *  @type {Tone.Signal}
+		 *  @type {Number}
+		 *  @signal
 		 */
 		this.gate = new Tone.Signal(0);
 		this._readOnly("gate");
@@ -39,15 +44,20 @@ define(["Tone/core/Tone", "Tone/signal/SignalBase", "Tone/signal/GreaterThan"], 
 
 		this.input.connect(this.output);
 		this.gate.chain(this._thresh, this.output.gain);
+
+		//initially open
+		if (open){
+			this.open();
+		}
 	};
 
 	Tone.extend(Tone.Switch, Tone.SignalBase);
 
 	/**
-	 *  open the switch at a specific time
+	 *  Open the switch at a specific time. 
 	 *
-	 *  @param {Tone.Time=} time the time when the switch will be open
-	 *  @returns {Tone.Switch} `this`
+	 *  @param {Time} [time=now] The time when the switch will be open. 
+	 *  @returns {Tone.Switch} this
 	 *  @example
 	 *  //open the switch to let the signal through
 	 *  sigSwitch.open();
@@ -58,10 +68,10 @@ define(["Tone/core/Tone", "Tone/signal/SignalBase", "Tone/signal/GreaterThan"], 
 	}; 
 
 	/**
-	 *  close the switch at a specific time
+	 *  Close the switch at a specific time. 
 	 *
-	 *  @param {Tone.Time} time the time when the switch will be open
-	 *  @returns {Tone.Switch} `this`
+	 *  @param {Time} [time=now] The time when the switch will be closed.
+	 *  @returns {Tone.Switch} this
 	 *  @example
 	 *  //close the switch a half second from now
 	 *  sigSwitch.close("+0.5");
@@ -72,8 +82,8 @@ define(["Tone/core/Tone", "Tone/signal/SignalBase", "Tone/signal/GreaterThan"], 
 	}; 
 
 	/**
-	 *  clean up
-	 *  @returns {Tone.Switch} `this`
+	 *  Clean up.
+	 *  @returns {Tone.Switch} this
 	 */
 	Tone.Switch.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);

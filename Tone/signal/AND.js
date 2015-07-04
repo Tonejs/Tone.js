@@ -3,17 +3,18 @@ define(["Tone/core/Tone", "Tone/signal/Equal"], function(Tone){
 	"use strict";
 
 	/**
-	 *  @class and returns 1 when all the inputs are equal to 1
+	 *  @class [AND](https://en.wikipedia.org/wiki/Logical_conjunction)
+	 *         returns 1 when all the inputs are equal to 1 and returns 0 otherwise.
 	 *
 	 *  @extends {Tone.SignalBase}
 	 *  @constructor
 	 *  @param {number} [inputCount=2] the number of inputs. NOTE: all inputs are
 	 *                                 connected to the single AND input node
 	 *  @example
-	 *  var and = new Tone.AND(2);
-	 *  var sigA = new Tone.Signal(0).connect(and, 0, 0);
-	 *  var sigB = new Tone.Signal(1).connect(and, 0, 1);
-	 *  //the output of and is 0. 
+	 * var and = new Tone.AND(2);
+	 * var sigA = new Tone.Signal(0).connect(and, 0, 0);
+	 * var sigB = new Tone.Signal(1).connect(and, 0, 1);
+	 * //the output of and is 0. 
 	 */
 	Tone.AND = function(inputCount){
 
@@ -37,7 +38,7 @@ define(["Tone/core/Tone", "Tone/signal/Equal"], function(Tone){
 
 	/**
 	 *  clean up
-	 *  @returns {Tone.AND} `this`
+	 *  @returns {Tone.AND} this
 	 */
 	Tone.AND.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);

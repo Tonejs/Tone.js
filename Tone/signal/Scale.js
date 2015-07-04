@@ -4,17 +4,17 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Multiply", "Tone/signa
 	
 	/**
 	 *  @class  Performs a linear scaling on an input signal.
-	 *          Scales a normal gain input range [0,1] to between
-	 *          outputMin and outputMax
+	 *          Scales a NormalRange input to between
+	 *          outputMin and outputMax.
 	 *
 	 *  @constructor
 	 *  @extends {Tone.SignalBase}
-	 *  @param {number} [outputMin=0]
-	 *  @param {number} [outputMax=1]
+	 *  @param {number} [outputMin=0] The output value when the input is 0. 
+	 *  @param {number} [outputMax=1]	The output value when the input is 1. 
 	 *  @example
-	 *  var scale = new Tone.Scale(50, 100);
-	 *  var signal = new Tone.Signal(0.5).connect(scale);
-	 *  //the output of scale equals 75
+	 * var scale = new Tone.Scale(50, 100);
+	 * var signal = new Tone.Signal(0.5).connect(scale);
+	 * //the output of scale equals 75
 	 */
 	Tone.Scale = function(outputMin, outputMax){
 
@@ -52,7 +52,8 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Multiply", "Tone/signa
 	Tone.extend(Tone.Scale, Tone.SignalBase);
 
 	/**
-	 * The minimum output value.
+	 * The minimum output value. This number is output when 
+	 * the value input value is 0. 
 	 * @memberOf Tone.Scale#
 	 * @type {number}
 	 * @name min
@@ -68,7 +69,8 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Multiply", "Tone/signa
 	});
 
 	/**
-	 * The maximum output value.
+	 * The maximum output value. This number is output when 
+	 * the value input value is 1. 
 	 * @memberOf Tone.Scale#
 	 * @type {number}
 	 * @name max
@@ -93,8 +95,8 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Multiply", "Tone/signa
 	};
 
 	/**
-	 *  clean up
-	 *  @returns {Tone.Scale} `this`
+	 *  Clean up.
+	 *  @returns {Tone.Scale} this
 	 */
 	Tone.Scale.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);

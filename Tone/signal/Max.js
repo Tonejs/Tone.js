@@ -3,19 +3,26 @@ define(["Tone/core/Tone", "Tone/signal/GreaterThan", "Tone/signal/IfThenElse", "
 	"use strict";
 
 	/**
-	 * 	@class  outputs the greater of two signals. If a number is provided in the constructor
+	 * 	@class  Outputs the greater of two signals. If a number is provided in the constructor
 	 * 	        it will use that instead of the signal. 
 	 * 	
 	 *  @constructor
 	 *  @extends {Tone.Signal}
-	 *  @param {number=} max max value if provided. if not provided, it will use the
+	 *  @param {number=} max Max value if provided. if not provided, it will use the
 	 *                       signal value from input 1. 
 	 *  @example
-	 *  var max = new Tone.Max(2);
-	 *  var sig = new Tone.Signal(3).connect(max);
-	 *  //max outputs 3
-	 *  sig.value = 1;
-	 *  //max outputs 2
+	 * var max = new Tone.Max(2);
+	 * var sig = new Tone.Signal(3).connect(max);
+	 * //max outputs 3
+	 * sig.value = 1;
+	 * //max outputs 2
+	 *  @example
+	 * var max = new Tone.Max();
+	 * var sigA = new Tone.Signal(3);
+	 * var sigB = new Tone.Signal(4);
+	 * sigA.connect(max, 0, 0);
+	 * sigB.connect(max, 0, 1);
+	 * //output of max is 4.
 	 */
 	Tone.Max = function(max){
 
@@ -51,8 +58,8 @@ define(["Tone/core/Tone", "Tone/signal/GreaterThan", "Tone/signal/IfThenElse", "
 	Tone.extend(Tone.Max, Tone.Signal);
 
 	/**
-	 *  clean up
-	 *  @returns {Tone.Max} `this`
+	 * 	Clean up.
+	 *  @returns {Tone.Max} this
 	 */
 	Tone.Max.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);

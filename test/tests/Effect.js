@@ -15,7 +15,7 @@ function(Tone, chai, Recorder, Master, Effect, CrossFade, FeedbackEffect, Signal
 
 	Test.onlineContext();
 
-	Master.mute();
+	Master.mute = true;
 
 	describe("Tone.Effect", function(){
 

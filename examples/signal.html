@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+	<title>Signals</title>
+
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+	<script type="text/javascript" src="../build/Tone.js"></script>
+	<script type="text/javascript" src="./scripts/jquery.min.js"></script>
+	<script type="text/javascript" src="./scripts/Notone.GUI.js"></script>
+	<script type="text/javascript" src="./scripts/Interface.js"></script>
+
+	<link rel="stylesheet" type="text/css" href="./style/examples.css">
+
+	<script type="text/javascript">
+		// jshint ignore: start
+	</script>
+
+</head>
+<body>
+	<div id="Content">
+		<div id="Title">Control Voltage</div>
+		<div id="Explanation">
+			One of the most powerful features of Tone.js is the ability to 
+			perform math and logic on audio-rate signal. Signals
+			can be ramped and scheduled to control Audio Parameters and 
+			other Signals making it simple to create elaborate, 
+			interconnected automations. 
+			<br><br>
+			This example applies a series of mappings to a
+			signal value and applies the results of those mappings
+			to the frequency attribute of 2
+			<a href="http://tonejs.org/docs/#Oscillator">Tone.Oscillators</a> 
+			and a <a href="http://tonejs.org/docs/#LFO">Tone.LFO</a>. 
+		</div>	
+	</div>
+	<script type="text/javascript">
+		//initially muted
+		Tone.Master.mute = true;
+
+		//use this to pan the two oscillators hard left/right
+		var merge = new Tone.Merge().toMaster();
+
+		//two oscillators panned hard left / hard right
+		var rightOsc = new Tone.Oscillator({
+			"type" : "sawtooth",
+			"volume" : -20
+		}).connect(merge.right).start();
+
+		var leftOsc = new Tone.Oscillator({
+			"type" : "square",
+			"volume" : -20
+		}).connect(merge.left).start();
+
+		//create an oscillation that goes from 0 to 1200
+		//connection it to the detune of the two oscillators
+		var detuneLFO = new Tone.LFO({
+			"type" : "square",
+			"min" : 0,
+			"max" : 1200
+		}).fan(rightOsc.detune, leftOsc.detune).start();
+
+		//the frequency signal
+		var frequency = new Tone.Signal(0.5);
+
+		//the move the 0 to 1 value into frequency range
+		var scale = new Tone.ScaleExp(110, 440);
+		
+		//multiply the frequency by 2.5 to get a 10th above
+		var mult = new Tone.Multiply(2.5);
+		
+		//chain the components together
+		frequency.chain(scale, mult);
+		scale.connect(rightOsc.frequency);
+		mult.connect(leftOsc.frequency);
+
+		//multiply the frequency by 2 to get the octave above
+		var detuneScale = new Tone.Scale(14, 4);
+		frequency.chain(detuneScale, detuneLFO.frequency);		
+
+	</script>
+
+	<script id="GUI" type="text/javascript">
+
+		$(function(){
+			Notone.config({
+				"search" : false,
+				"expandInDrawer" : true,
+				"hideDrawer" : Interface.isMobile,
+				"drawer" : true,
+				"container" : "body"
+			});
+
+			var rightOscGUI = Notone.add(rightOsc, "Right Oscillator", ["type"]);
+
+			var leftOscGUI = Notone.add(leftOsc, "Left Oscillator", ["type"]);
+
+			var detuneLFOGUI = Notone.add(detuneLFO, "Detune LFO", ["type"]);
+
+			new Interface.Slider({
+				drag : function(value){
+					frequency.rampTo(value, 0.1);
+				},
+				start : function(){
+					Tone.Master.mute = false;
+				},
+				end: function(){
+					Tone.Master.mute = true;
+				},
+				name : "frequency",
+				min : 0,
+				max : 1,
+				exp : 0.5,
+				value : 0.5,
+				position: 5
+			});
+
+		});
+
+		
+	</script>
+</body>
+</html>

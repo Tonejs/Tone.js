@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+	<title>PolySynth</title>
+
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	
+	<script type="text/javascript" src="../build/Tone.js"></script>
+	<script type="text/javascript" src="./scripts/jquery.min.js"></script>
+	<script type="text/javascript" src="./scripts/Interface.js"></script>
+	<script type="text/javascript" src="./scripts/qwerty-hancock.js"></script>
+
+	<link rel="stylesheet" type="text/css" href="./style/examples.css">
+
+	<script type="text/javascript">
+		// jshint ignore: start
+	</script>
+
+</head>
+<body>	
+	<style type="text/css">
+
+	</style>
+	<div id="Content" class="FullScreen">
+		<div id="Title">PolySynth</div>
+		<div id="Explanation">
+			<a href="http://tonejs.org/docs/#PolySynth">Tone.PolySynth</a> 
+			handles voice creation and allocation for any
+	 		instruments passed in as the second parameter. PolySynth is 
+	 		not a synthesizer by itself, it merely manages voices of 
+	 		one of the other types of synths, allowing any of the 
+	 		monophonic synthesizers to be polyphonic. 
+		</div>
+		<div id="Keyboard"></div>
+	</div>
+
+	<script type="text/javascript">
+
+		var synth = new Tone.PolySynth(6, Tone.SimpleSynth).toMaster();
+
+	</script>
+
+	<script id="GUI" type="text/javascript">
+		$(function(){
+
+			var keyboard = new QwertyHancock({
+				id: "Keyboard",
+				width: $("#Content").width(),
+				height: 150,
+				octaves: Interface.isMobile ? 1.26 : 3,
+				startNote: "C3",
+				whiteKeyColour: "white",
+				blackKeyColour: "#7F33ED",
+				activeColour : "#ED3333"
+			});
+
+			keyboard.keyDown = function (note) {
+			    synth.triggerAttack(note);
+			};
+
+			keyboard.keyUp = function (note) {
+			    synth.triggerRelease(note);
+			};
+
+		});
+	</script>
+
+	</style>
+</body>
+</html>

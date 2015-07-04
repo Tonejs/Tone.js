@@ -3,14 +3,18 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	"use strict";
 
 	/**
-	 *  @class A thin wrapper around the DynamicsCompressorNode
+	 *  @class Tone.Compressor is a thin wrapper around the Web Audio 
+	 *         [DynamicsCompressorNode](http://webaudio.github.io/web-audio-api/#the-dynamicscompressornode-interface).
+	 *         Compression reduces the volume of loud sounds or amplifies quiet sounds 
+	 *         by narrowing or "compressing" an audio signal's dynamic range. 
+	 *         Read more on [Wikipedia](https://en.wikipedia.org/wiki/Dynamic_range_compression).
 	 *
 	 *  @extends {Tone}
 	 *  @constructor
-	 *  @param {number} [threshold=-24] threshold in decibels
-	 *  @param {number} [ratio=12] gain reduction ratio
+	 *  @param {Decibels|Object} [threshold] The value above which the compression starts to be applied.
+	 *  @param {Positive} [ratio] The gain reduction ratio.
 	 *  @example
-	 *  var comp = new Tone.Compressor(-30, 3);
+	 * var comp = new Tone.Compressor(-30, 3);
 	 */
 	Tone.Compressor = function(){
 
@@ -25,37 +29,40 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 
 		/**
 		 *  the threshold vaue
-		 *  @type {AudioParam}
+		 *  @type {Decibels}
+		 *  @signal
 		 */
 		this.threshold = this._compressor.threshold;
 
 		/**
 		 *  The attack parameter
-		 *  @type {Tone.Signal}
+		 *  @type {Time}
+		 *  @signal
 		 */
-		this.attack = new Tone.Signal(this._compressor.attack, Tone.Signal.Units.Time);
+		this.attack = new Tone.Signal(this._compressor.attack, Tone.Type.Time);
 
 		/**
 		 *  The release parameter
-		 *  @type {Tone.Signal}
+		 *  @type {Time}
+		 *  @signal
 		 */
-		this.release = new Tone.Signal(this._compressor.release, Tone.Signal.Units.Time);
+		this.release = new Tone.Signal(this._compressor.release, Tone.Type.Time);
 
 		/**
 		 *  The knee parameter
-		 *  @type {AudioParam}
+		 *  @type {Decibels}
+		 *  @signal
 		 */
 		this.knee = this._compressor.knee;
 
 		/**
 		 *  The ratio value
-		 *  @type {AudioParam}
+		 *  @type {Number}
+		 *  @signal
 		 */
 		this.ratio = this._compressor.ratio;
 
 		//set the defaults
-		this.attack.connect(this._compressor.attack);
-		this.release.connect(this._compressor.release);
 		this._readOnly(["knee", "release", "attack", "ratio", "threshold"]);
 		this.set(options);
 	};
@@ -77,7 +84,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 
 	/**
 	 *  clean up
-	 *  @returns {Tone.Compressor} `this`
+	 *  @returns {Tone.Compressor} this
 	 */
 	Tone.Compressor.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);

@@ -3,12 +3,13 @@ define(["Tone/core/Tone", "Tone/signal/ScaleExp", "Tone/signal/Signal"], functio
 	"use strict";
 
 	/**
-	 *  @class A comb filter with feedback.
+	 *  @class Comb filters are basic building blocks for physical modeling. Read more
+	 *         about comb filters on [CCRMA's website](https://ccrma.stanford.edu/~jos/pasp/Feedback_Comb_Filters.html).
 	 *
 	 *  @extends {Tone}
 	 *  @constructor
-	 *  @param {number} [delayTime=0.1] the minimum delay time which the filter can have
-	 *  @param {number} [resonance=0.5] the maximum delay time which the filter can have
+	 *  @param {Time|Object} [delayTime] The delay time of the filter. 
+	 *  @param {NormalRange=} resonance The amount of feedback the filter has. 
 	 */
 	Tone.FeedbackCombFilter = function(){
 
@@ -16,10 +17,11 @@ define(["Tone/core/Tone", "Tone/signal/ScaleExp", "Tone/signal/Signal"], functio
 		var options = this.optionsObject(arguments, ["delayTime", "resonance"], Tone.FeedbackCombFilter.defaults);
 
 		/**
-		 *  the resonance control
-		 *  @type {Tone.Signal}
+		 *  The amount of feedback of the delayed signal. 
+		 *  @type {NormalRange}
+		 *  @signal
 		 */
-		this.resonance = new Tone.Signal(options.resonance, Tone.Signal.Units.Normal);
+		this.resonance = new Tone.Signal(options.resonance, Tone.Type.NormalRange);
 
 		/**
 		 *  the delay node
@@ -29,10 +31,11 @@ define(["Tone/core/Tone", "Tone/signal/ScaleExp", "Tone/signal/Signal"], functio
 		this._delay = this.input = this.output = this.context.createDelay(1);
 
 		/**
-		 *  the delayTime
-		 *  @type {Tone.Signal}
+		 *  The amount of delay of the comb filter. 
+		 *  @type {Time}
+		 *  @signal
 		 */
-		this.delayTime = new Tone.Signal(options.delayTime, Tone.Signal.Units.Time);
+		this.delayTime = new Tone.Signal(options.delayTime, Tone.Type.Time);
 
 		/**
 		 *  the feedback node
@@ -62,7 +65,7 @@ define(["Tone/core/Tone", "Tone/signal/ScaleExp", "Tone/signal/Signal"], functio
 
 	/**
 	 *  clean up
-	 *  @returns {Tone.FeedbackCombFilter} `this`
+	 *  @returns {Tone.FeedbackCombFilter} this
 	 */
 	Tone.FeedbackCombFilter.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);

@@ -4,16 +4,14 @@
   <meta charset="utf-8">
 	<title>Oscillator</title>
 	
-	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
-	<script type="text/javascript" src="./deps/jquery.min.js"></script>
 	<script type="text/javascript" src="../build/Tone.js"></script>
-	<script type="text/javascript" src="./deps/nexusUI.js"></script>
-	<script type="text/javascript" src="./deps/prism.js"></script>
+	<script type="text/javascript" src="./scripts/jquery.min.js"></script>
+	<script type="text/javascript" src="./scripts/Notone.GUI.js"></script>
 	<script type="text/javascript" src="./scripts/Interface.js"></script>
 
 	<link rel="stylesheet" type="text/css" href="./style/examples.css">
-	<link rel="stylesheet" type="text/css" href="./style/prism.css">
 
 	<script type="text/javascript">
 		// jshint ignore: start
@@ -21,36 +19,56 @@
 
 </head>
 <body>
-	<div id="Explanation">
-		Oscillator
-		<br>
-		<br>
-		An oscillator with an LFO attached to the detune control. 
-	</div>
 	<div id="Content">
-		<div id="Rack"></div>
-		<div id="Code"></div>
+		<div id="Title">Oscillator</div>
+		<div id="Explanation">
+			Click and drag the dot to hear the oscillator. The x-axis controls the freqency of the oscillator and the y-axis controls the amplitude.
+			<br><br>
+			<a href="http://tonejs.org/docs/#Oscillator">Tone.Oscillator</a> docs.
+		</div>
+		<div id="DragContainer"></div>
 	</div>
 	<script id="ToneCode" type="text/javascript">
-		var osc = new Tone.Oscillator(440, "sine").toMaster();
-		osc.volume.value = -10;
-
-		var vibrato = new Tone.LFO(6, -25, 25)
-			.connect(osc.detune)
-			.start();
+		var osc = new Tone.Oscillator({
+			"frequency" : 440,
+			"volume" : -10
+		}).toMaster();
 	</script>
 	<script id="GUI" type="text/javascript">
-		Interface.Rack("Rack", "Oscillator");
-		Interface.Toggle("Rack", function(on){
-			if (on){
-				osc.start();
-			} else {
-				osc.stop();
-			}
-		});
-		Interface.DropDown("Rack", osc, "type", ["sine", "square", "triangle", "sawtooth"], "Oscillator Type");
-		Interface.DropDown("Rack", vibrato, "type", ["sine", "square", "triangle", "sawtooth"], "LFO Type");
-		Interface.Code("Code", "ToneCode");
+		$(function(){
+			Notone.config({
+				"search" : false,
+				"expandInDrawer" : true,
+				"hideDrawer" : Interface.isMobile,
+				"drawer" : true,
+				"container" : "body"
+			});
+
+			var oscGUI = Notone.add(osc, "Oscillator");
+
+			new Interface.Dragger({
+				gui: oscGUI,
+				x : {
+					param : "frequency",
+					min : 40,
+					max : 2000,
+					exp : 2
+				},
+				y : {
+					param : "volume",
+					min : -40,
+					max : 0
+				},
+				start : function(){
+					osc.start();
+					Tone.Master.volume.rampTo(0, 0.05);
+				},
+				end : function(){
+					//so it doesn't click
+					Tone.Master.volume.rampTo(-Infinity, 0.05);
+				}
+			});
+		})
 
 		
 	</script>

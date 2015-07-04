@@ -3,14 +3,13 @@ define(["Tone/core/Tone", "Tone/component/CrossFade"], function(Tone){
 	"use strict";
 	
 	/**
-	 * 	@class  Effect is the base class for effects. connect the effect between
-	 * 	        the effectSend and effectReturn GainNodes. then control the amount of
-	 * 	        effect which goes to the output using the dry/wet control.
+	 * 	@class  Tone.Effect is the base class for effects. Connect the effect between
+	 * 	        the effectSend and effectReturn GainNodes, then control the amount of
+	 * 	        effect which goes to the output using the wet control.
 	 *
 	 *  @constructor
 	 *  @extends {Tone}
-	 *  @param {number} [initialWet=0] the starting wet value
-	 *                                 defaults to 100% wet
+	 *  @param {NormalRange|Object} [wet] The starting wet value. 
 	 */
 	Tone.Effect = function(){
 
@@ -27,15 +26,16 @@ define(["Tone/core/Tone", "Tone/component/CrossFade"], function(Tone){
 		this._dryWet = new Tone.CrossFade(options.wet);
 
 		/**
-		 *  The wet control, i.e. how much of the effected
-		 *  will pass through to the output. 
-		 *  @type {Tone.Signal}
+		 *  The wet control is how much of the effected
+		 *  will pass through to the output. 1 = 100% effected
+		 *  signal, 0 = 100% dry signal. 
+		 *  @type {NormalRange}
+		 *  @signal
 		 */
 		this.wet = this._dryWet.fade;
 
 		/**
 		 *  connect the effectSend to the input of hte effect
-		 *  
 		 *  @type {GainNode}
 		 *  @private
 		 */
@@ -43,7 +43,6 @@ define(["Tone/core/Tone", "Tone/component/CrossFade"], function(Tone){
 
 		/**
 		 *  connect the output of the effect to the effectReturn
-		 *  
 		 *  @type {GainNode}
 		 *  @private
 		 */
@@ -68,19 +67,10 @@ define(["Tone/core/Tone", "Tone/component/CrossFade"], function(Tone){
 	};
 
 	/**
-	 *  bypass the effect
-	 *  @returns {Tone.Effect} `this`
-	 */
-	Tone.Effect.prototype.bypass = function(){
-		this.wet.value = 0;
-		return this;
-	};
-
-	/**
 	 *  chains the effect in between the effectSend and effectReturn
 	 *  @param  {Tone} effect
 	 *  @private
-	 *  @returns {Tone.Effect} `this`
+	 *  @returns {Tone.Effect} this
 	 */
 	Tone.Effect.prototype.connectEffect = function(effect){
 		this.effectSend.chain(effect, this.effectReturn);
@@ -88,8 +78,8 @@ define(["Tone/core/Tone", "Tone/component/CrossFade"], function(Tone){
 	};
 
 	/**
-	 *  tear down
-	 *  @returns {Tone.Effect} `this`
+	 *  Clean up. 
+	 *  @returns {Tone.Effect} this
 	 */
 	Tone.Effect.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);

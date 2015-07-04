@@ -3,14 +3,28 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 	"use strict";
 
 	/**
-	 *  @class  Noise generator.
-	 *          Uses looped noise buffers to save on performance.
+	 *  @class  Tone.Noise is a noise generator. It uses looped noise buffers to save on performance.
+	 *          Tone.Noise supports the noise types: "pink", "white", and "brown". Read more about
+	 *          colors of noise on [Wikipedia](https://en.wikipedia.org/wiki/Colors_of_noise).
 	 *
 	 *  @constructor
 	 *  @extends {Tone.Source}
 	 *  @param {string} type the noise type (white|pink|brown)
 	 *  @example
-	 *  var noise = new Tone.Noise("pink");
+	 * //initialize the noise and start
+	 * var noise = new Tone.Noise("pink").start();
+	 * 
+	 * //make an autofilter to shape the noise
+	 * var autoFilter = new Tone.AutoFilter({
+	 * 	"frequency" : "8m", 
+	 * 	"min" : 800, 
+	 * 	"max" : 15000
+	 * }).connect(Tone.Master);
+	 * 
+	 * //connect the noise
+	 * noise.connect(autoFilter);
+	 * //start the autofilter LFO
+	 * autoFilter.start()
 	 */
 	Tone.Noise = function(){
 
@@ -51,7 +65,6 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 	 * @memberOf Tone.Noise#
 	 * @type {string}
 	 * @name type
-	 * @options ["white", "brown", "pink"]
 	 * @example
 	 * noise.type = "white";
 	 */
@@ -81,7 +94,7 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 						this._buffer = _whiteNoise;
 				}
 				//if it's playing, stop and restart it
-				if (this.state === Tone.Source.State.STARTED){
+				if (this.state === Tone.State.Started){
 					var now = this.now() + this.bufferTime;
 					//remove the listener
 					this._source.onended = undefined;
@@ -95,7 +108,7 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 	/**
 	 *  internal start method
 	 *
-	 *  @param {Tone.Time} time
+	 *  @param {Time} time
 	 *  @private
 	 */
 	Tone.Noise.prototype._start = function(time){
@@ -110,7 +123,7 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 	/**
 	 *  internal stop method
 	 *
-	 *  @param {Tone.Time} time
+	 *  @param {Time} time
 	 *  @private
 	 */
 	Tone.Noise.prototype._stop = function(time){
@@ -120,8 +133,8 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 	};
 
 	/**
-	 *  dispose all the components
-	 *  @returns {Tone.Noise} `this`
+	 *  Clean up.
+	 *  @returns {Tone.Noise} this
 	 */
 	Tone.Noise.prototype.dispose = function(){
 		Tone.Source.prototype.dispose.call(this);

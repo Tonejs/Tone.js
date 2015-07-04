@@ -4,18 +4,15 @@
   <meta charset="utf-8">
 	<title>SCORE</title>
 
-	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
 	<script type="text/javascript" src="../build/Tone.js"></script>
-	<script type="text/javascript" src="../build/Tone.Preset.js"></script>
-	<script type="text/javascript" src="./deps/jquery.min.js"></script>
-	<script type="text/javascript" src="./deps/qwerty-hancock.js"></script>
-	<script type="text/javascript" src="./deps/nexusUI.js"></script>
-	<script type="text/javascript" src="./deps/prism.js"></script>
+	<script type="text/javascript" src="./scripts/jquery.min.js"></script>
+	<script type="text/javascript" src="./scripts/Notone.GUI.js"></script>
 	<script type="text/javascript" src="./scripts/Interface.js"></script>
+	<script type="text/javascript" src="./scripts/nexusUI.js"></script>
 
 	<link rel="stylesheet" type="text/css" href="./style/examples.css">
-	<link rel="stylesheet" type="text/css" href="./style/prism.css">
 
 	<script type="text/javascript">
 		// jshint ignore: start
@@ -24,26 +21,22 @@
 </head>
 <body>	
 	<style type="text/css">
-	
+		canvas {
+			margin-top: 3px;
+		}
 	</style>
-	<div id="Explanation">
-		Tone.Transport
-		<br>
-		<br>
-		Tone.Transport is the application-wide timekeeper. It uses an OscillatorNode
-		as it's clock source which enables sample-accurate scheduling as well as 
-		tempo-curves and automation. This example uses Tone.Transport.setInterval
-		to invoke a callback every 16th note.
-	</div>
-	<div id="Content">
-		<div id="LoadingBar"></div>
-		<div id="Controls"></div>
-		<div id="Rack">
-
+	<div id="Content" class="FullScreen">
+		<div id="Title">Tone.Transport</div>
+		<div id="Explanation">
+			<a href="http://tonejs.org/docs/#Transport">Tone.Transport</a> 
+			is the application-wide timekeeper. It uses an OscillatorNode
+			as it's clock source which enables sample-accurate scheduling as well as 
+			tempo-curves and automation. This example uses Tone.Transport.setInterval
+			to invoke a callback every 16th note.
 		</div>
-		<div id="Code"></div>
-	</div>
-	<script id="ToneCode" type="text/javascript">
+		<canvas nx="matrix"></canvas>
+	</div>	
+	<script type="text/javascript">
 		//setup a polyphonic sampler
 		var keys = new Tone.PolySynth(4, Tone.Sampler, {
 			"A" : "./audio/casio/A1.mp3",
@@ -79,19 +72,45 @@
 		Tone.Transport.loop = true;
 	</script>
 	<script type="text/javascript">
-		Interface.Loading("LoadingBar");
-		Interface.Rack("Rack", "Step Sequencer");
-		Interface.StepSequencer("Rack", 32, 8).randomize();
-		Interface.Slider("Rack", Tone.Transport, "bpm", 100, 150);
-		Interface.Toggle("Rack", function(on){
-			if (on){
-				Tone.Transport.start();
-			} else {
-				Tone.Transport.stop();
-			}
-		});
-		Interface.Code("Code", "ToneCode");
+		nx.onload = function(){
+			nx.colorize("#f5871f");
+			
+			matrix1.col = 16;
+			matrix1.init();
+			matrix1.resize($("#Content").width(), 250);
+			matrix1.draw();
+		}
 
+		$(function(){
+
+			new Interface.Slider({
+				name : "BPM",
+				min : 80,
+				max : 200,
+				value : Tone.Transport.bpm.value,
+				drag : function(val){
+					Tone.Transport.bpm.value = val;
+				}
+			});
+
+			new Interface.Button({
+				text : "Start",
+				activeText : "Stop",
+				type : "toggle",
+				key : 32, //spacebar
+				start : function(){
+					Tone.Transport.start();
+				},
+				end : function(){
+					Tone.Transport.stop();
+				},
+			});
+
+			$(window).on("resize", function(){
+				matrix1.resize($("#Content").width(), 250);
+				matrix1.draw();	
+			});
+		});
 	</script>
 </body>
 </html>

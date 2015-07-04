@@ -4,9 +4,9 @@
   <meta charset="utf-8">
 	<title>EXAMPLES</title>
 
-	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 	
-	<script type="text/javascript" src="./deps/jquery.min.js"></script>
+	<script type="text/javascript" src="./scripts/jquery.min.js"></script>
 	<script type="text/javascript" src="./scripts/ExampleList.js"></script>
 
 	<link rel="stylesheet" type="text/css" href="./style/examples.css">	
@@ -14,49 +14,58 @@
 </head>
 <body>
 	<style type="text/css">
-	#Content {
-		width: 300px;
-		margin-bottom: 30px;
-	}
+		#Content div{
+			font-size: 16px;
+			margin-top: 5px;
+		}
+		#Content a {
+			margin-left: 10px;
+			font-weight: normal!important;
+		}
+		.Category {
+			font-weight: 900;
+			font-size: 18px;
+		}
+
+		#ExampleList {
+			width: 200px;
+			margin-left: auto;
+			margin-right: auto;
+			margin-bottom: 40px;
+		}
 	</style>
-	<div id="TopBar">
-		<div id="Homepage" title="github">
-			<a href="http://github.com/TONEnoTONE/Tone.js">Tone.js</a>
-		</div>
-		<div id="Examples" title="examples">
-			<a href="./index.html">examples</a>
-		</div>
-	</div>
-	<div id="Content"></div>
+	<div id="Content" class="FullScreen"></div>
 	<script type="text/javascript">
 
-		var content = $("#Content");
-		for (var catName in ExampleList){
-		$("<div>").addClass("Category").text(catName)
-			.appendTo(content);
-		var category = ExampleList[catName];
-		for (var example in category){
-			$("<div>").addClass("Item")
-				.appendTo(content)
-				.html($("<a>").attr("href", category[example]+".html").text(example));
-		}
-	}
+		var container = $("<div>", {
+			"id" : "ExampleList",
+		}).appendTo("#Content");
+
+		$(function(){
+			var topbar = $("<div>").attr("id", "TopBar");
+			$("body").prepend(topbar);
+			$("<div>")
+				.attr("id", "Homepage")
+				.attr("title", "github")
+				.html("<a href='http://github.com/TONEnoTONE/Tone.js'>Tone.js</a>")
+				.appendTo(topbar);
+			$("<div>")
+				.attr("id", "Examples")
+				.attr("title", "examples")
+				.html("<a href='./index.html'>examples</a>")
+				.appendTo(topbar);
+
+			for (var catName in ExampleList){
+				$("<div>").addClass("Category").text(catName).appendTo(container);
+				var category = ExampleList[catName];
+				for (var example in category){
+					$("<div>").addClass("Item")
+						.appendTo(container)
+						.html($("<a>").attr("href", category[example]+".html").text(example));
+				}
+			}
+
+		});
 	</script>
-	<style type="text/css">
-	#Content div{
-		font-size: 14px;
-		margin-top: 5px;
-	}
-	a:visited {
-		color: black;
-	}
-	a {
-		margin-left: 10px;
-		color: black;
-	}
-	.Category {
-		font-weight: 900;
-	}
-	</style>
 </body>
 </html>

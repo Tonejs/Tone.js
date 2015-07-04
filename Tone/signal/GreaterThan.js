@@ -11,9 +11,9 @@ define(["Tone/core/Tone", "Tone/signal/GreaterThanZero", "Tone/signal/Subtract",
 	 *  @extends {Tone.Signal}
 	 *  @param {number} [value=0] the value to compare to the incoming signal
 	 *  @example
-	 *  var gt = new Tone.GreaterThan(2);
-	 *  var sig = new Tone.Signal(4).connect(gt);
-	 *  //output of gt is equal 1. 
+	 * var gt = new Tone.GreaterThan(2);
+	 * var sig = new Tone.Signal(4).connect(gt);
+	 * //output of gt is equal 1. 
 	 */
 	Tone.GreaterThan = function(value){
 
@@ -42,7 +42,7 @@ define(["Tone/core/Tone", "Tone/signal/GreaterThanZero", "Tone/signal/Subtract",
 
 	/**
 	 *  dispose method
-	 *  @returns {Tone.GreaterThan} `this`
+	 *  @returns {Tone.GreaterThan} this
 	 */
 	Tone.GreaterThan.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);

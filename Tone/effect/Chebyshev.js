@@ -3,15 +3,20 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/signal/WaveShaper"], funct
 	"use strict";
 
 	/**
-	 *  @class A Chebyshev waveshaper. Good for making different types of distortion sounds.
-	 *         Note that odd orders sound very different from even ones. order = 1 is no change. 
-	 *         http://music.columbia.edu/cmc/musicandcomputers/chapter4/04_06.php
+	 *  @class Tone.ChebyShev is a Chebyshev waveshaper, an effect which is good 
+	 *         for making different types of distortion sounds.
+	 *         Note that odd orders sound very different from even ones, 
+	 *         and order = 1 is no change. 
+	 *         Read more at [music.columbia.edu](http://music.columbia.edu/cmc/musicandcomputers/chapter4/04_06.php).
 	 *
 	 *  @extends {Tone.Effect}
 	 *  @constructor
-	 *  @param {number} order The order of the chebyshev polynomial. Normal range between 1-100. 
+	 *  @param {Positive|Object} [order] The order of the chebyshev polynomial. Normal range between 1-100. 
 	 *  @example
-	 *  var cheby = new Tone.Chebyshev(50);
+	 * //create a new cheby
+	 * var cheby = new Tone.Chebyshev(50);
+	 * //create a monosynth connected to our cheby
+	 * synth = new Tone.MonoSynth().connect(cheby);
 	 */
 	Tone.Chebyshev = function(){
 
@@ -71,10 +76,14 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/signal/WaveShaper"], funct
 	};
 
 	/**
-	 * The order of the Chebyshev polynomial i.e.
-	 * order = 2 -> 2x^2 + 1. order = 3 -> 4x^3 + 3x. 
+	 * The order of the Chebyshev polynomial which creates
+	 * the equation which is applied to the incoming 
+	 * signal through a Tone.WaveShaper. The equations
+	 * are in the form:<br>
+	 * order 2: 2x^2 + 1<br>
+	 * order 3: 4x^3 + 3x <br>
 	 * @memberOf Tone.Chebyshev#
-	 * @type {number}
+	 * @type {Positive}
 	 * @name order
 	 */
 	Object.defineProperty(Tone.Chebyshev.prototype, "order", {
@@ -114,8 +123,8 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/signal/WaveShaper"], funct
 	});
 
 	/**
-	 *  clean up
-	 *  @returns {Tone.Chebyshev} `this`
+	 *  Clean up. 
+	 *  @returns {Tone.Chebyshev} this
 	 */
 	Tone.Chebyshev.prototype.dispose = function(){
 		Tone.Effect.prototype.dispose.call(this);

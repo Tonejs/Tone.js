@@ -8,11 +8,11 @@ define(["Tone/core/Tone", "Tone/signal/EqualZero", "Tone/signal/Subtract", "Tone
 	 *  
 	 *  @constructor
 	 *  @extends {Tone.SignalBase}
-	 *  @param {number} value the number to compare the incoming signal to
+	 *  @param {number=} value The number to compare the incoming signal to
 	 *  @example
-	 *  var eq = new Tone.Equal(3);
-	 *  var sig = new Tone.Signal(3).connect(eq);
-	 *  //the output of eq is 1. 
+	 * var eq = new Tone.Equal(3);
+	 * var sig = new Tone.Signal(3).connect(eq);
+	 * //the output of eq is 1. 
 	 */
 	Tone.Equal = function(value){
 
@@ -54,8 +54,8 @@ define(["Tone/core/Tone", "Tone/signal/EqualZero", "Tone/signal/Subtract", "Tone
 	});
 
 	/**
-	 *  dispose method
-	 *  @returns {Tone.Equal} `this`
+	 *  Clean up.
+	 *  @returns {Tone.Equal} this
 	 */
 	Tone.Equal.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);

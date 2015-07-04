@@ -4,15 +4,17 @@ define(["Tone/core/Tone", "Tone/component/Envelope", "Tone/signal/Scale"],
 	"use strict";
 
 	/**
-	 *  @class An envelope which can be scaled to any range. 
-	 *         Useful for applying an envelope to a filter
+	 *  @class Tone.ScaledEnvelop is an envelope which can be scaled 
+	 *         to any range. It's useful for applying an envelope 
+	 *         to a frequency or any other non-NormalRange signal 
+	 *         parameter. 
 	 *
 	 *  @extends {Tone.Envelope}
 	 *  @constructor
-	 *  @param {Tone.Time|Object} [attack=0.01]	the attack time in seconds
-	 *  @param {Tone.Time} [decay=0.1]	the decay time in seconds
-	 *  @param {number} [sustain=0.5] 	a percentage (0-1) of the full amplitude
-	 *  @param {Tone.Time} [release=1]	the release time in seconds
+	 *  @param {Time|Object} [attack]	the attack time in seconds
+	 *  @param {Time} [decay]	the decay time in seconds
+	 *  @param {number} [sustain] 	a percentage (0-1) of the full amplitude
+	 *  @param {Time} [release]	the release time in seconds
 	 *  @example
 	 *  var scaledEnv = new Tone.ScaledEnvelope({
 	 *  	"attack" : 0.2,
@@ -106,7 +108,7 @@ define(["Tone/core/Tone", "Tone/component/Envelope", "Tone/signal/Scale"],
 	
 	/**
 	 *  clean up
-	 *  @returns {Tone.ScaledEnvelope} `this`
+	 *  @returns {Tone.ScaledEnvelope} this
 	 */
 	Tone.ScaledEnvelope.prototype.dispose = function(){
 		Tone.Envelope.prototype.dispose.call(this);

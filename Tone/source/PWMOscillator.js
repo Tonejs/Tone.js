@@ -4,15 +4,17 @@ function(Tone){
 	"use strict";
 
 	/**
-	 *  @class takes an array of Oscillator descriptions and mixes them together
-	 *         with the same detune and frequency controls. 
+	 *  @class Tone.PWMOscillator modulates the width of a Tone.PulseOscillator 
+	 *         at the modulationFrequency. This has the effect of continuously
+	 *         changing the timbre of the oscillator by altering the harmonics 
+	 *         generated.
 	 *
 	 *  @extends {Tone.Oscillator}
 	 *  @constructor
-	 *  @param {frequency} Tone.Frequency frequency of the oscillator (meaningless for noise types)
-	 *  @param {number} modulationFrequency the modulation frequency of the oscillator
+	 *  @param {Frequency} frequency The starting frequency of the oscillator. 
+	 *  @param {Frequency} modulationFrequency The modulation frequency of the width of the pulse. 
 	 *  @example
-	 *  var pwm = new Tone.PWMOscillator("Ab3", 0.3);
+	 *  var pwm = new Tone.PWMOscillator("Ab3", 0.3).toMaster().start();
 	 */
 	Tone.PWMOscillator = function(){
 		var options = this.optionsObject(arguments, ["frequency", "modulationFrequency"], Tone.PWMOscillator.defaults);
@@ -46,20 +48,23 @@ function(Tone){
 		this._scale = new Tone.Multiply(1.01);
 
 		/**
-		 *  the frequency control
-		 *  @type {Tone.Signal}
+		 *  The frequency control.
+		 *  @type {Frequency}
+		 *  @signal
 		 */
 		this.frequency = this._modulator.frequency;
 
 		/**
-		 *  the detune control
-		 *  @type {Tone.Signal}
+		 *  The detune of the oscillator.
+		 *  @type {Cents}
+		 *  @signal
 		 */
 		this.detune = this._modulator.detune;
 
 		/**
-		 *  the modulation rate of the oscillator
-		 *  @type {Tone.Signal}
+		 *  The modulation rate of the oscillator. 
+		 *  @type {Frequency}
+		 *  @signal
 		 */
 		this.modulationFrequency = this._pulse.frequency;	
 
@@ -85,7 +90,7 @@ function(Tone){
 
 	/**
 	 *  start the oscillator
-	 *  @param  {Tone.Time} [time=now]
+	 *  @param  {Time} [time=now]
 	 *  @private
 	 */
 	Tone.PWMOscillator.prototype._start = function(time){
@@ -96,7 +101,7 @@ function(Tone){
 
 	/**
 	 *  stop the oscillator
-	 *  @param  {Tone.Time} time (optional) timing parameter
+	 *  @param  {Time} time (optional) timing parameter
 	 *  @private
 	 */
 	Tone.PWMOscillator.prototype._stop = function(time){
@@ -134,8 +139,8 @@ function(Tone){
 	});
 
 	/**
-	 *  clean up
-	 *  @return {Tone.PWMOscillator} `this`
+	 *  Clean up.
+	 *  @return {Tone.PWMOscillator} this
 	 */
 	Tone.PWMOscillator.prototype.dispose = function(){
 		Tone.Source.prototype.dispose.call(this);

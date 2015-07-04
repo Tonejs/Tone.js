@@ -3,8 +3,9 @@ define(["Tone/core/Tone", "Tone/component/Merge"], function(Tone){
 	"use strict";
 
 	/**
-	 *  @class Coerces the incoming mono or stereo signal into a mono signal
-	 *         where both left and right channels have the same value. 
+	 *  @class Tone.Mono coerces the incoming mono or stereo signal into a mono signal
+	 *         where both left and right channels have the same value. This can be useful 
+	 *         for [stereo imaging](https://en.wikipedia.org/wiki/Stereo_imaging).
 	 *
 	 *  @extends {Tone}
 	 *  @constructor
@@ -28,7 +29,7 @@ define(["Tone/core/Tone", "Tone/component/Merge"], function(Tone){
 
 	/**
 	 *  clean up
-	 *  @returns {Tone.Mono} `this`
+	 *  @returns {Tone.Mono} this
 	 */
 	Tone.Mono.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);

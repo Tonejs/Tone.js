@@ -9,11 +9,11 @@ function(Tone){
 	 *  @constructor
 	 *  @extends {Tone.SignalBase}
 	 *  @example
-	 *  var gt0 = new Tone.GreaterThanZero();
-	 *  var sig = new Tone.Signal(0.01).connect(gt0);
-	 *  //the output of gt0 is 1. 
-	 *  sig.value = 0;
-	 *  //the output of gt0 is 0. 
+	 * var gt0 = new Tone.GreaterThanZero();
+	 * var sig = new Tone.Signal(0.01).connect(gt0);
+	 * //the output of gt0 is 1. 
+	 * sig.value = 0;
+	 * //the output of gt0 is 0. 
 	 */
 	Tone.GreaterThanZero = function(){
 		
@@ -45,7 +45,7 @@ function(Tone){
 
 	/**
 	 *  dispose method
-	 *  @returns {Tone.GreaterThanZero} `this`
+	 *  @returns {Tone.GreaterThanZero} this
 	 */
 	Tone.GreaterThanZero.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);

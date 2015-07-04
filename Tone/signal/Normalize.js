@@ -3,16 +3,16 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Multiply"], function(T
 	"use strict";
 
 	/**
-	 *  @class Normalize takes an input min and max and maps it linearly to [0,1]
+	 *  @class Normalize takes an input min and max and maps it linearly to NormalRange [0,1]
 	 *
 	 *  @extends {Tone.SignalBase}
 	 *  @constructor
 	 *  @param {number} inputMin the min input value
 	 *  @param {number} inputMax the max input value
 	 *  @example
-	 *  var norm = new Tone.Normalize(2, 4);
-	 *  var sig = new Tone.Signal(3).connect(norm);
-	 *  //output of norm is 0.5. 
+	 * var norm = new Tone.Normalize(2, 4);
+	 * var sig = new Tone.Signal(3).connect(norm);
+	 * //output of norm is 0.5. 
 	 */
 	Tone.Normalize = function(inputMin, inputMax){
 
@@ -93,7 +93,7 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Multiply"], function(T
 
 	/**
 	 *  clean up
-	 *  @returns {Tone.Normalize} `this`
+	 *  @returns {Tone.Normalize} this
 	 */
 	Tone.Normalize.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);

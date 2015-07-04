@@ -3,7 +3,8 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper", "Tone/signal/Signal"], funct
 	"use strict";
 
 	/**
-	 *  @class AudioToGain converts an input range of -1,1 to 0,1
+	 *  @class AudioToGain converts an input in AudioRange [-1,1] to NormalRange [0,1]. 
+	 *         See Tone.GainToAudio.
 	 *
 	 *  @extends {Tone.SignalBase}
 	 *  @constructor
@@ -25,7 +26,7 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper", "Tone/signal/Signal"], funct
 
 	/**
 	 *  clean up
-	 *  @returns {Tone.AudioToGain} `this`
+	 *  @returns {Tone.AudioToGain} this
 	 */
 	Tone.AudioToGain.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);

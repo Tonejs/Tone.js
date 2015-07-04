@@ -3,24 +3,13 @@ define(["Tone/core/Tone", "Tone/core/Transport"], function(Tone){
 	"use strict";
 
 	/**
-	 *  Frequency can be described similar to time, except ultimately the
-	 *  values are converted to frequency instead of seconds. A number
-	 *  is taken literally as the value in hertz. Additionally any of the 
-	 *  {@link Tone.Time} encodings can be used. Note names in the form
-	 *  of NOTE OCTAVE (i.e. `C4`) are also accepted and converted to their
-	 *  frequency value. 
-	 *  
-	 *  @typedef {number|string|Tone.Time} Tone.Frequency
-	 */
-
-	/**
 	 *  @class  A timed note. Creating a note will register a callback 
 	 *          which will be invoked on the channel at the time with
 	 *          whatever value was specified. 
 	 *
 	 *  @constructor
 	 *  @param {number|string} channel the channel name of the note
-	 *  @param {Tone.Time} time the time when the note will occur
+	 *  @param {Time} time the time when the note will occur
 	 *  @param {string|number|Object|Array} value the value of the note
 	 */
 	Tone.Note = function(channel, time, value){
@@ -63,7 +52,7 @@ define(["Tone/core/Tone", "Tone/core/Transport"], function(Tone){
 
 	/**
 	 *  clean up
-	 *  @returns {Tone.Note} `this`
+	 *  @returns {Tone.Note} this
 	 */
 	Tone.Note.prototype.dispose = function(){ 
 		Tone.Tranport.clearTimeline(this._timelineID);
@@ -129,34 +118,34 @@ define(["Tone/core/Tone", "Tone/core/Transport"], function(Tone){
 
 	/**
 	 *  Parses a score and registers all of the notes along the timeline. 
-	 *
+	 *  <br><br>
 	 *  Scores are a JSON object with instruments at the top level
 	 *  and an array of time and values. The value of a note can be 0 or more 
 	 *  parameters. 
-	 *
+	 *  <br><br>
 	 *  The only requirement for the score format is that the time is the first (or only)
 	 *  value in the array. All other values are optional and will be passed into the callback
 	 *  function registered using `Note.route(channelName, callback)`.
-	 *
+	 *  <br><br>
 	 *  To convert MIDI files to score notation, take a look at utils/MidiToScore.js
 	 *
 	 *  @example
-	 *  //an example JSON score which sets up events on channels
-	 *  var score = { 
-	 *  	"synth"  : [["0", "C3"], ["0:1", "D3"], ["0:2", "E3"], ... ],
-	 *  	"bass"  : [["0", "C2"], ["1:0", "A2"], ["2:0", "C2"], ["3:0", "A2"], ... ],
-	 *  	"kick"  : ["0", "0:2", "1:0", "1:2", "2:0", ... ],
-	 *  	//...
-	 *  };
-	 *  //parse the score into Notes
-	 *  Tone.Note.parseScore(score);
-	 *  //route all notes on the "synth" channel
-	 *  Tone.Note.route("synth", function(time, note){
-	 *  	//trigger synth
-	 *  });
+	 * //an example JSON score which sets up events on channels
+	 * var score = { 
+	 * 	"synth"  : [["0", "C3"], ["0:1", "D3"], ["0:2", "E3"], ... ],
+	 * 	"bass"  : [["0", "C2"], ["1:0", "A2"], ["2:0", "C2"], ["3:0", "A2"], ... ],
+	 * 	"kick"  : ["0", "0:2", "1:0", "1:2", "2:0", ... ],
+	 * 	//...
+	 * };
+	 * //parse the score into Notes
+	 * Tone.Note.parseScore(score);
+	 * //route all notes on the "synth" channel
+	 * Tone.Note.route("synth", function(time, note){
+	 * 	//trigger synth
+	 * });
 	 *  @static
 	 *  @param {Object} score
-	 *  @return {Array<Tone.Note>} an array of all of the notes that were created
+	 *  @return {Array} an array of all of the notes that were created
 	 */
 	Tone.Note.parseScore = function(score){
 		var notes = [];
@@ -202,11 +191,11 @@ define(["Tone/core/Tone", "Tone/core/Transport"], function(Tone){
 	var middleC = 261.6255653005986;
 
 	/**
-	 *  convert a note name to frequency (i.e. A4 to 440)
-	 *  defined in "Tone/core/Note"
-	 *  
+	 *  Convert a note name to frequency. 
 	 *  @param  {string} note
-	 *  @return {number}         
+	 *  @return {number}     
+	 *  @example
+	 * var freq = tone.noteToFrequency("A4"); //returns 440
 	 */
 	Tone.prototype.noteToFrequency = function(note){
 		//break apart the note by frequency and octave
@@ -222,8 +211,8 @@ define(["Tone/core/Tone", "Tone/core/Transport"], function(Tone){
 	};
 
 	/**
-	 *  test if a string is in note format: i.e. "C4"
-	 *  @param  {string|number}  note the note to test
+	 *  Test if a string is in note format: i.e. "C4". 
+	 *  @param  {string|number}  note The note to test
 	 *  @return {boolean}      true if it's in the form of a note
 	 *  @method isNotation
 	 *  @lends Tone.prototype.isNote
@@ -240,7 +229,7 @@ define(["Tone/core/Tone", "Tone/core/Transport"], function(Tone){
 	})();
 
 	/**
-	 *  a pointer to the previous toFrequency method
+	 *  A pointer to the previous toFrequency method
 	 *  @private
 	 *  @function
 	 */
@@ -249,8 +238,8 @@ define(["Tone/core/Tone", "Tone/core/Transport"], function(Tone){
 	/**
 	 *  A method which accepts frequencies in the form
 	 *  of notes (`"C#4"`), frequencies as strings ("49hz"), frequency numbers,
-	 *  or Tone.Time and converts them to their frequency as a number in hertz.
-	 *  @param  {Tone.Frequency} note the note name or notation
+	 *  or Time and converts them to their frequency as a number in hertz.
+	 *  @param  {Frequency} note the note name or notation
 	 *  @param {number=} 	now 	if passed in, this number will be 
 	 *                        		used for all 'now' relative timings
 	 *  @return {number}      the frequency as a number
@@ -263,8 +252,7 @@ define(["Tone/core/Tone", "Tone/core/Transport"], function(Tone){
 	};
 
 	/**
-	 *  Convert a note name (i.e. A4, C#5, etc to a frequency).
-	 *  Defined in "Tone/core/Note"
+	 *  Convert a frequency to a note name (i.e. A4, C#5).
 	 *  @param  {number} freq
 	 *  @return {string}         
 	 */
@@ -279,23 +267,23 @@ define(["Tone/core/Tone", "Tone/core/Transport"], function(Tone){
 	/**
 	 *  Convert an interval (in semitones) to a frequency ratio.
 	 *
-	 *  @param  {number} interval the number of semitones above the base note
+	 *  @param  {Interval} interval the number of semitones above the base note
 	 *  @return {number}          the frequency ratio
 	 *  @example
-	 *  tone.intervalToFrequencyRatio(0); // returns 1
-	 *  tone.intervalToFrequencyRatio(12); // returns 2
+	 * tone.intervalToFrequencyRatio(0); // returns 1
+	 * tone.intervalToFrequencyRatio(12); // returns 2
 	 */
 	Tone.prototype.intervalToFrequencyRatio = function(interval){
 		return Math.pow(2,(interval/12));
 	};
 
 	/**
-	 *  Convert a midi note number into a note name/
+	 *  Convert a midi note number into a note name. 
 	 *
-	 *  @param  {number} midiNumber the midi note number
+	 *  @param  {MIDI} midiNumber the midi note number
 	 *  @return {string}            the note's name and octave
 	 *  @example
-	 *  tone.midiToNote(60); // returns "C3"
+	 * tone.midiToNote(60); // returns "C3"
 	 */
 	Tone.prototype.midiToNote = function(midiNumber){
 		var octave = Math.floor(midiNumber / 12) - 2;
@@ -304,13 +292,12 @@ define(["Tone/core/Tone", "Tone/core/Transport"], function(Tone){
 	};
 
 	/**
-	 *  convert a note to it's midi value
-	 *  defined in "Tone/core/Note"
+	 *  Convert a note to it's midi value. 
 	 *
 	 *  @param  {string} note the note name (i.e. "C3")
-	 *  @return {number} the midi value of that note
+	 *  @return {MIDI} the midi value of that note
 	 *  @example
-	 *  tone.noteToMidi("C3"); // returns 60
+	 * tone.noteToMidi("C3"); // returns 60
 	 */
 	Tone.prototype.noteToMidi = function(note){
 		//break apart the note by frequency and octave

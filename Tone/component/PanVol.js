@@ -3,41 +3,44 @@ define(["Tone/core/Tone", "Tone/component/Panner", "Tone/component/Volume"], fun
 	"use strict";
 
 	/**
-	 *  @class A Panner and volume in one.
+	 *  @class Tone.PanVol is a Tone.Panner and Tone.Volume in one.
 	 *
 	 *  @extends {Tone}
 	 *  @constructor
-	 *  @param {number} pan the initial pan
-	 *  @param {number} volume the volume
+	 *  @param {NormalRange} pan the initial pan
+	 *  @param {number} volume The output volume. 
 	 *  @example
-	 *  var panVol = new Tone.PanVol(0.25, -12);
+	 * //pan the incoming signal left and drop the volume
+	 * var panVol = new Tone.PanVol(0.25, -12);
 	 */
 	Tone.PanVol = function(pan, volume){
 		
 		/**
-		 *  the panning node
+		 *  The panning node
 		 *  @type {Tone.Panner}
 		 *  @private
 		 */
 		this._panner = this.input = new Tone.Panner(pan);
 
 		/**
-		 *  the panning control
-		 *  @type {Tone.Panner}
-		 *  @private
+		 *  The L/R panning control.
+		 *  @type {NormalRange}
+		 *  @signal
 		 */
 		this.pan = this._panner.pan;
 
 		/**
-		 * the volume control
+		 * The volume object. 
 		 * @type {Tone.Volume}
+		 * @signal
 		 * @private
 		 */
 		this._volume = this.output = new Tone.Volume(volume);
 
 		/**
 		 *  The volume control in decibels. 
-		 *  @type {Tone.Signal}
+		 *  @type {Decibels}
+		 *  @signal
 		 */
 		this.volume = this._volume.volume;
 
@@ -51,7 +54,7 @@ define(["Tone/core/Tone", "Tone/component/Panner", "Tone/component/Volume"], fun
 
 	/**
 	 *  clean up
-	 *  @returns {Tone.PanVol} `this`
+	 *  @returns {Tone.PanVol} this
 	 */
 	Tone.PanVol.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);

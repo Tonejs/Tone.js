@@ -3,14 +3,15 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/component/Filter"], functi
 	"use strict";
 
 	/**
-	 *  @class A lowpass feedback comb filter. 
-	 *         DelayNode -> Lowpass Filter -> feedback
+	 *  @class Tone.Lowpass is a lowpass feedback comb filter. It is similar to 
+	 *         Tone.FeedbackCombFilter, but includes a lowpass filter.
 	 *
 	 *  @extends {Tone}
 	 *  @constructor
-	 *  @param {number} [delayTime=0.1] The delay time of the comb filter
-	 *  @param {number} [resonance=0.5] The resonance (feedback) of the comb filter
-	 *  @param {Tone.Frequency} [dampening=3000] The dampending cutoff of the lowpass filter
+	 *  @param {Time|Object} [delayTime] The delay time of the comb filter
+	 *  @param {NormalRange=} resonance The resonance (feedback) of the comb filter
+	 *  @param {Frequency=} dampening The cutoff of the lowpass filter dampens the
+	 *                                signal as it is fedback. 
 	 */
 	Tone.LowpassCombFilter = function(){
 
@@ -26,10 +27,11 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/component/Filter"], functi
 		this._delay = this.input = this.context.createDelay(1);
 
 		/**
-		 *  the delayTime
-		 *  @type {Tone.Signal}
+		 *  The delayTime of the comb filter. 
+		 *  @type {Time}
+		 *  @signal
 		 */
-		this.delayTime = new Tone.Signal(options.delayTime, Tone.Signal.Units.Time);
+		this.delayTime = new Tone.Signal(options.delayTime, Tone.Type.Time);
 
 		/**
 		 *  the lowpass filter
@@ -39,13 +41,14 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/component/Filter"], functi
 		this._lowpass = this.output = this.context.createBiquadFilter();
 		this._lowpass.Q.value = 0;
 		this._lowpass.type = "lowpass";
-		this._lowpass.frequency.value = options.dampening;
 
 		/**
-		 *  the dampening control
-		 *  @type {Tone.Signal}
+		 *  The dampening control of the feedback
+		 *  @type {Frequency}
+		 *  @signal
 		 */
-		this.dampening = new Tone.Signal(this._lowpass.frequency, Tone.Signal.Units.Frequency);
+		this.dampening = new Tone.Signal(this._lowpass.frequency, Tone.Type.Frequency);
+		this.dampening.value = options.dampening;
 
 		/**
 		 *  the feedback gain
@@ -55,15 +58,17 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/component/Filter"], functi
 		this._feedback = this.context.createGain();
 
 		/**
-		 *  the resonance control
-		 *  @type {Tone.Signal}
+		 *  The amount of feedback of the delayed signal. 
+		 *  @type {NormalRange}
+		 *  @signal
 		 */
-		this.resonance = new Tone.Signal(options.resonance, Tone.Signal.Units.Normal);
+		this.resonance = new Tone.Signal(options.resonance, Tone.Type.NormalRange);
 
 		//connections
 		this._delay.chain(this._lowpass, this._feedback, this._delay);
 		this.delayTime.connect(this._delay.delayTime);
 		this.resonance.connect(this._feedback.gain);
+		this.dampening.connect(this._lowpass.frequency);
 		this._readOnly(["dampening", "resonance", "delayTime"]);
 	};
 
@@ -82,8 +87,8 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/component/Filter"], functi
 	};
 
 	/**
-	 *  clean up
-	 *  @returns {Tone.LowpassCombFilter} `this`
+	 *  Clean up. 
+	 *  @returns {Tone.LowpassCombFilter} this
 	 */
 	Tone.LowpassCombFilter.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);

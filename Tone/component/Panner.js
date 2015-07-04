@@ -5,18 +5,15 @@ function(Tone){
 	"use strict";
 
 	/**
-	 *  Panner. 
-	 *  
-	 *  @class  Equal Power Gain L/R Panner. Not 3D. 
-	 *          0 = 100% Left
-	 *          1 = 100% Right
+	 *  @class  Tone.Panner is an equal power Left/Right Panner and does not
+	 *  support 3D. Panner uses the StereoPannerNode when available. 
 	 *  
 	 *  @constructor
 	 *  @extends {Tone}
-	 *  @param {number} [initialPan=0.5] the initail panner value (defaults to 0.5 = center)
+	 *  @param {NormalRange} [initialPan=0.5] The initail panner value (defaults to 0.5 = center)
 	 *  @example
+	 *  //pan the input signal hard right. 
 	 *  var panner = new Tone.Panner(1);
-	 *  // ^ pan the input signal hard right. 
 	 */
 	Tone.Panner = function(initialPan){
 
@@ -39,10 +36,11 @@ function(Tone){
 			this._panner = this.input = this.output = this.context.createStereoPanner();
 
 			/**
-			 *  the pan control
-			 *  @type {Tone.Signal}
+			 *  The pan control. 0 = hard left, 1 = hard right. 
+			 *  @type {NormalRange}
+			 *  @signal
 			 */	
-			this.pan = new Tone.Signal(0, Tone.Signal.Units.Normal);
+			this.pan = new Tone.Signal(0, Tone.Type.NormalRange);
 
 			/**
 			 *  scale the pan signal to between -1 and 1
@@ -76,8 +74,9 @@ function(Tone){
 			this._splitter = this.input = new Tone.Split();
 			
 			/**
-			 *  the pan control
-			 *  @type {Tone.Signal}
+			 *  The pan control. 0 = hard left, 1 = hard right. 
+			 *  @type {NormalRange}
+			 *  @signal
 			 */	
 			this.pan = this._crossFade.fade;
 
@@ -98,8 +97,8 @@ function(Tone){
 	Tone.extend(Tone.Panner);
 
 	/**
-	 *  clean up
-	 *  @returns {Tone.Panner} `this`
+	 *  Clean up.
+	 *  @returns {Tone.Panner} this
 	 */
 	Tone.Panner.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);

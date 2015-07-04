@@ -3,50 +3,62 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/LFO", "Tone/comp
 	"use strict";
 
 	/**
-	 *  @class AutoFilter is a Tone.Panner with an LFO connected to the pan amount
+	 *  @class Tone.AutoFilter is a Tone.Filter with a Tone.LFO connected to the filter cutoff frequency.
+	 *         Setting the LFO rate and depth allows for control over the filter modulation rate 
+	 *         and depth.
 	 *
 	 *  @constructor
 	 *  @extends {Tone.Effect}
-	 *  @param {Tone.Time} [frequency=1] (optional) rate in HZ of the filter
-	 *  @param {number} [depth=0.5] The depth of the effect
+	 *  @param {Time|Object} [frequency] The rate of the LFO.
+	 *  @param {Frequency} [min] The lower value of the LFOs oscillation
+ 	 *  @param {Frequency} [max] The upper value of the LFOs oscillation. 
 	 *  @example
-	 *  var autoPanner = new Tone.AutoFilter("4n");
+	 * //create an autofilter and start it's LFO
+	 * var autoFilter = new Tone.AutoFilter("4n").toMaster().start();
+	 * //route an oscillator through the filter and start it
+	 * var oscillator = new Tone.Oscillator().connect(autoFilter).start();
 	 */
 	Tone.AutoFilter = function(){
 
-		var options = this.optionsObject(arguments, ["frequency"], Tone.AutoFilter.defaults);
+		var options = this.optionsObject(arguments, ["frequency", "min", "max"], Tone.AutoFilter.defaults);
 		Tone.Effect.call(this, options);
 
 		/**
-		 *  the lfo which drives the panning
+		 *  the lfo which drives the filter cutoff
 		 *  @type {Tone.LFO}
 		 *  @private
 		 */
-		this._lfo = new Tone.LFO(options.frequency, options.min, options.max);
+		this._lfo = new Tone.LFO({
+			"frequency" : options.frequency,
+			"amplitude" : options.depth,
+			"min" : options.min,
+			"max" : options.max
+		});
 
 		/**
-		 * The amount of panning between left and right. 
-		 * 0 = always center. 1 = full range between left and right. 
-		 * @type {Tone.Signal}
+		 * The range of the filter modulating between the min and max frequency. 
+		 * 0 = no modulation. 1 = full modulation.
+		 * @type {NormalRange}
+		 * @signal
 		 */
 		this.depth = this._lfo.amplitude;
 
 		/**
 		 * How fast the filter modulates between min and max. 
-		 * @type {Tone.Signal}
+		 * @type {Frequency}
+		 * @signal
 		 */
 		this.frequency = this._lfo.frequency;
 
 		/**
-		 *  the filter node
+		 *  The filter node
 		 *  @type {Tone.Filter}
-		 *  @private
 		 */
-		this._filter = new Tone.Filter(options.filter);
+		this.filter = new Tone.Filter(options.filter);
 
 		//connections
-		this.connectEffect(this._filter);
-		this._lfo.connect(this._filter.frequency);
+		this.connectEffect(this.filter);
+		this._lfo.connect(this.filter.frequency);
 		this.type = options.type;
 		this._readOnly(["frequency", "depth"]);
 	};
@@ -73,9 +85,9 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/LFO", "Tone/comp
 	};
 	
 	/**
-	 * Start the filter.
-	 * @param {Tone.Time} [time=now] the filter begins.
-	 * @returns {Tone.AutoFilter} `this`
+	 * Start the effect.
+	 * @param {Time} [time=now] When the LFO will start. 
+	 * @returns {Tone.AutoFilter} this
 	 */
 	Tone.AutoFilter.prototype.start = function(time){
 		this._lfo.start(time);
@@ -83,9 +95,9 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/LFO", "Tone/comp
 	};
 
 	/**
-	 * Stop the filter.
-	 * @param {Tone.Time} [time=now] the filter stops.
-	 * @returns {Tone.AutoFilter} `this`
+	 * Stop the effect.
+	 * @param {Time} [time=now] When the LFO will stop. 
+	 * @returns {Tone.AutoFilter} this
 	 */
 	Tone.AutoFilter.prototype.stop = function(time){
 		this._lfo.stop(time);
@@ -94,9 +106,9 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/LFO", "Tone/comp
 
 	/**
 	 * Sync the filter to the transport.
-	 * @param {Tone.Time} [delay=0] Delay time before starting the effect after the
+	 * @param {Time} [delay=0] Delay time before starting the effect after the
 	 *                               Transport has started. 
-	 * @returns {Tone.AutoFilter} `this`
+	 * @returns {Tone.AutoFilter} this
 	 */
 	Tone.AutoFilter.prototype.sync = function(delay){
 		this._lfo.sync(delay);
@@ -104,8 +116,8 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/LFO", "Tone/comp
 	};
 
 	/**
-	 * Unsync the filter from the transport
-	 * @returns {Tone.AutoFilter} `this`
+	 * Unsync the filter from the transport.
+	 * @returns {Tone.AutoFilter} this
 	 */
 	Tone.AutoFilter.prototype.unsync = function(){
 		this._lfo.unsync();
@@ -113,7 +125,8 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/LFO", "Tone/comp
 	};
 
 	/**
-	 * Type of oscillator attached to the AutoFilter.
+	 * Type of oscillator attached to the AutoFilter. 
+	 * Possible values: "sine", "square", "triangle", "sawtooth".
 	 * @memberOf Tone.AutoFilter#
 	 * @type {string}
 	 * @name type
@@ -128,9 +141,9 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/LFO", "Tone/comp
 	});
 
 	/**
-	 * The miniumum output of the AutoFilter.
+	 * The minimum value of the LFO attached to the cutoff frequency of the filter.
 	 * @memberOf Tone.AutoFilter#
-	 * @type {number}
+	 * @type {Frequency}
 	 * @name min
 	 */
 	Object.defineProperty(Tone.AutoFilter.prototype, "min", {
@@ -143,9 +156,9 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/LFO", "Tone/comp
 	});
 
 	/**
-	 * The maximum output of the AutoFilter.
+	 * The minimum value of the LFO attached to the cutoff frequency of the filter.
 	 * @memberOf Tone.AutoFilter#
-	 * @type {number}
+	 * @type {Frequency}
 	 * @name max
 	 */
 	Object.defineProperty(Tone.AutoFilter.prototype, "max", {
@@ -158,15 +171,15 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/LFO", "Tone/comp
 	});
 
 	/**
-	 *  clean up
-	 *  @returns {Tone.AutoFilter} `this`
+	 *  Clean up. 
+	 *  @returns {Tone.AutoFilter} this
 	 */
 	Tone.AutoFilter.prototype.dispose = function(){
 		Tone.Effect.prototype.dispose.call(this);
 		this._lfo.dispose();
 		this._lfo = null;
-		this._filter.dispose();
-		this._filter = null;
+		this.filter.dispose();
+		this.filter = null;
 		this._writable(["frequency", "depth"]);
 		this.frequency = null;
 		this.depth = null;

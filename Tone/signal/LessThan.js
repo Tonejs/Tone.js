@@ -5,17 +5,17 @@ function(Tone){
 
 	/**
 	 *  @class  Output 1 if the signal is less than the value, otherwise outputs 0.
-	 *          Can compare two signals or a signal and a number. <br><br>
-	 *          input 0: left hand side of comparison.<br><br>
-	 *          input 1: right hand side of comparison.
+	 *          Can compare two signals or a signal and a number. 
 	 *  
 	 *  @constructor
 	 *  @extends {Tone.Signal}
-	 *  @param {number} [value=0] the value to compare to the incoming signal
+	 *  @param {number=} value The value to compare to the incoming signal. 
+	 *                            If no value is provided, it will compare 
+	 *                            <code>input[0]</code> and <code>input[1]</code>
 	 *  @example
-	 *  var lt = new Tone.LessThan(2);
-	 *  var sig = new Tone.Signal(-1).connect(lt);
-	 *  //lt outputs 1 because sig < 2
+	 * var lt = new Tone.LessThan(2);
+	 * var sig = new Tone.Signal(-1).connect(lt);
+	 * //if (sig < 2) lt outputs 1
 	 */
 	Tone.LessThan = function(value){
 
@@ -58,8 +58,8 @@ function(Tone){
 	Tone.extend(Tone.LessThan, Tone.Signal);
 
 	/**
-	 *  dispose method
-	 *  @returns {Tone.LessThan} `this`
+	 *  Clean up.
+	 *  @returns {Tone.LessThan} this
 	 */
 	Tone.LessThan.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);

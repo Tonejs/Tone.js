@@ -4,14 +4,18 @@ function(Tone){
 	"use strict";
 
 	/**
-	 *  @class Pulse Oscillator with control over width
+	 *  @class Tone.PulseOscillator is a pulse oscillator with control over pulse width,
+	 *         also known as the duty cycle. At 50% duty cycle (width = 0.5) the wave is 
+	 *         a square and only odd-numbered harmonics are present. At all other widths 
+	 *         even-numbered harmonics are present. Read more 
+	 *         [here](https://wigglewave.wordpress.com/2014/08/16/pulse-waveforms-and-harmonics/).
 	 *
 	 *  @constructor
 	 *  @extends {Tone.Oscillator}
-	 *  @param {number} [frequency=440] the frequency of the oscillator
-	 *  @param {number} [width = 0.2] the width of the pulse
+	 *  @param {Frequency} [frequency] The frequency of the oscillator
+	 *  @param {NormalRange} [width] The width of the pulse
 	 *  @example
-	 *  var pulse = new Tone.PulseOscillator("E5", 0.4);
+	 * var pulse = new Tone.PulseOscillator("E5", 0.4).toMaster().start();
 	 */
 	Tone.PulseOscillator = function(){
 
@@ -19,10 +23,11 @@ function(Tone){
 		Tone.Source.call(this, options);
 
 		/**
-		 *  the width of the pulse
-		 *  @type {Tone.Signal}
+		 *  The width of the pulse. 
+		 *  @type {NormalRange}
+		 *  @signal
 		 */
-		this.width = new Tone.Signal(options.width, Tone.Signal.Units.Normal);
+		this.width = new Tone.Signal(options.width, Tone.Type.NormalRange);
 
 		/**
 		 *  gate the width amount
@@ -44,14 +49,16 @@ function(Tone){
 		});
 
 		/**
-		 *  The frequency in hertz
-		 *  @type {Tone.Signal}
+		 *  The frequency control.
+		 *  @type {Frequency}
+		 *  @signal
 		 */
 		this.frequency = this._sawtooth.frequency;
 
 		/**
 		 *  The detune in cents. 
-		 *  @type {Tone.Signal}
+		 *  @type {Cents}
+		 *  @signal
 		 */
 		this.detune = this._sawtooth.detune;
 
@@ -91,7 +98,7 @@ function(Tone){
 
 	/**
 	 *  start the oscillator
-	 *  @param  {Tone.Time} time 
+	 *  @param  {Time} time 
 	 *  @private
 	 */
 	Tone.PulseOscillator.prototype._start = function(time){
@@ -102,7 +109,7 @@ function(Tone){
 
 	/**
 	 *  stop the oscillator
-	 *  @param  {Tone.Time} time 
+	 *  @param  {Time} time 
 	 *  @private
 	 */
 	Tone.PulseOscillator.prototype._stop = function(time){
@@ -116,7 +123,7 @@ function(Tone){
 	/**
 	 * The phase of the oscillator in degrees.
 	 * @memberOf Tone.PulseOscillator#
-	 * @type {number}
+	 * @type {Degrees}
 	 * @name phase
 	 */
 	Object.defineProperty(Tone.PulseOscillator.prototype, "phase", {
@@ -142,8 +149,8 @@ function(Tone){
 	});
 
 	/**
-	 *  Clean up method
-	 *  @return {Tone.PulseOscillator} `this`
+	 *  Clean up method.
+	 *  @return {Tone.PulseOscillator} this
 	 */
 	Tone.PulseOscillator.prototype.dispose = function(){
 		Tone.Source.prototype.dispose.call(this);

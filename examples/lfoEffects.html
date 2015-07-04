@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+	<title>LFO Effects</title>
+	
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+	<script type="text/javascript" src="../build/Tone.js"></script>
+	<script type="text/javascript" src="./scripts/jquery.min.js"></script>
+	<script type="text/javascript" src="./scripts/Notone.GUI.js"></script>
+	<script type="text/javascript" src="./scripts/Interface.js"></script>
+
+	<link rel="stylesheet" type="text/css" href="./style/examples.css">
+
+	<script type="text/javascript">
+		// jshint ignore: start
+	</script>
+</head>
+<body>
+	<div id="Content">
+		<div id="Title">LFO Effects</div>
+		<div id="Explanation">
+			These effects use an <a href="http://tonejs.org/docs/#LFO">LFO</a> (Low Frequency Oscillator) to modulate the effect. Click and drag the dot to change the frequency and depth of the effect. 
+			<br><br>
+			Docs on <a href="http://tonejs.org/docs/#AutoPanner">Tone.AutoPanner</a>, 
+			<a href="http://tonejs.org/docs/#AutoFilter">Tone.AutoFilter</a>, and
+			<a href="http://tonejs.org/docs/#Tremolo">Tone.Tremolo</a>
+		</div>
+		<div id="DragContainer">
+			
+		</div>
+	</div>
+	<script id="JSCode" type="text/javascript">
+		//AutoPanner - a penning modulation effect
+		var panner = new Tone.AutoPanner({
+			"frequency" : 4,
+			"depth" : 1
+		}).toMaster().start();
+
+		//AutoFilter - a filter modulation effect
+		var filter = new Tone.AutoFilter({
+			"frequency" : 2,
+			"depth" : 0.6
+		}).toMaster().start();
+
+		//Tremolo - an amplitude modulation effect
+		var tremolo = new Tone.Tremolo({
+			"frequency" : 0.6,
+			"depth" : 0.7
+		}).toMaster().start();
+
+		//the input oscillators
+		var osc0 = new Tone.Oscillator({ 
+			"volume" : -Infinity, 
+			"type" : "square6",
+			"frequency" : "C4"
+		}).connect(panner).start();
+
+		var osc1 = new Tone.Oscillator({ 
+			"volume" : -Infinity, 
+			"type" : "square6",
+			"frequency" : "E4"
+		}).connect(filter).start();
+
+		var osc2 = new Tone.Oscillator({ 
+			"volume" : -Infinity, 
+			"type" : "square6",
+			"frequency" : "A4"
+		}).connect(tremolo).start();
+
+	</script>
+	<script id="gui" type="text/javascript">
+
+	$(function(){
+		Notone.config({
+			"search" : false,
+			"expandInDrawer" : true,
+			"hideDrawer" : Interface.isMobile,
+			"drawer" : true,
+			"container" : "body"
+		});
+
+		var pannerGUI = Notone.add(panner, "AutoPanner");
+
+		var tremoloGUI = Notone.add(tremolo, "Tremolo");
+		
+		var filterGUI = Notone.add(filter, "AutoFilter");
+
+		new Interface.Dragger({
+			gui : pannerGUI,
+			x : {
+				param : "frequency",
+				min : 0.1,
+				max : 8
+			},
+			y : {
+				param : "depth",
+				min : 0.5,
+				max : 1
+			},
+			start : function(){
+				osc0.volume.rampTo(0, 0.1);
+			},
+			end : function(){
+				osc0.volume.rampTo(-Infinity, 0.1);
+			}
+		});
+
+		new Interface.Dragger({
+			gui : filterGUI, 
+			x : {
+				param : "frequency",
+				min : 0.1,
+				max : 8
+			},
+			y : {
+				param : "depth",
+				min : 0.5,
+				max : 1
+			},
+			start : function(){
+				osc1.volume.rampTo(0, 0.1);
+			},
+			end : function(){
+				osc1.volume.rampTo(-Infinity, 0.1);
+			}
+		});
+
+		new Interface.Dragger({
+			gui : tremoloGUI,
+			x : {
+				param : "frequency",
+				min : 0.1,
+				max : 8
+			},
+			y : {
+				param : "depth",
+				min : 0.5,
+				max : 1
+			},
+			start : function(){
+				osc2.volume.rampTo(0, 0.1);
+			},
+			end : function(){
+				osc2.volume.rampTo(-Infinity, 0.1);
+			}
+		});
+	})
+
+		
+	</script>
+
+</body>
+</html>

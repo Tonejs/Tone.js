@@ -3,18 +3,21 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/source/Noise", "To
 	"use strict";
 
 	/**
-	 *  @class Karplus-String string synthesis. 
+	 *  @class Karplus-String string synthesis. Often out of tune. 
+	 *         Will change when the AudioWorkerNode is available across
+	 *         browsers. 
 	 *  
 	 *  @constructor
 	 *  @extends {Tone.Instrument}
-	 *  @param {Object} options see the defaults
+	 *  @param {Object} [options] see the defaults
 	 *  @example
-	 *  var plucky = new Tone.PluckSynth();
+	 * var plucky = new Tone.PluckSynth().toMaster();
+	 * plucky.triggerAttack("C4");
 	 */
 	Tone.PluckSynth = function(options){
 
 		options = this.defaultArg(options, Tone.PluckSynth.defaults);
-		Tone.Instrument.call(this);
+		Tone.Instrument.call(this, options);
 
 		/**
 		 *  @type {Tone.Noise}
@@ -34,17 +37,22 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/source/Noise", "To
 		 *  @type {Tone.LowpassCombFilter}
 		 *  @private
 		 */
-		this._lfcf = new Tone.LowpassCombFilter(1 / 440);
+		this._lfcf = new Tone.LowpassCombFilter({
+			"resonance" : options.resonance,
+			"dampening" : options.dampening
+		});
 
 		/**
-		 *  the resonance control
-		 *  @type {Tone.Signal}
+		 *  The resonance control. 
+		 *  @type {NormalRange}
+		 *  @signal
 		 */
 		this.resonance = this._lfcf.resonance;
 
 		/**
-		 *  the dampening control. i.e. the lowpass filter frequency of the comb filter
-		 *  @type {Tone.Signal}
+		 *  The dampening control. i.e. the lowpass filter frequency of the comb filter
+		 *  @type {Frequency}
+		 *  @signal
 		 */
 		this.dampening = this._lfcf.dampening;
 
@@ -64,14 +72,14 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/source/Noise", "To
 	Tone.PluckSynth.defaults = {
 		"attackNoise" : 1,
 		"dampening" : 4000,
-		"resonance" : 0.5
+		"resonance" : 0.9
 	};
 
 	/**
-	 *  trigger the attack portion
-	 *  @param {string|number} note the note name or frequency
-	 *  @param {Tone.Time} [time=now] the time of the note
-	 *  @returns {Tone.PluckSynth} `this`
+	 *  Trigger the note. 
+	 *  @param {Frequency} note The note to trigger.
+	 *  @param {Time} [time=now] When the note should be triggered.
+	 *  @returns {Tone.PluckSynth} this
 	 */
 	Tone.PluckSynth.prototype.triggerAttack = function(note, time) {
 		note = this.toFrequency(note);
@@ -84,8 +92,8 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/source/Noise", "To
 	};
 
 	/**
-	 *  clean up
-	 *  @returns {Tone.PluckSynth} `this`
+	 *  Clean up. 
+	 *  @returns {Tone.PluckSynth} this
 	 */
 	Tone.PluckSynth.prototype.dispose = function(){
 		Tone.Instrument.prototype.dispose.call(this);

@@ -3,21 +3,28 @@ define(["Tone/core/Tone", "Tone/signal/SignalBase"], function(Tone){
 	"use strict";
 
 	/**
-	 *  @class Wraps the WaveShaperNode
+	 *  @class Wraps the native Web Audio API 
+	 *         [WaveShaperNode](http://webaudio.github.io/web-audio-api/#the-waveshapernode-interface).
 	 *
 	 *  @extends {Tone.SignalBase}
 	 *  @constructor
-	 *  @param {function(number, number)|Array|number} mapping the function used to define the values. 
+	 *  @param {function|Array|Number} mapping The function used to define the values. 
 	 *                                    The mapping function should take two arguments: 
 	 *                                    the first is the value at the current position 
 	 *                                    and the second is the array position. 
 	 *                                    If the argument is an array, that array will be
-	 *                                    set as the wave shapping function
-	 *  @param {number} [bufferLen=1024] the length of the WaveShaperNode buffer.
+	 *                                    set as the wave shaping function. The input
+	 *                                    signal is an AudioRange [-1, 1] value and the output
+	 *                                    signal can take on any numerical values. 
+	 *                                    
+	 *  @param {Number} [bufferLen=1024] The length of the WaveShaperNode buffer.
 	 *  @example
-	 *  var timesTwo = new Tone.WaveShaper(function(val){
-	 *  	return val * 2;
-	 *  }, 2048);
+	 * var timesTwo = new Tone.WaveShaper(function(val){
+	 * 	return val * 2;
+	 * }, 2048);
+	 *  @example
+	 * //a waveshaper can also be constructed with an array of values
+	 * var invert = new Tone.WaveShaper([1, -1]);
 	 */
 	Tone.WaveShaper = function(mapping, bufferLen){
 
@@ -48,12 +55,18 @@ define(["Tone/core/Tone", "Tone/signal/SignalBase"], function(Tone){
 	Tone.extend(Tone.WaveShaper, Tone.SignalBase);
 
 	/**
-	 *  uses a mapping function to set the value of the curve
-	 *  @param {function(number, number)} mapping the function used to define the values. 
-	 *                                    The mapping function should take two arguments: 
-	 *                                    the first is the value at the current position 
-	 *                                    and the second is the array position
-	 *  @returns {Tone.WaveShaper} `this`
+	 *  Uses a mapping function to set the value of the curve. 
+	 *  @param {function} mapping The function used to define the values. 
+	 *                            The mapping function take two arguments: 
+	 *                            the first is the value at the current position 
+	 *                            which goes from -1 to 1 over the number of elements
+	 *                            in the curve array. The second argument is the array position. 
+	 *  @returns {Tone.WaveShaper} this
+	 *  @example
+	 * //map the input signal from [-1, 1] to [0, 10]
+	 * shaper.setMap(function(val, index){
+	 * 	return (val + 1) * 5;
+	 * })
 	 */
 	Tone.WaveShaper.prototype.setMap = function(mapping){
 		for (var i = 0, len = this._curve.length; i < len; i++){
@@ -65,7 +78,9 @@ define(["Tone/core/Tone", "Tone/signal/SignalBase"], function(Tone){
 	};
 
 	/**
-	 * The array to set as the waveshaper curve
+	 * The array to set as the waveshaper curve. For linear curves
+	 * array length does not make much difference, but for complex curves
+	 * longer arrays will provide smoother interpolation. 
 	 * @memberOf Tone.WaveShaper#
 	 * @type {Array}
 	 * @name curve
@@ -86,7 +101,8 @@ define(["Tone/core/Tone", "Tone/signal/SignalBase"], function(Tone){
 	});
 
 	/**
-	 * The oversampling. Can either be "none", "2x" or "4x"
+	 * Specifies what type of oversampling (if any) should be used when 
+	 * applying the shaping curve. Can either be "none", "2x" or "4x". 
 	 * @memberOf Tone.WaveShaper#
 	 * @type {string}
 	 * @name oversample
@@ -111,8 +127,8 @@ define(["Tone/core/Tone", "Tone/signal/SignalBase"], function(Tone){
 	};
 
 	/**
-	 *  clean up
-	 *  @returns {Tone.WaveShaper} `this`
+	 *  Clean up.
+	 *  @returns {Tone.WaveShaper} this
 	 */
 	Tone.WaveShaper.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);

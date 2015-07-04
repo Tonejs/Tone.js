@@ -4,15 +4,20 @@ function(Tone){
 	"use strict";
 
 	/**
-	 *  @class A Chorus effect with feedback. inspiration from https://github.com/Dinahmoe/tuna/blob/master/tuna.js
+	 *  @class Tone.Chorus is a stereo chorus effect with feedback composed of 
+	 *         a left and right delay with a Tone.LFO applied to the delayTime of each channel. 
+	 *         Inspiration from [Tuna.js](https://github.com/Dinahmoe/tuna/blob/master/tuna.js).
+	 *         Read more on the chorus effect on [SoundOnSound](http://www.soundonsound.com/sos/jun04/articles/synthsecrets.htm).
 	 *
 	 *	@constructor
 	 *	@extends {Tone.StereoXFeedbackEffect}
-	 *	@param {number|Object} [frequency=2] the frequency of the effect
-	 *	@param {number} [delayTime=3.5] the delay of the chorus effect in ms
-	 *	@param {number} [depth=0.7] the depth of the chorus
+	 *	@param {Frequency|Object} [frequency] The frequency of the LFO.
+	 *	@param {Number} [delayTime] The delay of the chorus effect in ms. 
+	 *	@param {NormalRange} [depth] The depth of the chorus.
 	 *	@example
-	 * 	var chorus = new Tone.Chorus(4, 2.5, 0.5);
+	 * var chorus = new Tone.Chorus(4, 2.5, 0.5);
+	 * var synth = new Tone.PolySynth(4, Tone.MonoSynth).connect(chorus);
+	 * synth.triggerAttackRelease(["C3","E3","G3"], "8n");
 	 */
 	Tone.Chorus = function(){
 
@@ -63,17 +68,17 @@ function(Tone){
 		this._delayNodeR = this.context.createDelay();
 
 		/**
-		 * The frequency the chorus will modulate at. 
-		 * @type {Tone.Signal}
+		 * The frequency of the LFO which modulates the delayTime. 
+		 * @type {Frequency}
+		 * @signal
 		 */
 		this.frequency = this._lfoL.frequency;
 
 		//connections
 		this.connectSeries(this.effectSendL, this._delayNodeL, this.effectReturnL);
 		this.connectSeries(this.effectSendR, this._delayNodeR, this.effectReturnR);
-		//and pass through
-		this.effectSendL.connect(this.effectReturnL);
-		this.effectSendR.connect(this.effectReturnR);
+		//and pass through to make the detune apparent
+		this.input.connect(this.output);
 		//lfo setup
 		this._lfoL.connect(this._delayNodeL.delayTime);
 		this._lfoR.connect(this._delayNodeR.delayTime);
@@ -105,9 +110,10 @@ function(Tone){
 	};
 
 	/**
-	 * The depth of the effect. 
+	 * The depth of the effect. A depth of 1 makes the delayTime
+	 * modulate between 0 and 2*delayTime (centered around the delayTime). 
 	 * @memberOf Tone.Chorus#
-	 * @type {number}
+	 * @type {NormalRange}
 	 * @name depth
 	 */
 	Object.defineProperty(Tone.Chorus.prototype, "depth", {
@@ -125,9 +131,11 @@ function(Tone){
 	});
 
 	/**
-	 * The delayTime in milliseconds
+	 * The delayTime in milliseconds of the chorus. A larger delayTime
+	 * will give a more pronounced effect. Nominal range a delayTime
+	 * is between 2 and 20ms. 
 	 * @memberOf Tone.Chorus#
-	 * @type {number}
+	 * @type {Number}
 	 * @name delayTime
 	 */
 	Object.defineProperty(Tone.Chorus.prototype, "delayTime", {
@@ -141,7 +149,7 @@ function(Tone){
 	});
 
 	/**
-	 * The lfo type for the chorus. 
+	 * The oscillator type of the LFO. 
 	 * @memberOf Tone.Chorus#
 	 * @type {string}
 	 * @name type
@@ -157,8 +165,8 @@ function(Tone){
 	});
 
 	/**
-	 *  clean up
-	 *  @returns {Tone.Chorus} `this`
+	 *  Clean up. 
+	 *  @returns {Tone.Chorus} this
 	 */
 	Tone.Chorus.prototype.dispose = function(){
 		Tone.StereoXFeedbackEffect.prototype.dispose.call(this);

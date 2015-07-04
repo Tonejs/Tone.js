@@ -4,16 +4,25 @@ define(["Tone/core/Tone"], function(Tone){
 
 	/**
 	 *  @class  Buffer loading and storage. Tone.Buffer is used internally by all 
-	 *          classes that make requests for audio files such as {@link Tone.Player},
-	 *          {@link Tone.Sampler} and {@link Tone.Convolver} .
-	 *          <br><br>Aside from load callbacks from individual buffers, Tone.Buffer 
+	 *          classes that make requests for audio files such as Tone.Player,
+	 *          Tone.Sampler and Tone.Convolver.
+	 *          <br><br>
+	 *          Aside from load callbacks from individual buffers, Tone.Buffer 
 	 *  		provides static methods which keep track of the loading progress 
-	 *  		of all of the buffers. These methods are `onload`, `onprogress`,
-	 *  		and `onerror`. 
+	 *  		of all of the buffers. These methods are Tone.Buffer.onload, Tone.Buffer.onprogress,
+	 *  		and Tone.Buffer.onerror. 
 	 *
 	 *  @constructor 
 	 *  @extends {Tone}
-	 *  @param {AudioBuffer|string} url the url to load, or the audio buffer to set
+	 *  @param {AudioBuffer|string} url The url to load, or the audio buffer to set. 
+	 *  @param {function=} onload A callback which is invoked after the buffer is loaded. 
+	 *                            It's recommended to use Tone.Buffer.onload instead 
+	 *                            since it will give you a callback when ALL buffers are loaded.
+	 *  @example
+	 * var buffer = new Tone.Buffer("path/to/sound.mp3", function(){
+	 * 	//the buffer is now available.
+	 * 	var buff = buffer.get();
+	 * });
 	 */
 	Tone.Buffer = function(){
 
@@ -34,7 +43,7 @@ define(["Tone/core/Tone"], function(Tone){
 		this._reversed = options.reverse;
 
 		/**
-		 *  the url of the buffer. `undefined` if it was 
+		 *  The url of the buffer. <code>undefined</code> if it was 
 		 *  constructed with a buffer
 		 *  @type {string}
 		 *  @readOnly
@@ -42,14 +51,14 @@ define(["Tone/core/Tone"], function(Tone){
 		this.url = undefined;
 
 		/**
-		 *  indicates if the buffer is loaded or not
+		 *  Indicates if the buffer is loaded or not. 
 		 *  @type {boolean}
 		 *  @readOnly
 		 */
 		this.loaded = false;
 
 		/**
-		 *  the callback to invoke when everything is loaded
+		 *  The callback to invoke when everything is loaded. 
 		 *  @type {function}
 		 */
 		this.onload = options.onload.bind(this, this);
@@ -67,21 +76,19 @@ define(["Tone/core/Tone"], function(Tone){
 
 	/**
 	 *  the default parameters
-	 *
-	 *  @static
-	 *  @const
 	 *  @type {Object}
 	 */
 	Tone.Buffer.defaults = {
 		"url" : undefined,
-		"onload" : function(){},
+		"onload" : Tone.noOp,
 		"reverse" : false
 	};
 
 	/**
-	 *  set the buffer
+	 *  Pass in an AudioBuffer or Tone.Buffer to set the value
+	 *  of this buffer.
 	 *  @param {AudioBuffer|Tone.Buffer} buffer the buffer
-	 *  @returns {Tone.Buffer} `this`
+	 *  @returns {Tone.Buffer} this
 	 */
 	Tone.Buffer.prototype.set = function(buffer){
 		if (buffer instanceof Tone.Buffer){
@@ -94,18 +101,19 @@ define(["Tone/core/Tone"], function(Tone){
 	};
 
 	/**
-	 *  @return {AudioBuffer} the audio buffer
+	 *  @return {AudioBuffer} The audio buffer stored in the object.
 	 */
 	Tone.Buffer.prototype.get = function(){
 		return this._buffer;
 	};
 
 	/**
-	 *  @param {string} url the url to load
-	 *  @param {function=} callback the callback to invoke on load. 
+	 *  Load url into the buffer. 
+	 *  @param {String} url The url to load
+	 *  @param {Function=} callback The callback to invoke on load. 
 	 *                              don't need to set if `onload` is
 	 *                              already set.
-	 *  @returns {Tone.Buffer} `this`
+	 *  @returns {Tone.Buffer} this
 	 */
 	Tone.Buffer.prototype.load = function(url, callback){
 		this.url = url;
@@ -116,7 +124,7 @@ define(["Tone/core/Tone"], function(Tone){
 
 	/**
 	 *  dispose and disconnect
-	 *  @returns {Tone.Buffer} `this`
+	 *  @returns {Tone.Buffer} this
 	 */
 	Tone.Buffer.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
@@ -127,7 +135,7 @@ define(["Tone/core/Tone"], function(Tone){
 	};
 
 	/**
-	 * the duration of the buffer
+	 * The duration of the buffer. 
 	 * @memberOf Tone.Buffer#
 	 * @type {number}
 	 * @name duration
@@ -144,9 +152,9 @@ define(["Tone/core/Tone"], function(Tone){
 	});
 
 	/**
-	 *  reverse the buffer
+	 *  Reverse the buffer.
 	 *  @private
-	 *  @return {Tone.Buffer} `this`
+	 *  @return {Tone.Buffer} this
 	 */
 	Tone.Buffer.prototype._reverse = function(){
 		if (this.loaded){
@@ -158,7 +166,7 @@ define(["Tone/core/Tone"], function(Tone){
 	};
 
 	/**
-	 * if the buffer is reversed or not
+	 * Reverse the buffer.
 	 * @memberOf Tone.Buffer#
 	 * @type {boolean}
 	 * @name reverse
@@ -305,14 +313,13 @@ define(["Tone/core/Tone"], function(Tone){
 	};
 
 	/**
-	 *  makes an xhr reqest for the selected url
-	 *  Load the audio file as an audio buffer.
-	 *  Decodes the audio asynchronously and invokes
+	 *  Makes an xhr reqest for the selected url then decodes
+	 *  the file as an audio buffer. Invokes
 	 *  the callback once the audio buffer loads.
-	 *  @param {string} url the url of the buffer to load.
+	 *  @param {string} url The url of the buffer to load.
 	 *                      filetype support depends on the
 	 *                      browser.
-	 *  @param {function} callback function
+	 *  @param {function} callback The function to invoke when the url is loaded. 
 	 *  @returns {XMLHttpRequest} returns the XHR
 	 */
 	Tone.Buffer.load = function(url, callback){
@@ -334,40 +341,42 @@ define(["Tone/core/Tone"], function(Tone){
 	};
 
 	/**
-	 *  callback when all of the buffers in the queue have loaded
+	 *  Callback when all of the buffers in the queue have loaded
 	 *  @static
-	 *  @type {function}
+	 *  @function
 	 *  @example
 	 * //invoked when all of the queued samples are done loading
 	 * Tone.Buffer.onload = function(){
 	 * 	console.log("everything is loaded");
 	 * };
 	 */
-	Tone.Buffer.onload = function(){};
+	Tone.Buffer.onload = Tone.noOp;
 
 	/**
 	 *  Callback function is invoked with the progress of all of the loads in the queue. 
 	 *  The value passed to the callback is between 0-1.
 	 *  @static
-	 *  @type {function}
+	 *  @param {Number} percent The progress between 0 and 1. 
+	 *  @function
 	 *  @example
 	 * Tone.Buffer.onprogress = function(percent){
 	 * 	console.log("progress:" + (percent * 100).toFixed(1) + "%");
 	 * };
 	 */
-	Tone.Buffer.onprogress = function(){};
+	Tone.Buffer.onprogress = Tone.noOp;
 
 	/**
 	 *  Callback if one of the buffers in the queue encounters an error. The error
 	 *  is passed in as the argument. 
 	 *  @static
-	 *  @type {function}
+	 *  @param {Error} err
+	 *  @function
 	 *  @example
 	 * Tone.Buffer.onerror = function(e){
 	 * 	console.log("there was an error while loading the buffers: "+e);
 	 * }
 	 */
-	Tone.Buffer.onerror = function(){};
+	Tone.Buffer.onerror = Tone.noOp;
 
 	return Tone.Buffer;
 });

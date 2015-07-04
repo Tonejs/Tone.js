@@ -10,13 +10,13 @@ define(["Tone/core/Tone", "Tone/signal/Equal", "Tone/signal/Signal"], function(T
 	 *  @extends {Tone.SignalBase}
 	 *  @param {number} [sourceCount=2] the number of inputs the switch accepts
 	 *  @example
-	 *  var sel = new Tone.Select(2);
-	 *  var sigA = new Tone.Signal(10).connect(sel, 0, 0);
-	 *  var sigB = new Tone.Signal(20).connect(sel, 0, 1);
-	 *  sel.gate.value = 0;
-	 *  //sel outputs 10 (the value of sigA);
-	 *  sel.gate.value = 1;
-	 *  //sel outputs 20 (the value of sigB);
+	 * var sel = new Tone.Select(2);
+	 * var sigA = new Tone.Signal(10).connect(sel, 0, 0);
+	 * var sigB = new Tone.Signal(20).connect(sel, 0, 1);
+	 * sel.gate.value = 0;
+	 * //sel outputs 10 (the value of sigA);
+	 * sel.gate.value = 1;
+	 * //sel outputs 20 (the value of sigB);
 	 */
 	Tone.Select = function(sourceCount){
 
@@ -26,7 +26,8 @@ define(["Tone/core/Tone", "Tone/signal/Equal", "Tone/signal/Signal"], function(T
 
 		/**
 		 *  the control signal
-		 *  @type {Tone.Signal}
+		 *  @type {Number}
+		 *  @signal
 		 */
 		this.gate = new Tone.Signal(0);
 		this._readOnly("gate");
@@ -43,13 +44,13 @@ define(["Tone/core/Tone", "Tone/signal/Equal", "Tone/signal/Signal"], function(T
 	Tone.extend(Tone.Select, Tone.SignalBase);
 
 	/**
-	 *  open one of the inputs and close the other
-	 *  @param {number} which open one of the gates (closes the other)
-	 *  @param {Tone.Time=} time the time when the switch will open
-	 *  @returns {Tone.Select} `this`
+	 *  Open a specific input and close the others.
+	 *  @param {number} which The gate to open. 
+	 *  @param {Time} [time=now] The time when the switch will open
+	 *  @returns {Tone.Select} this
 	 *  @example
-	 *  //open input 1 in a half second from now
-	 *  sel.select(1, "+0.5");
+	 * //open input 1 in a half second from now
+	 * sel.select(1, "+0.5");
 	 */
 	Tone.Select.prototype.select = function(which, time){
 		//make sure it's an integer
@@ -59,8 +60,8 @@ define(["Tone/core/Tone", "Tone/signal/Equal", "Tone/signal/Signal"], function(T
 	};
 
 	/**
-	 *  dispose method
-	 *  @returns {Tone.Select} `this`
+	 *  Clean up.
+	 *  @returns {Tone.Select} this
 	 */
 	Tone.Select.prototype.dispose = function(){
 		this._writable("gate");

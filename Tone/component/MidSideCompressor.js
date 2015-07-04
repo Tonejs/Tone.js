@@ -4,10 +4,12 @@ define(["Tone/core/Tone", "Tone/component/MidSideSplit", "Tone/component/MidSide
 	"use strict";
 
 	/**
-	 *  @class MidSideCompressor applies two different compressors to the mid
-	 *         and side signal components.
+	 *  @class Tone.MidSideCompressor applies two different compressors to the mid
+	 *         and side signal components. See Tone.MidSideSplit. 
 	 *
-	 *  @extends {Tone.MidSideEffect}
+	 *  @extends {Tone}
+	 *  @param {Object} options The options that are passed to the mid and side
+	 *                          compressors. 
 	 *  @constructor
 	 */
 	Tone.MidSideCompressor = function(options){
@@ -70,8 +72,8 @@ define(["Tone/core/Tone", "Tone/component/MidSideSplit", "Tone/component/MidSide
 	};
 
 	/**
-	 *  clean up
-	 *  @returns {Tone.MidSideCompressor} `this`
+	 *  Clean up.
+	 *  @returns {Tone.MidSideCompressor} this
 	 */
 	Tone.MidSideCompressor.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);

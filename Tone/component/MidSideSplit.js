@@ -4,12 +4,13 @@ define(["Tone/core/Tone", "Tone/signal/Expr", "Tone/signal/Signal", "Tone/compon
 	"use strict";
 
 	/**
-	 *  @class Seperates the mid channel from the side channel. Has two outputs labeled 
-	 *         `mid` and `side` or `output[0]` and `output[1]`. <br>
-	 *         http://musicdsp.org/showArchiveComment.php?ArchiveID=173<br>
-	 *         http://www.kvraudio.com/forum/viewtopic.php?t=212587<br>
-	 *         M = (L+R)/sqrt(2);   // obtain mid-signal from left and right<br>
-	 *         S = (L-R)/sqrt(2);   // obtain side-signal from left and righ<br>
+	 *  @class Mid/Side processing separates the the 'mid' signal 
+	 *         (which comes out of both the left and the right channel) 
+	 *         and the 'side' (which only comes out of the the side channels). <br><br>
+	 *         <code>
+	 *         Mid = (Left+Right)/sqrt(2);   // obtain mid-signal from left and right<br>
+	 *         Side = (Left-Right)/sqrt(2);   // obtain side-signal from left and righ<br>
+	 *         </code>
 	 *
 	 *  @extends {Tone}
 	 *  @constructor
@@ -25,13 +26,15 @@ define(["Tone/core/Tone", "Tone/signal/Expr", "Tone/signal/Signal", "Tone/compon
 		this._split = this.input = new Tone.Split();
 
 		/**
-		 *  The mid send. Connect to mid processing.
+		 *  The mid send. Connect to mid processing. Alias for
+		 *  <code>output[0]</code>
 		 *  @type {Tone.Expr}
 		 */
 		this.mid = this.output[0] = new Tone.Expr("($0 + $1) * $2");
 
 		/**
-		 *  The side output. Connect to side processing.
+		 *  The side output. Connect to side processing. Alias for
+		 *  <code>output[1]</code>
 		 *  @type {Tone.Expr}
 		 */
 		this.side = this.output[1] = new Tone.Expr("($0 - $1) * $2");
@@ -48,7 +51,8 @@ define(["Tone/core/Tone", "Tone/signal/Expr", "Tone/signal/Signal", "Tone/compon
 
 	/**
 	 *  a constant signal equal to 1 / sqrt(2)
-	 *  @type {Tone.Signal}
+	 *  @type {Number}
+	 *  @signal
 	 *  @private
 	 *  @static
 	 */
@@ -60,7 +64,7 @@ define(["Tone/core/Tone", "Tone/signal/Expr", "Tone/signal/Signal", "Tone/compon
 
 	/**
 	 *  clean up
-	 *  @returns {Tone.MidSideSplit} `this`
+	 *  @returns {Tone.MidSideSplit} this
 	 */
 	Tone.MidSideSplit.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);

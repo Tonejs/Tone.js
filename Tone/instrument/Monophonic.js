@@ -3,8 +3,7 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/signal/Signal"], f
 	"use strict";
 
 	/**
-	 *  @class  this is a base class for monophonic instruments. 
-	 *          it defines their interfaces
+	 *  @class  This is a base class for monophonic instruments. 
 	 *
 	 *  @constructor
 	 *  @abstract
@@ -12,14 +11,14 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/signal/Signal"], f
 	 */
 	Tone.Monophonic = function(options){
 
-		Tone.Instrument.call(this);
-
 		//get the defaults
 		options = this.defaultArg(options, Tone.Monophonic.defaults);
 
+		Tone.Instrument.call(this, options);
+
 		/**
 		 *  The glide time between notes. 
-		 *  @type {Tone.Time}
+		 *  @type {Time}
 		 */
 		this.portamento = options.portamento;
 	};
@@ -36,54 +35,66 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/signal/Signal"], f
 	};
 
 	/**
-	 *  trigger the attack. start the note, at the time with the velocity
+	 *  Trigger the attack of the note optionally with a given velocity. 
 	 *  
-	 *  @param  {string|string} note     the note
-	 *  @param  {Tone.Time} [time=now]     the time, if not given is now
-	 *  @param  {number} [velocity=1] velocity defaults to 1
-	 *  @returns {Tone.Monophonic} `this`
+	 *  
+	 *  @param  {Frequency} note     The note to trigger.
+	 *  @param  {Time} [time=now]     When the note should start.
+	 *  @param  {number} [velocity=1] velocity The velocity scaler 
+	 *                                determines how "loud" the note 
+	 *                                will be triggered.
+	 *  @returns {Tone.Monophonic} this
+	 *  @example
+	 * synth.triggerAttack("C4");
+	 *  @example
+	 * //trigger the note a half second from now at half velocity
+	 * synth.triggerAttack("C4", "+0.5", 0.5);
 	 */
 	Tone.Monophonic.prototype.triggerAttack = function(note, time, velocity) {
 		time = this.toSeconds(time);
-		this.triggerEnvelopeAttack(time, velocity);
+		this._triggerEnvelopeAttack(time, velocity);
 		this.setNote(note, time);
 		return this;
 	};
 
 	/**
-	 *  trigger the release portion of the envelope
-	 *  @param  {Tone.Time} [time=now] if no time is given, the release happens immediatly
-	 *  @returns {Tone.Monophonic} `this`
+	 *  Trigger the release portion of the envelope
+	 *  @param  {Time} [time=now] If no time is given, the release happens immediatly
+	 *  @returns {Tone.Monophonic} this
+	 *  @example
+	 * synth.triggerRelease();
 	 */
 	Tone.Monophonic.prototype.triggerRelease = function(time){
-		this.triggerEnvelopeRelease(time);
+		this._triggerEnvelopeRelease(time);
 		return this;
 	};
 
 	/**
 	 *  override this method with the actual method
 	 *  @abstract
-	 *  @param {Tone.Time} [time=now] the time the attack should happen
-	 *  @param {number} [velocity=1] the velocity of the envelope
-	 *  @returns {Tone.Monophonic} `this`
+	 *  @private
 	 */	
-	Tone.Monophonic.prototype.triggerEnvelopeAttack = function() {};
+	Tone.Monophonic.prototype._triggerEnvelopeAttack = function() {};
 
 	/**
 	 *  override this method with the actual method
 	 *  @abstract
-	 *  @param {Tone.Time} [time=now] the time the attack should happen
-	 *  @param {number} [velocity=1] the velocity of the envelope
-	 *  @returns {Tone.Monophonic} `this`
+	 *  @private
 	 */	
-	Tone.Monophonic.prototype.triggerEnvelopeRelease = function() {};
+	Tone.Monophonic.prototype._triggerEnvelopeRelease = function() {};
 
 	/**
-	 *  set the note to happen at a specific time
-	 *  @param {number|string} note if the note is a string, it will be 
-	 *                              parsed as (NoteName)(Octave) i.e. A4, C#3, etc
-	 *                              otherwise it will be considered as the frequency
-	 *  @returns {Tone.Monophonic} `this`
+	 *  Set the note at the given time. If no time is given, the note
+	 *  will set immediately. 
+	 *  @param {Frequency} note The note to change to.
+	 *  @param  {Time} [time=now] The time when the note should be set. 
+	 *  @returns {Tone.Monophonic} this
+	 * @example
+	 * //change to F#6 in one quarter note from now.
+	 * synth.setNote("F#6", "+4n");
+	 * @example
+	 * //change to Bb4 right now
+	 * synth.setNote("Bb4");
 	 */
 	Tone.Monophonic.prototype.setNote = function(note, time){
 		time = this.toSeconds(time);

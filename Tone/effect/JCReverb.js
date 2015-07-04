@@ -28,15 +28,20 @@ function(Tone){
 	var allpassFilterFreqs = [347, 113, 37];
 
 	/**
-	 *  @class a simple Schroeder Reverberators tuned by John Chowning in 1970
-	 *         made up of 3 allpass filters and 4 feedback comb filters. 
-	 *         https://ccrma.stanford.edu/~jos/pasp/Schroeder_Reverberators.html
+	 *  @class Tone.JCReverb is a simple [Schroeder Reverberator](https://ccrma.stanford.edu/~jos/pasp/Schroeder_Reverberators.html)
+	 *         tuned by John Chowning in 1970.
+	 *         It is made up of three allpass filters and four Tone.FeedbackCombFilter. 
+	 *         
 	 *
 	 *  @extends {Tone.Effect}
 	 *  @constructor
-	 *  @param {number} roomSize Coorelates to the decay time. Value between 0,1
+	 *  @param {NormalRange|Object} [roomSize] Coorelates to the decay time.
 	 *  @example
-	 *  var freeverb = new Tone.Freeverb(0.4);
+	 * var reverb = new Tone.JCReverb(0.4).connect(Tone.Master);
+	 * var delay = new Tone.FeedbackDelay(0.5); 
+	 * //connecting the synth to reverb through delay
+	 * var synth = new Tone.DuoSynth().chain(delay, reverb);
+	 * synth.triggerAttackRelease("A4","8n");
 	 */
 	Tone.JCReverb = function(){
 
@@ -45,9 +50,10 @@ function(Tone){
 
 		/**
 		 *  room size control values between [0,1]
-		 *  @type {Tone.Signal}
+		 *  @type {NormalRange}
+		 *  @signal
 		 */
-		this.roomSize = new Tone.Signal(options.roomSize, Tone.Signal.Units.Normal);
+		this.roomSize = new Tone.Signal(options.roomSize, Tone.Type.NormalRange);
 
 		/**
 		 *  scale the room size
@@ -58,14 +64,14 @@ function(Tone){
 
 		/**
 		 *  a series of allpass filters
-		 *  @type {Array.<BiquadFilterNode>}
+		 *  @type {Array}
 		 *  @private
 		 */
 		this._allpassFilters = [];
 
 		/**
 		 *  parallel feedback comb filters
-		 *  @type {Array.<Tone.FeedbackCombFilter>}
+		 *  @type {Array}
 		 *  @private
 		 */
 		this._feedbackCombFilters = [];
@@ -113,8 +119,8 @@ function(Tone){
 	};
 
 	/**
-	 *  clean up
-	 *  @returns {Tone.JCReverb} `this`
+	 *  Clean up. 
+	 *  @returns {Tone.JCReverb} this
 	 */
 	Tone.JCReverb.prototype.dispose = function(){
 		Tone.StereoEffect.prototype.dispose.call(this);

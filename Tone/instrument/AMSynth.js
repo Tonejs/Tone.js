@@ -5,16 +5,20 @@ function(Tone){
 	"use strict";
 
 	/**
-	 *  @class  the AMSynth is an amplitude modulation synthesizer
-	 *          composed of two MonoSynths where one MonoSynth is the 
-	 *          carrier and the second is the modulator.
+	 *  @class  AMSynth uses the output of one Tone.MonoSynth to modulate the
+	 *          amplitude of another Tone.MonoSynth. The harmonicity (the ratio between
+	 *          the two signals) affects the timbre of the output signal the most.
+	 *          Read more about Amplitude Modulation Synthesis on 
+	 *          [SoundOnSound](http://www.soundonsound.com/sos/mar00/articles/synthsecrets.htm).
+	 *          <img src="https://docs.google.com/drawings/d/1TQu8Ed4iFr1YTLKpB3U1_hur-UwBrh5gdBXc8BxfGKw/pub?w=1009&h=457">
 	 *
 	 *  @constructor
 	 *  @extends {Tone.Monophonic}
-	 *  @param {Object} options the options available for the synth 
-	 *                          see defaults below
+	 *  @param {Object} [options] the options available for the synth 
+	 *                            see defaults below
 	 *  @example
-	 *  var synth = new Tone.AMSynth();
+	 * var synth = new Tone.AMSynth().toMaster();
+	 * synth.triggerAttackRelease("C4", "4n");
 	 */
 	Tone.AMSynth = function(options){
 
@@ -22,31 +26,37 @@ function(Tone){
 		Tone.Monophonic.call(this, options);
 
 		/**
-		 *  the first voice
+		 *  The carrier voice. 
 		 *  @type {Tone.MonoSynth}
 		 */
 		this.carrier = new Tone.MonoSynth(options.carrier);
 		this.carrier.volume.value = -10;
 
 		/**
-		 *  the second voice
+		 *  The modulator voice. 
 		 *  @type {Tone.MonoSynth}
 		 */
 		this.modulator = new Tone.MonoSynth(options.modulator);
 		this.modulator.volume.value = -10;
 
 		/**
-		 *  the frequency control
-		 *  @type {Tone.Signal}
+		 *  The frequency.
+		 *  @type {Frequency}
+		 *  @signal
 		 */
-		this.frequency = new Tone.Signal(440, Tone.Signal.Units.Frequency);
+		this.frequency = new Tone.Signal(440, Tone.Type.Frequency);
 
 		/**
-		 *  the ratio between the two voices
-		 *  @type {Tone.Multiply}
-		 *  @private
+		 *  Harmonicity is the ratio between the two voices. A harmonicity of
+		 *  1 is no change. Harmonicity = 2 means a change of an octave. 
+		 *  @type {Positive}
+		 *  @signal
+		 *  @example
+		 * //pitch voice1 an octave below voice0
+		 * synth.harmonicity.value = 0.5;
 		 */
-		this._harmonicity = new Tone.Multiply(options.harmonicity);
+		this.harmonicity = new Tone.Multiply(options.harmonicity);
+		this.harmonicity.units = Tone.Type.Positive;
 
 		/**
 		 *  convert the -1,1 output to 0,1
@@ -64,10 +74,10 @@ function(Tone){
 
 		//control the two voices frequency
 		this.frequency.connect(this.carrier.frequency);
-		this.frequency.chain(this._harmonicity, this.modulator.frequency);
+		this.frequency.chain(this.harmonicity, this.modulator.frequency);
 		this.modulator.chain(this._modulationScale, this._modulationNode.gain);
 		this.carrier.chain(this._modulationNode, this.output);
-		this._readOnly(["carrier", "modulator", "frequency"]);
+		this._readOnly(["carrier", "modulator", "frequency", "harmonicity"]);
 	};
 
 	Tone.extend(Tone.AMSynth, Tone.Monophonic);
@@ -133,11 +143,12 @@ function(Tone){
 	/**
 	 *  trigger the attack portion of the note
 	 *  
-	 *  @param  {Tone.Time} [time=now] the time the note will occur
-	 *  @param {number} [velocity=1] the velocity of the note
-	 *  @returns {Tone.AMSynth} `this`
+	 *  @param  {Time} [time=now] the time the note will occur
+	 *  @param {NormalRange} [velocity=1] the velocity of the note
+	 *  @private
+	 *  @returns {Tone.AMSynth} this
 	 */
-	Tone.AMSynth.prototype.triggerEnvelopeAttack = function(time, velocity){
+	Tone.AMSynth.prototype._triggerEnvelopeAttack = function(time, velocity){
 		//the port glide
 		time = this.toSeconds(time);
 		//the envelopes
@@ -151,45 +162,31 @@ function(Tone){
 	/**
 	 *  trigger the release portion of the note
 	 *  
-	 *  @param  {Tone.Time} [time=now] the time the note will release
-	 *  @returns {Tone.AMSynth} `this`
+	 *  @param  {Time} [time=now] the time the note will release
+	 *  @private
+	 *  @returns {Tone.AMSynth} this
 	 */
-	Tone.AMSynth.prototype.triggerEnvelopeRelease = function(time){
+	Tone.AMSynth.prototype._triggerEnvelopeRelease = function(time){
 		this.carrier.triggerRelease(time);
 		this.modulator.triggerRelease(time);
 		return this;
 	};
 
 	/**
-	 * The ratio between the two carrier and the modulator. 
-	 * @memberOf Tone.AMSynth#
-	 * @type {number}
-	 * @name harmonicity
-	 */
-	Object.defineProperty(Tone.AMSynth.prototype, "harmonicity", {
-		get : function(){
-			return this._harmonicity.value;
-		},
-		set : function(harm){
-			this._harmonicity.value = harm;
-		}
-	});
-
-	/**
 	 *  clean up
-	 *  @returns {Tone.AMSynth} `this`
+	 *  @returns {Tone.AMSynth} this
 	 */
 	Tone.AMSynth.prototype.dispose = function(){
 		Tone.Monophonic.prototype.dispose.call(this);
-		this._writable(["carrier", "modulator", "frequency"]);
+		this._writable(["carrier", "modulator", "frequency", "harmonicity"]);
 		this.carrier.dispose();
 		this.carrier = null;
 		this.modulator.dispose();
 		this.modulator = null;
 		this.frequency.dispose();
 		this.frequency = null;
-		this._harmonicity.dispose();
-		this._harmonicity = null;
+		this.harmonicity.dispose();
+		this.harmonicity = null;
 		this._modulationScale.dispose();
 		this._modulationScale = null;
 		this._modulationNode.disconnect();

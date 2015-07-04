@@ -3,10 +3,9 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Master"], function(T
 	"use strict";
 	
 	/**
-	 *  @class  Base class for sources.
-	 *          Sources have start/stop/pause and 
-	 *          the ability to be synced to the 
-	 *          start/stop/pause of Tone.Transport.
+	 *  @class  Base class for sources. Sources have start/stop methods
+	 *          and the ability to be synced to the 
+	 *          start/stop of Tone.Transport.
 	 *
 	 *  @constructor
 	 *  @extends {Tone}
@@ -20,9 +19,9 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Master"], function(T
 		 * Callback is invoked when the source is done playing.
 		 * @type {function}
 		 * @example
-		 *  source.onended = function(){
-		 *  	console.log("the source is done playing");
-		 *  }
+		 * source.onended = function(){
+		 * 	console.log("the source is done playing");
+		 * }
 		 */
 		this.onended = options.onended;
 
@@ -42,11 +41,16 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Master"], function(T
 
 		/**
 		 * The volume of the output in decibels.
-		 * @type {Tone.Signal}
+		 * @type {Decibels}
+		 * @signal
 		 * @example
 		 * source.volume.value = -6;
 		 */
-		this.volume = new Tone.Signal(this.output.gain, Tone.Signal.Units.Decibels);
+		this.volume = new Tone.Signal({
+			"param" : this.output.gain,
+			"value" : options.volume,
+			"units" : Tone.Type.Decibels
+		});
 		this._readOnly("volume");
 
 		/**
@@ -71,22 +75,13 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Master"], function(T
 	 *  @type {Object}
 	 */
 	Tone.Source.defaults = {
-		"onended" : function(){},
+		"onended" : Tone.noOp,
 		"volume" : 0,
 	};
 
 	/**
-	 *  @enum {string}
-	 */
-	Tone.Source.State = {
-		STARTED : "started",
-		PAUSED : "paused",
-		STOPPED : "stopped",
- 	};
-
-	/**
 	 *  Returns the playback state of the source, either "started" or "stopped".
-	 *  @type {Tone.Source.State}
+	 *  @type {Tone.State}
 	 *  @readOnly
 	 *  @memberOf Tone.Source#
 	 *  @name state
@@ -99,31 +94,32 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Master"], function(T
 
 	/**
 	 *  Get the state of the source at the specified time.
-	 *  @param  {Tone.Time}  time
-	 *  @return  {Tone.Source.State} 
+	 *  @param  {Time}  time
+	 *  @return  {Tone.State} 
 	 *  @private
 	 */
 	Tone.Source.prototype._stateAtTime = function(time){
 		time = this.toSeconds(time);
 		if (this._nextStart <= time && this._nextStop > time){
-			return Tone.Source.State.STARTED;
+			return Tone.State.Started;
 		} else if (this._nextStop <= time){
-			return Tone.Source.State.STOPPED;
+			return Tone.State.Stopped;
 		} else {
-			return Tone.Source.State.STOPPED;
+			return Tone.State.Stopped;
 		}
 	};
 
 	/**
-	 *  Start the source at the time.
-	 *  @param  {Tone.Time} [time=now]
-	 *  @returns {Tone.Source} `this`
+	 *  Start the source at the specified time. If no time is given, 
+	 *  start the source now.
+	 *  @param  {Time} [time=now] When the source should be started.
+	 *  @returns {Tone.Source} this
 	 *  @example
-	 *  source.start("+0.5"); //starts the source 0.5 seconds from now
+	 * source.start("+0.5"); //starts the source 0.5 seconds from now
 	 */
 	Tone.Source.prototype.start = function(time){
 		time = this.toSeconds(time);
-		if (this._stateAtTime(time) !== Tone.Source.State.STARTED || this.retrigger){
+		if (this._stateAtTime(time) !== Tone.State.Started || this.retrigger){
 			this._nextStart = time;
 			this._nextStop = Infinity;
 			this._start.apply(this, arguments);
@@ -132,16 +128,17 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Master"], function(T
 	};
 
 	/**
-	 * 	stop the source
-	 *  @param  {Tone.Time} [time=now]
-	 *  @returns {Tone.Source} `this`
+	 *  Stop the source at the specified time. If no time is given, 
+	 *  stop the source now.
+	 *  @param  {Time} [time=now] When the source should be stopped. 
+	 *  @returns {Tone.Source} this
 	 *  @example
-	 *  source.stop(); // stops the source immediately
+	 * source.stop(); // stops the source immediately
 	 */
 	Tone.Source.prototype.stop = function(time){
 		var now = this.now();
 		time = this.toSeconds(time, now);
-		if (this._stateAtTime(time) === Tone.Source.State.STARTED){
+		if (this._stateAtTime(time) === Tone.State.Started){
 			this._nextStop = this.toSeconds(time);
 			clearTimeout(this._timeout);
 			var diff = time - now;
@@ -160,8 +157,8 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Master"], function(T
 	 *  Not ready yet. 
  	 *  @private
  	 *  @abstract
-	 *  @param  {Tone.Time} time 
-	 *  @returns {Tone.Source} `this`
+	 *  @param  {Time} time 
+	 *  @returns {Tone.Source} this
 	 */
 	Tone.Source.prototype.pause = function(time){
 		//if there is no pause, just stop it
@@ -174,9 +171,14 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Master"], function(T
 	 *  is started, this source is started and when the transport is stopped
 	 *  or paused, so is the source. 
 	 *
-	 *  @param {Tone.Time} [delay=0] Delay time before starting the source after the
+	 *  @param {Time} [delay=0] Delay time before starting the source after the
 	 *                               Transport has started. 
-	 *  @returns {Tone.Source} `this`
+	 *  @returns {Tone.Source} this
+	 *  @example
+	 * //sync the source to start 1 measure after the transport starts
+	 * source.sync("1m");
+	 * //start the transport. the source will start 1 measure later. 
+	 * Tone.Transport.start();
 	 */
 	Tone.Source.prototype.sync = function(delay){
 		Tone.Transport.syncSource(this, delay);
@@ -184,8 +186,8 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Master"], function(T
 	};
 
 	/**
-	 *  Unsync the source to the Transport. See {@link Tone.Source#sync}
-	 *  @returns {Tone.Source} `this`
+	 *  Unsync the source to the Transport. See Tone.Source.sync
+	 *  @returns {Tone.Source} this
 	 */
 	Tone.Source.prototype.unsync = function(){
 		Tone.Transport.unsyncSource(this);
@@ -193,14 +195,14 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Master"], function(T
 	};
 
 	/**
-	 *	clean up
-	 *  @return {Tone.Source} `this`
+	 *	Clean up.
+	 *  @return {Tone.Source} this
 	 */
 	Tone.Source.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
 		this.stop();
 		clearTimeout(this._timeout);
-		this.onended = function(){};
+		this.onended = Tone.noOp;
 		this._writable("volume");
 		this.volume.dispose();
 		this.volume = null;

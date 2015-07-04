@@ -4,17 +4,14 @@
   <meta charset="utf-8">
 	<title>NOISES</title>
 
-	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
 	<script type="text/javascript" src="../build/Tone.js"></script>
-	<script type="text/javascript" src="../build/Tone.Preset.js"></script>
-	<script type="text/javascript" src="./deps/jquery.min.js"></script>
-	<script type="text/javascript" src="./deps/nexusUI.js"></script>
-	<script type="text/javascript" src="./deps/prism.js"></script>
+	<script type="text/javascript" src="./scripts/jquery.min.js"></script>
+	<script type="text/javascript" src="./scripts/Notone.GUI.js"></script>
 	<script type="text/javascript" src="./scripts/Interface.js"></script>
 
 	<link rel="stylesheet" type="text/css" href="./style/examples.css">
-	<link rel="stylesheet" type="text/css" href="./style/prism.css">
 
 	<script type="text/javascript">
 		// jshint ignore: start
@@ -22,34 +19,60 @@
 
 </head>
 <body>
-	<div id="Explanation">
-		Noise
-		<br>
-		<br>
-		Tone has 3 different types of noise. Careful, it's loud!
-	</div>
+	<style type="text/css">
+		.Dragger#Noise {
+			left: 50%;
+		}
+	</style>
 	<div id="Content">
-		<div id="Rack"></div>
-		<div id="CodeRack"></div>
+		<div id="Title">Noise</div>
+		<div id="Explanation">
+			<a href="http://tonejs.org/docs/#Noise">Tone.Noise</a>
+			has 3 different types of noise. Careful, it's loud!
+		</div>
+		<div id="DragContainer"></div>
 	</div>
 	<script id="ToneCode" type="text/javascript">
 		//make the noise and connect it to the output
-		var noise = new Tone.Noise().toMaster();
-		//so it's not too loud
-		noise.volume.value = -20;
+		var noise = new Tone.Noise({
+			"volume" : -20,
+			"type" : "brown"
+		}).toMaster();
 	</script>
 
 	<script id="GUI" type="text/javascript">
-		Interface.Rack("Rack", "Noise");
-		Interface.Toggle("Rack", function(on){
-			if (on){
-				noise.start();
-			} else {
-				noise.stop();
-			}
-		});
-		Interface.DropDown("Rack", noise, "type", ["white", "brown", "pink"]);
-		Interface.Code("CodeRack", "ToneCode");
+		$(function(){
+			Notone.config({
+				"search" : false,
+				"expandInDrawer" : true,
+				"hideDrawer" : Interface.isMobile,
+				"drawer" : true,
+				"container" : "body"
+			});
+
+			var noiseGUI = Notone.add(noise, "Noise");
+
+			new Interface.Dragger({
+				gui : noiseGUI,
+				y : {
+					param : "volume",
+					min : -40,
+					max : 0
+				},
+				x : {
+					param : "type",
+					options : ["white", "brown", "pink"]
+				},
+				start : function(){
+					noise.start();
+					Tone.Master.volume.rampTo(0, 0.05);
+				},
+				end : function(){
+					//so it doesn't click
+					Tone.Master.volume.rampTo(-Infinity, 0.05);
+				}
+			});
+		})			
 	</script>
 </body>
 </html>

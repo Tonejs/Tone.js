@@ -3,16 +3,19 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Expr", "Tone/signal
 	"use strict";
 
 	/**
-	 * @class  Equal power fading control values:<br>
-	 * 	       0 = 100% input 0<br>
-	 * 	       1 = 100% input 1<br>
+	 * @class  Tone.Crossfade provides equal power fading between two inputs. 
+	 *         More on crossfading technique [here](https://en.wikipedia.org/wiki/Fade_(audio_engineering)#Crossfading).
 	 *
 	 * @constructor
 	 * @extends {Tone}
-	 * @param {number} [initialFade=0.5]
+	 * @param {NormalRange} [initialFade=0.5]
 	 * @example
 	 * var crossFade = new Tone.CrossFade(0.5);
+	 * //connect effect A to crossfade from
+	 * //effect output 0 to crossfade input 0
 	 * effectA.connect(crossFade, 0, 0);
+	 * //connect effect B to crossfade from
+	 * //effect output 0 to crossfade input 1
 	 * effectB.connect(crossFade, 0, 1);
 	 * crossFade.fade.value = 0;
 	 * // ^ only effectA is output
@@ -26,24 +29,25 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Expr", "Tone/signal
 		Tone.call(this, 2, 1);
 
 		/**
-		 *  the first input. input "a".
+		 *  Alias for <code>input[0]</code>. 
 		 *  @type {GainNode}
 		 */
 		this.a = this.input[0] = this.context.createGain();
 
 		/**
-		 *  the second input. input "b"
+		 *  Alias for <code>input[1]</code>. 
 		 *  @type {GainNode}
 		 */
 		this.b = this.input[1] = this.context.createGain();
 
 		/**
-		 *  0 is 100% signal `a` (input 0) and 1 is 100% signal `b` (input 1).
-		 *  Values between 0-1.
-		 *  
-		 *  @type {Tone.Signal}
+		 * 	The mix between the two inputs. A fade value of 0
+		 * 	will output 100% <code>input[0]</code> and 
+		 * 	a value of 1 will output 100% <code>input[1]</code>. 
+		 *  @type {NormalRange}
+		 *  @signal
 		 */
-		this.fade = new Tone.Signal(this.defaultArg(initialFade, 0.5), Tone.Signal.Units.Normal);
+		this.fade = new Tone.Signal(this.defaultArg(initialFade, 0.5), Tone.Type.NormalRange);
 
 		/**
 		 *  equal power gain cross fade
@@ -78,7 +82,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Expr", "Tone/signal
 
 	/**
 	 *  clean up
-	 *  @returns {Tone.CrossFade} `this`
+	 *  @returns {Tone.CrossFade} this
 	 */
 	Tone.CrossFade.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);

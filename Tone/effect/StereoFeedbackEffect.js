@@ -4,7 +4,8 @@ function(Tone){
 	"use strict";
 
 	/**
-	 *  @class A stereo feedback effect where the feedback is on the same channel
+	 *  @class Base class for stereo feedback effects where the effectReturn
+	 *         is fed back into the same channel. 
 	 *
 	 *	@constructor
 	 *	@extends {Tone.FeedbackEffect}
@@ -16,9 +17,10 @@ function(Tone){
 
 		/**
 		 *  controls the amount of feedback
-		 *  @type {Tone.Signal}
+		 *  @type {NormalRange}
+		 *  @signal
 		 */
-		this.feedback = new Tone.Signal(options.feedback);
+		this.feedback = new Tone.Signal(options.feedback, Tone.Type.NormalRange);
 
 		/**
 		 *  the left side feeback
@@ -45,7 +47,7 @@ function(Tone){
 
 	/**
 	 *  clean up
-	 *  @returns {Tone.StereoFeedbackEffect} `this`
+	 *  @returns {Tone.StereoFeedbackEffect} this
 	 */
 	Tone.StereoFeedbackEffect.prototype.dispose = function(){
 		Tone.StereoEffect.prototype.dispose.call(this);

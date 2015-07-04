@@ -5,16 +5,18 @@ define(["Tone/core/Tone", "Tone/effect/MidSideEffect", "Tone/signal/Signal",
 	"use strict";
 
 	/**
-	 *  @class Applies a width factor (0-1) to the mid/side seperation. 
-	 *         0 is all mid and 1 is all side. <br><br>
-	 *         http://musicdsp.org/showArchiveComment.php?ArchiveID=173<br><br>
-	 *         http://www.kvraudio.com/forum/viewtopic.php?t=212587<br><br>
-	 *         M *= 2*(1-width)<br><br>
-	 *         S *= 2*width<br><br>
+	 *  @class Applies a width factor to the mid/side seperation. 
+	 *         0 is all mid and 1 is all side.
+	 *         Algorithm found in [kvraudio forums](http://www.kvraudio.com/forum/viewtopic.php?t=212587).
+	 *         <br><br>
+	 *         <code>
+	 *         Mid *= 2*(1-width)<br>
+	 *         Side *= 2*width
+	 *         </code>
 	 *
 	 *  @extends {Tone.MidSideEffect}
 	 *  @constructor
-	 *  @param {number|Object} [width=0.5] the stereo width. A width of 0 is mono and 1 is stereo. 0.5 is no change.
+	 *  @param {NormalRange|Object} [width] The stereo width. A width of 0 is mono and 1 is stereo. 0.5 is no change.
 	 */
 	Tone.StereoWidener = function(){
 
@@ -22,10 +24,11 @@ define(["Tone/core/Tone", "Tone/effect/MidSideEffect", "Tone/signal/Signal",
 		Tone.MidSideEffect.call(this, options);
 
 		/**
-		 *  The width control. 0 = 100% mid. 1 = 100% side. 
-		 *  @type {Tone.Signal}
+		 *  The width control. 0 = 100% mid. 1 = 100% side. 0.5 = no change. 
+		 *  @type {NormalRange}
+		 *  @signal
 		 */
-		this.width = new Tone.Signal(0.5, Tone.Signal.Units.Normal);
+		this.width = new Tone.Signal(0.5, Tone.Type.NormalRange);
 
 		/**
 		 *  Mid multiplier
@@ -72,8 +75,8 @@ define(["Tone/core/Tone", "Tone/effect/MidSideEffect", "Tone/signal/Signal",
 	};
 
 	/**
-	 *  clean up
-	 *  @returns {Tone.StereoWidener} `this`
+	 *  Clean up. 
+	 *  @returns {Tone.StereoWidener} this
 	 */
 	Tone.StereoWidener.prototype.dispose = function(){
 		Tone.MidSideEffect.prototype.dispose.call(this);

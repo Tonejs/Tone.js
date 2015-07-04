@@ -4,16 +4,14 @@
   <meta charset="utf-8">
 	<title>PINGPONG DELAY</title>
 
-	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 	
-	<script type="text/javascript" src="./deps/jquery.min.js"></script>
 	<script type="text/javascript" src="../build/Tone.js"></script>
-	<script type="text/javascript" src="./deps/nexusUI.js"></script>
-	<script type="text/javascript" src="./deps/prism.js"></script>
+	<script type="text/javascript" src="./scripts/jquery.min.js"></script>
+	<script type="text/javascript" src="./scripts/Notone.GUI.js"></script>
 	<script type="text/javascript" src="./scripts/Interface.js"></script>
 
 	<link rel="stylesheet" type="text/css" href="./style/examples.css">
-	<link rel="stylesheet" type="text/css" href="./style/prism.css">
 
 	<script type="text/javascript">
 		// jshint ignore: start
@@ -27,18 +25,15 @@
 		display: block;
 	}
 	</style>
-	<div id="Explanation">
-		Ping Pong Delay
-		<br>
-		<br>
-		A Ping Pong Delay is a stereo feedback delay where the delay bounces back and forth between the left and right channels. Hit the button to trigger a snare sample into the effect. 
-	</div>
 	<div id="Content">
-		<div id="LoadingBar"></div>
-		<div id="Rack"></div>
-		<div id="Code"></div>
+		<div id="Title">Ping Pong Delay</div>
+		<div id="Explanation">
+			A Ping Pong Delay is a stereo feedback delay where the delay bounces back and forth between the left and right channels. Hit the button to trigger a snare sample into the effect. 
+			<br><br>
+			<a href="http://tonejs.org/docs/#PingPongDelay">Tone.PingPongDelay</a> docs.
+		</div>
 	</div>
-	<script id="ToneCode" type="text/javascript">
+	<script type="text/javascript">
 		//the feedback delay
 		var feedbackDelay = new Tone.PingPongDelay({
 			"delayTime" : "8n",
@@ -47,20 +42,29 @@
 		}).toMaster();
 
 		//play a snare sound through it
-		var player = new Tone.Player("./audio/505/snare.mp3")
-			.connect(feedbackDelay);
+		var player = new Tone.Player("./audio/505/snare.mp3").connect(feedbackDelay);
 	</script>
 	<script type="text/javascript">
-		Interface.Loading("LoadingBar");
-		Interface.Rack("Rack", "PingPongDelay");
-		Interface.Momentary("Rack", function(on){
-			if (on){
-				player.start();
-			}
+		$(function(){
+			Notone.config({
+				"search" : false,
+				"expandInDrawer" : true,
+				"hideDrawer" : Interface.isMobile,
+				"drawer" : true,
+				"container" : "body"
+			});
+
+			Notone.add(feedbackDelay);
+
+			new Interface.Loader();
+
+			new Interface.Button({
+				text : "trigger",
+				start : function(){
+					player.start();
+				},
+			});
 		});
-		Interface.Slider("Rack", feedbackDelay, "feedback", 0, 0.95);
-		Interface.Slider("Rack", feedbackDelay, "delayTime", 0.1, 0.5);
-		Interface.Code("Code", "ToneCode");
 	</script>
 </body>
 </html>

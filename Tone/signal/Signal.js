@@ -3,27 +3,31 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 	"use strict";
 
 	/**
-	 *  @class  Constant audio-rate signal.
-	 *          Tone.Signal is a core component which allows for sample-accurate 
-	 *          synchronization of many components. Tone.Signal can be scheduled 
-	 *          with all of the functions available to AudioParams
+	 *  @class  A signal is an audio-rate value. Tone.Signal is a core component of the library.
+	 *          Unlike a number, Signals can be scheduled with sample-level accuracy. Tone.Signal
+	 *          has all of the methods available to native Web Audio 
+	 *          [AudioParam](http://webaudio.github.io/web-audio-api/#the-audioparam-interface)
+	 *          as well as additional conveniences. Read more about working with signals 
+	 *          [here](https://github.com/TONEnoTONE/Tone.js/wiki/Signals).
 	 *
 	 *  @constructor
 	 *  @extends {Tone.SignalBase}
-	 *  @param {number|AudioParam} [value=0] initial value or the AudioParam to control
-	 *                                       note that the signal has no output
-	 *                                       if an AudioParam is passed in.
-	 *  @param {Tone.Signal.Unit} [units=Number] unit the units the signal is in
+	 *  @param {Number|AudioParam} [value] Initial value of the signal. If an AudioParam
+	 *                                     is passed in, that parameter will be wrapped
+	 *                                     and controlled by the Signal. 
+	 *  @param {string} [units=Number] unit The units the signal is in. 
 	 *  @example
-	 *  var signal = new Tone.Signal(10);
+	 * var signal = new Tone.Signal(10);
 	 */
-	Tone.Signal = function(value, units){
+	Tone.Signal = function(){
+
+		var options = this.optionsObject(arguments, ["value", "units"], Tone.Signal.defaults);
 
 		/**
-		 * the units the signal is in
-		 * @type {Tone.Signal.Type}
+		 * The units of the signal.
+		 * @type {string}
 		 */
-		this.units = this.defaultArg(units, Tone.Signal.Units.Number);
+		this.units = options.units;
 
 		/**
 		 *  When true, converts the set value
@@ -32,7 +36,16 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 		 *  are merely used as a label. 
 		 *  @type  {boolean}
 		 */
-		this.convert = true;
+		this.convert = options.convert;
+
+		/**
+		 *  True if the signal value is being overridden by 
+		 *  a connected signal.
+		 *  @readOnly
+		 *  @type  {boolean}
+		 *  @private
+		 */
+		this.overridden = false;
 
 		/**
 		 * The node where the constant signal value is scaled.
@@ -48,12 +61,16 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 		 */
 		this.input = this._value = this._scaler.gain;
 
-		if (value instanceof AudioParam){
-			this._scaler.connect(value);
+		if (options.value instanceof AudioParam){
+			this._scaler.connect(options.value);
 			//zero out the value
-			value.value = 0;
+			options.value.value = 0;
 		} else {
-			this.value = this.defaultArg(value, Tone.Signal.defaults.value);
+			if (!this.isUndef(options.param)){
+				this._scaler.connect(options.param);
+				options.param.value = 0;
+			}
+			this.value = options.value;
 		}
 
 		//connect the constant 1 output to the node output
@@ -69,13 +86,16 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 	 *  @const
 	 */
 	Tone.Signal.defaults = {
-		"value" : 0
+		"value" : 0,
+		"param" : undefined,
+		"units" : Tone.Type.Default,
+		"convert" : true,
 	};
 
 	/**
-	 * The value of the signal. 
+	 * The current value of the signal. 
 	 * @memberOf Tone.Signal#
-	 * @type {Tone.Time|Tone.Frequency|number}
+	 * @type {Number}
 	 * @name value
 	 */
 	Object.defineProperty(Tone.Signal.prototype, "value", {
@@ -92,22 +112,24 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 
 	/**
 	 * @private
-	 * @param  {Tone.Time|Tone.Volume|Tone.Frequency|number|undefined} val the value to convert
+	 * @param  {*} val the value to convert
 	 * @return {number}     the number which the value should be set to
 	 */
 	Tone.Signal.prototype._fromUnits = function(val){
-		if (this.convert){
+		if (this.convert || this.isUndef(this.convert)){
 			switch(this.units){
-				case Tone.Signal.Units.Time: 
+				case Tone.Type.Time: 
 					return this.toSeconds(val);
-				case Tone.Signal.Units.Frequency: 
+				case Tone.Type.Frequency: 
 					return this.toFrequency(val);
-				case Tone.Signal.Units.Decibels: 
+				case Tone.Type.Decibels: 
 					return this.dbToGain(val);
-				case Tone.Signal.Units.Normal: 
+				case Tone.Type.NormalRange: 
 					return Math.min(Math.max(val, 0), 1);
-				case Tone.Signal.Units.Audio: 
+				case Tone.Type.AudioRange: 
 					return Math.min(Math.max(val, -1), 1);
+				case Tone.Type.Positive: 
+					return Math.max(val, 0);
 				default:
 					return val;
 			}
@@ -123,9 +145,9 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 	 * @return {number}
 	 */
 	Tone.Signal.prototype._toUnits = function(val){
-		if (this.convert){
+		if (this.convert || this.isUndef(this.convert)){
 			switch(this.units){
-				case Tone.Signal.Units.Decibels: 
+				case Tone.Type.Decibels: 
 					return this.gainToDb(val);
 				default:
 					return val;
@@ -137,9 +159,12 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 
 	/**
 	 *  Schedules a parameter value change at the given time.
-	 *  @param {number}		value 
-	 *  @param {Tone.Time}  time 
-	 *  @returns {Tone.Signal} `this`
+	 *  @param {*}	value The value to set the signal.
+	 *  @param {Time}  time The time when the change should occur.
+	 *  @returns {Tone.Signal} this
+	 *  @example
+	 * //set the frequency to "G4" in exactly 1 second from now. 
+	 * freq.setValueAtTime("G4", "+1");
 	 */
 	Tone.Signal.prototype.setValueAtTime = function(value, time){
 		value = this._fromUnits(value);
@@ -149,9 +174,11 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 
 	/**
 	 *  Creates a schedule point with the current value at the current time.
+	 *  This is useful for creating an automation anchor point in order to 
+	 *  schedule changes from the current value. 
 	 *
-	 *  @param {number=} now (optionally) pass the now value in
-	 *  @returns {Tone.Signal} `this`
+	 *  @param {number=} now (Optionally) pass the now value in. 
+	 *  @returns {Tone.Signal} this
 	 */
 	Tone.Signal.prototype.setCurrentValueNow = function(now){
 		now = this.defaultArg(now, this.now());
@@ -166,8 +193,8 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 	 *  previous scheduled parameter value to the given value.
 	 *  
 	 *  @param  {number} value   
-	 *  @param  {Tone.Time} endTime 
-	 *  @returns {Tone.Signal} `this`
+	 *  @param  {Time} endTime 
+	 *  @returns {Tone.Signal} this
 	 */
 	Tone.Signal.prototype.linearRampToValueAtTime = function(value, endTime){
 		value = this._fromUnits(value);
@@ -180,8 +207,8 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 	 *  the previous scheduled parameter value to the given value.
 	 *  
 	 *  @param  {number} value   
-	 *  @param  {Tone.Time} endTime 
-	 *  @returns {Tone.Signal} `this`
+	 *  @param  {Time} endTime 
+	 *  @returns {Tone.Signal} this
 	 */
 	Tone.Signal.prototype.exponentialRampToValueAtTime = function(value, endTime){
 		value = this._fromUnits(value);
@@ -195,12 +222,12 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 	 *  the current time and current value to the given value.
 	 *  
 	 *  @param  {number} value   
-	 *  @param  {Tone.Time} rampTime the time that it takes the 
+	 *  @param  {Time} rampTime the time that it takes the 
 	 *                               value to ramp from it's current value
-	 *  @returns {Tone.Signal} `this`
+	 *  @returns {Tone.Signal} this
 	 *  @example
-	 *  //exponentially ramp to the value 2 over 4 seconds. 
-	 *  signal.exponentialRampToValueNow(2, 4);
+	 * //exponentially ramp to the value 2 over 4 seconds. 
+	 * signal.exponentialRampToValueNow(2, 4);
 	 */
 	Tone.Signal.prototype.exponentialRampToValueNow = function(value, rampTime){
 		var now = this.now();
@@ -217,12 +244,12 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 	 *  the current time and current value to the given value at the given time.
 	 *  
 	 *  @param  {number} value   
-	 *  @param  {Tone.Time} rampTime the time that it takes the 
+	 *  @param  {Time} rampTime the time that it takes the 
 	 *                               value to ramp from it's current value
-	 *  @returns {Tone.Signal} `this`
+	 *  @returns {Tone.Signal} this
 	 *  @example
-	 *  //linearly ramp to the value 4 over 3 seconds. 
-	 *  signal.linearRampToValueNow(4, 3);
+	 * //linearly ramp to the value 4 over 3 seconds. 
+	 * signal.linearRampToValueNow(4, 3);
 	 */
 	Tone.Signal.prototype.linearRampToValueNow = function(value, rampTime){
 		var now = this.now();
@@ -235,9 +262,9 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 	 *  Start exponentially approaching the target value at the given time with
 	 *  a rate having the given time constant.
 	 *  @param {number} value        
-	 *  @param {Tone.Time} startTime    
+	 *  @param {Time} startTime    
 	 *  @param {number} timeConstant 
-	 *  @returns {Tone.Signal} `this`
+	 *  @returns {Tone.Signal} this
 	 */
 	Tone.Signal.prototype.setTargetAtTime = function(value, startTime, timeConstant){
 		value = this._fromUnits(value);
@@ -253,10 +280,10 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 	 *  Sets an array of arbitrary parameter values starting at the given time
 	 *  for the given duration.
 	 *  	
-	 *  @param {Array<number>} values    
-	 *  @param {Tone.Time} startTime 
-	 *  @param {Tone.Time} duration  
-	 *  @returns {Tone.Signal} `this`
+	 *  @param {Array} values    
+	 *  @param {Time} startTime 
+	 *  @param {Time} duration  
+	 *  @returns {Tone.Signal} this
 	 */
 	Tone.Signal.prototype.setValueCurveAtTime = function(values, startTime, duration){
 		for (var i = 0; i < values.length; i++){
@@ -270,8 +297,8 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 	 *  Cancels all scheduled parameter changes with times greater than or 
 	 *  equal to startTime.
 	 *  
-	 *  @param  {Tone.Time} startTime
-	 *  @returns {Tone.Signal} `this`
+	 *  @param  {Time} startTime
+	 *  @returns {Tone.Signal} this
 	 */
 	Tone.Signal.prototype.cancelScheduledValues = function(startTime){
 		this._value.cancelScheduledValues(this.toSeconds(startTime));
@@ -284,17 +311,17 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 	 *  depending on the `units` of the signal
 	 *  
 	 *  @param  {number} value   
-	 *  @param  {Tone.Time} rampTime the time that it takes the 
+	 *  @param  {Time} rampTime the time that it takes the 
 	 *                               value to ramp from it's current value
-	 *  @returns {Tone.Signal} `this`
+	 *  @returns {Tone.Signal} this
 	 *  @example
-	 *  //ramp to the value either linearly or exponentially 
-	 *  //depending on the "units" value of the signal
-	 *  signal.rampTo(0, 10);
+	 * //ramp to the value either linearly or exponentially 
+	 * //depending on the "units" value of the signal
+	 * signal.rampTo(0, 10);
 	 */
 	Tone.Signal.prototype.rampTo = function(value, rampTime){
 		rampTime = this.defaultArg(rampTime, 0);
-		if (this.units === Tone.Signal.Units.Frequency || this.units === Tone.Signal.Units.BPM){
+		if (this.units === Tone.Type.Frequency || this.units === Tone.Type.BPM){
 			this.exponentialRampToValueNow(value, rampTime);
 		} else {
 			this.linearRampToValueNow(value, rampTime);
@@ -304,40 +331,13 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 
 	/**
 	 *  dispose and disconnect
-	 *  @returns {Tone.Signal} `this`
+	 *  @returns {Tone.Signal} this
 	 */
 	Tone.Signal.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
 		this._value = null;
 		this._scaler = null;
 		return this;
-	};
-
-	/**
-	 * The units the Signal is in
-	 * @enum {string}
-	 */
-	Tone.Signal.Units = {
-		/** The default type. */
-		Number : "number",
-		/** Tone.Time will be converted into seconds. */
-		Time : "time",
-		/** Tone.Frequency will be converted into hertz. */
-		Frequency : "frequency",
-		/** A Gain value. */
-		Gain : "gain",
-		/** Within normal range [0,1]. */
-		Normal : "normal",
-		/** Within normal range [-1,1]. */
-		Audio : "audio",
-		/** In decibels. */
-		Decibels : "db",
-		/** In half-step increments, i.e. 12 is an octave above the root. */
-		Interval : "interval",
-		/** Beats per minute. */
-		BPM : "bpm",
-		/** A value greater than 0 */
-		Positive : "positive"
 	};
 
 	///////////////////////////////////////////////////////////////////////////

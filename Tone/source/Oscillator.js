@@ -4,14 +4,17 @@ function(Tone){
 	"use strict";
 
 	/**
-	 *  @class Oscilator with start, pause, stop and sync to Transport methods
+	 *  @class Tone.Oscillator supports a number of features including
+	 *         phase rotation, multiple oscillator types (see Tone.Oscillator.type), 
+	 *         and Transport syncing (see Tone.Oscillator.syncFrequency).
 	 *
 	 *  @constructor
 	 *  @extends {Tone.Source}
-	 *  @param {number|string} [frequency=440] starting frequency
-	 *  @param {string} [type="sine"] type of oscillator (sine|square|triangle|sawtooth)
+	 *  @param {Frequency} [frequency] Starting frequency
+	 *  @param {string} [type] The oscillator type. Read more about type below.
 	 *  @example
-	 *  var osc = new Tone.Oscillator(440, "sine");
+	 * //make and start a 440hz sine tone
+	 * var osc = new Tone.Oscillator(440, "sine").toMaster().start();
 	 */
 	Tone.Oscillator = function(){
 		
@@ -26,16 +29,18 @@ function(Tone){
 		this._oscillator = null;
 		
 		/**
-		 *  The frequency control signal in hertz.
-		 *  @type {Tone.Signal}
+		 *  The frequency control.
+		 *  @type {Frequency}
+		 *  @signal
 		 */
-		this.frequency = new Tone.Signal(options.frequency, Tone.Signal.Units.Frequency);
+		this.frequency = new Tone.Signal(options.frequency, Tone.Type.Frequency);
 
 		/**
-		 *  The detune control signal in cents. 
-		 *  @type {Tone.Signal}
+		 *  The detune control signal.
+		 *  @type {Cents}
+		 *  @signal
 		 */
-		this.detune = new Tone.Signal(options.detune);
+		this.detune = new Tone.Signal(options.detune, Tone.Type.Cents);
 
 		/**
 		 *  the periodic wave
@@ -69,24 +74,18 @@ function(Tone){
 
 	/**
 	 *  the default parameters
-	 *  @static
-	 *  @const
 	 *  @type {Object}
 	 */
 	Tone.Oscillator.defaults = {
-		/** @type {string} */
 		"type" : "sine",
-		/** @type {Tone.Frequency} */
 		"frequency" : 440,
-		/** @type {number} */
 		"detune" : 0,
-		/** @type {number} */
 		"phase" : 0
 	};
 
 	/**
 	 *  start the oscillator
-	 *  @param  {Tone.Time} [time=now] 
+	 *  @param  {Time} [time=now] 
 	 *  @private
 	 */
 	Tone.Oscillator.prototype._start = function(time){
@@ -104,8 +103,8 @@ function(Tone){
 	/**
 	 *  stop the oscillator
 	 *  @private
-	 *  @param  {Tone.Time} [time=now] (optional) timing parameter
-	 *  @returns {Tone.Oscillator} `this`
+	 *  @param  {Time} [time=now] (optional) timing parameter
+	 *  @returns {Tone.Oscillator} this
 	 */
 	Tone.Oscillator.prototype._stop = function(time){
 		if (this._oscillator){
@@ -118,13 +117,14 @@ function(Tone){
 	/**
 	 *  Sync the signal to the Transport's bpm. Any changes to the transports bpm,
 	 *  will also affect the oscillators frequency. 
-	 *  @returns {Tone.Oscillator} `this`
+	 *  @returns {Tone.Oscillator} this
 	 *  @example
-	 *  Tone.Transport.bpm.value = 120;
-	 *  osc.frequency.value = 440;
-	 *  osc.syncFrequency();
-	 *  Tone.Transport.bpm.value = 240; 
-	 *  // the frequency of the oscillator is doubled to 880
+	 * Tone.Transport.bpm.value = 120;
+	 * osc.frequency.value = 440;
+	 * //the ration between the bpm and the frequency will be maintained
+	 * osc.syncFrequency();
+	 * Tone.Transport.bpm.value = 240; 
+	 * // the frequency of the oscillator is doubled to 880
 	 */
 	Tone.Oscillator.prototype.syncFrequency = function(){
 		Tone.Transport.syncSignal(this.frequency);
@@ -133,8 +133,8 @@ function(Tone){
 
 	/**
 	 *  Unsync the oscillator's frequency from the Transport. 
-	 *  See {@link Tone.Oscillator#syncFrequency}.
-	 *  @returns {Tone.Oscillator} `this`
+	 *  See Tone.Oscillator.syncFrequency
+	 *  @returns {Tone.Oscillator} this
 	 */
 	Tone.Oscillator.prototype.unsyncFrequency = function(){
 		Tone.Transport.unsyncSignal(this.frequency);
@@ -142,20 +142,24 @@ function(Tone){
 	};
 
 	/**
-	 * The type of the oscillator: either sine, square, triangle, or sawtooth.
-	 *
-	 * Uses PeriodicWave internally even for native types so that it can set the phase.
-	 *
-	 * PeriodicWave equations are from the Web Audio Source code:
-	 * https://code.google.com/p/chromium/codesearch#chromium/src/third_party/WebKit/Source/modules/webaudio/PeriodicWave.cpp&sq=package:chromium
+	 * The type of the oscillator: either sine, square, triangle, or sawtooth. Also capable of
+	 * setting the first x number of partials of the oscillator. For example: "sine4" would
+	 * set be the first 4 partials of the sine wave and "triangle8" would set the first
+	 * 8 partials of the triangle wave.
+	 * <br><br> 
+	 * Uses PeriodicWave internally even for native types so that it can set the phase. 
+	 * PeriodicWave equations are from the 
+	 * [Webkit Web Audio implementation](https://code.google.com/p/chromium/codesearch#chromium/src/third_party/WebKit/Source/modules/webaudio/PeriodicWave.cpp&sq=package:chromium).
 	 *  
 	 * @memberOf Tone.Oscillator#
 	 * @type {string}
 	 * @name type
-	 * @options ["sine", "square", "sawtooth", "triangle"]
 	 * @example
+	 * //set it to a square wave
 	 * osc.type = "square";
-	 * osc.type; //returns "square"
+	 * @example
+	 * //set the first 6 partials of a sawtooth wave
+	 * osc.type = "sawtooth6";
 	 */
 	Object.defineProperty(Tone.Oscillator.prototype, "type", {
 		get : function(){
@@ -224,7 +228,7 @@ function(Tone){
 	/**
 	 * The phase of the oscillator in degrees. 
 	 * @memberOf Tone.Oscillator#
-	 * @type {number}
+	 * @type {Degrees}
 	 * @name phase
 	 * @example
 	 * osc.phase = 180; //flips the phase of the oscillator
@@ -241,8 +245,8 @@ function(Tone){
 	});
 
 	/**
-	 *  dispose and disconnect
-	 *  @return {Tone.Oscillator} `this`
+	 *  Dispose and disconnect.
+	 *  @return {Tone.Oscillator} this
 	 */
 	Tone.Oscillator.prototype.dispose = function(){
 		Tone.Source.prototype.dispose.call(this);

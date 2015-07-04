@@ -94,7 +94,9 @@ define(function(){
 	///////////////////////////////////////////////////////////////////////////
 
 	/**
-	 *  @class  Tone is the base class of all other classes.  
+	 *  @class  Tone is the base class of all other classes. It provides 
+	 *          a lot of methods and functionality to all classes that extend
+	 *          it. 
 	 *  
 	 *  @constructor
 	 *  @alias Tone
@@ -128,22 +130,26 @@ define(function(){
 	 *  Set the parameters at once. Either pass in an
 	 *  object mapping parameters to values, or to set a
 	 *  single parameter, by passing in a string and value.
+	 *  The last argument is an optional ramp time which 
+	 *  will ramp any signal values to their destination value
+	 *  over the duration of the rampTime.
 	 *  @param {Object|string} params
 	 *  @param {number=} value
-	 *  @param {Tone.Time=} rampTime
-	 *  @returns {Tone} `this`
+	 *  @param {Time=} rampTime
+	 *  @returns {Tone} this
 	 *  @example
-	 *  //set values using an object
-	 *  filter.set({
-	 *  	"frequency" : 300,
-	 *  	"type" : highpass
-	 *  });
-	 *  //or
-	 *  filter.set("type", "highpass");
-	 *  //ramp to the value 220 over 3 seconds. 
-	 *  oscillator.set({
-	 *  	"frequency" : 220
-	 *  }, 3);
+	 * //set values using an object
+	 * filter.set({
+	 * 	"frequency" : 300,
+	 * 	"type" : highpass
+	 * });
+	 *  @example
+	 * filter.set("type", "highpass");
+	 *  @example
+	 * //ramp to the value 220 over 3 seconds. 
+	 * oscillator.set({
+	 * 	"frequency" : 220
+	 * }, 3);
 	 */
 	Tone.prototype.set = function(params, value, rampTime){
 		if (typeof params === "object"){
@@ -154,11 +160,19 @@ define(function(){
 			params = tmpObj;
 		}
 		for (var attr in params){
-			var param = this[attr];
+			value = params[attr];
+			var parent = this;
+			if (attr.indexOf(".") !== -1){
+				var attrSplit = attr.split(".");
+				for (var i = 0; i < attrSplit.length - 1; i++){
+					parent = parent[attrSplit[i]];
+				}
+				attr = attrSplit[attrSplit.length - 1];
+			}
+			var param = parent[attr];
 			if (isUndef(param)){
 				continue;
 			}
-			value = params[attr];
 			if (param instanceof Tone.Signal){
 				if (param.value !== value){
 					if (isUndef(rampTime)){
@@ -174,49 +188,64 @@ define(function(){
 			} else if (param instanceof Tone){
 				param.set(value);
 			} else if (param !== value){
-				this[attr] = value;
+				parent[attr] = value;
 			}
 		}
 		return this;
 	};
 
 	/**
-	 *  Get the object's attributes. 
+	 *  Get the object's attributes. Given no arguments get
+	 *  will return all available object properties and their corresponding
+	 *  values. Pass in a single attribute to retrieve or an array
+	 *  of attributes. The attribute strings can also include a "."
+	 *  to access deeper properties.
 	 *  @example
-	 *  osc.get();
-	 *  //returns {"type" : "sine", "frequency" : 440, ...etc}
-	 *  osc.get("type"); //returns { "type" : "sine"}
-	 *  @param {Array=|string|Object} params the parameters to get, otherwise will return 
+	 * osc.get();
+	 * //returns {"type" : "sine", "frequency" : 440, ...etc}
+	 *  @example
+	 * osc.get("type");
+	 * //returns { "type" : "sine"}
+	 * @example
+	 * //use dot notation to access deep properties
+	 * synth.get(["envelope.attack", "envelope.release"]);
+	 * //returns {"envelope" : {"attack" : 0.2, "release" : 0.4}}
+	 *  @param {Array=|string|undefined} params the parameters to get, otherwise will return 
 	 *  					                  all available.
+	 *  @returns {Object}
 	 */
 	Tone.prototype.get = function(params){
 		if (isUndef(params)){
 			params = this._collectDefaults(this.constructor);
 		} else if (typeof params === "string"){
-			var obj = {};
-			obj[params] = 0;
-			params = obj;
-		} else if (Array.isArray(params)){
-			//use the objects as keys
-			var keyObj = {};
-			for (var i = 0; i < params.length; i++){
-				keyObj[params[i]] = 0;
-			}
-			params = keyObj;
-		}
+			params = [params];
+		} 
 		var ret = {};
-		for (var attr in params){
-			var param = this[attr];
+		for (var i = 0; i < params.length; i++){
+			var attr = params[i];
+			var parent = this;
+			var subRet = ret;
+			if (attr.indexOf(".") !== -1){
+				var attrSplit = attr.split(".");
+				for (var j = 0; j < attrSplit.length - 1; j++){
+					var subAttr = attrSplit[j];
+					subRet[subAttr] = subRet[subAttr] || {};
+					subRet = subRet[subAttr];
+					parent = parent[subAttr];
+				}
+				attr = attrSplit[attrSplit.length - 1];
+			}
+			var param = parent[attr];
 			if (typeof params[attr] === "object"){
-				ret[attr] = param.get(params[attr]);
+				subRet[attr] = param.get();
 			} else if (param instanceof Tone.Signal){
-				ret[attr] = param.value;
+				subRet[attr] = param.value;
 			} else if (param instanceof AudioParam){
-				ret[attr] = param.value;
+				subRet[attr] = param.value;
 			} else if (param instanceof Tone){
-				ret[attr] = param.get();
+				subRet[attr] = param.get();
 			} else if (!isFunction(param) && !isUndef(param)){
-				ret[attr] = param;
+				subRet[attr] = param;
 			} 
 		}
 		return ret;
@@ -226,17 +255,20 @@ define(function(){
 	 *  collect all of the default attributes in one
 	 *  @private
 	 *  @param {function} constr the constructor to find the defaults from
-	 *  @return {Object} all of the attributes which belong to the class
+	 *  @return {Array} all of the attributes which belong to the class
 	 */
 	Tone.prototype._collectDefaults = function(constr){
-		var ret = {};
+		var ret = [];
 		if (!isUndef(constr.defaults)){
-			ret = constr.defaults;
+			ret = Object.keys(constr.defaults);
 		}
 		if (!isUndef(constr._super)){
 			var superDefs = this._collectDefaults(constr._super);
-			for (var attr in superDefs){
-				ret[attr] = superDefs[attr];
+			//filter out repeats
+			for (var i = 0; i < superDefs.length; i++){
+				if (ret.indexOf(superDefs[i]) === -1){
+					ret.push(superDefs[i]);
+				}
 			}
 		}
 		return ret;
@@ -245,7 +277,7 @@ define(function(){
 	/**
 	 *  Set the preset if it exists. 
 	 *  @param {string} presetName the name of the preset
-	 *  @returns {Tone} `this`
+	 *  @returns {Tone} this
 	 */
 	Tone.prototype.setPreset = function(presetName){
 		if (!this.isUndef(this.preset) && this.preset.hasOwnProperty(presetName)){
@@ -273,7 +305,7 @@ define(function(){
 	///////////////////////////////////////////////////////////////////////////
 
 	/**
-	 *  A static pointer to the audio context accessible as `Tone.context`. 
+	 *  A static pointer to the audio context accessible as Tone.context. 
 	 *  @type {AudioContext}
 	 */
 	Tone.context = audioContext;
@@ -306,7 +338,7 @@ define(function(){
 
 	/**
 	 *  disconnect and dispose
-	 *  @returns {Tone} `this`
+	 *  @returns {Tone} this
 	 */
 	Tone.prototype.dispose = function(){
 		if (!this.isUndef(this.input)){
@@ -338,7 +370,7 @@ define(function(){
 	 *  until 'dispose' is explicitly called
 	 *
 	 *  use carefully. circumvents JS and WebAudio's normal Garbage Collection behavior
-	 *  @returns {Tone} `this`
+	 *  @returns {Tone} this
 	 */
 	Tone.prototype.noGC = function(){
 		this.output.connect(_silentNode);
@@ -355,7 +387,7 @@ define(function(){
 	 *  @param  {Tone | AudioParam | AudioNode} unit 
 	 *  @param {number} [outputNum=0] optionally which output to connect from
 	 *  @param {number} [inputNum=0] optionally which input to connect to
-	 *  @returns {Tone} `this`
+	 *  @returns {Tone} this
 	 */
 	Tone.prototype.connect = function(unit, outputNum, inputNum){
 		if (Array.isArray(this.output)){
@@ -369,7 +401,7 @@ define(function(){
 
 	/**
 	 *  disconnect the output
-	 *  @returns {Tone} `this`
+	 *  @returns {Tone} this
 	 */
 	Tone.prototype.disconnect = function(outputNum){
 		if (Array.isArray(this.output)){
@@ -384,7 +416,7 @@ define(function(){
 	/**
 	 *  connect together all of the arguments in series
 	 *  @param {...AudioParam|Tone|AudioNode}
-	 *  @returns {Tone} `this`
+	 *  @returns {Tone} this
 	 */
 	Tone.prototype.connectSeries = function(){
 		if (arguments.length > 1){
@@ -401,7 +433,7 @@ define(function(){
 	/**
 	 *  fan out the connection from the first argument to the rest of the arguments
 	 *  @param {...AudioParam|Tone|AudioNode}
-	 *  @returns {Tone} `this`
+	 *  @returns {Tone} this
 	 */
 	Tone.prototype.connectParallel = function(){
 		var connectFrom = arguments[0];
@@ -420,7 +452,7 @@ define(function(){
 	 *  //connect a node to an effect, panVol and then to the master output
 	 *  node.chain(effect, panVol, Tone.Master);
 	 *  @param {...AudioParam|Tone|AudioNode} nodes
-	 *  @returns {Tone} `this`
+	 *  @returns {Tone} this
 	 */
 	Tone.prototype.chain = function(){
 		if (arguments.length > 0){
@@ -437,7 +469,7 @@ define(function(){
 	/**
 	 *  connect the output of this node to the rest of the nodes in parallel.
 	 *  @param {...AudioParam|Tone|AudioNode}
-	 *  @returns {Tone} `this`
+	 *  @returns {Tone} this
 	 */
 	Tone.prototype.fan = function(){
 		if (arguments.length > 0){
@@ -493,7 +525,7 @@ define(function(){
 	 *  that that's already the options object and will just return it. 
 	 *  
 	 *  @param  {Array} values  the 'arguments' object of the function
-	 *  @param  {Array.<string>} keys the names of the arguments as they
+	 *  @param  {Array} keys the names of the arguments as they
 	 *                                 should appear in the options object
 	 *  @param {Object=} defaults optional defaults to mixin to the returned 
 	 *                            options object                              
@@ -680,8 +712,8 @@ define(function(){
 
 	/**
 	 *  Convert a frequency into seconds.
-	 *  Accepts numbers and strings: i.e. `"10hz"` or 
-	 *  `10` both return `0.1`. 
+	 *  Accepts numbers and strings: i.e. "10hz" or 
+	 *  10 both return 0.1. 
 	 *  
 	 *  @param  {number|string} freq 
 	 *  @return {number}      
@@ -729,6 +761,126 @@ define(function(){
 	};
 
 	///////////////////////////////////////////////////////////////////////////
+	//	TYPES / STATES
+	///////////////////////////////////////////////////////////////////////////
+
+	/**
+	 * Possible types which a value can take on
+	 * @enum {string}
+	 */
+	Tone.Type = {
+		/** 
+		 *  The default value is a number which can take on any value between [-Infinity, Infinity]
+		 */
+		Default : "number",
+		/**
+		 *  Time can be described in a number of ways. Read more [Time](https://github.com/TONEnoTONE/Tone.js/wiki/Time).
+		 *
+		 *  <ul>
+		 *  <li>Numbers, which will be taken literally as the time (in seconds).</li>
+		 *  <li>Notation, ("4n", "8t") describes time in BPM and time signature relative values.</li>
+		 *  <li>TransportTime, ("4:3:2") will also provide tempo and time signature relative times 
+		 *  in the form BARS:QUARTERS:SIXTEENTHS.</li>
+		 *  <li>Frequency, ("8hz") is converted to the length of the cycle in seconds.</li>
+		 *  <li>Now-Relative, ("+1") prefix any of the above with "+" and it will be interpreted as 
+		 *  "the current time plus whatever expression follows".</li>
+		 *  <li>Expressions, ("3:0 + 2 - (1m / 7)") any of the above can also be combined 
+		 *  into a mathematical expression which will be evaluated to compute the desired time.</li>
+		 *  <li>No Argument, for methods which accept time, no argument will be interpreted as 
+		 *  "now" (i.e. the currentTime).</li>
+		 *  </ul>
+		 *  
+		 *  @typedef {Time}
+		 */
+		Time : "time",
+		/**
+		 *  Frequency can be described similar to time, except ultimately the
+		 *  values are converted to frequency instead of seconds. A number
+		 *  is taken literally as the value in hertz. Additionally any of the 
+		 *  Time encodings can be used. Note names in the form
+		 *  of NOTE OCTAVE (i.e. C4) are also accepted and converted to their
+		 *  frequency value. 
+		 *  @typedef {Frequency}
+		 */
+		Frequency : "frequency",
+		/**
+		 * Gain is the ratio between the input and the output value of a signal.
+		 *  @typedef {Gain}
+		 */
+		Gain : "gain",
+		/** 
+		 *  Normal values are within the range [0, 1].
+		 *  @typedef {NormalRange}
+		 */
+		NormalRange : "normalrange",
+		/** 
+		 *  AudioRange values are between [-1, 1].
+		 *  @typedef {AudioRange}
+		 */
+		AudioRange : "audiorange",
+		/** 
+		 *  Decibels are a logarithmic unit of measurement which is useful for volume
+		 *  because of the logarithmic way that we perceive loudness. 0 decibels 
+		 *  means no change in volume. -10db is approximately half as loud and 10db 
+		 *  is twice is loud. 
+		 *  @typedef {Decibels}
+		 */
+		Decibels : "db",
+		/** 
+		 *  Half-step note increments, i.e. 12 is an octave above the root. and 1 is a half-step up.
+		 *  @typedef {Interval}
+		 */
+		Interval : "interval",
+		/** 
+		 *  Beats per minute. 
+		 *  @typedef {BPM}
+		 */
+		BPM : "bpm",
+		/** 
+		 *  The value must be greater than 0.
+		 *  @typedef {Positive}
+		 */
+		Positive : "positive",
+		/** 
+		 *  A cent is a hundredth of a semitone. 
+		 *  @typedef {Cents}
+		 */
+		Cents : "cents",
+		/** 
+		 *  Angle between 0 and 360. 
+		 *  @typedef {Degrees}
+		 */
+		Degrees : "degrees",
+		/** 
+		 *  A number representing a midi note.
+		 *  @typedef {MIDI}
+		 */
+		MIDI : "midi",
+		/** 
+		 *  A colon-separated representation of time in the form of
+		 *  BARS:QUARTERS:SIXTEENTHS. 
+		 *  @typedef {TransportTime}
+		 */
+		TransportTime : "transporttime"
+	};
+
+	/**
+	 * Possible play states. 
+	 * @enum {string}
+	 */
+	Tone.State = {
+		Started : "started",
+		Stopped : "stopped",
+		Paused : "paused",
+ 	};
+
+ 	/**
+	 *  An empty function.
+	 *  @static
+	 */
+	Tone.noOp = function(){};
+
+	///////////////////////////////////////////////////////////////////////////
 	//	CONTEXT
 	///////////////////////////////////////////////////////////////////////////
 
@@ -755,7 +907,7 @@ define(function(){
 	};
 
 	/**
-	 *  Tone.js automatically creates a context on init, but if you are working
+	 *  Tone automatically creates a context on init, but if you are working
 	 *  with other libraries which also create an AudioContext, it can be
 	 *  useful to set your own. If you are going to set your own context, 
 	 *  be sure to do it at the start of your code, before creating any objects.
@@ -798,7 +950,9 @@ define(function(){
 		_silentNode.connect(audioContext.destination);
 	});
 
-	console.log("%c * Tone.js r5-dev * ", "background: #000; color: #fff");
+	Tone.version = "r5";
+
+	console.log("%c * Tone.js " + Tone.version + " * ", "background: #000; color: #fff");
 
 	return Tone;
 });

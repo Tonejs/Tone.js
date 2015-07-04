@@ -4,15 +4,24 @@ function(Tone){
 	"use strict";
 
 	/**
-	 *  @class A Phaser effect. inspiration from https://github.com/Dinahmoe/tuna/
+	 *  @class Tone.Phaser is a phaser effect. Phasers work by changing the phase
+	 *         of different frequency components of an incoming signal. Read more on 
+	 *         [Wikipedia](https://en.wikipedia.org/wiki/Phaser_(effect)). 
+	 *         Inspiration for this phaser comes from [Tuna.js](https://github.com/Dinahmoe/tuna/).
 	 *
 	 *	@extends {Tone.StereoEffect}
 	 *	@constructor
-	 *	@param {number|Object} [frequency=0.5] the speed of the phasing
-	 *	@param {number} [depth=10] the depth of the effect
-	 *	@param {number} [baseFrequency=400] the base frequency of the filters
+	 *	@param {Frequency|Object} [frequency] The speed of the phasing. 
+	 *	@param {number} [depth] The depth of the effect. 
+	 *	@param {Frequency} [baseFrequency] The base frequency of the filters. 
 	 *	@example
-	 * 	var phaser = new Tone.Phaser(0.4, 12, 550);
+	 * var phaser = new Tone.Phaser({
+	 * 	"frequency" : 15, 
+	 * 	"depth" : 5, 
+	 * 	"baseFrequency" : 1000
+	 * }).toMaster();
+	 * var synth = new Tone.FMSynth().connect(phaser);
+	 * synth.triggerAttackRelease("E3", "2n");
 	 */
 	Tone.Phaser = function(){
 
@@ -48,20 +57,27 @@ function(Tone){
 		 *  @private
 		 */
 		this._depth = options.depth;
+
+		/**
+		 *  The quality factor of the filters
+		 *  @type {Positive}
+		 *  @signal
+		 */
+		this.Q = new Tone.Signal(options.Q, Tone.Type.Positive);
 		
 		/**
 		 *  the array of filters for the left side
-		 *  @type {Array.<Tone.Filter>}
+		 *  @type {Array}
 		 *  @private
 		 */
-		this._filtersL = this._makeFilters(options.stages, this._lfoL, options.Q);
+		this._filtersL = this._makeFilters(options.stages, this._lfoL, this.Q);
 
 		/**
 		 *  the array of filters for the left side
-		 *  @type {Array.<Tone.Filter>}
+		 *  @type {Array}
 		 *  @private
 		 */
-		this._filtersR = this._makeFilters(options.stages, this._lfoR, options.Q);
+		this._filtersR = this._makeFilters(options.stages, this._lfoR, this.Q);
 
 		/**
 		 * the frequency of the effect
@@ -75,8 +91,6 @@ function(Tone){
 		this.effectSendR.connect(this._filtersR[0]);
 		this._filtersL[options.stages - 1].connect(this.effectReturnL);
 		this._filtersR[options.stages - 1].connect(this.effectReturnR);
-		this.effectSendL.connect(this.effectReturnL);
-		this.effectSendR.connect(this.effectReturnR);
 		//control the frequency with one LFO
 		this._lfoL.frequency.connect(this._lfoR.frequency);
 		//set the options
@@ -85,7 +99,7 @@ function(Tone){
 		//start the lfo
 		this._lfoL.start();
 		this._lfoR.start();
-		this._readOnly(["frequency"]);
+		this._readOnly(["frequency", "Q"]);
 	};
 
 	Tone.extend(Tone.Phaser, Tone.StereoEffect);
@@ -98,9 +112,9 @@ function(Tone){
 	Tone.Phaser.defaults = {
 		"frequency" : 0.5,
 		"depth" : 10,
-		"stages" : 4,
-		"Q" : 100,
-		"baseFrequency" : 400,
+		"stages" : 10,
+		"Q" : 10,
+		"baseFrequency" : 350,
 	};
 
 	/**
@@ -114,7 +128,7 @@ function(Tone){
 		for (var i = 0; i < stages; i++){
 			var filter = this.context.createBiquadFilter();
 			filter.type = "allpass";
-			filter.Q.value = Q;
+			Q.connect(filter.Q);
 			connectToFreq.connect(filter.frequency);
 			filters[i] = filter;
 		}
@@ -160,10 +174,13 @@ function(Tone){
 
 	/**
 	 *  clean up
-	 *  @returns {Tone.Phaser} `this`
+	 *  @returns {Tone.Phaser} this
 	 */
 	Tone.Phaser.prototype.dispose = function(){
 		Tone.StereoEffect.prototype.dispose.call(this);
+		this._writable(["frequency", "Q"]);
+		this.Q.dispose();
+		this.Q = null;
 		this._lfoL.dispose();
 		this._lfoL = null;
 		this._lfoR.dispose();
@@ -178,7 +195,6 @@ function(Tone){
 			this._filtersR[j] = null;
 		}
 		this._filtersR = null;
-		this._writable(["frequency"]);
 		this.frequency = null;
 		return this;
 	};

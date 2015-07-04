@@ -1,8 +1,8 @@
 /* global it, describe, after */
 
 define(["chai", "Tone/core/Tone", "Tone/core/Master", "Tone/core/Bus", 
-	"Tone/core/Note", "tests/Common", "Tone/core/Buffer", "Tone/source/Oscillator"], 
-function(chai, Tone, Master, Bus, Note, Test, Buffer, Oscillator){
+	"Tone/core/Note", "tests/Common", "Tone/core/Buffer", "Tone/source/Oscillator", "Tone/instrument/SimpleSynth"], 
+function(chai, Tone, Master, Bus, Note, Test, Buffer, Oscillator, SimpleSynth){
 	var expect = chai.expect;
 
 	describe("AudioContext", function(){
@@ -187,8 +187,7 @@ function(chai, Tone, Master, Bus, Note, Test, Buffer, Oscillator){
 
 		it("gets all defaults of the object with no arguments", function(){
 			var osc = new Oscillator(0);
-			expect(Oscillator.defaults).to.contain.keys(Object.keys(osc.get()));
-			// expect(osc.get()).to.contain.keys(Object.keys(Oscillator.defaults));
+			expect(osc.get()).to.contain.keys(Object.keys(Oscillator.defaults));
 			osc.dispose();
 		});	
 
@@ -197,6 +196,43 @@ function(chai, Tone, Master, Bus, Note, Test, Buffer, Oscillator){
 			var keys = ["frequency", "type"];
 			expect(Object.keys(osc.get(keys))).to.deep.equal(keys);
 			osc.dispose();
+		});	
+
+		it("can 'set' a nested object", function(){
+			var synth = new SimpleSynth();
+			synth.set({
+				"oscillator" : {
+					"type" : "square2"
+				}
+			});
+			expect(synth.oscillator.type).to.equal("square2");
+			synth.dispose();
+		});	
+
+		it("can 'set' a value with dot notation", function(){
+			var synth = new SimpleSynth();
+			synth.set("oscillator.type", "triangle");
+			expect(synth.oscillator.type).to.equal("triangle");
+			synth.dispose();
+		});	
+
+		it("can 'get' a value with dot notation", function(){
+			var synth = new SimpleSynth();
+			synth.set({
+				"oscillator" : {
+					"type" : "sine10",
+					"phase" : 20,
+				}
+			});
+			expect(synth.get("oscillator.type").oscillator.type).to.equal("sine10");
+			//get multiple values
+			expect(synth.get(["oscillator.type", "oscillator.phase"])).to.deep.equal({
+				"oscillator" : {
+					"type" : "sine10",
+					"phase" : 20,
+				}
+			});
+			synth.dispose();
 		});	
 
 	});

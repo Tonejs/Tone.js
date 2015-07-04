@@ -3,28 +3,27 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	"use strict";
 
 	/**
-	 *  @class Add a signal and a number or two signals. <br><br>
-	 *         input 0: augend. input 1: addend. <br><br>
-	 *         Add can be used in two ways, either constructed with a value,
-	 *         or constructed with no initial value and with signals connected
-	 *         to each of its two inputs. 
-	 *
+	 *  @class Add a signal and a number or two signals. When no value is
+	 *         passed into the constructor, Tone.Add will sum <code>input[0]</code>
+	 *         and <code>input[1]</code>. If a value is passed into the constructor, 
+	 *         the it will be added to the input.
+	 *  
 	 *  @constructor
 	 *  @extends {Tone.Signal}
-	 *  @param {number=} value if no value is provided, Tone.Add will sum the first
+	 *  @param {number=} value If no value is provided, Tone.Add will sum the first
 	 *                         and second inputs. 
 	 *  @example
-	 *  var signal = new Tone.Signal(2);
-	 *  var add = new Tone.Add(2);
-	 *  signal.connect(add);
-	 *  //the output of add equals 4
-	 *
-	 *  //if constructed with no arguments
-	 *  //it will add the first and second inputs
-	 *  var add = new Tone.Add();
-	 *  var sig0 = new Tone.Signal(3).connect(add, 0, 0);
-	 *  var sig1 = new Tone.Signal(4).connect(add, 0, 1);
-	 *  //the output of add equals 7. 
+	 * var signal = new Tone.Signal(2);
+	 * var add = new Tone.Add(2);
+	 * signal.connect(add);
+	 * //the output of add equals 4
+	 *  @example
+	 * //if constructed with no arguments
+	 * //it will add the first and second inputs
+	 * var add = new Tone.Add();
+	 * var sig0 = new Tone.Signal(3).connect(add, 0, 0);
+	 * var sig1 = new Tone.Signal(4).connect(add, 0, 1);
+	 * //the output of add equals 7. 
 	 */
 	Tone.Add = function(value){
 
@@ -49,8 +48,8 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	Tone.extend(Tone.Add, Tone.Signal);
 	
 	/**
-	 *  dispose method
-	 *  @returns {Tone.Add} `this`
+	 *  Clean up.
+	 *  @returns {Tone.Add} this
 	 */
 	Tone.Add.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);

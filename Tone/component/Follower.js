@@ -5,17 +5,19 @@ function(Tone){
 	"use strict";
 
 	/**
-	 *  @class  Follow the envelope of the incoming signal. 
-	 *          Careful with small (< 0.02) attack or decay values. 
-	 *          The follower has some ripple which gets exaggerated
-	 *          by small values. 
+	 *  @class  Tone.Follower is a  crude envelope follower which will follow 
+	 *          the amplitude of an incoming signal. 
+	 *          Take care with small (< 0.02) attack or decay values 
+	 *          as follower has some ripple which is exaggerated
+	 *          at these values. Read more about envelope followers (also known 
+	 *          as envelope detectors) on [Wikipedia](https://en.wikipedia.org/wiki/Envelope_detector).
 	 *  
 	 *  @constructor
 	 *  @extends {Tone}
-	 *  @param {Tone.Time} [attack = 0.05] 
-	 *  @param {Tone.Time} [release = 0.5] 
+	 *  @param {Time|Object} [attack] The rate at which the follower rises.
+	 *  @param {Time=} release The rate at which the folower falls. 
 	 *  @example
-	 *  var follower = new Tone.Follower(0.2, 0.4);
+	 * var follower = new Tone.Follower(0.2, 0.4);
 	 */
 	Tone.Follower = function(){
 
@@ -100,8 +102,8 @@ function(Tone){
 
 	/**
 	 *  sets the attack and release times in the wave shaper
-	 *  @param   {Tone.Time} attack  
-	 *  @param   {Tone.Time} release 
+	 *  @param   {Time} attack  
+	 *  @param   {Time} release 
 	 *  @private
 	 */
 	Tone.Follower.prototype._setAttackRelease = function(attack, release){
@@ -122,7 +124,7 @@ function(Tone){
 	/**
 	 * The attack time.
 	 * @memberOf Tone.Follower#
-	 * @type {Tone.Time}
+	 * @type {Time}
 	 * @name attack
 	 */
 	Object.defineProperty(Tone.Follower.prototype, "attack", {
@@ -138,7 +140,7 @@ function(Tone){
 	/**
 	 * The release time.
 	 * @memberOf Tone.Follower#
-	 * @type {Tone.Time}
+	 * @type {Time}
 	 * @name release
 	 */
 	Object.defineProperty(Tone.Follower.prototype, "release", {
@@ -152,15 +154,15 @@ function(Tone){
 	});
 
 	/**
-	 *  borrows the connect method from Signal so that the output can be used
-	 *  as a control signal {@link Tone.Signal}
+	 *  Borrows the connect method from Signal so that the output can be used
+	 *  as a Tone.Signal control signal.
 	 *  @function
 	 */
 	Tone.Follower.prototype.connect = Tone.Signal.prototype.connect;
 
 	/**
 	 *  dispose
-	 *  @returns {Tone.Follower} `this`
+	 *  @returns {Tone.Follower} this
 	 */
 	Tone.Follower.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);

@@ -5,14 +5,18 @@ function(Tone){
 	"use strict";
 
 	/**
-	 *  @class OmniOscillator aggregates Tone.Oscillator, Tone.PulseOscillator,
-	 *         and Tone.PWMOscillator which allows it to have the types: 
-	 *         sine, square, triangle, sawtooth, pulse or pwm. 
+	 *  @class Tone.OmniOscillator aggregates Tone.Oscillator, Tone.PulseOscillator,
+	 *         and Tone.PWMOscillator into one class, allowing it to have the 
+	 *         types: sine, square, triangle, sawtooth, pulse or pwm. Additionally,
+	 *         OmniOscillator is capable of setting the first x number of partials 
+	 *         of the oscillator. For example: "sine4" would set be the first 4 
+	 *         partials of the sine wave and "triangle8" would set the first 
+	 *         8 partials of the triangle wave. 
 	 *
 	 *  @extends {Tone.Oscillator}
 	 *  @constructor
-	 *  @param {frequency} Tone.Frequency frequency of the oscillator (meaningless for noise types)
-	 *  @param {string} type the type of the oscillator
+	 *  @param {Frequency} frequency The initial frequency of the oscillator.
+	 *  @param {string} type The type of the oscillator.
 	 *  @example
 	 *  var omniOsc = new Tone.OmniOscillator("C#4", "pwm");
 	 */
@@ -21,16 +25,18 @@ function(Tone){
 		Tone.Source.call(this, options);
 
 		/**
-		 *  the frequency control
-		 *  @type {Tone.Signal}
+		 *  The frequency control.
+		 *  @type {Frequency}
+		 *  @signal
 		 */
-		this.frequency = new Tone.Signal(options.frequency, Tone.Signal.Units.Frequency);
+		this.frequency = new Tone.Signal(options.frequency, Tone.Type.Frequency);
 
 		/**
-		 *  the detune control
-		 *  @type {Tone.Signal}
+		 *  The detune control
+		 *  @type {Cents}
+		 *  @signal
 		 */
-		this.detune = new Tone.Signal(options.detune);
+		this.detune = new Tone.Signal(options.detune, Tone.Type.Cents);
 
 		/**
 		 *  the type of the oscillator source
@@ -79,7 +85,7 @@ function(Tone){
 
 	/**
 	 *  start the oscillator
-	 *  @param {Tone.Time} [time=now] the time to start the oscillator
+	 *  @param {Time} [time=now] the time to start the oscillator
 	 *  @private
 	 */
 	Tone.OmniOscillator.prototype._start = function(time){
@@ -88,7 +94,7 @@ function(Tone){
 
 	/**
 	 *  start the oscillator
-	 *  @param {Tone.Time} [time=now] the time to start the oscillator
+	 *  @param {Time} [time=now] the time to start the oscillator
 	 *  @private
 	 */
 	Tone.OmniOscillator.prototype._stop = function(time){
@@ -97,7 +103,6 @@ function(Tone){
 
 	/**
 	 * The type of the oscillator. sine, square, triangle, sawtooth, pwm, or pulse. 
-	 *  
 	 * @memberOf Tone.OmniOscillator#
 	 * @type {string}
 	 * @name type
@@ -107,7 +112,8 @@ function(Tone){
 			return this._oscillator.type;
 		}, 
 		set : function(type){
-			if (type === "sine" || type === "square" || type === "triangle" || type === "sawtooth"){
+			if (type.indexOf("sine") === 0 || type.indexOf("square") === 0 || 
+				type.indexOf("triangle") === 0 || type.indexOf("sawtooth") === 0){
 				if (this._sourceType !== OmniOscType.Oscillator){
 					this._sourceType = OmniOscType.Oscillator;
 					this._createNewOscillator(Tone.Oscillator);
@@ -148,15 +154,15 @@ function(Tone){
 		this.frequency.connect(this._oscillator.frequency);
 		this.detune.connect(this._oscillator.detune);
 		this._oscillator.connect(this.output);
-		if (this.state === Tone.Source.State.STARTED){
+		if (this.state === Tone.State.Started){
 			this._oscillator.start(now);
 		}
 	};
 
 	/**
-	 * The phase of the oscillator in degrees
+	 * The phase of the oscillator in degrees. 
 	 * @memberOf Tone.OmniOscillator#
-	 * @type {number}
+	 * @type {Degrees}
 	 * @name phase
 	 */
 	Object.defineProperty(Tone.OmniOscillator.prototype, "phase", {
@@ -171,7 +177,8 @@ function(Tone){
 	/**
 	 * The width of the oscillator (only if the oscillator is set to pulse)
 	 * @memberOf Tone.OmniOscillator#
-	 * @type {Tone.Signal}
+	 * @type {NormalRange}
+	 * @signal
 	 * @name width
 	 * @example
 	 * var omniOsc = new Tone.OmniOscillator(440, "pulse");
@@ -190,7 +197,8 @@ function(Tone){
 	 * The modulationFrequency Signal of the oscillator 
 	 * (only if the oscillator type is set to pwm).
 	 * @memberOf Tone.OmniOscillator#
-	 * @type {Tone.Signal}
+	 * @type {Frequency}
+	 * @signal
 	 * @name modulationFrequency
 	 * @example
 	 * var omniOsc = new Tone.OmniOscillator(440, "pwm");
@@ -206,8 +214,8 @@ function(Tone){
 	});
 
 	/**
-	 *  clean up
-	 *  @return {Tone.OmniOscillator} `this`
+	 *  Clean up.
+	 *  @return {Tone.OmniOscillator} this
 	 */
 	Tone.OmniOscillator.prototype.dispose = function(){
 		Tone.Source.prototype.dispose.call(this);

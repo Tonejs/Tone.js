@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+	<title>SimpleSynth</title>
+
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	
+	<script type="text/javascript" src="../build/Tone.js"></script>
+	<script type="text/javascript" src="./scripts/jquery.min.js"></script>
+	<script type="text/javascript" src="./scripts/Notone.GUI.js"></script>
+	<script type="text/javascript" src="./scripts/Interface.js"></script>
+	<script type="text/javascript" src="./scripts/qwerty-hancock.js"></script>
+
+	<link rel="stylesheet" type="text/css" href="./style/examples.css">
+
+	<script type="text/javascript">
+		// jshint ignore: start
+	</script>
+
+</head>
+<body>	
+	<style type="text/css">
+
+		img {
+			width: 80%;
+			max-width: 700px;
+			margin-left: auto;
+    		margin-right: auto;
+    		display: block;
+		}
+
+		#Keyboard {
+			margin: 3px!important;
+		}
+	</style>
+	<div id="Content">
+		<div id="Title">SimpleSynth</div>
+		<div id="Explanation">
+			<a href="http://tonejs.org/docs/#SimpleSynth" target="_blank">Tone.SimpleSynth</a> is composed simply of a 
+			<a href="http://tonejs.org/docs/#OmniOscillator" target="_blank">Tone.OmniOscillator</a>
+			routed through a 
+			<a href="http://tonejs.org/docs/#AmplitudeEnvelope" target="_blank">Tone.AmplitudeEnvelope</a>.
+			<img src="https://docs.google.com/drawings/d/1-1_0YW2Z1J2EPI36P8fNCMcZG7N1w1GZluPs4og4evo/pub?w=1163&h=231">
+		</div>
+		<div id="Keyboard"></div>
+	</div>
+
+	<script type="text/javascript">
+
+		var synth = new Tone.SimpleSynth({
+			"oscillator" : {
+				"type" : "square"
+			},
+			"envelope" : {
+				"attack" : 0.01,
+				"decay" : 0.2,
+				"sustain" : 0.4,
+				"release" : 0.2,
+			}
+		}).toMaster();
+
+	</script>
+
+	<script id="GUI" type="text/javascript">
+		$(function(){
+			Notone.config({
+				"search" : false,
+				"expandInDrawer" : true,
+				"expandChildren" : true,
+				"hideDrawer" : Interface.isMobile,
+				"drawer" : true,
+				"container" : "body"
+			});
+
+			Notone.add(synth);
+
+			var keyboard = new QwertyHancock({
+				id: "Keyboard",
+				width: $("#Content").width(),
+				height: 150,
+				octaves: Interface.isMobile ? 1.26 : 2,
+				startNote: "C4",
+				whiteKeyColour: "white",
+				blackKeyColour: "#22DBC0",
+				hoverColour: "#1EDF3E",
+				activeColour : "#ED33CF"
+			});
+
+			keyboard.keyDown = function (note, frequency) {
+			    synth.triggerAttack(frequency);
+			};
+
+			keyboard.keyUp = function () {
+			    synth.triggerRelease();
+			};
+
+		});
+	</script>
+
+	</style>
+</body>
+</html>

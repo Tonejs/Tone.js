@@ -3,13 +3,22 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	"use strict";
 	
 	/**
-	 *  @class  a sample accurate clock built on an oscillator.
-	 *          Invokes the tick method at the set rate
+	 *  @class  A sample accurate clock which provides a callback at the given rate. 
+	 *          While the callback is not sample-accurate (it is still susceptible to
+	 *          loose JS timing), the time passed in as the argument to the callback
+	 *          is precise. For most applications, it is better to use Tone.Transport
+	 *          instead of the clock. 
 	 *
 	 * 	@constructor
 	 * 	@extends {Tone}
-	 * 	@param {Tone.Frequency} frequency the rate of the callback
-	 * 	@param {function} callback the callback to be invoked with the time of the audio event
+	 * 	@param {Frequency} frequency The rate of the callback
+	 * 	@param {function} callback The callback to be invoked with the time of the audio event
+	 * 	@example
+	 * //the callback will be invoked approximately once a second
+	 * //and will print the time exactly once a second apart.
+	 * var clock = new Tone.Clock(1, function(time){
+	 * 	console.log(time);
+	 * });
 	 */
 	Tone.Clock = function(frequency, callback){
 
@@ -29,10 +38,11 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 		this._jsNode.onaudioprocess = this._processBuffer.bind(this);
 
 		/**
-		 *  the rate control signal
-		 *  @type {Tone.Signal}
+		 *  The frequency in which the callback will be invoked.
+		 *  @type {Frequency}
+		 *  @signal
 		 */
-		this.frequency = new Tone.Signal(frequency, Tone.Signal.Units.Frequency);
+		this.frequency = new Tone.Signal(frequency, Tone.Type.Frequency);
 
 		/**
 		 *  whether the tick is on the up or down
@@ -42,7 +52,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 		this._upTick = false;
 
 		/**
-		 *  the callback which is invoked on every tick
+		 *  The callback which is invoked on every tick
 		 *  with the time of that tick as the argument
 		 *  @type {function(number)}
 		 */
@@ -52,11 +62,11 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 		 * Callback is invoked when the clock is stopped.
 		 * @type {function}
 		 * @example
-		 *  clock.onended = function(){
-		 *  	console.log("the clock is stopped");
-		 *  }
+		 * clock.onended = function(){
+		 * 	console.log("the clock is stopped");
+		 * }
 		 */
-		this.onended = function(){};
+		this.onended = Tone.noOp;
 
 		//setup
 		this._jsNode.noGC();
@@ -65,9 +75,11 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	Tone.extend(Tone.Clock);
 
 	/**
-	 *  start the clock
-	 *  @param {Tone.Time} [time=now] the time when the clock should start
-	 *  @returns {Tone.Clock} `this`
+	 *  Start the clock.
+	 *  @param {Time} [time=now] the time when the clock should start
+	 *  @returns {Tone.Clock} this
+	 *  @example
+	 * clock.start();
 	 */
 	Tone.Clock.prototype.start = function(time){
 		if (!this._oscillator){
@@ -84,9 +96,11 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	};
 
 	/**
-	 *  stop the clock
-	 *  @param {Tone.Time} [time=now] The time when the clock should stop.
-	 *  @returns {Tone.Clock} `this`
+	 *  Stop the clock.
+	 *  @param {Time} [time=now] The time when the clock should stop.
+	 *  @returns {Tone.Clock} this
+	 *  @example
+	 * clock.stop();
 	 */
 	Tone.Clock.prototype.stop = function(time){
 		if (this._oscillator){
@@ -96,7 +110,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 			this._oscillator = null;
 			if (time){
 				//set a timeout for when it stops
-				setTimeout(this.onended.bind(this), (stopTime - now) * 1000);
+				setTimeout(this.onended, (stopTime - now) * 1000);
 			} else {
 				this.onended();
 			}
@@ -136,8 +150,8 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	};
 
 	/**
-	 *  clean up
-	 *  @returns {Tone.Clock} `this`
+	 *  Clean up.
+	 *  @returns {Tone.Clock} this
 	 */
 	Tone.Clock.prototype.dispose = function(){
 		this._jsNode.disconnect();
@@ -147,10 +161,10 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 			this._oscillator.disconnect();
 			this._oscillator = null;
 		}
-		this._jsNode.onaudioprocess = function(){};
+		this._jsNode.onaudioprocess = Tone.noOp;
 		this._jsNode = null;
 		this.tick = null;
-		this.onended = function(){};
+		this.onended = Tone.noOp;
 		return this;
 	};
 

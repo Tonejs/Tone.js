@@ -3,15 +3,18 @@ define(["Tone/core/Tone", "Tone/component/LFO", "Tone/effect/Effect"], function(
 	"use strict";
 
 	/**
-	 *  @class A tremolo is a modulation in the amplitude of the incoming signal using an LFO. 
+	 *  @class Tone.Tremelo modulates the amplitude of an incoming signal using a Tone.LFO. 
 	 *         The type, frequency, and depth of the LFO is controllable. 
 	 *
 	 *  @extends {Tone.Effect}
 	 *  @constructor
-	 *  @param {Tone.Time} [frequency=10] The rate of the effect. 
-	 *  @param {number} [depth=0.5] The depth of the wavering.
+	 *  @param {Frequency|Object} [frequency] The rate of the effect. 
+	 *  @param {NormalRange} [depth] The depth of the wavering.
 	 *  @example
-	 *  var tremolo = new Tone.Tremolo(9, 0.75);
+	 * //create an tremolo and start it's LFO
+	 * var tremolo = new Tone.Tremolo(9, 0.75).toMaster().start();
+	 * //route an oscillator through the tremolo and start it
+	 * var oscillator = new Tone.Oscillator().connect(tremolo).start();
 	 */
 	Tone.Tremolo = function(){
 
@@ -23,7 +26,12 @@ define(["Tone/core/Tone", "Tone/component/LFO", "Tone/effect/Effect"], function(
 		 *  @type  {Tone.LFO}
 		 *  @private
 		 */
-		this._lfo = new Tone.LFO(options.frequency, 1, 0);
+		this._lfo = new Tone.LFO({
+			"frequency" : options.frequency,
+			"amplitude" : options.depth,
+			"min" : 1,
+			"max" : 0
+		});
 
 		/**
 		 *  Where the gain is multiplied
@@ -34,13 +42,17 @@ define(["Tone/core/Tone", "Tone/component/LFO", "Tone/effect/Effect"], function(
 
 		/**
 		 *  The frequency of the tremolo.	
-		 *  @type  {Tone.Signal}
+		 *  @type  {Frequency}
+		 *  @signal
 		 */
 		this.frequency = this._lfo.frequency;
 
 		/**
-		 *  The depth of the effect.	
-		 *  @type  {Tone.Signal}
+		 *  The depth of the effect. A depth of 0, has no effect
+		 *  on the amplitude, and a depth of 1 makes the amplitude
+		 *  modulate fully between 0 and 1. 
+		 *  @type  {NormalRange}
+		 *  @signal
 		 */
 		this.depth = this._lfo.amplitude;
 
@@ -65,8 +77,8 @@ define(["Tone/core/Tone", "Tone/component/LFO", "Tone/effect/Effect"], function(
 
 	/**
 	 * Start the tremolo.
-	 * @param {Tone.Time} [time=now] When the tremolo begins.
-	 * @returns {Tone.Tremolo} `this`
+	 * @param {Time} [time=now] When the tremolo begins.
+	 * @returns {Tone.Tremolo} this
 	 */
 	Tone.Tremolo.prototype.start = function(time){
 		this._lfo.start(time);
@@ -75,8 +87,8 @@ define(["Tone/core/Tone", "Tone/component/LFO", "Tone/effect/Effect"], function(
 
 	/**
 	 * Stop the tremolo.
-	 * @param {Tone.Time} [time=now] the tremolo stops.
-	 * @returns {Tone.Tremolo} `this`
+	 * @param {Time} [time=now] When the tremolo stops.
+	 * @returns {Tone.Tremolo} this
 	 */
 	Tone.Tremolo.prototype.stop = function(time){
 		this._lfo.stop(time);
@@ -85,9 +97,9 @@ define(["Tone/core/Tone", "Tone/component/LFO", "Tone/effect/Effect"], function(
 
 	/**
 	 * Sync the effect to the transport.
-	 * @param {Tone.Time} [delay=0] Delay time before starting the effect after the
+	 * @param {Time} [delay=0] Delay time before starting the effect after the
 	 *                              Transport has started. 
-	 * @returns {Tone.AutoFilter} `this`
+	 * @returns {Tone.AutoFilter} this
 	 */
 	Tone.Tremolo.prototype.sync = function(delay){
 		this._lfo.sync(delay);
@@ -96,7 +108,7 @@ define(["Tone/core/Tone", "Tone/component/LFO", "Tone/effect/Effect"], function(
 
 	/**
 	 * Unsync the filter from the transport
-	 * @returns {Tone.Tremolo} `this`
+	 * @returns {Tone.Tremolo} this
 	 */
 	Tone.Tremolo.prototype.unsync = function(){
 		this._lfo.unsync();
@@ -120,7 +132,7 @@ define(["Tone/core/Tone", "Tone/component/LFO", "Tone/effect/Effect"], function(
 
 	/**
 	 *  clean up
-	 *  @returns {Tone.Tremolo} `this`
+	 *  @returns {Tone.Tremolo} this
 	 */
 	Tone.Tremolo.prototype.dispose = function(){
 		Tone.Effect.prototype.dispose.call(this);
