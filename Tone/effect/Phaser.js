@@ -58,20 +58,27 @@ function(Tone){
 		 *  @private
 		 */
 		this._depth = options.depth;
+
+		/**
+		 *  The quality factor of the filters
+		 *  @type {Positive}
+		 *  @signal
+		 */
+		this.Q = new Tone.Signal(options.Q, Tone.Type.Positive);
 		
 		/**
 		 *  the array of filters for the left side
 		 *  @type {Array}
 		 *  @private
 		 */
-		this._filtersL = this._makeFilters(options.stages, this._lfoL, options.Q);
+		this._filtersL = this._makeFilters(options.stages, this._lfoL, this.Q);
 
 		/**
 		 *  the array of filters for the left side
 		 *  @type {Array}
 		 *  @private
 		 */
-		this._filtersR = this._makeFilters(options.stages, this._lfoR, options.Q);
+		this._filtersR = this._makeFilters(options.stages, this._lfoR, this.Q);
 
 		/**
 		 * the frequency of the effect
@@ -85,8 +92,6 @@ function(Tone){
 		this.effectSendR.connect(this._filtersR[0]);
 		this._filtersL[options.stages - 1].connect(this.effectReturnL);
 		this._filtersR[options.stages - 1].connect(this.effectReturnR);
-		this.effectSendL.connect(this.effectReturnL);
-		this.effectSendR.connect(this.effectReturnR);
 		//control the frequency with one LFO
 		this._lfoL.frequency.connect(this._lfoR.frequency);
 		//set the options
@@ -95,7 +100,7 @@ function(Tone){
 		//start the lfo
 		this._lfoL.start();
 		this._lfoR.start();
-		this._readOnly(["frequency"]);
+		this._readOnly(["frequency", "Q"]);
 	};
 
 	Tone.extend(Tone.Phaser, Tone.StereoEffect);
@@ -108,9 +113,9 @@ function(Tone){
 	Tone.Phaser.defaults = {
 		"frequency" : 0.5,
 		"depth" : 10,
-		"stages" : 4,
-		"Q" : 100,
-		"baseFrequency" : 400,
+		"stages" : 10,
+		"Q" : 10,
+		"baseFrequency" : 350,
 	};
 
 	/**
@@ -124,7 +129,7 @@ function(Tone){
 		for (var i = 0; i < stages; i++){
 			var filter = this.context.createBiquadFilter();
 			filter.type = "allpass";
-			filter.Q.value = Q;
+			Q.connect(filter.Q);
 			connectToFreq.connect(filter.frequency);
 			filters[i] = filter;
 		}
@@ -174,6 +179,9 @@ function(Tone){
 	 */
 	Tone.Phaser.prototype.dispose = function(){
 		Tone.StereoEffect.prototype.dispose.call(this);
+		this._writable(["frequency", "Q"]);
+		this.Q.dispose();
+		this.Q = null;
 		this._lfoL.dispose();
 		this._lfoL = null;
 		this._lfoR.dispose();
@@ -188,7 +196,6 @@ function(Tone){
 			this._filtersR[j] = null;
 		}
 		this._filtersR = null;
-		this._writable(["frequency"]);
 		this.frequency = null;
 		return this;
 	};
