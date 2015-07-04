@@ -3,8 +3,8 @@ define(["Tone/core/Tone", "Tone/component/CrossFade"], function(Tone){
 	"use strict";
 	
 	/**
-	 * 	@class  Effect is the base class for effects. Connect the effect between
-	 * 	        the effectSend and effectReturn GainNodes. then control the amount of
+	 * 	@class  Tone.Effect is the base class for effects. Connect the effect between
+	 * 	        the effectSend and effectReturn GainNodes, then control the amount of
 	 * 	        effect which goes to the output using the wet control.
 	 *
 	 *  @constructor

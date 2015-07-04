@@ -4,7 +4,7 @@ function(Tone){
 	"use strict";
 
 	/**
-	 *  @class  LFO stands for low frequency oscillator. It produces an output signal 
+	 *  @class  LFO stands for low frequency oscillator. Tone.LFo produces an output signal 
 	 *          which can be attached to an AudioParam or Tone.Signal 
 	 *          in order to modulate that parameter with an oscillator. The LFO can 
 	 *          also be synced to the transport to start/stop and change when the tempo changes.

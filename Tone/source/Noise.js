@@ -3,8 +3,8 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 	"use strict";
 
 	/**
-	 *  @class  Noise generator. Uses looped noise buffers to save on performance.
-	 *          Supports noise types: "pink", "white", and "brown". Read more about
+	 *  @class  Tone.Noise is a noise generator. It uses looped noise buffers to save on performance.
+	 *          Tone.Noise supports the noise types: "pink", "white", and "brown". Read more about
 	 *          colors of noise on 
 	 *          <a href="https://en.wikipedia.org/wiki/Colors_of_noise" target="_blank">Wikipedia</a>.
 	 *
@@ -12,7 +12,20 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 	 *  @extends {Tone.Source}
 	 *  @param {string} type the noise type (white|pink|brown)
 	 *  @example
-	 *  var noise = new Tone.Noise("pink");
+	 * //initialize the noise and start
+	 * var noise = new Tone.Noise("pink").start();
+	 * 
+	 * //make an autofilter to shape the noise
+	 * var autoFilter = new Tone.AutoFilter({
+	 * 	"frequency" : "8m", 
+	 * 	"min" : 800, 
+	 * 	"max" : 15000
+	 * }).connect(Tone.Master);
+	 * 
+	 * //connect the noise
+	 * noise.connect(autoFilter);
+	 * //start the autofilter LFO
+	 * autoFilter.start()
 	 */
 	Tone.Noise = function(){
 

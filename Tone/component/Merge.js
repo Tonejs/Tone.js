@@ -3,15 +3,20 @@ define(["Tone/core/Tone"], function(Tone){
 	"use strict";
 
 	/**
-	 *  @class  Merge two signals into the left and right 
-	 *          channels of a single, stereo channel.
+	 *  @class  Tone.Merge brings two signals into the left and right 
+	 *          channels of a single stereo channel.
 	 *
 	 *  @constructor
 	 *  @extends {Tone}
 	 *  @example
-	 * var merge = new Tone.Merge();
-	 * sigLeft.connect(merge.left);
-	 * sigRight.connect(merge.right);
+	 * var merge = new Tone.Merge().toMaster();
+	 * //routing a sine tone in the left channel
+	 * //and noise in the right channel
+	 * var osc = new Tone.Oscillator().connect(merge.left);
+	 * var noise = new Tone.Noise().connect(merge.right);
+	 * //starting our oscillators
+	 * noise.start();
+	 * osc.start();
 	 */
 	Tone.Merge = function(){
 

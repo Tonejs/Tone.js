@@ -12,7 +12,12 @@ define(["Tone/core/Tone", "Tone/effect/FeedbackEffect", "Tone/signal/Signal"], f
 	 *  @param {NormalRange=} feedback The amount of the effected signal which 
 	 *                            is fed back through the delay.
 	 *  @example
-	 * var feedbackDelay = new Tone.FeedbackDelay("8n", 0.25);
+	 * var feedbackDelay = new Tone.FeedbackDelay("8n", 0.5).toMaster();
+	 * var tom = new Tone.DrumSynth({
+	 * 	"octaves" : 4,
+	 * 	"pitchDecay" : 0.1
+	 * }).connect(feedbackDelay);
+	 * tom.triggerAttackRelease("A2","32n");
 	 */
 	Tone.FeedbackDelay = function(){
 		

@@ -3,8 +3,8 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/component/Filter"], functi
 	"use strict";
 
 	/**
-	 *  @class A lowpass feedback comb filter. Similar to Tone.FeedbackCombFilter, but
-	 *         includes a lowpass filter.
+	 *  @class Tone.Lowpass is a lowpass feedback comb filter. It is similar to 
+	 *         Tone.FeedbackCombFilter, but includes a lowpass filter.
 	 *
 	 *  @extends {Tone}
 	 *  @constructor

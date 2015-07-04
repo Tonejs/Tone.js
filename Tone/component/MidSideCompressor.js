@@ -4,7 +4,7 @@ define(["Tone/core/Tone", "Tone/component/MidSideSplit", "Tone/component/MidSide
 	"use strict";
 
 	/**
-	 *  @class MidSideCompressor applies two different compressors to the mid
+	 *  @class Tone.MidSideCompressor applies two different compressors to the mid
 	 *         and side signal components. See Tone.MidSideSplit. 
 	 *
 	 *  @extends {Tone}

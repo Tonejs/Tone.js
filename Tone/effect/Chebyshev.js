@@ -3,15 +3,21 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/signal/WaveShaper"], funct
 	"use strict";
 
 	/**
-	 *  @class A Chebyshev waveshaper. Good for making different types of distortion sounds.
-	 *         Note that odd orders sound very different from even ones. order = 1 is no change. 
-	 *         Read more <a href="http://music.columbia.edu/cmc/musicandcomputers/chapter4/04_06.php">here</a>
+	 *  @class Tone.ChebyShev is a Chebyshev waveshaper, an effect which is good 
+	 *         for making different types of distortion sounds.
+	 *         Note that odd orders sound very different from even ones, 
+	 *         and order = 1 is no change. 
+	 *         Read more <a href="http://music.columbia.edu/cmc/musicandcomputers/chapter4/04_06.php"
+	 *         targer="_blank">here</a>.
 	 *
 	 *  @extends {Tone.Effect}
 	 *  @constructor
 	 *  @param {Positive|Object} [order] The order of the chebyshev polynomial. Normal range between 1-100. 
 	 *  @example
+	 *  //create a new cheby
 	 *  var cheby = new Tone.Chebyshev(50);
+	 *  //create a monosynth connected to our cheby
+	 *  synth = new Tone.MonoSynth().connect(cheby);
 	 */
 	Tone.Chebyshev = function(){
 

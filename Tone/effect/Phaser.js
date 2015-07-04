@@ -4,7 +4,11 @@ function(Tone){
 	"use strict";
 
 	/**
-	 *  @class A Phaser effect. Inspiration from <a href="https://github.com/Dinahmoe/tuna/">tuna.js</a>
+	 *  @class Tone.Phaser is a phaser effect. Phasers work by changing the phase
+	 *  of different frequency components of an incoming signal. Read more on 
+	 *  <a href="https://en.wikipedia.org/wiki/Phaser_(effect)" target="_blank">
+	 *  Wikipedia</a>. Inspiration for this phaser comes from 
+	 *  <a href="https://github.com/Dinahmoe/tuna/">tuna.js</a>.
 	 *
 	 *	@extends {Tone.StereoEffect}
 	 *	@constructor
@@ -13,10 +17,12 @@ function(Tone){
 	 *	@param {Frequency} [baseFrequency] The base frequency of the filters. 
 	 *	@example
 	 * var phaser = new Tone.Phaser({
-	 * 	"frequency" : 0.4, 
-	 * 	"depth" : 12, 
-	 * 	"baseFrequency" : 550
-	 * });
+	 * 	"frequency" : 15, 
+	 * 	"depth" : 5, 
+	 * 	"baseFrequency" : 1000
+	 * }).toMaster();
+	 * var synth = new Tone.FMSynth().connect(phaser);
+	 * synth.triggerAttackRelease("E3", "2n");
 	 */
 	Tone.Phaser = function(){
 

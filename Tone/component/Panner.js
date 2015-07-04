@@ -5,7 +5,8 @@ function(Tone){
 	"use strict";
 
 	/**
-	 *  @class  Equal power Left/Right Panner. Not 3D. Uses the StereoPannerNode when available. 
+	 *  @class  Tone.Panner is an equal power Left/Right Panner and does not
+	 *  support 3D. Panner uses the StereoPannerNode when available. 
 	 *  
 	 *  @constructor
 	 *  @extends {Tone}
