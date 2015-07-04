@@ -59,7 +59,7 @@ A unique feature of the library is the oscillator-based Transport which allows f
 
 In the Tone library, time can be described in a number of ways. Any method which takes a time as a parameter will accept the number in seconds as well as a tempo-relative form. 
 
-For example to `"4n"` is a quarter-note and "4:2:0" is the third beat of the fifth measure (remember we're counting from 0). 
+For example to `"4n"` is a quarter-note and `"4:2:0"` is the third beat of the fifth measure (remember we're counting from 0). 
 
 [Read more Time](https://github.com/TONEnoTONE/Tone.js/wiki/Time).
 
