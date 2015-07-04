@@ -294,8 +294,8 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 	/**
 	 * The playback speed. 1 is normal speed. 
 	 * Note that this is not a Tone.Signal because of a bug in Blink. 
-	 * Please star <a href="https://code.google.com/p/chromium/issues/detail?id=311284">this</a>
-	 * issue if this an important thing to you.
+	 * Please star [this issue](https://code.google.com/p/chromium/issues/detail?id=311284)
+	 * if this an important thing to you.
 	 * @memberOf Tone.Player#
 	 * @type {number}
 	 * @name playbackRate

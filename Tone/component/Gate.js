@@ -6,9 +6,7 @@ define(["Tone/core/Tone", "Tone/component/Follower", "Tone/signal/GreaterThan"],
 	 *  @class  Tone.Gate only passes a signal through when the incoming 
 	 *          signal exceeds a specified threshold. To do this, Gate uses 
 	 *          a Tone.Follower to follow the amplitude of the incoming signal. 
-	 *          A common implementation of this class is a 
-	 *          <a href="https://en.wikipedia.org/wiki/Noise_gate" target="_blank">
-	 *          Noise Gate</a>.
+	 *          A common implementation of this class is a [Noise Gate](https://en.wikipedia.org/wiki/Noise_gate).
 	 *  
 	 *  @constructor
 	 *  @extends {Tone}

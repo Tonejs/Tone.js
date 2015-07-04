@@ -4,7 +4,7 @@ define(["Tone/core/Tone", "Tone/signal/ScaleExp", "Tone/signal/Signal"], functio
 
 	/**
 	 *  @class Comb filters are basic building blocks for physical modeling. Read more
-	 *         about comb filters on <a href="https://ccrma.stanford.edu/~jos/pasp/Feedback_Comb_Filters.html" target="_blank">CCRMA's website</a>. 
+	 *         about comb filters on [CCRMA's website](https://ccrma.stanford.edu/~jos/pasp/Feedback_Comb_Filters.html).
 	 *
 	 *  @extends {Tone}
 	 *  @constructor

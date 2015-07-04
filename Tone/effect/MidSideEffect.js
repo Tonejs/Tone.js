@@ -9,7 +9,7 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/MidSideSplit", "
 	 *         and the 'side' (which only comes out of the the side channels) 
 	 *         and effects them separately before being recombined.
 	 *         Applies a Mid/Side seperation and recombination.
-	 *         Algorithm found in <a href="http://www.kvraudio.com/forum/viewtopic.php?t=212587">kvraudio forums</a>. 
+	 *         Algorithm found in [kvraudio forums](http://www.kvraudio.com/forum/viewtopic.php?t=212587).
 	 *         <br><br>
 	 *         This is a base-class for Mid/Side Effects. 
 	 *

@@ -7,8 +7,7 @@ function(Tone){
 	/**
 	 *  @class  Tone.AutoWah connects a Tone.Follower to a bandpass filter (Tone.Filter).
 	 *          The frequency of the filter is adjusted proportionally to the 
-	 *          incoming signal's amplitude. Inspiration from 
-	 *          <a href="https://github.com/Dinahmoe/tuna" target="_blank">Tuna.js</a>. 
+	 *          incoming signal's amplitude. Inspiration from [Tuna.js](https://github.com/Dinahmoe/tuna).
 	 *
 	 *  @constructor
 	 *  @extends {Tone.Effect}

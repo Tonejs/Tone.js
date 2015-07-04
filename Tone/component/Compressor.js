@@ -4,10 +4,10 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 
 	/**
 	 *  @class Tone.Compressor is a thin wrapper around the Web Audio 
-	 *         <a href="http://webaudio.github.io/web-audio-api/#the-dynamicscompressornode-interface" target="_blank">DynamicsCompressorNode</a>. 
+	 *         [DynamicsCompressorNode](http://webaudio.github.io/web-audio-api/#the-dynamicscompressornode-interface).
 	 *         Compression reduces the volume of loud sounds or amplifies quiet sounds 
 	 *         by narrowing or "compressing" an audio signal's dynamic range. 
-	 *         Read more on <a href="https://en.wikipedia.org/wiki/Dynamic_range_compression">Wikipedia</a>.
+	 *         Read more on [Wikipedia](https://en.wikipedia.org/wiki/Dynamic_range_compression).
 	 *
 	 *  @extends {Tone}
 	 *  @constructor

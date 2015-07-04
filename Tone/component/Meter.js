@@ -3,15 +3,13 @@ define(["Tone/core/Tone", "Tone/core/Master"], function(Tone){
 	"use strict";
 
 	/**
-	 *  @class  Tone.Meter gets the <a href="https://en.wikipedia.org/wiki/Root_mean_square" 
-	 *          target="blank">RMS</a> of an input signal with some averaging applied. 
+	 *  @class  Tone.Meter gets the [RMS](https://en.wikipedia.org/wiki/Root_mean_square)
+	 *          of an input signal with some averaging applied. 
 	 *          It can also get the raw value of the signal or the value in dB. For signal 
 	 *          processing, it's better to use Tone.Follower which will produce an audio-rate 
 	 *          envelope follower instead of needing to poll the Meter to get the output.
 	 *          <br><br>
-	 *          Meter was inspired by 
-	 *          <a href=" https://github.com/cwilso/volume-meter/blob/master/volume-meter.js" 
-	 *          target="_blank">Chris Wilsons Volume Meter</a>
+	 *          Meter was inspired by [Chris Wilsons Volume Meter](https://github.com/cwilso/volume-meter/blob/master/volume-meter.js).
 	 *
 	 *  @constructor
 	 *  @extends {Tone}

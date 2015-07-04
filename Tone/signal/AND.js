@@ -3,7 +3,7 @@ define(["Tone/core/Tone", "Tone/signal/Equal"], function(Tone){
 	"use strict";
 
 	/**
-	 *  @class <a href="https://en.wikipedia.org/wiki/Logical_conjunction" target="_blank">AND</a>
+	 *  @class [AND](https://en.wikipedia.org/wiki/Logical_conjunction)
 	 *         returns 1 when all the inputs are equal to 1 and returns 0 otherwise.
 	 *
 	 *  @extends {Tone.SignalBase}

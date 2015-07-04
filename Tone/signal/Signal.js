@@ -6,9 +6,9 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 	 *  @class  A signal is an audio-rate value. Tone.Signal is a core component of the library.
 	 *          Unlike a number, Signals can be scheduled with sample-level accuracy. Tone.Signal
 	 *          has all of the methods available to native Web Audio 
-	 *          <a href="http://webaudio.github.io/web-audio-api/#the-audioparam-interface" target="_blank">AudioParams</a> 
+	 *          [AudioParam](http://webaudio.github.io/web-audio-api/#the-audioparam-interface)
 	 *          as well as additional conveniences. Read more about working with signals 
-	 *          <a href="https://github.com/TONEnoTONE/Tone.js/wiki/Signals" target="_blank">here</a> 
+	 *          [here](https://github.com/TONEnoTONE/Tone.js/wiki/Signals).
 	 *
 	 *  @constructor
 	 *  @extends {Tone.SignalBase}

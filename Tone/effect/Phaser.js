@@ -5,10 +5,9 @@ function(Tone){
 
 	/**
 	 *  @class Tone.Phaser is a phaser effect. Phasers work by changing the phase
-	 *  of different frequency components of an incoming signal. Read more on 
-	 *  <a href="https://en.wikipedia.org/wiki/Phaser_(effect)" target="_blank">
-	 *  Wikipedia</a>. Inspiration for this phaser comes from 
-	 *  <a href="https://github.com/Dinahmoe/tuna/">tuna.js</a>.
+	 *         of different frequency components of an incoming signal. Read more on 
+	 *         [Wikipedia](https://en.wikipedia.org/wiki/Phaser_(effect)). 
+	 *         Inspiration for this phaser comes from [Tuna.js](https://github.com/Dinahmoe/tuna/).
 	 *
 	 *	@extends {Tone.StereoEffect}
 	 *	@constructor

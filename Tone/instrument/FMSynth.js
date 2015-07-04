@@ -7,7 +7,7 @@ function(Tone){
 	 *  @class  FMSynth is composed of two Tone.MonoSynths where one Tone.MonoSynth modulates
 	 *          the frequency of a second Tone.MonoSynth. A lot of spectral content 
 	 *          can be explored using the modulationIndex parameter. Read more about
-	 *          frequency modulation synthesis on <a href="http://www.soundonsound.com/sos/apr00/articles/synthsecrets.htm">SoundOnSound</a>
+	 *          frequency modulation synthesis on [SoundOnSound](http://www.soundonsound.com/sos/apr00/articles/synthsecrets.htm).
 	 *          <img src="https://docs.google.com/drawings/d/1h0PUDZXPgi4Ikx6bVT6oncrYPLluFKy7lj53puxj-DM/pub?w=902&h=462">
 	 *
 	 *  @constructor

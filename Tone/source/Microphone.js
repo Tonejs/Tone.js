@@ -3,7 +3,8 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 	"use strict";
 
 	/**
-	 *  @class  Tone.Microphone is a WebRTC Microphone. Check <a href="https://developer.mozilla.org/en-US/docs/Web/API/MediaStream_API">Media Stream API Support</a>
+	 *  @class  Tone.Microphone is a WebRTC Microphone. Check 
+	 *          [Media Stream API Support](https://developer.mozilla.org/en-US/docs/Web/API/MediaStream_API)
 	 *          to see which browsers are supported. 
 	 *
 	 *  @constructor

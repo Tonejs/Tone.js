@@ -774,7 +774,7 @@ define(function(){
 		 */
 		Default : "number",
 		/**
-		 *  Time can be described in a number of ways. Read more <a href="https://github.com/TONEnoTONE/Tone.js/wiki/Time">here</a>.
+		 *  Time can be described in a number of ways. Read more [Time](https://github.com/TONEnoTONE/Tone.js/wiki/Time).
 		 *
 		 *  <ul>
 		 *  <li>Numbers, which will be taken literally as the time (in seconds).</li>

@@ -5,8 +5,7 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 	/**
 	 *  @class  Tone.Noise is a noise generator. It uses looped noise buffers to save on performance.
 	 *          Tone.Noise supports the noise types: "pink", "white", and "brown". Read more about
-	 *          colors of noise on 
-	 *          <a href="https://en.wikipedia.org/wiki/Colors_of_noise" target="_blank">Wikipedia</a>.
+	 *          colors of noise on [Wikipedia](https://en.wikipedia.org/wiki/Colors_of_noise).
 	 *
 	 *  @constructor
 	 *  @extends {Tone.Source}

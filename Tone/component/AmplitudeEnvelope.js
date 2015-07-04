@@ -6,8 +6,7 @@ define(["Tone/core/Tone", "Tone/component/Envelope"], function(Tone){
 	 *  @class  Tone.AmplitudeEnvelope is a Tone.Envelope connected to a gain node. 
 	 *          Unlike Tone.Envelope, which outputs the envelope's value, Tone.AmplitudeEnvelope accepts
 	 *          an audio signal as the input and will apply the envelope to the amplitude
-	 *          of the signal. Read more about ADSR Envelopes on 
-	 *          <a href="https://en.wikipedia.org/wiki/Synthesizer#ADSR_envelope" target="_blank">Wikipedia</a>.
+	 *          of the signal. Read more about ADSR Envelopes on [Wikipedia](https://en.wikipedia.org/wiki/Synthesizer#ADSR_envelope).
 	 *  
 	 *  @constructor
 	 *  @extends {Tone.Envelope}

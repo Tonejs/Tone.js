@@ -6,7 +6,7 @@ function(Tone){
 	/**
 	 *  @class Tone.Bitcrusher downsamples the incoming signal to a different bitdepth. 
 	 *         Lowering the bitdepth of the signal creates distortion. Read more about Bitcrushing
-	 *         on <a href="https://en.wikipedia.org/wiki/Bitcrusher" target="_blank">Wikipedia</a>.
+	 *         on [Wikipedia](https://en.wikipedia.org/wiki/Bitcrusher).
 	 *
 	 *  @constructor
 	 *  @extends {Tone.Effect}

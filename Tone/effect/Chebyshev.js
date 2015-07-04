@@ -7,8 +7,7 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/signal/WaveShaper"], funct
 	 *         for making different types of distortion sounds.
 	 *         Note that odd orders sound very different from even ones, 
 	 *         and order = 1 is no change. 
-	 *         Read more <a href="http://music.columbia.edu/cmc/musicandcomputers/chapter4/04_06.php"
-	 *         targer="_blank">here</a>.
+	 *         Read more at [music.columbia.edu](http://music.columbia.edu/cmc/musicandcomputers/chapter4/04_06.php).
 	 *
 	 *  @extends {Tone.Effect}
 	 *  @constructor

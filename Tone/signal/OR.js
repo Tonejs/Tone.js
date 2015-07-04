@@ -3,7 +3,7 @@ define(["Tone/core/Tone", "Tone/signal/GreaterThanZero"], function(Tone){
 	"use strict";
 
 	/**
-	 *  @class <a href="https://en.wikipedia.org/wiki/OR_gate" target="_blank">OR</a> 
+	 *  @class [OR](https://en.wikipedia.org/wiki/OR_gate)
 	 *         the inputs together. True if at least one of the inputs is true. 
 	 *
 	 *  @extends {Tone.SignalBase}

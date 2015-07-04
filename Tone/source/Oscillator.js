@@ -149,7 +149,7 @@ function(Tone){
 	 * <br><br> 
 	 * Uses PeriodicWave internally even for native types so that it can set the phase. 
 	 * PeriodicWave equations are from the 
-	 * <a href="https://code.google.com/p/chromium/codesearch#chromium/src/third_party/WebKit/Source/modules/webaudio/PeriodicWave.cpp&sq=package:chromium">Webkit Web Audio implementation</a>.
+	 * [Webkit Web Audio implementation](https://code.google.com/p/chromium/codesearch#chromium/src/third_party/WebKit/Source/modules/webaudio/PeriodicWave.cpp&sq=package:chromium).
 	 *  
 	 * @memberOf Tone.Oscillator#
 	 * @type {string}

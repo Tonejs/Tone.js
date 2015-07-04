@@ -3,7 +3,8 @@ define(["Tone/core/Tone", "Tone/signal/SignalBase"], function(Tone){
 	"use strict";
 
 	/**
-	 *  @class Wraps the native Web Audio API <a href="http://webaudio.github.io/web-audio-api/#the-waveshapernode-interface" target="_blank">WaveShaperNode</a>.
+	 *  @class Wraps the native Web Audio API 
+	 *         [WaveShaperNode](http://webaudio.github.io/web-audio-api/#the-waveshapernode-interface).
 	 *
 	 *  @extends {Tone.SignalBase}
 	 *  @constructor

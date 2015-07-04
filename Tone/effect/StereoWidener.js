@@ -7,7 +7,7 @@ define(["Tone/core/Tone", "Tone/effect/MidSideEffect", "Tone/signal/Signal",
 	/**
 	 *  @class Applies a width factor to the mid/side seperation. 
 	 *         0 is all mid and 1 is all side.
-	 *         Algorithm found in <a href="http://www.kvraudio.com/forum/viewtopic.php?t=212587">kvraudio forums</a>
+	 *         Algorithm found in [kvraudio forums](http://www.kvraudio.com/forum/viewtopic.php?t=212587).
 	 *         <br><br>
 	 *         <code>
 	 *         Mid *= 2*(1-width)<br>

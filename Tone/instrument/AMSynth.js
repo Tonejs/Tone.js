@@ -9,7 +9,7 @@ function(Tone){
 	 *          amplitude of another Tone.MonoSynth. The harmonicity (the ratio between
 	 *          the two signals) affects the timbre of the output signal the most.
 	 *          Read more about Amplitude Modulation Synthesis on 
-	 *          <a href="http://www.soundonsound.com/sos/mar00/articles/synthsecrets.htm" target="_blank">SoundOnSound</a>. 
+	 *          [SoundOnSound](http://www.soundonsound.com/sos/mar00/articles/synthsecrets.htm).
 	 *          <img src="https://docs.google.com/drawings/d/1TQu8Ed4iFr1YTLKpB3U1_hur-UwBrh5gdBXc8BxfGKw/pub?w=1009&h=457">
 	 *
 	 *  @constructor

@@ -8,8 +8,7 @@ function(Tone){
 	 *         also known as the duty cycle. At 50% duty cycle (width = 0.5) the wave is 
 	 *         a square and only odd-numbered harmonics are present. At all other widths 
 	 *         even-numbered harmonics are present. Read more 
-	 *         <a href="https://wigglewave.wordpress.com/2014/08/16/pulse-waveforms-and-harmonics/"
-	 *         target="_blank">here</a>.
+	 *         [here](https://wigglewave.wordpress.com/2014/08/16/pulse-waveforms-and-harmonics/).
 	 *
 	 *  @constructor
 	 *  @extends {Tone.Oscillator}
