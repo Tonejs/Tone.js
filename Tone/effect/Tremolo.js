@@ -3,7 +3,7 @@ define(["Tone/core/Tone", "Tone/component/LFO", "Tone/effect/Effect"], function(
 	"use strict";
 
 	/**
-	 *  @class A tremolo is a modulation in the amplitude of the incoming signal using a Tone.LFO. 
+	 *  @class Tone.Tremelo modulates the amplitude of an incoming signal using a Tone.LFO. 
 	 *         The type, frequency, and depth of the LFO is controllable. 
 	 *
 	 *  @extends {Tone.Effect}

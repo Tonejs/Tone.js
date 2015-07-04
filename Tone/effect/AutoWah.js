@@ -5,7 +5,7 @@ function(Tone){
 	"use strict";
 
 	/**
-	 *  @class  AutoWah connects a Tone.Follower to a bandpass filter (Tone.Filter).
+	 *  @class  Tone.AutoWah connects a Tone.Follower to a bandpass filter (Tone.Filter).
 	 *          The frequency of the filter is adjusted proportionally to the 
 	 *          incoming signal's amplitude. Inspiration from 
 	 *          <a href="https://github.com/Dinahmoe/tuna" target="_blank">Tuna.js</a>. 
@@ -19,7 +19,13 @@ function(Tone){
 	 *  @param {Decibels} [sensitivity] The decibel threshold sensitivity for 
 	 *                                   the incoming signal. Normal range of -40 to 0. 
 	 *  @example
-	 *  var autoWah = new Tone.AutoWah(100, 6, -20);
+	 * var autoWah = new Tone.AutoWah(50, 6, -30).toMaster();
+	 * //initialize the synth and connect to autowah
+	 * var synth = new SimpleSynth.connect(autoWah);
+	 * //Q value influences the effect of the wah - default is 2
+	 * autoWah.Q.value = 6;
+	 * //more audible on higher notes
+	 * synth.triggerAttackRelease("C4", "8n")
 	 */
 	Tone.AutoWah = function(){
 

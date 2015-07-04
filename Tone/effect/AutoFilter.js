@@ -3,7 +3,9 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/LFO", "Tone/comp
 	"use strict";
 
 	/**
-	 *  @class AutoFilter is a Tone.Filter with a Tone.LFO connected to the filter cutoff frequency.
+	 *  @class Tone.AutoFilter is a Tone.Filter with a Tone.LFO connected to the filter cutoff frequency.
+	 *         Setting the LFO rate and depth allows for control over the filter modulation rate 
+	 *         and depth.
 	 *
 	 *  @constructor
 	 *  @extends {Tone.Effect}

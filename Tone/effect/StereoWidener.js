@@ -9,8 +9,10 @@ define(["Tone/core/Tone", "Tone/effect/MidSideEffect", "Tone/signal/Signal",
 	 *         0 is all mid and 1 is all side.
 	 *         Algorithm found in <a href="http://www.kvraudio.com/forum/viewtopic.php?t=212587">kvraudio forums</a>
 	 *         <br><br>
+	 *         <code>
 	 *         Mid *= 2*(1-width)<br>
 	 *         Side *= 2*width
+	 *         </code>
 	 *
 	 *  @extends {Tone.MidSideEffect}
 	 *  @constructor

@@ -3,7 +3,7 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/signal/Signal", "Tone/sign
 	"use strict";
 	
 	/**
-	 * 	@class  Feedback Effect provides a loop between an 
+	 * 	@class  Tone.FeedbackEffect provides a loop between an 
 	 * 	        audio source and its own output. This is a base-class
 	 * 	        for feedback effects. 
 	 *

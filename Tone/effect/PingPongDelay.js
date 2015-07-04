@@ -4,8 +4,13 @@ function(Tone){
 	"use strict";
 
 	/**
-	 *  @class  PingPongDelay is a feedback delay effect where the echo is heard
-	 *          first in one channel and next in the opposite channel
+	 *  @class  Tone.PingPongDelay is a feedback delay effect where the echo is heard
+	 *          first in one channel and next in the opposite channel. In a stereo
+	 *          system these are the right and left channels.
+	 *          PingPongDelay in more simplified terms is two Tone.FeedbackDelays 
+	 *          with independent delay values. Each delay is routed to one channel
+	 *          (left or right), and the channel triggered second will always 
+	 *          trigger at the same interval after the first.
 	 *
 	 * 	@constructor
 	 * 	@extends {Tone.StereoXFeedbackEffect}
@@ -13,7 +18,9 @@ function(Tone){
 	 *  @param {NormalRange=} feedback The amount of the effected signal which 
 	 *                                 is fed back through the delay.
 	 *  @example
-	 * var pingPong = new Tone.PingPongDelay("4n", 0.2);
+	 * var pingPong = new Tone.PingPongDelay("4n", 0.2).toMaster();
+	 * var drum = new Tone.DrumSynth().connect(pingPong);
+	 * drum.triggerAttackRelease("C4", "32n");
 	 */
 	Tone.PingPongDelay = function(){
 		
