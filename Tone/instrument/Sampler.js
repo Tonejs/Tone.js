@@ -32,8 +32,8 @@ function(Tone){
 	 */
 	Tone.Sampler = function(urls, options){
 
-		Tone.Instrument.call(this);
 		options = this.defaultArg(options, Tone.Sampler.defaults);
+		Tone.Instrument.call(this, options);
 
 		/**
 		 *  The sample player.

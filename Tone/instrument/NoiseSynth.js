@@ -22,7 +22,7 @@ function(Tone){
 
 		//get the defaults
 		options = this.defaultArg(options, Tone.NoiseSynth.defaults);
-		Tone.Instrument.call(this);
+		Tone.Instrument.call(this, options);
 
 		/**
 		 *  The noise source.
