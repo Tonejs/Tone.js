@@ -4,7 +4,7 @@ function(Tone){
 	"use strict";
 
 	/**
-	 *  @class  LFO stands for low frequency oscillator. It produces an output signal 
+	 *  @class  LFO stands for low frequency oscillator. Tone.LFO produces an output signal 
 	 *          which can be attached to an AudioParam or Tone.Signal 
 	 *          in order to modulate that parameter with an oscillator. The LFO can 
 	 *          also be synced to the transport to start/stop and change when the tempo changes.
@@ -27,9 +27,7 @@ function(Tone){
 		/** 
 		 *  The oscillator. 
 		 *  @type {Tone.Oscillator}
-		 *  @example
-		 * //make the LFO a square wave
-		 * envelope.set("oscillator.type", "square");
+		 *  @private
 		 */
 		this.oscillator = new Tone.Oscillator({
 			"frequency" : options.frequency, 

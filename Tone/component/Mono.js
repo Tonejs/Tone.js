@@ -3,8 +3,10 @@ define(["Tone/core/Tone", "Tone/component/Merge"], function(Tone){
 	"use strict";
 
 	/**
-	 *  @class Coerces the incoming mono or stereo signal into a mono signal
-	 *         where both left and right channels have the same value. 
+	 *  @class Tone.Mono coerces the incoming mono or stereo signal into a mono signal
+	 *         where both left and right channels have the same value. This is useful 
+	 *         for <a href="https://en.wikipedia.org/wiki/Stereo_imaging" target="_blank">
+	 *         stereo imaging</a>.
 	 *
 	 *  @extends {Tone}
 	 *  @constructor

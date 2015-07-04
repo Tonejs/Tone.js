@@ -7,8 +7,10 @@ define(["Tone/core/Tone", "Tone/signal/Expr", "Tone/signal/Signal", "Tone/compon
 	 *  @class Mid/Side processing separates the the 'mid' signal 
 	 *         (which comes out of both the left and the right channel) 
 	 *         and the 'side' (which only comes out of the the side channels). <br><br>
+	 *         <code>
 	 *         Mid = (Left+Right)/sqrt(2);   // obtain mid-signal from left and right<br>
 	 *         Side = (Left-Right)/sqrt(2);   // obtain side-signal from left and righ<br>
+	 *         </code>
 	 *
 	 *  @extends {Tone}
 	 *  @constructor

@@ -5,11 +5,14 @@ function(Tone){
 	"use strict";
 
 	/**
-	 *  @class  A crude envelope follower which will follow the amplitude
-	 *          of the incoming signal. 
-	 *          Careful with small (< 0.02) attack or decay values. 
-	 *          The follower has some ripple which gets exaggerated
-	 *          by small values. 
+	 *  @class  Tone.Follower is a  crude envelope follower which will follow 
+	 *          the amplitude of an incoming signal. 
+	 *          Take care with small (< 0.02) attack or decay values 
+	 *          as follower has some ripple which is exaggerated
+	 *          at these values. Read more about envelope followers (also known 
+	 *          as envelope detectors) on
+	 *          <a href="https://en.wikipedia.org/wiki/Envelope_detector" 
+	 *          target="_blank">Wikipedia</a>.
 	 *  
 	 *  @constructor
 	 *  @extends {Tone}
@@ -153,8 +156,8 @@ function(Tone){
 	});
 
 	/**
-	 *  borrows the connect method from Signal so that the output can be used
-	 *  as a control signal {@link Tone.Signal}
+	 *  Borrows the connect method from Signal so that the output can be used
+	 *  as a Tone.Signal control signal.
 	 *  @function
 	 */
 	Tone.Follower.prototype.connect = Tone.Signal.prototype.connect;

@@ -3,19 +3,29 @@ define(["Tone/core/Tone", "Tone/core/Master"], function(Tone){
 	"use strict";
 
 	/**
-	 *  @class  Get the <a href="https://en.wikipedia.org/wiki/Root_mean_square" target="blank">RMS</a> 
-	 *          of the input signal with some averaging. Can also get the raw value of the signal
-	 *          or the value in dB. inspired by 
-	 *          <a href=" https://github.com/cwilso/volume-meter/blob/master/volume-meter.js" target="_blank">Chris Wilsons Volume Meter</a>
-	 *         <br><br>
-	 *          Note that for signal processing, it's better to use Tone.Follower which will produce
-	 *          an audio-rate envelope follower instead of needing to poll the Meter to get the output.
+	 *  @class  Tone.Meter gets the <a href="https://en.wikipedia.org/wiki/Root_mean_square" 
+	 *          target="blank">RMS</a> of an input signal with some averaging applied. 
+	 *          It can also get the raw value of the signal or the value in dB. For signal 
+	 *          processing, it's better to use Tone.Follower which will produce an audio-rate 
+	 *          envelope follower instead of needing to poll the Meter to get the output.
+	 *          <br><br>
+	 *          Meter was inspired by 
+	 *          <a href=" https://github.com/cwilso/volume-meter/blob/master/volume-meter.js" 
+	 *          target="_blank">Chris Wilsons Volume Meter</a>
 	 *
 	 *  @constructor
 	 *  @extends {Tone}
 	 *  @param {number} [channels=1] number of channels being metered
 	 *  @param {number} [smoothing=0.8] amount of smoothing applied to the volume
 	 *  @param {number} [clipMemory=0.5] number in seconds that a "clip" should be remembered
+	 *  @example
+	 * var meter = new Tone.Meter();
+	 * var mic = new Tone.Microphone().start();
+	 * //connect mic to the meter
+	 * mic.connect(meter);
+	 * //use getLevel or getDb 
+	 * //to access meter level
+	 * meter.getLevel();
 	 */
 	Tone.Meter = function(channels, smoothing, clipMemory){
 		//extends Unit

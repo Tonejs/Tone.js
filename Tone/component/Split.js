@@ -3,7 +3,7 @@ define(["Tone/core/Tone"], function(Tone){
 	"use strict";
 
 	/**
-	 *	@class  Split the incoming signal into left and right channels. 
+	 *	@class  Tone.Split splits an incoming signal into left and right channels.
 	 *	
 	 *  @constructor
 	 *  @extends {Tone}

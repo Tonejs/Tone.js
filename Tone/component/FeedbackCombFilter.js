@@ -3,7 +3,7 @@ define(["Tone/core/Tone", "Tone/signal/ScaleExp", "Tone/signal/Signal"], functio
 	"use strict";
 
 	/**
-	 *  @class Comb filters are basic building blocks for digital audio effects. Read more
+	 *  @class Comb filters are basic building blocks for physical modeling. Read more
 	 *         about comb filters on <a href="https://ccrma.stanford.edu/~jos/pasp/Feedback_Comb_Filters.html" target="_blank">CCRMA's website</a>. 
 	 *
 	 *  @extends {Tone}

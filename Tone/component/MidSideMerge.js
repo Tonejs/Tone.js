@@ -9,8 +9,10 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Expr", "Tone/compon
 	 *         and the 'side' (which only comes out of the the side channels). 
 	 *         MidSideMerge merges the mid and side signal after they've been seperated
 	 *         by Tone.MidSideSplit.<br><br>
+	 *         <code>
 	 *         Left = (Mid+Side)/sqrt(2);   // obtain left signal from mid and side<br>
 	 *         Right = (Mid-Side)/sqrt(2);   // obtain right signal from mid and side<br>
+	 *         </code>
 	 *
 	 *  @extends {Tone.StereoEffect}
 	 *  @constructor
