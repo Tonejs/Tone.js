@@ -153,6 +153,20 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Pow"], function(Ton
 	Tone.Envelope.prototype._timeMult = 0.25;
 
 	/**
+	 * Read the current value of the envelope. Useful for 
+	 * syncronizing visual output to the envelope. 
+	 * @memberOf Tone.Envelope#
+	 * @type {Number}
+	 * @name value
+	 * @readOnly
+	 */
+	Object.defineProperty(Tone.Envelope.prototype, "value", {
+		get : function(){
+			return this._sig.value;
+		}
+	});
+
+	/**
 	 * The slope of the attack. Either "linear" or "exponential". 
 	 * @memberOf Tone.Envelope#
 	 * @type {string}
