@@ -19,7 +19,8 @@ var ExampleList = {
 	"Sequencing / Timing" : {
 		"Scores" : "score",
 		"Step Sequencer" : "stepSequencer",
-		"Play Along" : "shiny"
+		"Play Along" : "shiny",
+		"Visualizing Envelopes": "funkyShape"
 	},
 	"Signals" : {
 		"Control Voltage" : "signal",
