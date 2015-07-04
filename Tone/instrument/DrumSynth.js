@@ -10,8 +10,8 @@ function(Tone){
 	 *          is routed through a Tone.AmplitudeEnvelope to the output. The drum
 	 *          quality of the sound comes from the frequency envelope applied
 	 *          during during Tone.DrumSynth.triggerAttack(note). The frequency
-	 *          envelope starts at <code>note * Tone.DrumSynth.octaves</code> and ramps to 
-	 *          <code>note</code> over the duration of <code>Tone.DrumSynth.pitchDecay</code>. 
+	 *          envelope starts at <code>note * .octaves</code> and ramps to 
+	 *          <code>note</code> over the duration of <code>.pitchDecay</code>. 
 	 *
 	 *  @constructor
 	 *  @extends {Tone.Instrument}

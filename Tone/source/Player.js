@@ -3,7 +3,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 	"use strict";
 	
 	/**
-	 *  @class  Audio file player with start, loop, stop.
+	 *  @class  Tone.Player is an audio file player with start, loop, and stop functions.
 	 *  
 	 *  @constructor
 	 *  @extends {Tone.Source} 
@@ -83,7 +83,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 		/**
 		 *  Enabling retrigger will allow a player to be restarted
 		 *  before the the previous 'start' is done playing. Otherwise, 
-		 *  successive calls to Tone.Player.start, will only start
+		 *  successive calls to Tone.Player.start will only start
 		 *  the sample if it had played all the way through. 
 		 *  @type {boolean}
 		 */

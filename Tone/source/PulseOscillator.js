@@ -4,7 +4,12 @@ function(Tone){
 	"use strict";
 
 	/**
-	 *  @class Pulse Oscillator with control over width. 
+	 *  @class Tone.PulseOscillator is a pulse oscillator with control over pulse width,
+	 *         also known as the duty cycle. At 50% duty cycle (width = 0.5) the wave is 
+	 *         a square and only odd-numbered harmonics are present. At all other widths 
+	 *         even-numbered harmonics are present. Read more 
+	 *         <a href="https://wigglewave.wordpress.com/2014/08/16/pulse-waveforms-and-harmonics/"
+	 *         target="_blank">here</a>.
 	 *
 	 *  @constructor
 	 *  @extends {Tone.Oscillator}
