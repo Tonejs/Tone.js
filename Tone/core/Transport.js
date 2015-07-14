@@ -205,7 +205,7 @@ function(Tone){
 				timelineTicks % tatum !== 0 && //not on a downbeat
 				timelineTicks % swingTatum === 0){
 				//add some swing
-				tickTime += this._ticksToSeconds(swingTatum) * swingAmount;
+				tickTime += this.ticksToSeconds(swingTatum) * swingAmount;
 			}
 			processIntervals(tickTime);
 			processTimeouts(tickTime);
@@ -308,7 +308,7 @@ function(Tone){
 	 *  }, "8n");
 	 */
 	Tone.Transport.prototype.setInterval = function(callback, interval, ctx){
-		var tickTime = this._toTicks(interval);
+		var tickTime = this.toTicks(interval);
 		var timeout = new TimelineEvent(callback, ctx, tickTime, transportTicks);
 		intervals.push(timeout);
 		return timeout.id;
@@ -360,7 +360,7 @@ function(Tone){
 	 *  }, 1)
 	 */
 	Tone.Transport.prototype.setTimeout = function(callback, time, ctx){
-		var ticks = this._toTicks(time);
+		var ticks = this.toTicks(time);
 		var timeout = new TimelineEvent(callback, ctx, ticks + transportTicks, 0);
 		//put it in the right spot
 		for (var i = 0, len = timeouts.length; i<len; i++){
@@ -412,7 +412,7 @@ function(Tone){
 	 *  Tone.Transport has been stopped and restarted. 
 	 *
 	 *  @param {function} 	callback 	
-	 *  @param {Tome.Time}  timeout  
+	 *  @param {Time}  timeout  
 	 *  @return {number} 				the id for clearing the transportTimeline event
 	 *  @example
 	 *  //trigger the start of a part on the 16th measure
@@ -421,7 +421,7 @@ function(Tone){
 	 *  }, "16m");
 	 */
 	Tone.Transport.prototype.setTimeline = function(callback, timeout, ctx){
-		var ticks = this._toTicks(timeout);
+		var ticks = this.toTicks(timeout);
 		var timelineEvnt = new TimelineEvent(callback, ctx, ticks, 0);
 		//put it in the right spot
 		for (var i = timelineProgress, len = transportTimeline.length; i<len; i++){
@@ -468,50 +468,19 @@ function(Tone){
 	///////////////////////////////////////////////////////////////////////////////
 
 	/**
-	 *  turns the time into
-	 *  @param  {Time} time
-	 *  @return {number}   
-	 *  @private   
-	 */
-	Tone.Transport.prototype._toTicks = function(time){
-		//get the seconds
-		var seconds = this.toSeconds(time);
-		var quarter = this.notationToSeconds("4n");
-		var quarters = seconds / quarter;
-		var tickNum = quarters * tatum;
-		//quantize to tick value
-		return Math.round(tickNum);
-	};
-
-	/**
-	 *  convert ticks into seconds
-	 *  
-	 *  @param  {number} ticks 
-	 *  @param {number=} bpm 
-	 *  @param {number=} timeSignature
-	 *  @return {number}               seconds
-	 *  @private
-	 */
-	Tone.Transport.prototype._ticksToSeconds = function(ticks, bpm, timeSignature){
-		ticks = Math.floor(ticks);
-		var quater = this.notationToSeconds("4n", bpm, timeSignature);
-		return (quater * ticks) / (tatum);
-	};
-
-	/**
 	 *  Returns the time of the next beat.
 	 *  @param  {string} [subdivision="4n"]
 	 *  @return {number} 	the time in seconds of the next subdivision
 	 */
 	Tone.Transport.prototype.nextBeat = function(subdivision){
 		subdivision = this.defaultArg(subdivision, "4n");
-		var tickNum = this._toTicks(subdivision);
+		var tickNum = this.toTicks(subdivision);
 		var remainingTicks = (transportTicks % tickNum);
 		var nextTick = remainingTicks;
 		if (remainingTicks > 0){
 			nextTick = tickNum - remainingTicks;
 		}
-		return this._ticksToSeconds(nextTick);
+		return this.ticksToSeconds(nextTick);
 	};
 
 
@@ -531,7 +500,7 @@ function(Tone){
 	Tone.Transport.prototype.start = function(time, offset){
 		if (this.state === Tone.State.Stopped || this.state === Tone.State.Paused){
 			if (!this.isUndef(offset)){
-				this._setTicks(this._toTicks(offset));
+				this._setTicks(this.toTicks(offset));
 			}
 			this.state = Tone.State.Started;
 			var startTime = this.toSeconds(time);
@@ -633,10 +602,10 @@ function(Tone){
 	 */
 	Object.defineProperty(Tone.Transport.prototype, "loopStart", {
 		get : function(){
-			return this._ticksToSeconds(loopStart);
+			return this.ticksToSeconds(loopStart);
 		},
 		set : function(startPosition){
-			loopStart = this._toTicks(startPosition);
+			loopStart = this.toTicks(startPosition);
 		}
 	});
 
@@ -648,10 +617,10 @@ function(Tone){
 	 */
 	Object.defineProperty(Tone.Transport.prototype, "loopEnd", {
 		get : function(){
-			return this._ticksToSeconds(loopEnd);
+			return this.ticksToSeconds(loopEnd);
 		},
 		set : function(endPosition){
-			loopEnd = this._toTicks(endPosition);
+			loopEnd = this.toTicks(endPosition);
 		}
 	});
 
@@ -704,7 +673,7 @@ function(Tone){
 		set : function(subdivision){
 			//scale the values to a normal range
 			swingSubdivision = subdivision;
-			swingTatum = this._toTicks(subdivision);
+			swingTatum = this.toTicks(subdivision);
 		}
 	});
 
@@ -726,7 +695,7 @@ function(Tone){
 			return progress.join(":");
 		},
 		set : function(progress){
-			var ticks = this._toTicks(progress);
+			var ticks = this.toTicks(progress);
 			this._setTicks(ticks);
 		}
 	});
@@ -896,12 +865,30 @@ function(Tone){
 	///////////////////////////////////////////////////////////////////////////////
 
 	/**
-	 *  tests if a string is musical notation
-	 *  i.e.:
-	 *  	4n = quarter note
-	 *   	2m = two measures
-	 *    	8t = eighth-note triplet
+	 *  Tests if a string is in Tick notation. 
 	 *  
+	 *  @param {string} str The string to test
+	 *  @return {boolean} 
+	 *  @method isTick
+	 *  @lends Tone.prototype.isTick
+	 */
+	Tone.prototype.isTicks = (function(){
+		var tickFormat = new RegExp(/^\d+i$/i);
+		return function(note){
+			return tickFormat.test(note);
+		};
+	})();
+
+	/**
+	 *  tests if a string is musical notation.
+	 *  i.e.:
+	 *  <ul>
+	 *  	<li>4n = quarter note</li>
+	 *   	<li>2m = two measures</li>
+	 *    	<li>8t = eighth-note triplet</li>
+	 *  </ul>
+	 *  
+	 *  @param {string} str The string to test
 	 *  @return {boolean} 
 	 *  @method isNotation
 	 *  @lends Tone.prototype.isNotation
@@ -994,6 +981,21 @@ function(Tone){
 		var beats = (measures * timeSignature + quarters + sixteenths / 4);
 		return beats * this.notationToSeconds("4n");
 	};
+	
+	/**
+	 *  convert ticks into seconds
+	 *  
+	 *  @param  {number} ticks 
+	 *  @param {number=} bpm 
+	 *  @param {number=} timeSignature
+	 *  @return {number}               seconds
+	 *  @private
+	 */
+	Tone.prototype.ticksToSeconds = function(ticks, bpm, timeSignature){
+		ticks = parseInt(ticks);
+		var quater = this.notationToSeconds("4n", bpm, timeSignature);
+		return (quater * ticks) / (tatum);
+	};
 
 	/**
 	 *  Convert seconds to the closest transportTime in the form 
@@ -1038,6 +1040,23 @@ function(Tone){
 			return freq;
 		}
 	};
+
+	/**
+	 *  turns the time into
+	 *  @param  {Time} time
+	 *  @return {number}   
+	 *  @private   
+	 */
+	Tone.prototype.toTicks = function(time){
+		//get the seconds
+		var seconds = this.toSeconds(time);
+		var quarter = this.notationToSeconds("4n");
+		var quarters = seconds / quarter;
+		var tickNum = quarters * tatum;
+		//quantize to tick value
+		return Math.round(tickNum);
+	};
+
 
 	/**
 	 *  Convert Time into seconds.
@@ -1089,6 +1108,8 @@ function(Tone){
 				time = this.transportTimeToSeconds(time);
 			} else if (this.isFrequency(time)){
 				time = this.frequencyToSeconds(time);
+			} else if (this.isTicks(time)){
+				time = this.ticksToSeconds(time);
 			} else {
 				time = parseFloat(time);
 			}
