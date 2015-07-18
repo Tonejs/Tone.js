@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
+define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Types"], function(Tone){
 
 	"use strict";
 	
