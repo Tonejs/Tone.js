@@ -117,7 +117,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Pow", "Tone/core/Ty
 		 *  @type {number}
 		 *  @private
 		 */
-		this._minOutput = 0.0001;
+		this._minOutput = 0.00001;
 
 		/**
 		 *  the signal
