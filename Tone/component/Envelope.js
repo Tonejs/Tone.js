@@ -275,7 +275,8 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Pow", "Tone/core/Ty
 	 */
 	Tone.Envelope.prototype.triggerAttack = function(time, velocity){
 		//to seconds
-		time = this.toSeconds(time);
+		var now = this.now() + this.blockTime;
+		time = this.toSeconds(time, now);
 		var attack = this.toSeconds(this.attack);
 		var decay = this.toSeconds(this.decay);
 
@@ -315,7 +316,8 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Pow", "Tone/core/Ty
 	 *  env.triggerRelease();
 	 */
 	Tone.Envelope.prototype.triggerRelease = function(time){
-		time = this.toSeconds(time);
+		var now = this.now() + this.blockTime;
+		time = this.toSeconds(time, now);
 		var phase = this._phaseAtTime(time);
 		var release = this.toSeconds(this.release);
 
