@@ -325,12 +325,12 @@ define(function(){
 	Tone.prototype.bufferSize = 2048;
 
 	/**
-	 *  the delay time of a single buffer frame
+	 *  The delay time of a single frame (128 samples according to the spec). 
 	 *  @type {number}
 	 *  @static
 	 *  @const
 	 */
-	Tone.prototype.bufferTime = Tone.prototype.bufferSize / Tone.context.sampleRate;
+	Tone.prototype.blockTime = 128 / Tone.context.sampleRate;
 	
 	///////////////////////////////////////////////////////////////////////////
 	//	CONNECTIONS
@@ -653,6 +653,9 @@ define(function(){
 	///////////////////////////////////////////////////////////////////////////
 
 	/**
+	 *  Return the current time of the clock + a single buffer frame. 
+	 *  If this value is used to schedule a value to change, the earliest
+	 *  it could be scheduled is the following frame. 
 	 *  @return {number} the currentTime from the AudioContext
 	 */
 	Tone.prototype.now = function(){
@@ -751,8 +754,8 @@ define(function(){
 
 	//setup the context
 	Tone._initAudioContext(function(audioContext){
-		//set the bufferTime
-		Tone.prototype.bufferTime = Tone.prototype.bufferSize / audioContext.sampleRate;
+		//set the blockTime
+		Tone.prototype.blockTime = 128 / audioContext.sampleRate;
 		_silentNode = audioContext.createGain();
 		_silentNode.gain.value = 0;
 		_silentNode.connect(audioContext.destination);

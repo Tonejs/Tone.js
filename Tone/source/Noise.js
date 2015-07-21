@@ -95,7 +95,7 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 				}
 				//if it's playing, stop and restart it
 				if (this.state === Tone.State.Started){
-					var now = this.now() + this.bufferTime;
+					var now = this.now() + this.blockTime;
 					//remove the listener
 					this._source.onended = undefined;
 					this._stop(now);

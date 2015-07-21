@@ -141,7 +141,7 @@ function(Tone){
 	 */
 	Tone.OmniOscillator.prototype._createNewOscillator = function(OscillatorConstructor){
 		//short delay to avoid clicks on the change
-		var now = this.now() + this.bufferTime;
+		var now = this.now() + this.blockTime;
 		if (this._oscillator !== null){
 			var oldOsc = this._oscillator;
 			oldOsc.stop(now);

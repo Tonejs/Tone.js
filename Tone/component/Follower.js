@@ -57,7 +57,7 @@ function(Tone){
 		 *  @private
 		 */
 		this._delay = this.context.createDelay();
-		this._delay.delayTime.value = this.bufferTime;
+		this._delay.delayTime.value = this.blockTime;
 
 		/**
 		 *  this keeps it far from 0, even for very small differences
@@ -107,7 +107,7 @@ function(Tone){
 	 *  @private
 	 */
 	Tone.Follower.prototype._setAttackRelease = function(attack, release){
-		var minTime = this.bufferTime;
+		var minTime = this.blockTime;
 		attack = this.secondsToFrequency(this.toSeconds(attack));
 		release = this.secondsToFrequency(this.toSeconds(release));
 		attack = Math.max(attack, minTime);
