@@ -90,6 +90,14 @@ function(chai, Tone, Types, Transport){
 			expect(tone.notationToSeconds("8t")).to.equal(0.25/3);
 			expect(tone.notationToSeconds("8m")).to.equal(8);
 		});
+
+		it("handles setting different time signatures", function(){
+			Transport.bpm.value = 120;
+			Transport.timeSignature = 7;
+			expect(tone.notationToSeconds("4n")).to.equal(0.5);
+			expect(tone.notationToSeconds("1m")).to.equal(3.5);
+			expect(tone.notationToSeconds("1n")).to.equal(3.5);
+		});
 	});
 
 	describe("Tone.transportTimeToSeconds", function(){
@@ -233,6 +241,24 @@ function(chai, Tone, Types, Transport){
 				done();
 			}, 100);
 		});
+	});
+
+	describe("Tone.toNotation", function(){
+
+		it("converts time into notation", function(){
+			Transport.bpm.value = 120;
+			Transport.timeSignature = 4;
+			expect(tone.toNotation("4n")).to.equal("4n");
+			expect(tone.toNotation(1.5)).to.equal("2n + 4n");
+			expect(tone.toNotation("1:2:3")).to.equal("1m + 2n + 8n + 16n");
+		});
+
+		it("works with triplet notation", function(){
+			Transport.bpm.value = 120;
+			Transport.timeSignature = 5;
+			expect(tone.toNotation("1m + 8t")).to.equal("1m + 8t");
+		});
+
 	});
 
 	describe("Tone.getType", function(){

@@ -230,6 +230,7 @@ define(["Tone/core/Tone"], function (Tone) {
 	/**
 	 *  Get the Tone.Type of the argument
 	 *  @param {String|Number} value The value to test the type of
+	 *  @returns {Tone.Type} The type of that value.
 	 */
 	 Tone.prototype.getType = function(value){
 		if (this.isTicks(value)){
@@ -256,15 +257,19 @@ define(["Tone/core/Tone"], function (Tone) {
 	 *  convert notation format strings to seconds
 	 *  
 	 *  @param  {String} notation     
-	 *  @param {number=} bpm 
+	 *  @param {BPM=} bpm 
 	 *  @param {number=} timeSignature 
 	 *  @return {number} 
 	 *                
 	 */
 	Tone.prototype.notationToSeconds = function(notation, bpm, timeSignature){
-		bpm = this.defaultArg(bpm, Tone.Transport.bpm.value);
+		bpm = this.defaultArg(bpm, Tone.Transport.bpm ? Tone.Transport.bpm.value : 0);
 		timeSignature = this.defaultArg(timeSignature, Tone.Transport.timeSignature);
 		var beatTime = (60 / bpm);
+		//special case: 1n = 1m
+		if (notation === "1n"){
+			notation = "1m";
+		}
 		var subdivision = parseInt(notation, 10);
 		var beats = 0;
 		if (subdivision === 0){
@@ -288,8 +293,8 @@ define(["Tone/core/Tone"], function (Tone) {
 	 *  
 	 *  ie: 4:2:3 == 4 measures + 2 quarters + 3 sixteenths
 	 *
-	 *  @param  {String} transportTime 
-	 *  @param {number=} bpm 
+	 *  @param  {TransportTime} transportTime 
+	 *  @param {BPM=} bpm 
 	 *  @param {number=} timeSignature
 	 *  @return {number}               seconds
 	 *
@@ -313,14 +318,14 @@ define(["Tone/core/Tone"], function (Tone) {
 			sixteenths = parseFloat(split[2]);
 		}
 		var beats = (measures * timeSignature + quarters + sixteenths / 4);
-		return beats * this.notationToSeconds("4n");
+		return beats * this.notationToSeconds("4n", bpm, timeSignature);
 	};
 	
 	/**
 	 *  convert ticks into seconds
 	 *  
-	 *  @param  {number} ticks 
-	 *  @param {number=} bpm 
+	 *  @param  {Ticks} ticks 
+	 *  @param {BPM=} bpm 
 	 *  @param {number=} timeSignature
 	 *  @return {number}               seconds
 	 *  @private
@@ -339,7 +344,7 @@ define(["Tone/core/Tone"], function (Tone) {
 	 *  Accepts numbers and strings: i.e. "10hz" or 
 	 *  10 both return 0.1. 
 	 *  
-	 *  @param  {number|string} freq 
+	 *  @param  {Frequency} freq 
 	 *  @return {number}      
 	 */
 	Tone.prototype.frequencyToSeconds = function(freq){
@@ -373,14 +378,14 @@ define(["Tone/core/Tone"], function (Tone) {
 	 *  	"measures:quarters:sixteenths"
 	 *
 	 *  @param {Number} seconds 
-	 *  @param {Number=} bpm 
+	 *  @param {BPM=} bpm 
 	 *  @param {Number=} timeSignature
 	 *  @return {TransportTime}  
 	 */
 	Tone.prototype.secondsToTransportTime = function(seconds, bpm, timeSignature){
 		bpm = this.defaultArg(bpm, Tone.Transport.bpm.value);
 		timeSignature = this.defaultArg(timeSignature, Tone.Transport.timeSignature);
-		var quarterTime = this.notationToSeconds("4n");
+		var quarterTime = this.notationToSeconds("4n", bpm, timeSignature);
 		var quarters = seconds / quarterTime;
 		var measures = Math.floor(quarters / timeSignature);
 		var sixteenths = (quarters % 1) * 4;
@@ -408,10 +413,10 @@ define(["Tone/core/Tone"], function (Tone) {
 	 *
 	 *  @method toTransportTime
 	 *  
-	 *  @param {Time} seconds 
-	 *  @param {number=} bpm 
+	 *  @param {Time} time 
+	 *  @param {BPM=} bpm 
 	 *  @param {number=} timeSignature
-	 *  @return {String}  
+	 *  @return {TransportTime}  
 	 *  
 	 *  @lends Tone.prototype.toTransportTime
 	 */
@@ -539,6 +544,58 @@ define(["Tone/core/Tone"], function (Tone) {
 			return now;
 		}
 	};
+
+	function toNotationHelper(time, bpm, timeSignature, testNotations){
+		var seconds = this.toSeconds(time);
+		var threshold = this.notationToSeconds(testNotations[testNotations.length - 1], bpm, timeSignature);
+		var retNotation = "";
+		for (var i = 0; i < testNotations.length; i++){
+			var notationTime = this.notationToSeconds(testNotations[i], bpm, timeSignature);
+			//account for floating point errors (i.e. round up if the value is 0.999999)
+			var multiple = seconds / notationTime;
+			var floatingPointError = 0.000001;
+			if (1 - multiple % 1 < floatingPointError){
+				multiple += floatingPointError;
+			}
+			multiple = Math.floor(multiple);
+			if (multiple > 0){
+				if (multiple === 1){
+					retNotation += testNotations[i];
+				} else {
+					retNotation += multiple.toString() + "*" + testNotations[i];
+				}
+				seconds -= multiple * notationTime;
+				if (seconds < threshold){
+					break;
+				} else {
+					retNotation += " + ";
+				}
+			}
+		}
+		return retNotation;
+	}
+
+	/**
+	 *  Convert a Time to Notation. Values will be thresholded to the nearest 128th note. 
+	 *  @param {Time} time 
+	 *  @param {BPM=} bpm 
+	 *  @param {number=} timeSignature
+	 *  @return {Notation}  
+	 */
+	Tone.prototype.toNotation = function(time, bpm, timeSignature){
+		var testNotations = ["1m", "2n", "4n", "8n", "16n", "32n", "64n", "128n"];
+		var retNotation = toNotationHelper.call(this, time, bpm, timeSignature, testNotations);
+		//try the same thing but with tripelets
+		var testTripletNotations = ["1m", "2n", "2t", "4n", "4t", "8n", "8t", "16n", "16t", "32n", "32t", "64n", "64t", "128n"];
+		var retTripletNotation = toNotationHelper.call(this, time, bpm, timeSignature, testTripletNotations);
+		//choose the simpler expression of the two
+		if (retTripletNotation.split("+").length < retNotation.split("+").length){
+			return retTripletNotation;
+		} else {
+			return retNotation;
+		}
+	};
+
 
 	///////////////////////////////////////////////////////////////////////////
 	//	FREQUENCY CONVERSIONS
