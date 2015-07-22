@@ -13827,6 +13827,9 @@
 		 *  @extends {Tone.Monophonic}
 		 *  @param {Object} [options] the options available for the synth 
 		 *                          see defaults below
+		 *  
+		 *  @routing test test test
+		 *  
 		 *  @example
 		 * var synth = new Tone.SimpleSynth().toMaster();
 		 * synth.triggerAttackRelease("C4", "8n");

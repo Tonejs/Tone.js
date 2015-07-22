@@ -17,6 +17,19 @@ function(Tone){
 	 *  @example
 	 * var fmSynth = new Tone.FMSynth().toMaster();
 	 * fmSynth.triggerAttackRelease("C5", "4n");
+	 *
+	 * 	@routing {
+	 * 	         	"carrier": {
+	 * 	         		"type": "Oscillator",
+	 * 	         	 	"connect": "output",
+	 * 	         	 	"param": ".carrier"
+	 * 	            },
+	 * 	         	"modulator": {
+	 * 	         		"type": "Oscillator,
+	 * 	         	 	"connect": "carrier.frequency",
+	 * 	         	 	"param": ".modulator"
+	 * 	            }
+	 *           }
 	 */
 	Tone.FMSynth = function(options){
 
