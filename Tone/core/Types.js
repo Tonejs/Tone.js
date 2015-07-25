@@ -14,7 +14,7 @@ define(["Tone/core/Tone"], function (Tone) {
 		 */
 		Default : "number",
 		/**
-		 *  Time can be described in a number of ways. Read more [Time](https://github.com/TONEnoTONE/Tone.js/wiki/Time).
+		 *  Time can be described in a number of ways. Read more [Time](https://github.com/Tonejs/Tone.js/wiki/Time).
 		 *
 		 *  <ul>
 		 *  <li>Numbers, which will be taken literally as the time (in seconds).</li>
@@ -206,7 +206,7 @@ define(["Tone/core/Tone"], function (Tone) {
 	 *  @function
 	 */
 	Tone.prototype.isNote = ( function(){
-		var noteFormat = new RegExp(/^[a-g]{1}([b#]{1}|[b#]{0})[0-9]+$/i);
+		var noteFormat = new RegExp(/^[a-g]{1}[b|#]?-?[0-9]+$/i);
 		return function(note){
 			return noteFormat.test(note);
 		};
@@ -631,7 +631,7 @@ define(["Tone/core/Tone"], function (Tone) {
 	 */
 	Tone.prototype.noteToFrequency = function(note){
 		//break apart the note by frequency and octave
-		var parts = note.split(/(\d+)/);
+		var parts = note.split(/(-?\d+)/);
 		if (parts.length === 3){
 			var index = noteToScaleIndex[parts[0].toLowerCase()];
 			var octave = parts[1];
@@ -651,6 +651,9 @@ define(["Tone/core/Tone"], function (Tone) {
 		var log = Math.log(freq / middleC) / Math.LN2;
 		var noteNumber = Math.round(12 * log) + 48;
 		var octave = Math.floor(noteNumber/12);
+		if(octave < 0){
+			noteNumber += -12 * octave;
+		}
 		var noteName = scaleIndexToNote[noteNumber % 12];
 		return noteName + octave.toString();
 	};
