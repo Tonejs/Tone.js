@@ -26,11 +26,13 @@ function(chai, Tone, Types, Transport){
 
 		it("can convert notes into frequencies", function(){
 			expect(tone.noteToFrequency("A4")).to.be.closeTo(440, 0.0001);
+			expect(tone.noteToFrequency("A-1")).to.be.closeTo(13.75, 0.0001);
 			expect(tone.noteToFrequency("Bb4")).to.be.closeTo(466.163761, 0.0001);
 		});
 
 		it("can convert frequencies into notes", function(){
 			expect(tone.frequencyToNote(440)).to.equal("A4");
+			expect(tone.frequencyToNote(13.75)).to.equal("A-1");
 			expect(tone.frequencyToNote(4978.031739553295)).to.equal("D#8");
 		});
 
@@ -289,6 +291,9 @@ function(chai, Tone, Types, Transport){
 			expect(tone.isNote("abb0")).to.be.false;
 			expect(tone.isNote("C0.0")).to.be.false;
 			expect(tone.isNote("C##0")).to.be.false;
+			expect(tone.isNote("C-1")).to.be.true;
+			expect(tone.isNote("Cb-1")).to.be.true;
+			expect(tone.isNote("Cba-1")).to.be.false;
 			expect(tone.isNote("aC1")).to.be.false;
 			expect(tone.isNote(1231)).to.be.false;
 		});
