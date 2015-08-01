@@ -191,7 +191,7 @@ define(["Tone/core/Tone"], function (Tone) {
 	 *  @lends Tone.prototype.isTransportTime
 	 */
 	Tone.prototype.isTransportTime = (function(){
-		var transportTimeFormat = new RegExp(/^\d+(\.\d+)?:\d+(\.\d+)?(:\d+(\.\d+)?)?$/i);
+		var transportTimeFormat = new RegExp(/^(\d+(\.\d+)?\:){1,2}(\d+(\.\d+)?)?$/i);
 		return function(transportTime){
 			return transportTimeFormat.test(transportTime);
 		};
@@ -206,7 +206,7 @@ define(["Tone/core/Tone"], function (Tone) {
 	 *  @function
 	 */
 	Tone.prototype.isNote = ( function(){
-		var noteFormat = new RegExp(/^[a-g]{1}[b|#]?-?[0-9]+$/i);
+		var noteFormat = new RegExp(/^[a-g]{1}(b|#|x|bb)?-?[0-9]+$/i);
 		return function(note){
 			return noteFormat.test(note);
 		};
@@ -545,6 +545,32 @@ define(["Tone/core/Tone"], function (Tone) {
 		}
 	};
 
+
+	/**
+	 *  Convert a Time to Notation. Values will be thresholded to the nearest 128th note. 
+	 *  @param {Time} time 
+	 *  @param {BPM=} bpm 
+	 *  @param {number=} timeSignature
+	 *  @return {Notation}  
+	 */
+	Tone.prototype.toNotation = function(time, bpm, timeSignature){
+		var testNotations = ["1m", "2n", "4n", "8n", "16n", "32n", "64n", "128n"];
+		var retNotation = toNotationHelper.call(this, time, bpm, timeSignature, testNotations);
+		//try the same thing but with tripelets
+		var testTripletNotations = ["1m", "2n", "2t", "4n", "4t", "8n", "8t", "16n", "16t", "32n", "32t", "64n", "64t", "128n"];
+		var retTripletNotation = toNotationHelper.call(this, time, bpm, timeSignature, testTripletNotations);
+		//choose the simpler expression of the two
+		if (retTripletNotation.split("+").length < retNotation.split("+").length){
+			return retTripletNotation;
+		} else {
+			return retNotation;
+		}
+	};
+
+	/**
+	 *  Helper method for Tone.toNotation
+	 *  @private
+	 */
 	function toNotationHelper(time, bpm, timeSignature, testNotations){
 		var seconds = this.toSeconds(time);
 		var threshold = this.notationToSeconds(testNotations[testNotations.length - 1], bpm, timeSignature);
@@ -575,28 +601,6 @@ define(["Tone/core/Tone"], function (Tone) {
 		return retNotation;
 	}
 
-	/**
-	 *  Convert a Time to Notation. Values will be thresholded to the nearest 128th note. 
-	 *  @param {Time} time 
-	 *  @param {BPM=} bpm 
-	 *  @param {number=} timeSignature
-	 *  @return {Notation}  
-	 */
-	Tone.prototype.toNotation = function(time, bpm, timeSignature){
-		var testNotations = ["1m", "2n", "4n", "8n", "16n", "32n", "64n", "128n"];
-		var retNotation = toNotationHelper.call(this, time, bpm, timeSignature, testNotations);
-		//try the same thing but with tripelets
-		var testTripletNotations = ["1m", "2n", "2t", "4n", "4t", "8n", "8t", "16n", "16t", "32n", "32t", "64n", "64t", "128n"];
-		var retTripletNotation = toNotationHelper.call(this, time, bpm, timeSignature, testTripletNotations);
-		//choose the simpler expression of the two
-		if (retTripletNotation.split("+").length < retNotation.split("+").length){
-			return retTripletNotation;
-		} else {
-			return retNotation;
-		}
-	};
-
-
 	///////////////////////////////////////////////////////////////////////////
 	//	FREQUENCY CONVERSIONS
 	///////////////////////////////////////////////////////////////////////////
@@ -605,9 +609,14 @@ define(["Tone/core/Tone"], function (Tone) {
 	 *  Note to scale index
 	 *  @type  {Object}
 	 */
-	var noteToScaleIndex = { "c" : 0, "c#" : 1, "db" : 1, "d" : 2, "d#" : 3, "eb" : 3, 
-		"e" : 4, "f" : 5, "f#" : 6, "gb" : 6, "g" : 7, "g#" : 8, "ab" : 8, 
-		"a" : 9, "a#" : 10, "bb" : 10, "b" : 11
+	var noteToScaleIndex = {
+		"cbb" : -2, "cb" : -1, "c" : 0,  "c#" : 1,  "cx" : 2, 
+		"dbb" : 0,  "db" : 1,  "d" : 2,  "d#" : 3,  "dx" : 4,
+		"ebb" : 2,  "eb" : 3,  "e" : 4,  "e#" : 5,  "ex" : 6, 
+		"fbb" : 4,  "fb" : 5,  "f" : 6,  "f#" : 7,  "fx" : 8,
+		"gbb" : 5,  "gb" : 6,  "g" : 7,  "g#" : 8,  "gx" : 9,
+		"abb" : 7,  "ab" : 8,  "a" : 9,  "a#" : 10, "ax" : 11,
+		"bbb" : 9,  "bb" : 10, "b" : 11, "b#" : 12, "bx" : 13,
 	};
 
 	/**
