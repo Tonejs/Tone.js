@@ -25,9 +25,21 @@ function(chai, Tone, Types, Transport){
 	describe("Frequency Conversions", function(){
 
 		it("can convert notes into frequencies", function(){
+			expect(tone.noteToFrequency("C4")).to.be.closeTo(261.6255653005986, 0.0001);
+			expect(tone.noteToFrequency("A3")).to.be.closeTo(220, 0.0001);
 			expect(tone.noteToFrequency("A4")).to.be.closeTo(440, 0.0001);
 			expect(tone.noteToFrequency("A-1")).to.be.closeTo(13.75, 0.0001);
 			expect(tone.noteToFrequency("Bb4")).to.be.closeTo(466.163761, 0.0001);
+		});
+
+		it("can accomidate different concert tuning", function(){
+			Tone.A4 = 444;
+			expect(tone.noteToFrequency("A4")).to.be.closeTo(444, 0.0001);
+			expect(tone.noteToFrequency("C4")).to.be.closeTo(264.00397953060406, 0.0001);
+			Tone.A4 = 100;
+			expect(tone.noteToFrequency("C4")).to.be.closeTo(59.46035575013605, 0.0001);
+			//return it to normal
+			Tone.A4 = 440;
 		});
 
 		it("handles double accidentals", function(){
@@ -36,6 +48,8 @@ function(chai, Tone, Types, Transport){
 		});
 
 		it("can convert frequencies into notes", function(){
+			expect(tone.frequencyToNote(261.6255653005986)).to.equal("C4");
+			expect(tone.frequencyToNote(220)).to.equal("A3");
 			expect(tone.frequencyToNote(440)).to.equal("A4");
 			expect(tone.frequencyToNote(13.75)).to.equal("A-1");
 			expect(tone.frequencyToNote(4978.031739553295)).to.equal("D#8");

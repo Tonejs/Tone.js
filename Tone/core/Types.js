@@ -626,10 +626,12 @@ define(["Tone/core/Tone"], function (Tone) {
 	var scaleIndexToNote = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
 
 	/**
-	 *  the frequency of Middle C
-	 *  @type  {Number}
+	 *  The [concert pitch](https://en.wikipedia.org/wiki/Concert_pitch, 
+	 *  A4's values in Hertz. 
+	 *  @type {Frequency}
+	 *  @static
 	 */
-	var middleC = 261.6255653005986;
+	Tone.A4 = 440;
 
 	/**
 	 *  Convert a note name to frequency. 
@@ -644,8 +646,8 @@ define(["Tone/core/Tone"], function (Tone) {
 		if (parts.length === 3){
 			var index = noteToScaleIndex[parts[0].toLowerCase()];
 			var octave = parts[1];
-			var noteNumber = index + parseInt(octave, 10) * 12;
-			return Math.pow(2, (noteNumber - 48) / 12) * middleC;
+			var noteNumber = index + (parseInt(octave, 10) + 1) * 12;
+			return this.midiToFrequency(noteNumber);
 		} else {
 			return 0;
 		}
@@ -657,8 +659,8 @@ define(["Tone/core/Tone"], function (Tone) {
 	 *  @return {String}         
 	 */
 	Tone.prototype.frequencyToNote = function(freq){
-		var log = Math.log(freq / middleC) / Math.LN2;
-		var noteNumber = Math.round(12 * log) + 48;
+		var log = Math.log(freq / Tone.A4) / Math.LN2;
+		var noteNumber = Math.round(12 * log) + 57;
 		var octave = Math.floor(noteNumber/12);
 		if(octave < 0){
 			noteNumber += -12 * octave;
@@ -723,7 +725,7 @@ define(["Tone/core/Tone"], function (Tone) {
 	 * tone.midiToFrequency(57); // returns 440
 	 */
 	Tone.prototype.midiToFrequency = function(midi){
-		return (440 * Math.pow(2, (midi - 69) / 12));
+		return Tone.A4 * Math.pow(2, (midi - 69) / 12);
 	};
 
 	return Tone;
