@@ -55,7 +55,7 @@ define(["Tone/core/Tone", "Tone/core/Transport"], function(Tone){
 	 *  @returns {Tone.Note} this
 	 */
 	Tone.Note.prototype.dispose = function(){ 
-		Tone.Tranport.clearTimeline(this._timelineID);
+		Tone.Transport.clearTimeline(this._timelineID);
 		this.value = null;
 		return this;
 	};
