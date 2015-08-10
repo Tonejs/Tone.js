@@ -26,7 +26,8 @@ var ExampleList = {
 		"Control Voltage" : "signal",
 		"Ramping Values" : "rampTo",
 	},
-	"Advanced" : {
+	"Misc" : {
 		"Module Loaders" : "require",
+		"Analysis" : "analysis"
 	},
 };
