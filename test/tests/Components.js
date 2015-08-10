@@ -1,6 +1,6 @@
 /* global it, describe, maxTimeout*/
 
-define(["tests/Core", "chai", "Tone/component/CrossFade", "Tone/core/Master", "Tone/signal/Signal", 
+define(["chai", "Tone/component/CrossFade", "Tone/core/Master", "Tone/signal/Signal", 
 "Recorder", "Tone/component/Panner", "Tone/component/LFO", "Tone/component/Gate", 
 "Tone/component/Follower", "Tone/component/Envelope", "Tone/component/Filter", "Tone/component/EQ3", 
 "Tone/component/Merge", "Tone/component/Split", "tests/Common", "Tone/component/AmplitudeEnvelope", 
@@ -8,11 +8,11 @@ define(["tests/Core", "chai", "Tone/component/CrossFade", "Tone/core/Master", "T
 "Tone/component/MultibandSplit", "Tone/component/Compressor", "Tone/component/PanVol",
 "Tone/component/MultibandCompressor", "Tone/component/ScaledEnvelope", "Tone/component/Limiter", 
 "Tone/core/Transport", "Tone/component/Volume", "Tone/component/MidSideSplit",
-"Tone/component/MidSideMerge", "Tone/component/MidSideCompressor"],
-function(coreTest, chai, CrossFade, Master, Signal, Recorder, Panner, LFO, Gate, Follower, Envelope, 
+"Tone/component/MidSideMerge", "Tone/component/MidSideCompressor", "Tone/component/Analyser"],
+function(chai, CrossFade, Master, Signal, Recorder, Panner, LFO, Gate, Follower, Envelope, 
 	Filter, EQ3, Merge, Split, Test, AmplitudeEnvelope, LowpassCombFilter, FeedbackCombFilter,
 	Mono, MultibandSplit, Compressor, PanVol, MultibandCompressor, ScaledEnvelope, Limiter, Transport, 
-	Volume, MidSideSplit, MidSideMerge, MidSideCompressor){
+	Volume, MidSideSplit, MidSideMerge, MidSideCompressor, Analyser){
 	var expect = chai.expect;
 
 	Master.mute = true;
@@ -1225,5 +1225,87 @@ function(coreTest, chai, CrossFade, Master, Signal, Recorder, Panner, LFO, Gate,
 				done();
 			});
 		});
+	});
+
+	describe("Tone.Analyser", function(){
+		this.timeout(maxTimeout);
+
+		it("can be created and disposed", function(){
+			var anl = new Analyser();
+			anl.dispose();
+			Test.wasDisposed(anl);
+		});
+
+		it("handles input connections", function(){
+			Test.onlineContext();
+			var anl = new Analyser();
+			Test.acceptsInput(anl);
+			anl.dispose();
+		});
+
+		it("can get and set properties", function(){
+			Test.onlineContext();
+			var anl = new Analyser();
+			anl.set({
+				"size" : 32,
+				"maxDecibels" : -20,
+				"minDecibels" : -80,
+				"smoothing" : 0.2
+			});
+			var values = anl.get();
+			expect(values.size).to.equal(32);
+			expect(values.minDecibels).to.equal(-80);
+			expect(values.maxDecibels).to.equal(-20);
+			expect(values.smoothing).to.equal(0.2);
+			anl.dispose();
+		});
+
+		it("can correctly set the size", function(){
+			Test.onlineContext();
+			var anl = new Analyser(512);
+			expect(anl.size).to.equal(512);
+			anl.size = 1024;
+			expect(anl.size).to.equal(1024);
+			anl.dispose();
+		});
+
+		it("can run fft analysis in both bytes and floats", function(){
+			Test.onlineContext();
+			var anl = new Analyser(512, "fft");
+			anl.returnType = "byte";
+			var analysis = anl.analyse();
+			expect(analysis.length).to.equal(512);
+			var i;
+			for (i = 0; i < analysis.length; i++){
+				expect(analysis[i]).is.within(0, 255);
+			}
+			anl.returnType = "float";
+			analysis = anl.analyse();
+			expect(analysis.length).to.equal(512);
+			for (i = 0; i < analysis.length; i++){
+				expect(analysis[i]).is.within(anl.minDecibels, anl.maxDecibels);
+			}
+			anl.dispose();
+		});
+
+		it("can run waveform analysis in both bytes and floats", function(){
+			Test.onlineContext();
+			var anl = new Analyser(256, "waveform");
+			anl.returnType = "byte";
+			var analysis = anl.analyse();
+			expect(analysis.length).to.equal(256);
+			var i;
+			for (i = 0; i < analysis.length; i++){
+				expect(analysis[i]).is.within(0, 255);
+			}
+			anl.returnType = "float";
+			analysis = anl.analyse();
+			expect(analysis.length).to.equal(256);
+			for (i = 0; i < analysis.length; i++){
+				expect(analysis[i]).is.within(0, 1);
+			}
+			anl.dispose();
+		});
+
 	});
 });
