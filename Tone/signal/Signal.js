@@ -8,7 +8,7 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper", "Tone/core/Types"], function
 	 *          has all of the methods available to native Web Audio 
 	 *          [AudioParam](http://webaudio.github.io/web-audio-api/#the-audioparam-interface)
 	 *          as well as additional conveniences. Read more about working with signals 
-	 *          [here](https://github.com/TONEnoTONE/Tone.js/wiki/Signals).
+	 *          [here](https://github.com/Tonejs/Tone.js/wiki/Signals).
 	 *
 	 *  @constructor
 	 *  @extends {Tone.SignalBase}
