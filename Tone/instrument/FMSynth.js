@@ -21,14 +21,18 @@ function(Tone){
 	 * 	@routing {
 	 * 	         	"carrier": {
 	 * 	         		"type": "Oscillator",
-	 * 	         	 	"connect": "output",
+	 * 	         	 	"connect": ["output.input"],
 	 * 	         	 	"param": ".carrier"
 	 * 	            },
 	 * 	         	"modulator": {
-	 * 	         		"type": "Oscillator,
-	 * 	         	 	"connect": "carrier.frequency",
+	 * 	         		"type": "Oscillator",
+	 * 	         	 	"connect": ["carrier.frequency"],
 	 * 	         	 	"param": ".modulator"
-	 * 	            }
+	 * 	            },
+	 *           	"output" : {
+	 *           		"type" : "Signal",
+	 *           		"param" : "output"
+	 *           	}
 	 *           }
 	 */
 	Tone.FMSynth = function(options){
