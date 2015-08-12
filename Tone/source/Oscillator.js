@@ -206,7 +206,7 @@ function(Tone){
 						}
 						break;
 					default:
-						throw new TypeError("invalid oscillator type: "+type);
+						throw new Error("invalid oscillator type: "+type);
 				}
 				if (b !== 0){
 					real[n] = -b * Math.sin(shift * n);
