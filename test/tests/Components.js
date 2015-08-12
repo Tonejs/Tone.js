@@ -512,6 +512,35 @@ function(chai, CrossFade, Master, Signal, Recorder, Panner, LFO, Gate, Follower,
 			});
 		});
 
+		it("only accepts filter values -12, -24, -48 and -96", function(){
+			var filter = new Filter();
+			filter.rolloff = -12;
+			expect(filter.rolloff).to.equal(-12);
+			filter.rolloff = "-24";
+			expect(filter.rolloff).to.equal(-24);
+			filter.rolloff = -48;
+			expect(filter.rolloff).to.equal(-48);
+			filter.rolloff = -96;
+			expect(filter.rolloff).to.equal(-96);
+			expect(function(){
+				filter.rolloff = -95;
+			}).to.throw(Error);
+			filter.dispose();
+		});
+
+		it("can set the basic filter types", function(){
+			var filter = new Filter();
+			var types = ["lowpass", "highpass", "bandpass", "lowshelf", "highshelf", "notch", "allpass", "peaking"];
+			for (var i = 0; i < types.length; i++){
+				filter.type = types[i];
+				expect(filter.type).to.equal(types[i]);
+			}
+			expect(function(){
+				filter.type = "nontype";
+			}).to.throw(Error);
+			filter.dispose();
+		});
+
 		it ("can take parameters as both an object and as arguments", function(){
 			Test.onlineContext();
 			var f0 = new Filter({
