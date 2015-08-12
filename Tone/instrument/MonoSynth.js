@@ -8,13 +8,21 @@ function(Tone){
 	 *  @class  Tone.MonoSynth is composed of one oscillator, one filter, and two envelopes.
 	 *          The amplitude of the Tone.Oscillator and the cutoff frequency of the 
 	 *          Tone.Filter are controlled by Tone.Envelopes. 
+	 *          <img src="https://docs.google.com/drawings/d/1gaY1DF9_Hzkodqf8JI1Cg2VZfwSElpFQfI94IQwad38/pub?w=924&h=240">
 	 *          
 	 *  @constructor
 	 *  @extends {Tone.Monophonic}
 	 *  @param {Object} [options] the options available for the synth 
 	 *                          see defaults below
 	 *  @example
-	 * var synth = new Tone.MonoSynth().toMaster();
+	 * var synth = new Tone.MonoSynth({
+	 * 	"oscillator" : {
+	 * 		"type" : "square"
+	 *  },
+	 *  "envelope" : {
+	 *  	"attack" : 0.1
+	 *  }
+	 * }).toMaster();
 	 * synth.triggerAttackRelease("C4", "8n");
 	 */
 	Tone.MonoSynth = function(options){

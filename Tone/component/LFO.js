@@ -4,29 +4,30 @@ function(Tone){
 	"use strict";
 
 	/**
-	 *  @class  The Low Frequency Oscillator produces an output signal 
+	 *  @class  LFO stands for low frequency oscillator. Tone.LFO produces an output signal 
 	 *          which can be attached to an AudioParam or Tone.Signal 
-	 *          for constant control over that parameter. the LFO can 
-	 *          also be synced to the transport to start/stop/pause
-	 *          and change when the tempo changes. The LFO starts at 
-	 *          it's minimal value.
+	 *          in order to modulate that parameter with an oscillator. The LFO can 
+	 *          also be synced to the transport to start/stop and change when the tempo changes.
 	 *
 	 *  @constructor
 	 *  @extends {Tone.Oscillator}
-	 *  @param {Time} [frequency="4n"]
-	 *  @param {number} [outputMin=0]
-	 *  @param {number} [outputMax=1]
+	 *  @param {Frequency|Object} [frequency] The frequency of the oscillation. Typically, LFOs will be
+	 *                               in the frequency range of 0.1 to 10 hertz. 
+	 *  @param {number=} min The minimum output value of the LFO. The LFO starts 
+	 *                      at it's minimum value. 
+	 *  @param {number=} max The maximum value of the LFO. 
 	 *  @example
-	 *  var lfo = new Tone.LFO("4n", 400, 4000);
-	 *  lfo.connect(filter.frequency);
+	 * var lfo = new Tone.LFO("4n", 400, 4000);
+	 * lfo.connect(filter.frequency);
 	 */
 	Tone.LFO = function(){
 
 		var options = this.optionsObject(arguments, ["frequency", "min", "max"], Tone.LFO.defaults);
 
 		/** 
-		 *  the oscillator
+		 *  The oscillator. 
 		 *  @type {Tone.Oscillator}
+		 *  @private
 		 */
 		this.oscillator = new Tone.Oscillator({
 			"frequency" : options.frequency, 
@@ -125,8 +126,8 @@ function(Tone){
 	 *  @example
 	 *  lfo.frequency.value = "8n";
 	 *  lfo.sync();
-	 *  // the rate of the LFO will always be an eighth note, 
-	 *  // even as the tempo changes
+	 *  //the rate of the LFO will always be an eighth note, 
+	 *  //even as the tempo changes
 	 */
 	Tone.LFO.prototype.sync = function(delay){
 		this.oscillator.sync(delay);
@@ -192,7 +193,7 @@ function(Tone){
 	});
 
 	/**
-	 * The phase of the LFO
+	 * The phase of the LFO.
 	 * @memberOf Tone.LFO#
 	 * @type {number}
 	 * @name phase
@@ -207,7 +208,7 @@ function(Tone){
 	});
 
 	/**
-	 * The output units of the LFO
+	 * The output units of the LFO.
 	 * @memberOf Tone.LFO#
 	 * @type {Tone.Type}
 	 * @name units
@@ -233,6 +234,7 @@ function(Tone){
 	 *  @param {number} [outputNum=0] optionally which output to connect from
 	 *  @param {number} [inputNum=0] optionally which input to connect to
 	 *  @returns {Tone.LFO} this
+	 *  @private
 	 */
 	Tone.LFO.prototype.connect = function(node){
 		if (node.constructor === Tone.Signal){

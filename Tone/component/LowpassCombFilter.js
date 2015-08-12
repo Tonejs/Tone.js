@@ -3,14 +3,15 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/component/Filter"], functi
 	"use strict";
 
 	/**
-	 *  @class A lowpass feedback comb filter. 
-	 *         DelayNode -> Lowpass Filter -> feedback
+	 *  @class Tone.Lowpass is a lowpass feedback comb filter. It is similar to 
+	 *         Tone.FeedbackCombFilter, but includes a lowpass filter.
 	 *
 	 *  @extends {Tone}
 	 *  @constructor
-	 *  @param {Time} [delayTime=0.1] The delay time of the comb filter
-	 *  @param {NormalRange} [resonance=0.5] The resonance (feedback) of the comb filter
-	 *  @param {Frequency} [dampening=3000] The dampending cutoff of the lowpass filter
+	 *  @param {Time|Object} [delayTime] The delay time of the comb filter
+	 *  @param {NormalRange=} resonance The resonance (feedback) of the comb filter
+	 *  @param {Frequency=} dampening The cutoff of the lowpass filter dampens the
+	 *                                signal as it is fedback. 
 	 */
 	Tone.LowpassCombFilter = function(){
 
@@ -26,7 +27,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/component/Filter"], functi
 		this._delay = this.input = this.context.createDelay(1);
 
 		/**
-		 *  the delayTime
+		 *  The delayTime of the comb filter. 
 		 *  @type {Time}
 		 *  @signal
 		 */
@@ -42,7 +43,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/component/Filter"], functi
 		this._lowpass.type = "lowpass";
 
 		/**
-		 *  the dampening control
+		 *  The dampening control of the feedback
 		 *  @type {Frequency}
 		 *  @signal
 		 */
@@ -57,7 +58,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/component/Filter"], functi
 		this._feedback = this.context.createGain();
 
 		/**
-		 *  the resonance control
+		 *  The amount of feedback of the delayed signal. 
 		 *  @type {NormalRange}
 		 *  @signal
 		 */
@@ -86,7 +87,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/component/Filter"], functi
 	};
 
 	/**
-	 *  clean up
+	 *  Clean up. 
 	 *  @returns {Tone.LowpassCombFilter} this
 	 */
 	Tone.LowpassCombFilter.prototype.dispose = function(){

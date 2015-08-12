@@ -1,15 +1,18 @@
-define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
+define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Types"], function(Tone){
 
 	"use strict";
 	
 	/**
-	 *  @class  a sample accurate clock built on an oscillator.
-	 *          Invokes the tick method at the set rate
+	 *  @class  A sample accurate clock which provides a callback at the given rate. 
+	 *          While the callback is not sample-accurate (it is still susceptible to
+	 *          loose JS timing), the time passed in as the argument to the callback
+	 *          is precise. For most applications, it is better to use Tone.Transport
+	 *          instead of the clock. 
 	 *
 	 * 	@constructor
 	 * 	@extends {Tone}
-	 * 	@param {Frequency} frequency the rate of the callback
-	 * 	@param {function} callback the callback to be invoked with the time of the audio event
+	 * 	@param {Frequency} frequency The rate of the callback
+	 * 	@param {function} callback The callback to be invoked with the time of the audio event
 	 * 	@example
 	 * //the callback will be invoked approximately once a second
 	 * //and will print the time exactly once a second apart.
@@ -35,7 +38,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 		this._jsNode.onaudioprocess = this._processBuffer.bind(this);
 
 		/**
-		 *  the rate control signal
+		 *  The frequency in which the callback will be invoked.
 		 *  @type {Frequency}
 		 *  @signal
 		 */
@@ -49,7 +52,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 		this._upTick = false;
 
 		/**
-		 *  the callback which is invoked on every tick
+		 *  The callback which is invoked on every tick
 		 *  with the time of that tick as the argument
 		 *  @type {function(number)}
 		 */
@@ -59,9 +62,9 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 		 * Callback is invoked when the clock is stopped.
 		 * @type {function}
 		 * @example
-		 *  clock.onended = function(){
-		 *  	console.log("the clock is stopped");
-		 *  }
+		 * clock.onended = function(){
+		 * 	console.log("the clock is stopped");
+		 * }
 		 */
 		this.onended = Tone.noOp;
 

@@ -4,11 +4,11 @@
   <meta charset="utf-8">
 	<title>NOISES</title>
 
-	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
 	<script type="text/javascript" src="../build/Tone.js"></script>
-	<script type="text/javascript" src="./deps/jquery.min.js"></script>
-	<script type="text/javascript" src="../../Notone.js/build/Notone.GUI.js"></script>
+	<script type="text/javascript" src="./scripts/jquery.min.js"></script>
+	<script type="text/javascript" src="./scripts/Notone.GUI.js"></script>
 	<script type="text/javascript" src="./scripts/Interface.js"></script>
 
 	<link rel="stylesheet" type="text/css" href="./style/examples.css">
@@ -25,11 +25,10 @@
 		}
 	</style>
 	<div id="Content">
+		<div id="Title">Noise</div>
 		<div id="Explanation">
-			Noise
-			<br>
-			<br>
-			Tone has 3 different types of noise. Careful, it's loud!
+			<a href="http://tonejs.org/docs/#Noise">Tone.Noise</a>
+			has 3 different types of noise. Careful, it's loud!
 		</div>
 		<div id="DragContainer"></div>
 	</div>
@@ -53,7 +52,8 @@
 
 			var noiseGUI = Notone.add(noise, "Noise");
 
-			new Interface.Dragger(noiseGUI, {
+			new Interface.Dragger({
+				gui : noiseGUI,
 				y : {
 					param : "volume",
 					min : -40,

@@ -5,14 +5,18 @@ function(Tone){
 	"use strict";
 
 	/**
-	 *  @class OmniOscillator aggregates Tone.Oscillator, Tone.PulseOscillator,
-	 *         and Tone.PWMOscillator which allows it to have the types: 
-	 *         sine, square, triangle, sawtooth, pulse or pwm. 
+	 *  @class Tone.OmniOscillator aggregates Tone.Oscillator, Tone.PulseOscillator,
+	 *         and Tone.PWMOscillator into one class, allowing it to have the 
+	 *         types: sine, square, triangle, sawtooth, pulse or pwm. Additionally,
+	 *         OmniOscillator is capable of setting the first x number of partials 
+	 *         of the oscillator. For example: "sine4" would set be the first 4 
+	 *         partials of the sine wave and "triangle8" would set the first 
+	 *         8 partials of the triangle wave. 
 	 *
 	 *  @extends {Tone.Oscillator}
 	 *  @constructor
-	 *  @param {Frequency} frequency of the oscillator (meaningless for noise types)
-	 *  @param {string} type the type of the oscillator
+	 *  @param {Frequency} frequency The initial frequency of the oscillator.
+	 *  @param {string} type The type of the oscillator.
 	 *  @example
 	 *  var omniOsc = new Tone.OmniOscillator("C#4", "pwm");
 	 */
@@ -21,14 +25,14 @@ function(Tone){
 		Tone.Source.call(this, options);
 
 		/**
-		 *  the frequency control
+		 *  The frequency control.
 		 *  @type {Frequency}
 		 *  @signal
 		 */
 		this.frequency = new Tone.Signal(options.frequency, Tone.Type.Frequency);
 
 		/**
-		 *  the detune control
+		 *  The detune control
 		 *  @type {Cents}
 		 *  @signal
 		 */
@@ -137,7 +141,7 @@ function(Tone){
 	 */
 	Tone.OmniOscillator.prototype._createNewOscillator = function(OscillatorConstructor){
 		//short delay to avoid clicks on the change
-		var now = this.now() + this.bufferTime;
+		var now = this.now() + this.blockTime;
 		if (this._oscillator !== null){
 			var oldOsc = this._oscillator;
 			oldOsc.stop(now);
@@ -210,7 +214,7 @@ function(Tone){
 	});
 
 	/**
-	 *  clean up
+	 *  Clean up.
 	 *  @return {Tone.OmniOscillator} this
 	 */
 	Tone.OmniOscillator.prototype.dispose = function(){

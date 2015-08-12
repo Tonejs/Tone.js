@@ -6,6 +6,7 @@ function(Tone){
 	/**
 	 *  @class  Tone.SimpleSynth is composed simply of a Tone.OmniOscillator
 	 *          routed through a Tone.AmplitudeEnvelope. 
+	 *          <img src="https://docs.google.com/drawings/d/1-1_0YW2Z1J2EPI36P8fNCMcZG7N1w1GZluPs4og4evo/pub?w=1163&h=231">
 	 *
 	 *  @constructor
 	 *  @extends {Tone.Monophonic}

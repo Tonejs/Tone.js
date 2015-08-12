@@ -4,14 +4,17 @@ function(Tone){
 	"use strict";
 
 	/**
-	 *  @class PWM oscillator modulates the width of the Tone.PulseOscillator at the modulationFrequency.
+	 *  @class Tone.PWMOscillator modulates the width of a Tone.PulseOscillator 
+	 *         at the modulationFrequency. This has the effect of continuously
+	 *         changing the timbre of the oscillator by altering the harmonics 
+	 *         generated.
 	 *
 	 *  @extends {Tone.Oscillator}
 	 *  @constructor
 	 *  @param {Frequency} frequency The starting frequency of the oscillator. 
 	 *  @param {Frequency} modulationFrequency The modulation frequency of the width of the pulse. 
 	 *  @example
-	 *  var pwm = new Tone.PWMOscillator("Ab3", 0.3);
+	 *  var pwm = new Tone.PWMOscillator("Ab3", 0.3).toMaster().start();
 	 */
 	Tone.PWMOscillator = function(){
 		var options = this.optionsObject(arguments, ["frequency", "modulationFrequency"], Tone.PWMOscillator.defaults);

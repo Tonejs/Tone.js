@@ -5,17 +5,18 @@ define(["Tone/core/Tone", "Tone/effect/MidSideEffect", "Tone/signal/Signal",
 	"use strict";
 
 	/**
-	 *  @class Applies a width factor (0-1) to the mid/side seperation. 
-	 *         0 is all mid and 1 is all side. <br>
-	 *          Applies a Mid/Side seperation and recombination. <br>
-	 *         Algorithm found in <a href="http://www.kvraudio.com/forum/viewtopic.php?t=212587">kvraudio forums</a>
-	 *         <br>
-	 *         M *= 2*(1-width)<br>
-	 *         S *= 2*width
+	 *  @class Applies a width factor to the mid/side seperation. 
+	 *         0 is all mid and 1 is all side.
+	 *         Algorithm found in [kvraudio forums](http://www.kvraudio.com/forum/viewtopic.php?t=212587).
+	 *         <br><br>
+	 *         <code>
+	 *         Mid *= 2*(1-width)<br>
+	 *         Side *= 2*width
+	 *         </code>
 	 *
 	 *  @extends {Tone.MidSideEffect}
 	 *  @constructor
-	 *  @param {number|Object} [width=0.5] the stereo width. A width of 0 is mono and 1 is stereo. 0.5 is no change.
+	 *  @param {NormalRange|Object} [width] The stereo width. A width of 0 is mono and 1 is stereo. 0.5 is no change.
 	 */
 	Tone.StereoWidener = function(){
 
@@ -23,7 +24,7 @@ define(["Tone/core/Tone", "Tone/effect/MidSideEffect", "Tone/signal/Signal",
 		Tone.MidSideEffect.call(this, options);
 
 		/**
-		 *  The width control. 0 = 100% mid. 1 = 100% side. 
+		 *  The width control. 0 = 100% mid. 1 = 100% side. 0.5 = no change. 
 		 *  @type {NormalRange}
 		 *  @signal
 		 */
@@ -74,7 +75,7 @@ define(["Tone/core/Tone", "Tone/effect/MidSideEffect", "Tone/signal/Signal",
 	};
 
 	/**
-	 *  clean up
+	 *  Clean up. 
 	 *  @returns {Tone.StereoWidener} this
 	 */
 	Tone.StereoWidener.prototype.dispose = function(){

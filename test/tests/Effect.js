@@ -6,10 +6,10 @@ define(["tests/Core", "chai", "Recorder", "Tone/core/Master", "Tone/effect/Effec
 	"Tone/effect/JCReverb", "Tone/effect/StereoEffect", "Tone/effect/StereoFeedbackEffect", 
 	"Tone/effect/StereoXFeedbackEffect", "Tone/effect/Phaser", "Tone/effect/Distortion", "Tone/effect/Chebyshev", 
 	"Tone/effect/Convolver", "Tone/effect/MidSideEffect", "Tone/effect/StereoWidener", 
-	"Tone/effect/AutoFilter", "Tone/effect/Tremolo"], 
+	"Tone/effect/AutoFilter", "Tone/effect/Tremolo", "Tone/effect/PitchShift"], 
 function(Tone, chai, Recorder, Master, Effect, CrossFade, FeedbackEffect, Signal, AutoPanner, AutoWah, BitCrusher, 
 	FeedbackDelay, PingPongDelay, Chorus, Test, Freeverb, JCReverb, StereoEffect, StereoFeedbackEffect, 
-	StereoXFeedbackEffect, Phaser, Distortion, Chebyshev, Convolver, MidSide, StereoWidener, AutoFilter, Tremolo){
+	StereoXFeedbackEffect, Phaser, Distortion, Chebyshev, Convolver, MidSide, StereoWidener, AutoFilter, Tremolo, PitchShift){
 
 	var expect = chai.expect;
 
@@ -23,13 +23,6 @@ function(Tone, chai, Recorder, Master, Effect, CrossFade, FeedbackEffect, Signal
 			var e = new Effect();
 			e.dispose();
 			Test.wasDisposed(e);
-		});
-
-		it("can by bypassed", function(){
-			var e = new Effect();
-			e.bypass();
-			expect(e.wet.value).to.equal(0);
-			e.dispose();
 		});
 
 		it("handles input and output connections", function(){
@@ -930,6 +923,51 @@ function(Tone, chai, Recorder, Master, Effect, CrossFade, FeedbackEffect, Signal
 			expect(trem.frequency.value).is.closeTo(12, 0.01);
 			expect(trem.depth.value).is.closeTo(0.6, 0.01);
 			trem.dispose();
+		});
+	});
+
+	describe("Tone.PitchShift", function(){
+
+		it("can be created and disposed", function(){
+			var shift = new PitchShift();
+			shift.dispose();
+			Test.wasDisposed(shift);
+		});
+
+		it("handles input and output connections", function(){
+			Test.onlineContext();
+			var shift = new PitchShift();
+			Test.acceptsInputAndOutput(shift);
+			shift.dispose();
+		});
+
+		it("passes the incoming signal through to the output", function(done){
+			var shift;
+			Test.passesAudio(function(input, output){
+				shift = new PitchShift();
+				input.connect(shift);
+				shift.connect(output);
+			}, function(){
+				shift.dispose();
+				done();
+			});
+		});
+
+		it("extends Tone.Effect", function(){
+			var shift = new PitchShift();
+			expect(shift).is.instanceof(Effect);
+			shift.dispose();
+		});
+
+		it("can be set with options object", function(){
+			var shift = new PitchShift();
+			shift.set({
+				"windowSize" : 0.03,
+				"pitch" : 3,
+			});
+			expect(shift.windowSize).is.closeTo(0.03, 0.001);
+			expect(shift.pitch).is.closeTo(3, 0.001);
+			shift.dispose();
 		});
 	});
 });

@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/core/Master", "Tone/core/Note"], function(Tone){
+define(["Tone/core/Tone", "Tone/core/Master", "Tone/core/Types"], function(Tone){
 
 	"use strict";
 
@@ -8,7 +8,10 @@ define(["Tone/core/Tone", "Tone/core/Master", "Tone/core/Note"], function(Tone){
 	 *  @constructor
 	 *  @extends {Tone}
 	 */
-	Tone.Instrument = function(){
+	Tone.Instrument = function(options){
+
+		//get the defaults
+		options = this.defaultArg(options, Tone.Instrument.defaults);
 
 		/**
 		 *  the output
@@ -18,11 +21,15 @@ define(["Tone/core/Tone", "Tone/core/Master", "Tone/core/Note"], function(Tone){
 		this.output = this.context.createGain();
 
 		/**
-		 * the volume of the output in decibels
+		 * The volume of the instrument.
 		 * @type {Decibels}
 		 * @signal
 		 */
-		this.volume = new Tone.Signal(this.output.gain, Tone.Type.Decibels);
+		this.volume = new Tone.Signal({
+			"param" : this.output.gain, 
+			"units" : Tone.Type.Decibels,
+			"value" : options.volume
+		});
 		this._readOnly(["volume"]);
 	};
 
@@ -53,10 +60,11 @@ define(["Tone/core/Tone", "Tone/core/Master", "Tone/core/Note"], function(Tone){
 
 	/**
 	 *  Trigger the attack and then the release after the duration. 
-	 *  @param  {string|number} note     the note to trigger
-	 *  @param  {Time} duration the duration of the note
-	 *  @param {Time} [time=now]     the time of the attack
-	 *  @param  {NormalRange} [velocity=1] the velocity
+	 *  @param  {Frequency} note     The note to trigger.
+	 *  @param  {Time} duration How long the note should be held for before
+	 *                          triggering the release.
+	 *  @param {Time} [time=now]  When the note should be triggered.
+	 *  @param  {NormalRange} [velocity=1] The velocity the note should be triggered at.
 	 *  @returns {Tone.Instrument} this
 	 *  @example
 	 * //trigger "C4" for the duration of an 8th note

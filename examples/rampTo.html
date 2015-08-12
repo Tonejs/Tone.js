@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+	<title>SIGNAL RAMP</title>
+
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+	<script type="text/javascript" src="../build/Tone.js"></script>
+	<script type="text/javascript" src="./scripts/jquery.min.js"></script>
+	<script type="text/javascript" src="./scripts/Notone.GUI.js"></script>
+	<script type="text/javascript" src="./scripts/Interface.js"></script>
+	<script type="text/javascript" src="./scripts/nexusUI.js"></script>
+
+	<link rel="stylesheet" type="text/css" href="./style/examples.css">
+
+	<script type="text/javascript">
+		// jshint ignore: start
+	</script>
+
+</head>
+<body>
+	<style type="text/css">
+		canvas {
+			margin-top: 3px;
+		}
+	</style>
+		
+	<div id="Content" class="FullScreen">
+		<div id="Title">rampTo</div>
+		<div id="Explanation">
+			In Tone.js, many of a class' members are <a href="http://tonejs.org/docs/#Signal">Tone.Signals</a>. 
+			Working with signals is different than working with numbers or strings: 
+			Signals are values which are updated at audio rate,
+			which allows for sample-accurate scheduling and ramping. <code>.rampTo(value, rampTime)</code>
+			smoothly changes the signal from the current value to the target value over the duration of the rampTime. 
+			This example uses <code>.rampTo</code> in to smooth out changes in volume and frequency. 
+			<br><br>
+			As the large dot gets closer to each of the smaller dots, a different harmonic is heard depending
+			on the distance to that smaller dot. The "harmony" slider adjusts each of the oscillators frequencies' 
+			distance from the fundamental frequency.
+		</div>
+		<canvas nx="joints"></canvas>
+	</div>
+
+	<script type="text/javascript">
+
+		Tone.Master.volume.value = -Infinity;
+
+		var oscillators = {};
+
+		var bassFreq = 32;
+
+		var reverb = new Tone.JCReverb().toMaster();
+
+		for (var i = 0; i < 7; i++){
+			oscillators["node" + i] = new Tone.Oscillator({
+				"frequency" : bassFreq * i,
+				"type" :  "sawtooth10",
+				"detune" : Math.random() * 30 - 15,
+			}).connect(reverb).start();
+		}
+		
+	</script>
+
+	<script type="text/javascript">
+
+		nx.onload = function(){
+			nx.colorize("#7F33ED");
+
+			joints1.nodeSize = 45;
+			joints1.val.x = Math.random();
+			joints1.val.y = Math.random();
+			joints1.resize($("#Content").width(), 250);
+			joints1.animate("bounce");
+			var width = joints1.width;
+			var height = joints1.height;
+			joints1.threshold = Math.max($("#Content").width() / 1.5, 60);
+			randomPlacement();
+			joints1.init();
+			joints1.draw();
+
+			$(window).on("resize", function(){
+				joints1.resize($("#Content").width(), 250);
+				joints1.threshold = Math.max($("#Content").width() / 1.5, 60);
+				joints1.draw();
+			});
+
+			function randomPlacement(){
+				var width = $("#Content").width();
+				var height = joints1.height;
+				var len = Object.keys(oscillators).length;
+				for (var i = 0; i < len; i++){
+					joints1.joints[i] = {
+						x : Math.random() * width,
+						y : Math.random() * height
+					}
+				}
+			}
+
+			function setValues(data){
+				for (var n in oscillators){
+					if (data.hasOwnProperty(n)){
+						oscillators[n].volume.rampTo((1 - Math.pow(data[n], 0.5)) * -60, 0.3);
+					} else {
+						oscillators[n].volume.rampTo(-Infinity, 0.4);
+					}
+				}
+			}
+
+			joints1.on("*", setValues);
+
+			new Interface.Slider({
+				name : "harmony",
+				min : 0.5,
+				max : 2,
+				value : 1,
+				drag : function(value){
+					var i = 0;
+					for (var n in oscillators){
+						var osc = oscillators[n];
+						osc.frequency.rampTo(bassFreq * i * value, 0.4);
+						i++;
+					}
+				},
+			});
+
+
+			new Interface.Button({
+				text : "Unmute",
+				activeText : "Mute",
+				type : "toggle",
+				key : 32, //spacebar
+				start : function(){
+					Tone.Master.volume.rampTo(-20, 0.5);
+				},
+				end : function(){
+					Tone.Master.volume.rampTo(-Infinity, 0.5);
+				},
+			});
+
+		}
+	</script>
+
+</body>
+</html>

@@ -3,13 +3,25 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/effect/Effect"], function(To
 	"use strict";
 
 	/**
-	 *  @class  ConvolverNode wrapper for reverb and emulation.
+	 *  @class  Tone.Convolver is a wrapper around the Native Web Audio 
+	 *          [ConvolverNode](http://webaudio.github.io/web-audio-api/#the-convolvernode-interface).
+	 *          Convolution is useful for reverb and filter emulation. Read more about convolution reverb on
+	 *          [Wikipedia](https://en.wikipedia.org/wiki/Convolution_reverb).
 	 *  
 	 *  @constructor
 	 *  @extends {Tone.Effect}
-	 *  @param {string|AudioBuffer=} url
+	 *  @param {string|Tone.Buffer|Object} [url] The URL of the impulse response or the Tone.Buffer
+	 *                                           contianing the impulse response. 
 	 *  @example
-	 *  var convolver = new Tone.Convolver("./path/to/ir.wav");
+	 * //initializing the convolver with an impulse response
+	 * var convolver = new Tone.Convolver("./path/to/ir.wav");
+	 * convolver.toMaster();
+	 * //after the buffer has loaded
+	 * Tone.Buffer.onload = function(){
+	 * 	//testing out convolution with a noise burst
+	 * 	var burst = new Tone.NoiseSynth().connect(convolver);
+	 * 	burst.triggerAttackRelease("16n");
+	 * };
 	 */
 	Tone.Convolver = function(){
 
@@ -68,7 +80,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/effect/Effect"], function(To
 	 *  Load an impulse response url as an audio buffer.
 	 *  Decodes the audio asynchronously and invokes
 	 *  the callback once the audio buffer loads.
-	 *  @param {string} url the url of the buffer to load.
+	 *  @param {string} url The url of the buffer to load.
 	 *                      filetype support depends on the
 	 *                      browser.
 	 *  @param  {function=} callback
@@ -85,7 +97,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/effect/Effect"], function(To
 	};
 
 	/**
-	 *  dispose and disconnect
+	 *  Clean up. 
 	 *  @returns {Tone.Convolver} this
 	 */
 	Tone.Convolver.prototype.dispose = function(){

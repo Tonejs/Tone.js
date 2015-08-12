@@ -1,21 +1,23 @@
 define(["Tone/core/Tone", "Tone/signal/Abs", "Tone/signal/Subtract", 
-	"Tone/signal/Multiply", "Tone/signal/Signal", "Tone/signal/WaveShaper"], 
+	"Tone/signal/Multiply", "Tone/signal/Signal", "Tone/signal/WaveShaper", "Tone/core/Types"], 
 function(Tone){
 
 	"use strict";
 
 	/**
-	 *  @class  Follow the envelope of the incoming signal. 
-	 *          Careful with small (< 0.02) attack or decay values. 
-	 *          The follower has some ripple which gets exaggerated
-	 *          by small values. 
+	 *  @class  Tone.Follower is a  crude envelope follower which will follow 
+	 *          the amplitude of an incoming signal. 
+	 *          Take care with small (< 0.02) attack or decay values 
+	 *          as follower has some ripple which is exaggerated
+	 *          at these values. Read more about envelope followers (also known 
+	 *          as envelope detectors) on [Wikipedia](https://en.wikipedia.org/wiki/Envelope_detector).
 	 *  
 	 *  @constructor
 	 *  @extends {Tone}
-	 *  @param {Time=} attack
-	 *  @param {Time=} release
+	 *  @param {Time|Object} [attack] The rate at which the follower rises.
+	 *  @param {Time=} release The rate at which the folower falls. 
 	 *  @example
-	 *  var follower = new Tone.Follower(0.2, 0.4);
+	 * var follower = new Tone.Follower(0.2, 0.4);
 	 */
 	Tone.Follower = function(){
 
@@ -55,7 +57,7 @@ function(Tone){
 		 *  @private
 		 */
 		this._delay = this.context.createDelay();
-		this._delay.delayTime.value = this.bufferTime;
+		this._delay.delayTime.value = this.blockTime;
 
 		/**
 		 *  this keeps it far from 0, even for very small differences
@@ -105,7 +107,7 @@ function(Tone){
 	 *  @private
 	 */
 	Tone.Follower.prototype._setAttackRelease = function(attack, release){
-		var minTime = this.bufferTime;
+		var minTime = this.blockTime;
 		attack = this.secondsToFrequency(this.toSeconds(attack));
 		release = this.secondsToFrequency(this.toSeconds(release));
 		attack = Math.max(attack, minTime);
@@ -152,8 +154,8 @@ function(Tone){
 	});
 
 	/**
-	 *  borrows the connect method from Signal so that the output can be used
-	 *  as a control signal {@link Tone.Signal}
+	 *  Borrows the connect method from Signal so that the output can be used
+	 *  as a Tone.Signal control signal.
 	 *  @function
 	 */
 	Tone.Follower.prototype.connect = Tone.Signal.prototype.connect;

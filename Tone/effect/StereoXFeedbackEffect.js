@@ -16,10 +16,13 @@ function(Tone){
 		Tone.StereoEffect.call(this, options);
 
 		/**
-		 *  controls the amount of feedback
-		 *  @type {Tone.Signal}
+		 *  The amount of feedback from the output
+		 *  back into the input of the effect (routed
+		 *  across left and right channels).
+		 *  @type {NormalRange}
+		 *  @signal
 		 */
-		this.feedback = new Tone.Signal(options.feedback);
+		this.feedback = new Tone.Signal(options.feedback, Tone.Type.NormalRange);
 
 		/**
 		 *  the left side feeback

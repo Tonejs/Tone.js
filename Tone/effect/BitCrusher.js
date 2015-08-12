@@ -4,13 +4,18 @@ function(Tone){
 	"use strict";
 
 	/**
-	 *  @class Downsample incoming signal to a different bitdepth. 
+	 *  @class Tone.Bitcrusher downsamples the incoming signal to a different bitdepth. 
+	 *         Lowering the bitdepth of the signal creates distortion. Read more about Bitcrushing
+	 *         on [Wikipedia](https://en.wikipedia.org/wiki/Bitcrusher).
 	 *
 	 *  @constructor
 	 *  @extends {Tone.Effect}
-	 *  @param {number} bits 1-8. 
+	 *  @param {Number} bits The number of bits to downsample the signal. Nominal range
+	 *                       of 1 to 8. 
 	 *  @example
-	 *  var crusher = new Tone.BitCrusher(4);
+	 * //initialize crusher and route a synth through it
+	 * var crusher = new Tone.BitCrusher(4).toMaster();
+	 * var synth = new Tone.MonoSynth().connect(crusher);
 	 */
 	Tone.BitCrusher = function(){
 
@@ -58,7 +63,7 @@ function(Tone){
 	};
 
 	/**
-	 * The bit depth of the BitCrusher
+	 * The bit depth of the effect. Nominal range of 1-8. 
 	 * @memberOf Tone.BitCrusher#
 	 * @type {number}
 	 * @name bits
@@ -75,7 +80,7 @@ function(Tone){
 	});
 
 	/**
-	 *  clean up
+	 *  Clean up. 
 	 *  @returns {Tone.BitCrusher} this
 	 */
 	Tone.BitCrusher.prototype.dispose = function(){

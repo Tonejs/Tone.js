@@ -4,18 +4,14 @@
   <meta charset="utf-8">
 	<title>SHINY</title>
 
-	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
 	<script type="text/javascript" src="../build/Tone.js"></script>
-	<script type="text/javascript" src="../build/Tone.Preset.js"></script>
-	<script type="text/javascript" src="./deps/jquery.min.js"></script>
-	<script type="text/javascript" src="./deps/qwerty-hancock.js"></script>
-	<script type="text/javascript" src="./deps/nexusUI.js"></script>
-	<script type="text/javascript" src="./deps/prism.js"></script>
+	<script type="text/javascript" src="./scripts/jquery.min.js"></script>
+	<script type="text/javascript" src="./scripts/Notone.GUI.js"></script>
 	<script type="text/javascript" src="./scripts/Interface.js"></script>
 
 	<link rel="stylesheet" type="text/css" href="./style/examples.css">
-	<link rel="stylesheet" type="text/css" href="./style/prism.css">
 
 	<script type="text/javascript">
 		// jshint ignore: start
@@ -23,84 +19,156 @@
 
 </head>
 <body>	
-	<div id="Explanation">
-		Play Along
-		<br>
-		<br>
-		Touch/Mouse and drag to play along with the probabilistic backtrack. X = pitch, Y = modulation.
-	</div>
 	<div id="Content">
-		<div id="LoadingBar"></div>
-		<div id="Rack"></div>
+		<div id="Title">Play Along</div>
+		<div id="Explanation">
+			Touch/Mouse and drag to play along with the probabilistic backtrack. X = pitch, Y = modulation.
+		</div>
 	</div>
 
-	<style type="text/css">
-		canvas {
-			width: 100%;
-			height: 300px;
-			border: 1px solid black;
-			cursor: pointer;
-			background-color: white;
+<script type="text/javascript">
+
+	//DRUMS//
+
+	//and a compressor
+	var drumCompress = new Tone.Compressor({
+		"threshold" : -30,
+		"ratio" : 6,
+		"attack" : 0.3,
+		"release" : 0.1
+	}).toMaster();
+
+	var distortion = new Tone.Distortion({
+		"distortion" : 0.4,
+		"wet" : 0.4
+	});
+
+	//hats
+	var hats = new Tone.Sampler("./audio/505/hh.mp3", {
+		"volume" : -10,
+		"envelope" : {
+			"attack" : 0.001,
+			"decay" : 0.02,
+			"sustain" : 0.01,
+			"release" : 0.01
+		},
+		"filterEnvelope" : {
+			"attack" : 0.001,
+			"decay" : 0.02,
+			"sustain" : 1,
+			"min" : 6000,
+			"max" : 600
+		},
+		"filter" : {
+			"type" : "highpass"
 		}
-	</style>
-	<script type="text/javascript">
+	}).chain(distortion, drumCompress);
 
-		var loadedCount = 0;
-		function sampleLoaded(){
-			loadedCount++;
-			if (loadedCount == 2){
-				$("#Loading").remove();
-				startButton.enable();
-			}
+	var snare = new Tone.Sampler("./audio/505/snare.mp3", {
+		"envelope" : {
+			"attack" : 0.01,
+			"decay" : 0.05,
+			"sustain" : 0
+		},
+		"filterEnvelope" : {
+			"attack" : 0.001,
+			"decay" : 0.01,
+			"sustain" : 0,
+			"min" : 3000,
+			"max" : 10000
+		},
+
+	}).chain(distortion, drumCompress);
+
+	var kick = new Tone.MonoSynth({
+		"portamento" : 0.00,
+		"oscillator" : {
+			"type" : "square"
+		},
+		"filter" : {
+			"Q" : 2,
+			"type" : "bandpass",
+			"rolloff" : -12
+		},
+		"envelope" : {
+			"attack" : 0.01,
+			"decay" : 0.2,
+			"sustain" : 0.0,
+			"release" : 0.2
+		},
+		"filterEnvelope" : {
+			"attack" : 0.01,
+			"decay" : 0.2,
+			"sustain" : 1,
+			"release" : 0.4,
+			"min" : 3000,
+			"max" : 30
 		}
-
-		//DRUMS//
-
-		//hats
-		var crusher = new Tone.Distortion({
-			"distortion" : 0.4,
-			"wet" : 0.4
-		});
-		var hats = new Tone.Sampler("./audio/505/hh.mp3", {
-			"volume" : -10,
-			"envelope" : {
-				"attack" : 0.001,
-				"decay" : 0.02,
-				"sustain" : 0.01,
-				"release" : 0.01
-			},
-			"filterEnvelope" : {
-				"attack" : 0.001,
-				"decay" : 0.02,
-				"sustain" : 1,
-				"min" : 6000,
-				"max" : 600
-			},
-			"filter" : {
-				"type" : "highpass"
-			}
-		}).connect(crusher);
-
-		var snare = new Tone.Sampler("./audio/505/snare.mp3", {
-			"envelope" : {
-				"attack" : 0.01,
-				"decay" : 0.05,
-				"sustain" : 0
-			},
-			"filterEnvelope" : {
-				"attack" : 0.001,
-				"decay" : 0.01,
-				"sustain" : 0,
-				"min" : 3000,
-				"max" : 10000
-			},
-
-		}).connect(crusher);
-
-		var kick = new Tone.MonoSynth({
-			"portamento" : 0.00,
+	}).connect(drumCompress);
+	
+	// BASS
+	var bass = new Tone.SimpleFM({
+		"harmonicity" : 2,
+		"modulationIndex" : 3,
+		"carrier" : {
 			"oscillator" : {
 				"type" : "square"
+			},
+			"envelope" : {
+				"attack" : 0.08,
+				"decay" : 0.3,
+				"sustain" : 0,
+			},
+		},
+		"modulator" : {
+			"oscillator" : {
+				"type" : "sine"
+			},
+			"envelope" : {
+				"attack" : 0.1,
+				"decay" : 0.2,
+				"sustain" : 0.3,
+				"release" : 0.01
+			},
+		}
+	}).toMaster();
+
+	//SYNTH
+	var synth = new Tone.DuoSynth({
+		"vibratoAmount" : 0.5,
+		"vibratoRate" : 5,
+		"portamento" : 0.1,
+		"harmonicity" : 1.005,
+		"volume" : 5,
+		"voice0" : {
+			"volume" : -2,
+			"oscillator" : {
+				"type" : "sawtooth"
+			},
+			"filter" : {
+				"Q" : 1,
+				"type" : "lowpass",
+				"rolloff" : -24
+			},
+			"envelope" : {
+				"attack" : 0.01,
+				"decay" : 0.25,
+				"sustain" : 0.4,
+				"release" : 1.2
+			},
+			"filterEnvelope" : {
+				"attack" : 0.001,
+				"decay" : 0.05,
+				"sustain" : 0.3,
+				"release" : 2,
+				"min" : 100,
+				"max" : 10000
+			}
+		},
+		"voice1" : {
+			"volume" : -10,
+			"oscillator" : {
+				"type" : "sawtooth"
 			},
 			"filter" : {
 				"Q" : 2,
@@ -108,213 +176,150 @@
 				"rolloff" : -12
 			},
 			"envelope" : {
-				"attack" : 0.01,
-				"decay" : 0.2,
-				"sustain" : 0.0,
-				"release" : 0.2
+				"attack" : 0.25,
+				"decay" : 4,
+				"sustain" : 0.1,
+				"release" : 0.8
 			},
 			"filterEnvelope" : {
-				"attack" : 0.01,
-				"decay" : 0.2,
-				"sustain" : 1,
-				"release" : 0.4,
-				"min" : 3000,
-				"max" : 30
+				"attack" : 0.05,
+				"decay" : 0.05,
+				"sustain" : 0.7,
+				"release" : 2,
+				"min" : 5000,
+				"max" : 2000
 			}
-		});
-
-		//an EQ for the kick
-		var eq = new Tone.EQ3(4, -20, 0);
-		kick.connect(eq);
-
-		//and a compressor
-		var drumCompress = new Tone.Compressor({
-			"threshold" : -30,
-			"ratio" : 6,
-			"attack" : 0.01,
-			"release" : 0.01
-		}).toMaster();
-		
-		//connections
-		eq.connect(drumCompress);
-		crusher.connect(drumCompress);
-
-		var bass = new Tone.FMSynth({
-			"volume" : -10,
-			"harmonicity" : 1,
-			"modulationIndex" : 0.5,
-			"modulator" : {
-				"filter" : {
-					"type" : "lowpass"
-				}
-			},
-			"carrier" : {
-				"envelope" : {
-					"decay" : 1
-				}
-			}
-		}).toMaster().setPreset("ScratchAttack");
-
-		var synth = new Tone.DuoSynth({
-			"volume" : -10
-		}).toMaster().setPreset("Unicorn");
-
-		// SCORE //
-
-		var synthNotes = ["C2", "E2", "G2", "A2", "C3", "D3", "E3", "G3", "A3", "B3", "C4", "D4", "E4", "G4", "A4", "B4", "C5"];
-
-		//randomly generate a highhat score on each refresh
-		var highHatNotes = [];
-		for (var i = 0; i < 16*4; i++){
-			var probability = (i % 2) === 0 ? 1 : 0.2;
-			highHatNotes.push([i+"*16n", probability]);
 		}
-	
-		var Score = {
-			"hats" : highHatNotes,
-			"kick" : [["0", 1],["0:2", 1], ["1:0", 1],["1:2", 1], ["1:3:2", 0.3], ["2:0", 1],["2:2", 1], ["3:0", 1],["3:2", 1], ["3:3:2", 0.5]],
-			"snare" : ["0:1", "0:3", "1:1", "1:3", "2:1", "2:3", "3:1", "3:3"],
-			"bass" : [["0:0", "C2", "4n + 8n", 1], ["0:2", "C2", "8n", 0.5], ["0:2 + 4t", "C2", "8n", 0.2], ["0:2 + 4t*2", "C2", "8n", 0.7],
-					["1:0", "C2", "4n + 8n", 1], ["1:2", "C2", "8n", 0.5], ["1:2 + 4t", "C2", "8n", 0.2], ["1:2 + 4t*2", "E2", "8n", 0.7],
-					["2:0", "F2", "4n + 8n", 1], ["2:2", "F2", "8n", 0.5], ["2:2 + 4t", "F2", "8n", 0.2], ["2:2 + 4t*2", "F2", "8n", 0.7],
-					["3:0", "F2", "4n + 8n", 1], ["3:2", "F2", "8n", 0.5], ["3:2 + 4t", "F2", "8n", 0.2], ["3:2 + 4t*2", "B1", "8n", 0.7]]
-		};
-		//parse the score
-		Tone.Note.parseScore(Score);
+	}).toMaster();
 
-		var globalProbability = 0;
-		var probabilityLFO = 0;
+	// SCORE //
 
-		//modulate the globalProbability with an LFO
-		setInterval(function(){
-			globalProbability = (Math.cos(probabilityLFO + Math.PI) + 1)/2;
-			probabilityLFO += 0.1;
-		}, 1000);
+	var synthNotes = ["C2", "E2", "G2", "A2", 
+					  "C3", "D3", "E3", "G3", "A3", "B3", 
+					  "C4", "D4", "E4", "G4", "A4", "B4", "C5"];
 
-		//route note events
-		Tone.Note.route("hats", function(time, probability){
-			if (Math.random() < probability + globalProbability / 2){
-				hats.triggerAttackRelease(0,"8n", time);
-			}
-		});
-		Tone.Note.route("kick", function(time, probability){
-			if (Math.random() < probability + globalProbability){
-				kick.triggerAttack("C2", time);
-			}
-		});
-		Tone.Note.route("snare", function(time){
-			snare.triggerAttack(0, time);
-		});
-		Tone.Note.route("bass", function(time, note, duration, probability){
-			if (Math.random() < probability + globalProbability){
-				bass.triggerAttack(note, time);
-			}
-		});
+	//randomly generate a highhat score on each refresh
+	var highHatNotes = [];
+	for (var i = 0; i < 16*4; i++){
+		var probability = (i % 2) === 0 ? 1 : 0.2;
+		highHatNotes.push([i+"*16n", probability]);
+	}
 
-		//setup the transport looping
-		Tone.Transport.loopStart = 0;
-		Tone.Transport.loopEnd = "4:0";
-		Tone.Transport.loop = true;
-		Tone.Transport.bpm.value = 125;
-		Tone.Transport.swing = 0.2;
+	var Score = {
+		"hats" : highHatNotes,
+		"kick" : [["0", 1],["0:2", 1], 
+				  ["1:0", 1],["1:2", 1], ["1:3:2", 0.3], 
+				  ["2:0", 1],["2:2", 1], 
+				  ["3:0", 1],["3:2", 1], ["3:3:2", 0.5]],
+		"snare" : ["0:1", "0:3", 
+				   "1:1", "1:3", 
+				   "2:1", "2:3", 
+				   "3:1", "3:3"],
+		"bass" : [["0:0", "C2", "4n + 8n", 1], ["0:2", "C2", "8n", 0.5], 
+				  ["0:2 + 4t", "C2", "8n", 0.2], ["0:2 + 4t*2", "C2", "8n", 0.7],
+				  ["1:0", "C2", "4n + 8n", 1], ["1:2", "C2", "8n", 0.5], 
+				  ["1:2 + 4t", "C2", "8n", 0.2], ["1:2 + 4t*2", "E2", "8n", 0.7],
+				  ["2:0", "F2", "4n + 8n", 1], ["2:2", "F2", "8n", 0.5], 
+				  ["2:2 + 4t", "F2", "8n", 0.2], ["2:2 + 4t*2", "F2", "8n", 0.7],
+				  ["3:0", "F2", "4n + 8n", 1], ["3:2", "F2", "8n", 0.5], 
+				  ["3:2 + 4t", "F2", "8n", 0.2], ["3:2 + 4t*2", "B1", "8n", 0.7]]
+	};
+	//parse the score
+	Tone.Note.parseScore(Score);
 
-		</script>
-		<script type="text/javascript">
 
-		Interface.Loading("LoadingBar");
-		Interface.Rack("Rack", "Shiny");
-		Interface.Toggle("Rack", function(down){
-			if (down){
-				Tone.Transport.start();
-			} else {
-				Tone.Transport.stop();
-			}
-		});
+	//modulate the globalProbability with an LFO so the probability of all the parts changes over time
+	var globalProbability = 0;
+	var probabilityLFO = 0;
+	setInterval(function(){
+		globalProbability = (Math.cos(probabilityLFO + Math.PI) + 1)/2;
+		probabilityLFO += 0.1;
+	}, 1000);
 
-		//setup the touch interface
-		var content = $("#Rack");
-		var canvas = $("<canvas>").appendTo(content);
-		var context = canvas[0].getContext("2d");
-		var width = canvas.width();
-		var height = canvas.height();
-		context.canvas.width = width;
-		context.canvas.height = height;
+	//route note events
+	Tone.Note.route("hats", function(time, probability){
+		if (Math.random() < probability + globalProbability / 2){
+			hats.triggerAttackRelease(0,"8n", time);
+		}
+	});
+	Tone.Note.route("kick", function(time, probability){
+		if (Math.random() < probability + globalProbability){
+			kick.triggerAttack("C2", time);
+		}
+	});
+	Tone.Note.route("snare", function(time){
+		snare.triggerAttack(0, time);
+	});
+	Tone.Note.route("bass", function(time, note, duration, probability){
+		if (Math.random() < probability + globalProbability){
+			bass.triggerAttack(note, time);
+		}
+	});
 
-		//setup the events
-		var mouseIsDown = false;
-		var circles = [];
-		canvas.on("mousemove touchmove", function(e){
-			if (mouseIsDown){
-				e.preventDefault();
-				getTouchXY(e);
-				//choose the note
-				var normalizedX = Math.min(e.offsetX / width, 0.999);
-				var normalizedY = Math.min(e.offsetY / height, 0.999);
-				var note = synthNotes[Math.floor(normalizedX * synthNotes.length)];
-				synth.setNote(note);
-				//set the vibrato amount
-				synth.vibratoAmount.value = normalizedY * 2;
-				circles.push({
-					x : e.offsetX,
-					y : e.offsetY
-				});
-			}
-		})
-		.on("mousedown touchstart", function(e){
-			mouseIsDown = true;
-			getTouchXY(e);
-			e.preventDefault();
-			var normalizedX = Math.min(e.offsetX / width, 0.999);
-			var note = synthNotes[Math.floor(normalizedX * synthNotes.length)];
-			synth.triggerAttack(note);
-			circles = [];
-			circles.push({
-				x : e.offsetX,
-				y : e.offsetY
+	//setup the transport looping
+	Tone.Transport.setLoopPoints(0, "4m");
+	Tone.Transport.loop = true;
+	Tone.Transport.bpm.value = 125;
+
+	</script>
+	<script type="text/javascript">
+
+		$(function(){
+			Notone.config({
+				"search" : false,
+				"expandInDrawer" : true,
+				"hideDrawer" : Interface.isMobile,
+				"drawer" : true,
+				"container" : "body"
 			});
-		})
-		.on("mouseup touchend mouseout", function(){
-			mouseIsDown = false;
-			synth.triggerRelease();
-			context.clearRect(0, 0, width, height);
-			circles = [];
-		});
 
-		function getTouchXY(e){
-			var offset = canvas.offset();
-			if (e.originalEvent.touches){
-				e.offsetX = e.originalEvent.touches[0].pageX - offset.left;
-				e.offsetY = e.originalEvent.touches[0].pageY - offset.top;
-			}
-		}
+			Notone.add(synth, "Synth Lead");
+			Notone.add(bass, "Bass");
+			Notone.add(distortion, "Distortion");
+			Notone.add(drumCompress, "Drum Compressor");
 
-		setInterval(function(){
-			if (circles.length === 0){
-				return;
-			}
-			//draw the points
-			context.clearRect(0, 0, width, height);
-			context.strokeStyle = "#D76767";
-			context.lineWidth = 2;
-			var twoPi = Math.PI * 2;
-			if (circles.length > 1){
-				circles.shift();
-				for (var i = 0, len = circles.length; i < len; i++){
-					var circle = circles[i];
-					context.beginPath();
-					var radius = (i / (len - 1)) * 30 + 1;
-					context.arc(circle.x, circle.y, radius, 0, twoPi, false);
-					context.stroke();
+			new Interface.Button({
+				key : 32,
+				type : "toggle",
+				text : "Start",
+				activeText : "Stop",
+				start : function(){
+					Tone.Transport.start();
+				},
+				end : function(){
+					Tone.Transport.stop();
 				}
-			} else if (circles.length === 1){
-				var circle = circles[0];
-				context.beginPath();
-				var radius = 30;
-				context.arc(circle.x, circle.y, radius, 0, twoPi, false);
-				context.stroke();
-			}
-		}, 20);
+			});
 
+			var lastSynthNote = synthNotes[0];
+			new Interface.Dragger({
+				// container : "#Content",
+				x : {
+					options : synthNotes,
+					drag : function(note){
+						synth.setNote(note);
+						lastSynthNote = note;
+					}
+				},
+				y : {
+					min : 0,
+					max : 2,
+					drag : function(val){
+						synth.vibratoAmount.value = val;
+					}
+				},
+				start : function(){
+					synth.triggerAttack(lastSynthNote);
+				},
+				end : function(){
+					synth.triggerRelease();
+				},
+				name : "Synth"
+			});
+
+			new Interface.Loader();
+
+		});
 	</script>
 </body>
 </html>

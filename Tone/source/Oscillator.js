@@ -4,14 +4,17 @@ function(Tone){
 	"use strict";
 
 	/**
-	 *  @class Oscilator with start, stop and sync to Transport methods
+	 *  @class Tone.Oscillator supports a number of features including
+	 *         phase rotation, multiple oscillator types (see Tone.Oscillator.type), 
+	 *         and Transport syncing (see Tone.Oscillator.syncFrequency).
 	 *
 	 *  @constructor
 	 *  @extends {Tone.Source}
-	 *  @param {Frequency} [frequency] starting frequency
+	 *  @param {Frequency} [frequency] Starting frequency
 	 *  @param {string} [type] The oscillator type. Read more about type below.
 	 *  @example
-	 * var osc = new Tone.Oscillator(440, "sine");
+	 * //make and start a 440hz sine tone
+	 * var osc = new Tone.Oscillator(440, "sine").toMaster().start();
 	 */
 	Tone.Oscillator = function(){
 		
@@ -26,14 +29,14 @@ function(Tone){
 		this._oscillator = null;
 		
 		/**
-		 *  The frequency control signal in hertz.
+		 *  The frequency control.
 		 *  @type {Frequency}
 		 *  @signal
 		 */
 		this.frequency = new Tone.Signal(options.frequency, Tone.Type.Frequency);
 
 		/**
-		 *  The detune control signal in cents. 
+		 *  The detune control signal.
 		 *  @type {Cents}
 		 *  @signal
 		 */
@@ -118,6 +121,7 @@ function(Tone){
 	 *  @example
 	 * Tone.Transport.bpm.value = 120;
 	 * osc.frequency.value = 440;
+	 * //the ration between the bpm and the frequency will be maintained
 	 * osc.syncFrequency();
 	 * Tone.Transport.bpm.value = 240; 
 	 * // the frequency of the oscillator is doubled to 880
@@ -140,12 +144,12 @@ function(Tone){
 	/**
 	 * The type of the oscillator: either sine, square, triangle, or sawtooth. Also capable of
 	 * setting the first x number of partials of the oscillator. For example: "sine4" would
-	 * would set be the first 4 partials of the sine wave and "triangle8" would set the first
+	 * set be the first 4 partials of the sine wave and "triangle8" would set the first
 	 * 8 partials of the triangle wave.
 	 * <br><br> 
 	 * Uses PeriodicWave internally even for native types so that it can set the phase. 
 	 * PeriodicWave equations are from the 
-	 * <a href="https://code.google.com/p/chromium/codesearch#chromium/src/third_party/WebKit/Source/modules/webaudio/PeriodicWave.cpp&sq=package:chromium">Webkit Web Audio implementation</a>.
+	 * [Webkit Web Audio implementation](https://code.google.com/p/chromium/codesearch#chromium/src/third_party/WebKit/Source/modules/webaudio/PeriodicWave.cpp&sq=package:chromium).
 	 *  
 	 * @memberOf Tone.Oscillator#
 	 * @type {string}

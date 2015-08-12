@@ -21,16 +21,19 @@ function(Tone){
 	var allpassFilterFrequencies = [225, 556, 441, 341];
 
 	/**
-	 *  @class Reverb based on <a href="https://ccrma.stanford.edu/~jos/pasp/Freeverb.html">Freeverb</a>.
+	 *  @class Tone.Freeverb is a reverb based on [Freeverb](https://ccrma.stanford.edu/~jos/pasp/Freeverb.html).
+	 *         Read more on reverb on [SoundOnSound](http://www.soundonsound.com/sos/may00/articles/reverb.htm).
 	 *
 	 *  @extends {Tone.Effect}
 	 *  @constructor
-	 *  @param {number} [roomSize=0.7] correlated to the decay time. 
-	 *                                 value between (0,1)
-	 *  @param {number} [dampening=3000] filtering which is applied to the reverb. 
-	 *                                  Value is a lowpass frequency value in hertz. 
+	 *  @param {NormalRange|Object} [roomSize] Correlated to the decay time. 
+	 *  @param {Frequency} [dampening] The cutoff frequency of a lowpass filter as part 
+	 *                                 of the reverb. 
 	 *  @example
-	 *  var freeverb = new Tone.Freeverb(0.4, 2000);
+	 * var freeverb = new Tone.Freeverb().toMaster();
+	 * freeverb.dampening.value = 1000;
+	 * //routing synth through the reverb
+	 * var synth = new Tone.AMSynth().connect(freeverb);
 	 */
 	Tone.Freeverb = function(){
 
@@ -38,14 +41,15 @@ function(Tone){
 		Tone.StereoEffect.call(this, options);
 
 		/**
-		 *  The roomSize value between (0,1)
+		 *  The roomSize value between. A larger roomSize
+		 *  will result in a longer decay. 
 		 *  @type {NormalRange}
 		 *  @signal
 		 */
 		this.roomSize = new Tone.Signal(options.roomSize, Tone.Type.NormalRange);
 
 		/**
-		 *  The amount of dampening as a value in Hertz.
+		 *  The amount of dampening of the reverberant signal. 
 		 *  @type {Frequency}
 		 *  @signal
 		 */
@@ -121,7 +125,7 @@ function(Tone){
 	};
 
 	/**
-	 *  clean up
+	 *  Clean up. 
 	 *  @returns {Tone.Freeverb} this
 	 */
 	Tone.Freeverb.prototype.dispose = function(){

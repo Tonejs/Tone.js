@@ -4,7 +4,8 @@ function(Tone){
 	"use strict";
 
 	/**
-	 *  @class A stereo feedback effect where the feedback is on the same channel
+	 *  @class Base class for stereo feedback effects where the effectReturn
+	 *         is fed back into the same channel. 
 	 *
 	 *	@constructor
 	 *	@extends {Tone.FeedbackEffect}

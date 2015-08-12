@@ -3,11 +3,11 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Master"], function(To
 	"use strict";
 
 	/**
-	 *  @class A simple volume node. Volume value in decibels. 
+	 *  @class Tone.Volume is a simple volume node, useful for creating a volume fader. 
 	 *
 	 *  @extends {Tone}
 	 *  @constructor
-	 *  @param {number} [volume=0] the initial volume
+	 *  @param {Decibels} [volume=0] the initial volume
 	 *  @example
 	 * var vol = new Tone.Volume(-12);
 	 * instrument.chain(vol, Tone.Master);
@@ -23,7 +23,8 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Master"], function(To
 
 		/**
 		 *  The volume control in decibels. 
-		 *  @type {Tone.Signal}
+		 *  @type {Decibels}
+		 *  @signal
 		 */
 		this.volume = new Tone.Signal(this.output.gain, Tone.Type.Decibels);
 		this.volume.value = this.defaultArg(volume, 0);

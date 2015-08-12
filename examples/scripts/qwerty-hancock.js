@@ -1,5 +1,5 @@
 /*
- * Qwerty Hancock keyboard library v0.4.3
+ * Qwerty Hancock keyboard library v0.4.5
  * The web keyboard for now people.
  * Copyright 2012-14, Stuart Memo
  *
@@ -10,7 +10,7 @@
  */
 
 (function (window, undefined) {
-    var version = '0.4.3',
+    var version = '0.4.5',
         settings = {},
         mouse_is_down = false,
         keysDown = {},
@@ -177,7 +177,11 @@
         key.el.style.borderRight = 0;
         key.el.style.height = settings.height + 'px';
         key.el.style.width = key.width + 'px';
-        key.el.style.borderRadius = '0 0 2px 2px';
+        key.el.style.borderRadius = '0 0 5px 5px';
+
+        if (key.noteNumber === getTotalWhiteKeys() - 1) {
+            key.el.style.border = '1px solid ' + settings.borderColour;
+        }
     };
 
     /**
@@ -190,7 +194,6 @@
 
         key.el.style.backgroundColor = settings.blackKeyColour;
         key.el.style.border = '1px solid ' + settings.borderColour;
-        key.el.style.top = '0px';
         key.el.style.position = 'absolute';
         key.el.style.left = Math.floor(((white_key_width + 1) * (key.noteNumber + 1)) - (black_key_width / 2)) + 'px';
         key.el.style.width = black_key_width + 'px';
@@ -238,18 +241,22 @@
     * Call user's mouseDown event.
     */
     var mouseDown = function (element, callback) {
-        mouse_is_down = true;
-        lightenUp(element);
-        callback(element.title, getFrequencyOfNote(element.title));
+        if (element.tagName.toLowerCase() == 'li') {
+            mouse_is_down = true;
+            lightenUp(element);
+            callback(element.title, getFrequencyOfNote(element.title));
+        }
     };
 
     /**
     * Call user's mouseUp event.
     */
     var mouseUp = function (element, callback) {
-        mouse_is_down = false;
-        darkenDown(element);
-        callback(element.title, getFrequencyOfNote(element.title));
+        if (element.tagName.toLowerCase() == 'li') {
+            mouse_is_down = false;
+            darkenDown(element);
+            callback(element.title, getFrequencyOfNote(element.title));
+        }
     };
 
     /**

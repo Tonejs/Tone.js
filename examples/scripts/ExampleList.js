@@ -1,33 +1,32 @@
 var ExampleList = {
-	"Sources" : {
+	"Basic" : {
 		"Oscillators" : "oscillator",
+		"Envelope" : "envelope",
 		"Noise" : "noises",
 		"Player" : "player"
 	},
-	"Components" : {
-		"Envelope" : "envelope",
-		"LFO" : "lfo"
-	},
-	"Signal" : {
-		"Signal Math" : "signalMath",
+	"Instruments" : {
+		"SimpleSynth" : "simpleSynth",
+		"MonoSynth" : "monoSynth",
+		"FMSynth" : "fmSynth",
+		"PolySynth" : "polySynth",
 	},
 	"Effects" : {
-		"AutoPanner" : "autoPanner",
+		"LFO Effects" : "lfoEffects",
 		"PingPongDelay" : "pingPongDelay",
 		"Buses" : "buses",
 	},
-	"Instruments" : {
-		"MonoSynth" : "monoSynth",
-		"DuoSynth" : "duoSynth",
-		"FMSynth" : "fmSynth",
+	"Sequencing / Timing" : {
+		"Scores" : "score",
+		"Step Sequencer" : "stepSequencer",
+		"Play Along" : "shiny",
+		"Visualizing Envelopes": "funkyShape"
 	},
-	"Timing" : {
-		"Notes / Scores" : "score",
-		"Transport" : "stepSequencer"
+	"Signals" : {
+		"Control Voltage" : "signal",
+		"Ramping Values" : "rampTo",
 	},
-	"Apps" : {
-		"JSON Sandbox" : "json",
-		"Dots" : "interaction",
-		"Play Along" : "shiny"
+	"Advanced" : {
+		"Module Loaders" : "require",
 	},
 };

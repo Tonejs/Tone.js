@@ -3,11 +3,13 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/signal/Signal", "Tone/sign
 	"use strict";
 	
 	/**
-	 * 	@class  Feedback Effect (a sound loop between an audio source and its own output)
+	 * 	@class  Tone.FeedbackEffect provides a loop between an 
+	 * 	        audio source and its own output. This is a base-class
+	 * 	        for feedback effects. 
 	 *
 	 *  @constructor
 	 *  @extends {Tone.Effect}
-	 *  @param {number|Object} [initialFeedback=0.125] the initial feedback value
+	 *  @param {NormalRange|Object} [feedback] The initial feedback value.
 	 */
 	Tone.FeedbackEffect = function(){
 
@@ -17,7 +19,7 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/signal/Signal", "Tone/sign
 		Tone.Effect.call(this, options);
 
 		/**
-		 *  controls the amount of feedback
+		 *  The amount of signal which is fed back into the effect input. 
 		 *  @type {NormalRange}
 		 *  @signal
 		 */
@@ -47,7 +49,7 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/signal/Signal", "Tone/sign
 	};
 
 	/**
-	 *  clean up
+	 *  Clean up. 
 	 *  @returns {Tone.FeedbackEffect} this
 	 */
 	Tone.FeedbackEffect.prototype.dispose = function(){

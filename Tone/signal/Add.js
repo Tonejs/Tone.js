@@ -4,8 +4,8 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 
 	/**
 	 *  @class Add a signal and a number or two signals. When no value is
-	 *         passed into the constructor, Tone.Add will sum <code>input0</code>
-	 *         and <code>input1</code>. If a value is passed into the constructor, 
+	 *         passed into the constructor, Tone.Add will sum <code>input[0]</code>
+	 *         and <code>input[1]</code>. If a value is passed into the constructor, 
 	 *         the it will be added to the input.
 	 *  
 	 *  @constructor

@@ -8,8 +8,8 @@ define(["Tone/core/Tone", "Tone/component/Filter", "Tone/signal/Signal"], functi
 	 *
 	 *  @extends {Tone}
 	 *  @constructor
-	 *  @param {number} lowFrequency the low/mid crossover frequency
-	 *  @param {number} highFrequency the mid/high crossover frequency
+	 *  @param {Frequency|Object} [lowFrequency] the low/mid crossover frequency
+	 *  @param {Frequency} [highFrequency] the mid/high crossover frequency
 	 */
 	Tone.MultibandSplit = function(){
 		var options = this.optionsObject(arguments, ["lowFrequency", "highFrequency"], Tone.MultibandSplit.defaults);
@@ -29,7 +29,7 @@ define(["Tone/core/Tone", "Tone/component/Filter", "Tone/signal/Signal"], functi
 		this.output = new Array(3);
 
 		/**
-		 *  the low band
+		 *  The low band. Alias for <code>output[0]</code>
 		 *  @type {Tone.Filter}
 		 */
 		this.low = this.output[0] = new Tone.Filter(0, "lowpass");
@@ -42,33 +42,33 @@ define(["Tone/core/Tone", "Tone/component/Filter", "Tone/signal/Signal"], functi
 		this._lowMidFilter = new Tone.Filter(0, "highpass");
 
 		/**
-		 *  the mid band
+		 *  The mid band output. Alias for <code>output[1]</code>
 		 *  @type {Tone.Filter}
 		 */
 		this.mid = this.output[1] = new Tone.Filter(0, "lowpass");
 
 		/**
-		 *  the high band
+		 *  The high band output. Alias for <code>output[2]</code>
 		 *  @type {Tone.Filter}
 		 */
 		this.high = this.output[2] = new Tone.Filter(0, "highpass");
 
 		/**
-		 *  the low/mid crossover frequency
+		 *  The low/mid crossover frequency.
 		 *  @type {Frequency}
 		 *  @signal
 		 */
 		this.lowFrequency = new Tone.Signal(options.lowFrequency, Tone.Type.Frequency);
 
 		/**
-		 *  the mid/high crossover frequency
+		 *  The mid/high crossover frequency.
 		 *  @type {Frequency}
 		 *  @signal
 		 */
 		this.highFrequency = new Tone.Signal(options.highFrequency, Tone.Type.Frequency);
 
 		/**
-		 *  the quality of all the fitlers
+		 *  The quality of all the filters
 		 *  @type {Number}
 		 *  @signal
 		 */
@@ -104,7 +104,7 @@ define(["Tone/core/Tone", "Tone/component/Filter", "Tone/signal/Signal"], functi
 	};
 
 	/**
-	 *  clean up
+	 *  Clean up.
 	 *  @returns {Tone.MultibandSplit} this
 	 */
 	Tone.MultibandSplit.prototype.dispose = function(){

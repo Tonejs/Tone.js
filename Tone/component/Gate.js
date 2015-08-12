@@ -3,16 +3,21 @@ define(["Tone/core/Tone", "Tone/component/Follower", "Tone/signal/GreaterThan"],
 	"use strict";
 
 	/**
-	 *  @class  Only pass signal through when it's signal exceeds the
-	 *          specified threshold.
+	 *  @class  Tone.Gate only passes a signal through when the incoming 
+	 *          signal exceeds a specified threshold. To do this, Gate uses 
+	 *          a Tone.Follower to follow the amplitude of the incoming signal. 
+	 *          A common implementation of this class is a [Noise Gate](https://en.wikipedia.org/wiki/Noise_gate).
 	 *  
 	 *  @constructor
 	 *  @extends {Tone}
-	 *  @param {number} [threshold = -40] the threshold in Decibels
-	 *  @param {Time} [attack = 0.1] the follower's attack time
-	 *  @param {Time} [release = 0.1] the follower's release time
+	 *  @param {Decibels|Object} [threshold] The threshold above which the gate will open. 
+	 *  @param {Time=} attack The follower's attack time
+	 *  @param {Time=} release The follower's release time
 	 *  @example
-	 *  var gate = new Tone.Gate(-30, 0.2, 0.3);
+	 * var gate = new Tone.Gate(-30, 0.2, 0.3).toMaster();
+	 * var mic = new Tone.Microphone().connect(gate);
+	 * //the gate will only pass through the incoming 
+	 * //signal when it's louder than -30db
 	 */
 	Tone.Gate = function(){
 		
@@ -96,7 +101,7 @@ define(["Tone/core/Tone", "Tone/component/Follower", "Tone/signal/GreaterThan"],
 	});
 
 	/**
-	 *  dispose
+	 *  Clean up. 
 	 *  @returns {Tone.Gate} this
 	 */
 	Tone.Gate.prototype.dispose = function(){

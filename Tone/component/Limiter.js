@@ -3,12 +3,16 @@ define(["Tone/core/Tone", "Tone/component/Compressor"], function(Tone){
 	"use strict";
 
 	/**
-	 *  @class A limiter on the incoming signal. Composed of a Tone.Compressor
-	 *         with a fast attack and decay value. 
+	 *  @class Tone.Limiter will limit the loudness of an incoming signal. 
+	 *         It is composed of a Tone.Compressor with a fast attack 
+	 *         and release. Limiters are commonly used to safeguard against 
+	 *         signal clipping. Unlike a compressor, limiters do not provide 
+	 *         smooth gain reduction and almost completely prevent 
+	 *         additional gain above the threshold.
 	 *
 	 *  @extends {Tone}
 	 *  @constructor
-	 *  @param {number} threshold the threshold in decibels
+	 *  @param {number} threshold The theshold above which the limiting is applied. 
 	 *  @example
 	 *  var limiter = new Tone.Limiter(-6);
 	 */
@@ -20,14 +24,15 @@ define(["Tone/core/Tone", "Tone/component/Compressor"], function(Tone){
 		 *  @type {Tone.Compressor}
 		 */
 		this._compressor = this.input = this.output = new Tone.Compressor({
-			"attack" : 0.0001,
-			"decay" : 0.0001,
+			"attack" : 0.001,
+			"decay" : 0.001,
 			"threshold" : threshold
 		});
 
 		/**
 		 * The threshold of of the limiter
-		 * @type {AudioParam}
+		 * @type {Decibel}
+		 * @signal
 		 */
 		this.threshold = this._compressor.threshold;
 
@@ -37,7 +42,7 @@ define(["Tone/core/Tone", "Tone/component/Compressor"], function(Tone){
 	Tone.extend(Tone.Limiter);
 
 	/**
-	 *  clean up
+	 *  Clean up.
 	 *  @returns {Tone.Limiter} this
 	 */
 	Tone.Limiter.prototype.dispose = function(){

@@ -7,13 +7,20 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	 *          AudioDestinationNode (aka your speakers). 
 	 *          It provides useful conveniences such as the ability 
 	 *          to set the volume and mute the entire application. 
-	 *          It also gives you the ability to apply master effects like compression, 
-	 *          limiting or effects to your application. <br><br>
-	 *          Like Tone.Transport, Tone.Master is created
-	 *          on initialization. You don't need to constuct it.
+	 *          It also gives you the ability to apply master effects to your application. 
+	 *          <br><br>
+	 *          Like Tone.Transport, A single Tone.Master is created
+	 *          on initialization and you do not need to explicitly construct one.
 	 *
 	 *  @constructor
 	 *  @extends {Tone}
+	 *  @singleton
+	 *  @example
+	 * //the audio will go from the oscillator to the speakers
+	 * oscillator.connect(Tone.Master);
+	 * //a convenience for connecting to the master output is also provided:
+	 * oscillator.toMaster();
+	 * //the above two examples are equivalent.
 	 */
 	Tone.Master = function(){
 		Tone.call(this);
@@ -33,7 +40,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 		this._muted = false;
 
 		/**
-		 * the volume of the output in decibels
+		 * The volume of the master output.
 		 * @type {Decibels}
 		 * @signal
 		 */
@@ -55,7 +62,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	};
 
 	/**
-	 * Set `mute` to true to stop all output
+	 * Mute the output. 
 	 * @memberOf Tone.Master#
 	 * @type {boolean}
 	 * @name mute
@@ -68,7 +75,6 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 			return this._muted;
 		}, 
 		set : function(mute){
-			this._muted = mute;
 			if (!this._muted && mute){
 				this._unmutedVolume = this.volume.value;
 				//maybe it should ramp here?
@@ -76,12 +82,13 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 			} else if (this._muted && !mute){
 				this.volume.value = this._unmutedVolume;
 			}
+			this._muted = mute;
 		}
 	});
 
 	/**
-	 *  Add a master effects chain. This will disconnect any nodes which were previously 
-	 *  chained. 
+	 *  Add a master effects chain. NOTE: this will disconnect any nodes which were previously 
+	 *  chained in the master effects chain. 
 	 *  @param {AudioNode|Tone...} args All arguments will be connected in a row
 	 *                                  and the Master will be routed through it.
 	 *  @return  {Tone.Master}  this

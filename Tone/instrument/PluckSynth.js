@@ -12,12 +12,12 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/source/Noise", "To
 	 *  @param {Object} [options] see the defaults
 	 *  @example
 	 * var plucky = new Tone.PluckSynth().toMaster();
-	 * plucky.triggerAttackRelease("C4", "8n");
+	 * plucky.triggerAttack("C4");
 	 */
 	Tone.PluckSynth = function(options){
 
 		options = this.defaultArg(options, Tone.PluckSynth.defaults);
-		Tone.Instrument.call(this);
+		Tone.Instrument.call(this, options);
 
 		/**
 		 *  @type {Tone.Noise}
@@ -43,14 +43,14 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/source/Noise", "To
 		});
 
 		/**
-		 *  the resonance control
+		 *  The resonance control. 
 		 *  @type {NormalRange}
 		 *  @signal
 		 */
 		this.resonance = this._lfcf.resonance;
 
 		/**
-		 *  the dampening control. i.e. the lowpass filter frequency of the comb filter
+		 *  The dampening control. i.e. the lowpass filter frequency of the comb filter
 		 *  @type {Frequency}
 		 *  @signal
 		 */
@@ -76,9 +76,9 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/source/Noise", "To
 	};
 
 	/**
-	 *  trigger the attack portion
-	 *  @param {string|number} note the note name or frequency
-	 *  @param {Time} [time=now] the time of the note
+	 *  Trigger the note. 
+	 *  @param {Frequency} note The note to trigger.
+	 *  @param {Time} [time=now] When the note should be triggered.
 	 *  @returns {Tone.PluckSynth} this
 	 */
 	Tone.PluckSynth.prototype.triggerAttack = function(note, time) {
@@ -92,7 +92,7 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/source/Noise", "To
 	};
 
 	/**
-	 *  clean up
+	 *  Clean up. 
 	 *  @returns {Tone.PluckSynth} this
 	 */
 	Tone.PluckSynth.prototype.dispose = function(){

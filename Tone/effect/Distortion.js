@@ -3,14 +3,17 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/signal/WaveShaper"], funct
 	"use strict";
 
 	/**
-	 *  @class A simple distortion effect using the waveshaper node
-	 *         algorithm from <a href="http://stackoverflow.com/a/22313408">a stackoverflow answer</a>.
+	 *  @class Tone.Distortion is a simple distortion effect using Tone.WaveShaper.
+	 *         Algorithm from [a stackoverflow answer](http://stackoverflow.com/a/22313408).
 	 *
 	 *  @extends {Tone.Effect}
 	 *  @constructor
-	 *  @param {number} distortion the amount of distortion (nominal range of 0-1)
+	 *  @param {Number|Object} [distortion] The amount of distortion (nominal range of 0-1)
 	 *  @example
-	 *  var dist = new Tone.Distortion(0.8);
+	 * var dist = new Tone.Distortion(0.8).toMaster();
+	 * var fm = new Tone.SimpleFM().connect(dist);
+	 * //this sounds good on bass notes
+	 * fm.triggerAttackRelease("A1", "8n");
 	 */
 	Tone.Distortion = function(){
 
@@ -89,7 +92,7 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/signal/WaveShaper"], funct
 	});
 
 	/**
-	 *  clean up
+	 *  Clean up. 
 	 *  @returns {Tone.Distortion} this
 	 */
 	Tone.Distortion.prototype.dispose = function(){

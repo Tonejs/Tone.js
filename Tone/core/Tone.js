@@ -94,7 +94,9 @@ define(function(){
 	///////////////////////////////////////////////////////////////////////////
 
 	/**
-	 *  @class  Tone is the base class of all other classes.  
+	 *  @class  Tone is the base class of all other classes. It provides 
+	 *          a lot of methods and functionality to all classes that extend
+	 *          it. 
 	 *  
 	 *  @constructor
 	 *  @alias Tone
@@ -323,12 +325,12 @@ define(function(){
 	Tone.prototype.bufferSize = 2048;
 
 	/**
-	 *  the delay time of a single buffer frame
+	 *  The delay time of a single frame (128 samples according to the spec). 
 	 *  @type {number}
 	 *  @static
 	 *  @const
 	 */
-	Tone.prototype.bufferTime = Tone.prototype.bufferSize / Tone.context.sampleRate;
+	Tone.prototype.blockTime = 128 / Tone.context.sampleRate;
 	
 	///////////////////////////////////////////////////////////////////////////
 	//	CONNECTIONS
@@ -561,6 +563,13 @@ define(function(){
 	 */
 	Tone.prototype.isFunction = isFunction;
 
+ 	/**
+	 *  An empty function.
+	 *  @static
+	 */
+	Tone.noOp = function(){};
+
+
 	/**
 	 *  Make the property not writable. Internal use only. 
 	 *  @private
@@ -595,6 +604,16 @@ define(function(){
 			});
 		}
 	};
+
+	/**
+	 * Possible play states. 
+	 * @enum {string}
+	 */
+	Tone.State = {
+		Started : "started",
+		Stopped : "stopped",
+		Paused : "paused",
+ 	};
 
 	///////////////////////////////////////////////////////////////////////////
 	// GAIN CONVERSIONS
@@ -634,99 +653,13 @@ define(function(){
 	///////////////////////////////////////////////////////////////////////////
 
 	/**
+	 *  Return the current time of the clock + a single buffer frame. 
+	 *  If this value is used to schedule a value to change, the earliest
+	 *  it could be scheduled is the following frame. 
 	 *  @return {number} the currentTime from the AudioContext
 	 */
 	Tone.prototype.now = function(){
 		return this.context.currentTime;
-	};
-
-	/**
-	 *  convert a sample count to seconds
-	 *  @param  {number} samples 
-	 *  @return {number}         
-	 */
-	Tone.prototype.samplesToSeconds = function(samples){
-		return samples / this.context.sampleRate;
-	};
-
-	/**
-	 *  convert a time into samples
-	 *  
-	 *  @param  {Tone.time} time
-	 *  @return {number}         
-	 */
-	Tone.prototype.toSamples = function(time){
-		var seconds = this.toSeconds(time);
-		return Math.round(seconds * this.context.sampleRate);
-	};
-
-	/**
-	 *  convert time to seconds
-	 *
-	 *  this is a simplified version which only handles numbers and 
-	 *  'now' relative numbers. If the Transport is included this 
-	 *  method is overridden to include many other features including 
-	 *  notationTime, Frequency, and transportTime
-	 *  
-	 *  @param  {number=} time 
-	 *  @param {number=} now if passed in, this number will be 
-	 *                       used for all 'now' relative timings
-	 *  @return {number}   	seconds in the same timescale as the AudioContext
-	 */
-	Tone.prototype.toSeconds = function(time, now){
-		now = this.defaultArg(now, this.now());
-		if (typeof time === "number"){
-			return time; //assuming that it's seconds
-		} else if (typeof time === "string"){
-			var plusTime = 0;
-			if(time.charAt(0) === "+") {
-				time = time.slice(1);	
-				plusTime = now;			
-			} 
-			return parseFloat(time) + plusTime;
-		} else {
-			return now;
-		}
-	};
-
-	///////////////////////////////////////////////////////////////////////////
-	// FREQUENCY CONVERSION
-	///////////////////////////////////////////////////////////////////////////
-
-	/**
-	 *  true if the input is in the format number+hz
-	 *  i.e.: 10hz
-	 *
-	 *  @param {number} freq 
-	 *  @return {boolean} 
-	 *  @function
-	 */
-	Tone.prototype.isFrequency = (function(){
-		var freqFormat = new RegExp(/\d*\.?\d+hz$/i);
-		return function(freq){
-			return freqFormat.test(freq);
-		};
-	})();
-
-	/**
-	 *  Convert a frequency into seconds.
-	 *  Accepts numbers and strings: i.e. "10hz" or 
-	 *  10 both return 0.1. 
-	 *  
-	 *  @param  {number|string} freq 
-	 *  @return {number}      
-	 */
-	Tone.prototype.frequencyToSeconds = function(freq){
-		return 1 / parseFloat(freq);
-	};
-
-	/**
-	 *  Convert a number in seconds to a frequency.
-	 *  @param  {number} seconds 
-	 *  @return {number}         
-	 */
-	Tone.prototype.secondsToFrequency = function(seconds){
-		return 1/seconds;
 	};
 
 	///////////////////////////////////////////////////////////////////////////
@@ -757,115 +690,6 @@ define(function(){
 		child.prototype.constructor = child;
 		child._super = parent;
 	};
-
-	///////////////////////////////////////////////////////////////////////////
-	//	TYPES / STATES
-	///////////////////////////////////////////////////////////////////////////
-
-	/**
-	 * Possible types which a value can take on
-	 * @enum {string}
-	 */
-	Tone.Type = {
-		/** 
-		 *  The default value is a number which can take on any value between [-Infinity, Infinity]
-		 */
-		Default : "number",
-		/**
-		 *  Time can be described in a number of ways. Read more <a href="https://github.com/TONEnoTONE/Tone.js/wiki/Time">here</>.
-		 *
-		 *  <ul>
-		 *  <li>Numbers, which will be taken literally as the time (in seconds).</li>
-		 *  <li>Notation, ("4n", "8t") describes time in BPM and time signature relative values.</li>
-		 *  <li>Transport Time, ("4:3:2") will also provide tempo and time signature relative times 
-		 *  in the form BARS:QUARTERS:SIXTEENTHS.</li>
-		 *  <li>Frequency, ("8hz") is converted to the length of the cycle in seconds.</li>
-		 *  <li>Now-Relative, ("+1") prefix any of the above with "+" and it will be interpreted as 
-		 *  "the current time plus whatever expression follows".</li>
-		 *  <li>Expressions, ("3:0 + 2 - (1m / 7)") any of the above can also be combined 
-		 *  into a mathematical expression which will be evaluated to compute the desired time.</li>
-		 *  <li>No Argument, for methods which accept time, no argument will be interpreted as 
-		 *  "now" (i.e. the currentTime).</li>
-		 *  </ul>
-		 *  
-		 *  @typedef {Time}
-		 */
-		Time : "time",
-		/**
-		 *  Frequency can be described similar to time, except ultimately the
-		 *  values are converted to frequency instead of seconds. A number
-		 *  is taken literally as the value in hertz. Additionally any of the 
-		 *  Time encodings can be used. Note names in the form
-		 *  of NOTE OCTAVE (i.e. C4) are also accepted and converted to their
-		 *  frequency value. 
-		 *  @typedef {Frequency}
-		 */
-		Frequency : "frequency",
-		/**
-		 * Gain is the ratio between the input and the output value of a signal.
-		 *  @typedef {Gain}
-		 */
-		Gain : "gain",
-		/** 
-		 *  Normal values are within the range [0, 1].
-		 *  @typedef {NormalRange}
-		 */
-		NormalRange : "normalrange",
-		/** 
-		 *  AudioRange values are between [-1, 1].
-		 *  @typedef {AudioRange}
-		 */
-		AudioRange : "audiorange",
-		/** 
-		 *  Decibels are a logarithmic unit of measurement which is useful for volume
-		 *  because of the logarithmic way that we perceive loudness. 0 decibels 
-		 *  means no change in volume. -10db is approximately half as loud and 10db 
-		 *  is twice is loud. 
-		 *  @typedef {Decibels}
-		 */
-		Decibels : "db",
-		/** 
-		 *  Half-step note increments, i.e. 12 is an octave above the root. and 1 is a half-step up.
-		 *  @typedef {Interval}
-		 */
-		Interval : "interval",
-		/** 
-		 *  Beats per minute. 
-		 *  @typedef {BPM}
-		 */
-		BPM : "bpm",
-		/** 
-		 *  The value must be greater than 0.
-		 *  @typedef {Positive}
-		 */
-		Positive : "positive",
-		/** 
-		 *  A cent is a hundreth of a semitone. 
-		 *  @typedef {Cents}
-		 */
-		Cents : "cents",
-		/** 
-		 *  Angle between 0 and 360. 
-		 *  @typedef {Degrees}
-		 */
-		Degrees : "degrees"
-	};
-
-	/**
-	 * Possible play states. 
-	 * @enum {string}
-	 */
-	Tone.State = {
-		Started : "started",
-		Stopped : "stopped",
-		Paused : "paused",
- 	};
-
- 	/**
-	 *  An empty function.
-	 *  @static
-	 */
-	Tone.noOp = function(){};
 
 	///////////////////////////////////////////////////////////////////////////
 	//	CONTEXT
@@ -930,14 +754,14 @@ define(function(){
 
 	//setup the context
 	Tone._initAudioContext(function(audioContext){
-		//set the bufferTime
-		Tone.prototype.bufferTime = Tone.prototype.bufferSize / audioContext.sampleRate;
+		//set the blockTime
+		Tone.prototype.blockTime = 128 / audioContext.sampleRate;
 		_silentNode = audioContext.createGain();
 		_silentNode.gain.value = 0;
 		_silentNode.connect(audioContext.destination);
 	});
 
-	Tone.version = "r5-dev";
+	Tone.version = "r6-dev";
 
 	console.log("%c * Tone.js " + Tone.version + " * ", "background: #000; color: #fff");
 

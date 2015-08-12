@@ -2,99 +2,88 @@
 <html>
 <head>
   <meta charset="utf-8">
-	<title>MONOSYNTH</title>
+	<title>MonoSynth</title>
 
-	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-
-	<script type="text/javascript" src="./deps/jquery.min.js"></script>
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	
 	<script type="text/javascript" src="../build/Tone.js"></script>
-	<script type="text/javascript" src="../build/Tone.Preset.js"></script>
-	<script type="text/javascript" src="./deps/nexusUI.js"></script>
-	<script type="text/javascript" src="./deps/prism.js"></script>
+	<script type="text/javascript" src="./scripts/jquery.min.js"></script>
+	<script type="text/javascript" src="./scripts/Notone.GUI.js"></script>
 	<script type="text/javascript" src="./scripts/Interface.js"></script>
-	<script type="text/javascript" src="./deps/qwerty-hancock.js"></script>
+	<script type="text/javascript" src="./scripts/qwerty-hancock.js"></script>
 
 	<link rel="stylesheet" type="text/css" href="./style/examples.css">
-	<link rel="stylesheet" type="text/css" href="./style/prism.css">
 
 	<script type="text/javascript">
 		// jshint ignore: start
 	</script>
 
 </head>
-<body>
+<body>	
 	<style type="text/css">
-	#Amplitude {
-		/*position: relative;*/
-		width: calc(40% - 10px)!important;
-	}
-	#FilterEnvelope {
-		/*position: relative;*/
-		width: calc(60% - 10px)!important;
-	}
-	.FilterEnvelope.Envelope {
-		width: 100%!important;
-	}
 
-	.Envelope {
-		width: 100%!important;
-	}
 	</style>
-	<div id="Explanation">
-		MonoSynth
-		<br>
-		<br>
-		MonoSynth is a monophonic synthesizer composed simply of one oscillator and one filter each with their own independent envelope. 
-	</div>
 	<div id="Content">
-		<div id="KeyRack">
-			<div id="Keyboard"></div>
+		<div id="Title">MonoSynth</div>
+		<div id="Explanation">
+			<a href="http://tonejs.org/docs/#MonoSynth">Tone.MonoSynth</a> 
+			is composed of one oscillator, one filter, and two envelopes.
+	 		Both envelopes are triggered simultaneously when a note is triggered. 
+	 	   	<img src="https://docs.google.com/drawings/d/1gaY1DF9_Hzkodqf8JI1Cg2VZfwSElpFQfI94IQwad38/pub?w=924&h=240">
 		</div>
-		<div id="Oscillator"></div>
-		<div id="Envelope">
-			<div id="Amplitude"></div>
-			<div id="FilterEnvelope"></div>
-		</div>
-		<div id="Filter"></div>
-		<div id="Presets"></div>
+		<div id="Keyboard"></div>
 	</div>
 
-	<script id="ToneCode" type="text/javascript">			
-		var synth = new Tone.MonoSynth().toMaster();
+	<script type="text/javascript">
+
+		var synth = new Tone.MonoSynth({
+			"oscillator" : {
+				"type" : "square"
+			},
+			"envelope" : {
+				"attack" : 0.01,
+				"decay" : 0.2,
+				"sustain" : 0.4,
+				"release" : 0.2,
+			}
+		}).toMaster();
+
 	</script>
+
 	<script id="GUI" type="text/javascript">
+		$(function(){
+			Notone.config({
+				"search" : false,
+				"expandInDrawer" : true,
+				"hideDrawer" : Interface.isMobile,
+				"drawer" : true,
+				"container" : "body"
+			});
 
-		Interface.Rack("KeyRack", "Keyboard", true).open();
-		//the keyboard
-		var keyboard = new QwertyHancock({
-			id: "Keyboard",
-			width: $("#KeyRack").width(),
-			height: 75,
-			octaves : 3,
-			startNote: "A2",
+			Notone.add(synth);
+
+			var keyboard = new QwertyHancock({
+				id: "Keyboard",
+				width: $("#Content").width(),
+				height: 150,
+				octaves: Interface.isMobile ? 1.26 : 3,
+				startNote: "C3",
+				whiteKeyColour: "white",
+				blackKeyColour: "#1EDF3E",
+				activeColour : "#3833ED"
+			});
+
+			keyboard.keyDown = function (note, frequency) {
+			    synth.triggerAttack(frequency);
+			};
+
+			keyboard.keyUp = function () {
+			    synth.triggerRelease();
+			};
+
 		});
-		keyboard.keyDown = function(note, freq){
-			synth.triggerAttack(freq);
-		};
-		keyboard.keyUp = function(){
-			synth.triggerRelease();
-		};
-
-		//the oscillator
-		Interface.Rack("Oscillator", "Oscillator", true);
-		Interface.DropDown("Oscillator", synth.oscillator, "type", ["sine", "square", "triangle", "sawtooth", "pwm", "pulse"]).listen();
-		//the envelopes
-		Interface.Rack("Envelope", "Envelopes", true);
-		var ampGroup = Interface.Group("Amplitude", "Amplitude");
-		Interface.AmplitudeEnvelope(ampGroup, synth.envelope).listen();
-		var filtGroup = Interface.Group("FilterEnvelope", "Filter");
-		Interface.FilterEnvelope(filtGroup, synth.filterEnvelope).listen();
-		Interface.Rack("Filter", "Filter", true);
-		var type = Interface.DropDown("Filter", synth.filter, "type", ["lowpass", "highpass", "bandpass"]).listen();
-		var Q = Interface.Slider("Filter", synth.filter, "Q", 0.1, 20);
-		Interface.Rack("Presets", "Presets", true);
-		Interface.Presets("Presets", synth);
-		
 	</script>
+
+	</style>
 </body>
 </html>

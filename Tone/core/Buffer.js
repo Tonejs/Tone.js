@@ -9,8 +9,8 @@ define(["Tone/core/Tone"], function(Tone){
 	 *          <br><br>
 	 *          Aside from load callbacks from individual buffers, Tone.Buffer 
 	 *  		provides static methods which keep track of the loading progress 
-	 *  		of all of the buffers. These methods are <code>onload</code>, <code>onprogress</code>,
-	 *  		and <code>onerror</code>. 
+	 *  		of all of the buffers. These methods are Tone.Buffer.onload, Tone.Buffer.onprogress,
+	 *  		and Tone.Buffer.onerror. 
 	 *
 	 *  @constructor 
 	 *  @extends {Tone}
@@ -343,7 +343,7 @@ define(["Tone/core/Tone"], function(Tone){
 	/**
 	 *  Callback when all of the buffers in the queue have loaded
 	 *  @static
-	 *  @type {function}
+	 *  @function
 	 *  @example
 	 * //invoked when all of the queued samples are done loading
 	 * Tone.Buffer.onload = function(){
@@ -356,7 +356,8 @@ define(["Tone/core/Tone"], function(Tone){
 	 *  Callback function is invoked with the progress of all of the loads in the queue. 
 	 *  The value passed to the callback is between 0-1.
 	 *  @static
-	 *  @type {function}
+	 *  @param {Number} percent The progress between 0 and 1. 
+	 *  @function
 	 *  @example
 	 * Tone.Buffer.onprogress = function(percent){
 	 * 	console.log("progress:" + (percent * 100).toFixed(1) + "%");
@@ -368,7 +369,8 @@ define(["Tone/core/Tone"], function(Tone){
 	 *  Callback if one of the buffers in the queue encounters an error. The error
 	 *  is passed in as the argument. 
 	 *  @static
-	 *  @type {function}
+	 *  @param {Error} err
+	 *  @function
 	 *  @example
 	 * Tone.Buffer.onerror = function(e){
 	 * 	console.log("there was an error while loading the buffers: "+e);

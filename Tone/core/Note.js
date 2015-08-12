@@ -55,7 +55,7 @@ define(["Tone/core/Tone", "Tone/core/Transport"], function(Tone){
 	 *  @returns {Tone.Note} this
 	 */
 	Tone.Note.prototype.dispose = function(){ 
-		Tone.Tranport.clearTimeline(this._timelineID);
+		Tone.Transport.clearTimeline(this._timelineID);
 		this.value = null;
 		return this;
 	};
@@ -163,6 +163,8 @@ define(["Tone/core/Tone", "Tone/core/Transport"], function(Tone){
 						var time = noteDescription[0];
 						var value = noteDescription.slice(1);
 						note = new Tone.Note(inst, time, value);
+					} else if (typeof noteDescription === "object"){
+						note = new Tone.Note(inst, noteDescription.time, noteDescription);
 					} else {
 						note = new Tone.Note(inst, noteDescription);
 					}
@@ -173,142 +175,6 @@ define(["Tone/core/Tone", "Tone/core/Transport"], function(Tone){
 			}
 		}
 		return notes;
-	};
-
-	///////////////////////////////////////////////////////////////////////////
-	//	MUSIC NOTES
-	//	
-	//	Augments Tone.prototype to include note methods
-	///////////////////////////////////////////////////////////////////////////
-
-	var noteToIndex = { "c" : 0, "c#" : 1, "db" : 1, "d" : 2, "d#" : 3, "eb" : 3, 
-		"e" : 4, "f" : 5, "f#" : 6, "gb" : 6, "g" : 7, "g#" : 8, "ab" : 8, 
-		"a" : 9, "a#" : 10, "bb" : 10, "b" : 11
-	};
-
-	var noteIndexToNote = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
-
-	var middleC = 261.6255653005986;
-
-	/**
-	 *  Convert a note name to frequency. 
-	 *  @param  {string} note
-	 *  @return {number}     
-	 *  @example
-	 * var freq = tone.noteToFrequency("A4"); //returns 440
-	 */
-	Tone.prototype.noteToFrequency = function(note){
-		//break apart the note by frequency and octave
-		var parts = note.split(/(\d+)/);
-		if (parts.length === 3){
-			var index = noteToIndex[parts[0].toLowerCase()];
-			var octave = parts[1];
-			var noteNumber = index + parseInt(octave, 10) * 12;
-			return Math.pow(2, (noteNumber - 48) / 12) * middleC;
-		} else {
-			return 0;
-		}
-	};
-
-	/**
-	 *  Test if a string is in note format: i.e. "C4". 
-	 *  @param  {string|number}  note The note to test
-	 *  @return {boolean}      true if it's in the form of a note
-	 *  @method isNotation
-	 *  @lends Tone.prototype.isNote
-	 *  @function
-	 */
-	Tone.prototype.isNote = ( function(){
-		var noteFormat = new RegExp(/[a-g]{1}([b#]{1}|[b#]{0})[0-9]+$/i);
-		return function(note){
-			if (typeof note === "string"){
-				note = note.toLowerCase();
-			} 
-			return noteFormat.test(note);
-		};
-	})();
-
-	/**
-	 *  A pointer to the previous toFrequency method
-	 *  @private
-	 *  @function
-	 */
-	Tone.prototype._overwrittenToFrequency = Tone.prototype.toFrequency;
-
-	/**
-	 *  A method which accepts frequencies in the form
-	 *  of notes (`"C#4"`), frequencies as strings ("49hz"), frequency numbers,
-	 *  or Time and converts them to their frequency as a number in hertz.
-	 *  @param  {Frequency} note the note name or notation
-	 *  @param {number=} 	now 	if passed in, this number will be 
-	 *                        		used for all 'now' relative timings
-	 *  @return {number}      the frequency as a number
-	 */
-	Tone.prototype.toFrequency = function(note, now){
-		if (this.isNote(note)){
-			note = this.noteToFrequency(note);
-		} 
-		return this._overwrittenToFrequency(note, now);
-	};
-
-	/**
-	 *  Convert a note name (i.e. A4, C#5, etc to a frequency).
-	 *  @param  {number} freq
-	 *  @return {string}         
-	 */
-	Tone.prototype.frequencyToNote = function(freq){
-		var log = Math.log(freq / middleC) / Math.LN2;
-		var noteNumber = Math.round(12 * log) + 48;
-		var octave = Math.floor(noteNumber/12);
-		var noteName = noteIndexToNote[noteNumber % 12];
-		return noteName + octave.toString();
-	};
-
-	/**
-	 *  Convert an interval (in semitones) to a frequency ratio.
-	 *
-	 *  @param  {number} interval the number of semitones above the base note
-	 *  @return {number}          the frequency ratio
-	 *  @example
-	 *  tone.intervalToFrequencyRatio(0); // returns 1
-	 *  tone.intervalToFrequencyRatio(12); // returns 2
-	 */
-	Tone.prototype.intervalToFrequencyRatio = function(interval){
-		return Math.pow(2,(interval/12));
-	};
-
-	/**
-	 *  Convert a midi note number into a note name. 
-	 *
-	 *  @param  {number} midiNumber the midi note number
-	 *  @return {string}            the note's name and octave
-	 *  @example
-	 *  tone.midiToNote(60); // returns "C3"
-	 */
-	Tone.prototype.midiToNote = function(midiNumber){
-		var octave = Math.floor(midiNumber / 12) - 2;
-		var note = midiNumber % 12;
-		return noteIndexToNote[note] + octave;
-	};
-
-	/**
-	 *  Convert a note to it's midi value. 
-	 *
-	 *  @param  {string} note the note name (i.e. "C3")
-	 *  @return {number} the midi value of that note
-	 *  @example
-	 *  tone.noteToMidi("C3"); // returns 60
-	 */
-	Tone.prototype.noteToMidi = function(note){
-		//break apart the note by frequency and octave
-		var parts = note.split(/(\d+)/);
-		if (parts.length === 3){
-			var index = noteToIndex[parts[0].toLowerCase()];
-			var octave = parts[1];
-			return index + (parseInt(octave, 10) + 2) * 12;
-		} else {
-			return 0;
-		}
 	};
 
 	return Tone.Note;

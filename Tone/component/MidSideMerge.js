@@ -8,10 +8,11 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Expr", "Tone/compon
 	 *         (which comes out of both the left and the right channel) 
 	 *         and the 'side' (which only comes out of the the side channels). 
 	 *         MidSideMerge merges the mid and side signal after they've been seperated
-	 *         by Tone.MidSideSplit.<br>
-	 *         M/S send/return<br>
-	 *         L = (M+S)/sqrt(2);   // obtain left signal from mid and side<br>
-	 *         R = (M-S)/sqrt(2);   // obtain right signal from mid and side<br>
+	 *         by Tone.MidSideSplit.<br><br>
+	 *         <code>
+	 *         Left = (Mid+Side)/sqrt(2);   // obtain left signal from mid and side<br>
+	 *         Right = (Mid-Side)/sqrt(2);   // obtain right signal from mid and side<br>
+	 *         </code>
 	 *
 	 *  @extends {Tone.StereoEffect}
 	 *  @constructor
@@ -20,7 +21,8 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Expr", "Tone/compon
 		Tone.call(this, 2, 0);
 
 		/**
-		 *  The mid signal input.
+		 *  The mid signal input. Alias for
+		 *  <code>input[0]</code>
 		 *  @type  {GainNode}
 		 */
 		this.mid = this.input[0] = this.context.createGain();
@@ -33,7 +35,8 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Expr", "Tone/compon
 		this._left = new Tone.Expr("($0 + $1) * $2");
 
 		/**
-		 *  The side signal input.
+		 *  The side signal input. Alias for
+		 *  <code>input[1]</code>
 		 *  @type  {GainNode}
 		 */
 		this.side = this.input[1] = this.context.createGain();

@@ -2,20 +2,17 @@
 <html>
 <head>
   <meta charset="utf-8">
-	<title>BUSES</title>
+	<title>Buses</title>
 
-	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 	
 	<script type="text/javascript" src="../build/Tone.js"></script>
-	<script type="text/javascript" src="../build/Tone.Preset.js"></script>
-	<script type="text/javascript" src="./deps/jquery.min.js"></script>
-	<script type="text/javascript" src="./deps/qwerty-hancock.js"></script>
-	<script type="text/javascript" src="./deps/nexusUI.js"></script>
-	<script type="text/javascript" src="./deps/prism.js"></script>
+	<script type="text/javascript" src="./scripts/jquery.min.js"></script>
+	<script type="text/javascript" src="./scripts/Notone.GUI.js"></script>
 	<script type="text/javascript" src="./scripts/Interface.js"></script>
+	<script type="text/javascript" src="./scripts/qwerty-hancock.js"></script>
 
 	<link rel="stylesheet" type="text/css" href="./style/examples.css">
-	<link rel="stylesheet" type="text/css" href="./style/prism.css">
 
 	<script type="text/javascript">
 		// jshint ignore: start
@@ -23,81 +20,126 @@
 
 </head>
 <body>
-	<div id="Explanation">
-		Buses
-		<br>
-		<br>
-		Buses allow you to send signal using named sends and receives. Sometimes
-		this is advantageous over directly connecting nodes for modularity and loose coupling. 
-	</div>
 	<div id="Content">
-		<div id="KeyRack">
-			<div id="Keyboard"></div>
+		<div id="Title">Buses</div>
+		<div id="Explanation">
+			Buses make it easy to share effects across many instruments. <code>send</code>
+			audio to a named bus from an instrument and then <code>receive</code> that
+			channel on your effect.
+			<br><br>
+			Docs on <a href="http://tonejs.org/docs/#Tone.send">send</a> and 
+			<a href="http://tonejs.org/docs/#Tone.receive">receive</a>.
 		</div>
-		<div id="Rack"></div>
-		<div id="CodeBlock"></div>
+		<div id="Sliders"></div>
+		<div id="Keyboard"></div>
 	</div>
-	<script id="ToneCode" type="text/javascript">
-		//the dry signal which goes to the master output
-		var dry = Tone.context.createGain()
-			.toMaster();
+	<script type="text/javascript">
 
 		//the synth
-		var synth = new Tone.MonoSynth()
-			.setPreset("Barky")
-			.connect(dry);
+		var synth = new Tone.SimpleSynth().toMaster()
+			.set("envelope.attack", 0.04);
 
-		//need to force the single channel synth 
-		//signal a stereo signal for the the chorus
-		var mono = new Tone.Mono();
-		synth.connect(mono);
-
-		var chorusSend = mono.send("chorus", 0);
-		var chebySend = synth.send("cheby", 0);
-		var autowahSend = synth.send("autowah", 0);
+		//send audio to each of the effect channels
+		var chorusSend = synth.send("chorus", -Infinity);
+		var chebySend = synth.send("cheby", -Infinity);
+		var autowahSend = synth.send("autowah", -Infinity);
+		var reverbSend = synth.send("reverb", -Infinity);
 
 		//make some effects
 		var chorus = new Tone.Chorus()
 			.receive("chorus")
-			.setPreset("Ether")
 			.toMaster();
+
 		var cheby = new Tone.Chebyshev(50)
 			.receive("cheby")
 			.toMaster();
+
+		var reverb = new Tone.Freeverb(0.9, 4000)
+			.receive("reverb")
+			.toMaster();
+
 		var autoWah = new Tone.AutoWah()
 			.receive("autowah")
-			.setPreset("Talker")
-			.toMaster();
+			.toMaster()
+			.set({
+				"baseFrequency" : 100,
+				"octaves" : 4,
+				"sensitivity" : 0,
+				"Q" : 2,
+				"gain" : 10,
+				"follower" : {
+					"attack" : 0.05,
+					"release" : 0.2
+				}
+			});
 	</script>
-	<script id="gui" type="text/javascript">
+	<script id="GUI" type="text/javascript">
+		$(function(){
+			Notone.config({
+				"search" : false,
+				"expandInDrawer" : true,
+				"hideDrawer" : Interface.isMobile,
+				"drawer" : true,
+				"container" : "body"
+			});
 
-		Interface.Rack("KeyRack", "MonoSynth");
-		Interface.Rack("Rack", "Sends");
-		var keyboard = new QwertyHancock({
-			id: "Keyboard",
-			width: $("#KeyRack").width(),
-			height: 75,
-			octaves : 3,
-			startNote: "A2",
+			Notone.add(synth);
+
+			new Interface.Slider({
+				name : "Chebyshev",
+				parent : $("#Sliders"),
+				drag : function(val){
+					chebySend.gain.value = val;
+				}
+			});
+
+			new Interface.Slider({
+				name : "Chorus",
+				parent : $("#Sliders"),
+				drag : function(val){
+					chorusSend.gain.value = val;
+				}
+			});
+
+			new Interface.Slider({
+				name : "Freeverb",
+				parent : $("#Sliders"),
+				drag : function(val){
+					reverbSend.gain.value = val;
+				}
+			});
+
+			new Interface.Slider({
+				name : "AutoWah",
+				parent : $("#Sliders"),
+				drag : function(val){
+					autowahSend.gain.value = val;
+				}
+			});
+
+			/**
+			 *  the keyboard
+			 */
+			var keyboard = new QwertyHancock({
+				id: "Keyboard",
+				width: $("#Content").width(),
+				height: 150,
+				octaves: Interface.isMobile ? 1.26 : 3,
+				startNote: "C3",
+				whiteKeyColour: "white",
+				blackKeyColour: "#f5871f",
+				activeColour : "#1EDF3E"
+			});
+
+			keyboard.keyDown = function (note, frequency) {
+			    synth.triggerAttack(frequency);
+			};
+
+			keyboard.keyUp = function () {
+			    synth.triggerRelease();
+			};
+
 		});
-		keyboard.keyDown = function(note, freq){
-			synth.triggerAttack(freq);
-		};
-		keyboard.keyUp = function(){
-			synth.triggerRelease();
-		};
-		Interface.HorizontalSlider("Rack", dry, "gain", 0, 1, 2).label = "dry";
-		var chorusSlider = Interface.HorizontalSlider("Rack", chorusSend, "gain");
-		var chebySlider = Interface.HorizontalSlider("Rack", chebySend, "gain");
-		var autoSlider = Interface.HorizontalSlider("Rack", autowahSend, "gain");
-		chorusSlider.label = "chorus";
-		chebySlider.label = "chebyshev";
-		autoSlider.label = "autowah";
-		chorusSlider.draw();
-		chebySlider.draw();
-		autoSlider.draw();
-		Interface.Code("CodeBlock", "ToneCode");
-		
 	</script>
 </body>
 </html>

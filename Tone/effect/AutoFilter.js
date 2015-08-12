@@ -3,15 +3,20 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/LFO", "Tone/comp
 	"use strict";
 
 	/**
-	 *  @class AutoFilter is a Tone.Filter with a Tone.LFO connected to the filter cutoff frequency.
+	 *  @class Tone.AutoFilter is a Tone.Filter with a Tone.LFO connected to the filter cutoff frequency.
+	 *         Setting the LFO rate and depth allows for control over the filter modulation rate 
+	 *         and depth.
 	 *
 	 *  @constructor
 	 *  @extends {Tone.Effect}
-	 *  @param {Time} [frequency=1] (optional) rate in HZ of the filter
-	 *  @param {number} [min=200] min 
- 	 *  @param {number} [max=1200] max
+	 *  @param {Time|Object} [frequency] The rate of the LFO.
+	 *  @param {Frequency} [min] The lower value of the LFOs oscillation
+ 	 *  @param {Frequency} [max] The upper value of the LFOs oscillation. 
 	 *  @example
-	 * var autoFilter = new Tone.AutoFilter("4n");
+	 * //create an autofilter and start it's LFO
+	 * var autoFilter = new Tone.AutoFilter("4n").toMaster().start();
+	 * //route an oscillator through the filter and start it
+	 * var oscillator = new Tone.Oscillator().connect(autoFilter).start();
 	 */
 	Tone.AutoFilter = function(){
 
@@ -80,8 +85,8 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/LFO", "Tone/comp
 	};
 	
 	/**
-	 * Start the filter.
-	 * @param {Time} [time=now] the filter begins.
+	 * Start the effect.
+	 * @param {Time} [time=now] When the LFO will start. 
 	 * @returns {Tone.AutoFilter} this
 	 */
 	Tone.AutoFilter.prototype.start = function(time){
@@ -90,8 +95,8 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/LFO", "Tone/comp
 	};
 
 	/**
-	 * Stop the filter.
-	 * @param {Time} [time=now] the filter stops.
+	 * Stop the effect.
+	 * @param {Time} [time=now] When the LFO will stop. 
 	 * @returns {Tone.AutoFilter} this
 	 */
 	Tone.AutoFilter.prototype.stop = function(time){
@@ -111,7 +116,7 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/LFO", "Tone/comp
 	};
 
 	/**
-	 * Unsync the filter from the transport
+	 * Unsync the filter from the transport.
 	 * @returns {Tone.AutoFilter} this
 	 */
 	Tone.AutoFilter.prototype.unsync = function(){
@@ -120,7 +125,8 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/LFO", "Tone/comp
 	};
 
 	/**
-	 * Type of oscillator attached to the AutoFilter.
+	 * Type of oscillator attached to the AutoFilter. 
+	 * Possible values: "sine", "square", "triangle", "sawtooth".
 	 * @memberOf Tone.AutoFilter#
 	 * @type {string}
 	 * @name type
@@ -165,7 +171,7 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/LFO", "Tone/comp
 	});
 
 	/**
-	 *  clean up
+	 *  Clean up. 
 	 *  @returns {Tone.AutoFilter} this
 	 */
 	Tone.AutoFilter.prototype.dispose = function(){

@@ -8,8 +8,8 @@ function(Tone){
 	 *  @class   AMSynth uses the output of one Tone.SimpleSynth to modulate the
 	 *          amplitude of another Tone.SimpleSynth. The harmonicity (the ratio between
 	 *          the two signals) affects the timbre of the output signal the most.
-	 *          Read more about Amplitude Modulation Synthesis on 
-	 *          <a href="http://www.soundonsound.com/sos/mar00/articles/synthsecrets.htm" target="_blank">SoundOnSound</a>. 
+	 *          Read more about Amplitude Modulation Synthesis on [SoundOnSound](http://www.soundonsound.com/sos/mar00/articles/synthsecrets.htm).
+	 *          <img src="https://docs.google.com/drawings/d/1p_os_As-N1bpnK8u55gXlgVw3U7BfquLX0Wj57kSZXY/pub?w=1009&h=457">
 	 *
 	 *  @constructor
 	 *  @extends {Tone.Monophonic}
@@ -103,11 +103,11 @@ function(Tone){
 			"volume" : -10,
 			"portamento" : 0,
 			"oscillator" : {
-				"type" : "square"
+				"type" : "sine"
 			},
 			"envelope" : {
-				"attack" : 2,
-				"decay" : 0.0,
+				"attack" : 0.5,
+				"decay" : 0.1,
 				"sustain" : 1,
 				"release" : 0.5
 			}

@@ -5,9 +5,12 @@ function(Tone){
 	"use strict";
 
 	/**
-	 *  @class A simple sampler instrument which plays an audio buffer 
-	 *         through an amplitude envelope and a filter envelope. Nested
-	 *         lists will be flattened.
+	 *  @class A sampler instrument which plays an audio buffer 
+	 *         through an amplitude envelope and a filter envelope. The sampler takes
+	 *         an Object in the constructor which maps a sample name to the URL 
+	 *         of the sample. Nested Objects will be flattened and can be accessed using
+	 *         a dot notation (see the example).
+	 *         <img src="https://docs.google.com/drawings/d/1UK-gi_hxzKDz9Dh4ByyOptuagMOQxv52WxN12HwvtW8/pub?w=931&h=241">
 	 *
 	 *  @constructor
 	 *  @extends {Tone.Instrument}
@@ -29,11 +32,11 @@ function(Tone){
 	 */
 	Tone.Sampler = function(urls, options){
 
-		Tone.Instrument.call(this);
 		options = this.defaultArg(options, Tone.Sampler.defaults);
+		Tone.Instrument.call(this, options);
 
 		/**
-		 *  the sample player
+		 *  The sample player.
 		 *  @type {Tone.Player}
 		 */
 		this.player = new Tone.Player(options.player);
@@ -139,8 +142,8 @@ function(Tone){
 	};
 
 	/**
-	 *  flatten an object into a single depth object
-	 *  https://gist.github.com/penguinboy/762197
+	 *  Flatten an object into a single depth object. 
+	 *  thanks to https://gist.github.com/penguinboy/762197
 	 *  @param   {Object} ob 	
 	 *  @return  {Object}    
 	 *  @private
@@ -163,12 +166,14 @@ function(Tone){
 	};
 
 	/**
-	 *  start the sample.
-	 *  @param {string=} sample the name of the samle to trigger, defaults to
-	 *                          the last sample used
-	 *  @param {Time} [time=now] the time when the note should start
-	 *  @param {number} [velocity=1] the velocity of the note
+	 *  Start the sample and simultaneously trigger the envelopes. 
+	 *  @param {string=} sample The name of the sample to trigger, defaults to
+	 *                          the last sample used. 
+	 *  @param {Time} [time=now] The time when the sample should start
+	 *  @param {number} [velocity=1] The velocity of the note
 	 *  @returns {Tone.Sampler} this
+	 *  @example
+	 * sampler.triggerAttack("B.1");
 	 */
 	Tone.Sampler.prototype.triggerAttack = function(name, time, velocity){
 		time = this.toSeconds(time);
@@ -182,10 +187,13 @@ function(Tone){
 	};
 
 	/**
-	 *  start the release portion of the sample
+	 *  Start the release portion of the sample. Will stop the sample once the 
+	 *  envelope has fully released. 
 	 *  
-	 *  @param {Time} [time=now] the time when the note should release
+	 *  @param {Time} [time=now] The time when the note should release
 	 *  @returns {Tone.Sampler} this
+	 *  @example
+	 * sampler.triggerRelease();
 	 */
 	Tone.Sampler.prototype.triggerRelease = function(time){
 		time = this.toSeconds(time);
@@ -200,6 +208,9 @@ function(Tone){
 	 * @memberOf Tone.Sampler#
 	 * @type {number|string}
 	 * @name sample
+	 * @example
+	 * //set the sample to "A.2" for next time the sample is triggered
+	 * sampler.sample = "A.2";
 	 */
 	Object.defineProperty(Tone.Sampler.prototype, "sample", {
 		get : function(){
@@ -238,7 +249,7 @@ function(Tone){
 	 * Repitch the sampled note by some interval (measured
 	 * in semi-tones). 
 	 * @memberOf Tone.Sampler#
-	 * @type {number}
+	 * @type {Interval}
 	 * @name pitch
 	 * @example
 	 * sampler.pitch = -12; //down one octave
@@ -255,7 +266,7 @@ function(Tone){
 	});
 
 	/**
-	 *  clean up
+	 *  Clean up.
 	 *  @returns {Tone.Sampler} this
 	 */
 	Tone.Sampler.prototype.dispose = function(){

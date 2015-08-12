@@ -7,7 +7,8 @@ function(Tone){
 	 *  @class  FMSynth is composed of two Tone.MonoSynths where one Tone.MonoSynth modulates
 	 *          the frequency of a second Tone.MonoSynth. A lot of spectral content 
 	 *          can be explored using the modulationIndex parameter. Read more about
-	 *          Frequency Modulation Synthesis on <a href="http://www.soundonsound.com/sos/apr00/articles/synthsecrets.htm">SoundOnSound</a>
+	 *          frequency modulation synthesis on [SoundOnSound](http://www.soundonsound.com/sos/apr00/articles/synthsecrets.htm).
+	 *          <img src="https://docs.google.com/drawings/d/1h0PUDZXPgi4Ikx6bVT6oncrYPLluFKy7lj53puxj-DM/pub?w=902&h=462">
 	 *
 	 *  @constructor
 	 *  @extends {Tone.Monophonic}
@@ -37,22 +38,26 @@ function(Tone){
 		this.modulator.volume.value = -10;
 
 		/**
-		 *  the frequency control
+		 *  The frequency control.
 		 *  @type {Frequency}
 		 *  @signal
 		 */
 		this.frequency = new Tone.Signal(440, Tone.Type.Frequency);
 
 		/**
-		 *  The ratio between the two carrier and the modulator. 
+		 *  Harmonicity is the ratio between the two voices. A harmonicity of
+		 *  1 is no change. Harmonicity = 2 means a change of an octave. 
 		 *  @type {Positive}
 		 *  @signal
+		 *  @example
+		 * //pitch voice1 an octave below voice0
+		 * synth.harmonicity.value = 0.5;
 		 */
 		this.harmonicity = new Tone.Multiply(options.harmonicity);
 		this.harmonicity.units = Tone.Type.Positive;
 
 		/**
-		 *  The modulation index which is in essence the depth or amount of the modulation. In other terms it is the 
+		 *  The modulation index which essentially the depth or amount of the modulation. It is the 
 		 *  ratio of the frequency of the modulating signal (mf) to the amplitude of the 
 		 *  modulating signal (ma) -- as in ma/mf. 
 		 *	@type {Positive}
@@ -133,7 +138,7 @@ function(Tone){
 	};
 
 	/**
-	 *  trigger the attack portion of the note
+	 * 	trigger the attack portion of the note
 	 *  
 	 *  @param  {Time} [time=now] the time the note will occur
 	 *  @param {number} [velocity=1] the velocity of the note

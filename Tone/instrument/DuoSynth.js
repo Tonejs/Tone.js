@@ -4,9 +4,10 @@ function(Tone){
 	"use strict";
 
 	/**
-	 *  @class  the DuoSynth is a monophonic synth composed of two 
+	 *  @class  Tone.DuoSynth is a monophonic synth composed of two 
 	 *          MonoSynths run in parallel with control over the 
 	 *          frequency ratio between the two voices and vibrato effect.
+	 *          <img src="https://docs.google.com/drawings/d/1bL4GXvfRMMlqS7XyBm9CjL9KJPSUKbcdBNpqOlkFLxk/pub?w=1012&h=448">
 	 *
 	 *  @constructor
 	 *  @extends {Tone.Monophonic}
@@ -80,9 +81,13 @@ function(Tone){
 		this.frequency = new Tone.Signal(440, Tone.Type.Frequency);
 
 		/**
-		 *  the ratio between the two voices
+		 *  Harmonicity is the ratio between the two voices. A harmonicity of
+		 *  1 is no change. Harmonicity = 2 means a change of an octave. 
 		 *  @type {Positive}
 		 *  @signal
+		 *  @example
+		 * //pitch voice1 an octave below voice0
+		 * duoSynth.harmonicity.value = 0.5;
 		 */
 		this.harmonicity = new Tone.Multiply(options.harmonicity);
 		this.harmonicity.units = Tone.Type.Positive;

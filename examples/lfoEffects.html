@@ -4,11 +4,11 @@
   <meta charset="utf-8">
 	<title>LFO Effects</title>
 	
-	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
 	<script type="text/javascript" src="../build/Tone.js"></script>
-	<script type="text/javascript" src="./deps/jquery.min.js"></script>
-	<script type="text/javascript" src="../../Notone.js/build/Notone.GUI.js"></script>
+	<script type="text/javascript" src="./scripts/jquery.min.js"></script>
+	<script type="text/javascript" src="./scripts/Notone.GUI.js"></script>
 	<script type="text/javascript" src="./scripts/Interface.js"></script>
 
 	<link rel="stylesheet" type="text/css" href="./style/examples.css">
@@ -19,11 +19,13 @@
 </head>
 <body>
 	<div id="Content">
+		<div id="Title">LFO Effects</div>
 		<div id="Explanation">
-			LFO Effects
-			<br>
-			<br>
-			These effects use an LFO (Low Frequency Oscillator) to modulate one parameter of the effect. Click and drag the dot to change the frequency and depth of the effect. 
+			These effects use an <a href="http://tonejs.org/docs/#LFO">LFO</a> (Low Frequency Oscillator) to modulate the effect. Click and drag the dot to change the frequency and depth of the effect. 
+			<br><br>
+			Docs on <a href="http://tonejs.org/docs/#AutoPanner">Tone.AutoPanner</a>, 
+			<a href="http://tonejs.org/docs/#AutoFilter">Tone.AutoFilter</a>, and
+			<a href="http://tonejs.org/docs/#Tremolo">Tone.Tremolo</a>
 		</div>
 		<div id="DragContainer">
 			
@@ -50,27 +52,22 @@
 
 		//the input oscillators
 		var osc0 = new Tone.Oscillator({ 
-			"volume" : -6, 
-			"type" : "triangle",
+			"volume" : -Infinity, 
+			"type" : "square6",
 			"frequency" : "C4"
 		}).connect(panner).start();
 
 		var osc1 = new Tone.Oscillator({ 
-			"volume" : -6, 
-			"type" : "triangle",
+			"volume" : -Infinity, 
+			"type" : "square6",
 			"frequency" : "E4"
 		}).connect(filter).start();
 
 		var osc2 = new Tone.Oscillator({ 
-			"volume" : -6, 
-			"type" : "triangle",
+			"volume" : -Infinity, 
+			"type" : "square6",
 			"frequency" : "A4"
 		}).connect(tremolo).start();
-
-		//set the volumes to silent initially
-		osc0.volume.value = -Infinity;
-		osc1.volume.value = -Infinity;
-		osc2.volume.value = -Infinity;
 
 	</script>
 	<script id="gui" type="text/javascript">
@@ -90,7 +87,8 @@
 		
 		var filterGUI = Notone.add(filter, "AutoFilter");
 
-		new Interface.Dragger(pannerGUI, {
+		new Interface.Dragger({
+			gui : pannerGUI,
 			x : {
 				param : "frequency",
 				min : 0.1,
@@ -109,7 +107,8 @@
 			}
 		});
 
-		new Interface.Dragger(filterGUI, {
+		new Interface.Dragger({
+			gui : filterGUI, 
 			x : {
 				param : "frequency",
 				min : 0.1,
@@ -128,7 +127,8 @@
 			}
 		});
 
-		new Interface.Dragger(tremoloGUI, {
+		new Interface.Dragger({
+			gui : tremoloGUI,
 			x : {
 				param : "frequency",
 				min : 0.1,

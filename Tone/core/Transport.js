@@ -9,9 +9,11 @@ function(Tone){
 	 *          on initialization. Unlike browser-based timing (setInterval, requestAnimationFrame)
 	 *          Tone.Transport timing events pass in the exact time of the scheduled event
 	 *          in the argument of the callback function. Pass that time value to the object
-	 *          you're scheduling. 
+	 *          you're scheduling. <br><br>
+	 *          A single transport is created for you when the library is initialized. 
 	 *
 	 *  @extends {Tone}
+	 *  @singleton
 	 *  @example
 	 * //repeated event every 8th note
 	 * Tone.Transport.setInterval(function(time){
@@ -47,9 +49,13 @@ function(Tone){
 		this.loop = false;
 
 		/**
-		 *  the bpm value
+		 *  The Beats Per Minute of the Transport. 
 		 *  @type {BPM}
 		 *  @signal
+		 *  @example
+		 * Tone.Transport.bpm.value = 80;
+		 * //ramp the bpm to 120 over 10 seconds
+		 * Tone.Transport.bpm.rampTo(120, 10);
 		 */
 		this.bpm = new Tone.Signal(120, Tone.Type.BPM);
 
@@ -61,7 +67,7 @@ function(Tone){
 		this._bpmMult = new Tone.Multiply(1/60 * tatum);
 
 		/**
-		 * 	The state of the transport. 
+		 * 	The state of the transport. READ ONLY. 
 		 *  @type {Tone.State}
 		 */
 		this.state = Tone.State.Stopped;
@@ -199,7 +205,7 @@ function(Tone){
 				timelineTicks % tatum !== 0 && //not on a downbeat
 				timelineTicks % swingTatum === 0){
 				//add some swing
-				tickTime += this._ticksToSeconds(swingTatum) * swingAmount;
+				tickTime += this.ticksToSeconds(swingTatum) * swingAmount;
 			}
 			processIntervals(tickTime);
 			processTimeouts(tickTime);
@@ -292,7 +298,6 @@ function(Tone){
 
 	/**
 	 *  Set a callback for a recurring event.
-	 *
 	 *  @param {function} callback
 	 *  @param {Time}   interval 
 	 *  @return {number} the id of the interval
@@ -303,15 +308,16 @@ function(Tone){
 	 *  }, "8n");
 	 */
 	Tone.Transport.prototype.setInterval = function(callback, interval, ctx){
-		var tickTime = this._toTicks(interval);
+		var tickTime = this.toTicks(interval);
 		var timeout = new TimelineEvent(callback, ctx, tickTime, transportTicks);
 		intervals.push(timeout);
 		return timeout.id;
 	};
 
 	/**
-	 *  clear an interval from the processing array
-	 *  @param  {number} rmInterval 	the interval to remove
+	 *  Stop and ongoing interval.
+	 *  @param  {number} intervalID  The ID of interval to remove. The interval
+	 *                               ID is given as the return value in Tone.Transport.setInterval.
 	 *  @return {boolean}            	true if the event was removed
 	 */
 	Tone.Transport.prototype.clearInterval = function(rmInterval){
@@ -326,7 +332,7 @@ function(Tone){
 	};
 
 	/**
-	 *  removes all of the intervals that are currently set
+	 *  Removes all of the intervals that are currently set. 
 	 *  @return {boolean}            	true if the event was removed
 	 */
 	Tone.Transport.prototype.clearIntervals = function(){
@@ -345,8 +351,8 @@ function(Tone){
 	 *  transport is stopped. 
 	 *
 	 *  @param {function} callback 
-	 *  @param {Time}   time     
-	 *  @return {number} the id of the timeout for clearing timeouts
+	 *  @param {Time}   time    The time (from now) that the callback will be invoked.
+	 *  @return {number} The id of the timeout.
 	 *  @example
 	 *  //trigger an event to happen 1 second from now
 	 *  Tone.Transport.setTimeout(function(time){
@@ -354,7 +360,7 @@ function(Tone){
 	 *  }, 1)
 	 */
 	Tone.Transport.prototype.setTimeout = function(callback, time, ctx){
-		var ticks = this._toTicks(time);
+		var ticks = this.toTicks(time);
 		var timeout = new TimelineEvent(callback, ctx, ticks + transportTicks, 0);
 		//put it in the right spot
 		for (var i = 0, len = timeouts.length; i<len; i++){
@@ -370,8 +376,9 @@ function(Tone){
 	};
 
 	/**
-	 *  clear the timeout based on it's ID
-	 *  @param  {number} timeoutID 
+	 *  Clear a timeout using it's ID.
+	 *  @param  {number} intervalID  The ID of timeout to remove. The timeout
+	 *                               ID is given as the return value in Tone.Transport.setTimeout.
 	 *  @return {boolean}           true if the timeout was removed
 	 */
 	Tone.Transport.prototype.clearTimeout = function(timeoutID){
@@ -386,7 +393,7 @@ function(Tone){
 	};
 
 	/**
-	 *  removes all of the timeouts that are currently set
+	 *  Removes all of the timeouts that are currently set. 
 	 *  @return {boolean}            	true if the event was removed
 	 */
 	Tone.Transport.prototype.clearTimeouts = function(){
@@ -400,12 +407,12 @@ function(Tone){
 	///////////////////////////////////////////////////////////////////////////////
 
 	/**
-	 *  Timeline events are synced to the transportTimeline of the Tone.Transport
+	 *  Timeline events are synced to the timeline of the Tone.Transport.
 	 *  Unlike Timeout, Timeline events will restart after the 
 	 *  Tone.Transport has been stopped and restarted. 
 	 *
 	 *  @param {function} 	callback 	
-	 *  @param {Tome.Time}  timeout  
+	 *  @param {Time}  timeout  
 	 *  @return {number} 				the id for clearing the transportTimeline event
 	 *  @example
 	 *  //trigger the start of a part on the 16th measure
@@ -414,7 +421,7 @@ function(Tone){
 	 *  }, "16m");
 	 */
 	Tone.Transport.prototype.setTimeline = function(callback, timeout, ctx){
-		var ticks = this._toTicks(timeout);
+		var ticks = this.toTicks(timeout);
 		var timelineEvnt = new TimelineEvent(callback, ctx, ticks, 0);
 		//put it in the right spot
 		for (var i = timelineProgress, len = transportTimeline.length; i<len; i++){
@@ -430,7 +437,7 @@ function(Tone){
 	};
 
 	/**
-	 *  clear the transportTimeline event from the 
+	 *  Clear the timeline event.
 	 *  @param  {number} timelineID 
 	 *  @return {boolean} true if it was removed
 	 */
@@ -446,7 +453,7 @@ function(Tone){
 	};
 
 	/**
-	 *  remove all events from the timeline
+	 *  Remove all events from the timeline.
 	 *  @returns {boolean} true if the events were removed
 	 */
 	Tone.Transport.prototype.clearTimelines = function(){
@@ -461,50 +468,19 @@ function(Tone){
 	///////////////////////////////////////////////////////////////////////////////
 
 	/**
-	 *  turns the time into
-	 *  @param  {Time} time
-	 *  @return {number}   
-	 *  @private   
-	 */
-	Tone.Transport.prototype._toTicks = function(time){
-		//get the seconds
-		var seconds = this.toSeconds(time);
-		var quarter = this.notationToSeconds("4n");
-		var quarters = seconds / quarter;
-		var tickNum = quarters * tatum;
-		//quantize to tick value
-		return Math.round(tickNum);
-	};
-
-	/**
-	 *  convert ticks into seconds
-	 *  
-	 *  @param  {number} ticks 
-	 *  @param {number=} bpm 
-	 *  @param {number=} timeSignature
-	 *  @return {number}               seconds
-	 *  @private
-	 */
-	Tone.Transport.prototype._ticksToSeconds = function(ticks, bpm, timeSignature){
-		ticks = Math.floor(ticks);
-		var quater = this.notationToSeconds("4n", bpm, timeSignature);
-		return (quater * ticks) / (tatum);
-	};
-
-	/**
-	 *  returns the time of the next beat
+	 *  Returns the time of the next beat.
 	 *  @param  {string} [subdivision="4n"]
 	 *  @return {number} 	the time in seconds of the next subdivision
 	 */
 	Tone.Transport.prototype.nextBeat = function(subdivision){
 		subdivision = this.defaultArg(subdivision, "4n");
-		var tickNum = this._toTicks(subdivision);
+		var tickNum = this.toTicks(subdivision);
 		var remainingTicks = (transportTicks % tickNum);
 		var nextTick = remainingTicks;
 		if (remainingTicks > 0){
 			nextTick = tickNum - remainingTicks;
 		}
-		return this._ticksToSeconds(nextTick);
+		return this.ticksToSeconds(nextTick);
 	};
 
 
@@ -513,16 +489,18 @@ function(Tone){
 	///////////////////////////////////////////////////////////////////////////////
 
 	/**
-	 *  start the transport and all sources synced to the transport
-	 *  
-	 *  @param  {Time} time
-	 *  @param  {Time=} offset the offset position to start
+	 *  Start the transport and all sources synced to the transport.
+	 *  @param  {Time} [time=now] The time when the transport should start.
+	 *  @param  {Time=} offset The timeline offset to start the transport.
 	 *  @returns {Tone.Transport} this
+	 *  @example
+	 * //start the transport in one second starting at beginning of the 5th measure. 
+	 * Tone.Transport.start("+1", "4:0:0");
 	 */
 	Tone.Transport.prototype.start = function(time, offset){
 		if (this.state === Tone.State.Stopped || this.state === Tone.State.Paused){
 			if (!this.isUndef(offset)){
-				this._setTicks(this._toTicks(offset));
+				this._setTicks(this.toTicks(offset));
 			}
 			this.state = Tone.State.Started;
 			var startTime = this.toSeconds(time);
@@ -539,10 +517,11 @@ function(Tone){
 
 
 	/**
-	 *  stop the transport and all sources synced to the transport
-	 *  
-	 *  @param  {Time} time
+	 *  Stop the transport and all sources synced to the transport.
+	 *  @param  {Time} [time=now] The time when the transport should stop. 
 	 *  @returns {Tone.Transport} this
+	 *  @example
+	 * Tone.Transport.stop();
 	 */
 	Tone.Transport.prototype.stop = function(time){
 		if (this.state === Tone.State.Started || this.state === Tone.State.Paused){
@@ -571,9 +550,8 @@ function(Tone){
 	};
 
 	/**
-	 *  pause the transport and all sources synced to the transport
-	 *  
-	 *  @param  {Time} time
+	 *  Pause the transport and all sources synced to the transport.
+	 *  @param  {Time} [time=now]
 	 *  @returns {Tone.Transport} this
 	 */
 	Tone.Transport.prototype.pause = function(time){
@@ -595,11 +573,16 @@ function(Tone){
 	///////////////////////////////////////////////////////////////////////////////
 
 	/**
-	 *  Time signature as just the numerator over 4. 
+	 *  The time signature as just the numerator over 4. 
 	 *  For example 4/4 would be just 4 and 6/8 would be 3.
 	 *  @memberOf Tone.Transport#
 	 *  @type {number}
 	 *  @name timeSignature
+	 *  @example
+	 * //common time
+	 * Tone.Transport.timeSignature = 4;
+	 * // 7/8
+	 * Tone.Transport.timeSignature = 3.5;
 	 */
 	Object.defineProperty(Tone.Transport.prototype, "timeSignature", {
 		get : function(){
@@ -612,40 +595,44 @@ function(Tone){
 
 
 	/**
-	 * The loop start point
+	 * When the Tone.Transport.loop = true, this is the starting position of the loop.
 	 * @memberOf Tone.Transport#
 	 * @type {Time}
 	 * @name loopStart
 	 */
 	Object.defineProperty(Tone.Transport.prototype, "loopStart", {
 		get : function(){
-			return this._ticksToSeconds(loopStart);
+			return this.ticksToSeconds(loopStart);
 		},
 		set : function(startPosition){
-			loopStart = this._toTicks(startPosition);
+			loopStart = this.toTicks(startPosition);
 		}
 	});
 
 	/**
-	 * The loop end point
+	 * When the Tone.Transport.loop = true, this is the ending position of the loop.
 	 * @memberOf Tone.Transport#
 	 * @type {Time}
 	 * @name loopEnd
 	 */
 	Object.defineProperty(Tone.Transport.prototype, "loopEnd", {
 		get : function(){
-			return this._ticksToSeconds(loopEnd);
+			return this.ticksToSeconds(loopEnd);
 		},
 		set : function(endPosition){
-			loopEnd = this._toTicks(endPosition);
+			loopEnd = this.toTicks(endPosition);
 		}
 	});
 
 	/**
-	 *  shorthand loop setting
+	 *  Set the loop start and stop at the same time. 
 	 *  @param {Time} startPosition 
 	 *  @param {Time} endPosition   
 	 *  @returns {Tone.Transport} this
+	 *  @example
+	 * //loop over the first measure
+	 * Tone.Transport.setLoopPoints(0, "1m");
+	 * Tone.Transport.loop = true;
 	 */
 	Tone.Transport.prototype.setLoopPoints = function(startPosition, endPosition){
 		this.loopStart = startPosition;
@@ -675,7 +662,6 @@ function(Tone){
 	 *  The default values is a 16th note. Value must be less 
 	 *  than a quarter note.
 	 *  
-	 *  
 	 *  @memberOf Tone.Transport#
 	 *  @type {Time}
 	 *  @name swingSubdivision
@@ -687,7 +673,7 @@ function(Tone){
 		set : function(subdivision){
 			//scale the values to a normal range
 			swingSubdivision = subdivision;
-			swingTatum = this._toTicks(subdivision);
+			swingTatum = this.toTicks(subdivision);
 		}
 	});
 
@@ -696,7 +682,7 @@ function(Tone){
 	 *  Setting the value will jump to that position right away. 
 	 *  
 	 *  @memberOf Tone.Transport#
-	 *  @type {string}
+	 *  @type {TransportTime}
 	 *  @name position
 	 */
 	Object.defineProperty(Tone.Transport.prototype, "position", {
@@ -709,7 +695,7 @@ function(Tone){
 			return progress.join(":");
 		},
 		set : function(progress){
-			var ticks = this._toTicks(progress);
+			var ticks = this.toTicks(progress);
 			this._setTicks(ticks);
 		}
 	});
@@ -723,6 +709,10 @@ function(Tone){
 	 *  @param  {Tone.Source} source the source to sync to the transport
 	 *  @param {Time} delay (optionally) start the source with a delay from the transport
 	 *  @returns {Tone.Transport} this
+	 *  @example
+	 * Tone.Transport.syncSource(player, "1m");
+	 * Tone.Transport.start();
+	 * //the player will start 1 measure after the transport starts
 	 */
 	Tone.Transport.prototype.syncSource = function(source, startDelay){
 		SyncedSources.push({
@@ -733,7 +723,7 @@ function(Tone){
 	};
 
 	/**
-	 *  remove the source from the list of Synced Sources
+	 *  Unsync the source from the transport. See Tone.Transport.syncSource. 
 	 *  
 	 *  @param  {Tone.Source} source [description]
 	 *  @returns {Tone.Transport} this
@@ -748,7 +738,7 @@ function(Tone){
 	};
 
 	/**
-	 *  attaches the signal to the tempo control signal so that 
+	 *  Attaches the signal to the tempo control signal so that 
 	 *  any changes in the tempo will change the signal in the same
 	 *  ratio. 
 	 *  
@@ -780,7 +770,8 @@ function(Tone){
 	};
 
 	/**
-	 *  Unsyncs a previously synced signal from the transport's control
+	 *  Unsyncs a previously synced signal from the transport's control. 
+	 *  See Tone.Transport.syncSignal.
 	 *  @param  {Tone.Signal} signal 
 	 *  @returns {Tone.Transport} this
 	 */
@@ -797,8 +788,9 @@ function(Tone){
 	};
 
 	/**
-	 *  clean up
+	 *  Clean up. 
 	 *  @returns {Tone.Transport} this
+	 *  @private
 	 */
 	Tone.Transport.prototype.dispose = function(){
 		this._clock.dispose();
@@ -873,12 +865,30 @@ function(Tone){
 	///////////////////////////////////////////////////////////////////////////////
 
 	/**
-	 *  tests if a string is musical notation
-	 *  i.e.:
-	 *  	4n = quarter note
-	 *   	2m = two measures
-	 *    	8t = eighth-note triplet
+	 *  Tests if a string is in Tick notation. 
 	 *  
+	 *  @param {string} str The string to test
+	 *  @return {boolean} 
+	 *  @method isTick
+	 *  @lends Tone.prototype.isTick
+	 */
+	Tone.prototype.isTicks = (function(){
+		var tickFormat = new RegExp(/^\d+i$/i);
+		return function(note){
+			return tickFormat.test(note);
+		};
+	})();
+
+	/**
+	 *  tests if a string is musical notation.
+	 *  i.e.:
+	 *  <ul>
+	 *  	<li>4n = quarter note</li>
+	 *   	<li>2m = two measures</li>
+	 *    	<li>8t = eighth-note triplet</li>
+	 *  </ul>
+	 *  
+	 *  @param {string} str The string to test
 	 *  @return {boolean} 
 	 *  @method isNotation
 	 *  @lends Tone.prototype.isNotation
@@ -971,6 +981,21 @@ function(Tone){
 		var beats = (measures * timeSignature + quarters + sixteenths / 4);
 		return beats * this.notationToSeconds("4n");
 	};
+	
+	/**
+	 *  convert ticks into seconds
+	 *  
+	 *  @param  {number} ticks 
+	 *  @param {number=} bpm 
+	 *  @param {number=} timeSignature
+	 *  @return {number}               seconds
+	 *  @private
+	 */
+	Tone.prototype.ticksToSeconds = function(ticks, bpm, timeSignature){
+		ticks = parseInt(ticks);
+		var quater = this.notationToSeconds("4n", bpm, timeSignature);
+		return (quater * ticks) / (tatum);
+	};
 
 	/**
 	 *  Convert seconds to the closest transportTime in the form 
@@ -1015,6 +1040,23 @@ function(Tone){
 			return freq;
 		}
 	};
+
+	/**
+	 *  turns the time into
+	 *  @param  {Time} time
+	 *  @return {number}   
+	 *  @private   
+	 */
+	Tone.prototype.toTicks = function(time){
+		//get the seconds
+		var seconds = this.toSeconds(time);
+		var quarter = this.notationToSeconds("4n");
+		var quarters = seconds / quarter;
+		var tickNum = quarters * tatum;
+		//quantize to tick value
+		return Math.round(tickNum);
+	};
+
 
 	/**
 	 *  Convert Time into seconds.
@@ -1066,6 +1108,8 @@ function(Tone){
 				time = this.transportTimeToSeconds(time);
 			} else if (this.isFrequency(time)){
 				time = this.frequencyToSeconds(time);
+			} else if (this.isTicks(time)){
+				time = this.ticksToSeconds(time);
 			} else {
 				time = parseFloat(time);
 			}
