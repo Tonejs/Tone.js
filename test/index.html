@@ -2,13 +2,15 @@
 <head>
 	<meta charset="utf-8">
 	<title>TESTS</title>
-	<script src="./testDeps/mocha.js"></script>
-	<script data-main="test.js" src="./testDeps/require.js"></script>
-
-	<link rel="stylesheet" href="./testDeps/mocha.css" />
+	<!-- GLOBAL SCRIPTS -->
+	<script src="./deps/mocha.js"></script>
+	<script src="./deps/chai.js"></script>
+	<!-- TESTS -->
+	<script data-main="Main.js" src="./deps/require.js"></script>
+	<!-- STYLE -->
+	<link rel="stylesheet" href="./deps/mocha.css" />
 </head>
 <body>
 	<div id="mocha"></div>
-	<script>mocha.setup('bdd')</script>
 </body>
 </html>
