@@ -130,7 +130,7 @@ function(Tone){
 					this._createNewOscillator(Tone.PulseOscillator);
 				}
 			} else {
-				throw new TypeError("Tone.OmniOscillator does not support type "+type);
+				throw new Error("Tone.OmniOscillator does not support type "+type);
 			}
 		}
 	});
@@ -145,10 +145,11 @@ function(Tone){
 		if (this._oscillator !== null){
 			var oldOsc = this._oscillator;
 			oldOsc.stop(now);
-			oldOsc.onended = function(){
+			//dispose the old one
+			setTimeout(function(){
 				oldOsc.dispose();
 				oldOsc = null;
-			};
+			}, this.blockTime * 1000);
 		}
 		this._oscillator = new OscillatorConstructor();
 		this.frequency.connect(this._oscillator.frequency);
