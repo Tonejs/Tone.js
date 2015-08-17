@@ -12,7 +12,7 @@ var uglify = require("gulp-uglify");
 var rename = require("gulp-rename");
 var sass = require("gulp-ruby-sass");
 var prefix = require("gulp-autoprefixer");
-var concatCss = require("gulp-concat-css");
+var open = require("gulp-open");
 
 /**
  *  BUILDING
@@ -109,4 +109,31 @@ gulp.task("sass", function () {
 
 gulp.task("example", function() {
   gulp.watch(["../examples/style/examples.scss"], ["sass"]);
+});
+
+
+/**
+ *  Test Runners
+ */
+gulp.task("test", ["collectTests"], function(){
+	gulp.src("../test/test.html")
+		.pipe(open());
+});
+
+gulp.task("collectTests", function(done){
+	var allFiles = [];
+	var task = gulp.src(["../test/Test/*/*.js"])
+		.pipe(tap(function(file){
+			var fileName = path.relative("../test/", file.path);
+			allFiles.push(fileName.substring(0, fileName.length - 3));
+		}));
+	task.on("end", function(){
+		//build a require string
+		allFiles.unshift("Test");
+		var innerTask = gulp.src("./fragments/test.frag")
+			.pipe(replace("{FILES}", JSON.stringify(allFiles)))
+			.pipe(rename("mainTest.js"))
+			.pipe(gulp.dest("../test/"));
+		innerTask.on("end", done);
+	});
 });

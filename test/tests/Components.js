@@ -64,7 +64,6 @@ function(chai, CrossFade, Master, Signal, Recorder, Panner, LFO, Gate, Follower,
 				wetSignal = new Signal(20);
 				drySignal.connect(crossFade, 0, 0);
 				wetSignal.connect(crossFade, 0, 1);
-				recorder = new Recorder();
 				crossFade.fade.value = 1;
 				crossFade.connect(dest);
 			}, function(sample){
@@ -84,7 +83,6 @@ function(chai, CrossFade, Master, Signal, Recorder, Panner, LFO, Gate, Follower,
 				wetSignal = new Signal(0.5);
 				drySignal.connect(crossFade, 0, 0);
 				wetSignal.connect(crossFade, 0, 1);
-				recorder = new Recorder();
 				crossFade.fade.value = 0.5;
 				crossFade.connect(dest);
 			}, function(sample){

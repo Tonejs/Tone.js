@@ -1,19 +1,43 @@
-require.config({
-	baseUrl:"./",
-	paths : {
-		"Tone" : "../Tone",
-		"chai" : "./testDeps/chai",
-		"Recorder" : "./testDeps/Tone.Recorder"
-	},
-});
+/* global mocha, chai*/
 
-var maxTimeout = 1000;
+define(["Tone/core/Tone"], function (Tone) {
 
-var allTests = ["tests/Core", "tests/Timing", "tests/Signal", "tests/SignalComparison", 
-"tests/SignalMath", "tests/Transport", "tests/Sources", "tests/Components", 
-"tests/Effect", "tests/Instruments", "tests/EffectPresets", "tests/InstrumentPresets", "tests/Expr"];
-// var allTests = ["tests/Core", "tests/Signal"];
+	//testing setup
+	window.expect = chai.expect;
+	mocha.setup("bdd");
 
-require(allTests, function(){
-	mocha.run(); 
+
+	/**
+	 *  The Test object
+	 */
+	var Test = {
+		input : Tone.context.createGain()
+	};
+
+	Test.run = function(){
+		mocha.run(); 
+	};
+
+	Test.wasDisposed = function(obj){
+		for (var prop in obj){
+			var member = obj[prop];
+			if (typeof member !== "function" && 
+				typeof member !== "string" && 
+				typeof member !== "number" &&
+				typeof member !== "boolean" &&
+				prop !== "preset" && 
+				!(member instanceof AudioContext)){
+				if (member !== null){
+					throw Error("property was not completely disposed: "+prop);
+				}
+			}
+		}
+	};
+
+	Test.connect = function(node, inputNumber){
+		this.input.connect(node, 0, inputNumber);
+		this.input.disconnect();
+	};
+
+	return Test;
 });

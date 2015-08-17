@@ -9,6 +9,8 @@ define(["Tone/core/Tone"], function (Tone) {
 	 */
 	Tone.Gain = function(initial){
 
+		var options = this.optionsObject(arguments, ["gain"], Tone.Gain.defaults);
+
 		/**
 		 *  The GainNode
 		 *  @type  {GainNode}
@@ -24,9 +26,8 @@ define(["Tone/core/Tone"], function (Tone) {
 		this.gain = this._gainNode.gain;
 
 		//set the initial value
-		initial = this.defaultArg(initial, 1);
 		this._readOnly("gain");
-		this.gain.value = initial;
+		this.gain.value = options.gain;
 	};
 
 	Tone.extend(Tone.Gain);

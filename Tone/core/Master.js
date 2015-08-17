@@ -46,6 +46,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 		 */
 		this.volume = new Tone.Signal(this.output.gain, Tone.Type.Decibels);
 		
+		this._readOnly("volume");
 		//connections
 		this.input.chain(this.output, this.context.destination);
 	};
@@ -110,6 +111,17 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 		this.input.disconnect();
 		this.input.chain.apply(this.input, arguments);
 		arguments[arguments.length - 1].connect(this.output);
+	};
+
+	/**
+	 *  Clean up
+	 *  @return  {Tone.Master}  this
+	 */
+	Tone.Master.prototype.dispose = function(){
+		Tone.prototype.dispose.call(this);
+		this._writable("volume");
+		this.volume.dispose();
+		this.volume = null;
 	};
 
 	///////////////////////////////////////////////////////////////////////////

@@ -27,5 +27,8 @@
     "Tone.js"
   ],
   "author": "Yotam Mann",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "gulp-open": "^1.0.0"
+  }
 }

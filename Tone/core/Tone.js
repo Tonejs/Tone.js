@@ -238,7 +238,7 @@ define(function(){
 			var param = parent[attr];
 			if (typeof params[attr] === "object"){
 				subRet[attr] = param.get();
-			} else if (param instanceof Tone.Signal){
+			} else if (Tone.Signal && param instanceof Tone.Signal){
 				subRet[attr] = param.value;
 			} else if (param instanceof AudioParam){
 				subRet[attr] = param.value;
