@@ -25,6 +25,7 @@ define(["Tone/core/Tone"], function (Tone) {
 				typeof member !== "string" && 
 				typeof member !== "number" &&
 				typeof member !== "boolean" &&
+				typeof member !== "undefined" &&
 				prop !== "preset" && 
 				!(member instanceof AudioContext)){
 				if (member !== null){
