@@ -2,15 +2,13 @@ define(["Tone/core/Tone"], function (Tone) {
 
 	/**
 	 *  @class A Schedulable class has two private functions
-	 *         for scheduling and maintaining state: _insertEvent
-	 *         and _getEvent. A scheduled event is pushed onto
+	 *         for scheduling and maintaining state: addEvent
+	 *         and getEvent. A scheduled event is pushed onto
 	 *         a private _timeline array. The event must be an 
 	 *         Object with a 'time' attribute.
 	 *  @extends {Tone}
 	 */
 	Tone.Schedulable = function(){
-
-		Tone.apply(this, arguments);
 
 		/**
 		 *  The array of scheduled timeline events
@@ -27,13 +25,13 @@ define(["Tone/core/Tone"], function (Tone) {
 	 *  @param  {Object}  event  The event object to insert into the 
 	 *                           timeline. Events must have a "time" attribute.
 	 *  @returns {Tone.Schedulable} this
-	 *  @private
 	 */
-	Tone.Schedulable.prototype._insertEvent = function(event){
+	Tone.Schedulable.prototype.addEvent = function(event){
 		//the event needs to have a time attribute
 		if (this.isUndef(event.time)){
 			throw new Error("events must have a time attribute");
 		}
+		event.time = this.toSeconds(event.time);
 		if (this._timeline.length){
 			var index = this._search(event.time);
 			this._timeline.splice(index + 1, 0, event);
@@ -44,18 +42,47 @@ define(["Tone/core/Tone"], function (Tone) {
 	};
 
 	/**
-	 *  Get the event at or after the given time
+	 *  Get the event whose time is less than or equal to the given time.
 	 *  @param  {Number}  time  The time to query.
 	 *  @returns {Object} The event object set after that time.
-	 *  @private
 	 */
-	Tone.Schedulable.prototype._getEvent = function(time){
+	Tone.Schedulable.prototype.getEvent = function(time){
+		time = this.toSeconds(time);
 		var index = this._search(time);
 		if (index !== -1){
 			return this._timeline[index];
 		} else {
 			return null;
 		}
+	};
+
+	/**
+	 *  Get the next event after the current event.
+	 *  @param  {Number}  time  The time to query.
+	 *  @returns {Object} The event object after the given time
+	 */
+	Tone.Schedulable.prototype.getNextEvent = function(time){
+		time = this.toSeconds(time);
+		var index = this._search(time);
+		if (index + 1 < this._timeline.length){
+			return this._timeline[index + 1];
+		} else {
+			return null;
+		}
+	};
+
+	/**
+	 *  Cancel events after the given time
+	 *  @param  {Time}  time  The time to query.
+	 *  @returns {Tone.Schedulable} this
+	 */
+	Tone.Schedulable.prototype.clear = function(after){
+		after = this.toSeconds(after);
+		var index = this._search(after);
+		if (index >= 0){
+			this._timeline = this._timeline.slice(0, index);
+		}
+		return this;
 	};
 
 	/**
