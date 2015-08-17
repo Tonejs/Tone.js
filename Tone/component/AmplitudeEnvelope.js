@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/component/Envelope"], function(Tone){
+define(["Tone/core/Tone", "Tone/component/Envelope", "Tone/core/Gain"], function(Tone){
 
 	"use strict";
 
@@ -38,12 +38,23 @@ define(["Tone/core/Tone", "Tone/component/Envelope"], function(Tone){
 		 *  @type {GainNode}
 		 *  @private
 		 */
-		this.input = this.output = this.context.createGain();
+		this.input = this.output = new Tone.Gain();
 
 		this._sig.connect(this.output.gain);
 	};
 
 	Tone.extend(Tone.AmplitudeEnvelope, Tone.Envelope);
+
+	/**
+	 *  Clean up
+	 *  @return  {Tone.AmplitudeEnvelope}  this
+	 */
+	Tone.AmplitudeEnvelope.prototype.dispose = function(){
+		this.input.dispose();
+		this.input = null;
+		Tone.Envelope.prototype.dispose.call(this);
+		return this;
+	};
 
 	return Tone.AmplitudeEnvelope;
 });

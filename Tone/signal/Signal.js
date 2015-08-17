@@ -55,6 +55,13 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper", "Tone/core/Types"], function
 		this.output = this._scaler = this.context.createGain();
 
 		/**
+		 *  the minimum output value
+		 *  @type {number}
+		 *  @private
+		 */
+		this._minOutput = 0.00001;
+
+		/**
 		 * The node where the value is set.
 		 * @type {AudioParam}
 		 * @private
@@ -212,7 +219,7 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper", "Tone/core/Types"], function
 	 */
 	Tone.Signal.prototype.exponentialRampToValueAtTime = function(value, endTime){
 		value = this._fromUnits(value);
-		value = Math.max(0.00001, value);
+		value = Math.max(this._minOutput, value);
 		this._value.exponentialRampToValueAtTime(value, this.toSeconds(endTime));
 		return this;
 	};
@@ -234,7 +241,7 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper", "Tone/core/Types"], function
 		// exponentialRampToValueAt cannot ever ramp from 0, apparently.
 		// More info: https://bugzilla.mozilla.org/show_bug.cgi?id=1125600#c2
 		var currentVal = this.value;
-		this.setValueAtTime(Math.max(currentVal, 0.0001), now);
+		this.setValueAtTime(Math.max(currentVal, this._minOutput), now);
 		this.exponentialRampToValueAtTime(value, now + this.toSeconds(rampTime));
 		return this;
 	};
@@ -264,14 +271,15 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper", "Tone/core/Types"], function
 	 *  @param {number} value        
 	 *  @param {Time} startTime    
 	 *  @param {number} timeConstant 
-	 *  @returns {Tone.Signal} this
+	 *  @returns {Tone.Signal} this 
 	 */
 	Tone.Signal.prototype.setTargetAtTime = function(value, startTime, timeConstant){
 		value = this._fromUnits(value);
 		// The value will never be able to approach without timeConstant > 0.
 		// http://www.w3.org/TR/webaudio/#dfn-setTargetAtTime, where the equation
 		// is described. 0 results in a division by 0.
-		timeConstant = Math.max(0.00001, timeConstant);
+		value = Math.max(this._minOutput, value);
+		timeConstant = Math.max(this._minOutput, timeConstant);
 		this._value.setTargetAtTime(value, this.toSeconds(startTime), timeConstant);
 		return this;
 	};

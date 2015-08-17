@@ -80,7 +80,7 @@ function(Tone, chai, Recorder, Master, Signal){
 
 	function acceptsInput(node, inputNumber){
 		inputNumber = inputNumber || 0;
-		var inputNode = node.context.createGain();
+		var inputNode = Tone.context.createGain();
 		inputNode.connect(node, 0, inputNumber);
 		inputNode.disconnect();
 		inputNode = null;		
@@ -88,7 +88,7 @@ function(Tone, chai, Recorder, Master, Signal){
 
 	function acceptsOutput(node, outputNumber){
 		outputNumber = outputNumber || 0;
-		var outputNode = node.context.createGain();
+		var outputNode = Tone.context.createGain();
 		node.connect(outputNode, outputNumber, 0);
 		node.disconnect(outputNumber);
 		outputNode = null;		
