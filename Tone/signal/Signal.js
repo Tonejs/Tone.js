@@ -111,8 +111,6 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper", "Tone/core/Types"], function
 		},
 		set : function(value){
 			var convertedVal = this._fromUnits(value);
-			//is this what you want?
-			this.cancelScheduledValues(0);
 			this._value.value = convertedVal;
 		}
 	});
