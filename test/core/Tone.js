@@ -30,24 +30,6 @@ define(["Test", "Tone/core/Tone", "PassAudio", "Tone/source/Oscillator", "Tone/i
 
 	});
 
-	describe("Tone.setContext", function(){
-
-		it ("can set a new context", function(){
-			var origCtx = Tone.context;
-			var ctx = new OfflineAudioContext(2, 44100, 44100);
-			Tone.setContext(ctx);
-			expect(Tone.context).to.equal(ctx);
-			expect(Tone.prototype.context).to.equal(ctx);
-			//then set it back
-			Tone.setContext(origCtx);
-			expect(Tone.context).to.equal(origCtx);
-			expect(Tone.prototype.context).to.equal(origCtx);
-			//and a saftey check
-			expect(ctx).to.not.equal(origCtx);
-		});
-		
-	});
-
 	describe("Tone", function(){
 
 		var tone = new Tone();
@@ -136,121 +118,140 @@ define(["Test", "Tone/core/Tone", "PassAudio", "Tone/source/Oscillator", "Tone/i
 				done();
 			});
 		});
-	});
 
-	describe("Tone.prototype.set / get", function(){
+		context("Tone.setContext", function(){
 
-		it("sets a value given an object", function(){
-			var osc = new Oscillator(0);
-			osc.set({
-				"frequency" : 30
+			it ("can set a new context", function(){
+				var origCtx = Tone.context;
+				var ctx = new OfflineAudioContext(2, 44100, 44100);
+				Tone.setContext(ctx);
+				expect(Tone.context).to.equal(ctx);
+				expect(Tone.prototype.context).to.equal(ctx);
+				//then set it back
+				Tone.setContext(origCtx);
+				expect(Tone.context).to.equal(origCtx);
+				expect(Tone.prototype.context).to.equal(origCtx);
+				//and a saftey check
+				expect(ctx).to.not.equal(origCtx);
 			});
-			expect(osc.frequency.value).to.be.closeTo(30, 0.001);
-			osc.dispose();
-		});	
+			
+		});
 
-		it("sets a value given a string and a value", function(){
-			var osc = new Oscillator(0);
-			osc.set("frequency", 2);
-			expect(osc.frequency.value).to.be.closeTo(2, 0.001);
-			osc.dispose();
-		});		
+		context("Tone.prototype.set / get", function(){
 
-		it("ramps to a value given an object and ramp time", function(done){
-			var osc;
-			var setValue = 30;
-			var offline = new Offline(0.6);
-			offline.before(function(dest){
-				osc = new Oscillator(0);
-				osc.frequency.connect(dest);
+			it("sets a value given an object", function(){
+				var osc = new Oscillator(0);
 				osc.set({
-					"frequency" : setValue
-				}, 0.5);
-				expect(osc.frequency.value).to.not.be.closeTo(setValue, 0.001);
-			});
-			offline.test(function(sample, time){
-				if (time > 0.5){
-					expect(sample).to.closeTo(setValue, 0.01);
-				}
-			});
-			offline.after(function(){
+					"frequency" : 30
+				});
+				expect(osc.frequency.value).to.be.closeTo(30, 0.001);
 				osc.dispose();
-				done();
-			});
-			offline.run();
-		});		
+			});	
 
-		it("ramps to a value given a string and a value and a ramp time", function(done){
-			var osc;
-			var setValue = 30;
-			var offline = new Offline(0.6);
-			offline.before(function(dest){
-				osc = new Oscillator(0);
-				osc.frequency.connect(dest);
-				osc.set("frequency", setValue, 0.5);
-				expect(osc.frequency.value).to.not.be.closeTo(setValue, 0.001);
-			});
-			offline.test(function(sample, time){
-				if (time > 0.5){
-					expect(sample).to.closeTo(setValue, 0.01);
-				}
-			});
-			offline.after(function(){
+			it("sets a value given a string and a value", function(){
+				var osc = new Oscillator(0);
+				osc.set("frequency", 2);
+				expect(osc.frequency.value).to.be.closeTo(2, 0.001);
 				osc.dispose();
-				done();
-			});
-			offline.run();
-		});		
+			});		
 
-		it("gets all defaults of the object with no arguments", function(){
-			var osc = new Oscillator(0);
-			expect(osc.get()).to.contain.keys(Object.keys(Oscillator.defaults));
-			osc.dispose();
-		});	
+			it("ramps to a value given an object and ramp time", function(done){
+				var osc;
+				var setValue = 30;
+				var offline = new Offline(0.6);
+				offline.before(function(dest){
+					osc = new Oscillator(0);
+					osc.frequency.connect(dest);
+					osc.set({
+						"frequency" : setValue
+					}, 0.5);
+					expect(osc.frequency.value).to.not.be.closeTo(setValue, 0.001);
+				});
+				offline.test(function(sample, time){
+					if (time > 0.5){
+						expect(sample).to.closeTo(setValue, 0.01);
+					}
+				});
+				offline.after(function(){
+					osc.dispose();
+					done();
+				});
+				offline.run();
+			});		
 
-		it("can 'get' only the given keys", function(){
-			var osc = new Oscillator(0);
-			var keys = ["frequency", "type"];
-			expect(Object.keys(osc.get(keys))).to.deep.equal(keys);
-			osc.dispose();
-		});	
+			it("ramps to a value given a string and a value and a ramp time", function(done){
+				var osc;
+				var setValue = 30;
+				var offline = new Offline(0.6);
+				offline.before(function(dest){
+					osc = new Oscillator(0);
+					osc.frequency.connect(dest);
+					osc.set("frequency", setValue, 0.5);
+					expect(osc.frequency.value).to.not.be.closeTo(setValue, 0.001);
+				});
+				offline.test(function(sample, time){
+					if (time > 0.5){
+						expect(sample).to.closeTo(setValue, 0.01);
+					}
+				});
+				offline.after(function(){
+					osc.dispose();
+					done();
+				});
+				offline.run();
+			});		
 
-		it("can 'set' a nested object", function(){
-			var synth = new SimpleSynth();
-			synth.set({
-				"oscillator" : {
-					"type" : "square2"
-				}
-			});
-			expect(synth.oscillator.type).to.equal("square2");
-			synth.dispose();
-		});	
+			it("gets all defaults of the object with no arguments", function(){
+				var osc = new Oscillator(0);
+				expect(osc.get()).to.contain.keys(Object.keys(Oscillator.defaults));
+				osc.dispose();
+			});	
 
-		it("can 'set' a value with dot notation", function(){
-			var synth = new SimpleSynth();
-			synth.set("oscillator.type", "triangle");
-			expect(synth.oscillator.type).to.equal("triangle");
-			synth.dispose();
-		});	
+			it("can 'get' only the given keys", function(){
+				var osc = new Oscillator(0);
+				var keys = ["frequency", "type"];
+				expect(Object.keys(osc.get(keys))).to.deep.equal(keys);
+				osc.dispose();
+			});	
 
-		it("can 'get' a value with dot notation", function(){
-			var synth = new SimpleSynth();
-			synth.set({
-				"oscillator" : {
-					"type" : "sine10",
-					"phase" : 20,
-				}
-			});
-			expect(synth.get("oscillator.type").oscillator.type).to.equal("sine10");
-			//get multiple values
-			expect(synth.get(["oscillator.type", "oscillator.phase"])).to.deep.equal({
-				"oscillator" : {
-					"type" : "sine10",
-					"phase" : 20,
-				}
-			});
-			synth.dispose();
-		});	
+			it("can 'set' a nested object", function(){
+				var synth = new SimpleSynth();
+				synth.set({
+					"oscillator" : {
+						"type" : "square2"
+					}
+				});
+				expect(synth.oscillator.type).to.equal("square2");
+				synth.dispose();
+			});	
 
+			it("can 'set' a value with dot notation", function(){
+				var synth = new SimpleSynth();
+				synth.set("oscillator.type", "triangle");
+				expect(synth.oscillator.type).to.equal("triangle");
+				synth.dispose();
+			});	
+
+			it("can 'get' a value with dot notation", function(){
+				var synth = new SimpleSynth();
+				synth.set({
+					"oscillator" : {
+						"type" : "sine10",
+						"phase" : 20,
+					}
+				});
+				expect(synth.get("oscillator.type").oscillator.type).to.equal("sine10");
+				//get multiple values
+				expect(synth.get(["oscillator.type", "oscillator.phase"])).to.deep.equal({
+					"oscillator" : {
+						"type" : "sine10",
+						"phase" : 20,
+					}
+				});
+				synth.dispose();
+			});	
+
+		});
 	});
+
 });
