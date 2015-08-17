@@ -29,7 +29,7 @@ define(["Tone/core/Tone", "Tone/core/Schedulable", "Tone/core/Types"], function 
 	 *  @return  {String}  The name of the state input in setStateAtTime.
 	 */
 	Tone.SchedulableState.prototype.getStateAtTime = function(time){
-		var event = this._getEvent(time);
+		var event = this.getEvent(time);
 		if (event !== null){
 			return event.state;
 		} else {
@@ -44,7 +44,7 @@ define(["Tone/core/Tone", "Tone/core/Schedulable", "Tone/core/Types"], function 
 	 *  @param  {Time}  time  The time to query.
 	 */
 	Tone.SchedulableState.prototype.setStateAtTime = function(state, time){
-		this._insertEvent({
+		this.addEvent({
 			"state" : state,
 			"time" : this.toSeconds(time)
 		});
