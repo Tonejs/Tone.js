@@ -691,7 +691,7 @@ define(["Tone/core/Tone"], function (Tone) {
 	 * tone.midiToNote(60); // returns "C3"
 	 */
 	Tone.prototype.midiToNote = function(midiNumber){
-		var octave = Math.floor(midiNumber / 12) - 2;
+		var octave = Math.floor(midiNumber / 12) - 1;
 		var note = midiNumber % 12;
 		return scaleIndexToNote[note] + octave;
 	};
@@ -710,7 +710,7 @@ define(["Tone/core/Tone"], function (Tone) {
 		if (parts.length === 3){
 			var index = noteToScaleIndex[parts[0].toLowerCase()];
 			var octave = parts[1];
-			return index + (parseInt(octave, 10) + 2) * 12;
+			return index + (parseInt(octave, 10) + 1) * 12;
 		} else {
 			return 0;
 		}
