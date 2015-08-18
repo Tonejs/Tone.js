@@ -1,4 +1,4 @@
-define(["Test", "Tone/core/NewClock"], function (Test, Clock) {
+define(["Test", "Tone/core/Clock"], function (Test, Clock) {
 
 	describe("Clock", function(){
 
@@ -262,6 +262,16 @@ define(["Test", "Tone/core/NewClock"], function (Test, Clock) {
 					clock.dispose();
 					done();
 				}, 600);
+			});
+
+			it ("can start with a tick offset", function(done){
+				var clock = new Clock(function(){
+					expect(clock.ticks).to.equal(4);
+					clock.dispose();
+					done();
+				}, 0.5);
+				expect(clock.ticks).to.equal(0);
+				clock.start(undefined, 4);
 			});
 		});
 
