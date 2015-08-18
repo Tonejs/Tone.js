@@ -116,9 +116,11 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper", "Tone/core/Types"], function
 	});
 
 	/**
-	 * @private
-	 * @param  {*} val the value to convert
-	 * @return {number}     the number which the value should be set to
+	 *  Convert the given value from the type specified by Tone.Signal.units
+	 *  into the destination value (such as gain).
+	 *  @private
+	 *  @param  {*} val the value to convert
+	 *  @return {number}     the number which the value should be set to
 	 */
 	Tone.Signal.prototype._fromUnits = function(val){
 		if (this.convert || this.isUndef(this.convert)){
@@ -144,7 +146,7 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper", "Tone/core/Types"], function
 	};
 
 	/**
-	 * convert to the desired units
+	 * Convert the signals true value into the units specified by Tone.Signal.units.
 	 * @private
 	 * @param  {number} val the value to convert
 	 * @return {number}
