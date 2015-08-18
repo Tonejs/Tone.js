@@ -1,15 +1,15 @@
-define(["Test", "Tone/core/SchedulableState"], function (Test, SchedulableState) {
+define(["Test", "Tone/core/TimelineState"], function (Test, TimelineState) {
 
-	describe("SchedulableState", function(){
+	describe("TimelineState", function(){
 
 		it ("can be created and disposed", function(){
-			var sched = new SchedulableState();
+			var sched = new TimelineState();
 			sched.dispose();
 			Test.wasDisposed(sched);
 		});
 
 		it ("can schedule a state at a given time", function(){
-			var sched = new SchedulableState();
+			var sched = new TimelineState();
 			sched.setStateAtTime("A", 0);
 			sched.setStateAtTime("B", 1);
 			sched.setStateAtTime("C", 1);
@@ -17,7 +17,7 @@ define(["Test", "Tone/core/SchedulableState"], function (Test, SchedulableState)
 		});
 
 		it ("can get a state at a given time", function(){
-			var sched = new SchedulableState();
+			var sched = new TimelineState();
 			sched.setStateAtTime("A", 0);
 			sched.setStateAtTime("B", 1);
 			sched.setStateAtTime("C", 2);
@@ -27,7 +27,7 @@ define(["Test", "Tone/core/SchedulableState"], function (Test, SchedulableState)
 		});
 
 		it ("returns undefined if it's before any scheduled states", function(){
-			var sched = new SchedulableState();
+			var sched = new TimelineState();
 			sched.setStateAtTime("A", 0);
 			sched.setStateAtTime("B", 1);
 			sched.setStateAtTime("C", 2);
@@ -36,7 +36,7 @@ define(["Test", "Tone/core/SchedulableState"], function (Test, SchedulableState)
 		});
 
 		it ("returns initial state if defined and query time is before any scheduled states", function(){
-			var sched = new SchedulableState("initial");
+			var sched = new TimelineState("initial");
 			sched.setStateAtTime("A", 20);
 			sched.setStateAtTime("B", 21);
 			sched.setStateAtTime("C", 22);
