@@ -1,4 +1,4 @@
-define(["Test", "Tone/core/Tone", "Tone/core/Delay"], function (Test, Tone, Delay) {
+define(["Test", "Tone/core/Tone", "Tone/core/Delay", "PassAudio"], function (Test, Tone, Delay, PassAudio) {
 
 	describe("Delay", function(){
 
@@ -41,6 +41,18 @@ define(["Test", "Tone/core/Tone", "Tone/core/Delay"], function (Test, Tone, Dela
 			expect(values.delayTime).to.be.closeTo(0.4, 0.001);
 			delay.dispose();
 		});
+
+		it ("passes audio through", function(done){
+			var delay;
+			PassAudio(function(input, output){
+				delay = new Delay();
+				delay.delayTime.value = 0;
+				input.chain(delay, output);
+			}, function(){
+				delay.dispose();
+				done();
+			});
+		});		
 
 	});
 });
