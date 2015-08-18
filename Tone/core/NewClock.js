@@ -85,25 +85,10 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal", "Tone/core/TimelineState
 		this.frequency = new Tone.TimelineSignal(options.frequency, Tone.Type.Frequency);
 
 		/**
-		 *  If the oneneded callback was called.
-		 *  @type {Boolean}
-		 *  @private
-		 */
-		this._calledEnded = true;
-
-		/**
-		 * Callback is invoked when the clock is stopped.
-		 * @type {function}
-		 * @example
-		 * clock.onended = function(){
-		 * 	console.log("the clock is stopped");
-		 * }
-		 */
-		this.onended = options.onended;
-
-		/**
-		 *  Keeps track of the number of times the callback was invoked
+		 *  The number of times the callback was invoked. Starts counting at 0
+		 *  and increments after the callback was invoked. 
 		 *  @type {Ticks}
+		 *  @readOnly
 		 */
 		this.ticks = 0;
 
@@ -138,11 +123,10 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal", "Tone/core/TimelineState
 		"callback" : Tone.noOp,
 		"frequency" : 1,
 		"lookAhead" : "auto",
-		"onended" : Tone.noOp
 	};
 
 	/**
-	 *  Returns the playback state of the source, either "started" or "stopped".
+	 *  Returns the playback state of the source, either "started", "stopped" or "paused".
 	 *  @type {Tone.State}
 	 *  @readOnly
 	 *  @memberOf Tone.Clock#
@@ -200,6 +184,13 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal", "Tone/core/TimelineState
 		return this;	
 	};
 
+	/**
+	 *  Stop the clock. Stopping the clock resets the tick counter to 0.
+	 *  @param {Time} [time=now] The time when the clock should stop.
+	 *  @returns {Tone.Clock} this
+	 *  @example
+	 * clock.stop();
+	 */
 	Tone.Clock.prototype.stop = function(time){
 		time = this.toSeconds(time);
 		if (this._state.getStateAtTime(time) !== Tone.State.Stopped){
@@ -209,6 +200,11 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal", "Tone/core/TimelineState
 	};
 
 
+	/**
+	 *  Pause the clock. Pausing does not reset the tick counter.
+	 *  @param {Time} [time=now] The time when the clock should stop.
+	 *  @returns {Tone.Clock} this
+	 */
 	Tone.Clock.prototype.pause = function(time){
 		time = this.toSeconds(time);
 		if (this._state.getStateAtTime(time) === Tone.State.Started){
@@ -217,6 +213,12 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal", "Tone/core/TimelineState
 		return this;	
 	};
 
+	/**
+	 *  The scheduling loop.
+	 *  @param  {Number}  time  The current page time starting from 0
+	 *                          when the page was loaded.
+	 *  @private
+	 */
 	Tone.Clock.prototype._loop = function(time){
 		this._loopID = requestAnimationFrame(this._boundLoop);
 		//compute the look ahead
@@ -267,10 +269,12 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal", "Tone/core/TimelineState
 	};
 
 	/**
-	 *  Returns the scheduled state scheduled before or at
-	 *  the given time.
+	 *  Returns the scheduled state at the given time.
 	 *  @param  {Time}  time  The time to query.
 	 *  @return  {String}  The name of the state input in setStateAtTime.
+	 *  @example
+	 * clock.start("+0.1");
+	 * clock.getStateAtTime("+0.1"); //returns "started"
 	 */
 	Tone.Clock.prototype.getStateAtTime = function(time){
 		return this._state.getStateAtTime(time);
