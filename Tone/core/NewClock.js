@@ -181,10 +181,16 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal", "Tone/core/TimelineState
 	});
 
 
+	/**
+	 *  Start the clock at the given time. Optionally pass in an offset
+	 *  of where to start the tick counter from.
+	 *  @param  {Time}  time    The time the clock should start
+	 *  @param  {Ticks=}  offset  Where the tick counter starts counting from.
+	 *  @return  {Tone.Clock}  this
+	 */
 	Tone.Clock.prototype.start = function(time, offset){
 		time = this.toSeconds(time);
 		if (this._state.getStateAtTime(time) !== Tone.State.Started){
-			offset = this.defaultArg(offset, 0);
 			this._state.addEvent({
 				"state" : Tone.State.Started, 
 				"time" : time,
@@ -238,7 +244,9 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal", "Tone/core/TimelineState
 			//if it was stopped and now started
 			if (this._nextTick === -1 && state === Tone.State.Started){
 				this._nextTick = event.time;
-				this.ticks = event.offset;
+				if (!this.isUndef(event.offset)){
+					this.ticks = event.offset;
+				}
 			}
 		}
 		if (state === Tone.State.Started){
