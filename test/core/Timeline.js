@@ -148,11 +148,11 @@ define(["Test", "Tone/core/Timeline"], function (Test, Timeline) {
 
 		it ("can clear items after the given time", function(){
 			var sched = new Timeline();
-			for (var i = 0; i < 100; i++){
+			for (var i = 5; i < 100; i++){
 				sched.addEvent({"time" : i});
 			}
 			sched.clear(10);
-			expect(sched.length).to.equal(10);
+			expect(sched.length).to.equal(5);
 			sched.clear(0);
 			expect(sched.length).to.equal(0);
 			sched.dispose();
