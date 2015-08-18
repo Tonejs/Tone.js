@@ -6,13 +6,13 @@
 
 	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
 
-	<script type="text/javascript" src="./deps/jquery.min.js"></script>
+	<script type="text/javascript" src="./scripts/jquery.min.js"></script>
 	<script type="text/javascript" src="../build/Tone.js"></script>
 	<script type="text/javascript" src="../build/Tone.Preset.js"></script>
-	<script type="text/javascript" src="./deps/nexusUI.js"></script>
-	<script type="text/javascript" src="./deps/prism.js"></script>
+	<script type="text/javascript" src="./scripts/nexusUI.js"></script>
+	<script type="text/javascript" src="./scripts/prism.js"></script>
 	<script type="text/javascript" src="./scripts/Interface.js"></script>
-	<script type="text/javascript" src="./deps/qwerty-hancock.js"></script>
+	<script type="text/javascript" src="./scripts/qwerty-hancock.js"></script>
 
 	<link rel="stylesheet" type="text/css" href="./style/examples.css">
 	<link rel="stylesheet" type="text/css" href="./style/prism.css">
@@ -158,8 +158,8 @@
 		</div>
 	</div>
 	<div class = "wrapper">
-		<div id="envelope0" class="comp-div">
-			<p>envelope0</p>
+		<div id="strike" class="comp-div">
+			<p>strike</p>
 			<br>
 			<p>Decay</p>
 			<input type="range" id="decay0" value="0"/>
@@ -167,10 +167,10 @@
 			<p>Attack</p>
 			<input type="range" id="attack0" value="0"/>
 			<p>Trigger</p>
-			<button type="button" onclick="cymbal.envelope0.triggerAttack()">env 0</button>
+			<button type="button" onclick="cymbal.strike.triggerAttack()">strike</button>
 		</div>
-		<div id="envelope1" class="comp-div">
-			<p>envelope1</p>
+		<div id="body" class="comp-div">
+			<p>body</p>
 			<br>
 			<p>Decay</p>
 			<input type="range" id="decay1" value="0"/>
@@ -178,10 +178,10 @@
 			<p>Attack</p>
 			<input type="range" id="attack1" value="0"/>
 			<p>Trigger</p>
-			<button type="button" onclick="cymbal.envelope1.triggerAttack()">env 1</button>
+			<button type="button" onclick="cymbal.body.triggerAttack()">body</button>
 		</div>
 		<div id="envelope2" class="comp-div">
-			<p>envelope2</p>
+			<p>envelope2 removed</p>
 			<br>
 			<p>Decay</p>
 			<input type="range" id="decay2" value="0"/>
@@ -198,6 +198,7 @@
 		cymbal.triggerAttack(Tone.context.currentTime)
 	};
 
+	var envelopeArray = ["strike", "body"]
 	for(var i = 0; i < 2; i ++){
 		var freq = document.getElementById("bpfreq" + i);
 		freq.max = 22050;
@@ -216,12 +217,12 @@
 
 		var decay = document.getElementById("decay" + i);
 		decay.max = 6;
-		decay.value = cymbal["envelope" + i].decay;
+		decay.value = cymbal[envelopeArray[i]].decay;
 		decay.step = 0.01;
 
 		var attack = document.getElementById("attack" + i);
 		attack.max = 2;
-		attack.value = cymbal["envelope" + i].attack;
+		attack.value = cymbal[envelopeArray[i]].attack;
 		attack.step = 0.001;
 	}
 
@@ -323,28 +324,21 @@
 	});
 
 	$("#decay0").on("change", function(){
-		cymbal["envelope0"].decay = $("#decay0").val();
+		cymbal[envelopeArray[0]].decay = $("#decay0").val();
 	});
 
 	$("#decay1").on("change", function(){
-		cymbal["envelope1"].decay = $("#decay1").val();
-	});
-
-	$("#decay2").on("change", function(){
-		cymbal["envelope2"].decay = $("#decay2").val();
+		cymbal[envelopeArray[1]].decay = $("#decay1").val();
 	});
 
 	$("#attack0").on("change", function(){
-		cymbal["envelope0"].attack = $("#attack0").val();
+		cymbal[envelopeArray[0]].attack = $("#attack0").val();
 	});
 
 	$("#attack1").on("change", function(){
-		cymbal["envelope1"].attack = $("#attack1").val();
+		cymbal[envelopeArray[1]].attack = $("#attack1").val();
 	});
 
-	$("#attack2").on("change", function(){
-		cymbal["envelope2"].attack = $("#attack2").val();
-	});
 
 	</script>
 </body>

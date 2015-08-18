@@ -759,26 +759,28 @@
 	Module(function (Tone) {
 	    
 	    /**
-		 *  @class Wraps the native Web Audio API <a href="interface" target="_blank">WaveShaperNode</a>.
+		 *  @class Wraps the native Web Audio API 
+		 *         [WaveShaperNode](http://webaudio.github.io/web-audio-api/#the-waveshapernode-interface).
 		 *
 		 *  @extends {Tone.SignalBase}
 		 *  @constructor
-		 *  @param {function(number, number)|Array|number} mapping the function used to define the values. 
+		 *  @param {function|Array|Number} mapping The function used to define the values. 
 		 *                                    The mapping function should take two arguments: 
 		 *                                    the first is the value at the current position 
 		 *                                    and the second is the array position. 
 		 *                                    If the argument is an array, that array will be
 		 *                                    set as the wave shaping function. The input
 		 *                                    signal is an AudioRange [-1, 1] value and the output
-		 *                                    signal can take on any numerical values. Read more 
-		 *                                    about the waveshaper in the 
-		 *                                    <a href='http://webaudio.github.io/web-audio-api/#the-waveshapernode-interface' target='_blank'>Web Audio API</a>. 
+		 *                                    signal can take on any numerical values. 
 		 *                                    
-		 *  @param {number} [bufferLen=1024] the length of the WaveShaperNode buffer.
+		 *  @param {Number} [bufferLen=1024] The length of the WaveShaperNode buffer.
 		 *  @example
 		 * var timesTwo = new Tone.WaveShaper(function(val){
 		 * 	return val * 2;
 		 * }, 2048);
+		 *  @example
+		 * //a waveshaper can also be constructed with an array of values
+		 * var invert = new Tone.WaveShaper([1, -1]);
 		 */
 	    Tone.WaveShaper = function (mapping, bufferLen) {
 	        /**
@@ -883,424 +885,6 @@
 	        return this;
 	    };
 	    return Tone.WaveShaper;
-	});
-	Module(function (Tone) {
-	    
-	    /**
-		 *  @class  Audio-rate value. Tone.Signal is a core component of the library.
-		 *          Signals can be scheduled with sample-level accuracy. Tone.Signal
-		 *          has all of the methods available to native Web Audio 
-		 *          <a href="http://webaudio.github.io/web-audio-api/#the-audioparam-interface" target="_blank">AudioParams</a> 
-		 *          as well as additional conveniences. 
-		 *
-		 *  @constructor
-		 *  @extends {Tone.SignalBase}
-		 *  @param {Number|AudioParam} [value] Initial value of the signal. If an AudioParam
-		 *                                     is passed in, that parameter will be wrapped
-		 *                                     and controlled by the Signal. 
-		 *  @param {string} [units=Number] unit The units the signal is in. 
-		 *  @example
-		 * var signal = new Tone.Signal(10);
-		 */
-	    Tone.Signal = function () {
-	        var options = this.optionsObject(arguments, [
-	            'value',
-	            'units'
-	        ], Tone.Signal.defaults);
-	        /**
-			 * The units of the signal.
-			 * @type {string}
-			 */
-	        this.units = options.units;
-	        /**
-			 *  When true, converts the set value
-			 *  based on the units given. When false,
-			 *  applies no conversion and the units
-			 *  are merely used as a label. 
-			 *  @type  {boolean}
-			 */
-	        this.convert = options.convert;
-	        /**
-			 *  True if the signal value is being overridden by 
-			 *  a connected signal.
-			 *  @readOnly
-			 *  @type  {boolean}
-			 *  @private
-			 */
-	        this.overridden = false;
-	        /**
-			 * The node where the constant signal value is scaled.
-			 * @type {GainNode}
-			 * @private
-			 */
-	        this.output = this._scaler = this.context.createGain();
-	        /**
-			 * The node where the value is set.
-			 * @type {AudioParam}
-			 * @private
-			 */
-	        this.input = this._value = this._scaler.gain;
-	        if (options.value instanceof AudioParam) {
-	            this._scaler.connect(options.value);
-	            //zero out the value
-	            options.value.value = 0;
-	        } else {
-	            if (!this.isUndef(options.param)) {
-	                this._scaler.connect(options.param);
-	                options.param.value = 0;
-	            }
-	            this.value = options.value;
-	        }
-	        //connect the constant 1 output to the node output
-	        Tone.Signal._constant.chain(this._scaler);
-	    };
-	    Tone.extend(Tone.Signal, Tone.SignalBase);
-	    /**
-		 *  The default values
-		 *  @type  {Object}
-		 *  @static
-		 *  @const
-		 */
-	    Tone.Signal.defaults = {
-	        'value': 0,
-	        'param': undefined,
-	        'units': Tone.Type.Default,
-	        'convert': true
-	    };
-	    /**
-		 * The value of the signal. 
-		 * @memberOf Tone.Signal#
-		 * @type {Number}
-		 * @name value
-		 */
-	    Object.defineProperty(Tone.Signal.prototype, 'value', {
-	        get: function () {
-	            return this._toUnits(this._value.value);
-	        },
-	        set: function (value) {
-	            var convertedVal = this._fromUnits(value);
-	            //is this what you want?
-	            this.cancelScheduledValues(0);
-	            this._value.value = convertedVal;
-	        }
-	    });
-	    /**
-		 * @private
-		 * @param  {*} val the value to convert
-		 * @return {number}     the number which the value should be set to
-		 */
-	    Tone.Signal.prototype._fromUnits = function (val) {
-	        if (this.convert || this.isUndef(this.convert)) {
-	            switch (this.units) {
-	            case Tone.Type.Time:
-	                return this.toSeconds(val);
-	            case Tone.Type.Frequency:
-	                return this.toFrequency(val);
-	            case Tone.Type.Decibels:
-	                return this.dbToGain(val);
-	            case Tone.Type.NormalRange:
-	                return Math.min(Math.max(val, 0), 1);
-	            case Tone.Type.AudioRange:
-	                return Math.min(Math.max(val, -1), 1);
-	            case Tone.Type.Positive:
-	                return Math.max(val, 0);
-	            default:
-	                return val;
-	            }
-	        } else {
-	            return val;
-	        }
-	    };
-	    /**
-		 * convert to the desired units
-		 * @private
-		 * @param  {number} val the value to convert
-		 * @return {number}
-		 */
-	    Tone.Signal.prototype._toUnits = function (val) {
-	        if (this.convert || this.isUndef(this.convert)) {
-	            switch (this.units) {
-	            case Tone.Type.Decibels:
-	                return this.gainToDb(val);
-	            default:
-	                return val;
-	            }
-	        } else {
-	            return val;
-	        }
-	    };
-	    /**
-		 *  Schedules a parameter value change at the given time.
-		 *  @param {*}	value The value to set the signal.
-		 *  @param {Time}  time The time when the change should occur.
-		 *  @returns {Tone.Signal} this
-		 *  @example
-		 * //set the frequency to "G4" in exactly 1 second from now. 
-		 * freq.setValueAtTime("G4", "+1");
-		 */
-	    Tone.Signal.prototype.setValueAtTime = function (value, time) {
-	        value = this._fromUnits(value);
-	        this._value.setValueAtTime(value, this.toSeconds(time));
-	        return this;
-	    };
-	    /**
-		 *  Creates a schedule point with the current value at the current time.
-		 *  This is useful for creating an automation anchor point in order to 
-		 *  schedule changes from the current value. 
-		 *
-		 *  @param {number=} now (Optionally) pass the now value in. 
-		 *  @returns {Tone.Signal} this
-		 */
-	    Tone.Signal.prototype.setCurrentValueNow = function (now) {
-	        now = this.defaultArg(now, this.now());
-	        var currentVal = this._value.value;
-	        this.cancelScheduledValues(now);
-	        this._value.setValueAtTime(currentVal, now);
-	        return this;
-	    };
-	    /**
-		 *  Schedules a linear continuous change in parameter value from the 
-		 *  previous scheduled parameter value to the given value.
-		 *  
-		 *  @param  {number} value   
-		 *  @param  {Time} endTime 
-		 *  @returns {Tone.Signal} this
-		 */
-	    Tone.Signal.prototype.linearRampToValueAtTime = function (value, endTime) {
-	        value = this._fromUnits(value);
-	        this._value.linearRampToValueAtTime(value, this.toSeconds(endTime));
-	        return this;
-	    };
-	    /**
-		 *  Schedules an exponential continuous change in parameter value from 
-		 *  the previous scheduled parameter value to the given value.
-		 *  
-		 *  @param  {number} value   
-		 *  @param  {Time} endTime 
-		 *  @returns {Tone.Signal} this
-		 */
-	    Tone.Signal.prototype.exponentialRampToValueAtTime = function (value, endTime) {
-	        value = this._fromUnits(value);
-	        value = Math.max(0.00001, value);
-	        this._value.exponentialRampToValueAtTime(value, this.toSeconds(endTime));
-	        return this;
-	    };
-	    /**
-		 *  Schedules an exponential continuous change in parameter value from 
-		 *  the current time and current value to the given value.
-		 *  
-		 *  @param  {number} value   
-		 *  @param  {Time} rampTime the time that it takes the 
-		 *                               value to ramp from it's current value
-		 *  @returns {Tone.Signal} this
-		 *  @example
-		 * //exponentially ramp to the value 2 over 4 seconds. 
-		 * signal.exponentialRampToValueNow(2, 4);
-		 */
-	    Tone.Signal.prototype.exponentialRampToValueNow = function (value, rampTime) {
-	        var now = this.now();
-	        // exponentialRampToValueAt cannot ever ramp from 0, apparently.
-	        // More info: https://bugzilla.mozilla.org/show_bug.cgi?id=1125600#c2
-	        var currentVal = this.value;
-	        this.setValueAtTime(Math.max(currentVal, 0.0001), now);
-	        this.exponentialRampToValueAtTime(value, now + this.toSeconds(rampTime));
-	        return this;
-	    };
-	    /**
-		 *  Schedules an linear continuous change in parameter value from 
-		 *  the current time and current value to the given value at the given time.
-		 *  
-		 *  @param  {number} value   
-		 *  @param  {Time} rampTime the time that it takes the 
-		 *                               value to ramp from it's current value
-		 *  @returns {Tone.Signal} this
-		 *  @example
-		 * //linearly ramp to the value 4 over 3 seconds. 
-		 * signal.linearRampToValueNow(4, 3);
-		 */
-	    Tone.Signal.prototype.linearRampToValueNow = function (value, rampTime) {
-	        var now = this.now();
-	        this.setCurrentValueNow(now);
-	        this.linearRampToValueAtTime(value, now + this.toSeconds(rampTime));
-	        return this;
-	    };
-	    /**
-		 *  Start exponentially approaching the target value at the given time with
-		 *  a rate having the given time constant.
-		 *  @param {number} value        
-		 *  @param {Time} startTime    
-		 *  @param {number} timeConstant 
-		 *  @returns {Tone.Signal} this
-		 */
-	    Tone.Signal.prototype.setTargetAtTime = function (value, startTime, timeConstant) {
-	        value = this._fromUnits(value);
-	        // The value will never be able to approach without timeConstant > 0.
-	        // http://www.w3.org/TR/webaudio/#dfn-setTargetAtTime, where the equation
-	        // is described. 0 results in a division by 0.
-	        timeConstant = Math.max(0.00001, timeConstant);
-	        this._value.setTargetAtTime(value, this.toSeconds(startTime), timeConstant);
-	        return this;
-	    };
-	    /**
-		 *  Sets an array of arbitrary parameter values starting at the given time
-		 *  for the given duration.
-		 *  	
-		 *  @param {Array} values    
-		 *  @param {Time} startTime 
-		 *  @param {Time} duration  
-		 *  @returns {Tone.Signal} this
-		 */
-	    Tone.Signal.prototype.setValueCurveAtTime = function (values, startTime, duration) {
-	        for (var i = 0; i < values.length; i++) {
-	            values[i] = this._fromUnits(values[i]);
-	        }
-	        this._value.setValueCurveAtTime(values, this.toSeconds(startTime), this.toSeconds(duration));
-	        return this;
-	    };
-	    /**
-		 *  Cancels all scheduled parameter changes with times greater than or 
-		 *  equal to startTime.
-		 *  
-		 *  @param  {Time} startTime
-		 *  @returns {Tone.Signal} this
-		 */
-	    Tone.Signal.prototype.cancelScheduledValues = function (startTime) {
-	        this._value.cancelScheduledValues(this.toSeconds(startTime));
-	        return this;
-	    };
-	    /**
-		 *  Ramps to the given value over the duration of the rampTime. 
-		 *  Automatically selects the best ramp type (exponential or linear)
-		 *  depending on the `units` of the signal
-		 *  
-		 *  @param  {number} value   
-		 *  @param  {Time} rampTime the time that it takes the 
-		 *                               value to ramp from it's current value
-		 *  @returns {Tone.Signal} this
-		 *  @example
-		 * //ramp to the value either linearly or exponentially 
-		 * //depending on the "units" value of the signal
-		 * signal.rampTo(0, 10);
-		 */
-	    Tone.Signal.prototype.rampTo = function (value, rampTime) {
-	        rampTime = this.defaultArg(rampTime, 0);
-	        if (this.units === Tone.Type.Frequency || this.units === Tone.Type.BPM) {
-	            this.exponentialRampToValueNow(value, rampTime);
-	        } else {
-	            this.linearRampToValueNow(value, rampTime);
-	        }
-	        return this;
-	    };
-	    /**
-		 *  dispose and disconnect
-		 *  @returns {Tone.Signal} this
-		 */
-	    Tone.Signal.prototype.dispose = function () {
-	        Tone.prototype.dispose.call(this);
-	        this._value = null;
-	        this._scaler = null;
-	        return this;
-	    };
-	    ///////////////////////////////////////////////////////////////////////////
-	    //	STATIC
-	    ///////////////////////////////////////////////////////////////////////////
-	    /**
-		 *  the constant signal generator
-		 *  @static
-		 *  @private
-		 *  @const
-		 *  @type {OscillatorNode}
-		 */
-	    Tone.Signal._generator = null;
-	    /**
-		 *  the signal generator waveshaper. makes the incoming signal
-		 *  only output 1 for all inputs.
-		 *  @static
-		 *  @private
-		 *  @const
-		 *  @type {Tone.WaveShaper}
-		 */
-	    Tone.Signal._constant = null;
-	    /**
-		 *  initializer function
-		 */
-	    Tone._initAudioContext(function (audioContext) {
-	        Tone.Signal._generator = audioContext.createOscillator();
-	        Tone.Signal._constant = new Tone.WaveShaper([
-	            1,
-	            1
-	        ]);
-	        Tone.Signal._generator.connect(Tone.Signal._constant);
-	        Tone.Signal._generator.start(0);
-	        Tone.Signal._generator.noGC();
-	    });
-	    return Tone.Signal;
-	});
-	Module(function (Tone) {
-	    
-	    /**
-		 *  @class Pow applies an exponent to the incoming signal. The incoming signal
-		 *         must be AudioRange.
-		 *
-		 *  @extends {Tone.SignalBase}
-		 *  @constructor
-		 *  @param {number} exp The exponent to apply to the incoming signal, must be at least 2. 
-		 *  @example
-		 * var pow = new Tone.Pow(2);
-		 * var sig = new Tone.Signal(0.5).connect(pow);
-		 * //output of pow is 0.25. 
-		 */
-	    Tone.Pow = function (exp) {
-	        /**
-			 * the exponent
-			 * @private
-			 * @type {number}
-			 */
-	        this._exp = this.defaultArg(exp, 1);
-	        /**
-			 *  @type {WaveShaperNode}
-			 *  @private
-			 */
-	        this._expScaler = this.input = this.output = new Tone.WaveShaper(this._expFunc(this._exp), 8192);
-	    };
-	    Tone.extend(Tone.Pow, Tone.SignalBase);
-	    /**
-		 * The value of the exponent.
-		 * @memberOf Tone.Pow#
-		 * @type {number}
-		 * @name value
-		 */
-	    Object.defineProperty(Tone.Pow.prototype, 'value', {
-	        get: function () {
-	            return this._exp;
-	        },
-	        set: function (exp) {
-	            this._exp = exp;
-	            this._expScaler.setMap(this._expFunc(this._exp));
-	        }
-	    });
-	    /**
-		 *  the function which maps the waveshaper
-		 *  @param   {number} exp
-		 *  @return {function}
-		 *  @private
-		 */
-	    Tone.Pow.prototype._expFunc = function (exp) {
-	        return function (val) {
-	            return Math.pow(Math.abs(val), exp);
-	        };
-	    };
-	    /**
-		 *  Clean up.
-		 *  @returns {Tone.Pow} this
-		 */
-	    Tone.Pow.prototype.dispose = function () {
-	        Tone.prototype.dispose.call(this);
-	        this._expScaler.dispose();
-	        this._expScaler = null;
-	        return this;
-	    };
-	    return Tone.Pow;
 	});
 	Module(function (Tone) {
 	    ///////////////////////////////////////////////////////////////////////////
@@ -2062,6 +1646,425 @@
 	        return Tone.A4 * Math.pow(2, (midi - 69) / 12);
 	    };
 	    return Tone;
+	});
+	Module(function (Tone) {
+	    
+	    /**
+		 *  @class  A signal is an audio-rate value. Tone.Signal is a core component of the library.
+		 *          Unlike a number, Signals can be scheduled with sample-level accuracy. Tone.Signal
+		 *          has all of the methods available to native Web Audio 
+		 *          [AudioParam](http://webaudio.github.io/web-audio-api/#the-audioparam-interface)
+		 *          as well as additional conveniences. Read more about working with signals 
+		 *          [here](https://github.com/TONEnoTONE/Tone.js/wiki/Signals).
+		 *
+		 *  @constructor
+		 *  @extends {Tone.SignalBase}
+		 *  @param {Number|AudioParam} [value] Initial value of the signal. If an AudioParam
+		 *                                     is passed in, that parameter will be wrapped
+		 *                                     and controlled by the Signal. 
+		 *  @param {string} [units=Number] unit The units the signal is in. 
+		 *  @example
+		 * var signal = new Tone.Signal(10);
+		 */
+	    Tone.Signal = function () {
+	        var options = this.optionsObject(arguments, [
+	            'value',
+	            'units'
+	        ], Tone.Signal.defaults);
+	        /**
+			 * The units of the signal.
+			 * @type {string}
+			 */
+	        this.units = options.units;
+	        /**
+			 *  When true, converts the set value
+			 *  based on the units given. When false,
+			 *  applies no conversion and the units
+			 *  are merely used as a label. 
+			 *  @type  {boolean}
+			 */
+	        this.convert = options.convert;
+	        /**
+			 *  True if the signal value is being overridden by 
+			 *  a connected signal.
+			 *  @readOnly
+			 *  @type  {boolean}
+			 *  @private
+			 */
+	        this.overridden = false;
+	        /**
+			 * The node where the constant signal value is scaled.
+			 * @type {GainNode}
+			 * @private
+			 */
+	        this.output = this._scaler = this.context.createGain();
+	        /**
+			 * The node where the value is set.
+			 * @type {AudioParam}
+			 * @private
+			 */
+	        this.input = this._value = this._scaler.gain;
+	        if (options.value instanceof AudioParam) {
+	            this._scaler.connect(options.value);
+	            //zero out the value
+	            options.value.value = 0;
+	        } else {
+	            if (!this.isUndef(options.param)) {
+	                this._scaler.connect(options.param);
+	                options.param.value = 0;
+	            }
+	            this.value = options.value;
+	        }
+	        //connect the constant 1 output to the node output
+	        Tone.Signal._constant.chain(this._scaler);
+	    };
+	    Tone.extend(Tone.Signal, Tone.SignalBase);
+	    /**
+		 *  The default values
+		 *  @type  {Object}
+		 *  @static
+		 *  @const
+		 */
+	    Tone.Signal.defaults = {
+	        'value': 0,
+	        'param': undefined,
+	        'units': Tone.Type.Default,
+	        'convert': true
+	    };
+	    /**
+		 * The current value of the signal. 
+		 * @memberOf Tone.Signal#
+		 * @type {Number}
+		 * @name value
+		 */
+	    Object.defineProperty(Tone.Signal.prototype, 'value', {
+	        get: function () {
+	            return this._toUnits(this._value.value);
+	        },
+	        set: function (value) {
+	            var convertedVal = this._fromUnits(value);
+	            //is this what you want?
+	            this.cancelScheduledValues(0);
+	            this._value.value = convertedVal;
+	        }
+	    });
+	    /**
+		 * @private
+		 * @param  {*} val the value to convert
+		 * @return {number}     the number which the value should be set to
+		 */
+	    Tone.Signal.prototype._fromUnits = function (val) {
+	        if (this.convert || this.isUndef(this.convert)) {
+	            switch (this.units) {
+	            case Tone.Type.Time:
+	                return this.toSeconds(val);
+	            case Tone.Type.Frequency:
+	                return this.toFrequency(val);
+	            case Tone.Type.Decibels:
+	                return this.dbToGain(val);
+	            case Tone.Type.NormalRange:
+	                return Math.min(Math.max(val, 0), 1);
+	            case Tone.Type.AudioRange:
+	                return Math.min(Math.max(val, -1), 1);
+	            case Tone.Type.Positive:
+	                return Math.max(val, 0);
+	            default:
+	                return val;
+	            }
+	        } else {
+	            return val;
+	        }
+	    };
+	    /**
+		 * convert to the desired units
+		 * @private
+		 * @param  {number} val the value to convert
+		 * @return {number}
+		 */
+	    Tone.Signal.prototype._toUnits = function (val) {
+	        if (this.convert || this.isUndef(this.convert)) {
+	            switch (this.units) {
+	            case Tone.Type.Decibels:
+	                return this.gainToDb(val);
+	            default:
+	                return val;
+	            }
+	        } else {
+	            return val;
+	        }
+	    };
+	    /**
+		 *  Schedules a parameter value change at the given time.
+		 *  @param {*}	value The value to set the signal.
+		 *  @param {Time}  time The time when the change should occur.
+		 *  @returns {Tone.Signal} this
+		 *  @example
+		 * //set the frequency to "G4" in exactly 1 second from now. 
+		 * freq.setValueAtTime("G4", "+1");
+		 */
+	    Tone.Signal.prototype.setValueAtTime = function (value, time) {
+	        value = this._fromUnits(value);
+	        this._value.setValueAtTime(value, this.toSeconds(time));
+	        return this;
+	    };
+	    /**
+		 *  Creates a schedule point with the current value at the current time.
+		 *  This is useful for creating an automation anchor point in order to 
+		 *  schedule changes from the current value. 
+		 *
+		 *  @param {number=} now (Optionally) pass the now value in. 
+		 *  @returns {Tone.Signal} this
+		 */
+	    Tone.Signal.prototype.setCurrentValueNow = function (now) {
+	        now = this.defaultArg(now, this.now());
+	        var currentVal = this._value.value;
+	        this.cancelScheduledValues(now);
+	        this._value.setValueAtTime(currentVal, now);
+	        return this;
+	    };
+	    /**
+		 *  Schedules a linear continuous change in parameter value from the 
+		 *  previous scheduled parameter value to the given value.
+		 *  
+		 *  @param  {number} value   
+		 *  @param  {Time} endTime 
+		 *  @returns {Tone.Signal} this
+		 */
+	    Tone.Signal.prototype.linearRampToValueAtTime = function (value, endTime) {
+	        value = this._fromUnits(value);
+	        this._value.linearRampToValueAtTime(value, this.toSeconds(endTime));
+	        return this;
+	    };
+	    /**
+		 *  Schedules an exponential continuous change in parameter value from 
+		 *  the previous scheduled parameter value to the given value.
+		 *  
+		 *  @param  {number} value   
+		 *  @param  {Time} endTime 
+		 *  @returns {Tone.Signal} this
+		 */
+	    Tone.Signal.prototype.exponentialRampToValueAtTime = function (value, endTime) {
+	        value = this._fromUnits(value);
+	        value = Math.max(0.00001, value);
+	        this._value.exponentialRampToValueAtTime(value, this.toSeconds(endTime));
+	        return this;
+	    };
+	    /**
+		 *  Schedules an exponential continuous change in parameter value from 
+		 *  the current time and current value to the given value.
+		 *  
+		 *  @param  {number} value   
+		 *  @param  {Time} rampTime the time that it takes the 
+		 *                               value to ramp from it's current value
+		 *  @returns {Tone.Signal} this
+		 *  @example
+		 * //exponentially ramp to the value 2 over 4 seconds. 
+		 * signal.exponentialRampToValueNow(2, 4);
+		 */
+	    Tone.Signal.prototype.exponentialRampToValueNow = function (value, rampTime) {
+	        var now = this.now();
+	        // exponentialRampToValueAt cannot ever ramp from 0, apparently.
+	        // More info: https://bugzilla.mozilla.org/show_bug.cgi?id=1125600#c2
+	        var currentVal = this.value;
+	        this.setValueAtTime(Math.max(currentVal, 0.0001), now);
+	        this.exponentialRampToValueAtTime(value, now + this.toSeconds(rampTime));
+	        return this;
+	    };
+	    /**
+		 *  Schedules an linear continuous change in parameter value from 
+		 *  the current time and current value to the given value at the given time.
+		 *  
+		 *  @param  {number} value   
+		 *  @param  {Time} rampTime the time that it takes the 
+		 *                               value to ramp from it's current value
+		 *  @returns {Tone.Signal} this
+		 *  @example
+		 * //linearly ramp to the value 4 over 3 seconds. 
+		 * signal.linearRampToValueNow(4, 3);
+		 */
+	    Tone.Signal.prototype.linearRampToValueNow = function (value, rampTime) {
+	        var now = this.now();
+	        this.setCurrentValueNow(now);
+	        this.linearRampToValueAtTime(value, now + this.toSeconds(rampTime));
+	        return this;
+	    };
+	    /**
+		 *  Start exponentially approaching the target value at the given time with
+		 *  a rate having the given time constant.
+		 *  @param {number} value        
+		 *  @param {Time} startTime    
+		 *  @param {number} timeConstant 
+		 *  @returns {Tone.Signal} this
+		 */
+	    Tone.Signal.prototype.setTargetAtTime = function (value, startTime, timeConstant) {
+	        value = this._fromUnits(value);
+	        // The value will never be able to approach without timeConstant > 0.
+	        // http://www.w3.org/TR/webaudio/#dfn-setTargetAtTime, where the equation
+	        // is described. 0 results in a division by 0.
+	        timeConstant = Math.max(0.00001, timeConstant);
+	        this._value.setTargetAtTime(value, this.toSeconds(startTime), timeConstant);
+	        return this;
+	    };
+	    /**
+		 *  Sets an array of arbitrary parameter values starting at the given time
+		 *  for the given duration.
+		 *  	
+		 *  @param {Array} values    
+		 *  @param {Time} startTime 
+		 *  @param {Time} duration  
+		 *  @returns {Tone.Signal} this
+		 */
+	    Tone.Signal.prototype.setValueCurveAtTime = function (values, startTime, duration) {
+	        for (var i = 0; i < values.length; i++) {
+	            values[i] = this._fromUnits(values[i]);
+	        }
+	        this._value.setValueCurveAtTime(values, this.toSeconds(startTime), this.toSeconds(duration));
+	        return this;
+	    };
+	    /**
+		 *  Cancels all scheduled parameter changes with times greater than or 
+		 *  equal to startTime.
+		 *  
+		 *  @param  {Time} startTime
+		 *  @returns {Tone.Signal} this
+		 */
+	    Tone.Signal.prototype.cancelScheduledValues = function (startTime) {
+	        this._value.cancelScheduledValues(this.toSeconds(startTime));
+	        return this;
+	    };
+	    /**
+		 *  Ramps to the given value over the duration of the rampTime. 
+		 *  Automatically selects the best ramp type (exponential or linear)
+		 *  depending on the `units` of the signal
+		 *  
+		 *  @param  {number} value   
+		 *  @param  {Time} rampTime the time that it takes the 
+		 *                               value to ramp from it's current value
+		 *  @returns {Tone.Signal} this
+		 *  @example
+		 * //ramp to the value either linearly or exponentially 
+		 * //depending on the "units" value of the signal
+		 * signal.rampTo(0, 10);
+		 */
+	    Tone.Signal.prototype.rampTo = function (value, rampTime) {
+	        rampTime = this.defaultArg(rampTime, 0);
+	        if (this.units === Tone.Type.Frequency || this.units === Tone.Type.BPM) {
+	            this.exponentialRampToValueNow(value, rampTime);
+	        } else {
+	            this.linearRampToValueNow(value, rampTime);
+	        }
+	        return this;
+	    };
+	    /**
+		 *  dispose and disconnect
+		 *  @returns {Tone.Signal} this
+		 */
+	    Tone.Signal.prototype.dispose = function () {
+	        Tone.prototype.dispose.call(this);
+	        this._value = null;
+	        this._scaler = null;
+	        return this;
+	    };
+	    ///////////////////////////////////////////////////////////////////////////
+	    //	STATIC
+	    ///////////////////////////////////////////////////////////////////////////
+	    /**
+		 *  the constant signal generator
+		 *  @static
+		 *  @private
+		 *  @const
+		 *  @type {OscillatorNode}
+		 */
+	    Tone.Signal._generator = null;
+	    /**
+		 *  the signal generator waveshaper. makes the incoming signal
+		 *  only output 1 for all inputs.
+		 *  @static
+		 *  @private
+		 *  @const
+		 *  @type {Tone.WaveShaper}
+		 */
+	    Tone.Signal._constant = null;
+	    /**
+		 *  initializer function
+		 */
+	    Tone._initAudioContext(function (audioContext) {
+	        Tone.Signal._generator = audioContext.createOscillator();
+	        Tone.Signal._constant = new Tone.WaveShaper([
+	            1,
+	            1
+	        ]);
+	        Tone.Signal._generator.connect(Tone.Signal._constant);
+	        Tone.Signal._generator.start(0);
+	        Tone.Signal._generator.noGC();
+	    });
+	    return Tone.Signal;
+	});
+	Module(function (Tone) {
+	    
+	    /**
+		 *  @class Pow applies an exponent to the incoming signal. The incoming signal
+		 *         must be AudioRange.
+		 *
+		 *  @extends {Tone.SignalBase}
+		 *  @constructor
+		 *  @param {number} exp The exponent to apply to the incoming signal, must be at least 2. 
+		 *  @example
+		 * var pow = new Tone.Pow(2);
+		 * var sig = new Tone.Signal(0.5).connect(pow);
+		 * //output of pow is 0.25. 
+		 */
+	    Tone.Pow = function (exp) {
+	        /**
+			 * the exponent
+			 * @private
+			 * @type {number}
+			 */
+	        this._exp = this.defaultArg(exp, 1);
+	        /**
+			 *  @type {WaveShaperNode}
+			 *  @private
+			 */
+	        this._expScaler = this.input = this.output = new Tone.WaveShaper(this._expFunc(this._exp), 8192);
+	    };
+	    Tone.extend(Tone.Pow, Tone.SignalBase);
+	    /**
+		 * The value of the exponent.
+		 * @memberOf Tone.Pow#
+		 * @type {number}
+		 * @name value
+		 */
+	    Object.defineProperty(Tone.Pow.prototype, 'value', {
+	        get: function () {
+	            return this._exp;
+	        },
+	        set: function (exp) {
+	            this._exp = exp;
+	            this._expScaler.setMap(this._expFunc(this._exp));
+	        }
+	    });
+	    /**
+		 *  the function which maps the waveshaper
+		 *  @param   {number} exp
+		 *  @return {function}
+		 *  @private
+		 */
+	    Tone.Pow.prototype._expFunc = function (exp) {
+	        return function (val) {
+	            return Math.pow(Math.abs(val), exp);
+	        };
+	    };
+	    /**
+		 *  Clean up.
+		 *  @returns {Tone.Pow} this
+		 */
+	    Tone.Pow.prototype.dispose = function () {
+	        Tone.prototype.dispose.call(this);
+	        this._expScaler.dispose();
+	        this._expScaler = null;
+	        return this;
+	    };
+	    return Tone.Pow;
 	});
 	Module(function (Tone) {
 	    
@@ -11177,6 +11180,194 @@
 	    return Tone.PingPongDelay;
 	});
 	Module(function (Tone) {
+	    /**
+		 *  @class Tone.PitchShift does near-realtime pitch shifting to the incoming signal. 
+		 *         The effect is achieved by speeding up or slowing down the delayTime
+		 *         of a DelayNode using a sawtooth wave. 
+		 *         Algorithm found in [this pdf](http://dsp-book.narod.ru/soundproc.pdf).
+		 *         Additional reference by [Miller Pucket](http://msp.ucsd.edu/techniques/v0.11/book-html/node115.html).
+		 *         
+		 *  @extends {Tone.Effect}
+		 *  @param {Interval=} pitch The interval to transpose the incoming signal by. 
+		 */
+	    Tone.PitchShift = function () {
+	        Tone.Effect.call(this);
+	        var options = this.optionsObject(arguments, ['pitch'], Tone.PitchShift.defaults);
+	        /**
+			 *  The pitch signal
+			 *  @type  {Tone.Signal}
+			 *  @private
+			 */
+	        this._frequency = new Tone.Signal(0);
+	        /**
+			 *  Uses two DelayNodes to cover up the jump in
+			 *  the sawtooth wave. 
+			 *  @type  {DelayNode}
+			 *  @private
+			 */
+	        this._delayA = this.context.createDelay(1);
+	        /**
+			 *  The first LFO.
+			 *  @type  {Tone.LFO}
+			 *  @private
+			 */
+	        this._lfoA = new Tone.LFO({
+	            'min': 0,
+	            'max': 0.1,
+	            'type': 'sawtooth'
+	        }).connect(this._delayA.delayTime);
+	        /**
+			 *  The second DelayNode
+			 *  @type  {DelayNode}
+			 *  @private
+			 */
+	        this._delayB = this.context.createDelay(1);
+	        /**
+			 *  The first LFO.
+			 *  @type  {Tone.LFO}
+			 *  @private
+			 */
+	        this._lfoB = new Tone.LFO({
+	            'min': 0,
+	            'max': 0.1,
+	            'type': 'sawtooth',
+	            'phase': 180
+	        }).connect(this._delayB.delayTime);
+	        /**
+			 *  Crossfade quickly between the two delay lines
+			 *  to cover up the jump in the sawtooth wave
+			 *  @type  {Tone.CrossFade}
+			 *  @private
+			 */
+	        this._crossFade = new Tone.CrossFade().connect(this.effectReturn);
+	        /**
+			 *  LFO which alternates between the two
+			 *  delay lines to cover up the disparity in the
+			 *  sawtooth wave. 
+			 *  @type  {Tone.LFO}
+			 */
+	        this._crossFadeLFO = new Tone.LFO({
+	            'min': 0,
+	            'max': 1,
+	            'type': 'triangle',
+	            'phase': 90
+	        }).connect(this._crossFade.fade);
+	        /**
+			 *  Hold the current pitch
+			 *  @type {Number}
+			 *  @private
+			 */
+	        this._pitch = options.pitch;
+	        /**
+			 *  Hold the current windowSize
+			 *  @type {Number}
+			 *  @private
+			 */
+	        this._windowSize = options.windowSize;
+	        //connect the two delay lines up
+	        this._delayA.connect(this._crossFade.a);
+	        this._delayB.connect(this._crossFade.b);
+	        //connect the frequency
+	        this._frequency.fan(this._lfoA.frequency, this._lfoB.frequency, this._crossFadeLFO.frequency);
+	        //route the input
+	        this.effectSend.fan(this._delayA, this._delayB);
+	        //start the LFOs at the same time
+	        var now = this.now();
+	        this._lfoA.start(now);
+	        this._lfoB.start(now);
+	        this._crossFadeLFO.start(now);
+	        //set the initial value
+	        this.windowSize = this._windowSize;
+	    };
+	    Tone.extend(Tone.PitchShift, Tone.Effect);
+	    /**
+		 *  default values
+		 *  @static
+		 *  @type {Object}
+		 *  @const
+		 */
+	    Tone.PitchShift.defaults = {
+	        'pitch': 0,
+	        'windowSize': 0.1
+	    };
+	    /**
+		 * Repitch the incoming signal by some interval (measured
+		 * in semi-tones). 
+		 * @memberOf Tone.PitchShift#
+		 * @type {Interval}
+		 * @name pitch
+		 * @example
+		 * pitchShift.pitch = -12; //down one octave
+		 * pitchShift.pitch = 7; //up a fifth
+		 */
+	    Object.defineProperty(Tone.PitchShift.prototype, 'pitch', {
+	        get: function () {
+	            return this._pitch;
+	        },
+	        set: function (interval) {
+	            this._pitch = interval;
+	            var factor = 0;
+	            if (interval < 0) {
+	                this._lfoA.min = 0;
+	                this._lfoA.max = this._windowSize;
+	                this._lfoB.min = 0;
+	                this._lfoB.max = this._windowSize;
+	                factor = this.intervalToFrequencyRatio(interval - 1) + 1;
+	            } else {
+	                this._lfoA.min = this._windowSize;
+	                this._lfoA.max = 0;
+	                this._lfoB.min = this._windowSize;
+	                this._lfoB.max = 0;
+	                factor = this.intervalToFrequencyRatio(interval) - 1;
+	            }
+	            this._frequency.value = factor * (1.2 / this._windowSize);
+	        }
+	    });
+	    /**
+		 * The window size corresponds roughly to the sample length in a looping sampler. 
+		 * Smaller values are desirable for a less noticeable delay time of the pitch shifted
+		 * signal, but larger values will result in smoother pitch shifting for larger intervals. 
+		 * A nominal range of 0.03 to 0.1 is recommended. 
+		 * @memberOf Tone.PitchShift#
+		 * @type {Time}
+		 * @name windowSize
+		 * @example
+		 * pitchShift.windowSize = 0.1;
+		 */
+	    Object.defineProperty(Tone.PitchShift.prototype, 'windowSize', {
+	        get: function () {
+	            return this._windowSize;
+	        },
+	        set: function (size) {
+	            this._windowSize = this.toSeconds(size);
+	            this.pitch = this._pitch;
+	        }
+	    });
+	    /**
+		 *  Clean up.
+		 *  @return  {Tone.PitchShift}  this
+		 */
+	    Tone.PitchShift.prototype.dispose = function () {
+	        Tone.Effect.prototype.dispose.call(this);
+	        this._frequency.dispose();
+	        this._frequency = null;
+	        this._delayA.disconnect();
+	        this._delayA = null;
+	        this._delayB.disconnect();
+	        this._delayB = null;
+	        this._lfoA.dispose();
+	        this._lfoA = null;
+	        this._lfoB.dispose();
+	        this._lfoB = null;
+	        this._crossFade.dispose();
+	        this._crossFade = null;
+	        this._crossFadeLFO.dispose();
+	        this._crossFadeLFO = null;
+	        return this;
+	    };
+	    return Tone.PitchShift;
+	});
+	Module(function (Tone) {
 	    
 	    /**
 		 *  @class Base class for stereo feedback effects where the effectReturn
@@ -12529,14 +12720,46 @@
 	        //make things private 
 	        options = this.defaultArg(options, Tone.CymbalSynth.defaults);
 	        Tone.Instrument.call(this, options);
-	        this.highPass0 = new Tone.Filter(options.highPass0).connect(this.output);
-	        this.highPass1 = new Tone.Filter(options.highPass1).connect(this.output);
-	        this.highPass2 = new Tone.Filter(options.highPass2).connect(this.output);
-	        this.envelope0 = new Tone.AmplitudeEnvelope(options.envelope0).connect(this.highPass0);
-	        this.envelope1 = new Tone.AmplitudeEnvelope(options.envelope1).connect(this.highPass1);
-	        this.envelope1.connect(this.highPass2);
-	        this.bandPass0 = new Tone.Filter(options.bandPass0).connect(this.envelope0);
-	        this.bandPass1 = new Tone.Filter(options.bandPass1).connect(this.envelope1);
+	        //,
+	        // "highPass0" : {
+	        // 	"type" : "highpass",
+	        // 	"frequency" : 6600,
+	        // 	"rolloff" : -12,
+	        // 	"Q" : 3.2,
+	        // 	"gain" : 1.17
+	        // },
+	        // "highPass1" : {
+	        // 	"type" : "highpass",
+	        // 	"frequency" : 11500,
+	        // 	"rolloff" : -12,
+	        // 	"Q" : 2,
+	        // 	"gain" : 8
+	        // },
+	        // "highPass2" : {
+	        // 	"type" : "highpass",
+	        // 	"frequency" : 10500,
+	        // 	"rolloff" : -12,
+	        // 	"Q" : 6,
+	        // 	"gain" : 21
+	        // }
+	        var highPassFreq = [
+	            6600,
+	            11500,
+	            10500
+	        ];
+	        var highPassQ = [
+	            3.2,
+	            2,
+	            6
+	        ];
+	        this.highPass0 = new Tone.Filter(highPassFreq[0], 'highpass', -12).connect(this.output);
+	        this.highPass1 = new Tone.Filter(highPassFreq[1], 'highpass', -12).connect(this.output);
+	        this.highPass2 = new Tone.Filter(highPassFreq[2], 'highpass', -12).connect(this.output);
+	        this.strike = new Tone.AmplitudeEnvelope(options.strike).connect(this.highPass0);
+	        this.body = new Tone.AmplitudeEnvelope(options.body).connect(this.highPass1);
+	        this.body.connect(this.highPass2);
+	        this.bandPass0 = new Tone.Filter(options.bandPass0).connect(this.strike);
+	        this.bandPass1 = new Tone.Filter(options.bandPass1).connect(this.body);
 	        //frequencies from https://ccrma.stanford.edu/papers/tr-808-cymbal-physically-informed-circuit-bendable-digital-model
 	        var freqArray = [
 	            205.3,
@@ -12546,13 +12769,47 @@
 	            540,
 	            800
 	        ];
-	        this.oscArray = [];
-	        //look at different oscillators 
+	        this.harmonicity = new Tone.Signal(options.harmonicity);
+	        this.harmonicity.units = Tone.Type.Positive;
+	        //the 808 base frequency
+	        this.baseFreq = new Tone.Signal(options.baseFreq, Tone.Type.Frequency);
+	        //frequency ration for the 808
+	        this.inharmRatios = [
+	            1,
+	            1.483,
+	            1.932,
+	            2.546,
+	            2.63,
+	            3.897
+	        ];
+	        //harmonic frequency ratio
+	        this.harmRatios = [
+	            1,
+	            1.5,
+	            2.025,
+	            2.975,
+	            4,
+	            6
+	        ];
+	        this.inharmRatioSignal = [];
+	        this.harmMinusSignal = [];
+	        this._oscillators = [];
+	        this.freqMult = [];
+	        //originally: this.baseFreq*(this.harmRatio[i]*this.harmonicity + this.inharmRatio[i]*(1 - this.harmonicity))
+	        //simplified formula : baseFreq(harmonicity * (harmRatio - inharmRatio) +inharmRatio)
+	        //simplified formula : baseFreq(harmonicity * harmMinus +inharmRatio)
 	        for (var i = 0; i < 6; i++) {
-	            this.oscArray[i] = new Tone.Oscillator(freqArray[i], 'square');
-	            this.oscArray[i].connect(this.bandPass0);
-	            this.oscArray[i].connect(this.bandPass1);
-	            this.oscArray[i].start();
+	            this.inharmRatioSignal[i] = new Tone.Add(this.inharmRatios[i]);
+	            this.harmMinusSignal[i] = new Tone.Multiply(this.harmRatios[i] - this.inharmRatios[i]).connect(this.inharmRatioSignal[i]);
+	            this.harmonicity.connect(this.harmMinusSignal[i]);
+	            var freqMult = new Tone.Multiply();
+	            this.inharmRatioSignal[i].connect(freqMult, 0, 0);
+	            this.baseFreq.connect(freqMult, 0, 1);
+	            this._oscillators[i] = new Tone.Oscillator({ 'type': 'square' });
+	            freqMult.connect(this._oscillators[i].frequency);
+	            this._oscillators[i].connect(this.bandPass0);
+	            this._oscillators[i].connect(this.bandPass1);
+	            this._oscillators[i].start();
 	        }
 	    };
 	    Tone.extend(Tone.CymbalSynth, Tone.Instrument);
@@ -12560,6 +12817,25 @@
 	    //use existing freqs for ratios
 	    //try spreading ratios
 	    Tone.CymbalSynth.defaults = {
+	        'harmonicity': 0,
+	        'baseFreq': 205.3,
+	        // "attack" : {
+	        // 	"attack" : ,
+	        // 	"decay" : ,
+	        // 	//bandpass freq window
+	        // 	"bandpass" : ,
+	        // 	//highpass frequency
+	        // 	"highpass" : ,
+	        // 	//combined q values
+	        // 	"resonance" : 
+	        // }
+	        // "body" : {
+	        // 	"attack" : ,
+	        // 	"decay" : ,
+	        // 	"bandpass" : ,
+	        // 	"highpass" : ,
+	        // 	"resonance" :
+	        // },
 	        //"choke" : true;
 	        'bandPass0': {
 	            'type': 'bandpass',
@@ -12575,47 +12851,19 @@
 	            'Q': 6,
 	            'gain': 24
 	        },
-	        'envelope0': {
+	        'strike': {
 	            'attack': 0.01,
 	            'decay': 0.25,
 	            'sustain': 0,
 	            'release': 0,
 	            'attackCurve': 'exponential'
 	        },
-	        'envelope1': {
+	        'body': {
 	            'attack': 0.01,
 	            'decay': 3,
 	            'sustain': 0,
 	            'release': 0,
 	            'attackCurve': 'exponential'
-	        },
-	        'envelope2': {
-	            'attack': 0.01,
-	            'decay': 3,
-	            'sustain': 0,
-	            'release': 0,
-	            'attackCurve': 'exponential'
-	        },
-	        'highPass0': {
-	            'type': 'highpass',
-	            'frequency': 6600,
-	            'rolloff': -12,
-	            'Q': 3.2,
-	            'gain': 1.17
-	        },
-	        'highPass1': {
-	            'type': 'highpass',
-	            'frequency': 11500,
-	            'rolloff': -12,
-	            'Q': 2,
-	            'gain': 8
-	        },
-	        'highPass2': {
-	            'type': 'highpass',
-	            'frequency': 10500,
-	            'rolloff': -12,
-	            'Q': 6,
-	            'gain': 21
 	        }
 	    };
 	    //we will use trigger release to do choking
@@ -12625,12 +12873,8 @@
 	    //and retry with a smaller number
 	    Tone.CymbalSynth.prototype.triggerAttack = function (time, velocity) {
 	        time = this.toSeconds(time);
-	        this.envelope0.triggerAttack(time);
-	        this.envelope1.triggerAttack(time);
-	        //this.envelope2.triggerAttack(time);
-	        //this.envelope0.triggerRelease(time + 0.01);
-	        //this.envelope1.triggerRelease(time + 0.01);
-	        //this.envelope2.triggerRelease(time + 0.01);
+	        this.strike.triggerAttack(time);
+	        this.body.triggerAttack(time);
 	        return this;
 	    };
 	    //no attackrelease
@@ -12639,8 +12883,8 @@
 	    //look at current ADSR envelope and structure
 	    //yotam wants to make an AR envelope maybe?
 	    Tone.CymbalSynth.prototype.triggerRelease = function (time) {
-	        this.envelope0.triggerRelease(time);
-	        this.envelope1.triggerRelease(time);
+	        this.strike.triggerRelease(time);
+	        this.body.triggerRelease(time);
 	        //this.envelope2.triggerRelease(time);
 	        return this;
 	    };
