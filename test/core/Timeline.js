@@ -259,6 +259,18 @@ define(["Test", "Tone/core/Timeline"], function (Test, Timeline) {
 				expect(count).to.equal(2);
 				sched.dispose();
 			});
+
+			it("can remove items during iterations", function(){
+				var sched = new Timeline();
+				for (var i = 0; i < 1000; i++){
+					sched.addEvent({"time" : i});
+				}
+				sched.forEach(function(event){
+					sched.removeEvent(event);
+				});
+				expect(sched.length).to.equal(0);
+				sched.dispose();
+			});
 		});
 	});
 });
