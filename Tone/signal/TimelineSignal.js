@@ -1,20 +1,20 @@
-define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Schedulable"], function (Tone) {
+define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Timeline"], function (Tone) {
 
 	/**
-	 *  @class A signal which adds the method _getValueAtTime. 
+	 *  @class A signal which adds the method getValueAtTime. 
 	 *         Code and inspiration from https://github.com/jsantell/web-audio-automation-timeline
 	 */
-	Tone.SchedulableSignal = function(){
+	Tone.TimelineSignal = function(){
 
 		//extend Tone.Signal
 		Tone.Signal.apply(this, arguments);
 
 		/**
 		 *  The scheduled events
-		 *  @type {Tone.Schedulable}
+		 *  @type {Tone.Timeline}
 		 *  @private
 		 */
-		this._events = new Tone.Schedulable();
+		this._events = new Tone.Timeline();
 
 		/**
 		 *  The initial scheduled value
@@ -24,18 +24,35 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Schedulable"], functi
 		this._initial = this._value.value;
 	};
 
-	Tone.extend(Tone.SchedulableSignal, Tone.Signal);
+	Tone.extend(Tone.TimelineSignal, Tone.Signal);
 
 	/**
 	 *  The event types of a schedulable signal.
 	 *  @enum {String}
 	 */
-	Tone.SchedulableSignal.Type = {
+	Tone.TimelineSignal.Type = {
 		Linear : "linear",
 		Exponential : "exponential",
 		Target : "target",
 		Set : "set"
 	};
+
+	/**
+	 * The current value of the signal. 
+	 * @memberOf Tone.TimelineSignal#
+	 * @type {Number}
+	 * @name value
+	 */
+	Object.defineProperty(Tone.TimelineSignal.prototype, "value", {
+		get : function(){
+			return this._toUnits(this._value.value);
+		},
+		set : function(value){
+			var convertedVal = this._fromUnits(value);
+			this._initial = convertedVal;
+			this._value.value = convertedVal;
+		}
+	});
 
 	///////////////////////////////////////////////////////////////////////////
 	//	SCHEDULING
@@ -45,16 +62,16 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Schedulable"], functi
 	 *  Schedules a parameter value change at the given time.
 	 *  @param {*}	value The value to set the signal.
 	 *  @param {Time}  time The time when the change should occur.
-	 *  @returns {Tone.SchedulableSignal} this
+	 *  @returns {Tone.TimelineSignal} this
 	 *  @example
 	 * //set the frequency to "G4" in exactly 1 second from now. 
 	 * freq.setValueAtTime("G4", "+1");
 	 */
-	Tone.SchedulableSignal.prototype.setValueAtTime = function (value, startTime) {
+	Tone.TimelineSignal.prototype.setValueAtTime = function (value, startTime) {
 		value = this._fromUnits(value);
 		startTime = this.toSeconds(startTime);
 		this._events.addEvent({
-			"type" : Tone.SchedulableSignal.Type.Set,
+			"type" : Tone.TimelineSignal.Type.Set,
 			"value" : value,
 			"time" : startTime
 		});
@@ -69,13 +86,13 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Schedulable"], functi
 	 *  
 	 *  @param  {number} value   
 	 *  @param  {Time} endTime 
-	 *  @returns {Tone.SchedulableSignal} this
+	 *  @returns {Tone.TimelineSignal} this
 	 */
-	Tone.SchedulableSignal.prototype.linearRampToValueAtTime = function (value, endTime) {
+	Tone.TimelineSignal.prototype.linearRampToValueAtTime = function (value, endTime) {
 		value = this._fromUnits(value);
 		endTime = this.toSeconds(endTime);
 		this._events.addEvent({
-			"type" : Tone.SchedulableSignal.Type.Linear,
+			"type" : Tone.TimelineSignal.Type.Linear,
 			"value" : value,
 			"time" : endTime
 		});
@@ -89,14 +106,14 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Schedulable"], functi
 	 *  
 	 *  @param  {number} value   
 	 *  @param  {Time} endTime 
-	 *  @returns {Tone.SchedulableSignal} this
+	 *  @returns {Tone.TimelineSignal} this
 	 */
-	Tone.SchedulableSignal.prototype.exponentialRampToValueAtTime = function (value, endTime) {
+	Tone.TimelineSignal.prototype.exponentialRampToValueAtTime = function (value, endTime) {
 		value = this._fromUnits(value);
 		value = Math.max(this._minOutput, value);
 		endTime = this.toSeconds(endTime);
 		this._events.addEvent({
-			"type" : Tone.SchedulableSignal.Type.Exponential,
+			"type" : Tone.TimelineSignal.Type.Exponential,
 			"value" : value,
 			"time" : endTime
 		});
@@ -110,14 +127,14 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Schedulable"], functi
 	 *  @param {number} value        
 	 *  @param {Time} startTime    
 	 *  @param {number} timeConstant 
-	 *  @returns {Tone.SchedulableSignal} this 
+	 *  @returns {Tone.TimelineSignal} this 
 	 */
-	Tone.SchedulableSignal.prototype.setTargetAtTime = function (value, startTime, timeConstant) {
+	Tone.TimelineSignal.prototype.setTargetAtTime = function (value, startTime, timeConstant) {
 		value = this._fromUnits(value);
 		value = Math.max(this._minOutput, value);
 		startTime = this.toSeconds(startTime);
 		this._events.addEvent({
-			"type" : Tone.SchedulableSignal.Type.Target,
+			"type" : Tone.TimelineSignal.Type.Target,
 			"value" : value,
 			"time" : startTime,
 			"constant" : timeConstant
@@ -131,9 +148,9 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Schedulable"], functi
 	 *  equal to startTime.
 	 *  
 	 *  @param  {Time} startTime
-	 *  @returns {Tone.SchedulableSignal} this
+	 *  @returns {Tone.TimelineSignal} this
 	 */
-	Tone.SchedulableSignal.prototype.cancelScheduledValues = function (after) {
+	Tone.TimelineSignal.prototype.cancelScheduledValues = function (after) {
 		this._events.clear(after);
 		Tone.Signal.prototype.cancelScheduledValues.apply(this, arguments);
 		return this;
@@ -144,12 +161,12 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Schedulable"], functi
 	 *  a point from which a linear or exponential curve
 	 *  can be scheduled after.
 	 *  @param {Time} time When to set the ramp point
-	 *  @returns {Tone.SchedulableSignal} this
+	 *  @returns {Tone.TimelineSignal} this
 	 */
-	Tone.SchedulableSignal.prototype.setRampPoint = function (time) {
+	Tone.TimelineSignal.prototype.setRampPoint = function (time) {
 		time = this.toSeconds(time);
 		//get the value at the given time
-		var val = this._getValueAtTime(time);
+		var val = this.getValueAtTime(time);
 		this.setValueAtTime(val, time);
 		return this;
 	};
@@ -161,7 +178,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Schedulable"], functi
 	 *  @param {Time} finish The ending anchor point by which the value of
 	 *                       the signal will equal the given value.
 	 */
-	Tone.SchedulableSignal.prototype.linearRampToValueBetween = function (value, start, finish) {
+	Tone.TimelineSignal.prototype.linearRampToValueBetween = function (value, start, finish) {
 		this.setRampPoint(start);
 		this.linearRampToValueAtTime(value, finish);
 		return this;
@@ -174,7 +191,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Schedulable"], functi
 	 *  @param {Time} finish The ending anchor point by which the value of
 	 *                       the signal will equal the given value.
 	 */
-	Tone.SchedulableSignal.prototype.exponentialRampToValueBetween = function (value, start, finish) {
+	Tone.TimelineSignal.prototype.exponentialRampToValueBetween = function (value, start, finish) {
 		this.setRampPoint(start);
 		this.exponentialRampToValueAtTime(value, finish);
 		return this;
@@ -190,7 +207,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Schedulable"], functi
 	 *  @return  {Object}  The event at or before the given time.
 	 *  @private
 	 */
-	Tone.SchedulableSignal.prototype._searchBefore = function(time){
+	Tone.TimelineSignal.prototype._searchBefore = function(time){
 		return this._events.getEvent(time);
 	};
 
@@ -199,7 +216,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Schedulable"], functi
 	 *  @param  {Number}  time  The time to query.
 	 *  @return  {Object}  The next event after the given time
 	 */
-	Tone.SchedulableSignal.prototype._searchAfter = function(time){
+	Tone.TimelineSignal.prototype._searchAfter = function(time){
 		return this._events.getNextEvent(time);
 	};
 
@@ -207,15 +224,14 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Schedulable"], functi
 	 *  Get the scheduled value at the given time.
 	 *  @param  {Number}  time  The time in seconds.
 	 *  @return  {Number}  The scheduled value at the given time.
-	 *  @private
 	 */
-	Tone.SchedulableSignal.prototype._getValueAtTime = function(time){
+	Tone.TimelineSignal.prototype.getValueAtTime = function(time){
 		var after = this._searchAfter(time);
 		var before = this._searchBefore(time);
 		//if it was set by
 		if (before === null){
 			return this._initial;
-		} else if (before.type === Tone.SchedulableSignal.Type.Target){
+		} else if (before.type === Tone.TimelineSignal.Type.Target){
 			var previous = this._searchBefore(before.time - 0.0001);
 			var previouVal;
 			if (previous === null){
@@ -226,9 +242,9 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Schedulable"], functi
 			return this._exponentialApproach(before.time, previouVal, before.value, before.constant, time);
 		} else if (after === null){
 			return before.value;
-		} else if (after.type === Tone.SchedulableSignal.Type.Linear){
+		} else if (after.type === Tone.TimelineSignal.Type.Linear){
 			return this._linearInterpolate(before.time, before.value, after.time, after.value, time);
-		} else if (after.type === Tone.SchedulableSignal.Type.Exponential){
+		} else if (after.type === Tone.TimelineSignal.Type.Exponential){
 			return this._exponentialInterpolate(before.time, before.value, after.time, after.value, time);
 		} else {
 			return before.value;
@@ -244,7 +260,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Schedulable"], functi
 	 *  Calculates the the value along the curve produced by setTargetAtTime
 	 *  @private
 	 */
-	Tone.SchedulableSignal.prototype._exponentialApproach = function (t0, v0, v1, timeConstant, t) {
+	Tone.TimelineSignal.prototype._exponentialApproach = function (t0, v0, v1, timeConstant, t) {
 		return v1 + (v0 - v1) * Math.exp(-(t - t0) / timeConstant);
 	};
 
@@ -252,7 +268,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Schedulable"], functi
 	 *  Calculates the the value along the curve produced by linearRampToValueAtTime
 	 *  @private
 	 */
-	Tone.SchedulableSignal.prototype._linearInterpolate = function (t0, v0, t1, v1, t) {
+	Tone.TimelineSignal.prototype._linearInterpolate = function (t0, v0, t1, v1, t) {
 		return v0 + (v1 - v0) * ((t - t0) / (t1 - t0));
 	};
 
@@ -260,20 +276,20 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Schedulable"], functi
 	 *  Calculates the the value along the curve produced by exponentialRampToValueAtTime
 	 *  @private
 	 */
-	Tone.SchedulableSignal.prototype._exponentialInterpolate = function (t0, v0, t1, v1, t) {
+	Tone.TimelineSignal.prototype._exponentialInterpolate = function (t0, v0, t1, v1, t) {
 		v0 = Math.max(this._minOutput, v0);
 		return v0 * Math.pow(v1 / v0, (t - t0) / (t1 - t0));
 	};
 
 	/**
 	 *  Clean up.
-	 *  @return {Tone.SchedulableSignal} this
+	 *  @return {Tone.TimelineSignal} this
 	 */
-	Tone.SchedulableSignal.prototype.dispose = function(){
+	Tone.TimelineSignal.prototype.dispose = function(){
 		Tone.Signal.prototype.dispose.call(this);
 		this._events.dispose();
 		this._events = null;
 	};
 
-	return Tone.SchedulableSignal;
+	return Tone.TimelineSignal;
 });

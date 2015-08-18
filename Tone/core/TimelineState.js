@@ -1,16 +1,16 @@
-define(["Tone/core/Tone", "Tone/core/Schedulable", "Tone/core/Types"], function (Tone) {
+define(["Tone/core/Tone", "Tone/core/Timeline", "Tone/core/Types"], function (Tone) {
 
 	/**
-	 *  @class  A Schedulable State. Provides the methods: <code>setStateAtTime("state", time)</code>
+	 *  @class  A Timeline State. Provides the methods: <code>setStateAtTime("state", time)</code>
 	 *          and <code>getStateAtTime(time)</code>.
 	 *
-	 *  @extends {Tone.Schedulable}
-	 *  @param {String} initial The initial state of the SchedulableState. 
+	 *  @extends {Tone.Timeline}
+	 *  @param {String} initial The initial state of the TimelineState. 
 	 *                          Defaults to <code>undefined</code>
 	 */
-	Tone.SchedulableState = function(initial){
+	Tone.TimelineState = function(initial){
 
-		Tone.Schedulable.call(this);
+		Tone.Timeline.call(this);
 
 		/**
 		 *  The initial state
@@ -20,7 +20,7 @@ define(["Tone/core/Tone", "Tone/core/Schedulable", "Tone/core/Types"], function 
 		this._initial = initial;
 	};
 
-	Tone.extend(Tone.SchedulableState, Tone.Schedulable);
+	Tone.extend(Tone.TimelineState, Tone.Timeline);
 
 	/**
 	 *  Returns the scheduled state scheduled before or at
@@ -28,7 +28,7 @@ define(["Tone/core/Tone", "Tone/core/Schedulable", "Tone/core/Types"], function 
 	 *  @param  {Time}  time  The time to query.
 	 *  @return  {String}  The name of the state input in setStateAtTime.
 	 */
-	Tone.SchedulableState.prototype.getStateAtTime = function(time){
+	Tone.TimelineState.prototype.getStateAtTime = function(time){
 		var event = this.getEvent(time);
 		if (event !== null){
 			return event.state;
@@ -43,12 +43,12 @@ define(["Tone/core/Tone", "Tone/core/Schedulable", "Tone/core/Types"], function 
 	 *  @param  {String}  state The name of the state to set.
 	 *  @param  {Time}  time  The time to query.
 	 */
-	Tone.SchedulableState.prototype.setStateAtTime = function(state, time){
+	Tone.TimelineState.prototype.setStateAtTime = function(state, time){
 		this.addEvent({
 			"state" : state,
 			"time" : this.toSeconds(time)
 		});
 	};
 
-	return Tone.SchedulableState;
+	return Tone.TimelineState;
 });
