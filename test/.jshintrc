@@ -23,10 +23,12 @@
     //testing stuff
     "it" : false,
     "describe" : false,
+    "context" : false,
     "expect" : false,
     "beforeEach" : false,
     "afterEach" : false,
-    "after" : false
+    "after" : false,
+    "before" : false
   },
   "globalstrict": false,
   "quotmark": true,
