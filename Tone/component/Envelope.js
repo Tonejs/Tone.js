@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/signal/SchedulableSignal", 
+define(["Tone/core/Tone", "Tone/signal/TimelineSignal", 
 	"Tone/signal/Pow", "Tone/core/Types"], function(Tone){
 
 	"use strict";
@@ -87,10 +87,10 @@ define(["Tone/core/Tone", "Tone/signal/SchedulableSignal",
 
 		/**
 		 *  the signal
-		 *  @type {Tone.SchedulableSignal}
+		 *  @type {Tone.TimelineSignal}
 		 *  @private
 		 */
-		this._sig = this.output = new Tone.SchedulableSignal();
+		this._sig = this.output = new Tone.TimelineSignal();
 		this._sig.setValueAtTime(0, 0);
 
 		//set the attackCurve initially
