@@ -1,11 +1,10 @@
 define(["Tone/core/Tone", "Tone/core/Types"], function (Tone) {
 
 	/**
-	 *  @class A Timeline class has two private functions
-	 *         for scheduling and maintaining state: addEvent
-	 *         and getEvent. A scheduled event is pushed onto
-	 *         a private _timeline array. The event must be an 
-	 *         Object with a 'time' attribute.
+	 *  @class A Timeline class for scheduling and maintaining state
+	 *         along a timeline. All events must have a "time" property. 
+	 *         Internally, events are stored in time order for fast 
+	 *         retrieval.
 	 *  @extends {Tone}
 	 */
 	Tone.Timeline = function(){
@@ -34,9 +33,9 @@ define(["Tone/core/Tone", "Tone/core/Types"], function (Tone) {
 	});
 
 	/**
-	 *  Insert an event into the correct position in the timeline.
+	 *  Insert an event object onto the timeline. Events must have a "time" attribute.
 	 *  @param  {Object}  event  The event object to insert into the 
-	 *                           timeline. Events must have a "time" attribute.
+	 *                           timeline. 
 	 *  @returns {Tone.Timeline} this
 	 */
 	Tone.Timeline.prototype.addEvent = function(event){
@@ -60,10 +59,11 @@ define(["Tone/core/Tone", "Tone/core/Types"], function (Tone) {
 	 *  @returns {Tone.Timeline} this
 	 */
 	Tone.Timeline.prototype.removeEvent = function(event){
-		var index = this._timeline.indexOf(event);
-		if (index !== -1){
-			this._timeline.splice(index, 1);
-		}
+		this.forEachAtTime(event.time, function(testEvent, index){
+			if (testEvent === event){
+				this._timeline.splice(index, 1);
+			}
+		}.bind(this));
 		return this;
 	};
 
@@ -103,10 +103,28 @@ define(["Tone/core/Tone", "Tone/core/Types"], function (Tone) {
 	 *  @returns {Tone.Timeline} this
 	 */
 	Tone.Timeline.prototype.clear = function(after){
-		after = this.toSeconds(after);
-		var index = this._search(after);
-		if (index >= 0){
-			this._timeline = this._timeline.slice(0, index);
+		if (this._timeline.length){
+			after = this.toSeconds(after);
+			var index = this._search(after);
+			if (index >= 0){
+				this._timeline = this._timeline.slice(0, index);
+			}
+		}
+		return this;
+	};
+
+	/**
+	 *  Cancel events before or equal to the given time.
+	 *  @param  {Time}  time  The time to clear before.
+	 *  @returns {Tone.Timeline} this
+	 */
+	Tone.Timeline.prototype.clearBefore = function(time){
+		if (this._timeline.length){
+			time = this.toSeconds(time);
+			var index = this._search(time);
+			if (index >= 0){
+				this._timeline = this._timeline.slice(index);
+			}
 		}
 		return this;
 	};
@@ -156,7 +174,7 @@ define(["Tone/core/Tone", "Tone/core/Types"], function (Tone) {
 		// while()
 		//iterate over the items in reverse so that removing an item doesn't break things
 		for (var i = this._timeline.length - 1; i >= 0; i--){
-			callback(this._timeline[i]);
+			callback(this._timeline[i], i);
 		}
 		return this;
 	};
@@ -173,7 +191,7 @@ define(["Tone/core/Tone", "Tone/core/Types"], function (Tone) {
 		var startIndex = this._search(time);
 		if (startIndex !== -1){
 			for (var i = startIndex; i >= 0; i--){
-				callback(this._timeline[i]);
+				callback(this._timeline[i], i);
 			}
 		}
 		return this;
@@ -191,7 +209,7 @@ define(["Tone/core/Tone", "Tone/core/Types"], function (Tone) {
 		var endIndex = this._search(time);
 		if (endIndex !== -1){
 			for (var i = this._timeline.length - 1; i > endIndex; i--){
-				callback(this._timeline[i]);
+				callback(this._timeline[i], i);
 			}
 		}
 		return this;
@@ -211,7 +229,7 @@ define(["Tone/core/Tone", "Tone/core/Types"], function (Tone) {
 			for (var i = index; i >= 0; i--){
 				var event = this._timeline[i];
 				if (event.time === time){
-					callback(event);
+					callback(event, i);
 				} else {
 					break;
 				}
