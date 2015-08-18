@@ -61,10 +61,26 @@ gulp.task("buildrequire", ["makerequire"], function(done){
 		.pipe(tap(function(file){
 			var fileAsString = file.contents.toString();
 			file.contents = new Buffer(fileAsString.substr(0, fileAsString.indexOf("require([") - 1));
+			fs.writeFile("toneMain.js", file.contents, function(err){
+				if (err){
+					console.log(err);
+				}
+			});
 		}))
 		//surround the file with the header/footer
 		.pipe(insert.prepend(fs.readFileSync("./fragments/before.frag").toString()))
 		.pipe(insert.append(fs.readFileSync("./fragments/after.frag").toString()))
+		//clean up the files
+		.pipe(gulp.dest("../build/"));
+	stream.on("end", done);
+});
+
+gulp.task("buildp5Tone", ["buildrequire"], function(done){
+	var stream = gulp.src("./toneMain.js")
+	.pipe(rename("p5.Tone.js"))
+	//surround the file with the header/footer
+		.pipe(insert.prepend(fs.readFileSync("./fragments/before.frag").toString()))
+		.pipe(insert.append(fs.readFileSync("./fragments/p5-after.frag").toString()))
 		//clean up the files
 		.pipe(gulp.dest("../build/"));
 	stream.on("end", function(){
@@ -72,8 +88,8 @@ gulp.task("buildrequire", ["makerequire"], function(done){
 	});
 });
 
-gulp.task("build", ["buildrequire"], function(){
-		gulp.src("../build/Tone.js")
+gulp.task("build", ["buildp5Tone"], function(){
+		gulp.src("../build/{p5.Tone,Tone}.js")
 			.pipe(uglify({
 					preserveComments : "some",
 					compress: {
@@ -91,7 +107,9 @@ gulp.task("build", ["buildrequire"], function(){
 						cascade : true,
 					},
 				}))
-			.pipe(rename("Tone.min.js"))
+			.pipe(rename(function(path) {
+				path.basename += ".min";
+			}))
 			.pipe(gulp.dest("../build/"));
 });
 
