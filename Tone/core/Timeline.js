@@ -108,6 +108,8 @@ define(["Tone/core/Tone", "Tone/core/Types"], function (Tone) {
 			var index = this._search(after);
 			if (index >= 0){
 				this._timeline = this._timeline.slice(0, index);
+			} else {
+				this._timeline = [];
 			}
 		}
 		return this;
