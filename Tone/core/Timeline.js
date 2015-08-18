@@ -123,7 +123,7 @@ define(["Tone/core/Tone", "Tone/core/Types"], function (Tone) {
 			time = this.toSeconds(time);
 			var index = this._search(time);
 			if (index >= 0){
-				this._timeline = this._timeline.slice(index);
+				this._timeline = this._timeline.slice(index + 1);
 			}
 		}
 		return this;
