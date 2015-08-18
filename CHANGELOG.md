@@ -1,6 +1,8 @@
 ### r6
 
 * Added PitchShift Effect.
+* Added Timeline/TimelineState/TimelineSignal which keeps track of the state in the future
+* removed `onended` event from Tone.Source
 
 ### r5
 
