@@ -61,16 +61,18 @@ gulp.task("buildrequire", ["makerequire"], function(done){
 		.pipe(tap(function(file){
 			var fileAsString = file.contents.toString();
 			file.contents = new Buffer(fileAsString.substr(0, fileAsString.indexOf("require([") - 1));
-			fs.writeFile("toneMain.js", file.contents);
+			fs.writeFile("toneMain.js", file.contents, function(err){
+				if (err){
+					console.log(err);
+				}
+			});
 		}))
 		//surround the file with the header/footer
 		.pipe(insert.prepend(fs.readFileSync("./fragments/before.frag").toString()))
 		.pipe(insert.append(fs.readFileSync("./fragments/after.frag").toString()))
 		//clean up the files
 		.pipe(gulp.dest("../build/"));
-	stream.on("end", function(){
-		done();
-	});
+	stream.on("end", done);
 });
 
 gulp.task("buildp5Tone", ["buildrequire"], function(done){
