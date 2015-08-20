@@ -167,7 +167,7 @@
 			<p>Attack</p>
 			<input type="range" id="attack0" value="0"/>
 			<p>Trigger</p>
-			<button type="button" onclick="cymbal.strike.triggerAttack()">strike</button>
+			<button type="button" onclick="cymbal.strikeEnvelope.triggerAttack()">strike</button>
 		</div>
 		<div id="body" class="comp-div">
 			<p>body</p>
@@ -178,7 +178,7 @@
 			<p>Attack</p>
 			<input type="range" id="attack1" value="0"/>
 			<p>Trigger</p>
-			<button type="button" onclick="cymbal.body.triggerAttack()">body</button>
+			<button type="button" onclick="cymbal.bodyEnvelope.triggerAttack()">body</button>
 		</div>
 		<div id="envelope2" class="comp-div">
 			<p>envelope2 removed</p>
@@ -198,7 +198,7 @@
 		cymbal.triggerAttack(Tone.context.currentTime)
 	};
 
-	var envelopeArray = ["strike", "body"]
+	var envelopeArray = ["strikeEnvelope", "bodyEnvelope"]
 	for(var i = 0; i < 2; i ++){
 		var freq = document.getElementById("bpfreq" + i);
 		freq.max = 22050;

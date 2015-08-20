@@ -12755,11 +12755,18 @@
 	        this.highPass0 = new Tone.Filter(highPassFreq[0], 'highpass', -12).connect(this.output);
 	        this.highPass1 = new Tone.Filter(highPassFreq[1], 'highpass', -12).connect(this.output);
 	        this.highPass2 = new Tone.Filter(highPassFreq[2], 'highpass', -12).connect(this.output);
-	        this.strike = new Tone.AmplitudeEnvelope(options.strike).connect(this.highPass0);
-	        this.body = new Tone.AmplitudeEnvelope(options.body).connect(this.highPass1);
-	        this.body.connect(this.highPass2);
-	        this.bandPass0 = new Tone.Filter(options.bandPass0).connect(this.strike);
-	        this.bandPass1 = new Tone.Filter(options.bandPass1).connect(this.body);
+	        this.highPass0.Q = highPassQ[0];
+	        this.highPass1.Q = highPassQ[1];
+	        this.highPass1.Q = highPassQ[2];
+	        //cymbal helper class? yotam wants better name!
+	        //this allows to have discrete components
+	        //
+	        //ratio of inharmonicity - 0 is most harminous and 1 least?
+	        this.strikeEnvelope = new Tone.AmplitudeEnvelope(options.strikeEnvelope).connect(this.highPass0);
+	        this.bodyEnvelope = new Tone.AmplitudeEnvelope(options.bodyEnvelope).connect(this.highPass1);
+	        this.bodyEnvelope.connect(this.highPass2);
+	        this.bandPass0 = new Tone.Filter(options.bandPass0).connect(this.strikeEnvelope);
+	        this.bandPass1 = new Tone.Filter(options.bandPass1).connect(this.bodyEnvelope);
 	        //frequencies from https://ccrma.stanford.edu/papers/tr-808-cymbal-physically-informed-circuit-bendable-digital-model
 	        var freqArray = [
 	            205.3,
@@ -12772,7 +12779,8 @@
 	        this.harmonicity = new Tone.Signal(options.harmonicity);
 	        this.harmonicity.units = Tone.Type.Positive;
 	        //the 808 base frequency
-	        this.baseFreq = new Tone.Signal(options.baseFreq, Tone.Type.Frequency);
+	        //yotam - change to frequency
+	        this.frequency = new Tone.Signal(options.frequency, Tone.Type.Frequency);
 	        //frequency ration for the 808
 	        this.inharmRatios = [
 	            1,
@@ -12795,16 +12803,17 @@
 	        this.harmMinusSignal = [];
 	        this._oscillators = [];
 	        this.freqMult = [];
-	        //originally: this.baseFreq*(this.harmRatio[i]*this.harmonicity + this.inharmRatio[i]*(1 - this.harmonicity))
-	        //simplified formula : baseFreq(harmonicity * (harmRatio - inharmRatio) +inharmRatio)
-	        //simplified formula : baseFreq(harmonicity * harmMinus +inharmRatio)
+	        //originally: this.frequency*(this.harmRatio[i]*this.harmonicity + this.inharmRatio[i]*(1 - this.harmonicity))
+	        //simplified formula : frequency(harmonicity * (harmRatio - inharmRatio) +inharmRatio)
+	        //simplified formula : frequency(harmonicity * harmMinus +inharmRatio)
 	        for (var i = 0; i < 6; i++) {
+	            //rebuild these with Tone.scaled
 	            this.inharmRatioSignal[i] = new Tone.Add(this.inharmRatios[i]);
 	            this.harmMinusSignal[i] = new Tone.Multiply(this.harmRatios[i] - this.inharmRatios[i]).connect(this.inharmRatioSignal[i]);
 	            this.harmonicity.connect(this.harmMinusSignal[i]);
 	            var freqMult = new Tone.Multiply();
 	            this.inharmRatioSignal[i].connect(freqMult, 0, 0);
-	            this.baseFreq.connect(freqMult, 0, 1);
+	            this.frequency.connect(freqMult, 0, 1);
 	            this._oscillators[i] = new Tone.Oscillator({ 'type': 'square' });
 	            freqMult.connect(this._oscillators[i].frequency);
 	            this._oscillators[i].connect(this.bandPass0);
@@ -12813,12 +12822,9 @@
 	        }
 	    };
 	    Tone.extend(Tone.CymbalSynth, Tone.Instrument);
-	    //harmonicity between oscillators?
-	    //use existing freqs for ratios
-	    //try spreading ratios
 	    Tone.CymbalSynth.defaults = {
 	        'harmonicity': 0,
-	        'baseFreq': 205.3,
+	        'frequency': 205.3,
 	        // "attack" : {
 	        // 	"attack" : ,
 	        // 	"decay" : ,
@@ -12829,7 +12835,7 @@
 	        // 	//combined q values
 	        // 	"resonance" : 
 	        // }
-	        // "body" : {
+	        // "bodyEnvelope" : {
 	        // 	"attack" : ,
 	        // 	"decay" : ,
 	        // 	"bandpass" : ,
@@ -12851,14 +12857,14 @@
 	            'Q': 6,
 	            'gain': 24
 	        },
-	        'strike': {
+	        'strikeEnvelope': {
 	            'attack': 0.01,
 	            'decay': 0.25,
 	            'sustain': 0,
 	            'release': 0,
 	            'attackCurve': 'exponential'
 	        },
-	        'body': {
+	        'bodyEnvelope': {
 	            'attack': 0.01,
 	            'decay': 3,
 	            'sustain': 0,
@@ -12866,15 +12872,13 @@
 	            'attackCurve': 'exponential'
 	        }
 	    };
-	    //we will use trigger release to do choking
-	    //think about how to do choke channels?
 	    //
 	    //git checkout on envelope since there were some changes
 	    //and retry with a smaller number
 	    Tone.CymbalSynth.prototype.triggerAttack = function (time, velocity) {
 	        time = this.toSeconds(time);
-	        this.strike.triggerAttack(time);
-	        this.body.triggerAttack(time);
+	        this.strikeEnvelope.triggerAttack(time);
+	        this.bodyEnvelope.triggerAttack(time);
 	        return this;
 	    };
 	    //no attackrelease
@@ -12883,8 +12887,8 @@
 	    //look at current ADSR envelope and structure
 	    //yotam wants to make an AR envelope maybe?
 	    Tone.CymbalSynth.prototype.triggerRelease = function (time) {
-	        this.strike.triggerRelease(time);
-	        this.body.triggerRelease(time);
+	        this.strikeEnvelope.triggerRelease(time);
+	        this.bodyEnvelope.triggerRelease(time);
 	        //this.envelope2.triggerRelease(time);
 	        return this;
 	    };
