@@ -37,7 +37,7 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 
 	Tone.ExternalInput = function(){
 
-		var options = this.optionsObject(arguments, ["inputNum", "onload"], Tone.ExternalInput.defaults);
+		var options = this.optionsObject(arguments, ["inputNum"], Tone.ExternalInput.defaults);
 		Tone.Source.call(this, options);
 
 		/**
@@ -78,8 +78,7 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 	 * @type {Object}
 	 */
 	Tone.ExternalInput.defaults = {
-		"inputNum" : 0,
-		"onload" : Tone.noOp
+		"inputNum" : 0
 	};
 
 	/**
@@ -87,20 +86,12 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 	 * @private
 	 */
 	Tone.ExternalInput.prototype._start = function(){
-		if(!Tone.ExternalInput.sourceList.length && Tone.ExternalInput._hasGetSources && this.inputNum){
-			console.error("Default source selected, use ExternalInput.onload to allow source loading");
-		}
-		if(!Tone.ExternalInput._hasGetSources && this.inputNum > 0){
-			console.error("This browser does not support MediaStreamTrack sourceId");
-		}
 		if (this.inputNum < Tone.ExternalInput.sourceList.length && this.inputNum > -1) {
 			this._constraints = {
 				audio : {
 					optional : [{ sourceId: Tone.ExternalInput.sourceList[this.inputNum].id}]
 				}
 			};
-		} else {
-			console.error("inputNum was outside of sourceList bounds, default source selected");
 		}
 		navigator.getUserMedia(this._constraints, 
 			this._onStream.bind(this), this._onStreamError.bind(this));
@@ -165,7 +156,7 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 	 * @type {Boolean}
 	 * @private
 	 */
-	Tone.ExternalInput._hasGetSources = true;
+	Tone.ExternalInput._canGetSources = Tone.prototype.isFunction(MediaStreamTrack.getSources);
 
 	/**
 	 * Enumerates sourcelist
@@ -176,20 +167,17 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 
 	Tone.ExternalInput._getSources = function(){
 		if(Tone.ExternalInput.sourceList.length === 0){
-			if(typeof MediaStreamTrack.getSources === "undefined"){
-				Tone.ExternalInput._hasGetSources = false;
-				//console.error("MediaStreamTrack not supported");
-				window.setTimeout(function(){
-					Tone.ExternalInput.onload();
-				}, 10);
-			} else{
-				Tone.ExternalInput._hasGetSources = true;
+			if(Tone.ExternalInput._canGetSources){
 				MediaStreamTrack.getSources(function (media_sources){
 					for(var i = 0, max = media_sources.length; i < max; i++) {
 						Tone.ExternalInput.sourceList[i] = media_sources[i];
 					}
 					Tone.ExternalInput.onload();
-				});			
+				});
+			} else{
+				window.setTimeout(function(){
+					Tone.ExternalInput.onload();
+				}, 10);
 			}
 		} else {
 			return Tone.ExternalInput.sourceList;
