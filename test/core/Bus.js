@@ -1,4 +1,4 @@
-define(["Test", "Tone/core/Bus", "Tone/core/Tone", "Offline", "PassAudio"], 
+define(["Test", "Tone/core/Bus", "Tone/core/Tone", "helper/Offline", "helper/PassAudio"], 
 	function (Test, Bus, Tone, Offline, PassAudio) {
 
 	describe("Bus", function(){

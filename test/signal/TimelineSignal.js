@@ -1,4 +1,4 @@
-define(["Test", "Tone/signal/TimelineSignal", "Offline"], function (Test, TimelineSignal, Offline) {
+define(["Test", "Tone/signal/TimelineSignal", "helper/Offline"], function (Test, TimelineSignal, Offline) {
 
 	describe("TimelineSignal", function(){
 

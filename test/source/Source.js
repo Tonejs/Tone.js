@@ -1,4 +1,4 @@
-define(["Test", "Tone/source/Source", "Offline"], function (Test, Source, Offline) {
+define(["Test", "Tone/source/Source"], function (Test, Source) {
 
 	describe("Source", function(){
 
@@ -69,7 +69,7 @@ define(["Test", "Tone/source/Source", "Offline"], function (Test, Source, Offlin
 		});
 
 		it ("can sync its start time to the Transport", function(){
-
+			throw new Error("cannot sync to the transport");
 		});
 
 		it ("can unsync after it was synced", function(){

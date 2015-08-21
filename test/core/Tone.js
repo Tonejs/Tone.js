@@ -1,4 +1,4 @@
-define(["Test", "Tone/core/Tone", "PassAudio", "Tone/source/Oscillator", "Tone/instrument/SimpleSynth", "Offline"], 
+define(["Test", "Tone/core/Tone", "helper/PassAudio", "Tone/source/Oscillator", "Tone/instrument/SimpleSynth", "helper/Offline"], 
 	function (Test, Tone, PassAudio, Oscillator, SimpleSynth, Offline) {
 
 	describe("AudioContext", function(){

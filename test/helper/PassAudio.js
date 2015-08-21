@@ -1,4 +1,4 @@
-define(["Offline", "Test", "Tone/signal/Signal"], function (Offline, Test, Signal) {
+define(["helper/Offline", "Test", "Tone/signal/Signal"], function (Offline, Test, Signal) {
 
 	var PassAudio = function(before, after){
 		var duration = 0.5;

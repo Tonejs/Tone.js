@@ -1,4 +1,4 @@
-define(["Test", "Tone/core/Tone"], function (Test, Tone) {
+define(["Tone/core/Tone"], function (Tone) {
 
 	//hold onto the current context
 	var onlineContext = Tone.context;
@@ -6,14 +6,16 @@ define(["Test", "Tone/core/Tone"], function (Test, Tone) {
 	/**
 	 *  OFFLINE TESTING
 	 */
-	var Offline = function(duration, stereo){
+	var Offline = function(duration, channels, rms){
 		duration = duration || 1;
 		var sampleRate = 44100;
 		//dummy functions
 		this._before = Tone.noOp;
 		this._after = Tone.noOp;
 		this._test = Tone.noOp;
-		var channels = stereo ? 2 : 1;
+		channels = channels || 1;
+		rms = rms || false;
+		var rmsFrame = 512;
 		//offline rendering context
 		this.context = new OfflineAudioContext(channels, sampleRate * duration, sampleRate);
 		this.context.oncomplete = function(e){
@@ -26,7 +28,17 @@ define(["Test", "Tone/core/Tone"], function (Test, Tone) {
 			} else {
 				var buffer = e.renderedBuffer.getChannelData(0);
 				for (var j = 0; j < buffer.length; j++){
-					this._test(buffer[j], j / sampleRate);
+					if (rms){
+						var sum = 0;
+						if (j >= rmsFrame){
+							for (var k = j - rmsFrame; k < j; k++){
+								sum += buffer[k] * buffer[k];
+							}
+						}
+						this._test(Math.sqrt(sum / rmsFrame), j / sampleRate);
+					} else {
+						this._test(buffer[j], j / sampleRate);
+					}
 				}
 			}
 			this._after();
