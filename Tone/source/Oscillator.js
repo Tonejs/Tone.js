@@ -176,7 +176,7 @@ function(Tone){
 			var imag = new Float32Array(periodicWaveSize);
 			
 			var partialCount = 1;
-			var partial = /(sine|triangle|square|sawtooth)(\d+)$/.exec(type);
+			var partial = /^(sine|triangle|square|sawtooth)(\d+)$/.exec(type);
 			if (partial){
 				partialCount = parseInt(partial[2]);
 				type = partial[1];
