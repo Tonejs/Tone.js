@@ -18,8 +18,14 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 	 * }
 	 */
 	Tone.Player = function(url){
-		
-		var options = this.optionsObject(arguments, ["url", "onload"], Tone.Player.defaults);
+
+		var options;
+		if (url instanceof Tone.Buffer){
+			url = url.get();
+			options = Tone.Player.defaults;
+		} else {
+			options = this.optionsObject(arguments, ["url", "onload"], Tone.Player.defaults);
+		}		
 		Tone.Source.call(this, options);
 
 		/**
@@ -51,7 +57,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 			"onload" : this._onload.bind(this, options.onload),
 			"reverse" : options.reverse
 		});
-		if (url instanceof AudioBuffer || url instanceof Tone.Buffer){
+		if (url instanceof AudioBuffer){
 			this._buffer.set(url);
 		}
 
