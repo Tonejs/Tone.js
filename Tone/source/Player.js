@@ -17,7 +17,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 	 * 	player.start();
 	 * }
 	 */
-	Tone.Player = function(){
+	Tone.Player = function(url){
 		
 		var options = this.optionsObject(arguments, ["url", "onload"], Tone.Player.defaults);
 		Tone.Source.call(this, options);
@@ -51,6 +51,9 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 			"onload" : this._onload.bind(this, options.onload),
 			"reverse" : options.reverse
 		});
+		if (url instanceof AudioBuffer || url instanceof Tone.Buffer){
+			this._buffer.set(url);
+		}
 
 		/**
 		 *  if the buffer should loop once it's over
@@ -113,7 +116,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 	 *  Load the audio file as an audio buffer.
 	 *  Decodes the audio asynchronously and invokes
 	 *  the callback once the audio buffer loads. 
-	 *  Note: this does not need to be called, if a url
+	 *  Note: this does not need to be called if a url
 	 *  was passed in to the constructor. Only use this
 	 *  if you want to manually load a new url. 
 	 * @param {string} url The url of the buffer to load.
@@ -261,7 +264,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 	/**
 	 * The audio buffer belonging to the player. 
 	 * @memberOf Tone.Player#
-	 * @type {AudioBuffer}
+	 * @type {Tone.Buffer}
 	 * @name buffer
 	 */
 	Object.defineProperty(Tone.Player.prototype, "buffer", {
