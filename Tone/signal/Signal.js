@@ -187,10 +187,9 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper", "Tone/core/Types"], function
 	 *  @param {number=} now (Optionally) pass the now value in. 
 	 *  @returns {Tone.Signal} this
 	 */
-	Tone.Signal.prototype.setCurrentValueNow = function(now){
+	Tone.Signal.prototype.setRampPoint = function(now){
 		now = this.defaultArg(now, this.now());
 		var currentVal = this._value.value;
-		this.cancelScheduledValues(now);
 		this._value.setValueAtTime(currentVal, now);
 		return this;
 	};
@@ -226,17 +225,18 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper", "Tone/core/Types"], function
 
 	/**
 	 *  Schedules an exponential continuous change in parameter value from 
-	 *  the current time and current value to the given value.
+	 *  the current time and current value to the given value over the 
+	 *  duration of the rampTime.
 	 *  
-	 *  @param  {number} value   
+	 *  @param  {number} value   The value to ramp to.
 	 *  @param  {Time} rampTime the time that it takes the 
 	 *                               value to ramp from it's current value
 	 *  @returns {Tone.Signal} this
 	 *  @example
 	 * //exponentially ramp to the value 2 over 4 seconds. 
-	 * signal.exponentialRampToValueNow(2, 4);
+	 * signal.exponentialRampToValue(2, 4);
 	 */
-	Tone.Signal.prototype.exponentialRampToValueNow = function(value, rampTime){
+	Tone.Signal.prototype.exponentialRampToValue = function(value, rampTime){
 		var now = this.now();
 		// exponentialRampToValueAt cannot ever ramp from 0, apparently.
 		// More info: https://bugzilla.mozilla.org/show_bug.cgi?id=1125600#c2
@@ -248,19 +248,20 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper", "Tone/core/Types"], function
 
 	/**
 	 *  Schedules an linear continuous change in parameter value from 
-	 *  the current time and current value to the given value at the given time.
+	 *  the current time and current value to the given value over the 
+	 *  duration of the rampTime.
 	 *  
-	 *  @param  {number} value   
+	 *  @param  {number} value   The value to ramp to.
 	 *  @param  {Time} rampTime the time that it takes the 
 	 *                               value to ramp from it's current value
 	 *  @returns {Tone.Signal} this
 	 *  @example
 	 * //linearly ramp to the value 4 over 3 seconds. 
-	 * signal.linearRampToValueNow(4, 3);
+	 * signal.linearRampToValue(4, 3);
 	 */
-	Tone.Signal.prototype.linearRampToValueNow = function(value, rampTime){
+	Tone.Signal.prototype.linearRampToValue = function(value, rampTime){
 		var now = this.now();
-		this.setCurrentValueNow(now);
+		this.setRampPoint(now);
 		this.linearRampToValueAtTime(value, now + this.toSeconds(rampTime));
 		return this;
 	};
@@ -330,9 +331,9 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper", "Tone/core/Types"], function
 	Tone.Signal.prototype.rampTo = function(value, rampTime){
 		rampTime = this.defaultArg(rampTime, 0);
 		if (this.units === Tone.Type.Frequency || this.units === Tone.Type.BPM){
-			this.exponentialRampToValueNow(value, rampTime);
+			this.exponentialRampToValue(value, rampTime);
 		} else {
-			this.linearRampToValueNow(value, rampTime);
+			this.linearRampToValue(value, rampTime);
 		}
 		return this;
 	};

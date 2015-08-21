@@ -1,8 +1,11 @@
 ### r6
 
-* Added PitchShift Effect.
+* Added PitchShift and Vibrato Effect.
 * Added Timeline/TimelineState/TimelineSignal which keeps track of the state in the future
-* removed `onended` event from Tone.Source
+* Clock uses requestAnimationFrame instead of ScriptProcessorNode
+* Removed `onended` event from Tone.Source
+* Refactored tests
+* Renamed some Signal methods: exponentialRampToValueNow->exponentialRampToValue, setCurrentValueNow->setRampPoint
 
 ### r5
 
