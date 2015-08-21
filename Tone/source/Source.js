@@ -10,7 +10,7 @@ function(Tone){
 	 *          start/stop of Tone.Transport.
 	 *
 	 *  @constructor
-	 *  @extends {Tone.TimelineState}
+	 *  @extends {Tone}
 	 */	
 	Tone.Source = function(options){
 		//Sources only have an output and no input
