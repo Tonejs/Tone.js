@@ -198,21 +198,21 @@
 		cymbal.triggerAttack(Tone.context.currentTime)
 	};
 
-	var envelopeArray = ["strikeEnvelope", "bodyEnvelope"]
+	var envelopeArray = ["impactEnvelope", "bodyEnvelope"]
 	for(var i = 0; i < 2; i ++){
 		var freq = document.getElementById("bpfreq" + i);
 		freq.max = 22050;
-		freq.value = cymbal["bandPass" + i].frequency.value;
+		freq.value = cymbal["_bandPass" + i].frequency.value;
 		freq.step = 50;
 
 		var q = document.getElementById("bpq" + i);
 		q.max = 20;
-		q.value = cymbal["bandPass" + i].Q.value;
+		q.value = cymbal["_bandPass" + i].Q.value;
 		q.step = 0.1;
 
 		var gain = document.getElementById("bpg" + i);
 		gain.max = 40;
-		gain.value = cymbal["bandPass" + i].gain.value;
+		gain.value = cymbal["_bandPass" + i].gain.value;
 		gain.step = 0.1;
 
 		var decay = document.getElementById("decay" + i);
@@ -229,98 +229,98 @@
 	for(var i = 0; i < 3; i ++){
 		var freq = document.getElementById("hpfreq" + i);
 		freq.max = 22050;
-		freq.value = cymbal["highPass" + i].frequency.value;
+		freq.value = cymbal["_highPass" + i].frequency.value;
 		freq.step = 50;
 
 		var q = document.getElementById("hpq" + i);
 		q.max = 20;
-		q.value = cymbal["highPass" + i].Q.value;
+		q.value = cymbal["_highPass" + i].Q.value;
 		q.step = 0.01;
 
 		var gain = document.getElementById("hpg" + i);
 		gain.max = 40;
-		gain.value = cymbal["highPass" + i].gain.value;
+		gain.value = cymbal["_highPass" + i].gain.value;
 		gain.step = 0.01;
 	}
 	
 	$("#hpfreq0").on("change", function(){
-		cymbal["highPass0"].frequency.value = $("#hpfreq0").val();
+		cymbal["_highPass0"].frequency.value = $("#hpfreq0").val();
 	});
 
 	$("#hpfreq1").on("change", function(){
-		cymbal["highPass1"].frequency.value = $("#hpfreq1").val();
+		cymbal["_highPass1"].frequency.value = $("#hpfreq1").val();
 	});
 
 	$("#hpfreq2").on("change", function(){
-		cymbal["highPass2"].frequency.value = $("#hpfreq2").val();
+		cymbal["_highPass2"].frequency.value = $("#hpfreq2").val();
 	});
 
 	$("#hpq0").on("change", function(){
-		cymbal["highPass0"].Q.value = $("#hpq0").val();
+		cymbal["_highPass0"].Q.value = $("#hpq0").val();
 	});
 
 	$("#hpq1").on("change", function(){
-		cymbal["highPass1"].Q.value = $("#hpq1").val();
+		cymbal["_highPass1"].Q.value = $("#hpq1").val();
 	});
 
 	$("#hpq2").on("change", function(){
-		cymbal["highPass2"].Q.value = $("#hpq2").val();
+		cymbal["_highPass2"].Q.value = $("#hpq2").val();
 	});
 
 	$("#hpg0").on("change", function(){
-		cymbal["highPass0"].gain.value = $("#hpg0").val();
+		cymbal["_highPass0"].gain.value = $("#hpg0").val();
 	});
 
 	$("#hpg1").on("change", function(){
-		cymbal["highPass1"].gain.value = $("#hpg1").val();
+		cymbal["_highPass1"].gain.value = $("#hpg1").val();
 	});
 
 	$("#hpg2").on("change", function(){
-		cymbal["highPass2"].gain.value = $("#hpg2").val();
+		cymbal["_highPass2"].gain.value = $("#hpg2").val();
 	});
 
 	$("#hpr0").on("change", function(){
-		cymbal["highPass0"].rolloff = parseInt($("#hpr0").val());
+		cymbal["_highPass0"].rolloff = parseInt($("#hpr0").val());
 	});
 
 	$("#hpr1").on("change", function(){
-		cymbal["highPass1"].rolloff = parseInt($("#hpr1").val());
+		cymbal["_highPass1"].rolloff = parseInt($("#hpr1").val());
 	});
 
 	$("#hpr2").on("change", function(){
-		cymbal["highPass2"].rolloff = parseInt($("#hpr2").val());
+		cymbal["_highPass2"].rolloff = parseInt($("#hpr2").val());
 	});
 
 	$("#bpfreq0").on("change", function(){
-		cymbal["bandPass0"].frequency.value = $("#bpfreq0").val();
+		cymbal["_bandPass0"].frequency.value = $("#bpfreq0").val();
 	});
 
 	$("#bpg0").on("change", function(){
-		cymbal["bandPass0"].gain.value = $("#bpg0").val();
+		cymbal["_bandPass0"].gain.value = $("#bpg0").val();
 	});
 
 	$("#bpq0").on("change", function(){
-		cymbal["bandPass0"].Q.value = $("#bpq0").val();
+		cymbal["_bandPass0"].Q.value = $("#bpq0").val();
 	});
 
 	$("#bpfreq1").on("change", function(){
-		cymbal["bandPass1"].frequency.value = $("#bpfreq1").val();
+		cymbal["_bandPass1"].frequency.value = $("#bpfreq1").val();
 	});
 
 	$("#bpg1").on("change", function(){
-		cymbal["bandPass1"].gain.value = $("#bpg1").val();
+		cymbal["_bandPass1"].gain.value = $("#bpg1").val();
 	});
 
 	$("#bpq1").on("change", function(){
-		cymbal["bandPass1"].Q.value = $("#bpq1").val();
+		cymbal["_bandPass1"].Q.value = $("#bpq1").val();
 	});
 
 	$("#bpr0").on("change", function(){
-		cymbal["bandPass0"].rolloff = parseInt($("#bpr0").val());
+		cymbal["_bandPass0"].rolloff = parseInt($("#bpr0").val());
 	});
 
 	$("#bpr1").on("change", function(){
-		cymbal["bandPass1"].rolloff = parseInt($("#bpr1").val());
+		cymbal["_bandPass1"].rolloff = parseInt($("#bpr1").val());
 	});
 
 	$("#decay0").on("change", function(){
