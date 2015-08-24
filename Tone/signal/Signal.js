@@ -354,21 +354,11 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper", "Tone/core/Types"], function
 	///////////////////////////////////////////////////////////////////////////
 
 	/**
-	 *  the constant signal generator
+	 *  Generates a constant output of 1.
 	 *  @static
 	 *  @private
 	 *  @const
-	 *  @type {OscillatorNode}
-	 */
-	Tone.Signal._generator = null;
-
-	/**
-	 *  the signal generator waveshaper. makes the incoming signal
-	 *  only output 1 for all inputs.
-	 *  @static
-	 *  @private
-	 *  @const
-	 *  @type {Tone.WaveShaper}
+	 *  @type {AudioBufferSourceNode}
 	 */
 	Tone.Signal._constant = null;
 
@@ -376,11 +366,16 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper", "Tone/core/Types"], function
 	 *  initializer function
 	 */
 	Tone._initAudioContext(function(audioContext){
-		Tone.Signal._generator = audioContext.createOscillator();
-		Tone.Signal._constant = new Tone.WaveShaper([1,1]);
-		Tone.Signal._generator.connect(Tone.Signal._constant);
-		Tone.Signal._generator.start(0);
-		Tone.Signal._generator.noGC();
+		var buffer = audioContext.createBuffer(1, 128, audioContext.sampleRate);
+		var arr = buffer.getChannelData(0);
+		for (var i = 0; i < arr.length; i++){
+			arr[i] = 1;
+		}
+		Tone.Signal._constant = audioContext.createBufferSource();
+		Tone.Signal._constant.buffer = buffer;
+		Tone.Signal._constant.loop = true;
+		Tone.Signal._constant.start(0);
+		Tone.Signal._constant.noGC();
 	});
 
 	return Tone.Signal;
