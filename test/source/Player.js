@@ -1,5 +1,5 @@
-define(["helper/Basic", "Tone/source/Player", "helper/Offline", "helper/SourceTests", "Tone/core/Buffer"], 
-	function (BasicTests, Player, Offline, SourceTests, Buffer) {
+define(["helper/Basic", "Tone/source/Player", "helper/Offline", "helper/SourceTests", "Tone/core/Buffer", "helper/Meter"], 
+	function (BasicTests, Player, Offline, SourceTests, Buffer, Meter) {
 
 	describe("Player", function(){
 
@@ -147,7 +147,7 @@ define(["helper/Basic", "Tone/source/Player", "helper/Offline", "helper/SourceTe
 
 			it("can be start with an offset", function(done){
 				var player;
-				var offline = new Offline(0.4, 1, true);
+				var offline = new Offline(0.4, 1);
 				var audioBuffer = buffer.get().getChannelData(0);
 				var testSample = audioBuffer[buffer.secondsToSamples(0.1)];
 				offline.before(function(dest){
@@ -169,59 +169,28 @@ define(["helper/Basic", "Tone/source/Player", "helper/Offline", "helper/SourceTe
 
 			it("can be play for a specific duration", function(done){
 				var player;
-				var offline = new Offline(0.4, 1, true);
-				offline.before(function(dest){
+				var meter = new Meter(0.4);
+				meter.before(function(dest){
 					player = new Player(buffer);
 					player.connect(dest);
 					player.start(0).stop(0.1);
 				});
-				offline.test(function(sample, time){
-					if (sample < 0.001 && time > 0.02){
+				meter.test(function(sample, time){
+					if (sample < 0.001){
 						expect(time).to.at.least(0.1);
 					}
 				});
-				offline.after(function(){
+				meter.after(function(){
 					player.dispose();
 					done();
 				});
-				offline.run();
+				meter.run();
 			});
 
 		});
 
 		context("Synchronization", function(){
-			/*it("can sync the frequency to Transport", function(done){
-				var player;
-				Test.offlineTest(0.1, function(dest){
-					Transport.bpm.value = 120;
-					player = new Player(2);
-					player.frequency.connect(dest);
-					player.syncFrequency();
-					Transport.bpm.value = 240;
-				}, function(freq){
-					expect(freq).to.be.closeTo(4, 0.001);
-				}, function(){
-					player.dispose();
-					done();
-				});
-			});*/
-
-			/*it("can unsync the frequency to Transport", function(done){
-				var player;
-				Test.offlineTest(0.1, function(dest){
-					Transport.bpm.value = 120;
-					player = new Player(2);
-					player.frequency.connect(dest);
-					player.syncFrequency();
-					Transport.bpm.value = 240;
-					player.unsyncFrequency();
-				}, function(freq){
-					expect(freq).to.be.closeTo(2, 0.001);
-				}, function(){
-					player.dispose();
-					done();
-				});
-			});*/
+			
 		});
 
 	});
