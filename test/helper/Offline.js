@@ -6,7 +6,7 @@ define(["Tone/core/Tone"], function (Tone) {
 	/**
 	 *  OFFLINE TESTING
 	 */
-	var Offline = function(duration, channels, rms){
+	var Offline = function(duration, channels){
 		duration = duration || 1;
 		var sampleRate = 44100;
 		//dummy functions
