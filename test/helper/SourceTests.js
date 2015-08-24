@@ -1,5 +1,5 @@
-define(["helper/OutputAudio", "Tone/source/Source", "helper/OutputAudioStereo", "Test", "helper/Offline"], 
-	function (OutputAudio, Source, OutputAudioStereo, Test, Offline) {
+define(["helper/OutputAudio", "Tone/source/Source", "helper/OutputAudioStereo", "Test", "helper/Offline", "helper/Meter"], 
+	function (OutputAudio, Source, OutputAudioStereo, Test, Offline, Meter) {
 
 	return function(Constr, args){
 
@@ -57,43 +57,43 @@ define(["helper/OutputAudio", "Tone/source/Source", "helper/OutputAudioStereo", 
 
 			it("be scheduled to start in the future", function(done){
 				var instance;
-				var offline = new Offline(0.3, 1, true);
-				offline.before(function(dest){
+				var meter = new Meter(0.3);
+				meter.before(function(dest){
 					instance = new Constr(args);
 					instance.connect(dest);
 					instance.start(0.1);
 				});
-				offline.test(function(sample, time){
+				meter.test(function(sample, time){
 					if (sample > 0){
 						expect(time).to.be.at.least(0.1);
 					}
 				});
-				offline.after(function(){
+				meter.after(function(){
 					instance.dispose();
 					done();
 				});
-				offline.run();
+				meter.run();
 			});
 
 			it("be scheduled to stop in the future", function(done){
 				var instance;
-				var offline = new Offline(0.4, 1, true);
-				offline.before(function(dest){
+				var meter = new Meter(0.4);
+				meter.before(function(dest){
 					instance = new Constr(args);
 					instance.connect(dest);
 					instance.start(0).stop(0.2);
 				});
 				//keep a moving average of the output
-				offline.test(function(sample, time){
+				meter.test(function(sample, time){
 					if (time > 0.02 && sample < 0.001){
 						expect(time).to.be.gte(0.2);
 					}
 				});
-				offline.after(function(){
+				meter.after(function(){
 					instance.dispose();
 					done();
 				});
-				offline.run();
+				meter.run();
 			});
 
 		});
