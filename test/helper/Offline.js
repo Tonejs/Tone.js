@@ -14,32 +14,21 @@ define(["Tone/core/Tone"], function (Tone) {
 		this._after = Tone.noOp;
 		this._test = Tone.noOp;
 		channels = channels || 1;
-		rms = rms || false;
-		var rmsFrame = 512;
 		//offline rendering context
 		this.context = new OfflineAudioContext(channels, sampleRate * duration, sampleRate);
 		this.context.oncomplete = function(e){
-			if (channels === 2){
-				var bufferL = e.renderedBuffer.getChannelData(0);
-				var bufferR = e.renderedBuffer.getChannelData(1);
-				for (var i = 0; i < bufferL.length; i++){
-					this._test(bufferL[i], bufferR[i], i / sampleRate);
+
+			for (var i = 0; i < sampleRate * duration; i++){
+
+				var ret = [];
+				for (var channel = 0; channel < channels; channel++){
+					var buffer = e.renderedBuffer.getChannelData(channel);
+					ret[channel] = buffer[i];
 				}
-			} else {
-				var buffer = e.renderedBuffer.getChannelData(0);
-				for (var j = 0; j < buffer.length; j++){
-					if (rms){
-						var sum = 0;
-						if (j >= rmsFrame){
-							for (var k = j - rmsFrame; k < j; k++){
-								sum += buffer[k] * buffer[k];
-							}
-						}
-						this._test(Math.sqrt(sum / rmsFrame), j / sampleRate);
-					} else {
-						this._test(buffer[j], j / sampleRate);
-					}
+				if (channels === 1)	{
+					ret = ret[0];
 				}
+				this._test(ret, i / sampleRate);
 			}
 			this._after();
 			//reset the old context

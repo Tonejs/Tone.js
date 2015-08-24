@@ -18,11 +18,11 @@ define(["helper/Offline"], function (Offline) {
 			} 
 			after();
 		});
-		offline.test(function(sampleL, sampleR){
-			if (Math.abs(sampleL) > 0.01){
+		offline.test(function(samples){
+			if (Math.abs(samples[0]) > 0.01){
 				audioLeft = true;
 			}
-			if (Math.abs(sampleR) > 0.01){
+			if (Math.abs(samples[1]) > 0.01){
 				audioRight = true;
 			}
 		});
