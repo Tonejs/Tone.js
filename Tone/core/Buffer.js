@@ -63,7 +63,7 @@ define(["Tone/core/Tone"], function(Tone){
 		 */
 		this.onload = options.onload.bind(this, this);
 
-		if (url instanceof AudioBuffer){
+		if (url instanceof AudioBuffer || url instanceof Tone.Buffer){
 			this.set(url);
 			this.onload(this);
 		} else if (typeof options.url === "string"){
