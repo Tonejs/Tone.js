@@ -90,11 +90,6 @@ define(["Tone/core/Tone", "Tone/signal/SignalBase"], function(Tone){
 			return this._shaper.curve;
 		},
 		set : function(mapping){
-			//fixes safari WaveShaperNode bug
-			if (this._isSafari()){
-				var first = mapping[0];
-				mapping.unshift(first);	
-			}
 			this._curve = new Float32Array(mapping);
 			this._shaper.curve = this._curve;
 		}
@@ -112,19 +107,13 @@ define(["Tone/core/Tone", "Tone/signal/SignalBase"], function(Tone){
 			return this._shaper.oversample;
 		},
 		set : function(oversampling){
-			this._shaper.oversample = oversampling;
+			if (["none", "2x", "4x"].indexOf(oversampling) !== -1){
+				this._shaper.oversample = oversampling;
+			} else {
+				throw new Error("invalid oversampling: "+oversampling);
+			}
 		}
 	});
-
-	/**
-	 *  returns true if the browser is safari
-	 *  @return  {boolean} 
-	 *  @private
-	 */
-	Tone.WaveShaper.prototype._isSafari = function(){
-		var ua = navigator.userAgent.toLowerCase(); 
-		return ua.indexOf("safari") !== -1 && ua.indexOf("chrome") === -1;
-	};
 
 	/**
 	 *  Clean up.
