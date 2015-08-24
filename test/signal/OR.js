@@ -1,22 +1,22 @@
-define(["helper/Offline", "helper/Basic", "Tone/signal/AND", "Tone/signal/Signal"], 
-function (Offline, Basic, AND, Signal) {
+define(["helper/Offline", "helper/Basic", "Tone/signal/OR", "Tone/signal/Signal"], 
+function (Offline, Basic, OR, Signal) {
 
-	describe("AND", function(){
+	describe("OR", function(){
 
-		Basic(AND);
+		Basic(OR);
 
 		describe("Logic", function(){
 
 			it("outputs 1 when both inputs are 1", function(done){
-				var signal0, signal1, and;
+				var signal0, signal1, or;
 				var offline = new Offline();
 				offline.before(function(dest){
 					signal0 = new Signal(1);
 					signal1 = new Signal(1);
-					and = new AND(2);
-					signal0.connect(and, 0, 0);
-					signal1.connect(and, 0, 1);
-					and.connect(dest);
+					or = new OR(2);
+					signal0.connect(or, 0, 0);
+					signal1.connect(or, 0, 1);
+					or.connect(dest);
 				});
 				offline.test(function(sample){
 					expect(sample).to.equal(1);
@@ -24,45 +24,45 @@ function (Offline, Basic, AND, Signal) {
 				offline.after(function(){
 					signal0.dispose();
 					signal1.dispose();
-					and.dispose();
+					or.dispose();
 					done();
 				});
 				offline.run();
 			});
 
-			it("outputs 0 when only one input is 1", function(done){
-				var signal0, signal1, and;
+			it("outputs 1 when only one input is 1", function(done){
+				var signal0, signal1, or;
 				var offline = new Offline();
 				offline.before(function(dest){
 					signal0 = new Signal(1);
 					signal1 = new Signal(0);
-					and = new AND(2);
-					signal0.connect(and);
-					signal1.connect(and);
-					and.connect(dest);
+					or = new OR(2);
+					signal0.connect(or, 0, 0);
+					signal1.connect(or, 0, 1);
+					or.connect(dest);
 				});
 				offline.test(function(sample){
-					expect(sample).to.equal(0);
+					expect(sample).to.equal(1);
 				});
 				offline.after(function(){
 					signal0.dispose();
 					signal1.dispose();
-					and.dispose();
+					or.dispose();
 					done();
 				});
 				offline.run();
 			});
 
-			it("outputs 0 when only the inputs are 0", function(done){
-				var signal0, signal1, and;
+			it("outputs 0 when both the inputs are 0", function(done){
+				var signal0, signal1, or;
 				var offline = new Offline();
 				offline.before(function(dest){
 					signal0 = new Signal(0);
 					signal1 = new Signal(0);
-					and = new AND(2);
-					signal0.connect(and);
-					signal1.connect(and);
-					and.connect(dest);
+					or = new OR(2);
+					signal0.connect(or, 0, 0);
+					signal1.connect(or, 0, 1);
+					or.connect(dest);
 				});
 				offline.test(function(sample){
 					expect(sample).to.equal(0);
@@ -70,24 +70,24 @@ function (Offline, Basic, AND, Signal) {
 				offline.after(function(){
 					signal0.dispose();
 					signal1.dispose();
-					and.dispose();
+					or.dispose();
 					done();
 				});
 				offline.run();
 			});
 
 			it("works with three signals", function(done){
-				var signal0, signal1, signal2, and;
+				var signal0, signal1, signal2, or;
 				var offline = new Offline();
 				offline.before(function(dest){
-					signal0 = new Signal(1);
-					signal1 = new Signal(1);
+					signal0 = new Signal(0);
+					signal1 = new Signal(0);
 					signal2 = new Signal(1);
-					and = new AND(3);
-					signal0.connect(and);
-					signal1.connect(and);
-					signal2.connect(and);
-					and.connect(dest);
+					or = new OR(3);
+					signal0.connect(or, 0, 0);
+					signal1.connect(or, 0, 1);
+					signal2.connect(or, 0, 2);
+					or.connect(dest);
 				});
 				offline.test(function(sample){
 					expect(sample).to.equal(1);
@@ -96,7 +96,7 @@ function (Offline, Basic, AND, Signal) {
 					signal0.dispose();
 					signal1.dispose();
 					signal2.dispose();
-					and.dispose();
+					or.dispose();
 					done();
 				});
 				offline.run();
