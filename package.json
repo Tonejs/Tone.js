@@ -1,6 +1,6 @@
 {
   "name": "tone",
-  "version": "0.4.2",
+  "version": "0.5.1",
   "description": "A Web Audio framework for making interactive music in the browser.",
   "main": "build/Tone.js",
   "files": [
@@ -13,7 +13,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/TONEnoTONE/Tone.js.git"
+    "url": "https://github.com/Tonejs/Tone.js.git"
   },
   "keywords": [
     "Web Audio",
@@ -29,6 +29,6 @@
   "author": "Yotam Mann <yotammann@gmail.com> (http://yotammann.info/)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/TONEnoTONE/Tone.js/issues"
+    "url": "https://github.com/Tonejs/Tone.js/issues"
   }
 }

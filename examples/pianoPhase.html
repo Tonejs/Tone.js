@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+	<title>SimpleSynth</title>
+
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	
+	<script type="text/javascript" src="../build/Tone.js"></script>
+	<script type="text/javascript" src="./scripts/jquery.min.js"></script>
+	<script type="text/javascript" src="./scripts/Notone.GUI.js"></script>
+	<script type="text/javascript" src="./scripts/Interface.js"></script>
+
+	<link rel="stylesheet" type="text/css" href="./style/examples.css">
+
+	<script type="text/javascript">
+		// jshint ignore: start
+	</script>
+
+</head>
+<body>	
+	<style type="text/css">
+
+		img {
+			width: 80%;
+			max-width: 700px;
+			margin-left: auto;
+    		margin-right: auto;
+    		display: block;
+		}
+
+		#Keyboard {
+			margin: 3px!important;
+		}
+	</style>
+	<div id="Content">
+		<div id="Title">Piano Phase</div>
+		<div id="Explanation">
+			By slowing down very slightly the playbackRate of the Tone.Sequence in the right channel,
+			the two identical parts phase against each other in interesting ways.
+			Borrowed from and inspired by Steve Reich and Alexander Chen.
+		</div>
+		<div id="Keyboard"></div>
+	</div>
+
+	<script type="text/javascript">
+		//set the bpm and time signature first
+		Transport.timeSignature = [6, 4];
+		Transport.bpm.value = 180;
+
+		//L/R channel merging
+		var merge = new Merge();
+
+		//reverb to make it sound good
+		var reverb = new Freeverb({
+			"roomSize" : 0.2,
+			"wet" : 0.3
+		});
+
+		var merge.chain(reverb, Master);
+
+		//the synth settings
+		var synthSettings = {
+			"oscillator": {
+				"detune": 0,
+				"type": "pwm",
+				"modulationFrequency": 1,
+				"phase": 0,
+				"volume": 0
+			},
+			"envelope": {
+				"attack": 0.005,
+				"decay": 0.3,
+				"sustain": 0.2,
+				"release": 1,
+			},
+			"portamento": 0.01,
+			"volume": -20
+		};
+
+		//left and right synthesizers
+		var synthL = new SimpleSynth(synthSettings).connect(merge.left);
+		var synthR = new SimpleSynth(synthSettings).connect(merge.right);
+
+		//the two Tone.Sequences
+		var partL = new Sequence(function(time, note){
+			synthL.triggerAttackRelease(note, "8n", time);
+		}, [["E4", "F#4"], ["B4", "C#5"], ["D5", "F#4"], ["E4", "C#5"], ["B4", "F#4"], ["C#5", "B4"]]).start();
+
+		var partR = new Sequence(function(time, note){
+			synthR.triggerAttackRelease(note, "8n", time);
+		}, [["E4", "F#4"], ["B4", "C#5"], ["D5", "F#4"], ["E4", "C#5"], ["B4", "F#4"], ["C#5", "B4"]]).start("4m");
+		
+		//loop both sequences
+		partL.loop = true;
+		partR.loop = true;
+
+		//set the playback rate of the right part to be slightly slower
+		//this is what causes the phasing
+		partR.playbackRate = 0.992;
+		
+	</script>
+
+	<script id="GUI" type="text/javascript">
+		$(function(){
+			Transport.start();
+
+			function loop(){
+				$("#meter").text(partL.progress.toFixed(2) + " " + partR.progress.toFixed(2));
+				requestAnimationFrame(loop);
+			}
+			loop();
+
+		});
+	</script>
+
+	</style>
+</body>
+</html>

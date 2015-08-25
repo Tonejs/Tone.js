@@ -18,6 +18,7 @@ Tone.js is a Web Audio framework for creating interactive music in the browser. 
 * [Solarbeat - Luke Twyman](http://www.whitevinyldesign.com/solarbeat/)
 * [João Costa - Wind](http://wind.joaocosta.co)
 * [Abe Rubenstein - Block Chords](http://dev.abe.sh/block-chords/)
+* [This is Not a Machine Learning - David Karam](http://posttool.github.io/)
 
 Using Tone.js? I'd love to hear it: yotammann@gmail.com
 
@@ -29,7 +30,7 @@ Tone can be installed in a few of ways:
 * [bower](http://bower.io/) - `bower install tone`
 * [npm](https://www.npmjs.org/) - `npm install tone`
 
-The fastest way to include Tone.js on your page is to use the CDN (not for production use, please):
+The fastest way to include Tone.js on your page is to use the CDN (hosted by [github pages](https://pages.github.com/)).
 
 ```html
 <script type="text/javascript" src="http://cdn.tonejs.org/latest/Tone.min.js"></script>
@@ -98,3 +99,5 @@ Tone.js uses very few ScriptProcessorNodes. Nearly all of the Tone Modules find 
 * [Tuna.js](https://github.com/Dinahmoe/tuna)
 * [Many of Chris Wilson's Repositories](https://github.com/cwilso)
 * [The Spec](http://webaudio.github.io/web-audio-api/)
+* [Sound on Sound - Synth Secrets](http://www.soundonsound.com/sos/may99/articles/synthsec.htm)
+* [Miller Puckette - Theory and Techniques of Electronic Music](http://msp.ucsd.edu/techniques.htm)

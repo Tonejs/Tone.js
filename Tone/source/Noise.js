@@ -115,7 +115,7 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 		this._source = this.context.createBufferSource();
 		this._source.buffer = this._buffer;
 		this._source.loop = true;
-		this.connectSeries(this._source, this.output);
+		this._source.connect(this.output);
 		this._source.start(this.toSeconds(time));
 		this._source.onended = this.onended;
 	};

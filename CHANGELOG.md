@@ -1,3 +1,7 @@
+### r6
+
+* Added PitchShift Effect.
+
 ### r5
 
 * reverse buffer for Player and Sampler.
@@ -18,7 +22,7 @@
 * [new docs](http://tonejs.org/docs)
 * [updated examples](http://tonejs.org/docs)
 
-### r4 - Cool is cool
+### r4
 
 * `toFrequency` accepts notes by name (i.e. `"C4"`)
 * Envelope no longer accepts exponential scaling, only Tone.ScaledEnvelope
@@ -49,7 +53,7 @@ Or if setBpm was being invoked with a rampTime:
 	find `Tone.Transport.setBpm\((\d+)\, (\d+)\)` and replace it with `Tone.Transport.bpm.rampTo($1, $2)`.
 
 
-### r3 - Expressive Signal
+### r3
 
 Core Change:
 
@@ -84,7 +88,7 @@ Synths:
 * NoiseSynth
 
 
-### r2 - Getting Physical
+### r2
 
 * PluckSynth - Karplus-Strong Plucked String modeling synth
 * Freeverb
