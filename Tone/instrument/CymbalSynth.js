@@ -213,7 +213,30 @@ function(Tone){
 	 * Clean up.
 	 * @return {Tone.CymbalSynth} this
 	 */
-	Tone.CymbalSynth.prototype.dispose = function(){};
+	Tone.CymbalSynth.prototype.dispose = function(){
+		Tone.Instrument.prototype.dispose.call(this);
+		this.harmonicity.dispose();
+		this.harmonicity = null;
+		this.frequency.dispose();
+		this.frequency = null;
+		this.inharmRatios = null;
+		this.harmRatios = null;
+
+		for(var i = 0; i <6; i++){
+			this._oscillators[i].dispose();
+			this._scaledSignals[i].dispose();
+			this._freqMult[i].dispose();
+		}
+		this._oscillators = null;
+		this._scaledSignals = null;
+		this._freqMult = null;
+
+		this.body.dispose();
+		this.strike.dispose();
+		this.strike = null;
+		this.body = null;
+		return this;
+	};
 
 	/**
 	 * Cymbal part helper class
@@ -227,7 +250,9 @@ function(Tone){
 			"value" : options.volume
 		});
 		this._readOnly(["volume"]);
-		this._highPass = new Tone.Filter({"type" : "highpass"}).connect(this.output);
+		this._highPass = new Tone.Filter({
+			"type" : "highpass"
+		}).connect(this.output);
 		this.envelope = new Tone.AmplitudeEnvelope({
 			"attack" : options.envelope.attack,
 			"decay" : options.envelope.decay,
@@ -246,7 +271,28 @@ function(Tone){
 		this.resonance = new Tone.Signal(options.resonance).connect(this.input.Q);
 		this._highPassResonance = new Tone.Multiply(options.resonanceScalar).connect(this._highPass.Q);
 		this.resonance.connect(this._highPassResonance);
+	};
 
+	CymbalComponent.prototype.dispose = function(){
+		this.output.dispose();
+		this.output = null;
+		this.volume.dispose();
+		this.volume = null;
+		this._highPass.dispose();
+		this._highPass = null;
+		this.envelope.dispose();
+		this.envelope = null;
+		this.input.dispose();
+		this.input = null;
+		this.cutoff.dispose();
+		this.cutoff = null;
+		this._highPassFrequency.dispose();
+		this._highPassFrequency = null;
+		this.resonance.dispose();
+		this.resonance = null;
+		this._highPassResonance.dispose();
+		this._highPassResonance = null;
+		return this;
 	};
 
 	Tone.extend(CymbalComponent);
