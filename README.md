@@ -11,8 +11,7 @@ Tone.js is a Web Audio framework for creating interactive music in the browser. 
 
 * [Jazz.Computer - Yotam Mann](http://jazz.computer/)
 * [motionEmotion - emotion & gesture-based arpeggiator and synthesizer](http://motionemotion.herokuapp.com/)
-* [A Tone.js Plugin Architecture with GUIs](https://github.com/billautomata/Tone.js.Plugins)
-* [p5.sound - build with Tone.js](https://github.com/processing/p5.js-sound)
+* [p5.sound - built with Tone.js](https://github.com/processing/p5.js-sound)
 * [Hypercube by @eddietree](http://eddietree.github.io/hypercube/)
 * [randomcommander.io by Jake Albaugh](http://randomcommander.io/)
 * [Tone.js + NexusUI by taylorbf](http://taylorbf.github.io/Tone-Rack/)
@@ -47,7 +46,7 @@ It's always much safer to use a specific version rather than just "latest".
 //create one of Tone's built-in synthesizers and connect it to the master output
 var synth = new Tone.SimpleSynth().toMaster();
 
-//play a middle c for the duratino of an 8th note
+//play a middle c for the duration of an 8th note
 synth.triggerAttackRelease("C4", "8n");
 ```
 
@@ -61,7 +60,7 @@ A unique feature of the library is the oscillator-based Transport which allows f
 
 In the Tone library, time can be described in a number of ways. Any method which takes a time as a parameter will accept the number in seconds as well as a tempo-relative form. 
 
-For example to `"4n"` is a quarter-note and "4:2:0" is the third beat of the fifth measure (remember we're counting from 0). 
+For example to `"4n"` is a quarter-note and `"4:2:0"` is the third beat of the fifth measure (remember we're counting from 0). 
 
 [Read more Time](https://github.com/Tonejs/Tone.js/wiki/Time).
 
