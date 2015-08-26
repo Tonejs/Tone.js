@@ -17,7 +17,8 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/MidSideSplit", "
 	 *  @constructor
 	 */
 	Tone.MidSideEffect = function(){
-		Tone.Effect.call(this);
+		
+		Tone.Effect.apply(this, arguments);
 
 		/**
 		 *  The mid/side split
