@@ -13,21 +13,17 @@ define(["Tone/core/Tone", "Tone/source/ExternalInput"], function(Tone){
 	 *  @example
 	 *  //mic will feedback if played through master
 	 *  var mic = new Tone.Microphone();
-	 *  mic.start();
+	 *  mic.open(function(){
+	 *  	//start the mic at ten seconds
+	 *  	mic.start(10);
+	 *  });
+	 *  //stop the mic
+	 *  mic.stop(20);
 	 */
 	Tone.Microphone = function(){
 		Tone.ExternalInput.call(this);
 	};
 	Tone.extend(Tone.Microphone, Tone.ExternalInput);
-
-	/**
-	 * start the stream
-	 * @private
-	 */
-	Tone.Microphone.prototype._start = function(){
-		navigator.getUserMedia(this._constraints, 
-			this._onStream.bind(this), this._onStreamError.bind(this));
-	};
 
 	return Tone.Microphone;
 });
