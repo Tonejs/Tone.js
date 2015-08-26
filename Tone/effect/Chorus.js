@@ -43,15 +43,23 @@ function(Tone){
 		 *  @type {Tone.LFO}
 		 *  @private
 		 */
-		this._lfoL = new Tone.LFO(options.rate, 0, 1);
+		this._lfoL = new Tone.LFO({
+			"frequency" : options.frequency,
+			"min" : 0, 
+			"max" : 1,
+		});
 
 		/**
 		 *  another LFO for the right side with a 180 degree phase diff
 		 *  @type {Tone.LFO}
 		 *  @private
 		 */
-		this._lfoR = new Tone.LFO(options.rate, 0, 1);
-		this._lfoR.phase = 180;
+		this._lfoR = new Tone.LFO({
+			"frequency" : options.frequency,
+			"min" : 0, 
+			"max" : 1,
+			"phase" : 180
+		});
 
 		/**
 		 *  delay for left
@@ -75,10 +83,11 @@ function(Tone){
 		this.frequency = this._lfoL.frequency;
 
 		//connections
-		this.connectSeries(this.effectSendL, this._delayNodeL, this.effectReturnL);
-		this.connectSeries(this.effectSendR, this._delayNodeR, this.effectReturnR);
+		this.effectSendL.chain(this._delayNodeL, this.effectReturnL);
+		this.effectSendR.chain(this._delayNodeR, this.effectReturnR);
 		//and pass through to make the detune apparent
-		this.input.connect(this.output);
+		this.effectSendL.connect(this.effectReturnL);
+		this.effectSendR.connect(this.effectReturnR);
 		//lfo setup
 		this._lfoL.connect(this._delayNodeL.delayTime);
 		this._lfoR.connect(this._delayNodeR.delayTime);
@@ -91,7 +100,6 @@ function(Tone){
 		this.depth = this._depth;
 		this.frequency.value = options.frequency;
 		this.type = options.type;
-
 		this._readOnly(["frequency"]);
 	};
 
