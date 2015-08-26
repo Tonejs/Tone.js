@@ -88,10 +88,8 @@ function (Offline, Basic, WaveShaper, Signal) {
 				var signal, waveshaper;
 				var offline = new Offline();
 				offline.before(function(dest){
-					signal = new Signal(0);
-					waveshaper = new WaveShaper(function(input){
-						return input * 20;
-					});
+					signal = new Signal(-1);
+					waveshaper = new WaveShaper([-20, 20]);
 					signal.connect(waveshaper);
 					waveshaper.connect(dest);
 				});
