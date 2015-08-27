@@ -38,20 +38,13 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 
 		//get the option
 		var self = this;
-
-		if(typeof MediaStreamTrack.getSources === 'undefined'){
-			console.error("MediaStreamTrack not supported");
-		} else {
-			MediaStreamTrack.getSources(function (media_sources) {
-				if (inputNum < media_sources.length){
-					self._constraints = {
-						audio : {
-							optional : [{ sourceId: media_sources[inputNum].id}]
-						}
-					};
-				}
-			});
-		}
+		MediaStreamTrack.getSources(function (media_sources) {
+			if (inputNum < media_sources.length){
+				self.constraints.audio = {
+					optional : [{ sourceId: media_sources[inputNum].id}]
+				};
+			}
+		});		
 	};
 
 	Tone.extend(Tone.Microphone, Tone.Source);

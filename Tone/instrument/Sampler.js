@@ -29,6 +29,33 @@ function(Tone){
 	 * Tone.Buffer.onload = function(){
 	 * 	sampler.triggerAttack("A.1", time, velocity);
 	 * };
+	 *
+	 *  @routing {
+	 *           	"player": {
+	 *           		"type" : "Player",
+	 *           		"connect" : ["envelope.input"],
+	 *           		"param" : ".player"
+	 *           	}, 
+	 *           	"envelope" : {
+	 *           		"type" : "AmplitudeEnvelope",
+	 *           		"connect" : ["filter.input"],
+	 *           		"param" : ".envelope"
+	 *           	},
+	 *           	"filterEnvelope" : {
+	 *           		"type" : "ScaledEnvelope",
+	 *           		"connect" : ["filter.frequency"],
+	 *           		"param" : ".filterEnvelope"
+	 *           	},
+	 *           	"filter" : {
+	 *           		"type" : "Filter",
+	 *           		"connect" : ["output.input"],
+	 *           		"param" : ".filter"
+	 *           	},
+	 *           	"output" : {
+	 *           		"type" : "Signal",
+	 *           		"param" : "output"
+	 *           	}
+	 *           }
 	 */
 	Tone.Sampler = function(urls, options){
 

@@ -19,15 +19,20 @@ function(Tone){
 	 * fmSynth.triggerAttackRelease("C5", "4n");
 	 *
 	 * 	@routing {
-	 * 	         	"carrier": {
-	 * 	         		"type": "Oscillator",
-	 * 	         	 	"connect": ["output.input"],
-	 * 	         	 	"param": ".carrier"
+	 * 	         	"carrier" : {
+	 * 	         		"type" : "Oscillator",
+	 * 	         	 	"connect" : ["output.input"],
+	 * 	         	 	"param" : ".carrier"
+	 * 	            },
+	 * 	            "modulationIndex" : {
+	 * 	            	"type" : "Multiply",
+	 * 	            	"connect" : ["carrier.frequency"],
+	 * 	            	"param" : ".modulationIndex"
 	 * 	            },
 	 * 	         	"modulator": {
-	 * 	         		"type": "Oscillator",
-	 * 	         	 	"connect": ["carrier.frequency"],
-	 * 	         	 	"param": ".modulator"
+	 * 	         		"type" : "Oscillator",
+	 * 	         	 	"connect" : ["modulationIndex.input"],
+	 * 	         	 	"param" : ".modulator"
 	 * 	            },
 	 *           	"output" : {
 	 *           		"type" : "Signal",

@@ -17,6 +17,33 @@ function(Tone){
 	 * @example
 	 * var noiseSynth = new Tone.NoiseSynth().toMaster();
 	 * noiseSynth.triggerAttackRelease("8n");
+	 *
+	 *  @routing {
+	 *           	"noise": {
+	 *           		"type" : "Noise",
+	 *           		"connect" : ["envelope.input"],
+	 *           		"param" : ".noise"
+	 *           	}, 
+	 *           	"envelope" : {
+	 *           		"type" : "AmplitudeEnvelope",
+	 *           		"connect" : ["filter.input"],
+	 *           		"param" : ".envelope"
+	 *           	},
+	 *           	"filterEnvelope" : {
+	 *           		"type" : "ScaledEnvelope",
+	 *           		"connect" : ["filter.frequency"],
+	 *           		"param" : ".filterEnvelope"
+	 *           	},
+	 *           	"filter" : {
+	 *           		"type" : "Filter",
+	 *           		"connect" : ["output.input"],
+	 *           		"param" : ".filter"
+	 *           	},
+	 *           	"output" : {
+	 *           		"type" : "Signal",
+	 *           		"param" : "output"
+	 *           	}
+	 *           }
 	 */
 	Tone.NoiseSynth = function(options){
 

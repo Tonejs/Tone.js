@@ -15,6 +15,23 @@ function(Tone){
 	 *  @example
 	 * var synth = new Tone.SimpleSynth().toMaster();
 	 * synth.triggerAttackRelease("C4", "8n");
+	 *
+	 * 	@routing {
+	 * 	         	"oscillator" : {
+	 * 	         		"type" : "OmniOscillator",
+	 * 	         	 	"connect" : ["envelope.input"],
+	 * 	         	 	"param" : ".oscillator"
+	 * 	            },
+	 * 	         	"envelope": {
+	 * 	         		"type" : "AmplitudeEnvelope",
+	 * 	         	 	"connect" : ["output.input"],
+	 * 	         	 	"param" : ".envelope"
+	 * 	            },
+	 *           	"output" : {
+	 *           		"type" : "Signal",
+	 *           		"param" : "output"
+	 *           	}
+	 *           }
 	 */
 	Tone.SimpleSynth = function(options){
 

@@ -8638,2375 +8638,6 @@
 	Module(function (Tone) {
 	    
 	    /**
-		 * 	@class  Tone.Effect is the base class for effects. Connect the effect between
-		 * 	        the effectSend and effectReturn GainNodes, then control the amount of
-		 * 	        effect which goes to the output using the wet control.
-		 *
-		 *  @constructor
-		 *  @extends {Tone}
-		 *  @param {NormalRange|Object} [wet] The starting wet value. 
-		 */
-	    Tone.Effect = function () {
-	        Tone.call(this);
-	        //get all of the defaults
-	        var options = this.optionsObject(arguments, ['wet'], Tone.Effect.defaults);
-	        /**
-			 *  the drywet knob to control the amount of effect
-			 *  @type {Tone.CrossFade}
-			 *  @private
-			 */
-	        this._dryWet = new Tone.CrossFade(options.wet);
-	        /**
-			 *  The wet control is how much of the effected
-			 *  will pass through to the output. 1 = 100% effected
-			 *  signal, 0 = 100% dry signal. 
-			 *  @type {NormalRange}
-			 *  @signal
-			 */
-	        this.wet = this._dryWet.fade;
-	        /**
-			 *  connect the effectSend to the input of hte effect
-			 *  @type {GainNode}
-			 *  @private
-			 */
-	        this.effectSend = this.context.createGain();
-	        /**
-			 *  connect the output of the effect to the effectReturn
-			 *  @type {GainNode}
-			 *  @private
-			 */
-	        this.effectReturn = this.context.createGain();
-	        //connections
-	        this.input.connect(this._dryWet.a);
-	        this.input.connect(this.effectSend);
-	        this.effectReturn.connect(this._dryWet.b);
-	        this._dryWet.connect(this.output);
-	        this._readOnly(['wet']);
-	    };
-	    Tone.extend(Tone.Effect);
-	    /**
-		 *  @static
-		 *  @type {Object}
-		 */
-	    Tone.Effect.defaults = { 'wet': 1 };
-	    /**
-		 *  chains the effect in between the effectSend and effectReturn
-		 *  @param  {Tone} effect
-		 *  @private
-		 *  @returns {Tone.Effect} this
-		 */
-	    Tone.Effect.prototype.connectEffect = function (effect) {
-	        this.effectSend.chain(effect, this.effectReturn);
-	        return this;
-	    };
-	    /**
-		 *  Clean up. 
-		 *  @returns {Tone.Effect} this
-		 */
-	    Tone.Effect.prototype.dispose = function () {
-	        Tone.prototype.dispose.call(this);
-	        this._dryWet.dispose();
-	        this._dryWet = null;
-	        this.effectSend.disconnect();
-	        this.effectSend = null;
-	        this.effectReturn.disconnect();
-	        this.effectReturn = null;
-	        this._writable(['wet']);
-	        this.wet = null;
-	        return this;
-	    };
-	    return Tone.Effect;
-	});
-	Module(function (Tone) {
-	    
-	    /**
-		 *  @class Tone.AutoFilter is a Tone.Filter with a Tone.LFO connected to the filter cutoff frequency.
-		 *         Setting the LFO rate and depth allows for control over the filter modulation rate 
-		 *         and depth.
-		 *
-		 *  @constructor
-		 *  @extends {Tone.Effect}
-		 *  @param {Time|Object} [frequency] The rate of the LFO.
-		 *  @param {Frequency} [min] The lower value of the LFOs oscillation
-	 	 *  @param {Frequency} [max] The upper value of the LFOs oscillation. 
-		 *  @example
-		 * //create an autofilter and start it's LFO
-		 * var autoFilter = new Tone.AutoFilter("4n").toMaster().start();
-		 * //route an oscillator through the filter and start it
-		 * var oscillator = new Tone.Oscillator().connect(autoFilter).start();
-		 */
-	    Tone.AutoFilter = function () {
-	        var options = this.optionsObject(arguments, [
-	            'frequency',
-	            'min',
-	            'max'
-	        ], Tone.AutoFilter.defaults);
-	        Tone.Effect.call(this, options);
-	        /**
-			 *  the lfo which drives the filter cutoff
-			 *  @type {Tone.LFO}
-			 *  @private
-			 */
-	        this._lfo = new Tone.LFO({
-	            'frequency': options.frequency,
-	            'amplitude': options.depth,
-	            'min': options.min,
-	            'max': options.max
-	        });
-	        /**
-			 * The range of the filter modulating between the min and max frequency. 
-			 * 0 = no modulation. 1 = full modulation.
-			 * @type {NormalRange}
-			 * @signal
-			 */
-	        this.depth = this._lfo.amplitude;
-	        /**
-			 * How fast the filter modulates between min and max. 
-			 * @type {Frequency}
-			 * @signal
-			 */
-	        this.frequency = this._lfo.frequency;
-	        /**
-			 *  The filter node
-			 *  @type {Tone.Filter}
-			 */
-	        this.filter = new Tone.Filter(options.filter);
-	        //connections
-	        this.connectEffect(this.filter);
-	        this._lfo.connect(this.filter.frequency);
-	        this.type = options.type;
-	        this._readOnly([
-	            'frequency',
-	            'depth'
-	        ]);
-	    };
-	    //extend Effect
-	    Tone.extend(Tone.AutoFilter, Tone.Effect);
-	    /**
-		 *  defaults
-		 *  @static
-		 *  @type {Object}
-		 */
-	    Tone.AutoFilter.defaults = {
-	        'frequency': 1,
-	        'type': 'sine',
-	        'depth': 1,
-	        'min': 200,
-	        'max': 1200,
-	        'filter': {
-	            'type': 'lowpass',
-	            'rolloff': -12,
-	            'Q': 1
-	        }
-	    };
-	    /**
-		 * Start the effect.
-		 * @param {Time} [time=now] When the LFO will start. 
-		 * @returns {Tone.AutoFilter} this
-		 */
-	    Tone.AutoFilter.prototype.start = function (time) {
-	        this._lfo.start(time);
-	        return this;
-	    };
-	    /**
-		 * Stop the effect.
-		 * @param {Time} [time=now] When the LFO will stop. 
-		 * @returns {Tone.AutoFilter} this
-		 */
-	    Tone.AutoFilter.prototype.stop = function (time) {
-	        this._lfo.stop(time);
-	        return this;
-	    };
-	    /**
-		 * Sync the filter to the transport.
-		 * @param {Time} [delay=0] Delay time before starting the effect after the
-		 *                               Transport has started. 
-		 * @returns {Tone.AutoFilter} this
-		 */
-	    Tone.AutoFilter.prototype.sync = function (delay) {
-	        this._lfo.sync(delay);
-	        return this;
-	    };
-	    /**
-		 * Unsync the filter from the transport.
-		 * @returns {Tone.AutoFilter} this
-		 */
-	    Tone.AutoFilter.prototype.unsync = function () {
-	        this._lfo.unsync();
-	        return this;
-	    };
-	    /**
-		 * Type of oscillator attached to the AutoFilter. 
-		 * Possible values: "sine", "square", "triangle", "sawtooth".
-		 * @memberOf Tone.AutoFilter#
-		 * @type {string}
-		 * @name type
-		 */
-	    Object.defineProperty(Tone.AutoFilter.prototype, 'type', {
-	        get: function () {
-	            return this._lfo.type;
-	        },
-	        set: function (type) {
-	            this._lfo.type = type;
-	        }
-	    });
-	    /**
-		 * The minimum value of the LFO attached to the cutoff frequency of the filter.
-		 * @memberOf Tone.AutoFilter#
-		 * @type {Frequency}
-		 * @name min
-		 */
-	    Object.defineProperty(Tone.AutoFilter.prototype, 'min', {
-	        get: function () {
-	            return this._lfo.min;
-	        },
-	        set: function (min) {
-	            this._lfo.min = min;
-	        }
-	    });
-	    /**
-		 * The minimum value of the LFO attached to the cutoff frequency of the filter.
-		 * @memberOf Tone.AutoFilter#
-		 * @type {Frequency}
-		 * @name max
-		 */
-	    Object.defineProperty(Tone.AutoFilter.prototype, 'max', {
-	        get: function () {
-	            return this._lfo.max;
-	        },
-	        set: function (max) {
-	            this._lfo.max = max;
-	        }
-	    });
-	    /**
-		 *  Clean up. 
-		 *  @returns {Tone.AutoFilter} this
-		 */
-	    Tone.AutoFilter.prototype.dispose = function () {
-	        Tone.Effect.prototype.dispose.call(this);
-	        this._lfo.dispose();
-	        this._lfo = null;
-	        this.filter.dispose();
-	        this.filter = null;
-	        this._writable([
-	            'frequency',
-	            'depth'
-	        ]);
-	        this.frequency = null;
-	        this.depth = null;
-	        return this;
-	    };
-	    return Tone.AutoFilter;
-	});
-	Module(function (Tone) {
-	    
-	    /**
-		 *  @class Tone.AutoPanner is a Tone.Panner with an LFO connected to the pan amount. 
-		 *         More on using autopanners [here](https://www.ableton.com/en/blog/autopan-chopper-effect-and-more-liveschool/).
-		 *
-		 *  @constructor
-		 *  @extends {Tone.Effect}
-		 *  @param {Frequency|Object} [frequency] Rate of left-right oscillation. 
-		 *  @example
-		 * //create an autopanner and start it's LFO
-		 * var autoPanner = new Tone.AutoPanner("4n").toMaster().start();
-		 * //route an oscillator through the panner and start it
-		 * var oscillator = new Tone.Oscillator().connect(autoPanner).start();
-		 */
-	    Tone.AutoPanner = function () {
-	        var options = this.optionsObject(arguments, ['frequency'], Tone.AutoPanner.defaults);
-	        Tone.Effect.call(this, options);
-	        /**
-			 *  the lfo which drives the panning
-			 *  @type {Tone.LFO}
-			 *  @private
-			 */
-	        this._lfo = new Tone.LFO({
-	            'frequency': options.frequency,
-	            'amplitude': options.depth,
-	            'min': 0,
-	            'max': 1,
-	            //start at the middle of the cycle
-	            'phase': 90
-	        });
-	        /**
-			 * The amount of panning between left and right. 
-			 * 0 = always center. 1 = full range between left and right. 
-			 * @type {NormalRange}
-			 * @signal
-			 */
-	        this.depth = this._lfo.amplitude;
-	        /**
-			 *  the panner node which does the panning
-			 *  @type {Tone.Panner}
-			 *  @private
-			 */
-	        this._panner = new Tone.Panner();
-	        /**
-			 * How fast the panner modulates between left and right. 
-			 * @type {Frequency}
-			 * @signal
-			 */
-	        this.frequency = this._lfo.frequency;
-	        //connections
-	        this.connectEffect(this._panner);
-	        this._lfo.connect(this._panner.pan);
-	        this.type = options.type;
-	        this._readOnly([
-	            'depth',
-	            'frequency'
-	        ]);
-	    };
-	    //extend Effect
-	    Tone.extend(Tone.AutoPanner, Tone.Effect);
-	    /**
-		 *  defaults
-		 *  @static
-		 *  @type {Object}
-		 */
-	    Tone.AutoPanner.defaults = {
-	        'frequency': 1,
-	        'type': 'sine',
-	        'depth': 1
-	    };
-	    /**
-		 * Start the effect.
-		 * @param {Time} [time=now] When the LFO will start. 
-		 * @returns {Tone.AutoPanner} this
-		 */
-	    Tone.AutoPanner.prototype.start = function (time) {
-	        this._lfo.start(time);
-	        return this;
-	    };
-	    /**
-		 * Stop the effect.
-		 * @param {Time} [time=now] When the LFO will stop. 
-		 * @returns {Tone.AutoPanner} this
-		 */
-	    Tone.AutoPanner.prototype.stop = function (time) {
-	        this._lfo.stop(time);
-	        return this;
-	    };
-	    /**
-		 * Sync the panner to the transport.
-		 * @param {Time} [delay=0] Delay time before starting the effect after the
-		 *                               Transport has started. 
-		 * @returns {Tone.AutoPanner} this
-		 */
-	    Tone.AutoPanner.prototype.sync = function (delay) {
-	        this._lfo.sync(delay);
-	        return this;
-	    };
-	    /**
-		 * Unsync the panner from the transport
-		 * @returns {Tone.AutoPanner} this
-		 */
-	    Tone.AutoPanner.prototype.unsync = function () {
-	        this._lfo.unsync();
-	        return this;
-	    };
-	    /**
-		 * Type of oscillator attached to the AutoFilter. 
-		 * Possible values: "sine", "square", "triangle", "sawtooth".
-		 * @memberOf Tone.AutoFilter#
-		 * @type {string}
-		 * @name type
-		 */
-	    Object.defineProperty(Tone.AutoPanner.prototype, 'type', {
-	        get: function () {
-	            return this._lfo.type;
-	        },
-	        set: function (type) {
-	            this._lfo.type = type;
-	        }
-	    });
-	    /**
-		 *  clean up
-		 *  @returns {Tone.AutoPanner} this
-		 */
-	    Tone.AutoPanner.prototype.dispose = function () {
-	        Tone.Effect.prototype.dispose.call(this);
-	        this._lfo.dispose();
-	        this._lfo = null;
-	        this._panner.dispose();
-	        this._panner = null;
-	        this._writable([
-	            'depth',
-	            'frequency'
-	        ]);
-	        this.frequency = null;
-	        this.depth = null;
-	        return this;
-	    };
-	    return Tone.AutoPanner;
-	});
-	Module(function (Tone) {
-	    
-	    /**
-		 *  @class  Tone.AutoWah connects a Tone.Follower to a bandpass filter (Tone.Filter).
-		 *          The frequency of the filter is adjusted proportionally to the 
-		 *          incoming signal's amplitude. Inspiration from [Tuna.js](https://github.com/Dinahmoe/tuna).
-		 *
-		 *  @constructor
-		 *  @extends {Tone.Effect}
-		 *  @param {Frequency|Object} [baseFrequency] The frequency the filter is set 
-		 *                                            to at the low point of the wah
-		 *  @param {Positive} [octaves] The number of octaves above the baseFrequency
-		 *                                the filter will sweep to when fully open
-		 *  @param {Decibels} [sensitivity] The decibel threshold sensitivity for 
-		 *                                   the incoming signal. Normal range of -40 to 0. 
-		 *  @example
-		 * var autoWah = new Tone.AutoWah(50, 6, -30).toMaster();
-		 * //initialize the synth and connect to autowah
-		 * var synth = new SimpleSynth.connect(autoWah);
-		 * //Q value influences the effect of the wah - default is 2
-		 * autoWah.Q.value = 6;
-		 * //more audible on higher notes
-		 * synth.triggerAttackRelease("C4", "8n")
-		 */
-	    Tone.AutoWah = function () {
-	        var options = this.optionsObject(arguments, [
-	            'baseFrequency',
-	            'octaves',
-	            'sensitivity'
-	        ], Tone.AutoWah.defaults);
-	        Tone.Effect.call(this, options);
-	        /**
-			 *  The envelope follower. Set the attack/release
-			 *  timing to adjust how the envelope is followed. 
-			 *  @type {Tone.Follower}
-			 *  @private
-			 */
-	        this.follower = new Tone.Follower(options.follower);
-	        /**
-			 *  scales the follower value to the frequency domain
-			 *  @type {Tone}
-			 *  @private
-			 */
-	        this._sweepRange = new Tone.ScaleExp(0, 1, 0.5);
-	        /**
-			 *  @type {number}
-			 *  @private
-			 */
-	        this._baseFrequency = options.baseFrequency;
-	        /**
-			 *  @type {number}
-			 *  @private
-			 */
-	        this._octaves = options.octaves;
-	        /**
-			 *  the input gain to adjust the sensitivity
-			 *  @type {GainNode}
-			 *  @private
-			 */
-	        this._inputBoost = this.context.createGain();
-	        /**
-			 *  @type {BiquadFilterNode}
-			 *  @private
-			 */
-	        this._bandpass = new Tone.Filter({
-	            'rolloff': -48,
-	            'frequency': 0,
-	            'Q': options.Q
-	        });
-	        /**
-			 *  @type {Tone.Filter}
-			 *  @private
-			 */
-	        this._peaking = new Tone.Filter(0, 'peaking');
-	        this._peaking.gain.value = options.gain;
-	        /**
-			 * The gain of the filter.
-			 * @type {Gain}
-			 * @signal
-			 */
-	        this.gain = this._peaking.gain;
-	        /**
-			 * The quality of the filter.
-			 * @type {Positive}
-			 * @signal
-			 */
-	        this.Q = this._bandpass.Q;
-	        //the control signal path
-	        this.effectSend.chain(this._inputBoost, this.follower, this._sweepRange);
-	        this._sweepRange.connect(this._bandpass.frequency);
-	        this._sweepRange.connect(this._peaking.frequency);
-	        //the filtered path
-	        this.effectSend.chain(this._bandpass, this._peaking, this.effectReturn);
-	        //set the initial value
-	        this._setSweepRange();
-	        this.sensitivity = options.sensitivity;
-	        this._readOnly([
-	            'gain',
-	            'Q'
-	        ]);
-	    };
-	    Tone.extend(Tone.AutoWah, Tone.Effect);
-	    /**
-		 *  @static
-		 *  @type {Object}
-		 */
-	    Tone.AutoWah.defaults = {
-	        'baseFrequency': 100,
-	        'octaves': 6,
-	        'sensitivity': 0,
-	        'Q': 2,
-	        'gain': 2,
-	        'follower': {
-	            'attack': 0.3,
-	            'release': 0.5
-	        }
-	    };
-	    /**
-		 * The number of octaves that the filter will sweep above the 
-		 * baseFrequency. 
-		 * @memberOf Tone.AutoWah#
-		 * @type {Number}
-		 * @name octaves
-		 */
-	    Object.defineProperty(Tone.AutoWah.prototype, 'octaves', {
-	        get: function () {
-	            return this._octaves;
-	        },
-	        set: function (octaves) {
-	            this._octaves = octaves;
-	            this._setSweepRange();
-	        }
-	    });
-	    /**
-		 * The base frequency from which the sweep will start from.
-		 * @memberOf Tone.AutoWah#
-		 * @type {Frequency}
-		 * @name baseFrequency
-		 */
-	    Object.defineProperty(Tone.AutoWah.prototype, 'baseFrequency', {
-	        get: function () {
-	            return this._baseFrequency;
-	        },
-	        set: function (baseFreq) {
-	            this._baseFrequency = baseFreq;
-	            this._setSweepRange();
-	        }
-	    });
-	    /**
-		 * The sensitivity to control how responsive to the input signal the filter is. 
-		 * @memberOf Tone.AutoWah#
-		 * @type {Decibels}
-		 * @name sensitivity
-		 */
-	    Object.defineProperty(Tone.AutoWah.prototype, 'sensitivity', {
-	        get: function () {
-	            return this.gainToDb(1 / this._inputBoost.gain.value);
-	        },
-	        set: function (sensitivy) {
-	            this._inputBoost.gain.value = 1 / this.dbToGain(sensitivy);
-	        }
-	    });
-	    /**
-		 *  sets the sweep range of the scaler
-		 *  @private
-		 */
-	    Tone.AutoWah.prototype._setSweepRange = function () {
-	        this._sweepRange.min = this._baseFrequency;
-	        this._sweepRange.max = Math.min(this._baseFrequency * Math.pow(2, this._octaves), this.context.sampleRate / 2);
-	    };
-	    /**
-		 *  Clean up.
-		 *  @returns {Tone.AutoWah} this
-		 */
-	    Tone.AutoWah.prototype.dispose = function () {
-	        Tone.Effect.prototype.dispose.call(this);
-	        this.follower.dispose();
-	        this.follower = null;
-	        this._sweepRange.dispose();
-	        this._sweepRange = null;
-	        this._bandpass.dispose();
-	        this._bandpass = null;
-	        this._peaking.dispose();
-	        this._peaking = null;
-	        this._inputBoost.disconnect();
-	        this._inputBoost = null;
-	        this._writable([
-	            'gain',
-	            'Q'
-	        ]);
-	        this.gain = null;
-	        this.Q = null;
-	        return this;
-	    };
-	    return Tone.AutoWah;
-	});
-	Module(function (Tone) {
-	    
-	    /**
-		 *  @class Tone.Bitcrusher downsamples the incoming signal to a different bitdepth. 
-		 *         Lowering the bitdepth of the signal creates distortion. Read more about Bitcrushing
-		 *         on [Wikipedia](https://en.wikipedia.org/wiki/Bitcrusher).
-		 *
-		 *  @constructor
-		 *  @extends {Tone.Effect}
-		 *  @param {Number} bits The number of bits to downsample the signal. Nominal range
-		 *                       of 1 to 8. 
-		 *  @example
-		 * //initialize crusher and route a synth through it
-		 * var crusher = new Tone.BitCrusher(4).toMaster();
-		 * var synth = new Tone.MonoSynth().connect(crusher);
-		 */
-	    Tone.BitCrusher = function () {
-	        var options = this.optionsObject(arguments, ['bits'], Tone.BitCrusher.defaults);
-	        Tone.Effect.call(this, options);
-	        var invStepSize = 1 / Math.pow(2, options.bits - 1);
-	        /**
-			 *  Subtract the input signal and the modulus of the input signal
-			 *  @type {Tone.Subtract}
-			 *  @private
-			 */
-	        this._subtract = new Tone.Subtract();
-	        /**
-			 *  The mod function
-			 *  @type  {Tone.Modulo}
-			 *  @private
-			 */
-	        this._modulo = new Tone.Modulo(invStepSize);
-	        /**
-			 *  keeps track of the bits
-			 *  @type {number}
-			 *  @private
-			 */
-	        this._bits = options.bits;
-	        //connect it up
-	        this.effectSend.fan(this._subtract, this._modulo);
-	        this._modulo.connect(this._subtract, 0, 1);
-	        this._subtract.connect(this.effectReturn);
-	    };
-	    Tone.extend(Tone.BitCrusher, Tone.Effect);
-	    /**
-		 *  the default values
-		 *  @static
-		 *  @type {Object}
-		 */
-	    Tone.BitCrusher.defaults = { 'bits': 4 };
-	    /**
-		 * The bit depth of the effect. Nominal range of 1-8. 
-		 * @memberOf Tone.BitCrusher#
-		 * @type {number}
-		 * @name bits
-		 */
-	    Object.defineProperty(Tone.BitCrusher.prototype, 'bits', {
-	        get: function () {
-	            return this._bits;
-	        },
-	        set: function (bits) {
-	            this._bits = bits;
-	            var invStepSize = 1 / Math.pow(2, bits - 1);
-	            this._modulo.value = invStepSize;
-	        }
-	    });
-	    /**
-		 *  Clean up. 
-		 *  @returns {Tone.BitCrusher} this
-		 */
-	    Tone.BitCrusher.prototype.dispose = function () {
-	        Tone.Effect.prototype.dispose.call(this);
-	        this._subtract.dispose();
-	        this._subtract = null;
-	        this._modulo.dispose();
-	        this._modulo = null;
-	        return this;
-	    };
-	    return Tone.BitCrusher;
-	});
-	Module(function (Tone) {
-	    
-	    /**
-		 *  @class Tone.ChebyShev is a Chebyshev waveshaper, an effect which is good 
-		 *         for making different types of distortion sounds.
-		 *         Note that odd orders sound very different from even ones, 
-		 *         and order = 1 is no change. 
-		 *         Read more at [music.columbia.edu](http://music.columbia.edu/cmc/musicandcomputers/chapter4/04_06.php).
-		 *
-		 *  @extends {Tone.Effect}
-		 *  @constructor
-		 *  @param {Positive|Object} [order] The order of the chebyshev polynomial. Normal range between 1-100. 
-		 *  @example
-		 * //create a new cheby
-		 * var cheby = new Tone.Chebyshev(50);
-		 * //create a monosynth connected to our cheby
-		 * synth = new Tone.MonoSynth().connect(cheby);
-		 */
-	    Tone.Chebyshev = function () {
-	        var options = this.optionsObject(arguments, ['order'], Tone.Chebyshev.defaults);
-	        Tone.Effect.call(this);
-	        /**
-			 *  @type {WaveShaperNode}
-			 *  @private
-			 */
-	        this._shaper = new Tone.WaveShaper(4096);
-	        /**
-			 * holds onto the order of the filter
-			 * @type {number}
-			 * @private
-			 */
-	        this._order = options.order;
-	        this.connectEffect(this._shaper);
-	        this.order = options.order;
-	        this.oversample = options.oversample;
-	    };
-	    Tone.extend(Tone.Chebyshev, Tone.Effect);
-	    /**
-		 *  @static
-		 *  @const
-		 *  @type {Object}
-		 */
-	    Tone.Chebyshev.defaults = {
-	        'order': 1,
-	        'oversample': 'none'
-	    };
-	    /**
-		 *  get the coefficient for that degree
-		 *  @param {number} x the x value
-		 *  @param   {number} degree 
-		 *  @param {Object} memo memoize the computed value. 
-		 *                       this speeds up computation greatly. 
-		 *  @return  {number}       the coefficient 
-		 *  @private
-		 */
-	    Tone.Chebyshev.prototype._getCoefficient = function (x, degree, memo) {
-	        if (memo.hasOwnProperty(degree)) {
-	            return memo[degree];
-	        } else if (degree === 0) {
-	            memo[degree] = 0;
-	        } else if (degree === 1) {
-	            memo[degree] = x;
-	        } else {
-	            memo[degree] = 2 * x * this._getCoefficient(x, degree - 1, memo) - this._getCoefficient(x, degree - 2, memo);
-	        }
-	        return memo[degree];
-	    };
-	    /**
-		 * The order of the Chebyshev polynomial which creates
-		 * the equation which is applied to the incoming 
-		 * signal through a Tone.WaveShaper. The equations
-		 * are in the form:<br>
-		 * order 2: 2x^2 + 1<br>
-		 * order 3: 4x^3 + 3x <br>
-		 * @memberOf Tone.Chebyshev#
-		 * @type {Positive}
-		 * @name order
-		 */
-	    Object.defineProperty(Tone.Chebyshev.prototype, 'order', {
-	        get: function () {
-	            return this._order;
-	        },
-	        set: function (order) {
-	            this._order = order;
-	            var curve = new Array(4096);
-	            var len = curve.length;
-	            for (var i = 0; i < len; ++i) {
-	                var x = i * 2 / len - 1;
-	                if (x === 0) {
-	                    //should output 0 when input is 0
-	                    curve[i] = 0;
-	                } else {
-	                    curve[i] = this._getCoefficient(x, order, {});
-	                }
-	            }
-	            this._shaper.curve = curve;
-	        }
-	    });
-	    /**
-		 * The oversampling of the effect. Can either be "none", "2x" or "4x".
-		 * @memberOf Tone.Chebyshev#
-		 * @type {string}
-		 * @name oversample
-		 */
-	    Object.defineProperty(Tone.Chebyshev.prototype, 'oversample', {
-	        get: function () {
-	            return this._shaper.oversample;
-	        },
-	        set: function (oversampling) {
-	            this._shaper.oversample = oversampling;
-	        }
-	    });
-	    /**
-		 *  Clean up. 
-		 *  @returns {Tone.Chebyshev} this
-		 */
-	    Tone.Chebyshev.prototype.dispose = function () {
-	        Tone.Effect.prototype.dispose.call(this);
-	        this._shaper.dispose();
-	        this._shaper = null;
-	        return this;
-	    };
-	    return Tone.Chebyshev;
-	});
-	Module(function (Tone) {
-	    
-	    /**
-		 *  @class Base class for Stereo effects. Provides effectSendL/R and effectReturnL/R. 
-		 *
-		 *	@constructor
-		 *	@extends {Tone.Effect}
-		 */
-	    Tone.StereoEffect = function () {
-	        Tone.call(this);
-	        //get the defaults
-	        var options = this.optionsObject(arguments, ['wet'], Tone.Effect.defaults);
-	        /**
-			 *  the drywet knob to control the amount of effect
-			 *  @type {Tone.CrossFade}
-			 *  @private
-			 */
-	        this._dryWet = new Tone.CrossFade(options.wet);
-	        /**
-			 *  The wet control, i.e. how much of the effected
-			 *  will pass through to the output. 
-			 *  @type {NormalRange}
-			 *  @signal
-			 */
-	        this.wet = this._dryWet.fade;
-	        /**
-			 *  then split it
-			 *  @type {Tone.Split}
-			 *  @private
-			 */
-	        this._split = new Tone.Split();
-	        /**
-			 *  the effects send LEFT
-			 *  @type {GainNode}
-			 *  @private
-			 */
-	        this.effectSendL = this._split.left;
-	        /**
-			 *  the effects send RIGHT
-			 *  @type {GainNode}
-			 *  @private
-			 */
-	        this.effectSendR = this._split.right;
-	        /**
-			 *  the stereo effect merger
-			 *  @type {Tone.Merge}
-			 *  @private
-			 */
-	        this._merge = new Tone.Merge();
-	        /**
-			 *  the effect return LEFT
-			 *  @type {GainNode}
-			 *  @private
-			 */
-	        this.effectReturnL = this._merge.left;
-	        /**
-			 *  the effect return RIGHT
-			 *  @type {GainNode}
-			 *  @private
-			 */
-	        this.effectReturnR = this._merge.right;
-	        //connections
-	        this.input.connect(this._split);
-	        //dry wet connections
-	        this.input.connect(this._dryWet, 0, 0);
-	        this._merge.connect(this._dryWet, 0, 1);
-	        this._dryWet.connect(this.output);
-	        this._readOnly(['wet']);
-	    };
-	    Tone.extend(Tone.StereoEffect, Tone.Effect);
-	    /**
-		 *  Clean up. 
-		 *  @returns {Tone.StereoEffect} this
-		 */
-	    Tone.StereoEffect.prototype.dispose = function () {
-	        Tone.prototype.dispose.call(this);
-	        this._dryWet.dispose();
-	        this._dryWet = null;
-	        this._split.dispose();
-	        this._split = null;
-	        this._merge.dispose();
-	        this._merge = null;
-	        this.effectSendL = null;
-	        this.effectSendR = null;
-	        this.effectReturnL = null;
-	        this.effectReturnR = null;
-	        this._writable(['wet']);
-	        this.wet = null;
-	        return this;
-	    };
-	    return Tone.StereoEffect;
-	});
-	Module(function (Tone) {
-	    
-	    /**
-		 * 	@class  Tone.FeedbackEffect provides a loop between an 
-		 * 	        audio source and its own output. This is a base-class
-		 * 	        for feedback effects. 
-		 *
-		 *  @constructor
-		 *  @extends {Tone.Effect}
-		 *  @param {NormalRange|Object} [feedback] The initial feedback value.
-		 */
-	    Tone.FeedbackEffect = function () {
-	        var options = this.optionsObject(arguments, ['feedback']);
-	        options = this.defaultArg(options, Tone.FeedbackEffect.defaults);
-	        Tone.Effect.call(this, options);
-	        /**
-			 *  The amount of signal which is fed back into the effect input. 
-			 *  @type {NormalRange}
-			 *  @signal
-			 */
-	        this.feedback = new Tone.Signal(options.feedback, Tone.Type.NormalRange);
-	        /**
-			 *  the gain which controls the feedback
-			 *  @type {GainNode}
-			 *  @private
-			 */
-	        this._feedbackGain = this.context.createGain();
-	        //the feedback loop
-	        this.effectReturn.chain(this._feedbackGain, this.effectSend);
-	        this.feedback.connect(this._feedbackGain.gain);
-	        this._readOnly(['feedback']);
-	    };
-	    Tone.extend(Tone.FeedbackEffect, Tone.Effect);
-	    /**
-		 *  @static
-		 *  @type {Object}
-		 */
-	    Tone.FeedbackEffect.defaults = { 'feedback': 0.125 };
-	    /**
-		 *  Clean up. 
-		 *  @returns {Tone.FeedbackEffect} this
-		 */
-	    Tone.FeedbackEffect.prototype.dispose = function () {
-	        Tone.Effect.prototype.dispose.call(this);
-	        this._writable(['feedback']);
-	        this.feedback.dispose();
-	        this.feedback = null;
-	        this._feedbackGain.disconnect();
-	        this._feedbackGain = null;
-	        return this;
-	    };
-	    return Tone.FeedbackEffect;
-	});
-	Module(function (Tone) {
-	    
-	    /**
-		 *  @class Just like a stereo feedback effect, but the feedback is routed from left to right
-		 *         and right to left instead of on the same channel.
-		 *
-		 *	@constructor
-		 *	@extends {Tone.FeedbackEffect}
-		 */
-	    Tone.StereoXFeedbackEffect = function () {
-	        var options = this.optionsObject(arguments, ['feedback'], Tone.FeedbackEffect.defaults);
-	        Tone.StereoEffect.call(this, options);
-	        /**
-			 *  The amount of feedback from the output
-			 *  back into the input of the effect (routed
-			 *  across left and right channels).
-			 *  @type {NormalRange}
-			 *  @signal
-			 */
-	        this.feedback = new Tone.Signal(options.feedback, Tone.Type.NormalRange);
-	        /**
-			 *  the left side feeback
-			 *  @type {GainNode}
-			 *  @private
-			 */
-	        this._feedbackLR = this.context.createGain();
-	        /**
-			 *  the right side feeback
-			 *  @type {GainNode}
-			 *  @private
-			 */
-	        this._feedbackRL = this.context.createGain();
-	        //connect it up
-	        this.effectReturnL.chain(this._feedbackLR, this.effectSendR);
-	        this.effectReturnR.chain(this._feedbackRL, this.effectSendL);
-	        this.feedback.fan(this._feedbackLR.gain, this._feedbackRL.gain);
-	        this._readOnly(['feedback']);
-	    };
-	    Tone.extend(Tone.StereoXFeedbackEffect, Tone.FeedbackEffect);
-	    /**
-		 *  clean up
-		 *  @returns {Tone.StereoXFeedbackEffect} this
-		 */
-	    Tone.StereoXFeedbackEffect.prototype.dispose = function () {
-	        Tone.StereoEffect.prototype.dispose.call(this);
-	        this._writable(['feedback']);
-	        this.feedback.dispose();
-	        this.feedback = null;
-	        this._feedbackLR.disconnect();
-	        this._feedbackLR = null;
-	        this._feedbackRL.disconnect();
-	        this._feedbackRL = null;
-	        return this;
-	    };
-	    return Tone.StereoXFeedbackEffect;
-	});
-	Module(function (Tone) {
-	    
-	    /**
-		 *  @class Tone.Chorus is a stereo chorus effect with feedback composed of 
-		 *         a left and right delay with a Tone.LFO applied to the delayTime of each channel. 
-		 *         Inspiration from [Tuna.js](https://github.com/Dinahmoe/tuna/blob/master/tuna.js).
-		 *         Read more on the chorus effect on [SoundOnSound](http://www.soundonsound.com/sos/jun04/articles/synthsecrets.htm).
-		 *
-		 *	@constructor
-		 *	@extends {Tone.StereoXFeedbackEffect}
-		 *	@param {Frequency|Object} [frequency] The frequency of the LFO.
-		 *	@param {Number} [delayTime] The delay of the chorus effect in ms. 
-		 *	@param {NormalRange} [depth] The depth of the chorus.
-		 *	@example
-		 * var chorus = new Tone.Chorus(4, 2.5, 0.5);
-		 * var synth = new Tone.PolySynth(4, Tone.MonoSynth).connect(chorus);
-		 * synth.triggerAttackRelease(["C3","E3","G3"], "8n");
-		 */
-	    Tone.Chorus = function () {
-	        var options = this.optionsObject(arguments, [
-	            'frequency',
-	            'delayTime',
-	            'depth'
-	        ], Tone.Chorus.defaults);
-	        Tone.StereoXFeedbackEffect.call(this, options);
-	        /**
-			 *  the depth of the chorus
-			 *  @type {number}
-			 *  @private
-			 */
-	        this._depth = options.depth;
-	        /**
-			 *  the delayTime
-			 *  @type {number}
-			 *  @private
-			 */
-	        this._delayTime = options.delayTime / 1000;
-	        /**
-			 *  the lfo which controls the delayTime
-			 *  @type {Tone.LFO}
-			 *  @private
-			 */
-	        this._lfoL = new Tone.LFO(options.rate, 0, 1);
-	        /**
-			 *  another LFO for the right side with a 180 degree phase diff
-			 *  @type {Tone.LFO}
-			 *  @private
-			 */
-	        this._lfoR = new Tone.LFO(options.rate, 0, 1);
-	        this._lfoR.phase = 180;
-	        /**
-			 *  delay for left
-			 *  @type {DelayNode}
-			 *  @private
-			 */
-	        this._delayNodeL = this.context.createDelay();
-	        /**
-			 *  delay for right
-			 *  @type {DelayNode}
-			 *  @private
-			 */
-	        this._delayNodeR = this.context.createDelay();
-	        /**
-			 * The frequency of the LFO which modulates the delayTime. 
-			 * @type {Frequency}
-			 * @signal
-			 */
-	        this.frequency = this._lfoL.frequency;
-	        //connections
-	        this.connectSeries(this.effectSendL, this._delayNodeL, this.effectReturnL);
-	        this.connectSeries(this.effectSendR, this._delayNodeR, this.effectReturnR);
-	        //and pass through to make the detune apparent
-	        this.input.connect(this.output);
-	        //lfo setup
-	        this._lfoL.connect(this._delayNodeL.delayTime);
-	        this._lfoR.connect(this._delayNodeR.delayTime);
-	        //start the lfo
-	        this._lfoL.start();
-	        this._lfoR.start();
-	        //have one LFO frequency control the other
-	        this._lfoL.frequency.connect(this._lfoR.frequency);
-	        //set the initial values
-	        this.depth = this._depth;
-	        this.frequency.value = options.frequency;
-	        this.type = options.type;
-	        this._readOnly(['frequency']);
-	    };
-	    Tone.extend(Tone.Chorus, Tone.StereoXFeedbackEffect);
-	    /**
-		 *  @static
-		 *  @type {Object}
-		 */
-	    Tone.Chorus.defaults = {
-	        'frequency': 1.5,
-	        'delayTime': 3.5,
-	        'depth': 0.7,
-	        'feedback': 0.1,
-	        'type': 'sine'
-	    };
-	    /**
-		 * The depth of the effect. A depth of 1 makes the delayTime
-		 * modulate between 0 and 2*delayTime (centered around the delayTime). 
-		 * @memberOf Tone.Chorus#
-		 * @type {NormalRange}
-		 * @name depth
-		 */
-	    Object.defineProperty(Tone.Chorus.prototype, 'depth', {
-	        get: function () {
-	            return this._depth;
-	        },
-	        set: function (depth) {
-	            this._depth = depth;
-	            var deviation = this._delayTime * depth;
-	            this._lfoL.min = Math.max(this._delayTime - deviation, 0);
-	            this._lfoL.max = this._delayTime + deviation;
-	            this._lfoR.min = Math.max(this._delayTime - deviation, 0);
-	            this._lfoR.max = this._delayTime + deviation;
-	        }
-	    });
-	    /**
-		 * The delayTime in milliseconds of the chorus. A larger delayTime
-		 * will give a more pronounced effect. Nominal range a delayTime
-		 * is between 2 and 20ms. 
-		 * @memberOf Tone.Chorus#
-		 * @type {Number}
-		 * @name delayTime
-		 */
-	    Object.defineProperty(Tone.Chorus.prototype, 'delayTime', {
-	        get: function () {
-	            return this._delayTime * 1000;
-	        },
-	        set: function (delayTime) {
-	            this._delayTime = delayTime / 1000;
-	            this.depth = this._depth;
-	        }
-	    });
-	    /**
-		 * The oscillator type of the LFO. 
-		 * @memberOf Tone.Chorus#
-		 * @type {string}
-		 * @name type
-		 */
-	    Object.defineProperty(Tone.Chorus.prototype, 'type', {
-	        get: function () {
-	            return this._lfoL.type;
-	        },
-	        set: function (type) {
-	            this._lfoL.type = type;
-	            this._lfoR.type = type;
-	        }
-	    });
-	    /**
-		 *  Clean up. 
-		 *  @returns {Tone.Chorus} this
-		 */
-	    Tone.Chorus.prototype.dispose = function () {
-	        Tone.StereoXFeedbackEffect.prototype.dispose.call(this);
-	        this._lfoL.dispose();
-	        this._lfoL = null;
-	        this._lfoR.dispose();
-	        this._lfoR = null;
-	        this._delayNodeL.disconnect();
-	        this._delayNodeL = null;
-	        this._delayNodeR.disconnect();
-	        this._delayNodeR = null;
-	        this._writable('frequency');
-	        this.frequency = null;
-	        return this;
-	    };
-	    return Tone.Chorus;
-	});
-	Module(function (Tone) {
-	    
-	    /**
-		 *  @class  Tone.Convolver is a wrapper around the Native Web Audio 
-		 *          [ConvolverNode](http://webaudio.github.io/web-audio-api/#the-convolvernode-interface).
-		 *          Convolution is useful for reverb and filter emulation. Read more about convolution reverb on
-		 *          [Wikipedia](https://en.wikipedia.org/wiki/Convolution_reverb).
-		 *  
-		 *  @constructor
-		 *  @extends {Tone.Effect}
-		 *  @param {string|Tone.Buffer|Object} [url] The URL of the impulse response or the Tone.Buffer
-		 *                                           contianing the impulse response. 
-		 *  @example
-		 * //initializing the convolver with an impulse response
-		 * var convolver = new Tone.Convolver("./path/to/ir.wav");
-		 * convolver.toMaster();
-		 * //after the buffer has loaded
-		 * Tone.Buffer.onload = function(){
-		 * 	//testing out convolution with a noise burst
-		 * 	var burst = new Tone.NoiseSynth().connect(convolver);
-		 * 	burst.triggerAttackRelease("16n");
-		 * };
-		 */
-	    Tone.Convolver = function () {
-	        var options = this.optionsObject(arguments, ['url'], Tone.Convolver.defaults);
-	        Tone.Effect.call(this, options);
-	        /**
-			 *  convolver node
-			 *  @type {ConvolverNode}
-			 *  @private
-			 */
-	        this._convolver = this.context.createConvolver();
-	        /**
-			 *  the convolution buffer
-			 *  @type {Tone.Buffer}
-			 *  @private
-			 */
-	        this._buffer = new Tone.Buffer(options.url, function (buffer) {
-	            this.buffer = buffer;
-	            options.onload();
-	        }.bind(this));
-	        this.connectEffect(this._convolver);
-	    };
-	    Tone.extend(Tone.Convolver, Tone.Effect);
-	    /**
-		 *  @static
-		 *  @const
-		 *  @type  {Object}
-		 */
-	    Tone.Convolver.defaults = {
-	        'url': '',
-	        'onload': Tone.noOp
-	    };
-	    /**
-		 *  The convolver's buffer
-		 *  @memberOf Tone.Convolver#
-		 *  @type {AudioBuffer}
-		 *  @name buffer
-		 */
-	    Object.defineProperty(Tone.Convolver.prototype, 'buffer', {
-	        get: function () {
-	            return this._buffer.get();
-	        },
-	        set: function (buffer) {
-	            this._buffer.set(buffer);
-	            this._convolver.buffer = this._buffer.get();
-	        }
-	    });
-	    /**
-		 *  Load an impulse response url as an audio buffer.
-		 *  Decodes the audio asynchronously and invokes
-		 *  the callback once the audio buffer loads.
-		 *  @param {string} url The url of the buffer to load.
-		 *                      filetype support depends on the
-		 *                      browser.
-		 *  @param  {function=} callback
-		 *  @returns {Tone.Convolver} this
-		 */
-	    Tone.Convolver.prototype.load = function (url, callback) {
-	        this._buffer.load(url, function (buff) {
-	            this.buffer = buff;
-	            if (callback) {
-	                callback();
-	            }
-	        }.bind(this));
-	        return this;
-	    };
-	    /**
-		 *  Clean up. 
-		 *  @returns {Tone.Convolver} this
-		 */
-	    Tone.Convolver.prototype.dispose = function () {
-	        Tone.Effect.prototype.dispose.call(this);
-	        this._convolver.disconnect();
-	        this._convolver = null;
-	        this._buffer.dispose();
-	        this._buffer = null;
-	        return this;
-	    };
-	    return Tone.Convolver;
-	});
-	Module(function (Tone) {
-	    
-	    /**
-		 *  @class Tone.Distortion is a simple distortion effect using Tone.WaveShaper.
-		 *         Algorithm from [a stackoverflow answer](http://stackoverflow.com/a/22313408).
-		 *
-		 *  @extends {Tone.Effect}
-		 *  @constructor
-		 *  @param {Number|Object} [distortion] The amount of distortion (nominal range of 0-1)
-		 *  @example
-		 * var dist = new Tone.Distortion(0.8).toMaster();
-		 * var fm = new Tone.SimpleFM().connect(dist);
-		 * //this sounds good on bass notes
-		 * fm.triggerAttackRelease("A1", "8n");
-		 */
-	    Tone.Distortion = function () {
-	        var options = this.optionsObject(arguments, ['distortion'], Tone.Distortion.defaults);
-	        Tone.Effect.call(this, options);
-	        /**
-			 *  @type {Tone.WaveShaper}
-			 *  @private
-			 */
-	        this._shaper = new Tone.WaveShaper(4096);
-	        /**
-			 * holds the distortion amount
-			 * @type {number}
-			 * @private
-			 */
-	        this._distortion = options.distortion;
-	        this.connectEffect(this._shaper);
-	        this.distortion = options.distortion;
-	        this.oversample = options.oversample;
-	    };
-	    Tone.extend(Tone.Distortion, Tone.Effect);
-	    /**
-		 *  @static
-		 *  @const
-		 *  @type {Object}
-		 */
-	    Tone.Distortion.defaults = {
-	        'distortion': 0.4,
-	        'oversample': 'none'
-	    };
-	    /**
-		 * The amount of distortion. Range between 0-1. 
-		 * @memberOf Tone.Distortion#
-		 * @type {number}
-		 * @name distortion
-		 */
-	    Object.defineProperty(Tone.Distortion.prototype, 'distortion', {
-	        get: function () {
-	            return this._distortion;
-	        },
-	        set: function (amount) {
-	            this._distortion = amount;
-	            var k = amount * 100;
-	            var deg = Math.PI / 180;
-	            this._shaper.setMap(function (x) {
-	                if (Math.abs(x) < 0.001) {
-	                    //should output 0 when input is 0
-	                    return 0;
-	                } else {
-	                    return (3 + k) * x * 20 * deg / (Math.PI + k * Math.abs(x));
-	                }
-	            });
-	        }
-	    });
-	    /**
-		 * The oversampling of the effect. Can either be "none", "2x" or "4x".
-		 * @memberOf Tone.Distortion#
-		 * @type {string}
-		 * @name oversample
-		 */
-	    Object.defineProperty(Tone.Distortion.prototype, 'oversample', {
-	        get: function () {
-	            return this._shaper.oversample;
-	        },
-	        set: function (oversampling) {
-	            this._shaper.oversample = oversampling;
-	        }
-	    });
-	    /**
-		 *  Clean up. 
-		 *  @returns {Tone.Distortion} this
-		 */
-	    Tone.Distortion.prototype.dispose = function () {
-	        Tone.Effect.prototype.dispose.call(this);
-	        this._shaper.dispose();
-	        this._shaper = null;
-	        return this;
-	    };
-	    return Tone.Distortion;
-	});
-	Module(function (Tone) {
-	    
-	    /**
-		 *  @class  Tone.FeedbackDelay is a DelayNode in which part of output
-		 *          signal is fed back into the delay. 
-		 *
-		 *  @constructor
-		 *  @extends {Tone.FeedbackEffect}
-		 *  @param {Time|Object} [delayTime] The delay applied to the incoming signal. 
-		 *  @param {NormalRange=} feedback The amount of the effected signal which 
-		 *                            is fed back through the delay.
-		 *  @example
-		 * var feedbackDelay = new Tone.FeedbackDelay("8n", 0.5).toMaster();
-		 * var tom = new Tone.DrumSynth({
-		 * 	"octaves" : 4,
-		 * 	"pitchDecay" : 0.1
-		 * }).connect(feedbackDelay);
-		 * tom.triggerAttackRelease("A2","32n");
-		 */
-	    Tone.FeedbackDelay = function () {
-	        var options = this.optionsObject(arguments, [
-	            'delayTime',
-	            'feedback'
-	        ], Tone.FeedbackDelay.defaults);
-	        Tone.FeedbackEffect.call(this, options);
-	        /**
-			 *  The delayTime of the DelayNode. 
-			 *  @type {Time}
-			 *  @signal
-			 */
-	        this.delayTime = new Tone.Signal(options.delayTime, Tone.Type.Time);
-	        /**
-			 *  the delay node
-			 *  @type {DelayNode}
-			 *  @private
-			 */
-	        this._delayNode = this.context.createDelay(4);
-	        // connect it up
-	        this.connectEffect(this._delayNode);
-	        this.delayTime.connect(this._delayNode.delayTime);
-	        this._readOnly(['delayTime']);
-	    };
-	    Tone.extend(Tone.FeedbackDelay, Tone.FeedbackEffect);
-	    /**
-		 *  The default values. 
-		 *  @const
-		 *  @static
-		 *  @type {Object}
-		 */
-	    Tone.FeedbackDelay.defaults = { 'delayTime': 0.25 };
-	    /**
-		 *  clean up
-		 *  @returns {Tone.FeedbackDelay} this
-		 */
-	    Tone.FeedbackDelay.prototype.dispose = function () {
-	        Tone.FeedbackEffect.prototype.dispose.call(this);
-	        this.delayTime.dispose();
-	        this._delayNode.disconnect();
-	        this._delayNode = null;
-	        this._writable(['delayTime']);
-	        this.delayTime = null;
-	        return this;
-	    };
-	    return Tone.FeedbackDelay;
-	});
-	Module(function (Tone) {
-	    
-	    /**
-		 *  an array of comb filter delay values from Freeverb implementation
-		 *  @static
-		 *  @private
-		 *  @type {Array}
-		 */
-	    var combFilterTunings = [
-	        1557 / 44100,
-	        1617 / 44100,
-	        1491 / 44100,
-	        1422 / 44100,
-	        1277 / 44100,
-	        1356 / 44100,
-	        1188 / 44100,
-	        1116 / 44100
-	    ];
-	    /**
-		 *  an array of allpass filter frequency values from Freeverb implementation
-		 *  @private
-		 *  @static
-		 *  @type {Array}
-		 */
-	    var allpassFilterFrequencies = [
-	        225,
-	        556,
-	        441,
-	        341
-	    ];
-	    /**
-		 *  @class Tone.Freeverb is a reverb based on [Freeverb](https://ccrma.stanford.edu/~jos/pasp/Freeverb.html).
-		 *         Read more on reverb on [SoundOnSound](http://www.soundonsound.com/sos/may00/articles/reverb.htm).
-		 *
-		 *  @extends {Tone.Effect}
-		 *  @constructor
-		 *  @param {NormalRange|Object} [roomSize] Correlated to the decay time. 
-		 *  @param {Frequency} [dampening] The cutoff frequency of a lowpass filter as part 
-		 *                                 of the reverb. 
-		 *  @example
-		 * var freeverb = new Tone.Freeverb().toMaster();
-		 * freeverb.dampening.value = 1000;
-		 * //routing synth through the reverb
-		 * var synth = new Tone.AMSynth().connect(freeverb);
-		 */
-	    Tone.Freeverb = function () {
-	        var options = this.optionsObject(arguments, [
-	            'roomSize',
-	            'dampening'
-	        ], Tone.Freeverb.defaults);
-	        Tone.StereoEffect.call(this, options);
-	        /**
-			 *  The roomSize value between. A larger roomSize
-			 *  will result in a longer decay. 
-			 *  @type {NormalRange}
-			 *  @signal
-			 */
-	        this.roomSize = new Tone.Signal(options.roomSize, Tone.Type.NormalRange);
-	        /**
-			 *  The amount of dampening of the reverberant signal. 
-			 *  @type {Frequency}
-			 *  @signal
-			 */
-	        this.dampening = new Tone.Signal(options.dampening, Tone.Type.Frequency);
-	        /**
-			 *  the comb filters
-			 *  @type {Array}
-			 *  @private
-			 */
-	        this._combFilters = [];
-	        /**
-			 *  the allpass filters on the left
-			 *  @type {Array}
-			 *  @private
-			 */
-	        this._allpassFiltersL = [];
-	        /**
-			 *  the allpass filters on the right
-			 *  @type {Array}
-			 *  @private
-			 */
-	        this._allpassFiltersR = [];
-	        //make the allpass filters on teh right
-	        for (var l = 0; l < allpassFilterFrequencies.length; l++) {
-	            var allpassL = this.context.createBiquadFilter();
-	            allpassL.type = 'allpass';
-	            allpassL.frequency.value = allpassFilterFrequencies[l];
-	            this._allpassFiltersL.push(allpassL);
-	        }
-	        //make the allpass filters on the left
-	        for (var r = 0; r < allpassFilterFrequencies.length; r++) {
-	            var allpassR = this.context.createBiquadFilter();
-	            allpassR.type = 'allpass';
-	            allpassR.frequency.value = allpassFilterFrequencies[r];
-	            this._allpassFiltersR.push(allpassR);
-	        }
-	        //make the comb filters
-	        for (var c = 0; c < combFilterTunings.length; c++) {
-	            var lfpf = new Tone.LowpassCombFilter(combFilterTunings[c]);
-	            if (c < combFilterTunings.length / 2) {
-	                this.effectSendL.chain(lfpf, this._allpassFiltersL[0]);
-	            } else {
-	                this.effectSendR.chain(lfpf, this._allpassFiltersR[0]);
-	            }
-	            this.roomSize.connect(lfpf.resonance);
-	            this.dampening.connect(lfpf.dampening);
-	            this._combFilters.push(lfpf);
-	        }
-	        //chain the allpass filters togetehr
-	        this.connectSeries.apply(this, this._allpassFiltersL);
-	        this.connectSeries.apply(this, this._allpassFiltersR);
-	        this._allpassFiltersL[this._allpassFiltersL.length - 1].connect(this.effectReturnL);
-	        this._allpassFiltersR[this._allpassFiltersR.length - 1].connect(this.effectReturnR);
-	        this._readOnly([
-	            'roomSize',
-	            'dampening'
-	        ]);
-	    };
-	    Tone.extend(Tone.Freeverb, Tone.StereoEffect);
-	    /**
-		 *  @static
-		 *  @type {Object}
-		 */
-	    Tone.Freeverb.defaults = {
-	        'roomSize': 0.7,
-	        'dampening': 3000
-	    };
-	    /**
-		 *  Clean up. 
-		 *  @returns {Tone.Freeverb} this
-		 */
-	    Tone.Freeverb.prototype.dispose = function () {
-	        Tone.StereoEffect.prototype.dispose.call(this);
-	        for (var al = 0; al < this._allpassFiltersL.length; al++) {
-	            this._allpassFiltersL[al].disconnect();
-	            this._allpassFiltersL[al] = null;
-	        }
-	        this._allpassFiltersL = null;
-	        for (var ar = 0; ar < this._allpassFiltersR.length; ar++) {
-	            this._allpassFiltersR[ar].disconnect();
-	            this._allpassFiltersR[ar] = null;
-	        }
-	        this._allpassFiltersR = null;
-	        for (var cf = 0; cf < this._combFilters.length; cf++) {
-	            this._combFilters[cf].dispose();
-	            this._combFilters[cf] = null;
-	        }
-	        this._combFilters = null;
-	        this._writable([
-	            'roomSize',
-	            'dampening'
-	        ]);
-	        this.roomSize.dispose();
-	        this.roomSize = null;
-	        this.dampening.dispose();
-	        this.dampening = null;
-	        return this;
-	    };
-	    return Tone.Freeverb;
-	});
-	Module(function (Tone) {
-	    
-	    /**
-		 *  an array of the comb filter delay time values
-		 *  @private
-		 *  @static
-		 *  @type {Array}
-		 */
-	    var combFilterDelayTimes = [
-	        1687 / 25000,
-	        1601 / 25000,
-	        2053 / 25000,
-	        2251 / 25000
-	    ];
-	    /**
-		 *  the resonances of each of the comb filters
-		 *  @private
-		 *  @static
-		 *  @type {Array}
-		 */
-	    var combFilterResonances = [
-	        0.773,
-	        0.802,
-	        0.753,
-	        0.733
-	    ];
-	    /**
-		 *  the allpass filter frequencies
-		 *  @private
-		 *  @static
-		 *  @type {Array}
-		 */
-	    var allpassFilterFreqs = [
-	        347,
-	        113,
-	        37
-	    ];
-	    /**
-		 *  @class Tone.JCReverb is a simple [Schroeder Reverberator](https://ccrma.stanford.edu/~jos/pasp/Schroeder_Reverberators.html)
-		 *         tuned by John Chowning in 1970.
-		 *         It is made up of three allpass filters and four Tone.FeedbackCombFilter. 
-		 *         
-		 *
-		 *  @extends {Tone.Effect}
-		 *  @constructor
-		 *  @param {NormalRange|Object} [roomSize] Coorelates to the decay time.
-		 *  @example
-		 * var reverb = new Tone.JCReverb(0.4).connect(Tone.Master);
-		 * var delay = new Tone.FeedbackDelay(0.5); 
-		 * //connecting the synth to reverb through delay
-		 * var synth = new Tone.DuoSynth().chain(delay, reverb);
-		 * synth.triggerAttackRelease("A4","8n");
-		 */
-	    Tone.JCReverb = function () {
-	        var options = this.optionsObject(arguments, ['roomSize'], Tone.JCReverb.defaults);
-	        Tone.StereoEffect.call(this, options);
-	        /**
-			 *  room size control values between [0,1]
-			 *  @type {NormalRange}
-			 *  @signal
-			 */
-	        this.roomSize = new Tone.Signal(options.roomSize, Tone.Type.NormalRange);
-	        /**
-			 *  scale the room size
-			 *  @type {Tone.Scale}
-			 *  @private
-			 */
-	        this._scaleRoomSize = new Tone.Scale(-0.733, 0.197);
-	        /**
-			 *  a series of allpass filters
-			 *  @type {Array}
-			 *  @private
-			 */
-	        this._allpassFilters = [];
-	        /**
-			 *  parallel feedback comb filters
-			 *  @type {Array}
-			 *  @private
-			 */
-	        this._feedbackCombFilters = [];
-	        //make the allpass filters
-	        for (var af = 0; af < allpassFilterFreqs.length; af++) {
-	            var allpass = this.context.createBiquadFilter();
-	            allpass.type = 'allpass';
-	            allpass.frequency.value = allpassFilterFreqs[af];
-	            this._allpassFilters.push(allpass);
-	        }
-	        //and the comb filters
-	        for (var cf = 0; cf < combFilterDelayTimes.length; cf++) {
-	            var fbcf = new Tone.FeedbackCombFilter(combFilterDelayTimes[cf], 0.1);
-	            this._scaleRoomSize.connect(fbcf.resonance);
-	            fbcf.resonance.value = combFilterResonances[cf];
-	            this._allpassFilters[this._allpassFilters.length - 1].connect(fbcf);
-	            if (cf < combFilterDelayTimes.length / 2) {
-	                fbcf.connect(this.effectReturnL);
-	            } else {
-	                fbcf.connect(this.effectReturnR);
-	            }
-	            this._feedbackCombFilters.push(fbcf);
-	        }
-	        //chain the allpass filters together
-	        this.roomSize.connect(this._scaleRoomSize);
-	        this.connectSeries.apply(this, this._allpassFilters);
-	        this.effectSendL.connect(this._allpassFilters[0]);
-	        this.effectSendR.connect(this._allpassFilters[0]);
-	        this._readOnly(['roomSize']);
-	    };
-	    Tone.extend(Tone.JCReverb, Tone.StereoEffect);
-	    /**
-		 *  the default values
-		 *  @static
-		 *  @const
-		 *  @type {Object}
-		 */
-	    Tone.JCReverb.defaults = { 'roomSize': 0.5 };
-	    /**
-		 *  Clean up. 
-		 *  @returns {Tone.JCReverb} this
-		 */
-	    Tone.JCReverb.prototype.dispose = function () {
-	        Tone.StereoEffect.prototype.dispose.call(this);
-	        for (var apf = 0; apf < this._allpassFilters.length; apf++) {
-	            this._allpassFilters[apf].disconnect();
-	            this._allpassFilters[apf] = null;
-	        }
-	        this._allpassFilters = null;
-	        for (var fbcf = 0; fbcf < this._feedbackCombFilters.length; fbcf++) {
-	            this._feedbackCombFilters[fbcf].dispose();
-	            this._feedbackCombFilters[fbcf] = null;
-	        }
-	        this._feedbackCombFilters = null;
-	        this._writable(['roomSize']);
-	        this.roomSize.dispose();
-	        this.roomSize = null;
-	        this._scaleRoomSize.dispose();
-	        this._scaleRoomSize = null;
-	        return this;
-	    };
-	    return Tone.JCReverb;
-	});
-	Module(function (Tone) {
-	    
-	    /**
-		 *  @class Mid/Side processing separates the the 'mid' signal 
-		 *         (which comes out of both the left and the right channel) 
-		 *         and the 'side' (which only comes out of the the side channels) 
-		 *         and effects them separately before being recombined.
-		 *         Applies a Mid/Side seperation and recombination.
-		 *         Algorithm found in [kvraudio forums](http://www.kvraudio.com/forum/viewtopic.php?t=212587).
-		 *         <br><br>
-		 *         This is a base-class for Mid/Side Effects. 
-		 *
-		 *  @extends {Tone.Effect}
-		 *  @constructor
-		 */
-	    Tone.MidSideEffect = function () {
-	        Tone.Effect.call(this);
-	        /**
-			 *  The mid/side split
-			 *  @type  {Tone.MidSideSplit}
-			 *  @private
-			 */
-	        this._midSideSplit = new Tone.MidSideSplit();
-	        /**
-			 *  The mid/side merge
-			 *  @type  {Tone.MidSideMerge}
-			 *  @private
-			 */
-	        this._midSideMerge = new Tone.MidSideMerge();
-	        /**
-			 *  The mid send. Connect to mid processing
-			 *  @type {Tone.Expr}
-			 *  @private
-			 */
-	        this.midSend = this._midSideSplit.mid;
-	        /**
-			 *  The side send. Connect to side processing
-			 *  @type {Tone.Expr}
-			 *  @private
-			 */
-	        this.sideSend = this._midSideSplit.side;
-	        /**
-			 *  The mid return connection
-			 *  @type {GainNode}
-			 *  @private
-			 */
-	        this.midReturn = this._midSideMerge.mid;
-	        /**
-			 *  The side return connection
-			 *  @type {GainNode}
-			 *  @private
-			 */
-	        this.sideReturn = this._midSideMerge.side;
-	        //the connections
-	        this.effectSend.connect(this._midSideSplit);
-	        this._midSideMerge.connect(this.effectReturn);
-	    };
-	    Tone.extend(Tone.MidSideEffect, Tone.Effect);
-	    /**
-		 *  Clean up. 
-		 *  @returns {Tone.MidSideEffect} this
-		 */
-	    Tone.MidSideEffect.prototype.dispose = function () {
-	        Tone.Effect.prototype.dispose.call(this);
-	        this._midSideSplit.dispose();
-	        this._midSideSplit = null;
-	        this._midSideMerge.dispose();
-	        this._midSideMerge = null;
-	        this.midSend = null;
-	        this.sideSend = null;
-	        this.midReturn = null;
-	        this.sideReturn = null;
-	        return this;
-	    };
-	    return Tone.MidSideEffect;
-	});
-	Module(function (Tone) {
-	    
-	    /**
-		 *  @class Tone.Phaser is a phaser effect. Phasers work by changing the phase
-		 *         of different frequency components of an incoming signal. Read more on 
-		 *         [Wikipedia](https://en.wikipedia.org/wiki/Phaser_(effect)). 
-		 *         Inspiration for this phaser comes from [Tuna.js](https://github.com/Dinahmoe/tuna/).
-		 *
-		 *	@extends {Tone.StereoEffect}
-		 *	@constructor
-		 *	@param {Frequency|Object} [frequency] The speed of the phasing. 
-		 *	@param {number} [depth] The depth of the effect. 
-		 *	@param {Frequency} [baseFrequency] The base frequency of the filters. 
-		 *	@example
-		 * var phaser = new Tone.Phaser({
-		 * 	"frequency" : 15, 
-		 * 	"depth" : 5, 
-		 * 	"baseFrequency" : 1000
-		 * }).toMaster();
-		 * var synth = new Tone.FMSynth().connect(phaser);
-		 * synth.triggerAttackRelease("E3", "2n");
-		 */
-	    Tone.Phaser = function () {
-	        //set the defaults
-	        var options = this.optionsObject(arguments, [
-	            'frequency',
-	            'depth',
-	            'baseFrequency'
-	        ], Tone.Phaser.defaults);
-	        Tone.StereoEffect.call(this, options);
-	        /**
-			 *  the lfo which controls the frequency on the left side
-			 *  @type {Tone.LFO}
-			 *  @private
-			 */
-	        this._lfoL = new Tone.LFO(options.frequency, 0, 1);
-	        /**
-			 *  the lfo which controls the frequency on the right side
-			 *  @type {Tone.LFO}
-			 *  @private
-			 */
-	        this._lfoR = new Tone.LFO(options.frequency, 0, 1);
-	        this._lfoR.phase = 180;
-	        /**
-			 *  the base modulation frequency
-			 *  @type {number}
-			 *  @private
-			 */
-	        this._baseFrequency = options.baseFrequency;
-	        /**
-			 *  the depth of the phasing
-			 *  @type {number}
-			 *  @private
-			 */
-	        this._depth = options.depth;
-	        /**
-			 *  The quality factor of the filters
-			 *  @type {Positive}
-			 *  @signal
-			 */
-	        this.Q = new Tone.Signal(options.Q, Tone.Type.Positive);
-	        /**
-			 *  the array of filters for the left side
-			 *  @type {Array}
-			 *  @private
-			 */
-	        this._filtersL = this._makeFilters(options.stages, this._lfoL, this.Q);
-	        /**
-			 *  the array of filters for the left side
-			 *  @type {Array}
-			 *  @private
-			 */
-	        this._filtersR = this._makeFilters(options.stages, this._lfoR, this.Q);
-	        /**
-			 * the frequency of the effect
-			 * @type {Tone.Signal}
-			 */
-	        this.frequency = this._lfoL.frequency;
-	        this.frequency.value = options.frequency;
-	        //connect them up
-	        this.effectSendL.connect(this._filtersL[0]);
-	        this.effectSendR.connect(this._filtersR[0]);
-	        this._filtersL[options.stages - 1].connect(this.effectReturnL);
-	        this._filtersR[options.stages - 1].connect(this.effectReturnR);
-	        //control the frequency with one LFO
-	        this._lfoL.frequency.connect(this._lfoR.frequency);
-	        //set the options
-	        this.baseFrequency = options.baseFrequency;
-	        this.depth = options.depth;
-	        //start the lfo
-	        this._lfoL.start();
-	        this._lfoR.start();
-	        this._readOnly([
-	            'frequency',
-	            'Q'
-	        ]);
-	    };
-	    Tone.extend(Tone.Phaser, Tone.StereoEffect);
-	    /**
-		 *  defaults
-		 *  @static
-		 *  @type {object}
-		 */
-	    Tone.Phaser.defaults = {
-	        'frequency': 0.5,
-	        'depth': 10,
-	        'stages': 10,
-	        'Q': 10,
-	        'baseFrequency': 350
-	    };
-	    /**
-		 *  @param {number} stages
-		 *  @returns {Array} the number of filters all connected together
-		 *  @private
-		 */
-	    Tone.Phaser.prototype._makeFilters = function (stages, connectToFreq, Q) {
-	        var filters = new Array(stages);
-	        //make all the filters
-	        for (var i = 0; i < stages; i++) {
-	            var filter = this.context.createBiquadFilter();
-	            filter.type = 'allpass';
-	            Q.connect(filter.Q);
-	            connectToFreq.connect(filter.frequency);
-	            filters[i] = filter;
-	        }
-	        this.connectSeries.apply(this, filters);
-	        return filters;
-	    };
-	    /**
-		 * The depth of the effect. 
-		 * @memberOf Tone.Phaser#
-		 * @type {number}
-		 * @name depth
-		 */
-	    Object.defineProperty(Tone.Phaser.prototype, 'depth', {
-	        get: function () {
-	            return this._depth;
-	        },
-	        set: function (depth) {
-	            this._depth = depth;
-	            var max = this._baseFrequency + this._baseFrequency * depth;
-	            this._lfoL.max = max;
-	            this._lfoR.max = max;
-	        }
-	    });
-	    /**
-		 * The the base frequency of the filters. 
-		 * @memberOf Tone.Phaser#
-		 * @type {number}
-		 * @name baseFrequency
-		 */
-	    Object.defineProperty(Tone.Phaser.prototype, 'baseFrequency', {
-	        get: function () {
-	            return this._baseFrequency;
-	        },
-	        set: function (freq) {
-	            this._baseFrequency = freq;
-	            this._lfoL.min = freq;
-	            this._lfoR.min = freq;
-	            this.depth = this._depth;
-	        }
-	    });
-	    /**
-		 *  clean up
-		 *  @returns {Tone.Phaser} this
-		 */
-	    Tone.Phaser.prototype.dispose = function () {
-	        Tone.StereoEffect.prototype.dispose.call(this);
-	        this._writable([
-	            'frequency',
-	            'Q'
-	        ]);
-	        this.Q.dispose();
-	        this.Q = null;
-	        this._lfoL.dispose();
-	        this._lfoL = null;
-	        this._lfoR.dispose();
-	        this._lfoR = null;
-	        for (var i = 0; i < this._filtersL.length; i++) {
-	            this._filtersL[i].disconnect();
-	            this._filtersL[i] = null;
-	        }
-	        this._filtersL = null;
-	        for (var j = 0; j < this._filtersR.length; j++) {
-	            this._filtersR[j].disconnect();
-	            this._filtersR[j] = null;
-	        }
-	        this._filtersR = null;
-	        this.frequency = null;
-	        return this;
-	    };
-	    return Tone.Phaser;
-	});
-	Module(function (Tone) {
-	    
-	    /**
-		 *  @class  Tone.PingPongDelay is a feedback delay effect where the echo is heard
-		 *          first in one channel and next in the opposite channel. In a stereo
-		 *          system these are the right and left channels.
-		 *          PingPongDelay in more simplified terms is two Tone.FeedbackDelays 
-		 *          with independent delay values. Each delay is routed to one channel
-		 *          (left or right), and the channel triggered second will always 
-		 *          trigger at the same interval after the first.
-		 *
-		 * 	@constructor
-		 * 	@extends {Tone.StereoXFeedbackEffect}
-		 *  @param {Time|Object} [delayTime] The delayTime between consecutive echos.
-		 *  @param {NormalRange=} feedback The amount of the effected signal which 
-		 *                                 is fed back through the delay.
-		 *  @example
-		 * var pingPong = new Tone.PingPongDelay("4n", 0.2).toMaster();
-		 * var drum = new Tone.DrumSynth().connect(pingPong);
-		 * drum.triggerAttackRelease("C4", "32n");
-		 */
-	    Tone.PingPongDelay = function () {
-	        var options = this.optionsObject(arguments, [
-	            'delayTime',
-	            'feedback'
-	        ], Tone.PingPongDelay.defaults);
-	        Tone.StereoXFeedbackEffect.call(this, options);
-	        /**
-			 *  the delay node on the left side
-			 *  @type {DelayNode}
-			 *  @private
-			 */
-	        this._leftDelay = this.context.createDelay(options.maxDelayTime);
-	        /**
-			 *  the delay node on the right side
-			 *  @type {DelayNode}
-			 *  @private
-			 */
-	        this._rightDelay = this.context.createDelay(options.maxDelayTime);
-	        /**
-			 *  the predelay on the right side
-			 *  @type {DelayNode}
-			 *  @private
-			 */
-	        this._rightPreDelay = this.context.createDelay(options.maxDelayTime);
-	        /**
-			 *  the delay time signal
-			 *  @type {Time}
-			 *  @signal
-			 */
-	        this.delayTime = new Tone.Signal(options.delayTime, Tone.Type.Time);
-	        //connect it up
-	        this.effectSendL.chain(this._leftDelay, this.effectReturnL);
-	        this.effectSendR.chain(this._rightPreDelay, this._rightDelay, this.effectReturnR);
-	        this.delayTime.fan(this._leftDelay.delayTime, this._rightDelay.delayTime, this._rightPreDelay.delayTime);
-	        //rearranged the feedback to be after the rightPreDelay
-	        this._feedbackLR.disconnect();
-	        this._feedbackLR.connect(this._rightDelay);
-	        this._readOnly(['delayTime']);
-	    };
-	    Tone.extend(Tone.PingPongDelay, Tone.StereoXFeedbackEffect);
-	    /**
-		 *  @static
-		 *  @type {Object}
-		 */
-	    Tone.PingPongDelay.defaults = {
-	        'delayTime': 0.25,
-	        'maxDelayTime': 1
-	    };
-	    /**
-		 *  Clean up. 
-		 *  @returns {Tone.PingPongDelay} this
-		 */
-	    Tone.PingPongDelay.prototype.dispose = function () {
-	        Tone.StereoXFeedbackEffect.prototype.dispose.call(this);
-	        this._leftDelay.disconnect();
-	        this._leftDelay = null;
-	        this._rightDelay.disconnect();
-	        this._rightDelay = null;
-	        this._rightPreDelay.disconnect();
-	        this._rightPreDelay = null;
-	        this._writable(['delayTime']);
-	        this.delayTime.dispose();
-	        this.delayTime = null;
-	        return this;
-	    };
-	    return Tone.PingPongDelay;
-	});
-	Module(function (Tone) {
-	    
-	    /**
-		 *  @class Base class for stereo feedback effects where the effectReturn
-		 *         is fed back into the same channel. 
-		 *
-		 *	@constructor
-		 *	@extends {Tone.FeedbackEffect}
-		 */
-	    Tone.StereoFeedbackEffect = function () {
-	        var options = this.optionsObject(arguments, ['feedback'], Tone.FeedbackEffect.defaults);
-	        Tone.StereoEffect.call(this, options);
-	        /**
-			 *  controls the amount of feedback
-			 *  @type {NormalRange}
-			 *  @signal
-			 */
-	        this.feedback = new Tone.Signal(options.feedback, Tone.Type.NormalRange);
-	        /**
-			 *  the left side feeback
-			 *  @type {GainNode}
-			 *  @private
-			 */
-	        this._feedbackL = this.context.createGain();
-	        /**
-			 *  the right side feeback
-			 *  @type {GainNode}
-			 *  @private
-			 */
-	        this._feedbackR = this.context.createGain();
-	        //connect it up
-	        this.effectReturnL.chain(this._feedbackL, this.effectSendL);
-	        this.effectReturnR.chain(this._feedbackR, this.effectSendR);
-	        this.feedback.fan(this._feedbackL.gain, this._feedbackR.gain);
-	        this._readOnly(['feedback']);
-	    };
-	    Tone.extend(Tone.StereoFeedbackEffect, Tone.FeedbackEffect);
-	    /**
-		 *  clean up
-		 *  @returns {Tone.StereoFeedbackEffect} this
-		 */
-	    Tone.StereoFeedbackEffect.prototype.dispose = function () {
-	        Tone.StereoEffect.prototype.dispose.call(this);
-	        this._writable(['feedback']);
-	        this.feedback.dispose();
-	        this.feedback = null;
-	        this._feedbackL.disconnect();
-	        this._feedbackL = null;
-	        this._feedbackR.disconnect();
-	        this._feedbackR = null;
-	        return this;
-	    };
-	    return Tone.StereoFeedbackEffect;
-	});
-	Module(function (Tone) {
-	    
-	    /**
-		 *  @class Applies a width factor to the mid/side seperation. 
-		 *         0 is all mid and 1 is all side.
-		 *         Algorithm found in [kvraudio forums](http://www.kvraudio.com/forum/viewtopic.php?t=212587).
-		 *         <br><br>
-		 *         <code>
-		 *         Mid *= 2*(1-width)<br>
-		 *         Side *= 2*width
-		 *         </code>
-		 *
-		 *  @extends {Tone.MidSideEffect}
-		 *  @constructor
-		 *  @param {NormalRange|Object} [width] The stereo width. A width of 0 is mono and 1 is stereo. 0.5 is no change.
-		 */
-	    Tone.StereoWidener = function () {
-	        var options = this.optionsObject(arguments, ['width'], Tone.StereoWidener.defaults);
-	        Tone.MidSideEffect.call(this, options);
-	        /**
-			 *  The width control. 0 = 100% mid. 1 = 100% side. 0.5 = no change. 
-			 *  @type {NormalRange}
-			 *  @signal
-			 */
-	        this.width = new Tone.Signal(0.5, Tone.Type.NormalRange);
-	        /**
-			 *  Mid multiplier
-			 *  @type {Tone.Expr}
-			 *  @private
-			 */
-	        this._midMult = new Tone.Expr('$0 * ($1 * (1 - $2))');
-	        /**
-			 *  Side multiplier
-			 *  @type {Tone.Expr}
-			 *  @private
-			 */
-	        this._sideMult = new Tone.Expr('$0 * ($1 * $2)');
-	        /**
-			 *  constant output of 2
-			 *  @type {Tone}
-			 *  @private
-			 */
-	        this._two = new Tone.Signal(2);
-	        //the mid chain
-	        this._two.connect(this._midMult, 0, 1);
-	        this.width.connect(this._midMult, 0, 2);
-	        //the side chain
-	        this._two.connect(this._sideMult, 0, 1);
-	        this.width.connect(this._sideMult, 0, 2);
-	        //connect it to the effect send/return
-	        this.midSend.chain(this._midMult, this.midReturn);
-	        this.sideSend.chain(this._sideMult, this.sideReturn);
-	        this._readOnly(['width']);
-	    };
-	    Tone.extend(Tone.StereoWidener, Tone.MidSideEffect);
-	    /**
-		 *  the default values
-		 *  @static
-		 *  @type {Object}
-		 */
-	    Tone.StereoWidener.defaults = { 'width': 0.5 };
-	    /**
-		 *  Clean up. 
-		 *  @returns {Tone.StereoWidener} this
-		 */
-	    Tone.StereoWidener.prototype.dispose = function () {
-	        Tone.MidSideEffect.prototype.dispose.call(this);
-	        this._writable(['width']);
-	        this.width.dispose();
-	        this.width = null;
-	        this._midMult.dispose();
-	        this._midMult = null;
-	        this._sideMult.dispose();
-	        this._sideMult = null;
-	        this._two.dispose();
-	        this._two = null;
-	        return this;
-	    };
-	    return Tone.StereoWidener;
-	});
-	Module(function (Tone) {
-	    
-	    /**
-		 *  @class Tone.Tremelo modulates the amplitude of an incoming signal using a Tone.LFO. 
-		 *         The type, frequency, and depth of the LFO is controllable. 
-		 *
-		 *  @extends {Tone.Effect}
-		 *  @constructor
-		 *  @param {Frequency|Object} [frequency] The rate of the effect. 
-		 *  @param {NormalRange} [depth] The depth of the wavering.
-		 *  @example
-		 * //create an tremolo and start it's LFO
-		 * var tremolo = new Tone.Tremolo(9, 0.75).toMaster().start();
-		 * //route an oscillator through the tremolo and start it
-		 * var oscillator = new Tone.Oscillator().connect(tremolo).start();
-		 */
-	    Tone.Tremolo = function () {
-	        var options = this.optionsObject(arguments, [
-	            'frequency',
-	            'depth'
-	        ], Tone.Tremolo.defaults);
-	        Tone.Effect.call(this, options);
-	        /**
-			 *  The tremelo LFO
-			 *  @type  {Tone.LFO}
-			 *  @private
-			 */
-	        this._lfo = new Tone.LFO({
-	            'frequency': options.frequency,
-	            'amplitude': options.depth,
-	            'min': 1,
-	            'max': 0
-	        });
-	        /**
-			 *  Where the gain is multiplied
-			 *  @type  {GainNode}
-			 *  @private
-			 */
-	        this._amplitude = this.context.createGain();
-	        /**
-			 *  The frequency of the tremolo.	
-			 *  @type  {Frequency}
-			 *  @signal
-			 */
-	        this.frequency = this._lfo.frequency;
-	        /**
-			 *  The depth of the effect. A depth of 0, has no effect
-			 *  on the amplitude, and a depth of 1 makes the amplitude
-			 *  modulate fully between 0 and 1. 
-			 *  @type  {NormalRange}
-			 *  @signal
-			 */
-	        this.depth = this._lfo.amplitude;
-	        this._readOnly([
-	            'frequency',
-	            'depth'
-	        ]);
-	        this.connectEffect(this._amplitude);
-	        this._lfo.connect(this._amplitude.gain);
-	        this.type = options.type;
-	    };
-	    Tone.extend(Tone.Tremolo, Tone.Effect);
-	    /**
-		 *  @static
-		 *  @const
-		 *  @type {Object}
-		 */
-	    Tone.Tremolo.defaults = {
-	        'frequency': 10,
-	        'type': 'sine',
-	        'depth': 0.5
-	    };
-	    /**
-		 * Start the tremolo.
-		 * @param {Time} [time=now] When the tremolo begins.
-		 * @returns {Tone.Tremolo} this
-		 */
-	    Tone.Tremolo.prototype.start = function (time) {
-	        this._lfo.start(time);
-	        return this;
-	    };
-	    /**
-		 * Stop the tremolo.
-		 * @param {Time} [time=now] When the tremolo stops.
-		 * @returns {Tone.Tremolo} this
-		 */
-	    Tone.Tremolo.prototype.stop = function (time) {
-	        this._lfo.stop(time);
-	        return this;
-	    };
-	    /**
-		 * Sync the effect to the transport.
-		 * @param {Time} [delay=0] Delay time before starting the effect after the
-		 *                              Transport has started. 
-		 * @returns {Tone.AutoFilter} this
-		 */
-	    Tone.Tremolo.prototype.sync = function (delay) {
-	        this._lfo.sync(delay);
-	        return this;
-	    };
-	    /**
-		 * Unsync the filter from the transport
-		 * @returns {Tone.Tremolo} this
-		 */
-	    Tone.Tremolo.prototype.unsync = function () {
-	        this._lfo.unsync();
-	        return this;
-	    };
-	    /**
-		 * Type of oscillator attached to the Tremolo.
-		 * @memberOf Tone.Tremolo#
-		 * @type {string}
-		 * @name type
-		 */
-	    Object.defineProperty(Tone.Tremolo.prototype, 'type', {
-	        get: function () {
-	            return this._lfo.type;
-	        },
-	        set: function (type) {
-	            this._lfo.type = type;
-	        }
-	    });
-	    /**
-		 *  clean up
-		 *  @returns {Tone.Tremolo} this
-		 */
-	    Tone.Tremolo.prototype.dispose = function () {
-	        Tone.Effect.prototype.dispose.call(this);
-	        this._writable([
-	            'frequency',
-	            'depth'
-	        ]);
-	        this._lfo.dispose();
-	        this._lfo = null;
-	        this._amplitude.disconnect();
-	        this._amplitude = null;
-	        this.frequency = null;
-	        this.depth = null;
-	        return this;
-	    };
-	    return Tone.Tremolo;
-	});
-	Module(function (Tone) {
-	    
-	    /**
 		 *  @class Tone.PulseOscillator is a pulse oscillator with control over pulse width,
 		 *         also known as the duty cycle. At 50% duty cycle (width = 0.5) the wave is 
 		 *         a square and only odd-numbered harmonics are present. At all other widths 
@@ -13827,9 +11458,6 @@
 		 *  @extends {Tone.Monophonic}
 		 *  @param {Object} [options] the options available for the synth 
 		 *                          see defaults below
-		 *  
-		 *  @routing test test test
-		 *  
 		 *  @example
 		 * var synth = new Tone.SimpleSynth().toMaster();
 		 * synth.triggerAttackRelease("C4", "8n");
@@ -14260,6 +11888,2375 @@
 	Module(function (Tone) {
 	    
 	    /**
+		 * 	@class  Tone.Effect is the base class for effects. Connect the effect between
+		 * 	        the effectSend and effectReturn GainNodes, then control the amount of
+		 * 	        effect which goes to the output using the wet control.
+		 *
+		 *  @constructor
+		 *  @extends {Tone}
+		 *  @param {NormalRange|Object} [wet] The starting wet value. 
+		 */
+	    Tone.Effect = function () {
+	        Tone.call(this);
+	        //get all of the defaults
+	        var options = this.optionsObject(arguments, ['wet'], Tone.Effect.defaults);
+	        /**
+			 *  the drywet knob to control the amount of effect
+			 *  @type {Tone.CrossFade}
+			 *  @private
+			 */
+	        this._dryWet = new Tone.CrossFade(options.wet);
+	        /**
+			 *  The wet control is how much of the effected
+			 *  will pass through to the output. 1 = 100% effected
+			 *  signal, 0 = 100% dry signal. 
+			 *  @type {NormalRange}
+			 *  @signal
+			 */
+	        this.wet = this._dryWet.fade;
+	        /**
+			 *  connect the effectSend to the input of hte effect
+			 *  @type {GainNode}
+			 *  @private
+			 */
+	        this.effectSend = this.context.createGain();
+	        /**
+			 *  connect the output of the effect to the effectReturn
+			 *  @type {GainNode}
+			 *  @private
+			 */
+	        this.effectReturn = this.context.createGain();
+	        //connections
+	        this.input.connect(this._dryWet.a);
+	        this.input.connect(this.effectSend);
+	        this.effectReturn.connect(this._dryWet.b);
+	        this._dryWet.connect(this.output);
+	        this._readOnly(['wet']);
+	    };
+	    Tone.extend(Tone.Effect);
+	    /**
+		 *  @static
+		 *  @type {Object}
+		 */
+	    Tone.Effect.defaults = { 'wet': 1 };
+	    /**
+		 *  chains the effect in between the effectSend and effectReturn
+		 *  @param  {Tone} effect
+		 *  @private
+		 *  @returns {Tone.Effect} this
+		 */
+	    Tone.Effect.prototype.connectEffect = function (effect) {
+	        this.effectSend.chain(effect, this.effectReturn);
+	        return this;
+	    };
+	    /**
+		 *  Clean up. 
+		 *  @returns {Tone.Effect} this
+		 */
+	    Tone.Effect.prototype.dispose = function () {
+	        Tone.prototype.dispose.call(this);
+	        this._dryWet.dispose();
+	        this._dryWet = null;
+	        this.effectSend.disconnect();
+	        this.effectSend = null;
+	        this.effectReturn.disconnect();
+	        this.effectReturn = null;
+	        this._writable(['wet']);
+	        this.wet = null;
+	        return this;
+	    };
+	    return Tone.Effect;
+	});
+	Module(function (Tone) {
+	    
+	    /**
+		 *  @class Tone.AutoFilter is a Tone.Filter with a Tone.LFO connected to the filter cutoff frequency.
+		 *         Setting the LFO rate and depth allows for control over the filter modulation rate 
+		 *         and depth.
+		 *
+		 *  @constructor
+		 *  @extends {Tone.Effect}
+		 *  @param {Time|Object} [frequency] The rate of the LFO.
+		 *  @param {Frequency} [min] The lower value of the LFOs oscillation
+	 	 *  @param {Frequency} [max] The upper value of the LFOs oscillation. 
+		 *  @example
+		 * //create an autofilter and start it's LFO
+		 * var autoFilter = new Tone.AutoFilter("4n").toMaster().start();
+		 * //route an oscillator through the filter and start it
+		 * var oscillator = new Tone.Oscillator().connect(autoFilter).start();
+		 */
+	    Tone.AutoFilter = function () {
+	        var options = this.optionsObject(arguments, [
+	            'frequency',
+	            'min',
+	            'max'
+	        ], Tone.AutoFilter.defaults);
+	        Tone.Effect.call(this, options);
+	        /**
+			 *  the lfo which drives the filter cutoff
+			 *  @type {Tone.LFO}
+			 *  @private
+			 */
+	        this._lfo = new Tone.LFO({
+	            'frequency': options.frequency,
+	            'amplitude': options.depth,
+	            'min': options.min,
+	            'max': options.max
+	        });
+	        /**
+			 * The range of the filter modulating between the min and max frequency. 
+			 * 0 = no modulation. 1 = full modulation.
+			 * @type {NormalRange}
+			 * @signal
+			 */
+	        this.depth = this._lfo.amplitude;
+	        /**
+			 * How fast the filter modulates between min and max. 
+			 * @type {Frequency}
+			 * @signal
+			 */
+	        this.frequency = this._lfo.frequency;
+	        /**
+			 *  The filter node
+			 *  @type {Tone.Filter}
+			 */
+	        this.filter = new Tone.Filter(options.filter);
+	        //connections
+	        this.connectEffect(this.filter);
+	        this._lfo.connect(this.filter.frequency);
+	        this.type = options.type;
+	        this._readOnly([
+	            'frequency',
+	            'depth'
+	        ]);
+	    };
+	    //extend Effect
+	    Tone.extend(Tone.AutoFilter, Tone.Effect);
+	    /**
+		 *  defaults
+		 *  @static
+		 *  @type {Object}
+		 */
+	    Tone.AutoFilter.defaults = {
+	        'frequency': 1,
+	        'type': 'sine',
+	        'depth': 1,
+	        'min': 200,
+	        'max': 1200,
+	        'filter': {
+	            'type': 'lowpass',
+	            'rolloff': -12,
+	            'Q': 1
+	        }
+	    };
+	    /**
+		 * Start the effect.
+		 * @param {Time} [time=now] When the LFO will start. 
+		 * @returns {Tone.AutoFilter} this
+		 */
+	    Tone.AutoFilter.prototype.start = function (time) {
+	        this._lfo.start(time);
+	        return this;
+	    };
+	    /**
+		 * Stop the effect.
+		 * @param {Time} [time=now] When the LFO will stop. 
+		 * @returns {Tone.AutoFilter} this
+		 */
+	    Tone.AutoFilter.prototype.stop = function (time) {
+	        this._lfo.stop(time);
+	        return this;
+	    };
+	    /**
+		 * Sync the filter to the transport.
+		 * @param {Time} [delay=0] Delay time before starting the effect after the
+		 *                               Transport has started. 
+		 * @returns {Tone.AutoFilter} this
+		 */
+	    Tone.AutoFilter.prototype.sync = function (delay) {
+	        this._lfo.sync(delay);
+	        return this;
+	    };
+	    /**
+		 * Unsync the filter from the transport.
+		 * @returns {Tone.AutoFilter} this
+		 */
+	    Tone.AutoFilter.prototype.unsync = function () {
+	        this._lfo.unsync();
+	        return this;
+	    };
+	    /**
+		 * Type of oscillator attached to the AutoFilter. 
+		 * Possible values: "sine", "square", "triangle", "sawtooth".
+		 * @memberOf Tone.AutoFilter#
+		 * @type {string}
+		 * @name type
+		 */
+	    Object.defineProperty(Tone.AutoFilter.prototype, 'type', {
+	        get: function () {
+	            return this._lfo.type;
+	        },
+	        set: function (type) {
+	            this._lfo.type = type;
+	        }
+	    });
+	    /**
+		 * The minimum value of the LFO attached to the cutoff frequency of the filter.
+		 * @memberOf Tone.AutoFilter#
+		 * @type {Frequency}
+		 * @name min
+		 */
+	    Object.defineProperty(Tone.AutoFilter.prototype, 'min', {
+	        get: function () {
+	            return this._lfo.min;
+	        },
+	        set: function (min) {
+	            this._lfo.min = min;
+	        }
+	    });
+	    /**
+		 * The minimum value of the LFO attached to the cutoff frequency of the filter.
+		 * @memberOf Tone.AutoFilter#
+		 * @type {Frequency}
+		 * @name max
+		 */
+	    Object.defineProperty(Tone.AutoFilter.prototype, 'max', {
+	        get: function () {
+	            return this._lfo.max;
+	        },
+	        set: function (max) {
+	            this._lfo.max = max;
+	        }
+	    });
+	    /**
+		 *  Clean up. 
+		 *  @returns {Tone.AutoFilter} this
+		 */
+	    Tone.AutoFilter.prototype.dispose = function () {
+	        Tone.Effect.prototype.dispose.call(this);
+	        this._lfo.dispose();
+	        this._lfo = null;
+	        this.filter.dispose();
+	        this.filter = null;
+	        this._writable([
+	            'frequency',
+	            'depth'
+	        ]);
+	        this.frequency = null;
+	        this.depth = null;
+	        return this;
+	    };
+	    return Tone.AutoFilter;
+	});
+	Module(function (Tone) {
+	    
+	    /**
+		 *  @class Tone.AutoPanner is a Tone.Panner with an LFO connected to the pan amount. 
+		 *         More on using autopanners [here](https://www.ableton.com/en/blog/autopan-chopper-effect-and-more-liveschool/).
+		 *
+		 *  @constructor
+		 *  @extends {Tone.Effect}
+		 *  @param {Frequency|Object} [frequency] Rate of left-right oscillation. 
+		 *  @example
+		 * //create an autopanner and start it's LFO
+		 * var autoPanner = new Tone.AutoPanner("4n").toMaster().start();
+		 * //route an oscillator through the panner and start it
+		 * var oscillator = new Tone.Oscillator().connect(autoPanner).start();
+		 */
+	    Tone.AutoPanner = function () {
+	        var options = this.optionsObject(arguments, ['frequency'], Tone.AutoPanner.defaults);
+	        Tone.Effect.call(this, options);
+	        /**
+			 *  the lfo which drives the panning
+			 *  @type {Tone.LFO}
+			 *  @private
+			 */
+	        this._lfo = new Tone.LFO({
+	            'frequency': options.frequency,
+	            'amplitude': options.depth,
+	            'min': 0,
+	            'max': 1,
+	            //start at the middle of the cycle
+	            'phase': 90
+	        });
+	        /**
+			 * The amount of panning between left and right. 
+			 * 0 = always center. 1 = full range between left and right. 
+			 * @type {NormalRange}
+			 * @signal
+			 */
+	        this.depth = this._lfo.amplitude;
+	        /**
+			 *  the panner node which does the panning
+			 *  @type {Tone.Panner}
+			 *  @private
+			 */
+	        this._panner = new Tone.Panner();
+	        /**
+			 * How fast the panner modulates between left and right. 
+			 * @type {Frequency}
+			 * @signal
+			 */
+	        this.frequency = this._lfo.frequency;
+	        //connections
+	        this.connectEffect(this._panner);
+	        this._lfo.connect(this._panner.pan);
+	        this.type = options.type;
+	        this._readOnly([
+	            'depth',
+	            'frequency'
+	        ]);
+	    };
+	    //extend Effect
+	    Tone.extend(Tone.AutoPanner, Tone.Effect);
+	    /**
+		 *  defaults
+		 *  @static
+		 *  @type {Object}
+		 */
+	    Tone.AutoPanner.defaults = {
+	        'frequency': 1,
+	        'type': 'sine',
+	        'depth': 1
+	    };
+	    /**
+		 * Start the effect.
+		 * @param {Time} [time=now] When the LFO will start. 
+		 * @returns {Tone.AutoPanner} this
+		 */
+	    Tone.AutoPanner.prototype.start = function (time) {
+	        this._lfo.start(time);
+	        return this;
+	    };
+	    /**
+		 * Stop the effect.
+		 * @param {Time} [time=now] When the LFO will stop. 
+		 * @returns {Tone.AutoPanner} this
+		 */
+	    Tone.AutoPanner.prototype.stop = function (time) {
+	        this._lfo.stop(time);
+	        return this;
+	    };
+	    /**
+		 * Sync the panner to the transport.
+		 * @param {Time} [delay=0] Delay time before starting the effect after the
+		 *                               Transport has started. 
+		 * @returns {Tone.AutoPanner} this
+		 */
+	    Tone.AutoPanner.prototype.sync = function (delay) {
+	        this._lfo.sync(delay);
+	        return this;
+	    };
+	    /**
+		 * Unsync the panner from the transport
+		 * @returns {Tone.AutoPanner} this
+		 */
+	    Tone.AutoPanner.prototype.unsync = function () {
+	        this._lfo.unsync();
+	        return this;
+	    };
+	    /**
+		 * Type of oscillator attached to the AutoFilter. 
+		 * Possible values: "sine", "square", "triangle", "sawtooth".
+		 * @memberOf Tone.AutoFilter#
+		 * @type {string}
+		 * @name type
+		 */
+	    Object.defineProperty(Tone.AutoPanner.prototype, 'type', {
+	        get: function () {
+	            return this._lfo.type;
+	        },
+	        set: function (type) {
+	            this._lfo.type = type;
+	        }
+	    });
+	    /**
+		 *  clean up
+		 *  @returns {Tone.AutoPanner} this
+		 */
+	    Tone.AutoPanner.prototype.dispose = function () {
+	        Tone.Effect.prototype.dispose.call(this);
+	        this._lfo.dispose();
+	        this._lfo = null;
+	        this._panner.dispose();
+	        this._panner = null;
+	        this._writable([
+	            'depth',
+	            'frequency'
+	        ]);
+	        this.frequency = null;
+	        this.depth = null;
+	        return this;
+	    };
+	    return Tone.AutoPanner;
+	});
+	Module(function (Tone) {
+	    
+	    /**
+		 *  @class  Tone.AutoWah connects a Tone.Follower to a bandpass filter (Tone.Filter).
+		 *          The frequency of the filter is adjusted proportionally to the 
+		 *          incoming signal's amplitude. Inspiration from [Tuna.js](https://github.com/Dinahmoe/tuna).
+		 *
+		 *  @constructor
+		 *  @extends {Tone.Effect}
+		 *  @param {Frequency|Object} [baseFrequency] The frequency the filter is set 
+		 *                                            to at the low point of the wah
+		 *  @param {Positive} [octaves] The number of octaves above the baseFrequency
+		 *                                the filter will sweep to when fully open
+		 *  @param {Decibels} [sensitivity] The decibel threshold sensitivity for 
+		 *                                   the incoming signal. Normal range of -40 to 0. 
+		 *  @example
+		 * var autoWah = new Tone.AutoWah(50, 6, -30).toMaster();
+		 * //initialize the synth and connect to autowah
+		 * var synth = new SimpleSynth.connect(autoWah);
+		 * //Q value influences the effect of the wah - default is 2
+		 * autoWah.Q.value = 6;
+		 * //more audible on higher notes
+		 * synth.triggerAttackRelease("C4", "8n")
+		 */
+	    Tone.AutoWah = function () {
+	        var options = this.optionsObject(arguments, [
+	            'baseFrequency',
+	            'octaves',
+	            'sensitivity'
+	        ], Tone.AutoWah.defaults);
+	        Tone.Effect.call(this, options);
+	        /**
+			 *  The envelope follower. Set the attack/release
+			 *  timing to adjust how the envelope is followed. 
+			 *  @type {Tone.Follower}
+			 *  @private
+			 */
+	        this.follower = new Tone.Follower(options.follower);
+	        /**
+			 *  scales the follower value to the frequency domain
+			 *  @type {Tone}
+			 *  @private
+			 */
+	        this._sweepRange = new Tone.ScaleExp(0, 1, 0.5);
+	        /**
+			 *  @type {number}
+			 *  @private
+			 */
+	        this._baseFrequency = options.baseFrequency;
+	        /**
+			 *  @type {number}
+			 *  @private
+			 */
+	        this._octaves = options.octaves;
+	        /**
+			 *  the input gain to adjust the sensitivity
+			 *  @type {GainNode}
+			 *  @private
+			 */
+	        this._inputBoost = this.context.createGain();
+	        /**
+			 *  @type {BiquadFilterNode}
+			 *  @private
+			 */
+	        this._bandpass = new Tone.Filter({
+	            'rolloff': -48,
+	            'frequency': 0,
+	            'Q': options.Q
+	        });
+	        /**
+			 *  @type {Tone.Filter}
+			 *  @private
+			 */
+	        this._peaking = new Tone.Filter(0, 'peaking');
+	        this._peaking.gain.value = options.gain;
+	        /**
+			 * The gain of the filter.
+			 * @type {Gain}
+			 * @signal
+			 */
+	        this.gain = this._peaking.gain;
+	        /**
+			 * The quality of the filter.
+			 * @type {Positive}
+			 * @signal
+			 */
+	        this.Q = this._bandpass.Q;
+	        //the control signal path
+	        this.effectSend.chain(this._inputBoost, this.follower, this._sweepRange);
+	        this._sweepRange.connect(this._bandpass.frequency);
+	        this._sweepRange.connect(this._peaking.frequency);
+	        //the filtered path
+	        this.effectSend.chain(this._bandpass, this._peaking, this.effectReturn);
+	        //set the initial value
+	        this._setSweepRange();
+	        this.sensitivity = options.sensitivity;
+	        this._readOnly([
+	            'gain',
+	            'Q'
+	        ]);
+	    };
+	    Tone.extend(Tone.AutoWah, Tone.Effect);
+	    /**
+		 *  @static
+		 *  @type {Object}
+		 */
+	    Tone.AutoWah.defaults = {
+	        'baseFrequency': 100,
+	        'octaves': 6,
+	        'sensitivity': 0,
+	        'Q': 2,
+	        'gain': 2,
+	        'follower': {
+	            'attack': 0.3,
+	            'release': 0.5
+	        }
+	    };
+	    /**
+		 * The number of octaves that the filter will sweep above the 
+		 * baseFrequency. 
+		 * @memberOf Tone.AutoWah#
+		 * @type {Number}
+		 * @name octaves
+		 */
+	    Object.defineProperty(Tone.AutoWah.prototype, 'octaves', {
+	        get: function () {
+	            return this._octaves;
+	        },
+	        set: function (octaves) {
+	            this._octaves = octaves;
+	            this._setSweepRange();
+	        }
+	    });
+	    /**
+		 * The base frequency from which the sweep will start from.
+		 * @memberOf Tone.AutoWah#
+		 * @type {Frequency}
+		 * @name baseFrequency
+		 */
+	    Object.defineProperty(Tone.AutoWah.prototype, 'baseFrequency', {
+	        get: function () {
+	            return this._baseFrequency;
+	        },
+	        set: function (baseFreq) {
+	            this._baseFrequency = baseFreq;
+	            this._setSweepRange();
+	        }
+	    });
+	    /**
+		 * The sensitivity to control how responsive to the input signal the filter is. 
+		 * @memberOf Tone.AutoWah#
+		 * @type {Decibels}
+		 * @name sensitivity
+		 */
+	    Object.defineProperty(Tone.AutoWah.prototype, 'sensitivity', {
+	        get: function () {
+	            return this.gainToDb(1 / this._inputBoost.gain.value);
+	        },
+	        set: function (sensitivy) {
+	            this._inputBoost.gain.value = 1 / this.dbToGain(sensitivy);
+	        }
+	    });
+	    /**
+		 *  sets the sweep range of the scaler
+		 *  @private
+		 */
+	    Tone.AutoWah.prototype._setSweepRange = function () {
+	        this._sweepRange.min = this._baseFrequency;
+	        this._sweepRange.max = Math.min(this._baseFrequency * Math.pow(2, this._octaves), this.context.sampleRate / 2);
+	    };
+	    /**
+		 *  Clean up.
+		 *  @returns {Tone.AutoWah} this
+		 */
+	    Tone.AutoWah.prototype.dispose = function () {
+	        Tone.Effect.prototype.dispose.call(this);
+	        this.follower.dispose();
+	        this.follower = null;
+	        this._sweepRange.dispose();
+	        this._sweepRange = null;
+	        this._bandpass.dispose();
+	        this._bandpass = null;
+	        this._peaking.dispose();
+	        this._peaking = null;
+	        this._inputBoost.disconnect();
+	        this._inputBoost = null;
+	        this._writable([
+	            'gain',
+	            'Q'
+	        ]);
+	        this.gain = null;
+	        this.Q = null;
+	        return this;
+	    };
+	    return Tone.AutoWah;
+	});
+	Module(function (Tone) {
+	    
+	    /**
+		 *  @class Tone.Bitcrusher downsamples the incoming signal to a different bitdepth. 
+		 *         Lowering the bitdepth of the signal creates distortion. Read more about Bitcrushing
+		 *         on [Wikipedia](https://en.wikipedia.org/wiki/Bitcrusher).
+		 *
+		 *  @constructor
+		 *  @extends {Tone.Effect}
+		 *  @param {Number} bits The number of bits to downsample the signal. Nominal range
+		 *                       of 1 to 8. 
+		 *  @example
+		 * //initialize crusher and route a synth through it
+		 * var crusher = new Tone.BitCrusher(4).toMaster();
+		 * var synth = new Tone.MonoSynth().connect(crusher);
+		 */
+	    Tone.BitCrusher = function () {
+	        var options = this.optionsObject(arguments, ['bits'], Tone.BitCrusher.defaults);
+	        Tone.Effect.call(this, options);
+	        var invStepSize = 1 / Math.pow(2, options.bits - 1);
+	        /**
+			 *  Subtract the input signal and the modulus of the input signal
+			 *  @type {Tone.Subtract}
+			 *  @private
+			 */
+	        this._subtract = new Tone.Subtract();
+	        /**
+			 *  The mod function
+			 *  @type  {Tone.Modulo}
+			 *  @private
+			 */
+	        this._modulo = new Tone.Modulo(invStepSize);
+	        /**
+			 *  keeps track of the bits
+			 *  @type {number}
+			 *  @private
+			 */
+	        this._bits = options.bits;
+	        //connect it up
+	        this.effectSend.fan(this._subtract, this._modulo);
+	        this._modulo.connect(this._subtract, 0, 1);
+	        this._subtract.connect(this.effectReturn);
+	    };
+	    Tone.extend(Tone.BitCrusher, Tone.Effect);
+	    /**
+		 *  the default values
+		 *  @static
+		 *  @type {Object}
+		 */
+	    Tone.BitCrusher.defaults = { 'bits': 4 };
+	    /**
+		 * The bit depth of the effect. Nominal range of 1-8. 
+		 * @memberOf Tone.BitCrusher#
+		 * @type {number}
+		 * @name bits
+		 */
+	    Object.defineProperty(Tone.BitCrusher.prototype, 'bits', {
+	        get: function () {
+	            return this._bits;
+	        },
+	        set: function (bits) {
+	            this._bits = bits;
+	            var invStepSize = 1 / Math.pow(2, bits - 1);
+	            this._modulo.value = invStepSize;
+	        }
+	    });
+	    /**
+		 *  Clean up. 
+		 *  @returns {Tone.BitCrusher} this
+		 */
+	    Tone.BitCrusher.prototype.dispose = function () {
+	        Tone.Effect.prototype.dispose.call(this);
+	        this._subtract.dispose();
+	        this._subtract = null;
+	        this._modulo.dispose();
+	        this._modulo = null;
+	        return this;
+	    };
+	    return Tone.BitCrusher;
+	});
+	Module(function (Tone) {
+	    
+	    /**
+		 *  @class Tone.ChebyShev is a Chebyshev waveshaper, an effect which is good 
+		 *         for making different types of distortion sounds.
+		 *         Note that odd orders sound very different from even ones, 
+		 *         and order = 1 is no change. 
+		 *         Read more at [music.columbia.edu](http://music.columbia.edu/cmc/musicandcomputers/chapter4/04_06.php).
+		 *
+		 *  @extends {Tone.Effect}
+		 *  @constructor
+		 *  @param {Positive|Object} [order] The order of the chebyshev polynomial. Normal range between 1-100. 
+		 *  @example
+		 * //create a new cheby
+		 * var cheby = new Tone.Chebyshev(50);
+		 * //create a monosynth connected to our cheby
+		 * synth = new Tone.MonoSynth().connect(cheby);
+		 */
+	    Tone.Chebyshev = function () {
+	        var options = this.optionsObject(arguments, ['order'], Tone.Chebyshev.defaults);
+	        Tone.Effect.call(this);
+	        /**
+			 *  @type {WaveShaperNode}
+			 *  @private
+			 */
+	        this._shaper = new Tone.WaveShaper(4096);
+	        /**
+			 * holds onto the order of the filter
+			 * @type {number}
+			 * @private
+			 */
+	        this._order = options.order;
+	        this.connectEffect(this._shaper);
+	        this.order = options.order;
+	        this.oversample = options.oversample;
+	    };
+	    Tone.extend(Tone.Chebyshev, Tone.Effect);
+	    /**
+		 *  @static
+		 *  @const
+		 *  @type {Object}
+		 */
+	    Tone.Chebyshev.defaults = {
+	        'order': 1,
+	        'oversample': 'none'
+	    };
+	    /**
+		 *  get the coefficient for that degree
+		 *  @param {number} x the x value
+		 *  @param   {number} degree 
+		 *  @param {Object} memo memoize the computed value. 
+		 *                       this speeds up computation greatly. 
+		 *  @return  {number}       the coefficient 
+		 *  @private
+		 */
+	    Tone.Chebyshev.prototype._getCoefficient = function (x, degree, memo) {
+	        if (memo.hasOwnProperty(degree)) {
+	            return memo[degree];
+	        } else if (degree === 0) {
+	            memo[degree] = 0;
+	        } else if (degree === 1) {
+	            memo[degree] = x;
+	        } else {
+	            memo[degree] = 2 * x * this._getCoefficient(x, degree - 1, memo) - this._getCoefficient(x, degree - 2, memo);
+	        }
+	        return memo[degree];
+	    };
+	    /**
+		 * The order of the Chebyshev polynomial which creates
+		 * the equation which is applied to the incoming 
+		 * signal through a Tone.WaveShaper. The equations
+		 * are in the form:<br>
+		 * order 2: 2x^2 + 1<br>
+		 * order 3: 4x^3 + 3x <br>
+		 * @memberOf Tone.Chebyshev#
+		 * @type {Positive}
+		 * @name order
+		 */
+	    Object.defineProperty(Tone.Chebyshev.prototype, 'order', {
+	        get: function () {
+	            return this._order;
+	        },
+	        set: function (order) {
+	            this._order = order;
+	            var curve = new Array(4096);
+	            var len = curve.length;
+	            for (var i = 0; i < len; ++i) {
+	                var x = i * 2 / len - 1;
+	                if (x === 0) {
+	                    //should output 0 when input is 0
+	                    curve[i] = 0;
+	                } else {
+	                    curve[i] = this._getCoefficient(x, order, {});
+	                }
+	            }
+	            this._shaper.curve = curve;
+	        }
+	    });
+	    /**
+		 * The oversampling of the effect. Can either be "none", "2x" or "4x".
+		 * @memberOf Tone.Chebyshev#
+		 * @type {string}
+		 * @name oversample
+		 */
+	    Object.defineProperty(Tone.Chebyshev.prototype, 'oversample', {
+	        get: function () {
+	            return this._shaper.oversample;
+	        },
+	        set: function (oversampling) {
+	            this._shaper.oversample = oversampling;
+	        }
+	    });
+	    /**
+		 *  Clean up. 
+		 *  @returns {Tone.Chebyshev} this
+		 */
+	    Tone.Chebyshev.prototype.dispose = function () {
+	        Tone.Effect.prototype.dispose.call(this);
+	        this._shaper.dispose();
+	        this._shaper = null;
+	        return this;
+	    };
+	    return Tone.Chebyshev;
+	});
+	Module(function (Tone) {
+	    
+	    /**
+		 *  @class Base class for Stereo effects. Provides effectSendL/R and effectReturnL/R. 
+		 *
+		 *	@constructor
+		 *	@extends {Tone.Effect}
+		 */
+	    Tone.StereoEffect = function () {
+	        Tone.call(this);
+	        //get the defaults
+	        var options = this.optionsObject(arguments, ['wet'], Tone.Effect.defaults);
+	        /**
+			 *  the drywet knob to control the amount of effect
+			 *  @type {Tone.CrossFade}
+			 *  @private
+			 */
+	        this._dryWet = new Tone.CrossFade(options.wet);
+	        /**
+			 *  The wet control, i.e. how much of the effected
+			 *  will pass through to the output. 
+			 *  @type {NormalRange}
+			 *  @signal
+			 */
+	        this.wet = this._dryWet.fade;
+	        /**
+			 *  then split it
+			 *  @type {Tone.Split}
+			 *  @private
+			 */
+	        this._split = new Tone.Split();
+	        /**
+			 *  the effects send LEFT
+			 *  @type {GainNode}
+			 *  @private
+			 */
+	        this.effectSendL = this._split.left;
+	        /**
+			 *  the effects send RIGHT
+			 *  @type {GainNode}
+			 *  @private
+			 */
+	        this.effectSendR = this._split.right;
+	        /**
+			 *  the stereo effect merger
+			 *  @type {Tone.Merge}
+			 *  @private
+			 */
+	        this._merge = new Tone.Merge();
+	        /**
+			 *  the effect return LEFT
+			 *  @type {GainNode}
+			 *  @private
+			 */
+	        this.effectReturnL = this._merge.left;
+	        /**
+			 *  the effect return RIGHT
+			 *  @type {GainNode}
+			 *  @private
+			 */
+	        this.effectReturnR = this._merge.right;
+	        //connections
+	        this.input.connect(this._split);
+	        //dry wet connections
+	        this.input.connect(this._dryWet, 0, 0);
+	        this._merge.connect(this._dryWet, 0, 1);
+	        this._dryWet.connect(this.output);
+	        this._readOnly(['wet']);
+	    };
+	    Tone.extend(Tone.StereoEffect, Tone.Effect);
+	    /**
+		 *  Clean up. 
+		 *  @returns {Tone.StereoEffect} this
+		 */
+	    Tone.StereoEffect.prototype.dispose = function () {
+	        Tone.prototype.dispose.call(this);
+	        this._dryWet.dispose();
+	        this._dryWet = null;
+	        this._split.dispose();
+	        this._split = null;
+	        this._merge.dispose();
+	        this._merge = null;
+	        this.effectSendL = null;
+	        this.effectSendR = null;
+	        this.effectReturnL = null;
+	        this.effectReturnR = null;
+	        this._writable(['wet']);
+	        this.wet = null;
+	        return this;
+	    };
+	    return Tone.StereoEffect;
+	});
+	Module(function (Tone) {
+	    
+	    /**
+		 * 	@class  Tone.FeedbackEffect provides a loop between an 
+		 * 	        audio source and its own output. This is a base-class
+		 * 	        for feedback effects. 
+		 *
+		 *  @constructor
+		 *  @extends {Tone.Effect}
+		 *  @param {NormalRange|Object} [feedback] The initial feedback value.
+		 */
+	    Tone.FeedbackEffect = function () {
+	        var options = this.optionsObject(arguments, ['feedback']);
+	        options = this.defaultArg(options, Tone.FeedbackEffect.defaults);
+	        Tone.Effect.call(this, options);
+	        /**
+			 *  The amount of signal which is fed back into the effect input. 
+			 *  @type {NormalRange}
+			 *  @signal
+			 */
+	        this.feedback = new Tone.Signal(options.feedback, Tone.Type.NormalRange);
+	        /**
+			 *  the gain which controls the feedback
+			 *  @type {GainNode}
+			 *  @private
+			 */
+	        this._feedbackGain = this.context.createGain();
+	        //the feedback loop
+	        this.effectReturn.chain(this._feedbackGain, this.effectSend);
+	        this.feedback.connect(this._feedbackGain.gain);
+	        this._readOnly(['feedback']);
+	    };
+	    Tone.extend(Tone.FeedbackEffect, Tone.Effect);
+	    /**
+		 *  @static
+		 *  @type {Object}
+		 */
+	    Tone.FeedbackEffect.defaults = { 'feedback': 0.125 };
+	    /**
+		 *  Clean up. 
+		 *  @returns {Tone.FeedbackEffect} this
+		 */
+	    Tone.FeedbackEffect.prototype.dispose = function () {
+	        Tone.Effect.prototype.dispose.call(this);
+	        this._writable(['feedback']);
+	        this.feedback.dispose();
+	        this.feedback = null;
+	        this._feedbackGain.disconnect();
+	        this._feedbackGain = null;
+	        return this;
+	    };
+	    return Tone.FeedbackEffect;
+	});
+	Module(function (Tone) {
+	    
+	    /**
+		 *  @class Just like a stereo feedback effect, but the feedback is routed from left to right
+		 *         and right to left instead of on the same channel.
+		 *
+		 *	@constructor
+		 *	@extends {Tone.FeedbackEffect}
+		 */
+	    Tone.StereoXFeedbackEffect = function () {
+	        var options = this.optionsObject(arguments, ['feedback'], Tone.FeedbackEffect.defaults);
+	        Tone.StereoEffect.call(this, options);
+	        /**
+			 *  The amount of feedback from the output
+			 *  back into the input of the effect (routed
+			 *  across left and right channels).
+			 *  @type {NormalRange}
+			 *  @signal
+			 */
+	        this.feedback = new Tone.Signal(options.feedback, Tone.Type.NormalRange);
+	        /**
+			 *  the left side feeback
+			 *  @type {GainNode}
+			 *  @private
+			 */
+	        this._feedbackLR = this.context.createGain();
+	        /**
+			 *  the right side feeback
+			 *  @type {GainNode}
+			 *  @private
+			 */
+	        this._feedbackRL = this.context.createGain();
+	        //connect it up
+	        this.effectReturnL.chain(this._feedbackLR, this.effectSendR);
+	        this.effectReturnR.chain(this._feedbackRL, this.effectSendL);
+	        this.feedback.fan(this._feedbackLR.gain, this._feedbackRL.gain);
+	        this._readOnly(['feedback']);
+	    };
+	    Tone.extend(Tone.StereoXFeedbackEffect, Tone.FeedbackEffect);
+	    /**
+		 *  clean up
+		 *  @returns {Tone.StereoXFeedbackEffect} this
+		 */
+	    Tone.StereoXFeedbackEffect.prototype.dispose = function () {
+	        Tone.StereoEffect.prototype.dispose.call(this);
+	        this._writable(['feedback']);
+	        this.feedback.dispose();
+	        this.feedback = null;
+	        this._feedbackLR.disconnect();
+	        this._feedbackLR = null;
+	        this._feedbackRL.disconnect();
+	        this._feedbackRL = null;
+	        return this;
+	    };
+	    return Tone.StereoXFeedbackEffect;
+	});
+	Module(function (Tone) {
+	    
+	    /**
+		 *  @class Tone.Chorus is a stereo chorus effect with feedback composed of 
+		 *         a left and right delay with a Tone.LFO applied to the delayTime of each channel. 
+		 *         Inspiration from [Tuna.js](https://github.com/Dinahmoe/tuna/blob/master/tuna.js).
+		 *         Read more on the chorus effect on [SoundOnSound](http://www.soundonsound.com/sos/jun04/articles/synthsecrets.htm).
+		 *
+		 *	@constructor
+		 *	@extends {Tone.StereoXFeedbackEffect}
+		 *	@param {Frequency|Object} [frequency] The frequency of the LFO.
+		 *	@param {Number} [delayTime] The delay of the chorus effect in ms. 
+		 *	@param {NormalRange} [depth] The depth of the chorus.
+		 *	@example
+		 * var chorus = new Tone.Chorus(4, 2.5, 0.5);
+		 * var synth = new Tone.PolySynth(4, Tone.MonoSynth).connect(chorus);
+		 * synth.triggerAttackRelease(["C3","E3","G3"], "8n");
+		 */
+	    Tone.Chorus = function () {
+	        var options = this.optionsObject(arguments, [
+	            'frequency',
+	            'delayTime',
+	            'depth'
+	        ], Tone.Chorus.defaults);
+	        Tone.StereoXFeedbackEffect.call(this, options);
+	        /**
+			 *  the depth of the chorus
+			 *  @type {number}
+			 *  @private
+			 */
+	        this._depth = options.depth;
+	        /**
+			 *  the delayTime
+			 *  @type {number}
+			 *  @private
+			 */
+	        this._delayTime = options.delayTime / 1000;
+	        /**
+			 *  the lfo which controls the delayTime
+			 *  @type {Tone.LFO}
+			 *  @private
+			 */
+	        this._lfoL = new Tone.LFO(options.rate, 0, 1);
+	        /**
+			 *  another LFO for the right side with a 180 degree phase diff
+			 *  @type {Tone.LFO}
+			 *  @private
+			 */
+	        this._lfoR = new Tone.LFO(options.rate, 0, 1);
+	        this._lfoR.phase = 180;
+	        /**
+			 *  delay for left
+			 *  @type {DelayNode}
+			 *  @private
+			 */
+	        this._delayNodeL = this.context.createDelay();
+	        /**
+			 *  delay for right
+			 *  @type {DelayNode}
+			 *  @private
+			 */
+	        this._delayNodeR = this.context.createDelay();
+	        /**
+			 * The frequency of the LFO which modulates the delayTime. 
+			 * @type {Frequency}
+			 * @signal
+			 */
+	        this.frequency = this._lfoL.frequency;
+	        //connections
+	        this.connectSeries(this.effectSendL, this._delayNodeL, this.effectReturnL);
+	        this.connectSeries(this.effectSendR, this._delayNodeR, this.effectReturnR);
+	        //and pass through to make the detune apparent
+	        this.input.connect(this.output);
+	        //lfo setup
+	        this._lfoL.connect(this._delayNodeL.delayTime);
+	        this._lfoR.connect(this._delayNodeR.delayTime);
+	        //start the lfo
+	        this._lfoL.start();
+	        this._lfoR.start();
+	        //have one LFO frequency control the other
+	        this._lfoL.frequency.connect(this._lfoR.frequency);
+	        //set the initial values
+	        this.depth = this._depth;
+	        this.frequency.value = options.frequency;
+	        this.type = options.type;
+	        this._readOnly(['frequency']);
+	    };
+	    Tone.extend(Tone.Chorus, Tone.StereoXFeedbackEffect);
+	    /**
+		 *  @static
+		 *  @type {Object}
+		 */
+	    Tone.Chorus.defaults = {
+	        'frequency': 1.5,
+	        'delayTime': 3.5,
+	        'depth': 0.7,
+	        'feedback': 0.1,
+	        'type': 'sine'
+	    };
+	    /**
+		 * The depth of the effect. A depth of 1 makes the delayTime
+		 * modulate between 0 and 2*delayTime (centered around the delayTime). 
+		 * @memberOf Tone.Chorus#
+		 * @type {NormalRange}
+		 * @name depth
+		 */
+	    Object.defineProperty(Tone.Chorus.prototype, 'depth', {
+	        get: function () {
+	            return this._depth;
+	        },
+	        set: function (depth) {
+	            this._depth = depth;
+	            var deviation = this._delayTime * depth;
+	            this._lfoL.min = Math.max(this._delayTime - deviation, 0);
+	            this._lfoL.max = this._delayTime + deviation;
+	            this._lfoR.min = Math.max(this._delayTime - deviation, 0);
+	            this._lfoR.max = this._delayTime + deviation;
+	        }
+	    });
+	    /**
+		 * The delayTime in milliseconds of the chorus. A larger delayTime
+		 * will give a more pronounced effect. Nominal range a delayTime
+		 * is between 2 and 20ms. 
+		 * @memberOf Tone.Chorus#
+		 * @type {Number}
+		 * @name delayTime
+		 */
+	    Object.defineProperty(Tone.Chorus.prototype, 'delayTime', {
+	        get: function () {
+	            return this._delayTime * 1000;
+	        },
+	        set: function (delayTime) {
+	            this._delayTime = delayTime / 1000;
+	            this.depth = this._depth;
+	        }
+	    });
+	    /**
+		 * The oscillator type of the LFO. 
+		 * @memberOf Tone.Chorus#
+		 * @type {string}
+		 * @name type
+		 */
+	    Object.defineProperty(Tone.Chorus.prototype, 'type', {
+	        get: function () {
+	            return this._lfoL.type;
+	        },
+	        set: function (type) {
+	            this._lfoL.type = type;
+	            this._lfoR.type = type;
+	        }
+	    });
+	    /**
+		 *  Clean up. 
+		 *  @returns {Tone.Chorus} this
+		 */
+	    Tone.Chorus.prototype.dispose = function () {
+	        Tone.StereoXFeedbackEffect.prototype.dispose.call(this);
+	        this._lfoL.dispose();
+	        this._lfoL = null;
+	        this._lfoR.dispose();
+	        this._lfoR = null;
+	        this._delayNodeL.disconnect();
+	        this._delayNodeL = null;
+	        this._delayNodeR.disconnect();
+	        this._delayNodeR = null;
+	        this._writable('frequency');
+	        this.frequency = null;
+	        return this;
+	    };
+	    return Tone.Chorus;
+	});
+	Module(function (Tone) {
+	    
+	    /**
+		 *  @class  Tone.Convolver is a wrapper around the Native Web Audio 
+		 *          [ConvolverNode](http://webaudio.github.io/web-audio-api/#the-convolvernode-interface).
+		 *          Convolution is useful for reverb and filter emulation. Read more about convolution reverb on
+		 *          [Wikipedia](https://en.wikipedia.org/wiki/Convolution_reverb).
+		 *  
+		 *  @constructor
+		 *  @extends {Tone.Effect}
+		 *  @param {string|Tone.Buffer|Object} [url] The URL of the impulse response or the Tone.Buffer
+		 *                                           contianing the impulse response. 
+		 *  @example
+		 * //initializing the convolver with an impulse response
+		 * var convolver = new Tone.Convolver("./path/to/ir.wav");
+		 * convolver.toMaster();
+		 * //after the buffer has loaded
+		 * Tone.Buffer.onload = function(){
+		 * 	//testing out convolution with a noise burst
+		 * 	var burst = new Tone.NoiseSynth().connect(convolver);
+		 * 	burst.triggerAttackRelease("16n");
+		 * };
+		 */
+	    Tone.Convolver = function () {
+	        var options = this.optionsObject(arguments, ['url'], Tone.Convolver.defaults);
+	        Tone.Effect.call(this, options);
+	        /**
+			 *  convolver node
+			 *  @type {ConvolverNode}
+			 *  @private
+			 */
+	        this._convolver = this.context.createConvolver();
+	        /**
+			 *  the convolution buffer
+			 *  @type {Tone.Buffer}
+			 *  @private
+			 */
+	        this._buffer = new Tone.Buffer(options.url, function (buffer) {
+	            this.buffer = buffer;
+	            options.onload();
+	        }.bind(this));
+	        this.connectEffect(this._convolver);
+	    };
+	    Tone.extend(Tone.Convolver, Tone.Effect);
+	    /**
+		 *  @static
+		 *  @const
+		 *  @type  {Object}
+		 */
+	    Tone.Convolver.defaults = {
+	        'url': '',
+	        'onload': Tone.noOp
+	    };
+	    /**
+		 *  The convolver's buffer
+		 *  @memberOf Tone.Convolver#
+		 *  @type {AudioBuffer}
+		 *  @name buffer
+		 */
+	    Object.defineProperty(Tone.Convolver.prototype, 'buffer', {
+	        get: function () {
+	            return this._buffer.get();
+	        },
+	        set: function (buffer) {
+	            this._buffer.set(buffer);
+	            this._convolver.buffer = this._buffer.get();
+	        }
+	    });
+	    /**
+		 *  Load an impulse response url as an audio buffer.
+		 *  Decodes the audio asynchronously and invokes
+		 *  the callback once the audio buffer loads.
+		 *  @param {string} url The url of the buffer to load.
+		 *                      filetype support depends on the
+		 *                      browser.
+		 *  @param  {function=} callback
+		 *  @returns {Tone.Convolver} this
+		 */
+	    Tone.Convolver.prototype.load = function (url, callback) {
+	        this._buffer.load(url, function (buff) {
+	            this.buffer = buff;
+	            if (callback) {
+	                callback();
+	            }
+	        }.bind(this));
+	        return this;
+	    };
+	    /**
+		 *  Clean up. 
+		 *  @returns {Tone.Convolver} this
+		 */
+	    Tone.Convolver.prototype.dispose = function () {
+	        Tone.Effect.prototype.dispose.call(this);
+	        this._convolver.disconnect();
+	        this._convolver = null;
+	        this._buffer.dispose();
+	        this._buffer = null;
+	        return this;
+	    };
+	    return Tone.Convolver;
+	});
+	Module(function (Tone) {
+	    
+	    /**
+		 *  @class Tone.Distortion is a simple distortion effect using Tone.WaveShaper.
+		 *         Algorithm from [a stackoverflow answer](http://stackoverflow.com/a/22313408).
+		 *
+		 *  @extends {Tone.Effect}
+		 *  @constructor
+		 *  @param {Number|Object} [distortion] The amount of distortion (nominal range of 0-1)
+		 *  @example
+		 * var dist = new Tone.Distortion(0.8).toMaster();
+		 * var fm = new Tone.SimpleFM().connect(dist);
+		 * //this sounds good on bass notes
+		 * fm.triggerAttackRelease("A1", "8n");
+		 */
+	    Tone.Distortion = function () {
+	        var options = this.optionsObject(arguments, ['distortion'], Tone.Distortion.defaults);
+	        Tone.Effect.call(this, options);
+	        /**
+			 *  @type {Tone.WaveShaper}
+			 *  @private
+			 */
+	        this._shaper = new Tone.WaveShaper(4096);
+	        /**
+			 * holds the distortion amount
+			 * @type {number}
+			 * @private
+			 */
+	        this._distortion = options.distortion;
+	        this.connectEffect(this._shaper);
+	        this.distortion = options.distortion;
+	        this.oversample = options.oversample;
+	    };
+	    Tone.extend(Tone.Distortion, Tone.Effect);
+	    /**
+		 *  @static
+		 *  @const
+		 *  @type {Object}
+		 */
+	    Tone.Distortion.defaults = {
+	        'distortion': 0.4,
+	        'oversample': 'none'
+	    };
+	    /**
+		 * The amount of distortion. Range between 0-1. 
+		 * @memberOf Tone.Distortion#
+		 * @type {number}
+		 * @name distortion
+		 */
+	    Object.defineProperty(Tone.Distortion.prototype, 'distortion', {
+	        get: function () {
+	            return this._distortion;
+	        },
+	        set: function (amount) {
+	            this._distortion = amount;
+	            var k = amount * 100;
+	            var deg = Math.PI / 180;
+	            this._shaper.setMap(function (x) {
+	                if (Math.abs(x) < 0.001) {
+	                    //should output 0 when input is 0
+	                    return 0;
+	                } else {
+	                    return (3 + k) * x * 20 * deg / (Math.PI + k * Math.abs(x));
+	                }
+	            });
+	        }
+	    });
+	    /**
+		 * The oversampling of the effect. Can either be "none", "2x" or "4x".
+		 * @memberOf Tone.Distortion#
+		 * @type {string}
+		 * @name oversample
+		 */
+	    Object.defineProperty(Tone.Distortion.prototype, 'oversample', {
+	        get: function () {
+	            return this._shaper.oversample;
+	        },
+	        set: function (oversampling) {
+	            this._shaper.oversample = oversampling;
+	        }
+	    });
+	    /**
+		 *  Clean up. 
+		 *  @returns {Tone.Distortion} this
+		 */
+	    Tone.Distortion.prototype.dispose = function () {
+	        Tone.Effect.prototype.dispose.call(this);
+	        this._shaper.dispose();
+	        this._shaper = null;
+	        return this;
+	    };
+	    return Tone.Distortion;
+	});
+	Module(function (Tone) {
+	    
+	    /**
+		 *  @class  Tone.FeedbackDelay is a DelayNode in which part of output
+		 *          signal is fed back into the delay. 
+		 *
+		 *  @constructor
+		 *  @extends {Tone.FeedbackEffect}
+		 *  @param {Time|Object} [delayTime] The delay applied to the incoming signal. 
+		 *  @param {NormalRange=} feedback The amount of the effected signal which 
+		 *                            is fed back through the delay.
+		 *  @example
+		 * var feedbackDelay = new Tone.FeedbackDelay("8n", 0.5).toMaster();
+		 * var tom = new Tone.DrumSynth({
+		 * 	"octaves" : 4,
+		 * 	"pitchDecay" : 0.1
+		 * }).connect(feedbackDelay);
+		 * tom.triggerAttackRelease("A2","32n");
+		 */
+	    Tone.FeedbackDelay = function () {
+	        var options = this.optionsObject(arguments, [
+	            'delayTime',
+	            'feedback'
+	        ], Tone.FeedbackDelay.defaults);
+	        Tone.FeedbackEffect.call(this, options);
+	        /**
+			 *  The delayTime of the DelayNode. 
+			 *  @type {Time}
+			 *  @signal
+			 */
+	        this.delayTime = new Tone.Signal(options.delayTime, Tone.Type.Time);
+	        /**
+			 *  the delay node
+			 *  @type {DelayNode}
+			 *  @private
+			 */
+	        this._delayNode = this.context.createDelay(4);
+	        // connect it up
+	        this.connectEffect(this._delayNode);
+	        this.delayTime.connect(this._delayNode.delayTime);
+	        this._readOnly(['delayTime']);
+	    };
+	    Tone.extend(Tone.FeedbackDelay, Tone.FeedbackEffect);
+	    /**
+		 *  The default values. 
+		 *  @const
+		 *  @static
+		 *  @type {Object}
+		 */
+	    Tone.FeedbackDelay.defaults = { 'delayTime': 0.25 };
+	    /**
+		 *  clean up
+		 *  @returns {Tone.FeedbackDelay} this
+		 */
+	    Tone.FeedbackDelay.prototype.dispose = function () {
+	        Tone.FeedbackEffect.prototype.dispose.call(this);
+	        this.delayTime.dispose();
+	        this._delayNode.disconnect();
+	        this._delayNode = null;
+	        this._writable(['delayTime']);
+	        this.delayTime = null;
+	        return this;
+	    };
+	    return Tone.FeedbackDelay;
+	});
+	Module(function (Tone) {
+	    
+	    /**
+		 *  an array of comb filter delay values from Freeverb implementation
+		 *  @static
+		 *  @private
+		 *  @type {Array}
+		 */
+	    var combFilterTunings = [
+	        1557 / 44100,
+	        1617 / 44100,
+	        1491 / 44100,
+	        1422 / 44100,
+	        1277 / 44100,
+	        1356 / 44100,
+	        1188 / 44100,
+	        1116 / 44100
+	    ];
+	    /**
+		 *  an array of allpass filter frequency values from Freeverb implementation
+		 *  @private
+		 *  @static
+		 *  @type {Array}
+		 */
+	    var allpassFilterFrequencies = [
+	        225,
+	        556,
+	        441,
+	        341
+	    ];
+	    /**
+		 *  @class Tone.Freeverb is a reverb based on [Freeverb](https://ccrma.stanford.edu/~jos/pasp/Freeverb.html).
+		 *         Read more on reverb on [SoundOnSound](http://www.soundonsound.com/sos/may00/articles/reverb.htm).
+		 *
+		 *  @extends {Tone.Effect}
+		 *  @constructor
+		 *  @param {NormalRange|Object} [roomSize] Correlated to the decay time. 
+		 *  @param {Frequency} [dampening] The cutoff frequency of a lowpass filter as part 
+		 *                                 of the reverb. 
+		 *  @example
+		 * var freeverb = new Tone.Freeverb().toMaster();
+		 * freeverb.dampening.value = 1000;
+		 * //routing synth through the reverb
+		 * var synth = new Tone.AMSynth().connect(freeverb);
+		 */
+	    Tone.Freeverb = function () {
+	        var options = this.optionsObject(arguments, [
+	            'roomSize',
+	            'dampening'
+	        ], Tone.Freeverb.defaults);
+	        Tone.StereoEffect.call(this, options);
+	        /**
+			 *  The roomSize value between. A larger roomSize
+			 *  will result in a longer decay. 
+			 *  @type {NormalRange}
+			 *  @signal
+			 */
+	        this.roomSize = new Tone.Signal(options.roomSize, Tone.Type.NormalRange);
+	        /**
+			 *  The amount of dampening of the reverberant signal. 
+			 *  @type {Frequency}
+			 *  @signal
+			 */
+	        this.dampening = new Tone.Signal(options.dampening, Tone.Type.Frequency);
+	        /**
+			 *  the comb filters
+			 *  @type {Array}
+			 *  @private
+			 */
+	        this._combFilters = [];
+	        /**
+			 *  the allpass filters on the left
+			 *  @type {Array}
+			 *  @private
+			 */
+	        this._allpassFiltersL = [];
+	        /**
+			 *  the allpass filters on the right
+			 *  @type {Array}
+			 *  @private
+			 */
+	        this._allpassFiltersR = [];
+	        //make the allpass filters on teh right
+	        for (var l = 0; l < allpassFilterFrequencies.length; l++) {
+	            var allpassL = this.context.createBiquadFilter();
+	            allpassL.type = 'allpass';
+	            allpassL.frequency.value = allpassFilterFrequencies[l];
+	            this._allpassFiltersL.push(allpassL);
+	        }
+	        //make the allpass filters on the left
+	        for (var r = 0; r < allpassFilterFrequencies.length; r++) {
+	            var allpassR = this.context.createBiquadFilter();
+	            allpassR.type = 'allpass';
+	            allpassR.frequency.value = allpassFilterFrequencies[r];
+	            this._allpassFiltersR.push(allpassR);
+	        }
+	        //make the comb filters
+	        for (var c = 0; c < combFilterTunings.length; c++) {
+	            var lfpf = new Tone.LowpassCombFilter(combFilterTunings[c]);
+	            if (c < combFilterTunings.length / 2) {
+	                this.effectSendL.chain(lfpf, this._allpassFiltersL[0]);
+	            } else {
+	                this.effectSendR.chain(lfpf, this._allpassFiltersR[0]);
+	            }
+	            this.roomSize.connect(lfpf.resonance);
+	            this.dampening.connect(lfpf.dampening);
+	            this._combFilters.push(lfpf);
+	        }
+	        //chain the allpass filters togetehr
+	        this.connectSeries.apply(this, this._allpassFiltersL);
+	        this.connectSeries.apply(this, this._allpassFiltersR);
+	        this._allpassFiltersL[this._allpassFiltersL.length - 1].connect(this.effectReturnL);
+	        this._allpassFiltersR[this._allpassFiltersR.length - 1].connect(this.effectReturnR);
+	        this._readOnly([
+	            'roomSize',
+	            'dampening'
+	        ]);
+	    };
+	    Tone.extend(Tone.Freeverb, Tone.StereoEffect);
+	    /**
+		 *  @static
+		 *  @type {Object}
+		 */
+	    Tone.Freeverb.defaults = {
+	        'roomSize': 0.7,
+	        'dampening': 3000
+	    };
+	    /**
+		 *  Clean up. 
+		 *  @returns {Tone.Freeverb} this
+		 */
+	    Tone.Freeverb.prototype.dispose = function () {
+	        Tone.StereoEffect.prototype.dispose.call(this);
+	        for (var al = 0; al < this._allpassFiltersL.length; al++) {
+	            this._allpassFiltersL[al].disconnect();
+	            this._allpassFiltersL[al] = null;
+	        }
+	        this._allpassFiltersL = null;
+	        for (var ar = 0; ar < this._allpassFiltersR.length; ar++) {
+	            this._allpassFiltersR[ar].disconnect();
+	            this._allpassFiltersR[ar] = null;
+	        }
+	        this._allpassFiltersR = null;
+	        for (var cf = 0; cf < this._combFilters.length; cf++) {
+	            this._combFilters[cf].dispose();
+	            this._combFilters[cf] = null;
+	        }
+	        this._combFilters = null;
+	        this._writable([
+	            'roomSize',
+	            'dampening'
+	        ]);
+	        this.roomSize.dispose();
+	        this.roomSize = null;
+	        this.dampening.dispose();
+	        this.dampening = null;
+	        return this;
+	    };
+	    return Tone.Freeverb;
+	});
+	Module(function (Tone) {
+	    
+	    /**
+		 *  an array of the comb filter delay time values
+		 *  @private
+		 *  @static
+		 *  @type {Array}
+		 */
+	    var combFilterDelayTimes = [
+	        1687 / 25000,
+	        1601 / 25000,
+	        2053 / 25000,
+	        2251 / 25000
+	    ];
+	    /**
+		 *  the resonances of each of the comb filters
+		 *  @private
+		 *  @static
+		 *  @type {Array}
+		 */
+	    var combFilterResonances = [
+	        0.773,
+	        0.802,
+	        0.753,
+	        0.733
+	    ];
+	    /**
+		 *  the allpass filter frequencies
+		 *  @private
+		 *  @static
+		 *  @type {Array}
+		 */
+	    var allpassFilterFreqs = [
+	        347,
+	        113,
+	        37
+	    ];
+	    /**
+		 *  @class Tone.JCReverb is a simple [Schroeder Reverberator](https://ccrma.stanford.edu/~jos/pasp/Schroeder_Reverberators.html)
+		 *         tuned by John Chowning in 1970.
+		 *         It is made up of three allpass filters and four Tone.FeedbackCombFilter. 
+		 *         
+		 *
+		 *  @extends {Tone.Effect}
+		 *  @constructor
+		 *  @param {NormalRange|Object} [roomSize] Coorelates to the decay time.
+		 *  @example
+		 * var reverb = new Tone.JCReverb(0.4).connect(Tone.Master);
+		 * var delay = new Tone.FeedbackDelay(0.5); 
+		 * //connecting the synth to reverb through delay
+		 * var synth = new Tone.DuoSynth().chain(delay, reverb);
+		 * synth.triggerAttackRelease("A4","8n");
+		 */
+	    Tone.JCReverb = function () {
+	        var options = this.optionsObject(arguments, ['roomSize'], Tone.JCReverb.defaults);
+	        Tone.StereoEffect.call(this, options);
+	        /**
+			 *  room size control values between [0,1]
+			 *  @type {NormalRange}
+			 *  @signal
+			 */
+	        this.roomSize = new Tone.Signal(options.roomSize, Tone.Type.NormalRange);
+	        /**
+			 *  scale the room size
+			 *  @type {Tone.Scale}
+			 *  @private
+			 */
+	        this._scaleRoomSize = new Tone.Scale(-0.733, 0.197);
+	        /**
+			 *  a series of allpass filters
+			 *  @type {Array}
+			 *  @private
+			 */
+	        this._allpassFilters = [];
+	        /**
+			 *  parallel feedback comb filters
+			 *  @type {Array}
+			 *  @private
+			 */
+	        this._feedbackCombFilters = [];
+	        //make the allpass filters
+	        for (var af = 0; af < allpassFilterFreqs.length; af++) {
+	            var allpass = this.context.createBiquadFilter();
+	            allpass.type = 'allpass';
+	            allpass.frequency.value = allpassFilterFreqs[af];
+	            this._allpassFilters.push(allpass);
+	        }
+	        //and the comb filters
+	        for (var cf = 0; cf < combFilterDelayTimes.length; cf++) {
+	            var fbcf = new Tone.FeedbackCombFilter(combFilterDelayTimes[cf], 0.1);
+	            this._scaleRoomSize.connect(fbcf.resonance);
+	            fbcf.resonance.value = combFilterResonances[cf];
+	            this._allpassFilters[this._allpassFilters.length - 1].connect(fbcf);
+	            if (cf < combFilterDelayTimes.length / 2) {
+	                fbcf.connect(this.effectReturnL);
+	            } else {
+	                fbcf.connect(this.effectReturnR);
+	            }
+	            this._feedbackCombFilters.push(fbcf);
+	        }
+	        //chain the allpass filters together
+	        this.roomSize.connect(this._scaleRoomSize);
+	        this.connectSeries.apply(this, this._allpassFilters);
+	        this.effectSendL.connect(this._allpassFilters[0]);
+	        this.effectSendR.connect(this._allpassFilters[0]);
+	        this._readOnly(['roomSize']);
+	    };
+	    Tone.extend(Tone.JCReverb, Tone.StereoEffect);
+	    /**
+		 *  the default values
+		 *  @static
+		 *  @const
+		 *  @type {Object}
+		 */
+	    Tone.JCReverb.defaults = { 'roomSize': 0.5 };
+	    /**
+		 *  Clean up. 
+		 *  @returns {Tone.JCReverb} this
+		 */
+	    Tone.JCReverb.prototype.dispose = function () {
+	        Tone.StereoEffect.prototype.dispose.call(this);
+	        for (var apf = 0; apf < this._allpassFilters.length; apf++) {
+	            this._allpassFilters[apf].disconnect();
+	            this._allpassFilters[apf] = null;
+	        }
+	        this._allpassFilters = null;
+	        for (var fbcf = 0; fbcf < this._feedbackCombFilters.length; fbcf++) {
+	            this._feedbackCombFilters[fbcf].dispose();
+	            this._feedbackCombFilters[fbcf] = null;
+	        }
+	        this._feedbackCombFilters = null;
+	        this._writable(['roomSize']);
+	        this.roomSize.dispose();
+	        this.roomSize = null;
+	        this._scaleRoomSize.dispose();
+	        this._scaleRoomSize = null;
+	        return this;
+	    };
+	    return Tone.JCReverb;
+	});
+	Module(function (Tone) {
+	    
+	    /**
+		 *  @class Mid/Side processing separates the the 'mid' signal 
+		 *         (which comes out of both the left and the right channel) 
+		 *         and the 'side' (which only comes out of the the side channels) 
+		 *         and effects them separately before being recombined.
+		 *         Applies a Mid/Side seperation and recombination.
+		 *         Algorithm found in [kvraudio forums](http://www.kvraudio.com/forum/viewtopic.php?t=212587).
+		 *         <br><br>
+		 *         This is a base-class for Mid/Side Effects. 
+		 *
+		 *  @extends {Tone.Effect}
+		 *  @constructor
+		 */
+	    Tone.MidSideEffect = function () {
+	        Tone.Effect.call(this);
+	        /**
+			 *  The mid/side split
+			 *  @type  {Tone.MidSideSplit}
+			 *  @private
+			 */
+	        this._midSideSplit = new Tone.MidSideSplit();
+	        /**
+			 *  The mid/side merge
+			 *  @type  {Tone.MidSideMerge}
+			 *  @private
+			 */
+	        this._midSideMerge = new Tone.MidSideMerge();
+	        /**
+			 *  The mid send. Connect to mid processing
+			 *  @type {Tone.Expr}
+			 *  @private
+			 */
+	        this.midSend = this._midSideSplit.mid;
+	        /**
+			 *  The side send. Connect to side processing
+			 *  @type {Tone.Expr}
+			 *  @private
+			 */
+	        this.sideSend = this._midSideSplit.side;
+	        /**
+			 *  The mid return connection
+			 *  @type {GainNode}
+			 *  @private
+			 */
+	        this.midReturn = this._midSideMerge.mid;
+	        /**
+			 *  The side return connection
+			 *  @type {GainNode}
+			 *  @private
+			 */
+	        this.sideReturn = this._midSideMerge.side;
+	        //the connections
+	        this.effectSend.connect(this._midSideSplit);
+	        this._midSideMerge.connect(this.effectReturn);
+	    };
+	    Tone.extend(Tone.MidSideEffect, Tone.Effect);
+	    /**
+		 *  Clean up. 
+		 *  @returns {Tone.MidSideEffect} this
+		 */
+	    Tone.MidSideEffect.prototype.dispose = function () {
+	        Tone.Effect.prototype.dispose.call(this);
+	        this._midSideSplit.dispose();
+	        this._midSideSplit = null;
+	        this._midSideMerge.dispose();
+	        this._midSideMerge = null;
+	        this.midSend = null;
+	        this.sideSend = null;
+	        this.midReturn = null;
+	        this.sideReturn = null;
+	        return this;
+	    };
+	    return Tone.MidSideEffect;
+	});
+	Module(function (Tone) {
+	    
+	    /**
+		 *  @class Tone.Phaser is a phaser effect. Phasers work by changing the phase
+		 *         of different frequency components of an incoming signal. Read more on 
+		 *         [Wikipedia](https://en.wikipedia.org/wiki/Phaser_(effect)). 
+		 *         Inspiration for this phaser comes from [Tuna.js](https://github.com/Dinahmoe/tuna/).
+		 *
+		 *	@extends {Tone.StereoEffect}
+		 *	@constructor
+		 *	@param {Frequency|Object} [frequency] The speed of the phasing. 
+		 *	@param {number} [depth] The depth of the effect. 
+		 *	@param {Frequency} [baseFrequency] The base frequency of the filters. 
+		 *	@example
+		 * var phaser = new Tone.Phaser({
+		 * 	"frequency" : 15, 
+		 * 	"depth" : 5, 
+		 * 	"baseFrequency" : 1000
+		 * }).toMaster();
+		 * var synth = new Tone.FMSynth().connect(phaser);
+		 * synth.triggerAttackRelease("E3", "2n");
+		 */
+	    Tone.Phaser = function () {
+	        //set the defaults
+	        var options = this.optionsObject(arguments, [
+	            'frequency',
+	            'depth',
+	            'baseFrequency'
+	        ], Tone.Phaser.defaults);
+	        Tone.StereoEffect.call(this, options);
+	        /**
+			 *  the lfo which controls the frequency on the left side
+			 *  @type {Tone.LFO}
+			 *  @private
+			 */
+	        this._lfoL = new Tone.LFO(options.frequency, 0, 1);
+	        /**
+			 *  the lfo which controls the frequency on the right side
+			 *  @type {Tone.LFO}
+			 *  @private
+			 */
+	        this._lfoR = new Tone.LFO(options.frequency, 0, 1);
+	        this._lfoR.phase = 180;
+	        /**
+			 *  the base modulation frequency
+			 *  @type {number}
+			 *  @private
+			 */
+	        this._baseFrequency = options.baseFrequency;
+	        /**
+			 *  the depth of the phasing
+			 *  @type {number}
+			 *  @private
+			 */
+	        this._depth = options.depth;
+	        /**
+			 *  The quality factor of the filters
+			 *  @type {Positive}
+			 *  @signal
+			 */
+	        this.Q = new Tone.Signal(options.Q, Tone.Type.Positive);
+	        /**
+			 *  the array of filters for the left side
+			 *  @type {Array}
+			 *  @private
+			 */
+	        this._filtersL = this._makeFilters(options.stages, this._lfoL, this.Q);
+	        /**
+			 *  the array of filters for the left side
+			 *  @type {Array}
+			 *  @private
+			 */
+	        this._filtersR = this._makeFilters(options.stages, this._lfoR, this.Q);
+	        /**
+			 * the frequency of the effect
+			 * @type {Tone.Signal}
+			 */
+	        this.frequency = this._lfoL.frequency;
+	        this.frequency.value = options.frequency;
+	        //connect them up
+	        this.effectSendL.connect(this._filtersL[0]);
+	        this.effectSendR.connect(this._filtersR[0]);
+	        this._filtersL[options.stages - 1].connect(this.effectReturnL);
+	        this._filtersR[options.stages - 1].connect(this.effectReturnR);
+	        //control the frequency with one LFO
+	        this._lfoL.frequency.connect(this._lfoR.frequency);
+	        //set the options
+	        this.baseFrequency = options.baseFrequency;
+	        this.depth = options.depth;
+	        //start the lfo
+	        this._lfoL.start();
+	        this._lfoR.start();
+	        this._readOnly([
+	            'frequency',
+	            'Q'
+	        ]);
+	    };
+	    Tone.extend(Tone.Phaser, Tone.StereoEffect);
+	    /**
+		 *  defaults
+		 *  @static
+		 *  @type {object}
+		 */
+	    Tone.Phaser.defaults = {
+	        'frequency': 0.5,
+	        'depth': 10,
+	        'stages': 10,
+	        'Q': 10,
+	        'baseFrequency': 350
+	    };
+	    /**
+		 *  @param {number} stages
+		 *  @returns {Array} the number of filters all connected together
+		 *  @private
+		 */
+	    Tone.Phaser.prototype._makeFilters = function (stages, connectToFreq, Q) {
+	        var filters = new Array(stages);
+	        //make all the filters
+	        for (var i = 0; i < stages; i++) {
+	            var filter = this.context.createBiquadFilter();
+	            filter.type = 'allpass';
+	            Q.connect(filter.Q);
+	            connectToFreq.connect(filter.frequency);
+	            filters[i] = filter;
+	        }
+	        this.connectSeries.apply(this, filters);
+	        return filters;
+	    };
+	    /**
+		 * The depth of the effect. 
+		 * @memberOf Tone.Phaser#
+		 * @type {number}
+		 * @name depth
+		 */
+	    Object.defineProperty(Tone.Phaser.prototype, 'depth', {
+	        get: function () {
+	            return this._depth;
+	        },
+	        set: function (depth) {
+	            this._depth = depth;
+	            var max = this._baseFrequency + this._baseFrequency * depth;
+	            this._lfoL.max = max;
+	            this._lfoR.max = max;
+	        }
+	    });
+	    /**
+		 * The the base frequency of the filters. 
+		 * @memberOf Tone.Phaser#
+		 * @type {number}
+		 * @name baseFrequency
+		 */
+	    Object.defineProperty(Tone.Phaser.prototype, 'baseFrequency', {
+	        get: function () {
+	            return this._baseFrequency;
+	        },
+	        set: function (freq) {
+	            this._baseFrequency = freq;
+	            this._lfoL.min = freq;
+	            this._lfoR.min = freq;
+	            this.depth = this._depth;
+	        }
+	    });
+	    /**
+		 *  clean up
+		 *  @returns {Tone.Phaser} this
+		 */
+	    Tone.Phaser.prototype.dispose = function () {
+	        Tone.StereoEffect.prototype.dispose.call(this);
+	        this._writable([
+	            'frequency',
+	            'Q'
+	        ]);
+	        this.Q.dispose();
+	        this.Q = null;
+	        this._lfoL.dispose();
+	        this._lfoL = null;
+	        this._lfoR.dispose();
+	        this._lfoR = null;
+	        for (var i = 0; i < this._filtersL.length; i++) {
+	            this._filtersL[i].disconnect();
+	            this._filtersL[i] = null;
+	        }
+	        this._filtersL = null;
+	        for (var j = 0; j < this._filtersR.length; j++) {
+	            this._filtersR[j].disconnect();
+	            this._filtersR[j] = null;
+	        }
+	        this._filtersR = null;
+	        this.frequency = null;
+	        return this;
+	    };
+	    return Tone.Phaser;
+	});
+	Module(function (Tone) {
+	    
+	    /**
+		 *  @class  Tone.PingPongDelay is a feedback delay effect where the echo is heard
+		 *          first in one channel and next in the opposite channel. In a stereo
+		 *          system these are the right and left channels.
+		 *          PingPongDelay in more simplified terms is two Tone.FeedbackDelays 
+		 *          with independent delay values. Each delay is routed to one channel
+		 *          (left or right), and the channel triggered second will always 
+		 *          trigger at the same interval after the first.
+		 *
+		 * 	@constructor
+		 * 	@extends {Tone.StereoXFeedbackEffect}
+		 *  @param {Time|Object} [delayTime] The delayTime between consecutive echos.
+		 *  @param {NormalRange=} feedback The amount of the effected signal which 
+		 *                                 is fed back through the delay.
+		 *  @example
+		 * var pingPong = new Tone.PingPongDelay("4n", 0.2).toMaster();
+		 * var drum = new Tone.DrumSynth().connect(pingPong);
+		 * drum.triggerAttackRelease("C4", "32n");
+		 */
+	    Tone.PingPongDelay = function () {
+	        var options = this.optionsObject(arguments, [
+	            'delayTime',
+	            'feedback'
+	        ], Tone.PingPongDelay.defaults);
+	        Tone.StereoXFeedbackEffect.call(this, options);
+	        /**
+			 *  the delay node on the left side
+			 *  @type {DelayNode}
+			 *  @private
+			 */
+	        this._leftDelay = this.context.createDelay(options.maxDelayTime);
+	        /**
+			 *  the delay node on the right side
+			 *  @type {DelayNode}
+			 *  @private
+			 */
+	        this._rightDelay = this.context.createDelay(options.maxDelayTime);
+	        /**
+			 *  the predelay on the right side
+			 *  @type {DelayNode}
+			 *  @private
+			 */
+	        this._rightPreDelay = this.context.createDelay(options.maxDelayTime);
+	        /**
+			 *  the delay time signal
+			 *  @type {Time}
+			 *  @signal
+			 */
+	        this.delayTime = new Tone.Signal(options.delayTime, Tone.Type.Time);
+	        //connect it up
+	        this.effectSendL.chain(this._leftDelay, this.effectReturnL);
+	        this.effectSendR.chain(this._rightPreDelay, this._rightDelay, this.effectReturnR);
+	        this.delayTime.fan(this._leftDelay.delayTime, this._rightDelay.delayTime, this._rightPreDelay.delayTime);
+	        //rearranged the feedback to be after the rightPreDelay
+	        this._feedbackLR.disconnect();
+	        this._feedbackLR.connect(this._rightDelay);
+	        this._readOnly(['delayTime']);
+	    };
+	    Tone.extend(Tone.PingPongDelay, Tone.StereoXFeedbackEffect);
+	    /**
+		 *  @static
+		 *  @type {Object}
+		 */
+	    Tone.PingPongDelay.defaults = {
+	        'delayTime': 0.25,
+	        'maxDelayTime': 1
+	    };
+	    /**
+		 *  Clean up. 
+		 *  @returns {Tone.PingPongDelay} this
+		 */
+	    Tone.PingPongDelay.prototype.dispose = function () {
+	        Tone.StereoXFeedbackEffect.prototype.dispose.call(this);
+	        this._leftDelay.disconnect();
+	        this._leftDelay = null;
+	        this._rightDelay.disconnect();
+	        this._rightDelay = null;
+	        this._rightPreDelay.disconnect();
+	        this._rightPreDelay = null;
+	        this._writable(['delayTime']);
+	        this.delayTime.dispose();
+	        this.delayTime = null;
+	        return this;
+	    };
+	    return Tone.PingPongDelay;
+	});
+	Module(function (Tone) {
+	    
+	    /**
+		 *  @class Base class for stereo feedback effects where the effectReturn
+		 *         is fed back into the same channel. 
+		 *
+		 *	@constructor
+		 *	@extends {Tone.FeedbackEffect}
+		 */
+	    Tone.StereoFeedbackEffect = function () {
+	        var options = this.optionsObject(arguments, ['feedback'], Tone.FeedbackEffect.defaults);
+	        Tone.StereoEffect.call(this, options);
+	        /**
+			 *  controls the amount of feedback
+			 *  @type {NormalRange}
+			 *  @signal
+			 */
+	        this.feedback = new Tone.Signal(options.feedback, Tone.Type.NormalRange);
+	        /**
+			 *  the left side feeback
+			 *  @type {GainNode}
+			 *  @private
+			 */
+	        this._feedbackL = this.context.createGain();
+	        /**
+			 *  the right side feeback
+			 *  @type {GainNode}
+			 *  @private
+			 */
+	        this._feedbackR = this.context.createGain();
+	        //connect it up
+	        this.effectReturnL.chain(this._feedbackL, this.effectSendL);
+	        this.effectReturnR.chain(this._feedbackR, this.effectSendR);
+	        this.feedback.fan(this._feedbackL.gain, this._feedbackR.gain);
+	        this._readOnly(['feedback']);
+	    };
+	    Tone.extend(Tone.StereoFeedbackEffect, Tone.FeedbackEffect);
+	    /**
+		 *  clean up
+		 *  @returns {Tone.StereoFeedbackEffect} this
+		 */
+	    Tone.StereoFeedbackEffect.prototype.dispose = function () {
+	        Tone.StereoEffect.prototype.dispose.call(this);
+	        this._writable(['feedback']);
+	        this.feedback.dispose();
+	        this.feedback = null;
+	        this._feedbackL.disconnect();
+	        this._feedbackL = null;
+	        this._feedbackR.disconnect();
+	        this._feedbackR = null;
+	        return this;
+	    };
+	    return Tone.StereoFeedbackEffect;
+	});
+	Module(function (Tone) {
+	    
+	    /**
+		 *  @class Applies a width factor to the mid/side seperation. 
+		 *         0 is all mid and 1 is all side.
+		 *         Algorithm found in [kvraudio forums](http://www.kvraudio.com/forum/viewtopic.php?t=212587).
+		 *         <br><br>
+		 *         <code>
+		 *         Mid *= 2*(1-width)<br>
+		 *         Side *= 2*width
+		 *         </code>
+		 *
+		 *  @extends {Tone.MidSideEffect}
+		 *  @constructor
+		 *  @param {NormalRange|Object} [width] The stereo width. A width of 0 is mono and 1 is stereo. 0.5 is no change.
+		 */
+	    Tone.StereoWidener = function () {
+	        var options = this.optionsObject(arguments, ['width'], Tone.StereoWidener.defaults);
+	        Tone.MidSideEffect.call(this, options);
+	        /**
+			 *  The width control. 0 = 100% mid. 1 = 100% side. 0.5 = no change. 
+			 *  @type {NormalRange}
+			 *  @signal
+			 */
+	        this.width = new Tone.Signal(0.5, Tone.Type.NormalRange);
+	        /**
+			 *  Mid multiplier
+			 *  @type {Tone.Expr}
+			 *  @private
+			 */
+	        this._midMult = new Tone.Expr('$0 * ($1 * (1 - $2))');
+	        /**
+			 *  Side multiplier
+			 *  @type {Tone.Expr}
+			 *  @private
+			 */
+	        this._sideMult = new Tone.Expr('$0 * ($1 * $2)');
+	        /**
+			 *  constant output of 2
+			 *  @type {Tone}
+			 *  @private
+			 */
+	        this._two = new Tone.Signal(2);
+	        //the mid chain
+	        this._two.connect(this._midMult, 0, 1);
+	        this.width.connect(this._midMult, 0, 2);
+	        //the side chain
+	        this._two.connect(this._sideMult, 0, 1);
+	        this.width.connect(this._sideMult, 0, 2);
+	        //connect it to the effect send/return
+	        this.midSend.chain(this._midMult, this.midReturn);
+	        this.sideSend.chain(this._sideMult, this.sideReturn);
+	        this._readOnly(['width']);
+	    };
+	    Tone.extend(Tone.StereoWidener, Tone.MidSideEffect);
+	    /**
+		 *  the default values
+		 *  @static
+		 *  @type {Object}
+		 */
+	    Tone.StereoWidener.defaults = { 'width': 0.5 };
+	    /**
+		 *  Clean up. 
+		 *  @returns {Tone.StereoWidener} this
+		 */
+	    Tone.StereoWidener.prototype.dispose = function () {
+	        Tone.MidSideEffect.prototype.dispose.call(this);
+	        this._writable(['width']);
+	        this.width.dispose();
+	        this.width = null;
+	        this._midMult.dispose();
+	        this._midMult = null;
+	        this._sideMult.dispose();
+	        this._sideMult = null;
+	        this._two.dispose();
+	        this._two = null;
+	        return this;
+	    };
+	    return Tone.StereoWidener;
+	});
+	Module(function (Tone) {
+	    
+	    /**
+		 *  @class Tone.Tremelo modulates the amplitude of an incoming signal using a Tone.LFO. 
+		 *         The type, frequency, and depth of the LFO is controllable. 
+		 *
+		 *  @extends {Tone.Effect}
+		 *  @constructor
+		 *  @param {Frequency|Object} [frequency] The rate of the effect. 
+		 *  @param {NormalRange} [depth] The depth of the wavering.
+		 *  @example
+		 * //create an tremolo and start it's LFO
+		 * var tremolo = new Tone.Tremolo(9, 0.75).toMaster().start();
+		 * //route an oscillator through the tremolo and start it
+		 * var oscillator = new Tone.Oscillator().connect(tremolo).start();
+		 */
+	    Tone.Tremolo = function () {
+	        var options = this.optionsObject(arguments, [
+	            'frequency',
+	            'depth'
+	        ], Tone.Tremolo.defaults);
+	        Tone.Effect.call(this, options);
+	        /**
+			 *  The tremelo LFO
+			 *  @type  {Tone.LFO}
+			 *  @private
+			 */
+	        this._lfo = new Tone.LFO({
+	            'frequency': options.frequency,
+	            'amplitude': options.depth,
+	            'min': 1,
+	            'max': 0
+	        });
+	        /**
+			 *  Where the gain is multiplied
+			 *  @type  {GainNode}
+			 *  @private
+			 */
+	        this._amplitude = this.context.createGain();
+	        /**
+			 *  The frequency of the tremolo.	
+			 *  @type  {Frequency}
+			 *  @signal
+			 */
+	        this.frequency = this._lfo.frequency;
+	        /**
+			 *  The depth of the effect. A depth of 0, has no effect
+			 *  on the amplitude, and a depth of 1 makes the amplitude
+			 *  modulate fully between 0 and 1. 
+			 *  @type  {NormalRange}
+			 *  @signal
+			 */
+	        this.depth = this._lfo.amplitude;
+	        this._readOnly([
+	            'frequency',
+	            'depth'
+	        ]);
+	        this.connectEffect(this._amplitude);
+	        this._lfo.connect(this._amplitude.gain);
+	        this.type = options.type;
+	    };
+	    Tone.extend(Tone.Tremolo, Tone.Effect);
+	    /**
+		 *  @static
+		 *  @const
+		 *  @type {Object}
+		 */
+	    Tone.Tremolo.defaults = {
+	        'frequency': 10,
+	        'type': 'sine',
+	        'depth': 0.5
+	    };
+	    /**
+		 * Start the tremolo.
+		 * @param {Time} [time=now] When the tremolo begins.
+		 * @returns {Tone.Tremolo} this
+		 */
+	    Tone.Tremolo.prototype.start = function (time) {
+	        this._lfo.start(time);
+	        return this;
+	    };
+	    /**
+		 * Stop the tremolo.
+		 * @param {Time} [time=now] When the tremolo stops.
+		 * @returns {Tone.Tremolo} this
+		 */
+	    Tone.Tremolo.prototype.stop = function (time) {
+	        this._lfo.stop(time);
+	        return this;
+	    };
+	    /**
+		 * Sync the effect to the transport.
+		 * @param {Time} [delay=0] Delay time before starting the effect after the
+		 *                              Transport has started. 
+		 * @returns {Tone.AutoFilter} this
+		 */
+	    Tone.Tremolo.prototype.sync = function (delay) {
+	        this._lfo.sync(delay);
+	        return this;
+	    };
+	    /**
+		 * Unsync the filter from the transport
+		 * @returns {Tone.Tremolo} this
+		 */
+	    Tone.Tremolo.prototype.unsync = function () {
+	        this._lfo.unsync();
+	        return this;
+	    };
+	    /**
+		 * Type of oscillator attached to the Tremolo.
+		 * @memberOf Tone.Tremolo#
+		 * @type {string}
+		 * @name type
+		 */
+	    Object.defineProperty(Tone.Tremolo.prototype, 'type', {
+	        get: function () {
+	            return this._lfo.type;
+	        },
+	        set: function (type) {
+	            this._lfo.type = type;
+	        }
+	    });
+	    /**
+		 *  clean up
+		 *  @returns {Tone.Tremolo} this
+		 */
+	    Tone.Tremolo.prototype.dispose = function () {
+	        Tone.Effect.prototype.dispose.call(this);
+	        this._writable([
+	            'frequency',
+	            'depth'
+	        ]);
+	        this._lfo.dispose();
+	        this._lfo = null;
+	        this._amplitude.disconnect();
+	        this._amplitude = null;
+	        this.frequency = null;
+	        this.depth = null;
+	        return this;
+	    };
+	    return Tone.Tremolo;
+	});
+	Module(function (Tone) {
+	    
+	    /**
 		 * 	@class  Clip the incoming signal so that the output is always between min and max.
 		 * 	
 		 *  @constructor
@@ -14625,15 +14622,11 @@
 	        this._constraints = { 'audio': true };
 	        //get the option
 	        var self = this;
-	        if (typeof MediaStreamTrack.getSources === 'undefined') {
-	            console.error('MediaStreamTrack not supported');
-	        } else {
-	            MediaStreamTrack.getSources(function (media_sources) {
-	                if (inputNum < media_sources.length) {
-	                    self._constraints = { audio: { optional: [{ sourceId: media_sources[inputNum].id }] } };
-	                }
-	            });
-	        }
+	        MediaStreamTrack.getSources(function (media_sources) {
+	            if (inputNum < media_sources.length) {
+	                self.constraints.audio = { optional: [{ sourceId: media_sources[inputNum].id }] };
+	            }
+	        });
 	    };
 	    Tone.extend(Tone.Microphone, Tone.Source);
 	    /**

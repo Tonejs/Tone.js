@@ -16,6 +16,33 @@ function(Tone){
 	 *  @example
 	 * var duoSynth = new Tone.DuoSynth().toMaster();
 	 * duoSynth.triggerAttackRelease("C4", "2n");
+	 *  
+	 *  @routing {
+	 *           	"frequency": {
+	 *           		"type" : "Signal",
+	 *           		"connect" : ["voice0.frequency", "harmonicity.input"],
+	 *           		"param" : ".frequency"
+	 *           	}, 
+	 *           	"voice0" : {
+	 *           		"type" : "Monosynth",
+	 *           		"connect" : ["output.input"],
+	 *           		"param" : ".voice0"
+	 *           	},
+	 *           	"harmonicity" : {
+	 *           		"type" : "Multiply",
+	 *           		"connect" : ["voice1.input"],
+	 *           		"param" : ".harmonicity"
+	 *           	},
+	 *           	"voice1" : {
+	 *           		"type" : "Monosynth",
+	 *           		"connect" : ["output.input"],
+	 *           		"param" : ".voice1"
+	 *           	},
+	 *           	"output" : {
+	 *           		"type" : "Signal",
+	 *           		"param" : "output"
+	 *           	}
+	 *           }
 	 */
 	Tone.DuoSynth = function(options){
 
