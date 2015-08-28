@@ -157,6 +157,7 @@ function(Tone){
 		 */
 		this._swingAmount = 0;
 
+		this._readOnly("bpm");
 	};
 
 	Tone.extend(Tone.Transport);
@@ -700,6 +701,8 @@ function(Tone){
 	Tone.Transport.prototype.dispose = function(){
 		this._clock.dispose();
 		this._clock = null;
+		this._writable("bpm");
+		this.bpm.dispose();
 		this.bpm = null;
 		this._timeline.dispose();
 		this._timeline = null;
