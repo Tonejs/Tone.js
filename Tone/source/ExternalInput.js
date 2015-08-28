@@ -47,16 +47,21 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 		 */
 		this._constraints = {"audio" : true};
 
-		if(Tone.ExternalInput.sourceList.length === 0){
-			Tone.ExternalInput.getSources(function(){});
-		}
-
 		/**
-		 * The input source position in Tone.ExternalInput.sourceList. 
-		 * Set before ExternalInput.open().
-		 * @type {[type]}
+		 *  The input source position in Tone.ExternalInput.sources. 
+		 *  Set before ExternalInput.open().
+		 *  @type {[type]}
 		 */
 		this.inputNum = options.inputNum;
+
+		/**
+		 *  gates the input signal for start/stop
+		 *  @type {GainNode}
+		 *  @private
+		 */
+		this._gate = this.context.createGain();
+		this._gate.gain.value = 0;
+		this._gate.connect(this.output);
 
 	};
 
@@ -77,7 +82,7 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 	Tone.ExternalInput.prototype._getUserMedia = function(callback){
 		this._constraints = {
 			audio : {
-				optional : [{sourceId: Tone.ExternalInput.sourceList[this.inputNum].id}]
+				optional : [{sourceId: Tone.ExternalInput.sources[this.inputNum].id}]
 			}
 		};
 		navigator.getUserMedia(this._constraints, function(stream){
@@ -95,13 +100,10 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 	 *  @return {Tone.ExternalInput} this
 	 */
 	Tone.ExternalInput.prototype.open = function(callback){
-		if(Tone.ExternalInput.sourceList.length === 0){
-			Tone.ExternalInput.getSources(function(){
-				this._getUserMedia(callback);
-			}.bind(this));
-		} else {
+		Tone.ExternalInput.getSources(function(){
 			this._getUserMedia(callback);
-		}
+		}.bind(this));
+		return this;
 	};
 
 	/**
@@ -143,10 +145,7 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 		//Wrap a MediaStreamSourceNode around the live input stream.
 		this._mediaStream = this.context.createMediaStreamSource(stream);
 		//Connect the MediaStreamSourceNode to a gate gain node
-		this._gate = this.context.createGain();
-		this._gate.gain.value = 0;
 		this._mediaStream.connect(this._gate);
-		this._gate.connect(this.output);
 	};
 	/**
 	 * called on error
@@ -181,7 +180,7 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 	 * The array of available sources, different depending on whether connection is secure
 	 * @type {Array}
 	 */
-	Tone.ExternalInput.sourceList = [];
+	Tone.ExternalInput.sources = [];
 
 	/**
 	 * indicates whether browser supports MediaStreamTrack.getSources (i.e. Chrome vs Firefox)
@@ -193,12 +192,10 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 	/**
 	 *  Populates the source list. Accepts a callback 
 	 *  @param  {function=} callback Callback to be executed after populating list 
-	 *  @return {Array} Tone.ExternalInput.sourceList
+	 *  @return {Array} Tone.ExternalInput.sources
 	 *  @example
 	 *  var soundflower = new Tone.ExternalInput();
-	 *  Tone.ExternalInput.getSources(function(){
-	 *  	selectSoundflower(Tone.ExternalInput.sourceList);
-	 *  });
+	 *  Tone.ExternalInput.getSources(selectSoundflower);
 	 *
 	 * function selectSoundflower(sources){
 	 *  	for(var i = 0; i < sources.length; i++){
@@ -212,19 +209,19 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 	 *  };
 	 */
 	Tone.ExternalInput.getSources = function(callback){
-		if(Tone.ExternalInput.sourceList.length === 0 && Tone.ExternalInput._canGetSources){
+		if(Tone.ExternalInput.sources.length === 0 && Tone.ExternalInput._canGetSources){
 			MediaStreamTrack.getSources(function (media_sources){
 				for(var i = 0, max = media_sources.length; i < max; i++) {
 					if(media_sources[i].kind === "audio"){
-					Tone.ExternalInput.sourceList[i] = media_sources[i];
+						Tone.ExternalInput.sources[i] = media_sources[i];
 					}
 				}
-				callback();
+				callback(Tone.ExternalInput.sources);
 			});
 		} else {
-			callback();
+			callback(Tone.ExternalInput.sources);
 		}
-		return Tone.ExternalInput.sourceList;
+		return this;
 	};
 
 	//polyfill
