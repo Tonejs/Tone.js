@@ -372,6 +372,8 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper", "Tone/core/Types"], function
 			arr[i] = 1;
 		}
 		Tone.Signal._constant = audioContext.createBufferSource();
+		Tone.Signal._constant.channelCount = 1;
+		Tone.Signal._constant.channelCountMode = "explicit";
 		Tone.Signal._constant.buffer = buffer;
 		Tone.Signal._constant.loop = true;
 		Tone.Signal._constant.start(0);
