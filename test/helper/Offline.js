@@ -41,18 +41,22 @@ define(["Tone/core/Tone"], function (Tone) {
 		Tone.setContext(this.context);
 		this._before(this.context.destination);
 		this.context.startRendering();
+		return this;
 	};
 
 	Offline.prototype.before = function(cb){
 		this._before = cb;
+		return this;
 	};
 
 	Offline.prototype.after = function(cb){
 		this._after = cb;
+		return this;
 	};
 
 	Offline.prototype.test = function(cb){
 		this._test = cb;
+		return this;
 	};
 
 	return Offline;
