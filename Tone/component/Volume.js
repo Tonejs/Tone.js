@@ -12,7 +12,9 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Master"], function(To
 	 * var vol = new Tone.Volume(-12);
 	 * instrument.chain(vol, Tone.Master);
 	 */
-	Tone.Volume = function(volume){
+	Tone.Volume = function(){
+
+		var options = this.optionsObject(arguments, ["volume"], Tone.Volume.defaults);
 
 		/**
 		 * the output node
@@ -26,13 +28,26 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Master"], function(To
 		 *  @type {Decibels}
 		 *  @signal
 		 */
-		this.volume = new Tone.Signal(this.output.gain, Tone.Type.Decibels);
-		this.volume.value = this.defaultArg(volume, 0);
+		this.volume = new Tone.Signal({
+			"param" : this.output.gain, 
+			"value" : options.volume,
+			"units" : Tone.Type.Decibels
+		});
 
 		this._readOnly("volume");
 	};
 
 	Tone.extend(Tone.Volume);
+
+	/**
+	 *  Defaults
+	 *  @type  {Object}
+	 *  @const
+	 *  @static
+	 */
+	Tone.Volume.defaults = {
+		"volume" : 0
+	};
 
 	/**
 	 *  clean up
