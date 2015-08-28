@@ -7,18 +7,19 @@ define(["Tone/core/Tone"], function (Tone) {
 	 *  OFFLINE TESTING
 	 */
 	var Offline = function(duration, channels){
-		duration = duration || 1;
+		duration = duration || 0.7;
 		var sampleRate = 44100;
 		//dummy functions
 		this._before = Tone.noOp;
 		this._after = Tone.noOp;
 		this._test = Tone.noOp;
 		channels = channels || 1;
+		duration = Math.floor(duration * sampleRate);
 		//offline rendering context
-		this.context = new OfflineAudioContext(channels, sampleRate * duration, sampleRate);
+		this.context = new OfflineAudioContext(channels, duration, sampleRate);
 		this.context.oncomplete = function(e){
 
-			for (var i = 0; i < sampleRate * duration; i++){
+			for (var i = 0; i < duration; i++){
 
 				var ret = [];
 				for (var channel = 0; channel < channels; channel++){
