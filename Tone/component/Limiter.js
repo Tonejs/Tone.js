@@ -16,7 +16,9 @@ define(["Tone/core/Tone", "Tone/component/Compressor"], function(Tone){
 	 *  @example
 	 *  var limiter = new Tone.Limiter(-6);
 	 */
-	Tone.Limiter = function(threshold){
+	Tone.Limiter = function(){
+
+		var options = this.optionsObject(arguments, ["threshold"], Tone.Limiter.defaults);
 
 		/**
 		 *  the compressor
@@ -26,7 +28,7 @@ define(["Tone/core/Tone", "Tone/component/Compressor"], function(Tone){
 		this._compressor = this.input = this.output = new Tone.Compressor({
 			"attack" : 0.001,
 			"decay" : 0.001,
-			"threshold" : threshold
+			"threshold" : options.threshold
 		});
 
 		/**
@@ -40,6 +42,16 @@ define(["Tone/core/Tone", "Tone/component/Compressor"], function(Tone){
 	};
 
 	Tone.extend(Tone.Limiter);
+
+	/**
+	 *  The default value
+	 *  @type {Object}
+	 *  @const
+	 *  @static
+	 */
+	Tone.Limiter.defaults = {
+		"threshold" : -12
+	};
 
 	/**
 	 *  Clean up.
