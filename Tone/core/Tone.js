@@ -173,7 +173,7 @@ define(function(){
 			if (isUndef(param)){
 				continue;
 			}
-			if (param instanceof Tone.Signal){
+			if (isFunction(Tone.Signal) && param instanceof Tone.Signal){
 				if (param.value !== value){
 					if (isUndef(rampTime)){
 						param.value = value;
