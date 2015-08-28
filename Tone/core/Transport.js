@@ -91,6 +91,7 @@ function(Tone){
 		this.bpm._fromUnits = this._fromUnits.bind(this);
 		this.bpm.units = Tone.Type.BPM;
 		this.bpm.value = TransportConstructor.defaults.bpm;
+		this._readOnly("bpm");
 
 		/**
 		 *  The time signature, or more accurately the numerator
@@ -157,7 +158,6 @@ function(Tone){
 		 */
 		this._swingAmount = 0;
 
-		this._readOnly("bpm");
 	};
 
 	Tone.extend(Tone.Transport);
@@ -702,7 +702,6 @@ function(Tone){
 		this._clock.dispose();
 		this._clock = null;
 		this._writable("bpm");
-		this.bpm.dispose();
 		this.bpm = null;
 		this._timeline.dispose();
 		this._timeline = null;
