@@ -2,7 +2,8 @@ define(["helper/OutputAudio", "Tone/effect/Effect", "helper/PassAudio",
 	"helper/PassAudioStereo", "Test", "helper/Offline", "Tone/signal/Signal", "Tone/component/Merge"], 
 	function (OutputAudio, Effect, PassAudio, PassAudioStereo, Test, Offline, Signal, Merge) {
 
-	return function(Constr, args){
+	return function(Constr, args, before){
+
 
 		context("Effect Tests", function(){
 
@@ -14,6 +15,9 @@ define(["helper/OutputAudio", "Tone/effect/Effect", "helper/PassAudio",
 
 			it ("has an input and output", function(){
 				var instance = new Constr(args);
+				if (before){
+					before(instance);
+				}
 				instance.connect(Test);
 				Test.connect(instance);
 				instance.dispose();
@@ -21,6 +25,9 @@ define(["helper/OutputAudio", "Tone/effect/Effect", "helper/PassAudio",
 
 			it("can set the dry/wet value", function(){
 				var instance = new Constr(args);
+				if (before){
+					before(instance);
+				}
 				instance.wet.value = 0;
 				expect(instance.wet.value).to.equal(0);
 				instance.wet.value = 0.5;
@@ -32,6 +39,9 @@ define(["helper/OutputAudio", "Tone/effect/Effect", "helper/PassAudio",
 				var instance = new Constr({
 					"wet" : "0.25"
 				});
+				if (before){
+					before(instance);
+				}
 				expect(instance.wet.value).to.equal(0.25);
 				instance.dispose();
 			});
@@ -40,11 +50,11 @@ define(["helper/OutputAudio", "Tone/effect/Effect", "helper/PassAudio",
 				var instance;
 				PassAudio(function(input, dest){
 					instance = new Constr(args);
+					if (before){
+						before(instance);
+					}
 					input.connect(instance);
 					instance.connect(dest);
-					if (instance.start){
-						instance.start();
-					}
 				}, function(){
 					instance.dispose();
 					done();
@@ -55,11 +65,11 @@ define(["helper/OutputAudio", "Tone/effect/Effect", "helper/PassAudio",
 				var instance;
 				PassAudioStereo(function(input, dest){
 					instance = new Constr(args);
+					if (before){
+						before(instance);
+					}
 					input.connect(instance);
 					instance.connect(dest);
-					if (instance.start){
-						instance.start();
-					}
 				}, function(){
 					instance.dispose();
 					done();
@@ -71,15 +81,15 @@ define(["helper/OutputAudio", "Tone/effect/Effect", "helper/PassAudio",
 				var offline = new Offline(1, 2);
 				offline.before(function(dest){
 					instance = new Constr(args).connect(dest);
+					if (before){
+						before(instance);
+					}
 					merge = new Merge().connect(instance);
 					signalL = new Signal(-1).connect(merge.left);
 					signalR = new Signal(1).connect(merge.right);
 					//make the signals ramp
 					signalL.linearRampToValue(1, 1);
 					signalR.linearRampToValue(-1, 1);
-					if (instance.start){
-						instance.start();
-					}
 					instance.wet.value = 0;
 				});
 				offline.test(function(samples, time){
@@ -105,6 +115,9 @@ define(["helper/OutputAudio", "Tone/effect/Effect", "helper/PassAudio",
 				var rightEffected = false;
 				offline.before(function(dest){
 					instance = new Constr(args).connect(dest);
+					if (before){
+						before(instance);
+					}
 					merge = new Merge().connect(instance);
 					signalL = new Signal(-1).connect(merge.left);
 					signalR = new Signal(1).connect(merge.right);
