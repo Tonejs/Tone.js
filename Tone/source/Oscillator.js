@@ -50,6 +50,13 @@ function(Tone){
 		this._wave = null;
 
 		/**
+		 *  The partials of the oscillator
+		 *  @type {Array}
+		 *  @private
+		 */
+		this._partials = this.defaultArg(options.partials, [1]);
+
+		/**
 		 *  the phase of the oscillator
 		 *  between 0 - 360
 		 *  @type {number}
@@ -81,6 +88,18 @@ function(Tone){
 		"frequency" : 440,
 		"detune" : 0,
 		"phase" : 0
+	};
+
+	/**
+	 *  The Oscillator types
+	 *  @enum {String}
+	 */
+	Tone.Oscillator.Type = {
+		Sine : "sine",
+		Triangle : "triangle",
+		Sawtooth : "sawtooth",
+		Square : "square",
+		Custom : "custom"
 	};
 
 	/**
@@ -190,33 +209,41 @@ function(Tone){
 		var imag = new Float32Array(periodicWaveSize);
 		
 		var partialCount = 1;
-		var partial = /^(sine|triangle|square|sawtooth)(\d+)$/.exec(type);
-		if (partial){
-			partialCount = parseInt(partial[2]);
-			type = partial[1];
-			partialCount = Math.max(partialCount, 2);
+		if (type === Tone.Oscillator.Type.Custom){
+			partialCount = this._partials.length + 1;
 			periodicWaveSize = partialCount;
+		} else {
+			var partial = /^(sine|triangle|square|sawtooth)(\d+)$/.exec(type);
+			if (partial){
+				partialCount = parseInt(partial[2]) + 1;
+				type = partial[1];
+				partialCount = Math.max(partialCount, 2);
+				periodicWaveSize = partialCount;
+			}
 		}
 
 		for (var n = 1; n < periodicWaveSize; ++n) {
 			var piFactor = 2 / (n * Math.PI);
 			var b; 
 			switch (type) {
-				case "sine": 
+				case Tone.Oscillator.Type.Sine: 
 					b = (n <= partialCount) ? 1 : 0;
 					break;
-				case "square":
+				case Tone.Oscillator.Type.Square:
 					b = (n & 1) ? 2 * piFactor : 0;
 					break;
-				case "sawtooth":
+				case Tone.Oscillator.Type.Sawtooth:
 					b = piFactor * ((n & 1) ? 1 : -1);
 					break;
-				case "triangle":
+				case Tone.Oscillator.Type.Triangle:
 					if (n & 1) {
 						b = 2 * (piFactor * piFactor) * ((((n - 1) >> 1) & 1) ? -1 : 1);
 					} else {
 						b = 0;
 					}
+					break;
+				case Tone.Oscillator.Type.Custom: 
+					b = this._partials[n - 1];
 					break;
 				default:
 					throw new Error("invalid oscillator type: "+type);
@@ -268,6 +295,33 @@ function(Tone){
 	};
 
 	/**
+	 * The partials of the waveform. A partial represents 
+	 * the amplitude at a harmonic. The first harmonic is the 
+	 * fundamental frequency, the second is the octave and so on
+	 * following the harmonic series. 
+	 * Setting this value will automatically set the type to "custom". 
+	 * The value is an empty array when the type is not "custom". 
+	 * @memberOf Tone.Oscillator#
+	 * @type {Array}
+	 * @name partials
+	 * @example
+	 * osc.partials = [1, 0.2, 0.01];
+	 */
+	Object.defineProperty(Tone.Oscillator.prototype, "partials", {
+		get : function(){
+			if (this._type !== Tone.Oscillator.Type.Custom){
+				return [];
+			} else {
+				return this._partials;
+			}
+		}, 
+		set : function(partials){
+			this._partials = partials;
+			this.type = Tone.Oscillator.Type.Custom;
+		}
+	});
+
+	/**
 	 * The phase of the oscillator in degrees. 
 	 * @memberOf Tone.Oscillator#
 	 * @type {Degrees}
@@ -302,6 +356,7 @@ function(Tone){
 		this.frequency = null;
 		this.detune.dispose();
 		this.detune = null;
+		this._partials = null;
 		return this;
 	};
 
