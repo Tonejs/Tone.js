@@ -13,8 +13,8 @@ define(["Tone/core/Tone", "Tone/component/LFO", "Tone/component/CrossFade", "Ton
 	 */
 	Tone.PitchShift = function(){
 
-		Tone.Effect.call(this);
 		var options = this.optionsObject(arguments, ["pitch"], Tone.PitchShift.defaults);
+		Tone.Effect.call(this, options);
 
 		/**
 		 *  The pitch signal

@@ -1,6 +1,12 @@
 ### r6
 
-* Added PitchShift Effect.
+* Added PitchShift and Vibrato Effect.
+* Added Timeline/TimelineState/TimelineSignal which keeps track of the state in the future
+* Clock uses requestAnimationFrame instead of ScriptProcessorNode
+* Removed `onended` event from Tone.Source
+* Refactored tests
+* Renamed some Signal methods: exponentialRampToValueNow->exponentialRampToValue, setCurrentValueNow->setRampPoint
+* LFO no longer starts at bottom of cycle. Starts at whatever phase it's set at.
 
 ### r5
 

@@ -166,64 +166,106 @@ function(Tone){
 			return this._type;
 		},
 		set : function(type){
-
-			var originalType = type;
-
-			var fftSize = 4096;
-			var periodicWaveSize = fftSize / 2;
-
-			var real = new Float32Array(periodicWaveSize);
-			var imag = new Float32Array(periodicWaveSize);
-			
-			var partialCount = 1;
-			var partial = /(sine|triangle|square|sawtooth)(\d+)$/.exec(type);
-			if (partial){
-				partialCount = parseInt(partial[2]);
-				type = partial[1];
-				partialCount = Math.max(partialCount, 2);
-				periodicWaveSize = partialCount;
-			}
-
-			var shift = this._phase;	
-			for (var n = 1; n < periodicWaveSize; ++n) {
-				var piFactor = 2 / (n * Math.PI);
-				var b; 
-				switch (type) {
-					case "sine": 
-						b = (n <= partialCount) ? 1 : 0;
-						break;
-					case "square":
-						b = (n & 1) ? 2 * piFactor : 0;
-						break;
-					case "sawtooth":
-						b = piFactor * ((n & 1) ? 1 : -1);
-						break;
-					case "triangle":
-						if (n & 1) {
-							b = 2 * (piFactor * piFactor) * ((((n - 1) >> 1) & 1) ? -1 : 1);
-						} else {
-							b = 0;
-						}
-						break;
-					default:
-						throw new Error("invalid oscillator type: "+type);
-				}
-				if (b !== 0){
-					real[n] = -b * Math.sin(shift * n);
-					imag[n] = b * Math.cos(shift * n);
-				} else {
-					real[n] = 0;
-					imag[n] = 0;
-				}
-			}
-			var periodicWave = this.context.createPeriodicWave(real, imag);
+			var coefs = this._getRealImaginary(type, this._phase);
+			var periodicWave = this.context.createPeriodicWave(coefs[0], coefs[1]);
 			this._wave = periodicWave;
 			if (this._oscillator !== null){
 				this._oscillator.setPeriodicWave(this._wave);
 			}
-			this._type = originalType;
+			this._type = type;
 		}
 	});
+
+	/**
+	 *  Returns the real and imaginary components based 
+	 *  on the oscillator type.
+	 *  @returns {Array} [real, imaginary]
+	 *  @private
+	 */
+	Tone.Oscillator.prototype._getRealImaginary = function(type, phase){
+		var fftSize = 4096;
+		var periodicWaveSize = fftSize / 2;
+
+		var real = new Float32Array(periodicWaveSize);
+		var imag = new Float32Array(periodicWaveSize);
+		
+		var partialCount = 1;
+		var partial = /^(sine|triangle|square|sawtooth)(\d+)$/.exec(type);
+		if (partial){
+			partialCount = parseInt(partial[2]);
+			type = partial[1];
+			partialCount = Math.max(partialCount, 2);
+			periodicWaveSize = partialCount;
+		}
+
+		for (var n = 1; n < periodicWaveSize; ++n) {
+			var piFactor = 2 / (n * Math.PI);
+			var b; 
+			switch (type) {
+				case "sine": 
+					b = (n <= partialCount) ? 1 : 0;
+					break;
+				case "square":
+					b = (n & 1) ? 2 * piFactor : 0;
+					break;
+				case "sawtooth":
+					b = piFactor * ((n & 1) ? 1 : -1);
+					break;
+				case "triangle":
+					if (n & 1) {
+						b = 2 * (piFactor * piFactor) * ((((n - 1) >> 1) & 1) ? -1 : 1);
+					} else {
+						b = 0;
+					}
+					break;
+				default:
+					throw new Error("invalid oscillator type: "+type);
+			}
+			if (b !== 0){
+				real[n] = -b * Math.sin(phase * n);
+				imag[n] = b * Math.cos(phase * n);
+			} else {
+				real[n] = 0;
+				imag[n] = 0;
+			}
+		}
+		return [real, imag];
+	};
+
+	/**
+	 *  Compute the inverse FFT for a given phase.	
+	 *  @param  {Float32Array}  real
+	 *  @param  {Float32Array}  imag 
+	 *  @param  {NormalRange}  phase 
+	 *  @return  {AudioRange}
+	 *  @private
+	 */
+	Tone.Oscillator.prototype._inverseFFT = function(real, imag, phase){
+		var sum = 0;
+		var len = real.length;
+		for (var i = 0; i < len; i++){
+			sum += real[i] * Math.cos(i * phase) + imag[i] * Math.sin(i * phase);
+		}
+		return sum;
+	};
+
+	/**
+	 *  Returns the initial value of the oscillator.
+	 *  @return  {AudioRange}
+	 *  @private
+	 */
+	Tone.Oscillator.prototype._getInitialValue = function(){
+		var coefs = this._getRealImaginary(this._type, 0);
+		var real = coefs[0];
+		var imag = coefs[1];
+		var maxValue = 0;
+		var twoPi = Math.PI * 2;
+		//check for peaks in 8 places
+		for (var i = 0; i < 8; i++){
+			maxValue = Math.max(this._inverseFFT(real, imag, (i / 8) * twoPi), maxValue);
+		}
+		return -this._inverseFFT(real, imag, this._phase) / maxValue;
+	};
 
 	/**
 	 * The phase of the oscillator in degrees. 

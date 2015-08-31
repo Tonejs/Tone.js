@@ -1,5 +1,6 @@
 define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Master", 
-	"Tone/core/Types", "Tone/core/Schedulable"], function(Tone){
+	"Tone/core/Types", "Tone/core/TimelineState", "Tone/signal/Signal"], 
+function(Tone){
 
 	"use strict";
 	
@@ -9,11 +10,12 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Master",
 	 *          start/stop of Tone.Transport.
 	 *
 	 *  @constructor
-	 *  @extends {Tone.Schedulable}
+	 *  @extends {Tone}
 	 */	
 	Tone.Source = function(options){
-		//unlike most ToneNodes, Sources only have an output and no input
-		Tone.Schedulable.call(this, 0, 1);
+		//Sources only have an output and no input
+		Tone.call(this, 0, 1);
+
 		options = this.defaultArg(options, Tone.Source.defaults);
 
 		/**
@@ -31,19 +33,18 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Master",
 		this._readOnly("volume");
 
 		/**
-		 * 	keeps track of the timeout for chaning the state
-		 * 	and calling the onended
-		 *  @type {number}
+		 * 	Keep track of the scheduled state.
+		 *  @type {Tone.TimelineState}
 		 *  @private
 		 */
-		this._timeout = -1;
+		this._state = new Tone.TimelineState(Tone.State.Stopped);
 
 		//make the output explicitly stereo
 		this.output.channelCount = 2;
 		this.output.channelCountMode = "explicit";
 	};
 
-	Tone.extend(Tone.Source, Tone.Schedulable);
+	Tone.extend(Tone.Source);
 
 	/**
 	 *  The default parameters
@@ -64,7 +65,7 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Master",
 	 */
 	Object.defineProperty(Tone.Source.prototype, "state", {
 		get : function(){
-			return this._getStateAtTime(this.now());
+			return this._state.getStateAtTime(this.now());
 		}
 	});
 
@@ -78,9 +79,11 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Master",
 	 */
 	Tone.Source.prototype.start = function(time){
 		time = this.toSeconds(time);
-		if (this._getStateAtTime(time) !== Tone.State.Started || this.retrigger){
-			this._setStateAtTime(Tone.State.Started, time);
-			this._start.apply(this, arguments);
+		if (this._state.getStateAtTime(time) !== Tone.State.Started || this.retrigger){
+			this._state.setStateAtTime(Tone.State.Started, time);
+			if (this._start){
+				this._start.apply(this, arguments);
+			}
 		}
 		return this;
 	};
@@ -95,9 +98,11 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Master",
 	 */
 	Tone.Source.prototype.stop = function(time){
 		time = this.toSeconds(time);
-		if (this._getStateAtTime(time) === Tone.State.Started){
-			this._setStateAtTime(Tone.State.Stopped, time);
-			this._stop.apply(this, arguments);
+		if (this._state.getStateAtTime(time) === Tone.State.Started){
+			this._state.setStateAtTime(Tone.State.Stopped, time);
+			if (this._stop){
+				this._stop.apply(this, arguments);
+			}
 		}
 		return this;
 	};
@@ -138,10 +143,12 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Master",
 	 */
 	Tone.Source.prototype.dispose = function(){
 		this.stop();
-		Tone.Schedulable.prototype.dispose.call(this);
+		Tone.TimelineState.prototype.dispose.call(this);
 		this._writable("volume");
 		this.volume.dispose();
 		this.volume = null;
+		this._state.dispose();
+		this._state = null;
 	};
 
 	return Tone.Source;

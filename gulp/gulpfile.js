@@ -12,7 +12,18 @@ var uglify = require("gulp-uglify");
 var rename = require("gulp-rename");
 var sass = require("gulp-ruby-sass");
 var prefix = require("gulp-autoprefixer");
-var concatCss = require("gulp-concat-css");
+var openFile = require("gulp-open");
+var argv = require("yargs")
+			.alias("f", "file")
+			.alias("s", "signal")
+			.alias("i", "instrument")
+			.alias("o", "source")
+			.alias("t", "structure")
+			.alias("e", "effect")
+			.alias("c", "core")
+			.alias("m", "component")
+			.argv;
+var webserver = require("gulp-webserver");
 
 /**
  *  BUILDING
@@ -109,4 +120,72 @@ gulp.task("sass", function () {
 
 gulp.task("example", function() {
   gulp.watch(["../examples/style/examples.scss"], ["sass"]);
+});
+
+/**
+ *  THE WEBSERVER
+ */
+gulp.task("server", function(){
+	gulp.src("../")
+		.pipe(webserver({
+			// livereload: false,
+			directoryListing: true,
+			port : 3000,
+			open: false
+		}));
+});
+
+/**
+ *  TEST RUNNER
+ */
+gulp.task("test", ["server", "collectTests"], function(){
+	gulp.src("../test/index.html")
+		.pipe(openFile({uri: "http://localhost:3000/test"}));
+});
+
+gulp.task("collectTests", function(done){
+	var tests = ["../test/*/*.js", "!../test/helper/*.js", "!../test/tests/*.js"];
+	if (argv.file){
+		tests = ["../test/*/"+argv.file+".js"];
+	} else if (argv.signal || argv.core || argv.component || argv.instrument || 
+				argv.source || argv.effect || argv.structure){
+		tests = [];
+		if (argv.signal){
+			tests.push("../test/signal/*.js");
+		}
+		if (argv.core){
+			tests.push("../test/core/*.js");
+		}
+		if (argv.source){
+			tests.push("../test/source/*.js");
+		}
+		if (argv.instrument){
+			tests.push("../test/instrument/*.js");
+		}
+		if (argv.component){
+			tests.push("../test/component/*.js");
+		}
+		if (argv.effect){
+			tests.push("../test/effect/*.js");
+		}
+		if (argv.structure){
+			tests.push("../test/structure/*.js");
+		}
+	} 
+	// console.log(argv.signal === undefined);
+	var allFiles = [];
+	var task = gulp.src(tests)
+		.pipe(tap(function(file){
+			var fileName = path.relative("../test/", file.path);
+			allFiles.push(fileName.substring(0, fileName.length - 3));
+		}));
+	task.on("end", function(){
+		//build a require string
+		allFiles.unshift("Test");
+		var innerTask = gulp.src("./fragments/test.frag")
+			.pipe(replace("{FILES}", JSON.stringify(allFiles)))
+			.pipe(rename("Main.js"))
+			.pipe(gulp.dest("../test/"));
+		innerTask.on("end", done);
+	});
 });

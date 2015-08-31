@@ -173,7 +173,7 @@ define(function(){
 			if (isUndef(param)){
 				continue;
 			}
-			if (param instanceof Tone.Signal){
+			if (isFunction(Tone.Signal) && param instanceof Tone.Signal){
 				if (param.value !== value){
 					if (isUndef(rampTime)){
 						param.value = value;
@@ -238,7 +238,7 @@ define(function(){
 			var param = parent[attr];
 			if (typeof params[attr] === "object"){
 				subRet[attr] = param.get();
-			} else if (param instanceof Tone.Signal){
+			} else if (Tone.Signal && param instanceof Tone.Signal){
 				subRet[attr] = param.value;
 			} else if (param instanceof AudioParam){
 				subRet[attr] = param.value;
@@ -620,10 +620,9 @@ define(function(){
 	///////////////////////////////////////////////////////////////////////////
 
 	/**
-	 *  equal power gain scale
-	 *  good for cross-fading
-	 *  @param  {number} percent (0-1)
-	 *  @return {number}         output gain (0-1)
+	 *  Equal power gain scale. Good for cross-fading.
+	 *  @param  {NormalRange} percent (0-1)
+	 *  @return {Gain}         output gain (0-1)
 	 */
 	Tone.prototype.equalPowerScale = function(percent){
 		var piFactor = 0.5 * Math.PI;
@@ -631,18 +630,18 @@ define(function(){
 	};
 
 	/**
-	 *  convert db scale to gain scale (0-1)
-	 *  @param  {number} db
-	 *  @return {number}   
+	 *  Convert decibels into gain.
+	 *  @param  {Decibels} db
+	 *  @return {Gain}   
 	 */
 	Tone.prototype.dbToGain = function(db) {
 		return Math.pow(2, db / 6);
 	};
 
 	/**
-	 *  convert gain scale to decibels
-	 *  @param  {number} gain (0-1)
-	 *  @return {number}   
+	 *  Convert gain to decibels.
+	 *  @param  {Gain} gain (0-1)
+	 *  @return {Decibels}   
 	 */
 	Tone.prototype.gainToDb = function(gain) {
 		return  20 * (Math.log(gain) / Math.LN10);

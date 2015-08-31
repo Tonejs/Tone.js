@@ -253,6 +253,32 @@ define(["Tone/core/Tone"], function (Tone) {
 	///////////////////////////////////////////////////////////////////////////
 
 	/**
+	 *  @private
+	 *  @return  {Object}  The Transport's BPM if the Transport exists, 
+	 *                         otherwise returns reasonable defaults.
+	 */
+	function getTransportBpm(){
+		if (Tone.Transport && Tone.Transport.bpm){
+			return Tone.Transport.bpm.value;
+		} else {
+			return 120;
+		}
+	}
+
+	/**
+	 *  @private
+	 *  @return  {Object}  The Transport's Time Signature if the Transport exists, 
+	 *                         otherwise returns reasonable defaults.
+	 */
+	function getTransportTimeSignature(){
+		if (Tone.Transport && Tone.Transport.timeSignature){
+			return Tone.Transport.timeSignature;
+		} else {
+			return 4;
+		}
+	}
+
+	/**
 	 *
 	 *  convert notation format strings to seconds
 	 *  
@@ -263,8 +289,8 @@ define(["Tone/core/Tone"], function (Tone) {
 	 *                
 	 */
 	Tone.prototype.notationToSeconds = function(notation, bpm, timeSignature){
-		bpm = this.defaultArg(bpm, Tone.Transport.bpm ? Tone.Transport.bpm.value : 0);
-		timeSignature = this.defaultArg(timeSignature, Tone.Transport.timeSignature);
+		bpm = this.defaultArg(bpm, getTransportBpm());
+		timeSignature = this.defaultArg(timeSignature, getTransportTimeSignature());
 		var beatTime = (60 / bpm);
 		//special case: 1n = 1m
 		if (notation === "1n"){
@@ -301,8 +327,8 @@ define(["Tone/core/Tone"], function (Tone) {
 	 *  @lends Tone.prototype.transportTimeToSeconds
 	 */
 	Tone.prototype.transportTimeToSeconds = function(transportTime, bpm, timeSignature){
-		bpm = this.defaultArg(bpm, Tone.Transport.bpm.value);
-		timeSignature = this.defaultArg(timeSignature, Tone.Transport.timeSignature);
+		bpm = this.defaultArg(bpm, getTransportBpm());
+		timeSignature = this.defaultArg(timeSignature, getTransportTimeSignature());
 		var measures = 0;
 		var quarters = 0;
 		var sixteenths = 0;
@@ -383,8 +409,8 @@ define(["Tone/core/Tone"], function (Tone) {
 	 *  @return {TransportTime}  
 	 */
 	Tone.prototype.secondsToTransportTime = function(seconds, bpm, timeSignature){
-		bpm = this.defaultArg(bpm, Tone.Transport.bpm.value);
-		timeSignature = this.defaultArg(timeSignature, Tone.Transport.timeSignature);
+		bpm = this.defaultArg(bpm, getTransportBpm());
+		timeSignature = this.defaultArg(timeSignature, getTransportTimeSignature());
 		var quarterTime = this.notationToSeconds("4n", bpm, timeSignature);
 		var quarters = seconds / quarterTime;
 		var measures = Math.floor(quarters / timeSignature);
@@ -691,7 +717,7 @@ define(["Tone/core/Tone"], function (Tone) {
 	 * tone.midiToNote(60); // returns "C3"
 	 */
 	Tone.prototype.midiToNote = function(midiNumber){
-		var octave = Math.floor(midiNumber / 12) - 2;
+		var octave = Math.floor(midiNumber / 12) - 1;
 		var note = midiNumber % 12;
 		return scaleIndexToNote[note] + octave;
 	};
@@ -710,7 +736,7 @@ define(["Tone/core/Tone"], function (Tone) {
 		if (parts.length === 3){
 			var index = noteToScaleIndex[parts[0].toLowerCase()];
 			var octave = parts[1];
-			return index + (parseInt(octave, 10) + 2) * 12;
+			return index + (parseInt(octave, 10) + 1) * 12;
 		} else {
 			return 0;
 		}

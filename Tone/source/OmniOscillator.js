@@ -54,6 +54,7 @@ function(Tone){
 
 		//set the oscillator
 		this.type = options.type;
+		this.phase = options.phase;
 		this._readOnly(["frequency", "detune"]);
 	};
 
@@ -69,6 +70,7 @@ function(Tone){
 		"frequency" : 440,
 		"detune" : 0,
 		"type" : "sine",
+		"phase" : 0,
 		"width" : 0.4, //only applies if the oscillator is set to "pulse",
 		"modulationFrequency" : 0.4, //only applies if the oscillator is set to "pwm",
 	};

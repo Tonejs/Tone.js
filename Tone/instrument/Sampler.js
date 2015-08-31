@@ -19,7 +19,7 @@ function(Tone){
 	 *  @example
 	 * var sampler = new Sampler({
 	 * 	A : {
-	 * 		1 : {"./audio/casio/A1.mp3",
+	 * 		1 : "./audio/casio/A1.mp3",
 	 * 		2 : "./audio/casio/A2.mp3",
 	 * 	},
 	 * 	"B.1" : "./audio/casio/B1.mp3",

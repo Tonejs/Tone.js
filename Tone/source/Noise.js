@@ -91,7 +91,7 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 						this._buffer = _brownNoise;
 						break;
 					default : 
-						this._buffer = _whiteNoise;
+						throw new Error("invalid noise type: "+type)
 				}
 				//if it's playing, stop and restart it
 				if (this.state === Tone.State.Started){
