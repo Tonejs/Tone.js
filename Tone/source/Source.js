@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Master", 
+define(["Tone/core/Tone", "Tone/core/Transport", "Tone/component/Volume", 
 	"Tone/core/Types", "Tone/core/TimelineState", "Tone/signal/Signal"], 
 function(Tone){
 
@@ -14,9 +14,16 @@ function(Tone){
 	 */	
 	Tone.Source = function(options){
 		//Sources only have an output and no input
-		Tone.call(this, 0, 1);
+		Tone.call(this);
 
 		options = this.defaultArg(options, Tone.Source.defaults);
+
+		/**
+		 *  The volume node. 
+		 *  @type  {Tone.Volume}
+		 *  @private
+		 */
+		this._volume = this.output = new Tone.Volume(options.volume);
 
 		/**
 		 * The volume of the output in decibels.
@@ -25,11 +32,7 @@ function(Tone){
 		 * @example
 		 * source.volume.value = -6;
 		 */
-		this.volume = new Tone.Signal({
-			"param" : this.output.gain,
-			"value" : options.volume,
-			"units" : Tone.Type.Decibels
-		});
+		this.volume = this._volume.volume;
 		this._readOnly("volume");
 
 		/**
@@ -180,8 +183,9 @@ function(Tone){
 		this.stop();
 		Tone.prototype.dispose.call(this);
 		this.unsync();
+		this._volume.dispose();
+		this._volume = null;
 		this._writable("volume");
-		this.volume.dispose();
 		this.volume = null;
 		this._state.dispose();
 		this._state = null;
