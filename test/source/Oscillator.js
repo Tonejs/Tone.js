@@ -1,5 +1,6 @@
-define(["helper/Basic", "Tone/source/Oscillator", "helper/Offline", "helper/SourceTests", "helper/OscillatorTests"], 
-	function (BasicTests, Oscillator, Offline, SourceTests, OscillatorTests) {
+define(["helper/Basic", "Tone/source/Oscillator", "helper/Offline", "helper/SourceTests", 
+	"helper/OscillatorTests", "helper/OutputAudio", "Tone/core/Transport"], 
+	function (BasicTests, Oscillator, Offline, SourceTests, OscillatorTests, OutputAudio, Transport) {
 
 	describe("Oscillator", function(){
 
@@ -124,39 +125,95 @@ define(["helper/Basic", "Tone/source/Oscillator", "helper/Offline", "helper/Sour
 			});
 		});
 
-		context("Synchronization", function(){
-			/*it("can sync the frequency to Transport", function(done){
+		context("Partials", function(){
+
+			it ("can pass partials in the constructor", function(){
+				var osc = new Oscillator({
+					"partials" : [1, 0.3, 0.3],
+					"type" : "custom"
+				});
+				expect(osc.type).to.equal("custom");
+				expect(osc.partials[1]).to.equal(0.3);
+				osc.dispose();
+			});
+
+			it ("can set partials", function(){
+				var osc = new Oscillator();
+				osc.partials = [1, 0.2, 0.2, 0.2];
+				expect(osc.type).to.equal("custom");
+				expect(osc.partials[1]).to.equal(0.2);
+				osc.dispose();
+			});
+
+			it ("makes a sound with custom partials", function(done){
 				var osc;
-				Test.offlineTest(0.1, function(dest){
+				OutputAudio(function(dest){
+					osc = new Oscillator().connect(dest).start();
+					osc.partials = [1, 0.2, 0.2, 0.2];
+				}, function(){
+					osc.dispose();
+					done();
+				});
+			});
+
+			it ("outputs empty array when type is not 'custom'", function(){
+				var osc = new Oscillator({
+					"partials" : [1, 0.3, 0.3],
+					"type" : "custom"
+				});
+				expect(osc.type).to.equal("custom");
+				expect(osc.partials[1]).to.equal(0.3);
+				osc.type = "sine2";
+				expect(osc.type).to.equal("sine2");
+				expect(osc.partials.length).to.equal(0);
+				osc.dispose();
+			});
+
+		});
+
+		context("Synchronization", function(){
+			it("can sync the frequency to the Transport", function(done){
+				var osc;
+				var offline = new Offline(0.1);
+				offline.before(function(dest){
 					Transport.bpm.value = 120;
 					osc = new Oscillator(2);
 					osc.frequency.connect(dest);
 					osc.syncFrequency();
 					Transport.bpm.value = 240;
-				}, function(freq){
+				});
+				offline.test(function(freq){
 					expect(freq).to.be.closeTo(4, 0.001);
-				}, function(){
+				});
+				offline.after(function(){
+					Transport.bpm.value = 120;
 					osc.dispose();
 					done();
 				});
-			});*/
+				offline.run();
+			});
 
-			/*it("can unsync the frequency to Transport", function(done){
+			it("can unsync the frequency from the Transport", function(done){
 				var osc;
-				Test.offlineTest(0.1, function(dest){
+				var offline = new Offline(0.1);
+				offline.before(function(dest){
 					Transport.bpm.value = 120;
 					osc = new Oscillator(2);
 					osc.frequency.connect(dest);
 					osc.syncFrequency();
 					Transport.bpm.value = 240;
 					osc.unsyncFrequency();
-				}, function(freq){
+				});
+				offline.test(function(freq){
 					expect(freq).to.be.closeTo(2, 0.001);
-				}, function(){
+				});
+				offline.after(function(){
+					Transport.bpm.value = 120;
 					osc.dispose();
 					done();
 				});
-			});*/
+				offline.run();
+			});
 		});
 
 	});
