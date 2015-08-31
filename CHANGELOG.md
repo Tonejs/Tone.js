@@ -7,6 +7,8 @@
 * Refactored tests
 * Renamed some Signal methods: exponentialRampToValueNow->exponentialRampToValue, setCurrentValueNow->setRampPoint
 * LFO no longer starts at bottom of cycle. Starts at whatever phase it's set at.
+* Transport is an event emitter. triggers events on "start", "stop", "pause", and "loop". 
+* Oscillator takes a "partials" array. 
 
 ### r5
 
