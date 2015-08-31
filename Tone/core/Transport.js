@@ -212,6 +212,7 @@ function(Tone){
 		if (this.loop){
 			if (this._clock.ticks === this._loopEnd){
 				this.ticks = this._loopStart;
+				this.trigger("loop", tickTime);
 			}
 		}
 		var ticks = this._clock.ticks;
