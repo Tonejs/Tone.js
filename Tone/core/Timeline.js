@@ -173,7 +173,6 @@ define(["Tone/core/Tone", "Tone/core/Types"], function (Tone) {
 	 *  @returns {Tone.Timeline} this
 	 */
 	Tone.Timeline.prototype.forEach = function(callback){
-		// while()
 		//iterate over the items in reverse so that removing an item doesn't break things
 		for (var i = this._timeline.length - 1; i >= 0; i--){
 			callback(this._timeline[i], i);
