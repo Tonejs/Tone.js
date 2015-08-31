@@ -68,11 +68,11 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Timeline"], function 
 	 * freq.setValueAtTime("G4", "+1");
 	 */
 	Tone.TimelineSignal.prototype.setValueAtTime = function (value, startTime) {
-		value = this._fromUnits(value);
+		var unitValue = this._fromUnits(value);
 		startTime = this.toSeconds(startTime);
 		this._events.addEvent({
 			"type" : Tone.TimelineSignal.Type.Set,
-			"value" : value,
+			"value" : unitValue,
 			"time" : startTime
 		});
 		//invoke the original event
@@ -89,11 +89,11 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Timeline"], function 
 	 *  @returns {Tone.TimelineSignal} this
 	 */
 	Tone.TimelineSignal.prototype.linearRampToValueAtTime = function (value, endTime) {
-		value = this._fromUnits(value);
+		var unitValue = this._fromUnits(value);
 		endTime = this.toSeconds(endTime);
 		this._events.addEvent({
 			"type" : Tone.TimelineSignal.Type.Linear,
-			"value" : value,
+			"value" : unitValue,
 			"time" : endTime
 		});
 		Tone.Signal.prototype.linearRampToValueAtTime.apply(this, arguments);
@@ -109,12 +109,12 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Timeline"], function 
 	 *  @returns {Tone.TimelineSignal} this
 	 */
 	Tone.TimelineSignal.prototype.exponentialRampToValueAtTime = function (value, endTime) {
-		value = this._fromUnits(value);
-		value = Math.max(this._minOutput, value);
+		var unitValue = this._fromUnits(value);
+		unitValue = Math.max(this._minOutput, unitValue);
 		endTime = this.toSeconds(endTime);
 		this._events.addEvent({
 			"type" : Tone.TimelineSignal.Type.Exponential,
-			"value" : value,
+			"value" : unitValue,
 			"time" : endTime
 		});
 		Tone.Signal.prototype.exponentialRampToValueAtTime.apply(this, arguments);
@@ -130,12 +130,12 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Timeline"], function 
 	 *  @returns {Tone.TimelineSignal} this 
 	 */
 	Tone.TimelineSignal.prototype.setTargetAtTime = function (value, startTime, timeConstant) {
-		value = this._fromUnits(value);
-		value = Math.max(this._minOutput, value);
+		var unitValue = this._fromUnits(value);
+		unitValue = Math.max(this._minOutput, unitValue);
 		startTime = this.toSeconds(startTime);
 		this._events.addEvent({
 			"type" : Tone.TimelineSignal.Type.Target,
-			"value" : value,
+			"value" : unitValue,
 			"time" : startTime,
 			"constant" : timeConstant
 		});
