@@ -1,4 +1,4 @@
-define(["Test", "Tone/source/Source"], function (Test, Source) {
+define(["Test", "Tone/source/Source", "Tone/core/Transport"], function (Test, Source, Transport) {
 
 	describe("Source", function(){
 
@@ -68,15 +68,57 @@ define(["Test", "Tone/source/Source"], function (Test, Source) {
 			source.dispose();
 		});
 
-		it ("can sync its start time to the Transport", function(){
-			throw new Error("cannot sync to the transport");
+		it ("can sync its start to the Transport", function(done){
+			var source = new Source();
+			source.sync();
+			Transport.start();
+			setTimeout(function(){
+				expect(source.state).to.equal("started");
+				source.dispose();
+				Transport.stop();
+				done();
+			}, 200);
 		});
 
-		it ("can unsync after it was synced", function(){
+		it ("can sync its stop to the Transport", function(done){
+			var source = new Source();
+			source.sync();
+			Transport.start().stop("+0.4");
+			setTimeout(function(){
+				expect(source.state).to.equal("started");
+				setTimeout(function(){
+					expect(source.state).to.equal("stopped");
+					source.dispose();
+					done();
+				}, 300);
+			}, 200);
+		});
+
+		it ("can sync its start to the Transport after a delay", function(done){
+			var source = new Source();
+			source.sync(0.3);
+			Transport.start();
+			setTimeout(function(){
+				expect(source.state).to.equal("stopped");
+				setTimeout(function(){
+					expect(source.state).to.equal("started");
+					source.dispose();
+					Transport.stop();
+					done();
+				}, 300);
+			}, 200);
+		});
+
+		it ("can unsync after it was synced", function(done){
 			var source = new Source();
 			source.sync();
 			source.unsync();
-			source.dispose();
+			Transport.start();
+			setTimeout(function(){
+				expect(source.state).to.equal("stopped");
+				source.dispose();
+				done();
+			}, 100);
 		});
 
 		it ("correctly returns the scheduled play state", function(done){

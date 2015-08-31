@@ -1,5 +1,5 @@
-define(["helper/Offline", "helper/Basic", "Test", "Tone/signal/Signal", "Tone/core/Types"], 
-	function (Offline, Basic, Test, Signal, Tone) {
+define(["helper/Offline", "helper/Basic", "Test", "Tone/signal/Signal", "Tone/core/Types", "Tone/core/Transport"], 
+	function (Offline, Basic, Test, Signal, Tone, Transport) {
 
 	describe("Signal", function(){
 
@@ -277,6 +277,89 @@ define(["helper/Offline", "helper/Basic", "Test", "Tone/signal/Signal", "Tone/co
 				signal.dispose();
 			});
 			
+		});
+
+		context("Transport Syncing", function(){
+
+			it("maintains its original value after being synced to the transport", function(done){
+				var sig;
+				var offline = new Offline(0.2);
+				offline.before(function(dest){
+					sig = new Signal(3).connect(dest);
+					Transport.syncSignal(sig);
+				});
+				offline.test(function(sample){
+					expect(sample).to.be.closeTo(3, 0.01);
+				});
+				offline.after(function(){
+					sig.dispose();
+					done();
+				});
+				offline.run();
+			});
+
+			it("keeps the ratio when the bpm changes", function(done){
+				var sig;
+				var offline = new Offline(0.2);
+				offline.before(function(dest){
+					Transport.bpm.value = 120;
+					sig = new Signal(5).connect(dest);
+					Transport.syncSignal(sig);
+					Transport.bpm.value = 240;
+				});
+				offline.test(function(sample){
+					expect(sample).to.be.closeTo(10, 0.01);
+				});
+				offline.after(function(){
+					sig.dispose();
+					Transport.bpm.value = 120;
+					done();
+				});
+				offline.run();
+			});
+
+			it("can ramp along with the bpm", function(done){
+				var sig;
+				var offline = new Offline(0.7);
+				offline.before(function(dest){
+					Transport.bpm.value = 120;
+					sig = new Signal(2).connect(dest);
+					Transport.syncSignal(sig);
+					Transport.bpm.rampTo(240, 0.5);
+				});
+				offline.test(function(sample, time){
+					if (time >= 0.5){
+						expect(sample).to.be.closeTo(4, 0.01);
+					}
+				});
+				offline.after(function(){
+					sig.dispose();
+					Transport.bpm.value = 120;
+					done();
+				});
+				offline.run();
+			});
+
+			it("returns to the original value when unsynced", function(done){
+				var sig;
+				var offline = new Offline(0.2);
+				offline.before(function(dest){
+					Transport.bpm.value = 120;
+					sig = new Signal(5).connect(dest);
+					Transport.syncSignal(sig);
+					Transport.bpm.value = 240;
+					Transport.unsyncSignal(sig);
+				});
+				offline.test(function(sample){
+					expect(sample).to.be.closeTo(5, 0.01);
+				});
+				offline.after(function(){
+					sig.dispose();
+					Transport.bpm.value = 120;
+					done();
+				});
+				offline.run();
+			});
 		});
 	});
 });
