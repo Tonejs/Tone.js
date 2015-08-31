@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Master"], function(Tone){
+define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Gain"], function(Tone){
 
 	"use strict";
 
@@ -21,7 +21,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Master"], function(To
 		 * @type {GainNode}
 		 * @private
 		 */
-		this.output = this.input = this.context.createGain();
+		this.output = this.input = new Tone.Gain();
 
 		/**
 		 *  The volume control in decibels. 
@@ -54,6 +54,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Master"], function(To
 	 *  @returns {Tone.Volume} this
 	 */
 	Tone.Volume.prototype.dispose = function(){
+		this.input.dispose();
 		Tone.prototype.dispose.call(this);
 		this._writable("volume");
 		this.volume.dispose();
