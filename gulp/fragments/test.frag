@@ -2,6 +2,7 @@ require.config({
 	baseUrl:"./",
 	paths : {
 		"Tone" : "../Tone",
+		"Test" : "helper/Test"
 	},
 });
 

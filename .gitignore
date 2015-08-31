@@ -42,3 +42,5 @@ examples/deps/Tone.dat.gui.js
 examples/deps/dat.gui.js
 
 test/mainTest.js
+
+test/Main.js
