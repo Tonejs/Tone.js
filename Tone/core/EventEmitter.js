@@ -29,9 +29,6 @@ define(["Tone/core/Tone"], function (Tone) {
 	Tone.EventEmitter.prototype.on = function(event, callback){
 		//split the event
 		var events = event.split(/\W+/);
-		if (!this._events){
-			this._events = {};
-		}
 		for (var i = 0; i < events.length; i++){
 			var eventName = events[i];
 			if (!this._events.hasOwnProperty(eventName)){
@@ -50,7 +47,9 @@ define(["Tone/core/Tone"], function (Tone) {
 	 *  @return  {Tone.EventEmitter}    this
 	 */
 	Tone.EventEmitter.prototype.off = function(event, callback){
-		if (this._events){
+		var events = event.split(/\W+/);
+		for (var ev = 0; ev < events.length; ev++){
+			event = events[ev];
 			if (this._events.hasOwnProperty(event)){
 				var eventList = this._events[event];
 				for (var i = 0; i < eventList.length; i++){
@@ -90,14 +89,11 @@ define(["Tone/core/Tone"], function (Tone) {
 	 */
 	Tone.EventEmitter.mixin = function(object){
 		var functions = ["on", "off", "trigger"];
+		object._events = {};
 		for (var i = 0; i < functions.length; i++){
 			var func = functions[i];
 			var emitterFunc = Tone.EventEmitter.prototype[func];
-			if(Tone.prototype.isFunction(object)){
-				object.prototype[func] = emitterFunc;
-			}else{
-				object[func] = emitterFunc;
-			}
+			object[func] = emitterFunc;
 		}
 	};
 
