@@ -677,6 +677,7 @@ function(Tone){
 	 *  @private
 	 */
 	Tone.Transport.prototype.dispose = function(){
+		Tone.EventEmitter.prototype.dispose.call(this);
 		this._clock.dispose();
 		this._clock = null;
 		this._writable("bpm");
