@@ -1,4 +1,5 @@
-define(["Test", "Tone/signal/TimelineSignal", "helper/Offline"], function (Test, TimelineSignal, Offline) {
+define(["Test", "Tone/signal/TimelineSignal", "helper/Offline", "Tone/core/Types"], 
+	function (Test, TimelineSignal, Offline, Tone) {
 
 	describe("TimelineSignal", function(){
 
@@ -132,6 +133,31 @@ define(["Test", "Tone/signal/TimelineSignal", "helper/Offline"], function (Test,
 			});
 			offline.test(function(sample, time){
 				expect(sample).to.be.closeTo(sched.getValueAtTime(time), 0.001);
+			});
+			offline.after(function(){
+				sched.dispose();
+				done();
+			});
+			offline.run();
+		});
+
+		it("can automate values with different units", function(done){
+			var sched;
+			var offline = new Offline(1.2);
+			offline.before(function(dest){
+				sched = new TimelineSignal(-10, Tone.Type.Decibels).connect(dest);
+				sched.setValueAtTime(-5, 0);
+				sched.linearRampToValueAtTime(-12, 0.5);
+				sched.exponentialRampToValueBetween(-6, 1, 1.1);
+			});
+			offline.test(function(sample, time){
+				if (time < 0.5){
+					expect(sample).to.be.within(sched.dbToGain(-12), sched.dbToGain(-5));
+				} else if (time < 1){
+					expect(sample).to.be.closeTo(sched.dbToGain(-12), 0.001);
+				} else if (time > 1.1){
+					expect(sample).to.be.closeTo(sched.dbToGain(-6), 0.001);
+				}
 			});
 			offline.after(function(){
 				sched.dispose();
