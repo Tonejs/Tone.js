@@ -12,7 +12,7 @@ function(Tone){
 	 *	@constructor
 	 *	@extends {Tone.StereoXFeedbackEffect}
 	 *	@param {Frequency|Object} [frequency] The frequency of the LFO.
-	 *	@param {Number} [delayTime] The delay of the chorus effect in ms. 
+	 *	@param {Milliseconds} [delayTime] The delay of the chorus effect in ms. 
 	 *	@param {NormalRange} [depth] The depth of the chorus.
 	 *	@example
 	 * var chorus = new Tone.Chorus(4, 2.5, 0.5);
@@ -143,7 +143,7 @@ function(Tone){
 	 * will give a more pronounced effect. Nominal range a delayTime
 	 * is between 2 and 20ms. 
 	 * @memberOf Tone.Chorus#
-	 * @type {Number}
+	 * @type {Milliseconds}
 	 * @name delayTime
 	 */
 	Object.defineProperty(Tone.Chorus.prototype, "delayTime", {

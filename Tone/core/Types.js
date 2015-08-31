@@ -116,6 +116,11 @@ define(["Tone/core/Tone"], function (Tone) {
 		 */
 		Note : "note",
 		/** 
+		 *  One millisecond is a thousandth of a second. 
+		 *  @typedef {Milliseconds}
+		 */
+		Milliseconds : "milliseconds",
+		/** 
 		 *  A string representing a duration relative to a measure. 
 		 *  <ul>
 		 *  	<li>"4n" = quarter note</li>
