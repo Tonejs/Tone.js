@@ -39,6 +39,34 @@ function(Tone){
 		 */
 		this._state = new Tone.TimelineState(Tone.State.Stopped);
 
+		/**
+		 *  The synced `start` callback function from the transport
+		 *  @type {Function}
+		 *  @private
+		 */
+		this._bindedStart = this.start.bind(this);
+
+		/**
+		 *  The synced `stop` callback function from the transport
+		 *  @type {Function}
+		 *  @private
+		 */
+		this._bindedStop = this.stop.bind(this);
+
+		/**
+		 *  If the source is synced to the transport or not
+		 *  @type {Boolean}
+		 *  @private
+		 */
+		this._isSynced = false;
+
+		/**
+		 *  The offset from the start of the Transport `start`
+		 *  @type {Time}
+		 *  @private
+		 */
+		this._startDelay = 0;
+
 		//make the output explicitly stereo
 		this.output.channelCount = 2;
 		this.output.channelCountMode = "explicit";
@@ -79,6 +107,9 @@ function(Tone){
 	 */
 	Tone.Source.prototype.start = function(time){
 		time = this.toSeconds(time);
+		if (this._isSynced){
+			time += this.toSeconds(this._startDelay);
+		}
 		if (this._state.getStateAtTime(time) !== Tone.State.Started || this.retrigger){
 			this._state.setStateAtTime(Tone.State.Started, time);
 			if (this._start){
@@ -122,9 +153,10 @@ function(Tone){
 	 * Tone.Transport.start();
 	 */
 	Tone.Source.prototype.sync = function(delay){
-		/*Tone.Transport.syncSource(this, delay);
-		Tone.Transport.on("start", this.start.bind(this));
-		Tone.Transport.on("stop", this.start.bind(this));*/
+		this._isSynced = true;
+		this._startDelay = this.defaultArg(delay, 0);
+		Tone.Transport.on("start", this._bindedStart);
+		Tone.Transport.on("stop pause", this._bindedStop);
 		return this;
 	};
 
@@ -133,7 +165,10 @@ function(Tone){
 	 *  @returns {Tone.Source} this
 	 */
 	Tone.Source.prototype.unsync = function(){
-		// Tone.Transport.unsyncSource(this);
+		this._startDelay = 0;
+		this._isSynced = false;
+		Tone.Transport.off("start", this._bindedStart);
+		Tone.Transport.off("stop pause", this._bindedStop);
 		return this;
 	};
 
@@ -143,7 +178,8 @@ function(Tone){
 	 */
 	Tone.Source.prototype.dispose = function(){
 		this.stop();
-		Tone.TimelineState.prototype.dispose.call(this);
+		Tone.prototype.dispose.call(this);
+		this.unsync();
 		this._writable("volume");
 		this.volume.dispose();
 		this.volume = null;
