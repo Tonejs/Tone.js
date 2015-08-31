@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/structure/Atom", "Tone/structure/Group"], function (Tone) {
+define(["Tone/core/Tone", "Tone/structure/Note", "Tone/structure/Part"], function (Tone) {
 
 	/**
 	 *  @class Tone.Pattern arpeggiates between the given notes
