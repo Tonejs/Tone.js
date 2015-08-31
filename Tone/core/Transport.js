@@ -1,4 +1,5 @@
-define(["Tone/core/Tone", "Tone/core/Clock", "Tone/core/Types", "Tone/core/Timeline"], 
+define(["Tone/core/Tone", "Tone/core/Clock", "Tone/core/Types", "Tone/core/Timeline", 
+	"Tone/core/EventEmitter", "Tone/core/Gain"], 
 function(Tone){
 
 	"use strict";
@@ -11,8 +12,11 @@ function(Tone){
 	 *          in the argument of the callback function. Pass that time value to the object
 	 *          you're scheduling. <br><br>
 	 *          A single transport is created for you when the library is initialized. 
+	 *          <br><br>
+	 *          The transport emits the events: "start", "stop", "pause", and "loop" which are
+	 *          invoked with the time of that event. 
 	 *
-	 *  @extends {Tone}
+	 *  @extends {Tone.EventEmitter}
 	 *  @singleton
 	 *  @example
 	 * //repeated event every 8th note
@@ -31,6 +35,8 @@ function(Tone){
 	 * }, "16:0:0");
 	 */
 	Tone.Transport = function(){
+
+		Tone.EventEmitter.call(this);
 
 		///////////////////////////////////////////////////////////////////////
 		//	LOOPING
@@ -110,7 +116,7 @@ function(Tone){
 		 *  @type {Object}
 		 *  @private
 		 */
-		this._events = {};
+		this._scheduledEvents = {};
 
 		/**
 		 *  The event ID counter
@@ -140,6 +146,13 @@ function(Tone){
 		 */
 		this._onceEvents = new Tone.Timeline();
 
+		/** 
+		 *  All of the synced Signals
+		 *  @private 
+		 *  @type {Array}
+		 */
+		this._syncedSignals = [];
+
 		///////////////////////////////////////////////////////////////////////
 		//	SWING
 		//////////////////////////////////////////////////////////////////////
@@ -160,7 +173,7 @@ function(Tone){
 
 	};
 
-	Tone.extend(Tone.Transport);
+	Tone.extend(Tone.Transport, Tone.EventEmitter);
 
 	/**
 	 *  the defaults
@@ -177,13 +190,6 @@ function(Tone){
 		"loopEnd" : "4m",
 		"PPQ" : 48
 	};
-
-	/** 
-	 *  All of the synced Signals
-	 *  @private 
-	 *  @type {Array}
-	 */
-	var SyncedSignals = [];
 
 	///////////////////////////////////////////////////////////////////////////////
 	//	TICKS
@@ -248,7 +254,7 @@ function(Tone){
 			"callback" : callback
 		};
 		var id = this._eventID++;
-		this._events[id.toString()] = {
+		this._scheduledEvents[id.toString()] = {
 			"event" : event,
 			"timeline" : this._timeline
 		};
@@ -276,7 +282,7 @@ function(Tone){
 			"callback" : callback
 		};
 		var id = this._eventID++;
-		this._events[id.toString()] = {
+		this._scheduledEvents[id.toString()] = {
 			"event" : event,
 			"timeline" : this._repeatedEvents
 		};
@@ -298,7 +304,7 @@ function(Tone){
 			"callback" : callback
 		};
 		var id = this._eventID++;
-		this._events[id.toString()] = {
+		this._scheduledEvents[id.toString()] = {
 			"event" : event,
 			"timeline" : this._onceEvents
 		};
@@ -312,10 +318,10 @@ function(Tone){
 	 *  @returns {Tone.Transport} this
 	 */
 	Tone.Transport.prototype.cancel = function(eventId){
-		if (this._events.hasOwnProperty(eventId)){
-			var item = this._events[eventId.toString()];
+		if (this._scheduledEvents.hasOwnProperty(eventId)){
+			var item = this._scheduledEvents[eventId.toString()];
 			item.timeline.removeEvent(item.event);
-			delete this._events[eventId.toString()];
+			delete this._scheduledEvents[eventId.toString()];
 		}
 		return this;
 	};
@@ -388,6 +394,7 @@ function(Tone){
 		}
 		//start the clock
 		this._clock.start(time, offset);
+		this.trigger("start", time, this.ticksToSeconds(offset));
 		return this;
 	};
 
@@ -399,7 +406,9 @@ function(Tone){
 	 * Tone.Transport.stop();
 	 */
 	Tone.Transport.prototype.stop = function(time){
+		time = this.toSeconds(time);
 		this._clock.stop(time);
+		this.trigger("stop", time);
 		return this;
 	};
 
@@ -409,7 +418,9 @@ function(Tone){
 	 *  @returns {Tone.Transport} this
 	 */
 	Tone.Transport.prototype.pause = function(time){
+		time = this.toSeconds(time);
 		this._clock.pause(time);
+		this.trigger("pause", time);
 		return this;
 	};
 
@@ -611,39 +622,6 @@ function(Tone){
 	///////////////////////////////////////////////////////////////////////////////
 
 	/**
-	 *  Sync a source to the transport so that 
-	 *  @param  {Tone.Source} source the source to sync to the transport
-	 *  @param {Time} delay (optionally) start the source with a delay from the transport
-	 *  @returns {Tone.Transport} this
-	 *  @example
-	 * Tone.Transport.syncSource(player, "1m");
-	 * Tone.Transport.start();
-	 * //the player will start 1 measure after the transport starts
-	 */
-	Tone.Transport.prototype.syncSource = function(source, startDelay){
-		SyncedSources.push({
-			source : source,
-			delay : this.toSeconds(this.defaultArg(startDelay, 0))
-		});
-		return this;
-	};
-
-	/**
-	 *  Unsync the source from the transport. See Tone.Transport.syncSource. 
-	 *  
-	 *  @param  {Tone.Source} source [description]
-	 *  @returns {Tone.Transport} this
-	 */
-	Tone.Transport.prototype.unsyncSource = function(source){
-		for (var i = 0; i < SyncedSources.length; i++){
-			if (SyncedSources[i].source === source){
-				SyncedSources.splice(i, 1);
-			}
-		}
-		return this;
-	};
-
-	/**
 	 *  Attaches the signal to the tempo control signal so that 
 	 *  any changes in the tempo will change the signal in the same
 	 *  ratio. 
@@ -658,15 +636,14 @@ function(Tone){
 		if (!ratio){
 			//get the sync ratio
 			if (signal._value.value !== 0){
-				ratio = signal._value.value / this.bpm.value;
+				ratio = signal._value.value / this.bpm._value.value;
 			} else {
 				ratio = 0;
 			}
 		}
-		var ratioSignal = this.context.createGain();
-		ratioSignal.gain.value = ratio;
+		var ratioSignal = new Tone.Gain(ratio);
 		this.bpm.chain(ratioSignal, signal._value);
-		SyncedSignals.push({
+		this._syncedSignals.push({
 			"ratio" : ratioSignal,
 			"signal" : signal,
 			"initial" : signal._value.value
@@ -682,12 +659,12 @@ function(Tone){
 	 *  @returns {Tone.Transport} this
 	 */
 	Tone.Transport.prototype.unsyncSignal = function(signal){
-		for (var i = 0; i < SyncedSignals.length; i++){
-			var syncedSignal = SyncedSignals[i];
+		for (var i = this._syncedSignals.length - 1; i >= 0; i--){
+			var syncedSignal = this._syncedSignals[i];
 			if (syncedSignal.signal === signal){
-				syncedSignal.ratio.disconnect();
+				syncedSignal.ratio.dispose();
 				syncedSignal.signal._value.value = syncedSignal.initial;
-				SyncedSignals.splice(i, 1);
+				this._syncedSignals.splice(i, 1);
 			}
 		}
 		return this;
