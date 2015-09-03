@@ -182,15 +182,12 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 				this._source.loop = this._loop;
 				this._source.loopStart = this.toSeconds(this._loopStart);
 				this._source.loopEnd = this.toSeconds(this._loopEnd);
-				// this fixes a bug in chrome 42 that breaks looping
-				// https://code.google.com/p/chromium/issues/detail?id=457099
-				duration = 65536;
 			} else {
-				this._nextStop = startTime + duration;
+				//if it's not looping, set the state change at the end of the sample
+				this._state.setStateAtTime(Tone.State.Stopped, startTime + duration);
 			}
 			//and other properties
 			this._source.playbackRate.value = this._playbackRate;
-			this._source.onended = this.onended;
 			this._source.connect(this.output);
 			//start it
 			this._source.start(startTime, offset, duration);
