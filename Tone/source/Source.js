@@ -134,7 +134,7 @@ function(Tone){
 		}
 		return this;
 	};
-
+	
 	/**
 	 *  Sync the source to the Transport so that when the transport
 	 *  is started, this source is started and when the transport is stopped
