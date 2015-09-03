@@ -231,7 +231,7 @@ function(Tone){
 			event.callback(tickTime);
 		});
 		//and clear the single occurrence timeline
-		this._onceEvents.clearBefore(ticks);
+		this._onceEvents.cancelBefore(ticks);
 	};
 
 	///////////////////////////////////////////////////////////////////////////////
@@ -280,6 +280,7 @@ function(Tone){
 		var event = {
 			"time" : this.toTicks(startTime),
 			"interval" : this.toTicks(interval),
+			"stop" : Infinity,
 			"callback" : callback
 		};
 		var id = this._eventID++;
@@ -314,11 +315,11 @@ function(Tone){
 	};
 
 	/**
-	 *  Cancel the passed in event id.
+	 *  Clear the passed in event id from the timeline
 	 *  @param {Number} eventId The id of the event.
 	 *  @returns {Tone.Transport} this
 	 */
-	Tone.Transport.prototype.cancel = function(eventId){
+	Tone.Transport.prototype.clear = function(eventId){
 		if (this._scheduledEvents.hasOwnProperty(eventId)){
 			var item = this._scheduledEvents[eventId.toString()];
 			item.timeline.removeEvent(item.event);
@@ -335,12 +336,12 @@ function(Tone){
 	 *                          this time. 
 	 *  @returns {Tone.Transport} this
 	 */
-	Tone.Transport.prototype.clear = function(after){
+	Tone.Transport.prototype.cancel = function(after){
 		after = this.defaultArg(after, 0);
 		after = this.toTicks(after);
-		this._timeline.clear(after);
-		this._onceEvents.clear(after);
-		this._repeatedEvents.clear(after);
+		this._timeline.cancel(after);
+		this._onceEvents.cancel(after);
+		this._repeatedEvents.cancel(after);
 		return this;
 	};
 

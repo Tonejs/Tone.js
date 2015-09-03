@@ -146,28 +146,28 @@ define(["Test", "Tone/core/Timeline"], function (Test, Timeline) {
 			sched.dispose();
 		});
 
-		it ("can clear items after the given time", function(){
+		it ("can cancel items after the given time", function(){
 			var sched = new Timeline();
 			for (var i = 5; i < 100; i++){
 				sched.addEvent({"time" : i});
 			}
-			sched.clear(10);
+			sched.cancel(10);
 			expect(sched.length).to.equal(5);
-			sched.clear(0);
+			sched.cancel(0);
 			expect(sched.length).to.equal(0);
 			sched.dispose();
 		});
 
-		it ("can clear items before the given time", function(){
+		it ("can cancel items before the given time", function(){
 			var sched = new Timeline();
 			for (var i = 0; i < 100; i++){
 				sched.addEvent({"time" : i});
 			}
-			sched.clearBefore(9);
+			sched.cancelBefore(9);
 			expect(sched.length).to.equal(90);
-			sched.clearBefore(10.1);
+			sched.cancelBefore(10.1);
 			expect(sched.length).to.equal(89);
-			sched.clearBefore(100);
+			sched.cancelBefore(100);
 			expect(sched.length).to.equal(0);
 			sched.dispose();
 		});

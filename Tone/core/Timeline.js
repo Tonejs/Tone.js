@@ -102,7 +102,7 @@ define(["Tone/core/Tone", "Tone/core/Types"], function (Tone) {
 	 *  @param  {Time}  time  The time to query.
 	 *  @returns {Tone.Timeline} this
 	 */
-	Tone.Timeline.prototype.clear = function(after){
+	Tone.Timeline.prototype.cancel = function(after){
 		if (this._timeline.length){
 			after = this.toSeconds(after);
 			var index = this._search(after);
@@ -117,10 +117,10 @@ define(["Tone/core/Tone", "Tone/core/Types"], function (Tone) {
 
 	/**
 	 *  Cancel events before or equal to the given time.
-	 *  @param  {Time}  time  The time to clear before.
+	 *  @param  {Time}  time  The time to cancel before.
 	 *  @returns {Tone.Timeline} this
 	 */
-	Tone.Timeline.prototype.clearBefore = function(time){
+	Tone.Timeline.prototype.cancelBefore = function(time){
 		if (this._timeline.length){
 			time = this.toSeconds(time);
 			var index = this._search(time);

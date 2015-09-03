@@ -3,7 +3,7 @@ define(["Test", "Tone/core/Transport", "Tone/core/Tone"], function (Test, Transp
 	describe("Transport", function(){
 
 		function resetTransport(done){
-			Tone.Transport.clear(0);
+			Tone.Transport.cancel(0);
 			Tone.Transport.stop();
 			Tone.Transport.loop = false;
 			Tone.Transport.PPQ = 48;
@@ -71,7 +71,7 @@ define(["Test", "Tone/core/Transport", "Tone/core/Tone"], function (Test, Transp
 					expect(invocations).to.be.greaterThan(1);
 					Tone.Transport.loop = false;
 					Tone.Transport.stop();
-					Tone.Transport.clear(0);
+					Tone.Transport.cancel(0);
 					done();
 				}, 1000);
 			});
@@ -223,25 +223,25 @@ define(["Test", "Tone/core/Transport", "Tone/core/Tone"], function (Test, Transp
 				setTimeout(done, 100);
 			});
 
-			it ("can clear the timeline of scheduled object", function(){
+			it ("can cancel the timeline of scheduled object", function(){
 				Tone.Transport.schedule(Tone.noOp, 0);
 				Tone.Transport.schedule(Tone.noOp, 1);
 				Tone.Transport.schedule(Tone.noOp, 2);
 				expect(Tone.Transport._timeline.length).to.equal(3);
-				Tone.Transport.clear(2);
+				Tone.Transport.cancel(2);
 				expect(Tone.Transport._timeline.length).to.equal(2);
-				Tone.Transport.clear(0);
+				Tone.Transport.cancel(0);
 				expect(Tone.Transport._timeline.length).to.equal(0);
 			});
 
-			it ("can clear the timeline of schedulOnce object", function(){
+			it ("can cancel the timeline of schedulOnce object", function(){
 				Tone.Transport.scheduleOnce(Tone.noOp, 0);
 				Tone.Transport.scheduleOnce(Tone.noOp, 1);
 				Tone.Transport.scheduleOnce(Tone.noOp, 2);
 				expect(Tone.Transport._onceEvents.length).to.equal(3);
-				Tone.Transport.clear(2);
+				Tone.Transport.cancel(2);
 				expect(Tone.Transport._onceEvents.length).to.equal(2);
-				Tone.Transport.clear(0);
+				Tone.Transport.cancel(0);
 				expect(Tone.Transport._onceEvents.length).to.equal(0);
 			});
 
@@ -292,18 +292,18 @@ define(["Test", "Tone/core/Transport", "Tone/core/Tone"], function (Test, Transp
 			it ("scheduled event gets invoked with the time of the event", function(done){
 				var startTime = Tone.Transport.now() + 0.1;
 				var eventID = Tone.Transport.scheduleRepeat(function(time){
-					Tone.Transport.cancel(eventID);
+					Tone.Transport.clear(eventID);
 					expect(time).to.equal(startTime);
 					done();
 				}, 1, 0);
 				Tone.Transport.start(startTime);
 			});
 
-			it ("can cancel a scheduled event", function(done){
+			it ("can clear a scheduled event", function(done){
 				var eventID = Tone.Transport.scheduleRepeat(function(){
 					throw new Error("should not call this function");
 				}, 1, 0);
-				Tone.Transport.cancel(eventID);
+				Tone.Transport.clear(eventID);
 				Tone.Transport.stop();
 				setTimeout(done, 100);
 			});
@@ -311,7 +311,7 @@ define(["Test", "Tone/core/Transport", "Tone/core/Tone"], function (Test, Transp
 			it ("can be scheduled in the future", function(done){
 				var startTime = Tone.Transport.now() + 0.1;
 				var eventID = Tone.Transport.scheduleRepeat(function(time){
-					Tone.Transport.cancel(eventID);
+					Tone.Transport.clear(eventID);
 					expect(time).to.be.closeTo(startTime + 0.2, 0.01);
 					done();
 				}, 1, 0.2);
@@ -340,7 +340,7 @@ define(["Test", "Tone/core/Transport", "Tone/core/Tone"], function (Test, Transp
 				}, 0.1, 0);
 				Tone.Transport.start();
 				setTimeout(function(){
-					Tone.Transport.cancel(eventID);
+					Tone.Transport.clear(eventID);
 					done();
 				}, 1000);
 			});
@@ -349,10 +349,10 @@ define(["Test", "Tone/core/Transport", "Tone/core/Tone"], function (Test, Transp
 				var first = false;
 				var firstID = Tone.Transport.scheduleRepeat(function(){
 					first = true;
-					Tone.Transport.cancel(firstID);
+					Tone.Transport.clear(firstID);
 				}, 1, 0.5);
 				var secondID = Tone.Transport.scheduleRepeat(function(){
-					Tone.Transport.cancel(secondID);
+					Tone.Transport.clear(secondID);
 					expect(first).to.be.true;
 					done();
 				}, 1, 0.51);
@@ -379,7 +379,7 @@ define(["Test", "Tone/core/Transport", "Tone/core/Tone"], function (Test, Transp
 			it ("scheduled event gets invoked with the time of the event", function(done){
 				var startTime = Tone.Transport.now() + 0.1;
 				var eventID = Tone.Transport.scheduleOnce(function(time){
-					Tone.Transport.cancel(eventID);
+					Tone.Transport.clear(eventID);
 					expect(time).to.equal(startTime);
 					done();
 				}, 0);
@@ -391,7 +391,7 @@ define(["Test", "Tone/core/Transport", "Tone/core/Tone"], function (Test, Transp
 				var eventID = Tone.Transport.scheduleOnce(function(){
 					throw new Error("should not call this function");
 				}, 0);
-				Tone.Transport.cancel(eventID);
+				Tone.Transport.clear(eventID);
 				Tone.Transport.stop();
 				setTimeout(done, 200);
 			});
@@ -399,7 +399,7 @@ define(["Test", "Tone/core/Transport", "Tone/core/Tone"], function (Test, Transp
 			it ("can be scheduled in the future", function(done){
 				var startTime = Tone.Transport.now() + 0.1;
 				var eventID = Tone.Transport.scheduleOnce(function(time){
-					Tone.Transport.cancel(eventID);
+					Tone.Transport.clear(eventID);
 					expect(time).to.be.closeTo(startTime + 0.3, 0.01);
 					done();
 				}, 0.3);
