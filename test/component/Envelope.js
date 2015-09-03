@@ -334,6 +334,17 @@ function (Envelope, Basic, Offline, Test) {
 				});
 				offline.run();
 			});
+
+			it ("reports its current envelope value (.value)", function(done){
+				var env = new Envelope(0.1, 0.2, 1).noGC();
+				expect(env.value).to.be.closeTo(0, 0.01);
+				env.triggerAttack();
+				setTimeout(function(){
+					expect(env.value).to.be.closeTo(1, 0.01);
+					env.dispose();
+					done();
+				}, 200);
+			});
 		});
 	});
 });
