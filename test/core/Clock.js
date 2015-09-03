@@ -20,22 +20,6 @@ define(["Test", "Tone/core/Clock"], function (Test, Clock) {
 				clock.dispose();
 			});
 
-			it ("can get and set the frequency", function(){
-				var clock = new Clock(function(){}, 2);
-				expect(clock.frequency.value).to.equal(2);
-				clock.frequency.value = 0.2;
-				expect(clock.frequency.value).to.be.closeTo(0.2, 0.001);
-				clock.dispose();
-			});
-
-			it ("can set the frequency of the clock", function(){
-				var clock = new Clock(function(){}, 2);
-				expect(clock.frequency.value).to.equal(2);
-				clock.frequency.value = 3;
-				expect(clock.frequency.value).to.equal(3);
-				clock.dispose();
-			});
-
 			it ("invokes the callback when started", function(done){
 				var clock = new Clock(function(){
 					clock.dispose();
