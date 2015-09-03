@@ -14,23 +14,21 @@ define(["Tone/core/Tone", "Tone/core/Master", "Tone/core/Types"], function(Tone)
 		options = this.defaultArg(options, Tone.Instrument.defaults);
 
 		/**
-		 *  the output
-		 *  @type {GainNode}
+		 *  The volume node. 
+		 *  @type  {Tone.Volume}
 		 *  @private
 		 */
-		this.output = this.context.createGain();
+		this._volume = this.output = new Tone.Volume(options.volume);
 
 		/**
-		 * The volume of the instrument.
+		 * The volume of the output in decibels.
 		 * @type {Decibels}
 		 * @signal
+		 * @example
+		 * source.volume.value = -6;
 		 */
-		this.volume = new Tone.Signal({
-			"param" : this.output.gain, 
-			"units" : Tone.Type.Decibels,
-			"value" : options.volume
-		});
-		this._readOnly(["volume"]);
+		this.volume = this._volume.volume;
+		this._readOnly("volume");
 	};
 
 	Tone.extend(Tone.Instrument);
@@ -84,8 +82,9 @@ define(["Tone/core/Tone", "Tone/core/Master", "Tone/core/Types"], function(Tone)
 	 */
 	Tone.Instrument.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
+		this._volume.dispose();
+		this._volume = null;
 		this._writable(["volume"]);
-		this.volume.dispose();
 		this.volume = null;
 		return this;
 	};
