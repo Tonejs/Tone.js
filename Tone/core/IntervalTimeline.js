@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/core/Types"], function (Tone) {
+define(["Tone/core/Tone", "Tone/core/Type"], function (Tone) {
 
 	/**
 	 *  @class Similar to Tone.Timeline, but all events represent

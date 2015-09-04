@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/core/Timeline", "Tone/core/Types"], function (Tone) {
+define(["Tone/core/Tone", "Tone/core/Timeline", "Tone/core/Type"], function (Tone) {
 
 	/**
 	 *  @class  A Timeline State. Provides the methods: <code>setStateAtTime("state", time)</code>

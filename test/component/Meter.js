@@ -1,5 +1,5 @@
 define(["Tone/component/Meter", "helper/Basic", "helper/Offline", "Test", 
-	"Tone/signal/Signal", "helper/PassAudio", "Tone/core/Types", "Tone/component/Merge"], 
+	"Tone/signal/Signal", "helper/PassAudio", "Tone/core/Type", "Tone/component/Merge"], 
 function (Meter, Basic, Offline, Test, Signal, PassAudio, Tone, Merge) {
 	describe("Meter", function(){
 

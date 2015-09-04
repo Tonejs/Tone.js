@@ -1,5 +1,5 @@
 define(["Tone/component/Gate", "helper/Basic", "helper/Offline", "Test", 
-	"Tone/signal/Signal", "helper/PassAudio", "Tone/core/Types"], 
+	"Tone/signal/Signal", "helper/PassAudio", "Tone/core/Type"], 
 function (Gate, Basic, Offline, Test, Signal, PassAudio, Tone) {
 	describe("Gate", function(){
 

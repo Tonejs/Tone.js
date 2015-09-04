@@ -1,4 +1,4 @@
-define(["Test", "Tone/core/Types", "Tone/core/Transport", "deps/teoria"], function (Test, Tone, Transport, teoria) {
+define(["Test", "Tone/core/Type", "Tone/core/Transport", "deps/teoria"], function (Test, Tone, Transport, teoria) {
 
 	describe("Types", function(){
 

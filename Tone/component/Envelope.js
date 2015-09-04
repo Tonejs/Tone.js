@@ -1,5 +1,5 @@
 define(["Tone/core/Tone", "Tone/signal/TimelineSignal", 
-	"Tone/signal/Pow", "Tone/core/Types"], function(Tone){
+	"Tone/signal/Pow", "Tone/core/Type"], function(Tone){
 
 	"use strict";
 
