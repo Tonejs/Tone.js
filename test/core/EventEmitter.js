@@ -28,6 +28,19 @@ define(["Test", "Tone/core/EventEmitter"], function (Test, EventEmitter) {
 			emitter.dispose();
 		});
 
+		it ("removes all events when no callback is given", function(){
+			var emitter = new EventEmitter();
+			emitter.on("something", function(){
+				throw new Error("should call this");	
+			});
+			emitter.on("something", function(){
+				throw new Error("should call this");	
+			});
+			emitter.off("something");
+			emitter.trigger("something");
+			emitter.dispose();
+		});
+
 		it ("can pass arguments to the callback", function(done){
 			var emitter = new EventEmitter();
 			emitter.on("something", function(arg0, arg1){
