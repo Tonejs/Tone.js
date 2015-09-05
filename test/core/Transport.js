@@ -4,6 +4,7 @@ define(["Test", "Tone/core/Transport", "Tone/core/Tone"], function (Test, Transp
 
 		function resetTransport(done){
 			Tone.Transport.cancel(0);
+			Tone.Transport.off("start stop pause loop");
 			Tone.Transport.stop();
 			Tone.Transport.loop = false;
 			Tone.Transport.PPQ = 48;
@@ -365,6 +366,19 @@ define(["Test", "Tone/core/Transport", "Tone/core/Tone"], function (Test, Transp
 				}).to.throw(Error);
 			});
 
+			it ("repeats for the given duration", function(done){
+				var repeatCount = 0;
+				var eventID = Tone.Transport.scheduleRepeat(function(){
+					repeatCount++;
+				}, 0.1, 0, 0.5);
+				Tone.Transport.start();
+				setTimeout(function(){
+					expect(repeatCount).to.equal(5);
+					Tone.Transport.clear(eventID);
+					done();
+				}, 700);
+			});
+
 		});
 
 		context("scheduleOnce", function(){	
@@ -416,6 +430,50 @@ define(["Test", "Tone/core/Transport", "Tone/core/Tone"], function (Test, Transp
 				setTimeout(done, 500);
 			});
 
+		});
+
+		context("events", function(){
+
+			afterEach(resetTransport);
+
+			it("invokes start/stop/pause events", function(){
+				var count = 0;
+				Transport.on("start stop pause", function(){
+					count++;
+				});
+				Transport.start().pause("+0.1").stop("+0.2");
+				expect(count).to.equal(3);
+			});
+
+			it("passes in the time argument to the events", function(){
+				Transport.on("start", function(time){
+					expect(time).to.equal(3);
+				});
+				Transport.on("stop", function(time){
+					expect(time).to.equal(4);
+				});
+				Transport.start(3).stop(4);
+			});
+
+			it("invokes the 'loop' method on loop", function(done){
+				var sixteenth = Transport.toSeconds("16n");
+				Transport.setLoopPoints(0, sixteenth);
+				Transport.loop = true;
+				var lastLoop = -1;
+				var loops = 0;
+				Transport.on("loop", function(time){
+					loops++;
+					if (lastLoop !== -1){
+						expect(time - lastLoop).to.be.closeTo(sixteenth, 0.001);
+					}
+					lastLoop = time;
+				});
+				Transport.start().stop("+ 16n * 5.1");
+				setTimeout(function(){
+					expect(loops).to.equal(5);
+					done();
+				}, 700);
+			});
 		});
 
 	});
