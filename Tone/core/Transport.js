@@ -1,20 +1,19 @@
-define(["Tone/core/Tone", "Tone/core/Clock", "Tone/core/Types", "Tone/core/Timeline", 
-	"Tone/core/EventEmitter", "Tone/core/Gain"], 
+define(["Tone/core/Tone", "Tone/core/Clock", "Tone/core/Type", "Tone/core/Timeline", 
+	"Tone/core/EventEmitter", "Tone/core/Gain", "Tone/core/IntervalTimeline"], 
 function(Tone){
 
 	"use strict";
 
 	/**
-	 *  @class  Oscillator-based transport allows for timing musical events.
-	 *          Supports tempo curves and time changes. A single transport is created
-	 *          on initialization. Unlike browser-based timing (setInterval, requestAnimationFrame)
+	 *  @class  Transport for timing musical events.
+	 *          Supports tempo curves and time changes. Unlike browser-based timing (setInterval, requestAnimationFrame)
 	 *          Tone.Transport timing events pass in the exact time of the scheduled event
 	 *          in the argument of the callback function. Pass that time value to the object
 	 *          you're scheduling. <br><br>
 	 *          A single transport is created for you when the library is initialized. 
 	 *          <br><br>
 	 *          The transport emits the events: "start", "stop", "pause", and "loop" which are
-	 *          invoked with the time of that event. 
+	 *          called with the time of that event as the argument. 
 	 *
 	 *  @extends {Tone.EventEmitter}
 	 *  @singleton
@@ -137,7 +136,7 @@ function(Tone){
 		 *  @type {Array}
 		 *  @private
 		 */
-		this._repeatedEvents = new Tone.Timeline();
+		this._repeatedEvents = new Tone.IntervalTimeline();
 
 		/**
 		 *  Events that occur once
@@ -221,7 +220,7 @@ function(Tone){
 			event.callback(tickTime);
 		});
 		//process the repeated events
-		this._repeatedEvents.forEachBefore(ticks, function(event){
+		this._repeatedEvents.forEachOverlap(ticks, function(event){
 			if ((ticks - event.time) % event.interval === 0){
 				event.callback(tickTime);
 			}
@@ -270,17 +269,18 @@ function(Tone){
 	 *                               callbacks.
 	 *  @param  {Time=}    startTime  When along the timeline the events should
 	 *                               start being invoked.
+	 *  @param {Time} [duration=Infinity] How long the event should repeat. 
 	 *  @return  {Number}    The ID of the scheduled event. Use this to cancel
 	 *                           the event. 
 	 */
-	Tone.Transport.prototype.scheduleRepeat = function(callback, interval, startTime){
-		if (interval === 0){
+	Tone.Transport.prototype.scheduleRepeat = function(callback, interval, startTime, duration){
+		if (interval <= 0){
 			throw new Error("repeat events must have an interval larger than 0");
 		}
 		var event = {
 			"time" : this.toTicks(startTime),
+			"duration" : this.toTicks(this.defaultArg(duration, Infinity)),
 			"interval" : this.toTicks(interval),
-			"stop" : Infinity,
 			"callback" : callback
 		};
 		var id = this._eventID++;
@@ -722,8 +722,8 @@ function(Tone){
 	 *  @return {boolean}            	true if the event was removed
 	 */
 	Tone.Transport.prototype.clearInterval = function(id){
-		console.warn("This method is deprecated. Use Tone.Transport.cancel instead.");
-		return Tone.Transport.cancel(id);
+		console.warn("This method is deprecated. Use Tone.Transport.clear instead.");
+		return Tone.Transport.clear(id);
 	};
 
 	/**
@@ -754,8 +754,8 @@ function(Tone){
 	 *  @return {boolean}           true if the timeout was removed
 	 */
 	Tone.Transport.prototype.clearTimeout = function(id){
-		console.warn("This method is deprecated. Use Tone.Transport.cancel instead.");
-		return Tone.Transport.cancel(id);
+		console.warn("This method is deprecated. Use Tone.Transport.clear instead.");
+		return Tone.Transport.clear(id);
 	};
 
 	/**
@@ -785,8 +785,8 @@ function(Tone){
 	 *  @return {boolean} true if it was removed
 	 */
 	Tone.Transport.prototype.clearTimeline = function(id){
-		console.warn("This method is deprecated. Use Tone.Transport.cancel instead.");
-		return Tone.Transport.cancel(id);
+		console.warn("This method is deprecated. Use Tone.Transport.clear instead.");
+		return Tone.Transport.clear(id);
 	};
 
 	///////////////////////////////////////////////////////////////////////////////
