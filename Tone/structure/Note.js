@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Types"], function (Tone) {
+define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Type", "Tone/core/Timeline"], function (Tone) {
 
 	"use strict";
 
@@ -61,18 +61,11 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Types"], function (T
 		this._loopEnd = 0;
 
 		/**
-		 *  When the note is going to start
-		 *  @type {Ticks}
+		 *  Tracks the scheduled events
+		 *  @type {Tone.Timeline}
 		 *  @private
 		 */
-		this._startTick = -1;
-
-		/**
-		 *  When the note is going to end
-		 *  @type {Ticks}
-		 *  @private
-		 */
-		this._stopTick = Infinity;
+		this._events = new Tone.Timeline();
 
 		/**
 		 *  The playback speed of the note. A speed of 1
@@ -88,13 +81,6 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Types"], function (T
 		 *  @type {NormalRange}
 		 */
 		this.probability = options.probability;
-
-		/**
-		 *  The event id of the last scheduled event
-		 *  @private
-		 *  @type {Number}
-		 */
-		this._eventId = -1;
 
 		//set the initial values
 		this.loopStart = options.loopStart;
@@ -130,28 +116,54 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Types"], function (T
 	};
 
 	/**
+	 *  Reschedule all of the events along the timeline
+	 *  with the updated values.
+	 *  @param {Time} after Only reschedules events after the given time.
+	 *  @return  {Tone.Note}  this
+	 *  @private
+	 */
+	Tone.Note.prototype._rescheduleEvents = function(after){
+		//if no argument is given, schedules all of the events
+		after = this.defaultArg(after, -1);
+		this._events.forEachAfter(after, function(event){
+			var duration;
+			if (event.state === Tone.State.Started){
+				if (!this.isUndef(event.id)){
+					Tone.Transport.clear(event.id);
+				}
+				if (this._loop){
+					duration = Infinity;
+					if (typeof this._loop === "number"){
+						duration =  (this._loop - 1) * this._getLoopDuration();
+					}
+					var nextEvent = this._events.getEventAfter(event.time);
+					if (nextEvent !== null){
+						duration = Math.min(duration, nextEvent.time - event.time);
+					}
+					event.id = Tone.Transport.scheduleRepeat(this._tick.bind(this), this._getLoopDuration().toString() + "i", event.time + "i", duration + "i");
+				} else {
+					event.id = Tone.Transport.schedule(this._tick.bind(this), event.time + "i");
+				}
+			} 
+		}.bind(this));
+		return this;
+	};
+
+	/**
 	 *  Start the note at the given time. 
 	 *  @param  {Time}  time  When the note should start.
 	 *  @return  {Tone.Note}  this
 	 */
-	Tone.Note.prototype.start = function(time, offset){
-		if (this._startTick === -1){
-			//if the previous event hasn't been cancelled yet
-			if (this._eventId !== -1){
-				Tone.Transport.cancel(this._eventId);
-				this._eventId = -1;
-			}
-			this._startTick = this.toTicks(time) - this.toTicks(offset);
-			this._stopTick = Infinity;
-			if (this._loop){
-				this._eventId = Tone.Transport.scheduleRepeat(this._tick.bind(this), this._getLoopDuration() + "i", this._startTick + "i");
-				if (typeof this._loop === "number"){
-					var duration = this._loopEnd - this._loopStart;
-					this._stopTick = this._loop * duration + this._startTick;
-				}
-			} else {
-				this._eventId = Tone.Transport.schedule(this._tick.bind(this), this._startTick + "i");
-			}
+	Tone.Note.prototype.start = function(time){
+		var scheduledEvent = this._events.getEvent(time);
+		if (scheduledEvent === null || scheduledEvent.state === Tone.State.Stopped){
+			time = this.toTicks(time);
+			this._events.addEvent({
+				"state" : Tone.State.Started,
+				"time" : time,
+				"id" : undefined,
+			});
+			this._rescheduleEvents(time - 0.001);
 		}
 		return this;
 	};
@@ -162,10 +174,35 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Types"], function (T
 	 *  @return  {Tone.Note}  this
 	 */
 	Tone.Note.prototype.stop = function(time){
-		if (this._startTick !== -1){
-			this._stopTick = this.toTicks(time);
-			this._startTick = -1;
-		} 
+		var scheduledEvent = this._events.getEvent(time);
+		if (scheduledEvent === null || scheduledEvent.state === Tone.State.Started){
+			time = this.toTicks(time);
+			this._events.addEvent({
+				"state" : Tone.State.Stopped,
+				"time" : time
+			});
+			var previousEvent = this._events.getEventBefore(time);
+			var reschedulTime = time;
+			if (previousEvent !== null){
+				reschedulTime = previousEvent.time;
+			}
+			this._rescheduleEvents(reschedulTime - 0.001);
+		}
+		return this;
+	};
+
+	/**
+	 *  Cancel all scheduled events greater than or equal to the given time
+	 *  @param  {Time}  [time=0]  The time after which events will be cancel.
+	 *  @return  {Tone.Note}  this
+	 */
+	Tone.Note.prototype.cancel = function(time){
+		time = this.defaultArg(time, -Infinity);
+		time = this.toTicks(time);
+		this._events.forEachAfter(time - 0.001, function(event){
+			Tone.Transport.clear(event.id);
+		});
+		this._events.cancel(time);
 		return this;
 	};
 
@@ -176,11 +213,8 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Types"], function (T
 	 *  @private
 	 */
 	Tone.Note.prototype._tick = function(time){
-		if (Tone.Transport.ticks >= this._stopTick && this._eventId !== -1){
-			Tone.Transport.cancel(this._eventId);
-			this._eventId = -1;
-			this._stopTick = Infinity;
-		} else {
+		var currentState = this._events.getEvent(Tone.Transport.ticks);
+		if (currentState !== null && currentState.state === Tone.State.Started){
 			if (this.probability < 1){
 				if (Math.random() <= this.probability){
 					this._callback(time, this.value);	
@@ -215,24 +249,8 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Types"], function (T
 			return this._loop;
 		},
 		set : function(loop){
-			if (this._startTick !== -1){
-				if (loop){
-					var duration = this._getLoopDuration();
-					if (typeof loop === "number"){
-						this._stopTick = loop * duration + this._startTick;
-					} else {
-						this._stopTick = Infinity;
-					}
-					//cancel the previous event and set a new one
-					Tone.Transport.cancel(this._eventId);
-					this._eventId = Tone.Transport.scheduleRepeat(this._tick.bind(this), duration + "i", this._startTick + "i");
-				} else {
-					//cancel the previous event and set a timeline event
-					Tone.Transport.cancel(this._eventId);
-					this._eventId = Tone.Transport.schedule(this._tick.bind(this), this._startTick + "i");
-				}
-			}
 			this._loop = loop;
+			this._rescheduleEvents();
 		}
 	});
 
@@ -252,14 +270,9 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Types"], function (T
 		},
 		set : function(rate){
 			this._playbackRate = rate;
-			if (this._startTick !== -1){
-				var offset = this._getLoopDuration() * this.progress;
-				this.stop();
-				this.start()
-				this._startTick = Math.round((event.time) / rate + this._startTick);
+			if (this._loop){
+				this._rescheduleEvents();
 			}
-			//reinit the loop
-			this.loop = this._loop;
 		}
 	});
 
@@ -275,9 +288,10 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Types"], function (T
 			return this.toNotation(this._loopEnd + "i");
 		},
 		set : function(loopEnd){
-			//reset the loop
 			this._loopEnd = this.toTicks(loopEnd);
-			this.loop = this._loop;
+			if (this._loop){
+				this._rescheduleEvents();
+			}
 		}
 	});
 
@@ -293,9 +307,10 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Types"], function (T
 			return this.toNotation(this._loopStart + "i");
 		},
 		set : function(loopStart){
-			//reset the loop
 			this._loopStart = this.toTicks(loopStart);
-			this.loop = this._loop;
+			if (this._loop){
+				this._rescheduleEvents();
+			}
 		}
 	});
 
@@ -312,9 +327,16 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Types"], function (T
 		get : function(){
 			if (this._loop){
 				var ticks = Tone.Transport.ticks;
-				if (this._startTick !== -1 && ticks > this._startTick){
-					var loopDuration = (this._loopEnd - this._loopStart) / this.playbackRate;
-					var progress = (ticks - this._startTick) % loopDuration;
+				var lastEvent = this._events.getEvent(ticks);
+				if (lastEvent !== null && lastEvent.state === Tone.State.Started){
+					var loopDuration = this._getLoopDuration();
+					if (typeof this._loop === "number"){
+						var endTime = loopDuration * (this._loop);
+						if (ticks > endTime){
+							return 0;
+						}
+					}
+					var progress = (ticks - lastEvent.time) % loopDuration;
 					return progress / loopDuration;
 				} else {
 					return 0;
@@ -330,9 +352,9 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Types"], function (T
 	 *  @return  {Tone.Note}  this
 	 */
 	Tone.Note.prototype.dispose = function(){
-		if (this._eventId !== -1){
-			Tone.Transport.cancel(this._eventId);
-		}
+		this.cancel();
+		this._events.dispose();
+		this._events = null;
 		this._callback = null;
 		this.value = null;
 	};
