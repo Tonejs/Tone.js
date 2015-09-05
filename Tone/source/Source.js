@@ -7,10 +7,24 @@ function(Tone){
 	/**
 	 *  @class  Base class for sources. Sources have start/stop methods
 	 *          and the ability to be synced to the 
-	 *          start/stop of Tone.Transport.
+	 *          start/stop of Tone.Transport. 
 	 *
 	 *  @constructor
 	 *  @extends {Tone}
+	 *  @example
+	 * //Multiple state change events can be chained together,
+	 * //but must be set in the correct order and with ascending times
+	 * 
+	 * // OK
+	 * state.start().stop("+0.2");
+	 * // AND
+	 * state.start().stop("+0.2").start("+0.4").stop("+0.7")
+	 *
+	 * // BAD
+	 * state.stop("+0.2").start();
+	 * // OR
+	 * state.start("+0.3").stop("+0.2");
+	 * 
 	 */	
 	Tone.Source = function(options){
 		//Sources only have an output and no input
