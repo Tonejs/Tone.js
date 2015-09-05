@@ -476,5 +476,78 @@ define(["Test", "Tone/core/Transport", "Tone/core/Tone"], function (Test, Transp
 			});
 		});
 
+		context("deprecated methods", function(){
+
+			afterEach(resetTransport);
+
+			it("can schedule an event using setTimeline", function(done){
+				var startTime = Transport.toSeconds("+0.1");
+				Transport.setTimeline(function(time){
+					expect(time).to.equal(startTime);
+				}, 0);
+				Transport.start(startTime);
+				setTimeout(function(){
+					done();
+				}, 100);
+			});
+
+			it("can cancel an event using clearTimeline", function(done){
+				var id = Transport.setTimeline(function(){
+					throw new Error("this event should be canceled");
+				}, 0);
+				Transport.clearTimeline(id);
+				Transport.start();
+				setTimeout(function(){
+					done();
+				}, 100);
+			});
+
+			it("can schedule a repeated event using setInterval", function(done){
+				var count = 0;
+				Transport.setInterval(function(){
+					count++;
+				}, 0.1);
+				Transport.start().stop("+0.31");
+				setTimeout(function(){
+					expect(count).to.equal(3);
+					done();
+				}, 500);
+			});
+
+			it("can cancel an event using clearInterval", function(done){
+				var id = Transport.setInterval(function(){
+					throw new Error("this event should be canceled");
+				}, 0.01);
+				Transport.clearTimeline(id);
+				Transport.start();
+				setTimeout(function(){
+					done();
+				}, 100);
+			});
+
+			it("can schedule an event using setTimeout", function(done){
+				var startTime = Transport.toSeconds("+0.1");
+				Transport.setTimeout(function(time){
+					expect(time).to.equal(startTime);
+				}, 0);
+				Transport.start(startTime);
+				setTimeout(function(){
+					done();
+				}, 100);
+			});
+
+			it("can cancel an event using clearTimeout", function(done){
+				var id = Transport.setTimeout(function(){
+					throw new Error("this event should be canceled");
+				}, 0);
+				Transport.clearTimeout(id);
+				Transport.start();
+				setTimeout(function(){
+					done();
+				}, 100);
+			});
+
+		});
+
 	});
 });
