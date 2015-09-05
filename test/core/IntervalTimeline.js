@@ -207,6 +207,20 @@ define(["Test", "Tone/core/IntervalTimeline", "helper/Basic"], function (Test, I
 				sched.dispose();
 			});
 
+			it ("can handle many items", function(){
+				var sched = new IntervalTimeline();
+				for (var i = 0; i < 10000; i++){
+					sched.addEvent({
+						"time" : i,
+						"duration" : 1
+					});
+				}
+				for (var j = 0; j < 10000; j++){
+					expect(sched.getEvent(j).time).to.equal(j);
+				}
+				sched.dispose();
+			});
+
 		});
 
 
@@ -224,20 +238,6 @@ define(["Test", "Tone/core/IntervalTimeline", "helper/Basic"], function (Test, I
 				expect(sched.length).to.equal(5);
 				sched.cancel(0);
 				expect(sched.length).to.equal(0);
-				sched.dispose();
-			});
-
-			it ("can handle many items", function(){
-				var sched = new IntervalTimeline();
-				for (var i = 0; i < 5000; i++){
-					sched.addEvent({
-						"time" : i,
-						"duration" : i
-					});
-				}
-				for (var j = 0; j < 5000; j++){
-					expect(sched.getEvent(j).time).to.equal(j);
-				}
 				sched.dispose();
 			});
 		});
@@ -319,6 +319,12 @@ define(["Test", "Tone/core/IntervalTimeline", "helper/Basic"], function (Test, I
 					count++;
 				});
 				expect(count).to.equal(3);
+				count = 0;
+				sched.forEachAfter(0.35, function(event){
+					expect(event.time).to.be.gte(0.35);
+					count++;
+				});
+				expect(count).to.equal(1);
 				sched.dispose();
 			});
 
