@@ -502,7 +502,10 @@ define(function(){
 	 *  @return {*}          
 	 */
 	Tone.prototype.defaultArg = function(given, fallback){
-		if (typeof given === "object" && typeof fallback === "object"){
+		if (typeof given === "object" && 
+				typeof fallback === "object" && 
+				!Array.isArray(given) && 
+				!Array.isArray(fallback)){
 			var ret = {};
 			//make a deep copy of the given object
 			for (var givenProp in given) {
