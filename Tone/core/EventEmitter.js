@@ -42,8 +42,10 @@ define(["Tone/core/Tone"], function (Tone) {
 	/**
 	 *  Remove the event listener.
 	 *  @param  {String}    event     The event to stop listening to.
-	 *  @param  {Function}  callback  The callback which was bound to 
+	 *  @param  {Function=}  callback  The callback which was bound to 
 	 *                                the event with Tone.EventEmitter.on.
+	 *                                If no callback is given, all callbacks
+	 *                                events are removed.
 	 *  @return  {Tone.EventEmitter}    this
 	 */
 	Tone.EventEmitter.prototype.off = function(event, callback){
@@ -51,11 +53,14 @@ define(["Tone/core/Tone"], function (Tone) {
 		for (var ev = 0; ev < events.length; ev++){
 			event = events[ev];
 			if (this._events.hasOwnProperty(event)){
-				var eventList = this._events[event];
-				for (var i = 0; i < eventList.length; i++){
-					if (eventList[i] === callback){
-						eventList.splice(i, 1);
-						break;					
+				if (this.isUndef(callback)){
+					this._events[event] = [];
+				} else {
+					var eventList = this._events[event];
+					for (var i = 0; i < eventList.length; i++){
+						if (eventList[i] === callback){
+							eventList.splice(i, 1);
+						}
 					}
 				}
 			}
