@@ -38,12 +38,20 @@ define(["Tone/core/Tone", "Tone/core/Type"], function (Tone) {
 		if (this.isUndef(event.time) || this.isUndef(event.duration)){
 			throw new Error("events must have time and duration parameters");
 		}
+		var node = new IntervalNode(event.time, event.time + event.duration, event);
 		if (this._root === null){
-			this._root = new IntervalNode(event.time, event.time + event.duration, event);
+			this._root = node;
 		} else {
-			this._root.insert(new IntervalNode(event.time, event.time + event.duration, event));
+			this._root.insert(node);
 		}
 		this._length++;
+		// Restructure tree to be balanced
+		while (node !== null) {
+			node.updateHeight();
+			node.updateMax();
+			this._rebalance(node);
+			node = node.parent;
+		}
 		return this;
 	};
 
@@ -95,6 +103,18 @@ define(["Tone/core/Tone", "Tone/core/Type"], function (Tone) {
 	};
 
 	/**
+	 *  Set the root node as the given node
+	 *  @param {IntervalNode} node
+	 *  @private
+	 */
+	Tone.IntervalTimeline.prototype._setRoot = function(node){
+		this._root = node;
+		if (this._root !== null){
+			this._root.parent = null;
+		}
+	};
+
+	/**
 	 *  Replace the references to the node in the node's parent
 	 *  with the replacement node.
 	 *  @param  {IntervalNode}  node        
@@ -103,16 +123,14 @@ define(["Tone/core/Tone", "Tone/core/Type"], function (Tone) {
 	 */
 	Tone.IntervalTimeline.prototype._replaceNodeInParent = function(node, replacement){
 		if (node.parent !== null){
-			if (node.parent.left === node){
+			if (node.isLeftChild()){
 				node.parent.left = replacement;
 			} else {
 				node.parent.right = replacement;
 			}
+			this._rebalance(node.parent);
 		} else {
-			this._root = replacement;
-		}
-		if (replacement !== null){
-			replacement.parent = node.parent;
+			this._setRoot(replacement);
 		}
 	};
 
@@ -130,19 +148,125 @@ define(["Tone/core/Tone", "Tone/core/Type"], function (Tone) {
 		} else if (node.left === null){
 			this._replaceNodeInParent(node, node.right);
 		} else {
-			var replacement;
-			if (node.right.left === null){
-				replacement = node.right;
-				replacement.left = node.left;
+			var balance = node.getBalance();
+			var replacement, temp;
+			if (balance > 0){
+				if (node.left.right === null){
+					replacement = node.left;
+					replacement.right = node.right;
+					temp = replacement;
+				} else {
+					replacement = node.left.right;
+					while (replacement.right !== null){
+						replacement = replacement.right;
+					}
+					replacement.parent.right = replacement.left;
+					temp = replacement.parent;
+					replacement.left = node.left;
+					replacement.right = node.right;
+				}
 			} else {
-				replacement = node.right.getMinNode();
-				replacement.parent.left = replacement.right;
-				replacement.left = node.left;
-				replacement.right = node.right;
+				if (node.right.left === null){
+					replacement = node.right;
+					replacement.left = node.left;
+					temp = replacement;
+				} else {
+					replacement = node.right.left;
+					while (replacement.left !== null) {
+						replacement = replacement.left;
+					}
+					replacement.parent = replacement.parent;
+					replacement.parent.left = replacement.right;
+					temp = replacement.parent;
+					replacement.left = node.left;
+					replacement.right = node.right;
+				}
 			}
-			this._replaceNodeInParent(node, replacement);
+			if (node.parent !== null){
+				if (node.isLeftChild()){
+					node.parent.left = replacement;
+				} else {
+					node.parent.right = replacement;
+				}
+			} else {
+				this._setRoot(replacement);
+			}
+			// this._replaceNodeInParent(node, replacement);
+			this._rebalance(temp);
 		}
 		node.dispose();
+	};
+
+	/**
+	 *  Rotate the tree to the left
+	 *  @param  {IntervalNode}  node
+	 *  @private
+	 */
+	Tone.IntervalTimeline.prototype._rotateLeft = function(node){
+		var parent = node.parent;
+		var isLeftChild = node.isLeftChild();
+
+		// Make node.right the new root of this sub tree (instead of node)
+		var pivotNode = node.right;
+		node.right = pivotNode.left;
+		pivotNode.left = node;
+
+		if (parent !== null){
+			if (isLeftChild){
+				parent.left = pivotNode;
+			} else{
+				parent.right = pivotNode;
+			}
+		} else{
+			this._setRoot(pivotNode);
+		}
+	};
+
+	/**
+	 *  Rotate the tree to the right
+	 *  @param  {IntervalNode}  node
+	 *  @private
+	 */
+	Tone.IntervalTimeline.prototype._rotateRight = function(node){
+		var parent = node.parent;
+		var isLeftChild = node.isLeftChild();
+ 
+		// Make node.left the new root of this sub tree (instead of node)
+		var pivotNode = node.left;
+		node.left = pivotNode.right;
+		pivotNode.right = node;
+
+		if (parent !== null){
+			if (isLeftChild){
+				parent.left = pivotNode;
+			} else{
+				parent.right = pivotNode;
+			}
+		} else{
+			this._setRoot(pivotNode);
+		}
+	};
+
+	/**
+	 *  Balance the BST
+	 *  @param  {IntervalNode}  node
+	 *  @private
+	 */
+	Tone.IntervalTimeline.prototype._rebalance = function(node){
+		var balance = node.getBalance();
+		if (balance > 1){
+			if (node.left.getBalance() < 0){
+				this._rotateLeft(node.left);
+			} else {
+				this._rotateRight(node);
+			}
+		} else if (balance < -1) {
+			if (node.right.getBalance() > 0){
+				this._rotateRight(node.right);
+			} else {
+				this._rotateLeft(node);
+			}
+		}
 	};
 
 	/**
@@ -152,8 +276,8 @@ define(["Tone/core/Tone", "Tone/core/Type"], function (Tone) {
 	 *  @return  {Object}  The event which spans the desired time
 	 */
 	Tone.IntervalTimeline.prototype.getEvent = function(time){
-		var results = [];
 		if (this._root !== null){
+			var results = [];
 			this._root.search(time, results);
 			if (results.length > 0){
 				var max = results[0];
@@ -255,7 +379,9 @@ define(["Tone/core/Tone", "Tone/core/Type"], function (Tone) {
 	 *  Represents a node in the binary search tree, with the addition
 	 *  of a "high" value which keeps track of the highest value of
 	 *  its children. 
-	 *  Interval tree algorithm from: http://www.mif.vu.lt/~valdas/ALGORITMAI/LITERATURA/Cormen/Cormen.pdf
+	 *  References: 
+	 *  https://brooknovak.wordpress.com/2013/12/07/augmented-interval-tree-in-c/
+	 *  http://www.mif.vu.lt/~valdas/ALGORITMAI/LITERATURA/Cormen/Cormen.pdf
 	 *  @param {Number} low
 	 *  @param {Number} high
 	 *  @private
@@ -270,11 +396,13 @@ define(["Tone/core/Tone", "Tone/core/Type"], function (Tone) {
 		//the high value for this and all child nodes
 		this.max = this.high;
 		//the nodes to the left
-		this.left = null;
+		this._left = null;
 		//the nodes to the right
-		this.right = null;
+		this._right = null;
 		//the parent node
 		this.parent = null;
+		//the number of child nodes
+		this.height = 0;
 	};
 
 	/** 
@@ -282,20 +410,15 @@ define(["Tone/core/Tone", "Tone/core/Type"], function (Tone) {
 	 *  @param  {IntervalNode}  node
 	 */
 	IntervalNode.prototype.insert = function(node) {
-		if (node.high > this.max){
-			this.max = node.high;
-		}
 		if (node.low <= this.low){
 			if (this.left === null){
 				this.left = node;
-				node.parent = this;
 			} else {
 				this.left.insert(node);
 			}
 		} else {
 			if (this.right === null){
 				this.right = node;
-				node.parent = this;
 			} else {
 				this.right.insert(node);
 			}
@@ -343,27 +466,14 @@ define(["Tone/core/Tone", "Tone/core/Type"], function (Tone) {
 		// Check this node
 		if (this.low >= point){
 			results.push(this);
-			// Search both sides
 			if (this.left !== null){
 				this.left.searchAfter(point, results);
 			}
 		} 
+		// search the right side
 		if (this.right !== null){
 			this.right.searchAfter(point, results);
 		}
-	};
-
-	/**
-	 *  Search the tree for nodes which overlap 
-	 *  with the given point
-	 *  @param  {Number}  point  The point to query
-	 */
-	IntervalNode.prototype.getMinNode = function(){
-		var current_node = this;
-		while (current_node.left !== null){
-			current_node = current_node.left;
-		}
-		return current_node;
 	};
 
 	/**
@@ -381,12 +491,100 @@ define(["Tone/core/Tone", "Tone/core/Type"], function (Tone) {
 	};
 
 	/**
+	 *  Update the height of the node
+	 */
+	IntervalNode.prototype.updateHeight = function(){
+		if (this.left !== null && this.right !== null){
+			this.height = Math.max(this.left.height, this.right.height) + 1;
+		} else if (this.right !== null){
+			this.height = this.right.height + 1;
+		} else if (this.left !== null){
+			this.height = this.left.height + 1;
+		} else {
+			this.height = 0;
+		}
+	};
+
+	/**
+	 *  Update the height of the node
+	 */
+	IntervalNode.prototype.updateMax = function(){
+		this.max = this.high;
+		if (this.left !== null){
+			this.max = Math.max(this.max, this.left.max);
+		}
+		if (this.right !== null){
+			this.max = Math.max(this.max, this.right.max);
+		}
+	};
+
+	/**
+	 *  The balance is how the leafs are distributed on the node
+	 *  @return  {Number}  Negative numbers are balanced to the right
+	 */
+	IntervalNode.prototype.getBalance = function() {
+		var balance = 0;
+		if (this.left !== null && this.right !== null){
+			balance = this.left.height - this.right.height;
+		} else if (this.left !== null){
+			balance = this.left.height + 1;
+		} else if (this.right !== null){
+			balance = -(this.right.height + 1);
+		}
+		return balance;
+	};
+
+	/**
+	 *  @returns {Boolean} true if this node is the left child
+	 *  of its parent
+	 */
+	IntervalNode.prototype.isLeftChild = function() {
+		return this.parent !== null && this.parent.left === this;
+	};
+
+	/**
+	 *  get/set the left node
+	 *  @type {IntervalNode}
+	 */
+	Object.defineProperty(IntervalNode.prototype, "left", {
+		get : function(){
+			return this._left;
+		},
+		set : function(node){
+			this._left = node;
+			if (node !== null){
+				node.parent = this;
+			}
+			this.updateHeight();
+			this.updateMax();
+		}
+	});
+
+	/**
+	 *  get/set the right node
+	 *  @type {IntervalNode}
+	 */
+	Object.defineProperty(IntervalNode.prototype, "right", {
+		get : function(){
+			return this._right;
+		},
+		set : function(node){
+			this._right = node;
+			if (node !== null){
+				node.parent = this;
+			}
+			this.updateHeight();
+			this.updateMax();
+		}
+	});
+
+	/**
 	 *  null out references.
 	 */
 	IntervalNode.prototype.dispose = function() {
 		this.parent = null;
-		this.left = null;
-		this.right = null;
+		this._left = null;
+		this._right = null;
 		this.event = null;
 	};
 
