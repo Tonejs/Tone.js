@@ -83,15 +83,30 @@ define(["Tone/core/Tone", "Tone/core/Type"], function (Tone) {
 	};
 
 	/**
-	 *  Get the next event after the current event.
+	 *  Get the event which is scheduled after the given time.
 	 *  @param  {Number}  time  The time to query.
 	 *  @returns {Object} The event object after the given time
 	 */
-	Tone.Timeline.prototype.getNextEvent = function(time){
+	Tone.Timeline.prototype.getEventAfter = function(time){
 		time = this.toSeconds(time);
 		var index = this._search(time);
 		if (index + 1 < this._timeline.length){
 			return this._timeline[index + 1];
+		} else {
+			return null;
+		}
+	};
+
+	/**
+	 *  Get the event before the event at the given time.
+	 *  @param  {Number}  time  The time to query.
+	 *  @returns {Object} The event object before the given time
+	 */
+	Tone.Timeline.prototype.getEventBefore = function(time){
+		time = this.toSeconds(time);
+		var index = this._search(time);
+		if (index - 1 >= 0){
+			return this._timeline[index - 1];
 		} else {
 			return null;
 		}
@@ -208,10 +223,8 @@ define(["Tone/core/Tone", "Tone/core/Type"], function (Tone) {
 		//iterate over the items in reverse so that removing an item doesn't break things
 		time = this.toSeconds(time);
 		var endIndex = this._search(time);
-		if (endIndex !== -1){
-			for (var i = this._timeline.length - 1; i > endIndex; i--){
-				callback(this._timeline[i], i);
-			}
+		for (var i = this._timeline.length - 1; i > endIndex; i--){
+			callback(this._timeline[i], i);
 		}
 		return this;
 	};
