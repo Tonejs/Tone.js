@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/structure/Note", "Tone/core/Types", "Tone/core/Transport"], function (Tone) {
+define(["Tone/core/Tone", "Tone/structure/Note", "Tone/core/Type", "Tone/core/Transport"], function (Tone) {
 
 	"use strict";
 	
@@ -18,47 +18,74 @@ define(["Tone/core/Tone", "Tone/structure/Note", "Tone/core/Types", "Tone/core/T
 	 * 	   {"time" : "0:2", "note" : "C4", "velocity": 0.5}
 	 * ]).start();
 	 */
-	Tone.Part = function(callback, atoms){
+	Tone.Part = function(){
+
+		var options = this.optionsObject(arguments, ["callback", "notes"], Tone.Part.defaults);
 
 		/**
-		 *  When the atom is scheduled to start.
+		 *  If the part is looping or not
+		 *  @type  {Boolean|Positive}
+		 *  @private
+		 */
+		this._loop = options.loop;
+
+		/**
+		 *  When the note is scheduled to start.
 		 *  @type  {Number}
 		 *  @private
 		 */
 		this._loopStart = 0;
 
 		/**
-		 *  When the atom is scheduled to start.
+		 *  When the note is scheduled to start.
 		 *  @type  {Number}
 		 *  @private
 		 */
-		this._loopEnd = this.toTicks("1m");
+		this._loopEnd = 0;
 
 		/**
-		 *  The time the part was started
-		 *  @type {Ticks}
+		 *  The playback rate of the part
+		 *  @type  {Positive}
 		 *  @private
 		 */
-		this._startTick = -1;
+		this._playbackRate = 1;
+
+		/**
+		 *  Keeps track of the current state
+		 *  @type {Tone.TimelineState}
+		 *  @private
+		 */
+		this._state = new Tone.TimelineState(Tone.State.Stopped);
 
 		/**
 		 *  An array of Objects. Each one
-		 *  contains a atom object and the relative
-		 *  start time of the atom.
+		 *  contains a note object and the relative
+		 *  start time of the note.
 		 *  @type  {Array}
 		 *  @private
 		 */
-		this._atoms = [];
+		this._notes = [];
 
 		/**
-		 *  The callback to invoke on every atom
+		 *  The callback to invoke on every note
 		 *  @type {Function}
 		 *  @private
 		 */
-		this._callback = callback;
+		this._callback = options.callback;
 
-		for (var i = 0; i < atoms.length; i++){
-			this.add.apply(this, atoms[i]);
+		//setup
+		this.loopEnd = options.loopEnd;
+		this.loopStart = options.loopStart;
+		this.playbackRate = options.playbackRate;
+
+		//add the notes
+		var notes = this.defaultArg(options.notes, []);
+		for (var i = 0; i < notes.length; i++){
+			if (Array.isArray(notes[i])){
+				this.add(notes[i][0], notes[i][1]);
+			} else {
+				this.add(notes[i]);
+			}
 		}
 	};
 
@@ -77,7 +104,6 @@ define(["Tone/core/Tone", "Tone/structure/Note", "Tone/core/Types", "Tone/core/T
 		"playbackRate" : 1,
 	};
 
-
 	/**
 	 *  Start the part at the given time. Optionally
 	 *  set an offset time.
@@ -87,16 +113,23 @@ define(["Tone/core/Tone", "Tone/structure/Note", "Tone/core/Types", "Tone/core/T
 	 *  @return  {Tone.Part}  this
 	 */
 	Tone.Part.prototype.start = function(time, offset){
-		if (this._startTick === -1){
-			this._startTick = this.toTicks(time);
+		if (this._state.getStateAtTime(time) !== Tone.State.Started){
+			this._state.setStateAtTime(Tone.State.Started, time);
+			var ticks = this.toTicks(time);
 			offset = this.defaultArg(offset, 0);
 			offset = this.toTicks(offset);
-			for (var i = 0; i < this._atoms.length; i++){
-				var event = this._atoms[i];
-				if (event.time >= offset){
-					event.atom.start(Math.round((event.time - offset) / this.playbackRate + this._startTick) + "i");
+			this._forEach(function(event){
+				var startTick;
+				if (this._loop){
+					if (event.time >= this._loopStart && event.time < this._loopEnd){
+						startTick = event.time - offset - this._loopStart;
+						event.note.start(Math.round(startTick / this.playbackRate + ticks) + "i");
+					}
+				} else {
+					startTick = event.time - offset;
+					event.note.start(Math.round(startTick / this.playbackRate + ticks) + "i");
 				}
-			}
+			}.bind(this));
 		}
 		return this;
 	};
@@ -107,18 +140,18 @@ define(["Tone/core/Tone", "Tone/structure/Note", "Tone/core/Types", "Tone/core/T
 	 *  @return  {Tone.Part}  this
 	 */
 	Tone.Part.prototype.stop = function(time){
-		if (this._startTick !== -1){
-			this._startTick = -1;
-			for (var i = 0; i < this._atoms.length; i++){
-				this._atoms[i].atom.stop(time);
-			}
+		if (this._state.getStateAtTime(time) === Tone.State.Started){
+			this._state.setStateAtTime(Tone.State.Stopped, time);
+			this._forEach(function(event){
+				event.note.stop(time);
+			});
 		}
 		return this;
 	};
 
 	/**
-	 *  Add a atom or part to the part. 
-	 *  @param {Time|Object} time The time the atom should start.
+	 *  Add a note or part to the part. 
+	 *  @param {Time|Object} time The time the note should start.
 	 *                            If an object is passed in, it should
 	 *                            have a 'time' attribute and the rest
 	 *                            of the object will be used as the 'value'.
@@ -138,24 +171,28 @@ define(["Tone/core/Tone", "Tone/structure/Note", "Tone/core/Types", "Tone/core/T
 			time = value.time;
 		}
 		time = this.toTicks(time);
+		var note;
 		if (value instanceof Tone.Note || value instanceof Tone.Part){
-			value._callback = this._callback;
-			this._atoms.push({
-				"time" : time,
-				"atom" : value
-			});
+			note = value;
+			note._callback = this._tick.bind(this);
 		} else {
-			var atom = new Tone.Note(this._callback, value);
-			this._atoms.push({
-				"time" : time,
-				"atom" : atom
-			});
+			note = new Tone.Note(this._tick.bind(this), value);
 		}
+		//initialize the stuff
+		note.playbackRate *= this._playbackRate;
+		note.loopStart = 0;
+		note.loopEnd = this.loopEnd;
+		note.loop = this.loop;
+		//add it to the notes
+		this._notes.push({
+			"time" : time,
+			"note" : note
+		});
 		return this;
 	};
 
 	/**
-	 *  Remove a atom from the part. 
+	 *  Remove a note from the part. 
 	 */
 	Tone.Part.prototype.remove = function(time, value){
 		//extract the parameters
@@ -163,30 +200,66 @@ define(["Tone/core/Tone", "Tone/structure/Note", "Tone/core/Types", "Tone/core/T
 			value = time;
 			time = value.time;
 		} 
-		for (var i = 0; i < this._atoms.length; i++){
-			var event = this._atoms[i];
-			if (event.time === time && event.atom.value === value){
-				this._atoms.splice(i, 1);
-				event.atom.dispose();
-				break;
+		this._forEach(function(event, index){
+			if (event.time === time && event.note.value === value){
+				this._notes.splice(index, 1);
+				event.note.dispose();
 			}
-		}
+		});
 		return this;
 	};
 
 	/**
-	 *  Remove all of the atoms from the group. 
+	 *  Remove all of the notes from the group. 
 	 *  @return  {Tone.Part}  this
 	 */
 	Tone.Part.prototype.clear = function(){
-		for (var i = 0; i < this._atoms.length; i++){
-			this._atoms[i].atom.dispose();
+		this._forEach(function(event){
+			event.note.dispose();
+		});
+		this._notes = [];
+		return this;
+	};
+
+	/**
+	 *  Cancel scheduled state change events: i.e. "start" and "stop".
+	 *  @param {Time} after The time after which to cancel the scheduled events.
+	 *  @return  {Tone.Part}  this
+	 */
+	Tone.Part.prototype.cancel = function(after){
+		this._forEach(function(event){
+			event.note.cancel(after);
+		});
+		this._state.cancel(after);
+		return this;
+	};
+
+	/**
+	 *  Iterate over all of the notes
+	 *  @param {Function} callback
+	 *  @private
+	 */
+	Tone.Part.prototype._forEach = function(callback){
+		for (var i = this._notes.length - 1; i >= 0; i--){
+			callback(this._notes[i], i);
 		}
 		return this;
 	};
 
 	/**
-	 *  If the atom should loop or not
+	 *  Internal tick method
+	 *  @param  {Number}  time  The time of the event in seconds
+	 *  @private
+	 */
+	Tone.Part.prototype._tick = function(time, value){
+		console.log(time, value, this._state.getStateAtTime(time));
+		if (this._state.getStateAtTime(time) === Tone.State.Started){
+			this._callback(time, value);
+		}
+	};
+
+	/**
+	 *  If the note should loop or not
 	 *  between Tone.Part.loopStart and 
 	 *  Tone.Part.loopEnd. An integer
 	 *  value corresponds to the number of
@@ -201,15 +274,11 @@ define(["Tone/core/Tone", "Tone/structure/Note", "Tone/core/Types", "Tone/core/T
 		},
 		set : function(loop){
 			this._loop = loop;
-			for (var i = 0; i < this._atoms.length; i++){
-				var event = this._atoms[i];
-				if (event.time >= this._loopStart && event.time < this._loopEnd){
-					event.atom.loopEnd = (this._loopEnd - this._loopStart) + "i";
-					event.atom.loop = true;
-				} else if (this._startTick !== -1){
-					event.atom.stop();
-				}
-			}
+			this._forEach(function(event){
+				event.note.loop = loop;
+			});
+			this.loopEnd = this._loopEnd + "i";
+			this.loopStart = this._loopStart + "i";
 		}
 	});
 
@@ -225,9 +294,15 @@ define(["Tone/core/Tone", "Tone/structure/Note", "Tone/core/Types", "Tone/core/T
 			return this.toNotation(this._loopEnd + "i");
 		},
 		set : function(loopEnd){
-			//reset the loop
 			this._loopEnd = this.toTicks(loopEnd);
-			this.loop = this._loop;
+			if (this._loop){
+				this._forEach(function(event){
+					event.note.loopEnd = (this._loopEnd - this._loopStart) + "i";
+					if (event.note.time > this._loopEnd){
+						event.note.cancel();
+					}
+				}.bind(this));
+			}
 		}
 	});
 
@@ -243,9 +318,15 @@ define(["Tone/core/Tone", "Tone/structure/Note", "Tone/core/Types", "Tone/core/T
 			return this.toNotation(this._loopStart + "i");
 		},
 		set : function(loopStart){
-			//reset the loop
 			this._loopStart = this.toTicks(loopStart);
-			this.loop = this._loop;
+			if (this._loop){
+				this._forEach(function(event){
+					event.note.loopEnd = (this._loopEnd - this._loopStart) + "i";
+					if (event.note.time <= this._loopStart){
+						event.note.cancel();
+					}
+				}.bind(this));
+			}
 		}
 	});
 
@@ -257,23 +338,21 @@ define(["Tone/core/Tone", "Tone/structure/Note", "Tone/core/Types", "Tone/core/T
 	 */
 	Object.defineProperty(Tone.Part.prototype, "playbackRate", {
 		get : function(){
-			return this._atoms[0].atom.playbackRate;
+			return this._playbackRate;
 		},
 		set : function(rate){
-			for (var i = 0; i < this._atoms.length; i++){
-				var event = this._atoms[i];
-				//if it's started, move the start position based on the rate
-				if (this._startTick !== -1){
-					event.atom._startTick = Math.round((event.time) / rate + this._startTick);
-				}
-				event.atom.playbackRate = rate;
-			}
+			this._forEach(function(event){
+				var ratio = event.note.playbackRate / this._playbackRate;
+				event.note.playbackRate = rate * ratio;
+			}.bind(this));
+			this._playbackRate = rate;
+
 		}
 	});
 
 	/**
 	 *  The current progress of the loop interval.
-	 *  0 if the atom is not started yet or the 
+	 *  0 if the note is not started yet or the 
 	 *  part is not set to loop.
 	 *  @memberOf Tone.Part#
 	 *  @type {NormalRange}
@@ -304,7 +383,7 @@ define(["Tone/core/Tone", "Tone/structure/Note", "Tone/core/Types", "Tone/core/T
 	Tone.Part.prototype.dispose = function(){
 		this._callback = null;
 		this.clear();
-		this._atoms = null;
+		this._notes = null;
 		return this;
 	};
 
