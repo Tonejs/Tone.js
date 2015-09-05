@@ -128,6 +128,7 @@ define(["Test", "Tone/core/Timeline"], function (Test, Timeline) {
 
 		it ("can the next event after the given time", function(){
 			var sched = new Timeline();
+			expect(sched.getEventAfter(0)).is.null;
 			sched.addEvent({
 				"state" : "A",
 				"time"  : 0.1
@@ -140,9 +141,30 @@ define(["Test", "Tone/core/Timeline"], function (Test, Timeline) {
 				"state" : "C",
 				"time"  : 2.1
 			});
-			expect(sched.getNextEvent(0).state).is.equal("A");
-			expect(sched.getNextEvent(1).state).is.equal("B");
-			expect(sched.getNextEvent(3)).is.null;
+			expect(sched.getEventAfter(0).state).is.equal("A");
+			expect(sched.getEventAfter(1).state).is.equal("B");
+			expect(sched.getEventAfter(3)).is.null;
+			sched.dispose();
+		});
+
+		it ("can the event before the event before the given time", function(){
+			var sched = new Timeline();
+			expect(sched.getEventBefore(0)).is.null;
+			sched.addEvent({
+				"state" : "A",
+				"time"  : 0.1
+			});
+			sched.addEvent({
+				"state" : "B",
+				"time"  : 1.1
+			});
+			sched.addEvent({
+				"state" : "C",
+				"time"  : 2.1
+			});
+			expect(sched.getEventBefore(0)).is.null;
+			expect(sched.getEventBefore(1.1).state).is.equal("A");
+			expect(sched.getEventBefore(3).state).is.equal("B");
 			sched.dispose();
 		});
 
@@ -153,6 +175,8 @@ define(["Test", "Tone/core/Timeline"], function (Test, Timeline) {
 			}
 			sched.cancel(10);
 			expect(sched.length).to.equal(5);
+			sched.cancel(5);
+			expect(sched.length).to.equal(0);
 			sched.cancel(0);
 			expect(sched.length).to.equal(0);
 			sched.dispose();
@@ -262,6 +286,20 @@ define(["Test", "Tone/core/Timeline"], function (Test, Timeline) {
 					count++;
 				});
 				expect(count).to.equal(0);
+				sched.dispose();
+			});
+
+			it("handles time ranges before the first object", function(){
+				var sched = new Timeline();
+				sched.addEvent({"time" : 0.1});
+				sched.addEvent({"time" : 0.2});
+				sched.addEvent({"time" : 0.3});
+				sched.addEvent({"time" : 0.4});
+				var count = 0;
+				sched.forEachAfter(-Infinity, function(){
+					count++;
+				});
+				expect(count).to.equal(4);
 				sched.dispose();
 			});
 
