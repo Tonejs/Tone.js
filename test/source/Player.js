@@ -103,6 +103,27 @@ define(["helper/Basic", "Tone/source/Player", "helper/Offline", "helper/SourceTe
 				player.dispose();
 			});
 
+			it("loops the audio", function(done){
+				var player;
+				var meter = new Meter(buffer.duration * 2);
+				meter.before(function(dest){
+					player = new Player(buffer);
+					player.loop = true;
+					player.connect(dest);
+					player.start(0);
+				});
+				meter.test(function(sample, time){
+					if (time > 0.01){
+						expect(sample).to.be.above(0);
+					}
+				});
+				meter.after(function(){
+					player.dispose();
+					done();
+				});
+				meter.run();
+			});
+
 		});
 
 		context("Get/Set", function(){
@@ -178,6 +199,28 @@ define(["helper/Basic", "Tone/source/Player", "helper/Offline", "helper/SourceTe
 				meter.test(function(sample, time){
 					if (sample < 0.001){
 						expect(time).to.at.least(0.1);
+						expect(player.state).to.equal("stopped");
+					}
+				});
+				meter.after(function(){
+					player.dispose();
+					done();
+				});
+				meter.run();
+			});
+
+			it("can be play for a specific duration passed in the 'start' method", function(done){
+				var player;
+				var meter = new Meter(0.4);
+				meter.before(function(dest){
+					player = new Player(buffer);
+					player.connect(dest);
+					player.start(0, 0.1);
+				});
+				meter.test(function(sample, time){
+					if (sample < 0.001){
+						expect(time).to.at.least(0.1);
+						expect(player.state).to.equal("stopped");
 					}
 				});
 				meter.after(function(){
