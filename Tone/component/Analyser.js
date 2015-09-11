@@ -7,7 +7,7 @@ define(["Tone/core/Tone"], function (Tone) {
 	 *  @extends {Tone}
 	 *  @param {Number=} size The size of the FFT. Value must be a power of 
 	 *                       two in the range 32 to 32768.
-	 *  @param {String=} type The return type of the analysis, either "byte", or "float". 
+	 *  @param {String=} type The return type of the analysis, either "fft", or "waveform". 
 	 */
 	Tone.Analyser = function(){
 
