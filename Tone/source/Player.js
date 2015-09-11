@@ -190,7 +190,11 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 			this._source.playbackRate.value = this._playbackRate;
 			this._source.connect(this.output);
 			//start it
-			this._source.start(startTime, offset, duration);
+			if (this._loop){
+				this._source.start(startTime, offset);
+			} else {
+				this._source.start(startTime, offset, duration);
+			}
 		} else {
 			throw Error("tried to start Player before the buffer was loaded");
 		}
