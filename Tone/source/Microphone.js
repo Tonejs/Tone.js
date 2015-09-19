@@ -3,10 +3,7 @@ define(["Tone/core/Tone", "Tone/source/ExternalInput"], function(Tone){
 	"use strict";
 
 	/**
-	 *  @class  A simpler verision of Tone.ExternalInput that
-	 *          takes no arguments, connects only to the 
-	 *          default source (typically the microphone),
-	 *          and does not require an onload function. 
+	 *  @class  Opens up the default source (typically the microphone).
 	 *
 	 *  @constructor
 	 *  @extends {Tone.ExternalInput}
@@ -21,8 +18,11 @@ define(["Tone/core/Tone", "Tone/source/ExternalInput"], function(Tone){
 	 *  mic.stop(20);
 	 */
 	Tone.Microphone = function(){
-		Tone.ExternalInput.call(this);
+
+		Tone.ExternalInput.call(this, 0);
+
 	};
+
 	Tone.extend(Tone.Microphone, Tone.ExternalInput);
 
 	return Tone.Microphone;
