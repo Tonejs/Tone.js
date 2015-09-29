@@ -24,13 +24,13 @@
     Tone.Buffer.load = function (url, callback) {
     	var handle = Tone.registeredPreload();
         var request = new XMLHttpRequest();
-        request.open('GET', url, true);
-        request.responseType = 'arraybuffer';
+        request.open("GET", url, true);
+        request.responseType = "arraybuffer";
         // decode asynchronously
         request.onload = function () {
             Tone.context.decodeAudioData(request.response, function (buff) {
                 if (!buff) {
-                    throw new Error('could not decode audio data:' + url);
+                    throw new Error("could not decode audio data:" + url);
                 }
                 callback(buff);
 	        	handle();
