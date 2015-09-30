@@ -4,11 +4,12 @@
 * Added Timeline/TimelineState/TimelineSignal which keeps track of the state in the future
 * Clock uses requestAnimationFrame instead of ScriptProcessorNode
 * Removed `onended` event from Tone.Source
-* Refactored tests
+* Refactored tests into individual files. 
 * Renamed some Signal methods: exponentialRampToValueNow->exponentialRampToValue, setCurrentValueNow->setRampPoint
 * LFO no longer starts at bottom of cycle. Starts at whatever phase it's set at.
 * Transport is an event emitter. triggers events on "start", "stop", "pause", and "loop". 
 * Oscillator takes a "partials" array. 
+* Microphone inherits from ExternalInput
 
 ### r5
 
