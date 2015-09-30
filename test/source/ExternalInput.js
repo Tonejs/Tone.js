@@ -63,12 +63,12 @@ define(["helper/Basic", "Tone/source/ExternalInput", "Test", "Tone/source/Source
 			});
 
 			it ("indicates if the browser has UserMedia support", function(){
-				expect(ExternalInput.canGetUserMedia).to.be.a.boolean;
+				expect(ExternalInput.supported).to.be.a.boolean;
 			});
 		});
 
 		//if it is a manual test (i.e. there is a person to 'allow' the microphone)
-		if (window.MANUAL_TEST && ExternalInput.canGetUserMedia){
+		if (window.MANUAL_TEST && ExternalInput.supported){
 
 			context("Opening and closing", function(){
 

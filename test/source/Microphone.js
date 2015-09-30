@@ -9,5 +9,9 @@ define(["Tone/source/Microphone", "helper/Basic", "Tone/source/ExternalInput"],
 			expect(mic).to.be.instanceOf(ExternalInput);
 			mic.dispose();
 		});
+
+		it ("indicates if the browser has UserMedia support", function(){
+			expect(Microphone.supported).to.be.a.boolean;
+		});
 	});
 });

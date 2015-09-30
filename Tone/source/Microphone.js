@@ -25,5 +25,19 @@ define(["Tone/core/Tone", "Tone/source/ExternalInput"], function(Tone){
 
 	Tone.extend(Tone.Microphone, Tone.ExternalInput);
 
+	/**
+	 *  If getUserMedia is supported by the browser.
+	 *  @type  {Boolean}
+	 *  @memberOf Tone.Microphone#
+	 *  @name supported
+	 *  @static
+	 *  @readOnly
+	 */
+	Object.defineProperty(Tone.Microphone, "supported", {
+		get : function(){
+			return Tone.ExternalInput.supported;
+		}
+	});
+
 	return Tone.Microphone;
 });

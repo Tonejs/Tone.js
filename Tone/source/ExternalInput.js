@@ -87,7 +87,7 @@ define(["Tone/core/Tone", "Tone/source/Source", "Tone/core/Gain"], function(Tone
 	 * @private
 	 */
 	Tone.ExternalInput.prototype._getUserMedia = function(callback){
-		if (!Tone.ExternalInput.canGetUserMedia){
+		if (!Tone.ExternalInput.supported){
 			throw new Error("browser does not support 'getUserMedia'");
 		}
 		if (Tone.ExternalInput.sources[this._inputNum]){
@@ -144,7 +144,10 @@ define(["Tone/core/Tone", "Tone/source/Source", "Tone/core/Gain"], function(Tone
 	 */
 	Tone.ExternalInput.prototype.close = function(){
 		if(this._stream){
-			this._stream.stop();
+			var track = this._stream.getTracks()[this._inputNum];
+			if (!this.isUndef(track)){
+				track.stop();
+			} 
 			this._stream = null;
 		}
 		return this;
@@ -206,11 +209,18 @@ define(["Tone/core/Tone", "Tone/source/Source", "Tone/core/Gain"], function(Tone
 	Tone.ExternalInput._canGetSources = !Tone.prototype.isUndef(window.MediaStreamTrack) && Tone.prototype.isFunction(MediaStreamTrack.getSources);
 
 	/**
-	 *  Indicates if the browser supports 'getUserMedia'
-	 *  @type {Boolean}
+	 *  If getUserMedia is supported by the browser.
+	 *  @type  {Boolean}
+	 *  @memberOf Tone.ExternalInput#
+	 *  @name supported
 	 *  @static
+	 *  @readOnly
 	 */
-	Tone.ExternalInput.canGetUserMedia = Tone.prototype.isFunction(navigator.getUserMedia);
+	Object.defineProperty(Tone.ExternalInput, "supported", {
+		get : function(){
+			return Tone.prototype.isFunction(navigator.getUserMedia);
+		}
+	});
 
 	/**
 	 *  Populates the source list. Invokes the callback with an array of 
