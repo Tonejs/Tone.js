@@ -22,6 +22,7 @@ Tone.js is a Web Audio framework for creating interactive music in the browser. 
 * [Airjam - Seth Kranzler, Abe Rubenstein, and Teresa Lamb](http://airjam.band/)
 * [Calculaural - Matthew Hasbach](https://github.com/mjhasbach/calculaural)
 * [Scratch + Tone.js - Eric Rosenbaum](http://ericrosenbaum.github.io/tone-synth-extension/)
+* [Game of Reich - Ben Taylor](http://nexusosc.com/gameofreich/)
 
 Using Tone.js? I'd love to hear it: yotammann@gmail.com
 
@@ -55,7 +56,7 @@ synth.triggerAttackRelease("C4", "8n");
 
 # Tone.Transport
 
-A unique feature of the library is the oscillator-based Transport which allows for application-wide synchronization of sources and signals. The Transport allows you to register callbacks at precise moments along the timeline which are invoked right before the event with the exact time of the event. Additionally, because the Transport is implemented with an oscillator, it is capable of elaborate tempo curves and automation. 
+A unique feature of the library is the Transport which allows for application-wide synchronization of sources and signals with tempo curves and automation. The Transport allows you to register callbacks at precise moments along the timeline which are invoked right before the event with the exact time of the event.
 
 [Read more](https://github.com/Tonejs/Tone.js/wiki/Transport).
 
@@ -65,7 +66,7 @@ In the Tone library, time can be described in a number of ways. Any method which
 
 For example to `"4n"` is a quarter-note and "4:2:0" is the third beat of the fifth measure (remember we're counting from 0). 
 
-[Read more Time](https://github.com/Tonejs/Tone.js/wiki/Time).
+[Read more](https://github.com/Tonejs/Tone.js/wiki/Time).
 
 # Sources
 
@@ -75,11 +76,15 @@ Aside from the 4 basic oscillator types (sine, square, triangle, sawtooth), Tone
 
 # Instruments
 
-Tone has a few prebuilt synthesizers. [Read more about their common interface](https://github.com/Tonejs/Tone.js/wiki/Instruments).
+Tone has a number of instruments which all inherit from Tone.Instrument, giving them the same API for triggering notes. These instruments are all monophonic and can be made polyphonic if they are passed into the second argument of [Tone.PolySynth](http://tonejs.org/docs/#PolySynth). 
+
+[Read more](https://github.com/Tonejs/Tone.js/wiki/Instruments).
 
 # Effects
 
-Tone.js also has a few stereo and mono effects some of which also have their own presets. [Read more about using effects](https://github.com/Tonejs/Tone.js/wiki/Effects).
+Tone.js also has many stereo and mono effects. Each effect lets you change the ratio between the dry (unaffected) and wet signal.
+
+[Read more](https://github.com/Tonejs/Tone.js/wiki/Effects).
 
 # Signals
 
@@ -92,6 +97,10 @@ Read more about [signals](https://github.com/Tonejs/Tone.js/wiki/Signals).
 Tone.js creates an AudioContext when it loads and shims it for maximum browser compatibility. The AudioContext can be found at `Tone.context` or from within any Object extending Tone as `this.context`. 
 
 Tone also let's you set your own AudioContext using `Tone.setContext`.
+
+# MIDI
+
+To use MIDI files, you'll first need to convert them into a JSON format which Tone.js can understand using [MidiConvert](tonejs.github.io/MidiConvert/).
 
 # Performance
 
