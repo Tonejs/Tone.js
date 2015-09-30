@@ -6,7 +6,7 @@
   "dependencies": {
     "amd-optimize": "^0.4.3",
     "del": "^1.1.1",
-    "gulp": "^3.8.11",
+    "gulp": "^3.9.0",
     "gulp-autoprefixer": "^2.3.1",
     "gulp-concat": "^2.5.2",
     "gulp-concat-css": "^2.2.0",
