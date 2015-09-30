@@ -3,7 +3,8 @@ var ExampleList = {
 		"Oscillators" : "oscillator",
 		"Envelope" : "envelope",
 		"Noise" : "noises",
-		"Player" : "player"
+		"Player" : "player",
+		"Microphone" : "mic"
 	},
 	"Instruments" : {
 		"SimpleSynth" : "simpleSynth",
