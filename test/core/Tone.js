@@ -44,80 +44,147 @@ define(["Test", "Tone/core/Tone", "helper/PassAudio", "Tone/source/Oscillator", 
 			Test.wasDisposed(t);
 		});
 
-		it("can convert gain to db", function(){
-			expect(tone.gainToDb(0)).to.equal(-Infinity);
-			expect(tone.gainToDb(1)).is.closeTo(0, 0.1);
-			expect(tone.gainToDb(0.5)).is.closeTo(-6, 0.1);
-		});
+		context("Unit Conversions", function(){
+			it("can convert gain to db", function(){
+				expect(tone.gainToDb(0)).to.equal(-Infinity);
+				expect(tone.gainToDb(1)).is.closeTo(0, 0.1);
+				expect(tone.gainToDb(0.5)).is.closeTo(-6, 0.1);
+			});
 
-		it("can convert db to gain", function(){
-			expect(tone.dbToGain(0)).is.closeTo(1, 0.1);
-			expect(tone.dbToGain(-12)).is.closeTo(0.25, 0.1);
-			expect(tone.dbToGain(-24)).is.closeTo(0.125, 0.1);
-		});
+			it("can convert db to gain", function(){
+				expect(tone.dbToGain(0)).is.closeTo(1, 0.1);
+				expect(tone.dbToGain(-12)).is.closeTo(0.25, 0.1);
+				expect(tone.dbToGain(-24)).is.closeTo(0.125, 0.1);
+			});
 
-		it("can convert back and forth between db and gain representations", function(){
-			expect(tone.dbToGain(tone.gainToDb(0))).is.closeTo(0, 0.01);
-			expect(tone.dbToGain(tone.gainToDb(0.5))).is.closeTo(0.5, 0.01);
-			expect(tone.gainToDb(tone.dbToGain(1))).is.closeTo(1, 0.01);
-		});
-
-		it("returns a default argument when the given is not defined", function(){
-			expect(tone.defaultArg(undefined, 0)).is.equal(0);
-			expect(tone.defaultArg(undefined, "also")).is.equal("also");
-			expect(tone.defaultArg("hihi", 100)).is.equal("hihi");
-		});
-
-		it("handles default arguments on an object", function(){
-			expect(tone.defaultArg({"b" : 10}, {"a" : 4, "b" : 10})).has.property("a", 4);
-			expect(tone.defaultArg({"b" : 10}, {"a" : 4, "b" : 10})).has.property("b", 10);
-			expect(tone.defaultArg({"b" : {"c" : 10}}, {"b" : {"c" : 20}})).has.deep.property("b.c", 10);
-			expect(tone.defaultArg({"a" : 10}, {"b" : {"c" : 20}})).has.deep.property("b.c", 20);
-		});
-
-		it("can connect and disconnect", function(){
-			var node = Tone.context.createGain();
-			tone.connect(node, 0, 0);
-			tone.disconnect();
-		});
-
-		it("can chain connections", function(done){
-			var node0, node1, node2;
-			PassAudio(function(input, output){
-				node0 = new Tone(1, 1);
-				//internal connection
-				node0.input.connect(node0.output);
-				//two other nodes to pass audio through
-				node1 = Tone.context.createGain();
-				node2 = Tone.context.createGain();
-				input.connect(node0);
-				node0.chain(node1, node2, output);
-			}, function(){
-				node0.dispose();
-				node1.disconnect();
-				node2.disconnect();
-				done();
+			it("can convert back and forth between db and gain representations", function(){
+				expect(tone.dbToGain(tone.gainToDb(0))).is.closeTo(0, 0.01);
+				expect(tone.dbToGain(tone.gainToDb(0.5))).is.closeTo(0.5, 0.01);
+				expect(tone.gainToDb(tone.dbToGain(1))).is.closeTo(1, 0.01);
 			});
 		});
 
-		it("can fan connections", function(done){
-			var node0, node1, node2;
-			PassAudio(function(input, output){
-				node0 = new Tone(1, 1);
-				//internal connection
-				node0.input.connect(node0.output);
-				//two other nodes to pass audio through
-				node1 = Tone.context.createGain();
-				node2 = Tone.context.createGain();
-				input.connect(node0);
-				node0.fan(node1, node2, output);
-			}, function(){
-				node0.dispose();
-				node1.disconnect();
-				node2.disconnect();
-				done();
+		context("defaultArg", function(){
+
+			it("returns a default argument when the given is not defined", function(){
+				expect(tone.defaultArg(undefined, 0)).is.equal(0);
+				expect(tone.defaultArg(undefined, "also")).is.equal("also");
+				expect(tone.defaultArg("hihi", 100)).is.equal("hihi");
+			});
+
+			it("handles default arguments on a shallow object", function(){
+				expect(tone.defaultArg({"b" : 10}, {"a" : 4, "b" : 10})).has.property("a", 4);
+				expect(tone.defaultArg({"b" : 10, "c" : 20}, {"a" : 4, "b" : 10})).has.property("b", 10);
+				expect(tone.defaultArg({"b" : 10, "c" : 20}, {"a" : 4, "b" : 10})).has.property("c", 20);
+			});
+
+			it("handles default arguments on a deep object", function(){
+				expect(tone.defaultArg({"b" : {"c" : 10}}, {"b" : {"c" : 20, "d" : 30}})).has.deep.property("b.d", 30);
+				expect(tone.defaultArg({"a" : 10}, {"b" : {"c" : 20}})).has.deep.property("b.c", 20);
+			});
+
+			it("does a shallow copy of a deep object", function(){
+				expect(tone.defaultArg({"b" : {"c" : 10}}, {"b" : {"c" : 20, "d" : 30}}, true)).to.not.have.deep.property("b.d");
+				expect(tone.defaultArg({"a" : 10, "b" : "thing"}, {"b" : {"c" : 20}}, true)).has.deep.property("b", "thing");
+			});
+
+			it("does not enter an infinite loop with self-referential objects using shallow copy", function(){
+				var a = {};
+				//self referential
+				a.a = a;
+				expect(tone.defaultArg(a, {"a" : 10}, true)).has.property("a");
+			});
+
+		});
+
+		context("optionsObject", function(){
+
+			it("maps array parameters to an object", function(){
+				expect(tone.optionsObject([1, 2], ["a", "b"])).is.deep.equal({
+					"a" : 1,
+					"b" : 2
+				});
+			});
+
+			it("maps array parameters to an object with missing arguments", function(){
+				expect(tone.optionsObject([1, 2], ["a", "b", "c"])).is.deep.equal({
+					"a" : 1,
+					"b" : 2,
+					"c" : undefined
+				});
+			});
+
+			it("gets default arguments after creating options object", function(){
+				expect(tone.optionsObject([1, 2], ["a", "b", "c"], {"c" : 3})).is.deep.equal({
+					"a" : 1,
+					"b" : 2,
+					"c" : 3
+				});
+			});
+
+			it("does not map parameter if first argument is already an object", function(){
+				expect(tone.optionsObject([{"a" : 2, "b" : 3}], ["a", "b", "c"])).is.deep.equal({
+					"a" : 2,
+					"b" : 3,
+				});
+			});
+
+			it("does shallow copy of defaults", function(){
+				var c = {};
+				//self referential
+				c.c = c;
+				expect(tone.optionsObject([c], ["a"], c, true)).is.deep.equal(c);
+			});
+
+		});
+
+		context("connections", function(){
+
+			it("can connect and disconnect", function(){
+				var node = Tone.context.createGain();
+				tone.connect(node, 0, 0);
+				tone.disconnect();
+			});
+
+			it("can chain connections", function(done){
+				var node0, node1, node2;
+				PassAudio(function(input, output){
+					node0 = new Tone(1, 1);
+					//internal connection
+					node0.input.connect(node0.output);
+					//two other nodes to pass audio through
+					node1 = Tone.context.createGain();
+					node2 = Tone.context.createGain();
+					input.connect(node0);
+					node0.chain(node1, node2, output);
+				}, function(){
+					node0.dispose();
+					node1.disconnect();
+					node2.disconnect();
+					done();
+				});
+			});
+
+			it("can fan connections", function(done){
+				var node0, node1, node2;
+				PassAudio(function(input, output){
+					node0 = new Tone(1, 1);
+					//internal connection
+					node0.input.connect(node0.output);
+					//two other nodes to pass audio through
+					node1 = Tone.context.createGain();
+					node2 = Tone.context.createGain();
+					input.connect(node0);
+					node0.fan(node1, node2, output);
+				}, function(){
+					node0.dispose();
+					node1.disconnect();
+					node2.disconnect();
+					done();
+				});
 			});
 		});
+
 
 		context("Tone.setContext", function(){
 
