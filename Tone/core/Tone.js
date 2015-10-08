@@ -489,19 +489,23 @@ define(function(){
 	///////////////////////////////////////////////////////////////////////////
 
 	/**
-	 *  if a the given is undefined, use the fallback. 
-	 *  if both given and fallback are objects, given
+	 *  If a the given is undefined, use the fallback. 
+	 *  If both given and fallback are objects, given
 	 *  will be augmented with whatever properties it's
-	 *  missing which are in fallback
-	 *
-	 *  warning: if object is self referential, it will go into an an 
-	 *  infinite recursive loop. 
+	 *  missing which are in fallback. It will recurse nested
+	 *  objects unless shallowCopy is true.
+	 *  <br><br>
+	 *  WARNING: if object is self referential, it will go into an an 
+	 *  infinite recursive loop if shallowCopy is set to true.
 	 *  
 	 *  @param  {*} given    
 	 *  @param  {*} fallback 
+	 *  @param {Boolean} [shallowCopy=false] Shallow copies avoid recursively
+	 *                                       accessing nested objects.
 	 *  @return {*}          
 	 */
-	Tone.prototype.defaultArg = function(given, fallback){
+	Tone.prototype.defaultArg = function(given, fallback, shallowCopy){
+		shallowCopy = isUndef(shallowCopy) ? false : shallowCopy;
 		if (typeof given === "object" && 
 				typeof fallback === "object" && 
 				!Array.isArray(given) && 
@@ -509,10 +513,18 @@ define(function(){
 			var ret = {};
 			//make a deep copy of the given object
 			for (var givenProp in given) {
-				ret[givenProp] = this.defaultArg(given[givenProp], given[givenProp]);
+				if (shallowCopy){
+					ret[givenProp] = isUndef(fallback[givenProp]) ? given[givenProp] : fallback[givenProp];
+				} else {
+					ret[givenProp] = this.defaultArg(fallback[givenProp], given[givenProp]);
+				}
 			}
-			for (var prop in fallback) {
-				ret[prop] = this.defaultArg(given[prop], fallback[prop]);
+			for (var fallbackProp in fallback) {
+				if (shallowCopy){
+					ret[fallbackProp] = isUndef(given[fallbackProp]) ? fallback[fallbackProp] : given[fallbackProp];
+				} else {
+					ret[fallbackProp] = this.defaultArg(given[fallbackProp], fallback[fallbackProp]);
+				}
 			}
 			return ret;
 		} else {
@@ -524,7 +536,7 @@ define(function(){
 	 *  returns the args as an options object with given arguments
 	 *  mapped to the names provided. 
 	 *
-	 *  if the args given is an array containing an object, it is assumed
+	 *  if the args given is an array containing only one object, it is assumed
 	 *  that that's already the options object and will just return it. 
 	 *  
 	 *  @param  {Array} values  the 'arguments' object of the function
@@ -532,9 +544,11 @@ define(function(){
 	 *                                 should appear in the options object
 	 *  @param {Object=} defaults optional defaults to mixin to the returned 
 	 *                            options object                              
+	 *  @param {Boolean} [shallowCopy=false] Shallow copies avoid recursively
+	 *                                       accessing nested objects.
 	 *  @return {Object}       the options object with the names mapped to the arguments
 	 */
-	Tone.prototype.optionsObject = function(values, keys, defaults){
+	Tone.prototype.optionsObject = function(values, keys, defaults, shallowCopy){
 		var options = {};
 		if (values.length === 1 && typeof values[0] === "object"){
 			options = values[0];
@@ -544,7 +558,7 @@ define(function(){
 			}
 		}
 		if (!this.isUndef(defaults)){
-			return this.defaultArg(options, defaults);
+			return this.defaultArg(options, defaults, shallowCopy);
 		} else {
 			return options;
 		}
