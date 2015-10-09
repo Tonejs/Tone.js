@@ -123,6 +123,16 @@ define(["Test", "Tone/core/Transport", "Tone/core/Tone"], function (Test, Transp
 				expect(Tone.Transport.position).to.equal("0:0:0");
 			});
 
+			it ("can get the progress of the loop", function(){
+				Tone.Transport.setLoopPoints(0, "1m").start();
+				Tone.Transport.loop = true;
+				expect(Tone.Transport.progress).to.be.equal(0);
+				Tone.Transport.position = "2n";
+				expect(Tone.Transport.progress).to.be.closeTo(0.5, 0.001);
+				Tone.Transport.position = "2n + 4n";
+				expect(Tone.Transport.progress).to.be.closeTo(0.75, 0.001);
+			});
+
 		});
 		
 
