@@ -62,7 +62,7 @@ define(["Test", "Tone/signal/TimelineSignal", "helper/Offline", "Tone/core/Type"
 				sched.exponentialRampToValueAtTime(0.5, 2);
 			});
 			offline.test(function(sample, time){
-				expect(sample).to.be.closeTo(sched.getValueAtTime(time), 0.001);
+				expect(sample).to.be.closeTo(sched.getValueAtTime(time), 0.01);
 			});
 			offline.after(function(){
 				sched.dispose();
@@ -80,7 +80,7 @@ define(["Test", "Tone/signal/TimelineSignal", "helper/Offline", "Tone/core/Type"
 				sched.setTargetAtTime(0.5, 0.5, 2);
 			});
 			offline.test(function(sample, time){
-				expect(sample).to.be.closeTo(sched.getValueAtTime(time), 0.001);
+				expect(sample).to.be.closeTo(sched.getValueAtTime(time), 0.01);
 			});
 			offline.after(function(){
 				sched.dispose();
@@ -105,7 +105,7 @@ define(["Test", "Tone/signal/TimelineSignal", "helper/Offline", "Tone/core/Type"
 				sched.setTargetAtTime(2, 3.5, 5);
 			});
 			offline.test(function(sample, time){
-				expect(sample).to.be.closeTo(sched.getValueAtTime(time), 0.001);
+				expect(sample).to.be.closeTo(sched.getValueAtTime(time), 0.01);
 			});
 			offline.after(function(){
 				sched.dispose();
@@ -132,7 +132,7 @@ define(["Test", "Tone/signal/TimelineSignal", "helper/Offline", "Tone/core/Type"
 				sched.linearRampToValueBetween(3, 1, 2);
 			});
 			offline.test(function(sample, time){
-				expect(sample).to.be.closeTo(sched.getValueAtTime(time), 0.001);
+				expect(sample).to.be.closeTo(sched.getValueAtTime(time), 0.01);
 			});
 			offline.after(function(){
 				sched.dispose();
@@ -154,9 +154,9 @@ define(["Test", "Tone/signal/TimelineSignal", "helper/Offline", "Tone/core/Type"
 				if (time < 0.5){
 					expect(sample).to.be.within(sched.dbToGain(-12), sched.dbToGain(-5));
 				} else if (time < 1){
-					expect(sample).to.be.closeTo(sched.dbToGain(-12), 0.001);
+					expect(sample).to.be.a.percentageFrom(sched.dbToGain(-12), 0.01);
 				} else if (time > 1.1){
-					expect(sample).to.be.closeTo(sched.dbToGain(-6), 0.001);
+					expect(sample).to.be.a.percentageFrom(sched.dbToGain(-6), 0.01);
 				}
 			});
 			offline.after(function(){

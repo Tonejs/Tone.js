@@ -68,7 +68,7 @@ define(["helper/Offline", "helper/Basic", "Test", "Tone/signal/Signal", "Tone/co
 				offline.test(function(sample, time){
 					if (time < 0.2){
 						expect(sample).to.be.closeTo(0, 0.001);
-					} else {
+					} else if (time > 0.21){
 						expect(sample).to.be.closeTo(2, 0.001);
 					}
 				});
@@ -126,9 +126,9 @@ define(["helper/Offline", "helper/Basic", "Test", "Tone/signal/Signal", "Tone/co
 				});
 				offline.test(function(sample, time){
 					if (time < 0.5){
-						expect(sample).to.be.closeTo(time, 0.001);
+						expect(sample).to.be.closeTo(time, 0.01);
 					} else {
-						expect(sample).to.be.closeTo(1 - time, 0.001);
+						expect(sample).to.be.closeTo(1 - time, 0.01);
 					}
 				});
 				offline.after(function(){
@@ -159,7 +159,7 @@ define(["helper/Offline", "helper/Basic", "Test", "Tone/signal/Signal", "Tone/co
 				});
 				offline.test(function(sample, time){
 					if (time > 0.3){
-						expect(sample).to.be.closeTo(2, 0.001);
+						expect(sample).to.be.closeTo(2, 0.02);
 					}
 				});
 				offline.after(function(){
@@ -178,7 +178,7 @@ define(["helper/Offline", "helper/Basic", "Test", "Tone/signal/Signal", "Tone/co
 				});
 				offline.test(function(sample, time){
 					if (time >= 0.4){
-						expect(sample).to.be.closeTo(50, 0.01);
+						expect(sample).to.be.closeTo(50, 0.5);
 					} else {
 						expect(sample).to.be.lessThan(50);
 					}
@@ -199,7 +199,7 @@ define(["helper/Offline", "helper/Basic", "Test", "Tone/signal/Signal", "Tone/co
 				});
 				offline.test(function(sample, time){
 					if (time >= 0.1){
-						expect(sample).to.be.closeTo(0.2, 0.01);
+						expect(sample).to.be.closeTo(0.2, 0.1);
 					} else {
 						expect(sample).to.be.greaterThan(0.2);
 					}
@@ -329,7 +329,7 @@ define(["helper/Offline", "helper/Basic", "Test", "Tone/signal/Signal", "Tone/co
 				});
 				offline.test(function(sample, time){
 					if (time >= 0.5){
-						expect(sample).to.be.closeTo(4, 0.01);
+						expect(sample).to.be.closeTo(4, 0.04);
 					}
 				});
 				offline.after(function(){

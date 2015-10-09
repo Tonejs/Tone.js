@@ -2,9 +2,15 @@
 
 define(["Tone/core/Tone"], function (Tone) {
 
+	//add a chai test
+	chai.Assertion.addMethod("percentageFrom", function(val, percent){
+		new chai.Assertion(this._obj).to.be.closeTo(val, val * percent);
+	});
+
 	//testing setup
 	window.expect = chai.expect;
 	mocha.setup("bdd");
+
 
 
 	/**
