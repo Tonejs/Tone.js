@@ -9,8 +9,8 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal", "Tone/core/TimelineState
 	 *
 	 * 	@constructor
 	 * 	@extends {Tone}
-	 * 	@param {Frequency} frequency The rate of the callback
 	 * 	@param {function} callback The callback to be invoked with the time of the audio event
+	 * 	@param {Frequency} frequency The rate of the callback
 	 * 	@example
 	 * //the callback will be invoked approximately once a second
 	 * //and will print the time exactly once a second apart.
