@@ -24,7 +24,12 @@ define(["Tone/core/Tone"], function (Tone) {
 					for (var k = j - rmsFrame; k < j; k++){
 						sum += buffer[k] * buffer[k];
 					}
-					this._test(Math.sqrt(sum / rmsFrame), j / sampleRate);
+					try {
+						this._test(Math.sqrt(sum / rmsFrame), j / sampleRate);
+					} catch (e){
+						Tone.setContext(onlineContext);
+						throw new Error(e);									
+					}
 				}
 			}
 			this._after();

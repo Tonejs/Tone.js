@@ -29,7 +29,13 @@ define(["Tone/core/Tone"], function (Tone) {
 				if (channels === 1)	{
 					ret = ret[0];
 				}
-				this._test(ret, i / sampleRate);
+				try {
+					this._test(ret, i / sampleRate);
+				} catch (e){
+					//reset the old context
+					Tone.setContext(onlineContext);
+					throw new Error(e);
+				}
 			}
 			this._after();
 			//reset the old context
