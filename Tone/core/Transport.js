@@ -564,6 +564,23 @@ function(Tone){
 	});
 
 	/**
+	 *  The Transport's loop position as a normalized value. Always
+	 *  returns 0 if the transport if loop is not true. 
+	 *  @memberOf Tone.Transport#
+	 *  @name progress
+	 *  @type {NormalRange}
+	 */
+	Object.defineProperty(Tone.Transport.prototype, "progress", {
+		get : function(){
+			if (this.loop){
+				return (this.ticks - this._loopStart) / (this._loopEnd - this._loopStart);
+			} else {
+				return 0;
+			}
+		}
+	});
+
+	/**
 	 *  The transports current tick position.
 	 *  
 	 *  @memberOf Tone.Transport#
