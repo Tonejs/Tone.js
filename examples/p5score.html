@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+	<title>SCORING EVENTS</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+	<script type="text/javascript" src="./scripts/p5.js"></script>
+	<script type="text/javascript" src="http://cdn.tonejs.org/r5/p5.Tone.js"></script>
+	<script type="text/javascript" src="./scripts/jquery.min.js"></script>
+	<script type="text/javascript" src="./scripts/Interface.js"></script>
+
+	<link rel="stylesheet" type="text/css" href="./style/examples.css">
+
+	<script type="text/javascript">
+		// jshint ignore: start
+	</script>
+
+</head>
+<body>	
+	<div id="Content" class="FullScreen">
+		<div id="Title">Scoring Events</div>
+		<div id="Explanation">
+			Scores let you to schedule a note on a particular "channel". Then use <code>Tone.Note.route</code>
+			to listen for events on that channel. Multiple notes can be put into a JSON-friendly score
+			which can be parsed using <code>Tone.Note.parseScore</code>.
+			<br><br>
+			These note events can be also be used to trigger <code>p5.js</code> events such as drawing shapes, changing colors, and anything else you can think of!
+			<br><br>
+			Take a look at source to see the score format. 
+			MIDI files can also be converted to JSON score format using utils/MidiToScore.js.
+			<br><br>
+			Docs for <a href="http://tonejs.org/docs/#Note.route">Tone.Note.route</a>
+			and <a href="http://tonejs.org/docs/#Note.parseScore">Tone.Note.parseScore</a>
+		</div>
+	</div>
+
+	<script id="p5" type="text/javascript">
+
+		function setup() {
+		    createCanvas(windowWidth, windowHeight);
+			strokeWeight(10);
+			strokeJoin(ROUND);
+		}
+
+		function draw() {
+			fill(255, 255, 255, 10);
+			rect(-10, -10, width+20, height+20);
+		}
+
+		function drawPolygon(npoints) {
+			var c = color(random(255), random(255), random(255));
+			fill(c);
+
+			var x = random(width);
+			var y = random(height);
+
+			var radius = random(5, 100);
+			var npoints = random(3, 10);
+			var angle = TWO_PI / npoints;
+
+			beginShape();
+			for (var a = 0; a < TWO_PI; a += angle) {
+				var sx = x + cos(a) * radius;
+				var sy = y + sin(a) * radius;
+				vertex(sx, sy);
+			}
+			endShape(CLOSE);
+		}
+	</script>
+	<script id="Song" type="text/javascript">
+		/**
+		 *  HARP
+		 */
+		var harp = new Tone.PolySynth(4, Tone.SimpleSynth).toMaster();
+
+		Tone.Note.route("Harp", function(time, note, duration){
+			harp.triggerAttackRelease(note, duration, time);
+			// for(var i = 0; i < 50; i ++){
+				drawPolygon();
+			// }
+		});
+
+		/**
+		 *  SCORE
+		 */
+		var Score = {
+			"Harp" : [
+				["0:0:0", "F#3", "16n"], 
+				["0:0:1", "A3", "16n"], 
+				["0:0:2", "C#4", "16n"], 
+				["0:0:3", "E4", "16n"],
+				["0:1:0", "G#4", "16n"],
+				["0:1:2", "A3", "16n"],
+				["0:1:3", "C#4", "16n"],
+				["0:2:0", "F#3", "16n"],
+				["0:2:1", "A4", "16n"],
+				["0:2:2", "A3", "16n"],
+				["0:2:3", "E4", "16n"],
+				["0:3:0", "C#4", "16n"]
+			]
+		};
+
+		Tone.Note.parseScore(Score);
+
+		Tone.Transport.loop = true;
+		Tone.Transport.bpm.value = 90;
+		Tone.Transport.setLoopPoints(0, "1m");
+	</script>
+	<script id="GUI" type="text/javascript">
+
+		$(function(){
+
+			new Interface.Button({
+				key : 32,
+				type : "toggle",
+				text : "Start",
+				activeText : "Stop",
+				start : function(){
+					Tone.Transport.start();
+				},
+				end : function(){
+					Tone.Transport.stop();
+				}
+			});
+		});
+	</script>
+</body>
+</html>
