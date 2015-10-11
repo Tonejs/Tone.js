@@ -215,6 +215,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Timeline"], function 
 	 *  The event after the given time
 	 *  @param  {Number}  time  The time to query.
 	 *  @return  {Object}  The next event after the given time
+	 *  @private
 	 */
 	Tone.TimelineSignal.prototype._searchAfter = function(time){
 		return this._events.getEventAfter(time);
