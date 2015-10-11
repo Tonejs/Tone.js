@@ -214,7 +214,7 @@ define(["Tone/core/Tone", "Tone/core/Type"], function (Tone) {
 	};
 
 	/**
-	 *  Iterate over everything in the array at or before the given time.
+	 *  Iterate over everything in the array after the given time.
 	 *  @param  {Time}  time The time to check if items are before
 	 *  @param  {Function}  callback The callback to invoke with every item
 	 *  @returns {Tone.Timeline} this
@@ -223,6 +223,27 @@ define(["Tone/core/Tone", "Tone/core/Type"], function (Tone) {
 		//iterate over the items in reverse so that removing an item doesn't break things
 		time = this.toSeconds(time);
 		var endIndex = this._search(time);
+		for (var i = this._timeline.length - 1; i > endIndex; i--){
+			callback(this._timeline[i], i);
+		}
+		return this;
+	};
+
+	/**
+	 *  Iterate over everything in the array at or after the given time. Similar to 
+	 *  forEachAfter, but includes the item(s) at the given time.
+	 *  @param  {Time}  time The time to check if items are before
+	 *  @param  {Function}  callback The callback to invoke with every item
+	 *  @returns {Tone.Timeline} this
+	 */
+	Tone.Timeline.prototype.forEachFrom = function(time, callback){
+		//iterate over the items in reverse so that removing an item doesn't break things
+		time = this.toSeconds(time);
+		var endIndex = this._search(time);
+		//work backwards until the event time is less than time
+		while (endIndex >= 0 && this._timeline[endIndex].time >= time){
+			endIndex--;
+		}
 		for (var i = this._timeline.length - 1; i > endIndex; i--){
 			callback(this._timeline[i], i);
 		}
