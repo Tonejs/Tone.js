@@ -303,6 +303,31 @@ define(["Test", "Tone/core/Timeline"], function (Test, Timeline) {
 				sched.dispose();
 			});
 
+			it("can iterate after inclusive of the item at the given time", function(){
+				var sched = new Timeline();
+				sched.addEvent({"time" : 0.1});
+				sched.addEvent({"time" : 0.2});
+				sched.addEvent({"time" : 0.2});
+				sched.addEvent({"time" : 0.3});
+				sched.addEvent({"time" : 0.4});
+				var count = 0;
+				sched.forEachFrom(0.2, function(){
+					count++;
+				});
+				expect(count).to.equal(4);
+				count = 0;
+				sched.forEachFrom(0.21, function(){
+					count++;
+				});
+				expect(count).to.equal(2);
+				count = 0;
+				sched.forEachFrom(0, function(){
+					count++;
+				});
+				expect(count).to.equal(5);
+				sched.dispose();
+			});
+
 			it("iterates over all items at the given time", function(){
 				var sched = new Timeline();
 				sched.addEvent({"time" : 0});
