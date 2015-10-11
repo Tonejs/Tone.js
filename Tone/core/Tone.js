@@ -580,12 +580,29 @@ define(function(){
 	 */
 	Tone.prototype.isFunction = isFunction;
 
+	/**
+	 *  Test if the argument is a number.
+	 *  @param {*} arg the argument to test
+	 *  @returns {boolean} true if the arg is a number
+	 */
+	Tone.prototype.isNumber = function(arg){
+		return (typeof arg === "number");
+	};
+
+	/**
+	 *  Test if the argument is a boolean.
+	 *  @param {*} arg the argument to test
+	 *  @returns {boolean} true if the arg is a boolean
+	 */
+	Tone.prototype.isBoolean = function(arg){
+		return (typeof arg === "boolean");
+	};
+
  	/**
 	 *  An empty function.
 	 *  @static
 	 */
 	Tone.noOp = function(){};
-
 
 	/**
 	 *  Make the property not writable. Internal use only. 
