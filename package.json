@@ -9,7 +9,7 @@
     "build/Tone.js"
   ],
   "scripts": {
-    "test": "echo \"tests require a browser\" && exit 0"
+    "test": "cd gulp && gulp test"
   },
   "repository": {
     "type": "git",
