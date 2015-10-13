@@ -3,7 +3,9 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/signal/Signal"], f
 	"use strict";
 
 	/**
-	 *  @class  This is a base class for monophonic instruments. 
+	 *  @class  This is an abstract base class for other monophonic instruments to 
+	 *          extend. IMPORTANT: It does not make any sound on its own and
+	 *          shouldn't be directly instantiated.
 	 *
 	 *  @constructor
 	 *  @abstract
