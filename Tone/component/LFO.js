@@ -251,6 +251,19 @@ function(Tone){
 	});
 
 	/**
+	 *  Returns the playback state of the source, either "started" or "stopped".
+	 *  @type {Tone.State}
+	 *  @readOnly
+	 *  @memberOf Tone.LFO#
+	 *  @name state
+	 */
+	Object.defineProperty(Tone.LFO.prototype, "state", {
+		get : function(){
+			return this._oscillator.state;
+		}
+	});
+
+	/**
 	 *  Connect the output of a ToneNode to an AudioParam, AudioNode, or Tone Node. 
 	 *  will get the units from the connected node.
 	 *  @param  {Tone | AudioParam | AudioNode} node 

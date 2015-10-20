@@ -4,6 +4,19 @@ function (LFO, Basic, Offline, Test, OutputAudio) {
 
 		Basic(LFO);
 
+		context("API", function(){
+			it ("can get the current state", function(done){
+				var lfo = new LFO();
+				expect(lfo.state).to.equal("stopped");
+				lfo.start();
+				setTimeout(function(){
+					expect(lfo.state).to.equal("started");
+					lfo.dispose();
+					done();
+				}, 100);
+			});
+		});
+
 		context("Low Oscillations", function(){
 
 			it("handles output connections", function(){
