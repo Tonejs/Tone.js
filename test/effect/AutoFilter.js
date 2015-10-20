@@ -1,4 +1,5 @@
-define(["Tone/effect/AutoFilter", "helper/Basic", "helper/EffectTests"], function (AutoFilter, Basic, EffectTests) {
+define(["Tone/effect/AutoFilter", "helper/Basic", "helper/EffectTests", "deps/teoria"], 
+	function (AutoFilter, Basic, EffectTests, teoria) {
 	describe("Effect", function(){
 		Basic(AutoFilter);
 		EffectTests(AutoFilter);
@@ -49,6 +50,13 @@ define(["Tone/effect/AutoFilter", "helper/Basic", "helper/EffectTests"], functio
 				var autoFilter = new AutoFilter();
 				autoFilter.filter.Q.value = 2;
 				expect(autoFilter.filter.Q.value).to.be.closeTo(2, 0.01);
+				autoFilter.dispose();
+			});
+
+			it ("accepts min and max as frequency values", function(){
+				var autoFilter = new AutoFilter("2n", "C2", "C4");
+				expect(autoFilter.min).to.be.closeTo(teoria.note("C2").fq(), 0.01);
+				expect(autoFilter.max).to.be.closeTo(teoria.note("C4").fq(), 0.01);
 				autoFilter.dispose();
 			});
 		});

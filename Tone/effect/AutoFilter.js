@@ -31,8 +31,8 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/LFO", "Tone/comp
 		this._lfo = new Tone.LFO({
 			"frequency" : options.frequency,
 			"amplitude" : options.depth,
-			"min" : options.min,
-			"max" : options.max
+			"min" : this.toFrequency(options.min),
+			"max" : this.toFrequency(options.max)
 		});
 
 		/**
@@ -151,7 +151,7 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/LFO", "Tone/comp
 			return this._lfo.min;
 		},
 		set : function(min){
-			this._lfo.min = min;
+			this._lfo.min = this.toFrequency(min);
 		}
 	});
 
@@ -166,7 +166,7 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/LFO", "Tone/comp
 			return this._lfo.max;
 		},
 		set : function(max){
-			this._lfo.max = max;
+			this._lfo.max = this.toFrequency(max);
 		}
 	});
 
