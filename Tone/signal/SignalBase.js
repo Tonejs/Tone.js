@@ -1,4 +1,4 @@
-define(["Tone/core/Tone"], function(Tone){
+define(["Tone/core/Tone", "Tone/core/Param", "Tone/core/TimelineParam"], function(Tone){
 
 	"use strict";
 
@@ -25,11 +25,11 @@ define(["Tone/core/Tone"], function(Tone){
 	 */
 	Tone.SignalBase.prototype.connect = function(node, outputNumber, inputNumber){
 		//zero it out so that the signal can have full control
-		if (node.constructor === Tone.Signal){
+		if ([Tone.Signal, Tone.Param, Tone.TimelineParam].indexOf(node.constructor) !== -1){
 			//cancel changes
-			node._value.cancelScheduledValues(0);
+			node._param.cancelScheduledValues(0);
 			//reset the value
-			node._value.value = 0;
+			node._param.value = 0;
 			//mark the value as overridden
 			node.overridden = true;
 		} else if (node instanceof AudioParam){

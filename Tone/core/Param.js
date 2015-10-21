@@ -2,7 +2,9 @@ define(["Tone/core/Tone", "Tone/core/Type"], function(Tone){
 
 	/**
 	 *  @class Tone.Param wraps the native Web Audio's AudioParam to provide
-	 *         additional unit conversion functionality.
+	 *         additional unit conversion functionality. It also
+	 *         serves as a base-class for classes which have a single,
+	 *         automatable parameter. 
 	 *  @extends {Tone}
 	 *  @param  {AudioParam}  param  The parameter to wrap.
 	 *  @param  {Tone.Type} units The units of the audio param.
@@ -30,6 +32,15 @@ define(["Tone/core/Tone", "Tone/core/Type"], function(Tone){
 		 *  @type {Boolean}
 		 */
 		this.convert = options.convert;
+
+		/**
+		 *  True if the signal value is being overridden by 
+		 *  a connected signal.
+		 *  @readOnly
+		 *  @type  {boolean}
+		 *  @private
+		 */
+		this.overridden = false;
 
 		if (!this.isUndef(options.value)){
 			this.value = options.value;
@@ -96,7 +107,7 @@ define(["Tone/core/Tone", "Tone/core/Type"], function(Tone){
 	};
 
 	/**
-	 * Convert the signals true value into the units specified by Tone.Param.units.
+	 * Convert the parameters value into the units specified by Tone.Param.units.
 	 * @private
 	 * @param  {number} val the value to convert
 	 * @return {number}

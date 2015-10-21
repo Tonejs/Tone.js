@@ -24,15 +24,6 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper", "Tone/core/Type", "Tone/core
 		var options = this.optionsObject(arguments, ["value", "units"], Tone.Signal.defaults);
 
 		/**
-		 *  True if the signal value is being overridden by 
-		 *  a connected signal.
-		 *  @readOnly
-		 *  @type  {boolean}
-		 *  @private
-		 */
-		this.overridden = false;
-
-		/**
 		 * The node where the constant signal value is scaled.
 		 * @type {GainNode}
 		 * @private
