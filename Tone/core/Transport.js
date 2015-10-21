@@ -654,20 +654,20 @@ function(Tone){
 	Tone.Transport.prototype.syncSignal = function(signal, ratio){
 		if (!ratio){
 			//get the sync ratio
-			if (signal._value.value !== 0){
-				ratio = signal._value.value / this.bpm._value.value;
+			if (signal._param.value !== 0){
+				ratio = signal._param.value / this.bpm._param.value;
 			} else {
 				ratio = 0;
 			}
 		}
 		var ratioSignal = new Tone.Gain(ratio);
-		this.bpm.chain(ratioSignal, signal._value);
+		this.bpm.chain(ratioSignal, signal._param);
 		this._syncedSignals.push({
 			"ratio" : ratioSignal,
 			"signal" : signal,
-			"initial" : signal._value.value
+			"initial" : signal._param.value
 		});
-		signal._value.value = 0;
+		signal._param.value = 0;
 		return this;
 	};
 
@@ -682,7 +682,7 @@ function(Tone){
 			var syncedSignal = this._syncedSignals[i];
 			if (syncedSignal.signal === signal){
 				syncedSignal.ratio.dispose();
-				syncedSignal.signal._value.value = syncedSignal.initial;
+				syncedSignal.signal._param.value = syncedSignal.initial;
 				this._syncedSignals.splice(i, 1);
 			}
 		}
