@@ -40,9 +40,9 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 		 *  @private
 		 *  @type {Tone.Signal}
 		 */
-		this._value = this.input[1] = new Tone.Signal(value);
+		this._param = this.input[1] = new Tone.Signal(value);
 
-		this._value.connect(this._sum);
+		this._param.connect(this._sum);
 	};
 
 	Tone.extend(Tone.Add, Tone.Signal);
@@ -55,8 +55,8 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 		Tone.prototype.dispose.call(this);
 		this._sum.disconnect();
 		this._sum = null;
-		this._value.dispose();
-		this._value = null;
+		this._param.dispose();
+		this._param = null;
 		return this;
 	}; 
 

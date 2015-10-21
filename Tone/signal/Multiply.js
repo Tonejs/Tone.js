@@ -40,9 +40,9 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 		 *  @type {AudioParam}
 		 *  @private
 		 */
-		this._value = this.input[1] = this.output.gain;
+		this._param = this.input[1] = this.output.gain;
 		
-		this._value.value = this.defaultArg(value, 0);
+		this._param.value = this.defaultArg(value, 0);
 	};
 
 	Tone.extend(Tone.Multiply, Tone.Signal);
@@ -55,7 +55,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 		Tone.prototype.dispose.call(this);
 		this._mult.disconnect();
 		this._mult = null;
-		this._value = null;
+		this._param = null;
 		return this;
 	}; 
 

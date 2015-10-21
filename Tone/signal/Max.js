@@ -34,7 +34,7 @@ define(["Tone/core/Tone", "Tone/signal/GreaterThan", "Tone/signal/IfThenElse", "
 		 *  @type {Tone.Signal}
 		 *  @private
 		 */
-		this._value = this.input[1] = new Tone.Signal(max);
+		this._param = this.input[1] = new Tone.Signal(max);
 
 		/**
 		 *  @type {Tone.Select}
@@ -51,8 +51,8 @@ define(["Tone/core/Tone", "Tone/signal/GreaterThan", "Tone/signal/IfThenElse", "
 		//connections
 		this.input[0].chain(this._gt, this._ifThenElse.if);
 		this.input[0].connect(this._ifThenElse.then);
-		this._value.connect(this._ifThenElse.else);
-		this._value.connect(this._gt, 0, 1);
+		this._param.connect(this._ifThenElse.else);
+		this._param.connect(this._gt, 0, 1);
 	};
 
 	Tone.extend(Tone.Max, Tone.Signal);
@@ -63,10 +63,10 @@ define(["Tone/core/Tone", "Tone/signal/GreaterThan", "Tone/signal/IfThenElse", "
 	 */
 	Tone.Max.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
-		this._value.dispose();
+		this._param.dispose();
 		this._ifThenElse.dispose();
 		this._gt.dispose();
-		this._value = null;
+		this._param = null;
 		this._ifThenElse = null;
 		this._gt = null;
 		return this;

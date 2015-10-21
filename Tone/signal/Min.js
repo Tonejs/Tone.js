@@ -45,13 +45,13 @@ define(["Tone/core/Tone", "Tone/signal/LessThan", "Tone/signal/IfThenElse", "Ton
 		 *  @type {Tone.Signal}
 		 *  @private
 		 */
-		this._value = this.input[1] = new Tone.Signal(min);
+		this._param = this.input[1] = new Tone.Signal(min);
 
 		//connections
 		this.input[0].chain(this._lt, this._ifThenElse.if);
 		this.input[0].connect(this._ifThenElse.then);
-		this._value.connect(this._ifThenElse.else);
-		this._value.connect(this._lt, 0, 1);
+		this._param.connect(this._ifThenElse.else);
+		this._param.connect(this._lt, 0, 1);
 	};
 
 	Tone.extend(Tone.Min, Tone.Signal);
@@ -62,10 +62,10 @@ define(["Tone/core/Tone", "Tone/signal/LessThan", "Tone/signal/IfThenElse", "Ton
 	 */
 	Tone.Min.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
-		this._value.dispose();
+		this._param.dispose();
 		this._ifThenElse.dispose();
 		this._lt.dispose();
-		this._value = null;
+		this._param = null;
 		this._ifThenElse = null;
 		this._lt = null;
 		return this;

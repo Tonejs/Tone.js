@@ -282,20 +282,20 @@ function(Tone){
 	};
 
 	/**
-	 *  private method borroed from Signal converts 
+	 *  private method borrowed from Param converts 
 	 *  units from their destination value
 	 *  @function
 	 *  @private
 	 */
-	Tone.LFO.prototype._fromUnits = Tone.Signal.prototype._fromUnits;
+	Tone.LFO.prototype._fromUnits = Tone.Param.prototype._fromUnits;
 
 	/**
-	 *  private method borroed from Signal converts 
+	 *  private method borrowed from Param converts 
 	 *  units to their destination value
 	 *  @function
 	 *  @private
 	 */
-	Tone.LFO.prototype._toUnits = Tone.Signal.prototype._toUnits;
+	Tone.LFO.prototype._toUnits = Tone.Param.prototype._toUnits;
 
 	/**
 	 *  disconnect and dispose
