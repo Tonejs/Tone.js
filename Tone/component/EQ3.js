@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/component/MultibandSplit", "Tone/signal/Signal"], function(Tone){
+define(["Tone/core/Tone", "Tone/component/MultibandSplit", "Tone/core/Gain"], function(Tone){
 
 	"use strict";
 
@@ -37,46 +37,25 @@ define(["Tone/core/Tone", "Tone/component/MultibandSplit", "Tone/signal/Signal"]
 		});
 
 		/**
-		 *  the low gain
-		 *  @type {GainNode}
-		 *  @private
-		 */
-		this._lowGain = this.context.createGain();
-
-		/**
-		 *  the mid gain
-		 *  @type {GainNode}
-		 *  @private
-		 */
-		this._midGain = this.context.createGain();
-
-		/**
-		 *  the high gain
-		 *  @type {GainNode}
-		 *  @private
-		 */
-		this._highGain = this.context.createGain();
-
-		/**
 		 * The gain in decibels of the low part
 		 * @type {Decibels}
 		 * @signal
 		 */
-		this.low = new Tone.Signal(this._lowGain.gain, Tone.Type.Decibels);
+		this.low = new Tone.Gain(options.low, Tone.Type.Decibels);
 
 		/**
 		 * The gain in decibels of the mid part
 		 * @type {Decibels}
 		 * @signal
 		 */
-		this.mid = new Tone.Signal(this._midGain.gain, Tone.Type.Decibels);
+		this.mid = new Tone.Gain(options.mid, Tone.Type.Decibels);
 
 		/**
 		 * The gain in decibels of the high part
 		 * @type {Decibels}
 		 * @signal
 		 */
-		this.high = new Tone.Signal(this._highGain.gain, Tone.Type.Decibels);
+		this.high = new Tone.Gain(options.high, Tone.Type.Decibels);
 
 		/**
 		 *  The Q value for all of the filters. 
@@ -100,13 +79,9 @@ define(["Tone/core/Tone", "Tone/component/MultibandSplit", "Tone/signal/Signal"]
 		this.highFrequency = this._multibandSplit.highFrequency;
 
 		//the frequency bands
-		this._multibandSplit.low.chain(this._lowGain, this.output);
-		this._multibandSplit.mid.chain(this._midGain, this.output);
-		this._multibandSplit.high.chain(this._highGain, this.output);
-		//set the gains
-		this.low.value = options.low;
-		this.mid.value = options.mid;
-		this.high.value = options.high;
+		this._multibandSplit.low.chain(this.low, this.output);
+		this._multibandSplit.mid.chain(this.mid, this.output);
+		this._multibandSplit.high.chain(this.high, this.output);
 		this._readOnly(["low", "mid", "high", "lowFrequency", "highFrequency"]);
 	};
 
@@ -134,12 +109,6 @@ define(["Tone/core/Tone", "Tone/component/MultibandSplit", "Tone/signal/Signal"]
 		this._multibandSplit = null;
 		this.lowFrequency = null;
 		this.highFrequency = null;
-		this._lowGain.disconnect();
-		this._lowGain = null;
-		this._midGain.disconnect();
-		this._midGain = null;
-		this._highGain.disconnect();
-		this._highGain = null;
 		this.low.dispose();
 		this.low = null;
 		this.mid.dispose();
