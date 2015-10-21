@@ -81,10 +81,11 @@ function(Tone){
 
 		/**
 		 *  the units of the LFO (used for converting)
-		 *  @type {string} 
+		 *  @type {Tone.Type} 
 		 *  @private
 		 */
 		this._units = Tone.Type.Default;
+		this.units = options.units;
 
 		//connect it up
 		this._oscillator.chain(this._a2g, this._scaler);
@@ -108,7 +109,8 @@ function(Tone){
 		"max" : 1,
 		"phase" : 0,
 		"frequency" : "4n",
-		"amplitude" : 1
+		"amplitude" : 1,
+		"units" : Tone.Type.Default
 	};
 
 	/**
@@ -264,7 +266,8 @@ function(Tone){
 	});
 
 	/**
-	 *  Connect the output of a ToneNode to an AudioParam, AudioNode, or Tone Node. 
+	 *  Connect the output of the LFO to an AudioParam, AudioNode, or Tone Node. 
+	 *  Tone.LFO will automatically convert to the destination units of the 
 	 *  will get the units from the connected node.
 	 *  @param  {Tone | AudioParam | AudioNode} node 
 	 *  @param {number} [outputNum=0] optionally which output to connect from
@@ -273,7 +276,7 @@ function(Tone){
 	 *  @private
 	 */
 	Tone.LFO.prototype.connect = function(node){
-		if (node.constructor === Tone.Signal){
+		if (node.constructor === Tone.Signal || node.constructor === Tone.Param || node.constructor === Tone.TimelineSignal){
 			this.convert = node.convert;
 			this.units = node.units;
 		}
