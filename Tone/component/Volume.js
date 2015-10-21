@@ -14,30 +14,12 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Gain"], function(Tone
 	 */
 	Tone.Volume = function(){
 
-		var options = this.optionsObject(arguments, ["volume"], Tone.Volume.defaults);
+		var options = this.optionsObject(arguments, ["value"], Tone.Volume.defaults);
 
-		/**
-		 * the output node
-		 * @type {GainNode}
-		 * @private
-		 */
-		this.output = this.input = new Tone.Gain();
-
-		/**
-		 *  The volume control in decibels. 
-		 *  @type {Decibels}
-		 *  @signal
-		 */
-		this.volume = new Tone.Signal({
-			"param" : this.output.gain, 
-			"value" : options.volume,
-			"units" : Tone.Type.Decibels
-		});
-
-		this._readOnly("volume");
+		Tone.Gain.call(this, options.value, Tone.Type.Decibels);
 	};
 
-	Tone.extend(Tone.Volume);
+	Tone.extend(Tone.Volume, Tone.Gain);
 
 	/**
 	 *  Defaults
@@ -46,20 +28,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Gain"], function(Tone
 	 *  @static
 	 */
 	Tone.Volume.defaults = {
-		"volume" : 0
-	};
-
-	/**
-	 *  clean up
-	 *  @returns {Tone.Volume} this
-	 */
-	Tone.Volume.prototype.dispose = function(){
-		this.input.dispose();
-		Tone.prototype.dispose.call(this);
-		this._writable("volume");
-		this.volume.dispose();
-		this.volume = null;
-		return this;
+		"value" : 0
 	};
 
 	return Tone.Volume;
