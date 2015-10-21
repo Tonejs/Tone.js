@@ -492,11 +492,11 @@ define(function(){
 	///////////////////////////////////////////////////////////////////////////
 
 	/**
-	 *  If a the given is undefined, use the fallback. 
-	 *  If both given and fallback are objects, given
-	 *  will be augmented with whatever properties it's
-	 *  missing which are in fallback. It will recurse nested
-	 *  objects.
+	 *  If the `given` parameter is undefined, use the `fallback`. 
+	 *  If both `given` and `fallback` are object literals, it will
+	 *  return a deep copy which includes all of the parameters from both 
+	 *  objects. If a parameter is undefined in given, it will return
+	 *  the fallback property. 
 	 *  <br><br>
 	 *  WARNING: if object is self referential, it will go into an an 
 	 *  infinite recursive loop.
@@ -588,7 +588,7 @@ define(function(){
 	 *  @returns {boolean} true if the arg is an object literal.
 	 */
 	Tone.prototype.isObject = function(arg){
-		return (Object.prototype.toString.call(arg) === "[object Object]");
+		return (Object.prototype.toString.call(arg) === "[object Object]" && arg.constructor === Object);
 	};
 
 	/**
