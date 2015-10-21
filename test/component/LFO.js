@@ -1,5 +1,5 @@
-define(["Tone/component/LFO", "helper/Basic", "helper/Offline", "Test", "helper/OutputAudio"], 
-function (LFO, Basic, Offline, Test, OutputAudio) {
+define(["Tone/component/LFO", "helper/Basic", "helper/Offline", "Test", "helper/OutputAudio", "Tone/core/Type", "Tone/signal/Signal"], 
+function (LFO, Basic, Offline, Test, OutputAudio, Tone, Signal) {
 	describe("LFO", function(){
 
 		Basic(LFO);
@@ -160,6 +160,51 @@ function (LFO, Basic, Offline, Test, OutputAudio) {
 				}); 
 				offline.test(function(sample){
 					expect(sample).to.be.closeTo(1, 0.01);
+				}); 
+				offline.after(function(){
+					lfo.dispose();
+					done();
+				});
+				offline.run();
+			});
+
+			it("can convert to other units", function(done){
+				var lfo;
+				var offline = new Offline(0.1); 
+				offline.before(function(dest){
+					lfo = new LFO({
+						"units" : Tone.Type.Decibels,
+						"min" : -20,
+						"max" : 5,
+						"frequency" : 20
+					});
+					lfo.connect(dest);
+					lfo.start();
+				}); 
+				offline.test(function(sample){
+					expect(sample).to.be.within(lfo.dbToGain(-20) - 0.01, lfo.dbToGain(5) + 0.01);
+				}); 
+				offline.after(function(){
+					lfo.dispose();
+					done();
+				});
+				offline.run();
+			});
+
+			it("can converts to the units of the connecting node", function(done){
+				var lfo, signal;
+				var offline = new Offline(0.1); 
+				offline.before(function(dest){
+					lfo = new LFO(20, -35, -10);
+					signal = new Signal(0, Tone.Type.Decibels);
+					expect(lfo.units).to.equal(Tone.Type.Default);
+					lfo.connect(dest);
+					lfo.connect(signal);
+					expect(lfo.units).to.equal(Tone.Type.Decibels);
+					lfo.start();
+				}); 
+				offline.test(function(sample){
+					expect(sample).to.be.within(lfo.dbToGain(-35) - 0.01, lfo.dbToGain(-10) + 0.01);
 				}); 
 				offline.after(function(){
 					lfo.dispose();
