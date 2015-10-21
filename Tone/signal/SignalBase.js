@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/core/Param", "Tone/core/TimelineParam"], function(Tone){
+define(["Tone/core/Tone"], function(Tone){
 
 	"use strict";
 
@@ -25,7 +25,9 @@ define(["Tone/core/Tone", "Tone/core/Param", "Tone/core/TimelineParam"], functio
 	 */
 	Tone.SignalBase.prototype.connect = function(node, outputNumber, inputNumber){
 		//zero it out so that the signal can have full control
-		if ([Tone.Signal, Tone.Param, Tone.TimelineParam].indexOf(node.constructor) !== -1){
+		if ((Tone.Signal && Tone.Signal === node.constructor) || 
+				(Tone.Param && Tone.Param === node.constructor) || 
+				(Tone.TimelineSignal && Tone.TimelineSignal === node.constructor)){
 			//cancel changes
 			node._param.cancelScheduledValues(0);
 			//reset the value
