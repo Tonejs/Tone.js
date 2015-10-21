@@ -533,11 +533,9 @@ define(function(){
 	 *                                 should appear in the options object
 	 *  @param {Object=} defaults optional defaults to mixin to the returned 
 	 *                            options object                              
-	 *  @param {Boolean} [shallowCopy=false] Shallow copies avoid recursively
-	 *                                       accessing nested objects.
 	 *  @return {Object}       the options object with the names mapped to the arguments
 	 */
-	Tone.prototype.optionsObject = function(values, keys, defaults, shallowCopy){
+	Tone.prototype.optionsObject = function(values, keys, defaults){
 		var options = {};
 		if (values.length === 1 && this.isObject(values[0])){
 			options = values[0];
@@ -547,7 +545,7 @@ define(function(){
 			}
 		}
 		if (!this.isUndef(defaults)){
-			return this.defaultArg(options, defaults, shallowCopy);
+			return this.defaultArg(options, defaults);
 		} else {
 			return options;
 		}
