@@ -1,36 +1,38 @@
-define(["Tone/core/Tone"], function (Tone) {
+define(["Tone/core/Tone", "Tone/core/Param", "Tone/core/Type"], function (Tone) {
 
 	/**
 	 *  @class A thin wrapper around the Native Web Audio GainNode.
 	 *         The GainNode is a basic building block of the Web Audio
 	 *         API and is useful for routing audio and adjusting gains. 
 	 *  @extends {Tone}
-	 *  @param  {Number=}  initial  The initial gain of the GainNode
+	 *  @param  {Number=}  value  The initial gain of the GainNode
+	 *  @param {Tone.Type=} units The units of the gain parameter. 
 	 */
-	Tone.Gain = function(initial){
+	Tone.Gain = function(){
 
-		var options = this.optionsObject(arguments, ["gain"], Tone.Gain.defaults);
+		var options = this.optionsObject(arguments, ["value", "units"], Tone.Gain.defaults);
 
 		/**
 		 *  The GainNode
 		 *  @type  {GainNode}
 		 *  @private
 		 */
-		this._gainNode = this.input = this.output = this.context.createGain();
+		this._gainNode = this.context.createGain();
+
+		options.param = this._gainNode.gain;
+		Tone.Param.call(this, options);
+		this.input = this.output = this._gainNode;
 
 		/**
-		 *  The gain of the gain node.
-		 *  @type {Number}
+		 *  The gain parameter of the gain node.
+		 *  @type {AudioParam}
 		 *  @signal
 		 */
-		this.gain = this._gainNode.gain;
-
-		//set the initial value
+		this.gain = this._param;
 		this._readOnly("gain");
-		this.gain.value = options.gain;
 	};
 
-	Tone.extend(Tone.Gain);
+	Tone.extend(Tone.Gain, Tone.Param);
 
 	/**
 	 *  The defaults
@@ -38,7 +40,9 @@ define(["Tone/core/Tone"], function (Tone) {
 	 *  @type  {Object}
 	 */
 	Tone.Gain.defaults = {
-		"gain" : 1
+		"value" : 1,
+		"units" : Tone.Type.Gain,
+		"convert" : true
 	};
 
 	/**
@@ -46,7 +50,7 @@ define(["Tone/core/Tone"], function (Tone) {
 	 *  @return  {Tone.Gain}  this
 	 */
 	Tone.Gain.prototype.dispose = function(){
-		Tone.prototype.dispose.call(this);
+		Tone.Param.prototype.dispose.call(this);
 		this._gainNode.disconnect();
 		this._gainNode = null;
 		this._writable("gain");
