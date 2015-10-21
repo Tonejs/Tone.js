@@ -64,6 +64,58 @@ define(["Test", "Tone/core/Tone", "helper/PassAudio", "Tone/source/Oscillator", 
 			});
 		});
 
+		context("Type checking", function(){
+
+			it("can test if an argument is a undefined", function(){
+				expect(tone.isUndef(undefined)).to.be.true;
+				expect(tone.isUndef("seomthing")).to.be.false;
+				expect(tone.isUndef({})).to.be.false;
+			});
+
+			it("can test if an argument is a function", function(){
+				expect(tone.isFunction(undefined)).to.be.false;
+				expect(tone.isFunction(function(){})).to.be.true;
+				expect(tone.isFunction(Tone)).to.be.true;
+			});
+
+			it("can test if an argument is a number", function(){
+				expect(tone.isNumber(undefined)).to.be.false;
+				expect(tone.isNumber(function(){})).to.be.false;
+				expect(tone.isNumber(Tone)).to.be.false;
+				expect(tone.isNumber(10)).to.be.true;
+				expect(tone.isNumber("10")).to.be.false;
+			});
+
+			it("can test if an argument is an object literal", function(){
+				expect(tone.isObject(Number)).to.be.false;
+				expect(tone.isObject(function(){})).to.be.false;
+				expect(tone.isObject(Tone)).to.be.false;
+				expect(tone.isObject({})).to.be.true;
+				expect(tone.isObject([])).to.be.false;
+				expect(tone.isObject("10")).to.be.false;
+			});
+
+			it("can test if an argument is an array", function(){
+				expect(tone.isArray(Number)).to.be.false;
+				expect(tone.isArray({})).to.be.false;
+				expect(tone.isArray([])).to.be.true;
+			});
+
+			it("can test if an argument is a boolean", function(){
+				expect(tone.isBoolean(Number)).to.be.false;
+				expect(tone.isBoolean(true)).to.be.true;
+				expect(tone.isBoolean(false)).to.be.true;
+				expect(tone.isBoolean([])).to.be.false;
+			});
+
+			it("can test if an argument is a string", function(){
+				expect(tone.isString(Number)).to.be.false;
+				expect(tone.isString(true)).to.be.false;
+				expect(tone.isString("false")).to.be.true;
+				expect(tone.isString("thanks")).to.be.true;
+			});
+		});
+
 		context("defaultArg", function(){
 
 			it("returns a default argument when the given is not defined", function(){
@@ -81,18 +133,6 @@ define(["Test", "Tone/core/Tone", "helper/PassAudio", "Tone/source/Oscillator", 
 			it("handles default arguments on a deep object", function(){
 				expect(tone.defaultArg({"b" : {"c" : 10}}, {"b" : {"c" : 20, "d" : 30}})).has.deep.property("b.d", 30);
 				expect(tone.defaultArg({"a" : 10}, {"b" : {"c" : 20}})).has.deep.property("b.c", 20);
-			});
-
-			it("does a shallow copy of a deep object", function(){
-				expect(tone.defaultArg({"b" : {"c" : 10}}, {"b" : {"c" : 20, "d" : 30}}, true)).to.not.have.deep.property("b.d");
-				expect(tone.defaultArg({"a" : 10, "b" : "thing"}, {"b" : {"c" : 20}}, true)).has.deep.property("b", "thing");
-			});
-
-			it("does not enter an infinite loop with self-referential objects using shallow copy", function(){
-				var a = {};
-				//self referential
-				a.a = a;
-				expect(tone.defaultArg(a, {"a" : 10}, true)).has.property("a");
 			});
 
 		});
@@ -127,13 +167,6 @@ define(["Test", "Tone/core/Tone", "helper/PassAudio", "Tone/source/Oscillator", 
 					"a" : 2,
 					"b" : 3,
 				});
-			});
-
-			it("does shallow copy of defaults", function(){
-				var c = {};
-				//self referential
-				c.c = c;
-				expect(tone.optionsObject([c], ["a"], c, true)).is.deep.equal(c);
 			});
 
 		});

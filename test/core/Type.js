@@ -294,7 +294,7 @@ define(["Test", "Tone/core/Type", "Tone/core/Transport", "deps/teoria"], functio
 
 		});
 
-		context("Tone.getType", function(){
+		context("Test Types", function(){
 
 			it("can recognize frequency format", function(){
 				expect(tone.isFrequency("12hz")).to.be.true;
