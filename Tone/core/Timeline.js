@@ -1,5 +1,7 @@
 define(["Tone/core/Tone", "Tone/core/Type"], function (Tone) {
 
+	"use strict";
+
 	/**
 	 *  @class A Timeline class for scheduling and maintaining state
 	 *         along a timeline. All events must have a "time" property. 

@@ -1,5 +1,7 @@
 define(["Tone/core/Tone", "Tone/signal/TimelineSignal", "Tone/core/TimelineState"], function (Tone) {
 
+	"use strict";
+
 	/**
 	 *  @class  A sample accurate clock which provides a callback at the given rate. 
 	 *          While the callback is not sample-accurate (it is still susceptible to

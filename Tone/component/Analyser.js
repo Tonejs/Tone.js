@@ -1,5 +1,7 @@
 define(["Tone/core/Tone"], function (Tone) {
 
+	"use strict";
+
 	/**
 	 *  @class  Wrapper around the native Web Audio's 
 	 *          [AnalyserNode](http://webaudio.github.io/web-audio-api/#idl-def-AnalyserNode).

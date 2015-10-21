@@ -1,5 +1,7 @@
 define(["Tone/core/Tone"], function (Tone) {
 
+	"use strict";
+
 	/**
 	 *  @class Tone.EventEmitter gives classes which extend it
 	 *         the ability to listen for and trigger events. 

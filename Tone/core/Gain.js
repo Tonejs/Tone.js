@@ -1,5 +1,7 @@
 define(["Tone/core/Tone", "Tone/core/Param", "Tone/core/Type"], function (Tone) {
 
+	"use strict";
+
 	/**
 	 *  @class A thin wrapper around the Native Web Audio GainNode.
 	 *         The GainNode is a basic building block of the Web Audio

@@ -1,5 +1,7 @@
 define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/core/Delay", "Tone/component/LFO"], function (Tone) {
 
+	"use strict";
+
 	/**
 	 *  @class A Vibrato effect composed of a Tone.Delay and a Tone.LFO. The LFO
 	 *         modulates the delayTime of the delay, causing the pitch to rise

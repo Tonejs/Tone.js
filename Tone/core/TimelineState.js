@@ -1,5 +1,7 @@
 define(["Tone/core/Tone", "Tone/core/Timeline", "Tone/core/Type"], function (Tone) {
 
+	"use strict";
+
 	/**
 	 *  @class  A Timeline State. Provides the methods: <code>setStateAtTime("state", time)</code>
 	 *          and <code>getStateAtTime(time)</code>.

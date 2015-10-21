@@ -1,5 +1,7 @@
 define(["Tone/core/Tone", "Tone/core/Type"], function(Tone){
 
+	"use strict";
+
 	/**
 	 *  @class Tone.Param wraps the native Web Audio's AudioParam to provide
 	 *         additional unit conversion functionality. It also

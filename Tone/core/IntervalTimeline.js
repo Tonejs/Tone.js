@@ -1,5 +1,7 @@
 define(["Tone/core/Tone", "Tone/core/Type"], function (Tone) {
 
+	"use strict";
+
 	/**
 	 *  @class Similar to Tone.Timeline, but all events represent
 	 *         intervals with both "time" and "duration" times. The 

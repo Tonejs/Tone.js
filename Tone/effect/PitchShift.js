@@ -1,6 +1,8 @@
 define(["Tone/core/Tone", "Tone/component/LFO", "Tone/component/CrossFade", 
 	"Tone/signal/Signal", "Tone/effect/FeedbackEffect", "Tone/core/Delay"], 
-	function (Tone) {
+function (Tone) {
+
+	"use strict";
 
 	/**
 	 *  @class Tone.PitchShift does near-realtime pitch shifting to the incoming signal. 
