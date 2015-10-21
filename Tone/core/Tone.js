@@ -152,9 +152,9 @@ define(function(){
 	 * }, 3);
 	 */
 	Tone.prototype.set = function(params, value, rampTime){
-		if (typeof params === "object"){
+		if (this.isObject(params)){
 			rampTime = value;
-		} else if (typeof params === "string"){
+		} else if (this.isString(params)){
 			var tmpObj = {};
 			tmpObj[params] = value;
 			params = tmpObj;
@@ -218,7 +218,7 @@ define(function(){
 	Tone.prototype.get = function(params){
 		if (isUndef(params)){
 			params = this._collectDefaults(this.constructor);
-		} else if (typeof params === "string"){
+		} else if (this.isString(params)){
 			params = [params];
 		} 
 		var ret = {};
@@ -237,7 +237,7 @@ define(function(){
 				attr = attrSplit[attrSplit.length - 1];
 			}
 			var param = parent[attr];
-			if (typeof params[attr] === "object"){
+			if (this.isObject(params[attr])){
 				subRet[attr] = param.get();
 			} else if (Tone.Signal && param instanceof Tone.Signal){
 				subRet[attr] = param.value;
@@ -496,38 +496,24 @@ define(function(){
 	 *  If both given and fallback are objects, given
 	 *  will be augmented with whatever properties it's
 	 *  missing which are in fallback. It will recurse nested
-	 *  objects unless shallowCopy is true.
+	 *  objects.
 	 *  <br><br>
 	 *  WARNING: if object is self referential, it will go into an an 
-	 *  infinite recursive loop if shallowCopy is set to true.
+	 *  infinite recursive loop.
 	 *  
 	 *  @param  {*} given    
 	 *  @param  {*} fallback 
-	 *  @param {Boolean} [shallowCopy=false] Shallow copies avoid recursively
-	 *                                       accessing nested objects.
 	 *  @return {*}          
 	 */
-	Tone.prototype.defaultArg = function(given, fallback, shallowCopy){
-		shallowCopy = isUndef(shallowCopy) ? false : shallowCopy;
-		if (typeof given === "object" && 
-				typeof fallback === "object" && 
-				!Array.isArray(given) && 
-				!Array.isArray(fallback)){
+	Tone.prototype.defaultArg = function(given, fallback){
+		if (this.isObject(given) && this.isObject(fallback)){
 			var ret = {};
 			//make a deep copy of the given object
 			for (var givenProp in given) {
-				if (shallowCopy){
-					ret[givenProp] = isUndef(fallback[givenProp]) ? given[givenProp] : fallback[givenProp];
-				} else {
-					ret[givenProp] = this.defaultArg(fallback[givenProp], given[givenProp]);
-				}
+				ret[givenProp] = this.defaultArg(fallback[givenProp], given[givenProp]);
 			}
 			for (var fallbackProp in fallback) {
-				if (shallowCopy){
-					ret[fallbackProp] = isUndef(given[fallbackProp]) ? fallback[fallbackProp] : given[fallbackProp];
-				} else {
-					ret[fallbackProp] = this.defaultArg(given[fallbackProp], fallback[fallbackProp]);
-				}
+				ret[fallbackProp] = this.defaultArg(given[fallbackProp], fallback[fallbackProp]);
 			}
 			return ret;
 		} else {
@@ -553,7 +539,7 @@ define(function(){
 	 */
 	Tone.prototype.optionsObject = function(values, keys, defaults, shallowCopy){
 		var options = {};
-		if (values.length === 1 && Object.prototype.toString.call( values[0] ) === "[object Object]"){
+		if (values.length === 1 && this.isObject(values[0])){
 			options = values[0];
 		} else {
 			for (var i = 0; i < keys.length; i++){
@@ -566,6 +552,10 @@ define(function(){
 			return options;
 		}
 	};
+
+	///////////////////////////////////////////////////////////////////////////
+	// TYPE CHECKING
+	///////////////////////////////////////////////////////////////////////////
 
 	/**
 	 *  test if the arg is undefined
@@ -593,12 +583,39 @@ define(function(){
 	};
 
 	/**
+	 *  Test if the given argument is an object literal (i.e. `{}`);
+	 *  @param {*} arg the argument to test
+	 *  @returns {boolean} true if the arg is an object literal.
+	 */
+	Tone.prototype.isObject = function(arg){
+		return (Object.prototype.toString.call(arg) === "[object Object]");
+	};
+
+	/**
 	 *  Test if the argument is a boolean.
 	 *  @param {*} arg the argument to test
 	 *  @returns {boolean} true if the arg is a boolean
 	 */
 	Tone.prototype.isBoolean = function(arg){
 		return (typeof arg === "boolean");
+	};
+
+	/**
+	 *  Test if the argument is an Array
+	 *  @param {*} arg the argument to test
+	 *  @returns {boolean} true if the arg is an array
+	 */
+	Tone.prototype.isArray = function(arg){
+		return (Array.isArray(arg));
+	};
+
+	/**
+	 *  Test if the argument is a string.
+	 *  @param {*} arg the argument to test
+	 *  @returns {boolean} true if the arg is a string
+	 */
+	Tone.prototype.isString = function(arg){
+		return (typeof arg === "string");
 	};
 
  	/**
