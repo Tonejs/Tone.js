@@ -1,4 +1,5 @@
-define(["Tone/core/Tone", "Tone/component/LFO", "Tone/component/CrossFade", "Tone/signal/Signal", "Tone/effect/Effect"], 
+define(["Tone/core/Tone", "Tone/component/LFO", "Tone/component/CrossFade", 
+	"Tone/signal/Signal", "Tone/effect/FeedbackEffect", "Tone/core/Delay"], 
 	function (Tone) {
 
 	/**
@@ -8,13 +9,13 @@ define(["Tone/core/Tone", "Tone/component/LFO", "Tone/component/CrossFade", "Ton
 	 *         Algorithm found in [this pdf](http://dsp-book.narod.ru/soundproc.pdf).
 	 *         Additional reference by [Miller Pucket](http://msp.ucsd.edu/techniques/v0.11/book-html/node115.html).
 	 *         
-	 *  @extends {Tone.Effect}
+	 *  @extends {Tone.FeedbackEffect}
 	 *  @param {Interval=} pitch The interval to transpose the incoming signal by. 
 	 */
 	Tone.PitchShift = function(){
 
 		var options = this.optionsObject(arguments, ["pitch"], Tone.PitchShift.defaults);
-		Tone.Effect.call(this, options);
+		Tone.FeedbackEffect.call(this, options);
 
 		/**
 		 *  The pitch signal
@@ -29,7 +30,7 @@ define(["Tone/core/Tone", "Tone/component/LFO", "Tone/component/CrossFade", "Ton
 		 *  @type  {DelayNode}
 		 *  @private
 		 */
-		this._delayA = this.context.createDelay(1);
+		this._delayA = new Tone.Delay(0, 1);
 
 		/**
 		 *  The first LFO.
@@ -48,7 +49,7 @@ define(["Tone/core/Tone", "Tone/component/LFO", "Tone/component/CrossFade", "Ton
 		 *  @type  {DelayNode}
 		 *  @private
 		 */
-		this._delayB = this.context.createDelay(1);
+		this._delayB = new Tone.Delay(0, 1);
 
 		/**
 		 *  The first LFO.
@@ -68,7 +69,7 @@ define(["Tone/core/Tone", "Tone/component/LFO", "Tone/component/CrossFade", "Ton
 		 *  @type  {Tone.CrossFade}
 		 *  @private
 		 */
-		this._crossFade = new Tone.CrossFade().connect(this.effectReturn);
+		this._crossFade = new Tone.CrossFade();
 
 		/**
 		 *  LFO which alternates between the two
@@ -82,6 +83,14 @@ define(["Tone/core/Tone", "Tone/component/LFO", "Tone/component/CrossFade", "Ton
 			"type" : "triangle",
 			"phase" : 90
 		}).connect(this._crossFade.fade);
+
+		/**
+		 *  The amount of delay on the input signal
+		 *  @type {Time}
+		 *  @signal
+		 */
+		this.delayTime = new Tone.Delay(options.delayTime);
+		this._readOnly("delayTime");
 
 		/**
 		 *  Hold the current pitch
@@ -104,6 +113,7 @@ define(["Tone/core/Tone", "Tone/component/LFO", "Tone/component/CrossFade", "Ton
 		this._frequency.fan(this._lfoA.frequency, this._lfoB.frequency, this._crossFadeLFO.frequency);
 		//route the input
 		this.effectSend.fan(this._delayA, this._delayB);
+		this._crossFade.chain(this.delayTime, this.effectReturn);
 		//start the LFOs at the same time
 		var now = this.now();
 		this._lfoA.start(now);
@@ -113,7 +123,7 @@ define(["Tone/core/Tone", "Tone/component/LFO", "Tone/component/CrossFade", "Ton
 		this.windowSize = this._windowSize;
 	};
 
-	Tone.extend(Tone.PitchShift, Tone.Effect);
+	Tone.extend(Tone.PitchShift, Tone.FeedbackEffect);
 
 	/**
 	 *  default values
@@ -123,7 +133,9 @@ define(["Tone/core/Tone", "Tone/component/LFO", "Tone/component/CrossFade", "Ton
 	 */
 	Tone.PitchShift.defaults = {
 		"pitch" : 0,
-		"windowSize" : 0.1
+		"windowSize" : 0.1,
+		"delayTime" : 0,
+		"feedback" : 0
 	};
 
 	/**
@@ -186,7 +198,7 @@ define(["Tone/core/Tone", "Tone/component/LFO", "Tone/component/CrossFade", "Ton
 	 *  @return  {Tone.PitchShift}  this
 	 */
 	Tone.PitchShift.prototype.dispose = function(){
-		Tone.Effect.prototype.dispose.call(this);
+		Tone.FeedbackEffect.prototype.dispose.call(this);
 		this._frequency.dispose();
 		this._frequency = null;
 		this._delayA.disconnect();
@@ -201,6 +213,9 @@ define(["Tone/core/Tone", "Tone/component/LFO", "Tone/component/CrossFade", "Ton
 		this._crossFade = null;
 		this._crossFadeLFO.dispose();
 		this._crossFadeLFO = null;
+		this._writable("delayTime");
+		this.delayTime.dispose();
+		this.delayTime = null;
 		return this;
 	};
 
