@@ -89,7 +89,7 @@ define(["Test", "Tone/core/Tone", "helper/PassAudio", "Tone/source/Oscillator", 
 			it("can test if an argument is an object literal", function(){
 				expect(tone.isObject(Number)).to.be.false;
 				expect(tone.isObject(function(){})).to.be.false;
-				expect(tone.isObject(Tone)).to.be.false;
+				expect(tone.isObject(tone)).to.be.false;
 				expect(tone.isObject({})).to.be.true;
 				expect(tone.isObject([])).to.be.false;
 				expect(tone.isObject("10")).to.be.false;
