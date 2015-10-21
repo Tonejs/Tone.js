@@ -62,7 +62,7 @@ define(["helper/OutputAudio", "Tone/instrument/Instrument", "helper/OutputAudioS
 					}
 				});
 				meter.test(function(sample, time){
-					if (sample > 0){
+					if (sample > 0.2){
 						expect(time).to.be.at.least(0.1);
 					}
 				});
