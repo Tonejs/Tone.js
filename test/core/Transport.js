@@ -26,7 +26,7 @@ define(["Test", "Tone/core/Transport", "Tone/core/Tone"], function (Test, Transp
 				expect(Tone.Transport.bpm.value).to.be.closeTo(125, 0.001);
 				//reset the bpm
 				Tone.Transport.bpm.value = 120;
-				expect(Tone.Transport.bpm._value.value).to.equal(2 * Tone.Transport.PPQ);
+				expect(Tone.Transport.bpm._param.value).to.equal(2 * Tone.Transport.PPQ);
 			});
 
 			it("can get and set timeSignature as both an array or number", function(){

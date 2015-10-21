@@ -36,6 +36,18 @@ define(["Tone/effect/PitchShift", "helper/Basic", "helper/EffectTests"], functio
 				expect(pitchShift.get().windowSize).to.be.closeTo(0.4, 0.01);
 				pitchShift.dispose();
 			});
+
+			it ("can set set the feedback and delay times", function(){
+				var pitchShift = new PitchShift({
+					"delayTime" : "4n",
+					"feedback" : 0.3
+				});
+				expect(pitchShift.delayTime.value).to.be.closeTo(pitchShift.toSeconds("4n"), 0.01);
+				expect(pitchShift.feedback.value).to.be.closeTo(0.3, 0.01);
+				pitchShift.delayTime.value = 0.2;
+				expect(pitchShift.delayTime.value).to.be.closeTo(0.2, 0.01);
+				pitchShift.dispose();
+			});
 		});
 	});
 });

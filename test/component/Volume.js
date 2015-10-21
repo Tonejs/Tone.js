@@ -16,24 +16,24 @@ function (Volume, Basic, Meter, Test, Signal, PassAudio, PassAudioStereo) {
 
 			it("can be constructed volume value", function(){
 				var volume = new Volume(-12);
-				expect(volume.volume.value).to.be.closeTo(-12, 0.1);
+				expect(volume.value).to.be.closeTo(-12, 0.1);
 				volume.dispose();
 			});
 
 			it("can be constructed with an options object", function(){
 				var volume = new Volume({
-					"volume" : 2
+					"value" : 2
 				});
-				expect(volume.volume.value).to.be.closeTo(2, 0.1);
+				expect(volume.value).to.be.closeTo(2, 0.1);
 				volume.dispose();
 			});
 
 			it("can set/get with an object", function(){
 				var volume = new Volume();
 				volume.set({
-					"volume" : -10
+					"value" : -10
 				});
-				expect(volume.get().volume).to.be.closeTo(-10, 0.1);
+				expect(volume.get().value).to.be.closeTo(-10, 0.1);
 				volume.dispose();
 			});
 

@@ -360,17 +360,6 @@ define(["Test", "Tone/core/Type", "Tone/core/Transport", "deps/teoria"], functio
 				expect(tone.isTransportTime("2:0a")).to.be.false;
 				expect(tone.isTransportTime("2")).to.be.false;
 			});
-
-			it("can correctly infer the type", function(){
-				expect(tone.getType("12hz")).to.equal(Tone.Type.Frequency);
-				expect(tone.getType("1:0:0")).to.equal(Tone.Type.TransportTime);
-				expect(tone.getType("1n")).to.equal(Tone.Type.Notation);
-				expect(tone.getType("C4")).to.equal(Tone.Type.Note);
-				expect(tone.getType("12i")).to.equal(Tone.Type.Ticks);
-				expect(tone.getType("asdfa")).is.undefined;
-				expect(tone.getType(12)).is.equal(Tone.Type.Default);
-				expect(tone.getType("12.0")).is.equal(Tone.Type.Default);
-			});
 		});
 	})
 });

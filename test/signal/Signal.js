@@ -228,23 +228,43 @@ define(["helper/Offline", "helper/Basic", "Test", "Tone/signal/Signal", "Tone/co
 				signal.dispose();
 			});
 
-			it("converts the given units when passed in the constructor", function(){
-				var signal = new Signal({
-					"value" : -10,
-					"units" : Tone.Type.Decibels,
+			it("converts the given units when passed in the constructor", function(done){
+				var signal;
+				var offline = new Offline(0.2);
+				offline.before(function(dest){
+					signal = new Signal({
+						"value" : -10,
+						"units" : Tone.Type.Decibels,
+					}).connect(dest);
 				});
-				expect(signal._value.value).to.be.closeTo(0.315, 0.01);
-				signal.dispose();
+				offline.test(function(sample){
+					expect(sample).to.be.closeTo(0.315, 0.01);
+				});
+				offline.after(function(){
+					signal.dispose();
+					done();
+				});
+				offline.run();
 			});
 
-			it("can be set to not convert the given units", function(){
-				var signal = new Signal({
-					"value" : -10,
-					"units" : Tone.Type.Decibels,
-					"convert" : false
+			it("can be set to not convert the given units", function(done){
+				var signal;
+				var offline = new Offline(0.2);
+				offline.before(function(dest){
+					signal = new Signal({
+						"value" : -10,
+						"units" : Tone.Type.Decibels,
+						"convert" : false
+					}).connect(dest);
 				});
-				expect(signal._value.value).to.be.closeTo(-10, 0.001);
-				signal.dispose();
+				offline.test(function(sample){
+					expect(sample).to.be.closeTo(-10, 0.01);
+				});
+				offline.after(function(){
+					signal.dispose();
+					done();
+				});
+				offline.run();
 			});
 
 			it("converts Frequency units", function(){

@@ -25,7 +25,7 @@ define(["Test", "Tone/core/Tone", "Tone/core/Delay", "helper/PassAudio"], functi
 
 		it("can be constructed with an options object", function(){
 			var delay = new Delay({
-				"delayTime" : 0.3,
+				"value" : 0.3,
 				"maxDelay" : 2
 			});
 			expect(delay.delayTime.value).to.be.closeTo(0.3, 0.001);
@@ -34,19 +34,18 @@ define(["Test", "Tone/core/Tone", "Tone/core/Delay", "helper/PassAudio"], functi
 
 		it("can returns state from 'get' method", function(){
 			var delay = new Delay({
-				"delayTime" : 0.4,
+				"value" : 0.4,
 				"maxDelay" : 2
 			});
 			var values = delay.get();
-			expect(values.delayTime).to.be.closeTo(0.4, 0.001);
+			expect(values.value).to.be.closeTo(0.4, 0.001);
 			delay.dispose();
 		});
 
 		it ("passes audio through", function(done){
 			var delay;
 			PassAudio(function(input, output){
-				delay = new Delay();
-				delay.delayTime.value = 0;
+				delay = new Delay(0);
 				input.chain(delay, output);
 			}, function(){
 				delay.dispose();
