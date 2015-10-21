@@ -173,7 +173,8 @@ define(function(){
 			if (isUndef(param)){
 				continue;
 			}
-			if (isFunction(Tone.Signal) && param instanceof Tone.Signal){
+			if ((Tone.Signal && param instanceof Tone.Signal) || 
+					(Tone.Param && param instanceof Tone.Param)){
 				if (param.value !== value){
 					if (isUndef(rampTime)){
 						param.value = value;
@@ -239,6 +240,8 @@ define(function(){
 			if (typeof params[attr] === "object"){
 				subRet[attr] = param.get();
 			} else if (Tone.Signal && param instanceof Tone.Signal){
+				subRet[attr] = param.value;
+			} else if (Tone.Param && param instanceof Tone.Param){
 				subRet[attr] = param.value;
 			} else if (param instanceof AudioParam){
 				subRet[attr] = param.value;
@@ -550,7 +553,7 @@ define(function(){
 	 */
 	Tone.prototype.optionsObject = function(values, keys, defaults, shallowCopy){
 		var options = {};
-		if (values.length === 1 && typeof values[0] === "object"){
+		if (values.length === 1 && Object.prototype.toString.call( values[0] ) === "[object Object]"){
 			options = values[0];
 		} else {
 			for (var i = 0; i < keys.length; i++){
