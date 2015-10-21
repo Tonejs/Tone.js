@@ -24,7 +24,7 @@ define(["Tone/core/Tone"], function(Tone){
 	 * 	var buff = buffer.get();
 	 * });
 	 */
-	Tone.Buffer = function(url){
+	Tone.Buffer = function(){
 
 		var options = this.optionsObject(arguments, ["url", "onload"], Tone.Buffer.defaults);
 
@@ -63,8 +63,8 @@ define(["Tone/core/Tone"], function(Tone){
 		 */
 		this.onload = options.onload.bind(this, this);
 
-		if (url instanceof AudioBuffer || url instanceof Tone.Buffer){
-			this.set(url);
+		if (options.url instanceof AudioBuffer || options.url instanceof Tone.Buffer){
+			this.set(options.url);
 			this.onload(this);
 		} else if (this.isString(options.url)){
 			this.url = options.url;
