@@ -33,20 +33,13 @@ function(Tone){
 		options = this.defaultArg(options, Tone.Source.defaults);
 
 		/**
-		 *  The volume node. 
-		 *  @type  {Tone.Volume}
-		 *  @private
-		 */
-		this._volume = this.output = new Tone.Volume(options.volume);
-
-		/**
 		 * The volume of the output in decibels.
 		 * @type {Decibels}
 		 * @signal
 		 * @example
 		 * source.volume.value = -6;
 		 */
-		this.volume = this._volume.volume;
+		this.volume = this.output = new Tone.Volume(options.volume);
 		this._readOnly("volume");
 
 		/**
@@ -189,9 +182,8 @@ function(Tone){
 		this.stop();
 		Tone.prototype.dispose.call(this);
 		this.unsync();
-		this._volume.dispose();
-		this._volume = null;
 		this._writable("volume");
+		this.volume.dispose();
 		this.volume = null;
 		this._state.dispose();
 		this._state = null;

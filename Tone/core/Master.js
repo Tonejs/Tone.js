@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
+define(["Tone/core/Tone", "Tone/component/Volume"], function(Tone){
 
 	"use strict";
 	
@@ -44,7 +44,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 		 * @type {Decibels}
 		 * @signal
 		 */
-		this.volume = new Tone.Signal(this.output.gain, Tone.Type.Decibels);
+		this.volume = this.output = new Tone.Volume();
 		
 		this._readOnly("volume");
 		//connections
