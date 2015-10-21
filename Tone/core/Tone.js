@@ -489,13 +489,7 @@ define(function(){
 	///////////////////////////////////////////////////////////////////////////
 
 	/**
-	 *  if a the given is undefined, use the fallback. 
-	 *  if both given and fallback are objects, given
-	 *  will be augmented with whatever properties it's
-	 *  missing which are in fallback
-	 *
-	 *  warning: if object is self referential, it will go into an an 
-	 *  infinite recursive loop. 
+	 *  Add default values for the properties that are not yet set
 	 *  
 	 *  @param  {*} given    
 	 *  @param  {*} fallback 
@@ -503,15 +497,15 @@ define(function(){
 	 */
 	Tone.prototype.defaultArg = function(given, fallback){
 		if (typeof given === "object" && typeof fallback === "object"){
-			var ret = {};
-			//make a deep copy of the given object
-			for (var givenProp in given) {
-				ret[givenProp] = this.defaultArg(given[givenProp], given[givenProp]);
-			}
 			for (var prop in fallback) {
-				ret[prop] = this.defaultArg(given[prop], fallback[prop]);
-			}
-			return ret;
+              	if (!given.hasOwnProperty(prop) ||
+                   	given[prop] === null ||
+                   	given[prop] === undefined) {
+                    given[prop] = fallback[prop];
+                }
+            }
+         
+            return given;
 		} else {
 			return isUndef(given) ? fallback : given;
 		}

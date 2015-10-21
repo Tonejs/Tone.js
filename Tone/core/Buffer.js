@@ -64,7 +64,7 @@ define(["Tone/core/Tone"], function(Tone){
 		this.onload = options.onload.bind(this, this);
 
 		if (options.url instanceof AudioBuffer){
-			this._buffer.set(options.url);
+			this.set(options.url);
 			this.onload(this);
 		} else if (typeof options.url === "string"){
 			this.url = options.url;
