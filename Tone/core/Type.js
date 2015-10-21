@@ -232,27 +232,6 @@ define(["Tone/core/Tone"], function (Tone) {
 		};
 	})();
 
-	/**
-	 *  Get the Tone.Type of the argument
-	 *  @param {String|Number} value The value to test the type of
-	 *  @returns {Tone.Type} The type of that value.
-	 */
-	 Tone.prototype.getType = function(value){
-		if (this.isTicks(value)){
-			return Tone.Type.Ticks;
-		} else if (this.isNotation(value)){
-			return Tone.Type.Notation;
-		} else if (this.isNote(value)){
-			return Tone.Type.Note;
-		} else if (this.isTransportTime(value)){
-			return Tone.Type.TransportTime;
-		} else if (this.isFrequency(value)){
-			return Tone.Type.Frequency;
-		} else if (isFinite(value)){
-			return Tone.Type.Default;
-		}
-	 };
-
 	///////////////////////////////////////////////////////////////////////////
 	//	TO SECOND CONVERSIONS
 	///////////////////////////////////////////////////////////////////////////
