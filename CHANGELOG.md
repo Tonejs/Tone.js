@@ -5,11 +5,20 @@
 * Clock uses requestAnimationFrame instead of ScriptProcessorNode
 * Removed `onended` event from Tone.Source
 * Refactored tests into individual files. 
-* Renamed some Signal methods: exponentialRampToValueNow->exponentialRampToValue, setCurrentValueNow->setRampPoint
+* Renamed some Signal methods: `exponentialRampToValueNow`->`exponentialRampToValue`, `setCurrentValueNow`->`setRampPoint`
 * LFO no longer starts at bottom of cycle. Starts at whatever phase it's set at.
 * Transport is an event emitter. triggers events on "start", "stop", "pause", and "loop". 
-* Oscillator takes a "partials" array. 
-* Microphone inherits from ExternalInput
+* Oscillator accepts a "partials" array. 
+* Microphone inherits from ExternalInput which is generalized for different inputs.
+* New scheduling methods on Transport - `schedule`, `scheduleOnce`, and `scheduleRepeat`.
+* Tone.Gain and Tone.Delay classes wrap the native Web Audio nodes.
+* Musical structures: Tone.Note, Tone.Part, Tone.Pattern, Tone.Sequence and Tone.Score.
+* Moved [MidiToScore](https://github.com/Tonejs/MidiConvert) and [TypeScript](https://github.com/Tonejs/TypeScript) definitions to separate repos.
+* Tone.Param wraps the native AudioParam
+
+DEPRECATED:
+* `setTimeout`, `setInterval`, `setTimeline` in favor of new `schedule`, `scheduleOnce`, and `scheduleRepeat`.
+* Tone.Signal no longer takes an AudioParam in the first argument. Use Tone.Param instead. 
 
 ### r5
 
@@ -29,7 +38,7 @@
 * expose Q in Phaser. 
 * unit conversions using Tone.Type for signals and LFO. 
 * [new docs](http://tonejs.org/docs)
-* [updated examples](http://tonejs.org/docs)
+* [updated examples](http://tonejs.org/examples)
 
 ### r4
 
