@@ -57,6 +57,19 @@ define(["Test", "Tone/core/Buffer"], function (Test, Buffer) {
 			});
 		});
 
+		it("takes a Tone.Buffer in the constructor method", function(done){
+			var buffer = new Buffer({
+				"url" : "./audio/hh.mp3",
+				"onload" : function(){
+					var testOne = new Buffer(buffer);
+					expect(testOne.get()).to.equal(buffer.get());
+					testOne.dispose();
+					buffer.dispose();
+					done();
+				}
+			});
+		});
+
 		it("takes Tone.Buffer in the set method", function(done){
 			var buffer = new Buffer({
 				"url" : "./audio/hh.mp3",
