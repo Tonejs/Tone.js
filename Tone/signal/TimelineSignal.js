@@ -1,5 +1,7 @@
 define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Timeline"], function (Tone) {
 
+	"use strict";
+
 	/**
 	 *  @class A signal which adds the method getValueAtTime. 
 	 *         Code and inspiration from https://github.com/jsantell/web-audio-automation-timeline
@@ -271,7 +273,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Timeline"], function 
 	 *  @returns {Tone.TimelineSignal} this
 	 *  @method
 	 */
-	Tone.TimelineSignal.prototype.connect = Tone.Signal.prototype.connect;
+	Tone.TimelineSignal.prototype.connect = Tone.SignalBase.prototype.connect;
 
 
 	///////////////////////////////////////////////////////////////////////////
