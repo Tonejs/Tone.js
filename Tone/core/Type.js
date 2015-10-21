@@ -516,9 +516,9 @@ define(["Tone/core/Tone"], function (Tone) {
 	 */
 	Tone.prototype.toSeconds = function(time, now){
 		now = this.defaultArg(now, this.now());
-		if (typeof time === "number"){
+		if (this.isNumber(time)){
 			return time; //assuming that it's seconds
-		} else if (typeof time === "string"){
+		} else if (this.isString(time)){
 			var plusTime = 0;
 			if(this.isNowRelative(time)) {
 				time = time.replace(/^\W*/, "");

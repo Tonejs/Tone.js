@@ -127,7 +127,7 @@ function(Tone){
 	 *  @private
 	 */
 	Tone.Sampler.prototype._loadBuffers = function(urls){
-		if (typeof urls === "string"){
+		if (this.isString(urls)){
 			this._buffers["0"] = new Tone.Buffer(urls, function(){
 				this.sample = "0";
 			}.bind(this));
@@ -152,7 +152,7 @@ function(Tone){
 		var toReturn = {};
 		for (var i in ob) {
 			if (!ob.hasOwnProperty(i)) continue;
-			if ((typeof ob[i]) == "object") {
+			if (this.isObject(ob[i])) {
 				var flatObject = this._flattenUrls(ob[i]);
 				for (var x in flatObject) {
 					if (!flatObject.hasOwnProperty(x)) continue;
