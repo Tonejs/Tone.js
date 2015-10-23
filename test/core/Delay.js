@@ -42,6 +42,27 @@ define(["Test", "Tone/core/Tone", "Tone/core/Delay", "helper/PassAudio"], functi
 			delay.dispose();
 		});
 
+		it("accepts Time in constructor", function(){
+			var delay = new Delay("4n");
+			expect(delay.value).to.be.closeTo(delay.toSeconds("4n"), 0.001);
+			delay.dispose();
+		});
+
+		it("accepts Time in options object", function(){
+			var delay = new Delay({
+				"value" : "8t"
+			});
+			expect(delay.value).to.be.closeTo(delay.toSeconds("8t"), 0.001);
+			delay.dispose();
+		});
+
+		it("can set Time", function(){
+			var delay = new Delay();
+			delay.value = "16n";
+			expect(delay.value).to.be.closeTo(delay.toSeconds("16n"), 0.001);
+			delay.dispose();
+		});
+
 		it ("passes audio through", function(done){
 			var delay;
 			PassAudio(function(input, output){
