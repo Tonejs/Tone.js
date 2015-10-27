@@ -79,6 +79,37 @@ define(["Test", "Tone/core/Transport", "Tone/core/Tone"], function (Test, Transp
 
 		});
 
+		context("Quantization", function(){
+
+			afterEach(resetTransport);
+
+			it("returns the time quantized to the next subdivision", function(){
+				expect(Tone.Transport.quantize(1.1, 0.5)).to.be.closeTo(1.5, 0.01);
+				expect(Tone.Transport.quantize("1m", "2m")).to.be.closeTo(Tone.Transport.toSeconds("2m"), 0.01);
+				expect(Tone.Transport.quantize(2.3, 0.5)).to.be.closeTo(2.5, 0.01);
+				expect(Tone.Transport.quantize("4n", "8n")).to.be.closeTo(Tone.Transport.toSeconds("4n"), 0.01);
+				expect(Tone.Transport.quantize(0, 4)).to.be.closeTo(0, 0.01);
+			});
+
+			it("returns now relative times with the Transport stopped", function(){
+				var now = Tone.Transport.now();
+				expect(Tone.Transport.quantize(undefined, "1m")).to.be.closeTo(now, 0.01);
+				expect(Tone.Transport.quantize("+1m", "1m")).to.be.closeTo(now + Tone.Transport.toSeconds("1m"), 0.01);
+			});
+
+			it("returns the time of the next subdivision when the transport is started", function(done){
+				var now = Tone.Transport.now() + 0.2;
+				Tone.Transport.start(now);
+				setTimeout(function(){
+					expect(Tone.Transport.quantize(undefined, 0.5)).to.be.closeTo(now + 0.5, 0.05);
+					expect(Tone.Transport.quantize("+1.1", 0.5)).to.be.closeTo(now + 1.5, 0.05);
+					expect(Tone.Transport.quantize("+0.4", 1)).to.be.closeTo(now + 1, 0.05);
+					expect(Tone.Transport.quantize("+1.1", 1)).to.be.closeTo(now + 2, 0.05);
+					done();
+				}, 500);
+			});
+		});
+
 		context("PPQ", function(){
 
 			afterEach(resetTransport);
