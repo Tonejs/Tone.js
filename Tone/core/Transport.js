@@ -1,5 +1,5 @@
 define(["Tone/core/Tone", "Tone/core/Clock", "Tone/core/Type", "Tone/core/Timeline", 
-	"Tone/core/EventEmitter", "Tone/core/Gain", "Tone/core/IntervalTimeline"], 
+	"Tone/core/Emitter", "Tone/core/Gain", "Tone/core/IntervalTimeline"], 
 function(Tone){
 
 	"use strict";
@@ -15,7 +15,7 @@ function(Tone){
 	 *          The transport emits the events: "start", "stop", "pause", and "loop" which are
 	 *          called with the time of that event as the argument. 
 	 *
-	 *  @extends {Tone.EventEmitter}
+	 *  @extends {Tone.Emitter}
 	 *  @singleton
 	 *  @example
 	 * //repeated event every 8th note
@@ -35,7 +35,7 @@ function(Tone){
 	 */
 	Tone.Transport = function(){
 
-		Tone.EventEmitter.call(this);
+		Tone.Emitter.call(this);
 
 		///////////////////////////////////////////////////////////////////////
 		//	LOOPING
@@ -156,12 +156,14 @@ function(Tone){
 		//	SWING
 		//////////////////////////////////////////////////////////////////////
 
+		var swingSeconds = this.notationToSeconds(TransportConstructor.defaults.swingSubdivision, TransportConstructor.defaults.bpm, TransportConstructor.defaults.timeSignature);
+
 		/**
 		 *  The subdivision of the swing
 		 *  @type  {Ticks}
 		 *  @private
 		 */
-		this._swingTicks = this.toTicks(TransportConstructor.defaults.swingSubdivision, TransportConstructor.defaults.bpm, TransportConstructor.defaults.timeSignature);
+		this._swingTicks = (swingSeconds / (60 / TransportConstructor.defaults.bpm)) * this._ppq;
 
 		/**
 		 *  The swing amount
@@ -172,7 +174,7 @@ function(Tone){
 
 	};
 
-	Tone.extend(Tone.Transport, Tone.EventEmitter);
+	Tone.extend(Tone.Transport, Tone.Emitter);
 
 	/**
 	 *  the defaults
@@ -350,16 +352,26 @@ function(Tone){
 	///////////////////////////////////////////////////////////////////////////////
 
 	/**
-	 *  Returns the time of the next beat.
-	 *  @param  {string} [subdivision="4n"]
-	 *  @return {number} 	the time in seconds of the next subdivision
+	 *  Returns the time closest time (equal to or after the given time) that aligns 
+	 *  to the subidivision. 
+	 *  @param {Time} time The time value to quantize to the given subdivision
+	 *  @param  {String} [subdivision="4n"] The subdivision to quantize to.
+	 *  @return {Number} 	the time in seconds until the next subdivision.
+	 *  @example
+	 * Tone.Transport.bpm.value = 120;
+	 * Tone.Transport.quantize("3 * 4n", "1m"); //return 0.5
+	 * //if the clock is started, it will return a value less than 0.5
 	 */
-	Tone.Transport.prototype.nextBeat = function(subdivision){
+	Tone.Transport.prototype.quantize = function(time, subdivision){
 		subdivision = this.defaultArg(subdivision, "4n");
-		var tickNum = this.toTicks(subdivision);
-		var remainingTicks = (transportTicks % tickNum);
+		var tickTime = this.toTicks(time);
+		subdivision = this.toTicks(subdivision);
+		var remainingTicks = subdivision - (tickTime % subdivision);
+		if (remainingTicks === subdivision){
+			remainingTicks = 0;
+		}
+		return this.toSeconds(time) + this.ticksToSeconds(remainingTicks);
 	};
-
 
 	///////////////////////////////////////////////////////////////////////////////
 	//	START/STOP/PAUSE
@@ -367,9 +379,9 @@ function(Tone){
 
 	/**
 	 *  Returns the playback state of the source, either "started", "stopped", or "paused"
-	 *  @type {String}
+	 *  @type {Tone.State}
 	 *  @readOnly
-	 *  @memberOf Tone.State#
+	 *  @memberOf Tone.Transport#
 	 *  @name state
 	 */
 	Object.defineProperty(Tone.Transport.prototype, "state", {
@@ -695,7 +707,7 @@ function(Tone){
 	 *  @private
 	 */
 	Tone.Transport.prototype.dispose = function(){
-		Tone.EventEmitter.prototype.dispose.call(this);
+		Tone.Emitter.prototype.dispose.call(this);
 		this._clock.dispose();
 		this._clock = null;
 		this._writable("bpm");
