@@ -1,15 +1,15 @@
-define(["Test", "Tone/core/EventEmitter"], function (Test, EventEmitter) {
+define(["Test", "Tone/core/Emitter"], function (Test, Emitter) {
 
-	describe("EventEmitter", function(){
+	describe("Emitter", function(){
 
 		it ("can be created and disposed", function(){
-			var emitter = new EventEmitter();
+			var emitter = new Emitter();
 			emitter.dispose();
 			Test.wasDisposed(emitter);
 		});
 
 		it ("can bind events", function(done){
-			var emitter = new EventEmitter();
+			var emitter = new Emitter();
 			emitter.on("something", function(){
 				done();
 				emitter.dispose();
@@ -18,7 +18,7 @@ define(["Test", "Tone/core/EventEmitter"], function (Test, EventEmitter) {
 		});
 
 		it ("can unbind events", function(){
-			var emitter = new EventEmitter();
+			var emitter = new Emitter();
 			var callback = function(){
 				throw new Error("should call this");
 			};
@@ -29,7 +29,7 @@ define(["Test", "Tone/core/EventEmitter"], function (Test, EventEmitter) {
 		});
 
 		it ("removes all events when no callback is given", function(){
-			var emitter = new EventEmitter();
+			var emitter = new Emitter();
 			emitter.on("something", function(){
 				throw new Error("should call this");	
 			});
@@ -42,7 +42,7 @@ define(["Test", "Tone/core/EventEmitter"], function (Test, EventEmitter) {
 		});
 
 		it ("can pass arguments to the callback", function(done){
-			var emitter = new EventEmitter();
+			var emitter = new Emitter();
 			emitter.on("something", function(arg0, arg1){
 				expect(arg0).to.equal("A");
 				expect(arg1).to.equal("B");
@@ -54,7 +54,7 @@ define(["Test", "Tone/core/EventEmitter"], function (Test, EventEmitter) {
 
 		it ("can mixin its methods to another object", function(done){
 			var emitter = {};
-			EventEmitter.mixin(emitter);
+			Emitter.mixin(emitter);
 			emitter.on("test", done);
 			emitter.trigger("test");
 		});
