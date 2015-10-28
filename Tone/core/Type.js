@@ -147,7 +147,7 @@ define(["Tone/core/Tone"], function (Tone) {
 	 *  @lends Tone.prototype.isNowRelative
 	 */
 	Tone.prototype.isNowRelative = (function(){
-		var nowRelative = new RegExp(/^\W*\+(.)+/i);
+		var nowRelative = new RegExp(/^\s*\+(.)+/i);
 		return function(note){
 			return nowRelative.test(note);
 		};
@@ -309,8 +309,6 @@ define(["Tone/core/Tone"], function (Tone) {
 	 *  @param {BPM=} bpm 
 	 *  @param {number=} timeSignature
 	 *  @return {number}               seconds
-	 *
-	 *  @lends Tone.prototype.transportTimeToSeconds
 	 */
 	Tone.prototype.transportTimeToSeconds = function(transportTime, bpm, timeSignature){
 		bpm = this.defaultArg(bpm, getTransportBpm());
@@ -330,25 +328,23 @@ define(["Tone/core/Tone"], function (Tone) {
 			sixteenths = parseFloat(split[2]);
 		}
 		var beats = (measures * timeSignature + quarters + sixteenths / 4);
-		return beats * this.notationToSeconds("4n", bpm, timeSignature);
+		return beats * (60/bpm);
 	};
 	
 	/**
-	 *  convert ticks into seconds
-	 *  
+	 *  Convert ticks into seconds
 	 *  @param  {Ticks} ticks 
 	 *  @param {BPM=} bpm 
-	 *  @param {number=} timeSignature
 	 *  @return {number}               seconds
-	 *  @private
 	 */
-	Tone.prototype.ticksToSeconds = function(ticks, bpm, timeSignature){
+	Tone.prototype.ticksToSeconds = function(ticks, bpm){
 		if (this.isUndef(Tone.Transport)){
 			return 0;
 		}
-		ticks = parseInt(ticks);
-		var quater = this.notationToSeconds("4n", bpm, timeSignature);
-		return (quater * ticks) / (Tone.Transport.PPQ);
+		ticks = parseFloat(ticks);
+		bpm = this.defaultArg(bpm, getTransportBpm());
+		var tickTime = (60/bpm) / Tone.Transport.PPQ;
+		return tickTime * ticks;
 	};
 
 	/**
@@ -397,7 +393,7 @@ define(["Tone/core/Tone"], function (Tone) {
 	Tone.prototype.secondsToTransportTime = function(seconds, bpm, timeSignature){
 		bpm = this.defaultArg(bpm, getTransportBpm());
 		timeSignature = this.defaultArg(timeSignature, getTransportTimeSignature());
-		var quarterTime = this.notationToSeconds("4n", bpm, timeSignature);
+		var quarterTime = 60/bpm;
 		var quarters = seconds / quarterTime;
 		var measures = Math.floor(quarters / timeSignature);
 		var sixteenths = (quarters % 1) * 4;
@@ -433,7 +429,7 @@ define(["Tone/core/Tone"], function (Tone) {
 	 *  @lends Tone.prototype.toTransportTime
 	 */
 	Tone.prototype.toTransportTime = function(time, bpm, timeSignature){
-		var seconds = this.toSeconds(time, bpm, timeSignature);
+		var seconds = this.toSeconds(time);
 		return this.secondsToTransportTime(seconds, bpm, timeSignature);
 	};
 
@@ -463,26 +459,26 @@ define(["Tone/core/Tone"], function (Tone) {
 	 *  Tone.Transport.ticks. 
 	 *  @param  {Time} time
 	 *  @return {Ticks}   
-	 *  @private   
 	 */
-	Tone.prototype.toTicks = function(time, bpm, timeSignature){
+	Tone.prototype.toTicks = function(time){
 		if (this.isUndef(Tone.Transport)){
 			return 0;
 		}
+		var bpm = Tone.Transport.bpm.value;
 		//get the seconds
 		var plusNow = 0;
 		if (this.isNowRelative(time)){
-			time = time.replace(/^\W*/, "");
+			time = time.replace("+", "");
 			plusNow = Tone.Transport.ticks;
 		} else if (this.isUndef(time)){
 			return Tone.Transport.ticks;
 		}
 		var seconds = this.toSeconds(time);
-		var quarter = this.notationToSeconds("4n", bpm, timeSignature);
+		var quarter = 60/bpm;
 		var quarters = seconds / quarter;
 		var tickNum = quarters * Tone.Transport.PPQ;
-		//quantize to tick value
-		return Math.round(tickNum) + plusNow;
+		//align the tick value
+		return Math.round(tickNum + plusNow);
 	};
 
 	/**
@@ -506,7 +502,7 @@ define(["Tone/core/Tone"], function (Tone) {
 	 *  Notation: 4n|1m|2t
 	 *  TransportTime: 2:4:1 (measure:quarters:sixteens)
 	 *  Now Relative: +3n
-	 *  Math: 3n+16n or even very complicated expressions ((3n*2)/6 + 1)
+	 *  Math: 3n+16n or even complicated expressions ((3n*2)/6 + 1)
 	 *
 	 *  @override
 	 *  @param  {Time} time       
@@ -521,35 +517,66 @@ define(["Tone/core/Tone"], function (Tone) {
 		} else if (this.isString(time)){
 			var plusTime = 0;
 			if(this.isNowRelative(time)) {
-				time = time.replace(/^\W*/, "");
+				time = time.replace("+", "");
 				plusTime = now;
 			} 
-			var components = time.split(/[\(\)\-\+\/\*]/);
-			if (components.length > 1){
-				var originalTime = time;
-				for(var i = 0; i < components.length; i++){
-					var symb = components[i].trim();
-					if (symb !== ""){
-						var val = this.toSeconds(symb);
-						time = time.replace(symb, val);
+			var betweenParens = time.match(/\(([^)(]+)\)/g);
+			if (betweenParens){
+				//evaluate the expressions between the parenthesis
+				for (var j = 0; j < betweenParens.length; j++){
+					//remove the parens
+					var symbol = betweenParens[j].replace(/[\(\)]/g, "");
+					var symbolVal = this.toSeconds(symbol);
+					time = time.replace(betweenParens[j], symbolVal);
+				}
+			}
+			//test if it is quantized
+			if (time.indexOf("@") !== -1){
+				var quantizationSplit = time.split("@");
+				if (!this.isUndef(Tone.Transport)){
+					var toQuantize = quantizationSplit[0].trim();
+					//if there's no argument it should be evaluated as the current time
+					if (toQuantize === ""){
+						toQuantize = undefined;
+					} 
+					//if it's now-relative, it should be evaluated by `quantize`
+					if (plusTime > 0){
+						toQuantize = "+" + toQuantize;
+						plusTime = 0;
 					}
+					var subdivision = quantizationSplit[1].trim();
+					time = Tone.Transport.quantize(toQuantize, subdivision);
+				} else {
+					throw new Error("quantization requires Tone.Transport");
 				}
-				try {
-					//eval is evil, but i think it's safe here
-					time = eval(time); // jshint ignore:line
-				} catch (e){
-					throw new EvalError("problem evaluating Time: "+originalTime);
-				}
-			} else if (this.isNotation(time)){
-				time = this.notationToSeconds(time);
-			} else if (this.isTransportTime(time)){
-				time = this.transportTimeToSeconds(time);
-			} else if (this.isFrequency(time)){
-				time = this.frequencyToSeconds(time);
-			} else if (this.isTicks(time)){
-				time = this.ticksToSeconds(time);
 			} else {
-				time = parseFloat(time);
+				var components = time.split(/[\(\)\-\+\/\*]/);
+				if (components.length > 1){
+					var originalTime = time;
+					for(var i = 0; i < components.length; i++){
+						var symb = components[i].trim();
+						if (symb !== ""){
+							var val = this.toSeconds(symb);
+							time = time.replace(symb, val);
+						}
+					}
+					try {
+						//eval is evil
+						time = eval(time); // jshint ignore:line
+					} catch (e){
+						throw new EvalError("cannot evaluate Time: "+originalTime);
+					}
+				} else if (this.isNotation(time)){
+					time = this.notationToSeconds(time);
+				} else if (this.isTransportTime(time)){
+					time = this.transportTimeToSeconds(time);
+				} else if (this.isFrequency(time)){
+					time = this.frequencyToSeconds(time);
+				} else if (this.isTicks(time)){
+					time = this.ticksToSeconds(time);
+				} else {
+					time = parseFloat(time);
+				}
 			}
 			return time + plusTime;
 		} else {
@@ -610,8 +637,58 @@ define(["Tone/core/Tone"], function (Tone) {
 				}
 			}
 		}
+		if (retNotation === ""){
+			retNotation = "0";
+		}
 		return retNotation;
 	}
+
+	/**
+	 *  Convert the given value from the type specified by units
+	 *  into a number.
+	 *  @param  {*} val the value to convert
+	 *  @return {Number}     the number which the value should be set to
+	 */
+	Tone.prototype.fromUnits = function(val, units){
+		if (this.convert || this.isUndef(this.convert)){
+			switch(units){
+				case Tone.Type.Time: 
+					return this.toSeconds(val);
+				case Tone.Type.Frequency: 
+					return this.toFrequency(val);
+				case Tone.Type.Decibels: 
+					return this.dbToGain(val);
+				case Tone.Type.NormalRange: 
+					return Math.min(Math.max(val, 0), 1);
+				case Tone.Type.AudioRange: 
+					return Math.min(Math.max(val, -1), 1);
+				case Tone.Type.Positive: 
+					return Math.max(val, 0);
+				default:
+					return val;
+			}
+		} else {
+			return val;
+		}
+	};
+
+	/**
+	 * Convert a number to the specified units.
+	 * @param  {number} val the value to convert
+	 * @return {number}
+	 */
+	Tone.prototype.toUnits = function(val, units){
+		if (this.convert || this.isUndef(this.convert)){
+			switch(units){
+				case Tone.Type.Decibels: 
+					return this.gainToDb(val);
+				default:
+					return val;
+			}
+		} else {
+			return val;
+		}
+	};
 
 	///////////////////////////////////////////////////////////////////////////
 	//	FREQUENCY CONVERSIONS
