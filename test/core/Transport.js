@@ -98,15 +98,16 @@ define(["Test", "Tone/core/Transport", "Tone/core/Tone"], function (Test, Transp
 			});
 
 			it("returns the time of the next subdivision when the transport is started", function(done){
-				var now = Tone.Transport.now() + 0.2;
+				var now = Tone.Transport.now() + 0.1;
 				Tone.Transport.start(now);
 				setTimeout(function(){
-					expect(Tone.Transport.quantize(undefined, 0.5)).to.be.closeTo(now + 0.5, 0.05);
-					expect(Tone.Transport.quantize("+1.1", 0.5)).to.be.closeTo(now + 1.5, 0.05);
-					expect(Tone.Transport.quantize("+0.4", 1)).to.be.closeTo(now + 1, 0.05);
-					expect(Tone.Transport.quantize("+1.1", 1)).to.be.closeTo(now + 2, 0.05);
+					// console.log((now + 0.5) - Tone.Transport.quantize(undefined, 0.5));
+					expect(Tone.Transport.quantize(undefined, 0.5)).to.be.closeTo(now + 0.5, 0.01);
+					expect(Tone.Transport.quantize("+1.1", 0.5)).to.be.closeTo(now + 1.5, 0.01);
+					expect(Tone.Transport.quantize("+0.4", 1)).to.be.closeTo(now + 1, 0.01);
+					expect(Tone.Transport.quantize("+1.1", 1)).to.be.closeTo(now + 2, 0.01);
 					done();
-				}, 500);
+				}, 200);
 			});
 		});
 
