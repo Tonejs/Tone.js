@@ -370,7 +370,11 @@ function(Tone){
 		if (remainingTicks === subdivision){
 			remainingTicks = 0;
 		}
-		return this.toSeconds(time) + this.ticksToSeconds(remainingTicks);
+		var now = this.now();
+		if (this.state === Tone.State.Started){
+			now = this._clock._nextTick;
+		}
+		return this.toSeconds(time, now) + this.ticksToSeconds(remainingTicks);
 	};
 
 	///////////////////////////////////////////////////////////////////////////////
