@@ -11,7 +11,7 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper", "Tone/core/Type", "Tone/core
 	 *          [here](https://github.com/Tonejs/Tone.js/wiki/Signals).
 	 *
 	 *  @constructor
-	 *  @extends {Tone.SignalBase}
+	 *  @extends {Tone.Param}
 	 *  @param {Number|AudioParam} [value] Initial value of the signal. If an AudioParam
 	 *                                     is passed in, that parameter will be wrapped
 	 *                                     and controlled by the Signal. 
@@ -28,7 +28,7 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper", "Tone/core/Type", "Tone/core
 		 * @type {GainNode}
 		 * @private
 		 */
-		this.output = this._gain = new Tone.Gain(options);
+		this.output = this._gain = this.context.createGain();
 
 		options.param = this._gain.gain;
 		Tone.Param.call(this, options);
@@ -79,7 +79,7 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper", "Tone/core/Type", "Tone/core
 	Tone.Signal.prototype.dispose = function(){
 		Tone.Param.prototype.dispose.call(this);
 		this._param = null;
-		this._gain.dispose();
+		this._gain.disconnect();
 		this._gain = null;
 		return this;
 	};
