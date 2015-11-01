@@ -7,34 +7,35 @@ define(["Tone/core/Tone", "Tone/core/Param", "Tone/core/Type"], function (Tone) 
 	 *         The GainNode is a basic building block of the Web Audio
 	 *         API and is useful for routing audio and adjusting gains. 
 	 *  @extends {Tone}
-	 *  @param  {Number=}  value  The initial gain of the GainNode
+	 *  @param  {Number=}  gain  The initial gain of the GainNode
 	 *  @param {Tone.Type=} units The units of the gain parameter. 
 	 */
 	Tone.Gain = function(){
 
-		var options = this.optionsObject(arguments, ["value", "units"], Tone.Gain.defaults);
+		var options = this.optionsObject(arguments, ["gain", "units"], Tone.Gain.defaults);
 
 		/**
 		 *  The GainNode
 		 *  @type  {GainNode}
 		 *  @private
 		 */
-		this._gainNode = this.context.createGain();
-
-		options.param = this._gainNode.gain;
-		Tone.Param.call(this, options);
-		this.input = this.output = this._gainNode;
+		this.input = this.output = this._gainNode = this.context.createGain();
 
 		/**
 		 *  The gain parameter of the gain node.
 		 *  @type {AudioParam}
 		 *  @signal
 		 */
-		this.gain = this._param;
+		this.gain = new Tone.Param({
+			"param" : this._gainNode.gain, 
+			"units" : options.units,
+			"value" : options.gain,
+			"convert" : options.convert
+		});
 		this._readOnly("gain");
 	};
 
-	Tone.extend(Tone.Gain, Tone.Param);
+	Tone.extend(Tone.Gain);
 
 	/**
 	 *  The defaults
@@ -42,9 +43,9 @@ define(["Tone/core/Tone", "Tone/core/Param", "Tone/core/Type"], function (Tone) 
 	 *  @type  {Object}
 	 */
 	Tone.Gain.defaults = {
-		"value" : 1,
+		"gain" : 1,
 		"units" : Tone.Type.Gain,
-		"convert" : true
+		"convert" : true,
 	};
 
 	/**
@@ -56,6 +57,7 @@ define(["Tone/core/Tone", "Tone/core/Param", "Tone/core/Type"], function (Tone) 
 		this._gainNode.disconnect();
 		this._gainNode = null;
 		this._writable("gain");
+		this.gain.dispose();
 		this.gain = null;
 	};
 
