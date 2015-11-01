@@ -32,14 +32,20 @@ define(["Tone/core/Tone", "Tone/component/Panner", "Tone/component/Volume"], fun
 		this.pan = this._panner.pan;
 
 		/**
+		 *  The volume node
+		 *  @type {Tone.Volume}
+		 */
+		this._volume = this.output = new Tone.Volume(options.volume);
+
+		/**
 		 *  The volume control in decibels. 
 		 *  @type {Decibels}
 		 *  @signal
 		 */
-		this.volume = this.output = new Tone.Volume(options.volume);
+		this.volume = this._volume.volume;
 
 		//connections
-		this._panner.connect(this.volume);
+		this._panner.connect(this._volume);
 
 		this._readOnly(["pan", "volume"]);
 	};
@@ -67,7 +73,8 @@ define(["Tone/core/Tone", "Tone/component/Panner", "Tone/component/Volume"], fun
 		this._panner.dispose();
 		this._panner = null;
 		this.pan = null;
-		this.volume.dispose();
+		this._volume.dispose();
+		this._volume = null;
 		this.volume = null;
 		return this;
 	};

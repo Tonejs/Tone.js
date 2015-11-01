@@ -37,25 +37,46 @@ define(["Tone/core/Tone", "Tone/component/MultibandSplit", "Tone/core/Gain"], fu
 		});
 
 		/**
+		 *  The gain for the lower signals
+		 *  @type  {Tone.Gain}
+		 *  @private
+		 */
+		this._lowGain = new Tone.Gain(options.low, Tone.Type.Decibels);
+
+		/**
+		 *  The gain for the mid signals
+		 *  @type  {Tone.Gain}
+		 *  @private
+		 */
+		this._midGain = new Tone.Gain(options.mid, Tone.Type.Decibels);
+
+		/**
+		 * The gain in decibels of the high part
+		 * @type {Tone.Gain}
+		 * @private
+		 */
+		this._highGain = new Tone.Gain(options.high, Tone.Type.Decibels);
+
+		/**
 		 * The gain in decibels of the low part
 		 * @type {Decibels}
 		 * @signal
 		 */
-		this.low = new Tone.Gain(options.low, Tone.Type.Decibels);
+		this.low = this._lowGain.gain;
 
 		/**
 		 * The gain in decibels of the mid part
 		 * @type {Decibels}
 		 * @signal
 		 */
-		this.mid = new Tone.Gain(options.mid, Tone.Type.Decibels);
+		this.mid = this._midGain.gain;
 
 		/**
 		 * The gain in decibels of the high part
 		 * @type {Decibels}
 		 * @signal
 		 */
-		this.high = new Tone.Gain(options.high, Tone.Type.Decibels);
+		this.high = this._highGain.gain;
 
 		/**
 		 *  The Q value for all of the filters. 
@@ -79,9 +100,9 @@ define(["Tone/core/Tone", "Tone/component/MultibandSplit", "Tone/core/Gain"], fu
 		this.highFrequency = this._multibandSplit.highFrequency;
 
 		//the frequency bands
-		this._multibandSplit.low.chain(this.low, this.output);
-		this._multibandSplit.mid.chain(this.mid, this.output);
-		this._multibandSplit.high.chain(this.high, this.output);
+		this._multibandSplit.low.chain(this._lowGain, this.output);
+		this._multibandSplit.mid.chain(this._midGain, this.output);
+		this._multibandSplit.high.chain(this._highGain, this.output);
 		this._readOnly(["low", "mid", "high", "lowFrequency", "highFrequency"]);
 	};
 
@@ -109,11 +130,14 @@ define(["Tone/core/Tone", "Tone/component/MultibandSplit", "Tone/core/Gain"], fu
 		this._multibandSplit = null;
 		this.lowFrequency = null;
 		this.highFrequency = null;
-		this.low.dispose();
+		this._lowGain.dispose();
+		this._lowGain = null;
+		this._midGain.dispose();
+		this._midGain = null;
+		this._highGain.dispose();
+		this._highGain = null;
 		this.low = null;
-		this.mid.dispose();
 		this.mid = null;
-		this.high.dispose();
 		this.high = null;
 		this.Q = null;
 		return this;
