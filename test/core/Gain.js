@@ -27,7 +27,7 @@ define(["Test", "Tone/core/Gain", "Tone/core/Tone", "helper/Offline", "helper/Pa
 		it("can be constructed with options object", function(){
 
 			var gain = new Gain({
-				"value" : 0.4
+				"gain" : 0.4
 			});
 			expect(gain.gain.value).to.be.closeTo(0.4, 0.001);
 			gain.dispose();
@@ -41,21 +41,21 @@ define(["Test", "Tone/core/Gain", "Tone/core/Tone", "helper/Offline", "helper/Pa
 
 		it("can set the units", function(){
 			var gain = new Gain(0, Tone.Type.Decibels);
-			expect(gain.value).to.be.closeTo(0, 0.001);
-			expect(gain.units).to.equal(Tone.Type.Decibels);
+			expect(gain.gain.value).to.be.closeTo(0, 0.001);
+			expect(gain.gain.units).to.equal(Tone.Type.Decibels);
 			gain.dispose();
 		});
 
 		it("can get the value using 'get'", function(){
 			var gain = new Gain(5);
 			var value = gain.get();
-			expect(value.value).to.be.closeTo(5, 0.001);
+			expect(value.gain).to.be.closeTo(5, 0.001);
 			gain.dispose();
 		});
 
 		it("can set the value using 'set'", function(){
 			var gain = new Gain(5);
-			gain.set("value", 4);
+			gain.set("gain", 4);
 			expect(gain.gain.value).to.be.closeTo(4, 0.001);
 			gain.dispose();
 		});

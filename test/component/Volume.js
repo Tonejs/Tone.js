@@ -8,72 +8,72 @@ function (Volume, Basic, Meter, Test, Signal, PassAudio, PassAudioStereo) {
 		context("Volume", function(){
 
 			it("handles input and output connections", function(){
-				var volume = new Volume();
-				Test.connect(volume);
-				volume.connect(Test);
-				volume.dispose();
+				var vol = new Volume();
+				Test.connect(vol);
+				vol.connect(Test);
+				vol.dispose();
 			});
 
-			it("can be constructed volume value", function(){
-				var volume = new Volume(-12);
-				expect(volume.value).to.be.closeTo(-12, 0.1);
-				volume.dispose();
+			it("can be constructed with volume value", function(){
+				var vol = new Volume(-12);
+				expect(vol.volume.value).to.be.closeTo(-12, 0.1);
+				vol.dispose();
 			});
 
 			it("can be constructed with an options object", function(){
-				var volume = new Volume({
-					"value" : 2
+				var vol = new Volume({
+					"volume" : 2
 				});
-				expect(volume.value).to.be.closeTo(2, 0.1);
-				volume.dispose();
+				expect(vol.volume.value).to.be.closeTo(2, 0.1);
+				vol.dispose();
 			});
 
 			it("can set/get with an object", function(){
-				var volume = new Volume();
-				volume.set({
-					"value" : -10
+				var vol = new Volume();
+				vol.set({
+					"volume" : -10
 				});
-				expect(volume.get().value).to.be.closeTo(-10, 0.1);
-				volume.dispose();
+				expect(vol.get().volume).to.be.closeTo(-10, 0.1);
+				vol.dispose();
 			});
 
 			it("passes the incoming signal through", function(done){
-				var volume;
+				var vol;
 				PassAudio(function(input, output){
-					volume = new Volume();
-					input.connect(volume);
-					volume.connect(output);
+					vol = new Volume();
+					input.connect(vol);
+					vol.connect(output);
 				}, function(){
-					volume.dispose();
+					vol.dispose();
 					done();
 				});
 			});
 
 			it("passes the incoming stereo signal through", function(done){
-				var volume;
+				var vol;
 				PassAudioStereo(function(input, output){
-					volume = new Volume();
-					input.connect(volume);
-					volume.connect(output);
+					vol = new Volume();
+					input.connect(vol);
+					vol.connect(output);
 				}, function(){
-					volume.dispose();
+					vol.dispose();
 					done();
 				});
 			});
 
 			it("can lower the volume", function(done){
-				var volume;
+				var vol;
 				var signal;
 				var meter = new Meter();
 				meter.before(function(output){
-					volume = new Volume(-10).connect(output);
-					signal = new Signal(1).connect(volume);
+					vol = new Volume(-10).connect(output);
+					signal = new Signal(1).connect(vol);
 				});
 				meter.test(function(level){
-					expect(level).to.be.closeTo(volume.dbToGain(-10), 0.01);
+					expect(level).to.be.closeTo(vol.dbToGain(-10), 0.01);
 				});
 				meter.after(function(){
-					volume.dispose();
+					vol.dispose();
 					signal.dispose();
 					done();
 				});
