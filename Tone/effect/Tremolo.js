@@ -1,17 +1,17 @@
-define(["Tone/core/Tone", "Tone/component/LFO", "Tone/effect/Effect"], function(Tone){
+define(["Tone/core/Tone", "Tone/component/LFO", "Tone/effect/StereoEffect"], function(Tone){
 
 	"use strict";
 
 	/**
-	 *  @class Tone.Tremelo modulates the amplitude of an incoming signal using a Tone.LFO. 
+	 *  @class Tone.Tremolo modulates the amplitude of an incoming signal using a Tone.LFO. 
 	 *         The type, frequency, and depth of the LFO is controllable. 
 	 *
-	 *  @extends {Tone.Effect}
+	 *  @extends {Tone.StereoEffect}
 	 *  @constructor
 	 *  @param {Frequency|Object} [frequency] The rate of the effect. 
 	 *  @param {NormalRange} [depth] The depth of the wavering.
 	 *  @example
-	 * //create an tremolo and start it's LFO
+	 * //create a tremolo and start it's LFO
 	 * var tremolo = new Tone.Tremolo(9, 0.75).toMaster().start();
 	 * //route an oscillator through the tremolo and start it
 	 * var oscillator = new Tone.Oscillator().connect(tremolo).start();
@@ -19,33 +19,50 @@ define(["Tone/core/Tone", "Tone/component/LFO", "Tone/effect/Effect"], function(
 	Tone.Tremolo = function(){
 
 		var options = this.optionsObject(arguments, ["frequency", "depth"], Tone.Tremolo.defaults);
-		Tone.Effect.call(this, options);
+		Tone.StereoEffect.call(this, options);
 
 		/**
-		 *  The tremelo LFO
+		 *  The tremelo LFO in the left channel
 		 *  @type  {Tone.LFO}
 		 *  @private
 		 */
-		this._lfo = new Tone.LFO({
-			"frequency" : options.frequency,
-			"amplitude" : options.depth,
+		this._lfoL = new Tone.LFO({
+			"phase" : 0,
 			"min" : 1,
-			"max" : 0
+			"max" : 0,
+		});
+
+		/**
+		 *  The tremelo LFO in the left channel
+		 *  @type  {Tone.LFO}
+		 *  @private
+		 */
+		this._lfoR = new Tone.LFO({
+			"phase" : 180,
+			"min" : 1,
+			"max" : 0,
 		});
 
 		/**
 		 *  Where the gain is multiplied
-		 *  @type  {GainNode}
+		 *  @type  {Tone.Gain}
 		 *  @private
 		 */
-		this._amplitude = this.context.createGain();
+		this._amplitudeL = new Tone.Gain();
+
+		/**
+		 *  Where the gain is multiplied
+		 *  @type  {Tone.Gain}
+		 *  @private
+		 */
+		this._amplitudeR = new Tone.Gain();
 
 		/**
 		 *  The frequency of the tremolo.	
 		 *  @type  {Frequency}
 		 *  @signal
 		 */
-		this.frequency = this._lfo.frequency;
+		this.frequency = new Tone.Signal(options.frequency, Tone.Type.Frequency);
 
 		/**
 		 *  The depth of the effect. A depth of 0, has no effect
@@ -54,15 +71,19 @@ define(["Tone/core/Tone", "Tone/component/LFO", "Tone/effect/Effect"], function(
 		 *  @type  {NormalRange}
 		 *  @signal
 		 */
-		this.depth = this._lfo.amplitude;
+		this.depth = new Tone.Signal(options.depth, Tone.Type.NormalRange);
 
 		this._readOnly(["frequency", "depth"]);
-		this.connectEffect(this._amplitude);
-		this._lfo.connect(this._amplitude.gain);
+		this.effectSendL.chain(this._amplitudeL, this.effectReturnL);
+		this.effectSendR.chain(this._amplitudeR, this.effectReturnR);
+		this._lfoL.connect(this._amplitudeL.gain);
+		this._lfoR.connect(this._amplitudeR.gain);
+		this.frequency.fan(this._lfoL.frequency, this._lfoR.frequency);
+		this.depth.fan(this._lfoR.amplitude, this._lfoL.amplitude);
 		this.type = options.type;
 	};
 
-	Tone.extend(Tone.Tremolo, Tone.Effect);
+	Tone.extend(Tone.Tremolo, Tone.StereoEffect);
 
 	/**
 	 *  @static
@@ -81,7 +102,8 @@ define(["Tone/core/Tone", "Tone/component/LFO", "Tone/effect/Effect"], function(
 	 * @returns {Tone.Tremolo} this
 	 */
 	Tone.Tremolo.prototype.start = function(time){
-		this._lfo.start(time);
+		this._lfoL.start(time);
+		this._lfoR.start(time);
 		return this;
 	};
 
@@ -91,7 +113,8 @@ define(["Tone/core/Tone", "Tone/component/LFO", "Tone/effect/Effect"], function(
 	 * @returns {Tone.Tremolo} this
 	 */
 	Tone.Tremolo.prototype.stop = function(time){
-		this._lfo.stop(time);
+		this._lfoL.stop(time);
+		this._lfoR.stop(time);
 		return this;
 	};
 
@@ -102,7 +125,8 @@ define(["Tone/core/Tone", "Tone/component/LFO", "Tone/effect/Effect"], function(
 	 * @returns {Tone.AutoFilter} this
 	 */
 	Tone.Tremolo.prototype.sync = function(delay){
-		this._lfo.sync(delay);
+		this._lfoL.sync(delay);
+		this._lfoR.sync(delay);
 		return this;
 	};
 
@@ -111,7 +135,8 @@ define(["Tone/core/Tone", "Tone/component/LFO", "Tone/effect/Effect"], function(
 	 * @returns {Tone.Tremolo} this
 	 */
 	Tone.Tremolo.prototype.unsync = function(){
-		this._lfo.unsync();
+		this._lfoL.unsync();
+		this._lfoR.unsync();
 		return this;
 	};
 
@@ -123,10 +148,11 @@ define(["Tone/core/Tone", "Tone/component/LFO", "Tone/effect/Effect"], function(
 	 */
 	Object.defineProperty(Tone.Tremolo.prototype, "type", {
 		get : function(){
-			return this._lfo.type;
+			return this._lfoL.type;
 		},
 		set : function(type){
-			this._lfo.type = type;
+			this._lfoL.type = type;
+			this._lfoR.type = type;
 		}
 	});
 
@@ -135,12 +161,16 @@ define(["Tone/core/Tone", "Tone/component/LFO", "Tone/effect/Effect"], function(
 	 *  @returns {Tone.Tremolo} this
 	 */
 	Tone.Tremolo.prototype.dispose = function(){
-		Tone.Effect.prototype.dispose.call(this);
+		Tone.StereoEffect.prototype.dispose.call(this);
 		this._writable(["frequency", "depth"]);
-		this._lfo.dispose();
-		this._lfo = null;
-		this._amplitude.disconnect();
-		this._amplitude = null;
+		this._lfoL.dispose();
+		this._lfoL = null;
+		this._lfoR.dispose();
+		this._lfoR = null;
+		this._amplitudeL.dispose();
+		this._amplitudeL = null;
+		this._amplitudeR.dispose();
+		this._amplitudeR = null;
 		this.frequency = null;
 		this.depth = null;
 		return this;
