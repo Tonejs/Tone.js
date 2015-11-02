@@ -25,7 +25,7 @@ define(["Test", "Tone/core/Tone", "Tone/core/Delay", "helper/PassAudio"], functi
 
 		it("can be constructed with an options object", function(){
 			var delay = new Delay({
-				"value" : 0.3,
+				"delayTime" : 0.3,
 				"maxDelay" : 2
 			});
 			expect(delay.delayTime.value).to.be.closeTo(0.3, 0.001);
@@ -34,32 +34,32 @@ define(["Test", "Tone/core/Tone", "Tone/core/Delay", "helper/PassAudio"], functi
 
 		it("can returns state from 'get' method", function(){
 			var delay = new Delay({
-				"value" : 0.4,
+				"delayTime" : 0.4,
 				"maxDelay" : 2
 			});
 			var values = delay.get();
-			expect(values.value).to.be.closeTo(0.4, 0.001);
+			expect(values.delayTime).to.be.closeTo(0.4, 0.001);
 			delay.dispose();
 		});
 
 		it("accepts Time in constructor", function(){
 			var delay = new Delay("4n");
-			expect(delay.value).to.be.closeTo(delay.toSeconds("4n"), 0.001);
+			expect(delay.delayTime.value).to.be.closeTo(delay.toSeconds("4n"), 0.001);
 			delay.dispose();
 		});
 
 		it("accepts Time in options object", function(){
 			var delay = new Delay({
-				"value" : "8t"
+				"delayTime" : "8t"
 			});
-			expect(delay.value).to.be.closeTo(delay.toSeconds("8t"), 0.001);
+			expect(delay.delayTime.value).to.be.closeTo(delay.toSeconds("8t"), 0.001);
 			delay.dispose();
 		});
 
 		it("can set Time", function(){
 			var delay = new Delay();
-			delay.value = "16n";
-			expect(delay.value).to.be.closeTo(delay.toSeconds("16n"), 0.001);
+			delay.delayTime.value = "16n";
+			expect(delay.delayTime.value).to.be.closeTo(delay.toSeconds("16n"), 0.001);
 			delay.dispose();
 		});
 
