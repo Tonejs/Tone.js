@@ -87,11 +87,18 @@ function (Tone) {
 		}).connect(this._crossFade.fade);
 
 		/**
+		 *  The delay node
+		 *  @type {Tone.Delay}
+		 *  @private
+		 */
+		this._feedbackDelay = new Tone.Delay(options.delayTime);
+
+		/**
 		 *  The amount of delay on the input signal
 		 *  @type {Time}
 		 *  @signal
 		 */
-		this.delayTime = new Tone.Delay(options.delayTime);
+		this.delayTime = this._feedbackDelay.delayTime;
 		this._readOnly("delayTime");
 
 		/**
@@ -115,7 +122,7 @@ function (Tone) {
 		this._frequency.fan(this._lfoA.frequency, this._lfoB.frequency, this._crossFadeLFO.frequency);
 		//route the input
 		this.effectSend.fan(this._delayA, this._delayB);
-		this._crossFade.chain(this.delayTime, this.effectReturn);
+		this._crossFade.chain(this._feedbackDelay, this.effectReturn);
 		//start the LFOs at the same time
 		var now = this.now();
 		this._lfoA.start(now);
@@ -216,7 +223,8 @@ function (Tone) {
 		this._crossFadeLFO.dispose();
 		this._crossFadeLFO = null;
 		this._writable("delayTime");
-		this.delayTime.dispose();
+		this._feedbackDelay.dispose();
+		this._feedbackDelay = null;
 		this.delayTime = null;
 		return this;
 	};
