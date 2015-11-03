@@ -50,14 +50,14 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Type", "Tone/core/Ti
 		 *  @type  {Number}
 		 *  @private
 		 */
-		this._loopStart = 0;
+		this._loopStart = this.toTicks(options.loopStart);
 
 		/**
 		 *  When the note is scheduled to start.
 		 *  @type  {Number}
 		 *  @private
 		 */
-		this._loopEnd = 0;
+		this._loopEnd = this.toTicks(options.loopEnd);
 
 		/**
 		 *  Tracks the scheduled events
@@ -79,7 +79,7 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Type", "Tone/core/Ti
 		 *  @type {Ticks}
 		 *  @private
 		 */
-		this._startDelay = 0;
+		this._startOffset = 0;
 
 		/**
 		 *  The probability that the callback will be invoked
@@ -90,7 +90,10 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Type", "Tone/core/Ti
 
 		/**
 		 *  Random variation +/-0.01s to the scheduled time. 
-		 *  Or give it a time value which it will randomize by.
+		 *  Or give it a time value which it will randomize by. 
+		 *  Note that if the value is too large, the humanized time
+		 *  could aniticpate the current clock's time. For this
+		 *  reason, the value should be kept below the clock's lookAhead time. 
 		 *  @type {Boolean|Time}
 		 */
 		this.humanize = options.humanize;
@@ -103,8 +106,6 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Type", "Tone/core/Ti
 		this.mute = options.mute;
 
 		//set the initial values
-		this.loopStart = options.loopStart;
-		this.loopEnd = options.loopEnd;
 		this.playbackRate = options.playbackRate;
 	};
 
@@ -143,7 +144,7 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Type", "Tone/core/Ti
 				if (!this.isUndef(event.id)){
 					Tone.Transport.clear(event.id);
 				}
-				var startTick = event.time + Math.round(this._startDelay / this._playbackRate);
+				var startTick = event.time + Math.round(this.startOffset / this._playbackRate);
 				if (this._loop){
 					duration = Infinity;
 					if (this.isNumber(this._loop)){
@@ -180,6 +181,22 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Type", "Tone/core/Ti
 	Object.defineProperty(Tone.Event.prototype, "state", {
 		get : function(){
 			return this._state.getStateAtTime(Tone.Transport.ticks);
+		}
+	});
+
+	/**
+	 *  The start from the scheduled start time
+	 *  @type {Ticks}
+	 *  @memberOf Tone.Event#
+	 *  @name startOffset
+	 *  @private
+	 */
+	Object.defineProperty(Tone.Event.prototype, "startOffset", {
+		get : function(){
+			return this._startOffset;
+		},
+		set : function(offset){
+			this._startOffset = offset;
 		}
 	});
 
@@ -302,9 +319,7 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Type", "Tone/core/Ti
 		},
 		set : function(rate){
 			this._playbackRate = rate;
-			if (this._loop){
-				this._rescheduleEvents();
-			}
+			this._rescheduleEvents();
 		}
 	});
 
