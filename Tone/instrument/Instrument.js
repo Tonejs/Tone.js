@@ -14,13 +14,20 @@ define(["Tone/core/Tone", "Tone/core/Master", "Tone/core/Type"], function(Tone){
 		options = this.defaultArg(options, Tone.Instrument.defaults);
 
 		/**
+		 *  The output and volume triming node
+		 *  @type  {Tone.Volume}
+		 *  @private
+		 */
+		this._volume = this.output = new Tone.Volume(options.volume);
+
+		/**
 		 * The volume of the output in decibels.
 		 * @type {Decibels}
 		 * @signal
 		 * @example
 		 * source.volume.value = -6;
 		 */
-		this.volume = this.output = new Tone.Volume(options.volume);
+		this.volume = this._volume.volume;
 		this._readOnly("volume");
 	};
 
@@ -75,8 +82,9 @@ define(["Tone/core/Tone", "Tone/core/Master", "Tone/core/Type"], function(Tone){
 	 */
 	Tone.Instrument.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
+		this._volume.dispose();
+		this._volume = null;
 		this._writable(["volume"]);
-		this.volume.dispose();
 		this.volume = null;
 		return this;
 	};
