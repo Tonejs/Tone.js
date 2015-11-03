@@ -118,6 +118,14 @@ function(Tone){
 		this._scheduledEvents = {};
 
 		/**
+		 *  The events to remove from the timelines. 
+		 *  Each event is an object with an 'item' and a 'timeline'.
+		 *  @type  {Array}
+		 *  @private
+		 */
+		this._eventsToRemove = [];
+
+		/**
 		 *  The event ID counter
 		 *  @type {Number}
 		 *  @private
@@ -216,6 +224,11 @@ function(Tone){
 				this.trigger("loop", tickTime);
 			}
 		}
+		for (var i = 0; i < this._eventsToRemove.length; i++){
+			var item = this._eventsToRemove[i];
+			item.timeline.removeEvent(item.event);
+		}
+		this._eventsToRemove = [];
 		var ticks = this._clock.ticks;
 		//fire the next tick events if their time has come
 		this._timeline.forEachAtTime(ticks, function(event){
@@ -324,7 +337,7 @@ function(Tone){
 	Tone.Transport.prototype.clear = function(eventId){
 		if (this._scheduledEvents.hasOwnProperty(eventId)){
 			var item = this._scheduledEvents[eventId.toString()];
-			item.timeline.removeEvent(item.event);
+			this._eventsToRemove.push(item);
 			delete this._scheduledEvents[eventId.toString()];
 		}
 		return this;
