@@ -340,19 +340,6 @@ define(["helper/Basic", "Tone/event/Event", "Tone/core/Tone", "Tone/core/Transpo
 				}, 800);
 			});
 
-			it ("progress is 1 when after the number of loops", function(done){
-				var note = new Event({
-					"loopEnd" : 0.125,
-					"loop" : 3,
-				}).start(0);
-				Tone.Transport.start();
-				setTimeout(function(){
-					expect(note.progress).to.equal(1);
-					note.dispose();	
-					done();
-				}, 800);
-			});
-
 			it ("progress is 0 when not looping", function(done){
 				var note = new Event({
 					"loopEnd" : 0.125,

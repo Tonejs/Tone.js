@@ -404,6 +404,25 @@ define(["helper/Basic", "Tone/event/Part", "Tone/core/Tone", "Tone/core/Transpor
 				}, 800);
 			});
 
+			it ("can loop between loopStart and loopEnd", function(done){
+				var note = new Part({
+					"loopStart" : "8n",
+					"loopEnd" : "4n",
+					"loop" : true,
+					"callback" : function(time, value){
+						expect(value).to.be.at.least(1);
+						expect(value).to.be.at.most(2);
+					},
+					events : [[0, 0], ["8n", 1], ["8n + 16n", 2], ["4n", 3]]
+				}).start(0);
+				Tone.Transport.start();
+
+				setTimeout(function(){
+					note.dispose();	
+					done();
+				}, 800);
+			});
+
 
 			it ("reports the progress of the loop", function(done){
 				var callCount = 0;

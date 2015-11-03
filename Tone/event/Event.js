@@ -1,16 +1,16 @@
-define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Type", "Tone/core/Timeline"], function (Tone) {
+define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Type", "Tone/core/TimelineState"], function (Tone) {
 
 	"use strict";
 
 	/**
-	 *  @class  Tone.Note provides a callback for a single, repeatable
+	 *  @class  Tone.Event provides a callback for a single, repeatable
 	 *          event along the timeline. 
 	 *
 	 *  @param {function} callback The callback to invoke at the time. 
-	 *  @param {*...=} value The value or values which should be passed to
+	 *  @param {*} value The value or values which should be passed to
 	 *                      the callback function on invocation.  
 	 *  @example
-	 * var chord = new Tone.Note(function(time, chord){
+	 * var chord = new Tone.Event(function(time, chord){
 	 * 	//the chord as well as the exact time of the event
 	 * 	//are passed in as arguments to the callback function
 	 * }, "Dm");
@@ -20,9 +20,9 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Type", "Tone/core/Ti
 	 * chord.loop = 8;
 	 * chord.loopEnd = "1m";
 	 */
-	Tone.Note = function(){
+	Tone.Event = function(){
 
-		var options = this.optionsObject(arguments, ["callback", "value"], Tone.Note.defaults);
+		var options = this.optionsObject(arguments, ["callback", "value"], Tone.Event.defaults);
 
 		/**
 		 *  Loop value
@@ -34,9 +34,8 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Type", "Tone/core/Ti
 		/**
 		 *  The callback to invoke. 
 		 *  @type  {Function}
-		 *  @private
 		 */
-		this._callback = options.callback;
+		this.callback = options.callback;
 
 		/**
 		 *  The value which is passed to the
@@ -62,10 +61,10 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Type", "Tone/core/Ti
 
 		/**
 		 *  Tracks the scheduled events
-		 *  @type {Tone.Timeline}
+		 *  @type {Tone.TimelineState}
 		 *  @private
 		 */
-		this._events = new Tone.Timeline();
+		this._state = new Tone.TimelineState(Tone.State.Stopped);
 
 		/**
 		 *  The playback speed of the note. A speed of 1
@@ -76,73 +75,95 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Type", "Tone/core/Ti
 		this._playbackRate = 1;
 
 		/**
+		 *  A delay time from when the event is scheduled to start
+		 *  @type {Ticks}
+		 *  @private
+		 */
+		this._startDelay = 0;
+
+		/**
 		 *  The probability that the callback will be invoked
 		 *  at the scheduled time. 
 		 *  @type {NormalRange}
 		 */
 		this.probability = options.probability;
 
+		/**
+		 *  Random variation +/-0.01s to the scheduled time. 
+		 *  Or give it a time value which it will randomize by.
+		 *  @type {Boolean|Time}
+		 */
+		this.humanize = options.humanize;
+
+		/**
+		 *  If the part is inactive and does 
+		 *  not invoke the callback function.
+		 *  @type {Boolean}
+		 */
+		this.mute = options.mute;
+
 		//set the initial values
 		this.loopStart = options.loopStart;
 		this.loopEnd = options.loopEnd;
 		this.playbackRate = options.playbackRate;
-
-		//if an object was used in the constructor, the value is all the extra parameters
-		if (arguments.length === 1 && typeof arguments[0] === "object" && this.isUndef(this.value)){
-			var valueObj = {};
-			for (var param in arguments[0]){
-				if (!Tone.Note.defaults.hasOwnProperty(param)){
-					valueObj[param] = arguments[0][param];
-				}
-			}
-			this.value = valueObj;
-		}
 	};
 
-	Tone.extend(Tone.Note);
+	Tone.extend(Tone.Event);
 
 	/**
 	 *  The default values
 	 *  @type  {Object}
 	 *  @const
 	 */
-	Tone.Note.defaults = {
+	Tone.Event.defaults = {
 		"callback" : Tone.noOp,
 		"loop" : false,
 		"loopEnd" : "1m",
 		"loopStart" : 0,
 		"playbackRate" : 1,
-		"probability" : 1
+		"value" : null,
+		"probability" : 1,
+		"mute" : false,
+		"humanize" : false,
 	};
 
 	/**
 	 *  Reschedule all of the events along the timeline
 	 *  with the updated values.
 	 *  @param {Time} after Only reschedules events after the given time.
-	 *  @return  {Tone.Note}  this
+	 *  @return  {Tone.Event}  this
 	 *  @private
 	 */
-	Tone.Note.prototype._rescheduleEvents = function(after){
+	Tone.Event.prototype._rescheduleEvents = function(after){
 		//if no argument is given, schedules all of the events
 		after = this.defaultArg(after, -1);
-		this._events.forEachAfter(after, function(event){
+		this._state.forEachFrom(after, function(event){
 			var duration;
 			if (event.state === Tone.State.Started){
 				if (!this.isUndef(event.id)){
 					Tone.Transport.clear(event.id);
 				}
+				var startTick = event.time + Math.round(this._startDelay / this._playbackRate);
 				if (this._loop){
 					duration = Infinity;
-					if (typeof this._loop === "number"){
+					if (this.isNumber(this._loop)){
 						duration =  (this._loop - 1) * this._getLoopDuration();
 					}
-					var nextEvent = this._events.getEventAfter(event.time);
+					var nextEvent = this._state.getEventAfter(startTick);
 					if (nextEvent !== null){
-						duration = Math.min(duration, nextEvent.time - event.time);
+						duration = Math.min(duration, nextEvent.time - startTick);
 					}
-					event.id = Tone.Transport.scheduleRepeat(this._tick.bind(this), this._getLoopDuration().toString() + "i", event.time + "i", duration + "i");
+					//make it ticks
+					if (duration !== Infinity){
+						//schedule a stop since it's finite duration
+						duration += "i";
+					}
+					event.id = Tone.Transport.scheduleRepeat(this._tick.bind(this), this._getLoopDuration().toString() + "i", startTick + "i", duration);
+					if (duration !== Infinity){
+						this.stop((startTick + 1) + "i + "+ duration);
+					}
 				} else {
-					event.id = Tone.Transport.schedule(this._tick.bind(this), event.time + "i");
+					event.id = Tone.Transport.schedule(this._tick.bind(this), startTick + "i");
 				}
 			} 
 		}.bind(this));
@@ -150,20 +171,32 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Type", "Tone/core/Ti
 	};
 
 	/**
+	 *  Returns the playback state of the note, either "started" or "stopped".
+	 *  @type {String}
+	 *  @readOnly
+	 *  @memberOf Tone.Event#
+	 *  @name state
+	 */
+	Object.defineProperty(Tone.Event.prototype, "state", {
+		get : function(){
+			return this._state.getStateAtTime(Tone.Transport.ticks);
+		}
+	});
+
+	/**
 	 *  Start the note at the given time. 
 	 *  @param  {Time}  time  When the note should start.
-	 *  @return  {Tone.Note}  this
+	 *  @return  {Tone.Event}  this
 	 */
-	Tone.Note.prototype.start = function(time){
-		var scheduledEvent = this._events.getEvent(time);
-		if (scheduledEvent === null || scheduledEvent.state === Tone.State.Stopped){
-			time = this.toTicks(time);
-			this._events.addEvent({
+	Tone.Event.prototype.start = function(time){
+		time = this.toTicks(time);
+		if (this._state.getStateAtTime(time) === Tone.State.Stopped){
+			this._state.addEvent({
 				"state" : Tone.State.Started,
 				"time" : time,
 				"id" : undefined,
 			});
-			this._rescheduleEvents(time - 0.001);
+			this._rescheduleEvents(time);
 		}
 		return this;
 	};
@@ -171,22 +204,18 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Type", "Tone/core/Ti
 	/**
 	 *  Stop the Note at the given time.
 	 *  @param  {Time}  time  When the note should stop.
-	 *  @return  {Tone.Note}  this
+	 *  @return  {Tone.Event}  this
 	 */
-	Tone.Note.prototype.stop = function(time){
-		var scheduledEvent = this._events.getEvent(time);
-		if (scheduledEvent === null || scheduledEvent.state === Tone.State.Started){
-			time = this.toTicks(time);
-			this._events.addEvent({
-				"state" : Tone.State.Stopped,
-				"time" : time
-			});
-			var previousEvent = this._events.getEventBefore(time);
+	Tone.Event.prototype.stop = function(time){
+		time = this.toTicks(time);
+		if (this._state.getStateAtTime(time) === Tone.State.Started){
+			this._state.setStateAtTime(Tone.State.Stopped, time);
+			var previousEvent = this._state.getEventBefore(time);
 			var reschedulTime = time;
 			if (previousEvent !== null){
 				reschedulTime = previousEvent.time;
 			}
-			this._rescheduleEvents(reschedulTime - 0.001);
+			this._rescheduleEvents(reschedulTime);
 		}
 		return this;
 	};
@@ -194,15 +223,15 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Type", "Tone/core/Ti
 	/**
 	 *  Cancel all scheduled events greater than or equal to the given time
 	 *  @param  {Time}  [time=0]  The time after which events will be cancel.
-	 *  @return  {Tone.Note}  this
+	 *  @return  {Tone.Event}  this
 	 */
-	Tone.Note.prototype.cancel = function(time){
+	Tone.Event.prototype.cancel = function(time){
 		time = this.defaultArg(time, -Infinity);
 		time = this.toTicks(time);
-		this._events.forEachAfter(time - 0.001, function(event){
+		this._state.forEachFrom(time, function(event){
 			Tone.Transport.clear(event.id);
 		});
-		this._events.cancel(time);
+		this._state.cancel(time);
 		return this;
 	};
 
@@ -212,39 +241,42 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Type", "Tone/core/Ti
 	 *  @param  {Number}  time  The time of the event in seconds
 	 *  @private
 	 */
-	Tone.Note.prototype._tick = function(time){
-		var currentState = this._events.getEvent(Tone.Transport.ticks);
-		if (currentState !== null && currentState.state === Tone.State.Started){
-			if (this.probability < 1){
-				if (Math.random() <= this.probability){
-					this._callback(time, this.value);	
+	Tone.Event.prototype._tick = function(time){
+		if (!this.mute && this._state.getStateAtTime(Tone.Transport.ticks) === Tone.State.Started){
+			if (this.probability < 1 && Math.random() > this.probability){
+				return;
+			} 
+			if (this.humanize){
+				var variation = 0.01;
+				if (!this.isBoolean(this.humanize)){
+					variation = this.toSeconds(this.humanize);
 				}
-			} else {
-				this._callback(time, this.value);
+				time += (Math.random() * 2 - 1) * variation;
 			}
+			this.callback(time, this.value);
 		}
 	};
 
 	/**
 	 *  Get the duration of the loop.
-	 *  @return  {Number}
+	 *  @return  {Ticks}
 	 *  @private
 	 */
-	Tone.Note.prototype._getLoopDuration = function(){
+	Tone.Event.prototype._getLoopDuration = function(){
 		return Math.round((this._loopEnd - this._loopStart) / this._playbackRate);
 	};
 
 	/**
 	 *  If the note should loop or not
-	 *  between Tone.Note.loopStart and 
-	 *  Tone.Note.loopEnd. An integer
+	 *  between Tone.Event.loopStart and 
+	 *  Tone.Event.loopEnd. An integer
 	 *  value corresponds to the number of
 	 *  loops the Note does after it starts.
-	 *  @memberOf Tone.Note#
+	 *  @memberOf Tone.Event#
 	 *  @type {Boolean|Positive}
 	 *  @name loop
 	 */
-	Object.defineProperty(Tone.Note.prototype, "loop", {
+	Object.defineProperty(Tone.Event.prototype, "loop", {
 		get : function(){
 			return this._loop;
 		},
@@ -256,7 +288,7 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Type", "Tone/core/Ti
 
 	/**
 	 * 	The playback rate of the note. Defaults to 1.
-	 *  @memberOf Tone.Note#
+	 *  @memberOf Tone.Event#
 	 *  @type {Positive}
 	 *  @name playbackRate
 	 *  @example
@@ -264,7 +296,7 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Type", "Tone/core/Ti
 	 * //repeat the note twice as fast
 	 * note.playbackRate = 2;
 	 */
-	Object.defineProperty(Tone.Note.prototype, "playbackRate", {
+	Object.defineProperty(Tone.Event.prototype, "playbackRate", {
 		get : function(){
 			return this._playbackRate;
 		},
@@ -278,12 +310,12 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Type", "Tone/core/Ti
 
 	/**
 	 *  The loopEnd point determines when it will 
-	 *  loop if Tone.Note.loop is true.
-	 *  @memberOf Tone.Note#
+	 *  loop if Tone.Event.loop is true.
+	 *  @memberOf Tone.Event#
 	 *  @type {Boolean|Positive}
 	 *  @name loopEnd
 	 */
-	Object.defineProperty(Tone.Note.prototype, "loopEnd", {
+	Object.defineProperty(Tone.Event.prototype, "loopEnd", {
 		get : function(){
 			return this.toNotation(this._loopEnd + "i");
 		},
@@ -297,12 +329,12 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Type", "Tone/core/Ti
 
 	/**
 	 *  The loopStart point determines when it will 
-	 *  loop if Tone.Note.loop is true.
-	 *  @memberOf Tone.Note#
+	 *  loop if Tone.Event.loop is true.
+	 *  @memberOf Tone.Event#
 	 *  @type {Boolean|Positive}
 	 *  @name loopStart
 	 */
-	Object.defineProperty(Tone.Note.prototype, "loopStart", {
+	Object.defineProperty(Tone.Event.prototype, "loopStart", {
 		get : function(){
 			return this.toNotation(this._loopStart + "i");
 		},
@@ -318,24 +350,18 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Type", "Tone/core/Ti
 	 *  The current progress of the loop interval.
 	 *  Returns 0 if the atom is not started yet or the 
 	 *  atom is not set to loop.
-	 *  @memberOf Tone.Note#
+	 *  @memberOf Tone.Event#
 	 *  @type {NormalRange}
 	 *  @name progress
 	 *  @readOnly
 	 */
-	Object.defineProperty(Tone.Note.prototype, "progress", {
+	Object.defineProperty(Tone.Event.prototype, "progress", {
 		get : function(){
 			if (this._loop){
 				var ticks = Tone.Transport.ticks;
-				var lastEvent = this._events.getEvent(ticks);
+				var lastEvent = this._state.getEvent(ticks);
 				if (lastEvent !== null && lastEvent.state === Tone.State.Started){
 					var loopDuration = this._getLoopDuration();
-					if (typeof this._loop === "number"){
-						var endTime = loopDuration * (this._loop);
-						if (ticks > endTime){
-							return 0;
-						}
-					}
 					var progress = (ticks - lastEvent.time) % loopDuration;
 					return progress / loopDuration;
 				} else {
@@ -349,15 +375,15 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Type", "Tone/core/Ti
 
 	/**
 	 *  Clean up
-	 *  @return  {Tone.Note}  this
+	 *  @return  {Tone.Event}  this
 	 */
-	Tone.Note.prototype.dispose = function(){
+	Tone.Event.prototype.dispose = function(){
 		this.cancel();
-		this._events.dispose();
-		this._events = null;
-		this._callback = null;
+		this._state.dispose();
+		this._state = null;
+		this.callback = null;
 		this.value = null;
 	};
 
-	return Tone.Note;
+	return Tone.Event;
 });
