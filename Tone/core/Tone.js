@@ -418,7 +418,7 @@ define(function(){
 
 	/**
 	 *  connect together all of the arguments in series
-	 *  @param {...AudioParam|Tone|AudioNode}
+	 *  @param {...AudioParam|Tone|AudioNode} nodes
 	 *  @returns {Tone} this
 	 */
 	Tone.prototype.connectSeries = function(){
@@ -435,7 +435,7 @@ define(function(){
 
 	/**
 	 *  fan out the connection from the first argument to the rest of the arguments
-	 *  @param {...AudioParam|Tone|AudioNode}
+	 *  @param {...AudioParam|Tone|AudioNode} nodes
 	 *  @returns {Tone} this
 	 */
 	Tone.prototype.connectParallel = function(){
@@ -471,7 +471,7 @@ define(function(){
 
 	/**
 	 *  connect the output of this node to the rest of the nodes in parallel.
-	 *  @param {...AudioParam|Tone|AudioNode}
+	 *  @param {...AudioParam|Tone|AudioNode} nodes
 	 *  @returns {Tone} this
 	 */
 	Tone.prototype.fan = function(){
