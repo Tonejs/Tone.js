@@ -126,6 +126,18 @@ define(["helper/Basic", "Tone/event/Part", "Tone/core/Tone", "Tone/core/Transpor
 				part.dispose();
 			});
 
+			it("can add another part", function(){
+				var part = new Part();
+				expect(part.length).to.equal(0);
+				var subPart = new Part({
+					"events" : [0, 0.5]
+				});
+				part.add(0.2, subPart);
+				expect(part.length).to.equal(1);
+				expect(part.at(0.2)).to.equal(subPart);
+				part.dispose();
+			});
+
 			it("can remove an event by time", function(){
 				var part = new Part({
 					"events" : [[0.2, "C3"], [0.2, "C4"]]
@@ -148,12 +160,25 @@ define(["helper/Basic", "Tone/event/Part", "Tone/core/Tone", "Tone/core/Transpor
 
 			it("added events have the same settings as the parent", function(){
 				var part = new Part({
+					"loopEnd" : "1m",
+					"loopStart" : "4n",
 					"humanize" : 0.1,
 					"probability" : 0.2,
 					"events" : [[0.2, "C3"], [0.3, "C4"]]
 				});
-				expect(part.at(0.2).humanize).to.equal(0.1);
-				expect(part.at(0.3).probability).to.equal(0.2);
+				var firstEvent = part.at(0.2);
+				expect(firstEvent.humanize).to.equal(0.1);
+				expect(firstEvent.probability).to.equal(0.2);
+				//loop duration is the same
+				expect(firstEvent.loopEnd).to.equal("2n + 4n");
+				expect(firstEvent.loopStart).to.equal("0");
+				
+				var secondEvent = part.at(0.3);
+				expect(secondEvent.humanize).to.equal(0.1);
+				expect(secondEvent.probability).to.equal(0.2);
+				//loop duration is the same
+				expect(secondEvent.loopEnd).to.equal("2n + 4n");
+				expect(secondEvent.loopStart).to.equal("0");
 				part.dispose();
 			});
 
@@ -292,6 +317,26 @@ define(["helper/Basic", "Tone/event/Part", "Tone/core/Tone", "Tone/core/Transpor
 					part.add(0.1, 1);
 				}, 100);
 			});
+
+			it("can schedule a subpart", function(done){
+				var startTime = Tone.Transport.now() + 0.1;
+				var subPart = new Part({
+					"events" : [[0, 1], [0.3, 2]]
+				});
+				var part = new Part(function(time, value){
+					if (value === 0){
+						expect(time - startTime).to.be.closeTo(0, 0.01);
+					} else if (value === 1){
+						expect(time - startTime).to.be.closeTo(0.2, 0.01);
+					} else if (value === 2){
+						expect(time - startTime).to.be.closeTo(0.5, 0.01);
+						part.dispose();
+						done();
+					}
+				}).add(0.2, subPart).add(0, 0).start(0);
+				Tone.Transport.start(startTime);
+			});
+
 		});
 		
 		context("Looping", function(){
@@ -319,7 +364,7 @@ define(["helper/Basic", "Tone/event/Part", "Tone/core/Tone", "Tone/core/Transpor
 
 			it ("can be set to loop at a specific interval", function(done){
 				var lastCall;
-				var note = new Part({
+				var part = new Part({
 					"loopEnd" : 0.25,
 					"loop" : true,
 					"callback" : function(time){
@@ -333,20 +378,20 @@ define(["helper/Basic", "Tone/event/Part", "Tone/core/Tone", "Tone/core/Transpor
 				Tone.Transport.start();
 
 				setTimeout(function(){
-					note.dispose();	
+					part.dispose();	
 					done();
 				}, 700);
 			});
 
-			it ("a started note will be stopped if it is after the loopEnd", function(done){
+			it ("a started part will be stopped if it is after the loopEnd", function(done){
 				var switched = false;
-				var note = new Part({
+				var part = new Part({
 					"loopEnd" : 0.5,
 					"loop" : true,
 					"callback" : function(time, value){
 						if (value === 1){
 							switched = true;
-							note.loopEnd = 0.2;
+							part.loopEnd = 0.2;
 						} else if (switched){
 							expect(value).to.equal(0);
 						} 
@@ -356,20 +401,20 @@ define(["helper/Basic", "Tone/event/Part", "Tone/core/Tone", "Tone/core/Transpor
 				Tone.Transport.start();
 
 				setTimeout(function(){
-					note.dispose();	
+					part.dispose();	
 					done();
 				}, 700);
 			});
 
-			it ("a started note will be stopped if it is before the loopStart", function(done){
+			it ("a started part will be stopped if it is before the loopStart", function(done){
 				var switched = false;
-				var note = new Part({
+				var part = new Part({
 					"loopEnd" : 0.5,
 					"loop" : true,
 					"callback" : function(time, value){
 						if (value === 1){
 							switched = true;
-							note.loopStart = 0.2;
+							part.loopStart = 0.2;
 						} else if (switched){
 							expect(value).to.equal(1);
 						} 
@@ -379,7 +424,7 @@ define(["helper/Basic", "Tone/event/Part", "Tone/core/Tone", "Tone/core/Transpor
 				Tone.Transport.start();
 
 				setTimeout(function(){
-					note.dispose();	
+					part.dispose();	
 					done();
 				}, 700);
 			});
@@ -387,7 +432,7 @@ define(["helper/Basic", "Tone/event/Part", "Tone/core/Tone", "Tone/core/Transpor
 			
 			it ("can loop a specific number of times", function(done){
 				var callCount = 0;
-				var note = new Part({
+				var part = new Part({
 					"loopEnd" : 0.125,
 					"loop" : 3,
 					"callback" : function(){
@@ -399,13 +444,13 @@ define(["helper/Basic", "Tone/event/Part", "Tone/core/Tone", "Tone/core/Transpor
 
 				setTimeout(function(){
 					expect(callCount).to.equal(6);
-					note.dispose();	
+					part.dispose();	
 					done();
 				}, 800);
 			});
 
 			it ("can loop between loopStart and loopEnd", function(done){
-				var note = new Part({
+				var part = new Part({
 					"loopStart" : "8n",
 					"loopEnd" : "4n",
 					"loop" : true,
@@ -418,7 +463,7 @@ define(["helper/Basic", "Tone/event/Part", "Tone/core/Tone", "Tone/core/Transpor
 				Tone.Transport.start();
 
 				setTimeout(function(){
-					note.dispose();	
+					part.dispose();	
 					done();
 				}, 800);
 			});
@@ -426,7 +471,7 @@ define(["helper/Basic", "Tone/event/Part", "Tone/core/Tone", "Tone/core/Transpor
 
 			it ("reports the progress of the loop", function(done){
 				var callCount = 0;
-				var note = new Part({
+				var part = new Part({
 					"loopEnd" : 1,
 					"loop" : true,
 					"callback" : function(){
@@ -435,12 +480,63 @@ define(["helper/Basic", "Tone/event/Part", "Tone/core/Tone", "Tone/core/Transpor
 				}).start(0);
 				Tone.Transport.start();
 				setTimeout(function(){
-					expect(note.progress).to.be.closeTo(0.8, 0.05);
-					note.dispose();	
+					expect(part.progress).to.be.closeTo(0.8, 0.05);
+					part.dispose();	
 					done();
 				}, 800);
 			});
 
+		});
+
+		context("playbackRate", function(){
+
+			afterEach(resetTransport);
+
+			it ("can adjust the playbackRate", function(done){
+				var lastCall;
+				var part = new Part({
+					"playbackRate" : 2,
+					"loopEnd" : 1,
+					"loop" : true,
+					"events" : [0, 0.5],
+					"callback" : function(time){
+						if (lastCall){
+							expect(time - lastCall).to.be.closeTo(0.25, 0.01);
+						}
+						lastCall = time;
+					}
+				}).start(0);
+				Tone.Transport.start();
+
+				setTimeout(function(){
+					part.dispose();	
+					done();
+				}, 700);
+			});
+
+			it ("can adjust the playbackRate after starting", function(done){
+				var lastCall;
+				var part = new Part({
+					"playbackRate" : 1,
+					"loopEnd" : 0.5,
+					"loop" : true,
+					"events" : [0, 0.25],
+					"callback" : function(time){
+						if (lastCall){
+							expect(time - lastCall).to.be.closeTo(0.5, 0.01);
+						} else {
+							part.playbackRate = 0.5;
+						}
+						lastCall = time;
+					}
+				}).start(0);
+				Tone.Transport.start();
+
+				setTimeout(function(){
+					part.dispose();	
+					done();
+				}, 800);
+			});
 		});
 	});
 });
