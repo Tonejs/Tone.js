@@ -5,6 +5,9 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Timeline"], function 
 	/**
 	 *  @class A signal which adds the method getValueAtTime. 
 	 *         Code and inspiration from https://github.com/jsantell/web-audio-automation-timeline
+	 *  @extends {Tone.Param}
+	 *  @param {Number=} value The initial value of the signal
+	 *  @param {String=} units The conversion units of the signal.
 	 */
 	Tone.TimelineSignal = function(){
 
