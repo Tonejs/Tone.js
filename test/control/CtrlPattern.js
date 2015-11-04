@@ -141,7 +141,7 @@ define(["Tone/control/CtrlPattern", "helper/Basic"], function (CtrlPattern, Basi
 			});
 
 			it ("does randomOnce pattern", function(){
-				var pattern = new CtrlPattern([0, 1, 2, 3, 4], "randomOnce");
+				var pattern = new CtrlPattern([4, 5, 6, 7, 8], "randomOnce");
 				var output = [];
 				var i;
 				for (i = 0; i < 5; i++){
@@ -149,7 +149,7 @@ define(["Tone/control/CtrlPattern", "helper/Basic"], function (CtrlPattern, Basi
 					pattern.next();
 				}
 				output = output.sort();
-				expect(output).to.deep.equal([0, 1, 2, 3, 4]);
+				expect(output).to.deep.equal([4, 5, 6, 7, 8]);
 				pattern.dispose();
 			});
 		});

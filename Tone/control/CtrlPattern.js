@@ -94,7 +94,10 @@ define(["Tone/core/Tone"], function (Tone) {
 			this.index = Math.min(this.index, this.values.length - 1);
 			var val = this.values[this.index];
 			if (this.type === Tone.CtrlPattern.Type.RandomOnce){
-				val = this._shuffled[this.index];
+				if (this.values.length !== this._shuffled.length){
+					this._shuffleValues();
+				}
+				val = this.values[this._shuffled[this.index]];
 			}
 			return val;
 		}
@@ -230,8 +233,11 @@ define(["Tone/core/Tone"], function (Tone) {
 	 *  @private
 	 */
 	Tone.CtrlPattern.prototype._shuffleValues = function(){
-		var copy = this.values.slice(0);
+		var copy = [];
 		this._shuffled = [];
+		for (var i = 0; i < this.values.length; i++){
+			copy[i] = i;
+		}
 		while(copy.length > 0){
 			var randVal = copy.splice(Math.floor(copy.length * Math.random()), 1);
 			this._shuffled.push(randVal[0]);
