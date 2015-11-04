@@ -1,7 +1,7 @@
 ### r6
 
 * Added PitchShift and Vibrato Effect.
-* Added Timeline/TimelineState/TimelineSignal which keeps track of the state in the future
+* Added Timeline/TimelineState/TimelineSignal which keeps track of the state
 * Clock uses requestAnimationFrame instead of ScriptProcessorNode
 * Removed `onended` event from Tone.Source
 * Refactored tests into individual files. 
@@ -12,9 +12,11 @@
 * Microphone inherits from ExternalInput which is generalized for different inputs.
 * New scheduling methods on Transport - `schedule`, `scheduleOnce`, and `scheduleRepeat`.
 * Tone.Gain and Tone.Delay classes wrap the native Web Audio nodes.
-* Musical structures: Tone.Note, Tone.Part, Tone.Pattern, Tone.Sequence and Tone.Score.
 * Moved [MidiToScore](https://github.com/Tonejs/MidiConvert) and [TypeScript](https://github.com/Tonejs/TypeScript) definitions to separate repos.
-* Tone.Param wraps the native AudioParam
+* Tone.Param wraps the native AudioParam and allows for unit conversion. 
+* Quantization with Transport.quantize and using "@" in any Time. [Read more](https://github.com/Tonejs/Tone.js/wiki/Time).
+* Control-rate generators for value interpolation, patterns, random numbers, and markov chains. 
+* Scheduable musical events: Tone.Event, Tone.Loop, Tone.Part, Tone.Pattern, Tone.Sequence. 
 
 DEPRECATED:
 * `setTimeout`, `setInterval`, `setTimeline` in favor of new `schedule`, `scheduleOnce`, and `scheduleRepeat`.
