@@ -44,6 +44,15 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 		 */
 		this._buffer = null;
 
+		/**
+		 *  The playback rate of the noise. Affects
+		 *  the "frequency" of the noise.
+		 *  @type {Positive}
+		 *  @signal
+		 */
+		this.playbackRate = new Tone.Signal(options.playbackRate, Tone.Type.Positive);
+		this._readOnly("playbackRate");
+
 		this.type = options.type;
 	};
 
@@ -58,6 +67,7 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 	 */
 	Tone.Noise.defaults = {
 		"type" : "white",
+		"playbackRate" : 1
 	};
 
 	/**
@@ -97,7 +107,6 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 				if (this.state === Tone.State.Started){
 					var now = this.now() + this.blockTime;
 					//remove the listener
-					this._source.onended = undefined;
 					this._stop(now);
 					this._start(now);
 				}
@@ -116,8 +125,8 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 		this._source.buffer = this._buffer;
 		this._source.loop = true;
 		this._source.connect(this.output);
+		this.playbackRate.connect(this._source.playbackRate);
 		this._source.start(this.toSeconds(time));
-		this._source.onended = this.onended;
 	};
 
 	/**
@@ -143,6 +152,9 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 			this._source = null;
 		}
 		this._buffer = null;
+		this._writable("playbackRate");
+		this.playbackRate.dispose();
+		this.playbackRate = null;
 		return this;
 	};
 
