@@ -23,14 +23,13 @@ define(["Test", "Tone/core/Buffer"], function (Test, Buffer) {
 			});
 		});
 
-		it("the static onload method is invoked", function(done){
+		it("the static on('load') method is invoked", function(done){
 			var buffer = new Buffer("./audio/hh.mp3");
-			Buffer.onload = function(){
+			Buffer.on("load", function(){
 				buffer.dispose();
+				Buffer.off("load");
 				done();
-				//reset this method for the next one
-				Buffer.onload = function(){};
-			};
+			});
 		});
 
 		it("can be constructed with an options object", function(done){
@@ -98,18 +97,14 @@ define(["Test", "Tone/core/Buffer"], function (Test, Buffer) {
 			});
 		});
 
-		it("the static onprogress method is invoked", function(done){
-			var progressWasInvoked = false;
-			var buffer = new Buffer("./audio/hh.mp3", function(){
+		it("the static on('progress') method is invoked", function(done){
+			var buffer = new Buffer("./audio/hh.mp3");
+			Buffer.on("progress", function(percent){
+				expect(percent).to.be.a.number;
+				Buffer.off("progress");
 				buffer.dispose();
-				expect(progressWasInvoked).to.be.true;
 				done();
 			});
-			Buffer.onprogress = function(){
-				progressWasInvoked = true;
-				//reset this method for the next one
-				Buffer.onprogress = function(){};
-			};
 		});
 
 		it("can reverse a buffer", function(done){
