@@ -116,11 +116,14 @@ define(["Tone/core/Tone", "Tone/event/Part", "Tone/core/Transport"], function (T
 	 *  @returns {Tone.Sequence} this
 	 */
 	Tone.Sequence.prototype.add = function(index, value){
+		if (value === null){
+			return this;
+		}
 		if (this.isArray(value)){
 			//make a subsequence and add that to the sequence
 			var subSubdivision = Math.round(this._subdivision / value.length) + "i";
 			value = new Tone.Sequence(this._tick.bind(this), value, subSubdivision);
-		}
+		} 
 		Tone.Part.prototype.add.call(this, this._indexTime(index), value);
 		return this;
 	};
