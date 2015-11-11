@@ -55,7 +55,7 @@ define(["Tone/core/Tone"], function (Tone) {
 		for (var ev = 0; ev < events.length; ev++){
 			event = events[ev];
 			if (this._events.hasOwnProperty(event)){
-				if (this.isUndef(callback)){
+				if (Tone.prototype.isUndef(callback)){
 					this._events[event] = [];
 				} else {
 					var eventList = this._events[event];
