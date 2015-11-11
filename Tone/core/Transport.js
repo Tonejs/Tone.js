@@ -259,9 +259,9 @@ function(Tone){
 	 *  @return {Number} The id of the event which can be used for canceling the event. 
 	 *  @example
 	 *  //trigger the callback when the Transport reaches the desired time
-	 *  Tone.Transport.schedule(function(time){
-	 *  	envelope.triggerAttack(time);
-	 *  }, "128i");
+	 * Tone.Transport.schedule(function(time){
+	 * 	envelope.triggerAttack(time);
+	 * }, "128i");
 	 */
 	Tone.Transport.prototype.schedule = function(callback, time){
 		var event = {
@@ -278,7 +278,9 @@ function(Tone){
 	};
 
 	/**
-	 *  Schedule a repeated event along the timeline.
+	 *  Schedule a repeated event along the timeline. The event will fire
+	 *  at the `interval` starting at the `startTime` and for the specified
+	 *  `duration`. 
 	 *  @param  {Function}  callback   The callback to invoke.
 	 *  @param  {Time}    interval   The duration between successive
 	 *                               callbacks.
@@ -287,6 +289,9 @@ function(Tone){
 	 *  @param {Time} [duration=Infinity] How long the event should repeat. 
 	 *  @return  {Number}    The ID of the scheduled event. Use this to cancel
 	 *                           the event. 
+	 *  @example
+	 * //a callback invoked every eighth note after the first measure
+	 * Tone.Transport.scheduleRepeat(callback, "8n", "1m");
 	 */
 	Tone.Transport.prototype.scheduleRepeat = function(callback, interval, startTime, duration){
 		if (interval <= 0){
@@ -463,20 +468,22 @@ function(Tone){
 	 *  The time signature as just the numerator over 4. 
 	 *  For example 4/4 would be just 4 and 6/8 would be 3.
 	 *  @memberOf Tone.Transport#
-	 *  @type {number}
+	 *  @type {Number|Array}
 	 *  @name timeSignature
 	 *  @example
 	 * //common time
 	 * Tone.Transport.timeSignature = 4;
 	 * // 7/8
-	 * Tone.Transport.timeSignature = 3.5;
+	 * Tone.Transport.timeSignature = [7, 8];
+	 * //this will be reduced to a single number
+	 * Tone.Transport.timeSignature; //returns 3.5
 	 */
 	Object.defineProperty(Tone.Transport.prototype, "timeSignature", {
 		get : function(){
 			return this._timeSignature;
 		},
 		set : function(timeSig){
-			if (Array.isArray(timeSig)){
+			if (this.isArray(timeSig)){
 				timeSig = (timeSig[0] / timeSig[1]) * 4;
 			}
 			this._timeSignature = timeSig;
