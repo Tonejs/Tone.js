@@ -202,18 +202,6 @@ function(Tone){
 	};
 
 	/**
-	 *  @param {string} presetName the preset name
-	 *  @returns {Tone.PolySynth} this
-	 *  @private
-	 */
-	Tone.PolySynth.prototype.setPreset = function(presetName){
-		for (var i = 0; i < this.voices.length; i++){
-			this.voices[i].setPreset(presetName);
-		}
-		return this;
-	};
-
-	/**
 	 *  Trigger the release portion of all the currently active voices.
 	 *  @param {Time} [time=now] When the notes should be released.
 	 *  @return {Tone.PolySynth} this

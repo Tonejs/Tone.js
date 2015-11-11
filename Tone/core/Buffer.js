@@ -1,4 +1,4 @@
-define(["Tone/core/Tone"], function(Tone){
+define(["Tone/core/Tone", "Tone/core/Emitter"], function(Tone){
 
 	"use strict";
 
@@ -186,6 +186,9 @@ define(["Tone/core/Tone"], function(Tone){
 	///////////////////////////////////////////////////////////////////////////
 	// STATIC METHODS
 	///////////////////////////////////////////////////////////////////////////
+
+	//statically inherits Emitter methods
+	Tone.Emitter.mixin(Tone.Buffer);
 	 
 	/**
 	 *  the static queue for all of the xhr requests
@@ -283,10 +286,12 @@ define(["Tone/core/Tone"], function(Tone){
 					next.progress = event.loaded / event.total;
 					Tone.Buffer._onprogress();
 				};
-				next.xhr.onerror = Tone.Buffer.onerror;
+				next.xhr.onerror = function(e){
+					Tone.Buffer.trigger("error", e);
+				};
 			} 
 		} else if (Tone.Buffer._currentDownloads.length === 0){
-			Tone.Buffer.onload();
+			Tone.Buffer.trigger("load");
 			//reset the downloads
 			Tone.Buffer._totalDownloads = 0;
 		}
@@ -309,7 +314,7 @@ define(["Tone/core/Tone"], function(Tone){
 		}
 		var currentDownloadProgress = currentDLLen - inprogress;
 		var completed = Tone.Buffer._totalDownloads - Tone.Buffer._queue.length - currentDownloadProgress;
-		Tone.Buffer.onprogress(completed / Tone.Buffer._totalDownloads);
+		Tone.Buffer.trigger("progress", completed / Tone.Buffer._totalDownloads);
 	};
 
 	/**
@@ -341,42 +346,28 @@ define(["Tone/core/Tone"], function(Tone){
 	};
 
 	/**
-	 *  Callback when all of the buffers in the queue have loaded
-	 *  @static
-	 *  @function
-	 *  @example
-	 * //invoked when all of the queued samples are done loading
-	 * Tone.Buffer.onload = function(){
-	 * 	console.log("everything is loaded");
-	 * };
+	 *  @deprecated us on([event]) instead
 	 */
-	Tone.Buffer.onload = Tone.noOp;
+	Object.defineProperty(Tone.Buffer, "onload", {
+		set : function(cb){
+			console.warn("Tone.Buffer.onload is deprecated, use Tone.Buffer.on('load', callback)");
+			Tone.Buffer.on("load", cb);
+		}
+	});
 
-	/**
-	 *  Callback function is invoked with the progress of all of the loads in the queue. 
-	 *  The value passed to the callback is between 0-1.
-	 *  @static
-	 *  @param {Number} percent The progress between 0 and 1. 
-	 *  @function
-	 *  @example
-	 * Tone.Buffer.onprogress = function(percent){
-	 * 	console.log("progress:" + (percent * 100).toFixed(1) + "%");
-	 * };
-	 */
-	Tone.Buffer.onprogress = Tone.noOp;
+	Object.defineProperty(Tone.Buffer, "onprogress", {
+		set : function(cb){
+			console.warn("Tone.Buffer.onprogress is deprecated, use Tone.Buffer.on('progress', callback)");
+			Tone.Buffer.on("progress", cb);
+		}
+	});
 
-	/**
-	 *  Callback if one of the buffers in the queue encounters an error. The error
-	 *  is passed in as the argument. 
-	 *  @static
-	 *  @param {Error} err
-	 *  @function
-	 *  @example
-	 * Tone.Buffer.onerror = function(e){
-	 * 	console.log("there was an error while loading the buffers: "+e);
-	 * }
-	 */
-	Tone.Buffer.onerror = Tone.noOp;
+	Object.defineProperty(Tone.Buffer, "onerror", {
+		set : function(cb){
+			console.warn("Tone.Buffer.onerror is deprecated, use Tone.Buffer.on('error', callback)");
+			Tone.Buffer.on("error", cb);
+		}
+	});
 
 	return Tone.Buffer;
 });
