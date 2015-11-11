@@ -17,6 +17,7 @@
 * Quantization with Transport.quantize and using "@" in any Time. [Read more](https://github.com/Tonejs/Tone.js/wiki/Time).
 * Control-rate generators for value interpolation, patterns, random numbers, and markov chains. 
 * Scheduable musical events: Tone.Event, Tone.Loop, Tone.Part, Tone.Pattern, Tone.Sequence. 
+* Player's playbackRate is now a signal and Noise includes a playbackRate signal. 
 
 DEPRECATED:
 * `setTimeout`, `setInterval`, `setTimeline` in favor of new `schedule`, `scheduleOnce`, and `scheduleRepeat`.
