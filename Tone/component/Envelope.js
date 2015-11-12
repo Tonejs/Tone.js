@@ -222,6 +222,7 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal",
 		if (this._releaseCurve === Tone.Envelope.Type.Linear){
 			this._sig.linearRampToValueBetween(this._minOutput, time, time + release);
 		} else {
+			this._sig.setRampPoint(time);
 			this._sig.setTargetAtTime(this._minOutput, time, release * this._timeMult);
 		}
 		return this;
