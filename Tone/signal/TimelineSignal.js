@@ -160,7 +160,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Timeline"], function 
 	 *  @returns {Tone.TimelineSignal} this
 	 */
 	Tone.TimelineSignal.prototype.cancelScheduledValues = function (after) {
-		this._events.clear(after);
+		this._events.cancel(after);
 		this._param.cancelScheduledValues(this.toSeconds(after));
 		return this;
 	};
@@ -168,7 +168,10 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Timeline"], function 
 	/**
 	 *  Sets the computed value at the given time. This provides
 	 *  a point from which a linear or exponential curve
-	 *  can be scheduled after.
+	 *  can be scheduled after. Will cancel events after 
+	 *  the given time and shorten the currently scheduled
+	 *  linear or exponential ramp so that it ends at `time` .
+	 *  This is to avoid discontinuities and clicks in envelopes. 
 	 *  @param {Time} time When to set the ramp point
 	 *  @returns {Tone.TimelineSignal} this
 	 */
@@ -176,6 +179,17 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Timeline"], function 
 		time = this.toSeconds(time);
 		//get the value at the given time
 		var val = this.getValueAtTime(time);
+		//reschedule the next event to end at the given time
+		var after = this._searchAfter(time);
+		if (after){
+			//cancel the next event(s)
+			this.cancelScheduledValues(time);
+			if (after.type === Tone.TimelineSignal.Type.Linear){
+				this.linearRampToValueAtTime(val, time);
+			} else if (after.type === Tone.TimelineSignal.Type.Exponential){
+				this.exponentialRampToValueAtTime(val, time);
+			} 
+		} 
 		this.setValueAtTime(val, time);
 		return this;
 	};
@@ -244,7 +258,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Timeline"], function 
 		if (before === null){
 			return this._initial;
 		} else if (before.type === Tone.TimelineSignal.Type.Target){
-			var previous = this._searchBefore(before.time - 0.0001);
+			var previous = this._events.getEventBefore(before.time);
 			var previouVal;
 			if (previous === null){
 				previouVal = this._initial;
