@@ -40,11 +40,18 @@ define(["Tone/core/Tone", "Tone/component/Volume"], function(Tone){
 		this._muted = false;
 
 		/**
+		 *  The private volume node
+		 *  @type  {Tone.Volume}
+		 *  @private
+		 */
+		this._volume = this.output = new Tone.Volume();
+
+		/**
 		 * The volume of the master output.
 		 * @type {Decibels}
 		 * @signal
 		 */
-		this.volume = this.output = new Tone.Volume();
+		this.volume = this._volume.volume;
 		
 		this._readOnly("volume");
 		//connections
@@ -120,7 +127,8 @@ define(["Tone/core/Tone", "Tone/component/Volume"], function(Tone){
 	Tone.Master.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
 		this._writable("volume");
-		this.volume.dispose();
+		this._volume.dispose();
+		this._volume = null;
 		this.volume = null;
 	};
 
