@@ -115,7 +115,7 @@ function(Tone){
 		}, 
 		set : function(type){
 			if (type.indexOf("sine") === 0 || type.indexOf("square") === 0 || 
-				type.indexOf("triangle") === 0 || type.indexOf("sawtooth") === 0){
+				type.indexOf("triangle") === 0 || type.indexOf("sawtooth") === 0 || type === Tone.Oscillator.Type.Custom){
 				if (this._sourceType !== OmniOscType.Oscillator){
 					this._sourceType = OmniOscType.Oscillator;
 					this._createNewOscillator(Tone.Oscillator);
@@ -134,6 +134,31 @@ function(Tone){
 			} else {
 				throw new Error("Tone.OmniOscillator does not support type "+type);
 			}
+		}
+	});
+
+	/**
+	 * The partials of the waveform. A partial represents 
+	 * the amplitude at a harmonic. The first harmonic is the 
+	 * fundamental frequency, the second is the octave and so on
+	 * following the harmonic series. 
+	 * Setting this value will automatically set the type to "custom". 
+	 * The value is an empty array when the type is not "custom". 
+	 * @memberOf Tone.Oscillator#
+	 * @type {Array}
+	 * @name partials
+	 * @example
+	 * osc.partials = [1, 0.2, 0.01];
+	 */
+	Object.defineProperty(Tone.OmniOscillator.prototype, "partials", {
+		get : function(){
+			return this._oscillator.partials;
+		}, 
+		set : function(partials){
+			if (this._sourceType !== OmniOscType.Oscillator){
+				this.type = Tone.Oscillator.Type.Custom;
+			}
+			this._oscillator.partials = partials;
 		}
 	});
 

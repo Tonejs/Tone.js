@@ -126,6 +126,19 @@ function(Tone){
 	});
 
 	/**
+	 * The partials of the waveform. Cannot set partials for this waveform type
+	 * @memberOf Tone.PWMOscillator#
+	 * @type {Array}
+	 * @name partials
+	 * @private
+	 */
+	Object.defineProperty(Tone.OmniOscillator.prototype, "partials", {
+		get : function(){
+			return [];
+		}
+	});
+
+	/**
 	 * The phase of the oscillator in degrees.
 	 * @memberOf Tone.PWMOscillator#
 	 * @type {number}

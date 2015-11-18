@@ -149,6 +149,19 @@ function(Tone){
 	});
 
 	/**
+	 * The partials of the waveform. Cannot set partials for this waveform type
+	 * @memberOf Tone.PulseOscillator#
+	 * @type {Array}
+	 * @name partials
+	 * @private
+	 */
+	Object.defineProperty(Tone.OmniOscillator.prototype, "partials", {
+		get : function(){
+			return [];
+		}
+	});
+
+	/**
 	 *  Clean up method.
 	 *  @return {Tone.PulseOscillator} this
 	 */
