@@ -78,6 +78,7 @@ function (Tone) {
 		 *  delay lines to cover up the disparity in the
 		 *  sawtooth wave. 
 		 *  @type  {Tone.LFO}
+		 *  @private
 		 */
 		this._crossFadeLFO = new Tone.LFO({
 			"min" : 0,

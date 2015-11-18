@@ -21,11 +21,15 @@ define(["Tone/core/Tone", "Tone/source/Source", "Tone/core/Gain"], function(Tone
 	 *  @extends {Tone.Source}
 	 *  @param {number} [inputNum=0] If multiple inputs are present, select the input number. Chrome only.
 	 *  @example
-	 *  var motu = new Tone.ExternalInput(3);
-	 *  
-	 *  motu.open(function(){
-	 *  	motu.start(10);
-	 *  });
+	 * //select the third input
+	 * var motu = new Tone.ExternalInput(3);
+	 * 
+	 * //opening the input asks the user to activate their mic
+	 * motu.open(function(){
+	 * 	//opening is activates the microphone
+	 * 	//starting lets audio through
+	 * 	motu.start(10);
+	 * });
 	 */
 
 	Tone.ExternalInput = function(){
