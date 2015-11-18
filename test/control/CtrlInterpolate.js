@@ -17,11 +17,9 @@ define(["Tone/control/CtrlInterpolate", "helper/Basic"], function (CtrlInterpola
 				var terp = new CtrlInterpolate({
 					values : [1, 2, 3],
 					index : 1,
-					exponent : 4
 				});
 				expect(terp.values).to.deep.equal([1, 2, 3]);
 				expect(terp.index).to.equal(1);
-				expect(terp.exponent).to.equal(4);
 				terp.dispose();
 			});
 
@@ -49,14 +47,6 @@ define(["Tone/control/CtrlInterpolate", "helper/Basic"], function (CtrlInterpola
 				terp.dispose();
 			});
 
-			it ("can exponentially interpolate values", function(){
-				var terp = new CtrlInterpolate([3, 2, 1, 0], 0);
-				terp.exponent = 2;
-				expect(terp.value).to.equal(3);
-				terp.index = 0.5;
-				expect(terp.value).to.equal(2.75);
-				terp.dispose();
-			});
 
 			it ("can be done over an array of arrays", function(){
 				var terp = new CtrlInterpolate([[1, 2, 3], [4, 4, 4]], 0.25);

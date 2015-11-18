@@ -20,6 +20,7 @@ define(["Tone/core/Tone", "Tone/core/Type"], function (Tone) {
 	 * ]);
 	 * @param {Array} values The array of values to interpolate over
 	 * @param {Positive} index The initial interpolation index.
+	 * @extends {Tone}
 	 */
 	Tone.CtrlInterpolate = function(){
 
@@ -43,12 +44,6 @@ define(["Tone/core/Tone", "Tone/core/Type"], function (Tone) {
 		 *  @type  {Positive}
 		 */
 		this.index = options.index;
-
-		/**
-		 *  Use an exponent to ease between values.
-		 *  @type {Positive}
-		 */
-		this.exponent = options.exponent;
 	};
 
 	Tone.extend(Tone.CtrlInterpolate);
@@ -60,12 +55,11 @@ define(["Tone/core/Tone", "Tone/core/Type"], function (Tone) {
 	 */
 	Tone.CtrlInterpolate.defaults = {
 		"index" : 0,
-		"exponent" : 1,
 		"values" : []
 	};
 
 	/**
-	 *  The current interpolated value based on the index and exponent
+	 *  The current interpolated value based on the index
 	 *  @readOnly
 	 *  @memberOf Tone.CtrlInterpolate#
 	 *  @type {*}
@@ -106,7 +100,6 @@ define(["Tone/core/Tone", "Tone/core/Type"], function (Tone) {
 		} else {
 			lower = this._toNumber(lower);
 			upper = this._toNumber(upper);
-			index = Math.pow(index, this.exponent);
 			return (1 - index) * lower + index * upper;
 		}
 	};
