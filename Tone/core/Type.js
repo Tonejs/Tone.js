@@ -45,11 +45,6 @@ define(["Tone/core/Tone"], function (Tone) {
 		 *  @typedef {Frequency}
 		 */
 		Frequency : "frequency",
-		/**
-		 * Gain is the ratio between the input and the output value of a signal.
-		 *  @typedef {Gain}
-		 */
-		Gain : "gain",
 		/** 
 		 *  Normal values are within the range [0, 1].
 		 *  @typedef {NormalRange}

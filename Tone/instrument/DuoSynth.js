@@ -61,12 +61,12 @@ function(Tone){
 
 		/**
 		 * The amount of vibrato
-		 * @type {Gain}
+		 * @type {Positive}
 		 * @signal
 		 */
 		this.vibratoAmount = new Tone.Param({
 			"param" : this._vibratoGain.gain, 
-			"units" : Tone.Type.Gain, 
+			"units" : Tone.Type.Positive, 
 			"value" : options.vibratoAmount
 		});
 

@@ -3,9 +3,10 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Type", "Tone/core/Ti
 	"use strict";
 
 	/**
-	 *  @class  Tone.Event provides a callback for a single, repeatable
-	 *          event along the timeline. 
+	 *  @class  Tone.Event abstracts away Tone.Transport.schedule and provides a schedulable
+	 *          callback for a single or repeatable events along the timeline. 
 	 *
+	 *  @extends {Tone}
 	 *  @param {function} callback The callback to invoke at the time. 
 	 *  @param {*} value The value or values which should be passed to
 	 *                      the callback function on invocation.  
@@ -13,7 +14,7 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Type", "Tone/core/Ti
 	 * var chord = new Tone.Event(function(time, chord){
 	 * 	//the chord as well as the exact time of the event
 	 * 	//are passed in as arguments to the callback function
-	 * }, "Dm");
+	 * }, ["D4", "E4", "F4"]);
 	 * //start the chord at the beginning of the transport timeline
 	 * chord.start();
 	 * //loop it every measure for 8 measures
@@ -89,18 +90,18 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Type", "Tone/core/Ti
 		this.probability = options.probability;
 
 		/**
-		 *  Random variation +/-0.01s to the scheduled time. 
-		 *  Or give it a time value which it will randomize by. 
-		 *  Note that if the value is too large, the humanized time
-		 *  could aniticpate the current clock's time. For this
-		 *  reason, the value should be kept below the clock's lookAhead time. 
+		 *  If set to true, will apply small (+/-0.01 seconds) random variation
+		 *  to the callback time. If the value is given as a time, it will randomize
+		 *  by that amount.
+		 *  @example
+		 * event.humanize = true;
 		 *  @type {Boolean|Time}
 		 */
 		this.humanize = options.humanize;
 
 		/**
-		 *  If the part is inactive and does 
-		 *  not invoke the callback function.
+		 *  If mute is true, the callback won't be
+		 *  invoked.
 		 *  @type {Boolean}
 		 */
 		this.mute = options.mute;
@@ -219,7 +220,7 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Type", "Tone/core/Ti
 	};
 
 	/**
-	 *  Stop the Note at the given time.
+	 *  Stop the Event at the given time.
 	 *  @param  {Time}  time  When the note should stop.
 	 *  @return  {Tone.Event}  this
 	 */
@@ -254,7 +255,7 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Type", "Tone/core/Ti
 
 	/**
 	 *  The callback function invoker. Also 
-	 *  checks if the Note is done playing
+	 *  checks if the Event is done playing
 	 *  @param  {Number}  time  The time of the event in seconds
 	 *  @private
 	 */
@@ -288,7 +289,7 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Type", "Tone/core/Ti
 	 *  between Tone.Event.loopStart and 
 	 *  Tone.Event.loopEnd. An integer
 	 *  value corresponds to the number of
-	 *  loops the Note does after it starts.
+	 *  loops the Event does after it starts.
 	 *  @memberOf Tone.Event#
 	 *  @type {Boolean|Positive}
 	 *  @name loop
@@ -324,8 +325,8 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Type", "Tone/core/Ti
 	});
 
 	/**
-	 *  The loopEnd point determines when it will 
-	 *  loop if Tone.Event.loop is true.
+	 *  The loopEnd point is the time the event will loop. 
+	 *  Note: only loops if Tone.Event.loop is true.
 	 *  @memberOf Tone.Event#
 	 *  @type {Boolean|Positive}
 	 *  @name loopEnd
@@ -343,8 +344,7 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Type", "Tone/core/Ti
 	});
 
 	/**
-	 *  The loopStart point determines when it will 
-	 *  loop if Tone.Event.loop is true.
+	 *  The time when the loop should start. 
 	 *  @memberOf Tone.Event#
 	 *  @type {Boolean|Positive}
 	 *  @name loopStart

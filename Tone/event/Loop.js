@@ -125,7 +125,9 @@ define(["Tone/core/Tone", "Tone/event/Event"], function (Tone) {
 	});
 
 	/**
-	 *  The repeat interval
+	 *  The time between successive callbacks. 
+	 *  @example
+	 * loop.interval = "8n"; //loop every 8n
 	 *  @memberOf Tone.Loop#
 	 *  @type {Time}
 	 *  @name interval
@@ -140,7 +142,8 @@ define(["Tone/core/Tone", "Tone/event/Event"], function (Tone) {
 	});
 
 	/**
-	 *  The playback rate of the pattern.
+	 *  The playback rate of the loop. The normal playback rate is 1 (no change). 
+	 *  A `playbackRate` of 2 would be twice as fast. 
 	 *  @memberOf Tone.Loop#
 	 *  @type {Time}
 	 *  @name playbackRate

@@ -5,9 +5,21 @@ define(["Tone/core/Tone"], function (Tone) {
 	/**
 	 *  @class Generate patterns from an array of values.
 	 *         Has a number of arpeggiation and randomized
-	 *         selection patterns.
+	 *         selection patterns. 
+	 *           <ul>
+	 *  	        <li>"up" - cycles upward</li>
+	 *  			<li>"down" - cycles downward</li>
+	 *  			<li>"upDown" - up then and down</li>
+	 *  			<li>"downUp" - cycles down then and up</li>
+	 *  			<li>"alternateUp" - jump up two and down one</li>
+	 *  			<li>"alternateDown" - jump down two and up one</li>
+	 *  			<li>"random" - randomly select an index</li>
+	 *  			<li>"randomWalk" - randomly moves one index away from the current position</li>
+	 *  			<li>"randomOnce" - randomly select an index without repeating until all values have been chosen.</li>
+	 *     		</ul>
 	 *  @param  {Array}  values   An array of options to choose from.
 	 *  @param  {Tone.CtrlPattern.Type=}  type  The name of the pattern.
+	 *  @extends {Tone}
 	 */
 	Tone.CtrlPattern = function(){
 
@@ -54,6 +66,7 @@ define(["Tone/core/Tone"], function (Tone) {
 	/**
 	 *  The Control Patterns
 	 *  @type  {Object}
+	 *  @static
 	 */
 	Tone.CtrlPattern.Type = {
 		Up : "up",

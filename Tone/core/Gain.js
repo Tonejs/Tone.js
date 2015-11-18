@@ -44,7 +44,6 @@ define(["Tone/core/Tone", "Tone/core/Param", "Tone/core/Type"], function (Tone) 
 	 */
 	Tone.Gain.defaults = {
 		"gain" : 1,
-		"units" : Tone.Type.Gain,
 		"convert" : true,
 	};
 

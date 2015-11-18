@@ -2,7 +2,12 @@ define(["Tone/core/Tone", "Tone/event/Loop", "Tone/control/CtrlPattern"], functi
 
 	/**
 	 *  @class Tone.Pattern arpeggiates between the given notes
-	 *         in a number of patterns.
+	 *         in a number of patterns. See Tone.CtrlPattern for
+	 *         a full list of patterns.
+	 *  @example
+	 * var pattern = new Tone.Pattern(function(time, note){
+	 *   //the order of the notes passed in depends on the pattern
+	 * }, ["C2", "D4", "E5", "A6"], "upDown");
 	 *  @extends {Tone.Loop}
 	 *  @param {Function} callback The callback to invoke with the
 	 *                             event.
@@ -52,7 +57,7 @@ define(["Tone/core/Tone", "Tone/event/Loop", "Tone/control/CtrlPattern"], functi
 	/**
 	 *  The current index in the events array.
 	 *  @memberOf Tone.Pattern#
-	 *  @type {Time}
+	 *  @type {Positive}
 	 *  @name index
 	 */
 	Object.defineProperty(Tone.Pattern.prototype, "index", {
@@ -67,7 +72,7 @@ define(["Tone/core/Tone", "Tone/event/Loop", "Tone/control/CtrlPattern"], functi
 	/**
 	 *  The array of events.
 	 *  @memberOf Tone.Pattern#
-	 *  @type {Time}
+	 *  @type {Array}
 	 *  @name events
 	 */
 	Object.defineProperty(Tone.Pattern.prototype, "events", {
@@ -82,31 +87,20 @@ define(["Tone/core/Tone", "Tone/event/Loop", "Tone/control/CtrlPattern"], functi
 	/**
 	 *  The current value of the pattern.
 	 *  @memberOf Tone.Pattern#
-	 *  @type {Time}
+	 *  @type {*}
 	 *  @name value
+	 *  @readOnly
 	 */
 	Object.defineProperty(Tone.Pattern.prototype, "value", {
 		get : function(){
 			return this._pattern.value;
-		},
-		set : function(val){
-			this._pattern.value = val;
 		}
 	});
 
 	/**
-	 *  The pattern type. 
-	 *  "up" - cycles upward
-	 *  "down" - cycles downward
-	 *  "upDown" - up then and down
-	 *  "downUp" - cycles down then and up
-	 *  "alternateUp" - jump up two and down one
-	 *  "alternateDown" - jump down two and up one
-	 *  "random" - randomly select an index
-	 *  "randomWalk" - randomly moves one index away from the current position
-	 *  "randomOnce" - randomly select an index without repeating until all values have been chosen.
+	 *  The pattern type. See Tone.CtrlPattern for the full list of patterns.
 	 *  @memberOf Tone.Pattern#
-	 *  @type {Time}
+	 *  @type {String}
 	 *  @name pattern
 	 */
 	Object.defineProperty(Tone.Pattern.prototype, "pattern", {

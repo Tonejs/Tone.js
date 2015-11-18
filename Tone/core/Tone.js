@@ -278,18 +278,6 @@ define(function(){
 	};
 
 	/**
-	 *  Set the preset if it exists. 
-	 *  @param {string} presetName the name of the preset
-	 *  @returns {Tone} this
-	 */
-	Tone.prototype.setPreset = function(presetName){
-		if (!this.isUndef(this.preset) && this.preset.hasOwnProperty(presetName)){
-			this.set(this.preset[presetName]);
-		}
-		return this;
-	};
-
-	/**
 	 *  @returns {string} returns the name of the class as a string
 	 */
 	Tone.prototype.toString = function(){
@@ -674,7 +662,7 @@ define(function(){
 	/**
 	 *  Equal power gain scale. Good for cross-fading.
 	 *  @param  {NormalRange} percent (0-1)
-	 *  @return {Gain}         output gain (0-1)
+	 *  @return {Number}         output gain (0-1)
 	 */
 	Tone.prototype.equalPowerScale = function(percent){
 		var piFactor = 0.5 * Math.PI;
@@ -684,7 +672,7 @@ define(function(){
 	/**
 	 *  Convert decibels into gain.
 	 *  @param  {Decibels} db
-	 *  @return {Gain}   
+	 *  @return {Number}   
 	 */
 	Tone.prototype.dbToGain = function(db) {
 		return Math.pow(2, db / 6);
@@ -692,7 +680,7 @@ define(function(){
 
 	/**
 	 *  Convert gain to decibels.
-	 *  @param  {Gain} gain (0-1)
+	 *  @param  {Number} gain (0-1)
 	 *  @return {Decibels}   
 	 */
 	Tone.prototype.gainToDb = function(gain) {

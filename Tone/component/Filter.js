@@ -45,12 +45,11 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 
 		/**
 		 *  The gain of the filter, only used in certain filter types
-		 *  @type {Gain}
+		 *  @type {Number}
 		 *  @signal
 		 */
 		this.gain = new Tone.Signal({
 			"value" : options.gain, 
-			"units" : Tone.Type.Gain,
 			"convert" : false
 		});
 

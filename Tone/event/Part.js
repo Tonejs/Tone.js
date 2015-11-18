@@ -8,18 +8,21 @@ define(["Tone/core/Tone", "Tone/event/Event", "Tone/core/Type", "Tone/core/Trans
 	 *
 	 *  @extends {Tone.Event}
 	 *  @param {Function} callback The callback to invoke on each event
-	 *  @param {Array} events the array of events to invoke
+	 *  @param {Array} events the array of events
 	 *  @example
 	 * var part = new Tone.Part(function(time, note){
+	 * 	//the notes given as the second element in the array
+	 * 	//will be passed in as the second argument
 	 * 	synth.triggerAttackRelease(note, "8n", time);
-	 * }, [[0, "C2"], ["0:2", "C3"], ["0:3:2", "G2"]]).start();
+	 * }, [[0, "C2"], ["0:2", "C3"], ["0:3:2", "G2"]]);
 	 *  @example
 	 * //use JSON as long as the object has a "time" attribute
 	 * var part = new Tone.Part(function(time, value){
+	 * 	//the value is an object which contains both the ntoe and the velocity
 	 * 	synth.triggerAttackRelease(value.note, "8n", time, value.velocity);
 	 * }, [{"time" : 0, "note" : "C3", "velocity": 0.9}, 
 	 * 	   {"time" : "0:2", "note" : "C4", "velocity": 0.5}
-	 * ]).start();
+	 * ]).start(0);
 	 */
 	Tone.Part = function(){
 
@@ -83,22 +86,21 @@ define(["Tone/core/Tone", "Tone/event/Event", "Tone/core/Type", "Tone/core/Trans
 		this._state = new Tone.TimelineState(Tone.State.Stopped);
 
 		/**
-		 *  An array of Objects. Each one
-		 *  contains a note object and the relative
-		 *  start time of the note.
+		 *  An array of Objects. 
 		 *  @type  {Array}
 		 *  @private
 		 */
 		this._events = [];
 
 		/**
-		 *  The callback to invoke on every note
+		 *  The callback to invoke at all the scheduled events.
 		 *  @type {Function}
 		 */
 		this.callback = options.callback;
 
 		/**
-		 * 	If the part invokes the callback
+		 *  If mute is true, the callback won't be
+		 *  invoked.
 		 *  @type {Boolean}
 		 */
 		this.mute = options.mute;
@@ -135,8 +137,7 @@ define(["Tone/core/Tone", "Tone/event/Event", "Tone/core/Type", "Tone/core/Trans
 	};
 
 	/**
-	 *  Start the part at the given time. Optionally
-	 *  set an offset time.
+	 *  Start the part at the given time. 
 	 *  @param  {Time}  time    When to start the part.
 	 *  @param  {Time=}  offset  The offset from the start of the part
 	 *                           to begin playing at.
@@ -221,6 +222,11 @@ define(["Tone/core/Tone", "Tone/event/Event", "Tone/core/Type", "Tone/core/Trans
 	 *  the given time, one will be created with that value. 
 	 *  If two events are at the same time, the first one will
 	 *  be returned.
+	 *  @example
+	 * part.at("1m"); //returns the part at the first measure
+	 *
+	 * part.at("2m", "C2"); //set the value at "2m" to C2. 
+	 * //if an event didn't exist at that time, it will be created.
 	 *  @param {Time} time the time of the event to get or set
 	 *  @param {*=} value If a value is passed in, the value of the
 	 *                    event at the given time will be set to it.
@@ -424,11 +430,12 @@ define(["Tone/core/Tone", "Tone/event/Event", "Tone/core/Type", "Tone/core/Trans
 	});
 
 	/**
-	 *  Random variation +/-0.01s to the scheduled time. 
-	 *  Or give it a time value which it will randomize by.
+	 *  If set to true, will apply small random variation
+	 *  to the callback time. If the value is given as a time, it will randomize
+	 *  by that amount.
+	 *  @example
+	 * event.humanize = true;
 	 *  @type {Boolean|Time}
-	 *  @memberOf Tone.Part#
-	 *  @name humanize
 	 */
 	Object.defineProperty(Tone.Part.prototype, "humanize", {
 		get : function(){
@@ -449,6 +456,9 @@ define(["Tone/core/Tone", "Tone/event/Event", "Tone/core/Type", "Tone/core/Trans
 	 *  @memberOf Tone.Part#
 	 *  @type {Boolean|Positive}
 	 *  @name loop
+	 *  @example
+	 * //loop the part 8 times
+	 * part.loop = 8;
 	 */
 	Object.defineProperty(Tone.Part.prototype, "loop", {
 		get : function(){

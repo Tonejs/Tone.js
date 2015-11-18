@@ -7,31 +7,21 @@ define(["Tone/core/Tone", "Tone/event/Part", "Tone/core/Transport"], function (T
 	 *         of passing in an array of [time, event] pairs, pass
 	 *         in an array of events which will be spaced at the
 	 *         given subdivision. Subdivisions are given
-	 *         as sub arrays. Sequence notation inspiration from [Tidal](http://yaxu.org/tidal/)
+	 *         as sub arrays and will be devided according to how many items are in the array. 
+	 *         Sequence notation inspiration from [Tidal](http://yaxu.org/tidal/)
 	 *  @param  {Function}  callback  The callback to invoke with every note
 	 *  @param  {Array}    events  The sequence
 	 *  @extends {Tone.Part}
 	 *  @example
-	 * //straight quater notes
 	 * var seq = new Tone.Sequence(function(time, note){
 	 * 	console.log(note);
+	 * //straight quater notes
 	 * }, ["C4", "E4", "G4", "A4"], "4n");
 	 *  @example
-	 * //subdivisions are given as subarrays
 	 * var seq = new Tone.Sequence(function(time, note){
 	 * 	console.log(note);
-	 * }, ["C4", "E4", "G4", ["A4", "G4"]]);
-	 * @example
-	 * //A sequence with objects which are converted into Events
-	 * var seq = new Tone.Sequence(function(time, val){
-	 * 
-	 * }, [{"note" : "C4", "probability" : 1}, 
-	 * 	   {"note" : "E4", "probability" : 0.8}, 
-	 * 	   {"note" : "G4", "probability" : 0.6}, 
-	 * 	   [{"note" : "A4", "probability" : 0.8}, 
-	 * 	   	{"note" : "G4", "probability" : 0.1}
-	 * 	   ]
-	 * 	  ]);
+	 * //subdivisions are given as subarrays
+	 * }, ["C4", ["E4", "D4", "E4"], "G4", ["A4", "G4"]]);
 	 */
 	Tone.Sequence = function(){
 
@@ -77,7 +67,8 @@ define(["Tone/core/Tone", "Tone/event/Part", "Tone/core/Transport"], function (T
 
 	/**
 	 *  The subdivision of the sequence. This can only be 
-	 *  set in the constructor. 
+	 *  set in the constructor. The subdivision is the 
+	 *  interval between successive steps. 
 	 *  @type {Time}
 	 *  @memberOf Tone.Sequence#
 	 *  @name subdivision
@@ -142,6 +133,7 @@ define(["Tone/core/Tone", "Tone/event/Part", "Tone/core/Transport"], function (T
 	 *  Get the time of the index given the Sequence's subdivision
 	 *  @param  {Number}  index 
 	 *  @return  {Time}  The time of that index
+	 *  @private
 	 */
 	Tone.Sequence.prototype._indexTime = function(index){
 		if (this.isTicks(index)){

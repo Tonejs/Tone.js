@@ -10,6 +10,7 @@ define(["Tone/core/Tone"], function (Tone) {
 	 *         of the next choices, pass in an object with "state" and "probability" attributes. 
 	 *         The probabilities will be normalized and then chosen. If no next options
 	 *         are given for the current state, the state will stay there. 
+	 *  @extends {Tone}
 	 *  @example
 	 * var chain = new Tone.CtrlMarkov({
 	 * 	"beginning" : ["end", "middle"],
