@@ -54,7 +54,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Timeline"], function 
 	 */
 	Object.defineProperty(Tone.TimelineSignal.prototype, "value", {
 		get : function(){
-			return this._toUnits(this._param.value);
+			return this.getValueAtTime(this.now());
 		},
 		set : function(value){
 			var convertedVal = this._fromUnits(value);
@@ -254,9 +254,10 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Timeline"], function 
 	Tone.TimelineSignal.prototype.getValueAtTime = function(time){
 		var after = this._searchAfter(time);
 		var before = this._searchBefore(time);
+		var value = this._initial;
 		//if it was set by
 		if (before === null){
-			return this._initial;
+			value = this._initial;
 		} else if (before.type === Tone.TimelineSignal.Type.Target){
 			var previous = this._events.getEventBefore(before.time);
 			var previouVal;
@@ -265,17 +266,17 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Timeline"], function 
 			} else {
 				previouVal = previous.value;
 			}
-			return this._exponentialApproach(before.time, previouVal, before.value, before.constant, time);
+			value = this._exponentialApproach(before.time, previouVal, before.value, before.constant, time);
 		} else if (after === null){
-			return before.value;
+			value = before.value;
 		} else if (after.type === Tone.TimelineSignal.Type.Linear){
-			return this._linearInterpolate(before.time, before.value, after.time, after.value, time);
+			value = this._linearInterpolate(before.time, before.value, after.time, after.value, time);
 		} else if (after.type === Tone.TimelineSignal.Type.Exponential){
-			return this._exponentialInterpolate(before.time, before.value, after.time, after.value, time);
+			value = this._exponentialInterpolate(before.time, before.value, after.time, after.value, time);
 		} else {
-			return before.value;
+			value = before.value;
 		}
-		return this._param.getValueAtTime(time);
+		return this._toUnits(value);
 	};
 
 	/**
