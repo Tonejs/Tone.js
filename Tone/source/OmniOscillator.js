@@ -144,7 +144,7 @@ function(Tone){
 	 * following the harmonic series. 
 	 * Setting this value will automatically set the type to "custom". 
 	 * The value is an empty array when the type is not "custom". 
-	 * @memberOf Tone.Oscillator#
+	 * @memberOf Tone.OmniOscillator#
 	 * @type {Array}
 	 * @name partials
 	 * @example

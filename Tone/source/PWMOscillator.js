@@ -132,7 +132,7 @@ function(Tone){
 	 * @name partials
 	 * @private
 	 */
-	Object.defineProperty(Tone.OmniOscillator.prototype, "partials", {
+	Object.defineProperty(Tone.PWMOscillator.prototype, "partials", {
 		get : function(){
 			return [];
 		}
