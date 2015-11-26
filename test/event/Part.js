@@ -170,15 +170,15 @@ define(["helper/Basic", "Tone/event/Part", "Tone/core/Tone", "Tone/core/Transpor
 				expect(firstEvent.humanize).to.equal(0.1);
 				expect(firstEvent.probability).to.equal(0.2);
 				//loop duration is the same
-				expect(firstEvent.loopEnd).to.equal("2n + 4n");
-				expect(firstEvent.loopStart).to.equal("0");
+				expect(firstEvent.loopEnd).to.equal("1m");
+				expect(firstEvent.loopStart).to.equal("4n");
 				
 				var secondEvent = part.at(0.3);
 				expect(secondEvent.humanize).to.equal(0.1);
 				expect(secondEvent.probability).to.equal(0.2);
 				//loop duration is the same
-				expect(secondEvent.loopEnd).to.equal("2n + 4n");
-				expect(secondEvent.loopStart).to.equal("0");
+				expect(secondEvent.loopEnd).to.equal("1m");
+				expect(secondEvent.loopStart).to.equal("4n");
 				part.dispose();
 			});
 
@@ -224,7 +224,7 @@ define(["helper/Basic", "Tone/event/Part", "Tone/core/Tone", "Tone/core/Transpor
 			});
 
 			it ("passes in the scheduled time to the callback", function(done){
-				var now = Tone.Transport.now();
+				var now = Tone.Transport.now() + 0.1;
 				var part = new Part(function(time){
 					expect(time).to.be.a.number;
 					expect(time - now).to.be.closeTo(0.8, 0.01);
@@ -232,7 +232,7 @@ define(["helper/Basic", "Tone/event/Part", "Tone/core/Tone", "Tone/core/Transpor
 					done();
 				}, [0.5]);
 				part.start(0.3);
-				Tone.Transport.start();
+				Tone.Transport.start(now);
 			});
 
 			it ("passes in the value to the callback", function(done){
@@ -348,10 +348,10 @@ define(["helper/Basic", "Tone/event/Part", "Tone/core/Tone", "Tone/core/Transpor
 				var part = new Part({
 					"loopEnd" : 0.2,
 					"loop" : true,
-					"callback" : function(){
+					"callback" : function(time, val){
 						callCount++;
 					},
-					"events" : [0, 0.1]
+					"events" : [[0, 1], [0.1, 2]]
 				}).start(0);
 				Tone.Transport.start();
 
@@ -359,7 +359,7 @@ define(["helper/Basic", "Tone/event/Part", "Tone/core/Tone", "Tone/core/Transpor
 					expect(callCount).to.equal(6);
 					part.dispose();	
 					done();
-				}, 550);
+				}, 520);
 			});
 
 			it ("can be set to loop at a specific interval", function(done){

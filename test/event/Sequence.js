@@ -231,6 +231,22 @@ define(["helper/Basic", "Tone/event/Sequence", "Tone/core/Tone", "Tone/core/Tran
 				Tone.Transport.start(now);
 			});
 
+			it ("can schedule triple nested arrays", function(done){
+				var count = 0;
+				var now = Tone.Transport.now() + 0.1;
+				var eighth = Tone.Transport.toSeconds("8n");
+				var times = [now, now + eighth, now + eighth * 1.5, now + eighth * 1.75];
+				var seq = new Sequence(function(time, value){
+					expect(time).to.be.closeTo(times[count], 0.01);
+					count++;
+					if (value === 3){
+						seq.dispose();
+						done();
+					}
+				}, [0, [1, [2, 3]]], "8n").start(0);
+				Tone.Transport.start(now);
+			});
+
 			it ("starts an event added after the seq was started", function(done){
 				var seq = new Sequence({
 					"callback" : function(time, value){

@@ -108,15 +108,15 @@ define(["helper/Basic", "Tone/event/Event", "Tone/core/Tone", "Tone/core/Transpo
 			});
 
 			it ("passes in the scheduled time to the callback", function(done){
-				var now = Tone.Transport.now();
+				var now = Tone.Transport.now() + 0.1;
 				var note = new Event(function(time){
 					expect(time).to.be.a.number;
 					expect(time - now).to.be.closeTo(0.3, 0.01);
 					note.dispose();
 					done();
 				});
-				Tone.Transport.start();
 				note.start(0.3);
+				Tone.Transport.start(now);
 			});
 
 			it ("passes in the value to the callback", function(done){
