@@ -337,6 +337,17 @@ define(["helper/Basic", "Tone/event/Part", "Tone/core/Tone", "Tone/core/Transpor
 				Tone.Transport.start(startTime);
 			});
 
+			it("can start with an offset", function(done){
+				var now = Tone.Transport.now() + 0.1;
+				var part = new Part(function(time, number){
+					expect(time - now).to.be.closeTo(0.1, 0.01);
+					expect(number).to.equal(1);
+					part.dispose();
+					done();
+				}, [[0, 0], [1, 1]]).start(0, 0.9);
+				Tone.Transport.start(now);
+			});
+
 		});
 		
 		context("Looping", function(){
@@ -484,6 +495,24 @@ define(["helper/Basic", "Tone/event/Part", "Tone/core/Tone", "Tone/core/Transpor
 					part.dispose();	
 					done();
 				}, 800);
+			});
+
+			it("can start a loop with an offset", function(done){
+				var iteration = 0;
+				var part = new Part(function(time, number){
+					if (iteration === 0){
+						expect(number).to.equal(1);
+					} else if (iteration === 1){
+						expect(number).to.equal(0);
+						part.dispose();
+						done();
+					}
+					iteration++;
+				}, [[0, 0], [0.25, 1]]);
+				part.loop = true;
+				part.loopEnd = 0.5;
+				part.start(0, 0.25);
+				Tone.Transport.start();
 			});
 
 		});

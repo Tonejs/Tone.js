@@ -179,7 +179,7 @@ define(["Tone/core/Tone", "Tone/event/Event", "Tone/core/Type", "Tone/core/Trans
 				event.start(ticks + "i");
 			}
 		} else {
-			if (event.startOffset < offset){
+			if (event.startOffset >= offset){
 				event.start(ticks + "i");
 			}
 		}
