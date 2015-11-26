@@ -90,7 +90,7 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Type", "Tone/core/Ti
 		this.probability = options.probability;
 
 		/**
-		 *  If set to true, will apply small (+/-0.01 seconds) random variation
+		 *  If set to true, will apply small (+/-0.02 seconds) random variation
 		 *  to the callback time. If the value is given as a time, it will randomize
 		 *  by that amount.
 		 *  @example
@@ -265,7 +265,7 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Type", "Tone/core/Ti
 				return;
 			} 
 			if (this.humanize){
-				var variation = 0.01;
+				var variation = 0.02;
 				if (!this.isBoolean(this.humanize)){
 					variation = this.toSeconds(this.humanize);
 				}
