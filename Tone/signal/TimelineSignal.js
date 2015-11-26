@@ -54,7 +54,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Timeline"], function 
 	 */
 	Object.defineProperty(Tone.TimelineSignal.prototype, "value", {
 		get : function(){
-			return this.getValueAtTime(this.now());
+			return this._toUnits(this._param.value);
 		},
 		set : function(value){
 			var convertedVal = this._fromUnits(value);
@@ -247,7 +247,8 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Timeline"], function 
 	};
 
 	/**
-	 *  Get the scheduled value at the given time.
+	 *  Get the scheduled value at the given time. This will
+	 *  return the unconverted (raw) value.
 	 *  @param  {Number}  time  The time in seconds.
 	 *  @return  {Number}  The scheduled value at the given time.
 	 */
@@ -276,7 +277,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Timeline"], function 
 		} else {
 			value = before.value;
 		}
-		return this._toUnits(value);
+		return value;
 	};
 
 	/**
