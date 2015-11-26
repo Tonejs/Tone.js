@@ -87,7 +87,8 @@ function(Tone){
 		"type" : "sine",
 		"frequency" : 440,
 		"detune" : 0,
-		"phase" : 0
+		"phase" : 0,
+		"partials" : []
 	};
 
 	/**
