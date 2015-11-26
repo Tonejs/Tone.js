@@ -56,6 +56,9 @@ function(Tone){
 		this.type = options.type;
 		this.phase = options.phase;
 		this._readOnly(["frequency", "detune"]);
+		if (this.isArray(options.partials)){
+			this.partials = options.partials;
+		}
 	};
 
 	Tone.extend(Tone.OmniOscillator, Tone.Oscillator);
