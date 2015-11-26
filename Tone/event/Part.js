@@ -169,15 +169,19 @@ define(["Tone/core/Tone", "Tone/event/Event", "Tone/core/Type", "Tone/core/Trans
 	 *  @private
 	 */
 	Tone.Part.prototype._startNote = function(event, ticks, offset){
-		var startTick = ticks + offset;
+		ticks -= offset;
 		if (this._loop){
-			var eventStartOffset = event.startOffset - this.startOffset;
-			if (eventStartOffset >= this._loopStart && eventStartOffset < this._loopEnd){
-				// startTick -= this._loopStart;
-				event.start(startTick + "i", this.startOffset + "i");
+			if (event.startOffset >= this._loopStart && event.startOffset < this._loopEnd){
+				if (event.startOffset < offset){
+					//start it on the next loop
+					ticks += this._getLoopDuration();
+				}
+				event.start(ticks + "i");
 			}
 		} else {
-			event.start(startTick + "i");
+			if (event.startOffset < offset){
+				event.start(ticks + "i");
+			}
 		}
 	};
 
@@ -195,7 +199,7 @@ define(["Tone/core/Tone", "Tone/event/Event", "Tone/core/Type", "Tone/core/Trans
 		set : function(offset){
 			this._startOffset = offset;
 			this._forEach(function(event){
-				event.startOffset += offset;
+				event.startOffset += this._startOffset;
 			});
 		}
 	});
@@ -285,10 +289,11 @@ define(["Tone/core/Tone", "Tone/event/Event", "Tone/core/Type", "Tone/core/Trans
 		}
 		//the start offset
 		event.startOffset = time;
-		
+
 		//initialize the values
 		event.set({
-			"loopEnd" : (this._loopEnd - this._loopStart) + "i",
+			"loopEnd" : this.loopEnd,
+			"loopStart" : this.loopStart,
 			"loop" : this.loop,
 			"humanize" : this.humanize,
 			"playbackRate" : this.playbackRate,
@@ -315,7 +320,10 @@ define(["Tone/core/Tone", "Tone/event/Event", "Tone/core/Type", "Tone/core/Trans
 	};
 
 	/**
-	 *  Remove a note from the part. 
+	 *  Remove an event from the part. Will recursively iterate
+	 *  into the sub-parts to find the event
+	 *  @param {Time} time The time of the event
+	 *  @param {*} value Optionally select only a specific event value
 	 */
 	Tone.Part.prototype.remove = function(time, value){
 		//extract the parameters
@@ -324,14 +332,19 @@ define(["Tone/core/Tone", "Tone/event/Event", "Tone/core/Type", "Tone/core/Trans
 			time = value.time;
 		} 
 		time = this.toTicks(time);
-		this._forEach(function(event, index){
-			if (event.startOffset === time){
-				if (this.isUndef(value) || (!this.isUndef(value) && event.value === value)){
-					this._events.splice(index, 1);
-					event.dispose();
+		for (var i = this._events.length - 1; i >= 0; i--){
+			var event = this._events[i];
+			if (event instanceof Tone.Part){
+				event.remove(time, value);
+			} else {
+				if (event.startOffset === time){
+					if (this.isUndef(value) || (!this.isUndef(value) && event.value === value)){
+						this._events.splice(i, 1);
+						event.dispose();
+					}
 				}
 			}
-		});
+		}
 		return this;
 	};
 
@@ -361,13 +374,20 @@ define(["Tone/core/Tone", "Tone/event/Event", "Tone/core/Type", "Tone/core/Trans
 	};
 
 	/**
-	 *  Iterate over all of the notes
+	 *  Iterate over all of the events
 	 *  @param {Function} callback
+	 *  @param {Object} ctx The context
 	 *  @private
 	 */
-	Tone.Part.prototype._forEach = function(callback){
+	Tone.Part.prototype._forEach = function(callback, ctx){
+		ctx = this.defaultArg(ctx, this);
 		for (var i = this._events.length - 1; i >= 0; i--){
-			callback.call(this, this._events[i], i);
+			var e = this._events[i];
+			if (e instanceof Tone.Part){
+				e._forEach(callback, ctx);
+			} else {
+				callback.call(ctx, e);
+			}
 		}
 		return this;
 	};
@@ -390,7 +410,7 @@ define(["Tone/core/Tone", "Tone/event/Event", "Tone/core/Type", "Tone/core/Trans
 	 *  @private
 	 */
 	Tone.Part.prototype._tick = function(time, value){
-		if (!this.mute && this._state.getStateAtTime(Tone.Transport.ticks) === Tone.State.Started){
+		if (!this.mute){
 			this.callback(time, value);
 		}
 	};
@@ -402,8 +422,7 @@ define(["Tone/core/Tone", "Tone/event/Event", "Tone/core/Type", "Tone/core/Trans
 	 *  @private
 	 */
 	Tone.Part.prototype._testLoopBoundries = function(event){
-		var eventStartOffset = event.startOffset - this.startOffset;
-		if (eventStartOffset < this._loopStart || eventStartOffset >= this._loopEnd){
+		if (event.startOffset < this._loopStart || event.startOffset >= this._loopEnd){
 			event.cancel();
 		} else {
 			//reschedule it if it's stopped
@@ -467,8 +486,8 @@ define(["Tone/core/Tone", "Tone/event/Event", "Tone/core/Type", "Tone/core/Trans
 		set : function(loop){
 			this._loop = loop;
 			this._forEach(function(event){
-				event._loopStart = 0;
-				event._loopEnd = (this._loopEnd - this._loopStart);
+				event._loopStart = this._loopStart;
+				event._loopEnd = this._loopEnd;
 				event.loop = loop;
 				this._testLoopBoundries(event);
 			});
@@ -490,7 +509,7 @@ define(["Tone/core/Tone", "Tone/event/Event", "Tone/core/Type", "Tone/core/Trans
 			this._loopEnd = this.toTicks(loopEnd);
 			if (this._loop){
 				this._forEach(function(event){
-					event.loopEnd = (this._loopEnd - this._loopStart) + "i";
+					event.loopEnd = this.loopEnd;
 					this._testLoopBoundries(event);
 				});
 			}
@@ -512,7 +531,7 @@ define(["Tone/core/Tone", "Tone/event/Event", "Tone/core/Type", "Tone/core/Trans
 			this._loopStart = this.toTicks(loopStart);
 			if (this._loop){
 				this._forEach(function(event){
-					event.loopEnd = (this._loopEnd - this._loopStart) + "i";
+					event.loopStart = this.loopStart;
 					this._testLoopBoundries(event);
 				});
 			}
