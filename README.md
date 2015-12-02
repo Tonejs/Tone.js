@@ -115,7 +115,7 @@ var monoSynth = new Tone.MonoSynth({
 }).toMaster();
 
 //start the note "D3" one second from now
-simpleSynth.triggerAttack("D3", "+1");
+monoSynth.triggerAttack("D3", "+1");
 ```
 
 All instruments are monophonic (one voice) but can be made polyphonic when the constructor is passed in as the second argument to [Tone.PolySynth](http://tonejs.org/docs/#PolySynth). 
