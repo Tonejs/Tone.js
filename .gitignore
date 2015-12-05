@@ -35,8 +35,6 @@ examples/crashes.html
 
 examples/style/examples.css.map
 
-examples/style/examples.scss
-
 examples/deps/Tone.dat.gui.js
 
 examples/deps/dat.gui.js
@@ -44,3 +42,6 @@ examples/deps/dat.gui.js
 test/mainTest.js
 
 test/Main.js
+
+build/p5.Tone.min.js
+build/p5.Tone.js
