@@ -17,6 +17,20 @@ define(["Tone/core/Tone", "Tone/core/Type"], function (Tone) {
 		 *  @private
 		 */
 		this._timeline = [];
+
+		/**
+		 *  An array of items to remove from the list. 
+		 *  @type {Array}
+		 *  @private
+		 */
+		this._toRemove = [];
+
+		/**
+		 *  Flag if the tieline is mid iteration
+		 *  @private
+		 *  @type {Boolean}
+		 */
+		this._iterating = false;
 	};
 
 	Tone.extend(Tone.Timeline);
@@ -61,11 +75,14 @@ define(["Tone/core/Tone", "Tone/core/Type"], function (Tone) {
 	 *  @returns {Tone.Timeline} this
 	 */
 	Tone.Timeline.prototype.removeEvent = function(event){
-		this.forEachAtTime(event.time, function(testEvent, index){
-			if (testEvent === event){
+		if (this._iterating){
+			this._toRemove.push(event);
+		} else {
+			var index = this._timeline.indexOf(event);
+			if (index !== -1){
 				this._timeline.splice(index, 1);
 			}
-		}.bind(this));
+		}
 		return this;
 	};
 
@@ -185,15 +202,39 @@ define(["Tone/core/Tone", "Tone/core/Type"], function (Tone) {
 	};
 
 	/**
+	 *  Internal iterator. Applies extra safety checks for 
+	 *  removing items from the array. 
+	 *  @param  {Function}  callback 
+	 *  @param  {Number=}    lowerBound     
+	 *  @param  {Number=}    upperBound    
+	 *  @private
+	 */
+	Tone.Timeline.prototype._iterate = function(callback, lowerBound, upperBound){
+		this._iterating = true;
+		lowerBound = this.defaultArg(lowerBound, 0);
+		upperBound = this.defaultArg(upperBound, this._timeline.length - 1);
+		for (var i = lowerBound; i <= upperBound; i++){
+			callback(this._timeline[i]);
+		}
+		this._iterating = false;
+		if (this._toRemove.length > 0){
+			for (var j = 0; j < this._toRemove.length; j++){
+				var index = this._timeline.indexOf(this._toRemove[j]);
+				if (index !== -1){
+					this._timeline.splice(index, 1);
+				}
+			}
+			this._toRemove = [];
+		}
+	};
+
+	/**
 	 *  Iterate over everything in the array
 	 *  @param  {Function}  callback The callback to invoke with every item
 	 *  @returns {Tone.Timeline} this
 	 */
 	Tone.Timeline.prototype.forEach = function(callback){
-		//iterate over the items in reverse so that removing an item doesn't break things
-		for (var i = this._timeline.length - 1; i >= 0; i--){
-			callback(this._timeline[i], i);
-		}
+		this._iterate(callback);
 		return this;
 	};
 
@@ -206,11 +247,9 @@ define(["Tone/core/Tone", "Tone/core/Type"], function (Tone) {
 	Tone.Timeline.prototype.forEachBefore = function(time, callback){
 		//iterate over the items in reverse so that removing an item doesn't break things
 		time = this.toSeconds(time);
-		var startIndex = this._search(time);
-		if (startIndex !== -1){
-			for (var i = startIndex; i >= 0; i--){
-				callback(this._timeline[i], i);
-			}
+		var upperBound = this._search(time);
+		if (upperBound !== -1){
+			this._iterate(callback, 0, upperBound);
 		}
 		return this;
 	};
@@ -224,10 +263,8 @@ define(["Tone/core/Tone", "Tone/core/Type"], function (Tone) {
 	Tone.Timeline.prototype.forEachAfter = function(time, callback){
 		//iterate over the items in reverse so that removing an item doesn't break things
 		time = this.toSeconds(time);
-		var endIndex = this._search(time);
-		for (var i = this._timeline.length - 1; i > endIndex; i--){
-			callback(this._timeline[i], i);
-		}
+		var lowerBound = this._search(time);
+		this._iterate(callback, lowerBound + 1);
 		return this;
 	};
 
@@ -241,14 +278,12 @@ define(["Tone/core/Tone", "Tone/core/Type"], function (Tone) {
 	Tone.Timeline.prototype.forEachFrom = function(time, callback){
 		//iterate over the items in reverse so that removing an item doesn't break things
 		time = this.toSeconds(time);
-		var endIndex = this._search(time);
+		var lowerBound = this._search(time);
 		//work backwards until the event time is less than time
-		while (endIndex >= 0 && this._timeline[endIndex].time >= time){
-			endIndex--;
+		while (lowerBound >= 0 && this._timeline[lowerBound].time >= time){
+			lowerBound--;
 		}
-		for (var i = this._timeline.length - 1; i > endIndex; i--){
-			callback(this._timeline[i], i);
-		}
+		this._iterate(callback, lowerBound + 1);
 		return this;
 	};
 
@@ -261,16 +296,13 @@ define(["Tone/core/Tone", "Tone/core/Type"], function (Tone) {
 	Tone.Timeline.prototype.forEachAtTime = function(time, callback){
 		//iterate over the items in reverse so that removing an item doesn't break things
 		time = this.toSeconds(time);
-		var index = this._search(time);
-		if (index !== -1){
-			for (var i = index; i >= 0; i--){
-				var event = this._timeline[i];
+		var upperBound = this._search(time);
+		if (upperBound !== -1){
+			this._iterate(function(event){
 				if (event.time === time){
-					callback(event, i);
-				} else {
-					break;
-				}
-			}
+					callback(event);
+				} 
+			}, 0, upperBound);
 		}
 		return this;
 	};
@@ -282,6 +314,7 @@ define(["Tone/core/Tone", "Tone/core/Type"], function (Tone) {
 	Tone.Timeline.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
 		this._timeline = null;
+		this._toRemove = null;
 	};
 
 	return Tone.Timeline;
