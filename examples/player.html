@@ -8,8 +8,9 @@
 	
 	<script type="text/javascript" src="../build/Tone.js"></script>
 	<script type="text/javascript" src="./scripts/jquery.min.js"></script>
-	<script type="text/javascript" src="./scripts/Notone.GUI.js"></script>
+	<script type="text/javascript" src="./scripts/draggabilly.js"></script>
 	<script type="text/javascript" src="./scripts/Interface.js"></script>
+	<script type="text/javascript" src="./scripts/Logo.js"></script>
 
 	<link rel="stylesheet" type="text/css" href="./style/examples.css">
 
@@ -22,13 +23,8 @@
 	<div id="Content">
 		<div id="Title">Grains</div>
 		<div id="Explanation">
-			Click on the button to play short looped section (also called a grain)
+			Click on the button to play short looped section of the audio file
 			using <a href="http://tonejs.org/docs/#Player">Tone.Player</a>. 
-			When the loop becomes very small, it takes on another pitch value. 
-			<br><br>
-			The duration of the sample is &#8275;2.5 seconds. Any values for loopStart or loopEnd 
-			larger than the duration will just loop to the end of the sample. Also make sure 
-			that loopStart is smaller than loopEnd. 
 		</div>
 	</div>
 	<script type="text/javascript">
@@ -44,15 +40,6 @@
 	
 	<script id="GUI" type="text/javascript">
 		$(function(){
-			Notone.config({
-				"search" : false,
-				"expandInDrawer" : true,
-				"hideDrawer" : Interface.isMobile,
-				"drawer" : true,
-				"container" : "body"
-			});
-
-			var playerGUI = Notone.add(player, "player", ["loopStart", "loopEnd"]);
 
 			new Interface.Loader();
 

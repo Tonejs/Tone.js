@@ -1,9 +1,3 @@
-/**
- *  COLORS
- */
-/** 
- *  SIZING
- */
 /* FOR MOBILES */
 @media (max-width: 400px) {
   #TopBar #Homepage a {
@@ -11,7 +5,7 @@
 
   #Content {
     font-size: 10px !important;
-    max-width: calc(100% - 32px) !important; }
+    max-width: calc(100% - 6px) !important; }
 
   #Content * {
     font-size: 14px !important; } }
@@ -20,13 +14,6 @@ html, body {
   margin: 0px;
   height: calc(100% - 4px); }
 
-#NotoneDrawer {
-  top: 40.5px;
-  z-index: 2; }
-
-.Notone {
-  z-index: 3 !important; }
-
 /**
  *  
  *  TOP BAR
@@ -34,60 +21,28 @@ html, body {
  */
 #TopBar {
   background-color: black;
-  height: 34.5px;
+  height: 35px;
   margin: 3px;
   position: relative;
-  width: calc(100% - 2 * 3px);
+  width: calc(100% - 6px);
   font-family: monospace; }
-  #TopBar #Homepage {
-    position: relative;
-    float: left;
-    margin-left: 20px;
-    font-size: 24px;
-    line-height: 34.5px;
-    color: white; }
-    #TopBar #Homepage a {
-      line-height: inherit;
-      height: 100%;
-      position: absolute;
-      font-size: 24px;
-      color: white;
-      text-transform: none;
-      text-decoration: none;
-      margin-left: 0px; }
+  #TopBar #TonejsLogo {
+    position: absolute;
+    top: 3px; }
   #TopBar #Examples {
-    left: 50%;
-    height: 34.5px;
-    line-height: 34.5px;
-    position: absolute; }
+    right: 10px;
+    top: 0px;
+    height: 35px;
+    line-height: 35px;
+    position: absolute;
+    width: 100px;
+    text-align: left; }
     #TopBar #Examples a {
       position: absolute;
       font-size: 14px;
-      left: 50%;
-      -webkit-transform: translate(-50%, 0);
-          -ms-transform: translate(-50%, 0);
-              transform: translate(-50%, 0);
-      text-align: center;
       color: white;
       text-transform: none;
-      text-decoration: none;
-      margin-left: 0px; }
-  #TopBar #Meter {
-    width: 50px;
-    height: calc(100% - 10px);
-    position: absolute;
-    right: 3px;
-    top: 5px; }
-    #TopBar #Meter .Level {
-      height: 100%;
-      position: absolute;
-      width: 47%;
-      background-color: #59d72e;
-      bottom: 0px; }
-    #TopBar #Meter #Left {
-      left: 0px; }
-    #TopBar #Meter #Right {
-      right: 0px; }
+      text-decoration: none; }
 
 #MobileStart {
   position: absolute;
@@ -118,21 +73,18 @@ html, body {
     background-color: #ED33CF;
     color: #22DBC0; }
 
-.Mobile #Content {
-  width: calc(100% - 28px); }
-
 #Content {
   font-family: monospace;
   position: absolute;
-  right: 3px;
-  width: calc(100% - 280px);
+  left: 3px;
+  width: calc(100% - 6px);
   margin-bottom: 15px; }
   #Content #Title {
     height: 23px;
     line-height: 23px;
     font-size: 1.2em;
     color: white;
-    width: calc(100% - padding);
+    width: calc(100% - 15px);
     padding-left: 15px;
     background-color: black; }
   #Content #Explanation {
@@ -237,7 +189,7 @@ html, body {
   #Content .Button:hover {
     color: white;
     background-color: #3833ED; }
-  #Content .Button:hover:active, #Content .Button:hover:active.Active {
+  #Content .Button:hover:active, #Content #Content .Button:hover:active.Active {
     color: #22DBC0;
     background-color: #ED33CF; }
   #Content .Button.Toggle.Active {
@@ -246,17 +198,30 @@ html, body {
     line-height: 84px;
     color: black;
     background-color: white; }
-
-#Content.FullScreen {
-  width: calc(100% - 6px) !important;
-  max-width: calc(100% - 6px) !important; }
+  #Content .Transport {
+    width: 100%;
+    height: 30px;
+    background-color: black;
+    line-height: 30px;
+    color: white;
+    border-radius: 10px;
+    margin-top: 3px;
+    position: relative; }
+    #Content .Transport #Position {
+      width: 70px;
+      left: 50%;
+      margin-left: -35px;
+      text-align: left;
+      height: 100%;
+      position: absolute;
+      color: white; }
 
 #Keyboard {
   margin: 3px !important; }
 
 code {
   background-color: #ECECEC;
-  color: #8C8C8C;
+  color: #333;
   padding: 1px; }
 
 #Loading {

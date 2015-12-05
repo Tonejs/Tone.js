@@ -8,7 +8,8 @@
 
 	<script type="text/javascript" src="../build/Tone.js"></script>
 	<script type="text/javascript" src="./scripts/jquery.min.js"></script>
-	<script type="text/javascript" src="./scripts/Notone.GUI.js"></script>
+	<script type="text/javascript" src="./scripts/draggabilly.js"></script>
+	<script type="text/javascript" src="./scripts/Logo.js"></script>
 	<script type="text/javascript" src="./scripts/Interface.js"></script>
 	<script type="text/javascript" src="./scripts/nexusUI.js"></script>
 
@@ -53,7 +54,7 @@
 
 		var reverb = new Tone.JCReverb().toMaster();
 
-		for (var i = 0; i < 7; i++){
+		for (var i = 0; i < 8; i++){
 			oscillators["node" + i] = new Tone.Oscillator({
 				"frequency" : bassFreq * i,
 				"type" :  "sawtooth10",
@@ -68,7 +69,7 @@
 		nx.onload = function(){
 			nx.colorize("#7F33ED");
 
-			joints1.nodeSize = 45;
+			joints1.nodeSize = 25;
 			joints1.val.x = Math.random();
 			joints1.val.y = Math.random();
 			joints1.resize($("#Content").width(), 250);
@@ -76,7 +77,6 @@
 			var width = joints1.width;
 			var height = joints1.height;
 			joints1.threshold = Math.max($("#Content").width() / 1.5, 60);
-			randomPlacement();
 			joints1.init();
 			joints1.draw();
 
@@ -85,18 +85,6 @@
 				joints1.threshold = Math.max($("#Content").width() / 1.5, 60);
 				joints1.draw();
 			});
-
-			function randomPlacement(){
-				var width = $("#Content").width();
-				var height = joints1.height;
-				var len = Object.keys(oscillators).length;
-				for (var i = 0; i < len; i++){
-					joints1.joints[i] = {
-						x : Math.random() * width,
-						y : Math.random() * height
-					}
-				}
-			}
 
 			function setValues(data){
 				for (var n in oscillators){

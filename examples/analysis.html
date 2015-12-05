@@ -8,7 +8,8 @@
 	
 	<script type="text/javascript" src="../build/Tone.js"></script>
 	<script type="text/javascript" src="./scripts/jquery.min.js"></script>
-	<script type="text/javascript" src="./scripts/Notone.GUI.js"></script>
+	<script type="text/javascript" src="./scripts/draggabilly.js"></script>
+	<script type="text/javascript" src="./scripts/Logo.js"></script>
 	<script type="text/javascript" src="./scripts/Interface.js"></script>
 
 	<link rel="stylesheet" type="text/css" href="./style/examples.css">
@@ -97,8 +98,9 @@
 			var canvasWidth, canvasHeight;
 
 			function sizeCanvases(){
-				canvasWidth = $("canvas").width();
-				canvasHeight = $("canvas").height();
+				canvasWidth = $("#fft").width();
+				canvasHeight = $("#fft").height();
+				console.log(canvasWidth);
 				waveContext.canvas.width = canvasWidth;
 				fftContext.canvas.width = canvasWidth;
 				waveContext.canvas.height = canvasHeight;
@@ -123,16 +125,6 @@
 				drawWaveform(waveformValues);
 			}
 			loop();
-
-			/*Notone.config({
-				"search" : false,
-				"expandInDrawer" : true,
-				"hideDrawer" : Interface.isMobile,
-				"drawer" : true,
-				"container" : "body"
-			});
-
-			var fmGUI = Notone.add(synth, "SimpleFM");*/
 
 		});
 	</script>

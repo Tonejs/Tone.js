@@ -8,7 +8,8 @@
 
 	<script type="text/javascript" src="../build/Tone.js"></script>
 	<script type="text/javascript" src="./scripts/jquery.min.js"></script>
-	<script type="text/javascript" src="./scripts/Notone.GUI.js"></script>
+	<script type="text/javascript" src="./scripts/draggabilly.js"></script>
+	<script type="text/javascript" src="./scripts/Logo.js"></script>
 	<script type="text/javascript" src="./scripts/Interface.js"></script>
 	<script type="text/javascript" src="./scripts/nexusUI.js"></script>
 
@@ -25,7 +26,7 @@
 			margin-top: 3px;
 		}
 	</style>
-	<div id="Content" class="FullScreen">
+	<div id="Content">
 		<div id="Title">Tone.Transport</div>
 		<div id="Explanation">
 			<a href="http://tonejs.org/docs/#Transport">Tone.Transport</a> 
@@ -44,32 +45,29 @@
 			"E" : "./audio/casio/E2.mp3",
 			"F#" : "./audio/casio/Fs2.mp3",
 		}, {
+			"volume" : -10,
 			"envelope" : {
-				"release" : 0.2
+				// "release" : 0.2
 			}
 		}).toMaster();
-		keys.volume.value = -15;
 
-		//keep track of steps and notes
-		var stepNumber = 0;
-		var noteNames = ["A", "C#", "E", "F#"];
+		// var keys = new Tone.PolySynth(4, Tone.SimpleSynth).toMaster();
 
-		//the repeated callback
-		Tone.Transport.setInterval(function(time){
-			//get the notes at the step
-			var column = matrix1.matrix[stepNumber];
+		//the notes
+		var noteNames = ["F#", "E", "C#", "A"];
+		// var noteNames = ["F#3", "E3", "C#3", "A3"];
+
+		var loop = new Tone.Sequence(function(time, col){
+			var column = matrix1.matrix[col];
 			for (var i = 0; i < 4; i++){
 				if (column[i] === 1){
 					keys.triggerAttackRelease(noteNames[i], "32n", time);
 				}
 			}
-			stepNumber++;
-			stepNumber = stepNumber % 16;
-		}, "16n");
+		}, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], "16n");
 
-		//transport settings
-		Tone.Transport.loopEnd = "1m";
-		Tone.Transport.loop = true;
+		Tone.Transport.start();
+
 	</script>
 	<script type="text/javascript">
 		nx.onload = function(){
@@ -99,12 +97,14 @@
 				type : "toggle",
 				key : 32, //spacebar
 				start : function(){
-					Tone.Transport.start();
+					loop.start();
 				},
 				end : function(){
-					Tone.Transport.stop();
+					loop.stop();
 				},
 			});
+
+			Interface.Loader();
 
 			$(window).on("resize", function(){
 				matrix1.resize($("#Content").width(), 250);

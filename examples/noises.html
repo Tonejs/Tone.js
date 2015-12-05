@@ -8,8 +8,9 @@
 
 	<script type="text/javascript" src="../build/Tone.js"></script>
 	<script type="text/javascript" src="./scripts/jquery.min.js"></script>
-	<script type="text/javascript" src="./scripts/Notone.GUI.js"></script>
+	<script type="text/javascript" src="./scripts/draggabilly.js"></script>
 	<script type="text/javascript" src="./scripts/Interface.js"></script>
+	<script type="text/javascript" src="./scripts/Logo.js"></script>
 
 	<link rel="stylesheet" type="text/css" href="./style/examples.css">
 
@@ -42,18 +43,9 @@
 
 	<script id="GUI" type="text/javascript">
 		$(function(){
-			Notone.config({
-				"search" : false,
-				"expandInDrawer" : true,
-				"hideDrawer" : Interface.isMobile,
-				"drawer" : true,
-				"container" : "body"
-			});
-
-			var noiseGUI = Notone.add(noise, "Noise");
 
 			new Interface.Dragger({
-				gui : noiseGUI,
+				tone : noise,
 				y : {
 					param : "volume",
 					min : -40,
