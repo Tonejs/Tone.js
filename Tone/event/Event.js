@@ -225,6 +225,7 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Type", "Tone/core/Ti
 	 *  @return  {Tone.Event}  this
 	 */
 	Tone.Event.prototype.stop = function(time){
+		this.cancel(time);
 		time = this.toTicks(time);
 		if (this._state.getStateAtTime(time) === Tone.State.Started){
 			this._state.setStateAtTime(Tone.State.Stopped, time);
