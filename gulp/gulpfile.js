@@ -167,7 +167,7 @@ gulp.task("collectTests", function(done){
 	if (argv.file){
 		tests = ["../test/*/"+argv.file+".js"];
 	} else if (argv.signal || argv.core || argv.component || argv.instrument || 
-				argv.source || argv.effect || argv.structure){
+				argv.source || argv.effect || argv.event){
 		tests = [];
 		if (argv.signal){
 			tests.push("../test/signal/*.js");
@@ -187,8 +187,8 @@ gulp.task("collectTests", function(done){
 		if (argv.effect){
 			tests.push("../test/effect/*.js");
 		}
-		if (argv.structure){
-			tests.push("../test/structure/*.js");
+		if (argv.event){
+			tests.push("../test/event/*.js");
 		}
 	} 
 	// console.log(argv.signal === undefined);
