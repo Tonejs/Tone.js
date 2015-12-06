@@ -1,7 +1,7 @@
 ### r6
 
 * Added PitchShift and Vibrato Effect.
-* Added Timeline/TimelineState/TimelineSignal which keeps track of the state
+* Added Timeline/TimelineState/TimelineSignal which keeps track of all scheduled state changes.
 * Clock uses requestAnimationFrame instead of ScriptProcessorNode
 * Removed `onended` event from Tone.Source
 * Refactored tests into individual files. 
@@ -22,6 +22,7 @@
 DEPRECATED:
 * `setTimeout`, `setInterval`, `setTimeline` in favor of new `schedule`, `scheduleOnce`, and `scheduleRepeat`.
 * Tone.Signal no longer takes an AudioParam in the first argument. Use Tone.Param instead. 
+* Tone.Buffer.onload/onprogress/onerror is deprecated. Use `Tone.Buffer.on("load", callback)` instead. 
 
 ### r5
 
