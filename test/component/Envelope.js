@@ -262,7 +262,7 @@ function (Envelope, Basic, Offline, Test) {
 					if (time < env.attack){
 						expect(sample).to.be.within(0, 1);
 					} else if (time < env.attack + env.decay){
-						expect(sample).to.be.within(env.sustain, 1);
+						expect(sample).to.be.within(env.sustain - 0.001, 1);
 					} else if (time < duration){
 						expect(sample).to.be.closeTo(env.sustain, 0.1);
 					} else if (time < duration + env.release){
