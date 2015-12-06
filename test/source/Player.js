@@ -174,8 +174,8 @@ define(["helper/Basic", "Tone/source/Player", "helper/Offline", "helper/SourceTe
 
 			it("can get/set the playbackRate", function(){
 				var player = new Player();
-				player.playbackRate.value = 0.5;
-				expect(player.playbackRate.value).to.equal(0.5);
+				player.playbackRate = 0.5;
+				expect(player.playbackRate).to.equal(0.5);
 				player.dispose();
 			});
 

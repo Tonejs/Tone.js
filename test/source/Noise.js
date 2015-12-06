@@ -11,26 +11,11 @@ define(["helper/Basic", "Tone/source/Noise", "helper/SourceTests", "helper/Outpu
 
 			it("can be constructed with an options object", function(){
 				var noise = new Noise({
-					"type" : "brown",
-					"playbackRate" : 0.1
+					"type" : "brown"
 				});
 				expect(noise.type).to.equal("brown");
-				expect(noise.playbackRate.value).to.be.closeTo(0.1, 0.001);
 				noise.dispose();
 			});
-
-			it("plays at different playbackRates", function(done){
-				var noise;
-				OutputAudio(function(dest){
-					noise = new Noise("white");
-					noise.playbackRate.value = 0.1;
-					noise.connect(dest);
-					noise.start();
-				}, function(){
-					noise.dispose();
-					done();
-				});
-			});		
 
 		});
 
@@ -92,5 +77,53 @@ define(["helper/Basic", "Tone/source/Noise", "helper/SourceTests", "helper/Outpu
 			});		
 		});
 
+
+		/*it("be scheduled to start in the future", function(done){
+			var noise;
+			var offline = new Offline();
+			Test.offlineTest(1, function(dest){
+				noise = new Noise();
+				noise.connect(dest);
+				noise.start("+0.1");
+			}, function(sample, time){
+				if (sample !== 0){
+					expect(time).to.be.at.least(0.1);
+				}
+			}, function(){
+				noise.dispose();
+				done();
+			});
+		});
+
+		it("can set the noise types", function(){
+			var noise = new Noise();
+			noise.type = "brown";
+			noise.type = "white";
+			noise.type = "pink";
+			//even after started
+			noise.start();
+			noise.type = "brown";
+			noise.type = "white";
+			noise.type = "pink";
+			noise.stop();
+			noise.dispose();
+		});
+
+		it("can be created with an options object", function(){
+			var noise = new Noise({
+				"type" : "brown"
+			});
+			expect(noise.type).to.equal("brown");
+			noise.dispose();
+		});
+
+		it("can be set with an options object", function(){
+			var noise = new Noise();
+			noise.set({
+				"type" : "pink"
+			});
+			expect(noise.type).to.equal("pink");
+			noise.dispose();
+		});*/
 	});
 });
