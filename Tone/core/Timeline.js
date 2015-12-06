@@ -137,12 +137,17 @@ define(["Tone/core/Tone", "Tone/core/Type"], function (Tone) {
 	 *  @returns {Tone.Timeline} this
 	 */
 	Tone.Timeline.prototype.cancel = function(after){
-		if (this._timeline.length){
+		if (this._timeline.length > 1){
 			after = this.toSeconds(after);
 			var index = this._search(after);
 			if (index >= 0){
 				this._timeline = this._timeline.slice(0, index);
 			} else {
+				this._timeline = [];
+			}
+		} else if (this._timeline.length === 1){
+			//the first item's time
+			if (this._timeline[0].time >= after){
 				this._timeline = [];
 			}
 		}
