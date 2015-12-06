@@ -1,5 +1,6 @@
 define(["Tone/effect/Tremolo", "helper/Basic", "helper/EffectTests"], function (Tremolo, Basic, EffectTests) {
-	describe("Effect", function(){
+	
+	describe("Tremolo", function(){
 		Basic(Tremolo);
 		EffectTests(Tremolo);
 
@@ -8,10 +9,12 @@ define(["Tone/effect/Tremolo", "helper/Basic", "helper/EffectTests"], function (
 			it ("can pass in options in the constructor", function(){
 				var tremolo = new Tremolo({
 					"depth" : 0.2,
-					"type" : "sawtooth"
+					"type" : "sawtooth",
+					"spread" : 160,
 				});
 				expect(tremolo.depth.value).to.be.closeTo(0.2, 0.001);
 				expect(tremolo.type).to.equal("sawtooth");
+				expect(tremolo.spread).to.equal(160);
 				tremolo.dispose();
 			});
 
