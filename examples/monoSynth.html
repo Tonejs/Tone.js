@@ -38,14 +38,15 @@
 	<script type="text/javascript">
 
 		var synth = new Tone.MonoSynth({
+			"portamento" : 0.01,
 			"oscillator" : {
 				"type" : "square"
 			},
 			"envelope" : {
-				"attack" : 0.01,
+				"attack" : 0.005,
 				"decay" : 0.2,
 				"sustain" : 0.4,
-				"release" : 0.2,
+				"release" : 1.4,
 			},
 			"filterEnvelope" : {
 				"attack" : 0.005,
