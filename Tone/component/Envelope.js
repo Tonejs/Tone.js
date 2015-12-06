@@ -91,7 +91,7 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal",
 		 *  @private
 		 */
 		this._sig = this.output = new Tone.TimelineSignal();
-		this._sig.setValueAtTime(0, 0);
+		this._sig.setValueAtTime(this._minOutput, 0);
 
 		//set the attackCurve initially
 		this.attackCurve = options.attackCurve;
@@ -203,7 +203,7 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal",
 			this._sig.exponentialRampToValueBetween(velocity, time, attack);
 		}
 		//decay
-		this._sig.setTargetAtTime(this.sustain * velocity, attack, decay * this._timeMult);
+		this._sig.exponentialRampToValueAtTime(this.sustain * velocity, attack + decay);
 		return this;
 	};
 	
@@ -222,8 +222,7 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal",
 		if (this._releaseCurve === Tone.Envelope.Type.Linear){
 			this._sig.linearRampToValueBetween(this._minOutput, time, time + release);
 		} else {
-			this._sig.setRampPoint(time);
-			this._sig.setTargetAtTime(this._minOutput, time, release * this._timeMult);
+			this._sig.exponentialRampToValueBetween(this._minOutput, time, release + time);
 		}
 		return this;
 	};
