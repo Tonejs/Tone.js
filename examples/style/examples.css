@@ -51,12 +51,12 @@ html, body {
   z-index: 10000;
   top: 0px;
   left: 0px;
-  background-color: rgba(0, 0, 0, 0.5); }
+  background-color: rgba(0, 0, 0, 0.8); }
   #MobileStart #Button {
     position: absolute;
     left: 50%;
     top: 50%;
-    background-color: black;
+    background-color: #7F33ED;
     color: white;
     font-family: monospace;
     border-radius: 3px;
