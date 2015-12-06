@@ -450,7 +450,7 @@ define(["helper/Basic", "Tone/event/Part", "Tone/core/Tone", "Tone/core/Transpor
 						callCount++;
 					},
 					events : [0, 0.1]
-				}).start(0);
+				}).start(0.1);
 				Tone.Transport.start();
 
 				setTimeout(function(){

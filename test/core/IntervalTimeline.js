@@ -362,7 +362,7 @@ define(["Test", "Tone/core/IntervalTimeline", "helper/Basic"], function (Test, I
 					sched.addEvent({"time" : i, "duration" : 0.01});
 				}
 				sched.forEach(function(event){
-					sched.removeEvent(event);
+					sched.cancel(event.time);
 				});
 				expect(sched.length).to.equal(0);
 				sched.dispose();
@@ -374,7 +374,7 @@ define(["Test", "Tone/core/IntervalTimeline", "helper/Basic"], function (Test, I
 					sched.addEvent({"time" : i, "duration" : Infinity});
 				}
 				sched.forEachOverlap(1000, function(event){
-					sched.removeEvent(event);
+					sched.cancel(event.time);
 				});
 				expect(sched.length).to.equal(0);
 				sched.dispose();

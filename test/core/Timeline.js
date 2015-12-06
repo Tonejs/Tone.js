@@ -168,6 +168,17 @@ define(["Test", "Tone/core/Timeline"], function (Test, Timeline) {
 			sched.dispose();
 		});
 
+		it ("can cancel an item", function(){
+			var sched = new Timeline();
+			sched.addEvent({"time" : 3});
+			expect(sched.length).to.equal(1);
+			sched.cancel(10);
+			expect(sched.length).to.equal(1);
+			sched.cancel(3);
+			expect(sched.length).to.equal(0);
+			sched.dispose();
+		});
+
 		it ("can cancel items after the given time", function(){
 			var sched = new Timeline();
 			for (var i = 5; i < 100; i++){
