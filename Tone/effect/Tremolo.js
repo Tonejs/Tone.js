@@ -81,6 +81,7 @@ define(["Tone/core/Tone", "Tone/component/LFO", "Tone/effect/StereoEffect"], fun
 		this.frequency.fan(this._lfoL.frequency, this._lfoR.frequency);
 		this.depth.fan(this._lfoR.amplitude, this._lfoL.amplitude);
 		this.type = options.type;
+		this.spread = options.spread;
 	};
 
 	Tone.extend(Tone.Tremolo, Tone.StereoEffect);
@@ -157,10 +158,11 @@ define(["Tone/core/Tone", "Tone/component/LFO", "Tone/effect/StereoEffect"], fun
 		}
 	});
 
-	/** Amount of stereo spread. When set to 0, both LFO's will be panned centrally.
+	/** 
+	 * Amount of stereo spread. When set to 0, both LFO's will be panned centrally.
 	 * When set to 180, LFO's will be panned hard left and right respectively.
 	 * @memberOf Tone.Tremolo#
-	 * @type {number}
+	 * @type {Degrees}
 	 * @name spread
 	 */
 	Object.defineProperty(Tone.Tremolo.prototype, "spread", {
