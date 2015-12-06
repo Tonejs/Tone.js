@@ -17,6 +17,21 @@ define(["helper/Basic", "Tone/source/Noise", "helper/SourceTests", "helper/Outpu
 				noise.dispose();
 			});
 
+			it("can set the playbackRate in the constructor", function(){
+				var noise = new Noise({
+					"playbackRate" : 2
+				});
+				expect(noise.playbackRate).to.equal(2);
+				noise.dispose();
+			});
+
+			it("can set the playbackRate", function(){
+				var noise = new Noise();
+				noise.playbackRate = 3;
+				expect(noise.playbackRate).to.equal(3);
+				noise.dispose();
+			});
+
 		});
 
 		context("Type", function(){
