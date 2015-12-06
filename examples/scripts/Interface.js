@@ -34,8 +34,8 @@ $(function(){
 		$("body").addClass("Mobile");
 		var element = $("<div>", {"id" : "MobileStart"}).appendTo("body");
 		$("<div>").attr("id", "Button")
-			.text("\u25B6")
-			.on("touchstart touchend", function(e){
+			.text("Enter")
+			.on("touchend", function(e){
 				e.preventDefault();
 				Tone.startMobile();
 				element.remove();
