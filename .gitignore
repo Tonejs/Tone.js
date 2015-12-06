@@ -45,3 +45,5 @@ test/Main.js
 
 build/p5.Tone.min.js
 build/p5.Tone.js
+
+.DS_Store
