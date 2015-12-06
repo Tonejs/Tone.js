@@ -261,7 +261,7 @@ function(Tone){
 		},
 		set : function(interval){
 			this._pitch = interval;
-			this.player.playbackRate.value = this.intervalToFrequencyRatio(interval);
+			this.player.playbackRate = this.intervalToFrequencyRatio(interval);
 		}
 	});
 

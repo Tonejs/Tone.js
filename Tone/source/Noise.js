@@ -50,8 +50,7 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 		 *  @type {Positive}
 		 *  @signal
 		 */
-		this.playbackRate = new Tone.Signal(options.playbackRate, Tone.Type.Positive);
-		this._readOnly("playbackRate");
+		this._playbackRate = options.playbackRate;
 
 		this.type = options.type;
 	};
@@ -115,6 +114,24 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 	});
 
 	/**
+	 *  The playback rate of the noise. Affects
+	 *  the "frequency" of the noise.
+	 *  @type {Positive}
+	 *  @signal
+	 */
+	Object.defineProperty(Tone.Noise.prototype, "playbackRate", {
+		get : function(){
+			return this._playbackRate;
+		}, 
+		set : function(rate){
+			this._playbackRate = rate;
+			if (this._source) {
+				this._source.playbackRate.value = rate;
+			}
+		}
+	});
+
+	/**
 	 *  internal start method
 	 *
 	 *  @param {Time} time
@@ -124,8 +141,8 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 		this._source = this.context.createBufferSource();
 		this._source.buffer = this._buffer;
 		this._source.loop = true;
+		this._source.playbackRate.value = this._playbackRate;
 		this._source.connect(this.output);
-		this.playbackRate.connect(this._source.playbackRate);
 		this._source.start(this.toSeconds(time));
 	};
 
@@ -152,9 +169,6 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 			this._source = null;
 		}
 		this._buffer = null;
-		this._writable("playbackRate");
-		this.playbackRate.dispose();
-		this.playbackRate = null;
 		return this;
 	};
 

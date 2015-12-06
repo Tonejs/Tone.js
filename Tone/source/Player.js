@@ -302,10 +302,8 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 	});
 
 	/**
-	 * The playback speed. 1 is normal speed. 
-	 * Note that this is not a Tone.Signal because of a bug in Blink. 
-	 * Please star [this issue](https://code.google.com/p/chromium/issues/detail?id=311284)
-	 * if this an important thing to you.
+	 * The playback speed. 1 is normal speed. This is not a signal because
+	 * Safari and iOS currently don't support playbackRate as a signal.
 	 * @memberOf Tone.Player#
 	 * @type {number}
 	 * @name playbackRate
