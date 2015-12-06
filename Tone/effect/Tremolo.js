@@ -3,12 +3,12 @@ define(["Tone/core/Tone", "Tone/component/LFO", "Tone/effect/StereoEffect"], fun
 	"use strict";
 
 	/**
-	 *  @class Tone.Tremolo modulates the amplitude of an incoming signal using a Tone.LFO. 
-	 *         The type, frequency, and depth of the LFO is controllable. 
+	 *  @class Tone.Tremolo modulates the amplitude of an incoming signal using a Tone.LFO.
+	 *         The type, frequency, and depth of the LFO is controllable.
 	 *
 	 *  @extends {Tone.StereoEffect}
 	 *  @constructor
-	 *  @param {Frequency|Object} [frequency] The rate of the effect. 
+	 *  @param {Frequency|Object} [frequency] The rate of the effect.
 	 *  @param {NormalRange} [depth] The depth of the wavering.
 	 *  @example
 	 * //create a tremolo and start it's LFO
@@ -27,7 +27,7 @@ define(["Tone/core/Tone", "Tone/component/LFO", "Tone/effect/StereoEffect"], fun
 		 *  @private
 		 */
 		this._lfoL = new Tone.LFO({
-			"phase" : 0,
+			"phase" : options.spread,
 			"min" : 1,
 			"max" : 0,
 		});
@@ -38,7 +38,7 @@ define(["Tone/core/Tone", "Tone/component/LFO", "Tone/effect/StereoEffect"], fun
 		 *  @private
 		 */
 		this._lfoR = new Tone.LFO({
-			"phase" : 180,
+			"phase" : options.spread,
 			"min" : 1,
 			"max" : 0,
 		});
@@ -58,7 +58,7 @@ define(["Tone/core/Tone", "Tone/component/LFO", "Tone/effect/StereoEffect"], fun
 		this._amplitudeR = new Tone.Gain();
 
 		/**
-		 *  The frequency of the tremolo.	
+		 *  The frequency of the tremolo.
 		 *  @type  {Frequency}
 		 *  @signal
 		 */
@@ -67,7 +67,7 @@ define(["Tone/core/Tone", "Tone/component/LFO", "Tone/effect/StereoEffect"], fun
 		/**
 		 *  The depth of the effect. A depth of 0, has no effect
 		 *  on the amplitude, and a depth of 1 makes the amplitude
-		 *  modulate fully between 0 and 1. 
+		 *  modulate fully between 0 and 1.
 		 *  @type  {NormalRange}
 		 *  @signal
 		 */
@@ -93,7 +93,8 @@ define(["Tone/core/Tone", "Tone/component/LFO", "Tone/effect/StereoEffect"], fun
 	Tone.Tremolo.defaults = {
 		"frequency" : 10,
 		"type" : "sine",
-		"depth" : 0.5
+		"depth" : 0.5,
+		"spread" : 180,
 	};
 
 	/**
@@ -121,7 +122,7 @@ define(["Tone/core/Tone", "Tone/component/LFO", "Tone/effect/StereoEffect"], fun
 	/**
 	 * Sync the effect to the transport.
 	 * @param {Time} [delay=0] Delay time before starting the effect after the
-	 *                              Transport has started. 
+	 *                              Transport has started.
 	 * @returns {Tone.AutoFilter} this
 	 */
 	Tone.Tremolo.prototype.sync = function(delay){
@@ -153,6 +154,22 @@ define(["Tone/core/Tone", "Tone/component/LFO", "Tone/effect/StereoEffect"], fun
 		set : function(type){
 			this._lfoL.type = type;
 			this._lfoR.type = type;
+		}
+	});
+
+	/** Amount of stereo spread. When set to 0, both LFO's will be panned centrally.
+	 * When set to 180, LFO's will be panned hard left and right respectively.
+	 * @memberOf Tone.Tremolo#
+	 * @type {number}
+	 * @name spread
+	 */
+	Object.defineProperty(Tone.Tremolo.prototype, "spread", {
+		get : function(){
+			return this._lfoR.phase - this._lfoL.phase; //180
+		},
+		set : function(spread){
+			this._lfoL.phase = 90 - (spread/2);
+			this._lfoR.phase = (spread/2) + 90;
 		}
 	});
 
