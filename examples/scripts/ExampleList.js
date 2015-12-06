@@ -18,10 +18,12 @@ var ExampleList = {
 		"Buses" : "buses",
 	},
 	"Sequencing / Timing" : {
-		"Scores" : "score",
 		"Step Sequencer" : "stepSequencer",
+		"Events" : "events",
 		"Play Along" : "shiny",
-		"Visualizing Envelopes": "funkyShape"
+		"Visualizing Envelopes": "funkyShape",
+		"Quantization" : "quantization",
+		"Playback Rate" : "pianoPhase",
 	},
 	"Signals" : {
 		"Control Voltage" : "signal",
