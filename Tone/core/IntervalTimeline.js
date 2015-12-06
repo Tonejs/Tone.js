@@ -308,7 +308,10 @@ define(["Tone/core/Tone", "Tone/core/Type"], function (Tone) {
 				});
 			}
 			for (var i = 0; i < allNodes.length; i++){
-				callback(allNodes[i].event);
+				var ev = allNodes[i].event;
+				if (ev){
+					callback(ev);
+				}
 			}
 		}
 		return this;
@@ -322,13 +325,15 @@ define(["Tone/core/Tone", "Tone/core/Type"], function (Tone) {
 	 *  @returns {Tone.IntervalTimeline} this
 	 */
 	Tone.IntervalTimeline.prototype.forEachOverlap = function(time, callback){
-		//iterate over the items in reverse so that removing an item doesn't break things
 		time = this.toSeconds(time);
 		if (this._root !== null){
 			var results = [];
 			this._root.search(time, results);
 			for (var i = results.length - 1; i >= 0; i--){
-				callback(results[i].event);
+				var ev = results[i].event;
+				if (ev){
+					callback(ev);
+				}
 			}
 		}
 		return this;
@@ -342,13 +347,15 @@ define(["Tone/core/Tone", "Tone/core/Type"], function (Tone) {
 	 *  @returns {Tone.IntervalTimeline} this
 	 */
 	Tone.IntervalTimeline.prototype.forEachAfter = function(time, callback){
-		//iterate over the items in reverse so that removing an item doesn't break things
 		time = this.toSeconds(time);
 		if (this._root !== null){
 			var results = [];
 			this._root.searchAfter(time, results);
 			for (var i = results.length - 1; i >= 0; i--){
-				callback(results[i].event);
+				var ev = results[i].event;
+				if (ev){
+					callback(ev);
+				}
 			}
 		}
 		return this;
