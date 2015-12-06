@@ -155,15 +155,12 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Type", "Tone/core/Ti
 					if (nextEvent !== null){
 						duration = Math.min(duration, nextEvent.time - startTick);
 					}
-					//make it ticks
 					if (duration !== Infinity){
 						//schedule a stop since it's finite duration
+						this._state.setStateAtTime(Tone.State.Stopped, startTick + duration + 1);
 						duration += "i";
 					}
 					event.id = Tone.Transport.scheduleRepeat(this._tick.bind(this), this._getLoopDuration().toString() + "i", startTick + "i", duration);
-					if (duration !== Infinity){
-						this.stop((startTick + 1) + "i + "+ duration);
-					}
 				} else {
 					event.id = Tone.Transport.schedule(this._tick.bind(this), startTick + "i");
 				}
