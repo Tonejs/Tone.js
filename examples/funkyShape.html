@@ -164,8 +164,8 @@
 		    "filterEnvelope": {
 		        "attack": 0.01,
 		        "decay": 0.03,
-		        "min": 4000,
-		        "max": 700,
+		        "baseFrequency": 4000,
+		        "octaves": -2.5,
 		        "exponent": 4,
 		    }
 		}).connect(lowPass);
@@ -186,8 +186,8 @@
 		    "filterEnvelope": {
 		        "attack": 0.01,
 		        "decay": 0.03,
-		        "min": 4000,
-		        "max": 700,
+		        "baseFrequency": 4000,
+		        "octaves": -2.5,
 		        "exponent": 4,
 
 		    }
@@ -247,13 +247,13 @@
 
 		var kick = new Tone.Oscillator("A2").connect(kickEnvelope).start();
 
-		kickSnapEnv = new Tone.ScaledEnvelope({
+		kickSnapEnv = new Tone.FrequencyEnvelope({
 		    "attack": 0.005,
 		    "decay": 0.01,
 		    "sustain": 0,
 		    "release": 0,
-		    "min": "110",
-		    "max": 700
+		    "baseFrequency": "A2",
+		    "octaves": 2.7
 		}).connect(kick.frequency);
 
 		var kickPart = new Tone.Part(function(time){

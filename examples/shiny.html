@@ -58,8 +58,8 @@
 			"attack" : 0.001,
 			"decay" : 0.02,
 			"sustain" : 1,
-			"min" : 6000,
-			"max" : 600
+			"baseFrequency" : 6000,
+			"octaves" : -3.3
 		},
 		"filter" : {
 			"type" : "highpass"
@@ -85,8 +85,8 @@
 			"attack" : 0.001,
 			"decay" : 0.01,
 			"sustain" : 0,
-			"min" : 3000,
-			"max" : 10000
+			"baseFrequency" : 3000,
+			"octaves" : 2
 		},
 	}).chain(distortion, drumCompress);
 
@@ -186,8 +186,8 @@
 				"decay" : 0.05,
 				"sustain" : 0.3,
 				"release" : 2,
-				"min" : 100,
-				"max" : 10000
+				"baseFrequency" : 100,
+				"octaves" : 4
 			}
 		},
 		"voice1" : {
@@ -211,8 +211,8 @@
 				"decay" : 0.05,
 				"sustain" : 0.7,
 				"release" : 2,
-				"min" : 5000,
-				"max" : 2000
+				"baseFrequency" : 5000,
+				"octaves" : -1.5
 			}
 		}
 	}).toMaster();
