@@ -23,7 +23,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Timeline"], function 
 		 *  @type {Tone.Timeline}
 		 *  @private
 		 */
-		this._events = new Tone.Timeline();
+		this._events = new Tone.Timeline(10);
 
 		/**
 		 *  The initial scheduled value
