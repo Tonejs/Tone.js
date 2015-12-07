@@ -19,6 +19,7 @@
 * Scheduable musical events: Tone.Event, Tone.Loop, Tone.Part, Tone.Pattern, Tone.Sequence. 
 * Player's playbackRate is now a signal and Noise includes a playbackRate signal. 
 * All filterEnvelopes use new Tone.FrequencyEnvelope with frequency units and `baseFrequency` and `octaves` instead of `min` and `max`. 
+* Phaser uses "octaves" instead of "depth" to be more consistent across the whole Tone.js API. 
 
 DEPRECATED:
 * `setTimeout`, `setInterval`, `setTimeline` in favor of new `schedule`, `scheduleOnce`, and `scheduleRepeat`.

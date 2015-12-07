@@ -18,11 +18,11 @@ define(["Tone/effect/Phaser", "helper/Basic", "helper/EffectTests"], function (P
 			it ("can get/set the options", function(){
 				var phaser = new Phaser();
 				phaser.set({
-					"depth" : 0.21,
+					"octaves" : 0.21,
 					"baseFrequency" : 300,
 				});
 				expect(phaser.get().baseFrequency).to.be.closeTo(300, 0.01);
-				expect(phaser.get().depth).to.be.closeTo(0.21, 0.01);
+				expect(phaser.get().octaves).to.be.closeTo(0.21, 0.01);
 				phaser.dispose();
 			});
 		});
