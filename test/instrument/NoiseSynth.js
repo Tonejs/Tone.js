@@ -30,8 +30,8 @@ define(["Tone/instrument/NoiseSynth", "helper/Basic", "helper/InstrumentTests"],
 
 			it ("can get and set filterEnvelope attributes", function(){
 				var noiseSynth = new NoiseSynth();
-				noiseSynth.filterEnvelope.min = 400;
-				expect(noiseSynth.filterEnvelope.min).to.equal(400);
+				noiseSynth.filterEnvelope.baseFrequency = 400;
+				expect(noiseSynth.filterEnvelope.baseFrequency).to.equal(400);
 				noiseSynth.dispose();
 			});
 

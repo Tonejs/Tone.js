@@ -30,8 +30,8 @@ define(["Tone/instrument/MonoSynth", "helper/Basic", "helper/InstrumentTests"], 
 
 			it ("can get and set filterEnvelope attributes", function(){
 				var monoSynth = new MonoSynth();
-				monoSynth.filterEnvelope.min = 400;
-				expect(monoSynth.filterEnvelope.min).to.equal(400);
+				monoSynth.filterEnvelope.baseFrequency = 400;
+				expect(monoSynth.filterEnvelope.baseFrequency).to.equal(400);
 				monoSynth.dispose();
 			});
 
