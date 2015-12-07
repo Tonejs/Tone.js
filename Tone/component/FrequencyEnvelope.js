@@ -5,8 +5,7 @@ define(["Tone/core/Tone", "Tone/component/ScaledEnvelope", "Tone/component/Envel
 
 	/**
 	 *  @class Tone.FrequencyEnvelope is a Tone.ScaledEnvelope, but instead of `min` and `max`
-	 *         it's got a `baseFrequency` and `octaves` parameter. Also the exponent is 
-	 *         hard-coded at 2. 
+	 *         it's got a `baseFrequency` and `octaves` parameter. 
 	 *
 	 *  @extends {Tone.Envelope}
 	 *  @constructor
@@ -25,7 +24,6 @@ define(["Tone/core/Tone", "Tone/component/ScaledEnvelope", "Tone/component/Envel
 	Tone.FrequencyEnvelope = function(){
 
 		var options = this.optionsObject(arguments, ["attack", "decay", "sustain", "release"], Tone.Envelope.defaults);
-		options.exponent = 2;
 		Tone.ScaledEnvelope.call(this, options);
 		options = this.defaultArg(options, Tone.FrequencyEnvelope.defaults);
 
@@ -50,13 +48,14 @@ define(["Tone/core/Tone", "Tone/component/ScaledEnvelope", "Tone/component/Envel
 	Tone.FrequencyEnvelope.defaults = {
 		"baseFrequency" : 200,
 		"octaves" : 4,
+		"exponent" : 2
 	};
 
 	/**
 	 * The envelope's mininum output value. This is the value which it
 	 * starts at. 
 	 * @memberOf Tone.FrequencyEnvelope#
-	 * @type {Frequencye}
+	 * @type {Frequency}
 	 * @name baseFrequency
 	 */
 	Object.defineProperty(Tone.FrequencyEnvelope.prototype, "baseFrequency", {
@@ -82,6 +81,21 @@ define(["Tone/core/Tone", "Tone/component/ScaledEnvelope", "Tone/component/Envel
 		set : function(octaves){
 			this._octaves = octaves;
 			this._scale.max = this.baseFrequency * Math.pow(2, octaves);
+		}
+	});
+
+	/**
+	 * The envelope's exponent value. 
+	 * @memberOf Tone.FrequencyEnvelope#
+	 * @type {number}
+	 * @name exponent
+	 */
+	Object.defineProperty(Tone.FrequencyEnvelope.prototype, "exponent", {
+		get : function(){
+			return this._exp.value;
+		},
+		set : function(exp){
+			this._exp.value = exp;
 		}
 	});
 	
