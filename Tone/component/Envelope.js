@@ -203,6 +203,7 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal",
 			this._sig.exponentialRampToValueBetween(velocity, time, attack);
 		}
 		//decay
+		this._sig.setValueAtTime(velocity, attack);
 		this._sig.exponentialRampToValueAtTime(this.sustain * velocity, attack + decay);
 		return this;
 	};
