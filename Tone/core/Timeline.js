@@ -8,8 +8,11 @@ define(["Tone/core/Tone", "Tone/core/Type"], function (Tone) {
 	 *         Internally, events are stored in time order for fast 
 	 *         retrieval.
 	 *  @extends {Tone}
+	 *  @param {Positive} [memory=Infinity] The number of previous events that are retained.
 	 */
 	Tone.Timeline = function(){
+
+		var options = this.optionsObject(arguments, ["memory"], Tone.Timeline.defaults);
 
 		/**
 		 *  The array of scheduled timeline events
@@ -31,9 +34,25 @@ define(["Tone/core/Tone", "Tone/core/Type"], function (Tone) {
 		 *  @type {Boolean}
 		 */
 		this._iterating = false;
+
+		/**
+		 *  The memory of the timeline, i.e.
+		 *  how many events in the past it will retain
+		 *  @type {Positive}
+		 */
+		this.memory = options.memory;
 	};
 
 	Tone.extend(Tone.Timeline);
+
+	/**
+	 *  the default parameters
+	 *  @static
+	 *  @const
+	 */
+	Tone.Timeline.defaults = {
+		"memory" : Infinity
+	};
 
 	/**
 	 *  The number of items in the timeline.
@@ -65,6 +84,11 @@ define(["Tone/core/Tone", "Tone/core/Type"], function (Tone) {
 			this._timeline.splice(index + 1, 0, event);
 		} else {
 			this._timeline.push(event);			
+		}
+		//if the length is more than the memory, remove the previous ones
+		if (this.length > this.memory){
+			var diff = this.length - this.memory;
+			this._timeline.splice(0, diff);
 		}
 		return this;
 	};

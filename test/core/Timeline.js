@@ -220,6 +220,17 @@ define(["Test", "Tone/core/Timeline"], function (Test, Timeline) {
 			sched.dispose();
 		});
 
+		it ("can constrain the length of the timeline", function(){
+			var sched = new Timeline(4);
+			for (var i = 0; i < 10000; i++){
+				sched.addEvent({
+					"time" : i
+				});
+			}
+			expect(sched.length).to.equal(4);
+			sched.dispose();
+		});
+
 		context("Iterators", function(){
 
 			it("iterates over all items and returns and item", function(){
