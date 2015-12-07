@@ -12,10 +12,12 @@ define(["Tone/effect/Chorus", "helper/Basic", "helper/EffectTests"], function (C
 					"frequency" : 2,
 					"delayTime" : 1,
 					"depth" : 0.4,
+					"spread" : 90
 				});
 				expect(chorus.frequency.value).to.be.closeTo(2, 0.01);
 				expect(chorus.delayTime).to.be.closeTo(1, 0.01);
 				expect(chorus.depth).to.be.closeTo(0.4, 0.01);
+				expect(chorus.spread).to.be.equal(90);
 				chorus.dispose();
 			});
 

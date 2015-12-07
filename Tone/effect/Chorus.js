@@ -101,6 +101,7 @@ function(Tone){
 		this.frequency.value = options.frequency;
 		this.type = options.type;
 		this._readOnly(["frequency"]);
+		this.spread = options.spread;
 	};
 
 	Tone.extend(Tone.Chorus, Tone.StereoXFeedbackEffect);
@@ -114,7 +115,8 @@ function(Tone){
 		"delayTime" : 3.5,
 		"depth" : 0.7,
 		"feedback" : 0.1,
-		"type" : "sine"
+		"type" : "sine",
+		"spread" : 180
 	};
 
 	/**
@@ -169,6 +171,23 @@ function(Tone){
 		set : function(type){
 			this._lfoL.type = type;
 			this._lfoR.type = type;
+		}
+	});
+
+	/** 
+	 * Amount of stereo spread. When set to 0, both LFO's will be panned centrally.
+	 * When set to 180, LFO's will be panned hard left and right respectively.
+	 * @memberOf Tone.Chorus#
+	 * @type {Degrees}
+	 * @name spread
+	 */
+	Object.defineProperty(Tone.Chorus.prototype, "spread", {
+		get : function(){
+			return this._lfoR.phase - this._lfoL.phase; //180
+		},
+		set : function(spread){
+			this._lfoL.phase = 90 - (spread/2);
+			this._lfoR.phase = (spread/2) + 90;
 		}
 	});
 
