@@ -10,8 +10,8 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/LFO", "Tone/comp
 	 *  @constructor
 	 *  @extends {Tone.Effect}
 	 *  @param {Time|Object} [frequency] The rate of the LFO.
-	 *  @param {Frequency} [min] The lower value of the LFOs oscillation
- 	 *  @param {Frequency} [max] The upper value of the LFOs oscillation. 
+	 *  @param {Frequency=} baseFrequency The lower value of the LFOs oscillation
+ 	 *  @param {Frequency=} octaves The number of octaves above the baseFrequency
 	 *  @example
 	 * //create an autofilter and start it's LFO
 	 * var autoFilter = new Tone.AutoFilter("4n").toMaster().start();
@@ -20,7 +20,7 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/LFO", "Tone/comp
 	 */
 	Tone.AutoFilter = function(){
 
-		var options = this.optionsObject(arguments, ["frequency", "min", "max"], Tone.AutoFilter.defaults);
+		var options = this.optionsObject(arguments, ["frequency", "baseFrequency", "octaves"], Tone.AutoFilter.defaults);
 		Tone.Effect.call(this, options);
 
 		/**
@@ -31,8 +31,6 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/LFO", "Tone/comp
 		this._lfo = new Tone.LFO({
 			"frequency" : options.frequency,
 			"amplitude" : options.depth,
-			"min" : this.toFrequency(options.min),
-			"max" : this.toFrequency(options.max)
 		});
 
 		/**
@@ -56,11 +54,20 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/LFO", "Tone/comp
 		 */
 		this.filter = new Tone.Filter(options.filter);
 
+		/**
+		 *  The octaves placeholder
+		 *  @type {Positive}
+		 *  @private
+		 */
+		this._octaves = 0;
+
 		//connections
 		this.connectEffect(this.filter);
 		this._lfo.connect(this.filter.frequency);
 		this.type = options.type;
 		this._readOnly(["frequency", "depth"]);
+		this.octaves = options.octaves;
+		this.baseFrequency = options.baseFrequency;
 	};
 
 	//extend Effect
@@ -75,8 +82,8 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/LFO", "Tone/comp
 		"frequency" : 1,
 		"type" : "sine",
 		"depth" : 1,
-		"min" : 200,
-		"max" : 1200,
+		"baseFrequency" : 200,
+		"octaves" : 2.6,
 		"filter" : {
 			"type" : "lowpass",
 			"rolloff" : -12,
@@ -141,32 +148,33 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/LFO", "Tone/comp
 	});
 
 	/**
-	 * The minimum value of the LFO attached to the cutoff frequency of the filter.
+	 * The minimum value of the filter's cutoff frequency.
 	 * @memberOf Tone.AutoFilter#
 	 * @type {Frequency}
 	 * @name min
 	 */
-	Object.defineProperty(Tone.AutoFilter.prototype, "min", {
+	Object.defineProperty(Tone.AutoFilter.prototype, "baseFrequency", {
 		get : function(){
 			return this._lfo.min;
 		},
-		set : function(min){
-			this._lfo.min = this.toFrequency(min);
+		set : function(freq){
+			this._lfo.min = this.toFrequency(freq);
 		}
 	});
 
 	/**
-	 * The minimum value of the LFO attached to the cutoff frequency of the filter.
+	 * The maximum value of the filter's cutoff frequency. 
 	 * @memberOf Tone.AutoFilter#
-	 * @type {Frequency}
-	 * @name max
+	 * @type {Positive}
+	 * @name octaves
 	 */
-	Object.defineProperty(Tone.AutoFilter.prototype, "max", {
+	Object.defineProperty(Tone.AutoFilter.prototype, "octaves", {
 		get : function(){
-			return this._lfo.max;
+			return this._octaves;
 		},
-		set : function(max){
-			this._lfo.max = this.toFrequency(max);
+		set : function(oct){
+			this._octaves = oct;
+			this._lfo.max = this.baseFrequency * Math.pow(2, oct);
 		}
 	});
 
