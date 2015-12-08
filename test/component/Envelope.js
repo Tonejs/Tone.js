@@ -292,7 +292,7 @@ function (Envelope, Basic, Offline, Test) {
 					if (time < env.attack){
 						expect(sample).to.be.within(0, velocity + 0.01);
 					} else if (time < env.attack + env.decay){
-						expect(sample).to.be.within(env.sustain * velocity, velocity + 0.01);
+						expect(sample).to.be.within(env.sustain * velocity - 0.01, velocity + 0.01);
 					} else if (time < duration){
 						expect(sample).to.be.closeTo(env.sustain * velocity, 0.1);
 					} else if (time < duration + env.release){
