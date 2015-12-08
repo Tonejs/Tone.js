@@ -47,11 +47,11 @@ function(Tone){
 		 *  @private
 		 *  @type {Tone.Signal}
 		 */
-		this._value = this.input[1] = new Tone.Signal(value);
+		this._param = this.input[1] = new Tone.Signal(value);
 
 		//connect
 		this._neg.connect(this._gt);
-		this._value.connect(this._rhNeg);	
+		this._param.connect(this._rhNeg);	
 		this._rhNeg.connect(this._gt, 0, 1);
 	};
 
@@ -69,8 +69,8 @@ function(Tone){
 		this._gt = null;
 		this._rhNeg.dispose();
 		this._rhNeg = null;
-		this._value.dispose();
-		this._value = null;
+		this._param.dispose();
+		this._param = null;
 		return this;
 	};
 

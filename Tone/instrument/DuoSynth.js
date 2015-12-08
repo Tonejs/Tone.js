@@ -1,4 +1,5 @@
-define(["Tone/core/Tone", "Tone/instrument/MonoSynth", "Tone/component/LFO", "Tone/signal/Signal", "Tone/signal/Multiply", "Tone/instrument/Monophonic"], 
+define(["Tone/core/Tone", "Tone/instrument/MonoSynth", "Tone/component/LFO", "Tone/signal/Signal", 
+	"Tone/signal/Multiply", "Tone/instrument/Monophonic", "Tone/core/Param"], 
 function(Tone){
 
 	"use strict";
@@ -60,11 +61,14 @@ function(Tone){
 
 		/**
 		 * The amount of vibrato
-		 * @type {Gain}
+		 * @type {Positive}
 		 * @signal
 		 */
-		this.vibratoAmount = new Tone.Signal(this._vibratoGain.gain, Tone.Type.Gain);
-		this.vibratoAmount.value = options.vibratoAmount;
+		this.vibratoAmount = new Tone.Param({
+			"param" : this._vibratoGain.gain, 
+			"units" : Tone.Type.Positive, 
+			"value" : options.vibratoAmount
+		});
 
 		/**
 		 *  the delay before the vibrato starts

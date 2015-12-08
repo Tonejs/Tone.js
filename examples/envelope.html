@@ -5,11 +5,13 @@
 	<title>Envelope</title>
 
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<link rel="icon" type="image/png" sizes="174x174" href="./style/favicon.png">
 	
 	<script type="text/javascript" src="../build/Tone.js"></script>
 	<script type="text/javascript" src="./scripts/jquery.min.js"></script>
-	<script type="text/javascript" src="./scripts/Notone.GUI.js"></script>
+	<script type="text/javascript" src="./scripts/draggabilly.js"></script>
 	<script type="text/javascript" src="./scripts/Interface.js"></script>
+	<script type="text/javascript" src="./scripts/Logo.js"></script>
 
 	<link rel="stylesheet" type="text/css" href="./style/examples.css">
 
@@ -61,7 +63,8 @@
 
 		//create an oscillator and connect it to the envelope
 		var osc = new Tone.Oscillator({
-			"type" : "triangle",
+			"partials" : [3, 2, 1],
+			"type" : "custom",
 			"frequency" : "C#4",
 			"volume" : -8,
 		}).connect(env).start();
@@ -70,23 +73,12 @@
 
 	<script id="GUI" type="text/javascript">
 		$(function(){
-			Notone.config({
-				"search" : false,
-				"expandInDrawer" : true,
-				"hideDrawer" : Interface.isMobile,
-				"drawer" : true,
-				"container" : "body"
-			});
-
-			var oscGUI = Notone.add(osc, "Oscillator");
-
-			var envGUI = Notone.add(env, "Envelope");
 
 			new Interface.Slider({
 				param : "attack",
 				name : "attack",
 				parent : $("#Sliders"),
-				gui : envGUI,
+				tone : env,
 				min : 0.005,
 				max : 1,
 				exp : 2,
@@ -96,7 +88,7 @@
 				param : "decay",
 				name : "decay",
 				parent : $("#Sliders"),
-				gui : envGUI,
+				tone : env,
 				min : 0.005,
 				max : 1,
 				exp : 2,
@@ -106,7 +98,7 @@
 				param : "release",
 				name : "release",
 				parent : $("#Sliders"),
-				gui : envGUI,
+				tone : env,
 				min : 0.2,
 				max : 2,
 				exp : 2,
@@ -115,7 +107,7 @@
 			new Interface.Slider({
 				param : "sustain",
 				name : "sustain",
-				gui : envGUI,
+				tone : env,
 				axis : "y",
 				min : 0.0,
 				max : 1,

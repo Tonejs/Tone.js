@@ -1,0 +1,369 @@
+//COLORS
+$blue: #3833ED;
+$green: #1EDF3E;
+$red: #ED3333;
+$purple: #7F33ED;
+$teal : #22DBC0;
+$pink : #ED33CF;
+$yellow : #FFFC0C;
+$orange : #f5871f;
+//SIZES
+$margin : 3px;
+$sidebarWidth : 280px;
+$topbarHeight : 35px;
+$padding: 15px;
+$fontSize : 14px;
+
+/* FOR MOBILES */
+@media (max-width: 400px) {
+
+	#TopBar #Homepage a {
+		font-size: 16px !important; 
+	}
+
+	#Content {
+		font-size: 10px !important;
+		max-width: calc(100% - #{$margin * 2}) !important; 
+	}
+
+	#Content * {
+		font-size: $fontSize !important; 
+	} 
+}
+
+html, body {
+	padding: 0px;
+	margin: 0px;
+	height: calc(100% - 4px); 
+}
+
+/**
+ *  
+ *  TOP BAR
+ *  
+ */
+#TopBar {
+	background-color: black;
+	height: $topbarHeight;
+	margin: $margin;
+	position: relative;
+	width: calc(100% - #{$margin * 2});
+	font-family: monospace; 
+
+	#TonejsLogo {
+		position: absolute;
+		top: $margin;
+	}
+
+	#Examples {
+
+		right: 10px;
+		top: 0px;
+		height: $topbarHeight;
+		line-height: $topbarHeight;
+		position: absolute; 
+		width: 100px;
+		text-align: left;
+
+		a {
+			position: absolute;
+			font-size: $fontSize;
+			color: white;
+			text-transform: none;
+			text-decoration: none;
+		}
+	}
+}
+
+
+#MobileStart {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	z-index: 10000;
+	top: 0px;
+	left: 0px;
+	background-color: rgba(0, 0, 0, 0.8); 
+
+	$ButtonSize : 80px;
+	
+	#Button {
+		position: absolute;
+		left: 50%;
+		top: 50%;
+		background-color: $purple;
+		color: white;
+		font-family: monospace;
+		border-radius: $margin;
+		margin-top: -$ButtonSize/2;
+		margin-left: -$ButtonSize/2;
+		width: $ButtonSize;
+		height: $ButtonSize;
+		text-align: center;
+		line-height: $ButtonSize; 
+	}
+
+	#Button:hover {
+		background-color: $purple;
+		color: white; 
+	}
+
+	#Button:hover:active {
+		background-color: $pink;
+		color: $teal; 
+	}
+}
+
+.Mobile #Content {
+	// width: calc(100% - 28px); 
+}
+
+#Content {
+	font-family: monospace;
+	position: absolute;
+	left: $margin;
+	width: calc(100% - #{$margin * 2});
+	margin-bottom: $padding; 
+
+	#Title {
+		height: 23px;
+		line-height: 23px;
+		font-size: 1.2em;
+		color: white;
+		width: calc(100% - #{$padding});
+		padding-left: $padding;
+		background-color: black; 
+	}
+
+	#Explanation {
+		position: relative;
+		font-family: monospace;
+		padding: $padding;
+		color: black;
+		font-size: $fontSize;
+		box-sizing: border-box;
+		border: $margin solid black;
+		border-top-width: 0px;
+		width: 100%; 
+
+		img {
+			width: 80%;
+			max-width: 700px;
+			margin-left: auto;
+			margin-right: auto;
+			display: block; 
+		}
+	}
+
+	a {
+		color: black;
+		font-family: monospace;
+		font-size: $fontSize;
+		font-weight: bold;
+		text-decoration: none; 
+	}
+	a:hover {
+		color: $green; 
+	}
+	a:hover:active {
+		color: $pink; 
+	}
+
+	$DraggerHeight : 400px;
+
+
+	// DRAGER
+	#DragContainer {
+		margin-left: $margin;
+		margin-top: $margin;
+		margin-bottom: $padding;
+		width: calc(100% - #{$margin});
+		height: $DraggerHeight;
+		position: relative;
+		color: white; 
+	}
+	//SLIDERS
+	.Slider.x {
+		position: relative;
+		height: 94px;
+		width: 100%;
+		margin-top: 3px; 
+		.Axis {
+			top: 50%;
+			margin-top: -1.5px; 
+		}
+	}
+	.Slider.y {
+		position: relative;
+		width: 94px;
+		height: $DraggerHeight; 
+		.Axis {
+			left: 50%;
+			margin-left: -1.5px; 
+		}
+	}
+
+	$DragHandleSize : 90px;
+
+	//DRAGGER
+	.Dragger {
+		width: $DragHandleSize;
+		height: $DragHandleSize;
+		position: absolute;
+		background-color: black;
+		border-radius: 50%;
+		z-index: 1;
+		margin-top: -2px;
+		border: 2px solid white;
+		cursor: -webkit-grab; 
+
+		#Name {
+			width: 100%;
+			height: 100%;
+			position: relative;
+			text-align: center;
+			font-size: 12px;
+			font-family: monospace;
+			line-height: $DragHandleSize;
+			color: white; 
+		}
+	}
+
+	.Dragger:hover {
+		background-color: $blue;
+		color: white; 
+	}
+
+	.Dragger.is-pointer-down {
+		cursor: -webkit-grabbing;
+		background-color: $pink; 
+		#Name {
+			color: $green; 
+		}
+	}
+
+	$AxisWidth : 3px;
+
+	//AXIS LINES
+	.Axis {
+		position: absolute;
+		background-color: black;
+		width: $AxisWidth;
+		height: $AxisWidth;
+		top: $AxisWidth;
+		left: $AxisWidth;
+		border-radius: $AxisWidth/2;
+		z-index: 0; 
+	}
+
+	#xAxis {
+		width: calc(100% - #{$margin * 2}); 
+	}
+	#yAxis {
+		height: calc(100% - #{$margin * 2}); 
+	}
+
+	$ButtonHeight : 90px;
+
+	//BUTTONS
+	.Button {
+		width: 100%;
+		margin-top: $margin;
+		height: $ButtonHeight;
+		background-color: black;
+		line-height: $ButtonHeight;
+		color: white;
+		border-radius: 10px;
+		text-align: center;
+		cursor: pointer; 
+	}
+	.Button:hover {
+		color: white;
+		background-color: $blue; 
+	}
+	.Button:hover:active, #Content .Button:hover:active.Active {
+		color: $teal;
+		background-color: $pink; 
+	}
+	.Button.Toggle.Active {
+		$ToggleBorder : 3px;
+		box-sizing: border-box;
+		border: $ToggleBorder solid black;
+		line-height: $ButtonHeight - $ToggleBorder*2;
+		color: black;
+		background-color: white; 
+	}
+
+	//TRANSPORT
+
+	$TransportHeight : $ButtonHeight / 3;
+
+	.Transport {
+		width: 100%;
+		height: $TransportHeight;
+		background-color: black;
+		line-height: $TransportHeight;
+		color: white;
+		border-radius: 10px;
+		margin-top: $margin;
+		position: relative;
+
+		$PositionWidth: 70px;
+
+		#Position {
+			width: $PositionWidth;
+			left: 50%;
+			margin-left: -$PositionWidth/2;
+			text-align: left;
+			height: 100%;
+			position: absolute;
+			color: white;
+		}
+	}
+
+}
+
+
+#Keyboard {
+	margin: 3px !important; 
+}
+
+code {
+	background-color: #ECECEC;
+	color: #333;
+	padding: 1px; 
+}
+
+
+//LOADING
+
+#Loading {
+	font-family: monospace;
+	z-index: 100000;
+	position: absolute;
+	background-color: rgba(140, 140, 140, 0.5);
+	width: 100%;
+	height: calc(100% - 37.5px);
+	top: 37.5px;
+	left: 0px;
+	opacity: 1;
+	transition: opacity 0.4s;
+	#Text {
+		color: white;
+		position: absolute;
+		text-align: center;
+		top: 50%;
+		left: 50%;
+		width: 300px;
+		margin-left: -150px;
+		height: 60px;
+		margin-top: -30px;
+		line-height: 60px;
+		font-size: 42px; 
+	}
+}
+
+#Loading.Loaded {
+	pointer-events: none;
+	opacity: 0; 
+}

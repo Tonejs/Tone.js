@@ -12,7 +12,19 @@ var uglify = require("gulp-uglify");
 var rename = require("gulp-rename");
 var sass = require("gulp-ruby-sass");
 var prefix = require("gulp-autoprefixer");
-var concatCss = require("gulp-concat-css");
+var openFile = require("gulp-open");
+var argv = require("yargs")
+			.alias("f", "file")
+			.alias("s", "signal")
+			.alias("i", "instrument")
+			.alias("o", "source")
+			.alias("v", "event")
+			.alias("t", "control")
+			.alias("e", "effect")
+			.alias("c", "core")
+			.alias("m", "component")
+			.argv;
+var webserver = require("gulp-webserver");
 
 /**
  *  BUILDING
@@ -61,10 +73,26 @@ gulp.task("buildrequire", ["makerequire"], function(done){
 		.pipe(tap(function(file){
 			var fileAsString = file.contents.toString();
 			file.contents = new Buffer(fileAsString.substr(0, fileAsString.indexOf("require([") - 1));
+			fs.writeFile("toneMain.js", file.contents, function(err){
+				if (err){
+					console.log(err);
+				}
+			});
 		}))
 		//surround the file with the header/footer
 		.pipe(insert.prepend(fs.readFileSync("./fragments/before.frag").toString()))
 		.pipe(insert.append(fs.readFileSync("./fragments/after.frag").toString()))
+		//clean up the files
+		.pipe(gulp.dest("../build/"));
+	stream.on("end", done);
+});
+
+gulp.task("buildp5Tone", ["buildrequire"], function(done){
+	var stream = gulp.src("./toneMain.js")
+	.pipe(rename("p5.Tone.js"))
+	//surround the file with the header/footer
+		.pipe(insert.prepend(fs.readFileSync("./fragments/before.frag").toString()))
+		.pipe(insert.append(fs.readFileSync("./fragments/p5-after.frag").toString()))
 		//clean up the files
 		.pipe(gulp.dest("../build/"));
 	stream.on("end", function(){
@@ -72,8 +100,8 @@ gulp.task("buildrequire", ["makerequire"], function(done){
 	});
 });
 
-gulp.task("build", ["buildrequire"], function(){
-		gulp.src("../build/Tone.js")
+gulp.task("build", ["buildp5Tone"], function(){
+		gulp.src("../build/{p5.Tone,Tone}.js")
 			.pipe(uglify({
 					preserveComments : "some",
 					compress: {
@@ -91,7 +119,9 @@ gulp.task("build", ["buildrequire"], function(){
 						cascade : true,
 					},
 				}))
-			.pipe(rename("Tone.min.js"))
+			.pipe(rename(function(path) {
+				path.basename += ".min";
+			}))
 			.pipe(gulp.dest("../build/"));
 });
 
@@ -109,4 +139,72 @@ gulp.task("sass", function () {
 
 gulp.task("example", function() {
   gulp.watch(["../examples/style/examples.scss"], ["sass"]);
+});
+
+/**
+ *  THE WEBSERVER
+ */
+gulp.task("server", function(){
+	gulp.src("../")
+		.pipe(webserver({
+			// livereload: false,
+			directoryListing: true,
+			port : 3000,
+			open: false
+		}));
+});
+
+/**
+ *  TEST RUNNER
+ */
+gulp.task("test", ["server", "collectTests"], function(){
+	gulp.src("../test/index.html")
+		.pipe(openFile({uri: "http://localhost:3000/test"}));
+});
+
+gulp.task("collectTests", function(done){
+	var tests = ["../test/*/*.js", "!../test/helper/*.js", "!../test/tests/*.js"];
+	if (argv.file){
+		tests = ["../test/*/"+argv.file+".js"];
+	} else if (argv.signal || argv.core || argv.component || argv.instrument || 
+				argv.source || argv.effect || argv.event){
+		tests = [];
+		if (argv.signal){
+			tests.push("../test/signal/*.js");
+		}
+		if (argv.core){
+			tests.push("../test/core/*.js");
+		}
+		if (argv.source){
+			tests.push("../test/source/*.js");
+		}
+		if (argv.instrument){
+			tests.push("../test/instrument/*.js");
+		}
+		if (argv.component){
+			tests.push("../test/component/*.js");
+		}
+		if (argv.effect){
+			tests.push("../test/effect/*.js");
+		}
+		if (argv.event){
+			tests.push("../test/event/*.js");
+		}
+	} 
+	// console.log(argv.signal === undefined);
+	var allFiles = [];
+	var task = gulp.src(tests)
+		.pipe(tap(function(file){
+			var fileName = path.relative("../test/", file.path);
+			allFiles.push(fileName.substring(0, fileName.length - 3));
+		}));
+	task.on("end", function(){
+		//build a require string
+		allFiles.unshift("Test");
+		var innerTask = gulp.src("./fragments/test.frag")
+			.pipe(replace("{FILES}", JSON.stringify(allFiles)))
+			.pipe(rename("Main.js"))
+			.pipe(gulp.dest("../test/"));
+		innerTask.on("end", done);
+	});
 });

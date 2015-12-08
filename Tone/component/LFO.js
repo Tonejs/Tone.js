@@ -1,4 +1,5 @@
-define(["Tone/core/Tone", "Tone/source/Oscillator", "Tone/signal/Scale", "Tone/signal/Signal", "Tone/signal/AudioToGain"], 
+define(["Tone/core/Tone", "Tone/source/Oscillator", "Tone/signal/Scale", 
+	"Tone/signal/Signal", "Tone/signal/AudioToGain", "Tone/core/Type"], 
 function(Tone){
 
 	"use strict";
@@ -13,8 +14,7 @@ function(Tone){
 	 *  @extends {Tone.Oscillator}
 	 *  @param {Frequency|Object} [frequency] The frequency of the oscillation. Typically, LFOs will be
 	 *                               in the frequency range of 0.1 to 10 hertz. 
-	 *  @param {number=} min The minimum output value of the LFO. The LFO starts 
-	 *                      at it's minimum value. 
+	 *  @param {number=} min The minimum output value of the LFO. 
 	 *  @param {number=} max The maximum value of the LFO. 
 	 *  @example
 	 * var lfo = new Tone.LFO("4n", 400, 4000);
@@ -29,10 +29,9 @@ function(Tone){
 		 *  @type {Tone.Oscillator}
 		 *  @private
 		 */
-		this.oscillator = new Tone.Oscillator({
+		this._oscillator = new Tone.Oscillator({
 			"frequency" : options.frequency, 
 			"type" : options.type, 
-			"phase" : options.phase + 90
 		});
 
 		/**
@@ -40,7 +39,7 @@ function(Tone){
 		 *  @type {Frequency}
 		 *  @signal
 		 */
-		this.frequency = this.oscillator.frequency;
+		this.frequency = this._oscillator.frequency;
 
 		/**
 		 * The amplitude of the LFO, which controls the output range between
@@ -50,9 +49,23 @@ function(Tone){
 		 * @type {Number}
 		 * @signal
 		 */
-		this.amplitude = this.oscillator.volume;
+		this.amplitude = this._oscillator.volume;
 		this.amplitude.units = Tone.Type.NormalRange;
 		this.amplitude.value = options.amplitude;
+
+		/**
+		 *  The signal which is output when the LFO is stopped
+		 *  @type  {Tone.Signal}
+		 *  @private
+		 */
+		this._stoppedSignal = new Tone.Signal(0, Tone.Type.AudioRange);
+
+		/**
+		 *  The value that the LFO outputs when it's stopped
+		 *  @type {AudioRange}
+		 *  @private
+		 */
+		this._stoppedValue = 0;
 
 		/**
 		 *  @type {Tone.AudioToGain} 
@@ -68,14 +81,17 @@ function(Tone){
 
 		/**
 		 *  the units of the LFO (used for converting)
-		 *  @type {string} 
+		 *  @type {Tone.Type} 
 		 *  @private
 		 */
 		this._units = Tone.Type.Default;
+		this.units = options.units;
 
 		//connect it up
-		this.oscillator.chain(this._a2g, this._scaler);
-		this._readOnly(["amplitude", "frequency", "oscillator"]);
+		this._oscillator.chain(this._a2g, this._scaler);
+		this._stoppedSignal.connect(this._a2g);
+		this._readOnly(["amplitude", "frequency"]);
+		this.phase = options.phase;
 	};
 
 	Tone.extend(Tone.LFO, Tone.Oscillator);
@@ -93,7 +109,8 @@ function(Tone){
 		"max" : 1,
 		"phase" : 0,
 		"frequency" : "4n",
-		"amplitude" : 1
+		"amplitude" : 1,
+		"units" : Tone.Type.Default
 	};
 
 	/**
@@ -102,7 +119,9 @@ function(Tone){
 	 *  @returns {Tone.LFO} this
 	 */
 	Tone.LFO.prototype.start = function(time){
-		this.oscillator.start(time);
+		time = this.toSeconds(time);
+		this._stoppedSignal.setValueAtTime(0, time);
+		this._oscillator.start(time);
 		return this;
 	};
 
@@ -112,7 +131,9 @@ function(Tone){
 	 *  @returns {Tone.LFO} this
 	 */
 	Tone.LFO.prototype.stop = function(time){
-		this.oscillator.stop(time);
+		time = this.toSeconds(time);
+		this._stoppedSignal.setValueAtTime(this._stoppedValue, time);
+		this._oscillator.stop(time);
 		return this;
 	};
 
@@ -130,8 +151,8 @@ function(Tone){
 	 *  //even as the tempo changes
 	 */
 	Tone.LFO.prototype.sync = function(delay){
-		this.oscillator.sync(delay);
-		this.oscillator.syncFrequency();
+		this._oscillator.sync(delay);
+		this._oscillator.syncFrequency();
 		return this;
 	};
 
@@ -140,8 +161,8 @@ function(Tone){
 	 *  @returns {Tone.LFO} this
 	 */
 	Tone.LFO.prototype.unsync = function(){
-		this.oscillator.unsync();
-		this.oscillator.unsyncFrequency();
+		this._oscillator.unsync();
+		this._oscillator.unsyncFrequency();
 		return this;
 	};
 
@@ -185,10 +206,12 @@ function(Tone){
 	 */
 	 Object.defineProperty(Tone.LFO.prototype, "type", {
 		get : function(){
-			return this.oscillator.type;
+			return this._oscillator.type;
 		},
 		set : function(type){
-			this.oscillator.type = type;
+			this._oscillator.type = type;
+			this._stoppedValue = this._oscillator._getInitialValue();
+			this._stoppedSignal.value = this._stoppedValue;
 		}
 	});
 
@@ -200,10 +223,12 @@ function(Tone){
 	 */
 	 Object.defineProperty(Tone.LFO.prototype, "phase", {
 		get : function(){
-			return this.oscillator.phase - 90;
+			return this._oscillator.phase;
 		},
 		set : function(phase){
-			this.oscillator.phase = phase + 90;
+			this._oscillator.phase = phase;
+			this._stoppedValue = this._oscillator._getInitialValue();
+			this._stoppedSignal.value = this._stoppedValue;
 		}
 	});
 
@@ -228,7 +253,21 @@ function(Tone){
 	});
 
 	/**
-	 *  Connect the output of a ToneNode to an AudioParam, AudioNode, or Tone Node. 
+	 *  Returns the playback state of the source, either "started" or "stopped".
+	 *  @type {Tone.State}
+	 *  @readOnly
+	 *  @memberOf Tone.LFO#
+	 *  @name state
+	 */
+	Object.defineProperty(Tone.LFO.prototype, "state", {
+		get : function(){
+			return this._oscillator.state;
+		}
+	});
+
+	/**
+	 *  Connect the output of the LFO to an AudioParam, AudioNode, or Tone Node. 
+	 *  Tone.LFO will automatically convert to the destination units of the 
 	 *  will get the units from the connected node.
 	 *  @param  {Tone | AudioParam | AudioNode} node 
 	 *  @param {number} [outputNum=0] optionally which output to connect from
@@ -237,7 +276,7 @@ function(Tone){
 	 *  @private
 	 */
 	Tone.LFO.prototype.connect = function(node){
-		if (node.constructor === Tone.Signal){
+		if (node.constructor === Tone.Signal || node.constructor === Tone.Param || node.constructor === Tone.TimelineSignal){
 			this.convert = node.convert;
 			this.units = node.units;
 		}
@@ -246,20 +285,20 @@ function(Tone){
 	};
 
 	/**
-	 *  private method borroed from Signal converts 
+	 *  private method borrowed from Param converts 
 	 *  units from their destination value
 	 *  @function
 	 *  @private
 	 */
-	Tone.LFO.prototype._fromUnits = Tone.Signal.prototype._fromUnits;
+	Tone.LFO.prototype._fromUnits = Tone.Param.prototype._fromUnits;
 
 	/**
-	 *  private method borroed from Signal converts 
+	 *  private method borrowed from Param converts 
 	 *  units to their destination value
 	 *  @function
 	 *  @private
 	 */
-	Tone.LFO.prototype._toUnits = Tone.Signal.prototype._toUnits;
+	Tone.LFO.prototype._toUnits = Tone.Param.prototype._toUnits;
 
 	/**
 	 *  disconnect and dispose
@@ -267,9 +306,11 @@ function(Tone){
 	 */
 	Tone.LFO.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
-		this._writable(["amplitude", "frequency", "oscillator"]);
-		this.oscillator.dispose();
-		this.oscillator = null;
+		this._writable(["amplitude", "frequency"]);
+		this._oscillator.dispose();
+		this._oscillator = null;
+		this._stoppedSignal.dispose();
+		this._stoppedSignal = null;
 		this._scaler.dispose();
 		this._scaler = null;
 		this._a2g.dispose();

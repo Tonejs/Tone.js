@@ -47,9 +47,9 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Negate", "Tone/signal/
 		 *  @private
 		 *  @type {Tone.Signal}
 		 */
-		this._value = this.input[1] = new Tone.Signal(value);
+		this._param = this.input[1] = new Tone.Signal(value);
 
-		this._value.chain(this._neg, this._sum);
+		this._param.chain(this._neg, this._sum);
 	};
 
 	Tone.extend(Tone.Subtract, Tone.Signal);
@@ -64,8 +64,8 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Negate", "Tone/signal/
 		this._neg = null;
 		this._sum.disconnect();
 		this._sum = null;
-		this._value.dispose();
-		this._value = null;
+		this._param.dispose();
+		this._param = null;
 		return this;
 	};
 

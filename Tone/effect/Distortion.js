@@ -52,9 +52,9 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/signal/WaveShaper"], funct
 	};
 
 	/**
-	 * The amount of distortion. Range between 0-1. 
+	 * The amount of distortion.
 	 * @memberOf Tone.Distortion#
-	 * @type {number}
+	 * @type {NormalRange}
 	 * @name distortion
 	 */
 	Object.defineProperty(Tone.Distortion.prototype, "distortion", {

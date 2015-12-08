@@ -50,6 +50,13 @@ function(Tone){
 		this._wave = null;
 
 		/**
+		 *  The partials of the oscillator
+		 *  @type {Array}
+		 *  @private
+		 */
+		this._partials = this.defaultArg(options.partials, [1]);
+
+		/**
 		 *  the phase of the oscillator
 		 *  between 0 - 360
 		 *  @type {number}
@@ -80,7 +87,20 @@ function(Tone){
 		"type" : "sine",
 		"frequency" : 440,
 		"detune" : 0,
-		"phase" : 0
+		"phase" : 0,
+		"partials" : []
+	};
+
+	/**
+	 *  The Oscillator types
+	 *  @enum {String}
+	 */
+	Tone.Oscillator.Type = {
+		Sine : "sine",
+		Triangle : "triangle",
+		Sawtooth : "sawtooth",
+		Square : "square",
+		Custom : "custom"
 	};
 
 	/**
@@ -166,62 +186,139 @@ function(Tone){
 			return this._type;
 		},
 		set : function(type){
-
-			var originalType = type;
-
-			var fftSize = 4096;
-			var periodicWaveSize = fftSize / 2;
-
-			var real = new Float32Array(periodicWaveSize);
-			var imag = new Float32Array(periodicWaveSize);
-			
-			var partialCount = 1;
-			var partial = /(sine|triangle|square|sawtooth)(\d+)$/.exec(type);
-			if (partial){
-				partialCount = parseInt(partial[2]);
-				type = partial[1];
-				partialCount = Math.max(partialCount, 2);
-				periodicWaveSize = partialCount;
-			}
-
-			var shift = this._phase;	
-			for (var n = 1; n < periodicWaveSize; ++n) {
-				var piFactor = 2 / (n * Math.PI);
-				var b; 
-				switch (type) {
-					case "sine": 
-						b = (n <= partialCount) ? 1 : 0;
-						break;
-					case "square":
-						b = (n & 1) ? 2 * piFactor : 0;
-						break;
-					case "sawtooth":
-						b = piFactor * ((n & 1) ? 1 : -1);
-						break;
-					case "triangle":
-						if (n & 1) {
-							b = 2 * (piFactor * piFactor) * ((((n - 1) >> 1) & 1) ? -1 : 1);
-						} else {
-							b = 0;
-						}
-						break;
-					default:
-						throw new TypeError("invalid oscillator type: "+type);
-				}
-				if (b !== 0){
-					real[n] = -b * Math.sin(shift * n);
-					imag[n] = b * Math.cos(shift * n);
-				} else {
-					real[n] = 0;
-					imag[n] = 0;
-				}
-			}
-			var periodicWave = this.context.createPeriodicWave(real, imag);
+			var coefs = this._getRealImaginary(type, this._phase);
+			var periodicWave = this.context.createPeriodicWave(coefs[0], coefs[1]);
 			this._wave = periodicWave;
 			if (this._oscillator !== null){
 				this._oscillator.setPeriodicWave(this._wave);
 			}
-			this._type = originalType;
+			this._type = type;
+		}
+	});
+
+	/**
+	 *  Returns the real and imaginary components based 
+	 *  on the oscillator type.
+	 *  @returns {Array} [real, imaginary]
+	 *  @private
+	 */
+	Tone.Oscillator.prototype._getRealImaginary = function(type, phase){
+		var fftSize = 4096;
+		var periodicWaveSize = fftSize / 2;
+
+		var real = new Float32Array(periodicWaveSize);
+		var imag = new Float32Array(periodicWaveSize);
+		
+		var partialCount = 1;
+		if (type === Tone.Oscillator.Type.Custom){
+			partialCount = this._partials.length + 1;
+			periodicWaveSize = partialCount;
+		} else {
+			var partial = /^(sine|triangle|square|sawtooth)(\d+)$/.exec(type);
+			if (partial){
+				partialCount = parseInt(partial[2]) + 1;
+				type = partial[1];
+				partialCount = Math.max(partialCount, 2);
+				periodicWaveSize = partialCount;
+			}
+		}
+
+		for (var n = 1; n < periodicWaveSize; ++n) {
+			var piFactor = 2 / (n * Math.PI);
+			var b; 
+			switch (type) {
+				case Tone.Oscillator.Type.Sine: 
+					b = (n <= partialCount) ? 1 : 0;
+					break;
+				case Tone.Oscillator.Type.Square:
+					b = (n & 1) ? 2 * piFactor : 0;
+					break;
+				case Tone.Oscillator.Type.Sawtooth:
+					b = piFactor * ((n & 1) ? 1 : -1);
+					break;
+				case Tone.Oscillator.Type.Triangle:
+					if (n & 1) {
+						b = 2 * (piFactor * piFactor) * ((((n - 1) >> 1) & 1) ? -1 : 1);
+					} else {
+						b = 0;
+					}
+					break;
+				case Tone.Oscillator.Type.Custom: 
+					b = this._partials[n - 1];
+					break;
+				default:
+					throw new Error("invalid oscillator type: "+type);
+			}
+			if (b !== 0){
+				real[n] = -b * Math.sin(phase * n);
+				imag[n] = b * Math.cos(phase * n);
+			} else {
+				real[n] = 0;
+				imag[n] = 0;
+			}
+		}
+		return [real, imag];
+	};
+
+	/**
+	 *  Compute the inverse FFT for a given phase.	
+	 *  @param  {Float32Array}  real
+	 *  @param  {Float32Array}  imag 
+	 *  @param  {NormalRange}  phase 
+	 *  @return  {AudioRange}
+	 *  @private
+	 */
+	Tone.Oscillator.prototype._inverseFFT = function(real, imag, phase){
+		var sum = 0;
+		var len = real.length;
+		for (var i = 0; i < len; i++){
+			sum += real[i] * Math.cos(i * phase) + imag[i] * Math.sin(i * phase);
+		}
+		return sum;
+	};
+
+	/**
+	 *  Returns the initial value of the oscillator.
+	 *  @return  {AudioRange}
+	 *  @private
+	 */
+	Tone.Oscillator.prototype._getInitialValue = function(){
+		var coefs = this._getRealImaginary(this._type, 0);
+		var real = coefs[0];
+		var imag = coefs[1];
+		var maxValue = 0;
+		var twoPi = Math.PI * 2;
+		//check for peaks in 8 places
+		for (var i = 0; i < 8; i++){
+			maxValue = Math.max(this._inverseFFT(real, imag, (i / 8) * twoPi), maxValue);
+		}
+		return -this._inverseFFT(real, imag, this._phase) / maxValue;
+	};
+
+	/**
+	 * The partials of the waveform. A partial represents 
+	 * the amplitude at a harmonic. The first harmonic is the 
+	 * fundamental frequency, the second is the octave and so on
+	 * following the harmonic series. 
+	 * Setting this value will automatically set the type to "custom". 
+	 * The value is an empty array when the type is not "custom". 
+	 * @memberOf Tone.Oscillator#
+	 * @type {Array}
+	 * @name partials
+	 * @example
+	 * osc.partials = [1, 0.2, 0.01];
+	 */
+	Object.defineProperty(Tone.Oscillator.prototype, "partials", {
+		get : function(){
+			if (this._type !== Tone.Oscillator.Type.Custom){
+				return [];
+			} else {
+				return this._partials;
+			}
+		}, 
+		set : function(partials){
+			this._partials = partials;
+			this.type = Tone.Oscillator.Type.Custom;
 		}
 	});
 
@@ -260,6 +357,7 @@ function(Tone){
 		this.frequency = null;
 		this.detune.dispose();
 		this.detune = null;
+		this._partials = null;
 		return this;
 	};
 

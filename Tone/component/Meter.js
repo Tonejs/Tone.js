@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/core/Master"], function(Tone){
+define(["Tone/core/Tone"], function(Tone){
 
 	"use strict";
 
@@ -25,7 +25,9 @@ define(["Tone/core/Tone", "Tone/core/Master"], function(Tone){
 	 * //to access meter level
 	 * meter.getLevel();
 	 */
-	Tone.Meter = function(channels, smoothing, clipMemory){
+	Tone.Meter = function(){
+
+		var options = this.optionsObject(arguments, ["channels", "smoothing"], Tone.Meter.defaults);
 		//extends Unit
 		Tone.call(this);
 
@@ -34,21 +36,26 @@ define(["Tone/core/Tone", "Tone/core/Master"], function(Tone){
 		 *  @type  {number}
 		 *  @private
 		 */
-		this._channels = this.defaultArg(channels, 1);
+		this._channels = options.channels;
+
+		/**
+		 * The amount which the decays of the meter are smoothed. Small values
+		 * will follow the contours of the incoming envelope more closely than large values.
+		 * @type {NormalRange}
+		 */
+		this.smoothing = options.smoothing;
 
 		/** 
-		 *  the smoothing value
-		 *  @type  {number}
-		 *  @private
+		 *  The amount of time a clip is remember for. 
+		 *  @type  {Time}
 		 */
-		this._smoothing = this.defaultArg(smoothing, 0.8);
+		this.clipMemory = options.clipMemory;
 
 		/** 
-		 *  the amount of time a clip is remember for. 
-		 *  @type  {number}
-		 *  @private
+		 *  The value above which the signal is considered clipped.
+		 *  @type  {Number}
 		 */
-		this._clipMemory = this.defaultArg(clipMemory, 0.5) * 1000;
+		this.clipLevel = options.clipLevel;
 
 		/** 
 		 *  the rms for each of the channels
@@ -73,15 +80,20 @@ define(["Tone/core/Tone", "Tone/core/Master"], function(Tone){
 		/** 
 		 *  last time the values clipped
 		 *  @private
-		 *  @type {number}
+		 *  @type {Array}
 		 */
-		this._lastClip = 0;
+		this._lastClip = new Array(this._channels);
+
+		//zero out the clip array
+		for (var j = 0; j < this._lastClip.length; j++){
+			this._lastClip[j] = 0;
+		}
 		
 		/** 
 		 *  @private
 		 *  @type {ScriptProcessorNode}
 		 */
-		this._jsNode = this.context.createScriptProcessor(this.bufferSize, this._channels, 1);
+		this._jsNode = this.context.createScriptProcessor(options.bufferSize, this._channels, 1);
 		this._jsNode.onaudioprocess = this._onprocess.bind(this);
 		//so it doesn't get garbage collected
 		this._jsNode.noGC();
@@ -94,30 +106,42 @@ define(["Tone/core/Tone", "Tone/core/Master"], function(Tone){
 	Tone.extend(Tone.Meter);
 
 	/**
+	 *  The defaults
+	 *  @type {Object}
+	 *  @static
+	 *  @const
+	 */
+	Tone.Meter.defaults = {
+		"smoothing" : 0.8,
+		"bufferSize" : 1024,
+		"clipMemory" : 0.5,
+		"clipLevel" : 0.9,
+		"channels" : 1
+	};
+
+	/**
 	 *  called on each processing frame
 	 *  @private
 	 *  @param  {AudioProcessingEvent} event 
 	 */
 	Tone.Meter.prototype._onprocess = function(event){
 		var bufferSize = this._jsNode.bufferSize;
-		var smoothing = this._smoothing;
+		var smoothing = this.smoothing;
 		for (var channel = 0; channel < this._channels; channel++){
 			var input = event.inputBuffer.getChannelData(channel);
 			var sum = 0;
 			var total = 0;
 			var x;
-			var clipped = false;
 			for (var i = 0; i < bufferSize; i++){
 				x = input[i];
-				if (!clipped && x > 0.95){
-					clipped = true;
-					this._lastClip = Date.now();
-				}
 				total += x;
 		    	sum += x * x;
 			}
 			var average = total / bufferSize;
 			var rms = Math.sqrt(sum / bufferSize);
+			if (rms > 0.9){
+				this._lastClip[channel] = Date.now();
+			}
 			this._volume[channel] = Math.max(rms, this._volume[channel] * smoothing);
 			this._values[channel] = average;
 		}
@@ -161,8 +185,9 @@ define(["Tone/core/Tone", "Tone/core/Master"], function(Tone){
 	 * @returns {boolean} if the audio has clipped. The value resets
 	 *                       based on the clipMemory defined. 
 	 */
-	Tone.Meter.prototype.isClipped = function(){
-		return Date.now() - this._lastClip < this._clipMemory;
+	Tone.Meter.prototype.isClipped = function(channel){
+		channel = this.defaultArg(channel, 0);
+		return Date.now() - this._lastClip[channel] < this._clipMemory * 1000;
 	};
 
 	/**
@@ -173,8 +198,10 @@ define(["Tone/core/Tone", "Tone/core/Master"], function(Tone){
 		Tone.prototype.dispose.call(this);
 		this._jsNode.disconnect();
 		this._jsNode.onaudioprocess = null;
+		this._jsNode = null;
 		this._volume = null;
 		this._values = null;
+		this._lastClip = null;
 		return this;
 	};
 

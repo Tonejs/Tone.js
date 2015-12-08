@@ -84,7 +84,7 @@ function(Tone){
 
 		/**
 		 * The gain of the filter.
-		 * @type {Gain}
+		 * @type {Number}
 		 * @signal
 		 */
 		this.gain = this._peaking.gain;

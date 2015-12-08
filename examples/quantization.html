@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+	<title>Quantize</title>
+	
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<link rel="icon" type="image/png" sizes="174x174" href="./style/favicon.png">
+
+	<script type="text/javascript" src="../build/Tone.js"></script>
+	<script type="text/javascript" src="./scripts/jquery.min.js"></script>
+	<script type="text/javascript" src="./scripts/draggabilly.js"></script>
+	<script type="text/javascript" src="./scripts/Logo.js"></script>
+	<script type="text/javascript" src="./scripts/Interface.js"></script>
+
+	<link rel="stylesheet" type="text/css" href="./style/examples.css">
+
+	<script type="text/javascript">
+		// jshint ignore: start
+	</script>
+</head>
+<body>
+	<style type="text/css">
+		.Button {
+			width: calc(50% - 4px)!important;
+			float: left;
+			margin: 2px;
+		}
+	</style>
+	<div id="Content" class="FullScreen">
+		<div id="Title">Quantization</div>
+		<div id="Explanation">
+			Using the "@" symbol, <a href="https://github.com/Tonejs/Tone.js/wiki/Time" target="_blank">Time</a> 
+			expressions can be <a href="https://en.wikipedia.org/wiki/Quantization_(music)" target="_blank">quantized</a> 
+			(aligned to a subdivision). In this example, a note's start time is aligned to the given subdivision. 
+		</div>
+	</div>
+	<script id="JSCode" type="text/javascript">
+		var polySynth = new Tone.PolySynth(4, Tone.SimpleSynth).toMaster();
+
+		Tone.Transport.start();
+
+	</script>
+	<script id="gui" type="text/javascript">
+
+	$(function(){
+
+		new Interface.Transport();
+
+		new Interface.Button({
+			type : "moment",
+			text : "@1m",
+			start : function(){
+				polySynth.triggerAttackRelease("C2", "8n", "@1m", 2);
+			},
+		});
+
+		new Interface.Button({
+			type : "moment",
+			text : "@2n",
+			start : function(){
+				polySynth.triggerAttackRelease("G3", "8n", "@2n");
+			},
+		});
+
+		new Interface.Button({
+			type : "moment",
+			text : "@4n",
+			start : function(){
+				polySynth.triggerAttackRelease("E4", "8n", "@4n");
+			},
+		});
+
+		new Interface.Button({
+			type : "moment",
+			text : "@8n",
+			start : function(){
+				polySynth.triggerAttackRelease("B4", "8n", "@8n");
+			},
+		});
+	});
+		
+	</script>
+
+</body>
+</html>

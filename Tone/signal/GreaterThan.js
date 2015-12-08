@@ -24,8 +24,8 @@ define(["Tone/core/Tone", "Tone/signal/GreaterThanZero", "Tone/signal/Subtract",
 		 *  @type {Tone.Subtract}
 		 *  @private
 		 */
-		this._value = this.input[0] = new Tone.Subtract(value);
-		this.input[1] = this._value.input[1];
+		this._param = this.input[0] = new Tone.Subtract(value);
+		this.input[1] = this._param.input[1];
 
 		/**
 		 *  compare that amount to zero
@@ -35,7 +35,7 @@ define(["Tone/core/Tone", "Tone/signal/GreaterThanZero", "Tone/signal/Subtract",
 		this._gtz = this.output = new Tone.GreaterThanZero();
 
 		//connect
-		this._value.connect(this._gtz);
+		this._param.connect(this._gtz);
 	};
 
 	Tone.extend(Tone.GreaterThan, Tone.Signal);
@@ -46,8 +46,8 @@ define(["Tone/core/Tone", "Tone/signal/GreaterThanZero", "Tone/signal/Subtract",
 	 */
 	Tone.GreaterThan.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
-		this._value.dispose();
-		this._value = null;
+		this._param.dispose();
+		this._param = null;
 		this._gtz.dispose();
 		this._gtz = null;
 		return this;

@@ -5,11 +5,13 @@
 	<title>SimpleSynth</title>
 
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<link rel="icon" type="image/png" sizes="174x174" href="./style/favicon.png">
 	
 	<script type="text/javascript" src="../build/Tone.js"></script>
 	<script type="text/javascript" src="./scripts/jquery.min.js"></script>
-	<script type="text/javascript" src="./scripts/Notone.GUI.js"></script>
+	<script type="text/javascript" src="./scripts/draggabilly.js"></script>
 	<script type="text/javascript" src="./scripts/Interface.js"></script>
+	<script type="text/javascript" src="./scripts/Logo.js"></script>
 	<script type="text/javascript" src="./scripts/qwerty-hancock.js"></script>
 
 	<link rel="stylesheet" type="text/css" href="./style/examples.css">
@@ -55,7 +57,7 @@
 			"envelope" : {
 				"attack" : 0.01,
 				"decay" : 0.2,
-				"sustain" : 0.4,
+				"sustain" : 0.2,
 				"release" : 0.2,
 			}
 		}).toMaster();
@@ -64,16 +66,6 @@
 
 	<script id="GUI" type="text/javascript">
 		$(function(){
-			Notone.config({
-				"search" : false,
-				"expandInDrawer" : true,
-				"expandChildren" : true,
-				"hideDrawer" : Interface.isMobile,
-				"drawer" : true,
-				"container" : "body"
-			});
-
-			Notone.add(synth);
 
 			var keyboard = new QwertyHancock({
 				id: "Keyboard",

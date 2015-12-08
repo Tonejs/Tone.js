@@ -36,6 +36,13 @@ function(Tone){
 		this.voices = new Array(options.polyphony);
 
 		/**
+		 *  If there are no more voices available,
+		 *  should an active voice be stolen to play the new note?
+		 *  @type {Boolean}
+		 */
+		this.stealVoices = true;
+
+		/**
 		 *  the queue of free voices
 		 *  @private
 		 *  @type {Array}
@@ -92,12 +99,19 @@ function(Tone){
 		for (var i = 0; i < notes.length; i++){
 			var val = notes[i];
 			var stringified = JSON.stringify(val);
-			if (this._activeVoices[stringified]){
+			//retrigger the same note if possible
+			if (this._activeVoices.hasOwnProperty(stringified)){
 				this._activeVoices[stringified].triggerAttack(val, time, velocity);
 			} else if (this._freeVoices.length > 0){
 				var voice = this._freeVoices.shift();
 				voice.triggerAttack(val, time, velocity);
 				this._activeVoices[stringified] = voice;
+			} else if (this.stealVoices){ //steal a voice				
+				//take the first voice
+				for (var voiceName in this._activeVoices){
+					this._activeVoices[voiceName].triggerAttack(val, time, velocity);
+					break;
+				}
 			}
 		}
 		return this;
@@ -131,7 +145,7 @@ function(Tone){
 	 *  @param  {Time} [time=now]  When the release will be triggered. 
 	 *  @returns {Tone.PolySynth} this
 	 *  @example
-	 * poly.triggerAttack(["Ab3", "C4", "F5"]);
+	 * poly.triggerRelease(["Ab3", "C4", "F5"], "+2n");
 	 */
 	Tone.PolySynth.prototype.triggerRelease = function(notes, time){
 		if (!Array.isArray(notes)){
@@ -188,13 +202,13 @@ function(Tone){
 	};
 
 	/**
-	 *  @param {string} presetName the preset name
-	 *  @returns {Tone.PolySynth} this
-	 *  @private
+	 *  Trigger the release portion of all the currently active voices.
+	 *  @param {Time} [time=now] When the notes should be released.
+	 *  @return {Tone.PolySynth} this
 	 */
-	Tone.PolySynth.prototype.setPreset = function(presetName){
+	Tone.PolySynth.prototype.releaseAll = function(time){
 		for (var i = 0; i < this.voices.length; i++){
-			this.voices[i].setPreset(presetName);
+			this.voices[i].triggerRelease(time);
 		}
 		return this;
 	};

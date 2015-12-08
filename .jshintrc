@@ -19,7 +19,8 @@
     "AudioNode" : false,
     "AudioParam" : false,
     "WaveShaperNode" : false,
-    "DynamicsCompressorNode" : false
+    "DynamicsCompressorNode" : false,
+    "MediaStreamTrack" : false
   },
   "jquery" : true,
   "globalstrict": false,

@@ -2,7 +2,7 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Subtract", "Tone/signa
 	"Tone/signal/IfThenElse", "Tone/signal/OR", "Tone/signal/AND", "Tone/signal/NOT", 
 	"Tone/signal/GreaterThan", "Tone/signal/LessThan", "Tone/signal/Equal", "Tone/signal/EqualZero", 
 	"Tone/signal/GreaterThanZero", "Tone/signal/Abs", "Tone/signal/Negate", "Tone/signal/Max", 
-	"Tone/signal/Min", "Tone/signal/Modulo", "Tone/signal/Pow"], 
+	"Tone/signal/Min", "Tone/signal/Modulo", "Tone/signal/Pow", "Tone/signal/AudioToGain"], 
 	function(Tone){
 
 	"use strict";
@@ -165,6 +165,14 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Subtract", "Tone/signa
 				method : function(args, self){
 					var exp = literalNumber(args[1]);
 					var op = new Tone.Pow(exp);
+					self._eval(args[0]).connect(op);
+					return op;
+				}
+			},
+			"a2g" : {
+				regexp : /^a2g/,
+				method : function(args, self){
+					var op = new Tone.AudioToGain();
 					self._eval(args[0]).connect(op);
 					return op;
 				}

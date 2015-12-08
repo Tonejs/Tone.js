@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/component/AmplitudeEnvelope", "Tone/component/ScaledEnvelope", 
+define(["Tone/core/Tone", "Tone/component/AmplitudeEnvelope", "Tone/component/FrequencyEnvelope", 
 	"Tone/source/Noise", "Tone/signal/Signal", "Tone/component/Filter", "Tone/instrument/Instrument"], 
 function(Tone){
 
@@ -40,9 +40,9 @@ function(Tone){
 
 		/**
 		 *  The filter envelope. 
-		 *  @type {Tone.ScaledEnvelope}
+		 *  @type {Tone.FrequencyEnvelope}
 		 */
-		this.filterEnvelope = new Tone.ScaledEnvelope(options.filterEnvelope);
+		this.filterEnvelope = new Tone.FrequencyEnvelope(options.filterEnvelope);
 
 		/**
 		 *  The amplitude envelope. 
@@ -85,9 +85,8 @@ function(Tone){
 			"decay" : 0.2,
 			"sustain" : 0,
 			"release" : 2,
-			"min" : 20,
-			"max" : 4000,
-			"exponent" : 2
+			"baseFrequency" : 20,
+			"octaves" : 5,
 		}
 	};
 

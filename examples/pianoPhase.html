@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+	<title>SimpleSynth</title>
+
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<link rel="icon" type="image/png" sizes="174x174" href="./style/favicon.png">
+	
+	<script type="text/javascript" src="../build/Tone.js"></script>
+	<script type="text/javascript" src="./scripts/jquery.min.js"></script>
+	<script type="text/javascript" src="./scripts/draggabilly.js"></script>
+	<script type="text/javascript" src="./scripts/Logo.js"></script>
+	<script type="text/javascript" src="./scripts/Interface.js"></script>
+
+	<link rel="stylesheet" type="text/css" href="./style/examples.css">
+
+	<script type="text/javascript">
+		// jshint ignore: start
+	</script>
+
+</head>
+<body>	
+	<style type="text/css">
+
+		#Left, #Right {
+			height: 200px;
+			width: 50%;
+			position: relative;
+			float: left;
+			margin-top: 5px;
+			margin-bottom: 5px;
+		}
+
+		.Button {
+			display: inline-block;
+		}
+	</style>
+	<div id="Content">
+		<div id="Title">Piano Phase</div>
+		<div id="Explanation">
+			By slightly slowing down the playbackRate of the Tone.Sequence in the right channel,
+			the two identical melodies phase against each other in interesting ways.
+			Composition by Steve Reich. Inspiration from Alexander Chen.
+		</div>
+		<canvas id="Left"></canvas>
+		<canvas id="Right"></canvas>
+	</div>
+
+	<script type="text/javascript">
+		//set the bpm and time signature first
+		Tone.Transport.timeSignature = [6, 4];
+		Tone.Transport.bpm.value = 180;
+
+		//L/R channel merging
+		var merge = new Tone.Merge();
+
+		//a little reverb
+		var reverb = new Tone.Freeverb({
+			"roomSize" : 0.2,
+			"wet" : 0.3
+		});
+
+		merge.chain(reverb, Tone.Master);
+
+		//the synth settings
+		var synthSettings = {
+			"oscillator": {
+				"detune": 0,
+				"type": "custom",
+				"partials" : [2, 1, 2, 2],
+				"phase": 0,
+				"volume": 0
+			},
+			"envelope": {
+				"attack": 0.005,
+				"decay": 0.3,
+				"sustain": 0.2,
+				"release": 1,
+			},
+			"portamento": 0.01,
+			"volume": -20
+		};
+
+		//left and right synthesizers
+		var synthL = new Tone.SimpleSynth(synthSettings).connect(merge.left);
+		var synthR = new Tone.SimpleSynth(synthSettings).connect(merge.right);
+
+		//the two Tone.Sequences
+		var partL = new Tone.Sequence(function(time, note){
+			synthL.triggerAttackRelease(note, "8n", time);
+		}, ["E4", "F#4", "B4", "C#5", "D5", "F#4", "E4", "C#5", "B4", "F#4", "C#5", "B4"], "8n").start();
+
+		var partR = new Tone.Sequence(function(time, note){
+			synthR.triggerAttackRelease(note, "8n", time);
+		}, ["E4", "F#4", "B4", "C#5", "D5", "F#4", "E4", "C#5", "B4", "F#4", "C#5", "B4"], "8n").start("2m");
+		
+		//set the playback rate of the right part to be slightly slower
+		partR.playbackRate = 0.985;
+		
+	</script>
+
+	<script id="GUI" type="text/javascript">
+		$(function(){
+			
+			new Interface.Button({
+				key : 32,
+				type : "toggle",
+				text : "Start",
+				activeText : "Stop",
+				start : function(){
+					Tone.Transport.start();
+				},
+				end : function(){
+					Tone.Transport.stop();
+				}
+			});
+
+			//draw two circles
+			var leftCanvas = $("#Left");
+			var rightCanvas = $("#Right");
+			var leftContext = leftCanvas.get(0).getContext("2d");
+			var rightContext = rightCanvas.get(0).getContext("2d");
+			var canvasWidth = leftCanvas.width() * 2;
+			var canvasHeight = leftCanvas.height() * 2;
+			var radius = Math.min(canvasWidth, canvasHeight);
+
+			function sizeCanvas(){
+				canvasWidth = leftCanvas.width() * 2;
+				canvasHeight = leftCanvas.height() * 2;
+				radius = Math.min(canvasWidth, canvasHeight);
+
+				leftContext.canvas.width = canvasWidth;
+				leftContext.canvas.height = canvasHeight;
+
+				rightContext.canvas.width = canvasWidth;
+				rightContext.canvas.height = canvasHeight;
+			}
+
+			$(window).on("resize", sizeCanvas);
+
+			sizeCanvas();
+
+			var twoPi = Math.PI * 2;
+
+			function loop(){
+				requestAnimationFrame(loop);
+				//draw the left progress
+				leftContext.clearRect(0, 0, canvasWidth, canvasHeight);
+				leftContext.fillStyle = "#3833ED";
+				leftContext.save();
+				leftContext.translate(canvasWidth / 2, canvasHeight / 2);
+				leftContext.rotate(-Math.PI / 2);
+				leftContext.beginPath();
+				leftContext.moveTo(0, 0);
+				leftContext.arc(0, 0, radius/2, 0, twoPi * partL.progress, false);
+				leftContext.fill();
+				leftContext.restore();
+
+				//draw the left progress
+				rightContext.clearRect(0, 0, canvasWidth, canvasHeight);
+				rightContext.fillStyle = "#ED3333";
+				rightContext.save();
+				rightContext.translate(canvasWidth / 2, canvasHeight / 2);
+				rightContext.rotate(-Math.PI / 2);
+				rightContext.beginPath();
+				rightContext.moveTo(0, 0);
+				rightContext.arc(0, 0, radius/2, 0, twoPi * partR.progress, false);
+				rightContext.fill();
+				rightContext.restore();
+			}
+			loop();
+
+		});
+	</script>
+
+	</style>
+</body>
+</html>

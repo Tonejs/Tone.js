@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
+define(["Tone/core/Tone", "Tone/core/Param"], function(Tone){
 
 	"use strict";
 
@@ -39,14 +39,14 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 		 *  @type {Time}
 		 *  @signal
 		 */
-		this.attack = new Tone.Signal(this._compressor.attack, Tone.Type.Time);
+		this.attack = new Tone.Param(this._compressor.attack, Tone.Type.Time);
 
 		/**
 		 *  The release parameter
 		 *  @type {Time}
 		 *  @signal
 		 */
-		this.release = new Tone.Signal(this._compressor.release, Tone.Type.Time);
+		this.release = new Tone.Param(this._compressor.release, Tone.Type.Time);
 
 		/**
 		 *  The knee parameter
