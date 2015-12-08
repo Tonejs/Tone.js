@@ -20,6 +20,7 @@
 * Player's playbackRate is now a signal and Noise includes a playbackRate signal. 
 * All filterEnvelopes use new Tone.FrequencyEnvelope with frequency units and `baseFrequency` and `octaves` instead of `min` and `max`. 
 * Phaser uses "octaves" instead of "depth" to be more consistent across the whole Tone.js API. 
+* Presets now have [their own repo](https://github.com/Tonejs/Presets)
 
 DEPRECATED:
 * `setTimeout`, `setInterval`, `setTimeline` in favor of new `schedule`, `scheduleOnce`, and `scheduleRepeat`.
