@@ -8,8 +8,8 @@ define(["Tone/core/Tone", "Tone/component/LFO", "Tone/effect/StereoEffect"], fun
 	 *
 	 *  @extends {Tone.StereoEffect}
 	 *  @constructor
-	 *  @param {Frequency|Object} [frequency] The rate of the effect.
-	 *  @param {NormalRange} [depth] The depth of the wavering.
+	 *  @param {Frequency} [frequency] The rate of the effect.
+	 *  @param {NormalRange} [depth] The depth of the effect.
 	 *  @example
 	 * //create a tremolo and start it's LFO
 	 * var tremolo = new Tone.Tremolo(9, 0.75).toMaster().start();
@@ -143,7 +143,7 @@ define(["Tone/core/Tone", "Tone/component/LFO", "Tone/effect/StereoEffect"], fun
 	};
 
 	/**
-	 * Type of oscillator attached to the Tremolo.
+	 * The Tremolo's oscillator type.
 	 * @memberOf Tone.Tremolo#
 	 * @type {string}
 	 * @name type

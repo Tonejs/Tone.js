@@ -69,7 +69,7 @@ define(["Tone/core/Tone", "Tone/event/Event"], function (Tone) {
 	};
 
 	/**
-	 *  Stop the arpeggio at the given time.
+	 *  Stop the loop at the given time.
 	 *  @param  {Time=}  time  When to stop the Arpeggio
 	 *  @return  {Tone.Loop}  this
 	 */

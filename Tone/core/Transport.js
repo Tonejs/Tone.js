@@ -241,11 +241,11 @@ function(Tone){
 
 	/**
 	 *  Schedule an event along the timeline.
-	 *  @param {TimelineEvent} event
-	 *  @param {Time}   time 
+	 *  @param {Function} callback The callback to be invoked at the time.
+	 *  @param {Time}  time The time to invoke the callback at.
 	 *  @return {Number} The id of the event which can be used for canceling the event. 
 	 *  @example
-	 *  //trigger the callback when the Transport reaches the desired time
+	 * //trigger the callback when the Transport reaches the desired time
 	 * Tone.Transport.schedule(function(time){
 	 * 	envelope.triggerAttack(time);
 	 * }, "128i");
@@ -748,6 +748,7 @@ function(Tone){
 	 *  Tone.Transport.setInterval(function(time){
 	 *  	envelope.triggerAttack(time);
 	 *  }, "8n");
+	 *  @private
 	 */
 	Tone.Transport.prototype.setInterval = function(callback, interval){
 		console.warn("This method is deprecated. Use Tone.Transport.scheduleRepeat instead.");
@@ -760,6 +761,7 @@ function(Tone){
 	 *  @param  {number} intervalID  The ID of interval to remove. The interval
 	 *                               ID is given as the return value in Tone.Transport.setInterval.
 	 *  @return {boolean}            	true if the event was removed
+	 *  @private
 	 */
 	Tone.Transport.prototype.clearInterval = function(id){
 		console.warn("This method is deprecated. Use Tone.Transport.clear instead.");
@@ -780,6 +782,7 @@ function(Tone){
 	 *  Tone.Transport.setTimeout(function(time){
 	 *  	player.start(time);
 	 *  }, 1)
+	 *  @private
 	 */
 	Tone.Transport.prototype.setTimeout = function(callback, timeout){
 		console.warn("This method is deprecated. Use Tone.Transport.scheduleOnce instead.");
@@ -792,6 +795,7 @@ function(Tone){
 	 *  @param  {number} intervalID  The ID of timeout to remove. The timeout
 	 *                               ID is given as the return value in Tone.Transport.setTimeout.
 	 *  @return {boolean}           true if the timeout was removed
+	 *  @private
 	 */
 	Tone.Transport.prototype.clearTimeout = function(id){
 		console.warn("This method is deprecated. Use Tone.Transport.clear instead.");
@@ -812,6 +816,7 @@ function(Tone){
 	 *  Tone.Transport.setTimeline(function(time){
 	 *  	part.start(time);
 	 *  }, "16m");
+	 *  @private
 	 */
 	Tone.Transport.prototype.setTimeline = function(callback, time){
 		console.warn("This method is deprecated. Use Tone.Transport.schedule instead.");
@@ -823,6 +828,7 @@ function(Tone){
 	 *  Clear the timeline event.
 	 *  @param  {number} id 
 	 *  @return {boolean} true if it was removed
+	 *  @private
 	 */
 	Tone.Transport.prototype.clearTimeline = function(id){
 		console.warn("This method is deprecated. Use Tone.Transport.clear instead.");

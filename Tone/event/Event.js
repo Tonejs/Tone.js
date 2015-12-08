@@ -86,6 +86,9 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Type", "Tone/core/Ti
 		 *  The probability that the callback will be invoked
 		 *  at the scheduled time. 
 		 *  @type {NormalRange}
+		 *  @example
+		 * //the callback will be invoked 50% of the time
+		 * event.probability = 0.5;
 		 */
 		this.probability = options.probability;
 
@@ -361,8 +364,8 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Type", "Tone/core/Ti
 
 	/**
 	 *  The current progress of the loop interval.
-	 *  Returns 0 if the atom is not started yet or the 
-	 *  atom is not set to loop.
+	 *  Returns 0 if the event is not started yet or
+	 *  it is not set to loop.
 	 *  @memberOf Tone.Event#
 	 *  @type {NormalRange}
 	 *  @name progress

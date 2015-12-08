@@ -6,11 +6,12 @@ define(["Tone/core/Tone", "Tone/event/Part", "Tone/core/Transport"], function (T
 	 *  @class A sequence is an alternate notation of a part. Instead
 	 *         of passing in an array of [time, event] pairs, pass
 	 *         in an array of events which will be spaced at the
-	 *         given subdivision. Subdivisions are given
-	 *         as sub arrays and will be devided according to how many items are in the array. 
+	 *         given subdivision. Sub-arrays will subdivide that beat
+	 *         by the number of items are in the array. 
 	 *         Sequence notation inspiration from [Tidal](http://yaxu.org/tidal/)
 	 *  @param  {Function}  callback  The callback to invoke with every note
 	 *  @param  {Array}    events  The sequence
+	 *  @param  {Time} subdivision  The subdivision between which events are placed. 
 	 *  @extends {Tone.Part}
 	 *  @example
 	 * var seq = new Tone.Sequence(function(time, note){
@@ -81,12 +82,17 @@ define(["Tone/core/Tone", "Tone/event/Part", "Tone/core/Transport"], function (T
 	});
 
 	/**
-	 *  Get/Set an index of the sequence
+	 *  Get/Set an index of the sequence. If the index contains a subarray, 
+	 *  a Tone.Sequence representing that sub-array will be returned. 
 	 *  @example
-	 * var sequence = new Tone.Sequence(playNote, ["E4", "C4", "F#4", "A4"])
+	 * var sequence = new Tone.Sequence(playNote, ["E4", "C4", "F#4", ["A4", "Bb3"]])
 	 * sequence.at(0)// => returns "E4"
 	 * //set a value
 	 * sequence.at(0, "G3");
+	 * //get a nested sequence
+	 * sequence.at(3).at(1)// => returns "Bb3"
+	 * @param {Positive} index The index to get or set
+	 * @param {*} value Optionally pass in the value to set at the given index.
 	 */
 	Tone.Sequence.prototype.at = function(index, value){
 		//if the value is an array, 

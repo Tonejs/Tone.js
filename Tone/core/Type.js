@@ -74,7 +74,7 @@ define(["Tone/core/Tone"], function (Tone) {
 		 */
 		BPM : "bpm",
 		/** 
-		 *  The value must be greater than 0.
+		 *  The value must be greater than or equal to 0.
 		 *  @typedef {Positive}
 		 */
 		Positive : "positive",

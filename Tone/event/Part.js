@@ -16,9 +16,9 @@ define(["Tone/core/Tone", "Tone/event/Event", "Tone/core/Type", "Tone/core/Trans
 	 * 	synth.triggerAttackRelease(note, "8n", time);
 	 * }, [[0, "C2"], ["0:2", "C3"], ["0:3:2", "G2"]]);
 	 *  @example
-	 * //use JSON as long as the object has a "time" attribute
+	 * //use an array of objects as long as the object has a "time" attribute
 	 * var part = new Tone.Part(function(time, value){
-	 * 	//the value is an object which contains both the ntoe and the velocity
+	 * 	//the value is an object which contains both the note and the velocity
 	 * 	synth.triggerAttackRelease(value.note, "8n", time, value.velocity);
 	 * }, [{"time" : 0, "note" : "C3", "velocity": 0.9}, 
 	 * 	   {"time" : "0:2", "note" : "C4", "velocity": 0.5}
@@ -259,7 +259,7 @@ define(["Tone/core/Tone", "Tone/event/Event", "Tone/core/Type", "Tone/core/Trans
 	};
 
 	/**
-	 *  Add a note or part to the part. 
+	 *  Add a an event to the part. 
 	 *  @param {Time} time The time the note should start.
 	 *                            If an object is passed in, it should
 	 *                            have a 'time' attribute and the rest
@@ -321,7 +321,7 @@ define(["Tone/core/Tone", "Tone/event/Event", "Tone/core/Type", "Tone/core/Trans
 
 	/**
 	 *  Remove an event from the part. Will recursively iterate
-	 *  into the sub-parts to find the event
+	 *  into nested parts to find the event.
 	 *  @param {Time} time The time of the event
 	 *  @param {*} value Optionally select only a specific event value
 	 */
@@ -455,6 +455,7 @@ define(["Tone/core/Tone", "Tone/event/Event", "Tone/core/Type", "Tone/core/Trans
 	 *  @example
 	 * event.humanize = true;
 	 *  @type {Boolean|Time}
+	 *  @name humanize
 	 */
 	Object.defineProperty(Tone.Part.prototype, "humanize", {
 		get : function(){
