@@ -800,7 +800,7 @@ define(function(){
 		_silentNode.connect(audioContext.destination);
 	});
 
-	Tone.version = "r6";
+	Tone.version = "r7-dev";
 
 	console.log("%c * Tone.js " + Tone.version + " * ", "background: #000; color: #fff");
 
