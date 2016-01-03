@@ -12,9 +12,8 @@ define(["Tone/core/Tone", "Tone/event/Event"], function (Tone) {
 	 * }, "8n").start(0);
 	 * Tone.Transport.start();
 	 *  @extends {Tone}
-	 *  @param {Function} callback The callback to invoke with the
-	 *                             event.
-	 *  @param {Array} events The events to arpeggiate over.
+	 *  @param {Function} callback The callback to invoke with the event.
+	 *  @param {Time} interval The time between successive callback calls. 
 	 */
 	Tone.Loop = function(){
 
