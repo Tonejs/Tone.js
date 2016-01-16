@@ -91,7 +91,7 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal",
 		 *  @private
 		 */
 		this._sig = this.output = new Tone.TimelineSignal();
-		this._sig.setValueAtTime(this._minOutput, 0);
+		this._sig.setValueAtTime(0, 0);
 
 		//set the attackCurve initially
 		this.attackCurve = options.attackCurve;
@@ -113,13 +113,6 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal",
 		"attackCurve" : "linear",
 		"releaseCurve" : "exponential",
 	};
-
-	/**
-	 *  the envelope time multipler
-	 *  @type {number}
-	 *  @private
-	 */
-	Tone.Envelope.prototype._timeMult = 0.25;
 
 	/**
 	 * Read the current value of the envelope. Useful for 
@@ -221,9 +214,11 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal",
 		time = this.toSeconds(time, now);
 		var release = this.toSeconds(this.release);
 		if (this._releaseCurve === Tone.Envelope.Type.Linear){
-			this._sig.linearRampToValueBetween(this._minOutput, time, time + release);
+			this._sig.linearRampToValueBetween(0, time, time + release);
 		} else {
 			this._sig.exponentialRampToValueBetween(this._minOutput, time, release + time);
+			//silence the output entirely after the release
+			this._sig.setValueAtTime(0, release + time + 1 / Tone.context.sampleRate);
 		}
 		return this;
 	};
