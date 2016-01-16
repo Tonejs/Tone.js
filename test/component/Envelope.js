@@ -144,22 +144,19 @@ function (Envelope, Basic, Offline, Test) {
 			});
 
 
-			it ("correctly schedules an exponential attack", function(done){
+			it ("correctly schedules a linear release", function(done){
 				var env;
-				var offline = new Offline(0.7); 
+				var offline = new Offline(0.4); 
 				offline.before(function(dest){
-					env = new Envelope(0.3, 0.001, 0.5, 0.1);
-					env.attackCurve = "exponential";
+					env = new Envelope(0.1, 0.01, 1, 0.1);
+					env.releaseCurve = "linear";
 					env.connect(dest);
-					env.triggerAttack(0);
+					env.triggerAttackRelease(0.2, 0);
 				});
 				offline.test(function(sample, time){
-					if (time < env.attack){
-						expect(sample).to.be.within(0, 1);
-					} else if (time < env.attack + env.decay){
-						expect(sample).to.be.within(env.sustain, 1);
-					} else {
-						expect(sample).to.be.closeTo(env.sustain, 0.01);
+					if (time > 0.2 && time <= 0.3){
+						var target = 1 - (time - 0.2) * 10;
+						expect(sample).to.be.closeTo(target, 0.01);
 					} 
 				}); 
 				offline.after(function(){
@@ -209,6 +206,31 @@ function (Envelope, Basic, Offline, Test) {
 					} else if (time > 0.5){
 						//silent
 						expect(sample).to.be.below(0.01);
+					}
+				}); 
+				offline.after(function(){
+					env.dispose();
+					done();
+				});
+				offline.run();
+			});
+
+			it ("is silent before and after triggering", function(done){
+				var releaseTime = 0.2;
+				var attackTime = 0.1;
+				var env;
+				var offline = new Offline(0.7); 
+				offline.before(function(dest){
+					env = new Envelope(0.001, 0.001, 0.5, 0.01);
+					env.connect(dest);
+					env.triggerAttack(attackTime);
+					env.triggerRelease(releaseTime);
+				});
+				offline.test(function(sample, time){
+					if (time < attackTime){
+						expect(sample).to.equal(0);
+					} else if (time > env.attack + env.decay + releaseTime + env.release){
+						expect(sample).to.equal(0);
 					}
 				}); 
 				offline.after(function(){
