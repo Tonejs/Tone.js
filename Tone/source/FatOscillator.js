@@ -88,7 +88,7 @@ function(Tone){
 		"detune" : 0,
 		"phase" : 0,
 		"spread" : 20,
-		"count" : 2,
+		"count" : 3,
 		"type" : "sawtooth"
 	};
 
@@ -198,7 +198,7 @@ function(Tone){
 						osc.type = this._type;
 					}
 					osc.phase = this._phase;
-					osc.volume.value = -10;
+					osc.volume.value = -6 - count;
 					this.frequency.connect(osc.frequency);
 					this.detune.connect(osc.detune);
 					osc.connect(this.output);
