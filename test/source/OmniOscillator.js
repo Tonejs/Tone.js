@@ -58,6 +58,42 @@ define(["helper/Basic", "Tone/source/OmniOscillator", "helper/Offline", "helper/
 				});
 			});		
 
+			it("makes a sound when set to fm", function(done){
+				var osc;
+				OutputAudio(function(dest){
+					osc = new OmniOscillator(440, "fmsquare");
+					osc.connect(dest);
+					osc.start();
+				}, function(){
+					osc.dispose();
+					done();
+				});
+			});		
+
+			it("makes a sound when set to am", function(done){
+				var osc;
+				OutputAudio(function(dest){
+					osc = new OmniOscillator(440, "amsine");
+					osc.connect(dest);
+					osc.start();
+				}, function(){
+					osc.dispose();
+					done();
+				});
+			});	
+
+			it("makes a sound when set to fat", function(done){
+				var osc;
+				OutputAudio(function(dest){
+					osc = new OmniOscillator(440, "fatsawtooth");
+					osc.connect(dest);
+					osc.start();
+				}, function(){
+					osc.dispose();
+					done();
+				});
+			});		
+
 		});
 
 		context("Type", function(){
@@ -70,9 +106,9 @@ define(["helper/Basic", "Tone/source/OmniOscillator", "helper/Offline", "helper/
 				osc.dispose();
 			});
 
-			it ("handles 6 types", function(){
+			it ("handles various types", function(){
 				var osc = new OmniOscillator();
-				var types = ["triangle", "sawtooth", "sine", "square", "pulse", "pwm"];
+				var types = ["triangle3", "sine", "pulse", "pwm", "amsine4", "fatsquare2", "fmsawtooth"];
 				for (var i = 0; i < types.length; i++){
 					osc.type = types[i];
 					expect(osc.type).to.equal(types[i]);
@@ -120,6 +156,52 @@ define(["helper/Basic", "Tone/source/OmniOscillator", "helper/Offline", "helper/
 				expect(function(){
 					omni.width.value = 0.2;
 				}).to.throw(Error);
+				omni.dispose();
+			});
+
+			it("can be set to an FM oscillator", function(){
+				var omni = new OmniOscillator();
+				omni.set({
+					"type" : "fmsquare2",
+					"modulationIndex" : 2
+				});
+				expect(omni.type).to.equal("fmsquare2");
+				expect(omni.modulationIndex.value).to.equal(2);
+				omni.dispose();
+			});
+
+			it("can be set to an AM oscillator", function(){
+				var omni = new OmniOscillator();
+				omni.set("type", "amsquare");
+				omni.modulationType = "sawtooth2";
+				expect(omni.type).to.equal("amsquare");
+				expect(omni.modulationType).to.equal("sawtooth2");
+				omni.dispose();
+			});
+
+			it("can be set to an FatOscillator", function(){
+				var omni = new OmniOscillator({
+					"type" : "fatsquare2",
+					"count" : 3
+				});
+				expect(omni.type).to.equal("fatsquare2");
+				expect(omni.count).to.equal(3);
+				omni.dispose();
+			});
+
+			it ("can set a FM oscillator with partials", function(){
+				var omni = new OmniOscillator({
+					"detune": 4,
+					"type": "fmcustom",
+					"partials" : [2, 1, 2, 2],
+					"phase": 120,
+					"volume": -2
+				});
+				expect(omni.volume.value).to.be.closeTo(-2, 0.01);
+				expect(omni.detune.value).to.be.closeTo(4, 0.01);
+				expect(omni.phase).to.be.closeTo(120, 0.01);
+				expect(omni.type).to.be.equal("fmcustom");
+				expect(omni.partials).to.deep.equal([2, 1, 2, 2]);
 				omni.dispose();
 			});
 		});
