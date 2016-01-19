@@ -33,7 +33,7 @@ function (Envelope, Basic, Offline, Test) {
 					env = new Envelope().connect(dest);
 				});
 				offline.test(function(sample){
-					expect(sample).to.be.closeTo(0, 0.001);
+					expect(sample).to.equal(0);
 				});
 				offline.after(function(){
 					env.dispose();
@@ -51,7 +51,7 @@ function (Envelope, Basic, Offline, Test) {
 				});
 				offline.test(function(sample, time){
 					if (time <= 0.1){
-						expect(sample).to.be.closeTo(0, 0.001);
+						expect(sample).to.equal(0);
 					} else {
 						expect(sample).to.be.above(0);
 					}
@@ -240,6 +240,29 @@ function (Envelope, Basic, Offline, Test) {
 				offline.run();
 			});
 
+			it ("is silent after decay if sustain is 0", function(done){
+				var attackTime = 0.1;
+				var env;
+				var offline = new Offline(0.7); 
+				offline.before(function(dest){
+					env = new Envelope(0.001, 0.01, 0.0);
+					env.connect(dest);
+					env.triggerAttack(attackTime);
+				});
+				offline.test(function(sample, time){
+					if (time < attackTime){
+						expect(sample).to.equal(0);
+					} else if (time > attackTime + env.attack + env.decay + 0.0001){
+						expect(sample).to.equal(0);
+					}
+				}); 
+				offline.after(function(){
+					env.dispose();
+					done();
+				});
+				offline.run();
+			});
+
 			it ("correctly schedule an attack release envelope", function(done){
 				var env;
 				var releaseTime = 0.4;
@@ -342,13 +365,11 @@ function (Envelope, Basic, Offline, Test) {
 				offline.test(function(sample, time){
 					if (time > 0 && time < 0.3){
 						expect(sample).to.be.above(0);
-					} else if (time <= 0.5){
+					} else if (time < 0.5){
 						expect(sample).to.be.below(0.02);
-					} else if (time <= 0.8){
+					} else if (time > 0.5 && time < 0.8){
 						expect(sample).to.be.above(0);
-					} else {
-						expect(sample).to.be.below(0.02);
-					}
+					} 
 				}); 
 				offline.after(function(){
 					env.dispose();
