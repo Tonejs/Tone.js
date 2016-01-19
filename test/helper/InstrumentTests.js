@@ -49,6 +49,23 @@ define(["helper/OutputAudio", "Tone/instrument/Instrument", "helper/OutputAudioS
 				});
 			});	
 
+			it("is silent before being triggered", function(done){
+				var instance;
+				var meter = new Meter(0.3);
+				meter.before(function(dest){
+					instance = new Constr();
+					instance.connect(dest);
+				});
+				meter.test(function(level){
+					expect(level).to.equal(0);
+				});
+				meter.after(function(){
+					instance.dispose();
+					done();
+				});
+				meter.run();
+			});	
+
 			it("be scheduled to start in the future", function(done){
 				var instance;
 				var meter = new Meter(0.3);
