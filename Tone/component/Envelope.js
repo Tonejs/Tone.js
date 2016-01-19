@@ -197,7 +197,12 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal",
 		}
 		//decay
 		this._sig.setValueAtTime(velocity, attack);
-		this._sig.exponentialRampToValueAtTime(this.sustain * velocity, attack + decay);
+		if (this.sustain * velocity === 0){
+			this._sig.exponentialRampToValueAtTime(this._minOutput, attack + decay - 1 / Tone.context.sampleRate);
+			this._sig.setValueAtTime(0, attack + decay);
+		} else {
+			this._sig.exponentialRampToValueAtTime(this.sustain * velocity, attack + decay);
+		}
 		return this;
 	};
 	
@@ -216,9 +221,9 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal",
 		if (this._releaseCurve === Tone.Envelope.Type.Linear){
 			this._sig.linearRampToValueBetween(0, time, time + release);
 		} else {
-			this._sig.exponentialRampToValueBetween(this._minOutput, time, release + time);
+			this._sig.exponentialRampToValueBetween(this._minOutput, time, release + time - 1 / Tone.context.sampleRate);
 			//silence the output entirely after the release
-			this._sig.setValueAtTime(0, release + time + 1 / Tone.context.sampleRate);
+			this._sig.setValueAtTime(0, release + time);
 		}
 		return this;
 	};
