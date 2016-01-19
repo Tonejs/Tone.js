@@ -345,29 +345,5 @@ define(["Tone/core/Tone", "Tone/core/Emitter"], function(Tone){
 		return request;
 	};
 
-	/**
-	 *  @deprecated us on([event]) instead
-	 */
-	Object.defineProperty(Tone.Buffer, "onload", {
-		set : function(cb){
-			console.warn("Tone.Buffer.onload is deprecated, use Tone.Buffer.on('load', callback)");
-			Tone.Buffer.on("load", cb);
-		}
-	});
-
-	Object.defineProperty(Tone.Buffer, "onprogress", {
-		set : function(cb){
-			console.warn("Tone.Buffer.onprogress is deprecated, use Tone.Buffer.on('progress', callback)");
-			Tone.Buffer.on("progress", cb);
-		}
-	});
-
-	Object.defineProperty(Tone.Buffer, "onerror", {
-		set : function(cb){
-			console.warn("Tone.Buffer.onerror is deprecated, use Tone.Buffer.on('error', callback)");
-			Tone.Buffer.on("error", cb);
-		}
-	});
-
 	return Tone.Buffer;
 });
