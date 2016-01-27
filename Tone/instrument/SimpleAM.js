@@ -18,6 +18,28 @@ function(Tone){
 	 *  @example
 	 * var synth = new Tone.SimpleAM().toMaster();
 	 * synth.triggerAttackRelease("C4", "8n");
+	 *
+	 *  @routing {
+	 *           	"carrier": {
+	 *           		"type" : "SimpleSynth",
+	 *           		"connect" : ["gainNode.input"],
+	 *           		"param" : ".carrier"
+	 *           	}, 
+	 *           	"modulator" : {
+	 *           		"type" : "SimpleSynth",
+	 *           		"connect" : ["gainNode.gain"],
+	 *           		"param" : ".envelope"
+	 *           	},
+	 *           	"gainNode" : {
+	 *           		"type" : "nativeWebAudio.GainNode",
+	 *           		"connect" : ["output.input"],
+	 *           		"param" : ""
+	 *           	},
+	 *           	"output" : {
+	 *           		"type" : "Signal",
+	 *           		"param" : "output"
+	 *           	}
+	 *           }
 	 */
 	Tone.SimpleAM = function(options){
 

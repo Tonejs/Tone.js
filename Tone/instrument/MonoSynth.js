@@ -24,6 +24,33 @@ function(Tone){
 	 *  }
 	 * }).toMaster();
 	 * synth.triggerAttackRelease("C4", "8n");
+	 *  
+	 *  @routing {
+	 *           	"oscillator": {
+	 *           		"type" : "Oscillator",
+	 *           		"connect" : ["envelope.input"],
+	 *           		"param" : ".oscillator"
+	 *           	}, 
+	 *           	"envelope" : {
+	 *           		"type" : "AmplitudeEnvelope",
+	 *           		"connect" : ["filter.input"],
+	 *           		"param" : ".envelope"
+	 *           	},
+	 *           	"filterEnvelope" : {
+	 *           		"type" : "ScaledEnvelope",
+	 *           		"connect" : ["filter.frequency"],
+	 *           		"param" : ".filterEnvelope"
+	 *           	},
+	 *           	"filter" : {
+	 *           		"type" : "Filter",
+	 *           		"connect" : ["output.input"],
+	 *           		"param" : ".filter"
+	 *           	},
+	 *           	"output" : {
+	 *           		"type" : "Signal",
+	 *           		"param" : "output"
+	 *           	}
+	 *           }
 	 */
 	Tone.MonoSynth = function(options){
 

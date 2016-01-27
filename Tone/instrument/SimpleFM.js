@@ -17,6 +17,28 @@ function(Tone){
 	 *  @example
 	 * var fmSynth = new Tone.SimpleFM().toMaster();
 	 * fmSynth.triggerAttackRelease("C4", "8n");
+	 *
+	 * 	@routing {
+	 * 	         	"carrier" : {
+	 * 	         		"type" : "SimpleSynth",
+	 * 	         	 	"connect" : ["output.input"],
+	 * 	         	 	"param" : ".carrier"
+	 * 	            },
+	 * 	            "modulationIndex" : {
+	 * 	            	"type" : "Multiply",
+	 * 	            	"connect" : ["carrier.frequency"],
+	 * 	            	"param" : ".modulationIndex"
+	 * 	            },
+	 * 	         	"modulator": {
+	 * 	         		"type" : "SimpleSynth",
+	 * 	         	 	"connect" : ["modulationIndex.input"],
+	 * 	         	 	"param" : ".modulator"
+	 * 	            },
+	 *           	"output" : {
+	 *           		"type" : "Signal",
+	 *           		"param" : "output"
+	 *           	}
+	 *           }
 	 */
 	Tone.SimpleFM = function(options){
 

@@ -19,6 +19,27 @@ function(Tone){
 	 *  @example
 	 * var synth = new Tone.AMSynth().toMaster();
 	 * synth.triggerAttackRelease("C4", "4n");
+	 *
+	 *  @routing {
+	 *           	"modulator": {
+	 *           		"type" : "MonoSynth",
+	 *           		"connect" : ["gainNode.gain"],
+	 *           		"param" : ".modulator"
+	 *           	},	
+	 *           	"carrier": {
+	 *           		"type" : "MonoSynth",
+	 *           		"connect" : ["gainNode.input"],
+	 *           		"param" : ".carrier"
+	 *           	},
+	 *           	"gainNode" : {
+	 *           		"type" : "AmplitudeEnvelope",
+	 *           		"connect" : ["output.input"]
+	 *           	},
+	 *           	"output" : {
+	 *           		"type" : "Signal",
+	 *           		"param" : "output"
+	 *           	}
+	 *           }
 	 */
 	Tone.AMSynth = function(options){
 
