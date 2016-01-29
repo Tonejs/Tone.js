@@ -217,15 +217,27 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal",
 	Tone.Envelope.prototype.triggerRelease = function(time){
 		var now = this.now() + this.blockTime;
 		time = this.toSeconds(time, now);
-		var release = this.toSeconds(this.release);
-		if (this._releaseCurve === Tone.Envelope.Type.Linear){
-			this._sig.linearRampToValueBetween(0, time, time + release);
-		} else {
-			this._sig.exponentialRampToValueBetween(this._minOutput, time, release + time - 1 / Tone.context.sampleRate);
-			//silence the output entirely after the release
-			this._sig.setValueAtTime(0, release + time);
+		if (this.getValueAtTime(time) > 0){
+			var release = this.toSeconds(this.release);
+			if (this._releaseCurve === Tone.Envelope.Type.Linear){
+				this._sig.linearRampToValueBetween(0, time, time + release);
+			} else {
+				this._sig.exponentialRampToValueBetween(this._minOutput, time, release + time - 1 / Tone.context.sampleRate);
+				//silence the output entirely after the release
+				this._sig.setValueAtTime(0, release + time);
+			}
 		}
 		return this;
+	};
+
+	/**
+	 *  Get the scheduled value at the given time. This will
+	 *  return the unconverted (raw) value.
+	 *  @param  {Number}  time  The time in seconds.
+	 *  @return  {Number}  The scheduled value at the given time.
+	 */
+	Tone.Envelope.prototype.getValueAtTime = function(time){
+		return this._sig.getValueAtTime(time);
 	};
 
 	/**
