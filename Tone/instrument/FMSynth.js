@@ -1,11 +1,11 @@
-define(["Tone/core/Tone", "Tone/instrument/MonoSynth", "Tone/signal/Signal", "Tone/signal/Multiply", "Tone/instrument/Monophonic"], 
+define(["Tone/core/Tone", "Tone/instrument/SimpleSynth", "Tone/signal/Signal", "Tone/signal/Multiply", "Tone/instrument/Monophonic"], 
 function(Tone){
 
 	"use strict";
 
 	/**
-	 *  @class  FMSynth is composed of two Tone.MonoSynths where one Tone.MonoSynth modulates
-	 *          the frequency of a second Tone.MonoSynth. A lot of spectral content 
+	 *  @class  FMSynth is composed of two Tone.SimpleSynths where one Tone.SimpleSynth modulates
+	 *          the frequency of a second Tone.SimpleSynth. A lot of spectral content 
 	 *          can be explored using the modulationIndex parameter. Read more about
 	 *          frequency modulation synthesis on [SoundOnSound](http://www.soundonsound.com/sos/apr00/articles/synthsecrets.htm).
 	 *          <img src="https://docs.google.com/drawings/d/1h0PUDZXPgi4Ikx6bVT6oncrYPLluFKy7lj53puxj-DM/pub?w=902&h=462">
@@ -25,17 +25,44 @@ function(Tone){
 
 		/**
 		 *  The carrier voice.
-		 *  @type {Tone.MonoSynth}
+		 *  @type {Tone.SimpleSynth}
 		 */
-		this.carrier = new Tone.MonoSynth(options.carrier);
-		this.carrier.volume.value = -10;
+		this._carrier = new Tone.SimpleSynth(options.carrier);
+		this._carrier.volume.value = -10;
+
+
+		/**
+		 *  The carrier's oscillator
+		 *  @type {Tone.Oscillator}
+		 */
+		this.oscillator = this._carrier.oscillator;
+
+		/**
+		 *  The carrier's envelope
+		 *  @type {Tone.Oscillator}
+		 */
+		this.envelope = this._carrier.envelope.set(options.envelope);
 
 		/**
 		 *  The modulator voice.
-		 *  @type {Tone.MonoSynth}
+		 *  @type {Tone.SimpleSynth}
 		 */
-		this.modulator = new Tone.MonoSynth(options.modulator);
-		this.modulator.volume.value = -10;
+		this._modulator = new Tone.SimpleSynth(options.modulator);
+		this._modulator.volume.value = -10;
+
+
+		/**
+		 *  The modulator's oscillator which is applied
+		 *  to the amplitude of the oscillator
+		 *  @type {Tone.Oscillator}
+		 */
+		this.modulation = this._modulator.oscillator.set(options.modulation);
+
+		/**
+		 *  The modulator's envelope
+		 *  @type {Tone.Oscillator}
+		 */
+		this.modulationEnvelope = this._modulator.envelope.set(options.modulationEnvelope);
 
 		/**
 		 *  The frequency control.
@@ -74,14 +101,14 @@ function(Tone){
 		this._modulationNode = this.context.createGain();
 
 		//control the two voices frequency
-		this.frequency.connect(this.carrier.frequency);
-		this.frequency.chain(this.harmonicity, this.modulator.frequency);
+		this.frequency.connect(this._carrier.frequency);
+		this.frequency.chain(this.harmonicity, this._modulator.frequency);
 		this.frequency.chain(this.modulationIndex, this._modulationNode);
-		this.modulator.connect(this._modulationNode.gain);
+		this._modulator.connect(this._modulationNode.gain);
 		this._modulationNode.gain.value = 0;
-		this._modulationNode.connect(this.carrier.frequency);
-		this.carrier.connect(this.output);
-		this._readOnly(["carrier", "modulator", "frequency", "harmonicity", "modulationIndex"]);
+		this._modulationNode.connect(this._carrier.frequency);
+		this._carrier.connect(this.output);
+		this._readOnly(["frequency", "harmonicity", "modulationIndex", "oscillator", "envelope", "modulation", "modulationEnvelope"]);
 	};
 
 	Tone.extend(Tone.FMSynth, Tone.Monophonic);
@@ -93,47 +120,23 @@ function(Tone){
 	Tone.FMSynth.defaults = {
 		"harmonicity" : 3,
 		"modulationIndex" : 10,
-		"carrier" : {
-			"volume" : -10,
-			"portamento" : 0,
-			"oscillator" : {
-				"type" : "sine"
-			},
-			"envelope" : {
-				"attack" : 0.01,
-				"decay" : 0.0,
-				"sustain" : 1,
-				"release" : 0.5
-			},
-			"filterEnvelope" : {
-				"attack" : 0.01,
-				"decay" : 0.0,
-				"sustain" : 1,
-				"release" : 0.5,
-				"baseFrequency" : 200,
-				"octaves" : 8
-			}
+		"oscillator" : {
+			"type" : "sine"
 		},
-		"modulator" : {
-			"volume" : -10,
-			"portamento" : 0,
-			"oscillator" : {
-				"type" : "triangle"
-			},
-			"envelope" : {
-				"attack" : 0.01,
-				"decay" : 0.0,
-				"sustain" : 1,
-				"release" : 0.5
-			},
-			"filterEnvelope" : {
-				"attack" : 0.01,
-				"decay" : 0.0,
-				"sustain" : 1,
-				"release" : 0.5,
-				"baseFrequency" : 600,
-				"octaves" : 5
-			}
+		"envelope" : {
+			"attack" : 0.01,
+			"decay" : 0.01,
+			"sustain" : 1,
+			"release" : 0.5
+		},
+		"moduation" : {
+			"type" : "square"
+		},
+		"modulationEnvelope" : {
+			"attack" : 0.5,
+			"decay" : 0.0,
+			"sustain" : 1,
+			"release" : 0.5
 		}
 	};
 
@@ -146,13 +149,10 @@ function(Tone){
 	 *  @private
 	 */
 	Tone.FMSynth.prototype._triggerEnvelopeAttack = function(time, velocity){
-		//the port glide
 		time = this.toSeconds(time);
 		//the envelopes
-		this.carrier.envelope.triggerAttack(time, velocity);
-		this.modulator.envelope.triggerAttack(time);
-		this.carrier.filterEnvelope.triggerAttack(time);
-		this.modulator.filterEnvelope.triggerAttack(time);
+		this.envelope.triggerAttack(time, velocity);
+		this.modulationEnvelope.triggerAttack(time);
 		return this;
 	};
 
@@ -164,8 +164,9 @@ function(Tone){
 	 *  @private
 	 */
 	Tone.FMSynth.prototype._triggerEnvelopeRelease = function(time){
-		this.carrier.triggerRelease(time);
-		this.modulator.triggerRelease(time);
+		time = this.toSeconds(time);
+		this.envelope.triggerRelease(time);
+		this.modulationEnvelope.triggerRelease(time);
 		return this;
 	};
 
@@ -175,11 +176,11 @@ function(Tone){
 	 */
 	Tone.FMSynth.prototype.dispose = function(){
 		Tone.Monophonic.prototype.dispose.call(this);
-		this._writable(["carrier", "modulator", "frequency", "harmonicity", "modulationIndex"]);
-		this.carrier.dispose();
-		this.carrier = null;
-		this.modulator.dispose();
-		this.modulator = null;
+		this._writable(["frequency", "harmonicity", "modulationIndex", "oscillator", "envelope", "modulation", "modulationEnvelope"]);
+		this._carrier.dispose();
+		this._carrier = null;
+		this._modulator.dispose();
+		this._modulator = null;
 		this.frequency.dispose();
 		this.frequency = null;
 		this.modulationIndex.dispose();
@@ -188,6 +189,10 @@ function(Tone){
 		this.harmonicity = null;
 		this._modulationNode.disconnect();
 		this._modulationNode = null;
+		this.oscillator = null;
+		this.envelope = null;
+		this.modulationEnvelope = null;
+		this.modulation = null;
 		return this;
 	};
 

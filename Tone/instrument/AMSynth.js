@@ -1,13 +1,13 @@
-define(["Tone/core/Tone", "Tone/instrument/MonoSynth", "Tone/signal/Signal", "Tone/signal/Multiply", 
+define(["Tone/core/Tone", "Tone/instrument/SimpleSynth", "Tone/signal/Signal", "Tone/signal/Multiply", 
 	"Tone/instrument/Monophonic", "Tone/signal/AudioToGain"], 
 function(Tone){
 
 	"use strict";
 
 	/**
-	 *  @class  AMSynth uses the output of one Tone.MonoSynth to modulate the
-	 *          amplitude of another Tone.MonoSynth. The harmonicity (the ratio between
-	 *          the two signals) affects the timbre of the output signal the most.
+	 *  @class  AMSynth uses the output of one Tone.SimpleSynth to modulate the
+	 *          amplitude of another Tone.SimpleSynth. The harmonicity (the ratio between
+	 *          the two signals) affects the timbre of the output signal greatly.
 	 *          Read more about Amplitude Modulation Synthesis on 
 	 *          [SoundOnSound](http://www.soundonsound.com/sos/mar00/articles/synthsecrets.htm).
 	 *          <img src="https://docs.google.com/drawings/d/1TQu8Ed4iFr1YTLKpB3U1_hur-UwBrh5gdBXc8BxfGKw/pub?w=1009&h=457">
@@ -27,17 +27,42 @@ function(Tone){
 
 		/**
 		 *  The carrier voice. 
-		 *  @type {Tone.MonoSynth}
+		 *  @type {Tone.SimpleSynth}
 		 */
-		this.carrier = new Tone.MonoSynth(options.carrier);
-		this.carrier.volume.value = -10;
+		this._carrier = new Tone.SimpleSynth();
+		this._carrier.volume.value = -10;
+
+		/**
+		 *  The carrier's oscillator
+		 *  @type {Tone.Oscillator}
+		 */
+		this.oscillator = this._carrier.oscillator;
+
+		/**
+		 *  The carrier's envelope
+		 *  @type {Tone.Oscillator}
+		 */
+		this.envelope = this._carrier.envelope.set(options.envelope);
 
 		/**
 		 *  The modulator voice. 
-		 *  @type {Tone.MonoSynth}
+		 *  @type {Tone.SimpleSynth}
 		 */
-		this.modulator = new Tone.MonoSynth(options.modulator);
-		this.modulator.volume.value = -10;
+		this._modulator = new Tone.SimpleSynth();
+		this._modulator.volume.value = -10;
+
+		/**
+		 *  The modulator's oscillator which is applied
+		 *  to the amplitude of the oscillator
+		 *  @type {Tone.Oscillator}
+		 */
+		this.modulation = this._modulator.oscillator.set(options.modulation);
+
+		/**
+		 *  The modulator's envelope
+		 *  @type {Tone.Oscillator}
+		 */
+		this.modulationEnvelope = this._modulator.envelope.set(options.modulationEnvelope);
 
 		/**
 		 *  The frequency.
@@ -73,11 +98,11 @@ function(Tone){
 		this._modulationNode = this.context.createGain();
 
 		//control the two voices frequency
-		this.frequency.connect(this.carrier.frequency);
-		this.frequency.chain(this.harmonicity, this.modulator.frequency);
-		this.modulator.chain(this._modulationScale, this._modulationNode.gain);
-		this.carrier.chain(this._modulationNode, this.output);
-		this._readOnly(["carrier", "modulator", "frequency", "harmonicity"]);
+		this.frequency.connect(this._carrier.frequency);
+		this.frequency.chain(this.harmonicity, this._modulator.frequency);
+		this._modulator.chain(this._modulationScale, this._modulationNode.gain);
+		this._carrier.chain(this._modulationNode, this.output);
+		this._readOnly(["frequency", "harmonicity", "oscillator", "envelope", "modulation", "modulationEnvelope"]);
 	};
 
 	Tone.extend(Tone.AMSynth, Tone.Monophonic);
@@ -88,55 +113,23 @@ function(Tone){
 	 */
 	Tone.AMSynth.defaults = {
 		"harmonicity" : 3,
-		"carrier" : {
-			"volume" : -10,
-			"oscillator" : {
-				"type" : "sine"
-			},
-			"envelope" : {
-				"attack" : 0.01,
-				"decay" : 0.01,
-				"sustain" : 1,
-				"release" : 0.5
-			},
-			"filterEnvelope" : {
-				"attack" : 0.01,
-				"decay" : 0.0,
-				"sustain" : 1,
-				"release" : 0.5,
-				"baseFrequency" : 20000,
-				"octaves" : 0
-			},
-			"filter" : {
-				"Q" : 6,
-				"type" : "lowpass",
-				"rolloff" : -24
-			},
+		"oscillator" : {
+			"type" : "sine"
 		},
-		"modulator" : {
-			"volume" : -10,
-			"oscillator" : {
-				"type" : "square"
-			},
-			"envelope" : {
-				"attack" : 2,
-				"decay" : 0.0,
-				"sustain" : 1,
-				"release" : 0.5
-			},
-			"filterEnvelope" : {
-				"attack" : 4,
-				"decay" : 0.2,
-				"sustain" : 0.5,
-				"release" : 0.5,
-				"baseFrequency" : 20,
-				"octaves" : 6
-			},
-			"filter" : {
-				"Q" : 6,
-				"type" : "lowpass",
-				"rolloff" : -24
-			},
+		"envelope" : {
+			"attack" : 0.01,
+			"decay" : 0.01,
+			"sustain" : 1,
+			"release" : 0.5
+		},
+		"moduation" : {
+			"type" : "square"
+		},
+		"modulationEnvelope" : {
+			"attack" : 0.5,
+			"decay" : 0.0,
+			"sustain" : 1,
+			"release" : 0.5
 		}
 	};
 
@@ -152,10 +145,8 @@ function(Tone){
 		//the port glide
 		time = this.toSeconds(time);
 		//the envelopes
-		this.carrier.envelope.triggerAttack(time, velocity);
-		this.modulator.envelope.triggerAttack(time);
-		this.carrier.filterEnvelope.triggerAttack(time);
-		this.modulator.filterEnvelope.triggerAttack(time);
+		this.envelope.triggerAttack(time, velocity);
+		this.modulationEnvelope.triggerAttack(time, velocity);
 		return this;
 	};
 
@@ -167,8 +158,8 @@ function(Tone){
 	 *  @returns {Tone.AMSynth} this
 	 */
 	Tone.AMSynth.prototype._triggerEnvelopeRelease = function(time){
-		this.carrier.triggerRelease(time);
-		this.modulator.triggerRelease(time);
+		this.envelope.triggerRelease(time);
+		this.modulationEnvelope.triggerRelease(time);
 		return this;
 	};
 
@@ -178,11 +169,11 @@ function(Tone){
 	 */
 	Tone.AMSynth.prototype.dispose = function(){
 		Tone.Monophonic.prototype.dispose.call(this);
-		this._writable(["carrier", "modulator", "frequency", "harmonicity"]);
-		this.carrier.dispose();
-		this.carrier = null;
-		this.modulator.dispose();
-		this.modulator = null;
+		this._writable(["frequency", "harmonicity", "oscillator", "envelope", "modulation", "modulationEnvelope"]);
+		this._carrier.dispose();
+		this._carrier = null;
+		this._modulator.dispose();
+		this._modulator = null;
 		this.frequency.dispose();
 		this.frequency = null;
 		this.harmonicity.dispose();
@@ -191,6 +182,10 @@ function(Tone){
 		this._modulationScale = null;
 		this._modulationNode.disconnect();
 		this._modulationNode = null;
+		this.oscillator = null;
+		this.envelope = null;
+		this.modulationEnvelope = null;
+		this.modulation = null;
 		return this;
 	};
 
