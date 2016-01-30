@@ -11,6 +11,8 @@ var ExampleList = {
 		"MonoSynth" : "monoSynth",
 		"FMSynth" : "fmSynth",
 		"PolySynth" : "polySynth",
+		"FatOscillator" : "jump",
+		"MetalSynth" : "bembe",
 	},
 	"Effects" : {
 		"LFO Effects" : "lfoEffects",
