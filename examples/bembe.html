@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>CymbalSynth</title>
+
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<link rel="icon" type="image/png" sizes="174x174" href="./style/favicon.png">
+	
+	<script type="text/javascript" src="../build/Tone.js"></script>
+	<script type="text/javascript" src="./scripts/jquery.min.js"></script>
+	<script type="text/javascript" src="./scripts/draggabilly.js"></script>
+	<script type="text/javascript" src="./scripts/Logo.js"></script>
+	<script type="text/javascript" src="./scripts/Interface.js"></script>
+
+	<link rel="stylesheet" type="text/css" href="./style/examples.css">
+
+	<script type="text/javascript">
+		// jshint ignore: start
+	</script>
+
+</head>
+<body>	
+	<style type="text/css">
+
+	</style>
+	<div id="Content">
+		<div id="Title">Bembe</div>
+		<div id="Explanation">
+			Tone.MetalSynth creates metallic, inharmonic sounds using 6 Tone.FMOscillators with a tuning based on the TR-808 Cymbal. Tone.MembraneSynth makes kick and tom-like sounds using a frequency envelope which is triggered on notes attack. 
+		</div>
+	</div>
+
+	<script type="text/javascript">
+
+		var bell = new Tone.MetalSynth({
+			"harmonicity" : 12,
+			"resonance" : 800,
+			"modulationIndex" : 20,
+			"envelope" : {
+				"decay" : 0.4,
+			},
+			"volume" : -15
+		}).toMaster();
+
+		var bellPart = new Tone.Sequence(function(time, freq){
+			bell.frequency.setValueAtTime(freq, time, Math.random()*0.5 + 0.5);
+			bell.triggerAttack(time);
+		}, [300, null, 200, null, 200, 200, null, 200, null, 200, null, 200], "8t").start(0);
+
+		// bellPart.loop = true;
+		// bellPart.loopEnd = "1m";
+
+		var conga = new Tone.MembraneSynth({
+			"pitchDecay" : 0.008,
+			"octaves" : 2,
+			"envelope" : {
+				"attack" : 0.0006,
+				"decay" : 0.5,
+				"sustain" : 0
+			}
+		}).toMaster();
+
+		var congaPart = new Tone.Sequence(function(time, pitch){
+			conga.triggerAttack(pitch, time, Math.random()*0.5 + 0.5);
+		}, ["G3", "C4", "C4", "C4"], "4n").start(0);
+
+		// congaPart.loop = true;
+		// congaPart.loopEnd = "1m";
+
+		Tone.Transport.bpm.value = 115;
+		
+	</script>
+
+	<script id="GUI" type="text/javascript">
+		$(function(){
+			
+			new Interface.Button({
+				key : 32,
+				type : "toggle",
+				text : "Start",
+				activeText : "Stop",
+				start : function(){
+					Tone.Transport.start();
+				},
+				end : function(){
+					Tone.Transport.stop();
+				}
+			});
+		});
+	</script>
+
+	</style>
+</body>
+</html>
