@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>FatOscillator</title>
+
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<link rel="icon" type="image/png" sizes="174x174" href="./style/favicon.png">
+	
+	<script type="text/javascript" src="../build/Tone.js"></script>
+	<script type="text/javascript" src="./scripts/jquery.min.js"></script>
+	<script type="text/javascript" src="./scripts/draggabilly.js"></script>
+	<script type="text/javascript" src="./scripts/Logo.js"></script>
+	<script type="text/javascript" src="./scripts/Interface.js"></script>
+
+	<link rel="stylesheet" type="text/css" href="./style/examples.css">
+
+	<script type="text/javascript">
+		// jshint ignore: start
+	</script>
+
+</head>
+<body>	
+	<style type="text/css">
+
+	</style>
+	<div id="Content">
+		<div id="Title">Supersaw</div>
+		<div id="Explanation">
+			<a href="http://tonejs.org/docs/#FatOscillator">Tone.FatOscillator</a> creates multiple oscillators
+			and detunes them slightly from each other to thicken the sound. The <code>count</code> parameter sets 
+			the number of oscillators and <code>spread</code> sets the total spread (in cents) between the oscillators. 
+			<br><br>
+			FatOscillator is also available in <a href="http://tonejs.org/docs/#OmniOscillator">Tone.OmniOscillator</a> 
+			by prefixing another type with "fat"; to create a "supersaw": <code>omniOscillator.type = "fatsawtooth"</code>.
+			<br><br>
+			<a href="http://www.midiworld.com/files/1121/">Jump by Van Halen MIDI</a> converted using <a href="http://tonejs.github.io/MidiConvert/">MidiConvert</a>
+		</div>
+	</div>
+
+	<script type="text/javascript">
+
+		var synth = new Tone.PolySynth(3, Tone.SimpleSynth, {
+			"oscillator" : {
+				"type" : "fatsawtooth",
+				"count" : 3,
+				"spread" : 30
+			},
+			"envelope": {
+				"attack": 0.01,
+				"decay": 0.1,
+				"sustain": 0.5,
+				"release": 0.4,
+				"attackCurve" : "exponential"
+			},
+		}).toMaster();
+
+		// Van Halen - Jump MIDI from http://www.midiworld.com/files/1121/
+		// converted using 
+		var part = new Tone.Part(function(time, note){
+			synth.triggerAttackRelease(note.noteName, note.duration, time, note.velocity);
+		}, [
+			{
+				"time": "48i",
+				"noteName": "G4",
+				"velocity": 0.8110236220472441,
+				"duration": "26i"
+			},
+			{
+				"time": "48i",
+				"noteName": "B4",
+				"velocity": 0.7874015748031497,
+				"duration": "26i"
+			},
+			{
+				"time": "48i",
+				"noteName": "D5",
+				"velocity": 0.8031496062992126,
+				"duration": "26i"
+			},
+			{
+				"time": "120i",
+				"noteName": "G4",
+				"velocity": 0.7559055118110236,
+				"duration": "26i"
+			},
+			{
+				"time": "120i",
+				"noteName": "C5",
+				"velocity": 0.6850393700787402,
+				"duration": "26i"
+			},
+			{
+				"time": "120i",
+				"noteName": "E5",
+				"velocity": 0.6771653543307087,
+				"duration": "26i"
+			},
+			{
+				"time": "192i",
+				"noteName": "F4",
+				"velocity": 0.8661417322834646,
+				"duration": "26i"
+			},
+			{
+				"time": "192i",
+				"noteName": "A4",
+				"velocity": 0.8346456692913385,
+				"duration": "26i"
+			},
+			{
+				"time": "192i",
+				"noteName": "C5",
+				"velocity": 0.8188976377952756,
+				"duration": "26i"
+			},
+			{
+				"time": "264i",
+				"noteName": "F4",
+				"velocity": 0.7007874015748031,
+				"duration": "26i"
+			},
+			{
+				"time": "264i",
+				"noteName": "A4",
+				"velocity": 0.6850393700787402,
+				"duration": "26i"
+			},
+			{
+				"time": "264i",
+				"noteName": "C5",
+				"velocity": 0.6614173228346457,
+				"duration": "26i"
+			},
+			{
+				"time": "312i",
+				"noteName": "G4",
+				"velocity": 0.6771653543307087,
+				"duration": "26i"
+			},
+			{
+				"time": "312i",
+				"noteName": "B4",
+				"velocity": 0.6771653543307087,
+				"duration": "26i"
+			},
+			{
+				"time": "312i",
+				"noteName": "D5",
+				"velocity": 0.7165354330708661,
+				"duration": "26i"
+			},
+			{
+				"time": "360i",
+				"noteName": "G4",
+				"velocity": 0.8818897637795275,
+				"duration": "62i"
+			},
+			{
+				"time": "360i",
+				"noteName": "B4",
+				"velocity": 0.84251968503937,
+				"duration": "62i"
+			},
+			{
+				"time": "360i",
+				"noteName": "D5",
+				"velocity": 0.8818897637795275,
+				"duration": "62i"
+			},
+			{
+				"time": "432i",
+				"noteName": "G4",
+				"velocity": 0.8267716535433071,
+				"duration": "26i"
+			},
+			{
+				"time": "432i",
+				"noteName": "C5",
+				"velocity": 0.8031496062992126,
+				"duration": "26i"
+			},
+			{
+				"time": "432i",
+				"noteName": "E5",
+				"velocity": 0.8188976377952756,
+				"duration": "26i"
+			},
+			{
+				"time": "504i",
+				"noteName": "F4",
+				"velocity": 0.7086614173228346,
+				"duration": "26i"
+			},
+			{
+				"time": "504i",
+				"noteName": "A4",
+				"velocity": 0.7244094488188977,
+				"duration": "26i"
+			},
+			{
+				"time": "504i",
+				"noteName": "C5",
+				"velocity": 0.7007874015748031,
+				"duration": "26i"
+			},
+			{
+				"time": "552i",
+				"noteName": "C4",
+				"velocity": 0.9921259842519685,
+				"duration": "74i"
+			},
+			{
+				"time": "552i",
+				"noteName": "F4",
+				"velocity": 0.968503937007874,
+				"duration": "50i"
+			},
+			{
+				"time": "552i",
+				"noteName": "A4",
+				"velocity": 0.9606299212598425,
+				"duration": "53i"
+			},
+			{
+				"time": "600i",
+				"noteName": "E4",
+				"velocity": 0.7559055118110236,
+				"duration": "26i"
+			},
+			{
+				"time": "600i",
+				"noteName": "G4",
+				"velocity": 0.7007874015748031,
+				"duration": "26i"
+			},
+			{
+				"time": "648i",
+				"noteName": "C4",
+				"velocity": 0.968503937007874,
+				"duration": "123i"
+			},
+			{
+				"time": "648i",
+				"noteName": "D4",
+				"velocity": 0.9448818897637795,
+				"duration": "122i"
+			},
+			{
+				"time": "648i",
+				"noteName": "G4",
+				"velocity": 0.937007874015748,
+				"duration": "123i"
+			}
+	]).start(0);
+
+	part.loop = true;
+	part.loopEnd = "4m";
+
+	Tone.Transport.bpm.value = 132;
+		
+	</script>
+
+	<script id="GUI" type="text/javascript">
+		$(function(){
+			
+			new Interface.Button({
+				key : 32,
+				type : "toggle",
+				text : "Start",
+				activeText : "Stop",
+				start : function(){
+					Tone.Transport.start();
+				},
+				end : function(){
+					Tone.Transport.stop();
+				}
+			});
+		});
+	</script>
+
+	</style>
+</body>
+</html>
