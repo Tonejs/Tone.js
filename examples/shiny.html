@@ -95,7 +95,7 @@
 		snare.triggerAttackRelease(0, "8n", time, velocity);
 	}, [null, 1, null, [1, 0.3]]).start(0);
 
-	var kick = new Tone.DrumSynth({
+	var kick = new Tone.MembraneSynth({
 		"pitchDecay" : 0.01,
 		"octaves" : 6,
 		"oscillator" : {
