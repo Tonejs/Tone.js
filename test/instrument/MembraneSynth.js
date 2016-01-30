@@ -1,28 +1,28 @@
-define(["Tone/instrument/DrumSynth", "helper/Basic", "helper/InstrumentTests"], function (DrumSynth, Basic, InstrumentTest) {
+define(["Tone/instrument/MembraneSynth", "helper/Basic", "helper/InstrumentTests"], function (MembraneSynth, Basic, InstrumentTest) {
 
-	describe("DrumSynth", function(){
+	describe("MembraneSynth", function(){
 
-		Basic(DrumSynth);
-		InstrumentTest(DrumSynth, "C2");
+		Basic(MembraneSynth);
+		InstrumentTest(MembraneSynth, "C2");
 
 		context("API", function(){
 
 			it ("can get and set oscillator attributes", function(){
-				var drumSynth = new DrumSynth();
+				var drumSynth = new MembraneSynth();
 				drumSynth.oscillator.type = "triangle";
 				expect(drumSynth.oscillator.type).to.equal("triangle");
 				drumSynth.dispose();
 			});
 
 			it ("can get and set envelope attributes", function(){
-				var drumSynth = new DrumSynth();
+				var drumSynth = new MembraneSynth();
 				drumSynth.envelope.attack = 0.24;
 				expect(drumSynth.envelope.attack).to.equal(0.24);
 				drumSynth.dispose();
 			});
 
 			it ("can get and set the octaves and pitch decay", function(){
-				var drumSynth = new DrumSynth();
+				var drumSynth = new MembraneSynth();
 				drumSynth.octaves = 12;
 				drumSynth.pitchDecay = 0.2;
 				expect(drumSynth.pitchDecay).to.equal(0.2);
@@ -31,7 +31,7 @@ define(["Tone/instrument/DrumSynth", "helper/Basic", "helper/InstrumentTests"], 
 			});
 
 			it ("can be constructed with an options object", function(){
-				var drumSynth = new DrumSynth({
+				var drumSynth = new MembraneSynth({
 					"envelope" : {
 						"sustain" : 0.3
 					}
@@ -41,7 +41,7 @@ define(["Tone/instrument/DrumSynth", "helper/Basic", "helper/InstrumentTests"], 
 			});
 
 			it ("can get/set attributes", function(){
-				var drumSynth = new DrumSynth();
+				var drumSynth = new MembraneSynth();
 				drumSynth.set({
 					"envelope.decay" : 0.24
 				});

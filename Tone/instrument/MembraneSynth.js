@@ -5,11 +5,11 @@ function(Tone){
 	"use strict";
 
 	/**
-	 *  @class  Tone.DrumSynth makes kick and tom sounds using a single oscillator
+	 *  @class  Tone.MembraneSynth makes kick and tom sounds using a single oscillator
 	 *          with an amplitude envelope and frequency ramp. A Tone.Oscillator
 	 *          is routed through a Tone.AmplitudeEnvelope to the output. The drum
 	 *          quality of the sound comes from the frequency envelope applied
-	 *          during during Tone.DrumSynth.triggerAttack(note). The frequency
+	 *          during during Tone.MembraneSynth.triggerAttack(note). The frequency
 	 *          envelope starts at <code>note * .octaves</code> and ramps to 
 	 *          <code>note</code> over the duration of <code>.pitchDecay</code>. 
 	 *
@@ -18,12 +18,12 @@ function(Tone){
 	 *  @param {Object} [options] the options available for the synth 
 	 *                          see defaults below
 	 *  @example
-	 * var synth = new Tone.DrumSynth().toMaster();
+	 * var synth = new Tone.MembraneSynth().toMaster();
 	 * synth.triggerAttackRelease("C2", "8n");
 	 */
-	Tone.DrumSynth = function(options){
+	Tone.MembraneSynth = function(options){
 
-		options = this.defaultArg(options, Tone.DrumSynth.defaults);
+		options = this.defaultArg(options, Tone.MembraneSynth.defaults);
 		Tone.Instrument.call(this, options);
 
 		/**
@@ -54,13 +54,13 @@ function(Tone){
 		this._readOnly(["oscillator", "envelope"]);
 	};
 
-	Tone.extend(Tone.DrumSynth, Tone.Instrument);
+	Tone.extend(Tone.MembraneSynth, Tone.Instrument);
 
 	/**
 	 *  @static
 	 *  @type {Object}
 	 */
-	Tone.DrumSynth.defaults = {
+	Tone.MembraneSynth.defaults = {
 		"pitchDecay" : 0.05,
 		"octaves" : 10,
 		"oscillator" : {
@@ -81,11 +81,11 @@ function(Tone){
 	 *  @param  {Frequency} note     the note
 	 *  @param  {Time} [time=now]     the time, if not given is now
 	 *  @param  {number} [velocity=1] velocity defaults to 1
-	 *  @returns {Tone.DrumSynth} this
+	 *  @returns {Tone.MembraneSynth} this
 	 *  @example
 	 *  kick.triggerAttack(60);
 	 */
-	Tone.DrumSynth.prototype.triggerAttack = function(note, time, velocity) {
+	Tone.MembraneSynth.prototype.triggerAttack = function(note, time, velocity) {
 		time = this.toSeconds(time);
 		note = this.toFrequency(note);
 		var maxNote = note * this.octaves;
@@ -99,18 +99,18 @@ function(Tone){
 	 *  Trigger the release portion of the note.
 	 *  
 	 *  @param  {Time} [time=now] the time the note will release
-	 *  @returns {Tone.DrumSynth} this
+	 *  @returns {Tone.MembraneSynth} this
 	 */
-	Tone.DrumSynth.prototype.triggerRelease = function(time){
+	Tone.MembraneSynth.prototype.triggerRelease = function(time){
 		this.envelope.triggerRelease(time);
 		return this;
 	};
 
 	/**
 	 *  Clean up.
-	 *  @returns {Tone.DrumSynth} this
+	 *  @returns {Tone.MembraneSynth} this
 	 */
-	Tone.DrumSynth.prototype.dispose = function(){
+	Tone.MembraneSynth.prototype.dispose = function(){
 		Tone.Instrument.prototype.dispose.call(this);
 		this._writable(["oscillator", "envelope"]);
 		this.oscillator.dispose();
@@ -120,5 +120,5 @@ function(Tone){
 		return this;
 	};
 
-	return Tone.DrumSynth;
+	return Tone.MembraneSynth;
 });

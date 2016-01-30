@@ -22,9 +22,9 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/source/FMOscillato
 	 *  @param {Object} [options] The options availble for the synth
 	 *                             see defaults below
 	 */
-	Tone.CymbalSynth = function(options){
+	Tone.MetalSynth = function(options){
 
-		options = this.defaultArg(options, Tone.CymbalSynth.defaults);
+		options = this.defaultArg(options, Tone.MetalSynth.defaults);
 		Tone.Instrument.call(this, options);
 
 		/**
@@ -115,7 +115,7 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/source/FMOscillato
 
 	};
 
-	Tone.extend(Tone.CymbalSynth, Tone.Instrument);
+	Tone.extend(Tone.MetalSynth, Tone.Instrument);
 
 	/**
 	 *  default values
@@ -123,7 +123,7 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/source/FMOscillato
 	 *  @const
 	 *  @type {Object}
 	 */
-	Tone.CymbalSynth.defaults = {
+	Tone.MetalSynth.defaults = {
 		"frequency" : 200,
 		"envelope" : {
 			"attack" : 0.0015,
@@ -140,9 +140,9 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/source/FMOscillato
 	 *  Trigger the attack.
 	 *  @param  {Time}  time      When the attack should be triggered.
 	 *  @param  {NormalRange=1}  velocity  The velocity that the envelope should be triggered at.
-	 *  @return  {Tone.CymbalSynth}  this
+	 *  @return  {Tone.MetalSynth}  this
 	 */
-	Tone.CymbalSynth.prototype.triggerAttack = function(time, vel) {
+	Tone.MetalSynth.prototype.triggerAttack = function(time, vel) {
 		time = this.toSeconds(time);
 		vel = this.defaultArg(vel, 1);
 		this.envelope.triggerAttack(time, vel);
@@ -152,9 +152,9 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/source/FMOscillato
 	/**
 	 *  Trigger the release of the envelope.
 	 *  @param  {Time}  time      When the release should be triggered.
-	 *  @return  {Tone.CymbalSynth}  this
+	 *  @return  {Tone.MetalSynth}  this
 	 */
-	Tone.CymbalSynth.prototype.triggerRelease = function(time) {
+	Tone.MetalSynth.prototype.triggerRelease = function(time) {
 		time = this.toSeconds(time);
 		this.envelope.triggerRelease(time);
 		return this;
@@ -166,9 +166,9 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/source/FMOscillato
 	 *  @param  {Time}  duration  The duration before triggering the release
 	 *  @param  {Time}  time      When the attack should be triggered.
 	 *  @param  {NormalRange=1}  velocity  The velocity that the envelope should be triggered at.
-	 *  @return  {Tone.CymbalSynth}  this
+	 *  @return  {Tone.MetalSynth}  this
 	 */
-	Tone.CymbalSynth.prototype.triggerAttackRelease = function(duration, time, velocity) {
+	Tone.MetalSynth.prototype.triggerAttackRelease = function(duration, time, velocity) {
 		var now = this.now();
 		time = this.toSeconds(time, now);
 		duration = this.toSeconds(duration, now);
@@ -180,11 +180,11 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/source/FMOscillato
 	/**
 	 *  The modulationIndex of the oscillators which make up the source.
 	 *  see Tone.FMOscillator.modulationIndex
-	 *  @memberOf Tone.CymbalSynth#
+	 *  @memberOf Tone.MetalSynth#
 	 *  @type {Positive}
 	 *  @name  modulationIndex
 	 */
-	Object.defineProperty(Tone.CymbalSynth.prototype, "modulationIndex", {
+	Object.defineProperty(Tone.MetalSynth.prototype, "modulationIndex", {
 		get : function(){
 			return this._oscillators[0].modulationIndex.value;
 		},
@@ -198,11 +198,11 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/source/FMOscillato
 	/**
 	 *  The harmonicity of the oscillators which make up the source.
 	 *  see Tone.FMOscillator.harmonicity
-	 *  @memberOf Tone.CymbalSynth#
+	 *  @memberOf Tone.MetalSynth#
 	 *  @type {Positive}
 	 *  @name  harmonicity
 	 */
-	Object.defineProperty(Tone.CymbalSynth.prototype, "harmonicity", {
+	Object.defineProperty(Tone.MetalSynth.prototype, "harmonicity", {
 		get : function(){
 			return this._oscillators[0].harmonicity.value;
 		},
@@ -215,11 +215,11 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/source/FMOscillato
 
 	/**
 	 *  The frequency of the highpass filter attached to the envelope
-	 *  @memberOf Tone.CymbalSynth#
+	 *  @memberOf Tone.MetalSynth#
 	 *  @type {Frequency}
 	 *  @name  resonance
 	 */
-	Object.defineProperty(Tone.CymbalSynth.prototype, "resonance", {
+	Object.defineProperty(Tone.MetalSynth.prototype, "resonance", {
 		get : function(){
 			return this._filterFreqScaler.min;
 		},
@@ -232,11 +232,11 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/source/FMOscillato
 	/**
 	 *  The number of octaves above the "resonance" frequency
 	 *  that the filter ramps during the attack/decay envelope
-	 *  @memberOf Tone.CymbalSynth#
+	 *  @memberOf Tone.MetalSynth#
 	 *  @type {Number}
 	 *  @name  octaves
 	 */
-	Object.defineProperty(Tone.CymbalSynth.prototype, "octaves", {
+	Object.defineProperty(Tone.MetalSynth.prototype, "octaves", {
 		get : function(){
 			return this._octaves;
 		},
@@ -248,9 +248,9 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/source/FMOscillato
 
 	/**
 	 *  Clean up
-	 *  @returns {Tone.CymbalSynth} this
+	 *  @returns {Tone.MetalSynth} this
 	 */
-	Tone.CymbalSynth.prototype.dispose = function(){
+	Tone.MetalSynth.prototype.dispose = function(){
 		Tone.Instrument.prototype.dispose.call(this);
 		for (var i = 0; i < this._oscillators.length; i++){
 			this._oscillators[i].dispose();
@@ -270,5 +270,5 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/source/FMOscillato
 		this._highpass = null;
 	};
 
-	return Tone.CymbalSynth;
+	return Tone.MetalSynth;
 });

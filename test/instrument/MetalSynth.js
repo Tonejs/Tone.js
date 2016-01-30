@@ -1,14 +1,14 @@
-define(["Tone/instrument/CymbalSynth", "helper/Basic", "helper/InstrumentTests"], function (CymbalSynth, Basic, InstrumentTest) {
+define(["Tone/instrument/MetalSynth", "helper/Basic", "helper/InstrumentTests"], function (MetalSynth, Basic, InstrumentTest) {
 
-	describe("CymbalSynth", function(){
+	describe("MetalSynth", function(){
 
-		Basic(CymbalSynth);
-		InstrumentTest(CymbalSynth);
+		Basic(MetalSynth);
+		InstrumentTest(MetalSynth);
 
 		context("API", function(){
 
 			it ("can be constructed with octave and harmonicity values", function(){
-				var cymbal = new CymbalSynth({
+				var cymbal = new MetalSynth({
 					"octaves" : 0.4,
 					"resonance" : 2300,
 					"harmonicity" : 3.1
@@ -20,7 +20,7 @@ define(["Tone/instrument/CymbalSynth", "helper/Basic", "helper/InstrumentTests"]
 			});
 
 			it ("can get and set envelope attributes", function(){
-				var cymbal = new CymbalSynth();
+				var cymbal = new MetalSynth();
 				cymbal.envelope.attack = 0.024;
 				cymbal.envelope.decay = 0.9;
 				expect(cymbal.envelope.attack).to.equal(0.024);
@@ -29,14 +29,14 @@ define(["Tone/instrument/CymbalSynth", "helper/Basic", "helper/InstrumentTests"]
 			});
 
 			it ("can set the modulationIndex", function(){
-				var cymbal = new CymbalSynth();
+				var cymbal = new MetalSynth();
 				cymbal.modulationIndex = 82;
 				expect(cymbal.modulationIndex).to.be.closeTo(82, 0.01);
 				cymbal.dispose();
 			});
 
 			it ("can get/set attributes", function(){
-				var cymbal = new CymbalSynth();
+				var cymbal = new MetalSynth();
 				cymbal.set({
 					"frequency" : 120
 				});
