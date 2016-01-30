@@ -1,5 +1,18 @@
 ### r6
 
+* MetalSynth creates metalic, cymbal sounds
+* DrumSynth -> MembraneSynth
+* FMOscillator, AMOscillator types
+* FatOscillator creates multiple oscillators and detunes them slightly
+* FM, AM, Fat Oscillators incorporated into OmniOscillator
+* Simplified FM and AM Synths and APIs
+
+
+DEPRECATED:
+* Removed SimpleFM and SimpleAM
+
+### r6
+
 * Added PitchShift and Vibrato Effect.
 * Added Timeline/TimelineState/TimelineSignal which keeps track of all scheduled state changes.
 * Clock uses requestAnimationFrame instead of ScriptProcessorNode
