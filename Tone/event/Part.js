@@ -146,7 +146,11 @@ define(["Tone/core/Tone", "Tone/event/Event", "Tone/core/Type", "Tone/core/Trans
 	Tone.Part.prototype.start = function(time, offset){
 		var ticks = this.toTicks(time);
 		if (this._state.getStateAtTime(ticks) !== Tone.State.Started){
-			offset = this.defaultArg(offset, 0);
+			if (this._loop){
+				offset = this.defaultArg(offset, this._loopStart);
+			} else {
+				offset = this.defaultArg(offset, 0);
+			}
 			offset = this.toTicks(offset);
 			this._state.addEvent({
 				"state" : Tone.State.Started, 
@@ -176,6 +180,9 @@ define(["Tone/core/Tone", "Tone/event/Event", "Tone/core/Type", "Tone/core/Trans
 					//start it on the next loop
 					ticks += this._getLoopDuration();
 				}
+				event.start(ticks + "i");
+			} else if (event.startOffset < this._loopStart && event.startOffset >= offset) {
+				event.loop = false;
 				event.start(ticks + "i");
 			}
 		} else {
