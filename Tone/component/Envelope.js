@@ -276,18 +276,6 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal",
 		return this;
 	};
 
-	/**
-	 *  The phase of the envelope. 
-	 *  @enum {string}
-	 */
-	Tone.Envelope.Phase = {
-		Attack : "attack",
-		Decay : "decay",
-		Sustain : "sustain",
-		Release : "release",
-		Standby : "standby",
- 	};
-
  	/**
 	 *  The phase of the envelope. 
 	 *  @enum {string}
