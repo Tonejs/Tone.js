@@ -378,6 +378,34 @@ function (Envelope, Basic, Offline, Test) {
 				offline.run();
 			});
 
+			it ("can schedule multiple attack/releases with no discontinuities", function(done){
+				var env;
+				var offline = new Offline(2); 
+				offline.before(function(dest){
+					env = new Envelope(0.1, 0.2, 0.2, 0.4);
+					env.connect(dest);
+					env.triggerAttackRelease(0.4, 0);
+					env.triggerAttackRelease(0.11, 0.4);
+					env.triggerAttackRelease(0.1, 0.45);
+					env.triggerAttackRelease(0.09, 1.1);
+					env.triggerAttackRelease(0.3, 1.5);
+					env.triggerAttackRelease(0.29, 1.8);
+				});
+				//test for discontinuities
+				var lastSample = 0;
+				offline.test(function(sample){
+					expect(sample).to.be.at.most(1);
+					var diff = Math.abs(lastSample - sample);
+					expect(diff).to.be.lessThan(0.001);
+					lastSample = sample;
+				}); 
+				offline.after(function(){
+					env.dispose();
+					done();
+				});
+				offline.run();
+			});
+
 			it ("reports its current envelope value (.value)", function(done){
 				var env = new Envelope(0.1, 0.2, 1).noGC();
 				expect(env.value).to.be.closeTo(0, 0.01);
