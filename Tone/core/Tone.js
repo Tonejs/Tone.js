@@ -322,6 +322,14 @@ define(function(){
 	 *  @const
 	 */
 	Tone.prototype.blockTime = 128 / Tone.context.sampleRate;
+
+	/**
+	 *  The time of a single sample
+	 *  @type {number}
+	 *  @static
+	 *  @const
+	 */
+	Tone.prototype.sampleTime = 1 / Tone.context.sampleRate;
 	
 	///////////////////////////////////////////////////////////////////////////
 	//	CONNECTIONS
@@ -795,6 +803,7 @@ define(function(){
 	Tone._initAudioContext(function(audioContext){
 		//set the blockTime
 		Tone.prototype.blockTime = 128 / audioContext.sampleRate;
+		Tone.prototype.sampleTime = 1 / audioContext.sampleRate;
 		_silentNode = audioContext.createGain();
 		_silentNode.gain.value = 0;
 		_silentNode.connect(audioContext.destination);
