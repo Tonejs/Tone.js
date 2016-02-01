@@ -186,9 +186,19 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal",
 		//to seconds
 		var now = this.now() + this.blockTime;
 		time = this.toSeconds(time, now);
-		var attack = this.toSeconds(this.attack) + time;
+		var attack = this.toSeconds(this.attack);
 		var decay = this.toSeconds(this.decay);
 		velocity = this.defaultArg(velocity, 1);
+		//check if it's not a complete attack
+		var currentValue = this.getValueAtTime(time);
+		if (currentValue > 0){
+			//subtract the current value from the attack time
+			var attackRate = 1 / attack;
+			var remainingDistance = 1 - currentValue;
+			//the attack is now the remaining time
+			attack = remainingDistance / attackRate;
+		}
+		attack += time;
 		//attack
 		if (this._attackCurve === Tone.Envelope.Type.Linear){
 			this._sig.linearRampToValueBetween(velocity, time, attack);
@@ -196,13 +206,7 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal",
 			this._sig.exponentialRampToValueBetween(velocity, time, attack);
 		}
 		//decay
-		this._sig.setValueAtTime(velocity, attack);
-		if (this.sustain * velocity === 0){
-			this._sig.exponentialRampToValueAtTime(this._minOutput, attack + decay - 1 / Tone.context.sampleRate);
-			this._sig.setValueAtTime(0, attack + decay);
-		} else {
-			this._sig.exponentialRampToValueAtTime(this.sustain * velocity, attack + decay);
-		}
+		this._sig.exponentialRampToValueBetween(velocity * this.sustain, attack + this.sampleTime, attack + decay);
 		return this;
 	};
 	
@@ -222,9 +226,7 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal",
 			if (this._releaseCurve === Tone.Envelope.Type.Linear){
 				this._sig.linearRampToValueBetween(0, time, time + release);
 			} else {
-				this._sig.exponentialRampToValueBetween(this._minOutput, time, release + time - 1 / Tone.context.sampleRate);
-				//silence the output entirely after the release
-				this._sig.setValueAtTime(0, release + time);
+				this._sig.exponentialRampToValueBetween(0, time, release + time);
 			}
 		}
 		return this;
