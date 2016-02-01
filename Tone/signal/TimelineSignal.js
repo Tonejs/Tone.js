@@ -118,15 +118,27 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Timeline"], function 
 	 *  @returns {Tone.TimelineSignal} this
 	 */
 	Tone.TimelineSignal.prototype.exponentialRampToValueAtTime = function (value, endTime) {
+		//get the previous event and make sure it's not starting from 0
+		var beforeEvent = this._searchBefore(endTime);
+		if (beforeEvent && beforeEvent.value === 0){
+			//reschedule that event
+			this.setValueAtTime(this._minOutput, beforeEvent.time);
+		}
 		value = this._fromUnits(value);
-		value = Math.max(this._minOutput, value);
+		var setValue = Math.max(value, this._minOutput);
 		endTime = this.toSeconds(endTime);
 		this._events.addEvent({
 			"type" : Tone.TimelineSignal.Type.Exponential,
-			"value" : value,
+			"value" : setValue,
 			"time" : endTime
 		});
-		this._param.exponentialRampToValueAtTime(value, endTime);
+		//if the ramped to value is 0, make it go to the min output, and then set to 0.
+		if (value < this._minOutput){
+			this._param.exponentialRampToValueAtTime(this._minOutput, endTime - 1 / Tone.context.sampleRate);
+			this.setValueAtTime(0, endTime);
+		} else {
+			this._param.exponentialRampToValueAtTime(value, endTime);
+		}
 		return this;
 	};
 
@@ -180,18 +192,26 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Timeline"], function 
 		time = this.toSeconds(time);
 		//get the value at the given time
 		var val = this.getValueAtTime(time);
-		//reschedule the next event to end at the given time
-		var after = this._searchAfter(time);
-		if (after){
-			//cancel the next event(s)
-			this.cancelScheduledValues(time);
-			if (after.type === Tone.TimelineSignal.Type.Linear){
-				this.linearRampToValueAtTime(val, time);
-			} else if (after.type === Tone.TimelineSignal.Type.Exponential){
-				this.exponentialRampToValueAtTime(val, time);
+		//if there is an event at the given time
+		//and that even is not a "set"
+		var before = this._searchBefore(time);
+		if (before && before.time === time){
+			//remove everything after
+			this.cancelScheduledValues(time + this.sampleTime);
+		} else {
+			//reschedule the next event to end at the given time
+			var after = this._searchAfter(time);
+			if (after){
+				//cancel the next event(s)
+				this.cancelScheduledValues(time);
+				if (after.type === Tone.TimelineSignal.Type.Linear){
+					this.linearRampToValueAtTime(val, time);
+				} else if (after.type === Tone.TimelineSignal.Type.Exponential){
+					this.exponentialRampToValueAtTime(val, time);
+				} 
 			} 
-		} 
-		this.setValueAtTime(val, time);
+			this.setValueAtTime(val, time);
+		}
 		return this;
 	};
 
