@@ -140,14 +140,14 @@ function(Tone){
 	/**
 	 *  Trigger the release of the note. Unlike monophonic instruments, 
 	 *  a note (or array of notes) needs to be passed in as the first argument.
+	 *  @param  {Time} [time=now]  When the release will be triggered.
 	 *  @param  {Frequency|Array} notes The notes to play. Accepts a single
 	 *                                  Frequency or an array of frequencies.
-	 *  @param  {Time} [time=now]  When the release will be triggered. 
 	 *  @returns {Tone.PolySynth} this
 	 *  @example
-	 * poly.triggerRelease(["Ab3", "C4", "F5"], "+2n");
+	 * poly.triggerRelease("+2n", ["Ab3", "C4", "F5"]);
 	 */
-	Tone.PolySynth.prototype.triggerRelease = function(notes, time){
+	Tone.PolySynth.prototype.triggerRelease = function(time, notes){
 		if (!Array.isArray(notes)){
 			notes = [notes];
 		}
