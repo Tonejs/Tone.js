@@ -515,6 +515,31 @@ define(["helper/Basic", "Tone/event/Part", "Tone/core/Tone", "Tone/core/Transpor
 				Tone.Transport.start();
 			});
 
+			it("can start a loop with an offset before loop start", function(done){
+				var iteration = 0;
+				var part = new Part(function(time, number){
+					if (iteration === 0){
+						expect(number).to.equal(0);
+					} else if (iteration === 1){
+						expect(number).to.equal(1);
+					} else if (iteration === 2){
+						expect(number).to.equal(2);
+					} else if (iteration === 3){
+						expect(number).to.equal(1);
+					} else if (iteration === 4){
+						expect(number).to.equal(2);
+						part.dispose();
+						done();
+					}
+					iteration++;
+				}, [[0, 0], [0.25, 1], [0.30, 2]]);
+				part.loop = true;
+				part.loopStart = 0.25;
+				part.loopEnd = 0.5;
+				part.start(0, 0);
+				Tone.Transport.start();
+			});
+
 		});
 
 		context("playbackRate", function(){
