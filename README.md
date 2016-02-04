@@ -124,7 +124,7 @@ All instruments are monophonic (one voice) but can be made polyphonic when the c
 //a 4 voice MonoSynth
 var polySynth = new Tone.PolySynth(4, Tone.MonoSynth).toMaster();
 //play a chord
-polySimpleSynth.triggerAttackRelease(["C4", "E4", "G4", "B4"], "2n");
+polySynth.triggerAttackRelease(["C4", "E4", "G4", "B4"], "2n");
 ```
 
 [Read more about Instruments.](https://github.com/Tonejs/Tone.js/wiki/Instruments)
