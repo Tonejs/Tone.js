@@ -18,13 +18,13 @@ function (Test, Abs, BasicTest, Signal, Offline) {
 				var signal, abs;
 				var offline = new Offline(0.2);
 				offline.before(function(dest){
-					signal = new Signal(100);
+					signal = new Signal(0.4);
 					abs = new Abs();
 					signal.connect(abs);
 					abs.connect(dest);
 				});
 				offline.test(function(sample){
-					expect(sample).to.be.closeTo(100, 0.01);
+					expect(sample).to.be.closeTo(0.4, 0.01);
 				});
 				offline.after(function(){
 					signal.dispose();
@@ -38,13 +38,13 @@ function (Test, Abs, BasicTest, Signal, Offline) {
 				var signal, abs;
 				var offline = new Offline(0.2);
 				offline.before(function(dest){
-					signal = new Signal(-10);
+					signal = new Signal(-0.3);
 					abs = new Abs();
 					signal.connect(abs);
 					abs.connect(dest);
 				});
 				offline.test(function(sample){
-					expect(sample).to.be.closeTo(10, 0.01);
+					expect(sample).to.be.closeTo(0.3, 0.01);
 				});
 				offline.after(function(){
 					signal.dispose();
