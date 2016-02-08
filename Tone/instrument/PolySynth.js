@@ -37,13 +37,6 @@ function(Tone){
 		this.voices = new Array(options.polyphony);
 
 		/**
-		 *  If there are no more voices available,
-		 *  should an active voice be stolen to play the new note?
-		 *  @type {Boolean}
-		 */
-		this.stealVoices = false;
-
-		/**
 		 *  The queue of voices with data about last trigger
 		 *  and the triggered note
 		 *  @private
@@ -99,30 +92,18 @@ function(Tone){
 		time = this.toSeconds(time);
 		for (var i = 0; i < notes.length; i++){
 			var val = notes[i];
-			//get a released note
-			var wasTriggered = false;
-			for (var v = 0; v < this._triggers.length; v++){
-				var desc = this._triggers[v];
-				if (desc.release < time){
-					desc.release = Infinity;
-					desc.note = JSON.stringify(val);
-					desc.voice.triggerAttack(val, time, velocity);
-					wasTriggered = true;
-					break;
+			//trigger the oldest voice
+			var oldest = this._triggers[0];
+			var oldestIndex = 0;
+			for (var j = 1; j < this._triggers.length; j++){
+				if (this._triggers[j].release < oldest.release){
+					oldest = this._triggers[j];
+					oldestIndex = j;
 				}
 			}
-			if (!wasTriggered && this.stealVoices){
-				//retrigger the oldest voice
-				var oldest = this._triggers[0];
-				for (var j = 1; j < this._triggers.length; j++){
-					if (this._triggers[j].release < oldest.release){
-						oldest = this._triggers[j];
-					}
-				}
-				oldest.release = Infinity;
-				oldest.note = JSON.stringify(val);
-				oldest.voice.triggerAttack(val, time, velocity);
-			}
+			oldest.release = Infinity;
+			oldest.note = JSON.stringify(val);
+			oldest.voice.triggerAttack(val, time, velocity);
 		}
 		return this;
 	};
