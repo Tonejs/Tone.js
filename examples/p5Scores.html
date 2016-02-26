@@ -2,11 +2,11 @@
 <html>
 <head>
   <meta charset="utf-8">
-	<title>SCORING EVENTS</title>
+	<title>SHAPES AND SCORES</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
 	<script type="text/javascript" src="./scripts/p5.js"></script>
-	<script type="text/javascript" src="http://cdn.tonejs.org/r5/p5.Tone.js"></script>
+	<script type="text/javascript" src="http://cdn.tonejs.org/r6/p5.Tone.js"></script>
 	<script type="text/javascript" src="./scripts/jquery.min.js"></script>
 	<script type="text/javascript" src="./scripts/Interface.js"></script>
 
@@ -38,7 +38,7 @@
 	<script id="p5" type="text/javascript">
 
 		function setup() {
-		    createCanvas(windowWidth, windowHeight);
+			createCanvas(windowWidth, windowHeight);
 			strokeWeight(10);
 			strokeJoin(ROUND);
 		}
@@ -48,9 +48,27 @@
 			rect(-10, -10, width+20, height+20);
 		}
 
+		function drawPolygon(npoints) {
+			var c = color(random(255), random(255), random(255));
+			fill(c);
+
+			var x = random(width);
+			var y = random(height);
+
+			var radius = random(5, 100);
+			var npoints = random(3, 10);
+			var angle = TWO_PI / npoints;
+
+			beginShape();
+			for (var a = 0; a < TWO_PI; a += angle) {
+				var sx = x + cos(a) * radius;
+				var sy = y + sin(a) * radius;
+				vertex(sx, sy);
+			}
+			endShape(CLOSE);
+		}
 	</script>
 	<script id="Song" type="text/javascript">
-
 		/**
 		 *  HARP
 		 */
@@ -58,9 +76,8 @@
 
 		Tone.Note.route("Harp", function(time, note, duration){
 			harp.triggerAttackRelease(note, duration, time);
-			drawShape();
+			drawPolygon();
 		});
-
 		/**
 		 *  SCORE
 		 */

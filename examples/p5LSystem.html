@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="utf-8">
-	<title>SCORING EVENTS</title>
+	<title>SONIFYING LSYSTEMS</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
 	<script type="text/javascript" src="./scripts/p5.js"></script>
@@ -18,25 +18,8 @@
 
 </head>
 <body>	
-<!-- 	<div id="Content" class="FullScreen">
-		<div id="Title">Scoring Events</div>
-		<div id="Explanation">
-			Scores let you to schedule a note on a particular "channel". Then use <code>Tone.Note.route</code>
-			to listen for events on that channel. Multiple notes can be put into a JSON-friendly score
-			which can be parsed using <code>Tone.Note.parseScore</code>.
-			<br><br>
-			These note events can be also be used to trigger <code>p5.js</code> events such as drawing shapes, changing colors, and anything else you can think of!
-			<br><br>
-			Take a look at source to see the score format. 
-			MIDI files can also be converted to JSON score format using utils/MidiToScore.js.
-			<br><br>
-			Docs for <a href="http://tonejs.org/docs/#Note.route">Tone.Note.route</a>
-			and <a href="http://tonejs.org/docs/#Note.parseScore">Tone.Note.parseScore</a>
-		</div>
-	</div> -->
-
 	<script id="p5" type="text/javascript">
-	//based on the amazing work of R. Luke Dubois
+	//based on the work of R. Luke Dubois
 	//http://www.music.columbia.edu/~luke/dissertation/dissertation.pdf
 	var generations = 5;
 
@@ -85,35 +68,15 @@
 			console.log(i + ": " + outstring);
 		}
 
-		translate(width/2, height/2);
+		translate(width / 3, 2 * height / 3);
 		rotate(-45);
 
-		for(var i = 0; i < 8; i ++){
-			synths[i] = new Tone.FMSynth({
-				harmonicity: 8,
-				modulationIndex: 10,
-				carrier: {
-					oscillator: {
-						type: "sine"
-					},
-					envelope: {
-						release: 0.5
-					}
-				},
-				modulator: {
-					oscillator: {
-						type: "sine"
-					}
-				}
-			}).toMaster();
-		};
 	}
 
 	function draw(){
 		for(var i = 0, iMax = position; i < iMax; i ++){
 			turtle(instring[i]);
 		}
-
 		for(var i = 0; i < pushCount; i ++){
 			pop();
 		}
@@ -123,21 +86,35 @@
 	}
 	</script>
 	<script id="Song" type="text/javascript">
-	var synths = [];
-	var synthCount = 0;
-	Tone.Transport.setInterval(function(time){
+
+	synth = new Tone.FMSynth({
+		harmonicity: 8,
+		modulationIndex: 10,
+		carrier: {
+			oscillator: {
+				type: "sine"
+			},
+			envelope: {
+				release: 0.5
+			}
+		},
+		modulator: {
+			oscillator: {
+				type: "sine"
+			}
+		}
+	}).toMaster();
+
+	Tone.Transport.scheduleRepeat(function(time){
 		if(instring[position] != "X"){
-			synths[synthCount].triggerAttackRelease(symMap[instring[position]], "8n", time);
+			var char = instring[position]
+			synth.triggerAttackRelease(symMap[char], "8n", time);
 		}
 		position ++;
 		if(position > instring.length){
 			position = 0;
 		}
-		if(synthCount >= 7){
-			synthCount = 0;
-		}
-		// }
-	}, "16n");
+	}, "16n", 0);
 
 	Tone.Transport.start();
 
@@ -173,18 +150,6 @@
 				rotate(-25.5);
 				totRotate -= 25.5;
 			}();
-		}
-	}
-
-	function generateString(){
-
-	}
-
-	function mToF(midi){
-		if (midi >= 0 && midi <= 119){
-			return 440 * Math.pow(2, (midi-69)/12)
-		} else{
-			return null;
 		}
 	}
 	</script>
