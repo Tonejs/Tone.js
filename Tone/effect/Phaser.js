@@ -12,12 +12,12 @@ function(Tone){
 	 *	@extends {Tone.StereoEffect}
 	 *	@constructor
 	 *	@param {Frequency|Object} [frequency] The speed of the phasing. 
-	 *	@param {number} [depth] The depth of the effect. 
+	 *	@param {number} [octaves] The octaves of the effect. 
 	 *	@param {Frequency} [baseFrequency] The base frequency of the filters. 
 	 *	@example
 	 * var phaser = new Tone.Phaser({
 	 * 	"frequency" : 15, 
-	 * 	"depth" : 5, 
+	 * 	"octaves" : 5, 
 	 * 	"baseFrequency" : 1000
 	 * }).toMaster();
 	 * var synth = new Tone.FMSynth().connect(phaser);
@@ -26,7 +26,7 @@ function(Tone){
 	Tone.Phaser = function(){
 
 		//set the defaults
-		var options = this.optionsObject(arguments, ["frequency", "depth", "baseFrequency"], Tone.Phaser.defaults);
+		var options = this.optionsObject(arguments, ["frequency", "octaves", "baseFrequency"], Tone.Phaser.defaults);
 		Tone.StereoEffect.call(this, options);
 
 		/**
@@ -52,11 +52,11 @@ function(Tone){
 		this._baseFrequency = options.baseFrequency;
 
 		/**
-		 *  the depth of the phasing
+		 *  the octaves of the phasing
 		 *  @type {number}
 		 *  @private
 		 */
-		this._depth = options.depth;
+		this._octaves = options.octaves;
 
 		/**
 		 *  The quality factor of the filters
@@ -95,7 +95,7 @@ function(Tone){
 		this._lfoL.frequency.connect(this._lfoR.frequency);
 		//set the options
 		this.baseFrequency = options.baseFrequency;
-		this.depth = options.depth;
+		this.octaves = options.octaves;
 		//start the lfo
 		this._lfoL.start();
 		this._lfoR.start();
@@ -111,7 +111,7 @@ function(Tone){
 	 */
 	Tone.Phaser.defaults = {
 		"frequency" : 0.5,
-		"depth" : 10,
+		"octaves" : 3,
 		"stages" : 10,
 		"Q" : 10,
 		"baseFrequency" : 350,
@@ -137,18 +137,19 @@ function(Tone){
 	};
 
 	/**
-	 * The depth of the effect. 
+	 * The number of octaves the phase goes above
+	 * the baseFrequency
 	 * @memberOf Tone.Phaser#
-	 * @type {number}
-	 * @name depth
+	 * @type {Positive}
+	 * @name octaves
 	 */
-	Object.defineProperty(Tone.Phaser.prototype, "depth", {
+	Object.defineProperty(Tone.Phaser.prototype, "octaves", {
 		get : function(){
-			return this._depth;
+			return this._octaves;
 		},
-		set : function(depth){
-			this._depth = depth;
-			var max = this._baseFrequency + this._baseFrequency * depth;
+		set : function(octaves){
+			this._octaves = octaves;
+			var max = this._baseFrequency * Math.pow(2, octaves);
 			this._lfoL.max = max;
 			this._lfoR.max = max;
 		}
@@ -168,7 +169,7 @@ function(Tone){
 			this._baseFrequency = freq;	
 			this._lfoL.min = freq;
 			this._lfoR.min = freq;
-			this.depth = this._depth;
+			this.octaves = this._octaves;
 		}
 	});
 

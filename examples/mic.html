@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+	<title>MICROPHONE</title>
+
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<link rel="icon" type="image/png" sizes="174x174" href="./style/favicon.png">
+	
+	<script type="text/javascript" src="../build/Tone.js"></script>
+	<script type="text/javascript" src="./scripts/jquery.min.js"></script>
+	<script type="text/javascript" src="./scripts/draggabilly.js"></script>
+	<script type="text/javascript" src="./scripts/Interface.js"></script>
+	<script type="text/javascript" src="./scripts/Logo.js"></script>
+
+	<link rel="stylesheet" type="text/css" href="./style/examples.css">
+
+	<script type="text/javascript">
+		// jshint ignore: start
+	</script>
+
+
+</head>
+<body>
+	<style type="text/css">
+		canvas {
+			width: 100%;
+			height: 200px;
+			background-color: black;
+			border-bottom-left-radius: 5px;
+			border-bottom-right-radius: 5px;
+		}
+	</style>
+	<div id="Content" class="FullScreen">
+		<div id="Title">Microphone</div>
+		<div id="Explanation">
+			If supported, Tone.Microphone uses <code>getUserMedia</code> to open
+			the user's microphone where it can then be processed with Tone.js.
+		</div>
+	</div>
+	<script type="text/javascript">
+
+		//you probably DONT want to connect the microphone
+		//directly to the master output because of feedback.
+		var mic = new Tone.Microphone();
+
+		var analyser = new Tone.Analyser({
+			"type" : "waveform",
+			"size" : 256
+		});
+
+		mic.connect(analyser);
+
+	</script>
+	
+	<script id="GUI" type="text/javascript">
+		$(function(){
+
+			//indicate if the microphone is supported or not
+			if (!Tone.Microphone.supported){
+				$("<div>", {
+					"id" : "NotSupported",
+					"text" : "getUserMedia is not supported by your browser."
+				}).appendTo("#Content");
+			} else {
+
+				mic.open(function(){
+
+					var canvas = $("<canvas>").appendTo("#Content");
+
+					var context = canvas.get(0).getContext("2d");
+
+					context.canvas.width = canvas.width();
+					context.canvas.height = canvas.height();
+
+					function drawLoop(){
+						var canvasWidth = context.canvas.width;
+						var canvasHeight = context.canvas.height;
+						requestAnimationFrame(drawLoop);
+						//draw the waveform
+						context.clearRect(0, 0, canvasWidth, canvasHeight);
+						var values = analyser.analyse();
+						context.beginPath();
+						context.lineJoin = "round";
+						context.lineWidth = 6;
+						context.strokeStyle = "white";
+						context.moveTo(0, (values[0] / 255) * canvasHeight);
+						for (var i = 1, len = values.length; i < len; i++){
+							var val = values[i] / 255;
+							var x = canvasWidth * (i / (len - 1));
+							var y = val * canvasHeight;
+							context.lineTo(x, y);
+						}
+						context.stroke();
+					}
+					drawLoop();
+					
+					new Interface.Button({
+						type : "toggle",
+						text : "Start Mic",
+						activeText : "Stop Mic",
+						start : function(){
+							mic.start();
+						},
+						end : function(){
+							mic.stop();
+						}
+					});
+				});
+
+			}
+
+		});
+	</script>
+</body>
+</html>

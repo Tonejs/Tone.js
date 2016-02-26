@@ -5,12 +5,15 @@
 	<title>SimpleFM</title>
 
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<link rel="icon" type="image/png" sizes="174x174" href="./style/favicon.png">
 	
 	<script type="text/javascript" src="../build/Tone.js"></script>
 	<script type="text/javascript" src="./scripts/jquery.min.js"></script>
-	<script type="text/javascript" src="./scripts/Notone.GUI.js"></script>
+	<script type="text/javascript" src="./scripts/draggabilly.js"></script>
 	<script type="text/javascript" src="./scripts/Interface.js"></script>
+	<script type="text/javascript" src="./scripts/Logo.js"></script>
 	<script type="text/javascript" src="./scripts/qwerty-hancock.js"></script>
+
 
 	<link rel="stylesheet" type="text/css" href="./style/examples.css">
 
@@ -32,25 +35,31 @@
 
 	<script type="text/javascript">			
 		var synth = new Tone.SimpleFM({
-			"modulationIndex" : 12.22
+			"modulationIndex" : 12.22,
+			"carrier" : {
+				"envelope" : {
+					"attack" : 0.01,
+					"decay" : 0.2
+				}
+			},
+			"modulator" : {
+				"oscillator" : {
+					"type" : "square"
+				},
+				"envelope" : {
+					"attack" : 0.2,
+					"decay" : 0.01
+				}
+			}
 		}).toMaster();
 	</script>
 
 	<script type="text/javascript">
 
 		$(function(){
-			Notone.config({
-				"search" : false,
-				"expandInDrawer" : true,
-				"hideDrawer" : Interface.isMobile,
-				"drawer" : true,
-				"container" : "body"
-			});
-
-			var fmGUI = Notone.add(synth, "SimpleFM");
-
+		
 			new Interface.Slider({
-				gui : fmGUI,
+				tone : synth,
 				param : "modulationIndex",
 				name : "mod index",
 				max : 100

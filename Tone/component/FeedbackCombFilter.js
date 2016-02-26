@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/signal/ScaleExp", "Tone/signal/Signal"], function(Tone){
+define(["Tone/core/Tone", "Tone/signal/ScaleExp", "Tone/signal/Signal", "Tone/core/Param"], function(Tone){
 
 	"use strict";
 
@@ -17,13 +17,6 @@ define(["Tone/core/Tone", "Tone/signal/ScaleExp", "Tone/signal/Signal"], functio
 		var options = this.optionsObject(arguments, ["delayTime", "resonance"], Tone.FeedbackCombFilter.defaults);
 
 		/**
-		 *  The amount of feedback of the delayed signal. 
-		 *  @type {NormalRange}
-		 *  @signal
-		 */
-		this.resonance = new Tone.Signal(options.resonance, Tone.Type.NormalRange);
-
-		/**
 		 *  the delay node
 		 *  @type {DelayNode}
 		 *  @private
@@ -35,7 +28,11 @@ define(["Tone/core/Tone", "Tone/signal/ScaleExp", "Tone/signal/Signal"], functio
 		 *  @type {Time}
 		 *  @signal
 		 */
-		this.delayTime = new Tone.Signal(options.delayTime, Tone.Type.Time);
+		this.delayTime = new Tone.Param({
+			"param" : this._delay.delayTime,
+			"value" : options.delayTime, 
+			"units" : Tone.Type.Time
+		});
 
 		/**
 		 *  the feedback node
@@ -44,9 +41,18 @@ define(["Tone/core/Tone", "Tone/signal/ScaleExp", "Tone/signal/Signal"], functio
 		 */
 		this._feedback = this.context.createGain();
 
+		/**
+		 *  The amount of feedback of the delayed signal. 
+		 *  @type {NormalRange}
+		 *  @signal
+		 */
+		this.resonance = new Tone.Param({
+			"param" : this._feedback.gain,
+			"value" : options.resonance, 
+			"units" : Tone.Type.NormalRange
+		});
+
 		this._delay.chain(this._feedback, this._delay);
-		this.resonance.connect(this._feedback.gain);
-		this.delayTime.connect(this._delay.delayTime);
 		this._readOnly(["resonance", "delayTime"]);
 	};
 

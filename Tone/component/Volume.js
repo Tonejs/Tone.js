@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Master"], function(Tone){
+define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Gain"], function(Tone){
 
 	"use strict";
 
@@ -12,22 +12,23 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Master"], function(To
 	 * var vol = new Tone.Volume(-12);
 	 * instrument.chain(vol, Tone.Master);
 	 */
-	Tone.Volume = function(volume){
+	Tone.Volume = function(){
+
+		var options = this.optionsObject(arguments, ["volume"], Tone.Volume.defaults);
 
 		/**
 		 * the output node
 		 * @type {GainNode}
 		 * @private
 		 */
-		this.output = this.input = this.context.createGain();
+		this.output = this.input = new Tone.Gain(options.volume, Tone.Type.Decibels);
 
 		/**
 		 *  The volume control in decibels. 
 		 *  @type {Decibels}
 		 *  @signal
 		 */
-		this.volume = new Tone.Signal(this.output.gain, Tone.Type.Decibels);
-		this.volume.value = this.defaultArg(volume, 0);
+		this.volume = this.output.gain;
 
 		this._readOnly("volume");
 	};
@@ -35,10 +36,21 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Master"], function(To
 	Tone.extend(Tone.Volume);
 
 	/**
+	 *  Defaults
+	 *  @type  {Object}
+	 *  @const
+	 *  @static
+	 */
+	Tone.Volume.defaults = {
+		"volume" : 0
+	};
+
+	/**
 	 *  clean up
 	 *  @returns {Tone.Volume} this
 	 */
 	Tone.Volume.prototype.dispose = function(){
+		this.input.dispose();
 		Tone.prototype.dispose.call(this);
 		this._writable("volume");
 		this.volume.dispose();

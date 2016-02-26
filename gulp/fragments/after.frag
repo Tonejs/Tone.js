@@ -1,7 +1,7 @@
 
 	//UMD
 	if ( typeof define === "function" && define.amd ) {
-		define( "Tone", [], function() {
+		define(function() {
 			return Tone;
 		});
 	} else if (typeof module === "object") {

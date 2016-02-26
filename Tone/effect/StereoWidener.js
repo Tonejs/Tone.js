@@ -28,7 +28,7 @@ define(["Tone/core/Tone", "Tone/effect/MidSideEffect", "Tone/signal/Signal",
 		 *  @type {NormalRange}
 		 *  @signal
 		 */
-		this.width = new Tone.Signal(0.5, Tone.Type.NormalRange);
+		this.width = new Tone.Signal(options.width, Tone.Type.NormalRange);
 
 		/**
 		 *  Mid multiplier

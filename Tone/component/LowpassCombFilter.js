@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/component/Filter"], function(Tone){
+define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/component/Filter", "Tone/core/Param"], function(Tone){
 
 	"use strict";
 
@@ -47,8 +47,11 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/component/Filter"], functi
 		 *  @type {Frequency}
 		 *  @signal
 		 */
-		this.dampening = new Tone.Signal(this._lowpass.frequency, Tone.Type.Frequency);
-		this.dampening.value = options.dampening;
+		this.dampening = new Tone.Param({
+			"param" : this._lowpass.frequency, 
+			"units" : Tone.Type.Frequency,
+			"value" : options.dampening
+		});
 
 		/**
 		 *  the feedback gain
@@ -62,13 +65,15 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/component/Filter"], functi
 		 *  @type {NormalRange}
 		 *  @signal
 		 */
-		this.resonance = new Tone.Signal(options.resonance, Tone.Type.NormalRange);
+		this.resonance = new Tone.Param({
+			"param" : this._feedback.gain, 
+			"units" : Tone.Type.NormalRange,
+			"value" : options.resonance
+		});
 
 		//connections
 		this._delay.chain(this._lowpass, this._feedback, this._delay);
 		this.delayTime.connect(this._delay.delayTime);
-		this.resonance.connect(this._feedback.gain);
-		this.dampening.connect(this._lowpass.frequency);
 		this._readOnly(["dampening", "resonance", "delayTime"]);
 	};
 

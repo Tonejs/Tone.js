@@ -45,12 +45,11 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 
 		/**
 		 *  The gain of the filter, only used in certain filter types
-		 *  @type {Gain}
+		 *  @type {Number}
 		 *  @signal
 		 */
 		this.gain = new Tone.Signal({
 			"value" : options.gain, 
-			"units" : Tone.Type.Decibels,
 			"convert" : false
 		});
 
@@ -110,7 +109,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 		set : function(type){
 			var types = ["lowpass", "highpass", "bandpass", "lowshelf", "highshelf", "notch", "allpass", "peaking"];
 			if (types.indexOf(type)=== -1){
-				throw new TypeError("Tone.Filter does not have filter type "+type);
+				throw new Error("Tone.Filter does not have filter type "+type);
 			}
 			this._type = type;
 			for (var i = 0; i < this._filters.length; i++){
@@ -122,7 +121,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	/**
 	 * The rolloff of the filter which is the drop in db
 	 * per octave. Implemented internally by cascading filters.
-	 * Only accepts the values -12, -24, and -48.
+	 * Only accepts the values -12, -24, -48 and -96.
 	 * @memberOf Tone.Filter#
 	 * @type {number}
 	 * @name rolloff
@@ -132,13 +131,14 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 			return this._rolloff;
 		},
 		set : function(rolloff){
-			var possibilities = [-12, -24, -48];
+			rolloff = parseInt(rolloff, 10);
+			var possibilities = [-12, -24, -48, -96];
 			var cascadingCount = possibilities.indexOf(rolloff);
 			//check the rolloff is valid
 			if (cascadingCount === -1){
-				throw new RangeError("Filter rolloff can only be -12, -24, or -48");
+				throw new Error("Filter rolloff can only be -12, -24, -48 or -96");
 			} 
-			cascadingCount++;
+			cascadingCount += 1;
 			this._rolloff = rolloff;
 			//first disconnect the filters and throw them away
 			this.input.disconnect();

@@ -36,7 +36,8 @@ function(Tone){
 		 */
 		this._modulator = new Tone.Oscillator({
 			"frequency" : options.frequency,
-			"detune" : options.detune
+			"detune" : options.detune,
+			"phase" : options.phase
 		});
 
 		/**
@@ -85,6 +86,7 @@ function(Tone){
 	Tone.PWMOscillator.defaults = {
 		"frequency" : 440,
 		"detune" : 0,
+		"phase" : 0,
 		"modulationFrequency" : 0.4,
 	};
 
@@ -120,6 +122,19 @@ function(Tone){
 	Object.defineProperty(Tone.PWMOscillator.prototype, "type", {
 		get : function(){
 			return "pwm";
+		}
+	});
+
+	/**
+	 * The partials of the waveform. Cannot set partials for this waveform type
+	 * @memberOf Tone.PWMOscillator#
+	 * @type {Array}
+	 * @name partials
+	 * @private
+	 */
+	Object.defineProperty(Tone.PWMOscillator.prototype, "partials", {
+		get : function(){
+			return [];
 		}
 	});
 

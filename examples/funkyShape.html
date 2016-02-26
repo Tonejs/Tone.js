@@ -10,10 +10,13 @@
 	https://github.com/polyrhythmatic
 	-->
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<link rel="icon" type="image/png" sizes="174x174" href="./style/favicon.png">
 	
 	<script type="text/javascript" src="../build/Tone.js"></script>
 	<script type="text/javascript" src="./scripts/jquery.min.js"></script>
+	<script type="text/javascript" src="./scripts/draggabilly.js"></script>
 	<script type="text/javascript" src="./scripts/Interface.js"></script>
+	<script type="text/javascript" src="./scripts/Logo.js"></script>
 	<script type="text/javascript" src="./scripts/p5.js"></script>
 
 	<link rel="stylesheet" type="text/css" href="./style/examples.css">
@@ -24,12 +27,21 @@
 
 </head>
 <body>
+	<style type="text/css">
+		canvas {
+			position: absolute;
+			top: 0px;
+			z-index: -1;
+		}
+	</style>
 	<div id="Content" class="FullScreen">
 		<div id="Title">Using p5</div>
 		<div id="Explanation">
-			Click on the button to play the example. This sketch uses <a href="p5js.org" target="_blank">p5.js</a> for visual components.
-			<br><br>
 			By accessing the envelope's current value, we can create responsive visuals that are directly tied to what is heard.
+				<br><br>
+			This sketch uses <a href="p5js.org" target="_blank">p5.js</a> for visual components and the 
+				<a href="http://cdn.tonejs.org/latest/p5.Tone.js">p5 version of Tone.js</a> 
+			which adds a p5 <code>preload</code> hook for buffer loading. 
 		</div>
 	</div>
 	<script id="p5" type="text/javascript">
@@ -153,11 +165,15 @@
 		    "filterEnvelope": {
 		        "attack": 0.01,
 		        "decay": 0.03,
-		        "min": 4000,
-		        "max": 700,
+		        "baseFrequency": 4000,
+		        "octaves": -2.5,
 		        "exponent": 4,
 		    }
 		}).connect(lowPass);
+
+		var openHiHatPart = new Tone.Part(function(time){
+			openHiHat.triggerAttack(time);
+		}, ["2*8n", "6*8n"]).start(0);
 
 		var closedHiHat = new Tone.NoiseSynth({
 			"volume" : -10,
@@ -171,12 +187,16 @@
 		    "filterEnvelope": {
 		        "attack": 0.01,
 		        "decay": 0.03,
-		        "min": 4000,
-		        "max": 700,
+		        "baseFrequency": 4000,
+		        "octaves": -2.5,
 		        "exponent": 4,
 
 		    }
 		}).connect(lowPass);
+
+		var closedHatPart = new Tone.Part(function(time){
+			closedHiHat.triggerAttack(time);
+		}, ["0*8n", "1*16n", "1*8n", "3*8n", "4*8n", "5*8n", "7*8n", "8*8n"]).start(0);
 
 		//BASS
 		var bassEnvelope = new Tone.AmplitudeEnvelope({
@@ -194,6 +214,14 @@
 		var bass = new Tone.PulseOscillator("A2", 0.4).chain(bassFilter, bassEnvelope);
 		bass.start();
 
+		var bassPart = new Tone.Part(function(time, note){
+			bass.frequency.setValueAtTime(note, time);
+		    bassEnvelope.triggerAttack(time);
+		}, [["0:0", "A1"],
+			["0:2", "G1"],
+			["0:2:2", "C2"],
+			["0:3:2", "A1"]]).start(0);
+
 		//BLEEP
 		var bleepEnvelope = new Tone.AmplitudeEnvelope({
 		    "attack": 0.01,
@@ -202,8 +230,13 @@
 		    "release": 0,
 		}).toMaster();
 
+
 		var bleep = new Tone.Oscillator("A4").connect(bleepEnvelope);
 		bleep.start();
+
+		var bleepLoop = new Tone.Loop(function(time){
+			 bleepEnvelope.triggerAttack(time);
+		}, "2n").start(0);
 
 		//KICK
 		var kickEnvelope = new Tone.AmplitudeEnvelope({
@@ -213,56 +246,23 @@
 		    "release": 0
 		}).toMaster();
 
-		var kick = new Tone.Oscillator("A2").connect(kickEnvelope);
-		kick.start();
+		var kick = new Tone.Oscillator("A2").connect(kickEnvelope).start();
 
-		kickSnapEnv = new Tone.ScaledEnvelope({
+		kickSnapEnv = new Tone.FrequencyEnvelope({
 		    "attack": 0.005,
 		    "decay": 0.01,
 		    "sustain": 0,
 		    "release": 0,
-		    "min": "110",
-		    "max": 700
+		    "baseFrequency": "A2",
+		    "octaves": 2.7
 		}).connect(kick.frequency);
 
-		var score = {
-		    "kick": ["0", "0:0:3", "0:2:0", "0:3:1"],
-		    "closedHiHat": ["0*8n", "1*16n", "1*8n", "3*8n", "4*8n", "5*8n", "7*8n", "8*8n"],
-		    "openHiHat": ["2*8n", "6*8n"],
-		    "bass": [
-		        ["0:0", "A1", "8n"],
-		        ["0:2", "G1", "8n"],
-		        ["0:2:2", "C2", "8n"],
-		        ["0:3:2", "A1", "8n"]
-		    ]
-		};
+		var kickPart = new Tone.Part(function(time){
+			kickEnvelope.triggerAttack(time);
+			kickSnapEnv.triggerAttack(time);
+		}, ["0", "0:0:3", "0:2:0", "0:3:1"]).start(0);
 
-		Tone.Note.parseScore(score);
-
-		Tone.Note.route("kick", function(time) {
-		    kickEnvelope.triggerAttack(time);
-		    kickSnapEnv.triggerAttack(time);
-		});
-
-		Tone.Note.route("closedHiHat", function(time) {
-		    closedHiHat.triggerAttack(time);
-		});
-
-		Tone.Note.route("openHiHat", function(time) {
-		    openHiHat.triggerAttack(time);
-		});
-
-		Tone.Note.route("bass", function(time, note) {
-		    bass.frequency.value = bass.frequency.toFrequency(note);
-		    bassEnvelope.triggerAttack(time);
-		});
-
-		//LOOP THE TRANSPORT
-
-		Tone.Transport.setInterval(function(time) {
-		    bleepEnvelope.triggerAttack(time);
-		}, "2n");
-
+		//TRANSPORT
 		Tone.Transport.loopStart = 0;
 		Tone.Transport.loopEnd = "1:0";
 		Tone.Transport.loop = true;

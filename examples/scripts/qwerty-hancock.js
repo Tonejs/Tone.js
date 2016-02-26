@@ -1,7 +1,7 @@
 /*
- * Qwerty Hancock keyboard library v0.4.5
+ * Qwerty Hancock keyboard library v0.5.1
  * The web keyboard for now people.
- * Copyright 2012-14, Stuart Memo
+ * Copyright 2012-15, Stuart Memo
  *
  * Licensed under the MIT License
  * http://opensource.org/licenses/mit-license.php
@@ -9,8 +9,13 @@
  * http://stuartmemo.com/qwerty-hancock
  */
 
-(function (window, undefined) {
-    var version = '0.4.5',
+(function () {
+    var root = this;
+    /* In <script> context, `this` is the window.
+     * In node context (browserify), `this` is the node global.
+     */
+    var globalWindow = typeof global === 'undefined' ? root : root.window;
+    var version = '0.5.1',
         settings = {},
         mouse_is_down = false,
         keysDown = {},
@@ -278,7 +283,7 @@
             callback(element.title, getFrequencyOfNote(element.title));
         }
     };
- 
+
     /**
     * Create key DOM element.
     * @return {object} Key DOM element.
@@ -359,7 +364,7 @@
     var setKeyPressOffset = function (sorted_white_notes) {
         settings.keyPressOffset = sorted_white_notes[0] === 'C' ? 0 : 1;
     };
-    
+
     var createKeyboard = function () {
         var keyboard = {
             container: document.getElementById(settings.id),
@@ -410,7 +415,7 @@
             lightenUp(document.getElementById(key_pressed));
        }
     };
- 
+
     /**
      * Handle a keyboard key being released.
      * @param {element} key The DOM element of the key that was released.
@@ -437,12 +442,12 @@
         var that = this;
 
         // Key is pressed down on keyboard.
-        window.addEventListener('keydown', function (key) {
+        globalWindow.addEventListener('keydown', function (key) {
             keyboardDown(key, that.keyDown);
         });
- 
+
         // Key is released on keyboard.
-        window.addEventListener('keyup', function (key) {
+        globalWindow.addEventListener('keyup', function (key) {
             keyboardUp(key, that.keyUp);
         });
 
@@ -483,7 +488,7 @@
             keyboard_element.addEventListener('touchcancel', function (event) {
                 mouseOut(event.target, that.keyUp);
             });
-        } 
+        }
     };
 
     /**
@@ -504,5 +509,12 @@
         init.call(this, settings);
     };
 
-    window.QwertyHancock = QwertyHancock;
-})(window);
+    if (typeof exports !== 'undefined') {
+      if (typeof module !== 'undefined' && module.exports) {
+        exports = module.exports = QwertyHancock;
+      }
+      exports.QwertyHancock = QwertyHancock;
+    } else {
+      root.QwertyHancock = QwertyHancock;
+    }
+})(this);

@@ -46,6 +46,11 @@ define(["Tone/core/Tone"], function(Tone){
 		//connections
 		this.left.connect(this._merger, 0, 0);
 		this.right.connect(this._merger, 0, 1);
+
+		this.left.channelCount = 1;
+		this.right.channelCount = 1;
+		this.left.channelCountMode = "explicit";
+		this.right.channelCountMode = "explicit";
 	};
 
 	Tone.extend(Tone.Merge);

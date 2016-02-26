@@ -104,8 +104,8 @@ function(Tone){
 				"decay" : 0.0,
 				"sustain" : 1,
 				"release" : 0.5,
-				"min" : 20000,
-				"max" : 20000
+				"baseFrequency" : 20000,
+				"octaves" : 0
 			},
 			"filter" : {
 				"Q" : 6,
@@ -129,8 +129,8 @@ function(Tone){
 				"decay" : 0.2,
 				"sustain" : 0.5,
 				"release" : 0.5,
-				"min" : 20,
-				"max" : 1500
+				"baseFrequency" : 20,
+				"octaves" : 6
 			},
 			"filter" : {
 				"Q" : 6,

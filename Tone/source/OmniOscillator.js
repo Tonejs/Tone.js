@@ -54,7 +54,11 @@ function(Tone){
 
 		//set the oscillator
 		this.type = options.type;
+		this.phase = options.phase;
 		this._readOnly(["frequency", "detune"]);
+		if (this.isArray(options.partials)){
+			this.partials = options.partials;
+		}
 	};
 
 	Tone.extend(Tone.OmniOscillator, Tone.Oscillator);
@@ -69,6 +73,7 @@ function(Tone){
 		"frequency" : 440,
 		"detune" : 0,
 		"type" : "sine",
+		"phase" : 0,
 		"width" : 0.4, //only applies if the oscillator is set to "pulse",
 		"modulationFrequency" : 0.4, //only applies if the oscillator is set to "pwm",
 	};
@@ -113,7 +118,7 @@ function(Tone){
 		}, 
 		set : function(type){
 			if (type.indexOf("sine") === 0 || type.indexOf("square") === 0 || 
-				type.indexOf("triangle") === 0 || type.indexOf("sawtooth") === 0){
+				type.indexOf("triangle") === 0 || type.indexOf("sawtooth") === 0 || type === Tone.Oscillator.Type.Custom){
 				if (this._sourceType !== OmniOscType.Oscillator){
 					this._sourceType = OmniOscType.Oscillator;
 					this._createNewOscillator(Tone.Oscillator);
@@ -130,8 +135,33 @@ function(Tone){
 					this._createNewOscillator(Tone.PulseOscillator);
 				}
 			} else {
-				throw new TypeError("Tone.OmniOscillator does not support type "+type);
+				throw new Error("Tone.OmniOscillator does not support type "+type);
 			}
+		}
+	});
+
+	/**
+	 * The partials of the waveform. A partial represents 
+	 * the amplitude at a harmonic. The first harmonic is the 
+	 * fundamental frequency, the second is the octave and so on
+	 * following the harmonic series. 
+	 * Setting this value will automatically set the type to "custom". 
+	 * The value is an empty array when the type is not "custom". 
+	 * @memberOf Tone.OmniOscillator#
+	 * @type {Array}
+	 * @name partials
+	 * @example
+	 * osc.partials = [1, 0.2, 0.01];
+	 */
+	Object.defineProperty(Tone.OmniOscillator.prototype, "partials", {
+		get : function(){
+			return this._oscillator.partials;
+		}, 
+		set : function(partials){
+			if (this._sourceType !== OmniOscType.Oscillator){
+				this.type = Tone.Oscillator.Type.Custom;
+			}
+			this._oscillator.partials = partials;
 		}
 	});
 
@@ -141,14 +171,15 @@ function(Tone){
 	 */
 	Tone.OmniOscillator.prototype._createNewOscillator = function(OscillatorConstructor){
 		//short delay to avoid clicks on the change
-		var now = this.now() + this.bufferTime;
+		var now = this.now() + this.blockTime;
 		if (this._oscillator !== null){
 			var oldOsc = this._oscillator;
 			oldOsc.stop(now);
-			oldOsc.onended = function(){
+			//dispose the old one
+			setTimeout(function(){
 				oldOsc.dispose();
 				oldOsc = null;
-			};
+			}, this.blockTime * 1000);
 		}
 		this._oscillator = new OscillatorConstructor();
 		this.frequency.connect(this._oscillator.frequency);

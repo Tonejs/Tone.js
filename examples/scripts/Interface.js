@@ -14,11 +14,15 @@ var Interface = {
 $(function(){
 	var topbar = $("<div>").attr("id", "TopBar");
 	$("body").prepend(topbar);
-	$("<div>")
-		.attr("id", "Homepage")
-		.attr("title", "github")
-		.html("<a href='http://github.com/TONEnoTONE/Tone.js'>Tone.js</a>")
-		.appendTo(topbar);
+	
+	if (typeof Tone !== "undefined"){
+		var logo = new Logo({
+			"container" : topbar,
+			"height" : topbar.height() - 6,
+			"width" : 140
+		});
+
+	}
 	$("<div>")
 		.attr("id", "Examples")
 		.attr("title", "examples")
@@ -30,33 +34,13 @@ $(function(){
 		$("body").addClass("Mobile");
 		var element = $("<div>", {"id" : "MobileStart"}).appendTo("body");
 		$("<div>").attr("id", "Button")
-			.text("\u25B6")
-			.on("touchstart", function(e){
+			.text("Enter")
+			.on("touchend", function(e){
 				e.preventDefault();
 				Tone.startMobile();
 				element.remove();
 			})
 			.appendTo(element);  
-	}
-	//get the master output
-	if (typeof Tone !== "undefined"){
-		var meter = new Tone.Meter(2);
-		Tone.Master.connect(meter);
-		var meterElement = $("<div>").attr("id", "Meter").appendTo(topbar);
-		var leftLevel = $("<div>").addClass("Level")
-			.attr("id", "Left")
-			.appendTo(meterElement);
-		var rightLevel = $("<div>").addClass("Level")
-			.attr("id", "Right")
-			.appendTo(meterElement);
-		function update(){
-			requestAnimationFrame(update);
-			var leftHeight = 100 - Math.max(Math.min(Math.abs(meter.getDb(0)), 100), 0);
-			var rightHeight = 100 - Math.max(Math.min(Math.abs(meter.getDb(1)), 100), 0);
-			leftLevel.height(leftHeight + "%");
-			rightLevel.height(rightHeight + "%");
-		}
-		update();
 	}
 });
 
@@ -75,9 +59,9 @@ Interface.Loader = function(){
 		"text" : "Loading"
 	}).appendTo(this.element);
 
-	Tone.Buffer.onload = function(){
+	Tone.Buffer.on("load", function(){
 		this.element.addClass("Loaded");
-	}.bind(this);
+	}.bind(this));
 };
 
 /**
@@ -97,9 +81,9 @@ Interface.Dragger = function(params){
 	this.container = $("#DragContainer");
 
 	/**
-	 *  the gui
+	 *  the tone object
 	 */
-	this.gui = params.gui;
+	this.tone = params.tone;
 
 	/**
 	 *  callbacks
@@ -113,7 +97,7 @@ Interface.Dragger = function(params){
 	/**
 	 *  the name
 	 */
-	var name = params.name ? params.name : this.gui.name ? this.gui.name : "";
+	var name = params.name ? params.name : this.tone ? this.tone.toString() : "";
 
 	/**
 	 *  elements
@@ -142,7 +126,7 @@ Interface.Dragger = function(params){
 	var xParams = params.x;
 	xParams.axis = "x";
 	xParams.element = this.element;
-	xParams.gui = this.gui;
+	xParams.tone = this.tone;
 	xParams.container = this.container;
 	this.xAxis = new Interface.Slider(xParams);
 
@@ -152,7 +136,7 @@ Interface.Dragger = function(params){
 	var yParams = params.y;
 	yParams.axis = "y";
 	yParams.element = this.element;
-	yParams.gui = this.gui;
+	yParams.tone = this.tone;
 	yParams.container = this.container;
 	this.yAxis = new Interface.Slider(yParams);
 
@@ -203,9 +187,12 @@ Interface.Dragger.prototype._onend = function(e){
  */
 Interface.Slider = function(params){
 
-	this.gui = params.gui;
+	this.tone = params.tone;
 
-	var name = params.name ? params.name : this.gui ? this.gui.name : "";
+	/**
+	 *  the name
+	 */
+	var name = params.name ? params.name : this.tone ? this.tone.toString() : "";
 
 	/**
 	 *  callback functions
@@ -291,7 +278,10 @@ Interface.Slider = function(params){
 			maxSize = this.container[this.maxAxis]() - maxSize;
 		}
 
-		var paramValue = typeof params.value !== "undefined" ? params.value : this.gui.params[this.parameter].get();
+		var paramValue = typeof params.value !== "undefined" ? params.value : this.tone.get(this.parameter);
+		if (paramValue.hasOwnProperty(this.parameter)){
+			paramValue = paramValue[this.parameter];
+		}
 
 		if (this.options){
 			paramValue = this.options.indexOf(paramValue);
@@ -355,8 +345,8 @@ Interface.Slider.prototype._onend = function(){
 };
 
 Interface.Slider.prototype._setParam = function(value){
-	if (this.parameter && this.gui){
-		this.gui.params[this.parameter].set(value);
+	if (this.parameter && this.tone){
+		this.tone.set(this.parameter, value);
 	}
 };
 
@@ -452,4 +442,28 @@ Interface.Button.prototype._keyup = function(e){
 		e.preventDefault();
 		this._end();
 	}
+};
+
+/**
+ *
+ *	TRANSPORT
+ *  
+ */
+Interface.Transport = function(){
+
+	this.element = $("<div>", {
+		"class" : "Transport",
+	}).appendTo("#Content");
+
+	this.position = $("<div>", {
+		"id" : "Position"
+	}).appendTo(this.element);
+
+	this._boundLoop = this._loop.bind(this);
+	this._loop();
+};
+
+Interface.Transport.prototype._loop = function(){
+	setTimeout(this._boundLoop, 50);
+	this.position.text(Tone.Transport.position);
 };

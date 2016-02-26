@@ -30,8 +30,6 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/LFO", "Tone/comp
 			"amplitude" : options.depth,
 			"min" : 0,
 			"max" : 1,
-			//start at the middle of the cycle
-			"phase" : 90
 		});
 
 		/**

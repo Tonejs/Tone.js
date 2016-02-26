@@ -17,9 +17,15 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 	 * 	player.start();
 	 * }
 	 */
-	Tone.Player = function(){
-		
-		var options = this.optionsObject(arguments, ["url", "onload"], Tone.Player.defaults);
+	Tone.Player = function(url){
+
+		var options;
+		if (url instanceof Tone.Buffer){
+			url = url.get();
+			options = Tone.Player.defaults;
+		} else {
+			options = this.optionsObject(arguments, ["url", "onload"], Tone.Player.defaults);
+		}		
 		Tone.Source.call(this, options);
 
 		/**
@@ -51,6 +57,9 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 			"onload" : this._onload.bind(this, options.onload),
 			"reverse" : options.reverse
 		});
+		if (url instanceof AudioBuffer){
+			this._buffer.set(url);
+		}
 
 		/**
 		 *  if the buffer should loop once it's over
@@ -113,7 +122,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 	 *  Load the audio file as an audio buffer.
 	 *  Decodes the audio asynchronously and invokes
 	 *  the callback once the audio buffer loads. 
-	 *  Note: this does not need to be called, if a url
+	 *  Note: this does not need to be called if a url
 	 *  was passed in to the constructor. Only use this
 	 *  if you want to manually load a new url. 
 	 * @param {string} url The url of the buffer to load.
@@ -173,18 +182,19 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 				this._source.loop = this._loop;
 				this._source.loopStart = this.toSeconds(this._loopStart);
 				this._source.loopEnd = this.toSeconds(this._loopEnd);
-				// this fixes a bug in chrome 42 that breaks looping
-				// https://code.google.com/p/chromium/issues/detail?id=457099
-				duration = 65536;
 			} else {
-				this._nextStop = startTime + duration;
+				//if it's not looping, set the state change at the end of the sample
+				this._state.setStateAtTime(Tone.State.Stopped, startTime + duration);
 			}
 			//and other properties
 			this._source.playbackRate.value = this._playbackRate;
-			this._source.onended = this.onended;
 			this._source.connect(this.output);
 			//start it
-			this._source.start(startTime, offset, duration);
+			if (this._loop){
+				this._source.start(startTime, offset);
+			} else {
+				this._source.start(startTime, offset, duration);
+			}
 		} else {
 			throw Error("tried to start Player before the buffer was loaded");
 		}
@@ -261,7 +271,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 	/**
 	 * The audio buffer belonging to the player. 
 	 * @memberOf Tone.Player#
-	 * @type {AudioBuffer}
+	 * @type {Tone.Buffer}
 	 * @name buffer
 	 */
 	Object.defineProperty(Tone.Player.prototype, "buffer", {
@@ -292,10 +302,8 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 	});
 
 	/**
-	 * The playback speed. 1 is normal speed. 
-	 * Note that this is not a Tone.Signal because of a bug in Blink. 
-	 * Please star [this issue](https://code.google.com/p/chromium/issues/detail?id=311284)
-	 * if this an important thing to you.
+	 * The playback speed. 1 is normal speed. This is not a signal because
+	 * Safari and iOS currently don't support playbackRate as a signal.
 	 * @memberOf Tone.Player#
 	 * @type {number}
 	 * @name playbackRate

@@ -110,8 +110,8 @@ function(Tone){
 				"decay" : 0.0,
 				"sustain" : 1,
 				"release" : 0.5,
-				"min" : 20000,
-				"max" : 20000
+				"baseFrequency" : 200,
+				"octaves" : 8
 			}
 		},
 		"modulator" : {
@@ -131,8 +131,8 @@ function(Tone){
 				"decay" : 0.0,
 				"sustain" : 1,
 				"release" : 0.5,
-				"min" : 20000,
-				"max" : 20000
+				"baseFrequency" : 600,
+				"octaves" : 5
 			}
 		}
 	};

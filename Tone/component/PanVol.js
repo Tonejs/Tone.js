@@ -13,14 +13,16 @@ define(["Tone/core/Tone", "Tone/component/Panner", "Tone/component/Volume"], fun
 	 * //pan the incoming signal left and drop the volume
 	 * var panVol = new Tone.PanVol(0.25, -12);
 	 */
-	Tone.PanVol = function(pan, volume){
+	Tone.PanVol = function(){
+
+		var options = this.optionsObject(arguments, ["pan", "volume"], Tone.PanVol.defaults);
 		
 		/**
 		 *  The panning node
 		 *  @type {Tone.Panner}
 		 *  @private
 		 */
-		this._panner = this.input = new Tone.Panner(pan);
+		this._panner = this.input = new Tone.Panner(options.pan);
 
 		/**
 		 *  The L/R panning control.
@@ -30,12 +32,10 @@ define(["Tone/core/Tone", "Tone/component/Panner", "Tone/component/Volume"], fun
 		this.pan = this._panner.pan;
 
 		/**
-		 * The volume object. 
-		 * @type {Tone.Volume}
-		 * @signal
-		 * @private
+		 *  The volume node
+		 *  @type {Tone.Volume}
 		 */
-		this._volume = this.output = new Tone.Volume(volume);
+		this._volume = this.output = new Tone.Volume(options.volume);
 
 		/**
 		 *  The volume control in decibels. 
@@ -53,6 +53,17 @@ define(["Tone/core/Tone", "Tone/component/Panner", "Tone/component/Volume"], fun
 	Tone.extend(Tone.PanVol);
 
 	/**
+	 *  The defaults
+	 *  @type  {Object}
+	 *  @const
+	 *  @static
+	 */
+	Tone.PanVol.defaults = {
+		"pan" : 0.5,
+		"volume" : 0
+	};
+
+	/**
 	 *  clean up
 	 *  @returns {Tone.PanVol} this
 	 */
@@ -61,9 +72,9 @@ define(["Tone/core/Tone", "Tone/component/Panner", "Tone/component/Volume"], fun
 		this._writable(["pan", "volume"]);
 		this._panner.dispose();
 		this._panner = null;
+		this.pan = null;
 		this._volume.dispose();
 		this._volume = null;
-		this.pan = null;
 		this.volume = null;
 		return this;
 	};

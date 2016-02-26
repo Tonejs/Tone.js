@@ -5,11 +5,13 @@
 	<title>LFO Effects</title>
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<link rel="icon" type="image/png" sizes="174x174" href="./style/favicon.png">
 
 	<script type="text/javascript" src="../build/Tone.js"></script>
 	<script type="text/javascript" src="./scripts/jquery.min.js"></script>
-	<script type="text/javascript" src="./scripts/Notone.GUI.js"></script>
+	<script type="text/javascript" src="./scripts/draggabilly.js"></script>
 	<script type="text/javascript" src="./scripts/Interface.js"></script>
+	<script type="text/javascript" src="./scripts/Logo.js"></script>
 
 	<link rel="stylesheet" type="text/css" href="./style/examples.css">
 
@@ -73,22 +75,9 @@
 	<script id="gui" type="text/javascript">
 
 	$(function(){
-		Notone.config({
-			"search" : false,
-			"expandInDrawer" : true,
-			"hideDrawer" : Interface.isMobile,
-			"drawer" : true,
-			"container" : "body"
-		});
-
-		var pannerGUI = Notone.add(panner, "AutoPanner");
-
-		var tremoloGUI = Notone.add(tremolo, "Tremolo");
-		
-		var filterGUI = Notone.add(filter, "AutoFilter");
 
 		new Interface.Dragger({
-			gui : pannerGUI,
+			tone : panner,
 			x : {
 				param : "frequency",
 				min : 0.1,
@@ -108,7 +97,7 @@
 		});
 
 		new Interface.Dragger({
-			gui : filterGUI, 
+			tone : filter, 
 			x : {
 				param : "frequency",
 				min : 0.1,
@@ -128,7 +117,7 @@
 		});
 
 		new Interface.Dragger({
-			gui : tremoloGUI,
+			tone : tremolo,
 			x : {
 				param : "frequency",
 				min : 0.1,

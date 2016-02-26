@@ -152,9 +152,9 @@ define(function(){
 	 * }, 3);
 	 */
 	Tone.prototype.set = function(params, value, rampTime){
-		if (typeof params === "object"){
+		if (this.isObject(params)){
 			rampTime = value;
-		} else if (typeof params === "string"){
+		} else if (this.isString(params)){
 			var tmpObj = {};
 			tmpObj[params] = value;
 			params = tmpObj;
@@ -173,7 +173,8 @@ define(function(){
 			if (isUndef(param)){
 				continue;
 			}
-			if (param instanceof Tone.Signal){
+			if ((Tone.Signal && param instanceof Tone.Signal) || 
+					(Tone.Param && param instanceof Tone.Param)){
 				if (param.value !== value){
 					if (isUndef(rampTime)){
 						param.value = value;
@@ -217,7 +218,7 @@ define(function(){
 	Tone.prototype.get = function(params){
 		if (isUndef(params)){
 			params = this._collectDefaults(this.constructor);
-		} else if (typeof params === "string"){
+		} else if (this.isString(params)){
 			params = [params];
 		} 
 		var ret = {};
@@ -236,9 +237,11 @@ define(function(){
 				attr = attrSplit[attrSplit.length - 1];
 			}
 			var param = parent[attr];
-			if (typeof params[attr] === "object"){
+			if (this.isObject(params[attr])){
 				subRet[attr] = param.get();
-			} else if (param instanceof Tone.Signal){
+			} else if (Tone.Signal && param instanceof Tone.Signal){
+				subRet[attr] = param.value;
+			} else if (Tone.Param && param instanceof Tone.Param){
 				subRet[attr] = param.value;
 			} else if (param instanceof AudioParam){
 				subRet[attr] = param.value;
@@ -272,18 +275,6 @@ define(function(){
 			}
 		}
 		return ret;
-	};
-
-	/**
-	 *  Set the preset if it exists. 
-	 *  @param {string} presetName the name of the preset
-	 *  @returns {Tone} this
-	 */
-	Tone.prototype.setPreset = function(presetName){
-		if (!this.isUndef(this.preset) && this.preset.hasOwnProperty(presetName)){
-			this.set(this.preset[presetName]);
-		}
-		return this;
 	};
 
 	/**
@@ -325,12 +316,12 @@ define(function(){
 	Tone.prototype.bufferSize = 2048;
 
 	/**
-	 *  the delay time of a single buffer frame
+	 *  The delay time of a single frame (128 samples according to the spec). 
 	 *  @type {number}
 	 *  @static
 	 *  @const
 	 */
-	Tone.prototype.bufferTime = Tone.prototype.bufferSize / Tone.context.sampleRate;
+	Tone.prototype.blockTime = 128 / Tone.context.sampleRate;
 	
 	///////////////////////////////////////////////////////////////////////////
 	//	CONNECTIONS
@@ -415,7 +406,7 @@ define(function(){
 
 	/**
 	 *  connect together all of the arguments in series
-	 *  @param {...AudioParam|Tone|AudioNode}
+	 *  @param {...AudioParam|Tone|AudioNode} nodes
 	 *  @returns {Tone} this
 	 */
 	Tone.prototype.connectSeries = function(){
@@ -432,7 +423,7 @@ define(function(){
 
 	/**
 	 *  fan out the connection from the first argument to the rest of the arguments
-	 *  @param {...AudioParam|Tone|AudioNode}
+	 *  @param {...AudioParam|Tone|AudioNode} nodes
 	 *  @returns {Tone} this
 	 */
 	Tone.prototype.connectParallel = function(){
@@ -468,7 +459,7 @@ define(function(){
 
 	/**
 	 *  connect the output of this node to the rest of the nodes in parallel.
-	 *  @param {...AudioParam|Tone|AudioNode}
+	 *  @param {...AudioParam|Tone|AudioNode} nodes
 	 *  @returns {Tone} this
 	 */
 	Tone.prototype.fan = function(){
@@ -489,27 +480,28 @@ define(function(){
 	///////////////////////////////////////////////////////////////////////////
 
 	/**
-	 *  if a the given is undefined, use the fallback. 
-	 *  if both given and fallback are objects, given
-	 *  will be augmented with whatever properties it's
-	 *  missing which are in fallback
-	 *
-	 *  warning: if object is self referential, it will go into an an 
-	 *  infinite recursive loop. 
+	 *  If the `given` parameter is undefined, use the `fallback`. 
+	 *  If both `given` and `fallback` are object literals, it will
+	 *  return a deep copy which includes all of the parameters from both 
+	 *  objects. If a parameter is undefined in given, it will return
+	 *  the fallback property. 
+	 *  <br><br>
+	 *  WARNING: if object is self referential, it will go into an an 
+	 *  infinite recursive loop.
 	 *  
 	 *  @param  {*} given    
 	 *  @param  {*} fallback 
 	 *  @return {*}          
 	 */
 	Tone.prototype.defaultArg = function(given, fallback){
-		if (typeof given === "object" && typeof fallback === "object"){
+		if (this.isObject(given) && this.isObject(fallback)){
 			var ret = {};
 			//make a deep copy of the given object
 			for (var givenProp in given) {
-				ret[givenProp] = this.defaultArg(given[givenProp], given[givenProp]);
+				ret[givenProp] = this.defaultArg(fallback[givenProp], given[givenProp]);
 			}
-			for (var prop in fallback) {
-				ret[prop] = this.defaultArg(given[prop], fallback[prop]);
+			for (var fallbackProp in fallback) {
+				ret[fallbackProp] = this.defaultArg(given[fallbackProp], fallback[fallbackProp]);
 			}
 			return ret;
 		} else {
@@ -521,7 +513,7 @@ define(function(){
 	 *  returns the args as an options object with given arguments
 	 *  mapped to the names provided. 
 	 *
-	 *  if the args given is an array containing an object, it is assumed
+	 *  if the args given is an array containing only one object, it is assumed
 	 *  that that's already the options object and will just return it. 
 	 *  
 	 *  @param  {Array} values  the 'arguments' object of the function
@@ -533,7 +525,7 @@ define(function(){
 	 */
 	Tone.prototype.optionsObject = function(values, keys, defaults){
 		var options = {};
-		if (values.length === 1 && typeof values[0] === "object"){
+		if (values.length === 1 && this.isObject(values[0])){
 			options = values[0];
 		} else {
 			for (var i = 0; i < keys.length; i++){
@@ -546,6 +538,10 @@ define(function(){
 			return options;
 		}
 	};
+
+	///////////////////////////////////////////////////////////////////////////
+	// TYPE CHECKING
+	///////////////////////////////////////////////////////////////////////////
 
 	/**
 	 *  test if the arg is undefined
@@ -562,6 +558,57 @@ define(function(){
 	 *  @function
 	 */
 	Tone.prototype.isFunction = isFunction;
+
+	/**
+	 *  Test if the argument is a number.
+	 *  @param {*} arg the argument to test
+	 *  @returns {boolean} true if the arg is a number
+	 */
+	Tone.prototype.isNumber = function(arg){
+		return (typeof arg === "number");
+	};
+
+	/**
+	 *  Test if the given argument is an object literal (i.e. `{}`);
+	 *  @param {*} arg the argument to test
+	 *  @returns {boolean} true if the arg is an object literal.
+	 */
+	Tone.prototype.isObject = function(arg){
+		return (Object.prototype.toString.call(arg) === "[object Object]" && arg.constructor === Object);
+	};
+
+	/**
+	 *  Test if the argument is a boolean.
+	 *  @param {*} arg the argument to test
+	 *  @returns {boolean} true if the arg is a boolean
+	 */
+	Tone.prototype.isBoolean = function(arg){
+		return (typeof arg === "boolean");
+	};
+
+	/**
+	 *  Test if the argument is an Array
+	 *  @param {*} arg the argument to test
+	 *  @returns {boolean} true if the arg is an array
+	 */
+	Tone.prototype.isArray = function(arg){
+		return (Array.isArray(arg));
+	};
+
+	/**
+	 *  Test if the argument is a string.
+	 *  @param {*} arg the argument to test
+	 *  @returns {boolean} true if the arg is a string
+	 */
+	Tone.prototype.isString = function(arg){
+		return (typeof arg === "string");
+	};
+
+ 	/**
+	 *  An empty function.
+	 *  @static
+	 */
+	Tone.noOp = function(){};
 
 	/**
 	 *  Make the property not writable. Internal use only. 
@@ -598,15 +645,24 @@ define(function(){
 		}
 	};
 
+	/**
+	 * Possible play states. 
+	 * @enum {string}
+	 */
+	Tone.State = {
+		Started : "started",
+		Stopped : "stopped",
+		Paused : "paused",
+ 	};
+
 	///////////////////////////////////////////////////////////////////////////
 	// GAIN CONVERSIONS
 	///////////////////////////////////////////////////////////////////////////
 
 	/**
-	 *  equal power gain scale
-	 *  good for cross-fading
-	 *  @param  {number} percent (0-1)
-	 *  @return {number}         output gain (0-1)
+	 *  Equal power gain scale. Good for cross-fading.
+	 *  @param  {NormalRange} percent (0-1)
+	 *  @return {Number}         output gain (0-1)
 	 */
 	Tone.prototype.equalPowerScale = function(percent){
 		var piFactor = 0.5 * Math.PI;
@@ -614,18 +670,18 @@ define(function(){
 	};
 
 	/**
-	 *  convert db scale to gain scale (0-1)
-	 *  @param  {number} db
-	 *  @return {number}   
+	 *  Convert decibels into gain.
+	 *  @param  {Decibels} db
+	 *  @return {Number}   
 	 */
 	Tone.prototype.dbToGain = function(db) {
 		return Math.pow(2, db / 6);
 	};
 
 	/**
-	 *  convert gain scale to decibels
-	 *  @param  {number} gain (0-1)
-	 *  @return {number}   
+	 *  Convert gain to decibels.
+	 *  @param  {Number} gain (0-1)
+	 *  @return {Decibels}   
 	 */
 	Tone.prototype.gainToDb = function(gain) {
 		return  20 * (Math.log(gain) / Math.LN10);
@@ -636,99 +692,13 @@ define(function(){
 	///////////////////////////////////////////////////////////////////////////
 
 	/**
+	 *  Return the current time of the clock + a single buffer frame. 
+	 *  If this value is used to schedule a value to change, the earliest
+	 *  it could be scheduled is the following frame. 
 	 *  @return {number} the currentTime from the AudioContext
 	 */
 	Tone.prototype.now = function(){
 		return this.context.currentTime;
-	};
-
-	/**
-	 *  convert a sample count to seconds
-	 *  @param  {number} samples 
-	 *  @return {number}         
-	 */
-	Tone.prototype.samplesToSeconds = function(samples){
-		return samples / this.context.sampleRate;
-	};
-
-	/**
-	 *  convert a time into samples
-	 *  
-	 *  @param  {Tone.time} time
-	 *  @return {number}         
-	 */
-	Tone.prototype.toSamples = function(time){
-		var seconds = this.toSeconds(time);
-		return Math.round(seconds * this.context.sampleRate);
-	};
-
-	/**
-	 *  convert time to seconds
-	 *
-	 *  this is a simplified version which only handles numbers and 
-	 *  'now' relative numbers. If the Transport is included this 
-	 *  method is overridden to include many other features including 
-	 *  notationTime, Frequency, and transportTime
-	 *  
-	 *  @param  {number=} time 
-	 *  @param {number=} now if passed in, this number will be 
-	 *                       used for all 'now' relative timings
-	 *  @return {number}   	seconds in the same timescale as the AudioContext
-	 */
-	Tone.prototype.toSeconds = function(time, now){
-		now = this.defaultArg(now, this.now());
-		if (typeof time === "number"){
-			return time; //assuming that it's seconds
-		} else if (typeof time === "string"){
-			var plusTime = 0;
-			if(time.charAt(0) === "+") {
-				time = time.slice(1);	
-				plusTime = now;			
-			} 
-			return parseFloat(time) + plusTime;
-		} else {
-			return now;
-		}
-	};
-
-	///////////////////////////////////////////////////////////////////////////
-	// FREQUENCY CONVERSION
-	///////////////////////////////////////////////////////////////////////////
-
-	/**
-	 *  true if the input is in the format number+hz
-	 *  i.e.: 10hz
-	 *
-	 *  @param {number} freq 
-	 *  @return {boolean} 
-	 *  @function
-	 */
-	Tone.prototype.isFrequency = (function(){
-		var freqFormat = new RegExp(/\d*\.?\d+hz$/i);
-		return function(freq){
-			return freqFormat.test(freq);
-		};
-	})();
-
-	/**
-	 *  Convert a frequency into seconds.
-	 *  Accepts numbers and strings: i.e. "10hz" or 
-	 *  10 both return 0.1. 
-	 *  
-	 *  @param  {number|string} freq 
-	 *  @return {number}      
-	 */
-	Tone.prototype.frequencyToSeconds = function(freq){
-		return 1 / parseFloat(freq);
-	};
-
-	/**
-	 *  Convert a number in seconds to a frequency.
-	 *  @param  {number} seconds 
-	 *  @return {number}         
-	 */
-	Tone.prototype.secondsToFrequency = function(seconds){
-		return 1/seconds;
 	};
 
 	///////////////////////////////////////////////////////////////////////////
@@ -759,126 +729,6 @@ define(function(){
 		child.prototype.constructor = child;
 		child._super = parent;
 	};
-
-	///////////////////////////////////////////////////////////////////////////
-	//	TYPES / STATES
-	///////////////////////////////////////////////////////////////////////////
-
-	/**
-	 * Possible types which a value can take on
-	 * @enum {string}
-	 */
-	Tone.Type = {
-		/** 
-		 *  The default value is a number which can take on any value between [-Infinity, Infinity]
-		 */
-		Default : "number",
-		/**
-		 *  Time can be described in a number of ways. Read more [Time](https://github.com/TONEnoTONE/Tone.js/wiki/Time).
-		 *
-		 *  <ul>
-		 *  <li>Numbers, which will be taken literally as the time (in seconds).</li>
-		 *  <li>Notation, ("4n", "8t") describes time in BPM and time signature relative values.</li>
-		 *  <li>TransportTime, ("4:3:2") will also provide tempo and time signature relative times 
-		 *  in the form BARS:QUARTERS:SIXTEENTHS.</li>
-		 *  <li>Frequency, ("8hz") is converted to the length of the cycle in seconds.</li>
-		 *  <li>Now-Relative, ("+1") prefix any of the above with "+" and it will be interpreted as 
-		 *  "the current time plus whatever expression follows".</li>
-		 *  <li>Expressions, ("3:0 + 2 - (1m / 7)") any of the above can also be combined 
-		 *  into a mathematical expression which will be evaluated to compute the desired time.</li>
-		 *  <li>No Argument, for methods which accept time, no argument will be interpreted as 
-		 *  "now" (i.e. the currentTime).</li>
-		 *  </ul>
-		 *  
-		 *  @typedef {Time}
-		 */
-		Time : "time",
-		/**
-		 *  Frequency can be described similar to time, except ultimately the
-		 *  values are converted to frequency instead of seconds. A number
-		 *  is taken literally as the value in hertz. Additionally any of the 
-		 *  Time encodings can be used. Note names in the form
-		 *  of NOTE OCTAVE (i.e. C4) are also accepted and converted to their
-		 *  frequency value. 
-		 *  @typedef {Frequency}
-		 */
-		Frequency : "frequency",
-		/**
-		 * Gain is the ratio between the input and the output value of a signal.
-		 *  @typedef {Gain}
-		 */
-		Gain : "gain",
-		/** 
-		 *  Normal values are within the range [0, 1].
-		 *  @typedef {NormalRange}
-		 */
-		NormalRange : "normalrange",
-		/** 
-		 *  AudioRange values are between [-1, 1].
-		 *  @typedef {AudioRange}
-		 */
-		AudioRange : "audiorange",
-		/** 
-		 *  Decibels are a logarithmic unit of measurement which is useful for volume
-		 *  because of the logarithmic way that we perceive loudness. 0 decibels 
-		 *  means no change in volume. -10db is approximately half as loud and 10db 
-		 *  is twice is loud. 
-		 *  @typedef {Decibels}
-		 */
-		Decibels : "db",
-		/** 
-		 *  Half-step note increments, i.e. 12 is an octave above the root. and 1 is a half-step up.
-		 *  @typedef {Interval}
-		 */
-		Interval : "interval",
-		/** 
-		 *  Beats per minute. 
-		 *  @typedef {BPM}
-		 */
-		BPM : "bpm",
-		/** 
-		 *  The value must be greater than 0.
-		 *  @typedef {Positive}
-		 */
-		Positive : "positive",
-		/** 
-		 *  A cent is a hundredth of a semitone. 
-		 *  @typedef {Cents}
-		 */
-		Cents : "cents",
-		/** 
-		 *  Angle between 0 and 360. 
-		 *  @typedef {Degrees}
-		 */
-		Degrees : "degrees",
-		/** 
-		 *  A number representing a midi note.
-		 *  @typedef {MIDI}
-		 */
-		MIDI : "midi",
-		/** 
-		 *  A colon-separated representation of time in the form of
-		 *  BARS:QUARTERS:SIXTEENTHS. 
-		 *  @typedef {TransportTime}
-		 */
-		TransportTime : "transporttime"
-	};
-
-	/**
-	 * Possible play states. 
-	 * @enum {string}
-	 */
-	Tone.State = {
-		Started : "started",
-		Stopped : "stopped",
-		Paused : "paused",
- 	};
-
- 	/**
-	 *  An empty function.
-	 *  @static
-	 */
-	Tone.noOp = function(){};
 
 	///////////////////////////////////////////////////////////////////////////
 	//	CONTEXT
@@ -943,14 +793,14 @@ define(function(){
 
 	//setup the context
 	Tone._initAudioContext(function(audioContext){
-		//set the bufferTime
-		Tone.prototype.bufferTime = Tone.prototype.bufferSize / audioContext.sampleRate;
+		//set the blockTime
+		Tone.prototype.blockTime = 128 / audioContext.sampleRate;
 		_silentNode = audioContext.createGain();
 		_silentNode.gain.value = 0;
 		_silentNode.connect(audioContext.destination);
 	});
 
-	Tone.version = "r5";
+	Tone.version = "r6";
 
 	console.log("%c * Tone.js " + Tone.version + " * ", "background: #000; color: #fff");
 
