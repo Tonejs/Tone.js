@@ -6,7 +6,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
 	<script type="text/javascript" src="./scripts/p5.js"></script>
-	<script type="text/javascript" src="http://cdn.tonejs.org/r5/p5.Tone.js"></script>
+	<script type="text/javascript" src="http://cdn.tonejs.org/r6/p5.Tone.js"></script>
 	<script type="text/javascript" src="./scripts/jquery.min.js"></script>
 	<script type="text/javascript" src="./scripts/Interface.js"></script>
 
@@ -38,7 +38,7 @@
 	<script id="p5" type="text/javascript">
 
 		function setup() {
-		    createCanvas(windowWidth, windowHeight);
+			createCanvas(windowWidth, windowHeight);
 			strokeWeight(10);
 			strokeJoin(ROUND);
 		}
@@ -76,11 +76,8 @@
 
 		Tone.Note.route("Harp", function(time, note, duration){
 			harp.triggerAttackRelease(note, duration, time);
-			// for(var i = 0; i < 50; i ++){
-				drawPolygon();
-			// }
+			drawPolygon();
 		});
-
 		/**
 		 *  SCORE
 		 */

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+	<title>Mapping</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+	<script type="text/javascript" src="./scripts/p5.js"></script>
+	<script type="text/javascript" src="http://cdn.tonejs.org/r5/p5.Tone.js"></script>
+	<script type="text/javascript" src="./scripts/jquery.min.js"></script>
+	<script type="text/javascript" src="./scripts/Interface.js"></script>
+
+	<link rel="stylesheet" type="text/css" href="./style/examples.css">
+
+	<script type="text/javascript">
+		// jshint ignore: start
+	</script>
+
+</head>
+<body>	
+	<div id="Content" class="FullScreen">
+		<div id="Title">Mapping to the Mouse</div>
+		<div id="Explanation">
+			P5 allows for simple mapping of frame-rate events such as mouse position. In this example, a <code>Tone.Freeverb</code> has its room size and dampening values mapped to the x and y movement of the mouse.
+			<br><br>
+			Such mappings allow for dynamic correlation between music creation and drawing. For this example, room size and dampening of the drum loop correspond to the room being drawn and the color of the walls respectively.
+		</div>
+	</div>
+
+	<script id="p5" type="text/javascript">
+		var sample;
+		var reverb = new Tone.Freeverb().toMaster();
+
+		function preload() {
+			sample = new Tone.Player("./audio/amen-break.mp3").connect(reverb);
+		}
+
+		function setup() {
+			createCanvas(windowWidth, windowHeight);
+			rectMode(CORNERS);
+			strokeWeight(2);
+			sample.loop = true;
+			sample.start();
+		}
+
+		function draw() {
+			background(255, 255, 255);
+
+			//update the reverb values based on mouse position
+			//http://tonejs.org/docs/#Freeverb
+			reverb.roomSize.value = map(mouseX, 0, width, 0, 0.95);
+			reverb.dampening.value = map(mouseY, 0, height, 500, 10000);
+
+			var distance = map(mouseX, 0, width, 4, 30);
+
+			//these are the x components of the rectangle (right and left side x positions)
+			var left = width/2 - width/distance;
+			var right = width/2 + width/distance;
+			//these are the y components of the rectangle (top and bottom y positions)
+			var top = height/2 - height/distance;
+			var bottom = height/2 + height/distance;
+
+			var blue = map(mouseY, 0, height, 100, 200);
+			//back wall
+			fill(230, 230, blue);
+			rect(left, top, right, bottom);
+
+			//left wall
+			beginShape();
+			vertex(0, 0);
+			vertex(left, top);
+			vertex(left, bottom);
+			vertex(0, height);
+			endShape(CLOSE);
+
+			//right wall
+			beginShape();
+			vertex(width, 0);
+			vertex(right, top);
+			vertex(right, bottom);
+			vertex(width, height);
+			endShape(CLOSE);
+
+			//ceiling
+			fill(240, 240, 240);
+			beginShape();
+			vertex(0, 0);
+			vertex(left, top);
+			vertex(right, top);
+			vertex(width, 0);
+			endShape(CLOSE);
+
+			// floor
+			fill(60);
+			beginShape();
+			vertex(width, height);
+			vertex(right, bottom);
+			vertex(left, bottom);
+			vertex(0, height);
+			endShape(CLOSE);
+		}
+	</script>
+	<script id="GUI" type="text/javascript">
+
+		$(function(){
+
+			new Interface.Button({
+				key : 32,
+				type : "toggle",
+				text : "Start",
+				activeText : "Stop",
+				start : function(){
+					Tone.Transport.start();
+				},
+				end : function(){
+					Tone.Transport.stop();
+				}
+			});
+		});
+	</script>
+</body>
+</html>
