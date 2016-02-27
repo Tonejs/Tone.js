@@ -26,6 +26,8 @@ define(["Tone/core/Tone", "Tone/core/Gain"], function (Tone) {
 	 */
 	Tone.Zero.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
+		this._gain.dispose();
+		this._gain = null;
 		return this;
 	};
 
