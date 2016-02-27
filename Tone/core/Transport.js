@@ -217,6 +217,12 @@ function(Tone){
 			}
 		}
 		var ticks = this._clock.ticks;
+		//process the single occurrence events
+		this._onceEvents.forEachBefore(ticks, function(event){
+			event.callback(tickTime);
+		});
+		//and clear the single occurrence timeline
+		this._onceEvents.cancelBefore(ticks);
 		//fire the next tick events if their time has come
 		this._timeline.forEachAtTime(ticks, function(event){
 			event.callback(tickTime);
@@ -227,12 +233,6 @@ function(Tone){
 				event.callback(tickTime);
 			}
 		});
-		//process the single occurrence events
-		this._onceEvents.forEachBefore(ticks, function(event){
-			event.callback(tickTime);
-		});
-		//and clear the single occurrence timeline
-		this._onceEvents.cancelBefore(ticks);
 	};
 
 	///////////////////////////////////////////////////////////////////////////////
