@@ -1,8 +1,6 @@
 define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Subtract", "Tone/signal/Multiply", 
-	"Tone/signal/IfThenElse", "Tone/signal/OR", "Tone/signal/AND", "Tone/signal/NOT", 
-	"Tone/signal/GreaterThan", "Tone/signal/LessThan", "Tone/signal/Equal", "Tone/signal/EqualZero", 
-	"Tone/signal/GreaterThanZero", "Tone/signal/Abs", "Tone/signal/Negate", "Tone/signal/Max", 
-	"Tone/signal/Min", "Tone/signal/Modulo", "Tone/signal/Pow", "Tone/signal/AudioToGain"], 
+	"Tone/signal/GreaterThan", "Tone/signal/GreaterThanZero", "Tone/signal/Abs", "Tone/signal/Negate", 
+	"Tone/signal/Modulo", "Tone/signal/Pow", "Tone/signal/AudioToGain"], 
 	function(Tone){
 
 	"use strict";
@@ -125,32 +123,6 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Subtract", "Tone/signa
 				regexp : /^abs/,
 				method : applyUnary.bind(this, Tone.Abs)
 			},
-			"min" : {
-				regexp : /^min/,
-				method : applyBinary.bind(this, Tone.Min)
-			},
-			"max" : {
-				regexp : /^max/,
-				method : applyBinary.bind(this, Tone.Max)
-			},
-			"if" :  {
-				regexp : /^if/,
-				method : function(args, self){
-					var op = new Tone.IfThenElse();
-					self._eval(args[0]).connect(op.if);
-					self._eval(args[1]).connect(op.then);
-					self._eval(args[2]).connect(op.else);
-					return op;
-				}
-			},
-			"gt0" : {
-				regexp : /^gt0/,
-				method : applyUnary.bind(this, Tone.GreaterThanZero)
-			},
-			"eq0" : {
-				regexp : /^eq0/,
-				method : applyUnary.bind(this, Tone.EqualZero)
-			},
 			"mod" : {
 				regexp : /^mod/,
 				method : function(args, self){
@@ -201,32 +173,7 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Subtract", "Tone/signa
 				regexp : /^\*/,
 				precedence : 0,
 				method : applyBinary.bind(this, Tone.Multiply)
-			},
-			">" : {
-				regexp : /^\>/,
-				precedence : 2,
-				method : applyBinary.bind(this, Tone.GreaterThan)
-			},
-			"<" : {
-				regexp : /^</,
-				precedence : 2,
-				method : applyBinary.bind(this, Tone.LessThan)
-			},
-			"==" : {
-				regexp : /^==/,
-				precedence : 3,
-				method : applyBinary.bind(this, Tone.Equal)
-			},
-			"&&" : {
-				regexp : /^&&/,
-				precedence : 4,
-				method : applyBinary.bind(this, Tone.AND)
-			},
-			"||" : {
-				regexp : /^\|\|/,
-				precedence : 5,
-				method : applyBinary.bind(this, Tone.OR)
-			},
+			}
 		},
 		//unary expressions
 		"unary" : {

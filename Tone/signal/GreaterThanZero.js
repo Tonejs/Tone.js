@@ -27,7 +27,7 @@ function(Tone){
 			} else {
 				return 1;
 			}
-		});
+		}, 127);
 
 		/**
 		 *  scale the first thresholded signal by a large value.
