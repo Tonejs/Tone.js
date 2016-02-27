@@ -318,6 +318,13 @@ define(["Tone/core/Tone", "Tone/core/Emitter"], function(Tone){
 	};
 
 	/**
+	 *  A path which is prefixed before every url.
+	 *  @type  {String}
+	 *  @static
+	 */
+	Tone.Buffer.baseUrl = "";
+
+	/**
 	 *  Makes an xhr reqest for the selected url then decodes
 	 *  the file as an audio buffer. Invokes
 	 *  the callback once the audio buffer loads.
@@ -329,7 +336,7 @@ define(["Tone/core/Tone", "Tone/core/Emitter"], function(Tone){
 	 */
 	Tone.Buffer.load = function(url, callback){
 		var request = new XMLHttpRequest();
-		request.open("GET", url, true);
+		request.open("GET", Tone.Buffer.baseUrl + url, true);
 		request.responseType = "arraybuffer";
 		// decode asynchronously
 		request.onload = function() {
