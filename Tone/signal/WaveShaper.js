@@ -70,7 +70,7 @@ define(["Tone/core/Tone", "Tone/signal/SignalBase"], function(Tone){
 	 */
 	Tone.WaveShaper.prototype.setMap = function(mapping){
 		for (var i = 0, len = this._curve.length; i < len; i++){
-			var normalized = (i / (len)) * 2 - 1;
+			var normalized = (i / (len - 1)) * 2 - 1;
 			this._curve[i] = mapping(normalized, i);
 		}
 		this._shaper.curve = this._curve;
