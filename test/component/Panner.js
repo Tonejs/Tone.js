@@ -44,12 +44,12 @@ function (Panner, Basic, Offline, Test, Signal, PassAudio, PassAudioStereo, Merg
 				});
 			});
 
-			it("pans hard left when the pan is set to 0", function(done){
+			it("pans hard left when the pan is set to -1", function(done){
 				var panner;
 				var signal;
 				new Offline(0.2, 2)
 					.before(function(dest){
-						panner = new Panner(0).connect(dest);
+						panner = new Panner(-1).connect(dest);
 						signal = new Signal(1).connect(panner);
 					})
 					.test(function(samples){
@@ -71,9 +71,11 @@ function (Panner, Basic, Offline, Test, Signal, PassAudio, PassAudioStereo, Merg
 						panner = new Panner(1).connect(dest);
 						signal = new Signal(1).connect(panner);
 					})
-					.test(function(samples){
-						expect(samples[0]).to.be.closeTo(0, 0.01);
-						expect(samples[1]).to.be.closeTo(1, 0.01);
+					.test(function(samples, time){
+						if (time > 0){
+							expect(samples[0]).to.be.closeTo(0, 0.01);
+							expect(samples[1]).to.be.closeTo(1, 0.01);
+						}
 					})
 					.after(function(){
 						panner.dispose();
@@ -87,7 +89,7 @@ function (Panner, Basic, Offline, Test, Signal, PassAudio, PassAudioStereo, Merg
 				var signal;
 				new Offline(0.2, 2)
 					.before(function(dest){
-						panner = new Panner(0.5).connect(dest);
+						panner = new Panner(0).connect(dest);
 						signal = new Signal(1).connect(panner);
 					})
 					.test(function(samples){
