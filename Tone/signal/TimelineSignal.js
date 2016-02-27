@@ -134,7 +134,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Timeline"], function 
 		});
 		//if the ramped to value is 0, make it go to the min output, and then set to 0.
 		if (value < this._minOutput){
-			this._param.exponentialRampToValueAtTime(this._minOutput, endTime - 1 / Tone.context.sampleRate);
+			this._param.exponentialRampToValueAtTime(this._minOutput, endTime - this.sampleTime);
 			this.setValueAtTime(0, endTime);
 		} else {
 			this._param.exponentialRampToValueAtTime(value, endTime);
