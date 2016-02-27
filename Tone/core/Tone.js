@@ -782,23 +782,6 @@ define(function(){
 		}
 	};
 
-	/**
-	 *  Bind this to a touchstart event to start the audio on mobile devices. 
-	 *  <br>
-	 *  http://stackoverflow.com/questions/12517000/no-sound-on-ios-6-web-audio-api/12569290#12569290
-	 *  @static
-	 */
-	Tone.startMobile = function(){
-		var osc = Tone.context.createOscillator();
-		var silent = Tone.context.createGain();
-		silent.gain.value = 0;
-		osc.connect(silent);
-		silent.connect(Tone.context.destination);
-		var now = Tone.context.currentTime;
-		osc.start(now);
-		osc.stop(now+1);
-	};
-
 	//setup the context
 	Tone._initAudioContext(function(audioContext){
 		//set the blockTime
