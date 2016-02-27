@@ -2,6 +2,38 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal", "Tone/core/TimelineState
 
 	"use strict";
 
+	//URL Shim
+	window.URL = window.URL || window.webkitURL;
+
+	/**
+	 *  The update rate in Milliseconds
+	 *  @const
+	 *  @type  {Number}
+	 *  @private
+	 */
+	var UPDATE_RATE = 20;
+
+	/**
+	 *  The script which runs in a web worker
+	 *  @type {Blob}
+	 *  @private
+	 */
+	var blob = new Blob(["setInterval(function(){self.postMessage('tick')}, "+UPDATE_RATE+")"]);
+
+	/**
+	 *  Create a blob url from the Blob
+	 *  @type  {URL}
+	 *  @private
+	 */
+  	var blobUrl = URL.createObjectURL(blob);
+
+	/**
+	 *  The Worker which generates a regular callback
+	 *  @type {Worker}
+	 *  @private
+	 */
+	var worker = new Worker(blobUrl);
+
 	/**
 	 *  @class  A sample accurate clock which provides a callback at the given rate. 
 	 *          While the callback is not sample-accurate (it is still susceptible to
@@ -49,14 +81,14 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal", "Tone/core/TimelineState
 		 *  @type {Number}
 		 *  @private
 		 */
-		this._computedLookAhead = 1/60;
+		this._computedLookAhead = UPDATE_RATE/1000;
 
 		/**
 		 *  The value afterwhich events are thrown out
 		 *  @type {Number}
 		 *  @private
 		 */
-		this._threshold = 0.5;
+		this._threshold = (UPDATE_RATE/1000) * 3;
 
 		/**
 		 *  The next time the callback is scheduled.
@@ -102,16 +134,17 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal", "Tone/core/TimelineState
 		this._state = new Tone.TimelineState(Tone.State.Stopped);
 
 		/**
-		 *  A pre-binded loop function to save a tiny bit of overhead
-		 *  of rebinding the function on every frame.
-		 *  @type  {Function}
+		 *  The loop function bound to its context. 
+		 *  This is necessary to remove the event in the end.
+		 *  @type {Function}
 		 *  @private
 		 */
 		this._boundLoop = this._loop.bind(this);
 
+		//bind a callback to the worker thread
+    	worker.addEventListener("message", this._boundLoop);
+
 		this._readOnly("frequency");
-		//start the loop
-		this._loop();
 	};
 
 	Tone.extend(Tone.Clock);
@@ -222,18 +255,16 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal", "Tone/core/TimelineState
 	 *  @private
 	 */
 	Tone.Clock.prototype._loop = function(time){
-		this._loopID = requestAnimationFrame(this._boundLoop);
 		//compute the look ahead
 		if (this._lookAhead === "auto"){
-			if (!this.isUndef(time)){
-				var diff = (time - this._lastUpdate) / 1000;
-				this._lastUpdate = time;
-				//throw away large differences
-				if (diff < this._threshold){
-					//averaging
-					this._computedLookAhead = (9 * this._computedLookAhead + diff) / 10;
-				}
-			}
+			time = Date.now();
+			var diff = (time - this._lastUpdate) / 1000;
+			this._lastUpdate = time;
+			//throw away large differences
+			if (diff < this._threshold){
+				//averaging
+				this._computedLookAhead = (9 * this._computedLookAhead + diff) / 10;
+			} 
 		} else {
 			this._computedLookAhead = this._lookAhead;
 		}
@@ -289,10 +320,11 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal", "Tone/core/TimelineState
 	Tone.Clock.prototype.dispose = function(){
 		cancelAnimationFrame(this._loopID);
 		Tone.TimelineState.prototype.dispose.call(this);
+		worker.removeEventListener("message", this._boundLoop);
 		this._writable("frequency");
 		this.frequency.dispose();
 		this.frequency = null;
-		this._boundLoop = Tone.noOp;
+		this._boundLoop = null;
 		this._nextTick = Infinity;
 		this.callback = null;
 		this._state.dispose();
