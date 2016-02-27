@@ -700,13 +700,20 @@ define(function(){
 	///////////////////////////////////////////////////////////////////////////
 
 	/**
-	 *  Return the current time of the clock + a single buffer frame. 
-	 *  If this value is used to schedule a value to change, the earliest
-	 *  it could be scheduled is the following frame. 
-	 *  @return {number} the currentTime from the AudioContext
+	 *  Return the current time of the AudioContext clock.
+	 *  @return {Number} the currentTime from the AudioContext
 	 */
 	Tone.prototype.now = function(){
 		return this.context.currentTime;
+	};
+
+	/**
+	 *  Return the current time of the AudioContext clock.
+	 *  @return {Number} the currentTime from the AudioContext
+	 *  @static
+	 */
+	Tone.now = function(){
+		return Tone.context.currentTime;
 	};
 
 	///////////////////////////////////////////////////////////////////////////

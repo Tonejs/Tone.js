@@ -88,11 +88,12 @@ define(["Tone/core/Tone", "Tone/source/Source", "Tone/core/Gain"], function(Tone
 	/**
 	 * wrapper for getUserMedia function
 	 * @param {function} callback
+	 * @param {function} error
 	 * @private
 	 */
-	Tone.ExternalInput.prototype._getUserMedia = function(callback){
+	Tone.ExternalInput.prototype._getUserMedia = function(callback, error){
 		if (!Tone.ExternalInput.supported){
-			throw new Error("browser does not support 'getUserMedia'");
+			error("browser does not support 'getUserMedia'");
 		}
 		if (Tone.ExternalInput.sources[this._inputNum]){
 			this._constraints = {
@@ -105,7 +106,7 @@ define(["Tone/core/Tone", "Tone/source/Source", "Tone/core/Gain"], function(Tone
 			this._onStream(stream);
 			callback();
 		}.bind(this), function(err){
-			callback(err);
+			error(err);
 		});
 	};
 
@@ -132,12 +133,18 @@ define(["Tone/core/Tone", "Tone/source/Source", "Tone/core/Gain"], function(Tone
 	 *  Open the media stream 
 	 *  @param  {function=} callback The callback function to 
 	 *                       execute when the stream is open
+	 *  @param  {function=} error The callback function to execute
+	 *                            when the media stream can't open. 
+	 *                            This is fired either because the browser
+	 *                            doesn't support the media stream,
+	 *                            or the user blocked opening the microphone. 
 	 *  @return {Tone.ExternalInput} this
 	 */
-	Tone.ExternalInput.prototype.open = function(callback){
+	Tone.ExternalInput.prototype.open = function(callback, error){
 		callback = this.defaultArg(callback, Tone.noOp);
+		error = this.defaultArg(error, Tone.noOp);
 		Tone.ExternalInput.getSources(function(){
-			this._getUserMedia(callback);
+			this._getUserMedia(callback, error);
 		}.bind(this));
 		return this;
 	};

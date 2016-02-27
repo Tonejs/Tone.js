@@ -28,6 +28,7 @@ function(Tone){
 		Tone.Instrument.call(this);
 
 		var options = this.optionsObject(arguments, ["polyphony", "voice"], Tone.PolySynth.defaults);
+		options = this.defaultArg(options, Tone.Instrument.defaults);
 
 		/**
 		 *  the array of voices
@@ -36,36 +37,27 @@ function(Tone){
 		this.voices = new Array(options.polyphony);
 
 		/**
-		 *  If there are no more voices available,
-		 *  should an active voice be stolen to play the new note?
-		 *  @type {Boolean}
-		 */
-		this.stealVoices = true;
-
-		/**
-		 *  the queue of free voices
+		 *  The queue of voices with data about last trigger
+		 *  and the triggered note
 		 *  @private
 		 *  @type {Array}
 		 */
-		this._freeVoices = [];
-
-		/**
-		 *  keeps track of which notes are down
-		 *  @private
-		 *  @type {Object}
-		 */
-		this._activeVoices = {};
+		this._triggers = new Array(options.polyphony);
 
 		//create the voices
 		for (var i = 0; i < options.polyphony; i++){
 			var v = new options.voice(arguments[2], arguments[3]);
 			this.voices[i] = v;
 			v.connect(this.output);
+			this._triggers[i] = {
+				release : -1,
+				note : null,
+				voice : v
+			};
 		}
 
-		//make a copy of the voices
-		this._freeVoices = this.voices.slice(0);
-		//get the prototypes and properties
+		//set the volume initially
+		this.volume.value = options.volume;
 	};
 
 	Tone.extend(Tone.PolySynth, Tone.Instrument);
@@ -78,6 +70,7 @@ function(Tone){
 	 */
 	Tone.PolySynth.defaults = {
 		"polyphony" : 4,
+		"volume" : 0,
 		"voice" : Tone.MonoSynth
 	};
 
@@ -96,23 +89,21 @@ function(Tone){
 		if (!Array.isArray(notes)){
 			notes = [notes];
 		}
+		time = this.toSeconds(time);
 		for (var i = 0; i < notes.length; i++){
 			var val = notes[i];
-			var stringified = JSON.stringify(val);
-			//retrigger the same note if possible
-			if (this._activeVoices.hasOwnProperty(stringified)){
-				this._activeVoices[stringified].triggerAttack(val, time, velocity);
-			} else if (this._freeVoices.length > 0){
-				var voice = this._freeVoices.shift();
-				voice.triggerAttack(val, time, velocity);
-				this._activeVoices[stringified] = voice;
-			} else if (this.stealVoices){ //steal a voice				
-				//take the first voice
-				for (var voiceName in this._activeVoices){
-					this._activeVoices[voiceName].triggerAttack(val, time, velocity);
-					break;
+			//trigger the oldest voice
+			var oldest = this._triggers[0];
+			var oldestIndex = 0;
+			for (var j = 1; j < this._triggers.length; j++){
+				if (this._triggers[j].release < oldest.release){
+					oldest = this._triggers[j];
+					oldestIndex = j;
 				}
 			}
+			oldest.release = Infinity;
+			oldest.note = JSON.stringify(val);
+			oldest.voice.triggerAttack(val, time, velocity);
 		}
 		return this;
 	};
@@ -151,15 +142,16 @@ function(Tone){
 		if (!Array.isArray(notes)){
 			notes = [notes];
 		}
+		time = this.toSeconds(time);
 		for (var i = 0; i < notes.length; i++){
 			//get the voice
 			var stringified = JSON.stringify(notes[i]);
-			var voice = this._activeVoices[stringified];
-			if (voice){
-				voice.triggerRelease(time);
-				this._freeVoices.push(voice);
-				delete this._activeVoices[stringified];
-				voice = null;
+			for (var v = 0; v < this._triggers.length; v++){
+				var desc = this._triggers[v];
+				if (desc.note === stringified && desc.release > time){
+					desc.voice.triggerRelease(time);
+					desc.release = time;
+				}
 			}
 		}
 		return this;
@@ -207,8 +199,13 @@ function(Tone){
 	 *  @return {Tone.PolySynth} this
 	 */
 	Tone.PolySynth.prototype.releaseAll = function(time){
-		for (var i = 0; i < this.voices.length; i++){
-			this.voices[i].triggerRelease(time);
+		time = this.toSeconds(time);
+		for (var i = 0; i < this._triggers.length; i++){
+			var desc = this._triggers[i];
+			if (desc.release > time){
+				desc.release = time;
+				desc.voice.triggerRelease(time);
+			}
 		}
 		return this;
 	};
@@ -224,8 +221,7 @@ function(Tone){
 			this.voices[i] = null;
 		}
 		this.voices = null;
-		this._activeVoices = null;
-		this._freeVoices = null;
+		this._triggers = null;
 		return this;
 	};
 
