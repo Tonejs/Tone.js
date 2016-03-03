@@ -2,38 +2,6 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal", "Tone/core/TimelineState
 
 	"use strict";
 
-	//URL Shim
-	window.URL = window.URL || window.webkitURL;
-
-	/**
-	 *  The update rate in Milliseconds
-	 *  @const
-	 *  @type  {Number}
-	 *  @private
-	 */
-	var UPDATE_RATE = 20;
-
-	/**
-	 *  The script which runs in a web worker
-	 *  @type {Blob}
-	 *  @private
-	 */
-	var blob = new Blob(["setInterval(function(){self.postMessage('tick')}, "+UPDATE_RATE+")"]);
-
-	/**
-	 *  Create a blob url from the Blob
-	 *  @type  {URL}
-	 *  @private
-	 */
-  	var blobUrl = URL.createObjectURL(blob);
-
-	/**
-	 *  The Worker which generates a regular callback
-	 *  @type {Worker}
-	 *  @private
-	 */
-	var worker = new Worker(blobUrl);
-
 	/**
 	 *  @class  A sample accurate clock which provides a callback at the given rate. 
 	 *          While the callback is not sample-accurate (it is still susceptible to
@@ -84,13 +52,6 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal", "Tone/core/TimelineState
 		this._computedLookAhead = UPDATE_RATE/1000;
 
 		/**
-		 *  The value afterwhich events are thrown out
-		 *  @type {Number}
-		 *  @private
-		 */
-		this._threshold = (UPDATE_RATE/1000) * 3;
-
-		/**
 		 *  The next time the callback is scheduled.
 		 *  @type {Number}
 		 *  @private
@@ -102,7 +63,7 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal", "Tone/core/TimelineState
 		 *  @type  {Number}
 		 *  @private
 		 */
-		this._lastUpdate = 0;
+		this._lastUpdate = -1;
 
 		/**
 		 *  The id of the requestAnimationFrame
@@ -142,7 +103,7 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal", "Tone/core/TimelineState
 		this._boundLoop = this._loop.bind(this);
 
 		//bind a callback to the worker thread
-    	worker.addEventListener("message", this._boundLoop);
+    	Tone.Clock._worker.addEventListener("message", this._boundLoop);
 
 		this._readOnly("frequency");
 	};
@@ -254,17 +215,16 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal", "Tone/core/TimelineState
 	 *                          when the page was loaded.
 	 *  @private
 	 */
-	Tone.Clock.prototype._loop = function(time){
+	Tone.Clock.prototype._loop = function(){
 		//compute the look ahead
 		if (this._lookAhead === "auto"){
-			time = Date.now();
-			var diff = (time - this._lastUpdate) / 1000;
-			this._lastUpdate = time;
-			//throw away large differences
-			if (diff < this._threshold){
+			var time = this.now();
+			if (this._lastUpdate !== -1){
+				var diff = (time - this._lastUpdate) / 1000;
 				//averaging
 				this._computedLookAhead = (9 * this._computedLookAhead + diff) / 10;
-			} 
+			}
+			this._lastUpdate = time;
 		} else {
 			this._computedLookAhead = this._lookAhead;
 		}
@@ -286,10 +246,6 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal", "Tone/core/TimelineState
 		}
 		if (state === Tone.State.Started){
 			while (now + lookAhead > this._nextTick){
-				//catch up
-				if (now > this._nextTick + this._threshold){
-					this._nextTick = now;
-				}
 				var tickTime = this._nextTick;
 				this._nextTick += 1 / this.frequency.getValueAtTime(this._nextTick);
 				this.callback(tickTime);
@@ -320,7 +276,7 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal", "Tone/core/TimelineState
 	Tone.Clock.prototype.dispose = function(){
 		cancelAnimationFrame(this._loopID);
 		Tone.TimelineState.prototype.dispose.call(this);
-		worker.removeEventListener("message", this._boundLoop);
+		Tone.Clock._worker.removeEventListener("message", this._boundLoop);
 		this._writable("frequency");
 		this.frequency.dispose();
 		this.frequency = null;
@@ -330,6 +286,39 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal", "Tone/core/TimelineState
 		this._state.dispose();
 		this._state = null;
 	};
+
+	//URL Shim
+	window.URL = window.URL || window.webkitURL;
+
+	/**
+	 *  The update rate in Milliseconds
+	 *  @const
+	 *  @type  {Number}
+	 *  @private
+	 */
+	var UPDATE_RATE = 20;
+
+	/**
+	 *  The script which runs in a web worker
+	 *  @type {Blob}
+	 *  @private
+	 */
+	var blob = new Blob(["setInterval(function(){self.postMessage('tick')}, "+UPDATE_RATE+")"]);
+
+	/**
+	 *  Create a blob url from the Blob
+	 *  @type  {URL}
+	 *  @private
+	 */
+  	var blobUrl = URL.createObjectURL(blob);
+
+  	/**
+	 *  The Worker which generates a regular callback
+	 *  @type {Worker}
+	 *  @private
+	 *  @static
+	 */
+	Tone.Clock._worker = new Worker(blobUrl);
 
 	return Tone.Clock;
 });
