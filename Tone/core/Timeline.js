@@ -111,7 +111,7 @@ define(["Tone/core/Tone", "Tone/core/Type"], function (Tone) {
 	};
 
 	/**
-	 *  Get the event whose time is less than or equal to the given time.
+	 *  Get the nearest event whose time is less than or equal to the given time.
 	 *  @param  {Number}  time  The time to query.
 	 *  @returns {Object} The event object set after that time.
 	 */
@@ -147,6 +147,11 @@ define(["Tone/core/Tone", "Tone/core/Type"], function (Tone) {
 	 */
 	Tone.Timeline.prototype.getEventBefore = function(time){
 		time = this.toSeconds(time);
+		var len = this._timeline.length;
+		//if it's after the last item, return the last item
+		if (len > 0 && this._timeline[len - 1].time < time){
+			return this._timeline[len - 1];
+		}
 		var index = this._search(time);
 		if (index - 1 >= 0){
 			return this._timeline[index - 1];
@@ -165,7 +170,19 @@ define(["Tone/core/Tone", "Tone/core/Type"], function (Tone) {
 			after = this.toSeconds(after);
 			var index = this._search(after);
 			if (index >= 0){
-				this._timeline = this._timeline.slice(0, index);
+				if (this._timeline[index].time === after){
+					//get the first item with that time
+					for (var i = index; i >= 0; i--){
+						if (this._timeline[i].time === after){
+							index = i;
+						} else {
+							break;
+						}
+					}
+					this._timeline = this._timeline.slice(0, index);
+				} else {
+					this._timeline = this._timeline.slice(0, index + 1);
+				}
 			} else {
 				this._timeline = [];
 			}
@@ -196,7 +213,9 @@ define(["Tone/core/Tone", "Tone/core/Type"], function (Tone) {
 
 	/**
 	 *  Does a binary serach on the timeline array and returns the 
-	 *  event which is after or equal to the time.
+	 *  nearest event index whose time is after or equal to the given time.
+	 *  If a time is searched before the first index in the timeline, -1 is returned.
+	 *  If the time is after the end, the index of the last item is returned.
 	 *  @param  {Number}  time  
 	 *  @return  {Number} the index in the timeline array 
 	 *  @private
@@ -205,11 +224,14 @@ define(["Tone/core/Tone", "Tone/core/Type"], function (Tone) {
 		var beginning = 0;
 		var len = this._timeline.length;
 		var end = len;
-		// continue searching while [imin,imax] is not empty
-		while (beginning <= end && beginning < len){
+		if (len > 0 && this._timeline[len - 1].time <= time){
+			return len - 1;
+		}
+		while (beginning < end){
 			// calculate the midpoint for roughly equal partition
 			var midPoint = Math.floor(beginning + (end - beginning) / 2);
 			var event = this._timeline[midPoint];
+			var nextEvent = this._timeline[midPoint + 1];
 			if (event.time === time){
 				//choose the last one that has the same time
 				for (var i = midPoint; i < this._timeline.length; i++){
@@ -219,15 +241,17 @@ define(["Tone/core/Tone", "Tone/core/Type"], function (Tone) {
 					}
 				}
 				return midPoint;
+			} else if (event.time < time && nextEvent.time > time){
+				return midPoint;
 			} else if (event.time > time){
 				//search lower
-				end = midPoint - 1;
+				end = midPoint;
 			} else if (event.time < time){
 				//search upper
 				beginning = midPoint + 1;
 			} 
 		}
-		return beginning - 1;
+		return -1;
 	};
 
 	/**
