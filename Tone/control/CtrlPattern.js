@@ -20,6 +20,22 @@ define(["Tone/core/Tone"], function (Tone) {
 	 *  @param  {Array}  values   An array of options to choose from.
 	 *  @param  {Tone.CtrlPattern.Type=}  type  The name of the pattern.
 	 *  @extends {Tone}
+	  @example
+	 * var synth1 = new Tone.SimpleSynth().toMaster();
+	 * var synth2 = new Tone.SimpleSynth().toMaster();
+	 var loop = new Tone.Pattern(function(when, what) {
+        //what is a chosen note from this array of notes
+        synth.triggerAttackRelease(what, "8n", when)
+    }, ["C4", "G4", "C2", "G2"], "down").start(0);
+
+
+    var loop2 = new Tone.Loop(function(when) {
+        synth2.triggerAttackRelease("C4", "8n", when)
+    }).start(2).stop(8);
+
+    Tone.Transport.start();
+
+
 	 */
 	Tone.CtrlPattern = function(){
 
