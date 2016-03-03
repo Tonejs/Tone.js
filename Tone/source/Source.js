@@ -140,11 +140,10 @@ function(Tone){
 	 */
 	Tone.Source.prototype.stop = function(time){
 		time = this.toSeconds(time);
-		if (this._state.getStateAtTime(time) === Tone.State.Started){
-			this._state.setStateAtTime(Tone.State.Stopped, time);
-			if (this._stop){
-				this._stop.apply(this, arguments);
-			}
+		this._state.cancel(time);
+		this._state.setStateAtTime(Tone.State.Stopped, time);
+		if (this._stop){
+			this._stop.apply(this, arguments);
 		}
 		return this;
 	};
