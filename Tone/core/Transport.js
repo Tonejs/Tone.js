@@ -19,17 +19,12 @@ function(Tone){
 	 *  @singleton
 	 *  @example
 	 * //repeated event every 8th note
-	 * Tone.Transport.setInterval(function(time){
+	 * Tone.Transport.scheduleRepeat(function(time){
 	 * 	//do something with the time
 	 * }, "8n");
 	 *  @example
-	 * //one time event 1 second in the future
-	 * Tone.Transport.setTimeout(function(time){
-	 * 	//do something with the time
-	 * }, 1);
-	 *  @example
-	 * //event fixed to the Transports timeline. 
-	 * Tone.Transport.setTimeline(function(time){
+	 * //schedule an event on the 16th measure
+	 * Tone.Transport.schedule(function(time){
 	 * 	//do something with the time
 	 * }, "16:0:0");
 	 */
