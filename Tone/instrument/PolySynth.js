@@ -30,6 +30,9 @@ function(Tone){
 		var options = this.optionsObject(arguments, ["polyphony", "voice"], Tone.PolySynth.defaults);
 		options = this.defaultArg(options, Tone.Instrument.defaults);
 
+		//max polyphony
+		options.polyphony = Math.min(Tone.PolySynth.MAX_POLYPHONY, options.polyphony);
+
 		/**
 		 *  the array of voices
 		 *  @type {Array}
@@ -224,6 +227,14 @@ function(Tone){
 		this._triggers = null;
 		return this;
 	};
+
+	/**
+	 *  The maximum number of notes that can be allocated 
+	 *  to a polysynth. 
+	 *  @type  {Number}
+	 *  @static
+	 */
+	Tone.PolySynth.MAX_POLYPHONY = 20;
 
 	return Tone.PolySynth;
 });
