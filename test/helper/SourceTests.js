@@ -1,4 +1,4 @@
-define(["helper/OutputAudio", "Tone/source/Source", "helper/OutputAudioStereo", "Test", "helper/Offline", "helper/Meter"], 
+define(["helper/OutputAudio", "Tone/source/Source", "helper/OutputAudioStereo", "Test", "helper/Offline2", "helper/Meter"], 
 	function (OutputAudio, Source, OutputAudioStereo, Test, Offline, Meter) {
 
 	return function(Constr, args){
@@ -18,17 +18,26 @@ define(["helper/OutputAudio", "Tone/source/Source", "helper/OutputAudioStereo", 
 			});
 
 			it("starts and stops", function(done){
-				var instance = new Constr(args);
-				expect(instance.state).to.equal("stopped");
-				instance.start().stop("+0.2");
-				setTimeout(function(){
-					expect(instance.state).to.equal("started");
-				}, 100);
-				setTimeout(function(){
+
+				Offline(function(output, testFn, tearDown){
+					
+					var instance = new Constr(args);
 					expect(instance.state).to.equal("stopped");
-					instance.dispose();
-					done();
-				}, 300);
+					instance.start(0).stop(0.2);
+
+					testFn(function(sample, time){
+						if (time >= 0 && time < 0.2){
+							expect(instance.state).to.equal("started");
+						} else if (time > 0.2){
+							expect(instance.state).to.equal("stopped");
+						}
+					});
+
+					tearDown(function(){
+						instance.dispose();
+						done();
+					});
+				}, 0.3);
 			});
 
 			it("makes a sound", function(done){

@@ -1,4 +1,5 @@
-define(["Test", "Tone/source/Source", "Tone/core/Transport"], function (Test, Source, Transport) {
+define(["Test", "Tone/source/Source", "Tone/core/Transport", "helper/Offline2"], 
+function (Test, Source, Transport, OfflineTest) {
 
 	describe("Source", function(){
 
@@ -68,71 +69,86 @@ define(["Test", "Tone/source/Source", "Tone/core/Transport"], function (Test, So
 			source.dispose();
 		});
 
-		it ("can sync its start to the Transport", function(done){
+		it ("can sync its start to the Transport", function(){
 			var source = new Source();
 			source.sync();
 			Transport.start();
-			setTimeout(function(){
-				expect(source.state).to.equal("started");
-				source.dispose();
-				Transport.stop();
-				done();
-			}, 200);
+			expect(source.state).to.equal("started");
+			source.dispose();
+			Transport.stop();
 		});
 
 		it ("can sync its stop to the Transport", function(done){
-			var source = new Source();
-			source.sync();
-			Transport.start().stop("+0.4");
-			setTimeout(function(){
+			OfflineTest(function(output, testFn, tearDown){
+				var source = new Source();
+				source.sync();
+				expect(source.state).to.equal("stopped");
+				Transport.start().stop(0.4);
 				expect(source.state).to.equal("started");
-				setTimeout(function(){
-					expect(source.state).to.equal("stopped");
+
+				testFn(function(sample, time){
+					if (time > 0.4){
+						expect(source.state).to.equal("stopped");
+					}
+				});
+
+				tearDown(function(){
 					source.dispose();
 					done();
-				}, 300);
-			}, 200);
+				});
+			}, 0.5);
 		});
 
 		it ("can sync its start to the Transport after a delay", function(done){
-			var source = new Source();
-			source.sync(0.3);
-			Transport.start();
-			setTimeout(function(){
+			OfflineTest(function(output, testFn, tearDown){
+				var source = new Source();
+				source.sync(0.3);
+				Transport.start(0).stop(0.4);
 				expect(source.state).to.equal("stopped");
-				setTimeout(function(){
-					expect(source.state).to.equal("started");
+
+				testFn(function(sample, time){
+					if (time > 0.3 && time < 0.4){
+						expect(source.state).to.equal("started");
+					} else if (time > 0.4){
+						expect(source.state).to.equal("stopped");
+					}
+				});
+
+				tearDown(function(){
 					source.dispose();
-					Transport.stop();
 					done();
-				}, 300);
-			}, 200);
+				});
+			}, 0.5);
 		});
 
-		it ("can unsync after it was synced", function(done){
+		it ("can unsync after it was synced", function(){
 			var source = new Source();
 			source.sync();
 			source.unsync();
 			Transport.start();
-			setTimeout(function(){
-				expect(source.state).to.equal("stopped");
-				source.dispose();
-				done();
-			}, 100);
+			expect(source.state).to.equal("stopped");
 		});
 
+
 		it ("correctly returns the scheduled play state", function(done){
-			var source = new Source();
-			expect(source.state).to.equal("stopped");
-			source.start().stop("+0.5");
-			setTimeout(function(){
-				expect(source.state).to.equal("started");
-			}, 100);
-			setTimeout(function(){
+			OfflineTest(function(output, testFn, tearDown){
+				var source = new Source();
 				expect(source.state).to.equal("stopped");
-				source.dispose();
-				done();
-			}, 600);
+				source.start(0).stop(0.5);
+
+				testFn(function(sample, time){
+					if (time >= 0 && time < 0.5){
+						expect(source.state).to.equal("started");
+					} else if (time > 0.5){
+						expect(source.state).to.equal("stopped");
+					}
+				});
+
+				tearDown(function(){
+					source.dispose();
+					done();
+				});
+			}, 0.6);
 		});
 	});
 });
