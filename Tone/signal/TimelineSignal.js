@@ -54,7 +54,9 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Timeline"], function 
 	 */
 	Object.defineProperty(Tone.TimelineSignal.prototype, "value", {
 		get : function(){
-			return this._toUnits(this._param.value);
+			var now = this.now();
+			var val = this.getValueAtTime(now);
+			return this._toUnits(val);
 		},
 		set : function(value){
 			var convertedVal = this._fromUnits(value);

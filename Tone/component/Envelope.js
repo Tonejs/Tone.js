@@ -124,7 +124,7 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal",
 	 */
 	Object.defineProperty(Tone.Envelope.prototype, "value", {
 		get : function(){
-			return this._sig.value;
+			return this.getValueAtTime(this.now());
 		}
 	});
 
