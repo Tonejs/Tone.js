@@ -84,6 +84,24 @@ define(["helper/OutputAudio", "Tone/source/Source", "helper/OutputAudioStereo", 
 				meter.run();
 			});
 
+			it("makes no sound if it is started and then stopped with a time at or before the start time", function(done){
+				var instance;
+				var meter = new Meter(1);
+				meter.before(function(dest){
+					instance = new Constr(args);
+					instance.connect(dest);
+					instance.start(0.5).stop(0);
+				});
+				meter.test(function(sample){
+					expect(sample).to.equal(0);
+				});
+				meter.after(function(){
+					instance.dispose();
+					done();
+				});
+				meter.run();
+			});
+
 			it("be scheduled to stop in the future", function(done){
 				var instance;
 				var meter = new Meter(0.4);
