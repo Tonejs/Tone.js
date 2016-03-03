@@ -10,7 +10,6 @@ define(["helper/Offline", "helper/Basic", "Test", "Tone/core/Param", "Tone/core/
 			it("handles input connections", function(){
 				var gain = Tone.context.createGain();
 				var param = new Param(gain.gain);
-				console.log(param);
 				Test.connect(param);
 				param.dispose();
 			});
