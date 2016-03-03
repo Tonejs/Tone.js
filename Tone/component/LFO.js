@@ -1,5 +1,5 @@
 define(["Tone/core/Tone", "Tone/source/Oscillator", "Tone/signal/Scale", 
-	"Tone/signal/Signal", "Tone/signal/AudioToGain", "Tone/core/Type"], 
+	"Tone/signal/Signal", "Tone/signal/AudioToGain", "Tone/core/Type", "Tone/signal/Zero"], 
 function(Tone){
 
 	"use strict";
@@ -61,6 +61,13 @@ function(Tone){
 		this._stoppedSignal = new Tone.Signal(0, Tone.Type.AudioRange);
 
 		/**
+		 *  Just outputs zeros.
+		 *  @type {Tone.Zero}
+		 *  @private
+		 */
+		this._zeros = new Tone.Zero();
+
+		/**
 		 *  The value that the LFO outputs when it's stopped
 		 *  @type {AudioRange}
 		 *  @private
@@ -89,6 +96,7 @@ function(Tone){
 
 		//connect it up
 		this._oscillator.chain(this._a2g, this._scaler);
+		this._zeros.connect(this._a2g);
 		this._stoppedSignal.connect(this._a2g);
 		this._readOnly(["amplitude", "frequency"]);
 		this.phase = options.phase;
@@ -311,6 +319,8 @@ function(Tone){
 		this._oscillator = null;
 		this._stoppedSignal.dispose();
 		this._stoppedSignal = null;
+		this._zeros.dispose();
+		this._zeros = null;
 		this._scaler.dispose();
 		this._scaler = null;
 		this._a2g.dispose();
