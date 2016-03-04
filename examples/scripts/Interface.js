@@ -1,4 +1,4 @@
-/* globals Tone */
+/* globals Tone, StartAudioContext */
 
 
 var Interface = {
@@ -33,14 +33,12 @@ $(function(){
 		Interface.isMobile = true;
 		$("body").addClass("Mobile");
 		var element = $("<div>", {"id" : "MobileStart"}).appendTo("body");
-		$("<div>").attr("id", "Button")
-			.text("Enter")
-			.on("touchend", function(e){
-				e.preventDefault();
-				Tone.startMobile();
-				element.remove();
-			})
-			.appendTo(element);  
+		var button = $("<div>").attr("id", "Button").text("Enter").appendTo(element);
+		StartAudioContext.setContext(Tone.context);
+		StartAudioContext.on(button);
+		StartAudioContext.onStarted(function(){
+			element.remove();
+		});
 	}
 });
 
