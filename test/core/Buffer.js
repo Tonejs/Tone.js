@@ -1,4 +1,8 @@
 define(["Test", "Tone/core/Buffer"], function (Test, Buffer) {
+	
+	if (window.__karma__){
+		Buffer.baseUrl = "/base/test/";
+	}
 
 	describe("Buffer", function(){
 		it ("can be created and disposed", function(){

@@ -1,6 +1,10 @@
 define(["helper/Basic", "Tone/source/Player", "helper/Offline", "helper/SourceTests", "Tone/core/Buffer", "helper/Meter"], 
 	function (BasicTests, Player, Offline, SourceTests, Buffer, Meter) {
 
+	if (window.__karma__){
+		Buffer.baseUrl = "/base/test/";
+	}
+
 	describe("Player", function(){
 
 		var buffer = new Buffer();
@@ -100,6 +104,8 @@ define(["helper/Basic", "Tone/source/Player", "helper/Offline", "helper/SourceTe
 		});
 
 		context("Looping", function(){
+
+			this.timeout(3000);
 
 			it("can be set to loop", function(){
 				var player = new Player();

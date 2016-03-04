@@ -25,6 +25,7 @@ var argv = require("yargs")
 			.alias("m", "component")
 			.argv;
 var webserver = require("gulp-webserver");
+var KarmaServer = require("karma").Server;
 
 /**
  *  BUILDING
@@ -157,9 +158,16 @@ gulp.task("server", function(){
 /**
  *  TEST RUNNER
  */
-gulp.task("test", ["server", "collectTests"], function(){
+gulp.task("browser-test", ["server", "collectTests"], function(){
 	gulp.src("../test/index.html")
 		.pipe(openFile({uri: "http://localhost:3000/test"}));
+});
+
+gulp.task("karma-test", function (done) {
+  new KarmaServer({
+    configFile: __dirname + '/karma.conf.js',
+    singleRun: true
+  }, done).start();
 });
 
 gulp.task("collectTests", function(done){
