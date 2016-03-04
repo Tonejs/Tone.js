@@ -10,5 +10,4 @@ before_script:
   - npm install -g karma
   - npm install -g gulp
   - npm install
-  - cd ..
-script: cd gulp && gulp karma-test
+script: gulp karma-test
