@@ -59,7 +59,7 @@ define(["Tone/core/Tone"], function (Tone) {
 	 *  @const
 	 */
 	Tone.Analyser.defaults = {
-		"size" : 2048,
+		"size" : 1024,
 		"returnType" : "byte",
 		"type" : "fft",
 		"smoothing" : 0.8,
