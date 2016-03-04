@@ -145,7 +145,7 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal",
 				type === Tone.Envelope.Type.Exponential){
 				this._attackCurve = type;
 			} else {
-				throw Error("attackCurve must be either \"linear\" or \"exponential\". Invalid type: ", type);
+				throw Error("Invalid curve type: ", type);
 			}
 		}
 	});
@@ -167,7 +167,7 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal",
 				type === Tone.Envelope.Type.Exponential){
 				this._releaseCurve = type;
 			} else {
-				throw Error("releaseCurve must be either \"linear\" or \"exponential\". Invalid type: ", type);
+				throw Error("Invalid curve type: ", type);
 			}
 		}
 	});
@@ -257,6 +257,16 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal",
 		time = this.toSeconds(time);
 		this.triggerAttack(time, velocity);
 		this.triggerRelease(time + this.toSeconds(duration));
+		return this;
+	};
+
+	/**
+	 *  Cancels all scheduled envelope changes after the given time.
+	 *  @param  {Time} after
+	 *  @returns {Tone.Envelope} this
+	 */
+	Tone.Envelope.prototype.cancel = function (after) {
+		this._sig.cancelScheduledValues(after);
 		return this;
 	};
 
