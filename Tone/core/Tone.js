@@ -64,30 +64,33 @@ define(function(){
 	if (!isFunction(OscillatorNode.prototype.setPeriodicWave)){
 		OscillatorNode.prototype.setPeriodicWave = OscillatorNode.prototype.setWaveTable;	
 	}
+
 	//extend the connect function to include Tones
-	AudioNode.prototype._nativeConnect = AudioNode.prototype.connect;
-	AudioNode.prototype.connect = function(B, outNum, inNum){
-		if (B.input){
-			if (Array.isArray(B.input)){
-				if (isUndef(inNum)){
-					inNum = 0;
-				}
-				this.connect(B.input[inNum]);
-			} else {
-				this.connect(B.input, outNum, inNum);
-			}
-		} else {
-			try {
-				if (B instanceof AudioNode){
-					this._nativeConnect(B, outNum, inNum);
+	if (isUndef(AudioNode.prototype._nativeConnect)){
+		AudioNode.prototype._nativeConnect = AudioNode.prototype.connect;
+		AudioNode.prototype.connect = function(B, outNum, inNum){
+			if (B.input){
+				if (Array.isArray(B.input)){
+					if (isUndef(inNum)){
+						inNum = 0;
+					}
+					this.connect(B.input[inNum]);
 				} else {
-					this._nativeConnect(B, outNum);
+					this.connect(B.input, outNum, inNum);
 				}
-			} catch (e) {
-				throw new Error("error connecting to node: "+B);
+			} else {
+				try {
+					if (B instanceof AudioNode){
+						this._nativeConnect(B, outNum, inNum);
+					} else {
+						this._nativeConnect(B, outNum);
+					}
+				} catch (e) {
+					throw new Error("error connecting to node: "+B);
+				}
 			}
-		}
-	};
+		};
+	}
 
 	///////////////////////////////////////////////////////////////////////////
 	//	TONE
