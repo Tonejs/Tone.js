@@ -1,5 +1,5 @@
-define(["Tone/component/Envelope", "helper/Basic", "helper/Offline", "Test"], 
-function (Envelope, Basic, Offline, Test) {
+define(["Tone/component/Envelope", "helper/Basic", "helper/Offline", "Test", "helper/Offline2"], 
+function (Envelope, Basic, Offline, Test, Offline2) {
 	describe("Envelope", function(){
 
 		Basic(Envelope);
@@ -407,14 +407,42 @@ function (Envelope, Basic, Offline, Test) {
 			});
 
 			it ("reports its current envelope value (.value)", function(done){
-				var env = new Envelope(0.1, 0.2, 1).noGC();
-				expect(env.value).to.be.closeTo(0, 0.01);
-				env.triggerAttack();
-				setTimeout(function(){
-					expect(env.value).to.be.closeTo(1, 0.01);
-					env.dispose();
-					done();
-				}, 200);
+				Offline2(function(output, test, after){
+
+					var env = new Envelope(0.1, 0.2, 1).connect(output);
+
+					expect(env.value).to.be.closeTo(0, 0.01);
+
+					env.triggerAttack();
+
+					test(function(sample){
+						expect(env.value).to.be.closeTo(sample, 0.01);
+					});
+
+					after(function(){
+						env.dispose();
+						done();
+					});
+
+				}, 0.3);
+			});
+
+			it ("can cancel a schedule envelope", function(done){
+				Offline2(function(output, test, after){
+					var env = new Envelope(0.1, 0.2, 1).connect(output);
+
+					env.triggerAttack(0.2);
+					env.cancel(0.2);
+
+					test(function(sample){
+						expect(sample).to.equal(0);
+					});	
+
+					after(function(){
+						env.dispose();
+						done();
+					});
+				}, 0.3);
 			});
 		});
 	});
