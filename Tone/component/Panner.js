@@ -1,5 +1,5 @@
-define(["Tone/core/Tone", "Tone/component/CrossFade", "Tone/component/Merge",
-	"Tone/component/Split", "Tone/signal/Signal", "Tone/signal/AudioToGain"], 
+define(["Tone/core/Tone", "Tone/component/CrossFade", "Tone/component/Merge", "Tone/component/Split", 
+	"Tone/signal/Signal", "Tone/signal/AudioToGain", "Tone/signal/Zero"], 
 function(Tone){
 
 	"use strict";
@@ -64,6 +64,13 @@ function(Tone){
 			this.pan = new Tone.Signal(0, Tone.Type.AudioRange);
 
 			/**
+			 *  always sends 0
+			 *  @type {Tone.Zero}
+			 *  @private
+			 */
+			this._zero = new Tone.Zero();
+
+			/**
 			 *  The analog to gain conversion
 			 *  @type  {Tone.AudioToGain}
 			 *  @private
@@ -71,7 +78,8 @@ function(Tone){
 			this._a2g = new Tone.AudioToGain();
 
 			//CONNECTIONS:
-			this.pan.connect(this._a2g, this._crossFade.fade);
+			this._zero.connect(this._a2g);
+			this.pan.chain(this._a2g, this._crossFade.fade);
 			//left channel is a, right channel is b
 			this._splitter.connect(this._crossFade, 0, 0);
 			this._splitter.connect(this._crossFade, 1, 1);
@@ -105,6 +113,8 @@ function(Tone){
 			this._panner = null;
 			this.pan = null;
 		} else {
+			this._zero.dispose();
+			this._zero = null;
 			this._crossFade.dispose();
 			this._crossFade = null;
 			this._splitter.dispose();
