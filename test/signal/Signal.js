@@ -1,5 +1,6 @@
-define(["helper/Offline", "helper/Basic", "Test", "Tone/signal/Signal", "Tone/core/Type", "Tone/core/Transport"], 
-	function (Offline, Basic, Test, Signal, Tone, Transport) {
+define(["helper/Offline", "helper/Basic", "Test", "Tone/signal/Signal", 
+	"Tone/core/Type", "Tone/core/Transport", "helper/Offline2"], 
+	function (Offline, Basic, Test, Signal, Tone, Transport, Offline2) {
 
 	describe("Signal", function(){
 
@@ -139,15 +140,24 @@ define(["helper/Offline", "helper/Basic", "Test", "Tone/signal/Signal", "Tone/co
 			});
 
 			it ("can cancel an automation", function(done){
-				var sig = new Signal(1);
-				sig.setValueAtTime(4, 0.1);
-				sig.exponentialRampToValueAtTime(3, 0.2);
-				sig.cancelScheduledValues(0);
-				setTimeout(function(){
-					expect(sig.value).to.equal(1);
-					sig.dispose();
-					done();
-				}, 400);
+				Offline2(function(output, test, after){
+
+					var sig = new Signal(1).connect(output);
+					sig.setValueAtTime(4, 0.1);
+					sig.exponentialRampToValueAtTime(3, 0.2);
+					sig.cancelScheduledValues(0);
+
+					test(function(){
+						expect(sig.value).to.equal(1);
+					});
+
+					after(function(){
+						expect(sig.value).to.equal(1);
+						sig.dispose();
+						done();
+					});
+
+				}, 0.4);
 			});
 
 			it ("can set a linear ramp from the current time", function(done){

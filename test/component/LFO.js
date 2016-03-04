@@ -1,4 +1,5 @@
-define(["Tone/component/LFO", "helper/Basic", "helper/Offline", "Test", "helper/OutputAudio", "Tone/core/Type", "Tone/signal/Signal"], 
+define(["Tone/component/LFO", "helper/Basic", "helper/Offline", "Test", 
+	"helper/OutputAudio", "Tone/core/Type", "Tone/signal/Signal"], 
 function (LFO, Basic, Offline, Test, OutputAudio, Tone, Signal) {
 	describe("LFO", function(){
 
@@ -9,11 +10,9 @@ function (LFO, Basic, Offline, Test, OutputAudio, Tone, Signal) {
 				var lfo = new LFO();
 				expect(lfo.state).to.equal("stopped");
 				lfo.start();
-				setTimeout(function(){
-					expect(lfo.state).to.equal("started");
-					lfo.dispose();
-					done();
-				}, 100);
+				expect(lfo.state).to.equal("started");
+				lfo.dispose();
+				done();
 			});
 		});
 

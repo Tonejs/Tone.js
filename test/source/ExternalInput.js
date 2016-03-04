@@ -1,5 +1,5 @@
-define(["helper/Basic", "Tone/source/ExternalInput", "Test", "Tone/source/Source"], 
-	function (BasicTests, ExternalInput, Test, Source) {
+define(["helper/Basic", "Tone/source/ExternalInput", "Test", "Tone/source/Source", "helper/Offline2"], 
+	function (BasicTests, ExternalInput, Test, Source, Offline) {
 
 	describe("ExternalInput", function(){
 
@@ -35,17 +35,18 @@ define(["helper/Basic", "Tone/source/ExternalInput", "Test", "Tone/source/Source
 			});
 
 			it("starts and stops", function(done){
-				var extIn = new ExternalInput();
-				expect(extIn.state).to.equal("stopped");
-				extIn.start().stop("+0.2");
-				setTimeout(function(){
-					expect(extIn.state).to.equal("started");
-				}, 100);
-				setTimeout(function(){
+				Offline(function(output, test, after){
+					var extIn = new ExternalInput();
 					expect(extIn.state).to.equal("stopped");
-					extIn.dispose();
-					done();
-				}, 300);
+					extIn.start(0).stop(0.2);
+					expect(extIn.state).to.equal("started");
+					
+					after(function(){
+						expect(extIn.state).to.equal("stopped");
+						extIn.dispose();
+						done();
+					});
+				}, 0.3);
 			});
 		});
 
