@@ -11,11 +11,11 @@ define(["Tone/core/Tone", "Tone/event/Loop", "Tone/control/CtrlPattern"], functi
 	 *  @extends {Tone.Loop}
 	 *  @param {Function} callback The callback to invoke with the
 	 *                             event.
-	 *  @param {Array} events The events to arpeggiate over.
+	 *  @param {Array} values The values to arpeggiate over.
 	 */
 	Tone.Pattern = function(){
 
-		var options = this.optionsObject(arguments, ["callback", "events", "pattern"], Tone.Pattern.defaults);
+		var options = this.optionsObject(arguments, ["callback", "values", "pattern"], Tone.Pattern.defaults);
 
 		Tone.Loop.call(this, options);
 
@@ -25,7 +25,7 @@ define(["Tone/core/Tone", "Tone/event/Loop", "Tone/control/CtrlPattern"], functi
 		 *  @private
 		 */
 		this._pattern = new Tone.CtrlPattern({
-			"values" : options.events, 
+			"values" : options.values, 
 			"type" : options.pattern,
 			"index" : options.index
 		});
@@ -41,7 +41,7 @@ define(["Tone/core/Tone", "Tone/event/Loop", "Tone/control/CtrlPattern"], functi
 	 */
 	Tone.Pattern.defaults = {
 		"pattern" : Tone.CtrlPattern.Type.Up,
-		"events" : [],
+		"values" : [],
 	};
 
 	/**
@@ -55,7 +55,7 @@ define(["Tone/core/Tone", "Tone/event/Loop", "Tone/control/CtrlPattern"], functi
 	};
 
 	/**
-	 *  The current index in the events array.
+	 *  The current index in the values array.
 	 *  @memberOf Tone.Pattern#
 	 *  @type {Positive}
 	 *  @name index
@@ -73,9 +73,9 @@ define(["Tone/core/Tone", "Tone/event/Loop", "Tone/control/CtrlPattern"], functi
 	 *  The array of events.
 	 *  @memberOf Tone.Pattern#
 	 *  @type {Array}
-	 *  @name events
+	 *  @name values
 	 */
-	Object.defineProperty(Tone.Pattern.prototype, "events", {
+	Object.defineProperty(Tone.Pattern.prototype, "values", {
 		get : function(){
 			return this._pattern.values;
 		},

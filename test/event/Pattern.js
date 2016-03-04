@@ -20,11 +20,11 @@ define(["helper/Basic", "Tone/event/Pattern", "Tone/core/Tone", "Tone/core/Trans
 
 			afterEach(resetTransport);
 
-			it ("takes a callback, an array of events and a pattern name", function(){
+			it ("takes a callback, an array of values and a pattern name", function(){
 				var callback = function(){};
 				var pattern = new Pattern(callback, [0, 1, 2, 3], "down");
 				expect(pattern.callback).to.equal(callback);
-				expect(pattern.events).to.deep.equal([0, 1, 2, 3]);
+				expect(pattern.values).to.deep.equal([0, 1, 2, 3]);
 				expect(pattern.pattern).to.equal("down");
 				pattern.dispose();
 			});
@@ -41,13 +41,13 @@ define(["helper/Basic", "Tone/event/Pattern", "Tone/core/Tone", "Tone/core/Trans
 					"iterations" : 4,
 					"probability" : 0.3,
 					"interval" : "8t",
-					"events" : [1, 2, 3],
+					"values" : [1, 2, 3],
 					"pattern" : "upDown"
 				});
 				expect(pattern.callback).to.equal(callback);
 				expect(pattern.interval).to.equal("8t");
 				expect(pattern.iterations).to.equal(4);
-				expect(pattern.events).to.deep.equal([1, 2, 3]);
+				expect(pattern.values).to.deep.equal([1, 2, 3]);
 				expect(pattern.probability).to.equal(0.3);
 				expect(pattern.pattern).to.equal("upDown");
 				pattern.dispose();
@@ -63,11 +63,11 @@ define(["helper/Basic", "Tone/event/Pattern", "Tone/core/Tone", "Tone/core/Trans
 				var pattern = new Pattern();
 				pattern.set({
 					"callback" : callback,
-					"events" : ["a", "b", "c"],
+					"values" : ["a", "b", "c"],
 					"index" : 2
 				});
 				expect(pattern.callback).to.equal(callback);
-				expect(pattern.events).to.deep.equal(["a", "b", "c"]);
+				expect(pattern.values).to.deep.equal(["a", "b", "c"]);
 				expect(pattern.index).to.equal(2);
 				pattern.dispose();
 			});
