@@ -1,6 +1,6 @@
 /* global mocha, chai*/
 
-define(["Tone/core/Tone"], function (Tone) {
+define(["Tone/core/Tone", "deps/chai"], function (Tone, chai) {
 
 	//add a chai test
 	chai.Assertion.addMethod("percentageFrom", function(val, percent){

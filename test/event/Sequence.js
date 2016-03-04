@@ -1,5 +1,6 @@
-define(["helper/Basic", "Tone/event/Sequence", "Tone/core/Tone", "Tone/core/Transport", "Tone/event/Event"], 
-	function (Basic, Sequence, Tone, Transport, Event) {
+define(["helper/Basic", "Tone/event/Sequence", "Tone/core/Tone", 
+	"Tone/core/Transport", "Tone/event/Event", "helper/Offline2"], 
+	function (Basic, Sequence, Tone, Transport, Event, Offline) {
 
 	describe("Sequence", function(){
 
@@ -287,44 +288,52 @@ define(["helper/Basic", "Tone/event/Sequence", "Tone/core/Tone", "Tone/core/Tran
 			});
 
 			it ("can loop between loopStart and loopEnd", function(done){
-				var seq = new Sequence({
-					"loopEnd" : "4n",
-					"loopStart" : "8n",
-					"callback" : function(time, value){
-						expect(value).to.be.at.least(1);
-						expect(value).to.be.at.most(3);
-					},
-					"subdivision" : "8n",
-					"events" : [0, [1, 2, 3], [4, 5]]
-				}).start(0);
-				Tone.Transport.start();
-				setTimeout(function(){
-					seq.dispose();
-					done();
-				}, 700);
+				Offline(function(output, test, after){
+
+					var seq = new Sequence({
+						"loopEnd" : "4n",
+						"loopStart" : "8n",
+						"callback" : function(time, value){
+							expect(value).to.be.at.least(1);
+							expect(value).to.be.at.most(3);
+						},
+						"subdivision" : "8n",
+						"events" : [0, [1, 2, 3], [4, 5]]
+					}).start(0);
+					Tone.Transport.start();
+					after(function(){
+						seq.dispose();
+						done();
+					});
+				}, 0.7);
 			});
 
 			it ("can set the loop points after starting", function(done){
-				var switched = false;
-				var seq = new Sequence({
-					"callback" : function(time, value){
-						if (value === 4){
-							seq.loopStart = "8n";
-							switched = true;
-						}
-						if (switched){
-							expect(value).to.be.at.least(4);
-							expect(value).to.be.at.most(5);
-						}
-					},
-					"subdivision" : "16n",
-					"events" : [0, [1, 2, 3], [4, 5]]
-				}).start(0);
-				Tone.Transport.start();
-				setTimeout(function(){
-					seq.dispose();
-					done();
-				}, 700);
+				Offline(function(output, test, after){
+
+					var switched = false;
+					var seq = new Sequence({
+						"callback" : function(time, value){
+							if (value === 4){
+								seq.loopStart = "8n";
+								switched = true;
+							}
+							if (switched){
+								expect(value).to.be.at.least(4);
+								expect(value).to.be.at.most(5);
+							}
+						},
+						"subdivision" : "16n",
+						"events" : [0, [1, 2, 3], [4, 5]]
+					}).start(0);
+
+					Tone.Transport.start();
+
+					after(function(){
+						seq.dispose();
+						done();
+					});
+				}, 0.7);
 			});
 
 		});
@@ -335,68 +344,83 @@ define(["helper/Basic", "Tone/event/Sequence", "Tone/core/Tone", "Tone/core/Tran
 			afterEach(resetTransport);
 
 			it ("can adjust the playbackRate", function(done){
-				var lastCall;
-				var seq = new Sequence({
-					"playbackRate" : 2,
-					"subdivision" : "4n",
-					"events" : [0, 1],
-					"callback" : function(time){
-						if (lastCall){
-							expect(time - lastCall).to.be.closeTo(0.25, 0.01);
-						}
-						lastCall = time;
-					}
-				}).start(0);
-				Tone.Transport.start();
 
-				setTimeout(function(){
-					seq.dispose();	
-					done();
-				}, 700);
+				Offline(function(output, test, after){
+
+					var lastCall;
+					var seq = new Sequence({
+						"playbackRate" : 2,
+						"subdivision" : "4n",
+						"events" : [0, 1],
+						"callback" : function(time){
+							if (lastCall){
+								expect(time - lastCall).to.be.closeTo(0.25, 0.01);
+							}
+							lastCall = time;
+						}
+					}).start(0);
+
+					Tone.Transport.start();
+
+					after(function(){
+						seq.dispose();	
+						done();
+					});
+
+				}, 0.7);
 			});
 
 			it ("adjusts speed of subsequences", function(done){
-				var lastCall;
-				var seq = new Sequence({
-					"playbackRate" : 0.5,
-					"subdivision" : "8n",
-					"events" : [[0, 1], [2, 3]],
-					"callback" : function(time){
-						if (lastCall){
-							expect(time - lastCall).to.be.closeTo(0.25, 0.01);
-						}
-						lastCall = time;
-					}
-				}).start(0);
-				Tone.Transport.start();
+				Offline(function(output, test, after){
 
-				setTimeout(function(){
-					seq.dispose();	
-					done();
-				}, 700);
+					var lastCall;
+					var seq = new Sequence({
+						"playbackRate" : 0.5,
+						"subdivision" : "8n",
+						"events" : [[0, 1], [2, 3]],
+						"callback" : function(time){
+							if (lastCall){
+								expect(time - lastCall).to.be.closeTo(0.25, 0.01);
+							}
+							lastCall = time;
+						}
+					}).start(0);
+					Tone.Transport.start();
+
+					after(function(){
+						seq.dispose();	
+						done();
+					});
+
+				}, 0.7);
 			});
 			
 			it ("can adjust the playbackRate after starting", function(done){
-				var lastCall;
-				var seq = new Sequence({
-					"playbackRate" : 1,
-					"subdivision" : "8n",
-					"events" : [0, 1],
-					"callback" : function(time){
-						if (lastCall){
-							expect(time - lastCall).to.be.closeTo(0.5, 0.01);
-						} else {
-							seq.playbackRate = 0.5;
-						}
-						lastCall = time;
-					}
-				}).start(0);
-				Tone.Transport.start();
 
-				setTimeout(function(){
-					seq.dispose();	
-					done();
-				}, 800);
+				Offline(function(output, test, after){
+
+					var lastCall;
+					var seq = new Sequence({
+						"playbackRate" : 1,
+						"subdivision" : "8n",
+						"events" : [0, 1],
+						"callback" : function(time){
+							if (lastCall){
+								expect(time - lastCall).to.be.closeTo(0.5, 0.01);
+							} else {
+								seq.playbackRate = 0.5;
+							}
+							lastCall = time;
+						}
+					}).start(0);
+					Tone.Transport.start();
+
+					after(function(){
+						seq.dispose();	
+						done();
+					});
+					
+				}, 0.8);
 			});
 
 		});

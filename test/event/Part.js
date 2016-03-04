@@ -1,5 +1,6 @@
-define(["helper/Basic", "Tone/event/Part", "Tone/core/Tone", "Tone/core/Transport", "Tone/event/Event"], 
-	function (Basic, Part, Tone, Transport, Event) {
+define(["helper/Basic", "Tone/event/Part", "Tone/core/Tone", 
+	"Tone/core/Transport", "Tone/event/Event", "helper/Offline2"], 
+	function (Basic, Part, Tone, Transport, Event, Offline) {
 
 	describe("Part", function(){
 
@@ -205,14 +206,20 @@ define(["helper/Basic", "Tone/event/Part", "Tone/core/Tone", "Tone/core/Transpor
 			afterEach(resetTransport);
 
 			it ("does not invoke get invoked until started", function(done){
-				var part = new Event(function(){
-					throw new Error("shouldn't call this callback");
-				}, [0, 0.4]);
-				Tone.Transport.start();
-				setTimeout(function(){
-					part.dispose();
-					done();
-				}, 300);
+				Offline(function(dest, test, after){
+
+					var part = new Event(function(){
+						throw new Error("shouldn't call this callback");
+					}, [0, 0.4]);
+
+					Tone.Transport.start();
+
+					after(function(){
+						part.dispose();
+						done();
+					});
+
+				}, 0.5);
 			});
 
 			it ("is invoked after it's started", function(done){
@@ -227,11 +234,11 @@ define(["helper/Basic", "Tone/event/Part", "Tone/core/Tone", "Tone/core/Transpor
 				var now = Tone.Transport.now() + 0.1;
 				var part = new Part(function(time){
 					expect(time).to.be.a.number;
-					expect(time - now).to.be.closeTo(0.8, 0.01);
+					expect(time - now).to.be.closeTo(0.5, 0.01);
 					part.dispose();
 					done();
-				}, [0.5]);
-				part.start(0.3);
+				}, [0.3]);
+				part.start(0.2);
 				Tone.Transport.start(now);
 			});
 
@@ -246,58 +253,82 @@ define(["helper/Basic", "Tone/event/Part", "Tone/core/Tone", "Tone/core/Transpor
 			});
 
 			it ("can mute the callback", function(done){
-				var part = new Part(function(){
-					throw new Error("shouldn't call this callback");
-				}, [0, 0.1, 0.2, 0.3]).start();
-				part.mute = true;
-				expect(part.mute).to.be.true;
-				Tone.Transport.start();
-				setTimeout(function(){
-					part.dispose();
-					done();
-				}, 300);
+				Offline(function(dest, test, after){
+
+					var part = new Part(function(){
+						throw new Error("shouldn't call this callback");
+					}, [0, 0.1, 0.2, 0.3]).start();
+
+					part.mute = true;
+					expect(part.mute).to.be.true;
+					Tone.Transport.start();
+
+					after(function(){
+						part.dispose();
+						done();
+					});
+				});
 			});
 
 			it ("can trigger with some probability", function(done){
-				var part = new Part(function(){
-					throw new Error("shouldn't call this callback");
-				}, [0, 1, 2, 3]).start();
-				part.probability = 0;
-				expect(part.probability).to.equal(0);
-				Tone.Transport.start();
-				setTimeout(function(){
-					part.dispose();
-					done();
-				}, 300);
+				Offline(function(output, test, after){
+
+					var part = new Part(function(){
+						throw new Error("shouldn't call this callback");
+					}, [0, 1, 2, 3]).start();
+
+					part.probability = 0;
+					expect(part.probability).to.equal(0);
+
+					Tone.Transport.start();
+
+					after(function(){
+						part.dispose();
+						done();
+					});
+
+				}, 0.4);
 			});
 
 
 			it ("invokes all of the scheduled events", function(done){
-				var count = 0;
-				var part = new Part(function(){
-					count++;
-				}, [0, 0.1, 0.2, 0.3]).start();
-				Tone.Transport.start();
-				setTimeout(function(){
-					expect(count).to.equal(4);
-					part.dispose();
-					done();
-				}, 400);
+				Offline(function(output, test, after){
+
+					var count = 0;
+					var part = new Part(function(){
+						count++;
+					}, [0, 0.1, 0.2, 0.3]).start();
+
+					Tone.Transport.start();
+
+					after(function(){
+						expect(count).to.equal(4);
+						part.dispose();
+						done();
+					});
+
+				}, 0.4);
 			});
 
 			it ("invokes all of the scheduled events at the correct times", function(done){
-				var count = 0;
-				var now = Tone.Transport.now() + 0.1;
-				var part = new Part(function(time, value){
-					count++;
-					expect(time - now).to.be.closeTo(value, 0.01);
-				}, [[0, 0], [0.1, 0.1], [0.2, 0.2]]).start();
-				Tone.Transport.start(now);
-				setTimeout(function(){
-					expect(count).to.equal(3);
-					part.dispose();
-					done();
-				}, 400);
+				Offline(function(output, test, after){
+
+					var count = 0;
+					var now = Tone.Transport.now() + 0.1;
+
+					var part = new Part(function(time, value){
+						count++;
+						expect(time - now).to.be.closeTo(value, 0.01);
+					}, [[0, 0], [0.1, 0.1], [0.2, 0.2]]).start();
+
+					Tone.Transport.start(now);
+
+					after(function(){
+						expect(count).to.equal(3);
+						part.dispose();
+						done();
+					});
+				}, 0.4);
 			});
 
 			it ("starts an event added after the part was started", function(done){
@@ -355,146 +386,178 @@ define(["helper/Basic", "Tone/event/Part", "Tone/core/Tone", "Tone/core/Transpor
 			afterEach(resetTransport);
 
 			it ("can be set to loop", function(done){
-				var callCount = 0;
-				var part = new Part({
-					"loopEnd" : 0.2,
-					"loop" : true,
-					"callback" : function(time, val){
-						callCount++;
-					},
-					"events" : [[0, 1], [0.1, 2]]
-				}).start(0);
-				Tone.Transport.start();
 
-				setTimeout(function(){
-					expect(callCount).to.equal(6);
-					part.dispose();	
-					done();
-				}, 520);
+				Offline(function(output, test, after){
+
+					var callCount = 0;
+					var part = new Part({
+						"loopEnd" : 0.2,
+						"loop" : true,
+						"callback" : function(){
+							callCount++;
+						},
+						"events" : [[0, 1], [0.1, 2]]
+					}).start(0);
+					Tone.Transport.start();
+
+					after(function(){
+						expect(callCount).to.equal(6);
+						part.dispose();	
+						done();
+					});
+
+				}, 0.55);
 			});
 
 			it ("can be set to loop at a specific interval", function(done){
-				var lastCall;
-				var part = new Part({
-					"loopEnd" : 0.25,
-					"loop" : true,
-					"callback" : function(time){
-						if (lastCall){
-							expect(time - lastCall).to.be.closeTo(0.25, 0.01);
-						}
-						lastCall = time;
-					},
-					events : [0]
-				}).start(0);
-				Tone.Transport.start();
+				Offline(function(output, test, after){
 
-				setTimeout(function(){
-					part.dispose();	
-					done();
-				}, 700);
+					var lastCall;
+					var part = new Part({
+						"loopEnd" : 0.25,
+						"loop" : true,
+						"callback" : function(time){
+							if (lastCall){
+								expect(time - lastCall).to.be.closeTo(0.25, 0.01);
+							}
+							lastCall = time;
+						},
+						events : [0]
+					}).start(0);
+
+					Tone.Transport.start();
+
+					after(function(){
+						part.dispose();	
+						done();
+					});
+
+				}, 0.7);
 			});
 
 			it ("a started part will be stopped if it is after the loopEnd", function(done){
-				var switched = false;
-				var part = new Part({
-					"loopEnd" : 0.5,
-					"loop" : true,
-					"callback" : function(time, value){
-						if (value === 1){
-							switched = true;
-							part.loopEnd = 0.2;
-						} else if (switched){
-							expect(value).to.equal(0);
-						} 
-					},
-					events : [[0, 0], [0.25, 1]]
-				}).start(0);
-				Tone.Transport.start();
+				Offline(function(output, test, after){
 
-				setTimeout(function(){
-					part.dispose();	
-					done();
-				}, 700);
+					var switched = false;
+					var part = new Part({
+						"loopEnd" : 0.5,
+						"loop" : true,
+						"callback" : function(time, value){
+							if (value === 1){
+								switched = true;
+								part.loopEnd = 0.2;
+							} else if (switched){
+								expect(value).to.equal(0);
+							} 
+						},
+						events : [[0, 0], [0.25, 1]]
+					}).start(0);
+					Tone.Transport.start();
+
+					after(function(){
+						part.dispose();	
+						done();
+					});
+
+				}, 0.7);				
 			});
 
 			it ("a started part will be stopped if it is before the loopStart", function(done){
-				var switched = false;
-				var part = new Part({
-					"loopEnd" : 0.5,
-					"loop" : true,
-					"callback" : function(time, value){
-						if (value === 1){
-							switched = true;
-							part.loopStart = 0.2;
-						} else if (switched){
-							expect(value).to.equal(1);
-						} 
-					},
-					events : [[0, 0], [0.25, 1]]
-				}).start(0);
-				Tone.Transport.start();
 
-				setTimeout(function(){
-					part.dispose();	
-					done();
-				}, 700);
+				Offline(function(output, test, after){
+
+					var switched = false;
+					var part = new Part({
+						"loopEnd" : 0.5,
+						"loop" : true,
+						"callback" : function(time, value){
+							if (value === 1){
+								switched = true;
+								part.loopStart = 0.2;
+							} else if (switched){
+								expect(value).to.equal(1);
+							} 
+						},
+						events : [[0, 0], [0.25, 1]]
+					}).start(0);
+					Tone.Transport.start();
+
+					after(function(){
+						part.dispose();	
+						done();
+					});
+
+				}, 0.7);
 			});
 
 			
 			it ("can loop a specific number of times", function(done){
-				var callCount = 0;
-				var part = new Part({
-					"loopEnd" : 0.125,
-					"loop" : 3,
-					"callback" : function(){
-						callCount++;
-					},
-					events : [0, 0.1]
-				}).start(0.1);
-				Tone.Transport.start();
 
-				setTimeout(function(){
-					expect(callCount).to.equal(6);
-					part.dispose();	
-					done();
-				}, 800);
+				Offline(function(output, test, after){
+
+					var callCount = 0;
+					var part = new Part({
+						"loopEnd" : 0.125,
+						"loop" : 3,
+						"callback" : function(){
+							callCount++;
+						},
+						events : [0, 0.1]
+					}).start(0.1);
+					Tone.Transport.start();
+
+					after(function(){
+						expect(callCount).to.equal(6);
+						part.dispose();	
+						done();
+					});
+
+				}, 0.8);
 			});
 
 			it ("can loop between loopStart and loopEnd", function(done){
-				var part = new Part({
-					"loopStart" : "8n",
-					"loopEnd" : "4n",
-					"loop" : true,
-					"callback" : function(time, value){
-						expect(value).to.be.at.least(1);
-						expect(value).to.be.at.most(2);
-					},
-					events : [[0, 0], ["8n", 1], ["8n + 16n", 2], ["4n", 3]]
-				}).start(0);
-				Tone.Transport.start();
 
-				setTimeout(function(){
-					part.dispose();	
-					done();
-				}, 800);
+				Offline(function(output, test, after){
+					var part = new Part({
+						"loopStart" : "8n",
+						"loopEnd" : "4n",
+						"loop" : true,
+						"callback" : function(time, value){
+							expect(value).to.be.at.least(1);
+							expect(value).to.be.at.most(2);
+						},
+						events : [[0, 0], ["8n", 1], ["8n + 16n", 2], ["4n", 3]]
+					}).start(0);
+					Tone.Transport.start();
+
+					after(function(){
+						part.dispose();	
+						done();
+					});
+
+				}, 0.8);
 			});
 
 
 			it ("reports the progress of the loop", function(done){
-				var callCount = 0;
-				var part = new Part({
-					"loopEnd" : 1,
-					"loop" : true,
-					"callback" : function(){
-						callCount++;
-					}
-				}).start(0);
-				Tone.Transport.start();
-				setTimeout(function(){
-					expect(part.progress).to.be.closeTo(0.8, 0.05);
-					part.dispose();	
-					done();
-				}, 800);
+
+				Offline(function(output, test, after){
+
+					var callCount = 0;
+					var part = new Part({
+						"loopEnd" : 1,
+						"loop" : true,
+						"callback" : function(){
+							callCount++;
+						}
+					}).start(0);
+					Tone.Transport.start();
+					after(function(){
+						expect(part.progress).to.be.closeTo(0.8, 0.05);
+						part.dispose();	
+						done();
+					});
+				}, 0.8);
 			});
 
 			it("can start a loop with an offset", function(done){
@@ -547,49 +610,55 @@ define(["helper/Basic", "Tone/event/Part", "Tone/core/Tone", "Tone/core/Transpor
 			afterEach(resetTransport);
 
 			it ("can adjust the playbackRate", function(done){
-				var lastCall;
-				var part = new Part({
-					"playbackRate" : 2,
-					"loopEnd" : 1,
-					"loop" : true,
-					"events" : [0, 0.5],
-					"callback" : function(time){
-						if (lastCall){
-							expect(time - lastCall).to.be.closeTo(0.25, 0.01);
-						}
-						lastCall = time;
-					}
-				}).start(0);
-				Tone.Transport.start();
 
-				setTimeout(function(){
-					part.dispose();	
-					done();
-				}, 700);
+				Offline(function(output, test, after){
+					var lastCall;
+					var part = new Part({
+						"playbackRate" : 2,
+						"loopEnd" : 1,
+						"loop" : true,
+						"events" : [0, 0.5],
+						"callback" : function(time){
+							if (lastCall){
+								expect(time - lastCall).to.be.closeTo(0.25, 0.01);
+							}
+							lastCall = time;
+						}
+					}).start(0);
+					Tone.Transport.start();
+
+					after(function(){
+						part.dispose();	
+						done();
+					});
+				}, 0.7);
 			});
 
 			it ("can adjust the playbackRate after starting", function(done){
-				var lastCall;
-				var part = new Part({
-					"playbackRate" : 1,
-					"loopEnd" : 0.5,
-					"loop" : true,
-					"events" : [0, 0.25],
-					"callback" : function(time){
-						if (lastCall){
-							expect(time - lastCall).to.be.closeTo(0.5, 0.01);
-						} else {
-							part.playbackRate = 0.5;
-						}
-						lastCall = time;
-					}
-				}).start(0);
-				Tone.Transport.start();
+				Offline(function(output, test, after){
 
-				setTimeout(function(){
-					part.dispose();	
-					done();
-				}, 800);
+					var lastCall;
+					var part = new Part({
+						"playbackRate" : 1,
+						"loopEnd" : 0.5,
+						"loop" : true,
+						"events" : [0, 0.25],
+						"callback" : function(time){
+							if (lastCall){
+								expect(time - lastCall).to.be.closeTo(0.5, 0.01);
+							} else {
+								part.playbackRate = 0.5;
+							}
+							lastCall = time;
+						}
+					}).start(0);
+					Tone.Transport.start();
+
+					after(function(){
+						part.dispose();	
+						done();
+					});
+				}, 0.8);
 			});
 		});
 	});

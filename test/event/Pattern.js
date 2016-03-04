@@ -1,4 +1,5 @@
-define(["helper/Basic", "Tone/event/Pattern", "Tone/core/Tone", "Tone/core/Transport"], function (Basic, Pattern, Tone, Transport) {
+define(["helper/Basic", "Tone/event/Pattern", "Tone/core/Tone", "Tone/core/Transport", "helper/Offline2"], 
+	function (Basic, Pattern, Tone, Transport, Offline) {
 
 	describe("Pattern", function(){
 
@@ -91,45 +92,59 @@ define(["helper/Basic", "Tone/event/Pattern", "Tone/core/Tone", "Tone/core/Trans
 			afterEach(resetTransport);
 
 			it ("is invoked after it's started", function(done){
-				var wasInvoked = false;
-				var pattern = new Pattern(function(){
-					wasInvoked = true;
-				}, [0, 1, 2]).start(0);
-				Tone.Transport.start();
-				setTimeout(function(){
-					expect(wasInvoked).to.be.true;
-					pattern.dispose();
-					done();
-				}, 100);
+				Offline(function(output, test, after){
+					var wasInvoked = false;
+					var pattern = new Pattern(function(){
+						wasInvoked = true;
+					}, [0, 1, 2]).start(0);
+					Tone.Transport.start();
+					after(function(){
+						expect(wasInvoked).to.be.true;
+						pattern.dispose();
+						done();
+					});
+				}, 0.2);
 			});
 
 			it ("passes in the scheduled time and pattern index to the callback", function(done){
-				var now = Tone.Transport.now();
-				var pattern = new Pattern(function(time, note){
-					expect(time).to.be.a.number;
-					expect(time - now).to.be.closeTo(0.3, 0.01);
-					expect(note).to.be.equal("a");
-				}, ["a"], "up");
-				Tone.Transport.start();
-				pattern.start(0.3);
-				setTimeout(function(){
-					pattern.dispose();
-					done();
-				}, 100);
+				Offline(function(output, test, after){
+
+					var now = Tone.Transport.now();
+
+					var pattern = new Pattern(function(time, note){
+						expect(time).to.be.a.number;
+						expect(time - now).to.be.closeTo(0.3, 0.01);
+						expect(note).to.be.equal("a");
+					}, ["a"], "up");
+
+					Tone.Transport.start();
+
+					pattern.start(0.3);
+					after(function(){
+						pattern.dispose();
+						done();
+					});
+				}, 0.4);
 			});
 
 			it ("passes in the next note of the pattern", function(done){
-				var counter = 0;
-				var pattern = new Pattern(function(time, note){
-					expect(note).to.equal(counter % 3);
-					counter++;
-				}, [0, 1, 2], "up").start();
-				pattern.interval = "16n";
-				Tone.Transport.start();
-				setTimeout(function(){
-					pattern.dispose();
-					done();
-				}, 700);
+				Offline(function(output, test, after){
+
+					var counter = 0;
+					var pattern = new Pattern(function(time, note){
+						expect(note).to.equal(counter % 3);
+						counter++;
+					}, [0, 1, 2], "up").start();
+
+					pattern.interval = "16n";
+					
+					Tone.Transport.start();
+					after(function(){
+						pattern.dispose();
+						done();
+					});
+
+				}, 0.7);
 			});
 		});
 

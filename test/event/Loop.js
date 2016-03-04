@@ -1,4 +1,5 @@
-define(["helper/Basic", "Tone/event/Loop", "Tone/core/Tone", "Tone/core/Transport"], function (Basic, Loop, Tone, Transport) {
+define(["helper/Basic", "Tone/event/Loop", "Tone/core/Tone", 
+	"Tone/core/Transport", "helper/Offline2"], function (Basic, Loop, Tone, Transport, Offline) {
 
 	describe("Loop", function(){
 
@@ -85,14 +86,21 @@ define(["helper/Basic", "Tone/event/Loop", "Tone/core/Tone", "Tone/core/Transpor
 			afterEach(resetTransport);
 
 			it ("does not invoke get invoked until started", function(done){
-				var loop = new Loop(function(){
-					throw new Error("shouldn't call this callback");
-				}, "8n");
-				Tone.Transport.start();
-				setTimeout(function(){
-					loop.dispose();
-					done();
-				}, 300);
+
+				Offline(function(dest, test, after){
+
+					var loop = new Loop(function(){
+						throw new Error("shouldn't call this callback");
+					}, "8n");
+
+					Tone.Transport.start();
+
+					after(function(){
+						loop.dispose();
+						done();
+					});
+
+				}, 0.3);
 			});
 
 			it ("is invoked after it's started", function(done){
@@ -116,29 +124,39 @@ define(["helper/Basic", "Tone/event/Loop", "Tone/core/Tone", "Tone/core/Transpor
 			});
 
 			it ("can mute the callback", function(done){
-				var loop = new Loop(function(){
-					throw new Error("shouldn't call this callback");
-				}, "4n").start();
-				loop.mute = true;
-				expect(loop.mute).to.be.true;
-				Tone.Transport.start();
-				setTimeout(function(){
-					loop.dispose();
-					done();
-				}, 300);
+				Offline(function(output, test, after){
+
+					var loop = new Loop(function(){
+						throw new Error("shouldn't call this callback");
+					}, "4n").start();
+
+					loop.mute = true;
+
+					expect(loop.mute).to.be.true;
+
+					Tone.Transport.start();
+
+					after(function(){
+						loop.dispose();
+						done();
+					});
+				}, 0.4);
 			});
 
 			it ("can trigger with some probability", function(done){
-				var loop = new Loop(function(){
-					throw new Error("shouldn't call this callback");
-				}, "4n").start();
-				loop.probability = 0;
-				expect(loop.probability).to.equal(0);
-				Tone.Transport.start();
-				setTimeout(function(){
-					loop.dispose();
-					done();
-				}, 300);
+
+				Offline(function(output, test, after){
+					var loop = new Loop(function(){
+						throw new Error("shouldn't call this callback");
+					}, "4n").start();
+					loop.probability = 0;
+					expect(loop.probability).to.equal(0);
+					Tone.Transport.start();
+					after(function(){
+						loop.dispose();
+						done();
+					});
+				}, 0.4);
 			});
 		});
 
@@ -147,19 +165,28 @@ define(["helper/Basic", "Tone/event/Loop", "Tone/core/Tone", "Tone/core/Transpor
 			afterEach(resetTransport);
 
 			it ("can be started and stopped multiple times", function(done){
-				var loop = new Loop().start().stop(0.2).start(0.4);
-				setTimeout(function(){
-					expect(loop.state).to.equal("started");
-				}, 100);
-				setTimeout(function(){
-					expect(loop.state).to.equal("stopped");
-				}, 300);
-				setTimeout(function(){
-					expect(loop.state).to.equal("started");
-					loop.dispose();
-					done();
-				}, 500);
-				Tone.Transport.start();
+				Offline(function(output, test, after){
+
+					var loop = new Loop().start().stop(0.2).start(0.4);
+
+					Tone.Transport.start(0);
+
+					test(function(sample, time){
+						if (time > 0.01 && time < 0.18){
+							expect(loop.state).to.equal("started");	
+						} else if (time > 0.2 && time < 0.38){
+							expect(loop.state).to.equal("stopped");
+						} else if (time > 0.4){
+							expect(loop.state).to.equal("started");
+						}
+					});
+
+					after(function(){
+						loop.dispose();
+						done();
+					});
+
+				}, 0.6);
 			});
 
 			it ("restarts when transport is restarted", function(done){
@@ -209,20 +236,25 @@ define(["helper/Basic", "Tone/event/Loop", "Tone/core/Tone", "Tone/core/Transpor
 			afterEach(resetTransport);
 
 			it ("loops", function(done){
-				var callCount = 0;
-				var loop = new Loop({
-					"interval" : 0.1,
-					"callback" : function(){
-						callCount++;
-					}
-				}).start(0);
-				Tone.Transport.start();
 
-				setTimeout(function(){
-					expect(callCount).to.above(6);
-					loop.dispose();	
-					done();
-				}, 800);
+				Offline(function(output, test, after){
+
+					var callCount = 0;
+					var loop = new Loop({
+						"interval" : 0.1,
+						"callback" : function(){
+							callCount++;
+						}
+					}).start(0);
+					Tone.Transport.start();
+
+					after(function(){
+						expect(callCount).to.above(6);
+						loop.dispose();	
+						done();
+					});
+
+				}, 0.8);
 			});
 
 			it ("loops for the specified interval", function(done){
@@ -245,34 +277,45 @@ define(["helper/Basic", "Tone/event/Loop", "Tone/core/Tone", "Tone/core/Transpor
 			});
 
 			it ("can loop a specific number of iterations", function(done){
-				var callCount = 0;
-				var loop = new Loop({
-					"interval" : 0.1,
-					"iterations" : 2,
-					"callback" : function(){
-						callCount++;
-					}
-				}).start(0);
-				Tone.Transport.start();
 
-				setTimeout(function(){
-					expect(callCount).to.equal(2);
-					expect(loop.state).to.equal("stopped");
-					loop.dispose();	
-					done();
-				}, 400);
+				Offline(function(output, test, after){
+
+					var callCount = 0;
+					var loop = new Loop({
+						"interval" : 0.1,
+						"iterations" : 2,
+						"callback" : function(){
+							callCount++;
+						}
+					}).start(0);
+					Tone.Transport.start();
+
+					after(function(){
+						expect(callCount).to.equal(2);
+						expect(loop.state).to.equal("stopped");
+						loop.dispose();	
+						done();
+					});
+				}, 0.4);
 			});
 
 			it ("reports the progress of the loop", function(done){
-				var loop = new Loop({
-					"interval" : 1,
-				}).start(0);
-				Tone.Transport.start();
-				setTimeout(function(){
-					expect(loop.progress).to.be.closeTo(0.8, 0.05);
-					loop.dispose();	
-					done();
-				}, 800);
+
+				Offline(function(output, test, after){
+
+					var loop = new Loop({
+						"interval" : 1,
+					}).start(0);
+
+					Tone.Transport.start();
+
+					after(function(){
+						expect(loop.progress).to.be.closeTo(0.8, 0.05);
+						loop.dispose();	
+						done();
+					});
+				}, 0.8);
+
 			});
 
 		});
@@ -282,23 +325,31 @@ define(["helper/Basic", "Tone/event/Loop", "Tone/core/Tone", "Tone/core/Transpor
 			afterEach(resetTransport);
 
 			it ("can adjust the playbackRate", function(done){
-				var lastCall;
-				var loop = new Loop({
-					"playbackRate" : 2,
-					"intervaliter" : 0.5,
-					"callback" : function(time){
-						if (lastCall){
-							expect(time - lastCall).to.be.closeTo(0.25, 0.01);
-						}
-						lastCall = time;
-					}
-				}).start(0);
-				Tone.Transport.start();
 
-				setTimeout(function(){
-					loop.dispose();	
-					done();
-				}, 700);
+				Offline(function(output, test, after){
+
+					var lastCall;
+					
+					var loop = new Loop({
+						"playbackRate" : 2,
+						"intervaliter" : 0.5,
+						"callback" : function(time){
+							if (lastCall){
+								expect(time - lastCall).to.be.closeTo(0.25, 0.01);
+							}
+							lastCall = time;
+						}
+					}).start(0);
+
+					Tone.Transport.start();
+
+					after(function(){
+						loop.dispose();	
+						done();
+					});
+
+				}, 0.7);
+				
 			});
 
 		});
