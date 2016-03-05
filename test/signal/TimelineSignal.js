@@ -1,5 +1,5 @@
-define(["Test", "Tone/signal/TimelineSignal", "helper/Offline", "Tone/core/Type"], 
-	function (Test, TimelineSignal, Offline, Tone) {
+define(["Test", "Tone/signal/TimelineSignal", "helper/Offline", "Tone/core/Type", "helper/Offline2"], 
+	function (Test, TimelineSignal, Offline, Tone, Offline2) {
 
 	describe("TimelineSignal", function(){
 
@@ -76,7 +76,7 @@ define(["Test", "Tone/signal/TimelineSignal", "helper/Offline", "Tone/core/Type"
 			var offline = new Offline(2);
 			offline.before(function(dest){
 				sched = new TimelineSignal(1).connect(dest);
-				sched.setValueAtTime(3, 0);
+				sched.setValueAtTime(1, 0);
 				sched.setTargetAtTime(0.5, 0.5, 2);
 			});
 			offline.test(function(sample, time){
@@ -87,6 +87,38 @@ define(["Test", "Tone/signal/TimelineSignal", "helper/Offline", "Tone/core/Type"
 				done();
 			});
 			offline.run();
+		});
+
+		it("can get set a curve in the future", function(done){
+			Offline2(function(dest, test, after){
+				var sched = new TimelineSignal(1).connect(dest);
+				sched.setValueCurveAtTime([0, 1, 0.2, 0.8, 0], 0, 1);
+
+				test(function(sample, time){
+					expect(sample).to.be.closeTo(sched.getValueAtTime(time), 0.01);
+				});
+
+				after(function(){
+					sched.dispose();
+					done();
+				});
+			}, 1);
+		});
+
+		it("can scale a curve value", function(done){
+			Offline2(function(dest, test, after){
+				var sched = new TimelineSignal(1).connect(dest);
+				sched.setValueCurveAtTime([0, 1, 0], 0, 1, 0.5);
+
+				test(function(sample){
+					expect(sample).to.be.at.most(0.5);
+				});
+
+				after(function(){
+					sched.dispose();
+					done();
+				});
+			}, 1);
 		});
 
 		it("can match a complex scheduled curve", function(done){
@@ -103,6 +135,7 @@ define(["Test", "Tone/signal/TimelineSignal", "helper/Offline", "Tone/core/Type"
 				sched.linearRampToValueAtTime(2.4, 2.5);
 				sched.linearRampToValueAtTime(5, 3);
 				sched.setTargetAtTime(2, 3.5, 5);
+				sched.setValueCurveAtTime([0, 1, 0], 3.8, 0.2);
 			});
 			offline.test(function(sample, time){
 				expect(sample).to.be.closeTo(sched.getValueAtTime(time), 0.01);
