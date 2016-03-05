@@ -269,7 +269,7 @@ define(["Test", "Tone/core/Tone", "helper/PassAudio", "Tone/source/Oscillator", 
 				});
 				offline.test(function(sample, time){
 					if (time > 0.5){
-						expect(sample).to.closeTo(setValue, 0.01);
+						expect(sample).to.closeTo(setValue, setValue * 0.1);
 					}
 				});
 				offline.after(function(){
@@ -291,7 +291,7 @@ define(["Test", "Tone/core/Tone", "helper/PassAudio", "Tone/source/Oscillator", 
 				});
 				offline.test(function(sample, time){
 					if (time > 0.5){
-						expect(sample).to.closeTo(setValue, 0.01);
+						expect(sample).to.closeTo(setValue, setValue * 0.1);
 					}
 				});
 				offline.after(function(){
