@@ -166,7 +166,7 @@ define(["helper/Basic", "Tone/event/Sequence", "Tone/core/Tone",
 			});
 
 			it ("passes in the scheduled time to the callback", function(done){
-				var now = Tone.Transport.now();
+				var now = Tone.Transport.now() + 0.1;
 				var seq = new Sequence(function(time){
 					expect(time).to.be.a.number;
 					expect(time - now).to.be.closeTo(0.3, 0.01);
@@ -174,7 +174,7 @@ define(["helper/Basic", "Tone/event/Sequence", "Tone/core/Tone",
 					done();
 				}, [0.5]);
 				seq.start(0.3);
-				Tone.Transport.start();
+				Tone.Transport.start(now);
 			});
 
 			it ("passes in the value to the callback", function(done){
