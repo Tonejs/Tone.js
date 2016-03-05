@@ -7,7 +7,7 @@ function (Convolver, Basic, EffectTests, Buffer) {
 		var ir = new Buffer();
 
 		before(function(done){
-			ir.load("./audio/berlin_tunnel_ir.wav", function(){
+			ir.load("./audio/berlin_tunnel_ir.mp3", function(){
 				done();
 			});
 		});
@@ -20,14 +20,14 @@ function (Convolver, Basic, EffectTests, Buffer) {
 
 			it ("can pass in options in the constructor", function(){
 				var convolver = new Convolver({
-					"url" : "./audio/berlin_tunnel_ir.wav",
+					"url" : "./audio/berlin_tunnel_ir.mp3",
 				});
 				convolver.dispose();
 			});
 
 			it ("invokes the onload function when loaded", function(done){
 				var convolver = new Convolver({
-					"url" : "./audio/berlin_tunnel_ir.wav",
+					"url" : "./audio/berlin_tunnel_ir.mp3",
 					"onload" : function(){
 						convolver.dispose();
 						done();
