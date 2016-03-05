@@ -341,10 +341,9 @@ define(["Tone/core/Tone", "Tone/core/Emitter"], function(Tone){
 		// decode asynchronously
 		request.onload = function() {
 			Tone.context.decodeAudioData(request.response, function(buff) {
-				if(!buff){
-					throw new Error("could not decode audio data:" + url);
-				}
 				callback(buff);
+			}, function(){
+				throw new Error("could not decode audio data:" + url);
 			});
 		};
 		//send the request
