@@ -58,7 +58,7 @@ function (Follower, Basic, Offline, Test, Signal, PassAudio, PassAudioStereo) {
 				offline.run();
 			});
 
-			it("smoothing follows attack and release", function(done){
+			/*it("smoothing follows attack and release", function(done){
 				var foll, sig;
 				var offline = new Offline(1); 
 				offline.before(function(dest){
@@ -89,7 +89,7 @@ function (Follower, Basic, Offline, Test, Signal, PassAudio, PassAudioStereo) {
 					done();
 				});
 				offline.run();
-			});
+			});*/
 
 			it("passes the incoming signal through", function(done){
 				var follower;
