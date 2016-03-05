@@ -43,8 +43,7 @@ define(["helper/Basic", "Tone/source/MultiPlayer", "helper/Offline", "helper/Sou
 			it("invokes callback when a multiple buffers are added", function(done){
 				var player = new MultiPlayer().addBuffer({
 					"sine": "./audio/sine.wav", 
-					"hh": "./audio/hh.mp3", 
-					"kick": "./audio/kick.mp3", 
+					"hh": "./audio/hh.wav", 
 				}, function(){
 					player.dispose();
 					done();

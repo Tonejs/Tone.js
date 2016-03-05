@@ -189,6 +189,8 @@ define(["helper/Basic", "Tone/source/Player", "helper/Offline", "helper/SourceTe
 
 		context("Start Scheduling", function(){
 
+			this.timeout(3000);
+
 			it("can be start with an offset", function(done){
 				var player;
 				var offline = new Offline(0.4, 1);
@@ -254,7 +256,7 @@ define(["helper/Basic", "Tone/source/Player", "helper/Offline", "helper/SourceTe
 			});
 
 			it("reports itself as stopped after a single iterations of the buffer", function(done){
-				var player = new Player("./audio/kick.mp3", function(){
+				var player = new Player("./audio/hh.wav", function(){
 					var duration = player.buffer.duration;
 					player.start();
 					setTimeout(function(){

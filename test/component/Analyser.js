@@ -47,7 +47,7 @@ define(["Tone/component/Analyser", "Test", "helper/Basic"], function (Analyser, 
 			analysis = anl.analyse();
 			expect(analysis.length).to.equal(512);
 			for (i = 0; i < analysis.length; i++){
-				expect(analysis[i]).is.within(anl.minDecibels, anl.maxDecibels);
+				expect(analysis[i]).is.lessThan(anl.maxDecibels);
 			}
 			anl.dispose();
 		});
