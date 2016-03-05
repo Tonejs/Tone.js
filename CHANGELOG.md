@@ -1,4 +1,4 @@
-### r6
+### r7
 
 * MetalSynth creates metalic, cymbal sounds
 * DrumSynth -> MembraneSynth
@@ -6,6 +6,12 @@
 * FatOscillator creates multiple oscillators and detunes them slightly
 * FM, AM, Fat Oscillators incorporated into OmniOscillator
 * Simplified FM and AM Synths and APIs
+* Panner.pan is between -1,1 like the StereoPannerNode
+* Pruned away unused (or little used) Signal classes. 
+	* All this functionality will be available when the AudioWorkerNode is introduced. 
+* Clock uses Web Workers instead of requestAnimationFrame which allows it to run in the background. 
+* Removed `startMobile`. Use [StartAudioContext](https://github.com/tambien/StartAudioContext) instead. 
+* Automated test runner using [Travis CI](https://travis-ci.org/Tonejs/Tone.js/)
 
 
 DEPRECATED:
