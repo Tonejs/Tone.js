@@ -25,9 +25,9 @@ function(Tone){
 			if (val === 0){
 				return 0;
 			} else {
-				return 1;
+				return Math.abs(val);
 			}
-		}, 3);
+		}, 127);
 	};
 
 	Tone.extend(Tone.Abs, Tone.SignalBase);
