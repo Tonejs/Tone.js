@@ -1,5 +1,5 @@
-define(["helper/Offline", "helper/Basic", "Tone/signal/GreaterThanZero", "Tone/signal/Signal"], 
-function (Offline, Basic, GreaterThanZero, Signal) {
+define(["helper/Offline", "helper/Basic", "Tone/signal/GreaterThanZero", "Tone/signal/Signal", "helper/Supports"], 
+function (Offline, Basic, GreaterThanZero, Signal, Supports) {
 
 	describe("GreaterThanZero", function(){
 
@@ -47,25 +47,28 @@ function (Offline, Basic, GreaterThanZero, Signal) {
 				offline.run();
 			});
 
-			it("Outputs 0 when the value is equal to 0", function(done){
-				var signal, gtz;
-				var offline = new Offline();
-				offline.before(function(dest){
-					signal = new Signal(0);
-					gtz = new GreaterThanZero();
-					signal.connect(gtz);
-					gtz.connect(dest);
+			if (Supports.WAVESHAPER_0_POSITION){
+
+				it("Outputs 0 when the value is equal to 0", function(done){
+					var signal, gtz;
+					var offline = new Offline();
+					offline.before(function(dest){
+						signal = new Signal(0);
+						gtz = new GreaterThanZero();
+						signal.connect(gtz);
+						gtz.connect(dest);
+					});
+					offline.test(function(sample){
+						expect(sample).to.equal(0);
+					});
+					offline.after(function(){
+						signal.dispose();
+						gtz.dispose();
+						done();
+					});
+					offline.run();
 				});
-				offline.test(function(sample){
-					expect(sample).to.equal(0);
-				});
-				offline.after(function(){
-					signal.dispose();
-					gtz.dispose();
-					done();
-				});
-				offline.run();
-			});
+			}
 
 			it("Outputs 1 when the value is slightly above 0", function(done){
 				var signal, gtz;

@@ -1,6 +1,6 @@
 define(["Tone/component/Gate", "helper/Basic", "helper/Offline", "Test", 
-	"Tone/signal/Signal", "helper/PassAudio", "Tone/core/Type"], 
-function (Gate, Basic, Offline, Test, Signal, PassAudio, Tone) {
+	"Tone/signal/Signal", "helper/PassAudio", "Tone/core/Type", "helper/Supports"], 
+function (Gate, Basic, Offline, Test, Signal, PassAudio, Tone, Supports) {
 	describe("Gate", function(){
 
 		Basic(Gate);
@@ -38,25 +38,28 @@ function (Gate, Basic, Offline, Test, Signal, PassAudio, Tone) {
 				gate.dispose();
 			});
 
-			it("gates the incoming signal when below the threshold", function(done){
-				var gate, sig;
-				var offline = new Offline(); 
-				offline.before(function(dest){
-					gate = new Gate(-9);
-					sig = new Signal(-10, Tone.Type.Decibels);
-					sig.connect(gate);
-					gate.connect(dest);
-				}); 
-				offline.test(function(sample){
-					expect(sample).to.equal(0);
-				}); 
-				offline.after(function(){
-					gate.dispose();
-					sig.dispose();
-					done();
+			if (Supports.WAVESHAPER_0_POSITION){
+
+				it("gates the incoming signal when below the threshold", function(done){
+					var gate, sig;
+					var offline = new Offline(); 
+					offline.before(function(dest){
+						gate = new Gate(-9);
+						sig = new Signal(-10, Tone.Type.Decibels);
+						sig.connect(gate);
+						gate.connect(dest);
+					}); 
+					offline.test(function(sample){
+						expect(sample).to.equal(0);
+					}); 
+					offline.after(function(){
+						gate.dispose();
+						sig.dispose();
+						done();
+					});
+					offline.run();
 				});
-				offline.run();
-			});
+			}
 
 			it("passes the incoming signal when above the threshold", function(done){
 				var gate, sig;

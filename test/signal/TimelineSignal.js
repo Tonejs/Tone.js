@@ -1,5 +1,6 @@
-define(["Test", "Tone/signal/TimelineSignal", "helper/Offline", "Tone/core/Type", "helper/Offline2"], 
-	function (Test, TimelineSignal, Offline, Tone, Offline2) {
+define(["Test", "Tone/signal/TimelineSignal", "helper/Offline", "Tone/core/Type", 
+	"helper/Offline2", "helper/Supports"], 
+	function (Test, TimelineSignal, Offline, Tone, Offline2, Supports) {
 
 	describe("TimelineSignal", function(){
 
@@ -89,21 +90,24 @@ define(["Test", "Tone/signal/TimelineSignal", "helper/Offline", "Tone/core/Type"
 			offline.run();
 		});
 
-		it("can get set a curve in the future", function(done){
-			Offline2(function(dest, test, after){
-				var sched = new TimelineSignal(1).connect(dest);
-				sched.setValueCurveAtTime([0, 1, 0.2, 0.8, 0], 0, 1);
+		if (Supports.INTERPOLATED_VALUE_CURVE){
+			
+			it("can get set a curve in the future", function(done){
+				Offline2(function(dest, test, after){
+					var sched = new TimelineSignal(1).connect(dest);
+					sched.setValueCurveAtTime([0, 1, 0.2, 0.8, 0], 0, 1);
 
-				test(function(sample, time){
-					expect(sample).to.be.closeTo(sched.getValueAtTime(time), 0.01);
-				});
+					test(function(sample, time){
+						expect(sample).to.be.closeTo(sched.getValueAtTime(time), 0.01);
+					});
 
-				after(function(){
-					sched.dispose();
-					done();
-				});
-			}, 1);
-		});
+					after(function(){
+						sched.dispose();
+						done();
+					});
+				}, 1);
+			});
+		}
 
 		it("can scale a curve value", function(done){
 			Offline2(function(dest, test, after){
@@ -121,31 +125,34 @@ define(["Test", "Tone/signal/TimelineSignal", "helper/Offline", "Tone/core/Type"
 			}, 1);
 		});
 
-		it("can match a complex scheduled curve", function(done){
-			var sched;
-			var offline = new Offline(4);
-			offline.before(function(dest){
-				sched = new TimelineSignal(1).connect(dest);
-				sched.setValueAtTime(0.2, 0.3);
-				sched.setTargetAtTime(0.5, 0.5, 2);
-				sched.setValueAtTime(0.4, 1);
-				sched.linearRampToValueAtTime(5, 1.4);
-				sched.exponentialRampToValueAtTime(2, 1.6);
-				sched.setValueAtTime(2.5, 2);
-				sched.linearRampToValueAtTime(2.4, 2.5);
-				sched.linearRampToValueAtTime(5, 3);
-				sched.setTargetAtTime(2, 3.5, 5);
-				sched.setValueCurveAtTime([0, 1, 0], 3.8, 0.2);
+		if (Supports.COMPLEX_SIGNAL_SCHEDULING){
+			
+			it("can match a complex scheduled curve", function(done){
+				var sched;
+				var offline = new Offline(4);
+				offline.before(function(dest){
+					sched = new TimelineSignal(1).connect(dest);
+					sched.setValueAtTime(0.2, 0.3);
+					sched.setTargetAtTime(0.5, 0.5, 2);
+					sched.setValueAtTime(0.4, 1);
+					sched.linearRampToValueAtTime(5, 1.4);
+					sched.exponentialRampToValueAtTime(2, 1.6);
+					sched.setValueAtTime(2.5, 2);
+					sched.linearRampToValueAtTime(2.4, 2.5);
+					sched.linearRampToValueAtTime(5, 3);
+					sched.setTargetAtTime(2, 3.5, 5);
+					sched.setValueCurveAtTime([0, 1, 0], 3.8, 0.2);
+				});
+				offline.test(function(sample, time){
+					expect(sample).to.be.closeTo(sched.getValueAtTime(time), 0.01);
+				});
+				offline.after(function(){
+					sched.dispose();
+					done();
+				});
+				offline.run();
 			});
-			offline.test(function(sample, time){
-				expect(sample).to.be.closeTo(sched.getValueAtTime(time), 0.01);
-			});
-			offline.after(function(){
-				sched.dispose();
-				done();
-			});
-			offline.run();
-		});
+		}
 
 		it("can schedule a linear ramp between two times", function(){
 			var sched = new TimelineSignal(0);

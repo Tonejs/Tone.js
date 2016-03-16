@@ -1,6 +1,6 @@
 define(["Tone/component/Follower", "helper/Basic", "helper/Offline", "Test", 
-	"Tone/signal/Signal", "helper/PassAudio", "helper/PassAudioStereo"], 
-function (Follower, Basic, Offline, Test, Signal, PassAudio, PassAudioStereo) {
+	"Tone/signal/Signal", "helper/PassAudio", "helper/PassAudioStereo", "helper/Supports"], 
+function (Follower, Basic, Offline, Test, Signal, PassAudio, PassAudioStereo, Supports) {
 	describe("Follower", function(){
 
 		Basic(Follower);
@@ -91,17 +91,20 @@ function (Follower, Basic, Offline, Test, Signal, PassAudio, PassAudioStereo) {
 				offline.run();
 			});*/
 
-			it("passes the incoming signal through", function(done){
-				var follower;
-				PassAudio(function(input, output){
-					follower = new Follower();
-					input.connect(follower);
-					follower.connect(output);
-				}, function(){
-					follower.dispose();
-					done();
+			if (Supports.WAVESHAPER_0_POSITION){
+
+				it("passes the incoming signal through", function(done){
+					var follower;
+					PassAudio(function(input, output){
+						follower = new Follower();
+						input.connect(follower);
+						follower.connect(output);
+					}, function(){
+						follower.dispose();
+						done();
+					});
 				});
-			});
+			}
 
 		});
 	});

@@ -1,6 +1,6 @@
-define(["Tone/component/Panner", "helper/Basic", "helper/Offline", "Test", 
-	"Tone/signal/Signal", "helper/PassAudio", "helper/PassAudioStereo", "Tone/component/Merge", "Tone/core/Tone"], 
-function (Panner, Basic, Offline, Test, Signal, PassAudio, PassAudioStereo, Merge, Tone) {
+define(["Tone/component/Panner", "helper/Basic", "helper/Offline", "Test", "Tone/signal/Signal", 
+	"helper/PassAudio", "helper/PassAudioStereo", "Tone/component/Merge", "Tone/core/Tone", "helper/Supports"], 
+function (Panner, Basic, Offline, Test, Signal, PassAudio, PassAudioStereo, Merge, Tone, Supports) {
 
 	//a stereo signal for testing
 	var StereoSignal = function(val){
@@ -110,24 +110,27 @@ function (Panner, Basic, Offline, Test, Signal, PassAudio, PassAudioStereo, Merg
 					}).run();
 			});
 
-			it("mixes the signal in equal power when panned center", function(done){
-				var panner;
-				var signal;
-				new Offline(0.2, 2)
-					.before(function(dest){
-						panner = new Panner(0).connect(dest);
-						signal = new StereoSignal(1, 1).connect(panner);
-					})
-					.test(function(samples){
-						expect(samples[0]).to.be.closeTo(0.707, 0.01);
-						expect(samples[1]).to.be.closeTo(0.707, 0.01);
-					})
-					.after(function(){
-						panner.dispose();
-						signal.dispose();
-						done();
-					}).run();
-			});
+			if (Supports.EQUAL_POWER_PANNER){
+
+				it("mixes the signal in equal power when panned center", function(done){
+					var panner;
+					var signal;
+					new Offline(0.2, 2)
+						.before(function(dest){
+							panner = new Panner(0).connect(dest);
+							signal = new StereoSignal(1, 1).connect(panner);
+						})
+						.test(function(samples){
+							expect(samples[0]).to.be.closeTo(0.707, 0.01);
+							expect(samples[1]).to.be.closeTo(0.707, 0.01);
+						})
+						.after(function(){
+							panner.dispose();
+							signal.dispose();
+							done();
+						}).run();
+				});
+			}
 		});
 	});
 });

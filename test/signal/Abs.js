@@ -1,5 +1,5 @@
-define(["Test", "Tone/signal/Abs", "helper/Basic", "Tone/signal/Signal", "helper/Offline"], 
-function (Test, Abs, BasicTest, Signal, Offline) {
+define(["Test", "Tone/signal/Abs", "helper/Basic", "Tone/signal/Signal", "helper/Offline", "helper/Supports"], 
+function (Test, Abs, BasicTest, Signal, Offline, Supports) {
 
 	describe("Abs", function(){
 
@@ -24,7 +24,7 @@ function (Test, Abs, BasicTest, Signal, Offline) {
 					abs.connect(dest);
 				});
 				offline.test(function(sample){
-					expect(sample).to.be.closeTo(0.4, 0.01);
+					expect(sample).to.be.closeTo(0.4, 0.1);
 				});
 				offline.after(function(){
 					signal.dispose();
@@ -33,6 +33,29 @@ function (Test, Abs, BasicTest, Signal, Offline) {
 				});
 				offline.run();
 			});
+
+			if (Supports.WAVESHAPER_0_POSITION){
+				
+				it("outputs 0 when the input is 0", function(done){
+					var signal, abs;
+					var offline = new Offline(0.2);
+					offline.before(function(dest){
+						signal = new Signal(0);
+						abs = new Abs();
+						signal.connect(abs);
+						abs.connect(dest);
+					});
+					offline.test(function(sample){
+						expect(sample).to.equal(0);
+					});
+					offline.after(function(){
+						signal.dispose();
+						abs.dispose();
+						done();
+					});
+					offline.run();
+				});
+			}
 
 			it("outputs the absolute value for negative numbers", function(done){
 				var signal, abs;

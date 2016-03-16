@@ -238,7 +238,7 @@ function(Signal, Expr, Test, Basic, OutputAudio, PassAudio, Offline){
 					exp.connect(dest);
 				}); 
 				offline.test(function(sample){
-					expect(sample).to.be.closeTo(0.11, 0.001);
+					expect(sample).to.be.closeTo(0.11, 0.01);
 				}); 
 				offline.after(function(){
 					exp.dispose();

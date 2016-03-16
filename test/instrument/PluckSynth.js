@@ -1,9 +1,13 @@
-define(["Tone/instrument/PluckSynth", "helper/Basic", "helper/InstrumentTests"], function (PluckSynth, Basic, InstrumentTest) {
+define(["Tone/instrument/PluckSynth", "helper/Basic", "helper/InstrumentTests", "helper/Supports"], 
+	function (PluckSynth, Basic, InstrumentTest, Supports) {
 
 	describe("PluckSynth", function(){
 
 		Basic(PluckSynth);
-		InstrumentTest(PluckSynth, "C3");
+
+		if (Supports.PLUCK_SYNTH){
+			InstrumentTest(PluckSynth, "C3");
+		}
 
 		context("API", function(){
 
