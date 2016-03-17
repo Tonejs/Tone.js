@@ -220,7 +220,7 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal", "Tone/core/TimelineState
 		if (this._lookAhead === "auto"){
 			var time = this.now();
 			if (this._lastUpdate !== -1){
-				var diff = (time - this._lastUpdate) / 1000;
+				var diff = (time - this._lastUpdate);
 				//averaging
 				this._computedLookAhead = (9 * this._computedLookAhead + diff) / 10;
 			}
