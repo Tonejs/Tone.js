@@ -208,7 +208,7 @@ define(["helper/Basic", "Tone/event/Event", "Tone/core/Tone", "Tone/core/Transpo
 					test(function(sample, time){
 						if (time > 0 && time < 0.38){
 							expect(note.state).to.equal("started");	
-						} else if (time > 0.4 && time < 0.5){
+						} else if (time > 0.4 && time < 0.48){
 							expect(note.state).to.equal("stopped");	
 						} else if (time > 0.55 && time < 0.8){
 							expect(note.state).to.equal("started");	
@@ -270,7 +270,7 @@ define(["helper/Basic", "Tone/event/Event", "Tone/core/Tone", "Tone/core/Transpo
 						note.dispose();	
 						done();
 					});
-				}, 1);
+				}, 0.8);
 
 			});
 
