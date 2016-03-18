@@ -36,6 +36,14 @@ define(["Tone/core/Tone"], function (Tone) {
 		 */
 		Time : "time",
 		/**
+		 *  TimelinePosition describes a position along the Transport's timeline. It is
+		 *  similar to Time in that it uses all the same encodings, but TimelinePosition specifically
+		 *  pertains to the Transport's timeline, which is startable, stoppable, loopable, and seekable. 
+		 *  [Read more](https://github.com/Tonejs/Tone.js/wiki/TimelinePosition)
+		 *  @typedef {TimelinePosition}
+		 */
+		TimelinePosition : "timelinePosition",
+		/**
 		 *  Frequency can be described similar to time, except ultimately the
 		 *  values are converted to frequency instead of seconds. A number
 		 *  is taken literally as the value in hertz. Additionally any of the 

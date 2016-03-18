@@ -203,7 +203,7 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Type", "Tone/core/Ti
 
 	/**
 	 *  Start the note at the given time. 
-	 *  @param  {Time}  time  When the note should start.
+	 *  @param  {TimelinePosition}  time  When the note should start.
 	 *  @return  {Tone.Event}  this
 	 */
 	Tone.Event.prototype.start = function(time){
@@ -221,7 +221,7 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Type", "Tone/core/Ti
 
 	/**
 	 *  Stop the Event at the given time.
-	 *  @param  {Time}  time  When the note should stop.
+	 *  @param  {TimelinePosition}  time  When the note should stop.
 	 *  @return  {Tone.Event}  this
 	 */
 	Tone.Event.prototype.stop = function(time){
@@ -241,7 +241,7 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Type", "Tone/core/Ti
 
 	/**
 	 *  Cancel all scheduled events greater than or equal to the given time
-	 *  @param  {Time}  [time=0]  The time after which events will be cancel.
+	 *  @param  {TimelinePosition}  [time=0]  The time after which events will be cancel.
 	 *  @return  {Tone.Event}  this
 	 */
 	Tone.Event.prototype.cancel = function(time){

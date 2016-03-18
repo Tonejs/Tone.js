@@ -237,7 +237,7 @@ function(Tone){
 	/**
 	 *  Schedule an event along the timeline.
 	 *  @param {Function} callback The callback to be invoked at the time.
-	 *  @param {Time}  time The time to invoke the callback at.
+	 *  @param {TimelinePosition}  time The time to invoke the callback at.
 	 *  @return {Number} The id of the event which can be used for canceling the event. 
 	 *  @example
 	 * //trigger the callback when the Transport reaches the desired time
@@ -266,7 +266,7 @@ function(Tone){
 	 *  @param  {Function}  callback   The callback to invoke.
 	 *  @param  {Time}    interval   The duration between successive
 	 *                               callbacks.
-	 *  @param  {Time=}    startTime  When along the timeline the events should
+	 *  @param  {TimelinePosition=}    startTime  When along the timeline the events should
 	 *                               start being invoked.
 	 *  @param {Time} [duration=Infinity] How long the event should repeat. 
 	 *  @return  {Number}    The ID of the scheduled event. Use this to cancel
@@ -299,7 +299,7 @@ function(Tone){
 	 *  Note that if the given time is less than the current transport time, 
 	 *  the event will be invoked immediately. 
 	 *  @param {Function} callback The callback to invoke once.
-	 *  @param {Time} time The time the callback should be invoked.
+	 *  @param {TimelinePosition} time The time the callback should be invoked.
 	 *  @returns {Number} The ID of the scheduled event. 
 	 */
 	Tone.Transport.prototype.scheduleOnce = function(callback, time){
@@ -334,7 +334,7 @@ function(Tone){
 	 *  Remove scheduled events from the timeline after
 	 *  the given time. Repeated events will be removed
 	 *  if their startTime is after the given time
-	 *  @param {Time} [after=0] Clear all events after
+	 *  @param {TimelinePosition} [after=0] Clear all events after
 	 *                          this time. 
 	 *  @returns {Tone.Transport} this
 	 */
@@ -505,8 +505,8 @@ function(Tone){
 
 	/**
 	 *  Set the loop start and stop at the same time. 
-	 *  @param {Time} startPosition 
-	 *  @param {Time} endPosition   
+	 *  @param {TimelinePosition} startPosition 
+	 *  @param {TimelinePosition} endPosition   
 	 *  @returns {Tone.Transport} this
 	 *  @example
 	 * //loop over the first measure

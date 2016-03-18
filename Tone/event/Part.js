@@ -138,7 +138,7 @@ define(["Tone/core/Tone", "Tone/event/Event", "Tone/core/Type", "Tone/core/Trans
 
 	/**
 	 *  Start the part at the given time. 
-	 *  @param  {Time}  time    When to start the part.
+	 *  @param  {TimelinePosition}  time    When to start the part.
 	 *  @param  {Time=}  offset  The offset from the start of the part
 	 *                           to begin playing at.
 	 *  @return  {Tone.Part}  this
@@ -213,7 +213,7 @@ define(["Tone/core/Tone", "Tone/event/Event", "Tone/core/Type", "Tone/core/Trans
 
 	/**
 	 *  Stop the part at the given time.
-	 *  @param  {Time}  time  When to stop the part.
+	 *  @param  {TimelinePosition}  time  When to stop the part.
 	 *  @return  {Tone.Part}  this
 	 */
 	Tone.Part.prototype.stop = function(time){
@@ -369,7 +369,7 @@ define(["Tone/core/Tone", "Tone/event/Event", "Tone/core/Type", "Tone/core/Trans
 
 	/**
 	 *  Cancel scheduled state change events: i.e. "start" and "stop".
-	 *  @param {Time} after The time after which to cancel the scheduled events.
+	 *  @param {TimelinePosition} after The time after which to cancel the scheduled events.
 	 *  @return  {Tone.Part}  this
 	 */
 	Tone.Part.prototype.cancel = function(after){
