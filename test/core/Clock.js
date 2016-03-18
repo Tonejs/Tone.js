@@ -186,7 +186,7 @@ define(["Test", "Tone/core/Clock", "helper/Offline2"], function (Test, Clock, Of
 						clock.dispose();
 						done();
 					});
-				}, 0.5);
+				}, 0.45);
 			});
 
 			it ("can schedule the frequency of the clock", function(done){
@@ -236,7 +236,7 @@ define(["Test", "Tone/core/Clock", "helper/Offline2"], function (Test, Clock, Of
 					var clock = new Clock(function(){}, 0.05).start().stop(0.5);
 
 					testFn(function(sample, time){
-						if (time > 0.05 && time < 0.5){
+						if (time > 0.05 && time < 0.48){
 							expect(clock.ticks).to.be.above(0);
 						}
 					});

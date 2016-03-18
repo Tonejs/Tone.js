@@ -216,7 +216,7 @@ function (Test, Transport, Tone, Offline) {
 						if (time <= 0.1){
 							expect(Tone.Transport.ticks).to.be.greaterThan(0);	
 							pausedTicks = Tone.Transport.ticks;
-						} else if (time <= 0.2){
+						} else if (time <= 0.19){
 							expect(Tone.Transport.ticks).to.equal(pausedTicks);	
 						} else if (time > 0.21){
 							expect(Tone.Transport.ticks).to.equal(0);	
