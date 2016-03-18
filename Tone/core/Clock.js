@@ -221,6 +221,8 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal", "Tone/core/TimelineState
 			var time = this.now();
 			if (this._lastUpdate !== -1){
 				var diff = (time - this._lastUpdate);
+				//max size on the diff
+				diff = Math.min(10 * UPDATE_RATE/1000, diff);
 				//averaging
 				this._computedLookAhead = (9 * this._computedLookAhead + diff) / 10;
 			}
