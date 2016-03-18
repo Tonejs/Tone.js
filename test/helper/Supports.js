@@ -24,7 +24,7 @@ define(["helper/ua-parser"], function (UserAgentParser) {
 		//has stereo panner node
 		STEREO_PANNER_NODE : isnt("Safari"),
 		//can schedule a mixture of curves correctly
-		COMPLEX_SIGNAL_SCHEDULING : is("Chrome"),
+		ACCURATE_SIGNAL_SCHEDULING : is("Chrome"),
 		//stereo panner is equal power panning
 		EQUAL_POWER_PANNER : isnt("Firefox"),
 		//doesn't seem to support the pluck synth

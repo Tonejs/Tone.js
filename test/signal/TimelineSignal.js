@@ -125,7 +125,7 @@ define(["Test", "Tone/signal/TimelineSignal", "helper/Offline", "Tone/core/Type"
 			}, 1);
 		});
 
-		if (Supports.COMPLEX_SIGNAL_SCHEDULING){
+		if (Supports.ACCURATE_SIGNAL_SCHEDULING){
 			
 			it("can match a complex scheduled curve", function(done){
 				var sched;

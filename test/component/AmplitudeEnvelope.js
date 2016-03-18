@@ -39,7 +39,7 @@ function (AmplitudeEnvelope, Basic, Offline, Envelope, Test, Signal, Supports) {
 				offline.run();
 			});
 
-			if (Supports.COMPLEX_SIGNAL_SCHEDULING){
+			if (Supports.ACCURATE_SIGNAL_SCHEDULING){
 
 				it ("passes signal once triggered", function(done){
 					var ampEnv, signal;

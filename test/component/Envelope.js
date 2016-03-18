@@ -42,7 +42,7 @@ function (Envelope, Basic, Offline, Test, Offline2, Supports) {
 				offline.run();
 			});
 
-			if (Supports.COMPLEX_SIGNAL_SCHEDULING){
+			if (Supports.ACCURATE_SIGNAL_SCHEDULING){
 
 				it ("passes signal once triggered", function(done){
 					var env;
@@ -120,7 +120,7 @@ function (Envelope, Basic, Offline, Test, Offline2, Supports) {
 				env2.dispose();
 			});
 
-			if (Supports.COMPLEX_SIGNAL_SCHEDULING){
+			if (Supports.ACCURATE_SIGNAL_SCHEDULING){
 
 				it ("correctly schedules an exponential attack", function(done){
 					var env;
@@ -172,7 +172,7 @@ function (Envelope, Basic, Offline, Test, Offline2, Supports) {
 				offline.run();
 			});
 
-			if (Supports.COMPLEX_SIGNAL_SCHEDULING){
+			if (Supports.ACCURATE_SIGNAL_SCHEDULING){
 
 				it ("can schedule a very short attack", function(done){
 					var env;
@@ -249,7 +249,7 @@ function (Envelope, Basic, Offline, Test, Offline2, Supports) {
 				offline.run();
 			});
 
-			if (Supports.COMPLEX_SIGNAL_SCHEDULING){
+			if (Supports.ACCURATE_SIGNAL_SCHEDULING){
 
 				it ("is silent after decay if sustain is 0", function(done){
 					var attackTime = 0.1;
