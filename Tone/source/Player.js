@@ -149,9 +149,8 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 	};
 
 	/**
-	 *  play the buffer between the desired positions
+	 *  Play the buffer between the desired positions
 	 *  
-	 *  @private
 	 *  @param  {Time} [startTime=now] when the player should start.
 	 *  @param  {Time} [offset=0] the offset from the beginning of the sample
 	 *                                 to start at. 
@@ -159,6 +158,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 	 *                                is given, it will default to the full length 
 	 *                                of the sample (minus any offset)
 	 *  @returns {Tone.Player} this
+	 *  @method start
 	 */
 	Tone.Player.prototype._start = function(startTime, offset, duration){
 		if (this._buffer.loaded){
