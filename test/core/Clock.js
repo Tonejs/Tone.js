@@ -236,7 +236,7 @@ define(["Test", "Tone/core/Clock", "helper/Offline2"], function (Test, Clock, Of
 					var clock = new Clock(function(){}, 0.05).start().stop(0.5);
 
 					testFn(function(sample, time){
-						if (time > 0.05 && time < 0.48){
+						if (time > 0.05 && time < 0.5){
 							expect(clock.ticks).to.be.above(0);
 						}
 					});

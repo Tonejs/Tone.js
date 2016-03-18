@@ -47,9 +47,10 @@ define(["Tone/core/Tone", "Tone/core/Clock", "Tone/core/Transport"], function (T
 				}
 				try {
 					//update the clock periodically
-					if (i % 10 === 0){
-						Clock._worker.dispatchEvent(event);
-					} 
+					// if (i % 10 === 0){
+					// 	Clock._worker.dispatchEvent(event);
+					// } 
+					Clock._worker.dispatchEvent(event);
 					this._currentTime = i / sampleRate;
 					this._test(ret, i / sampleRate, Tone.Transport.ticks);
 				} catch (e){
