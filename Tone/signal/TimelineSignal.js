@@ -192,8 +192,36 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Timeline"], function 
 			"time" : startTime,
 			"duration" : duration
 		});
+		floats = this._interpolateValueCurve(floats, duration);
 		this._param.setValueCurveAtTime(floats, startTime, duration);
 		return this;
+	};
+
+	/**
+	 *  setValueCurveAtTime currently doesn't interpolate adjacent values 
+	 *  for some browsers as per [the spec](http://webaudio.github.io/web-audio-api/#widl-AudioParam-setValueCurveAtTime-AudioParam-Float32Array-values-double-startTime-double-duration)
+	 *  Creates a pre-interpolated curve on browsers that are not Chrome 46+.
+	 *  @param  {Float32Array}  values
+	 *  @param  {Number}  duration
+	 *  @return  {Float32Array}
+	 *  @private
+	 */
+	Tone.TimelineSignal.prototype._interpolateValueCurve = function(values, duration){
+		//only chrome version > 46 currently supports scaled value curves
+		var isChrome = navigator.userAgent.toLowerCase().indexOf("chrome") > -1;
+		//http://stackoverflow.com/questions/4900436/how-to-detect-the-installed-chrome-version
+		var version = navigator.userAgent.match(/Chrom(e|ium)\/([0-9]+)\./);
+		if (!(isChrome && parseInt(version[2]) > 46)){
+			//make a new array
+			var numSamples = Math.floor(duration * this.context.sampleRate * 0.5);
+			var newVals = new Float32Array(numSamples);
+			for (var i = 0; i < numSamples; i++){
+				newVals[i] = this._curveInterpolate(0, values, numSamples, i);
+			}
+			return newVals;
+		} else {
+			return values;
+		}
 	};
 
 	/**

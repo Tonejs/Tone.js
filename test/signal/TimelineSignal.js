@@ -89,25 +89,22 @@ define(["Test", "Tone/signal/TimelineSignal", "helper/Offline", "Tone/core/Type"
 			});
 			offline.run();
 		});
-
-		if (Supports.INTERPOLATED_VALUE_CURVE){
 			
-			it("can get set a curve in the future", function(done){
-				Offline2(function(dest, test, after){
-					var sched = new TimelineSignal(1).connect(dest);
-					sched.setValueCurveAtTime([0, 1, 0.2, 0.8, 0], 0, 1);
+		it("can get set a curve in the future", function(done){
+			Offline2(function(dest, test, after){
+				var sched = new TimelineSignal(1).connect(dest);
+				sched.setValueCurveAtTime([0, 1, 0.2, 0.8, 0], 0, 1);
 
-					test(function(sample, time){
-						expect(sample).to.be.closeTo(sched.getValueAtTime(time), 0.01);
-					});
+				test(function(sample, time){
+					expect(sample).to.be.closeTo(sched.getValueAtTime(time), 0.01);
+				});
 
-					after(function(){
-						sched.dispose();
-						done();
-					});
-				}, 1);
-			});
-		}
+				after(function(){
+					sched.dispose();
+					done();
+				});
+			}, 1);
+		});
 
 		it("can scale a curve value", function(done){
 			Offline2(function(dest, test, after){
