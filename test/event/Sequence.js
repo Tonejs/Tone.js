@@ -188,64 +188,88 @@ define(["helper/Basic", "Tone/event/Sequence", "Tone/core/Tone",
 			});
 
 			it ("invokes the scheduled events in the right order", function(done){
-				var count = 0;
-				var seq = new Sequence(function(time, value){
-					expect(value).to.equal(count);
-					count++;
-					if (value === 4){
+				Offline(function(dest, test, after){
+
+					var count = 0;
+					var seq = new Sequence(function(time, value){
+						expect(value).to.equal(count);
+						count++;
+					}, [0, [1, 2], [3, 4]], "16n").start();
+
+					seq.loop = false;
+					Tone.Transport.start();
+
+					after(function(){
 						seq.dispose();
 						done();
-					}
-				}, [0, [1, 2], [3, 4]], "16n").start();
-				Tone.Transport.start();
+					});
+				}, 0.5);
 			});
 
 			it ("invokes the scheduled events at the correct times", function(done){
-				var count = 0;
-				var now = Tone.Transport.now() + 0.1;
-				var eighth = Tone.Transport.toSeconds("8n");
-				var times = [now, now + eighth, now + eighth * 1.5, now + eighth * 2, now + eighth*(2 + 1/3), now + eighth*(2 + 2/3)];
-				var seq = new Sequence(function(time, value){
-					expect(time).to.be.closeTo(times[count], 0.01);
-					count++;
-					if (value === 5){
+
+				Offline(function(dest, test, after){
+
+					var count = 0;
+					var eighth = Tone.Transport.toSeconds("8n");
+					var times = [0, eighth, eighth * 1.5, eighth * 2, eighth*(2 + 1/3), eighth*(2 + 2/3)];
+
+					var seq = new Sequence(function(time){
+						expect(time).to.be.closeTo(times[count], 0.01);
+						count++;
+					}, [0, [1, 2], [3, 4, 5]], "8n").start(0);
+
+					seq.loop = false;
+					Tone.Transport.start();
+
+					after(function(){
 						seq.dispose();
 						done();
-					}
-				}, [0, [1, 2], [3, 4, 5]], "8n").start(0);
-				Tone.Transport.start(now);
+					});
+				}, 0.8);
 			});
 
 			it ("can schedule rests using 'null'", function(done){
-				var count = 0;
-				var now = Tone.Transport.now() + 0.1;
-				var eighth = Tone.Transport.toSeconds("8n");
-				var times = [now, now + eighth * 2.5];
-				var seq = new Sequence(function(time, value){
-					expect(time).to.be.closeTo(times[count], 0.01);
-					count++;
-					if (value === 1){
+
+				Offline(function(dest, test, after){
+
+					var count = 0;
+					var eighth = Tone.Transport.toSeconds("8n");
+					var times = [0, eighth * 2.5];
+					var seq = new Sequence(function(time, value){
+						expect(time).to.be.closeTo(times[count], 0.01);
+						count++;
+					}, [0, null, [null, 1]], "8n").start(0);
+
+					seq.loop = false;
+					Tone.Transport.start();
+					
+					after(function(){
 						seq.dispose();
 						done();
-					}
-				}, [0, null, [null, 1]], "8n").start(0);
-				Tone.Transport.start(now);
+					});
+				}, 0.8);
 			});
 
 			it ("can schedule triple nested arrays", function(done){
-				var count = 0;
-				var now = Tone.Transport.now() + 0.1;
-				var eighth = Tone.Transport.toSeconds("8n");
-				var times = [now, now + eighth, now + eighth * 1.5, now + eighth * 1.75];
-				var seq = new Sequence(function(time, value){
-					expect(time).to.be.closeTo(times[count], 0.01);
-					count++;
-					if (value === 3){
+				Offline(function(output, test, after){
+
+					var count = 0;
+					var eighth = Tone.Transport.toSeconds("8n");
+					var times = [0,eighth, eighth * 1.5, eighth * 1.75];
+					var seq = new Sequence(function(time){
+						expect(time).to.be.closeTo(times[count], 0.01);
+						count++;
+					}, [0, [1, [2, 3]]], "8n").start(0);
+					seq.loop = false;
+
+					Tone.Transport.start(0);
+					
+					after(function(){
 						seq.dispose();
 						done();
-					}
-				}, [0, [1, [2, 3]]], "8n").start(0);
-				Tone.Transport.start(now);
+					});
+				}, 0.7);
 			});
 
 			it ("starts an event added after the seq was started", function(done){
