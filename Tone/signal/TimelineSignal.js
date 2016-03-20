@@ -201,6 +201,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Timeline"], function 
 	 *  setValueCurveAtTime currently doesn't interpolate adjacent values 
 	 *  for some browsers as per [the spec](http://webaudio.github.io/web-audio-api/#widl-AudioParam-setValueCurveAtTime-AudioParam-Float32Array-values-double-startTime-double-duration)
 	 *  Creates a pre-interpolated curve on browsers that are not Chrome 46+.
+	 *  POLYFILL
 	 *  @param  {Float32Array}  values
 	 *  @param  {Number}  duration
 	 *  @return  {Float32Array}
