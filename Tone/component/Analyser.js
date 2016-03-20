@@ -101,7 +101,17 @@ define(["Tone/core/Tone"], function (Tone) {
 			if (this._returnType === Tone.Analyser.ReturnType.Byte){
 				this._analyser.getByteTimeDomainData(this._buffer);
 			} else {
-				this._analyser.getFloatTimeDomainData(this._buffer);
+				if (this.isFunction(AnalyserNode.prototype.getFloatTimeDomainData)){
+					this._analyser.getFloatTimeDomainData(this._buffer);
+				} else {
+					var uint8 = new Uint8Array(this._buffer.length);
+					this._analyser.getByteTimeDomainData(uint8);
+					//referenced https://github.com/mohayonao/get-float-time-domain-data 
+					// POLYFILL
+					for (var i = 0; i < uint8.length; i++){
+						this._buffer[i] = (uint8[i] - 128) * 0.0078125;
+					}
+				}
 			}
 		}
 		return this._buffer;
