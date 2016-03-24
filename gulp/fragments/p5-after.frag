@@ -1,17 +1,5 @@
-	//UMD
-	if ( typeof define === "function" && define.amd ) {
-		define( "Tone", [], function() {
-			return Tone;
-		});
-	} else if (typeof module === "object") {
-		module.exports = Tone;
- 	} else {
-		root.Tone = Tone;
-	}
-
-
 	///////////////////////////////////////////////////////////////////////////
-	//	P5 SHIM
+	//	P5 PRELOAD SHIM
 	///////////////////////////////////////////////////////////////////////////
 
 	Tone.registeredPreload = function(callback){
@@ -43,5 +31,5 @@
 
 	p5.prototype.registerPreloadMethod("registeredPreload", Tone);
 	
-
-} (this));
+	return Tone
+}));
