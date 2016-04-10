@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/core/Gain", "Tone/core/Master"], function (Tone) {
+define(["Tone/core/Tone", "Tone/core/Gain", "Tone/core/Master", "Tone/core/Buffer"], function (Tone) {
 
 	/**
 	 * @class Tone.MultiPlayer implements a "fire and forget"

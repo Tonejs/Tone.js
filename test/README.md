@@ -1,6 +1,10 @@
-`gulp test` from within the gulp folder to start a server and run all of the tests. 
+I am currently using two test runners: [mocha](https://mochajs.org/) and [karma](https://github.com/karma-runner/karma) + mocha. 
 
-Individual files can be tested by running `gulp collectTests -f [Tone class name]` which will update the test/Main.js with the given class tests. 
+From within the gulp folder, run `gulp browser-test` to collect all of the files, launch a local server and run the tests. If you run `gulp karma-test`, the tests can be configured to run across multiple browsers simultaneously. 
+
+Be sure that the browser window is in focus while tests are running. 
+
+Individual files can be tested by running `gulp collectTests -f [Tone class name]` which will update the test/Main.js with the given class' tests. You can then refresh the `test/index.html` page to rerun those tests. 
 
 You can also test groups of classes by folder by adding another flag. For example to test all of the signals run `gulp collectTests --signal`. or the shorthand form: `gulp collectTests -s`. 
 
@@ -13,6 +17,4 @@ You can also test groups of classes by folder by adding another flag. For exampl
 * `-m` = `--component`
 * `-t` = `--control`
 
-Currently, Chrome is the target test platform. 100% of tests should pass. Fewer tests tends to pass in Safari and even fewer in Firefox. The goal is to have 100% pass on all browsers, but since the speicification and implementations are all relatively new, there are still a few kinks to work out. 
-
-Be sure that the browser window is in focus while tests are running. Timing in Tone.js is done using requestAnimationFrame which fires at a low priority or no priority if the tab is not in focus. 
+The tests target the latest [specification](https://webaudio.github.io/web-audio-api/) and not any specific browser. I have been keeping a list of which features browsers/versions currently support in `test/helper/Supports.js`. Some tests are only conditionally run if that feature is supported on the platform. 
