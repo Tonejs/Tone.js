@@ -433,22 +433,6 @@ define(function(){
 	};
 
 	/**
-	 *  fan out the connection from the first argument to the rest of the arguments
-	 *  @param {...AudioParam|Tone|AudioNode} nodes
-	 *  @returns {Tone} this
-	 */
-	Tone.prototype.connectParallel = function(){
-		var connectFrom = arguments[0];
-		if (arguments.length > 1){
-			for (var i = 1; i < arguments.length; i++){
-				var connectTo = arguments[i];
-				connectFrom.connect(connectTo);
-			}
-		}
-		return this;
-	};
-
-	/**
 	 *  Connect the output of this node to the rest of the nodes in series.
 	 *  @example
 	 *  //connect a node to an effect, panVol and then to the master output
