@@ -319,7 +319,7 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Subtract", "Tone/signa
 					method : token.method,
 					args : [
 						expr,
-						parseExpression(precedence)
+						parseExpression(precedence-1)
 					]
 				};
 				token = lexer.peek();
