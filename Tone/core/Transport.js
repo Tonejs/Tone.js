@@ -184,7 +184,7 @@ function(Tone){
 		"timeSignature" : 4,
 		"loopStart" : 0,
 		"loopEnd" : "4m",
-		"PPQ" : 48
+		"PPQ" : 192
 	};
 
 	///////////////////////////////////////////////////////////////////////////////
@@ -345,36 +345,6 @@ function(Tone){
 		this._onceEvents.cancel(after);
 		this._repeatedEvents.cancel(after);
 		return this;
-	};
-
-	///////////////////////////////////////////////////////////////////////////////
-	//	QUANTIZATION
-	///////////////////////////////////////////////////////////////////////////////
-
-	/**
-	 *  Returns the time closest time (equal to or after the given time) that aligns 
-	 *  to the subidivision. 
-	 *  @param {Time} time The time value to quantize to the given subdivision
-	 *  @param  {String} [subdivision="4n"] The subdivision to quantize to.
-	 *  @return {Number} 	the time in seconds until the next subdivision.
-	 *  @example
-	 * Tone.Transport.bpm.value = 120;
-	 * Tone.Transport.quantize("3 * 4n", "1m"); //return 0.5
-	 * //if the clock is started, it will return a value less than 0.5
-	 */
-	Tone.Transport.prototype.quantize = function(time, subdivision){
-		subdivision = this.defaultArg(subdivision, "4n");
-		var tickTime = this.toTicks(time);
-		subdivision = this.toTicks(subdivision);
-		var remainingTicks = subdivision - (tickTime % subdivision);
-		if (remainingTicks === subdivision){
-			remainingTicks = 0;
-		}
-		var now = this.now();
-		if (this.state === Tone.State.Started){
-			now = this._clock._nextTick;
-		}
-		return this.toSeconds(time, now) + this.ticksToSeconds(remainingTicks);
 	};
 
 	///////////////////////////////////////////////////////////////////////////////
@@ -657,6 +627,34 @@ function(Tone){
 	///////////////////////////////////////////////////////////////////////////////
 	//	SYNCING
 	///////////////////////////////////////////////////////////////////////////////
+
+	/**
+	 *  Returns the time aligned to the next subdivision
+	 *  of the Transport. If the Transport is not started,
+	 *  it will return 0.
+	 *  Note: this will not work precisely during tempo ramps.
+	 *  @param  {Time}  subdivision  The subdivision to quantize to
+	 *  @return  {Number}  The context time of the next subdivision.
+	 *  @example
+	 * Tone.Transport.start(); //the transport must be started
+	 * Tone.Transport.nextSubdivision("4n");
+	 */
+	Tone.Transport.prototype.nextSubdivision = function(subdivision){
+		subdivision = this.toSeconds(subdivision);
+		//if the transport's not started, return 0
+		var now;
+		if (this.state === Tone.State.Started){
+			now = this._clock._nextTick;
+		} else {
+			return 0;
+		}
+		var transportPos = this.ticksToSeconds(this.ticks);
+		var remainingTime = subdivision - (transportPos % subdivision);
+		if (remainingTime === subdivision){
+			remainingTime = 0;
+		}
+		return now + remainingTime;
+	};
 
 	/**
 	 *  Attaches the signal to the tempo control signal so that 
