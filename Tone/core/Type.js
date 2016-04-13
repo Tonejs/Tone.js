@@ -762,19 +762,6 @@ define(["Tone/core/Tone"], function (Tone) {
 	};
 
 	/**
-	 *  Convert an interval (in semitones) to a frequency ratio.
-	 *
-	 *  @param  {Interval} interval the number of semitones above the base note
-	 *  @return {number}          the frequency ratio
-	 *  @example
-	 * tone.intervalToFrequencyRatio(0); // returns 1
-	 * tone.intervalToFrequencyRatio(12); // returns 2
-	 */
-	Tone.prototype.intervalToFrequencyRatio = function(interval){
-		return Math.pow(2,(interval/12));
-	};
-
-	/**
 	 *  Convert a midi note number into a note name. 
 	 *
 	 *  @param  {MIDI} midiNumber the midi note number

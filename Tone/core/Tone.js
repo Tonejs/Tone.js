@@ -682,6 +682,19 @@ define(function(){
 		return  20 * (Math.log(gain) / Math.LN10);
 	};
 
+	/**
+	 *  Convert an interval (in semitones) to a frequency ratio.
+	 *  @param  {Interval} interval the number of semitones above the base note
+	 *  @return {number}          the frequency ratio
+	 *  @example
+	 * tone.intervalToFrequencyRatio(0); // 1
+	 * tone.intervalToFrequencyRatio(12); // 2
+	 * tone.intervalToFrequencyRatio(-12); // 0.5
+	 */
+	Tone.prototype.intervalToFrequencyRatio = function(interval){
+		return Math.pow(2,(interval/12));
+	};
+
 	///////////////////////////////////////////////////////////////////////////
 	//	TIMING
 	///////////////////////////////////////////////////////////////////////////
