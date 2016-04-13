@@ -12,22 +12,6 @@ define(["Test", "Tone/core/Type", "Tone/core/Transport", "deps/teoria"], functio
 			tone.dispose();
 		});
 
-		context("Sample Conversion", function(){
-
-			it("correctly calculates samples to seconds", function(){
-				var sampleRate = tone.context.sampleRate;
-				expect(tone.samplesToSeconds(100)).to.equal(100/sampleRate);
-				expect(tone.samplesToSeconds(800)).to.equal(800/sampleRate);
-			});
-
-			it("correctly calculates seconds to samples", function(){
-				var sampleRate = tone.context.sampleRate;
-				expect(tone.secondsToSamples(1)).to.equal(1 * sampleRate);
-				expect(tone.secondsToSamples(0.5)).to.equal(0.5*sampleRate);
-			});
-
-		});
-
 		context("Frequency Conversions", function(){
 
 			it("can convert notes into frequencies", function(){
@@ -247,27 +231,6 @@ define(["Test", "Tone/core/Type", "Tone/core/Transport", "deps/teoria"], functio
 				expect(tone.toSeconds("((1) + 2)*4n + 1:0:0")).to.equal(3.5);
 			});
 
-			it("can quantize values", function(){
-				expect(tone.toSeconds("4n @ 2n")).to.be.closeTo(1, 0.01);
-				expect(tone.toSeconds("2 @ 1.4")).to.be.closeTo(2.8, 0.01);
-				expect(tone.toSeconds("1 + 4n @ 4n")).to.be.closeTo(1.5, 0.01);
-				expect(tone.toSeconds("(1 + 4n) @ (4n + 1)")).to.be.closeTo(1.5, 0.01);
-				expect(tone.toSeconds("(0.4 + 4n) @ (4n + 1)")).to.be.closeTo(1.5, 0.01);
-				expect(tone.toSeconds("(0.4 @ 4n) + (2.1 @ 2n)")).to.be.closeTo(3.5, 0.01);
-			});
-
-			it("can get the next subdivison when the transport is started", function(done){
-				var now = tone.now() + 0.1;
-				Tone.Transport.start(now);
-				setTimeout(function(){
-					expect(tone.toSeconds("@8m")).to.be.closeTo(now + 16, 0.01);
-					expect(tone.toSeconds("@1m + 4n")).to.be.closeTo(now + 2.5, 0.01);
-					expect(tone.toSeconds("+1.1@4n")).to.be.closeTo(now + 1.5, 0.01);
-					expect(tone.toSeconds("(@4n) + 2n")).to.be.closeTo(now + 1.5, 0.01);
-					expect(tone.toSeconds("(+ 0.4 + 0.7 @4n) + 2n")).to.be.closeTo(now + 2.5, 0.01);
-					done();
-				}, 300);
-			});
 		});
 
 		context("Tone.ticksToSeconds", function(){
