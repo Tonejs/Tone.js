@@ -9,6 +9,7 @@ Tone.js is a Web Audio framework for creating interactive music in the browser. 
 
 # Demos
 
+* [Chrome Music Lab - Google](https://musiclab.chromeexperiments.com)
 * [Jazz.Computer - Yotam Mann](http://jazz.computer/)
 * [motionEmotion - Karen Peng, Jason Sigal](http://motionemotion.herokuapp.com/)
 * [p5.sound - build with Tone.js](https://github.com/processing/p5.js-sound)
@@ -24,8 +25,12 @@ Tone.js is a Web Audio framework for creating interactive music in the browser. 
 * [Scratch + Tone.js - Eric Rosenbaum](http://ericrosenbaum.github.io/tone-synth-extension/)
 * [Game of Reich - Ben Taylor](http://nexusosc.com/gameofreich/)
 * [Yume - Helios + Luke Twyman](http://www.unseen-music.com/yume/)
+* [TR-808 - Gregor Adams](http://codepen.io/pixelass/full/adyLPR)
+* [Tweet FM - Mike Mitchell](https://tweet-fm.herokuapp.com/)
+* [TextXoX - Damon Holzborn](http://rustleworks.com/textxox/)
+* [Stepping - John Hussey](http://stepping.audio/)
 
-Using Tone.js? I'd love to hear it: yotammann@gmail.com
+Using Tone.js? I'd love to hear it: yotam@tonejs.org
 
 # Installation
 
