@@ -332,7 +332,7 @@ define(["helper/Basic", "Tone/event/Loop", "Tone/core/Tone",
 					
 					var loop = new Loop({
 						"playbackRate" : 2,
-						"intervaliter" : 0.5,
+						"interval" : 0.5,
 						"callback" : function(time){
 							if (lastCall){
 								expect(time - lastCall).to.be.closeTo(0.25, 0.01);
