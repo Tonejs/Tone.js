@@ -8,7 +8,7 @@ function (Test, Transport, Tone, Offline) {
 			Tone.Transport.off("start stop pause loop");
 			Tone.Transport.stop();
 			Tone.Transport.loop = false;
-			Tone.Transport.PPQ = 48;
+			Tone.Transport.PPQ = 192;
 			Tone.Transport.bpm.value = 120;
 			Tone.Transport.timeSignature = [4, 4];
 			setTimeout(done, 200);
@@ -82,36 +82,25 @@ function (Test, Transport, Tone, Offline) {
 
 		});
 
-		context("Quantization", function(){
+		context("nextSubdivision", function(){
 
 			afterEach(resetTransport);
 
-			it("returns the time quantized to the next subdivision", function(){
-				expect(Tone.Transport.quantize(1.1, 0.5)).to.be.closeTo(1.5, 0.01);
-				expect(Tone.Transport.quantize("1m", "2m")).to.be.closeTo(Tone.Transport.toSeconds("2m"), 0.01);
-				expect(Tone.Transport.quantize(2.3, 0.5)).to.be.closeTo(2.5, 0.01);
-				expect(Tone.Transport.quantize("4n", "8n")).to.be.closeTo(Tone.Transport.toSeconds("4n"), 0.01);
-				expect(Tone.Transport.quantize(0, 4)).to.be.closeTo(0, 0.01);
+			it("returns 0 if the transports not started", function(){
+				expect(Tone.Transport.nextSubdivision()).to.equal(0);
 			});
 
-			it("returns now relative times with the Transport stopped", function(){
-				var now = Tone.Transport.now();
-				expect(Tone.Transport.quantize(undefined, "1m")).to.be.closeTo(now, 0.01);
-				expect(Tone.Transport.quantize("+1m", "1m")).to.be.closeTo(now + Tone.Transport.toSeconds("1m"), 0.01);
-			});
-
-			it("returns the time of the next subdivision when the transport is started", function(done){
+			it("can get the next subdivision of the transport", function(done){
 				var now = Tone.Transport.now() + 0.1;
 				Tone.Transport.start(now);
 				setTimeout(function(){
-					// console.log((now + 0.5) - Tone.Transport.quantize(undefined, 0.5));
-					expect(Tone.Transport.quantize(undefined, 0.5)).to.be.closeTo(now + 0.5, 0.01);
-					expect(Tone.Transport.quantize("+1.1", 0.5)).to.be.closeTo(now + 1.5, 0.01);
-					expect(Tone.Transport.quantize("+0.4", 1)).to.be.closeTo(now + 1, 0.01);
-					expect(Tone.Transport.quantize("+1.1", 1)).to.be.closeTo(now + 2, 0.01);
+					expect(Tone.Transport.nextSubdivision(0.5)).to.be.closeTo(now + 1, 0.01);
+					expect(Tone.Transport.nextSubdivision(2)).to.be.closeTo(now + 2, 0.01);
+					expect(Tone.Transport.nextSubdivision("8n")).to.be.closeTo(now + 0.75, 0.01);
 					done();
-				}, 200);
+				}, 600);
 			});
+
 		});
 
 		context("PPQ", function(){
@@ -231,11 +220,11 @@ function (Test, Transport, Tone, Offline) {
 
 				Offline(function(dest, test, after){
 					Tone.Transport.bpm.value = 120;
-					Tone.Transport.PPQ = 48;
+					Tone.Transport.PPQ = 192;
 					Tone.Transport.start();
 
 					after(function(){
-						expect(Tone.Transport.ticks).to.at.least(48);
+						expect(Tone.Transport.ticks).to.at.least(192);
 						done();
 					});
 				}, 0.6);
@@ -470,7 +459,7 @@ function (Test, Transport, Tone, Offline) {
 					Tone.Transport.start();
 
 					after(function(){
-						expect(repeatCount).to.equal(5);
+						expect(repeatCount).to.at.least(5);
 						Tone.Transport.clear(eventID);
 						done();
 					});
