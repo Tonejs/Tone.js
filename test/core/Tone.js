@@ -62,6 +62,12 @@ define(["Test", "Tone/core/Tone", "helper/PassAudio", "Tone/source/Oscillator", 
 				expect(tone.dbToGain(tone.gainToDb(0.5))).is.closeTo(0.5, 0.01);
 				expect(tone.gainToDb(tone.dbToGain(1))).is.closeTo(1, 0.01);
 			});
+
+			it("can convert semitone intervals to frequency ratios", function(){
+				expect(tone.intervalToFrequencyRatio(0)).to.equal(1);
+				expect(tone.intervalToFrequencyRatio(12)).to.equal(2);
+				expect(tone.intervalToFrequencyRatio(7)).to.be.closeTo(1.5, 0.01);
+			});
 		});
 
 		context("Type checking", function(){
