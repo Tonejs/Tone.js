@@ -15,8 +15,8 @@ define(["Tone/core/Tone", "Tone/core/Type"], function (Tone) {
 	 *
 	 *  @example
 	 * var interp = new Tone.CtrlInterpolate([
-	 * 	["C3", "G4", "E5"],
-	 * 	["D4", "F#4", "E5"],
+	 * 	[2, 4, 5],
+	 * 	[9, 3, 2],
 	 * ]);
 	 * @param {Array} values The array of values to interpolate over
 	 * @param {Positive} index The initial interpolation index.
@@ -113,8 +113,6 @@ define(["Tone/core/Tone", "Tone/core/Type"], function (Tone) {
 	Tone.CtrlInterpolate.prototype._toNumber = function(val){
 		if (this.isNumber(val)){
 			return val;
-		} else if (this.isNote(val)){
-			return this.toFrequency(val);
 		} else {
 			//otherwise assume that it's Time...
 			return this.toSeconds(val);
