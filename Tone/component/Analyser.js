@@ -68,7 +68,7 @@ define(["Tone/core/Tone"], function (Tone) {
 	};
 
 	/**
-	 *  Possible return types of Tone.Analyser.value
+	 *  Possible return types of Tone.Analyser.analyse()
 	 *  @enum {String}
 	 */
 	Tone.Analyser.Type = {
@@ -77,7 +77,10 @@ define(["Tone/core/Tone"], function (Tone) {
 	};
 
 	/**
-	 *  Possible return types of Tone.Analyser.value
+	 *  Possible return types of Tone.Analyser.analyse(). 
+	 *  byte values are between [0,255]. float values are between 
+	 *  [-1, 1] when the type is set to "waveform" and between 
+	 *  [minDecibels,maxDecibels] when the type is "fft".
 	 *  @enum {String}
 	 */
 	Tone.Analyser.ReturnType = {
@@ -134,9 +137,11 @@ define(["Tone/core/Tone"], function (Tone) {
 	});
 
 	/**
-	 *  The return type of Tone.Analyser.value, either "byte" or "float". 
+	 *  The return type of Tone.Analyser.analyse(), either "byte" or "float". 
 	 *  When the type is set to "byte" the range of values returned in the array
-	 *  are between 0-255, when set to "float" the values are between 0-1. 
+	 *  are between 0-255. "float" values are between 
+	 *  [-1, 1] when the type is set to "waveform" and between 
+	 *  [minDecibels,maxDecibels] when the type is "fft".
 	 *  @memberOf Tone.Analyser#
 	 *  @type {String}
 	 *  @name type
@@ -158,7 +163,7 @@ define(["Tone/core/Tone"], function (Tone) {
 	});
 
 	/**
-	 *  The analysis function returned by Tone.Analyser.value, either "fft" or "waveform". 
+	 *  The analysis function returned by Tone.Analyser.analyse(), either "fft" or "waveform". 
 	 *  @memberOf Tone.Analyser#
 	 *  @type {String}
 	 *  @name type
