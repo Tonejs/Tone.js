@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/core/Clock", "Tone/core/Type", "Tone/core/Timeline", 
+define(["Tone/core/Tone", "Tone/core/Clock", "Tone/type/Type", "Tone/core/Timeline", 
 	"Tone/core/Emitter", "Tone/core/Gain", "Tone/core/IntervalTimeline"], 
 function(Tone){
 
@@ -151,14 +151,12 @@ function(Tone){
 		//	SWING
 		//////////////////////////////////////////////////////////////////////
 
-		var swingSeconds = this.notationToSeconds(TransportConstructor.defaults.swingSubdivision, TransportConstructor.defaults.bpm, TransportConstructor.defaults.timeSignature);
-
 		/**
 		 *  The subdivision of the swing
 		 *  @type  {Ticks}
 		 *  @private
 		 */
-		this._swingTicks = (swingSeconds / (60 / TransportConstructor.defaults.bpm)) * this._ppq;
+		this._swingTicks = TransportConstructor.defaults.PPQ / 2; //8n
 
 		/**
 		 *  The swing amount
@@ -180,7 +178,7 @@ function(Tone){
 	Tone.Transport.defaults = {
 		"bpm" : 120,
 		"swing" : 0,
-		"swingSubdivision" : "16n",
+		"swingSubdivision" : "8n",
 		"timeSignature" : 4,
 		"loopStart" : 0,
 		"loopEnd" : "4m",
@@ -197,21 +195,24 @@ function(Tone){
 	 *  @private
 	 */
 	Tone.Transport.prototype._processTick = function(tickTime){
+		var ticks = this._clock.ticks;
 		//handle swing
 		if (this._swingAmount > 0 && 
-			this._clock.ticks % this._ppq !== 0 && //not on a downbeat
-			this._clock.ticks % this._swingTicks === 0){
+			ticks % this._ppq !== 0 && //not on a downbeat
+			ticks % (this._swingTicks * 2) !== 0){
 			//add some swing
-			tickTime += this.ticksToSeconds(this._swingTicks) * this._swingAmount;
-		}
+			var progress = (ticks % (this._swingTicks * 2)) / (this._swingTicks * 2);
+			var amount = Math.sin((progress) * Math.PI) * this._swingAmount;
+			tickTime += Tone.Time(this._swingTicks * 2/3, "i").eval() * amount;
+		} 
 		//do the loop test
 		if (this.loop){
-			if (this._clock.ticks === this._loopEnd){
+			if (ticks === this._loopEnd){
 				this.ticks = this._loopStart;
+				ticks = this._loopStart;
 				this.trigger("loop", tickTime);
 			}
 		}
-		var ticks = this._clock.ticks;
 		//process the single occurrence events
 		this._onceEvents.forEachBefore(ticks, function(event){
 			event.callback(tickTime);
@@ -237,7 +238,7 @@ function(Tone){
 	/**
 	 *  Schedule an event along the timeline.
 	 *  @param {Function} callback The callback to be invoked at the time.
-	 *  @param {TimelinePosition}  time The time to invoke the callback at.
+	 *  @param {TransportTime}  time The time to invoke the callback at.
 	 *  @return {Number} The id of the event which can be used for canceling the event. 
 	 *  @example
 	 * //trigger the callback when the Transport reaches the desired time
@@ -299,7 +300,7 @@ function(Tone){
 	 *  Note that if the given time is less than the current transport time, 
 	 *  the event will be invoked immediately. 
 	 *  @param {Function} callback The callback to invoke once.
-	 *  @param {TimelinePosition} time The time the callback should be invoked.
+	 *  @param {TransportTime} time The time the callback should be invoked.
 	 *  @returns {Number} The ID of the scheduled event. 
 	 */
 	Tone.Transport.prototype.scheduleOnce = function(callback, time){
@@ -334,7 +335,7 @@ function(Tone){
 	 *  Remove scheduled events from the timeline after
 	 *  the given time. Repeated events will be removed
 	 *  if their startTime is after the given time
-	 *  @param {TimelinePosition} [after=0] Clear all events after
+	 *  @param {TransportTime} [after=0] Clear all events after
 	 *                          this time. 
 	 *  @returns {Tone.Transport} this
 	 */
@@ -367,7 +368,7 @@ function(Tone){
 	/**
 	 *  Start the transport and all sources synced to the transport.
 	 *  @param  {Time} [time=now] The time when the transport should start.
-	 *  @param  {Time=} offset The timeline offset to start the transport.
+	 *  @param  {TransportTime=} offset The timeline offset to start the transport.
 	 *  @returns {Tone.Transport} this
 	 *  @example
 	 * //start the transport in one second starting at beginning of the 5th measure. 
@@ -376,13 +377,13 @@ function(Tone){
 	Tone.Transport.prototype.start = function(time, offset){
 		time = this.toSeconds(time);
 		if (!this.isUndef(offset)){
-			offset = this.toTicks(offset);
+			offset = new Tone.TransportTime(offset);
 		} else {
-			offset = this.defaultArg(offset, this._clock.ticks);
+			offset = new Tone.TransportTime(this._clock.ticks, "i");
 		}
 		//start the clock
-		this._clock.start(time, offset);
-		this.trigger("start", time, this.ticksToSeconds(offset));
+		this._clock.start(time, offset.eval());
+		this.trigger("start", time, offset.toSeconds());
 		return this;
 	};
 
@@ -446,12 +447,12 @@ function(Tone){
 	/**
 	 * When the Tone.Transport.loop = true, this is the starting position of the loop.
 	 * @memberOf Tone.Transport#
-	 * @type {Time}
+	 * @type {TransportTime}
 	 * @name loopStart
 	 */
 	Object.defineProperty(Tone.Transport.prototype, "loopStart", {
 		get : function(){
-			return this.ticksToSeconds(this._loopStart);
+			return Tone.TransportTime(this._loopStart, "i").toSeconds();
 		},
 		set : function(startPosition){
 			this._loopStart = this.toTicks(startPosition);
@@ -461,12 +462,12 @@ function(Tone){
 	/**
 	 * When the Tone.Transport.loop = true, this is the ending position of the loop.
 	 * @memberOf Tone.Transport#
-	 * @type {Time}
+	 * @type {TransportTime}
 	 * @name loopEnd
 	 */
 	Object.defineProperty(Tone.Transport.prototype, "loopEnd", {
 		get : function(){
-			return this.ticksToSeconds(this._loopEnd);
+			return Tone.TransportTime(this._loopEnd, "i").toSeconds();
 		},
 		set : function(endPosition){
 			this._loopEnd = this.toTicks(endPosition);
@@ -475,8 +476,8 @@ function(Tone){
 
 	/**
 	 *  Set the loop start and stop at the same time. 
-	 *  @param {TimelinePosition} startPosition 
-	 *  @param {TimelinePosition} endPosition   
+	 *  @param {TransportTime} startPosition 
+	 *  @param {TransportTime} endPosition   
 	 *  @returns {Tone.Transport} this
 	 *  @example
 	 * //loop over the first measure
@@ -498,11 +499,11 @@ function(Tone){
 	 */
 	Object.defineProperty(Tone.Transport.prototype, "swing", {
 		get : function(){
-			return this._swingAmount * 2;
+			return this._swingAmount;
 		},
 		set : function(amount){
 			//scale the values to a normal range
-			this._swingAmount = amount * 0.5;
+			this._swingAmount = amount;
 		}
 	});
 
@@ -517,7 +518,7 @@ function(Tone){
 	 */
 	Object.defineProperty(Tone.Transport.prototype, "swingSubdivision", {
 		get : function(){
-			return this.toNotation(this._swingTicks + "i");
+			return Tone.Time(this._swingTicks, "i").toNotation();
 		},
 		set : function(subdivision){
 			this._swingTicks = this.toTicks(subdivision);
@@ -525,9 +526,8 @@ function(Tone){
 	});
 
 	/**
-	 *  The Transport's position in MEASURES:BEATS:SIXTEENTHS.
+	 *  The Transport's position in Bars:Beats:Sixteenths.
 	 *  Setting the value will jump to that position right away. 
-	 *  
 	 *  @memberOf Tone.Transport#
 	 *  @type {TransportTime}
 	 *  @name position
@@ -648,7 +648,7 @@ function(Tone){
 		} else {
 			return 0;
 		}
-		var transportPos = this.ticksToSeconds(this.ticks);
+		var transportPos = Tone.Time(this.ticks, "i").eval();
 		var remainingTime = subdivision - (transportPos % subdivision);
 		if (remainingTime === subdivision){
 			remainingTime = 0;
