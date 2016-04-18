@@ -38,6 +38,8 @@ define(["Tone/core/Tone"], function (Tone) {
 			} else if (this.isUndef(val)){
 				//default expression
 				this._expr = this._defaultExpr();
+			} else if (val instanceof Tone.TimeBase){
+				this._expr = val._expr;
 			}
 		} else {
 
