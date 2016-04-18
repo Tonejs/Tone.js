@@ -33,30 +33,16 @@ function(Tone){
 		this.noise = new Tone.Noise();
 
 		/**
-		 *  The filter. 
-		 *  @type {Tone.Filter}
-		 */
-		this.filter = new Tone.Filter(options.filter);
-
-		/**
-		 *  The filter envelope. 
-		 *  @type {Tone.FrequencyEnvelope}
-		 */
-		this.filterEnvelope = new Tone.FrequencyEnvelope(options.filterEnvelope);
-
-		/**
 		 *  The amplitude envelope. 
 		 *  @type {Tone.AmplitudeEnvelope}
 		 */
 		this.envelope = new Tone.AmplitudeEnvelope(options.envelope);
 
 		//connect the noise to the output
-		this.noise.chain(this.filter, this.envelope, this.output);
+		this.noise.chain(this.envelope, this.output);
 		//start the noise
 		this.noise.start();
-		//connect the filter envelope
-		this.filterEnvelope.connect(this.filter.frequency);
-		this._readOnly(["noise", "filter", "filterEnvelope", "envelope"]);
+		this._readOnly(["noise", "envelope"]);
 	};
 
 	Tone.extend(Tone.NoiseSynth, Tone.Instrument);
@@ -70,23 +56,10 @@ function(Tone){
 		"noise" : {
 			"type" : "white"
 		},
-		"filter" : {
-			"Q" : 6,
-			"type" : "highpass",
-			"rolloff" : -24
-		},
 		"envelope" : {
 			"attack" : 0.005,
 			"decay" : 0.1,
 			"sustain" : 0.0,
-		},
-		"filterEnvelope" : {
-			"attack" : 0.06,
-			"decay" : 0.2,
-			"sustain" : 0,
-			"release" : 2,
-			"baseFrequency" : 20,
-			"octaves" : 5,
 		}
 	};
 
@@ -102,7 +75,6 @@ function(Tone){
 	Tone.NoiseSynth.prototype.triggerAttack = function(time, velocity){
 		//the envelopes
 		this.envelope.triggerAttack(time, velocity);
-		this.filterEnvelope.triggerAttack(time);	
 		return this;	
 	};
 
@@ -113,7 +85,6 @@ function(Tone){
 	 */
 	Tone.NoiseSynth.prototype.triggerRelease = function(time){
 		this.envelope.triggerRelease(time);
-		this.filterEnvelope.triggerRelease(time);
 		return this;
 	};
 
@@ -138,15 +109,11 @@ function(Tone){
 	 */
 	Tone.NoiseSynth.prototype.dispose = function(){
 		Tone.Instrument.prototype.dispose.call(this);
-		this._writable(["noise", "filter", "filterEnvelope", "envelope"]);
+		this._writable(["noise", "envelope"]);
 		this.noise.dispose();
 		this.noise = null;
 		this.envelope.dispose();
 		this.envelope = null;
-		this.filterEnvelope.dispose();
-		this.filterEnvelope = null;
-		this.filter.dispose();
-		this.filter = null;
 		return this;
 	};
 
