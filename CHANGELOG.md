@@ -10,8 +10,9 @@
 * Pruned away unused (or little used) Signal classes. 
 	* All this functionality will be available when the AudioWorkerNode is introduced. 
 * Clock uses Web Workers instead of requestAnimationFrame which allows it to run in the background. 
-* Removed `startMobile`. Use [StartAudioContext](https://github.com/tambien/StartAudioContext) instead. 
+* Removed `startMobile`. Using [StartAudioContext](https://github.com/tambien/StartAudioContext) in examples. 
 * Automated test runner using [Travis CI](https://travis-ci.org/Tonejs/Tone.js/)
+* Simplified NoiseSynth by removing filter and filter envelope.
 
 
 DEPRECATED:
