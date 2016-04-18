@@ -1,4 +1,4 @@
-/* global mocha, chai*/
+/* global mocha*/
 
 define(["Tone/core/Tone", "deps/chai"], function (Tone, chai) {
 
@@ -33,7 +33,8 @@ define(["Tone/core/Tone", "deps/chai"], function (Tone, chai) {
 				typeof member !== "boolean" &&
 				typeof member !== "undefined" &&
 				prop !== "preset" && 
-				!(member instanceof AudioContext)){
+				!(member instanceof AudioContext) && 
+				!obj.constructor.prototype[prop]){
 				if (member !== null){
 					throw Error("property was not completely disposed: "+prop);
 				}
