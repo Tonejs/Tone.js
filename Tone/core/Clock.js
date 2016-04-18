@@ -189,9 +189,8 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal", "Tone/core/TimelineState
 	 */
 	Tone.Clock.prototype.stop = function(time){
 		time = this.toSeconds(time);
-		if (this._state.getStateAtTime(time) !== Tone.State.Stopped){
-			this._state.setStateAtTime(Tone.State.Stopped, time);
-		}
+		this._state.cancel(time);
+		this._state.setStateAtTime(Tone.State.Stopped, time);
 		return this;	
 	};
 
