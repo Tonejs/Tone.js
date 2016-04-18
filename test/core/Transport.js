@@ -1,5 +1,5 @@
-define(["Test", "Tone/core/Transport", "Tone/core/Tone", "helper/Offline2"], 
-function (Test, Transport, Tone, Offline) {
+define(["Test", "Tone/core/Transport", "Tone/core/Tone", "helper/Offline2", "Tone/type/TransportTime"], 
+function (Test, Transport, Tone, Offline, TransportTime) {
 
 	describe("Transport", function(){
 
@@ -131,7 +131,7 @@ function (Test, Transport, Tone, Offline) {
 				}, 0.1);
 			});
 
-			it("can get the current position in TransportTime", function(done){
+			it("can get the current position in BarsBeatsSixteenths", function(done){
 				Offline(function(dest, test, after){
 					expect(Tone.Transport.position).to.equal("0:0:0");
 					Tone.Transport.start();
@@ -143,7 +143,7 @@ function (Test, Transport, Tone, Offline) {
 				}, 0.1);
 			});
 
-			it("can set the current position in TransportTime", function(){
+			it("can set the current position in BarsBeatsSixteenths", function(){
 				expect(Tone.Transport.position).to.equal("0:0:0");
 				Tone.Transport.position = "3:0";
 				expect(Tone.Transport.position).to.equal("3:0:0");
@@ -266,11 +266,12 @@ function (Test, Transport, Tone, Offline) {
 		context("schedule", function(){	
 
 			afterEach(resetTransport);
-
+			
 			it ("can schedule an event on the timeline", function(){
 				var eventID = Tone.Transport.schedule(function(){}, 0);
 				expect(eventID).to.be.a.number;
 			});
+
 
 			it ("scheduled event gets invoked with the time of the event", function(done){
 				var startTime = Tone.Transport.now() + 0.1;
@@ -278,6 +279,16 @@ function (Test, Transport, Tone, Offline) {
 					expect(time).to.equal(startTime);
 					done();
 				}, 0);
+				Tone.Transport.start(startTime);
+			});
+
+			it ("can schedule events with TransportTime", function(done){
+				var startTime = Tone.Transport.now() + 0.1;
+				var eighth = Tone.Transport.toSeconds("8n");
+				Tone.Transport.schedule(function(time){
+					expect(time).to.be.closeTo(startTime + eighth, 0.01);
+					done();
+				}, TransportTime("8n"));
 				Tone.Transport.start(startTime);
 			});
 
@@ -368,6 +379,16 @@ function (Test, Transport, Tone, Offline) {
 					expect(time).to.equal(startTime);
 					done();
 				}, 1, 0);
+				Tone.Transport.start(startTime);
+			});
+
+			it ("can schedule events with TransportTime", function(done){
+				var startTime = Tone.Transport.now() + 0.1;
+				var eighth = Tone.Transport.toSeconds("8n");
+				Tone.Transport.scheduleRepeat(function(time){
+					expect(time).to.be.closeTo(startTime + eighth, 0.01);
+					done();
+				}, "1n", TransportTime("8n"));
 				Tone.Transport.start(startTime);
 			});
 
@@ -485,6 +506,16 @@ function (Test, Transport, Tone, Offline) {
 					expect(time).to.equal(startTime);
 					done();
 				}, 0);
+				Tone.Transport.start(startTime);
+			});
+
+			it ("can schedule events with TransportTime", function(done){
+				var startTime = Tone.Transport.now() + 0.1;
+				var eighth = Tone.Transport.toSeconds("8n");
+				Tone.Transport.scheduleOnce(function(time){
+					expect(time).to.be.closeTo(startTime + eighth, 0.01);
+					done();
+				}, TransportTime("8n"));
 				Tone.Transport.start(startTime);
 			});
 
@@ -622,6 +653,7 @@ function (Test, Transport, Tone, Offline) {
 					Tone.Transport.start(0).stop(0.7);
 
 					after(function(){
+						Tone.Transport.swing = 0;
 						done();
 					});
 
