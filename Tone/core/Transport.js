@@ -377,12 +377,12 @@ function(Tone){
 	Tone.Transport.prototype.start = function(time, offset){
 		time = this.toSeconds(time);
 		if (!this.isUndef(offset)){
-			offset = new Tone.TransportTime(offset);
+			offset = new Tone.Time(offset);
 		} else {
-			offset = new Tone.TransportTime(this._clock.ticks, "i");
+			offset = new Tone.Time(this._clock.ticks, "i");
 		}
 		//start the clock
-		this._clock.start(time, offset.eval());
+		this._clock.start(time, offset.toTicks());
 		this.trigger("start", time, offset.toSeconds());
 		return this;
 	};
