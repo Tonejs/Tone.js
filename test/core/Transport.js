@@ -8,7 +8,6 @@ function (Test, Transport, Tone, Offline, TransportTime) {
 			Tone.Transport.off("start stop pause loop");
 			Tone.Transport.stop();
 			Tone.Transport.loop = false;
-			Tone.Transport.PPQ = 192;
 			Tone.Transport.bpm.value = 120;
 			Tone.Transport.timeSignature = [4, 4];
 			setTimeout(done, 200);
@@ -108,8 +107,10 @@ function (Test, Transport, Tone, Offline, TransportTime) {
 			afterEach(resetTransport);
 
 			it("can get and set pulses per quarter", function(){
+				var origPPQ = Tone.Transport.PPQ;
 				Tone.Transport.PPQ = 96;
 				expect(Tone.Transport.PPQ).to.equal(96);
+				Tone.Transport.PPQ = origPPQ;
 			});
 
 		});
@@ -220,7 +221,6 @@ function (Test, Transport, Tone, Offline, TransportTime) {
 
 				Offline(function(dest, test, after){
 					Tone.Transport.bpm.value = 120;
-					Tone.Transport.PPQ = 192;
 					Tone.Transport.start();
 
 					after(function(){
@@ -250,12 +250,14 @@ function (Test, Transport, Tone, Offline, TransportTime) {
 			it("tracks ticks correctly with a different PPQ and BPM", function(done){
 
 				Offline(function(dest, test, after){
+					var origPPQ = Tone.Transport.PPQ;
 					Tone.Transport.PPQ = 96;
 					Tone.Transport.bpm.value = 90;
 					Tone.Transport.start();
 
 					after(function(){
 						expect(Tone.Transport.ticks).to.at.least(72);
+						Tone.Transport.PPQ = origPPQ;
 						done();
 					});
 				}, 0.6);

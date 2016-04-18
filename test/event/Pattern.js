@@ -10,7 +10,6 @@ define(["helper/Basic", "Tone/event/Pattern", "Tone/core/Tone", "Tone/core/Trans
 			Tone.Transport.off("start stop pause pattern");
 			Tone.Transport.stop();
 			Tone.Transport.pattern = false;
-			Tone.Transport.PPQ = 48;
 			Tone.Transport.bpm.value = 120;
 			Tone.Transport.timeSignature = [4, 4];
 			setTimeout(done, 200);

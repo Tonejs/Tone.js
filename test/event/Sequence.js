@@ -11,7 +11,6 @@ define(["helper/Basic", "Tone/event/Sequence", "Tone/core/Tone",
 			Tone.Transport.off("start stop pause loop");
 			Tone.Transport.stop();
 			Tone.Transport.loop = false;
-			Tone.Transport.PPQ = 48;
 			Tone.Transport.bpm.value = 120;
 			Tone.Transport.timeSignature = [4, 4];
 			setTimeout(done, 200);
