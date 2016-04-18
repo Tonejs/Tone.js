@@ -195,7 +195,7 @@ define(["helper/Basic", "Tone/source/Player", "helper/Offline", "helper/SourceTe
 				var player;
 				var offline = new Offline(0.4, 1);
 				var audioBuffer = buffer.get().getChannelData(0);
-				var testSample = audioBuffer[buffer.secondsToSamples(0.1)];
+				var testSample = audioBuffer[Math.floor(0.1 * buffer.context.sampleRate)];
 				offline.before(function(dest){
 					player = new Player(buffer.get());
 					player.connect(dest);
