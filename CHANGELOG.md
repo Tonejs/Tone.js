@@ -13,6 +13,7 @@
 * Removed `startMobile`. Using [StartAudioContext](https://github.com/tambien/StartAudioContext) in examples. 
 * Automated test runner using [Travis CI](https://travis-ci.org/Tonejs/Tone.js/)
 * Simplified NoiseSynth by removing filter and filter envelope.
+* Added new timing primitive types: Time, Frequency, TransportTime.
 
 
 DEPRECATED:
