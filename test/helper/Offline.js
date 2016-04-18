@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/core/Clock", "Tone/core/Transport"], function (Tone, Clock, Transport) {
+define(["Tone/core/Tone", "Tone/core/Clock"], function (Tone, Clock) {
 
 	//hold onto the current context
 	var onlineContext = Tone.context;
@@ -52,7 +52,7 @@ define(["Tone/core/Tone", "Tone/core/Clock", "Tone/core/Transport"], function (T
 					// } 
 					Clock._worker.dispatchEvent(event);
 					this._currentTime = i / sampleRate;
-					this._test(ret, i / sampleRate, Tone.Transport.ticks);
+					this._test(ret, i / sampleRate);
 				} catch (e){
 					//reset the old context
 					Tone.setContext(onlineContext);
