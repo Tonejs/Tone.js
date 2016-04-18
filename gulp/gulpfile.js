@@ -23,6 +23,7 @@ var argv = require("yargs")
 			.alias("e", "effect")
 			.alias("c", "core")
 			.alias("m", "component")
+			.alias("y", "type")
 			.argv;
 var webserver = require("gulp-webserver");
 var KarmaServer = require("karma").Server;
@@ -175,7 +176,7 @@ gulp.task("collectTests", function(done){
 	if (argv.file){
 		tests = ["../test/*/"+argv.file+".js"];
 	} else if (argv.signal || argv.core || argv.component || argv.instrument || 
-				argv.source || argv.effect || argv.event){
+				argv.source || argv.effect || argv.event || argv.type){
 		tests = [];
 		if (argv.signal){
 			tests.push("../test/signal/*.js");
@@ -197,6 +198,9 @@ gulp.task("collectTests", function(done){
 		}
 		if (argv.event){
 			tests.push("../test/event/*.js");
+		}
+		if (argv.type){
+			tests.push("../test/type/*.js");
 		}
 	} 
 	// console.log(argv.signal === undefined);
