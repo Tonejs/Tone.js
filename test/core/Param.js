@@ -1,4 +1,4 @@
-define(["helper/Offline", "helper/Basic", "Test", "Tone/core/Param", "Tone/core/Type", "Tone/signal/Signal"], 
+define(["helper/Offline", "helper/Basic", "Test", "Tone/core/Param", "Tone/type/Type", "Tone/signal/Signal"], 
 	function (Offline, Basic, Test, Param, Tone, Signal) {
 
 	describe("Param", function(){

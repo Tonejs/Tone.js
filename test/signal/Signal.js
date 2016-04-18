@@ -1,5 +1,5 @@
 define(["helper/Offline", "helper/Basic", "Test", "Tone/signal/Signal", 
-	"Tone/core/Type", "Tone/core/Transport", "helper/Offline2"], 
+	"Tone/type/Type", "Tone/core/Transport", "helper/Offline2"], 
 	function (Offline, Basic, Test, Signal, Tone, Transport, Offline2) {
 
 	describe("Signal", function(){

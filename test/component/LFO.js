@@ -1,5 +1,5 @@
 define(["Tone/component/LFO", "helper/Basic", "helper/Offline", "Test", 
-	"helper/OutputAudio", "Tone/core/Type", "Tone/signal/Signal"], 
+	"helper/OutputAudio", "Tone/type/Type", "Tone/signal/Signal"], 
 function (LFO, Basic, Offline, Test, OutputAudio, Tone, Signal) {
 	describe("LFO", function(){
 
