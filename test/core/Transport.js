@@ -526,36 +526,36 @@ function (Test, Transport, Tone, Offline) {
 
 			it("invokes start/stop/pause events", function(){
 				var count = 0;
-				Transport.on("start stop pause", function(){
+				Tone.Transport.on("start stop pause", function(){
 					count++;
 				});
-				Transport.start().pause("+0.1").stop("+0.2");
+				Tone.Transport.start().pause("+0.1").stop("+0.2");
 				expect(count).to.equal(3);
 			});
 
 			it("passes in the time argument to the events", function(){
-				Transport.on("start", function(time){
+				Tone.Transport.on("start", function(time){
 					expect(time).to.equal(3);
 				});
-				Transport.on("stop", function(time){
+				Tone.Transport.on("stop", function(time){
 					expect(time).to.equal(4);
 				});
-				Transport.start(3).stop(4);
+				Tone.Transport.start(3).stop(4);
 			});
 
 			it("invokes the 'loop' method on loop", function(done){
 
 				Offline(function(output, test, after){
 
-					var sixteenth = Transport.toSeconds("16n");
+					var sixteenth = Tone.Transport.toSeconds("16n");
 
-					Transport.setLoopPoints(0, sixteenth);
-					Transport.loop = true;
+					Tone.Transport.setLoopPoints(0, sixteenth);
+					Tone.Transport.loop = true;
 
 					var lastLoop = -1;
 					var loops = 0;
 
-					Transport.on("loop", function(time){
+					Tone.Transport.on("loop", function(time){
 						loops++;
 						if (lastLoop !== -1){
 							expect(time - lastLoop).to.be.closeTo(sixteenth, 0.001);
@@ -563,10 +563,65 @@ function (Test, Transport, Tone, Offline) {
 						lastLoop = time;
 					});
 
-					Transport.start(0).stop(sixteenth * 5.1);
+					Tone.Transport.start(0).stop(sixteenth * 5.1);
 
 					after(function(){
 						expect(loops).to.equal(5);
+						done();
+					});
+
+				}, 0.7);
+			});
+		});
+
+		context("swing", function(){
+
+			afterEach(resetTransport);
+
+			it("can get/set the swing subdivision", function(){
+				Tone.Transport.swingSubdivision = "8n";
+				expect(Tone.Transport.swingSubdivision).to.equal("8n");
+				Tone.Transport.swingSubdivision = "4n";
+				expect(Tone.Transport.swingSubdivision).to.equal("4n");
+			});
+
+			it("can get/set the swing amount", function(){
+				Tone.Transport.swing = 0.5;
+				expect(Tone.Transport.swing).to.equal(0.5);
+				Tone.Transport.swing = 0;
+				expect(Tone.Transport.swing).to.equal(0);
+			});
+
+			it("can swing", function(done){
+				Offline(function(output, test, after){
+
+					Tone.Transport.swing = 1;
+					Tone.Transport.swingSubdivision = "8n";
+					var eightNote = Tone.Transport.toSeconds("8n");
+
+					//downbeat, no swing
+					Tone.Transport.schedule(function(time){
+						expect(time).is.closeTo(0, 0.001);
+					}, 0);
+
+					//eighth note has swing
+					Tone.Transport.schedule(function(time){
+						expect(time).is.closeTo(eightNote * 5/3, 0.001);
+					}, "8n");
+
+					//sixteenth note is also swung
+					Tone.Transport.schedule(function(time){
+						expect(time).is.closeTo(eightNote, 0.05);
+					}, "16n");
+
+					//no swing on the quarter
+					Tone.Transport.schedule(function(time){
+						expect(time).is.closeTo(eightNote * 2, 0.001);
+					}, "4n");
+
+					Tone.Transport.start(0).stop(0.7);
+
+					after(function(){
 						done();
 					});
 
