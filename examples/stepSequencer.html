@@ -32,8 +32,7 @@
 		<div id="Title">Tone.Transport</div>
 		<div id="Explanation">
 			<a href="http://tonejs.org/docs/#Transport">Tone.Transport</a> 
-			is the application-wide timekeeper. It's clock source enables sample-accurate scheduling as well as 
-			tempo-curves and automation. This example uses Tone.Sequence to invoke a callback every 16th note.
+			is the application-wide timekeeper. It's clock source enables sample-accurate scheduling as well as tempo-curves and automation. This example uses Tone.Sequence to invoke a callback every 16th note.
 		</div>
 		<canvas nx="matrix"></canvas>
 	</div>	
@@ -48,11 +47,8 @@
 			"volume" : -10,
 		}).toMaster();
 
-		// var keys = new Tone.PolySynth(4, Tone.SimpleSynth).toMaster();
-
 		//the notes
 		var noteNames = ["F#", "E", "C#", "A"];
-		// var noteNames = ["F#3", "E3", "C#3", "A3"];
 
 		var loop = new Tone.Sequence(function(time, col){
 			var column = matrix1.matrix[col];
