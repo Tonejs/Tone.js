@@ -20,7 +20,7 @@ define(["Tone/core/Tone"], function (Tone) {
 		 *  @private
 		 *  @type {AnalyserNode}
 		 */
-		this._analyser = this.input = this.context.createAnalyser();
+		this._analyser = this.input = this.output = this.context.createAnalyser();
 
 		/**
 		 *  The analysis type
