@@ -34,7 +34,7 @@ Using Tone.js? I'd love to hear it: yotam@tonejs.org
 
 # Installation
 
-* CDN - [full](http://cdn.tonejs.org/latest/Tone.js) | [min](http://cdn.tonejs.org/latest/Tone.min.js)
+* CDN - [full](https://tonejs.github.io/CDN/latest/Tone.js) | [min](https://tonejs.github.io/CDN/latest/Tone.min.js)
 * [bower](http://bower.io/) - `bower install tone`
 * [npm](https://www.npmjs.org/) - `npm install tone`
 
