@@ -9,7 +9,8 @@ Tone.js is a Web Audio framework for creating interactive music in the browser. 
 
 # Demos
 
-* [Chrome Music Lab - Google](https://musiclab.chromeexperiments.com)
+* [Chrome Music Lab - Google Creative Lab](https://musiclab.chromeexperiments.com)
+* [Groove Pizza - NYU Music Experience Design Lab](https://apps.musedlab.org/groovepizza/)
 * [Jazz.Computer - Yotam Mann](http://jazz.computer/)
 * [motionEmotion - Karen Peng, Jason Sigal](http://motionemotion.herokuapp.com/)
 * [p5.sound - build with Tone.js](https://github.com/processing/p5.js-sound)
