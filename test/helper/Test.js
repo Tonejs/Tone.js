@@ -9,7 +9,11 @@ define(["Tone/core/Tone", "deps/chai"], function (Tone, chai) {
 
 	//testing setup
 	window.expect = chai.expect;
-	mocha.setup("bdd");
+	mocha.setup({
+		ui: "bdd",
+		// make this very long cause sometimes the travis CI server is slow
+		timeout : 4000
+	});
 
 
 
