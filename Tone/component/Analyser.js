@@ -7,13 +7,13 @@ define(["Tone/core/Tone"], function (Tone) {
 	 *          [AnalyserNode](http://webaudio.github.io/web-audio-api/#idl-def-AnalyserNode).
 	 *          Extracts FFT or Waveform data from the incoming signal.
 	 *  @extends {Tone}
+	 *  @param {String=} type The return type of the analysis, either "fft", or "waveform". 
 	 *  @param {Number=} size The size of the FFT. Value must be a power of 
 	 *                       two in the range 32 to 32768.
-	 *  @param {String=} type The return type of the analysis, either "fft", or "waveform". 
 	 */
 	Tone.Analyser = function(){
 
-		var options = this.optionsObject(arguments, ["size", "type"], Tone.Analyser.defaults);
+		var options = this.optionsObject(arguments, ["type", "size"], Tone.Analyser.defaults);
 
 		/**
 		 *  The analyser node.

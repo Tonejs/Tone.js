@@ -28,7 +28,7 @@ define(["Tone/component/Analyser", "Test", "helper/Basic", "helper/Supports"],
 		});
 
 		it("can correctly set the size", function(){
-			var anl = new Analyser(512);
+			var anl = new Analyser("fft", 512);
 			expect(anl.size).to.equal(512);
 			anl.size = 1024;
 			expect(anl.size).to.equal(1024);
@@ -36,7 +36,7 @@ define(["Tone/component/Analyser", "Test", "helper/Basic", "helper/Supports"],
 		});
 
 		it("can run fft analysis in both bytes and floats", function(){
-			var anl = new Analyser(512, "fft");
+			var anl = new Analyser("fft", 512);
 			anl.returnType = "byte";
 			var analysis = anl.analyse();
 			expect(analysis.length).to.equal(512);
@@ -54,7 +54,7 @@ define(["Tone/component/Analyser", "Test", "helper/Basic", "helper/Supports"],
 		});
 
 		it("can run waveform analysis in both bytes and floats", function(){
-			var anl = new Analyser(256, "waveform");
+			var anl = new Analyser("waveform", 256);
 			anl.returnType = "byte";
 			var analysis = anl.analyse();
 			expect(analysis.length).to.equal(256);
