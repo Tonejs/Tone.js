@@ -529,21 +529,12 @@ function(Tone){
 	 *  The Transport's position in Bars:Beats:Sixteenths.
 	 *  Setting the value will jump to that position right away. 
 	 *  @memberOf Tone.Transport#
-	 *  @type {TransportTime}
+	 *  @type {BarsBeatsSixteenths}
 	 *  @name position
 	 */
 	Object.defineProperty(Tone.Transport.prototype, "position", {
 		get : function(){
-			var quarters = this.ticks / this._ppq;
-			var measures = Math.floor(quarters / this._timeSignature);
-			var sixteenths = ((quarters % 1) * 4);
-			//if the sixteenths aren't a whole number, fix their length
-			if (sixteenths % 1 > 0){
-				sixteenths = sixteenths.toFixed(3);	
-			}
-			quarters = Math.floor(quarters) % this._timeSignature;
-			var progress = [measures, quarters, sixteenths];
-			return progress.join(":");
+			return Tone.TransportTime(this.ticks, "i").toBarsBeatsSixteenths();
 		},
 		set : function(progress){
 			var ticks = this.toTicks(progress);
