@@ -74,6 +74,7 @@ define(["Tone/core/Tone", "Tone/type/Type"], function(Tone){
 		},
 		set : function(value){
 			var convertedVal = this._fromUnits(value);
+			this._param.cancelScheduledValues(this.now());
 			this._param.value = convertedVal;
 		}
 	});

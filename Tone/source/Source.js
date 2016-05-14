@@ -40,6 +40,20 @@ function(Tone){
 		this._volume = this.output = new Tone.Volume(options.volume);
 
 		/**
+		 * the unmuted volume
+		 * @type {number}
+		 * @private
+		 */
+		this._unmutedVolume = 1;
+
+		/**
+		 *  if the master is muted
+		 *  @type {boolean}
+		 *  @private
+		 */
+		this._muted = false;
+
+		/**
 		 * The volume of the output in decibels.
 		 * @type {Decibels}
 		 * @signal
@@ -108,6 +122,31 @@ function(Tone){
 	Object.defineProperty(Tone.Source.prototype, "state", {
 		get : function(){
 			return this._state.getStateAtTime(this.now());
+		}
+	});
+
+	/**
+	 * Mute the output. 
+	 * @memberOf Tone.Source#
+	 * @type {boolean}
+	 * @name mute
+	 * @example
+	 * //mute the output
+	 * source.mute = true;
+	 */
+	Object.defineProperty(Tone.Source.prototype, "mute", {
+		get : function(){
+			return this._muted;
+		}, 
+		set : function(mute){
+			if (!this._muted && mute){
+				this._unmutedVolume = this.volume.value;
+				//maybe it should ramp here?
+				this.volume.value = -Infinity;
+			} else if (this._muted && !mute){
+				this.volume.value = this._unmutedVolume;
+			}
+			this._muted = mute;
 		}
 	});
 
