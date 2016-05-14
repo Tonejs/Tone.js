@@ -45,6 +45,9 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Gain"], function(Tone
 		this.volume = this.output.gain;
 
 		this._readOnly("volume");
+
+		//set the mute initially
+		this.mute = options.mute;
 	};
 
 	Tone.extend(Tone.Volume);
@@ -56,7 +59,8 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Gain"], function(Tone
 	 *  @static
 	 */
 	Tone.Volume.defaults = {
-		"volume" : 0
+		"volume" : 0,
+		"mute" : false
 	};
 
 	/**

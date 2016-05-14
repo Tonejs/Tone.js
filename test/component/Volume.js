@@ -28,6 +28,14 @@ function (Volume, Basic, Meter, Test, Signal, PassAudio, PassAudioStereo) {
 				vol.dispose();
 			});
 
+			it("can be constructed with an options object and muted", function(){
+				var vol = new Volume({
+					"mute" : true
+				});
+				expect(vol.mute).to.be.true;
+				vol.dispose();
+			});
+
 			it("can set/get with an object", function(){
 				var vol = new Volume();
 				vol.set({

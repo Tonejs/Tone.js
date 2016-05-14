@@ -55,6 +55,7 @@ function(Tone){
 		 *  @private
 		 */
 		this._state = new Tone.TimelineState(Tone.State.Stopped);
+		this._state.memory = 10;
 
 		/**
 		 *  The synced `start` callback function from the transport
@@ -84,6 +85,8 @@ function(Tone){
 		//make the output explicitly stereo
 		this._volume.output.output.channelCount = 2;
 		this._volume.output.output.channelCountMode = "explicit";
+		//mute initially
+		this.mute = options.mute;
 	};
 
 	Tone.extend(Tone.Source);
@@ -96,6 +99,7 @@ function(Tone){
 	 */
 	Tone.Source.defaults = {
 		"volume" : 0,
+		"mute" : false
 	};
 
 	/**

@@ -24,6 +24,14 @@ function (Test, Source, Transport, OfflineTest) {
 			source.dispose();
 		});
 
+		it("can be muted in the constructor options", function(){
+			var source = new Source({
+				"mute" : true
+			});
+			expect(source.mute).to.be.true;
+			source.dispose();
+		});
+
 		it("can set the volume", function(){
 			var source = new Source();
 			source.volume.value = -8;
