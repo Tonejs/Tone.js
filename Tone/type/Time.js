@@ -6,6 +6,14 @@ define(["Tone/core/Tone", "Tone/type/TimeBase"], function (Tone) {
 	 */
 	Tone.Time = function(val, units){
 		if (this instanceof Tone.Time){
+
+			/**
+			 *  If the current clock time should
+			 *  be added to the output
+			 *  @type  {Boolean}
+			 *  @private
+			 */
+			this._plusNow = false;
 			
 			Tone.TimeBase.call(this, val, units);
 
@@ -42,7 +50,8 @@ define(["Tone/core/Tone", "Tone/type/TimeBase"], function (Tone) {
 	Tone.Time.prototype._unaryExpressions.now = {
 		regexp : /^\+/,
 		method : function(lh){
-			return this.now() + lh();
+			this._plusNow = true;
+			return lh();
 		}
 	};
 
@@ -63,7 +72,7 @@ define(["Tone/core/Tone", "Tone/type/TimeBase"], function (Tone) {
 		perc = this.defaultArg(perc, 1);
 		this._expr = function(expr, subdivision, percent){
 			expr = expr();
-			subdivision = subdivision.eval();
+			subdivision = subdivision.toSeconds();
 			var multiple = Math.round(expr / subdivision);
 			var ideal = multiple * subdivision;
 			var diff = ideal - expr;
@@ -77,9 +86,7 @@ define(["Tone/core/Tone", "Tone/type/TimeBase"], function (Tone) {
 	 *  @return  {Tone.Time}  this
 	 */
 	Tone.Time.prototype.addNow = function(){
-		this._expr = function(expr){
-			return expr() + this.now();
-		}.bind(this, this._expr);
+		this._plusNow = true;
 		return this;
 	};
 
@@ -90,9 +97,8 @@ define(["Tone/core/Tone", "Tone/type/TimeBase"], function (Tone) {
 	 *  @private
 	 */
 	Tone.Time.prototype._defaultExpr = function(){
-		return function(expr){
-			return expr() + this.now();
-		}.bind(this, this._expr);
+		this._plusNow = true;
+		return this._noOp;
 	};
 
 
@@ -103,7 +109,7 @@ define(["Tone/core/Tone", "Tone/type/TimeBase"], function (Tone) {
 	 *  @return {Notation}  
 	 */
 	Tone.Time.prototype.toNotation = function(){
-		var time = this.eval();
+		var time = this.toSeconds();
 		var testNotations = ["1m", "2n", "4n", "8n", "16n", "32n", "64n", "128n"];
 		var retNotation = this._toNotationHelper(time, testNotations);
 		//try the same thing but with tripelets
@@ -181,7 +187,7 @@ define(["Tone/core/Tone", "Tone/type/TimeBase"], function (Tone) {
 	 */
 	Tone.Time.prototype.toBarsBeatsSixteenths = function(){
 		var quarterTime = this._beatsToUnits(1);
-		var quarters = this.eval() / quarterTime;
+		var quarters = this.toSeconds() / quarterTime;
 		var measures = Math.floor(quarters / this._timeSignature());
 		var sixteenths = (quarters % 1) * 4;
 		quarters = Math.floor(quarters) % this._timeSignature();
@@ -204,7 +210,7 @@ define(["Tone/core/Tone", "Tone/type/TimeBase"], function (Tone) {
 	 *  @return  {Samples}  
 	 */
 	Tone.Time.prototype.toSamples = function(){
-		return this.eval() * this.context.sampleRate;
+		return this.toSeconds() * this.context.sampleRate;
 	};
 
 	/**
@@ -220,7 +226,16 @@ define(["Tone/core/Tone", "Tone/type/TimeBase"], function (Tone) {
 	 *  @return  {Seconds} 
 	 */
 	Tone.Time.prototype.toSeconds = function(){
-		return this.eval();
+		return this._expr();
+	};
+
+	/**
+	 *  Return the time in seconds.
+	 *  @return  {Seconds} 
+	 */
+	Tone.Time.prototype.eval = function(){
+		var val = this._expr();
+		return val + (this._plusNow?this.now():0);
 	};
 
 	return Tone.Time;
