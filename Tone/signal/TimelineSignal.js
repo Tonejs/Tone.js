@@ -12,18 +12,18 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Timeline"], function 
 	Tone.TimelineSignal = function(){
 
 		var options = this.optionsObject(arguments, ["value", "units"], Tone.Signal.defaults);
-
-		//constructors
-		Tone.Signal.apply(this, options);
-		options.param = this._param;
-		Tone.Param.call(this, options);
-
+		
 		/**
 		 *  The scheduled events
 		 *  @type {Tone.Timeline}
 		 *  @private
 		 */
 		this._events = new Tone.Timeline(10);
+
+		//constructors
+		Tone.Signal.apply(this, options);
+		options.param = this._param;
+		Tone.Param.call(this, options);
 
 		/**
 		 *  The initial scheduled value
@@ -63,6 +63,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Timeline"], function 
 		set : function(value){
 			var convertedVal = this._fromUnits(value);
 			this._initial = convertedVal;
+			this.cancelScheduledValues();
 			this._param.value = convertedVal;
 		}
 	});
