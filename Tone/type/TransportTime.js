@@ -28,43 +28,22 @@ define(["Tone/core/Tone", "Tone/type/Time"], function (Tone) {
 	Tone.TransportTime.prototype._unaryExpressions.quantize = {
 		regexp : /^@/,
 		method : function(rh){
-			var subdivision = rh();
+			var subdivision = this._secondsToTicks(rh());
 			var multiple = Math.ceil(Tone.Transport.ticks / subdivision);
-			return multiple * subdivision;
+			return this._ticksToUnits(multiple * subdivision);
 		}
 	};
 
 	/**
-	 *  @override
-	 *  The value of a beat in ticks.
-	 *  @param {Number} beats
-	 *  @return  {Number}
-	 *  @private
-	 */
-	Tone.TransportTime.prototype._beatsToUnits = function(beats){
-		return Tone.Transport.PPQ * beats;
-	};
-
-	/**
-	 *  @override
-	 *  @param {Ticks} ticks
-	 *  @return  {Number}
-	 *  @private
-	 */
-	Tone.TransportTime.prototype._ticksToUnits = function(ticks){
-		return ticks;
-	};
-
-	/**
-	 *  Returns the value of a second in the current units
+	 *  Convert seconds into ticks
 	 *  @param {Seconds} seconds
-	 *  @return  {Number}
+	 *  @return  {Ticks}
 	 *  @private
 	 */
-	Tone.TransportTime.prototype._secondsToUnits = function(seconds){
-		var quarterTime = (60 / Tone.Transport.bpm.value);
+	Tone.TransportTime.prototype._secondsToTicks = function(seconds){
+		var quarterTime = this._beatsToUnits(1);
 		var quarters = seconds / quarterTime;
-		return Math.floor(quarters * Tone.Transport.PPQ);
+		return Math.round(quarters * Tone.Transport.PPQ);
 	};
 
 	/**
@@ -72,15 +51,8 @@ define(["Tone/core/Tone", "Tone/type/Time"], function (Tone) {
 	 *  @return {Ticks}
 	 */
 	Tone.TransportTime.prototype.eval = function(){
-		return Math.floor(this._expr());
-	};
-
-	/**
-	 *  The current time along the Transport
-	 *  @return {Ticks} The Transport's position in ticks. 
-	 */
-	Tone.TransportTime.prototype.now = function(){
-		return Tone.Transport.ticks;
+		var val = this._secondsToTicks(this._expr());
+		return val + (this._plusNow ? Tone.Transport.ticks : 0);
 	};
 
 	/**
@@ -92,29 +64,11 @@ define(["Tone/core/Tone", "Tone/type/Time"], function (Tone) {
 	};
 
 	/**
-	 *  Return the time in samples
-	 *  @return  {Samples}  
-	 */
-	Tone.TransportTime.prototype.toSamples = function(){
-		return this.toSeconds() * this.context.sampleRate;
-	};
-
-	/**
 	 *  Return the time as a frequency value
 	 *  @return  {Frequency} 
 	 */
 	Tone.TransportTime.prototype.toFrequency = function(){
 		return 1/this.toSeconds();
-	};
-
-	/**
-	 *  Return the time in seconds.
-	 *  @return  {Seconds} 
-	 */
-	Tone.TransportTime.prototype.toSeconds = function(){
-		var beatTime = 60/Tone.Transport.bpm.value;
-		var tickTime = beatTime / Tone.Transport.PPQ;
-		return this.eval() * tickTime;
 	};
 
 	return Tone.TransportTime;
