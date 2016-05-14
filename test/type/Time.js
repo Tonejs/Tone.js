@@ -1,5 +1,5 @@
-define(["helper/Basic", "Test", "Tone/core/Transport", "Tone/type/Time", "Tone/core/Tone"], 
-	function (Basic, Test, Transport, Time, Tone) {
+define(["helper/Basic", "Test", "Tone/core/Transport", "Tone/type/Time", "Tone/core/Tone", "helper/Offline2"], 
+	function (Basic, Test, Transport, Time, Tone, Offline) {
 
 	describe("Time", function(){
 
@@ -53,17 +53,19 @@ define(["helper/Basic", "Test", "Tone/core/Transport", "Tone/type/Time", "Tone/c
 				expect(Time(10).quantize(8, 0.5).eval()).to.equal(9);
 				expect(Time(2).quantize(8, 0.75).eval()).to.equal(0.5);
 			});
-
+			
 			it("can get the next subdivison when the transport is started", function(done){
-				var now = Tone.now() + 0.1;
-				Tone.Transport.start(now);
-				setTimeout(function(){
-					expect(Time("@1m").eval()).to.be.closeTo(now + 2, 0.01);
-					expect(Time("@(4n + 2n)").eval()).to.be.closeTo(now + 1.5, 0.01);
-					expect(Time("@4n").eval()).to.be.closeTo(now + 1, 0.01);
-					Tone.Transport.stop();
-					done();
-				}, 600);
+
+				Offline(function(dest, testFn, after){
+					Tone.Transport.start(0);
+					after(function(){
+						expect(Time("@1m").eval()).to.be.closeTo(2, 0.01);
+						expect(Time("@(4n + 2n)").eval()).to.be.closeTo(1.5, 0.01);
+						expect(Time("@4n").eval()).to.be.closeTo(1, 0.01);
+						Tone.Transport.stop();
+						done();
+					});
+				}, 0.6);
 			});	
 		});
 
