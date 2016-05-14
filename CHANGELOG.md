@@ -15,6 +15,7 @@
 * Simplified NoiseSynth by removing filter and filter envelope.
 * Added new timing primitive types: Time, Frequency, TransportTime.
 * Switching parameter position of type and size in Tone.Analyser
+* Tone.Meter uses Tone.Analyser instead of ScriptProcessorNode.
 
 DEPRECATED:
 * Removed SimpleFM and SimpleAM
