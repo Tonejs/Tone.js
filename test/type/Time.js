@@ -73,6 +73,7 @@ define(["helper/Basic", "Test", "Tone/core/Transport", "Tone/type/Time", "Tone/c
 				var now = Tone.now();
 				expect(Time(4).addNow().eval()).to.be.closeTo(4 + now, 0.01);
 				expect(Time("2n").addNow().eval()).to.be.closeTo(1 + now, 0.01);
+				expect(Time("+2n").eval()).to.be.closeTo(1 + now, 0.01);
 			});
 
 			it("can quantize the value", function(){
@@ -80,6 +81,15 @@ define(["helper/Basic", "Test", "Tone/core/Transport", "Tone/type/Time", "Tone/c
 				expect(Time(5).quantize(3).eval()).to.equal(6);
 			});
 
+		});
+
+		context("Expressions", function(){
+
+			it("evaluates mixed expressions", function(){
+				expect(Time("4n * 2").eval()).to.equal(1);
+				expect(Time("(4n * 2) / 4").eval()).to.equal(0.25);
+				expect(Time("0:2 / 2").eval()).to.equal(0.5);
+			});
 		});
 
 		context("Conversions", function(){

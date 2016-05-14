@@ -1,5 +1,6 @@
-define(["helper/Basic", "Test", "Tone/core/Transport", "Tone/type/TransportTime", "Tone/core/Tone"], 
-	function (Basic, Test, Transport, TransportTime, Tone) {
+define(["helper/Basic", "Test", "Tone/core/Transport", "Tone/type/TransportTime", 
+	"Tone/core/Tone", "helper/Offline2"], 
+	function (Basic, Test, Transport, TransportTime, Tone, Offline) {
 
 	describe("TransportTime", function(){
 
@@ -48,6 +49,7 @@ define(["helper/Basic", "Test", "Tone/core/Transport", "Tone/type/TransportTime"
 				Tone.Transport.start();
 				setTimeout(function(){
 					expect(TransportTime().eval()).to.equal(Tone.Transport.ticks);
+					Tone.Transport.stop();
 					done();
 				}, 300);
 			});
@@ -62,17 +64,30 @@ define(["helper/Basic", "Test", "Tone/core/Transport", "Tone/type/TransportTime"
 			});
 
 			it("can get the next subdivison when the transport is started", function(done){
-				Tone.Transport.start();
-				setTimeout(function(){
-					expect(TransportTime("@1m").eval()).to.be.closeTo(4 * Tone.Transport.PPQ, 0.01);
-					expect(TransportTime("@(4n + 2n)").eval()).to.be.closeTo(Tone.Transport.PPQ * 3, 0.01);
-					expect(TransportTime("@4n").eval()).to.be.closeTo(Tone.Transport.PPQ * 2, 0.01);
-					Tone.Transport.stop();
-					done();
-				}, 600);
+
+				Offline(function(output, test, after){
+
+					Tone.Transport.start();
+
+					after(function(){
+						expect(TransportTime("@1m").eval()).to.be.closeTo(4 * Tone.Transport.PPQ, 0.01);
+						expect(TransportTime("@(4n + 2n)").eval()).to.be.closeTo(Tone.Transport.PPQ * 3, 0.01);
+						expect(TransportTime("@4n").eval()).to.be.closeTo(Tone.Transport.PPQ * 2, 0.01);
+						Tone.Transport.stop();
+						done();
+					});
+				}, 0.6);
 			});	
 		});
 
+		context("Expressions", function(){
+
+			it("evaluates mixed expressions", function(){
+				expect(TransportTime("4n * 2").eval()).to.equal(Tone.Transport.PPQ * 2);
+				expect(TransportTime("(4n * 2) / 4").eval()).to.equal(Tone.Transport.PPQ / 2);
+				expect(TransportTime("0:2 / 2").eval()).to.equal(Tone.Transport.PPQ);
+			});
+		});
 
 		context("Operators", function(){
 
@@ -82,6 +97,7 @@ define(["helper/Basic", "Test", "Tone/core/Transport", "Tone/type/TransportTime"
 					var now = Tone.Transport.ticks;
 					expect(TransportTime("4i").addNow().eval()).to.be.closeTo(4 + now, 0.01);
 					expect(TransportTime("2n").addNow().eval()).to.be.closeTo(Tone.Transport.PPQ * 2 + now, 0.01);
+					expect(TransportTime("+2n").eval()).to.be.closeTo(Tone.Transport.PPQ * 2 + now, 0.01);
 					Tone.Transport.stop();
 					done();
 				}, 600);
