@@ -123,11 +123,21 @@ function(Tone){
 	 *  @example
 	 * //trigger a chord for a duration of a half note 
 	 * poly.triggerAttackRelease(["Eb3", "G4", "C5"], "2n");
+	 *  @example
+	 * //can pass in an array of durations as well
+	 * poly.triggerAttackRelease(["Eb3", "G4", "C5"], ["2n", "4n", "4n"]);
 	 */
 	Tone.PolySynth.prototype.triggerAttackRelease = function(notes, duration, time, velocity){
 		time = this.toSeconds(time);
 		this.triggerAttack(notes, time, velocity);
-		this.triggerRelease(notes, time + this.toSeconds(duration));
+		if (this.isArray(duration) && this.isArray(notes)){
+			for (var i = 0; i < notes.length; i++){
+				var d = duration[Math.min(i, duration.length - 1)];
+				this.triggerRelease(notes[i], time + this.toSeconds(d));	
+			}
+		} else {
+			this.triggerRelease(notes, time + this.toSeconds(duration));
+		}
 		return this;
 	};
 

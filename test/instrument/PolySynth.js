@@ -33,6 +33,18 @@ function (PolySynth, Basic, InstrumentTests, OutputAudioStereo, Meter, Instrumen
 				});
 			});	
 
+			it("triggerAttackRelease can take an array of durations", function(done){
+				var polySynth;
+				OutputAudio(function(dest){
+					polySynth = new PolySynth(2);
+					polySynth.connect(dest);
+					polySynth.triggerAttackRelease(["C4", "D4"], [0.1, 0.2]);
+				}, function(){
+					polySynth.dispose();
+					done();
+				});
+			});	
+
 			it("is silent before being triggered", function(done){
 				var polySynth;
 				var meter = new Meter(0.3);
