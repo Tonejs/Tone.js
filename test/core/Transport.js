@@ -90,14 +90,15 @@ function (Test, Transport, Tone, Offline, TransportTime) {
 			});
 
 			it("can get the next subdivision of the transport", function(done){
-				var now = Tone.Transport.now() + 0.1;
-				Tone.Transport.start(now);
-				setTimeout(function(){
-					expect(Tone.Transport.nextSubdivision(0.5)).to.be.closeTo(now + 1, 0.01);
-					expect(Tone.Transport.nextSubdivision(2)).to.be.closeTo(now + 2, 0.01);
-					expect(Tone.Transport.nextSubdivision("8n")).to.be.closeTo(now + 0.75, 0.01);
-					done();
-				}, 600);
+				Offline(function(dest, testFn, after){
+					Tone.Transport.start(0);
+					after(function(){
+						expect(Tone.Transport.nextSubdivision(0.5)).to.be.closeTo(1, 0.01);
+						expect(Tone.Transport.nextSubdivision(2)).to.be.closeTo(2, 0.01);
+						expect(Tone.Transport.nextSubdivision("8n")).to.be.closeTo(0.75, 0.01);
+						done();
+					});
+				}, 0.7);
 			});
 
 		});
