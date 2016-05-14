@@ -1,4 +1,4 @@
-define(["Tone/core/Tone"], function(Tone){
+define(["Tone/core/Tone", "Tone/component/Analyser"], function(Tone){
 
 	"use strict";
 
@@ -27,83 +27,41 @@ define(["Tone/core/Tone"], function(Tone){
 	 */
 	Tone.Meter = function(){
 
-		var options = this.optionsObject(arguments, ["channels", "smoothing"], Tone.Meter.defaults);
-		//extends Unit
-		Tone.call(this);
-
-		/** 
-		 *  The channel count
-		 *  @type  {number}
+		var options = this.optionsObject(arguments, ["type", "smoothing"], Tone.Meter.defaults);
+		
+		/**
 		 *  @private
+		 *  Hold the type of the Meter
+		 *  @type  {String}
 		 */
-		this._channels = options.channels;
+		this._type = options.type;
 
 		/**
-		 * The amount which the decays of the meter are smoothed. Small values
-		 * will follow the contours of the incoming envelope more closely than large values.
-		 * @type {NormalRange}
+		 *  The analyser node which computes the levels.
+		 *  @private
+		 *  @type  {Tone.Analyser}
 		 */
+		this.input = this.output = this._analyser = new Tone.Analyser("fft", 32);
+
+		// set some ranges
+		this._analyser.minDecibels = -120;
+		this._analyser.maxDecibels = 10;
+		this._analyser.returnType = "float";
+
+		this.type = options.type;
 		this.smoothing = options.smoothing;
-
-		/** 
-		 *  The amount of time a clip is remember for. 
-		 *  @type  {Time}
-		 */
-		this.clipMemory = options.clipMemory;
-
-		/** 
-		 *  The value above which the signal is considered clipped.
-		 *  @type  {Number}
-		 */
-		this.clipLevel = options.clipLevel;
-
-		/** 
-		 *  the rms for each of the channels
-		 *  @private
-		 *  @type {Array}
-		 */
-		this._volume = new Array(this._channels);
-
-		/** 
-		 *  the raw values for each of the channels
-		 *  @private
-		 *  @type {Array}
-		 */
-		this._values = new Array(this._channels);
-
-		//zero out the volume array
-		for (var i = 0; i < this._channels; i++){
-			this._volume[i] = 0;
-			this._values[i] = 0;
-		}
-
-		/** 
-		 *  last time the values clipped
-		 *  @private
-		 *  @type {Array}
-		 */
-		this._lastClip = new Array(this._channels);
-
-		//zero out the clip array
-		for (var j = 0; j < this._lastClip.length; j++){
-			this._lastClip[j] = 0;
-		}
-		
-		/** 
-		 *  @private
-		 *  @type {ScriptProcessorNode}
-		 */
-		this._jsNode = this.context.createScriptProcessor(options.bufferSize, this._channels, 1);
-		this._jsNode.onaudioprocess = this._onprocess.bind(this);
-		//so it doesn't get garbage collected
-		this._jsNode.noGC();
-
-		//signal just passes
-		this.input.connect(this.output);
-		this.input.connect(this._jsNode);
 	};
 
 	Tone.extend(Tone.Meter);
+
+	/**
+	 *  @private
+	 *  @enum {String}
+	 */
+	Tone.Meter.Type = {
+		Level : "level",
+		Signal : "signal"
+	};
 
 	/**
 	 *  The defaults
@@ -113,82 +71,74 @@ define(["Tone/core/Tone"], function(Tone){
 	 */
 	Tone.Meter.defaults = {
 		"smoothing" : 0.8,
-		"bufferSize" : 1024,
-		"clipMemory" : 0.5,
-		"clipLevel" : 0.9,
-		"channels" : 1
+		"type" : Tone.Meter.Type.Level
 	};
 
 	/**
-	 *  called on each processing frame
-	 *  @private
-	 *  @param  {AudioProcessingEvent} event 
+	 * The smoothing which is applied meter (only for "level" type)
+	 * @memberOf Tone.Meter#
+	 * @type {NormalRange}
+	 * @name smoothing
 	 */
-	Tone.Meter.prototype._onprocess = function(event){
-		var bufferSize = this._jsNode.bufferSize;
-		var smoothing = this.smoothing;
-		for (var channel = 0; channel < this._channels; channel++){
-			var input = event.inputBuffer.getChannelData(channel);
-			var sum = 0;
-			var total = 0;
-			var x;
-			for (var i = 0; i < bufferSize; i++){
-				x = input[i];
-				total += x;
-		    	sum += x * x;
+	Object.defineProperty(Tone.Meter.prototype, "smoothing", {
+		get : function(){
+			return this._analyser.smoothingTimeConstant;
+		},
+		set : function(smoothing){
+			this._analyser.smoothingTimeConstant = smoothing;
+		},
+	});
+
+	/**
+	 * The type of the meter, either "level" or "signal". 
+	 * A level meter will return the volume level of the 
+	 * inpute signal and a value meter will return
+	 * the signal value of the input. 
+	 * @memberOf Tone.Meter#
+	 * @type {String}
+	 * @name type
+	 */
+	Object.defineProperty(Tone.Meter.prototype, "type", {
+		get : function(){
+			return this._type;
+		},
+		set : function(type){
+			this._type = type;
+			if (type === Tone.Meter.Type.Level){
+				this._analyser.type = "fft";
+			} else if (type === Tone.Meter.Type.Signal){
+				this._analyser.type = "waveform";
 			}
-			var average = total / bufferSize;
-			var rms = Math.sqrt(sum / bufferSize);
-			if (rms > 0.9){
-				this._lastClip[channel] = Date.now();
+		},
+	});
+
+	/**
+	 * The current value of the meter.
+	 * @memberOf Tone.Meter#
+	 * @type {Number}
+	 * @name value
+	 * @readOnly
+	 */
+	Object.defineProperty(Tone.Meter.prototype, "value", {
+		get : function(){
+			var analysis = this._analyser.analyse();
+			if (this._type === Tone.Meter.Type.Level){
+				var max = -Infinity;
+				for (var i = 0; i < analysis.length; i++){
+					max = Math.max(analysis[i], max);
+				}
+				//scale [-100,0] to [0, 1]
+				var min = this._analyser.minDecibels;
+				if (max < min){
+					return 0;
+				} else {
+					return (max - min) / -min;
+				}
+			} else {
+				return analysis[0];
 			}
-			this._volume[channel] = Math.max(rms, this._volume[channel] * smoothing);
-			this._values[channel] = average;
-		}
-	};
-
-	/**
-	 *  Get the rms of the signal.
-	 *  @param  {number} [channel=0] which channel
-	 *  @return {number}         the value
-	 */
-	Tone.Meter.prototype.getLevel = function(channel){
-		channel = this.defaultArg(channel, 0);
-		var vol = this._volume[channel];
-		if (vol < 0.00001){
-			return 0;
-		} else {
-			return vol;
-		}
-	};
-
-	/**
-	 *  Get the raw value of the signal. 
-	 *  @param  {number=} channel 
-	 *  @return {number}         
-	 */
-	Tone.Meter.prototype.getValue = function(channel){
-		channel = this.defaultArg(channel, 0);
-		return this._values[channel];
-	};
-
-	/**
-	 *  Get the volume of the signal in dB
-	 *  @param  {number=} channel 
-	 *  @return {Decibels}         
-	 */
-	Tone.Meter.prototype.getDb = function(channel){
-		return this.gainToDb(this.getLevel(channel));
-	};
-
-	/**
-	 * @returns {boolean} if the audio has clipped. The value resets
-	 *                       based on the clipMemory defined. 
-	 */
-	Tone.Meter.prototype.isClipped = function(channel){
-		channel = this.defaultArg(channel, 0);
-		return Date.now() - this._lastClip[channel] < this._clipMemory * 1000;
-	};
+		},
+	});
 
 	/**
 	 *  Clean up.
@@ -196,12 +146,8 @@ define(["Tone/core/Tone"], function(Tone){
 	 */
 	Tone.Meter.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
-		this._jsNode.disconnect();
-		this._jsNode.onaudioprocess = null;
-		this._jsNode = null;
-		this._volume = null;
-		this._values = null;
-		this._lastClip = null;
+		this._analyser.dispose();
+		this._analyser = null;
 		return this;
 	};
 
