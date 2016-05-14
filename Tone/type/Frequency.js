@@ -263,7 +263,7 @@ define(["Tone/core/Tone", "Tone/type/TimeBase"], function (Tone) {
 	 * tone.midiToFrequency(440); // returns 69
 	 */
 	Tone.Frequency.prototype.frequencyToMidi = function(frequency){
-		return 69 + 12 * Math.log2(frequency / Tone.Frequency.A4);
+		return 69 + 12 * Math.log(frequency / Tone.Frequency.A4) / Math.LN2;
 	};
 
 	return Tone.Frequency;
