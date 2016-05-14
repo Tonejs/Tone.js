@@ -37,6 +37,17 @@ function (Volume, Basic, Meter, Test, Signal, PassAudio, PassAudioStereo) {
 				vol.dispose();
 			});
 
+			it("unmuting returns to previous volume", function(){
+				var vol = new Volume(-10);
+				vol.mute = true;
+				expect(vol.mute).to.be.true;
+				expect(vol.volume.value).to.equal(-Infinity);
+				vol.mute = false;
+				//returns the volume to what it was
+				expect(vol.volume.value).to.be.closeTo(-10, 0.1);
+				vol.dispose();
+			});
+
 			it("passes the incoming signal through", function(done){
 				var vol;
 				PassAudio(function(input, output){
@@ -71,6 +82,26 @@ function (Volume, Basic, Meter, Test, Signal, PassAudio, PassAudioStereo) {
 				});
 				meter.test(function(level){
 					expect(level).to.be.closeTo(vol.dbToGain(-10), 0.01);
+				});
+				meter.after(function(){
+					vol.dispose();
+					signal.dispose();
+					done();
+				});
+				meter.run();
+			});
+
+			it("can mute the volume", function(done){
+				var vol;
+				var signal;
+				var meter = new Meter();
+				meter.before(function(output){
+					vol = new Volume().connect(output);
+					vol.mute = true;
+					signal = new Signal(1).connect(vol);
+				});
+				meter.test(function(level){
+					expect(level).to.equal(0);
 				});
 				meter.after(function(){
 					vol.dispose();

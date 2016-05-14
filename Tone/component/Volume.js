@@ -24,6 +24,20 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Gain"], function(Tone
 		this.output = this.input = new Tone.Gain(options.volume, Tone.Type.Decibels);
 
 		/**
+		 * The unmuted volume
+		 * @type {Decibels}
+		 * @private
+		 */
+		this._unmutedVolume = 0;
+
+		/**
+		 *  if the volume is muted
+		 *  @type {Boolean}
+		 *  @private
+		 */
+		this._muted = false;
+
+		/**
 		 *  The volume control in decibels. 
 		 *  @type {Decibels}
 		 *  @signal
@@ -44,6 +58,31 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Gain"], function(Tone
 	Tone.Volume.defaults = {
 		"volume" : 0
 	};
+
+	/**
+	 * Mute the output. 
+	 * @memberOf Tone.Volume#
+	 * @type {boolean}
+	 * @name mute
+	 * @example
+	 * //mute the output
+	 * volume.mute = true;
+	 */
+	Object.defineProperty(Tone.Volume.prototype, "mute", {
+		get : function(){
+			return this._muted;
+		}, 
+		set : function(mute){
+			if (!this._muted && mute){
+				this._unmutedVolume = this.volume.value;
+				//maybe it should ramp here?
+				this.volume.value = -Infinity;
+			} else if (this._muted && !mute){
+				this.volume.value = this._unmutedVolume;
+			}
+			this._muted = mute;
+		}
+	});
 
 	/**
 	 *  clean up
