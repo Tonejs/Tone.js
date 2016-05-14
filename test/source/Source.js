@@ -31,6 +31,18 @@ function (Test, Source, Transport, OfflineTest) {
 			source.dispose();
 		});
 
+		it("can mute and unmute the source", function(){
+			var source = new Source();
+			source.volume.value = -8;
+			source.mute = true;
+			expect(source.mute).to.be.true;
+			expect(source.volume.value).to.equal(-Infinity);
+			source.mute = false;
+			//returns the volume to what it was
+			expect(source.volume.value).to.be.closeTo(-8, 0.1);
+			source.dispose();
+		});
+
 		it("can get and set values with an object", function(){
 			var source = new Source();
 			source.set("volume", -10);

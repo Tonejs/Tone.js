@@ -102,6 +102,25 @@ define(["helper/OutputAudio", "Tone/source/Source", "helper/OutputAudioStereo", 
 				meter.run();
 			});
 
+			it("can be muted", function(done){
+				var instance;
+				var meter = new Meter(0.25);
+				meter.before(function(dest){
+					instance = new Constr(args);
+					instance.connect(dest);
+					instance.start(0);
+					instance.mute = true;
+				});
+				meter.test(function(sample){
+					expect(sample).to.equal(0);
+				});
+				meter.after(function(){
+					instance.dispose();
+					done();
+				});
+				meter.run();
+			});
+
 			it("be scheduled to stop in the future", function(done){
 				var instance;
 				var meter = new Meter(0.4);
