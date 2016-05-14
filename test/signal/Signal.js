@@ -59,6 +59,8 @@ define(["helper/Offline", "helper/Basic", "Test", "Tone/signal/Signal",
 
 		context("Scheduling", function(){
 
+			this.timeout(3000);
+
 			it ("can be scheduled to set a value in the future", function(done){
 				var sig;
 				var offline = new Offline();
