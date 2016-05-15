@@ -72,6 +72,13 @@ function(Tone){
 		this.frequency = new Tone.Signal(440, Tone.Type.Frequency);
 
 		/**
+		 *  The detune in cents
+		 *  @type {Cents}
+		 *  @signal
+		 */
+		this.detune = new Tone.Signal(options.detune, Tone.Type.Cents);
+
+		/**
 		 *  Harmonicity is the ratio between the two voices. A harmonicity of
 		 *  1 is no change. Harmonicity = 2 means a change of an octave. 
 		 *  @type {Positive}
@@ -100,9 +107,10 @@ function(Tone){
 		//control the two voices frequency
 		this.frequency.connect(this._carrier.frequency);
 		this.frequency.chain(this.harmonicity, this._modulator.frequency);
+		this.detune.fan(this._carrier.detune, this._modulator.detune);
 		this._modulator.chain(this._modulationScale, this._modulationNode.gain);
 		this._carrier.chain(this._modulationNode, this.output);
-		this._readOnly(["frequency", "harmonicity", "oscillator", "envelope", "modulation", "modulationEnvelope"]);
+		this._readOnly(["frequency", "harmonicity", "oscillator", "envelope", "modulation", "modulationEnvelope", "detune"]);
 	};
 
 	Tone.extend(Tone.AMSynth, Tone.Monophonic);
@@ -113,6 +121,7 @@ function(Tone){
 	 */
 	Tone.AMSynth.defaults = {
 		"harmonicity" : 3,
+		"detune" : 0,
 		"oscillator" : {
 			"type" : "sine"
 		},
@@ -169,13 +178,15 @@ function(Tone){
 	 */
 	Tone.AMSynth.prototype.dispose = function(){
 		Tone.Monophonic.prototype.dispose.call(this);
-		this._writable(["frequency", "harmonicity", "oscillator", "envelope", "modulation", "modulationEnvelope"]);
+		this._writable(["frequency", "harmonicity", "oscillator", "envelope", "modulation", "modulationEnvelope", "detune"]);
 		this._carrier.dispose();
 		this._carrier = null;
 		this._modulator.dispose();
 		this._modulator = null;
 		this.frequency.dispose();
 		this.frequency = null;
+		this.detune.dispose();
+		this.detune = null;
 		this.harmonicity.dispose();
 		this.harmonicity = null;
 		this._modulationScale.dispose();

@@ -41,9 +41,11 @@ define(["Tone/instrument/FMSynth", "helper/Basic", "helper/InstrumentTests"], fu
 			it ("can get/set attributes", function(){
 				var fmSynth = new FMSynth();
 				fmSynth.set({
-					"harmonicity" : 1.5
+					"harmonicity" : 1.5,
+					"detune" : 1200,
 				});
 				expect(fmSynth.get().harmonicity).to.equal(1.5);
+				expect(fmSynth.get().detune).to.be.closeTo(1200, 1);
 				fmSynth.dispose();
 			});
 

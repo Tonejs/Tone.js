@@ -41,9 +41,11 @@ define(["Tone/instrument/AMSynth", "helper/Basic", "helper/InstrumentTests"], fu
 			it ("can get/set attributes", function(){
 				var amSynth = new AMSynth();
 				amSynth.set({
-					"harmonicity" : 1.5
+					"harmonicity" : 1.5,
+					"detune" : 1200
 				});
 				expect(amSynth.get().harmonicity).to.equal(1.5);
+				expect(amSynth.get().detune).to.be.closeTo(1200, 1);
 				amSynth.dispose();
 			});
 

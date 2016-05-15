@@ -72,6 +72,13 @@ function(Tone){
 		this.frequency = new Tone.Signal(440, Tone.Type.Frequency);
 
 		/**
+		 *  The detune in cents
+		 *  @type {Cents}
+		 *  @signal
+		 */
+		this.detune = new Tone.Signal(options.detune, Tone.Type.Cents);
+
+		/**
 		 *  Harmonicity is the ratio between the two voices. A harmonicity of
 		 *  1 is no change. Harmonicity = 2 means a change of an octave. 
 		 *  @type {Positive}
@@ -104,11 +111,12 @@ function(Tone){
 		this.frequency.connect(this._carrier.frequency);
 		this.frequency.chain(this.harmonicity, this._modulator.frequency);
 		this.frequency.chain(this.modulationIndex, this._modulationNode);
+		this.detune.fan(this._carrier.detune, this._modulator.detune);
 		this._modulator.connect(this._modulationNode.gain);
 		this._modulationNode.gain.value = 0;
 		this._modulationNode.connect(this._carrier.frequency);
 		this._carrier.connect(this.output);
-		this._readOnly(["frequency", "harmonicity", "modulationIndex", "oscillator", "envelope", "modulation", "modulationEnvelope"]);
+		this._readOnly(["frequency", "harmonicity", "modulationIndex", "oscillator", "envelope", "modulation", "modulationEnvelope", "detune"]);
 	};
 
 	Tone.extend(Tone.FMSynth, Tone.Monophonic);
@@ -120,6 +128,7 @@ function(Tone){
 	Tone.FMSynth.defaults = {
 		"harmonicity" : 3,
 		"modulationIndex" : 10,
+		"detune" : 0,
 		"oscillator" : {
 			"type" : "sine"
 		},
@@ -176,13 +185,15 @@ function(Tone){
 	 */
 	Tone.FMSynth.prototype.dispose = function(){
 		Tone.Monophonic.prototype.dispose.call(this);
-		this._writable(["frequency", "harmonicity", "modulationIndex", "oscillator", "envelope", "modulation", "modulationEnvelope"]);
+		this._writable(["frequency", "harmonicity", "modulationIndex", "oscillator", "envelope", "modulation", "modulationEnvelope", "detune"]);
 		this._carrier.dispose();
 		this._carrier = null;
 		this._modulator.dispose();
 		this._modulator = null;
 		this.frequency.dispose();
 		this.frequency = null;
+		this.detune.dispose();
+		this.detune = null;
 		this.modulationIndex.dispose();
 		this.modulationIndex = null;
 		this.harmonicity.dispose();
