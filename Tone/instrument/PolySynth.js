@@ -47,11 +47,22 @@ function(Tone){
 		 */
 		this._triggers = new Array(options.polyphony);
 
+		/**
+		 *  The detune in cents
+		 *  @type {Cents}
+		 *  @signal
+		 */
+		this.detune = new Tone.Signal(options.detune, Tone.Type.Cents);
+		this._readOnly("detune");
+
 		//create the voices
 		for (var i = 0; i < options.polyphony; i++){
 			var v = new options.voice(arguments[2], arguments[3]);
 			this.voices[i] = v;
 			v.connect(this.output);
+			if (v.hasOwnProperty("detune")){
+				this.detune.connect(v.detune);
+			}
 			this._triggers[i] = {
 				release : -1,
 				note : null,
@@ -74,6 +85,7 @@ function(Tone){
 	Tone.PolySynth.defaults = {
 		"polyphony" : 4,
 		"volume" : 0,
+		"detune" : 0,
 		"voice" : Tone.MonoSynth
 	};
 
@@ -233,6 +245,9 @@ function(Tone){
 			this.voices[i].dispose();
 			this.voices[i] = null;
 		}
+		this._writable("detune");
+		this.detune.dispose();
+		this.detune = null;
 		this.voices = null;
 		this._triggers = null;
 		return this;

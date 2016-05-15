@@ -96,6 +96,13 @@ function (PolySynth, Basic, InstrumentTests, OutputAudioStereo, Meter, Instrumen
 				polySynth.dispose();
 			});
 
+			it ("can be set the detune", function(){
+				var polySynth = new PolySynth();
+				polySynth.detune.value = -1200;
+				expect(polySynth.detune.value).to.equal(-1200);
+				polySynth.dispose();
+			});
+
 			it ("can get/set attributes", function(){
 				var polySynth = new PolySynth();
 				polySynth.set({
