@@ -23,7 +23,6 @@ var ExampleList = {
 		"Step Sequencer" : "stepSequencer",
 		"Events" : "events",
 		"Play Along" : "shiny",
-		"Visualizing Envelopes": "funkyShape",
 		"Quantization" : "quantization",
 		"Playback Rate" : "pianoPhase",
 	},
@@ -31,8 +30,12 @@ var ExampleList = {
 		"Control Voltage" : "signal",
 		"Ramping Values" : "rampTo",
 	},
+	"Visualization" : {
+		"Envelopes": "funkyShape",
+		"Analysis" : "analysis",
+		"Meter" : "meter"
+	},
 	"Misc" : {
 		"Module Loaders" : "require",
-		"Analysis" : "analysis"
 	},
 };
