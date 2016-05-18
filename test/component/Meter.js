@@ -60,8 +60,9 @@ function (Meter, Basic, Offline, Test, Signal, PassAudio, Tone, Merge, Oscillato
 			it("can get the level of the incoming signal", function(done){
 				var meter = new Meter();
 				var osc = new Oscillator().connect(meter).start();
+				osc.volume.value = -6;
 				setTimeout(function(){
-					expect(meter.value).to.be.closeTo(0.85, 0.1);
+					expect(meter.value).to.be.closeTo(1, 0.1);
 					meter.dispose();
 					osc.dispose();
 					done();
