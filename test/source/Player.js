@@ -105,7 +105,11 @@ define(["helper/Basic", "Tone/source/Player", "helper/Offline", "helper/SourceTe
 
 		context("Looping", function(){
 
-			this.timeout(3000);
+			beforeEach(function(done){
+				buffer.load("./audio/short_sine.wav", function(){
+					done();
+				});
+			});
 
 			it("can be set to loop", function(){
 				var player = new Player();
@@ -256,7 +260,7 @@ define(["helper/Basic", "Tone/source/Player", "helper/Offline", "helper/SourceTe
 			});
 
 			it("reports itself as stopped after a single iterations of the buffer", function(done){
-				var player = new Player("./audio/hh.wav", function(){
+				var player = new Player("./audio/kick.mp3", function(){
 					var duration = player.buffer.duration;
 					player.start();
 					setTimeout(function(){
