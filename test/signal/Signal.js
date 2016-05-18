@@ -59,8 +59,6 @@ define(["helper/Offline", "helper/Basic", "Test", "Tone/signal/Signal",
 
 		context("Scheduling", function(){
 
-			this.timeout(3000);
-
 			it ("can be scheduled to set a value in the future", function(done){
 				var sig;
 				var offline = new Offline();
@@ -181,6 +179,28 @@ define(["helper/Offline", "helper/Basic", "Test", "Tone/signal/Signal",
 				offline.run();
 			});
 
+			it ("can set an linear ramp in the future", function(done){
+				var sig;
+				var offline = new Offline(0.6);
+				offline.before(function(dest){
+					sig = new Signal(1).connect(dest);
+					sig.linearRampToValue(50, 0.3, 0.2);
+				});
+				offline.test(function(sample, time){
+					if (time >= 0.6){
+						expect(sample).to.be.closeTo(50, 0.5);
+					} else if (time < 0.2){
+						expect(sample).to.equal(1);
+					}
+				});
+				offline.after(function(){
+					sig.dispose();
+					done();
+				});
+				offline.run();
+			});
+
+
 			it ("can set an exponential ramp from the current time", function(done){
 				var sig;
 				var offline = new Offline(0.5);
@@ -202,6 +222,27 @@ define(["helper/Offline", "helper/Basic", "Test", "Tone/signal/Signal",
 				offline.run();
 			});
 
+			it ("can set an exponential ramp in the future", function(done){
+				var sig;
+				var offline = new Offline(0.6);
+				offline.before(function(dest){
+					sig = new Signal(1).connect(dest);
+					sig.exponentialRampToValue(50, 0.3, 0.2);
+				});
+				offline.test(function(sample, time){
+					if (time >= 0.6){
+						expect(sample).to.be.closeTo(50, 0.5);
+					} else if (time < 0.2){
+						expect(sample).to.equal(1);
+					}
+				});
+				offline.after(function(){
+					sig.dispose();
+					done();
+				});
+				offline.run();
+			});
+
 			it ("rampTo ramps from the current value", function(done){
 				var sig;
 				var offline = new Offline(0.5);
@@ -214,6 +255,27 @@ define(["helper/Offline", "helper/Basic", "Test", "Tone/signal/Signal",
 						expect(sample).to.be.closeTo(0.2, 0.1);
 					} else {
 						expect(sample).to.be.greaterThan(0.2);
+					}
+				});
+				offline.after(function(){
+					sig.dispose();
+					done();
+				});
+				offline.run();
+			});
+
+			it ("rampTo ramps from the current value at a specific time", function(done){
+				var sig;
+				var offline = new Offline(0.6);
+				offline.before(function(dest){
+					sig = new Signal(0).connect(dest);
+					sig.rampTo(2, 0.1, 0.4);
+				});
+				offline.test(function(sample, time){
+					if (time <= 0.4){
+						expect(sample).to.be.closeTo(0, 0.1);
+					} else if (time > 0.5){
+						expect(sample).to.be.closeTo(2, 0.1);
 					}
 				});
 				offline.after(function(){
