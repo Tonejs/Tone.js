@@ -181,9 +181,9 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Timeline"], function 
 	Tone.TimelineSignal.prototype.setValueCurveAtTime = function (values, startTime, duration, scaling) {
 		scaling = this.defaultArg(scaling, 1);
 		//copy the array
-		var floats = new Float32Array(values);
+		var floats = new Array(values.length);
 		for (var i = 0; i < floats.length; i++){
-			floats[i] = this._fromUnits(floats[i]) * scaling;
+			floats[i] = this._fromUnits(values[i]) * scaling;
 		}
 		startTime = this.toSeconds(startTime);
 		duration = this.toSeconds(duration);
@@ -193,37 +193,14 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Timeline"], function 
 			"time" : startTime,
 			"duration" : duration
 		});
-		floats = this._interpolateValueCurve(floats, duration);
-		this._param.setValueCurveAtTime(floats, startTime, duration);
-		return this;
-	};
-
-	/**
-	 *  setValueCurveAtTime currently doesn't interpolate adjacent values 
-	 *  for some browsers as per [the spec](http://webaudio.github.io/web-audio-api/#widl-AudioParam-setValueCurveAtTime-AudioParam-Float32Array-values-double-startTime-double-duration)
-	 *  Creates a pre-interpolated curve on browsers that are not Chrome 46+.
-	 *  POLYFILL
-	 *  @param  {Float32Array}  values
-	 *  @param  {Number}  duration
-	 *  @return  {Float32Array}
-	 *  @private
-	 */
-	Tone.TimelineSignal.prototype._interpolateValueCurve = function(values, duration){
-		//only chrome version > 46 currently supports scaled value curves
-		var isChrome = navigator.userAgent.toLowerCase().indexOf("chrome") > -1;
-		//http://stackoverflow.com/questions/4900436/how-to-detect-the-installed-chrome-version
-		var version = navigator.userAgent.match(/Chrom(e|ium)\/([0-9]+)\./);
-		if (!(isChrome && parseInt(version[2]) > 46)){
-			//make a new array
-			var numSamples = Math.floor(duration * this.context.sampleRate * 0.5);
-			var newVals = new Float32Array(numSamples);
-			for (var i = 0; i < numSamples; i++){
-				newVals[i] = this._curveInterpolate(0, values, numSamples, i);
-			}
-			return newVals;
-		} else {
-			return values;
+		//set the first value
+		this._param.setValueAtTime(floats[0], startTime);
+		//schedule a lienar ramp for each of the segments
+		for (var j = 1; j < floats.length; j++){
+			var segmentTime = startTime + (j / (floats.length - 1) * duration);
+			this._param.linearRampToValueAtTime(floats[j], segmentTime);
 		}
+		return this;
 	};
 
 	/**
@@ -259,6 +236,13 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Timeline"], function 
 		if (before && before.time === time){
 			//remove everything after
 			this.cancelScheduledValues(time + this.sampleTime);
+		} else if (before && 
+				   before.type === Tone.TimelineSignal.Type.Curve &&
+				   before.time + before.duration > time){
+			//if the curve is still playing
+			//cancel the curve
+			this.cancelScheduledValues(time);
+			this.linearRampToValueAtTime(val, time);
 		} else {
 			//reschedule the next event to end at the given time
 			var after = this._searchAfter(time);
@@ -269,8 +253,8 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Timeline"], function 
 					this.linearRampToValueAtTime(val, time);
 				} else if (after.type === Tone.TimelineSignal.Type.Exponential){
 					this.exponentialRampToValueAtTime(val, time);
-				} 
-			} 
+				}
+			}
 			this.setValueAtTime(val, time);
 		}
 		return this;
