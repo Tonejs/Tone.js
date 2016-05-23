@@ -69,21 +69,14 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal",
 		 *  @type {number}
 		 *  @private
 		 */
-		this._attackCurve = Tone.Envelope.Type.Linear;
+		this._attackCurve = "linear";
 
 		/**
 		 *  the next time the envelope is at standby
 		 *  @type {number}
 		 *  @private
 		 */
-		this._releaseCurve = Tone.Envelope.Type.Exponential;
-
-		/**
-		 *  the minimum output value
-		 *  @type {number}
-		 *  @private
-		 */
-		this._minOutput = 0.00001;
+		this._releaseCurve = "exponential";
 
 		/**
 		 *  the signal
@@ -129,45 +122,83 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal",
 	});
 
 	/**
-	 * The slope of the attack. Either "linear" or "exponential". 
+	 * The shape of the attack. 
+	 * Can be any of these strings:
+	 * <ul>
+	 *   <li>linear</li>
+	 *   <li>exponential</li>
+	 *   <li>sine</li>
+	 *   <li>ease</li>
+	 *   <li>bounce</li>
+	 *   <li>ripple</li>
+	 *   <li>step</li>
+	 * </ul>
+	 * Can also be an array which describes the curve. Values
+	 * in the array are evenly subdivided and linearly
+	 * interpolated over the duration of the attack. 
 	 * @memberOf Tone.Envelope#
-	 * @type {string}
+	 * @type {String|Array}
 	 * @name attackCurve
 	 * @example
 	 * env.attackCurve = "linear";
+	 * @example
+	 * //can also be an array
+	 * env.attackCurve = [0, 0.2, 0.3, 0.4, 1]
 	 */
 	Object.defineProperty(Tone.Envelope.prototype, "attackCurve", {
 		get : function(){
-			return this._attackCurve;
+			if (this.isString(this._attackCurve)){
+				return this._attackCurve;
+			} else if (this.isObject(this._attackCurve)){
+				//look up the name in the curves array
+				for (var type in Tone.Envelope.Type){
+					if (Tone.Envelope.Type[type] === this._attackCurve){
+						return type;
+					}
+				}
+			}
 		}, 
-		set : function(type){
-			if (type === Tone.Envelope.Type.Linear || 
-				type === Tone.Envelope.Type.Exponential){
-				this._attackCurve = type;
+		set : function(curve){
+			//check if it's a valid type
+			if (Tone.Envelope.Type.hasOwnProperty(curve)){
+				this._attackCurve = Tone.Envelope.Type[curve];
+			} else if (this.isArray(curve)){
+				this._attackCurve = curve;
 			} else {
-				throw Error("Invalid curve type: ", type);
+				throw Error("Invalid curve: " + curve);
 			}
 		}
 	});
 
 	/**
-	 * The slope of the Release. Either "linear" or "exponential".
+	 * The shape of the release. See the attack curve types. 
 	 * @memberOf Tone.Envelope#
-	 * @type {string}
+	 * @type {String|Array}
 	 * @name releaseCurve
 	 * @example
 	 * env.releaseCurve = "linear";
 	 */
 	Object.defineProperty(Tone.Envelope.prototype, "releaseCurve", {
 		get : function(){
-			return this._releaseCurve;
+			if (this.isString(this._releaseCurve)){
+				return this._releaseCurve;
+			} else if (this.isObject(this._releaseCurve)){
+				//look up the name in the curves array
+				for (var type in Tone.Envelope.Type){
+					if (Tone.Envelope.Type[type] === this._releaseCurve){
+						return type;
+					}
+				}
+			}
 		}, 
-		set : function(type){
-			if (type === Tone.Envelope.Type.Linear || 
-				type === Tone.Envelope.Type.Exponential){
-				this._releaseCurve = type;
+		set : function(curve){
+			//check if it's a valid type
+			if (Tone.Envelope.Type.hasOwnProperty(curve)){
+				this._releaseCurve = Tone.Envelope.Type[curve];
+			} else if (this.isArray(curve)){
+				this._releaseCurve = curve;
 			} else {
-				throw Error("Invalid curve type: ", type);
+				throw Error("Invalid curve: " + curve);
 			}
 		}
 	});
@@ -186,7 +217,8 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal",
 		//to seconds
 		var now = this.now() + this.blockTime;
 		time = this.toSeconds(time, now);
-		var attack = this.toSeconds(this.attack);
+		var originalAttack = this.toSeconds(this.attack);
+		var attack = originalAttack;
 		var decay = this.toSeconds(this.decay);
 		velocity = this.defaultArg(velocity, 1);
 		//check if it's not a complete attack
@@ -198,15 +230,29 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal",
 			//the attack is now the remaining time
 			attack = remainingDistance / attackRate;
 		}
-		attack += time;
 		//attack
-		if (this._attackCurve === Tone.Envelope.Type.Linear){
-			this._sig.linearRampToValueBetween(velocity, time, attack);
-		} else {
-			this._sig.exponentialRampToValueBetween(velocity, time, attack);
+		if (this._attackCurve === "linear"){
+			this._sig.linearRampToValue(velocity, attack, time);
+		} else if (this._attackCurve === "exponential"){
+			this._sig.exponentialRampToValue(velocity, attack, time);
+		} else if (attack > 0){
+			this._sig.setRampPoint(time);
+			var curve = this._attackCurve;
+			if (this.isObject(curve)){
+				curve = curve.In;
+			}
+			//take only a portion of the curve
+			if (attack < originalAttack){
+				var percentComplete = 1 - attack / originalAttack;
+				var sliceIndex = Math.floor(percentComplete * this._attackCurve.length);
+				curve = this._attackCurve.slice(sliceIndex);
+				//the first index is the current value
+				curve[0] = currentValue;
+			}
+			this._sig.setValueCurveAtTime(curve, time, attack, velocity);
 		}
 		//decay
-		this._sig.exponentialRampToValueBetween(velocity * this.sustain, attack + this.sampleTime, attack + decay);
+		this._sig.exponentialRampToValue(velocity * this.sustain, decay, attack + time);
 		return this;
 	};
 	
@@ -221,12 +267,20 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal",
 	Tone.Envelope.prototype.triggerRelease = function(time){
 		var now = this.now() + this.blockTime;
 		time = this.toSeconds(time, now);
-		if (this.getValueAtTime(time) > 0){
+		var currentValue = this.getValueAtTime(time);
+		if (currentValue > 0){
 			var release = this.toSeconds(this.release);
-			if (this._releaseCurve === Tone.Envelope.Type.Linear){
-				this._sig.linearRampToValueBetween(0, time, time + release);
-			} else {
-				this._sig.exponentialRampToValueBetween(0, time, release + time);
+			if (this._releaseCurve === "linear"){
+				this._sig.linearRampToValue(0, release, time);
+			} else if (this._releaseCurve === "exponential"){
+				this._sig.exponentialRampToValue(0, release, time);
+			} else{
+				var curve = this._releaseCurve;
+				if (this.isObject(curve)){
+					curve = curve.Out;
+				}
+				this._sig.setRampPoint(time);
+				this._sig.setValueCurveAtTime(curve, time, release, currentValue);
 			}
 		}
 		return this;
@@ -277,6 +331,106 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal",
 	 */
 	Tone.Envelope.prototype.connect = Tone.Signal.prototype.connect;
 
+ 	/**
+ 	 *  Generate some complex envelope curves. 
+ 	 */
+	(function _createCurves(){
+
+		var curveLen = 128;
+
+		var i, k;
+
+		//sine curve
+		var sineCurve = [];
+		for (i = 0; i < curveLen; i++){
+			sineCurve[i] = Math.sin((i / (curveLen - 1)) * (Math.PI / 2));
+		}
+
+		//ripple curve
+		var rippleCurve = [];
+		var rippleCurveFreq = 6.4;
+		for (i = 0; i < curveLen - 1; i++){
+			k = (i / (curveLen - 1));
+			var sineWave = Math.sin(k * (Math.PI  * 2) * rippleCurveFreq - Math.PI / 2) + 1;
+			rippleCurve[i] = sineWave/10 + k * 0.83;
+		}
+		rippleCurve[curveLen - 1] = 1;
+
+		//stairs curve
+		var stairsCurve = [];
+		var steps = 5;
+		for (i = 0; i < curveLen; i++){
+			stairsCurve[i] = Math.ceil((i / (curveLen - 1)) * steps) / steps;
+		}		
+
+		//in-out easing curve
+		var inOutEasing = [];
+		for (i = 0; i < curveLen; i++){
+			k = i / (curveLen - 1);
+			inOutEasing[i] = 0.5 * (1 - Math.cos(Math.PI * k));
+		}
+
+		//a bounce curve
+		var bounceCurve = [];
+		for (i = 0; i < curveLen; i++){
+			k = i / (curveLen - 1);
+			var freq = Math.pow(k, 3) * 4 + 0.2;
+			var val = Math.cos(freq * Math.PI * 2 * k);
+			bounceCurve[i] = Math.abs(val * (1 - k));
+		}
+
+		/**
+		 *  Invert a value curve to make it work for the release
+		 *  @private
+		 */
+		function invertCurve(curve){
+			var out = new Array(curve.length);
+			for (var j = 0; j < curve.length; j++){
+				out[j] = 1 - curve[j];
+			}
+			return out;
+		}
+
+		/**
+		 *  reverse the curve
+		 *  @private
+		 */
+		function reverseCurve(curve){
+			return curve.slice(0).reverse();
+		}
+
+		/**
+		 *  attack and release curve arrays
+		 *  @type  {Object}
+		 *  @private
+		 */
+	 	Tone.Envelope.Type = {
+	 		"linear" : "linear",
+	 		"exponential" : "exponential",
+			"bounce" : {
+				In : invertCurve(bounceCurve),
+				Out : bounceCurve
+			},
+			"sine" : {
+				In : sineCurve,
+				Out : reverseCurve(sineCurve)
+			},
+			"step" : {
+				In : stairsCurve,
+				Out : invertCurve(stairsCurve)
+			},
+			"ripple" : {
+				In : rippleCurve,
+				Out : invertCurve(rippleCurve)
+			},
+			"ease" : {
+				In : inOutEasing,
+				Out : invertCurve(inOutEasing)
+			}
+		};
+
+	})();
+
 	/**
 	 *  Disconnect and dispose.
 	 *  @returns {Tone.Envelope} this
@@ -285,17 +439,11 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal",
 		Tone.prototype.dispose.call(this);
 		this._sig.dispose();
 		this._sig = null;
+		this._attackCurve = null;
+		this._releaseCurve = null;
 		return this;
 	};
 
- 	/**
-	 *  The phase of the envelope. 
-	 *  @enum {string}
-	 */
-	Tone.Envelope.Type = {
-		Linear : "linear",
-		Exponential : "exponential",
- 	};
 
 	return Tone.Envelope;
 });
