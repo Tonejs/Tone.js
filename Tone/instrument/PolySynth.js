@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/instrument/MonoSynth", "Tone/source/Source"], 
+define(["Tone/core/Tone", "Tone/instrument/Synth", "Tone/source/Source"], 
 function(Tone){
 
 	"use strict";
@@ -13,11 +13,11 @@ function(Tone){
 	 *  @constructor
 	 *  @extends {Tone.Instrument}
 	 *  @param {number|Object} [polyphony=4] The number of voices to create
-	 *  @param {function} [voice=Tone.MonoSynth] The constructor of the voices
-	 *                                            uses Tone.MonoSynth by default. 
+	 *  @param {function} [voice=Tone.Synth] The constructor of the voices
+	 *                                            uses Tone.Synth by default. 
 	 *  @example
-	 * //a polysynth composed of 6 Voices of MonoSynth
-	 * var synth = new Tone.PolySynth(6, Tone.MonoSynth).toMaster();
+	 * //a polysynth composed of 6 Voices of Synth
+	 * var synth = new Tone.PolySynth(6, Tone.Synth).toMaster();
 	 * //set the attributes using the set interface
 	 * synth.set("detune", -1200);
 	 * //play a chord
@@ -86,7 +86,7 @@ function(Tone){
 		"polyphony" : 4,
 		"volume" : 0,
 		"detune" : 0,
-		"voice" : Tone.MonoSynth
+		"voice" : Tone.Synth
 	};
 
 	/**
