@@ -1,5 +1,6 @@
-define(["Tone/component/Envelope", "helper/Basic", "helper/Offline", "Test", "helper/Offline2", "helper/Supports"], 
-function (Envelope, Basic, Offline, Test, Offline2, Supports) {
+define(["Tone/component/Envelope", "helper/Basic", "helper/Offline", "Test", 
+	"helper/Offline2", "helper/Supports", "helper/PassAudio"], 
+function (Envelope, Basic, Offline, Test, Offline2, Supports, PassAudio) {
 	describe("Envelope", function(){
 
 		Basic(Envelope);
@@ -456,6 +457,229 @@ function (Envelope, Basic, Offline, Test, Offline2, Supports) {
 						done();
 					});
 				}, 0.3);
+			});
+		});
+
+		context("Attack/Release Curves", function(){
+
+			it ("can get set all of the types as the attackCurve", function(){
+
+				var env = new Envelope();
+
+				for (var type in Envelope.Type){
+					env.attackCurve = type;
+					expect(env.attackCurve).to.equal(type);
+				}
+				env.dispose();
+			});
+
+			it ("can get set all of the types as the releaseCurve", function(){
+
+				var env = new Envelope();
+
+				for (var type in Envelope.Type){
+					env.releaseCurve = type;
+					expect(env.releaseCurve).to.equal(type);
+				}
+				env.dispose();
+			});
+
+			it ("outputs a signal when the attack/release curves are set to 'bounce'", function(done){
+				Offline2(function(output, test, after){
+
+					var env = new Envelope({
+						attack : 0.3,
+						sustain : 1,
+						release: 0.3,
+						decay : 0,
+						attackCurve : "bounce",
+						releaseCurve : "bounce",
+					}).connect(output);
+
+					env.triggerAttackRelease(0.3, 0.1);
+
+					test(function(sample, time){
+						if (time > 0.1 && time < 0.7){
+							expect(sample).to.be.above(0);
+						}
+					});
+
+					after(function(){
+						env.dispose();
+						done();
+					});
+
+				}, 0.8);
+			});
+
+			it ("outputs a signal when the attack/release curves are set to 'ripple'", function(done){
+				Offline2(function(output, test, after){
+
+					var env = new Envelope({
+						attack : 0.3,
+						sustain : 1,
+						release: 0.3,
+						decay : 0,
+						attackCurve : "ripple",
+						releaseCurve : "ripple",
+					}).connect(output);
+
+					env.triggerAttackRelease(0.3, 0.1);
+
+					test(function(sample, time){
+						if (time > 0.1 && time < 0.7){
+							expect(sample).to.be.above(0);
+						}
+					});
+
+					after(function(){
+						env.dispose();
+						done();
+					});
+
+				}, 0.8);
+			});
+
+			it ("outputs a signal when the attack/release curves are set to 'sine'", function(done){
+				Offline2(function(output, test, after){
+
+					var env = new Envelope({
+						attack : 0.3,
+						sustain : 1,
+						release: 0.3,
+						decay : 0,
+						attackCurve : "sine",
+						releaseCurve : "sine",
+					}).connect(output);
+
+					env.triggerAttackRelease(0.3, 0.1);
+
+					test(function(sample, time){
+						if (time > 0.1 && time < 0.7){
+							expect(sample).to.be.above(0);
+						}
+					});
+
+					after(function(){
+						env.dispose();
+						done();
+					});
+
+				}, 0.8);
+			});
+
+			it ("outputs a signal when the attack/release curves are set to 'ease'", function(done){
+				Offline2(function(output, test, after){
+
+					var env = new Envelope({
+						attack : 0.3,
+						sustain : 1,
+						release: 0.3,
+						decay : 0,
+						attackCurve : "ease",
+						releaseCurve : "ease",
+					}).connect(output);
+
+					env.triggerAttackRelease(0.3, 0.1);
+
+					test(function(sample, time){
+						if (time > 0.1 && time < 0.7){
+							expect(sample).to.be.above(0);
+						}
+					});
+
+					after(function(){
+						env.dispose();
+						done();
+					});
+
+				}, 0.8);
+			});
+
+			it ("outputs a signal when the attack/release curves are set to 'step'", function(done){
+				Offline2(function(output, test, after){
+
+					var env = new Envelope({
+						attack : 0.3,
+						sustain : 1,
+						release: 0.3,
+						decay : 0,
+						attackCurve : "step",
+						releaseCurve : "step",
+					}).connect(output);
+
+					env.triggerAttackRelease(0.3, 0.1);
+
+					test(function(sample, time){
+						if (time > 0.3 && time < 0.5){
+							expect(sample).to.be.above(0);
+						} else if (time < 0.1){
+							expect(sample).to.equal(0);
+						}
+					});
+
+					after(function(){
+						env.dispose();
+						done();
+					});
+
+				}, 0.8);
+			});
+
+			it ("outputs a signal when the attack/release curves are set to an array", function(done){
+				Offline2(function(output, test, after){
+
+					var env = new Envelope({
+						attack : 0.3,
+						sustain : 1,
+						release: 0.3,
+						decay : 0,
+						attackCurve : [0, 1, 0, 1],
+						releaseCurve : [1, 0, 1, 0],
+					}).connect(output);
+
+					env.triggerAttackRelease(0.4, 0.1);
+
+					test(function(sample, time){
+						if (time > 0.4 && time < 0.5){
+							expect(sample).to.be.above(0);
+						} else if (time < 0.1){
+							expect(sample).to.equal(0);
+						}
+					});
+
+					after(function(){
+						env.dispose();
+						done();
+					});
+
+				}, 0.8);
+			});
+
+			it ("can scale a velocity with a custom curve", function(done){
+				Offline2(function(output, test, after){
+
+					var env = new Envelope({
+						attack : 0.3,
+						sustain : 1,
+						release: 0.3,
+						decay : 0,
+						attackCurve : [0, 1, 0, 1],
+						releaseCurve : [1, 0, 1, 0],
+					}).connect(output);
+
+					env.triggerAttackRelease(0.4, 0.1, 0.5);
+
+					test(function(sample, time){
+						expect(sample).to.be.lte(0.5);
+					});
+
+					after(function(){
+						env.dispose();
+						done();
+					});
+
+				}, 0.8);
 			});
 		});
 	});
