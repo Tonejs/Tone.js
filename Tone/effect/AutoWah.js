@@ -20,7 +20,7 @@ function(Tone){
 	 *  @example
 	 * var autoWah = new Tone.AutoWah(50, 6, -30).toMaster();
 	 * //initialize the synth and connect to autowah
-	 * var synth = new SimpleSynth.connect(autoWah);
+	 * var synth = new Synth.connect(autoWah);
 	 * //Q value influences the effect of the wah - default is 2
 	 * autoWah.Q.value = 6;
 	 * //more audible on higher notes

@@ -1,28 +1,28 @@
-define(["Tone/instrument/SimpleSynth", "helper/Basic", "helper/InstrumentTests"], function (SimpleSynth, Basic, InstrumentTest) {
+define(["Tone/instrument/Synth", "helper/Basic", "helper/InstrumentTests"], function (Synth, Basic, InstrumentTest) {
 
-	describe("SimpleSynth", function(){
+	describe("Synth", function(){
 
-		Basic(SimpleSynth);
-		InstrumentTest(SimpleSynth, "C4");
+		Basic(Synth);
+		InstrumentTest(Synth, "C4");
 
 		context("API", function(){
 
 			it ("can get and set oscillator attributes", function(){
-				var simple = new SimpleSynth();
+				var simple = new Synth();
 				simple.oscillator.type = "triangle";
 				expect(simple.oscillator.type).to.equal("triangle");
 				simple.dispose();
 			});
 
 			it ("can get and set envelope attributes", function(){
-				var simple = new SimpleSynth();
+				var simple = new Synth();
 				simple.envelope.attack = 0.24;
 				expect(simple.envelope.attack).to.equal(0.24);
 				simple.dispose();
 			});
 
 			it ("can be constructed with an options object", function(){
-				var simple = new SimpleSynth({
+				var simple = new Synth({
 					"envelope" : {
 						"sustain" : 0.3
 					}
@@ -32,7 +32,7 @@ define(["Tone/instrument/SimpleSynth", "helper/Basic", "helper/InstrumentTests"]
 			});
 
 			it ("can get/set attributes", function(){
-				var simple = new SimpleSynth();
+				var simple = new Synth();
 				simple.set({
 					"envelope.decay" : 0.24
 				});

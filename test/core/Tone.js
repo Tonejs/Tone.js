@@ -1,5 +1,5 @@
-define(["Test", "Tone/core/Tone", "helper/PassAudio", "Tone/source/Oscillator", "Tone/instrument/SimpleSynth", "helper/Offline"], 
-	function (Test, Tone, PassAudio, Oscillator, SimpleSynth, Offline) {
+define(["Test", "Tone/core/Tone", "helper/PassAudio", "Tone/source/Oscillator", "Tone/instrument/Synth", "helper/Offline"], 
+	function (Test, Tone, PassAudio, Oscillator, Synth, Offline) {
 
 	describe("AudioContext", function(){
 		
@@ -321,7 +321,7 @@ define(["Test", "Tone/core/Tone", "helper/PassAudio", "Tone/source/Oscillator", 
 			});	
 
 			it("can 'set' a nested object", function(){
-				var synth = new SimpleSynth();
+				var synth = new Synth();
 				synth.set({
 					"oscillator" : {
 						"type" : "square2"
@@ -332,14 +332,14 @@ define(["Test", "Tone/core/Tone", "helper/PassAudio", "Tone/source/Oscillator", 
 			});	
 
 			it("can 'set' a value with dot notation", function(){
-				var synth = new SimpleSynth();
+				var synth = new Synth();
 				synth.set("oscillator.type", "triangle");
 				expect(synth.oscillator.type).to.equal("triangle");
 				synth.dispose();
 			});	
 
 			it("can 'get' a value with dot notation", function(){
-				var synth = new SimpleSynth();
+				var synth = new Synth();
 				synth.set({
 					"oscillator" : {
 						"type" : "sine10",

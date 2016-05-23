@@ -1,11 +1,11 @@
-define(["Tone/core/Tone", "Tone/instrument/SimpleSynth", "Tone/signal/Signal", "Tone/signal/Multiply", "Tone/instrument/Monophonic"], 
+define(["Tone/core/Tone", "Tone/instrument/Synth", "Tone/signal/Signal", "Tone/signal/Multiply", "Tone/instrument/Monophonic"], 
 function(Tone){
 
 	"use strict";
 
 	/**
-	 *  @class  FMSynth is composed of two Tone.SimpleSynths where one Tone.SimpleSynth modulates
-	 *          the frequency of a second Tone.SimpleSynth. A lot of spectral content 
+	 *  @class  FMSynth is composed of two Tone.Synths where one Tone.Synth modulates
+	 *          the frequency of a second Tone.Synth. A lot of spectral content 
 	 *          can be explored using the modulationIndex parameter. Read more about
 	 *          frequency modulation synthesis on [SoundOnSound](http://www.soundonsound.com/sos/apr00/articles/synthsecrets.htm).
 	 *          <img src="https://docs.google.com/drawings/d/1h0PUDZXPgi4Ikx6bVT6oncrYPLluFKy7lj53puxj-DM/pub?w=902&h=462">
@@ -25,9 +25,9 @@ function(Tone){
 
 		/**
 		 *  The carrier voice.
-		 *  @type {Tone.SimpleSynth}
+		 *  @type {Tone.Synth}
 		 */
-		this._carrier = new Tone.SimpleSynth(options.carrier);
+		this._carrier = new Tone.Synth(options.carrier);
 		this._carrier.volume.value = -10;
 
 
@@ -45,9 +45,9 @@ function(Tone){
 
 		/**
 		 *  The modulator voice.
-		 *  @type {Tone.SimpleSynth}
+		 *  @type {Tone.Synth}
 		 */
-		this._modulator = new Tone.SimpleSynth(options.modulator);
+		this._modulator = new Tone.Synth(options.modulator);
 		this._modulator.volume.value = -10;
 
 

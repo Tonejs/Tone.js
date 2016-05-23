@@ -1,12 +1,12 @@
-define(["Tone/core/Tone", "Tone/instrument/SimpleSynth", "Tone/signal/Signal", "Tone/signal/Multiply", 
+define(["Tone/core/Tone", "Tone/instrument/Synth", "Tone/signal/Signal", "Tone/signal/Multiply", 
 	"Tone/instrument/Monophonic", "Tone/signal/AudioToGain"], 
 function(Tone){
 
 	"use strict";
 
 	/**
-	 *  @class  AMSynth uses the output of one Tone.SimpleSynth to modulate the
-	 *          amplitude of another Tone.SimpleSynth. The harmonicity (the ratio between
+	 *  @class  AMSynth uses the output of one Tone.Synth to modulate the
+	 *          amplitude of another Tone.Synth. The harmonicity (the ratio between
 	 *          the two signals) affects the timbre of the output signal greatly.
 	 *          Read more about Amplitude Modulation Synthesis on 
 	 *          [SoundOnSound](http://www.soundonsound.com/sos/mar00/articles/synthsecrets.htm).
@@ -27,9 +27,9 @@ function(Tone){
 
 		/**
 		 *  The carrier voice. 
-		 *  @type {Tone.SimpleSynth}
+		 *  @type {Tone.Synth}
 		 */
-		this._carrier = new Tone.SimpleSynth();
+		this._carrier = new Tone.Synth();
 		this._carrier.volume.value = -10;
 
 		/**
@@ -46,9 +46,9 @@ function(Tone){
 
 		/**
 		 *  The modulator voice. 
-		 *  @type {Tone.SimpleSynth}
+		 *  @type {Tone.Synth}
 		 */
-		this._modulator = new Tone.SimpleSynth();
+		this._modulator = new Tone.Synth();
 		this._modulator.volume.value = -10;
 
 		/**
