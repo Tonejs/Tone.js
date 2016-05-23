@@ -96,7 +96,7 @@ define(["Test", "Tone/signal/TimelineSignal", "helper/Offline", "Tone/type/Type"
 				sched.setValueCurveAtTime([0, 1, 0.2, 0.8, 0], 0, 1);
 
 				test(function(sample, time){
-					expect(sample).to.be.closeTo(sched.getValueAtTime(time), 0.01);
+					expect(sample).to.be.closeTo(sched.getValueAtTime(time), 0.03);
 				});
 
 				after(function(){
@@ -112,7 +112,7 @@ define(["Test", "Tone/signal/TimelineSignal", "helper/Offline", "Tone/type/Type"
 				sched.setValueCurveAtTime([0, 1, 0], 0, 1, 0.5);
 
 				test(function(sample){
-					expect(sample).to.be.at.most(0.5);
+					expect(sample).to.be.at.most(0.51);
 				});
 
 				after(function(){
