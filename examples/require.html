@@ -39,9 +39,9 @@
 			}
 		});
 
-		require(["Tone/core/Master", "Tone/instrument/SimpleSynth"], 
-		function(Master, SimpleSynth){
-			var synth = new SimpleSynth().toMaster();
+		require(["Tone/core/Master", "Tone/instrument/Synth"], 
+		function(Master, Synth){
+			var synth = new Synth().toMaster();
 			synth.triggerAttackRelease("C4", "8n");
 		});
 	</script>

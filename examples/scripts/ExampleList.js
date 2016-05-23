@@ -7,7 +7,7 @@ var ExampleList = {
 		"Microphone" : "mic"
 	},
 	"Instruments" : {
-		"SimpleSynth" : "simpleSynth",
+		"Synth" : "simpleSynth",
 		"MonoSynth" : "monoSynth",
 		"FMSynth" : "fmSynth",
 		"PolySynth" : "polySynth",

@@ -17,6 +17,7 @@
 * Switching parameter position of type and size in Tone.Analyser
 * Tone.Meter uses Tone.Analyser instead of ScriptProcessorNode.
 * Tone.Envelope has 5 new attack/release curves: "sine", "ease", "bounce", "ripple", "step"
+* Renamed Tone.SimpleSynth -> Tone.Synth
 
 DEPRECATED:
 * Removed SimpleFM and SimpleAM

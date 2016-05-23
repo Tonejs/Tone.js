@@ -84,8 +84,8 @@
 		};
 
 		//left and right synthesizers
-		var synthL = new Tone.SimpleSynth(synthSettings).connect(merge.left);
-		var synthR = new Tone.SimpleSynth(synthSettings).connect(merge.right);
+		var synthL = new Tone.Synth(synthSettings).connect(merge.left);
+		var synthR = new Tone.Synth(synthSettings).connect(merge.right);
 
 		//the two Tone.Sequences
 		var partL = new Tone.Sequence(function(time, note){
