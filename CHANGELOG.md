@@ -16,6 +16,7 @@
 * Added new timing primitive types: Time, Frequency, TransportTime.
 * Switching parameter position of type and size in Tone.Analyser
 * Tone.Meter uses Tone.Analyser instead of ScriptProcessorNode.
+* Tone.Envelope has 5 new attack/release curves: "sine", "ease", "bounce", "ripple", "step"
 
 DEPRECATED:
 * Removed SimpleFM and SimpleAM
