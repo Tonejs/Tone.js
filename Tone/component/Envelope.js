@@ -165,7 +165,7 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal",
 			} else if (this.isArray(curve)){
 				this._attackCurve = curve;
 			} else {
-				throw Error("Invalid curve: " + curve);
+				throw new Error("Tone.Envelope: invalid curve: " + curve);
 			}
 		}
 	});
@@ -198,7 +198,7 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal",
 			} else if (this.isArray(curve)){
 				this._releaseCurve = curve;
 			} else {
-				throw Error("Invalid curve: " + curve);
+				throw new Error("Tone.Envelope: invalid curve: " + curve);
 			}
 		}
 	});

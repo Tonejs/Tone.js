@@ -220,7 +220,7 @@ function(Tone){
 				this._sample = name;
 				this.player.buffer = this._buffers[name];
 			} else {
-				throw new Error("Sampler does not have a sample named "+name);
+				throw new Error("Tone.Sampler: no sample named "+name);
 			}
 		}
 	});

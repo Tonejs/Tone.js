@@ -278,7 +278,7 @@ function(Tone){
 	 */
 	Tone.Transport.prototype.scheduleRepeat = function(callback, interval, startTime, duration){
 		if (interval <= 0){
-			throw new Error("repeat events must have an interval larger than 0");
+			throw new Error("Tone.Transport: repeat events must have an interval larger than 0");
 		}
 		var event = {
 			"time" : this.toTicks(startTime),

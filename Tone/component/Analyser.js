@@ -156,7 +156,7 @@ define(["Tone/core/Tone"], function (Tone) {
 			} else if (type === Tone.Analyser.ReturnType.Float){
 				this._buffer = new Float32Array(this._analyser.frequencyBinCount);
 			} else {
-				throw new Error("Invalid Return Type: "+type);
+				throw new TypeError("Tone.Analayser: invalid return type: "+type);
 			}
 			this._returnType = type;
 		}
@@ -174,7 +174,7 @@ define(["Tone/core/Tone"], function (Tone) {
 		},
 		set : function(type){
 			if (type !== Tone.Analyser.Type.Waveform && type !== Tone.Analyser.Type.FFT){
-				throw new Error("Invalid Type: "+type);
+				throw new TypeError("Tone.Analyser: invalid type: "+type);
 			}
 			this._type = type;
 		}

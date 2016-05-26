@@ -48,7 +48,7 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Subtract", "Tone/signa
 			result = this._eval(tree);
 		} catch (e){
 			this._disposeNodes();
-			throw new Error("Could evaluate expression: "+expr);
+			throw new Error("Tone.Expr: Could evaluate expression: "+expr);
 		}
 
 		/**
@@ -251,7 +251,7 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Subtract", "Tone/signa
 					}
 				}
 			}
-			throw new SyntaxError("Unexpected token "+expr);
+			throw new SyntaxError("Tone.Expr: Unexpected token "+expr);
 		}
 
 		return {
@@ -346,7 +346,7 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Subtract", "Tone/signa
 			var token, expr;
 			token = lexer.peek();
 			if (isUndef(token)) {
-				throw new SyntaxError("Unexpected termination of expression");
+				throw new SyntaxError("Tone.Expr: Unexpected termination of expression");
 			}
 			if (token.type === "func") {
 				token = lexer.next();
@@ -368,14 +368,14 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Subtract", "Tone/signa
 				}
 				return expr;
 			}
-			throw new SyntaxError("Parse error, cannot process token " + token.value);
+			throw new SyntaxError("Tone.Expr: Parse error, cannot process token " + token.value);
 		}
 
 		function parseFunctionCall(func) {
 			var token, args = [];
 			token = lexer.next();
 			if (!matchSyntax(token, "(")) {
-				throw new SyntaxError("Expected ( in a function call \"" + func.value + "\"");
+				throw new SyntaxError("Tone.Expr: Expected ( in a function call \"" + func.value + "\"");
 			}
 			token = lexer.peek();
 			if (!matchSyntax(token, ")")) {
@@ -383,7 +383,7 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Subtract", "Tone/signa
 			}
 			token = lexer.next();
 			if (!matchSyntax(token, ")")) {
-				throw new SyntaxError("Expected ) in a function call \"" + func.value + "\"");
+				throw new SyntaxError("Tone.Expr: Expected ) in a function call \"" + func.value + "\"");
 			}
 			return {
 				method : func.method,

@@ -247,7 +247,7 @@ function(Tone){
 					b = this._partials[n - 1];
 					break;
 				default:
-					throw new Error("invalid oscillator type: "+type);
+					throw new TypeError("Tone.Oscillator: invalid type: "+type);
 			}
 			if (b !== 0){
 				real[n] = -b * Math.sin(phase * n);

@@ -221,7 +221,7 @@ define(["Tone/core/Tone"], function (Tone) {
 					}
 				}
 			}
-			throw new SyntaxError("Unexpected token "+expr);
+			throw new SyntaxError("Tone.TimeBase: Unexpected token "+expr);
 		}
 
 		return {
@@ -311,7 +311,7 @@ define(["Tone/core/Tone"], function (Tone) {
 		var token, expr;
 		token = lexer.peek();
 		if (this.isUndef(token)) {
-			throw new SyntaxError("Unexpected end of expression");
+			throw new SyntaxError("Tone.TimeBase: Unexpected end of expression");
 		}
 		if (this._matchGroup(token, this._primaryExpressions)) {
 			token = lexer.next();
@@ -327,7 +327,7 @@ define(["Tone/core/Tone"], function (Tone) {
 			}
 			return expr;
 		}
-		throw new SyntaxError("Cannot process token " + token.value);
+		throw new SyntaxError("Tone.TimeBase: Cannot process token " + token.value);
 	};
 
 	/**

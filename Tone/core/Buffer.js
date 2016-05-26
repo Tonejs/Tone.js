@@ -343,7 +343,7 @@ define(["Tone/core/Tone", "Tone/core/Emitter"], function(Tone){
 			Tone.context.decodeAudioData(request.response, function(buff) {
 				callback(buff);
 			}, function(){
-				throw new Error("could not decode audio data:" + url);
+				throw new Error("Tone.Buffer: could not decode audio data:" + url);
 			});
 		};
 		//send the request

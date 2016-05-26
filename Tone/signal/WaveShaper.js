@@ -110,7 +110,7 @@ define(["Tone/core/Tone", "Tone/signal/SignalBase"], function(Tone){
 			if (["none", "2x", "4x"].indexOf(oversampling) !== -1){
 				this._shaper.oversample = oversampling;
 			} else {
-				throw new Error("invalid oversampling: "+oversampling);
+				throw new RangeError("Tone.WaveShaper: oversampling must be either 'none', '2x', or '4x'");
 			}
 		}
 	});
