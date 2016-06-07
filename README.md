@@ -1,7 +1,7 @@
 Tone.js
 =========
 
-Tone.js is a Web Audio framework for creating interactive music in the browser. The architecture of Tone.js aims to be familiar to both musicians and audio programmers looking to create web-based audio applications. On the high-level, Tone offers common DAW (digital audio workstation) features like a global transport for scheduling and timing events and prebuilt synths and effects. For signal-processing programmers (coming from languages like Max/MSP), Tone provides a wealth of high performance, low latency building blocks and DSP modules to build your own synthesizers, effects, and complex control signals.
+Tone.js is a Web Audio framework for creating interactive music in the browser. The architecture of Tone.js aims to be familiar to both musicians and audio programmers looking to create web-based audio applications. On the high-level, Tone offers common DAW (digital audio workstation) features like a global transport for scheduling events and prebuilt synths and effects. For signal-processing programmers (coming from languages like Max/MSP), Tone provides a wealth of high performance, low latency building blocks and DSP modules to build your own synthesizers, effects, and complex control signals.
 
 [API](http://tonejs.org/docs/)
 
@@ -30,6 +30,7 @@ Tone.js is a Web Audio framework for creating interactive music in the browser. 
 * [Tweet FM - Mike Mitchell](https://tweet-fm.herokuapp.com/)
 * [TextXoX - Damon Holzborn](http://rustleworks.com/textxox/)
 * [Stepping - John Hussey](http://stepping.audio/)
+* [Limp Body Beat](http://www.adultswim.com/etcetera/limp-body-beat/)
 
 Using Tone.js? I'd love to hear it: yotam@tonejs.org
 
@@ -45,13 +46,13 @@ Using Tone.js? I'd love to hear it: yotam@tonejs.org
 
 ```javascript
 //create one of Tone's built-in synthesizers and connect it to the master output
-var synth = new Tone.SimpleSynth().toMaster();
+var synth = new Tone.Synth().toMaster();
 
-//play a middle c for the duration of an 8th note
+//play a middle 'C' for the duration of an 8th note
 synth.triggerAttackRelease("C4", "8n");
 ```
 
-[SimpleSynth](http://tonejs.org/docs/#SimpleSynth) is a single oscillator, single envelope synthesizer. It's [ADSR envelope](https://en.wikipedia.org/wiki/Synthesizer#ADSR_envelope) has two phases: the attack and the release. These can be triggered by calling  `triggerAttack` and `triggerRelease` separately, or combined as shown above. The first argument of `triggerAttackRelease` is the frequency, which can be given either a number (like `440`) or as "pitch-octave" notation (like `"D#2"`). The second argument is the duration of the envelope's sustain (i.e. how long the note is held for). The third (optional) argument of `triggerAttackRelease` is the time the attack should start. With no argument, the time will evaluate to "now" and play immediately. Passing in a time value let's you schedule the event in the future. 
+[Synth](http://tonejs.org/docs/#Synth) is a single oscillator, single envelope synthesizer. It's [ADSR envelope](https://en.wikipedia.org/wiki/Synthesizer#ADSR_envelope) has two phases: the attack and the release. These can be triggered by calling  `triggerAttack` and `triggerRelease` separately, or combined as shown above. The first argument of `triggerAttackRelease` is the frequency, which can be given either a number (like `440`) or as "pitch-octave" notation (like `"D#2"`). The second argument is the duration of the envelope's sustain (i.e. how long the note is held for). The third (optional) argument of `triggerAttackRelease` is the time the attack should start. With no argument, the time will evaluate to "now" and play immediately. Passing in a time value let's you schedule the event in the future. 
 
 ### Time
 
@@ -130,7 +131,7 @@ All instruments are monophonic (one voice) but can be made polyphonic when the c
 //a 4 voice MonoSynth
 var polySynth = new Tone.PolySynth(4, Tone.MonoSynth).toMaster();
 //play a chord
-polySimpleSynth.triggerAttackRelease(["C4", "E4", "G4", "B4"], "2n");
+polySynth.triggerAttackRelease(["C4", "E4", "G4", "B4"], "2n");
 ```
 
 [Read more about Instruments.](https://github.com/Tonejs/Tone.js/wiki/Instruments)
@@ -175,7 +176,7 @@ To use MIDI files, you'll first need to convert them into a JSON format which To
 
 # Performance
 
-Tone.js uses only one ScriptProcessorNode (in Tone.Meter). The rest of Tone's modules find a native Web Audio component workaround, making extensive use of the GainNode and WaveShaperNode especially, which enables Tone.js to work well on both desktop and mobile browsers. While the ScriptProcessorNode is extremely powerful, it introduces a lot of latency and the potential for glitches more than any other node.
+Tone.js makes extensive use of the native Web Audio Nodes such as the GainNode and WaveShaperNode for all signal processing, which enables Tone.js to work well on both desktop and mobile browsers. It uses no ScriptProcessorNodes.
 
 # Contributing
 
