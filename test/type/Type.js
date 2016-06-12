@@ -33,16 +33,16 @@ define(["helper/Basic", "Test", "Tone/core/Transport", "Tone/type/Type",
 				Tone.Transport.bpm.value = 120;
 				Tone.Transport.timeSignature = 4;
 				var now = tone.now();
-				expect(tone.toSeconds("+5")).to.be.closeTo(now + 5, 0.01);
+				expect(tone.toSeconds("+5")).to.be.closeTo(now + 5, 0.05);
 				now = tone.now();
-				expect(tone.toSeconds("+4n")).to.be.closeTo(now + 0.5, 0.01);
+				expect(tone.toSeconds("+4n")).to.be.closeTo(now + 0.5, 0.05);
 				now = tone.now();
-				expect(tone.toSeconds("+1:0")).to.be.closeTo(now + 2, 0.01);
+				expect(tone.toSeconds("+1:0")).to.be.closeTo(now + 2, 0.05);
 			});
 
 			it("with no arguments returns 'now'", function(){
 				var now = tone.now();
-				expect(tone.toSeconds()).to.be.closeTo(now, 0.01);
+				expect(tone.toSeconds()).to.be.closeTo(now, 0.05);
 			});
 
 			it("can evaluate mathematical expressions of time", function(){
@@ -57,8 +57,8 @@ define(["helper/Basic", "Test", "Tone/core/Transport", "Tone/type/Type",
 
 			it("can pass in Primitive time types", function(){
 				Tone.Transport.stop();
-				// expect(tone.toSeconds(Time("4n"))).to.equal(0.5);
-				// expect(tone.toSeconds(Frequency("4n"))).to.equal(0.5);
+				expect(tone.toSeconds(Time("4n"))).to.equal(0.5);
+				expect(tone.toSeconds(Frequency("4n"))).to.equal(0.5);
 				expect(tone.toSeconds(TransportTime("4n"))).to.equal(0.5);
 			});
 
