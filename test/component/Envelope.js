@@ -568,7 +568,7 @@ function (Envelope, Basic, Offline, Test, Offline2, Supports, PassAudio) {
 				}, 0.8);
 			});
 
-			it ("outputs a signal when the attack/release curves are set to 'ease'", function(done){
+			it ("outputs a signal when the attack/release curves are set to 'cosine'", function(done){
 				Offline2(function(output, test, after){
 
 					var env = new Envelope({
@@ -576,8 +576,8 @@ function (Envelope, Basic, Offline, Test, Offline2, Supports, PassAudio) {
 						sustain : 1,
 						release: 0.3,
 						decay : 0,
-						attackCurve : "ease",
-						releaseCurve : "ease",
+						attackCurve : "cosine",
+						releaseCurve : "cosine",
 					}).connect(output);
 
 					env.triggerAttackRelease(0.3, 0.1);

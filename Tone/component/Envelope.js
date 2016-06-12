@@ -340,10 +340,10 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal",
 
 		var i, k;
 
-		//sine curve
-		var sineCurve = [];
+		//cosine curve
+		var cosineCurve = [];
 		for (i = 0; i < curveLen; i++){
-			sineCurve[i] = Math.sin((i / (curveLen - 1)) * (Math.PI / 2));
+			cosineCurve[i] = Math.sin((i / (curveLen - 1)) * (Math.PI / 2));
 		}
 
 		//ripple curve
@@ -364,10 +364,10 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal",
 		}		
 
 		//in-out easing curve
-		var inOutEasing = [];
+		var sineCurve = [];
 		for (i = 0; i < curveLen; i++){
 			k = i / (curveLen - 1);
-			inOutEasing[i] = 0.5 * (1 - Math.cos(Math.PI * k));
+			sineCurve[i] = 0.5 * (1 - Math.cos(Math.PI * k));
 		}
 
 		//a bounce curve
@@ -411,9 +411,9 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal",
 				In : invertCurve(bounceCurve),
 				Out : bounceCurve
 			},
-			"sine" : {
-				In : sineCurve,
-				Out : reverseCurve(sineCurve)
+			"cosine" : {
+				In : cosineCurve,
+				Out : reverseCurve(cosineCurve)
 			},
 			"step" : {
 				In : stairsCurve,
@@ -423,9 +423,9 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal",
 				In : rippleCurve,
 				Out : invertCurve(rippleCurve)
 			},
-			"ease" : {
-				In : inOutEasing,
-				Out : invertCurve(inOutEasing)
+			"sine" : {
+				In : sineCurve,
+				Out : invertCurve(sineCurve)
 			}
 		};
 
