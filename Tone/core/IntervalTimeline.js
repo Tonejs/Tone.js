@@ -324,7 +324,7 @@ define(["Tone/core/Tone", "Tone/type/Type"], function (Tone) {
 	 *  @param  {Function}  callback The callback to invoke with every item
 	 *  @returns {Tone.IntervalTimeline} this
 	 */
-	Tone.IntervalTimeline.prototype.forEachOverlap = function(time, callback){
+	Tone.IntervalTimeline.prototype.forEachAtTime = function(time, callback){
 		time = this.toSeconds(time);
 		if (this._root !== null){
 			var results = [];

@@ -224,7 +224,7 @@ function(Tone){
 			event.callback(tickTime);
 		});
 		//process the repeated events
-		this._repeatedEvents.forEachOverlap(ticks, function(event){
+		this._repeatedEvents.forEachAtTime(ticks, function(event){
 			if ((ticks - event.time) % event.interval === 0){
 				event.callback(tickTime);
 			}
@@ -641,8 +641,8 @@ function(Tone){
 		}
 		var transportPos = Tone.Time(this.ticks, "i").eval();
 		var remainingTime = subdivision - (transportPos % subdivision);
-		if (remainingTime === subdivision){
-			remainingTime = 0;
+		if (remainingTime === 0){
+			remainingTime = subdivision;
 		}
 		return now + remainingTime;
 	};
