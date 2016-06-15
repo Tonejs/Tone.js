@@ -16,8 +16,11 @@
 * Added new timing primitive types: Time, Frequency, TransportTime.
 * Switching parameter position of type and size in Tone.Analyser
 * Tone.Meter uses Tone.Analyser instead of ScriptProcessorNode.
-* Tone.Envelope has 5 new attack/release curves: "sine", "ease", "bounce", "ripple", "step"
+* Tone.Envelope has 5 new attack/release curves: "sine", "cosine", "bounce", "ripple", "step"
 * Renamed Tone.SimpleSynth -> Tone.Synth
+* Tone.Buffers combines multiple buffers
+* Tone.BufferSource a low-level wrapper, and Tone.MultiPlayer which is good for multisampled instruments.
+* Tone.GrainPlayer: granular synthesis buffer player. 
 
 DEPRECATED:
 * Removed SimpleFM and SimpleAM
