@@ -141,10 +141,6 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function (T
 
 		this._source.start(time, offset);
 
-		if (!this.loop){
-			this.stop(time + duration, fadeInTime);
-		}
-
 		gain = this.defaultArg(gain, 1);
 		this._gain = gain;
 
@@ -155,8 +151,13 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function (T
 			fadeInTime = this.toSeconds(fadeInTime);
 		}
 
+		if (!this.loop){
+			this.stop(time + duration + fadeInTime, fadeInTime);
+		}
+
 		if (fadeInTime > 0){
-			this._gainNode.gain.setValueCurveAtTime(this._fadeInCurve, time, fadeInTime);
+			this._gainNode.gain.setValueAtTime(0, time);
+			this._gainNode.gain.linearRampToValueAtTime(1, time + fadeInTime);
 			time += fadeInTime;
 		} else {
 			this._gainNode.gain.setValueAtTime(gain, time);
@@ -193,7 +194,8 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function (T
 
 		//set a new one
 		if (fadeOutTime > 0){
-			this._gainNode.gain.setValueCurveAtTime(this._fadeOutCurve, time, fadeOutTime);
+			this._gainNode.gain.setValueAtTime(1, time);
+			this._gainNode.gain.linearRampToValueAtTime(0, time + fadeOutTime);
 			time += fadeOutTime;
 		} else {
 			this._gainNode.gain.setValueAtTime(0, time);
@@ -276,34 +278,6 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function (T
 			this._source.loop = loop;
 		}
 	});
-
-	//ENVELOPE CURVES
-	(function setupEnvelopes(){
-
-		var len = 1024;
-
-		/**
-		 *  The fade in envelope which i used with
-		 *  setValueCurveAtTime.
-		 *  @type  {Float32Array}
-		 *  @private
-		 */
-		Tone.BufferSource.prototype._fadeInCurve = new Float32Array(len);
-		for (var i = 0; i < len; i++){
-			Tone.BufferSource.prototype._fadeInCurve[i] = 0.5 * (1 - Math.cos((i / (len - 1)) * Math.PI));
-		}
-
-		/**
-		 *  The envelope used to fade out the gain.
-		 *  @type  {Float32Array}
-		 *  @private
-		 */
-		Tone.BufferSource.prototype._fadeOutCurve = new Float32Array(len);
-		for (var j = 0; j < len; j++){
-			Tone.BufferSource.prototype._fadeOutCurve[j] = Tone.BufferSource.prototype._fadeInCurve[len - 1 - j];
-		}
-		
-	})();
 
 	/**
 	 *  Clean up.
