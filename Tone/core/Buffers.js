@@ -60,7 +60,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer"], function (Tone) {
 		if (this._buffers.hasOwnProperty(name)){
 			return this._buffers[name];
 		} else {
-			throw new Error("Tone.Buffers: no buffer "+name);
+			throw new Error("Tone.Buffers: no buffer named"+name);
 		}
 	};
 

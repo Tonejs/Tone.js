@@ -135,12 +135,12 @@ define(["helper/Basic", "Tone/source/BufferSource", "helper/Offline2", "Tone/cor
 		context("Start/Stop Scheduling", function(){
 
 			beforeEach(function(done){
-				buffer.load("./audio/kick.mp3", function(){
+				buffer.load("./audio/sine.wav", function(){
 					done();
 				});
 			});
 
-			it("can be start with an offset", function(done){
+			it("can be started with an offset", function(done){
 				Offline(function(output, test, after){
 					var audioBuffer = buffer.get().getChannelData(0);
 					var testSample = audioBuffer[Math.floor(0.1 * buffer.context.sampleRate)];
@@ -203,7 +203,7 @@ define(["helper/Basic", "Tone/source/BufferSource", "helper/Offline2", "Tone/cor
 				meter.run();
 			});
 
-			it("reports itself as stopped after a single iterations of the buffer", function(done){
+			/*it("reports itself as stopped after a single iterations of the buffer", function(done){
 				Offline(function(output, test, after){
 					var player = new BufferSource(buffer).toMaster();
 					var duration = buffer.duration;
@@ -220,15 +220,35 @@ define(["helper/Basic", "Tone/source/BufferSource", "helper/Offline2", "Tone/cor
 						done();
 					});
 				}, 0.6);
-			});
+			});*/
 
 			it("schedules the onended callback", function(done){
-				Offline(function(output, test, after){
-					var player = new BufferSource(buffer).toMaster();
+
+				var player = new BufferSource(buffer).noGC();
+				player.start().stop("+0.1");
+
+				var wasCalled = false;
+				player.onended = function(plyr){
+					console.log("here");
+					expect(plyr).to.equal(player);
+					wasCalled = true;
+				};
+				setTimeout(function(){
+					expect(player.state).to.equal("started");
+				}, 50);
+				setTimeout(function(){
+					expect(wasCalled).to.be.true;
+					expect(player.state).to.equal("stopped");
+					player.dispose();
+					done();
+				}, 300);
+				/*Offline(function(output, test, after){
+					var player = new BufferSource(buffer).connect(output);
 					player.start(0);
 
 					var wasCalled = false;
 					player.onended = function(plyr){
+						console.log("here");
 						expect(plyr).to.equal(player);
 						wasCalled = true;
 					};
@@ -237,7 +257,7 @@ define(["helper/Basic", "Tone/source/BufferSource", "helper/Offline2", "Tone/cor
 						player.dispose();
 						done();
 					});
-				}, 0.6);
+				}, 1);*/
 			});
 
 			it("can be scheduled to stop", function(done){

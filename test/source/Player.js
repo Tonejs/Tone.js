@@ -260,12 +260,12 @@ define(["helper/Basic", "Tone/source/Player", "helper/Offline", "helper/SourceTe
 			});
 
 			it("reports itself as stopped after a single iterations of the buffer", function(done){
-				var player = new Player("./audio/kick.mp3", function(){
+				var player = new Player("./audio/short_sine.wav", function(){
 					var duration = player.buffer.duration;
 					player.start();
 					setTimeout(function(){
 						expect(player.state).to.equal("started");
-					}, 100);
+					}, 50);
 					setTimeout(function(){
 						expect(player.state).to.equal("stopped");
 						done();
