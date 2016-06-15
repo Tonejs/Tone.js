@@ -21,7 +21,6 @@ define(["helper/Basic", "Tone/source/MultiPlayer", "helper/Offline", "helper/Sou
 				var player = new MultiPlayer({
 					"buffer" : buffer
 				});
-				expect(player._buffers.buffer).to.equal(buffer);
 				player.dispose();
 			});
 
@@ -29,22 +28,18 @@ define(["helper/Basic", "Tone/source/MultiPlayer", "helper/Offline", "helper/Sou
 				var player = new MultiPlayer();
 				player.dispose();
 			});
-		});
 
-		context("Loading", function(){
-
-			it("invokes callback when a single buffer is added", function(done){
-				var player = new MultiPlayer().addBuffer("sine", "./audio/sine.wav", function(){
-					player.dispose();
-					done();
+			it ("can be constructed an options object", function(){
+				var player = new MultiPlayer({
+					buffers : ["./audio/sine.wav"],
+					fadeOut : 0.1
 				});
+				expect(player.fadeOut).to.equal(0.1);
+				player.dispose();
 			});
 
-			it("invokes callback when a multiple buffers are added", function(done){
-				var player = new MultiPlayer().addBuffer({
-					"sine": "./audio/sine.wav", 
-					"hh": "./audio/hh.wav", 
-				}, function(){
+			it("invokes callback when a single buffer is added", function(done){
+				var player = new MultiPlayer().add("sine", "./audio/sine.wav", function(){
 					player.dispose();
 					done();
 				});
@@ -56,7 +51,7 @@ define(["helper/Basic", "Tone/source/MultiPlayer", "helper/Offline", "helper/Sou
 			it("produces sound in both channels", function(done){
 				var player;
 				OutputAudioStereo(function(dest){
-					player = new MultiPlayer().addBuffer("buffer", buffer);
+					player = new MultiPlayer().add("buffer", buffer);
 					player.connect(dest);
 					player.start("buffer");
 				}, function(){
@@ -69,13 +64,95 @@ define(["helper/Basic", "Tone/source/MultiPlayer", "helper/Offline", "helper/Sou
 				var player;
 				var meter = new Meter(0.3);
 				meter.before(function(dest){
-					player = new MultiPlayer().addBuffer("buffer", buffer);
+					player = new MultiPlayer().add("buffer", buffer);
 					player.connect(dest);
 					player.start("buffer", 0.1);
 				});
 				meter.test(function(sample, time){
 					if (sample > 0){
 						expect(time).to.be.at.least(0.1);
+					}
+				});
+				meter.after(function(){
+					player.dispose();
+					done();
+				});
+				meter.run();
+			});
+
+			it("can be repitched", function(done){
+				var player;
+				var meter = new Meter(0.3);
+				meter.before(function(dest){
+					player = new MultiPlayer().add("buffer", buffer);
+					player.connect(dest);
+					player.start("buffer", 0, 0, 0.3, -1);
+				});
+				meter.test(function(value, time){
+					if (time > 0){
+						expect(value).to.be.at.least(0.1);
+					}
+				});
+				meter.after(function(){
+					player.dispose();
+					done();
+				});
+				meter.run();
+			});
+
+			it("can be played at a different gain", function(done){
+				var player;
+				var meter = new Meter(0.3);
+				meter.before(function(dest){
+					player = new MultiPlayer().add("buffer", buffer);
+					player.connect(dest);
+					player.start("buffer", 0, 0, 0.3, 0, 0.1);
+				});
+				meter.test(function(value){
+					expect(value).to.be.at.most(0.1);
+				});
+				meter.after(function(){
+					player.dispose();
+					done();
+				});
+				meter.run();
+			});
+
+			it("can be stopped", function(done){
+				var player;
+				var meter = new Meter(0.3);
+				meter.before(function(dest){
+					player = new MultiPlayer().add("buffer", buffer);
+					player.connect(dest);
+					player.start("buffer", 0).stop("buffer", 0.1);
+				});
+				meter.test(function(value, time){
+					if (time > 0 && time < 0.1){
+						expect(value).to.be.at.least(0.1);
+					} else if (time > 0.11){
+						expect(value).to.equal(0);
+					}
+				});
+				meter.after(function(){
+					player.dispose();
+					done();
+				});
+				meter.run();
+			});
+
+			it("can stop all sources", function(done){
+				var player;
+				var meter = new Meter(0.3);
+				meter.before(function(dest){
+					player = new MultiPlayer().add("buffer", buffer);
+					player.connect(dest);
+					player.start("buffer", 0).start("buffer", 0.02).stopAll(0.1);
+				});
+				meter.test(function(value, time){
+					if (time > 0 && time < 0.1){
+						expect(value).to.be.at.least(0.1);
+					} else if (time > 0.12){
+						expect(value).to.equal(0);
 					}
 				});
 				meter.after(function(){

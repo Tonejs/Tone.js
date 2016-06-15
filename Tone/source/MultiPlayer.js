@@ -1,161 +1,182 @@
-define(["Tone/core/Tone", "Tone/core/Gain", "Tone/core/Master", "Tone/core/Buffer"], function (Tone) {
+define(["Tone/core/Tone", "Tone/source/BufferSource", "Tone/core/Buffers"], function (Tone) {
 
 	/**
-	 * @class Tone.MultiPlayer implements a "fire and forget"
-	 *        style buffer player. This is very good for short samples
-	 *        like drum hits, sound effects and instruments samples. 
-	 *        Unlike Tone.Player, Tone.MultiPlayer cannot loop samples
-	 *        or change any attributes of a playing sample.
-	 * @extends {Tone}
-	 * @param {Object} buffers An object with sample names as the keys and either
-	 *                         urls or Tone.Buffers as the values. 
+	 *  @class Tone.MultiPlayer is well suited for one-shots, multi-sampled istruments
+	 *         or any time you need to play a bunch of audio buffers. 
+	 *  @param  {Object|Array|Tone.Buffers}  buffers  The buffers which are available
+	 *                                                to the MultiPlayer
+	 *  @param {Function} onload The callback to invoke when all of the buffers are loaded.
+	 *  @extends {Tone}
+	 *  @example
+	 * var multiPlayer = new MultiPlayer({
+	 * 	"kick" : "path/to/kick.mp3",
+	 * 	"snare" : "path/to/snare.mp3",
+	 * }, function(){
+	 * 	multiPlayer.start("kick");
+	 * });
+	 *  @example
+	 * //can also store the values in an array
+	 * var multiPlayer = new MultiPlayer(["path/to/kick.mp3", "path/to/snare.mp3"], 
+	 * function(){
+	 * 	//if an array is passed in, the samples are referenced to by index
+	 * 	multiPlayer.start(1);
+	 * });
 	 */
 	Tone.MultiPlayer = function(buffers){
 
 		Tone.call(this, 0, 1);
 
-		/**
-		 * All of the buffers
-		 * @type {Object}
-		 * @private
-		 */
-		this._buffers = {};
+		var options = this.optionsObject(arguments, ["buffers", "onload"], Tone.MultiPlayer.defaults);
 
-		/**
-		 * The source output node
-		 * @type {Tone.Gain}
-		 * @private
-		 */
-		this._sourceOutput = new Tone.Gain();
-		this._sourceOutput.connect(this.output);
-
-		//add the buffers
-		if (this.isObject(buffers)){
-			this.addBuffer(buffers);
+		if (buffers instanceof Tone.Buffers){
+			/**
+			 *  All the buffers belonging to the player.
+			 *  @type  {Tone.Buffers}
+			 */
+			this.buffers = buffers;
+		} else {
+			this.buffers = new Tone.Buffers(buffers, options.onload);
 		}
 
-		this.output.channelCount = 2;
-		this.output.channelCountMode = "explicit";
+		/**
+		 *  Keeps track of the currently playing sources.
+		 *  @type  {Array}
+		 *  @private
+		 */
+		this._activeSources = [];
+
+		/**
+		 *  The fade in envelope which is applied
+		 *  to the beginning of the BufferSource
+		 *  @type  {Time}
+		 */
+		this.fadeIn = options.fadeIn;
+
+		/**
+		 *  The fade out envelope which is applied
+		 *  to the end of the BufferSource
+		 *  @type  {Time}
+		 */
+		this.fadeOut = options.fadeOut;
 	};
 
 	Tone.extend(Tone.MultiPlayer);
 
 	/**
-	 * Start the given sampleName with 
-	 * @param  {String} sampleName The name of the buffer to trigger
-	 * @param  {Time} time       The time to play the sample
-	 * @param  {Object} options   An object literal of options: gain, 
-	 *                            duration, playbackRate, and offset
-	 * @return {Tone.MultiPlayer} this
+	 *  The defaults
+	 *  @type  {Object}
 	 */
-	Tone.MultiPlayer.prototype.start = function(sampleName, time, options){
-		options = this.defaultArg(options, {
-			"playbackRate" : 1,
-			"gain" : 1,
-			"offset" : 0,
-			"attack" : 0,
-			"release" : 0,
-		});
-
-		if (this._buffers.hasOwnProperty(sampleName)){
-			var buffer = this._buffers[sampleName];
-
-			//create the source and connect it up
-			var source = this.context.createBufferSource();
-			source.buffer = buffer.get();
-			var gainNode = this.context.createGain();
-			source.connect(gainNode);
-			gainNode.connect(this._sourceOutput);
-			source.playbackRate.value = options.playbackRate;
-
-			//trigger the source with all of the options
-			time = this.toSeconds(time);
-			source.start(time, options.offset);
-
-			//trigger the gainNode with all of the options
-			if (options.attack !== 0){
-				gainNode.gain.setValueAtTime(0, time);
-				gainNode.gain.linearRampToValueAtTime(options.gain, time + this.toSeconds(options.attack));
-			} else {
-				gainNode.gain.setValueAtTime(options.gain, time);
-			}
-
-			
-			if (!this.isUndef(options.duration)){
-				var duration = this.toSeconds(options.duration, buffer.duration);
-				var release = this.toSeconds(options.release);
-				gainNode.gain.setValueAtTime(options.gain, time + duration);
-				gainNode.gain.linearRampToValueAtTime(0, time + duration + release);
-				source.stop(time + duration + release);
-			}
-		}
-		return this;
+	Tone.MultiPlayer.defaults = {
+		"onload" : Tone.noOp,
+		"fadeIn" : 0,
+		"fadeOut" : 0
 	};
 
 	/**
-	 * Stop all the samples that are currently playing
-	 * @param {Time} time When to stop the samples.
-	 * @param {Time} [fadeTime = 0.01] How long to fade out for. 
-	 * @return {Tone.MultiPlayer}      this
+	 *  Get the given buffer.
+	 *  @param  {String|Number|AudioBuffer|Tone.Buffer}  buffer
+	 *  @return  {AudioBuffer}  The requested buffer.
+	 *  @private
 	 */
-	Tone.MultiPlayer.prototype.stopAll = function(time, fadeTime){
-		//create a new output node, fade out the current one
-		time = this.toSeconds(time);
-		fadeTime = this.defaultArg(fadeTime, 0.01);
-		fadeTime = this.toSeconds(fadeTime);
-		this._sourceOutput.gain.setValueAtTime(1, time);
-		//small fade out to avoid pops
-		this._sourceOutput.gain.linearRampToValueAtTime(0, time + fadeTime);
-		//make a new output
-		this._sourceOutput = new Tone.Gain().connect(this.output);
-		return this;
-	};
-
-	/**
-	 * Add a buffer to the list of buffers, or load the given url
-	 * @param {String|Object} name The name of the buffer. Or pass in an object
-	 *                             with the name as the keys and urls as the values
-	 * @param {String|Tone.Buffer} url  Either the url to load, or the
-	 *                                  Tone.Buffer which corresponds to the name.
-	 * @param {Function=} callback The callback to invoke when the buffer is loaded.
-	 * @returns {Tone.MultiPlayer} this
-	 */
-	Tone.MultiPlayer.prototype.addBuffer = function(name, url, callback){
-		var loadCount = 0;
-		function loaded(){
-			loadCount--;
-			if (loadCount === 0){
-				if (this.isFunction(url)){
-					url();
-				}
-			}
-		}
-		if (this.isObject(name)){
-			for (var buff in name){
-				loadCount++;
-				this.addBuffer(buff, name[buff], loaded);
-			}
-		} else if (url instanceof Tone.Buffer){
-			this._buffers[name] = url;
+	Tone.MultiPlayer.prototype._getBuffer = function(buffer){
+		if (this.isNumber(buffer) || this.isString(buffer)){
+			return this.buffers.get(buffer).get();
+		} else if (buffer instanceof Tone.Buffer){
+			return buffer.get();
 		} else {
-			this._buffers[name] = new Tone.Buffer(url, callback);
+			return buffer;
+		}
+	};
+
+	/**
+	 *  Start a buffer by name. The `start` method allows a number of options
+	 *  to be passed in such as offset, interval, and gain. This is good for multi-sampled 
+	 *  instruments and sound sprites where samples are repitched played back at different velocities.
+	 *  @param  {String|AudioBuffer}  buffer    The name of the buffer to start.
+	 *                                          Or pass in a buffer which will be started.
+	 *  @param  {Time}  time      When to start the buffer.
+	 *  @param  {Time}  [offset=0]    The offset into the buffer to play from.
+	 *  @param  {Time=}  duration   How long to play the buffer for.
+	 *  @param  {Interval}  [interval=0]  The interval to repitch the buffer.
+	 *  @param  {Gain}  [gain=1]      The gain to play the sample at.
+	 *  @return  {Tone.MultiPlayer}  this
+	 */
+	Tone.MultiPlayer.prototype.start = function(buffer, time, offset, duration, interval, gain){
+		buffer = this._getBuffer(buffer);
+		var source = new Tone.BufferSource(buffer).connect(this.output);
+		this._activeSources.push(source);
+		source.start(time, offset, duration, this.defaultArg(gain, 1), this.fadeIn);
+		source.onended = this._onended.bind(this);
+		interval = this.defaultArg(interval, 0);
+		source.playbackRate.value = this.intervalToFrequencyRatio(interval);
+		return this;
+	};
+
+	/**
+	 *  Internal callback when a buffer is done playing.
+	 *  @param  {Tone.BufferSource}  source  The stopped source
+	 *  @private
+	 */
+	Tone.MultiPlayer.prototype._onended = function(source){
+		var index = this._activeSources.indexOf(source);
+		this._activeSources.splice(index, 1);
+	};
+
+	/**
+	 *  Stop all instances of the currently playing buffer at the given time.
+	 *  @param  {String|AudioBuffer}  buffer  The buffer to stop.
+	 *  @param  {Time=}  time    When to stop the buffer
+	 *  @return  {Tone.MultiPlayer}  this
+	 */
+	Tone.MultiPlayer.prototype.stop = function(buffer, time){
+		buffer = this._getBuffer(buffer);
+		time = this.toSeconds(time);
+		for (var i = 0; i < this._activeSources.length; i++){
+			if (this._activeSources[i].buffer === buffer){
+				this._activeSources[i].stop(time, this.fadeOut);
+			}
 		}
 		return this;
 	};
 
 	/**
-	 * Clean up
-	 * @return {Tone.MultiPlayer} [description]
+	 *  Stop all currently playing buffers at the given time.
+	 *  @param  {Time=}  time  When to stop the buffers.
+	 *  @return  {Tone.MultiPlayer}  this
+	 */
+	Tone.MultiPlayer.prototype.stopAll = function(time){
+		time = this.toSeconds(time);
+		for (var i = 0; i < this._activeSources.length; i++){
+			this._activeSources[i].stop(time, this.fadeOut);
+		}
+		return this;
+	};
+
+	/**
+	 *  Add another buffer to the available buffers.
+	 *  @param {String} name The name to that the buffer is refered
+	 *                       to in start/stop methods. 
+	 *  @param {String|Tone.Buffer} url The url of the buffer to load
+	 *                                  or the buffer.
+	 *  @param {Function} callback The function to invoke after the buffer is loaded.
+	 */
+	Tone.MultiPlayer.prototype.add = function(name, url, callback){
+		this.buffers.add(name, url, callback);
+		return this;
+	};
+
+	/**
+	 *  Clean up.
+	 *  @return  {Tone.MultiPlayer}  this
 	 */
 	Tone.MultiPlayer.prototype.dispose = function(){
-		this.stopAll();
 		Tone.prototype.dispose.call(this);
-		this._sourceOutput.dispose();
-		this._sourceOutput = null;
-		for (var buff in this._buffers){
-			this._buffers[buff].dispose();
+		this.buffers.dispose();
+		this.buffers = null;
+		for (var i = 0; i < this._activeSources.length; i++){
+			this._activeSources[i].dispose();
 		}
-		this._buffers = null;
+		this._activeSources = null;
 		return this;
 	};
 
