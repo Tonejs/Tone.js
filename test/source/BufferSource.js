@@ -140,27 +140,6 @@ define(["helper/Basic", "Tone/source/BufferSource", "helper/Offline2", "Tone/cor
 				});
 			});
 
-			it("can be started with an offset", function(done){
-				Offline(function(output, test, after){
-					var audioBuffer = buffer.get().getChannelData(0);
-					var testSample = audioBuffer[Math.floor(0.1 * buffer.context.sampleRate)];
-
-					var player = new BufferSource(buffer).connect(output);
-					player.start(0, 0.1);
-					
-					test(function(sample, time){
-						if (time === 0){
-							expect(sample).to.equal(testSample);
-						}
-					});
-
-					after(function(){
-						player.dispose();
-						done();
-					});
-				}, 1);
-			});
-
 			it("can be play for a specific duration", function(done){
 				var player;
 				var meter = new Meter(0.4);
