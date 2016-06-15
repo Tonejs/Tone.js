@@ -336,7 +336,7 @@ define(["Tone/core/Tone", "Tone/core/Emitter"], function(Tone){
 	 */
 	Tone.Buffer.load = function(url, callback){
 		var request = new XMLHttpRequest();
-		request.open("GET", encodeURIComponent(Tone.Buffer.baseUrl + url), true);
+		request.open("GET", Tone.Buffer.baseUrl + url, true);
 		request.responseType = "arraybuffer";
 		// decode asynchronously
 		request.onload = function() {
