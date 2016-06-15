@@ -312,6 +312,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function (T
 	Tone.BufferSource.prototype.dispose = function(){
 		this.onended = null;
 		if (this._source){
+			this._source.onended = null;
 			this._source.disconnect();
 			this._source = null;
 		}
