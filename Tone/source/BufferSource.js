@@ -139,10 +139,10 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function (T
 		time = this.toSeconds(time);
 		duration = this.toSeconds(duration);
 
-		if (this.loop){
-			this._source.start(time, offset);
-		} else {
-			this._source.start(time, offset, duration);
+		this._source.start(time, offset);
+
+		if (!this.loop){
+			this.stop(time + duration, fadeInTime);
 		}
 
 		gain = this.defaultArg(gain, 1);

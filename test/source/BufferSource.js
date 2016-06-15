@@ -203,25 +203,6 @@ define(["helper/Basic", "Tone/source/BufferSource", "helper/Offline2", "Tone/cor
 				meter.run();
 			});
 
-			/*it("reports itself as stopped after a single iterations of the buffer", function(done){
-				Offline(function(output, test, after){
-					var player = new BufferSource(buffer).toMaster();
-					var duration = buffer.duration;
-					player.start(0);
-
-					test(function(sample, time){
-						if (time > 0 && buffer < duration){
-							expect(player.state).to.equal("started");
-						}
-					});
-					after(function(){
-						expect(player.state).to.equal("stopped");
-						player.dispose();
-						done();
-					});
-				}, 0.6);
-			});*/
-
 			it("schedules the onended callback", function(done){
 
 				var player = new BufferSource(buffer).noGC();
@@ -229,35 +210,15 @@ define(["helper/Basic", "Tone/source/BufferSource", "helper/Offline2", "Tone/cor
 
 				var wasCalled = false;
 				player.onended = function(plyr){
-					console.log("here");
 					expect(plyr).to.equal(player);
 					wasCalled = true;
 				};
-				setTimeout(function(){
-					expect(player.state).to.equal("started");
-				}, 50);
 				setTimeout(function(){
 					expect(wasCalled).to.be.true;
 					expect(player.state).to.equal("stopped");
 					player.dispose();
 					done();
 				}, 300);
-				/*Offline(function(output, test, after){
-					var player = new BufferSource(buffer).connect(output);
-					player.start(0);
-
-					var wasCalled = false;
-					player.onended = function(plyr){
-						console.log("here");
-						expect(plyr).to.equal(player);
-						wasCalled = true;
-					};
-					after(function(){
-						expect(wasCalled).to.be.true;
-						player.dispose();
-						done();
-					});
-				}, 1);*/
 			});
 
 			it("can be scheduled to stop", function(done){

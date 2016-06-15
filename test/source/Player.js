@@ -264,9 +264,6 @@ define(["helper/Basic", "Tone/source/Player", "helper/Offline", "helper/SourceTe
 					var duration = player.buffer.duration;
 					player.start();
 					setTimeout(function(){
-						expect(player.state).to.equal("started");
-					}, 50);
-					setTimeout(function(){
 						expect(player.state).to.equal("stopped");
 						done();
 					}, duration * 1000 + 200);
