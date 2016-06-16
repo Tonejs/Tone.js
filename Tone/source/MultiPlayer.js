@@ -105,7 +105,11 @@ define(["Tone/core/Tone", "Tone/source/BufferSource", "Tone/core/Buffers"], func
 		buffer = this._getBuffer(buffer);
 		var source = new Tone.BufferSource(buffer).connect(this.output);
 		this._activeSources.push(source);
+		time = this.toSeconds(time);
 		source.start(time, offset, duration, this.defaultArg(gain, 1), this.fadeIn);
+		if (duration){
+			source.stop(time + duration, this.fadeOut);
+		}
 		source.onended = this._onended.bind(this);
 		interval = this.defaultArg(interval, 0);
 		source.playbackRate.value = this.intervalToFrequencyRatio(interval);

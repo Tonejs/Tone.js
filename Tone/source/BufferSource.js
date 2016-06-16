@@ -190,7 +190,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function (T
 		}
 
 		//cancel the end curve
-		this._gainNode.gain.cancelScheduledValues(this._startTime);
+		this._gainNode.gain.cancelScheduledValues(this._startTime + this.sampleTime);
 
 		//set a new one
 		if (fadeOutTime > 0){
