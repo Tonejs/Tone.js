@@ -1,4 +1,6 @@
-define(["Tone/core/Tone", "Tone/source/BufferSource", "Tone/core/Buffers"], function (Tone) {
+define(["Tone/core/Tone", "Tone/source/BufferSource", "Tone/core/Buffers", 
+	"Tone/source/Source", "Tone/component/Volume"], 
+function (Tone) {
 
 	/**
 	 *  @class Tone.MultiPlayer is well suited for one-shots, multi-sampled istruments
@@ -23,8 +25,6 @@ define(["Tone/core/Tone", "Tone/source/BufferSource", "Tone/core/Buffers"], func
 	 * });
 	 */
 	Tone.MultiPlayer = function(buffers){
-
-		Tone.call(this, 0, 1);
 
 		var options = this.optionsObject(arguments, ["buffers", "onload"], Tone.MultiPlayer.defaults);
 
@@ -58,9 +58,32 @@ define(["Tone/core/Tone", "Tone/source/BufferSource", "Tone/core/Buffers"], func
 		 *  @type  {Time}
 		 */
 		this.fadeOut = options.fadeOut;
+
+		/**
+		 *  The output volume node
+		 *  @type  {Tone.Volume}
+		 *  @private
+		 */
+		this._volume = this.output = new Tone.Volume(options.volume);
+
+		/**
+		 * The volume of the output in decibels.
+		 * @type {Decibels}
+		 * @signal
+		 * @example
+		 * source.volume.value = -6;
+		 */
+		this.volume = this._volume.volume;
+		this._readOnly("volume");
+
+		//make the output explicitly stereo
+		this._volume.output.output.channelCount = 2;
+		this._volume.output.output.channelCountMode = "explicit";
+		//mute initially
+		this.mute = options.mute;
 	};
 
-	Tone.extend(Tone.MultiPlayer);
+	Tone.extend(Tone.MultiPlayer, Tone.Source);
 
 	/**
 	 *  The defaults
@@ -168,6 +191,38 @@ define(["Tone/core/Tone", "Tone/source/BufferSource", "Tone/core/Buffers"], func
 		this.buffers.add(name, url, callback);
 		return this;
 	};
+
+	/**
+	 *  Returns the playback state of the source. "started"
+	 *  if there are any buffers playing. "stopped" otherwise.
+	 *  @type {Tone.State}
+	 *  @readOnly
+	 *  @memberOf Tone.MultiPlayer#
+	 *  @name state
+	 */
+	Object.defineProperty(Tone.MultiPlayer.prototype, "state", {
+		get : function(){
+			return this._activeSources.length > 0 ? Tone.State.Started : Tone.State.Stopped;
+		}
+	});
+
+	/**
+	 * Mute the output. 
+	 * @memberOf Tone.MultiPlayer#
+	 * @type {boolean}
+	 * @name mute
+	 * @example
+	 * //mute the output
+	 * source.mute = true;
+	 */
+	Object.defineProperty(Tone.MultiPlayer.prototype, "mute", {
+		get : function(){
+			return this._volume.mute;
+		}, 
+		set : function(mute){
+			this._volume.mute = mute;
+		}
+	});
 
 	/**
 	 *  Clean up.
