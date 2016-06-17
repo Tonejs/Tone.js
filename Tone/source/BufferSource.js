@@ -134,10 +134,8 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function (T
 			offset = this.defaultArg(offset, 0);
 		}
 		offset = this.toSeconds(offset);
-		duration = this.defaultArg(duration, this.buffer.duration - offset);
 		//the values in seconds
 		time = this.toSeconds(time);
-		duration = this.toSeconds(duration);
 
 		this._source.start(time, offset);
 
@@ -151,19 +149,20 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function (T
 			fadeInTime = this.toSeconds(fadeInTime);
 		}
 
-		if (!this.loop){
-			this.stop(time + duration + fadeInTime, fadeInTime);
-		}
-
 		if (fadeInTime > 0){
 			this._gainNode.gain.setValueAtTime(0, time);
 			this._gainNode.gain.linearRampToValueAtTime(this._gain, time + fadeInTime);
-			time += fadeInTime;
 		} else {
 			this._gainNode.gain.setValueAtTime(gain, time);
 		}
 
-		this._startTime = time;
+		this._startTime = time + fadeInTime;
+
+		if (!this.isUndef(duration)){
+			duration = this.defaultArg(duration, this.buffer.duration - offset);
+			duration = this.toSeconds(duration);
+			this.stop(time + duration + fadeInTime, fadeInTime);
+		}
 
 		return this;
 	};
