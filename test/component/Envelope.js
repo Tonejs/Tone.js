@@ -681,6 +681,38 @@ function (Envelope, Basic, Offline, Test, Offline2, Supports, PassAudio) {
 
 				}, 0.8);
 			});
+
+			it ("can retrigger partial envelope with custom type", function(done){
+				Offline2(function(output, test, after){
+
+					var env = new Envelope({
+						attack : 0.3,
+						sustain : 1,
+						release: 0.3,
+						decay : 0,
+						attackCurve : "step",
+						releaseCurve : "step",
+					}).connect(output);
+
+					env.triggerAttackRelease(0.3, 0.1);
+					env.triggerAttackRelease(0.35, 0.1);
+					env.triggerAttackRelease(0.8, 0.1);
+
+					test(function(sample, time){
+						if (time > 0.3 && time < 0.5){
+							expect(sample).to.be.above(0);
+						} else if (time < 0.1){
+							expect(sample).to.equal(0);
+						}
+					});
+
+					after(function(){
+						env.dispose();
+						done();
+					});
+
+				}, 1);
+			});
 		});
 	});
 });
