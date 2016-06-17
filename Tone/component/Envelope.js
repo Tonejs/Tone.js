@@ -149,19 +149,26 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal",
 		get : function(){
 			if (this.isString(this._attackCurve)){
 				return this._attackCurve;
-			} else if (this.isObject(this._attackCurve)){
+			} else if (this.isArray(this._attackCurve)){
 				//look up the name in the curves array
 				for (var type in Tone.Envelope.Type){
-					if (Tone.Envelope.Type[type] === this._attackCurve){
+					if (Tone.Envelope.Type[type].In === this._attackCurve){
 						return type;
 					}
 				}
+				//otherwise just return the array
+				return this._attackCurve;
 			}
 		}, 
 		set : function(curve){
 			//check if it's a valid type
 			if (Tone.Envelope.Type.hasOwnProperty(curve)){
-				this._attackCurve = Tone.Envelope.Type[curve];
+				var curveDef = Tone.Envelope.Type[curve];
+				if (this.isObject(curveDef)){
+					this._attackCurve = curveDef.In;
+				} else {
+					this._attackCurve = curveDef;
+				}
 			} else if (this.isArray(curve)){
 				this._attackCurve = curve;
 			} else {
@@ -182,19 +189,26 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal",
 		get : function(){
 			if (this.isString(this._releaseCurve)){
 				return this._releaseCurve;
-			} else if (this.isObject(this._releaseCurve)){
+			} else if (this.isArray(this._releaseCurve)){
 				//look up the name in the curves array
 				for (var type in Tone.Envelope.Type){
-					if (Tone.Envelope.Type[type] === this._releaseCurve){
+					if (Tone.Envelope.Type[type].Out === this._releaseCurve){
 						return type;
 					}
 				}
+				//otherwise just return the array
+				return this._releaseCurve;
 			}
 		}, 
 		set : function(curve){
 			//check if it's a valid type
 			if (Tone.Envelope.Type.hasOwnProperty(curve)){
-				this._releaseCurve = Tone.Envelope.Type[curve];
+				var curveDef = Tone.Envelope.Type[curve];
+				if (this.isObject(curveDef)){
+					this._releaseCurve = curveDef.Out;
+				} else {
+					this._releaseCurve = curveDef;
+				}
 			} else if (this.isArray(curve)){
 				this._releaseCurve = curve;
 			} else {
@@ -238,9 +252,6 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal",
 		} else if (attack > 0){
 			this._sig.setRampPoint(time);
 			var curve = this._attackCurve;
-			if (this.isObject(curve)){
-				curve = curve.In;
-			}
 			//take only a portion of the curve
 			if (attack < originalAttack){
 				var percentComplete = 1 - attack / originalAttack;
@@ -276,11 +287,10 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal",
 				this._sig.exponentialRampToValue(0, release, time);
 			} else{
 				var curve = this._releaseCurve;
-				if (this.isObject(curve)){
-					curve = curve.Out;
+				if (this.isArray(curve)){
+					this._sig.setRampPoint(time);
+					this._sig.setValueCurveAtTime(curve, time, release, currentValue);
 				}
-				this._sig.setRampPoint(time);
-				this._sig.setValueCurveAtTime(curve, time, release, currentValue);
 			}
 		}
 		return this;
