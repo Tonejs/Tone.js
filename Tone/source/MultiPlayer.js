@@ -230,6 +230,10 @@ function (Tone) {
 	 */
 	Tone.MultiPlayer.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
+		this._volume.dispose();
+		this._volume = null;
+		this._writable("volume");
+		this.volume = null;
 		this.buffers.dispose();
 		this.buffers = null;
 		for (var i = 0; i < this._activeSources.length; i++){
