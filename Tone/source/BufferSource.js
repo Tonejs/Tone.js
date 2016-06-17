@@ -157,7 +157,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function (T
 
 		if (fadeInTime > 0){
 			this._gainNode.gain.setValueAtTime(0, time);
-			this._gainNode.gain.linearRampToValueAtTime(1, time + fadeInTime);
+			this._gainNode.gain.linearRampToValueAtTime(this._gain, time + fadeInTime);
 			time += fadeInTime;
 		} else {
 			this._gainNode.gain.setValueAtTime(gain, time);
@@ -194,7 +194,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function (T
 
 		//set a new one
 		if (fadeOutTime > 0){
-			this._gainNode.gain.setValueAtTime(1, time);
+			this._gainNode.gain.setValueAtTime(this._gain, time);
 			this._gainNode.gain.linearRampToValueAtTime(0, time + fadeOutTime);
 			time += fadeOutTime;
 		} else {
