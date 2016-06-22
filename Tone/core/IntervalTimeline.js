@@ -451,7 +451,7 @@ define(["Tone/core/Tone", "Tone/type/Type"], function (Tone) {
 			this.left.search(point, results);
 		}
 		// Check this node
-		if (this.low <= point && this.high >= point){
+		if (this.low <= point && this.high > point){
 			results.push(this);
 		}
 		// If p is to the left of the time of this interval,
