@@ -67,33 +67,6 @@ define(["helper/Basic", "Tone/source/GrainPlayer", "helper/Offline", "helper/Sou
 
 		});
 
-		context("Reverse", function(){
-
-			it("can be played in reverse", function(done){
-				var player;
-				var offline = new Offline();
-				var audioBuffer = buffer.get().getChannelData(0);
-				var lastSample = audioBuffer[audioBuffer.length - 1];
-				offline.before(function(dest){
-					player = new GrainPlayer(buffer.get()).connect(dest);
-					player.reverse = true;
-					player.start(0);
-				});
-				offline.test(function(sample, time){
-					if (time === 0){
-						expect(sample).to.equal(lastSample);
-					}
-				});
-				offline.after(function(){
-					player.dispose();
-					buffer.reverse = false;
-					done();
-				});
-				offline.run();
-			});
-
-		});
-
 		context("Looping", function(){
 
 			beforeEach(function(done){
