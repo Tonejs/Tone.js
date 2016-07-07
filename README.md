@@ -16,6 +16,7 @@ Tone.js is a Web Audio framework for creating interactive music in the browser. 
 * [p5.sound - build with Tone.js](https://github.com/processing/p5.js-sound)
 * [Hypercube - @eddietree](http://eddietree.github.io/hypercube/)
 * [randomcommander.io - Jake Albaugh](http://randomcommander.io/)
+* [Musical Chord Progression Arpeggiator - Jake Albaugh](http://codepen.io/jakealbaugh/full/qNrZyw/)
 * [Tone.js + NexusUI - Ben Taylor](http://taylorbf.github.io/Tone-Rack/)
 * [Solarbeat - Luke Twyman](http://www.whitevinyldesign.com/solarbeat/)
 * [Wind - João Costa](http://wind.joaocosta.co)
@@ -31,6 +32,9 @@ Tone.js is a Web Audio framework for creating interactive music in the browser. 
 * [TextXoX - Damon Holzborn](http://rustleworks.com/textxox/)
 * [Stepping - John Hussey](http://stepping.audio/)
 * [Limp Body Beat](http://www.adultswim.com/etcetera/limp-body-beat/)
+* [MsCompose 95 - Autotel](http://autotel.co/mscompose95/)
+* [Pedalboard - Micha Hanselmann](https://deermichel.github.io/pedalboard/)
+* [Keyboard Boogie - Douglas Tarr](http://douglastarr.com/keyboard-boogie)
 
 Using Tone.js? I'd love to hear it: yotam@tonejs.org
 
@@ -45,75 +49,73 @@ Using Tone.js? I'd love to hear it: yotam@tonejs.org
 # Hello Tone
 
 ```javascript
-//create one of Tone's built-in synthesizers and connect it to the master output
+//create a synth and connect it to the master output (your speakers)
 var synth = new Tone.Synth().toMaster();
 
 //play a middle 'C' for the duration of an 8th note
 synth.triggerAttackRelease("C4", "8n");
 ```
 
-[Synth](http://tonejs.org/docs/#Synth) is a single oscillator, single envelope synthesizer. It's [ADSR envelope](https://en.wikipedia.org/wiki/Synthesizer#ADSR_envelope) has two phases: the attack and the release. These can be triggered by calling  `triggerAttack` and `triggerRelease` separately, or combined as shown above. The first argument of `triggerAttackRelease` is the frequency, which can be given either a number (like `440`) or as "pitch-octave" notation (like `"D#2"`). The second argument is the duration of the envelope's sustain (i.e. how long the note is held for). The third (optional) argument of `triggerAttackRelease` is the time the attack should start. With no argument, the time will evaluate to "now" and play immediately. Passing in a time value let's you schedule the event in the future. 
+#### Tone.Synth
 
-### Time
+[Tone.Synth](http://tonejs.org/docs/#Synth) is a basic synthesizer with a single [oscillator](http://tonejs.org/docs/#OmniOscillator) and an [ADSR envelope](https://en.wikipedia.org/wiki/Synthesizer#ADSR_envelope). 
 
-Any method which takes a time as a parameter will accept either a number or a string. Numbers will be taken literally as the time in seconds and strings can encode time expressions in terms of the current tempo. For example `"4n"` is a quarter-note, `"8t"` is an eighth-note triplet, and `"1m"` is one measure. Any value prefixed with `"+"` will be added to the current time. To trigger the same note one measure from now:
+#### triggerAttackRelease
 
-```javascript
-synth.triggerAttackRelease("C4", "8n", "+1m");
-```
+The "attack" of an envelope is the period when the amplitude is rising, and the "release" is when it is falling back to 0. These two methods can be invoked separately as `triggerAttack` and `triggerRelease`, or combined as shown above. The first argument is the frequency which can either be a number (like `440`) or as "pitch-octave" notation (like `"D#2"`). The second argument is how long the note should be held before triggering the release phases. An optional third argument schedules the event for some time in the future. With no third argument, the note will play immediately. 
+
+#### Time
+
+In the examples above, instead of using the time in seconds (for an 8th note at 120 BPM it would be 0.25 seconds), any method which takes time as an argument can accept a number or a string. Numbers will be taken literally as the time in seconds and strings can encode time expressions in terms of the current tempo. For example `"4n"` is a quarter-note, `"8t"` is an eighth-note triplet, and `"1m"` is one measure. 
 
 [Read about Time encodings.](https://github.com/Tonejs/Tone.js/wiki/Time)
 
+# Scheduling
+
 ### Transport
 
-Time expressions are evaluated against the Transport's BPM. [Tone.Transport](http://tonejs.org/docs/#Transport) is the master timekeeper, allowing for application-wide synchronization of sources, signals and events along a shared timeline. Callbacks scheduled with Tone.Transport will be invoked right before the scheduled time with the exact time of the event is passed in as the first parameter to the callback. 
-
-```javascript
-//schedule a callback on the second beat of the first measure
-Tone.Transport.schedule(function(time){
-	//schedule the synth's attackRelease using the passed-in time
-	synth.triggerAttackRelease("C4", "8n", time);
-}, "1:2:0");
-
-//start the transport
-Tone.Transport.start();
-```
-[Read more about scheduling events with the Transport.](https://github.com/Tonejs/Tone.js/wiki/Transport)
+[Tone.Transport](http://tonejs.org/docs/#Transport) is the master timekeeper, allowing for application-wide synchronization of sources, signals and events along a shared timeline. Time expressions (like the ones above) are evaluated against the Transport's BPM which can be set like this: `Tone.Transport.bpm.value = 120`. 
 
 ### Loops
 
-Instead of scheduling events directly on the Transport, Tone.js provides a few higher-level classes for working with events. [Tone.Loop](http://tonejs.org/docs/#Loop) is a simple way to create a looped callback that can be scheduled to start and stop.
+Tone.js provides higher-level abstractions for scheduling events. [Tone.Loop](http://tonejs.org/docs/#Loop) is a simple way to create a looped callback that can be scheduled to start and stop.
 
 ```javascript
 //play a note every quarter-note
 var loop = new Tone.Loop(function(time){
 	synth.triggerAttackRelease("C2", "8n", time);
 }, "4n");
+```
 
+Since Javascript timing is not sample-accurate, the precise time of the event is passed into the callback function. This time should be used to schedule events within the loop. 
+
+You can then start and stop the loop along the Transport's timeline.
+
+```javascript
 //loop between the first and fourth measures of the Transport's timeline
 loop.start("1m").stop("4m");
 ```
 
-Start the Transport to hear the looped notes:
+Then start the Transport to hear the loop:
 
 ```javascript
 Transport.start();
 ```
 
-[Read about Tone.js' Event classes.](https://github.com/Tonejs/Tone.js/wiki/Events)
+[Read about Tone.js' Event classes](https://github.com/Tonejs/Tone.js/wiki/Events) and [scheduling events with the Transport.](https://github.com/Tonejs/Tone.js/wiki/Transport)
 
 # Instruments
 
-Tone has a number of instruments which all inherit from the same [Instrument base class](http://tonejs.org/docs/#Instrument), giving them a common API for playing notes. [Tone.MonoSynth](http://tonejs.org/docs/#MonoSynth) is composed of one oscillator, one filter, and two envelopes connected to the amplitude and the filter frequency. 
+Tone has a number of instruments which all inherit from the same [Instrument base class](http://tonejs.org/docs/#Instrument), giving them a common API for playing notes. [Tone.Synth](http://tonejs.org/docs/#Synth) is composed of one oscillator and an amplitude envelope.
 
 ```javascript
 //pass in some initial values for the filter and filter envelope
-var monoSynth = new Tone.MonoSynth({
-	"filter" : {
-		"type" : "lowpass",
-		"Q" : 7
+var synth = new Tone.Synth({
+	"oscillator" : {
+		"type" : "pwm",
+		"modulationFrequency" : 0.2
 	},
-	"filterEnvelope" : {
+	"envelope" : {
 		"attack" : 0.02,
 		"decay" : 0.1,
 		"sustain" : 0.2,
@@ -122,14 +124,14 @@ var monoSynth = new Tone.MonoSynth({
 }).toMaster();
 
 //start the note "D3" one second from now
-monoSynth.triggerAttack("D3", "+1");
+synth.triggerAttack("D3", "+1");
 ```
 
 All instruments are monophonic (one voice) but can be made polyphonic when the constructor is passed in as the second argument to [Tone.PolySynth](http://tonejs.org/docs/#PolySynth). 
 
 ```javascript
-//a 4 voice MonoSynth
-var polySynth = new Tone.PolySynth(4, Tone.MonoSynth).toMaster();
+//a 4 voice Synth
+var polySynth = new Tone.PolySynth(4, Tone.Synth).toMaster();
 //play a chord
 polySynth.triggerAttackRelease(["C4", "E4", "G4", "B4"], "2n");
 ```
@@ -181,6 +183,8 @@ Tone.js makes extensive use of the native Web Audio Nodes such as the GainNode a
 # Contributing
 
 There are many ways to contribute to Tone.js. Check out [this wiki](https://github.com/Tonejs/Tone.js/wiki/Contributing) if you're interested. 
+
+If you have questions (or answers) that are not necessarily bugs/issues, please post them to the [forum](https://groups.google.com/forum/#!forum/tonejs).
 
 # References and Inspiration
 
