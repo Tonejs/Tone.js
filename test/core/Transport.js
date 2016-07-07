@@ -114,6 +114,19 @@ function (Test, Transport, Tone, Offline, TransportTime) {
 				Tone.Transport.PPQ = origPPQ;
 			});
 
+			it("schedules a quarter note at the same time with a different PPQ", function(done){
+				var origPPQ = Tone.Transport.PPQ;
+				Tone.Transport.PPQ = 1;
+				var start = Tone.now();
+				var id = Tone.Transport.schedule(function(time){
+					expect(time - start).to.be.closeTo(Tone.Transport.toSeconds("4n"), 0.1);
+					Tone.Transport.cancel(id);
+					Tone.Transport.PPQ = origPPQ;
+					done();
+				}, "4n");
+				Tone.Transport.start();
+			});
+
 		});
 
 		context("position", function(){

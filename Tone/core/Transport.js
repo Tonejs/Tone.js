@@ -590,8 +590,9 @@ function(Tone){
 			return this._ppq;
 		},
 		set : function(ppq){
+			var bpm = this.bpm.value;
 			this._ppq = ppq;
-			this.bpm.value = this.bpm.value;
+			this.bpm.value = bpm;
 		}
 	});
 
