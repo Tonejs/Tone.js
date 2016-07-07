@@ -17,9 +17,9 @@ $(function(){
 	
 	if (typeof Tone !== "undefined"){
 		var logo = new Logo({
-			"container" : topbar,
-			"height" : topbar.height() - 6,
-			"width" : 140
+			"container" : topbar.get(0),
+			"height" : topbar.height() - 8,
+			"width" : 120
 		});
 
 	}
