@@ -24,18 +24,18 @@ function (Tone) {
 	 * 	multiPlayer.start(1);
 	 * });
 	 */
-	Tone.MultiPlayer = function(buffers){
+	Tone.MultiPlayer = function(){
 
-		var options = this.optionsObject(arguments, ["buffers", "onload"], Tone.MultiPlayer.defaults);
+		var options = this.optionsObject(arguments, ["urls", "onload"], Tone.MultiPlayer.defaults);
 
-		if (buffers instanceof Tone.Buffers){
+		if (options.urls instanceof Tone.Buffers){
 			/**
 			 *  All the buffers belonging to the player.
 			 *  @type  {Tone.Buffers}
 			 */
-			this.buffers = buffers;
+			this.buffers = options.urls;
 		} else {
-			this.buffers = new Tone.Buffers(buffers, options.onload);
+			this.buffers = new Tone.Buffers(options.urls, options.onload);
 		}
 
 		/**
@@ -131,7 +131,7 @@ function (Tone) {
 		time = this.toSeconds(time);
 		source.start(time, offset, duration, this.defaultArg(gain, 1), this.fadeIn);
 		if (duration){
-			source.stop(time + duration, this.fadeOut);
+			source.stop(time + this.toSeconds(duration), this.fadeOut);
 		}
 		source.onended = this._onended.bind(this);
 		interval = this.defaultArg(interval, 0);
