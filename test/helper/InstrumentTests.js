@@ -1,18 +1,18 @@
 define(["helper/OutputAudio", "Tone/instrument/Instrument", "helper/OutputAudioStereo", "Test", "helper/Offline", "helper/Meter"], 
 	function (OutputAudio, Instrument, OutputAudioStereo, Test, Offline, Meter) {
 
-	return function(Constr, note){
+	return function(Constr, note, constrArg){
 
 		context("Instrument Tests", function(){
 
 			it ("extends Tone.Instrument", function(){
-				var instance = new Constr();
+				var instance = new Constr(constrArg);
 				expect(instance).to.be.an.instanceof(Instrument);
 				instance.dispose();
 			});
 
 			it ("can connect the output", function(){
-				var instance = new Constr();
+				var instance = new Constr(constrArg);
 				instance.connect(Test);
 				instance.dispose();
 			});
@@ -28,7 +28,7 @@ define(["helper/OutputAudio", "Tone/instrument/Instrument", "helper/OutputAudioS
 			it("makes a sound", function(done){
 				var instance;
 				OutputAudio(function(dest){
-					instance = new Constr();
+					instance = new Constr(constrArg);
 					instance.connect(dest);
 					instance.triggerAttack(note);
 				}, function(){
@@ -40,7 +40,7 @@ define(["helper/OutputAudio", "Tone/instrument/Instrument", "helper/OutputAudioS
 			it("produces sound in both channels", function(done){
 				var instance;
 				OutputAudioStereo(function(dest){
-					instance = new Constr();
+					instance = new Constr(constrArg);
 					instance.connect(dest);
 					instance.triggerAttack(note);
 				}, function(){
@@ -53,7 +53,7 @@ define(["helper/OutputAudio", "Tone/instrument/Instrument", "helper/OutputAudioS
 				var instance;
 				var meter = new Meter(0.3);
 				meter.before(function(dest){
-					instance = new Constr();
+					instance = new Constr(constrArg);
 					instance.connect(dest);
 				});
 				meter.test(function(level){
@@ -70,7 +70,7 @@ define(["helper/OutputAudio", "Tone/instrument/Instrument", "helper/OutputAudioS
 				var instance;
 				var meter = new Meter(0.3);
 				meter.before(function(dest){
-					instance = new Constr();
+					instance = new Constr(constrArg);
 					instance.connect(dest);
 					if (note){
 						instance.triggerAttack(note, 0.1);
