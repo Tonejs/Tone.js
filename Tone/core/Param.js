@@ -160,7 +160,7 @@ define(["Tone/core/Tone", "Tone/type/Type"], function(Tone){
 	 */
 	Tone.Param.prototype.setRampPoint = function(now){
 		now = this.defaultArg(now, this.now());
-		var currentVal = this._fromUnits(this._param.value);
+		var currentVal = this._param.value;
 		// exponentialRampToValueAt cannot ever ramp from or to 0
 		// More info: https://bugzilla.mozilla.org/show_bug.cgi?id=1125600#c2
 		if (currentVal === 0){
