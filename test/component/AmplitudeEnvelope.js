@@ -1,6 +1,6 @@
 define(["Tone/component/AmplitudeEnvelope", "helper/Basic", "helper/Offline", 
-	"Tone/component/Envelope", "Test", "Tone/signal/Signal"], 
-function (AmplitudeEnvelope, Basic, Offline, Envelope, Test, Signal) {
+	"Tone/component/Envelope", "Test", "Tone/signal/Signal", "helper/Supports"], 
+function (AmplitudeEnvelope, Basic, Offline, Envelope, Test, Signal, Supports) {
 	describe("AmplitudeEnvelope", function(){
 
 		Basic(AmplitudeEnvelope);
@@ -39,28 +39,32 @@ function (AmplitudeEnvelope, Basic, Offline, Envelope, Test, Signal) {
 				offline.run();
 			});
 
-			it ("passes signal once triggered", function(done){
-				var ampEnv, signal;
-				var offline = new Offline(0.2);
-				offline.before(function(dest){
-					ampEnv = new AmplitudeEnvelope().connect(dest);
-					signal = new Signal(1).connect(ampEnv);
-					ampEnv.triggerAttack(0.1);
+			if (Supports.ACCURATE_SIGNAL_SCHEDULING){
+
+				it ("passes signal once triggered", function(done){
+					var ampEnv, signal;
+					var offline = new Offline(0.2);
+					offline.before(function(dest){
+						ampEnv = new AmplitudeEnvelope().connect(dest);
+						signal = new Signal(1).connect(ampEnv);
+						ampEnv.triggerAttack(0.1);
+					});
+					offline.test(function(sample, time){
+						if (time <= 0.1){
+							expect(sample).to.be.closeTo(0, 0.001);
+						} else {
+							expect(sample).to.be.above(0);
+						}
+					});
+					offline.after(function(){
+						signal.dispose();
+						ampEnv.dispose();
+						done();
+					});
+					offline.run();
 				});
-				offline.test(function(sample, time){
-					if (time <= 0.1){
-						expect(sample).to.be.closeTo(0, 0.001);
-					} else {
-						expect(sample).to.be.above(0);
-					}
-				});
-				offline.after(function(){
-					signal.dispose();
-					ampEnv.dispose();
-					done();
-				});
-				offline.run();
-			});
+			}
+			
 		});
 	});
 });

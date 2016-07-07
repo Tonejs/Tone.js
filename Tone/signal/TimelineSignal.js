@@ -12,18 +12,18 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Timeline"], function 
 	Tone.TimelineSignal = function(){
 
 		var options = this.optionsObject(arguments, ["value", "units"], Tone.Signal.defaults);
-
-		//constructors
-		Tone.Signal.apply(this, options);
-		options.param = this._param;
-		Tone.Param.call(this, options);
-
+		
 		/**
 		 *  The scheduled events
 		 *  @type {Tone.Timeline}
 		 *  @private
 		 */
 		this._events = new Tone.Timeline(10);
+
+		//constructors
+		Tone.Signal.apply(this, options);
+		options.param = this._param;
+		Tone.Param.call(this, options);
 
 		/**
 		 *  The initial scheduled value
@@ -38,11 +38,13 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Timeline"], function 
 	/**
 	 *  The event types of a schedulable signal.
 	 *  @enum {String}
+	 *  @private
 	 */
 	Tone.TimelineSignal.Type = {
 		Linear : "linear",
 		Exponential : "exponential",
 		Target : "target",
+		Curve : "curve",
 		Set : "set"
 	};
 
@@ -54,11 +56,14 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Timeline"], function 
 	 */
 	Object.defineProperty(Tone.TimelineSignal.prototype, "value", {
 		get : function(){
-			return this._toUnits(this._param.value);
+			var now = this.now();
+			var val = this.getValueAtTime(now);
+			return this._toUnits(val);
 		},
 		set : function(value){
 			var convertedVal = this._fromUnits(value);
 			this._initial = convertedVal;
+			this.cancelScheduledValues();
 			this._param.value = convertedVal;
 		}
 	});
@@ -118,15 +123,27 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Timeline"], function 
 	 *  @returns {Tone.TimelineSignal} this
 	 */
 	Tone.TimelineSignal.prototype.exponentialRampToValueAtTime = function (value, endTime) {
+		//get the previous event and make sure it's not starting from 0
+		var beforeEvent = this._searchBefore(endTime);
+		if (beforeEvent && beforeEvent.value === 0){
+			//reschedule that event
+			this.setValueAtTime(this._minOutput, beforeEvent.time);
+		}
 		value = this._fromUnits(value);
-		value = Math.max(this._minOutput, value);
+		var setValue = Math.max(value, this._minOutput);
 		endTime = this.toSeconds(endTime);
 		this._events.addEvent({
 			"type" : Tone.TimelineSignal.Type.Exponential,
-			"value" : value,
+			"value" : setValue,
 			"time" : endTime
 		});
-		this._param.exponentialRampToValueAtTime(value, endTime);
+		//if the ramped to value is 0, make it go to the min output, and then set to 0.
+		if (value < this._minOutput){
+			this._param.exponentialRampToValueAtTime(this._minOutput, endTime - this.sampleTime);
+			this.setValueAtTime(0, endTime);
+		} else {
+			this._param.exponentialRampToValueAtTime(value, endTime);
+		}
 		return this;
 	};
 
@@ -150,6 +167,39 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Timeline"], function 
 			"constant" : timeConstant
 		});
 		this._param.setTargetAtTime(value, startTime, timeConstant);
+		return this;
+	};
+
+	/**
+	 *  Set an array of arbitrary values starting at the given time for the given duration.
+	 *  @param {Float32Array} values        
+	 *  @param {Time} startTime    
+	 *  @param {Time} duration
+	 *  @param {NormalRange} [scaling=1] If the values in the curve should be scaled by some value
+	 *  @returns {Tone.TimelineSignal} this 
+	 */
+	Tone.TimelineSignal.prototype.setValueCurveAtTime = function (values, startTime, duration, scaling) {
+		scaling = this.defaultArg(scaling, 1);
+		//copy the array
+		var floats = new Array(values.length);
+		for (var i = 0; i < floats.length; i++){
+			floats[i] = this._fromUnits(values[i]) * scaling;
+		}
+		startTime = this.toSeconds(startTime);
+		duration = this.toSeconds(duration);
+		this._events.addEvent({
+			"type" : Tone.TimelineSignal.Type.Curve,
+			"value" : floats,
+			"time" : startTime,
+			"duration" : duration
+		});
+		//set the first value
+		this._param.setValueAtTime(floats[0], startTime);
+		//schedule a lienar ramp for each of the segments
+		for (var j = 1; j < floats.length; j++){
+			var segmentTime = startTime + (j / (floats.length - 1) * duration);
+			this._param.linearRampToValueAtTime(floats[j], segmentTime);
+		}
 		return this;
 	};
 
@@ -179,19 +229,34 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Timeline"], function 
 	Tone.TimelineSignal.prototype.setRampPoint = function (time) {
 		time = this.toSeconds(time);
 		//get the value at the given time
-		var val = this.getValueAtTime(time);
-		//reschedule the next event to end at the given time
-		var after = this._searchAfter(time);
-		if (after){
-			//cancel the next event(s)
+		var val = this._toUnits(this.getValueAtTime(time));
+		//if there is an event at the given time
+		//and that even is not a "set"
+		var before = this._searchBefore(time);
+		if (before && before.time === time){
+			//remove everything after
+			this.cancelScheduledValues(time + this.sampleTime);
+		} else if (before && 
+				   before.type === Tone.TimelineSignal.Type.Curve &&
+				   before.time + before.duration > time){
+			//if the curve is still playing
+			//cancel the curve
 			this.cancelScheduledValues(time);
-			if (after.type === Tone.TimelineSignal.Type.Linear){
-				this.linearRampToValueAtTime(val, time);
-			} else if (after.type === Tone.TimelineSignal.Type.Exponential){
-				this.exponentialRampToValueAtTime(val, time);
-			} 
-		} 
-		this.setValueAtTime(val, time);
+			this.linearRampToValueAtTime(val, time);
+		} else {
+			//reschedule the next event to end at the given time
+			var after = this._searchAfter(time);
+			if (after){
+				//cancel the next event(s)
+				this.cancelScheduledValues(time);
+				if (after.type === Tone.TimelineSignal.Type.Linear){
+					this.linearRampToValueAtTime(val, time);
+				} else if (after.type === Tone.TimelineSignal.Type.Exponential){
+					this.exponentialRampToValueAtTime(val, time);
+				}
+			}
+			this.setValueAtTime(val, time);
+		}
 		return this;
 	};
 
@@ -269,6 +334,8 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Timeline"], function 
 				previouVal = previous.value;
 			}
 			value = this._exponentialApproach(before.time, previouVal, before.value, before.constant, time);
+		} else if (before.type === Tone.TimelineSignal.Type.Curve){
+			value = this._curveInterpolate(before.time, before.value, before.duration, time);
 		} else if (after === null){
 			value = before.value;
 		} else if (after.type === Tone.TimelineSignal.Type.Linear){
@@ -324,6 +391,31 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Timeline"], function 
 	Tone.TimelineSignal.prototype._exponentialInterpolate = function (t0, v0, t1, v1, t) {
 		v0 = Math.max(this._minOutput, v0);
 		return v0 * Math.pow(v1 / v0, (t - t0) / (t1 - t0));
+	};
+
+	/**
+	 *  Calculates the the value along the curve produced by setValueCurveAtTime
+	 *  @private
+	 */
+	Tone.TimelineSignal.prototype._curveInterpolate = function (start, curve, duration, time) {
+		var len = curve.length;
+		// If time is after duration, return the last curve value
+		if (time >= start + duration) {
+			return curve[len - 1];
+		} else if (time <= start){
+			return curve[0];
+		} else {
+			var progress = (time - start) / duration;
+			var lowerIndex = Math.floor((len - 1) * progress);
+			var upperIndex = Math.ceil((len - 1) * progress);
+			var lowerVal = curve[lowerIndex];
+			var upperVal = curve[upperIndex];
+			if (upperIndex === lowerIndex){
+				return lowerVal;
+			} else {
+				return this._linearInterpolate(lowerIndex, lowerVal, upperIndex, upperVal, progress * (len - 1));
+			}
+		}
 	};
 
 	/**

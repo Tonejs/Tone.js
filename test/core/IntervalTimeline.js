@@ -146,6 +146,18 @@ define(["Test", "Tone/core/IntervalTimeline", "helper/Basic"], function (Test, I
 				sched.dispose();
 			});
 
+			it ("returns events exclusive of the end time", function(){
+				var sched = new IntervalTimeline();
+				sched.addEvent({
+					"state" : "A",
+					"duration" : 1,
+					"time"  : 0
+				});
+				expect(sched.getEvent(0.99).state).to.equal("A");
+				expect(sched.getEvent(1)).to.equal(null);
+				sched.dispose();
+			});
+
 			it ("factors in start position and duration when checking for overlaps", function(){
 				var sched = new IntervalTimeline();
 				sched.addEvent({
@@ -155,7 +167,7 @@ define(["Test", "Tone/core/IntervalTimeline", "helper/Basic"], function (Test, I
 				expect(sched.getEvent(0.5)).to.be.null;
 				expect(sched.getEvent(-1)).to.be.null;
 				expect(sched.getEvent(0)).to.not.be.null;
-				expect(sched.getEvent(0.4)).to.not.be.null;
+				expect(sched.getEvent(0.39)).to.not.be.null;
 				sched.dispose();
 			});
 
@@ -269,7 +281,7 @@ define(["Test", "Tone/core/IntervalTimeline", "helper/Basic"], function (Test, I
 				sched.addEvent({"time" : 0.3, "duration" : 5});
 				sched.addEvent({"time" : 0.4, "duration" : 5});
 				var count = 0;
-				sched.forEachOverlap(0.3, function(event){
+				sched.forEachAtTime(0.3, function(event){
 					expect(event).to.be.an.object;
 					expect(event.time).to.be.at.most(0.3);
 					count++;
@@ -285,7 +297,7 @@ define(["Test", "Tone/core/IntervalTimeline", "helper/Basic"], function (Test, I
 				sched.addEvent({"time" : 0.3, "duration" : 5});
 				sched.addEvent({"time" : 0.4, "duration" : 5});
 				var count = 0;
-				sched.forEachOverlap(0, function(){
+				sched.forEachAtTime(0, function(){
 					count++;
 				});
 				expect(count).to.equal(0);
@@ -299,7 +311,7 @@ define(["Test", "Tone/core/IntervalTimeline", "helper/Basic"], function (Test, I
 				sched.addEvent({"time" : 0.3, "duration" : 5});
 				sched.addEvent({"time" : 0.4, "duration" : 5});
 				var count = 0;
-				sched.forEachOverlap(5.5, function(){
+				sched.forEachAtTime(5.5, function(){
 					count++;
 				});
 				expect(count).to.equal(0);
@@ -368,12 +380,12 @@ define(["Test", "Tone/core/IntervalTimeline", "helper/Basic"], function (Test, I
 				sched.dispose();
 			});
 
-			it("can remove items during forEachOverlap iterations", function(){
+			it("can remove items during forEachAtTime iterations", function(){
 				var sched = new IntervalTimeline();
 				for (var i = 0; i < 1000; i++){
 					sched.addEvent({"time" : i, "duration" : Infinity});
 				}
-				sched.forEachOverlap(1000, function(event){
+				sched.forEachAtTime(1000, function(event){
 					sched.cancel(event.time);
 				});
 				expect(sched.length).to.equal(0);

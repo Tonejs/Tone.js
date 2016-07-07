@@ -1,6 +1,6 @@
 define(["helper/Offline", "Tone/signal/GainToAudio", "helper/Basic", 
-	"Test", "Tone/signal/Signal"], 
-	function (Offline, GainToAudio, Basic, Test, Signal) {
+	"Test", "Tone/signal/Signal", "Tone/signal/Zero"], 
+	function (Offline, GainToAudio, Basic, Test, Signal, Zero) {
 
 	describe("GainToAudio", function(){
 
@@ -62,7 +62,7 @@ define(["helper/Offline", "Tone/signal/GainToAudio", "helper/Basic",
 				var sig, g2a;
 				var offline = new Offline();
 				offline.before(function(dest){
-					sig = new Signal(0);
+					sig = new Zero();
 					g2a = new GainToAudio();
 					sig.connect(g2a);
 					g2a.connect(dest);

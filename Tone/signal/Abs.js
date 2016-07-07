@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/signal/Select", "Tone/signal/Negate", "Tone/signal/LessThan", "Tone/signal/Signal"], 
+define(["Tone/core/Tone", "Tone/signal/WaveShaper", "Tone/signal/SignalBase"], 
 function(Tone){
 
 	"use strict";
@@ -21,27 +21,13 @@ function(Tone){
 		 *  @type {Tone.LessThan}
 		 *  @private
 		 */
-		this._ltz = new Tone.LessThan(0);
-
-		/**
-		 *  @type {Tone.Select}
-		 *  @private
-		 */
-		this._switch = this.output = new Tone.Select(2);
-		
-		/**
-		 *  @type {Tone.Negate}
-		 *  @private
-		 */
-		this._negate = new Tone.Negate();
-
-		//two signal paths, positive and negative
-		this.input.connect(this._switch, 0, 0);
-		this.input.connect(this._negate);
-		this._negate.connect(this._switch, 0, 1);
-		
-		//the control signal
-		this.input.chain(this._ltz, this._switch.gate);
+		this._abs = this.input = this.output = new Tone.WaveShaper(function(val){
+			if (val === 0){
+				return 0;
+			} else {
+				return Math.abs(val);
+			}
+		}, 127);
 	};
 
 	Tone.extend(Tone.Abs, Tone.SignalBase);
@@ -52,12 +38,8 @@ function(Tone){
 	 */
 	Tone.Abs.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
-		this._switch.dispose();
-		this._switch = null;
-		this._ltz.dispose();
-		this._ltz = null;
-		this._negate.dispose();
-		this._negate = null;
+		this._abs.dispose();
+		this._abs = null;
 		return this;
 	}; 
 

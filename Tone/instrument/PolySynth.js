@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/instrument/MonoSynth", "Tone/source/Source"], 
+define(["Tone/core/Tone", "Tone/instrument/Synth", "Tone/source/Source"], 
 function(Tone){
 
 	"use strict";
@@ -13,11 +13,11 @@ function(Tone){
 	 *  @constructor
 	 *  @extends {Tone.Instrument}
 	 *  @param {number|Object} [polyphony=4] The number of voices to create
-	 *  @param {function} [voice=Tone.MonoSynth] The constructor of the voices
-	 *                                            uses Tone.MonoSynth by default. 
+	 *  @param {function} [voice=Tone.Synth] The constructor of the voices
+	 *                                            uses Tone.Synth by default. 
 	 *  @example
-	 * //a polysynth composed of 6 Voices of MonoSynth
-	 * var synth = new Tone.PolySynth(6, Tone.MonoSynth).toMaster();
+	 * //a polysynth composed of 6 Voices of Synth
+	 * var synth = new Tone.PolySynth(6, Tone.Synth).toMaster();
 	 * //set the attributes using the set interface
 	 * synth.set("detune", -1200);
 	 * //play a chord
@@ -28,6 +28,10 @@ function(Tone){
 		Tone.Instrument.call(this);
 
 		var options = this.optionsObject(arguments, ["polyphony", "voice"], Tone.PolySynth.defaults);
+		options = this.defaultArg(options, Tone.Instrument.defaults);
+
+		//max polyphony
+		options.polyphony = Math.min(Tone.PolySynth.MAX_POLYPHONY, options.polyphony);
 
 		/**
 		 *  the array of voices
@@ -36,36 +40,38 @@ function(Tone){
 		this.voices = new Array(options.polyphony);
 
 		/**
-		 *  If there are no more voices available,
-		 *  should an active voice be stolen to play the new note?
-		 *  @type {Boolean}
-		 */
-		this.stealVoices = true;
-
-		/**
-		 *  the queue of free voices
+		 *  The queue of voices with data about last trigger
+		 *  and the triggered note
 		 *  @private
 		 *  @type {Array}
 		 */
-		this._freeVoices = [];
+		this._triggers = new Array(options.polyphony);
 
 		/**
-		 *  keeps track of which notes are down
-		 *  @private
-		 *  @type {Object}
+		 *  The detune in cents
+		 *  @type {Cents}
+		 *  @signal
 		 */
-		this._activeVoices = {};
+		this.detune = new Tone.Signal(options.detune, Tone.Type.Cents);
+		this._readOnly("detune");
 
 		//create the voices
 		for (var i = 0; i < options.polyphony; i++){
 			var v = new options.voice(arguments[2], arguments[3]);
 			this.voices[i] = v;
 			v.connect(this.output);
+			if (v.hasOwnProperty("detune")){
+				this.detune.connect(v.detune);
+			}
+			this._triggers[i] = {
+				release : -1,
+				note : null,
+				voice : v
+			};
 		}
 
-		//make a copy of the voices
-		this._freeVoices = this.voices.slice(0);
-		//get the prototypes and properties
+		//set the volume initially
+		this.volume.value = options.volume;
 	};
 
 	Tone.extend(Tone.PolySynth, Tone.Instrument);
@@ -78,7 +84,9 @@ function(Tone){
 	 */
 	Tone.PolySynth.defaults = {
 		"polyphony" : 4,
-		"voice" : Tone.MonoSynth
+		"volume" : 0,
+		"detune" : 0,
+		"voice" : Tone.Synth
 	};
 
 	/**
@@ -96,23 +104,21 @@ function(Tone){
 		if (!Array.isArray(notes)){
 			notes = [notes];
 		}
+		time = this.toSeconds(time);
 		for (var i = 0; i < notes.length; i++){
 			var val = notes[i];
-			var stringified = JSON.stringify(val);
-			//retrigger the same note if possible
-			if (this._activeVoices.hasOwnProperty(stringified)){
-				this._activeVoices[stringified].triggerAttack(val, time, velocity);
-			} else if (this._freeVoices.length > 0){
-				var voice = this._freeVoices.shift();
-				voice.triggerAttack(val, time, velocity);
-				this._activeVoices[stringified] = voice;
-			} else if (this.stealVoices){ //steal a voice				
-				//take the first voice
-				for (var voiceName in this._activeVoices){
-					this._activeVoices[voiceName].triggerAttack(val, time, velocity);
-					break;
+			//trigger the oldest voice
+			var oldest = this._triggers[0];
+			var oldestIndex = 0;
+			for (var j = 1; j < this._triggers.length; j++){
+				if (this._triggers[j].release < oldest.release){
+					oldest = this._triggers[j];
+					oldestIndex = j;
 				}
 			}
+			oldest.release = Infinity;
+			oldest.note = JSON.stringify(val);
+			oldest.voice.triggerAttack(val, time, velocity);
 		}
 		return this;
 	};
@@ -129,11 +135,21 @@ function(Tone){
 	 *  @example
 	 * //trigger a chord for a duration of a half note 
 	 * poly.triggerAttackRelease(["Eb3", "G4", "C5"], "2n");
+	 *  @example
+	 * //can pass in an array of durations as well
+	 * poly.triggerAttackRelease(["Eb3", "G4", "C5"], ["2n", "4n", "4n"]);
 	 */
 	Tone.PolySynth.prototype.triggerAttackRelease = function(notes, duration, time, velocity){
 		time = this.toSeconds(time);
 		this.triggerAttack(notes, time, velocity);
-		this.triggerRelease(notes, time + this.toSeconds(duration));
+		if (this.isArray(duration) && this.isArray(notes)){
+			for (var i = 0; i < notes.length; i++){
+				var d = duration[Math.min(i, duration.length - 1)];
+				this.triggerRelease(notes[i], time + this.toSeconds(d));	
+			}
+		} else {
+			this.triggerRelease(notes, time + this.toSeconds(duration));
+		}
 		return this;
 	};
 
@@ -151,15 +167,16 @@ function(Tone){
 		if (!Array.isArray(notes)){
 			notes = [notes];
 		}
+		time = this.toSeconds(time);
 		for (var i = 0; i < notes.length; i++){
 			//get the voice
 			var stringified = JSON.stringify(notes[i]);
-			var voice = this._activeVoices[stringified];
-			if (voice){
-				voice.triggerRelease(time);
-				this._freeVoices.push(voice);
-				delete this._activeVoices[stringified];
-				voice = null;
+			for (var v = 0; v < this._triggers.length; v++){
+				var desc = this._triggers[v];
+				if (desc.note === stringified && desc.release > time){
+					desc.voice.triggerRelease(time);
+					desc.release = time;
+				}
 			}
 		}
 		return this;
@@ -207,8 +224,13 @@ function(Tone){
 	 *  @return {Tone.PolySynth} this
 	 */
 	Tone.PolySynth.prototype.releaseAll = function(time){
-		for (var i = 0; i < this.voices.length; i++){
-			this.voices[i].triggerRelease(time);
+		time = this.toSeconds(time);
+		for (var i = 0; i < this._triggers.length; i++){
+			var desc = this._triggers[i];
+			if (desc.release > time){
+				desc.release = time;
+				desc.voice.triggerRelease(time);
+			}
 		}
 		return this;
 	};
@@ -223,11 +245,21 @@ function(Tone){
 			this.voices[i].dispose();
 			this.voices[i] = null;
 		}
+		this._writable("detune");
+		this.detune.dispose();
+		this.detune = null;
 		this.voices = null;
-		this._activeVoices = null;
-		this._freeVoices = null;
+		this._triggers = null;
 		return this;
 	};
+
+	/**
+	 *  The maximum number of notes that can be allocated 
+	 *  to a polysynth. 
+	 *  @type  {Number}
+	 *  @static
+	 */
+	Tone.PolySynth.MAX_POLYPHONY = 20;
 
 	return Tone.PolySynth;
 });

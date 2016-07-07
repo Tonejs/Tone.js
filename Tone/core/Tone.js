@@ -2,7 +2,7 @@
  *  Tone.js
  *  @author Yotam Mann
  *  @license http://opensource.org/licenses/MIT MIT License
- *  @copyright 2014-2015 Yotam Mann
+ *  @copyright 2014-2016 Yotam Mann
  */
 define(function(){
 
@@ -64,30 +64,33 @@ define(function(){
 	if (!isFunction(OscillatorNode.prototype.setPeriodicWave)){
 		OscillatorNode.prototype.setPeriodicWave = OscillatorNode.prototype.setWaveTable;	
 	}
+
 	//extend the connect function to include Tones
-	AudioNode.prototype._nativeConnect = AudioNode.prototype.connect;
-	AudioNode.prototype.connect = function(B, outNum, inNum){
-		if (B.input){
-			if (Array.isArray(B.input)){
-				if (isUndef(inNum)){
-					inNum = 0;
-				}
-				this.connect(B.input[inNum]);
-			} else {
-				this.connect(B.input, outNum, inNum);
-			}
-		} else {
-			try {
-				if (B instanceof AudioNode){
-					this._nativeConnect(B, outNum, inNum);
+	if (isUndef(AudioNode.prototype._nativeConnect)){
+		AudioNode.prototype._nativeConnect = AudioNode.prototype.connect;
+		AudioNode.prototype.connect = function(B, outNum, inNum){
+			if (B.input){
+				if (Array.isArray(B.input)){
+					if (isUndef(inNum)){
+						inNum = 0;
+					}
+					this.connect(B.input[inNum]);
 				} else {
-					this._nativeConnect(B, outNum);
+					this.connect(B.input, outNum, inNum);
 				}
-			} catch (e) {
-				throw new Error("error connecting to node: "+B);
+			} else {
+				try {
+					if (B instanceof AudioNode){
+						this._nativeConnect(B, outNum, inNum);
+					} else {
+						this._nativeConnect(B, outNum);
+					}
+				} catch (e) {
+					throw new Error("error connecting to node: "+B);
+				}
 			}
-		}
-	};
+		};
+	}
 
 	///////////////////////////////////////////////////////////////////////////
 	//	TONE
@@ -322,6 +325,14 @@ define(function(){
 	 *  @const
 	 */
 	Tone.prototype.blockTime = 128 / Tone.context.sampleRate;
+
+	/**
+	 *  The time of a single sample
+	 *  @type {number}
+	 *  @static
+	 *  @const
+	 */
+	Tone.prototype.sampleTime = 1 / Tone.context.sampleRate;
 	
 	///////////////////////////////////////////////////////////////////////////
 	//	CONNECTIONS
@@ -392,12 +403,17 @@ define(function(){
 
 	/**
 	 *  disconnect the output
+	 *  @param {Number|AudioNode} output Either the output index to disconnect
+	 *                                   if the output is an array, or the
+	 *                                   node to disconnect from.
 	 *  @returns {Tone} this
 	 */
-	Tone.prototype.disconnect = function(outputNum){
+	Tone.prototype.disconnect = function(output){
 		if (Array.isArray(this.output)){
-			outputNum = this.defaultArg(outputNum, 0);
-			this.output[outputNum].disconnect();
+			output = this.defaultArg(output, 0);
+			this.output[output].disconnect();
+		} else if (!this.isUndef(output)){
+			this.output.disconnect(output);
 		} else {
 			this.output.disconnect();
 		}
@@ -416,22 +432,6 @@ define(function(){
 				var toUnit = arguments[i];
 				currentUnit.connect(toUnit);
 				currentUnit = toUnit;
-			}
-		}
-		return this;
-	};
-
-	/**
-	 *  fan out the connection from the first argument to the rest of the arguments
-	 *  @param {...AudioParam|Tone|AudioNode} nodes
-	 *  @returns {Tone} this
-	 */
-	Tone.prototype.connectParallel = function(){
-		var connectFrom = arguments[0];
-		if (arguments.length > 1){
-			for (var i = 1; i < arguments.length; i++){
-				var connectTo = arguments[i];
-				connectFrom.connect(connectTo);
 			}
 		}
 		return this;
@@ -687,18 +687,38 @@ define(function(){
 		return  20 * (Math.log(gain) / Math.LN10);
 	};
 
+	/**
+	 *  Convert an interval (in semitones) to a frequency ratio.
+	 *  @param  {Interval} interval the number of semitones above the base note
+	 *  @return {number}          the frequency ratio
+	 *  @example
+	 * tone.intervalToFrequencyRatio(0); // 1
+	 * tone.intervalToFrequencyRatio(12); // 2
+	 * tone.intervalToFrequencyRatio(-12); // 0.5
+	 */
+	Tone.prototype.intervalToFrequencyRatio = function(interval){
+		return Math.pow(2,(interval/12));
+	};
+
 	///////////////////////////////////////////////////////////////////////////
 	//	TIMING
 	///////////////////////////////////////////////////////////////////////////
 
 	/**
-	 *  Return the current time of the clock + a single buffer frame. 
-	 *  If this value is used to schedule a value to change, the earliest
-	 *  it could be scheduled is the following frame. 
-	 *  @return {number} the currentTime from the AudioContext
+	 *  Return the current time of the AudioContext clock.
+	 *  @return {Number} the currentTime from the AudioContext
 	 */
 	Tone.prototype.now = function(){
 		return this.context.currentTime;
+	};
+
+	/**
+	 *  Return the current time of the AudioContext clock.
+	 *  @return {Number} the currentTime from the AudioContext
+	 *  @static
+	 */
+	Tone.now = function(){
+		return Tone.context.currentTime;
 	};
 
 	///////////////////////////////////////////////////////////////////////////
@@ -774,33 +794,17 @@ define(function(){
 		}
 	};
 
-	/**
-	 *  Bind this to a touchstart event to start the audio on mobile devices. 
-	 *  <br>
-	 *  http://stackoverflow.com/questions/12517000/no-sound-on-ios-6-web-audio-api/12569290#12569290
-	 *  @static
-	 */
-	Tone.startMobile = function(){
-		var osc = Tone.context.createOscillator();
-		var silent = Tone.context.createGain();
-		silent.gain.value = 0;
-		osc.connect(silent);
-		silent.connect(Tone.context.destination);
-		var now = Tone.context.currentTime;
-		osc.start(now);
-		osc.stop(now+1);
-	};
-
 	//setup the context
 	Tone._initAudioContext(function(audioContext){
 		//set the blockTime
 		Tone.prototype.blockTime = 128 / audioContext.sampleRate;
+		Tone.prototype.sampleTime = 1 / audioContext.sampleRate;
 		_silentNode = audioContext.createGain();
 		_silentNode.gain.value = 0;
 		_silentNode.connect(audioContext.destination);
 	});
 
-	Tone.version = "r6";
+	Tone.version = "r7";
 
 	console.log("%c * Tone.js " + Tone.version + " * ", "background: #000; color: #fff");
 

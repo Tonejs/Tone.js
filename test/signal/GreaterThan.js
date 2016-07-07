@@ -1,5 +1,6 @@
-define(["helper/Offline", "helper/Basic", "Tone/signal/GreaterThan", "Tone/signal/Signal", "Test"], 
-function (Offline, Basic, GreaterThan, Signal, Test) {
+define(["helper/Offline", "helper/Basic", "Tone/signal/GreaterThan", 
+	"Tone/signal/Signal", "Test", "helper/Supports"], 
+function (Offline, Basic, GreaterThan, Signal, Test, Supports) {
 	describe("GreaterThan", function(){
 
 		Basic(GreaterThan);
@@ -35,25 +36,28 @@ function (Offline, Basic, GreaterThan, Signal, Test) {
 				offline.run();
 			});
 
-			it("outputs 0 when signal is equal to the value", function(done){
-				var signal, gt;
-				var offline = new Offline();
-				offline.before(function(dest){
-					signal = new Signal(10);
-					gt = new GreaterThan(10);
-					signal.connect(gt);
-					gt.connect(dest);
+			if (Supports.WAVESHAPER_0_POSITION){
+
+				it("outputs 0 when signal is equal to the value", function(done){
+					var signal, gt;
+					var offline = new Offline();
+					offline.before(function(dest){
+						signal = new Signal(10);
+						gt = new GreaterThan(10);
+						signal.connect(gt);
+						gt.connect(dest);
+					});
+					offline.test(function(sample){
+						expect(sample).to.equal(0);
+					});
+					offline.after(function(){
+						signal.dispose();
+						gt.dispose();
+						done();
+					});
+					offline.run();
 				});
-				offline.test(function(sample){
-					expect(sample).to.equal(0);
-				});
-				offline.after(function(){
-					signal.dispose();
-					gt.dispose();
-					done();
-				});
-				offline.run();
-			});
+			}
 
 			it("outputs 1 value is greater than", function(done){
 				var signal, gt;

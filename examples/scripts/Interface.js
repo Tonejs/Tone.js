@@ -1,4 +1,4 @@
-/* globals Tone */
+/* globals Tone, StartAudioContext */
 
 
 var Interface = {
@@ -16,8 +16,8 @@ $(function(){
 	$("body").prepend(topbar);
 	
 	if (typeof Tone !== "undefined"){
-		var logo = new Logo({
-			"container" : topbar,
+		Logo({
+			"container" : topbar.get(0),
 			"height" : topbar.height() - 6,
 			"width" : 140
 		});
@@ -33,14 +33,12 @@ $(function(){
 		Interface.isMobile = true;
 		$("body").addClass("Mobile");
 		var element = $("<div>", {"id" : "MobileStart"}).appendTo("body");
-		$("<div>").attr("id", "Button")
-			.text("Enter")
-			.on("touchend", function(e){
-				e.preventDefault();
-				Tone.startMobile();
-				element.remove();
-			})
-			.appendTo(element);  
+		var button = $("<div>").attr("id", "Button").text("Enter").appendTo(element);
+		StartAudioContext.setContext(Tone.context);
+		StartAudioContext.on(button);
+		StartAudioContext.onStarted(function(){
+			element.remove();
+		});
 	}
 });
 

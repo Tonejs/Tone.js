@@ -9,15 +9,15 @@ define(["Tone/instrument/FMSynth", "helper/Basic", "helper/InstrumentTests"], fu
 
 			it ("can get and set carrier attributes", function(){
 				var fmSynth = new FMSynth();
-				fmSynth.carrier.oscillator.type = "triangle";
-				expect(fmSynth.carrier.oscillator.type).to.equal("triangle");
+				fmSynth.oscillator.type = "triangle";
+				expect(fmSynth.oscillator.type).to.equal("triangle");
 				fmSynth.dispose();
 			});
 
 			it ("can get and set modulator attributes", function(){
 				var fmSynth = new FMSynth();
-				fmSynth.modulator.envelope.attack = 0.24;
-				expect(fmSynth.modulator.envelope.attack).to.equal(0.24);
+				fmSynth.modulationEnvelope.attack = 0.24;
+				expect(fmSynth.modulationEnvelope.attack).to.equal(0.24);
 				fmSynth.dispose();
 			});
 
@@ -30,22 +30,22 @@ define(["Tone/instrument/FMSynth", "helper/Basic", "helper/InstrumentTests"], fu
 
 			it ("can be constructed with an options object", function(){
 				var fmSynth = new FMSynth({
-					"carrier" : {
-						"filter" : {
-							"rolloff" : -24
-						}
+					"envelope" : {
+						"release" : 0.3
 					}
 				});
-				expect(fmSynth.carrier.filter.rolloff).to.equal(-24);
+				expect(fmSynth.envelope.release).to.equal(0.3);
 				fmSynth.dispose();
 			});
 
 			it ("can get/set attributes", function(){
 				var fmSynth = new FMSynth();
 				fmSynth.set({
-					"harmonicity" : 1.5
+					"harmonicity" : 1.5,
+					"detune" : 1200,
 				});
 				expect(fmSynth.get().harmonicity).to.equal(1.5);
+				expect(fmSynth.get().detune).to.be.closeTo(1200, 1);
 				fmSynth.dispose();
 			});
 

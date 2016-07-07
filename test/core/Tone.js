@@ -1,5 +1,6 @@
-define(["Test", "Tone/core/Tone", "helper/PassAudio", "Tone/source/Oscillator", "Tone/instrument/SimpleSynth", "helper/Offline"], 
-	function (Test, Tone, PassAudio, Oscillator, SimpleSynth, Offline) {
+define(["Test", "Tone/core/Tone", "helper/PassAudio", "Tone/source/Oscillator", 
+	"Tone/instrument/Synth", "helper/Offline2", "helper/Supports"], 
+	function (Test, Tone, PassAudio, Oscillator, Synth, Offline, Supports) {
 
 	describe("AudioContext", function(){
 		
@@ -61,6 +62,12 @@ define(["Test", "Tone/core/Tone", "helper/PassAudio", "Tone/source/Oscillator", 
 				expect(tone.dbToGain(tone.gainToDb(0))).is.closeTo(0, 0.01);
 				expect(tone.dbToGain(tone.gainToDb(0.5))).is.closeTo(0.5, 0.01);
 				expect(tone.gainToDb(tone.dbToGain(1))).is.closeTo(1, 0.01);
+			});
+
+			it("can convert semitone intervals to frequency ratios", function(){
+				expect(tone.intervalToFrequencyRatio(0)).to.equal(1);
+				expect(tone.intervalToFrequencyRatio(12)).to.equal(2);
+				expect(tone.intervalToFrequencyRatio(7)).to.be.closeTo(1.5, 0.01);
 			});
 		});
 
@@ -179,6 +186,28 @@ define(["Test", "Tone/core/Tone", "helper/PassAudio", "Tone/source/Oscillator", 
 				tone.disconnect();
 			});
 
+			if (Supports.NODE_DISCONNECT){
+				it("can disconnect from a specific connection", function(done){
+					var node0, node1;
+					PassAudio(function(input, output){
+						node0 = new Tone(1, 1);
+						//internal connection
+						node0.input.connect(node0.output);
+						//two other nodes to pass audio through
+						node1 = Tone.context.createGain();
+						input.chain(node0, output);
+						//connect and disconnect, shouldn't affect the others
+						input.connect(node1);
+						input.disconnect(node1);
+					}, function(){
+						node0.dispose();
+						node1.disconnect();
+						done();
+					});
+				});
+			}
+
+
 			it("can chain connections", function(done){
 				var node0, node1, node2;
 				PassAudio(function(input, output){
@@ -256,49 +285,47 @@ define(["Test", "Tone/core/Tone", "helper/PassAudio", "Tone/source/Oscillator", 
 			});		
 
 			it("ramps to a value given an object and ramp time", function(done){
-				var osc;
-				var setValue = 30;
-				var offline = new Offline(0.6);
-				offline.before(function(dest){
-					osc = new Oscillator(0);
+				Offline(function(dest, test, after){
+					var osc = new Oscillator(0);
+					var setValue = 30;
 					osc.frequency.connect(dest);
 					osc.set({
 						"frequency" : setValue
 					}, 0.5);
 					expect(osc.frequency.value).to.not.be.closeTo(setValue, 0.001);
-				});
-				offline.test(function(sample, time){
-					if (time > 0.5){
-						expect(sample).to.closeTo(setValue, 0.01);
-					}
-				});
-				offline.after(function(){
-					osc.dispose();
-					done();
-				});
-				offline.run();
+
+					test(function(sample, time){
+						if (time > 0.5){
+							expect(sample).to.closeTo(setValue, setValue * 0.1);
+						}
+					});
+
+					after(function(){
+						osc.dispose();
+						done();
+					});
+				}, 0.6);
 			});		
 
 			it("ramps to a value given a string and a value and a ramp time", function(done){
-				var osc;
-				var setValue = 30;
-				var offline = new Offline(0.6);
-				offline.before(function(dest){
-					osc = new Oscillator(0);
+				Offline(function(dest, test, after){
+					var osc = new Oscillator(0);
+					var setValue = 30;
 					osc.frequency.connect(dest);
 					osc.set("frequency", setValue, 0.5);
 					expect(osc.frequency.value).to.not.be.closeTo(setValue, 0.001);
-				});
-				offline.test(function(sample, time){
-					if (time > 0.5){
-						expect(sample).to.closeTo(setValue, 0.01);
-					}
-				});
-				offline.after(function(){
-					osc.dispose();
-					done();
-				});
-				offline.run();
+
+					test(function(sample, time){
+						if (time > 0.5){
+							expect(sample).to.closeTo(setValue, setValue * 0.1);
+						}
+					});
+
+					after(function(){
+						osc.dispose();
+						done();
+					});
+				}, 0.6);
 			});		
 
 			it("gets all defaults of the object with no arguments", function(){
@@ -315,7 +342,7 @@ define(["Test", "Tone/core/Tone", "helper/PassAudio", "Tone/source/Oscillator", 
 			});	
 
 			it("can 'set' a nested object", function(){
-				var synth = new SimpleSynth();
+				var synth = new Synth();
 				synth.set({
 					"oscillator" : {
 						"type" : "square2"
@@ -326,14 +353,14 @@ define(["Test", "Tone/core/Tone", "helper/PassAudio", "Tone/source/Oscillator", 
 			});	
 
 			it("can 'set' a value with dot notation", function(){
-				var synth = new SimpleSynth();
+				var synth = new Synth();
 				synth.set("oscillator.type", "triangle");
 				expect(synth.oscillator.type).to.equal("triangle");
 				synth.dispose();
 			});	
 
 			it("can 'get' a value with dot notation", function(){
-				var synth = new SimpleSynth();
+				var synth = new Synth();
 				synth.set({
 					"oscillator" : {
 						"type" : "sine10",

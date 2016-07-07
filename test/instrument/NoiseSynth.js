@@ -21,20 +21,6 @@ define(["Tone/instrument/NoiseSynth", "helper/Basic", "helper/InstrumentTests"],
 				noiseSynth.dispose();
 			});
 
-			it ("can get and set filter attributes", function(){
-				var noiseSynth = new NoiseSynth();
-				noiseSynth.filter.Q.value = 0.4;
-				expect(noiseSynth.filter.Q.value).to.be.closeTo(0.4, 0.001);
-				noiseSynth.dispose();
-			});
-
-			it ("can get and set filterEnvelope attributes", function(){
-				var noiseSynth = new NoiseSynth();
-				noiseSynth.filterEnvelope.baseFrequency = 400;
-				expect(noiseSynth.filterEnvelope.baseFrequency).to.equal(400);
-				noiseSynth.dispose();
-			});
-
 			it ("can be constructed with an options object", function(){
 				var noiseSynth = new NoiseSynth({
 					"envelope" : {

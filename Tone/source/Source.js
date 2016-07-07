@@ -1,5 +1,5 @@
-define(["Tone/core/Tone", "Tone/core/Transport", "Tone/component/Volume", 
-	"Tone/core/Type", "Tone/core/TimelineState", "Tone/signal/Signal"], 
+define(["Tone/core/Tone", "Tone/core/Transport", "Tone/component/Volume", "Tone/core/Master",
+	"Tone/type/Type", "Tone/core/TimelineState", "Tone/signal/Signal"], 
 function(Tone){
 
 	"use strict";
@@ -55,6 +55,7 @@ function(Tone){
 		 *  @private
 		 */
 		this._state = new Tone.TimelineState(Tone.State.Stopped);
+		this._state.memory = 10;
 
 		/**
 		 *  The synced `start` callback function from the transport
@@ -84,6 +85,8 @@ function(Tone){
 		//make the output explicitly stereo
 		this._volume.output.output.channelCount = 2;
 		this._volume.output.output.channelCountMode = "explicit";
+		//mute initially
+		this.mute = options.mute;
 	};
 
 	Tone.extend(Tone.Source);
@@ -96,6 +99,7 @@ function(Tone){
 	 */
 	Tone.Source.defaults = {
 		"volume" : 0,
+		"mute" : false
 	};
 
 	/**
@@ -108,6 +112,24 @@ function(Tone){
 	Object.defineProperty(Tone.Source.prototype, "state", {
 		get : function(){
 			return this._state.getStateAtTime(this.now());
+		}
+	});
+
+	/**
+	 * Mute the output. 
+	 * @memberOf Tone.Source#
+	 * @type {boolean}
+	 * @name mute
+	 * @example
+	 * //mute the output
+	 * source.mute = true;
+	 */
+	Object.defineProperty(Tone.Source.prototype, "mute", {
+		get : function(){
+			return this._volume.mute;
+		}, 
+		set : function(mute){
+			this._volume.mute = mute;
 		}
 	});
 
@@ -140,11 +162,10 @@ function(Tone){
 	 */
 	Tone.Source.prototype.stop = function(time){
 		time = this.toSeconds(time);
-		if (this._state.getStateAtTime(time) === Tone.State.Started){
-			this._state.setStateAtTime(Tone.State.Stopped, time);
-			if (this._stop){
-				this._stop.apply(this, arguments);
-			}
+		this._state.cancel(time);
+		this._state.setStateAtTime(Tone.State.Stopped, time);
+		if (this._stop){
+			this._stop.apply(this, arguments);
 		}
 		return this;
 	};

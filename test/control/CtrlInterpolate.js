@@ -79,12 +79,6 @@ define(["Tone/control/CtrlInterpolate", "helper/Basic"], function (CtrlInterpola
 				terp.dispose();
 			});
 
-			it ("can evaluate notes", function(){
-				var terp = new CtrlInterpolate(["C4", "C8"], 0.5);
-				expect(terp.value).to.be.closeTo(2223.81730, 0.01);
-				terp.dispose();
-			});
-
 			it ("mix types", function(){
 				var terp = new CtrlInterpolate(["4n", 4], 0.25);
 				expect(terp.value).to.equal(1.375);

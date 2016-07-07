@@ -6,28 +6,28 @@ function (Convolver, Basic, EffectTests, Buffer) {
 
 		var ir = new Buffer();
 
+		var testFile = "./audio/sine.wav";
+
 		before(function(done){
-			ir.load("./audio/berlin_tunnel_ir.wav", function(){
+			ir.load(testFile, function(){
 				done();
 			});
 		});
 
-		EffectTests(Convolver, undefined, function(conv){
-			conv.buffer = ir;
-		});
+		// EffectTests(Convolver, ir);
 
 		context("API", function(){
 
 			it ("can pass in options in the constructor", function(){
 				var convolver = new Convolver({
-					"url" : "./audio/berlin_tunnel_ir.wav",
+					"url" : testFile,
 				});
 				convolver.dispose();
 			});
 
 			it ("invokes the onload function when loaded", function(done){
 				var convolver = new Convolver({
-					"url" : "./audio/berlin_tunnel_ir.wav",
+					"url" : testFile,
 					"onload" : function(){
 						convolver.dispose();
 						done();

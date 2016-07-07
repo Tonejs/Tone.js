@@ -10,8 +10,9 @@
 	<script type="text/javascript" src="../build/Tone.js"></script>
 	<script type="text/javascript" src="./scripts/jquery.min.js"></script>
 	<script type="text/javascript" src="./scripts/draggabilly.js"></script>
+	<script type="text/javascript" src="./scripts/StartAudioContext.js"></script>
 	<script type="text/javascript" src="./scripts/Interface.js"></script>
-	<script type="text/javascript" src="./scripts/Logo.js"></script>
+	<script type="text/javascript" src="https://tonejs.github.io/Logo/build/Logo.js"></script>
 	<script type="text/javascript" src="./scripts/qwerty-hancock.js"></script>
 
 	<link rel="stylesheet" type="text/css" href="./style/examples.css">
@@ -28,7 +29,7 @@
 	<div id="Content" class="FullScreen">
 		<div id="Title">PolySynth</div>
 		<div id="Explanation">
-			<a href="http://tonejs.org/docs/#PolySynth">Tone.PolySynth</a> 
+			<a href="https://tonejs.github.io/docs/#PolySynth">Tone.PolySynth</a> 
 			handles voice creation and allocation for any
 	 		instruments passed in as the second parameter. PolySynth is 
 	 		not a synthesizer by itself, it merely manages voices of 
@@ -40,7 +41,7 @@
 
 	<script type="text/javascript">
 
-		var synth = new Tone.PolySynth(6, Tone.SimpleSynth, {
+		var synth = new Tone.PolySynth(6, Tone.Synth, {
 			"oscillator" : {
 				"partials" : [0, 2, 3, 4],
 			}

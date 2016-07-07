@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Type", "Tone/core/TimelineState"], function (Tone) {
+define(["Tone/core/Tone", "Tone/core/Transport", "Tone/type/Type", "Tone/core/TimelineState"], function (Tone) {
 
 	"use strict";
 
@@ -152,7 +152,7 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Type", "Tone/core/Ti
 				if (this._loop){
 					duration = Infinity;
 					if (this.isNumber(this._loop)){
-						duration =  (this._loop - 1) * this._getLoopDuration();
+						duration =  (this._loop) * this._getLoopDuration();
 					}
 					var nextEvent = this._state.getEventAfter(startTick);
 					if (nextEvent !== null){
@@ -161,9 +161,10 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Type", "Tone/core/Ti
 					if (duration !== Infinity){
 						//schedule a stop since it's finite duration
 						this._state.setStateAtTime(Tone.State.Stopped, startTick + duration + 1);
-						duration += "i";
+						duration = Tone.Time(duration, "i");
 					}
-					event.id = Tone.Transport.scheduleRepeat(this._tick.bind(this), this._getLoopDuration().toString() + "i", startTick + "i", duration);
+					var interval = Tone.Time(this._getLoopDuration(), "i");
+					event.id = Tone.Transport.scheduleRepeat(this._tick.bind(this), interval, Tone.TransportTime(startTick, "i"), duration);
 				} else {
 					event.id = Tone.Transport.schedule(this._tick.bind(this), startTick + "i");
 				}
@@ -203,7 +204,7 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Type", "Tone/core/Ti
 
 	/**
 	 *  Start the note at the given time. 
-	 *  @param  {Time}  time  When the note should start.
+	 *  @param  {TimelinePosition}  time  When the note should start.
 	 *  @return  {Tone.Event}  this
 	 */
 	Tone.Event.prototype.start = function(time){
@@ -221,7 +222,7 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Type", "Tone/core/Ti
 
 	/**
 	 *  Stop the Event at the given time.
-	 *  @param  {Time}  time  When the note should stop.
+	 *  @param  {TimelinePosition}  time  When the note should stop.
 	 *  @return  {Tone.Event}  this
 	 */
 	Tone.Event.prototype.stop = function(time){
@@ -241,7 +242,7 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Type", "Tone/core/Ti
 
 	/**
 	 *  Cancel all scheduled events greater than or equal to the given time
-	 *  @param  {Time}  [time=0]  The time after which events will be cancel.
+	 *  @param  {TimelinePosition}  [time=0]  The time after which events will be cancel.
 	 *  @return  {Tone.Event}  this
 	 */
 	Tone.Event.prototype.cancel = function(time){
@@ -326,15 +327,15 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Type", "Tone/core/Ti
 	});
 
 	/**
-	 *  The loopEnd point is the time the event will loop. 
-	 *  Note: only loops if Tone.Event.loop is true.
+	 *  The loopEnd point is the time the event will loop
+	 *  if Tone.Event.loop is true.
 	 *  @memberOf Tone.Event#
-	 *  @type {Boolean|Positive}
+	 *  @type {TransportTime}
 	 *  @name loopEnd
 	 */
 	Object.defineProperty(Tone.Event.prototype, "loopEnd", {
 		get : function(){
-			return this.toNotation(this._loopEnd + "i");
+			return Tone.TransportTime(this._loopEnd, "i").toNotation();
 		},
 		set : function(loopEnd){
 			this._loopEnd = this.toTicks(loopEnd);
@@ -347,12 +348,12 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Type", "Tone/core/Ti
 	/**
 	 *  The time when the loop should start. 
 	 *  @memberOf Tone.Event#
-	 *  @type {Boolean|Positive}
+	 *  @type {TransportTime}
 	 *  @name loopStart
 	 */
 	Object.defineProperty(Tone.Event.prototype, "loopStart", {
 		get : function(){
-			return this.toNotation(this._loopStart + "i");
+			return Tone.TransportTime(this._loopStart, "i").toNotation();
 		},
 		set : function(loopStart){
 			this._loopStart = this.toTicks(loopStart);

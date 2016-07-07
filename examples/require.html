@@ -4,6 +4,7 @@
   <meta charset="utf-8">
 	<title>MODULE LOADERS</title>
 
+	<script type="text/javascript" src="./scripts/StartAudioContext.js"></script>
 	<script type="text/javascript" src="./scripts/require.js"></script>
 
 	<script type="text/javascript" src="./scripts/jquery.min.js"></script>
@@ -38,9 +39,9 @@
 			}
 		});
 
-		require(["Tone/core/Master", "Tone/instrument/SimpleSynth"], 
-		function(Master, SimpleSynth){
-			var synth = new SimpleSynth().toMaster();
+		require(["Tone/core/Master", "Tone/instrument/Synth"], 
+		function(Master, Synth){
+			var synth = new Synth().toMaster();
 			synth.triggerAttackRelease("C4", "8n");
 		});
 	</script>

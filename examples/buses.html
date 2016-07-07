@@ -10,8 +10,9 @@
 	<script type="text/javascript" src="../build/Tone.js"></script>
 	<script type="text/javascript" src="./scripts/jquery.min.js"></script>
 	<script type="text/javascript" src="./scripts/draggabilly.js"></script>
+	<script type="text/javascript" src="./scripts/StartAudioContext.js"></script>
 	<script type="text/javascript" src="./scripts/Interface.js"></script>
-	<script type="text/javascript" src="./scripts/Logo.js"></script>
+	<script type="text/javascript" src="https://tonejs.github.io/Logo/build/Logo.js"></script>
 	<script type="text/javascript" src="./scripts/qwerty-hancock.js"></script>
 
 	<link rel="stylesheet" type="text/css" href="./style/examples.css">
@@ -29,8 +30,8 @@
 			audio to a named bus from an instrument and then <code>receive</code> that
 			channel on your effect.
 			<br><br>
-			Docs on <a href="http://tonejs.org/docs/#Tone.send">send</a> and 
-			<a href="http://tonejs.org/docs/#Tone.receive">receive</a>.
+			Docs on <a href="https://tonejs.github.io/docs/#Tone.send">send</a> and 
+			<a href="https://tonejs.github.io/docs/#Tone.receive">receive</a>.
 		</div>
 		<div id="Sliders"></div>
 		<div id="Keyboard"></div>
@@ -38,7 +39,7 @@
 	<script type="text/javascript">
 
 		//the synth
-		var synth = new Tone.SimpleSynth().toMaster()
+		var synth = new Tone.Synth().toMaster()
 			.set("envelope.attack", 0.04);
 
 		//send audio to each of the effect channels

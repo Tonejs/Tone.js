@@ -318,6 +318,13 @@ define(["Tone/core/Tone", "Tone/core/Emitter"], function(Tone){
 	};
 
 	/**
+	 *  A path which is prefixed before every url.
+	 *  @type  {String}
+	 *  @static
+	 */
+	Tone.Buffer.baseUrl = "";
+
+	/**
 	 *  Makes an xhr reqest for the selected url then decodes
 	 *  the file as an audio buffer. Invokes
 	 *  the callback once the audio buffer loads.
@@ -329,15 +336,14 @@ define(["Tone/core/Tone", "Tone/core/Emitter"], function(Tone){
 	 */
 	Tone.Buffer.load = function(url, callback){
 		var request = new XMLHttpRequest();
-		request.open("GET", url, true);
+		request.open("GET", Tone.Buffer.baseUrl + url, true);
 		request.responseType = "arraybuffer";
 		// decode asynchronously
 		request.onload = function() {
 			Tone.context.decodeAudioData(request.response, function(buff) {
-				if(!buff){
-					throw new Error("could not decode audio data:" + url);
-				}
 				callback(buff);
+			}, function(){
+				throw new Error("Tone.Buffer: could not decode audio data:" + url);
 			});
 		};
 		//send the request
@@ -346,28 +352,20 @@ define(["Tone/core/Tone", "Tone/core/Emitter"], function(Tone){
 	};
 
 	/**
-	 *  @deprecated us on([event]) instead
+	 *  Checks a url's extension to see if the current browser can play that file type.
+	 *  @param {String} url The url/extension to test
+	 *  @return {Boolean} If the file extension can be played
+	 *  @static
+	 *  @example
+	 * Tone.Buffer.supportsType("wav"); //returns true
+	 * Tone.Buffer.supportsType("path/to/file.wav"); //returns true
 	 */
-	Object.defineProperty(Tone.Buffer, "onload", {
-		set : function(cb){
-			console.warn("Tone.Buffer.onload is deprecated, use Tone.Buffer.on('load', callback)");
-			Tone.Buffer.on("load", cb);
-		}
-	});
-
-	Object.defineProperty(Tone.Buffer, "onprogress", {
-		set : function(cb){
-			console.warn("Tone.Buffer.onprogress is deprecated, use Tone.Buffer.on('progress', callback)");
-			Tone.Buffer.on("progress", cb);
-		}
-	});
-
-	Object.defineProperty(Tone.Buffer, "onerror", {
-		set : function(cb){
-			console.warn("Tone.Buffer.onerror is deprecated, use Tone.Buffer.on('error', callback)");
-			Tone.Buffer.on("error", cb);
-		}
-	});
+	Tone.Buffer.supportsType = function(url){
+		var extension = url.split(".");
+		extension = extension[extension.length - 1];
+		var response = document.createElement("audio").canPlayType("audio/"+extension);
+		return response !== "";
+	};
 
 	return Tone.Buffer;
 });

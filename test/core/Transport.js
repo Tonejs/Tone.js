@@ -1,4 +1,5 @@
-define(["Test", "Tone/core/Transport", "Tone/core/Tone"], function (Test, Transport, Tone) {
+define(["Test", "Tone/core/Transport", "Tone/core/Tone", "helper/Offline2", "Tone/type/TransportTime"], 
+function (Test, Transport, Tone, Offline, TransportTime) {
 
 	describe("Transport", function(){
 
@@ -7,7 +8,6 @@ define(["Test", "Tone/core/Transport", "Tone/core/Tone"], function (Test, Transp
 			Tone.Transport.off("start stop pause loop");
 			Tone.Transport.stop();
 			Tone.Transport.loop = false;
-			Tone.Transport.PPQ = 48;
 			Tone.Transport.bpm.value = 120;
 			Tone.Transport.timeSignature = [4, 4];
 			setTimeout(done, 200);
@@ -62,53 +62,45 @@ define(["Test", "Tone/core/Transport", "Tone/core/Tone"], function (Test, Transp
 			});
 
 			it ("can loop events scheduled on the transport", function(done){
-				var invocations = 0;
-				Tone.Transport.schedule(function(){
-					invocations++;
-				}, 0);
-				Tone.Transport.setLoopPoints(0, "4n").start();
-				Tone.Transport.loop = true;
-				setTimeout(function(){
-					expect(invocations).to.be.greaterThan(1);
-					Tone.Transport.loop = false;
-					Tone.Transport.stop();
-					Tone.Transport.cancel(0);
-					done();
-				}, 1000);
+				Offline(function(dest, testFn, after){
+					var invocations = 0;
+					Tone.Transport.schedule(function(){
+						invocations++;
+					}, 0);
+					Tone.Transport.setLoopPoints(0, "4n").start();
+					Tone.Transport.loop = true;
+					after(function(){
+						expect(invocations).to.be.greaterThan(1);
+						Tone.Transport.loop = false;
+						Tone.Transport.stop();
+						Tone.Transport.cancel(0);
+						done();
+					});
+				}, 1);
 			});
 
 		});
 
-		context("Quantization", function(){
+		context("nextSubdivision", function(){
 
 			afterEach(resetTransport);
 
-			it("returns the time quantized to the next subdivision", function(){
-				expect(Tone.Transport.quantize(1.1, 0.5)).to.be.closeTo(1.5, 0.01);
-				expect(Tone.Transport.quantize("1m", "2m")).to.be.closeTo(Tone.Transport.toSeconds("2m"), 0.01);
-				expect(Tone.Transport.quantize(2.3, 0.5)).to.be.closeTo(2.5, 0.01);
-				expect(Tone.Transport.quantize("4n", "8n")).to.be.closeTo(Tone.Transport.toSeconds("4n"), 0.01);
-				expect(Tone.Transport.quantize(0, 4)).to.be.closeTo(0, 0.01);
+			it("returns 0 if the transports not started", function(){
+				expect(Tone.Transport.nextSubdivision()).to.equal(0);
 			});
 
-			it("returns now relative times with the Transport stopped", function(){
-				var now = Tone.Transport.now();
-				expect(Tone.Transport.quantize(undefined, "1m")).to.be.closeTo(now, 0.01);
-				expect(Tone.Transport.quantize("+1m", "1m")).to.be.closeTo(now + Tone.Transport.toSeconds("1m"), 0.01);
+			it("can get the next subdivision of the transport", function(done){
+				Offline(function(dest, testFn, after){
+					Tone.Transport.start(0);
+					after(function(){
+						expect(Tone.Transport.nextSubdivision(0.5)).to.be.closeTo(1, 0.01);
+						expect(Tone.Transport.nextSubdivision(2)).to.be.closeTo(2, 0.01);
+						expect(Tone.Transport.nextSubdivision("8n")).to.be.closeTo(0.75, 0.01);
+						done();
+					});
+				}, 0.7);
 			});
 
-			it("returns the time of the next subdivision when the transport is started", function(done){
-				var now = Tone.Transport.now() + 0.1;
-				Tone.Transport.start(now);
-				setTimeout(function(){
-					// console.log((now + 0.5) - Tone.Transport.quantize(undefined, 0.5));
-					expect(Tone.Transport.quantize(undefined, 0.5)).to.be.closeTo(now + 0.5, 0.01);
-					expect(Tone.Transport.quantize("+1.1", 0.5)).to.be.closeTo(now + 1.5, 0.01);
-					expect(Tone.Transport.quantize("+0.4", 1)).to.be.closeTo(now + 1, 0.01);
-					expect(Tone.Transport.quantize("+1.1", 1)).to.be.closeTo(now + 2, 0.01);
-					done();
-				}, 200);
-			});
 		});
 
 		context("PPQ", function(){
@@ -116,8 +108,23 @@ define(["Test", "Tone/core/Transport", "Tone/core/Tone"], function (Test, Transp
 			afterEach(resetTransport);
 
 			it("can get and set pulses per quarter", function(){
+				var origPPQ = Tone.Transport.PPQ;
 				Tone.Transport.PPQ = 96;
 				expect(Tone.Transport.PPQ).to.equal(96);
+				Tone.Transport.PPQ = origPPQ;
+			});
+
+			it("schedules a quarter note at the same time with a different PPQ", function(done){
+				var origPPQ = Tone.Transport.PPQ;
+				Tone.Transport.PPQ = 1;
+				var start = Tone.now();
+				var id = Tone.Transport.schedule(function(time){
+					expect(time - start).to.be.closeTo(Tone.Transport.toSeconds("4n"), 0.1);
+					Tone.Transport.cancel(id);
+					Tone.Transport.PPQ = origPPQ;
+					done();
+				}, "4n");
+				Tone.Transport.start();
 			});
 
 		});
@@ -127,27 +134,31 @@ define(["Test", "Tone/core/Transport", "Tone/core/Tone"], function (Test, Transp
 			afterEach(resetTransport);
 
 			it("can jump to a specific tick number", function(done){
-				Tone.Transport.ticks = 200;
-				expect(Tone.Transport.ticks).to.equal(200);
-				Tone.Transport.start();
-				setTimeout(function(){
-					expect(Tone.Transport.ticks).to.at.least(200);
-					Tone.Transport.stop();
-					done();
-				}, 100);
+				Offline(function(dest, test, after){
+					Tone.Transport.ticks = 200;
+					expect(Tone.Transport.ticks).to.equal(200);
+					Tone.Transport.start();
+					after(function(){
+						expect(Tone.Transport.ticks).to.at.least(200);
+						Tone.Transport.stop();
+						done();
+					});
+				}, 0.1);
 			});
 
-			it("can get the current position in TransportTime", function(done){
-				expect(Tone.Transport.position).to.equal("0:0:0");
-				Tone.Transport.start();
-				setTimeout(function(){
-					expect(Tone.Transport.position).to.not.equal("0:0:0");
-					Tone.Transport.stop();
-					done();
-				}, 100);
+			it("can get the current position in BarsBeatsSixteenths", function(done){
+				Offline(function(dest, test, after){
+					expect(Tone.Transport.position).to.equal("0:0:0");
+					Tone.Transport.start();
+					after(function(){
+						expect(Tone.Transport.position).to.not.equal("0:0:0");
+						Tone.Transport.stop();
+						done();
+					});
+				}, 0.1);
 			});
 
-			it("can set the current position in TransportTime", function(){
+			it("can set the current position in BarsBeatsSixteenths", function(){
 				expect(Tone.Transport.position).to.equal("0:0:0");
 				Tone.Transport.position = "3:0";
 				expect(Tone.Transport.position).to.equal("3:0:0");
@@ -173,17 +184,23 @@ define(["Test", "Tone/core/Transport", "Tone/core/Tone"], function (Test, Transp
 			afterEach(resetTransport);
 
 			it("can start, pause, and stop", function(done){
-				Tone.Transport.start().pause("+0.2").stop("+0.4");
-				setTimeout(function(){
-					expect(Tone.Transport.state).to.equal("started");
-				}, 100);
-				setTimeout(function(){
-					expect(Tone.Transport.state).to.equal("paused");
-				}, 300);
-				setTimeout(function(){
-					expect(Tone.Transport.state).to.equal("stopped");
-					done();
-				}, 500);
+				Offline(function(dest, test, after){
+					Tone.Transport.start(0).pause(0.2).stop(0.4);
+
+					test(function(sample, time){
+						if (time < 0.2){
+							expect(Tone.Transport.state).to.equal("started");
+						} else if (time < 0.4){
+							expect(Tone.Transport.state).to.equal("paused");
+						} else {
+							expect(Tone.Transport.state).to.equal("stopped");
+						}
+					});
+					after(function(){
+						expect(Tone.Transport.state).to.equal("stopped");
+						done();
+					});
+				}, 0.5);
 			});
 
 		});
@@ -194,47 +211,70 @@ define(["Test", "Tone/core/Transport", "Tone/core/Tone"], function (Test, Transp
 			afterEach(resetTransport);
 
 			it("resets ticks on stop but not on pause", function(done){
-				Tone.Transport.start();
-				setTimeout(function(){
-					expect(Tone.Transport.ticks).to.be.greaterThan(0);
-					Tone.Transport.pause();
-					setTimeout(function(){
-						expect(Tone.Transport.ticks).to.be.greaterThan(0);
-						Tone.Transport.stop();
-						setTimeout(function(){
-							expect(Tone.Transport.ticks).to.equal(0);
-							done();
-						}, 100);
-					}, 100);
-				}, 100);
+				Offline(function(dest, test, after){
+					Tone.Transport.start().pause(0.1).stop(0.2);
+
+					var pausedTicks = 0;
+
+					test(function(sample, time){
+						if (time <= 0.1){
+							expect(Tone.Transport.ticks).to.be.greaterThan(0);	
+							pausedTicks = Tone.Transport.ticks;
+						} else if (time <= 0.19){
+							expect(Tone.Transport.ticks).to.equal(pausedTicks);	
+						} else if (time > 0.21){
+							expect(Tone.Transport.ticks).to.equal(0);	
+						}
+					});
+
+					after(done);
+				}, 0.5);
 			});
 
 			it("tracks ticks after start", function(done){
-				Tone.Transport.bpm.value = 120;
-				Tone.Transport.PPQ = 48;
-				Tone.Transport.start();
-				setTimeout(function(){
-					expect(Tone.Transport.ticks).to.at.least(48);
-					done();
-				}, 600);
+
+				Offline(function(dest, test, after){
+					Tone.Transport.bpm.value = 120;
+					Tone.Transport.start();
+
+					after(function(){
+						expect(Tone.Transport.ticks).to.at.least(192);
+						done();
+					});
+				}, 0.6);
 			});
 
 			it("can start with a tick offset", function(done){
-				Tone.Transport.start(undefined, 200 + "i");
-				setTimeout(function(){
-					expect(Tone.Transport.ticks).to.at.least(200);
-					done();
-				}, 100);
+				Offline(function(dest, test, after){
+					Tone.Transport.start(0, "200i");
+
+					test(function(sample, time){
+						if (time > 0){
+							expect(Tone.Transport.ticks).to.at.least(200);
+						}
+					});
+
+					after(function(){
+						expect(Tone.Transport.ticks).to.at.least(200);
+						done();
+					});
+				}, 0.1);
 			});
 
 			it("tracks ticks correctly with a different PPQ and BPM", function(done){
-				Tone.Transport.PPQ = 96;
-				Tone.Transport.bpm.value = 60;
-				Tone.Transport.start();
-				setTimeout(function(){
-					expect(Tone.Transport.ticks).to.at.least(48);
-					done();
-				}, 600);
+
+				Offline(function(dest, test, after){
+					var origPPQ = Tone.Transport.PPQ;
+					Tone.Transport.PPQ = 96;
+					Tone.Transport.bpm.value = 90;
+					Tone.Transport.start();
+
+					after(function(){
+						expect(Tone.Transport.ticks).to.at.least(72);
+						Tone.Transport.PPQ = origPPQ;
+						done();
+					});
+				}, 0.6);
 			});
 
 		});	
@@ -242,11 +282,12 @@ define(["Test", "Tone/core/Transport", "Tone/core/Tone"], function (Test, Transp
 		context("schedule", function(){	
 
 			afterEach(resetTransport);
-
+			
 			it ("can schedule an event on the timeline", function(){
 				var eventID = Tone.Transport.schedule(function(){}, 0);
 				expect(eventID).to.be.a.number;
 			});
+
 
 			it ("scheduled event gets invoked with the time of the event", function(done){
 				var startTime = Tone.Transport.now() + 0.1;
@@ -254,6 +295,16 @@ define(["Test", "Tone/core/Transport", "Tone/core/Tone"], function (Test, Transp
 					expect(time).to.equal(startTime);
 					done();
 				}, 0);
+				Tone.Transport.start(startTime);
+			});
+
+			it ("can schedule events with TransportTime", function(done){
+				var startTime = Tone.Transport.now() + 0.1;
+				var eighth = Tone.Transport.toSeconds("8n");
+				Tone.Transport.schedule(function(time){
+					expect(time).to.be.closeTo(startTime + eighth, 0.01);
+					done();
+				}, TransportTime("8n"));
 				Tone.Transport.start(startTime);
 			});
 
@@ -310,15 +361,20 @@ define(["Test", "Tone/core/Transport", "Tone/core/Tone"], function (Test, Transp
 			});
 
 			it ("invokes the event again if the timeline is restarted", function(done){
-				var iterations = 0;
-				Tone.Transport.schedule(function(){
-					iterations++;
-				}, 0.05);
-				Tone.Transport.start().stop("+0.1").start("+0.2");
-				setTimeout(function(){
-					expect(iterations).to.be.equal(2);
-					done();
-				}, 1000);
+				Offline(function(dest, test, after){
+					var iterations = 0;
+
+					Tone.Transport.schedule(function(){
+						iterations++;
+					}, 0.05);
+
+					Tone.Transport.start(0).stop(0.1).start(0.2);
+
+					after(function(){
+						expect(iterations).to.be.equal(2);
+						done();
+					});
+				}, 0.3);
 			});
 
 		});
@@ -342,6 +398,16 @@ define(["Test", "Tone/core/Transport", "Tone/core/Tone"], function (Test, Transp
 				Tone.Transport.start(startTime);
 			});
 
+			it ("can schedule events with TransportTime", function(done){
+				var startTime = Tone.Transport.now() + 0.1;
+				var eighth = Tone.Transport.toSeconds("8n");
+				Tone.Transport.scheduleRepeat(function(time){
+					expect(time).to.be.closeTo(startTime + eighth, 0.01);
+					done();
+				}, "1n", TransportTime("8n"));
+				Tone.Transport.start(startTime);
+			});
+
 			it ("can clear a scheduled event", function(done){
 				var eventID = Tone.Transport.scheduleRepeat(function(){
 					throw new Error("should not call this function");
@@ -362,30 +428,40 @@ define(["Test", "Tone/core/Transport", "Tone/core/Tone"], function (Test, Transp
 			});
 
 			it ("repeats a repeat event", function(done){
-				var invocations = 0;
-				Tone.Transport.scheduleRepeat(function(){
-					invocations++;
-				}, 0.1, 0);
-				Tone.Transport.start();
-				setTimeout(function(){
-					expect(invocations).to.be.above(9);
-					done();
-				}, 1100);
+				Offline(function(output, test, after){
+					var invocations = 0;
+
+					Tone.Transport.scheduleRepeat(function(){
+						invocations++;
+					}, 0.1, 0);
+
+					Tone.Transport.start();
+
+					after(function(){
+						expect(invocations).to.be.above(9);
+						done();
+					});
+				}, 1);
 			});
 
 			it ("repeats at the repeat interval", function(done){
-				var repeatTime = -1;
-				var eventID = Tone.Transport.scheduleRepeat(function(time){
-					if (repeatTime !== -1){
-						expect(time - repeatTime).to.be.closeTo(0.1, 0.01);
-					}
-					repeatTime = time;
-				}, 0.1, 0);
-				Tone.Transport.start();
-				setTimeout(function(){
-					Tone.Transport.clear(eventID);
-					done();
-				}, 1000);
+				Offline(function(output, test, after){
+					var repeatTime = -1;
+
+					var eventID = Tone.Transport.scheduleRepeat(function(time){
+						if (repeatTime !== -1){
+							expect(time - repeatTime).to.be.closeTo(0.1, 0.01);
+						}
+						repeatTime = time;
+					}, 0.1, 0);
+
+					Tone.Transport.start();
+
+					after(function(){
+						Tone.Transport.clear(eventID);
+						done();
+					});
+				});
 			});
 
 			it ("can schedule multiple events and invoke them in the right order", function(done){
@@ -409,16 +485,23 @@ define(["Test", "Tone/core/Transport", "Tone/core/Tone"], function (Test, Transp
 			});
 
 			it ("repeats for the given duration", function(done){
-				var repeatCount = 0;
-				var eventID = Tone.Transport.scheduleRepeat(function(){
-					repeatCount++;
-				}, 0.1, 0, 0.5);
-				Tone.Transport.start();
-				setTimeout(function(){
-					expect(repeatCount).to.equal(5);
-					Tone.Transport.clear(eventID);
-					done();
-				}, 700);
+				Offline(function(output, test, after){
+
+					var repeatCount = 0;
+
+					var eventID = Tone.Transport.scheduleRepeat(function(){
+						repeatCount++;
+					}, 0.1, 0, 0.5);
+
+					Tone.Transport.start();
+
+					after(function(){
+						expect(repeatCount).to.at.least(5);
+						Tone.Transport.clear(eventID);
+						done();
+					});
+
+				}, 0.6);
 			});
 
 		});
@@ -439,6 +522,16 @@ define(["Test", "Tone/core/Transport", "Tone/core/Tone"], function (Test, Transp
 					expect(time).to.equal(startTime);
 					done();
 				}, 0);
+				Tone.Transport.start(startTime);
+			});
+
+			it ("can schedule events with TransportTime", function(done){
+				var startTime = Tone.Transport.now() + 0.1;
+				var eighth = Tone.Transport.toSeconds("8n");
+				Tone.Transport.scheduleOnce(function(time){
+					expect(time).to.be.closeTo(startTime + eighth, 0.01);
+					done();
+				}, TransportTime("8n"));
 				Tone.Transport.start(startTime);
 			});
 
@@ -480,115 +573,108 @@ define(["Test", "Tone/core/Transport", "Tone/core/Tone"], function (Test, Transp
 
 			it("invokes start/stop/pause events", function(){
 				var count = 0;
-				Transport.on("start stop pause", function(){
+				Tone.Transport.on("start stop pause", function(){
 					count++;
 				});
-				Transport.start().pause("+0.1").stop("+0.2");
+				Tone.Transport.start().pause("+0.1").stop("+0.2");
 				expect(count).to.equal(3);
 			});
 
 			it("passes in the time argument to the events", function(){
-				Transport.on("start", function(time){
+				Tone.Transport.on("start", function(time){
 					expect(time).to.equal(3);
 				});
-				Transport.on("stop", function(time){
+				Tone.Transport.on("stop", function(time){
 					expect(time).to.equal(4);
 				});
-				Transport.start(3).stop(4);
+				Tone.Transport.start(3).stop(4);
 			});
 
 			it("invokes the 'loop' method on loop", function(done){
-				var sixteenth = Transport.toSeconds("16n");
-				Transport.setLoopPoints(0, sixteenth);
-				Transport.loop = true;
-				var lastLoop = -1;
-				var loops = 0;
-				Transport.on("loop", function(time){
-					loops++;
-					if (lastLoop !== -1){
-						expect(time - lastLoop).to.be.closeTo(sixteenth, 0.001);
-					}
-					lastLoop = time;
-				});
-				Transport.start().stop("+ 16n * 5.1");
-				setTimeout(function(){
-					expect(loops).to.equal(5);
-					done();
-				}, 700);
+
+				Offline(function(output, test, after){
+
+					var sixteenth = Tone.Transport.toSeconds("16n");
+
+					Tone.Transport.setLoopPoints(0, sixteenth);
+					Tone.Transport.loop = true;
+
+					var lastLoop = -1;
+					var loops = 0;
+
+					Tone.Transport.on("loop", function(time){
+						loops++;
+						if (lastLoop !== -1){
+							expect(time - lastLoop).to.be.closeTo(sixteenth, 0.001);
+						}
+						lastLoop = time;
+					});
+
+					Tone.Transport.start(0).stop(sixteenth * 5.1);
+
+					after(function(){
+						expect(loops).to.equal(5);
+						done();
+					});
+
+				}, 0.7);
 			});
 		});
 
-		context("deprecated methods", function(){
+		context("swing", function(){
 
 			afterEach(resetTransport);
 
-			it("can schedule an event using setTimeline", function(done){
-				var startTime = Transport.toSeconds("+0.1");
-				Transport.setTimeline(function(time){
-					expect(time).to.equal(startTime);
-				}, 0);
-				Transport.start(startTime);
-				setTimeout(function(){
-					done();
-				}, 100);
+			it("can get/set the swing subdivision", function(){
+				Tone.Transport.swingSubdivision = "8n";
+				expect(Tone.Transport.swingSubdivision).to.equal("8n");
+				Tone.Transport.swingSubdivision = "4n";
+				expect(Tone.Transport.swingSubdivision).to.equal("4n");
 			});
 
-			it("can cancel an event using clearTimeline", function(done){
-				var id = Transport.setTimeline(function(){
-					throw new Error("this event should be canceled");
-				}, 0);
-				Transport.clearTimeline(id);
-				Transport.start();
-				setTimeout(function(){
-					done();
-				}, 100);
+			it("can get/set the swing amount", function(){
+				Tone.Transport.swing = 0.5;
+				expect(Tone.Transport.swing).to.equal(0.5);
+				Tone.Transport.swing = 0;
+				expect(Tone.Transport.swing).to.equal(0);
 			});
 
-			it("can schedule a repeated event using setInterval", function(done){
-				var count = 0;
-				Transport.setInterval(function(){
-					count++;
-				}, 0.1);
-				Transport.start().stop("+0.31");
-				setTimeout(function(){
-					expect(count).to.equal(3);
-					done();
-				}, 500);
-			});
+			it("can swing", function(done){
+				Offline(function(output, test, after){
 
-			it("can cancel an event using clearInterval", function(done){
-				var id = Transport.setInterval(function(){
-					throw new Error("this event should be canceled");
-				}, 0.01);
-				Transport.clearTimeline(id);
-				Transport.start();
-				setTimeout(function(){
-					done();
-				}, 100);
-			});
+					Tone.Transport.swing = 1;
+					Tone.Transport.swingSubdivision = "8n";
+					var eightNote = Tone.Transport.toSeconds("8n");
 
-			it("can schedule an event using setTimeout", function(done){
-				var startTime = Transport.toSeconds("+0.1");
-				Transport.setTimeout(function(time){
-					expect(time).to.equal(startTime);
-				}, 0);
-				Transport.start(startTime);
-				setTimeout(function(){
-					done();
-				}, 100);
-			});
+					//downbeat, no swing
+					Tone.Transport.schedule(function(time){
+						expect(time).is.closeTo(0, 0.001);
+					}, 0);
 
-			it("can cancel an event using clearTimeout", function(done){
-				var id = Transport.setTimeout(function(){
-					throw new Error("this event should be canceled");
-				}, 0);
-				Transport.clearTimeout(id);
-				Transport.start();
-				setTimeout(function(){
-					done();
-				}, 100);
-			});
+					//eighth note has swing
+					Tone.Transport.schedule(function(time){
+						expect(time).is.closeTo(eightNote * 5/3, 0.001);
+					}, "8n");
 
+					//sixteenth note is also swung
+					Tone.Transport.schedule(function(time){
+						expect(time).is.closeTo(eightNote, 0.05);
+					}, "16n");
+
+					//no swing on the quarter
+					Tone.Transport.schedule(function(time){
+						expect(time).is.closeTo(eightNote * 2, 0.001);
+					}, "4n");
+
+					Tone.Transport.start(0).stop(0.7);
+
+					after(function(){
+						Tone.Transport.swing = 0;
+						done();
+					});
+
+				}, 0.7);
+			});
 		});
 
 	});

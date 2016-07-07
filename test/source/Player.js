@@ -1,6 +1,10 @@
 define(["helper/Basic", "Tone/source/Player", "helper/Offline", "helper/SourceTests", "Tone/core/Buffer", "helper/Meter"], 
 	function (BasicTests, Player, Offline, SourceTests, Buffer, Meter) {
 
+	if (window.__karma__){
+		Buffer.baseUrl = "/base/test/";
+	}
+
 	describe("Player", function(){
 
 		var buffer = new Buffer();
@@ -101,6 +105,12 @@ define(["helper/Basic", "Tone/source/Player", "helper/Offline", "helper/SourceTe
 
 		context("Looping", function(){
 
+			beforeEach(function(done){
+				buffer.load("./audio/short_sine.wav", function(){
+					done();
+				});
+			});
+
 			it("can be set to loop", function(){
 				var player = new Player();
 				player.loop = true;
@@ -183,11 +193,13 @@ define(["helper/Basic", "Tone/source/Player", "helper/Offline", "helper/SourceTe
 
 		context("Start Scheduling", function(){
 
+			this.timeout(3000);
+
 			it("can be start with an offset", function(done){
 				var player;
 				var offline = new Offline(0.4, 1);
 				var audioBuffer = buffer.get().getChannelData(0);
-				var testSample = audioBuffer[buffer.secondsToSamples(0.1)];
+				var testSample = audioBuffer[Math.floor(0.1 * buffer.context.sampleRate)];
 				offline.before(function(dest){
 					player = new Player(buffer.get());
 					player.connect(dest);
@@ -248,12 +260,9 @@ define(["helper/Basic", "Tone/source/Player", "helper/Offline", "helper/SourceTe
 			});
 
 			it("reports itself as stopped after a single iterations of the buffer", function(done){
-				var player = new Player("./audio/kick.mp3", function(){
+				var player = new Player("./audio/short_sine.wav", function(){
 					var duration = player.buffer.duration;
 					player.start();
-					setTimeout(function(){
-						expect(player.state).to.equal("started");
-					}, 100);
 					setTimeout(function(){
 						expect(player.state).to.equal("stopped");
 						done();

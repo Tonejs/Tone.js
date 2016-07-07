@@ -1,5 +1,6 @@
-define(["helper/Basic", "Tone/event/Sequence", "Tone/core/Tone", "Tone/core/Transport", "Tone/event/Event"], 
-	function (Basic, Sequence, Tone, Transport, Event) {
+define(["helper/Basic", "Tone/event/Sequence", "Tone/core/Tone", 
+	"Tone/core/Transport", "Tone/event/Event", "helper/Offline2"], 
+	function (Basic, Sequence, Tone, Transport, Event, Offline) {
 
 	describe("Sequence", function(){
 
@@ -10,7 +11,6 @@ define(["helper/Basic", "Tone/event/Sequence", "Tone/core/Tone", "Tone/core/Tran
 			Tone.Transport.off("start stop pause loop");
 			Tone.Transport.stop();
 			Tone.Transport.loop = false;
-			Tone.Transport.PPQ = 48;
 			Tone.Transport.bpm.value = 120;
 			Tone.Transport.timeSignature = [4, 4];
 			setTimeout(done, 200);
@@ -165,7 +165,7 @@ define(["helper/Basic", "Tone/event/Sequence", "Tone/core/Tone", "Tone/core/Tran
 			});
 
 			it ("passes in the scheduled time to the callback", function(done){
-				var now = Tone.Transport.now();
+				var now = Tone.Transport.now() + 0.1;
 				var seq = new Sequence(function(time){
 					expect(time).to.be.a.number;
 					expect(time - now).to.be.closeTo(0.3, 0.01);
@@ -173,7 +173,7 @@ define(["helper/Basic", "Tone/event/Sequence", "Tone/core/Tone", "Tone/core/Tran
 					done();
 				}, [0.5]);
 				seq.start(0.3);
-				Tone.Transport.start();
+				Tone.Transport.start(now);
 			});
 
 			it ("passes in the value to the callback", function(done){
@@ -187,64 +187,88 @@ define(["helper/Basic", "Tone/event/Sequence", "Tone/core/Tone", "Tone/core/Tran
 			});
 
 			it ("invokes the scheduled events in the right order", function(done){
-				var count = 0;
-				var seq = new Sequence(function(time, value){
-					expect(value).to.equal(count);
-					count++;
-					if (value === 4){
+				Offline(function(dest, test, after){
+
+					var count = 0;
+					var seq = new Sequence(function(time, value){
+						expect(value).to.equal(count);
+						count++;
+					}, [0, [1, 2], [3, 4]], "16n").start();
+
+					seq.loop = false;
+					Tone.Transport.start();
+
+					after(function(){
 						seq.dispose();
 						done();
-					}
-				}, [0, [1, 2], [3, 4]], "16n").start();
-				Tone.Transport.start();
+					});
+				}, 0.5);
 			});
 
 			it ("invokes the scheduled events at the correct times", function(done){
-				var count = 0;
-				var now = Tone.Transport.now() + 0.1;
-				var eighth = Tone.Transport.toSeconds("8n");
-				var times = [now, now + eighth, now + eighth * 1.5, now + eighth * 2, now + eighth*(2 + 1/3), now + eighth*(2 + 2/3)];
-				var seq = new Sequence(function(time, value){
-					expect(time).to.be.closeTo(times[count], 0.01);
-					count++;
-					if (value === 5){
+
+				Offline(function(dest, test, after){
+
+					var count = 0;
+					var eighth = Tone.Transport.toSeconds("8n");
+					var times = [0, eighth, eighth * 1.5, eighth * 2, eighth*(2 + 1/3), eighth*(2 + 2/3)];
+
+					var seq = new Sequence(function(time){
+						expect(time).to.be.closeTo(times[count], 0.01);
+						count++;
+					}, [0, [1, 2], [3, 4, 5]], "8n").start(0);
+
+					seq.loop = false;
+					Tone.Transport.start();
+
+					after(function(){
 						seq.dispose();
 						done();
-					}
-				}, [0, [1, 2], [3, 4, 5]], "8n").start(0);
-				Tone.Transport.start(now);
+					});
+				}, 0.8);
 			});
 
 			it ("can schedule rests using 'null'", function(done){
-				var count = 0;
-				var now = Tone.Transport.now() + 0.1;
-				var eighth = Tone.Transport.toSeconds("8n");
-				var times = [now, now + eighth * 2.5];
-				var seq = new Sequence(function(time, value){
-					expect(time).to.be.closeTo(times[count], 0.01);
-					count++;
-					if (value === 1){
+
+				Offline(function(dest, test, after){
+
+					var count = 0;
+					var eighth = Tone.Transport.toSeconds("8n");
+					var times = [0, eighth * 2.5];
+					var seq = new Sequence(function(time, value){
+						expect(time).to.be.closeTo(times[count], 0.01);
+						count++;
+					}, [0, null, [null, 1]], "8n").start(0);
+
+					seq.loop = false;
+					Tone.Transport.start();
+					
+					after(function(){
 						seq.dispose();
 						done();
-					}
-				}, [0, null, [null, 1]], "8n").start(0);
-				Tone.Transport.start(now);
+					});
+				}, 0.8);
 			});
 
 			it ("can schedule triple nested arrays", function(done){
-				var count = 0;
-				var now = Tone.Transport.now() + 0.1;
-				var eighth = Tone.Transport.toSeconds("8n");
-				var times = [now, now + eighth, now + eighth * 1.5, now + eighth * 1.75];
-				var seq = new Sequence(function(time, value){
-					expect(time).to.be.closeTo(times[count], 0.01);
-					count++;
-					if (value === 3){
+				Offline(function(output, test, after){
+
+					var count = 0;
+					var eighth = Tone.Transport.toSeconds("8n");
+					var times = [0,eighth, eighth * 1.5, eighth * 1.75];
+					var seq = new Sequence(function(time){
+						expect(time).to.be.closeTo(times[count], 0.01);
+						count++;
+					}, [0, [1, [2, 3]]], "8n").start(0);
+					seq.loop = false;
+
+					Tone.Transport.start(0);
+					
+					after(function(){
 						seq.dispose();
 						done();
-					}
-				}, [0, [1, [2, 3]]], "8n").start(0);
-				Tone.Transport.start(now);
+					});
+				}, 0.7);
 			});
 
 			it ("starts an event added after the seq was started", function(done){
@@ -287,44 +311,52 @@ define(["helper/Basic", "Tone/event/Sequence", "Tone/core/Tone", "Tone/core/Tran
 			});
 
 			it ("can loop between loopStart and loopEnd", function(done){
-				var seq = new Sequence({
-					"loopEnd" : "4n",
-					"loopStart" : "8n",
-					"callback" : function(time, value){
-						expect(value).to.be.at.least(1);
-						expect(value).to.be.at.most(3);
-					},
-					"subdivision" : "8n",
-					"events" : [0, [1, 2, 3], [4, 5]]
-				}).start(0);
-				Tone.Transport.start();
-				setTimeout(function(){
-					seq.dispose();
-					done();
-				}, 700);
+				Offline(function(output, test, after){
+
+					var seq = new Sequence({
+						"loopEnd" : "4n",
+						"loopStart" : "8n",
+						"callback" : function(time, value){
+							expect(value).to.be.at.least(1);
+							expect(value).to.be.at.most(3);
+						},
+						"subdivision" : "8n",
+						"events" : [0, [1, 2, 3], [4, 5]]
+					}).start(0);
+					Tone.Transport.start();
+					after(function(){
+						seq.dispose();
+						done();
+					});
+				}, 0.7);
 			});
 
 			it ("can set the loop points after starting", function(done){
-				var switched = false;
-				var seq = new Sequence({
-					"callback" : function(time, value){
-						if (value === 4){
-							seq.loopStart = "8n";
-							switched = true;
-						}
-						if (switched){
-							expect(value).to.be.at.least(4);
-							expect(value).to.be.at.most(5);
-						}
-					},
-					"subdivision" : "16n",
-					"events" : [0, [1, 2, 3], [4, 5]]
-				}).start(0);
-				Tone.Transport.start();
-				setTimeout(function(){
-					seq.dispose();
-					done();
-				}, 700);
+				Offline(function(output, test, after){
+
+					var switched = false;
+					var seq = new Sequence({
+						"callback" : function(time, value){
+							if (value === 4){
+								seq.loopStart = "8n";
+								switched = true;
+							}
+							if (switched){
+								expect(value).to.be.at.least(4);
+								expect(value).to.be.at.most(5);
+							}
+						},
+						"subdivision" : "16n",
+						"events" : [0, [1, 2, 3], [4, 5]]
+					}).start(0);
+
+					Tone.Transport.start();
+
+					after(function(){
+						seq.dispose();
+						done();
+					});
+				}, 0.7);
 			});
 
 		});
@@ -335,68 +367,83 @@ define(["helper/Basic", "Tone/event/Sequence", "Tone/core/Tone", "Tone/core/Tran
 			afterEach(resetTransport);
 
 			it ("can adjust the playbackRate", function(done){
-				var lastCall;
-				var seq = new Sequence({
-					"playbackRate" : 2,
-					"subdivision" : "4n",
-					"events" : [0, 1],
-					"callback" : function(time){
-						if (lastCall){
-							expect(time - lastCall).to.be.closeTo(0.25, 0.01);
-						}
-						lastCall = time;
-					}
-				}).start(0);
-				Tone.Transport.start();
 
-				setTimeout(function(){
-					seq.dispose();	
-					done();
-				}, 700);
+				Offline(function(output, test, after){
+
+					var lastCall;
+					var seq = new Sequence({
+						"playbackRate" : 2,
+						"subdivision" : "4n",
+						"events" : [0, 1],
+						"callback" : function(time){
+							if (lastCall){
+								expect(time - lastCall).to.be.closeTo(0.25, 0.01);
+							}
+							lastCall = time;
+						}
+					}).start(0);
+
+					Tone.Transport.start();
+
+					after(function(){
+						seq.dispose();	
+						done();
+					});
+
+				}, 0.7);
 			});
 
 			it ("adjusts speed of subsequences", function(done){
-				var lastCall;
-				var seq = new Sequence({
-					"playbackRate" : 0.5,
-					"subdivision" : "8n",
-					"events" : [[0, 1], [2, 3]],
-					"callback" : function(time){
-						if (lastCall){
-							expect(time - lastCall).to.be.closeTo(0.25, 0.01);
-						}
-						lastCall = time;
-					}
-				}).start(0);
-				Tone.Transport.start();
+				Offline(function(output, test, after){
 
-				setTimeout(function(){
-					seq.dispose();	
-					done();
-				}, 700);
+					var lastCall;
+					var seq = new Sequence({
+						"playbackRate" : 0.5,
+						"subdivision" : "8n",
+						"events" : [[0, 1], [2, 3]],
+						"callback" : function(time){
+							if (lastCall){
+								expect(time - lastCall).to.be.closeTo(0.25, 0.01);
+							}
+							lastCall = time;
+						}
+					}).start(0);
+					Tone.Transport.start();
+
+					after(function(){
+						seq.dispose();	
+						done();
+					});
+
+				}, 0.7);
 			});
 			
 			it ("can adjust the playbackRate after starting", function(done){
-				var lastCall;
-				var seq = new Sequence({
-					"playbackRate" : 1,
-					"subdivision" : "8n",
-					"events" : [0, 1],
-					"callback" : function(time){
-						if (lastCall){
-							expect(time - lastCall).to.be.closeTo(0.5, 0.01);
-						} else {
-							seq.playbackRate = 0.5;
-						}
-						lastCall = time;
-					}
-				}).start(0);
-				Tone.Transport.start();
 
-				setTimeout(function(){
-					seq.dispose();	
-					done();
-				}, 800);
+				Offline(function(output, test, after){
+
+					var lastCall;
+					var seq = new Sequence({
+						"playbackRate" : 1,
+						"subdivision" : "8n",
+						"events" : [0, 1],
+						"callback" : function(time){
+							if (lastCall){
+								expect(time - lastCall).to.be.closeTo(0.5, 0.01);
+							} else {
+								seq.playbackRate = 0.5;
+							}
+							lastCall = time;
+						}
+					}).start(0);
+					Tone.Transport.start();
+
+					after(function(){
+						seq.dispose();	
+						done();
+					});
+					
+				}, 0.8);
 			});
 
 		});

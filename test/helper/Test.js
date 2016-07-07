@@ -1,6 +1,6 @@
-/* global mocha, chai*/
+/* global mocha*/
 
-define(["Tone/core/Tone"], function (Tone) {
+define(["Tone/core/Tone", "deps/chai"], function (Tone, chai) {
 
 	//add a chai test
 	chai.Assertion.addMethod("percentageFrom", function(val, percent){
@@ -9,7 +9,11 @@ define(["Tone/core/Tone"], function (Tone) {
 
 	//testing setup
 	window.expect = chai.expect;
-	mocha.setup("bdd");
+	mocha.setup({
+		ui: "bdd",
+		// make this very long cause sometimes the travis CI server is slow
+		timeout : 5000
+	});
 
 
 
@@ -33,7 +37,8 @@ define(["Tone/core/Tone"], function (Tone) {
 				typeof member !== "boolean" &&
 				typeof member !== "undefined" &&
 				prop !== "preset" && 
-				!(member instanceof AudioContext)){
+				!(member instanceof AudioContext) && 
+				!obj.constructor.prototype[prop]){
 				if (member !== null){
 					throw Error("property was not completely disposed: "+prop);
 				}

@@ -46,7 +46,7 @@ function(Tone){
 		 *  @type {Tone.Multiply}
 		 *  @private
 		 */
-		this._scale = new Tone.Multiply(1.01);
+		this._scale = new Tone.Multiply(2);
 
 		/**
 		 *  The frequency control.

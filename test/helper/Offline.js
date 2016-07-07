@@ -1,7 +1,8 @@
-define(["Tone/core/Tone"], function (Tone) {
+define(["Tone/core/Tone", "Tone/core/Clock"], function (Tone, Clock) {
 
 	//hold onto the current context
 	var onlineContext = Tone.context;
+
 
 	/**
 	 *  OFFLINE TESTING
@@ -13,10 +14,25 @@ define(["Tone/core/Tone"], function (Tone) {
 		this._before = Tone.noOp;
 		this._after = Tone.noOp;
 		this._test = Tone.noOp;
+
+		this._currentTime = 0;
 		channels = channels || 1;
 		duration = Math.floor(duration * sampleRate);
 		//offline rendering context
 		this.context = new OfflineAudioContext(channels, duration, sampleRate);
+
+		var oldNowFunc = Tone.prototype.now;
+
+		Tone.prototype.now = function(){
+			return this._currentTime;
+		}.bind(this);
+
+		Tone.now = function(){
+			return this._currentTime;
+		}.bind(this);
+
+		var event = new Event("message");
+
 		this.context.oncomplete = function(e){
 
 			for (var i = 0; i < duration; i++){
@@ -30,6 +46,12 @@ define(["Tone/core/Tone"], function (Tone) {
 					ret = ret[0];
 				}
 				try {
+					//update the clock periodically
+					// if (i % 10 === 0){
+					// 	Clock._worker.dispatchEvent(event);
+					// } 
+					Clock._worker.dispatchEvent(event);
+					this._currentTime = i / sampleRate;
 					this._test(ret, i / sampleRate);
 				} catch (e){
 					//reset the old context
@@ -38,6 +60,9 @@ define(["Tone/core/Tone"], function (Tone) {
 				}
 			}
 			this._after();
+			//return the old 'now' method
+			Tone.now = oldNowFunc;
+			Tone.prototype.now = oldNowFunc;
 			//reset the old context
 			Tone.setContext(onlineContext);
 		}.bind(this);

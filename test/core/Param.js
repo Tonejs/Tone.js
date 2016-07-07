@@ -1,5 +1,5 @@
-define(["helper/Offline", "helper/Basic", "Test", "Tone/core/Param", "Tone/core/Type", "Tone/signal/Signal"], 
-	function (Offline, Basic, Test, Param, Tone, Signal) {
+define(["helper/Offline", "helper/Basic", "Test", "Tone/core/Param", "Tone/type/Type", "Tone/signal/Signal", "Tone/core/Transport"], 
+	function (Offline, Basic, Test, Param, Tone, Signal, Transport) {
 
 	describe("Param", function(){
 
@@ -10,7 +10,6 @@ define(["helper/Offline", "helper/Basic", "Test", "Tone/core/Param", "Tone/core/
 			it("handles input connections", function(){
 				var gain = Tone.context.createGain();
 				var param = new Param(gain.gain);
-				console.log(param);
 				Test.connect(param);
 				param.dispose();
 			});
@@ -33,6 +32,7 @@ define(["helper/Offline", "helper/Basic", "Test", "Tone/core/Param", "Tone/core/
 				expect(param.value).to.equal(10);
 				param.dispose();
 			});
+
 		});
 
 		context("Units", function(){
@@ -194,6 +194,18 @@ define(["helper/Offline", "helper/Basic", "Test", "Tone/core/Param", "Tone/core/
 				var param = new Param(gain.gain);
 				param.rampTo(0.5, 0.5);
 				param.dispose();
+			});
+
+			it("can schedule and set a value", function(done){
+				var gain = Tone.context.createGain();
+				var param = new Param(gain.gain);
+				param.rampTo(0.1, 10);
+				setTimeout(function(){
+					param.value = 10;
+					expect(param.value).to.equal(10);
+					param.dispose();
+					done();
+				}, 100);
 			});
 		});
 	});

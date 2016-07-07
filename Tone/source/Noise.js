@@ -100,7 +100,7 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 						this._buffer = _brownNoise;
 						break;
 					default : 
-						throw new Error("invalid noise type: "+type)
+						throw new TypeError("Tone.Noise: invalid type: "+type);
 				}
 				//if it's playing, stop and restart it
 				if (this.state === Tone.State.Started){
@@ -143,7 +143,7 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 		this._source.loop = true;
 		this._source.playbackRate.value = this._playbackRate;
 		this._source.connect(this.output);
-		this._source.start(this.toSeconds(time));
+		this._source.start(this.toSeconds(time), Math.random() * (this._buffer.duration - 0.001));
 	};
 
 	/**

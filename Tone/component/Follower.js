@@ -1,5 +1,5 @@
 define(["Tone/core/Tone", "Tone/signal/Abs", "Tone/signal/Subtract", 
-	"Tone/signal/Multiply", "Tone/signal/Signal", "Tone/signal/WaveShaper", "Tone/core/Type"], 
+	"Tone/signal/Multiply", "Tone/signal/Signal", "Tone/signal/WaveShaper", "Tone/type/Type"], 
 function(Tone){
 
 	"use strict";
@@ -108,8 +108,8 @@ function(Tone){
 	 */
 	Tone.Follower.prototype._setAttackRelease = function(attack, release){
 		var minTime = this.blockTime;
-		attack = this.secondsToFrequency(this.toSeconds(attack));
-		release = this.secondsToFrequency(this.toSeconds(release));
+		attack = Tone.Time(attack).toFrequency();
+		release = Tone.Time(release).toFrequency();
 		attack = Math.max(attack, minTime);
 		release = Math.max(release, minTime);
 		this._frequencyValues.setMap(function(val){

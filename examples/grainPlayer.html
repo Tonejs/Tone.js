@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+	<title>GRAINPLAYER</title>
+
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<link rel="icon" type="image/png" sizes="174x174" href="./style/favicon.png">
+	
+	<script type="text/javascript" src="../build/Tone.js"></script>
+	<script type="text/javascript" src="./scripts/jquery.min.js"></script>
+	<script type="text/javascript" src="./scripts/draggabilly.js"></script>
+	<script type="text/javascript" src="./scripts/StartAudioContext.js"></script>
+	<script type="text/javascript" src="./scripts/Interface.js"></script>
+	<script type="text/javascript" src="https://tonejs.github.io/Logo/build/Logo.js"></script>
+
+	<link rel="stylesheet" type="text/css" href="./style/examples.css">
+
+	<script type="text/javascript">
+		// jshint ignore: start
+	</script>
+
+</head>
+<body>
+	<div id="Content">
+		<div id="Title">Granular Synthesis</div>
+		<div id="Explanation">
+			<a href="https://tonejs.github.io/docs/#GrainPlayer">Tone.GrainPlayer</a> uses
+			<a href="https://en.wikipedia.org/wiki/Granular_synthesis">granular synthesis</a>
+			to enable you to adjust pitch and playback rate independently. The grainSize is the 
+			amount of time each small chunk of audio is played for and the overlap is the 
+			amount of crossfading transition time between successive grains.
+		</div>
+		<div id="Sliders"></div>
+	</div>
+	<script type="text/javascript">
+
+		//the player
+		var player = new Tone.GrainPlayer({
+			"url" : "./audio/FWDL.mp3",
+			"loop" : true,
+			"grainSize" : 0.1,
+			"overlap" : 0.05,
+		}).toMaster();
+	</script>
+	
+	<script id="GUI" type="text/javascript">
+		$(function(){
+
+			new Interface.Loader();
+
+			new Interface.Button({
+				text : "Start",
+				activeText : "Stop",
+				type : "toggle",
+				start : function(){
+					player.start();
+				},
+				end : function(){
+					player.stop();
+				}
+			});
+
+			new Interface.Slider({
+				param : "playbackRate",
+				name : "playbackRate",
+				parent : $("#Sliders"),
+				tone : player,
+				min : 0.5,
+				max : 2,
+			});
+
+			new Interface.Slider({
+				param : "detune",
+				name : "detune",
+				parent : $("#Sliders"),
+				tone : player,
+				min : -1200,
+				max : 1200,
+			});
+
+			new Interface.Slider({
+				param : "grainSize",
+				name : "grainSize",
+				parent : $("#Sliders"),
+				tone : player,
+				min : 0.01,
+				max : 0.2,
+			});
+
+			new Interface.Slider({
+				param : "overlap",
+				name : "overlap",
+				parent : $("#Sliders"),
+				tone : player,
+				min : 0,
+				max : 0.2,
+			});
+
+		});
+	</script>
+</body>
+</html>

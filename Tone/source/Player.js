@@ -13,9 +13,8 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 	 *                            Recommended to use Tone.Buffer.onload instead.
 	 *  @example
 	 * var player = new Tone.Player("./path/to/sample.mp3").toMaster();
-	 * Tone.Buffer.onload = function(){
-	 * 	player.start();
-	 * }
+	 * //play as soon as the buffer is loaded
+	 * player.autostart = true;
 	 */
 	Tone.Player = function(url){
 
@@ -149,16 +148,25 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 	};
 
 	/**
-	 *  play the buffer between the desired positions
+	 *  Play the buffer at the given startTime. Optionally add an offset
+	 *  and/or duration which will play the buffer from a position
+	 *  within the buffer for the given duration. 
 	 *  
-	 *  @private
-	 *  @param  {Time} [startTime=now] when the player should start.
-	 *  @param  {Time} [offset=0] the offset from the beginning of the sample
+	 *  @param  {Time} [startTime=now] When the player should start.
+	 *  @param  {Time} [offset=0] The offset from the beginning of the sample
 	 *                                 to start at. 
-	 *  @param  {Time=} duration how long the sample should play. If no duration
+	 *  @param  {Time=} duration How long the sample should play. If no duration
 	 *                                is given, it will default to the full length 
 	 *                                of the sample (minus any offset)
 	 *  @returns {Tone.Player} this
+	 *  @memberOf Tone.Player#
+	 *  @method start
+	 *  @name start
+	 */
+
+	/**
+	 *  Internal start method
+	 *  @private
 	 */
 	Tone.Player.prototype._start = function(startTime, offset, duration){
 		if (this._buffer.loaded){
@@ -196,7 +204,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 				this._source.start(startTime, offset, duration);
 			}
 		} else {
-			throw Error("tried to start Player before the buffer was loaded");
+			throw Error("Tone.Player: tried to start Player before the buffer was loaded");
 		}
 		return this;
 	};

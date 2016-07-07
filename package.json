@@ -1,15 +1,16 @@
 {
   "name": "tone",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "description": "A Web Audio framework for making interactive music in the browser.",
   "main": "build/Tone.js",
   "files": [
     "./README.md",
     "build/Tone.min.js",
-    "build/Tone.js"
+    "build/Tone.js",
+    "Tone"
   ],
   "scripts": {
-    "test": "cd gulp && gulp test"
+    "test": "cd gulp && gulp karma-test"
   },
   "repository": {
     "type": "git",

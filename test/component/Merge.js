@@ -26,47 +26,6 @@ function (Merge, Basic, PassAudio, PassAudioStereo, Test, Offline, Signal) {
 				});
 			});
 
-			it("passes a signal on the left side", function(done){
-				var signal, merger;
-				var offline = new Offline(0.1, 2);
-				offline.before(function(dest){
-					signal = new Signal(1);
-					merger = new Merge();
-					signal.connect(merger.left);
-					merger.connect(dest);
-				});
-				offline.test(function(samples){
-					expect(samples[0]).to.be.closeTo(1, 0.001);
-					expect(samples[1]).to.be.closeTo(0, 0.001);
-				}); 
-				offline.after(function(){
-					signal.dispose();
-					merger.dispose();
-					done();
-				});
-				offline.run();
-			});
-
-			it("passes a signal on the right side", function(done){
-				var signal, merger;
-				var offline = new Offline(0.1, 2);
-				offline.before(function(dest){
-					signal = new Signal(1);
-					merger = new Merge();
-					signal.connect(merger, 0, 1);
-					merger.connect(dest);
-				});
-				offline.test(function(samples){
-					expect(samples[0]).to.be.closeTo(0, 0.001);
-					expect(samples[1]).to.be.closeTo(1, 0.001);
-				}); 
-				offline.after(function(){
-					signal.dispose();
-					merger.dispose();
-					done();
-				});
-				offline.run();
-			});
 
 			it("merge two signal into one stereo signal", function(done){
 				var sigL, sigR, merger;

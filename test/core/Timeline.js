@@ -52,6 +52,7 @@ define(["Test", "Tone/core/Timeline"], function (Test, Timeline) {
 			sched.dispose();
 		});
 
+
 		it ("can remove items from the timeline", function(){
 			var sched = new Timeline();
 			var obj = {"time" : 0};
@@ -64,6 +65,7 @@ define(["Test", "Tone/core/Timeline"], function (Test, Timeline) {
 			expect(sched.length).to.equal(1);
 			sched.dispose();
 		});
+
 
 		it ("can search for events in the timeline by time", function(){
 			var sched = new Timeline();
@@ -80,11 +82,13 @@ define(["Test", "Tone/core/Timeline"], function (Test, Timeline) {
 			expect(sched._search(0.01)).to.equal(0);
 			expect(sched._search(1)).to.equal(1);
 			expect(sched._search(1.01)).to.equal(1);
+			expect(sched._search(2)).to.equal(2);
 			expect(sched._search(20000)).to.equal(2);
 			expect(sched._search(-1)).to.equal(-1);
 			sched.dispose();
 		});
 
+		
 		it ("can get the scheduled event at the given time", function(){
 			var sched = new Timeline();
 			sched.addEvent({
@@ -126,6 +130,7 @@ define(["Test", "Tone/core/Timeline"], function (Test, Timeline) {
 			sched.dispose();
 		});
 
+
 		it ("can the next event after the given time", function(){
 			var sched = new Timeline();
 			expect(sched.getEventAfter(0)).is.null;
@@ -147,6 +152,7 @@ define(["Test", "Tone/core/Timeline"], function (Test, Timeline) {
 			sched.dispose();
 		});
 
+
 		it ("can the event before the event before the given time", function(){
 			var sched = new Timeline();
 			expect(sched.getEventBefore(0)).is.null;
@@ -164,34 +170,44 @@ define(["Test", "Tone/core/Timeline"], function (Test, Timeline) {
 			});
 			expect(sched.getEventBefore(0)).is.null;
 			expect(sched.getEventBefore(1.1).state).is.equal("A");
-			expect(sched.getEventBefore(3).state).is.equal("B");
+			expect(sched.getEventBefore(2.1).state).is.equal("B");
+			expect(sched.getEventBefore(3).state).is.equal("C");
 			sched.dispose();
 		});
+
 
 		it ("can cancel an item", function(){
 			var sched = new Timeline();
 			sched.addEvent({"time" : 3});
-			expect(sched.length).to.equal(1);
+			sched.addEvent({"time" : 5});
+			sched.addEvent({"time" : 4});
+			sched.addEvent({"time" : 8});
+			sched.addEvent({"time" : 5});
+			expect(sched.length).to.equal(5);
 			sched.cancel(10);
-			expect(sched.length).to.equal(1);
+			expect(sched.length).to.equal(5);
+			sched.cancel(5);
+			expect(sched.length).to.equal(2);
 			sched.cancel(3);
 			expect(sched.length).to.equal(0);
 			sched.dispose();
 		});
 
+
 		it ("can cancel items after the given time", function(){
 			var sched = new Timeline();
-			for (var i = 5; i < 100; i++){
-				sched.addEvent({"time" : i});
+			for (var i = 0; i < 100; i++){
+				sched.addEvent({"time" : 100 - i});
 			}
 			sched.cancel(10);
-			expect(sched.length).to.equal(5);
+			expect(sched.length).to.equal(9);
 			sched.cancel(5);
-			expect(sched.length).to.equal(0);
+			expect(sched.length).to.equal(4);
 			sched.cancel(0);
 			expect(sched.length).to.equal(0);
 			sched.dispose();
 		});
+
 
 		it ("can cancel items before the given time", function(){
 			var sched = new Timeline();
@@ -206,6 +222,8 @@ define(["Test", "Tone/core/Timeline"], function (Test, Timeline) {
 			expect(sched.length).to.equal(0);
 			sched.dispose();
 		});
+
+		
 
 		it ("has no problem with many items", function(){
 			var sched = new Timeline();

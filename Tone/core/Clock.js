@@ -49,14 +49,7 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal", "Tone/core/TimelineState
 		 *  @type {Number}
 		 *  @private
 		 */
-		this._computedLookAhead = 1/60;
-
-		/**
-		 *  The value afterwhich events are thrown out
-		 *  @type {Number}
-		 *  @private
-		 */
-		this._threshold = 0.5;
+		this._computedLookAhead = UPDATE_RATE/1000;
 
 		/**
 		 *  The next time the callback is scheduled.
@@ -70,7 +63,7 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal", "Tone/core/TimelineState
 		 *  @type  {Number}
 		 *  @private
 		 */
-		this._lastUpdate = 0;
+		this._lastUpdate = -1;
 
 		/**
 		 *  The id of the requestAnimationFrame
@@ -102,16 +95,17 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal", "Tone/core/TimelineState
 		this._state = new Tone.TimelineState(Tone.State.Stopped);
 
 		/**
-		 *  A pre-binded loop function to save a tiny bit of overhead
-		 *  of rebinding the function on every frame.
-		 *  @type  {Function}
+		 *  The loop function bound to its context. 
+		 *  This is necessary to remove the event in the end.
+		 *  @type {Function}
 		 *  @private
 		 */
 		this._boundLoop = this._loop.bind(this);
 
+		//bind a callback to the worker thread
+    	Tone.Clock._worker.addEventListener("message", this._boundLoop);
+
 		this._readOnly("frequency");
-		//start the loop
-		this._loop();
 	};
 
 	Tone.extend(Tone.Clock);
@@ -195,9 +189,8 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal", "Tone/core/TimelineState
 	 */
 	Tone.Clock.prototype.stop = function(time){
 		time = this.toSeconds(time);
-		if (this._state.getStateAtTime(time) !== Tone.State.Stopped){
-			this._state.setStateAtTime(Tone.State.Stopped, time);
-		}
+		this._state.cancel(time);
+		this._state.setStateAtTime(Tone.State.Stopped, time);
 		return this;	
 	};
 
@@ -221,19 +214,18 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal", "Tone/core/TimelineState
 	 *                          when the page was loaded.
 	 *  @private
 	 */
-	Tone.Clock.prototype._loop = function(time){
-		this._loopID = requestAnimationFrame(this._boundLoop);
+	Tone.Clock.prototype._loop = function(){
 		//compute the look ahead
 		if (this._lookAhead === "auto"){
-			if (!this.isUndef(time)){
-				var diff = (time - this._lastUpdate) / 1000;
-				this._lastUpdate = time;
-				//throw away large differences
-				if (diff < this._threshold){
-					//averaging
-					this._computedLookAhead = (9 * this._computedLookAhead + diff) / 10;
-				}
+			var time = this.now();
+			if (this._lastUpdate !== -1){
+				var diff = (time - this._lastUpdate);
+				//max size on the diff
+				diff = Math.min(10 * UPDATE_RATE/1000, diff);
+				//averaging
+				this._computedLookAhead = (9 * this._computedLookAhead + diff) / 10;
 			}
+			this._lastUpdate = time;
 		} else {
 			this._computedLookAhead = this._lookAhead;
 		}
@@ -255,10 +247,6 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal", "Tone/core/TimelineState
 		}
 		if (state === Tone.State.Started){
 			while (now + lookAhead > this._nextTick){
-				//catch up
-				if (now > this._nextTick + this._threshold){
-					this._nextTick = now;
-				}
 				var tickTime = this._nextTick;
 				this._nextTick += 1 / this.frequency.getValueAtTime(this._nextTick);
 				this.callback(tickTime);
@@ -289,15 +277,49 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal", "Tone/core/TimelineState
 	Tone.Clock.prototype.dispose = function(){
 		cancelAnimationFrame(this._loopID);
 		Tone.TimelineState.prototype.dispose.call(this);
+		Tone.Clock._worker.removeEventListener("message", this._boundLoop);
 		this._writable("frequency");
 		this.frequency.dispose();
 		this.frequency = null;
-		this._boundLoop = Tone.noOp;
+		this._boundLoop = null;
 		this._nextTick = Infinity;
 		this.callback = null;
 		this._state.dispose();
 		this._state = null;
 	};
+
+	//URL Shim
+	window.URL = window.URL || window.webkitURL;
+
+	/**
+	 *  The update rate in Milliseconds
+	 *  @const
+	 *  @type  {Number}
+	 *  @private
+	 */
+	var UPDATE_RATE = 20;
+
+	/**
+	 *  The script which runs in a web worker
+	 *  @type {Blob}
+	 *  @private
+	 */
+	var blob = new Blob(["setInterval(function(){self.postMessage('tick')}, "+UPDATE_RATE+")"]);
+
+	/**
+	 *  Create a blob url from the Blob
+	 *  @type  {URL}
+	 *  @private
+	 */
+  	var blobUrl = URL.createObjectURL(blob);
+
+  	/**
+	 *  The Worker which generates a regular callback
+	 *  @type {Worker}
+	 *  @private
+	 *  @static
+	 */
+	Tone.Clock._worker = new Worker(blobUrl);
 
 	return Tone.Clock;
 });

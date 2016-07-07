@@ -7,20 +7,20 @@ define(["Tone/core/Tone"], function (Tone) {
 	 *          [AnalyserNode](http://webaudio.github.io/web-audio-api/#idl-def-AnalyserNode).
 	 *          Extracts FFT or Waveform data from the incoming signal.
 	 *  @extends {Tone}
+	 *  @param {String=} type The return type of the analysis, either "fft", or "waveform". 
 	 *  @param {Number=} size The size of the FFT. Value must be a power of 
 	 *                       two in the range 32 to 32768.
-	 *  @param {String=} type The return type of the analysis, either "fft", or "waveform". 
 	 */
 	Tone.Analyser = function(){
 
-		var options = this.optionsObject(arguments, ["size", "type"], Tone.Analyser.defaults);
+		var options = this.optionsObject(arguments, ["type", "size"], Tone.Analyser.defaults);
 
 		/**
 		 *  The analyser node.
 		 *  @private
 		 *  @type {AnalyserNode}
 		 */
-		this._analyser = this.input = this.context.createAnalyser();
+		this._analyser = this.input = this.output = this.context.createAnalyser();
 
 		/**
 		 *  The analysis type
@@ -59,7 +59,7 @@ define(["Tone/core/Tone"], function (Tone) {
 	 *  @const
 	 */
 	Tone.Analyser.defaults = {
-		"size" : 2048,
+		"size" : 1024,
 		"returnType" : "byte",
 		"type" : "fft",
 		"smoothing" : 0.8,
@@ -68,7 +68,7 @@ define(["Tone/core/Tone"], function (Tone) {
 	};
 
 	/**
-	 *  Possible return types of Tone.Analyser.value
+	 *  Possible return types of Tone.Analyser.analyse()
 	 *  @enum {String}
 	 */
 	Tone.Analyser.Type = {
@@ -77,7 +77,10 @@ define(["Tone/core/Tone"], function (Tone) {
 	};
 
 	/**
-	 *  Possible return types of Tone.Analyser.value
+	 *  Possible return types of Tone.Analyser.analyse(). 
+	 *  byte values are between [0,255]. float values are between 
+	 *  [-1, 1] when the type is set to "waveform" and between 
+	 *  [minDecibels,maxDecibels] when the type is "fft".
 	 *  @enum {String}
 	 */
 	Tone.Analyser.ReturnType = {
@@ -101,7 +104,17 @@ define(["Tone/core/Tone"], function (Tone) {
 			if (this._returnType === Tone.Analyser.ReturnType.Byte){
 				this._analyser.getByteTimeDomainData(this._buffer);
 			} else {
-				this._analyser.getFloatTimeDomainData(this._buffer);
+				if (this.isFunction(AnalyserNode.prototype.getFloatTimeDomainData)){
+					this._analyser.getFloatTimeDomainData(this._buffer);
+				} else {
+					var uint8 = new Uint8Array(this._buffer.length);
+					this._analyser.getByteTimeDomainData(uint8);
+					//referenced https://github.com/mohayonao/get-float-time-domain-data 
+					// POLYFILL
+					for (var i = 0; i < uint8.length; i++){
+						this._buffer[i] = (uint8[i] - 128) * 0.0078125;
+					}
+				}
 			}
 		}
 		return this._buffer;
@@ -124,9 +137,11 @@ define(["Tone/core/Tone"], function (Tone) {
 	});
 
 	/**
-	 *  The return type of Tone.Analyser.value, either "byte" or "float". 
+	 *  The return type of Tone.Analyser.analyse(), either "byte" or "float". 
 	 *  When the type is set to "byte" the range of values returned in the array
-	 *  are between 0-255, when set to "float" the values are between 0-1. 
+	 *  are between 0-255. "float" values are between 
+	 *  [-1, 1] when the type is set to "waveform" and between 
+	 *  [minDecibels,maxDecibels] when the type is "fft".
 	 *  @memberOf Tone.Analyser#
 	 *  @type {String}
 	 *  @name type
@@ -141,14 +156,14 @@ define(["Tone/core/Tone"], function (Tone) {
 			} else if (type === Tone.Analyser.ReturnType.Float){
 				this._buffer = new Float32Array(this._analyser.frequencyBinCount);
 			} else {
-				throw new Error("Invalid Return Type: "+type);
+				throw new TypeError("Tone.Analayser: invalid return type: "+type);
 			}
 			this._returnType = type;
 		}
 	});
 
 	/**
-	 *  The analysis function returned by Tone.Analyser.value, either "fft" or "waveform". 
+	 *  The analysis function returned by Tone.Analyser.analyse(), either "fft" or "waveform". 
 	 *  @memberOf Tone.Analyser#
 	 *  @type {String}
 	 *  @name type
@@ -159,7 +174,7 @@ define(["Tone/core/Tone"], function (Tone) {
 		},
 		set : function(type){
 			if (type !== Tone.Analyser.Type.Waveform && type !== Tone.Analyser.Type.FFT){
-				throw new Error("Invalid Type: "+type);
+				throw new TypeError("Tone.Analyser: invalid type: "+type);
 			}
 			this._type = type;
 		}

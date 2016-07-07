@@ -10,7 +10,8 @@
 	<script type="text/javascript" src="../build/Tone.js"></script>
 	<script type="text/javascript" src="./scripts/jquery.min.js"></script>
 	<script type="text/javascript" src="./scripts/draggabilly.js"></script>
-	<script type="text/javascript" src="./scripts/Logo.js"></script>
+	<script type="text/javascript" src="https://tonejs.github.io/Logo/build/Logo.js"></script>
+	<script type="text/javascript" src="./scripts/StartAudioContext.js"></script>
 	<script type="text/javascript" src="./scripts/Interface.js"></script>
 	<script type="text/javascript" src="./scripts/nexusUI.js"></script>
 
@@ -30,36 +31,34 @@
 	<div id="Content">
 		<div id="Title">Tone.Transport</div>
 		<div id="Explanation">
-			<a href="http://tonejs.org/docs/#Transport">Tone.Transport</a> 
-			is the application-wide timekeeper. It uses an OscillatorNode
-			as it's clock source which enables sample-accurate scheduling as well as 
-			tempo-curves and automation. This example uses Tone.Transport.setInterval
-			to invoke a callback every 16th note.
+			<a href="https://tonejs.github.io/docs/#Transport">Tone.Transport</a> 
+			is the application-wide timekeeper. It's clock source enables sample-accurate scheduling as well as tempo-curves and automation. This example uses Tone.Sequence to invoke a callback every 16th note.
 		</div>
 		<canvas nx="matrix"></canvas>
 	</div>	
 	<script type="text/javascript">
 		//setup a polyphonic sampler
-		var keys = new Tone.PolySynth(4, Tone.Sampler, {
-			"A" : "./audio/casio/A1.mp3",
-			"C#" : "./audio/casio/Cs2.mp3",
-			"E" : "./audio/casio/E2.mp3",
-			"F#" : "./audio/casio/Fs2.mp3",
-		}, {
-			"volume" : -10,
+		var keys = new Tone.MultiPlayer({
+			urls : {
+				"A" : "./audio/casio/A1.mp3",
+				"C#" : "./audio/casio/Cs2.mp3",
+				"E" : "./audio/casio/E2.mp3",
+				"F#" : "./audio/casio/Fs2.mp3",
+			},
+			volume : -10,
+			fadeOut : 0.1,
 		}).toMaster();
-
-		// var keys = new Tone.PolySynth(4, Tone.SimpleSynth).toMaster();
 
 		//the notes
 		var noteNames = ["F#", "E", "C#", "A"];
-		// var noteNames = ["F#3", "E3", "C#3", "A3"];
 
 		var loop = new Tone.Sequence(function(time, col){
 			var column = matrix1.matrix[col];
 			for (var i = 0; i < 4; i++){
 				if (column[i] === 1){
-					keys.triggerAttackRelease(noteNames[i], "32n", time);
+					//slightly randomized velocities
+					var vel = Math.random() * 0.5 + 0.5;
+					keys.start(noteNames[i], time, 0, "32n", 0, vel);
 				}
 			}
 		}, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], "16n");

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+	<title>Meter</title>
+
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<link rel="icon" type="image/png" sizes="174x174" href="./style/favicon.png">
+	
+	<script type="text/javascript" src="../build/Tone.js"></script>
+	<script type="text/javascript" src="./scripts/jquery.min.js"></script>
+	<script type="text/javascript" src="./scripts/draggabilly.js"></script>
+	<script type="text/javascript" src="https://tonejs.github.io/Logo/build/Logo.js"></script>
+	<script type="text/javascript" src="./scripts/StartAudioContext.js"></script>
+	<script type="text/javascript" src="./scripts/Interface.js"></script>
+
+	<link rel="stylesheet" type="text/css" href="./style/examples.css">
+
+	<script type="text/javascript">
+		// jshint ignore: start
+	</script>
+	<style type="text/css">
+	canvas {
+		margin-top: 2px;
+		width: 100%;
+		height: 90px;
+		border-radius: 10px;
+	}
+	</style>
+</head>
+<body>
+	<div id="Content" class="FullScreen">
+		<div id="Title">Meter</div>
+		<div id="Explanation">	
+			<a href="https://tonejs.github.io/docs/#Meter" target="_blank">Tone.Meter</a>
+			gives you the level of the incoming signal (between 0-1). Values above 1
+			are clipping. 
+		</div>
+		
+	</div>
+
+	<script type="text/javascript">		
+		//create a level meter
+		var meter = new Tone.Meter("level");
+
+		var player = new Tone.Player({
+			"url" : "./audio/FWDL.mp3",
+			"loop" : true
+		}).connect(meter).toMaster();
+		
+	</script>
+
+	<script type="text/javascript">
+
+		$(function(){
+
+			//start button
+			new Interface.Button({
+				key : 32,
+				type : "toggle",
+				text : "Start",
+				activeText : "Stop",
+				start : function(){
+					player.start();
+				},
+				end : function(){
+					player.stop();
+				}
+			});
+
+			//drawing the FFT
+			var meterContext = $("<canvas>",{
+				"id" : "fft"
+			}).appendTo("#Content").get(0).getContext("2d");
+
+			var meterGraident;
+
+			function drawMeter(){
+				var level = meter.value * 0.8; //scale it since values go above 1 when clipping
+				meterContext.clearRect(0, 0, canvasWidth, canvasHeight);
+				meterContext.fillStyle = meterGraident;
+				meterContext.fillRect(0, 0, canvasWidth, canvasHeight);
+				meterContext.fillStyle = "white";
+				meterContext.fillRect(canvasWidth * level, 0, canvasWidth, canvasHeight);
+			}
+
+			//size the canvase
+			var canvasWidth, canvasHeight;
+
+			function sizeCanvases(){
+				canvasWidth = $("#fft").width();
+				canvasHeight = $("#fft").height();
+				meterContext.canvas.width = canvasWidth;
+				meterContext.canvas.height = canvasHeight;
+				//make the gradient
+				meterGraident = meterContext.createLinearGradient(0, 0, canvasWidth, canvasHeight);
+				meterGraident.addColorStop(0, "#BFFF02");
+				meterGraident.addColorStop(0.8, "#02FF24");   
+				meterGraident.addColorStop(1, "#FF0202");   
+			}
+
+			sizeCanvases();
+			$(window).resize(sizeCanvases);
+
+			function loop(){
+				requestAnimationFrame(loop);
+				//draw the meter level
+				drawMeter();
+			}
+			loop();
+
+		});
+	</script>
+</body>
+</html>

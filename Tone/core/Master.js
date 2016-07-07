@@ -26,20 +26,6 @@ define(["Tone/core/Tone", "Tone/component/Volume"], function(Tone){
 		Tone.call(this);
 
 		/**
-		 * the unmuted volume
-		 * @type {number}
-		 * @private
-		 */
-		this._unmutedVolume = 1;
-
-		/**
-		 *  if the master is muted
-		 *  @type {boolean}
-		 *  @private
-		 */
-		this._muted = false;
-
-		/**
 		 *  The private volume node
 		 *  @type  {Tone.Volume}
 		 *  @private
@@ -80,17 +66,10 @@ define(["Tone/core/Tone", "Tone/component/Volume"], function(Tone){
 	 */
 	Object.defineProperty(Tone.Master.prototype, "mute", {
 		get : function(){
-			return this._muted;
+			return this._volume.mute;
 		}, 
 		set : function(mute){
-			if (!this._muted && mute){
-				this._unmutedVolume = this.volume.value;
-				//maybe it should ramp here?
-				this.volume.value = -Infinity;
-			} else if (this._muted && !mute){
-				this.volume.value = this._unmutedVolume;
-			}
-			this._muted = mute;
+			this._volume.mute = mute;
 		}
 	});
 

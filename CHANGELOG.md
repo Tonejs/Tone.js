@@ -1,3 +1,31 @@
+### r7
+
+* MetalSynth creates metalic, cymbal sounds
+* DrumSynth -> MembraneSynth
+* FMOscillator, AMOscillator types
+* FatOscillator creates multiple oscillators and detunes them slightly
+* FM, AM, Fat Oscillators incorporated into OmniOscillator
+* Simplified FM and AM Synths and APIs
+* Panner.pan is between -1,1 like the StereoPannerNode
+* Pruned away unused (or little used) Signal classes. 
+	* All this functionality will be available when the AudioWorkerNode is introduced. 
+* Clock uses Web Workers instead of requestAnimationFrame which allows it to run in the background. 
+* Removed `startMobile`. Using [StartAudioContext](https://github.com/tambien/StartAudioContext) in examples. 
+* Automated test runner using [Travis CI](https://travis-ci.org/Tonejs/Tone.js/)
+* Simplified NoiseSynth by removing filter and filter envelope.
+* Added new timing primitive types: Time, Frequency, TransportTime.
+* Switching parameter position of type and size in Tone.Analyser
+* Tone.Meter uses Tone.Analyser instead of ScriptProcessorNode.
+* Tone.Envelope has 5 new attack/release curves: "sine", "cosine", "bounce", "ripple", "step"
+* Renamed Tone.SimpleSynth -> Tone.Synth
+* Tone.Buffers combines multiple buffers
+* Tone.BufferSource a low-level wrapper, and Tone.MultiPlayer which is good for multisampled instruments.
+* Tone.GrainPlayer: granular synthesis buffer player. 
+* Simplified Sampler
+
+DEPRECATED:
+* Removed SimpleFM and SimpleAM
+
 ### r6
 
 * Added PitchShift and Vibrato Effect.

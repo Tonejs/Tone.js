@@ -1,4 +1,4 @@
-define(["helper/OutputAudio", "Tone/source/Source", "helper/OutputAudioStereo", "Test", "helper/Offline", "helper/Meter"], 
+define(["helper/OutputAudio", "Tone/source/Source", "helper/OutputAudioStereo", "Test", "helper/Offline2", "helper/Meter"], 
 	function (OutputAudio, Source, OutputAudioStereo, Test, Offline, Meter) {
 
 	return function(Constr, args){
@@ -18,17 +18,26 @@ define(["helper/OutputAudio", "Tone/source/Source", "helper/OutputAudioStereo", 
 			});
 
 			it("starts and stops", function(done){
-				var instance = new Constr(args);
-				expect(instance.state).to.equal("stopped");
-				instance.start().stop("+0.2");
-				setTimeout(function(){
-					expect(instance.state).to.equal("started");
-				}, 100);
-				setTimeout(function(){
+
+				Offline(function(output, testFn, tearDown){
+					
+					var instance = new Constr(args);
 					expect(instance.state).to.equal("stopped");
-					instance.dispose();
-					done();
-				}, 300);
+					instance.start(0).stop(0.2);
+
+					testFn(function(sample, time){
+						if (time >= 0 && time < 0.2){
+							expect(instance.state).to.equal("started");
+						} else if (time > 0.2){
+							expect(instance.state).to.equal("stopped");
+						}
+					});
+
+					tearDown(function(){
+						instance.dispose();
+						done();
+					});
+				}, 0.3);
 			});
 
 			it("makes a sound", function(done){
@@ -67,6 +76,43 @@ define(["helper/OutputAudio", "Tone/source/Source", "helper/OutputAudioStereo", 
 					if (sample > 0){
 						expect(time).to.be.at.least(0.1);
 					}
+				});
+				meter.after(function(){
+					instance.dispose();
+					done();
+				});
+				meter.run();
+			});
+
+			it("makes no sound if it is started and then stopped with a time at or before the start time", function(done){
+				var instance;
+				var meter = new Meter(1);
+				meter.before(function(dest){
+					instance = new Constr(args);
+					instance.connect(dest);
+					instance.start(0.5).stop(0);
+				});
+				meter.test(function(sample){
+					expect(sample).to.equal(0);
+				});
+				meter.after(function(){
+					instance.dispose();
+					done();
+				});
+				meter.run();
+			});
+
+			it("can be muted", function(done){
+				var instance;
+				var meter = new Meter(0.25);
+				meter.before(function(dest){
+					instance = new Constr(args);
+					instance.connect(dest);
+					instance.start(0);
+					instance.mute = true;
+				});
+				meter.test(function(sample){
+					expect(sample).to.equal(0);
 				});
 				meter.after(function(){
 					instance.dispose();

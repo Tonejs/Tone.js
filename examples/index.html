@@ -8,7 +8,7 @@
 	<link rel="icon" type="image/png" sizes="174x174" href="./style/favicon.png">
 	
 	<script type="text/javascript" src="./scripts/jquery.min.js"></script>
-	<script type="text/javascript" src="./scripts/Logo.js"></script>
+	<script type="text/javascript" src="https://tonejs.github.io/Logo/build/Logo.js"></script>
 	<script type="text/javascript" src="./scripts/ExampleList.js"></script>
 
 	<link rel="stylesheet" type="text/css" href="./style/examples.css">	
@@ -48,8 +48,8 @@
 			$(function(){
 				var topbar = $("<div>").attr("id", "TopBar");
 				$("body").prepend(topbar);
-				var logo = new Logo({
-					"container" : topbar,
+				Logo({
+					"container" : topbar.get(0),
 					"height" : topbar.height() - 6,
 					"width" : 140
 				});

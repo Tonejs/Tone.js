@@ -12,9 +12,8 @@ define(["Tone/core/Tone", "Tone/event/Event"], function (Tone) {
 	 * }, "8n").start(0);
 	 * Tone.Transport.start();
 	 *  @extends {Tone}
-	 *  @param {Function} callback The callback to invoke with the
-	 *                             event.
-	 *  @param {Array} events The events to arpeggiate over.
+	 *  @param {Function} callback The callback to invoke with the event.
+	 *  @param {Time} interval The time between successive callback calls. 
 	 */
 	Tone.Loop = function(){
 
@@ -60,7 +59,7 @@ define(["Tone/core/Tone", "Tone/event/Event"], function (Tone) {
 	/**
 	 *  Start the loop at the specified time along the Transport's
 	 *  timeline.
-	 *  @param  {Time=}  time  When to start the Loop.
+	 *  @param  {TimelinePosition=}  time  When to start the Loop.
 	 *  @return  {Tone.Loop}  this
 	 */
 	Tone.Loop.prototype.start = function(time){
@@ -70,7 +69,7 @@ define(["Tone/core/Tone", "Tone/event/Event"], function (Tone) {
 
 	/**
 	 *  Stop the loop at the given time.
-	 *  @param  {Time=}  time  When to stop the Arpeggio
+	 *  @param  {TimelinePosition=}  time  When to stop the Arpeggio
 	 *  @return  {Tone.Loop}  this
 	 */
 	Tone.Loop.prototype.stop = function(time){
@@ -80,7 +79,7 @@ define(["Tone/core/Tone", "Tone/event/Event"], function (Tone) {
 
 	/**
 	 *  Cancel all scheduled events greater than or equal to the given time
-	 *  @param  {Time}  [time=0]  The time after which events will be cancel.
+	 *  @param  {TimelinePosition}  [time=0]  The time after which events will be cancel.
 	 *  @return  {Tone.Loop}  this
 	 */
 	Tone.Loop.prototype.cancel = function(time){

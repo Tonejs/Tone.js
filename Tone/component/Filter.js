@@ -109,7 +109,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 		set : function(type){
 			var types = ["lowpass", "highpass", "bandpass", "lowshelf", "highshelf", "notch", "allpass", "peaking"];
 			if (types.indexOf(type)=== -1){
-				throw new Error("Tone.Filter does not have filter type "+type);
+				throw new TypeError("Tone.Filter: invalid type "+type);
 			}
 			this._type = type;
 			for (var i = 0; i < this._filters.length; i++){
@@ -136,7 +136,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 			var cascadingCount = possibilities.indexOf(rolloff);
 			//check the rolloff is valid
 			if (cascadingCount === -1){
-				throw new Error("Filter rolloff can only be -12, -24, -48 or -96");
+				throw new RangeError("Tone.Filter: rolloff can only be -12, -24, -48 or -96");
 			} 
 			cascadingCount += 1;
 			this._rolloff = rolloff;

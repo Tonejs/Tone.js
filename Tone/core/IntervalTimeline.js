@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/core/Type"], function (Tone) {
+define(["Tone/core/Tone", "Tone/type/Type"], function (Tone) {
 
 	"use strict";
 
@@ -38,7 +38,7 @@ define(["Tone/core/Tone", "Tone/core/Type"], function (Tone) {
 	 */
 	Tone.IntervalTimeline.prototype.addEvent = function(event){
 		if (this.isUndef(event.time) || this.isUndef(event.duration)){
-			throw new Error("events must have time and duration parameters");
+			throw new Error("Tone.IntervalTimeline: events must have time and duration parameters");
 		}
 		var node = new IntervalNode(event.time, event.time + event.duration, event);
 		if (this._root === null){
@@ -324,7 +324,7 @@ define(["Tone/core/Tone", "Tone/core/Type"], function (Tone) {
 	 *  @param  {Function}  callback The callback to invoke with every item
 	 *  @returns {Tone.IntervalTimeline} this
 	 */
-	Tone.IntervalTimeline.prototype.forEachOverlap = function(time, callback){
+	Tone.IntervalTimeline.prototype.forEachAtTime = function(time, callback){
 		time = this.toSeconds(time);
 		if (this._root !== null){
 			var results = [];
@@ -451,7 +451,7 @@ define(["Tone/core/Tone", "Tone/core/Type"], function (Tone) {
 			this.left.search(point, results);
 		}
 		// Check this node
-		if (this.low <= point && this.high >= point){
+		if (this.low <= point && this.high > point){
 			results.push(this);
 		}
 		// If p is to the left of the time of this interval,

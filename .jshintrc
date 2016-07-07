@@ -18,6 +18,7 @@
     "GainNode" : false,
     "AudioNode" : false,
     "AudioParam" : false,
+    "AnalyserNode" : false,
     "WaveShaperNode" : false,
     "DynamicsCompressorNode" : false,
     "MediaStreamTrack" : false

@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/event/Event", "Tone/core/Type", "Tone/core/Transport"], function (Tone) {
+define(["Tone/core/Tone", "Tone/event/Event", "Tone/type/Type", "Tone/core/Transport"], function (Tone) {
 
 	"use strict";
 	
@@ -138,7 +138,7 @@ define(["Tone/core/Tone", "Tone/event/Event", "Tone/core/Type", "Tone/core/Trans
 
 	/**
 	 *  Start the part at the given time. 
-	 *  @param  {Time}  time    When to start the part.
+	 *  @param  {TransportTime}  time    When to start the part.
 	 *  @param  {Time=}  offset  The offset from the start of the part
 	 *                           to begin playing at.
 	 *  @return  {Tone.Part}  this
@@ -146,7 +146,11 @@ define(["Tone/core/Tone", "Tone/event/Event", "Tone/core/Type", "Tone/core/Trans
 	Tone.Part.prototype.start = function(time, offset){
 		var ticks = this.toTicks(time);
 		if (this._state.getStateAtTime(ticks) !== Tone.State.Started){
-			offset = this.defaultArg(offset, 0);
+			if (this._loop){
+				offset = this.defaultArg(offset, this._loopStart);
+			} else {
+				offset = this.defaultArg(offset, 0);
+			}
 			offset = this.toTicks(offset);
 			this._state.addEvent({
 				"state" : Tone.State.Started, 
@@ -176,11 +180,14 @@ define(["Tone/core/Tone", "Tone/event/Event", "Tone/core/Type", "Tone/core/Trans
 					//start it on the next loop
 					ticks += this._getLoopDuration();
 				}
-				event.start(ticks + "i");
+				event.start(Tone.TransportTime(ticks,"i"));
+			} else if (event.startOffset < this._loopStart && event.startOffset >= offset) {
+				event.loop = false;
+				event.start(Tone.TransportTime(ticks,"i"));
 			}
 		} else {
 			if (event.startOffset >= offset){
-				event.start(ticks + "i");
+				event.start(Tone.TransportTime(ticks,"i"));
 			}
 		}
 	};
@@ -206,17 +213,16 @@ define(["Tone/core/Tone", "Tone/event/Event", "Tone/core/Type", "Tone/core/Trans
 
 	/**
 	 *  Stop the part at the given time.
-	 *  @param  {Time}  time  When to stop the part.
+	 *  @param  {TimelinePosition}  time  When to stop the part.
 	 *  @return  {Tone.Part}  this
 	 */
 	Tone.Part.prototype.stop = function(time){
 		var ticks = this.toTicks(time);
-		if (this._state.getStateAtTime(ticks) === Tone.State.Started){
-			this._state.setStateAtTime(Tone.State.Stopped, ticks);
-			this._forEach(function(event){
-				event.stop(time);
-			});
-		}
+		this._state.cancel(ticks);
+		this._state.setStateAtTime(Tone.State.Stopped, ticks);
+		this._forEach(function(event){
+			event.stop(time);
+		});
 		return this;
 	};
 
@@ -231,17 +237,17 @@ define(["Tone/core/Tone", "Tone/event/Event", "Tone/core/Type", "Tone/core/Trans
 	 *
 	 * part.at("2m", "C2"); //set the value at "2m" to C2. 
 	 * //if an event didn't exist at that time, it will be created.
-	 *  @param {Time} time the time of the event to get or set
+	 *  @param {TransportTime} time The time of the event to get or set.
 	 *  @param {*=} value If a value is passed in, the value of the
 	 *                    event at the given time will be set to it.
 	 *  @return {Tone.Event} the event at the time
 	 */
 	Tone.Part.prototype.at = function(time, value){
-		time = this.toTicks(time);
-		var tickTime = this.ticksToSeconds(1);
+		time = Tone.TransportTime(time);
+		var tickTime = Tone.Time(1, "i").toSeconds();
 		for (var i = 0; i < this._events.length; i++){
 			var event = this._events[i];
-			if (Math.abs(time - event.startOffset) < tickTime){
+			if (Math.abs(time.toTicks() - event.startOffset) < tickTime){
 				if (!this.isUndef(value)){
 					event.value = value;
 				}
@@ -250,7 +256,7 @@ define(["Tone/core/Tone", "Tone/event/Event", "Tone/core/Type", "Tone/core/Trans
 		}
 		//if there was no event at that time, create one
 		if (!this.isUndef(value)){
-			this.add(time + "i", value);
+			this.add(time, value);
 			//return the new event
 			return this._events[this._events.length - 1];
 		} else {
@@ -362,7 +368,7 @@ define(["Tone/core/Tone", "Tone/event/Event", "Tone/core/Type", "Tone/core/Trans
 
 	/**
 	 *  Cancel scheduled state change events: i.e. "start" and "stop".
-	 *  @param {Time} after The time after which to cancel the scheduled events.
+	 *  @param {TimelinePosition} after The time after which to cancel the scheduled events.
 	 *  @return  {Tone.Part}  this
 	 */
 	Tone.Part.prototype.cancel = function(after){
@@ -499,12 +505,12 @@ define(["Tone/core/Tone", "Tone/event/Event", "Tone/core/Type", "Tone/core/Trans
 	 *  The loopEnd point determines when it will 
 	 *  loop if Tone.Part.loop is true.
 	 *  @memberOf Tone.Part#
-	 *  @type {Boolean|Positive}
+	 *  @type {TransportTime}
 	 *  @name loopEnd
 	 */
 	Object.defineProperty(Tone.Part.prototype, "loopEnd", {
 		get : function(){
-			return this.toNotation(this._loopEnd + "i");
+			return Tone.TransportTime(this._loopEnd, "i").toNotation();
 		},
 		set : function(loopEnd){
 			this._loopEnd = this.toTicks(loopEnd);
@@ -521,12 +527,12 @@ define(["Tone/core/Tone", "Tone/event/Event", "Tone/core/Type", "Tone/core/Trans
 	 *  The loopStart point determines when it will 
 	 *  loop if Tone.Part.loop is true.
 	 *  @memberOf Tone.Part#
-	 *  @type {Boolean|Positive}
+	 *  @type {TransportTime}
 	 *  @name loopStart
 	 */
 	Object.defineProperty(Tone.Part.prototype, "loopStart", {
 		get : function(){
-			return this.toNotation(this._loopStart + "i");
+			return Tone.TransportTime(this._loopStart, "i").toNotation();
 		},
 		set : function(loopStart){
 			this._loopStart = this.toTicks(loopStart);
