@@ -21,6 +21,7 @@
 * Tone.Buffers combines multiple buffers
 * Tone.BufferSource a low-level wrapper, and Tone.MultiPlayer which is good for multisampled instruments.
 * Tone.GrainPlayer: granular synthesis buffer player. 
+* Simplified Sampler
 
 DEPRECATED:
 * Removed SimpleFM and SimpleAM
