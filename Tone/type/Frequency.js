@@ -1,13 +1,17 @@
 define(["Tone/core/Tone", "Tone/type/TimeBase"], function (Tone) {
 
 	/**
-	 *  @param  {[type]}  val    [description]
-	 *  @param  {[type]}  units  [description]
+	 *  @class Tone.Frequency is a primitive type for encoding Frequency values. 
+	 *         Eventually all time values are evaluated to hertz
+	 *         using the `eval` method. 
+	 *  @constructor
+	 *  @extends {Tone.TimeBase}
+	 *  @param  {String|Number}  val    The time value.
+	 *  @param  {String=}  units  The units of the value.
 	 *  @example
 	 * Tone.Frequency("C3").eval() // 261
 	 * Tone.Frequency(38, "midi").eval() //
 	 * Tone.Frequency("C3").transpose(4).eval();
-	 * Tone.Frequency("440hz").transpose([0, 3, 7]).eval() // ["A4", "C5", "E5"];
 	 */
 	Tone.Frequency = function(val, units){
 		if (this instanceof Tone.Frequency){
@@ -123,6 +127,8 @@ define(["Tone/core/Tone", "Tone/type/TimeBase"], function (Tone) {
 	/**
 	 *  Return the value of the frequency as a MIDI note
 	 *  @return  {MIDI}
+	 *  @example
+	 * Tone.Frequency("C4").toMidi(); //60
 	 */
 	Tone.Frequency.prototype.toMidi = function(){
 		return this.frequencyToMidi(this.eval());
@@ -131,6 +137,8 @@ define(["Tone/core/Tone", "Tone/type/TimeBase"], function (Tone) {
 	/**
 	 *  Return the value of the frequency in Scientific Pitch Notation
 	 *  @return  {Note}
+	 *  @example
+	 * Tone.Frequency(69, "midi").toNote(); //"A4"
 	 */
 	Tone.Frequency.prototype.toNote = function(){
 		var freq = this.eval();

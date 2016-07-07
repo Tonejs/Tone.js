@@ -1,8 +1,19 @@
 define(["Tone/core/Tone", "Tone/type/TimeBase"], function (Tone) {
 
 	/**
-	 *  @param  {[type]}  val    [description]
-	 *  @param  {[type]}  units  [description]
+	 *  @class Tone.Time is a primitive type for encoding Time values. 
+	 *         Eventually all time values are evaluated to seconds
+	 *         using the `eval` method. Tone.Time can be constructed
+	 *         with or without the `new` keyword. Tone.Time can be passed
+	 *         into the parameter of any method which takes time as an argument. 
+	 *  @constructor
+	 *  @extends {Tone.TimeBase}
+	 *  @param  {String|Number}  val    The time value.
+	 *  @param  {String=}  units  The units of the value.
+	 *  @example
+	 * var t = Tone.Time("4n");//encodes a quarter note
+	 * t.mult(4); // multiply that value by 4
+	 * t.toNotation(); //returns "1m"
 	 */
 	Tone.Time = function(val, units){
 		if (this instanceof Tone.Time){
@@ -60,7 +71,7 @@ define(["Tone/core/Tone", "Tone/type/TimeBase"], function (Tone) {
 	 *  percentage which will move the time value towards the ideal
 	 *  quantized value by that percentage. 
 	 *  @param  {Number|Time}  val    The subdivision to quantize to
-	 *  @param  {NormalRange}  [perc=1]  Move the time value
+	 *  @param  {NormalRange}  [percent=1]  Move the time value
 	 *                                   towards the quantized value by
 	 *                                   a percentage.
 	 *  @return  {Tone.Time}  this
@@ -68,8 +79,8 @@ define(["Tone/core/Tone", "Tone/type/TimeBase"], function (Tone) {
 	 * Tone.Time(21).quantize(2).eval() //returns 22
 	 * Tone.Time(0.6).quantize("4n", 0.5).eval() //returns 0.55
 	 */
-	Tone.Time.prototype.quantize = function(subdiv, perc){
-		perc = this.defaultArg(perc, 1);
+	Tone.Time.prototype.quantize = function(subdiv, percent){
+		percent = this.defaultArg(percent, 1);
 		this._expr = function(expr, subdivision, percent){
 			expr = expr();
 			subdivision = subdivision.toSeconds();
@@ -77,12 +88,13 @@ define(["Tone/core/Tone", "Tone/type/TimeBase"], function (Tone) {
 			var ideal = multiple * subdivision;
 			var diff = ideal - expr;
 			return expr + diff * percent;
-		}.bind(this, this._expr, new this.constructor(subdiv), perc);
+		}.bind(this, this._expr, new this.constructor(subdiv), percent);
 		return this;
 	};
 
 	/**
-	 *  Adds the current clock time to the time expression
+	 *  Adds the clock time to the time expression at the 
+	 *  moment of evaluation. 
 	 *  @return  {Tone.Time}  this
 	 */
 	Tone.Time.prototype.addNow = function(){
@@ -106,7 +118,10 @@ define(["Tone/core/Tone", "Tone/type/TimeBase"], function (Tone) {
 
 	/**
 	 *  Convert a Time to Notation. Values will be thresholded to the nearest 128th note. 
-	 *  @return {Notation}  
+	 *  @return {Notation} 
+	 *  @example
+	 * //if the Transport is at 120bpm:
+	 * Tone.Time(2).toNotation();//returns "1m"
 	 */
 	Tone.Time.prototype.toNotation = function(){
 		var time = this.toSeconds();
@@ -216,6 +231,8 @@ define(["Tone/core/Tone", "Tone/type/TimeBase"], function (Tone) {
 	/**
 	 *  Return the time as a frequency value
 	 *  @return  {Frequency} 
+	 *  @example
+	 * Tone.Time(2).toFrequency(); //0.5
 	 */
 	Tone.Time.prototype.toFrequency = function(){
 		return 1/this.eval();

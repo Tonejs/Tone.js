@@ -64,6 +64,11 @@ define(["Tone/core/Tone"], function (Tone) {
 	//	ABSTRACT SYNTAX TREE PARSER
 	///////////////////////////////////////////////////////////////////////////
 
+	/**
+	 *  All the primary expressions.
+	 *  @private
+	 *  @type  {Object}
+	 */
 	Tone.TimeBase.prototype._primaryExpressions = {
 		"n" : {
 			regexp : /^(\d+)n/i,
@@ -137,6 +142,11 @@ define(["Tone/core/Tone"], function (Tone) {
 		}
 	};
 
+	/**
+	 *  All the binary expressions that TimeBase can accept.
+	 *  @private
+	 *  @type  {Object}
+	 */
 	Tone.TimeBase.prototype._binaryExpressions = {
 		"+" : {
 			regexp : /^\+/,
@@ -168,6 +178,11 @@ define(["Tone/core/Tone"], function (Tone) {
 		}
 	};
 
+	/**
+	 *  All the unary expressions.
+	 *  @private
+	 *  @type  {Object}
+	 */
 	Tone.TimeBase.prototype._unaryExpressions = {
 		"neg" : {
 			regexp : /^\-/,
@@ -177,6 +192,11 @@ define(["Tone/core/Tone"], function (Tone) {
 		}
 	};
 
+	/**
+	 *  Syntactic glue which holds expressions together
+	 *  @private
+	 *  @type  {Object}
+	 */
 	Tone.TimeBase.prototype._syntaxGlue = {
 		"(" : {
 			regexp : /^\(/
@@ -444,20 +464,24 @@ define(["Tone/core/Tone"], function (Tone) {
 	};
 
 	/**
-	 *  Subtract the current value by the given time.
-	 *  @param  {Time}  val    The value to divide by
+	 *  Add to the current value.
+	 *  @param  {Time}  val    The value to add
 	 *  @param  {String=}  units  Optional units to use with the value.
 	 *  @return  {Tone.TimeBase}  this
+	 *  @example
+	 * Tone.TimeBase("2m").add("1m"); //"3m"
 	 */
 	Tone.TimeBase.prototype.add = function(val, units){
 		return this._pushExpr(val, "+", units);
 	};
 
 	/**
-	 *  Subtract the current value by the given time.
-	 *  @param  {Time}  val    The value to divide by
+	 *  Subtract the value from the current time.
+	 *  @param  {Time}  val    The value to subtract
 	 *  @param  {String=}  units  Optional units to use with the value.
 	 *  @return  {Tone.TimeBase}  this
+	 *  @example
+	 * Tone.TimeBase("2m").sub("1m"); //"1m"
 	 */
 	Tone.TimeBase.prototype.sub = function(val, units){
 		return this._pushExpr(val, "-", units);
@@ -465,9 +489,11 @@ define(["Tone/core/Tone"], function (Tone) {
 
 	/**
 	 *  Multiply the current value by the given time.
-	 *  @param  {Time}  val    The value to divide by
+	 *  @param  {Time}  val    The value to multiply
 	 *  @param  {String=}  units  Optional units to use with the value.
 	 *  @return  {Tone.TimeBase}  this
+	 *  @example
+	 * Tone.TimeBase("2m").mult("2"); //"4m"
 	 */
 	Tone.TimeBase.prototype.mult = function(val, units){
 		return this._pushExpr(val, "*", units);
@@ -478,6 +504,8 @@ define(["Tone/core/Tone"], function (Tone) {
 	 *  @param  {Time}  val    The value to divide by
 	 *  @param  {String=}  units  Optional units to use with the value.
 	 *  @return  {Tone.TimeBase}  this
+	 *  @example
+	 * Tone.TimeBase("2m").div(2); //"1m"
 	 */
 	Tone.TimeBase.prototype.div = function(val, units){
 		return this._pushExpr(val, "/", units);
