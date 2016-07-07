@@ -13,6 +13,7 @@ var ExampleList = {
 		"PolySynth" : "polySynth",
 		"FatOscillator" : "jump",
 		"MetalSynth" : "bembe",
+		"Granular Synthesis" : "grainPlayer",
 	},
 	"Effects" : {
 		"LFO Effects" : "lfoEffects",
