@@ -403,12 +403,17 @@ define(function(){
 
 	/**
 	 *  disconnect the output
+	 *  @param {Number|AudioNode} output Either the output index to disconnect
+	 *                                   if the output is an array, or the
+	 *                                   node to disconnect from.
 	 *  @returns {Tone} this
 	 */
-	Tone.prototype.disconnect = function(outputNum){
+	Tone.prototype.disconnect = function(output){
 		if (Array.isArray(this.output)){
-			outputNum = this.defaultArg(outputNum, 0);
-			this.output[outputNum].disconnect();
+			output = this.defaultArg(output, 0);
+			this.output[output].disconnect();
+		} else if (!this.isUndef(output)){
+			this.output.disconnect(output);
 		} else {
 			this.output.disconnect();
 		}
