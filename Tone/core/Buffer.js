@@ -351,5 +351,21 @@ define(["Tone/core/Tone", "Tone/core/Emitter"], function(Tone){
 		return request;
 	};
 
+	/**
+	 *  Checks a url's extension to see if the current browser can play that file type.
+	 *  @param {String} url The url/extension to test
+	 *  @return {Boolean} If the file extension can be played
+	 *  @static
+	 *  @example
+	 * Tone.Buffer.supportsType("wav"); //returns true
+	 * Tone.Buffer.supportsType("path/to/file.wav"); //returns true
+	 */
+	Tone.Buffer.supportsType = function(url){
+		var extension = url.split(".");
+		extension = extension[extension.length - 1];
+		var response = document.createElement("audio").canPlayType("audio/"+extension);
+		return response !== "";
+	};
+
 	return Tone.Buffer;
 });
