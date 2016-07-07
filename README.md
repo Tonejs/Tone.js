@@ -55,7 +55,7 @@ synth.triggerAttackRelease("C4", "8n");
 
 #### Tone.Synth
 
-[Tone.Synth](http://tonejs.github.io/docs/#Synth) is a basic synthesizer with a single [oscillator](http://tonejs.github.io/docs/#OmniOscillator) and an [ADSR envelope](https://en.wikipedia.org/wiki/Synthesizer#ADSR_envelope). 
+[Tone.Synth](https://tonejs.github.io/docs/#Synth) is a basic synthesizer with a single [oscillator](https://tonejs.github.io/docs/#OmniOscillator) and an [ADSR envelope](https://en.wikipedia.org/wiki/Synthesizer#ADSR_envelope). 
 
 #### triggerAttackRelease
 
@@ -71,11 +71,11 @@ In the examples above, instead of using the time in seconds (for an 8th note at 
 
 ### Transport
 
-[Tone.Transport](http://tonejs.github.io/docs/#Transport) is the master timekeeper, allowing for application-wide synchronization of sources, signals and events along a shared timeline. Time expressions (like the ones above) are evaluated against the Transport's BPM which can be set like this: `Tone.Transport.bpm.value = 120`. 
+[Tone.Transport](https://tonejs.github.io/docs/#Transport) is the master timekeeper, allowing for application-wide synchronization of sources, signals and events along a shared timeline. Time expressions (like the ones above) are evaluated against the Transport's BPM which can be set like this: `Tone.Transport.bpm.value = 120`. 
 
 ### Loops
 
-Tone.js provides higher-level abstractions for scheduling events. [Tone.Loop](http://tonejs.github.io/docs/#Loop) is a simple way to create a looped callback that can be scheduled to start and stop.
+Tone.js provides higher-level abstractions for scheduling events. [Tone.Loop](https://tonejs.github.io/docs/#Loop) is a simple way to create a looped callback that can be scheduled to start and stop.
 
 ```javascript
 //play a note every quarter-note
@@ -103,7 +103,7 @@ Transport.start();
 
 # Instruments
 
-Tone has a number of instruments which all inherit from the same [Instrument base class](http://tonejs.github.io/docs/#Instrument), giving them a common API for playing notes. [Tone.Synth](http://tonejs.github.io/docs/#Synth) is composed of one oscillator and an amplitude envelope.
+Tone has a number of instruments which all inherit from the same [Instrument base class](https://tonejs.github.io/docs/#Instrument), giving them a common API for playing notes. [Tone.Synth](https://tonejs.github.io/docs/#Synth) is composed of one oscillator and an amplitude envelope.
 
 ```javascript
 //pass in some initial values for the filter and filter envelope
@@ -124,7 +124,7 @@ var synth = new Tone.Synth({
 synth.triggerAttack("D3", "+1");
 ```
 
-All instruments are monophonic (one voice) but can be made polyphonic when the constructor is passed in as the second argument to [Tone.PolySynth](http://tonejs.github.io/docs/#PolySynth). 
+All instruments are monophonic (one voice) but can be made polyphonic when the constructor is passed in as the second argument to [Tone.PolySynth](https://tonejs.github.io/docs/#PolySynth). 
 
 ```javascript
 //a 4 voice Synth
@@ -137,7 +137,7 @@ polySynth.triggerAttackRelease(["C4", "E4", "G4", "B4"], "2n");
 
 # Effects
 
-In the above examples, the synthesizer was always connected directly to the [master output](http://tonejs.github.io/docs/#Master), but the output of the synth could also be routed through one (or more) effects before going to the speakers. 
+In the above examples, the synthesizer was always connected directly to the [master output](https://tonejs.github.io/docs/#Master), but the output of the synth could also be routed through one (or more) effects before going to the speakers. 
 
 ```javascript
 //create a distortion effect
@@ -150,7 +150,7 @@ synth.connect(distortion);
 
 # Sources
 
-Tone has a few basic audio sources like [Tone.Oscillator](http://tonejs.github.io/docs/#Oscillator) which has sine, square, triangle, and sawtooth waveforms, a buffer player ([Tone.Player](http://tonejs.github.io/docs/#Player)), a noise generator ([Tone.Noise]((http://tonejs.github.io/docs/#Noise))), two additional oscillator types ([pwm](http://tonejs.github.io/docs/#PWMOscillator), [pulse](http://tonejs.github.io/docs/#PulseOscillator)) and [external audio input](http://tonejs.github.io/docs/#Microphone) (when [WebRTC is supported](http://caniuse.com/#feat=stream)).
+Tone has a few basic audio sources like [Tone.Oscillator](https://tonejs.github.io/docs/#Oscillator) which has sine, square, triangle, and sawtooth waveforms, a buffer player ([Tone.Player](https://tonejs.github.io/docs/#Player)), a noise generator ([Tone.Noise]((https://tonejs.github.io/docs/#Noise))), two additional oscillator types ([pwm](https://tonejs.github.io/docs/#PWMOscillator), [pulse](https://tonejs.github.io/docs/#PulseOscillator)) and [external audio input](https://tonejs.github.io/docs/#Microphone) (when [WebRTC is supported](http://caniuse.com/#feat=stream)).
 
 ```javascript
 //a pwm oscillator which is connected to the speaker and started right away
@@ -171,7 +171,7 @@ Tone.js creates an AudioContext when it loads and shims it for maximum browser c
 
 # MIDI
 
-To use MIDI files, you'll first need to convert them into a JSON format which Tone.js can understand using [MidiConvert](http://tonejs.github.io/MidiConvert/).
+To use MIDI files, you'll first need to convert them into a JSON format which Tone.js can understand using [MidiConvert](https://tonejs.github.io/MidiConvert/).
 
 # Performance
 
