@@ -12,7 +12,7 @@ define(["Tone/core/Tone", "deps/chai"], function (Tone, chai) {
 	mocha.setup({
 		ui: "bdd",
 		// make this very long cause sometimes the travis CI server is slow
-		timeout : 4000
+		timeout : 5000
 	});
 
 
