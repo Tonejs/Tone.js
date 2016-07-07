@@ -48,23 +48,14 @@
 	});
 
 	//hats
-	var hats = new Tone.Sampler("./audio/505/hh.mp3", {
+	var hats = new Tone.Sampler({
+		"url" : "./audio/505/hh.mp3",
 		"volume" : -10,
 		"envelope" : {
 			"attack" : 0.001,
 			"decay" : 0.02,
 			"sustain" : 0.01,
 			"release" : 0.01
-		},
-		"filterEnvelope" : {
-			"attack" : 0.001,
-			"decay" : 0.02,
-			"sustain" : 1,
-			"baseFrequency" : 6000,
-			"octaves" : -3.3
-		},
-		"filter" : {
-			"type" : "highpass"
 		}
 	}).chain(distortion, drumCompress);
 
@@ -77,18 +68,12 @@
 	}).start("1m");
 
 	//SNARE PART
-	var snare = new Tone.Sampler("./audio/505/snare.mp3", {
+	var snare = new Tone.Sampler({
+		"url" : "./audio/505/snare.mp3", 
 		"envelope" : {
 			"attack" : 0.01,
 			"decay" : 0.05,
 			"sustain" : 0
-		},
-		"filterEnvelope" : {
-			"attack" : 0.001,
-			"decay" : 0.01,
-			"sustain" : 0,
-			"baseFrequency" : 3000,
-			"octaves" : 2
 		},
 	}).chain(distortion, drumCompress);
 
@@ -116,7 +101,7 @@
 	}, [1, [1, [null, 0.3]], 1, [1, [null, 0.5]], 1, 1, 1, [1, [null, 0.8]]], "2n").start(0);
 	
 	// BASS
-	var bass = new Tone.SimpleFM({
+	var bass = new Tone.FMSynth({
 		"harmonicity" : 1,
 		"modulationIndex" : 3.5,
 		"carrier" : {
