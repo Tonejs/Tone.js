@@ -229,7 +229,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Timeline"], function 
 	Tone.TimelineSignal.prototype.setRampPoint = function (time) {
 		time = this.toSeconds(time);
 		//get the value at the given time
-		var val = this.getValueAtTime(time);
+		var val = this._toUnits(this.getValueAtTime(time));
 		//if there is an event at the given time
 		//and that even is not a "set"
 		var before = this._searchBefore(time);
