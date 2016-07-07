@@ -71,13 +71,6 @@ function(Tone){
 		});
 
 		/**
-		 *  the delay before the vibrato starts
-		 *  @type {number}
-		 *  @private
-		 */
-		this._vibratoDelay = this.toSeconds(options.vibratoDelay);
-
-		/**
 		 *  the frequency control
 		 *  @type {Frequency}
 		 *  @signal
@@ -115,7 +108,6 @@ function(Tone){
 	Tone.DuoSynth.defaults = {
 		"vibratoAmount" : 0.5,
 		"vibratoRate" : 5,
-		"vibratoDelay" : 1,
 		"harmonicity" : 1.5,
 		"voice0" : {
 			"volume" : -10,
