@@ -206,6 +206,10 @@ define(["Tone/core/Tone", "Tone/type/TimeBase"], function (Tone) {
 		var measures = Math.floor(quarters / this._timeSignature());
 		var sixteenths = (quarters % 1) * 4;
 		quarters = Math.floor(quarters) % this._timeSignature();
+		sixteenths = sixteenths.toString();
+		if (sixteenths.length > 3){
+			sixteenths = parseFloat(sixteenths).toFixed(3);
+		}
 		var progress = [measures, quarters, sixteenths];
 		return progress.join(":");
 	};
