@@ -260,8 +260,32 @@ define(["Test", "Tone/core/Clock", "helper/Offline2"], function (Test, Clock, Of
 							expect(clock.ticks).to.be.above(0);
 							pausedTicks = clock.ticks;
 						} else if (time >= 0.3){
-							expect(pausedTicks).to.equal(pausedTicks);
+							expect(clock.ticks).to.equal(pausedTicks);
 						}
+					});
+
+					tearDown(function(){
+						clock.dispose();
+						done();
+					});
+				}, 0.6);
+			});
+
+			it ("starts incrementing where it left off after pause", function(done){
+
+				Offline(function(output, testFn, tearDown){
+					var clock = new Clock(function(){}, 0.05).start(0).pause(0.3).start(0.5);
+
+					var pausedTicks = 0;
+					var restarted = false;
+					testFn(function(sample, time){
+						if (time < 0.3){
+							expect(clock.ticks).to.be.above(0);
+							pausedTicks = clock.ticks;
+						} else if (time >= 0.7 && !restarted){
+							restarted = true;
+							expect(clock.ticks).to.equal(pausedTicks + 1);
+						} 
 					});
 
 					tearDown(function(){
