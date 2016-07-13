@@ -96,7 +96,7 @@ loop.start("1m").stop("4m");
 Then start the Transport to hear the loop:
 
 ```javascript
-Transport.start();
+Tone.Transport.start();
 ```
 
 [Read about Tone.js' Event classes](https://github.com/Tonejs/Tone.js/wiki/Events) and [scheduling events with the Transport.](https://github.com/Tonejs/Tone.js/wiki/Transport)
