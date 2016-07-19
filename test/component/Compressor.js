@@ -51,6 +51,18 @@ function (Compressor, Basic, PassAudio, PassAudioStereo, Test) {
 				comp.dispose();
 			});
 
+			it("can be get and constructed with an object", function(){
+				var comp = new Compressor({
+					"ratio" : 22,
+					"threshold" : -30,
+					"release" : 0.5,
+					"attack" : 0.03,
+					"knee" : 20
+				});
+				expect(comp.threshold.value).to.have.be.closeTo(-30, 1);
+				comp.dispose();
+			});
+
 			it("can get/set all interfaces", function(){
 				var comp = new Compressor();
 				var values = {
