@@ -64,6 +64,8 @@ define(["Tone/core/Tone", "Tone/component/ScaledEnvelope", "Tone/component/Envel
 		},
 		set : function(min){
 			this._scale.min = this.toFrequency(min);
+			//also update the octaves
+			this.octaves = this._octaves;
 		}
 	});
 
