@@ -49,6 +49,13 @@ define(["Tone/instrument/Sampler", "helper/Basic", "helper/InstrumentTests", "To
 				sampler.dispose();
 			});
 
+			it ("can set the buffer", function(){
+				var sampler = new Sampler();
+				sampler.buffer = buffer;
+				expect(sampler.buffer.get()).to.equal(buffer.get());
+				sampler.dispose();
+			});
+
 			it ("can be set to loop and reverse", function(){
 				var sampler = new Sampler({
 					loop : true,

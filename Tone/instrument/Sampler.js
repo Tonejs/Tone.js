@@ -124,6 +124,21 @@ function(Tone){
 	});
 
 	/**
+	 * The buffer to play.
+	 * @memberOf Tone.Sampler#
+	 * @type {Tone.Buffer}
+	 * @name buffer
+	 */
+	Object.defineProperty(Tone.Sampler.prototype, "buffer", {
+		get : function(){
+			return this.player.buffer;
+		}, 
+		set : function(buff){
+			this.player.buffer = buff;
+		}
+	});
+
+	/**
 	 *  Clean up.
 	 *  @returns {Tone.Sampler} this
 	 */
