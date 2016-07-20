@@ -255,6 +255,8 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal", "Tone/core/TimelineState
 		} else if (state === Tone.State.Stopped){
 			this._nextTick = -1;
 			this.ticks = 0;
+		} else if (state === Tone.State.Paused){
+			this._nextTick = -1;
 		}
 	};
 
