@@ -159,6 +159,8 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/LFO", "Tone/comp
 		},
 		set : function(freq){
 			this._lfo.min = this.toFrequency(freq);
+			//and set the max
+			this.octaves = this._octaves;
 		}
 	});
 
