@@ -19,7 +19,7 @@ function (Convolver, Basic, EffectTests, Buffer) {
 			});
 		});
 
-		EffectTests(Convolver, ir);
+		// EffectTests(Convolver, ir);
 
 		context("API", function(){
 
