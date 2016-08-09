@@ -3,8 +3,8 @@ node_js:
   - "4.1"
 before_install:
   - sudo apt-get update
-  - sudo apt-get install google-chrome-stable
-  - export CHROME_BIN=/usr/bin/google-chrome
+  - sudo apt-get install chromium-browser
+  - export CHROME_BIN=/usr/bin/chromium
   - export DISPLAY=:99.0
   - sh -e /etc/init.d/xvfb start
   # - export CHROME_BIN=chromium-browser
