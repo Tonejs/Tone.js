@@ -3,16 +3,7 @@ node_js:
   - "4.1"
 before_install:
   - sudo apt-get update
-  - sudo apt-get install -y libappindicator1 fonts-liberation
-  - wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-  - sudo apt-get install build-essential
-  - sudo apt-get install aptitude
-  - sudo apt-get install libstdc++6 
-  - sudo apt-get install lsb-base 
-  - sudo dpkg -i google-chrome*.deb
-  - npm install -g npm
-  - npm install -g node-gyp
-  - node-gyp clean
+  - sudo apt-get install google-chrome-stable
   - export CHROME_BIN=/usr/bin/google-chrome
   - export DISPLAY=:99.0
   - sh -e /etc/init.d/xvfb start
