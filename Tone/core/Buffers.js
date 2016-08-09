@@ -50,6 +50,16 @@ define(["Tone/core/Tone", "Tone/core/Buffer"], function (Tone) {
 	Tone.extend(Tone.Buffers);
 
 	/**
+	 *  True if the buffers object has a buffer by that name.
+	 *  @param  {String|Number}  name  The key or index of the 
+	 *                                 buffer.
+	 *  @return  {Boolean}
+	 */
+	Tone.Buffers.prototype.has = function(name){
+		return this._buffers.hasOwnProperty(name);
+	};
+
+	/**
 	 *  Get a buffer by name. If an array was loaded, 
 	 *  then use the array index.
 	 *  @param  {String|Number}  name  The key or index of the 
@@ -57,10 +67,10 @@ define(["Tone/core/Tone", "Tone/core/Buffer"], function (Tone) {
 	 *  @return  {Tone.Buffer}
 	 */
 	Tone.Buffers.prototype.get = function(name){
-		if (this._buffers.hasOwnProperty(name)){
+		if (this.has(name)){
 			return this._buffers[name];
 		} else {
-			throw new Error("Tone.Buffers: no buffer named"+name);
+			throw new Error("Tone.Buffers: no buffer named "+name);
 		}
 	};
 
