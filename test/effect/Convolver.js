@@ -5,7 +5,7 @@ function (Convolver, Basic, EffectTests, Buffer) {
 		Buffer.baseUrl = "/base/test/";
 	}
 
-	describe("Effect", function(){
+	describe("Convolver", function(){
 
 		Basic(Convolver);
 
