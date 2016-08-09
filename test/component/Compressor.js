@@ -40,7 +40,7 @@ function (Compressor, Basic, PassAudio, PassAudioStereo, Test) {
 			it("can be get and set through object", function(){
 				var comp = new Compressor();
 				var values = {
-					"ratio" : 22,
+					"ratio" : 12,
 					"threshold" : -30,
 					"release" : 0.5,
 					"attack" : 0.03,
@@ -53,7 +53,7 @@ function (Compressor, Basic, PassAudio, PassAudioStereo, Test) {
 
 			it("can be get and constructed with an object", function(){
 				var comp = new Compressor({
-					"ratio" : 22,
+					"ratio" : 12,
 					"threshold" : -30,
 					"release" : 0.5,
 					"attack" : 0.03,
@@ -66,11 +66,11 @@ function (Compressor, Basic, PassAudio, PassAudioStereo, Test) {
 			it("can get/set all interfaces", function(){
 				var comp = new Compressor();
 				var values = {
-					"ratio" : 22,
+					"ratio" : 12,
 					"threshold" : -30,
 					"release" : 0.5,
 					"attack" : 0.03,
-					"knee" : 20
+					"knee" : 18
 				};
 				comp.ratio.value = values.ratio;
 				comp.threshold.value = values.threshold;

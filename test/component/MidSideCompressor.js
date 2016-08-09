@@ -41,7 +41,7 @@ function (MidSideCompressor, Basic, PassAudio, PassAudioStereo, Test) {
 				var comp = new MidSideCompressor();
 				var values = {
 					"mid" : {
-						"ratio" : 22,
+						"ratio" : 16,
 						"threshold" : -30,
 					},
 					"side" : {
@@ -52,7 +52,7 @@ function (MidSideCompressor, Basic, PassAudio, PassAudioStereo, Test) {
 				};
 				comp.set(values);
 				expect(comp.get()).to.have.keys(["mid", "side"]);
-				expect(comp.get().mid.ratio).be.closeTo(22, 0.01);
+				expect(comp.get().mid.ratio).be.closeTo(16, 0.01);
 				expect(comp.get().side.release).be.closeTo(0.5, 0.01);
 				comp.dispose();
 			});
@@ -60,7 +60,7 @@ function (MidSideCompressor, Basic, PassAudio, PassAudioStereo, Test) {
 			it("can be constructed with an options object", function(){
 				var comp = new MidSideCompressor({
 					"mid" : {
-						"ratio" : 22,
+						"ratio" : 16,
 						"threshold" : -30,
 					},
 					"side" : {
@@ -69,7 +69,7 @@ function (MidSideCompressor, Basic, PassAudio, PassAudioStereo, Test) {
 						"knee" : 20
 					}
 				});
-				expect(comp.mid.ratio.value).be.closeTo(22, 0.01);
+				expect(comp.mid.ratio.value).be.closeTo(16, 0.01);
 				expect(comp.mid.threshold.value).be.closeTo(-30, 0.01);
 				expect(comp.side.release.value).be.closeTo(0.5, 0.01);
 				expect(comp.side.attack.value).be.closeTo(0.03, 0.01);
