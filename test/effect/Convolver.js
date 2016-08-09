@@ -1,12 +1,17 @@
 define(["Tone/effect/Convolver", "helper/Basic", "helper/EffectTests", "Tone/core/Buffer"], 
 function (Convolver, Basic, EffectTests, Buffer) {
+
+	if (window.__karma__){
+		Buffer.baseUrl = "/base/test/";
+	}
+
 	describe("Effect", function(){
 
 		Basic(Convolver);
 
 		var ir = new Buffer();
 
-		var testFile = "./audio/sine.wav";
+		var testFile = "./audio/sineStereo.wav";
 
 		before(function(done){
 			ir.load(testFile, function(){
@@ -14,7 +19,7 @@ function (Convolver, Basic, EffectTests, Buffer) {
 			});
 		});
 
-		// EffectTests(Convolver, ir);
+		EffectTests(Convolver, ir);
 
 		context("API", function(){
 
