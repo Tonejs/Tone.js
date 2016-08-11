@@ -121,47 +121,45 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function (T
 			throw new Error("Tone.BufferSource: can only be started once.");
 		}
 
-		if (!this.buffer){
-			throw new Error("Tone.BufferSource: no buffer set.");	
-		}
+		if (this.buffer){
+			time = this.toSeconds(time);
+			//if it's a loop the default offset is the loopstart point
+			if (this.loop){
+				offset = this.defaultArg(offset, this.loopStart);
+			} else {
+				//otherwise the default offset is 0
+				offset = this.defaultArg(offset, 0);
+			}
+			offset = this.toSeconds(offset);
+			//the values in seconds
+			time = this.toSeconds(time);
 
-		time = this.toSeconds(time);
-		//if it's a loop the default offset is the loopstart point
-		if (this.loop){
-			offset = this.defaultArg(offset, this.loopStart);
-		} else {
-			//otherwise the default offset is 0
-			offset = this.defaultArg(offset, 0);
-		}
-		offset = this.toSeconds(offset);
-		//the values in seconds
-		time = this.toSeconds(time);
+			this._source.start(time, offset);
 
-		this._source.start(time, offset);
+			gain = this.defaultArg(gain, 1);
+			this._gain = gain;
 
-		gain = this.defaultArg(gain, 1);
-		this._gain = gain;
+			//the fadeIn time
+			if (this.isUndef(fadeInTime)){
+				fadeInTime = this.toSeconds(this.fadeIn);
+			} else {
+				fadeInTime = this.toSeconds(fadeInTime);
+			}
 
-		//the fadeIn time
-		if (this.isUndef(fadeInTime)){
-			fadeInTime = this.toSeconds(this.fadeIn);
-		} else {
-			fadeInTime = this.toSeconds(fadeInTime);
-		}
+			if (fadeInTime > 0){
+				this._gainNode.gain.setValueAtTime(0, time);
+				this._gainNode.gain.linearRampToValueAtTime(this._gain, time + fadeInTime);
+			} else {
+				this._gainNode.gain.setValueAtTime(gain, time);
+			}
 
-		if (fadeInTime > 0){
-			this._gainNode.gain.setValueAtTime(0, time);
-			this._gainNode.gain.linearRampToValueAtTime(this._gain, time + fadeInTime);
-		} else {
-			this._gainNode.gain.setValueAtTime(gain, time);
-		}
+			this._startTime = time + fadeInTime;
 
-		this._startTime = time + fadeInTime;
-
-		if (!this.isUndef(duration)){
-			duration = this.defaultArg(duration, this.buffer.duration - offset);
-			duration = this.toSeconds(duration);
-			this.stop(time + duration + fadeInTime, fadeInTime);
+			if (!this.isUndef(duration)){
+				duration = this.defaultArg(duration, this.buffer.duration - offset);
+				duration = this.toSeconds(duration);
+				this.stop(time + duration + fadeInTime, fadeInTime);
+			}
 		}
 
 		return this;
@@ -175,31 +173,30 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function (T
 	 *  @return  {Tone.BufferSource}  this
 	 */
 	Tone.BufferSource.prototype.stop = function(time, fadeOutTime){
-		if (!this.buffer){
-			throw new Error("Tone.BufferSource: no buffer set.");	
-		}
+		if (this.buffer){
 
-		time = this.toSeconds(time);
-		
-		//the fadeOut time
-		if (this.isUndef(fadeOutTime)){
-			fadeOutTime = this.toSeconds(this.fadeOut);
-		} else {
-			fadeOutTime = this.toSeconds(fadeOutTime);
-		}
+			time = this.toSeconds(time);
+			
+			//the fadeOut time
+			if (this.isUndef(fadeOutTime)){
+				fadeOutTime = this.toSeconds(this.fadeOut);
+			} else {
+				fadeOutTime = this.toSeconds(fadeOutTime);
+			}
 
-		//cancel the end curve
-		this._gainNode.gain.cancelScheduledValues(this._startTime + this.sampleTime);
+			//cancel the end curve
+			this._gainNode.gain.cancelScheduledValues(this._startTime + this.sampleTime);
 
-		//set a new one
-		if (fadeOutTime > 0){
-			this._gainNode.gain.setValueAtTime(this._gain, time);
-			this._gainNode.gain.linearRampToValueAtTime(0, time + fadeOutTime);
-			time += fadeOutTime;
-		} else {
-			this._gainNode.gain.setValueAtTime(0, time);
+			//set a new one
+			if (fadeOutTime > 0){
+				this._gainNode.gain.setValueAtTime(this._gain, time);
+				this._gainNode.gain.linearRampToValueAtTime(0, time + fadeOutTime);
+				time += fadeOutTime;
+			} else {
+				this._gainNode.gain.setValueAtTime(0, time);
+			}
+			this._source.stop(time);
 		}
-		this._source.stop(time);
 
 		return this;
 	};
@@ -252,7 +249,11 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function (T
 	 */
 	Object.defineProperty(Tone.BufferSource.prototype, "buffer", {
 		get : function(){
-			return this._source.buffer;
+			if (this._source){
+				return this._source.buffer;
+			} else {
+				return null;
+			}
 		}, 
 		set : function(buffer){
 			if (buffer instanceof Tone.Buffer){
