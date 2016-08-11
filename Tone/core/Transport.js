@@ -206,11 +206,10 @@ function(Tone){
 			tickTime += Tone.Time(this._swingTicks * 2/3, "i").eval() * amount;
 		} 
 		//do the loop test
-		if (this.loop){
-			if (ticks === this._loopEnd){
-				this.ticks = this._loopStart;
-				ticks = this._loopStart;
-				this.trigger("loop", tickTime);
+		if (this.loop) {
+			if (ticks === this._loopEnd) {
+				this.seek(this._loopStart)
+				this.trigger('loop', tickTime);
 			}
 		}
 		//process the single occurrence events
@@ -412,6 +411,28 @@ function(Tone){
 		this.trigger("pause", time);
 		return this;
 	};
+
+	/**
+	 *  Seek to a location on the transport timeline. 
+	 *  @param  {Time} [time=now]
+	 *  @returns {Tone.Transport} this
+	 */
+	Tone.Transport.prototype.seek = function (time) {
+
+		if (this.state=="started") {
+			this.trigger('stop',0)
+		}
+
+		this.ticks = this.toTicks(time)
+		this._ticks = this.toTicks(time)
+
+		if (this.state=="started") {
+			this.trigger('start',0)
+		}
+
+  };
+
+
 
 	///////////////////////////////////////////////////////////////////////////////
 	//	SETTERS/GETTERS
