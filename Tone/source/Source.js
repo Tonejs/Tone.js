@@ -62,10 +62,19 @@ function(Tone){
 		 *  @type {Function}
 		 *  @private
 		 */
-		this._syncStart = function(time, offset){
-			time = this.toSeconds(time);
-			time += this.toSeconds(this._startDelay);
-			this.start(time, offset);
+		this._syncStart = function(time){
+			
+			var delayFromNow = this.toSeconds(this._startDelay) - this.toSeconds(Tone.Transport.position)
+			var offset = 0
+
+			if (delayFromNow<0) {
+				offset = Math.abs(delayFromNow)
+				delayFromNow = 0
+			}
+
+			time += delayFromNow
+			this.start(time, offset)
+
 		}.bind(this);
 
 		/**
