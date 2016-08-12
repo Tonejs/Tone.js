@@ -195,7 +195,10 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function (T
 			} else {
 				this._gainNode.gain.setValueAtTime(0, time);
 			}
-			this._source.stop(time);
+			// fix for safari bug and old FF
+			if (!this.isNumber(this._source.playbackState) || this._source.playbackState === 2){
+				this._source.stop(time);
+			}
 		}
 
 		return this;
