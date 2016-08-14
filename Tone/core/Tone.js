@@ -806,7 +806,10 @@ define(function(){
 
 	Tone.version = "r7";
 
-	console.log("%c * Tone.js " + Tone.version + " * ", "background: #000; color: #fff");
+	// allow optional silencing of this log
+	if (!window.TONE_SILENCE_VERSION_LOGGING) {
+		console.log("%c * Tone.js " + Tone.version + " * ", "background: #000; color: #fff");
+	}
 
 	return Tone;
 });
