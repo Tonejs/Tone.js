@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/core/Emitter"], function(Tone){
+define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type"], function(Tone){
 
 	"use strict";
 
@@ -51,13 +51,6 @@ define(["Tone/core/Tone", "Tone/core/Emitter"], function(Tone){
 		this.url = undefined;
 
 		/**
-		 *  Indicates if the buffer is loaded or not. 
-		 *  @type {boolean}
-		 *  @readOnly
-		 */
-		this.loaded = false;
-
-		/**
 		 *  The callback to invoke when everything is loaded. 
 		 *  @type {function}
 		 */
@@ -96,7 +89,6 @@ define(["Tone/core/Tone", "Tone/core/Emitter"], function(Tone){
 		} else {
 			this._buffer = buffer;
 		}
-		this.loaded = true;
 		return this;
 	};
 
@@ -135,9 +127,22 @@ define(["Tone/core/Tone", "Tone/core/Emitter"], function(Tone){
 	};
 
 	/**
+	 * If the buffer is loaded or not
+	 * @memberOf Tone.Buffer#
+	 * @type {Boolean}
+	 * @name loaded
+	 * @readOnly
+	 */
+	Object.defineProperty(Tone.Buffer.prototype, "loaded", {
+		get : function(){
+			return this.length > 0;
+		},
+	});
+
+	/**
 	 * The duration of the buffer. 
 	 * @memberOf Tone.Buffer#
-	 * @type {number}
+	 * @type {Number}
 	 * @name duration
 	 * @readOnly
 	 */
@@ -145,6 +150,41 @@ define(["Tone/core/Tone", "Tone/core/Emitter"], function(Tone){
 		get : function(){
 			if (this._buffer){
 				return this._buffer.duration;
+			} else {
+				return 0;
+			}
+		},
+	});
+
+	/**
+	 * The length of the buffer in samples
+	 * @memberOf Tone.Buffer#
+	 * @type {Number}
+	 * @name length
+	 * @readOnly
+	 */
+	Object.defineProperty(Tone.Buffer.prototype, "length", {
+		get : function(){
+			if (this._buffer){
+				return this._buffer.length;
+			} else {
+				return 0;
+			}
+		},
+	});
+
+	/**
+	 * The number of discrete audio channels. Returns 0 if no buffer
+	 * is loaded.
+	 * @memberOf Tone.Buffer#
+	 * @type {Number}
+	 * @name numberOfChannels
+	 * @readOnly
+	 */
+	Object.defineProperty(Tone.Buffer.prototype, "numberOfChannels", {
+		get : function(){
+			if (this._buffer){
+				return this._buffer.numberOfChannels;
 			} else {
 				return 0;
 			}
@@ -163,6 +203,89 @@ define(["Tone/core/Tone", "Tone/core/Emitter"], function(Tone){
 			}
 		}
 		return this;
+	};
+
+	/**
+	 *  Set the audio buffer from the array
+	 *  @param {Float32Array} array The array to fill the audio buffer
+	 *  @param {Number} [channels=1] The number of channels contained in the array. 
+	 *                               If the channel is more than 1, the input array
+	 *                               is expected to be a multidimensional array
+	 *                               with dimensions equal to the number of channels.
+	 *  @return {Tone.Buffer} this
+	 */
+	Tone.Buffer.prototype.fromArray = function(array){
+		var isMultidimensional = array[0].length > 0;
+		var channels = isMultidimensional ? array.length : 1;
+		var len = isMultidimensional ? array[0].length : array.length;
+		var buffer = this.context.createBuffer(channels, len, this.context.sampleRate);
+		if (!isMultidimensional && channels === 1){
+			array = [array];
+		}
+		for (var c = 0; c < channels; c++){
+			if (this.isFunction(buffer.copyToChannel)){
+				buffer.copyToChannel(array[c], c);
+			} else {
+				var channel = buffer.getChannelData(c);
+				var channelArray = array[c];
+				for (var i = 0; i < channelArray.length; i++){
+					channel[i] = channelArray[i];
+				}
+			}
+		}
+		this._buffer = buffer;
+		return this;
+	};
+
+	/**
+	 * 	Get the buffer as an array. Single channel buffers will return a 1-dimensional 
+	 * 	Float32Array, and multichannel buffers will return multidimensional arrays.
+	 *  @param {Number=} channel Optionally only copy a single channel from the array.
+	 *  @return {Array}
+	 */
+	Tone.Buffer.prototype.toArray = function(channel){
+		if (this.isNumber(channel)){
+			return this._buffer.getChannelData(channel);
+		} else {
+			var ret = [];
+			for (var c = 0; c < this.numberOfChannels; c++){
+				ret[c] = new Float32Array(this.length)
+				if (this.isFunction(this._buffer.copyFromChannel)){
+					this._buffer.copyFromChannel(ret[c], c);
+				} else {
+					var channel = this._buffer.getChannelData(c);
+					var retArray = ret[c];
+					for (var i = 0; i < channelArray.length; i++){
+						retArray[i] = channel[i];
+					}
+				}
+			}
+			if (ret.length === 1){
+				return ret[0];
+			} else {
+				return ret;
+			}
+		}
+	};
+
+	/**
+	 *  Cut a subsection of the array and return a buffer of the
+	 *  subsection. Does not modify the original buffer
+	 *  @param {Time} start The time to start the slice
+	 *  @param {Time=} end The end time to slice. If none is given
+	 *                     will default to the end of the buffer
+	 *  @return {Tone.Buffer} this
+	 */
+	Tone.Buffer.prototype.slice = function(start, end){
+		end = this.defaultArg(end, this.duration);
+		var startSamples = Math.floor(this.context.sampleRate * this.toSeconds(start));
+		var endSamples = Math.floor(this.context.sampleRate * this.toSeconds(end));
+		var replacement = []
+		for (var i = 0; i < this.numberOfChannels; i++){
+			replacement[i] = this.toArray(i).slice(startSamples, endSamples);
+		}
+		var retBuffer = new Tone.Buffer().fromArray(replacement);
+		return retBuffer;
 	};
 
 	/**
