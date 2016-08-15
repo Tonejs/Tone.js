@@ -158,6 +158,29 @@ function (Test, Transport, Tone, Offline, TransportTime) {
 				}, 0.1);
 			});
 
+			it("can get the current position in seconds", function(done){
+				Offline(function(dest, test, after){
+					expect(Tone.Transport.seconds).to.equal(0);
+					Tone.Transport.start();
+					test(function(sample, time){
+						expect(Tone.Transport.seconds).to.be.closeTo(time, 0.05);
+					});
+					after(function(){
+						expect(Tone.Transport.seconds).to.be.closeTo(0.8, 0.05);
+						Tone.Transport.stop();
+						done();
+					});
+				}, 0.8);
+			});
+
+			it("can set the current position in seconds", function(){
+				expect(Tone.Transport.seconds).to.equal(0);
+				Tone.Transport.seconds = 3;
+				expect(Tone.Transport.seconds).to.be.closeTo(3, 0.05);
+				Tone.Transport.seconds = 0;
+				expect(Tone.Transport.seconds).to.equal(0);
+			});
+
 			it("can set the current position in BarsBeatsSixteenths", function(){
 				expect(Tone.Transport.position).to.equal("0:0:0");
 				Tone.Transport.position = "3:0";

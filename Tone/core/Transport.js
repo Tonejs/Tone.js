@@ -543,6 +543,23 @@ function(Tone){
 	});
 
 	/**
+	 *  The Transport's position in seconds
+	 *  Setting the value will jump to that position right away. 
+	 *  @memberOf Tone.Transport#
+	 *  @type {Seconds}
+	 *  @name seconds
+	 */
+	Object.defineProperty(Tone.Transport.prototype, "seconds", {
+		get : function(){
+			return Tone.TransportTime(this.ticks, "i").toSeconds();
+		},
+		set : function(progress){
+			var ticks = this.toTicks(progress);
+			this.ticks = ticks;
+		}
+	});
+
+	/**
 	 *  The Transport's loop position as a normalized value. Always
 	 *  returns 0 if the transport if loop is not true. 
 	 *  @memberOf Tone.Transport#
