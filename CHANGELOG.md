@@ -1,3 +1,7 @@
+### r8
+
+* Transport.seconds returns the progress in seconds. 
+
 ### r7
 
 * MetalSynth creates metalic, cymbal sounds
