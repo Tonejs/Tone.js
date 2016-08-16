@@ -1,6 +1,8 @@
 ### r8
 
 * Transport.seconds returns the progress in seconds. 
+* Buffer.from/toArray, Float32Array <-> Buffer conversions
+* Buffer.slice(start, end) slices and returns a subsection of the Buffer
 
 ### r7
 
