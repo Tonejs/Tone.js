@@ -15,9 +15,10 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type"], function(Tone)
 	 *  @constructor 
 	 *  @extends {Tone}
 	 *  @param {AudioBuffer|string} url The url to load, or the audio buffer to set. 
-	 *  @param {function=} onload A callback which is invoked after the buffer is loaded. 
+	 *  @param {Function=} onload A callback which is invoked after the buffer is loaded. 
 	 *                            It's recommended to use Tone.Buffer.onload instead 
 	 *                            since it will give you a callback when ALL buffers are loaded.
+	 *  @param {Function=} onerror The callback to invoke if there is an error
 	 *  @example
 	 * var buffer = new Tone.Buffer("path/to/sound.mp3", function(){
 	 * 	//the buffer is now available.
@@ -26,7 +27,7 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type"], function(Tone)
 	 */
 	Tone.Buffer = function(){
 
-		var options = this.optionsObject(arguments, ["url", "onload"], Tone.Buffer.defaults);
+		var options = this.optionsObject(arguments, ["url", "onload", "onerror"], Tone.Buffer.defaults);
 
 		/**
 		 *  stores the loaded AudioBuffer
@@ -37,7 +38,7 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type"], function(Tone)
 
 		/**
 		 *  indicates if the buffer should be reversed or not
-		 *  @type {boolean}
+		 *  @type {Boolean}
 		 *  @private
 		 */
 		this._reversed = options.reverse;
@@ -45,16 +46,22 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type"], function(Tone)
 		/**
 		 *  The url of the buffer. <code>undefined</code> if it was 
 		 *  constructed with a buffer
-		 *  @type {string}
+		 *  @type {String}
 		 *  @readOnly
 		 */
 		this.url = undefined;
 
 		/**
 		 *  The callback to invoke when everything is loaded. 
-		 *  @type {function}
+		 *  @type {Function}
 		 */
 		this.onload = options.onload.bind(this, this);
+
+		/**
+		 *  The callback to invoke if there is an error
+		 *  @type {Function}
+		 */
+		this.onerror = options.onerror.bind(this);
 
 		if (options.url instanceof AudioBuffer || options.url instanceof Tone.Buffer){
 			this.set(options.url);
@@ -74,6 +81,7 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type"], function(Tone)
 	Tone.Buffer.defaults = {
 		"url" : undefined,
 		"onload" : Tone.noOp,
+		"onerror" : Tone.noOp,
 		"reverse" : false
 	};
 
@@ -291,7 +299,7 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type"], function(Tone)
 	/**
 	 * Reverse the buffer.
 	 * @memberOf Tone.Buffer#
-	 * @type {boolean}
+	 * @type {Boolean}
 	 * @name reverse
 	 */
 	Object.defineProperty(Tone.Buffer.prototype, "reverse", {
@@ -329,7 +337,7 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type"], function(Tone)
 
 	/**
 	 *  the total number of downloads
-	 *  @type {number}
+	 *  @type {Number}
 	 *  @private
 	 */
 	Tone.Buffer._totalDownloads = 0;
@@ -337,14 +345,14 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type"], function(Tone)
 	/**
 	 *  the maximum number of simultaneous downloads
 	 *  @static
-	 *  @type {number}
+	 *  @type {Number}
 	 */
 	Tone.Buffer.MAX_SIMULTANEOUS_DOWNLOADS = 6;
 	
 	/**
 	 *  Adds a file to be loaded to the loading queue
-	 *  @param   {string}   url      the url to load
-	 *  @param   {function} callback the callback to invoke once it's loaded
+	 *  @param   {String}   url      the url to load
+	 *  @param   {Function} callback the callback to invoke once it's loaded
 	 *  @private
 	 */
 	Tone.Buffer._addToQueue = function(url, buffer){
@@ -404,13 +412,14 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type"], function(Tone)
 					next.Buffer.onload(next.Buffer);
 					Tone.Buffer._onprogress();
 					Tone.Buffer._next();
+				}, function(err){
+					next.Buffer.onerror(err);
+					Tone.Buffer.trigger("error", err);
+					Tone.Buffer._next();
 				});
 				next.xhr.onprogress = function(event){
 					next.progress = event.loaded / event.total;
 					Tone.Buffer._onprogress();
-				};
-				next.xhr.onerror = function(e){
-					Tone.Buffer.trigger("error", e);
 				};
 			} 
 		} else if (Tone.Buffer._currentDownloads.length === 0){
@@ -451,24 +460,34 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type"], function(Tone)
 	 *  Makes an xhr reqest for the selected url then decodes
 	 *  the file as an audio buffer. Invokes
 	 *  the callback once the audio buffer loads.
-	 *  @param {string} url The url of the buffer to load.
+	 *  @param {String} url The url of the buffer to load.
 	 *                      filetype support depends on the
 	 *                      browser.
-	 *  @param {function} callback The function to invoke when the url is loaded. 
+	 *  @param {Function} callback The function to invoke when the url is loaded. 
+	 *  @param {Function} error Callback to invoke if there is an error. 
 	 *  @returns {XMLHttpRequest} returns the XHR
 	 */
-	Tone.Buffer.load = function(url, callback){
+	Tone.Buffer.load = function(url, callback, onerror){
 		var request = new XMLHttpRequest();
 		request.open("GET", Tone.Buffer.baseUrl + url, true);
 		request.responseType = "arraybuffer";
 		// decode asynchronously
 		request.onload = function() {
-			Tone.context.decodeAudioData(request.response, function(buff) {
-				callback(buff);
-			}, function(){
-				throw new Error("Tone.Buffer: could not decode audio data:" + url);
-			});
-		};
+			if (request.status === 200){
+				Tone.context.decodeAudioData(request.response, function(buff) {
+					callback(buff);
+				}, function(){
+					if (onerror){
+						onerror("Tone.Buffer: could not decode audio data: " + url);
+					} else {
+						throw new Error("Tone.Buffer: could not decode audio data: " + url);
+					}
+				}.bind(this));
+			} else {
+				onerror("Tone.Buffer: could not locate file: "+url)
+			}
+		}.bind(this);
+		request.onerror = onerror;
 		//send the request
 		request.send();
 		return request;
