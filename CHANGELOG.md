@@ -3,6 +3,8 @@
 * Transport.seconds returns the progress in seconds. 
 * Buffer.from/toArray, Float32Array <-> Buffer conversions
 * Buffer.slice(start, end) slices and returns a subsection of the Buffer
+* Source.sync now syncs all subsequent calls to `start` and `stop` to the TransportTime instead of the AudioContext time. 
+	* e.g. source.sync().start(0, 0.4).stop(0.8);
 
 ### r7
 
