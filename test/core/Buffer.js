@@ -46,6 +46,23 @@ define(["Test", "Tone/core/Buffer"], function (Test, Buffer) {
 			});
 		});
 
+		it("invokes the error callback if there is a problem with the file", function(done){
+			var buffer = new Buffer("nosuchfile.wav", function(){
+				throw new Error("shouldn't invoke this function");
+			}, function(e){
+				buffer.dispose();
+				done();
+			});
+		});
+
+		it("invokes the error callback on static .load method", function(done){
+			Buffer.load("nosuchfile.wav", function(){
+				throw new Error("shouldn't invoke this function");
+			}, function(){
+				done();
+			});
+		});
+
 		it("the static on('load') method is invoked", function(done){
 			var buffer = new Buffer(testFile);
 			Buffer.on("load", function(){
@@ -54,6 +71,7 @@ define(["Test", "Tone/core/Buffer"], function (Test, Buffer) {
 				done();
 			});
 		});
+
 
 		it("can be constructed with an options object", function(done){
 			var buffer = new Buffer({
