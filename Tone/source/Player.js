@@ -179,6 +179,10 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 			}
 			offset = this.toSeconds(offset);
 			duration = this.defaultArg(duration, this._buffer.duration - offset);
+			//make sure it has a positive duration
+			if (duration <= 0){
+				return this;
+			}
 			//the values in seconds
 			startTime = this.toSeconds(startTime);
 			duration = this.toSeconds(duration);
