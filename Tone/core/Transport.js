@@ -589,6 +589,8 @@ function(Tone){
 		},
 		set : function(t){
 			this._clock.ticks = t;
+			// the 'seek' callback
+			this.trigger("seek", this.seconds);
 		}
 	});
 
