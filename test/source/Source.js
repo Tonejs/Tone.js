@@ -243,7 +243,6 @@ function (Test, Source, Transport, OfflineTest, Tone) {
 				OfflineTest(function(output, testFn, tearDown){
 					var source = new Source();
 					source._start = function(time, offset){
-						console.log(time, offset);
 						expect(time).to.be.closeTo(0.3, 0.05);
 						expect(offset).to.be.closeTo(0.2, 0.05);
 					};
