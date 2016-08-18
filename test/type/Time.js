@@ -113,6 +113,11 @@ define(["helper/Basic", "Test", "Tone/core/Transport", "Tone/type/Time", "Tone/c
 				Tone.Transport.timeSignature = 4;
 			});
 
+			it ("converts time into milliseconds", function(){
+				expect(Time(2).toMilliseconds()).to.equal(2000);
+				expect(Time("4n").toMilliseconds()).to.equal(500);
+			});
+
 			it ("converts time into samples", function(){
 				expect(Time(2).toSamples()).to.equal(2 * Tone.context.sampleRate);
 			});
