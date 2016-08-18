@@ -251,6 +251,14 @@ define(["Tone/core/Tone", "Tone/type/TimeBase"], function (Tone) {
 	};
 
 	/**
+	 *  Return the time in milliseconds.
+	 *  @return  {Milliseconds} 
+	 */
+	Tone.Time.prototype.toMilliseconds = function(){
+		return this.toSeconds() * 1000;
+	};
+
+	/**
 	 *  Return the time in seconds.
 	 *  @return  {Seconds} 
 	 */
