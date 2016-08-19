@@ -44,6 +44,31 @@ define(["Test", "Tone/core/Buffers", "Tone/core/Buffer"], function (Test, Buffer
 			});
 		});
 
+		it("tests if it has a buffer", function(done){
+			var buffer = new Buffers({
+				"sine" : testFile,
+				"kick" : testFile2
+			}, function(buff){
+				expect(buffer.has("kick")).to.be.true;
+				expect(buffer.has("sine")).to.be.true;
+				expect(buffer.has("nope")).to.be.false;
+				buffer.dispose();
+				done();
+			});
+		});
+
+		it("reports itself as loaded", function(done){
+			var buffer = new Buffers({
+				"sine" : testFile,
+				"kick" : testFile2
+			}, function(buff){
+				expect(buffer.loaded).to.be.true;
+				buffer.dispose();
+				done();
+			});
+			expect(buffer.loaded).to.be.false;
+		});
+
 		it("can get a buffer loaded from an array", function(done){
 			var buffer = new Buffers([testFile, testFile2], function(buff){
 				expect(buff.get(0)).to.be.instanceof(Buffer);
