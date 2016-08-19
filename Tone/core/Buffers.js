@@ -87,6 +87,24 @@ define(["Tone/core/Tone", "Tone/core/Buffer"], function (Tone) {
 	};
 
 	/**
+	 * If the buffers are loaded or not
+	 * @memberOf Tone.Buffers#
+	 * @type {Boolean}
+	 * @name loaded
+	 * @readOnly
+	 */
+	Object.defineProperty(Tone.Buffers.prototype, "loaded", {
+		get : function(){
+			var isLoaded = true;
+			for (var buffName in this._buffers){
+				var buff = this.get(buffName)
+				isLoaded = isLoaded && buff.loaded;
+			}
+			return isLoaded;
+		}
+	});
+
+	/**
 	 *  Add a buffer by name and url to the Buffers
 	 *  @param  {String}    name      A unique name to give
 	 *                                the buffer
