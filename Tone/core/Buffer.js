@@ -261,10 +261,10 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type"], function(Tone)
 				if (this.isFunction(this._buffer.copyFromChannel)){
 					this._buffer.copyFromChannel(ret[c], c);
 				} else {
-					var channel = this._buffer.getChannelData(c);
+					var channelData = this._buffer.getChannelData(c);
 					var retArray = ret[c];
-					for (var i = 0; i < channelArray.length; i++){
-						retArray[i] = channel[i];
+					for (var i = 0; i < channelData.length; i++){
+						retArray[i] = channelData[i];
 					}
 				}
 			}
@@ -288,7 +288,7 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type"], function(Tone)
 		end = this.defaultArg(end, this.duration);
 		var startSamples = Math.floor(this.context.sampleRate * this.toSeconds(start));
 		var endSamples = Math.floor(this.context.sampleRate * this.toSeconds(end));
-		var replacement = []
+		var replacement = [];
 		for (var i = 0; i < this.numberOfChannels; i++){
 			replacement[i] = this.toArray(i).slice(startSamples, endSamples);
 		}
@@ -484,7 +484,7 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type"], function(Tone)
 					}
 				}.bind(this));
 			} else {
-				onerror("Tone.Buffer: could not locate file: "+url)
+				onerror("Tone.Buffer: could not locate file: "+url);
 			}
 		}.bind(this);
 		request.onerror = onerror;

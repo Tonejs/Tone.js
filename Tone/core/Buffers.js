@@ -97,7 +97,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer"], function (Tone) {
 		get : function(){
 			var isLoaded = true;
 			for (var buffName in this._buffers){
-				var buff = this.get(buffName)
+				var buff = this.get(buffName);
 				isLoaded = isLoaded && buff.loaded;
 			}
 			return isLoaded;
