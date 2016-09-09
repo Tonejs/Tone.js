@@ -257,7 +257,7 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type"], function(Tone)
 		} else {
 			var ret = [];
 			for (var c = 0; c < this.numberOfChannels; c++){
-				ret[c] = new Float32Array(this.length)
+				ret[c] = new Float32Array(this.length);
 				if (this.isFunction(this._buffer.copyFromChannel)){
 					this._buffer.copyFromChannel(ret[c], c);
 				} else {
