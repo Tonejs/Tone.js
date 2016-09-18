@@ -148,18 +148,15 @@ function(Tone){
 	/**
 	 *  Sync the start/stop/pause to the transport 
 	 *  and the frequency to the bpm of the transport
-	 *
-	 *  @param {Time} [delay=0] the time to delay the start of the
-	 *                                LFO from the start of the transport
 	 *  @returns {Tone.LFO} this
 	 *  @example
 	 *  lfo.frequency.value = "8n";
-	 *  lfo.sync();
+	 *  lfo.sync().start(0)
 	 *  //the rate of the LFO will always be an eighth note, 
 	 *  //even as the tempo changes
 	 */
-	Tone.LFO.prototype.sync = function(delay){
-		this._oscillator.sync(delay);
+	Tone.LFO.prototype.sync = function(){
+		this._oscillator.sync();
 		this._oscillator.syncFrequency();
 		return this;
 	};
