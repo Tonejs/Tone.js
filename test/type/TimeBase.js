@@ -19,19 +19,71 @@ define(["helper/Basic", "Test", "Tone/core/Transport", "Tone/type/TimeBase", "To
 			it("can pass in a number in the constructor", function(){
 				var time = TimeBase(1);
 				expect(time).to.be.instanceOf(TimeBase);
+				expect(time.eval()).to.equal(1);
 				time.dispose();
 			});
 
 			it("can pass in a string in the constructor", function(){
 				var time = TimeBase("1");
 				expect(time).to.be.instanceOf(TimeBase);
+				expect(time.eval()).to.equal(1);
+				time.dispose();
+			});
+
+			it("can pass in a TimeBase in the constructor", function(){
+				var arg = TimeBase(1);
+				var time = TimeBase(arg);
+				expect(time.eval()).to.equal(1);
 				time.dispose();
 			});
 
 			it("can pass in a value and a type", function(){
 				expect(TimeBase(4, "n").eval()).to.equal(0.5);
+				expect(TimeBase("4", "n").eval()).to.equal(0.5);
 			});
 
+		});
+
+		context("Copy/Clone/Set", function(){
+
+			it("can set a new value", function(){
+				var time = new TimeBase(1);
+				expect(time.eval()).to.equal(1);
+				time.set(2);
+				expect(time.eval()).to.equal(2);
+			});
+
+			it("can clone a TimeBase", function(){
+				var time = new TimeBase(1);
+				var cloned = time.clone();
+				expect(cloned).to.not.equal(time);
+				expect(cloned).to.be.instanceOf(TimeBase);
+				expect(time.eval()).to.equal(1);
+				expect(cloned.eval()).to.equal(1);
+			});
+
+			it("the clone is not modified when the original is", function(){
+				var time = new TimeBase(1);
+				var cloned = time.clone();				
+				expect(time.eval()).to.equal(1);
+				expect(cloned.eval()).to.equal(1);
+				time.add(1);
+				expect(time.eval()).to.equal(2);
+				expect(cloned.eval()).to.equal(1);
+				time.set(3);
+				expect(time.eval()).to.equal(3);
+				expect(cloned.eval()).to.equal(1);
+			});
+
+			it("can copy values from another TimeBase", function(){
+				var time = new TimeBase(2);
+				var copy = new TimeBase(1);	
+				expect(time.eval()).to.equal(2);
+				expect(copy.eval()).to.equal(1);
+				copy.copy(time);
+				expect(time.eval()).to.equal(2);
+				expect(copy.eval()).to.equal(2);
+			});
 		});
 
 		context("Eval", function(){

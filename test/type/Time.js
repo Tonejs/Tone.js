@@ -40,6 +40,49 @@ define(["helper/Basic", "Test", "Tone/core/Transport", "Tone/type/Time", "Tone/c
 			});
 		});
 
+		context("Copy/Clone/Set", function(){
+
+			it("can set a new value", function(){
+				var time = new Time(1);
+				expect(time.eval()).to.equal(1);
+				time.set(2);
+				expect(time.eval()).to.equal(2);
+			});
+
+			it("can clone a Time", function(){
+				var time = new Time("+1");
+				var cloned = time.clone();
+				expect(cloned).to.not.equal(time);
+				expect(cloned).to.be.instanceOf(Time);
+				var now = time.now();
+				expect(time.eval()).to.be.closeTo(1 + now, 0.01);
+				expect(cloned.eval()).to.be.closeTo(1 + now, 0.01);
+			});
+
+			it("the clone is not modified when the original is", function(){
+				var time = new Time(1);
+				var cloned = time.clone();				
+				expect(time.eval()).to.equal(1);
+				expect(cloned.eval()).to.equal(1);
+				time.add(1);
+				expect(time.eval()).to.equal(2);
+				expect(cloned.eval()).to.equal(1);
+				time.set(3);
+				expect(time.eval()).to.equal(3);
+				expect(cloned.eval()).to.equal(1);
+			});
+
+			it("can copy values from another Time", function(){
+				var time = new Time(2);
+				var copy = new Time(1);	
+				expect(time.eval()).to.equal(2);
+				expect(copy.eval()).to.equal(1);
+				copy.copy(time);
+				expect(time.eval()).to.equal(2);
+				expect(copy.eval()).to.equal(2);
+			});
+		});
+
 		context("Quantizes values", function(){
 
 			it("returns the time quantized to the a subdivision", function(){
