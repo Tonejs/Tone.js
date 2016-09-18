@@ -418,8 +418,10 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type"], function(Tone)
 					Tone.Buffer._next();
 				});
 				next.xhr.onprogress = function(event){
-					next.progress = event.loaded / event.total;
-					Tone.Buffer._onprogress();
+					if (event.lengthComputable){
+						next.progress = event.loaded / event.total;
+						Tone.Buffer._onprogress();
+					}
 				};
 			} 
 		} else if (Tone.Buffer._currentDownloads.length === 0){
