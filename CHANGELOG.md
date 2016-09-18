@@ -4,7 +4,10 @@
 * Buffer.from/toArray, Float32Array <-> Buffer conversions
 * Buffer.slice(start, end) slices and returns a subsection of the Buffer
 * Source.sync now syncs all subsequent calls to `start` and `stop` to the TransportTime instead of the AudioContext time. 
-	* e.g. source.sync().start(0, 0.4).stop(0.8);
+	* e.g. source.sync().start(0).stop(0.8); //plays source between 0 and 0.8 of the Transport
+* Param can accept an LFO description in the constructor or .value
+	* e.g. param.value = {min : 10, max : 20, frequency : 0.4}
+* Time.TimeBase has clone/copy methods.
 
 ### r7
 
