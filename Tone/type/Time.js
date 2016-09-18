@@ -113,6 +113,16 @@ define(["Tone/core/Tone", "Tone/type/TimeBase"], function (Tone) {
 		return this._noOp;
 	};
 
+	/**
+	 *  Copies the value of time to this Time
+	 *  @param {Tone.Time} time
+	 *  @return  {Time}
+	 */
+	Tone.Time.prototype.copy = function(time){
+		Tone.TimeBase.prototype.copy.call(this, time);
+		this._plusNow = time._plusNow;
+		return this;
+	};
 
 	//CONVERSIONS//////////////////////////////////////////////////////////////
 

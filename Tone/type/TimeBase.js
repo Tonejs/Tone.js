@@ -26,20 +26,18 @@ define(["Tone/core/Tone"], function (Tone) {
 			 */
 			this._expr = this._noOp;
 
-			//default units
-			units = this.defaultArg(units, this._defaultUnits);
-
-			//get the value from the given time
-			if (this.isString(val)){
-				this._expr = this._parseExprString(val);
-			} else if (this.isNumber(val)){
+			if (val instanceof Tone.TimeBase){
+				this.copy(val);
+			} else if (!this.isUndef(val) && this.isUndef(units)){
+				this.set(val);
+			} else if (!this.isUndef(units) || this.isNumber(val)){
+				//default units
+				units = this.defaultArg(units, this._defaultUnits);
 				var method = this._primaryExpressions[units].method;
 				this._expr = method.bind(this, val);
 			} else if (this.isUndef(val)){
 				//default expression
 				this._expr = this._defaultExpr();
-			} else if (val instanceof Tone.TimeBase){
-				this._expr = val._expr;
 			}
 		} else {
 
@@ -58,6 +56,26 @@ define(["Tone/core/Tone"], function (Tone) {
 	Tone.TimeBase.prototype.set = function(exprString){
 		this._expr = this._parseExprString(exprString);
 		return this;
+	};
+
+	/**
+	 *  Return a clone of the TimeBase object.
+	 *  @return  {Tone.TimeBase} The new cloned Tone.TimeBase
+	 */
+	Tone.TimeBase.prototype.clone = function(){
+		var instance = new this.constructor();
+		instance.copy(this);
+		return instance;
+	};
+
+	/**
+	 *  Copies the value of time to this Time
+	 *  @param {Tone.TimeBase} time
+	 *  @return  {TimeBase}
+	 */
+	Tone.TimeBase.prototype.copy = function(time){
+		var val = time._expr();
+		return this.set(val);
 	};
 
 	///////////////////////////////////////////////////////////////////////////
@@ -357,6 +375,9 @@ define(["Tone/core/Tone"], function (Tone) {
 	 *  @private
 	 */
 	Tone.TimeBase.prototype._parseExprString = function(exprString){
+		if (!this.isString(exprString)){
+			exprString = exprString.toString();
+		}
 		var lexer = this._tokenize(exprString);
 		var tree = this._parseBinary(lexer);
 		return tree;
