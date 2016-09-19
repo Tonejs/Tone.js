@@ -331,7 +331,7 @@ define(["Tone/core/Tone", "Tone/type/Type"], function(Tone){
 	 */
 	Tone.Param.prototype.rampTo = function(value, rampTime, startTime){
 		rampTime = this.defaultArg(rampTime, 0);
-		if (this.units === Tone.Type.Frequency || this.units === Tone.Type.BPM || this.units === Tone.Type.Decibels){
+		if (this.units === Tone.Type.Frequency || this.units === Tone.Type.BPM){
 			this.exponentialRampToValue(value, rampTime, startTime);
 		} else {
 			this.linearRampToValue(value, rampTime, startTime);
