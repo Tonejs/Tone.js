@@ -9,8 +9,7 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type"], function(Tone)
 	 *          <br><br>
 	 *          Aside from load callbacks from individual buffers, Tone.Buffer 
 	 *  		provides static methods which keep track of the loading progress 
-	 *  		of all of the buffers. These methods are Tone.Buffer.onload, Tone.Buffer.onprogress,
-	 *  		and Tone.Buffer.onerror. 
+	 *  		of all of the buffers. These methods are Tone.Buffer.on("load" / "progress" / "error")
 	 *
 	 *  @constructor 
 	 *  @extends {Tone}
@@ -414,7 +413,7 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type"], function(Tone)
 					Tone.Buffer._next();
 				}, function(err){
 					next.Buffer.onerror(err);
-					Tone.Buffer.trigger("error", err);
+					Tone.Buffer.emit("error", err);
 					Tone.Buffer._next();
 				});
 				next.xhr.onprogress = function(event){
@@ -425,7 +424,7 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type"], function(Tone)
 				};
 			} 
 		} else if (Tone.Buffer._currentDownloads.length === 0){
-			Tone.Buffer.trigger("load");
+			Tone.Buffer.emit("load");
 			//reset the downloads
 			Tone.Buffer._totalDownloads = 0;
 		}
@@ -448,7 +447,7 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type"], function(Tone)
 		}
 		var currentDownloadProgress = currentDLLen - inprogress;
 		var completed = Tone.Buffer._totalDownloads - Tone.Buffer._queue.length - currentDownloadProgress;
-		Tone.Buffer.trigger("progress", completed / Tone.Buffer._totalDownloads);
+		Tone.Buffer.emit("progress", completed / Tone.Buffer._totalDownloads);
 	};
 
 	/**
@@ -467,7 +466,7 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type"], function(Tone)
 	 *                      browser.
 	 *  @param {Function} callback The function to invoke when the url is loaded. 
 	 *  @param {Function} error Callback to invoke if there is an error. 
-	 *  @returns {XMLHttpRequest} returns the XHR
+	 *  @returns {Promise} returns a Promise which resolves with the raw AudioBuffer
 	 */
 	Tone.Buffer.load = function(url, callback, onerror){
 		var request = new XMLHttpRequest();

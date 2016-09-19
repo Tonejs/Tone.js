@@ -210,7 +210,7 @@ function(Tone){
 			if (ticks === this._loopEnd){
 				this.ticks = this._loopStart;
 				ticks = this._loopStart;
-				this.trigger("loop", tickTime);
+				this.emit("loop", tickTime);
 			}
 		}
 		//process the single occurrence events
@@ -383,7 +383,7 @@ function(Tone){
 		}
 		//start the clock
 		this._clock.start(time, offset.toTicks());
-		this.trigger("start", time, offset.toSeconds());
+		this.emit("start", time, offset.toSeconds());
 		return this;
 	};
 
@@ -397,7 +397,7 @@ function(Tone){
 	Tone.Transport.prototype.stop = function(time){
 		time = this.toSeconds(time);
 		this._clock.stop(time);
-		this.trigger("stop", time);
+		this.emit("stop", time);
 		return this;
 	};
 
@@ -409,7 +409,7 @@ function(Tone){
 	Tone.Transport.prototype.pause = function(time){
 		time = this.toSeconds(time);
 		this._clock.pause(time);
-		this.trigger("pause", time);
+		this.emit("pause", time);
 		return this;
 	};
 
@@ -590,7 +590,7 @@ function(Tone){
 		set : function(t){
 			this._clock.ticks = t;
 			// the 'seek' callback
-			this.trigger("seek", this.seconds);
+			this.emit("seek", this.seconds);
 		}
 	});
 

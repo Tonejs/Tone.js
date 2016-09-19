@@ -14,7 +14,7 @@ define(["Test", "Tone/core/Emitter"], function (Test, Emitter) {
 				done();
 				emitter.dispose();
 			});
-			emitter.trigger("something");
+			emitter.emit("something");
 		});
 
 		it ("can unbind events", function(){
@@ -24,7 +24,7 @@ define(["Test", "Tone/core/Emitter"], function (Test, Emitter) {
 			};
 			emitter.on("something", callback);
 			emitter.off("something", callback);
-			emitter.trigger("something");
+			emitter.emit("something");
 			emitter.dispose();
 		});
 
@@ -37,7 +37,7 @@ define(["Test", "Tone/core/Emitter"], function (Test, Emitter) {
 				throw new Error("should call this");	
 			});
 			emitter.off("something");
-			emitter.trigger("something");
+			emitter.emit("something");
 			emitter.dispose();
 		});
 
@@ -49,14 +49,14 @@ define(["Test", "Tone/core/Emitter"], function (Test, Emitter) {
 				emitter.dispose();
 				done();
 			});
-			emitter.trigger("something", "A", "B");
+			emitter.emit("something", "A", "B");
 		});
 
 		it ("can mixin its methods to another object", function(done){
 			var emitter = {};
 			Emitter.mixin(emitter);
 			emitter.on("test", done);
-			emitter.trigger("test");
+			emitter.emit("test");
 		});
 	});
 });
