@@ -15,14 +15,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/effect/Effect"], function(To
 	 *  @param {Function} onload The callback to invoke when the url is loaded.
 	 *  @example
 	 * //initializing the convolver with an impulse response
-	 * var convolver = new Tone.Convolver("./path/to/ir.wav");
-	 * convolver.toMaster();
-	 * //after the buffer has loaded
-	 * Tone.Buffer.onload = function(){
-	 * 	//testing out convolution with a noise burst
-	 * 	var burst = new Tone.NoiseSynth().connect(convolver);
-	 * 	burst.triggerAttackRelease("16n");
-	 * };
+	 * var convolver = new Tone.Convolver("./path/to/ir.wav").toMaster();
 	 */
 	Tone.Convolver = function(){
 

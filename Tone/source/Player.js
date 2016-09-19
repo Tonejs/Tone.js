@@ -10,7 +10,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 	 *  @param {string|AudioBuffer} url Either the AudioBuffer or the url from
 	 *                                  which to load the AudioBuffer
 	 *  @param {function=} onload The function to invoke when the buffer is loaded. 
-	 *                            Recommended to use Tone.Buffer.onload instead.
+	 *                            Recommended to use Tone.Buffer.on('load') instead.
 	 *  @example
 	 * var player = new Tone.Player("./path/to/sample.mp3").toMaster();
 	 * //play as soon as the buffer is loaded
