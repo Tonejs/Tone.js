@@ -28,13 +28,13 @@ define(["Tone/core/Tone"], function (Tone) {
 
 			if (val instanceof Tone.TimeBase){
 				this.copy(val);
-			} else if (!this.isUndef(val) && this.isUndef(units)){
-				this.set(val);
 			} else if (!this.isUndef(units) || this.isNumber(val)){
 				//default units
 				units = this.defaultArg(units, this._defaultUnits);
 				var method = this._primaryExpressions[units].method;
 				this._expr = method.bind(this, val);
+			} else if (this.isString(val)){
+				this.set(val);
 			} else if (this.isUndef(val)){
 				//default expression
 				this._expr = this._defaultExpr();
