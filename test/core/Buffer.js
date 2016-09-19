@@ -211,5 +211,27 @@ define(["Test", "Tone/core/Buffer"], function (Test, Buffer) {
 				done();
 			});
 		});
+
+		it("instance .load method returns Promise", function(done){
+			var promise = (new Buffer()).load(testFile);
+			expect(promise).to.be.instanceOf(Promise);
+			promise.then(function(buff){
+				expect(buff).to.be.instanceOf(Buffer);
+				done();
+			});
+			promise.catch(function(){
+				throw new Error("shouldn't invoke this function");
+			});
+		});
+
+		it("Promise invokes catch callback", function(done){
+			var promise = (new Buffer()).load("nosuchfile.wav");
+			promise.then(function(){
+				throw new Error("shouldn't invoke this function");
+			});
+			promise.catch(function(){
+				done();
+			});
+		});
 	});
 });
