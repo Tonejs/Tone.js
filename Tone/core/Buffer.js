@@ -43,31 +43,27 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type"], function(Tone)
 		this._reversed = options.reverse;
 
 		/**
-		 *  The url of the buffer. <code>undefined</code> if it was 
-		 *  constructed with a buffer
-		 *  @type {String}
-		 *  @readOnly
+		 *  The download progress indicator
+		 *  @type  {Number}
+		 *  @private
 		 */
-		this.url = undefined;
+		this._progress = 0;
 
 		/**
-		 *  The callback to invoke when everything is loaded. 
-		 *  @type {Function}
+		 *  The XHR
+		 *  @type  {XMLHttpRequest}
+		 *  @private
 		 */
-		this.onload = options.onload.bind(this, this);
-
-		/**
-		 *  The callback to invoke if there is an error
-		 *  @type {Function}
-		 */
-		this.onerror = options.onerror.bind(this);
+		this._xhr = null;
 
 		if (options.url instanceof AudioBuffer || options.url instanceof Tone.Buffer){
 			this.set(options.url);
-			this.onload(this);
+			// invoke the onload callback
+			if (options.onload){
+				options.onload(this);
+			}
 		} else if (this.isString(options.url)){
-			this.url = options.url;
-			Tone.Buffer._addToQueue(options.url, this);
+			this.load(options.url, options.onload, options.onerror);
 		}
 	};
 
@@ -79,8 +75,6 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type"], function(Tone)
 	 */
 	Tone.Buffer.defaults = {
 		"url" : undefined,
-		"onload" : Tone.noOp,
-		"onerror" : Tone.noOp,
 		"reverse" : false
 	};
 
@@ -107,18 +101,42 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type"], function(Tone)
 	};
 
 	/**
-	 *  Load url into the buffer. 
-	 *  @param {String} url The url to load
-	 *  @param {Function=} callback The callback to invoke on load. 
-	 *                              don't need to set if `onload` is
-	 *                              already set.
-	 *  @returns {Tone.Buffer} this
+	 *  Makes an xhr reqest for the selected url then decodes
+	 *  the file as an audio buffer. Invokes
+	 *  the callback once the audio buffer loads.
+	 *  @param {String} url The url of the buffer to load.
+	 *                      filetype support depends on the
+	 *                      browser.
+	 *  @returns {Promise} returns a Promise which resolves with the Tone.Buffer
 	 */
-	Tone.Buffer.prototype.load = function(url, callback){
-		this.url = url;
-		this.onload = this.defaultArg(callback, this.onload);
-		Tone.Buffer._addToQueue(url, this);
-		return this;
+	Tone.Buffer.prototype.load = function(url, onload, onerror){
+
+		var promise = new Promise(function(load, error){
+
+			this._xhr = Tone.Buffer.load(url, 
+
+				//success
+				function(buff){
+					this._xhr = null;
+					this.set(buff);
+					load(this);
+					if (onload){
+						onload(this);
+					}
+				}.bind(this), 
+
+				//error
+				function(err){
+					this._xhr = null;
+					error(err);
+					if (onerror){
+						onerror(err);
+					}
+				}.bind(this));
+
+		}.bind(this));
+
+		return promise;
 	};
 
 	/**
@@ -126,10 +144,13 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type"], function(Tone)
 	 *  @returns {Tone.Buffer} this
 	 */
 	Tone.Buffer.prototype.dispose = function(){
-		Tone.prototype.dispose.call(this);
-		Tone.Buffer._removeFromQueue(this);
+		Tone.Emitter.prototype.dispose.call(this);
 		this._buffer = null;
-		this.onload = Tone.Buffer.defaults.onload;
+		if (this._xhr){
+			Tone.Buffer._currentDownloads--;
+			this._xhr.abort();
+			this._xhr = null;
+		}
 		return this;
 	};
 
@@ -197,20 +218,6 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type"], function(Tone)
 			}
 		},
 	});
-
-	/**
-	 *  Reverse the buffer.
-	 *  @private
-	 *  @return {Tone.Buffer} this
-	 */
-	Tone.Buffer.prototype._reverse = function(){
-		if (this.loaded){
-			for (var i = 0; i < this._buffer.numberOfChannels; i++){
-				Array.prototype.reverse.call(this._buffer.getChannelData(i));
-			}
-		}
-		return this;
-	};
 
 	/**
 	 *  Set the audio buffer from the array
@@ -296,6 +303,20 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type"], function(Tone)
 	};
 
 	/**
+	 *  Reverse the buffer.
+	 *  @private
+	 *  @return {Tone.Buffer} this
+	 */
+	Tone.Buffer.prototype._reverse = function(){
+		if (this.loaded){
+			for (var i = 0; i < this._buffer.numberOfChannels; i++){
+				Array.prototype.reverse.call(this._buffer.getChannelData(i));
+			}
+		}
+		return this;
+	};
+
+	/**
 	 * Reverse the buffer.
 	 * @memberOf Tone.Buffer#
 	 * @type {Boolean}
@@ -325,130 +346,14 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type"], function(Tone)
 	 *  @type {Array}
 	 *  @private
 	 */
-	Tone.Buffer._queue = [];
-
-	/**
-	 *  the array of current downloads
-	 *  @type {Array}
-	 *  @private
-	 */
-	Tone.Buffer._currentDownloads = [];
+	Tone.Buffer._downloadQueue = [];
 
 	/**
 	 *  the total number of downloads
 	 *  @type {Number}
 	 *  @private
 	 */
-	Tone.Buffer._totalDownloads = 0;
-
-	/**
-	 *  the maximum number of simultaneous downloads
-	 *  @static
-	 *  @type {Number}
-	 */
-	Tone.Buffer.MAX_SIMULTANEOUS_DOWNLOADS = 6;
-	
-	/**
-	 *  Adds a file to be loaded to the loading queue
-	 *  @param   {String}   url      the url to load
-	 *  @param   {Function} callback the callback to invoke once it's loaded
-	 *  @private
-	 */
-	Tone.Buffer._addToQueue = function(url, buffer){
-		Tone.Buffer._queue.push({
-			url : url,
-			Buffer : buffer,
-			progress : 0,
-			xhr : null
-		});
-		this._totalDownloads++;
-		Tone.Buffer._next();
-	};
-
-	/**
-	 *  Remove an object from the queue's (if it's still there)
-	 *  Abort the XHR if it's in progress
-	 *  @param {Tone.Buffer} buffer the buffer to remove
-	 *  @private
-	 */
-	Tone.Buffer._removeFromQueue = function(buffer){
-		var i;
-		for (i = 0; i < Tone.Buffer._queue.length; i++){
-			var q = Tone.Buffer._queue[i];
-			if (q.Buffer === buffer){
-				Tone.Buffer._queue.splice(i, 1);
-			}
-		}
-		for (i = 0; i < Tone.Buffer._currentDownloads.length; i++){
-			var dl = Tone.Buffer._currentDownloads[i];
-			if (dl.Buffer === buffer){
-				Tone.Buffer._currentDownloads.splice(i, 1);
-				dl.xhr.abort();
-				dl.xhr.onprogress = null;
-				dl.xhr.onload = null;
-				dl.xhr.onerror = null;
-			}
-		}
-	};
-
-	/**
-	 *  load the next buffer in the queue
-	 *  @private
-	 */
-	Tone.Buffer._next = function(){
-		if (Tone.Buffer._queue.length > 0){
-			if (Tone.Buffer._currentDownloads.length < Tone.Buffer.MAX_SIMULTANEOUS_DOWNLOADS){
-				var next = Tone.Buffer._queue.shift();
-				Tone.Buffer._currentDownloads.push(next);
-				next.xhr = Tone.Buffer.load(next.url, function(buffer){
-					//remove this one from the queue
-					var index = Tone.Buffer._currentDownloads.indexOf(next);
-					Tone.Buffer._currentDownloads.splice(index, 1);
-					next.Buffer.set(buffer);
-					if (next.Buffer._reversed){
-						next.Buffer._reverse();
-					}
-					next.Buffer.onload(next.Buffer);
-					Tone.Buffer._onprogress();
-					Tone.Buffer._next();
-				}, function(err){
-					next.Buffer.onerror(err);
-					Tone.Buffer.emit("error", err);
-					Tone.Buffer._next();
-				});
-				next.xhr.onprogress = function(event){
-					if (event.lengthComputable){
-						next.progress = event.loaded / event.total;
-						Tone.Buffer._onprogress();
-					}
-				};
-			} 
-		} else if (Tone.Buffer._currentDownloads.length === 0){
-			Tone.Buffer.emit("load");
-			//reset the downloads
-			Tone.Buffer._totalDownloads = 0;
-		}
-	};
-
-	/**
-	 *  internal progress event handler
-	 *  @private
-	 */
-	Tone.Buffer._onprogress = function(){
-		var curretDownloadsProgress = 0;
-		var currentDLLen = Tone.Buffer._currentDownloads.length;
-		var inprogress = 0;
-		if (currentDLLen > 0){
-			for (var i = 0; i < currentDLLen; i++){
-				var dl = Tone.Buffer._currentDownloads[i];
-				curretDownloadsProgress += dl.progress;
-			}
-			inprogress = curretDownloadsProgress;
-		}
-		var currentDownloadProgress = currentDLLen - inprogress;
-		var completed = Tone.Buffer._totalDownloads - Tone.Buffer._queue.length - currentDownloadProgress;
-		Tone.Buffer.emit("progress", completed / Tone.Buffer._totalDownloads);
-	};
+	Tone.Buffer._currentDownloads = 0;
 
 	/**
 	 *  A path which is prefixed before every url.
@@ -458,39 +363,72 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type"], function(Tone)
 	Tone.Buffer.baseUrl = "";
 
 	/**
-	 *  Makes an xhr reqest for the selected url then decodes
-	 *  the file as an audio buffer. Invokes
-	 *  the callback once the audio buffer loads.
-	 *  @param {String} url The url of the buffer to load.
-	 *                      filetype support depends on the
-	 *                      browser.
-	 *  @param {Function} callback The function to invoke when the url is loaded. 
-	 *  @param {Function} error Callback to invoke if there is an error. 
-	 *  @returns {Promise} returns a Promise which resolves with the raw AudioBuffer
+	 *  Loads a url using XMLHttpRequest.
+	 *  @param {String} url
+	 *  @param {Function} onload
+	 *  @param {Function} onerror
+	 *  @param {Function} onprogress
+	 *  @return {XMLHttpRequest}
 	 */
-	Tone.Buffer.load = function(url, callback, onerror){
+	Tone.Buffer.load = function(url, onload, onerror){
+		//defaults
+		onload = onload || Tone.noOp;
+		var errCallback = function(e){
+			Tone.Buffer._currentDownloads--;
+			if (onerror){
+				onerror(e);
+			} else {
+				throw new Error(e);
+			}
+		};
+
 		var request = new XMLHttpRequest();
 		request.open("GET", Tone.Buffer.baseUrl + url, true);
 		request.responseType = "arraybuffer";
-		// decode asynchronously
-		request.onload = function() {
+
+		Tone.Buffer._currentDownloads++;
+		Tone.Buffer._downloadQueue.push(request);
+
+		request.addEventListener("load", function(){
 			if (request.status === 200){
 				Tone.context.decodeAudioData(request.response, function(buff) {
-					callback(buff);
-				}, function(){
-					if (onerror){
-						onerror("Tone.Buffer: could not decode audio data: " + url);
-					} else {
-						throw new Error("Tone.Buffer: could not decode audio data: " + url);
+
+					request.progress = 1;
+					onload(buff);
+
+					Tone.Buffer._currentDownloads--;
+					if (Tone.Buffer._currentDownloads === 0){
+						// clear the downloads
+						Tone.Buffer._downloadQueue = [];
+						//emit the event at the end
+						Tone.Buffer.emit("load");
 					}
-				}.bind(this));
+
+				}, function(){
+					errCallback("Tone.Buffer: could not decode audio data: "+url);
+				});
 			} else {
-				onerror("Tone.Buffer: could not locate file: "+url);
+				errCallback("Tone.Buffer: could not locate file: "+url);
 			}
-		}.bind(this);
-		request.onerror = onerror;
-		//send the request
+		});
+
+		request.addEventListener("error", errCallback);
+
+		request.addEventListener("progress", function(event){
+			if (event.lengthComputable){
+				request.progress = event.loaded / event.total;
+
+				//calculate the progress
+				var totalProgress = 0;
+				for (var i = 0; i < Tone.Buffer._downloadQueue.length; i++){
+					totalProgress += Tone.Buffer._downloadQueue[i].progress;
+				}
+				Tone.Buffer.emit("progress", totalProgress / Tone.Buffer._downloadQueue.length);
+			}
+		});
+
 		request.send();
+
 		return request;
 	};
 
