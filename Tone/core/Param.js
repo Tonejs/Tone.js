@@ -82,7 +82,11 @@ define(["Tone/core/Tone", "Tone/type/Type"], function(Tone){
 			return this._toUnits(this._param.value);
 		},
 		set : function(value){
-			if (this.isObject(value) && Tone.LFO){
+			if (this.isObject(value)){
+				//throw an error if the LFO needs to be included
+				if (this.isUndef(Tone.LFO)){
+					throw new Error("Include 'Tone.LFO' to use an LFO as a Param value.");
+				}
 				//remove the old one
 				if (this._lfo){
 					this._lfo.dispose();
