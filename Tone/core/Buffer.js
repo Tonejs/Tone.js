@@ -382,6 +382,15 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type"], function(Tone)
 			}
 		};
 
+		function onProgress(){
+			//calculate the progress
+			var totalProgress = 0;
+			for (var i = 0; i < Tone.Buffer._downloadQueue.length; i++){
+				totalProgress += Tone.Buffer._downloadQueue[i].progress;
+			}
+			Tone.Buffer.emit("progress", totalProgress / Tone.Buffer._downloadQueue.length);
+		}
+
 		var request = new XMLHttpRequest();
 		request.open("GET", Tone.Buffer.baseUrl + url, true);
 		request.responseType = "arraybuffer";
@@ -394,6 +403,7 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type"], function(Tone)
 				Tone.context.decodeAudioData(request.response, function(buff) {
 
 					request.progress = 1;
+					onProgress();
 					onload(buff);
 
 					Tone.Buffer._currentDownloads--;
@@ -417,13 +427,7 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type"], function(Tone)
 		request.addEventListener("progress", function(event){
 			if (event.lengthComputable){
 				request.progress = event.loaded / event.total;
-
-				//calculate the progress
-				var totalProgress = 0;
-				for (var i = 0; i < Tone.Buffer._downloadQueue.length; i++){
-					totalProgress += Tone.Buffer._downloadQueue[i].progress;
-				}
-				Tone.Buffer.emit("progress", totalProgress / Tone.Buffer._downloadQueue.length);
+				onProgress();
 			}
 		});
 
