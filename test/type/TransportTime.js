@@ -28,12 +28,14 @@ define(["helper/Basic", "Test", "Tone/core/Transport", "Tone/type/TransportTime"
 			it("can pass in a number in the constructor", function(){
 				var time = TransportTime(1);
 				expect(time).to.be.instanceOf(TransportTime);
+				expect(time.eval()).to.equal(Tone.Transport.PPQ * 2);
 				time.dispose();
 			});
 
 			it("can pass in a string in the constructor", function(){
 				var time = TransportTime("1");
 				expect(time).to.be.instanceOf(TransportTime);
+				expect(time.eval()).to.equal(Tone.Transport.PPQ * 2);
 				time.dispose();
 			});
 
