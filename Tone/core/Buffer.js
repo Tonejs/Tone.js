@@ -43,13 +43,6 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type"], function(Tone)
 		this._reversed = options.reverse;
 
 		/**
-		 *  The download progress indicator
-		 *  @type  {Number}
-		 *  @private
-		 */
-		this._progress = 0;
-
-		/**
 		 *  The XHR
 		 *  @type  {XMLHttpRequest}
 		 *  @private
@@ -395,6 +388,8 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type"], function(Tone)
 		var request = new XMLHttpRequest();
 		request.open("GET", Tone.Buffer.baseUrl + url, true);
 		request.responseType = "arraybuffer";
+		//start out as 0
+		request.progress = 0;
 
 		Tone.Buffer._currentDownloads++;
 		Tone.Buffer._downloadQueue.push(request);
@@ -427,7 +422,8 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type"], function(Tone)
 
 		request.addEventListener("progress", function(event){
 			if (event.lengthComputable){
-				request.progress = event.loaded / event.total;
+				//only go to 95%, the last 5% is when the audio is decoded
+				request.progress = (event.loaded / event.total) * 0.95;
 				onProgress();
 			}
 		});
