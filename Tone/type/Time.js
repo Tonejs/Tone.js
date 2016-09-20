@@ -249,7 +249,7 @@ define(["Tone/core/Tone", "Tone/type/TimeBase"], function (Tone) {
 	 * Tone.Time(2).toFrequency(); //0.5
 	 */
 	Tone.Time.prototype.toFrequency = function(){
-		return 1/this.eval();
+		return 1/this.toSeconds();
 	};
 
 	/**
@@ -257,7 +257,7 @@ define(["Tone/core/Tone", "Tone/type/TimeBase"], function (Tone) {
 	 *  @return  {Seconds} 
 	 */
 	Tone.Time.prototype.toSeconds = function(){
-		return this._expr();
+		return this.eval();
 	};
 
 	/**
