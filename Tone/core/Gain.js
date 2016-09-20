@@ -23,7 +23,7 @@ define(["Tone/core/Tone", "Tone/core/Param", "Tone/type/Type"], function (Tone) 
 
 		/**
 		 *  The gain parameter of the gain node.
-		 *  @type {AudioParam}
+		 *  @type {Tone.Param}
 		 *  @signal
 		 */
 		this.gain = new Tone.Param({
@@ -59,6 +59,32 @@ define(["Tone/core/Tone", "Tone/core/Param", "Tone/type/Type"], function (Tone) 
 		this.gain.dispose();
 		this.gain = null;
 	};
+
+	//STATIC///////////////////////////////////////////////////////////////////
+
+	/**
+	 *  Create input and outputs for this object.
+	 *  @param  {Number}  input   The number of inputs
+	 *  @param  {Number=}  outputs  The number of outputs
+	 *  @return  {Tone}  this
+	 *  @internal
+	 */
+	Tone.prototype.createInsOuts = function(inputs, outputs){
+
+		if (inputs === 1){
+			this.input = new Tone.Gain();
+		} else if (inputs > 1){
+			this.input = new Array(inputs);
+		}
+
+		if (outputs === 1){
+			this.output = new Tone.Gain();
+		} else if (outputs > 1){
+			this.output = new Array(inputs);
+		}
+	};
+
+	///////////////////////////////////////////////////////////////////////////
 
 	return Tone.Gain;
 });
