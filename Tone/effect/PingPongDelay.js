@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/effect/StereoXFeedbackEffect", "Tone/signal/Signal"], 
+define(["Tone/core/Tone", "Tone/effect/StereoXFeedbackEffect", "Tone/signal/Signal", "Tone/core/Delay"], 
 function(Tone){
 
 	"use strict";
@@ -29,24 +29,24 @@ function(Tone){
 
 		/**
 		 *  the delay node on the left side
-		 *  @type {DelayNode}
+		 *  @type {Tone.Delay}
 		 *  @private
 		 */
-		this._leftDelay = this.context.createDelay(options.maxDelayTime);
+		this._leftDelay = new Tone.Delay(0, options.maxDelayTime);
 
 		/**
 		 *  the delay node on the right side
-		 *  @type {DelayNode}
+		 *  @type {Tone.Delay}
 		 *  @private
 		 */
-		this._rightDelay = this.context.createDelay(options.maxDelayTime);
+		this._rightDelay = new Tone.Delay(0, options.maxDelayTime);
 
 		/**
 		 *  the predelay on the right side
-		 *  @type {DelayNode}
+		 *  @type {Tone.Delay}
 		 *  @private
 		 */
-		this._rightPreDelay = this.context.createDelay(options.maxDelayTime);
+		this._rightPreDelay = new Tone.Delay(0, options.maxDelayTime);
 
 		/**
 		 *  the delay time signal
@@ -82,11 +82,11 @@ function(Tone){
 	 */
 	Tone.PingPongDelay.prototype.dispose = function(){
 		Tone.StereoXFeedbackEffect.prototype.dispose.call(this);
-		this._leftDelay.disconnect();
+		this._leftDelay.dispose();
 		this._leftDelay = null;
-		this._rightDelay.disconnect();
+		this._rightDelay.dispose();
 		this._rightDelay = null;
-		this._rightPreDelay.disconnect();
+		this._rightPreDelay.dispose();
 		this._rightPreDelay = null;
 		this._writable(["delayTime"]);
 		this.delayTime.dispose();

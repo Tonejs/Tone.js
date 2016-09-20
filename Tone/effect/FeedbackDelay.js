@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/effect/FeedbackEffect", "Tone/signal/Signal"], function(Tone){
+define(["Tone/core/Tone", "Tone/effect/FeedbackEffect", "Tone/signal/Signal", "Tone/core/Delay"], function(Tone){
 
 	"use strict";
 	
@@ -25,22 +25,22 @@ define(["Tone/core/Tone", "Tone/effect/FeedbackEffect", "Tone/signal/Signal"], f
 		Tone.FeedbackEffect.call(this, options);
 
 		/**
+		 *  the delay node
+		 *  @type {Tone.Delay}
+		 *  @private
+		 */
+		this._delayNode = new Tone.Delay(options.delayTime);
+
+		/**
 		 *  The delayTime of the DelayNode. 
 		 *  @type {Time}
 		 *  @signal
 		 */
-		this.delayTime = new Tone.Signal(options.delayTime, Tone.Type.Time);
+		this.delayTime = this._delayNode.delayTime;
 
-		/**
-		 *  the delay node
-		 *  @type {DelayNode}
-		 *  @private
-		 */
-		this._delayNode = this.context.createDelay(4);
 
 		// connect it up
 		this.connectEffect(this._delayNode);
-		this.delayTime.connect(this._delayNode.delayTime);
 		this._readOnly(["delayTime"]);
 	};
 
@@ -62,8 +62,7 @@ define(["Tone/core/Tone", "Tone/effect/FeedbackEffect", "Tone/signal/Signal"], f
 	 */
 	Tone.FeedbackDelay.prototype.dispose = function(){
 		Tone.FeedbackEffect.prototype.dispose.call(this);
-		this.delayTime.dispose();
-		this._delayNode.disconnect();
+		this._delayNode.dispose();
 		this._delayNode = null;
 		this._writable(["delayTime"]);
 		this.delayTime = null;

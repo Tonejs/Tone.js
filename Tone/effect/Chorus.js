@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/component/LFO", "Tone/effect/StereoXFeedbackEffect"],
+define(["Tone/core/Tone", "Tone/component/LFO", "Tone/effect/StereoXFeedbackEffect", "Tone/core/Delay"],
 function(Tone){
 
 	"use strict";
@@ -63,17 +63,17 @@ function(Tone){
 
 		/**
 		 *  delay for left
-		 *  @type {DelayNode}
+		 *  @type {Tone.Delay}
 		 *  @private
 		 */
-		this._delayNodeL = this.context.createDelay();
+		this._delayNodeL = new Tone.Delay();
 
 		/**
 		 *  delay for right
-		 *  @type {DelayNode}
+		 *  @type {Tone.Delay}
 		 *  @private
 		 */
-		this._delayNodeR = this.context.createDelay();
+		this._delayNodeR = new Tone.Delay();
 
 		/**
 		 * The frequency of the LFO which modulates the delayTime. 
@@ -201,9 +201,9 @@ function(Tone){
 		this._lfoL = null;
 		this._lfoR.dispose();
 		this._lfoR = null;
-		this._delayNodeL.disconnect();
+		this._delayNodeL.dispose();
 		this._delayNodeL = null;
-		this._delayNodeR.disconnect();
+		this._delayNodeR.dispose();
 		this._delayNodeR = null;
 		this._writable("frequency");
 		this.frequency = null;

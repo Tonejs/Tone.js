@@ -1,5 +1,5 @@
-define(["Tone/core/Tone", "Tone/signal/Abs", "Tone/signal/Subtract", 
-	"Tone/signal/Multiply", "Tone/signal/Signal", "Tone/signal/WaveShaper", "Tone/type/Type"], 
+define(["Tone/core/Tone", "Tone/signal/Abs", "Tone/signal/Subtract", "Tone/signal/Multiply", 
+	"Tone/signal/Signal", "Tone/signal/WaveShaper", "Tone/type/Type", "Tone/core/Delay"], 
 function(Tone){
 
 	"use strict";
@@ -53,11 +53,10 @@ function(Tone){
 		this._sub = new Tone.Subtract();
 
 		/**
-		 *  @type {DelayNode}
+		 *  @type {Tone.Delay}
 		 *  @private
 		 */
-		this._delay = this.context.createDelay();
-		this._delay.delayTime.value = this.blockTime;
+		this._delay = new Tone.Delay(this.blockTime);
 
 		/**
 		 *  this keeps it far from 0, even for very small differences
@@ -170,7 +169,7 @@ function(Tone){
 		this._filter = null;
 		this._frequencyValues.disconnect();
 		this._frequencyValues = null;
-		this._delay.disconnect();
+		this._delay.dispose();
 		this._delay = null;
 		this._sub.disconnect();
 		this._sub = null;
