@@ -161,6 +161,14 @@ define(["Tone/core/Tone", "Tone/type/TimeBase"], function (Tone) {
 	};
 
 	/**
+	 *  Return the value in Hertz
+	 *  @return  {Frequency}
+	 */
+	Tone.Frequency.prototype.toFrequency = function(){
+		return this.eval()
+	};
+
+	/**
 	 *  Return the duration of one cycle in ticks
 	 *  @return  {Ticks}
 	 */
