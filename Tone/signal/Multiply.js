@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
+define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Gain"], function(Tone){
 
 	"use strict";
 
@@ -33,7 +33,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 		 *  @type {GainNode}
 		 *  @private
 		 */
-		this._mult = this.input[0] = this.output = this.context.createGain();
+		this._mult = this.input[0] = this.output = new Tone.Gain();
 
 		/**
 		 *  the scaling parameter
