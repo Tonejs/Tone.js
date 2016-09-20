@@ -269,6 +269,7 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal", "Tone/core/TimelineState
 	 * clock.getStateAtTime("+0.1"); //returns "started"
 	 */
 	Tone.Clock.prototype.getStateAtTime = function(time){
+		time = this.toSeconds(time);
 		return this._state.getStateAtTime(time);
 	};
 
