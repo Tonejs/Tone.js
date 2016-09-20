@@ -478,7 +478,7 @@ define(["Tone/core/Tone"], function (Tone) {
 	Tone.TimeBase.prototype._pushExpr = function(val, name, units){
 		//create the expression
 		if (!(val instanceof Tone.TimeBase)){
-			val = new Tone.TimeBase(val, units);
+			val = new this.constructor(val, units);
 		}
 		this._expr = this._binaryExpressions[name].method.bind(this, this._expr, val._expr);
 		return this;
