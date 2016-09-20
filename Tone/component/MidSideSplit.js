@@ -16,7 +16,7 @@ define(["Tone/core/Tone", "Tone/signal/Expr", "Tone/signal/Signal", "Tone/compon
 	 *  @constructor
 	 */
 	Tone.MidSideSplit = function(){
-		Tone.call(this, 0, 2);
+		this.createInsOuts(0, 2);
 
 		/**
 		 *  split the incoming signal into left and right channels

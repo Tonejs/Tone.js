@@ -25,7 +25,7 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Negate", "Tone/signal/
 	 */
 	Tone.Subtract = function(value){
 
-		Tone.call(this, 2, 0);
+		this.createInsOuts(2, 0);
 
 		/**
 		 *  the summing node

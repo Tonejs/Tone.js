@@ -15,7 +15,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/component/Filter", "Tone/c
 	 */
 	Tone.LowpassCombFilter = function(){
 
-		Tone.call(this);
+		this.createInsOuts(1, 1);
 
 		var options = this.optionsObject(arguments, ["delayTime", "resonance", "dampening"], Tone.LowpassCombFilter.defaults);
 

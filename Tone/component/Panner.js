@@ -17,8 +17,6 @@ function(Tone){
 	 */
 	Tone.Panner = function(initialPan){
 
-		Tone.call(this);
-
 		if (this._hasStereoPanner){
 
 			/**

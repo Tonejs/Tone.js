@@ -15,8 +15,6 @@ function(Tone){
 	 * //the output of abs is 1. 
 	 */
 	Tone.Abs = function(){
-		Tone.call(this, 1, 0);
-
 		/**
 		 *  @type {Tone.LessThan}
 		 *  @private

@@ -27,8 +27,8 @@ function(Tone){
 	 * 
 	 */	
 	Tone.Source = function(options){
-		//Sources only have an output and no input
-		Tone.call(this);
+
+		// this.createInsOuts(0, 1);
 
 		options = this.defaultArg(options, Tone.Source.defaults);
 

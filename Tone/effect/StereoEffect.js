@@ -12,7 +12,7 @@ function(Tone){
 	 */
 	Tone.StereoEffect = function(){
 
-		Tone.call(this);
+		this.createInsOuts(1, 1);
 		//get the defaults
 		var options = this.optionsObject(arguments, ["wet"], Tone.Effect.defaults);
 

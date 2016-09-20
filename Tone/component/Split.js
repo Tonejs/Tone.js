@@ -13,7 +13,7 @@ define(["Tone/core/Tone"], function(Tone){
 	 */
 	Tone.Split = function(){
 
-		Tone.call(this, 0, 2);
+		this.createInsOuts(0, 2);
 
 		/** 
 		 *  @type {ChannelSplitterNode}

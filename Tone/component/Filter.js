@@ -18,7 +18,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	 *  var filter = new Tone.Filter(200, "highpass");
 	 */
 	Tone.Filter = function(){
-		Tone.call(this);
+		this.createInsOuts(1, 1);
 
 		var options = this.optionsObject(arguments, ["frequency", "type", "rolloff"], Tone.Filter.defaults);
 

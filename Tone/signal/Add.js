@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
+define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Gain"], function(Tone){
 
 	"use strict";
 
@@ -27,14 +27,14 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	 */
 	Tone.Add = function(value){
 
-		Tone.call(this, 2, 0);
+		this.createInsOuts(2, 0);
 
 		/**
 		 *  the summing node
 		 *  @type {GainNode}
 		 *  @private
 		 */
-		this._sum = this.input[0] = this.input[1] = this.output = this.context.createGain();
+		this._sum = this.input[0] = this.input[1] = this.output = new Tone.Gain();
 
 		/**
 		 *  @private
@@ -53,7 +53,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	 */
 	Tone.Add.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
-		this._sum.disconnect();
+		this._sum.dispose();
 		this._sum = null;
 		this._param.dispose();
 		this._param = null;

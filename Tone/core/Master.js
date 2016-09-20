@@ -23,7 +23,8 @@ define(["Tone/core/Tone", "Tone/component/Volume"], function(Tone){
 	 * //the above two examples are equivalent.
 	 */
 	Tone.Master = function(){
-		Tone.call(this);
+		
+		this.createInsOuts(1, 1);
 
 		/**
 		 *  The private volume node

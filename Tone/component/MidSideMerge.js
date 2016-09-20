@@ -18,7 +18,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Expr", "Tone/compon
 	 *  @constructor
 	 */
 	Tone.MidSideMerge = function(){
-		Tone.call(this, 2, 0);
+		this.createInsOuts(2, 0);
 
 		/**
 		 *  The mid signal input. Alias for

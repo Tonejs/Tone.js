@@ -17,7 +17,7 @@ define(["Tone/core/Tone", "Tone/signal/GreaterThanZero", "Tone/signal/Subtract",
 	 */
 	Tone.GreaterThan = function(value){
 
-		Tone.call(this, 2, 0);
+		this.createInsOuts(2, 0);
 		
 		/**
 		 *  subtract the amount from the incoming signal

@@ -13,7 +13,7 @@ define(["Tone/core/Tone", "Tone/component/CrossFade"], function(Tone){
 	 */
 	Tone.Effect = function(){
 
-		Tone.call(this);
+		this.createInsOuts(1, 1);
 
 		//get all of the defaults
 		var options = this.optionsObject(arguments, ["wet"], Tone.Effect.defaults);
