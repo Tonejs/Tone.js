@@ -28,7 +28,7 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/LFO", "Tone/comp
 		this._lfo = new Tone.LFO({
 			"frequency" : options.frequency,
 			"amplitude" : options.depth,
-			"min" : 0,
+			"min" : -1,
 			"max" : 1,
 		});
 
