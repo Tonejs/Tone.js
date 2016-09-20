@@ -78,7 +78,6 @@ define(["Tone/core/Tone", "Tone/type/Type"], function (Tone) {
 		if (this.isUndef(event.time)){
 			throw new Error("Tone.Timeline: events must have a time attribute");
 		}
-		event.time = this.toSeconds(event.time);
 		if (this._timeline.length){
 			var index = this._search(event.time);
 			this._timeline.splice(index + 1, 0, event);
@@ -116,7 +115,6 @@ define(["Tone/core/Tone", "Tone/type/Type"], function (Tone) {
 	 *  @returns {Object} The event object set after that time.
 	 */
 	Tone.Timeline.prototype.getEvent = function(time){
-		time = this.toSeconds(time);
 		var index = this._search(time);
 		if (index !== -1){
 			return this._timeline[index];
@@ -131,7 +129,6 @@ define(["Tone/core/Tone", "Tone/type/Type"], function (Tone) {
 	 *  @returns {Object} The event object after the given time
 	 */
 	Tone.Timeline.prototype.getEventAfter = function(time){
-		time = this.toSeconds(time);
 		var index = this._search(time);
 		if (index + 1 < this._timeline.length){
 			return this._timeline[index + 1];
@@ -146,7 +143,6 @@ define(["Tone/core/Tone", "Tone/type/Type"], function (Tone) {
 	 *  @returns {Object} The event object before the given time
 	 */
 	Tone.Timeline.prototype.getEventBefore = function(time){
-		time = this.toSeconds(time);
 		var len = this._timeline.length;
 		//if it's after the last item, return the last item
 		if (len > 0 && this._timeline[len - 1].time < time){
@@ -162,12 +158,11 @@ define(["Tone/core/Tone", "Tone/type/Type"], function (Tone) {
 
 	/**
 	 *  Cancel events after the given time
-	 *  @param  {Time}  time  The time to query.
+	 *  @param  {Number}  time  The time to query.
 	 *  @returns {Tone.Timeline} this
 	 */
 	Tone.Timeline.prototype.cancel = function(after){
 		if (this._timeline.length > 1){
-			after = this.toSeconds(after);
 			var index = this._search(after);
 			if (index >= 0){
 				if (this._timeline[index].time === after){
@@ -197,12 +192,11 @@ define(["Tone/core/Tone", "Tone/type/Type"], function (Tone) {
 
 	/**
 	 *  Cancel events before or equal to the given time.
-	 *  @param  {Time}  time  The time to cancel before.
+	 *  @param  {Number}  time  The time to cancel before.
 	 *  @returns {Tone.Timeline} this
 	 */
 	Tone.Timeline.prototype.cancelBefore = function(time){
 		if (this._timeline.length){
-			time = this.toSeconds(time);
 			var index = this._search(time);
 			if (index >= 0){
 				this._timeline = this._timeline.slice(index + 1);
@@ -293,13 +287,12 @@ define(["Tone/core/Tone", "Tone/type/Type"], function (Tone) {
 
 	/**
 	 *  Iterate over everything in the array at or before the given time.
-	 *  @param  {Time}  time The time to check if items are before
+	 *  @param  {Number}  time The time to check if items are before
 	 *  @param  {Function}  callback The callback to invoke with every item
 	 *  @returns {Tone.Timeline} this
 	 */
 	Tone.Timeline.prototype.forEachBefore = function(time, callback){
 		//iterate over the items in reverse so that removing an item doesn't break things
-		time = this.toSeconds(time);
 		var upperBound = this._search(time);
 		if (upperBound !== -1){
 			this._iterate(callback, 0, upperBound);
@@ -309,13 +302,12 @@ define(["Tone/core/Tone", "Tone/type/Type"], function (Tone) {
 
 	/**
 	 *  Iterate over everything in the array after the given time.
-	 *  @param  {Time}  time The time to check if items are before
+	 *  @param  {Number}  time The time to check if items are before
 	 *  @param  {Function}  callback The callback to invoke with every item
 	 *  @returns {Tone.Timeline} this
 	 */
 	Tone.Timeline.prototype.forEachAfter = function(time, callback){
 		//iterate over the items in reverse so that removing an item doesn't break things
-		time = this.toSeconds(time);
 		var lowerBound = this._search(time);
 		this._iterate(callback, lowerBound + 1);
 		return this;
@@ -324,13 +316,12 @@ define(["Tone/core/Tone", "Tone/type/Type"], function (Tone) {
 	/**
 	 *  Iterate over everything in the array at or after the given time. Similar to 
 	 *  forEachAfter, but includes the item(s) at the given time.
-	 *  @param  {Time}  time The time to check if items are before
+	 *  @param  {Number}  time The time to check if items are before
 	 *  @param  {Function}  callback The callback to invoke with every item
 	 *  @returns {Tone.Timeline} this
 	 */
 	Tone.Timeline.prototype.forEachFrom = function(time, callback){
 		//iterate over the items in reverse so that removing an item doesn't break things
-		time = this.toSeconds(time);
 		var lowerBound = this._search(time);
 		//work backwards until the event time is less than time
 		while (lowerBound >= 0 && this._timeline[lowerBound].time >= time){
@@ -342,13 +333,12 @@ define(["Tone/core/Tone", "Tone/type/Type"], function (Tone) {
 
 	/**
 	 *  Iterate over everything in the array at the given time
-	 *  @param  {Time}  time The time to check if items are before
+	 *  @param  {Number}  time The time to check if items are before
 	 *  @param  {Function}  callback The callback to invoke with every item
 	 *  @returns {Tone.Timeline} this
 	 */
 	Tone.Timeline.prototype.forEachAtTime = function(time, callback){
 		//iterate over the items in reverse so that removing an item doesn't break things
-		time = this.toSeconds(time);
 		var upperBound = this._search(time);
 		if (upperBound !== -1){
 			this._iterate(function(event){

@@ -93,11 +93,10 @@ define(["Tone/core/Tone", "Tone/type/Type"], function (Tone) {
 
 	/**
 	 *  Remove events whose time time is after the given time
-	 *  @param  {Time}  time  The time to query.
+	 *  @param  {Number}  time  The time to query.
 	 *  @returns {Tone.IntervalTimeline} this
 	 */
 	Tone.IntervalTimeline.prototype.cancel = function(after){
-		after = this.toSeconds(after);
 		this.forEachAfter(after, function(event){
 			this.removeEvent(event);
 		}.bind(this));
@@ -320,12 +319,11 @@ define(["Tone/core/Tone", "Tone/type/Type"], function (Tone) {
 	/**
 	 *  Iterate over everything in the array in which the given time
 	 *  overlaps with the time and duration time of the event.
-	 *  @param  {Time}  time The time to check if items are overlapping
+	 *  @param  {Number}  time The time to check if items are overlapping
 	 *  @param  {Function}  callback The callback to invoke with every item
 	 *  @returns {Tone.IntervalTimeline} this
 	 */
 	Tone.IntervalTimeline.prototype.forEachAtTime = function(time, callback){
-		time = this.toSeconds(time);
 		if (this._root !== null){
 			var results = [];
 			this._root.search(time, results);
@@ -342,12 +340,11 @@ define(["Tone/core/Tone", "Tone/type/Type"], function (Tone) {
 	/**
 	 *  Iterate over everything in the array in which the time is greater
 	 *  than the given time.
-	 *  @param  {Time}  time The time to check if items are before
+	 *  @param  {Number}  time The time to check if items are before
 	 *  @param  {Function}  callback The callback to invoke with every item
 	 *  @returns {Tone.IntervalTimeline} this
 	 */
 	Tone.IntervalTimeline.prototype.forEachAfter = function(time, callback){
-		time = this.toSeconds(time);
 		if (this._root !== null){
 			var results = [];
 			this._root.searchAfter(time, results);
