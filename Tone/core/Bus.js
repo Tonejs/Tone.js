@@ -1,4 +1,4 @@
-define(["Tone/core/Tone"], function(Tone){
+define(["Tone/core/Tone", "Tone/core/Gain"], function(Tone){
 
 	"use strict";
 
@@ -30,8 +30,8 @@ define(["Tone/core/Tone"], function(Tone){
 		if (!Buses.hasOwnProperty(channelName)){
 			Buses[channelName] = this.context.createGain();
 		}
-		var sendKnob = this.context.createGain();
-		sendKnob.gain.value = this.dbToGain(this.defaultArg(amount, 1));
+		amount = this.defaultArg(amount, 0);
+		var sendKnob = new Tone.Gain(amount, Tone.Type.Decibels);
 		this.output.chain(sendKnob, Buses[channelName]);
 		return sendKnob;		
 	};
@@ -57,6 +57,11 @@ define(["Tone/core/Tone"], function(Tone){
 		Buses[channelName].connect(input);
 		return this;
 	};
+
+	//remove all the send/receives when a new audio context is passed in
+	Tone._initAudioContext(function(){
+		Buses = {};
+	});
 
 	return Tone;
 });
