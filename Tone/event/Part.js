@@ -319,7 +319,7 @@ define(["Tone/core/Tone", "Tone/event/Event", "Tone/type/Type", "Tone/core/Trans
 	 *  @private
 	 */
 	Tone.Part.prototype._restartEvent = function(event){
-		var stateEvent = this._state.getEvent(this.now());
+		var stateEvent = this._state.getEvent(Tone.Transport.ticks);
 		if (stateEvent && stateEvent.state === Tone.State.Started){
 			this._startNote(event, stateEvent.time, stateEvent.offset);
 		}	
@@ -372,6 +372,7 @@ define(["Tone/core/Tone", "Tone/event/Event", "Tone/type/Type", "Tone/core/Trans
 	 *  @return  {Tone.Part}  this
 	 */
 	Tone.Part.prototype.cancel = function(after){
+		after = this.toTicks(after)
 		this._forEach(function(event){
 			event.cancel(after);
 		});
