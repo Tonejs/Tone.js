@@ -371,16 +371,17 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type"], function(Tone)
 	 *  @return {XMLHttpRequest}
 	 */
 	Tone.Buffer.load = function(url, onload, onerror){
-		//defaults
+		//default
 		onload = onload || Tone.noOp;
-		var errCallback = function(e){
+
+		function onError(e){
 			Tone.Buffer._currentDownloads--;
 			if (onerror){
 				onerror(e);
 			} else {
 				throw new Error(e);
 			}
-		};
+		}
 
 		function onProgress(){
 			//calculate the progress
@@ -415,14 +416,14 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type"], function(Tone)
 					}
 
 				}, function(){
-					errCallback("Tone.Buffer: could not decode audio data: "+url);
+					onError("Tone.Buffer: could not decode audio data: "+url);
 				});
 			} else {
-				errCallback("Tone.Buffer: could not locate file: "+url);
+				onError("Tone.Buffer: could not locate file: "+url);
 			}
 		});
 
-		request.addEventListener("error", errCallback);
+		request.addEventListener("error", onError);
 
 		request.addEventListener("progress", function(event){
 			if (event.lengthComputable){
