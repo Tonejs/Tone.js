@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Negate", "Tone/signal/Signal"], function(Tone){
+define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Negate", "Tone/signal/Signal", "Tone/core/Gain"], function(Tone){
 
 	"use strict";
 
@@ -32,7 +32,7 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Negate", "Tone/signal/
 		 *  @type {GainNode}
 		 *  @private
 		 */
-		this._sum = this.input[0] = this.output = this.context.createGain();
+		this._sum = this.input[0] = this.output = new Tone.Gain();
 
 		/**
 		 *  negate the input of the second input before connecting it

@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function (Tone) {
+define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/Gain"], function (Tone) {
 
 	/**
 	 *  @class Wrapper around the native BufferSourceNode.
@@ -26,10 +26,10 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function (T
 
 		/**
 		 *  The gain node which envelopes the BufferSource
-		 *  @type  {GainNode}
+		 *  @type  {Tone.Gain}
 		 *  @private
 		 */
-		this._gainNode = this.output = this.context.createGain();
+		this._gainNode = this.output = new Tone.Gain();
 
 		/**
 		 *  The buffer source
@@ -294,7 +294,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function (T
 			this._source = null;
 		}
 		if (this._gainNode){
-			this._gainNode.disconnect();
+			this._gainNode.dispose();
 			this._gainNode = null;
 		}
 		this._startTime = -1;

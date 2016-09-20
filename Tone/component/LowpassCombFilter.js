@@ -1,4 +1,5 @@
-define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/component/Filter", "Tone/core/Param"], function(Tone){
+define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/component/Filter", 
+	"Tone/core/Param", "Tone/core/Gain", "Tone/core/Delay"], function(Tone){
 
 	"use strict";
 
@@ -24,14 +25,14 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/component/Filter", "Tone/c
 		 *  @type {DelayNode}
 		 *  @private
 		 */
-		this._delay = this.input = this.context.createDelay(1);
+		this._delay = this.input = new Tone.Delay(options.delayTime);
 
 		/**
 		 *  The delayTime of the comb filter. 
 		 *  @type {Time}
 		 *  @signal
 		 */
-		this.delayTime = new Tone.Signal(options.delayTime, Tone.Type.Time);
+		this.delayTime = this._delay.delayTime;
 
 		/**
 		 *  the lowpass filter
@@ -55,25 +56,20 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/component/Filter", "Tone/c
 
 		/**
 		 *  the feedback gain
-		 *  @type {GainNode}
+		 *  @type {Tone.Gain}
 		 *  @private
 		 */
-		this._feedback = this.context.createGain();
+		this._feedback = new Tone.Gain(options.resonance, Tone.Type.NormalRange);
 
 		/**
 		 *  The amount of feedback of the delayed signal. 
 		 *  @type {NormalRange}
 		 *  @signal
 		 */
-		this.resonance = new Tone.Param({
-			"param" : this._feedback.gain, 
-			"units" : Tone.Type.NormalRange,
-			"value" : options.resonance
-		});
+		this.resonance = this._feedback.gain;
 
 		//connections
 		this._delay.chain(this._lowpass, this._feedback, this._delay);
-		this.delayTime.connect(this._delay.delayTime);
 		this._readOnly(["dampening", "resonance", "delayTime"]);
 	};
 
@@ -102,14 +98,13 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/component/Filter", "Tone/c
 		this.dampening = null;
 		this.resonance.dispose();
 		this.resonance = null;
-		this._delay.disconnect();
+		this._delay.dispose();
 		this._delay = null;
+		this.delayTime = null;
 		this._lowpass.disconnect();
 		this._lowpass = null;
 		this._feedback.disconnect();
 		this._feedback = null;
-		this.delayTime.dispose();
-		this.delayTime = null;
 		return this;
 	};
 

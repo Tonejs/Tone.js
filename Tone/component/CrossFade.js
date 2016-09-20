@@ -1,4 +1,5 @@
-define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Expr", "Tone/signal/EqualPowerGain"], function(Tone){
+define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Expr", 
+	"Tone/signal/EqualPowerGain", "Tone/core/Gain"], function(Tone){
 
 	"use strict";
 
@@ -30,15 +31,15 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Expr", "Tone/signal
 
 		/**
 		 *  Alias for <code>input[0]</code>. 
-		 *  @type {GainNode}
+		 *  @type {Tone.Gain}
 		 */
-		this.a = this.input[0] = this.context.createGain();
+		this.a = this.input[0] = new Tone.Gain();
 
 		/**
 		 *  Alias for <code>input[1]</code>. 
-		 *  @type {GainNode}
+		 *  @type {Tone.Gain}
 		 */
-		this.b = this.input[1] = this.context.createGain();
+		this.b = this.input[1] = new Tone.Gain();
 
 		/**
 		 * 	The mix between the two inputs. A fade value of 0
@@ -95,9 +96,9 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Expr", "Tone/signal
 		this.fade = null;
 		this._invert.dispose();
 		this._invert = null;
-		this.a.disconnect();
+		this.a.dispose();
 		this.a = null;
-		this.b.disconnect();
+		this.b.dispose();
 		this.b = null;
 		return this;
 	};

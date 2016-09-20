@@ -60,10 +60,10 @@ function(Tone){
 
 		/**
 		 *  the input gain to adjust the sensitivity
-		 *  @type {GainNode}
+		 *  @type {Tone.Gain}
 		 *  @private
 		 */
-		this._inputBoost = this.context.createGain();
+		this._inputBoost = new Tone.Gain();
 
 		/**
 		 *  @type {BiquadFilterNode}
@@ -198,7 +198,7 @@ function(Tone){
 		this._bandpass = null;
 		this._peaking.dispose();
 		this._peaking = null;
-		this._inputBoost.disconnect();
+		this._inputBoost.dispose();
 		this._inputBoost = null;
 		this._writable(["gain", "Q"]);
 		this.gain = null;

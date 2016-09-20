@@ -47,10 +47,10 @@ define(["Tone/core/Tone", "Tone/component/MultibandSplit", "Tone/component/Compr
 
 		/**
 		 *  the output
-		 *  @type {GainNode}
+		 *  @type {Tone.Gain}
 		 *  @private
 		 */
-		this.output = this.context.createGain();
+		this.output = new Tone.Gain();
 
 		/**
 		 *  The compressor applied to the low frequencies.

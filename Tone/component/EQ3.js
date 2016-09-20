@@ -24,7 +24,7 @@ define(["Tone/core/Tone", "Tone/component/MultibandSplit", "Tone/core/Gain"], fu
 		 *  @type {GainNode}
 		 *  @private
 		 */
-		this.output = this.context.createGain();
+		this.output = new Tone.Gain();
 
 		/**
 		 *  the multiband split

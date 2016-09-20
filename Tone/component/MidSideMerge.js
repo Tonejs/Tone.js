@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Expr", "Tone/component/Merge"], 
+define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Expr", "Tone/component/Merge", "Tone/core/Gain"], 
 	function(Tone){
 
 	"use strict";
@@ -23,9 +23,9 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Expr", "Tone/compon
 		/**
 		 *  The mid signal input. Alias for
 		 *  <code>input[0]</code>
-		 *  @type  {GainNode}
+		 *  @type  {Tone.Gain}
 		 */
-		this.mid = this.input[0] = this.context.createGain();
+		this.mid = this.input[0] = new Tone.Gain();
 
 		/**
 		 *  recombine the mid/side into Left
@@ -37,9 +37,9 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Expr", "Tone/compon
 		/**
 		 *  The side signal input. Alias for
 		 *  <code>input[1]</code>
-		 *  @type  {GainNode}
+		 *  @type  {Tone.Gain}
 		 */
-		this.side = this.input[1] = this.context.createGain();
+		this.side = this.input[1] = new Tone.Gain();
 
 		/**
 		 *  recombine the mid/side into Right
@@ -86,9 +86,9 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Expr", "Tone/compon
 	 */
 	Tone.MidSideMerge.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
-		this.mid.disconnect();
+		this.mid.dispose();
 		this.mid = null;
-		this.side.disconnect();
+		this.side.dispose();
 		this.side = null;
 		this._left.dispose();
 		this._left = null;

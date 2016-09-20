@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/component/Filter", "Tone/signal/Signal"], function(Tone){
+define(["Tone/core/Tone", "Tone/component/Filter", "Tone/signal/Signal", "Tone/core/Gain"], function(Tone){
 
 	"use strict";
 
@@ -16,10 +16,10 @@ define(["Tone/core/Tone", "Tone/component/Filter", "Tone/signal/Signal"], functi
 
 		/**
 		 *  the input
-		 *  @type {GainNode}
+		 *  @type {Tone.Gain}
 		 *  @private
 		 */
-		this.input = this.context.createGain();
+		this.input = new Tone.Gain();
 
 		/**
 		 *  the outputs

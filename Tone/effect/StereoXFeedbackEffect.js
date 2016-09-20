@@ -26,17 +26,17 @@ function(Tone){
 
 		/**
 		 *  the left side feeback
-		 *  @type {GainNode}
+		 *  @type {Tone.Gain}
 		 *  @private
 		 */
-		this._feedbackLR = this.context.createGain();
+		this._feedbackLR = new Tone.Gain();
 
 		/**
 		 *  the right side feeback
-		 *  @type {GainNode}
+		 *  @type {Tone.Gain}
 		 *  @private
 		 */
-		this._feedbackRL = this.context.createGain();
+		this._feedbackRL = new Tone.Gain();
 
 		//connect it up
 		this.effectReturnL.chain(this._feedbackLR, this.effectSendR);
@@ -56,9 +56,9 @@ function(Tone){
 		this._writable(["feedback"]);
 		this.feedback.dispose();
 		this.feedback = null;
-		this._feedbackLR.disconnect();
+		this._feedbackLR.dispose();
 		this._feedbackLR = null;
-		this._feedbackRL.disconnect();
+		this._feedbackRL.dispose();
 		this._feedbackRL = null;
 		return this;
 	};
