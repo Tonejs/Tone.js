@@ -42,9 +42,10 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/G
 	
 		/**
 		 *  The playbackRate of the buffer
-		 *  @type {AudioParam}
+		 *  @type {Positive}
+		 *  @signal
 		 */
-		this.playbackRate = this._source.playbackRate;
+		this.playbackRate = new Tone.Param(this._source.playbackRate, Tone.Type.Positive);
 
 		/**
 		 *  The fadeIn time of the amplitude envelope.
