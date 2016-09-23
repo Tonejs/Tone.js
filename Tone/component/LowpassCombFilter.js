@@ -40,7 +40,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/component/Filter",
 		 *  @private
 		 */
 		this._lowpass = this.output = this.context.createBiquadFilter();
-		this._lowpass.Q.value = 0;
+		this._lowpass.Q.value = -3.0102999566398125;
 		this._lowpass.type = "lowpass";
 
 		/**
