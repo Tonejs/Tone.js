@@ -126,16 +126,17 @@ function (Envelope, Basic, Offline, Test, Offline2, Supports, PassAudio) {
 				it ("correctly schedules an exponential attack", function(done){
 					var env;
 					var offline = new Offline(0.7); 
+					var startTime = 0.01;
 					offline.before(function(dest){
 						env = new Envelope(0.01, 0.4, 0.5, 0.1);
 						env.attackCurve = "exponential";
 						env.connect(dest);
-						env.triggerAttack(0);
+						env.triggerAttack(startTime);
 					});
 					offline.test(function(sample, time){
-						if (time < env.attack){
+						if (time < env.attack + startTime){
 							expect(sample).to.be.within(0, 1);
-						} else if (time < env.attack + env.decay){
+						} else if (time < env.attack + env.decay + startTime){
 							expect(sample).to.be.within(env.sustain - 0.001, 1);
 						} else {
 							expect(sample).to.be.closeTo(env.sustain, 0.01);
@@ -178,15 +179,16 @@ function (Envelope, Basic, Offline, Test, Offline2, Supports, PassAudio) {
 				it ("can schedule a very short attack", function(done){
 					var env;
 					var offline = new Offline(0.2); 
+					var startTime = 0.01;
 					offline.before(function(dest){
 						env = new Envelope(0.001, 0.001, 0);
 						env.connect(dest);
-						env.triggerAttack(0);
+						env.triggerAttack(startTime);
 					});
 					offline.test(function(sample, time){
-						if (time < env.attack){
+						if (time < env.attack + startTime){
 							expect(sample).to.be.within(0, 1);
-						} else if (time < env.attack + env.decay){
+						} else if (time < env.attack + env.decay + startTime){
 							expect(sample).to.be.within(0, 1);
 						} else {
 							expect(sample).to.be.below(0.02);
@@ -202,15 +204,16 @@ function (Envelope, Basic, Offline, Test, Offline2, Supports, PassAudio) {
 				it ("correctly schedule a release", function(done){
 					var releaseTime = 0.2;
 					var env;
-					var offline = new Offline(0.7); 
+					var offline = new Offline(0.7);
+					var startTime = 0.01; 
 					offline.before(function(dest){
 						env = new Envelope(0.001, 0.001, 0.5, 0.3);
 						env.connect(dest);
-						env.triggerAttack(0);
+						env.triggerAttack(startTime);
 						env.triggerRelease(releaseTime);
 					});
 					offline.test(function(sample, time){
-						if (time > env.attack + env.decay && time < env.attack + env.decay + releaseTime){
+						if (time > env.attack + env.decay + startTime && time < env.attack + env.decay + releaseTime + startTime){
 							expect(sample).to.be.below(env.sustain + 0.01);
 						} else if (time > 0.5){
 							//silent
@@ -368,14 +371,15 @@ function (Envelope, Basic, Offline, Test, Offline2, Supports, PassAudio) {
 				it ("can schedule multiple envelopes", function(done){
 					var env;
 					var offline = new Offline(1); 
+					var startTime = 0.01;
 					offline.before(function(dest){
 						env = new Envelope(0.1, 0.2, 0);
 						env.connect(dest);
-						env.triggerAttack(0);
+						env.triggerAttack(startTime);
 						env.triggerAttack(0.5);
 					});
 					offline.test(function(sample, time){
-						if (time > 0 && time < 0.3){
+						if (time > startTime && time < 0.3 + startTime){
 							expect(sample).to.be.above(0);
 						} else if (time < 0.5){
 							expect(sample).to.be.below(0.02);
