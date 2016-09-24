@@ -229,8 +229,9 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal",
 	 */
 	Tone.Envelope.prototype.triggerAttack = function(time, velocity){
 		//to seconds
-		var now = this.now() + this.blockTime;
-		time = this.toSeconds(time, now);
+		time = this.toSeconds(time);
+		//make sure the time is at least one block in the future to avoid pops
+		time = Math.max(this.now() + this.blockTime, time);
 		var originalAttack = this.toSeconds(this.attack);
 		var attack = originalAttack;
 		var decay = this.toSeconds(this.decay);
@@ -276,8 +277,9 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal",
 	 *  env.triggerRelease();
 	 */
 	Tone.Envelope.prototype.triggerRelease = function(time){
-		var now = this.now() + this.blockTime;
-		time = this.toSeconds(time, now);
+		time = this.toSeconds(time);
+		//make sure the time is at least one block in the future to avoid pops
+		time = Math.max(this.now() + this.blockTime, time);
 		var currentValue = this.getValueAtTime(time);
 		if (currentValue > 0){
 			var release = this.toSeconds(this.release);
