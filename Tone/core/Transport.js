@@ -77,6 +77,9 @@ function(Tone){
 			"callback" : this._processTick.bind(this), 
 			"frequency" : 0,
 		});
+
+		this._bindClockEvents();
+
 		/**
 		 *  The Beats Per Minute of the Transport. 
 		 *  @type {BPM}
@@ -353,6 +356,24 @@ function(Tone){
 	///////////////////////////////////////////////////////////////////////////////
 
 	/**
+	 *  Bind start/stop/pause events from the clock and emit them.
+	 */
+	Tone.Transport.prototype._bindClockEvents = function(){
+		this._clock.on("start", function(time, offset){
+			offset = Tone.Time(this._clock.ticks, "i").toSeconds();
+			this.emit("start", time, offset);
+		}.bind(this));
+
+		this._clock.on("stop", function(time){
+			this.emit("stop", time);
+		}.bind(this));
+
+		this._clock.on("pause", function(time){
+			this.emit("pause", time);
+		}.bind(this));
+	};
+
+	/**
 	 *  Returns the playback state of the source, either "started", "stopped", or "paused"
 	 *  @type {Tone.State}
 	 *  @readOnly
@@ -375,15 +396,11 @@ function(Tone){
 	 * Tone.Transport.start("+1", "4:0:0");
 	 */
 	Tone.Transport.prototype.start = function(time, offset){
-		time = this.toSeconds(time);
-		if (!this.isUndef(offset)){
-			offset = new Tone.Time(offset);
-		} else {
-			offset = new Tone.Time(this._clock.ticks, "i");
-		}
 		//start the clock
-		this._clock.start(time, offset.toTicks());
-		this.emit("start", time, offset.toSeconds());
+		if (!this.isUndef(offset)){
+			offset = this.toTicks(offset);
+		}
+		this._clock.start(time, offset);
 		return this;
 	};
 
@@ -395,9 +412,7 @@ function(Tone){
 	 * Tone.Transport.stop();
 	 */
 	Tone.Transport.prototype.stop = function(time){
-		time = this.toSeconds(time);
 		this._clock.stop(time);
-		this.emit("stop", time);
 		return this;
 	};
 
@@ -407,9 +422,7 @@ function(Tone){
 	 *  @returns {Tone.Transport} this
 	 */
 	Tone.Transport.prototype.pause = function(time){
-		time = this.toSeconds(time);
 		this._clock.pause(time);
-		this.emit("pause", time);
 		return this;
 	};
 
