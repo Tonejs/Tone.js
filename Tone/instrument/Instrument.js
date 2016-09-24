@@ -69,7 +69,11 @@ define(["Tone/core/Tone", "Tone/type/Type"], function(Tone){
 	 * synth.triggerAttackRelease("C4", "8n");
 	 */
 	Tone.Instrument.prototype.triggerAttackRelease = function(note, duration, time, velocity){
-		time = this.toSeconds(time);
+		if (this.isUndef(time)){
+			time = this.now() + this.blockTime;
+		} else {
+			time = this.toSeconds(time);
+		}
 		duration = this.toSeconds(duration);
 		this.triggerAttack(note, time, velocity);
 		this.triggerRelease(time + duration);
