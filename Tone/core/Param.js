@@ -169,7 +169,7 @@ define(["Tone/core/Tone", "Tone/type/Type"], function(Tone){
 	Tone.Param.prototype.setValueAtTime = function(value, time){
 		value = this._fromUnits(value);
 		time = this.toSeconds(time);
-		if (time < this.now() + this.blockTime){
+		if (time <= this.now() + this.blockTime){
 			this._param.value = value;
 		} else {
 			this._param.setValueAtTime(value, time);
