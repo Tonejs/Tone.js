@@ -12,12 +12,10 @@ define(function(){
 	//	WEB AUDIO CONTEXT
 	///////////////////////////////////////////////////////////////////////////
 
-	//borrowed from underscore.js
 	function isUndef(val){
-		return val === void 0;
+		return typeof val === "undefined";
 	}
 
-	//borrowed from underscore.js
 	function isFunction(val){
 		return typeof val === "function";
 	}
