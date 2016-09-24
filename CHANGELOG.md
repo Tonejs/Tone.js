@@ -9,6 +9,7 @@
 	* e.g. param.value = {min : 10, max : 20, frequency : 0.4}
 * Time.TimeBase has clone/copy methods.
 * Tone.Buffer.prototype.load returns Promise
+* Using Tone.Delay and Tone.Gain everywhere
 
 ### r7
 
