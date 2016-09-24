@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/signal/TimelineSignal", "Tone/core/TimelineState"], function (Tone) {
+define(["Tone/core/Tone", "Tone/signal/TimelineSignal", "Tone/core/TimelineState", "Tone/core/Emitter"], function (Tone) {
 
 	"use strict";
 
@@ -10,7 +10,7 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal", "Tone/core/TimelineState
 	 *          instead of the Clock by itself since you can synchronize multiple callbacks.
 	 *
 	 * 	@constructor
-	 * 	@extends {Tone}
+	 *  @extends {Tone.Emitter}
 	 * 	@param {function} callback The callback to be invoked with the time of the audio event
 	 * 	@param {Frequency} frequency The rate of the callback
 	 * 	@example
@@ -21,6 +21,8 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal", "Tone/core/TimelineState
 	 * }, 1);
 	 */
 	Tone.Clock = function(){
+
+		Tone.Emitter.call(this);
 
 		var options = this.optionsObject(arguments, ["callback", "frequency"], Tone.Clock.defaults);
 
@@ -108,7 +110,7 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal", "Tone/core/TimelineState
 		this._readOnly("frequency");
 	};
 
-	Tone.extend(Tone.Clock);
+	Tone.extend(Tone.Clock, Tone.Emitter);
 
 	/**
 	 *  The defaults
@@ -243,6 +245,7 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal", "Tone/core/TimelineState
 				if (!this.isUndef(event.offset)){
 					this.ticks = event.offset;
 				}
+				this.emit("start", event.time, this.ticks);
 			}
 		}
 		if (state === Tone.State.Started){
@@ -253,9 +256,15 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal", "Tone/core/TimelineState
 				this.ticks++;
 			}
 		} else if (state === Tone.State.Stopped){
+			if (this.ticks !== 0){
+				this.emit("stop", event.time);
+			}
 			this._nextTick = -1;
 			this.ticks = 0;
 		} else if (state === Tone.State.Paused){
+			if (this._nextTick !== -1){
+				this.emit("pause", event.time);
+			}
 			this._nextTick = -1;
 		}
 	};
@@ -279,6 +288,7 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal", "Tone/core/TimelineState
 	 */
 	Tone.Clock.prototype.dispose = function(){
 		cancelAnimationFrame(this._loopID);
+		Tone.Emitter.prototype.dispose.call(this);
 		Tone.TimelineState.prototype.dispose.call(this);
 		Tone.Clock._worker.removeEventListener("message", this._boundLoop);
 		this._writable("frequency");
