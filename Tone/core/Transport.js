@@ -601,9 +601,12 @@ function(Tone){
 			return this._clock.ticks;
 		},
 		set : function(t){
+			var now = this.now();
+			//stop everything synced to the transport
+			this.emit("stop", now);
 			this._clock.ticks = t;
-			// the 'seek' callback
-			this.emit("seek", this.seconds);
+			//restart it with the new time
+			this.emit("start", now, this.seconds);
 		}
 	});
 

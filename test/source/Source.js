@@ -122,6 +122,15 @@ function (Test, Source, Transport, OfflineTest, Tone) {
 				Tone.Transport.stop();
 			});
 
+
+			it ("can unsync after it was synced", function(){
+				var source = new Source();
+				source.sync().start(0);
+				source.unsync();
+				Tone.Transport.start();
+				expect(source.state).to.equal("stopped");
+			});
+
 			it ("can sync its stop to the Transport", function(done){
 				OfflineTest(function(output, testFn, tearDown){
 					var source = new Source();
@@ -243,16 +252,16 @@ function (Test, Source, Transport, OfflineTest, Tone) {
 				OfflineTest(function(output, testFn, tearDown){
 					var source = new Source();
 					source._start = function(time, offset){
-						expect(time).to.be.closeTo(0.3, 0.05);
-						expect(offset).to.be.closeTo(0.2, 0.05);
+						expect(time).to.be.closeTo(0.4, 0.05);
+						expect(offset).to.be.closeTo(0.1, 0.05);
 					};
 
 					source._stop = function(time){
-						expect(time).to.be.closeTo(0.6, 0.05);
+						expect(time).to.be.closeTo(0.5, 0.05);
 					};
 
-					source.sync().start(0.2, 0.1);
-					Tone.Transport.start(0.3, 0.3).stop(0.4);
+					source.sync().start(0.2, 0.1).stop(0.3);
+					Tone.Transport.start(0.2);
 
 					tearDown(function(){
 						source.dispose();
@@ -261,12 +270,132 @@ function (Test, Source, Transport, OfflineTest, Tone) {
 				}, 0.7);
 			});
 
-			it ("can unsync after it was synced", function(){
-				var source = new Source();
-				source.sync().start(0);
-				source.unsync();
-				Tone.Transport.start();
-				expect(source.state).to.equal("stopped");
+			it ("gives the correct offset on time on start/stop events invoked with an Transport offset", function(done){
+				OfflineTest(function(output, testFn, tearDown){
+					var source = new Source();
+					source._start = function(time, offset){
+						expect(time).to.be.closeTo(0.3, 0.05);
+						expect(offset).to.be.closeTo(0.1, 0.05);
+					};
+
+					source._stop = function(time){
+						expect(time).to.be.closeTo(0.4, 0.05);
+					};
+
+					source.sync().start(0.2, 0.1).stop(0.3);
+
+					Tone.Transport.start(0.2, 0.1);
+
+					tearDown(function(){
+						source.dispose();
+						done();
+					});
+				}, 0.7);
+			});
+
+			it ("gives the correct offset on time on start/stop events invoked with an Transport offset that's in the middle of the event", function(done){
+				OfflineTest(function(output, testFn, tearDown){
+					var source = new Source();
+					source._start = function(time, offset){
+						expect(time).to.be.closeTo(0.2, 0.05);
+						expect(offset).to.be.closeTo(0.15, 0.05);
+					};
+
+					source._stop = function(time){
+						expect(time).to.be.closeTo(0.25, 0.05);
+					};
+
+					source.sync().start(0.2, 0.1).stop(0.3);
+
+					Tone.Transport.start(0.2, 0.25);
+
+					tearDown(function(){
+						source.dispose();
+						done();
+					});
+				}, 0.7);
+			});
+
+			it ("gives the correct duration when invoked with an Transport offset that's in the middle of the event", function(done){
+				OfflineTest(function(output, testFn, tearDown){
+					var source = new Source();
+					source._start = function(time, offset, duration){
+						expect(time).to.be.closeTo(0, 0.05);
+						expect(offset).to.be.closeTo(0.2, 0.05);
+						expect(duration).to.be.closeTo(0.3, 0.05);
+					};
+
+					source._stop = function(time){
+						expect(time).to.be.closeTo(0.1, 0.05);
+					};
+
+					source.sync().start(0.2, 0.1, 0.4).stop(0.4);
+
+					Tone.Transport.start(0, 0.3);
+
+					tearDown(function(){
+						source.dispose();
+						done();
+					});
+				}, 0.7);
+			});
+
+			it ("stops at the right time when Transport.stop is invoked before the scheduled stop", function(done){
+				OfflineTest(function(output, testFn, tearDown){
+					var source = new Source();
+
+					source._stop = function(time){
+						expect(time).to.be.closeTo(0.3, 0.05);
+					};
+
+					source.sync().start(0.2).stop(0.4);
+
+					Tone.Transport.start(0).stop(0.3);
+
+					tearDown(function(){
+						source.dispose();
+						done();
+					});
+				}, 0.7);
+			});
+
+			it ("invokes the right methods and offsets when the transport is seeked", function(done){
+				OfflineTest(function(output, testFn, tearDown){
+					var source = new Source();
+
+					var seeked = false;
+
+					source._start = function(time, offset){
+						if(seeked){
+							expect(time).to.be.closeTo(0.1, 0.05);
+							expect(offset).to.be.closeTo(0.15, 0.05);
+						} else {
+							expect(time).to.be.closeTo(0, 0.05);
+							expect(offset).to.be.closeTo(0.1, 0.05);
+						}
+					};
+
+					source._stop = function(time){
+						//invokes the stop and restarts it
+						expect(time).to.be.closeTo(0.1, 0.05);
+					};
+
+					source.sync().start(0.2);
+
+					Tone.Transport.start(0, 0.3);
+
+					testFn(function(samples, time){
+						if (time === 0.1){
+							seeked = true;
+							Tone.Transport.seconds = 0.35;
+						}
+					});
+
+					tearDown(function(){
+						source.dispose();
+						done();
+					});
+				}, 0.7);
 			});
 		});
 	});

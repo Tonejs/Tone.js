@@ -157,6 +157,7 @@ function(Tone){
 			// add the offset time to the event
 			var event = this._state.getEvent(time);
 			event.offset = this.defaultArg(offset, 0);
+			event.duration = duration;
 			var sched = Tone.Transport.schedule(function(t){
 				this._start(t, offset, duration);
 			}.bind(this), time);
@@ -217,25 +218,21 @@ function(Tone){
 			if (offset > 0){
 				// get the playback state at that time
 				var stateEvent = this._state.getEvent(offset);
-				if (stateEvent && stateEvent.state === Tone.State.Started){
+				// listen for start events which may occur in the middle of the sync'ed time
+				if (stateEvent && stateEvent.state === Tone.State.Started && stateEvent.time !== offset){
 					// get the offset
-					var startOffset = offset - stateEvent.time;
-					this._start(time, startOffset + stateEvent.offset);
+					var startOffset = offset - this.toSeconds(stateEvent.time);
+					var duration;
+					if (stateEvent.duration){
+						duration = this.toSeconds(stateEvent.duration) - startOffset;	
+					}
+					this._start(time, stateEvent.offset + startOffset, duration);
 				}
 			}
 		}.bind(this));
 		Tone.Transport.on("stop pause", function(time){
 			if (this._state.getStateAtTime(Tone.Transport.seconds) === Tone.State.Started){
 				this._stop(time);
-			}
-		}.bind(this));
-		Tone.Transport.on("seek", function(offset){
-			var now = this.now();
-			// if it's currently playing, stop it
-			this._stop(now);
-			// if it's playing in the seeked offset, restarted it
-			if (this._state.getStateAtTime(offset) === Tone.State.Started){
-				this._start(now, offset);
 			}
 		}.bind(this));
 		return this;
@@ -247,7 +244,7 @@ function(Tone){
 	 */
 	Tone.Source.prototype.unsync = function(){
 		this._synced = false;
-		Tone.Transport.off("start stop pause seek");
+		Tone.Transport.off("start stop pause");
 		// clear all of the scheduled ids
 		for (var i = 0; i < this._scheduled.length; i++){
 			var id = this._scheduled[i];
