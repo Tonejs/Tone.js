@@ -1,5 +1,5 @@
-define(["Test", "Tone/type/Type", "Tone/core/Transport"], 
-function (Test, Type, Transport) {
+define(["Test", "Tone/type/Type", "Tone/core/Transport", "Tone/type/Time", "Tone/type/Frequency"], 
+function (Test, Type, Transport, Time, Frequency) {
 
 	//modified from http://stackoverflow.com/questions/15298912/javascript-generating-combinations-from-n-arrays-with-m-elements
 	function generatePermutations(args) {
@@ -22,13 +22,13 @@ function (Test, Type, Transport) {
 		if (typeof param === "string" && param.indexOf("=") !== -1){
 			return [undefined].concat(getVariations(param.replace("=", "")));
 		} else if (param === "Time"){
-			return ["2n", 1, "0.5"];
+			return ["2n", 1, Time("4n")];
 		} else if (param === "Number"){
 			return [20, 0, -0.5];
 		} else if (param === "NormalRange"){
 			return [0, 0.5, 1];
 		} else if (param === "Frequency"){
-			return ["2n", "C#4", 220];
+			return ["C#4", 220, Frequency("A4")];
 		} else if (param === "Function"){
 			return [function(){}];
 		} else {
