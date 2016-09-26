@@ -33,15 +33,9 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal", "Tone/core/TimelineState
 		this.callback = options.callback;
 
 		/**
-		 *  The time which the clock will schedule events in advance
-		 *  of the current time. Scheduling notes in advance improves
-		 *  performance and decreases the chance for clicks caused
-		 *  by scheduling events in the past. If set to "auto",
-		 *  this value will be automatically computed based on the 
-		 *  rate of requestAnimationFrame (0.016 seconds). Larger values
-		 *  will yeild better performance, but at the cost of latency. 
-		 *  Values less than 0.016 are not recommended.
+		 *  The internal lookahead value
 		 *  @type {Number|String}
+		 *  @private
 		 */
 		this._lookAhead = "auto";
 
@@ -66,13 +60,6 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal", "Tone/core/TimelineState
 		 *  @private
 		 */
 		this._lastUpdate = -1;
-
-		/**
-		 *  The id of the requestAnimationFrame
-		 *  @type {Number}
-		 *  @private
-		 */
-		this._loopID = -1;
 
 		/**
 		 *  The rate the callback function should be invoked. 
@@ -142,7 +129,7 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal", "Tone/core/TimelineState
 	 *  performance and decreases the chance for clicks caused
 	 *  by scheduling events in the past. If set to "auto",
 	 *  this value will be automatically computed based on the 
-	 *  rate of requestAnimationFrame (0.016 seconds). Larger values
+	 *  rate of the update (~0.02 seconds). Larger values
 	 *  will yeild better performance, but at the cost of latency. 
 	 *  Values less than 0.016 are not recommended.
 	 *  @type {Number|String}
@@ -256,7 +243,7 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal", "Tone/core/TimelineState
 				this.ticks++;
 			}
 		} else if (state === Tone.State.Stopped){
-			if (this.ticks !== 0){
+			if (event && this.ticks !== 0){
 				this.emit("stop", event.time);
 			}
 			this._nextTick = -1;
@@ -287,7 +274,6 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal", "Tone/core/TimelineState
 	 *  @returns {Tone.Clock} this
 	 */
 	Tone.Clock.prototype.dispose = function(){
-		cancelAnimationFrame(this._loopID);
 		Tone.Emitter.prototype.dispose.call(this);
 		Tone.TimelineState.prototype.dispose.call(this);
 		Tone.Clock._worker.removeEventListener("message", this._boundLoop);
