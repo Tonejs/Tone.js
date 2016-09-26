@@ -1,6 +1,6 @@
 define(["helper/OutputAudio", "Tone/instrument/Instrument", "helper/OutputAudioStereo", 
-	"Test", "helper/Offline", "helper/Meter", "helper/APITest"], 
-	function (OutputAudio, Instrument, OutputAudioStereo, Test, Offline, Meter, APITest) {
+	"Test", "helper/Offline", "helper/Meter"], 
+	function (OutputAudio, Instrument, OutputAudioStereo, Test, Offline, Meter) {
 
 	return function(Constr, note, constrArg){
 
@@ -91,12 +91,6 @@ define(["helper/OutputAudio", "Tone/instrument/Instrument", "helper/OutputAudioS
 				meter.run();
 			});
 
-		});
-
-		context("Instrument Tests: API", function(){
-			APITest.method(Constr, "triggerAttack", ["Frequency", "Time=", "NormalRange="]);
-			APITest.method(Constr, "triggerRelease", ["Time="]);
-			APITest.method(Constr, "triggerAttackRelease", ["Frequency", "Time=", "Time=", "NormalRange="]);
 		});
 
 	};

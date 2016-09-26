@@ -146,8 +146,8 @@ define(["helper/OutputAudio", "Tone/source/Source", "helper/OutputAudioStereo",
 		});
 
 		context("Source API", function(){
-			APITest.method(Constr, "start", ["Time=", "Time=", "Time="]);
-			APITest.method(Constr, "stop", ["Time="]);
+			APITest.method(Constr, "start", ["Time=", "Time=", "Time="], args);
+			APITest.method(Constr, "stop", ["Time="], args);
 		});
 
 	};

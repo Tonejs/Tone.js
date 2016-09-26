@@ -68,12 +68,12 @@ function (Test, Type, Transport) {
 	}
 
 	return {
-		method : function(constructor, fn, args){
+		method : function(constructor, fn, args, consArgs){
 
 			it (fn+" ("+args.join(", ") + ")", function(){
 				var permutations = generateArgs(args);
 				for (var i = 0; i < permutations.length; i++){
-					var instance = new constructor();
+					var instance = new constructor(consArgs);
 					instance[fn].apply(instance, permutations[i]);
 					instance.dispose();
 				}
