@@ -227,6 +227,30 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 		return this;
 	};
 
+
+	/**
+	 *  Seek to a specific time in the player's buffer. If the 
+	 *  source is no longer playing at that time, it will stop.
+	 *  If you seek to a time that 
+	 *  @param {Time} offset The time to seek to.
+	 *  @param {Time=} time The time for the seek event to occur.
+	 *  @return {Tone.Player} this
+	 *  @example
+	 * source.start(0.2);
+	 * source.stop(0.4);
+	 */
+	Tone.Player.prototype.seek = function(offset, time){
+		time = this.toSeconds(time);
+		if (this._state.getStateAtTime(time) === Tone.State.Started){
+			offset = this.toSeconds(offset);
+			// if it's currently playing, stop it
+			this._stop(time);
+			//restart it at the given time
+			this._start(time, offset);
+		}
+		return this;
+	};
+
 	/**
 	 *  Set the loop start and end. Will only loop if loop is 
 	 *  set to true. 
