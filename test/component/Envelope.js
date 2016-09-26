@@ -1,9 +1,25 @@
 define(["Tone/component/Envelope", "helper/Basic", "helper/Offline", "Test", 
-	"helper/Offline2", "helper/Supports", "helper/PassAudio"], 
-function (Envelope, Basic, Offline, Test, Offline2, Supports, PassAudio) {
+	"helper/Offline2", "helper/Supports", "helper/PassAudio", "helper/APITest"], 
+function (Envelope, Basic, Offline, Test, Offline2, Supports, PassAudio, APITest) {
 	describe("Envelope", function(){
 
 		Basic(Envelope);
+
+		context("API", function(){
+
+			APITest.constructor(Envelope, {
+				"attack" : "Time=",
+				"decay" : "Time=",
+				"sustain" : "NormalRange=",
+				"release" : "Time=",
+				"attackCurve" : ["linear", "exponential"],
+				"releaseCurve" : ["linear", "exponential"]
+			});
+			APITest.constructor(Envelope, ["Time=", "Time=", "NormalRange=", "Time="]);
+
+			APITest.method(Envelope, "triggerAttack", ["Time=", "NormalRange="]);
+			APITest.method(Envelope, "triggerRelease", ["Time="]);
+		});
 
 		context("Envelope", function(){
 
