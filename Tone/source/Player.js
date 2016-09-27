@@ -178,14 +178,11 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 				offset = this.defaultArg(offset, 0);
 			}
 			offset = this.toSeconds(offset);
-			duration = this.defaultArg(duration, this._buffer.duration - offset);
 			//make sure it has a positive duration
-			if (duration <= 0){
-				return this;
-			}
+			duration = this.defaultArg(duration, Math.max(this._buffer.duration - offset, 0));
+			duration = this.toSeconds(duration);
 			//the values in seconds
 			startTime = this.toSeconds(startTime);
-			duration = this.toSeconds(duration);
 			//make the source
 			this._source = this.context.createBufferSource();
 			this._source.buffer = this._buffer.get();
