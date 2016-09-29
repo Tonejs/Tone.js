@@ -200,6 +200,17 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 			this._source.connect(this.output);
 			//start it
 			if (this._loop){
+				//modify the offset if it's greater than the loop time
+				var loopEnd = this._source.loopEnd || this._buffer.duration;
+				var loopStart = this._source.loopStart;
+				var loopDuration = loopEnd - loopStart;
+				if (offset > loopDuration){
+					offset = loopStart + (offset % loopDuration);
+					if (offset > loopEnd){
+						offset -= loopDuration;
+					}
+				}
+
 				this._source.start(startTime, offset);
 			} else {
 				this._source.start(startTime, offset, duration);
