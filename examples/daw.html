@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+	<title>Transport Sync</title>
+
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<link rel="icon" type="image/png" sizes="174x174" href="./style/favicon.png">
+	
+	<script type="text/javascript" src="../build/Tone.js"></script>
+	<script type="text/javascript" src="./scripts/jquery.min.js"></script>
+	<script type="text/javascript" src="./scripts/draggabilly.js"></script>
+	<script type="text/javascript" src="https://tonejs.github.io/Logo/build/Logo.js"></script>
+	<script type="text/javascript" src="./scripts/StartAudioContext.js"></script>
+	<script type="text/javascript" src="./scripts/Interface.js"></script>
+
+	<link rel="stylesheet" type="text/css" href="./style/examples.css">
+
+	<script type="text/javascript">
+		// jshint ignore: start
+	</script>
+
+</head>
+<body>	
+	<style type="text/css">
+
+		#Left, #Right {
+			height: 200px;
+			width: 50%;
+			position: relative;
+			float: left;
+			margin-top: 5px;
+			margin-bottom: 5px;
+		}
+
+		.Button {
+			display: inline-block;
+		}
+
+		#TransportContainer{
+			width: 100%;
+			height: 100px;
+			position: relative;
+		}
+
+		img {
+			width: 100%;
+			height: 100%;
+			position: absolute;
+			top: 0px;
+			left: 0px;
+		}
+
+		#Bar {
+			width: 2px;
+			height: 94%;
+			position: absolute;
+			top: 3%;
+			left: 0%;
+			background-color: black;
+		}
+	</style>
+	<div id="Content">
+		<div id="Title">Transport Sync</div>
+		<div id="Explanation">
+			This beat is composed of 3 independent Players each with a different loop length, synced to the Transport to start at different times.
+		</div>
+		<div id="TransportContainer">
+			<img src="https://docs.google.com/drawings/d/1onWuoYuqt46GIrJPtoqZ_Wklh2kseo8ryxrF66E8E9U/pub?w=959&h=208">
+			<div id="Bar"></div>
+		</div>
+	</div>
+
+	<script type="text/javascript">
+
+		Tone.Transport.bpm.value = 102;
+		
+		var kick = new Tone.Player({
+			url : "./audio/loop/kick.wav",
+			loop : true
+		}).toMaster().sync().start(0);
+
+		var snare = new Tone.Player({
+			url : "./audio/loop/snare.wav",
+			loop : true
+		}).toMaster().sync().start("2n");
+
+		var hh = new Tone.Player({
+			url : "./audio/loop/hh.wav",
+			loop : true
+		}).toMaster().sync().start("3:3:2", "8n"); //start with an offset
+
+		Tone.Transport.loop = true;
+		Tone.Transport.loopStart = "4m";
+		Tone.Transport.loopEnd = "6m";
+		
+	</script>
+
+	<script id="GUI" type="text/javascript">
+		$(function(){
+
+			new Interface.Loader();
+
+			var dragging = false;
+
+			window.slider = new Interface.Slider({
+
+				max : Tone.Transport.loopEnd,
+
+				start : function(){
+					dragging = true;
+					if (started){
+						Tone.Transport.pause();
+					}
+				},
+				end : function(){
+					dragging = false;
+					if (started){
+						Tone.Transport.start("+0.1");
+					}
+				},
+				drag : function(val){
+					Tone.Transport.seconds = val;
+				}
+			})
+
+			var started = false;
+			
+			new Interface.Button({
+				key : 32,
+				type : "toggle",
+				text : "Start",
+				activeText : "Pause",
+				start : function(){
+					started = true;
+					Tone.Transport.start("+0.1");
+				},
+				end : function(){
+					started = false;
+					Tone.Transport.pause();
+				}
+			});
+
+			function loop(){
+				requestAnimationFrame(loop);
+				if (!dragging){
+					slider.value(Tone.Transport.seconds);
+				}
+				var progress = Tone.Transport.seconds / Tone.Transport.loopEnd;
+				$("#Bar").css("left", (progress * 100).toFixed(2) + "%");
+			}
+			loop();
+
+		});
+	</script>
+
+	</style>
+</body>
+</html>
