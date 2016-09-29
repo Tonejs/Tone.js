@@ -211,8 +211,10 @@ function(Tone){
 		//do the loop test
 		if (this.loop){
 			if (ticks === this._loopEnd){
-				this.ticks = this._loopStart;
+				this.emit("stop", tickTime);
+				this._clock.ticks = this._loopStart;
 				ticks = this._loopStart;
+				this.emit("start", tickTime, this.seconds);
 				this.emit("loop", tickTime);
 			}
 		}
@@ -603,10 +605,14 @@ function(Tone){
 		set : function(t){
 			var now = this.now();
 			//stop everything synced to the transport
-			this.emit("stop", now);
-			this._clock.ticks = t;
-			//restart it with the new time
-			this.emit("start", now, this.seconds);
+			if (this.state === Tone.State.Started){
+				this.emit("stop", now);
+				this._clock.ticks = t;
+				//restart it with the new time
+				this.emit("start", now, this.seconds);
+			} else {
+				this._clock.ticks = t;
+			}
 		}
 	});
 
