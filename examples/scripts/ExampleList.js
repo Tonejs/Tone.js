@@ -26,6 +26,7 @@ var ExampleList = {
 		"Play Along" : "shiny",
 		"Quantization" : "quantization",
 		"Playback Rate" : "pianoPhase",
+		"Transport Sync" : "daw"
 	},
 	"Signals" : {
 		"Control Voltage" : "signal",
