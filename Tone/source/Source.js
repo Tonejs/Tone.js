@@ -226,7 +226,7 @@ function(Tone){
 					if (stateEvent.duration){
 						duration = this.toSeconds(stateEvent.duration) - startOffset;	
 					}
-					this._start(time, stateEvent.offset + startOffset, duration);
+					this._start(time, this.toSeconds(stateEvent.offset) + startOffset, duration);
 				}
 			}
 		}.bind(this));
