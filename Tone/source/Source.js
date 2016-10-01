@@ -144,7 +144,7 @@ function(Tone){
 	 */
 	Tone.Source.prototype.start = function(time, offset, duration){
 		if (this.isUndef(time) && this._synced){
-			time = Tone.Transport.position;
+			time = Tone.Transport.seconds;
 		} else {
 			time = this.toSeconds(time);
 		}	
@@ -178,7 +178,7 @@ function(Tone){
 	 */
 	Tone.Source.prototype.stop = function(time){
 		if (this.isUndef(time) && this._synced){
-			time = Tone.Transport.position;
+			time = Tone.Transport.seconds;
 		} else {
 			time = this.toSeconds(time);
 		}
