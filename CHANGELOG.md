@@ -12,6 +12,7 @@
 * Tone.Buffer.prototype.load returns Promise
 * Using Tone.Delay and Tone.Gain everywhere
 * Patch for Chrome 53+ issue of not correctly scheduling AudioParams with setValueAtTime
+* Panner3D and Tone.Listener wrap native PannerNode and AudioListener to give 3D panning ability. 
 
 
 ### r7
