@@ -100,7 +100,8 @@ define(["helper/Basic", "Tone/event/Part", "Tone/core/Tone",
 					"note" : "D3"
 				}]);
 				expect(part.length).to.equal(2);
-				expect(part.at(0.3).value).to.deep.equal({note : "C3"});
+				expect(part.at(0.3).value).to.be.object;
+				expect(part.at(0.3).value.note).to.equal("C3")
 				part.dispose();
 			});
 
@@ -122,7 +123,9 @@ define(["helper/Basic", "Tone/event/Part", "Tone/core/Tone",
 					"duration" : "8n"
 				});
 				expect(part.length).to.equal(1);
-				expect(part.at(0.5).value).to.deep.equal({"note" : "D4", "duration" : "8n"});
+				expect(part.at(0.5).value).to.be.object;
+				expect(part.at(0.5).value.duration).to.deep.equal("8n");
+				expect(part.at(0.5).value.note).to.deep.equal("D4");
 				part.dispose();
 			});
 

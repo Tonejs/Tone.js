@@ -277,11 +277,10 @@ define(["Tone/core/Tone", "Tone/event/Event", "Tone/type/Type", "Tone/core/Trans
 	 */
 	Tone.Part.prototype.add = function(time, value){
 		//extract the parameters
-		if (this.isObject(time) && time.hasOwnProperty("time")){
+		if (time.hasOwnProperty("time")){
 			value = time;
 			time = value.time;
-			delete value.time;
-		} 
+		}
 		time = this.toTicks(time);
 		var event;
 		if (value instanceof Tone.Event){
@@ -330,13 +329,14 @@ define(["Tone/core/Tone", "Tone/event/Event", "Tone/type/Type", "Tone/core/Trans
 	 *  into nested parts to find the event.
 	 *  @param {Time} time The time of the event
 	 *  @param {*} value Optionally select only a specific event value
+	 *  @return  {Tone.Part}  this
 	 */
 	Tone.Part.prototype.remove = function(time, value){
 		//extract the parameters
-		if (this.isObject(time) && time.hasOwnProperty("time")){
+		if (time.hasOwnProperty("time")){
 			value = time;
 			time = value.time;
-		} 
+		}
 		time = this.toTicks(time);
 		for (var i = this._events.length - 1; i >= 0; i--){
 			var event = this._events[i];
