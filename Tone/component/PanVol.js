@@ -7,7 +7,7 @@ define(["Tone/core/Tone", "Tone/component/Panner", "Tone/component/Volume"], fun
 	 *
 	 *  @extends {Tone}
 	 *  @constructor
-	 *  @param {NormalRange} pan the initial pan
+	 *  @param {AudioRange} pan the initial pan
 	 *  @param {number} volume The output volume. 
 	 *  @example
 	 * //pan the incoming signal left and drop the volume
@@ -26,7 +26,7 @@ define(["Tone/core/Tone", "Tone/component/Panner", "Tone/component/Volume"], fun
 
 		/**
 		 *  The L/R panning control.
-		 *  @type {NormalRange}
+		 *  @type {AudioRange}
 		 *  @signal
 		 */
 		this.pan = this._panner.pan;

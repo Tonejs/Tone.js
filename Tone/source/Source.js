@@ -27,8 +27,8 @@ function(Tone){
 	 * 
 	 */	
 	Tone.Source = function(options){
-		//Sources only have an output and no input
-		Tone.call(this);
+
+		// this.createInsOuts(0, 1);
 
 		options = this.defaultArg(options, Tone.Source.defaults);
 
@@ -62,25 +62,14 @@ function(Tone){
 		 *  @type {Function}
 		 *  @private
 		 */
-		this._syncStart = function(time, offset){
-			time = this.toSeconds(time);
-			time += this.toSeconds(this._startDelay);
-			this.start(time, offset);
-		}.bind(this);
+		this._synced = false;
 
 		/**
-		 *  The synced `stop` callback function from the transport
-		 *  @type {Function}
+		 *  Keep track of all of the scheduled event ids
+		 *  @type  {Array}
 		 *  @private
 		 */
-		this._syncStop = this.stop.bind(this);
-
-		/**
-		 *  The offset from the start of the Transport `start`
-		 *  @type {Time}
-		 *  @private
-		 */
-		this._startDelay = 0;
+		this._scheduled = [];
 
 		//make the output explicitly stereo
 		this._volume.output.output.channelCount = 2;
@@ -111,7 +100,15 @@ function(Tone){
 	 */
 	Object.defineProperty(Tone.Source.prototype, "state", {
 		get : function(){
-			return this._state.getStateAtTime(this.now());
+			if (this._synced){
+				if (Tone.Transport.state === Tone.State.Started){
+					return this._state.getStateAtTime(Tone.Transport.seconds);
+				} else {
+					return Tone.State.Stopped;
+				}
+			} else {
+				return this._state.getStateAtTime(this.now());
+			}
 		}
 	});
 
@@ -133,6 +130,10 @@ function(Tone){
 		}
 	});
 
+	//overwrite these functions
+	Tone.Source.prototype._start = Tone.noOp;
+	Tone.Source.prototype._stop = Tone.noOp;
+
 	/**
 	 *  Start the source at the specified time. If no time is given, 
 	 *  start the source now.
@@ -141,13 +142,28 @@ function(Tone){
 	 *  @example
 	 * source.start("+0.5"); //starts the source 0.5 seconds from now
 	 */
-	Tone.Source.prototype.start = function(time){
-		time = this.toSeconds(time);
-		if (this._state.getStateAtTime(time) !== Tone.State.Started || this.retrigger){
-			this._state.setStateAtTime(Tone.State.Started, time);
-			if (this._start){
-				this._start.apply(this, arguments);
-			}
+	Tone.Source.prototype.start = function(time, offset, duration){
+		if (this.isUndef(time) && this._synced){
+			time = Tone.Transport.seconds;
+		} else {
+			time = this.toSeconds(time);
+		}	
+		//if it's started, stop it and restart it
+		if (this._state.getStateAtTime(time) === Tone.State.Started){
+			this.stop(time);
+		}
+		this._state.setStateAtTime(Tone.State.Started, time);
+		if (this._synced){
+			// add the offset time to the event
+			var event = this._state.getEvent(time);
+			event.offset = this.defaultArg(offset, 0);
+			event.duration = duration;
+			var sched = Tone.Transport.schedule(function(t){
+				this._start(t, offset, duration);
+			}.bind(this), time);
+			this._scheduled.push(sched);
+		} else {
+			this._start.apply(this, arguments);
 		}
 		return this;
 	};
@@ -161,33 +177,64 @@ function(Tone){
 	 * source.stop(); // stops the source immediately
 	 */
 	Tone.Source.prototype.stop = function(time){
-		time = this.toSeconds(time);
+		if (this.isUndef(time) && this._synced){
+			time = Tone.Transport.seconds;
+		} else {
+			time = this.toSeconds(time);
+		}
 		this._state.cancel(time);
 		this._state.setStateAtTime(Tone.State.Stopped, time);
-		if (this._stop){
+		if (!this._synced){
 			this._stop.apply(this, arguments);
-		}
+		} else {
+			var sched = Tone.Transport.schedule(this._stop.bind(this), time);
+			this._scheduled.push(sched);
+		}	
 		return this;
 	};
 	
 	/**
-	 *  Sync the source to the Transport so that when the transport
-	 *  is started, this source is started and when the transport is stopped
-	 *  or paused, so is the source. 
+	 *  Sync the source to the Transport so that all subsequent
+	 *  calls to `start` and `stop` are synced to the TransportTime
+	 *  instead of the AudioContext time. 
 	 *
-	 *  @param {Time} [delay=0] Delay time before starting the source after the
-	 *                               Transport has started. 
 	 *  @returns {Tone.Source} this
 	 *  @example
-	 * //sync the source to start 1 measure after the transport starts
-	 * source.sync("1m");
-	 * //start the transport. the source will start 1 measure later. 
+	 * //sync the source so that it plays between 0 and 0.3 on the Transport's timeline
+	 * source.sync().start(0).stop(0.3);
+	 * //start the transport.
 	 * Tone.Transport.start();
+	 *
+	 *  @example
+	 * //start the transport with an offset and the sync'ed sources
+	 * //will start in the correct position
+	 * source.sync().start(0.1);
+	 * //the source will be invoked with an offset of 0.4
+	 * Tone.Transport.start("+0.5", 0.5);
 	 */
-	Tone.Source.prototype.sync = function(delay){
-		this._startDelay = this.defaultArg(delay, 0);
-		Tone.Transport.on("start", this._syncStart);
-		Tone.Transport.on("stop pause", this._syncStop);
+	Tone.Source.prototype.sync = function(){
+		this._synced = true;
+		Tone.Transport.on("start", function(time, offset){
+			if (offset > 0){
+				// get the playback state at that time
+				var stateEvent = this._state.getEvent(offset);
+				// listen for start events which may occur in the middle of the sync'ed time
+				if (stateEvent && stateEvent.state === Tone.State.Started && stateEvent.time !== offset){
+					// get the offset
+					var startOffset = offset - this.toSeconds(stateEvent.time);
+					var duration;
+					if (stateEvent.duration){
+						duration = this.toSeconds(stateEvent.duration) - startOffset;	
+					}
+					this._start(time, this.toSeconds(stateEvent.offset) + startOffset, duration);
+				}
+			}
+		}.bind(this));
+		Tone.Transport.on("stop pause", function(time){
+			if (this._state.getStateAtTime(Tone.Transport.seconds) === Tone.State.Started){
+				this._stop(time);
+			}
+		}.bind(this));
 		return this;
 	};
 
@@ -196,9 +243,15 @@ function(Tone){
 	 *  @returns {Tone.Source} this
 	 */
 	Tone.Source.prototype.unsync = function(){
-		this._startDelay = 0;
-		Tone.Transport.off("start", this._syncStart);
-		Tone.Transport.off("stop pause", this._syncStop);
+		this._synced = false;
+		Tone.Transport.off("start stop pause");
+		// clear all of the scheduled ids
+		for (var i = 0; i < this._scheduled.length; i++){
+			var id = this._scheduled[i];
+			Tone.Transport.clear(id);
+		}
+		this._scheduled = [];
+		this._state.cancel(0);
 		return this;
 	};
 
@@ -207,17 +260,15 @@ function(Tone){
 	 *  @return {Tone.Source} this
 	 */
 	Tone.Source.prototype.dispose = function(){
-		this.stop();
 		Tone.prototype.dispose.call(this);
 		this.unsync();
+		this._scheduled = null;
 		this._writable("volume");
 		this._volume.dispose();
 		this._volume = null;
 		this.volume = null;
 		this._state.dispose();
 		this._state = null;
-		this._syncStart = null;
-		this._syncStart = null;
 	};
 
 	return Tone.Source;

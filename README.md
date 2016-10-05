@@ -32,6 +32,9 @@ Tone.js is a Web Audio framework for creating interactive music in the browser. 
 * [MsCompose 95 - Autotel](http://autotel.co/mscompose95/)
 * [Pedalboard - Micha Hanselmann](https://deermichel.github.io/pedalboard/)
 * [Keyboard Boogie - Douglas Tarr](http://douglastarr.com/keyboard-boogie)
+* [Reflect - Sydneyzh](http://reflect.sydneyzh.com/)
+* [Anxiety - Eve Weinberg, Aaron Montoya-Moraga](http://anxietybrain.net/)
+* [Ramsophone - Robert Vinluan](http://robertvinluan.com/Ramsophone/)
 
 Using Tone.js? I'd love to hear it: yotam@tonejs.org
 
@@ -150,7 +153,7 @@ synth.connect(distortion);
 
 # Sources
 
-Tone has a few basic audio sources like [Tone.Oscillator](https://tonejs.github.io/docs/#Oscillator) which has sine, square, triangle, and sawtooth waveforms, a buffer player ([Tone.Player](https://tonejs.github.io/docs/#Player)), a noise generator ([Tone.Noise]((https://tonejs.github.io/docs/#Noise))), two additional oscillator types ([pwm](https://tonejs.github.io/docs/#PWMOscillator), [pulse](https://tonejs.github.io/docs/#PulseOscillator)) and [external audio input](https://tonejs.github.io/docs/#Microphone) (when [WebRTC is supported](http://caniuse.com/#feat=stream)).
+Tone has a few basic audio sources like [Tone.Oscillator](https://tonejs.github.io/docs/#Oscillator) which has sine, square, triangle, and sawtooth waveforms, a buffer player ([Tone.Player](https://tonejs.github.io/docs/#Player)), a noise generator ([Tone.Noise](https://tonejs.github.io/docs/#Noise)), a few additional oscillator types ([pwm](https://tonejs.github.io/docs/#PWMOscillator), [pulse](https://tonejs.github.io/docs/#PulseOscillator), [fat](https://tonejs.github.io/docs/#FatOscillator), [fm](https://tonejs.github.io/docs/#FMOscillator)) and [external audio input](https://tonejs.github.io/docs/#Microphone) (when [WebRTC is supported](http://caniuse.com/#feat=stream)).
 
 ```javascript
 //a pwm oscillator which is connected to the speaker and started right away

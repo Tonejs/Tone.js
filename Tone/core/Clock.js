@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/signal/TimelineSignal", "Tone/core/TimelineState"], function (Tone) {
+define(["Tone/core/Tone", "Tone/signal/TimelineSignal", "Tone/core/TimelineState", "Tone/core/Emitter"], function (Tone) {
 
 	"use strict";
 
@@ -10,7 +10,7 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal", "Tone/core/TimelineState
 	 *          instead of the Clock by itself since you can synchronize multiple callbacks.
 	 *
 	 * 	@constructor
-	 * 	@extends {Tone}
+	 *  @extends {Tone.Emitter}
 	 * 	@param {function} callback The callback to be invoked with the time of the audio event
 	 * 	@param {Frequency} frequency The rate of the callback
 	 * 	@example
@@ -22,6 +22,8 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal", "Tone/core/TimelineState
 	 */
 	Tone.Clock = function(){
 
+		Tone.Emitter.call(this);
+
 		var options = this.optionsObject(arguments, ["callback", "frequency"], Tone.Clock.defaults);
 
 		/**
@@ -31,15 +33,9 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal", "Tone/core/TimelineState
 		this.callback = options.callback;
 
 		/**
-		 *  The time which the clock will schedule events in advance
-		 *  of the current time. Scheduling notes in advance improves
-		 *  performance and decreases the chance for clicks caused
-		 *  by scheduling events in the past. If set to "auto",
-		 *  this value will be automatically computed based on the 
-		 *  rate of requestAnimationFrame (0.016 seconds). Larger values
-		 *  will yeild better performance, but at the cost of latency. 
-		 *  Values less than 0.016 are not recommended.
+		 *  The internal lookahead value
 		 *  @type {Number|String}
+		 *  @private
 		 */
 		this._lookAhead = "auto";
 
@@ -64,13 +60,6 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal", "Tone/core/TimelineState
 		 *  @private
 		 */
 		this._lastUpdate = -1;
-
-		/**
-		 *  The id of the requestAnimationFrame
-		 *  @type {Number}
-		 *  @private
-		 */
-		this._loopID = -1;
 
 		/**
 		 *  The rate the callback function should be invoked. 
@@ -108,7 +97,7 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal", "Tone/core/TimelineState
 		this._readOnly("frequency");
 	};
 
-	Tone.extend(Tone.Clock);
+	Tone.extend(Tone.Clock, Tone.Emitter);
 
 	/**
 	 *  The defaults
@@ -140,7 +129,7 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal", "Tone/core/TimelineState
 	 *  performance and decreases the chance for clicks caused
 	 *  by scheduling events in the past. If set to "auto",
 	 *  this value will be automatically computed based on the 
-	 *  rate of requestAnimationFrame (0.016 seconds). Larger values
+	 *  rate of the update (~0.02 seconds). Larger values
 	 *  will yeild better performance, but at the cost of latency. 
 	 *  Values less than 0.016 are not recommended.
 	 *  @type {Number|String}
@@ -243,6 +232,7 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal", "Tone/core/TimelineState
 				if (!this.isUndef(event.offset)){
 					this.ticks = event.offset;
 				}
+				this.emit("start", event.time, this.ticks);
 			}
 		}
 		if (state === Tone.State.Started){
@@ -253,9 +243,15 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal", "Tone/core/TimelineState
 				this.ticks++;
 			}
 		} else if (state === Tone.State.Stopped){
+			if (event && this.ticks !== 0){
+				this.emit("stop", event.time);
+			}
 			this._nextTick = -1;
 			this.ticks = 0;
 		} else if (state === Tone.State.Paused){
+			if (this._nextTick !== -1){
+				this.emit("pause", event.time);
+			}
 			this._nextTick = -1;
 		}
 	};
@@ -269,6 +265,7 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal", "Tone/core/TimelineState
 	 * clock.getStateAtTime("+0.1"); //returns "started"
 	 */
 	Tone.Clock.prototype.getStateAtTime = function(time){
+		time = this.toSeconds(time);
 		return this._state.getStateAtTime(time);
 	};
 
@@ -277,7 +274,7 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal", "Tone/core/TimelineState
 	 *  @returns {Tone.Clock} this
 	 */
 	Tone.Clock.prototype.dispose = function(){
-		cancelAnimationFrame(this._loopID);
+		Tone.Emitter.prototype.dispose.call(this);
 		Tone.TimelineState.prototype.dispose.call(this);
 		Tone.Clock._worker.removeEventListener("message", this._boundLoop);
 		this._writable("frequency");

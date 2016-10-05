@@ -1,4 +1,5 @@
-define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/signal/Signal", "Tone/signal/Multiply"], function(Tone){
+define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/signal/Signal", 
+	"Tone/signal/Multiply", "Tone/core/Gain"], function(Tone){
 
 	"use strict";
 	
@@ -17,24 +18,23 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/signal/Signal", "Tone/sign
 		options = this.defaultArg(options, Tone.FeedbackEffect.defaults);
 
 		Tone.Effect.call(this, options);
+		
+		/**
+		 *  the gain which controls the feedback
+		 *  @type {Tone.Gain}
+		 *  @private
+		 */
+		this._feedbackGain = new Tone.Gain(options.feedback, Tone.Type.NormalRange);
 
 		/**
 		 *  The amount of signal which is fed back into the effect input. 
 		 *  @type {NormalRange}
 		 *  @signal
 		 */
-		this.feedback = new Tone.Signal(options.feedback, Tone.Type.NormalRange);
-		
-		/**
-		 *  the gain which controls the feedback
-		 *  @type {GainNode}
-		 *  @private
-		 */
-		this._feedbackGain = this.context.createGain();
+		this.feedback = this._feedbackGain.gain;
 
 		//the feedback loop
 		this.effectReturn.chain(this._feedbackGain, this.effectSend);
-		this.feedback.connect(this._feedbackGain.gain);
 		this._readOnly(["feedback"]);
 	};
 
@@ -55,10 +55,9 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/signal/Signal", "Tone/sign
 	Tone.FeedbackEffect.prototype.dispose = function(){
 		Tone.Effect.prototype.dispose.call(this);
 		this._writable(["feedback"]);
-		this.feedback.dispose();
-		this.feedback = null;
-		this._feedbackGain.disconnect();
+		this._feedbackGain.dispose();
 		this._feedbackGain = null;
+		this.feedback = null;
 		return this;
 	};
 

@@ -1,4 +1,4 @@
-define(["Tone/core/Tone"], function(Tone){
+define(["Tone/core/Tone", "Tone/core/Gain"], function(Tone){
 
 	"use strict";
 
@@ -13,7 +13,7 @@ define(["Tone/core/Tone"], function(Tone){
 	 */
 	Tone.Split = function(){
 
-		Tone.call(this, 0, 2);
+		this.createInsOuts(0, 2);
 
 		/** 
 		 *  @type {ChannelSplitterNode}
@@ -24,16 +24,16 @@ define(["Tone/core/Tone"], function(Tone){
 		/** 
 		 *  Left channel output. 
 		 *  Alias for <code>output[0]</code>
-		 *  @type {GainNode}
+		 *  @type {Tone.Gain}
 		 */
-		this.left = this.output[0] = this.context.createGain();
+		this.left = this.output[0] = new Tone.Gain();
 
 		/**
 		 *  Right channel output.
 		 *  Alias for <code>output[1]</code>
-		 *  @type {GainNode}
+		 *  @type {Tone.Gain}
 		 */
-		this.right = this.output[1] = this.context.createGain();
+		this.right = this.output[1] = new Tone.Gain();
 		
 		//connections
 		this._splitter.connect(this.left, 0, 0);
@@ -49,9 +49,9 @@ define(["Tone/core/Tone"], function(Tone){
 	Tone.Split.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
 		this._splitter.disconnect();
-		this.left.disconnect();
-		this.right.disconnect();
+		this.left.dispose();
 		this.left = null;
+		this.right.dispose();
 		this.right = null;
 		this._splitter = null;
 		return this;

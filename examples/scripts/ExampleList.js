@@ -19,6 +19,7 @@ var ExampleList = {
 		"LFO Effects" : "lfoEffects",
 		"PingPongDelay" : "pingPongDelay",
 		"Buses" : "buses",
+		"Spatialization" : "spatialPanner"
 	},
 	"Sequencing / Timing" : {
 		"Step Sequencer" : "stepSequencer",
@@ -26,6 +27,7 @@ var ExampleList = {
 		"Play Along" : "shiny",
 		"Quantization" : "quantization",
 		"Playback Rate" : "pianoPhase",
+		"Transport Sync" : "daw"
 	},
 	"Signals" : {
 		"Control Voltage" : "signal",

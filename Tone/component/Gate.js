@@ -21,7 +21,7 @@ define(["Tone/core/Tone", "Tone/component/Follower", "Tone/signal/GreaterThan"],
 	 */
 	Tone.Gate = function(){
 		
-		Tone.call(this);
+		this.createInsOuts(1, 1);
 		var options = this.optionsObject(arguments, ["threshold", "attack", "release"], Tone.Gate.defaults);
 
 		/**

@@ -110,7 +110,7 @@
 				text : "Start",
 				activeText : "Stop",
 				start : function(){
-					Tone.Transport.start();
+					Tone.Transport.start("+0.1");
 				},
 				end : function(){
 					Tone.Transport.stop();
@@ -129,7 +129,7 @@
 			function sizeCanvas(){
 				canvasWidth = leftCanvas.width() * 2;
 				canvasHeight = leftCanvas.height() * 2;
-				radius = Math.min(canvasWidth, canvasHeight);
+				radius = Math.min(canvasWidth, canvasHeight) * 0.8;
 
 				leftContext.canvas.width = canvasWidth;
 				leftContext.canvas.height = canvasHeight;
@@ -146,28 +146,28 @@
 
 			function loop(){
 				requestAnimationFrame(loop);
+				leftContext.lineWidth = radius * 0.1;
+				rightContext.lineWidth = radius * 0.1;
 				//draw the left progress
 				leftContext.clearRect(0, 0, canvasWidth, canvasHeight);
-				leftContext.fillStyle = "#3833ED";
+				leftContext.strokeStyle = "#7F33ED";
 				leftContext.save();
 				leftContext.translate(canvasWidth / 2, canvasHeight / 2);
 				leftContext.rotate(-Math.PI / 2);
 				leftContext.beginPath();
-				leftContext.moveTo(0, 0);
 				leftContext.arc(0, 0, radius/2, 0, twoPi * partL.progress, false);
-				leftContext.fill();
+				leftContext.stroke();
 				leftContext.restore();
 
 				//draw the left progress
 				rightContext.clearRect(0, 0, canvasWidth, canvasHeight);
-				rightContext.fillStyle = "#ED3333";
+				rightContext.strokeStyle = "#1EDF3E";
 				rightContext.save();
 				rightContext.translate(canvasWidth / 2, canvasHeight / 2);
 				rightContext.rotate(-Math.PI / 2);
 				rightContext.beginPath();
-				rightContext.moveTo(0, 0);
 				rightContext.arc(0, 0, radius/2, 0, twoPi * partR.progress, false);
-				rightContext.fill();
+				rightContext.stroke();
 				rightContext.restore();
 			}
 			loop();

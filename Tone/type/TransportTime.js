@@ -71,6 +71,15 @@ define(["Tone/core/Tone", "Tone/type/Time"], function (Tone) {
 	};
 
 	/**
+	 *  Return the time in seconds.
+	 *  @return  {Seconds}
+	 */
+	Tone.TransportTime.prototype.toSeconds = function(){
+		var val = this._expr();
+		return val + (this._plusNow ? Tone.Transport.seconds : 0);
+	};
+
+	/**
 	 *  Return the time as a frequency value
 	 *  @return  {Frequency} 
 	 */

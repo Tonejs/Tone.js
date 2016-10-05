@@ -124,6 +124,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Timeline"], function 
 	 */
 	Tone.TimelineSignal.prototype.exponentialRampToValueAtTime = function (value, endTime) {
 		//get the previous event and make sure it's not starting from 0
+		endTime = this.toSeconds(endTime);
 		var beforeEvent = this._searchBefore(endTime);
 		if (beforeEvent && beforeEvent.value === 0){
 			//reschedule that event
@@ -131,7 +132,6 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Timeline"], function 
 		}
 		value = this._fromUnits(value);
 		var setValue = Math.max(value, this._minOutput);
-		endTime = this.toSeconds(endTime);
 		this._events.addEvent({
 			"type" : Tone.TimelineSignal.Type.Exponential,
 			"value" : setValue,
@@ -211,8 +211,9 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Timeline"], function 
 	 *  @returns {Tone.TimelineSignal} this
 	 */
 	Tone.TimelineSignal.prototype.cancelScheduledValues = function (after) {
+		after = this.toSeconds(after);
 		this._events.cancel(after);
-		this._param.cancelScheduledValues(this.toSeconds(after));
+		this._param.cancelScheduledValues(after);
 		return this;
 	};
 
@@ -319,6 +320,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Timeline"], function 
 	 *  @return  {Number}  The scheduled value at the given time.
 	 */
 	Tone.TimelineSignal.prototype.getValueAtTime = function(time){
+		time = this.toSeconds(time);
 		var after = this._searchAfter(time);
 		var before = this._searchBefore(time);
 		var value = this._initial;

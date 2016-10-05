@@ -113,6 +113,16 @@ define(["Tone/core/Tone", "Tone/type/TimeBase"], function (Tone) {
 		return this._noOp;
 	};
 
+	/**
+	 *  Copies the value of time to this Time
+	 *  @param {Tone.Time} time
+	 *  @return  {Time}
+	 */
+	Tone.Time.prototype.copy = function(time){
+		Tone.TimeBase.prototype.copy.call(this, time);
+		this._plusNow = time._plusNow;
+		return this;
+	};
 
 	//CONVERSIONS//////////////////////////////////////////////////////////////
 
@@ -239,7 +249,7 @@ define(["Tone/core/Tone", "Tone/type/TimeBase"], function (Tone) {
 	 * Tone.Time(2).toFrequency(); //0.5
 	 */
 	Tone.Time.prototype.toFrequency = function(){
-		return 1/this.eval();
+		return 1/this.toSeconds();
 	};
 
 	/**
@@ -247,7 +257,15 @@ define(["Tone/core/Tone", "Tone/type/TimeBase"], function (Tone) {
 	 *  @return  {Seconds} 
 	 */
 	Tone.Time.prototype.toSeconds = function(){
-		return this._expr();
+		return this.eval();
+	};
+
+	/**
+	 *  Return the time in milliseconds.
+	 *  @return  {Milliseconds} 
+	 */
+	Tone.Time.prototype.toMilliseconds = function(){
+		return this.toSeconds() * 1000;
 	};
 
 	/**

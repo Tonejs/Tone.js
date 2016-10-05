@@ -1,5 +1,5 @@
 define(["Tone/core/Tone", "Tone/instrument/Synth", "Tone/signal/Signal", "Tone/signal/Multiply", 
-	"Tone/instrument/Monophonic", "Tone/signal/AudioToGain"], 
+	"Tone/instrument/Monophonic", "Tone/signal/AudioToGain", "Tone/core/Gain"], 
 function(Tone){
 
 	"use strict";
@@ -28,6 +28,7 @@ function(Tone){
 		/**
 		 *  The carrier voice. 
 		 *  @type {Tone.Synth}
+		 *  @private
 		 */
 		this._carrier = new Tone.Synth();
 		this._carrier.volume.value = -10;
@@ -47,6 +48,7 @@ function(Tone){
 		/**
 		 *  The modulator voice. 
 		 *  @type {Tone.Synth}
+		 *  @private
 		 */
 		this._modulator = new Tone.Synth();
 		this._modulator.volume.value = -10;
@@ -99,10 +101,10 @@ function(Tone){
 
 		/**
 		 *  the node where the modulation happens
-		 *  @type {GainNode}
+		 *  @type {Tone.Gain}
 		 *  @private
 		 */
-		this._modulationNode = this.context.createGain();
+		this._modulationNode = new Tone.Gain();
 
 		//control the two voices frequency
 		this.frequency.connect(this._carrier.frequency);
@@ -191,7 +193,7 @@ function(Tone){
 		this.harmonicity = null;
 		this._modulationScale.dispose();
 		this._modulationScale = null;
-		this._modulationNode.disconnect();
+		this._modulationNode.dispose();
 		this._modulationNode = null;
 		this.oscillator = null;
 		this.envelope = null;

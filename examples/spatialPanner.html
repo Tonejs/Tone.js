@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Panner3D</title>
+
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<link rel="icon" type="image/png" sizes="174x174" href="./style/favicon.png">
+	
+	<script type="text/javascript" src="../build/Tone.js"></script>
+	<script type="text/javascript" src="./scripts/three.min.js"></script>
+	<script type="text/javascript" src="./scripts/OrbitControls.js"></script>
+	<script type="text/javascript" src="./scripts/THREE.Tone.js"></script>
+	<script type="text/javascript" src="./scripts/jquery.min.js"></script>
+	<script type="text/javascript" src="./scripts/draggabilly.js"></script>
+	<script type="text/javascript" src="https://tonejs.github.io/Logo/build/Logo.js"></script>
+	<script type="text/javascript" src="./scripts/StartAudioContext.js"></script>
+	<script type="text/javascript" src="./scripts/Interface.js"></script>
+
+	<link rel="stylesheet" type="text/css" href="./style/examples.css">
+
+	<script type="text/javascript">
+		// jshint ignore: start
+	</script>
+
+</head>
+<body>	
+	<style type="text/css">
+
+		#three {
+			width: 100%;
+			height: 400px;
+		}
+	</style>
+	<div id="Content">
+		<div id="Title">Panner3D</div>
+		<div id="Explanation">
+			Tone.Panner3D and Tone.Listener work together to create 3D audio. Connect your synths and sources to Panner3D and then to the master output, anything you connect to the panner will be spatialized according the position of the panner relative to the position of the listener. This example synchronizes the position of the camera with Tone.Listener and the position of each of the spheres with a track.
+		</div>
+		<div id="three"></div>
+	</div>
+
+	<script type="text/javascript">
+
+		var greenSphere = new Tone.Panner3D().toMaster();
+		var drone = new Tone.Player({
+			url : "./audio/loop/drone.mp3",
+			loop: true,
+		}).connect(greenSphere).sync().start(0);
+
+		var blueSphere = new Tone.Panner3D().toMaster();
+		var repeat = new Tone.Player({
+			url : "./audio/loop/bass.mp3",
+			loop: true,
+		}).connect(blueSphere).sync().start(0);
+
+		var whiteSphere = new Tone.Panner3D().toMaster();
+		var chords = new Tone.Player({
+			url : "./audio/loop/chords.mp3",
+			loop: true,
+		}).connect(whiteSphere).sync().start(0);
+		
+	</script>
+
+	<script id="GUI" type="text/javascript">
+		$(function(){
+
+			new Interface.Loader()
+			
+			new Interface.Button({
+				key : 32,
+				type : "toggle",
+				text : "Start Sound",
+				activeText : "Stop",
+				start : function(){
+					Tone.Transport.start("+0.1");
+				},
+				end : function(){
+					Tone.Transport.stop();
+				}
+			});
+
+
+			//THREE.js/////////////////////////////////////////
+			var SCREEN_WIDTH = document.querySelector("#three").clientWidth;
+			var SCREEN_HEIGHT = document.querySelector("#three").clientHeight;
+			var aspect = SCREEN_WIDTH / SCREEN_HEIGHT;
+
+			var scene = new THREE.Scene()
+			var camera = new THREE.PerspectiveCamera( 50, aspect, 1, 10000 );
+			camera.position.z = 1;
+
+			// window.camera = camera;
+
+			var bassMesh = new THREE.Mesh(
+				new THREE.SphereBufferGeometry( 2, 16, 8 ),
+				new THREE.MeshBasicMaterial( { color: 0xffffff, wireframe: true } )
+			);
+			scene.add(bassMesh);
+			bassMesh.position.z = -10
+
+			var dronMesh = new THREE.Mesh(
+				new THREE.SphereBufferGeometry( 1, 16, 8 ),
+				new THREE.MeshBasicMaterial( { color: 0xff0000, wireframe: true } )
+			);
+			scene.add(dronMesh);
+
+			var chordMesh = new THREE.Mesh(
+				new THREE.SphereBufferGeometry( 1, 16, 8 ),
+				new THREE.MeshBasicMaterial( { color: 0xff00ff, wireframe: true } )
+			);
+			scene.add(chordMesh);
+
+			var renderer = new THREE.WebGLRenderer( { antialias: true } );
+			renderer.setPixelRatio( window.devicePixelRatio );
+			onWindowResize();
+			renderer.domElement.style.position = "relative";
+			document.querySelector("#three").appendChild( renderer.domElement );
+
+			controls = new THREE.OrbitControls( camera, renderer.domElement );
+			controls.addEventListener("change", function(){
+				Tone.Listener.updatePosition(camera);
+			})
+			//set the camer initially
+			Tone.Listener.updatePosition(camera);
+
+			function onWindowResize( event ) {
+				SCREEN_WIDTH = document.querySelector("#three").clientWidth;
+				SCREEN_HEIGHT = document.querySelector("#three").clientHeight;
+				aspect = SCREEN_WIDTH / SCREEN_HEIGHT;
+				camera.aspect = aspect;
+				renderer.setSize( SCREEN_WIDTH, SCREEN_HEIGHT );
+				camera.updateProjectionMatrix();
+			}
+
+			window.addEventListener("resize", onWindowResize);
+
+			function animate() {
+				requestAnimationFrame( animate );
+				var r = Date.now() * 0.0005;
+				chordMesh.position.x = 3 * Math.cos( r );
+				chordMesh.position.z = 3 * Math.cos( r );
+				chordMesh.position.y = 3 * Math.sin( r );
+				dronMesh.position.x = 4 * Math.cos( 2 * r );
+				dronMesh.position.z = 4 * Math.sin( 2 * r );
+				renderer.render( scene, camera );
+				controls.update();
+
+				greenSphere.updatePosition(dronMesh);
+				blueSphere.updatePosition(bassMesh);
+				whiteSphere.updatePosition(chordMesh);
+			}
+
+			animate()
+		});
+	</script>
+
+	</style>
+</body>
+</html>

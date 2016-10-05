@@ -77,6 +77,9 @@ function(Tone){
 			"callback" : this._processTick.bind(this), 
 			"frequency" : 0,
 		});
+
+		this._bindClockEvents();
+
 		/**
 		 *  The Beats Per Minute of the Transport. 
 		 *  @type {BPM}
@@ -208,9 +211,11 @@ function(Tone){
 		//do the loop test
 		if (this.loop){
 			if (ticks === this._loopEnd){
-				this.ticks = this._loopStart;
+				this.emit("stop", tickTime);
+				this._clock.ticks = this._loopStart;
 				ticks = this._loopStart;
-				this.trigger("loop", tickTime);
+				this.emit("start", tickTime, this.seconds);
+				this.emit("loop", tickTime);
 			}
 		}
 		//process the single occurrence events
@@ -353,6 +358,24 @@ function(Tone){
 	///////////////////////////////////////////////////////////////////////////////
 
 	/**
+	 *  Bind start/stop/pause events from the clock and emit them.
+	 */
+	Tone.Transport.prototype._bindClockEvents = function(){
+		this._clock.on("start", function(time, offset){
+			offset = Tone.Time(this._clock.ticks, "i").toSeconds();
+			this.emit("start", time, offset);
+		}.bind(this));
+
+		this._clock.on("stop", function(time){
+			this.emit("stop", time);
+		}.bind(this));
+
+		this._clock.on("pause", function(time){
+			this.emit("pause", time);
+		}.bind(this));
+	};
+
+	/**
 	 *  Returns the playback state of the source, either "started", "stopped", or "paused"
 	 *  @type {Tone.State}
 	 *  @readOnly
@@ -375,15 +398,11 @@ function(Tone){
 	 * Tone.Transport.start("+1", "4:0:0");
 	 */
 	Tone.Transport.prototype.start = function(time, offset){
-		time = this.toSeconds(time);
-		if (!this.isUndef(offset)){
-			offset = new Tone.Time(offset);
-		} else {
-			offset = new Tone.Time(this._clock.ticks, "i");
-		}
 		//start the clock
-		this._clock.start(time, offset.toTicks());
-		this.trigger("start", time, offset.toSeconds());
+		if (!this.isUndef(offset)){
+			offset = this.toTicks(offset);
+		}
+		this._clock.start(time, offset);
 		return this;
 	};
 
@@ -395,9 +414,7 @@ function(Tone){
 	 * Tone.Transport.stop();
 	 */
 	Tone.Transport.prototype.stop = function(time){
-		time = this.toSeconds(time);
 		this._clock.stop(time);
-		this.trigger("stop", time);
 		return this;
 	};
 
@@ -407,9 +424,7 @@ function(Tone){
 	 *  @returns {Tone.Transport} this
 	 */
 	Tone.Transport.prototype.pause = function(time){
-		time = this.toSeconds(time);
 		this._clock.pause(time);
-		this.trigger("pause", time);
 		return this;
 	};
 
@@ -543,6 +558,23 @@ function(Tone){
 	});
 
 	/**
+	 *  The Transport's position in seconds
+	 *  Setting the value will jump to that position right away. 
+	 *  @memberOf Tone.Transport#
+	 *  @type {Seconds}
+	 *  @name seconds
+	 */
+	Object.defineProperty(Tone.Transport.prototype, "seconds", {
+		get : function(){
+			return Tone.TransportTime(this.ticks, "i").toSeconds();
+		},
+		set : function(progress){
+			var ticks = this.toTicks(progress);
+			this.ticks = ticks;
+		}
+	});
+
+	/**
 	 *  The Transport's loop position as a normalized value. Always
 	 *  returns 0 if the transport if loop is not true. 
 	 *  @memberOf Tone.Transport#
@@ -571,7 +603,16 @@ function(Tone){
 			return this._clock.ticks;
 		},
 		set : function(t){
-			this._clock.ticks = t;
+			var now = this.now();
+			//stop everything synced to the transport
+			if (this.state === Tone.State.Started){
+				this.emit("stop", now);
+				this._clock.ticks = t;
+				//restart it with the new time
+				this.emit("start", now, this.seconds);
+			} else {
+				this._clock.ticks = t;
+			}
 		}
 	});
 

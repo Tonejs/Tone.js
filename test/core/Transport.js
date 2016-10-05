@@ -158,6 +158,29 @@ function (Test, Transport, Tone, Offline, TransportTime) {
 				}, 0.1);
 			});
 
+			it("can get the current position in seconds", function(done){
+				Offline(function(dest, test, after){
+					expect(Tone.Transport.seconds).to.equal(0);
+					Tone.Transport.start();
+					test(function(sample, time){
+						expect(Tone.Transport.seconds).to.be.closeTo(time, 0.05);
+					});
+					after(function(){
+						expect(Tone.Transport.seconds).to.be.closeTo(0.8, 0.05);
+						Tone.Transport.stop();
+						done();
+					});
+				}, 0.8);
+			});
+
+			it("can set the current position in seconds", function(){
+				expect(Tone.Transport.seconds).to.equal(0);
+				Tone.Transport.seconds = 3;
+				expect(Tone.Transport.seconds).to.be.closeTo(3, 0.05);
+				Tone.Transport.seconds = 0;
+				expect(Tone.Transport.seconds).to.equal(0);
+			});
+
 			it("can set the current position in BarsBeatsSixteenths", function(){
 				expect(Tone.Transport.position).to.equal("0:0:0");
 				Tone.Transport.position = "3:0";
@@ -571,23 +594,37 @@ function (Test, Transport, Tone, Offline, TransportTime) {
 
 			afterEach(resetTransport);
 
-			it("invokes start/stop/pause events", function(){
+			it("invokes start/stop/pause events", function(done){
 				var count = 0;
-				Tone.Transport.on("start stop pause", function(){
+				Tone.Transport.on("start pause stop", function(){
 					count++;
+					if (count === 3){
+						done();
+					}
 				});
-				Tone.Transport.start().pause("+0.1").stop("+0.2");
-				expect(count).to.equal(3);
+				Tone.Transport.start("+0.1").pause("+0.2").stop("+0.3");
 			});
 
-			it("passes in the time argument to the events", function(){
+			it("invokes start event with correct offset", function(done){
+				var now = Tone.now();
+				Tone.Transport.on("start", function(time, offset){
+					expect(time).to.be.closeTo(now + 0.1, 0.01);
+					expect(offset).to.be.closeTo(0.5, 0.001);
+					done();
+				});
+				Tone.Transport.start("+0.1", "4n");
+			});
+
+			it("passes in the time argument to the events", function(done){
+				var now = Tone.Transport.now();
 				Tone.Transport.on("start", function(time){
-					expect(time).to.equal(3);
+					expect(time).to.be.closeTo(now + 0.1, 0.01);
 				});
 				Tone.Transport.on("stop", function(time){
-					expect(time).to.equal(4);
+					expect(time).to.be.closeTo(now + 0.2, 0.01);
+					done();
 				});
-				Tone.Transport.start(3).stop(4);
+				Tone.Transport.start("+0.1").stop("+0.2");
 			});
 
 			it("invokes the 'loop' method on loop", function(done){

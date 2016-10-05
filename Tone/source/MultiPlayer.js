@@ -120,11 +120,11 @@ function (Tone) {
 	 *  @param  {Time}  time      When to start the buffer.
 	 *  @param  {Time}  [offset=0]    The offset into the buffer to play from.
 	 *  @param  {Time=}  duration   How long to play the buffer for.
-	 *  @param  {Interval}  [interval=0]  The interval to repitch the buffer.
+	 *  @param  {Interval}  [pitch=0]  The interval to repitch the buffer.
 	 *  @param  {Gain}  [gain=1]      The gain to play the sample at.
 	 *  @return  {Tone.MultiPlayer}  this
 	 */
-	Tone.MultiPlayer.prototype.start = function(buffer, time, offset, duration, interval, gain){
+	Tone.MultiPlayer.prototype.start = function(buffer, time, offset, duration, pitch, gain){
 		buffer = this._getBuffer(buffer);
 		var source = new Tone.BufferSource(buffer).connect(this.output);
 		this._activeSources.push(source);
@@ -134,8 +134,36 @@ function (Tone) {
 			source.stop(time + this.toSeconds(duration), this.fadeOut);
 		}
 		source.onended = this._onended.bind(this);
-		interval = this.defaultArg(interval, 0);
-		source.playbackRate.value = this.intervalToFrequencyRatio(interval);
+		pitch = this.defaultArg(pitch, 0);
+		source.playbackRate.value = this.intervalToFrequencyRatio(pitch);
+		return this;
+	};
+
+	/**
+	 *  Start a looping buffer by name. Similar to `start`, but the buffer
+	 *  is looped instead of played straight through. Can still be stopped with `stop`. 
+	 *  @param  {String|AudioBuffer}  buffer    The name of the buffer to start.
+	 *                                          Or pass in a buffer which will be started.
+	 *  @param  {Time}  time      When to start the buffer.
+	 *  @param  {Time}  [offset=0]    The offset into the buffer to play from.
+	 *  @param  {Time=}  loopStart   The start of the loop.
+	 *  @param  {Time=}  loopEnd	The end of the loop.
+	 *  @param  {Interval}  [pitch=0]  The interval to repitch the buffer.
+	 *  @param  {Gain}  [gain=1]      The gain to play the sample at.
+	 *  @return  {Tone.MultiPlayer}  this
+	 */
+	Tone.MultiPlayer.prototype.startLoop = function(buffer, time, offset, loopStart, loopEnd, pitch, gain){
+		buffer = this._getBuffer(buffer);
+		var source = new Tone.BufferSource(buffer).connect(this.output);
+		this._activeSources.push(source);
+		time = this.toSeconds(time);
+		source.loop = true;
+		source.loopStart = this.toSeconds(this.defaultArg(loopStart, 0));
+		source.loopEnd = this.toSeconds(this.defaultArg(loopEnd, 0));
+		source.start(time, offset, undefined, this.defaultArg(gain, 1), this.fadeIn);
+		source.onended = this._onended.bind(this);
+		pitch = this.defaultArg(pitch, 0);
+		source.playbackRate.value = this.intervalToFrequencyRatio(pitch);
 		return this;
 	};
 

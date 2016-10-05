@@ -1,4 +1,5 @@
-define(["Tone/instrument/Synth", "helper/Basic", "helper/InstrumentTests"], function (Synth, Basic, InstrumentTest) {
+define(["Tone/instrument/Synth", "helper/Basic", "helper/InstrumentTests", "helper/APITest"], 
+	function (Synth, Basic, InstrumentTest, APITest) {
 
 	describe("Synth", function(){
 
@@ -39,6 +40,10 @@ define(["Tone/instrument/Synth", "helper/Basic", "helper/InstrumentTests"], func
 				expect(simple.get().envelope.decay).to.equal(0.24);
 				simple.dispose();
 			});
+
+			APITest.method(Synth, "triggerAttack", ["Frequency", "Time=", "NormalRange="]);
+			APITest.method(Synth, "triggerRelease", ["Time="]);
+			APITest.method(Synth, "triggerAttackRelease", ["Frequency", "Time=", "Time=", "NormalRange="]);
 
 		});
 	});

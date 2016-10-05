@@ -1,4 +1,5 @@
-define(["Tone/core/Tone", "Tone/source/Source", "Tone/source/Oscillator", "Tone/signal/Signal", "Tone/signal/WaveShaper"],
+define(["Tone/core/Tone", "Tone/source/Source", "Tone/source/Oscillator", 
+	"Tone/signal/Signal", "Tone/signal/WaveShaper", "Tone/core/Gain"],
 function(Tone){
 
 	"use strict";
@@ -31,10 +32,10 @@ function(Tone){
 
 		/**
 		 *  gate the width amount
-		 *  @type {GainNode}
+		 *  @type {Tone.Gain}
 		 *  @private
 		 */
-		this._widthGate = this.context.createGain();
+		this._widthGate = new Tone.Gain();
 
 		/**
 		 *  the sawtooth oscillator
@@ -172,10 +173,9 @@ function(Tone){
 		this._writable(["width", "frequency", "detune"]);
 		this.width.dispose();
 		this.width = null;
-		this._widthGate.disconnect();
+		this._widthGate.dispose();
 		this._widthGate = null;
-		this._widthGate = null;
-		this._thresh.disconnect();
+		this._thresh.dispose();
 		this._thresh = null;
 		this.frequency = null;
 		this.detune = null;

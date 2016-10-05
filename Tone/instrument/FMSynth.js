@@ -26,6 +26,7 @@ function(Tone){
 		/**
 		 *  The carrier voice.
 		 *  @type {Tone.Synth}
+		 *  @private
 		 */
 		this._carrier = new Tone.Synth(options.carrier);
 		this._carrier.volume.value = -10;
@@ -46,6 +47,7 @@ function(Tone){
 		/**
 		 *  The modulator voice.
 		 *  @type {Tone.Synth}
+		 *  @private
 		 */
 		this._modulator = new Tone.Synth(options.modulator);
 		this._modulator.volume.value = -10;
@@ -105,7 +107,7 @@ function(Tone){
 		 *  @type {GainNode}
 		 *  @private
 		 */
-		this._modulationNode = this.context.createGain();
+		this._modulationNode = new Tone.Gain(0);
 
 		//control the two voices frequency
 		this.frequency.connect(this._carrier.frequency);
@@ -113,7 +115,6 @@ function(Tone){
 		this.frequency.chain(this.modulationIndex, this._modulationNode);
 		this.detune.fan(this._carrier.detune, this._modulator.detune);
 		this._modulator.connect(this._modulationNode.gain);
-		this._modulationNode.gain.value = 0;
 		this._modulationNode.connect(this._carrier.frequency);
 		this._carrier.connect(this.output);
 		this._readOnly(["frequency", "harmonicity", "modulationIndex", "oscillator", "envelope", "modulation", "modulationEnvelope", "detune"]);
@@ -198,7 +199,7 @@ function(Tone){
 		this.modulationIndex = null;
 		this.harmonicity.dispose();
 		this.harmonicity = null;
-		this._modulationNode.disconnect();
+		this._modulationNode.dispose();
 		this._modulationNode = null;
 		this.oscillator = null;
 		this.envelope = null;

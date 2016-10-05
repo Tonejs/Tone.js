@@ -2,6 +2,10 @@ define(["helper/Basic", "Tone/source/MultiPlayer", "helper/Offline", "helper/Sou
 	"Tone/core/Buffer", "helper/Meter", "helper/OutputAudioStereo"], 
 	function (BasicTests, MultiPlayer, Offline, SourceTests, Buffer, Meter, OutputAudioStereo) {
 
+	if (window.__karma__){
+		Buffer.baseUrl = "/base/test/";
+	}
+
 	describe("MultiPlayer", function(){
 
 		var buffer = new Buffer();

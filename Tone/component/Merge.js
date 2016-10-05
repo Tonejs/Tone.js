@@ -20,21 +20,21 @@ define(["Tone/core/Tone"], function(Tone){
 	 */
 	Tone.Merge = function(){
 
-		Tone.call(this, 2, 0);
+		this.createInsOuts(2, 0);
 
 		/**
 		 *  The left input channel.
 		 *  Alias for <code>input[0]</code>
 		 *  @type {GainNode}
 		 */
-		this.left = this.input[0] = this.context.createGain();
+		this.left = this.input[0] = new Tone.Gain();
 
 		/**
 		 *  The right input channel.
 		 *  Alias for <code>input[1]</code>.
 		 *  @type {GainNode}
 		 */
-		this.right = this.input[1] = this.context.createGain();
+		this.right = this.input[1] = new Tone.Gain();
 
 		/**
 		 *  the merger node for the two channels
@@ -61,9 +61,9 @@ define(["Tone/core/Tone"], function(Tone){
 	 */
 	Tone.Merge.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
-		this.left.disconnect();
+		this.left.dispose();
 		this.left = null;
-		this.right.disconnect();
+		this.right.dispose();
 		this.right = null;
 		this._merger.disconnect();
 		this._merger = null;

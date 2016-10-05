@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/effect/StereoEffect", "Tone/effect/FeedbackEffect"], 
+define(["Tone/core/Tone", "Tone/effect/StereoEffect", "Tone/effect/FeedbackEffect", "Tone/core/Gain"], 
 function(Tone){
 
 	"use strict";
@@ -24,17 +24,17 @@ function(Tone){
 
 		/**
 		 *  the left side feeback
-		 *  @type {GainNode}
+		 *  @type {Tone.Gain}
 		 *  @private
 		 */
-		this._feedbackL = this.context.createGain();
+		this._feedbackL = new Tone.Gain();
 
 		/**
 		 *  the right side feeback
-		 *  @type {GainNode}
+		 *  @type {Tone.Gain}
 		 *  @private
 		 */
-		this._feedbackR = this.context.createGain();
+		this._feedbackR = new Tone.Gain();
 
 		//connect it up
 		this.effectReturnL.chain(this._feedbackL, this.effectSendL);
@@ -54,9 +54,9 @@ function(Tone){
 		this._writable(["feedback"]);
 		this.feedback.dispose();
 		this.feedback = null;
-		this._feedbackL.disconnect();
+		this._feedbackL.dispose();
 		this._feedbackL = null;
-		this._feedbackR.disconnect();
+		this._feedbackR.dispose();
 		this._feedbackR = null;
 		return this;
 	};

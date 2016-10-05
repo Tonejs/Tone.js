@@ -28,7 +28,7 @@
 		<div id="Explanation">
 			Buses make it easy to share effects across many instruments. <code>send</code>
 			audio to a named bus from an instrument and then <code>receive</code> that
-			channel on your effect.
+			channel on your effect. The gain values are all in decibels.
 			<br><br>
 			Docs on <a href="https://tonejs.github.io/docs/#Tone.send">send</a> and 
 			<a href="https://tonejs.github.io/docs/#Tone.receive">receive</a>.
@@ -61,20 +61,6 @@
 			.receive("reverb")
 			.toMaster();
 
-		var autoWah = new Tone.AutoWah()
-			.receive("autowah")
-			.toMaster()
-			.set({
-				"baseFrequency" : 100,
-				"octaves" : 4,
-				"sensitivity" : 0,
-				"Q" : 2,
-				"gain" : 10,
-				"follower" : {
-					"attack" : 0.05,
-					"release" : 0.2
-				}
-			});
 	</script>
 	<script id="GUI" type="text/javascript">
 		$(function(){
@@ -82,6 +68,8 @@
 			new Interface.Slider({
 				name : "Chebyshev",
 				parent : $("#Sliders"),
+				min : -100,
+				max : 0,
 				drag : function(val){
 					chebySend.gain.value = val;
 				}
@@ -90,6 +78,8 @@
 			new Interface.Slider({
 				name : "Chorus",
 				parent : $("#Sliders"),
+				min : -100,
+				max : 0,
 				drag : function(val){
 					chorusSend.gain.value = val;
 				}
@@ -98,16 +88,10 @@
 			new Interface.Slider({
 				name : "Freeverb",
 				parent : $("#Sliders"),
+				min : -100,
+				max : 0,
 				drag : function(val){
 					reverbSend.gain.value = val;
-				}
-			});
-
-			new Interface.Slider({
-				name : "AutoWah",
-				parent : $("#Sliders"),
-				drag : function(val){
-					autowahSend.gain.value = val;
 				}
 			});
 

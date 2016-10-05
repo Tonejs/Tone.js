@@ -12,12 +12,10 @@ define(function(){
 	//	WEB AUDIO CONTEXT
 	///////////////////////////////////////////////////////////////////////////
 
-	//borrowed from underscore.js
 	function isUndef(val){
-		return val === void 0;
+		return typeof val === "undefined";
 	}
 
-	//borrowed from underscore.js
 	function isFunction(val){
 		return typeof val === "function";
 	}
@@ -804,9 +802,12 @@ define(function(){
 		_silentNode.connect(audioContext.destination);
 	});
 
-	Tone.version = "r7";
+	Tone.version = "r8";
 
-	console.log("%c * Tone.js " + Tone.version + " * ", "background: #000; color: #fff");
+	// allow optional silencing of this log
+	if (!window.TONE_SILENCE_VERSION_LOGGING) {
+		console.log("%c * Tone.js " + Tone.version + " * ", "background: #000; color: #fff");
+	}
 
 	return Tone;
 });

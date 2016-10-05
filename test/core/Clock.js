@@ -306,5 +306,59 @@ define(["Test", "Tone/core/Clock", "helper/Offline2"], function (Test, Clock, Of
 			});
 		});
 
+		context("Events", function(){
+
+			it ("triggers the start event on start", function(done){
+				var clock = new Clock(function(){}, 0.1);
+				var startTime = clock.now() + 0.3;
+				clock.on("start", function(time, offset){
+					expect(time).to.be.closeTo(startTime, 0.01);
+					expect(clock.now()).to.be.closeTo(startTime, 0.1);
+					expect(offset).to.equal(0);
+					clock.dispose();
+					done();
+				});
+				clock.start(startTime);
+			});
+
+			it ("triggers the start event with an offset", function(done){
+				var clock = new Clock(function(){}, 0.1);
+				var startTime = clock.now() + 0.3;
+				clock.on("start", function(time, offset){
+					expect(time).to.be.closeTo(startTime, 0.01);
+					expect(clock.now()).to.be.closeTo(startTime, 0.1);
+					expect(offset).to.equal(2);
+					clock.dispose();
+					done();
+				});
+				clock.start(startTime, 2);
+			});
+
+			it ("triggers stop event", function(done){
+				var clock = new Clock(function(){}, 0.1);
+				var stopTime = clock.now() + 0.3;
+				clock.on("stop", function(time){
+					expect(time).to.be.closeTo(stopTime, 0.01);
+					expect(clock.now()).to.be.closeTo(stopTime, 0.1);
+					clock.dispose();
+					done();
+				});
+				clock.start().stop(stopTime);
+			});
+
+			it ("triggers pause stop event", function(done){
+				var clock = new Clock(function(){}, 0.1);
+				var now = clock.now();
+				clock.on("pause", function(time){
+					expect(time).to.be.closeTo(now + 0.1, 0.01);
+				}).on("stop", function(time){
+					expect(time).to.be.closeTo(now + 0.2, 0.01);
+					clock.dispose();
+					done();
+				});
+				clock.start().pause("+0.1").stop("+0.2");
+			});
+		});
+
 	});
 });

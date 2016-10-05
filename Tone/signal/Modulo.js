@@ -17,7 +17,7 @@ function(Tone){
 	 */
 	Tone.Modulo = function(modulus){
 
-		Tone.call(this, 1, 1);
+		this.createInsOuts(1, 0);
 
 		/**
 		 *  A waveshaper gets the integer multiple of 

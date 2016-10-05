@@ -169,9 +169,8 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/source/FMOscillato
 	 *  @return  {Tone.MetalSynth}  this
 	 */
 	Tone.MetalSynth.prototype.triggerAttackRelease = function(duration, time, velocity) {
-		var now = this.now();
-		time = this.toSeconds(time, now);
-		duration = this.toSeconds(duration, now);
+		time = this.toSeconds(time);
+		duration = this.toSeconds(duration);
 		this.triggerAttack(time, velocity);
 		this.triggerRelease(time + duration);
 		return this;

@@ -54,21 +54,17 @@ function(Tone){
 
 		/**
 		 *  the vibrato gain
-		 *  @type {GainNode}
+		 *  @type {Tone.Gain}
 		 *  @private
 		 */
-		this._vibratoGain = this.context.createGain();
+		this._vibratoGain = new Tone.Gain(options.vibratoAmount, Tone.Type.Positive);
 
 		/**
 		 * The amount of vibrato
 		 * @type {Positive}
 		 * @signal
 		 */
-		this.vibratoAmount = new Tone.Param({
-			"param" : this._vibratoGain.gain, 
-			"units" : Tone.Type.Positive, 
-			"value" : options.vibratoAmount
-		});
+		this.vibratoAmount = this._vibratoGain.gain;
 
 		/**
 		 *  the frequency control
@@ -192,10 +188,9 @@ function(Tone){
 		this.voice1 = null;
 		this.frequency.dispose();
 		this.frequency = null;
-		this._vibrato.dispose();
-		this._vibrato = null;
-		this._vibratoGain.disconnect();
+		this._vibratoGain.dispose();
 		this._vibratoGain = null;
+		this._vibrato = null;
 		this.harmonicity.dispose();
 		this.harmonicity = null;
 		this.vibratoAmount.dispose();

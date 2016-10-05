@@ -1,5 +1,6 @@
-define(["helper/OutputAudio", "Tone/source/Source", "helper/OutputAudioStereo", "Test", "helper/Offline2", "helper/Meter"], 
-	function (OutputAudio, Source, OutputAudioStereo, Test, Offline, Meter) {
+define(["helper/OutputAudio", "Tone/source/Source", "helper/OutputAudioStereo", 
+	"Test", "helper/Offline2", "helper/Meter", "helper/APITest"], 
+	function (OutputAudio, Source, OutputAudioStereo, Test, Offline, Meter, APITest) {
 
 	return function(Constr, args){
 
@@ -142,6 +143,11 @@ define(["helper/OutputAudio", "Tone/source/Source", "helper/OutputAudioStereo", 
 				meter.run();
 			});
 
+		});
+
+		context("Source API", function(){
+			APITest.method(Constr, "start", ["Time=", "Time=", "Time="], args);
+			APITest.method(Constr, "stop", ["Time="], args);
 		});
 
 	};

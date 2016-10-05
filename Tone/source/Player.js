@@ -10,7 +10,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 	 *  @param {string|AudioBuffer} url Either the AudioBuffer or the url from
 	 *                                  which to load the AudioBuffer
 	 *  @param {function=} onload The function to invoke when the buffer is loaded. 
-	 *                            Recommended to use Tone.Buffer.onload instead.
+	 *                            Recommended to use Tone.Buffer.on('load') instead.
 	 *  @example
 	 * var player = new Tone.Player("./path/to/sample.mp3").toMaster();
 	 * //play as soon as the buffer is loaded
@@ -178,10 +178,11 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 				offset = this.defaultArg(offset, 0);
 			}
 			offset = this.toSeconds(offset);
-			duration = this.defaultArg(duration, this._buffer.duration - offset);
+			//make sure it has a positive duration
+			duration = this.defaultArg(duration, Math.max(this._buffer.duration - offset, 0));
+			duration = this.toSeconds(duration);
 			//the values in seconds
 			startTime = this.toSeconds(startTime);
-			duration = this.toSeconds(duration);
 			//make the source
 			this._source = this.context.createBufferSource();
 			this._source.buffer = this._buffer.get();
@@ -199,6 +200,17 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 			this._source.connect(this.output);
 			//start it
 			if (this._loop){
+				//modify the offset if it's greater than the loop time
+				var loopEnd = this._source.loopEnd || this._buffer.duration;
+				var loopStart = this._source.loopStart;
+				var loopDuration = loopEnd - loopStart;
+				if (offset > loopDuration){
+					offset = loopStart + (offset % loopDuration);
+					if (offset > loopEnd){
+						offset -= loopDuration;
+					}
+				}
+
 				this._source.start(startTime, offset);
 			} else {
 				this._source.start(startTime, offset, duration);
@@ -219,6 +231,30 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 		if (this._source){
 			this._source.stop(this.toSeconds(time));
 			this._source = null;
+		}
+		return this;
+	};
+
+
+	/**
+	 *  Seek to a specific time in the player's buffer. If the 
+	 *  source is no longer playing at that time, it will stop.
+	 *  If you seek to a time that 
+	 *  @param {Time} offset The time to seek to.
+	 *  @param {Time=} time The time for the seek event to occur.
+	 *  @return {Tone.Player} this
+	 *  @example
+	 * source.start(0.2);
+	 * source.stop(0.4);
+	 */
+	Tone.Player.prototype.seek = function(offset, time){
+		time = this.toSeconds(time);
+		if (this._state.getStateAtTime(time) === Tone.State.Started){
+			offset = this.toSeconds(offset);
+			// if it's currently playing, stop it
+			this._stop(time);
+			//restart it at the given time
+			this._start(time, offset);
 		}
 		return this;
 	};

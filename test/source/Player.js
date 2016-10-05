@@ -1,5 +1,6 @@
-define(["helper/Basic", "Tone/source/Player", "helper/Offline", "helper/SourceTests", "Tone/core/Buffer", "helper/Meter"], 
-	function (BasicTests, Player, Offline, SourceTests, Buffer, Meter) {
+define(["helper/Basic", "Tone/source/Player", "helper/Offline", 
+	"helper/SourceTests", "Tone/core/Buffer", "helper/Meter", "helper/Offline2"], 
+	function (BasicTests, Player, Offline, SourceTests, Buffer, Meter, Offline2) {
 
 	if (window.__karma__){
 		Buffer.baseUrl = "/base/test/";
@@ -193,8 +194,6 @@ define(["helper/Basic", "Tone/source/Player", "helper/Offline", "helper/SourceTe
 
 		context("Start Scheduling", function(){
 
-			this.timeout(3000);
-
 			it("can be start with an offset", function(done){
 				var player;
 				var offline = new Offline(0.4, 1);
@@ -215,6 +214,37 @@ define(["helper/Basic", "Tone/source/Player", "helper/Offline", "helper/SourceTe
 					done();
 				});
 				offline.run();
+			});
+
+			it("can seek to a position at the given time", function(done){
+				Offline2(function(output, test, after){
+
+					var ramp = new Float32Array(Math.floor(44100 * 0.3));
+					for (var i = 0; i < ramp.length; i++){
+						ramp[i] = (i / (ramp.length)) * 0.3;
+					}
+
+					var buff = new Buffer().fromArray(ramp);
+					var player = new Player(buff).connect(output);
+
+					player.start(0);
+					player.seek(0.2, 0.1);
+
+					test(function(sample, time){
+						if (time < 0.1){
+							expect(sample).to.be.within(0, 0.1);
+						} else if (time > 0.1 && time < 0.2){
+							expect(sample).to.be.within(0.2, 0.3);
+						}
+					});
+
+					after(function(){
+						buff.dispose();
+						player.dispose();
+						done();
+					});
+
+				}, 0.3);
 			});
 
 			it("can be play for a specific duration", function(done){

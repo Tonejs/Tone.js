@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+	<title>Transport Sync</title>
+
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<link rel="icon" type="image/png" sizes="174x174" href="./style/favicon.png">
+	
+	<script type="text/javascript" src="../build/Tone.js"></script>
+	<script type="text/javascript" src="./scripts/jquery.min.js"></script>
+	<script type="text/javascript" src="./scripts/draggabilly.js"></script>
+	<script type="text/javascript" src="https://tonejs.github.io/Logo/build/Logo.js"></script>
+	<script type="text/javascript" src="./scripts/StartAudioContext.js"></script>
+	<script type="text/javascript" src="./scripts/Interface.js"></script>
+
+	<link rel="stylesheet" type="text/css" href="./style/examples.css">
+
+	<script type="text/javascript">
+		// jshint ignore: start
+	</script>
+
+</head>
+<body>	
+	<style type="text/css">
+
+		#Left, #Right {
+			height: 200px;
+			width: 50%;
+			position: relative;
+			float: left;
+			margin-top: 5px;
+			margin-bottom: 5px;
+		}
+
+		.Button {
+			display: inline-block;
+		}
+
+		#TransportContainer{
+			margin-top: 5px;
+			margin-bottom: 5px;
+			width: 100%;
+			height: 100px;
+			position: relative;
+		}
+
+		#DawCanvas {
+			width: 100%;
+			height: 100%;
+			position: absolute;
+			top: 0px;
+			left: 0px;
+		}
+
+		#Bar {
+			width: 2px;
+			height: 94%;
+			position: absolute;
+			top: 3%;
+			left: 0%;
+			background-color: black;
+		}
+
+		#Images {
+			overflow: hidden;
+			height: 0px;
+			width: 100%;
+		}
+	</style>
+	<div id="Content">
+		<div id="Title">Transport Sync</div>
+		<div id="Explanation">
+			This beat is composed of 3 independent Players each with a different loop length, synced to the Transport to start at different times and different offsets. The players stay synchronized to the position and offset of the Transport. 
+		</div>
+		<div id="TransportContainer">
+			<canvas id="DawCanvas"></canvas>
+			<div id="Bar"></div>
+		</div>
+		<div id="Images">
+			<img src="./audio/loop/snare.png" id="Snare">
+			<img src="./audio/loop/kick.png" id="Kick">
+			<img src="./audio/loop/hh.png" id="HH">
+		</div>
+	</div>
+
+	<script type="text/javascript">
+
+		Tone.Transport.bpm.value = 108;
+		
+		var kick = new Tone.Player({
+			url : "./audio/loop/kick.mp3",
+			loop : true
+		}).toMaster().sync().start(0);
+
+		var snare = new Tone.Player({
+			url : "./audio/loop/snare.mp3",
+			loop : true
+		}).toMaster().sync().start("2n");
+
+		var hh = new Tone.Player({
+			url : "./audio/loop/hh.mp3",
+			loop : true
+		}).toMaster().sync().start("3:3", "4n"); //start with an offset
+
+		Tone.Transport.loop = true;
+		Tone.Transport.loopStart = "4m";
+		Tone.Transport.loopEnd = "8m";
+		
+	</script>
+
+	<script id="GUI" type="text/javascript">
+
+
+		$(function(){
+
+			new Interface.Loader();
+
+			var dragging = false;
+
+			window.slider = new Interface.Slider({
+
+				max : Tone.Transport.loopEnd,
+
+				start : function(){
+					dragging = true;
+					if (started){
+						Tone.Transport.pause();
+					}
+				},
+				end : function(){
+					dragging = false;
+					if (started){
+						Tone.Transport.start("+0.1");
+					}
+				},
+				drag : function(val){
+					Tone.Transport.seconds = val;
+				}
+			})
+
+			var started = false;
+			
+			new Interface.Button({
+				key : 32,
+				type : "toggle",
+				text : "Start",
+				activeText : "Pause",
+				start : function(){
+					started = true;
+					Tone.Transport.start("+0.1");
+				},
+				end : function(){
+					started = false;
+					Tone.Transport.pause();
+				}
+			});
+
+			function loop(){
+				requestAnimationFrame(loop);
+				if (!dragging){
+					slider.value(Tone.Transport.seconds);
+				}
+				var progress = Tone.Transport.seconds / Tone.Transport.loopEnd;
+				$("#Bar").css("left", (progress * 100).toFixed(2) + "%");
+			}
+			loop();
+
+		});
+
+		var loadedPromise = new Promise(function(done){
+			Tone.Buffer.on("load", done);
+		});
+
+
+		//when the images have loaded
+		$(window).load(function(){
+
+			// draw the canvas to represent the 3 tracks
+			window.context = $("#DawCanvas").get(0).getContext("2d");
+
+			// size the canvas
+			function draw(){
+				context.canvas.width = $(window).width() * 2;
+				context.canvas.height = $(window).height() * 2;
+
+				var barHeight = context.canvas.height / 3;
+				var barMargin = 40;
+				var width = context.canvas.width;
+				var totalSeconds = Tone.Transport.loopEnd;
+
+				//seconds to width pixel conversion
+				function s2w(seconds){
+					return (seconds / totalSeconds) * width;
+				}
+
+				function drawBuffer(img, duration, yOffset, startTime, imgOffset){
+					imgOffset = imgOffset || 0;
+					imgLeft = img.width * imgOffset;
+					imgWidth = img.width * (1 - imgOffset);
+					yOffset *= barHeight;
+					imgPixels = s2w(duration);
+					for (var i = startTime; i < totalSeconds; i+=duration){
+						context.drawImage(img, 
+							imgLeft, 0, imgWidth, img.height,
+							s2w(i), yOffset + barMargin, imgPixels * (1 - imgOffset), 
+							barHeight - barMargin * 2)
+						context.strokeRect(s2w(i), yOffset + barMargin, imgPixels, 
+							barHeight - barMargin * 2)
+					}
+				}
+
+				context.strokeStyle = "white";
+				context.lineWidth = 3;
+				// draw the kick
+				drawBuffer($("#Kick").get(0), kick.buffer.duration, 0, 0);
+				drawBuffer($("#Snare").get(0), snare.buffer.duration, 1, Tone.Transport.toSeconds("2n"));
+				drawBuffer($("#HH").get(0), hh.buffer.duration, 2, Tone.Transport.toSeconds("3:3"), 0.5);
+				drawBuffer($("#HH").get(0), hh.buffer.duration, 2, Tone.Transport.toSeconds("4m"));
+			}
+			$(window).resize(draw);
+			//draw it for the first time when it's loaded
+			loadedPromise.then(draw);
+		});
+	</script>
+
+	</style>
+</body>
+</html>

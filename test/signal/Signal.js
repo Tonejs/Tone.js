@@ -1,6 +1,6 @@
 define(["helper/Offline", "helper/Basic", "Test", "Tone/signal/Signal", 
-	"Tone/type/Type", "Tone/core/Transport", "helper/Offline2"], 
-	function (Offline, Basic, Test, Signal, Tone, Transport, Offline2) {
+	"Tone/type/Type", "Tone/core/Transport", "helper/Offline2", "Tone/component/LFO"], 
+	function (Offline, Basic, Test, Signal, Tone, Transport, Offline2, LFO) {
 
 	describe("Signal", function(){
 
@@ -453,6 +453,105 @@ define(["helper/Offline", "helper/Basic", "Test", "Tone/signal/Signal",
 					done();
 				});
 				offline.run();
+			});
+		});
+
+		context("LFO", function(){
+
+			it ("can create an LFO from the constructor", function(){
+
+				var sig = new Signal({
+					"lfo" : {
+						"min" : -20,
+						"max" : 20
+					}
+				});
+
+				expect(sig.lfo).to.be.instanceOf(Tone.LFO);
+				expect(sig.lfo.min).to.be.closeTo(-20, 0.1);
+				expect(sig.lfo.max).to.be.closeTo(20, 0.1);
+			});
+
+			it ("can set an LFO as the .value", function(){
+
+				var sig = new Signal();
+
+				sig.value = {
+					"min" : 20,
+					"max" : -20
+				};
+
+				expect(sig.lfo).to.be.instanceOf(Tone.LFO);
+				expect(sig.lfo.min).to.be.closeTo(20, 0.1);
+				expect(sig.lfo.max).to.be.closeTo(-20, 0.1);
+			});
+
+			it ("outputs a modulated signal", function(done){
+
+
+				Offline2(function(output, test, after){
+
+					var sig = new Signal({
+						"lfo" : {
+							"min" : 10,
+							"max" : 20
+						}
+					}).connect(output);
+
+					test(function(val){
+						expect(val).to.be.within(10, 20);
+					});
+
+					after(function(){
+						sig.dispose();
+						done();
+					});
+
+				}, 0.4);
+			});
+
+			it ("can handle multiple levels of lfo", function(done){
+
+				Offline2(function(output, test, after){
+
+					var sig = new Signal({
+						"lfo" : {
+							"min" : 10,
+							"max" : 20,
+							"type" : "square",
+							"frequency" : {
+								"lfo" : {
+									"min" : 2,
+									"max" : 3,
+									"frequency" : 10,
+								}
+							},
+							"amplitude" : {
+								"lfo" : {
+									"min" : 0,
+									"max" : 1,
+									"frequency" : {
+										"lfo" : {
+											"min" : 2,
+											"max" : 3,
+											"frequency" : 10,
+										}
+									},
+								}	
+							}
+						}
+					}).connect(output);
+
+					test(function(val){
+						expect(val).to.be.within(10, 20);
+					});
+
+					after(function(){
+						sig.dispose();
+						done();
+					});
+
+				}, 0.4);
 			});
 		});
 	});

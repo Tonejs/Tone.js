@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
+define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Gain"], function(Tone){
 
 	"use strict";
 
@@ -24,7 +24,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	 */
 	Tone.Multiply = function(value){
 
-		Tone.call(this, 2, 0);
+		this.createInsOuts(2, 0);
 
 		/**
 		 *  the input node is the same as the output node
@@ -33,7 +33,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 		 *  @type {GainNode}
 		 *  @private
 		 */
-		this._mult = this.input[0] = this.output = this.context.createGain();
+		this._mult = this.input[0] = this.output = new Tone.Gain();
 
 		/**
 		 *  the scaling parameter
@@ -53,7 +53,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	 */
 	Tone.Multiply.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
-		this._mult.disconnect();
+		this._mult.dispose();
 		this._mult = null;
 		this._param = null;
 		return this;

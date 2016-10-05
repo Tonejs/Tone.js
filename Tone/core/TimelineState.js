@@ -27,7 +27,7 @@ define(["Tone/core/Tone", "Tone/core/Timeline", "Tone/type/Type"], function (Ton
 	/**
 	 *  Returns the scheduled state scheduled before or at
 	 *  the given time.
-	 *  @param  {Time}  time  The time to query.
+	 *  @param  {Number}  time  The time to query.
 	 *  @return  {String}  The name of the state input in setStateAtTime.
 	 */
 	Tone.TimelineState.prototype.getStateAtTime = function(time){
@@ -43,12 +43,12 @@ define(["Tone/core/Tone", "Tone/core/Timeline", "Tone/type/Type"], function (Ton
 	 *  Returns the scheduled state scheduled before or at
 	 *  the given time.
 	 *  @param  {String}  state The name of the state to set.
-	 *  @param  {Time}  time  The time to query.
+	 *  @param  {Number}  time  The time to query.
 	 */
 	Tone.TimelineState.prototype.setStateAtTime = function(state, time){
 		this.addEvent({
 			"state" : state,
-			"time" : this.toSeconds(time)
+			"time" : time
 		});
 	};
 
