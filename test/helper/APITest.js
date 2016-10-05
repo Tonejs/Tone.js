@@ -79,6 +79,16 @@ function (Test, Type, Transport, Time, Frequency) {
 				}
 			});
 		},
+		member : function(constructor, member, param, consArgs){
+			it (member+" = "+param, function(){
+				var permutations = generateArgs([param]);
+				for (var i = 0; i < permutations.length; i++){
+					var instance = new constructor(consArgs);
+					instance[member] = permutations[i];
+					instance.dispose();
+				}
+			});
+		},
 		constructor : function(constructor, args){
 
 			var argString;
