@@ -88,6 +88,8 @@ function(Tone){
 		"upZ" : 0
 	};
 
+	Tone.Listener.prototype._rampTimeConstant = 0.3;
+
 	/**
 	 *  Sets the position of the listener in 3d space.	
 	 *  @param  {Number}  x
@@ -96,14 +98,15 @@ function(Tone){
 	 *  @return {Tone.Listener} this
 	 */
 	Tone.Listener.prototype.setPosition = function(x, y, z){
-		if (this.isFunction(this._listener.setPosition)){
-			this._listener.setPosition(x, y, z);
-			this._position = Array.prototype.slice.call(arguments);
+		if (this._listener.positionX){
+			var now = this.now();
+			this._listener.positionX.setTargetAtTime(x, now, this._rampTimeConstant);
+			this._listener.positionY.setTargetAtTime(y, now, this._rampTimeConstant);
+			this._listener.positionZ.setTargetAtTime(z, now, this._rampTimeConstant);
 		} else {
-			this._listener.positionX.value = x;
-			this._listener.positionY.value = y;
-			this._listener.positionZ.value = z;
+			this._listener.setPosition(x, y, z);
 		}
+		this._position = Array.prototype.slice.call(arguments);
 		return this;
 	};
 
@@ -121,17 +124,18 @@ function(Tone){
 	 *  @return {Tone.Listener} this
 	 */
 	Tone.Listener.prototype.setOrientation = function(x, y, z, upX, upY, upZ){
-		if (this.isFunction(this._listener.setOrientation)){
-			this._listener.setOrientation(x, y, z, upX, upY, upZ);
-			this._orientation = Array.prototype.slice.call(arguments);
+		if (this._listener.forwardX){
+			var now = this.now();
+			this._listener.forwardX.setTargetAtTime(x, now, this._rampTimeConstant);
+			this._listener.forwardY.setTargetAtTime(y, now, this._rampTimeConstant);
+			this._listener.forwardZ.setTargetAtTime(z, now, this._rampTimeConstant);
+			this._listener.upX.setTargetAtTime(upX, now, this._rampTimeConstant);
+			this._listener.upY.setTargetAtTime(upY, now, this._rampTimeConstant);
+			this._listener.upZ.setTargetAtTime(upZ, now, this._rampTimeConstant);
 		} else {
-			this._listener.forwardX.value = x;
-			this._listener.forwardY.value = y;
-			this._listener.forwardZ.value = z;
-			this._listener.upX.value = upX;
-			this._listener.upY.value = upY;
-			this._listener.upZ.value = upZ;
+			this._listener.setOrientation(x, y, z, upX, upY, upZ);
 		}
+		this._orientation = Array.prototype.slice.call(arguments);
 		return this;
 	};
 

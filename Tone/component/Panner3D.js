@@ -70,7 +70,7 @@ function(Tone){
 		"positionX" : 0,
 		"positionY" : 0,
 		"positionZ" : 0,
-		"orientationX" : 1,
+		"orientationX" : 0,
 		"orientationY" : 0,
 		"orientationZ" : 0,
 		"panningModel" : "equalpower",
@@ -83,6 +83,8 @@ function(Tone){
 		"rolloffFactor" : 1
 	};
 
+	Tone.Panner3D.prototype._rampTimeConstant = 0.3;
+
 	/**
 	 *  Sets the position of the source in 3d space.	
 	 *  @param  {Number}  x
@@ -91,14 +93,15 @@ function(Tone){
 	 *  @return {Tone.Panner3D} this
 	 */
 	Tone.Panner3D.prototype.setPosition = function(x, y, z){
-		if (this.isFunction(this._panner.setPosition)){
-			this._panner.setPosition(x, y, z);
-			this._position = Array.prototype.slice.call(arguments);
+		if (this._panner.positionX){
+			var now = this.now();
+			this._panner.positionX.setTargetAtTime(x, now, this._rampTimeConstant);
+			this._panner.positionY.setTargetAtTime(y, now, this._rampTimeConstant);
+			this._panner.positionZ.setTargetAtTime(z, now, this._rampTimeConstant);
 		} else {
-			this._panner.positionX.value = x;
-			this._panner.positionY.value = y;
-			this._panner.positionZ.value = z;
+			this._panner.setPosition(x, y, z);
 		}
+		this._position = Array.prototype.slice.call(arguments);
 		return this;
 	};
 
@@ -110,14 +113,15 @@ function(Tone){
 	 *  @return {Tone.Panner3D} this
 	 */
 	Tone.Panner3D.prototype.setOrientation = function(x, y, z){
-		if (this.isFunction(this._panner.setOrientation)){
-			this._panner.setOrientation(x, y, z);
-			this._orientation = Array.prototype.slice.call(arguments);
+		if (this._panner.orientationX){
+			var now = this.now();
+			this._panner.orientationX.setTargetAtTime(x, now, this._rampTimeConstant);
+			this._panner.orientationY.setTargetAtTime(y, now, this._rampTimeConstant);
+			this._panner.orientationZ.setTargetAtTime(z, now, this._rampTimeConstant);
 		} else {
-			this._panner.orientationX.value = x;
-			this._panner.orientationY.value = y;
-			this._panner.orientationZ.value = z;
+			this._panner.setOrientation(x, y, z);
 		}
+		this._orientation = Array.prototype.slice.call(arguments);
 		return this;
 	};
 
