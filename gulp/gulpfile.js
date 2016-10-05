@@ -91,7 +91,7 @@ gulp.task("p5Footer", ["compile"], function(done){
 });
 
 gulp.task("build", ["footer", "p5Footer"], function(){
-	gulp.src("../build/{p5.Tone,Tone}.js")
+	gulp.src("../build/Tone.js")
 		.pipe(uglify({
 				preserveComments : "some",
 				compress: {
