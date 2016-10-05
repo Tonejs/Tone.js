@@ -128,9 +128,12 @@
 				SCREEN_WIDTH = document.querySelector("#three").clientWidth;
 				SCREEN_HEIGHT = document.querySelector("#three").clientHeight;
 				aspect = SCREEN_WIDTH / SCREEN_HEIGHT;
+				camera.aspect = aspect;
 				renderer.setSize( SCREEN_WIDTH, SCREEN_HEIGHT );
 				camera.updateProjectionMatrix();
 			}
+
+			window.addEventListener("resize", onWindowResize);
 
 			function animate() {
 				requestAnimationFrame( animate );
