@@ -26,6 +26,7 @@ function(Tone){
 		/**
 		 *  The carrier voice.
 		 *  @type {Tone.Synth}
+		 *  @private
 		 */
 		this._carrier = new Tone.Synth(options.carrier);
 		this._carrier.volume.value = -10;
@@ -46,6 +47,7 @@ function(Tone){
 		/**
 		 *  The modulator voice.
 		 *  @type {Tone.Synth}
+		 *  @private
 		 */
 		this._modulator = new Tone.Synth(options.modulator);
 		this._modulator.volume.value = -10;
