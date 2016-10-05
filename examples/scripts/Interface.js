@@ -15,7 +15,7 @@ $(function(){
 	var topbar = $("<div>").attr("id", "TopBar");
 	$("body").prepend(topbar);
 	
-	if (typeof Tone !== "undefined"){
+	if (typeof Logo !== "undefined"){
 		Logo({
 			"container" : topbar.get(0),
 			"height" : topbar.height() - 6,
