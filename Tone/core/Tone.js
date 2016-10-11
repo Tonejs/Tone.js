@@ -802,7 +802,7 @@ define(function(){
 		_silentNode.connect(audioContext.destination);
 	});
 
-	Tone.version = "r8";
+	Tone.version = "r9-dev";
 
 	// allow optional silencing of this log
 	if (!window.TONE_SILENCE_VERSION_LOGGING) {
