@@ -204,9 +204,9 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 				var loopEnd = this._source.loopEnd || this._buffer.duration;
 				var loopStart = this._source.loopStart;
 				var loopDuration = loopEnd - loopStart;
-				if (offset > loopDuration){
-					offset = loopStart + (offset % loopDuration);
-					if (offset > loopEnd){
+				if (offset > loopEnd){
+					//move the offset back
+					while (offset > loopEnd){
 						offset -= loopDuration;
 					}
 				}

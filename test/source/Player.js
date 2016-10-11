@@ -247,6 +247,40 @@ define(["helper/Basic", "Tone/source/Player", "helper/Offline",
 				}, 0.3);
 			});
 
+			it ("correctly compensates if the offset is greater than the loopEnd", function(done){
+
+				Offline2(function(output, test, after){
+
+					var ramp = new Float32Array(Math.floor(44100 * 0.3));
+					for (var i = 0; i < ramp.length; i++){
+						ramp[i] = (i / (ramp.length)) * 0.3;
+					}
+
+					var buff = new Buffer().fromArray(ramp);
+					var player = new Player(buff).connect(output);
+					player.loopStart = 0.1
+					player.loopEnd = 0.2
+					player.loop = true
+
+					player.start(0, 0.35);
+
+					test(function(sample, time){
+						if (time < 0.05){
+							expect(sample).to.be.within(0.15, 0.2);
+						} else if (time > 0.05 && time < 0.1){
+							expect(sample).to.be.within(0.1, 0.15);
+						}
+					});
+
+					after(function(){
+						buff.dispose();
+						player.dispose();
+						done();
+					});
+
+				}, 0.3);		
+			});
+
 			it("can be play for a specific duration", function(done){
 				var player;
 				var meter = new Meter(0.4);
