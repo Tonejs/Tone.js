@@ -34,9 +34,7 @@ $(function(){
 		$("body").addClass("Mobile");
 		var element = $("<div>", {"id" : "MobileStart"}).appendTo("body");
 		var button = $("<div>").attr("id", "Button").text("Enter").appendTo(element);
-		StartAudioContext.setContext(Tone.context);
-		StartAudioContext.on(button);
-		StartAudioContext.onStarted(function(){
+		StartAudioContext(Tone.context, button, function(){
 			element.remove();
 		});
 	}
