@@ -214,7 +214,7 @@ function(Tone){
 	 */
 	Tone.Source.prototype.sync = function(){
 		this._synced = true;
-		Tone.Transport.on("start", function(time, offset){
+		Tone.Transport.on("start loopStart", function(time, offset){
 			if (offset > 0){
 				// get the playback state at that time
 				var stateEvent = this._state.getEvent(offset);
@@ -230,7 +230,7 @@ function(Tone){
 				}
 			}
 		}.bind(this));
-		Tone.Transport.on("stop pause", function(time){
+		Tone.Transport.on("stop pause loopEnd", function(time){
 			if (this._state.getStateAtTime(Tone.Transport.seconds) === Tone.State.Started){
 				this._stop(time);
 			}
@@ -244,7 +244,7 @@ function(Tone){
 	 */
 	Tone.Source.prototype.unsync = function(){
 		this._synced = false;
-		Tone.Transport.off("start stop pause");
+		Tone.Transport.off("start stop pause loopEnd loopStart");
 		// clear all of the scheduled ids
 		for (var i = 0; i < this._scheduled.length; i++){
 			var id = this._scheduled[i];

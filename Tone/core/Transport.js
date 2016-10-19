@@ -211,10 +211,10 @@ function(Tone){
 		//do the loop test
 		if (this.loop){
 			if (ticks === this._loopEnd){
-				this.emit("stop", tickTime);
+				this.emit("loopEnd", tickTime);
 				this._clock.ticks = this._loopStart;
 				ticks = this._loopStart;
-				this.emit("start", tickTime, this.seconds);
+				this.emit("loopStart", tickTime, this.seconds);
 				this.emit("loop", tickTime);
 			}
 		}
