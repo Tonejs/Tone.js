@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/source/Oscillator", "Tone/instrument/Instrument", 
+define(["Tone/core/Tone", "Tone/source/OmniOscillator", "Tone/instrument/Instrument", 
 	"Tone/component/AmplitudeEnvelope"],
 function(Tone){
 
@@ -6,7 +6,7 @@ function(Tone){
 
 	/**
 	 *  @class  Tone.MembraneSynth makes kick and tom sounds using a single oscillator
-	 *          with an amplitude envelope and frequency ramp. A Tone.Oscillator
+	 *          with an amplitude envelope and frequency ramp. A Tone.OmniOscillator
 	 *          is routed through a Tone.AmplitudeEnvelope to the output. The drum
 	 *          quality of the sound comes from the frequency envelope applied
 	 *          during during Tone.MembraneSynth.triggerAttack(note). The frequency
@@ -28,9 +28,9 @@ function(Tone){
 
 		/**
 		 *  The oscillator.
-		 *  @type {Tone.Oscillator}
+		 *  @type {Tone.OmniOscillator}
 		 */
-		this.oscillator = new Tone.Oscillator(options.oscillator).start();
+		this.oscillator = new Tone.OmniOscillator(options.oscillator).start();
 
 		/**
 		 *  The amplitude envelope.
