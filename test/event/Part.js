@@ -540,6 +540,69 @@ define(["helper/Basic", "Tone/event/Part", "Tone/core/Tone",
 				}, 0.8);
 			});
 
+			it ("can be started and stopped multiple times", function(done){
+
+				Offline(function(output, test, after){
+
+					var eventTimes = [[0.5, 0], [0.6, 1], [1.1, 0], [1.2, 1], [1.3, 2], [1.4, 0], [1.5, 1], [1.6, 2]];
+					var eventTimeIndex = 0;
+
+					var part = new Part({
+						"loopEnd" : 0.3,
+						"loopStart" : 0,
+						"loop" : true,
+						"callback" : function(time, value){
+							expect(eventTimes.length).to.be.gt(eventTimeIndex);
+							expect(eventTimes[eventTimeIndex][0]).to.be.closeTo(time, 0.05);
+							expect(eventTimes[eventTimeIndex][1]).to.equal(value);
+							eventTimeIndex++;
+						},
+						events : [[0, 0], [0.1, 1], [0.2, 2]]
+					}).start(0.3).stop(0.8);
+
+					Tone.Transport.start(0.2).stop(0.6).start(0.8);
+
+					after(function(){
+						part.dispose();	
+						done();
+					});
+
+				}, 2);
+			});
+
+			it ("can adjust the loopEnd times", function(done){
+
+				Offline(function(output, test, after){
+
+					var eventTimes = [[0.5, 0], [0.6, 1], [1.1, 0], [1.2, 1], [1.3, 2], [1.4, 0], [1.5, 1], [1.6, 2]];
+					var eventTimeIndex = 0;
+
+					var part = new Part({
+						"loopEnd" : 0.2,
+						"loopStart" : 0,
+						"loop" : true,
+						"callback" : function(time, value){
+							expect(eventTimes.length).to.be.gt(eventTimeIndex);
+							expect(eventTimes[eventTimeIndex][0]).to.be.closeTo(time, 0.05);
+							expect(eventTimes[eventTimeIndex][1]).to.equal(value);
+							eventTimeIndex++;
+						},
+						events : [[0, 0], [0.1, 1], [0.2, 2]]
+					}).start(0.3).stop(0.8);
+
+					part.loopEnd = 0.4;
+					part.loopEnd = 0.3;
+
+					Tone.Transport.start(0.2).stop(0.6).start(0.8);
+
+					after(function(){
+						part.dispose();	
+						done();
+					});
+
+				}, 2);
+			});
+
 
 			it ("reports the progress of the loop", function(done){
 
@@ -564,9 +627,11 @@ define(["helper/Basic", "Tone/event/Part", "Tone/core/Tone",
 
 			it("can start a loop with an offset", function(done){
 				var iteration = 0;
+				var now = Tone.now();
 				var part = new Part(function(time, number){
 					if (iteration === 0){
 						expect(number).to.equal(1);
+						expect(time - now).to.be.closeTo(0.2, 0.05);
 					} else if (iteration === 1){
 						expect(number).to.equal(0);
 						part.dispose();
@@ -576,7 +641,7 @@ define(["helper/Basic", "Tone/event/Part", "Tone/core/Tone",
 				}, [[0, 0], [0.25, 1]]);
 				part.loop = true;
 				part.loopEnd = 0.5;
-				part.start(0, 0.25);
+				part.start(0, 1.05);
 				Tone.Transport.start();
 			});
 
