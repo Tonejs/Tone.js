@@ -160,6 +160,8 @@ define(function(){
 			tmpObj[params] = value;
 			params = tmpObj;
 		}
+
+		paramLoop:
 		for (var attr in params){
 			value = params[attr];
 			var parent = this;
@@ -167,6 +169,12 @@ define(function(){
 				var attrSplit = attr.split(".");
 				for (var i = 0; i < attrSplit.length - 1; i++){
 					parent = parent[attrSplit[i]];
+					if (parent instanceof Tone) {
+						attrSplit.splice(0,i+1);
+						var innerParam = attrSplit.join(".");
+						parent.set(innerParam, value);
+						continue paramLoop;
+					}
 				}
 				attr = attrSplit[attrSplit.length - 1];
 			}
