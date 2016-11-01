@@ -524,7 +524,7 @@ function(Tone){
 
 	/**
 	 *  Set the subdivision which the swing will be applied to. 
-	 *  The default values is a 16th note. Value must be less 
+	 *  The default value is an 8th note. Value must be less 
 	 *  than a quarter note.
 	 *  
 	 *  @memberOf Tone.Transport#
