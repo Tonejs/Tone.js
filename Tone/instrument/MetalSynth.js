@@ -88,7 +88,7 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/source/FMOscillato
 		 */
 		this.envelope = new Tone.Envelope({
 			"attack" : options.envelope.attack,
-			"attackCurve" : "exponential",
+			"attackCurve" : "linear",
 			"decay" : options.envelope.decay,
 			"sustain" : 0,
 			"release" : options.envelope.release,
@@ -126,7 +126,7 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/source/FMOscillato
 	Tone.MetalSynth.defaults = {
 		"frequency" : 200,
 		"envelope" : {
-			"attack" : 0.0015,
+			"attack" : 0.001,
 			"decay" : 1.4,
 			"release" : 0.2
 		},
