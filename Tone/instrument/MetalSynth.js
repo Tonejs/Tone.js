@@ -62,7 +62,7 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/source/FMOscillato
 		 */
 		this._highpass = new Tone.Filter({
 			"type" : "highpass",
-			"Q" : 0
+			"Q" : -3.0102999566398125
 		}).connect(this._amplitue);
 
 		/**
