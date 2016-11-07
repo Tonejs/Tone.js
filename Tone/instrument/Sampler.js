@@ -94,6 +94,23 @@ function(Tone){
 	};
 
 	/**
+	 *  Trigger the attack and then the release after the duration. 
+	 *  @param  {Interval} interval     The interval in half-steps that the
+	 *                                  sample should be pitch shifted.
+	 *  @param  {Time} duration How long the note should be held for before
+	 *                          triggering the release.
+	 *  @param {Time} [time=now]  When the note should be triggered.
+	 *  @param  {NormalRange} [velocity=1] The velocity the note should be triggered at.
+	 *  @returns {Tone.Sampler} this
+	 *  @example
+	 * //trigger the unpitched note for the duration of an 8th note
+	 * synth.triggerAttackRelease(0, "8n");
+	 *  @memberOf Tone.Sampler#
+	 *  @name triggerAttackRelease
+	 *  @method triggerAttackRelease
+	 */
+
+	/**
 	 * If the output sample should loop or not.
 	 * @memberOf Tone.Sampler#
 	 * @type {number|string}
