@@ -437,8 +437,8 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type"], function(Tone)
 	 */
 	Tone.Buffer.stopDownloads = function(){
 		Tone.Buffer._downloadQueue.forEach(function(request){
-			request.abort()
-		})
+			request.abort();
+		});
 		Tone.Buffer._currentDownloads = 0;
 		return Tone.Buffer;
 	};
