@@ -156,7 +156,8 @@ gulp.task("server", function(){
 gulp.task("lint", function() {
 	return gulp.src("../Tone/*/*.js")
 		.pipe(jshint())
-		.pipe(jshint.reporter("default"));
+		.pipe(jshint.reporter("default"))
+		.pipe(jshint.reporter("fail"));
 });
 
 /**
