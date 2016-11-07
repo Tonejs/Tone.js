@@ -129,11 +129,10 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 	 *                     browser.
 	 *  @param  {function=} callback The function to invoke once
 	 *                               the sample is loaded.
-	 *  @returns {Tone.Player} this
+	 *  @returns {Promise}
 	 */
 	Tone.Player.prototype.load = function(url, callback){
-		this._buffer.load(url, this._onload.bind(this, callback));
-		return this;
+		return this._buffer.load(url, this._onload.bind(this, callback));
 	};
 
 	/**
@@ -141,6 +140,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 	 * @private
 	 */
 	Tone.Player.prototype._onload = function(callback){
+		callback = this.defaultArg(callback, Tone.noOp);
 		callback(this);
 		if (this.autostart){
 			this.start();

@@ -54,6 +54,15 @@ define(["helper/Basic", "Tone/source/Player", "helper/Offline",
 				});
 			});
 
+			it("returns a promise", function(done){
+				var player = new Player();
+				var promise = player.load("./audio/sine.wav");
+				expect(promise).to.be.instanceof(Promise);
+				promise.then(function(){
+					done();
+				});
+			});
+
 			it("can be created with an options object", function(){
 				var player = new Player({
 					"url" : "./audio/sine.wav",
