@@ -15,6 +15,7 @@ var rename = require("gulp-rename");
 var sass = require("gulp-ruby-sass");
 var prefix = require("gulp-autoprefixer");
 var openFile = require("gulp-open");
+var jshint = require("gulp-jshint");
 var argv = require("yargs")
 			.alias("f", "file")
 			.alias("s", "signal")
@@ -133,7 +134,7 @@ gulp.task("sass", function () {
 });
 
 gulp.task("example", function() {
-  gulp.watch(["../examples/style/examples.scss"], ["sass"]);
+	gulp.watch(["../examples/style/examples.scss"], ["sass"]);
 });
 
 /**
@@ -150,6 +151,15 @@ gulp.task("server", function(){
 });
 
 /**
+ *  LINTING
+ */
+gulp.task("lint", function() {
+	return gulp.src("../Tone/*/*.js")
+		.pipe(jshint())
+		.pipe(jshint.reporter("default"));
+});
+
+/**
  *  TEST RUNNER
  */
 gulp.task("browser-test", ["server", "collectTests"], function(){
@@ -159,7 +169,7 @@ gulp.task("browser-test", ["server", "collectTests"], function(){
 
 gulp.task("karma-test", function (done) {
   new KarmaServer({
-    configFile: __dirname + '/karma.conf.js',
+    configFile: __dirname + "/karma.conf.js",
     singleRun: true
   }, done).start();
 });
@@ -212,4 +222,11 @@ gulp.task("collectTests", function(done){
 			.pipe(gulp.dest("../test/"));
 		innerTask.on("end", done);
 	});
+});
+
+/**
+ *  TEST ALL
+ */
+gulp.task("travis-test", ["lint", "karma-test"], function(){
+	
 });
