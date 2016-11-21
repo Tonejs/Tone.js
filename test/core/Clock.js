@@ -22,9 +22,9 @@ define(["Test", "Tone/core/Clock", "helper/Offline2"], function (Test, Clock, Of
 				var clock = new Clock(function(){
 					clock.dispose();
 					done();
-				}, 1).start();
+				}, 10).start();
 			});
-
+			
 			it ("can be constructed with an options object", function(done){
 				var clock = new Clock({
 					"callback" : function(){
@@ -39,12 +39,10 @@ define(["Test", "Tone/core/Clock", "helper/Offline2"], function (Test, Clock, Of
 			it ("can get and set it's values with the set/get", function(){
 				var clock = new Clock();
 				clock.set({
-					"frequency" : 2,
-					"lookAhead" : 0.1
+					"frequency" : 2
 				});
 				var gotValues = clock.get();
 				expect(gotValues.frequency).to.equal(2);
-				expect(gotValues.lookAhead).to.equal(0.1);
 				clock.dispose();
 			});
 
@@ -89,6 +87,30 @@ define(["Test", "Tone/core/Clock", "helper/Offline2"], function (Test, Clock, Of
 				}, 0.6);
 			});
 
+			it("can start and stop in close proximity", function(done){
+				Offline(function(output, testFn, tearDown){
+					var clock = new Clock();
+					expect(clock.state).to.equal("stopped");
+					clock.start(0).stop(0.001).start(0.002);
+					expect(clock.state).to.equal("started");
+
+					testFn(function(sample, time){
+						if (time < 0.001){
+							expect(clock.state).to.equal("started");
+						} else if (time >= 0.002){
+							expect(clock.state).to.equal("started");
+						} else {
+							expect(clock.state).to.equal("stopped");
+						}
+					});
+
+					tearDown(function(){
+						clock.dispose();
+						done();
+					});
+				}, 0.05);
+			});
+
 			it("can schedule multiple start and stops", function(done){
 				Offline(function(output, testFn, tearDown){
 					var clock = new Clock();
@@ -123,7 +145,7 @@ define(["Test", "Tone/core/Clock", "helper/Offline2"], function (Test, Clock, Of
 					expect(time).to.be.a.number;
 					clock.dispose();
 					done();
-				}, 1).start();
+				}, 10).start();
 			});
 
 			it ("invokes the callback with a time great than now", function(done){
@@ -131,19 +153,7 @@ define(["Test", "Tone/core/Clock", "helper/Offline2"], function (Test, Clock, Of
 					clock.dispose();
 					expect(time).to.be.greaterThan(now);
 					done();
-				}, 1);
-				var now = clock.now();
-				var startTime = now + 0.1;
-				clock.start(startTime);
-			});
-
-			it ("invokes the callback with a time equal to the lookAhead time", function(done){
-				var clock = new Clock(function(time){
-					clock.dispose();
-					expect(time - now).to.be.closeTo(clock.lookAhead, 0.01);
-					done();
-				}, 1);
-				clock.lookAhead = 0.1;
+				}, 10);
 				var now = clock.now();
 				var startTime = now + 0.1;
 				clock.start(startTime);
@@ -154,7 +164,7 @@ define(["Test", "Tone/core/Clock", "helper/Offline2"], function (Test, Clock, Of
 					clock.dispose();
 					expect(time).to.equal(startTime);
 					done();
-				}, 1);
+				}, 10);
 				var startTime = clock.now() + 0.1;
 				clock.start(startTime);
 			});
@@ -189,6 +199,7 @@ define(["Test", "Tone/core/Clock", "helper/Offline2"], function (Test, Clock, Of
 				}, 0.45);
 			});
 
+
 			it ("can schedule the frequency of the clock", function(done){
 				Offline(function(output, testFn, tearDown){
 					var invokations = 0;
@@ -205,7 +216,6 @@ define(["Test", "Tone/core/Clock", "helper/Offline2"], function (Test, Clock, Of
 					});
 				}, 2);
 			});
-
 		});
 
 		context("Ticks", function(){
@@ -233,10 +243,10 @@ define(["Test", "Tone/core/Clock", "helper/Offline2"], function (Test, Clock, Of
 
 			it ("resets ticks on stop", function(done){
 				Offline(function(output, testFn, tearDown){
-					var clock = new Clock(function(){}, 0.05).start().stop(0.5);
+					var clock = new Clock(function(){}, 20).start(0).stop(0.5);
 
 					testFn(function(sample, time){
-						if (time > 0.05 && time < 0.5){
+						if (time > 0.1 && time < 0.5){
 							expect(clock.ticks).to.be.above(0);
 						}
 					});
@@ -252,7 +262,7 @@ define(["Test", "Tone/core/Clock", "helper/Offline2"], function (Test, Clock, Of
 			it ("does not reset ticks on pause but stops incrementing", function(done){
 
 				Offline(function(output, testFn, tearDown){
-					var clock = new Clock(function(){}, 0.05).start().pause(0.3);
+					var clock = new Clock(function(){}, 20).start().pause(0.3);
 
 					var pausedTicks = 0;
 					testFn(function(sample, time){
@@ -274,7 +284,7 @@ define(["Test", "Tone/core/Clock", "helper/Offline2"], function (Test, Clock, Of
 			it ("starts incrementing where it left off after pause", function(done){
 
 				Offline(function(output, testFn, tearDown){
-					var clock = new Clock(function(){}, 0.05).start(0).pause(0.3).start(0.5);
+					var clock = new Clock(function(){}, 20).start(0).pause(0.3).start(0.5);
 
 					var pausedTicks = 0;
 					var restarted = false;
@@ -300,7 +310,7 @@ define(["Test", "Tone/core/Clock", "helper/Offline2"], function (Test, Clock, Of
 					expect(clock.ticks).to.equal(4);
 					clock.dispose();
 					done();
-				}, 0.5);
+				}, 10);
 				expect(clock.ticks).to.equal(0);
 				clock.start(undefined, 4);
 			});
@@ -309,7 +319,7 @@ define(["Test", "Tone/core/Clock", "helper/Offline2"], function (Test, Clock, Of
 		context("Events", function(){
 
 			it ("triggers the start event on start", function(done){
-				var clock = new Clock(function(){}, 0.1);
+				var clock = new Clock(function(){}, 20);
 				var startTime = clock.now() + 0.3;
 				clock.on("start", function(time, offset){
 					expect(time).to.be.closeTo(startTime, 0.01);
@@ -322,7 +332,7 @@ define(["Test", "Tone/core/Clock", "helper/Offline2"], function (Test, Clock, Of
 			});
 
 			it ("triggers the start event with an offset", function(done){
-				var clock = new Clock(function(){}, 0.1);
+				var clock = new Clock(function(){}, 20);
 				var startTime = clock.now() + 0.3;
 				clock.on("start", function(time, offset){
 					expect(time).to.be.closeTo(startTime, 0.01);
@@ -335,7 +345,7 @@ define(["Test", "Tone/core/Clock", "helper/Offline2"], function (Test, Clock, Of
 			});
 
 			it ("triggers stop event", function(done){
-				var clock = new Clock(function(){}, 0.1);
+				var clock = new Clock(function(){}, 20);
 				var stopTime = clock.now() + 0.3;
 				clock.on("stop", function(time){
 					expect(time).to.be.closeTo(stopTime, 0.01);
@@ -347,7 +357,7 @@ define(["Test", "Tone/core/Clock", "helper/Offline2"], function (Test, Clock, Of
 			});
 
 			it ("triggers pause stop event", function(done){
-				var clock = new Clock(function(){}, 0.1);
+				var clock = new Clock(function(){}, 20);
 				var now = clock.now();
 				clock.on("pause", function(time){
 					expect(time).to.be.closeTo(now + 0.1, 0.01);

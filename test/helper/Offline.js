@@ -35,6 +35,11 @@ define(["Tone/core/Tone", "Tone/core/Clock"], function (Tone, Clock) {
 
 		this.context.oncomplete = function(e){
 
+			var originalTargetLookAhead = Tone.Clock._targetLookAhead;
+			Tone.Clock._targetLookAhead = 1 / sampleRate;
+
+			var error;
+
 			for (var i = 0; i < duration; i++){
 
 				var ret = [];
@@ -46,25 +51,24 @@ define(["Tone/core/Tone", "Tone/core/Clock"], function (Tone, Clock) {
 					ret = ret[0];
 				}
 				try {
-					//update the clock periodically
-					// if (i % 10 === 0){
-					// 	Clock._worker.dispatchEvent(event);
-					// } 
 					Clock._worker.dispatchEvent(event);
 					this._currentTime = i / sampleRate;
 					this._test(ret, i / sampleRate);
-				} catch (e){
-					//reset the old context
-					Tone.setContext(onlineContext);
-					throw new Error(e);
+				} catch (err){
+					error = err;
 				}
 			}
 			this._after();
+			Tone.Clock._targetLookAhead = originalTargetLookAhead;
 			//return the old 'now' method
 			Tone.now = oldNowFunc;
 			Tone.prototype.now = oldNowFunc;
 			//reset the old context
 			Tone.setContext(onlineContext);
+			//throw an error if there was one
+			if (error){
+				throw new Error(error);
+			}
 		}.bind(this);
 	};
 
