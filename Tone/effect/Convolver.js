@@ -84,16 +84,15 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/effect/Effect"], function(To
 	 *                      filetype support depends on the
 	 *                      browser.
 	 *  @param  {function=} callback
-	 *  @returns {Tone.Convolver} this
+	 *  @returns {Promise}
 	 */
 	Tone.Convolver.prototype.load = function(url, callback){
-		this._buffer.load(url, function(buff){
+		return this._buffer.load(url, function(buff){
 			this.buffer = buff;
 			if (callback){
 				callback();
 			}
 		}.bind(this));
-		return this;
 	};
 
 	/**

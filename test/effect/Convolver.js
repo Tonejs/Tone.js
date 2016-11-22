@@ -19,7 +19,7 @@ function (Convolver, Basic, EffectTests, Buffer) {
 			});
 		});
 
-		// EffectTests(Convolver, ir);
+		EffectTests(Convolver, ir);
 
 		context("API", function(){
 
@@ -39,6 +39,24 @@ function (Convolver, Basic, EffectTests, Buffer) {
 					}
 				});
 			});
+
+			it ("load returns a Promise", function(done){
+				var convolver = new Convolver();
+				convolver.load(testFile).then(function(){
+					convolver.dispose();
+					done();
+				});
+			});
+
+			it ("load invokes the second callback", function(done){
+				var convolver = new Convolver();
+				convolver.load(testFile, function(){
+					convolver.dispose();
+					done();
+				});
+			});
+
+
 		});
 	});
 });
