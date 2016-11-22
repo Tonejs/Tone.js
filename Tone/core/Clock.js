@@ -235,19 +235,34 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal", "Tone/core/TimelineState
 	window.URL = window.URL || window.webkitURL;
 
 	/**
-	 *  The update rate in Milliseconds
+	 *  The initial update rate in Milliseconds
 	 *  @const
 	 *  @type  {Number}
 	 *  @private
 	 */
-	var UPDATE_RATE = 20;
+	var UPDATE_RATE = 16;
 
 	/**
 	 *  The script which runs in a web worker
 	 *  @type {Blob}
 	 *  @private
 	 */
-	var blob = new Blob(["setInterval(function(){self.postMessage('tick')}, "+UPDATE_RATE+")"]);
+	var blob = new Blob([
+		//the initial timeout time
+		"var timeoutTime = "+UPDATE_RATE+";" +
+		//onmessage callback
+		"self.onmessage = function(msg){" +
+		"	timeoutTime = parseInt(msg.data);" + 
+		"};" + 
+		//the tick function which posts a message
+		//and schedules a new tick
+		"function tick(){" +
+		"	setTimeout(tick, timeoutTime);" +
+		"	self.postMessage('tick');" +
+		"}" +
+		//call tick initially
+		"tick();"
+	]);
 
 	/**
 	 *  Create a blob url from the Blob
@@ -299,17 +314,22 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal", "Tone/core/TimelineState
 	 *  The time which the clock will schedule events in advance
 	 *  of the current time. This value is be automatically 
 	 *  computed based on the rate of the update (~0.02 seconds).
-	 *  @type {Number|String}
+	 *  @type {Number}
 	 *  @memberOf Tone.Clock
 	 *  @name lookAhead
 	 *  @static
-	 *  @readOnly
 	 */
 	Object.defineProperty(Tone.Clock, "lookAhead", {
 		get : function(){
 			var diff = lookAhead - Tone.Clock._targetLookAhead;
 			diff = Math.max(diff, 0);
 			return Tone.Clock._targetLookAhead * 2 + diff * 2;
+		},
+		set : function(lA){
+			lA = lA / 2;
+			Tone.Clock._worker.postMessage(lA * 1000);
+			lookAhead = lA;
+			Tone.Clock._targetLookAhead = lA;
 		}
 	});
 

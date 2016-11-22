@@ -714,5 +714,22 @@ function (Test, Transport, Tone, Offline, TransportTime) {
 			});
 		});
 
+		context("lookAhead", function(){
+
+			afterEach(resetTransport);
+
+			it ("can get/set the lookAhead in seconds", function(){
+				Tone.Transport.lookAhead = 0.2;
+				expect(Tone.Transport.lookAhead).to.be.a.number;
+				Tone.Transport.lookAhead = "interactive";
+			});
+
+			it ("can set the lookAhead to 'performance', 'interactive' and 'balanced'", function(){
+				Tone.Transport.lookAhead = "performance";
+				Tone.Transport.lookAhead = "balanced";
+				Tone.Transport.lookAhead = "interactive";
+			});
+		});
+
 	});
 });
