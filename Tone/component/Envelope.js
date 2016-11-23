@@ -128,7 +128,7 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal",
 	 *   <li>linear</li>
 	 *   <li>exponential</li>
 	 *   <li>sine</li>
-	 *   <li>ease</li>
+	 *   <li>cosine</li>
 	 *   <li>bounce</li>
 	 *   <li>ripple</li>
 	 *   <li>step</li>
