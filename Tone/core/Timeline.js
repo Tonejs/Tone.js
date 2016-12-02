@@ -124,6 +124,22 @@ define(["Tone/core/Tone", "Tone/type/Type"], function (Tone) {
 	};
 
 	/**
+	 *  Return the first event in the timeline without removing it
+	 *  @returns {Object} The first event object
+	 */
+	Tone.Timeline.prototype.peek = function(){
+		return this._timeline[0];
+	};
+
+	/**
+	 *  Return the first event in the timeline and remove it
+	 *  @returns {Object} The first event object
+	 */
+	Tone.Timeline.prototype.shift = function(){
+		return this._timeline.shift();
+	};
+
+	/**
 	 *  Get the event which is scheduled after the given time.
 	 *  @param  {Number}  time  The time to query.
 	 *  @returns {Object} The event object after the given time

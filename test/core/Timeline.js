@@ -249,6 +249,31 @@ define(["Test", "Tone/core/Timeline"], function (Test, Timeline) {
 			sched.dispose();
 		});
 
+		it ("can peek and shift off the first element", function(){
+			var timeline = new Timeline();
+			timeline.addEvent({
+				"time" : 0,
+				"value" : "a"
+			});
+			timeline.addEvent({
+				"time" : 1,
+				"value" : "b"
+			});
+			timeline.addEvent({
+				"time" : 2,
+				"value" : "c"
+			});
+			expect(timeline.length).to.equal(3);
+			expect(timeline.peek().value).to.equal("a");
+			expect(timeline.length).to.equal(3);
+			expect(timeline.shift().value).to.equal("a");
+			expect(timeline.length).to.equal(2);
+			expect(timeline.peek().value).to.equal("b");
+			expect(timeline.shift().value).to.equal("b");
+			expect(timeline.length).to.equal(1);
+			timeline.dispose();
+		});
+
 		context("Iterators", function(){
 
 			it("iterates over all items and returns and item", function(){
