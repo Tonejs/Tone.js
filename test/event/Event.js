@@ -242,6 +242,16 @@ define(["helper/Basic", "Tone/event/Event", "Tone/core/Tone", "Tone/core/Transpo
 				Tone.Transport.start();
 			});
 
+			it ("invokes the deferred callback", function(done){
+				var note = new Event(function(){
+					return function(){
+						note.dispose();
+						done();
+					}
+				}).start(0);
+				Tone.Transport.start();
+			});
+
 		});
 
 		context("Looping", function(){

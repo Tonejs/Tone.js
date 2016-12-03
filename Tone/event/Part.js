@@ -422,7 +422,7 @@ define(["Tone/core/Tone", "Tone/event/Event", "Tone/type/Type", "Tone/core/Trans
 	 */
 	Tone.Part.prototype._tick = function(time, value){
 		if (!this.mute){
-			this.callback(time, value);
+			return this.callback(time, value);
 		}
 	};
 

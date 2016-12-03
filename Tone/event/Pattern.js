@@ -50,8 +50,9 @@ define(["Tone/core/Tone", "Tone/event/Loop", "Tone/control/CtrlPattern"], functi
 	 *  @private
 	 */
 	Tone.Pattern.prototype._tick = function(time){
-		this.callback(time, this._pattern.value);
+		var ret = this.callback(time, this._pattern.value);
 		this._pattern.next();
+		return ret;
 	};
 
 	/**

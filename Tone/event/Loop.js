@@ -93,7 +93,7 @@ define(["Tone/core/Tone", "Tone/event/Event"], function (Tone) {
 	 *  @private
 	 */
 	Tone.Loop.prototype._tick = function(time){
-		this.callback(time);
+		return this.callback(time);
 	};
 
 	/**

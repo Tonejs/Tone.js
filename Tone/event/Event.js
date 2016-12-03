@@ -273,7 +273,7 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/type/Type", "Tone/core/Ti
 				}
 				time += (Math.random() * 2 - 1) * variation;
 			}
-			this.callback(time, this.value);
+			return this.callback(time, this.value);
 		}
 	};
 

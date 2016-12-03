@@ -381,6 +381,16 @@ define(["helper/Basic", "Tone/event/Part", "Tone/core/Tone",
 				Tone.Transport.start(now);
 			});
 
+			it ("invokes the deferred callback", function(done){
+				var part = new Part(function(){
+					return function(){
+						part.dispose();
+						done();
+					}
+				}, [0]).start(0);
+				Tone.Transport.start();
+			});
+
 		});
 		
 		context("Looping", function(){

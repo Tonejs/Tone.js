@@ -287,6 +287,16 @@ define(["helper/Basic", "Tone/event/Sequence", "Tone/core/Tone",
 				}, 100);
 			});
 
+			it ("invokes the deferred callback", function(done){
+				var seq = new Sequence(function(){
+					return function(){
+						seq.dispose();
+						done();
+					}
+				}, [0]).start(0);
+				Tone.Transport.start();
+			});
+
 		});
 
 		context("Looping", function(){
