@@ -149,7 +149,7 @@ function(Tone){
 			time = this.toSeconds(time);
 		}	
 		//if it's started, stop it and restart it
-		if (this._state.getStateAtTime(time) === Tone.State.Started){
+		if (!this.retrigger && this._state.getStateAtTime(time) === Tone.State.Started){
 			this.stop(time);
 		}
 		this._state.setStateAtTime(Tone.State.Started, time);
