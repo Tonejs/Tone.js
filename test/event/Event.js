@@ -202,7 +202,7 @@ define(["helper/Basic", "Tone/event/Event", "Tone/core/Tone", "Tone/core/Transpo
 				Offline(function(output, test, after){
 					var note = new Event().start(0).stop(0.4);
 
-					Tone.Transport.start().stop(0.5).start(0.55);
+					Tone.Transport.start(0).stop(0.5).start(0.55);
 
 					test(function(sample, time){
 						if (time > 0 && time < 0.38){

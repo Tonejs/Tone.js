@@ -115,7 +115,11 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal", "Tone/core/TimelineState
 	 *  @return  {Tone.Clock}  this
 	 */
 	Tone.Clock.prototype.start = function(time, offset){
-		time = this.toSeconds(time);
+		if (this.isUndef(time)){
+			time = this.toSeconds(time) + Tone.Clock.lookAhead;
+		} else {
+			time = this.toSeconds(time);
+		}
 		if (this._state.getStateAtTime(time) !== Tone.State.Started){
 			this._state.addEvent({
 				"state" : Tone.State.Started, 

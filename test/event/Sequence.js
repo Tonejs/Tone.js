@@ -196,7 +196,7 @@ define(["helper/Basic", "Tone/event/Sequence", "Tone/core/Tone",
 					}, [0, [1, 2], [3, 4]], "16n").start();
 
 					seq.loop = false;
-					Tone.Transport.start();
+					Tone.Transport.start(0);
 
 					after(function(){
 						seq.dispose();
@@ -219,7 +219,7 @@ define(["helper/Basic", "Tone/event/Sequence", "Tone/core/Tone",
 					}, [0, [1, 2], [3, 4, 5]], "8n").start(0);
 
 					seq.loop = false;
-					Tone.Transport.start();
+					Tone.Transport.start(0);
 
 					after(function(){
 						seq.dispose();
@@ -241,7 +241,7 @@ define(["helper/Basic", "Tone/event/Sequence", "Tone/core/Tone",
 					}, [0, null, [null, 1]], "8n").start(0);
 
 					seq.loop = false;
-					Tone.Transport.start();
+					Tone.Transport.start(0);
 					
 					after(function(){
 						seq.dispose();

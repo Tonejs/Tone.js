@@ -116,7 +116,7 @@ function (Test, Source, Transport, OfflineTest, Tone) {
 				var source = new Source();
 				source.sync().start(0);
 				expect(source.state).to.equal("stopped");
-				Tone.Transport.start();
+				Tone.Transport.start(Tone.now());
 				expect(source.state).to.equal("started");
 				source.dispose();
 				Tone.Transport.stop();
@@ -136,7 +136,7 @@ function (Test, Source, Transport, OfflineTest, Tone) {
 					var source = new Source();
 					source.sync().start(0);
 					expect(source.state).to.equal("stopped");
-					Tone.Transport.start().stop(0.4);
+					Tone.Transport.start(0).stop(0.4);
 					expect(source.state).to.equal("started");
 
 					testFn(function(sample, time){

@@ -54,7 +54,7 @@ define(["Test", "Tone/core/Clock", "helper/Offline2"], function (Test, Clock, Of
 				Offline(function(output, testFn, tearDown){
 					var clock = new Clock();
 					expect(clock.state).to.equal("stopped");
-					clock.start().stop(0.5);
+					clock.start(0).stop(0.5);
 					expect(clock.state).to.equal("started");
 
 					tearDown(function(){
@@ -69,7 +69,7 @@ define(["Test", "Tone/core/Clock", "helper/Offline2"], function (Test, Clock, Of
 				Offline(function(output, testFn, tearDown){
 					var clock = new Clock();
 					expect(clock.state).to.equal("stopped");
-					clock.start().pause(0.2).stop(0.4);
+					clock.start(0).pause(0.2).stop(0.4);
 					expect(clock.state).to.equal("started");
 
 					testFn(function(sample, time){
@@ -115,7 +115,7 @@ define(["Test", "Tone/core/Clock", "helper/Offline2"], function (Test, Clock, Of
 				Offline(function(output, testFn, tearDown){
 					var clock = new Clock();
 					expect(clock.state).to.equal("stopped");
-					clock.start().pause(0.2).stop(0.4).start(0.6).stop(0.8);
+					clock.start(0).pause(0.2).stop(0.4).start(0.6).stop(0.8);
 					expect(clock.state).to.equal("started");
 
 					testFn(function(sample, time){
