@@ -652,7 +652,7 @@ define(["helper/Basic", "Tone/event/Part", "Tone/core/Tone",
 				part.loop = true;
 				part.loopEnd = 0.5;
 				part.start(0, 1.05);
-				Tone.Transport.start();
+				Tone.Transport.start(Tone.now());
 			});
 
 			it("can start a loop with an offset before loop start", function(done){
@@ -677,7 +677,7 @@ define(["helper/Basic", "Tone/event/Part", "Tone/core/Tone",
 				part.loopStart = 0.25;
 				part.loopEnd = 0.5;
 				part.start(0, 0);
-				Tone.Transport.start();
+				Tone.Transport.start(Tone.now());
 			});
 
 		});
@@ -702,7 +702,7 @@ define(["helper/Basic", "Tone/event/Part", "Tone/core/Tone",
 							lastCall = time;
 						}
 					}).start(0);
-					Tone.Transport.start();
+					Tone.Transport.start(0);
 
 					after(function(){
 						part.dispose();	
@@ -729,7 +729,7 @@ define(["helper/Basic", "Tone/event/Part", "Tone/core/Tone",
 							lastCall = time;
 						}
 					}).start(0);
-					Tone.Transport.start();
+					Tone.Transport.start(0);
 
 					after(function(){
 						part.dispose();	
