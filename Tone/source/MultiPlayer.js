@@ -102,7 +102,14 @@ function (Tone) {
 	 * @private
 	 */
 	Tone.MultiPlayer.prototype._makeSource = function(bufferName){
-		var buffer = this.buffers.get(bufferName).get();
+		var buffer;
+		if (this.isString(bufferName) || this.isNumber(bufferName)){
+			buffer = this.buffers.get(bufferName).get();
+		} else if (bufferName instanceof Tone.Buffer){
+			buffer = bufferName.get();
+		} else if (bufferName instanceof AudioBuffer){
+			buffer = bufferName;
+		}
 		var source = new Tone.BufferSource(buffer).connect(this.output);
 		if (!this._activeSources.hasOwnProperty(bufferName)){
 			this._activeSources[bufferName] = [];
