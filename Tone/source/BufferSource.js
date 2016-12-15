@@ -25,6 +25,13 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/G
 		this._startTime = -1;
 
 		/**
+		 *  The time that the buffer is scheduled to stop.
+		 *  @type  {Number}
+		 *  @private
+		 */
+		this._stopTime = -1;
+
+		/**
 		 *  The gain node which envelopes the BufferSource
 		 *  @type  {Tone.Gain}
 		 *  @private
@@ -38,7 +45,6 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/G
 		 */
 		this._source = this.context.createBufferSource();
 		this._source.connect(this._gainNode);
-		this._source.onended = this._onended.bind(this);
 	
 		/**
 		 *  The playbackRate of the buffer
@@ -65,6 +71,13 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/G
 		 *  @private
 		 */
 		this._gain = 1;
+
+		/**
+		 * The onended timeout
+		 * @type {Number}
+		 * @private
+		 */
+		this._onendedTimeout = -1;
 
 		//set the buffer initially
 		if (!this.isUndef(options.buffer)){
@@ -97,7 +110,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/G
 	Object.defineProperty(Tone.BufferSource.prototype, "state", {
 		get : function(){
 			var now = this.now();
-			if (this._startTime !== -1 && now > this._startTime){
+			if (this._startTime !== -1 && now >= this._startTime && now < this._stopTime){
 				return Tone.State.Started;
 			} else {
 				return Tone.State.Stopped;
@@ -185,6 +198,8 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/G
 				fadeOutTime = this.toSeconds(fadeOutTime);
 			}
 
+			this._stopTime = time + fadeOutTime;
+
 			//cancel the end curve
 			this._gainNode.gain.cancelScheduledValues(this._startTime + this.sampleTime);
 
@@ -200,6 +215,9 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/G
 			if (!this.isNumber(this._source.playbackState) || this._source.playbackState === 2){
 				this._source.stop(time);
 			}
+
+			clearTimeout(this._onendedTimeout);
+			this._onendedTimeout = setTimeout(this._onended.bind(this), (this._stopTime - this.now()) * 1000);
 		}
 
 		return this;
@@ -290,7 +308,6 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/G
 	Tone.BufferSource.prototype.dispose = function(){
 		this.onended = null;
 		if (this._source){
-			this._source.onended = null;
 			this._source.disconnect();
 			this._source = null;
 		}
@@ -301,6 +318,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/G
 		this._startTime = -1;
 		this.playbackRate = null;
 		this.output = null;
+		clearTimeout(this._onendedTimeout);
 		return this;
 	};
 
