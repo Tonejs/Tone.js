@@ -88,7 +88,12 @@ function(Tone){
 		"upZ" : 0
 	};
 
-	Tone.Listener.prototype._rampTimeConstant = 0.3;
+	/**
+	 * The ramp time which is applied to the setTargetAtTime
+	 * @type {Number}
+	 * @private
+	 */
+	Tone.Listener.prototype._rampTimeConstant = 0.01;
 
 	/**
 	 *  Sets the position of the listener in 3d space.	

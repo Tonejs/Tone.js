@@ -83,7 +83,12 @@ function(Tone){
 		"rolloffFactor" : 1
 	};
 
-	Tone.Panner3D.prototype._rampTimeConstant = 0.3;
+	/**
+	 * The ramp time which is applied to the setTargetAtTime
+	 * @type {Number}
+	 * @private
+	 */
+	Tone.Panner3D.prototype._rampTimeConstant = 0.01;
 
 	/**
 	 *  Sets the position of the source in 3d space.	
