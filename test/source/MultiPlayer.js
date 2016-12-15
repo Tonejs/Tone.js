@@ -1,6 +1,6 @@
 define(["helper/Basic", "Tone/source/MultiPlayer", "helper/Offline", "helper/SourceTests", 
-	"Tone/core/Buffer", "helper/Meter", "helper/OutputAudioStereo"], 
-	function (BasicTests, MultiPlayer, Offline, SourceTests, Buffer, Meter, OutputAudioStereo) {
+	"Tone/core/Buffer", "helper/Meter", "helper/OutputAudioStereo", "helper/Meter2"], 
+	function (BasicTests, MultiPlayer, Offline, SourceTests, Buffer, Meter, OutputAudioStereo, Meter2) {
 
 	if (window.__karma__){
 		Buffer.baseUrl = "/base/test/";
@@ -165,6 +165,29 @@ define(["helper/Basic", "Tone/source/MultiPlayer", "helper/Offline", "helper/Sou
 				});
 				meter.run();
 			});
+
+			it("can start and stop a loop", function(done){
+				var meter = new Meter2(function(dest, test, after){
+					var player = new MultiPlayer().add("buffer", buffer);
+					player.connect(dest);
+					var stopTime = buffer.duration * 1.1;
+					player.startLoop("buffer", 0).stop("buffer", stopTime);
+
+					test(function(value, time){
+						if (time > 0 && time < stopTime){
+							expect(value).to.be.at.least(0.1);
+						} else if (time > stopTime + 0.01){
+							expect(value).to.equal(0);
+						}
+					});
+
+					after(function(){
+						player.dispose();
+						done();
+					});
+				}, buffer.duration * 1.5);
+			});
+
 
 		});
 
