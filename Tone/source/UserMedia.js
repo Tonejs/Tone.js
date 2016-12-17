@@ -136,7 +136,7 @@ define(["Tone/core/Tone", "Tone/component/Volume"], function(Tone){
 	 */
 	Tone.UserMedia.prototype.close = function(){
 		if(this._stream){
-			var track = this._stream.getAudioTracks().forEach(function(track){
+			this._stream.getAudioTracks().forEach(function(track){
 				track.stop();
 			});
 			this._stream = null;
