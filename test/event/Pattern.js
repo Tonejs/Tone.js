@@ -145,16 +145,6 @@ define(["helper/Basic", "Tone/event/Pattern", "Tone/core/Tone", "Tone/core/Trans
 
 				}, 0.7);
 			});
-
-			it ("invokes the deferred callback", function(done){
-				var pattern = new Pattern(function(){
-					return function(){
-						pattern.dispose();
-						done();
-					}
-				}, [0]).start(0);
-				Tone.Transport.start();
-			});
 		});
 
 	});

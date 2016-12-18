@@ -731,47 +731,5 @@ function (Test, Transport, Tone, Offline, TransportTime) {
 			});
 		});
 
-		context("Deferred drawing callback", function(){
-
-			afterEach(resetTransport);
-
-			it ("invokes deferred callback from a schedule event", function(done){
-				Tone.Transport.schedule(function(time){
-					return function(){
-						done()
-					}	
-				}, 0);
-				Tone.Transport.start();
-			});
-
-			it ("invokes deferred callback at the scheduled time", function(done){
-				Tone.Transport.schedule(function(time){
-					return function(){
-						expect(Tone.now() - time).to.lessThan(0.1);
-						done()
-					}	
-				}, 0);
-				Tone.Transport.start();
-			});
-
-			it ("invokes deferred callback from a scheduleRepeat event", function(done){
-				Tone.Transport.scheduleRepeat(function(time){
-					return function(){
-						done()
-					}
-				}, 0.1);
-				Tone.Transport.start();
-			});
-
-			it ("invokes deferred callback from a scheduleOnce event", function(done){
-				Tone.Transport.scheduleOnce(function(time){
-					return function(){
-						done()
-					}
-				}, 0.1);
-				Tone.Transport.start();
-			});
-		});
-
 	});
 });

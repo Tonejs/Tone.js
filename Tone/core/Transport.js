@@ -168,26 +168,6 @@ function(Tone){
 		 */
 		this._swingAmount = 0;
 
-		///////////////////////////////////////////////////////////////////////
-		//	ANIMATION FRAME
-		//////////////////////////////////////////////////////////////////////
-
-		/**
-		 * The id of the animation frame for cancelling the event
-		 * @type {Number}
-		 * @private
-		 */
-		this._rafId = -1;
-
-		/**
-		 * The priority queue of drawing events
-		 * @type {Tone.Timeline}
-		 * @private
-		 */
-		this._drawCallbacks = new Tone.Timeline();
-
-		// start the animation loop
-		requestAnimationFrame(this._drawLoop.bind(this));
 	};
 
 	Tone.extend(Tone.Transport, Tone.Emitter);
@@ -240,7 +220,7 @@ function(Tone){
 		}
 		//process the single occurrence events
 		this._onceEvents.forEachBefore(ticks, function(event){
-			this._pushDrawCallback(event.callback(tickTime), tickTime);
+			event.callback(tickTime);
 			//remove the event
 			delete this._scheduledEvents[event.id.toString()];
 		}.bind(this));
@@ -248,41 +228,14 @@ function(Tone){
 		this._onceEvents.cancelBefore(ticks);
 		//fire the next tick events if their time has come
 		this._timeline.forEachAtTime(ticks, function(event){
-			this._pushDrawCallback(event.callback(tickTime), tickTime);
-		}.bind(this));
+			event.callback(tickTime);
+		});
 		//process the repeated events
 		this._repeatedEvents.forEachAtTime(ticks, function(event){
 			if ((ticks - event.time) % event.interval === 0){
-				this._pushDrawCallback(event.callback(tickTime), tickTime);
+				event.callback(tickTime);
 			}
-		}.bind(this));
-	};
-
-	/**
-	 * Push a draw callback method onto the queue
-	 * @private
-	 * @param  {Function} callback
-	 * @param  {Number}   time 
-	 */
-	Tone.Transport.prototype._pushDrawCallback = function(callback, time){
-		if (callback){
-			this._drawCallbacks.addEvent({time : time, callback : callback});
-		}
-	};
-
-	/**
-	 * Process draw callbacks every animation frame
-	 * @private
-	 */
-	Tone.Transport.prototype._drawLoop = function(){
-		this._rafId = requestAnimationFrame(this._drawLoop.bind(this));
-		while(this._drawCallbacks.length && this._drawCallbacks.peek().time <= Tone.now()){
-			var drawEvent = this._drawCallbacks.shift();
-			//if the event hasn't 'expired'
-			if (Tone.now() - drawEvent.time < 0.25){
-				drawEvent.callback();
-			}
-		}
+		});
 	};
 
 	///////////////////////////////////////////////////////////////////////////////
@@ -844,9 +797,6 @@ function(Tone){
 		this._onceEvents = null;
 		this._repeatedEvents.dispose();
 		this._repeatedEvents = null;
-		this._drawCallbacks.dispose();
-		this._drawCallbacks = null;
-		cancelAnimationFrame(this._rafId);
 		return this;
 	};
 

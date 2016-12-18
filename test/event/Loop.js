@@ -157,16 +157,6 @@ define(["helper/Basic", "Tone/event/Loop", "Tone/core/Tone",
 					});
 				}, 0.4);
 			});
-
-			it ("invokes the deferred callback", function(done){
-				var loop = new Loop(function(){
-					return function(){
-						loop.dispose();
-						done();
-					}
-				}).start(0);
-				Tone.Transport.start();
-			});
 		});
 
 		context("Scheduling", function(){
