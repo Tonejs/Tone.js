@@ -241,6 +241,8 @@ function(Tone){
 		//process the single occurrence events
 		this._onceEvents.forEachBefore(ticks, function(event){
 			this._pushDrawCallback(event.callback(tickTime), tickTime);
+			//remove the event
+			delete this._scheduledEvents[event.id.toString()];
 		}.bind(this));
 		//and clear the single occurrence timeline
 		this._onceEvents.cancelBefore(ticks);
@@ -356,11 +358,12 @@ function(Tone){
 	 *  @returns {Number} The ID of the scheduled event. 
 	 */
 	Tone.Transport.prototype.scheduleOnce = function(callback, time){
+		var id = this._eventID++;
 		var event = {
 			"time" : this.toTicks(time),
-			"callback" : callback
+			"callback" : callback,
+			"id" : id
 		};
-		var id = this._eventID++;
 		this._scheduledEvents[id.toString()] = {
 			"event" : event,
 			"timeline" : this._onceEvents
