@@ -244,7 +244,7 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal", "Tone/core/TimelineState
 	 *  @type  {Number}
 	 *  @private
 	 */
-	var UPDATE_RATE = 16;
+	var UPDATE_RATE = 25;
 
 	/**
 	 *  The script which runs in a web worker
@@ -315,9 +315,11 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal", "Tone/core/TimelineState
 	});
 
 	/**
-	 *  The time which the clock will schedule events in advance
-	 *  of the current time. This value is be automatically 
-	 *  computed based on the rate of the update (~0.02 seconds).
+	 *  The amount of time in advance that events are scheduled.
+	 *  The update interval is twice the rate of
+	 *  the lookAhead time. The lookAhead will adjust
+	 *  slightly in response to the measured update time to try 
+	 *  to avoid clicks.
 	 *  @type {Number}
 	 *  @memberOf Tone.Clock
 	 *  @name lookAhead
