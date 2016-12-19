@@ -322,7 +322,7 @@ define(["Test", "Tone/core/Clock", "helper/Offline2"], function (Test, Clock, Of
 				var clock = new Clock(function(){}, 20);
 				var startTime = clock.now() + 0.3;
 				clock.on("start", function(time, offset){
-					expect(time).to.be.closeTo(startTime, 0.01);
+					expect(time).to.be.closeTo(startTime, 0.05);
 					expect(clock.now()).to.be.closeTo(startTime, 0.1);
 					expect(offset).to.equal(0);
 					clock.dispose();
@@ -335,7 +335,7 @@ define(["Test", "Tone/core/Clock", "helper/Offline2"], function (Test, Clock, Of
 				var clock = new Clock(function(){}, 20);
 				var startTime = clock.now() + 0.3;
 				clock.on("start", function(time, offset){
-					expect(time).to.be.closeTo(startTime, 0.01);
+					expect(time).to.be.closeTo(startTime, 0.05);
 					expect(clock.now()).to.be.closeTo(startTime, 0.1);
 					expect(offset).to.equal(2);
 					clock.dispose();
@@ -348,7 +348,7 @@ define(["Test", "Tone/core/Clock", "helper/Offline2"], function (Test, Clock, Of
 				var clock = new Clock(function(){}, 20);
 				var stopTime = clock.now() + 0.3;
 				clock.on("stop", function(time){
-					expect(time).to.be.closeTo(stopTime, 0.01);
+					expect(time).to.be.closeTo(stopTime, 0.05);
 					expect(clock.now()).to.be.closeTo(stopTime, 0.1);
 					clock.dispose();
 					done();
@@ -360,9 +360,9 @@ define(["Test", "Tone/core/Clock", "helper/Offline2"], function (Test, Clock, Of
 				var clock = new Clock(function(){}, 20);
 				var now = clock.now();
 				clock.on("pause", function(time){
-					expect(time).to.be.closeTo(now + 0.1, 0.01);
+					expect(time).to.be.closeTo(now + 0.1, 0.05);
 				}).on("stop", function(time){
-					expect(time).to.be.closeTo(now + 0.2, 0.01);
+					expect(time).to.be.closeTo(now + 0.2, 0.05);
 					clock.dispose();
 					done();
 				});
