@@ -207,9 +207,9 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal", "Tone/core/TimelineState
 	 *  @return  {String}  The name of the state input in setStateAtTime.
 	 *  @example
 	 * clock.start("+0.1");
-	 * clock.getValueAtTime("+0.1"); //returns "started"
+	 * clock.getStateAtTime("+0.1"); //returns "started"
 	 */
-	Tone.Clock.prototype.getValueAtTime = function(time){
+	Tone.Clock.prototype.getStateAtTime = function(time){
 		time = this.toSeconds(time);
 		return this._state.getValueAtTime(time);
 	};

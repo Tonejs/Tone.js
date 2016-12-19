@@ -387,7 +387,7 @@ function(Tone){
 	 */
 	Object.defineProperty(Tone.Transport.prototype, "state", {
 		get : function(){
-			return this._clock.getValueAtTime(this.now());
+			return this._clock.getStateAtTime(this.now());
 		}
 	});
 
