@@ -25,7 +25,7 @@
 	<div id="Content">
 		<div id="Title">Grains</div>
 		<div id="Explanation">
-			Click on the button to play short looped section of the audio file
+			Click on the button to play the audio file on loop
 			using <a href="https://tonejs.github.io/docs/#Player">Tone.Player</a>. 
 		</div>
 	</div>
@@ -34,20 +34,18 @@
 		//the player
 		var player = new Tone.Player({
 			"url" : "./audio/FWDL.mp3",
-			"loop" : true,
-			"loopStart" : 0.101,
-			"loopEnd" : 0.211,
+			"loop" : true
 		}).toMaster();
 	</script>
 	
 	<script id="GUI" type="text/javascript">
 		$(function(){
 
-			new Interface.Loader();
+			Interface.Loader();
 
-			new Interface.Button({
-				text : "Start Grain",
-				activeText : "Stop Grain",
+			Interface.Button({
+				text : "Start",
+				activeText : "Stop",
 				start : function(){
 					player.start();
 				},
