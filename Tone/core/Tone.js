@@ -339,6 +339,48 @@ define(function(){
 	 *  @const
 	 */
 	Tone.prototype.sampleTime = 1 / Tone.context.sampleRate;
+
+	/**
+	 *  The number of inputs feeding into the AudioNode. 
+	 *  For source nodes, this will be 0.
+	 *  @memberOf Tone#
+	 *  @name numberOfInputs
+	 *  @readOnly
+	 */
+	Object.defineProperty(Tone.prototype, "numberOfInputs", {
+		get : function(){
+			if (this.input){
+				if (this.isArray(this.input)){
+					return this.input.length;
+				} else {
+					return 1;
+				}
+			} else {
+				return 0;
+			}
+		}
+	});
+
+	/**
+	 *  The number of outputs coming out of the AudioNode. 
+	 *  For source nodes, this will be 0.
+	 *  @memberOf Tone#
+	 *  @name numberOfInputs
+	 *  @readOnly
+	 */
+	Object.defineProperty(Tone.prototype, "numberOfOutputs", {
+		get : function(){
+			if (this.output){
+				if (this.isArray(this.output)){
+					return this.output.length;
+				} else {
+					return 1;
+				}
+			} else {
+				return 0;
+			}
+		}
+	});
 	
 	///////////////////////////////////////////////////////////////////////////
 	//	CONNECTIONS
