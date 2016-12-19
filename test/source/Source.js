@@ -80,12 +80,12 @@ function (Test, Source, Transport, OfflineTest, Tone) {
 		it("can be scheduled with multiple starts/stops", function(){
 			var source = new Source();
 			source.start(0).stop(0.5).start(0.75).stop(1).start(1.25).stop(1.5);
-			expect(source._state.getStateAtTime(0)).to.equal("started");
-			expect(source._state.getStateAtTime(0.5)).to.equal("stopped");
-			expect(source._state.getStateAtTime(0.8)).to.equal("started");
-			expect(source._state.getStateAtTime(1)).to.equal("stopped");
-			expect(source._state.getStateAtTime(1.25)).to.equal("started");
-			expect(source._state.getStateAtTime(1.6)).to.equal("stopped");
+			expect(source._state.getValueAtTime(0)).to.equal("started");
+			expect(source._state.getValueAtTime(0.5)).to.equal("stopped");
+			expect(source._state.getValueAtTime(0.8)).to.equal("started");
+			expect(source._state.getValueAtTime(1)).to.equal("stopped");
+			expect(source._state.getValueAtTime(1.25)).to.equal("started");
+			expect(source._state.getValueAtTime(1.6)).to.equal("stopped");
 			source.dispose();
 		});
 

@@ -145,7 +145,7 @@ define(["Tone/core/Tone", "Tone/event/Event", "Tone/type/Type", "Tone/core/Trans
 	 */
 	Tone.Part.prototype.start = function(time, offset){
 		var ticks = this.toTicks(time);
-		if (this._state.getStateAtTime(ticks) !== Tone.State.Started){
+		if (this._state.getValueAtTime(ticks) !== Tone.State.Started){
 			if (this._loop){
 				offset = this.defaultArg(offset, this._loopStart);
 			} else {

@@ -102,12 +102,12 @@ function(Tone){
 		get : function(){
 			if (this._synced){
 				if (Tone.Transport.state === Tone.State.Started){
-					return this._state.getStateAtTime(Tone.Transport.seconds);
+					return this._state.getValueAtTime(Tone.Transport.seconds);
 				} else {
 					return Tone.State.Stopped;
 				}
 			} else {
-				return this._state.getStateAtTime(this.now());
+				return this._state.getValueAtTime(this.now());
 			}
 		}
 	});
@@ -149,7 +149,7 @@ function(Tone){
 			time = this.toSeconds(time);
 		}	
 		//if it's started, stop it and restart it
-		if (!this.retrigger && this._state.getStateAtTime(time) === Tone.State.Started){
+		if (!this.retrigger && this._state.getValueAtTime(time) === Tone.State.Started){
 			this.stop(time);
 		}
 		this._state.setStateAtTime(Tone.State.Started, time);
@@ -231,7 +231,7 @@ function(Tone){
 			}
 		}.bind(this));
 		Tone.Transport.on("stop pause loopEnd", function(time){
-			if (this._state.getStateAtTime(Tone.Transport.seconds) === Tone.State.Started){
+			if (this._state.getValueAtTime(Tone.Transport.seconds) === Tone.State.Started){
 				this._stop(time);
 			}
 		}.bind(this));

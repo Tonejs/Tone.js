@@ -249,7 +249,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 	 */
 	Tone.Player.prototype.seek = function(offset, time){
 		time = this.toSeconds(time);
-		if (this._state.getStateAtTime(time) === Tone.State.Started){
+		if (this._state.getValueAtTime(time) === Tone.State.Started){
 			offset = this.toSeconds(offset);
 			// if it's currently playing, stop it
 			this._stop(time);

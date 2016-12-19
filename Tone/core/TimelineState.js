@@ -4,7 +4,7 @@ define(["Tone/core/Tone", "Tone/core/Timeline", "Tone/type/Type"], function (Ton
 
 	/**
 	 *  @class  A Timeline State. Provides the methods: <code>setStateAtTime("state", time)</code>
-	 *          and <code>getStateAtTime(time)</code>.
+	 *          and <code>getValueAtTime(time)</code>.
 	 *
 	 *  @extends {Tone.Timeline}
 	 *  @param {String} initial The initial state of the TimelineState. 
@@ -30,7 +30,7 @@ define(["Tone/core/Tone", "Tone/core/Timeline", "Tone/type/Type"], function (Ton
 	 *  @param  {Number}  time  The time to query.
 	 *  @return  {String}  The name of the state input in setStateAtTime.
 	 */
-	Tone.TimelineState.prototype.getStateAtTime = function(time){
+	Tone.TimelineState.prototype.getValueAtTime = function(time){
 		var event = this.get(time);
 		if (event !== null){
 			return event.state;

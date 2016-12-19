@@ -182,7 +182,7 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/type/Type", "Tone/core/Ti
 	 */
 	Object.defineProperty(Tone.Event.prototype, "state", {
 		get : function(){
-			return this._state.getStateAtTime(Tone.Transport.ticks);
+			return this._state.getValueAtTime(Tone.Transport.ticks);
 		}
 	});
 
@@ -209,7 +209,7 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/type/Type", "Tone/core/Ti
 	 */
 	Tone.Event.prototype.start = function(time){
 		time = this.toTicks(time);
-		if (this._state.getStateAtTime(time) === Tone.State.Stopped){
+		if (this._state.getValueAtTime(time) === Tone.State.Stopped){
 			this._state.add({
 				"state" : Tone.State.Started,
 				"time" : time,
@@ -228,7 +228,7 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/type/Type", "Tone/core/Ti
 	Tone.Event.prototype.stop = function(time){
 		this.cancel(time);
 		time = this.toTicks(time);
-		if (this._state.getStateAtTime(time) === Tone.State.Started){
+		if (this._state.getValueAtTime(time) === Tone.State.Started){
 			this._state.setStateAtTime(Tone.State.Stopped, time);
 			var previousEvent = this._state.getBefore(time);
 			var reschedulTime = time;
@@ -262,7 +262,7 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/type/Type", "Tone/core/Ti
 	 *  @private
 	 */
 	Tone.Event.prototype._tick = function(time){
-		if (!this.mute && this._state.getStateAtTime(Tone.Transport.ticks) === Tone.State.Started){
+		if (!this.mute && this._state.getValueAtTime(Tone.Transport.ticks) === Tone.State.Started){
 			if (this.probability < 1 && Math.random() > this.probability){
 				return;
 			} 

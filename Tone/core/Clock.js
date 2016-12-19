@@ -103,7 +103,7 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal", "Tone/core/TimelineState
 	 */
 	Object.defineProperty(Tone.Clock.prototype, "state", {
 		get : function(){
-			return this._state.getStateAtTime(this.now());
+			return this._state.getValueAtTime(this.now());
 		}
 	});
 
@@ -120,7 +120,7 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal", "Tone/core/TimelineState
 		} else {
 			time = this.toSeconds(time);
 		}
-		if (this._state.getStateAtTime(time) !== Tone.State.Started){
+		if (this._state.getValueAtTime(time) !== Tone.State.Started){
 			this._state.add({
 				"state" : Tone.State.Started, 
 				"time" : time,
@@ -152,7 +152,7 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal", "Tone/core/TimelineState
 	 */
 	Tone.Clock.prototype.pause = function(time){
 		time = this.toSeconds(time);
-		if (this._state.getStateAtTime(time) === Tone.State.Started){
+		if (this._state.getValueAtTime(time) === Tone.State.Started){
 			this._state.setStateAtTime(Tone.State.Paused, time);
 		}
 		return this;	
@@ -170,7 +170,7 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal", "Tone/core/TimelineState
 		//if it's started
 		var lookAhead = Tone.Clock.lookAhead;
 		while ((now + lookAhead) > this._nextTick && this._state){
-			var currentState = this._state.getStateAtTime(this._nextTick);
+			var currentState = this._state.getValueAtTime(this._nextTick);
 			if (currentState !== this._lastState){
 				this._lastState = currentState;
 				var event = this._state.get(this._nextTick);
@@ -207,11 +207,11 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal", "Tone/core/TimelineState
 	 *  @return  {String}  The name of the state input in setStateAtTime.
 	 *  @example
 	 * clock.start("+0.1");
-	 * clock.getStateAtTime("+0.1"); //returns "started"
+	 * clock.getValueAtTime("+0.1"); //returns "started"
 	 */
-	Tone.Clock.prototype.getStateAtTime = function(time){
+	Tone.Clock.prototype.getValueAtTime = function(time){
 		time = this.toSeconds(time);
-		return this._state.getStateAtTime(time);
+		return this._state.getValueAtTime(time);
 	};
 
 	/**
