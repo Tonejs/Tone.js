@@ -121,7 +121,7 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal", "Tone/core/TimelineState
 			time = this.toSeconds(time);
 		}
 		if (this._state.getStateAtTime(time) !== Tone.State.Started){
-			this._state.addEvent({
+			this._state.add({
 				"state" : Tone.State.Started, 
 				"time" : time,
 				"offset" : offset
@@ -173,7 +173,7 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal", "Tone/core/TimelineState
 			var currentState = this._state.getStateAtTime(this._nextTick);
 			if (currentState !== this._lastState){
 				this._lastState = currentState;
-				var event = this._state.getEvent(this._nextTick);
+				var event = this._state.get(this._nextTick);
 				// emit an event
 				if (currentState === Tone.State.Started){
 					//correct the time

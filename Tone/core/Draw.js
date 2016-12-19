@@ -64,7 +64,7 @@ define(["Tone/core/Tone", "Tone/core/Timeline"], function (Tone) {
 	 *  @return  {Tone.Draw}    this
 	 */
 	Tone.Draw.prototype.schedule = function(callback, time){
-		this._events.addEvent({
+		this._events.add({
 			callback : callback,
 			time : this.toSeconds(time)
 		});

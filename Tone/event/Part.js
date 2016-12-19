@@ -152,7 +152,7 @@ define(["Tone/core/Tone", "Tone/event/Event", "Tone/type/Type", "Tone/core/Trans
 				offset = this.defaultArg(offset, 0);
 			}
 			offset = this.toTicks(offset);
-			this._state.addEvent({
+			this._state.add({
 				"state" : Tone.State.Started, 
 				"time" : ticks, 
 				"offset" : offset

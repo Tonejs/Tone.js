@@ -154,7 +154,7 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/type/Type", "Tone/core/Ti
 					if (this.isNumber(this._loop)){
 						duration =  (this._loop) * this._getLoopDuration();
 					}
-					var nextEvent = this._state.getEventAfter(startTick);
+					var nextEvent = this._state.getAfter(startTick);
 					if (nextEvent !== null){
 						duration = Math.min(duration, nextEvent.time - startTick);
 					}
@@ -210,7 +210,7 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/type/Type", "Tone/core/Ti
 	Tone.Event.prototype.start = function(time){
 		time = this.toTicks(time);
 		if (this._state.getStateAtTime(time) === Tone.State.Stopped){
-			this._state.addEvent({
+			this._state.add({
 				"state" : Tone.State.Started,
 				"time" : time,
 				"id" : undefined,
@@ -230,7 +230,7 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/type/Type", "Tone/core/Ti
 		time = this.toTicks(time);
 		if (this._state.getStateAtTime(time) === Tone.State.Started){
 			this._state.setStateAtTime(Tone.State.Stopped, time);
-			var previousEvent = this._state.getEventBefore(time);
+			var previousEvent = this._state.getBefore(time);
 			var reschedulTime = time;
 			if (previousEvent !== null){
 				reschedulTime = previousEvent.time;
@@ -376,7 +376,7 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/type/Type", "Tone/core/Ti
 		get : function(){
 			if (this._loop){
 				var ticks = Tone.Transport.ticks;
-				var lastEvent = this._state.getEvent(ticks);
+				var lastEvent = this._state.get(ticks);
 				if (lastEvent !== null && lastEvent.state === Tone.State.Started){
 					var loopDuration = this._getLoopDuration();
 					var progress = (ticks - lastEvent.time) % loopDuration;

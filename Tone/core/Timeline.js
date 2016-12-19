@@ -73,7 +73,7 @@ define(["Tone/core/Tone", "Tone/type/Type"], function (Tone) {
 	 *                           timeline. 
 	 *  @returns {Tone.Timeline} this
 	 */
-	Tone.Timeline.prototype.addEvent = function(event){
+	Tone.Timeline.prototype.add = function(event){
 		//the event needs to have a time attribute
 		if (this.isUndef(event.time)){
 			throw new Error("Tone.Timeline: events must have a time attribute");
@@ -97,7 +97,7 @@ define(["Tone/core/Tone", "Tone/type/Type"], function (Tone) {
 	 *  @param  {Object}  event  The event object to remove from the list.
 	 *  @returns {Tone.Timeline} this
 	 */
-	Tone.Timeline.prototype.removeEvent = function(event){
+	Tone.Timeline.prototype.remove = function(event){
 		if (this._iterating){
 			this._toRemove.push(event);
 		} else {
@@ -114,7 +114,7 @@ define(["Tone/core/Tone", "Tone/type/Type"], function (Tone) {
 	 *  @param  {Number}  time  The time to query.
 	 *  @returns {Object} The event object set after that time.
 	 */
-	Tone.Timeline.prototype.getEvent = function(time){
+	Tone.Timeline.prototype.get = function(time){
 		var index = this._search(time);
 		if (index !== -1){
 			return this._timeline[index];
@@ -144,7 +144,7 @@ define(["Tone/core/Tone", "Tone/type/Type"], function (Tone) {
 	 *  @param  {Number}  time  The time to query.
 	 *  @returns {Object} The event object after the given time
 	 */
-	Tone.Timeline.prototype.getEventAfter = function(time){
+	Tone.Timeline.prototype.getAfter = function(time){
 		var index = this._search(time);
 		if (index + 1 < this._timeline.length){
 			return this._timeline[index + 1];
@@ -158,7 +158,7 @@ define(["Tone/core/Tone", "Tone/type/Type"], function (Tone) {
 	 *  @param  {Number}  time  The time to query.
 	 *  @returns {Object} The event object before the given time
 	 */
-	Tone.Timeline.prototype.getEventBefore = function(time){
+	Tone.Timeline.prototype.getBefore = function(time){
 		var len = this._timeline.length;
 		//if it's after the last item, return the last item
 		if (len > 0 && this._timeline[len - 1].time < time){

@@ -263,7 +263,7 @@ function(Tone){
 			"event" : event,
 			"timeline" : this._timeline
 		};
-		this._timeline.addEvent(event);
+		this._timeline.add(event);
 		return id;
 	};
 
@@ -298,7 +298,7 @@ function(Tone){
 			"event" : event,
 			"timeline" : this._repeatedEvents
 		};
-		this._repeatedEvents.addEvent(event);
+		this._repeatedEvents.add(event);
 		return id;
 	};
 
@@ -321,7 +321,7 @@ function(Tone){
 			"event" : event,
 			"timeline" : this._onceEvents
 		};
-		this._onceEvents.addEvent(event);
+		this._onceEvents.add(event);
 		return id;
 	};
 
@@ -333,7 +333,7 @@ function(Tone){
 	Tone.Transport.prototype.clear = function(eventId){
 		if (this._scheduledEvents.hasOwnProperty(eventId)){
 			var item = this._scheduledEvents[eventId.toString()];
-			item.timeline.removeEvent(item.event);
+			item.timeline.remove(item.event);
 			delete this._scheduledEvents[eventId.toString()];
 		}
 		return this;

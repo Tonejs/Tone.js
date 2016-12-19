@@ -84,7 +84,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Timeline"], function 
 	Tone.TimelineSignal.prototype.setValueAtTime = function (value, startTime) {
 		value = this._fromUnits(value);
 		startTime = this.toSeconds(startTime);
-		this._events.addEvent({
+		this._events.add({
 			"type" : Tone.TimelineSignal.Type.Set,
 			"value" : value,
 			"time" : startTime
@@ -105,7 +105,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Timeline"], function 
 	Tone.TimelineSignal.prototype.linearRampToValueAtTime = function (value, endTime) {
 		value = this._fromUnits(value);
 		endTime = this.toSeconds(endTime);
-		this._events.addEvent({
+		this._events.add({
 			"type" : Tone.TimelineSignal.Type.Linear,
 			"value" : value,
 			"time" : endTime
@@ -132,7 +132,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Timeline"], function 
 		}
 		value = this._fromUnits(value);
 		var setValue = Math.max(value, this._minOutput);
-		this._events.addEvent({
+		this._events.add({
 			"type" : Tone.TimelineSignal.Type.Exponential,
 			"value" : setValue,
 			"time" : endTime
@@ -160,7 +160,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Timeline"], function 
 		value = Math.max(this._minOutput, value);
 		timeConstant = Math.max(this._minOutput, timeConstant);
 		startTime = this.toSeconds(startTime);
-		this._events.addEvent({
+		this._events.add({
 			"type" : Tone.TimelineSignal.Type.Target,
 			"value" : value,
 			"time" : startTime,
@@ -187,7 +187,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Timeline"], function 
 		}
 		startTime = this.toSeconds(startTime);
 		duration = this.toSeconds(duration);
-		this._events.addEvent({
+		this._events.add({
 			"type" : Tone.TimelineSignal.Type.Curve,
 			"value" : floats,
 			"time" : startTime,
@@ -300,7 +300,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Timeline"], function 
 	 *  @private
 	 */
 	Tone.TimelineSignal.prototype._searchBefore = function(time){
-		return this._events.getEvent(time);
+		return this._events.get(time);
 	};
 
 	/**
@@ -310,7 +310,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Timeline"], function 
 	 *  @private
 	 */
 	Tone.TimelineSignal.prototype._searchAfter = function(time){
-		return this._events.getEventAfter(time);
+		return this._events.getAfter(time);
 	};
 
 	/**
@@ -328,7 +328,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Timeline"], function 
 		if (before === null){
 			value = this._initial;
 		} else if (before.type === Tone.TimelineSignal.Type.Target){
-			var previous = this._events.getEventBefore(before.time);
+			var previous = this._events.getBefore(before.time);
 			var previouVal;
 			if (previous === null){
 				previouVal = this._initial;

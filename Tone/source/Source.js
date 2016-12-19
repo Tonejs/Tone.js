@@ -155,7 +155,7 @@ function(Tone){
 		this._state.setStateAtTime(Tone.State.Started, time);
 		if (this._synced){
 			// add the offset time to the event
-			var event = this._state.getEvent(time);
+			var event = this._state.get(time);
 			event.offset = this.defaultArg(offset, 0);
 			event.duration = duration;
 			var sched = Tone.Transport.schedule(function(t){
@@ -217,7 +217,7 @@ function(Tone){
 		Tone.Transport.on("start loopStart", function(time, offset){
 			if (offset > 0){
 				// get the playback state at that time
-				var stateEvent = this._state.getEvent(offset);
+				var stateEvent = this._state.get(offset);
 				// listen for start events which may occur in the middle of the sync'ed time
 				if (stateEvent && stateEvent.state === Tone.State.Started && stateEvent.time !== offset){
 					// get the offset

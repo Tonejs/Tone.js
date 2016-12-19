@@ -31,7 +31,7 @@ define(["Tone/core/Tone", "Tone/core/Timeline", "Tone/type/Type"], function (Ton
 	 *  @return  {String}  The name of the state input in setStateAtTime.
 	 */
 	Tone.TimelineState.prototype.getStateAtTime = function(time){
-		var event = this.getEvent(time);
+		var event = this.get(time);
 		if (event !== null){
 			return event.state;
 		} else {
@@ -46,7 +46,7 @@ define(["Tone/core/Tone", "Tone/core/Timeline", "Tone/type/Type"], function (Ton
 	 *  @param  {Number}  time  The time to query.
 	 */
 	Tone.TimelineState.prototype.setStateAtTime = function(state, time){
-		this.addEvent({
+		this.add({
 			"state" : state,
 			"time" : time
 		});
