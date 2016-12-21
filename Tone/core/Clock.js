@@ -169,7 +169,8 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal", "Tone/core/TimelineState
 		var now = this.now();
 		//if it's started
 		var lookAhead = Tone.Clock.lookAhead;
-		while ((now + lookAhead) > this._nextTick && this._state){
+		var updateInterval = Tone.Clock.updateInterval;
+		while ((now + lookAhead + updateInterval) > this._nextTick && this._state){
 			var currentState = this._state.getValueAtTime(this._nextTick);
 			if (currentState !== this._lastState){
 				this._lastState = currentState;
@@ -239,12 +240,11 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal", "Tone/core/TimelineState
 	window.URL = window.URL || window.webkitURL;
 
 	/**
-	 *  The initial update rate in Milliseconds
-	 *  @const
-	 *  @type  {Number}
+	 *  How often the worker ticks
+	 *  @type  {Seconds}
 	 *  @private
 	 */
-	var UPDATE_RATE = 25;
+	Tone.Clock._updateInterval = 0.03;
 
 	/**
 	 *  The script which runs in a web worker
@@ -253,7 +253,7 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal", "Tone/core/TimelineState
 	 */
 	var blob = new Blob([
 		//the initial timeout time
-		"var timeoutTime = "+UPDATE_RATE+";" +
+		"var timeoutTime = "+(Tone.Clock._updateInterval * 1000)+";" +
 		//onmessage callback
 		"self.onmessage = function(msg){" +
 		"	timeoutTime = parseInt(msg.data);" + 
@@ -283,13 +283,12 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal", "Tone/core/TimelineState
 	 */
 	Tone.Clock._worker = new Worker(blobUrl);
 
-
 	/**
 	 *  The target update rate of the clock. 
 	 *  @private
 	 *  @type  {Number}
 	 */
-	Tone.Clock._targetLookAhead = UPDATE_RATE / 1000;
+	Tone.Clock._targetLookAhead = 0.1;
 
 	/**
 	 *  @private
@@ -309,17 +308,15 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal", "Tone/core/TimelineState
 	Tone.Clock._worker.addEventListener("message", function(){
 		if (lastUpdate !== -1){
 			var diff = Tone.now() - lastUpdate;
-			lookAhead = Math.max(diff, lookAhead * 0.98);
+			lookAhead = Math.max(diff, lookAhead * 0.97);
 		}
 		lastUpdate = Tone.now();
 	});
 
 	/**
 	 *  The amount of time in advance that events are scheduled.
-	 *  The update interval is twice the rate of
-	 *  the lookAhead time. The lookAhead will adjust
-	 *  slightly in response to the measured update time to try 
-	 *  to avoid clicks.
+	 *  The lookAhead will adjust slightly in response to the 
+	 *  measured update time to try to avoid clicks.
 	 *  @type {Number}
 	 *  @memberOf Tone.Clock
 	 *  @name lookAhead
@@ -329,13 +326,82 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal", "Tone/core/TimelineState
 		get : function(){
 			var diff = lookAhead - Tone.Clock._targetLookAhead;
 			diff = Math.max(diff, 0);
-			return Tone.Clock._targetLookAhead * 2 + diff * 2;
+			return Tone.Clock._targetLookAhead + diff * 2;
 		},
 		set : function(lA){
-			lA = lA / 2;
-			Tone.Clock._worker.postMessage(lA * 1000);
 			lookAhead = lA;
 			Tone.Clock._targetLookAhead = lA;
+		}
+	});
+
+	/**
+	 *  How often the Web Worker callback is invoked.
+	 *  This number corresponds to how responsive the scheduling
+	 *  can be. Clock.updateInterval + Clock.lookAhead gives you the
+	 *  total latency between scheduling an event and hearing it.
+	 *  @type {Number}
+	 *  @memberOf Tone.Clock
+	 *  @name updateInterval
+	 *  @static
+	 */
+	Object.defineProperty(Tone.Clock, "updateInterval", {
+		get : function(){
+			return Tone.Clock._updateInterval;
+		},
+		set : function(interval){
+			Tone.Clock._updateInterval = Math.max(interval, 0.01);
+			Tone.Clock._worker.postMessage(interval * 1000);
+		}
+	});
+
+	/**
+	 *  The latency hint
+	 *  @private
+	 *  @type {String|Number}
+	 */
+	var latencyHint = "interactive";
+
+	/**
+	 *  The type of playback, which affects tradeoffs between audio 
+	 *  output latency and responsiveness. 
+	 *  
+	 *  In addition to setting the value in seconds, the latencyHint also
+	 *  accepts the strings "interactive" (prioritizes low latency), 
+	 *  "playback" (prioritizes sustained playback), "balanced" (balances
+	 *  latency and performance), and "fastest" (lowest latency, might glitch more often). 
+	 *  @type {String|Seconds}
+	 *  @memberOf Tone.Clock
+	 *  @name latencyHint
+	 *  @static
+	 */
+	Object.defineProperty(Tone.Clock, "latencyHint", {
+		get : function(){
+			return latencyHint;
+		},
+		set : function(hint){
+			var lookAhead = hint;
+			latencyHint = hint;
+			if (Tone.prototype.isString(hint)){
+				switch(hint){
+					case "interactive" :
+						lookAhead = 0.1;
+						Tone.context.latencyHint = hint;
+						break;
+					case "playback" :
+						lookAhead = 0.5;
+						Tone.context.latencyHint = hint;
+						break;
+					case "balanced" :
+						lookAhead = 0.2;
+						Tone.context.latencyHint = hint;
+						break;
+					case "fastest" :
+						lookAhead = 0.01;
+						break;
+				}
+			}
+			Tone.Clock.lookAhead = lookAhead;
+			Tone.Clock.updateInterval = lookAhead/3;
 		}
 	});
 

@@ -46,6 +46,28 @@ define(["Test", "Tone/core/Clock", "helper/Offline2"], function (Test, Clock, Of
 				clock.dispose();
 			});
 
+			it ("can set the lookAhead", function(){
+				var oldLookAhead = Clock.lookAhead;
+				Clock.lookAhead = 0.05;
+				expect(Clock.lookAhead).to.equal(0.05);
+				Clock.lookAhead = oldLookAhead;
+			});
+
+			it ("can set the updateInterval", function(){
+				var oldUpdateInterval = Clock.updateInterval;
+				Clock.updateInterval = 0.05;
+				expect(Clock.updateInterval).to.equal(0.05);
+				Clock.updateInterval = oldUpdateInterval;
+			});
+
+			it ("can set the latencyHint", function(){
+				var oldLatencyHint = Clock.latencyHint;
+				Clock.latencyHint = "fastest";
+				expect(Clock.latencyHint).to.equal("fastest");
+				expect(Clock.lookAhead).to.be.closeTo(0.01, 0.05);
+				expect(Clock.updateInterval).to.be.closeTo(0.01, 0.05);
+				Clock.latencyHint = oldLatencyHint;
+			});
 		});
 
 		context("State", function(){
@@ -189,14 +211,14 @@ define(["Test", "Tone/core/Clock", "helper/Offline2"], function (Test, Clock, Of
 					var invokations = 0;
 					var clock = new Clock(function(){
 						invokations++;
-					}, 10).start(0);
+					}, 10).start(0).stop(0.49);
 
 					tearDown(function(){
 						expect(invokations).to.equal(5);
 						clock.dispose();
 						done();
 					});
-				}, 0.45);
+				}, 0.6);
 			});
 
 
@@ -246,7 +268,7 @@ define(["Test", "Tone/core/Clock", "helper/Offline2"], function (Test, Clock, Of
 					var clock = new Clock(function(){}, 20).start(0).stop(0.5);
 
 					testFn(function(sample, time){
-						if (time > 0.1 && time < 0.5){
+						if (time > 0.05 && time < 0.5){
 							expect(clock.ticks).to.be.above(0);
 						}
 					});
@@ -262,7 +284,7 @@ define(["Test", "Tone/core/Clock", "helper/Offline2"], function (Test, Clock, Of
 			it ("does not reset ticks on pause but stops incrementing", function(done){
 
 				Offline(function(output, testFn, tearDown){
-					var clock = new Clock(function(){}, 20).start().pause(0.3);
+					var clock = new Clock(function(){}, 20).start(0).pause(0.3);
 
 					var pausedTicks = 0;
 					testFn(function(sample, time){
@@ -323,20 +345,20 @@ define(["Test", "Tone/core/Clock", "helper/Offline2"], function (Test, Clock, Of
 				var startTime = clock.now() + 0.3;
 				clock.on("start", function(time, offset){
 					expect(time).to.be.closeTo(startTime, 0.05);
-					expect(clock.now()).to.be.closeTo(startTime, 0.1);
+					expect(clock.now() + Clock.lookAhead).to.be.closeTo(startTime, 0.1);
 					expect(offset).to.equal(0);
 					clock.dispose();
 					done();
 				});
 				clock.start(startTime);
 			});
-
+			
 			it ("triggers the start event with an offset", function(done){
 				var clock = new Clock(function(){}, 20);
 				var startTime = clock.now() + 0.3;
 				clock.on("start", function(time, offset){
 					expect(time).to.be.closeTo(startTime, 0.05);
-					expect(clock.now()).to.be.closeTo(startTime, 0.1);
+					expect(clock.now() + Clock.lookAhead).to.be.closeTo(startTime, 0.1);
 					expect(offset).to.equal(2);
 					clock.dispose();
 					done();
@@ -349,7 +371,7 @@ define(["Test", "Tone/core/Clock", "helper/Offline2"], function (Test, Clock, Of
 				var stopTime = clock.now() + 0.3;
 				clock.on("stop", function(time){
 					expect(time).to.be.closeTo(stopTime, 0.05);
-					expect(clock.now()).to.be.closeTo(stopTime, 0.1);
+					expect(clock.now() + Clock.lookAhead).to.be.closeTo(stopTime, 0.1);
 					clock.dispose();
 					done();
 				});
