@@ -203,7 +203,7 @@ define(["helper/Basic", "Tone/event/Loop", "Tone/core/Tone",
 							expect(loop.state).to.equal("started");
 							loop.dispose();
 							done();
-						}, 100);
+						}, 200);
 					}, 100);
 				}, 500);
 				Tone.Transport.start();
