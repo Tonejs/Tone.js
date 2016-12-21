@@ -23,6 +23,11 @@ define(["Tone/core/Tone", "Tone/core/Clock"], function (Tone, Clock) {
 
 		var oldNowFunc = Tone.prototype.now;
 
+		var originalTargetLookAhead = Tone.Clock._targetLookAhead;
+		var originalUpdateInterval = Tone.Clock._updateInterval;
+		Tone.Clock._targetLookAhead = 1 / sampleRate;
+		Tone.Clock._updateInterval = 1 / sampleRate;
+
 		Tone.prototype.now = function(){
 			return this._currentTime;
 		}.bind(this);
@@ -34,9 +39,6 @@ define(["Tone/core/Tone", "Tone/core/Clock"], function (Tone, Clock) {
 		var event = new Event("message");
 
 		this.context.oncomplete = function(e){
-
-			var originalTargetLookAhead = Tone.Clock._targetLookAhead;
-			Tone.Clock._targetLookAhead = 1 / sampleRate;
 
 			var error;
 
@@ -60,6 +62,7 @@ define(["Tone/core/Tone", "Tone/core/Clock"], function (Tone, Clock) {
 			}
 			this._after();
 			Tone.Clock._targetLookAhead = originalTargetLookAhead;
+			Tone.Clock._updateInterval = originalUpdateInterval;
 			//return the old 'now' method
 			Tone.now = oldNowFunc;
 			Tone.prototype.now = oldNowFunc;
