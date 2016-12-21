@@ -641,41 +641,23 @@ function(Tone){
 	});
 
 	/**
-	 * The amount of time that events are scheduled in advance.
-	 * This value is the latency between when a callback is 
-	 * invoked and the AudioContext time that the event is scheduled for.
-	 * This value also affects the size of the blocks that events are processed
-	 * in. So if the lookAhead is set to 1 (second), the events are processed
-	 * in 0.5 second blocks, that are at least 0.5 seconds in advance. 
-	 *
-	 * In addition to setting the value in seconds, the lookAhead also
-	 * accepts the strings "interactive" (prioritizes low latency), 
-	 * "playback" (prioritizes sustained playback), and "balanced" (balances
-	 * latency and performance).
-	 * @memberOf Tone.Transport#
-	 * @type {Seconds|String}
-	 * @name lookAhead
+	 *  The hint to the type of playback. Affects tradeoffs between audio 
+	 *  output latency and responsiveness. 
+	 *  
+	 *  In addition to setting the value in seconds, the latencyHint also
+	 *  accepts the strings "interactive" (prioritizes low latency), 
+	 *  "playback" (prioritizes sustained playback), "balanced" (balances
+	 *  latency and performance), and "fastest" (lowest latency, might glitch more often). 
+	 *  @memberOf Tone.Transport#
+	 *  @type {Seconds|String}
+	 *  @name latencyHint
 	 */
-	Object.defineProperty(Tone.Transport.prototype, "lookAhead", {
+	Object.defineProperty(Tone.Transport.prototype, "latencyHint", {
 		get : function(){
-			return Tone.Clock.lookAhead;
+			return Tone.Clock.latencyHint;
 		},
-		set : function(lA){
-			if (this.isString(lA)){
-				switch(lA){
-					case "interactive" :
-						this.lookAhead = 0.032;
-						break;
-					case "playback" :
-						this.lookAhead = 0.5;
-						break;
-					case "balanced" :
-						this.lookAhead = 0.1;
-						break;
-				}
-			} else {
-				Tone.Clock.lookAhead = lA;
-			}
+		set : function(hint){
+			Tone.Clock.latencyHint = hint;
 		}
 	});
 
