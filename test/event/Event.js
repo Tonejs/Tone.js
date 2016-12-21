@@ -405,7 +405,7 @@ define(["helper/Basic", "Tone/event/Event", "Tone/core/Tone", "Tone/core/Transpo
 						done();
 					});
 
-				}, 0.7);
+				}, 1);
 			});
 
 			it ("reports the progress of the loop", function(done){
@@ -420,7 +420,7 @@ define(["helper/Basic", "Tone/event/Event", "Tone/core/Tone", "Tone/core/Transpo
 					Tone.Transport.start();
 
 					after(function(){
-						expect(note.progress).to.be.closeTo(0.8, 0.05);
+						expect(note.progress).to.be.closeTo(0.8, 0.1);
 						note.dispose();	
 						done();
 					});
