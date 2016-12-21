@@ -34,6 +34,7 @@ var ExampleList = {
 		"Ramping Values" : "rampTo",
 	},
 	"Visualization" : {
+		"Animation Sync" : "animationSync",
 		"Envelopes": "funkyShape",
 		"Analysis" : "analysis",
 		"Meter" : "meter"
