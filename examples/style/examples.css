@@ -308,8 +308,10 @@ html, body {
       position: absolute;
       color: white; }
 
-#Keyboard {
-  margin: 3px !important; }
+.Keyboard {
+  height: 100px;
+  width: 100%;
+  position: relative; }
 
 code {
   background-color: #ECECEC;

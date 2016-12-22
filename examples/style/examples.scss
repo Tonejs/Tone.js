@@ -462,8 +462,10 @@ html, body {
 }
 
 
-#Keyboard {
-	margin: 3px !important; 
+.Keyboard {
+	height: 100px;
+	width: 100%;
+	position: relative;
 }
 
 code {
