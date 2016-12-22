@@ -4,7 +4,6 @@ define(["Test", "Tone/core/Draw", "Tone/core/Tone"],
 	describe("Draw", function(){
 
 		it ("can schedule a callback at a AudioContext time", function(done){
-			expect(Draw.schedule).is.a.function;
 			var scheduledTime = Tone.now() + 0.2;
 			Draw.schedule(function(){
 				expect(Tone.now()).to.be.closeTo(scheduledTime, 0.05);
