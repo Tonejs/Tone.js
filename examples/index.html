@@ -12,47 +12,39 @@
 	<script type="text/javascript" src="./scripts/ExampleList.js"></script>
 
 	<link rel="stylesheet" type="text/css" href="./style/examples.css">	
+	<link href="https://fonts.googleapis.com/css?family=Inconsolata" rel="stylesheet">
 
 </head>
 <body>
-	<style type="text/css">
-		#Content div{
-			font-size: 16px;
-			margin-top: 5px;
-		}
-		#Content a {
-			margin-left: 10px;
-			font-weight: normal!important;
-		}
-		.Category {
-			font-weight: 900;
-			font-size: 18px;
-		}
-
-		#ExampleList {
-			width: 200px;
-			margin-left: auto;
-			margin-right: auto;
-			margin-bottom: 40px;
-		}
-	</style>
-	<div id="Content" class="FullScreen">
-		<div id="ExampleList"></div>
+	<div id="Content" class="Example">
+		<iframe></iframe>
+		<div id="Sidebar"></div>
 	</div>
+	
 	<script type="text/javascript">
 
-		var container = $("#ExampleList");
+		var container = $("#Sidebar");
 
 		$(function(){
 
-			$(function(){
-				var topbar = $("<div>").attr("id", "TopBar");
-				$("body").prepend(topbar);
-				Logo({
-					"container" : topbar.get(0),
-					"height" : topbar.height() - 6,
-					"width" : 140
-				});
+			var topbar = $("<div>").attr("id", "TopBar");
+			$("body").prepend(topbar);
+
+			// make the hamburger menu
+			var hamburger = $("<div>").attr("id", "Hamburger")
+				.appendTo(topbar);
+			for (var i = 0; i < 3; i++){
+				$("<span>").appendTo(hamburger);
+			}
+			hamburger.on("click", function(){
+				$("#Sidebar").toggleClass("Open");
+			});
+
+			//add the Logo
+			Logo({
+				"container" : topbar.get(0),
+				"height" : topbar.height() - 6,
+				"width" : 140
 			});
 
 			for (var catName in ExampleList){
@@ -61,11 +53,45 @@
 				for (var example in category){
 					$("<div>").addClass("Item")
 						.appendTo(container)
-						.html($("<a>").attr("href", category[example]+".html").text(example));
+						.html($("<a>").attr("href", "#" + category[example]).text(example));
 				}
 			}
 
+			$(window).on("hashchange", setHash);	
+
+			function setHash(){
+				var hash = window.location.hash.substring(1);
+				if (hash === ""){
+					return;
+				}
+				var exampleName;
+				//split hash at the .
+				if (hash.split(".").length === 2){
+					var split = hash.split(".");
+					hash = split[0];
+					exampleName = split[1];
+				}
+				var url = location.protocol+'//'+location.host+location.pathname + hash + ".html";
+				$("iframe").attr("src", url);
+
+				// close the sidebar if it's open
+				if ($("#Sidebar").hasClass("Open")){
+					$("#Sidebar").removeClass("Open");
+				}
+
+				// add the source link
+				var srcUrl = "https://github.com/Tonejs/Tone.js/blob/master/examples/"+hash+".html"
+				if (!$("#Source").length){
+					$("<a id=\"Source\"></a>").appendTo("#Content");
+				}
+				$("#Source").attr("href", srcUrl);
+			}
+
+			//set it initially
+			setHash();
 		});
+
+
 	</script>
 </body>
 </html>

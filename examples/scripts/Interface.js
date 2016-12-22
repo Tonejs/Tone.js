@@ -12,22 +12,8 @@ var Interface = {
  *  
  */
 $(function(){
-	var topbar = $("<div>").attr("id", "TopBar");
-	$("body").prepend(topbar);
-	
-	if (typeof Logo !== "undefined"){
-		Logo({
-			"container" : topbar.get(0),
-			"height" : topbar.height() - 6,
-			"width" : 140
-		});
-
-	}
-	$("<div>")
-		.attr("id", "Examples")
-		.attr("title", "examples")
-		.html("<a href='./index.html'>examples</a>")
-		.appendTo(topbar);
+	// make all links open a new tab
+	$("a").attr("target", "_blank");
 	//mobile start
 	if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
 		Interface.isMobile = true;
