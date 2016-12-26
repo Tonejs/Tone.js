@@ -23,9 +23,9 @@ define(["Tone/core/Tone", "Tone/core/Clock"], function (Tone, Clock) {
 
 		var oldNowFunc = Tone.prototype.now;
 
-		var originalTargetLookAhead = Tone.Clock._targetLookAhead;
+		var originalTargetLookAhead = Tone.Clock._lookAhead;
 		var originalUpdateInterval = Tone.Clock._updateInterval;
-		Tone.Clock._targetLookAhead = 1 / sampleRate;
+		Tone.Clock._lookAhead = 1 / sampleRate;
 		Tone.Clock._updateInterval = 1 / sampleRate;
 
 		Tone.prototype.now = function(){
@@ -61,7 +61,7 @@ define(["Tone/core/Tone", "Tone/core/Clock"], function (Tone, Clock) {
 				}
 			}
 			this._after();
-			Tone.Clock._targetLookAhead = originalTargetLookAhead;
+			Tone.Clock._lookAhead = originalTargetLookAhead;
 			Tone.Clock._updateInterval = originalUpdateInterval;
 			//return the old 'now' method
 			Tone.now = oldNowFunc;

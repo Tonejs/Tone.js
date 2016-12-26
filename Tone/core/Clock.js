@@ -166,7 +166,9 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal", "Tone/core/TimelineState
 		//if it's started
 		var lookAhead = Tone.Clock.lookAhead;
 		var updateInterval = Tone.Clock.updateInterval;
-		while ((now + lookAhead + updateInterval) > this._nextTick && this._state){
+		var lagCompensation = Tone.Clock.lag * 2;
+		var loopInterval = now + lookAhead + updateInterval + lagCompensation;
+		while (loopInterval > this._nextTick && this._state){
 			var currentState = this._state.getValueAtTime(this._nextTick);
 			if (currentState !== this._lastState){
 				this._lastState = currentState;
@@ -236,11 +238,19 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal", "Tone/core/TimelineState
 	window.URL = window.URL || window.webkitURL;
 
 	/**
+	 *  The minimum amount of time events are 
+	 *  scheduled in advance.
+	 *  @private
+	 *  @type  {Number}
+	 */
+	Tone.Clock._lookAhead = 0.1;
+
+	/**
 	 *  How often the worker ticks
 	 *  @type  {Seconds}
 	 *  @private
 	 */
-	Tone.Clock._updateInterval = 0.03;
+	Tone.Clock._updateInterval = Tone.Clock._lookAhead / 3;
 
 	/**
 	 *  The script which runs in a web worker
@@ -280,13 +290,6 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal", "Tone/core/TimelineState
 	Tone.Clock._worker = new Worker(blobUrl);
 
 	/**
-	 *  The target update rate of the clock. 
-	 *  @private
-	 *  @type  {Number}
-	 */
-	Tone.Clock._targetLookAhead = 0.1;
-
-	/**
 	 *  @private
 	 *  @type  {Number}
 	 *  The time of the last update
@@ -294,19 +297,38 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal", "Tone/core/TimelineState
 	var lastUpdate = -1;
 
 	/**
-	 *  The current lookAhead of the system
+	 *  The current computed update rate of the clock.
 	 *  @type  {Number}
 	 *  @private
 	 */
-	var lookAhead = 0;
+	var computedUpdateInterval = 0;
 
 	//listen for message events and update the global clock lookahead
 	Tone.Clock._worker.addEventListener("message", function(){
+		var now = Tone.now();
 		if (lastUpdate !== -1){
-			var diff = Tone.now() - lastUpdate;
-			lookAhead = Math.max(diff, lookAhead * 0.97);
+			var diff = now - lastUpdate;
+			computedUpdateInterval = Math.max(diff, computedUpdateInterval * 0.97);
 		}
-		lastUpdate = Tone.now();
+		lastUpdate = now;
+	});
+
+	/**
+	 *  This is the time that the clock is falling behind
+	 *  the scheduled update interval. The Clock automatically
+	 *  adjusts for the lag and schedules further in advance.
+	 *  @type {Number}
+	 *  @memberOf Tone.Clock
+	 *  @name lag
+	 *  @static
+	 *  @readOnly
+	 */
+	Object.defineProperty(Tone.Clock, "lag", {
+		get : function(){
+			var diff = computedUpdateInterval - Tone.Clock._updateInterval;
+			diff = Math.max(diff, 0);
+			return diff;
+		}
 	});
 
 	/**
@@ -320,13 +342,10 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal", "Tone/core/TimelineState
 	 */
 	Object.defineProperty(Tone.Clock, "lookAhead", {
 		get : function(){
-			var diff = lookAhead - Tone.Clock._targetLookAhead;
-			diff = Math.max(diff, 0);
-			return Tone.Clock._targetLookAhead + diff * 2;
+			return Tone.Clock._lookAhead;
 		},
 		set : function(lA){
-			lookAhead = lA;
-			Tone.Clock._targetLookAhead = lA;
+			Tone.Clock._lookAhead = lA;
 		}
 	});
 
@@ -384,11 +403,11 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal", "Tone/core/TimelineState
 						Tone.context.latencyHint = hint;
 						break;
 					case "playback" :
-						lookAhead = 0.5;
+						lookAhead = 0.8;
 						Tone.context.latencyHint = hint;
 						break;
 					case "balanced" :
-						lookAhead = 0.2;
+						lookAhead = 0.25;
 						Tone.context.latencyHint = hint;
 						break;
 					case "fastest" :
@@ -403,7 +422,7 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal", "Tone/core/TimelineState
 
 	Tone._initAudioContext(function(){
 		lastUpdate = -1;
-		lookAhead = 0;
+		computedUpdateInterval = 0;
 	});
 
 	return Tone.Clock;
