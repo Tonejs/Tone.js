@@ -29,8 +29,9 @@ define(["Tone/core/Tone", "Tone/core/Timeline"], function (Tone) {
 		this._events = new Tone.Timeline();
 
 		/**
-		 *  The time after which events are not invoked.
+		 *  The duration after which events are not invoked.
 		 *  @type  {Number}
+		 *  @default 0.25
 		 */
 		this.expiration = 0.25;
 
@@ -39,6 +40,7 @@ define(["Tone/core/Tone", "Tone/core/Timeline"], function (Tone) {
 		 *  that the callback can be invoked. Default is
 		 *  half the time of an animation frame (0.008 seconds).
 		 *  @type  {Number}
+		 *  @default 0.008
 		 */
 		this.anticipation = 0.008;
 
