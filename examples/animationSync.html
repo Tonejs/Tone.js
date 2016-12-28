@@ -40,9 +40,9 @@
 	<div id="Content">
 		<div id="Title">Synchronizing Visuals</div>
 		<div id="Explanation">
-			 Audio scheduling and rendering visuals should always be kept separate. Instead of triggering visuals from within a scheduled event callback, return a 'deferred' callback which will be invoked from an animation frame at the exact moment of the scheduled event.
+			 Audio scheduling and rendering visuals should always be kept separate. Instead of triggering visuals from within a scheduled event callback, schedule a 'deferred' callback using Tone.Draw which will be invoked on an animation frame at the exact moment of the scheduled event.
 			 <br><br>
-			 For more information see <a href="">this wiki article</a>. 
+			 For more information see <a href="https://github.com/Tonejs/Tone.js/wiki/Performance">this wiki article</a>. 
 		</div>
 		<div id="Notes">
 			<div id="C4" class="Note"></div>
