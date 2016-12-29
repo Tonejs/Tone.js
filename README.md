@@ -20,7 +20,6 @@ Tone.js is a Web Audio framework for creating interactive music in the browser. 
 * [Solarbeat - Luke Twyman](http://www.whitevinyldesign.com/solarbeat/)
 * [Block Chords - Abe Rubenstein](http://dev.abe.sh/block-chords/)
 * [This is Not a Machine Learning - David Karam](http://posttool.github.io/)
-* [Calculaural - Matthew Hasbach](https://github.com/mjhasbach/calculaural)
 * [Scratch + Tone.js - Eric Rosenbaum](http://ericrosenbaum.github.io/tone-synth-extension/)
 * [Game of Reich - Ben Taylor](http://nexusosc.com/gameofreich/)
 * [Yume - Helios + Luke Twyman](http://www.unseen-music.com/yume/)
@@ -35,13 +34,13 @@ Tone.js is a Web Audio framework for creating interactive music in the browser. 
 * [Reflect - Sydneyzh](http://reflect.sydneyzh.com/)
 * [Anxiety - Eve Weinberg, Aaron Montoya-Moraga](http://anxietybrain.net/)
 * [Ramsophone - Robert Vinluan](http://robertvinluan.com/Ramsophone/)
+* [pgb-vsu - Annie Jiwon](http://www.pgb-vsu.club/)
 
 Using Tone.js? I'd love to hear it: yotam@tonejs.org
 
 # Installation
 
 * CDN - [full](https://tonejs.github.io/CDN/latest/Tone.js) | [min](https://tonejs.github.io/CDN/latest/Tone.min.js)
-* [bower](http://bower.io/) - `bower install tone`
 * [npm](https://www.npmjs.org/) - `npm install tone`
 
 [Full Installation Instruction](https://github.com/Tonejs/Tone.js/wiki/Installation)
