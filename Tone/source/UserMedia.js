@@ -17,7 +17,7 @@ define(["Tone/core/Tone", "Tone/component/Volume"], function(Tone){
 	 * var motu = new Tone.UserMedia();
 	 * 
 	 * //opening the input asks the user to activate their mic
-	 * motu.open(function(){
+	 * motu.open().then(function(){
 	 * 	//opening is activates the microphone
 	 * 	//starting lets audio through
 	 * 	motu.start(10);
