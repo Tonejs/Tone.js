@@ -3,8 +3,10 @@
 * Tone.Clock performance and lookAhead updates. 
 * Tone.Transport.lookAhead = seconds|'playback'|'interactive'|'balanced'
 * Convolver.load and Player.load returns Promise
-* ExternalInput -> UserMedia, simplified API, open() returns Promise.
+* Tone.ExternalInput -> Tone.UserMedia, simplified API, open() returns Promise.
 * Tone.Draw for animation-frame synced drawing
+* Compressor Parameters are now Tone.Params
+* Bug fixes
 
 ### r8
 
