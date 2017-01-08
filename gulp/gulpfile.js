@@ -72,8 +72,6 @@ gulp.task("compile", ["collectDependencies"], function(done){
 		.pipe(replace(/define\(\s*'([^']*)'\s*\,\s*\[\s*'([^']*'\s*\,*\s*)+?\]\s*\,\s*/g, "Module("))
 		.pipe(insert.prepend(fs.readFileSync("./fragments/before.frag").toString()))
 		.pipe(gulp.dest("../build/"))
-		.pipe(concat("p5.Tone.js"))
-		.pipe(gulp.dest("../build/"))
 		.on("end", done);
 });
 
@@ -84,14 +82,7 @@ gulp.task("footer", ["compile"], function(done){
 		.on("end", done);
 });
 
-gulp.task("p5Footer", ["compile"], function(done){
-	gulp.src("../build/p5.Tone.js")
-		.pipe(insert.append(fs.readFileSync("./fragments/p5-after.frag").toString()))
-		.pipe(gulp.dest("../build/"))
-		.on("end", done);
-});
-
-gulp.task("build", ["footer", "p5Footer"], function(){
+gulp.task("build", ["footer"], function(){
 	gulp.src("../build/Tone.js")
 		.pipe(uglify({
 				preserveComments : "some",
@@ -122,7 +113,7 @@ gulp.task("cleanup", ["build"], function(){
 });
 
 //default build
-gulp.task("default", ["cleanup"], function(){});
+gulp.task("default", ["cleanup"]);
 
 /**
  *  Sass
@@ -228,6 +219,4 @@ gulp.task("collectTests", function(done){
 /**
  *  TEST ALL
  */
-gulp.task("travis-test", ["lint", "karma-test"], function(){
-	
-});
+gulp.task("travis-test", ["lint", "karma-test"]);
