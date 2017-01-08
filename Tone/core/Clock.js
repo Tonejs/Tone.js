@@ -33,33 +33,18 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal", "Tone/core/TimelineState
 		this.callback = options.callback;
 
 		/**
-		 *  The internal lookahead value
-		 *  @type {Number|String}
-		 *  @private
-		 */
-		this._lookAhead = "auto";
-
-		/**
-		 *  The lookahead value which was automatically
-		 *  computed using a time-based averaging.
-		 *  @type {Number}
-		 *  @private
-		 */
-		this._computedLookAhead = UPDATE_RATE/1000;
-
-		/**
 		 *  The next time the callback is scheduled.
 		 *  @type {Number}
 		 *  @private
 		 */
-		this._nextTick = -1;
+		this._nextTick = 0;
 
 		/**
-		 *  The last time the callback was invoked
-		 *  @type  {Number}
+		 *  The last state of the clock.
+		 *  @type  {State}
 		 *  @private
 		 */
-		this._lastUpdate = -1;
+		this._lastState = Tone.State.Stopped;
 
 		/**
 		 *  The rate the callback function should be invoked. 
@@ -67,6 +52,7 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal", "Tone/core/TimelineState
 		 *  @signal
 		 */
 		this.frequency = new Tone.TimelineSignal(options.frequency, Tone.Type.Frequency);
+		this._readOnly("frequency");
 
 		/**
 		 *  The number of times the callback was invoked. Starts counting at 0
@@ -93,8 +79,6 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal", "Tone/core/TimelineState
 
 		//bind a callback to the worker thread
     	Tone.Clock._worker.addEventListener("message", this._boundLoop);
-
-		this._readOnly("frequency");
 	};
 
 	Tone.extend(Tone.Clock, Tone.Emitter);
@@ -119,36 +103,9 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal", "Tone/core/TimelineState
 	 */
 	Object.defineProperty(Tone.Clock.prototype, "state", {
 		get : function(){
-			return this._state.getStateAtTime(this.now());
+			return this._state.getValueAtTime(this.now());
 		}
 	});
-
-	/**
-	 *  The time which the clock will schedule events in advance
-	 *  of the current time. Scheduling notes in advance improves
-	 *  performance and decreases the chance for clicks caused
-	 *  by scheduling events in the past. If set to "auto",
-	 *  this value will be automatically computed based on the 
-	 *  rate of the update (~0.02 seconds). Larger values
-	 *  will yeild better performance, but at the cost of latency. 
-	 *  Values less than 0.016 are not recommended.
-	 *  @type {Number|String}
-	 *  @memberOf Tone.Clock#
-	 *  @name lookAhead
-	 */
-	Object.defineProperty(Tone.Clock.prototype, "lookAhead", {
-		get : function(){
-			return this._lookAhead;
-		},
-		set : function(val){
-			if (val === "auto"){
-				this._lookAhead = "auto";
-			} else {
-				this._lookAhead = this.toSeconds(val);
-			}
-		}
-	});
-
 
 	/**
 	 *  Start the clock at the given time. Optionally pass in an offset
@@ -159,8 +116,8 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal", "Tone/core/TimelineState
 	 */
 	Tone.Clock.prototype.start = function(time, offset){
 		time = this.toSeconds(time);
-		if (this._state.getStateAtTime(time) !== Tone.State.Started){
-			this._state.addEvent({
+		if (this._state.getValueAtTime(time) !== Tone.State.Started){
+			this._state.add({
 				"state" : Tone.State.Started, 
 				"time" : time,
 				"offset" : offset
@@ -191,7 +148,7 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal", "Tone/core/TimelineState
 	 */
 	Tone.Clock.prototype.pause = function(time){
 		time = this.toSeconds(time);
-		if (this._state.getStateAtTime(time) === Tone.State.Started){
+		if (this._state.getValueAtTime(time) === Tone.State.Started){
 			this._state.setStateAtTime(Tone.State.Paused, time);
 		}
 		return this;	
@@ -204,55 +161,42 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal", "Tone/core/TimelineState
 	 *  @private
 	 */
 	Tone.Clock.prototype._loop = function(){
-		//compute the look ahead
-		if (this._lookAhead === "auto"){
-			var time = this.now();
-			if (this._lastUpdate !== -1){
-				var diff = (time - this._lastUpdate);
-				//max size on the diff
-				diff = Math.min(10 * UPDATE_RATE/1000, diff);
-				//averaging
-				this._computedLookAhead = (9 * this._computedLookAhead + diff) / 10;
-			}
-			this._lastUpdate = time;
-		} else {
-			this._computedLookAhead = this._lookAhead;
-		}
 		//get the frequency value to compute the value of the next loop
 		var now = this.now();
 		//if it's started
-		var lookAhead = this._computedLookAhead * 2;
-		var event = this._state.getEvent(now + lookAhead);
-		var state = Tone.State.Stopped;
-		if (event){
-			state = event.state;
-			//if it was stopped and now started
-			if (this._nextTick === -1 && state === Tone.State.Started){
-				this._nextTick = event.time;
-				if (!this.isUndef(event.offset)){
-					this.ticks = event.offset;
+		var lookAhead = Tone.Clock.lookAhead;
+		var updateInterval = Tone.Clock.updateInterval;
+		var lagCompensation = Tone.Clock.lag * 2;
+		var loopInterval = now + lookAhead + updateInterval + lagCompensation;
+		while (loopInterval > this._nextTick && this._state){
+			var currentState = this._state.getValueAtTime(this._nextTick);
+			if (currentState !== this._lastState){
+				this._lastState = currentState;
+				var event = this._state.get(this._nextTick);
+				// emit an event
+				if (currentState === Tone.State.Started){
+					//correct the time
+					this._nextTick = event.time;
+					if (!this.isUndef(event.offset)){
+						this.ticks = event.offset;
+					}
+					this.emit("start", event.time, this.ticks);
+				} else if (currentState === Tone.State.Stopped){
+					this.ticks = 0;
+
+					this.emit("stop", event.time);
+				} else if (currentState === Tone.State.Paused){
+					this.emit("pause", event.time);
 				}
-				this.emit("start", event.time, this.ticks);
 			}
-		}
-		if (state === Tone.State.Started){
-			while (now + lookAhead > this._nextTick){
-				var tickTime = this._nextTick;
+			var tickTime = this._nextTick;
+			if (this.frequency){
 				this._nextTick += 1 / this.frequency.getValueAtTime(this._nextTick);
-				this.callback(tickTime);
-				this.ticks++;
+				if (currentState === Tone.State.Started){
+					this.callback(tickTime);
+					this.ticks++;
+				}
 			}
-		} else if (state === Tone.State.Stopped){
-			if (event && this.ticks !== 0){
-				this.emit("stop", event.time);
-			}
-			this._nextTick = -1;
-			this.ticks = 0;
-		} else if (state === Tone.State.Paused){
-			if (this._nextTick !== -1){
-				this.emit("pause", event.time);
-			}
-			this._nextTick = -1;
 		}
 	};
 
@@ -266,7 +210,7 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal", "Tone/core/TimelineState
 	 */
 	Tone.Clock.prototype.getStateAtTime = function(time){
 		time = this.toSeconds(time);
-		return this._state.getStateAtTime(time);
+		return this._state.getValueAtTime(time);
 	};
 
 	/**
@@ -275,7 +219,6 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal", "Tone/core/TimelineState
 	 */
 	Tone.Clock.prototype.dispose = function(){
 		Tone.Emitter.prototype.dispose.call(this);
-		Tone.TimelineState.prototype.dispose.call(this);
 		Tone.Clock._worker.removeEventListener("message", this._boundLoop);
 		this._writable("frequency");
 		this.frequency.dispose();
@@ -287,23 +230,49 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal", "Tone/core/TimelineState
 		this._state = null;
 	};
 
+	///////////////////////////////////////////////////////////////////////////
+	// WORKER
+	///////////////////////////////////////////////////////////////////////////
+
 	//URL Shim
 	window.URL = window.URL || window.webkitURL;
 
 	/**
-	 *  The update rate in Milliseconds
-	 *  @const
+	 *  The minimum amount of time events are 
+	 *  scheduled in advance.
+	 *  @private
 	 *  @type  {Number}
+	 */
+	Tone.Clock._lookAhead = 0.1;
+
+	/**
+	 *  How often the worker ticks
+	 *  @type  {Seconds}
 	 *  @private
 	 */
-	var UPDATE_RATE = 20;
+	Tone.Clock._updateInterval = Tone.Clock._lookAhead / 3;
 
 	/**
 	 *  The script which runs in a web worker
 	 *  @type {Blob}
 	 *  @private
 	 */
-	var blob = new Blob(["setInterval(function(){self.postMessage('tick')}, "+UPDATE_RATE+")"]);
+	var blob = new Blob([
+		//the initial timeout time
+		"var timeoutTime = "+(Tone.Clock._updateInterval * 1000)+";" +
+		//onmessage callback
+		"self.onmessage = function(msg){" +
+		"	timeoutTime = parseInt(msg.data);" + 
+		"};" + 
+		//the tick function which posts a message
+		//and schedules a new tick
+		"function tick(){" +
+		"	setTimeout(tick, timeoutTime);" +
+		"	self.postMessage('tick');" +
+		"}" +
+		//call tick initially
+		"tick();"
+	]);
 
 	/**
 	 *  Create a blob url from the Blob
@@ -319,6 +288,145 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal", "Tone/core/TimelineState
 	 *  @static
 	 */
 	Tone.Clock._worker = new Worker(blobUrl);
+
+	/**
+	 *  @private
+	 *  @type  {Number}
+	 *  The time of the last update
+	 */
+	var lastUpdate = -1;
+
+	/**
+	 *  The current computed update rate of the clock.
+	 *  @type  {Number}
+	 *  @private
+	 */
+	var computedUpdateInterval = 0;
+
+	//listen for message events and update the global clock lookahead
+	Tone.Clock._worker.addEventListener("message", function(){
+		var now = Tone.now();
+		if (lastUpdate !== -1){
+			var diff = now - lastUpdate;
+			computedUpdateInterval = Math.max(diff, computedUpdateInterval * 0.97);
+		}
+		lastUpdate = now;
+	});
+
+	/**
+	 *  This is the time that the clock is falling behind
+	 *  the scheduled update interval. The Clock automatically
+	 *  adjusts for the lag and schedules further in advance.
+	 *  @type {Number}
+	 *  @memberOf Tone.Clock
+	 *  @name lag
+	 *  @static
+	 *  @readOnly
+	 */
+	Object.defineProperty(Tone.Clock, "lag", {
+		get : function(){
+			var diff = computedUpdateInterval - Tone.Clock._updateInterval;
+			diff = Math.max(diff, 0);
+			return diff;
+		}
+	});
+
+	/**
+	 *  The amount of time in advance that events are scheduled.
+	 *  The lookAhead will adjust slightly in response to the 
+	 *  measured update time to try to avoid clicks.
+	 *  @type {Number}
+	 *  @memberOf Tone.Clock
+	 *  @name lookAhead
+	 *  @static
+	 */
+	Object.defineProperty(Tone.Clock, "lookAhead", {
+		get : function(){
+			return Tone.Clock._lookAhead;
+		},
+		set : function(lA){
+			Tone.Clock._lookAhead = lA;
+		}
+	});
+
+	/**
+	 *  How often the Web Worker callback is invoked.
+	 *  This number corresponds to how responsive the scheduling
+	 *  can be. Clock.updateInterval + Clock.lookAhead gives you the
+	 *  total latency between scheduling an event and hearing it.
+	 *  @type {Number}
+	 *  @memberOf Tone.Clock
+	 *  @name updateInterval
+	 *  @static
+	 */
+	Object.defineProperty(Tone.Clock, "updateInterval", {
+		get : function(){
+			return Tone.Clock._updateInterval;
+		},
+		set : function(interval){
+			Tone.Clock._updateInterval = Math.max(interval, 0.01);
+			Tone.Clock._worker.postMessage(interval * 1000);
+		}
+	});
+
+	/**
+	 *  The latency hint
+	 *  @private
+	 *  @type {String|Number}
+	 */
+	var latencyHint = "interactive";
+
+	/**
+	 *  The type of playback, which affects tradeoffs between audio 
+	 *  output latency and responsiveness. 
+	 *  
+	 *  In addition to setting the value in seconds, the latencyHint also
+	 *  accepts the strings "interactive" (prioritizes low latency), 
+	 *  "playback" (prioritizes sustained playback), "balanced" (balances
+	 *  latency and performance), and "fastest" (lowest latency, might glitch more often). 
+	 *  @type {String|Seconds}
+	 *  @memberOf Tone.Clock#
+	 *  @name latencyHint
+	 *  @static
+	 *  @example
+	 * //set the lookAhead to 0.3 seconds
+	 * Tone.Clock.latencyHint = 0.3;
+	 */
+	Object.defineProperty(Tone.Clock, "latencyHint", {
+		get : function(){
+			return latencyHint;
+		},
+		set : function(hint){
+			var lookAhead = hint;
+			latencyHint = hint;
+			if (Tone.prototype.isString(hint)){
+				switch(hint){
+					case "interactive" :
+						lookAhead = 0.1;
+						Tone.context.latencyHint = hint;
+						break;
+					case "playback" :
+						lookAhead = 0.8;
+						Tone.context.latencyHint = hint;
+						break;
+					case "balanced" :
+						lookAhead = 0.25;
+						Tone.context.latencyHint = hint;
+						break;
+					case "fastest" :
+						lookAhead = 0.01;
+						break;
+				}
+			}
+			Tone.Clock.lookAhead = lookAhead;
+			Tone.Clock.updateInterval = lookAhead/3;
+		}
+	});
+
+	Tone._initAudioContext(function(){
+		lastUpdate = -1;
+		computedUpdateInterval = 0;
+	});
 
 	return Tone.Clock;
 });

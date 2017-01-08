@@ -108,7 +108,7 @@ define(["helper/Basic", "Tone/event/Pattern", "Tone/core/Tone", "Tone/core/Trans
 			it ("passes in the scheduled time and pattern index to the callback", function(done){
 				Offline(function(output, test, after){
 
-					var now = Tone.Transport.now();
+					var now = Tone.Transport.now() + 0.05;
 
 					var pattern = new Pattern(function(time, note){
 						expect(time).to.be.a.number;
@@ -116,7 +116,7 @@ define(["helper/Basic", "Tone/event/Pattern", "Tone/core/Tone", "Tone/core/Trans
 						expect(note).to.be.equal("a");
 					}, ["a"], "up");
 
-					Tone.Transport.start();
+					Tone.Transport.start(now);
 
 					pattern.start(0.3);
 					after(function(){
@@ -137,7 +137,7 @@ define(["helper/Basic", "Tone/event/Pattern", "Tone/core/Tone", "Tone/core/Trans
 
 					pattern.interval = "16n";
 					
-					Tone.Transport.start();
+					Tone.Transport.start(0);
 					after(function(){
 						pattern.dispose();
 						done();

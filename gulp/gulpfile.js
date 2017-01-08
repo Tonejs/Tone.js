@@ -15,6 +15,7 @@ var rename = require("gulp-rename");
 var sass = require("gulp-ruby-sass");
 var prefix = require("gulp-autoprefixer");
 var openFile = require("gulp-open");
+var jshint = require("gulp-jshint");
 var argv = require("yargs")
 			.alias("f", "file")
 			.alias("s", "signal")
@@ -71,8 +72,6 @@ gulp.task("compile", ["collectDependencies"], function(done){
 		.pipe(replace(/define\(\s*'([^']*)'\s*\,\s*\[\s*'([^']*'\s*\,*\s*)+?\]\s*\,\s*/g, "Module("))
 		.pipe(insert.prepend(fs.readFileSync("./fragments/before.frag").toString()))
 		.pipe(gulp.dest("../build/"))
-		.pipe(concat("p5.Tone.js"))
-		.pipe(gulp.dest("../build/"))
 		.on("end", done);
 });
 
@@ -83,14 +82,7 @@ gulp.task("footer", ["compile"], function(done){
 		.on("end", done);
 });
 
-gulp.task("p5Footer", ["compile"], function(done){
-	gulp.src("../build/p5.Tone.js")
-		.pipe(insert.append(fs.readFileSync("./fragments/p5-after.frag").toString()))
-		.pipe(gulp.dest("../build/"))
-		.on("end", done);
-});
-
-gulp.task("build", ["footer", "p5Footer"], function(){
+gulp.task("build", ["footer"], function(){
 	gulp.src("../build/Tone.js")
 		.pipe(uglify({
 				preserveComments : "some",
@@ -121,7 +113,7 @@ gulp.task("cleanup", ["build"], function(){
 });
 
 //default build
-gulp.task("default", ["cleanup"], function(){});
+gulp.task("default", ["cleanup"]);
 
 /**
  *  Sass
@@ -133,7 +125,7 @@ gulp.task("sass", function () {
 });
 
 gulp.task("example", function() {
-  gulp.watch(["../examples/style/examples.scss"], ["sass"]);
+	gulp.watch(["../examples/style/examples.scss"], ["sass"]);
 });
 
 /**
@@ -150,6 +142,16 @@ gulp.task("server", function(){
 });
 
 /**
+ *  LINTING
+ */
+gulp.task("lint", function() {
+	return gulp.src("../Tone/*/*.js")
+		.pipe(jshint())
+		.pipe(jshint.reporter("default"))
+		.pipe(jshint.reporter("fail"));
+});
+
+/**
  *  TEST RUNNER
  */
 gulp.task("browser-test", ["server", "collectTests"], function(){
@@ -159,7 +161,7 @@ gulp.task("browser-test", ["server", "collectTests"], function(){
 
 gulp.task("karma-test", function (done) {
   new KarmaServer({
-    configFile: __dirname + '/karma.conf.js',
+    configFile: __dirname + "/karma.conf.js",
     singleRun: true
   }, done).start();
 });
@@ -213,3 +215,8 @@ gulp.task("collectTests", function(done){
 		innerTask.on("end", done);
 	});
 });
+
+/**
+ *  TEST ALL
+ */
+gulp.task("travis-test", ["lint", "karma-test"]);

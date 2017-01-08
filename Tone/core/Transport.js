@@ -211,17 +211,19 @@ function(Tone){
 		//do the loop test
 		if (this.loop){
 			if (ticks === this._loopEnd){
-				this.emit("stop", tickTime);
+				this.emit("loopEnd", tickTime);
 				this._clock.ticks = this._loopStart;
 				ticks = this._loopStart;
-				this.emit("start", tickTime, this.seconds);
+				this.emit("loopStart", tickTime, this.seconds);
 				this.emit("loop", tickTime);
 			}
 		}
 		//process the single occurrence events
 		this._onceEvents.forEachBefore(ticks, function(event){
 			event.callback(tickTime);
-		});
+			//remove the event
+			delete this._scheduledEvents[event.id.toString()];
+		}.bind(this));
 		//and clear the single occurrence timeline
 		this._onceEvents.cancelBefore(ticks);
 		//fire the next tick events if their time has come
@@ -261,7 +263,7 @@ function(Tone){
 			"event" : event,
 			"timeline" : this._timeline
 		};
-		this._timeline.addEvent(event);
+		this._timeline.add(event);
 		return id;
 	};
 
@@ -296,7 +298,7 @@ function(Tone){
 			"event" : event,
 			"timeline" : this._repeatedEvents
 		};
-		this._repeatedEvents.addEvent(event);
+		this._repeatedEvents.add(event);
 		return id;
 	};
 
@@ -309,16 +311,17 @@ function(Tone){
 	 *  @returns {Number} The ID of the scheduled event. 
 	 */
 	Tone.Transport.prototype.scheduleOnce = function(callback, time){
+		var id = this._eventID++;
 		var event = {
 			"time" : this.toTicks(time),
-			"callback" : callback
+			"callback" : callback,
+			"id" : id
 		};
-		var id = this._eventID++;
 		this._scheduledEvents[id.toString()] = {
 			"event" : event,
 			"timeline" : this._onceEvents
 		};
-		this._onceEvents.addEvent(event);
+		this._onceEvents.add(event);
 		return id;
 	};
 
@@ -330,7 +333,7 @@ function(Tone){
 	Tone.Transport.prototype.clear = function(eventId){
 		if (this._scheduledEvents.hasOwnProperty(eventId)){
 			var item = this._scheduledEvents[eventId.toString()];
-			item.timeline.removeEvent(item.event);
+			item.timeline.remove(item.event);
 			delete this._scheduledEvents[eventId.toString()];
 		}
 		return this;
@@ -524,7 +527,7 @@ function(Tone){
 
 	/**
 	 *  Set the subdivision which the swing will be applied to. 
-	 *  The default values is a 16th note. Value must be less 
+	 *  The default value is an 8th note. Value must be less 
 	 *  than a quarter note.
 	 *  
 	 *  @memberOf Tone.Transport#
@@ -634,6 +637,27 @@ function(Tone){
 			var bpm = this.bpm.value;
 			this._ppq = ppq;
 			this.bpm.value = bpm;
+		}
+	});
+
+	/**
+	 *  The hint to the type of playback. Affects tradeoffs between audio 
+	 *  output latency and responsiveness. 
+	 *  
+	 *  In addition to setting the value in seconds, the latencyHint also
+	 *  accepts the strings "interactive" (prioritizes low latency), 
+	 *  "playback" (prioritizes sustained playback), "balanced" (balances
+	 *  latency and performance), and "fastest" (lowest latency, might glitch more often). 
+	 *  @memberOf Tone.Transport#
+	 *  @type {Seconds|String}
+	 *  @name latencyHint
+	 */
+	Object.defineProperty(Tone.Transport.prototype, "latencyHint", {
+		get : function(){
+			return Tone.Clock.latencyHint;
+		},
+		set : function(hint){
+			Tone.Clock.latencyHint = hint;
 		}
 	});
 

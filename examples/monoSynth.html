@@ -13,7 +13,7 @@
 	<script type="text/javascript" src="./scripts/StartAudioContext.js"></script>
 	<script type="text/javascript" src="./scripts/Interface.js"></script>
 	<script type="text/javascript" src="https://tonejs.github.io/Logo/build/Logo.js"></script>
-	<script type="text/javascript" src="./scripts/qwerty-hancock.js"></script>
+	<script type="text/javascript" src="./scripts/Keyboard.js"></script>
 
 	<link rel="stylesheet" type="text/css" href="./style/examples.css">
 
@@ -32,7 +32,6 @@
 			<a href="https://tonejs.github.io/docs/#MonoSynth">Tone.MonoSynth</a> 
 			is composed of one oscillator, one filter, and two envelopes.
 	 		Both envelopes are triggered simultaneously when a note is triggered. 
-	 	   	<img src="https://docs.google.com/drawings/d/1gaY1DF9_Hzkodqf8JI1Cg2VZfwSElpFQfI94IQwad38/pub?w=924&h=240">
 		</div>
 		<div id="Keyboard"></div>
 	</div>
@@ -65,19 +64,10 @@
 	<script id="GUI" type="text/javascript">
 		$(function(){
 
-			var keyboard = new QwertyHancock({
-				id: "Keyboard",
-				width: $("#Content").width(),
-				height: 150,
-				octaves: Interface.isMobile ? 1.26 : 3,
-				startNote: "C3",
-				whiteKeyColour: "white",
-				blackKeyColour: "#1EDF3E",
-				activeColour : "#3833ED"
-			});
+			var keyboard = Interface.Keyboard();
 
-			keyboard.keyDown = function (note, frequency) {
-			    synth.triggerAttack(frequency);
+			keyboard.keyDown = function (note) {
+			    synth.triggerAttack(note);
 			};
 
 			keyboard.keyUp = function () {

@@ -54,6 +54,15 @@ define(["helper/Basic", "Tone/source/Player", "helper/Offline",
 				});
 			});
 
+			it("returns a promise", function(done){
+				var player = new Player();
+				var promise = player.load("./audio/sine.wav");
+				expect(promise).to.be.instanceof(Promise);
+				promise.then(function(){
+					done();
+				});
+			});
+
 			it("can be created with an options object", function(){
 				var player = new Player({
 					"url" : "./audio/sine.wav",
@@ -216,6 +225,69 @@ define(["helper/Basic", "Tone/source/Player", "helper/Offline",
 				offline.run();
 			});
 
+			it("is stopped and restarted if retrigger=false", function(done){
+				Offline2(function(output, test, after){
+
+					var ramp = new Float32Array(Math.floor(44100 * 0.3));
+					for (var i = 0; i < ramp.length; i++){
+						ramp[i] = 1 - (i / (ramp.length)) * 0.3;
+					}
+
+					var buff = new Buffer().fromArray(ramp);
+					var player = new Player(buff).connect(output);
+					player.retrigger = false
+
+					player.start(0);
+					player.start(0.1);
+
+					test(function(sample, time){
+						if (sample > 1){
+							throw new Error("should not exceed 1")
+						}
+					});
+
+					after(function(){
+						buff.dispose();
+						player.dispose();
+						done();
+					});
+
+				}, 0.3);
+			});
+
+			it("can be retriggered", function(done){
+				Offline2(function(output, test, after){
+
+					var ramp = new Float32Array(Math.floor(44100 * 0.3));
+					for (var i = 0; i < ramp.length; i++){
+						ramp[i] = 1 - (i / (ramp.length)) * 0.3;
+					}
+
+					var buff = new Buffer().fromArray(ramp);
+					var player = new Player(buff).connect(output);
+					player.retrigger = true
+
+					player.start(0);
+					player.start(0.1);
+
+					var exceededOne = false;
+					test(function(sample, time){
+						if (sample > 1){
+							expect(time).to.be.gte(0.1);
+							exceededOne = true;
+						}
+					});
+
+					after(function(){
+						expect(exceededOne).to.be.true;
+						buff.dispose();
+						player.dispose();
+						done();
+					});
+
+				}, 0.3);
+			});
+
 			it("can seek to a position at the given time", function(done){
 				Offline2(function(output, test, after){
 
@@ -245,6 +317,40 @@ define(["helper/Basic", "Tone/source/Player", "helper/Offline",
 					});
 
 				}, 0.3);
+			});
+
+			it ("correctly compensates if the offset is greater than the loopEnd", function(done){
+
+				Offline2(function(output, test, after){
+
+					var ramp = new Float32Array(Math.floor(44100 * 0.3));
+					for (var i = 0; i < ramp.length; i++){
+						ramp[i] = (i / (ramp.length)) * 0.3;
+					}
+
+					var buff = new Buffer().fromArray(ramp);
+					var player = new Player(buff).connect(output);
+					player.loopStart = 0.1
+					player.loopEnd = 0.2
+					player.loop = true
+
+					player.start(0, 0.35);
+
+					test(function(sample, time){
+						if (time < 0.05){
+							expect(sample).to.be.within(0.15, 0.2);
+						} else if (time > 0.05 && time < 0.1){
+							expect(sample).to.be.within(0.1, 0.15);
+						}
+					});
+
+					after(function(){
+						buff.dispose();
+						player.dispose();
+						done();
+					});
+
+				}, 0.3);		
 			});
 
 			it("can be play for a specific duration", function(done){

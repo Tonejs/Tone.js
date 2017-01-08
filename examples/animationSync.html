@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+	<title>ANIMATION SYNC</title>
+
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<link rel="icon" type="image/png" sizes="174x174" href="./style/favicon.png">
+
+	<script type="text/javascript" src="../build/Tone.js"></script>
+	<script type="text/javascript" src="./scripts/jquery.min.js"></script>
+	<script type="text/javascript" src="./scripts/draggabilly.js"></script>
+	<script type="text/javascript" src="./scripts/StartAudioContext.js"></script>
+	<script type="text/javascript" src="./scripts/Interface.js"></script>
+	<script type="text/javascript" src="https://tonejs.github.io/Logo/build/Logo.js"></script>
+
+	<link rel="stylesheet" type="text/css" href="./style/examples.css">
+
+	<script type="text/javascript">
+		// jshint ignore: start
+	</script>
+	<style type="text/css">
+		#Notes{
+			width: 100%;
+			height: 20px;
+			margin-top: 3px;
+			position: relative;
+		}
+		.Note {
+			width: 20%;
+			height: 100%;
+			position: relative;
+			float: left;
+			background-color: black;
+			opacity: 0;
+		}
+	</style>
+</head>
+<body>	
+	<div id="Content">
+		<div id="Title">Synchronizing Visuals</div>
+		<div id="Explanation">
+			 Audio scheduling and rendering visuals should always be kept separate. Instead of triggering visuals from within a scheduled event callback, schedule a 'deferred' callback using Tone.Draw which will be invoked on an animation frame at the exact moment of the scheduled event.
+			 <br><br>
+			 For more information see <a href="https://github.com/Tonejs/Tone.js/wiki/Performance">this wiki article</a>. 
+		</div>
+		<div id="Notes">
+			<div id="C4" class="Note"></div>
+			<div id="E4" class="Note"></div>
+			<div id="G4" class="Note"></div>
+			<div id="B4" class="Note"></div>
+			<div id="D5" class="Note"></div>
+		</div>
+	</div>
+
+	<script id="ToneCode" type="text/javascript">
+		
+		var piano = new Tone.Synth({
+			"oscillator" : {
+				"type" : "fmsine4",
+				"modulationType" : "square"
+			}
+		}).toMaster();
+
+		var loop = new Tone.Pattern(function(time, note){
+			piano.triggerAttackRelease(note, "16n", time);
+
+			// Draw.schedule takes a callback and a time to invoke the callback
+			Tone.Draw.schedule(function(){
+				//the callback synced to the animation frame at the given time
+				$("#"+note).css("opacity", 1).animate({"opacity" : 0}, 300)
+			}, time);
+		}, ["C4", "E4", "G4", "B4", "D5"]).start(0);
+
+		loop.interval = "16n";
+
+	</script>
+	<script type="text/javascript">
+
+		$(function(){
+
+			Tone.Transport.lookAhead = 0.5
+
+			Interface.Button({
+				key : 32,
+				type : "toggle",
+				text : "Start",
+				activeText : "Stop",
+				start : function(){
+					Tone.Transport.start("+0.1");
+				},
+				end : function(){
+					Tone.Transport.stop();
+				}
+			});
+		});
+	</script>
+</body>
+</html>

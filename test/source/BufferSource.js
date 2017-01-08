@@ -1,5 +1,5 @@
-define(["helper/Basic", "Tone/source/BufferSource", "helper/Offline2", "Tone/core/Buffer", "helper/Meter"], 
-	function (BasicTests, BufferSource, Offline, Buffer, Meter) {
+define(["helper/Basic", "Tone/source/BufferSource", "helper/Offline2", "Tone/core/Buffer", "helper/Meter", "helper/Meter2"], 
+	function (BasicTests, BufferSource, Offline, Buffer, Meter, Meter2) {
 
 	if (window.__karma__){
 		Buffer.baseUrl = "/base/test/";
@@ -141,24 +141,23 @@ define(["helper/Basic", "Tone/source/BufferSource", "helper/Offline2", "Tone/cor
 			});
 
 			it("can be play for a specific duration", function(done){
-				var player;
-				var meter = new Meter(0.4);
-				meter.before(function(dest){
-					player = new BufferSource(buffer);
+				var meter = new Meter2(function(dest, test, after){
+					var player = new BufferSource(buffer);
 					player.connect(dest);
 					player.start(0).stop(0.1);
-				});
-				meter.test(function(sample, time){
-					if (sample === 0){
-						expect(time).to.at.least(0.1);
-						expect(player.state).to.equal("stopped");
-					}
-				});
-				meter.after(function(){
-					player.dispose();
-					done();
-				});
-				meter.run();
+
+					test(function(sample, time){
+						if (sample === 0){
+							expect(time).to.at.least(0.1);
+							expect(player.state).to.equal("stopped");
+						}
+					});
+
+					after(function(){
+						player.dispose();
+						done();
+					});
+				}, 0.4);
 			});
 
 			it("can be play for a specific duration passed in the 'start' method", function(done){
@@ -182,9 +181,29 @@ define(["helper/Basic", "Tone/source/BufferSource", "helper/Offline2", "Tone/cor
 				meter.run();
 			});
 
+			it("reports the right state", function(done){
+				Offline(function(output, test, after){
+					var player = new BufferSource(buffer).toMaster();
+					player.start(0.2).stop(0.4);
+
+					test(function(sample, time){
+						if (time >= 0.2 && time < 0.4){
+							expect(player.state).to.equal("started");
+						} else {
+							expect(player.state).to.equal("stopped");
+						}
+					});
+
+					after(function(){
+						player.dispose();
+						done();
+					});
+				}, 0.5);
+			});
+
 			it("schedules the onended callback", function(done){
 
-				var player = new BufferSource(buffer).noGC();
+				var player = new BufferSource(buffer);
 				player.start().stop("+0.1");
 
 				var wasCalled = false;
@@ -201,12 +220,14 @@ define(["helper/Basic", "Tone/source/BufferSource", "helper/Offline2", "Tone/cor
 			});
 
 			it("can be scheduled to stop", function(done){
-				Offline(function(output, test, after){
+				Meter2(function(output, test, after){
 					var player = new BufferSource(buffer).toMaster();
 					player.start(0).stop(0.1);
 
 					test(function(sample, time){
-						if (time > 0.1){
+						if (time > 0.01 && time < 0.1){
+							expect(sample).to.be.gt(0);
+						} else if (time > 0.11){
 							expect(sample).to.equal(0);
 						}
 					});
@@ -219,12 +240,14 @@ define(["helper/Basic", "Tone/source/BufferSource", "helper/Offline2", "Tone/cor
 			});
 
 			it("can be scheduled to stop with a ramp", function(done){
-				Offline(function(output, test, after){
+				Meter2(function(output, test, after){
 					var player = new BufferSource(buffer).toMaster();
 					player.start(0).stop(0.1, 0.1);
 
 					test(function(sample, time){
-						if (time > 0.2){
+						if (time > 0.01 && time < 0.2){
+							expect(sample).to.be.gt(0);
+						} else if (time > 0.21){
 							expect(sample).to.equal(0);
 						}
 					});

@@ -32,7 +32,11 @@ define(["Tone/core/Tone", "Tone/core/Param"], function(Tone){
 		 *  @type {Decibels}
 		 *  @signal
 		 */
-		this.threshold = this._compressor.threshold;
+		this.threshold = new Tone.Param({
+			"param" : this._compressor.threshold, 
+			"units" : Tone.Type.Decibels,
+			"convert" : false
+		});
 
 		/**
 		 *  The attack parameter
@@ -53,14 +57,21 @@ define(["Tone/core/Tone", "Tone/core/Param"], function(Tone){
 		 *  @type {Decibels}
 		 *  @signal
 		 */
-		this.knee = this._compressor.knee;
+		this.knee = new Tone.Param({
+			"param" : this._compressor.knee, 
+			"units" : Tone.Type.Decibels,
+			"convert" : false
+		});
 
 		/**
 		 *  The ratio value
 		 *  @type {Number}
 		 *  @signal
 		 */
-		this.ratio = this._compressor.ratio;
+		this.ratio = new Tone.Param({
+			"param" : this._compressor.ratio, 
+			"convert" : false
+		});
 
 		//set the defaults
 		this._readOnly(["knee", "release", "attack", "ratio", "threshold"]);
@@ -95,8 +106,11 @@ define(["Tone/core/Tone", "Tone/core/Param"], function(Tone){
 		this.attack = null;
 		this.release.dispose();
 		this.release = null;
+		this.threshold.dispose();
 		this.threshold = null;
+		this.ratio.dispose();
 		this.ratio = null;
+		this.knee.dispose();
 		this.knee = null;
 		return this;
 	};

@@ -75,7 +75,7 @@
 	<script id="GUI" type="text/javascript">
 		$(function(){
 
-			new Interface.Slider({
+			Interface.Slider({
 				param : "attack",
 				name : "attack",
 				parent : $("#Sliders"),
@@ -85,7 +85,7 @@
 				exp : 2,
 			});
 
-			new Interface.Slider({
+			Interface.Slider({
 				param : "decay",
 				name : "decay",
 				parent : $("#Sliders"),
@@ -95,7 +95,7 @@
 				exp : 2,
 			});
 
-			new Interface.Slider({
+			Interface.Slider({
 				param : "release",
 				name : "release",
 				parent : $("#Sliders"),
@@ -105,7 +105,7 @@
 				exp : 2,
 			});
 
-			new Interface.Slider({
+			Interface.Slider({
 				param : "sustain",
 				name : "sustain",
 				tone : env,
@@ -115,7 +115,7 @@
 				exp : 2,
 			});
 
-			new Interface.Button({
+			Interface.Button({
 				text : "Trigger Attack",
 				activeText : "Trigger Release",
 				key : 32, //spacebar

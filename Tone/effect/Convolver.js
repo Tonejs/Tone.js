@@ -34,16 +34,16 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/effect/Effect"], function(To
 		 *  @type {Tone.Buffer}
 		 *  @private
 		 */
-		this._buffer = new Tone.Buffer()
+		this._buffer = new Tone.Buffer();
 
 		if (this.isString(options.url)){
 			this._buffer.load(options.url, function(buffer){
 				this.buffer = buffer;
 				options.onload();
-			}.bind(this))
+			}.bind(this));
 		} else if (options.url){
 			this.buffer = options.url;
-			options.onload()
+			options.onload();
 		}
 
 		this.connectEffect(this._convolver);
@@ -84,16 +84,15 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/effect/Effect"], function(To
 	 *                      filetype support depends on the
 	 *                      browser.
 	 *  @param  {function=} callback
-	 *  @returns {Tone.Convolver} this
+	 *  @returns {Promise}
 	 */
 	Tone.Convolver.prototype.load = function(url, callback){
-		this._buffer.load(url, function(buff){
+		return this._buffer.load(url, function(buff){
 			this.buffer = buff;
 			if (callback){
 				callback();
 			}
 		}.bind(this));
-		return this;
 	};
 
 	/**

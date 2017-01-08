@@ -13,7 +13,7 @@
 	<script type="text/javascript" src="./scripts/StartAudioContext.js"></script>
 	<script type="text/javascript" src="./scripts/Interface.js"></script>
 	<script type="text/javascript" src="https://tonejs.github.io/Logo/build/Logo.js"></script>
-	<script type="text/javascript" src="./scripts/qwerty-hancock.js"></script>
+	<script type="text/javascript" src="./scripts/Keyboard.js"></script>
 
 	<link rel="stylesheet" type="text/css" href="./style/examples.css">
 
@@ -65,7 +65,7 @@
 	<script id="GUI" type="text/javascript">
 		$(function(){
 
-			new Interface.Slider({
+			Interface.Slider({
 				name : "Chebyshev",
 				parent : $("#Sliders"),
 				min : -100,
@@ -75,7 +75,7 @@
 				}
 			});
 
-			new Interface.Slider({
+			Interface.Slider({
 				name : "Chorus",
 				parent : $("#Sliders"),
 				min : -100,
@@ -85,7 +85,7 @@
 				}
 			});
 
-			new Interface.Slider({
+			Interface.Slider({
 				name : "Freeverb",
 				parent : $("#Sliders"),
 				min : -100,
@@ -98,19 +98,10 @@
 			/**
 			 *  the keyboard
 			 */
-			var keyboard = new QwertyHancock({
-				id: "Keyboard",
-				width: $("#Content").width(),
-				height: 150,
-				octaves: Interface.isMobile ? 1.26 : 3,
-				startNote: "C3",
-				whiteKeyColour: "white",
-				blackKeyColour: "#f5871f",
-				activeColour : "#1EDF3E"
-			});
+			var keyboard = Interface.Keyboard();
 
-			keyboard.keyDown = function (note, frequency) {
-			    synth.triggerAttack(frequency);
+			keyboard.keyDown = function (note) {
+			    synth.triggerAttack(note);
 			};
 
 			keyboard.keyUp = function () {

@@ -3,7 +3,7 @@ define(["Tone/core/Tone", "Tone/source/BufferSource", "Tone/core/Buffers",
 function (Tone) {
 
 	/**
-	 *  @class Tone.MultiPlayer is well suited for one-shots, multi-sampled istruments
+	 *  @class Tone.MultiPlayer is well suited for one-shots, multi-sampled instruments
 	 *         or any time you need to play a bunch of audio buffers. 
 	 *  @param  {Object|Array|Tone.Buffers}  buffers  The buffers which are available
 	 *                                                to the MultiPlayer
@@ -40,10 +40,10 @@ function (Tone) {
 
 		/**
 		 *  Keeps track of the currently playing sources.
-		 *  @type  {Array}
+		 *  @type  {Object}
 		 *  @private
 		 */
-		this._activeSources = [];
+		this._activeSources = {};
 
 		/**
 		 *  The fade in envelope which is applied
@@ -96,27 +96,33 @@ function (Tone) {
 	};
 
 	/**
-	 *  Get the given buffer.
-	 *  @param  {String|Number|AudioBuffer|Tone.Buffer}  buffer
-	 *  @return  {AudioBuffer}  The requested buffer.
-	 *  @private
+	 * Make the source from the buffername
+	 * @param  {String} bufferName
+	 * @return {Tone.BufferSource}
+	 * @private
 	 */
-	Tone.MultiPlayer.prototype._getBuffer = function(buffer){
-		if (this.isNumber(buffer) || this.isString(buffer)){
-			return this.buffers.get(buffer).get();
-		} else if (buffer instanceof Tone.Buffer){
-			return buffer.get();
-		} else {
-			return buffer;
+	Tone.MultiPlayer.prototype._makeSource = function(bufferName){
+		var buffer;
+		if (this.isString(bufferName) || this.isNumber(bufferName)){
+			buffer = this.buffers.get(bufferName).get();
+		} else if (bufferName instanceof Tone.Buffer){
+			buffer = bufferName.get();
+		} else if (bufferName instanceof AudioBuffer){
+			buffer = bufferName;
 		}
+		var source = new Tone.BufferSource(buffer).connect(this.output);
+		if (!this._activeSources.hasOwnProperty(bufferName)){
+			this._activeSources[bufferName] = [];
+		}
+		this._activeSources[bufferName].push(source);
+		return source;
 	};
 
 	/**
 	 *  Start a buffer by name. The `start` method allows a number of options
 	 *  to be passed in such as offset, interval, and gain. This is good for multi-sampled 
 	 *  instruments and sound sprites where samples are repitched played back at different velocities.
-	 *  @param  {String|AudioBuffer}  buffer    The name of the buffer to start.
-	 *                                          Or pass in a buffer which will be started.
+	 *  @param  {String}  bufferName    The name of the buffer to start.
 	 *  @param  {Time}  time      When to start the buffer.
 	 *  @param  {Time}  [offset=0]    The offset into the buffer to play from.
 	 *  @param  {Time=}  duration   How long to play the buffer for.
@@ -124,16 +130,13 @@ function (Tone) {
 	 *  @param  {Gain}  [gain=1]      The gain to play the sample at.
 	 *  @return  {Tone.MultiPlayer}  this
 	 */
-	Tone.MultiPlayer.prototype.start = function(buffer, time, offset, duration, pitch, gain){
-		buffer = this._getBuffer(buffer);
-		var source = new Tone.BufferSource(buffer).connect(this.output);
-		this._activeSources.push(source);
+	Tone.MultiPlayer.prototype.start = function(bufferName, time, offset, duration, pitch, gain){
 		time = this.toSeconds(time);
+		var source = this._makeSource(bufferName);
 		source.start(time, offset, duration, this.defaultArg(gain, 1), this.fadeIn);
 		if (duration){
 			source.stop(time + this.toSeconds(duration), this.fadeOut);
 		}
-		source.onended = this._onended.bind(this);
 		pitch = this.defaultArg(pitch, 0);
 		source.playbackRate.value = this.intervalToFrequencyRatio(pitch);
 		return this;
@@ -142,8 +145,7 @@ function (Tone) {
 	/**
 	 *  Start a looping buffer by name. Similar to `start`, but the buffer
 	 *  is looped instead of played straight through. Can still be stopped with `stop`. 
-	 *  @param  {String|AudioBuffer}  buffer    The name of the buffer to start.
-	 *                                          Or pass in a buffer which will be started.
+	 *  @param  {String}  bufferName    The name of the buffer to start.
 	 *  @param  {Time}  time      When to start the buffer.
 	 *  @param  {Time}  [offset=0]    The offset into the buffer to play from.
 	 *  @param  {Time=}  loopStart   The start of the loop.
@@ -152,44 +154,30 @@ function (Tone) {
 	 *  @param  {Gain}  [gain=1]      The gain to play the sample at.
 	 *  @return  {Tone.MultiPlayer}  this
 	 */
-	Tone.MultiPlayer.prototype.startLoop = function(buffer, time, offset, loopStart, loopEnd, pitch, gain){
-		buffer = this._getBuffer(buffer);
-		var source = new Tone.BufferSource(buffer).connect(this.output);
-		this._activeSources.push(source);
+	Tone.MultiPlayer.prototype.startLoop = function(bufferName, time, offset, loopStart, loopEnd, pitch, gain){
 		time = this.toSeconds(time);
+		var source = this._makeSource(bufferName);
 		source.loop = true;
 		source.loopStart = this.toSeconds(this.defaultArg(loopStart, 0));
 		source.loopEnd = this.toSeconds(this.defaultArg(loopEnd, 0));
 		source.start(time, offset, undefined, this.defaultArg(gain, 1), this.fadeIn);
-		source.onended = this._onended.bind(this);
 		pitch = this.defaultArg(pitch, 0);
 		source.playbackRate.value = this.intervalToFrequencyRatio(pitch);
 		return this;
 	};
 
 	/**
-	 *  Internal callback when a buffer is done playing.
-	 *  @param  {Tone.BufferSource}  source  The stopped source
-	 *  @private
-	 */
-	Tone.MultiPlayer.prototype._onended = function(source){
-		var index = this._activeSources.indexOf(source);
-		this._activeSources.splice(index, 1);
-	};
-
-	/**
-	 *  Stop all instances of the currently playing buffer at the given time.
-	 *  @param  {String|AudioBuffer}  buffer  The buffer to stop.
+	 *  Stop the first played instance of the buffer name.
+	 *  @param  {String}  bufferName  The buffer to stop.
 	 *  @param  {Time=}  time    When to stop the buffer
 	 *  @return  {Tone.MultiPlayer}  this
 	 */
-	Tone.MultiPlayer.prototype.stop = function(buffer, time){
-		buffer = this._getBuffer(buffer);
-		time = this.toSeconds(time);
-		for (var i = 0; i < this._activeSources.length; i++){
-			if (this._activeSources[i].buffer === buffer){
-				this._activeSources[i].stop(time, this.fadeOut);
-			}
+	Tone.MultiPlayer.prototype.stop = function(bufferName, time){
+		if (this._activeSources[bufferName] && this._activeSources[bufferName].length){
+			time = this.toSeconds(time);
+			this._activeSources[bufferName].shift().stop(time, this.fadeOut);
+		} else {
+			throw new Error("Tone.MultiPlayer: cannot stop a buffer that hasn't been started or is already stopped");
 		}
 		return this;
 	};
@@ -201,8 +189,11 @@ function (Tone) {
 	 */
 	Tone.MultiPlayer.prototype.stopAll = function(time){
 		time = this.toSeconds(time);
-		for (var i = 0; i < this._activeSources.length; i++){
-			this._activeSources[i].stop(time, this.fadeOut);
+		for (var bufferName in this._activeSources){
+			var sources = this._activeSources[bufferName];
+			for (var i = 0; i < sources.length; i++){
+				sources[i].stop(time);
+			}
 		}
 		return this;
 	};
@@ -262,11 +253,13 @@ function (Tone) {
 		this._volume = null;
 		this._writable("volume");
 		this.volume = null;
+		for (var bufferName in this._activeSources){
+			this._activeSources[bufferName].forEach(function(source){
+				source.dispose();
+			});
+		}
 		this.buffers.dispose();
 		this.buffers = null;
-		for (var i = 0; i < this._activeSources.length; i++){
-			this._activeSources[i].dispose();
-		}
 		this._activeSources = null;
 		return this;
 	};

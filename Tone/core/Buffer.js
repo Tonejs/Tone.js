@@ -368,7 +368,6 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type"], function(Tone)
 		onload = onload || Tone.noOp;
 
 		function onError(e){
-			Tone.Buffer._currentDownloads--;
 			if (onerror){
 				onerror(e);
 			} else {
@@ -417,7 +416,6 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type"], function(Tone)
 				onError("Tone.Buffer: could not locate file: "+url);
 			}
 		});
-
 		request.addEventListener("error", onError);
 
 		request.addEventListener("progress", function(event){
@@ -431,6 +429,18 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type"], function(Tone)
 		request.send();
 
 		return request;
+	};
+
+	/**
+	 *  Stop all of the downloads in progress
+	 *  @return {Tone.Buffer}
+	 */
+	Tone.Buffer.stopDownloads = function(){
+		Tone.Buffer._downloadQueue.forEach(function(request){
+			request.abort();
+		});
+		Tone.Buffer._currentDownloads = 0;
+		return Tone.Buffer;
 	};
 
 	/**

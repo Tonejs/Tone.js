@@ -129,11 +129,10 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 	 *                     browser.
 	 *  @param  {function=} callback The function to invoke once
 	 *                               the sample is loaded.
-	 *  @returns {Tone.Player} this
+	 *  @returns {Promise}
 	 */
 	Tone.Player.prototype.load = function(url, callback){
-		this._buffer.load(url, this._onload.bind(this, callback));
-		return this;
+		return this._buffer.load(url, this._onload.bind(this, callback));
 	};
 
 	/**
@@ -141,6 +140,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 	 * @private
 	 */
 	Tone.Player.prototype._onload = function(callback){
+		callback = this.defaultArg(callback, Tone.noOp);
 		callback(this);
 		if (this.autostart){
 			this.start();
@@ -204,9 +204,9 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 				var loopEnd = this._source.loopEnd || this._buffer.duration;
 				var loopStart = this._source.loopStart;
 				var loopDuration = loopEnd - loopStart;
-				if (offset > loopDuration){
-					offset = loopStart + (offset % loopDuration);
-					if (offset > loopEnd){
+				if (offset > loopEnd){
+					//move the offset back
+					while (offset > loopEnd){
 						offset -= loopDuration;
 					}
 				}
@@ -249,7 +249,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 	 */
 	Tone.Player.prototype.seek = function(offset, time){
 		time = this.toSeconds(time);
-		if (this._state.getStateAtTime(time) === Tone.State.Started){
+		if (this._state.getValueAtTime(time) === Tone.State.Started){
 			offset = this.toSeconds(offset);
 			// if it's currently playing, stop it
 			this._stop(time);

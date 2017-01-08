@@ -30,7 +30,7 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/source/Noise", "To
 		 *  Nominal range of [0.1, 20]
 		 *  @type {number}
 		 */
-		this.attackNoise = 1;
+		this.attackNoise = options.attackNoise;
 
 		/**
 		 *  the LFCF

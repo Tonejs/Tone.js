@@ -19,6 +19,8 @@ function (Convolver, Basic, EffectTests, Buffer) {
 			});
 		});
 
+		// the buffers are set to 44.1 Khz, but i always get this error:
+		// Error: Failed to set the 'buffer' property on 'ConvolverNode': The buffer sample rate of 48000 does not match the context rate of 44100 Hz.
 		// EffectTests(Convolver, ir);
 
 		context("API", function(){
@@ -39,6 +41,23 @@ function (Convolver, Basic, EffectTests, Buffer) {
 					}
 				});
 			});
+
+			it ("load returns a Promise", function(done){
+				var convolver = new Convolver();
+				convolver.load(testFile).then(function(){
+					convolver.dispose();
+					done();
+				});
+			});
+
+			it ("load invokes the second callback", function(done){
+				var convolver = new Convolver();
+				convolver.load(testFile, function(){
+					convolver.dispose();
+					done();
+				});
+			});
+
 		});
 	});
 });

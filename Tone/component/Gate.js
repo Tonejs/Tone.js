@@ -15,7 +15,7 @@ define(["Tone/core/Tone", "Tone/component/Follower", "Tone/signal/GreaterThan"],
 	 *  @param {Time=} release The follower's release time
 	 *  @example
 	 * var gate = new Tone.Gate(-30, 0.2, 0.3).toMaster();
-	 * var mic = new Tone.Microphone().connect(gate);
+	 * var mic = new Tone.UserMedia().connect(gate);
 	 * //the gate will only pass through the incoming 
 	 * //signal when it's louder than -30db
 	 */

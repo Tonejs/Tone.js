@@ -48,3 +48,5 @@ build/p5.Tone.js
 
 .DS_Store
 examples/graph.html
+
+*.asd

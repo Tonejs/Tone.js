@@ -2,7 +2,7 @@
  *  Tone.js
  *  @author Yotam Mann
  *  @license http://opensource.org/licenses/MIT MIT License
- *  @copyright 2014-2016 Yotam Mann
+ *  @copyright 2014-2017 Yotam Mann
  */
 define(function(){
 
@@ -160,6 +160,8 @@ define(function(){
 			tmpObj[params] = value;
 			params = tmpObj;
 		}
+
+		paramLoop:
 		for (var attr in params){
 			value = params[attr];
 			var parent = this;
@@ -167,6 +169,12 @@ define(function(){
 				var attrSplit = attr.split(".");
 				for (var i = 0; i < attrSplit.length - 1; i++){
 					parent = parent[attrSplit[i]];
+					if (parent instanceof Tone) {
+						attrSplit.splice(0,i+1);
+						var innerParam = attrSplit.join(".");
+						parent.set(innerParam, value);
+						continue paramLoop;
+					}
 				}
 				attr = attrSplit[attrSplit.length - 1];
 			}
@@ -331,6 +339,48 @@ define(function(){
 	 *  @const
 	 */
 	Tone.prototype.sampleTime = 1 / Tone.context.sampleRate;
+
+	/**
+	 *  The number of inputs feeding into the AudioNode. 
+	 *  For source nodes, this will be 0.
+	 *  @memberOf Tone#
+	 *  @name numberOfInputs
+	 *  @readOnly
+	 */
+	Object.defineProperty(Tone.prototype, "numberOfInputs", {
+		get : function(){
+			if (this.input){
+				if (this.isArray(this.input)){
+					return this.input.length;
+				} else {
+					return 1;
+				}
+			} else {
+				return 0;
+			}
+		}
+	});
+
+	/**
+	 *  The number of outputs coming out of the AudioNode. 
+	 *  For source nodes, this will be 0.
+	 *  @memberOf Tone#
+	 *  @name numberOfInputs
+	 *  @readOnly
+	 */
+	Object.defineProperty(Tone.prototype, "numberOfOutputs", {
+		get : function(){
+			if (this.output){
+				if (this.isArray(this.output)){
+					return this.output.length;
+				} else {
+					return 1;
+				}
+			} else {
+				return 0;
+			}
+		}
+	});
 	
 	///////////////////////////////////////////////////////////////////////////
 	//	CONNECTIONS
@@ -802,7 +852,7 @@ define(function(){
 		_silentNode.connect(audioContext.destination);
 	});
 
-	Tone.version = "r8";
+	Tone.version = "r9";
 
 	// allow optional silencing of this log
 	if (!window.TONE_SILENCE_VERSION_LOGGING) {

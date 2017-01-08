@@ -57,11 +57,22 @@ define(["Test", "Tone/core/Buffer"], function (Test, Buffer) {
 
 		it("invokes the error callback on static .load method", function(done){
 			Buffer.load("nosuchfile.wav", function(){
+				Buffer.stopDownloads()
 				throw new Error("shouldn't invoke this function");
 			}, function(){
+				Buffer.stopDownloads()
 				done();
 			});
 		});
+
+		/*it("the static on('error') method is invoked", function(done){
+			Buffer.on("error", function(e){
+				buffer.dispose();
+				Buffer.off("error");
+				done();
+			});
+			var buffer = new Buffer("nosuchfile.wav");
+		});*/
 
 		it("the static on('load') method is invoked", function(done){
 			var buffer = new Buffer(testFile);
@@ -232,6 +243,13 @@ define(["Test", "Tone/core/Buffer"], function (Test, Buffer) {
 			promise.catch(function(){
 				done();
 			});
+		});
+
+		it("Test if the browser supports the given type", function(){
+			expect(Buffer.supportsType('test.wav')).to.be.true
+			expect(Buffer.supportsType('wav')).to.be.true
+			expect(Buffer.supportsType('path/to/test.wav')).to.be.true
+			expect(Buffer.supportsType('path/to/test.nope')).to.be.false
 		});
 	});
 });

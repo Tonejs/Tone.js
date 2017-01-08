@@ -202,7 +202,7 @@ define(["helper/Basic", "Tone/event/Event", "Tone/core/Tone", "Tone/core/Transpo
 				Offline(function(output, test, after){
 					var note = new Event().start(0).stop(0.4);
 
-					Tone.Transport.start().stop(0.5).start(0.55);
+					Tone.Transport.start(0).stop(0.5).start(0.55);
 
 					test(function(sample, time){
 						if (time > 0 && time < 0.38){
@@ -348,6 +348,32 @@ define(["helper/Basic", "Tone/event/Event", "Tone/core/Tone", "Tone/core/Transpo
 				}, 0.8);
 			});
 
+			it ("can be started and stopped multiple times", function(done){
+
+				Offline(function(output, test, after){
+
+					var eventTimes = [0.3, 0.4, 0.9, 1.0, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9];
+					var eventTimeIndex = 0;
+
+					var note = new Event({
+						"loopEnd" : 0.1,
+						"loop" : true,
+						"callback" : function(time){
+							expect(eventTimes.length).to.be.gt(eventTimeIndex);
+							expect(eventTimes[eventTimeIndex]).to.be.closeTo(time, 0.05);
+							eventTimeIndex++;
+						}
+					}).start(0.1).stop(0.2).start(0.5).stop(1.1);
+
+					Tone.Transport.start(0.2).stop(0.5).start(0.8);
+
+					after(function(){
+						note.dispose();	
+						done();
+					});
+				}, 2);
+			});
+
 			it ("loops the correct amount of times when the event is started in the Transport's past", function(done){
 
 				Offline(function(output, test, after){
@@ -379,7 +405,7 @@ define(["helper/Basic", "Tone/event/Event", "Tone/core/Tone", "Tone/core/Transpo
 						done();
 					});
 
-				}, 0.7);
+				}, 1);
 			});
 
 			it ("reports the progress of the loop", function(done){
@@ -394,7 +420,7 @@ define(["helper/Basic", "Tone/event/Event", "Tone/core/Tone", "Tone/core/Transpo
 					Tone.Transport.start();
 
 					after(function(){
-						expect(note.progress).to.be.closeTo(0.8, 0.05);
+						expect(note.progress).to.be.closeTo(0.8, 0.1);
 						note.dispose();	
 						done();
 					});

@@ -17,4 +17,4 @@ before_script:
   - npm install -g karma
   - npm install -g gulp
   - npm install
-script: gulp karma-test
+script: gulp travis-test

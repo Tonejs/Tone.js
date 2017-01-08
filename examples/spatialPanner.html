@@ -65,9 +65,9 @@
 	<script id="GUI" type="text/javascript">
 		$(function(){
 
-			new Interface.Loader()
+			Interface.Loader()
 			
-			new Interface.Button({
+			Interface.Button({
 				key : 32,
 				type : "toggle",
 				text : "Start Sound",
@@ -89,8 +89,7 @@
 			var scene = new THREE.Scene()
 			var camera = new THREE.PerspectiveCamera( 50, aspect, 1, 10000 );
 			camera.position.z = 1;
-
-			// window.camera = camera;
+			camera.updateMatrixWorld()
 
 			var bassMesh = new THREE.Mesh(
 				new THREE.SphereBufferGeometry( 2, 16, 8 ),

@@ -21,8 +21,8 @@ define(["Test", "Tone/core/TimelineState"], function (Test, TimelineState) {
 			sched.setStateAtTime("A", 0);
 			sched.setStateAtTime("B", 1);
 			sched.setStateAtTime("C", 2);
-			expect(sched.getStateAtTime(1)).to.equal("B");
-			expect(sched.getStateAtTime(0.999)).to.equal("A");
+			expect(sched.getValueAtTime(1)).to.equal("B");
+			expect(sched.getValueAtTime(0.999)).to.equal("A");
 			sched.dispose();
 		});
 
@@ -31,7 +31,7 @@ define(["Test", "Tone/core/TimelineState"], function (Test, TimelineState) {
 			sched.setStateAtTime("A", 0);
 			sched.setStateAtTime("B", 1);
 			sched.setStateAtTime("C", 2);
-			expect(sched.getStateAtTime(-11)).is.undefined;
+			expect(sched.getValueAtTime(-11)).is.undefined;
 			sched.dispose();
 		});
 
@@ -40,7 +40,7 @@ define(["Test", "Tone/core/TimelineState"], function (Test, TimelineState) {
 			sched.setStateAtTime("A", 20);
 			sched.setStateAtTime("B", 21);
 			sched.setStateAtTime("C", 22);
-			expect(sched.getStateAtTime(0)).is.equal("initial");
+			expect(sched.getValueAtTime(0)).is.equal("initial");
 			sched.dispose();
 		});
 		

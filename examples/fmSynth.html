@@ -13,7 +13,7 @@
 	<script type="text/javascript" src="./scripts/StartAudioContext.js"></script>
 	<script type="text/javascript" src="./scripts/Interface.js"></script>
 	<script type="text/javascript" src="https://tonejs.github.io/Logo/build/Logo.js"></script>
-	<script type="text/javascript" src="./scripts/qwerty-hancock.js"></script>
+	<script type="text/javascript" src="./scripts/Keyboard.js"></script>
 
 
 	<link rel="stylesheet" type="text/css" href="./style/examples.css">
@@ -55,27 +55,14 @@
 
 		$(function(){
 		
-			new Interface.Slider({
+			Interface.Slider({
 				tone : synth,
 				param : "modulationIndex",
 				name : "mod index",
 				max : 100
 			});
 
-			$("<div>", {
-				"id" : "Keyboard"
-			}).appendTo("#Content");
-
-			var keyboard = new QwertyHancock({
-				id: "Keyboard",
-				width: $("#Content").width(),
-				height: 150,
-				octaves: Interface.isMobile ? 1.26 : 3,
-				startNote: "C3",
-				whiteKeyColour: "white",
-				blackKeyColour: "#ECECEC",
-				activeColour : "#FFFC0C"
-			});
+			var keyboard = Interface.Keyboard();
 
 			keyboard.keyDown = function (note) {
 			    synth.triggerAttack(note);

@@ -165,7 +165,7 @@ define(["Tone/core/Tone", "Tone/type/TimeBase"], function (Tone) {
 	 *  @return  {Frequency}
 	 */
 	Tone.Frequency.prototype.toFrequency = function(){
-		return this.eval()
+		return this.eval();
 	};
 
 	/**

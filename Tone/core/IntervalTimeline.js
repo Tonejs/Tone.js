@@ -36,7 +36,7 @@ define(["Tone/core/Tone", "Tone/type/Type"], function (Tone) {
 	 *  @param  {Object}  event  The event to add to the timeline
 	 *  @return  {Tone.IntervalTimeline}  this
 	 */
-	Tone.IntervalTimeline.prototype.addEvent = function(event){
+	Tone.IntervalTimeline.prototype.add = function(event){
 		if (this.isUndef(event.time) || this.isUndef(event.duration)){
 			throw new Error("Tone.IntervalTimeline: events must have time and duration parameters");
 		}
@@ -62,7 +62,7 @@ define(["Tone/core/Tone", "Tone/type/Type"], function (Tone) {
 	 *  @param  {Object}  event  The event to remove from the timeline
 	 *  @return  {Tone.IntervalTimeline}  this
 	 */
-	Tone.IntervalTimeline.prototype.removeEvent = function(event){
+	Tone.IntervalTimeline.prototype.remove = function(event){
 		if (this._root !== null){
 			var results = [];
 			this._root.search(event.time, results);
@@ -98,7 +98,7 @@ define(["Tone/core/Tone", "Tone/type/Type"], function (Tone) {
 	 */
 	Tone.IntervalTimeline.prototype.cancel = function(after){
 		this.forEachAfter(after, function(event){
-			this.removeEvent(event);
+			this.remove(event);
 		}.bind(this));
 		return this;
 	};
@@ -276,7 +276,7 @@ define(["Tone/core/Tone", "Tone/type/Type"], function (Tone) {
 	 *  @param  {Object}  event  The event to add to the timeline
 	 *  @return  {Object}  The event which spans the desired time
 	 */
-	Tone.IntervalTimeline.prototype.getEvent = function(time){
+	Tone.IntervalTimeline.prototype.get = function(time){
 		if (this._root !== null){
 			var results = [];
 			this._root.search(time, results);

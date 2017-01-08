@@ -47,9 +47,9 @@
 	<script id="GUI" type="text/javascript">
 		$(function(){
 
-			new Interface.Loader();
+			Interface.Loader();
 
-			new Interface.Button({
+			Interface.Button({
 				text : "Start",
 				activeText : "Stop",
 				type : "toggle",
@@ -61,7 +61,7 @@
 				}
 			});
 
-			new Interface.Slider({
+			Interface.Slider({
 				param : "playbackRate",
 				name : "playbackRate",
 				parent : $("#Sliders"),
@@ -70,7 +70,7 @@
 				max : 2,
 			});
 
-			new Interface.Slider({
+			Interface.Slider({
 				param : "detune",
 				name : "detune",
 				parent : $("#Sliders"),
@@ -79,7 +79,7 @@
 				max : 1200,
 			});
 
-			new Interface.Slider({
+			Interface.Slider({
 				param : "grainSize",
 				name : "grainSize",
 				parent : $("#Sliders"),
@@ -88,7 +88,7 @@
 				max : 0.2,
 			});
 
-			new Interface.Slider({
+			Interface.Slider({
 				param : "overlap",
 				name : "overlap",
 				parent : $("#Sliders"),

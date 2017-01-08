@@ -1,3 +1,13 @@
+### r9
+
+* Tone.Clock performance and lookAhead updates. 
+* Tone.Transport.lookAhead = seconds|'playback'|'interactive'|'balanced'
+* Convolver.load and Player.load returns Promise
+* Tone.ExternalInput -> Tone.UserMedia, simplified API, open() returns Promise.
+* Tone.Draw for animation-frame synced drawing
+* Compressor Parameters are now Tone.Params
+* Bug fixes
+
 ### r8
 
 * Transport.seconds returns the progress in seconds. 
@@ -13,7 +23,6 @@
 * Using Tone.Delay and Tone.Gain everywhere
 * Patch for Chrome 53+ issue of not correctly scheduling AudioParams with setValueAtTime
 * Panner3D and Tone.Listener wrap native PannerNode and AudioListener to give 3D panning ability. 
-
 
 ### r7
 

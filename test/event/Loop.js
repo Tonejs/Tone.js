@@ -111,14 +111,14 @@ define(["helper/Basic", "Tone/event/Loop", "Tone/core/Tone",
 			});
 
 			it ("passes in the scheduled time to the callback", function(done){
-				var now = Tone.Transport.now();
+				var now = Tone.Transport.now() + 0.1;
 				var loop = new Loop(function(time){
 					expect(time).to.be.a.number;
 					expect(time - now).to.be.closeTo(0.3, 0.01);
 					loop.dispose();
 					done();
 				});
-				Tone.Transport.start();
+				Tone.Transport.start(now);
 				loop.start(0.3);
 			});
 
@@ -203,7 +203,7 @@ define(["helper/Basic", "Tone/event/Loop", "Tone/core/Tone",
 							expect(loop.state).to.equal("started");
 							loop.dispose();
 							done();
-						}, 100);
+						}, 200);
 					}, 100);
 				}, 500);
 				Tone.Transport.start();

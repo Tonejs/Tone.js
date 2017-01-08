@@ -28,7 +28,12 @@
 	<div id="Content">
 		<div id="Title">Bembe</div>
 		<div id="Explanation">
-			Tone.MetalSynth creates metallic, inharmonic sounds using 6 Tone.FMOscillators with a tuning based on the TR-808 Cymbal. Tone.MembraneSynth makes kick and tom-like sounds using a frequency envelope which is triggered on notes attack. 
+			<a href="https://tonejs.github.io/docs/#MetalSynth">Tone.MetalSynth</a> 
+			creates metallic, inharmonic sounds using 6 
+			<a href="https://tonejs.github.io/docs/#FMOscillator">Tone.FMOscillators</a>
+			with a tuning based on the TR-808 Cymbal. 
+			<a href="https://tonejs.github.io/docs/#MembraneSynth">Tone.MembraneSynth</a>
+			makes kick and tom-like sounds using a frequency envelope which is triggered on notes attack. 
 		</div>
 	</div>
 
@@ -76,7 +81,7 @@
 	<script id="GUI" type="text/javascript">
 		$(function(){
 			
-			new Interface.Button({
+			Interface.Button({
 				key : 32,
 				type : "toggle",
 				text : "Start",

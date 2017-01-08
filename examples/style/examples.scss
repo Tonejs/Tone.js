@@ -15,27 +15,130 @@ $padding: 15px;
 $fontSize : 14px;
 
 /* FOR MOBILES */
-@media (max-width: 400px) {
+@media (max-width: 750px) {
 
 	#TopBar #Homepage a {
 		font-size: 16px !important; 
 	}
 
-	#Content {
-		font-size: 10px !important;
-		max-width: calc(100% - #{$margin * 2}) !important; 
+	#TopBar #Hamburger {
+		display: initial!important;
 	}
 
-	#Content * {
-		font-size: $fontSize !important; 
-	} 
+	#Sidebar {
+		display: none;
+		width: 100%!important;
+	}
+
+	iframe {
+		width: 100%!important;
+	}
 }
 
 html, body {
 	padding: 0px;
 	margin: 0px;
 	height: calc(100% - 4px); 
+	font-family: "Inconsolata", monospace;
 }
+
+/**
+ *  
+ *  Example Home
+ *  
+ */
+#Content.Example {
+
+	height: calc(100% - #{$topbarHeight + $margin * 3});
+	width: calc(100% - #{$margin * 2});
+	margin-bottom: 0px;
+	overflow: hidden;
+	left: $margin;
+
+	#Sidebar {
+		background-color: white;
+		width: $sidebarWidth;
+		position: absolute;
+		left: 0px;
+		top: 0px;
+		height: calc(100% - #{$margin});
+		border-right: $margin solid black;
+		overflow-y: scroll;
+		overflow-x: hidden;
+
+		$catHeight : 25px;
+		$itemHeight : 22px;
+
+		.Category {
+			background-color: black;
+			color: white;
+			width: calc(100% - #{$margin * 2});
+			height: $catHeight;
+			line-height: $catHeight;
+			padding-left: 5px;
+			font-weight: 900;
+		}
+
+		.Item {
+			line-height: $itemHeight;
+			padding-left: 15px;
+			height: $itemHeight;
+			width: 100%;
+
+			&:last-child{
+				margin-bottom: 10px;
+			}
+		}
+
+		&.Open {
+			display: initial!important;
+		}
+		z-index: 1;
+	}
+
+	iframe {
+		width: calc(100% - #{$sidebarWidth + $margin * 2});
+		border: 0px;
+		position: absolute;
+		top: 0px;
+		right: 0px;
+		height: 100%;
+		z-index: 0;
+	}
+
+	$sourceHeight: 40px;
+	#Source {
+		position: absolute;
+		bottom: 0px;
+		right: 0px;
+		width: 80px;
+		height: $sourceHeight;
+		background-color: black;
+		color: white;
+		opacity: 0.5;
+		cursor: pointer;
+		z-index: 0;
+
+		&:before {
+			position: absolute;
+			width: 100%;
+			height: 100%;
+			content : "source";
+			text-align: center;
+			line-height: $sourceHeight;
+		}
+
+		&:hover {
+			opacity: 1;
+
+			&:active {
+				background-color: white;
+				color: black;
+			}
+		}
+	}
+}
+
 
 /**
  *  
@@ -48,7 +151,6 @@ html, body {
 	margin: $margin;
 	position: relative;
 	width: calc(100% - #{$margin * 2});
-	font-family: monospace; 
 
 	#TonejsLogo {
 		position: absolute;
@@ -73,6 +175,46 @@ html, body {
 			text-decoration: none;
 		}
 	}
+
+	#Hamburger {
+
+		$shrink : 0.8;
+
+		display: none;
+		width: $topbarHeight * $shrink;
+		height: $topbarHeight * $shrink;
+		position: absolute;
+		right: 10px;
+		top: ($topbarHeight * (1 - $shrink)) / 2;
+		cursor: pointer;
+
+		span {
+			margin-top: 6px;
+			position: absolute;
+			width: 80%;
+			height: $margin;
+			left: 10%;
+			background-color: white;
+		}
+
+
+		span:nth-child(0) {
+			top: 25% * 0;
+		}
+		span:nth-child(1) {
+			top: 25% * 1;
+		}
+		span:nth-child(2) {
+			top: 25% * 2;
+		}
+
+		&:hover:active {
+			span {
+				background-color: $teal;
+			}
+		}
+	}
+
 }
 
 
@@ -93,7 +235,6 @@ html, body {
 		top: 50%;
 		background-color: $purple;
 		color: white;
-		font-family: monospace;
 		border-radius: $margin;
 		margin-top: -$ButtonSize/2;
 		margin-left: -$ButtonSize/2;
@@ -118,11 +259,11 @@ html, body {
 	// width: calc(100% - 28px); 
 }
 
+
 #Content {
-	font-family: monospace;
 	position: absolute;
-	left: $margin;
-	width: calc(100% - #{$margin * 2});
+	left: 0px;
+	width: 100%;
 	margin-bottom: $padding; 
 
 	#Title {
@@ -137,7 +278,6 @@ html, body {
 
 	#Explanation {
 		position: relative;
-		font-family: monospace;
 		padding: $padding;
 		color: black;
 		font-size: $fontSize;
@@ -157,7 +297,6 @@ html, body {
 
 	a {
 		color: black;
-		font-family: monospace;
 		font-size: $fontSize;
 		font-weight: bold;
 		text-decoration: none; 
@@ -223,7 +362,6 @@ html, body {
 			position: relative;
 			text-align: center;
 			font-size: 12px;
-			font-family: monospace;
 			line-height: $DragHandleSize;
 			color: white; 
 		}
@@ -324,8 +462,10 @@ html, body {
 }
 
 
-#Keyboard {
-	margin: 3px !important; 
+.Keyboard {
+	height: 100px;
+	width: 100%;
+	position: relative;
 }
 
 code {
@@ -338,7 +478,6 @@ code {
 //LOADING
 
 #Loading {
-	font-family: monospace;
 	z-index: 100000;
 	position: absolute;
 	background-color: rgba(140, 140, 140, 0.5);

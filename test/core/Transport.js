@@ -67,7 +67,7 @@ function (Test, Transport, Tone, Offline, TransportTime) {
 					Tone.Transport.schedule(function(){
 						invocations++;
 					}, 0);
-					Tone.Transport.setLoopPoints(0, "4n").start();
+					Tone.Transport.setLoopPoints(0, "4n").start(0);
 					Tone.Transport.loop = true;
 					after(function(){
 						expect(invocations).to.be.greaterThan(1);
@@ -137,7 +137,7 @@ function (Test, Transport, Tone, Offline, TransportTime) {
 				Offline(function(dest, test, after){
 					Tone.Transport.ticks = 200;
 					expect(Tone.Transport.ticks).to.equal(200);
-					Tone.Transport.start();
+					Tone.Transport.start(0);
 					after(function(){
 						expect(Tone.Transport.ticks).to.at.least(200);
 						Tone.Transport.stop();
@@ -149,7 +149,7 @@ function (Test, Transport, Tone, Offline, TransportTime) {
 			it("can get the current position in BarsBeatsSixteenths", function(done){
 				Offline(function(dest, test, after){
 					expect(Tone.Transport.position).to.equal("0:0:0");
-					Tone.Transport.start();
+					Tone.Transport.start(0);
 					after(function(){
 						expect(Tone.Transport.position).to.not.equal("0:0:0");
 						Tone.Transport.stop();
@@ -161,7 +161,7 @@ function (Test, Transport, Tone, Offline, TransportTime) {
 			it("can get the current position in seconds", function(done){
 				Offline(function(dest, test, after){
 					expect(Tone.Transport.seconds).to.equal(0);
-					Tone.Transport.start();
+					Tone.Transport.start(0);
 					test(function(sample, time){
 						expect(Tone.Transport.seconds).to.be.closeTo(time, 0.05);
 					});
@@ -235,7 +235,7 @@ function (Test, Transport, Tone, Offline, TransportTime) {
 
 			it("resets ticks on stop but not on pause", function(done){
 				Offline(function(dest, test, after){
-					Tone.Transport.start().pause(0.1).stop(0.2);
+					Tone.Transport.start(0).pause(0.1).stop(0.2);
 
 					var pausedTicks = 0;
 
@@ -711,6 +711,23 @@ function (Test, Transport, Tone, Offline, TransportTime) {
 					});
 
 				}, 0.7);
+			});
+		});
+
+		context("latencyHint", function(){
+
+			afterEach(resetTransport);
+
+			it ("can get/set the latencyHint in seconds", function(){
+				Tone.Transport.latencyHint = 0.2;
+				expect(Tone.Transport.latencyHint).to.be.a.number;
+				Tone.Transport.latencyHint = "interactive";
+			});
+
+			it ("can set the latencyHint to 'performance', 'interactive' and 'balanced'", function(){
+				Tone.Transport.latencyHint = "performance";
+				Tone.Transport.latencyHint = "balanced";
+				Tone.Transport.latencyHint = "interactive";
 			});
 		});
 

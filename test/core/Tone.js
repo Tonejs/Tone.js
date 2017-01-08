@@ -123,6 +123,30 @@ define(["Test", "Tone/core/Tone", "helper/PassAudio", "Tone/source/Oscillator",
 			});
 		});
 
+
+		context("input/output count", function(){
+
+			it("can get the number of inputs and outputs with no inputs/outputs", function(){
+				var t00 = new Tone(0, 0);
+				expect(t00.numberOfInputs).to.equal(0);
+				expect(t00.numberOfOutputs).to.equal(0);
+			});
+
+			it("can get the number of inputs and outputs with 1 input/output", function(){
+				var t11 = new Tone(1, 1);
+				expect(t11.numberOfInputs).to.equal(1);
+				expect(t11.numberOfOutputs).to.equal(1);
+			});
+
+			it("can get the number of inputs and outputs with multiple input/output", function(){
+				var t44 = new Tone(4, 4);
+				expect(t44.numberOfInputs).to.equal(4);
+				expect(t44.numberOfOutputs).to.equal(4);
+			});
+
+		});
+
+
 		context("defaultArg", function(){
 
 			it("returns a default argument when the given is not defined", function(){
