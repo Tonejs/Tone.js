@@ -139,7 +139,7 @@ function(Tone){
 			"sustain" : 1,
 			"release" : 0.5
 		},
-		"moduation" : {
+		"modulation" : {
 			"type" : "square"
 		},
 		"modulationEnvelope" : {
