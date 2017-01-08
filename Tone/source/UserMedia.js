@@ -239,7 +239,7 @@ define(["Tone/core/Tone", "Tone/component/Volume"], function(Tone){
 	 * @name mute
 	 * @example
 	 * //mute the output
-	 * UserMedia.mute = true;
+	 * userMedia.mute = true;
 	 */
 	Object.defineProperty(Tone.UserMedia.prototype, "mute", {
 		get : function(){
