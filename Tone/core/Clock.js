@@ -385,9 +385,12 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal", "Tone/core/TimelineState
 	 *  "playback" (prioritizes sustained playback), "balanced" (balances
 	 *  latency and performance), and "fastest" (lowest latency, might glitch more often). 
 	 *  @type {String|Seconds}
-	 *  @memberOf Tone.Clock
+	 *  @memberOf Tone.Clock#
 	 *  @name latencyHint
 	 *  @static
+	 *  @example
+	 * //set the lookAhead to 0.3 seconds
+	 * Tone.Clock.latencyHint = 0.3;
 	 */
 	Object.defineProperty(Tone.Clock, "latencyHint", {
 		get : function(){
