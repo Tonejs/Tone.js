@@ -20997,20 +20997,6 @@
 	Module(function (Tone) {
 	    
 	    /**
-		 *  @class  Now called Tone.Synth
-		 *  @constructor
-		 *  @extends {Tone.Monophonic}
-		 */
-	    Tone.SimpleSynth = function (options) {
-	        console.warn('Tone.SimpleSynth is now called Tone.Synth');
-	        Tone.Synth.call(this, options);
-	    };
-	    Tone.extend(Tone.SimpleSynth, Tone.Synth);
-	    return Tone.SimpleSynth;
-	});
-	Module(function (Tone) {
-	    
-	    /**
 		 *  @class Maps a NormalRange [0, 1] to an AudioRange [-1, 1]. 
 		 *         See also Tone.AudioToGain. 
 		 *
