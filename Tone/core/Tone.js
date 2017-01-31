@@ -317,14 +317,6 @@ define(function(){
 	Tone.prototype.context = Tone.context;
 
 	/**
-	 *  the default buffer size
-	 *  @type {number}
-	 *  @static
-	 *  @const
-	 */
-	Tone.prototype.bufferSize = 2048;
-
-	/**
 	 *  The delay time of a single frame (128 samples according to the spec). 
 	 *  @type {number}
 	 *  @static
@@ -757,7 +749,7 @@ define(function(){
 	 *  @return {Number} the currentTime from the AudioContext
 	 */
 	Tone.prototype.now = function(){
-		return this.context.currentTime;
+		return Tone.context.currentTime;
 	};
 
 	/**
@@ -766,7 +758,7 @@ define(function(){
 	 *  @static
 	 */
 	Tone.now = function(){
-		return Tone.context.currentTime;
+		return Tone.prototype.now();
 	};
 
 	///////////////////////////////////////////////////////////////////////////
@@ -852,7 +844,7 @@ define(function(){
 		_silentNode.connect(audioContext.destination);
 	});
 
-	Tone.version = "r9";
+	Tone.version = "r10-dev";
 
 	// allow optional silencing of this log
 	if (!window.TONE_SILENCE_VERSION_LOGGING) {
