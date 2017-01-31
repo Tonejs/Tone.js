@@ -57,7 +57,6 @@ define(["Tone/core/Tone", "Tone/core/Gain"], function (Tone) {
 		Tone.Zero._zeros.buffer = buffer;
 		Tone.Zero._zeros.loop = true;
 		Tone.Zero._zeros.start(0);
-		Tone.Zero._zeros.noGC();
 	});
 
 	return Tone.Zero;

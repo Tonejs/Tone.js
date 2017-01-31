@@ -112,7 +112,6 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper", "Tone/type/Type", "Tone/core
 		Tone.Signal._constant.buffer = buffer;
 		Tone.Signal._constant.loop = true;
 		Tone.Signal._constant.start(0);
-		Tone.Signal._constant.noGC();
 	});
 
 	return Tone.Signal;

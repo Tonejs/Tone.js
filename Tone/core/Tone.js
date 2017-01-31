@@ -399,32 +399,6 @@ define(function(){
 	};
 
 	/**
-	 *  a silent connection to the DesinationNode
-	 *  which will ensure that anything connected to it
-	 *  will not be garbage collected
-	 *  
-	 *  @private
-	 */
-	var _silentNode = null;
-
-	/**
-	 *  makes a connection to ensure that the node will not be garbage collected
-	 *  until 'dispose' is explicitly called
-	 *
-	 *  use carefully. circumvents JS and WebAudio's normal Garbage Collection behavior
-	 *  @returns {Tone} this
-	 */
-	Tone.prototype.noGC = function(){
-		this.output.connect(_silentNode);
-		return this;
-	};
-
-	AudioNode.prototype.noGC = function(){
-		this.connect(_silentNode);
-		return this;
-	};
-
-	/**
 	 *  connect the output of a ToneNode to an AudioParam, AudioNode, or ToneNode
 	 *  @param  {Tone | AudioParam | AudioNode} unit 
 	 *  @param {number} [outputNum=0] optionally which output to connect from
@@ -839,9 +813,6 @@ define(function(){
 		//set the blockTime
 		Tone.prototype.blockTime = 128 / audioContext.sampleRate;
 		Tone.prototype.sampleTime = 1 / audioContext.sampleRate;
-		_silentNode = audioContext.createGain();
-		_silentNode.gain.value = 0;
-		_silentNode.connect(audioContext.destination);
 	});
 
 	Tone.version = "r10-dev";
