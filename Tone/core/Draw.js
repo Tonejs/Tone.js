@@ -50,9 +50,6 @@ define(["Tone/core/Tone", "Tone/core/Timeline"], function (Tone) {
 		 *  @private
 		 */
 		this._boundDrawLoop = this._drawLoop.bind(this);
-
-		//start the loop
-		this._drawLoop();
 	};
 
 	Tone.extend(Tone.Draw);
@@ -70,6 +67,10 @@ define(["Tone/core/Tone", "Tone/core/Timeline"], function (Tone) {
 			callback : callback,
 			time : this.toSeconds(time)
 		});
+		//start the draw loop on the first event
+		if (this._events.length === 1){
+			requestAnimationFrame(this._boundDrawLoop);
+		}
 		return this;
 	};
 
@@ -89,13 +90,15 @@ define(["Tone/core/Tone", "Tone/core/Timeline"], function (Tone) {
 	 *  @private
 	 */
 	Tone.Draw.prototype._drawLoop = function(){
-		requestAnimationFrame(this._boundDrawLoop);
 		var now = Tone.now();
 		while(this._events.length && this._events.peek().time - this.anticipation <= now){
 			var event = this._events.shift();
 			if (now - event.time <= this.expiration){
 				event.callback();
 			}
+		}
+		if (this._events.length > 0){
+			requestAnimationFrame(this._boundDrawLoop);
 		}
 	};
 
