@@ -1,6 +1,6 @@
 define(["Test", "Tone/core/Tone", "helper/PassAudio", "Tone/source/Oscillator", 
-	"Tone/instrument/Synth", "helper/Offline2", "helper/Supports"], 
-	function (Test, Tone, PassAudio, Oscillator, Synth, Offline, Supports) {
+	"Tone/instrument/Synth", "helper/Offline2", "helper/Supports", "Tone/component/Filter"], 
+	function (Test, Tone, PassAudio, Oscillator, Synth, Offline, Supports, Filter) {
 
 	describe("AudioContext", function(){
 		
@@ -210,7 +210,31 @@ define(["Test", "Tone/core/Tone", "helper/PassAudio", "Tone/source/Oscillator",
 				tone.disconnect();
 			});
 
+
 			if (Supports.NODE_DISCONNECT){
+
+				it("can disconnect with args", function(){
+					var node = Tone.context.createGain();
+					tone.connect(node, 0, 0);
+					tone.disconnect(node, 0, 0);
+				});
+
+				it("Tone nodes can disconnect with args", function(){
+					var osc = new Oscillator();
+					var gain = Tone.context.createGain();
+					osc.connect(gain, 0, 0);
+					osc.disconnect(gain, 0, 0);
+					osc.dispose();
+				});
+
+				it("Tone nodes can disconnect from other Tone nodes with args", function(){
+					var osc = new Oscillator();
+					var filter = new Filter();
+					osc.connect(filter, 0, 0);
+					osc.disconnect(filter, 0, 0);
+					osc.dispose();
+				});
+
 				it("can disconnect from a specific connection", function(done){
 					var node0, node1;
 					PassAudio(function(input, output){
