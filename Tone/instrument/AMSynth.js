@@ -41,7 +41,7 @@ function(Tone){
 
 		/**
 		 *  The carrier's envelope
-		 *  @type {Tone.Oscillator}
+		 *  @type {Tone.AmplitudeEnvelope}
 		 */
 		this.envelope = this._carrier.envelope.set(options.envelope);
 
@@ -62,7 +62,7 @@ function(Tone){
 
 		/**
 		 *  The modulator's envelope
-		 *  @type {Tone.Oscillator}
+		 *  @type {Tone.AmplitudeEnvelope}
 		 */
 		this.modulationEnvelope = this._modulator.envelope.set(options.modulationEnvelope);
 
