@@ -245,6 +245,32 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type"], function(Tone)
 	};
 
 	/**
+	 * 	Sums muliple channels into 1 channel
+	 *  @param {Number=} channel Optionally only copy a single channel from the array.
+	 *  @return {Array}
+	 */
+	Tone.Buffer.prototype.toMono = function(chanNum){
+		if (this.isNumber(chanNum)){
+			this.fromArray(this.toArray(chanNum));
+		} else {
+			var outputArray = new Float32Array(this.length);
+			var numChannels = this.numberOfChannels;
+			for (var channel = 0; channel < numChannels; channel++){
+				var channelArray = this.toArray(channel);
+				for (var i = 0; i < channelArray.length; i++){
+					outputArray[i] += channelArray[i];
+				}
+			}
+			//divide by the number of channels
+			outputArray = outputArray.map(function(sample){
+				return sample / numChannels;
+			});
+			this.fromArray(outputArray);
+		}
+		return this;
+	};
+
+	/**
 	 * 	Get the buffer as an array. Single channel buffers will return a 1-dimensional 
 	 * 	Float32Array, and multichannel buffers will return multidimensional arrays.
 	 *  @param {Number=} channel Optionally only copy a single channel from the array.
