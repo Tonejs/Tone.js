@@ -1,4 +1,5 @@
-define(["Test", "Tone/core/Context", "Tone/core/Tone"], function (Test, Context, Tone) {
+define(["Test", "Tone/core/Context", "Tone/core/Tone", "helper/Offline"], 
+	function (Test, Context, Tone, Offline) {
 
 	context("Context", function(){
 		it ("extends the AudioContext methods", function(){
@@ -35,10 +36,12 @@ define(["Test", "Tone/core/Context", "Tone/core/Tone"], function (Test, Context,
 
 		it ("invokes init when a new context is set", function(done){
 			this.timeout(200);
-			Context.on("init", function(context){
+			var initFn = function(context){
 				expect(Tone.context).to.equal(context);
+				Context.off("init", initFn);
 				done();
-			});
+			};
+			Context.on("init", initFn);
 			Tone.context.close();
 			Tone.context = new Context();
 		});
