@@ -59,8 +59,13 @@ define(["Tone/core/Tone", "Tone/core/Gain"], function(Tone){
 	};
 
 	//remove all the send/receives when a new audio context is passed in
-	Tone._initAudioContext(function(){
-		Buses = {};
+	Tone.Context.on("init", function(context){
+		if (context.Buses){
+			Buses = context.Buses;
+		} else {
+			Buses = {};
+			context.Buses = Buses;
+		}
 	});
 
 	return Tone;
