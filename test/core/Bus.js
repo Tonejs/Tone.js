@@ -1,6 +1,6 @@
 define(["Test", "Tone/core/Bus", "Tone/core/Tone", "helper/Offline", 
-	"helper/PassAudio", "Tone/signal/Signal", "Tone/core/Gain", "Tone/core/Master"], 
-	function (Test, Bus, Tone, Offline, PassAudio, Signal, Gain) {
+	"helper/PassAudio", "Tone/signal/Signal", "Tone/core/Gain", "helper/BufferTest"], 
+	function (Test, Bus, Tone, Offline, PassAudio, Signal, Gain, BufferTest) {
 
 	describe("Bus", function(){
 		it ("provides a send and receive method", function(){
@@ -21,16 +21,15 @@ define(["Test", "Tone/core/Bus", "Tone/core/Tone", "helper/Offline",
 
 		it ("passes audio from a send to a receive at the given level", function(){
 			return Offline(function(){
-
 				var sig = new Signal(1);
 				var recv = new Gain().toMaster();
 				sig.send("test", -12);
 				recv.receive("test");
-
-				return function(sample){
+			}, 0.2).then(function(buffer){
+				BufferTest.forEach(buffer, function(sample){
 					expect(sample).to.be.closeTo(0.25, 0.1);
-				};
-			}, 0.2);
+				});
+			});
 		});		
 	});
 });

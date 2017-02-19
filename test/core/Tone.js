@@ -1,11 +1,16 @@
 define(["Test", "Tone/core/Tone", "helper/PassAudio", "Tone/source/Oscillator", 
 	"Tone/instrument/Synth", "helper/Offline", "helper/Supports", 
-	"Tone/component/Filter", "Tone/core/Gain", "Tone/core/Context"], 
-	function (Test, Tone, PassAudio, Oscillator, Synth, Offline, Supports, Filter, Gain, Context) {
+	"Tone/component/Filter", "Tone/core/Gain", "Tone/core/Context", "helper/BufferTest"], 
+	function (Test, Tone, PassAudio, Oscillator, Synth, Offline, Supports, 
+		Filter, Gain, Context, BufferTest) {
 
 	describe("Tone", function(){
 
 		var tone = new Tone();
+
+		before(function(){
+			tone = new Tone();
+		});
 
 		after(function(){
 			tone.dispose();
@@ -301,14 +306,14 @@ define(["Test", "Tone/core/Tone", "helper/PassAudio", "Tone/source/Oscillator",
 			});
 
 			it("ramps to a value given a string and a value and a ramp time", function(){
-				return Offline(function(test){
+				return Offline(function(){
 					var osc = new Oscillator(0).toMaster();
 					var setValue = 20;
 					osc.frequency.toMaster();
 					osc.set("frequency", setValue, 0.2);
 					expect(osc.frequency.value).to.not.be.closeTo(setValue, 0.001);
-
-					test(function(sample, time){
+				}).then(function(buffer){
+					BufferTest.forEach(buffer, function(sample, time){
 						if (time > 0.2){
 							expect(sample).to.closeTo(setValue, setValue * 0.1);
 						}
