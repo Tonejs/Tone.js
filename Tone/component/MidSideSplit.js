@@ -43,24 +43,11 @@ define(["Tone/core/Tone", "Tone/signal/Expr", "Tone/signal/Signal", "Tone/compon
 		this._split.connect(this.mid, 1, 1);
 		this._split.connect(this.side, 0, 0);
 		this._split.connect(this.side, 1, 1);
-		sqrtTwo.connect(this.mid, 0, 2);
-		sqrtTwo.connect(this.side, 0, 2);
+		this.context._sqrtTwo.connect(this.mid, 0, 2);
+		this.context._sqrtTwo.connect(this.side, 0, 2);
 	};
 
 	Tone.extend(Tone.MidSideSplit);
-
-	/**
-	 *  a constant signal equal to 1 / sqrt(2)
-	 *  @type {Number}
-	 *  @signal
-	 *  @private
-	 *  @static
-	 */
-	var sqrtTwo = null;
-
-	Tone._initAudioContext(function(){
-		sqrtTwo = new Tone.Signal(1 / Math.sqrt(2));
-	});
 
 	/**
 	 *  clean up

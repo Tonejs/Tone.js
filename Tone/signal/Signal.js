@@ -41,7 +41,7 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper", "Tone/type/Type", "Tone/core
 		this.input = this._param = this._gain.gain;
 
 		//connect the const output to the node output
-		Tone.Signal._constant.chain(this._gain);
+		this.context._ones.chain(this._gain);
 	};
 
 	Tone.extend(Tone.Signal, Tone.Param);
@@ -83,36 +83,6 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper", "Tone/type/Type", "Tone/core
 		this._gain = null;
 		return this;
 	};
-
-	///////////////////////////////////////////////////////////////////////////
-	//	STATIC
-	///////////////////////////////////////////////////////////////////////////
-
-	/**
-	 *  Generates a constant output of 1.
-	 *  @static
-	 *  @private
-	 *  @const
-	 *  @type {AudioBufferSourceNode}
-	 */
-	Tone.Signal._constant = null;
-
-	/**
-	 *  initializer function
-	 */
-	Tone._initAudioContext(function(audioContext){
-		var buffer = audioContext.createBuffer(1, 128, audioContext.sampleRate);
-		var arr = buffer.getChannelData(0);
-		for (var i = 0; i < arr.length; i++){
-			arr[i] = 1;
-		}
-		Tone.Signal._constant = audioContext.createBufferSource();
-		Tone.Signal._constant.channelCount = 1;
-		Tone.Signal._constant.channelCountMode = "explicit";
-		Tone.Signal._constant.buffer = buffer;
-		Tone.Signal._constant.loop = true;
-		Tone.Signal._constant.start(0);
-	});
 
 	return Tone.Signal;
 });
