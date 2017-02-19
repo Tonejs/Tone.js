@@ -1,35 +1,7 @@
 define(["Test", "Tone/core/Tone", "helper/PassAudio", "Tone/source/Oscillator", 
-	"Tone/instrument/Synth", "helper/Offline2", "helper/Supports", "Tone/component/Filter"], 
-	function (Test, Tone, PassAudio, Oscillator, Synth, Offline, Supports, Filter) {
-
-	describe("AudioContext", function(){
-		
-		this.timeout(3000);
-
-		it ("was created", function(){
-			expect(Tone.context).to.be.instanceof(AudioContext);
-		});
-
-		it ("has OscillatorNode", function(){
-			expect(Tone.context.createOscillator).to.be.instanceof(Function);
-		});
-
-		it ("clock running", function(done){
-			var interval = setInterval(function(){
-				if (Tone.context.currentTime > 0){
-					clearInterval(interval);
-					done();
-				}
-			}, 20);
-		});
-
-		it ("has shimmed API", function(){
-			expect(OscillatorNode.prototype.start).to.be.instanceof(Function);
-			expect(AudioBufferSourceNode.prototype.start).to.be.instanceof(Function);
-			expect(AudioContext.prototype.createGain).to.be.instanceof(Function);
-		});
-
-	});
+	"Tone/instrument/Synth", "helper/Offline", "helper/Supports", 
+	"Tone/component/Filter", "Tone/core/Gain", "Tone/core/Context"], 
+	function (Test, Tone, PassAudio, Oscillator, Synth, Offline, Supports, Filter, Gain, Context) {
 
 	describe("Tone", function(){
 
@@ -235,62 +207,40 @@ define(["Test", "Tone/core/Tone", "helper/PassAudio", "Tone/source/Oscillator",
 					osc.dispose();
 				});
 
-				it("can disconnect from a specific connection", function(done){
-					var node0, node1;
-					PassAudio(function(input, output){
-						node0 = new Tone(1, 1);
-						//internal connection
-						node0.input.connect(node0.output);
-						//two other nodes to pass audio through
-						node1 = Tone.context.createGain();
-						input.chain(node0, output);
-						//connect and disconnect, shouldn't affect the others
-						input.connect(node1);
-						input.disconnect(node1);
-					}, function(){
-						node0.dispose();
-						node1.disconnect();
-						done();
+				it("connects two nodes", function(){
+					return PassAudio(function(input){
+						var node = new Gain().toMaster();
+						input.connect(node);
+					});
+				});
+
+				it("can disconnect from a specific connection", function(){
+					return PassAudio(function(input){
+						var node = new Gain().toMaster();
+						input.connect(node);
+						input.disconnect(node);
+					}).then(function(){
+						return false;
+					}).catch(function(){
+						return true;
 					});
 				});
 			}
 
 
-			it("can chain connections", function(done){
-				var node0, node1, node2;
-				PassAudio(function(input, output){
-					node0 = new Tone(1, 1);
-					//internal connection
-					node0.input.connect(node0.output);
-					//two other nodes to pass audio through
-					node1 = Tone.context.createGain();
-					node2 = Tone.context.createGain();
-					input.connect(node0);
-					node0.chain(node1, node2, output);
-				}, function(){
-					node0.dispose();
-					node1.disconnect();
-					node2.disconnect();
-					done();
+			it("can chain connections", function(){
+				return PassAudio(function(input){
+					var node0 = new Gain();
+					var node1 = new Gain().toMaster();
+					input.chain(node0, node1);
 				});
 			});
 
-			it("can fan connections", function(done){
-				var node0, node1, node2;
-				PassAudio(function(input, output){
-					node0 = new Tone(1, 1);
-					//internal connection
-					node0.input.connect(node0.output);
-					//two other nodes to pass audio through
-					node1 = Tone.context.createGain();
-					node2 = Tone.context.createGain();
-					input.connect(node0);
-					node0.fan(node1, node2, output);
-				}, function(){
-					node0.dispose();
-					node1.disconnect();
-					node2.disconnect();
-					done();
+			it("can fan connections", function(){
+				return PassAudio(function(input){
+					var node0 = new Gain().toMaster();
+					var node1 = new Gain().toMaster();
+					input.fan(node0, node1);
 				});
 			});
 		});
@@ -300,8 +250,8 @@ define(["Test", "Tone/core/Tone", "helper/PassAudio", "Tone/source/Oscillator",
 
 			it ("can set a new context", function(){
 				var origCtx = Tone.context;
-				var ctx = new OfflineAudioContext(2, 44100, 44100);
-				Tone.setContext(ctx);
+				var ctx = new Context();
+				Tone.context = ctx;
 				expect(Tone.context).to.equal(ctx);
 				expect(Tone.prototype.context).to.equal(ctx);
 				//then set it back
@@ -309,7 +259,7 @@ define(["Test", "Tone/core/Tone", "helper/PassAudio", "Tone/source/Oscillator",
 				expect(Tone.context).to.equal(origCtx);
 				expect(Tone.prototype.context).to.equal(origCtx);
 				//and a saftey check
-				expect(ctx).to.not.equal(origCtx);
+				return ctx.close();
 			});
 			
 		});
@@ -332,49 +282,39 @@ define(["Test", "Tone/core/Tone", "helper/PassAudio", "Tone/source/Oscillator",
 				osc.dispose();
 			});		
 
-			it("ramps to a value given an object and ramp time", function(done){
-				Offline(function(dest, test, after){
-					var osc = new Oscillator(0);
+			it("ramps to a value given an object and ramp time", function(){
+				return Offline(function(){
+					var osc = new Oscillator(0).toMaster();
 					var setValue = 30;
-					osc.frequency.connect(dest);
+					osc.frequency.toMaster();
 					osc.set({
 						"frequency" : setValue
 					}, 0.5);
 					expect(osc.frequency.value).to.not.be.closeTo(setValue, 0.001);
 
-					test(function(sample, time){
+					return function(sample, time){
 						if (time > 0.5){
 							expect(sample).to.closeTo(setValue, setValue * 0.1);
 						}
-					});
+					};
+				});
+			});
 
-					after(function(){
-						osc.dispose();
-						done();
-					});
-				}, 0.6);
-			});		
-
-			it("ramps to a value given a string and a value and a ramp time", function(done){
-				Offline(function(dest, test, after){
-					var osc = new Oscillator(0);
-					var setValue = 30;
-					osc.frequency.connect(dest);
-					osc.set("frequency", setValue, 0.5);
+			it("ramps to a value given a string and a value and a ramp time", function(){
+				return Offline(function(test){
+					var osc = new Oscillator(0).toMaster();
+					var setValue = 20;
+					osc.frequency.toMaster();
+					osc.set("frequency", setValue, 0.2);
 					expect(osc.frequency.value).to.not.be.closeTo(setValue, 0.001);
 
 					test(function(sample, time){
-						if (time > 0.5){
+						if (time > 0.2){
 							expect(sample).to.closeTo(setValue, setValue * 0.1);
 						}
 					});
-
-					after(function(){
-						osc.dispose();
-						done();
-					});
-				}, 0.6);
-			});		
+				});
+			});
 
 			it("gets all defaults of the object with no arguments", function(){
 				var osc = new Oscillator(0);
