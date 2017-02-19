@@ -35,13 +35,6 @@ function(Tone){
 		var options = this.optionsObject(arguments, ["positionX", "positionY", "positionZ"], ListenerConstructor.defaults);
 
 		/**
-		 *  The listener node
-		 *  @type {AudioListener}
-		 *  @private
-		 */
-		this._listener = this.context.listener;
-
-		/**
 		 *  Holds the current forward orientation
 		 *  @type  {Array}
 		 *  @private
@@ -103,13 +96,13 @@ function(Tone){
 	 *  @return {Tone.Listener} this
 	 */
 	Tone.Listener.prototype.setPosition = function(x, y, z){
-		if (this._listener.positionX){
+		if (this.context.listener.positionX){
 			var now = this.now();
-			this._listener.positionX.setTargetAtTime(x, now, this._rampTimeConstant);
-			this._listener.positionY.setTargetAtTime(y, now, this._rampTimeConstant);
-			this._listener.positionZ.setTargetAtTime(z, now, this._rampTimeConstant);
+			this.context.listener.positionX.setTargetAtTime(x, now, this._rampTimeConstant);
+			this.context.listener.positionY.setTargetAtTime(y, now, this._rampTimeConstant);
+			this.context.listener.positionZ.setTargetAtTime(z, now, this._rampTimeConstant);
 		} else {
-			this._listener.setPosition(x, y, z);
+			this.context.listener.setPosition(x, y, z);
 		}
 		this._position = Array.prototype.slice.call(arguments);
 		return this;
@@ -129,16 +122,16 @@ function(Tone){
 	 *  @return {Tone.Listener} this
 	 */
 	Tone.Listener.prototype.setOrientation = function(x, y, z, upX, upY, upZ){
-		if (this._listener.forwardX){
+		if (this.context.listener.forwardX){
 			var now = this.now();
-			this._listener.forwardX.setTargetAtTime(x, now, this._rampTimeConstant);
-			this._listener.forwardY.setTargetAtTime(y, now, this._rampTimeConstant);
-			this._listener.forwardZ.setTargetAtTime(z, now, this._rampTimeConstant);
-			this._listener.upX.setTargetAtTime(upX, now, this._rampTimeConstant);
-			this._listener.upY.setTargetAtTime(upY, now, this._rampTimeConstant);
-			this._listener.upZ.setTargetAtTime(upZ, now, this._rampTimeConstant);
+			this.context.listener.forwardX.setTargetAtTime(x, now, this._rampTimeConstant);
+			this.context.listener.forwardY.setTargetAtTime(y, now, this._rampTimeConstant);
+			this.context.listener.forwardZ.setTargetAtTime(z, now, this._rampTimeConstant);
+			this.context.listener.upX.setTargetAtTime(upX, now, this._rampTimeConstant);
+			this.context.listener.upY.setTargetAtTime(upY, now, this._rampTimeConstant);
+			this.context.listener.upZ.setTargetAtTime(upZ, now, this._rampTimeConstant);
 		} else {
-			this._listener.setOrientation(x, y, z, upX, upY, upZ);
+			this.context.listener.setOrientation(x, y, z, upX, upY, upZ);
 		}
 		this._orientation = Array.prototype.slice.call(arguments);
 		return this;
@@ -299,8 +292,6 @@ function(Tone){
 	 *  @returns {Tone.Listener} this
 	 */
 	Tone.Listener.prototype.dispose = function(){
-		this._listener.disconnect();
-		this._listener = null;
 		this._orientation = null;
 		this._position = null;
 		return this;
@@ -308,14 +299,17 @@ function(Tone){
 
 	//SINGLETON SETUP
 	var ListenerConstructor = Tone.Listener;
-	Tone._initAudioContext(function(){
-		if (typeof Tone.Listener === "function"){
+	Tone.Listener = new ListenerConstructor();
+
+	Tone.Context.on("init", function(context){
+		if (context.Listener instanceof ListenerConstructor){
 			//a single listener object
-			Tone.Listener = new Tone.Listener();
+			Tone.Listener = context.Listener;
 		} else {
 			//make new Listener insides
-			ListenerConstructor.call(Tone.Listener);
+			Tone.Listener = new ListenerConstructor();
 		}
+		context.Listener = Tone.Listener;
 	});
 	//END SINGLETON SETUP
 
