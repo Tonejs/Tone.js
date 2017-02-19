@@ -206,8 +206,13 @@ define(["Test", "Tone/core/Clock", "helper/Offline"],
 			it ("resets ticks on stop", function(){
 				return Offline(function(){
 					var clock = new Clock(function(){}, 20).start(0).stop(0.1);
-					return function(){
-						expect(clock.ticks).to.equal(0);
+					return function(time){
+						Test.whenBetween(time, 0, 0.09, function(){
+							expect(clock.ticks).to.be.greaterThan(0);
+						});
+						Test.whenBetween(time, 0.1, Infinity, function(){
+							expect(clock.ticks).to.equal(0);
+						});
 					};
 				}, 0.2);
 			});
@@ -215,8 +220,15 @@ define(["Test", "Tone/core/Clock", "helper/Offline"],
 			it ("does not reset ticks on pause but stops incrementing", function(){
 				return Offline(function(){
 					var clock = new Clock(function(){}, 20).start(0).pause(0.1);
-					return function(){
-						expect(clock.ticks).to.equal(2);
+					var pausedTicks = 0;
+					return function(time){
+						Test.whenBetween(time, 0, 0.1, function(){
+							expect(clock.ticks).to.be.greaterThan(0);
+							pausedTicks = clock.ticks;
+						});
+						Test.whenBetween(time, 0.1, Infinity, function(){
+							expect(clock.ticks).to.equal(pausedTicks);
+						});
 					};
 				}, 0.2);
 			});
@@ -224,78 +236,92 @@ define(["Test", "Tone/core/Clock", "helper/Offline"],
 			it ("starts incrementing where it left off after pause", function(){
 
 				return Offline(function(){
+					var clock = new Clock(function(){}, 20).start(0).pause(0.1).start(0.2);
+
 					var pausedTicks = 0;
 					var tested = false;
-					var clock = new Clock(function(time){
-						if (time < 0.1){
+					return function(time){
+						Test.whenBetween(time, 0, 0.1, function(){
+							expect(clock.ticks).to.be.greaterThan(0);
 							pausedTicks = clock.ticks;
-						} else if (time >= 0.2 && !tested){
-							tested = true;
-							expect(clock.ticks).to.equal(pausedTicks + 1);
-						}
-					}, 20).start(0).pause(0.1).start(0.2);
+						});
+						Test.whenBetween(time, 0.1, 0.19, function(){
+							expect(clock.ticks).to.equal(pausedTicks);
+						});
+						Test.whenBetween(time, 0.2, Infinity, function(){
+							if (!tested){
+								tested = true;
+								expect(clock.ticks).to.equal(pausedTicks + 1);
+							}
+						});
+					};
 				}, 0.3);
 			});
 
-			it ("can start with a tick offset", function(done){
-				var clock = new Clock(function(){
-					expect(clock.ticks).to.equal(4);
-					clock.dispose();
-					done();
-				}, 10);
-				expect(clock.ticks).to.equal(0);
-				clock.start(undefined, 4);
+			it ("can start with a tick offset", function(){
+				return Offline(function(){
+					var tested = false;
+					var clock = new Clock(function(){
+						if (!tested){
+							tested = true;
+							expect(clock.ticks).to.equal(4);
+						}
+					}, 10);
+					expect(clock.ticks).to.equal(0);
+					clock.start(0, 4);
+				});
 			});
 		});
 
 		context("Events", function(){
 
-			it ("triggers the start event on start", function(done){
-				var clock = new Clock(function(){}, 20);
-				var startTime = clock.now() + 0.3;
-				clock.on("start", function(time, offset){
-					expect(time).to.be.closeTo(startTime, 0.05);
-					expect(offset).to.equal(0);
-					clock.dispose();
-					done();
-				});
-				clock.start(startTime);
+			it ("triggers the start event on start", function(){
+				return Offline(function(){
+					var clock = new Clock(function(){}, 20);
+					var startTime = 0.3;
+					clock.on("start", function(time, offset){
+						expect(time).to.be.closeTo(startTime, 0.05);
+						expect(offset).to.equal(0);
+					});
+					clock.start(startTime);
+				}, 0.4);
 			});
 			
 			it ("triggers the start event with an offset", function(done){
-				var clock = new Clock(function(){}, 20);
-				var startTime = clock.now() + 0.3;
-				clock.on("start", function(time, offset){
-					expect(time).to.be.closeTo(startTime, 0.05);
-					expect(offset).to.equal(2);
-					clock.dispose();
-					done();
-				});
-				clock.start(startTime, 2);
+				return Offline(function(){
+					var clock = new Clock(function(){}, 20);
+					var startTime = 0.3;
+					clock.on("start", function(time, offset){
+						expect(time).to.be.closeTo(startTime, 0.05);
+						expect(offset).to.equal(2);
+						clock.dispose();
+						done();
+					});
+					clock.start(startTime, 2);
+				}, 0.4);
 			});
 
-			it ("triggers stop event", function(done){
-				var clock = new Clock(function(){}, 20);
-				var stopTime = clock.now() + 0.3;
-				clock.on("stop", function(time){
-					expect(time).to.be.closeTo(stopTime, 0.05);
-					clock.dispose();
-					done();
+			it ("triggers stop event", function(){
+				return Offline(function(){
+					var clock = new Clock(function(){}, 20);
+					var stopTime = 0.3;
+					clock.on("stop", function(time){
+						expect(time).to.be.closeTo(stopTime, 0.05);
+					});
+					clock.start().stop(stopTime);
 				});
-				clock.start().stop(stopTime);
 			});
 
-			it ("triggers pause stop event", function(done){
-				var clock = new Clock(function(){}, 20);
-				var now = clock.now();
-				clock.on("pause", function(time){
-					expect(time).to.be.closeTo(now + 0.1, 0.05);
-				}).on("stop", function(time){
-					expect(time).to.be.closeTo(now + 0.2, 0.05);
-					clock.dispose();
-					done();
+			it ("triggers pause stop event", function(){
+				return Offline(function(){
+					var clock = new Clock(function(){}, 20);
+					clock.on("pause", function(time){
+						expect(time).to.be.closeTo(0.1, 0.05);
+					}).on("stop", function(time){
+						expect(time).to.be.closeTo(0.2, 0.05);
+					});
+					clock.start().pause(0.1).stop(0.2);
 				});
-				clock.start().pause("+0.1").stop("+0.2");
 			});
 		});
 

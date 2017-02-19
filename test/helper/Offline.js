@@ -1,29 +1,21 @@
-define(["Tone/core/Tone", "Tone/core/Offline", "helper/BufferTest"], function (Tone, Offline, BufferTest) {
+define(["Tone/core/Tone", "Tone/core/Offline", "helper/BufferTest", "Tone/core/Master"], 
+	function (Tone, Offline, BufferTest, Master) {
 
 	return function(callback, duration, channels){
-		duration = duration || 0.5;
+		duration = duration || 0.1;
 		channels = channels || 1;
-		var testFn = null;
 		return Offline(function(Transport){
-			testFn = callback(Transport);
+			var testFn = callback(Transport);
+			if (testFn){
+				Transport.context.on("tick", function(){
+					testFn(Transport.now());
+				});
+			}
 		}, duration).then(function(buffer){
 			if (channels === 1){
 				buffer.toMono();
-			} 
-			if (testFn){
-				var currentTime = 0;
-				Tone.context.now = function(){
-					return currentTime;
-				};
-				BufferTest.forEach(buffer, function(){
-					if (arguments.length === 3){
-						currentTime = arguments[2];
-					} else {
-						currentTime = arguments[1];
-					}
-					testFn.apply(undefined, arguments);
-				});
 			}
+			return buffer;
 		});
 	};
 });
