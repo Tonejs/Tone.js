@@ -618,7 +618,7 @@ define(function(){
 	 *  @return {Number} the currentTime from the AudioContext
 	 */
 	Tone.prototype.now = function(){
-		return Tone.context.currentTime;
+		return Tone.context.now();
 	};
 
 	/**
@@ -627,7 +627,7 @@ define(function(){
 	 *  @static
 	 */
 	Tone.now = function(){
-		return Tone.prototype.now();
+		return Tone.context.now();
 	};
 
 	///////////////////////////////////////////////////////////////////////////
@@ -664,95 +664,15 @@ define(function(){
 	///////////////////////////////////////////////////////////////////////////
 
 	/**
-	 *  Shim all connect/disconnect and some deprecated methods which are still in
-	 *  some older implementations.
-	 *  @internal
-	 */
-	function shimAudioContext(){
-
-		var isUndef = Tone.prototype.isUndef;
-		var isFunction = Tone.prototype.isFunction;
-
-		var nativeConnect = AudioNode.prototype.connect;
-		//replace the old connect method
-		AudioNode.prototype.connect = function toneConnect(B, outNum, inNum){
-			if (B.input){
-				if (Array.isArray(B.input)){
-					if (isUndef(inNum)){
-						inNum = 0;
-					}
-					this.connect(B.input[inNum]);
-				} else {
-					this.connect(B.input, outNum, inNum);
-				}
-			} else {
-				try {
-					if (B instanceof AudioNode){
-						nativeConnect.call(this, B, outNum, inNum);
-					} else {
-						nativeConnect.call(this, B, outNum);
-					}
-				} catch (e) {
-					throw new Error("error connecting to node: "+B);
-				}
-			}
-		};
-
-		var nativeDisconnect = AudioNode.prototype.disconnect;
-		//replace the old disconnect method
-		AudioNode.prototype.disconnect = function toneDisconnect(B, outNum, inNum){
-			if (B && B.input && Array.isArray(B.input)){
-				if (isUndef(inNum)){
-					inNum = 0;
-				}
-				this.disconnect(B.input[inNum], outNum, inNum);
-			} else if (B && B.input){
-				this.disconnect(B.input, outNum, inNum);
-			} else {
-				try {
-					nativeDisconnect.apply(this, arguments);
-				} catch (e) {
-					throw new Error("error disconnecting node: "+B);
-				}
-			}
-		};
-
-		if (!isFunction(AudioContext.prototype.createGain)){
-			AudioContext.prototype.createGain = AudioContext.prototype.createGainNode;
-		}
-		if (!isFunction(AudioContext.prototype.createDelay)){
-			AudioContext.prototype.createDelay = AudioContext.prototype.createDelayNode;
-		}
-		if (!isFunction(AudioContext.prototype.createPeriodicWave)){
-			AudioContext.prototype.createPeriodicWave = AudioContext.prototype.createWaveTable;
-		}
-		if (!isFunction(AudioBufferSourceNode.prototype.start)){
-			AudioBufferSourceNode.prototype.start = AudioBufferSourceNode.prototype.noteGrainOn;
-		}
-		if (!isFunction(AudioBufferSourceNode.prototype.stop)){
-			AudioBufferSourceNode.prototype.stop = AudioBufferSourceNode.prototype.noteOff;
-		}
-		if (!isFunction(OscillatorNode.prototype.start)){
-			OscillatorNode.prototype.start = OscillatorNode.prototype.noteOn;
-		}
-		if (!isFunction(OscillatorNode.prototype.stop)){
-			OscillatorNode.prototype.stop = OscillatorNode.prototype.noteOff;	
-		}
-		if (!isFunction(OscillatorNode.prototype.setPeriodicWave)){
-			OscillatorNode.prototype.setPeriodicWave = OscillatorNode.prototype.setWaveTable;	
-		}
-	}
-
-	/**
 	 *  The private audio context shared by all Tone Nodes. 
 	 *  @private
-	 *  @type {AudioContext|undefined}
+	 *  @type {Tone.Context|undefined}
 	 */
 	var audioContext;
 
 	/**
 	 *  A static pointer to the audio context accessible as Tone.context. 
-	 *  @type {AudioContext}
+	 *  @type {Tone.Context}
 	 *  @name context
 	 *  @memberOf Tone
 	 */
@@ -761,24 +681,28 @@ define(function(){
 			return audioContext;
 		},
 		set : function(context){
-			audioContext = context;
-			//invoke all the callbacks
-			for (var i = 0; i < newContextCallbacks.length; i++){
-				newContextCallbacks[i](context);
+			if (Tone.Context && context instanceof Tone.Context){
+				audioContext = context;
+			} else {
+				audioContext = new Tone.Context(context);
+			}
+			//initialize the new audio context
+			if (Tone.Context){
+				Tone.Context.emit("init", audioContext);
 			}
 		}
 	});
 
 	/**
-	 *  AudioContext
-	 *  @type {AudioContext}
+	 *  The AudioContext
+	 *  @type {Tone.Context}
 	 *  @name context
 	 *  @memberOf Tone#
 	 *  @readOnly
 	 */
 	Object.defineProperty(Tone.prototype, "context", {
 		get : function(){
-			return audioContext;
+			return Tone.context;
 		}
 	});
 
@@ -860,23 +784,6 @@ define(function(){
 	// allow optional silencing of this log
 	if (!window.TONE_SILENCE_VERSION_LOGGING) {
 		console.log("%c * Tone.js " + Tone.version + " * ", "background: #000; color: #fff");
-	}
-
-	//shim the main audio context constructors
-	if (window.hasOwnProperty("webkitAudioContext") && !window.hasOwnProperty("AudioContext")){
-		window.AudioContext = window.webkitAudioContext;
-	}
-
-	if (window.hasOwnProperty("webkitOfflineAudioContext") && !window.hasOwnProperty("OfflineAudioContext")){
-		window.OfflineAudioContext = window.webkitOfflineAudioContext;
-	}
-
-	// create the audio context and shim it
-	if (Tone.supported){
-		audioContext = new window.AudioContext();
-		shimAudioContext();
-	} else {
-		console.warn("This browser does not support Tone.js");
 	}
 
 	return Tone;
