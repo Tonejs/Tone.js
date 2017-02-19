@@ -15,7 +15,9 @@ define(["Tone/core/Tone", "deps/chai", "Tone/core/Context"], function (Tone, cha
 		timeout : 5000
 	});
 
-
+	Context.on("init", function(){
+		Test.input = Tone.context.createGain();
+	});
 
 	/**
 	 *  The Test object
