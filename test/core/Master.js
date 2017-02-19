@@ -1,5 +1,6 @@
-define(["Test", "Tone/core/Master", "Tone/core/Tone", "helper/Offline", "helper/PassAudio"], 
-	function (Test, Master, Tone, Offline, PassAudio) {
+define(["Test", "Tone/core/Master", "Tone/core/Tone", "helper/Offline", "helper/PassAudio", 
+	"Tone/source/Oscillator", "helper/BufferTest"], 
+	function (Test, Master, Tone, Offline, PassAudio, Oscillator, BufferTest) {
 
 	describe("Master", function(){
 		it ("exists", function(){
@@ -18,38 +19,33 @@ define(["Test", "Tone/core/Master", "Tone/core/Tone", "helper/Offline", "helper/
 			expect(Tone.Master.mute).to.be.true;
 		});
 
-		it ("passes audio through", function(done){
-			PassAudio(function(input){
+		it ("passes audio through", function(){
+			return PassAudio(function(input){
 				input.toMaster();
-			}, done);
+			});
 		});
 
-		it ("passes no audio when muted", function(done){
-			var offline = new Offline();
-			offline.before(function(){
+		it ("passes no audio when muted", function(){
+			return Offline(function(){
+				new Oscillator().toMaster().start(0);
 				Tone.Master.mute = true;
+			}, 0.01).then(function(buffer){
+				expect(BufferTest.isSilent(buffer));
 			});
-			offline.test(function(sample){
-				expect(sample).to.equal(0);
-			});
-			offline.after(done);
-			offline.run();
 		});
 
 		it ("has a master volume control", function(){
-			Tone.Master.volume.value = -20;
-			expect(Tone.Master.volume.value).to.be.closeTo(-20, 0.1);
+			return Offline(function(){
+				Tone.Master.volume.value = -20;
+				expect(Tone.Master.volume.value).to.be.closeTo(-20, 0.1);
+			});
 		});
 
-		it ("can pass audio through chained nodes", function(done){
-			var gain;
-			PassAudio(function(input){
-				gain = Tone.context.createGain();
+		it ("can pass audio through chained nodes", function(){
+			return PassAudio(function(input){
+				var gain = Tone.context.createGain();
 				input.connect(gain);
 				Tone.Master.chain(gain);
-			}, function(){
-				gain.disconnect();
-				done();
 			});
 		});
 	});

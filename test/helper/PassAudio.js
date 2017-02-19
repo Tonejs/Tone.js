@@ -1,4 +1,5 @@
-define(["Test", "Tone/core/Offline", "Tone/signal/Signal"], function (Test, Offline, Signal) {
+define(["Test", "Tone/core/Offline", "Tone/signal/Signal", "Tone/core/Master"], 
+	function (Test, Offline, Signal, Master) {
 
 	var PassAudio = function(before){
 
