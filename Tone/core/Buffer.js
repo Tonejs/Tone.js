@@ -396,6 +396,7 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type"], function(Tone)
 		function onError(e){
 			if (onerror){
 				onerror(e);
+				Tone.Buffer.emit("error", e);
 			} else {
 				throw new Error(e);
 			}
@@ -460,8 +461,9 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type"], function(Tone)
 	/**
 	 *  Stop all of the downloads in progress
 	 *  @return {Tone.Buffer}
+	 *  @static
 	 */
-	Tone.Buffer.stopDownloads = function(){
+	Tone.Buffer.cancelDownloads = function(){
 		Tone.Buffer._downloadQueue.forEach(function(request){
 			request.abort();
 		});
@@ -483,6 +485,32 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type"], function(Tone)
 		extension = extension[extension.length - 1];
 		var response = document.createElement("audio").canPlayType("audio/"+extension);
 		return response !== "";
+	};
+
+	/**
+	 *  Returns a Promise which resolves when all of the buffers have loaded
+	 */
+	Tone.loaded = function(){
+		var onload, onerror;
+		return new Promise(function(success, fail){
+			onload = function(){
+				success();
+			};
+			onerror = function(){
+				fail();
+			};
+			//add the event listeners
+			Tone.Buffer.on("load", onload);
+			Tone.Buffer.on("error", onerror);
+		}).then(function(){
+			//remove the events when it's resolved
+			Tone.Buffer.off("load", onload);
+			Tone.Buffer.off("error", onerror);
+		}).catch(function(){
+			//remove the events when it's resolved
+			Tone.Buffer.off("load", onload);
+			Tone.Buffer.off("error", onerror);
+		});
 	};
 
 	return Tone.Buffer;

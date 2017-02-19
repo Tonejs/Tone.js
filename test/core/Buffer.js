@@ -57,22 +57,23 @@ define(["Test", "Tone/core/Buffer"], function (Test, Buffer) {
 
 		it("invokes the error callback on static .load method", function(done){
 			Buffer.load("nosuchfile.wav", function(){
-				Buffer.stopDownloads()
+				Buffer.cancelDownloads();
 				throw new Error("shouldn't invoke this function");
 			}, function(){
-				Buffer.stopDownloads()
+				Buffer.cancelDownloads();
 				done();
 			});
 		});
 
-		/*it("the static on('error') method is invoked", function(done){
+		it("the static on('error') method is invoked", function(done){
 			Buffer.on("error", function(e){
 				buffer.dispose();
+				Buffer.cancelDownloads();
 				Buffer.off("error");
 				done();
 			});
 			var buffer = new Buffer("nosuchfile.wav");
-		});*/
+		});
 
 		it("the static on('load') method is invoked", function(done){
 			var buffer = new Buffer(testFile);
