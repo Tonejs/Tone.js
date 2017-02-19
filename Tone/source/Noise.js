@@ -187,16 +187,16 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 	 */
 	var _pinkNoise = null, _brownNoise = null, _whiteNoise = null;
 
-	Tone._initAudioContext(function(audioContext){
+	function createNoise(context){
 
-		var sampleRate = audioContext.sampleRate;
+		var sampleRate = context.sampleRate;
 
 		//four seconds per buffer
 		var bufferLength = sampleRate * 4;
 
 		//fill the buffers
 		_pinkNoise = (function() {
-			var buffer = audioContext.createBuffer(2, bufferLength, sampleRate);
+			var buffer = context.createBuffer(2, bufferLength, sampleRate);
 			for (var channelNum = 0; channelNum < buffer.numberOfChannels; channelNum++){
 				var channel = buffer.getChannelData(channelNum);
 				var b0, b1, b2, b3, b4, b5, b6;
@@ -218,7 +218,7 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 		}());
 
 		_brownNoise = (function() {
-			var buffer = audioContext.createBuffer(2, bufferLength, sampleRate);
+			var buffer = context.createBuffer(2, bufferLength, sampleRate);
 			for (var channelNum = 0; channelNum < buffer.numberOfChannels; channelNum++){
 				var channel = buffer.getChannelData(channelNum);
 				var lastOut = 0.0;
@@ -233,7 +233,7 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 		})();
 
 		_whiteNoise = (function(){
-			var buffer = audioContext.createBuffer(2, bufferLength, sampleRate);
+			var buffer = context.createBuffer(2, bufferLength, sampleRate);
 			for (var channelNum = 0; channelNum < buffer.numberOfChannels; channelNum++){
 				var channel = buffer.getChannelData(channelNum);
 				for (var i = 0; i < bufferLength; i++){
@@ -242,7 +242,10 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 			}
 			return buffer;
 		}());
-	});
+	}
+	createNoise(Tone.context);
+
+	Tone.Context.on("init", createNoise);
 
 	return Tone.Noise;
 });

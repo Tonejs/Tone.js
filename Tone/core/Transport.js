@@ -1,5 +1,5 @@
 define(["Tone/core/Tone", "Tone/core/Clock", "Tone/type/Type", "Tone/core/Timeline", 
-	"Tone/core/Emitter", "Tone/core/Gain", "Tone/core/IntervalTimeline"], 
+	"Tone/core/Emitter", "Tone/core/Gain", "Tone/core/IntervalTimeline", "Tone/core/Context"], 
 function(Tone){
 
 	"use strict";
@@ -787,22 +787,15 @@ function(Tone){
 	///////////////////////////////////////////////////////////////////////////////
 
 	var TransportConstructor = Tone.Transport;
+	Tone.Transport = new TransportConstructor();
 
-	Tone._initAudioContext(function(){
-		if (typeof Tone.Transport === "function"){
-			//a single transport object
-			Tone.Transport = new Tone.Transport();
+	Tone.Context.on("init", function(context){
+		if (context.Transport instanceof TransportConstructor){
+			Tone.Transport = context.Transport;
 		} else {
-			//stop the clock
-			Tone.Transport.stop();
-			//get the previous values
-			var prevSettings = Tone.Transport.get();
-			//destory the old transport
-			Tone.Transport.dispose();
-			//make new Transport insides
-			TransportConstructor.call(Tone.Transport);
-			//set the previous config
-			Tone.Transport.set(prevSettings);
+			Tone.Transport = new TransportConstructor();
+			//store the Transport on the context so it can be retrieved later
+			context.Transport = Tone.Transport;
 		}
 	});
 
