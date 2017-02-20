@@ -95,8 +95,7 @@ function (LFO, Basic, Offline, Test, OutputAudio, Tone, Signal) {
 				return Offline(function(){
 					new LFO(100, 10, 20).toMaster();
 				}).then(function(buffer){
-					expect(buffer.min()).to.be.closeTo(15, 0.1);
-					expect(buffer.max()).to.be.closeTo(15, 0.1);
+					expect(buffer.value()).to.be.closeTo(15, 0.1);
 				});
 			});
 
@@ -107,8 +106,7 @@ function (LFO, Basic, Offline, Test, OutputAudio, Tone, Signal) {
 						"min" : 0
 					}).toMaster();
 				}).then(function(buffer){
-					expect(buffer.min()).to.be.closeTo(0, 0.1);
-					expect(buffer.max()).to.be.closeTo(0, 0.1);
+					expect(buffer.value()).to.be.closeTo(0, 0.1);
 				});
 			});
 
@@ -121,8 +119,7 @@ function (LFO, Basic, Offline, Test, OutputAudio, Tone, Signal) {
 					}).toMaster();
 					lfo.phase = 270;
 				}).then(function(buffer){
-					expect(buffer.min()).to.be.closeTo(1, 0.1);
-					expect(buffer.max()).to.be.closeTo(1, 0.1);
+					expect(buffer.value()).to.be.closeTo(1, 0.1);
 				});
 			});
 
