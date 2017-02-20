@@ -8,58 +8,48 @@ function (LowpassCombFilter, Basic, Offline, Test, Signal, PassAudio, PassAudioS
 		context("Comb Filtering", function(){
 
 			it("handles input and output connections", function(){
-				var fbcf = new LowpassCombFilter();
-				Test.connect(fbcf);
-				fbcf.connect(Test);
-				fbcf.dispose();
+				var lpcf = new LowpassCombFilter();
+				Test.connect(lpcf);
+				lpcf.connect(Test);
+				lpcf.dispose();
 			});
 
 			it("can be constructed with an object", function(){
-				var fbcf = new LowpassCombFilter({
+				var lpcf = new LowpassCombFilter({
 					"delayTime" : 0.2,
 					"resonance" : 0.3,
 					"dampening" : 2400
 				});
-				expect(fbcf.delayTime.value).to.be.closeTo(0.2, 0.001);
-				expect(fbcf.resonance.value).to.be.closeTo(0.3, 0.001);
-				expect(fbcf.dampening.value).to.be.closeTo(2400, 0.001);
-				fbcf.dispose();
+				expect(lpcf.delayTime.value).to.be.closeTo(0.2, 0.001);
+				expect(lpcf.resonance.value).to.be.closeTo(0.3, 0.001);
+				expect(lpcf.dampening.value).to.be.closeTo(2400, 0.001);
+				lpcf.dispose();
 			});
 
 			it("can be get and set through object", function(){
-				var fbcf = new LowpassCombFilter();
-				fbcf.set({
+				var lpcf = new LowpassCombFilter();
+				lpcf.set({
 					"delayTime" : 0.2,
 					"resonance" : 0.3,
 					"dampening" : 2000
 				});
-				expect(fbcf.get().delayTime).to.be.closeTo(0.2, 0.001);
-				expect(fbcf.get().resonance).to.be.closeTo(0.3, 0.001);
-				expect(fbcf.get().dampening).to.be.closeTo(2000, 0.001);
-				fbcf.dispose();
+				expect(lpcf.get().delayTime).to.be.closeTo(0.2, 0.001);
+				expect(lpcf.get().resonance).to.be.closeTo(0.3, 0.001);
+				expect(lpcf.get().dampening).to.be.closeTo(2000, 0.001);
+				lpcf.dispose();
 			});
 
-			it("passes the incoming signal through", function(done){
-				var fbcf;
-				PassAudio(function(input, output){
-					fbcf = new LowpassCombFilter();
-					input.connect(fbcf);
-					fbcf.connect(output);
-				}, function(){
-					fbcf.dispose();
-					done();
+			it("passes the incoming signal through", function(){
+				return PassAudio(function(input){
+					var lpcf = new LowpassCombFilter(0).toMaster();
+					input.connect(lpcf);
 				});
 			});
 
-			it("passes the incoming stereo signal through", function(done){
-				var fbcf;
-				PassAudioStereo(function(input, output){
-					fbcf = new LowpassCombFilter();
-					input.connect(fbcf);
-					fbcf.connect(output);
-				}, function(){
-					fbcf.dispose();
-					done();
+			it("passes the incoming stereo signal through", function(){
+				return PassAudioStereo(function(input){
+					var lpcf = new LowpassCombFilter(0).toMaster();
+					input.connect(lpcf);
 				});
 			});
 		});

@@ -1,6 +1,6 @@
-define(["Tone/component/Volume", "helper/Basic", "helper/Meter", "Test", 
+define(["Tone/component/Volume", "helper/Basic", "helper/Offline", "Test", 
 	"Tone/signal/Signal", "helper/PassAudio", "helper/PassAudioStereo"], 
-function (Volume, Basic, Meter, Test, Signal, PassAudio, PassAudioStereo) {
+function (Volume, Basic, Offline, Test, Signal, PassAudio, PassAudioStereo) {
 	describe("Volume", function(){
 
 		Basic(Volume);
@@ -56,67 +56,39 @@ function (Volume, Basic, Meter, Test, Signal, PassAudio, PassAudioStereo) {
 				vol.dispose();
 			});
 
-			it("passes the incoming signal through", function(done){
-				var vol;
-				PassAudio(function(input, output){
-					vol = new Volume();
+			it("passes the incoming signal through", function(){
+				return PassAudio(function(input){
+					var vol = new Volume().toMaster();
 					input.connect(vol);
-					vol.connect(output);
-				}, function(){
-					vol.dispose();
-					done();
 				});
 			});
 
-			it("passes the incoming stereo signal through", function(done){
-				var vol;
-				PassAudioStereo(function(input, output){
-					vol = new Volume();
+			it("passes the incoming stereo signal through", function(){
+				return PassAudioStereo(function(input){
+					var vol = new Volume().toMaster();
 					input.connect(vol);
-					vol.connect(output);
-				}, function(){
-					vol.dispose();
-					done();
 				});
 			});
 
-			it("can lower the volume", function(done){
-				var vol;
-				var signal;
-				var meter = new Meter();
-				meter.before(function(output){
-					vol = new Volume(-10).connect(output);
-					signal = new Signal(1).connect(vol);
+			it("can lower the volume", function(){
+				return Offline(function(){
+					var vol = new Volume(-10).toMaster();
+					new Signal(1).connect(vol);
+				}).then(function(buffer){
+					buffer.getRMS().forEach(function(level){
+						expect(level).to.be.closeTo(0.315, 0.01);
+					});
 				});
-				meter.test(function(level){
-					expect(level).to.be.closeTo(vol.dbToGain(-10), 0.01);
-				});
-				meter.after(function(){
-					vol.dispose();
-					signal.dispose();
-					done();
-				});
-				meter.run();
 			});
 
-			it("can mute the volume", function(done){
-				var vol;
-				var signal;
-				var meter = new Meter();
-				meter.before(function(output){
-					vol = new Volume().connect(output);
+			it("can mute the volume", function(){
+				return Offline(function(){
+					var vol = new Volume(0).toMaster();
+					new Signal(1).connect(vol);
 					vol.mute = true;
-					signal = new Signal(1).connect(vol);
+				}).then(function(buffer){
+					expect(buffer.isSilent()).to.be.true;
 				});
-				meter.test(function(level){
-					expect(level).to.equal(0);
-				});
-				meter.after(function(){
-					vol.dispose();
-					signal.dispose();
-					done();
-				});
-				meter.run();
 			});
 
 		});

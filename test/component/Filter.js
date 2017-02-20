@@ -50,15 +50,17 @@ function (Filter, Basic, Offline, Test, Signal, PassAudio, PassAudioStereo) {
 				filter.dispose();
 			});
 
-			it("passes the incoming signal through", function(done){
-				var filter;
-				PassAudio(function(input, output){
-					filter = new Filter();
+			it("passes the incoming signal through", function(){
+				return PassAudio(function(input){
+					var filter = new Filter().toMaster();
 					input.connect(filter);
-					filter.connect(output);
-				}, function(){
-					filter.dispose();
-					done();
+				});
+			});
+
+			it("passes the incoming stereo signal through", function(){
+				return PassAudioStereo(function(input){
+					var filter = new Filter().toMaster();
+					input.connect(filter);
 				});
 			});
 
@@ -89,30 +91,6 @@ function (Filter, Basic, Offline, Test, Signal, PassAudio, PassAudioStereo) {
 					filter.type = "nontype";
 				}).to.throw(Error);
 				filter.dispose();
-			});
-
-			it("passes the incoming signal through", function(done){
-				var filter;
-				PassAudio(function(input, output){
-					filter = new Filter();
-					input.connect(filter);
-					filter.connect(output);
-				}, function(){
-					filter.dispose();
-					done();
-				});
-			});
-
-			it("passes the incoming stereo signal through", function(done){
-				var filter;
-				PassAudioStereo(function(input, output){
-					filter = new Filter();
-					input.connect(filter);
-					filter.connect(output);
-				}, function(){
-					filter.dispose();
-					done();
-				});
 			});
 			
 		});

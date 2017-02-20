@@ -37,25 +37,15 @@ function (Follower, Basic, Offline, Test, Signal, PassAudio, PassAudioStereo, Su
 				follower.dispose();
 			});
 
-			it("smoothes the incoming signal", function(done){
-				var foll, sig;
-				var offline = new Offline(0.1); 
-				offline.before(function(dest){
-					foll = new Follower(0.1, 0.5);
-					sig = new Signal(0);
+			it("smoothes the incoming signal", function(){
+				return Offline(function(){
+					var foll = new Follower(0.1, 0.5).toMaster();
+					var sig = new Signal(0);
 					sig.connect(foll);
-					foll.connect(dest);
 					sig.setValueAtTime(1, 0.1);
-				}); 
-				offline.test(function(sample){
-					expect(sample).to.lessThan(1);
-				}); 
-				offline.after(function(){
-					foll.dispose();
-					sig.dispose();
-					done();
+				}, 0.1).then(function(buffer){
+					expect(buffer.max()).to.lessThan(1);
 				});
-				offline.run();
 			});
 
 			/*it("smoothing follows attack and release", function(done){
@@ -93,15 +83,11 @@ function (Follower, Basic, Offline, Test, Signal, PassAudio, PassAudioStereo, Su
 
 			if (Supports.WAVESHAPER_0_POSITION){
 
-				it("passes the incoming signal through", function(done){
+				it("passes the incoming signal through", function(){
 					var follower;
-					PassAudio(function(input, output){
-						follower = new Follower();
+					return PassAudio(function(input){
+						follower = new Follower().toMaster();
 						input.connect(follower);
-						follower.connect(output);
-					}, function(){
-						follower.dispose();
-						done();
 					});
 				});
 			}

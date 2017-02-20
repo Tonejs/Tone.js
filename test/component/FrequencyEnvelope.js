@@ -52,29 +52,28 @@ function (FrequencyEnvelope, Basic, Offline, Test, Envelope) {
 			});
 
 
-			it ("goes to the scaled range", function(done){
-				var env;
-				var offline = new Offline(0.3); 
-				offline.before(function(dest){
-					env = new FrequencyEnvelope(0.01, 0.4, 1);
+			it ("goes to the scaled range", function(){
+				var e = {
+					attack : 0.01,
+					decay : 0.4,
+					sustain : 1
+				};
+				return Offline(function(){
+					var env = new FrequencyEnvelope(e.attack, e.decay, e.sustain);
 					env.baseFrequency = 200;
 					env.octaves = 3;
 					env.attackCurve = "exponential";
-					env.connect(dest);
+					env.toMaster();
 					env.triggerAttack(0);
+				}, 0.3).then(function(buffer){
+					buffer.forEach(function(sample, time){
+						if (time < e.attack){
+							expect(sample).to.be.within(200, 1600);
+						} else if (time < e.attack + e.decay){
+							expect(sample).to.be.closeTo(1600, 2);
+						} 
+					});
 				});
-				offline.test(function(sample, time){
-					if (time < env.attack){
-						expect(sample).to.be.within(200, 1600);
-					} else if (time < env.attack + env.decay){
-						expect(sample).to.be.closeTo(1600, 2);
-					} 
-				}); 
-				offline.after(function(){
-					env.dispose();
-					done();
-				});
-				offline.run();
 			});
 		});
 	});

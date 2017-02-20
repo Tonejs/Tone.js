@@ -19,6 +19,26 @@ define(["Tone/core/Tone"], function (Tone) {
 			}
 		};
 
+		/**
+		 *  Get the RMS levels for the buffer, returned as an array
+		 *  @param  {blockSize}  [blockSize=512]
+		 */
+		buffer.getRMS = function(blockSize){
+			blockSize = blockSize || 512;
+			var rms = [];
+			var array = buffer.toMono().toArray();
+			for (var j = 0; j < array.length; j++){
+				var sum = 0;
+				if (j >= blockSize){
+					for (var k = j - blockSize; k < j; k++){
+						sum += array[k] * array[k];
+					}
+					rms.push(Math.sqrt(sum / blockSize));
+				}
+			}
+			return rms;
+		};
+
 		//return the time when the buffer is no longer silent
 		buffer.getFirstSoundTime = function(channelNum){
 			if (Tone.prototype.isUndef(channelNum)){
@@ -60,6 +80,30 @@ define(["Tone/core/Tone"], function (Tone) {
 					}
 				}
 			}
+		};
+
+		/**
+		 *  Returns the max value in the buffer
+		 *  @return  {Number}
+		 */
+		buffer.max = function(){
+			var max = -Infinity;
+			buffer.toMono().forEach(function(sample){
+				max = Math.max(sample, max);
+			});
+			return max;
+		};
+
+		/**
+		 *  Returns the min value in the buffer
+		 *  @return  {Number}
+		 */
+		buffer.min = function(){
+			var min = Infinity;
+			buffer.toMono().forEach(function(sample){
+				min = Math.min(sample, min);
+			});
+			return min;
 		};
 	};
 });

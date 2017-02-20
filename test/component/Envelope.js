@@ -43,45 +43,22 @@ function (Envelope, Basic, Offline, Test, Offline2, Supports, PassAudio, APITest
 				env.dispose();
 			});
 
-			it ("passes no signal before being triggered", function(done){
-				var env;
-				var offline = new Offline(0.1);
-				offline.before(function(dest){
-					env = new Envelope().connect(dest);
+			it ("passes no signal before being triggered", function(){
+				return Offline(function(){
+					new Envelope().toMaster();
+				}).then(function(buffer){
+					expect(buffer).to.equal.true;
 				});
-				offline.test(function(sample){
-					expect(sample).to.equal(0);
-				});
-				offline.after(function(){
-					env.dispose();
-					done();
-				});
-				offline.run();
 			});
 
-			if (Supports.ACCURATE_SIGNAL_SCHEDULING){
-
-				it ("passes signal once triggered", function(done){
-					var env;
-					var offline = new Offline(0.2);
-					offline.before(function(dest){
-						env = new Envelope().connect(dest);
-						env.triggerAttack(0.1);
-					});
-					offline.test(function(sample, time){
-						if (time <= 0.1){
-							expect(sample).to.equal(0);
-						} else {
-							expect(sample).to.be.above(0);
-						}
-					});
-					offline.after(function(){
-						env.dispose();
-						done();
-					});
-					offline.run();
-				});
-			}
+			it ("passes signal once triggered", function(){
+				return Offline(function(){
+					var env = new Envelope().toMaster();
+					env.triggerAttack(0.05);
+				}).then(function(buffer){
+					expect(buffer.getFirstSoundTime()).to.be.closeTo(0.05, 0.001);
+				}, 0.1);
+			});
 
 			it ("can take parameters as both an object and as arguments", function(){
 				var env0 = new Envelope({
@@ -137,342 +114,314 @@ function (Envelope, Basic, Offline, Test, Offline2, Supports, PassAudio, APITest
 				env2.dispose();
 			});
 
-			if (Supports.ACCURATE_SIGNAL_SCHEDULING){
-
-				it ("correctly schedules an exponential attack", function(done){
-					var env;
-					var offline = new Offline(0.7); 
-					offline.before(function(dest){
-						env = new Envelope(0.01, 0.4, 0.5, 0.1);
-						env.attackCurve = "exponential";
-						env.connect(dest);
-						env.triggerAttack(0);
-					});
-					offline.test(function(sample, time){
-						if (time < env.attack){
-							expect(sample).to.be.within(0, 1);
-						} else if (time < env.attack + env.decay){
-							expect(sample).to.be.within(env.sustain - 0.001, 1);
-						} else {
-							expect(sample).to.be.closeTo(env.sustain, 0.01);
-						} 
-					}); 
-					offline.after(function(){
-						env.dispose();
-						done();
-					});
-					offline.run();
+			it ("correctly schedules an exponential attack", function(){
+				var e = {
+					attack : 0.01,
+					decay : 0.4,
+					sustain : 0.5,
+					release : 0.1
+				};
+				return Offline(function(){
+					var env = new Envelope(e.attack, e.decay, e.sustain, e.release);
+					env.attackCurve = "exponential";
+					env.toMaster();
+					env.triggerAttack(0);
+				}, 0.7).then(function(buffer){
+					buffer.forEach(function(sample){
+						expect(sample).to.be.within(0, 1);
+					}, 0, e.attack);
+					buffer.forEach(function(sample){
+						expect(sample).to.be.within(e.sustain - 0.001, 1);
+					}, e.attack, e.attack + e.decay);
+					buffer.forEach(function(sample){
+						expect(sample).to.be.closeTo(e.sustain, 0.01);
+					}, e.attack + e.decay);
 				});
-			}
+			});
 
-
-
-			it ("correctly schedules a linear release", function(done){
-				var env;
-				var offline = new Offline(0.4); 
-				offline.before(function(dest){
-					env = new Envelope(0.1, 0.01, 1, 0.1);
-					env.releaseCurve = "linear";
-					env.connect(dest);
-					env.triggerAttackRelease(0.2, 0);
-				});
-				offline.test(function(sample, time){
-					if (time > 0.2 && time <= 0.3){
+			it ("correctly schedules a linear release", function(){
+				var e = {
+					attack : 0.01,
+					decay : 0.4,
+					sustain : 0.5,
+					release : 0.1
+				};
+				return Offline(function(){
+					var env = new Envelope(e.attack, e.decay, e.sustain, e.release);
+					env.attackCurve = "exponential";
+					env.toMaster();
+					env.triggerAttack(0);
+				}, 0.7).then(function(buffer){
+					buffer.forEach(function(sample, time){ 
 						var target = 1 - (time - 0.2) * 10;
 						expect(sample).to.be.closeTo(target, 0.01);
-					} 
-				}); 
-				offline.after(function(){
-					env.dispose();
-					done();
+					}, 0.2, 0.2); 
 				});
-				offline.run();
 			});
 
 			if (Supports.ACCURATE_SIGNAL_SCHEDULING){
 
-				it ("can schedule a very short attack", function(done){
-					var env;
-					var offline = new Offline(0.2); 
-					offline.before(function(dest){
-						env = new Envelope(0.001, 0.001, 0);
-						env.connect(dest);
+				it ("can schedule a very short attack", function(){
+					var e = {
+						attack : 0.001,
+						decay : 0.01,
+						sustain : 0.0,
+						release : 0.1
+					};
+					return Offline(function(){
+						var env = new Envelope(e.attack, e.decay, e.sustain, e.release);
+						env.attackCurve = "exponential";
+						env.toMaster();
 						env.triggerAttack(0);
-					});
-					offline.test(function(sample, time){
-						if (time < env.attack){
+					}, 0.2).then(function(buffer){
+						buffer.forEach(function(sample){
 							expect(sample).to.be.within(0, 1);
-						} else if (time < env.attack + env.decay){
-							expect(sample).to.be.within(0, 1);
-						} else {
-							expect(sample).to.be.below(0.02);
-						} 
-					}); 
-					offline.after(function(){
-						env.dispose();
-						done();
+						}, 0, e.attack);
+						buffer.forEach(function(sample){
+							expect(sample).to.be.within(e.sustain - 0.001, 1);
+						}, e.attack, e.attack + e.decay);
+						buffer.forEach(function(sample){
+							expect(sample).to.be.closeTo(e.sustain, 0.01);
+						}, e.attack + e.decay);
 					});
-					offline.run();
 				});
 
-				it ("correctly schedule a release", function(done){
+				it ("correctly schedule a release", function(){
+					var e = {
+						attack : 0.001,
+						decay : 0.01,
+						sustain : 0.5,
+						release : 0.3
+					};
 					var releaseTime = 0.2;
-					var env;
-					var offline = new Offline(0.7); 
-					offline.before(function(dest){
-						env = new Envelope(0.001, 0.001, 0.5, 0.3);
-						env.connect(dest);
-						env.triggerAttack(0);
-						env.triggerRelease(releaseTime);
+					return Offline(function(){
+						var env = new Envelope(e.attack, e.decay, e.sustain, e.release);
+						env.attackCurve = "exponential";
+						env.toMaster();
+						env.triggerAttackRelease(releaseTime);
+					}, 0.6).then(function(buffer){
+						var sustainStart = e.attack + e.decay;
+						var sustainEnd = sustainStart + releaseTime;
+						buffer.forEach(function(sample){
+							expect(sample).to.be.below(e.sustain + 0.01);
+						}, sustainStart, sustainEnd);
+						buffer.forEach(function(sample){
+							expect(sample).to.be.closeTo(0, 0.01);
+						}, releaseTime + e.release);
 					});
-					offline.test(function(sample, time){
-						if (time > env.attack + env.decay && time < env.attack + env.decay + releaseTime){
-							expect(sample).to.be.below(env.sustain + 0.01);
-						} else if (time > 0.5){
-							//silent
-							expect(sample).to.be.below(0.01);
-						}
-					}); 
-					offline.after(function(){
-						env.dispose();
-						done();
-					});
-					offline.run();
 				});
 			}
 
-			it ("is silent before and after triggering", function(done){
+			it ("is silent before and after triggering", function(){
+				var e = {
+					attack : 0.001,
+					decay : 0.01,
+					sustain : 0.5,
+					release : 0.3
+				};
 				var releaseTime = 0.2;
 				var attackTime = 0.1;
-				var env;
-				var offline = new Offline(0.7); 
-				offline.before(function(dest){
-					env = new Envelope(0.001, 0.001, 0.5, 0.01);
-					env.connect(dest);
+				return Offline(function(){
+					var env = new Envelope(e.attack, e.decay, e.sustain, e.release);
+					env.attackCurve = "exponential";
+					env.toMaster();
 					env.triggerAttack(attackTime);
 					env.triggerRelease(releaseTime);
+				}, 0.6).then(function(buffer){
+					buffer.forEach(function(sample, time){
+						if (time < attackTime - 0.001){
+							expect(sample).to.equal(0);
+						} else if (time > e.attack + e.decay + releaseTime + e.release){
+							expect(sample).to.equal(0);
+						}
+					});
 				});
-				offline.test(function(sample, time){
-					if (time < attackTime){
-						expect(sample).to.equal(0);
-					} else if (time > env.attack + env.decay + releaseTime + env.release){
-						expect(sample).to.equal(0);
-					}
-				}); 
-				offline.after(function(){
-					env.dispose();
-					done();
-				});
-				offline.run();
 			});
 
 			if (Supports.ACCURATE_SIGNAL_SCHEDULING){
 
-				it ("is silent after decay if sustain is 0", function(done){
+				it ("is silent after decay if sustain is 0", function(){
+					var e = {
+						attack : 0.01,
+						decay : 0.04,
+						sustain : 0,
+					};
 					var attackTime = 0.1;
-					var env;
-					var offline = new Offline(0.7); 
-					offline.before(function(dest){
-						env = new Envelope(0.001, 0.01, 0.0);
-						env.connect(dest);
+					return Offline(function(){
+						var env = new Envelope(e.attack, e.decay, e.sustain);
+						env.toMaster();
 						env.triggerAttack(attackTime);
+					}, 0.4).then(function(buffer){
+						buffer.forEach(function(sample, time){
+							if (time < attackTime - 0.001){
+								expect(sample).to.equal(0);
+							} else if (time > attackTime + e.attack + e.decay){
+								expect(sample).to.equal(0);
+							}
+						});
 					});
-					offline.test(function(sample, time){
-						if (time < attackTime){
-							expect(sample).to.equal(0);
-						} else if (time > attackTime + env.attack + env.decay + 0.0001){
-							expect(sample).to.equal(0);
-						}
-					}); 
-					offline.after(function(){
-						env.dispose();
-						done();
-					});
-					offline.run();
 				});
 
-				it ("correctly schedule an attack release envelope", function(done){
-					var env;
+				it ("correctly schedule an attack release envelope", function(){
+					var e = {
+						attack : 0.08,
+						decay : 0.2,
+						sustain : 0.1,
+						release : 0.2
+					};
 					var releaseTime = 0.4;
-					var offline = new Offline(0.8); 
-					offline.before(function(dest){
-						env = new Envelope(0.08, 0.2, 0.1, 0.2);
-						env.connect(dest);
+					return Offline(function(){
+						var env = new Envelope(e.attack, e.decay, e.sustain, e.release);
+						env.toMaster();
 						env.triggerAttack(0);
 						env.triggerRelease(releaseTime);
+					}).then(function(buffer){
+						buffer.forEach(function(sample, time){
+							if (time < e.attack){
+								expect(sample).to.be.within(0, 1);
+							} else if (time < e.attack + e.decay){
+								expect(sample).to.be.within(e.sustain, 1);
+							} else if (time < releaseTime){
+								expect(sample).to.be.closeTo(e.sustain, 0.1);
+							} else if (time < releaseTime + e.release){
+								expect(sample).to.be.within(0, e.sustain + 0.01);
+							} else {
+								expect(sample).to.be.below(0.0001);
+							}
+						});
 					});
-					offline.test(function(sample, time){
-						if (time < env.attack){
-							expect(sample).to.be.within(0, 1);
-						} else if (time < env.attack + env.decay){
-							expect(sample).to.be.within(env.sustain, 1);
-						} else if (time < releaseTime){
-							expect(sample).to.be.closeTo(env.sustain, 0.1);
-						} else if (time < releaseTime + env.release){
-							expect(sample).to.be.within(0, env.sustain + 0.01);
-						} else {
-							//silent
-							expect(sample).to.be.below(0.01);
-						}
-					}); 
-					offline.after(function(){
-						env.dispose();
-						done();
-					});
-					offline.run();
 				});
 
-				it ("can schedule a combined AttackRelease", function(done){
-					var env;
+				it ("can schedule a combined AttackRelease", function(){
+					var e = {
+						attack : 0.1,
+						decay : 0.2,
+						sustain : 0.35,
+						release : 0.1
+					};
+					var releaseTime = 0.4;
 					var duration = 0.4;
-					var offline = new Offline(0.7); 
-					offline.before(function(dest){
-						env = new Envelope(0.1, 0.2, 0.35, 0.1);
-						env.connect(dest);
-						env.triggerAttackRelease(duration, 0);
-					}); 
-					offline.test(function(sample, time){
-						if (time < env.attack){
-							expect(sample).to.be.within(0, 1);
-						} else if (time < env.attack + env.decay){
-							expect(sample).to.be.within(env.sustain - 0.001, 1);
-						} else if (time < duration){
-							expect(sample).to.be.closeTo(env.sustain, 0.1);
-						} else if (time < duration + env.release){
-							expect(sample).to.be.within(0, env.sustain + 0.01);
-						} else {
-							expect(sample).to.be.below(0.01);
+					return Offline(function(){
+						var env = new Envelope(e.attack, e.decay, e.sustain, e.release);
+						env.toMaster();
+						env.triggerAttack(0);
+						env.triggerRelease(releaseTime);
+					}, 0.7).then(function(buffer){
+						buffer.forEach(function(sample, time){
+							if (time < e.attack){
+								expect(sample).to.be.within(0, 1);
+							} else if (time < e.attack + e.decay){
+								expect(sample).to.be.within(e.sustain - 0.001, 1);
+							} else if (time < duration){
+								expect(sample).to.be.closeTo(e.sustain, 0.1);
+							} else if (time < duration + e.release){
+								expect(sample).to.be.within(0, e.sustain + 0.01);
+							} else {
+								expect(sample).to.be.below(0.001);
 						}
-					}); 
-					offline.after(function(){
-						env.dispose();
-						done();
+						});
 					});
-					offline.run();
 				});
 
-				it ("can schedule a combined AttackRelease with velocity", function(done){
-					var env;
+				it ("can schedule a combined AttackRelease with velocity", function(){
+					var e = {
+						attack : 0.1,
+						decay : 0.2,
+						sustain : 0.35,
+						release : 0.1
+					};
+					var releaseTime = 0.4;
 					var duration = 0.4;
 					var velocity = 0.4;
-					var offline = new Offline(0.8); 
-					offline.before(function(dest){
-						env = new Envelope(0.1, 0.2, 0.35, 0.1);
-						env.connect(dest);
-						env.triggerAttackRelease(duration, 0, velocity);
+					return Offline(function(){
+						var env = new Envelope(e.attack, e.decay, e.sustain, e.release);
+						env.toMaster();
+						env.triggerAttack(0, velocity);
+						env.triggerRelease(releaseTime);
+					}, 0.7).then(function(buffer){
+						buffer.forEach(function(sample, time){
+							if (time < e.attack){
+								expect(sample).to.be.within(0, velocity + 0.01);
+							} else if (time < e.attack + e.decay){
+								expect(sample).to.be.within(e.sustain * velocity - 0.01, velocity + 0.01);
+							} else if (time < duration){
+								expect(sample).to.be.closeTo(e.sustain * velocity, 0.1);
+							} else if (time < duration + e.release){
+								expect(sample).to.be.within(0, e.sustain * velocity + 0.01);
+							} else {
+								expect(sample).to.be.below(0.01);
+							}
+						});
 					});
-					offline.test(function(sample, time){
-						if (time < env.attack){
-							expect(sample).to.be.within(0, velocity + 0.01);
-						} else if (time < env.attack + env.decay){
-							expect(sample).to.be.within(env.sustain * velocity - 0.01, velocity + 0.01);
-						} else if (time < duration){
-							expect(sample).to.be.closeTo(env.sustain * velocity, 0.1);
-						} else if (time < duration + env.release){
-							expect(sample).to.be.within(0, env.sustain * velocity + 0.01);
-						} else {
-							expect(sample).to.be.below(0.01);
-						}
-					}); 
-					offline.after(function(){
-						env.dispose();
-						done();
-					});
-					offline.run();
 				});
 
-				it ("can schedule multiple envelopes", function(done){
-					var env;
-					var offline = new Offline(1); 
-					offline.before(function(dest){
-						env = new Envelope(0.1, 0.2, 0);
-						env.connect(dest);
+				it ("can schedule multiple envelopes", function(){
+					var e = {
+						attack : 0.1,
+						decay : 0.2,
+						sustain : 0.0,
+						release : 0.1
+					};
+					return Offline(function(){
+						var env = new Envelope(e.attack, e.decay, e.sustain, e.release);
+						env.toMaster();
 						env.triggerAttack(0);
 						env.triggerAttack(0.5);
+					}, 0.7).then(function(buffer){
+						buffer.forEach(function(sample, time){
+							if (time > 0 && time < 0.3){
+								expect(sample).to.be.above(0);
+							} else if (time < 0.5){
+								expect(sample).to.be.below(0.02);
+							} else if (time > 0.5 && time < 0.8){
+								expect(sample).to.be.above(0);
+							} 
+						});
 					});
-					offline.test(function(sample, time){
-						if (time > 0 && time < 0.3){
-							expect(sample).to.be.above(0);
-						} else if (time < 0.5){
-							expect(sample).to.be.below(0.02);
-						} else if (time > 0.5 && time < 0.8){
-							expect(sample).to.be.above(0);
-						} 
-					}); 
-					offline.after(function(){
-						env.dispose();
-						done();
-					});
-					offline.run();
 				});
 
-				it ("can schedule multiple attack/releases with no discontinuities", function(done){
-					var env;
-					var offline = new Offline(2); 
-					offline.before(function(dest){
-						env = new Envelope(0.1, 0.2, 0.2, 0.4);
-						env.connect(dest);
+				it ("can schedule multiple attack/releases with no discontinuities", function(){
+					Offline(function(){
+						var env = new Envelope(0.1, 0.2, 0.2, 0.4).toMaster();
 						env.triggerAttackRelease(0.4, 0);
 						env.triggerAttackRelease(0.11, 0.4);
 						env.triggerAttackRelease(0.1, 0.45);
 						env.triggerAttackRelease(0.09, 1.1);
 						env.triggerAttackRelease(0.3, 1.5);
 						env.triggerAttackRelease(0.29, 1.8);
+					}, 2).then(function(buffer){
+						//test for discontinuities
+						var lastSample = 0;
+						buffer.forEach(function(sample){
+							expect(sample).to.be.at.most(1);
+							var diff = Math.abs(lastSample - sample);
+							expect(diff).to.be.lessThan(0.001);
+							lastSample = sample;
+						});
 					});
-					//test for discontinuities
-					var lastSample = 0;
-					offline.test(function(sample){
-						expect(sample).to.be.at.most(1);
-						var diff = Math.abs(lastSample - sample);
-						expect(diff).to.be.lessThan(0.001);
-						lastSample = sample;
-					}); 
-					offline.after(function(){
-						env.dispose();
-						done();
-					});
-					offline.run();
 				});
 
-				it ("reports its current envelope value (.value)", function(done){
-					Offline2(function(output, test, after){
-
-						var env = new Envelope(0.1, 0.2, 1).connect(output);
-
+				it ("reports its current envelope value (.value)", function(){
+					return Offline(function(){
+						var env = new Envelope(1, 0.2, 1).toMaster();
 						expect(env.value).to.be.closeTo(0, 0.01);
-
 						env.triggerAttack();
-
-						test(function(sample){
-							expect(env.value).to.be.closeTo(sample, 0.01);
-						});
-
-						after(function(){
-							env.dispose();
-							done();
-						});
-
-					}, 0.3);
+						return function(time){
+							expect(env.value).to.be.closeTo(time, 0.01);
+						};
+					}, 0.5);
 				});
 			}
 
 
-			it ("can cancel a schedule envelope", function(done){
-				Offline2(function(output, test, after){
-					var env = new Envelope(0.1, 0.2, 1).connect(output);
-
+			it ("can cancel a schedule envelope", function(){
+				return Offline(function(){
+					var env = new Envelope(0.1, 0.2, 1).toMaster();
 					env.triggerAttack(0.2);
 					env.cancel(0.2);
-
-					test(function(sample){
-						expect(sample).to.equal(0);
-					});	
-
-					after(function(){
-						env.dispose();
-						done();
-					});
-				}, 0.3);
+				}, 0.3).then(function(buffer){
+					expect(buffer.isSilent()).to.be.true;
+				});
 			});
 		});
 
@@ -481,7 +430,6 @@ function (Envelope, Basic, Offline, Test, Offline2, Supports, PassAudio, APITest
 			it ("can get set all of the types as the attackCurve", function(){
 
 				var env = new Envelope();
-
 				for (var type in Envelope.Type){
 					env.attackCurve = type;
 					expect(env.attackCurve).to.equal(type);
@@ -490,9 +438,7 @@ function (Envelope, Basic, Offline, Test, Offline2, Supports, PassAudio, APITest
 			});
 
 			it ("can get set all of the types as the releaseCurve", function(){
-
 				var env = new Envelope();
-
 				for (var type in Envelope.Type){
 					env.releaseCurve = type;
 					expect(env.releaseCurve).to.equal(type);
@@ -500,9 +446,8 @@ function (Envelope, Basic, Offline, Test, Offline2, Supports, PassAudio, APITest
 				env.dispose();
 			});
 
-			it ("outputs a signal when the attack/release curves are set to 'bounce'", function(done){
-				Offline2(function(output, test, after){
-
+			it ("outputs a signal when the attack/release curves are set to 'bounce'", function(){
+				return Offline(function(){
 					var env = new Envelope({
 						attack : 0.3,
 						sustain : 1,
@@ -510,27 +455,17 @@ function (Envelope, Basic, Offline, Test, Offline2, Supports, PassAudio, APITest
 						decay : 0,
 						attackCurve : "bounce",
 						releaseCurve : "bounce",
-					}).connect(output);
-
+					}).toMaster();
 					env.triggerAttackRelease(0.3, 0.1);
-
-					test(function(sample, time){
-						if (time > 0.1 && time < 0.7){
-							expect(sample).to.be.above(0);
-						}
-					});
-
-					after(function(){
-						env.dispose();
-						done();
-					});
-
-				}, 0.8);
+				}, 0.8).then(function(buffer){
+					buffer.forEach(function(sample){
+						expect(sample).to.be.above(0);
+					}, 0.101, 0.7);
+				});
 			});
 
-			it ("outputs a signal when the attack/release curves are set to 'ripple'", function(done){
-				Offline2(function(output, test, after){
-
+			it ("outputs a signal when the attack/release curves are set to 'ripple'", function(){
+				return Offline(function(){
 					var env = new Envelope({
 						attack : 0.3,
 						sustain : 1,
@@ -538,27 +473,17 @@ function (Envelope, Basic, Offline, Test, Offline2, Supports, PassAudio, APITest
 						decay : 0,
 						attackCurve : "ripple",
 						releaseCurve : "ripple",
-					}).connect(output);
-
+					}).toMaster();
 					env.triggerAttackRelease(0.3, 0.1);
-
-					test(function(sample, time){
-						if (time > 0.1 && time < 0.7){
-							expect(sample).to.be.above(0);
-						}
-					});
-
-					after(function(){
-						env.dispose();
-						done();
-					});
-
-				}, 0.8);
+				}, 0.8).then(function(buffer){
+					buffer.forEach(function(sample){
+						expect(sample).to.be.above(0);
+					}, 0.101, 0.7);
+				});
 			});
 
-			it ("outputs a signal when the attack/release curves are set to 'sine'", function(done){
-				Offline2(function(output, test, after){
-
+			it ("outputs a signal when the attack/release curves are set to 'sine'", function(){
+				return Offline(function(){
 					var env = new Envelope({
 						attack : 0.3,
 						sustain : 1,
@@ -566,27 +491,17 @@ function (Envelope, Basic, Offline, Test, Offline2, Supports, PassAudio, APITest
 						decay : 0,
 						attackCurve : "sine",
 						releaseCurve : "sine",
-					}).connect(output);
-
+					}).toMaster();
 					env.triggerAttackRelease(0.3, 0.1);
-
-					test(function(sample, time){
-						if (time > 0.1 && time < 0.7){
-							expect(sample).to.be.above(0);
-						}
-					});
-
-					after(function(){
-						env.dispose();
-						done();
-					});
-
-				}, 0.8);
+				}, 0.8).then(function(buffer){
+					buffer.forEach(function(sample){
+						expect(sample).to.be.above(0);
+					}, 0.101, 0.7);
+				});
 			});
 
-			it ("outputs a signal when the attack/release curves are set to 'cosine'", function(done){
-				Offline2(function(output, test, after){
-
+			it ("outputs a signal when the attack/release curves are set to 'cosine'", function(){
+				return Offline(function(){
 					var env = new Envelope({
 						attack : 0.3,
 						sustain : 1,
@@ -594,27 +509,17 @@ function (Envelope, Basic, Offline, Test, Offline2, Supports, PassAudio, APITest
 						decay : 0,
 						attackCurve : "cosine",
 						releaseCurve : "cosine",
-					}).connect(output);
-
+					}).toMaster();
 					env.triggerAttackRelease(0.3, 0.1);
-
-					test(function(sample, time){
-						if (time > 0.1 && time < 0.7){
-							expect(sample).to.be.above(0);
-						}
-					});
-
-					after(function(){
-						env.dispose();
-						done();
-					});
-
-				}, 0.8);
+				}, 0.8).then(function(buffer){
+					buffer.forEach(function(sample){
+						expect(sample).to.be.above(0);
+					}, 0.101, 0.7);
+				});
 			});
 
-			it ("outputs a signal when the attack/release curves are set to 'step'", function(done){
-				Offline2(function(output, test, after){
-
+			it ("outputs a signal when the attack/release curves are set to 'step'", function(){
+				return Offline(function(){
 					var env = new Envelope({
 						attack : 0.3,
 						sustain : 1,
@@ -622,29 +527,21 @@ function (Envelope, Basic, Offline, Test, Offline2, Supports, PassAudio, APITest
 						decay : 0,
 						attackCurve : "step",
 						releaseCurve : "step",
-					}).connect(output);
-
+					}).toMaster();
 					env.triggerAttackRelease(0.3, 0.1);
-
-					test(function(sample, time){
+				}, 0.8).then(function(buffer){
+					buffer.forEach(function(sample, time){
 						if (time > 0.3 && time < 0.5){
 							expect(sample).to.be.above(0);
 						} else if (time < 0.1){
 							expect(sample).to.equal(0);
 						}
 					});
-
-					after(function(){
-						env.dispose();
-						done();
-					});
-
-				}, 0.8);
+				});
 			});
 
-			it ("outputs a signal when the attack/release curves are set to an array", function(done){
-				Offline2(function(output, test, after){
-
+			it ("outputs a signal when the attack/release curves are set to an array", function(){
+				return Offline(function(){
 					var env = new Envelope({
 						attack : 0.3,
 						sustain : 1,
@@ -652,29 +549,21 @@ function (Envelope, Basic, Offline, Test, Offline2, Supports, PassAudio, APITest
 						decay : 0,
 						attackCurve : [0, 1, 0, 1],
 						releaseCurve : [1, 0, 1, 0],
-					}).connect(output);
-
-					env.triggerAttackRelease(0.4, 0.1);
-
-					test(function(sample, time){
+					}).toMaster();
+					env.triggerAttackRelease(0.3, 0.1);
+				}, 0.8).then(function(buffer){
+					buffer.forEach(function(sample, time){
 						if (time > 0.4 && time < 0.5){
 							expect(sample).to.be.above(0);
 						} else if (time < 0.1){
 							expect(sample).to.equal(0);
 						}
 					});
-
-					after(function(){
-						env.dispose();
-						done();
-					});
-
-				}, 0.8);
+				});
 			});
 
-			it ("can scale a velocity with a custom curve", function(done){
-				Offline2(function(output, test, after){
-
+			it ("can scale a velocity with a custom curve", function(){
+				return Offline(function(){
 					var env = new Envelope({
 						attack : 0.3,
 						sustain : 1,
@@ -682,25 +571,17 @@ function (Envelope, Basic, Offline, Test, Offline2, Supports, PassAudio, APITest
 						decay : 0,
 						attackCurve : [0, 1, 0, 1],
 						releaseCurve : [1, 0, 1, 0],
-					}).connect(output);
-
+					}).toMaster();
 					env.triggerAttackRelease(0.4, 0.1, 0.5);
-
-					test(function(sample, time){
+				}, 0.8).then(function(buffer){
+					buffer.forEach(function(sample){
 						expect(sample).to.be.lte(0.5);
 					});
-
-					after(function(){
-						env.dispose();
-						done();
-					});
-
-				}, 0.8);
+				});
 			});
 
-			it ("can retrigger partial envelope with custom type", function(done){
-				Offline2(function(output, test, after){
-
+			it ("can retrigger partial envelope with custom type", function(){
+				return Offline(function(){
 					var env = new Envelope({
 						attack : 0.3,
 						sustain : 1,
@@ -708,26 +589,19 @@ function (Envelope, Basic, Offline, Test, Offline2, Supports, PassAudio, APITest
 						decay : 0,
 						attackCurve : "step",
 						releaseCurve : "step",
-					}).connect(output);
-
+					}).toMaster();
 					env.triggerAttackRelease(0.3, 0.1);
 					env.triggerAttackRelease(0.35, 0.1);
 					env.triggerAttackRelease(0.8, 0.1);
-
-					test(function(sample, time){
+				}, 1).then(function(buffer){
+					buffer.forEach(function(sample, time){
 						if (time > 0.3 && time < 0.5){
 							expect(sample).to.be.above(0);
 						} else if (time < 0.1){
 							expect(sample).to.equal(0);
 						}
 					});
-
-					after(function(){
-						env.dispose();
-						done();
-					});
-
-				}, 1);
+				});
 			});
 		});
 	});

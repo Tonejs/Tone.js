@@ -52,29 +52,24 @@ function (ScaledEnvelope, Basic, Offline, Test, Envelope) {
 			});
 
 
-			it ("goes to the scaled range", function(done){
+			it ("goes to the scaled range", function(){
 				var env;
-				var offline = new Offline(0.3); 
-				offline.before(function(dest){
+				return Offline(function(){
 					env = new ScaledEnvelope(0.01, 0.4, 1);
 					env.min = 5;
 					env.max = 10;
 					env.attackCurve = "exponential";
-					env.connect(dest);
+					env.toMaster();
 					env.triggerAttack(0);
+				}, 0.3).then(function(buffer){
+					buffer.forEach(function(sample, time){
+						if (time < env.attack){
+							expect(sample).to.be.within(5, 10);
+						} else if (time < env.attack + env.decay){
+							expect(sample).to.be.closeTo(10, 0.1);
+						} 
+					});
 				});
-				offline.test(function(sample, time){
-					if (time < env.attack){
-						expect(sample).to.be.within(5, 10);
-					} else if (time < env.attack + env.decay){
-						expect(sample).to.be.closeTo(10, 0.1);
-					} 
-				}); 
-				offline.after(function(){
-					env.dispose();
-					done();
-				});
-				offline.run();
 			});
 		});
 	});

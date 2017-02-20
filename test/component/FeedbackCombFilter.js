@@ -35,27 +35,17 @@ function (FeedbackCombFilter, Basic, Offline, Test, Signal, PassAudio, PassAudio
 				fbcf.dispose();
 			});
 
-			it("passes the incoming signal through", function(done){
-				var fbcf;
-				PassAudio(function(input, output){
-					fbcf = new FeedbackCombFilter();
+			it("passes the incoming signal through", function(){
+				return PassAudio(function(input){
+					var fbcf = new FeedbackCombFilter(0).toMaster();
 					input.connect(fbcf);
-					fbcf.connect(output);
-				}, function(){
-					fbcf.dispose();
-					done();
 				});
 			});
 
-			it("passes the incoming stereo signal through", function(done){
-				var fbcf;
-				PassAudioStereo(function(input, output){
-					fbcf = new FeedbackCombFilter();
+			it("passes the incoming stereo signal through", function(){
+				return PassAudioStereo(function(input){
+					var fbcf = new FeedbackCombFilter(0).toMaster();
 					input.connect(fbcf);
-					fbcf.connect(output);
-				}, function(){
-					fbcf.dispose();
-					done();
 				});
 			});
 		});

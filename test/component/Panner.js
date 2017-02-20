@@ -47,88 +47,56 @@ function (Panner, Basic, Offline, Test, Signal, PassAudio, PassAudioStereo, Merg
 				panner.dispose();
 			});
 
-			it("passes the incoming signal through", function(done){
-				var panner;
-				PassAudio(function(input, output){
-					panner = new Panner();
+			it("passes the incoming signal through", function(){
+				return PassAudio(function(input){
+					var panner = new Panner().toMaster();
 					input.connect(panner);
-					panner.connect(output);
-				}, function(){
-					panner.dispose();
-					done();
 				});
 			});
 
-			it("passes the incoming stereo signal through", function(done){
-				var panner;
-				PassAudioStereo(function(input, output){
-					panner = new Panner();
+			it("passes the incoming stereo signal through", function(){
+				return PassAudioStereo(function(input){
+					var panner = new Panner().toMaster();
 					input.connect(panner);
-					panner.connect(output);
-				}, function(){
-					panner.dispose();
-					done();
 				});
 			});
 
-			it("pans hard left when the pan is set to -1", function(done){
-				var panner;
-				var signal;
-				new Offline(0.2, 2)
-					.before(function(dest){
-						panner = new Panner(-1).connect(dest);
-						signal = new StereoSignal(1, 1).connect(panner);
-					})
-					.test(function(samples){
-						expect(samples[0]).to.be.closeTo(1, 0.01);
-						expect(samples[1]).to.be.closeTo(0, 0.01);
-					})
-					.after(function(){
-						panner.dispose();
-						signal.dispose();
-						done();
-					}).run();
+			it("pans hard left when the pan is set to -1", function(){
+				return Offline(function(){
+					var panner = new Panner(-1).toMaster();
+					new StereoSignal(1, 1).connect(panner);
+				}, 0.1, 2).then(function(buffer){
+					buffer.forEach(function(l, r){
+						expect(l).to.be.closeTo(1, 0.01);
+						expect(r).to.be.closeTo(0, 0.01);
+					});
+				});
 			});
 
-			it("pans hard right when the pan is set to 1", function(done){
-				var panner, signal;
-				new Offline(0.2, 2)
-					.before(function(dest){
-						panner = new Panner(1).connect(dest);
-						signal = new StereoSignal(1, 1).connect(panner);
-					})
-					.test(function(samples, time){
-						if (time > 0){
-							expect(samples[0]).to.be.closeTo(0, 0.01);
-							expect(samples[1]).to.be.closeTo(1, 0.01);
-						}
-					})
-					.after(function(){
-						panner.dispose();
-						signal.dispose();
-						done();
-					}).run();
+			it("pans hard right when the pan is set to 1", function(){
+				return Offline(function(){
+					var panner = new Panner(1).toMaster();
+					new StereoSignal(1, 1).connect(panner);
+				}, 0.1, 2).then(function(buffer){
+					buffer.forEach(function(l, r){
+						expect(l).to.be.closeTo(0, 0.01);
+						expect(r).to.be.closeTo(1, 0.01);
+					});
+				});
 			});
 
 			if (Supports.EQUAL_POWER_PANNER){
 
-				it("mixes the signal in equal power when panned center", function(done){
-					var panner;
-					var signal;
-					new Offline(0.2, 2)
-						.before(function(dest){
-							panner = new Panner(0).connect(dest);
-							signal = new StereoSignal(1, 1).connect(panner);
-						})
-						.test(function(samples){
-							expect(samples[0]).to.be.closeTo(0.707, 0.01);
-							expect(samples[1]).to.be.closeTo(0.707, 0.01);
-						})
-						.after(function(){
-							panner.dispose();
-							signal.dispose();
-							done();
-						}).run();
+				it("mixes the signal in equal power when panned center", function(){
+					return Offline(function(){
+						var panner = new Panner(0).toMaster();
+						new StereoSignal(1, 1).connect(panner);
+					}, 0.1, 2).then(function(buffer){
+						buffer.forEach(function(l, r){
+							expect(l).to.be.closeTo(0.707, 0.01);
+							expect(r).to.be.closeTo(0.707, 0.01);
+						});
+					});
 				});
 			}
 		});

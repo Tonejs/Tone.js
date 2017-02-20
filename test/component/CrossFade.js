@@ -14,76 +14,52 @@ function (CrossFade, Basic, Offline, Test, Signal) {
 				comp.dispose();
 			});
 
-			it("pass 100% of input 0", function(done){
-				var crossFade, drySignal, wetSignal;
-				var offline = new Offline(0.1); 
-				offline.before(function(dest){
-					crossFade = new CrossFade();
-					drySignal = new Signal(10);
-					wetSignal = new Signal(20);
+			it("pass 100% of input 0", function(){
+				return Offline(function(){
+					var crossFade = new CrossFade();
+					var drySignal = new Signal(10);
+					var wetSignal = new Signal(20);
 					drySignal.connect(crossFade, 0, 0);
 					wetSignal.connect(crossFade, 0, 1);
 					crossFade.fade.value = 0;
-					crossFade.connect(dest);
+					crossFade.toMaster();
+				}).then(function(buffer){
+					buffer.forEach(function(sample){
+						expect(sample).to.closeTo(10, 0.01);
+					});
 				});
-				offline.test(function(sample){
-					expect(sample).to.closeTo(10, 0.01);
-				}); 
-				offline.after(function(){
-					crossFade.dispose();
-					drySignal.dispose();
-					wetSignal.dispose();
-					done();
-				});
-				offline.run();
 			});
 
-			it("pass 100% of input 1", function(done){
-				var crossFade, drySignal, wetSignal;
-				var offline = new Offline(0.1); 
-				offline.before(function(dest){
-					crossFade = new CrossFade();
-					drySignal = new Signal(10);
-					wetSignal = new Signal(20);
+			it("pass 100% of input 1", function(){
+				return Offline(function(){
+					var crossFade = new CrossFade();
+					var drySignal = new Signal(10);
+					var wetSignal = new Signal(20);
 					drySignal.connect(crossFade, 0, 0);
 					wetSignal.connect(crossFade, 0, 1);
 					crossFade.fade.value = 1;
-					crossFade.connect(dest);
+					crossFade.toMaster();
+				}).then(function(buffer){
+					buffer.forEach(function(sample){
+						expect(sample).to.closeTo(20, 0.01);
+					});
 				});
-				offline.test(function(sample){
-					expect(sample).to.closeTo(20, 0.01);
-				}); 
-				offline.after(function(){
-					crossFade.dispose();
-					drySignal.dispose();
-					wetSignal.dispose();
-					done();
-				});
-				offline.run();
 			});
 			
-			it("can mix two signals", function(done){
-				var crossFade, drySignal, wetSignal;
-				var offline = new Offline(0.1); 
-				offline.before(function(dest){
-					crossFade = new CrossFade();
-					drySignal = new Signal(2);
-					wetSignal = new Signal(1);
+			it("can mix two signals", function(){
+				return Offline(function(){
+					var crossFade = new CrossFade();
+					var drySignal = new Signal(2);
+					var wetSignal = new Signal(1);
 					drySignal.connect(crossFade, 0, 0);
 					wetSignal.connect(crossFade, 0, 1);
 					crossFade.fade.value = 0.5;
-					crossFade.connect(dest);
+					crossFade.toMaster();
+				}).then(function(buffer){
+					buffer.forEach(function(sample){
+						expect(sample).to.closeTo(2.12, 0.01);
+					});
 				});
-				offline.test(function(sample){
-					expect(sample).to.closeTo(2.12, 0.01);
-				}); 
-				offline.after(function(){
-					crossFade.dispose();
-					drySignal.dispose();
-					wetSignal.dispose();
-					done();
-				});
-				offline.run();
 			});
 		});
 	});
