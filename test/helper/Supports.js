@@ -24,7 +24,7 @@ define(["helper/ua-parser"], function (UserAgentParser) {
 		//has stereo panner node
 		STEREO_PANNER_NODE : isnt("Safari"),
 		//can schedule a mixture of curves correctly
-		ACCURATE_SIGNAL_SCHEDULING : is("Chrome"),
+		ACCURATE_SIGNAL_SCHEDULING : isnt("Safari"),
 		//can disconnect from a specific node
 		NODE_DISCONNECT : is("Chrome", 50),
 		//stereo panner is equal power panning
