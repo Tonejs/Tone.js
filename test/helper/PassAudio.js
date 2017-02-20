@@ -17,10 +17,9 @@ define(["Test", "Tone/core/Offline", "Tone/signal/Signal", "Tone/core/Master"],
 					return true;
 				} else if (time < duration / 2) {
 					expect(sample).to.be.closeTo(0, 0.001);
-				} else {
-					throw new Error("node outputs silence");
 				}
 			}
+			throw new Error("node outputs silence");
 		});
 	};
 
