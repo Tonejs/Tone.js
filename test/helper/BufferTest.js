@@ -1,8 +1,13 @@
 define(["Tone/core/Tone"], function (Tone) {
-	return {
-		isSilent : function(buffer, channelNum){
-			if (Tone.prototype.isUndef(channelNum)){
-				return this.isSilent(buffer.toMono(), 0);
+
+	var isUndef = Tone.prototype.isUndef;
+
+	//augment the built in functions
+	return function(buffer){
+
+		buffer.isSilent = function(channelNum){
+			if (isUndef(channelNum)){
+				return buffer.toMono().isSilent(0);
 			} else {
 				var array = buffer.toArray(channelNum);
 				for (var i = 0; i < array.length; i++){
@@ -12,14 +17,12 @@ define(["Tone/core/Tone"], function (Tone) {
 				}
 				return true;
 			}
-		},
-		getRMS : function(buffer){
+		};
 
-		},
 		//return the time when the buffer is no longer silent
-		getFirstSoundTime : function(buffer, channelNum){
+		buffer.getFirstSoundTime = function(channelNum){
 			if (Tone.prototype.isUndef(channelNum)){
-				return this.getFirstSoundTime(buffer.toMono(), 0);
+				return buffer.toMono().getFirstSoundTime(0);
 			} else {
 				var array = buffer.toArray(channelNum);
 				for (var i = 0; i < array.length; i++){
@@ -29,18 +32,20 @@ define(["Tone/core/Tone"], function (Tone) {
 				}
 				return -1;
 			}
-		},
-		getSilenceTime : function(buffer){
+		};
 
-		},
 		//stops and returns value if callback does
-		forEach : function(buffer, callback){
-			var i, len, ret;
+		buffer.forEach = function(callback, start, end){
+			var i, ret;
+			start = start || 0;
+			end = end || buffer.duration;
+			start = Math.floor((start / buffer.duration) * buffer.length);
+			end = Math.floor((end / buffer.duration) * buffer.length);
 			if (buffer.numberOfChannels === 2){
 				var arrayL = buffer.toArray(0);
 				var arrayR = buffer.toArray(1);
-				for (i = 0, len = arrayL.length; i < len; i++){
-					ret = callback(arrayL[i], arrayR[i], i/len * buffer.duration);
+				for (i = start; i < end; i++){
+					ret = callback(arrayL[i], arrayR[i], (i/buffer.length) * buffer.duration);
 					if (typeof ret !== "undefined"){
 						return ret;
 					}
@@ -48,13 +53,13 @@ define(["Tone/core/Tone"], function (Tone) {
 				
 			} else {
 				var array = buffer.toArray();
-				for (i = 0, len = array.length; i < len; i++){
-					ret = callback(array[i], i/len * buffer.duration);
+				for (i = start; i < end; i++){
+					ret = callback(array[i], (i/array.length) * buffer.duration);
 					if (typeof ret !== "undefined"){
 						return ret;
 					}
 				}
 			}
-		},
+		};
 	};
 });

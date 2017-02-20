@@ -1,6 +1,6 @@
 define(["Test", "Tone/core/Bus", "Tone/core/Tone", "helper/Offline", 
-	"helper/PassAudio", "Tone/signal/Signal", "Tone/core/Gain", "helper/BufferTest"], 
-	function (Test, Bus, Tone, Offline, PassAudio, Signal, Gain, BufferTest) {
+	"helper/PassAudio", "Tone/signal/Signal", "Tone/core/Gain"], 
+	function (Test, Bus, Tone, Offline, PassAudio, Signal, Gain) {
 
 	describe("Bus", function(){
 		it ("provides a send and receive method", function(){
@@ -26,7 +26,7 @@ define(["Test", "Tone/core/Bus", "Tone/core/Tone", "helper/Offline",
 				sig.send("test", -12);
 				recv.receive("test");
 			}, 0.2).then(function(buffer){
-				BufferTest.forEach(buffer, function(sample){
+				buffer.forEach(function(sample){
 					expect(sample).to.be.closeTo(0.25, 0.1);
 				});
 			});

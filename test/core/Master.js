@@ -1,6 +1,5 @@
-define(["Test", "Tone/core/Master", "Tone/core/Tone", "helper/Offline", "helper/PassAudio", 
-	"Tone/source/Oscillator", "helper/BufferTest"], 
-	function (Test, Master, Tone, Offline, PassAudio, Oscillator, BufferTest) {
+define(["Test", "Tone/core/Master", "Tone/core/Tone", "helper/Offline", "helper/PassAudio", "Tone/source/Oscillator"], 
+	function (Test, Master, Tone, Offline, PassAudio, Oscillator) {
 
 	describe("Master", function(){
 		it ("exists", function(){
@@ -29,8 +28,8 @@ define(["Test", "Tone/core/Master", "Tone/core/Tone", "helper/Offline", "helper/
 			return Offline(function(){
 				new Oscillator().toMaster().start(0);
 				Tone.Master.mute = true;
-			}, 0.01).then(function(buffer){
-				expect(BufferTest.isSilent(buffer));
+			}).then(function(buffer){
+				expect(buffer.isSilent()).to.be.true;
 			});
 		});
 

@@ -313,7 +313,7 @@ define(["Test", "Tone/core/Tone", "helper/PassAudio", "Tone/source/Oscillator",
 					osc.set("frequency", setValue, 0.2);
 					expect(osc.frequency.value).to.not.be.closeTo(setValue, 0.001);
 				}).then(function(buffer){
-					BufferTest.forEach(buffer, function(sample, time){
+					buffer.forEach(function(sample, time){
 						if (time > 0.2){
 							expect(sample).to.closeTo(setValue, setValue * 0.1);
 						}

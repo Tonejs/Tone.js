@@ -26,7 +26,8 @@ define(["Test", "Tone/core/Offline", "Tone/core/Transport", "Tone/source/Oscilla
 
 		it ("silent by default", function(done){
 			Offline(function(){}, 0.01).then(function(buffer){
-				expect(BufferTest.isSilent(buffer)).to.be.true;
+				BufferTest(buffer);
+				expect(buffer.isSilent()).to.be.true;
 				done();
 			});
 		});
@@ -35,7 +36,8 @@ define(["Test", "Tone/core/Offline", "Tone/core/Transport", "Tone/source/Oscilla
 			return Offline(function(){
 				new Oscillator().toMaster().start();
 			}, 0.01).then(function(buffer){
-				expect(BufferTest.isSilent(buffer)).to.be.false;
+				BufferTest(buffer);
+				expect(buffer.isSilent()).to.be.false;
 			});
 		});
 
@@ -43,7 +45,8 @@ define(["Test", "Tone/core/Offline", "Tone/core/Transport", "Tone/source/Oscilla
 			return Offline(function(){
 				new Oscillator().toMaster().start(0.05);
 			}, 0.1).then(function(buffer){
-				expect(BufferTest.getFirstSoundTime(buffer)).to.be.closeTo(0.05, 0.0001);
+				BufferTest(buffer);
+				expect(buffer.getFirstSoundTime()).to.be.closeTo(0.05, 0.0001);
 			});
 		});
 
@@ -55,7 +58,8 @@ define(["Test", "Tone/core/Offline", "Tone/core/Transport", "Tone/source/Oscilla
 				}, 0.05);
 				Transport.start(0);
 			}, 0.1).then(function(buffer){
-				expect(BufferTest.getFirstSoundTime(buffer)).to.be.closeTo(0.05, 0.001);
+				BufferTest(buffer);
+				expect(buffer.getFirstSoundTime()).to.be.closeTo(0.05, 0.001);
 			});
 		});
 

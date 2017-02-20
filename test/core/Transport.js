@@ -250,7 +250,7 @@ function (Test, Transport, Tone, Offline, TransportTime, Signal, BufferTest) {
 					};
 				}, 0.6).then(function(buffer){
 
-					BufferTest.forEach(buffer, function(sample, time){
+					buffer.forEach(function(sample, time){
 						Test.whenBetween(time, 0, 0.01, function(){
 							expect(sample).to.equal(1);
 						});

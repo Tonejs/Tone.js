@@ -1,5 +1,5 @@
-define(["Test", "Tone/core/Offline", "Tone/signal/Signal", "Tone/core/Master", "helper/BufferTest"], 
-	function (Test, Offline, Signal, Master, BufferTest) {
+define(["Test", "helper/Offline", "Tone/signal/Signal", "Tone/core/Master"], 
+	function (Test, Offline, Signal, Master) {
 
 	var PassAudioStereo = function(before){
 
@@ -8,9 +8,9 @@ define(["Test", "Tone/core/Offline", "Tone/signal/Signal", "Tone/core/Master", "
 			var sig = new Signal(0);
 			before(sig);
 			sig.setValueAtTime(1, duration / 2);
-		}, duration).then(function(buffer){
+		}, duration, 2).then(function(buffer){
 			var silent = true;
-			BufferTest.forEach(buffer, function(l, r, time){
+			buffer.forEach(function(l, r, time){
 				if (time >= duration / 2 && l !== 0 && r !== 0){
 					silent = false;
 					return;

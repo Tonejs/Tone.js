@@ -12,6 +12,7 @@ define(["Tone/core/Tone", "Tone/core/Offline", "helper/BufferTest", "Tone/core/M
 				});
 			}
 		}, duration).then(function(buffer){
+			BufferTest(buffer);
 			if (channels === 1){
 				buffer.toMono();
 			}
