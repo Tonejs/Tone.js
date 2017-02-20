@@ -59,5 +59,16 @@ define(["Tone/core/Tone", "deps/chai", "Tone/core/Context"], function (Tone, cha
 		}
 	};
 
+	//invoked only once
+	Test.atTime = function(when, callback){
+		var wasInvoked = false;
+		return function(time){
+			if (time >= when && !wasInvoked){
+				callback(time);
+				wasInvoked = true;
+			}
+		};
+	};
+
 	return Test;
 });
