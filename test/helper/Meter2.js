@@ -1,17 +1,17 @@
-define(["Tone/core/Tone", "helper/Meter"], function (Tone, Meter) {
+define(["helper/Offline"], function (Offline) {
 
 	return function(callback, duration, channels){
 
-		var meter = new Meter(duration, channels);
-
-		meter.before(function(output){
-			callback(output, function testFn(cb){
-				meter.test(cb);
-			}, function(cb){
-				meter.after(cb);
-			});
+		return Offline(callback, duration, channels).then(function(buffer){
+			var blockTime = 512/buffer.sampleRate;
+			var rms = buffer.getRMS(512);
+			rms.forEach = function(callback){
+				for (var i = 0; i < rms.length; i++){
+					var level = rms[i];
+					callback(level, blockTime * i);
+				}
+			};
+			return rms;
 		});
-
-		meter.run();
 	};
 });
