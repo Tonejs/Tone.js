@@ -1,353 +1,302 @@
-define(["helper/Basic", "Tone/event/Loop", "Tone/core/Tone", 
-	"Tone/core/Transport", "helper/Offline2"], function (Basic, Loop, Tone, Transport, Offline) {
+define(["helper/Basic", "Tone/event/Loop", "Tone/core/Tone", "Tone/core/Transport", "helper/Offline", "Test"], 
+	function (Basic, Loop, Tone, Transport, Offline, Test) {
 
 	describe("Loop", function(){
 
 		Basic(Loop);
 
-		function resetTransport(done){
-			Tone.Transport.cancel(0);
-			Tone.Transport.off("start stop pause loop");
-			Tone.Transport.stop();
-			Tone.Transport.loop = false;
-			Tone.Transport.bpm.value = 120;
-			Tone.Transport.timeSignature = [4, 4];
-			setTimeout(done, 200);
-		}
-
 		context("Constructor", function(){
 
-			afterEach(resetTransport);
-
 			it ("takes a callback and an interval", function(){
-				var callback = function(){};
-				var loop = new Loop(callback, "8n");
-				expect(loop.callback).to.equal(callback);
-				expect(loop.interval).to.equal("8n");
-				loop.dispose();
+				return Offline(function(){
+					var callback = function(){};
+					var loop = new Loop(callback, "8n");
+					expect(loop.callback).to.equal(callback);
+					expect(loop.interval).to.equal("8n");
+					loop.dispose();
+				});
 			});
 
 			it ("can be constructed with no arguments", function(){
-				var loop = new Loop();
-				expect(loop.iterations).to.equal(Infinity);
-				loop.dispose();
+				return Offline(function(){
+					var loop = new Loop();
+					expect(loop.iterations).to.equal(Infinity);
+					loop.dispose();
+				});
 			});
 
 			it ("can pass in arguments in options object", function(){
-				var callback = function(){};
-				var loop = new Loop({
-					"callback" : callback,
-					"iterations" : 4,
-					"probability" : 0.3,
-					"interval" : "8t"
+				return Offline(function(){
+					var callback = function(){};
+					var loop = new Loop({
+						"callback" : callback,
+						"iterations" : 4,
+						"probability" : 0.3,
+						"interval" : "8t"
+					});
+					expect(loop.callback).to.equal(callback);
+					expect(loop.interval).to.equal("8t");
+					expect(loop.iterations).to.equal(4);
+					expect(loop.probability).to.equal(0.3);
+					loop.dispose();
 				});
-				expect(loop.callback).to.equal(callback);
-				expect(loop.interval).to.equal("8t");
-				expect(loop.iterations).to.equal(4);
-				expect(loop.probability).to.equal(0.3);
-				loop.dispose();
 			});
 		});
 
 		context("Get/Set", function(){
 
-			afterEach(resetTransport);
-
 			it ("can set values with object", function(){
-				var callback = function(){};
-				var loop = new Loop();
-				loop.set({
-					"callback" : callback,
-					"iterations" : 8
+				return Offline(function(){
+					var callback = function(){};
+					var loop = new Loop();
+					loop.set({
+						"callback" : callback,
+						"iterations" : 8
+					});
+					expect(loop.callback).to.equal(callback);
+					expect(loop.iterations).to.equal(8);
+					loop.dispose();
 				});
-				expect(loop.callback).to.equal(callback);
-				expect(loop.iterations).to.equal(8);
-				loop.dispose();
 			});
 
 			it ("can set get a the values as an object", function(){
-				var callback = function(){};
-				var loop = new Loop({
-					"callback" : callback,
-					"iterations" : 4,
-					"probability" : 0.3
+				return Offline(function(){
+					var callback = function(){};
+					var loop = new Loop({
+						"callback" : callback,
+						"iterations" : 4,
+						"probability" : 0.3
+					});
+					var values = loop.get();
+					expect(values.iterations).to.equal(4);
+					expect(values.probability).to.equal(0.3);
+					loop.dispose();
 				});
-				var values = loop.get();
-				expect(values.iterations).to.equal(4);
-				expect(values.probability).to.equal(0.3);
-				loop.dispose();
 			});
 		});
 
 
 		context("Callback", function(){
 
-			afterEach(resetTransport);
-
-			it ("does not invoke get invoked until started", function(done){
-
-				Offline(function(dest, test, after){
-
-					var loop = new Loop(function(){
+			it ("does not invoke get invoked until started", function(){
+				return Offline(function(Transport){
+					new Loop(function(){
 						throw new Error("shouldn't call this callback");
 					}, "8n");
-
-					Tone.Transport.start();
-
-					after(function(){
-						loop.dispose();
-						done();
-					});
-
+					Transport.start();
 				}, 0.3);
 			});
 
-			it ("is invoked after it's started", function(done){
-				var loop = new Loop(function(){
-					loop.dispose();
-					done();
-				}, "8n").start(0);
-				Tone.Transport.start();
-			});
-
-			it ("passes in the scheduled time to the callback", function(done){
-				var now = Tone.Transport.now() + 0.1;
-				var loop = new Loop(function(time){
-					expect(time).to.be.a.number;
-					expect(time - now).to.be.closeTo(0.3, 0.01);
-					loop.dispose();
-					done();
+			it ("is invoked after it's started", function(){
+				var invoked = false;
+				return Offline(function(Transport){
+					var loop = new Loop(function(){
+						loop.dispose();
+						invoked = true;
+					}, 0.05).start(0);
+					Transport.start();
+				}).then(function(){
+					expect(invoked).to.be.true;
 				});
-				Tone.Transport.start(now);
-				loop.start(0.3);
 			});
 
-			it ("can mute the callback", function(done){
-				Offline(function(output, test, after){
+			it ("passes in the scheduled time to the callback", function(){
+				var invoked = false;
+				return Offline(function(Transport){
+					var now = Transport.now() + 0.1;
+					var loop = new Loop(function(time){
+						expect(time).to.be.a.number;
+						expect(time - now).to.be.closeTo(0.3, 0.01);
+						loop.dispose();
+						invoked = true;
+					});
+					Transport.start(now);
+					loop.start(0.3);
+				}, 0.5).then(function(){
+					expect(invoked).to.be.true;
+				});
+			});
 
+			it ("can mute the callback", function(){
+				return Offline(function(){
 					var loop = new Loop(function(){
 						throw new Error("shouldn't call this callback");
 					}, "4n").start();
-
 					loop.mute = true;
-
 					expect(loop.mute).to.be.true;
-
-					Tone.Transport.start();
-
-					after(function(){
-						loop.dispose();
-						done();
-					});
+					Transport.start();
 				}, 0.4);
 			});
 
-			it ("can trigger with some probability", function(done){
-
-				Offline(function(output, test, after){
+			it ("can trigger with some probability", function(){
+				return Offline(function(Transport){
 					var loop = new Loop(function(){
 						throw new Error("shouldn't call this callback");
 					}, "4n").start();
 					loop.probability = 0;
 					expect(loop.probability).to.equal(0);
-					Tone.Transport.start();
-					after(function(){
-						loop.dispose();
-						done();
-					});
+					Transport.start();
 				}, 0.4);
 			});
 		});
 
 		context("Scheduling", function(){
 
-			afterEach(resetTransport);
-
-			it ("can be started and stopped multiple times", function(done){
-				Offline(function(output, test, after){
-
+			it ("can be started and stopped multiple times", function(){
+				return Offline(function(Transport){
 					var loop = new Loop().start().stop(0.2).start(0.4);
-
-					Tone.Transport.start(0);
-
-					test(function(sample, time){
-						if (time > 0.01 && time < 0.18){
+					Transport.start(0);
+					return function(time){
+						Test.whenBetween(time, 0, 0.19, function(){
 							expect(loop.state).to.equal("started");	
-						} else if (time > 0.2 && time < 0.38){
-							expect(loop.state).to.equal("stopped");
-						} else if (time > 0.4){
-							expect(loop.state).to.equal("started");
-						}
-					});
-
-					after(function(){
-						loop.dispose();
-						done();
-					});
-
+						});
+						Test.whenBetween(time, 0.2, 0.39, function(){
+							expect(loop.state).to.equal("stopped");	
+						});
+						Test.whenBetween(time, 0.4, Infinity, function(){
+							expect(loop.state).to.equal("started");	
+						});
+					};
 				}, 0.6);
 			});
 
-			it ("restarts when transport is restarted", function(done){
-				var loop = new Loop().start(0).stop(0.4);
-				setTimeout(function(){
-					expect(loop.state).to.equal("started");
-				}, 100);
-				setTimeout(function(){
-					expect(loop.state).to.equal("stopped");
-					Tone.Transport.stop();
-					setTimeout(function(){
-						Tone.Transport.start();
-						setTimeout(function(){
-							expect(Tone.Transport.state).to.equal("started");
-							expect(loop.state).to.equal("started");
-							loop.dispose();
-							done();
-						}, 200);
-					}, 100);
-				}, 500);
-				Tone.Transport.start();
+			it ("restarts when transport is restarted", function(){
+				return Offline(function(Transport){
+					var note = new Loop().start(0).stop(0.4);
+					Transport.start(0).stop(0.5).start(0.55);
+					return function(sample, time){
+						Test.whenBetween(time, 0, 0.39, function(){
+							expect(note.state).to.equal("started");
+						});
+						Test.whenBetween(time, 0.4, 0.5, function(){
+							expect(note.state).to.equal("stopped");	
+						});
+						Test.whenBetween(time, 0.55, 0.8, function(){
+							expect(note.state).to.equal("started");
+						});
+					};
+				}, 1);
 			});
 
 
-			it ("can be cancelled", function(done){
-				var loop = new Loop().start(0);
-				setTimeout(function(){
-					expect(loop.state).to.equal("started");
-					Tone.Transport.stop();
-					loop.cancel();
-					setTimeout(function(){
-						Tone.Transport.start();
-						setTimeout(function(){
-							expect(loop.state).to.equal("stopped");
-							loop.dispose();
-							done();
-						}, 100);
-					}, 100);
-				}, 100);
-				Tone.Transport.start();
+			it ("can be cancelled", function(){
+				return Offline(function(Transport){
+					var note = new Loop().start(0);
+					expect(note.state).to.equal("started");
+					Transport.start();
+
+					var firstStop = false;
+					var restarted = false;
+					var tested = false;
+					return function(time){
+						//stop the transport
+						if (time > 0.2 && !firstStop){
+							firstStop = true;
+							Transport.stop();
+							note.cancel();
+						}
+						if (time > 0.3 && !restarted){
+							restarted = true;
+							Transport.start();
+						}
+						if (time > 0.4 && !tested){
+							restarted = true;
+							Transport.start();
+							expect(note.state).to.equal("stopped");
+						}
+					};
+				}, 0.5);
 			});
 
 		});
 
 		context("Looping", function(){
 
-			afterEach(resetTransport);
-
-			it ("loops", function(done){
-
-				Offline(function(output, test, after){
-
-					var callCount = 0;
-					var loop = new Loop({
+			it ("loops", function(){
+				var callCount = 0;
+				return Offline(function(Transport){
+					new Loop({
 						"interval" : 0.1,
 						"callback" : function(){
 							callCount++;
 						}
 					}).start(0);
-					Tone.Transport.start();
-
-					after(function(){
-						expect(callCount).to.above(6);
-						loop.dispose();	
-						done();
-					});
-
-				}, 0.8);
+					Transport.start();
+				}, 0.8).then(function(){
+					expect(callCount).to.above(6);
+				});
 			});
 
-			it ("loops for the specified interval", function(done){
-				var lastCall;
-				var loop = new Loop({
-					"interval" : "8n",
-					"callback" : function(time){
-						if (lastCall){
-							expect(time - lastCall).to.be.closeTo(0.25, 0.01);
+			it ("loops for the specified interval", function(){
+				var invoked = false;
+				return Offline(function(Transport){
+					var lastCall;
+					new Loop({
+						"interval" : "8n",
+						"callback" : function(time){
+							if (lastCall){
+								invoked = true;
+								expect(time - lastCall).to.be.closeTo(0.25, 0.01);
+							}
+							lastCall = time;
 						}
-						lastCall = time;
-					}
-				}).start(0);
-				Tone.Transport.start();
-
-				setTimeout(function(){
-					loop.dispose();	
-					done();
-				}, 700);
+					}).start(0);
+					Transport.start();
+				}, 1).then(function(){
+					expect(invoked).to.be.true;
+				});
 			});
 
-			it ("can loop a specific number of iterations", function(done){
-
-				Offline(function(output, test, after){
-
-					var callCount = 0;
-					var loop = new Loop({
+			it ("can loop a specific number of iterations", function(){
+				var callCount = 0;
+				return Offline(function(Transport){
+					new Loop({
 						"interval" : 0.1,
 						"iterations" : 2,
 						"callback" : function(){
 							callCount++;
 						}
 					}).start(0);
-					Tone.Transport.start();
-
-					after(function(){
-						expect(callCount).to.equal(2);
-						expect(loop.state).to.equal("stopped");
-						loop.dispose();	
-						done();
-					});
-				}, 0.4);
+					Transport.start();
+				}, 0.4).then(function(){
+					expect(callCount).to.equal(2);
+				});
 			});
 
-			it ("reports the progress of the loop", function(done){
-
-				Offline(function(output, test, after){
-
+			it ("reports the progress of the loop", function(){
+				return Offline(function(Transport){
 					var loop = new Loop({
 						"interval" : 1,
 					}).start(0);
-
-					Tone.Transport.start();
-
-					after(function(){
-						expect(loop.progress).to.be.closeTo(0.8, 0.05);
-						loop.dispose();	
-						done();
-					});
+					Transport.start();
+					return function(time){
+						expect(loop.progress).to.be.closeTo(time, 0.05);
+					};
 				}, 0.8);
-
 			});
-
 		});
 
 		context("playbackRate", function(){
 
-			afterEach(resetTransport);
-
-			it ("can adjust the playbackRate", function(done){
-
-				Offline(function(output, test, after){
-
+			it ("can adjust the playbackRate", function(){
+				var invoked = false;
+				return Offline(function(Transport){
 					var lastCall;
-					
-					var loop = new Loop({
+					new Loop({
 						"playbackRate" : 2,
 						"interval" : 0.5,
 						"callback" : function(time){
 							if (lastCall){
+								invoked = true;
 								expect(time - lastCall).to.be.closeTo(0.25, 0.01);
 							}
 							lastCall = time;
 						}
 					}).start(0);
-
-					Tone.Transport.start();
-
-					after(function(){
-						loop.dispose();	
-						done();
-					});
-
-				}, 0.7);
+					Transport.start();
+				}, 0.7).then(function(){
+					expect(invoked).to.be.true;
+				});
 				
 			});
 
