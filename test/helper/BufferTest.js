@@ -41,7 +41,7 @@ define(["Tone/core/Tone"], function (Tone) {
 
 		//return the time when the buffer is no longer silent
 		buffer.getFirstSoundTime = function(channelNum){
-			if (Tone.prototype.isUndef(channelNum)){
+			if (isUndef(channelNum)){
 				return buffer.toMono().getFirstSoundTime(0);
 			} else {
 				var array = buffer.toArray(channelNum);
@@ -51,6 +51,21 @@ define(["Tone/core/Tone"], function (Tone) {
 					}
 				}
 				return -1;
+			}
+		};
+
+		//return the time when the buffer is silent to the remainer of the buffer
+		buffer.getLastSoundTime = function(channelNum){
+			if (isUndef(channelNum)){
+				return buffer.toMono().getLastSoundTime(0);
+			} else {
+				var array = buffer.toArray(channelNum);
+				for (var i = array.length - 1; i >= 0; i--){
+					if (array[i] !== 0){
+						return i / buffer.context.sampleRate;
+					}
+				}
+				return 0;
 			}
 		};
 
@@ -104,6 +119,21 @@ define(["Tone/core/Tone"], function (Tone) {
 				min = Math.min(sample, min);
 			});
 			return min;
+		};
+
+		/**
+		 *  returns the value if there is a single value the entire buffer
+		 */
+		buffer.value = function(){
+			var val;
+			buffer.toMono().forEach(function(sample){
+				if (typeof val === "undefined"){
+					val = sample;					
+				} else if (Math.abs(val - sample) > 0.0001){
+					throw new Error("multiple values in buffer");
+				}
+			});
+			return val;
 		};
 	};
 });
