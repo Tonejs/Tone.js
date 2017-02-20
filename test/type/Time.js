@@ -1,5 +1,5 @@
-define(["helper/Basic", "Test", "Tone/core/Transport", "Tone/type/Time", "Tone/core/Tone", "helper/Offline2"], 
-	function (Basic, Test, Transport, Time, Tone, Offline) {
+define(["helper/Basic", "Test", "Tone/type/Time", "Tone/core/Tone", "helper/Offline"], 
+	function (Basic, Test, Time, Tone, Offline) {
 
 	describe("Time", function(){
 
@@ -97,16 +97,14 @@ define(["helper/Basic", "Test", "Tone/core/Transport", "Tone/type/Time", "Tone/c
 				expect(Time(2).quantize(8, 0.75).eval()).to.equal(0.5);
 			});
 			
-			it("can get the next subdivison when the transport is started", function(done){
-
-				Offline(function(dest, testFn, after){
-					Tone.Transport.start(0);
-					after(function(){
+			it("can get the next subdivison when the transport is started", function(){
+				return Offline(function(Transport){
+					Transport.start(0);
+					return Test.atTime(0.59, function(){
 						expect(Time("@1m").eval()).to.be.closeTo(2, 0.01);
 						expect(Time("@(4n + 2n)").eval()).to.be.closeTo(1.5, 0.01);
 						expect(Time("@4n").eval()).to.be.closeTo(1, 0.01);
-						Tone.Transport.stop();
-						done();
+						Transport.stop();
 					});
 				}, 0.6);
 			});	
@@ -140,20 +138,24 @@ define(["helper/Basic", "Test", "Tone/core/Transport", "Tone/type/Time", "Tone/c
 		context("Conversions", function(){
 
 			it("converts time into notation", function(){
-				Tone.Transport.bpm.value = 120;
-				Tone.Transport.timeSignature = 4;
-				expect(Time("4n").toNotation()).to.equal("4n");
-				expect(Time(1.5).toNotation()).to.equal("2n + 4n");
-				expect(Time(0).toNotation()).to.equal("0");
-				expect(Time("1:2:3").toNotation()).to.equal("1m + 2n + 8n + 16n");
+				return Offline(function(Transport){
+					Transport.bpm.value = 120;
+					Transport.timeSignature = 4;
+					expect(Time("4n").toNotation()).to.equal("4n");
+					expect(Time(1.5).toNotation()).to.equal("2n + 4n");
+					expect(Time(0).toNotation()).to.equal("0");
+					expect(Time("1:2:3").toNotation()).to.equal("1m + 2n + 8n + 16n");
+				});
 			});
 
 			it("toNotation works with triplet notation", function(){
-				Tone.Transport.bpm.value = 120;
-				Tone.Transport.timeSignature = 5;
-				expect(Time("1m + 8t").toNotation()).to.equal("1m + 8t");
-				Tone.Transport.bpm.value = 120;
-				Tone.Transport.timeSignature = 4;
+				return Offline(function(Transport){
+					Transport.bpm.value = 120;
+					Transport.timeSignature = 5;
+					expect(Time("1m + 8t").toNotation()).to.equal("1m + 8t");
+					Transport.bpm.value = 120;
+					Transport.timeSignature = 4;
+				});
 			});
 
 			it ("converts time into milliseconds", function(){
@@ -170,7 +172,9 @@ define(["helper/Basic", "Test", "Tone/core/Transport", "Tone/type/Time", "Tone/c
 			});
 
 			it ("converts time into ticks", function(){
-				expect(Time("2n").toTicks()).to.equal(2 * Tone.Transport.PPQ);
+				return Offline(function(Transport){
+					expect(Time("2n").toTicks()).to.equal(2 * Transport.PPQ);
+				});
 			});
 
 			it ("converts time into BarsBeatsSixteenths", function(){

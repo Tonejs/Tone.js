@@ -1,5 +1,5 @@
-define(["helper/Basic", "Test", "Tone/core/Transport", "Tone/type/TimeBase", "Tone/core/Tone"], 
-	function (Basic, Test, Transport, TimeBase, Tone) {
+define(["helper/Basic", "Test", "Tone/type/TimeBase", "Tone/core/Tone", "helper/Offline"], 
+	function (Basic, Test, TimeBase, Tone, Offline) {
 
 	describe("TimeBase", function(){
 
@@ -95,22 +95,20 @@ define(["helper/Basic", "Test", "Tone/core/Transport", "Tone/type/TimeBase", "To
 			});
 
 			it("evaluates notation", function(){
-				Tone.Transport.bpm.value = 120;
-				Tone.Transport.timeSignature = 4;
-				expect(TimeBase("4n").eval()).to.equal(0.5);
-				expect(TimeBase("8n").eval()).to.equal(0.25);
-				expect(TimeBase(16, "n").eval()).to.equal(0.125);
-				expect(TimeBase("32n").eval()).to.equal(0.5/8);
-				expect(TimeBase("2t").eval()).to.equal(2/3);
-
-				Tone.Transport.bpm.value = 60;
-				Tone.Transport.timeSignature = [5,4];
-				expect(TimeBase("1m").eval()).to.equal(5);
-				expect(TimeBase(2, "m").eval()).to.equal(10);
-				expect(TimeBase("5m").eval()).to.equal(25);
-
-				Tone.Transport.bpm.value = 120;
-				Tone.Transport.timeSignature = 4;
+				return Offline(function(Transport){
+					Transport.bpm.value = 120;
+					Transport.timeSignature = 4;
+					expect(TimeBase("4n").eval()).to.equal(0.5);
+					expect(TimeBase("8n").eval()).to.equal(0.25);
+					expect(TimeBase(16, "n").eval()).to.equal(0.125);
+					expect(TimeBase("32n").eval()).to.equal(0.5/8);
+					expect(TimeBase("2t").eval()).to.equal(2/3);
+					Transport.bpm.value = 60;
+					Transport.timeSignature = [5,4];
+					expect(TimeBase("1m").eval()).to.equal(5);
+					expect(TimeBase(2, "m").eval()).to.equal(10);
+					expect(TimeBase("5m").eval()).to.equal(25);
+				});
 			});
 
 			it("evalutes hertz", function(){
@@ -121,18 +119,22 @@ define(["helper/Basic", "Test", "Tone/core/Transport", "Tone/type/TimeBase", "To
 			});
 
 			it("evalutes ticks", function(){
-				Tone.Transport.bpm.value = 120;
-				Tone.Transport.timeSignature = 4;
-				expect(TimeBase(Tone.Transport.PPQ, "i").eval()).to.equal(0.5);
-				expect(TimeBase(1, "i").eval()).to.equal(0.5 / Tone.Transport.PPQ);
+				return Offline(function(Transport){
+					Transport.bpm.value = 120;
+					Transport.timeSignature = 4;
+					expect(TimeBase(Transport.PPQ, "i").eval()).to.equal(0.5);
+					expect(TimeBase(1, "i").eval()).to.equal(0.5 / Transport.PPQ);
+				});
 			});
 
 			it("evalutes transport time", function(){
-				Tone.Transport.bpm.value = 120;
-				Tone.Transport.timeSignature = 4;
-				expect(TimeBase("1:0:0").eval()).to.equal(2);
-				expect(TimeBase("0:3:2").eval()).to.equal(1.75);
-				expect(TimeBase("0:0:2.2").eval()).to.equal(0.275);
+				return Offline(function(Transport){
+					Transport.bpm.value = 120;
+					Transport.timeSignature = 4;
+					expect(TimeBase("1:0:0").eval()).to.equal(2);
+					expect(TimeBase("0:3:2").eval()).to.equal(1.75);
+					expect(TimeBase("0:0:2.2").eval()).to.equal(0.275);
+				});
 			});
 		});
 
@@ -181,12 +183,14 @@ define(["helper/Basic", "Test", "Tone/core/Transport", "Tone/type/TimeBase", "To
 			});
 
 			it("evals expressions combining multiple types", function(){
-				Tone.Transport.bpm.value = 120;
-				Tone.Transport.timeSignature = 4;
-				expect(TimeBase("1n + 1").eval()).to.equal(3);
-				expect(TimeBase("1:2:0 + 2t * 1.5").eval()).to.equal(4);
-				expect(TimeBase("(1:2:0 + 2n) * (1m / 4)").eval()).to.equal(2);
-				expect(TimeBase("0.5hz + 1").eval()).to.equal(3);
+				return Offline(function(Transport){
+					Transport.bpm.value = 120;
+					Transport.timeSignature = 4;
+					expect(TimeBase("1n + 1").eval()).to.equal(3);
+					expect(TimeBase("1:2:0 + 2t * 1.5").eval()).to.equal(4);
+					expect(TimeBase("(1:2:0 + 2n) * (1m / 4)").eval()).to.equal(2);
+					expect(TimeBase("0.5hz + 1").eval()).to.equal(3);
+				});
 			});
 		});
 

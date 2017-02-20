@@ -1,5 +1,5 @@
-define(["helper/Basic", "Test", "Tone/core/Transport", "Tone/type/Frequency", "Tone/core/Tone", "deps/teoria"], 
-	function (Basic, Test, Transport, Frequency, Tone, teoria) {
+define(["helper/Basic", "Test", "Tone/type/Frequency", "Tone/core/Tone", "deps/teoria", "helper/Offline"], 
+	function (Basic, Test, Frequency, Tone, teoria, Offline) {
 
 	describe("Frequency", function(){
 
@@ -46,18 +46,18 @@ define(["helper/Basic", "Test", "Tone/core/Transport", "Tone/type/Frequency", "T
 			});
 
 			it("evaluates notation", function(){
-				Tone.Transport.bpm.value = 120;
-				Tone.Transport.timeSignature = 4;
-				expect(Frequency("4n").eval()).to.equal(2);
-				expect(Frequency("8n").eval()).to.equal(4);
-				expect(Frequency(16, "n").eval()).to.equal(8);
-
-				Tone.Transport.bpm.value = 60;
-				Tone.Transport.timeSignature = [5,4];
-				expect(Frequency("1m").eval()).to.equal(1/5);
-
-				Tone.Transport.bpm.value = 120;
-				Tone.Transport.timeSignature = 4;
+				return Offline(function(Transport){
+					Transport.bpm.value = 120;
+					Transport.timeSignature = 4;
+					expect(Frequency("4n").eval()).to.equal(2);
+					expect(Frequency("8n").eval()).to.equal(4);
+					expect(Frequency(16, "n").eval()).to.equal(8);
+					Transport.bpm.value = 60;
+					Transport.timeSignature = [5,4];
+					expect(Frequency("1m").eval()).to.equal(1/5);
+					Transport.bpm.value = 120;
+					Transport.timeSignature = 4;
+				});
 			});
 
 			it("evalutes hertz", function(){
@@ -68,8 +68,10 @@ define(["helper/Basic", "Test", "Tone/core/Transport", "Tone/type/Frequency", "T
 			});
 
 			it("evalutes ticks", function(){
-				expect(Frequency(Tone.Transport.PPQ, "i").eval()).to.equal(2);
-				expect(Frequency(1, "i").eval()).to.equal(Tone.Transport.PPQ * 2);
+				return Offline(function(Transport){
+					expect(Frequency(Transport.PPQ, "i").eval()).to.equal(2);
+					expect(Frequency(1, "i").eval()).to.equal(Transport.PPQ * 2);
+				});
 			});
 
 			it("evalutes transport time", function(){
@@ -111,13 +113,13 @@ define(["helper/Basic", "Test", "Tone/core/Transport", "Tone/type/Frequency", "T
 			});
 
 			it("can accomidate different concert tuning", function(){
-				Tone.Frequency.A4 = 444;
-				expect(Frequency("C4").eval()).to.be.closeTo(teoria.note("C4").fq(Tone.Frequency.A4), 0.0001);
-				expect(Frequency("D1").eval()).to.be.closeTo(teoria.note("D1").fq(Tone.Frequency.A4), 0.0001);
-				Tone.Frequency.A4 = 100;
-				expect(Frequency("C4").eval()).to.be.closeTo(teoria.note("C4").fq(Tone.Frequency.A4), 0.0001);
+				Frequency.A4 = 444;
+				expect(Frequency("C4").eval()).to.be.closeTo(teoria.note("C4").fq(Frequency.A4), 0.0001);
+				expect(Frequency("D1").eval()).to.be.closeTo(teoria.note("D1").fq(Frequency.A4), 0.0001);
+				Frequency.A4 = 100;
+				expect(Frequency("C4").eval()).to.be.closeTo(teoria.note("C4").fq(Frequency.A4), 0.0001);
 				//return it to normal
-				Tone.Frequency.A4 = 440;
+				Frequency.A4 = 440;
 			});
 
 		});
