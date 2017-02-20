@@ -60,12 +60,10 @@ function (LFO, Basic, Offline, Test, OutputAudio, Tone, Signal) {
 			});
 
 			it("outputs a signal", function(){
-				return Offline(function(){
-					var lfo = new LFO();
+				return OutputAudio(function(){
+					var lfo = new LFO(100, 10, 20);
 					lfo.toMaster();
 					lfo.start();
-				}).then(function(buffer){
-					console.log(buffer);
 				});
 			});
 
