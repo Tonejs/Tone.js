@@ -1,5 +1,5 @@
 define(["helper/Basic", "Tone/source/MultiPlayer", "helper/Offline", "helper/SourceTests", 
-	"Tone/core/Buffer", "helper/OutputAudioStereo", "helper/Meter2"], 
+	"Tone/core/Buffer", "helper/OutputAudioStereo", "helper/Meter"], 
 	function (BasicTests, MultiPlayer, Offline, SourceTests, Buffer, OutputAudioStereo, Meter) {
 
 	if (window.__karma__){

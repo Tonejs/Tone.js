@@ -1,6 +1,6 @@
 define(["helper/OutputAudio", "Tone/instrument/Instrument", "helper/OutputAudioStereo", 
-	"Test", "helper/Offline", "helper/Meter"], 
-	function (OutputAudio, Instrument, OutputAudioStereo, Test, Offline, Meter) {
+	"Test", "helper/Offline"], 
+	function (OutputAudio, Instrument, OutputAudioStereo, Test, Offline) {
 
 	return function(Constr, note, constrArg){
 

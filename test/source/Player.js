@@ -1,6 +1,6 @@
 define(["helper/Basic", "Tone/source/Player", "helper/Offline", 
-	"helper/SourceTests", "Tone/core/Buffer", "helper/Meter2", "helper/Offline2", "Test"], 
-	function (BasicTests, Player, Offline, SourceTests, Buffer, Meter, Offline2, Test) {
+	"helper/SourceTests", "Tone/core/Buffer", "helper/Meter", "Test"], 
+	function (BasicTests, Player, Offline, SourceTests, Buffer, Meter, Test) {
 
 	if (window.__karma__){
 		Buffer.baseUrl = "/base/test/";

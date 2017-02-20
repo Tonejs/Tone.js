@@ -1,5 +1,5 @@
-define(["helper/Basic", "Tone/source/BufferSource", "helper/Offline", "Tone/core/Buffer", "helper/Meter", "helper/Meter2"], 
-	function (BasicTests, BufferSource, Offline, Buffer, Meter, Meter2) {
+define(["helper/Basic", "Tone/source/BufferSource", "helper/Offline", "Tone/core/Buffer", "helper/Meter"], 
+	function (BasicTests, BufferSource, Offline, Buffer, Meter) {
 
 	if (window.__karma__){
 		Buffer.baseUrl = "/base/test/";
@@ -133,7 +133,7 @@ define(["helper/Basic", "Tone/source/BufferSource", "helper/Offline", "Tone/core
 			});
 
 			it("can play for a specific duration", function(){
-				return Meter2(function(){
+				return Meter(function(){
 					var player = new BufferSource(buffer);
 					player.toMaster();
 					player.start(0).stop(0.1);
@@ -155,7 +155,7 @@ define(["helper/Basic", "Tone/source/BufferSource", "helper/Offline", "Tone/core
 			});
 
 			it("can play for a specific duration passed in the 'start' method", function(){
-				return Meter2(function(){
+				return Meter(function(){
 					var player = new BufferSource(buffer);
 					player.toMaster();
 					player.start(0, 0, 0.1);
@@ -210,7 +210,7 @@ define(["helper/Basic", "Tone/source/BufferSource", "helper/Offline", "Tone/core
 			});
 
 			it("can be scheduled to stop", function(){
-				return Meter2(function(){
+				return Meter(function(){
 					var player = new BufferSource(buffer).toMaster();
 					player.start(0).stop(0.1);
 				}, 0.6).then(function(rms){
@@ -225,7 +225,7 @@ define(["helper/Basic", "Tone/source/BufferSource", "helper/Offline", "Tone/core
 			});
 
 			it("can be scheduled to stop with a ramp", function(){
-				return Meter2(function(){
+				return Meter(function(){
 					var player = new BufferSource(buffer).toMaster();
 					player.start(0).stop(0.1, 0.1);
 				}, 0.6).then(function(rms){

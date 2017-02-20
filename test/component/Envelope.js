@@ -1,6 +1,6 @@
 define(["Tone/component/Envelope", "helper/Basic", "helper/Offline", "Test", 
-	"helper/Offline2", "helper/Supports", "helper/PassAudio", "helper/APITest"], 
-function (Envelope, Basic, Offline, Test, Offline2, Supports, PassAudio, APITest) {
+	"helper/Supports", "helper/PassAudio", "helper/APITest"], 
+function (Envelope, Basic, Offline, Test, Supports, PassAudio, APITest) {
 	describe("Envelope", function(){
 
 		Basic(Envelope);
