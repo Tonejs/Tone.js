@@ -27,7 +27,7 @@ function (Tone) {
 		 *  @type  {Tone.MultiPlayer}
 		 *  @private
 		 */
-		this._player = this.output = new Tone.MultiPlayer();
+		this._player = new Tone.MultiPlayer().connect(this.output);
 
 		/**
 		 *  Create a repeating tick to schedule
@@ -113,12 +113,19 @@ function (Tone) {
 
 	/**
 	 *  Play the buffer at the given startTime. Optionally add an offset
-	 *  from the start of the buffer to play from.
+	 *  and/or duration which will play the buffer from a position
+	 *  within the buffer for the given duration. 
 	 *  
 	 *  @param  {Time} [startTime=now] When the player should start.
 	 *  @param  {Time} [offset=0] The offset from the beginning of the sample
 	 *                                 to start at. 
-	 * @return {Tone.GrainPlayer} this
+	 *  @param  {Time=} duration How long the sample should play. If no duration
+	 *                                is given, it will default to the full length 
+	 *                                of the sample (minus any offset)
+	 *  @returns {Tone.GrainPlayer} this
+	 *  @memberOf Tone.GrainPlayer#
+	 *  @method start
+	 *  @name start
 	 */
 	
 	/**
@@ -127,13 +134,20 @@ function (Tone) {
 	 *  @param {Time} offset
 	 *  @private
 	 */
-	Tone.GrainPlayer.prototype._start = function(time, offset){
+	Tone.GrainPlayer.prototype._start = function(time, offset, duration){
 		offset = this.defaultArg(offset, 0);
 		offset = this.toSeconds(offset);
 		time = this.toSeconds(time);
 
 		this._offset = offset;
 		this._clock.start(time);
+
+		//unmute the player
+		this._player.volume.setValueAtTime(0, time);
+
+		if (duration){
+			this._stop(time + this.toSeconds(duration));			
+		}
 	};
 
 	/**
@@ -143,8 +157,9 @@ function (Tone) {
 	 */
 	Tone.GrainPlayer.prototype._stop = function(time){
 		this._clock.stop(time);
-		this._player.stop(this.buffer, time);
-		this._offset = 0;
+		//mute the player
+		this._player.volume.cancelScheduledValues(time);
+		this._player.volume.setValueAtTime(-Infinity, time);
 	};
 
 	/**
@@ -162,7 +177,6 @@ function (Tone) {
 		var drift = (Math.random() * 2 - 1) * this.drift;
 		var offset = this._offset - this._overlap + drift;
 		var detune = this.detune / 100;
-
 
 		var originalFadeIn = this._player.fadeIn;
 		if (this.loop && this._offset > bufferDuration){
