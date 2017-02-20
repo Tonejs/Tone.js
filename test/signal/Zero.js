@@ -1,5 +1,5 @@
-define(["Test", "Tone/signal/Zero", "helper/Basic", "Tone/signal/Signal", "helper/Offline"], 
-function (Test, Zero, BasicTest, Signal, Offline) {
+define(["Test", "Tone/signal/Zero", "helper/Basic", "Tone/signal/Signal", "helper/ConstantOutput"], 
+function (Test, Zero, BasicTest, Signal, ConstantOutput) {
 
 	describe("Zero", function(){
 
@@ -13,21 +13,10 @@ function (Test, Zero, BasicTest, Signal, Offline) {
 				abs.dispose();
 			});
 
-			it("always outputs 0", function(done){
-				var zero;
-				var offline = new Offline(0.2);
-				offline.before(function(dest){
-					zero = new Zero();
-					zero.connect(dest);
-				});
-				offline.test(function(sample){
-					expect(sample).to.equal(0);
-				});
-				offline.after(function(){
-					zero.dispose();
-					done();
-				});
-				offline.run();
+			it("always outputs 0", function(){
+				return ConstantOutput(function(){
+					new Zero().toMaster();
+				}, 0, 0);
 			});
 
 		});

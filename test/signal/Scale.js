@@ -1,6 +1,6 @@
-define(["helper/Offline", "Tone/signal/Scale", "helper/Basic", 
+define(["helper/ConstantOutput", "Tone/signal/Scale", "helper/Basic", 
 	"Test", "Tone/source/Oscillator", "Tone/signal/Signal"], 
-	function (Offline, Scale, Basic, Test, Oscillator, Signal) {
+	function (ConstantOutput, Scale, Basic, Test, Oscillator, Signal) {
 
 	describe("Scale", function(){
 
@@ -24,68 +24,32 @@ define(["helper/Offline", "Tone/signal/Scale", "helper/Basic",
 				scale.dispose();
 			});
 
-			it("scales to the min when the input is 0", function(done){
-				//make an signalillator to drive the signal
-				var signal, scale;
-				var offline = new Offline();
-				offline.before(function(dest){
-					signal = new Signal(0);
-					scale = new Scale(-10, 8);
+			it("scales to the min when the input is 0", function(){
+				return ConstantOutput(function(){
+					var signal = new Signal(0);
+					var scale = new Scale(-10, 8);
 					signal.connect(scale);
-					scale.connect(dest);
-				}); 
-				offline.test(function(sample){
-					expect(sample).to.be.closeTo(-10, 0.001);
-				});
-				offline.after(function(){
-					signal.dispose();
-					scale.dispose();
-					done();
-				});
-				offline.run();
+					scale.toMaster();
+				}, -10); 
 			});
 
-			it("scales to the max when the input is 1", function(done){
-				//make an signalillator to drive the signal
-				var signal, scale;
-				var offline = new Offline();
-				offline.before(function(dest){
-					signal = new Signal(1);
-					scale = new Scale(-10, 0);
+			it("scales to the max when the input is 1", function(){
+				return ConstantOutput(function(){
+					var signal = new Signal(1);
+					var scale = new Scale(-10, 0);
 					scale.max = 8;
 					signal.connect(scale);
-					scale.connect(dest);
-				}); 
-				offline.test(function(sample){
-					expect(sample).to.be.closeTo(8, 0.001);
-				});
-				offline.after(function(){
-					signal.dispose();
-					scale.dispose();
-					done();
-				});
-				offline.run();
+					scale.toMaster();
+				}, 8); 
 			});
 
-			it("scales an input of 0.5 to 15 (10, 20)", function(done){
-				//make an signalillator to drive the signal
-				var signal, scale;
-				var offline = new Offline();
-				offline.before(function(dest){
-					signal = new Signal(0.5);
-					scale = new Scale(10, 20);
+			it("scales an input of 0.5 to 15 (10, 20)", function(){
+				return ConstantOutput(function(){
+					var signal = new Signal(0.5);
+					var scale = new Scale(10, 20);
 					signal.connect(scale);
-					scale.connect(dest);
-				}); 
-				offline.test(function(sample){
-					expect(sample).to.be.closeTo(15, 0.001);
-				});
-				offline.after(function(){
-					signal.dispose();
-					scale.dispose();
-					done();
-				});
-				offline.run();
+					scale.toMaster();
+				}, 15); 
 			});
 		});
 	});

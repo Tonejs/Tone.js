@@ -1,5 +1,5 @@
-define(["helper/Offline", "helper/Basic", "Tone/signal/WaveShaper", "Tone/signal/Signal"], 
-function (Offline, Basic, WaveShaper, Signal) {
+define(["helper/Offline", "helper/Basic", "Tone/signal/WaveShaper", "Tone/signal/Signal", "helper/ConstantOutput"], 
+function (Offline, Basic, WaveShaper, Signal, ConstantOutput) {
 
 	describe("WaveShaper", function(){
 
@@ -44,88 +44,48 @@ function (Offline, Basic, WaveShaper, Signal) {
 
 		describe("Logic", function(){
 
-			it("shapes the output of the incoming signal", function(done){
-				var signal, waveshaper;
-				var offline = new Offline();
-				offline.before(function(dest){
-					signal = new Signal(1);
-					waveshaper = new WaveShaper([-10, -10, -10]);
+			it("shapes the output of the incoming signal", function(){
+				return ConstantOutput(function(){
+					var signal = new Signal(1);
+					var waveshaper = new WaveShaper([-10, -10, -10]);
 					signal.connect(waveshaper);
-					waveshaper.connect(dest);
-				});
-				offline.test(function(sample){
-					expect(sample).to.equal(-10);
-				});
-				offline.after(function(){
-					signal.dispose();
-					waveshaper.dispose();
-					done();
-				});
-				offline.run();
+					waveshaper.toMaster();
+				}, -10);
 			});
 
-			it("outputs the last curve value when the input is above 1", function(done){
-				var signal, waveshaper;
-				var offline = new Offline();
-				offline.before(function(dest){
-					signal = new Signal(10);
-					waveshaper = new WaveShaper([-20, 20]);
+			it("outputs the last curve value when the input is above 1", function(){
+				return ConstantOutput(function(){
+					var signal = new Signal(10);
+					var waveshaper = new WaveShaper([-20, 20]);
 					signal.connect(waveshaper);
-					waveshaper.connect(dest);
-				});
-				offline.test(function(sample){
-					expect(sample).to.equal(20);
-				});
-				offline.after(function(){
-					signal.dispose();
-					waveshaper.dispose();
-					done();
-				});
-				offline.run();
+					waveshaper.toMaster();
+				}, 20);
 			});
 
-			it("outputs the first curve value when the input is below -1", function(done){
-				var signal, waveshaper;
-				var offline = new Offline();
-				offline.before(function(dest){
-					signal = new Signal(-1);
-					waveshaper = new WaveShaper([-20, 20]);
+			it("outputs the first curve value when the input is below -1", function(){
+				return ConstantOutput(function(){
+					var signal = new Signal(-1);
+					var waveshaper = new WaveShaper([-20, 20]);
 					signal.connect(waveshaper);
-					waveshaper.connect(dest);
-				});
-				offline.test(function(sample){
-					expect(sample).to.equal(-20);
-				});
-				offline.after(function(){
-					signal.dispose();
-					waveshaper.dispose();
-					done();
-				});
-				offline.run();
+					waveshaper.toMaster();
+				}, -20);
 			});
 
-			it("maps the input through the waveshaping curve", function(done){
-				var signal, waveshaper;
-				var offline = new Offline();
-				offline.before(function(dest){
-					signal = new Signal(-1);
-					waveshaper = new WaveShaper(function(input){
+			it("maps the input through the waveshaping curve", function(){
+				return Offline(function(){
+					var signal = new Signal(-1);
+					var waveshaper = new WaveShaper(function(input){
 						return input * 2;
 					});
 					signal.connect(waveshaper);
-					waveshaper.connect(dest);
+					waveshaper.toMaster();
 					signal.setValueAtTime(-1, 0);
 					signal.linearRampToValueAtTime(1, 1);
+				}, 1).then(function(buffer){
+					buffer.forEach(function(sample, time){
+						expect(sample).to.be.closeTo( 2 * ((time * 2) - 1), 0.005);
+					});
 				});
-				offline.test(function(sample, time){
-					expect(sample).to.be.closeTo( 2 * ((time * 2) - 1), 0.005);
-				});
-				offline.after(function(){
-					signal.dispose();
-					waveshaper.dispose();
-					done();
-				});
-				offline.run();
 			});
 
 		});

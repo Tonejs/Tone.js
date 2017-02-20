@@ -1,6 +1,6 @@
-define(["helper/Offline", "Tone/signal/Pow", "helper/Basic", 
+define(["helper/ConstantOutput", "Tone/signal/Pow", "helper/Basic", 
 	"Test", "Tone/signal/Signal"], 
-	function (Offline, Pow, Basic, Test, Signal) {
+	function (ConstantOutput, Pow, Basic, Test, Signal) {
 
 	describe("Pow", function(){
 
@@ -15,65 +15,32 @@ define(["helper/Offline", "Tone/signal/Pow", "helper/Basic",
 				pow.dispose();
 			});
 
-			it("can do powers of 2", function(done){
-				var signal, pow;
-				var offline = new Offline();
-				offline.before(function(dest){
-					signal = new Signal(0.3);
-					pow = new Pow(2);
+			it("can do powers of 2", function(){
+				return ConstantOutput(function(){
+					var signal = new Signal(0.3);
+					var pow = new Pow(2);
 					signal.connect(pow);
-					pow.connect(dest);
-				}); 
-				offline.test(function(sample){
-					expect(sample).to.be.closeTo(0.09, 0.01);
-				});
-				offline.after(function(){
-					signal.dispose();
-					pow.dispose();
-					done();
-				});
-				offline.run();
+					pow.toMaster();
+				}, 0.09); 
 			});
 
-			it("can compute negative values and powers less than 1", function(done){
-				var signal, pow;
-				var offline = new Offline();
-				offline.before(function(dest){
-					signal = new Signal(-0.49);
-					pow = new Pow(0.5);
+			it("can compute negative values and powers less than 1", function(){
+				return ConstantOutput(function(){
+					var signal = new Signal(-0.49);
+					var pow = new Pow(0.5);
 					signal.connect(pow);
-					pow.connect(dest);
-				}); 
-				offline.test(function(sample){
-					expect(sample).to.be.closeTo(0.7, 0.01);
-				});
-				offline.after(function(){
-					signal.dispose();
-					pow.dispose();
-					done();
-				});
-				offline.run();
+					pow.toMaster();
+				}, 0.7); 
 			});
 
-			it("can set a new exponent", function(done){
-				var signal, pow;
-				var offline = new Offline();
-				offline.before(function(dest){
-					signal = new Signal(0.5);
-					pow = new Pow(1);
+			it("can set a new exponent", function(){
+				return ConstantOutput(function(){
+					var signal = new Signal(0.5);
+					var pow = new Pow(1);
 					pow.value = 3;
 					signal.connect(pow);
-					pow.connect(dest);
-				}); 
-				offline.test(function(sample){
-					expect(sample).to.be.closeTo(0.125, 0.01);
-				});
-				offline.after(function(){
-					signal.dispose();
-					pow.dispose();
-					done();
-				});
-				offline.run();
+					pow.toMaster();
+				}, 0.125); 
 			});
 		});
 	});

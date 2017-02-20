@@ -1,5 +1,5 @@
-define(["helper/Offline", "helper/Basic", "Tone/signal/GreaterThanZero", "Tone/signal/Signal", "helper/Supports"], 
-function (Offline, Basic, GreaterThanZero, Signal, Supports) {
+define(["helper/ConstantOutput", "helper/Basic", "Tone/signal/GreaterThanZero", "Tone/signal/Signal", "helper/Supports"], 
+function (ConstantOutput, Basic, GreaterThanZero, Signal, Supports) {
 
 	describe("GreaterThanZero", function(){
 
@@ -7,87 +7,43 @@ function (Offline, Basic, GreaterThanZero, Signal, Supports) {
 
 		describe("Comparison", function(){
 
-			it("Outputs 0 when the value is less than 0", function(done){
-				var signal, gtz;
-				var offline = new Offline();
-				offline.before(function(dest){
-					signal = new Signal(-1);
-					gtz = new GreaterThanZero();
+			it("Outputs 0 when the value is less than 0", function(){
+				return ConstantOutput(function(){
+					var signal = new Signal(-1);
+					var gtz = new GreaterThanZero();
 					signal.connect(gtz);
-					gtz.connect(dest);
-				});
-				offline.test(function(sample){
-					expect(sample).to.equal(0);
-				});
-				offline.after(function(){
-					signal.dispose();
-					gtz.dispose();
-					done();
-				});
-				offline.run();
+					gtz.toMaster();
+				}, 0);
 			});
 
-			it("Outputs 1 when the value is greater than 0", function(done){
-				var signal, gtz;
-				var offline = new Offline();
-				offline.before(function(dest){
-					signal = new Signal(1);
-					gtz = new GreaterThanZero();
+			it("Outputs 1 when the value is greater than 0", function(){
+				return ConstantOutput(function(){
+					var signal = new Signal(1);
+					var gtz = new GreaterThanZero();
 					signal.connect(gtz);
-					gtz.connect(dest);
-				});
-				offline.test(function(sample){
-					expect(sample).to.equal(1);
-				});
-				offline.after(function(){
-					signal.dispose();
-					gtz.dispose();
-					done();
-				});
-				offline.run();
+					gtz.toMaster();
+				}, 1);
 			});
 
 			if (Supports.WAVESHAPER_0_POSITION){
 
-				it("Outputs 0 when the value is equal to 0", function(done){
-					var signal, gtz;
-					var offline = new Offline();
-					offline.before(function(dest){
-						signal = new Signal(0);
-						gtz = new GreaterThanZero();
+				it("Outputs 0 when the value is equal to 0", function(){
+					return ConstantOutput(function(){
+						var signal = new Signal(0);
+						var gtz = new GreaterThanZero();
 						signal.connect(gtz);
-						gtz.connect(dest);
-					});
-					offline.test(function(sample){
-						expect(sample).to.equal(0);
-					});
-					offline.after(function(){
-						signal.dispose();
-						gtz.dispose();
-						done();
-					});
-					offline.run();
+						gtz.toMaster();
+					}, 0);
 				});
 			}
 
-			it("Outputs 1 when the value is slightly above 0", function(done){
-				var signal, gtz;
-				var offline = new Offline();
-				offline.before(function(dest){
-					signal = new Signal(0.001);
-					gtz = new GreaterThanZero();
+			it("Outputs 1 when the value is slightly above 0", function(){
+				return ConstantOutput(function(){
+					var signal = new Signal(0.001);
+					var gtz = new GreaterThanZero();
 					signal.connect(gtz);
-					gtz.connect(dest);
-				});
-				offline.test(function(sample){
-					expect(sample).to.equal(1);
-				});
-				offline.after(function(){
-					signal.dispose();
-					gtz.dispose();
-					done();
-				});
-				offline.run();
+					gtz.toMaster();
+				}, 1);
 			});
 		});
 	});

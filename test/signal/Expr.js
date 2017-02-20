@@ -1,7 +1,7 @@
 
 define(["Tone/signal/Signal", "Tone/signal/Expr", "Test", "helper/Basic", 
-	"helper/OutputAudio", "helper/PassAudio", "helper/Offline"], 
-function(Signal, Expr, Test, Basic, OutputAudio, PassAudio, Offline){
+	"helper/OutputAudio", "helper/PassAudio", "helper/Offline", "helper/ConstantOutput"], 
+function(Signal, Expr, Test, Basic, OutputAudio, PassAudio, Offline, ConstantOutput){
 
 	describe("Expr", function(){
 
@@ -22,279 +22,118 @@ function(Signal, Expr, Test, Basic, OutputAudio, PassAudio, Offline){
 				exp.dispose();
 			});
 
-			it("outputs audio", function(done){
-				var exp;
-				OutputAudio(function(out){
-					exp = new Expr("1.1");
-					exp.connect(out);
-				}, function(){
-					exp.dispose();
-					done();
+			it("outputs audio", function(){
+				return OutputAudio(function(){
+					new Expr("1.1").toMaster();
 				});
 			});
 
-			it("passes input", function(done){
-				var exp;
-				PassAudio(function(input, output){
-					exp = new Expr("$0");
+			it("passes input", function(){
+				return PassAudio(function(input){
+					var exp = new Expr("$0");
 					input.connect(exp);
-					exp.connect(output);
-				}, function(){
-					exp.dispose();
-					done();
+					exp.toMaster();
 				});
 			});
 		});
 
 		context("Parsing", function(){
 
-			it("can do string replacements", function(done){
-				var exp;
-				var offline = new Offline(); 
-				offline.before(function(dest){
-					exp = new Expr("% + %", 0.2, 0.8);
-					exp.connect(dest);
-				}); 
-				offline.test(function(sample){
-					expect(sample).to.be.closeTo(1, 0.001);
-				}); 
-				offline.after(function(){
-					exp.dispose();
-					done();
-				});
-				offline.run();
+			it("can do string replacements", function(){
+				return ConstantOutput(function(){
+					var exp = new Expr("% + %", 0.2, 0.8);
+					exp.toMaster();
+				}, 1); 
 			});
 
-			it("can do string replacements with strings", function(done){
-				var exp;
-				var offline = new Offline(); 
-				offline.before(function(dest){
-					exp = new Expr("%", "1 + 2");
-					exp.connect(dest);
-				}); 
-				offline.test(function(sample){
-					expect(sample).to.be.closeTo(3, 0.001);
-				}); 
-				offline.after(function(){
-					exp.dispose();
-					done();
-				});
-				offline.run();
+			it("can do string replacements with strings", function(){
+				return ConstantOutput(function(){
+					new Expr("%", "1 + 2").toMaster();
+				}, 3);
 			});
 
-			it("handles precendence", function(done){
-				var exp;
-				var offline = new Offline(); 
-				offline.before(function(dest){
-					exp = new Expr("8 + 16 * 4 * (2 - 1)");
-					exp.connect(dest);
-				}); 
-				offline.test(function(sample){
-					expect(sample).to.be.closeTo(72, 0.01);
-				}); 
-				offline.after(function(){
-					exp.dispose();
-					done();
-				});
-				offline.run();
+			it("handles precendence", function(){
+				return ConstantOutput(function(){
+					new Expr("8 + 16 * 4 * (2 - 1)").toMaster();
+				}, 72);
 			});
 
-			it("tolerates inconsistent spacing", function(done){
-				var exp;
-				var offline = new Offline(); 
-				offline.before(function(dest){
-					exp = new Expr("2 *    3-2 *4 ");
-					exp.connect(dest);
-				}); 
-				offline.test(function(sample){
-					expect(sample).to.equal(-2);
-				}); 
-				offline.after(function(){
-					exp.dispose();
-					done();
-				});
-				offline.run();
+			it("tolerates inconsistent spacing", function(){
+				return ConstantOutput(function(){
+					new Expr("2 *    3-2 *4 ").toMaster();
+				}, -2);
 			});
 
-			it("handles parens", function(done){
-				var exp;
-				var offline = new Offline(); 
-				offline.before(function(dest){
-					exp = new Expr("(8 + 16) * (4 - 1)");
-					exp.connect(dest);
-				}); 
-				offline.test(function(sample){
-					expect(sample).to.equal(72);
-				}); 
-				offline.after(function(){
-					exp.dispose();
-					done();
-				});
-				offline.run();
+			it("handles parens", function(){
+				return ConstantOutput(function(){
+					new Expr("(8 + 16) * (4 - 1)").toMaster();
+				}, 72);
 			});
 		});
 
 		context("Math", function(){
 
-			it("does signal addition", function(done){
-				var exp;
-				var offline = new Offline(); 
-				offline.before(function(dest){
-					exp = new Expr("1 + 3");
-					exp.connect(dest);
-				}); 
-				offline.test(function(sample){
-					expect(sample).to.equal(4);
-				}); 
-				offline.after(function(){
-					exp.dispose();
-					done();
-				});
-				offline.run();
+			it("does signal addition", function(){
+				return ConstantOutput(function(){
+					new Expr("1 + 3").toMaster();
+				}, 4);
 			});
 
-			it("does signal multiplication", function(done){
-				var exp;
-				var offline = new Offline(); 
-				offline.before(function(dest){
-					exp = new Expr("1.5 * 6");
-					exp.connect(dest);
-				}); 
-				offline.test(function(sample){
-					expect(sample).to.equal(9);
-				}); 
-				offline.after(function(){
-					exp.dispose();
-					done();
-				});
-				offline.run();
+			it("does signal multiplication", function(){
+				return ConstantOutput(function(){
+					new Expr("1.5 * 6").toMaster();
+				}, 9);
 			});
 
-			it("does signal subtraction", function(done){
-				var exp;
-				var offline = new Offline(); 
-				offline.before(function(dest){
-					exp = new Expr("8 - 16");
-					exp.connect(dest);
-				}); 
-				offline.test(function(sample){
-					expect(sample).to.equal(-8);
-				}); 
-				offline.after(function(){
-					exp.dispose();
-					done();
-				});
-				offline.run();
+			it("does signal subtraction", function(){
+				return ConstantOutput(function(){
+					new Expr("8 - 16").toMaster();
+				}, -8);
 			});
 		});
 
 		context("Unary Operators", function(){
 
-			it("correctly outputs negative", function(done){
-				var exp, sig;
-				var offline = new Offline(); 
-				offline.before(function(dest){
-					sig = new Signal(1);
-					exp = new Expr("-$0");
+			it("correctly outputs negative", function(){
+				return ConstantOutput(function(){
+					var sig = new Signal(1);
+					var exp = new Expr("-$0");
 					sig.connect(exp);
-					exp.connect(dest);
-				}); 
-				offline.test(function(sample){
-					expect(sample).to.equal(-1);
-				}); 
-				offline.after(function(){
-					exp.dispose();
-					sig.dispose();
-					done();
-				});
-				offline.run();
+					exp.toMaster();
+				}, -1);
 			});
 		});
 
 		context("Functions", function(){
 
-			it("handles abs(-1)", function(done){
-				var exp;
-				var offline = new Offline(); 
-				offline.before(function(dest){
-					exp = new Expr("abs(-1)");
-					exp.connect(dest);
-				}); 
-				offline.test(function(sample){
-					expect(sample).to.equal(1);
-				}); 
-				offline.after(function(){
-					exp.dispose();
-					done();
-				});
-				offline.run();
+			it("handles abs(-1)", function(){
+				return ConstantOutput(function(){
+					new Expr("abs(-1)").toMaster();
+				}, 1);
 			});
 
-			it("handles abs(0.11)", function(done){
-				var exp;
-				var offline = new Offline(); 
-				offline.before(function(dest){
-					exp = new Expr("abs(0.11)");
-					exp.connect(dest);
-				}); 
-				offline.test(function(sample){
-					expect(sample).to.be.closeTo(0.11, 0.01);
-				}); 
-				offline.after(function(){
-					exp.dispose();
-					done();
-				});
-				offline.run();
+			it("handles abs(0.11)", function(){
+				return ConstantOutput(function(){
+					new Expr("abs(0.11)").toMaster();
+				}, 0.11);
 			});
 
-			it("handles mod(0.1, 0.9)", function(done){
-				var exp;
-				var offline = new Offline(); 
-				offline.before(function(dest){
-					exp = new Expr("mod(0.1, 0.9)");
-					exp.connect(dest);
-				}); 
-				offline.test(function(sample){
-					expect(sample).to.be.closeTo(0.1, 0.0001);
-				}); 
-				offline.after(function(){
-					exp.dispose();
-					done();
-				});
-				offline.run();
+			it("handles mod(0.2, 0.9)", function(){
+				return ConstantOutput(function(){
+					new Expr("mod(0.2, 0.9)").toMaster();
+				}, 0.2);
 			});
 
-			it("handles mod(0.5, 0.25)", function(done){
-				var exp;
-				var offline = new Offline(); 
-				offline.before(function(dest){
-					exp = new Expr("mod(0.6, 0.25)");
-					exp.connect(dest);
-				}); 
-				offline.test(function(sample){
-					expect(sample).to.be.closeTo(0.1, 0.0001);
-				}); 
-				offline.after(function(){
-					exp.dispose();
-					done();
-				});
-				offline.run();
+			it("handles mod(0.5, 0.25)", function(){
+				return ConstantOutput(function(){
+					new Expr("mod(0.6, 0.25)").toMaster();
+				}, 0.1);
 			});
 
-			it("computes pow(0.2, 3)", function(done){
-				var exp;
-				var offline = new Offline(); offline.before(function(dest){
-					exp = new Expr("pow(0.2, 3)");
-					exp.connect(dest);
-				}); 
-				offline.test(function(sample){
-					expect(sample).to.be.closeTo(0.008, 0.001);
-				}); 
-				offline.after(function(){
-					exp.dispose();
-					done();
-				});
-				offline.run();
+			it("computes pow(0.2, 3)", function(){
+				return ConstantOutput(function(){
+					new Expr("pow(0.2, 3)").toMaster();
+				}, 0.008, 0.001);
 			});
 		});
 	});

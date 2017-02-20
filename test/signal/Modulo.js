@@ -1,6 +1,6 @@
-define(["helper/Offline", "Tone/signal/Modulo", "helper/Basic", 
+define(["helper/ConstantOutput", "Tone/signal/Modulo", "helper/Basic", 
 	"Test", "Tone/signal/Signal"], 
-	function (Offline, Modulo, Basic, Test, Signal) {
+	function (ConstantOutput, Modulo, Basic, Test, Signal) {
 
 	describe("Modulo", function(){
 
@@ -15,66 +15,33 @@ define(["helper/Offline", "Tone/signal/Modulo", "helper/Basic",
 				mod.dispose();
 			});
 
-			it("can evaluate 0.45 % 0.3", function(done){
-				var signal, mod;
-				var offline = new Offline();
-				offline.before(function(dest){
-					signal = new Signal(0.45);
-					mod = new Modulo(0.3);
+			it("can evaluate 0.45 % 0.3", function(){
+				return ConstantOutput(function(){
+					var signal = new Signal(0.45);
+					var mod = new Modulo(0.3);
 					signal.connect(mod);
-					mod.connect(dest);
-				}); 
-				offline.test(function(sample){
-					expect(sample).to.be.closeTo(0.15, 0.0001);
-				});
-				offline.after(function(){
-					signal.dispose();
-					mod.dispose();
-					done();
-				});
-				offline.run();
+					mod.toMaster();
+				}, 0.15);
 			});
 
-			it("can evaluate 0.1 % 0.2", function(done){
-				var signal, mod;
-				var offline = new Offline();
-				offline.before(function(dest){
-					signal = new Signal(0.1);
-					mod = new Modulo(0.2);
+			it("can evaluate 0.1 % 0.2", function(){
+				return ConstantOutput(function(){
+					var signal = new Signal(0.1);
+					var mod = new Modulo(0.2);
 					signal.connect(mod);
-					mod.connect(dest);
-				}); 
-				offline.test(function(sample){
-					expect(sample).to.be.closeTo(0.1, 0.0001);
-				});
-				offline.after(function(){
-					signal.dispose();
-					mod.dispose();
-					done();
-				});
-				offline.run();
+					mod.toMaster();
+				}, 0.1);
 			});
 
-			it("can set a new modulo value", function(done){
-				var signal, mod;
-				var offline = new Offline();
-				offline.before(function(dest){
-					signal = new Signal(0.4);
-					mod = new Modulo(0.1);
+			it("can set a new modulo value", function(){
+				return ConstantOutput(function(){
+					var signal = new Signal(0.4);
+					var mod = new Modulo(0.1);
 					mod.value = 0.35;
 					expect(mod.value).to.be.closeTo(0.35, 0.001);
 					signal.connect(mod);
-					mod.connect(dest);
-				}); 
-				offline.test(function(sample){
-					expect(sample).to.be.closeTo(0.05, 0.0001);
-				});
-				offline.after(function(){
-					signal.dispose();
-					mod.dispose();
-					done();
-				});
-				offline.run();
+					mod.toMaster();
+				}, 0.05); 
 			});
 		});
 	});

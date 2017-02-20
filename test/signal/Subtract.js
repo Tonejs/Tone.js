@@ -1,6 +1,6 @@
-define(["helper/Offline", "Tone/signal/Subtract", "helper/Basic", 
+define(["helper/ConstantOutput", "Tone/signal/Subtract", "helper/Basic", 
 	"Test", "Tone/source/Oscillator", "Tone/signal/Signal"], 
-	function (Offline, Subtract, Basic, Test, Oscillator, Signal) {
+	function (ConstantOutput, Subtract, Basic, Test, Oscillator, Signal) {
 
 	describe("Subtract", function(){
 
@@ -16,88 +16,43 @@ define(["helper/Offline", "Tone/signal/Subtract", "helper/Basic",
 				subtract.dispose();
 			});
 
-			it("correctly subtracts a signal and a number", function(done){
-				var signal, sub;
-				var offline = new Offline();
-				offline.before(function(dest){
-					signal = new Signal(0);
-					sub = new Subtract(3);
+			it("correctly subtracts a signal and a number", function(){
+				return ConstantOutput(function(){
+					var signal = new Signal(0);
+					var sub = new Subtract(3);
 					signal.connect(sub);
-					sub.connect(dest);
-				}); 
-				offline.test(function(sample){
-					expect(sample).to.equal(-3);
-				});
-				offline.after(function(){
-					signal.dispose();
-					sub.dispose();
-					done();
-				});
-				offline.run();
+					sub.toMaster();
+				}, -3); 
 			});
 
-			it("can set the scalar value after construction", function(done){
-				var signal, sub;
-				var offline = new Offline();
-				offline.before(function(dest){
-					signal = new Signal(-2);
-					sub = new Subtract(0);
+			it("can set the scalar value after construction", function(){
+				return ConstantOutput(function(){
+					var signal = new Signal(-2);
+					var sub = new Subtract(0);
 					sub.value = 4;
 					signal.connect(sub);
-					sub.connect(dest);
-				}); 
-				offline.test(function(sample){
-					expect(sample).to.equal(-6);
-				});
-				offline.after(function(){
-					signal.dispose();
-					sub.dispose();
-					done();
-				});
-				offline.run();
+					sub.toMaster();
+				}, -6); 
 			});
 
-			it("can handle negative values", function(done){
-				var signal, sub;
-				var offline = new Offline();
-				offline.before(function(dest){
-					signal = new Signal(4);
-					sub = new Subtract(-2);
+			it("can handle negative values", function(){
+				return ConstantOutput(function(){
+					var signal = new Signal(4);
+					var sub = new Subtract(-2);
 					signal.connect(sub);
-					sub.connect(dest);
-				}); 
-				offline.test(function(sample){
-					expect(sample).to.equal(6);
-				});
-				offline.after(function(){
-					signal.dispose();
-					sub.dispose();
-					done();
-				});
-				offline.run();
+					sub.toMaster();
+				}, 6); 
 			});
 
-			it("can subtract two signals", function(done){
-				var sigA, sigB, sub;
-				var offline = new Offline();
-				offline.before(function(dest){
-					sigA = new Signal(1);
-					sigB = new Signal(4);
-					sub = new Subtract();
+			it("can subtract two signals", function(){
+				return ConstantOutput(function(){
+					var sigA = new Signal(1);
+					var sigB = new Signal(4);
+					var sub = new Subtract();
 					sigA.connect(sub, 0, 0);
 					sigB.connect(sub, 0, 1);
-					sub.connect(dest);
-				}); 
-				offline.test(function(sample){
-					expect(sample).to.equal(-3);
-				});
-				offline.after(function(){
-					sigA.dispose();
-					sigB.dispose();
-					sub.dispose();
-					done();
-				});
-				offline.run();
+					sub.toMaster();
+				}, -3); 
 			});
 		});
 	});
