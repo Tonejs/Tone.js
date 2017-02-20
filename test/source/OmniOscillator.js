@@ -10,87 +10,59 @@ define(["helper/Basic", "Tone/source/OmniOscillator", "helper/Offline", "helper/
 
 		context("Sound", function(){
 
-			it("makes a sound", function(done){
-				var osc;
-				OutputAudio(function(dest){
-					osc = new OmniOscillator();
-					osc.connect(dest);
+			it("makes a sound", function(){
+				return OutputAudio(function(){
+					var osc = new OmniOscillator();
+					osc.toMaster();
 					osc.start();
-				}, function(){
-					osc.dispose();
-					done();
 				});
 			});		
 
-			it("makes a sound when set to square", function(done){
-				var osc;
-				OutputAudio(function(dest){
-					osc = new OmniOscillator(440, "square");
-					osc.connect(dest);
+			it("makes a sound when set to square", function(){
+				return OutputAudio(function(){
+					var osc = new OmniOscillator(440, "square");
+					osc.toMaster();
 					osc.start();
-				}, function(){
-					osc.dispose();
-					done();
 				});
 			});		
 
-			it("makes a sound when set to pulse", function(done){
-				var osc;
-				OutputAudio(function(dest){
-					osc = new OmniOscillator(440, "pulse");
-					osc.connect(dest);
+			it("makes a sound when set to pulse", function(){
+				return OutputAudio(function(){
+					var osc = new OmniOscillator(440, "pulse");
+					osc.toMaster();
 					osc.start();
-				}, function(){
-					osc.dispose();
-					done();
 				});
 			});		
 
-			it("makes a sound when set to pwm", function(done){
-				var osc;
-				OutputAudio(function(dest){
-					osc = new OmniOscillator(440, "pwm");
-					osc.connect(dest);
+			it("makes a sound when set to pwm", function(){
+				return OutputAudio(function(){
+					var osc = new OmniOscillator(440, "pwm");
+					osc.toMaster();
 					osc.start();
-				}, function(){
-					osc.dispose();
-					done();
 				});
 			});		
 
-			it("makes a sound when set to fm", function(done){
-				var osc;
-				OutputAudio(function(dest){
-					osc = new OmniOscillator(440, "fmsquare");
-					osc.connect(dest);
+			it("makes a sound when set to fm", function(){
+				return OutputAudio(function(){
+					var osc = new OmniOscillator(440, "fmsquare");
+					osc.toMaster();
 					osc.start();
-				}, function(){
-					osc.dispose();
-					done();
 				});
 			});		
 
-			it("makes a sound when set to am", function(done){
-				var osc;
-				OutputAudio(function(dest){
-					osc = new OmniOscillator(440, "amsine");
-					osc.connect(dest);
+			it("makes a sound when set to am", function(){
+				return OutputAudio(function(){
+					var osc = new OmniOscillator(440, "amsine");
+					osc.toMaster();
 					osc.start();
-				}, function(){
-					osc.dispose();
-					done();
 				});
 			});	
 
-			it("makes a sound when set to fat", function(done){
-				var osc;
-				OutputAudio(function(dest){
-					osc = new OmniOscillator(440, "fatsawtooth");
-					osc.connect(dest);
+			it("makes a sound when set to fat", function(){
+				return OutputAudio(function(){
+					var osc = new OmniOscillator(440, "fatsawtooth");
+					osc.toMaster();
 					osc.start();
-				}, function(){
-					osc.dispose();
-					done();
 				});
 			});		
 

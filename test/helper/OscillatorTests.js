@@ -1,5 +1,5 @@
-define(["helper/OutputAudio", "Tone/source/Oscillator", "helper/Offline", "Test", "helper/Meter"], 
-	function (OutputAudio, Oscillator, Offline, Test, Meter) {
+define(["helper/OutputAudio", "Tone/source/Oscillator", "helper/Offline", "Test"], 
+	function (OutputAudio, Oscillator, Offline, Test) {
 
 	return function(Constr, args){
 
@@ -56,22 +56,12 @@ define(["helper/OutputAudio", "Tone/source/Oscillator", "helper/Offline", "Test"
 				osc.dispose();
 			});
 
-			it ("does not clip in volume", function(done){
-				var osc;
-				var meter = new Meter(0.2);
-				meter.before(function(dest){
-					osc = new Constr(args).connect(dest).start(0);
+			it ("does not clip in volume", function(){
+				return Offline(function(){
+					new Constr(args).toMaster().start(0);
+				}).then(function(buffer){
+					expect(buffer.max()).to.be.at.most(1);
 				});
-				meter.test(function(level){
-					if (level > 1){
-						throw new Error("audio clipped with level "+level);
-					}
-				});
-				meter.after(function(){
-					osc.dispose();
-					done();
-				});
-				meter.run();
 			});
 			
 		});

@@ -1,5 +1,5 @@
-define(["Test", "Tone/source/Source", "Tone/core/Transport", "helper/Offline2", "Tone/core/Tone"], 
-function (Test, Source, Transport, OfflineTest, Tone) {
+define(["Test", "Tone/source/Source", "Tone/core/Transport", "helper/Offline", "Tone/core/Tone"], 
+function (Test, Source, Transport, Offline, Tone) {
 
 	describe("Source", function(){
 
@@ -89,77 +89,71 @@ function (Test, Source, Transport, OfflineTest, Tone) {
 			source.dispose();
 		});
 
-		it ("correctly returns the scheduled play state", function(done){
-			OfflineTest(function(output, testFn, tearDown){
+		it ("correctly returns the scheduled play state", function(){
+			return Offline(function(){
 				var source = new Source();
 				expect(source.state).to.equal("stopped");
 				source.start(0).stop(0.5);
 
-				testFn(function(sample, time){
+				return function(time){
 					if (time >= 0 && time < 0.5){
 						expect(source.state).to.equal("started");
 					} else if (time > 0.5){
 						expect(source.state).to.equal("stopped");
 					}
-				});
-
-				tearDown(function(){
-					source.dispose();
-					done();
-				});
+				};
 			}, 0.6);
 		});
 
 		context("sync", function(){
 
 			it ("can sync its start to the Transport", function(){
-				var source = new Source();
-				source.sync().start(0);
-				expect(source.state).to.equal("stopped");
-				Tone.Transport.start(Tone.now());
-				expect(source.state).to.equal("started");
-				source.dispose();
-				Tone.Transport.stop();
+				return Offline(function(Transport){
+					var source = new Source();
+					source.sync().start(0);
+					expect(source.state).to.equal("stopped");
+					Transport.start(Tone.now());
+					expect(source.state).to.equal("started");
+					source.dispose();
+					Transport.stop();
+				});
 			});
 
 
 			it ("can unsync after it was synced", function(){
-				var source = new Source();
-				source.sync().start(0);
-				source.unsync();
-				Tone.Transport.start();
-				expect(source.state).to.equal("stopped");
+				return Offline(function(Transport){
+					var source = new Source();
+					source.sync().start(0);
+					source.unsync();
+					Transport.start();
+					expect(source.state).to.equal("stopped");
+				});
 			});
 
-			it ("can sync its stop to the Transport", function(done){
-				OfflineTest(function(output, testFn, tearDown){
+			it ("can sync its stop to the Transport", function(){
+				return Offline(function(Transport){
 					var source = new Source();
 					source.sync().start(0);
 					expect(source.state).to.equal("stopped");
-					Tone.Transport.start(0).stop(0.4);
+					Transport.start(0).stop(0.4);
 					expect(source.state).to.equal("started");
 
-					testFn(function(sample, time){
+					return function(time){
 						if (time > 0.4){
 							expect(source.state).to.equal("stopped");
 						}
-					});
-
-					tearDown(function(){
-						source.dispose();
-						done();
-					});
+					};
 				}, 0.5);
 			});
 
-			it ("can schedule multiple starts/stops", function(done){
-				OfflineTest(function(output, testFn, tearDown){
+			it ("can schedule multiple starts/stops", function(){
+				return Offline(function(Transport){
 					var source = new Source();
 					source.sync().start(0.1).stop(0.2).start(0.3);
-					Tone.Transport.start(0).stop(0.4);
+					Transport.start(0).stop(0.4);
 					expect(source.state).to.equal("stopped");
 
-					testFn(function(sample, time){
+					return function(time){
 						if (time > 0.1 && time < 0.19){
 							expect(source.state).to.equal("started");
 						} else if (time > 0.2 && time < 0.29){
@@ -169,87 +163,69 @@ function (Test, Source, Transport, OfflineTest, Tone) {
 						} else if (time > 0.4){
 							expect(source.state).to.equal("stopped");
 						}
-					});
-
-					tearDown(function(){
-						source.dispose();
-						done();
-					});
+					};
 				}, 0.6);
 			});
 
-			it ("has correct offset when the transport is started with an offset", function(done){
-				OfflineTest(function(output, testFn, tearDown){
+			it ("has correct offset when the transport is started with an offset", function(){
+				return Offline(function(Transport){
 					var source = new Source();
 					source.sync().start(0.3).stop(0.4);
-					Tone.Transport.start(0, 0.1);
+					Transport.start(0, 0.1);
 					expect(source.state).to.equal("stopped");
 
-					testFn(function(sample, time){
+					return function(sample, time){
 						if (time > 0.21 && time < 0.29){
 							expect(source.state).to.equal("started");
 						} else if (time > 0.3){
 							expect(source.state).to.equal("stopped");
 						}
-					});
-
-					tearDown(function(){
-						source.dispose();
-						done();
-					});
+					};
 				}, 0.5);
 			});
 
 			it ("can start with an offset after the start time of the source", function(){
-				var source = new Source();
-				source.sync().start(0);
-				Tone.Transport.start(0, 0.1);
-				expect(source.state).to.equal("started");
-				source.dispose();
+				return Offline(function(Transport){
+					var source = new Source();
+					source.sync().start(0);
+					Transport.start(0, 0.1);
+					expect(source.state).to.equal("started");
+					source.dispose();
+				}, 0.1);
 			});
 
-			it ("can sync its start to the Tone.Transport after a delay", function(done){
-				OfflineTest(function(output, testFn, tearDown){
+			it ("can sync its start to the Transport after a delay", function(){
+				return Offline(function(Transport){
 					var source = new Source();
 					source.sync().start(0.3);
-					Tone.Transport.start(0).stop(0.4);
+					Transport.start(0).stop(0.4);
 					expect(source.state).to.equal("stopped");
 
-					testFn(function(sample, time){
+					return function(time){
 						if (time > 0.3 && time < 0.39){
 							expect(source.state).to.equal("started");
 						} else if (time > 0.4){
 							expect(source.state).to.equal("stopped");
 						}
-					});
-
-					tearDown(function(){
-						source.dispose();
-						done();
-					});
+					};
 				}, 0.6);
 			});
 
-			it ("correct state when the Transport position is changed", function(done){
-				OfflineTest(function(output, testFn, tearDown){
+			it ("correct state when the Transport position is changed", function(){
+				return Offline(function(Transport){
 					var source = new Source();
 					source.sync().start(0.3).stop(0.4);
-					Tone.Transport.start(0).stop(0.4);
+					Transport.start(0).stop(0.4);
 					expect(source.state).to.equal("stopped");
-					Tone.Transport.seconds = 0.305;
+					Transport.seconds = 0.305;
 					expect(source.state).to.equal("started");
-					Tone.Transport.seconds = 0.405;
+					Transport.seconds = 0.405;
 					expect(source.state).to.equal("stopped");
-
-					tearDown(function(){
-						source.dispose();
-						done();
-					});
 				}, 0.1);
 			});
 
-			it ("gives the correct offset on time on start/stop events", function(done){
-				OfflineTest(function(output, testFn, tearDown){
+			it ("gives the correct offset on time on start/stop events", function(){
+				return Offline(function(Transport){
 					var source = new Source();
 					source._start = function(time, offset){
 						expect(time).to.be.closeTo(0.4, 0.05);
@@ -261,17 +237,12 @@ function (Test, Source, Transport, OfflineTest, Tone) {
 					};
 
 					source.sync().start(0.2, 0.1).stop(0.3);
-					Tone.Transport.start(0.2);
-
-					tearDown(function(){
-						source.dispose();
-						done();
-					});
+					Transport.start(0.2);
 				}, 0.7);
 			});
 
-			it ("gives the correct offset on time on start/stop events invoked with an Transport offset", function(done){
-				OfflineTest(function(output, testFn, tearDown){
+			it ("gives the correct offset on time on start/stop events invoked with an Transport offset", function(){
+				return Offline(function(Transport){
 					var source = new Source();
 					source._start = function(time, offset){
 						expect(time).to.be.closeTo(0.3, 0.05);
@@ -283,18 +254,12 @@ function (Test, Source, Transport, OfflineTest, Tone) {
 					};
 
 					source.sync().start(0.2, 0.1).stop(0.3);
-
-					Tone.Transport.start(0.2, 0.1);
-
-					tearDown(function(){
-						source.dispose();
-						done();
-					});
+					Transport.start(0.2, 0.1);
 				}, 0.7);
 			});
 
-			it ("gives the correct offset on time on start/stop events invoked with an Transport offset that's in the middle of the event", function(done){
-				OfflineTest(function(output, testFn, tearDown){
+			it ("gives the correct offset on time on start/stop events invoked with an Transport offset that's in the middle of the event", function(){
+				return Offline(function(Transport){
 					var source = new Source();
 					source._start = function(time, offset){
 						expect(time).to.be.closeTo(0.2, 0.05);
@@ -307,17 +272,13 @@ function (Test, Source, Transport, OfflineTest, Tone) {
 
 					source.sync().start(0.2, 0.1).stop(0.3);
 
-					Tone.Transport.start(0.2, 0.25);
+					Transport.start(0.2, 0.25);
 
-					tearDown(function(){
-						source.dispose();
-						done();
-					});
 				}, 0.7);
 			});
 
-			it ("gives the correct duration when invoked with an Transport offset that's in the middle of the event", function(done){
-				OfflineTest(function(output, testFn, tearDown){
+			it ("gives the correct duration when invoked with an Transport offset that's in the middle of the event", function(){
+				return Offline(function(){
 					var source = new Source();
 					source._start = function(time, offset, duration){
 						expect(time).to.be.closeTo(0, 0.05);
@@ -330,18 +291,12 @@ function (Test, Source, Transport, OfflineTest, Tone) {
 					};
 
 					source.sync().start(0.2, 0.1, 0.4).stop(0.4);
-
-					Tone.Transport.start(0, 0.3);
-
-					tearDown(function(){
-						source.dispose();
-						done();
-					});
+					Transport.start(0, 0.3);
 				}, 0.7);
 			});
 
-			it ("stops at the right time when Transport.stop is invoked before the scheduled stop", function(done){
-				OfflineTest(function(output, testFn, tearDown){
+			it ("stops at the right time when Transport.stop is invoked before the scheduled stop", function(){
+				return Offline(function(Transport){
 					var source = new Source();
 
 					source._stop = function(time){
@@ -349,24 +304,19 @@ function (Test, Source, Transport, OfflineTest, Tone) {
 					};
 
 					source.sync().start(0.2).stop(0.4);
-
-					Tone.Transport.start(0).stop(0.3);
-
-					tearDown(function(){
-						source.dispose();
-						done();
-					});
+					Transport.start(0).stop(0.3);
 				}, 0.7);
 			});
 
-			it ("invokes the right methods and offsets when the transport is seeked", function(done){
-				OfflineTest(function(output, testFn, tearDown){
+			it ("invokes the right methods and offsets when the transport is seeked", function(){
+				var invoked = false;
+				return Offline(function(Transport){
 					var source = new Source();
 
 					var seeked = false;
-
 					source._start = function(time, offset){
 						if(seeked){
+							invoked = true;
 							expect(time).to.be.closeTo(0.1, 0.05);
 							expect(offset).to.be.closeTo(0.15, 0.05);
 						} else {
@@ -381,21 +331,15 @@ function (Test, Source, Transport, OfflineTest, Tone) {
 					};
 
 					source.sync().start(0.2);
+					Transport.start(0, 0.3);
 
-					Tone.Transport.start(0, 0.3);
-
-					testFn(function(samples, time){
-						if (time === 0.1){
-							seeked = true;
-							Tone.Transport.seconds = 0.35;
-						}
+					return Test.atTime(0.1, function(){
+						seeked = true;
+						Transport.seconds = 0.35;
 					});
-
-					tearDown(function(){
-						source.dispose();
-						done();
-					});
-				}, 0.7);
+				}, 0.7).then(function(){
+					expect(invoked).to.be.true;
+				});
 			});
 		});
 	});

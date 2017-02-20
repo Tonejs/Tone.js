@@ -1,6 +1,6 @@
 define(["helper/Basic", "Tone/source/MultiPlayer", "helper/Offline", "helper/SourceTests", 
-	"Tone/core/Buffer", "helper/Meter", "helper/OutputAudioStereo", "helper/Meter2"], 
-	function (BasicTests, MultiPlayer, Offline, SourceTests, Buffer, Meter, OutputAudioStereo, Meter2) {
+	"Tone/core/Buffer", "helper/OutputAudioStereo", "helper/Meter"], 
+	function (BasicTests, MultiPlayer, Offline, SourceTests, Buffer, OutputAudioStereo, Meter) {
 
 	if (window.__karma__){
 		Buffer.baseUrl = "/base/test/";
@@ -52,140 +52,96 @@ define(["helper/Basic", "Tone/source/MultiPlayer", "helper/Offline", "helper/Sou
 
 		context("Makes Sound", function(){
 
-			it("produces sound in both channels", function(done){
-				var player;
-				OutputAudioStereo(function(dest){
-					player = new MultiPlayer().add("buffer", buffer);
-					player.connect(dest);
+			it("produces sound in both channels", function(){
+				return OutputAudioStereo(function(){
+					var player = new MultiPlayer().add("buffer", buffer);
+					player.toMaster();
 					player.start("buffer");
-				}, function(){
-					player.dispose();
-					done();
 				});
 			});	
 
-			it("be scheduled to start in the future", function(done){
-				var player;
-				var meter = new Meter(0.3);
-				meter.before(function(dest){
-					player = new MultiPlayer().add("buffer", buffer);
-					player.connect(dest);
+			it("be scheduled to start in the future", function(){
+				return Offline(function(){
+					var player = new MultiPlayer().add("buffer", buffer).toMaster();
 					player.start("buffer", 0.1);
-				});
-				meter.test(function(sample, time){
-					if (sample > 0){
-						expect(time).to.be.at.least(0.1);
-					}
-				});
-				meter.after(function(){
-					player.dispose();
-					done();
-				});
-				meter.run();
-			});
-
-			it("can be repitched", function(done){
-				var player;
-				var meter = new Meter(0.3);
-				meter.before(function(dest){
-					player = new MultiPlayer().add("buffer", buffer);
-					player.connect(dest);
-					player.start("buffer", 0, 0, 0.3, -1);
-				});
-				meter.test(function(value, time){
-					if (time > 0){
-						expect(value).to.be.at.least(0.1);
-					}
-				});
-				meter.after(function(){
-					player.dispose();
-					done();
-				});
-				meter.run();
-			});
-
-			it("can be played at a different gain", function(done){
-				var player;
-				var meter = new Meter(0.3);
-				meter.before(function(dest){
-					player = new MultiPlayer().add("buffer", buffer);
-					player.connect(dest);
-					player.start("buffer", 0, 0, 0.3, 0, 0.1);
-				});
-				meter.test(function(value){
-					expect(value).to.be.at.most(0.1);
-				});
-				meter.after(function(){
-					player.dispose();
-					done();
-				});
-				meter.run();
-			});
-
-			it("can be stopped", function(done){
-				var player;
-				var meter = new Meter(0.3);
-				meter.before(function(dest){
-					player = new MultiPlayer().add("buffer", buffer);
-					player.connect(dest);
-					player.start("buffer", 0).stop("buffer", 0.1);
-				});
-				meter.test(function(value, time){
-					if (time > 0 && time < 0.1){
-						expect(value).to.be.at.least(0.1);
-					} else if (time > 0.11){
-						expect(value).to.equal(0);
-					}
-				});
-				meter.after(function(){
-					player.dispose();
-					done();
-				});
-				meter.run();
-			});
-
-			it("can stop all sources", function(done){
-				var player;
-				var meter = new Meter(0.3);
-				meter.before(function(dest){
-					player = new MultiPlayer().add("buffer", buffer);
-					player.connect(dest);
-					player.start("buffer", 0).start("buffer", 0.02).stopAll(0.1);
-				});
-				meter.test(function(value, time){
-					if (time > 0 && time < 0.1){
-						expect(value).to.be.at.least(0.1);
-					} else if (time > 0.12){
-						expect(value).to.equal(0);
-					}
-				});
-				meter.after(function(){
-					player.dispose();
-					done();
-				});
-				meter.run();
-			});
-
-			it("can start and stop a loop", function(done){
-				var meter = new Meter2(function(dest, test, after){
-					var player = new MultiPlayer().add("buffer", buffer);
-					player.connect(dest);
-					var stopTime = buffer.duration * 1.1;
-					player.startLoop("buffer", 0).stop("buffer", stopTime);
-
-					test(function(value, time){
-						if (time > 0 && time < stopTime){
-							expect(value).to.be.at.least(0.1);
-						} else if (time > stopTime + 0.01){
-							expect(value).to.equal(0);
+				}, 0.3).then(function(buffer){
+					buffer.forEach(function(sample, time){
+						if (sample > 0){
+							expect(time).to.be.at.least(0.1);
 						}
 					});
+				});
+			});
 
-					after(function(){
-						player.dispose();
-						done();
+			it("can be repitched", function(){
+				return Meter(function(){
+					var player = new MultiPlayer().add("buffer", buffer).toMaster();
+					player.start("buffer", 0, 0, 0.3, -1);
+				}, 0.3).then(function(buffer){
+					buffer.forEach(function(level, time){
+						if (time > 0){
+							expect(level).to.be.at.least(0.1);
+						}
 					});
-				}, buffer.duration * 1.5);
+				});
+			});
+
+			it("can be played at a different gain", function(){
+				return Offline(function(){
+					var player = new MultiPlayer().add("buffer", buffer).toMaster();
+					player.start("buffer", 0, 0, 0.3, 0, 0.1);
+				}, 0.3).then(function(buffer){
+					expect(buffer.max()).to.be.at.most(0.1);
+				});
+			});
+
+			it("can be stopped", function(){
+				return Meter(function(){
+					var player = new MultiPlayer().add("buffer", buffer);
+					player.toMaster();
+					player.start("buffer", 0).stop("buffer", 0.1);
+				}, 0.3).then(function(rms){
+					rms.forEach(function(level, time){
+						if (time > 0 && time < 0.1){
+							expect(level).to.be.at.least(0.1);
+						} else if (time > 0.11){
+							expect(level).to.equal(0);
+						}
+					});
+				});
+			});
+
+			it("can stop all sources", function(){
+				return Meter(function(){
+					var player = new MultiPlayer().add("buffer", buffer);
+					player.toMaster();
+					player.start("buffer", 0).start("buffer", 0.02).stopAll(0.1);
+				}, 0.3).then(function(rms){
+					rms.forEach(function(level, time){
+						if (time > 0 && time < 0.1){
+							expect(level).to.be.at.least(0.1);
+						} else if (time > 0.12){
+							expect(level).to.equal(0);
+						}
+					});
+				});
+			});
+
+			it("can start and stop a loop", function(){
+				var stopTime = buffer.duration * 1.1;
+				return Meter(function(){
+					var player = new MultiPlayer().add("buffer", buffer);
+					player.toMaster();
+					player.startLoop("buffer", 0).stop("buffer", stopTime);
+				}, buffer.duration * 1.5).then(function(rms){
+					rms.forEach(function(level, time){
+						if (time > 0 && time < stopTime){
+							expect(level).to.be.at.least(0.1);
+						} else if (time > stopTime + 0.01){
+							expect(level).to.equal(0);
+						}
+					});
+				});
 			});
 
 

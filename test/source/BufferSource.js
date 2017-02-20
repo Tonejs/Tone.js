@@ -1,4 +1,4 @@
-define(["helper/Basic", "Tone/source/BufferSource", "helper/Offline2", "Tone/core/Buffer", "helper/Meter", "helper/Meter2"], 
+define(["helper/Basic", "Tone/source/BufferSource", "helper/Offline", "Tone/core/Buffer", "helper/Meter", "helper/Meter2"], 
 	function (BasicTests, BufferSource, Offline, Buffer, Meter, Meter2) {
 
 	if (window.__karma__){
@@ -85,25 +85,17 @@ define(["helper/Basic", "Tone/source/BufferSource", "helper/Offline2", "Tone/cor
 				player.dispose();
 			});
 
-			it("loops the audio", function(done){
-				var player;
-				var meter = new Meter(buffer.duration * 2);
-				meter.before(function(dest){
-					player = new BufferSource(buffer);
+			it("loops the audio", function(){
+				return Offline(function(){
+					var player = new BufferSource(buffer);
 					player.loop = true;
-					player.connect(dest);
+					player.toMaster();
 					player.start(0);
+				}, buffer.duration * 2).then(function(buff){
+					buff.getRMS().forEach(function(val){
+						expect(val).to.be.above(0);
+					});
 				});
-				meter.test(function(sample, time){
-					if (time > 0.1){
-						expect(sample).to.be.above(0);
-					}
-				});
-				meter.after(function(){
-					player.dispose();
-					done();
-				});
-				meter.run();
 			});
 
 		});
@@ -140,64 +132,62 @@ define(["helper/Basic", "Tone/source/BufferSource", "helper/Offline2", "Tone/cor
 				});
 			});
 
-			it("can be play for a specific duration", function(done){
-				var meter = new Meter2(function(dest, test, after){
+			it("can play for a specific duration", function(){
+				return Meter2(function(){
 					var player = new BufferSource(buffer);
-					player.connect(dest);
+					player.toMaster();
 					player.start(0).stop(0.1);
 
-					test(function(sample, time){
-						if (sample === 0){
-							expect(time).to.at.least(0.1);
+					return function(time){
+						if (time > 0.1){
 							expect(player.state).to.equal("stopped");
 						}
+					};
+				}, 0.4).then(function(buffer){
+					buffer.forEach(function(level, time){
+						if (time >= 0 && time < 0.1){
+							expect(level).to.be.greaterThan(0);
+						} else if (time > 0.1){
+							expect(level).to.equal(0);
+						}
 					});
-
-					after(function(){
-						player.dispose();
-						done();
-					});
-				}, 0.4);
+				});
 			});
 
-			it("can be play for a specific duration passed in the 'start' method", function(done){
-				var player;
-				var meter = new Meter(0.4);
-				meter.before(function(dest){
-					player = new BufferSource(buffer);
-					player.connect(dest);
+			it("can play for a specific duration passed in the 'start' method", function(){
+				return Meter2(function(){
+					var player = new BufferSource(buffer);
+					player.toMaster();
 					player.start(0, 0, 0.1);
+
+					return function(time){
+						if (time > 0.1){
+							expect(player.state).to.equal("stopped");
+						}
+					};
+				}, 0.4).then(function(buffer){
+					buffer.forEach(function(level, time){
+						if (time >= 0 && time < 0.1){
+							expect(level).to.be.greaterThan(0);
+						} else if (time > 0.1){
+							expect(level).to.equal(0);
+						}
+					});
 				});
-				meter.test(function(sample, time){
-					if (sample < 0.001){
-						expect(time).to.at.least(0.1);
-						expect(player.state).to.equal("stopped");
-					}
-				});
-				meter.after(function(){
-					player.dispose();
-					done();
-				});
-				meter.run();
 			});
 
-			it("reports the right state", function(done){
-				Offline(function(output, test, after){
+			it("reports the right state", function(){
+				return Offline(function(){
 					var player = new BufferSource(buffer).toMaster();
 					player.start(0.2).stop(0.4);
 
-					test(function(sample, time){
+					return function(time){
 						if (time >= 0.2 && time < 0.4){
 							expect(player.state).to.equal("started");
 						} else {
 							expect(player.state).to.equal("stopped");
 						}
-					});
-
-					after(function(){
-						player.dispose();
-						done();
-					});
+					};
 				}, 0.5);
 			});
 
@@ -219,78 +209,58 @@ define(["helper/Basic", "Tone/source/BufferSource", "helper/Offline2", "Tone/cor
 				}, 300);
 			});
 
-			it("can be scheduled to stop", function(done){
-				Meter2(function(output, test, after){
+			it("can be scheduled to stop", function(){
+				return Meter2(function(){
 					var player = new BufferSource(buffer).toMaster();
 					player.start(0).stop(0.1);
-
-					test(function(sample, time){
+				}, 0.6).then(function(rms){
+					rms.forEach(function(level, time){
 						if (time > 0.01 && time < 0.1){
-							expect(sample).to.be.gt(0);
+							expect(level).to.be.gt(0);
 						} else if (time > 0.11){
-							expect(sample).to.equal(0);
+							expect(level).to.equal(0);
 						}
 					});
-
-					after(function(){
-						player.dispose();
-						done();
-					});
-				}, 0.6);
+				});
 			});
 
-			it("can be scheduled to stop with a ramp", function(done){
-				Meter2(function(output, test, after){
+			it("can be scheduled to stop with a ramp", function(){
+				return Meter2(function(){
 					var player = new BufferSource(buffer).toMaster();
 					player.start(0).stop(0.1, 0.1);
-
-					test(function(sample, time){
+				}, 0.6).then(function(rms){
+					rms.forEach(function(level, time){
 						if (time > 0.01 && time < 0.2){
-							expect(sample).to.be.gt(0);
+							expect(level).to.be.gt(0);
 						} else if (time > 0.21){
-							expect(sample).to.equal(0);
+							expect(level).to.equal(0);
 						}
 					});
-
-					after(function(){
-						player.dispose();
-						done();
-					});
-				}, 0.5);
+				});
 			});
 
-			it("can be scheduled to start at a lower gain", function(done){
-				Offline(function(output, test, after){
+			it("can be scheduled to start at a lower gain", function(){
+				return Offline(function(){
 					var player = new BufferSource(buffer).toMaster();
 					player.start(0, 0, undefined, 0.5);
-
-					test(function(sample){
+				}, 0.5).then(function(buffer){
+					buffer.forEach(function(sample){
 						expect(sample).to.be.lte(0.5);
 					});
-
-					after(function(){
-						player.dispose();
-						done();
-					});
-				}, 0.5);
+				});
 			});
 
-			it("can be scheduled to start with a ramp", function(done){
-				Offline(function(output, test, after){
+			it("can be scheduled to start with a ramp", function(){
+				return Offline(function(){
 					var player = new BufferSource(buffer).toMaster();
 					player.start(0, 0, undefined, 1, 0.1);
-
-					test(function(sample, time){
+				}, 0.5).then(function(buffer){
+					buffer.forEach(function(sample, time){
 						if (time < 0.1){
 							expect(sample).to.be.lte(time * 10);
 						}
 					});
-
-					after(function(){
-						player.dispose();
-						done();
-					});
-				}, 0.5);
+				});
 			});
 		});
 

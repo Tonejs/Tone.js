@@ -31,58 +31,45 @@ define(["helper/Basic", "Tone/source/Oscillator", "helper/Offline", "helper/Sour
 				osc.dispose();
 			});
 
-
 		});
 
 		context("Phase Rotation", function(){
-			it ("can change the phase to 90", function(done){
-				var instance;
-				var offline = new Offline(1);
-				offline.before(function(dest){
-					instance = new Oscillator({
+			it ("can change the phase to 90", function(){
+				return Offline(function(){
+					var instance = new Oscillator({
 						"phase" : 90,
 						"frequency" : 1
 					});
-					instance.connect(dest);
+					instance.toMaster();
 					instance.start(0);
+				}, 1).then(function(buffer){
+					buffer.forEach(function(sample, time){
+						if (time < 0.25){
+							expect(sample).to.be.within(-1, 0);
+						} else if (time < 0.5){
+							expect(sample).to.be.within(0, 1);
+						}
+					});
 				});
-				offline.test(function(sample, time){
-					if (time < 0.25){
-						expect(sample).to.be.within(-1, 0);
-					} else if (time < 0.5){
-						expect(sample).to.be.within(0, 1);
-					}
-				});
-				offline.after(function(){
-					instance.dispose();
-					done();
-				});
-				offline.run();
 			});
 
-			it ("can change the phase to -90", function(done){
-				var instance;
-				var offline = new Offline(1);
-				offline.before(function(dest){
-					instance = new Oscillator({
+			it ("can change the phase to -90", function(){
+				return Offline(function(){
+					var instance = new Oscillator({
 						"phase" : 270,
 						"frequency" : 1
 					});
-					instance.connect(dest);
+					instance.toMaster();
 					instance.start(0);
+				}, 1).then(function(buffer){
+					buffer.forEach(function(sample, time){
+						if (time < 0.25){
+							expect(sample).to.be.within(0, 1);
+						} else if (time < 0.5){
+							expect(sample).to.be.within(-1, 0);
+						}
+					});
 				});
-				offline.test(function(sample, time){
-					if (time < 0.25){
-						expect(sample).to.be.within(0, 1);
-					} else if (time < 0.5){
-						expect(sample).to.be.within(-1, 0);
-					}
-				});
-				offline.after(function(){
-					instance.dispose();
-					done();
-				});
-				offline.run();
 			});
 			
 		});
@@ -145,14 +132,10 @@ define(["helper/Basic", "Tone/source/Oscillator", "helper/Offline", "helper/Sour
 				osc.dispose();
 			});
 
-			it ("makes a sound with custom partials", function(done){
-				var osc;
-				OutputAudio(function(dest){
-					osc = new Oscillator().connect(dest).start();
+			it ("makes a sound with custom partials", function(){
+				return OutputAudio(function(){
+					var osc = new Oscillator().toMaster().start();
 					osc.partials = [1, 0.2, 0.2, 0.2];
-				}, function(){
-					osc.dispose();
-					done();
 				});
 			});
 
@@ -172,47 +155,29 @@ define(["helper/Basic", "Tone/source/Oscillator", "helper/Offline", "helper/Sour
 		});
 
 		context("Synchronization", function(){
-			it("can sync the frequency to the Transport", function(done){
-				var osc;
-				var offline = new Offline(0.1);
-				offline.before(function(dest){
+			it("can sync the frequency to the Transport", function(){
+				return Offline(function(Transport){
 					Transport.bpm.value = 120;
-					osc = new Oscillator(2);
-					osc.frequency.connect(dest);
+					var osc = new Oscillator(2);
+					osc.frequency.toMaster();
 					osc.syncFrequency();
 					Transport.bpm.value = 240;
+				}).then(function(buffer){
+					expect(buffer.value()).to.be.closeTo(4, 0.001);
 				});
-				offline.test(function(freq){
-					expect(freq).to.be.closeTo(4, 0.001);
-				});
-				offline.after(function(){
-					Transport.bpm.value = 120;
-					osc.dispose();
-					done();
-				});
-				offline.run();
 			});
 
-			it("can unsync the frequency from the Transport", function(done){
-				var osc;
-				var offline = new Offline(0.1);
-				offline.before(function(dest){
+			it("can unsync the frequency from the Transport", function(){
+				return Offline(function(Transport){
 					Transport.bpm.value = 120;
-					osc = new Oscillator(2);
-					osc.frequency.connect(dest);
+					var osc = new Oscillator(2);
+					osc.frequency.toMaster();
 					osc.syncFrequency();
 					Transport.bpm.value = 240;
 					osc.unsyncFrequency();
+				}).then(function(buffer){
+					expect(buffer.value()).to.be.closeTo(2, 0.001);
 				});
-				offline.test(function(freq){
-					expect(freq).to.be.closeTo(2, 0.001);
-				});
-				offline.after(function(){
-					Transport.bpm.value = 120;
-					osc.dispose();
-					done();
-				});
-				offline.run();
 			});
 		});
 
