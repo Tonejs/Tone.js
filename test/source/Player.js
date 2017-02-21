@@ -244,7 +244,7 @@ define(["helper/Basic", "Tone/source/Player", "helper/Offline",
 				}, 0.3).then(function(buffer){
 					buffer.forEach(function(sample){
 						expect(sample).to.be.within(0, 0.1);
-					}, 0, 0.1);
+					}, 0, 0.09);
 					buffer.forEach(function(sample){
 						expect(sample).to.be.within(0.2, 0.3);
 					}, 0.11, 0.2);
@@ -267,10 +267,10 @@ define(["helper/Basic", "Tone/source/Player", "helper/Offline",
 				}, 0.3).then(function(buffer){
 					buffer.forEach(function(sample){
 						expect(sample).to.be.within(0.15, 0.2);
-					}, 0, 0.05);
+					}, 0, 0.04);
 					buffer.forEach(function(sample){
 						expect(sample).to.be.within(0.1, 0.15);
-					}, 0.06, 0.1);
+					}, 0.06, 0.09);
 				});
 			});
 
