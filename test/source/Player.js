@@ -233,9 +233,9 @@ define(["helper/Basic", "Tone/source/Player", "helper/Offline",
 			it("can seek to a position at the given time", function(){
 				return Offline(function(){
 					//make a ramp between 0-1
-					var ramp = new Float32Array(Math.floor(44100 * 0.3));
+					var ramp = new Float32Array(Math.floor(44100));
 					for (var i = 0; i < ramp.length; i++){
-						ramp[i] = (i / (ramp.length)) * 0.3;
+						ramp[i] = (i / (ramp.length));
 					}
 					var buff = new Buffer().fromArray(ramp);
 					var player = new Player(buff).toMaster();
@@ -243,20 +243,20 @@ define(["helper/Basic", "Tone/source/Player", "helper/Offline",
 					player.seek(0.2, 0.1);
 				}, 0.3).then(function(buffer){
 					buffer.forEach(function(sample){
-						expect(sample).to.be.within(0, 0.11);
+						expect(sample).to.be.within(0, 0.1);
 					}, 0, 0.1);
 					buffer.forEach(function(sample){
 						expect(sample).to.be.within(0.2, 0.3);
-					}, 0.1, 0.2);
+					}, 0.11, 0.2);
 				});
 			});
 
 			it ("correctly compensates if the offset is greater than the loopEnd", function(){
 				return Offline(function(){
 					//make a ramp between 0-1
-					var ramp = new Float32Array(Math.floor(44100 * 0.3));
+					var ramp = new Float32Array(Math.floor(44100));
 					for (var i = 0; i < ramp.length; i++){
-						ramp[i] = (i / (ramp.length)) * 0.3;
+						ramp[i] = (i / (ramp.length));
 					}
 					var buff = new Buffer().fromArray(ramp);
 					var player = new Player(buff).toMaster();
@@ -266,11 +266,11 @@ define(["helper/Basic", "Tone/source/Player", "helper/Offline",
 					player.start(0, 0.35);
 				}, 0.3).then(function(buffer){
 					buffer.forEach(function(sample){
-						expect(sample).to.be.within(0.15, 0.21);
+						expect(sample).to.be.within(0.15, 0.2);
 					}, 0, 0.05);
 					buffer.forEach(function(sample){
 						expect(sample).to.be.within(0.1, 0.15);
-					}, 0.05, 0.1);
+					}, 0.06, 0.1);
 				});
 			});
 
@@ -290,7 +290,7 @@ define(["helper/Basic", "Tone/source/Player", "helper/Offline",
 				}, 0.3).then(function(buffer){
 					buffer.forEach(function(sample){
 						expect(sample).to.equal(0);
-					}, 0.1, 0.15);
+					}, 0.11, 0.15);
 				});
 			});
 
