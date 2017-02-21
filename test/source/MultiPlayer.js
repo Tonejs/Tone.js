@@ -67,7 +67,7 @@ define(["helper/Basic", "Tone/source/MultiPlayer", "helper/Offline", "helper/Sou
 				}, 0.3).then(function(buffer){
 					buffer.forEach(function(sample, time){
 						if (sample > 0){
-							expect(time).to.be.at.least(0.1);
+							expect(time).to.be.at.least(0.099);
 						}
 					});
 				});
