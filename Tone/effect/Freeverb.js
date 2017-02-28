@@ -76,7 +76,7 @@ function(Tone){
 		 */
 		this._allpassFiltersR = [];
 
-		//make the allpass filters on teh right
+		//make the allpass filters on the right
 		for (var l = 0; l < allpassFilterFrequencies.length; l++){
 			var allpassL = this.context.createBiquadFilter();
 			allpassL.type = "allpass";
