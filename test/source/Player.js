@@ -1,6 +1,6 @@
 define(["helper/Basic", "Tone/source/Player", "helper/Offline", 
-	"helper/SourceTests", "Tone/core/Buffer", "helper/Meter", "Test"], 
-	function (BasicTests, Player, Offline, SourceTests, Buffer, Meter, Test) {
+	"helper/SourceTests", "Tone/core/Buffer", "helper/Meter", "Test", "Tone/core/Tone"], 
+	function (BasicTests, Player, Offline, SourceTests, Buffer, Meter, Test, Tone) {
 
 	if (window.__karma__){
 		Buffer.baseUrl = "/base/test/";
@@ -199,7 +199,7 @@ define(["helper/Basic", "Tone/source/Player", "helper/Offline",
 			it("is stopped and restarted if retrigger=false", function(){
 				return Offline(function(){
 					//make a ramp between 0-1
-					var ramp = new Float32Array(Math.floor(44100 * 0.3));
+					var ramp = new Float32Array(Math.floor(Tone.context.sampleRate * 0.3));
 					for (var i = 0; i < ramp.length; i++){
 						ramp[i] = (i / (ramp.length-1));
 					}
@@ -216,7 +216,7 @@ define(["helper/Basic", "Tone/source/Player", "helper/Offline",
 			it("can be retriggered", function(){
 				return Offline(function(){
 					//make a ramp between 0-1
-					var ramp = new Float32Array(Math.floor(44100 * 0.3));
+					var ramp = new Float32Array(Math.floor(Tone.context.sampleRate * 0.3));
 					for (var i = 0; i < ramp.length; i++){
 						ramp[i] = (i / (ramp.length-1));
 					}
@@ -232,7 +232,7 @@ define(["helper/Basic", "Tone/source/Player", "helper/Offline",
 
 			it("can seek to a position at the given time", function(){
 				return Offline(function(){
-					var ramp = new Float32Array(Math.floor(44100 * 0.3));
+					var ramp = new Float32Array(Math.floor(Tone.context.sampleRate * 0.3));
 					for (var i = 0; i < ramp.length; i++){
 						ramp[i] = (i / (ramp.length)) * 0.3;
 					}
@@ -242,9 +242,9 @@ define(["helper/Basic", "Tone/source/Player", "helper/Offline",
 					player.seek(0.2, 0.1);
 				}, 0.3).then(function(buffer){
 					buffer.forEach(function(sample, time){
-						if (time < 0.1){
+						if (time < 0.09){
 							expect(sample).to.be.within(0, 0.1);
-						} else if (time > 0.1 && time < 0.2){
+						} else if (time > 0.1 && time < 0.19){
 							expect(sample).to.be.within(0.2, 0.3);
 						}
 					});
@@ -254,7 +254,7 @@ define(["helper/Basic", "Tone/source/Player", "helper/Offline",
 			it ("correctly compensates if the offset is greater than the loopEnd", function(){
 				return Offline(function(){
 					//make a ramp between 0-1
-					var ramp = new Float32Array(Math.floor(44100 * 0.3));
+					var ramp = new Float32Array(Math.floor(Tone.context.sampleRate * 0.3));
 					for (var i = 0; i < ramp.length; i++){
 						ramp[i] = (i / (ramp.length)) * 0.3;
 					}
@@ -266,9 +266,9 @@ define(["helper/Basic", "Tone/source/Player", "helper/Offline",
 					player.start(0, 0.35);
 				}, 0.3).then(function(buffer){
 					buffer.forEach(function(sample, time){
-						if (time < 0.05){
+						if (time < 0.04){
 							expect(sample).to.be.within(0.15, 0.2);
-						} else if (time > 0.05 && time < 0.1){
+						} else if (time > 0.05 && time < 0.09){
 							expect(sample).to.be.within(0.1, 0.15);
 						}
 					});
