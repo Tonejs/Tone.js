@@ -136,7 +136,6 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal", "Tone/core/TimelineState
 	 */
 	Tone.Clock.prototype.stop = function(time){
 		time = this.toSeconds(time);
-		this._nextTick = 0;
 		this._state.cancel(time);
 		this._state.setStateAtTime(Tone.State.Stopped, time);
 		return this;	
@@ -150,7 +149,6 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal", "Tone/core/TimelineState
 	 */
 	Tone.Clock.prototype.pause = function(time){
 		time = this.toSeconds(time);
-		this._nextTick = 0;
 		if (this._state.getValueAtTime(time) === Tone.State.Started){
 			this._state.setStateAtTime(Tone.State.Paused, time);
 		}
