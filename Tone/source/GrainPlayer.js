@@ -177,6 +177,9 @@ function (Tone) {
 		var drift = (Math.random() * 2 - 1) * this.drift;
 		var offset = this._offset - this._overlap + drift;
 		var detune = this.detune / 100;
+		//keep the offset within the limits of the buffer
+		offset = Math.max(offset, 0);
+		offset = Math.min(offset, bufferDuration);
 
 		var originalFadeIn = this._player.fadeIn;
 		if (this.loop && this._offset > bufferDuration){
@@ -193,9 +196,8 @@ function (Tone) {
 			//set the state to stopped. 
 			this.stop(time);
 		} else {
-			if (offset < 0){
-				this._player.fadeIn = Math.max(this._player.fadeIn + offset, 0);
-				offset = 0;
+			if (offset === 0){
+				this._player.fadeIn = 0;
 			}
 			this._player.start(this.buffer, time, offset, this.grainSize + this._overlap, detune);
 		}
