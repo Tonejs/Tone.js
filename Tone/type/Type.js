@@ -193,7 +193,7 @@ function (Tone) {
 		if (this.isNumber(freq)){
 			return freq;
 		} else if (this.isString(freq) || this.isUndef(freq)){
-			return (new Tone.Frequency(freq)).eval();
+			return (new Tone.Frequency(freq)).valueOf();
 		} else if (freq instanceof Tone.TimeBase){
 			return freq.toFrequency();
 		}

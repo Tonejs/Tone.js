@@ -29,95 +29,102 @@ define(["helper/Basic", "Test", "Tone/type/Frequency", "Tone/core/Tone", "deps/t
 			});
 
 			it("can pass in a value and a type", function(){
-				expect(Frequency(4, "n").eval()).to.equal(2);
+				expect(Frequency(4, "n").valueOf()).to.equal(2);
 			});
 
 			it("with no arguments evaluates to 0", function(){
-				expect(Frequency().eval()).to.equal(0);
+				expect(Frequency().valueOf()).to.equal(0);
+			});
+
+			it("is evaluated in equations and comparisons using valueOf", function(){
+				expect(Frequency(1) + 1).to.equal(2);
+				expect(Frequency(1) + Frequency(1)).to.equal(2);
+				expect(Frequency(1) > Frequency(0)).to.be.true;
+				expect(+Frequency(1)).to.equal(1);
 			});
 		});
 
 		context("Eval Types", function(){
 
 			it("evaluates numbers as frequency", function(){
-				expect(Frequency("1").eval()).to.equal(1);
-				expect(Frequency("123").eval()).to.equal(123);
-				expect(Frequency(3.2).eval()).to.equal(3.2);
+				expect(Frequency("1").valueOf()).to.equal(1);
+				expect(Frequency("123").valueOf()).to.equal(123);
+				expect(Frequency(3.2).valueOf()).to.equal(3.2);
 			});
 
 			it("evaluates notation", function(){
 				return Offline(function(Transport){
 					Transport.bpm.value = 120;
 					Transport.timeSignature = 4;
-					expect(Frequency("4n").eval()).to.equal(2);
-					expect(Frequency("8n").eval()).to.equal(4);
-					expect(Frequency(16, "n").eval()).to.equal(8);
+					expect(Frequency("4n").valueOf()).to.equal(2);
+					expect(Frequency("8n").valueOf()).to.equal(4);
+					expect(Frequency(16, "n").valueOf()).to.equal(8);
 					Transport.bpm.value = 60;
 					Transport.timeSignature = [5,4];
-					expect(Frequency("1m").eval()).to.equal(1/5);
+					expect(Frequency("1m").valueOf()).to.equal(1/5);
 					Transport.bpm.value = 120;
 					Transport.timeSignature = 4;
 				});
 			});
 
 			it("evalutes hertz", function(){
-				expect(Frequency("1hz").eval()).to.equal(1);
-				expect(Frequency("2hz").eval()).to.equal(2);
-				expect(Frequency(4, "hz").eval()).to.equal(4);
-				expect(Frequency("0.25hz").eval()).to.equal(0.25);
+				expect(Frequency("1hz").valueOf()).to.equal(1);
+				expect(Frequency("2hz").valueOf()).to.equal(2);
+				expect(Frequency(4, "hz").valueOf()).to.equal(4);
+				expect(Frequency("0.25hz").valueOf()).to.equal(0.25);
 			});
 
 			it("evalutes ticks", function(){
 				return Offline(function(Transport){
-					expect(Frequency(Transport.PPQ, "i").eval()).to.equal(2);
-					expect(Frequency(1, "i").eval()).to.equal(Transport.PPQ * 2);
+					expect(Frequency(Transport.PPQ, "i").valueOf()).to.equal(2);
+					expect(Frequency(1, "i").valueOf()).to.equal(Transport.PPQ * 2);
 				});
 			});
 
 			it("evalutes transport time", function(){
-				expect(Frequency("1:0").eval()).to.equal(0.5);
-				expect(Frequency("1:4:0").eval()).to.equal(0.25);
-				// expect(Frequency("2:1:0").eval()).to.equal(0.25);
+				expect(Frequency("1:0").valueOf()).to.equal(0.5);
+				expect(Frequency("1:4:0").valueOf()).to.equal(0.25);
+				// expect(Frequency("2:1:0").valueOf()).to.equal(0.25);
 			});
 
 			it("evalutes midi", function(){
-				expect(Frequency(48, "midi").eval()).to.be.closeTo(teoria.Note.fromMIDI(48).fq(), 0.0001);
-				expect(Frequency(69, "midi").eval()).to.be.closeTo(teoria.Note.fromMIDI(69).fq(), 0.0001);
+				expect(Frequency(48, "midi").valueOf()).to.be.closeTo(teoria.Note.fromMIDI(48).fq(), 0.0001);
+				expect(Frequency(69, "midi").valueOf()).to.be.closeTo(teoria.Note.fromMIDI(69).fq(), 0.0001);
 			});
 
 			it("evalutes hz", function(){
-				expect(Frequency(48, "hz").eval()).to.equal(48);
-				expect(Frequency(480, "hz").eval()).to.equal(480);
+				expect(Frequency(48, "hz").valueOf()).to.equal(48);
+				expect(Frequency(480, "hz").valueOf()).to.equal(480);
 			});
 
 			it("can convert notes into frequencies", function(){
-				expect(Frequency("C4").eval()).to.be.closeTo(teoria.note("C4").fq(), 0.0001);
-				expect(Frequency("D4").eval()).to.be.closeTo(teoria.note("D4").fq(), 0.0001);
-				expect(Frequency("Db4").eval()).to.be.closeTo(teoria.note("Db4").fq(), 0.0001);
-				expect(Frequency("E4").eval()).to.be.closeTo(teoria.note("E4").fq(), 0.0001);
-				expect(Frequency("F2").eval()).to.be.closeTo(teoria.note("F2").fq(), 0.0001);
-				expect(Frequency("Gb-1").eval()).to.be.closeTo(teoria.note("Gb-1").fq(), 0.0001);
-				expect(Frequency("A#10").eval()).to.be.closeTo(teoria.note("A#10").fq(), 0.0001);
-				expect(Frequency("Bb2").eval()).to.be.closeTo(teoria.note("Bb2").fq(), 0.0001);
+				expect(Frequency("C4").valueOf()).to.be.closeTo(teoria.note("C4").fq(), 0.0001);
+				expect(Frequency("D4").valueOf()).to.be.closeTo(teoria.note("D4").fq(), 0.0001);
+				expect(Frequency("Db4").valueOf()).to.be.closeTo(teoria.note("Db4").fq(), 0.0001);
+				expect(Frequency("E4").valueOf()).to.be.closeTo(teoria.note("E4").fq(), 0.0001);
+				expect(Frequency("F2").valueOf()).to.be.closeTo(teoria.note("F2").fq(), 0.0001);
+				expect(Frequency("Gb-1").valueOf()).to.be.closeTo(teoria.note("Gb-1").fq(), 0.0001);
+				expect(Frequency("A#10").valueOf()).to.be.closeTo(teoria.note("A#10").fq(), 0.0001);
+				expect(Frequency("Bb2").valueOf()).to.be.closeTo(teoria.note("Bb2").fq(), 0.0001);
 			});
 
 			it("handles double accidentals", function(){
-				expect(Frequency("Cbb4").eval()).to.be.closeTo(teoria.note("Cbb4").fq(), 0.0001);
-				expect(Frequency("Dx4").eval()).to.be.closeTo(teoria.note("Dx4").fq(), 0.0001);
-				expect(Frequency("Dbb4").eval()).to.be.closeTo(teoria.note("Dbb4").fq(), 0.0001);
-				expect(Frequency("Ex4").eval()).to.be.closeTo(teoria.note("Ex4").fq(), 0.0001);
-				expect(Frequency("Fx2").eval()).to.be.closeTo(teoria.note("Fx2").fq(), 0.0001);
-				expect(Frequency("Gbb-1").eval()).to.be.closeTo(teoria.note("Gbb-1").fq(), 0.0001);
-				expect(Frequency("Ax10").eval()).to.be.closeTo(teoria.note("Ax10").fq(), 0.0001);
-				expect(Frequency("Bbb2").eval()).to.be.closeTo(teoria.note("Bbb2").fq(), 0.0001);
+				expect(Frequency("Cbb4").valueOf()).to.be.closeTo(teoria.note("Cbb4").fq(), 0.0001);
+				expect(Frequency("Dx4").valueOf()).to.be.closeTo(teoria.note("Dx4").fq(), 0.0001);
+				expect(Frequency("Dbb4").valueOf()).to.be.closeTo(teoria.note("Dbb4").fq(), 0.0001);
+				expect(Frequency("Ex4").valueOf()).to.be.closeTo(teoria.note("Ex4").fq(), 0.0001);
+				expect(Frequency("Fx2").valueOf()).to.be.closeTo(teoria.note("Fx2").fq(), 0.0001);
+				expect(Frequency("Gbb-1").valueOf()).to.be.closeTo(teoria.note("Gbb-1").fq(), 0.0001);
+				expect(Frequency("Ax10").valueOf()).to.be.closeTo(teoria.note("Ax10").fq(), 0.0001);
+				expect(Frequency("Bbb2").valueOf()).to.be.closeTo(teoria.note("Bbb2").fq(), 0.0001);
 			});
 
 			it("can accomidate different concert tuning", function(){
 				Frequency.A4 = 444;
-				expect(Frequency("C4").eval()).to.be.closeTo(teoria.note("C4").fq(Frequency.A4), 0.0001);
-				expect(Frequency("D1").eval()).to.be.closeTo(teoria.note("D1").fq(Frequency.A4), 0.0001);
+				expect(Frequency("C4").valueOf()).to.be.closeTo(teoria.note("C4").fq(Frequency.A4), 0.0001);
+				expect(Frequency("D1").valueOf()).to.be.closeTo(teoria.note("D1").fq(Frequency.A4), 0.0001);
 				Frequency.A4 = 100;
-				expect(Frequency("C4").eval()).to.be.closeTo(teoria.note("C4").fq(Frequency.A4), 0.0001);
+				expect(Frequency("C4").valueOf()).to.be.closeTo(teoria.note("C4").fq(Frequency.A4), 0.0001);
 				//return it to normal
 				Frequency.A4 = 440;
 			});
@@ -128,9 +135,9 @@ define(["helper/Basic", "Test", "Tone/type/Frequency", "Tone/core/Tone", "deps/t
 
 			it ("can evaluate expressions", function(){
 				var a4 = teoria.note("A4").fq();
-				expect(Frequency("A4 * 2").eval()).to.be.closeTo(a4 * 2, 0.0001);
-				expect(Frequency("A4 + 2 * 2").eval()).to.be.closeTo(a4 + 4, 0.0001);
-				expect(Frequency("A4/3").eval()).to.be.closeTo(a4/3, 0.0001);
+				expect(Frequency("A4 * 2").valueOf()).to.be.closeTo(a4 * 2, 0.0001);
+				expect(Frequency("A4 + 2 * 2").valueOf()).to.be.closeTo(a4 + 4, 0.0001);
+				expect(Frequency("A4/3").valueOf()).to.be.closeTo(a4/3, 0.0001);
 			});
 
 		});
@@ -159,13 +166,13 @@ define(["helper/Basic", "Test", "Tone/type/Frequency", "Tone/core/Tone", "deps/t
 		context("Operators", function(){
 
 			it("can combine operations", function(){
-				expect(Frequency(4).mult(2).add(3).eval()).to.equal(11);
-				expect(Frequency(8).sub(2).div(2).mult(8).eval()).to.equal(24);
+				expect(Frequency(4).mult(2).add(3).valueOf()).to.equal(11);
+				expect(Frequency(8).sub(2).div(2).mult(8).valueOf()).to.equal(24);
 			});
 
 			it("can combine operations", function(){
-				expect(Frequency(4).mult(2).add(3).eval()).to.equal(11);
-				expect(Frequency(8).sub(2).div(2).mult(8).eval()).to.equal(24);
+				expect(Frequency(4).mult(2).add(3).valueOf()).to.equal(11);
+				expect(Frequency(8).sub(2).div(2).mult(8).valueOf()).to.equal(24);
 			});
 
 		});

@@ -206,7 +206,7 @@ function(Tone){
 			//add some swing
 			var progress = (ticks % (this._swingTicks * 2)) / (this._swingTicks * 2);
 			var amount = Math.sin((progress) * Math.PI) * this._swingAmount;
-			tickTime += Tone.Time(this._swingTicks * 2/3, "i").eval() * amount;
+			tickTime += Tone.Time(this._swingTicks * 2/3, "i") * amount;
 		} 
 		//do the loop test
 		if (this.loop){
@@ -707,7 +707,7 @@ function(Tone){
 		} else {
 			return 0;
 		}
-		var transportPos = Tone.Time(this.ticks, "i").eval();
+		var transportPos = Tone.Time(this.ticks, "i");
 		var remainingTime = subdivision - (transportPos % subdivision);
 		if (remainingTime === 0){
 			remainingTime = subdivision;

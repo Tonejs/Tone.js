@@ -76,8 +76,8 @@ define(["Tone/core/Tone", "Tone/type/TimeBase"], function (Tone) {
 	 *                                   a percentage.
 	 *  @return  {Tone.Time}  this
 	 *  @example
-	 * Tone.Time(21).quantize(2).eval() //returns 22
-	 * Tone.Time(0.6).quantize("4n", 0.5).eval() //returns 0.55
+	 * Tone.Time(21).quantize(2) //returns 22
+	 * Tone.Time(0.6).quantize("4n", 0.5) //returns 0.55
 	 */
 	Tone.Time.prototype.quantize = function(subdiv, percent){
 		percent = this.defaultArg(percent, 1);
@@ -230,7 +230,7 @@ define(["Tone/core/Tone", "Tone/type/TimeBase"], function (Tone) {
 	 */
 	Tone.Time.prototype.toTicks = function(){
 		var quarterTime = this._beatsToUnits(1);
-		var quarters = this.eval() / quarterTime;
+		var quarters = this.valueOf() / quarterTime;
 		return Math.floor(quarters * Tone.Transport.PPQ);
 	};
 
@@ -257,7 +257,7 @@ define(["Tone/core/Tone", "Tone/type/TimeBase"], function (Tone) {
 	 *  @return  {Seconds} 
 	 */
 	Tone.Time.prototype.toSeconds = function(){
-		return this.eval();
+		return this.valueOf();
 	};
 
 	/**
@@ -272,7 +272,7 @@ define(["Tone/core/Tone", "Tone/type/TimeBase"], function (Tone) {
 	 *  Return the time in seconds.
 	 *  @return  {Seconds} 
 	 */
-	Tone.Time.prototype.eval = function(){
+	Tone.Time.prototype.valueOf = function(){
 		var val = this._expr();
 		return val + (this._plusNow?this.now():0);
 	};

@@ -18,25 +18,32 @@ define(["helper/Basic", "Test", "Tone/type/Time", "Tone/core/Tone", "helper/Offl
 
 			it("can pass in a number in the constructor", function(){
 				var time = Time(1);
-				expect(time.eval()).to.equal(1);
+				expect(time.valueOf()).to.equal(1);
 				expect(time).to.be.instanceOf(Time);
 				time.dispose();
 			});
 
 			it("can pass in a string in the constructor", function(){
 				var time = Time("1");
-				expect(time.eval()).to.equal(1);
+				expect(time.valueOf()).to.equal(1);
 				expect(time).to.be.instanceOf(Time);
 				time.dispose();
 			});
 
 			it("can pass in a value and a type", function(){
-				expect(Time(4, "m").eval()).to.equal(8);
+				expect(Time(4, "m").valueOf()).to.equal(8);
 			});
 
 			it("with no arguments evaluates to 'now'", function(){
 				var now = Tone.now();
-				expect(Time().eval()).to.be.closeTo(now, 0.01);
+				expect(Time().valueOf()).to.be.closeTo(now, 0.01);
+			});
+
+			it("is evaluated in equations and comparisons using valueOf", function(){
+				expect(Time(1) + 1).to.equal(2);
+				expect(Time(1) + Time(1)).to.equal(2);
+				expect(Time(1) > Time(0)).to.be.true;
+				expect(+Time(1)).to.equal(1);
 			});
 		});
 
@@ -44,9 +51,9 @@ define(["helper/Basic", "Test", "Tone/type/Time", "Tone/core/Tone", "helper/Offl
 
 			it("can set a new value", function(){
 				var time = new Time(1);
-				expect(time.eval()).to.equal(1);
+				expect(time.valueOf()).to.equal(1);
 				time.set(2);
-				expect(time.eval()).to.equal(2);
+				expect(time.valueOf()).to.equal(2);
 			});
 
 			it("can clone a Time", function(){
@@ -55,55 +62,55 @@ define(["helper/Basic", "Test", "Tone/type/Time", "Tone/core/Tone", "helper/Offl
 				expect(cloned).to.not.equal(time);
 				expect(cloned).to.be.instanceOf(Time);
 				var now = time.now();
-				expect(time.eval()).to.be.closeTo(1 + now, 0.01);
-				expect(cloned.eval()).to.be.closeTo(1 + now, 0.01);
+				expect(time.valueOf()).to.be.closeTo(1 + now, 0.01);
+				expect(cloned.valueOf()).to.be.closeTo(1 + now, 0.01);
 			});
 
 			it("the clone is not modified when the original is", function(){
 				var time = new Time(1);
 				var cloned = time.clone();				
-				expect(time.eval()).to.equal(1);
-				expect(cloned.eval()).to.equal(1);
+				expect(time.valueOf()).to.equal(1);
+				expect(cloned.valueOf()).to.equal(1);
 				time.add(1);
-				expect(time.eval()).to.equal(2);
-				expect(cloned.eval()).to.equal(1);
+				expect(time.valueOf()).to.equal(2);
+				expect(cloned.valueOf()).to.equal(1);
 				time.set(3);
-				expect(time.eval()).to.equal(3);
-				expect(cloned.eval()).to.equal(1);
+				expect(time.valueOf()).to.equal(3);
+				expect(cloned.valueOf()).to.equal(1);
 			});
 
 			it("can copy values from another Time", function(){
 				var time = new Time(2);
 				var copy = new Time(1);	
-				expect(time.eval()).to.equal(2);
-				expect(copy.eval()).to.equal(1);
+				expect(time.valueOf()).to.equal(2);
+				expect(copy.valueOf()).to.equal(1);
 				copy.copy(time);
-				expect(time.eval()).to.equal(2);
-				expect(copy.eval()).to.equal(2);
+				expect(time.valueOf()).to.equal(2);
+				expect(copy.valueOf()).to.equal(2);
 			});
 		});
 
 		context("Quantizes values", function(){
 
 			it("returns the time quantized to the a subdivision", function(){
-				expect(Time(1.1).quantize(0.5).eval()).to.be.closeTo(1, 0.01);
-				expect(Time(2.3).quantize(0.5).eval()).to.be.closeTo(2.5, 0.01);
-				expect(Time(0).quantize(4).eval()).to.be.closeTo(0, 0.01);
+				expect(Time(1.1).quantize(0.5).valueOf()).to.be.closeTo(1, 0.01);
+				expect(Time(2.3).quantize(0.5).valueOf()).to.be.closeTo(2.5, 0.01);
+				expect(Time(0).quantize(4).valueOf()).to.be.closeTo(0, 0.01);
 			});
 
 			it("can quantize with a percentage", function(){
-				expect(Time(4).quantize(8, 0.5).eval()).to.equal(6);
-				expect(Time(10).quantize(8, 0.5).eval()).to.equal(9);
-				expect(Time(2).quantize(8, 0.75).eval()).to.equal(0.5);
+				expect(Time(4).quantize(8, 0.5).valueOf()).to.equal(6);
+				expect(Time(10).quantize(8, 0.5).valueOf()).to.equal(9);
+				expect(Time(2).quantize(8, 0.75).valueOf()).to.equal(0.5);
 			});
 			
 			it("can get the next subdivison when the transport is started", function(){
 				return Offline(function(Transport){
 					Transport.start(0);
 					return Test.atTime(0.59, function(){
-						expect(Time("@1m").eval()).to.be.closeTo(2, 0.01);
-						expect(Time("@(4n + 2n)").eval()).to.be.closeTo(1.5, 0.01);
-						expect(Time("@4n").eval()).to.be.closeTo(1, 0.01);
+						expect(Time("@1m").valueOf()).to.be.closeTo(2, 0.01);
+						expect(Time("@(4n + 2n)").valueOf()).to.be.closeTo(1.5, 0.01);
+						expect(Time("@4n").valueOf()).to.be.closeTo(1, 0.01);
 						Transport.stop();
 					});
 				}, 0.6);
@@ -114,14 +121,14 @@ define(["helper/Basic", "Test", "Tone/type/Time", "Tone/core/Tone", "helper/Offl
 
 			it("can add the current time", function(){
 				var now = Tone.now();
-				expect(Time(4).addNow().eval()).to.be.closeTo(4 + now, 0.01);
-				expect(Time("2n").addNow().eval()).to.be.closeTo(1 + now, 0.01);
-				expect(Time("+2n").eval()).to.be.closeTo(1 + now, 0.01);
+				expect(Time(4).addNow().valueOf()).to.be.closeTo(4 + now, 0.01);
+				expect(Time("2n").addNow().valueOf()).to.be.closeTo(1 + now, 0.01);
+				expect(Time("+2n").valueOf()).to.be.closeTo(1 + now, 0.01);
 			});
 
 			it("can quantize the value", function(){
-				expect(Time(4).quantize(3).eval()).to.equal(3);
-				expect(Time(5).quantize(3).eval()).to.equal(6);
+				expect(Time(4).quantize(3).valueOf()).to.equal(3);
+				expect(Time(5).quantize(3).valueOf()).to.equal(6);
 			});
 
 		});
@@ -129,9 +136,9 @@ define(["helper/Basic", "Test", "Tone/type/Time", "Tone/core/Tone", "helper/Offl
 		context("Expressions", function(){
 
 			it("evaluates mixed expressions", function(){
-				expect(Time("4n * 2").eval()).to.equal(1);
-				expect(Time("(4n * 2) / 4").eval()).to.equal(0.25);
-				expect(Time("0:2 / 2").eval()).to.equal(0.5);
+				expect(Time("4n * 2").valueOf()).to.equal(1);
+				expect(Time("(4n * 2) / 4").valueOf()).to.equal(0.25);
+				expect(Time("0:2 / 2").valueOf()).to.equal(0.5);
 			});
 		});
 

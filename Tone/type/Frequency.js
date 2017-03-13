@@ -9,9 +9,9 @@ define(["Tone/core/Tone", "Tone/type/TimeBase"], function (Tone) {
 	 *  @param  {String|Number}  val    The time value.
 	 *  @param  {String=}  units  The units of the value.
 	 *  @example
-	 * Tone.Frequency("C3").eval() // 261
-	 * Tone.Frequency(38, "midi").eval() //
-	 * Tone.Frequency("C3").transpose(4).eval();
+	 * Tone.Frequency("C3") // 261
+	 * Tone.Frequency(38, "midi") //
+	 * Tone.Frequency("C3").transpose(4);
 	 */
 	Tone.Frequency = function(val, units){
 		if (this instanceof Tone.Frequency){
@@ -131,7 +131,7 @@ define(["Tone/core/Tone", "Tone/type/TimeBase"], function (Tone) {
 	 * Tone.Frequency("C4").toMidi(); //60
 	 */
 	Tone.Frequency.prototype.toMidi = function(){
-		return this.frequencyToMidi(this.eval());
+		return this.frequencyToMidi(this.valueOf());
 	};
 
 	/**
@@ -141,7 +141,7 @@ define(["Tone/core/Tone", "Tone/type/TimeBase"], function (Tone) {
 	 * Tone.Frequency(69, "midi").toNote(); //"A4"
 	 */
 	Tone.Frequency.prototype.toNote = function(){
-		var freq = this.eval();
+		var freq = this.valueOf();
 		var log = Math.log(freq / Tone.Frequency.A4) / Math.LN2;
 		var noteNumber = Math.round(12 * log) + 57;
 		var octave = Math.floor(noteNumber/12);
@@ -157,7 +157,7 @@ define(["Tone/core/Tone", "Tone/type/TimeBase"], function (Tone) {
 	 *  @return  {Seconds}
 	 */
 	Tone.Frequency.prototype.toSeconds = function(){
-		return 1 / this.eval();
+		return 1 / this.valueOf();
 	};
 
 	/**
@@ -165,7 +165,7 @@ define(["Tone/core/Tone", "Tone/type/TimeBase"], function (Tone) {
 	 *  @return  {Frequency}
 	 */
 	Tone.Frequency.prototype.toFrequency = function(){
-		return this.eval();
+		return this.valueOf();
 	};
 
 	/**
@@ -174,7 +174,7 @@ define(["Tone/core/Tone", "Tone/type/TimeBase"], function (Tone) {
 	 */
 	Tone.Frequency.prototype.toTicks = function(){
 		var quarterTime = this._beatsToUnits(1);
-		var quarters = this.eval() / quarterTime;
+		var quarters = this.valueOf() / quarterTime;
 		return Math.floor(quarters * Tone.Transport.PPQ);
 	};
 
