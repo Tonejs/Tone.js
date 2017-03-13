@@ -606,15 +606,17 @@ function(Tone){
 			return this._clock.ticks;
 		},
 		set : function(t){
-			var now = this.now();
-			//stop everything synced to the transport
-			if (this.state === Tone.State.Started){
-				this.emit("stop", now);
-				this._clock.ticks = t;
-				//restart it with the new time
-				this.emit("start", now, this.seconds);
-			} else {
-				this._clock.ticks = t;
+			if (this._clock.ticks !== t){
+				var now = this.now();
+				//stop everything synced to the transport
+				if (this.state === Tone.State.Started){
+					this.emit("stop", now);
+					this._clock.ticks = t;
+					//restart it with the new time
+					this.emit("start", now, this.seconds);
+				} else {
+					this._clock.ticks = t;
+				}
 			}
 		}
 	});
