@@ -79,7 +79,7 @@ define(["Tone/core/Tone"], function (Tone) {
 	 */
 	Tone.Emitter.prototype.emit = function(event){
 		if (this._events){
-			var args = Array.prototype.slice.call(arguments, 1);
+			var args = Array.apply(null, arguments).slice(1);
 			if (this._events.hasOwnProperty(event)){
 				var eventList = this._events[event];
 				for (var i = 0, len = eventList.length; i < len; i++){
