@@ -755,29 +755,10 @@ define(function(){
 		get : function(){
 			var hasAudioContext = window.hasOwnProperty("AudioContext") || window.hasOwnProperty("webkitAudioContext");
 			var hasPromises = window.hasOwnProperty("Promise");
-			return hasAudioContext && hasPromises;
+			var hasWorkers = window.hasOwnProperty("Worker");
+			return hasAudioContext && hasPromises && hasWorkers;
 		}
 	});
-
-	/**
-	 *  array of callbacks to be invoked when a new context is added
-	 *  @private 
-	 */
-	var newContextCallbacks = [];
-
-	/**
-	 *  invoke this callback when a new context is added
-	 *  will be invoked initially with the first context
-	 *  @private 
-	 *  @static
-	 *  @param {function(AudioContext)} callback the callback to be invoked with the audio context
-	 */
-	Tone._initAudioContext = function(callback){
-		//invoke the callback with the existing AudioContext
-		callback(Tone.context);
-		//add it to the array
-		newContextCallbacks.push(callback);
-	};
 
 	Tone.version = "r10-dev";
 
