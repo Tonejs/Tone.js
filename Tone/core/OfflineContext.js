@@ -1,5 +1,14 @@
 define(["Tone/core/Tone", "Tone/core/Context"], function (Tone) {
 
+
+	/**
+	 *  shim
+	 *  @private
+	 */
+	if (!window.hasOwnProperty("OfflineAudioContext") && window.hasOwnProperty("webkitOfflineAudioContext")){
+		window.OfflineAudioContext = window.webkitOfflineAudioContext;
+	}
+
 	/**
 	 *  @class Wrapper around the OfflineAudioContext
 	 *  @extends {Tone.Context

@@ -1,6 +1,14 @@
 define(["Tone/core/Tone", "Tone/core/Emitter"], function (Tone) {
 
 	/**
+	 *  shim
+	 *  @private
+	 */
+	if (!window.hasOwnProperty("AudioContext") && window.hasOwnProperty("webkitAudioContext")){
+		window.AudioContext = window.webkitAudioContext;
+	}
+
+	/**
 	 *  @class Wrapper around the native AudioContext.
 	 *  @extends {Tone.Emitter}
 	 *  @param {AudioContext=} context optionally pass in a context
@@ -297,26 +305,16 @@ define(["Tone/core/Tone", "Tone/core/Emitter"], function (Tone) {
 	 *  some older implementations.
 	 *  @private
 	 */
-	function shimAudioContext(){
-
-		//shim the main audio context constructors
-		if (window.hasOwnProperty("webkitAudioContext") && !window.hasOwnProperty("AudioContext")){
-			window.AudioContext = window.webkitAudioContext;
-		}
-
-		if (window.hasOwnProperty("webkitOfflineAudioContext") && !window.hasOwnProperty("OfflineAudioContext")){
-			window.OfflineAudioContext = window.webkitOfflineAudioContext;
-		}
-
-		var isUndef = Tone.prototype.isUndef;
-		var isFunction = Tone.prototype.isFunction;
+	function shimConnect(){
 
 		var nativeConnect = AudioNode.prototype.connect;
+		var nativeDisconnect = AudioNode.prototype.disconnect;
+
 		//replace the old connect method
-		AudioNode.prototype.connect = function toneConnect(B, outNum, inNum){
+		function toneConnect(B, outNum, inNum){
 			if (B.input){
 				if (Array.isArray(B.input)){
-					if (isUndef(inNum)){
+					if (Tone.prototype.isUndef(inNum)){
 						inNum = 0;
 					}
 					this.connect(B.input[inNum]);
@@ -334,13 +332,12 @@ define(["Tone/core/Tone", "Tone/core/Emitter"], function (Tone) {
 					throw new Error("error connecting to node: "+B+"\n"+e);
 				}
 			}
-		};
+		}
 
-		var nativeDisconnect = AudioNode.prototype.disconnect;
 		//replace the old disconnect method
-		AudioNode.prototype.disconnect = function toneDisconnect(B, outNum, inNum){
+		function toneDisconnect(B, outNum, inNum){
 			if (B && B.input && Array.isArray(B.input)){
-				if (isUndef(inNum)){
+				if (Tone.prototype.isUndef(inNum)){
 					inNum = 0;
 				}
 				this.disconnect(B.input[inNum], outNum, inNum);
@@ -353,37 +350,17 @@ define(["Tone/core/Tone", "Tone/core/Emitter"], function (Tone) {
 					throw new Error("error disconnecting node: "+B+"\n"+e);
 				}
 			}
-		};
+		}
 
-		if (!isFunction(AudioContext.prototype.createGain)){
-			AudioContext.prototype.createGain = AudioContext.prototype.createGainNode;
-		}
-		if (!isFunction(AudioContext.prototype.createDelay)){
-			AudioContext.prototype.createDelay = AudioContext.prototype.createDelayNode;
-		}
-		if (!isFunction(AudioContext.prototype.createPeriodicWave)){
-			AudioContext.prototype.createPeriodicWave = AudioContext.prototype.createWaveTable;
-		}
-		if (!isFunction(AudioBufferSourceNode.prototype.start)){
-			AudioBufferSourceNode.prototype.start = AudioBufferSourceNode.prototype.noteGrainOn;
-		}
-		if (!isFunction(AudioBufferSourceNode.prototype.stop)){
-			AudioBufferSourceNode.prototype.stop = AudioBufferSourceNode.prototype.noteOff;
-		}
-		if (!isFunction(OscillatorNode.prototype.start)){
-			OscillatorNode.prototype.start = OscillatorNode.prototype.noteOn;
-		}
-		if (!isFunction(OscillatorNode.prototype.stop)){
-			OscillatorNode.prototype.stop = OscillatorNode.prototype.noteOff;	
-		}
-		if (!isFunction(OscillatorNode.prototype.setPeriodicWave)){
-			OscillatorNode.prototype.setPeriodicWave = OscillatorNode.prototype.setWaveTable;	
+		if (AudioNode.prototype.connect !== toneConnect){
+			AudioNode.prototype.connect = toneConnect;
+			AudioNode.prototype.disconnect = toneDisconnect;
 		}
 	}
 
 	// set the audio context initially
 	if (Tone.supported){
-		shimAudioContext();
+		shimConnect();
 		Tone.context = new Tone.Context();
 	} else {
 		console.warn("This browser does not support Tone.js");

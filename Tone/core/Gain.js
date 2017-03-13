@@ -3,6 +3,14 @@ define(["Tone/core/Tone", "Tone/core/Param", "Tone/type/Type"], function (Tone) 
 	"use strict";
 
 	/**
+	 *  createGain shim
+	 *  @private
+	 */
+	if (window.GainNode && !AudioContext.prototype.createGain){
+		AudioContext.prototype.createGain = AudioContext.prototype.createGainNode;
+	}
+
+	/**
 	 *  @class A thin wrapper around the Native Web Audio GainNode.
 	 *         The GainNode is a basic building block of the Web Audio
 	 *         API and is useful for routing audio and adjusting gains. 
