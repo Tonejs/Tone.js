@@ -3,6 +3,20 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type"], function(Tone)
 	"use strict";
 
 	/**
+	 *  AudioBuffer.copyToChannel polyfill
+	 *  @private
+	 */
+	if (window.AudioBuffer && !AudioBuffer.prototype.copyToChannel){
+		AudioBuffer.prototype.copyToChannel = function(dest, chanNum, start){
+			var channel = this.getChannelData(chanNum);
+			start = start || 0;
+			for (var i = start; i < channel.length; i++){
+				channel[i-start] = dest[i];
+			}
+		};
+	}
+
+	/**
 	 *  @class  Buffer loading and storage. Tone.Buffer is used internally by all 
 	 *          classes that make requests for audio files such as Tone.Player,
 	 *          Tone.Sampler and Tone.Convolver.
@@ -230,15 +244,7 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type"], function(Tone)
 			array = [array];
 		}
 		for (var c = 0; c < channels; c++){
-			if (this.isFunction(buffer.copyToChannel)){
-				buffer.copyToChannel(array[c], c);
-			} else {
-				var channel = buffer.getChannelData(c);
-				var channelArray = array[c];
-				for (var i = 0; i < channelArray.length; i++){
-					channel[i] = channelArray[i];
-				}
-			}
+			buffer.copyToChannel(array[c], c);
 		}
 		this._buffer = buffer;
 		return this;
