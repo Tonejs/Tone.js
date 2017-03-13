@@ -10,8 +10,15 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type"], function(Tone)
 		AudioBuffer.prototype.copyToChannel = function(dest, chanNum, start){
 			var channel = this.getChannelData(chanNum);
 			start = start || 0;
-			for (var i = start; i < channel.length; i++){
-				channel[i-start] = dest[i];
+			for (var i = 0; i < channel.length; i++){
+				channel[i+start] = dest[i];
+			}
+		};
+		AudioBuffer.prototype.copyFromChannel = function(dest, chanNum, start){
+			var channel = this.getChannelData(chanNum);
+			start = start || 0;
+			for (var i = 0; i < channel.length; i++){
+				dest[i] = channel[i+start];
 			}
 		};
 	}
@@ -285,25 +292,14 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type"], function(Tone)
 	Tone.Buffer.prototype.toArray = function(channel){
 		if (this.isNumber(channel)){
 			return this._buffer.getChannelData(channel);
+		} else if (this.numberOfChannels === 1){
+			return this.toArray(0);
 		} else {
 			var ret = [];
 			for (var c = 0; c < this.numberOfChannels; c++){
-				ret[c] = new Float32Array(this.length);
-				if (this.isFunction(this._buffer.copyFromChannel)){
-					this._buffer.copyFromChannel(ret[c], c);
-				} else {
-					var channelData = this._buffer.getChannelData(c);
-					var retArray = ret[c];
-					for (var i = 0; i < channelData.length; i++){
-						retArray[i] = channelData[i];
-					}
-				}
+				ret[c] = this._buffer.getChannelData(c);
 			}
-			if (ret.length === 1){
-				return ret[0];
-			} else {
-				return ret;
-			}
+			return ret;
 		}
 	};
 
