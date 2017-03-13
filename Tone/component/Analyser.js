@@ -3,6 +3,22 @@ define(["Tone/core/Tone"], function (Tone) {
 	"use strict";
 
 	/**
+	 *  AnalyserNode.getFloatTimeDomainData polyfill
+	 *  @private
+	 */
+	if (window.AnalyserNode && !AnalyserNode.prototype.getFloatTimeDomainData){
+		//referenced https://github.com/mohayonao/get-float-time-domain-data 
+		AnalyserNode.prototype.getFloatTimeDomainData = function(array){
+			var uint8 = new Uint8Array(array.length);
+			this.getByteTimeDomainData(uint8);
+			for (var i = 0; i < uint8.length; i++){
+				array[i] = (uint8[i] - 128) / 128;
+			}
+		};
+	}
+
+
+	/**
 	 *  @class  Wrapper around the native Web Audio's 
 	 *          [AnalyserNode](http://webaudio.github.io/web-audio-api/#idl-def-AnalyserNode).
 	 *          Extracts FFT or Waveform data from the incoming signal.
@@ -104,17 +120,7 @@ define(["Tone/core/Tone"], function (Tone) {
 			if (this._returnType === Tone.Analyser.ReturnType.Byte){
 				this._analyser.getByteTimeDomainData(this._buffer);
 			} else {
-				if (this.isFunction(AnalyserNode.prototype.getFloatTimeDomainData)){
-					this._analyser.getFloatTimeDomainData(this._buffer);
-				} else {
-					var uint8 = new Uint8Array(this._buffer.length);
-					this._analyser.getByteTimeDomainData(uint8);
-					//referenced https://github.com/mohayonao/get-float-time-domain-data 
-					// POLYFILL
-					for (var i = 0; i < uint8.length; i++){
-						this._buffer[i] = (uint8[i] - 128) * 0.0078125;
-					}
-				}
+				this._analyser.getFloatTimeDomainData(this._buffer);
 			}
 		}
 		return this._buffer;
