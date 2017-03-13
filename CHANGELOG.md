@@ -4,8 +4,8 @@
 * Tone.OfflineContext wraps OfflineAudioContext
 * Tone.Offline: method for rendering audio offline
 * Rewritting tests with Tone.Offline
-* Optimizing Tone.Draw to only loop when events are scheduled (#194)
-* Time.eval->valueOf which takes advantage of build-in primitive evaluation (#205)
+* Optimizing Tone.Draw to only loop when events are scheduled: [#194](https://github.com/Tonejs/Tone.js/issues/194)
+* Time.eval->valueOf which takes advantage of build-in primitive evaluation [#205](https://github.com/Tonejs/Tone.js/issues/205)
 
 ### r9
 
