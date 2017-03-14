@@ -291,16 +291,25 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type"], function(Tone)
 	 */
 	Tone.Buffer.prototype.toArray = function(channel){
 		if (this.isNumber(channel)){
-			return this._buffer.getChannelData(channel);
+			return this.getChannelData(channel);
 		} else if (this.numberOfChannels === 1){
 			return this.toArray(0);
 		} else {
 			var ret = [];
 			for (var c = 0; c < this.numberOfChannels; c++){
-				ret[c] = this._buffer.getChannelData(c);
+				ret[c] = this.getChannelData(c);
 			}
 			return ret;
 		}
+	};
+
+	/**
+	 *  Returns the Float32Array representing the PCM audio data for the specific channel.
+	 *  @param  {Number}  channel  The channel number to return
+	 *  @return  {Float32Array}  The audio as a TypedArray
+	 */
+	Tone.Buffer.prototype.getChannelData = function(channel){
+		return this._buffer.getChannelData(channel);
 	};
 
 	/**
@@ -330,8 +339,8 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type"], function(Tone)
 	 */
 	Tone.Buffer.prototype._reverse = function(){
 		if (this.loaded){
-			for (var i = 0; i < this._buffer.numberOfChannels; i++){
-				Array.prototype.reverse.call(this._buffer.getChannelData(i));
+			for (var i = 0; i < this.numberOfChannels; i++){
+				Array.prototype.reverse.call(this.getChannelData(i));
 			}
 		}
 		return this;
