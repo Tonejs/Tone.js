@@ -160,6 +160,15 @@ define(["Test", "Tone/core/Buffer"], function (Test, Buffer) {
 			});
 		});
 
+		it("can get the channel data as an array", function(done){
+			var buffer = new Buffer(testFile, function(){
+				expect(buffer.getChannelData(0)).to.be.an.instanceOf(Float32Array);
+				expect(buffer.getChannelData(0).length).to.be.above(130000);
+				buffer.dispose();
+				done();
+			});
+		});
+
 		it("can reverse a buffer", function(done){
 			var buffer = new Buffer(testFile, function(){
 				var buffArray = buffer.get();
