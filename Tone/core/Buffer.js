@@ -500,9 +500,15 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type"], function(Tone)
 
 	/**
 	 *  Returns a Promise which resolves when all of the buffers have loaded
+	 *  @return {Promise}
 	 */
 	Tone.loaded = function(){
 		var onload, onerror;
+		function removeEvents(){
+			//remove the events when it's resolved
+			Tone.Buffer.off("load", onload);
+			Tone.Buffer.off("error", onerror);
+		}
 		return new Promise(function(success, fail){
 			onload = function(){
 				success();
@@ -513,14 +519,9 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type"], function(Tone)
 			//add the event listeners
 			Tone.Buffer.on("load", onload);
 			Tone.Buffer.on("error", onerror);
-		}).then(function(){
-			//remove the events when it's resolved
-			Tone.Buffer.off("load", onload);
-			Tone.Buffer.off("error", onerror);
-		}).catch(function(){
-			//remove the events when it's resolved
-			Tone.Buffer.off("load", onload);
-			Tone.Buffer.off("error", onerror);
+		}).then(removeEvents).catch(function(e){
+			removeEvents();
+			throw new Error(e);
 		});
 	};
 
