@@ -1,4 +1,4 @@
-define(["Test", "Tone/core/Buffer"], function (Test, Buffer) {
+define(["Test", "Tone/core/Buffer", "Tone/core/Tone"], function (Test, Buffer, Tone) {
 	
 	if (window.__karma__){
 		Buffer.baseUrl = "/base/test/";
@@ -260,6 +260,32 @@ define(["Test", "Tone/core/Buffer"], function (Test, Buffer) {
 			expect(Buffer.supportsType('wav')).to.be.true
 			expect(Buffer.supportsType('path/to/test.wav')).to.be.true
 			expect(Buffer.supportsType('path/to/test.nope')).to.be.false
+		});
+	});
+
+	describe("Tone.loaded()", function(){
+
+		it ("returns a promise", function(){
+			expect(Tone.loaded()).to.be.instanceOf(Promise)
+		});
+
+		it ("is invoked when all the buffers are loaded", function(){
+			Tone.Buffer.cancelDownloads()
+			// expect(Tone.loaded)
+			var buff0 = new Buffer(testFile)
+			var buff1 = new Buffer(testFile)
+			return Tone.loaded()
+		});
+
+		it ("invokes an error if one of the buffers is not found", function(done){
+			Tone.Buffer.cancelDownloads()
+			// expect(Tone.loaded)
+			var buff0 = new Buffer(testFile)
+			var buff1 = new Buffer("nosuchfile.wav")
+			Tone.loaded().catch(function(e){
+				expect(e).to.be.instanceOf(Error)
+				done()
+			});
 		});
 	});
 });
