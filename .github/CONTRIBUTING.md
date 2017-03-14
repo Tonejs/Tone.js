@@ -4,7 +4,7 @@ If you're looking for ideas for where to get started, consider jumping in on any
 
 ### Examples
 
-To contribute examples, please follow the current style of the examples. Add your example's title and file name to `ExampleList.js` file for it to appear in the examples list on index page. 
+To contribute examples, please follow the current style of the examples. Add your example's title and file name to `ExampleList.js` file for it to appear in the examples list on the index page. 
 
 ### Docs
 
@@ -12,7 +12,7 @@ There is always more work that can be done on documentation. Especially adding g
 
 All of the docs are written in [jsdoc](http://usejsdoc.org/)-style comments in the source code. If you catch a mistake, please send a pull request. 
 
-Along with this, I'd be great to integrate more visuals and references in the docs to help illustrate concepts. 
+Along with this, It'd be great to integrate more visuals and references in the docs to help illustrate concepts. 
 
 ### Forum
 
