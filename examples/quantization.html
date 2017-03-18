@@ -7,16 +7,16 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 	<link rel="icon" type="image/png" sizes="174x174" href="./style/favicon.png">
 
-	<script type="text/javascript" src="../build/Tone.js"></script>
-	<script type="text/javascript" src="./scripts/jquery.min.js"></script>
-	<script type="text/javascript" src="./scripts/draggabilly.js"></script>
-	<script type="text/javascript" src="https://tonejs.github.io/Logo/build/Logo.js"></script>
-	<script type="text/javascript" src="./scripts/StartAudioContext.js"></script>
-	<script type="text/javascript" src="./scripts/Interface.js"></script>
+	<script src="../build/Tone.js"></script>
+	<script src="./scripts/jquery.min.js"></script>
+	<script src="./scripts/draggabilly.js"></script>
+	<script src="https://tonejs.github.io/Logo/build/Logo.js"></script>
+	<script src="./scripts/StartAudioContext.js"></script>
+	<script src="./scripts/Interface.js"></script>
 
 	<link rel="stylesheet" type="text/css" href="./style/examples.css">
 
-	<script type="text/javascript">
+	<script>
 		// jshint ignore: start
 	</script>
 </head>
@@ -36,13 +36,13 @@
 			(aligned to a subdivision). In this example, a note's start time is aligned to the given subdivision. 
 		</div>
 	</div>
-	<script id="JSCode" type="text/javascript">
+	<script id="JSCode">
 		var polySynth = new Tone.PolySynth(4, Tone.Synth).toMaster();
 
 		Tone.Transport.start();
 
 	</script>
-	<script id="gui" type="text/javascript">
+	<script id="gui">
 
 	$(function(){
 

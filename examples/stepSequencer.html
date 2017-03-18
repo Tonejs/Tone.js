@@ -7,17 +7,17 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 	<link rel="icon" type="image/png" sizes="174x174" href="./style/favicon.png">
 
-	<script type="text/javascript" src="../build/Tone.js"></script>
-	<script type="text/javascript" src="./scripts/jquery.min.js"></script>
-	<script type="text/javascript" src="./scripts/draggabilly.js"></script>
-	<script type="text/javascript" src="https://tonejs.github.io/Logo/build/Logo.js"></script>
-	<script type="text/javascript" src="./scripts/StartAudioContext.js"></script>
-	<script type="text/javascript" src="./scripts/Interface.js"></script>
-	<script type="text/javascript" src="./scripts/nexusUI.js"></script>
+	<script src="../build/Tone.js"></script>
+	<script src="./scripts/jquery.min.js"></script>
+	<script src="./scripts/draggabilly.js"></script>
+	<script src="https://tonejs.github.io/Logo/build/Logo.js"></script>
+	<script src="./scripts/StartAudioContext.js"></script>
+	<script src="./scripts/Interface.js"></script>
+	<script src="./scripts/nexusUI.js"></script>
 
 	<link rel="stylesheet" type="text/css" href="./style/examples.css">
 
-	<script type="text/javascript">
+	<script>
 		// jshint ignore: start
 	</script>
 
@@ -36,7 +36,7 @@
 		</div>
 		<canvas nx="matrix"></canvas>
 	</div>	
-	<script type="text/javascript">
+	<script>
 		//setup a polyphonic sampler
 		var keys = new Tone.MultiPlayer({
 			urls : {
@@ -66,7 +66,7 @@
 		Tone.Transport.start();
 
 	</script>
-	<script type="text/javascript">
+	<script>
 		nx.onload = function(){
 			nx.colorize("#f5871f");
 			
