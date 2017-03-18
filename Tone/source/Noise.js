@@ -1,4 +1,5 @@
-define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
+define(["Tone/core/Tone", "Tone/source/Source", "Tone/core/Buffer", "Tone/source/BufferSource"], 
+	function(Tone){
 
 	"use strict";
 
@@ -42,7 +43,7 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 		 *  @private
 		 *  @type {AudioBuffer}
 		 */
-		this._buffer = null;
+		this._type = options.type;
 
 		/**
 		 *  The playback rate of the noise. Affects
@@ -51,8 +52,6 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 		 *  @signal
 		 */
 		this._playbackRate = options.playbackRate;
-
-		this.type = options.type;
 	};
 
 	Tone.extend(Tone.Noise, Tone.Source);
@@ -79,35 +78,20 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 	 */
 	Object.defineProperty(Tone.Noise.prototype, "type", {
 		get : function(){
-			if (this._buffer === _whiteNoise){
-				return "white";
-			} else if (this._buffer === _brownNoise){
-				return "brown";
-			} else if (this._buffer === _pinkNoise){
-				return "pink";
-			}
+			return this._type;
 		}, 
 		set : function(type){
-			if (this.type !== type){
-				switch (type){
-					case "white" : 
-						this._buffer = _whiteNoise;
-						break;
-					case "pink" : 
-						this._buffer = _pinkNoise;
-						break;
-					case "brown" : 
-						this._buffer = _brownNoise;
-						break;
-					default : 
-						throw new TypeError("Tone.Noise: invalid type: "+type);
-				}
-				//if it's playing, stop and restart it
-				if (this.state === Tone.State.Started){
-					var now = this.now() + this.blockTime;
-					//remove the listener
-					this._stop(now);
-					this._start(now);
+			if (this._type !== type){
+				if (type in _noiseBuffers){
+					this._type = type;
+					//if it's playing, stop and restart it
+					if (this.state === Tone.State.Started){
+						var now = this.now() + this.blockTime;
+						this._stop(now);
+						this._start(now);
+					}
+				} else {
+					throw new TypeError("Tone.Noise: invalid type: "+type);
 				}
 			}
 		}
@@ -138,12 +122,11 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 	 *  @private
 	 */
 	Tone.Noise.prototype._start = function(time){
-		this._source = this.context.createBufferSource();
-		this._source.buffer = this._buffer;
+		var buffer = _noiseBuffers[this._type];
+		this._source = new Tone.BufferSource(buffer).connect(this.output);
 		this._source.loop = true;
 		this._source.playbackRate.value = this._playbackRate;
-		this._source.connect(this.output);
-		this._source.start(this.toSeconds(time), Math.random() * (this._buffer.duration - 0.001));
+		this._source.start(this.toSeconds(time), Math.random() * (buffer.duration - 0.001));
 	};
 
 	/**
@@ -155,6 +138,7 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 	Tone.Noise.prototype._stop = function(time){
 		if (this._source){
 			this._source.stop(this.toSeconds(time));
+			this._source = null;
 		}
 	};
 
@@ -175,30 +159,26 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 
 	///////////////////////////////////////////////////////////////////////////
 	// THE BUFFERS
-	// borrowed heavily from http://noisehack.com/generate-noise-web-audio-api/
 	///////////////////////////////////////////////////////////////////////////
 
+	//Noise buffer stats
+	var bufferLength = 44100 * 5;
+	var channels = 2;
+
 	/**
-	 *	static noise buffers
-	 *
+	 *	the noise arrays. only generated once on init
 	 *  @static
 	 *  @private
-	 *  @type {AudioBuffer}
+	 *  @type {Array}
+	 *  borrowed heavily from https://github.com/zacharydenton/noise.js 
+	 *  (c) 2013 Zach Denton (MIT)
 	 */
-	var _pinkNoise = null, _brownNoise = null, _whiteNoise = null;
-
-	function createNoise(context){
-
-		var sampleRate = context.sampleRate;
-
-		//four seconds per buffer
-		var bufferLength = sampleRate * 4;
-
-		//fill the buffers
-		_pinkNoise = (function() {
-			var buffer = context.createBuffer(2, bufferLength, sampleRate);
-			for (var channelNum = 0; channelNum < buffer.numberOfChannels; channelNum++){
-				var channel = buffer.getChannelData(channelNum);
+	var _noiseArrays = {
+		"pink" : (function() {
+			var buffer = [];
+			for (var channelNum = 0; channelNum < channels; channelNum++){
+				var channel = new Float32Array(bufferLength);
+				buffer[channelNum] = channel;
 				var b0, b1, b2, b3, b4, b5, b6;
 				b0 = b1 = b2 = b3 = b4 = b5 = b6 = 0.0;
 				for (var i = 0; i < bufferLength; i++) {
@@ -215,12 +195,12 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 				}
 			}
 			return buffer;
-		}());
-
-		_brownNoise = (function() {
-			var buffer = context.createBuffer(2, bufferLength, sampleRate);
-			for (var channelNum = 0; channelNum < buffer.numberOfChannels; channelNum++){
-				var channel = buffer.getChannelData(channelNum);
+		}()),
+		"brown" : (function() {
+			var buffer = [];
+			for (var channelNum = 0; channelNum < channels; channelNum++){
+				var channel = new Float32Array(bufferLength);
+				buffer[channelNum] = channel;
 				var lastOut = 0.0;
 				for (var i = 0; i < bufferLength; i++) {
 					var white = Math.random() * 2 - 1;
@@ -230,22 +210,37 @@ define(["Tone/core/Tone", "Tone/source/Source"], function(Tone){
 				}
 			}
 			return buffer;
-		})();
-
-		_whiteNoise = (function(){
-			var buffer = context.createBuffer(2, bufferLength, sampleRate);
-			for (var channelNum = 0; channelNum < buffer.numberOfChannels; channelNum++){
-				var channel = buffer.getChannelData(channelNum);
+		})(),
+		"white" : (function(){
+			var buffer = [];
+			for (var channelNum = 0; channelNum < channels; channelNum++){
+				var channel = new Float32Array(bufferLength);
+				buffer[channelNum] = channel;
 				for (var i = 0; i < bufferLength; i++){
 					channel[i] =  Math.random() * 2 - 1;
 				}
 			}
 			return buffer;
-		}());
-	}
-	createNoise(Tone.context);
+		}())
+	};
 
-	Tone.Context.on("init", createNoise);
+	/**
+	 *	static noise buffers
+	 *  @static
+	 *  @private
+	 *  @type {Tone.Buffer}
+	 */
+	var _noiseBuffers = {};
+
+	//create the Tone.Buffers
+	function createBuffers(){
+		for (var type in _noiseArrays){
+			_noiseBuffers[type] = new Tone.Buffer().fromArray(_noiseArrays[type]);
+		}
+	}
+	createBuffers();
+
+	Tone.Context.on("init", createBuffers);
 
 	return Tone.Noise;
 });
