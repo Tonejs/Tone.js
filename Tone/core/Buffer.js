@@ -7,11 +7,11 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type"], function(Tone)
 	 *  @private
 	 */
 	if (window.AudioBuffer && !AudioBuffer.prototype.copyToChannel){
-		AudioBuffer.prototype.copyToChannel = function(dest, chanNum, start){
+		AudioBuffer.prototype.copyToChannel = function(src, chanNum, start){
 			var channel = this.getChannelData(chanNum);
 			start = start || 0;
 			for (var i = 0; i < channel.length; i++){
-				channel[i+start] = dest[i];
+				channel[i+start] = src[i];
 			}
 		};
 		AudioBuffer.prototype.copyFromChannel = function(dest, chanNum, start){
