@@ -72,6 +72,25 @@ define(["Test", "Tone/core/Context", "Tone/core/Tone", "helper/Offline"],
 			return ctx.close();
 		});
 
+		it ("gets a constant signal", function(){
+			var ctx = new Context();
+			var bufferSrc = ctx.getConstant(1);
+			expect(bufferSrc).is.instanceOf(AudioBufferSourceNode);
+			var buffer = bufferSrc.buffer.getChannelData(0);
+			for (var i = 0; i < buffer.length; i++){
+				expect(buffer[i]).to.equal(1);
+			}
+			ctx.close();
+		});
+
+		it ("multiple calls return the same buffer source", function(){
+			var ctx = new Context();
+			var bufferA = ctx.getConstant(2);
+			var bufferB = ctx.getConstant(2);
+			expect(bufferA).to.equal(bufferB);
+			ctx.close();
+		});
+
 	});
 
 });
