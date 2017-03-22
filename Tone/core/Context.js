@@ -53,45 +53,26 @@ define(["Tone/core/Tone", "Tone/core/Emitter"], function (Tone) {
 		this._updateInterval = this._lookAhead/3;
 
 		/**
-		 *  A reference to the actual computed update
-		 *  interval
+		 *  A reference to the actual computed update interval
 		 *  @type  {Number}
 		 *  @private
 		 */
 		this._computedUpdateInterval = 0;
 
 		/**
-		 *  The web worker which is used to update
-		 *  Tone.Clock
+		 *  The web worker which is used to update Tone.Clock
 		 *  @private
 		 *  @type  {WebWorker}
 		 */
 		this._worker = this._createWorker();
 
-		///////////////////////////////////////////////////////////////////////
-		// CONSTANTS
-		///////////////////////////////////////////////////////////////////////
-
 		/**
-		 *  Outputs a constant value of 1
-		 *  @type  {AudioBufferSourceNode}
+		 *  An object containing all of the constants AudioBufferSourceNodes
+		 *  @type  {Object}
 		 *  @private
 		 */
-		this._ones = this._createConstant(1);
+		this._constants = {};
 
-		/**
-		 *  Outputs a constant value of 0
-		 *  @type  {AudioBufferSourceNode}
-		 *  @private
-		 */
-		this._zeros = this._createConstant(0);
-
-		/**
-		 *  Outputs a constant value of 1/sqrt(2)
-		 *  @type  {AudioBufferSourceNode}
-		 *  @private
-		 */
-		this._sqrtTwo = this._createConstant(1 / Math.sqrt(2));
 	};
 
 	Tone.extend(Tone.Context, Tone.Emitter);
@@ -177,24 +158,28 @@ define(["Tone/core/Tone", "Tone/core/Emitter"], function (Tone) {
 	};
 
 	/**
-	 *  Generate a looped buffer at some constant
+	 *  Generate a looped buffer at some constant value.
 	 *  @param  {Number}  val
 	 *  @return  {BufferSourceNode}
-	 *  @private
 	 */
-	Tone.Context.prototype._createConstant = function(val){
-		var buffer = this._context.createBuffer(1, 128, this._context.sampleRate);
-		var arr = buffer.getChannelData(0);
-		for (var i = 0; i < arr.length; i++){
-			arr[i] = val;
+	Tone.Context.prototype.getConstant = function(val){
+		if (this._constants[val]){
+			return this._constants[val];
+		} else {
+			var buffer = this._context.createBuffer(1, 128, this._context.sampleRate);
+			var arr = buffer.getChannelData(0);
+			for (var i = 0; i < arr.length; i++){
+				arr[i] = val;
+			}
+			var constant = this._context.createBufferSource();
+			constant.channelCount = 1;
+			constant.channelCountMode = "explicit";
+			constant.buffer = buffer;
+			constant.loop = true;
+			constant.start(0);
+			this._constants[val] = constant;
+			return constant;
 		}
-		var constant = this._context.createBufferSource();
-		constant.channelCount = 1;
-		constant.channelCountMode = "explicit";
-		constant.buffer = buffer;
-		constant.loop = true;
-		constant.start(0);
-		return constant;
 	};
 
 	/**
