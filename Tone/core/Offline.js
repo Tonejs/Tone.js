@@ -2,7 +2,10 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Buffer", "Tone/core/
 function (Tone) {
 
 	/**
-	 *  Record a segment of the Transport
+	 *  Generate a buffer by rendering all of the Tone.js code within the callback using the OfflineAudioContext. 
+	 *  The OfflineAudioContext is capable of rendering much faster than real time in many cases. 
+	 *  The callback function also passes in an offline instance of Tone.Transport which can be used
+	 *  to schedule events along the Transport. 
 	 *  @param  {Function}  callback  All Tone.js nodes which are created and scheduled within this callback are recorded into the output Buffer.
 	 *  @param  {Time}  duration     the amount of time to record for.
 	 *  @return  {Promise}  The promise which is invoked with the Tone.Buffer of the recorded output.
@@ -17,12 +20,13 @@ function (Tone) {
 	 * })
 	 * @example
 	 * //can also schedule events along the Transport
-	 * Tone.Offline(function(){
+	 * //using the passed in Offline Transport
+	 * Tone.Offline(function(Transport){
 	 	var osc = new Tone.Oscillator().toMaster()
-	 * 	Tone.Transport.schedule(function(time){
+	 * 	Transport.schedule(function(time){
 	 * 		osc.start(time).stop(time + 0.1)
 	 * 	}, 1)
-	 * 	Tone.Transport.start(0.2)
+	 * 	Transport.start(0.2)
 	 * }, 4).then(function(buffer){
 	 * 	//do something with the output buffer
 	 * })
