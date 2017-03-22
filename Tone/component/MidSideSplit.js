@@ -43,8 +43,8 @@ define(["Tone/core/Tone", "Tone/signal/Expr", "Tone/signal/Signal", "Tone/compon
 		this._split.connect(this.mid, 1, 1);
 		this._split.connect(this.side, 0, 0);
 		this._split.connect(this.side, 1, 1);
-		this.context._sqrtTwo.connect(this.mid, 0, 2);
-		this.context._sqrtTwo.connect(this.side, 0, 2);
+		this.context.getConstant(1/Math.sqrt(2)).connect(this.mid, 0, 2);
+		this.context.getConstant(1/Math.sqrt(2)).connect(this.side, 0, 2);
 	};
 
 	Tone.extend(Tone.MidSideSplit);

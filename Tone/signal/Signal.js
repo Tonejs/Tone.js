@@ -41,7 +41,7 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper", "Tone/type/Type", "Tone/core
 		this.input = this._param = this._gain.gain;
 
 		//connect the const output to the node output
-		this.context._ones.chain(this._gain);
+		this.context.getConstant(1).chain(this._gain);
 	};
 
 	Tone.extend(Tone.Signal, Tone.Param);

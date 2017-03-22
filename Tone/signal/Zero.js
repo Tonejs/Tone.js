@@ -15,7 +15,7 @@ define(["Tone/core/Tone", "Tone/core/Gain"], function (Tone) {
 		 */
 		this._gain = this.input = this.output = new Tone.Gain();
 
-		Tone.context._zeros.connect(this._gain);
+		this.context.getConstant(0).connect(this._gain);
 	};
 
 	Tone.extend(Tone.Zero);
