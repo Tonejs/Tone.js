@@ -91,6 +91,27 @@ function (Volume, Basic, Offline, Test, Signal, PassAudio, PassAudioStereo) {
 				});
 			});
 
+			it("setting the volume unmutes it and reports itself as unmuted", function(){
+				var vol = new Volume(0).toMaster();
+				vol.mute = true;
+				expect(vol.mute).to.be.true;
+				vol.volume.value = 0
+				expect(vol.mute).to.be.false;
+				vol.dispose();
+			});
+
+			it("multiple calls to mute still return the vol to the original", function(){
+				var vol = new Volume(-20);
+				vol.mute = true;
+				vol.mute = true;
+				expect(vol.mute).to.be.true;
+				expect(vol.volume.value).to.equal(-Infinity);
+				vol.mute = false;
+				vol.mute = false;
+				expect(vol.volume.value).to.be.closeTo(-20, 0.5);
+				vol.dispose();
+			});
+
 		});
 	});
 });
