@@ -833,6 +833,10 @@ define(function(){
 	 *  @param {AudioContext} ctx The new audio context to set
 	 */
 	Tone.setContext = function(ctx){
+		//First close the previouse audiocontext.
+		if(typeof Tone.context.close !== 'undefined'){
+			Tone.context.close();
+		}
 		//set the prototypes
 		Tone.prototype.context = ctx;
 		Tone.context = ctx;
