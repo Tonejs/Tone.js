@@ -1,4 +1,4 @@
-define(["Test", "Tone/core/Bus", "Tone/core/Tone", "helper/Offline2", 
+define(["Test", "Tone/core/Bus", "Tone/core/Tone", "helper/Offline", 
 	"helper/PassAudio", "Tone/signal/Signal", "Tone/core/Gain"], 
 	function (Test, Bus, Tone, Offline, PassAudio, Signal, Gain) {
 
@@ -8,43 +8,28 @@ define(["Test", "Tone/core/Bus", "Tone/core/Tone", "helper/Offline2",
 			expect(Tone.prototype.receive).is.a("function");
 		});
 
-		it ("passes audio from a send to a receive with the same name", function(done){
-			var send, recv;
-			PassAudio(function(input, output){
+		it ("passes audio from a send to a receive with the same name", function(){
+			return PassAudio(function(input){
 				//make them pass through nodes
-				send = new Tone();
-				recv = new Tone();
-				send.input.connect(send.output);
-				recv.input.connect(recv.output);
+				var send = new Gain();
+				var recv = new Gain().toMaster();
 				input.connect(send);
-				recv.connect(output);
 				send.send("test");
 				recv.receive("test");
-			}, function(){
-				send.dispose();
-				recv.dispose();
-				done();
 			});
 		});		
 
-		it ("passes audio from a send to a receive at the given level", function(done){
-			Offline(function(output, test, after){
-
+		it ("passes audio from a send to a receive at the given level", function(){
+			return Offline(function(){
 				var sig = new Signal(1);
-				var recv = new Gain().connect(output);
+				var recv = new Gain().toMaster();
 				sig.send("test", -12);
 				recv.receive("test");
-
-				test(function(sample){
+			}, 0.2).then(function(buffer){
+				buffer.forEach(function(sample){
 					expect(sample).to.be.closeTo(0.25, 0.1);
 				});
-
-				after(function(){
-					sig.dispose();
-					recv.dispose();
-					done();
-				});
-			}, 0.2);
+			});
 		});		
 	});
 });

@@ -40,47 +40,30 @@ function (Gate, Basic, Offline, Test, Signal, PassAudio, Tone, Supports) {
 
 			if (Supports.WAVESHAPER_0_POSITION){
 
-				it("gates the incoming signal when below the threshold", function(done){
-					var gate, sig;
-					var offline = new Offline(); 
-					offline.before(function(dest){
-						gate = new Gate(-9);
-						sig = new Signal(-10, Tone.Type.Decibels);
+				it("gates the incoming signal when below the threshold", function(){
+					return Offline(function(){
+						var gate = new Gate(-9);
+						var sig = new Signal(-10, Tone.Type.Decibels);
 						sig.connect(gate);
-						gate.connect(dest);
-					}); 
-					offline.test(function(sample){
-						expect(sample).to.equal(0);
-					}); 
-					offline.after(function(){
-						gate.dispose();
-						sig.dispose();
-						done();
+						gate.toMaster();
+					}).then(function(buffer){
+						expect(buffer.isSilent()).to.be.true;
 					});
-					offline.run();
 				});
 			}
 
-			it("passes the incoming signal when above the threshold", function(done){
-				var gate, sig;
-				var offline = new Offline(); 
-				offline.before(function(dest){
-					gate = new Gate(-11);
-					sig = new Signal(-10, Tone.Type.Decibels);
-					sig.connect(gate);
-					gate.connect(dest);
-				}); 
-				offline.test(function(sample){
-					expect(sample).to.be.above(0);
-				}); 
-				offline.after(function(){
-					gate.dispose();
-					sig.dispose();
-					done();
+			it("passes the incoming signal when above the threshold", function(){
+				it("gates the incoming signal when below the threshold", function(){
+					return Offline(function(){
+						var gate = new Gate(-11);
+						var sig = new Signal(-10, Tone.Type.Decibels);
+						sig.connect(gate);
+						gate.toMaster();
+					}).then(function(buffer){
+						expect(buffer.min()).to.be.above(0);
+					});
 				});
-				offline.run();
 			});
-
 
 		});
 	});

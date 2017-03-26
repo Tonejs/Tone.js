@@ -1,4 +1,4 @@
-define(["Test", "Tone/core/Buffer"], function (Test, Buffer) {
+define(["Test", "Tone/core/Buffer", "Tone/core/Tone"], function (Test, Buffer, Tone) {
 	
 	if (window.__karma__){
 		Buffer.baseUrl = "/base/test/";
@@ -57,22 +57,23 @@ define(["Test", "Tone/core/Buffer"], function (Test, Buffer) {
 
 		it("invokes the error callback on static .load method", function(done){
 			Buffer.load("nosuchfile.wav", function(){
-				Buffer.stopDownloads()
+				Buffer.cancelDownloads();
 				throw new Error("shouldn't invoke this function");
 			}, function(){
-				Buffer.stopDownloads()
+				Buffer.cancelDownloads();
 				done();
 			});
 		});
 
-		/*it("the static on('error') method is invoked", function(done){
+		it("the static on('error') method is invoked", function(done){
 			Buffer.on("error", function(e){
 				buffer.dispose();
+				Buffer.cancelDownloads();
 				Buffer.off("error");
 				done();
 			});
 			var buffer = new Buffer("nosuchfile.wav");
-		});*/
+		});
 
 		it("the static on('load') method is invoked", function(done){
 			var buffer = new Buffer(testFile);
@@ -154,6 +155,15 @@ define(["Test", "Tone/core/Buffer"], function (Test, Buffer) {
 			Buffer.on("progress", function(percent){
 				expect(percent).to.be.a.number;
 				Buffer.off("progress");
+				buffer.dispose();
+				done();
+			});
+		});
+
+		it("can get the channel data as an array", function(done){
+			var buffer = new Buffer(testFile, function(){
+				expect(buffer.getChannelData(0)).to.be.an.instanceOf(Float32Array);
+				expect(buffer.getChannelData(0).length).to.be.above(130000);
 				buffer.dispose();
 				done();
 			});
@@ -250,6 +260,32 @@ define(["Test", "Tone/core/Buffer"], function (Test, Buffer) {
 			expect(Buffer.supportsType('wav')).to.be.true
 			expect(Buffer.supportsType('path/to/test.wav')).to.be.true
 			expect(Buffer.supportsType('path/to/test.nope')).to.be.false
+		});
+	});
+
+	describe("Tone.loaded()", function(){
+
+		it ("returns a promise", function(){
+			expect(Tone.loaded()).to.be.instanceOf(Promise)
+		});
+
+		it ("is invoked when all the buffers are loaded", function(){
+			Tone.Buffer.cancelDownloads()
+			// expect(Tone.loaded)
+			var buff0 = new Buffer(testFile)
+			var buff1 = new Buffer(testFile)
+			return Tone.loaded()
+		});
+
+		it ("invokes an error if one of the buffers is not found", function(done){
+			Tone.Buffer.cancelDownloads()
+			// expect(Tone.loaded)
+			var buff0 = new Buffer(testFile)
+			var buff1 = new Buffer("nosuchfile.wav")
+			Tone.loaded().catch(function(e){
+				expect(e).to.be.instanceOf(Error)
+				done()
+			});
 		});
 	});
 });

@@ -1,5 +1,5 @@
-define(["Test", "Tone/core/Gain", "Tone/core/Tone", "helper/Offline", "helper/PassAudio"], 
-	function (Test, Gain, Tone, Offline, PassAudio) {
+define(["Test", "Tone/core/Gain", "Tone/core/Tone", "helper/PassAudio"], 
+	function (Test, Gain, Tone, PassAudio) {
 
 	describe("Gain", function(){
 
@@ -60,14 +60,10 @@ define(["Test", "Tone/core/Gain", "Tone/core/Tone", "helper/Offline", "helper/Pa
 			gain.dispose();
 		});
 
-		it ("passes audio through", function(done){
-			var gain;
-			PassAudio(function(input, output){
-				gain = new Gain();
-				input.chain(gain, output);
-			}, function(){
-				gain.dispose();
-				done();
+		it ("passes audio through", function(){
+			return PassAudio(function(input){
+				var gain = new Gain().toMaster();
+				input.connect(gain);
 			});
 		});		
 	});

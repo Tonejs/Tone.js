@@ -1,6 +1,6 @@
 define(["helper/OutputAudio", "Tone/instrument/Instrument", "helper/OutputAudioStereo", 
-	"Test", "helper/Offline", "helper/Meter"], 
-	function (OutputAudio, Instrument, OutputAudioStereo, Test, Offline, Meter) {
+	"Test", "helper/Offline"], 
+	function (OutputAudio, Instrument, OutputAudioStereo, Test, Offline) {
 
 	return function(Constr, note, constrArg){
 
@@ -26,69 +26,43 @@ define(["helper/OutputAudio", "Tone/instrument/Instrument", "helper/OutputAudioS
 				instance.dispose();
 			});
 
-			it("makes a sound", function(done){
-				var instance;
-				OutputAudio(function(dest){
-					instance = new Constr(constrArg);
-					instance.connect(dest);
+			it("makes a sound", function(){
+				return OutputAudio(function(){
+					var instance = new Constr(constrArg);
+					instance.toMaster();
 					instance.triggerAttack(note);
-				}, function(){
-					instance.dispose();
-					done();
 				});
 			});	
 
-			it("produces sound in both channels", function(done){
-				var instance;
-				OutputAudioStereo(function(dest){
-					instance = new Constr(constrArg);
-					instance.connect(dest);
+			it("produces sound in both channels", function(){
+				return OutputAudioStereo(function(){
+					var instance = new Constr(constrArg);
+					instance.toMaster();
 					instance.triggerAttack(note);
-				}, function(){
-					instance.dispose();
-					done();
 				});
 			});	
 
-			it("is silent before being triggered", function(done){
-				var instance;
-				var meter = new Meter(0.3);
-				meter.before(function(dest){
-					instance = new Constr(constrArg);
-					instance.connect(dest);
+			it("is silent before being triggered", function(){
+				return Offline(function(){
+					var instance = new Constr(constrArg);
+					instance.toMaster();
+				}).then(function(buffer){
+					expect(buffer.isSilent()).to.be.true;
 				});
-				meter.test(function(level){
-					expect(level).to.equal(0);
-				});
-				meter.after(function(){
-					instance.dispose();
-					done();
-				});
-				meter.run();
 			});	
 
-			it("be scheduled to start in the future", function(done){
-				var instance;
-				var meter = new Meter(0.3);
-				meter.before(function(dest){
-					instance = new Constr(constrArg);
-					instance.connect(dest);
+			it("be scheduled to start in the future", function(){
+				return Offline(function(){
+					var instance = new Constr(constrArg);
+					instance.toMaster();
 					if (note){
 						instance.triggerAttack(note, 0.1);
 					} else {
 						instance.triggerAttack(0.1);
 					}
+				}, 0.2).then(function(buffer){
+					expect(buffer.getFirstSoundTime()).to.be.within(0.1, 0.15);
 				});
-				meter.test(function(sample, time){
-					if (sample > 0.2){
-						expect(time).to.be.at.least(0.1);
-					}
-				});
-				meter.after(function(){
-					instance.dispose();
-					done();
-				});
-				meter.run();
 			});
 
 		});

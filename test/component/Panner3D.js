@@ -3,15 +3,10 @@ define(["Test", "Tone/component/Panner3D", "helper/PassAudio"],
 
 	describe("Panner3D", function(){
 
-		it("passes the incoming signal through", function(done){
-			var panner;
-			PassAudio(function(input, output){
-				panner = new Panner3D();
+		it("passes the incoming signal through", function(){
+			return PassAudio(function(input){
+				var panner = new Panner3D().toMaster();
 				input.connect(panner);
-				panner.connect(output);
-			}, function(){
-				panner.dispose();
-				done();
 			});
 		});
 

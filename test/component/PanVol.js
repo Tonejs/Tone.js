@@ -38,27 +38,17 @@ function (PanVol, Basic, Offline, Test, Signal, PassAudio, PassAudioStereo, Merg
 				panVol.dispose();
 			});
 
-			it("passes the incoming signal through", function(done){
-				var panVol;
-				PassAudio(function(input, output){
-					panVol = new PanVol();
+			it("passes the incoming signal through", function(){
+				return PassAudio(function(input){
+					var panVol = new PanVol().toMaster();
 					input.connect(panVol);
-					panVol.connect(output);
-				}, function(){
-					panVol.dispose();
-					done();
 				});
 			});
 
-			it("passes the incoming stereo signal through", function(done){
-				var panVol;
-				PassAudioStereo(function(input, output){
-					panVol = new PanVol();
+			it("passes the incoming stereo signal through", function(){
+				return PassAudioStereo(function(input){
+					var panVol = new PanVol().toMaster();
 					input.connect(panVol);
-					panVol.connect(output);
-				}, function(){
-					panVol.dispose();
-					done();
 				});
 			});
 

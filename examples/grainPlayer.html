@@ -42,62 +42,59 @@
 			"grainSize" : 0.1,
 			"overlap" : 0.05,
 		}).toMaster();
-	</script>
-	
-	<script id="GUI">
-		$(function(){
 
-			Interface.Loader();
+		// GUI //
 
-			Interface.Button({
-				text : "Start",
-				activeText : "Stop",
-				type : "toggle",
-				start : function(){
-					player.start();
-				},
-				end : function(){
-					player.stop();
-				}
-			});
+		Interface.Loader();
 
-			Interface.Slider({
-				param : "playbackRate",
-				name : "playbackRate",
-				parent : $("#Sliders"),
-				tone : player,
-				min : 0.5,
-				max : 2,
-			});
-
-			Interface.Slider({
-				param : "detune",
-				name : "detune",
-				parent : $("#Sliders"),
-				tone : player,
-				min : -1200,
-				max : 1200,
-			});
-
-			Interface.Slider({
-				param : "grainSize",
-				name : "grainSize",
-				parent : $("#Sliders"),
-				tone : player,
-				min : 0.01,
-				max : 0.2,
-			});
-
-			Interface.Slider({
-				param : "overlap",
-				name : "overlap",
-				parent : $("#Sliders"),
-				tone : player,
-				min : 0,
-				max : 0.2,
-			});
-
+		Interface.Button({
+			text : "Start",
+			activeText : "Stop",
+			type : "toggle",
+			start : function(){
+				player.start();
+			},
+			end : function(){
+				player.stop();
+			}
 		});
+
+		Interface.Slider({
+			param : "playbackRate",
+			name : "playbackRate",
+			parent : $("#Sliders"),
+			tone : player,
+			min : 0.5,
+			max : 2,
+		});
+
+		Interface.Slider({
+			param : "detune",
+			name : "detune",
+			parent : $("#Sliders"),
+			tone : player,
+			min : -1200,
+			max : 1200,
+		});
+
+		Interface.Slider({
+			param : "grainSize",
+			name : "grainSize",
+			parent : $("#Sliders"),
+			tone : player,
+			min : 0.01,
+			max : 0.2,
+		});
+
+		Interface.Slider({
+			param : "overlap",
+			name : "overlap",
+			parent : $("#Sliders"),
+			tone : player,
+			min : 0,
+			max : 0.2,
+		});
+
 	</script>
 </body>
 </html>

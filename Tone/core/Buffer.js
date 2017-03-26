@@ -3,6 +3,27 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type"], function(Tone)
 	"use strict";
 
 	/**
+	 *  AudioBuffer.copyToChannel polyfill
+	 *  @private
+	 */
+	if (window.AudioBuffer && !AudioBuffer.prototype.copyToChannel){
+		AudioBuffer.prototype.copyToChannel = function(src, chanNum, start){
+			var channel = this.getChannelData(chanNum);
+			start = start || 0;
+			for (var i = 0; i < channel.length; i++){
+				channel[i+start] = src[i];
+			}
+		};
+		AudioBuffer.prototype.copyFromChannel = function(dest, chanNum, start){
+			var channel = this.getChannelData(chanNum);
+			start = start || 0;
+			for (var i = 0; i < channel.length; i++){
+				dest[i] = channel[i+start];
+			}
+		};
+	}
+
+	/**
 	 *  @class  Buffer loading and storage. Tone.Buffer is used internally by all 
 	 *          classes that make requests for audio files such as Tone.Player,
 	 *          Tone.Sampler and Tone.Convolver.
@@ -230,17 +251,35 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type"], function(Tone)
 			array = [array];
 		}
 		for (var c = 0; c < channels; c++){
-			if (this.isFunction(buffer.copyToChannel)){
-				buffer.copyToChannel(array[c], c);
-			} else {
-				var channel = buffer.getChannelData(c);
-				var channelArray = array[c];
-				for (var i = 0; i < channelArray.length; i++){
-					channel[i] = channelArray[i];
-				}
-			}
+			buffer.copyToChannel(array[c], c);
 		}
 		this._buffer = buffer;
+		return this;
+	};
+
+	/**
+	 * 	Sums muliple channels into 1 channel
+	 *  @param {Number=} channel Optionally only copy a single channel from the array.
+	 *  @return {Array}
+	 */
+	Tone.Buffer.prototype.toMono = function(chanNum){
+		if (this.isNumber(chanNum)){
+			this.fromArray(this.toArray(chanNum));
+		} else {
+			var outputArray = new Float32Array(this.length);
+			var numChannels = this.numberOfChannels;
+			for (var channel = 0; channel < numChannels; channel++){
+				var channelArray = this.toArray(channel);
+				for (var i = 0; i < channelArray.length; i++){
+					outputArray[i] += channelArray[i];
+				}
+			}
+			//divide by the number of channels
+			outputArray = outputArray.map(function(sample){
+				return sample / numChannels;
+			});
+			this.fromArray(outputArray);
+		}
 		return this;
 	};
 
@@ -252,27 +291,25 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type"], function(Tone)
 	 */
 	Tone.Buffer.prototype.toArray = function(channel){
 		if (this.isNumber(channel)){
-			return this._buffer.getChannelData(channel);
+			return this.getChannelData(channel);
+		} else if (this.numberOfChannels === 1){
+			return this.toArray(0);
 		} else {
 			var ret = [];
 			for (var c = 0; c < this.numberOfChannels; c++){
-				ret[c] = new Float32Array(this.length);
-				if (this.isFunction(this._buffer.copyFromChannel)){
-					this._buffer.copyFromChannel(ret[c], c);
-				} else {
-					var channelData = this._buffer.getChannelData(c);
-					var retArray = ret[c];
-					for (var i = 0; i < channelData.length; i++){
-						retArray[i] = channelData[i];
-					}
-				}
+				ret[c] = this.getChannelData(c);
 			}
-			if (ret.length === 1){
-				return ret[0];
-			} else {
-				return ret;
-			}
+			return ret;
 		}
+	};
+
+	/**
+	 *  Returns the Float32Array representing the PCM audio data for the specific channel.
+	 *  @param  {Number}  channel  The channel number to return
+	 *  @return  {Float32Array}  The audio as a TypedArray
+	 */
+	Tone.Buffer.prototype.getChannelData = function(channel){
+		return this._buffer.getChannelData(channel);
 	};
 
 	/**
@@ -302,8 +339,8 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type"], function(Tone)
 	 */
 	Tone.Buffer.prototype._reverse = function(){
 		if (this.loaded){
-			for (var i = 0; i < this._buffer.numberOfChannels; i++){
-				Array.prototype.reverse.call(this._buffer.getChannelData(i));
+			for (var i = 0; i < this.numberOfChannels; i++){
+				Array.prototype.reverse.call(this.getChannelData(i));
 			}
 		}
 		return this;
@@ -370,6 +407,7 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type"], function(Tone)
 		function onError(e){
 			if (onerror){
 				onerror(e);
+				Tone.Buffer.emit("error", e);
 			} else {
 				throw new Error(e);
 			}
@@ -434,8 +472,9 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type"], function(Tone)
 	/**
 	 *  Stop all of the downloads in progress
 	 *  @return {Tone.Buffer}
+	 *  @static
 	 */
-	Tone.Buffer.stopDownloads = function(){
+	Tone.Buffer.cancelDownloads = function(){
 		Tone.Buffer._downloadQueue.forEach(function(request){
 			request.abort();
 		});
@@ -457,6 +496,33 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type"], function(Tone)
 		extension = extension[extension.length - 1];
 		var response = document.createElement("audio").canPlayType("audio/"+extension);
 		return response !== "";
+	};
+
+	/**
+	 *  Returns a Promise which resolves when all of the buffers have loaded
+	 *  @return {Promise}
+	 */
+	Tone.loaded = function(){
+		var onload, onerror;
+		function removeEvents(){
+			//remove the events when it's resolved
+			Tone.Buffer.off("load", onload);
+			Tone.Buffer.off("error", onerror);
+		}
+		return new Promise(function(success, fail){
+			onload = function(){
+				success();
+			};
+			onerror = function(){
+				fail();
+			};
+			//add the event listeners
+			Tone.Buffer.on("load", onload);
+			Tone.Buffer.on("error", onerror);
+		}).then(removeEvents).catch(function(e){
+			removeEvents();
+			throw new Error(e);
+		});
 	};
 
 	return Tone.Buffer;

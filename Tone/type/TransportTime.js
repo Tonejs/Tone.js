@@ -57,7 +57,7 @@ define(["Tone/core/Tone", "Tone/type/Time"], function (Tone) {
 	 *  Evaluate the time expression. Returns values in ticks
 	 *  @return {Ticks}
 	 */
-	Tone.TransportTime.prototype.eval = function(){
+	Tone.TransportTime.prototype.valueOf = function(){
 		var val = this._secondsToTicks(this._expr());
 		return val + (this._plusNow ? Tone.Transport.ticks : 0);
 	};
@@ -67,7 +67,7 @@ define(["Tone/core/Tone", "Tone/type/Time"], function (Tone) {
 	 *  @return  {Ticks}
 	 */
 	Tone.TransportTime.prototype.toTicks = function(){
-		return this.eval();
+		return this.valueOf();
 	};
 
 	/**

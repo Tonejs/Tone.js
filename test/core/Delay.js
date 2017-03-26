@@ -63,14 +63,10 @@ define(["Test", "Tone/core/Tone", "Tone/core/Delay", "helper/PassAudio"], functi
 			delay.dispose();
 		});
 
-		it ("passes audio through", function(done){
-			var delay;
-			PassAudio(function(input, output){
-				delay = new Delay(0);
-				input.chain(delay, output);
-			}, function(){
-				delay.dispose();
-				done();
+		it ("passes audio through", function(){
+			return PassAudio(function(input){
+				var delay = new Delay(0).toMaster();
+				input.connect(delay);
 			});
 		});		
 

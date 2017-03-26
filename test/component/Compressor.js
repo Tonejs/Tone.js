@@ -13,27 +13,17 @@ function (Compressor, Basic, PassAudio, PassAudioStereo, Test) {
 				comp.dispose();
 			});
 
-			it("passes the incoming signal through", function(done){
-				var comp;
-				PassAudio(function(input, output){
-					comp = new Compressor();
+			it("passes the incoming signal through", function(){
+				return PassAudio(function(input){
+					var comp = new Compressor().toMaster();
 					input.connect(comp);
-					comp.connect(output);
-				}, function(){
-					comp.dispose();
-					done();
 				});
 			});
 
-			it("passes the incoming stereo signal through", function(done){
-				var comp;
-				PassAudioStereo(function(input, output){
-					comp = new Compressor();
+			it("passes the incoming stereo signal through", function(){
+				return PassAudioStereo(function(input){
+					var comp = new Compressor().toMaster();
 					input.connect(comp);
-					comp.connect(output);
-				}, function(){
-					comp.dispose();
-					done();
 				});
 			});
 

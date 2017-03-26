@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/component/Volume"], function(Tone){
+define(["Tone/core/Tone", "Tone/component/Volume", "Tone/core/Context"], function(Tone){
 
 	"use strict";
 	
@@ -138,19 +138,20 @@ define(["Tone/core/Tone", "Tone/component/Volume"], function(Tone){
 		return this;
 	};
 
-	var MasterConstructor = Tone.Master;
-
 	/**
 	 *  initialize the module and listen for new audio contexts
 	 */
-	Tone._initAudioContext(function(){
-		//a single master output
-		if (!Tone.prototype.isUndef(Tone.Master)){
-			Tone.Master = new MasterConstructor();
+	var MasterConstructor = Tone.Master;
+	Tone.Master = new MasterConstructor();
+
+	Tone.Context.on("init", function(context){
+		// if it already exists, just restore it
+		if (context.Master instanceof MasterConstructor){
+			Tone.Master = context.Master;
 		} else {
-			MasterConstructor.prototype.dispose.call(Tone.Master);
-			MasterConstructor.call(Tone.Master);
+			Tone.Master = new MasterConstructor();
 		}
+		context.Master = Tone.Master;
 	});
 
 	return Tone.Master;

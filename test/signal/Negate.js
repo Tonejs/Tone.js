@@ -1,6 +1,6 @@
-define(["helper/Offline", "Tone/signal/Negate", "helper/Basic", 
+define(["helper/ConstantOutput", "Tone/signal/Negate", "helper/Basic", 
 	"Test", "Tone/source/Oscillator", "Tone/signal/Signal"], 
-	function (Offline, Negate, Basic, Test, Oscillator, Signal) {
+	function (ConstantOutput, Negate, Basic, Test, Oscillator, Signal) {
 
 	describe("Negate", function(){
 
@@ -15,44 +15,22 @@ define(["helper/Offline", "Tone/signal/Negate", "helper/Basic",
 				negate.dispose();
 			});
 
-			it("negateates a positive value", function(done){
-				var signal, negate;
-				var offline = new Offline();
-				offline.before(function(dest){
-					signal = new Signal(1);
-					negate = new Negate();
+			it("negateates a positive value", function(){
+				return ConstantOutput(function(){
+					var signal = new Signal(1);
+					var negate = new Negate();
 					signal.connect(negate);
-					negate.connect(dest);
-				}); 
-				offline.test(function(sample){
-					expect(sample).to.equal(-1);
-				});
-				offline.after(function(){
-					signal.dispose();
-					negate.dispose();
-					done();
-				});
-				offline.run();
+					negate.toMaster();
+				}, -1);
 			});
 
-			it("makes a negateative value positive", function(done){
-				var signal, negate;
-				var offline = new Offline();
-				offline.before(function(dest){
-					signal = new Signal(-10);
-					negate = new Negate();
+			it("makes a negateative value positive", function(){
+				return ConstantOutput(function(){
+					var signal = new Signal(-10);
+					var negate = new Negate();
 					signal.connect(negate);
-					negate.connect(dest);
-				}); 
-				offline.test(function(sample){
-					expect(sample).to.equal(10);
-				});
-				offline.after(function(){
-					signal.dispose();
-					negate.dispose();
-					done();
-				});
-				offline.run();
+					negate.toMaster();
+				}, 10);
 			});			
 		});
 	});

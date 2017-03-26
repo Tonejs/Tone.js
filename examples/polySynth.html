@@ -23,9 +23,6 @@
 
 </head>
 <body>	
-	<style type="text/css">
-
-	</style>
 	<div id="Content" class="FullScreen">
 		<div id="Title">PolySynth</div>
 		<div id="Explanation">
@@ -47,24 +44,19 @@
 			}
 		}).toMaster();
 
+		// GUI //
+
+		var keyboard = Interface.Keyboard();
+
+		keyboard.keyDown = function (note) {
+		    synth.triggerAttack(note);
+		};
+
+		keyboard.keyUp = function (note) {
+		    synth.triggerRelease(note);
+		};
+
+
 	</script>
-
-	<script id="GUI">
-		$(function(){
-
-			var keyboard = Interface.Keyboard();
-
-			keyboard.keyDown = function (note) {
-			    synth.triggerAttack(note);
-			};
-
-			keyboard.keyUp = function (note) {
-			    synth.triggerRelease(note);
-			};
-
-		});
-	</script>
-
-	</style>
 </body>
 </html>

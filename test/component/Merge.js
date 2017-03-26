@@ -14,41 +14,28 @@ function (Merge, Basic, PassAudio, PassAudioStereo, Test, Offline, Signal) {
 				merge.dispose();
 			});
 
-			it("passes the incoming signal through", function(done){
-				var merge;
-				PassAudio(function(input, output){
-					merge = new Merge();
+			it("passes the incoming signal through", function(){
+				return PassAudio(function(input){
+					var merge = new Merge().toMaster();
 					input.connect(merge);
-					merge.connect(output);
-				}, function(){
-					merge.dispose();
-					done();
 				});
 			});
 
 
-			it("merge two signal into one stereo signal", function(done){
-				var sigL, sigR, merger;
-				var offline = new Offline(0.1, 2);
-				offline.before(function(dest){
-					sigL = new Signal(1);
-					sigR = new Signal(2);
-					merger = new Merge();
+			it("merge two signal into one stereo signal", function(){
+				return Offline(function(){
+					var sigL = new Signal(1);
+					var sigR = new Signal(2);
+					var merger = new Merge();
 					sigL.connect(merger.left);
 					sigR.connect(merger.right);
-					merger.connect(dest);
+					merger.toMaster();
+				}, 0.1, 2).then(function(buffer){
+					buffer.forEach(function(l, r){
+						expect(l).to.be.closeTo(1, 0.001);
+						expect(r).to.be.closeTo(2, 0.001);
+					});
 				});
-				offline.test(function(samples){
-					expect(samples[0]).to.be.closeTo(1, 0.001);
-					expect(samples[1]).to.be.closeTo(2, 0.001);
-				});  
-				offline.after(function(){
-					sigL.dispose();
-					sigR.dispose();
-					merger.dispose();
-					done();
-				});
-				offline.run();
 			});
 		});
 	});

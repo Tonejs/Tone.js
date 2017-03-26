@@ -1,5 +1,5 @@
-define(["helper/Basic", "Tone/source/GrainPlayer", "helper/Offline", "helper/SourceTests", "Tone/core/Buffer", "Tone/component/Meter"], 
-	function (BasicTests, GrainPlayer, Offline, SourceTests, Buffer, Meter) {
+define(["helper/Basic", "Tone/source/GrainPlayer", "helper/Offline", "helper/SourceTests", "Tone/core/Buffer", "Test"], 
+	function (BasicTests, GrainPlayer, Offline, SourceTests, Buffer, Test) {
 
 	if (window.__karma__){
 		Buffer.baseUrl = "/base/test/";
@@ -17,6 +17,7 @@ define(["helper/Basic", "Tone/source/GrainPlayer", "helper/Offline", "helper/Sou
 
 		//run the common tests
 		BasicTests(GrainPlayer, buffer);
+		SourceTests(GrainPlayer, buffer);
 
 		context("Constructor", function(){
 
@@ -34,17 +35,13 @@ define(["helper/Basic", "Tone/source/GrainPlayer", "helper/Offline", "helper/Sou
 				done();
 			});
 
-			it("makes a sound", function(done){
-				var player = new GrainPlayer(buffer);
-				var meter = new Meter();
-				player.connect(meter);
-				player.start();
-				setTimeout(function(){
-					expect(meter.value).to.be.above(0.1);
-					player.dispose();
-					meter.dispose();
-					done();
-				}, 500);
+			it("makes a sound", function(){
+				return Offline(function(){
+					var player = new GrainPlayer(buffer).toMaster();
+					player.start();
+				}).then(function(buffer){
+					expect(buffer.isSilent()).to.be.false;
+				});
 			});
 		});
 
@@ -84,6 +81,52 @@ define(["helper/Basic", "Tone/source/GrainPlayer", "helper/Offline", "helper/Sou
 
 		});
 
+		context("start/stop", function(){
+
+			beforeEach(function(done){
+				buffer.load("./audio/short_sine.wav", function(){
+					done();
+				});
+			});
+
+			it("can be play for a specific duration", function(){
+				return Offline(function(){
+					var player = new GrainPlayer(buffer);
+					player.toMaster();
+					player.start(0).stop(0.1);
+					return function(time){
+						Test.whenBetween(time, 0.1, Infinity, function(){
+							expect(player.state).to.equal("stopped");
+						});
+						Test.whenBetween(time, 0, 0.1, function(){
+							expect(player.state).to.equal("started");
+						});
+					};
+				}, 0.3).then(function(buffer){
+					expect(buffer.getLastSoundTime()).to.be.closeTo(0.1, 0.02);
+				});
+			});
+
+			it("can be play for a specific duration passed in the 'start' method", function(){
+				return Offline(function(){
+					var player = new GrainPlayer(buffer);
+					player.toMaster();
+					player.start(0, 0, 0.1);
+					return function(time){
+						Test.whenBetween(time, 0.1, Infinity, function(){
+							// expect(player.state).to.equal("stopped");
+						});
+						Test.whenBetween(time, 0, 0.1, function(){
+							expect(player.state).to.equal("started");
+						});
+					};
+				}, 0.3).then(function(buffer){
+					expect(buffer.getLastSoundTime()).to.be.closeTo(0.1, 0.02);
+				});
+			});
+
+		});
+
 		context("Get/Set", function(){
 
 			it("can be set with an options object", function(){
@@ -119,7 +162,6 @@ define(["helper/Basic", "Tone/source/GrainPlayer", "helper/Offline", "helper/Sou
 				expect(player.playbackRate).to.equal(0.5);
 				player.dispose();
 			});
-
 			
 		});
 

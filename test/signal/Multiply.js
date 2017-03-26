@@ -1,6 +1,6 @@
-define(["helper/Offline", "Tone/signal/Multiply", "helper/Basic", 
+define(["helper/ConstantOutput", "Tone/signal/Multiply", "helper/Basic", 
 	"Test", "Tone/source/Oscillator", "Tone/signal/Signal"], 
-	function (Offline, Multiply, Basic, Test, Oscillator, Signal) {
+	function (ConstantOutput, Multiply, Basic, Test, Oscillator, Signal) {
 
 	describe("Multiply", function(){
 
@@ -16,47 +16,24 @@ define(["helper/Offline", "Tone/signal/Multiply", "helper/Basic",
 				mult.dispose();
 			});
 
-			it("correctly multiplys a signal and a scalar", function(done){
-				var signal, mult;
-				var offline = new Offline();
-				offline.before(function(dest){
-					signal = new Signal(2);
-					mult = new Multiply(10);
+			it("correctly multiplys a signal and a scalar", function(){
+				return ConstantOutput(function(){
+					var signal = new Signal(2);
+					var mult = new Multiply(10);
 					signal.connect(mult);
-					mult.connect(dest);
-				}); 
-				offline.test(function(sample){
-					expect(sample).to.equal(20);
-				});
-				offline.after(function(){
-					signal.dispose();
-					mult.dispose();
-					done();
-				});
-				offline.run();
+					mult.toMaster();
+				}, 20);
 			});
 
-			it("can multiply two signals", function(done){
-				var sigA, sigB, mult;
-				var offline = new Offline();
-				offline.before(function(dest){
-					sigA = new Signal(3);
-					sigB = new Signal(5);
-					mult = new Multiply();
+			it("can multiply two signals", function(){
+				return ConstantOutput(function(){
+					var sigA = new Signal(3);
+					var sigB = new Signal(5);
+					var mult = new Multiply();
 					sigA.connect(mult, 0, 0);
 					sigB.connect(mult, 0, 1);
-					mult.connect(dest);
-				}); 
-				offline.test(function(sample){
-					expect(sample).to.equal(15);
-				});
-				offline.after(function(){
-					sigA.dispose();
-					sigB.dispose();
-					mult.dispose();
-					done();
-				});
-				offline.run();
+					mult.toMaster();
+				}, 15); 
 			});
 		});
 	});

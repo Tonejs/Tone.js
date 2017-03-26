@@ -23,9 +23,6 @@
 
 </head>
 <body>	
-	<style type="text/css">
-
-	</style>
 	<div id="Content">
 		<div id="Title">MonoSynth</div>
 		<div id="Explanation">
@@ -59,24 +56,19 @@
 			}
 		}).toMaster();
 
+		// GUI //
+
+		var keyboard = Interface.Keyboard();
+
+		keyboard.keyDown = function (note) {
+		    synth.triggerAttack(note);
+		};
+
+		keyboard.keyUp = function () {
+		    synth.triggerRelease();
+		};
+
+
 	</script>
-
-	<script id="GUI">
-		$(function(){
-
-			var keyboard = Interface.Keyboard();
-
-			keyboard.keyDown = function (note) {
-			    synth.triggerAttack(note);
-			};
-
-			keyboard.keyUp = function () {
-			    synth.triggerRelease();
-			};
-
-		});
-	</script>
-
-	</style>
 </body>
 </html>

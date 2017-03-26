@@ -16,27 +16,17 @@ function (MidSideMerge, Basic, Signal, PassAudioStereo, Test) {
 				merge.dispose();
 			});
 
-			it("passes the mid signal through", function(done){
-				var merge;
-				PassAudioStereo(function(input, output){
-					merge = new MidSideMerge();
+			it("passes the mid signal through", function(){
+				return PassAudioStereo(function(input){
+					var merge = new MidSideMerge().toMaster();
 					input.connect(merge.mid);
-					merge.connect(output);
-				}, function(){
-					merge.dispose();
-					done();
 				});
 			});
 
-			it("passes the side signal through", function(done){
-				var merge;
-				PassAudioStereo(function(input, output){
-					merge = new MidSideMerge();
+			it("passes the side signal through", function(){
+				return PassAudioStereo(function(input){
+					var merge = new MidSideMerge().toMaster();
 					input.connect(merge.side);
-					merge.connect(output);
-				}, function(){
-					merge.dispose();
-					done();
 				});
 			});
 		});

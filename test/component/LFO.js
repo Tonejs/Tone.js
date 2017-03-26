@@ -59,157 +59,96 @@ function (LFO, Basic, Offline, Test, OutputAudio, Tone, Signal) {
 				lfo.dispose();
 			});
 
-			it("outputs a signal", function(done){
-				var lfo;
-				OutputAudio(function(dest){
-					lfo = new LFO().connect(dest);
+			it("outputs a signal", function(){
+				return OutputAudio(function(){
+					var lfo = new LFO(100, 10, 20);
+					lfo.toMaster();
 					lfo.start();
-				}, function(){
-					lfo.dispose();
-					done();
 				});
 			});
 
-			it("can be creates an oscillation in a specific range", function(done){
-				var lfo;
-				var offline = new Offline(0.1); 
-				offline.before(function(dest){
-					lfo = new LFO(100, 10, 20);
-					lfo.connect(dest);
+			it("can be creates an oscillation in a specific range", function(){
+				return Offline(function(){
+					var lfo = new LFO(100, 10, 20).toMaster();
 					lfo.start();
-				}); 
-				offline.test(function(sample){
-					expect(sample).to.be.within(10, 20);
-				}); 
-				offline.after(function(){
-					lfo.dispose();
-					done();
+				}).then(function(buffer){
+					expect(buffer.min()).to.be.gte(10);
+					expect(buffer.max()).to.be.lte(20);
 				});
-				offline.run();
 			});
 
-			it("can change the oscillation range", function(done){
-				var lfo;
-				var offline = new Offline(0.1); 
-				offline.before(function(dest){
-					lfo = new LFO(100, 10, 20);
-					lfo.connect(dest);
+			it("can change the oscillation range", function(){
+				return Offline(function(){
+					var lfo = new LFO(100, 10, 20).toMaster();
 					lfo.start();
 					lfo.min = 15;
 					lfo.max  = 18;
-				}); 
-				offline.test(function(sample){
-					expect(sample).to.be.within(15, 18);
-				}); 
-				offline.after(function(){
-					lfo.dispose();
-					done();
+				}).then(function(buffer){
+					expect(buffer.min()).to.be.gte(15);
+					expect(buffer.max()).to.be.lte(18);
 				});
-				offline.run();
 			});
 
-			it("initially outputs a signal at the center of it's phase", function(done){
-				var lfo;
-				var offline = new Offline(0.1); 
-				offline.before(function(dest){
-					lfo = new LFO(100, 10, 20);
-					lfo.connect(dest);
-				}); 
-				offline.test(function(sample){
-					expect(sample).to.be.closeTo(15, 0.01);
-				}); 
-				offline.after(function(){
-					lfo.dispose();
-					done();
+			it("initially outputs a signal at the center of it's phase", function(){
+				return Offline(function(){
+					new LFO(100, 10, 20).toMaster();
+				}).then(function(buffer){
+					expect(buffer.value()).to.be.closeTo(15, 0.1);
 				});
-				offline.run();
 			});
 
-			it("outputs a signal at the correct phase angle", function(done){
-				var lfo;
-				var offline = new Offline(0.1); 
-				offline.before(function(dest){
-					lfo = new LFO({
+			it("outputs a signal at the correct phase angle", function(){
+				return Offline(function(){
+					new LFO({
 						"phase" : 90,
 						"min" : 0
-					});
-					lfo.connect(dest);
-				}); 
-				offline.test(function(sample){
-					expect(sample).to.be.closeTo(0, 0.01);
-				}); 
-				offline.after(function(){
-					lfo.dispose();
-					done();
+					}).toMaster();
+				}).then(function(buffer){
+					expect(buffer.value()).to.be.closeTo(0, 0.1);
 				});
-				offline.run();
 			});
 
-			it("outputs the right phase when setting a new phase", function(done){
-				var lfo;
-				var offline = new Offline(0.1); 
-				offline.before(function(dest){
-					lfo = new LFO({
+			it("outputs the right phase when setting a new phase", function(){
+				return Offline(function(){
+					var lfo = new LFO({
 						"phase" : 0,
 						"min" : -1,
 						"max" : 1
-					});
-					lfo.connect(dest);
+					}).toMaster();
 					lfo.phase = 270;
-				}); 
-				offline.test(function(sample){
-					expect(sample).to.be.closeTo(1, 0.01);
-				}); 
-				offline.after(function(){
-					lfo.dispose();
-					done();
+				}).then(function(buffer){
+					expect(buffer.value()).to.be.closeTo(1, 0.1);
 				});
-				offline.run();
 			});
 
-			it("can convert to other units", function(done){
-				var lfo;
-				var offline = new Offline(0.1); 
-				offline.before(function(dest){
-					lfo = new LFO({
+			it("can convert to other units", function(){
+				return Offline(function(){
+					var lfo = new LFO({
 						"units" : Tone.Type.Decibels,
 						"min" : -20,
 						"max" : 5,
 						"frequency" : 20
-					});
-					lfo.connect(dest);
+					}).toMaster();
 					lfo.start();
-				}); 
-				offline.test(function(sample){
-					expect(sample).to.be.within(lfo.dbToGain(-20) - 0.01, lfo.dbToGain(5) + 0.01);
-				}); 
-				offline.after(function(){
-					lfo.dispose();
-					done();
+				}).then(function(buffer){
+					expect(buffer.min()).to.be.closeTo(0.099, 0.01);
+					expect(buffer.max()).to.be.closeTo(1.78, 0.01);
 				});
-				offline.run();
 			});
 
-			it("can converts to the units of the connecting node", function(done){
-				var lfo, signal;
-				var offline = new Offline(0.1); 
-				offline.before(function(dest){
-					lfo = new LFO(20, -35, -10);
-					signal = new Signal(0, Tone.Type.Decibels);
+			it("can converts to the units of the connecting node", function(){
+				return Offline(function(){
+					var lfo = new LFO(20, -35, -10);
+					var signal = new Signal(0, Tone.Type.Decibels);
 					expect(lfo.units).to.equal(Tone.Type.Default);
-					lfo.connect(dest);
+					lfo.toMaster();
 					lfo.connect(signal);
 					expect(lfo.units).to.equal(Tone.Type.Decibels);
 					lfo.start();
-				}); 
-				offline.test(function(sample){
-					expect(sample).to.be.within(lfo.dbToGain(-35) - 0.01, lfo.dbToGain(-10) + 0.01);
-				}); 
-				offline.after(function(){
-					lfo.dispose();
-					done();
+				}).then(function(buffer){
+					expect(buffer.min()).to.be.closeTo(0.017, 0.01);
+					expect(buffer.max()).to.be.closeTo(0.31, 0.01);
 				});
-				offline.run();
 			});
 		});
 	});

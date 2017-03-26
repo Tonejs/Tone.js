@@ -31,7 +31,7 @@
     "karma-requirejs": "^1.1.0",
     "mocha": "^3.0.2",
     "requirejs": "^2.1.22",
-    "yargs": "^5.0.0"
+    "yargs": "^7.0.2"
   },
   "scripts": {
     "test": "gulp karma-test"

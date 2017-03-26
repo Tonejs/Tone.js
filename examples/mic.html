@@ -51,63 +51,60 @@
 
 		mic.connect(analyser);
 
+		// GUI //
+
+		//indicate if the microphone is supported or not
+		if (!Tone.UserMedia.supported){
+			$("<div>", {
+				"id" : "NotSupported",
+				"text" : "getUserMedia is not supported by your browser."
+			}).appendTo("#Content");
+		} else {
+
+			var canvas = $("<canvas>").appendTo("#Content");
+
+			var context = canvas.get(0).getContext("2d");
+
+			context.canvas.width = canvas.width();
+			context.canvas.height = canvas.height();
+
+			function drawLoop(){
+				var canvasWidth = context.canvas.width;
+				var canvasHeight = context.canvas.height;
+				requestAnimationFrame(drawLoop);
+				//draw the waveform
+				context.clearRect(0, 0, canvasWidth, canvasHeight);
+				var values = analyser.analyse();
+				context.beginPath();
+				context.lineJoin = "round";
+				context.lineWidth = 6;
+				context.strokeStyle = "white";
+				context.moveTo(0, (values[0] / 255) * canvasHeight);
+				for (var i = 1, len = values.length; i < len; i++){
+					var val = values[i] / 255;
+					var x = canvasWidth * (i / (len - 1));
+					var y = val * canvasHeight;
+					context.lineTo(x, y);
+				}
+				context.stroke();
+			}
+			drawLoop();
+			
+			Interface.Button({
+				type : "toggle",
+				text : "Open Mic",
+				activeText : "Close Mic",
+				start : function(){
+					mic.open();
+				},
+				end : function(){
+					mic.close();
+				}
+			});
+
+		}
+
 	</script>
 	
-	<script id="GUI">
-		$(function(){
-
-			//indicate if the microphone is supported or not
-			if (!Tone.UserMedia.supported){
-				$("<div>", {
-					"id" : "NotSupported",
-					"text" : "getUserMedia is not supported by your browser."
-				}).appendTo("#Content");
-			} else {
-
-				var canvas = $("<canvas>").appendTo("#Content");
-
-				var context = canvas.get(0).getContext("2d");
-
-				context.canvas.width = canvas.width();
-				context.canvas.height = canvas.height();
-
-				function drawLoop(){
-					var canvasWidth = context.canvas.width;
-					var canvasHeight = context.canvas.height;
-					requestAnimationFrame(drawLoop);
-					//draw the waveform
-					context.clearRect(0, 0, canvasWidth, canvasHeight);
-					var values = analyser.analyse();
-					context.beginPath();
-					context.lineJoin = "round";
-					context.lineWidth = 6;
-					context.strokeStyle = "white";
-					context.moveTo(0, (values[0] / 255) * canvasHeight);
-					for (var i = 1, len = values.length; i < len; i++){
-						var val = values[i] / 255;
-						var x = canvasWidth * (i / (len - 1));
-						var y = val * canvasHeight;
-						context.lineTo(x, y);
-					}
-					context.stroke();
-				}
-				drawLoop();
-				
-				Interface.Button({
-					type : "toggle",
-					text : "Open Mic",
-					activeText : "Close Mic",
-					start : function(){
-						mic.open();
-					},
-					end : function(){
-						mic.close();
-					}
-				});
-
-			}
-
-		});
-	</script>
 </body>
 </html>

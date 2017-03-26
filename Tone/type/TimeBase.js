@@ -537,7 +537,7 @@ define(["Tone/core/Tone"], function (Tone) {
 	 *  in seconds.
 	 *  @return  {Seconds} 
 	 */
-	Tone.TimeBase.prototype.eval = function(){
+	Tone.TimeBase.prototype.valueOf = function(){
 		return this._expr();
 	};
 

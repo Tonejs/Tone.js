@@ -10,7 +10,8 @@
     "Tone"
   ],
   "scripts": {
-    "test": "cd gulp && gulp karma-test"
+    "test": "cd gulp && gulp karma-test",
+    "build" : "cd gulp && gulp"
   },
   "repository": {
     "type": "git",

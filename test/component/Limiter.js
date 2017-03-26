@@ -13,27 +13,17 @@ function (Limiter, Basic, PassAudio, PassAudioStereo, Test) {
 				limiter.dispose();
 			});
 
-			it("passes the incoming signal through", function(done){
-				var limiter;
-				PassAudio(function(input, output){
-					limiter = new Limiter();
+			it("passes the incoming signal through", function(){
+				return PassAudio(function(input){
+					var limiter = new Limiter().toMaster();
 					input.connect(limiter);
-					limiter.connect(output);
-				}, function(){
-					limiter.dispose();
-					done();
 				});
 			});
 
-			it("passes the incoming stereo signal through", function(done){
-				var limiter;
-				PassAudioStereo(function(input, output){
-					limiter = new Limiter();
+			it("passes the incoming stereo signal through", function(){
+				return PassAudioStereo(function(input){
+					var limiter = new Limiter().toMaster();
 					input.connect(limiter);
-					limiter.connect(output);
-				}, function(){
-					limiter.dispose();
-					done();
 				});
 			});
 

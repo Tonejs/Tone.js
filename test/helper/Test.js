@@ -1,6 +1,6 @@
 /* global mocha*/
 
-define(["Tone/core/Tone", "deps/chai"], function (Tone, chai) {
+define(["Tone/core/Tone", "deps/chai", "Tone/core/Context"], function (Tone, chai, Context) {
 
 	//add a chai test
 	chai.Assertion.addMethod("percentageFrom", function(val, percent){
@@ -15,7 +15,9 @@ define(["Tone/core/Tone", "deps/chai"], function (Tone, chai) {
 		timeout : 5000
 	});
 
-
+	Context.on("init", function(){
+		Test.input = Tone.context.createGain();
+	});
 
 	/**
 	 *  The Test object
@@ -49,6 +51,23 @@ define(["Tone/core/Tone", "deps/chai"], function (Tone, chai) {
 	Test.connect = function(node, inputNumber){
 		this.input.connect(node, 0, inputNumber);
 		this.input.disconnect();
+	};
+
+	Test.whenBetween = function(value, start, stop, callback){
+		if (value >= start && value < stop){
+			callback();
+		}
+	};
+
+	//invoked only once
+	Test.atTime = function(when, callback){
+		var wasInvoked = false;
+		return function(time){
+			if (time >= when && !wasInvoked){
+				callback(time);
+				wasInvoked = true;
+			}
+		};
 	};
 
 	return Test;

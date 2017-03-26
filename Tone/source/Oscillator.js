@@ -4,6 +4,21 @@ function(Tone){
 	"use strict";
 
 	/**
+	 *  OscillatorNode shim
+	 *  @private
+	 */
+	if (window.OscillatorNode && !OscillatorNode.prototype.start){
+		OscillatorNode.prototype.start = OscillatorNode.prototype.noteOn;
+		OscillatorNode.prototype.stop = OscillatorNode.prototype.noteOff;	
+		if (!OscillatorNode.prototype.setPeriodicWave){
+			OscillatorNode.prototype.setPeriodicWave = OscillatorNode.prototype.setWaveTable;
+		}
+		if (!AudioContext.prototype.createPeriodicWave){
+			AudioContext.prototype.createPeriodicWave = AudioContext.prototype.createWaveTable;
+		}
+	}
+
+	/**
 	 *  @class Tone.Oscillator supports a number of features including
 	 *         phase rotation, multiple oscillator types (see Tone.Oscillator.type), 
 	 *         and Transport syncing (see Tone.Oscillator.syncFrequency).

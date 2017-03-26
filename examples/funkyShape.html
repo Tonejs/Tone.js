@@ -266,24 +266,22 @@
 		Tone.Transport.loopStart = 0;
 		Tone.Transport.loopEnd = "1:0";
 		Tone.Transport.loop = true;
-	</script>
-	
-	<script id="GUI">
-		$(function(){
 
-			Interface.Button({
-				type : "toggle",
-				text : "Start",
-				activeText : "Stop",
-				start : function(){
-					Tone.Transport.start("+0.1");
-				},
-				end : function(){
-					Tone.Transport.stop();
-				}
-			});
+		// GUI //
 
+		Interface.Button({
+			type : "toggle",
+			text : "Start",
+			activeText : "Stop",
+			start : function(){
+				Tone.Transport.start("+0.1");
+			},
+			end : function(){
+				Tone.Transport.stop();
+			}
 		});
+
 	</script>
+
 </body>
 </html>

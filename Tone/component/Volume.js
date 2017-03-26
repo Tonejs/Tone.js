@@ -28,14 +28,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Gain"], function(Tone
 		 * @type {Decibels}
 		 * @private
 		 */
-		this._unmutedVolume = 0;
-
-		/**
-		 *  if the volume is muted
-		 *  @type {Boolean}
-		 *  @private
-		 */
-		this._muted = false;
+		this._unmutedVolume = options.volume;
 
 		/**
 		 *  The volume control in decibels. 
@@ -74,17 +67,16 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Gain"], function(Tone
 	 */
 	Object.defineProperty(Tone.Volume.prototype, "mute", {
 		get : function(){
-			return this._muted;
+			return this.volume.value === -Infinity;
 		}, 
 		set : function(mute){
-			if (!this._muted && mute){
+			if (!this.mute && mute){
 				this._unmutedVolume = this.volume.value;
 				//maybe it should ramp here?
 				this.volume.value = -Infinity;
-			} else if (this._muted && !mute){
+			} else if (this.mute && !mute){
 				this.volume.value = this._unmutedVolume;
 			}
-			this._muted = mute;
 		}
 	});
 

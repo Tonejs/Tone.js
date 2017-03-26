@@ -1,6 +1,6 @@
 define(["helper/Offline", "helper/Basic", "Test", "Tone/signal/Signal", 
-	"Tone/type/Type", "Tone/core/Transport", "helper/Offline2", "Tone/component/LFO"], 
-	function (Offline, Basic, Test, Signal, Tone, Transport, Offline2, LFO) {
+	"Tone/type/Type", "Tone/core/Transport", "Tone/component/LFO", "helper/ConstantOutput"], 
+	function (Offline, Basic, Test, Signal, Tone, Transport, LFO, ConstantOutput) {
 
 	describe("Signal", function(){
 
@@ -38,64 +38,41 @@ define(["helper/Offline", "helper/Basic", "Test", "Tone/signal/Signal",
 				signal.dispose();
 			});
 
-			it("takes on another signal's value when connected", function(done){
-				var sigA, sigB;
-				var offline = new Offline(0.2);
-				offline.before(function(dest){
-					sigA = new Signal(0).connect(dest);
-					sigB = new Signal(3).connect(sigA);
-				});
-				offline.test(function(sample){
-					expect(sample).to.be.closeTo(3, 0.001);
-				});
-				offline.after(function(){
-					sigA.dispose();
-					sigB.dispose();
-					done();
-				});
-				offline.run();
+			it("takes on another signal's value when connected", function(){
+				return ConstantOutput(function(){
+					var sigA = new Signal(0).toMaster();
+					new Signal(3).connect(sigA);
+				}, 3);
 			});
 		});
 
 		context("Scheduling", function(){
 
-			it ("can be scheduled to set a value in the future", function(done){
-				var sig;
-				var offline = new Offline();
-				offline.before(function(dest){
-					sig = new Signal(0).connect(dest);
+			it ("can be scheduled to set a value in the future", function(){
+				return Offline(function(){
+					var sig = new Signal(0).toMaster();
 					sig.setValueAtTime(2, 0.2);
+				}, 0.3).then(function(buffer){
+					buffer.forEach(function(sample, time){
+						if (time < 0.19){
+							expect(sample).to.be.closeTo(0, 0.001);
+						} else if (time > 0.2){
+							expect(sample).to.be.closeTo(2, 0.001);
+						}
+					});
 				});
-				offline.test(function(sample, time){
-					if (time < 0.2){
-						expect(sample).to.be.closeTo(0, 0.001);
-					} else if (time > 0.21){
-						expect(sample).to.be.closeTo(2, 0.001);
-					}
-				});
-				offline.after(function(){
-					sig.dispose();
-					done();
-				});
-				offline.run();
 			});
 
-			it ("can linear ramp from the current value to another value in the future", function(done){
-				var sig;
-				var offline = new Offline(1);
-				offline.before(function(dest){
-					sig = new Signal(0).connect(dest);
+			it ("can linear ramp from the current value to another value in the future", function(){
+				return Offline(function(){
+					var sig = new Signal(0).toMaster();
 					sig.setValueAtTime(0, 0);
 					sig.linearRampToValueAtTime(1, 1);
+				}, 1).then(function(buffer){
+					buffer.forEach(function(sample, time){
+						expect(sample).to.be.closeTo(time, 0.001);
+					});
 				});
-				offline.test(function(sample, time){
-					expect(sample).to.be.closeTo(time, 0.001);
-				});
-				offline.after(function(){
-					sig.dispose();
-					done();
-				});
-				offline.run();
 			});
 
 			it ("can schedule an exponential ramp", function(){
@@ -116,173 +93,119 @@ define(["helper/Offline", "helper/Basic", "Test", "Tone/signal/Signal",
 				sig.dispose();
 			});
 
-			it ("can schedule multiple automations", function(done){
-				var sig;
-				var offline = new Offline(1);
-				offline.before(function(dest){
-					sig = new Signal(0).connect(dest);
+			it ("can schedule multiple automations", function(){
+				return Offline(function(){
+					var sig = new Signal(0).toMaster();
 					sig.setValueAtTime(0, 0);
 					sig.linearRampToValueAtTime(0.5, 0.5);
 					sig.linearRampToValueAtTime(0, 1);
+				}, 1).then(function(buffer){
+					buffer.forEach(function(sample, time){
+						if (time < 0.5){
+							expect(sample).to.be.closeTo(time, 0.01);
+						} else {
+							expect(sample).to.be.closeTo(1 - time, 0.01);
+						}
+					});
 				});
-				offline.test(function(sample, time){
-					if (time < 0.5){
-						expect(sample).to.be.closeTo(time, 0.01);
-					} else {
-						expect(sample).to.be.closeTo(1 - time, 0.01);
-					}
-				});
-				offline.after(function(){
-					sig.dispose();
-					done();
-				});
-				offline.run();
 			});
 
-			it ("can cancel an automation", function(done){
-				Offline2(function(output, test, after){
-
-					var sig = new Signal(1).connect(output);
+			it ("can cancel an automation", function(){
+				return ConstantOutput(function(){
+					var sig = new Signal(1).toMaster();
 					sig.setValueAtTime(4, 0.1);
 					sig.exponentialRampToValueAtTime(3, 0.2);
 					sig.cancelScheduledValues(0);
-
-					test(function(){
-						expect(sig.value).to.equal(1);
-					});
-
-					after(function(){
-						expect(sig.value).to.equal(1);
-						sig.dispose();
-						done();
-					});
-
-				}, 0.4);
+				}, 1);
 			});
 
-			it ("can set a linear ramp from the current time", function(done){
-				var sig;
-				var offline = new Offline(0.5);
-				offline.before(function(dest){
-					sig = new Signal(0).connect(dest);
+			it ("can set a linear ramp from the current time", function(){
+				return Offline(function(){
+					var sig = new Signal(0).toMaster();
 					sig.linearRampToValue(2, 0.3);
+				}, 0.5).then(function(buffer){
+					buffer.forEach(function(sample, time){
+						if (time > 0.3){
+							expect(sample).to.be.closeTo(2, 0.02);
+						}
+					});
 				});
-				offline.test(function(sample, time){
-					if (time > 0.3){
-						expect(sample).to.be.closeTo(2, 0.02);
-					}
-				});
-				offline.after(function(){
-					sig.dispose();
-					done();
-				});
-				offline.run();
 			});
 
-			it ("can set an linear ramp in the future", function(done){
-				var sig;
-				var offline = new Offline(0.6);
-				offline.before(function(dest){
-					sig = new Signal(1).connect(dest);
+			it ("can set an linear ramp in the future", function(){
+				return Offline(function(){
+					var sig = new Signal(1).toMaster();
 					sig.linearRampToValue(50, 0.3, 0.2);
+				}, 0.6).then(function(buffer){
+					buffer.forEach(function(sample, time){
+						if (time >= 0.6){
+							expect(sample).to.be.closeTo(50, 0.5);
+						} else if (time < 0.2){
+							expect(sample).to.equal(1);
+						}
+					});
 				});
-				offline.test(function(sample, time){
-					if (time >= 0.6){
-						expect(sample).to.be.closeTo(50, 0.5);
-					} else if (time < 0.2){
-						expect(sample).to.equal(1);
-					}
-				});
-				offline.after(function(){
-					sig.dispose();
-					done();
-				});
-				offline.run();
 			});
 
 
-			it ("can set an exponential ramp from the current time", function(done){
-				var sig;
-				var offline = new Offline(0.5);
-				offline.before(function(dest){
-					sig = new Signal(1).connect(dest);
+			it ("can set an exponential ramp from the current time", function(){
+				return Offline(function(){
+					var sig = new Signal(1).toMaster();
 					sig.exponentialRampToValue(50, 0.4);
+				}, 0.6).then(function(buffer){
+					buffer.forEach(function(sample, time){
+						if (time >= 0.4){
+							expect(sample).to.be.closeTo(50, 0.5);
+						} else if (time < 0.39){
+							expect(sample).to.be.lessThan(50);
+						}
+					});
 				});
-				offline.test(function(sample, time){
-					if (time >= 0.4){
-						expect(sample).to.be.closeTo(50, 0.5);
-					} else {
-						expect(sample).to.be.lessThan(50);
-					}
-				});
-				offline.after(function(){
-					sig.dispose();
-					done();
-				});
-				offline.run();
 			});
 
-			it ("can set an exponential ramp in the future", function(done){
-				var sig;
-				var offline = new Offline(0.6);
-				offline.before(function(dest){
-					sig = new Signal(1).connect(dest);
+			it ("can set an exponential ramp in the future", function(){
+				return Offline(function(){
+					var sig = new Signal(1).toMaster();
 					sig.exponentialRampToValue(50, 0.3, 0.2);
+				}, 0.8).then(function(buffer){
+					buffer.forEach(function(sample, time){
+						if (time >= 0.6){
+							expect(sample).to.be.closeTo(50, 0.5);
+						} else if (time < 0.2){
+							expect(sample).to.equal(1);
+						}
+					});
 				});
-				offline.test(function(sample, time){
-					if (time >= 0.6){
-						expect(sample).to.be.closeTo(50, 0.5);
-					} else if (time < 0.2){
-						expect(sample).to.equal(1);
-					}
-				});
-				offline.after(function(){
-					sig.dispose();
-					done();
-				});
-				offline.run();
 			});
 
-			it ("rampTo ramps from the current value", function(done){
-				var sig;
-				var offline = new Offline(0.5);
-				offline.before(function(dest){
-					sig = new Signal(3).connect(dest);
+			it ("rampTo ramps from the current value", function(){
+				return Offline(function(){
+					var sig = new Signal(3).toMaster();
 					sig.rampTo(0.2, 0.1);
+				}, 0.4).then(function(buffer){
+					buffer.forEach(function(sample, time){
+						if (time >= 0.1){
+							expect(sample).to.be.closeTo(0.2, 0.1);
+						} else {
+							expect(sample).to.be.greaterThan(0.2);
+						}
+					});
 				});
-				offline.test(function(sample, time){
-					if (time >= 0.1){
-						expect(sample).to.be.closeTo(0.2, 0.1);
-					} else {
-						expect(sample).to.be.greaterThan(0.2);
-					}
-				});
-				offline.after(function(){
-					sig.dispose();
-					done();
-				});
-				offline.run();
 			});
 
-			it ("rampTo ramps from the current value at a specific time", function(done){
-				var sig;
-				var offline = new Offline(0.6);
-				offline.before(function(dest){
-					sig = new Signal(0).connect(dest);
+			it ("rampTo ramps from the current value at a specific time", function(){
+				return Offline(function(){
+					var sig = new Signal(0).toMaster();
 					sig.rampTo(2, 0.1, 0.4);
-				});
-				offline.test(function(sample, time){
-					if (time <= 0.4){
+				}, 0.6).then(function(buffer){
+					buffer.forEach(function(sample, time){
+						if (time < 0.4){
 						expect(sample).to.be.closeTo(0, 0.1);
 					} else if (time > 0.5){
 						expect(sample).to.be.closeTo(2, 0.1);
 					}
+					});
 				});
-				offline.after(function(){
-					sig.dispose();
-					done();
-				});
-				offline.run();
 			});
 			
 		});
@@ -302,43 +225,23 @@ define(["helper/Offline", "helper/Basic", "Test", "Tone/signal/Signal",
 				signal.dispose();
 			});
 
-			it("converts the given units when passed in the constructor", function(done){
-				var signal;
-				var offline = new Offline(0.2);
-				offline.before(function(dest){
-					signal = new Signal({
+			it("converts the given units when passed in the constructor", function(){
+				return ConstantOutput(function(){
+					var signal = new Signal({
 						"value" : -10,
 						"units" : Tone.Type.Decibels,
-					}).connect(dest);
-				});
-				offline.test(function(sample){
-					expect(sample).to.be.closeTo(0.315, 0.01);
-				});
-				offline.after(function(){
-					signal.dispose();
-					done();
-				});
-				offline.run();
+					}).toMaster();
+				}, 0.315);
 			});
 
-			it("can be set to not convert the given units", function(done){
-				var signal;
-				var offline = new Offline(0.2);
-				offline.before(function(dest){
-					signal = new Signal({
+			it("can be set to not convert the given units", function(){
+				return ConstantOutput(function(){
+					var signal = new Signal({
 						"value" : -10,
 						"units" : Tone.Type.Decibels,
 						"convert" : false
-					}).connect(dest);
-				});
-				offline.test(function(sample){
-					expect(sample).to.be.closeTo(-10, 0.01);
-				});
-				offline.after(function(){
-					signal.dispose();
-					done();
-				});
-				offline.run();
+					}).toMaster();
+				}, -10);
 			});
 
 			it("converts Frequency units", function(){
@@ -375,146 +278,93 @@ define(["helper/Offline", "helper/Basic", "Test", "Tone/signal/Signal",
 
 		context("Transport Syncing", function(){
 
-			it("maintains its original value after being synced to the transport", function(done){
-				var sig;
-				var offline = new Offline(0.2);
-				offline.before(function(dest){
-					sig = new Signal(3).connect(dest);
+			it("maintains its original value after being synced to the transport", function(){
+				return ConstantOutput(function(Transport){
+					var sig = new Signal(3).toMaster();
 					Transport.syncSignal(sig);
-				});
-				offline.test(function(sample){
-					expect(sample).to.be.closeTo(3, 0.01);
-				});
-				offline.after(function(){
-					sig.dispose();
-					done();
-				});
-				offline.run();
+				}, 3);
 			});
 
-			it("keeps the ratio when the bpm changes", function(done){
-				var sig;
-				var offline = new Offline(0.2);
-				offline.before(function(dest){
+			it("keeps the ratio when the bpm changes", function(){
+				return ConstantOutput(function(Transport){
 					Transport.bpm.value = 120;
-					sig = new Signal(5).connect(dest);
+					var sig = new Signal(5).toMaster();
 					Transport.syncSignal(sig);
 					Transport.bpm.value = 240;
-				});
-				offline.test(function(sample){
-					expect(sample).to.be.closeTo(10, 0.01);
-				});
-				offline.after(function(){
-					sig.dispose();
-					Transport.bpm.value = 120;
-					done();
-				});
-				offline.run();
+				}, 10);
 			});
 
-			it("can ramp along with the bpm", function(done){
-				var sig;
-				var offline = new Offline(0.7);
-				offline.before(function(dest){
+			it("can ramp along with the bpm", function(){
+				return Offline(function(Transport){
 					Transport.bpm.value = 120;
-					sig = new Signal(2).connect(dest);
+					var sig = new Signal(2).toMaster();
 					Transport.syncSignal(sig);
 					Transport.bpm.rampTo(240, 0.5);
+				}).then(function(buffer){
+					buffer.forEach(function(sample, time){
+						if (time >= 0.5){
+							expect(sample).to.be.closeTo(4, 0.04);
+						} else if (time < 0.4){
+							expect(sample).to.be.within(1.95, 3);
+						}
+					});
 				});
-				offline.test(function(sample, time){
-					if (time >= 0.5){
-						expect(sample).to.be.closeTo(4, 0.04);
-					}
-				});
-				offline.after(function(){
-					sig.dispose();
-					Transport.bpm.value = 120;
-					done();
-				});
-				offline.run();
 			});
 
-			it("returns to the original value when unsynced", function(done){
-				var sig;
-				var offline = new Offline(0.2);
-				offline.before(function(dest){
+			it("returns to the original value when unsynced", function(){
+				return ConstantOutput(function(Transport){
 					Transport.bpm.value = 120;
-					sig = new Signal(5).connect(dest);
+					var sig = new Signal(5).toMaster();
 					Transport.syncSignal(sig);
 					Transport.bpm.value = 240;
 					Transport.unsyncSignal(sig);
-				});
-				offline.test(function(sample){
-					expect(sample).to.be.closeTo(5, 0.01);
-				});
-				offline.after(function(){
-					sig.dispose();
-					Transport.bpm.value = 120;
-					done();
-				});
-				offline.run();
+				}, 5);
 			});
 		});
 
 		context("LFO", function(){
 
 			it ("can create an LFO from the constructor", function(){
-
 				var sig = new Signal({
 					"lfo" : {
 						"min" : -20,
 						"max" : 20
 					}
 				});
-
-				expect(sig.lfo).to.be.instanceOf(Tone.LFO);
+				expect(sig.lfo).to.be.instanceOf(LFO);
 				expect(sig.lfo.min).to.be.closeTo(-20, 0.1);
 				expect(sig.lfo.max).to.be.closeTo(20, 0.1);
 			});
 
 			it ("can set an LFO as the .value", function(){
-
 				var sig = new Signal();
-
 				sig.value = {
 					"min" : 20,
 					"max" : -20
 				};
-
-				expect(sig.lfo).to.be.instanceOf(Tone.LFO);
+				expect(sig.lfo).to.be.instanceOf(LFO);
 				expect(sig.lfo.min).to.be.closeTo(20, 0.1);
 				expect(sig.lfo.max).to.be.closeTo(-20, 0.1);
 			});
 
-			it ("outputs a modulated signal", function(done){
-
-
-				Offline2(function(output, test, after){
-
-					var sig = new Signal({
+			it ("outputs a modulated signal", function(){
+				return Offline(function(){
+					new Signal({
 						"lfo" : {
 							"min" : 10,
 							"max" : 20
 						}
-					}).connect(output);
-
-					test(function(val){
-						expect(val).to.be.within(10, 20);
+					}).toMaster();
+				}, 0.4).then(function(buffer){
+					buffer.forEach(function(sample){
+						expect(sample).to.be.within(10, 20);
 					});
-
-					after(function(){
-						sig.dispose();
-						done();
-					});
-
-				}, 0.4);
+				});
 			});
 
-			it ("can handle multiple levels of lfo", function(done){
-
-				Offline2(function(output, test, after){
-
-					var sig = new Signal({
+			it ("can handle multiple levels of lfo", function(){
+				return Offline(function(){
+					new Signal({
 						"lfo" : {
 							"min" : 10,
 							"max" : 20,
@@ -540,18 +390,12 @@ define(["helper/Offline", "helper/Basic", "Test", "Tone/signal/Signal",
 								}	
 							}
 						}
-					}).connect(output);
-
-					test(function(val){
-						expect(val).to.be.within(10, 20);
+					}).toMaster();
+				}, 0.4).then(function(buffer){
+					buffer.forEach(function(sample){
+						expect(sample).to.be.within(10, 20);
 					});
-
-					after(function(){
-						sig.dispose();
-						done();
-					});
-
-				}, 0.4);
+				});
 			});
 		});
 	});

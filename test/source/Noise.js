@@ -55,90 +55,29 @@ define(["helper/Basic", "Tone/source/Noise", "helper/SourceTests", "helper/Outpu
 				noise.dispose();
 			});
 
-			it("outputs white noise", function(done){
-				var noise;
-				OutputAudio(function(dest){
-					noise = new Noise("white");
-					noise.connect(dest);
+			it("outputs white noise", function(){
+				return OutputAudio(function(){
+					var noise = new Noise("white");
+					noise.toMaster();
 					noise.start();
-				}, function(){
-					noise.dispose();
-					done();
 				});
 			});		
 
-			it("outputs pink noise", function(done){
-				var noise;
-				OutputAudio(function(dest){
-					noise = new Noise("pink");
-					noise.connect(dest);
+			it("outputs pink noise", function(){
+				return OutputAudio(function(){
+					var noise = new Noise("pink");
+					noise.toMaster();
 					noise.start();
-				}, function(){
-					noise.dispose();
-					done();
 				});
 			});		
 
-			it("outputs brown noise", function(done){
-				var noise;
-				OutputAudio(function(dest){
-					noise = new Noise("brown");
-					noise.connect(dest);
+			it("outputs brown noise", function(){
+				return OutputAudio(function(){
+					var noise = new Noise("brown");
+					noise.toMaster();
 					noise.start();
-				}, function(){
-					noise.dispose();
-					done();
 				});
 			});		
 		});
-
-
-		/*it("be scheduled to start in the future", function(done){
-			var noise;
-			var offline = new Offline();
-			Test.offlineTest(1, function(dest){
-				noise = new Noise();
-				noise.connect(dest);
-				noise.start("+0.1");
-			}, function(sample, time){
-				if (sample !== 0){
-					expect(time).to.be.at.least(0.1);
-				}
-			}, function(){
-				noise.dispose();
-				done();
-			});
-		});
-
-		it("can set the noise types", function(){
-			var noise = new Noise();
-			noise.type = "brown";
-			noise.type = "white";
-			noise.type = "pink";
-			//even after started
-			noise.start();
-			noise.type = "brown";
-			noise.type = "white";
-			noise.type = "pink";
-			noise.stop();
-			noise.dispose();
-		});
-
-		it("can be created with an options object", function(){
-			var noise = new Noise({
-				"type" : "brown"
-			});
-			expect(noise.type).to.equal("brown");
-			noise.dispose();
-		});
-
-		it("can be set with an options object", function(){
-			var noise = new Noise();
-			noise.set({
-				"type" : "pink"
-			});
-			expect(noise.type).to.equal("pink");
-			noise.dispose();
-		});*/
 	});
 });

@@ -1,6 +1,6 @@
 define(["Tone/instrument/PolySynth", "helper/Basic", "helper/InstrumentTests", "helper/OutputAudioStereo", 
-	"helper/Meter", "Tone/instrument/Instrument", "Test", "helper/OutputAudio", "Tone/instrument/MonoSynth"], 
-function (PolySynth, Basic, InstrumentTests, OutputAudioStereo, Meter, Instrument, Test, OutputAudio, MonoSynth) {
+	"Tone/instrument/Instrument", "Test", "helper/OutputAudio", "Tone/instrument/MonoSynth", "helper/Offline"], 
+function (PolySynth, Basic, InstrumentTests, OutputAudioStereo, Instrument, Test, OutputAudio, MonoSynth, Offline) {
 
 	describe("PolySynth", function(){
 
@@ -21,65 +21,31 @@ function (PolySynth, Basic, InstrumentTests, OutputAudioStereo, Meter, Instrumen
 				polySynth.dispose();
 			});
 
-			it("makes a sound", function(done){
-				var polySynth;
-				OutputAudio(function(dest){
-					polySynth = new PolySynth(2);
-					polySynth.connect(dest);
-					polySynth.triggerAttack("C4");
-				}, function(){
-					polySynth.dispose();
-					done();
-				});
-			});	
-
-			it("triggerAttackRelease can take an array of durations", function(done){
-				var polySynth;
-				OutputAudio(function(dest){
-					polySynth = new PolySynth(2);
-					polySynth.connect(dest);
+			it("triggerAttackRelease can take an array of durations", function(){
+				return OutputAudio(function(){
+					var polySynth = new PolySynth(2);
+					polySynth.toMaster();
 					polySynth.triggerAttackRelease(["C4", "D4"], [0.1, 0.2]);
-				}, function(){
-					polySynth.dispose();
-					done();
 				});
 			});	
 
-			it("is silent before being triggered", function(done){
-				var polySynth;
-				var meter = new Meter(0.3);
-				meter.before(function(dest){
-					polySynth = new PolySynth();
-					polySynth.connect(dest);
+			it("is silent before being triggered", function(){
+				return Offline(function(){
+					var polySynth = new PolySynth(2);
+					polySynth.toMaster();
+				}).then(function(buffer){
+					expect(buffer.isSilent()).to.be.true;
 				});
-				meter.test(function(level){
-					expect(level).to.equal(0);
-				});
-				meter.after(function(){
-					polySynth.dispose();
-					done();
-				});
-				meter.run();
 			});	
 
-			it("be scheduled to start in the future", function(done){
-				var polySynth;
-				var meter = new Meter(0.3);
-				meter.before(function(dest){
-					polySynth = new PolySynth();
-					polySynth.connect(dest);
+			it("can be scheduled to start in the future", function(){
+				return Offline(function(){
+					var polySynth = new PolySynth(2);
+					polySynth.toMaster();
 					polySynth.triggerAttack("C4", 0.1);
+				}, 0.3).then(function(buffer){
+					expect(buffer.getFirstSoundTime()).to.be.closeTo(0.1, 0.01);
 				});
-				meter.test(function(sample, time){
-					if (sample > 0.2){
-						expect(time).to.be.at.least(0.1);
-					}
-				});
-				meter.after(function(){
-					polySynth.dispose();
-					done();
-				});
-				meter.run();
 			});
 
 		});

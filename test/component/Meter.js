@@ -35,14 +35,11 @@ function (Meter, Basic, Offline, Test, Signal, PassAudio, Tone, Merge, Oscillato
 				meter.dispose();
 			});
 
-			it("passes the audio through", function(done){
+			it("passes the audio through", function(){
 				var meter;
-				PassAudio(function(input, output){
+				return PassAudio(function(input){
 					meter = new Meter();
-					input.chain(meter, output);
-				}, function(){
-					meter.dispose();
-					done();
+					input.chain(meter, Tone.Master);
 				});				
 			});
 

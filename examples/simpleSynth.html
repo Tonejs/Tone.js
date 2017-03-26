@@ -62,24 +62,18 @@
 			}
 		}).toMaster();
 
+		// GUI //
+
+		var keyboard = Interface.Keyboard();
+
+		keyboard.keyDown = function (note) {
+		    synth.triggerAttack(note);
+		};
+
+		keyboard.keyUp = function () {
+		    synth.triggerRelease();
+		};
 	</script>
 
-	<script id="GUI">
-		$(function(){
-
-			var keyboard = Interface.Keyboard();
-
-			keyboard.keyDown = function (note) {
-			    synth.triggerAttack(note);
-			};
-
-			keyboard.keyUp = function () {
-			    synth.triggerRelease();
-			};
-
-		});
-	</script>
-
-	</style>
 </body>
 </html>

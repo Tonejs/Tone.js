@@ -1,6 +1,14 @@
 define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/Gain"], function (Tone) {
 
 	/**
+	 *  BufferSource polyfill
+	 */
+	if (window.AudioBufferSourceNode && !AudioBufferSourceNode.prototype.start){
+		AudioBufferSourceNode.prototype.start = AudioBufferSourceNode.prototype.noteGrainOn;
+		AudioBufferSourceNode.prototype.stop = AudioBufferSourceNode.prototype.noteOff;
+	}
+
+	/**
 	 *  @class Wrapper around the native BufferSourceNode.
 	 *  @param  {AudioBuffer|Tone.Buffer}  buffer   The buffer to play
 	 *  @param  {Function}  onended  The callback to invoke when the 

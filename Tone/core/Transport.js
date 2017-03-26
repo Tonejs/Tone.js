@@ -206,7 +206,7 @@ function(Tone){
 			//add some swing
 			var progress = (ticks % (this._swingTicks * 2)) / (this._swingTicks * 2);
 			var amount = Math.sin((progress) * Math.PI) * this._swingAmount;
-			tickTime += Tone.Time(this._swingTicks * 2/3, "i").eval() * amount;
+			tickTime += Tone.Time(this._swingTicks * 2/3, "i") * amount;
 		} 
 		//do the loop test
 		if (this.loop){
@@ -606,15 +606,17 @@ function(Tone){
 			return this._clock.ticks;
 		},
 		set : function(t){
-			var now = this.now();
-			//stop everything synced to the transport
-			if (this.state === Tone.State.Started){
-				this.emit("stop", now);
-				this._clock.ticks = t;
-				//restart it with the new time
-				this.emit("start", now, this.seconds);
-			} else {
-				this._clock.ticks = t;
+			if (this._clock.ticks !== t){
+				var now = this.now();
+				//stop everything synced to the transport
+				if (this.state === Tone.State.Started){
+					this.emit("stop", now);
+					this._clock.ticks = t;
+					//restart it with the new time
+					this.emit("start", now, this.seconds);
+				} else {
+					this._clock.ticks = t;
+				}
 			}
 		}
 	});
@@ -705,7 +707,7 @@ function(Tone){
 		} else {
 			return 0;
 		}
-		var transportPos = Tone.Time(this.ticks, "i").eval();
+		var transportPos = Tone.Time(this.ticks, "i");
 		var remainingTime = subdivision - (transportPos % subdivision);
 		if (remainingTime === 0){
 			remainingTime = subdivision;
@@ -787,22 +789,15 @@ function(Tone){
 	///////////////////////////////////////////////////////////////////////////////
 
 	var TransportConstructor = Tone.Transport;
+	Tone.Transport = new TransportConstructor();
 
-	Tone._initAudioContext(function(){
-		if (typeof Tone.Transport === "function"){
-			//a single transport object
-			Tone.Transport = new Tone.Transport();
+	Tone.Context.on("init", function(context){
+		if (context.Transport instanceof TransportConstructor){
+			Tone.Transport = context.Transport;
 		} else {
-			//stop the clock
-			Tone.Transport.stop();
-			//get the previous values
-			var prevSettings = Tone.Transport.get();
-			//destory the old transport
-			Tone.Transport.dispose();
-			//make new Transport insides
-			TransportConstructor.call(Tone.Transport);
-			//set the previous config
-			Tone.Transport.set(prevSettings);
+			Tone.Transport = new TransportConstructor();
+			//store the Transport on the context so it can be retrieved later
+			context.Transport = Tone.Transport;
 		}
 	});
 

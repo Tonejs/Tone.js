@@ -1,4 +1,5 @@
-define(["Test", "Tone/core/Clock", "helper/Offline2"], function (Test, Clock, Offline) {
+define(["Test", "Tone/core/Clock", "helper/Offline"], 
+	function (Test, Clock, Offline) {
 
 	describe("Clock", function(){
 
@@ -45,118 +46,72 @@ define(["Test", "Tone/core/Clock", "helper/Offline2"], function (Test, Clock, Of
 				expect(gotValues.frequency).to.equal(2);
 				clock.dispose();
 			});
-
-			it ("can set the lookAhead", function(){
-				var oldLookAhead = Clock.lookAhead;
-				Clock.lookAhead = 0.05;
-				expect(Clock.lookAhead).to.equal(0.05);
-				Clock.lookAhead = oldLookAhead;
-			});
-
-			it ("can set the updateInterval", function(){
-				var oldUpdateInterval = Clock.updateInterval;
-				Clock.updateInterval = 0.05;
-				expect(Clock.updateInterval).to.equal(0.05);
-				Clock.updateInterval = oldUpdateInterval;
-			});
-
-			it ("can set the latencyHint", function(){
-				var oldLatencyHint = Clock.latencyHint;
-				Clock.latencyHint = "fastest";
-				expect(Clock.latencyHint).to.equal("fastest");
-				expect(Clock.lookAhead).to.be.closeTo(0.01, 0.05);
-				expect(Clock.updateInterval).to.be.closeTo(0.01, 0.05);
-				Clock.latencyHint = oldLatencyHint;
-			});
 		});
 
 		context("State", function(){
 
-			it ("correctly returns the scheduled play state", function(done){
-				Offline(function(output, testFn, tearDown){
+			it ("correctly returns the scheduled play state", function(){
+				return Offline(function(){
 					var clock = new Clock();
 					expect(clock.state).to.equal("stopped");
-					clock.start(0).stop(0.5);
+					clock.start(0).stop(0.2);
 					expect(clock.state).to.equal("started");
 
-					tearDown(function(){
-						expect(clock.state).to.equal("stopped");
-						clock.dispose();
-						done();
-					});
-				}, 0.6);
+					return function(sample, time){
+						Test.whenBetween(time, 0, 0.2, function(){
+							expect(clock.state).to.equal("started");
+						});
+
+						Test.whenBetween(time, 0.2, Infinity, function(){
+							expect(clock.state).to.equal("stopped");
+						});
+					};
+				}, 0.3);
 			});
 
-			it("can start, pause, and stop", function(done){
-				Offline(function(output, testFn, tearDown){
+			it("can start, pause, and stop", function(){
+				return Offline(function(){
 					var clock = new Clock();
 					expect(clock.state).to.equal("stopped");
 					clock.start(0).pause(0.2).stop(0.4);
 					expect(clock.state).to.equal("started");
 
-					testFn(function(sample, time){
-						if (time >= 0.2 && time < 0.4){
-							expect(clock.state).to.equal("paused");
-						} else if (time >= 0.4){
-							expect(clock.state).to.equal("stopped");
-						}
-					});
+					return function(sample, time){
+						Test.whenBetween(time, 0, 0.2, function(){
+							expect(clock.state).to.equal("started");
+						});
 
-					tearDown(function(){
-						clock.dispose();
-						done();
-					});
-				}, 0.6);
+						Test.whenBetween(time, 0.2, 0.4, function(){
+							expect(clock.state).to.equal("paused");
+						});
+
+						Test.whenBetween(time, 0.4, Infinity, function(){
+							expect(clock.state).to.equal("stopped");
+						});
+					};
+
+				}, 0.5);
 			});
 
-			it("can start and stop in close proximity", function(done){
-				Offline(function(output, testFn, tearDown){
+			it("can schedule multiple start and stops", function(){
+				return Offline(function(){
 					var clock = new Clock();
 					expect(clock.state).to.equal("stopped");
-					clock.start(0).stop(0.001).start(0.002);
+					clock.start(0).pause(0.1).stop(0.2).start(0.3).stop(0.4);
 					expect(clock.state).to.equal("started");
 
-					testFn(function(sample, time){
-						if (time < 0.001){
-							expect(clock.state).to.equal("started");
-						} else if (time >= 0.002){
-							expect(clock.state).to.equal("started");
-						} else {
-							expect(clock.state).to.equal("stopped");
-						}
-					});
-
-					tearDown(function(){
-						clock.dispose();
-						done();
-					});
-				}, 0.05);
-			});
-
-			it("can schedule multiple start and stops", function(done){
-				Offline(function(output, testFn, tearDown){
-					var clock = new Clock();
-					expect(clock.state).to.equal("stopped");
-					clock.start(0).pause(0.2).stop(0.4).start(0.6).stop(0.8);
-					expect(clock.state).to.equal("started");
-
-					testFn(function(sample, time){
-						if (time >= 0.2 && time < 0.4){
+					return function(sample, time){
+						Test.whenBetween(time, 0.1, 0.2, function(){
 							expect(clock.state).to.equal("paused");
-						} else if (time >= 0.4 && time < 0.6){
+						});
+						Test.whenBetween(time, 0.2, 0.3, function(){
 							expect(clock.state).to.equal("stopped");
-						} else if (time >= 0.6 && time < 0.8){
+						});
+						Test.whenBetween(time, 0.3, 0.4, function(){
 							expect(clock.state).to.equal("started");
-						} else if (time >= 0.8){
-							expect(clock.state).to.equal("stopped");
-						}
-					});
-
-					tearDown(function(){
-						clock.dispose();
-						done();
-					});
-				}, 0.9);
+						});
+					};
+				}, 0.5);
 			});
 		});
 
@@ -191,52 +146,40 @@ define(["Test", "Tone/core/Clock", "helper/Offline2"], function (Test, Clock, Of
 				clock.start(startTime);
 			});
 
-			it ("can be scheduled to stop in the future", function(done){
-				Offline(function(output, testFn, tearDown){
-					var invokations = 0;
-					var clock = new Clock(function(){
+			it ("can be scheduled to stop in the future", function(){
+				var invokations = 0;
+				return Offline(function(){
+					new Clock(function(){
 						invokations++;
 					}, 0.5).start(0);
-
-					tearDown(function(){
-						expect(invokations).to.equal(1);
-						clock.dispose();
-						done();
-					});
-				}, 0.6);
+				}, 0.6).then(function(){
+					expect(invokations).to.equal(1);
+				});
 			});
 
-			it ("invokes the right number of callbacks given the duration", function(done){
-				Offline(function(output, testFn, tearDown){
-					var invokations = 0;
-					var clock = new Clock(function(){
+			it ("invokes the right number of callbacks given the duration", function(){
+				var invokations = 0;
+				return Offline(function(){
+					new Clock(function(){
 						invokations++;
 					}, 10).start(0).stop(0.49);
-
-					tearDown(function(){
-						expect(invokations).to.equal(5);
-						clock.dispose();
-						done();
-					});
-				}, 0.6);
+				}, 0.6).then(function(){
+					expect(invokations).to.equal(5);
+				});
 			});
 
 
-			it ("can schedule the frequency of the clock", function(done){
-				Offline(function(output, testFn, tearDown){
-					var invokations = 0;
+			it ("can schedule the frequency of the clock", function(){
+				var invokations = 0;
+				return Offline(function(){
 					var clock = new Clock(function(){
 						invokations++;
 					}, 2);
 					clock.start(0).stop(1.1);
 					clock.frequency.setValueAtTime(4, 0.5);
-
-					tearDown(function(){
-						expect(invokations).to.equal(4);
-						clock.dispose();
-						done();
-					});
-				}, 2);
+				}, 2).then(function(){
+					expect(invokations).to.equal(4);
+				});
 			});
 		});
 
@@ -248,147 +191,137 @@ define(["Test", "Tone/core/Clock", "helper/Offline2"], function (Test, Clock, Of
 				clock.dispose();
 			});
 
-			it ("increments 1 tick per callback", function(done){
-				Offline(function(output, testFn, tearDown){
-					var ticks = 0;
-					var clock = new Clock(function(){
+			it ("increments 1 tick per callback", function(){
+				var ticks = 0;
+				var clock;
+				return Offline(function(){
+					clock = new Clock(function(){
 						ticks++;
 					}, 0.05).start();
-
-					tearDown(function(){
-						expect(ticks).to.equal(clock.ticks);
-						clock.dispose();
-						done();
-					});
-				}, 0.6);
+				}, 0.6).then(function(){
+					expect(ticks).to.equal(clock.ticks);
+				});
 			});
 
-			it ("resets ticks on stop", function(done){
-				Offline(function(output, testFn, tearDown){
-					var clock = new Clock(function(){}, 20).start(0).stop(0.5);
-
-					testFn(function(sample, time){
-						if (time > 0.05 && time < 0.5){
-							expect(clock.ticks).to.be.above(0);
-						}
-					});
-
-					tearDown(function(){
-						expect(clock.ticks).to.equal(0);
-						clock.dispose();
-						done();
-					});
-				}, 0.6);
+			it ("resets ticks on stop", function(){
+				return Offline(function(){
+					var clock = new Clock(function(){}, 20).start(0).stop(0.1);
+					return function(time){
+						Test.whenBetween(time, 0, 0.09, function(){
+							expect(clock.ticks).to.be.greaterThan(0);
+						});
+						Test.whenBetween(time, 0.1, Infinity, function(){
+							expect(clock.ticks).to.equal(0);
+						});
+					};
+				}, 0.2);
 			});
 
-			it ("does not reset ticks on pause but stops incrementing", function(done){
-
-				Offline(function(output, testFn, tearDown){
-					var clock = new Clock(function(){}, 20).start(0).pause(0.3);
-
+			it ("does not reset ticks on pause but stops incrementing", function(){
+				return Offline(function(){
+					var clock = new Clock(function(){}, 20).start(0).pause(0.1);
 					var pausedTicks = 0;
-					testFn(function(sample, time){
-						if (time > 0.05 && time < 0.3){
-							expect(clock.ticks).to.be.above(0);
+					return function(time){
+						Test.whenBetween(time, 0, 0.1, function(){
+							expect(clock.ticks).to.be.greaterThan(0);
 							pausedTicks = clock.ticks;
-						} else if (time >= 0.3){
+						});
+						Test.whenBetween(time, 0.1, Infinity, function(){
 							expect(clock.ticks).to.equal(pausedTicks);
-						}
-					});
-
-					tearDown(function(){
-						clock.dispose();
-						done();
-					});
-				}, 0.6);
+						});
+					};
+				}, 0.2);
 			});
 
-			it ("starts incrementing where it left off after pause", function(done){
+			it ("starts incrementing where it left off after pause", function(){
 
-				Offline(function(output, testFn, tearDown){
-					var clock = new Clock(function(){}, 20).start(0).pause(0.3).start(0.5);
+				return Offline(function(){
+					var clock = new Clock(function(){}, 20).start(0).pause(0.1).start(0.2);
 
 					var pausedTicks = 0;
-					var restarted = false;
-					testFn(function(sample, time){
-						if (time < 0.3){
-							expect(clock.ticks).to.be.above(0);
+					var tested = false;
+					return function(time){
+						Test.whenBetween(time, 0, 0.1, function(){
+							expect(clock.ticks).to.be.greaterThan(0);
 							pausedTicks = clock.ticks;
-						} else if (time >= 0.7 && !restarted){
-							restarted = true;
-							expect(clock.ticks).to.equal(pausedTicks + 1);
-						} 
-					});
-
-					tearDown(function(){
-						clock.dispose();
-						done();
-					});
-				}, 0.6);
+						});
+						Test.whenBetween(time, 0.1, 0.19, function(){
+							expect(clock.ticks).to.equal(pausedTicks);
+						});
+						Test.whenBetween(time, 0.2, Infinity, function(){
+							if (!tested){
+								tested = true;
+								expect(clock.ticks).to.equal(pausedTicks + 1);
+							}
+						});
+					};
+				}, 0.3);
 			});
 
-			it ("can start with a tick offset", function(done){
-				var clock = new Clock(function(){
-					expect(clock.ticks).to.equal(4);
-					clock.dispose();
-					done();
-				}, 10);
-				expect(clock.ticks).to.equal(0);
-				clock.start(undefined, 4);
+			it ("can start with a tick offset", function(){
+				return Offline(function(){
+					var tested = false;
+					var clock = new Clock(function(){
+						if (!tested){
+							tested = true;
+							expect(clock.ticks).to.equal(4);
+						}
+					}, 10);
+					expect(clock.ticks).to.equal(0);
+					clock.start(0, 4);
+				});
 			});
 		});
 
 		context("Events", function(){
 
-			it ("triggers the start event on start", function(done){
-				var clock = new Clock(function(){}, 20);
-				var startTime = clock.now() + 0.3;
-				clock.on("start", function(time, offset){
-					expect(time).to.be.closeTo(startTime, 0.05);
-					expect(clock.now() + Clock.lookAhead).to.be.closeTo(startTime, 0.1);
-					expect(offset).to.equal(0);
-					clock.dispose();
-					done();
-				});
-				clock.start(startTime);
+			it ("triggers the start event on start", function(){
+				return Offline(function(){
+					var clock = new Clock(function(){}, 20);
+					var startTime = 0.3;
+					clock.on("start", function(time, offset){
+						expect(time).to.be.closeTo(startTime, 0.05);
+						expect(offset).to.equal(0);
+					});
+					clock.start(startTime);
+				}, 0.4);
 			});
 			
 			it ("triggers the start event with an offset", function(done){
-				var clock = new Clock(function(){}, 20);
-				var startTime = clock.now() + 0.3;
-				clock.on("start", function(time, offset){
-					expect(time).to.be.closeTo(startTime, 0.05);
-					expect(clock.now() + Clock.lookAhead).to.be.closeTo(startTime, 0.1);
-					expect(offset).to.equal(2);
-					clock.dispose();
-					done();
-				});
-				clock.start(startTime, 2);
+				return Offline(function(){
+					var clock = new Clock(function(){}, 20);
+					var startTime = 0.3;
+					clock.on("start", function(time, offset){
+						expect(time).to.be.closeTo(startTime, 0.05);
+						expect(offset).to.equal(2);
+						clock.dispose();
+						done();
+					});
+					clock.start(startTime, 2);
+				}, 0.4);
 			});
 
-			it ("triggers stop event", function(done){
-				var clock = new Clock(function(){}, 20);
-				var stopTime = clock.now() + 0.3;
-				clock.on("stop", function(time){
-					expect(time).to.be.closeTo(stopTime, 0.05);
-					expect(clock.now() + Clock.lookAhead).to.be.closeTo(stopTime, 0.1);
-					clock.dispose();
-					done();
+			it ("triggers stop event", function(){
+				return Offline(function(){
+					var clock = new Clock(function(){}, 20);
+					var stopTime = 0.3;
+					clock.on("stop", function(time){
+						expect(time).to.be.closeTo(stopTime, 0.05);
+					});
+					clock.start().stop(stopTime);
 				});
-				clock.start().stop(stopTime);
 			});
 
-			it ("triggers pause stop event", function(done){
-				var clock = new Clock(function(){}, 20);
-				var now = clock.now();
-				clock.on("pause", function(time){
-					expect(time).to.be.closeTo(now + 0.1, 0.05);
-				}).on("stop", function(time){
-					expect(time).to.be.closeTo(now + 0.2, 0.05);
-					clock.dispose();
-					done();
+			it ("triggers pause stop event", function(){
+				return Offline(function(){
+					var clock = new Clock(function(){}, 20);
+					clock.on("pause", function(time){
+						expect(time).to.be.closeTo(0.1, 0.05);
+					}).on("stop", function(time){
+						expect(time).to.be.closeTo(0.2, 0.05);
+					});
+					clock.start().pause(0.1).stop(0.2);
 				});
-				clock.start().pause("+0.1").stop("+0.2");
 			});
 		});
 

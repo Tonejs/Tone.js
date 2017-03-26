@@ -106,67 +106,60 @@
 		Tone.Transport.loop = true;
 		Tone.Transport.loopStart = "4m";
 		Tone.Transport.loopEnd = "8m";
+
+		// GUI //
 		
-	</script>
+		Interface.Loader();
 
-	<script id="GUI">
+		var dragging = false;
 
+		window.slider = new Interface.Slider({
 
-		$(function(){
+			max : Tone.Transport.loopEnd,
 
-			Interface.Loader();
-
-			var dragging = false;
-
-			window.slider = new Interface.Slider({
-
-				max : Tone.Transport.loopEnd,
-
-				start : function(){
-					dragging = true;
-					if (started){
-						Tone.Transport.pause();
-					}
-				},
-				end : function(){
-					dragging = false;
-					if (started){
-						Tone.Transport.start("+0.1");
-					}
-				},
-				drag : function(val){
-					Tone.Transport.seconds = val;
-				}
-			})
-
-			var started = false;
-			
-			Interface.Button({
-				key : 32,
-				type : "toggle",
-				text : "Start",
-				activeText : "Pause",
-				start : function(){
-					started = true;
-					Tone.Transport.start("+0.1");
-				},
-				end : function(){
-					started = false;
+			start : function(){
+				dragging = true;
+				if (started){
 					Tone.Transport.pause();
 				}
-			});
-
-			function loop(){
-				requestAnimationFrame(loop);
-				if (!dragging){
-					slider.value(Tone.Transport.seconds);
+			},
+			end : function(){
+				dragging = false;
+				if (started){
+					Tone.Transport.start("+0.1");
 				}
-				var progress = Tone.Transport.seconds / Tone.Transport.loopEnd;
-				$("#Bar").css("left", (progress * 100).toFixed(2) + "%");
+			},
+			drag : function(val){
+				Tone.Transport.seconds = val;
 			}
-			loop();
+		})
 
+		var started = false;
+		
+		Interface.Button({
+			key : 32,
+			type : "toggle",
+			text : "Start",
+			activeText : "Pause",
+			start : function(){
+				started = true;
+				Tone.Transport.start("+0.1");
+			},
+			end : function(){
+				started = false;
+				Tone.Transport.pause();
+			}
 		});
+
+		function loop(){
+			requestAnimationFrame(loop);
+			if (!dragging){
+				slider.value(Tone.Transport.seconds);
+			}
+			var progress = Tone.Transport.seconds / Tone.Transport.loopEnd;
+			$("#Bar").css("left", (progress * 100).toFixed(2) + "%");
+		}
+		loop();
 
 		var loadedPromise = new Promise(function(done){
 			Tone.Buffer.on("load", done);
@@ -223,7 +216,5 @@
 			loadedPromise.then(draw);
 		});
 	</script>
-
-	</style>
 </body>
 </html>

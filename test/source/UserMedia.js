@@ -1,5 +1,5 @@
-define(["helper/Basic", "Tone/source/UserMedia", "Test", "Tone/source/Source", "helper/Offline2"], 
-	function (BasicTests, UserMedia, Test, Source, Offline) {
+define(["helper/Basic", "Tone/source/UserMedia", "Test", "Tone/source/Source"], 
+	function (BasicTests, UserMedia, Test, Source) {
 
 	describe("UserMedia", function(){
 

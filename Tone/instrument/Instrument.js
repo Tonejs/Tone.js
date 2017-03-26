@@ -60,7 +60,7 @@ define(["Tone/core/Tone", "Tone/type/Type"], function(Tone){
 	 *  Trigger the attack and then the release after the duration. 
 	 *  @param  {Frequency} note     The note to trigger.
 	 *  @param  {Time} duration How long the note should be held for before
-	 *                          triggering the release.
+	 *                          triggering the release. This value must be greater than 0. 
 	 *  @param {Time} [time=now]  When the note should be triggered.
 	 *  @param  {NormalRange} [velocity=1] The velocity the note should be triggered at.
 	 *  @returns {Tone.Instrument} this

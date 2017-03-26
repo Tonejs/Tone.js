@@ -1,282 +1,259 @@
-define(["helper/Basic", "Tone/event/Event", "Tone/core/Tone", "Tone/core/Transport", "helper/Offline2"], 
-	function (Basic, Event, Tone, Transport, Offline) {
+define(["helper/Basic", "Tone/event/Event", "Tone/core/Tone", "Tone/core/Transport", "helper/Offline", "Test"], 
+	function (Basic, Event, Tone, Transport, Offline, Test) {
 
 	describe("Event", function(){
 
 		Basic(Event);
 
-		function resetTransport(done){
-			Tone.Transport.cancel(0);
-			Tone.Transport.off("start stop pause loop");
-			Tone.Transport.stop();
-			Tone.Transport.loop = false;
-			Tone.Transport.bpm.value = 120;
-			Tone.Transport.timeSignature = [4, 4];
-			setTimeout(done, 200);
-		}
-
 		context("Constructor", function(){
 
-			afterEach(resetTransport);
-
 			it ("takes a callback and a value", function(){
-				var callback = function(){};
-				var note = new Event(callback, "C4");
-				expect(note.callback).to.equal(callback);
-				expect(note.value).to.equal("C4");
-				note.dispose();
+				return Offline(function(){
+					var callback = function(){};
+					var note = new Event(callback, "C4");
+					expect(note.callback).to.equal(callback);
+					expect(note.value).to.equal("C4");
+					note.dispose();
+				});
 			});
 
 			it ("can be constructed with no arguments", function(){
-				var note = new Event();
-				expect(note.value).to.be.null;
-				note.dispose();
+				return Offline(function(){
+					var note = new Event();
+					expect(note.value).to.be.null;
+					note.dispose();
+				});
 			});
 
 			it ("can pass in arguments in options object", function(){
-				var callback = function(){};
-				var value = {"a" : 1};
-				var note = new Event({
-					"callback" : callback,
-					"value" : value,
-					"loop" : true,
-					"loopEnd" : "4n",
-					"probability" : 0.3
+				return Offline(function(){
+					var callback = function(){};
+					var value = {"a" : 1};
+					var note = new Event({
+						"callback" : callback,
+						"value" : value,
+						"loop" : true,
+						"loopEnd" : "4n",
+						"probability" : 0.3
+					});
+					expect(note.callback).to.equal(callback);
+					expect(note.value).to.equal(value);
+					expect(note.loop).to.be.true;
+					expect(note.loopEnd).to.equal("4n");
+					expect(note.probability).to.equal(0.3);
+					note.dispose();
 				});
-				expect(note.callback).to.equal(callback);
-				expect(note.value).to.equal(value);
-				expect(note.loop).to.be.true;
-				expect(note.loopEnd).to.equal("4n");
-				expect(note.probability).to.equal(0.3);
-				note.dispose();
 			});
 		});
 
 		context("Get/Set", function(){
 
-			afterEach(resetTransport);
-
 			it ("can set values with object", function(){
-				var callback = function(){};
-				var note = new Event();
-				note.set({
-					"callback" : callback,
-					"value" : "D4",
-					"loop" : 8
+				return Offline(function(){
+					var callback = function(){};
+					var note = new Event();
+					note.set({
+						"callback" : callback,
+						"value" : "D4",
+						"loop" : 8
+					});
+					expect(note.callback).to.equal(callback);
+					expect(note.value).to.equal("D4");
+					expect(note.loop).to.equal(8);
+					note.dispose();
 				});
-				expect(note.callback).to.equal(callback);
-				expect(note.value).to.equal("D4");
-				expect(note.loop).to.equal(8);
-				note.dispose();
 			});
 
 			it ("can set get a the values as an object", function(){
-				var callback = function(){};
-				var note = new Event({
-					"callback" : callback,
-					"value" : "D3",
-					"loop" : 4
+				return Offline(function(){
+					var callback = function(){};
+					var note = new Event({
+						"callback" : callback,
+						"value" : "D3",
+						"loop" : 4
+					});
+					var values = note.get();
+					expect(values.value).to.equal("D3");
+					expect(values.loop).to.equal(4);
+					note.dispose();
 				});
-				var values = note.get();
-				expect(values.value).to.equal("D3");
-				expect(values.loop).to.equal(4);
-				note.dispose();
 			});
 		});
 
 		context("Event callback", function(){
 
-			afterEach(resetTransport);
-
-			it ("does not invoke get invoked until started", function(done){
-				Offline(function(output, test, after){
-
-					var note = new Event(function(){
+			it ("does not invoke get invoked until started", function(){
+				return Offline(function(Transport){
+					new Event(function(){
 						throw new Error("shouldn't call this callback");
 					}, "C4");
-					Tone.Transport.start();
-
-					after(function(){
-						note.dispose();
-						done();
-					});
+					Transport.start();
 				}, 0.3);
 			});
 
-			it ("is invoked after it's started", function(done){
-				var note = new Event(function(){
-					note.dispose();
-					done();
-				}, "C4").start(0);
-				Tone.Transport.start();
-			});
-
-			it ("passes in the scheduled time to the callback", function(done){
-				var now = Tone.Transport.now() + 0.1;
-				var note = new Event(function(time){
-					expect(time).to.be.a.number;
-					expect(time - now).to.be.closeTo(0.3, 0.01);
-					note.dispose();
-					done();
+			it ("is invoked after it's started", function(){
+				var invoked = false;
+				return Offline(function(Transport){
+					var note = new Event(function(){
+						note.dispose();
+						invoked = true;
+					}, "C4").start(0);
+					Transport.start();
+				}, 0.3).then(function(){
+					expect(invoked).to.be.true;
 				});
-				note.start(0.3);
-				Tone.Transport.start(now);
 			});
 
-			it ("passes in the value to the callback", function(done){
-				var note = new Event(function(time, thing){
-					expect(time).to.be.a.number;
-					expect(thing).to.equal("thing");
-					note.dispose();
-					done();
-				}, "thing").start();
-				Tone.Transport.start();
+			it ("passes in the scheduled time to the callback", function(){
+				var invoked = false;
+				return Offline(function(Transport){
+					var now = 0.1;
+					var note = new Event(function(time){
+						expect(time).to.be.a.number;
+						expect(time - now).to.be.closeTo(0.3, 0.01);
+						note.dispose();
+						invoked = true;
+					});
+					note.start(0.3);
+					Transport.start(now);
+				}, 0.5).then(function(){
+					expect(invoked).to.be.true;
+				});
 			});
 
-			it ("can mute the callback", function(done){
-				Offline(function(output, test, after){
+			it ("passes in the value to the callback", function(){
+				var invoked = false;
+				return Offline(function(Transport){
+					var note = new Event(function(time, thing){
+						expect(time).to.be.a.number;
+						expect(thing).to.equal("thing");
+						note.dispose();
+						invoked = true;
+					}, "thing").start();
+					Transport.start();
+				}, 0.3).then(function(){
+					expect(invoked).to.be.true;
+				});
+			});
+
+			it ("can mute the callback", function(){
+				return Offline(function(Transport){
 					var note = new Event(function(){
 						throw new Error("shouldn't call this callback");
 					}, "C4").start();
-
 					note.mute = true;
 					expect(note.mute).to.be.true;
-					Tone.Transport.start();
-
-					after(function(){
-						note.dispose();
-						done();
-					});
+					Transport.start();
 				}, 0.3);
 			});
 
-			it ("can trigger with some probability", function(done){
+			it ("can trigger with some probability", function(){
 
-				Offline(function(output, test, after){
+				return Offline(function(Transport){
 					var note = new Event(function(){
 						throw new Error("shouldn't call this callback");
 					}, "C4").start();
-
 					note.probability = 0;
 					expect(note.probability).to.equal(0);
-					Tone.Transport.start();
-
-					after(function(){
-						note.dispose();
-						done();
-					});
+					Transport.start();
 				}, 0.3);
 			});
 		});
 
 		context("Scheduling", function(){
 
-			afterEach(resetTransport);
-
-			it ("can be started and stopped multiple times", function(done){
-				Offline(function(output, test, after){
+			it ("can be started and stopped multiple times", function(){
+				return Offline(function(Transport){
 					var note = new Event().start(0).stop(0.2).start(0.4);
-
-					Tone.Transport.start(0);
-
-					test(function(sample, time){
-						if (time > 0 && time < 0.18){
+					Transport.start(0);
+					return function(time){
+						Test.whenBetween(time, 0, 0.19, function(){
 							expect(note.state).to.equal("started");
-						} else if (time > 0.2 && time < 0.38){
+						});
+						Test.whenBetween(time, 0.2, 0.39, function(){
 							expect(note.state).to.equal("stopped");
-						} else if (time > 0.4){
+						});
+						Test.whenBetween(time, 0.4, Infinity, function(){
 							expect(note.state).to.equal("started");
-						}
-					});
-					
-					after(function(){
-						expect(note.state).to.equal("started");
-						note.dispose();
-						done();
-					});
+						});
+					};
 				}, 0.5);
 			});
 
-			it ("restarts when transport is restarted", function(done){
+			it ("restarts when transport is restarted", function(){
 
-				Offline(function(output, test, after){
+				return Offline(function(Transport){
 					var note = new Event().start(0).stop(0.4);
-
-					Tone.Transport.start(0).stop(0.5).start(0.55);
-
-					test(function(sample, time){
-						if (time > 0 && time < 0.38){
-							expect(note.state).to.equal("started");	
-						} else if (time > 0.4 && time < 0.5){
+					Transport.start(0).stop(0.5).start(0.55);
+					return function(sample, time){
+						Test.whenBetween(time, 0, 0.39, function(){
+							expect(note.state).to.equal("started");
+						});
+						Test.whenBetween(time, 0.4, 0.5, function(){
 							expect(note.state).to.equal("stopped");	
-						} else if (time > 0.55 && time < 0.8){
-							expect(note.state).to.equal("started");	
-						}
-					});
-
-					after(function(){
-						expect(Tone.Transport.state).to.equal("started");
-						expect(note.state).to.equal("stopped");
-						note.dispose();
-						done();
-					});
+						});
+						Test.whenBetween(time, 0.55, 0.8, function(){
+							expect(note.state).to.equal("started");
+						});
+					};
 				}, 1);
 			});
 
 
-			it ("can be cancelled", function(done){
-				var note = new Event().start(0);
-				setTimeout(function(){
+			it ("can be cancelled", function(){
+				return Offline(function(Transport){
+					var note = new Event().start(0);
 					expect(note.state).to.equal("started");
-					Tone.Transport.stop();
-					note.cancel();
-					setTimeout(function(){
-						Tone.Transport.start();
-						setTimeout(function(){
+					Transport.start();
+
+					var firstStop = false;
+					var restarted = false;
+					var tested = false;
+					return function(time){
+						//stop the transport
+						if (time > 0.2 && !firstStop){
+							firstStop = true;
+							Transport.stop();
+							note.cancel();
+						}
+						if (time > 0.3 && !restarted){
+							restarted = true;
+							Transport.start();
+						}
+						if (time > 0.4 && !tested){
+							restarted = true;
+							Transport.start();
 							expect(note.state).to.equal("stopped");
-							note.dispose();
-							done();
-						}, 100);
-					}, 100);
-				}, 100);
-				Tone.Transport.start();
+						}
+					};
+				}, 0.5);
 			});
 
 		});
 
 		context("Looping", function(){
 
-			afterEach(resetTransport);
-
-			it ("can be set to loop", function(done){
-
-				Offline(function(output, test, after){
-
-					var callCount = 0;
-
-					var note = new Event({
+			it ("can be set to loop", function(){
+				var callCount = 0;
+				return Offline(function(Transport){
+					new Event({
 						"loopEnd" : 0.25,
 						"loop" : true,
 						"callback" : function(){
 							callCount++;
 						}
 					}).start(0);
-
-					Tone.Transport.start(0);
-
-					after(function(){
-						expect(callCount).to.equal(4);
-						note.dispose();	
-						done();
-					});
-				}, 0.8);
+					Transport.start(0);
+				}, 0.8).then(function(){
+					expect(callCount).to.equal(4);
+				});
 
 			});
 
-			it ("can be set to loop at a specific interval", function(done){
-				Offline(function(output, test, after){
+			it ("can be set to loop at a specific interval", function(){
+				return Offline(function(Transport){
 					var lastCall;
-					var note = new Event({
+					new Event({
 						"loopEnd" : 0.25,
 						"loop" : true,
 						"callback" : function(time){
@@ -286,22 +263,13 @@ define(["helper/Basic", "Tone/event/Event", "Tone/core/Tone", "Tone/core/Transpo
 							lastCall = time;
 						}
 					}).start(0);
-					Tone.Transport.start();
-
-					after(function(){
-						note.dispose();	
-						done();
-					});
-
+					Transport.start();
 				}, 1);
 			});
 
-			it ("can adjust the loop duration after starting", function(done){
-
-				Offline(function(output, test, after){
-
+			it ("can adjust the loop duration after starting", function(){
+				return Offline(function(Transport){
 					var lastCall;
-
 					var note = new Event({
 						"loopEnd" : 0.5,
 						"loop" : true,
@@ -314,48 +282,31 @@ define(["helper/Basic", "Tone/event/Event", "Tone/core/Tone", "Tone/core/Transpo
 							lastCall = time;
 						}
 					}).start(0);
-
-					Tone.Transport.start();
-
-					after(function(){
-						note.dispose();	
-						done();
-					});
+					Transport.start();
 				}, 0.8);
 			});
 
-			it ("can loop a specific number of times", function(done){
-
-				Offline(function(output, test, after){
-
-					var callCount = 0;
-
-					var note = new Event({
+			it ("can loop a specific number of times", function(){
+				var callCount = 0;
+				return Offline(function(Transport){
+					new Event({
 						"loopEnd" : 0.125,
 						"loop" : 3,
 						"callback" : function(){
 							callCount++;
 						}
 					}).start(0);
-
-					Tone.Transport.start();
-
-					after(function(){
-						expect(callCount).to.equal(3);
-						note.dispose();	
-						done();
-					});
-				}, 0.8);
+					Transport.start();
+				}, 0.8).then(function(){
+					expect(callCount).to.equal(3);
+				});
 			});
 
-			it ("can be started and stopped multiple times", function(done){
-
-				Offline(function(output, test, after){
-
+			it ("can be started and stopped multiple times", function(){
+				return Offline(function(Transport){
 					var eventTimes = [0.3, 0.4, 0.9, 1.0, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9];
 					var eventTimeIndex = 0;
-
-					var note = new Event({
+					new Event({
 						"loopEnd" : 0.1,
 						"loop" : true,
 						"callback" : function(time){
@@ -364,21 +315,13 @@ define(["helper/Basic", "Tone/event/Event", "Tone/core/Tone", "Tone/core/Transpo
 							eventTimeIndex++;
 						}
 					}).start(0.1).stop(0.2).start(0.5).stop(1.1);
-
-					Tone.Transport.start(0.2).stop(0.5).start(0.8);
-
-					after(function(){
-						note.dispose();	
-						done();
-					});
+					Transport.start(0.2).stop(0.5).start(0.8);
 				}, 2);
 			});
 
-			it ("loops the correct amount of times when the event is started in the Transport's past", function(done){
-
-				Offline(function(output, test, after){
-
-					var callCount = 0;
+			it ("loops the correct amount of times when the event is started in the Transport's past", function(){
+				var callCount = 0;
+				return Offline(function(Transport){
 					var note = new Event({
 						"loopEnd" : 0.2,
 						"loop" : 3,
@@ -386,76 +329,53 @@ define(["helper/Basic", "Tone/event/Event", "Tone/core/Tone", "Tone/core/Transpo
 							callCount++;
 						}
 					});
-
-					Tone.Transport.start();
-
+					Transport.start();
 					var wasCalled = false;
-
-					test(function(sample, time){
-
+					return function(time){
 						if (time > 0.1 && !wasCalled) {
 							wasCalled = true;
 							note.start(0);
 						}
-					});
-
-					after(function(){
-						expect(callCount).to.equal(2);
-						note.dispose();	
-						done();
-					});
-
-				}, 1);
+					};
+				}, 1).then(function(){
+					expect(callCount).to.equal(2);
+				});
 			});
 
-			it ("reports the progress of the loop", function(done){
-
-				Offline(function(output, test, after){
-
+			it ("reports the progress of the loop", function(){
+				return Offline(function(Transport){
 					var note = new Event({
 						"loopEnd" : 1,
 						"loop" : true,
 					}).start(0);
-
-					Tone.Transport.start();
-
-					after(function(){
-						expect(note.progress).to.be.closeTo(0.8, 0.1);
-						note.dispose();	
-						done();
-					});
+					Transport.start();
+					return function(time){
+						expect(note.progress).to.be.closeTo(time, 0.05);
+					};
 				}, 0.8);
 			});
 
-			it ("progress is 0 when not looping", function(done){
-				Offline(function(output, test, after){
-
+			it ("progress is 0 when not looping", function(){
+				Offline(function(Transport){
 					var note = new Event({
 						"loopEnd" : 0.25,
 						"loop" : false,
 					}).start(0);
-
-					Tone.Transport.start();
-
-					after(function(){
+					Transport.start();
+					return function(){
 						expect(note.progress).to.equal(0);
-						note.dispose();	
-						done();
-					});
-				}, 0.8);
+					};
+				}, 0.2);
 			});
 		});
 
 		context("playbackRate and humanize", function(){
 
-			afterEach(resetTransport);
 
-			it ("can adjust the playbackRate", function(done){
-
-				Offline(function(output, test, after){
-
+			it ("can adjust the playbackRate", function(){
+				return Offline(function(Transport){
 					var lastCall;
-					var note = new Event({
+					new Event({
 						"playbackRate" : 2,
 						"loopEnd" : 0.5,
 						"loop" : true,
@@ -466,20 +386,12 @@ define(["helper/Basic", "Tone/event/Event", "Tone/core/Tone", "Tone/core/Transpo
 							lastCall = time;
 						}
 					}).start(0);
-
-					Tone.Transport.start();
-
-					after(function(){
-						note.dispose();	
-						done();
-					});
-
+					Transport.start();
 				}, 0.7);
 			});
 
-			it ("can adjust the playbackRate after starting", function(done){
-
-				Offline(function(output, test, after){
+			it ("can adjust the playbackRate after starting", function(){
+				return Offline(function(Transport){
 					var lastCall;
 					var note = new Event({
 						"playbackRate" : 1,
@@ -494,22 +406,14 @@ define(["helper/Basic", "Tone/event/Event", "Tone/core/Tone", "Tone/core/Transpo
 							lastCall = time;
 						}
 					}).start(0);
-					Tone.Transport.start();
-
-					after(function(){
-						note.dispose();	
-						done();
-					});
+					Transport.start();
 				}, 1.2);
 
 			});
 
-			it ("can humanize the callback by some amount", function(done){
-
-				Offline(function(output, test, after){
-
+			it ("can humanize the callback by some amount", function(){
+				return Offline(function(Transport){
 					var lastCall;
-					
 					var note = new Event({
 						"humanize" : 0.05,
 						"loopEnd" : 0.25,
@@ -521,14 +425,7 @@ define(["helper/Basic", "Tone/event/Event", "Tone/core/Tone", "Tone/core/Transpo
 							lastCall += 0.25;
 						}
 					}).start(0);
-
-					Tone.Transport.start();
-
-					after(function(){
-						note.dispose();	
-						done();
-					});
-
+					Transport.start();
 				}, 0.6);
 			});
 

@@ -1,6 +1,6 @@
-define(["helper/Offline", "Tone/signal/ScaleExp", "helper/Basic", 
+define(["helper/ConstantOutput", "Tone/signal/ScaleExp", "helper/Basic", 
 	"Test", "Tone/source/Oscillator", "Tone/signal/Signal"], 
-	function (Offline, ScaleExp, Basic, Test, Oscillator, Signal) {
+	function (ConstantOutput, ScaleExp, Basic, Test, Oscillator, Signal) {
 
 	describe("ScaleExp", function(){
 
@@ -32,24 +32,13 @@ define(["helper/Offline", "Tone/signal/ScaleExp", "helper/Basic",
 				scale.dispose();
 			});
 
-			it("scales a signal exponentially", function(done){
-				var signal, scale;
-				var offline = new Offline();
-				offline.before(function(dest){
-					signal = new Signal(0.5);
-					scale = new ScaleExp(0, 1, 2);
+			it("scales a signal exponentially", function(){
+				return ConstantOutput(function(){
+					var signal = new Signal(0.5);
+					var scale = new ScaleExp(0, 1, 2);
 					signal.connect(scale);
-					scale.connect(dest);
-				}); 
-				offline.test(function(sample){
-					expect(sample).to.be.closeTo(0.25, 0.01);
-				});
-				offline.after(function(){
-					signal.dispose();
-					scale.dispose();
-					done();
-				});
-				offline.run();
+					scale.toMaster();
+				}, 0.25); 
 			});
 		});
 	});

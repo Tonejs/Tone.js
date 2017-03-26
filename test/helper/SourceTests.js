@@ -1,6 +1,6 @@
 define(["helper/OutputAudio", "Tone/source/Source", "helper/OutputAudioStereo", 
-	"Test", "helper/Offline2", "helper/Meter", "helper/APITest"], 
-	function (OutputAudio, Source, OutputAudioStereo, Test, Offline, Meter, APITest) {
+	"Test", "helper/Offline", "helper/APITest"], 
+	function (OutputAudio, Source, OutputAudioStereo, Test, Offline, APITest) {
 
 	return function(Constr, args){
 
@@ -18,129 +18,81 @@ define(["helper/OutputAudio", "Tone/source/Source", "helper/OutputAudioStereo",
 				instance.dispose();
 			});
 
-			it("starts and stops", function(done){
-
-				Offline(function(output, testFn, tearDown){
-					
+			it("starts and stops", function(){
+				return Offline(function(){
 					var instance = new Constr(args);
 					expect(instance.state).to.equal("stopped");
 					instance.start(0).stop(0.2);
-
-					testFn(function(sample, time){
+					return function(time){
 						if (time >= 0 && time < 0.2){
 							expect(instance.state).to.equal("started");
 						} else if (time > 0.2){
 							expect(instance.state).to.equal("stopped");
 						}
-					});
-
-					tearDown(function(){
-						instance.dispose();
-						done();
-					});
+					};
 				}, 0.3);
 			});
 
-			it("makes a sound", function(done){
-				var instance;
-				OutputAudio(function(dest){
-					instance = new Constr(args);
-					instance.connect(dest);
+			it("makes a sound", function(){
+				return OutputAudio(function(){
+					var instance = new Constr(args);
+					instance.toMaster();
 					instance.start();
-				}, function(){
-					instance.dispose();
-					done();
 				});
 			});	
 
-			it("produces sound in both channels", function(done){
-				var instance;
-				OutputAudioStereo(function(dest){
-					instance = new Constr(args);
-					instance.connect(dest);
+			it("produces sound in both channels", function(){
+				return OutputAudioStereo(function(){
+					var instance = new Constr(args);
+					instance.toMaster();
 					instance.start();
-				}, function(){
-					instance.dispose();
-					done();
 				});
 			});	
 
-			it("be scheduled to start in the future", function(done){
-				var instance;
-				var meter = new Meter(0.3);
-				meter.before(function(dest){
-					instance = new Constr(args);
-					instance.connect(dest);
+			it("be scheduled to start in the future", function(){
+				return Offline(function(){
+					var instance = new Constr(args).toMaster();
 					instance.start(0.1);
+				}, 0.3).then(function(buffer){
+					buffer.forEach(function(sample, time){
+						if (sample > 0){
+							expect(time).to.be.at.least(0.099);
+						}
+					});
 				});
-				meter.test(function(sample, time){
-					if (sample > 0){
-						expect(time).to.be.at.least(0.1);
-					}
-				});
-				meter.after(function(){
-					instance.dispose();
-					done();
-				});
-				meter.run();
 			});
 
-			it("makes no sound if it is started and then stopped with a time at or before the start time", function(done){
-				var instance;
-				var meter = new Meter(1);
-				meter.before(function(dest){
-					instance = new Constr(args);
-					instance.connect(dest);
-					instance.start(0.5).stop(0);
+			it("makes no sound if it is started and then stopped with a time at or before the start time", function(){
+				return Offline(function(){
+					var instance = new Constr(args).toMaster();
+					instance.start(0.1).stop(0.05);
+				}, 0.3).then(function(buffer){
+					expect(buffer.isSilent()).to.be.true;
 				});
-				meter.test(function(sample){
-					expect(sample).to.equal(0);
-				});
-				meter.after(function(){
-					instance.dispose();
-					done();
-				});
-				meter.run();
 			});
 
-			it("can be muted", function(done){
-				var instance;
-				var meter = new Meter(0.25);
-				meter.before(function(dest){
-					instance = new Constr(args);
-					instance.connect(dest);
+			it("can be muted", function(){
+				return Offline(function(){
+					var instance = new Constr(args).toMaster();
 					instance.start(0);
 					instance.mute = true;
+				}, 0.3).then(function(buffer){
+					expect(buffer.isSilent()).to.be.true;
 				});
-				meter.test(function(sample){
-					expect(sample).to.equal(0);
-				});
-				meter.after(function(){
-					instance.dispose();
-					done();
-				});
-				meter.run();
 			});
 
-			it("be scheduled to stop in the future", function(done){
-				var instance;
-				var meter = new Meter(0.4);
-				meter.before(function(dest){
-					instance = new Constr(args);
-					instance.connect(dest);
+			it("be scheduled to stop in the future", function(){
+				return Offline(function(){
+					var instance = new Constr(args).toMaster();
 					instance.start(0).stop(0.2);
+					instance.mute = true;
+				}, 0.3).then(function(buffer){
+					buffer.forEach(function(sample, time){
+						if (time > 0.2){
+							expect(sample).to.equal(0);
+						}
+					});
 				});
-				//keep a moving average of the output
-				meter.test(function(sample, time){
-					if (time > 0.02 && sample < 0.001){
-						expect(time).to.be.gte(0.2);
-					}
-				});
-				meter.after(function(){
-					instance.dispose();
-					done();
-				});
-				meter.run();
 			});
 
 		});

@@ -191,7 +191,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 				this._source.loop = this._loop;
 				this._source.loopStart = this.toSeconds(this._loopStart);
 				this._source.loopEnd = this.toSeconds(this._loopEnd);
-			} else {
+			} else if (!this._synced){
 				//if it's not looping, set the state change at the end of the sample
 				this._state.setStateAtTime(Tone.State.Stopped, startTime + duration);
 			}

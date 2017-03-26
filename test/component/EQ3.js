@@ -41,33 +41,23 @@ function (EQ3, Basic, Offline, Test, Signal, PassAudio, PassAudioStereo) {
 				eq3.dispose();
 			});
 
-			it("passes the incoming signal through", function(done){
-				var eq3;
-				PassAudio(function(input, output){
-					eq3 = new EQ3({
+			it("passes the incoming signal through", function(){
+				return PassAudio(function(input){
+					var eq3 = new EQ3({
 						"low" : -20,
 						"high" : 12
-					});
+					}).toMaster();
 					input.connect(eq3);
-					eq3.connect(output);
-				}, function(){
-					eq3.dispose();
-					done();
 				});
 			});
 
-			it("passes the incoming stereo signal through", function(done){
-				var eq3;
-				PassAudioStereo(function(input, output){
-					eq3 = new EQ3({
+			it("passes the incoming stereo signal through", function(){
+				return PassAudioStereo(function(input){
+					var eq3 = new EQ3({
 						"mid" : -2,
 						"high" : 2
-					});
+					}).toMaster();
 					input.connect(eq3);
-					eq3.connect(output);
-				}, function(){
-					eq3.dispose();
-					done();
 				});
 			});
 		});
