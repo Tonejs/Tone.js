@@ -63,25 +63,25 @@
 	</script>
 
 	<script id="GUI">
-		$(function(){
+		Interface.Loader()
+		
+		Interface.Button({
+			key : 32,
+			type : "toggle",
+			text : "Start Sound",
+			activeText : "Stop",
+			start : function(){
+				Tone.Transport.start("+0.1");
+			},
+			end : function(){
+				Tone.Transport.stop();
+			}
+		});
 
-			Interface.Loader()
-			
-			Interface.Button({
-				key : 32,
-				type : "toggle",
-				text : "Start Sound",
-				activeText : "Stop",
-				start : function(){
-					Tone.Transport.start("+0.1");
-				},
-				end : function(){
-					Tone.Transport.stop();
-				}
-			});
+		// THREE.JS //
 
+		if (window.WebGLRenderingContext){
 
-			//THREE.js/////////////////////////////////////////
 			var SCREEN_WIDTH = document.querySelector("#three").clientWidth;
 			var SCREEN_HEIGHT = document.querySelector("#three").clientHeight;
 			var aspect = SCREEN_WIDTH / SCREEN_HEIGHT;
@@ -151,7 +151,7 @@
 			}
 
 			animate()
-		});
+		}
 	</script>
 
 	</style>
