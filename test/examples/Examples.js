@@ -2,26 +2,49 @@ define(["Test", "Examples"], function (Test, Examples) {
 
 	var baseUrl = "../examples/";
 	if (window.__karma__){
-		baseUrl = "/base/test/";
+		baseUrl = "/base/examples/";
+	}
+
+	function getIframeError(url){
+		return new Promise(function(success, error){
+			var iframe = document.createElement("iframe");
+			iframe.onload = function(){
+				iframe.remove();
+				success();
+			};
+			iframe.width = 1;
+			iframe.height = 1;
+			iframe.src = url;
+			document.body.appendChild(iframe);
+			//capture the error
+			iframe.contentWindow.onerror=function(e) {
+				error(e);
+			};
+		});
 	}
 
 	function createTest(url){
 
-		it (url, function(done){
-			var iframe = document.createElement("iframe");
-			var err = null;
-			iframe.onload = function(){
-				iframe.remove();
-				done(err);
+		it (url, function(){
+			url = baseUrl + url + ".html";
+			return testUrl(url).then(getIframeError);
+		});
+	}
+
+	function testUrl(url){
+		return new Promise(function(success, fail){
+			var httpRequest = new XMLHttpRequest();
+			httpRequest.onreadystatechange = function() {
+				if (httpRequest.readyState === 4) {
+					if (httpRequest.status === 200) {
+						success(url);
+					} else {
+						fail("404: "+url);
+					}
+				}
 			};
-			iframe.src = baseUrl + url + ".html";
-			iframe.width = 1;
-			iframe.height = 1;
-			document.body.appendChild(iframe);
-			//capture the error
-			iframe.contentWindow.onerror=function(e) {
-				err = e;
-			};
+			httpRequest.open("GET", url);
+			httpRequest.send();
 		});
 	}
 
