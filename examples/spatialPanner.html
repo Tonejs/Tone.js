@@ -10,6 +10,7 @@
 	<script src="../build/Tone.js"></script>
 	<script src="./scripts/three.min.js"></script>
 	<script src="./scripts/OrbitControls.js"></script>
+	<script src="./scripts/WebGLDetector.js"></script>
 	<script src="./scripts/THREE.Tone.js"></script>
 	<script src="./scripts/jquery.min.js"></script>
 	<script src="./scripts/draggabilly.js"></script>
@@ -79,8 +80,8 @@
 		});
 
 		// THREE.JS //
-
-		if (window.WebGLRenderingContext){
+		
+		if (Detector.webgl){
 
 			var SCREEN_WIDTH = document.querySelector("#three").clientWidth;
 			var SCREEN_HEIGHT = document.querySelector("#three").clientHeight;
