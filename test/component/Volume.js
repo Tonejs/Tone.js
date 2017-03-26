@@ -91,6 +91,16 @@ function (Volume, Basic, Offline, Test, Signal, PassAudio, PassAudioStereo) {
 				});
 			});
 
+			it("muted when volume is set to -Infinity", function(){
+				return Offline(function(){
+					var vol = new Volume(-Infinity).toMaster();
+					new Signal(1).connect(vol);
+					expect(vol.mute).to.be.true;
+				}).then(function(buffer){
+					expect(buffer.isSilent()).to.be.true;
+				});
+			});
+
 			it("setting the volume unmutes it and reports itself as unmuted", function(){
 				var vol = new Volume(0).toMaster();
 				vol.mute = true;
