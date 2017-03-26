@@ -22,9 +22,6 @@
 
 </head>
 <body>	
-	<style type="text/css">
-
-	</style>
 	<div id="Content">
 		<div id="Title">Supersaw</div>
 		<div id="Explanation">
@@ -259,27 +256,22 @@
 	part.loopEnd = "4m";
 
 	Tone.Transport.bpm.value = 132;
+
+	// GUI //
+
+	Interface.Button({
+		key : 32,
+		type : "toggle",
+		text : "Start",
+		activeText : "Stop",
+		start : function(){
+			Tone.Transport.start("+0.1");
+		},
+		end : function(){
+			Tone.Transport.stop();
+		}
+	});
 		
 	</script>
-
-	<script id="GUI">
-		$(function(){
-			
-			Interface.Button({
-				key : 32,
-				type : "toggle",
-				text : "Start",
-				activeText : "Stop",
-				start : function(){
-					Tone.Transport.start("+0.1");
-				},
-				end : function(){
-					Tone.Transport.stop();
-				}
-			});
-		});
-	</script>
-
-	</style>
 </body>
 </html>

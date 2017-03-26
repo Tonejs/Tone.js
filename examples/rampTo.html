@@ -63,10 +63,8 @@
 				"detune" : Math.random() * 30 - 15,
 			}).connect(reverb).start();
 		}
-		
-	</script>
 
-	<script>
+		// GUI //
 
 		nx.onload = function(){
 			nx.colorize("#7F33ED");
@@ -90,6 +88,7 @@
 
 			function setValues(data){
 				for (var n in oscillators){
+					oscillators[n].volume.cancelScheduledValues();
 					if (data.hasOwnProperty(n)){
 						oscillators[n].volume.rampTo((1 - Math.pow(data[n], 0.5)) * -60, 0.3);
 					} else {
@@ -109,6 +108,7 @@
 					var i = 0;
 					for (var n in oscillators){
 						var osc = oscillators[n];
+						osc.volume.cancelScheduledValues();
 						osc.frequency.rampTo(bassFreq * i * value, 0.4);
 						i++;
 					}
@@ -128,9 +128,8 @@
 					Tone.Master.volume.rampTo(-Infinity, 0.5);
 				},
 			});
-
 		}
+		
 	</script>
-
 </body>
 </html>

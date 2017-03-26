@@ -49,29 +49,26 @@
 				"decay" : 0.01
 			}
 		}).toMaster();
-	</script>
 
-	<script>
+		// GUI //
 
-		$(function(){
-		
-			Interface.Slider({
-				tone : synth,
-				param : "modulationIndex",
-				name : "mod index",
-				max : 100
-			});
-
-			var keyboard = Interface.Keyboard();
-
-			keyboard.keyDown = function (note) {
-			    synth.triggerAttack(note);
-			};
-
-			keyboard.keyUp = function (note) {
-			    synth.triggerRelease();
-			};
+		Interface.Slider({
+			tone : synth,
+			param : "modulationIndex",
+			name : "mod index",
+			max : 100
 		});
+
+		var keyboard = Interface.Keyboard();
+
+		keyboard.keyDown = function (note) {
+			synth.triggerAttack(note);
+		};
+
+		keyboard.keyUp = function (note) {
+			synth.triggerRelease();
+		};
+
 	</script>
 </body>
 </html>

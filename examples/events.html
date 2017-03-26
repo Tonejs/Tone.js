@@ -128,23 +128,20 @@
 
 		//set the transport 
 		Tone.Transport.bpm.value = 90;
-	</script>
-	<script>
 
-		$(function(){
+		// GUI //
 
-			Interface.Button({
-				key : 32,
-				type : "toggle",
-				text : "Start",
-				activeText : "Stop",
-				start : function(){
-					Tone.Transport.start("+0.1");
-				},
-				end : function(){
-					Tone.Transport.stop();
-				}
-			});
+		Interface.Button({
+			key : 32,
+			type : "toggle",
+			text : "Start",
+			activeText : "Stop",
+			start : function(){
+				Tone.Transport.start("+0.1");
+			},
+			end : function(){
+				Tone.Transport.stop();
+			}
 		});
 	</script>
 </body>

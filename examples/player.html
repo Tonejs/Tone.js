@@ -36,25 +36,22 @@
 			"url" : "./audio/FWDL.mp3",
 			"loop" : true
 		}).toMaster();
-	</script>
-	
-	<script id="GUI">
-		$(function(){
 
-			Interface.Loader();
+		// GUI //
 
-			Interface.Button({
-				text : "Start",
-				activeText : "Stop",
-				start : function(){
-					player.start();
-				},
-				end : function(){
-					player.stop();
-				}
-			});
+		Interface.Loader();
 
+		Interface.Button({
+			text : "Start",
+			activeText : "Stop",
+			start : function(){
+				player.start();
+			},
+			end : function(){
+				player.stop();
+			}
 		});
 	</script>
+
 </body>
 </html>

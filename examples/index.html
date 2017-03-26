@@ -25,71 +25,68 @@
 
 		var container = $("#Sidebar");
 
-		$(function(){
+		var topbar = $("<div>").attr("id", "TopBar");
+		$("body").prepend(topbar);
 
-			var topbar = $("<div>").attr("id", "TopBar");
-			$("body").prepend(topbar);
-
-			// make the hamburger menu
-			var hamburger = $("<div>").attr("id", "Hamburger")
-				.appendTo(topbar);
-			for (var i = 0; i < 3; i++){
-				$("<span>").appendTo(hamburger);
-			}
-			hamburger.on("click", function(){
-				$("#Sidebar").toggleClass("Open");
-			});
-
-			//add the Logo
-			Logo({
-				"container" : topbar.get(0),
-				"height" : topbar.height() - 6,
-				"width" : 140
-			});
-
-			for (var catName in ExampleList){
-				$("<div>").addClass("Category").text(catName).appendTo(container);
-				var category = ExampleList[catName];
-				for (var example in category){
-					$("<div>").addClass("Item")
-						.appendTo(container)
-						.html($("<a>").attr("href", "#" + category[example]).text(example));
-				}
-			}
-
-			$(window).on("hashchange", setHash);	
-
-			function setHash(){
-				var hash = window.location.hash.substring(1);
-				if (hash === ""){
-					return;
-				}
-				var exampleName;
-				//split hash at the .
-				if (hash.split(".").length === 2){
-					var split = hash.split(".");
-					hash = split[0];
-					exampleName = split[1];
-				}
-				var url = location.protocol+'//'+location.host+location.pathname + hash + ".html";
-				$("iframe").attr("src", url);
-
-				// close the sidebar if it's open
-				if ($("#Sidebar").hasClass("Open")){
-					$("#Sidebar").removeClass("Open");
-				}
-
-				// add the source link
-				var srcUrl = "https://github.com/Tonejs/Tone.js/blob/master/examples/"+hash+".html"
-				if (!$("#Source").length){
-					$("<a id=\"Source\"></a>").appendTo("#Content");
-				}
-				$("#Source").attr("href", srcUrl);
-			}
-
-			//set it initially
-			setHash();
+		// make the hamburger menu
+		var hamburger = $("<div>").attr("id", "Hamburger")
+			.appendTo(topbar);
+		for (var i = 0; i < 3; i++){
+			$("<span>").appendTo(hamburger);
+		}
+		hamburger.on("click", function(){
+			$("#Sidebar").toggleClass("Open");
 		});
+
+		//add the Logo
+		Logo({
+			"container" : topbar.get(0),
+			"height" : topbar.height() - 6,
+			"width" : 140
+		});
+
+		for (var catName in ExampleList){
+			$("<div>").addClass("Category").text(catName).appendTo(container);
+			var category = ExampleList[catName];
+			for (var example in category){
+				$("<div>").addClass("Item")
+					.appendTo(container)
+					.html($("<a>").attr("href", "#" + category[example]).text(example));
+			}
+		}
+
+		$(window).on("hashchange", setHash);	
+
+		function setHash(){
+			var hash = window.location.hash.substring(1);
+			if (hash === ""){
+				return;
+			}
+			var exampleName;
+			//split hash at the .
+			if (hash.split(".").length === 2){
+				var split = hash.split(".");
+				hash = split[0];
+				exampleName = split[1];
+			}
+			var url = location.protocol+'//'+location.host+location.pathname + hash + ".html";
+			$("iframe").attr("src", url);
+
+			// close the sidebar if it's open
+			if ($("#Sidebar").hasClass("Open")){
+				$("#Sidebar").removeClass("Open");
+			}
+
+			// add the source link
+			var srcUrl = "https://github.com/Tonejs/Tone.js/blob/master/examples/"+hash+".html"
+			if (!$("#Source").length){
+				$("<a id=\"Source\"></a>").appendTo("#Content");
+			}
+			$("#Source").attr("href", srcUrl);
+		}
+
+		//set it initially
+		setHash();
 
 
 	</script>

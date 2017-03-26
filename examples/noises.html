@@ -41,32 +41,29 @@
 			"volume" : -20,
 			"type" : "brown"
 		}).toMaster();
-	</script>
 
-	<script id="GUI">
-		$(function(){
+		// GUI //
 
-			Interface.Dragger({
-				tone : noise,
-				y : {
-					param : "volume",
-					min : -40,
-					max : 0
-				},
-				x : {
-					param : "type",
-					options : ["white", "brown", "pink"]
-				},
-				start : function(){
-					noise.start();
-					Tone.Master.volume.rampTo(0, 0.05);
-				},
-				end : function(){
-					//so it doesn't click
-					Tone.Master.volume.rampTo(-Infinity, 0.05);
-				}
-			});
-		})			
+		Interface.Dragger({
+			tone : noise,
+			y : {
+				param : "volume",
+				min : -40,
+				max : 0
+			},
+			x : {
+				param : "type",
+				options : ["white", "brown", "pink"]
+			},
+			start : function(){
+				noise.start();
+				Tone.Master.volume.rampTo(0, 0.05);
+			},
+			end : function(){
+				//so it doesn't click
+				Tone.Master.volume.rampTo(-Infinity, 0.05);
+			}
+		});
 	</script>
 </body>
 </html>

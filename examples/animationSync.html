@@ -74,25 +74,22 @@
 
 		loop.interval = "16n";
 
-	</script>
-	<script>
 
-		$(function(){
+		// GUI //
 
-			Tone.Transport.lookAhead = 0.5
+		Tone.Transport.lookAhead = 0.5
 
-			Interface.Button({
-				key : 32,
-				type : "toggle",
-				text : "Start",
-				activeText : "Stop",
-				start : function(){
-					Tone.Transport.start("+0.1");
-				},
-				end : function(){
-					Tone.Transport.stop();
-				}
-			});
+		Interface.Button({
+			key : 32,
+			type : "toggle",
+			text : "Start",
+			activeText : "Stop",
+			start : function(){
+				Tone.Transport.start("+0.1");
+			},
+			end : function(){
+				Tone.Transport.stop();
+			}
 		});
 	</script>
 </body>

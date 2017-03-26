@@ -70,65 +70,59 @@
 			"volume" : -8,
 		}).connect(env).start();
 
-	</script>
+		// GUI //
 
-	<script id="GUI">
-		$(function(){
+		Interface.Slider({
+			param : "attack",
+			name : "attack",
+			parent : $("#Sliders"),
+			tone : env,
+			min : 0.005,
+			max : 1,
+			exp : 2,
+		});
 
-			Interface.Slider({
-				param : "attack",
-				name : "attack",
-				parent : $("#Sliders"),
-				tone : env,
-				min : 0.005,
-				max : 1,
-				exp : 2,
-			});
+		Interface.Slider({
+			param : "decay",
+			name : "decay",
+			parent : $("#Sliders"),
+			tone : env,
+			min : 0.005,
+			max : 1,
+			exp : 2,
+		});
 
-			Interface.Slider({
-				param : "decay",
-				name : "decay",
-				parent : $("#Sliders"),
-				tone : env,
-				min : 0.005,
-				max : 1,
-				exp : 2,
-			});
+		Interface.Slider({
+			param : "release",
+			name : "release",
+			parent : $("#Sliders"),
+			tone : env,
+			min : 0.2,
+			max : 2,
+			exp : 2,
+		});
 
-			Interface.Slider({
-				param : "release",
-				name : "release",
-				parent : $("#Sliders"),
-				tone : env,
-				min : 0.2,
-				max : 2,
-				exp : 2,
-			});
+		Interface.Slider({
+			param : "sustain",
+			name : "sustain",
+			tone : env,
+			axis : "y",
+			min : 0.0,
+			max : 1,
+			exp : 2,
+		});
 
-			Interface.Slider({
-				param : "sustain",
-				name : "sustain",
-				tone : env,
-				axis : "y",
-				min : 0.0,
-				max : 1,
-				exp : 2,
-			});
-
-			Interface.Button({
-				text : "Trigger Attack",
-				activeText : "Trigger Release",
-				key : 32, //spacebar
-				start : function(){
-					env.triggerAttack();
-				},
-				end : function(){
-					env.triggerRelease();
-				},
-			});
+		Interface.Button({
+			text : "Trigger Attack",
+			activeText : "Trigger Release",
+			key : 32, //spacebar
+			start : function(){
+				env.triggerAttack();
+			},
+			end : function(){
+				env.triggerRelease();
+			},
 		});
 	</script>
-
-	</style>
 </body>
 </html>

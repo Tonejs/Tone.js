@@ -61,54 +61,51 @@
 			.receive("reverb")
 			.toMaster();
 
-	</script>
-	<script id="GUI">
-		$(function(){
 
-			Interface.Slider({
-				name : "Chebyshev",
-				parent : $("#Sliders"),
-				min : -100,
-				max : 0,
-				drag : function(val){
-					chebySend.gain.value = val;
-				}
-			});
+		// GUI //
 
-			Interface.Slider({
-				name : "Chorus",
-				parent : $("#Sliders"),
-				min : -100,
-				max : 0,
-				drag : function(val){
-					chorusSend.gain.value = val;
-				}
-			});
-
-			Interface.Slider({
-				name : "Freeverb",
-				parent : $("#Sliders"),
-				min : -100,
-				max : 0,
-				drag : function(val){
-					reverbSend.gain.value = val;
-				}
-			});
-
-			/**
-			 *  the keyboard
-			 */
-			var keyboard = Interface.Keyboard();
-
-			keyboard.keyDown = function (note) {
-			    synth.triggerAttack(note);
-			};
-
-			keyboard.keyUp = function () {
-			    synth.triggerRelease();
-			};
-
+		Interface.Slider({
+			name : "Chebyshev",
+			parent : $("#Sliders"),
+			min : -100,
+			max : 0,
+			drag : function(val){
+				chebySend.gain.value = val;
+			}
 		});
+
+		Interface.Slider({
+			name : "Chorus",
+			parent : $("#Sliders"),
+			min : -100,
+			max : 0,
+			drag : function(val){
+				chorusSend.gain.value = val;
+			}
+		});
+
+		Interface.Slider({
+			name : "Freeverb",
+			parent : $("#Sliders"),
+			min : -100,
+			max : 0,
+			drag : function(val){
+				reverbSend.gain.value = val;
+			}
+		});
+
+		/**
+		 *  the keyboard
+		 */
+		var keyboard = Interface.Keyboard();
+
+		keyboard.keyDown = function (note) {
+		    synth.triggerAttack(note);
+		};
+
+		keyboard.keyUp = function () {
+		    synth.triggerRelease();
+		};
 	</script>
 </body>
 </html>
