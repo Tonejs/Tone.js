@@ -760,7 +760,7 @@ define(function(){
 		}
 	});
 
-	Tone.version = "r10-dev";
+	Tone.version = "r10";
 
 	// allow optional silencing of this log
 	if (!window.TONE_SILENCE_VERSION_LOGGING) {
