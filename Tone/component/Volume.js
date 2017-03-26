@@ -28,7 +28,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Gain"], function(Tone
 		 * @type {Decibels}
 		 * @private
 		 */
-		this._unmutedVolume = 0;
+		this._unmutedVolume = options.volume;
 
 		/**
 		 *  The volume control in decibels. 
