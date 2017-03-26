@@ -22,7 +22,7 @@ function (Tone) {
 	 * //can also schedule events along the Transport
 	 * //using the passed in Offline Transport
 	 * Tone.Offline(function(Transport){
-	 	var osc = new Tone.Oscillator().toMaster()
+	 * 	var osc = new Tone.Oscillator().toMaster()
 	 * 	Transport.schedule(function(time){
 	 * 		osc.start(time).stop(time + 0.1)
 	 * 	}, 1)
