@@ -41,5 +41,6 @@ var ExampleList = {
 	},
 	"Misc" : {
 		"Module Loaders" : "require",
+		"Offline Rendering" : "offline"
 	},
 };
