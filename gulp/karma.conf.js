@@ -22,6 +22,7 @@ module.exports = function(config) {
 			{pattern: 'examples/scripts/*.js', included: false},
 			{pattern: 'examples/style/*.css', included: false},
 			{pattern: 'examples/audio/*/*.mp3', included: false},
+			{pattern: 'examples/audio/*.mp3', included: false},
 			{pattern: 'examples/audio/*/*.png', included: false},
 			{pattern: 'build/*.js', included: false},
 			{pattern: 'test/audio/*', included: false},
