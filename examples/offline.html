@@ -45,35 +45,57 @@
 
 		Tone.loaded().then(function(){
 
-			return Tone.Offline(function(){
+			return Tone.Offline(function(Transport){
 
 				var reverb = new Tone.Convolver(buffer).toMaster();
-
 				reverb.wet.value = 0.2;
 
-				var count = 40;
-				var duration = 0.2;
+				var pannerA = new Tone.Panner(-1).connect(reverb);
+				var synthA = new Tone.Synth({
+					"envelope" : {
+						"attack" : 0.01,
+						"decay" : 5,
+						"sustain" : 0
+					},
+					"oscillator" : {
+						"type" : "sawtooth4"
+					}
+				}).connect(pannerA);
+				var seqA = new Tone.Sequence(function(time, note){
+					synthA.triggerAttack(note, time)
+				}, ["A4", "G4", "G#4", "F#4", "E4"], "8n").start(0);
+				seqA.loop = false;
 
-				for (var i = 0; i < count; i++){
-					var norm = i / count;
-					var pan = Math.cos(norm * Math.PI * 2);
-					var panner = new Tone.Panner(pan).connect(reverb);
-					var synth = new Tone.Synth({
-						"envelope" : {
-							"attack" : 0.001,
-							"decay" : 5,
-							"sustain" : 0
-						},
-						"oscillator" : {
-							"type" : "square10"
-						}
-					}).connect(panner);
+				var pannerB = new Tone.Panner(1).connect(reverb);
+				var synthB = new Tone.Synth({
+					"envelope" : {
+						"attack" : 0.001,
+						"decay" : 3,
+						"sustain" : 0
+					},
+					"oscillator" : {
+						"type" : "square8"
+					}
+				}).connect(pannerB);
+				var seqB = new Tone.Sequence(function(time, note){
+					synthB.triggerAttack(note, time)
+				}, ["G#4", "A4", "G4", "F4", "C4"], "8n").start("16n");
+				seqB.loop = false;
 
-					var time = norm * duration;
-					var freq = pan * 400 + 500;
-					synth.triggerAttack(freq, time, 0.1);
-				}
+				var bass = new Tone.MonoSynth({
+					"envelope" : {
+						"attack" : 0.01,
+						"decay" : 3,
+						"sustain" : 0.1
+					},
+				}).toMaster()
+				var bassSeq = new Tone.Sequence(function(time, note){
+					bass.triggerAttackRelease(note, "1n", time)
+				}, ["C2", "C2", "F1", "F1"], "4n").start(0);
+				bassSeq.loop = false;
 
+				Transport.bpm.value = 150;
+				Transport.start();
 			}, 7)
 
 		}).then(function(buffer){
