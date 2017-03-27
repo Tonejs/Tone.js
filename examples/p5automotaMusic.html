@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+	<title>CELULAR AUTOMOTA</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+	<script type="text/javascript" src="./scripts/p5.js"></script>
+	<script type="text/javascript" src="http://cdn.tonejs.org/r6/p5.Tone.js"></script>
+	<script type="text/javascript" src="./scripts/jquery.min.js"></script>
+	<script type="text/javascript" src="./scripts/Interface.js"></script>
+
+	<link rel="stylesheet" type="text/css" href="./style/examples.css">
+
+	<script type="text/javascript">
+		// jshint ignore: start
+	</script>
+
+</head>
+<body>
+	<script id="p5" type="text/javascript">
+
+		//based on http://hujackus.altervista.org/conwaymatrix/
+		//and the Game of Life example from Nature of Code 
+		//http://natureofcode.com/book/chapter-7-cellular-automata/
+		var w;
+		var h;
+		var columns;
+		var rows;
+		var board;
+		var next;
+
+		function setup(){
+			createCanvas(windowHeight, windowHeight);
+			// Calculate columns and rows
+			columns = 16;
+			rows = 16;
+
+			w = floor(width/columns);
+			h = floor(height/rows);
+
+			// Wacky way to make a 2D array in JS
+			board = new Array(columns);
+			for (var i = 0; i < columns; i++){
+				board[i] = new Array(rows);
+			} 
+			// Going to use multiple 2D arrays and swap them
+			next = new Array(columns);
+			for (i = 0; i < columns; i++){
+				next[i] = new Array(rows);
+			}
+			init();
+		}
+
+		function draw(){
+			background(255);
+			for ( var i = 0; i < columns;i++){
+				for ( var j = 0; j < rows;j++){
+					if(i == index && board[i][j] == 1){
+						fill(0, 0, 255);
+					}
+					else if (board[i][j] == 1){
+						fill(0);
+					}
+					else {
+						fill(255);
+					}
+					stroke(0);
+					rect(i * w, j * h, w - 1, h - 1);
+				}
+			}
+		}
+
+		function mouseDragged(){
+			var xIndex = Math.floor(columns * mouseX / width);
+			var yIndex = Math.floor(rows * mouseY / height)
+			board[xIndex][yIndex] = 1;
+		}
+
+		// Fill board randomly
+		function init(){
+			for (var i = 0; i < columns; i++){
+				for (var j = 0; j < rows; j++){
+					// Lining the edges with 0s
+					if (i == 0 || j == 0 || i == columns - 1 || j == rows - 1){
+						board[i][j] = 0;
+					}
+					// Filling the rest randomly
+					else {
+						board[i][j] = floor(random(2));
+					}
+					next[i][j] = 0;
+				}
+			}
+		}
+
+		// The process of creating the new generation
+		function generate(){
+			// Loop through every spot in our 2D array and check spots neighbors
+			for (var x = 1; x < columns - 1; x++){
+				for (var y = 1; y < rows - 1; y++){
+					// Add up all the states in a 3x3 surrounding grid
+					var neighbors = 0;
+					for (var i = -1; i <= 1; i++){
+						for (var j = -1; j <= 1; j++){
+							neighbors += board[x + i][y + j];
+						}
+					}
+					// A little trick to subtract the current cell's state since
+					// we added it in the above loop
+					neighbors -= board[x][y];
+					// Rules of Life
+					if (board[x][y] == 1 && neighbors <  2){
+						next[x][y] = 0; // Loneliness
+					}
+					else if (board[x][y] == 1 && neighbors >  3){
+						next[x][y] = 0; // Overpopulation
+					}
+					else if (board[x][y] == 0 && neighbors == 3){
+						next[x][y] = 1; // Reproduction
+					}
+					else {
+						next[x][y] = board[x][y]; // Stasis
+					}
+				}
+			}
+
+			// Swap!
+			var temp = board;
+			board = next;
+			next = temp;
+		}
+
+
+
+	</script>
+	<script id="Song" type="text/javascript">
+	var delay = new Tone.FeedbackDelay().toMaster();
+	delay.wet = 0.7;
+	var synth = new Tone.PolySynth(rows, Tone.SimpleSynth).connect(delay);
+	synth.set("envelope.attack", .1);
+	synth.set("envelope.release", .1);
+	var scaleValues = ["C2", "D2", "F2", "G2", "A3", "C3", "D3", "F3", "G3", "A4", "C4", "D4", "F4", "G4", "A5", "C5"];
+	scaleValues.reverse();
+
+	var index = 0;
+	var notes = [];
+	var loop = new Tone.Loop(function(time){
+		var column = board[index];
+		notes = [];
+		for(var i = 0; i < rows; i ++){
+			if(column[i] === 1){
+				notes.push(scaleValues[i]);
+			}
+		}
+		synth.triggerAttackRelease(notes, "16n", time);
+		index ++;
+		if(index > columns - 1){
+			index = 0;
+			generate();
+		}
+	}, "16n").start(0);
+
+	Tone.Transport.start();
+	</script>
+	<script id="GUI" type="text/javascript">
+
+		$(function(){
+
+			new Interface.Button({
+				key : 32,
+				type : "toggle",
+				text : "Start",
+				activeText : "Stop",
+				start : function(){
+					Tone.Transport.start();
+				},
+				end : function(){
+					Tone.Transport.stop();
+				}
+			});
+		});
+	</script>
+</body>
+</html>
