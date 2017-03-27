@@ -643,27 +643,6 @@ function(Tone){
 	});
 
 	/**
-	 *  The hint to the type of playback. Affects tradeoffs between audio 
-	 *  output latency and responsiveness. 
-	 *  
-	 *  In addition to setting the value in seconds, the latencyHint also
-	 *  accepts the strings "interactive" (prioritizes low latency), 
-	 *  "playback" (prioritizes sustained playback), "balanced" (balances
-	 *  latency and performance), and "fastest" (lowest latency, might glitch more often). 
-	 *  @memberOf Tone.Transport#
-	 *  @type {Seconds|String}
-	 *  @name latencyHint
-	 */
-	Object.defineProperty(Tone.Transport.prototype, "latencyHint", {
-		get : function(){
-			return Tone.Clock.latencyHint;
-		},
-		set : function(hint){
-			Tone.Clock.latencyHint = hint;
-		}
-	});
-
-	/**
 	 *  Convert from BPM to frequency (factoring in PPQ)
 	 *  @param  {BPM}  bpm The BPM value to convert to frequency
 	 *  @return  {Frequency}  The BPM as a frequency with PPQ factored in.
