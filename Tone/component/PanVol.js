@@ -11,7 +11,7 @@ define(["Tone/core/Tone", "Tone/component/Panner", "Tone/component/Volume"], fun
 	 *  @param {number} volume The output volume. 
 	 *  @example
 	 * //pan the incoming signal left and drop the volume
-	 * var panVol = new Tone.PanVol(0.25, -12);
+	 * var panVol = new Tone.PanVol(-0.25, -12);
 	 */
 	Tone.PanVol = function(){
 
