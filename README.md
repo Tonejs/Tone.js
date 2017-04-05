@@ -136,7 +136,7 @@ var pwm = new Tone.PWMOscillator("Bb3").toMaster().start();
 
 # Signals
 
-Like the underlying Web Audio API, Tone.js is built with audio-rate signal control over nearly everything. This is a powerful feature which allows for sample-accurate synchronization and scheduline of parameters. 
+Like the underlying Web Audio API, Tone.js is built with audio-rate signal control over nearly everything. This is a powerful feature which allows for sample-accurate synchronization and scheduling of parameters. 
 
 [Read more](https://github.com/Tonejs/Tone.js/wiki/Signals).
 
