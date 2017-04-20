@@ -13,7 +13,7 @@ define(["Tone/core/Tone", "Tone/component/Analyser"], function(Tone){
 	 *  @param {Number} smoothing The amount of smoothing applied between frames.
 	 *  @example
 	 * var meter = new Tone.Meter();
-	 * var mic = new Tone.UserMedia().start();
+	 * var mic = new Tone.UserMedia().open();
 	 * //connect mic to the meter
 	 * mic.connect(meter);
 	 * //the current level of the mic input
