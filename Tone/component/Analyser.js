@@ -150,7 +150,7 @@ define(["Tone/core/Tone"], function (Tone) {
 	 *  [minDecibels,maxDecibels] when the type is "fft".
 	 *  @memberOf Tone.Analyser#
 	 *  @type {String}
-	 *  @name type
+	 *  @name returnType
 	 */
 	Object.defineProperty(Tone.Analyser.prototype, "returnType", {
 		get : function(){
