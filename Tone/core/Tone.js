@@ -13,36 +13,12 @@ define(function(){
 	///////////////////////////////////////////////////////////////////////////
 
 	/**
-	 *  @class  Tone is the base class of all other classes. It provides 
-	 *          a lot of methods and functionality to all classes that extend
-	 *          it. 
-	 *  
+	 *  @class  Tone is the base class of all other classes.
 	 *  @constructor
-	 *  @alias Tone
-	 *  @param {number} [inputs=1] the number of input nodes
-	 *  @param {number} [outputs=1] the number of output nodes
+	 *  @param {Tone.Context} context The audio context
 	 */
-	var Tone = function(inputs, outputs){
-
-		/**
-		 *  the input node(s)
-		 *  @type {GainNode|Array}
-		 */
-		if (this.isUndef(inputs) || inputs === 1){
-			this.input = this.context.createGain();
-		} else if (inputs > 1){
-			this.input = new Array(inputs);
-		}
-
-		/**
-		 *  the output node(s)
-		 *  @type {GainNode|Array}
-		 */
-		if (this.isUndef(outputs) || outputs === 1){
-			this.output = this.context.createGain();
-		} else if (outputs > 1){
-			this.output = new Array(inputs);
-		}
+	var Tone = function(){
+		// this.context = this.defaultArg(context, Tone.context);
 	};
 
 	/**
@@ -216,6 +192,28 @@ define(function(){
 			}
 		}
 		return "Tone";
+	};
+
+	/**
+	 *  @param  {Array}  values  The arguments array
+	 *  @param  {Array}  keys    The names of the arguments
+	 *  @return  {Object}  An object composed of the  defaults between the class' defaults
+	 *                        and the passed in arguments.
+	 */
+	Tone.prototype.defaults = function(values, keys){
+		var options = {};
+		if (values.length === 1 && this.isObject(values[0])){
+			options = values[0];
+		} else {
+			for (var i = 0; i < keys.length; i++){
+				options[keys[i]] = values[i];
+			}
+		}
+		if (!this.isUndef(this.constructor.defaults)){
+			return this.defaultArg(options, this.constructor.defaults);
+		} else {
+			return options;
+		}
 	};
 
 	///////////////////////////////////////////////////////////////////////////
