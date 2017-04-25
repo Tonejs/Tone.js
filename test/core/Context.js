@@ -21,6 +21,49 @@ define(["Test", "Tone/core/Context", "Tone/core/Tone", "helper/Offline"],
 				}
 			}, 20);
 		});
+
+		it ("can be created an disposed", function(){
+			var ctx = new Context();
+			ctx.dispose();
+			Test.wasDisposed(ctx);
+		});
+	});
+
+	context("Timeouts", function(){
+
+		it ("can set a timeout", function(done){
+			var ctx = new Context();
+			ctx.setTimeout(function(){
+				done();
+				ctx.dispose();
+			}, 0.1);
+		});
+
+		it ("returns an id", function(){
+			var ctx = new Context();
+			expect(ctx.setTimeout(function(){}, 0.1)).to.be.a("number");
+			ctx.dispose();
+		});
+
+		it ("timeout is not invoked when cancelled", function(done){
+			var ctx = new Context();
+			var id = ctx.setTimeout(function(){
+				throw new Error("shouldn't be invoked");
+			}, 0.01);
+			ctx.clearTimeout(id);
+			ctx.setTimeout(function(){
+				done();
+				ctx.dispose();
+			}, 0.02);
+		});
+
+		it ("is invoked in the offline context", function(){
+			return Offline(function(Transport){
+				Transport.context.setTimeout(function(){
+					expect(Tone.now()).to.be.closeTo(0.01, 0.005);
+				}, 0.01);
+			}, 0.05);
+		});
 	});
 
 	context("Tone", function(){
