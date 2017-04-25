@@ -277,7 +277,7 @@ define(["Tone/core/Tone", "Tone/type/Type"], function (Tone) {
 		lowerBound = this.defaultArg(lowerBound, 0);
 		upperBound = this.defaultArg(upperBound, this._timeline.length - 1);
 		for (var i = lowerBound; i <= upperBound; i++){
-			callback(this._timeline[i]);
+			callback.call(this, this._timeline[i]);
 		}
 		this._iterating = false;
 		if (this._toRemove.length > 0){
@@ -359,7 +359,7 @@ define(["Tone/core/Tone", "Tone/type/Type"], function (Tone) {
 		if (upperBound !== -1){
 			this._iterate(function(event){
 				if (event.time === time){
-					callback(event);
+					callback.call(this, event);
 				} 
 			}, 0, upperBound);
 		}
@@ -374,6 +374,7 @@ define(["Tone/core/Tone", "Tone/type/Type"], function (Tone) {
 		Tone.prototype.dispose.call(this);
 		this._timeline = null;
 		this._toRemove = null;
+		return this;
 	};
 
 	return Tone.Timeline;
