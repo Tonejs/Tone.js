@@ -57,6 +57,19 @@ define(["Test", "Tone/core/Context", "Tone/core/Tone", "helper/Offline"],
 			}, 0.02);
 		});
 
+		it ("order is maintained", function(done){
+			var ctx = new Context();
+			var wasInvoked = false;
+			ctx.setTimeout(function(){
+				expect(wasInvoked).to.be.true;
+				done();
+				ctx.dispose();
+			}, 0.011);
+			ctx.setTimeout(function(){
+				wasInvoked = true;
+			}, 0.01);
+		});
+
 		it ("is invoked in the offline context", function(){
 			return Offline(function(Transport){
 				Transport.context.setTimeout(function(){
