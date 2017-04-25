@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/core/Emitter"], function (Tone) {
+define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/core/Timeline"], function (Tone) {
 
 	/**
 	 *  shim
@@ -26,16 +26,23 @@ define(["Tone/core/Tone", "Tone/core/Emitter"], function (Tone) {
 			this._defineProperty(this._context, prop);
 		}
 
-		///////////////////////////////////////////////////////////////////////
-		// WORKER
-		///////////////////////////////////////////////////////////////////////
-
 		/**
 		 *  The default latency hint
 		 *  @type  {String}
 		 *  @private
 		 */
 		this._latencyHint = "interactive";
+
+		/**
+		 *  An object containing all of the constants AudioBufferSourceNodes
+		 *  @type  {Object}
+		 *  @private
+		 */
+		this._constants = {};
+
+		///////////////////////////////////////////////////////////////////////
+		// WORKER
+		///////////////////////////////////////////////////////////////////////
 
 		/**
 		 *  The amount of time events are scheduled
@@ -66,12 +73,25 @@ define(["Tone/core/Tone", "Tone/core/Emitter"], function (Tone) {
 		 */
 		this._worker = this._createWorker();
 
+		///////////////////////////////////////////////////////////////////////
+		// TIMEOUTS
+		///////////////////////////////////////////////////////////////////////
+
 		/**
-		 *  An object containing all of the constants AudioBufferSourceNodes
-		 *  @type  {Object}
+		 *  All of the setTimeout events.
+		 *  @type  {Tone.Timeline}
 		 *  @private
 		 */
-		this._constants = {};
+		this._timeouts = new Tone.Timeline();
+
+		/**
+		 *  The timeout id counter
+		 *  @private
+		 *  @type {Number}
+		 */
+		this._timeoutIds = 0;
+
+		this.on("tick", this._timeoutLoop.bind(this));
 
 	};
 
@@ -183,6 +203,50 @@ define(["Tone/core/Tone", "Tone/core/Emitter"], function (Tone) {
 	};
 
 	/**
+	 *  The private loop which keeps track of the context scheduled timeouts
+	 *  Is invoked from the clock source
+	 *  @private
+	 */
+	Tone.Context.prototype._timeoutLoop = function(){
+		var now = this.now();
+		while(this._timeouts && this._timeouts.length && this._timeouts.peek().time <= now){
+			this._timeouts.shift().callback();
+		}
+	};
+
+	/**
+	 *  A setTimeout which is gaurenteed by the clock source. 
+	 *  Also runs in the offline context.
+	 *  @param  {Function}  fn       The callback to invoke
+	 *  @param  {Seconds}    timeout  The timeout in seconds
+	 *  @returns {Number} ID to use when invoking Tone.Context.clearTimeout
+	 */
+	Tone.Context.prototype.setTimeout = function(fn, timeout){
+		this._timeoutIds++;
+		var now = this.now();
+		this._timeouts.add({
+			callback : fn, 
+			time : now + timeout,
+			id : this._timeoutIds
+		});
+		return this._timeoutIds;
+	};
+
+	/**
+	 *  Clears a previously scheduled timeout with Tone.context.setTimeout
+	 *  @param  {Number}  id  The ID returned from setTimeout
+	 *  @return  {Tone.Context}  this
+	 */
+	Tone.Context.prototype.clearTimeout = function(id){
+		this._timeouts.forEach(function(event){
+			if (event.id === id){
+				this.remove(event);
+			}
+		});
+		return this;
+	};
+
+	/**
 	 *  This is the time that the clock is falling behind
 	 *  the scheduled update interval. The Context automatically
 	 *  adjusts for the lag and schedules further in advance.
@@ -284,6 +348,23 @@ define(["Tone/core/Tone", "Tone/core/Emitter"], function (Tone) {
 			this.updateInterval = lookAhead/3;
 		}
 	});
+
+	/**
+	 *  Clean up
+	 *  @returns {Tone.Context} this
+	 */
+	Tone.Context.prototype.dispose = function(){
+		Tone.Emitter.prototype.dispose.call(this);
+		this._worker = null;
+		this._timeouts.dispose();
+		this._timeouts = null;
+		for(var con in this._constants){
+			con.disconnect();
+		}
+		this._constants = null;
+		this.close();
+		return this;
+	};
 
 	/**
 	 *  Shim all connect/disconnect and some deprecated methods which are still in
