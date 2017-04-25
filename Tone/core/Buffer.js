@@ -47,7 +47,8 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type"], function(Tone)
 	 */
 	Tone.Buffer = function(){
 
-		var options = this.optionsObject(arguments, ["url", "onload", "onerror"], Tone.Buffer.defaults);
+		Tone.call(this);
+		var options = this.defaults(arguments, ["url", "onload", "onerror"]);
 
 		/**
 		 *  stores the loaded AudioBuffer
@@ -158,7 +159,7 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type"], function(Tone)
 	 *  @returns {Tone.Buffer} this
 	 */
 	Tone.Buffer.prototype.dispose = function(){
-		Tone.Emitter.prototype.dispose.call(this);
+		Tone.prototype.dispose.call(this);
 		this._buffer = null;
 		if (this._xhr){
 			Tone.Buffer._currentDownloads--;

@@ -23,7 +23,14 @@ define(["Tone/core/Tone", "Tone/core/Buffer"], function (Tone) {
 	 * });
 	 * 
 	 */
-	Tone.Buffers = function(urls, onload, baseUrl){
+	Tone.Buffers = function(urls){
+
+		//remove the urls from the options
+		if (arguments.length === 1 && !arguments[0].hasOwnProperty("urls")){
+			urls = { "urls" : urls };
+		}
+		Tone.apply(this, arguments);
+		var options = this.defaults(arguments, ["urls", "onload", "baseUrl"]);
 
 		/**
 		 *  All of the buffers
@@ -36,18 +43,27 @@ define(["Tone/core/Tone", "Tone/core/Buffer"], function (Tone) {
 		 *  A path which is prefixed before every url.
 		 *  @type  {String}
 		 */
-		this.baseUrl = this.defaultArg(baseUrl, "");
+		this.baseUrl = options.baseUrl;
 
-		urls = this._flattenUrls(urls);
+		options.urls = this._flattenUrls(options.urls);
 		this._loadingCount = 0;
 		//add each one
-		for (var key in urls){
+		for (var key in options.urls){
 			this._loadingCount++;
-			this.add(key, urls[key], this._bufferLoaded.bind(this, onload));
+			this.add(key, options.urls[key], this._bufferLoaded.bind(this, options.onload));
 		}
 	};
 
 	Tone.extend(Tone.Buffers);
+
+	/**
+	 *  Defaults
+	 *  @type  {Object}
+	 */
+	Tone.Buffers.defaults = {
+		"onload" : Tone.noOp,
+		"baseUrl" : ""
+	};
 
 	/**
 	 *  True if the buffers object has a buffer by that name.
@@ -157,6 +173,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer"], function (Tone) {
 	 *  @return  {Tone.Buffers} this
 	 */
 	Tone.Buffers.prototype.dispose = function(){
+		Tone.prototype.dispose.call(this);
 		for (var name in this._buffers){
 			this._buffers[name].dispose();
 		}
