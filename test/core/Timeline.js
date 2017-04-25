@@ -276,6 +276,71 @@ define(["Test", "Tone/core/Timeline"], function (Test, Timeline) {
 
 		context("Iterators", function(){
 
+			it("forEach is invoked with the timeline as the context", function(){
+				var sched = new Timeline();
+				sched.add({"time" : 0});
+				sched.add({"time" : 0.1});
+				sched.add({"time" : 0.2});
+				sched.add({"time" : 0.3});
+				sched.add({"time" : 0.4});
+				sched.forEach(function(){
+					expect(this).to.equal(sched);
+				});
+				sched.dispose();
+			});
+
+			it("forEachBefore is invoked with the timeline as the context", function(){
+				var sched = new Timeline();
+				sched.add({"time" : 0});
+				sched.add({"time" : 0.1});
+				sched.add({"time" : 0.2});
+				sched.add({"time" : 0.3});
+				sched.add({"time" : 0.4});
+				sched.forEachBefore(0.5, function(){
+					expect(this).to.equal(sched);
+				});
+				sched.dispose();
+			});
+
+			it("forEachAfter is invoked with the timeline as the context", function(){
+				var sched = new Timeline();
+				sched.add({"time" : 0});
+				sched.add({"time" : 0.1});
+				sched.add({"time" : 0.2});
+				sched.add({"time" : 0.3});
+				sched.add({"time" : 0.4});
+				sched.forEachAfter(0.5, function(){
+					expect(this).to.equal(sched);
+				});
+				sched.dispose();
+			});
+
+			it("forEachFrom is invoked with the timeline as the context", function(){
+				var sched = new Timeline();
+				sched.add({"time" : 0});
+				sched.add({"time" : 0.1});
+				sched.add({"time" : 0.2});
+				sched.add({"time" : 0.3});
+				sched.add({"time" : 0.4});
+				sched.forEachFrom(0.5, function(){
+					expect(this).to.equal(sched);
+				});
+				sched.dispose();
+			});
+
+			it("forEachAtTime is invoked with the timeline as the context", function(){
+				var sched = new Timeline();
+				sched.add({"time" : 0});
+				sched.add({"time" : 0.1});
+				sched.add({"time" : 0.2});
+				sched.add({"time" : 0.3});
+				sched.add({"time" : 0.4});
+				sched.forEachAtTime(0.5, function(){
+					expect(this).to.equal(sched);
+				});
+				sched.dispose();
+			});
+
 			it("iterates over all items and returns and item", function(){
 				var sched = new Timeline();
 				sched.add({"time" : 0});
