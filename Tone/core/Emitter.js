@@ -11,6 +11,7 @@ define(["Tone/core/Tone"], function (Tone) {
 	 *  @extends {Tone}
 	 */
 	Tone.Emitter = function(){
+		Tone.call(this);
 		/**
 		 *  Contains all of the events.
 		 *  @private

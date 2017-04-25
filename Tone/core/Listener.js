@@ -32,7 +32,8 @@ function(Tone){
 	 */
 	Tone.Listener = function(){
 
-		var options = this.optionsObject(arguments, ["positionX", "positionY", "positionZ"], ListenerConstructor.defaults);
+		Tone.call(this);
+		var options = this.defaults(arguments, ["positionX", "positionY", "positionZ"]);
 
 		/**
 		 *  Holds the current forward orientation

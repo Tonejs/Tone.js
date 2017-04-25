@@ -17,6 +17,7 @@ define(["Tone/core/Tone", "Tone/core/Context"], function (Tone) {
 	 *  @param {Number} sampleRate the sample rate to render at
 	 */
 	Tone.OfflineContext = function(channels, duration, sampleRate){
+		
 		/**
 		 *  The offline context
 		 *  @private

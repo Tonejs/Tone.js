@@ -14,7 +14,8 @@ define(["Tone/core/Tone", "Tone/type/Type"], function(Tone){
 	 */
 	Tone.Param = function(){
 
-		var options = this.optionsObject(arguments, ["param", "units", "convert"], Tone.Param.defaults);
+		Tone.call(this);
+		var options = this.defaults(arguments, ["param", "units", "convert"]);
 
 		/**
 		 *  The native parameter to control

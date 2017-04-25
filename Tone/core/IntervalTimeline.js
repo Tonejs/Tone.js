@@ -13,6 +13,8 @@ define(["Tone/core/Tone", "Tone/type/Type"], function (Tone) {
 	 */
 	Tone.IntervalTimeline = function(){
 
+		Tone.call(this);
+
 		/**
 		 *  The root node of the inteval tree
 		 *  @type  {IntervalNode}

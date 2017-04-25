@@ -24,6 +24,7 @@ define(["Tone/core/Tone", "Tone/component/Volume", "Tone/core/Context"], functio
 	 */
 	Tone.Master = function(){
 		
+		Tone.call(this);
 		this.createInsOuts(1, 1);
 
 		/**

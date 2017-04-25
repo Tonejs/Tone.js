@@ -12,7 +12,8 @@ define(["Tone/core/Tone"], function (Tone) {
 	 */
 	Tone.Timeline = function(){
 
-		var options = this.optionsObject(arguments, ["memory"], Tone.Timeline.defaults);
+		Tone.call(this);
+		var options = this.defaults(arguments, ["memory"]);
 
 		/**
 		 *  The array of scheduled timeline events
@@ -29,7 +30,7 @@ define(["Tone/core/Tone"], function (Tone) {
 		this._toRemove = [];
 
 		/**
-		 *  Flag if the tieline is mid iteration
+		 *  Flag if the timeline is mid iteration
 		 *  @private
 		 *  @type {Boolean}
 		 */
