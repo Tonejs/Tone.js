@@ -15,7 +15,8 @@ define(["Tone/core/Tone", "Tone/component/Panner", "Tone/component/Volume"], fun
 	 */
 	Tone.PanVol = function(){
 
-		var options = this.optionsObject(arguments, ["pan", "volume"], Tone.PanVol.defaults);
+		var options = Tone.defaults(arguments, ["pan", "volume"], Tone.PanVol);
+		Tone.call(this);
 		
 		/**
 		 *  The panning node

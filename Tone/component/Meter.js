@@ -21,7 +21,8 @@ define(["Tone/core/Tone", "Tone/component/Analyser"], function(Tone){
 	 */
 	Tone.Meter = function(){
 
-		var options = this.optionsObject(arguments, ["type", "smoothing"], Tone.Meter.defaults);
+		var options = Tone.defaults(arguments, ["type", "smoothing"], Tone.Meter);
+		Tone.call(this);
 		
 		/**
 		 *  The type of the meter, either "level" or "signal". 

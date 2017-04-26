@@ -12,7 +12,9 @@ define(["Tone/core/Tone", "Tone/component/Filter", "Tone/signal/Signal", "Tone/c
 	 *  @param {Frequency} [highFrequency] the mid/high crossover frequency
 	 */
 	Tone.MultibandSplit = function(){
-		var options = this.optionsObject(arguments, ["lowFrequency", "highFrequency"], Tone.MultibandSplit.defaults);
+
+		var options = Tone.defaults(arguments, ["lowFrequency", "highFrequency"], Tone.MultibandSplit);
+		Tone.call(this);
 
 		/**
 		 *  the input

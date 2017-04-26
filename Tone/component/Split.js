@@ -13,6 +13,7 @@ define(["Tone/core/Tone", "Tone/core/Gain"], function(Tone){
 	 */
 	Tone.Split = function(){
 
+		Tone.call(this);
 		this.createInsOuts(0, 2);
 
 		/** 

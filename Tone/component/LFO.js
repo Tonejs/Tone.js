@@ -11,7 +11,7 @@ function(Tone){
 	 *          also be synced to the transport to start/stop and change when the tempo changes.
 	 *
 	 *  @constructor
-	 *  @extends {Tone.Oscillator}
+	 *  @extends {Tone}
 	 *  @param {Frequency|Object} [frequency] The frequency of the oscillation. Typically, LFOs will be
 	 *                               in the frequency range of 0.1 to 10 hertz. 
 	 *  @param {number=} min The minimum output value of the LFO. 
@@ -22,7 +22,8 @@ function(Tone){
 	 */
 	Tone.LFO = function(){
 
-		var options = this.optionsObject(arguments, ["frequency", "min", "max"], Tone.LFO.defaults);
+		var options = Tone.defaults(arguments, ["frequency", "min", "max"], Tone.LFO);
+		Tone.call(this);
 
 		/** 
 		 *  The oscillator. 
@@ -102,7 +103,7 @@ function(Tone){
 		this.phase = options.phase;
 	};
 
-	Tone.extend(Tone.LFO, Tone.Oscillator);
+	Tone.extend(Tone.LFO);
 
 	/**
 	 *  the default parameters

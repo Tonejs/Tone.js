@@ -27,6 +27,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Expr",
 	 */		
 	Tone.CrossFade = function(initialFade){
 
+		Tone.call(this);
 		this.createInsOuts(2, 1);
 
 		/**

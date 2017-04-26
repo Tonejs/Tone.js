@@ -32,8 +32,9 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal",
 	Tone.Envelope = function(){
 
 		//get all of the defaults
-		var options = this.optionsObject(arguments, ["attack", "decay", "sustain", "release"], Tone.Envelope.defaults);
-
+		var options = Tone.defaults(arguments, ["attack", "decay", "sustain", "release"], Tone.Envelope);
+		Tone.call(this);
+		
 		/** 
 		 *  When triggerAttack is called, the attack time is the amount of
 		 *  time it takes for the envelope to reach it's maximum value. 

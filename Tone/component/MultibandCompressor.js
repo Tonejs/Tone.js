@@ -19,6 +19,7 @@ define(["Tone/core/Tone", "Tone/component/MultibandSplit", "Tone/component/Compr
 	 */
 	Tone.MultibandCompressor = function(options){
 
+		Tone.call(this);
 		options = this.defaultArg(arguments, Tone.MultibandCompressor.defaults);
 
 		/**

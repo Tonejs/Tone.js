@@ -20,6 +20,7 @@ define(["Tone/core/Tone"], function(Tone){
 	 */
 	Tone.Merge = function(){
 
+		Tone.call(this);
 		this.createInsOuts(2, 0);
 
 		/**

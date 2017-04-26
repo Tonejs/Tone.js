@@ -18,7 +18,8 @@ define(["Tone/core/Tone", "Tone/component/Compressor"], function(Tone){
 	 */
 	Tone.Limiter = function(){
 
-		var options = this.optionsObject(arguments, ["threshold"], Tone.Limiter.defaults);
+		var options = Tone.defaults(arguments, ["threshold"], Tone.Limiter);
+		Tone.call(this);
 
 		/**
 		 *  the compressor

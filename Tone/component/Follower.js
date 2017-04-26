@@ -21,8 +21,9 @@ function(Tone){
 	 */
 	Tone.Follower = function(){
 
+		var options = Tone.defaults(arguments, ["attack", "release"], Tone.Follower);
+		Tone.call(this);
 		this.createInsOuts(1, 1);
-		var options = this.optionsObject(arguments, ["attack", "release"], Tone.Follower.defaults);
 
 		/**
 		 *  @type {Tone.Abs}

@@ -18,6 +18,8 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Expr", "Tone/compon
 	 *  @constructor
 	 */
 	Tone.MidSideMerge = function(){
+
+		Tone.call(this);
 		this.createInsOuts(2, 0);
 
 		/**

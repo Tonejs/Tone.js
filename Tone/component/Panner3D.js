@@ -16,7 +16,8 @@ function(Tone){
 	 */
 	Tone.Panner3D = function(){
 
-		var options = this.optionsObject(arguments, ["positionX", "positionY", "positionZ"], Tone.Panner3D.defaults);
+		var options = Tone.defaults(arguments, ["positionX", "positionY", "positionZ"], Tone.Panner3D);
+		Tone.call(this);
 
 		/**
 		 *  The panner node

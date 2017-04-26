@@ -17,7 +17,8 @@ define(["Tone/core/Tone", "Tone/component/MultibandSplit", "Tone/core/Gain"], fu
 	 */
 	Tone.EQ3 = function(){
 
-		var options = this.optionsObject(arguments, ["low", "mid", "high"], Tone.EQ3.defaults);
+		var options = Tone.defaults(arguments, ["low", "mid", "high"], Tone.EQ3);
+		Tone.call(this);
 
 		/**
 		 *  the output node

@@ -11,6 +11,8 @@ define(["Tone/core/Tone", "Tone/component/Merge"], function(Tone){
 	 *  @constructor
 	 */
 	Tone.Mono = function(){
+
+		Tone.call(this);
 		this.createInsOuts(1, 0);
 
 		/**

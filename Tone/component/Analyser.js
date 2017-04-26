@@ -29,7 +29,8 @@ define(["Tone/core/Tone"], function (Tone) {
 	 */
 	Tone.Analyser = function(){
 
-		var options = this.optionsObject(arguments, ["type", "size"], Tone.Analyser.defaults);
+		var options = Tone.defaults(arguments, ["type", "size"], Tone.Analyser);
+		Tone.call(this);
 
 		/**
 		 *  The analyser node.

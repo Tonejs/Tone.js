@@ -16,6 +16,8 @@ define(["Tone/core/Tone", "Tone/signal/Expr", "Tone/signal/Signal", "Tone/compon
 	 *  @constructor
 	 */
 	Tone.MidSideSplit = function(){
+
+		Tone.call(this);
 		this.createInsOuts(0, 2);
 
 		/**

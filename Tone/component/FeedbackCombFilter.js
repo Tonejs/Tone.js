@@ -14,7 +14,8 @@ define(["Tone/core/Tone", "Tone/signal/ScaleExp", "Tone/signal/Signal",
 	 */
 	Tone.FeedbackCombFilter = function(){
 
-		var options = this.optionsObject(arguments, ["delayTime", "resonance"], Tone.FeedbackCombFilter.defaults);
+		var options = Tone.defaults(arguments, ["delayTime", "resonance"], Tone.FeedbackCombFilter);
+		Tone.call(this);
 
 		/**
 		 *  the delay node

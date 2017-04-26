@@ -18,7 +18,8 @@ define(["Tone/core/Tone", "Tone/core/Param"], function(Tone){
 	 */
 	Tone.Compressor = function(){
 
-		var options = this.optionsObject(arguments, ["threshold", "ratio"], Tone.Compressor.defaults);
+		var options = Tone.defaults(arguments, ["threshold", "ratio"], Tone.Compressor);
+		Tone.call(this);
 
 		/**
 		 *  the compressor node
