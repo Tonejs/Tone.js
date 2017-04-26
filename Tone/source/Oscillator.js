@@ -33,7 +33,7 @@ function(Tone){
 	 */
 	Tone.Oscillator = function(){
 		
-		var options = this.optionsObject(arguments, ["frequency", "type"], Tone.Oscillator.defaults);
+		var options = Tone.defaults(arguments, ["frequency", "type"], Tone.Oscillator);
 		Tone.Source.call(this, options);
 
 		/**

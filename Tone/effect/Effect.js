@@ -13,11 +13,9 @@ define(["Tone/core/Tone", "Tone/component/CrossFade"], function(Tone){
 	 */
 	Tone.Effect = function(){
 
+		var options = Tone.defaults(arguments, ["wet"], Tone.Effect);
 		Tone.call(this);
 		this.createInsOuts(1, 1);
-
-		//get all of the defaults
-		var options = this.optionsObject(arguments, ["wet"], Tone.Effect.defaults);
 
 		/**
 		 *  the drywet knob to control the amount of effect

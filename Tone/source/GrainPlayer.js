@@ -12,7 +12,7 @@ function (Tone) {
 	 */
 	Tone.GrainPlayer = function(){
 
-		var options = this.optionsObject(arguments, ["url", "onload"], Tone.GrainPlayer.defaults);
+		var options = Tone.defaults(arguments, ["url", "onload"], Tone.GrainPlayer);
 		Tone.Source.call(this, options);
 
 		/**

@@ -25,9 +25,8 @@ function(Tone){
 	 */
 	Tone.PolySynth = function(){
 
-		Tone.Instrument.call(this);
-
-		var options = this.optionsObject(arguments, ["polyphony", "voice"], Tone.PolySynth.defaults);
+		var options = Tone.defaults(arguments, ["polyphony", "voice"], Tone.PolySynth);
+		Tone.Instrument.call(this, options);
 		options = this.defaultArg(options, Tone.Instrument.defaults);
 
 		//max polyphony
@@ -69,9 +68,6 @@ function(Tone){
 				voice : v
 			};
 		}
-
-		//set the volume initially
-		this.volume.value = options.volume;
 	};
 
 	Tone.extend(Tone.PolySynth, Tone.Instrument);
