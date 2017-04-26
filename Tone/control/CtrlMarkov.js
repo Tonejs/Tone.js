@@ -32,6 +32,8 @@ define(["Tone/core/Tone"], function (Tone) {
 	 */
 	Tone.CtrlMarkov = function(values, initial){
 
+		Tone.call(this);
+
 		/**
 		 *  The Markov values with states as the keys
 		 *  and next state(s) as the values. 

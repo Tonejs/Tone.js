@@ -1,4 +1,4 @@
-define(["Tone/control/CtrlInterpolate", "helper/Basic"], function (CtrlInterpolate, Basic) {
+define(["Tone/control/CtrlInterpolate", "helper/Basic", "Tone/core/Transport"], function (CtrlInterpolate, Basic, Transport) {
 
 	describe("CtrlInterpolate", function(){
 

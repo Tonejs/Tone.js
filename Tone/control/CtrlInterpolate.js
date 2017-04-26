@@ -24,7 +24,8 @@ define(["Tone/core/Tone", "Tone/type/Type"], function (Tone) {
 	 */
 	Tone.CtrlInterpolate = function(){
 
-		var options = this.optionsObject(arguments, ["values", "index"], Tone.CtrlInterpolate.defaults);
+		var options = Tone.defaults(arguments, ["values", "index"], Tone.CtrlInterpolate);
+		Tone.call(this, options);
 
 		/**
 		 *  The values to interpolate between

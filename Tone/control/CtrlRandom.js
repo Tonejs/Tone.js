@@ -18,7 +18,8 @@ define(["Tone/core/Tone", "Tone/type/Type"], function (Tone) {
 	 */
 	Tone.CtrlRandom = function(){
 
-		var options = this.optionsObject(arguments, ["min", "max"], Tone.CtrlRandom.defaults);
+		var options = Tone.defaults(arguments, ["min", "max"], Tone.CtrlRandom);
+		Tone.call(this);
 
 		/**
 		 *  The minimum return value
