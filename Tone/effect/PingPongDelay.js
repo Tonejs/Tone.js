@@ -24,7 +24,7 @@ function(Tone){
 	 */
 	Tone.PingPongDelay = function(){
 		
-		var options = this.optionsObject(arguments, ["delayTime", "feedback"], Tone.PingPongDelay.defaults);
+		var options = Tone.defaults(arguments, ["delayTime", "feedback"], Tone.PingPongDelay);
 		Tone.StereoXFeedbackEffect.call(this, options);
 
 		/**

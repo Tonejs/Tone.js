@@ -17,7 +17,7 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/LFO", "Tone/comp
 	 */
 	Tone.AutoPanner = function(){
 
-		var options = this.optionsObject(arguments, ["frequency"], Tone.AutoPanner.defaults);
+		var options = Tone.defaults(arguments, ["frequency"], Tone.AutoPanner);
 		Tone.Effect.call(this, options);
 
 		/**

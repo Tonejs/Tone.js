@@ -8,13 +8,13 @@ function(Tone){
 	 *  @class Base class for Stereo effects. Provides effectSendL/R and effectReturnL/R. 
 	 *
 	 *	@constructor
-	 *	@extends {Tone.Effect}
+	 *	@extends {Tone}
 	 */
 	Tone.StereoEffect = function(){
 
-		this.createInsOuts(1, 1);
 		//get the defaults
-		var options = this.optionsObject(arguments, ["wet"], Tone.Effect.defaults);
+		var options = Tone.defaults(arguments, ["wet"], Tone.Effect);
+		this.createInsOuts(1, 1);
 
 		/**
 		 *  the drywet knob to control the amount of effect

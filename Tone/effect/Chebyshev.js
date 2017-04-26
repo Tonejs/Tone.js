@@ -20,7 +20,7 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/signal/WaveShaper"], funct
 	 */
 	Tone.Chebyshev = function(){
 
-		var options = this.optionsObject(arguments, ["order"], Tone.Chebyshev.defaults);
+		var options = Tone.defaults(arguments, ["order"], Tone.Chebyshev);
 		Tone.Effect.call(this, options);
 
 		/**

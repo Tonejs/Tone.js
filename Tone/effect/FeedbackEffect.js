@@ -14,9 +14,7 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/signal/Signal",
 	 */
 	Tone.FeedbackEffect = function(){
 
-		var options = this.optionsObject(arguments, ["feedback"]);
-		options = this.defaultArg(options, Tone.FeedbackEffect.defaults);
-
+		var options = Tone.defaults(arguments, ["feedback"], Tone.FeedbackEffect);
 		Tone.Effect.call(this, options);
 		
 		/**

@@ -19,7 +19,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/effect/Effect"], function(To
 	 */
 	Tone.Convolver = function(){
 
-		var options = this.optionsObject(arguments, ["url", "onload"], Tone.Convolver.defaults);
+		var options = Tone.defaults(arguments, ["url", "onload"], Tone.Convolver);
 		Tone.Effect.call(this, options);
 
 	  	/**

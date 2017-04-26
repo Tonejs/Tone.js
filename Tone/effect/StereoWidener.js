@@ -20,7 +20,7 @@ define(["Tone/core/Tone", "Tone/effect/MidSideEffect", "Tone/signal/Signal",
 	 */
 	Tone.StereoWidener = function(){
 
-		var options = this.optionsObject(arguments, ["width"], Tone.StereoWidener.defaults);
+		var options = Tone.defaults(arguments, ["width"], Tone.StereoWidener);
 		Tone.MidSideEffect.call(this, options);
 
 		/**

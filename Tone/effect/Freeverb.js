@@ -37,7 +37,7 @@ function(Tone){
 	 */
 	Tone.Freeverb = function(){
 
-		var options = this.optionsObject(arguments, ["roomSize", "dampening"], Tone.Freeverb.defaults);
+		var options = Tone.defaults(arguments, ["roomSize", "dampening"], Tone.Freeverb);
 		Tone.StereoEffect.call(this, options);
 
 		/**

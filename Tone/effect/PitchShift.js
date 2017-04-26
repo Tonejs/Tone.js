@@ -16,7 +16,7 @@ function (Tone) {
 	 */
 	Tone.PitchShift = function(){
 
-		var options = this.optionsObject(arguments, ["pitch"], Tone.PitchShift.defaults);
+		var options = Tone.defaults(arguments, ["pitch"], Tone.PitchShift);
 		Tone.FeedbackEffect.call(this, options);
 
 		/**

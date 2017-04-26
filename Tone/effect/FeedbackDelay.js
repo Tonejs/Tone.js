@@ -21,7 +21,7 @@ define(["Tone/core/Tone", "Tone/effect/FeedbackEffect", "Tone/signal/Signal", "T
 	 */
 	Tone.FeedbackDelay = function(){
 		
-		var options = this.optionsObject(arguments, ["delayTime", "feedback"], Tone.FeedbackDelay.defaults);
+		var options = Tone.defaults(arguments, ["delayTime", "feedback"], Tone.FeedbackDelay);
 		Tone.FeedbackEffect.call(this, options);
 
 		/**

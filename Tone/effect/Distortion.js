@@ -17,8 +17,7 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/signal/WaveShaper"], funct
 	 */
 	Tone.Distortion = function(){
 
-		var options = this.optionsObject(arguments, ["distortion"], Tone.Distortion.defaults);
-
+		var options = Tone.defaults(arguments, ["distortion"], Tone.Distortion);
 		Tone.Effect.call(this, options);
 
 		/**

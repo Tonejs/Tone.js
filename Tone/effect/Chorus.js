@@ -21,7 +21,7 @@ function(Tone){
 	 */
 	Tone.Chorus = function(){
 
-		var options = this.optionsObject(arguments, ["frequency", "delayTime", "depth"], Tone.Chorus.defaults);
+		var options = Tone.defaults(arguments, ["frequency", "delayTime", "depth"], Tone.Chorus);
 		Tone.StereoXFeedbackEffect.call(this, options);
 
 		/**
@@ -183,7 +183,7 @@ function(Tone){
 	 */
 	Object.defineProperty(Tone.Chorus.prototype, "spread", {
 		get : function(){
-			return this._lfoR.phase - this._lfoL.phase; //180
+			return this._lfoR.phase - this._lfoL.phase;
 		},
 		set : function(spread){
 			this._lfoL.phase = 90 - (spread/2);

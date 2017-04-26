@@ -18,7 +18,7 @@ define(["Tone/core/Tone", "Tone/component/LFO", "Tone/effect/StereoEffect"], fun
 	 */
 	Tone.Tremolo = function(){
 
-		var options = this.optionsObject(arguments, ["frequency", "depth"], Tone.Tremolo.defaults);
+		var options = Tone.defaults(arguments, ["frequency", "depth"], Tone.Tremolo);
 		Tone.StereoEffect.call(this, options);
 
 		/**

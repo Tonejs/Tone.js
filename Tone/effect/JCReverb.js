@@ -45,7 +45,7 @@ function(Tone){
 	 */
 	Tone.JCReverb = function(){
 
-		var options = this.optionsObject(arguments, ["roomSize"], Tone.JCReverb.defaults);
+		var options = Tone.defaults(arguments, ["roomSize"], Tone.JCReverb);
 		Tone.StereoEffect.call(this, options);
 
 		/**
