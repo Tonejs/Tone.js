@@ -30,7 +30,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer"], function (Tone) {
 			urls = { "urls" : urls };
 		}
 		var options = Tone.defaults(arguments, ["urls", "onload", "baseUrl"], Tone.Buffers);
-		Tone.call(this, options);
+		Tone.call(this);
 
 		/**
 		 *  All of the buffers

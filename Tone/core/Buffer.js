@@ -48,7 +48,7 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type"], function(Tone)
 	Tone.Buffer = function(){
 
 		var options = Tone.defaults(arguments, ["url", "onload", "onerror"], Tone.Buffer);
-		Tone.call(this, options);
+		Tone.call(this);
 
 		/**
 		 *  stores the loaded AudioBuffer

@@ -13,7 +13,7 @@ define(["Tone/core/Tone"], function (Tone) {
 	Tone.Timeline = function(){
 
 		var options = Tone.defaults(arguments, ["memory"], Tone.Timeline);
-		Tone.call(this, options);
+		Tone.call(this);
 
 		/**
 		 *  The array of scheduled timeline events

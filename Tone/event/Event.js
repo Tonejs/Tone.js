@@ -24,7 +24,7 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/type/Type", "Tone/core/Ti
 	Tone.Event = function(){
 
 		var options = Tone.defaults(arguments, ["callback", "value"], Tone.Event);
-		Tone.call(this, options);
+		Tone.call(this);
 
 		/**
 		 *  Loop value
