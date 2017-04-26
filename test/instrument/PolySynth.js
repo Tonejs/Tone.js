@@ -69,6 +69,16 @@ function (PolySynth, Basic, InstrumentTests, OutputAudioStereo, Instrument, Test
 				polySynth.dispose();
 			});
 
+			it ("can pass in the volume and detune", function(){
+				var polySynth = new PolySynth({
+					"volume" : -12,
+					"detune" : 120,
+				});
+				expect(polySynth.volume.value).to.be.closeTo(-12, 0.1);
+				expect(polySynth.detune.value).to.be.closeTo(120, 1);
+				polySynth.dispose();
+			});
+
 			it ("can get/set attributes", function(){
 				var polySynth = new PolySynth();
 				polySynth.set({
