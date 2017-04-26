@@ -1,12 +1,10 @@
 define(["Tone/core/Tone"], function (Tone) {
 
-	var isUndef = Tone.prototype.isUndef;
-
 	//augment the built in functions
 	return function(buffer){
 
 		buffer.isSilent = function(channelNum){
-			if (isUndef(channelNum)){
+			if (Tone.isUndef(channelNum)){
 				return buffer.toMono().isSilent(0);
 			} else {
 				var array = buffer.toArray(channelNum);
@@ -41,7 +39,7 @@ define(["Tone/core/Tone"], function (Tone) {
 
 		//return the time when the buffer is no longer silent
 		buffer.getFirstSoundTime = function(channelNum){
-			if (isUndef(channelNum)){
+			if (Tone.isUndef(channelNum)){
 				return buffer.toMono().getFirstSoundTime(0);
 			} else {
 				var array = buffer.toArray(channelNum);
@@ -56,7 +54,7 @@ define(["Tone/core/Tone"], function (Tone) {
 
 		//return the time when the buffer is silent to the remainer of the buffer
 		buffer.getLastSoundTime = function(channelNum){
-			if (isUndef(channelNum)){
+			if (Tone.isUndef(channelNum)){
 				return buffer.toMono().getLastSoundTime(0);
 			} else {
 				var array = buffer.toArray(channelNum);

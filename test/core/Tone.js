@@ -51,52 +51,52 @@ define(["Test", "Tone/core/Tone", "helper/PassAudio", "Tone/source/Oscillator",
 		context("Type checking", function(){
 
 			it("can test if an argument is a undefined", function(){
-				expect(tone.isUndef(undefined)).to.be.true;
-				expect(tone.isUndef("seomthing")).to.be.false;
-				expect(tone.isUndef({})).to.be.false;
+				expect(Tone.isUndef(undefined)).to.be.true;
+				expect(Tone.isUndef("seomthing")).to.be.false;
+				expect(Tone.isUndef({})).to.be.false;
 			});
 
 			it("can test if an argument is a function", function(){
-				expect(tone.isFunction(undefined)).to.be.false;
-				expect(tone.isFunction(function(){})).to.be.true;
-				expect(tone.isFunction(Tone)).to.be.true;
+				expect(Tone.isFunction(undefined)).to.be.false;
+				expect(Tone.isFunction(function(){})).to.be.true;
+				expect(Tone.isFunction(Tone)).to.be.true;
 			});
 
 			it("can test if an argument is a number", function(){
-				expect(tone.isNumber(undefined)).to.be.false;
-				expect(tone.isNumber(function(){})).to.be.false;
-				expect(tone.isNumber(Tone)).to.be.false;
-				expect(tone.isNumber(10)).to.be.true;
-				expect(tone.isNumber("10")).to.be.false;
+				expect(Tone.isNumber(undefined)).to.be.false;
+				expect(Tone.isNumber(function(){})).to.be.false;
+				expect(Tone.isNumber(Tone)).to.be.false;
+				expect(Tone.isNumber(10)).to.be.true;
+				expect(Tone.isNumber("10")).to.be.false;
 			});
 
 			it("can test if an argument is an object literal", function(){
-				expect(tone.isObject(Number)).to.be.false;
-				expect(tone.isObject(function(){})).to.be.false;
-				expect(tone.isObject(tone)).to.be.false;
-				expect(tone.isObject({})).to.be.true;
-				expect(tone.isObject([])).to.be.false;
-				expect(tone.isObject("10")).to.be.false;
+				expect(Tone.isObject(Number)).to.be.false;
+				expect(Tone.isObject(function(){})).to.be.false;
+				expect(Tone.isObject(tone)).to.be.false;
+				expect(Tone.isObject({})).to.be.true;
+				expect(Tone.isObject([])).to.be.false;
+				expect(Tone.isObject("10")).to.be.false;
 			});
 
 			it("can test if an argument is an array", function(){
-				expect(tone.isArray(Number)).to.be.false;
-				expect(tone.isArray({})).to.be.false;
-				expect(tone.isArray([])).to.be.true;
+				expect(Tone.isArray(Number)).to.be.false;
+				expect(Tone.isArray({})).to.be.false;
+				expect(Tone.isArray([])).to.be.true;
 			});
 
 			it("can test if an argument is a boolean", function(){
-				expect(tone.isBoolean(Number)).to.be.false;
-				expect(tone.isBoolean(true)).to.be.true;
-				expect(tone.isBoolean(false)).to.be.true;
-				expect(tone.isBoolean([])).to.be.false;
+				expect(Tone.isBoolean(Number)).to.be.false;
+				expect(Tone.isBoolean(true)).to.be.true;
+				expect(Tone.isBoolean(false)).to.be.true;
+				expect(Tone.isBoolean([])).to.be.false;
 			});
 
 			it("can test if an argument is a string", function(){
-				expect(tone.isString(Number)).to.be.false;
-				expect(tone.isString(true)).to.be.false;
-				expect(tone.isString("false")).to.be.true;
-				expect(tone.isString("thanks")).to.be.true;
+				expect(Tone.isString(Number)).to.be.false;
+				expect(Tone.isString(true)).to.be.false;
+				expect(Tone.isString("false")).to.be.true;
+				expect(Tone.isString("thanks")).to.be.true;
 			});
 		});
 
