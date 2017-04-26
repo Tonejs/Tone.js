@@ -194,7 +194,7 @@ function(Tone){
 		//make sure the type is set first
 		if (params === "type"){
 			this.type = value;
-		} else if (this.isObject(params) && params.hasOwnProperty("type")){
+		} else if (Tone.isObject(params) && params.hasOwnProperty("type")){
 			this.type = params.type;
 		}
 		//then set the rest

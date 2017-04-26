@@ -39,7 +39,7 @@ define(["Tone/core/Tone", "Tone/type/Type"], function (Tone) {
 	 *  @return  {Tone.IntervalTimeline}  this
 	 */
 	Tone.IntervalTimeline.prototype.add = function(event){
-		if (this.isUndef(event.time) || this.isUndef(event.duration)){
+		if (Tone.isUndef(event.time) || Tone.isUndef(event.duration)){
 			throw new Error("Tone.IntervalTimeline: events must have time and duration parameters");
 		}
 		var node = new IntervalNode(event.time, event.time + event.duration, event);

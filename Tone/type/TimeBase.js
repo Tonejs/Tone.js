@@ -28,14 +28,14 @@ define(["Tone/core/Tone"], function (Tone) {
 
 			if (val instanceof Tone.TimeBase){
 				this.copy(val);
-			} else if (!this.isUndef(units) || this.isNumber(val)){
+			} else if (!Tone.isUndef(units) || Tone.isNumber(val)){
 				//default units
 				units = this.defaultArg(units, this._defaultUnits);
 				var method = this._primaryExpressions[units].method;
 				this._expr = method.bind(this, val);
-			} else if (this.isString(val)){
+			} else if (Tone.isString(val)){
 				this.set(val);
-			} else if (this.isUndef(val)){
+			} else if (Tone.isUndef(val)){
 				//default expression
 				this._expr = this._defaultExpr();
 			}
@@ -281,11 +281,11 @@ define(["Tone/core/Tone"], function (Tone) {
 	 */
 	Tone.TimeBase.prototype._matchGroup = function(token, group, prec) {
 		var ret = false;
-		if (!this.isUndef(token)){
+		if (!Tone.isUndef(token)){
 			for (var opName in group){
 				var op = group[opName];
 				if (op.regexp.test(token.value)){
-					if (!this.isUndef(prec)){
+					if (!Tone.isUndef(prec)){
 						if(op.precedence === prec){	
 							return op;
 						}
@@ -305,7 +305,7 @@ define(["Tone/core/Tone"], function (Tone) {
 	 *  @private
 	 */
 	Tone.TimeBase.prototype._parseBinary = function(lexer, precedence){
-		if (this.isUndef(precedence)){
+		if (Tone.isUndef(precedence)){
 			precedence = 2;
 		}
 		var expr;
@@ -348,7 +348,7 @@ define(["Tone/core/Tone"], function (Tone) {
 	Tone.TimeBase.prototype._parsePrimary = function(lexer){
 		var token, expr;
 		token = lexer.peek();
-		if (this.isUndef(token)) {
+		if (Tone.isUndef(token)) {
 			throw new SyntaxError("Tone.TimeBase: Unexpected end of expression");
 		}
 		if (this._matchGroup(token, this._primaryExpressions)) {
@@ -375,7 +375,7 @@ define(["Tone/core/Tone"], function (Tone) {
 	 *  @private
 	 */
 	Tone.TimeBase.prototype._parseExprString = function(exprString){
-		if (!this.isString(exprString)){
+		if (!Tone.isString(exprString)){
 			exprString = exprString.toString();
 		}
 		var lexer = this._tokenize(exprString);

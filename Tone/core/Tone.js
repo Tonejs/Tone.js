@@ -47,9 +47,9 @@ define(function(){
 	 * }, 3);
 	 */
 	Tone.prototype.set = function(params, value, rampTime){
-		if (this.isObject(params)){
+		if (Tone.isObject(params)){
 			rampTime = value;
-		} else if (this.isString(params)){
+		} else if (Tone.isString(params)){
 			var tmpObj = {};
 			tmpObj[params] = value;
 			params = tmpObj;
@@ -73,13 +73,13 @@ define(function(){
 				attr = attrSplit[attrSplit.length - 1];
 			}
 			var param = parent[attr];
-			if (this.isUndef(param)){
+			if (Tone.isUndef(param)){
 				continue;
 			}
 			if ((Tone.Signal && param instanceof Tone.Signal) || 
 					(Tone.Param && param instanceof Tone.Param)){
 				if (param.value !== value){
-					if (this.isUndef(rampTime)){
+					if (Tone.isUndef(rampTime)){
 						param.value = value;
 					} else {
 						param.rampTo(value, rampTime);
@@ -119,9 +119,9 @@ define(function(){
 	 *  @returns {Object}
 	 */
 	Tone.prototype.get = function(params){
-		if (this.isUndef(params)){
+		if (Tone.isUndef(params)){
 			params = this._collectDefaults(this.constructor);
-		} else if (this.isString(params)){
+		} else if (Tone.isString(params)){
 			params = [params];
 		} 
 		var ret = {};
@@ -140,7 +140,7 @@ define(function(){
 				attr = attrSplit[attrSplit.length - 1];
 			}
 			var param = parent[attr];
-			if (this.isObject(params[attr])){
+			if (Tone.isObject(params[attr])){
 				subRet[attr] = param.get();
 			} else if (Tone.Signal && param instanceof Tone.Signal){
 				subRet[attr] = param.value;
@@ -150,7 +150,7 @@ define(function(){
 				subRet[attr] = param.value;
 			} else if (param instanceof Tone){
 				subRet[attr] = param.get();
-			} else if (!this.isFunction(param) && !this.isUndef(param)){
+			} else if (!Tone.isFunction(param) && !Tone.isUndef(param)){
 				subRet[attr] = param;
 			} 
 		}
@@ -165,10 +165,10 @@ define(function(){
 	 */
 	Tone.prototype._collectDefaults = function(constr){
 		var ret = [];
-		if (!this.isUndef(constr.defaults)){
+		if (!Tone.isUndef(constr.defaults)){
 			ret = Object.keys(constr.defaults);
 		}
-		if (!this.isUndef(constr._super)){
+		if (!Tone.isUndef(constr._super)){
 			var superDefs = this._collectDefaults(constr._super);
 			//filter out repeats
 			for (var i = 0; i < superDefs.length; i++){
@@ -187,7 +187,7 @@ define(function(){
 		for (var className in Tone){
 			var isLetter = className[0].match(/^[A-Z]$/);
 			var sameConstructor =  Tone[className] === this.constructor;
-			if (this.isFunction(Tone[className]) && isLetter && sameConstructor){
+			if (Tone.isFunction(Tone[className]) && isLetter && sameConstructor){
 				return className;
 			}
 		}
@@ -231,7 +231,7 @@ define(function(){
 	Object.defineProperty(Tone.prototype, "numberOfInputs", {
 		get : function(){
 			if (this.input){
-				if (this.isArray(this.input)){
+				if (Tone.isArray(this.input)){
 					return this.input.length;
 				} else {
 					return 1;
@@ -252,7 +252,7 @@ define(function(){
 	Object.defineProperty(Tone.prototype, "numberOfOutputs", {
 		get : function(){
 			if (this.output){
-				if (this.isArray(this.output)){
+				if (Tone.isArray(this.output)){
 					return this.output.length;
 				} else {
 					return 1;
@@ -272,13 +272,13 @@ define(function(){
 	 *  @returns {Tone} this
 	 */
 	Tone.prototype.dispose = function(){
-		if (!this.isUndef(this.input)){
+		if (!Tone.isUndef(this.input)){
 			if (this.input instanceof AudioNode){
 				this.input.disconnect();
 			} 
 			this.input = null;
 		}
-		if (!this.isUndef(this.output)){
+		if (!Tone.isUndef(this.output)){
 			if (this.output instanceof AudioNode){
 				this.output.disconnect();
 			} 
@@ -312,8 +312,8 @@ define(function(){
 	 *  @returns {Tone} this
 	 */
 	Tone.prototype.disconnect = function(destination, outputNum, inputNum){
-		if (this.isArray(this.output)){
-			if (this.isNumber(destination)){
+		if (Tone.isArray(this.output)){
+			if (Tone.isNumber(destination)){
 				this.output[destination].disconnect();
 			} else {
 				outputNum = this.defaultArg(outputNum, 0);
@@ -398,7 +398,7 @@ define(function(){
 	 *  @return {*}          
 	 */
 	Tone.prototype.defaultArg = function(given, fallback){
-		if (this.isObject(given) && this.isObject(fallback)){
+		if (Tone.isObject(given) && Tone.isObject(fallback)){
 			var ret = {};
 			//make a deep copy of the given object
 			for (var givenProp in given) {
@@ -409,7 +409,7 @@ define(function(){
 			}
 			return ret;
 		} else {
-			return this.isUndef(given) ? fallback : given;
+			return Tone.isUndef(given) ? fallback : given;
 		}
 	};
 
@@ -445,14 +445,14 @@ define(function(){
 	 */
 	Tone.prototype.optionsObject = function(values, keys, defaults){
 		var options = {};
-		if (values.length === 1 && this.isObject(values[0])){
+		if (values.length === 1 && Tone.isObject(values[0])){
 			options = values[0];
 		} else {
 			for (var i = 0; i < keys.length; i++){
 				options[keys[i]] = values[i];
 			}
 		}
-		if (!this.isUndef(defaults)){
+		if (!Tone.isUndef(defaults)){
 			return this.defaultArg(options, defaults);
 		} else {
 			return options;

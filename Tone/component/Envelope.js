@@ -148,9 +148,9 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal",
 	 */
 	Object.defineProperty(Tone.Envelope.prototype, "attackCurve", {
 		get : function(){
-			if (this.isString(this._attackCurve)){
+			if (Tone.isString(this._attackCurve)){
 				return this._attackCurve;
-			} else if (this.isArray(this._attackCurve)){
+			} else if (Tone.isArray(this._attackCurve)){
 				//look up the name in the curves array
 				for (var type in Tone.Envelope.Type){
 					if (Tone.Envelope.Type[type].In === this._attackCurve){
@@ -165,12 +165,12 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal",
 			//check if it's a valid type
 			if (Tone.Envelope.Type.hasOwnProperty(curve)){
 				var curveDef = Tone.Envelope.Type[curve];
-				if (this.isObject(curveDef)){
+				if (Tone.isObject(curveDef)){
 					this._attackCurve = curveDef.In;
 				} else {
 					this._attackCurve = curveDef;
 				}
-			} else if (this.isArray(curve)){
+			} else if (Tone.isArray(curve)){
 				this._attackCurve = curve;
 			} else {
 				throw new Error("Tone.Envelope: invalid curve: " + curve);
@@ -188,9 +188,9 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal",
 	 */
 	Object.defineProperty(Tone.Envelope.prototype, "releaseCurve", {
 		get : function(){
-			if (this.isString(this._releaseCurve)){
+			if (Tone.isString(this._releaseCurve)){
 				return this._releaseCurve;
-			} else if (this.isArray(this._releaseCurve)){
+			} else if (Tone.isArray(this._releaseCurve)){
 				//look up the name in the curves array
 				for (var type in Tone.Envelope.Type){
 					if (Tone.Envelope.Type[type].Out === this._releaseCurve){
@@ -205,12 +205,12 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal",
 			//check if it's a valid type
 			if (Tone.Envelope.Type.hasOwnProperty(curve)){
 				var curveDef = Tone.Envelope.Type[curve];
-				if (this.isObject(curveDef)){
+				if (Tone.isObject(curveDef)){
 					this._releaseCurve = curveDef.Out;
 				} else {
 					this._releaseCurve = curveDef;
 				}
-			} else if (this.isArray(curve)){
+			} else if (Tone.isArray(curve)){
 				this._releaseCurve = curve;
 			} else {
 				throw new Error("Tone.Envelope: invalid curve: " + curve);
@@ -285,7 +285,7 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal",
 				this._sig.exponentialRampToValue(0, release, time);
 			} else{
 				var curve = this._releaseCurve;
-				if (this.isArray(curve)){
+				if (Tone.isArray(curve)){
 					this._sig.setRampPoint(time);
 					this._sig.setValueCurveAtTime(curve, time, release, currentValue);
 				}

@@ -173,11 +173,11 @@ function (Tone) {
 	 *  @return {Seconds} 
 	 */
 	Tone.prototype.toSeconds = function(time){
-		if (this.isNumber(time)){
+		if (Tone.isNumber(time)){
 			return time;
-		} else if (this.isUndef(time)){
+		} else if (Tone.isUndef(time)){
 			return this.now();			
-		} else if (this.isString(time)){
+		} else if (Tone.isString(time)){
 			return (new Tone.Time(time)).toSeconds();
 		} else if (time instanceof Tone.TimeBase){
 			return time.toSeconds();
@@ -190,9 +190,9 @@ function (Tone) {
 	 *  @return {Hertz}      the frequency in hertz
 	 */
 	Tone.prototype.toFrequency = function(freq){
-		if (this.isNumber(freq)){
+		if (Tone.isNumber(freq)){
 			return freq;
-		} else if (this.isString(freq) || this.isUndef(freq)){
+		} else if (Tone.isString(freq) || Tone.isUndef(freq)){
 			return (new Tone.Frequency(freq)).valueOf();
 		} else if (freq instanceof Tone.TimeBase){
 			return freq.toFrequency();
@@ -205,9 +205,9 @@ function (Tone) {
 	 *  @return {Ticks}  the time in ticks
 	 */
 	Tone.prototype.toTicks = function(time){
-		if (this.isNumber(time) || this.isString(time)){
+		if (Tone.isNumber(time) || Tone.isString(time)){
 			return (new Tone.TransportTime(time)).toTicks();
-		} else if (this.isUndef(time)){
+		} else if (Tone.isUndef(time)){
 			return Tone.Transport.ticks;			
 		} else if (time instanceof Tone.TimeBase){
 			return time.toTicks();

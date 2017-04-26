@@ -76,7 +76,7 @@ define(["Tone/core/Tone"], function (Tone) {
 	 */
 	Tone.Timeline.prototype.add = function(event){
 		//the event needs to have a time attribute
-		if (this.isUndef(event.time)){
+		if (Tone.isUndef(event.time)){
 			throw new Error("Tone.Timeline: events must have a time attribute");
 		}
 		if (this._timeline.length){

@@ -89,7 +89,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/G
 		this._onendedTimeout = -1;
 
 		//set the buffer initially
-		if (!this.isUndef(options.buffer)){
+		if (!Tone.isUndef(options.buffer)){
 			this.buffer = options.buffer;
 		}
 
@@ -163,7 +163,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/G
 			this._gain = gain;
 
 			//the fadeIn time
-			if (this.isUndef(fadeInTime)){
+			if (Tone.isUndef(fadeInTime)){
 				fadeInTime = this.toSeconds(this.fadeIn);
 			} else {
 				fadeInTime = this.toSeconds(fadeInTime);
@@ -178,7 +178,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/G
 
 			this._startTime = time + fadeInTime;
 
-			if (!this.isUndef(duration)){
+			if (!Tone.isUndef(duration)){
 				duration = this.defaultArg(duration, this.buffer.duration - offset);
 				duration = this.toSeconds(duration);
 				this.stop(time + duration + fadeInTime, fadeInTime);
@@ -201,7 +201,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/G
 			time = this.toSeconds(time);
 			
 			//the fadeOut time
-			if (this.isUndef(fadeOutTime)){
+			if (Tone.isUndef(fadeOutTime)){
 				fadeOutTime = this.toSeconds(this.fadeOut);
 			} else {
 				fadeOutTime = this.toSeconds(fadeOutTime);
@@ -221,7 +221,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/G
 				this._gainNode.gain.setValueAtTime(0, time);
 			}
 			// fix for safari bug and old FF
-			if (!this.isNumber(this._source.playbackState) || this._source.playbackState === 2){
+			if (!Tone.isNumber(this._source.playbackState) || this._source.playbackState === 2){
 				this._source.stop(time);
 			}
 

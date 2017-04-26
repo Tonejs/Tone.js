@@ -93,7 +93,7 @@ define(["Tone/core/Tone", "Tone/component/Volume"], function(Tone){
 		labelOrId = this.defaultArg(labelOrId, "default");
 		return this.enumerateDevices().then(function(devices){
 			var device;
-			if (this.isNumber(labelOrId)){
+			if (Tone.isNumber(labelOrId)){
 				device = devices[labelOrId];
 			} else {
 				device = devices.find(function(device){

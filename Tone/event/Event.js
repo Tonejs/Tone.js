@@ -141,13 +141,13 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/type/Type", "Tone/core/Ti
 		this._state.forEachFrom(after, function(event){
 			var duration;
 			if (event.state === Tone.State.Started){
-				if (!this.isUndef(event.id)){
+				if (!Tone.isUndef(event.id)){
 					Tone.Transport.clear(event.id);
 				}
 				var startTick = event.time + Math.round(this.startOffset / this._playbackRate);
 				if (this._loop){
 					duration = Infinity;
-					if (this.isNumber(this._loop)){
+					if (Tone.isNumber(this._loop)){
 						duration =  (this._loop) * this._getLoopDuration();
 					}
 					var nextEvent = this._state.getAfter(startTick);
@@ -297,7 +297,7 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/type/Type", "Tone/core/Ti
 			} 
 			if (this.humanize){
 				var variation = 0.02;
-				if (!this.isBoolean(this.humanize)){
+				if (!Tone.isBoolean(this.humanize)){
 					variation = this.toSeconds(this.humanize);
 				}
 				time += (Math.random() * 2 - 1) * variation;

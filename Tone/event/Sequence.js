@@ -42,14 +42,14 @@ define(["Tone/core/Tone", "Tone/event/Part", "Tone/core/Transport"], function (T
 		this._subdivision = this.toTicks(options.subdivision);
 
 		//if no time was passed in, the loop end is the end of the cycle
-		if (this.isUndef(options.loopEnd) && !this.isUndef(events)){
+		if (Tone.isUndef(options.loopEnd) && !Tone.isUndef(events)){
 			this._loopEnd = (events.length * this._subdivision);
 		} 
 		//defaults to looping
 		this._loop = true;
 
 		//add all of the events
-		if (!this.isUndef(events)){
+		if (!Tone.isUndef(events)){
 			for (var i = 0; i < events.length; i++){
 				this.add(i, events[i]);
 			}
@@ -96,7 +96,7 @@ define(["Tone/core/Tone", "Tone/event/Part", "Tone/core/Transport"], function (T
 	 */
 	Tone.Sequence.prototype.at = function(index, value){
 		//if the value is an array, 
-		if (this.isArray(value)){
+		if (Tone.isArray(value)){
 			//remove the current event at that index
 			this.remove(index);
 		}
@@ -116,7 +116,7 @@ define(["Tone/core/Tone", "Tone/event/Part", "Tone/core/Transport"], function (T
 		if (value === null){
 			return this;
 		}
-		if (this.isArray(value)){
+		if (Tone.isArray(value)){
 			//make a subsequence and add that to the sequence
 			var subSubdivision = Math.round(this._subdivision / value.length);
 			value = new Tone.Sequence(this._tick.bind(this), value, Tone.Time(subSubdivision, "i"));

@@ -177,7 +177,7 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal", "Tone/core/TimelineState
 				if (currentState === Tone.State.Started){
 					//correct the time
 					this._nextTick = event.time;
-					if (!this.isUndef(event.offset)){
+					if (!Tone.isUndef(event.offset)){
 						this.ticks = event.offset;
 					}
 					this.emit("start", event.time, this.ticks);

@@ -85,7 +85,7 @@ function (Tone) {
 	 */
 	Tone.MultiPlayer.prototype._makeSource = function(bufferName){
 		var buffer;
-		if (this.isString(bufferName) || this.isNumber(bufferName)){
+		if (Tone.isString(bufferName) || Tone.isNumber(bufferName)){
 			buffer = this.buffers.get(bufferName).get();
 		} else if (bufferName instanceof Tone.Buffer){
 			buffer = bufferName.get();

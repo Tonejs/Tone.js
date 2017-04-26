@@ -142,7 +142,7 @@ function(Tone){
 	 * source.start("+0.5"); //starts the source 0.5 seconds from now
 	 */
 	Tone.Source.prototype.start = function(time, offset, duration){
-		if (this.isUndef(time) && this._synced){
+		if (Tone.isUndef(time) && this._synced){
 			time = Tone.Transport.seconds;
 		} else {
 			time = this.toSeconds(time);
@@ -176,7 +176,7 @@ function(Tone){
 	 * source.stop(); // stops the source immediately
 	 */
 	Tone.Source.prototype.stop = function(time){
-		if (this.isUndef(time) && this._synced){
+		if (Tone.isUndef(time) && this._synced){
 			time = Tone.Transport.seconds;
 		} else {
 			time = this.toSeconds(time);

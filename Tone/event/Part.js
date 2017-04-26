@@ -37,7 +37,7 @@ define(["Tone/core/Tone", "Tone/event/Event", "Tone/type/Type", "Tone/core/Trans
 		this._events = [];
 
 		//add the events
-		if (!this.isUndef(options.events)){
+		if (!Tone.isUndef(options.events)){
 			for (var i = 0; i < options.events.length; i++){
 				if (Array.isArray(options.events[i])){
 					this.add(options.events[i][0], options.events[i][1]);
@@ -179,14 +179,14 @@ define(["Tone/core/Tone", "Tone/event/Event", "Tone/type/Type", "Tone/core/Trans
 		for (var i = 0; i < this._events.length; i++){
 			var event = this._events[i];
 			if (Math.abs(time.toTicks() - event.startOffset) < tickTime){
-				if (!this.isUndef(value)){
+				if (!Tone.isUndef(value)){
 					event.value = value;
 				}
 				return event;
 			}
 		}
 		//if there was no event at that time, create one
-		if (!this.isUndef(value)){
+		if (!Tone.isUndef(value)){
 			this.add(time, value);
 			//return the new event
 			return this._events[this._events.length - 1];
@@ -279,7 +279,7 @@ define(["Tone/core/Tone", "Tone/event/Event", "Tone/type/Type", "Tone/core/Trans
 				event.remove(time, value);
 			} else {
 				if (event.startOffset === time){
-					if (this.isUndef(value) || (!this.isUndef(value) && event.value === value)){
+					if (Tone.isUndef(value) || (!Tone.isUndef(value) && event.value === value)){
 						this._events.splice(i, 1);
 						event.dispose();
 					}

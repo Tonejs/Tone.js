@@ -138,7 +138,7 @@ function(Tone){
 	Tone.PolySynth.prototype.triggerAttackRelease = function(notes, duration, time, velocity){
 		time = this.toSeconds(time);
 		this.triggerAttack(notes, time, velocity);
-		if (this.isArray(duration) && this.isArray(notes)){
+		if (Tone.isArray(duration) && Tone.isArray(notes)){
 			for (var i = 0; i < notes.length; i++){
 				var d = duration[Math.min(i, duration.length - 1)];
 				this.triggerRelease(notes[i], time + this.toSeconds(d));	

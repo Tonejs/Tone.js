@@ -106,7 +106,7 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/core/Timeline"], function (
 	 *  @private
 	 */
 	Tone.Context.prototype._defineProperty = function(context, prop){
-		if (this.isUndef(this[prop])){
+		if (Tone.isUndef(this[prop])){
 			Object.defineProperty(this, prop, {
 				get : function(){
 					if (typeof context[prop] === "function"){
@@ -167,7 +167,7 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/core/Timeline"], function (
 		//lag compensation
 		worker.addEventListener("message", function(){
 			var now = this.now();
-			if (this.isNumber(this._lastUpdate)){
+			if (Tone.isNumber(this._lastUpdate)){
 				var diff = now - this._lastUpdate;
 				this._computedUpdateInterval = Math.max(diff, this._computedUpdateInterval * 0.97);
 			}
@@ -325,7 +325,7 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/core/Timeline"], function (
 		set : function(hint){
 			var lookAhead = hint;
 			this._latencyHint = hint;
-			if (this.isString(hint)){
+			if (Tone.isString(hint)){
 				switch(hint){
 					case "interactive" :
 						lookAhead = 0.1;

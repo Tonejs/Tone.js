@@ -59,7 +59,7 @@ define(["Tone/core/Tone"], function (Tone) {
 	Tone.CtrlMarkov.prototype.next = function(){
 		if (this.values.hasOwnProperty(this.value)){
 			var next = this.values[this.value];
-			if (this.isArray(next)){
+			if (Tone.isArray(next)){
 				var distribution = this._getProbDistribution(next);
 				var rand = Math.random();
 				var total = 0;
@@ -67,7 +67,7 @@ define(["Tone/core/Tone"], function (Tone) {
 					var dist = distribution[i];
 					if (rand > total && rand < total + dist){
 						var chosen = next[i];
-						if (this.isObject(chosen)){
+						if (Tone.isObject(chosen)){
 							this.value = chosen.value;
 						} else {
 							this.value = chosen;
@@ -95,7 +95,7 @@ define(["Tone/core/Tone"], function (Tone) {
 		var needsNormalizing = false;
 		for (var i = 0; i < options.length; i++){
 			var option = options[i];
-			if (this.isObject(option)){
+			if (Tone.isObject(option)){
 				needsNormalizing = true;
 				distribution[i] = option.probability;
 			} else {

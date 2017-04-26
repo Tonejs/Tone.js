@@ -51,7 +51,7 @@ define(["Tone/core/Tone", "Tone/core/Gain"], function(Tone){
 		if (!Buses.hasOwnProperty(channelName)){
 			Buses[channelName] = this.context.createGain();	
 		}
-		if (this.isUndef(input)){
+		if (Tone.isUndef(input)){
 			input = this.input;
 		}
 		Buses[channelName].connect(input);

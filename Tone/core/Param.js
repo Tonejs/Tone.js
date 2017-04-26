@@ -52,9 +52,9 @@ define(["Tone/core/Tone", "Tone/type/Type"], function(Tone){
 		 */
 		this._lfo = null;
 
-		if (this.isObject(options.lfo)){
+		if (Tone.isObject(options.lfo)){
 			this.value = options.lfo;
-		} else if (!this.isUndef(options.value)){
+		} else if (!Tone.isUndef(options.value)){
 			this.value = options.value;
 		}
 	};
@@ -83,9 +83,9 @@ define(["Tone/core/Tone", "Tone/type/Type"], function(Tone){
 			return this._toUnits(this._param.value);
 		},
 		set : function(value){
-			if (this.isObject(value)){
+			if (Tone.isObject(value)){
 				//throw an error if the LFO needs to be included
-				if (this.isUndef(Tone.LFO)){
+				if (Tone.isUndef(Tone.LFO)){
 					throw new Error("Include 'Tone.LFO' to use an LFO as a Param value.");
 				}
 				//remove the old one
@@ -110,7 +110,7 @@ define(["Tone/core/Tone", "Tone/type/Type"], function(Tone){
 	 *  @return {number}     the number which the value should be set to
 	 */
 	Tone.Param.prototype._fromUnits = function(val){
-		if (this.convert || this.isUndef(this.convert)){
+		if (this.convert || Tone.isUndef(this.convert)){
 			switch(this.units){
 				case Tone.Type.Time: 
 					return this.toSeconds(val);
@@ -139,7 +139,7 @@ define(["Tone/core/Tone", "Tone/type/Type"], function(Tone){
 	 * @return {number}
 	 */
 	Tone.Param.prototype._toUnits = function(val){
-		if (this.convert || this.isUndef(this.convert)){
+		if (this.convert || Tone.isUndef(this.convert)){
 			switch(this.units){
 				case Tone.Type.Decibels: 
 					return this.gainToDb(val);

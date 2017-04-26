@@ -402,7 +402,7 @@ function(Tone){
 	 */
 	Tone.Transport.prototype.start = function(time, offset){
 		//start the clock
-		if (!this.isUndef(offset)){
+		if (!Tone.isUndef(offset)){
 			offset = this.toTicks(offset);
 		}
 		this._clock.start(time, offset);
@@ -454,7 +454,7 @@ function(Tone){
 			return this._timeSignature;
 		},
 		set : function(timeSig){
-			if (this.isArray(timeSig)){
+			if (Tone.isArray(timeSig)){
 				timeSig = (timeSig[0] / timeSig[1]) * 4;
 			}
 			this._timeSignature = timeSig;

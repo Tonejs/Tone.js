@@ -77,7 +77,7 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type"], function(Tone)
 			if (options.onload){
 				options.onload(this);
 			}
-		} else if (this.isString(options.url)){
+		} else if (Tone.isString(options.url)){
 			this.load(options.url, options.onload, options.onerror);
 		}
 	};
@@ -264,7 +264,7 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type"], function(Tone)
 	 *  @return {Array}
 	 */
 	Tone.Buffer.prototype.toMono = function(chanNum){
-		if (this.isNumber(chanNum)){
+		if (Tone.isNumber(chanNum)){
 			this.fromArray(this.toArray(chanNum));
 		} else {
 			var outputArray = new Float32Array(this.length);
@@ -291,7 +291,7 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type"], function(Tone)
 	 *  @return {Array}
 	 */
 	Tone.Buffer.prototype.toArray = function(channel){
-		if (this.isNumber(channel)){
+		if (Tone.isNumber(channel)){
 			return this.getChannelData(channel);
 		} else if (this.numberOfChannels === 1){
 			return this.toArray(0);

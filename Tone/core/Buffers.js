@@ -138,7 +138,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer"], function (Tone) {
 		} else if (url instanceof AudioBuffer){
 			this._buffers[name] = new Tone.Buffer(url);
 			callback(this);
-		} else if (this.isString(url)){
+		} else if (Tone.isString(url)){
 			this._buffers[name] = new Tone.Buffer(this.baseUrl + url, callback);
 		}
 		return this;
@@ -155,7 +155,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer"], function (Tone) {
 		var toReturn = {};
 		for (var i in ob) {
 			if (!ob.hasOwnProperty(i)) continue;
-			if (this.isObject(ob[i])) {
+			if (Tone.isObject(ob[i])) {
 				var flatObject = this._flattenUrls(ob[i]);
 				for (var x in flatObject) {
 					if (!flatObject.hasOwnProperty(x)) continue;
