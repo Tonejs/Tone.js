@@ -6,7 +6,7 @@ function(Tone){
 	/**
 	 *  @class Tone.FatOscillator 
 	 *
-	 *  @extends {Tone.Oscillator}
+	 *  @extends {Tone.Source}
 	 *  @constructor
 	 *  @param {Frequency} frequency The starting frequency of the oscillator. 
 	 *  @param {String} type The type of the carrier oscillator.
@@ -17,7 +17,7 @@ function(Tone){
 	 */
 	Tone.FatOscillator = function(){
 
-		var options = this.optionsObject(arguments, ["frequency", "type", "spread"], Tone.FatOscillator.defaults);
+		var options = Tone.defaults(arguments, ["frequency", "type", "spread"], Tone.FatOscillator);
 		Tone.Source.call(this, options);
 
 		/**
@@ -75,7 +75,7 @@ function(Tone){
 		this._readOnly(["frequency", "detune"]);
 	};
 
-	Tone.extend(Tone.FatOscillator, Tone.Oscillator);
+	Tone.extend(Tone.FatOscillator, Tone.Source);
 
 	/**
 	 *  default values

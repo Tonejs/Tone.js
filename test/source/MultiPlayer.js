@@ -35,7 +35,7 @@ define(["helper/Basic", "Tone/source/MultiPlayer", "helper/Offline", "helper/Sou
 
 			it ("can be constructed an options object", function(){
 				var player = new MultiPlayer({
-					buffers : ["./audio/sine.wav"],
+					urls : ["./audio/sine.wav"],
 					fadeOut : 0.1
 				});
 				expect(player.fadeOut).to.equal(0.1);

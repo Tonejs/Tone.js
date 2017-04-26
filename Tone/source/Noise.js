@@ -29,7 +29,7 @@ define(["Tone/core/Tone", "Tone/source/Source", "Tone/core/Buffer", "Tone/source
 	 */
 	Tone.Noise = function(){
 
-		var options = this.optionsObject(arguments, ["type"], Tone.Noise.defaults);
+		var options = Tone.defaults(arguments, ["type"], Tone.Noise);
 		Tone.Source.call(this, options);
 
 		/**

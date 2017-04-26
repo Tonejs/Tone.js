@@ -26,7 +26,8 @@ define(["Tone/core/Tone", "Tone/component/Volume"], function(Tone){
 
 	Tone.UserMedia = function(){
 
-		var options = this.optionsObject(arguments, ["volume"], Tone.UserMedia.defaults);
+		var options = Tone.defaults(arguments, ["volume"], Tone.UserMedia);
+		Tone.call(this);
 
 		/**
 		 *  The MediaStreamNode 

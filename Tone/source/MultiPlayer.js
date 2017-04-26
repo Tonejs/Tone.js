@@ -24,9 +24,14 @@ function (Tone) {
 	 * 	multiPlayer.start(1);
 	 * });
 	 */
-	Tone.MultiPlayer = function(){
+	Tone.MultiPlayer = function(urls){
 
-		var options = this.optionsObject(arguments, ["urls", "onload"], Tone.MultiPlayer.defaults);
+		//remove the urls from the options
+		if (arguments.length === 1 && !Tone.isUndef(arguments[0]) && !arguments[0].hasOwnProperty("urls")){
+			urls = { "urls" : urls };
+		}
+		var options = Tone.defaults(arguments, ["urls", "onload"], Tone.MultiPlayer);
+		Tone.Source.call(this, options);
 
 		if (options.urls instanceof Tone.Buffers){
 			/**
@@ -58,29 +63,6 @@ function (Tone) {
 		 *  @type  {Time}
 		 */
 		this.fadeOut = options.fadeOut;
-
-		/**
-		 *  The output volume node
-		 *  @type  {Tone.Volume}
-		 *  @private
-		 */
-		this._volume = this.output = new Tone.Volume(options.volume);
-
-		/**
-		 * The volume of the output in decibels.
-		 * @type {Decibels}
-		 * @signal
-		 * @example
-		 * source.volume.value = -6;
-		 */
-		this.volume = this._volume.volume;
-		this._readOnly("volume");
-
-		//make the output explicitly stereo
-		this._volume.output.output.channelCount = 2;
-		this._volume.output.output.channelCountMode = "explicit";
-		//mute initially
-		this.mute = options.mute;
 	};
 
 	Tone.extend(Tone.MultiPlayer, Tone.Source);
@@ -248,11 +230,7 @@ function (Tone) {
 	 *  @return  {Tone.MultiPlayer}  this
 	 */
 	Tone.MultiPlayer.prototype.dispose = function(){
-		Tone.prototype.dispose.call(this);
-		this._volume.dispose();
-		this._volume = null;
-		this._writable("volume");
-		this.volume = null;
+		Tone.Source.prototype.dispose.call(this);
 		for (var bufferName in this._activeSources){
 			this._activeSources[bufferName].forEach(function(source){
 				source.dispose();

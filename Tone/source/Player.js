@@ -23,7 +23,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 			url = url.get();
 			options = Tone.Player.defaults;
 		} else {
-			options = this.optionsObject(arguments, ["url", "onload"], Tone.Player.defaults);
+			options = Tone.defaults(arguments, ["url", "onload"], Tone.Player);
 		}		
 		Tone.Source.call(this, options);
 

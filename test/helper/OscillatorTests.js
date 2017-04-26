@@ -5,12 +5,6 @@ define(["helper/OutputAudio", "Tone/source/Oscillator", "helper/Offline", "Test"
 
 		context("Oscillator Tests", function(){
 
-			it ("extends Tone.Oscillator", function(){
-				var instance = new Constr(args);
-				expect(instance).to.be.an.instanceof(Oscillator);
-				instance.dispose();
-			});
-
 			it("can be created with an options object", function(){
 				var instance = new Constr({
 					"frequency" : 200,

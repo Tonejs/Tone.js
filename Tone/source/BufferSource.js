@@ -10,13 +10,14 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/G
 
 	/**
 	 *  @class Wrapper around the native BufferSourceNode.
+	 *  @extends {Tone}
 	 *  @param  {AudioBuffer|Tone.Buffer}  buffer   The buffer to play
 	 *  @param  {Function}  onended  The callback to invoke when the 
 	 *                               buffer is done playing.
 	 */
 	Tone.BufferSource = function(){
 
-		var options = this.optionsObject(arguments, ["buffer", "onended"], Tone.BufferSource.defaults);
+		var options = Tone.defaults(arguments, ["buffer", "onended"], Tone.BufferSource);
 
 		/**
 		 *  The callback to invoke after the 
@@ -140,7 +141,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/G
 	 */
 	Tone.BufferSource.prototype.start = function(time, offset, duration, gain, fadeInTime){
 		if (this._startTime !== -1){
-			throw new Error("Tone.BufferSource: can only be started once.");
+			throw new Error("Tone.BufferSource can only be started once.");
 		}
 
 		if (this.buffer){

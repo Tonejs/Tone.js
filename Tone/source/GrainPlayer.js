@@ -13,8 +13,7 @@ function (Tone) {
 	Tone.GrainPlayer = function(){
 
 		var options = this.optionsObject(arguments, ["url", "onload"], Tone.GrainPlayer.defaults);
-
-		Tone.Source.call(this);
+		Tone.Source.call(this, options);
 
 		/**
 		 *  The audio buffer belonging to the player.

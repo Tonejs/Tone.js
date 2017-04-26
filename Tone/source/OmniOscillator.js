@@ -14,7 +14,7 @@ function(Tone){
 	 *         For example: `omniOsc.type = "fatsawtooth"` will create set the oscillator
 	 *         to a FatOscillator of type "sawtooth". 
 	 *
-	 *  @extends {Tone.Oscillator}
+	 *  @extends {Tone.Source}
 	 *  @constructor
 	 *  @param {Frequency} frequency The initial frequency of the oscillator.
 	 *  @param {String} type The type of the oscillator.
@@ -22,7 +22,8 @@ function(Tone){
 	 *  var omniOsc = new Tone.OmniOscillator("C#4", "pwm");
 	 */
 	Tone.OmniOscillator = function(){
-		var options = this.optionsObject(arguments, ["frequency", "type"], Tone.OmniOscillator.defaults);
+
+		var options = Tone.defaults(arguments, ["frequency", "type"], Tone.OmniOscillator);
 		Tone.Source.call(this, options);
 
 		/**
@@ -60,7 +61,7 @@ function(Tone){
 		this.set(options);
 	};
 
-	Tone.extend(Tone.OmniOscillator, Tone.Oscillator);
+	Tone.extend(Tone.OmniOscillator, Tone.Source);
 
 	/**
 	 *  default values

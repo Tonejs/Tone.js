@@ -28,9 +28,8 @@ function(Tone){
 	 */	
 	Tone.Source = function(options){
 
-		// this.createInsOuts(0, 1);
-
-		options = this.defaultArg(options, Tone.Source.defaults);
+		Tone.call(this);
+		options = Tone.defaultArg(options, Tone.Source.defaults);
 
 		/**
 		 *  The output volume node
