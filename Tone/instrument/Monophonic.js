@@ -15,7 +15,6 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/signal/Signal"], f
 
 		//get the defaults
 		options = Tone.defaultArg(options, Tone.Monophonic.defaults);
-
 		Tone.Instrument.call(this, options);
 
 		/**
