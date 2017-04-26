@@ -275,7 +275,7 @@ define(["Tone/core/Tone", "Tone/component/Volume"], function(Tone){
 	 */
 	Object.defineProperty(Tone.UserMedia, "supported", {
 		get : function(){
-			return !Tone.prototype.isUndef(navigator.mediaDevices) && Tone.prototype.isFunction(navigator.mediaDevices.getUserMedia);
+			return !Tone.isUndef(navigator.mediaDevices) && Tone.isFunction(navigator.mediaDevices.getUserMedia);
 		}
 	});
 

@@ -469,78 +469,6 @@ define(function(){
 	 *  @returns {boolean} true if the arg is undefined
 	 *  @function
 	 */
-	Tone.prototype.isUndef = function(val){
-		return typeof val === "undefined";
-	};
-
-	/**
-	 *  test if the arg is a function
-	 *  @param {*} arg the argument to test
-	 *  @returns {boolean} true if the arg is a function
-	 *  @function
-	 */
-	Tone.prototype.isFunction = function(val){
-		return typeof val === "function";
-	};
-
-	/**
-	 *  Test if the argument is a number.
-	 *  @param {*} arg the argument to test
-	 *  @returns {boolean} true if the arg is a number
-	 */
-	Tone.prototype.isNumber = function(arg){
-		return (typeof arg === "number");
-	};
-
-	/**
-	 *  Test if the given argument is an object literal (i.e. `{}`);
-	 *  @param {*} arg the argument to test
-	 *  @returns {boolean} true if the arg is an object literal.
-	 */
-	Tone.prototype.isObject = function(arg){
-		return (Object.prototype.toString.call(arg) === "[object Object]" && arg.constructor === Object);
-	};
-
-	/**
-	 *  Test if the argument is a boolean.
-	 *  @param {*} arg the argument to test
-	 *  @returns {boolean} true if the arg is a boolean
-	 */
-	Tone.prototype.isBoolean = function(arg){
-		return (typeof arg === "boolean");
-	};
-
-	/**
-	 *  Test if the argument is an Array
-	 *  @param {*} arg the argument to test
-	 *  @returns {boolean} true if the arg is an array
-	 */
-	Tone.prototype.isArray = function(arg){
-		return (Array.isArray(arg));
-	};
-
-	/**
-	 *  Test if the argument is a string.
-	 *  @param {*} arg the argument to test
-	 *  @returns {boolean} true if the arg is a string
-	 */
-	Tone.prototype.isString = function(arg){
-		return (typeof arg === "string");
-	};
-
- 	/**
-	 *  An empty function.
-	 *  @static
-	 */
-	Tone.noOp = function(){};
-
-
-	/**
-	 *  test if the arg is undefined
-	 *  @param {*} arg the argument to test
-	 *  @returns {boolean} true if the arg is undefined
-	 *  @function
-	 */
 	Tone.isUndef = function(val){
 		return typeof val === "undefined";
 	};
@@ -599,6 +527,12 @@ define(function(){
 	Tone.isString = function(arg){
 		return (typeof arg === "string");
 	};
+
+ 	/**
+	 *  An empty function.
+	 *  @static
+	 */
+	Tone.noOp = function(){};
 
 	/**
 	 *  Make the property not writable. Internal use only. 
@@ -729,7 +663,7 @@ define(function(){
 	 *                             will inherit from Tone
 	 */
 	Tone.extend = function(child, parent){
-		if (Tone.prototype.isUndef(parent)){
+		if (Tone.isUndef(parent)){
 			parent = Tone;
 		}
 		function TempConstructor(){}

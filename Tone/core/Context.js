@@ -380,7 +380,7 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/core/Timeline"], function (
 		function toneConnect(B, outNum, inNum){
 			if (B.input){
 				if (Array.isArray(B.input)){
-					if (Tone.prototype.isUndef(inNum)){
+					if (Tone.isUndef(inNum)){
 						inNum = 0;
 					}
 					this.connect(B.input[inNum]);
@@ -403,7 +403,7 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/core/Timeline"], function (
 		//replace the old disconnect method
 		function toneDisconnect(B, outNum, inNum){
 			if (B && B.input && Array.isArray(B.input)){
-				if (Tone.prototype.isUndef(inNum)){
+				if (Tone.isUndef(inNum)){
 					inNum = 0;
 				}
 				this.disconnect(B.input[inNum], outNum, inNum);

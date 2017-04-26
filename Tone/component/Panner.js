@@ -98,7 +98,7 @@ function(Tone){
 	 *  @type  {boolean}
 	 *  @private
 	 */
-	Tone.Panner.prototype._hasStereoPanner = Tone.prototype.isFunction(Tone.context.createStereoPanner);
+	Tone.Panner.prototype._hasStereoPanner = Tone.isFunction(Tone.context.createStereoPanner);
 
 	/**
 	 *  Clean up.
