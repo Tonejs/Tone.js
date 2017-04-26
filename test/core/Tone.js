@@ -122,17 +122,17 @@ define(["Test", "Tone/core/Tone", "helper/PassAudio", "Tone/source/Oscillator",
 
 		});
 
-		context("optionsObject", function(){
+		context("defaults", function(){
 
 			it("maps array parameters to an object", function(){
-				expect(tone.optionsObject([1, 2], ["a", "b"])).is.deep.equal({
+				expect(Tone.defaults([1, 2], ["a", "b"], {})).is.deep.equal({
 					"a" : 1,
 					"b" : 2
 				});
 			});
 
 			it("maps array parameters to an object with missing arguments", function(){
-				expect(tone.optionsObject([1, 2], ["a", "b", "c"])).is.deep.equal({
+				expect(Tone.defaults([1, 2], ["a", "b", "c"], {})).is.deep.equal({
 					"a" : 1,
 					"b" : 2,
 					"c" : undefined
@@ -140,7 +140,10 @@ define(["Test", "Tone/core/Tone", "helper/PassAudio", "Tone/source/Oscillator",
 			});
 
 			it("gets default arguments after creating options object", function(){
-				expect(tone.optionsObject([1, 2], ["a", "b", "c"], {"c" : 3})).is.deep.equal({
+				var constr = {
+					"defaults" : {"c" : 3}
+				};
+				expect(Tone.defaults([1, 2], ["a", "b", "c"], constr)).is.deep.equal({
 					"a" : 1,
 					"b" : 2,
 					"c" : 3
@@ -148,7 +151,7 @@ define(["Test", "Tone/core/Tone", "helper/PassAudio", "Tone/source/Oscillator",
 			});
 
 			it("does not map parameter if first argument is already an object", function(){
-				expect(tone.optionsObject([{"a" : 2, "b" : 3}], ["a", "b", "c"])).is.deep.equal({
+				expect(Tone.defaults([{"a" : 2, "b" : 3}], ["a", "b", "c"], {})).is.deep.equal({
 					"a" : 2,
 					"b" : 3,
 				});
