@@ -24,7 +24,7 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/source/FMOscillato
 	 */
 	Tone.MetalSynth = function(options){
 
-		options = this.defaultArg(options, Tone.MetalSynth.defaults);
+		options = Tone.defaultArg(options, Tone.MetalSynth.defaults);
 		Tone.Instrument.call(this, options);
 
 		/**

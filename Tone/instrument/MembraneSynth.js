@@ -23,7 +23,7 @@ function(Tone){
 	 */
 	Tone.MembraneSynth = function(options){
 
-		options = this.defaultArg(options, Tone.MembraneSynth.defaults);
+		options = Tone.defaultArg(options, Tone.MembraneSynth.defaults);
 		Tone.Instrument.call(this, options);
 
 		/**

@@ -18,7 +18,7 @@ function(Tone){
 	 */
 	Tone.Sampler = function(){
 
-		var options = this.optionsObject(arguments, ["url", "onload"], Tone.Sampler.defaults);
+		var options = Tone.defaults(arguments, ["url", "onload"], Tone.Sampler);
 		Tone.Instrument.call(this, options);
 
 		/**

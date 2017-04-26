@@ -20,7 +20,7 @@ function(Tone){
 	 */
 	Tone.FMSynth = function(options){
 
-		options = this.defaultArg(options, Tone.FMSynth.defaults);
+		options = Tone.defaultArg(options, Tone.FMSynth.defaults);
 		Tone.Monophonic.call(this, options);
 
 		/**

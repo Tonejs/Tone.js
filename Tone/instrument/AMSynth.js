@@ -22,7 +22,7 @@ function(Tone){
 	 */
 	Tone.AMSynth = function(options){
 
-		options = this.defaultArg(options, Tone.AMSynth.defaults);
+		options = Tone.defaultArg(options, Tone.AMSynth.defaults);
 		Tone.Monophonic.call(this, options);
 
 		/**

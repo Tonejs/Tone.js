@@ -14,7 +14,7 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/signal/Signal"], f
 	Tone.Monophonic = function(options){
 
 		//get the defaults
-		options = this.defaultArg(options, Tone.Monophonic.defaults);
+		options = Tone.defaultArg(options, Tone.Monophonic.defaults);
 
 		Tone.Instrument.call(this, options);
 

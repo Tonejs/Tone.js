@@ -11,7 +11,8 @@ define(["Tone/core/Tone", "Tone/type/Type"], function(Tone){
 	Tone.Instrument = function(options){
 
 		//get the defaults
-		options = this.defaultArg(options, Tone.Instrument.defaults);
+		options = Tone.defaultArg(options, Tone.Instrument.defaults);
+		Tone.call(this);
 
 		/**
 		 *  The output and volume triming node
