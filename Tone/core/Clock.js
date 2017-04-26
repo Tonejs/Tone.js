@@ -23,8 +23,8 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal", "Tone/core/TimelineState
 	 */
 	Tone.Clock = function(){
 
+		var options = Tone.defaults(arguments, ["callback", "frequency"], Tone.Clock);
 		Tone.Emitter.call(this);
-		var options = this.defaults(arguments, ["callback", "frequency"]);
 
 		/**
 		 *  The callback function to invoke at the scheduled tick.

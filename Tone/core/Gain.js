@@ -20,8 +20,8 @@ define(["Tone/core/Tone", "Tone/core/Param", "Tone/type/Type"], function (Tone) 
 	 */
 	Tone.Gain = function(){
 
-		Tone.call(this);
-		var options = this.defaults(arguments, ["gain", "units"]);
+		var options = Tone.defaults(arguments, ["gain", "units"], Tone.Gain);
+		Tone.call(this, options);
 
 		/**
 		 *  The GainNode

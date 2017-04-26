@@ -12,8 +12,8 @@ define(["Tone/core/Tone"], function (Tone) {
 	 */
 	Tone.Timeline = function(){
 
-		Tone.call(this);
-		var options = this.defaults(arguments, ["memory"]);
+		var options = Tone.defaults(arguments, ["memory"], Tone.Timeline);
+		Tone.call(this, options);
 
 		/**
 		 *  The array of scheduled timeline events

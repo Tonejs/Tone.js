@@ -29,8 +29,8 @@ define(["Tone/core/Tone", "Tone/core/Buffer"], function (Tone) {
 		if (arguments.length === 1 && !arguments[0].hasOwnProperty("urls")){
 			urls = { "urls" : urls };
 		}
-		Tone.apply(this, arguments);
-		var options = this.defaults(arguments, ["urls", "onload", "baseUrl"]);
+		var options = Tone.defaults(arguments, ["urls", "onload", "baseUrl"], Tone.Buffers);
+		Tone.call(this, options);
 
 		/**
 		 *  All of the buffers

@@ -18,8 +18,8 @@ define(["Tone/core/Tone", "Tone/core/Param"], function (Tone) {
 	 */
 	Tone.Delay = function(){
 
-		Tone.apply(this, arguments);
-		var options = this.defaults(arguments, ["delayTime", "maxDelay"]);
+		var options = Tone.defaults(arguments, ["delayTime", "maxDelay"], Tone.Delay);
+		Tone.call(this, options);
 
 		/**
 		 *  The native delay node
