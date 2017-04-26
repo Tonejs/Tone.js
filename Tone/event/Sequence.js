@@ -26,7 +26,7 @@ define(["Tone/core/Tone", "Tone/event/Part", "Tone/core/Transport"], function (T
 	 */
 	Tone.Sequence = function(){
 
-		var options = this.optionsObject(arguments, ["callback", "events", "subdivision"], Tone.Sequence.defaults);
+		var options = Tone.defaults(arguments, ["callback", "events", "subdivision"], Tone.Sequence);
 
 		//remove the events
 		var events = options.events;

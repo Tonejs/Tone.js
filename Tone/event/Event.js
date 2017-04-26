@@ -23,7 +23,8 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/type/Type", "Tone/core/Ti
 	 */
 	Tone.Event = function(){
 
-		var options = this.optionsObject(arguments, ["callback", "value"], Tone.Event.defaults);
+		var options = Tone.defaults(arguments, ["callback", "value"], Tone.Event);
+		Tone.call(this, options);
 
 		/**
 		 *  Loop value
@@ -83,24 +84,19 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/type/Type", "Tone/core/Ti
 		this._startOffset = 0;
 
 		/**
-		 *  The probability that the callback will be invoked
-		 *  at the scheduled time. 
+		 *  private holder of probability value
 		 *  @type {NormalRange}
-		 *  @example
-		 * //the callback will be invoked 50% of the time
-		 * event.probability = 0.5;
+		 *  @private
 		 */
-		this.probability = options.probability;
+		this._probability = options.probability;
 
 		/**
-		 *  If set to true, will apply small (+/-0.02 seconds) random variation
-		 *  to the callback time. If the value is given as a time, it will randomize
-		 *  by that amount.
-		 *  @example
-		 * event.humanize = true;
+		 *  the amount of variation from the
+		 *  given time. 
 		 *  @type {Boolean|Time}
+		 *  @private
 		 */
-		this.humanize = options.humanize;
+		this._humanize = options.humanize;
 
 		/**
 		 *  If mute is true, the callback won't be
@@ -199,6 +195,39 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/type/Type", "Tone/core/Ti
 		},
 		set : function(offset){
 			this._startOffset = offset;
+		}
+	});
+
+	/**
+	 *  The probability of the notes being triggered.
+	 *  @memberOf Tone.Event#
+	 *  @type {NormalRange}
+	 *  @name probability
+	 */
+	Object.defineProperty(Tone.Event.prototype, "probability", {
+		get : function(){
+			return this._probability;
+		},
+		set : function(prob){
+			this._probability = prob;
+		}
+	});
+
+	/**
+	 *  If set to true, will apply small random variation
+	 *  to the callback time. If the value is given as a time, it will randomize
+	 *  by that amount.
+	 *  @example
+	 * event.humanize = true;
+	 *  @type {Boolean|Time}
+	 *  @name humanize
+	 */
+	Object.defineProperty(Tone.Event.prototype, "humanize", {
+		get : function(){
+			return this._humanize;
+		},
+		set : function(variation){
+			this._humanize = variation;
 		}
 	});
 

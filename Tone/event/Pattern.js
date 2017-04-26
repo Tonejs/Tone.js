@@ -15,8 +15,7 @@ define(["Tone/core/Tone", "Tone/event/Loop", "Tone/control/CtrlPattern"], functi
 	 */
 	Tone.Pattern = function(){
 
-		var options = this.optionsObject(arguments, ["callback", "values", "pattern"], Tone.Pattern.defaults);
-
+		var options = Tone.defaults(arguments, ["callback", "values", "pattern"], Tone.Pattern);
 		Tone.Loop.call(this, options);
 
 		/**
@@ -29,7 +28,6 @@ define(["Tone/core/Tone", "Tone/event/Loop", "Tone/control/CtrlPattern"], functi
 			"type" : options.pattern,
 			"index" : options.index
 		});
-		
 	};
 
 	Tone.extend(Tone.Pattern, Tone.Loop);
@@ -41,6 +39,7 @@ define(["Tone/core/Tone", "Tone/event/Loop", "Tone/control/CtrlPattern"], functi
 	 */
 	Tone.Pattern.defaults = {
 		"pattern" : Tone.CtrlPattern.Type.Up,
+		"callback" : Tone.noOp,
 		"values" : [],
 	};
 

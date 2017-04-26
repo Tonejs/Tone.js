@@ -26,64 +26,8 @@ define(["Tone/core/Tone", "Tone/event/Event", "Tone/type/Type", "Tone/core/Trans
 	 */
 	Tone.Part = function(){
 
-		var options = this.optionsObject(arguments, ["callback", "events"], Tone.Part.defaults);
-
-		/**
-		 *  If the part is looping or not
-		 *  @type  {Boolean|Positive}
-		 *  @private
-		 */
-		this._loop = options.loop;
-
-		/**
-		 *  When the note is scheduled to start.
-		 *  @type  {Ticks}
-		 *  @private
-		 */
-		this._loopStart = this.toTicks(options.loopStart);
-
-		/**
-		 *  When the note is scheduled to start.
-		 *  @type  {Ticks}
-		 *  @private
-		 */
-		this._loopEnd = this.toTicks(options.loopEnd);
-
-		/**
-		 *  The playback rate of the part
-		 *  @type  {Positive}
-		 *  @private
-		 */
-		this._playbackRate = options.playbackRate;
-
-		/**
-		 *  private holder of probability value
-		 *  @type {NormalRange}
-		 *  @private
-		 */
-		this._probability = options.probability;
-
-		/**
-		 *  the amount of variation from the
-		 *  given time. 
-		 *  @type {Boolean|Time}
-		 *  @private
-		 */
-		this._humanize = options.humanize;
-
-		/**
-		 *  The start offset
-		 *  @type {Ticks}
-		 *  @private
-		 */
-		this._startOffset = 0;
-
-		/**
-		 *  Keeps track of the current state
-		 *  @type {Tone.TimelineState}
-		 *  @private
-		 */
-		this._state = new Tone.TimelineState(Tone.State.Stopped);
+		var options = Tone.defaults(arguments, ["callback", "events"], Tone.Part);
+		Tone.Event.call(this, options);
 
 		/**
 		 *  An array of Objects. 
@@ -92,27 +36,13 @@ define(["Tone/core/Tone", "Tone/event/Event", "Tone/type/Type", "Tone/core/Trans
 		 */
 		this._events = [];
 
-		/**
-		 *  The callback to invoke at all the scheduled events.
-		 *  @type {Function}
-		 */
-		this.callback = options.callback;
-
-		/**
-		 *  If mute is true, the callback won't be
-		 *  invoked.
-		 *  @type {Boolean}
-		 */
-		this.mute = options.mute;
-
 		//add the events
-		var events = this.defaultArg(options.events, []);
 		if (!this.isUndef(options.events)){
-			for (var i = 0; i < events.length; i++){
-				if (Array.isArray(events[i])){
-					this.add(events[i][0], events[i][1]);
+			for (var i = 0; i < options.events.length; i++){
+				if (Array.isArray(options.events[i])){
+					this.add(options.events[i][0], options.events[i][1]);
 				} else {
-					this.add(events[i]);
+					this.add(options.events[i]);
 				}
 			}
 		}
@@ -134,6 +64,7 @@ define(["Tone/core/Tone", "Tone/event/Event", "Tone/type/Type", "Tone/core/Trans
 		"probability" : 1,
 		"humanize" : false,
 		"mute" : false,
+		"events" : []
 	};
 
 	/**
@@ -391,13 +322,15 @@ define(["Tone/core/Tone", "Tone/event/Event", "Tone/type/Type", "Tone/core/Trans
 	 *  @private
 	 */
 	Tone.Part.prototype._forEach = function(callback, ctx){
-		ctx = this.defaultArg(ctx, this);
-		for (var i = this._events.length - 1; i >= 0; i--){
-			var e = this._events[i];
-			if (e instanceof Tone.Part){
-				e._forEach(callback, ctx);
-			} else {
-				callback.call(ctx, e);
+		if (this._events){
+			ctx = this.defaultArg(ctx, this);
+			for (var i = this._events.length - 1; i >= 0; i--){
+				var e = this._events[i];
+				if (e instanceof Tone.Part){
+					e._forEach(callback, ctx);
+				} else {
+					callback.call(ctx, e);
+				}
 			}
 		}
 		return this;
