@@ -8,7 +8,9 @@ define(["Tone/core/Tone"], function(Tone){
 	 *  @constructor
 	 *  @extends {Tone}
 	 */
-	Tone.SignalBase = function(){};
+	Tone.SignalBase = function(){
+		Tone.call(this);
+	};
 
 	Tone.extend(Tone.SignalBase);
 

@@ -25,6 +25,7 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Negate", "Tone/signal/
 	 */
 	Tone.Subtract = function(value){
 
+		Tone.Signal.call(this);
 		this.createInsOuts(2, 0);
 
 		/**
@@ -59,13 +60,11 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Negate", "Tone/signal/
 	 *  @returns {Tone.SignalBase} this
 	 */
 	Tone.Subtract.prototype.dispose = function(){
-		Tone.prototype.dispose.call(this);
+		Tone.Signal.prototype.dispose.call(this);
 		this._neg.dispose();
 		this._neg = null;
 		this._sum.disconnect();
 		this._sum = null;
-		this._param.dispose();
-		this._param = null;
 		return this;
 	};
 

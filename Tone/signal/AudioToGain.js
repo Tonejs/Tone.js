@@ -13,6 +13,7 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper", "Tone/signal/Signal"], funct
 	 */
 	Tone.AudioToGain = function(){
 
+		Tone.SignalBase.call(this);
 		/**
 		 *  @type {WaveShaperNode}
 		 *  @private
@@ -29,7 +30,7 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper", "Tone/signal/Signal"], funct
 	 *  @returns {Tone.AudioToGain} this
 	 */
 	Tone.AudioToGain.prototype.dispose = function(){
-		Tone.prototype.dispose.call(this);
+		Tone.SignalBase.prototype.dispose.call(this);
 		this._norm.dispose();
 		this._norm = null;
 		return this;

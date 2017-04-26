@@ -12,6 +12,7 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 	 */
 	Tone.EqualPowerGain = function(){
 
+		Tone.SignalBase.call(this);
 		/**
 		 *  @type {Tone.WaveShaper}
 		 *  @private
@@ -33,7 +34,7 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 	 *  @returns {Tone.EqualPowerGain} this
 	 */
 	Tone.EqualPowerGain.prototype.dispose = function(){
-		Tone.prototype.dispose.call(this);
+		Tone.SignalBase.prototype.dispose.call(this);
 		this._eqPower.dispose();
 		this._eqPower = null;
 		return this;

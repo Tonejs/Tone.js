@@ -19,6 +19,7 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Subtract", "Tone/signa
 	 */
 	Tone.Expr = function(){
 
+		Tone.SignalBase.call(this);
 		var expr = this._replacements(Array.prototype.slice.call(arguments));
 		var inputCount = this._parseInputs(expr);
 
@@ -449,7 +450,7 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Subtract", "Tone/signa
 	 *  clean up
 	 */
 	Tone.Expr.prototype.dispose = function(){
-		Tone.prototype.dispose.call(this);
+		Tone.SignalBase.prototype.dispose.call(this);
 		this._disposeNodes();
 	};
 

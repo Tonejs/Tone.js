@@ -16,6 +16,8 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 	 */
 	Tone.Pow = function(exp){
 
+		Tone.SignalBase.call(this);
+		
 		/**
 		 * the exponent
 		 * @private
@@ -66,7 +68,7 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 	 *  @returns {Tone.Pow} this
 	 */
 	Tone.Pow.prototype.dispose = function(){
-		Tone.prototype.dispose.call(this);
+		Tone.SignalBase.prototype.dispose.call(this);
 		this._expScaler.dispose();
 		this._expScaler = null;
 		return this;

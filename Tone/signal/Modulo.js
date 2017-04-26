@@ -17,6 +17,7 @@ function(Tone){
 	 */
 	Tone.Modulo = function(modulus){
 
+		Tone.SignalBase.call(this);
 		this.createInsOuts(1, 0);
 
 		/**
@@ -90,7 +91,7 @@ function(Tone){
 	 *  @returns {Tone.Modulo} this
 	 */
 	Tone.Modulo.prototype.dispose = function(){
-		Tone.prototype.dispose.call(this);
+		Tone.SignalBase.prototype.dispose.call(this);
 		this._shaper.dispose();
 		this._shaper = null;
 		this._multiply.dispose();

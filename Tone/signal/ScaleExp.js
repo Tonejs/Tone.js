@@ -17,6 +17,8 @@ function(Tone){
 	 */
 	Tone.ScaleExp = function(outputMin, outputMax, exponent){
 
+		Tone.SignalBase.call(this);
+		
 		/**
 		 *  scale the input to the output range
 		 *  @type {Tone.Scale}
@@ -90,7 +92,7 @@ function(Tone){
 	 *  @returns {Tone.ScaleExp} this
 	 */
 	Tone.ScaleExp.prototype.dispose = function(){
-		Tone.prototype.dispose.call(this);
+		Tone.SignalBase.prototype.dispose.call(this);
 		this._scale.dispose();
 		this._scale = null;
 		this._exp.dispose();

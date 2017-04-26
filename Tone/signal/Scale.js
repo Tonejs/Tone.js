@@ -18,6 +18,8 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Multiply", "Tone/signa
 	 */
 	Tone.Scale = function(outputMin, outputMax){
 
+		Tone.SignalBase.call(this);
+		
 		/** 
 		 *  @private
 		 *  @type {number}
@@ -99,7 +101,7 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Multiply", "Tone/signa
 	 *  @returns {Tone.Scale} this
 	 */
 	Tone.Scale.prototype.dispose = function(){
-		Tone.prototype.dispose.call(this);
+		Tone.SignalBase.prototype.dispose.call(this);
 		this._add.dispose();
 		this._add = null;
 		this._scale.dispose();

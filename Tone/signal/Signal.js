@@ -21,27 +21,27 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper", "Tone/type/Type", "Tone/core
 	 */
 	Tone.Signal = function(){
 
-		var options = this.optionsObject(arguments, ["value", "units"], Tone.Signal.defaults);
+		var options = Tone.defaults(arguments, ["value", "units"], Tone.Signal);
+		var gainNode = Tone.context.createGain();
+		options.param = gainNode.gain;
+		Tone.Param.call(this, options);
 
 		/**
 		 * The node where the constant signal value is scaled.
 		 * @type {GainNode}
 		 * @private
 		 */
-		this.output = this._gain = this.context.createGain();
-
-		options.param = this._gain.gain;
-		Tone.Param.call(this, options);
+		this.output = gainNode;
 
 		/**
 		 * The node where the value is set.
 		 * @type {Tone.Param}
 		 * @private
 		 */
-		this.input = this._param = this._gain.gain;
+		this.input = this._param = this.output.gain;
 
 		//connect the const output to the node output
-		this.context.getConstant(1).chain(this._gain);
+		this.context.getConstant(1).chain(this.output);
 	};
 
 	Tone.extend(Tone.Signal, Tone.Param);
@@ -78,9 +78,6 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper", "Tone/type/Type", "Tone/core
 	 */
 	Tone.Signal.prototype.dispose = function(){
 		Tone.Param.prototype.dispose.call(this);
-		this._param = null;
-		this._gain.disconnect();
-		this._gain = null;
 		return this;
 	};
 

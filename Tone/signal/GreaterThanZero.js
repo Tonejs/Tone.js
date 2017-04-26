@@ -17,6 +17,8 @@ function(Tone){
 	 */
 	Tone.GreaterThanZero = function(){
 		
+		Tone.SignalBase.call(this);
+		
 		/**
 		 *  @type {Tone.WaveShaper}
 		 *  @private
@@ -48,7 +50,7 @@ function(Tone){
 	 *  @returns {Tone.GreaterThanZero} this
 	 */
 	Tone.GreaterThanZero.prototype.dispose = function(){
-		Tone.prototype.dispose.call(this);
+		Tone.SignalBase.prototype.dispose.call(this);
 		this._scale.dispose();
 		this._scale = null;
 		this._thresh.dispose();

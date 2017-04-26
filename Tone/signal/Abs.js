@@ -15,6 +15,7 @@ function(Tone){
 	 * //the output of abs is 1. 
 	 */
 	Tone.Abs = function(){
+		Tone.SignalBase.call(this);
 		/**
 		 *  @type {Tone.LessThan}
 		 *  @private
@@ -35,7 +36,7 @@ function(Tone){
 	 *  @returns {Tone.Abs} this
 	 */
 	Tone.Abs.prototype.dispose = function(){
-		Tone.prototype.dispose.call(this);
+		Tone.SignalBase.prototype.dispose.call(this);
 		this._abs.dispose();
 		this._abs = null;
 		return this;

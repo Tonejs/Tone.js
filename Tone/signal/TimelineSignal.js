@@ -5,13 +5,14 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Timeline"], function 
 	/**
 	 *  @class A signal which adds the method getValueAtTime. 
 	 *         Code and inspiration from https://github.com/jsantell/web-audio-automation-timeline
-	 *  @extends {Tone.Param}
+	 *  @extends {Tone.Signal}
 	 *  @param {Number=} value The initial value of the signal
 	 *  @param {String=} units The conversion units of the signal.
 	 */
 	Tone.TimelineSignal = function(){
 
-		var options = this.optionsObject(arguments, ["value", "units"], Tone.Signal.defaults);
+		var options = Tone.defaults(arguments, ["value", "units"], Tone.Signal);
+		Tone.Signal.call(this, options);
 		
 		/**
 		 *  The scheduled events
@@ -20,20 +21,16 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Timeline"], function 
 		 */
 		this._events = new Tone.Timeline(10);
 
-		//constructors
-		Tone.Signal.apply(this, options);
-		options.param = this._param;
-		Tone.Param.call(this, options);
-
 		/**
 		 *  The initial scheduled value
 		 *  @type {Number}
 		 *  @private
 		 */
 		this._initial = this._fromUnits(this._param.value);
+		this.value = options.value;
 	};
 
-	Tone.extend(Tone.TimelineSignal, Tone.Param);
+	Tone.extend(Tone.TimelineSignal, Tone.Signal);
 
 	/**
 	 *  The event types of a schedulable signal.
@@ -61,10 +58,12 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Timeline"], function 
 			return this._toUnits(val);
 		},
 		set : function(value){
-			var convertedVal = this._fromUnits(value);
-			this._initial = convertedVal;
-			this.cancelScheduledValues();
-			this._param.value = convertedVal;
+			if (this._events){
+				var convertedVal = this._fromUnits(value);
+				this._initial = convertedVal;
+				this.cancelScheduledValues();
+				this._param.value = convertedVal;
+			}
 		}
 	});
 
@@ -426,7 +425,6 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Timeline"], function 
 	 */
 	Tone.TimelineSignal.prototype.dispose = function(){
 		Tone.Signal.prototype.dispose.call(this);
-		Tone.Param.prototype.dispose.call(this);
 		this._events.dispose();
 		this._events = null;
 	};
