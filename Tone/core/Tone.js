@@ -18,7 +18,7 @@ define(function(){
 	 *  @param {Tone.Context} context The audio context
 	 */
 	var Tone = function(){
-		// this.context = this.defaultArg(context, Tone.context);
+		// this._context = this.defaultArg(context, Tone.context);
 	};
 
 	/**
@@ -197,20 +197,21 @@ define(function(){
 	/**
 	 *  @param  {Array}  values  The arguments array
 	 *  @param  {Array}  keys    The names of the arguments
+	 *  @param {Function} constr The class constructor
 	 *  @return  {Object}  An object composed of the  defaults between the class' defaults
 	 *                        and the passed in arguments.
 	 */
-	Tone.prototype.defaults = function(values, keys){
+	Tone.defaults = function(values, keys, constr){
 		var options = {};
-		if (values.length === 1 && this.isObject(values[0])){
+		if (values.length === 1 && Tone.isObject(values[0])){
 			options = values[0];
 		} else {
 			for (var i = 0; i < keys.length; i++){
 				options[keys[i]] = values[i];
 			}
 		}
-		if (!this.isUndef(this.constructor.defaults)){
-			return this.defaultArg(options, this.constructor.defaults);
+		if (!Tone.isUndef(constr.defaults)){
+			return Tone.defaultArg(options, constr.defaults);
 		} else {
 			return options;
 		}
@@ -412,6 +413,22 @@ define(function(){
 		}
 	};
 
+	Tone.defaultArg = function(given, fallback){
+		if (Tone.isObject(given) && Tone.isObject(fallback)){
+			var ret = {};
+			//make a deep copy of the given object
+			for (var givenProp in given) {
+				ret[givenProp] = Tone.defaultArg(fallback[givenProp], given[givenProp]);
+			}
+			for (var fallbackProp in fallback) {
+				ret[fallbackProp] = Tone.defaultArg(given[fallbackProp], fallback[fallbackProp]);
+			}
+			return ret;
+		} else {
+			return Tone.isUndef(given) ? fallback : given;
+		}
+	};
+
 	/**
 	 *  returns the args as an options object with given arguments
 	 *  mapped to the names provided. 
@@ -516,6 +533,72 @@ define(function(){
 	 *  @static
 	 */
 	Tone.noOp = function(){};
+
+
+	/**
+	 *  test if the arg is undefined
+	 *  @param {*} arg the argument to test
+	 *  @returns {boolean} true if the arg is undefined
+	 *  @function
+	 */
+	Tone.isUndef = function(val){
+		return typeof val === "undefined";
+	};
+
+	/**
+	 *  test if the arg is a function
+	 *  @param {*} arg the argument to test
+	 *  @returns {boolean} true if the arg is a function
+	 *  @function
+	 */
+	Tone.isFunction = function(val){
+		return typeof val === "function";
+	};
+
+	/**
+	 *  Test if the argument is a number.
+	 *  @param {*} arg the argument to test
+	 *  @returns {boolean} true if the arg is a number
+	 */
+	Tone.isNumber = function(arg){
+		return (typeof arg === "number");
+	};
+
+	/**
+	 *  Test if the given argument is an object literal (i.e. `{}`);
+	 *  @param {*} arg the argument to test
+	 *  @returns {boolean} true if the arg is an object literal.
+	 */
+	Tone.isObject = function(arg){
+		return (Object.prototype.toString.call(arg) === "[object Object]" && arg.constructor === Object);
+	};
+
+	/**
+	 *  Test if the argument is a boolean.
+	 *  @param {*} arg the argument to test
+	 *  @returns {boolean} true if the arg is a boolean
+	 */
+	Tone.isBoolean = function(arg){
+		return (typeof arg === "boolean");
+	};
+
+	/**
+	 *  Test if the argument is an Array
+	 *  @param {*} arg the argument to test
+	 *  @returns {boolean} true if the arg is an array
+	 */
+	Tone.isArray = function(arg){
+		return (Array.isArray(arg));
+	};
+
+	/**
+	 *  Test if the argument is a string.
+	 *  @param {*} arg the argument to test
+	 *  @returns {boolean} true if the arg is a string
+	 */
+	Tone.isString = function(arg){
+		return (typeof arg === "string");
+	};
 
 	/**
 	 *  Make the property not writable. Internal use only. 
