@@ -24,27 +24,27 @@ define(["Test", "Tone/core/Tone", "helper/PassAudio", "Tone/source/Oscillator",
 
 		context("Unit Conversions", function(){
 			it("can convert gain to db", function(){
-				expect(tone.gainToDb(0)).to.equal(-Infinity);
-				expect(tone.gainToDb(1)).is.closeTo(0, 0.1);
-				expect(tone.gainToDb(0.5)).is.closeTo(-6, 0.1);
+				expect(Tone.gainToDb(0)).to.equal(-Infinity);
+				expect(Tone.gainToDb(1)).is.closeTo(0, 0.1);
+				expect(Tone.gainToDb(0.5)).is.closeTo(-6, 0.1);
 			});
 
 			it("can convert db to gain", function(){
-				expect(tone.dbToGain(0)).is.closeTo(1, 0.1);
-				expect(tone.dbToGain(-12)).is.closeTo(0.25, 0.1);
-				expect(tone.dbToGain(-24)).is.closeTo(0.125, 0.1);
+				expect(Tone.dbToGain(0)).is.closeTo(1, 0.1);
+				expect(Tone.dbToGain(-12)).is.closeTo(0.25, 0.1);
+				expect(Tone.dbToGain(-24)).is.closeTo(0.125, 0.1);
 			});
 
 			it("can convert back and forth between db and gain representations", function(){
-				expect(tone.dbToGain(tone.gainToDb(0))).is.closeTo(0, 0.01);
-				expect(tone.dbToGain(tone.gainToDb(0.5))).is.closeTo(0.5, 0.01);
-				expect(tone.gainToDb(tone.dbToGain(1))).is.closeTo(1, 0.01);
+				expect(Tone.dbToGain(Tone.gainToDb(0))).is.closeTo(0, 0.01);
+				expect(Tone.dbToGain(Tone.gainToDb(0.5))).is.closeTo(0.5, 0.01);
+				expect(Tone.gainToDb(Tone.dbToGain(1))).is.closeTo(1, 0.01);
 			});
 
 			it("can convert semitone intervals to frequency ratios", function(){
-				expect(tone.intervalToFrequencyRatio(0)).to.equal(1);
-				expect(tone.intervalToFrequencyRatio(12)).to.equal(2);
-				expect(tone.intervalToFrequencyRatio(7)).to.be.closeTo(1.5, 0.01);
+				expect(Tone.intervalToFrequencyRatio(0)).to.equal(1);
+				expect(Tone.intervalToFrequencyRatio(12)).to.equal(2);
+				expect(Tone.intervalToFrequencyRatio(7)).to.be.closeTo(1.5, 0.01);
 			});
 		});
 

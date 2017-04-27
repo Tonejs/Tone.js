@@ -24,7 +24,7 @@ define(["Tone/core/Tone", "Tone/component/Merge"], function(Tone){
 
 		this.input.connect(this._merge, 0, 0);
 		this.input.connect(this._merge, 0, 1);
-		this.input.gain.value = this.dbToGain(-10);
+		this.input.gain.value = Tone.dbToGain(-10);
 	};
 
 	Tone.extend(Tone.Mono);

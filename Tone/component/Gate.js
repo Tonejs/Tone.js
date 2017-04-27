@@ -35,7 +35,7 @@ define(["Tone/core/Tone", "Tone/component/Follower", "Tone/signal/GreaterThan"],
 		 *  @type {Tone.GreaterThan}
 		 *  @private
 		 */
-		this._gt = new Tone.GreaterThan(this.dbToGain(options.threshold));
+		this._gt = new Tone.GreaterThan(Tone.dbToGain(options.threshold));
 
 		//the connections
 		this.input.connect(this.output);
@@ -64,10 +64,10 @@ define(["Tone/core/Tone", "Tone/component/Follower", "Tone/signal/GreaterThan"],
 	 */
 	Object.defineProperty(Tone.Gate.prototype, "threshold", {
 		get : function(){
-			return this.gainToDb(this._gt.value);
+			return Tone.gainToDb(this._gt.value);
 		}, 
 		set : function(thresh){
-			this._gt.value = this.dbToGain(thresh);
+			this._gt.value = Tone.dbToGain(thresh);
 		}
 	});
 

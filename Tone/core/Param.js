@@ -117,7 +117,7 @@ define(["Tone/core/Tone", "Tone/type/Type"], function(Tone){
 				case Tone.Type.Frequency: 
 					return this.toFrequency(val);
 				case Tone.Type.Decibels: 
-					return this.dbToGain(val);
+					return Tone.dbToGain(val);
 				case Tone.Type.NormalRange: 
 					return Math.min(Math.max(val, 0), 1);
 				case Tone.Type.AudioRange: 
@@ -142,7 +142,7 @@ define(["Tone/core/Tone", "Tone/type/Type"], function(Tone){
 		if (this.convert || Tone.isUndef(this.convert)){
 			switch(this.units){
 				case Tone.Type.Decibels: 
-					return this.gainToDb(val);
+					return Tone.gainToDb(val);
 				default:
 					return val;
 			}

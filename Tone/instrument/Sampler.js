@@ -71,7 +71,7 @@ function(Tone){
 	Tone.Sampler.prototype.triggerAttack = function(pitch, time, velocity){
 		time = this.toSeconds(time);
 		pitch = this.defaultArg(pitch, 0);
-		this.player.playbackRate = this.intervalToFrequencyRatio(pitch);
+		this.player.playbackRate = Tone.intervalToFrequencyRatio(pitch);
 		this.player.start(time);
 		this.envelope.triggerAttack(time, velocity);
 		return this;

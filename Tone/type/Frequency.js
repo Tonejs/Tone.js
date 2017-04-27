@@ -95,7 +95,7 @@ define(["Tone/core/Tone", "Tone/type/TimeBase"], function (Tone) {
 	Tone.Frequency.prototype.transpose = function(interval){
 		this._expr = function(expr, interval){
 			var val = expr();
-			return val * this.intervalToFrequencyRatio(interval);
+			return val * Tone.intervalToFrequencyRatio(interval);
 		}.bind(this, this._expr, interval);
 		return this;
 	};
@@ -113,7 +113,7 @@ define(["Tone/core/Tone", "Tone/type/TimeBase"], function (Tone) {
 			var val = expr();
 			var ret = [];
 			for (var i = 0; i < intervals.length; i++){
-				ret[i] = val * this.intervalToFrequencyRatio(intervals[i]);
+				ret[i] = val * Tone.intervalToFrequencyRatio(intervals[i]);
 			}
 			return ret;
 		}.bind(this, this._expr, intervals);

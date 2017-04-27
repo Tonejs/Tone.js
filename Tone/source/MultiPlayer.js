@@ -120,7 +120,7 @@ function (Tone) {
 			source.stop(time + this.toSeconds(duration), this.fadeOut);
 		}
 		pitch = this.defaultArg(pitch, 0);
-		source.playbackRate.value = this.intervalToFrequencyRatio(pitch);
+		source.playbackRate.value = Tone.intervalToFrequencyRatio(pitch);
 		return this;
 	};
 
@@ -144,7 +144,7 @@ function (Tone) {
 		source.loopEnd = this.toSeconds(this.defaultArg(loopEnd, 0));
 		source.start(time, offset, undefined, this.defaultArg(gain, 1), this.fadeIn);
 		pitch = this.defaultArg(pitch, 0);
-		source.playbackRate.value = this.intervalToFrequencyRatio(pitch);
+		source.playbackRate.value = Tone.intervalToFrequencyRatio(pitch);
 		return this;
 	};
 

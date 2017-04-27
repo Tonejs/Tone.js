@@ -22,7 +22,7 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 				//should output 0 when input is 0
 				return 0;
 			} else {
-				return this.equalPowerScale(val);
+				return Tone.equalPowerScale(val);
 			}
 		}.bind(this), 4096);
 	};

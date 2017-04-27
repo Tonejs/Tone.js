@@ -170,13 +170,13 @@ function (Tone) {
 				this._lfoA.max = this._windowSize;
 				this._lfoB.min = 0;
 				this._lfoB.max = this._windowSize;
-				factor = this.intervalToFrequencyRatio(interval - 1) + 1;
+				factor = Tone.intervalToFrequencyRatio(interval - 1) + 1;
 			} else {
 				this._lfoA.min = this._windowSize;
 				this._lfoA.max = 0;
 				this._lfoB.min = this._windowSize;
 				this._lfoB.max = 0;
-				factor = this.intervalToFrequencyRatio(interval) - 1;
+				factor = Tone.intervalToFrequencyRatio(interval) - 1;
 			}
 			this._frequency.value = factor * (1.2 / this._windowSize);
 		}

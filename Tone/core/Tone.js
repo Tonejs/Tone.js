@@ -588,7 +588,7 @@ define(function(){
 	 *  @param  {NormalRange} percent (0-1)
 	 *  @return {Number}         output gain (0-1)
 	 */
-	Tone.prototype.equalPowerScale = function(percent){
+	Tone.equalPowerScale = function(percent){
 		var piFactor = 0.5 * Math.PI;
 		return Math.sin(percent * piFactor);
 	};
@@ -598,7 +598,7 @@ define(function(){
 	 *  @param  {Decibels} db
 	 *  @return {Number}   
 	 */
-	Tone.prototype.dbToGain = function(db) {
+	Tone.dbToGain = function(db) {
 		return Math.pow(2, db / 6);
 	};
 
@@ -607,7 +607,7 @@ define(function(){
 	 *  @param  {Number} gain (0-1)
 	 *  @return {Decibels}   
 	 */
-	Tone.prototype.gainToDb = function(gain) {
+	Tone.gainToDb = function(gain) {
 		return  20 * (Math.log(gain) / Math.LN10);
 	};
 
@@ -620,7 +620,7 @@ define(function(){
 	 * tone.intervalToFrequencyRatio(12); // 2
 	 * tone.intervalToFrequencyRatio(-12); // 0.5
 	 */
-	Tone.prototype.intervalToFrequencyRatio = function(interval){
+	Tone.intervalToFrequencyRatio = function(interval){
 		return Math.pow(2,(interval/12));
 	};
 
