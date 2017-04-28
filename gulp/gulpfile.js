@@ -1,3 +1,4 @@
+/* globals process, __dirname */
 var gulp = require("gulp");
 var gutil = require("gulp-util");
 var glob = require("glob");
@@ -16,6 +17,7 @@ var sass = require("gulp-ruby-sass");
 var prefix = require("gulp-autoprefixer");
 var openFile = require("gulp-open");
 var jshint = require("gulp-jshint");
+var git = require("gulp-git");
 var argv = require("yargs")
 			.alias("f", "file")
 			.alias("s", "signal")
@@ -52,8 +54,8 @@ gulp.task("collectDependencies", function(done) {
 	});
 });
 
-gulp.task("compile", ["collectDependencies"], function(done){
-	gulp.src("./toneMain.js")
+gulp.task("compile", ["collectDependencies"], function(){
+	return gulp.src("./toneMain.js")
 		// Traces all modules and outputs them in the correct order.
 		.pipe(amdOptimize("gulp/toneMain", {
 			baseUrl : "../",
@@ -72,19 +74,17 @@ gulp.task("compile", ["collectDependencies"], function(done){
 		//replace the ToneModules
 		.pipe(replace(/define\(\s*'([^']*)'\s*\,\s*\[\s*'([^']*'\s*\,*\s*)+?\]\s*\,\s*/g, "Module("))
 		.pipe(insert.prepend(fs.readFileSync("./fragments/before.frag").toString()))
-		.pipe(gulp.dest("../build/"))
-		.on("end", done);
+		.pipe(gulp.dest("../build/"));
 });
 
-gulp.task("footer", ["compile"], function(done){
-	gulp.src("../build/Tone.js")
+gulp.task("footer", ["compile"], function(){
+	return gulp.src("../build/Tone.js")
 		.pipe(insert.append(fs.readFileSync("./fragments/after.frag").toString()))
-		.pipe(gulp.dest("../build/"))
-		.on("end", done);
+		.pipe(gulp.dest("../build/"));
 });
 
-gulp.task("build", ["footer"], function(){
-	gulp.src("../build/Tone.js")
+gulp.task("minify", ["footer"], function(){
+	return gulp.src("../build/Tone.js")
 		.pipe(uglify({
 				preserveComments : "some",
 				compress: {
@@ -109,12 +109,12 @@ gulp.task("build", ["footer"], function(){
 		.pipe(gulp.dest("../build/"));
 });
 
-gulp.task("cleanup", ["build"], function(){
-	del(["./toneMain.js"]);
+gulp.task("build", ["minify"], function(){
+	return del(["./toneMain.js"]);
 });
 
 //default build
-gulp.task("default", ["cleanup"]);
+gulp.task("default", ["build"]);
 
 /**
  *  Sass
@@ -224,3 +224,54 @@ gulp.task("collectTests", function(done){
  *  TEST ALL
  */
 gulp.task("travis-test", ["lint", "karma-test"]);
+
+/**
+ *  GIT
+ */
+gulp.task("cloneBuild", function(done) {
+	var gitUser = "";
+	if (process.env.TRAVIS && process.env.GH_TOKEN){
+		gitUser = process.env.GH_TOKEN+"@";
+	}
+	git.clone("https://"+gitUser+"github.com/Tonejs/build", {args: "../tmp"}, done);
+});
+
+gulp.task("moveToDev", ["build", "cloneBuild"], function(){
+	// move files to 'dev' folder
+	var version = fs.readFileSync("../Tone/core/Tone.js", "utf-8")
+		.match(/(?:Tone\.version\s*=\s*)(?:'|")(.*)(?:'|");/m)[1];
+	return gulp.src("../build/Tone.js")
+		.pipe(gulp.dest("../tmp/dev/"))
+		.pipe(rename(function(path){
+			// var version = 
+			if (process.env.TRAVIS_BUILD_NUMBER){
+				path.basename += "."+version+".b"+process.env.TRAVIS_BUILD_NUMBER;
+			} else {
+				path.basename += "."+version;
+			}
+		}))
+		.pipe(gulp.dest("../tmp/dev/"));
+});
+
+gulp.task("commitDev", ["moveToDev"], function(){
+	process.chdir("../tmp");
+	return gulp.src("./dev/*")
+		.pipe(git.add())
+		.pipe(git.commit("build "+process.env.TRAVIS_BUILD_NUMBER));
+});
+
+gulp.task("pushBuild", ["commitDev"], function(done){
+	if (process.env.TRAVIS && process.env.GH_TOKEN){
+		process.chdir("../tmp");
+		git.push("origin", "gh-pages", {args: " -f"}, function (err) {
+			if (err) throw err;
+			done();
+		});
+	} else {
+		done();
+	}
+});
+
+gulp.task("commitDevBuild", ["pushBuild"], function(){
+	return del(["../tmp"], { force : true});
+});

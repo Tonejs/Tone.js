@@ -12,6 +12,7 @@
     "gulp-autoprefixer": "^3.1.1",
     "gulp-concat": "^2.5.2",
     "gulp-concat-css": "^2.2.0",
+    "gulp-git": "^2.2.0",
     "gulp-indent": "^1.0.0",
     "gulp-insert": "^0.5.0",
     "gulp-jshint": "^2.0.1",
