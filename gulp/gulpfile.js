@@ -238,26 +238,17 @@ gulp.task("cloneBuild", function(done) {
 
 gulp.task("moveToDev", ["build", "cloneBuild"], function(){
 	// move files to 'dev' folder
-	var version = fs.readFileSync("../Tone/core/Tone.js", "utf-8")
-		.match(/(?:Tone\.version\s*=\s*)(?:'|")(.*)(?:'|");/m)[1];
-	return gulp.src("../build/Tone.js")
+	return gulp.src("../build/*.js")
 		.pipe(gulp.dest("../tmp/dev/"))
-		.pipe(rename(function(path){
-			// var version = 
-			if (process.env.TRAVIS_BUILD_NUMBER){
-				path.basename += "."+version+".b"+process.env.TRAVIS_BUILD_NUMBER;
-			} else {
-				path.basename += "."+version;
-			}
-		}))
-		.pipe(gulp.dest("../tmp/dev/"));
 });
 
 gulp.task("commitDev", ["moveToDev"], function(){
+	var version = fs.readFileSync("../Tone/core/Tone.js", "utf-8")
+		.match(/(?:Tone\.version\s*=\s*)(?:'|")(.*)(?:'|");/m)[1];
 	process.chdir("../tmp");
 	return gulp.src("./dev/*")
 		.pipe(git.add())
-		.pipe(git.commit("build "+process.env.TRAVIS_BUILD_NUMBER));
+		.pipe(git.commit(version+" build #"+process.env.TRAVIS_BUILD_NUMBER));
 });
 
 gulp.task("pushBuild", ["commitDev"], function(done){
