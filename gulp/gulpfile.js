@@ -235,7 +235,7 @@ gulp.task("cloneBuild", function(done) {
 	git.clone("https://"+gitUser+"github.com/Tonejs/build", {args: "../tmp"}, done);
 });
 
-gulp.task("moveToDev", function(){ //["build", "cloneBuild"], 
+gulp.task("moveToDev", ["build", "cloneBuild"], function(){
 	// move files to 'dev' folder
 	var version = fs.readFileSync("../Tone/core/Tone.js", "utf-8")
 		.match(/(?:Tone\.version\s*=\s*)(?:'|")(.*)(?:'|");/m)[1];
