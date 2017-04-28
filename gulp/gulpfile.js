@@ -237,11 +237,11 @@ gulp.task("cloneBuild", function(done) {
 
 gulp.task("moveToDev", ["build", "cloneBuild"], function(){
 	// move files to 'dev' folder
-	return gulp.src("../build/*.js")
+	return gulp.src("../build/Tone.js")
 		.pipe(rename(function(path){
-			var suffix = "-dev";
+			var suffix = ".dev";
 			if (process.env.TRAVIS_BUILD_NUMBER){
-				suffix = "-b"+process.env.TRAVIS_BUILD_NUMBER;
+				suffix = ".b"+process.env.TRAVIS_BUILD_NUMBER;
 			}
 			path.basename = path.basename.replace("Tone", "Tone"+suffix);
 		}))
