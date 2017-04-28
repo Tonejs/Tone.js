@@ -241,7 +241,7 @@ gulp.task("moveToDev", ["build", "cloneBuild"], function(){
 		.pipe(rename(function(path){
 			var suffix = "-dev";
 			if (process.env.TRAVIS_BUILD_NUMBER){
-				suffix = "-"+process.env.TRAVIS_BUILD_NUMBER;
+				suffix = "-b"+process.env.TRAVIS_BUILD_NUMBER;
 			}
 			path.basename = path.basename.replace("Tone", "Tone"+suffix);
 		}))
@@ -252,13 +252,13 @@ gulp.task("commitDev", ["moveToDev"], function(){
 	process.chdir("../tmp");
 	return gulp.src("./dev/*")
 		.pipe(git.add())
-		.pipe(git.commit("testing dev builds"));
+		.pipe(git.commit("build "+process.env.TRAVIS_BUILD_NUMBER));
 });
 
 gulp.task("pushBuild", ["commitDev"], function(done){
 	if (process.env.TRAVIS && process.env.GH_TOKEN){
 		process.chdir("../tmp");
-		git.push("origin", "gh-pages", function (err) { // {args: " -f"},
+		git.push("origin", "gh-pages", {args: " -f"}, function (err) {
 			if (err) throw err;
 			done();
 		});
