@@ -235,15 +235,18 @@ gulp.task("cloneBuild", function(done) {
 	git.clone("https://"+gitUser+"github.com/Tonejs/build", {args: "../tmp"}, done);
 });
 
-gulp.task("moveToDev", ["build", "cloneBuild"], function(){
+gulp.task("moveToDev", function(){ //["build", "cloneBuild"], 
 	// move files to 'dev' folder
+	var version = fs.readFileSync("../Tone/core/Tone.js", "utf-8")
+		.match(/(?:Tone\.version\s*=\s*)(?:'|")(.*)(?:'|");/m)[1];
 	return gulp.src("../build/Tone.js")
 		.pipe(rename(function(path){
-			var suffix = ".dev";
+			// var version = 
 			if (process.env.TRAVIS_BUILD_NUMBER){
-				suffix = ".b"+process.env.TRAVIS_BUILD_NUMBER;
+				path.basename += "."+version+".b"+process.env.TRAVIS_BUILD_NUMBER;
+			} else {
+				path.basename += "."+version;
 			}
-			path.basename = path.basename.replace("Tone", "Tone"+suffix);
 		}))
 		.pipe(gulp.dest("../tmp/dev/"));
 });
