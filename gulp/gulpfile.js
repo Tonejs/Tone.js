@@ -1,3 +1,4 @@
+/* globals process, __dirname */
 var gulp = require("gulp");
 var gutil = require("gulp-util");
 var glob = require("glob");
@@ -240,6 +241,7 @@ gulp.task("moveToDev", ["build", "cloneBuild"], function(){
 	var version = fs.readFileSync("../Tone/core/Tone.js", "utf-8")
 		.match(/(?:Tone\.version\s*=\s*)(?:'|")(.*)(?:'|");/m)[1];
 	return gulp.src("../build/Tone.js")
+		.pipe(gulp.dest("../tmp/dev/"))
 		.pipe(rename(function(path){
 			// var version = 
 			if (process.env.TRAVIS_BUILD_NUMBER){
