@@ -15,7 +15,7 @@ define(["Tone/core/Tone", "Tone/component/MidSideSplit", "Tone/component/MidSide
 	Tone.MidSideCompressor = function(options){
 
 		Tone.call(this);
-		options = this.defaultArg(options, Tone.MidSideCompressor.defaults);
+		options = Tone.defaultArg(options, Tone.MidSideCompressor.defaults);
 
 		/**
 		 *  the mid/side split

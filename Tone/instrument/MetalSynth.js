@@ -144,7 +144,7 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/source/FMOscillato
 	 */
 	Tone.MetalSynth.prototype.triggerAttack = function(time, vel) {
 		time = this.toSeconds(time);
-		vel = this.defaultArg(vel, 1);
+		vel = Tone.defaultArg(vel, 1);
 		this.envelope.triggerAttack(time, vel);
 		return this;
 	};

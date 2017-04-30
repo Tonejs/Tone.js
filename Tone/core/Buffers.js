@@ -131,7 +131,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer"], function (Tone) {
 	 *                                 when the url is loaded.
 	 */
 	Tone.Buffers.prototype.add = function(name, url, callback){
-		callback = this.defaultArg(callback, Tone.noOp);
+		callback = Tone.defaultArg(callback, Tone.noOp);
 		if (url instanceof Tone.Buffer){
 			this._buffers[name] = url;
 			callback(this);

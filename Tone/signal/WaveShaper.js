@@ -47,9 +47,9 @@ define(["Tone/core/Tone", "Tone/signal/SignalBase"], function(Tone){
 		if (Array.isArray(mapping)){
 			this.curve = mapping;
 		} else if (isFinite(mapping) || Tone.isUndef(mapping)){
-			this._curve = new Float32Array(this.defaultArg(mapping, 1024));
+			this._curve = new Float32Array(Tone.defaultArg(mapping, 1024));
 		} else if (Tone.isFunction(mapping)){
-			this._curve = new Float32Array(this.defaultArg(bufferLen, 1024));
+			this._curve = new Float32Array(Tone.defaultArg(bufferLen, 1024));
 			this.setMap(mapping);
 		} 
 	};

@@ -67,7 +67,7 @@ function(Tone){
 		 *  @type {Array}
 		 *  @private
 		 */
-		this._partials = this.defaultArg(options.partials, []);
+		this._partials = Tone.defaultArg(options.partials, []);
 
 		//set the count initially
 		this.count = options.count;

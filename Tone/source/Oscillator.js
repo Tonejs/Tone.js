@@ -69,7 +69,7 @@ function(Tone){
 		 *  @type {Array}
 		 *  @private
 		 */
-		this._partials = this.defaultArg(options.partials, [1]);
+		this._partials = Tone.defaultArg(options.partials, [1]);
 
 		/**
 		 *  the phase of the oscillator

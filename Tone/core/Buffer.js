@@ -322,7 +322,7 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type"], function(Tone)
 	 *  @return {Tone.Buffer} this
 	 */
 	Tone.Buffer.prototype.slice = function(start, end){
-		end = this.defaultArg(end, this.duration);
+		end = Tone.defaultArg(end, this.duration);
 		var startSamples = Math.floor(this.context.sampleRate * this.toSeconds(start));
 		var endSamples = Math.floor(this.context.sampleRate * this.toSeconds(end));
 		var replacement = [];

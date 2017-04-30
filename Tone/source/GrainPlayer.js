@@ -134,7 +134,7 @@ function (Tone) {
 	 *  @private
 	 */
 	Tone.GrainPlayer.prototype._start = function(time, offset, duration){
-		offset = this.defaultArg(offset, 0);
+		offset = Tone.defaultArg(offset, 0);
 		offset = this.toSeconds(offset);
 		time = this.toSeconds(time);
 

@@ -104,20 +104,20 @@ define(["Test", "Tone/core/Tone", "helper/PassAudio", "Tone/source/Oscillator",
 		context("defaultArg", function(){
 
 			it("returns a default argument when the given is not defined", function(){
-				expect(tone.defaultArg(undefined, 0)).is.equal(0);
-				expect(tone.defaultArg(undefined, "also")).is.equal("also");
-				expect(tone.defaultArg("hihi", 100)).is.equal("hihi");
+				expect(Tone.defaultArg(undefined, 0)).is.equal(0);
+				expect(Tone.defaultArg(undefined, "also")).is.equal("also");
+				expect(Tone.defaultArg("hihi", 100)).is.equal("hihi");
 			});
 
 			it("handles default arguments on a shallow object", function(){
-				expect(tone.defaultArg({"b" : 10}, {"a" : 4, "b" : 10})).has.property("a", 4);
-				expect(tone.defaultArg({"b" : 10, "c" : 20}, {"a" : 4, "b" : 10})).has.property("b", 10);
-				expect(tone.defaultArg({"b" : 10, "c" : 20}, {"a" : 4, "b" : 10})).has.property("c", 20);
+				expect(Tone.defaultArg({"b" : 10}, {"a" : 4, "b" : 10})).has.property("a", 4);
+				expect(Tone.defaultArg({"b" : 10, "c" : 20}, {"a" : 4, "b" : 10})).has.property("b", 10);
+				expect(Tone.defaultArg({"b" : 10, "c" : 20}, {"a" : 4, "b" : 10})).has.property("c", 20);
 			});
 
 			it("handles default arguments on a deep object", function(){
-				expect(tone.defaultArg({"b" : {"c" : 10}}, {"b" : {"c" : 20, "d" : 30}})).has.deep.property("b.d", 30);
-				expect(tone.defaultArg({"a" : 10}, {"b" : {"c" : 20}})).has.deep.property("b.c", 20);
+				expect(Tone.defaultArg({"b" : {"c" : 10}}, {"b" : {"c" : 20, "d" : 30}})).has.deep.property("b.d", 30);
+				expect(Tone.defaultArg({"a" : 10}, {"b" : {"c" : 20}})).has.deep.property("b.c", 20);
 			});
 
 		});

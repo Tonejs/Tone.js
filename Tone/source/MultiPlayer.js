@@ -115,11 +115,11 @@ function (Tone) {
 	Tone.MultiPlayer.prototype.start = function(bufferName, time, offset, duration, pitch, gain){
 		time = this.toSeconds(time);
 		var source = this._makeSource(bufferName);
-		source.start(time, offset, duration, this.defaultArg(gain, 1), this.fadeIn);
+		source.start(time, offset, duration, Tone.defaultArg(gain, 1), this.fadeIn);
 		if (duration){
 			source.stop(time + this.toSeconds(duration), this.fadeOut);
 		}
-		pitch = this.defaultArg(pitch, 0);
+		pitch = Tone.defaultArg(pitch, 0);
 		source.playbackRate.value = Tone.intervalToFrequencyRatio(pitch);
 		return this;
 	};
@@ -140,10 +140,10 @@ function (Tone) {
 		time = this.toSeconds(time);
 		var source = this._makeSource(bufferName);
 		source.loop = true;
-		source.loopStart = this.toSeconds(this.defaultArg(loopStart, 0));
-		source.loopEnd = this.toSeconds(this.defaultArg(loopEnd, 0));
-		source.start(time, offset, undefined, this.defaultArg(gain, 1), this.fadeIn);
-		pitch = this.defaultArg(pitch, 0);
+		source.loopStart = this.toSeconds(Tone.defaultArg(loopStart, 0));
+		source.loopEnd = this.toSeconds(Tone.defaultArg(loopEnd, 0));
+		source.start(time, offset, undefined, Tone.defaultArg(gain, 1), this.fadeIn);
+		pitch = Tone.defaultArg(pitch, 0);
 		source.playbackRate.value = Tone.intervalToFrequencyRatio(pitch);
 		return this;
 	};

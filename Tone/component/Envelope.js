@@ -233,7 +233,7 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal",
 		var originalAttack = this.toSeconds(this.attack);
 		var attack = originalAttack;
 		var decay = this.toSeconds(this.decay);
-		velocity = this.defaultArg(velocity, 1);
+		velocity = Tone.defaultArg(velocity, 1);
 		//check if it's not a complete attack
 		var currentValue = this.getValueAtTime(time);
 		if (currentValue > 0){

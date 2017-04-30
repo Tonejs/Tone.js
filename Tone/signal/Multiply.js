@@ -43,7 +43,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Gain"], function(Tone
 		 */
 		this._param = this.input[1] = this.output.gain;
 		
-		this._param.value = this.defaultArg(value, 0);
+		this._param.value = Tone.defaultArg(value, 0);
 	};
 
 	Tone.extend(Tone.Multiply, Tone.Signal);

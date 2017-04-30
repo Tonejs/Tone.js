@@ -23,7 +23,7 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 		 * @private
 		 * @type {number}
 		 */
-		this._exp = this.defaultArg(exp, 1);
+		this._exp = Tone.defaultArg(exp, 1);
 
 		/**
 		 *  @type {WaveShaperNode}

@@ -178,7 +178,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Timeline"], function 
 	 *  @returns {Tone.TimelineSignal} this 
 	 */
 	Tone.TimelineSignal.prototype.setValueCurveAtTime = function (values, startTime, duration, scaling) {
-		scaling = this.defaultArg(scaling, 1);
+		scaling = Tone.defaultArg(scaling, 1);
 		//copy the array
 		var floats = new Array(values.length);
 		for (var i = 0; i < floats.length; i++){

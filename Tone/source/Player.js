@@ -140,7 +140,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 	 * @private
 	 */
 	Tone.Player.prototype._onload = function(callback){
-		callback = this.defaultArg(callback, Tone.noOp);
+		callback = Tone.defaultArg(callback, Tone.noOp);
 		callback(this);
 		if (this.autostart){
 			this.start();
@@ -172,14 +172,14 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source"], function(To
 		if (this._buffer.loaded){
 			//if it's a loop the default offset is the loopstart point
 			if (this._loop){
-				offset = this.defaultArg(offset, this._loopStart);
+				offset = Tone.defaultArg(offset, this._loopStart);
 			} else {
 				//otherwise the default offset is 0
-				offset = this.defaultArg(offset, 0);
+				offset = Tone.defaultArg(offset, 0);
 			}
 			offset = this.toSeconds(offset);
 			//make sure it has a positive duration
-			duration = this.defaultArg(duration, Math.max(this._buffer.duration - offset, 0));
+			duration = Tone.defaultArg(duration, Math.max(this._buffer.duration - offset, 0));
 			duration = this.toSeconds(duration);
 			//the values in seconds
 			startTime = this.toSeconds(startTime);

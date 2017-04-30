@@ -87,7 +87,7 @@ function(Tone){
 			this._crossFade.b.connect(this._merger, 0, 1);
 		}
 		//initial value
-		this.pan.value = this.defaultArg(initialPan, 0);
+		this.pan.value = Tone.defaultArg(initialPan, 0);
 		this._readOnly("pan");
 	};
 

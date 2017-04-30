@@ -289,7 +289,7 @@ function(Tone){
 		}
 		var event = {
 			"time" : this.toTicks(startTime),
-			"duration" : this.toTicks(this.defaultArg(duration, Infinity)),
+			"duration" : this.toTicks(Tone.defaultArg(duration, Infinity)),
 			"interval" : this.toTicks(interval),
 			"callback" : callback
 		};
@@ -348,7 +348,7 @@ function(Tone){
 	 *  @returns {Tone.Transport} this
 	 */
 	Tone.Transport.prototype.cancel = function(after){
-		after = this.defaultArg(after, 0);
+		after = Tone.defaultArg(after, 0);
 		after = this.toTicks(after);
 		this._timeline.cancel(after);
 		this._onceEvents.cancel(after);

@@ -275,8 +275,8 @@ define(["Tone/core/Tone"], function (Tone) {
 	 */
 	Tone.Timeline.prototype._iterate = function(callback, lowerBound, upperBound){
 		this._iterating = true;
-		lowerBound = this.defaultArg(lowerBound, 0);
-		upperBound = this.defaultArg(upperBound, this._timeline.length - 1);
+		lowerBound = Tone.defaultArg(lowerBound, 0);
+		upperBound = Tone.defaultArg(upperBound, this._timeline.length - 1);
 		for (var i = lowerBound; i <= upperBound; i++){
 			callback.call(this, this._timeline[i]);
 		}

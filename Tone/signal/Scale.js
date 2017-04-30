@@ -24,13 +24,13 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Multiply", "Tone/signa
 		 *  @private
 		 *  @type {number}
 		 */
-		this._outputMin = this.defaultArg(outputMin, 0);
+		this._outputMin = Tone.defaultArg(outputMin, 0);
 
 		/** 
 		 *  @private
 		 *  @type {number}
 		 */
-		this._outputMax = this.defaultArg(outputMax, 1);
+		this._outputMax = Tone.defaultArg(outputMax, 1);
 
 
 		/** 

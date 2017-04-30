@@ -39,7 +39,7 @@ define(["Tone/core/Tone"], function (Tone) {
 		 *  and next state(s) as the values. 
 		 *  @type {Object}
 		 */
-		this.values = this.defaultArg(values, {});
+		this.values = Tone.defaultArg(values, {});
 		
 		/**
 		 *  The current state of the Markov values. The next
@@ -47,7 +47,7 @@ define(["Tone/core/Tone"], function (Tone) {
 		 *  is invoked.
 		 *  @type {String}
 		 */
-		this.value = this.defaultArg(initial, Object.keys(this.values)[0]);
+		this.value = Tone.defaultArg(initial, Object.keys(this.values)[0]);
 	};
 
 	Tone.extend(Tone.CtrlMarkov);

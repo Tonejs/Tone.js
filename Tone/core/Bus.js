@@ -30,7 +30,7 @@ define(["Tone/core/Tone", "Tone/core/Gain"], function(Tone){
 		if (!Buses.hasOwnProperty(channelName)){
 			Buses[channelName] = this.context.createGain();
 		}
-		amount = this.defaultArg(amount, 0);
+		amount = Tone.defaultArg(amount, 0);
 		var sendKnob = new Tone.Gain(amount, Tone.Type.Decibels);
 		this.output.chain(sendKnob, Buses[channelName]);
 		return sendKnob;		

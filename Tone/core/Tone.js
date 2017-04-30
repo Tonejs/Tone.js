@@ -18,7 +18,7 @@ define(function(){
 	 *  @param {Tone.Context} context The audio context
 	 */
 	var Tone = function(){
-		// this._context = this.defaultArg(context, Tone.context);
+		// this._context = Tone.defaultArg(context, Tone.context);
 	};
 
 	/**
@@ -296,7 +296,7 @@ define(function(){
 	 */
 	Tone.prototype.connect = function(unit, outputNum, inputNum){
 		if (Array.isArray(this.output)){
-			outputNum = this.defaultArg(outputNum, 0);
+			outputNum = Tone.defaultArg(outputNum, 0);
 			this.output[outputNum].connect(unit, 0, inputNum);
 		} else {
 			this.output.connect(unit, outputNum, inputNum);
@@ -316,7 +316,7 @@ define(function(){
 			if (Tone.isNumber(destination)){
 				this.output[destination].disconnect();
 			} else {
-				outputNum = this.defaultArg(outputNum, 0);
+				outputNum = Tone.defaultArg(outputNum, 0);
 				this.output[outputNum].disconnect(destination, 0, inputNum);
 			}
 		} else {
@@ -397,22 +397,6 @@ define(function(){
 	 *  @param  {*} fallback 
 	 *  @return {*}          
 	 */
-	Tone.prototype.defaultArg = function(given, fallback){
-		if (Tone.isObject(given) && Tone.isObject(fallback)){
-			var ret = {};
-			//make a deep copy of the given object
-			for (var givenProp in given) {
-				ret[givenProp] = this.defaultArg(fallback[givenProp], given[givenProp]);
-			}
-			for (var fallbackProp in fallback) {
-				ret[fallbackProp] = this.defaultArg(given[fallbackProp], fallback[fallbackProp]);
-			}
-			return ret;
-		} else {
-			return Tone.isUndef(given) ? fallback : given;
-		}
-	};
-
 	Tone.defaultArg = function(given, fallback){
 		if (Tone.isObject(given) && Tone.isObject(fallback)){
 			var ret = {};
@@ -426,36 +410,6 @@ define(function(){
 			return ret;
 		} else {
 			return Tone.isUndef(given) ? fallback : given;
-		}
-	};
-
-	/**
-	 *  returns the args as an options object with given arguments
-	 *  mapped to the names provided. 
-	 *
-	 *  if the args given is an array containing only one object, it is assumed
-	 *  that that's already the options object and will just return it. 
-	 *  
-	 *  @param  {Array} values  the 'arguments' object of the function
-	 *  @param  {Array} keys the names of the arguments as they
-	 *                                 should appear in the options object
-	 *  @param {Object=} defaults optional defaults to mixin to the returned 
-	 *                            options object                              
-	 *  @return {Object}       the options object with the names mapped to the arguments
-	 */
-	Tone.prototype.optionsObject = function(values, keys, defaults){
-		var options = {};
-		if (values.length === 1 && Tone.isObject(values[0])){
-			options = values[0];
-		} else {
-			for (var i = 0; i < keys.length; i++){
-				options[keys[i]] = values[i];
-			}
-		}
-		if (!Tone.isUndef(defaults)){
-			return this.defaultArg(options, defaults);
-		} else {
-			return options;
 		}
 	};
 

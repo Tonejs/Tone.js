@@ -155,7 +155,7 @@ function(Tone){
 		if (this._synced){
 			// add the offset time to the event
 			var event = this._state.get(time);
-			event.offset = this.defaultArg(offset, 0);
+			event.offset = Tone.defaultArg(offset, 0);
 			event.duration = duration;
 			var sched = Tone.Transport.schedule(function(t){
 				this._start(t, offset, duration);

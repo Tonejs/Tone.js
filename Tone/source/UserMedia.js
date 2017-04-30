@@ -90,7 +90,7 @@ define(["Tone/core/Tone", "Tone/component/Volume"], function(Tone){
 	 *  @return {Promise} The promise is resolved when the stream is open.
 	 */
 	Tone.UserMedia.prototype.open = function(labelOrId){
-		labelOrId = this.defaultArg(labelOrId, "default");
+		labelOrId = Tone.defaultArg(labelOrId, "default");
 		return this.enumerateDevices().then(function(devices){
 			var device;
 			if (Tone.isNumber(labelOrId)){

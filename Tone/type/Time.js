@@ -80,7 +80,7 @@ define(["Tone/core/Tone", "Tone/type/TimeBase"], function (Tone) {
 	 * Tone.Time(0.6).quantize("4n", 0.5) //returns 0.55
 	 */
 	Tone.Time.prototype.quantize = function(subdiv, percent){
-		percent = this.defaultArg(percent, 1);
+		percent = Tone.defaultArg(percent, 1);
 		this._expr = function(expr, subdivision, percent){
 			expr = expr();
 			subdivision = subdivision.toSeconds();

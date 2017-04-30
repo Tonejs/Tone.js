@@ -23,14 +23,14 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Multiply"], function(T
 		 *  @type {number}
 		 *  @private
 		 */
-		this._inputMin = this.defaultArg(inputMin, 0);
+		this._inputMin = Tone.defaultArg(inputMin, 0);
 
 		/**
 		 *  the max input value
 		 *  @type {number}
 		 *  @private
 		 */
-		this._inputMax = this.defaultArg(inputMax, 1);
+		this._inputMax = Tone.defaultArg(inputMax, 1);
 
 		/**
 		 *  subtract the min from the input

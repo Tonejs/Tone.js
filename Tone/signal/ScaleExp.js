@@ -31,7 +31,7 @@ function(Tone){
 		 *  @type {Tone.Pow}
 		 *  @private
 		 */
-		this._exp = this.input = new Tone.Pow(this.defaultArg(exponent, 2));
+		this._exp = this.input = new Tone.Pow(Tone.defaultArg(exponent, 2));
 
 		this._exp.connect(this._scale);
 	};

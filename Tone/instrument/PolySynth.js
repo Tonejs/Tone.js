@@ -27,7 +27,7 @@ function(Tone){
 
 		var options = Tone.defaults(arguments, ["polyphony", "voice"], Tone.PolySynth);
 		Tone.Instrument.call(this, options);
-		options = this.defaultArg(options, Tone.Instrument.defaults);
+		options = Tone.defaultArg(options, Tone.Instrument.defaults);
 
 		//max polyphony
 		options.polyphony = Math.min(Tone.PolySynth.MAX_POLYPHONY, options.polyphony);

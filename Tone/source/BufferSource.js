@@ -148,10 +148,10 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/G
 			time = this.toSeconds(time);
 			//if it's a loop the default offset is the loopstart point
 			if (this.loop){
-				offset = this.defaultArg(offset, this.loopStart);
+				offset = Tone.defaultArg(offset, this.loopStart);
 			} else {
 				//otherwise the default offset is 0
-				offset = this.defaultArg(offset, 0);
+				offset = Tone.defaultArg(offset, 0);
 			}
 			offset = this.toSeconds(offset);
 			//the values in seconds
@@ -159,7 +159,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/G
 
 			this._source.start(time, offset);
 
-			gain = this.defaultArg(gain, 1);
+			gain = Tone.defaultArg(gain, 1);
 			this._gain = gain;
 
 			//the fadeIn time
@@ -179,7 +179,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/G
 			this._startTime = time + fadeInTime;
 
 			if (!Tone.isUndef(duration)){
-				duration = this.defaultArg(duration, this.buffer.duration - offset);
+				duration = Tone.defaultArg(duration, this.buffer.duration - offset);
 				duration = this.toSeconds(duration);
 				this.stop(time + duration + fadeInTime, fadeInTime);
 			}

@@ -30,7 +30,7 @@ define(["Tone/core/Tone"], function (Tone) {
 				this.copy(val);
 			} else if (!Tone.isUndef(units) || Tone.isNumber(val)){
 				//default units
-				units = this.defaultArg(units, this._defaultUnits);
+				units = Tone.defaultArg(units, this._defaultUnits);
 				var method = this._primaryExpressions[units].method;
 				this._expr = method.bind(this, val);
 			} else if (Tone.isString(val)){

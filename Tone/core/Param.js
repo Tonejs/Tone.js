@@ -187,7 +187,7 @@ define(["Tone/core/Tone", "Tone/type/Type"], function(Tone){
 	 *  @returns {Tone.Param} this
 	 */
 	Tone.Param.prototype.setRampPoint = function(now){
-		now = this.defaultArg(now, this.now());
+		now = Tone.defaultArg(now, this.now());
 		var currentVal = this._param.value;
 		// exponentialRampToValueAt cannot ever ramp from or to 0
 		// More info: https://bugzilla.mozilla.org/show_bug.cgi?id=1125600#c2
@@ -336,7 +336,7 @@ define(["Tone/core/Tone", "Tone/type/Type"], function(Tone){
 	 * signal.rampTo(0, 10, 5)
 	 */
 	Tone.Param.prototype.rampTo = function(value, rampTime, startTime){
-		rampTime = this.defaultArg(rampTime, 0);
+		rampTime = Tone.defaultArg(rampTime, 0);
 		if (this.units === Tone.Type.Frequency || this.units === Tone.Type.BPM || this.units === Tone.Type.Decibels){
 			this.exponentialRampToValue(value, rampTime, startTime);
 		} else {

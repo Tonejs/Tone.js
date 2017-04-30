@@ -137,7 +137,7 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/type/Type", "Tone/core/Ti
 	 */
 	Tone.Event.prototype._rescheduleEvents = function(after){
 		//if no argument is given, schedules all of the events
-		after = this.defaultArg(after, -1);
+		after = Tone.defaultArg(after, -1);
 		this._state.forEachFrom(after, function(event){
 			var duration;
 			if (event.state === Tone.State.Started){
@@ -275,7 +275,7 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/type/Type", "Tone/core/Ti
 	 *  @return  {Tone.Event}  this
 	 */
 	Tone.Event.prototype.cancel = function(time){
-		time = this.defaultArg(time, -Infinity);
+		time = Tone.defaultArg(time, -Infinity);
 		time = this.toTicks(time);
 		this._state.forEachFrom(time, function(event){
 			Tone.Transport.clear(event.id);

@@ -78,9 +78,9 @@ define(["Tone/core/Tone", "Tone/event/Event", "Tone/type/Type", "Tone/core/Trans
 		var ticks = this.toTicks(time);
 		if (this._state.getValueAtTime(ticks) !== Tone.State.Started){
 			if (this._loop){
-				offset = this.defaultArg(offset, this._loopStart);
+				offset = Tone.defaultArg(offset, this._loopStart);
 			} else {
-				offset = this.defaultArg(offset, 0);
+				offset = Tone.defaultArg(offset, 0);
 			}
 			offset = this.toTicks(offset);
 			this._state.add({
@@ -323,7 +323,7 @@ define(["Tone/core/Tone", "Tone/event/Event", "Tone/type/Type", "Tone/core/Trans
 	 */
 	Tone.Part.prototype._forEach = function(callback, ctx){
 		if (this._events){
-			ctx = this.defaultArg(ctx, this);
+			ctx = Tone.defaultArg(ctx, this);
 			for (var i = this._events.length - 1; i >= 0; i--){
 				var e = this._events[i];
 				if (e instanceof Tone.Part){
