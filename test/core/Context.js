@@ -10,7 +10,7 @@ define(["Test", "Tone/core/Context", "Tone/core/Tone", "helper/Offline"],
 			expect(ctx.createOscillator()).to.be.instanceOf(OscillatorNode);
 			expect(ctx).to.have.property("createDelay");
 			expect(ctx.createDelay()).to.be.instanceOf(DelayNode);
-			return ctx.close();
+			ctx.dispose();
 		});
 
 		it ("clock is running", function(done){
@@ -34,8 +34,8 @@ define(["Test", "Tone/core/Context", "Tone/core/Tone", "helper/Offline"],
 		it ("can set a timeout", function(done){
 			var ctx = new Context();
 			ctx.setTimeout(function(){
-				done();
 				ctx.dispose();
+				done();
 			}, 0.1);
 		});
 
@@ -52,8 +52,8 @@ define(["Test", "Tone/core/Context", "Tone/core/Tone", "helper/Offline"],
 			}, 0.01);
 			ctx.clearTimeout(id);
 			ctx.setTimeout(function(){
-				done();
 				ctx.dispose();
+				done();
 			}, 0.02);
 		});
 
@@ -62,8 +62,8 @@ define(["Test", "Tone/core/Context", "Tone/core/Tone", "helper/Offline"],
 			var wasInvoked = false;
 			ctx.setTimeout(function(){
 				expect(wasInvoked).to.be.true;
-				done();
 				ctx.dispose();
+				done();
 			}, 0.011);
 			ctx.setTimeout(function(){
 				wasInvoked = true;
@@ -109,14 +109,14 @@ define(["Test", "Tone/core/Context", "Tone/core/Tone", "helper/Offline"],
 			var ctx = new Context();
 			ctx.lookAhead = 0.05;
 			expect(ctx.lookAhead).to.equal(0.05);
-			return ctx.close();
+			ctx.dispose();
 		});
 
 		it ("can set the updateInterval", function(){
 			var ctx = new Context();
 			ctx.updateInterval = 0.05;
 			expect(ctx.updateInterval).to.equal(0.05);
-			return ctx.close();
+			ctx.dispose();
 		});
 
 		it ("can set the latencyHint", function(){
@@ -125,7 +125,7 @@ define(["Test", "Tone/core/Context", "Tone/core/Tone", "helper/Offline"],
 			expect(ctx.latencyHint).to.equal("fastest");
 			expect(ctx.lookAhead).to.be.closeTo(0.01, 0.05);
 			expect(ctx.updateInterval).to.be.closeTo(0.01, 0.05);
-			return ctx.close();
+			ctx.dispose();
 		});
 
 		it ("gets a constant signal", function(){
@@ -136,7 +136,7 @@ define(["Test", "Tone/core/Context", "Tone/core/Tone", "helper/Offline"],
 			for (var i = 0; i < buffer.length; i++){
 				expect(buffer[i]).to.equal(1);
 			}
-			ctx.close();
+			ctx.dispose();
 		});
 
 		it ("multiple calls return the same buffer source", function(){
@@ -144,7 +144,7 @@ define(["Test", "Tone/core/Context", "Tone/core/Tone", "helper/Offline"],
 			var bufferA = ctx.getConstant(2);
 			var bufferB = ctx.getConstant(2);
 			expect(bufferA).to.equal(bufferB);
-			ctx.close();
+			ctx.dispose();
 		});
 
 	});
