@@ -20,4 +20,6 @@ before_script:
   - git config --global user.email "travis@travis-ci.org"
   - git config --global user.name "Travis CI"
 script: gulp travis-test
-after_success: gulp commitDevBuild
+after_success: 
+  - gulp commitDevBuild
+  - gulp coveralls

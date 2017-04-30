@@ -17,6 +17,7 @@ var sass = require("gulp-ruby-sass");
 var prefix = require("gulp-autoprefixer");
 var openFile = require("gulp-open");
 var jshint = require("gulp-jshint");
+var coveralls = require("gulp-coveralls");
 var git = require("gulp-git");
 var argv = require("yargs")
 			.alias("f", "file")
@@ -239,7 +240,7 @@ gulp.task("cloneBuild", function(done) {
 gulp.task("moveToDev", ["build", "cloneBuild"], function(){
 	// move files to 'dev' folder
 	return gulp.src("../build/*.js")
-		.pipe(gulp.dest("../tmp/dev/"))
+		.pipe(gulp.dest("../tmp/dev/"));
 });
 
 gulp.task("commitDev", ["moveToDev"], function(){
@@ -265,4 +266,12 @@ gulp.task("pushBuild", ["commitDev"], function(done){
 
 gulp.task("commitDevBuild", ["pushBuild"], function(){
 	return del(["../tmp"], { force : true});
+});
+
+/**
+ *  COVERALLS
+ */
+gulp.task("coveralls", function(){
+	return gulp.src("../test/coverage/**/lcov.info")
+		.pipe(coveralls());
 });
