@@ -104,7 +104,7 @@ module.exports = function(config) {
 		customLaunchers: {
 			Chrome_travis_ci: {
 				base: 'Chrome',
-				flags: ['--no-sandbox', '--use-fake-ui-for-media-stream']
+				flags: ['--no-sandbox', '--use-fake-ui-for-media-stream', '--use-fake-device-for-media-stream']
 			},
 			Chrome_user_media: {
 				base: 'Chrome',
