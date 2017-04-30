@@ -114,6 +114,10 @@ function (Panner, Basic, Offline, Test, Signal, PassAudio, PassAudioStereo, Merg
 			Panner.hasStereoPanner = false;
 		});
 
+		after(function(){
+			Panner.hasStereoPanner = hasSupport;
+		});
+
 		Basic(Panner);
 
 		context("Panning", function(){
