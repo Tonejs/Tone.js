@@ -359,7 +359,7 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/core/Timeline"], function (
 		this._timeouts.dispose();
 		this._timeouts = null;
 		for(var con in this._constants){
-			con.disconnect();
+			this._constants[con].disconnect();
 		}
 		this._constants = null;
 		this.close();
