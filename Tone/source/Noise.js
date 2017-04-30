@@ -166,12 +166,12 @@ define(["Tone/core/Tone", "Tone/source/Source", "Tone/core/Buffer", "Tone/source
 	var channels = 2;
 
 	/**
-	 *	the noise arrays. only generated once on init
+	 *	The noise arrays. Generated on initialization.
+	 *  borrowed heavily from https://github.com/zacharydenton/noise.js 
+	 *  (c) 2013 Zach Denton (MIT)
 	 *  @static
 	 *  @private
 	 *  @type {Array}
-	 *  borrowed heavily from https://github.com/zacharydenton/noise.js 
-	 *  (c) 2013 Zach Denton (MIT)
 	 */
 	var _noiseArrays = {
 		"pink" : (function() {

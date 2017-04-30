@@ -139,7 +139,7 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/source/FMOscillato
 	/**
 	 *  Trigger the attack.
 	 *  @param  {Time}  time      When the attack should be triggered.
-	 *  @param  {NormalRange=1}  velocity  The velocity that the envelope should be triggered at.
+	 *  @param  {NormalRange}  [velocity=1]  The velocity that the envelope should be triggered at.
 	 *  @return  {Tone.MetalSynth}  this
 	 */
 	Tone.MetalSynth.prototype.triggerAttack = function(time, vel) {
@@ -165,7 +165,7 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/source/FMOscillato
 	 *  duration. 
 	 *  @param  {Time}  duration  The duration before triggering the release
 	 *  @param  {Time}  time      When the attack should be triggered.
-	 *  @param  {NormalRange=1}  velocity  The velocity that the envelope should be triggered at.
+	 *  @param  {NormalRange}  [velocity=1]  The velocity that the envelope should be triggered at.
 	 *  @return  {Tone.MetalSynth}  this
 	 */
 	Tone.MetalSynth.prototype.triggerAttackRelease = function(duration, time, velocity) {

@@ -103,9 +103,9 @@ define(["Tone/core/Tone", "Tone/type/TimeBase"], function (Tone) {
 	};
 
 	/**
-	 *  @override
 	 *  Override the default value return when no arguments are passed in.
 	 *  The default value is 'now'
+	 *  @override
 	 *  @private
 	 */
 	Tone.Time.prototype._defaultExpr = function(){

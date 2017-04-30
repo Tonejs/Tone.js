@@ -61,11 +61,10 @@ function(Tone){
 	Tone.extend(Tone.Panner3D);
 
 	/**
-	 *  the default parameters
+	 *  Defaults according to the specification
 	 *  @static
 	 *  @const
 	 *  @type {Object}
-	 *  Defaults according to the specification
 	 */
 	Tone.Panner3D.defaults = {
 		"positionX" : 0,

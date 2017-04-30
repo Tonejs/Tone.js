@@ -211,7 +211,7 @@ function (Tone) {
 	 *  Jump to a specific time and play it.
 	 *  @param  {Time}  offset  The offset to jump to.
 	 *  @param {Time=} time When to make the jump.
-	 *  @return  {[type]}  [description]
+	 *  @return  {Tone.GrainPlayer}  this
 	 */
 	Tone.GrainPlayer.prototype.scrub = function(offset, time){
 		this._offset = this.toSeconds(offset);

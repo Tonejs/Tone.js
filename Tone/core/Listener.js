@@ -52,11 +52,10 @@ function(Tone){
 	Tone.extend(Tone.Listener);
 
 	/**
-	 *  the default parameters
+	 *  Defaults according to the specification
 	 *  @static
 	 *  @const
 	 *  @type {Object}
-	 *  Defaults according to the specification
 	 */
 	Tone.Listener.defaults = {
 		"positionX" : 0,
