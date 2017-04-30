@@ -8,7 +8,9 @@ define(["Test", "Tone/core/Master", "Tone/core/Tone", "helper/Offline", "helper/
 
 		it ("provides a toMaster method", function(){
 			expect(Tone.prototype.toMaster).is.a("function");
-			expect(AudioNode.prototype.toMaster).is.a("function");
+			var gain = Tone.context.createGain();
+			expect(gain.toMaster).is.a("function");
+			gain.toMaster();
 		});
 
 		it ("can be muted and unmuted", function(){
