@@ -51,6 +51,38 @@ define(["helper/OutputAudio", "Tone/instrument/Instrument", "helper/OutputAudioS
 				});
 			});	
 
+			if (Constr.prototype.triggerRelease){
+
+				it("can trigger release after attack", function(){
+					return Offline(function(){
+						var instance = new Constr(constrArg);
+						instance.toMaster();
+						if (note){
+							instance.triggerAttack(note, 0.05);
+						} else {
+							instance.triggerAttack(0.05);
+						}
+						instance.triggerRelease(0.1);
+					}, 0.2).then(function(buffer){
+						expect(buffer.getFirstSoundTime()).to.be.within(0.05, 0.1);
+					});
+				});
+
+				it("can combine triggerAttack and triggerRelease", function(){
+					return Offline(function(){
+						var instance = new Constr(constrArg);
+						instance.toMaster();
+						if (note){
+							instance.triggerAttackRelease(note, 0.1, 0.05);
+						} else {
+							instance.triggerAttackRelease(0.1, 0.05);
+						}
+					}, 0.2).then(function(buffer){
+						expect(buffer.getFirstSoundTime()).to.be.within(0.05, 0.1);
+					});
+				});
+			}
+
 			it("be scheduled to start in the future", function(){
 				return Offline(function(){
 					var instance = new Constr(constrArg);
