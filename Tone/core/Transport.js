@@ -775,9 +775,9 @@ function(Tone){
 			Tone.Transport = context.Transport;
 		} else {
 			Tone.Transport = new TransportConstructor();
-			//store the Transport on the context so it can be retrieved later
-			context.Transport = Tone.Transport;
 		}
+		//store the Transport on the context so it can be retrieved later
+		context.Transport = Tone.Transport;
 	});
 
 	return Tone.Transport;
