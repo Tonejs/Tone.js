@@ -52,6 +52,15 @@ define(["Test", "Tone/core/Timeline"], function (Test, Timeline) {
 			sched.dispose();
 		});
 
+		it ("throws an error if no time is provided in object", function(){
+			var sched = new Timeline();
+			expect(function(){
+				sched.add({
+					"no_time"  : 0
+				});
+			}).to.throw(Error);
+			sched.dispose();
+		});
 
 		it ("can remove items from the timeline", function(){
 			var sched = new Timeline();
