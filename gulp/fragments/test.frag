@@ -12,8 +12,6 @@ require.config({
 	}
 });
 
-window.MANUAL_TEST = false;
-
 require({FILES}, function(Test){
 	Test.run(); 
 });

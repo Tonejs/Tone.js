@@ -35,7 +35,7 @@ define(["helper/Basic", "Tone/source/UserMedia", "Test", "Tone/source/Source"],
 
 
 		//if it is a manual test (i.e. there is a person to 'allow' the microphone)
-		if (window.MANUAL_TEST && UserMedia.supported){
+		if (UserMedia.supported){
 
 			context("Opening and closing", function(){
 
@@ -49,7 +49,7 @@ define(["helper/Basic", "Tone/source/UserMedia", "Test", "Tone/source/Source"],
 					promise.then(function(){
 						extIn.dispose();
 						done();
-					})
+					});
 				});
 
 				it ("can open an input", function(done){

@@ -104,7 +104,11 @@ module.exports = function(config) {
 		customLaunchers: {
 			Chrome_travis_ci: {
 				base: 'Chrome',
-				flags: ['--no-sandbox']
+				flags: ['--no-sandbox', '--use-fake-ui-for-media-stream']
+			},
+			Chrome_user_media: {
+				base: 'Chrome',
+				flags: ['--use-fake-ui-for-media-stream']
 			}
 		}
 	};
@@ -114,7 +118,7 @@ module.exports = function(config) {
 		configuration.browsers = ['Chrome_travis_ci'];
 	} else {
 		// configuration.browsers = ['Chrome', 'Firefox'];
-		configuration.browsers = ['Chrome'];
+		configuration.browsers = ['Chrome_user_media'];
 	}
 
   config.set(configuration);
