@@ -21,9 +21,11 @@ define(["helper/Basic", "Tone/source/UserMedia", "Test", "Tone/source/Source"],
 
 			it ("can be constructed with an options object", function(){
 				var extIn = new UserMedia({
-					"volume" : -10
+					"volume" : -10,
+					"mute" : false
 				});
 				expect(extIn.volume.value).to.be.closeTo(-10, 0.1);
+				expect(extIn.mute).to.be.false;
 				extIn.dispose();
 			});
 
@@ -55,6 +57,27 @@ define(["helper/Basic", "Tone/source/UserMedia", "Test", "Tone/source/Source"],
 				it ("can open an input", function(done){
 					var extIn = new UserMedia();
 					extIn.open().then(function(){
+						extIn.dispose();
+						done();
+					});
+				});
+
+				it ("is 'started' after media is open and 'stopped' otherwise", function(done){
+					var extIn = new UserMedia();
+					expect(extIn.state).to.equal("stopped");
+					extIn.open().then(function(){
+						expect(extIn.state).to.equal("started");
+						extIn.dispose();
+						done();
+					});
+				});
+
+				it ("has a label, group and device id when open", function(done){
+					var extIn = new UserMedia();
+					extIn.open().then(function(){
+						expect(extIn.deviceId).to.be.a("string");
+						expect(extIn.groupId).to.be.a("string");
+						expect(extIn.label).to.be.a("string");
 						extIn.dispose();
 						done();
 					});
