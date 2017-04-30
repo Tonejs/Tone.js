@@ -1,9 +1,7 @@
 Tone.js
 =========
 
-[![Build Status](https://travis-ci.org/Tonejs/Tone.js.svg?branch=dev)](https://travis-ci.org/Tonejs/Tone.js)
-
-[![Coverage Status](https://coveralls.io/repos/github/Tonejs/Tone.js/badge.svg?branch=dev)](https://coveralls.io/github/Tonejs/Tone.js?branch=dev)
+[![Build Status](https://travis-ci.org/Tonejs/Tone.js.svg?branch=dev)](https://travis-ci.org/Tonejs/Tone.js) [![Coverage Status](https://coveralls.io/repos/github/Tonejs/Tone.js/badge.svg?branch=dev)](https://coveralls.io/github/Tonejs/Tone.js?branch=dev)
 
 Tone.js is a Web Audio framework for creating interactive music in the browser. The architecture of Tone.js aims to be familiar to both musicians and audio programmers looking to create web-based audio applications. On the high-level, Tone offers common DAW (digital audio workstation) features like a global transport for scheduling events and prebuilt synths and effects. For signal-processing programmers (coming from languages like Max/MSP), Tone provides a wealth of high performance, low latency building blocks and DSP modules to build your own synthesizers, effects, and complex control signals.
 
