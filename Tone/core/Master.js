@@ -25,7 +25,7 @@ define(["Tone/core/Tone", "Tone/component/Volume", "Tone/core/Context"], functio
 	Tone.Master = function(){
 		
 		Tone.call(this);
-		this.createInsOuts(1, 1);
+		this.createInsOuts(1, 0);
 
 		/**
 		 *  The private volume node
