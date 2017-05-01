@@ -634,9 +634,7 @@ define(function(){
 				audioContext = new Tone.Context(context);
 			}
 			//initialize the new audio context
-			if (Tone.Context){
-				Tone.Context.emit("init", audioContext);
-			}
+			Tone.Context.emit("init", audioContext);
 		}
 	});
 
