@@ -12,12 +12,13 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/G
 	 *  @class Wrapper around the native BufferSourceNode.
 	 *  @extends {Tone}
 	 *  @param  {AudioBuffer|Tone.Buffer}  buffer   The buffer to play
-	 *  @param  {Function}  onended  The callback to invoke when the 
+	 *  @param  {Function}  onload  The callback to invoke when the 
 	 *                               buffer is done playing.
 	 */
 	Tone.BufferSource = function(){
 
-		var options = Tone.defaults(arguments, ["buffer", "onended"], Tone.BufferSource);
+		var options = Tone.defaults(arguments, ["buffer", "onload"], Tone.BufferSource);
+		Tone.call(this);
 
 		/**
 		 *  The callback to invoke after the 
@@ -54,6 +55,13 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/G
 		 */
 		this._source = this.context.createBufferSource();
 		this._source.connect(this._gainNode);
+
+		/**
+		 * The private buffer instance
+		 * @type {Tone.Buffer}
+		 * @private
+		 */
+		this._buffer = new Tone.Buffer(options.buffer, options.onload);
 	
 		/**
 		 *  The playbackRate of the buffer
@@ -88,11 +96,6 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/G
 		 */
 		this._onendedTimeout = -1;
 
-		//set the buffer initially
-		if (!Tone.isUndef(options.buffer)){
-			this.buffer = options.buffer;
-		}
-
 		this.loop = options.loop;
 	};
 
@@ -105,6 +108,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/G
 	 */
 	Tone.BufferSource.defaults = {
 		"onended" : Tone.noOp,
+		"onload" : Tone.noOp,
 		"fadeIn" : 0,
 		"fadeOut" : 0
 	};
@@ -144,7 +148,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/G
 			throw new Error("Tone.BufferSource can only be started once.");
 		}
 
-		if (this.buffer){
+		if (this.buffer.loaded){
 			time = this.toSeconds(time);
 			//if it's a loop the default offset is the loopstart point
 			if (this.loop){
@@ -157,6 +161,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/G
 			//the values in seconds
 			time = this.toSeconds(time);
 
+			this._source.buffer = this.buffer.get();
 			this._source.start(time, offset);
 
 			gain = Tone.defaultArg(gain, 1);
@@ -188,6 +193,8 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/G
 				}
 				this.stop(time + computedDur + fadeInTime, fadeInTime);
 			}
+		} else {
+			throw new Error("Tone.BufferSource: buffer is either not set or not loaded.")
 		}
 
 		return this;
@@ -201,7 +208,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/G
 	 *  @return  {Tone.BufferSource}  this
 	 */
 	Tone.BufferSource.prototype.stop = function(time, fadeOutTime){
-		if (this.buffer){
+		if (this.buffer.loaded){
 
 			time = this.toSeconds(time);
 			
@@ -229,6 +236,8 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/G
 
 			Tone.context.clearTimeout(this._onendedTimeout);
 			this._onendedTimeout = Tone.context.setTimeout(this._onended.bind(this), this._stopTime - this.now());
+		} else {
+			throw new Error("Tone.BufferSource: buffer is either not set or not loaded.")
 		}
 
 		return this;
@@ -276,30 +285,22 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/G
 	/**
 	 * The audio buffer belonging to the player. 
 	 * @memberOf Tone.BufferSource#
-	 * @type {AudioBuffer}
+	 * @type {Tone.Buffer}
 	 * @name buffer
 	 */
 	Object.defineProperty(Tone.BufferSource.prototype, "buffer", {
 		get : function(){
-			if (this._source){
-				return this._source.buffer;
-			} else {
-				return null;
-			}
+			return this._buffer;
 		}, 
 		set : function(buffer){
-			if (buffer instanceof Tone.Buffer){
-				this._source.buffer = buffer.get();
-			} else {
-				this._source.buffer = buffer;
-			}
+			this._buffer.set(buffer);
 		}
 	});
 
 	/**
 	 * If the buffer should loop once it's over. 
 	 * @memberOf Tone.BufferSource#
-	 * @type {boolean}
+	 * @type {Boolean}
 	 * @name loop
 	 */
 	Object.defineProperty(Tone.BufferSource.prototype, "loop", {
@@ -316,18 +317,16 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/G
 	 *  @return  {Tone.BufferSource}  this
 	 */
 	Tone.BufferSource.prototype.dispose = function(){
+		Tone.prototype.dispose.call(this);
 		this.onended = null;
-		if (this._source){
-			this._source.disconnect();
-			this._source = null;
-		}
-		if (this._gainNode){
-			this._gainNode.dispose();
-			this._gainNode = null;
-		}
+		this._source.disconnect();
+		this._source = null;
+		this._gainNode.dispose();
+		this._gainNode = null;
+		this._buffer.dispose();
+		this._buffer = null;
 		this._startTime = -1;
 		this.playbackRate = null;
-		this.output = null;
 		Tone.context.clearTimeout(this._onendedTimeout);
 		return this;
 	};

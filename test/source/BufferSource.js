@@ -21,18 +21,16 @@ define(["helper/Basic", "Tone/source/BufferSource", "helper/Offline",
 
 		context("Constructor", function(){
 
-			it ("can be constructed with a Tone.Buffer", function(done){
+			it ("can be constructed with a Tone.Buffer", function(){
 				var source = new BufferSource(buffer);
-				expect(source.buffer).to.equal(buffer.get());
+				expect(source.buffer.get()).to.equal(buffer.get());
 				source.dispose();
-				done();
 			});
 
-			it ("can be constructed with an AudioBuffer", function(done){
+			it ("can be constructed with an AudioBuffer", function(){
 				var source = new BufferSource(buffer.get());
-				expect(source.buffer).to.equal(buffer.get());
+				expect(source.buffer.get()).to.equal(buffer.get());
 				source.dispose();
-				done();
 			});
 
 			it("can be created with an options object", function(){
@@ -43,30 +41,28 @@ define(["helper/Basic", "Tone/source/BufferSource", "helper/Offline",
 				expect(source.loop).to.equal(true);
 				source.dispose();
 			});
-		});
 
-		context("Starts and Stops", function(){
-
-			it ("can be constructed with a Tone.Buffer", function(done){
-				var source = new BufferSource(buffer);
-				expect(source.buffer).to.equal(buffer.get());
+			it ("can be constructed with no arguments", function(){
+				var source = new BufferSource();
 				source.dispose();
-				done();
 			});
 
-			it ("can be constructed with an AudioBuffer", function(done){
-				var source = new BufferSource(buffer.get());
-				expect(source.buffer).to.equal(buffer.get());
-				source.dispose();
-				done();
-			});
-
-			it("can be created with an options object", function(){
-				var source = new BufferSource({
-					"buffer" : buffer,
-					"loop" : true
+			it ("can be constructed with a url and onload", function(done){
+				var source = new BufferSource("./audio/short_sine.wav", function(){
+					expect(source.buffer.loaded).to.be.true;
+					source.dispose();
+					done()
 				});
-				expect(source.loop).to.equal(true);
+			});
+
+			it ("won't start or stop if there is no buffer", function(){
+				var source = new BufferSource();
+				expect(function(){
+					source.start();
+				}).to.throw(Error);
+				expect(function(){
+					source.stop();
+				}).to.throw(Error);
 				source.dispose();
 			});
 		});
