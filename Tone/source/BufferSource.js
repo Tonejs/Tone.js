@@ -178,10 +178,11 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/G
 
 			this._startTime = time + fadeInTime;
 
-			if (!Tone.isUndef(duration)){
-				duration = Tone.defaultArg(duration, this.buffer.duration - offset);
-				duration = this.toSeconds(duration);
-				this.stop(time + duration + fadeInTime, fadeInTime);
+			var computedDur = Tone.defaultArg(duration, this.buffer.duration - offset);
+			computedDur = this.toSeconds(computedDur);
+
+			if (!this.loop || (this.loop && !Tone.isUndef(duration))){
+				this.stop(time + computedDur + fadeInTime, fadeInTime);
 			}
 		}
 
@@ -205,28 +206,25 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/G
 				fadeOutTime = this.toSeconds(this.fadeOut);
 			} else {
 				fadeOutTime = this.toSeconds(fadeOutTime);
-			}
+			}			
 
 			this._stopTime = time + fadeOutTime;
 
 			//cancel the end curve
 			this._gainNode.gain.cancelScheduledValues(this._startTime + this.sampleTime);
+			time = Math.max(this._startTime, time);
 
 			//set a new one
 			if (fadeOutTime > 0){
 				this._gainNode.gain.setValueAtTime(this._gain, time);
-				this._gainNode.gain.linearRampToValueAtTime(0, time + fadeOutTime);
 				time += fadeOutTime;
+				this._gainNode.gain.linearRampToValueAtTime(0, time);
 			} else {
 				this._gainNode.gain.setValueAtTime(0, time);
 			}
-			// fix for safari bug and old FF
-			if (!Tone.isNumber(this._source.playbackState) || this._source.playbackState === 2){
-				this._source.stop(time);
-			}
 
-			clearTimeout(this._onendedTimeout);
-			this._onendedTimeout = setTimeout(this._onended.bind(this), (this._stopTime - this.now()) * 1000);
+			Tone.context.clearTimeout(this._onendedTimeout);
+			this._onendedTimeout = Tone.context.setTimeout(this._onended.bind(this), this._stopTime - this.now());
 		}
 
 		return this;
@@ -239,7 +237,6 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/G
 	 */
 	Tone.BufferSource.prototype._onended = function(){
 		this.onended(this);
-		this.dispose();
 	};
 
 	/**
@@ -327,7 +324,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/G
 		this._startTime = -1;
 		this.playbackRate = null;
 		this.output = null;
-		clearTimeout(this._onendedTimeout);
+		Tone.context.clearTimeout(this._onendedTimeout);
 		return this;
 	};
 
