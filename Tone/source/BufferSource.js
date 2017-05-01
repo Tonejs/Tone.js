@@ -194,7 +194,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/G
 				this.stop(time + computedDur + fadeInTime, fadeInTime);
 			}
 		} else {
-			throw new Error("Tone.BufferSource: buffer is either not set or not loaded.")
+			throw new Error("Tone.BufferSource: buffer is either not set or not loaded.");
 		}
 
 		return this;
@@ -237,7 +237,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/G
 			Tone.context.clearTimeout(this._onendedTimeout);
 			this._onendedTimeout = Tone.context.setTimeout(this._onended.bind(this), this._stopTime - this.now());
 		} else {
-			throw new Error("Tone.BufferSource: buffer is either not set or not loaded.")
+			throw new Error("Tone.BufferSource: buffer is either not set or not loaded.");
 		}
 
 		return this;
