@@ -255,6 +255,21 @@ define(["Test", "Tone/core/Tone", "helper/PassAudio", "Tone/source/Oscillator",
 						});
 					});
 				});
+
+				it("can disconnect based on node name and output number", function(){
+					return Offline(function(){
+						var merge = new Merge().toMaster();
+						var split = new Split().connect(merge, 0, 0);
+						split.connect(merge, 1, 1);
+						var sig = new Signal(3).connect(split);
+						split.disconnect(merge, 0, 0);
+					}, 0.05, 2).then(function(buffer){
+						buffer.forEach(function(l, r){
+							expect(l).to.equal(0);
+							expect(r).to.equal(3);
+						});
+					});
+				});
 			}
 
 			it("connects two nodes", function(){
