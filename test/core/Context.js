@@ -29,7 +29,7 @@ define(["Test", "Tone/core/Context", "Tone/core/Tone", "helper/Offline"],
 		});
 	});
 
-	context("Timeouts", function(){
+	context("setTimeout", function(){
 
 		it ("can set a timeout", function(done){
 			var ctx = new Context();
@@ -42,6 +42,8 @@ define(["Test", "Tone/core/Context", "Tone/core/Tone", "helper/Offline"],
 		it ("returns an id", function(){
 			var ctx = new Context();
 			expect(ctx.setTimeout(function(){}, 0.1)).to.be.a("number");
+			//try clearing a random ID, shouldn't cause any errors
+			ctx.clearTimeout(-2);
 			ctx.dispose();
 		});
 
