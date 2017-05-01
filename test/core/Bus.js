@@ -17,6 +17,17 @@ define(["Test", "Tone/core/Bus", "Tone/core/Tone", "helper/Offline",
 				send.send("test");
 				recv.receive("test");
 			});
+		});	
+
+		it ("can create the recieve before the send", function(){
+			return PassAudio(function(input){
+				//make them pass through nodes
+				var send = new Gain();
+				var recv = new Gain().toMaster();
+				input.connect(send);
+				recv.receive("test");
+				send.send("test");
+			});
 		});		
 
 		it ("passes audio from a send to a receive at the given level", function(){
