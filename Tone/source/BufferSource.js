@@ -182,6 +182,10 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/G
 			computedDur = this.toSeconds(computedDur);
 
 			if (!this.loop || (this.loop && !Tone.isUndef(duration))){
+				//clip the duration when not looping
+				if (!this.loop){
+					computedDur = Math.min(computedDur, this.buffer.duration - offset);
+				}
 				this.stop(time + computedDur + fadeInTime, fadeInTime);
 			}
 		}
