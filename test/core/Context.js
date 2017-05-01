@@ -125,6 +125,12 @@ define(["Test", "Tone/core/Context", "Tone/core/Tone", "helper/Offline"],
 			expect(ctx.latencyHint).to.equal("fastest");
 			expect(ctx.lookAhead).to.be.closeTo(0.01, 0.05);
 			expect(ctx.updateInterval).to.be.closeTo(0.01, 0.05);
+			// test all other latency hints
+			var latencyHints = ["interactive", "playback", "balanced"]
+			latencyHints.forEach(function(hint){
+				ctx.latencyHint = hint;
+				expect(ctx.latencyHint).to.equal(hint);
+			});
 			ctx.dispose();
 		});
 
