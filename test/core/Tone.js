@@ -7,16 +7,6 @@ define(["Test", "Tone/core/Tone", "helper/PassAudio", "Tone/source/Oscillator",
 
 	describe("Tone", function(){
 
-		var tone = new Tone();
-
-		before(function(){
-			tone = new Tone();
-		});
-
-		after(function(){
-			tone.dispose();
-		});
-
 		it("can be created and disposed", function(){
 			var t = new Tone();
 			t.dispose();
@@ -38,6 +28,15 @@ define(["Test", "Tone/core/Tone", "helper/PassAudio", "Tone/source/Oscillator",
 			expect(t2.numberOfInputs).to.equal(0);
 			expect(t2.numberOfOutputs).to.equal(0);
 			t2.dispose();
+		});
+
+		it("returns the class name with toString()", function(){
+			var t = new Tone();
+			expect(t.toString()).to.equal("Tone");
+			t.dispose();
+			var g = new Gain();
+			expect(g.toString()).to.equal("Gain");
+			g.dispose();
 		});
 
 		context("Unit Conversions", function(){
@@ -91,7 +90,7 @@ define(["Test", "Tone/core/Tone", "helper/PassAudio", "Tone/source/Oscillator",
 			it("can test if an argument is an object literal", function(){
 				expect(Tone.isObject(Number)).to.be.false;
 				expect(Tone.isObject(function(){})).to.be.false;
-				expect(Tone.isObject(tone)).to.be.false;
+				expect(Tone.isObject(new Tone())).to.be.false;
 				expect(Tone.isObject({})).to.be.true;
 				expect(Tone.isObject([])).to.be.false;
 				expect(Tone.isObject("10")).to.be.false;
