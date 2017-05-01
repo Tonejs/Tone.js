@@ -1,8 +1,9 @@
 define(["Test", "Tone/core/Tone", "helper/PassAudio", "Tone/source/Oscillator", 
 	"Tone/instrument/Synth", "helper/Offline", "helper/Supports", 
-	"Tone/component/Filter", "Tone/core/Gain", "Tone/core/Context", "helper/BufferTest"], 
+	"Tone/component/Filter", "Tone/core/Gain", "Tone/core/Context", 
+	"helper/BufferTest", "Tone/component/Merge", "Tone/signal/Signal", "Tone/component/Split"], 
 	function (Test, Tone, PassAudio, Oscillator, Synth, Offline, Supports, 
-		Filter, Gain, Context, BufferTest) {
+		Filter, Gain, Context, BufferTest, Merge, Signal, Split) {
 
 	describe("Tone", function(){
 
@@ -126,15 +127,14 @@ define(["Test", "Tone/core/Tone", "helper/PassAudio", "Tone/source/Oscillator",
 				expect(Tone.isNote("D4")).to.be.true;
 				expect(Tone.isNote("Db4")).to.be.true;
 				expect(Tone.isNote("E4")).to.be.true;
-				expect(Tone.isNote("F2")).to.be.true;
-				expect(Tone.isNote("Gb-1")).to.be.true;
+				expect(Tone.isNote("Fx2")).to.be.true;
+				expect(Tone.isNote("Gbb-1")).to.be.true;
 				expect(Tone.isNote("A#10")).to.be.true;
 				expect(Tone.isNote("Bb2")).to.be.true;
 			});
 		});
 
-
-		context("defaultArg", function(){
+		context("defaults", function(){
 
 			it("returns a default argument when the given is not defined", function(){
 				expect(Tone.defaultArg(undefined, 0)).is.equal(0);
@@ -152,10 +152,6 @@ define(["Test", "Tone/core/Tone", "helper/PassAudio", "Tone/source/Oscillator",
 				expect(Tone.defaultArg({"b" : {"c" : 10}}, {"b" : {"c" : 20, "d" : 30}})).has.deep.property("b.d", 30);
 				expect(Tone.defaultArg({"a" : 10}, {"b" : {"c" : 20}})).has.deep.property("b.c", 20);
 			});
-
-		});
-
-		context("defaults", function(){
 
 			it("maps array parameters to an object", function(){
 				expect(Tone.defaults([1, 2], ["a", "b"], {})).is.deep.equal({
@@ -219,13 +215,6 @@ define(["Test", "Tone/core/Tone", "helper/PassAudio", "Tone/source/Oscillator",
 					osc.dispose();
 				});
 
-				it("connects two nodes", function(){
-					return PassAudio(function(input){
-						var node = new Gain().toMaster();
-						input.connect(node);
-					});
-				});
-
 				it("can disconnect from a specific connection", function(){
 					return PassAudio(function(input){
 						var node = new Gain().toMaster();
@@ -237,7 +226,43 @@ define(["Test", "Tone/core/Tone", "helper/PassAudio", "Tone/source/Oscillator",
 						return true;
 					});
 				});
+
+				it("can disconnect from a specific note and connection number", function(){
+					return Offline(function(){
+						var merge = new Merge().toMaster();
+						var sig = new Signal(2).connect(merge, 0, 0);
+						sig.connect(merge, 0, 1);
+						sig.disconnect(merge, 0, 0);
+					}, 0.05, 2).then(function(buffer){
+						buffer.forEach(function(l, r){
+							expect(l).to.equal(0);
+							expect(r).to.equal(2);
+						});
+					});
+				});
+
+				it("can disconnect based on output number", function(){
+					return Offline(function(){
+						var merge = new Merge().toMaster();
+						var split = new Split().connect(merge, 0, 0);
+						split.connect(merge, 1, 1);
+						var sig = new Signal(3).connect(split);
+						split.disconnect(1);
+					}, 0.05, 2).then(function(buffer){
+						buffer.forEach(function(l, r){
+							expect(l).to.equal(3);
+							expect(r).to.equal(0);
+						});
+					});
+				});
 			}
+
+			it("connects two nodes", function(){
+				return PassAudio(function(input){
+					var node = new Gain().toMaster();
+					input.connect(node);
+				});
+			});
 
 
 			it("can chain connections", function(){
