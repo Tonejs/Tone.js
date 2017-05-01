@@ -168,13 +168,7 @@ define(["Tone/core/Tone", "Tone/type/Type"], function(Tone){
 	 * freq.setValueAtTime("G4", "+1");
 	 */
 	Tone.Param.prototype.setValueAtTime = function(value, time){
-		value = this._fromUnits(value);
-		time = this.toSeconds(time);
-		if (time <= this.now() + this.blockTime){
-			this._param.value = value;
-		} else {
-			this._param.setValueAtTime(value, time);
-		}
+		this._param.setValueAtTime(this._fromUnits(value), this.toSeconds(time));
 		return this;
 	};
 
