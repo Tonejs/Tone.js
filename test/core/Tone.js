@@ -22,6 +22,23 @@ define(["Test", "Tone/core/Tone", "helper/PassAudio", "Tone/source/Oscillator",
 			Test.wasDisposed(t);
 		});
 
+		it("reports the number of inputs and outputs", function(){
+			var t0 = new Tone();
+			t0.createInsOuts(1, 2);
+			expect(t0.numberOfInputs).to.equal(1);
+			expect(t0.numberOfOutputs).to.equal(2);
+			t0.dispose();
+			var t1 = new Tone();
+			t1.createInsOuts(2, 1);
+			expect(t1.numberOfInputs).to.equal(2);
+			expect(t1.numberOfOutputs).to.equal(1);
+			t1.dispose();
+			var t2 = new Tone();
+			expect(t2.numberOfInputs).to.equal(0);
+			expect(t2.numberOfOutputs).to.equal(0);
+			t2.dispose();
+		});
+
 		context("Unit Conversions", function(){
 			it("can convert gain to db", function(){
 				expect(Tone.gainToDb(0)).to.equal(-Infinity);
@@ -97,6 +114,22 @@ define(["Test", "Tone/core/Tone", "helper/PassAudio", "Tone/source/Oscillator",
 				expect(Tone.isString(true)).to.be.false;
 				expect(Tone.isString("false")).to.be.true;
 				expect(Tone.isString("thanks")).to.be.true;
+			});
+
+			it("can test if an argument is a note", function(){
+				expect(Tone.isNote(undefined)).to.be.false;
+				expect(Tone.isNote(function(){})).to.be.false;
+				expect(Tone.isNote(Tone)).to.be.false;
+				expect(Tone.isNote("Cb2")).to.be.true;
+				expect(Tone.isNote("10")).to.be.false;
+				expect(Tone.isNote("C4")).to.be.true;
+				expect(Tone.isNote("D4")).to.be.true;
+				expect(Tone.isNote("Db4")).to.be.true;
+				expect(Tone.isNote("E4")).to.be.true;
+				expect(Tone.isNote("F2")).to.be.true;
+				expect(Tone.isNote("Gb-1")).to.be.true;
+				expect(Tone.isNote("A#10")).to.be.true;
+				expect(Tone.isNote("Bb2")).to.be.true;
 			});
 		});
 
@@ -233,6 +266,19 @@ define(["Test", "Tone/core/Tone", "helper/PassAudio", "Tone/source/Oscillator",
 				Tone.context = ctx;
 				expect(Tone.context).to.equal(ctx);
 				expect(Tone.prototype.context).to.equal(ctx);
+				//then set it back
+				Tone.setContext(origCtx);
+				expect(Tone.context).to.equal(origCtx);
+				expect(Tone.prototype.context).to.equal(origCtx);
+				ctx.dispose();
+			});
+
+			it ("new context can be a raw audio context", function(){
+				var origCtx = Tone.context;
+				var ctx = new AudioContext();
+				Tone.context = ctx;
+				//wraps it in a Tone.Context
+				expect(Tone.context).to.be.instanceOf(Context);
 				//then set it back
 				Tone.setContext(origCtx);
 				expect(Tone.context).to.equal(origCtx);
