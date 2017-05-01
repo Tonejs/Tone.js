@@ -295,7 +295,7 @@ define(function(){
 	 *  @returns {Tone} this
 	 */
 	Tone.prototype.connect = function(unit, outputNum, inputNum){
-		if (Array.isArray(this.output)){
+		if (Tone.isArray(this.output)){
 			outputNum = Tone.defaultArg(outputNum, 0);
 			this.output[outputNum].connect(unit, 0, inputNum);
 		} else {
@@ -480,6 +480,16 @@ define(function(){
 	 */
 	Tone.isString = function(arg){
 		return (typeof arg === "string");
+	};
+
+	/**
+	 *  Test if the argument is in the form of a note in scientific pitch notation.
+	 *  e.g. "C4"
+	 *  @param {*} arg the argument to test
+	 *  @returns {boolean} true if the arg is a string
+	 */
+	Tone.isNote = function(arg){
+		return Tone.isString(arg) && /^([a-g]{1}(?:b|#|x|bb)?)(-?[0-9]+)/i.test(arg);
 	};
 
  	/**
