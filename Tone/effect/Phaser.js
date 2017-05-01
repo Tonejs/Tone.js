@@ -132,7 +132,7 @@ function(Tone){
 			connectToFreq.connect(filter.frequency);
 			filters[i] = filter;
 		}
-		this.connectSeries.apply(this, filters);
+		Tone.connectSeries.apply(Tone, filters);
 		return filters;
 	};
 

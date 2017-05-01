@@ -159,7 +159,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 			}
 			//connect them up
 			var connectionChain = [this.input].concat(this._filters).concat([this.output]);
-			this.connectSeries.apply(this, connectionChain);
+			Tone.connectSeries.apply(Tone, connectionChain);
 		}
 	});
 

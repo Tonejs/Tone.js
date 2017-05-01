@@ -106,8 +106,8 @@ function(Tone){
 		}
 
 		//chain the allpass filters togetehr
-		this.connectSeries.apply(this, this._allpassFiltersL);
-		this.connectSeries.apply(this, this._allpassFiltersR);
+		Tone.connectSeries.apply(Tone, this._allpassFiltersL);
+		Tone.connectSeries.apply(Tone, this._allpassFiltersR);
 		this._allpassFiltersL[this._allpassFiltersL.length - 1].connect(this.effectReturnL);
 		this._allpassFiltersR[this._allpassFiltersR.length - 1].connect(this.effectReturnR);
 		this._readOnly(["roomSize", "dampening"]);
