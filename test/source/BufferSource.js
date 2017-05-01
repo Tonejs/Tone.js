@@ -295,9 +295,9 @@ define(["helper/Basic", "Tone/source/BufferSource", "helper/Offline",
 					};
 				}, 0.4).then(function(buffer){
 					buffer.forEach(function(level, time){
-						if (time >= 0 && time < 0.1){
+						if (time >= 0 && time < 0.09){
 							expect(level).to.be.greaterThan(0);
-						} else if (time > 0.3){
+						} else if (time > 0.1){
 							expect(level).to.equal(0);
 						}
 					});
@@ -316,7 +316,7 @@ define(["helper/Basic", "Tone/source/BufferSource", "helper/Offline",
 					};
 				}, 0.4).then(function(buffer){
 					buffer.forEach(function(level, time){
-						if (time >= 0 && time < 0.1){
+						if (time >= 0 && time < 0.09){
 							expect(level).to.be.greaterThan(0);
 						} else if (time > 0.11){
 							expect(level).to.equal(0);
@@ -355,7 +355,7 @@ define(["helper/Basic", "Tone/source/BufferSource", "helper/Offline",
 					player.start(0, 0, undefined, 1, 0.1).stop(0.05);
 				}, 0.2).then(function(buffer){
 					buffer.forEach(function(level, time){
-						if (time >= 0 && time < 0.1){
+						if (time >= 0 && time < 0.09){
 							expect(level).to.be.greaterThan(0);
 						} else if (time > 0.1){
 							expect(level).to.equal(0);
@@ -370,7 +370,7 @@ define(["helper/Basic", "Tone/source/BufferSource", "helper/Offline",
 					player.start(0).stop(0.1);
 				}, 0.6).then(function(rms){
 					rms.forEach(function(level, time){
-						if (time > 0.01 && time < 0.1){
+						if (time > 0.01 && time < 0.09){
 							expect(level).to.be.gt(0);
 						} else if (time > 0.11){
 							expect(level).to.equal(0);
@@ -385,7 +385,7 @@ define(["helper/Basic", "Tone/source/BufferSource", "helper/Offline",
 					player.start(0).stop(0.1, 0.1);
 				}, 0.6).then(function(rms){
 					rms.forEach(function(level, time){
-						if (time > 0.01 && time < 0.2){
+						if (time > 0.01 && time < 0.19){
 							expect(level).to.be.gt(0);
 						} else if (time > 0.21){
 							expect(level).to.equal(0);
