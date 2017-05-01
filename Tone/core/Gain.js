@@ -89,7 +89,7 @@ define(["Tone/core/Tone", "Tone/core/Param", "Tone/type/Type"], function (Tone) 
 		if (outputs === 1){
 			this.output = new Tone.Gain();
 		} else if (outputs > 1){
-			this.output = new Array(inputs);
+			this.output = new Array(outputs);
 		}
 	};
 
