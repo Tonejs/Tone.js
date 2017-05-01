@@ -340,6 +340,7 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/core/Timeline"], function (
 						this._context.latencyHint = hint;
 						break;
 					case "fastest" :
+						this._context.latencyHint = "interactive";
 						lookAhead = 0.01;
 						break;
 				}
