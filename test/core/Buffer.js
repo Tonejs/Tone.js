@@ -29,6 +29,14 @@ define(["Test", "Tone/core/Buffer", "Tone/core/Tone"], function (Test, Buffer, T
 			});
 		});
 
+		it("can be constructed with no arguments", function(){
+			var buffer = new Buffer();
+			expect(buffer.length).to.equal(0);
+			expect(buffer.duration).to.equal(0);
+			expect(buffer.numberOfChannels).to.equal(0);
+			buffer.dispose();
+		});
+
 		it("can get the number of channels", function(done){
 			var buffer = new Buffer(testFile, function(){
 				expect(buffer.numberOfChannels).to.be.equal(1);
@@ -188,7 +196,18 @@ define(["Test", "Tone/core/Buffer", "Tone/core/Tone"], function (Test, Buffer, T
 			expect(buffer.duration).to.equal(0.5);
 			expect(buffer.numberOfChannels).to.equal(1);
 			//test the first sample of the first channel to see if it's the same
-			expect(buffer.get().getChannelData(0)[0]).to.equal(0.5);
+			expect(buffer.toArray(0)[0]).to.equal(0.5);
+			buffer.dispose();
+		});
+
+		it("can create a buffer from an array using the static method", function(){
+			var arr = new Float32Array(0.5 * Tone.context.sampleRate);
+			arr[0] = 0.5;
+			var buffer = Buffer.fromArray(arr);
+			expect(buffer.duration).to.equal(0.5);
+			expect(buffer.numberOfChannels).to.equal(1);
+			//test the first sample of the first channel to see if it's the same
+			expect(buffer.toArray(0)[0]).to.equal(0.5);
 			buffer.dispose();
 		});
 
@@ -199,7 +218,7 @@ define(["Test", "Tone/core/Buffer", "Tone/core/Tone"], function (Test, Buffer, T
 			buffer.fromArray(arr);
 			expect(buffer.duration).to.equal(0.5);
 			expect(buffer.numberOfChannels).to.equal(2);
-			expect(buffer.get().getChannelData(0)[0]).to.equal(0.5);
+			expect(buffer.toArray(0)[0]).to.equal(0.5);
 			buffer.dispose();
 		});
 
@@ -208,7 +227,7 @@ define(["Test", "Tone/core/Buffer", "Tone/core/Tone"], function (Test, Buffer, T
 			var arr = [new Float32Array(0.5 * buffer.context.sampleRate), new Float32Array(0.5 * buffer.context.sampleRate)];
 			arr[0][0] = 0.5;
 			buffer.fromArray(arr);
-			expect(buffer.get().getChannelData(0)[0]).to.equal(0.5);
+			expect(buffer.toArray(0)[0]).to.equal(0.5);
 			expect(buffer.toArray()[0][0]).to.equal(0.5);
 			//with a selected channel
 			expect(buffer.toArray(0)[0]).to.equal(0.5);

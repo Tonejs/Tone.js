@@ -235,12 +235,9 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type"], function(Tone)
 	});
 
 	/**
-	 *  Set the audio buffer from the array
+	 *  Set the audio buffer from the array. To create a multichannel AudioBuffer,
+	 *  pass in a multidimensional array. 
 	 *  @param {Float32Array} array The array to fill the audio buffer
-	 *  @param {Number} [channels=1] The number of channels contained in the array. 
-	 *                               If the channel is more than 1, the input array
-	 *                               is expected to be a multidimensional array
-	 *                               with dimensions equal to the number of channels.
 	 *  @return {Tone.Buffer} this
 	 */
 	Tone.Buffer.prototype.fromArray = function(array){
@@ -392,6 +389,16 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type"], function(Tone)
 	 *  @static
 	 */
 	Tone.Buffer.baseUrl = "";
+
+	/**
+	 *  Create a Tone.Buffer from the array. To create a multichannel AudioBuffer,
+	 *  pass in a multidimensional array. 
+	 *  @param {Float32Array} array The array to fill the audio buffer
+	 *  @return {Tone.Buffer} A Tone.Buffer created from the array
+	 */
+	Tone.Buffer.fromArray = function(array){
+		return (new Tone.Buffer()).fromArray(array);
+	};
 
 	/**
 	 *  Loads a url using XMLHttpRequest.
