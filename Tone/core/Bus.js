@@ -19,7 +19,7 @@ define(["Tone/core/Tone", "Tone/core/Gain"], function(Tone){
 
 	/**
 	 *  Send this signal to the channel name. 
-	 *  @param  {string} channelName A named channel to send the signal to.
+	 *  @param  {String} channelName A named channel to send the signal to.
 	 *  @param  {Decibels} amount The amount of the source to send to the bus. 
 	 *  @return {GainNode} The gain node which connects this node to the desired channel. 
 	 *                     Can be used to adjust the levels of the send.
@@ -39,22 +39,17 @@ define(["Tone/core/Tone", "Tone/core/Gain"], function(Tone){
 	/**
 	 *  Recieve the input from the desired channelName to the input
 	 *
-	 *  @param  {string} channelName A named channel to send the signal to.
-	 *  @param {AudioNode} [input] If no input is selected, the
-	 *                                         input of the current node is
-	 *                                         chosen. 
+	 *  @param  {String} channelName A named channel to send the signal to.
+	 *  @param  {Number=} channelNumber The channel to connect to
 	 *  @returns {Tone} this
 	 *  @example
 	 * reverbEffect.receive("reverb");
 	 */
-	Tone.prototype.receive = function(channelName, input){
+	Tone.prototype.receive = function(channelName, inputNum){
 		if (!Buses.hasOwnProperty(channelName)){
 			Buses[channelName] = this.context.createGain();	
 		}
-		if (Tone.isUndef(input)){
-			input = this.input;
-		}
-		Buses[channelName].connect(input);
+		Buses[channelName].connect(this, 0, inputNum);
 		return this;
 	};
 
