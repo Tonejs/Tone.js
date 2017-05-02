@@ -136,9 +136,46 @@ define(["helper/Basic", "Tone/source/Player", "helper/Offline",
 					player.loop = true;
 					player.toMaster();
 					player.start(0);
-				}).then(function(rms){
+				}, buffer.duration * 1.5).then(function(rms){
 					rms.forEach(function(level){
 						expect(level).to.be.above(0);
+					});
+				});
+			});
+
+			it("offset is the loopStart when set to loop", function(){
+				var testSample = buffer.toArray()[Math.floor(0.1 * buffer.context.sampleRate)];
+				return Offline(function(){
+					var player = new Player(buffer);
+					player.loopStart = 0.1;
+					player.loop = true;
+					player.toMaster();
+					player.start(0);
+				}, 0.05).then(function(buffer){
+					expect(buffer.toArray()[0]).to.equal(testSample);
+				});
+			});
+
+			it ("correctly compensates if the offset is greater than the loopEnd", function(){
+				return Offline(function(){
+					//make a ramp between 0-1
+					var ramp = new Float32Array(Math.floor(Tone.context.sampleRate * 0.3));
+					for (var i = 0; i < ramp.length; i++){
+						ramp[i] = (i / (ramp.length)) * 0.3;
+					}
+					var buff = Buffer.fromArray(ramp);
+					var player = new Player(buff).toMaster();
+					player.loopStart = 0.1;
+					player.loopEnd = 0.2;
+					player.loop = true;
+					player.start(0, 0.35);
+				}, 0.05).then(function(buffer){
+					buffer.forEach(function(sample, time){
+						if (time < 0.04){
+							expect(sample).to.be.within(0.15, 0.2);
+						} else if (time > 0.05 && time < 0.09){
+							expect(sample).to.be.within(0.1, 0.15);
+						}
 					});
 				});
 			});
@@ -251,30 +288,6 @@ define(["helper/Basic", "Tone/source/Player", "helper/Offline",
 				});
 			});
 
-			it ("correctly compensates if the offset is greater than the loopEnd", function(){
-				return Offline(function(){
-					//make a ramp between 0-1
-					var ramp = new Float32Array(Math.floor(Tone.context.sampleRate * 0.3));
-					for (var i = 0; i < ramp.length; i++){
-						ramp[i] = (i / (ramp.length)) * 0.3;
-					}
-					var buff = new Buffer().fromArray(ramp);
-					var player = new Player(buff).toMaster();
-					player.loopStart = 0.1;
-					player.loopEnd = 0.2;
-					player.loop = true;
-					player.start(0, 0.35);
-				}, 0.3).then(function(buffer){
-					buffer.forEach(function(sample, time){
-						if (time < 0.04){
-							expect(sample).to.be.within(0.15, 0.2);
-						} else if (time > 0.05 && time < 0.09){
-							expect(sample).to.be.within(0.1, 0.15);
-						}
-					});
-				});
-			});
-
 			it("can be play for a specific duration", function(){
 				return Offline(function(){
 					var player = new Player(buffer);
@@ -326,6 +339,16 @@ define(["helper/Basic", "Tone/source/Player", "helper/Offline",
 							expect(player.state).to.equal("started");
 						});
 					};
+				}, buffer.duration * 1.1);
+			});
+
+			it("offsets correctly when started by the Transport", function(){
+				var testSample = buffer.toArray()[Math.floor(0.13125 * buffer.context.sampleRate)];
+				return Offline(function(Transport){
+					var player = new Player(buffer).sync().start(0, 0.1).toMaster();
+					Transport.start(0, 0.03125);
+				}, 0.05).then(function(buffer){
+					expect(buffer.toArray()[0]).to.equal(testSample);
 				});
 			});
 		});

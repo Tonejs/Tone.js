@@ -36,9 +36,15 @@ define(["helper/Basic", "Tone/source/BufferSource", "helper/Offline",
 			it("can be created with an options object", function(){
 				var source = new BufferSource({
 					"buffer" : buffer,
-					"loop" : true
+					"loop" : true,
+					"loopEnd" : 0.2,
+					"loopStart" : 0.1,
+					"playbackRate" : 0.5
 				});
 				expect(source.loop).to.equal(true);
+				expect(source.loopEnd).to.equal(0.2);
+				expect(source.loopStart).to.equal(0.1);
+				expect(source.playbackRate.value).to.equal(0.5);
 				source.dispose();
 			});
 
@@ -123,6 +129,19 @@ define(["helper/Basic", "Tone/source/BufferSource", "helper/Offline",
 					player.start(0);
 				}, 0.05).then(function(buffer){
 					expect(buffer.toArray()[0]).to.equal(offsetSample);
+				});
+			});
+
+			it("the offset is modulo the loopDuration", function(){
+				var testSample = buffer.toArray()[Math.floor(0.05 * buffer.context.sampleRate)];
+				return Offline(function(){
+					var player = new BufferSource(buffer).toMaster();
+					player.loop = true;
+					player.loopStart = 0;
+					player.loopEnd = 0.1;
+					player.start(0, 0.35);
+				}, 0.05).then(function(buffer){
+					expect(buffer.toArray()[0]).to.be.closeTo(testSample, 1e-4);
 				});
 			});
 

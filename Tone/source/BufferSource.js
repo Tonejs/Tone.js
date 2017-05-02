@@ -97,6 +97,9 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/G
 		this._onendedTimeout = -1;
 
 		this.loop = options.loop;
+		this.loopStart = options.loopStart;
+		this.loopEnd = options.loopEnd;
+		this.playbackRate.value = options.playbackRate;
 	};
 
 	Tone.extend(Tone.BufferSource);
@@ -109,8 +112,12 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/G
 	Tone.BufferSource.defaults = {
 		"onended" : Tone.noOp,
 		"onload" : Tone.noOp,
+		"loop" : false,
+		"loopStart" : 0,
+		"loopEnd" : 0,
 		"fadeIn" : 0,
-		"fadeOut" : 0
+		"fadeOut" : 0,
+		"playbackRate" : 1
 	};
 
 	/**
@@ -161,9 +168,6 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/G
 			//the values in seconds
 			time = this.toSeconds(time);
 
-			this._source.buffer = this.buffer.get();
-			this._source.start(time, offset);
-
 			gain = Tone.defaultArg(gain, 1);
 			this._gain = gain;
 
@@ -185,6 +189,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/G
 
 			var computedDur = Tone.defaultArg(duration, this.buffer.duration - offset);
 			computedDur = this.toSeconds(computedDur);
+			computedDur = Math.max(computedDur, 0);
 
 			if (!this.loop || (this.loop && !Tone.isUndef(duration))){
 				//clip the duration when not looping
@@ -193,6 +198,20 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/G
 				}
 				this.stop(time + computedDur + fadeInTime, fadeInTime);
 			}
+
+			//start the buffer source
+			if (this.loop){
+				//modify the offset if it's greater than the loop time
+				var loopEnd = this.loopEnd || this.buffer.duration;
+				var loopStart = this.loopStart;
+				var loopDuration = loopEnd - loopStart;
+				//move the offset back
+				while (offset > loopEnd){
+					offset -= loopDuration;
+				}
+			}
+			this._source.buffer = this.buffer.get();
+			this._source.start(time, offset);
 		} else {
 			throw new Error("Tone.BufferSource: buffer is either not set or not loaded.");
 		}
