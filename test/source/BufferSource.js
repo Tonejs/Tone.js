@@ -53,6 +53,14 @@ define(["helper/Basic", "Tone/source/BufferSource", "helper/Offline",
 				source.dispose();
 			});
 
+			it ("can set the buffer after construction", function(){
+				var source = new BufferSource();
+				expect(source.buffer.loaded).to.be.false;
+				source.buffer = buffer;
+				expect(source.buffer.loaded).to.be.true;
+				source.dispose();
+			});
+
 			it ("can be constructed with a url and onload", function(done){
 				var source = new BufferSource("./audio/short_sine.wav", function(){
 					expect(source.buffer.loaded).to.be.true;
