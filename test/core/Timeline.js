@@ -75,6 +75,20 @@ define(["Test", "Tone/core/Timeline"], function (Test, Timeline) {
 			sched.dispose();
 		});
 
+		it ("has no effect to remove an object which is not there", function(){
+			var sched = new Timeline();
+			sched.add({
+				"time" : 2
+			});
+			sched.remove({});
+			expect(sched.length).to.equal(1);
+			sched.forEach(function(event){
+				sched.remove({});
+			});
+			expect(sched.length).to.equal(1);
+			sched.dispose();
+		});
+
 
 		it ("can search for events in the timeline by time", function(){
 			var sched = new Timeline();
