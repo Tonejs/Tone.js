@@ -257,7 +257,7 @@ define(["Tone/core/Tone"], function (Tone) {
 			} else if (event.time > time){
 				//search lower
 				end = midPoint;
-			} else if (event.time < time){
+			} else {
 				//search upper
 				beginning = midPoint + 1;
 			} 
