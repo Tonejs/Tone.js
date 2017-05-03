@@ -196,6 +196,23 @@ define(["helper/Basic", "Tone/source/Player", "helper/Offline",
 				player.dispose();
 			});
 
+			it("can set attributes after player is started", function(){
+				var player = new Player(buffer);
+				expect(player.loop).to.be.false;
+				player.start()
+				player.set({
+					"loopStart" : 0.2,
+					"loopEnd" : 0.3,
+					"loop" : true,
+					"playbackRate" : 0.9
+				});
+				expect(player.loop).to.be.true;
+				expect(player.loopStart).to.equal(0.2);
+				expect(player.loopEnd).to.equal(0.3);
+				expect(player.playbackRate).to.equal(0.9);
+				player.dispose();
+			});
+
 			it("can get an options object", function(){
 				var player = new Player({
 					"url" : "./audio/sine.wav",
