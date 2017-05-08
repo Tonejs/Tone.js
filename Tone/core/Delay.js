@@ -31,7 +31,7 @@ define(["Tone/core/Tone", "Tone/core/Param"], function (Tone) {
 		/**
 		 *  The amount of time the incoming signal is
 		 *  delayed. 
-		 *  @type {Tone.Param}
+		 *  @type {Time}
 		 *  @signal
 		 */
 		this.delayTime = new Tone.Param({
