@@ -11,7 +11,7 @@ define(["Tone/core/Tone", "Tone/core/Context"], function (Tone) {
 
 	/**
 	 *  @class Wrapper around the OfflineAudioContext
-	 *  @extends {Tone.Context
+	 *  @extends {Tone.Context}
 	 *  @param  {Number}  channels  The number of channels to render
 	 *  @param  {Number}  duration  The duration to render in samples
 	 *  @param {Number} sampleRate the sample rate to render at
