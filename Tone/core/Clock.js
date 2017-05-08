@@ -193,10 +193,26 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal", "Tone/core/TimelineState
 			if (this.frequency){
 				this._nextTick += 1 / this.frequency.getValueAtTime(this._nextTick);
 				if (currentState === Tone.State.Started){
-					this.callback(tickTime);
+					var error = this._tryCallback(tickTime);
 					this.ticks++;
+					if (error){
+						throw new Error(error);
+					}
 				}
 			}
+		}
+	};
+
+	/**
+	 * Invoke the callback with a try/catch block
+	 * @param  {Time} time The time to invoke the callback
+	 * @private
+	 */
+	Tone.Clock.prototype._tryCallback = function(time){
+		try {
+			this.callback(time);
+		} catch(e){
+			return e;
 		}
 	};
 
