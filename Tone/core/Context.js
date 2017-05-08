@@ -297,7 +297,7 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/core/Timeline"], function (
 			return this._updateInterval;
 		},
 		set : function(interval){
-			this._updateInterval = Math.max(interval, Tone.prototype.blockTime);
+			this._updateInterval = Math.max(interval, Tone.blockTime);
 			this._worker.postMessage(Math.max(interval * 1000, 1));
 		}
 	});
