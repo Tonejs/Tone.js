@@ -272,17 +272,6 @@ define(["Test", "Tone/core/Clock", "helper/Offline"],
 				});
 			});
 
-			it ("recovers even when an error is thrown in the callback", function(done){
-				try {
-					Offline(function(){
-						var clock = new Clock(function(time){
-							throw new Error("error!");
-						}, 10).start();
-					}, 0.21);
-				} catch(e){
-					done();
-				}
-			});
 		});
 
 		context("Events", function(){
