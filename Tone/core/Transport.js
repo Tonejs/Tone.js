@@ -362,6 +362,7 @@ function(Tone){
 
 	/**
 	 *  Bind start/stop/pause events from the clock and emit them.
+	 *  @private
 	 */
 	Tone.Transport.prototype._bindClockEvents = function(){
 		this._clock.on("start", function(time, offset){
