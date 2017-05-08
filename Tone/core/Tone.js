@@ -665,6 +665,7 @@ define(function(){
 	 *  The number of inputs feeding into the AudioNode. 
 	 *  For source nodes, this will be 0.
 	 *  @memberOf Tone#
+	 *  @type {Number}
 	 *  @name numberOfInputs
 	 *  @readOnly
 	 */
@@ -686,6 +687,7 @@ define(function(){
 	 *  The number of outputs coming out of the AudioNode. 
 	 *  For source nodes, this will be 0.
 	 *  @memberOf Tone#
+	 *  @type {Number}
 	 *  @name numberOfInputs
 	 *  @readOnly
 	 */
