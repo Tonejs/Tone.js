@@ -22,6 +22,7 @@ define(function(){
 	};
 
 	/**
+	 *  @memberOf Tone#
 	 *  @returns {string} returns the name of the class as a string
 	 */
 	Tone.prototype.toString = function(){
@@ -36,6 +37,7 @@ define(function(){
 	};
 
 	/**
+	 *  @memberOf Tone#
 	 *  disconnect and dispose
 	 *  @returns {Tone} this
 	 */
@@ -70,6 +72,7 @@ define(function(){
 	 *  @param {number=} value
 	 *  @param {Time=} rampTime
 	 *  @returns {Tone} this
+	 *  @memberOf Tone#
 	 *  @example
 	 * //set values using an object
 	 * filter.set({
@@ -142,6 +145,7 @@ define(function(){
 	 *  values. Pass in a single attribute to retrieve or an array
 	 *  of attributes. The attribute strings can also include a "."
 	 *  to access deeper properties.
+	 *  @memberOf Tone#
 	 *  @example
 	 * osc.get();
 	 * //returns {"type" : "sine", "frequency" : 440, ...etc}
@@ -223,6 +227,7 @@ define(function(){
 	///////////////////////////////////////////////////////////////////////////
 
 	/**
+	 *  @memberOf Tone
 	 *  @param  {Array}  values  The arguments array
 	 *  @param  {Array}  keys    The names of the arguments
 	 *  @param {Function} constr The class constructor
@@ -254,7 +259,7 @@ define(function(){
 	 *  <br><br>
 	 *  WARNING: if object is self referential, it will go into an an 
 	 *  infinite recursive loop.
-	 *  
+	 *  @memberOf Tone
 	 *  @param  {*} given    
 	 *  @param  {*} fallback 
 	 *  @return {*}          
@@ -285,6 +290,7 @@ define(function(){
 	 *  @param {number} [outputNum=0] optionally which output to connect from
 	 *  @param {number} [inputNum=0] optionally which input to connect to
 	 *  @returns {Tone} this
+	 *  @memberOf Tone#
 	 */
 	Tone.prototype.connect = function(unit, outputNum, inputNum){
 		if (Tone.isArray(this.output)){
@@ -302,6 +308,7 @@ define(function(){
 	 *                                   if the output is an array, or the
 	 *                                   node to disconnect from.
 	 *  @returns {Tone} this
+	 *  @memberOf Tone#
 	 */
 	Tone.prototype.disconnect = function(destination, outputNum, inputNum){
 		if (Tone.isArray(this.output)){
@@ -323,6 +330,7 @@ define(function(){
 	 *  node.chain(effect, panVol, Tone.Master);
 	 *  @param {...AudioParam|Tone|AudioNode} nodes
 	 *  @returns {Tone} this
+	 *  @memberOf Tone#
 	 */
 	Tone.prototype.chain = function(){
 		var currentUnit = this;
@@ -338,6 +346,7 @@ define(function(){
 	 *  connect the output of this node to the rest of the nodes in parallel.
 	 *  @param {...AudioParam|Tone|AudioNode} nodes
 	 *  @returns {Tone} this
+	 *  @memberOf Tone#
 	 */
 	Tone.prototype.fan = function(){
 		for (var i = 0; i < arguments.length; i++){
@@ -350,6 +359,7 @@ define(function(){
 	 *  connect together all of the arguments in series
 	 *  @param {...AudioParam|Tone|AudioNode} nodes
 	 *  @returns {Tone}
+	 *  @memberOf Tone
 	 *  @static
 	 */
 	Tone.connectSeries = function(){
@@ -376,6 +386,7 @@ define(function(){
 	 *  @param {*} arg the argument to test
 	 *  @returns {boolean} true if the arg is undefined
 	 *  @static
+	 *  @memberOf Tone
 	 */
 	Tone.isUndef = function(val){
 		return typeof val === "undefined";
@@ -386,6 +397,7 @@ define(function(){
 	 *  @param {*} arg the argument to test
 	 *  @returns {boolean} true if the arg is a function
 	 *  @static
+	 *  @memberOf Tone
 	 */
 	Tone.isFunction = function(val){
 		return typeof val === "function";
@@ -396,6 +408,7 @@ define(function(){
 	 *  @param {*} arg the argument to test
 	 *  @returns {boolean} true if the arg is a number
 	 *  @static
+	 *  @memberOf Tone
 	 */
 	Tone.isNumber = function(arg){
 		return (typeof arg === "number");
@@ -406,6 +419,7 @@ define(function(){
 	 *  @param {*} arg the argument to test
 	 *  @returns {boolean} true if the arg is an object literal.
 	 *  @static
+	 *  @memberOf Tone
 	 */
 	Tone.isObject = function(arg){
 		return (Object.prototype.toString.call(arg) === "[object Object]" && arg.constructor === Object);
@@ -416,6 +430,7 @@ define(function(){
 	 *  @param {*} arg the argument to test
 	 *  @returns {boolean} true if the arg is a boolean
 	 *  @static
+	 *  @memberOf Tone
 	 */
 	Tone.isBoolean = function(arg){
 		return (typeof arg === "boolean");
@@ -426,6 +441,7 @@ define(function(){
 	 *  @param {*} arg the argument to test
 	 *  @returns {boolean} true if the arg is an array
 	 *  @static
+	 *  @memberOf Tone
 	 */
 	Tone.isArray = function(arg){
 		return (Array.isArray(arg));
@@ -436,6 +452,7 @@ define(function(){
 	 *  @param {*} arg the argument to test
 	 *  @returns {boolean} true if the arg is a string
 	 *  @static
+	 *  @memberOf Tone
 	 */
 	Tone.isString = function(arg){
 		return (typeof arg === "string");
@@ -447,6 +464,7 @@ define(function(){
 	 *  @param {*} arg the argument to test
 	 *  @returns {boolean} true if the arg is a string
 	 *  @static
+	 *  @memberOf Tone
 	 */
 	Tone.isNote = function(arg){
 		return Tone.isString(arg) && /^([a-g]{1}(?:b|#|x|bb)?)(-?[0-9]+)/i.test(arg);
@@ -511,6 +529,8 @@ define(function(){
 	 *  Equal power gain scale. Good for cross-fading.
 	 *  @param  {NormalRange} percent (0-1)
 	 *  @return {Number}         output gain (0-1)
+	 *  @static
+	 *  @memberOf Tone
 	 */
 	Tone.equalPowerScale = function(percent){
 		var piFactor = 0.5 * Math.PI;
@@ -521,7 +541,8 @@ define(function(){
 	 *  Convert decibels into gain.
 	 *  @param  {Decibels} db
 	 *  @return {Number} 
-	 *  @static  
+	 *  @static 
+	 *  @memberOf Tone 
 	 */
 	Tone.dbToGain = function(db) {
 		return Math.pow(2, db / 6);
@@ -532,6 +553,7 @@ define(function(){
 	 *  @param  {Number} gain (0-1)
 	 *  @return {Decibels}   
 	 *  @static
+	 *  @memberOf Tone
 	 */
 	Tone.gainToDb = function(gain) {
 		return  20 * (Math.log(gain) / Math.LN10);
@@ -541,6 +563,8 @@ define(function(){
 	 *  Convert an interval (in semitones) to a frequency ratio.
 	 *  @param  {Interval} interval the number of semitones above the base note
 	 *  @return {number}          the frequency ratio
+	 *  @static
+	 *  @memberOf Tone
 	 *  @example
 	 * tone.intervalToFrequencyRatio(0); // 1
 	 * tone.intervalToFrequencyRatio(12); // 2
@@ -557,6 +581,7 @@ define(function(){
 	/**
 	 *  Return the current time of the AudioContext clock.
 	 *  @return {Number} the currentTime from the AudioContext
+	 *  @memberOf Tone#
 	 */
 	Tone.prototype.now = function(){
 		return Tone.context.now();
@@ -566,6 +591,7 @@ define(function(){
 	 *  Return the current time of the AudioContext clock.
 	 *  @return {Number} the currentTime from the AudioContext
 	 *  @static
+	 *  @memberOf Tone
 	 */
 	Tone.now = function(){
 		return Tone.context.now();
@@ -582,6 +608,7 @@ define(function(){
 	 *
 	 *  based on closure library's inherit function
 	 *
+	 *  @memberOf Tone
 	 *  @static
 	 *  @param  {function} 	child  
 	 *  @param  {function=} parent (optional) parent to inherit from
@@ -685,10 +712,9 @@ define(function(){
 
 	/**
 	 *  The number of outputs coming out of the AudioNode. 
-	 *  For source nodes, this will be 0.
 	 *  @memberOf Tone#
 	 *  @type {Number}
-	 *  @name numberOfInputs
+	 *  @name numberOfOutputs
 	 *  @readOnly
 	 */
 	Object.defineProperty(Tone.prototype, "numberOfOutputs", {
@@ -709,12 +735,13 @@ define(function(){
 	 *  The number of seconds of 1 processing block (128 samples)
 	 *  @type {Number}
 	 *  @name blockTime
-	 *  @memberOf Tone#
+	 *  @memberOf Tone
+	 *  @static
 	 *  @readOnly
 	 */
-	Object.defineProperty(Tone.prototype, "blockTime", {
+	Object.defineProperty(Tone, "blockTime", {
 		get : function(){
-			return 128 / this.context.sampleRate;
+			return 128 / Tone.context.sampleRate;
 		}
 	});
 
@@ -722,12 +749,13 @@ define(function(){
 	 *  The duration in seconds of one sample.
 	 *  @type {Number}
 	 *  @name sampleTime
-	 *  @memberOf Tone#
+	 *  @memberOf Tone
+	 *  @static
 	 *  @readOnly
 	 */
-	Object.defineProperty(Tone.prototype, "sampleTime", {
+	Object.defineProperty(Tone, "sampleTime", {
 		get : function(){
-			return 1 / this.context.sampleRate;
+			return 1 / Tone.context.sampleRate;
 		}
 	});
 

@@ -222,7 +222,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/G
 			this._stopTime = time + fadeOutTime;
 
 			//cancel the end curve
-			this._gainNode.gain.cancelScheduledValues(this._startTime + this.sampleTime);
+			this._gainNode.gain.cancelScheduledValues(this._startTime + Tone.sampleTime);
 			time = Math.max(this._startTime, time);
 
 			//set a new one

@@ -71,7 +71,7 @@ define(["Tone/core/Tone", "Tone/type/Type"], function(Tone){
 	 */
 	Tone.Instrument.prototype.triggerAttackRelease = function(note, duration, time, velocity){
 		if (Tone.isUndef(time)){
-			time = this.now() + this.blockTime;
+			time = this.now() + Tone.blockTime;
 		} else {
 			time = this.toSeconds(time);
 		}

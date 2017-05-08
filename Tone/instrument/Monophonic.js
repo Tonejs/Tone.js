@@ -53,7 +53,7 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/signal/Signal"], f
 	 */
 	Tone.Monophonic.prototype.triggerAttack = function(note, time, velocity) {
 		if (Tone.isUndef(time)){
-			time = this.now() + this.blockTime;
+			time = this.now() + Tone.blockTime;
 		} else {
 			time = this.toSeconds(time);
 		}
@@ -71,7 +71,7 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/signal/Signal"], f
 	 */
 	Tone.Monophonic.prototype.triggerRelease = function(time){
 		if (Tone.isUndef(time)){
-			time = this.now() + this.blockTime;
+			time = this.now() + Tone.blockTime;
 		} else {
 			time = this.toSeconds(time);
 		}

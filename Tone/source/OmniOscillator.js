@@ -211,7 +211,7 @@ function(Tone){
 			this._sourceType = oscType;
 			var OscillatorConstructor = Tone[oscType];
 			//short delay to avoid clicks on the change
-			var now = this.now() + this.blockTime;
+			var now = this.now() + Tone.blockTime;
 			if (this._oscillator !== null){
 				var oldOsc = this._oscillator;
 				oldOsc.stop(now);
@@ -219,7 +219,7 @@ function(Tone){
 				setTimeout(function(){
 					oldOsc.dispose();
 					oldOsc = null;
-				}, this.blockTime * 1000);
+				}, Tone.blockTime * 1000);
 			}
 			this._oscillator = new OscillatorConstructor();
 			this.frequency.connect(this._oscillator.frequency);
