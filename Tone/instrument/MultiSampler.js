@@ -17,7 +17,7 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/core/Buffers", "To
 	 * 	sampler.triggerAttack("D3")
 	 * })
 	 */
-	Tone.MultiSampler = function(urls, onload, baseUrl){
+	Tone.MultiSampler = function(urls){
 
 		// shift arguments over one. Those are the remainder of the options
 		var args = Array.prototype.slice.call(arguments);
@@ -143,7 +143,7 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/core/Buffers", "To
 		var midi = Tone.Frequency(note).toMidi();
 		// find the note
 		if (this._activeSources[midi] && this._activeSources[midi].length){
-			var source = this._activeSources[midi].shift().source
+			var source = this._activeSources[midi].shift().source;
 			source.stop(time, this.release);
 		}
 	};
@@ -198,7 +198,7 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/core/Buffers", "To
 		}
 		this._activeSources = null;
 		return this;
-	}
+	};
 
 	return Tone.MultiSampler;
 });
