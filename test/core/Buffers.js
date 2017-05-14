@@ -57,6 +57,19 @@ define(["Test", "Tone/core/Buffers", "Tone/core/Buffer"], function (Test, Buffer
 			});
 		});
 
+		it("can pass in buffers as object and options object in second arg", function(done){
+			var buffer = new Buffers({
+				"sine" : "sine.wav"
+			}, {
+				"onload" : function(){
+					expect(buffer.has("sine")).to.be.true;
+					buffer.dispose();
+					done();
+				},
+				"baseUrl" : "./audio/"
+			});
+		});
+
 		it("reports itself as loaded", function(done){
 			var buffer = new Buffers({
 				"sine" : testFile,
