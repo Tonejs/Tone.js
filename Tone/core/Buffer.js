@@ -163,6 +163,7 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type"], function(Tone)
 		this._buffer = null;
 		if (this._xhr){
 			Tone.Buffer._currentDownloads--;
+			Math.max(Tone.Buffer._currentDownloads, 0);
 			this._xhr.abort();
 			this._xhr = null;
 		}
