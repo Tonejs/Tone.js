@@ -1,3 +1,11 @@
+### r11
+
+* [Code coverage](https://coveralls.io/github/Tonejs/Tone.js) analysis
+* [Dev build](https://tonejs.github.io/build/dev/Tone.js) with each successful commit
+* Tone.MultiSampler simplifies creating multisampled instruments
+* Tone.Solo makes it easier to mute/solo audio
+* Making type-checking static
+
 ### r10
 
 * Tone.Context wraps AudioContext
