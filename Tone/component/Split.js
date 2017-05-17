@@ -21,6 +21,8 @@ define(["Tone/core/Tone", "Tone/core/Gain"], function(Tone){
 		 *  @private
 		 */
 		this._splitter = this.input = this.context.createChannelSplitter(2);
+		this._splitter.channelCount = 2;
+		this._splitter.channelCountMode = "explicit";
 
 		/** 
 		 *  Left channel output. 
