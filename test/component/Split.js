@@ -1,6 +1,7 @@
 define(["Tone/component/Merge", "helper/Basic", "helper/PassAudio", "helper/PassAudioStereo", 
-	"Test", "helper/Offline", "Tone/signal/Signal", "Tone/component/Split", "Tone/core/Tone"], 
-function (Merge, Basic, PassAudio, PassAudioStereo, Test, Offline, Signal, Split, Tone) {
+	"Test", "helper/Offline", "Tone/signal/Signal", "Tone/component/Split", 
+	"Tone/core/Tone", "helper/ConstantOutput"], 
+function (Merge, Basic, PassAudio, PassAudioStereo, Test, Offline, Signal, Split, Tone, ConstantOutput) {
 	describe("Split", function(){
 
 		Basic(Split);
@@ -15,23 +16,25 @@ function (Merge, Basic, PassAudio, PassAudioStereo, Test, Offline, Signal, Split
 			});
 
 			it("passes the incoming signal through on the left side", function(){
-				return PassAudioStereo(function(input){
+				return ConstantOutput(function(){
+					var input = new Signal(1);
 					var split = new Split();
 					input.connect(split);
 					split.left.toMaster();
-				});
+				}, 1);
 			});
 
 			it("passes the incoming signal through on the right side", function(){
-				return PassAudioStereo(function(input){
+				return ConstantOutput(function(){
+					var input = new Signal(1);
 					var split = new Split();
 					input.connect(split);
 					split.right.toMaster();
-				});
+				}, 1);
 			});
 
 			it("merges two signal into one stereo signal and then split them back into two signals on left side", function(){
-				return Offline(function(){
+				return ConstantOutput(function(){
 					var sigL = new Signal(1);
 					var sigR = new Signal(2);
 					var merger = new Merge();
@@ -40,14 +43,11 @@ function (Merge, Basic, PassAudio, PassAudioStereo, Test, Offline, Signal, Split
 					sigR.connect(merger.right);
 					merger.connect(split);
 					split.connect(Tone.Master, 0, 0);
-				}).then(function(buffer){
-					expect(buffer.min()).to.equal(1);
-					expect(buffer.max()).to.equal(1);
-				});
+				}, 1);
 			});
 
 			it("merges two signal into one stereo signal and then split them back into two signals on right side", function(){
-				return Offline(function(){
+				return ConstantOutput(function(){
 					var sigL = new Signal(1);
 					var sigR = new Signal(2);
 					var merger = new Merge();
@@ -56,10 +56,7 @@ function (Merge, Basic, PassAudio, PassAudioStereo, Test, Offline, Signal, Split
 					sigR.connect(merger.right);
 					merger.connect(split);
 					split.connect(Tone.Master, 1, 0);
-				}).then(function(buffer){
-					expect(buffer.min()).to.equal(2);
-					expect(buffer.max()).to.equal(2);
-				});
+				}, 2);
 			});
 		});
 	});
