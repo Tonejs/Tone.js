@@ -85,7 +85,6 @@ define(["helper/OutputAudio", "Tone/source/Source", "helper/OutputAudioStereo",
 				return Offline(function(){
 					var instance = new Constr(args).toMaster();
 					instance.start(0).stop(0.2);
-					instance.mute = true;
 				}, 0.3).then(function(buffer){
 					buffer.forEach(function(sample, time){
 						if (time > 0.2){
