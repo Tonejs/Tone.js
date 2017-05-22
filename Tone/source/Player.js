@@ -216,7 +216,6 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/source
 	Tone.Player.prototype._stop = function(time){
 		if (this._source){
 			this._source.stop(this.toSeconds(time));
-			this._source = null;
 		}
 		return this;
 	};
