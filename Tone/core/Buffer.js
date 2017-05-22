@@ -486,7 +486,7 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type"], function(Tone)
 	 *  @static
 	 */
 	Tone.Buffer.cancelDownloads = function(){
-		Tone.Buffer._downloadQueue.forEach(function(request){
+		Tone.Buffer._downloadQueue.slice().forEach(function(request){
 			Tone.Buffer._removeFromDownloadQueue(request);
 			request.abort();
 		});
