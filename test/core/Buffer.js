@@ -162,9 +162,12 @@ define(["Test", "Tone/core/Buffer", "Tone/core/Tone"], function (Test, Buffer, T
 			var buffer = new Buffer(testFile);
 			Buffer.on("progress", function(percent){
 				expect(percent).to.be.a.number;
-				Buffer.off("progress");
-				buffer.dispose();
-				done();
+				expect(percent).to.be.within(0, 1);
+				if (percent === 1){
+					Buffer.off("progress");
+					buffer.dispose();
+					done();
+				}
 			});
 		});
 
