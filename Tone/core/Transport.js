@@ -210,7 +210,7 @@ function(Tone){
 		} 
 		//do the loop test
 		if (this.loop){
-			if (ticks === this._loopEnd){
+			if (ticks >= this._loopEnd){
 				this.emit("loopEnd", tickTime);
 				this._clock.ticks = this._loopStart;
 				ticks = this._loopStart;
