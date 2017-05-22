@@ -428,13 +428,11 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type"], function(Tone)
 
 		function onProgress(){
 			//calculate the progress
-			if (Tone.Buffer._downloadQueue.length > 0){
-				var totalProgress = 0;
-				for (var i = 0; i < Tone.Buffer._downloadQueue.length; i++){
-					totalProgress += Tone.Buffer._downloadQueue[i].progress;
-				}
-				Tone.Buffer.emit("progress", totalProgress / Tone.Buffer._downloadQueue.length);
+			var totalProgress = 0;
+			for (var i = 0; i < Tone.Buffer._downloadQueue.length; i++){
+				totalProgress += Tone.Buffer._downloadQueue[i].progress;
 			}
+			Tone.Buffer.emit("progress", totalProgress / Tone.Buffer._downloadQueue.length);
 		}
 
 		var request = new XMLHttpRequest();
