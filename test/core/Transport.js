@@ -75,6 +75,21 @@ function (Test, Transport, Tone, Offline, TransportTime, Signal, BufferTest) {
 				});
 			});
 
+			it ("jumps to the loopStart after the loopEnd point", function(){
+				var looped = false;
+				return Offline(function(Transport){
+					Transport.on("loop", function(){
+						looped = true;
+					});
+					Transport.loop = true;
+					Transport.loopEnd = 1;
+					Transport.seconds = 2;
+					Transport.start();
+				}, 0.4).then(function(){
+					expect(looped).to.be.true;
+				});
+			});
+
 		});
 
 		context("nextSubdivision", function(){
