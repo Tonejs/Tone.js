@@ -366,6 +366,19 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/source
 	});
 
 	/**
+	 * If all the buffer is loaded
+	 * @memberOf Tone.Player#
+	 * @type {Boolean}
+	 * @name loaded
+	 * @readOnly
+	 */
+	Object.defineProperty(Tone.Player.prototype, "loaded", {
+		get : function(){
+			return this._buffer.loaded;
+		}
+	});
+
+	/**
 	 *  Dispose and disconnect.
 	 *  @return {Tone.Player} this
 	 */

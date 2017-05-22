@@ -41,6 +41,7 @@ define(["helper/Basic", "Tone/source/Player", "helper/Offline",
 
 			it("loads a url which was passed in", function(done){
 				var player = new Player("./audio/sine.wav", function(){
+					expect(player.loaded).to.be.true;
 					player.dispose();
 					done();
 				});
