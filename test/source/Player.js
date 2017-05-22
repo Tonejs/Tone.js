@@ -326,6 +326,16 @@ define(["helper/Basic", "Tone/source/Player", "helper/Offline",
 				});
 			});
 
+			it("stops playing if invoked with 'stop' at a sooner time", function(){
+				return Offline(function(){
+					var player = new Player(buffer);
+					player.toMaster();
+					player.start(0).stop(0.1).stop(0.05);
+				}, 0.3).then(function(buffer){
+					expect(buffer.getLastSoundTime()).to.be.closeTo(0.05, 0.02);
+				});
+			});
+
 			it("can be play for a specific duration passed in the 'start' method", function(){
 				return Offline(function(){
 					var player = new Player(buffer);
