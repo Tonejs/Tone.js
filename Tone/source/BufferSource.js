@@ -206,11 +206,12 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/G
 				var loopStart = this.loopStart;
 				var loopDuration = loopEnd - loopStart;
 				//move the offset back
-				while (offset > loopEnd){
-					offset -= loopDuration;
+				if (offset > loopEnd){
+					offset = ((offset - loopStart) % loopDuration) + loopStart;
 				}
 			}
 			this._source.buffer = this.buffer.get();
+			this._source.loopEnd = this.loopEnd || this.buffer.duration;
 			this._source.start(time, offset);
 		} else {
 			throw new Error("Tone.BufferSource: buffer is either not set or not loaded.");
