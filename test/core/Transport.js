@@ -272,7 +272,7 @@ function (Test, Transport, Tone, Offline, TransportTime, Signal, BufferTest) {
 						Test.whenBetween(time, 0.1, 0.11, function(){
 							expect(sample).to.equal(0);
 						});
-						Test.whenBetween(time, 0.5, 0.51, function(){
+						Test.whenBetween(time, 0.5001, 0.51, function(){
 							expect(sample).to.equal(1);
 						});
 					});
