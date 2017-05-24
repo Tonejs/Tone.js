@@ -287,7 +287,8 @@ define(["helper/Basic", "Tone/source/Player", "helper/Offline",
 
 			it("only seeks if player is started", function(){
 				return Offline(function(){
-					player.seek(0.2, 0.01).toMaster();
+					var player = new Player(buffer).toMaster();
+					player.seek(0.2, 0.01);
 				}, 0.05).then(function(buffer){
 					expect(buffer.isSilent()).to.be.true;
 				});
