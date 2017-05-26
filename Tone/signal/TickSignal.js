@@ -34,7 +34,7 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal"], function (Tone) {
 			var event = this._events.get(time);
 			event.ticks = Math.max(this.getTickAtTime(event.time - this.sampleTime), 0);
 			return this;
-		}
+		};
 	}
 
 	Tone.TickSignal.prototype.setValueAtTime = _wrapScheduleMethods(Tone.TimelineSignal.prototype.setValueAtTime);
@@ -96,11 +96,10 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal"], function (Tone) {
 	 * Calculates the number of ticks elapsed between the given interval
 	 * @param  {Number} time0
 	 * @param  {Number} time1
-	 * @param  {Tone.TimelineSignal.Type} curve
 	 * @return {Ticks}
 	 * @private
 	 */
-	Tone.TickSignal.prototype._getElapsedTicksBetween = function(time0, time1, curve){
+	Tone.TickSignal.prototype._getElapsedTicksBetween = function(time0, time1){
 		var val0 = this.getValueAtTime(time0);
 		var val1 = this.getValueAtTime(time1);
 		return 0.5 * (time1 - time0) * (val0 + val1);
@@ -116,12 +115,13 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal"], function (Tone) {
 	Tone.TickSignal.prototype.getTickAtTime = function(time){
 		time = this.toSeconds(time);
 		var event = this._events.get(time);
-		if (event !== null){
-			return this._getElapsedTicksBetween(event.time, time, event.type) + event.ticks;
-		} else {
-			//from the start
-			return this._getElapsedTicksBetween(0, time, Tone.TimelineSignal.Type.Set);
+		if (event === null){
+			event = {
+				"ticks" : 0,
+				"time" : 0
+			};
 		}
+		return this._getElapsedTicksBetween(event.time, time) + event.ticks;
 	};
 
 	/**
