@@ -29,8 +29,8 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Timeline"], function 
 		this._initial = this._fromUnits(this._param.value);
 		this.value = options.value;
 
-		//delete the input node
-		delete this.input
+		//delete the input node so that nothing can overwrite the signal value
+		delete this.input;
 	};
 
 	Tone.extend(Tone.TimelineSignal, Tone.Signal);
