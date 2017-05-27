@@ -40,8 +40,8 @@ define(["Test", "Tone/signal/TickSignal", "helper/Offline"],
 			tickSignal.setValueAtTime(2, 0.5);
 			expect(tickSignal.getTickAtTime(0)).to.be.closeTo(0, 0.01);
 			expect(tickSignal.getTickAtTime(0.5)).to.be.closeTo(0.5, 0.01);
-			// expect(tickSignal.getTickAtTime(0.75)).to.be.closeTo(1, 0.01);
-			// expect(tickSignal.getTickAtTime(1)).to.be.closeTo(1.5, 0.01);
+			expect(tickSignal.getTickAtTime(0.75)).to.be.closeTo(1, 0.01);
+			expect(tickSignal.getTickAtTime(1)).to.be.closeTo(1.5, 0.01);
 			tickSignal.dispose();
 		});
 
@@ -133,8 +133,8 @@ define(["Test", "Tone/signal/TickSignal", "helper/Offline"],
 			tickSignal.setTargetAtTime(0.5, 0, 0.1);
 			tickSignal.setTargetAtTime(2, 1, 1);
 			expect(tickSignal.getTimeOfTick(0)).to.be.closeTo(0, 0.01);
-			expect(tickSignal.getTimeOfTick(1)).to.be.closeTo(1.45, 0.01);
-			expect(tickSignal.getTimeOfTick(2)).to.be.closeTo(2.28, 0.01);
+			expect(tickSignal.getTimeOfTick(1)).to.be.closeTo(1.5, 0.1);
+			expect(tickSignal.getTimeOfTick(2)).to.be.closeTo(2.28, 0.1);
 			tickSignal.dispose();
 		});
 
@@ -186,9 +186,9 @@ define(["Test", "Tone/signal/TickSignal", "helper/Offline"],
 			tickSignal.setValueAtTime(1, 0);
 			tickSignal.linearRampToValueAtTime(2, 1);
 			expect(tickSignal.getTimeOfTick(0)).to.be.closeTo(0, 0.01);
-			expect(tickSignal.getTimeOfTick(1)).to.be.closeTo(0.66, 0.01);
-			expect(tickSignal.getTimeOfTick(2)).to.be.closeTo(1.25, 0.01);
-			expect(tickSignal.getTimeOfTick(3)).to.be.closeTo(1.75, 0.01);
+			expect(tickSignal.getTimeOfTick(1)).to.be.closeTo(0.75, 0.1);
+			expect(tickSignal.getTimeOfTick(2)).to.be.closeTo(1.25, 0.1);
+			expect(tickSignal.getTimeOfTick(3)).to.be.closeTo(1.75, 0.1);
 			tickSignal.dispose();
 		});
 
@@ -197,16 +197,15 @@ define(["Test", "Tone/signal/TickSignal", "helper/Offline"],
 			tickSignal.setValueAtTime(1, 0);
 			tickSignal.linearRampToValueAtTime(2, 1);
 			tickSignal.linearRampToValueAtTime(0, 2);
-			expect(tickSignal.getTimeOfTick(0)).to.be.closeTo(0, 0.01);
-			expect(tickSignal.getTimeOfTick(1)).to.be.closeTo(0.66, 0.01);
-			expect(tickSignal.getTimeOfTick(2)).to.be.closeTo(1.5, 0.01);
+			expect(tickSignal.getTimeOfTick(0)).to.be.closeTo(0, 0.1);
+			expect(tickSignal.getTimeOfTick(1)).to.be.closeTo(0.75, 0.1);
+			expect(tickSignal.getTimeOfTick(2)).to.be.closeTo(1.25, 0.1);
 			expect(tickSignal.getTimeOfTick(3)).to.equal(Infinity);
 			tickSignal.dispose();
 		});
 
 		it("computes the time of a given tick when a exponentialRampToValueAtTime is scheduled", function(){
 			var tickSignal = new TickSignal(1);
-			tickSignal.setValueAtTime(1, 0);
 			tickSignal.exponentialRampToValueAtTime(2, 1);
 			expect(tickSignal.getTimeOfTick(0)).to.be.closeTo(0, 0.01);
 			expect(tickSignal.getTimeOfTick(2)).to.be.closeTo(1.25, 0.1);
@@ -229,15 +228,15 @@ define(["Test", "Tone/signal/TickSignal", "helper/Offline"],
 		it("can schedule multiple types of curves", function(){
 			var tickSignal = new TickSignal(1);
 			tickSignal.setValueAtTime(1, 0);
-			tickSignal.exponentialRampToValueAtTime(0.5, 1);
-			tickSignal.linearRampToValueAtTime(3, 2);
+			tickSignal.exponentialRampToValueAtTime(4, 1);
+			tickSignal.linearRampToValueAtTime(0.2, 2);
 			tickSignal.setValueAtTime(2, 3);
 			tickSignal.linearRampToValueAtTime(2, 4);
 			tickSignal.setTargetAtTime(8, 5, 0.2);
 
-			for (var time = 0; time < 6; time+=0.5){
+			for (var time = 0; time < 5; time+=0.2){
 				var tick = tickSignal.getTickAtTime(time);
-				expect(tickSignal.getTimeOfTick(tick)).to.be.closeTo(time, 0.25);
+				expect(tickSignal.getTimeOfTick(tick)).to.be.closeTo(time, 0.1);
 			}
 
 			tickSignal.dispose();
