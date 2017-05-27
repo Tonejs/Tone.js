@@ -4,6 +4,10 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal"], function (Tone) {
 	 * @class Tone.TickSignal extends Tone.TimelineSignal, but adds the capability
 	 *        to calculate the number of elapsed ticks. exponential and target curves
 	 *        are approximated with multiple linear ramps. 
+	 *        
+	 *        Thank you Bruno Dias, H. Sofia Pinto, and David M. Matos, for your [WAC paper](https://smartech.gatech.edu/bitstream/handle/1853/54588/WAC2016-49.pdf)
+	 *        describing integrating timing functions for tempo calculations. 
+	 *
 	 * @param {Number} value The initial value of the signal
 	 * @extends {Tone.TimelineSignal}
 	 */
@@ -55,9 +59,8 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal"], function (Tone) {
 		//start from previously scheduled value
 		var prevEvent = this._events.get(time);
 		var segments = 5;
-		var segmentDur = constant;
 		for (var i = 0; i <= segments; i++){
-			var segTime = segmentDur * i + time;
+			var segTime = constant * i + time;
 			var rampVal = this._exponentialApproach(prevEvent.time, prevEvent.value, value, constant, segTime);
 			this.linearRampToValueAtTime(rampVal, segTime);
 		}
@@ -93,19 +96,6 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal"], function (Tone) {
 	};
 
 	/**
-	 * Calculates the number of ticks elapsed between the given interval
-	 * @param  {Number} time0
-	 * @param  {Number} time1
-	 * @return {Ticks}
-	 * @private
-	 */
-	Tone.TickSignal.prototype._getElapsedTicksBetween = function(time0, time1){
-		var val0 = this.getValueAtTime(time0);
-		var val1 = this.getValueAtTime(time1);
-		return 0.5 * (time1 - time0) * (val0 + val1);
-	};
-
-	/**
 	 * Returns the tick value at the time. Takes into account
 	 * any automation curves scheduled on the signal.
 	 * @param  {Time} time The time to get the tick count at
@@ -121,7 +111,9 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal"], function (Tone) {
 				"time" : 0
 			};
 		}
-		return this._getElapsedTicksBetween(event.time, time) + event.ticks;
+		var val0 = this.getValueAtTime(event.time);
+		var val1 = this.getValueAtTime(time);
+		return 0.5 * (time - event.time) * (val0 + val1) + event.ticks;
 	};
 
 	/**
@@ -132,9 +124,21 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal"], function (Tone) {
 	Tone.TickSignal.prototype.getTimeOfTick = function(tick){
 		var before = this._events.get(tick, "ticks");
 		var after = this._events.getAfter(tick, "ticks");
-		if (before !== null && after !== null && after.type === Tone.TimelineSignal.Type.Linear){
-			return this._linearInterpolate(before.ticks, before.time, after.ticks, after.time, tick);
-		} else if (before !== null){
+		if (tick === 0){
+			return 0
+		} else if (before && before.ticks === tick){
+			return before.time;
+		} else if (before && after && 
+			after.type === Tone.TimelineSignal.Type.Linear && 
+			before.value !== after.value){
+			var val0 = this.getValueAtTime(before.time);
+			var val1 = this.getValueAtTime(after.time);
+			var delta = (val1 - val0) / (after.time - before.time);
+			var k = Math.sqrt(Math.pow(val0, 2) - 2 * delta * (before.ticks - tick))
+			var sol1 = (-val0 + k) / delta;
+			var sol2 = (-val0 - k) / delta;
+			return (sol1 > 0 ? sol1 : sol2) + before.time;
+		} else if (before){
 			if (before.value === 0){
 				return Infinity;
 			} else {
