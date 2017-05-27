@@ -125,7 +125,7 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal"], function (Tone) {
 		var before = this._events.get(tick, "ticks");
 		var after = this._events.getAfter(tick, "ticks");
 		if (tick === 0){
-			return 0
+			return 0;
 		} else if (before && before.ticks === tick){
 			return before.time;
 		} else if (before && after && 
@@ -134,7 +134,7 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal"], function (Tone) {
 			var val0 = this.getValueAtTime(before.time);
 			var val1 = this.getValueAtTime(after.time);
 			var delta = (val1 - val0) / (after.time - before.time);
-			var k = Math.sqrt(Math.pow(val0, 2) - 2 * delta * (before.ticks - tick))
+			var k = Math.sqrt(Math.pow(val0, 2) - 2 * delta * (before.ticks - tick));
 			var sol1 = (-val0 + k) / delta;
 			var sol2 = (-val0 - k) / delta;
 			return (sol1 > 0 ? sol1 : sol2) + before.time;
