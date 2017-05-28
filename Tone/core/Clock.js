@@ -206,19 +206,6 @@ define(["Tone/core/Tone", "Tone/signal/TickSignal", "Tone/core/TimelineState",
 	};
 
 	/**
-	 * Invoke the callback with a try/catch block
-	 * @param  {Time} time The time to invoke the callback
-	 * @private
-	 */
-	Tone.Clock.prototype._tryCallback = function(time){
-		try {
-			this.callback(time);
-		} catch(e){
-			return e;
-		}
-	};
-
-	/**
 	 *  Returns the scheduled state at the given time.
 	 *  @param  {Time}  time  The time to query.
 	 *  @return  {String}  The name of the state input in setStateAtTime.
