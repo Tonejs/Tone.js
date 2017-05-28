@@ -229,6 +229,20 @@ define(["Tone/core/Tone"], function (Tone) {
 	};
 
 	/**
+	 * Returns the previous event if there is one. null otherwise
+	 * @param  {Object} event The event to find the previous one of
+	 * @return {Object}       The event right before the given event
+	 */
+	Tone.Timeline.prototype.previousEvent = function(event){
+		var index = this._timeline.indexOf(event);
+		if (index > 0){
+			return this._timeline[index-1];
+		} else {
+			return null;
+		}
+	};
+
+	/**
 	 *  Does a binary serach on the timeline array and returns the 
 	 *  nearest event index whose time is after or equal to the given time.
 	 *  If a time is searched before the first index in the timeline, -1 is returned.

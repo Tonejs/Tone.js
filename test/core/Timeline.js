@@ -111,6 +111,21 @@ define(["Test", "Tone/core/Timeline"], function (Test, Timeline) {
 			sched.dispose();
 		});
 
+		it ("can get a previous event", function(){
+			var sched = new Timeline();
+			var event0 = {
+				"time"  : 0
+			};
+			var event1 = {
+				"time" : 1
+			};
+			sched.add(event0);
+			sched.add(event1);
+			expect(sched.previousEvent(event1)).to.equal(event0);
+			expect(sched.previousEvent(event0)).to.equal(null);
+			sched.dispose();
+		});
+
 		
 		it ("can get the scheduled event at the given time", function(){
 			var sched = new Timeline();
