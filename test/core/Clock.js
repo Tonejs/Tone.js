@@ -103,12 +103,15 @@ define(["Test", "Tone/core/Clock", "helper/Offline"],
 					return function(sample, time){
 						Test.whenBetween(time, 0.1, 0.2, function(){
 							expect(clock.state).to.equal("paused");
+							expect(clock.ticks).to.be.greaterThan(0);
 						});
 						Test.whenBetween(time, 0.2, 0.3, function(){
 							expect(clock.state).to.equal("stopped");
+							expect(clock.ticks).to.equal(0);
 						});
 						Test.whenBetween(time, 0.3, 0.4, function(){
 							expect(clock.state).to.equal("started");
+							expect(clock.ticks).to.be.greaterThan(0);
 						});
 					};
 				}, 0.5);
@@ -139,7 +142,7 @@ define(["Test", "Tone/core/Clock", "helper/Offline"],
 			it ("invokes the first callback at the given start time", function(done){
 				var clock = new Clock(function(time){
 					clock.dispose();
-					expect(time).to.equal(startTime);
+					expect(time).to.be.closeTo(startTime, 0.01);
 					done();
 				}, 10);
 				var startTime = clock.now() + 0.1;
@@ -151,8 +154,8 @@ define(["Test", "Tone/core/Clock", "helper/Offline"],
 				return Offline(function(){
 					new Clock(function(){
 						invokations++;
-					}, 0.5).start(0);
-				}, 0.6).then(function(){
+					}, 2).start(0);
+				}, 0.4).then(function(){
 					expect(invokations).to.equal(1);
 				});
 			});
@@ -162,7 +165,7 @@ define(["Test", "Tone/core/Clock", "helper/Offline"],
 				return Offline(function(){
 					new Clock(function(){
 						invokations++;
-					}, 10).start(0).stop(0.49);
+					}, 10).start(0).stop(0.45);
 				}, 0.6).then(function(){
 					expect(invokations).to.equal(5);
 				});
@@ -172,10 +175,10 @@ define(["Test", "Tone/core/Clock", "helper/Offline"],
 			it ("can schedule the frequency of the clock", function(){
 				var invokations = 0;
 				return Offline(function(){
-					var clock = new Clock(function(){
+					var clock = new Clock(function(time){
 						invokations++;
 					}, 2);
-					clock.start(0).stop(1.1);
+					clock.start(0).stop(1.01);
 					clock.frequency.setValueAtTime(4, 0.5);
 				}, 2).then(function(){
 					expect(invokations).to.equal(4);
@@ -207,7 +210,7 @@ define(["Test", "Tone/core/Clock", "helper/Offline"],
 				return Offline(function(){
 					var clock = new Clock(function(){}, 20).start(0).stop(0.1);
 					return function(time){
-						Test.whenBetween(time, 0, 0.09, function(){
+						Test.whenBetween(time, 0.01, 0.09, function(){
 							expect(clock.ticks).to.be.greaterThan(0);
 						});
 						Test.whenBetween(time, 0.1, Infinity, function(){
@@ -222,7 +225,7 @@ define(["Test", "Tone/core/Clock", "helper/Offline"],
 					var clock = new Clock(function(){}, 20).start(0).pause(0.1);
 					var pausedTicks = 0;
 					return function(time){
-						Test.whenBetween(time, 0, 0.1, function(){
+						Test.whenBetween(time, 0.01, 0.1, function(){
 							expect(clock.ticks).to.be.greaterThan(0);
 							pausedTicks = clock.ticks;
 						});
@@ -241,14 +244,14 @@ define(["Test", "Tone/core/Clock", "helper/Offline"],
 					var pausedTicks = 0;
 					var tested = false;
 					return function(time){
-						Test.whenBetween(time, 0, 0.1, function(){
+						Test.whenBetween(time, 0.01, 0.1, function(){
 							expect(clock.ticks).to.be.greaterThan(0);
 							pausedTicks = clock.ticks;
 						});
 						Test.whenBetween(time, 0.1, 0.19, function(){
 							expect(clock.ticks).to.equal(pausedTicks);
 						});
-						Test.whenBetween(time, 0.2, Infinity, function(){
+						Test.whenBetween(time, 0.21, Infinity, function(){
 							if (!tested){
 								tested = true;
 								expect(clock.ticks).to.equal(pausedTicks + 1);
@@ -288,15 +291,13 @@ define(["Test", "Tone/core/Clock", "helper/Offline"],
 				}, 0.4);
 			});
 			
-			it ("triggers the start event with an offset", function(done){
+			it ("triggers the start event with an offset", function(){
 				return Offline(function(){
 					var clock = new Clock(function(){}, 20);
 					var startTime = 0.3;
 					clock.on("start", function(time, offset){
 						expect(time).to.be.closeTo(startTime, 0.05);
 						expect(offset).to.equal(2);
-						clock.dispose();
-						done();
 					});
 					clock.start(startTime, 2);
 				}, 0.4);
