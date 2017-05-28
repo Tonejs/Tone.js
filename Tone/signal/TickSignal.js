@@ -100,7 +100,7 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal"], function (Tone) {
 	Tone.TickSignal.prototype.stop = function(time){
 		time = this.toSeconds(time);
 		this._pausedRate = this.getValueAtTime(time);
-		this.cancel(time);
+		this.cancelScheduledValues(time);
 		this.setValueAtTime(0, time);
 		var event = this._events.get(time);
 		event.type = Tone.State.Stopped;
