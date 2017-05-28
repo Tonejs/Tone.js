@@ -242,71 +242,14 @@ define(["Test", "Tone/signal/TickSignal", "helper/Offline"],
 			tickSignal.dispose();
 		});
 
-		it("pause stops counting ticks", function(){
+		it ("can get the duration of a tick at any point in time", function(){
 			var tickSignal = new TickSignal(1);
 			tickSignal.setValueAtTime(2, 1);
-			expect(tickSignal.getTickAtTime(2)).to.be.closeTo(3, 0.01);
-			tickSignal.pause(3);
-			expect(tickSignal.getTickAtTime(3)).to.be.closeTo(5, 0.01);
-			expect(tickSignal.getTickAtTime(4)).to.be.closeTo(5, 0.01);
-			expect(tickSignal.getTickAtTime(5)).to.be.closeTo(5, 0.01);
-			tickSignal.dispose();
-		});
-
-		it("start increments ticks forward after pause where it left off", function(){
-			var tickSignal = new TickSignal(1);
-			tickSignal.setValueAtTime(2, 1);
-			tickSignal.pause(3);
-			tickSignal.start(4);
-			expect(tickSignal.getTickAtTime(2)).to.be.closeTo(3, 0.01);
-			expect(tickSignal.getTickAtTime(3)).to.be.closeTo(5, 0.01);
-			expect(tickSignal.getTickAtTime(4)).to.be.closeTo(5, 0.01);
-			expect(tickSignal.getTickAtTime(5)).to.be.closeTo(7, 0.01);
-			tickSignal.dispose();
-		});
-
-		it("start can be passed in with an offset", function(){
-			var tickSignal = new TickSignal(1);
-			tickSignal.setValueAtTime(2, 1);
-			tickSignal.pause(3);
-			tickSignal.start(4, 1);
-			expect(tickSignal.getTickAtTime(2)).to.be.closeTo(3, 0.01);
-			expect(tickSignal.getTickAtTime(3)).to.be.closeTo(5, 0.01);
-			expect(tickSignal.getTickAtTime(4)).to.be.closeTo(1, 0.01);
-			expect(tickSignal.getTickAtTime(5)).to.be.closeTo(3, 0.01);
-			tickSignal.dispose();
-		});
-
-		it("stops values and starts the tick counter over", function(){
-			var tickSignal = new TickSignal(1);
-			tickSignal.setValueAtTime(2, 1);
-			expect(tickSignal.getTickAtTime(2)).to.be.closeTo(3, 0.01);
-			tickSignal.stop(2);
-			tickSignal.start(2);
-			expect(tickSignal.getTickAtTime(2)).to.be.closeTo(0, 0.01);
-			expect(tickSignal.getTickAtTime(3)).to.be.closeTo(2, 0.01);
-			expect(tickSignal.getTickAtTime(4)).to.be.closeTo(4, 0.01);
-			tickSignal.stop(6);
-			tickSignal.start(6);
-			expect(tickSignal.getTickAtTime(5)).to.be.closeTo(6, 0.01);
-			expect(tickSignal.getTickAtTime(6)).to.be.closeTo(0, 0.01);
-			tickSignal.dispose();
-		});
-
-		it("throws an error if events are scheduled while paused or stopped", function(){
-			var tickSignal0 = new TickSignal(1);
-			tickSignal0.pause(0);
-			expect(function(){
-				tickSignal0.setValueAtTime(1, 1);
-			}).throws(Error);
-			tickSignal0.dispose();
-
-			var tickSignal1 = new TickSignal(1);
-			tickSignal1.stop(0);
-			expect(function(){
-				tickSignal1.setValueAtTime(1, 1);
-			}).throws(Error);
-			tickSignal1.dispose();
+			tickSignal.setValueAtTime(10, 2);
+			expect(tickSignal.getDurationOfTicks(1, 0)).to.be.closeTo(1, 0.01);
+			expect(tickSignal.getDurationOfTicks(1, 1)).to.be.closeTo(0.5, 0.01);
+			expect(tickSignal.getDurationOfTicks(1, 2)).to.be.closeTo(0.1, 0.01);
+			expect(tickSignal.getDurationOfTicks(2, 1.5)).to.be.closeTo(0.6, 0.01);
 		});
 
 	});

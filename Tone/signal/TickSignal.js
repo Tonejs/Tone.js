@@ -22,21 +22,6 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal"], function (Tone) {
 
 		//extend the memory
 		this._events.memory = Infinity;
-
-		/**
-		 * The paused time
-		 * @type {Ticks}
-		 * @private
-		 */
-		this._pausedRate = null;
-
-
-		/**
-		 * Keep track of state
-		 * @type {Tone.TimelineState}
-		 * @private
-		 */
-		// this._state = new Tone.TimelineState(Tone.State.Started);
 	};
 
 	Tone.extend(Tone.TickSignal, Tone.TimelineSignal);
@@ -50,11 +35,6 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal"], function (Tone) {
 	 */
 	function _wrapScheduleMethods(method){
 		return function(value, time){
-			//make sure it's not paused or stopped
-			var lastEvent = this._events.get(time);
-			if (lastEvent && lastEvent.type === Tone.State.Stopped && this._pausedRate !== null){
-				throw new Error("Tone.TickSignal: cannot schedule automations while stopped.");
-			}
 			time = this.toSeconds(time);
 			method.apply(this, arguments);
 			var event = this._events.get(time);
@@ -88,55 +68,6 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal"], function (Tone) {
 			var rampVal = this._exponentialApproach(prevEvent.time, prevEvent.value, value, constant, segTime);
 			this.linearRampToValueAtTime(rampVal, segTime);
 		}
-		return this;
-	};
-
-	/**
-	 * Stop the signal from ticking forward and reset the ticks to 0
-	 * until it is restarted. 
-	 * @param  {Time=} time When to stop the signal
-	 * @return {Tone.TickSignal}      this
-	 */
-	Tone.TickSignal.prototype.stop = function(time){
-		time = this.toSeconds(time);
-		this._pausedRate = this.getValueAtTime(time);
-		this.cancelScheduledValues(time);
-		this.setValueAtTime(0, time);
-		var event = this._events.get(time);
-		event.type = Tone.State.Stopped;
-		event.ticks = 0;
-		return this;
-	};
-
-	/**
-	 * Pause the ticks from counting forward. Will remain
-	 * at the same tick value until resumed. 
-	 * @param  {Time=} time When to pause the signal
-	 * @return {Tone.TickSignal}      this
-	 */
-	Tone.TickSignal.prototype.pause = function(time){
-		time = this.toSeconds(time);
-		this._pausedRate = this.getValueAtTime(time);
-		this.setValueAtTime(0, time);
-		var event = this._events.get(time);
-		event.type = Tone.State.Stopped;
-		return this;
-	};
-
-	/**
-	 * Start the signal after paused or stopped. Optionally with an offset
-	 * to start the tick counter at. 
-	 * @param  {Time=} time When to pause the signal
-	 * @param  {Ticks=} offset How many ticks to offset the counter
-	 * @return {Tone.TickSignal}      this
-	 */
-	Tone.TickSignal.prototype.start = function(time, offset){
-		time = this.toSeconds(time);
-		var resumeRate = this._pausedRate;
-		this._pausedRate = null;
-		this.setValueAtTime(resumeRate, time);
-		var event = this._events.get(time);
-		event.ticks = Tone.defaultArg(offset, this.getTickAtTime(time));
 		return this;
 	};
 
@@ -182,9 +113,6 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal"], function (Tone) {
 				"time" : 0
 			};
 		}
-		if (event.type === Tone.State.Stopped){
-			return event.ticks;
-		}
 		var val0 = this.getValueAtTime(event.time);
 		var val1 = this.getValueAtTime(time);
 		return 0.5 * (time - event.time) * (val0 + val1) + event.ticks;
@@ -201,6 +129,18 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal"], function (Tone) {
 		time = this.toSeconds(time);
 		var event = this._events.get(time);
 		return this._getTickUntilEvent(event, time);
+	};
+
+	/**
+	 * Return the elapsed time of the number of ticks from the given time
+	 * @param {Ticks} ticks The number of ticks to calculate
+	 * @param  {Time} time The time to get the next tick from
+	 * @return {Seconds} The duration of the number of ticks from the given time in seconds
+	 */
+	Tone.TickSignal.prototype.getDurationOfTicks = function(ticks, time){
+		time = this.toSeconds(time);
+		var currentTick = this.getTickAtTime(time);
+		return this.getTimeOfTick(currentTick + ticks) - time;
 	};
 
 	/**
