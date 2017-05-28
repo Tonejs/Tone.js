@@ -43,7 +43,7 @@ define(["Tone/core/Tone", "Tone/core/Context"], function (Tone) {
 		this._currentTime = 0;
 
 		//modify the lookAhead and updateInterval to one block
-		this.lookAhead = this.blockTime;
+		this.lookAhead = 0;
 		this.updateInterval = this.blockTime;
 	};
 
