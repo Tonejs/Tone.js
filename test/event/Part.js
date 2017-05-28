@@ -536,7 +536,7 @@ define(["helper/Basic", "Tone/event/Part", "Tone/core/Tone",
 						},
 						events : [[0, 0], [0.1, 1], [0.2, 2]]
 					}).start(0.3).stop(0.8);
-					Transport.start(0.2).stop(0.6).start(0.8);
+					Transport.start(0.2).stop(0.61).start(0.8);
 				}, 2).then(function(){
 					expect(eventTimeIndex).to.equal(8);
 				});
@@ -560,7 +560,7 @@ define(["helper/Basic", "Tone/event/Part", "Tone/core/Tone",
 					}).start(0.3).stop(0.8);
 					part.loopEnd = 0.4;
 					part.loopEnd = 0.3;
-					Transport.start(0.2).stop(0.6).start(0.8);
+					Transport.start(0.2).stop(0.61).start(0.8);
 				}, 2).then(function(){
 					expect(eventTimeIndex).to.equal(7);
 				});
