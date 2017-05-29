@@ -21,7 +21,7 @@ define(["Tone/core/Tone", "Tone/component/Envelope", "Tone/core/Gain"], function
 	 * var ampEnv = new Tone.AmplitudeEnvelope({
 	 * 	"attack": 0.1,
 	 * 	"decay": 0.2,
-	 * 	"sustain": 1.0,
+	 * 	"sustain": 0.5,
 	 * 	"release": 0.8
 	 * }).toMaster();
 	 * //create an oscillator and connect it
