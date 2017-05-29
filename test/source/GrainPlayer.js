@@ -1,5 +1,6 @@
-define(["helper/Basic", "Tone/source/GrainPlayer", "helper/Offline", "helper/SourceTests", "Tone/core/Buffer", "Test"], 
-	function (BasicTests, GrainPlayer, Offline, SourceTests, Buffer, Test) {
+define(["helper/Basic", "Tone/source/GrainPlayer", "helper/Offline", "helper/SourceTests", 
+	"Tone/core/Buffer", "Test", "Tone/core/Tone"], 
+	function (BasicTests, GrainPlayer, Offline, SourceTests, Buffer, Test, Tone) {
 
 	if (window.__karma__){
 		Buffer.baseUrl = "/base/test/";
@@ -114,7 +115,7 @@ define(["helper/Basic", "Tone/source/GrainPlayer", "helper/Offline", "helper/Sou
 					player.start(0, 0, 0.1);
 					return function(time){
 						Test.whenBetween(time, 0.1, Infinity, function(){
-							// expect(player.state).to.equal("stopped");
+							expect(player.state).to.equal("stopped");
 						});
 						Test.whenBetween(time, 0, 0.1, function(){
 							expect(player.state).to.equal("started");
@@ -122,6 +123,28 @@ define(["helper/Basic", "Tone/source/GrainPlayer", "helper/Offline", "helper/Sou
 					};
 				}, 0.3).then(function(buffer){
 					expect(buffer.getLastSoundTime()).to.be.closeTo(0.1, 0.02);
+				});
+			});
+
+			it("can seek to a position at the given time", function(){
+				return Offline(function(){
+					var ramp = new Float32Array(Math.floor(Tone.context.sampleRate * 0.3));
+					for (var i = 0; i < ramp.length; i++){
+						ramp[i] = (i / (ramp.length)) * 0.3;
+					}
+					var buff = new Buffer().fromArray(ramp);
+					var player = new GrainPlayer(buff).toMaster();
+					player.overlap = 0;
+					player.start(0);
+					player.seek(0.2, 0.1);
+				}, 0.3).then(function(buffer){
+					buffer.forEach(function(sample, time){
+						if (time < 0.09){
+							expect(sample).to.be.within(0, 0.1);
+						} else if (time > 0.1 && time < 0.19){
+							expect(sample).to.be.within(0.2, 0.3);
+						}
+					});
 				});
 			});
 
