@@ -252,5 +252,17 @@ define(["Test", "Tone/signal/TickSignal", "helper/Offline"],
 			expect(tickSignal.getDurationOfTicks(2, 1.5)).to.be.closeTo(0.6, 0.01);
 		});
 
+		it("outputs a signal", function(){
+			var sched;
+				return Offline(function(){
+				sched = new TickSignal(1).toMaster();
+				sched.linearRampToValueBetween(3, 1, 2);
+			}, 3).then(function(buffer){
+				buffer.forEach(function(sample, time){
+					expect(sample).to.be.closeTo(sched.getValueAtTime(time), 0.01);
+				});
+			});
+		});
+
 	});
 });
