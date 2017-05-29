@@ -152,8 +152,6 @@ define(["Tone/core/Tone", "Tone/signal/TickSignal", "Tone/core/TimelineState",
 
 	/**
 	 *  The scheduling loop.
-	 *  @param  {Number}  time  The current page time starting from 0
-	 *                          when the page was loaded.
 	 *  @private
 	 */
 	Tone.Clock.prototype._loop = function(){
