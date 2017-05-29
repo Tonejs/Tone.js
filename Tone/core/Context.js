@@ -50,14 +50,14 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/core/Timeline"], function (
 		 *  @type  {Number}
 		 *  @private
 		 */
-		this._lookAhead = 0.1;
+		this.lookAhead = 0.1;
 
 		/**
 		 *  How often the update look runs
 		 *  @type  {Number}
 		 *  @private
 		 */
-		this._updateInterval = this._lookAhead/3;
+		this._updateInterval = this.lookAhead/3;
 
 		/**
 		 *  A reference to the actual computed update interval
@@ -127,7 +127,7 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/core/Timeline"], function (
 	 *  @return  {Number}
 	 */
 	Tone.Context.prototype.now = function(){
-		return this._context.currentTime;
+		return this._context.currentTime + this.lookAhead;
 	};
 
 	/**
@@ -261,24 +261,6 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/core/Timeline"], function (
 			var diff = this._computedUpdateInterval - this._updateInterval;
 			diff = Math.max(diff, 0);
 			return diff;
-		}
-	});
-
-	/**
-	 *  The amount of time in advance that events are scheduled.
-	 *  The lookAhead will adjust slightly in response to the 
-	 *  measured update time to try to avoid clicks.
-	 *  @type {Number}
-	 *  @memberOf Tone.Context
-	 *  @name lookAhead
-	 *  @static
-	 */
-	Object.defineProperty(Tone.Context.prototype, "lookAhead", {
-		get : function(){
-			return this._lookAhead;
-		},
-		set : function(lA){
-			this._lookAhead = lA;
 		}
 	});
 
