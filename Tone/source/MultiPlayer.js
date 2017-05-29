@@ -5,6 +5,8 @@ function (Tone) {
 	/**
 	 *  @class Tone.MultiPlayer is well suited for one-shots, multi-sampled instruments
 	 *         or any time you need to play a bunch of audio buffers. 
+	 *
+	 *  @deprecated Use Tone.Players instead.
 	 *  @param  {Object|Array|Tone.Buffers}  buffers  The buffers which are available
 	 *                                                to the MultiPlayer
 	 *  @param {Function} onload The callback to invoke when all of the buffers are loaded.
@@ -25,6 +27,8 @@ function (Tone) {
 	 * });
 	 */
 	Tone.MultiPlayer = function(urls){
+
+		console.warn("Tone.MultiPlayer is deprecated. Use Tone.Players instead.");
 
 		//remove the urls from the options
 		if (arguments.length === 1 && !Tone.isUndef(arguments[0]) && !arguments[0].hasOwnProperty("urls")){
