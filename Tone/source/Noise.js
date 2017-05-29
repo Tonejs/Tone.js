@@ -86,7 +86,7 @@ define(["Tone/core/Tone", "Tone/source/Source", "Tone/core/Buffer", "Tone/source
 					this._type = type;
 					//if it's playing, stop and restart it
 					if (this.state === Tone.State.Started){
-						var now = this.now() + this.blockTime;
+						var now = this.now();
 						this._stop(now);
 						this._start(now);
 					}
