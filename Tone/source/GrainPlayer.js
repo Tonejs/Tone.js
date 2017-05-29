@@ -22,19 +22,12 @@ function (Tone) {
 		this.buffer = new Tone.Buffer(options.url, options.onload);
 
 		/**
-		 *  Plays the buffer with a small envelope
-		 *  @type  {Tone.MultiPlayer}
-		 *  @private
-		 */
-		this._player = new Tone.MultiPlayer().connect(this.output);
-
-		/**
 		 *  Create a repeating tick to schedule
 		 *  the grains.
 		 *  @type  {Tone.Clock}
 		 *  @private
 		 */
-		this._clock = new Tone.Clock(this._tick.bind(this), 1);
+		this._clock = new Tone.Clock(this._tick.bind(this), options.grainSize);
 
 		/**
 		 *  @type  {Number}
@@ -47,6 +40,13 @@ function (Tone) {
 		 *  @private
 		 */
 		this._loopEnd = 0;
+
+		/**
+		 * All of the currently playing BufferSources
+		 * @type {Array}
+		 * @private
+		 */
+		this._activeSources = [];
 
 		/**
 		 *  @type  {Number}
@@ -72,13 +72,6 @@ function (Tone) {
 		 */
 		this.detune = options.detune;
 
-		/**
-		 *  The amount of time randomly added
-		 *  or subtracted from the grain's offset
-		 *  @type  {Time}
-		 */
-		this.drift = options.drift;
-
 		//setup
 		this.overlap = options.overlap;
 		this.loop = options.loop;
@@ -87,6 +80,8 @@ function (Tone) {
 		this.loopStart = options.loopStart;
 		this.loopEnd = options.loopEnd;
 		this.reverse = options.reverse;
+
+		this._clock.on("stop", this._onstop.bind(this));
 	};
 
 	Tone.extend(Tone.GrainPlayer, Tone.Source);
@@ -101,7 +96,6 @@ function (Tone) {
 		"onload" : Tone.noOp,
 		"overlap" : 0.1,
 		"grainSize" : 0.2,
-		"drift" : 0.0,
 		"playbackRate" : 1,
 		"detune" : 0,
 		"loop" : false,
@@ -141,11 +135,8 @@ function (Tone) {
 		this._offset = offset;
 		this._clock.start(time);
 
-		//unmute the player
-		this._player.volume.setValueAtTime(0, time);
-
 		if (duration){
-			this._stop(time + this.toSeconds(duration));			
+			this.stop(time + this.toSeconds(duration));			
 		}
 	};
 
@@ -156,9 +147,18 @@ function (Tone) {
 	 */
 	Tone.GrainPlayer.prototype._stop = function(time){
 		this._clock.stop(time);
-		//mute the player
-		this._player.volume.cancelScheduledValues(time);
-		this._player.volume.setValueAtTime(-Infinity, time);
+	};
+
+	/**
+	 * Invoked when the clock is stopped
+	 * @param  {Number} time
+	 * @private
+	 */
+	Tone.GrainPlayer.prototype._onstop = function(time){
+		//stop the players
+		this._activeSources.forEach(function(source){
+			source.stop(time, 0);
+		});
 	};
 
 	/**
@@ -169,42 +169,31 @@ function (Tone) {
 	 */
 	Tone.GrainPlayer.prototype._tick = function(time){
 
-		var bufferDuration = this.buffer.duration;
-		if (this.loop && this._loopEnd > 0){
-			bufferDuration = this._loopEnd;
-		}
-		var drift = (Math.random() * 2 - 1) * this.drift;
-		var offset = this._offset - this._overlap + drift;
-		var detune = this.detune / 100;
-		//keep the offset within the limits of the buffer
-		offset = Math.max(offset, 0);
-		offset = Math.min(offset, bufferDuration);
+		var fadeIn = this._offset < this._overlap ? 0 : this._overlap;
 
-		var originalFadeIn = this._player.fadeIn;
-		if (this.loop && this._offset > bufferDuration){
-			//play the end
-			var endSegmentDuration = this._offset - bufferDuration;
-			this._player.start(this.buffer, time, offset, endSegmentDuration + this._overlap, detune);
+		var source = new Tone.BufferSource({
+			"buffer" : this.buffer,
+			"fadeIn" : fadeIn,
+			"fadeOut" : this._overlap,
+			"loop" : this.loop,
+			"loopStart" : this._loopStart,
+			"loopEnd" : this._loopEnd,
+			"playbackRate" : Tone.intervalToFrequencyRatio(this.detune / 100)
+		}).connect(this.output);
 
-			//and play the beginning 
-			offset = this._offset % bufferDuration;
-			this._offset = this._loopStart;
-			this._player.fadeIn = 0;
-			this._player.start(this.buffer, time + endSegmentDuration, this._offset, offset + this._overlap, detune);
-		} else if (this._offset > bufferDuration){
-			//set the state to stopped. 
-			this.stop(time);
-		} else {
-			if (offset === 0){
-				this._player.fadeIn = 0;
+		source.start(time, this._offset);
+		this._offset += this.grainSize;
+		source.stop(time + this.grainSize);
+
+		//add it to the active sources
+		this._activeSources.push(source);
+		//remove it when it's done
+		source.onended = function(){
+			var index = this._activeSources.indexOf(source);
+			if (index !== -1){
+				this._activeSources.splice(index, 1);
 			}
-			this._player.start(this.buffer, time, offset, this.grainSize + this._overlap, detune);
-		}
-
-		this._player.fadeIn = originalFadeIn;
-		//increment the offset
-		var duration = this._clock._nextTick - time;
-		this._offset += duration * this._playbackRate;
+		}.bind(this);
 	};
 
 	/**
@@ -213,7 +202,7 @@ function (Tone) {
 	 *  @param {Time=} time When to make the jump.
 	 *  @return  {Tone.GrainPlayer}  this
 	 */
-	Tone.GrainPlayer.prototype.scrub = function(offset, time){
+	Tone.GrainPlayer.prototype.seek = function(offset, time){
 		this._offset = this.toSeconds(offset);
 		this._tick(this.toSeconds(time));
 		return this;
@@ -309,15 +298,7 @@ function (Tone) {
 			return this._overlap;
 		}, 
 		set : function(time){
-			time = this.toSeconds(time);
-			this._overlap = time;
-			if (this._overlap < 0){
-				this._player.fadeIn = 0.01;
-				this._player.fadeOut = 0.01;
-			} else {
-				this._player.fadeIn = time;
-				this._player.fadeOut = time;
-			}
+			this._overlap = this.toSeconds(time);
 		}
 	});
 
@@ -329,10 +310,12 @@ function (Tone) {
 		Tone.Source.prototype.dispose.call(this);
 		this.buffer.dispose();
 		this.buffer = null;
-		this._player.dispose();
-		this._player = null;
 		this._clock.dispose();
 		this._clock = null;
+		this._activeSources.forEach(function(source){
+			source.dispose();
+		});
+		this._activeSources = null;
 		return this;
 	};
 
