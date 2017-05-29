@@ -449,6 +449,26 @@ define(["helper/Basic", "Tone/source/BufferSource", "helper/Offline",
 				}).to.throw(Error);
 				player.dispose();
 			});
+
+			it("stops playing if invoked with 'stop' at a sooner time", function(){
+				return Offline(function(){
+					var player = new BufferSource(buffer);
+					player.toMaster();
+					player.start(0).stop(0.1).stop(0.05);
+				}, 0.3).then(function(buffer){
+					expect(buffer.getLastSoundTime()).to.be.closeTo(0.05, 0.02);
+				});
+			});
+
+			it("stops playing at the earlier time if invoked with 'stop' at a later time", function(){
+				return Offline(function(){
+					var player = new BufferSource(buffer);
+					player.toMaster();
+					player.start(0).stop(0.1).stop(0.2);
+				}, 0.3).then(function(buffer){
+					expect(buffer.getLastSoundTime()).to.be.closeTo(0.1, 0.02);
+				});
+			});
 		});
 
 	});
