@@ -60,13 +60,15 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal"], function (Tone) {
 		//aproximate it with multiple linear ramps
 		time = this.toSeconds(time);
 		this.setRampPoint(time);
+		value = this._fromUnits(value);
+
 		//start from previously scheduled value
 		var prevEvent = this._events.get(time);
 		var segments = 5;
 		for (var i = 0; i <= segments; i++){
 			var segTime = constant * i + time;
 			var rampVal = this._exponentialApproach(prevEvent.time, prevEvent.value, value, constant, segTime);
-			this.linearRampToValueAtTime(rampVal, segTime);
+			this.linearRampToValueAtTime(this._toUnits(rampVal), segTime);
 		}
 		return this;
 	};
@@ -81,6 +83,8 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal"], function (Tone) {
 	Tone.TickSignal.prototype.exponentialRampToValueAtTime = function(value, time){
 		//aproximate it with multiple linear ramps
 		time = this.toSeconds(time);
+		value = this._fromUnits(value);
+
 		//start from previously scheduled value
 		var prevEvent = this._events.get(time);
 		if (prevEvent === null){
@@ -94,7 +98,7 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal"], function (Tone) {
 		for (var i = 0; i <= segments; i++){
 			var segTime = segmentDur * i + prevEvent.time;
 			var rampVal = this._exponentialInterpolate(prevEvent.time, prevEvent.value, time, value, segTime);
-			this.linearRampToValueAtTime(rampVal, segTime);
+			this.linearRampToValueAtTime(this._toUnits(rampVal), segTime);
 		}
 		return this;
 	};
