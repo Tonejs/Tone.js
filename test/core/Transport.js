@@ -331,6 +331,23 @@ function (Test, Transport, Tone, Offline, TransportTime, Signal, BufferTest) {
 				}, 0.1);
 			});
 
+			it("can toggle the state of the transport", function(){
+				return Offline(function(Transport){
+					Transport.toggle(0);
+					Transport.toggle(0.2);
+
+					return function(time){
+						Test.whenBetween(time, 0, 0.2, function(){
+							expect(Transport.state).to.equal("started");
+						});
+
+						Test.whenBetween(time, 0.2, Infinity, function(){
+							expect(Transport.state).to.equal("stopped");
+						});
+					};
+				}, 0.1);
+			});
+
 			it("tracks ticks correctly with a different PPQ and BPM", function(){
 
 				return Offline(function(Transport){
