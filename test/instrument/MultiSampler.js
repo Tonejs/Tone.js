@@ -108,6 +108,34 @@ define(["Tone/instrument/MultiSampler", "helper/Basic", "helper/InstrumentTests"
 					expect(buffer.isSilent()).to.be.true;
 				});
 			});
+
+			it ("is silent after the release", function(){
+				return Offline(function(){
+					var sampler = new MultiSampler({
+						"A4" : A4_buffer
+					}, {
+						release : 0
+					}).toMaster();
+					sampler.triggerAttack("A4", 0);
+					sampler.triggerRelease("A4", 0.2);
+				}, 0.3).then(function(buffer){
+					expect(buffer.getLastSoundTime()).to.be.closeTo(0.2, 0.01)
+				});
+			});
+
+			it ("can trigger the attack and release", function(){
+				return Offline(function(){
+					var sampler = new MultiSampler({
+						"A4" : A4_buffer
+					}, {
+						release : 0
+					}).toMaster();
+					sampler.triggerAttackRelease("A4", 0.2, 0.1);
+				}, 0.4).then(function(buffer){
+					expect(buffer.getFirstSoundTime()).to.be.closeTo(0.1, 0.01)
+					expect(buffer.getLastSoundTime()).to.be.closeTo(0.3, 0.01)
+				});
+			});
 		});
 
 		context("add samples", function(){
