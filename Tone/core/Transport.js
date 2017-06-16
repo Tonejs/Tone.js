@@ -431,6 +431,22 @@ function(Tone){
 		return this;
 	};
 
+	/**
+	 * Toggle the current state of the transport. If it is
+	 * started, it will stop it, otherwise it will start the Transport.
+	 * @param  {Time=} time The time of the event
+	 * @return {Tone.Transport}      this
+	 */
+	Tone.Transport.prototype.toggle = function(time){
+		time = this.toSeconds(time);
+		if (this._clock.getStateAtTime(time) !== Tone.State.Started){
+			this.start(time);
+		} else {
+			this.stop(time);
+		}
+		return this;
+	};
+
 	///////////////////////////////////////////////////////////////////////////////
 	//	SETTERS/GETTERS
 	///////////////////////////////////////////////////////////////////////////////
