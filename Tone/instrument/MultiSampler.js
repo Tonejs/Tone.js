@@ -149,6 +149,22 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/core/Buffers", "To
 	};
 
 	/**
+	 * Invoke the attack phase, then after the duration, invoke the release. 
+	 * @param  {Frequency} note     The note to play
+	 * @param  {Time} duration The time the note should be held
+	 * @param  {Time=} time     When to start the attack
+	 * @param  {NormalRange} [velocity=1] The velocity of the attack
+	 * @return {Tone.MultiSampler}          this
+	 */	
+	Tone.MultiSampler.prototype.triggerAttackRelease = function(note, duration, time, velocity){
+		time = this.toSeconds(time);
+		duration = this.toSeconds(duration);
+		this.triggerAttack(note, time, velocity);
+		this.triggerRelease(note, time + duration);
+		return this;
+	};
+
+	/**
 	 *  Add a note to the sampler.
 	 *  @param  {Note|Midi}   note      The buffer's pitch.
 	 *  @param  {String|Tone.Buffer|Audiobuffer}  url  Either the url of the bufer, 
