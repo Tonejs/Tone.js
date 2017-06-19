@@ -89,17 +89,17 @@
 		Tone.Transport.bpm.value = 108;
 		
 		var kick = new Tone.Player({
-			url : "./audio/loop/kick.mp3",
+			url : "./audio/loop/kick.[mp3|ogg]",
 			loop : true
 		}).toMaster().sync().start(0);
 
 		var snare = new Tone.Player({
-			url : "./audio/loop/snare.mp3",
+			url : "./audio/loop/snare.[mp3|ogg]",
 			loop : true
 		}).toMaster().sync().start("2n");
 
 		var hh = new Tone.Player({
-			url : "./audio/loop/hh.mp3",
+			url : "./audio/loop/hh.[mp3|ogg]",
 			loop : true
 		}).toMaster().sync().start("3:3", "4n"); //start with an offset
 
