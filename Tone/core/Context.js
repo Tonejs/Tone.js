@@ -337,6 +337,7 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/core/Timeline"], function (
 	 *  @returns {Tone.Context} this
 	 */
 	Tone.Context.prototype.dispose = function(){
+		Tone.Context.emit("close", this);
 		Tone.Emitter.prototype.dispose.call(this);
 		this._worker = null;
 		this._timeouts.dispose();
