@@ -96,6 +96,18 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/source
 		 *  @type {boolean}
 		 */
 		this.retrigger = options.retrigger;
+
+		/**
+		 *  The fadeIn time of the amplitude envelope.
+		 *  @type {Time}
+		 */
+		this.fadeIn = options.fadeIn;
+
+		/**
+		 *  The fadeOut time of the amplitude envelope.
+		 *  @type {Time}
+		 */
+		this.fadeOut = options.fadeOut;
 	};
 
 	Tone.extend(Tone.Player, Tone.Source);
@@ -115,6 +127,9 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/source
 		"loopEnd" : 0,
 		"retrigger" : false,
 		"reverse" : false,
+		"fadeIn" : 0,
+		"fadeOut" : 0
+
 	};
 
 	/**
@@ -189,7 +204,9 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/source
 			"loop" : this._loop,
 			"loopStart" : this._loopStart,
 			"loopEnd" : this._loopEnd,
-			"playbackRate" : this._playbackRate
+			"playbackRate" : this._playbackRate,
+			"fadeIn" : this.fadeIn,
+			"fadeOut" : this.fadeOut,
 		}).connect(this.output);
 
 		//set the looping properties
