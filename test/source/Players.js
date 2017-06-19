@@ -63,7 +63,25 @@ define(["helper/Basic", "Tone/source/Players", "helper/Offline",
 						done();
 					}
 				});
-			})
+			});
+
+			it ("can get and set fadeIn/Out", function(){
+				var players = new Players({
+					"test" : "./audio/sine.wav",
+				}, {
+					"fadeIn" : 0.1,
+					"fadeOut" : 0.2,
+				});
+				expect(players.fadeIn).to.equal(0.1);
+				expect(players.fadeOut).to.equal(0.2);
+				expect(players.get("test").fadeIn).to.equal(0.1);
+				players.fadeIn = 0.2;
+				players.fadeOut = 0.3;
+				expect(players.fadeIn).to.equal(0.2);
+				expect(players.fadeOut).to.equal(0.3);
+				expect(players.get("test").fadeOut).to.equal(0.3);
+				players.dispose();
+			});
 		});
 
 		context("get/has/add buffers", function(){
@@ -209,6 +227,35 @@ define(["helper/Basic", "Tone/source/Players", "helper/Offline",
 				}, 0.3).then(function(buffer){
 					buffer.forEach(function(sample, time){
 						if (time > 0.2){
+							expect(sample).to.equal(0);
+						}
+					});
+				});
+			});
+
+			it("fades in and out correctly", function(){
+				return Offline(function(){
+					var onesArray = new Float32Array(buffer.context.sampleRate * 0.5);
+					onesArray.forEach(function(sample, index){
+						onesArray[index] = 1;
+					});
+					var onesBuffer = Buffer.fromArray(onesArray);
+					var players = new Players({
+						"test" : onesBuffer
+					}, {
+						"fadeIn" : 0.1,
+						"fadeOut" : 0.1,
+					}).toMaster();
+					players.get("test").start(0);
+				}, 0.6).then(function(buffer){
+					buffer.forEach(function(sample, time){
+						if (time < 0.1){
+							expect(sample).to.be.within(0, 1);
+						} else if (time < 0.4){
+							expect(sample).to.equal(1);
+						} else if (time < 0.5){
+							expect(sample).to.be.within(0, 1);
+						} else {
 							expect(sample).to.equal(0);
 						}
 					});
