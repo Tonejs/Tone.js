@@ -88,7 +88,7 @@ define(["Test", "Tone/core/Context", "Tone/core/Tone", "helper/Offline"],
 		});
 
 		it ("can set a new context", function(){
-			Tone.context.close();
+			Tone.context.dispose();
 			Tone.context = new Context();
 		});
 
@@ -100,7 +100,19 @@ define(["Test", "Tone/core/Context", "Tone/core/Tone", "helper/Offline"],
 				done();
 			};
 			Context.on("init", initFn);
-			Tone.context.close();
+			Tone.context.dispose();
+			Tone.context = new Context();
+		});
+
+		it ("invokes close when a context is disposed", function(done){
+			this.timeout(200);
+			var closeFn = function(context){
+				expect(context).to.be.instanceOf(Context);
+				Context.off("close", closeFn);
+				done();
+			};
+			Context.on("close", closeFn);
+			Tone.context.dispose();
 			Tone.context = new Context();
 		});
 	});
