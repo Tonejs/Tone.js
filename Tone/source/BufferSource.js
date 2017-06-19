@@ -196,7 +196,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/G
 				if (!this.loop){
 					computedDur = Math.min(computedDur, this.buffer.duration - offset);
 				}
-				this.stop(time + computedDur + fadeInTime, fadeInTime);
+				this.stop(time + computedDur + fadeInTime, this.fadeOut);
 			}
 
 			//start the buffer source
@@ -240,8 +240,8 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/G
 			}			
 
 			//only stop if the last stop was scheduled later
-			if (this._stopTime === -1 || this._stopTime > time + fadeOutTime){
-				this._stopTime = time + fadeOutTime;
+			if (this._stopTime === -1 || this._stopTime > time){
+				this._stopTime = time;				
 
 				//cancel the end curve
 				this._gainNode.gain.cancelScheduledValues(this._startTime + this.sampleTime);
@@ -249,8 +249,8 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/G
 
 				//set a new one
 				if (fadeOutTime > 0){
-					this._gainNode.gain.setValueAtTime(this._gain, time);
-					time += fadeOutTime;
+					var startFade = Math.max(this._startTime, time - fadeOutTime);
+					this._gainNode.gain.setValueAtTime(this._gain, startFade);
 					this._gainNode.gain.linearRampToValueAtTime(0, time);
 				} else {
 					this._gainNode.gain.setValueAtTime(0, time);
