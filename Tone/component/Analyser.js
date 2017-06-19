@@ -77,7 +77,7 @@ define(["Tone/core/Tone"], function (Tone) {
 	 */
 	Tone.Analyser.defaults = {
 		"size" : 1024,
-		"returnType" : "byte",
+		"returnType" : "float",
 		"type" : "fft",
 		"smoothing" : 0.8,
 		"maxDecibels" : -30,
