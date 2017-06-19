@@ -190,10 +190,14 @@ define(["helper/Basic", "Tone/source/Player", "helper/Offline",
 				expect(player.loop).to.be.false;
 				player.set({
 					"loop" : true,
-					"loopStart" : 0.4
+					"loopStart" : 0.4,
+					"fadeIn" : 0.1,
+					"fadeOut" : 0.2,
 				});
 				expect(player.loop).to.be.true;
 				expect(player.loopStart).to.equal(0.4);
+				expect(player.fadeIn).to.equal(0.1);
+				expect(player.fadeOut).to.equal(0.2);
 				player.dispose();
 			});
 
@@ -386,6 +390,29 @@ define(["helper/Basic", "Tone/source/Player", "helper/Offline",
 					Transport.start(0, 0.03125);
 				}, 0.05).then(function(buffer){
 					expect(buffer.toArray()[0]).to.equal(testSample);
+				});
+			});
+
+			it("fades in and out correctly", function(){
+				return Offline(function(){
+					var onesArray = new Float32Array(buffer.context.sampleRate * 0.5);
+					onesArray.forEach(function(sample, index){
+						onesArray[index] = 1;
+					});
+					var onesBuffer = Buffer.fromArray(onesArray);
+					var player = new Player({"url" : onesBuffer, "fadeOut" : 0.1, "fadeIn" : 0.1}).start(0).toMaster();
+				}, 0.6).then(function(buffer){
+					buffer.forEach(function(sample, time){
+						if (time < 0.1){
+							expect(sample).to.be.within(0, 1);
+						} else if (time < 0.4){
+							expect(sample).to.equal(1);
+						} else if (time < 0.5){
+							expect(sample).to.be.within(0, 1);
+						} else {
+							expect(sample).to.equal(0);
+						}
+					});
 				});
 			});
 		});
