@@ -49,7 +49,6 @@ define(["Tone/core/Tone", "Tone/core/Buffer"], function (Tone) {
 		 */
 		this.baseUrl = options.baseUrl;
 
-		urls = this._flattenUrls(urls);
 		this._loadingCount = 0;
 		//add each one
 		for (var key in urls){
@@ -146,30 +145,6 @@ define(["Tone/core/Tone", "Tone/core/Buffer"], function (Tone) {
 			this._buffers[name] = new Tone.Buffer(this.baseUrl + url, callback);
 		}
 		return this;
-	};
-
-	/**
-	 *  Flatten an object into a single depth object. 
-	 *  thanks to https://gist.github.com/penguinboy/762197
-	 *  @param   {Object} ob 	
-	 *  @return  {Object}    
-	 *  @private
-	 */
-	Tone.Buffers.prototype._flattenUrls = function(ob) {
-		var toReturn = {};
-		for (var i in ob) {
-			if (!ob.hasOwnProperty(i)) continue;
-			if (Tone.isObject(ob[i])) {
-				var flatObject = this._flattenUrls(ob[i]);
-				for (var x in flatObject) {
-					if (!flatObject.hasOwnProperty(x)) continue;
-					toReturn[i + "." + x] = flatObject[x];
-				}
-			} else {
-				toReturn[i] = ob[i];
-			}
-		}
-		return toReturn;
 	};
 
 	/**
