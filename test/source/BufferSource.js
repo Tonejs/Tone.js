@@ -10,6 +10,12 @@ define(["helper/Basic", "Tone/source/BufferSource", "helper/Offline",
 
 		var buffer = new Buffer();
 
+		var ones = new Float32Array(buffer.context.sampleRate * 0.5);
+		ones.forEach(function(sample, index){
+			ones[index] = 1;
+		});
+		var onesBuffer = Buffer.fromArray(ones);
+
 		beforeEach(function(done){
 			buffer.load("./audio/sine.wav", function(){
 				done();
@@ -405,13 +411,66 @@ define(["helper/Basic", "Tone/source/BufferSource", "helper/Offline",
 			it("can be scheduled to stop with a ramp", function(){
 				return Meter(function(){
 					var player = new BufferSource(buffer).toMaster();
-					player.start(0).stop(0.1, 0.1);
+					player.start(0).stop(0.1, 0.05);
 				}, 0.6).then(function(rms){
 					rms.forEach(function(level, time){
-						if (time > 0.01 && time < 0.19){
+						if (time > 0.01 && time < 0.1){
 							expect(level).to.be.gt(0);
-						} else if (time > 0.21){
+						} else if (time > 0.1){
 							expect(level).to.equal(0);
+						}
+					});
+				});
+			});
+
+			it("fades from the end", function(){
+				return Offline(function(){
+					var player = new BufferSource(onesBuffer).toMaster();
+					player.start(0).stop(0.2, 0.1)
+				}, 0.3).then(function(buffer){
+					buffer.forEach(function(sample, time){
+						if (time < 0.1){
+							expect(sample).to.equal(1);
+						} else if (time < 0.2){
+							expect(sample).to.be.lessThan(1);
+						} else {
+							expect(sample).to.equal(0);
+						}
+					});
+				});
+			});
+
+			it("cant fade for shorter than the fade in time", function(){
+				return Offline(function(){
+					var player = new BufferSource(onesBuffer).toMaster();
+					player.fadeIn = 0.15
+					player.start(0).stop(0.2, 0.1)
+				}, 0.3).then(function(buffer){
+					buffer.forEach(function(sample, time){
+						if (time < 0.149){
+							expect(sample).to.be.lessThan(1);
+						} else if (Math.abs(time - 0.15) < 1e-4){
+							expect(sample).to.be.closeTo(1, 0.05);
+						} else if (time < 0.2){
+							expect(sample).to.be.lessThan(1);
+						}
+					});
+				});
+			});
+
+			it("fades at the end of the file", function(){
+				return Offline(function(){
+					var player = new BufferSource(onesBuffer).toMaster();
+					player.fadeOut = 0.1;
+					player.start(0);
+				}, 0.6).then(function(buffer){
+					buffer.forEach(function(sample, time){
+						if (time < 0.4){
+							expect(sample).to.equal(1);
+						} else if (time < 0.5){
+							expect(sample).to.be.lessThan(1);
+						} else {
+							expect(sample).to.equal(0);
 						}
 					});
 				});
