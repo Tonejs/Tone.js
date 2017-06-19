@@ -144,6 +144,27 @@ define(["Test", "Tone/core/Buffer", "Tone/core/Tone"], function (Test, Buffer, T
 				});
 			});
 
+			it("can load a file with fallback extensions", function(done){
+				Buffer.load("./audio/sine.[nope|nada|wav]", function(buffer){
+					expect(buffer).to.exist;
+					done();
+				});
+			});
+
+			it("takes the first supported format when multiple extensions are provided", function(done){
+				Buffer.load("./audio/sine.[wav|nope]", function(buffer){
+					expect(buffer).to.exist;
+					done();
+				});
+			});
+
+			it("can pass in multiple extensions in Buffer instance", function(done){
+				var buffer = new Buffer("./audio/sine.[nope|wav]", function(){
+					buffer.dispose();
+					done();
+				});
+			});
+
 			it("instance .load method returns Promise", function(done){
 				var promise = (new Buffer()).load(testFile);
 				expect(promise).to.be.instanceOf(Promise);
