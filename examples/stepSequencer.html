@@ -38,15 +38,14 @@
 	</div>	
 	<script>
 		//setup a polyphonic sampler
-		var keys = new Tone.MultiPlayer({
-			urls : {
-				"A" : "./audio/casio/A1.mp3",
-				"C#" : "./audio/casio/Cs2.mp3",
-				"E" : "./audio/casio/E2.mp3",
-				"F#" : "./audio/casio/Fs2.mp3",
-			},
-			volume : -10,
-			fadeOut : 0.1,
+		var keys = new Tone.Players({
+			"A" : "./audio/casio/A1.[mp3|ogg]",
+			"C#" : "./audio/casio/Cs2.[mp3|ogg]",
+			"E" : "./audio/casio/E2.[mp3|ogg]",
+			"F#" : "./audio/casio/Fs2.[mp3|ogg]",
+		}, {
+			"volume" : -10,
+			"fadeOut" : "64n",
 		}).toMaster();
 
 		//the notes
@@ -58,7 +57,7 @@
 				if (column[i] === 1){
 					//slightly randomized velocities
 					var vel = Math.random() * 0.5 + 0.5;
-					keys.start(noteNames[i], time, 0, "32n", 0, vel);
+					keys.get(noteNames[i]).start(time, 0, "32n", 0, vel);
 				}
 			}
 		}, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], "16n");
