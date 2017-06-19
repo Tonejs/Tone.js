@@ -117,11 +117,28 @@ define(["Test", "Tone/core/Buffers", "Tone/core/Buffer"], function (Test, Buffer
 			});
 		});
 
+		it("throws an error if no buffer exists with that name or index", function(){
+			var buffer = new Buffers();
+			expect(function(){
+				buffer.get("nope");
+			}).to.throw(Error);
+			buffer.dispose();
+		});
+
 		it("can add a Tone.Buffer", function(){
 			var buff = new Buffer();
 			var buffer = new Buffers();
 			buffer.add("name", buff);
 			expect(buffer.get("name")).to.equal(buff);
+		});
+
+		it("can add an AudioBuffer", function(done){
+			Buffer.load(testFile, function(buff){
+				var buffer = new Buffers();
+				buffer.add("name", buff);
+				expect(buffer.get("name").get()).to.equal(buff);
+				done();
+			})
 		});
 
 		it("can be constructed with Tone.Buffers", function(){
