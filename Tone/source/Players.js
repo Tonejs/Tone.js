@@ -54,6 +54,21 @@ define(["Tone/core/Tone", "Tone/source/Player", "Tone/component/Volume"], functi
 		 */
 		this._loadingCount = 0;
 
+		/**
+		 * private holder of the fadeIn time
+		 * @type {Time}
+		 * @private
+		 */
+		this._fadeIn = options.fadeIn;
+
+		/**
+		 * private holder of the fadeOut time
+		 * @type {Time}
+		 * @private
+		 */
+		this._fadeOut = options.fadeOut;
+
+		//add all of the players
 		for (var name in urls){
 			this._loadingCount++;
 			this.add(name, urls[name], this._bufferLoaded.bind(this, options.onload));
@@ -69,7 +84,9 @@ define(["Tone/core/Tone", "Tone/source/Player", "Tone/component/Volume"], functi
 	Tone.Players.defaults = {
 		"volume" : 0,
 		"mute" : false,
-		"onload" : Tone.noOp
+		"onload" : Tone.noOp,
+		"fadeIn" : 0,
+		"fadeOut" : 0
 	};
 
 	/**
@@ -99,6 +116,42 @@ define(["Tone/core/Tone", "Tone/source/Player", "Tone/component/Volume"], functi
 		}, 
 		set : function(mute){
 			this._volume.mute = mute;
+		}
+	});
+
+	/**
+	 * The fadeIn time of the amplitude envelope.
+	 * @memberOf Tone.Source#
+	 * @type {Time}
+	 * @name fadeIn
+	 */
+	Object.defineProperty(Tone.Players.prototype, "fadeIn", {
+		get : function(){
+			return this._fadeIn;
+		}, 
+		set : function(fadeIn){
+			this._fadeIn = fadeIn;
+			this._forEach(function(player){
+				player.fadeIn = fadeIn;
+			});
+		}
+	});
+
+	/**
+	 * The fadeOut time of the amplitude envelope.
+	 * @memberOf Tone.Source#
+	 * @type {Time}
+	 * @name fadeOut
+	 */
+	Object.defineProperty(Tone.Players.prototype, "fadeOut", {
+		get : function(){
+			return this._fadeOut;
+		}, 
+		set : function(fadeOut){
+			this._fadeOut = fadeOut;
+			this._forEach(function(player){
+				player.fadeOut = fadeOut;
+			});
 		}
 	});
 
@@ -184,6 +237,8 @@ define(["Tone/core/Tone", "Tone/source/Player", "Tone/component/Volume"], functi
 	 */
 	Tone.Players.prototype.add = function(name, url, callback){
 		this._players[name] = new Tone.Player(url, callback).connect(this.output);
+		this._players[name].fadeIn = this._fadeIn;
+		this._players[name].fadeOut = this._fadeOut;
 		return this;
 	};
 
