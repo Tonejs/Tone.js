@@ -796,5 +796,11 @@ function(Tone){
 		context.Transport = Tone.Transport;
 	});
 
+	Tone.Context.on("close", function(context){
+		if (context.Transport instanceof TransportConstructor){
+			context.Transport.dispose();
+		}
+	});
+
 	return Tone.Transport;
 });
