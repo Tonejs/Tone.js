@@ -36,8 +36,8 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type"], function(Tone)
 	 *  @extends {Tone}
 	 *  @param {AudioBuffer|string} url The url to load, or the audio buffer to set. 
 	 *  @param {Function=} onload A callback which is invoked after the buffer is loaded. 
-	 *                            It's recommended to use Tone.Buffer.onload instead 
-	 *                            since it will give you a callback when ALL buffers are loaded.
+	 *                            It's recommended to use `Tone.Buffer.on('load', callback)` instead 
+	 *                            since it will give you a callback when _all_ buffers are loaded.
 	 *  @param {Function=} onerror The callback to invoke if there is an error
 	 *  @example
 	 * var buffer = new Tone.Buffer("path/to/sound.mp3", function(){
