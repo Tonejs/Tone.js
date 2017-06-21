@@ -91,7 +91,6 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal", "Tone/core/TimelineState
 	Tone.Clock.defaults = {
 		"callback" : Tone.noOp,
 		"frequency" : 1,
-		"lookAhead" : "auto",
 	};
 
 	/**
@@ -110,7 +109,7 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal", "Tone/core/TimelineState
 	/**
 	 *  Start the clock at the given time. Optionally pass in an offset
 	 *  of where to start the tick counter from.
-	 *  @param  {Time}  time    The time the clock should start
+	 *  @param  {Time=}  time    The time the clock should start
 	 *  @param  {Ticks=}  offset  Where the tick counter starts counting from.
 	 *  @return  {Tone.Clock}  this
 	 */
