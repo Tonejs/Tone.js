@@ -78,7 +78,7 @@ define(["Tone/core/Tone", "Tone/component/Volume", "Tone/core/Context"], functio
 	/**
 	 *  Add a master effects chain. NOTE: this will disconnect any nodes which were previously 
 	 *  chained in the master effects chain. 
-	 *  @param {...AudioNode|Tone} args All arguments will be connected in a row
+	 *  @param {AudioNode|Tone} args... All arguments will be connected in a row
 	 *                                  and the Master will be routed through it.
 	 *  @return  {Tone.Master}  this
 	 *  @example
