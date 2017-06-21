@@ -271,7 +271,6 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/core/Timeline"], function (
 	 *  @type {Number}
 	 *  @memberOf Tone.Context
 	 *  @name lookAhead
-	 *  @static
 	 */
 	Object.defineProperty(Tone.Context.prototype, "lookAhead", {
 		get : function(){
