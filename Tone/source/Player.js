@@ -129,7 +129,6 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/source
 		"reverse" : false,
 		"fadeIn" : 0,
 		"fadeOut" : 0
-
 	};
 
 	/**
