@@ -11,7 +11,7 @@ function(Tone){
 	 *  @param {String} url the url of the audio file
 	 *  @param {Function=} onload The callback to invoke when the sample is loaded.
 	 *  @example
-	 * var sampler = new Sampler("./audio/casio/A1.mp3", function(){
+	 * var sampler = new Tone.Sampler("./audio/casio/A1.mp3", function(){
 	 * 	//repitch the sample down a half step
 	 * 	sampler.triggerAttack(-1);
 	 * }).toMaster();
