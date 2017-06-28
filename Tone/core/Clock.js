@@ -195,7 +195,7 @@ define(["Tone/core/Tone", "Tone/signal/TickSignal", "Tone/core/TimelineState",
 							this.ticks++;
 						} catch(e){
 							this.ticks++;
-							throw new Error(e);
+							throw e;
 						}
 					}
 				}
