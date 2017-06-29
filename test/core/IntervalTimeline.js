@@ -74,6 +74,14 @@ define(["Test", "Tone/core/IntervalTimeline", "helper/Basic"], function (Test, I
 				sched.dispose();
 			});
 
+			it ("removing on a null set does nothing", function(){
+				var sched = new IntervalTimeline();
+				expect(sched.length).to.equal(0);
+				sched.remove({});
+				expect(sched.length).to.equal(0);
+				sched.dispose();
+			});
+
 			it ("can add and remove and add again events from the timeline", function(){
 				var sched = new IntervalTimeline();
 
@@ -286,6 +294,16 @@ define(["Test", "Tone/core/IntervalTimeline", "helper/Basic"], function (Test, I
 					count++;
 				});
 				expect(count).to.equal(5);
+				sched.dispose();
+			});
+
+			it("iterate over null set", function(){
+				var sched = new IntervalTimeline();
+				var count = 0;
+				sched.forEach(function(){
+					count++;
+				});
+				expect(count).to.equal(0);
 				sched.dispose();
 			});
 
