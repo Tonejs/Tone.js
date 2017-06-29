@@ -66,11 +66,7 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/signal/Signal"], f
 	 * synth.triggerRelease();
 	 */
 	Tone.Monophonic.prototype.triggerRelease = function(time){
-		if (Tone.isUndef(time)){
-			time = this.now() + this.blockTime;
-		} else {
-			time = this.toSeconds(time);
-		}
+		time = this.toSeconds(time);
 		this._triggerEnvelopeRelease(time);
 		return this;
 	};
