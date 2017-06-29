@@ -102,28 +102,12 @@ module.exports = function(config) {
 
 		//custom launcher for travis
 		customLaunchers: {
-			Chrome_travis_ci: {
-				base: 'Chrome',
-				flags: ['--no-sandbox', '--use-fake-ui-for-media-stream', '--use-fake-device-for-media-stream']
-			},
-			Chrome_user_media: {
-				base: 'Chrome',
-				flags: ['--use-fake-ui-for-media-stream']
-			},
 			HeadlessChrome: {
 				base: 'ChromeHeadless',
 				flags: ['--disable-translate', '--disable-extensions', '--remote-debugging-port=9223', '--no-sandbox', '--use-fake-ui-for-media-stream', '--use-fake-device-for-media-stream']
 			}
 		}
 	};
-
-
-	/*if (process.env.TRAVIS) {
-		configuration.browsers = ['Chrome_travis_ci'];
-	} else {
-		// configuration.browsers = ['Chrome', 'Firefox'];
-		configuration.browsers = ['HeadlessChrome'];
-	}*/
 
 	config.set(configuration);
 };

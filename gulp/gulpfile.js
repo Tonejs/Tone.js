@@ -32,7 +32,6 @@ var argv = require("yargs")
 			.alias("y", "type")
 			.alias("x", "examples")
 			.argv;
-var webserver = require("gulp-webserver");
 var KarmaServer = require("karma").Server;
 
 /**
@@ -151,14 +150,6 @@ gulp.task("lint", function() {
 		.pipe(jshint())
 		.pipe(jshint.reporter("default"))
 		.pipe(jshint.reporter("fail"));
-});
-
-/**
- *  TEST RUNNER
- */
-gulp.task("browser-test", ["server", "collectTests"], function(){
-	gulp.src("../test/index.html")
-		.pipe(openFile({uri: "http://localhost:3000/test"}));
 });
 
 gulp.task("karma-test", ["default"], function (done) {
