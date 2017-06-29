@@ -27,7 +27,7 @@ module.exports = function(config) {
 			{pattern: 'build/*.js', included: false},
 			{pattern: 'test/audio/*', included: false},
 			{pattern: 'Tone/*/*.js', included: false},
-		],
+			],
 
 
 		// list of files to exclude
@@ -54,11 +54,11 @@ module.exports = function(config) {
 
 		//plugins
 		plugins : [
-			'karma-coverage',
-			'karma-mocha',
-			'karma-requirejs',
-			'karma-chrome-launcher',
-			'karma-firefox-launcher'
+		'karma-coverage',
+		'karma-mocha',
+		'karma-requirejs',
+		'karma-chrome-launcher',
+		'karma-firefox-launcher'
 		],
 
 
@@ -89,7 +89,7 @@ module.exports = function(config) {
 
 		// start these browsers
 		// available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-		// browsers: ['Chrome'],
+		browsers: ['HeadlessChrome'],
 
 
 		// Continuous Integration mode
@@ -109,17 +109,21 @@ module.exports = function(config) {
 			Chrome_user_media: {
 				base: 'Chrome',
 				flags: ['--use-fake-ui-for-media-stream']
+			},
+			HeadlessChrome: {
+				base: 'ChromeHeadless',
+				flags: ['--disable-translate', '--disable-extensions', '--remote-debugging-port=9223', '--no-sandbox', '--use-fake-ui-for-media-stream', '--use-fake-device-for-media-stream']
 			}
 		}
 	};
 
 
-	if (process.env.TRAVIS) {
+	/*if (process.env.TRAVIS) {
 		configuration.browsers = ['Chrome_travis_ci'];
 	} else {
 		// configuration.browsers = ['Chrome', 'Firefox'];
-		configuration.browsers = ['Chrome_user_media'];
-	}
+		configuration.browsers = ['HeadlessChrome'];
+	}*/
 
-  config.set(configuration);
+	config.set(configuration);
 };
