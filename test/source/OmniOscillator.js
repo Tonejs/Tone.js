@@ -64,6 +64,15 @@ define(["helper/Basic", "Tone/source/OmniOscillator", "helper/Offline", "helper/
 					osc.toMaster();
 					osc.start();
 				});
+			});	
+
+			it("can switch type after playing", function(){
+				return OutputAudio(function(){
+					var osc = new OmniOscillator(440, "amsine");
+					osc.toMaster();
+					osc.start();
+					osc.type = "fmsine";
+				});
 			});		
 
 		});
@@ -154,10 +163,12 @@ define(["helper/Basic", "Tone/source/OmniOscillator", "helper/Offline", "helper/
 			it("can be set to an FatOscillator", function(){
 				var omni = new OmniOscillator({
 					"type" : "fatsquare2",
-					"count" : 3
+					"count" : 4,
+					"spread" : 25
 				});
 				expect(omni.type).to.equal("fatsquare2");
-				expect(omni.count).to.equal(3);
+				expect(omni.count).to.equal(4);
+				expect(omni.spread).to.equal(25);
 				omni.dispose();
 			});
 
@@ -167,13 +178,15 @@ define(["helper/Basic", "Tone/source/OmniOscillator", "helper/Offline", "helper/
 					"type": "fmcustom",
 					"partials" : [2, 1, 2, 2],
 					"phase": 120,
-					"volume": -2
+					"volume": -2,
+					"harmonicity" : 2
 				});
 				expect(omni.volume.value).to.be.closeTo(-2, 0.01);
 				expect(omni.detune.value).to.be.closeTo(4, 0.01);
 				expect(omni.phase).to.be.closeTo(120, 0.01);
 				expect(omni.type).to.be.equal("fmcustom");
 				expect(omni.partials).to.deep.equal([2, 1, 2, 2]);
+				expect(omni.harmonicity.value).be.closeTo(2, 0.01);
 				omni.dispose();
 			});
 		});
