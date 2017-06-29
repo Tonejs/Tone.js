@@ -189,6 +189,23 @@ define(["helper/Basic", "Tone/source/OmniOscillator", "helper/Offline", "helper/
 				expect(omni.harmonicity.value).be.closeTo(2, 0.01);
 				omni.dispose();
 			});
+
+			it("setting/getting values when the wrong type is set has no effect", function(){
+				var omni = new OmniOscillator(440, "sine");
+				omni.set({
+					"spread" : 40,
+					"count" : 10,
+					"modulationType" : "sine",
+					"modulationIndex" : 4,
+					"harmonicity" : 3,
+				})
+				expect(omni.spread).to.be.undefined;
+				expect(omni.count).to.be.undefined;
+				expect(omni.modulationType).to.be.undefined;
+				expect(omni.modulationIndex).to.be.undefined;
+				expect(omni.harmonicity).to.be.undefined;
+				omni.dispose();
+			});
 		});
 	});
 });
