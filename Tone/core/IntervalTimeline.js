@@ -303,11 +303,9 @@ define(["Tone/core/Tone", "Tone/type/Type"], function (Tone) {
 	Tone.IntervalTimeline.prototype.forEach = function(callback){
 		if (this._root !== null){
 			var allNodes = [];
-			if (this._root !== null){
-				this._root.traverse(function(node){
-					allNodes.push(node);
-				});
-			}
+			this._root.traverse(function(node){
+				allNodes.push(node);
+			});
 			for (var i = 0; i < allNodes.length; i++){
 				var ev = allNodes[i].event;
 				if (ev){
@@ -352,9 +350,7 @@ define(["Tone/core/Tone", "Tone/type/Type"], function (Tone) {
 			this._root.searchAfter(time, results);
 			for (var i = results.length - 1; i >= 0; i--){
 				var ev = results[i].event;
-				if (ev){
-					callback(ev);
-				}
+				callback(ev);
 			}
 		}
 		return this;
