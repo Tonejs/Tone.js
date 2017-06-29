@@ -305,11 +305,10 @@ define(["Tone/core/Tone", "Tone/event/Event", "Tone/type/Type", "Tone/core/Trans
 	 *  @return  {Tone.Part}  this
 	 */
 	Tone.Part.prototype.cancel = function(after){
-		after = this.toTicks(after);
 		this._forEach(function(event){
 			event.cancel(after);
 		});
-		this._state.cancel(after);
+		this._state.cancel(this.toTicks(after));
 		return this;
 	};
 
