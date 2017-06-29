@@ -164,16 +164,6 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/core/Timeline"], function (
 			this.emit("tick");
 		}.bind(this));
 
-		//lag compensation
-		worker.addEventListener("message", function(){
-			var now = this.now();
-			if (Tone.isNumber(this._lastUpdate)){
-				var diff = now - this._lastUpdate;
-				this._computedUpdateInterval = Math.max(diff, this._computedUpdateInterval * 0.97);
-			}
-			this._lastUpdate = now;
-		}.bind(this));
-
 		return worker;
 	};
 
@@ -245,24 +235,6 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/core/Timeline"], function (
 		});
 		return this;
 	};
-
-	/**
-	 *  This is the time that the clock is falling behind
-	 *  the scheduled update interval. The Context automatically
-	 *  adjusts for the lag and schedules further in advance.
-	 *  @type {Number}
-	 *  @memberOf Tone.Context
-	 *  @name lag
-	 *  @static
-	 *  @readOnly
-	 */
-	Object.defineProperty(Tone.Context.prototype, "lag", {
-		get : function(){
-			var diff = this._computedUpdateInterval - this._updateInterval;
-			diff = Math.max(diff, 0);
-			return diff;
-		}
-	});
 
 	/**
 	 *  How often the Web Worker callback is invoked.
