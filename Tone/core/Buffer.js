@@ -417,7 +417,7 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type"], function(Tone)
 	 */
 	Tone.Buffer.load = function(url, onload, onerror){
 		//default
-		onload = onload || Tone.noOp;
+		onload = Tone.defaultArg(onload, Tone.noOp);
 
 		// test if the url contains multiple extensions
 		var matches = url.match(/\[(.+\|?)+\]$/);
@@ -435,11 +435,11 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type"], function(Tone)
 
 		function onError(e){
 			Tone.Buffer._removeFromDownloadQueue(request);
+			Tone.Buffer.emit("error", e);
 			if (onerror){
 				onerror(e);
-				Tone.Buffer.emit("error", e);
 			} else {
-				throw new Error(e);
+				throw e;
 			}
 		}
 
