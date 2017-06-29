@@ -42,6 +42,7 @@ define(["Tone/core/Tone", "Tone/core/Context"], function (Tone) {
 		 */
 		this._currentTime = 0;
 
+		this.clockSource = "offline";
 		//modify the lookAhead and updateInterval to one block
 		this.lookAhead = 0;
 		this.updateInterval = this.blockTime;
@@ -55,17 +56,6 @@ define(["Tone/core/Tone", "Tone/core/Context"], function (Tone) {
 	 */
 	Tone.OfflineContext.prototype.now = function(){
 		return this._currentTime;
-	};
-
-	/**
-	 *  Overwrite this method since the worker is not necessary for the offline context
-	 *  @private
-	 */
-	Tone.OfflineContext.prototype._createWorker = function(){
-		//dummy worker that does nothing
-		return {
-			postMessage : function(){}
-		};
 	};
 
 	/**
