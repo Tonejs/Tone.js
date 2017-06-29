@@ -37,13 +37,11 @@ define(["Tone/core/Tone", "Tone/event/Event", "Tone/type/Type", "Tone/core/Trans
 		this._events = [];
 
 		//add the events
-		if (!Tone.isUndef(options.events)){
-			for (var i = 0; i < options.events.length; i++){
-				if (Array.isArray(options.events[i])){
-					this.add(options.events[i][0], options.events[i][1]);
-				} else {
-					this.add(options.events[i]);
-				}
+		for (var i = 0; i < options.events.length; i++){
+			if (Array.isArray(options.events[i])){
+				this.add(options.events[i][0], options.events[i][1]);
+			} else {
+				this.add(options.events[i]);
 			}
 		}
 	};
