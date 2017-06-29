@@ -193,13 +193,13 @@ define(["helper/Basic", "Tone/source/OmniOscillator", "helper/Offline", "helper/
 			it("setting/getting values when the wrong type is set has no effect", function(){
 				var omni = new OmniOscillator(440, "sine");
 				omni.set({
-					"spread" : 40,
-					"count" : 10,
 					"modulationType" : "sine",
 					"modulationIndex" : 4,
 					"harmonicity" : 3,
 				})
+				omni.spread = 40;
 				expect(omni.spread).to.be.undefined;
+				omni.count = 5;
 				expect(omni.count).to.be.undefined;
 				expect(omni.modulationType).to.be.undefined;
 				expect(omni.modulationIndex).to.be.undefined;
