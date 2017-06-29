@@ -56,11 +56,11 @@ define(["Test", "Tone/core/IntervalTimeline", "helper/Basic"], function (Test, I
 				};
 				var ev1 = {
 					"duration" : 0.2,
-					"time"  : 0
+					"time"  : 0.2
 				};
 				var ev2 = {
 					"duration" : 0.2,
-					"time"  : 0
+					"time"  : 0.1
 				};
 				sched.add(ev0);
 				sched.add(ev1);
@@ -69,6 +69,8 @@ define(["Test", "Tone/core/IntervalTimeline", "helper/Basic"], function (Test, I
 				sched.remove(ev0);
 				sched.remove(ev1);
 				expect(sched.length).to.equal(1);
+				sched.remove(ev2);
+				expect(sched.length).to.equal(0);
 				sched.dispose();
 			});
 
@@ -81,11 +83,11 @@ define(["Test", "Tone/core/IntervalTimeline", "helper/Basic"], function (Test, I
 				};
 				var ev1 = {
 					"duration" : 0.2,
-					"time"  : 0
+					"time"  : 0.2
 				};
 				var ev2 = {
 					"duration" : 0.2,
-					"time"  : 0
+					"time"  : 0.1
 				};
 				sched.add(ev0);
 				sched.add(ev1);
@@ -221,14 +223,28 @@ define(["Test", "Tone/core/IntervalTimeline", "helper/Basic"], function (Test, I
 
 			it ("can handle many items", function(){
 				var sched = new IntervalTimeline();
-				for (var i = 0; i < 10000; i++){
-					sched.add({
-						"time" : i,
-						"duration" : 1
-					});
+				var len = 5000;
+				var events = [];
+				var duration = 1;
+				var time = 0;
+				for (var i = 0; i < len; i++){
+					var event = {
+						"time" : time,
+						"duration" : duration
+					};
+					time = (time + 3.1) % 109;
+					duration = (duration + 5.7) % 19;
+					sched.add(event);
+					events.push(event);
 				}
-				for (var j = 0; j < 10000; j++){
-					expect(sched.get(j).time).to.equal(j);
+				for (var j = 0; j < events.length; j++){
+					var event = events[j];
+					expect(sched.get(event.time).time).to.equal(event.time);
+				}
+
+				for (var k = 0; k < events.length; k++){
+					sched.remove(events[k]);
+					expect(sched.length).to.equal(events.length - k - 1);
 				}
 				sched.dispose();
 			});
