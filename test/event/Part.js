@@ -109,6 +109,26 @@ define(["helper/Basic", "Tone/event/Part", "Tone/core/Tone",
 				});
 			});
 
+			it("can cancel event changes", function(){
+				var count = 0;
+				return Offline(function(Transport){
+					var part = new Part(function(time){
+						count++;
+					}, [{
+						"time" : 0,
+						"note" : "C3"
+					},
+					{
+						"time" : 0.2,
+						"note" : "D3"
+					}]).start(0).stop(0.1);
+					part.cancel(0.1);
+					Transport.start(0);
+				}, 0.3).then(function(){
+					expect(count).to.equal(2);
+				});
+			});
+
 			it("can add an event as a time and value", function(){
 				return Offline(function(){
 					var part = new Part();
