@@ -78,7 +78,7 @@ module.exports = function(config) {
 		colors: true,
 
 		// set the inactivity level to longer
-		browserNoActivityTimeout : 30000,
+		browserNoActivityTimeout : 60000,
 
 
 		// level of logging
