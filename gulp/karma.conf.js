@@ -78,7 +78,7 @@ module.exports = function(config) {
 		colors: true,
 
 		// set the inactivity level to longer
-		browserNoActivityTimeout : 60000,
+		browserNoActivityTimeout : 20000,
 
 
 		// level of logging
@@ -107,7 +107,7 @@ module.exports = function(config) {
 		customLaunchers: {
 			HeadlessChrome: {
 				base: 'ChromeHeadless',
-				flags: ['--disable-translate', '--disable-extensions', '--remote-debugging-port=9223', '--no-sandbox', '--use-fake-ui-for-media-stream', '--use-fake-device-for-media-stream']
+				flags: [/*'--disable-translate', '--disable-extensions', '--remote-debugging-port=9223', */'--no-sandbox', '--use-fake-ui-for-media-stream', '--use-fake-device-for-media-stream']
 			}
 		}
 	};
