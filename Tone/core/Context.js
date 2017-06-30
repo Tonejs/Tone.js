@@ -435,28 +435,34 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/core/Timeline"], function (
 			return this._type;
 		},
 		set : function(type){
-			if (this._type === Ticker.Type.Worker){
-				this._worker.onmessage = null;
-			} else if (this._type === Ticker.Type.Timeout){
-				clearTimeout(this._timeout);
-			}
+			this._disposeClock();
 			this._type = type;
 			this._createClock();
 		}
 	});
 
 	/**
+	 * Clean up the current clock source
+	 * @private
+	 */
+	Ticker.prototype._disposeClock = function(){
+		if (this._timeout){
+			clearTimeout(this._timeout);
+			this._timeout = null;
+		}
+		if (this._worker){
+			this._worker.terminate();
+			this._worker.onmessage = null;
+			this._worker = null;
+		}	
+	};
+
+	/**
 	 * Clean up
 	 * @private
 	 */
 	Ticker.prototype.dispose = function(){
-		if (this._timeout){
-			clearTimeout(this._timeout);
-		}
-		if (this._worker){
-			this._worker.onmessage = null;
-			this._worker = null;
-		}
+		this._disposeClock();
 		this._callback = null;
 	};
 
