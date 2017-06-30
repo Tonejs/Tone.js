@@ -394,13 +394,13 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/core/Timeline"], function (
 	 */
 	Ticker.prototype._createClock = function(){
 		if (this._type === Ticker.Type.Worker){
-			this._createWorker();
-			/*try {
+			try {
+				this._createWorker();
 			} catch(e) {
 				// workers not supported, fallback to timeout
 				this._type = Ticker.Type.Timeout;
 				this._createClock();
-			}*/
+			}
 		} else if (this._type === Ticker.Type.Timeout){
 			this._createTimeout();
 		}
