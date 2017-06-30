@@ -371,7 +371,6 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/core/Timeline"], function (
 		var blobUrl = URL.createObjectURL(blob);
 		var worker = new Worker(blobUrl);
 
-		window.worker = worker;
 		worker.onmessage = this._callback.bind(this);
 
 		this._worker = worker;
