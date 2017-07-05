@@ -3,8 +3,17 @@ define(["Test", "Tone/core/OfflineContext"],
 
 	context("OfflineContext", function(){
 
-		it("can be created", function(){
-			new OfflineContext(1, 0.1, 44100);
+		it ("can be created an disposed", function(){
+			var ctx = new OfflineContext(1, 0.1, 44100);
+			ctx.dispose();
+			Test.wasDisposed(ctx);
+		});
+
+		it("is setup with 0 lookAhead and offline clockSource", function(){
+			var ctx = new OfflineContext(1, 0.1, 44100);
+			expect(ctx.lookAhead).to.equal(0);
+			expect(ctx.clockSource).to.equal("offline");
+			// ctx.dispose();
 		});
 
 		it ("render returns a promise", function(){
