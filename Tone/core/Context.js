@@ -55,13 +55,6 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/core/Timeline"], function (
 		this.lookAhead = options.lookAhead;
 
 		/**
-		 *  How often the update look runs
-		 *  @type  {Number}
-		 *  @private
-		 */
-		this._updateInterval = options.updateInterval;
-
-		/**
 		 *  A reference to the actual computed update interval
 		 *  @type  {Number}
 		 *  @private
@@ -73,7 +66,7 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/core/Timeline"], function (
 		 *  @private
 		 *  @type  {Ticker}
 		 */
-		this._ticker = new Ticker(this.emit.bind(this, "tick"), options.clockSource);
+		this._ticker = new Ticker(this.emit.bind(this, "tick"), options.clockSource, options.updateInterval);
 
 		///////////////////////////////////////////////////////////////////////
 		// TIMEOUTS
@@ -318,7 +311,7 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/core/Timeline"], function (
 	 *        a Web Worker, or if that isn't supported, falls back to setTimeout.
 	 * @private
 	 */
-	var Ticker = function(callback, type){
+	var Ticker = function(callback, type, updateInterval){
 
 		/**
 		 * Either "worker" or "timeout"
@@ -332,7 +325,7 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/core/Timeline"], function (
 		 * @private
 		 * @type {Number}
 		 */
-		this._updateInterval = 0.1/3;
+		this._updateInterval = updateInterval;
 
 		/**
 		 * The callback to invoke at regular intervals
@@ -362,7 +355,7 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/core/Timeline"], function (
 	 *  @private
 	 */
 	Ticker.prototype._createWorker = function(){
-		
+
 		//URL Shim
 		window.URL = window.URL || window.webkitURL;
 
