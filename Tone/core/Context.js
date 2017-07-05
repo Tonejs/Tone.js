@@ -13,14 +13,16 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/core/Timeline"], function (
 	 *  @extends {Tone.Emitter}
 	 *  @param {AudioContext=} context optionally pass in a context
 	 */
-	Tone.Context = function(context){
+	Tone.Context = function(){
 
 		Tone.Emitter.call(this);
 
-		if (!context){
-			context = new window.AudioContext();
+		var options = Tone.defaults(arguments, ["context"], Tone.Context);
+
+		if (!options.context){
+			options.context = new window.AudioContext();
 		}
-		this._context = context;
+		this._context = options.context;
 		// extend all of the methods
 		for (var prop in this._context){
 			this._defineProperty(this._context, prop);
@@ -31,7 +33,7 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/core/Timeline"], function (
 		 *  @type  {String}
 		 *  @private
 		 */
-		this._latencyHint = "interactive";
+		this._latencyHint = options.latencyHint;
 
 		/**
 		 *  An object containing all of the constants AudioBufferSourceNodes
@@ -50,14 +52,14 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/core/Timeline"], function (
 		 *  @type  {Number}
 		 *  @private
 		 */
-		this.lookAhead = 0.1;
+		this.lookAhead = options.lookAhead;
 
 		/**
 		 *  How often the update look runs
 		 *  @type  {Number}
 		 *  @private
 		 */
-		this._updateInterval = this.lookAhead/3;
+		this._updateInterval = options.updateInterval;
 
 		/**
 		 *  A reference to the actual computed update interval
@@ -71,7 +73,7 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/core/Timeline"], function (
 		 *  @private
 		 *  @type  {Ticker}
 		 */
-		this._ticker = new Ticker(this.emit.bind(this, "tick"));
+		this._ticker = new Ticker(this.emit.bind(this, "tick"), options.clockSource);
 
 		///////////////////////////////////////////////////////////////////////
 		// TIMEOUTS
@@ -97,6 +99,18 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/core/Timeline"], function (
 
 	Tone.extend(Tone.Context, Tone.Emitter);
 	Tone.Emitter.mixin(Tone.Context);
+
+	/**
+	 * defaults
+	 * @static
+	 * @type {Object}
+	 */
+	Tone.Context.defaults = {
+		"clockSource" : "worker",
+		"latencyHint" : "interactive",
+		"lookAhead" : 0.1,
+		"updateInterval" : 0.03
+	};
 
 	/**
 	 *  Define a property on this Tone.Context. 
@@ -304,14 +318,14 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/core/Timeline"], function (
 	 *        a Web Worker, or if that isn't supported, falls back to setTimeout.
 	 * @private
 	 */
-	var Ticker = function(callback){
+	var Ticker = function(callback, type){
 
 		/**
 		 * Either "worker" or "timeout"
 		 * @type {String}
 		 * @private
 		 */
-		this._type = Ticker.Type.Worker;
+		this._type = type;
 
 		/**
 		 * The update interval of the worker
