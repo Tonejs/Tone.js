@@ -30,6 +30,19 @@ define(["Test", "Tone/core/Context", "Tone/core/Tone", "helper/Offline"],
 				ctx.dispose();
 				Test.wasDisposed(ctx);
 			});
+
+			it ("can be constructed with an options object", function(){
+				var ctx = new Context({
+					"lookAhead" : 0.2,
+					"latencyHint" : "fastest",
+					"clockSource" : "timeout"
+				});
+				expect(ctx.lookAhead).to.equal(0.2);
+				expect(ctx.latencyHint).to.equal("fastest");
+				expect(ctx.clockSource).to.equal("timeout");
+				ctx.dispose();
+				Test.wasDisposed(ctx);
+			});
 		});
 
 		context("clockSource", function(){
