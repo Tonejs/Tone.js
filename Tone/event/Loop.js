@@ -217,7 +217,6 @@ define(["Tone/core/Tone", "Tone/event/Event"], function (Tone) {
 			} else {
 				return this._event.loop;
 			}
-			return this._pattern.index;
 		},
 		set : function(iters){
 			if (iters === Infinity){
