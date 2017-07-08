@@ -47,13 +47,6 @@ define(["Tone/core/Tone"], function (Tone) {
 		this._type = options.type;
 
 		/**
-		 *  The return type of the analysis
-		 *  @type {String}
-		 *  @private
-		 */
-		this._returnType = options.returnType;
-
-		/**
 		 *  The buffer that the FFT data is written to
 		 *  @type {TypedArray}
 		 *  @private
@@ -63,9 +56,6 @@ define(["Tone/core/Tone"], function (Tone) {
 		//set the values initially
 		this.size = options.size;
 		this.type = options.type;
-		this.returnType = options.returnType;
-		this.minDecibels = options.minDecibels;
-		this.maxDecibels = options.maxDecibels;
 	};
 
 	Tone.extend(Tone.Analyser);
@@ -77,11 +67,8 @@ define(["Tone/core/Tone"], function (Tone) {
 	 */
 	Tone.Analyser.defaults = {
 		"size" : 1024,
-		"returnType" : "float",
 		"type" : "fft",
-		"smoothing" : 0.8,
-		"maxDecibels" : -30,
-		"minDecibels" : -100
+		"smoothing" : 0.8
 	};
 
 	/**
@@ -94,35 +81,15 @@ define(["Tone/core/Tone"], function (Tone) {
 	};
 
 	/**
-	 *  Possible return types of Tone.Analyser.analyse(). 
-	 *  byte values are between [0,255]. float values are between 
-	 *  [-1, 1] when the type is set to "waveform" and between 
-	 *  [minDecibels,maxDecibels] when the type is "fft".
-	 *  @enum {String}
-	 */
-	Tone.Analyser.ReturnType = {
-		Byte : "byte",
-		Float : "float"
-	};
-
-	/**
 	 *  Run the analysis given the current settings and return the 
 	 *  result as a TypedArray. 
 	 *  @returns {TypedArray}
 	 */
 	Tone.Analyser.prototype.analyse = function(){
 		if (this._type === Tone.Analyser.Type.FFT){
-			if (this._returnType === Tone.Analyser.ReturnType.Byte){
-				this._analyser.getByteFrequencyData(this._buffer);
-			} else {
-				this._analyser.getFloatFrequencyData(this._buffer);
-			}
+			this._analyser.getFloatFrequencyData(this._buffer);
 		} else if (this._type === Tone.Analyser.Type.Waveform){
-			if (this._returnType === Tone.Analyser.ReturnType.Byte){
-				this._analyser.getByteTimeDomainData(this._buffer);
-			} else {
-				this._analyser.getFloatTimeDomainData(this._buffer);
-			}
+			this._analyser.getFloatTimeDomainData(this._buffer);
 		}
 		return this._buffer;
 	};
@@ -139,33 +106,7 @@ define(["Tone/core/Tone"], function (Tone) {
 		},
 		set : function(size){
 			this._analyser.fftSize = size * 2;
-			this.type = this._type;
-		}
-	});
-
-	/**
-	 *  The return type of Tone.Analyser.analyse(), either "byte" or "float". 
-	 *  When the type is set to "byte" the range of values returned in the array
-	 *  are between 0-255. "float" values are between 
-	 *  [-1, 1] when the type is set to "waveform" and between 
-	 *  [minDecibels,maxDecibels] when the type is "fft".
-	 *  @memberOf Tone.Analyser#
-	 *  @type {String}
-	 *  @name returnType
-	 */
-	Object.defineProperty(Tone.Analyser.prototype, "returnType", {
-		get : function(){
-			return this._returnType;
-		},
-		set : function(type){
-			if (type === Tone.Analyser.ReturnType.Byte){
-				this._buffer = new Uint8Array(this._analyser.frequencyBinCount);
-			} else if (type === Tone.Analyser.ReturnType.Float){
-				this._buffer = new Float32Array(this._analyser.frequencyBinCount);
-			} else {
-				throw new TypeError("Tone.Analayser: invalid return type: "+type);
-			}
-			this._returnType = type;
+			this._buffer = new Float32Array(size);
 		}
 	});
 
@@ -199,36 +140,6 @@ define(["Tone/core/Tone"], function (Tone) {
 		},
 		set : function(val){
 			this._analyser.smoothingTimeConstant = val;
-		}
-	});
-
-	/**
-	 *  The smallest decibel value which is analysed by the FFT. 
-	 *  @memberOf Tone.Analyser#
-	 *  @type {Decibels}
-	 *  @name minDecibels
-	 */
-	Object.defineProperty(Tone.Analyser.prototype, "minDecibels", {
-		get : function(){
-			return this._analyser.minDecibels;
-		},
-		set : function(val){
-			this._analyser.minDecibels = val;
-		}
-	});
-
-	/**
-	 *  The largest decibel value which is analysed by the FFT. 
-	 *  @memberOf Tone.Analyser#
-	 *  @type {Decibels}
-	 *  @name maxDecibels
-	 */
-	Object.defineProperty(Tone.Analyser.prototype, "maxDecibels", {
-		get : function(){
-			return this._analyser.maxDecibels;
-		},
-		set : function(val){
-			this._analyser.maxDecibels = val;
 		}
 	});
 
