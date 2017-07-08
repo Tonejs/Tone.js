@@ -17,7 +17,7 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type"], function(Tone)
 		AudioBuffer.prototype.copyFromChannel = function(dest, chanNum, start){
 			var channel = this.getChannelData(chanNum);
 			start = start || 0;
-			for (var i = 0; i < channel.length; i++){
+			for (var i = 0; i < dest.length; i++){
 				dest[i] = channel[i+start];
 			}
 		};
