@@ -372,9 +372,11 @@ define(function(){
 		return Tone;
 	};
 
-	//give native nodes chain and fan methods
-	AudioNode.prototype.chain = Tone.prototype.chain;
-	AudioNode.prototype.fan = Tone.prototype.fan;
+	if (window.AudioNode){
+		//give native nodes chain and fan methods
+		AudioNode.prototype.chain = Tone.prototype.chain;
+		AudioNode.prototype.fan = Tone.prototype.fan;
+	}
 
 
 	///////////////////////////////////////////////////////////////////////////
