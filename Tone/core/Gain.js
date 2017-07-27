@@ -69,14 +69,12 @@ define(["Tone/core/Tone", "Tone/core/Param", "Tone/type/Type"], function (Tone) 
 		this.gain = null;
 	};
 
-	//STATIC///////////////////////////////////////////////////////////////////
-
 	/**
 	 *  Create input and outputs for this object.
 	 *  @param  {Number}  input   The number of inputs
 	 *  @param  {Number=}  outputs  The number of outputs
 	 *  @return  {Tone}  this
-	 *  @internal
+	 *  @private
 	 */
 	Tone.prototype.createInsOuts = function(inputs, outputs){
 
