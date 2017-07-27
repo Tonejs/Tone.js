@@ -141,7 +141,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Timeline"], function 
 		});
 		//if the ramped to value is 0, make it go to the min output, and then set to 0.
 		if (value < this._minOutput){
-			this._param.exponentialRampToValueAtTime(this._minOutput, endTime - Tone.sampleTime);
+			this._param.exponentialRampToValueAtTime(this._minOutput, endTime - this.sampleTime);
 			this.setValueAtTime(0, endTime);
 		} else {
 			this._param.exponentialRampToValueAtTime(value, endTime);
@@ -238,7 +238,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Timeline"], function 
 		var before = this._searchBefore(time);
 		if (before && before.time === time){
 			//remove everything after
-			this.cancelScheduledValues(time + Tone.sampleTime);
+			this.cancelScheduledValues(time + this.sampleTime);
 		} else if (before && 
 				   before.type === Tone.TimelineSignal.Type.Curve &&
 				   before.time + before.duration > time){

@@ -67,7 +67,7 @@ define(["Tone/core/Tone", "Tone/core/Context"], function (Tone) {
 			//invoke all the callbacks on that time
 			this.emit("tick");
 			//increment the clock
-			this._currentTime += Tone.blockTime;
+			this._currentTime += this.blockTime;
 		}
 
 		//promise returned is not yet implemented in all browsers

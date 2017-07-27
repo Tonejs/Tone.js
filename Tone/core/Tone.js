@@ -739,9 +739,9 @@ define(function(){
 	 *  @static
 	 *  @readOnly
 	 */
-	Object.defineProperty(Tone, "blockTime", {
+	Object.defineProperty(Tone.prototype, "blockTime", {
 		get : function(){
-			return 128 / Tone.context.sampleRate;
+			return 128 / this.context.sampleRate;
 		}
 	});
 
@@ -753,9 +753,9 @@ define(function(){
 	 *  @static
 	 *  @readOnly
 	 */
-	Object.defineProperty(Tone, "sampleTime", {
+	Object.defineProperty(Tone.prototype, "sampleTime", {
 		get : function(){
-			return 1 / Tone.context.sampleRate;
+			return 1 / this.context.sampleRate;
 		}
 	});
 
