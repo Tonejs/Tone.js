@@ -45,19 +45,19 @@
 
 		var greenSphere = new Tone.Panner3D().toMaster();
 		var drone = new Tone.Player({
-			url : "./audio/loop/drone.mp3",
+			url : "./audio/loop/drone.[mp3|ogg]",
 			loop: true,
 		}).connect(greenSphere).sync().start(0);
 
 		var blueSphere = new Tone.Panner3D().toMaster();
 		var repeat = new Tone.Player({
-			url : "./audio/loop/bass.mp3",
+			url : "./audio/loop/bass.[mp3|ogg]",
 			loop: true,
 		}).connect(blueSphere).sync().start(0);
 
 		var whiteSphere = new Tone.Panner3D().toMaster();
 		var chords = new Tone.Player({
-			url : "./audio/loop/chords.mp3",
+			url : "./audio/loop/chords.[mp3|ogg]",
 			loop: true,
 		}).connect(whiteSphere).sync().start(0);
 		

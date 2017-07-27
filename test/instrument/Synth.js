@@ -1,5 +1,5 @@
-define(["Tone/instrument/Synth", "helper/Basic", "helper/InstrumentTests", "helper/APITest"], 
-	function (Synth, Basic, InstrumentTest, APITest) {
+define(["Tone/instrument/Synth", "helper/Basic", "helper/InstrumentTests", "helper/APITest", "helper/Offline"], 
+	function (Synth, Basic, InstrumentTest, APITest, Offline) {
 
 	describe("Synth", function(){
 
@@ -45,6 +45,27 @@ define(["Tone/instrument/Synth", "helper/Basic", "helper/InstrumentTests", "help
 			APITest.method(Synth, "triggerRelease", ["Time="]);
 			APITest.method(Synth, "triggerAttackRelease", ["Frequency", "Time=", "Time=", "NormalRange="]);
 
+		});
+
+		context("Portamento", function(){
+			it ("can play notes with a portamento", function(){
+				return Offline(function(){
+					var synth = new Synth({
+						"portamento" : 0.1
+					});
+					expect(synth.portamento).to.equal(0.1);
+					synth.frequency.toMaster();
+					synth.triggerAttack(880, 0);
+				}, 0.2).then(function(buffer){
+					buffer.forEach(function(val, time){
+						if (time < 0.1){
+							expect(val).to.not.equal(880);
+						} else {
+							expect(val).to.be.closeTo(880, 1);
+						}
+					});
+				});
+			});
 		});
 	});
 });

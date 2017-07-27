@@ -210,7 +210,7 @@ function(Tone){
 		} 
 		//do the loop test
 		if (this.loop){
-			if (ticks === this._loopEnd){
+			if (ticks >= this._loopEnd){
 				this.emit("loopEnd", tickTime);
 				this._clock.ticks = this._loopStart;
 				ticks = this._loopStart;
@@ -429,6 +429,22 @@ function(Tone){
 	 */
 	Tone.Transport.prototype.pause = function(time){
 		this._clock.pause(time);
+		return this;
+	};
+
+	/**
+	 * Toggle the current state of the transport. If it is
+	 * started, it will stop it, otherwise it will start the Transport.
+	 * @param  {Time=} time The time of the event
+	 * @return {Tone.Transport}      this
+	 */
+	Tone.Transport.prototype.toggle = function(time){
+		time = this.toSeconds(time);
+		if (this._clock.getStateAtTime(time) !== Tone.State.Started){
+			this.start(time);
+		} else {
+			this.stop(time);
+		}
 		return this;
 	};
 
@@ -779,6 +795,12 @@ function(Tone){
 		}
 		//store the Transport on the context so it can be retrieved later
 		context.Transport = Tone.Transport;
+	});
+
+	Tone.Context.on("close", function(context){
+		if (context.Transport instanceof TransportConstructor){
+			context.Transport.dispose();
+		}
 	});
 
 	return Tone.Transport;

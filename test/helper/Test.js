@@ -12,7 +12,7 @@ define(["Tone/core/Tone", "deps/chai", "Tone/core/Context"], function (Tone, cha
 	mocha.setup({
 		ui: "bdd",
 		// make this very long cause sometimes the travis CI server is slow
-		timeout : 5000
+		timeout : 30000
 	});
 
 	Context.on("init", function(){

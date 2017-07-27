@@ -26,7 +26,12 @@ define(["Tone/core/Tone", "Tone/core/Context"], function (Tone) {
 		var offlineContext = new OfflineAudioContext(channels, duration * sampleRate, sampleRate);
 
 		//wrap the methods/members
-		Tone.Context.call(this, offlineContext);
+		Tone.Context.call(this, {
+			"context" : offlineContext,
+			"clockSource" : "offline",
+			"lookAhead" : 0,
+			"updateInterval" : 128 / sampleRate
+		});
 
 		/**
 		 *  A private reference to the duration
@@ -41,10 +46,6 @@ define(["Tone/core/Tone", "Tone/core/Context"], function (Tone) {
 		 *  @private
 		 */
 		this._currentTime = 0;
-
-		//modify the lookAhead and updateInterval to one block
-		this.lookAhead = Tone.blockTime;
-		this.updateInterval = Tone.blockTime;
 	};
 
 	Tone.extend(Tone.OfflineContext, Tone.Context);
@@ -55,17 +56,6 @@ define(["Tone/core/Tone", "Tone/core/Context"], function (Tone) {
 	 */
 	Tone.OfflineContext.prototype.now = function(){
 		return this._currentTime;
-	};
-
-	/**
-	 *  Overwrite this method since the worker is not necessary for the offline context
-	 *  @private
-	 */
-	Tone.OfflineContext.prototype._createWorker = function(){
-		//dummy worker that does nothing
-		return {
-			postMessage : function(){}
-		};
 	};
 
 	/**
@@ -87,6 +77,14 @@ define(["Tone/core/Tone", "Tone/core/Context"], function (Tone) {
 			};
 			this._context.startRendering();
 		}.bind(this));
+	};
+
+	/**
+	 *  Close the context
+	 *  @return  {Number}
+	 */
+	Tone.OfflineContext.prototype.close = function(){
+		this._context = null;
 	};
 
 	return Tone.OfflineContext;

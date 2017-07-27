@@ -39,7 +39,6 @@ define(["Tone/core/Tone", "Tone/component/Analyser"], function(Tone){
 		 *  @type  {Tone.Analyser}
 		 */
 		this.input = this.output = this._analyser = new Tone.Analyser("waveform", 512);
-		this._analyser.returnType = "float";
 
 		/**
 		 *  The amount of carryover between the current and last frame. 

@@ -75,6 +75,20 @@ define(["Test", "Tone/core/Timeline"], function (Test, Timeline) {
 			sched.dispose();
 		});
 
+		it ("has no effect to remove an object which is not there", function(){
+			var sched = new Timeline();
+			sched.add({
+				"time" : 2
+			});
+			sched.remove({});
+			expect(sched.length).to.equal(1);
+			sched.forEach(function(event){
+				sched.remove({});
+			});
+			expect(sched.length).to.equal(1);
+			sched.dispose();
+		});
+
 
 		it ("can search for events in the timeline by time", function(){
 			var sched = new Timeline();
@@ -94,6 +108,21 @@ define(["Test", "Tone/core/Timeline"], function (Test, Timeline) {
 			expect(sched._search(2)).to.equal(2);
 			expect(sched._search(20000)).to.equal(2);
 			expect(sched._search(-1)).to.equal(-1);
+			sched.dispose();
+		});
+
+		it ("can get a previous event", function(){
+			var sched = new Timeline();
+			var event0 = {
+				"time"  : 0
+			};
+			var event1 = {
+				"time" : 1
+			};
+			sched.add(event0);
+			sched.add(event1);
+			expect(sched.previousEvent(event1)).to.equal(event0);
+			expect(sched.previousEvent(event0)).to.equal(null);
 			sched.dispose();
 		});
 

@@ -97,6 +97,9 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/G
 		this._onendedTimeout = -1;
 
 		this.loop = options.loop;
+		this.loopStart = options.loopStart;
+		this.loopEnd = options.loopEnd;
+		this.playbackRate.value = options.playbackRate;
 	};
 
 	Tone.extend(Tone.BufferSource);
@@ -109,8 +112,12 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/G
 	Tone.BufferSource.defaults = {
 		"onended" : Tone.noOp,
 		"onload" : Tone.noOp,
+		"loop" : false,
+		"loopStart" : 0,
+		"loopEnd" : 0,
 		"fadeIn" : 0,
-		"fadeOut" : 0
+		"fadeOut" : 0,
+		"playbackRate" : 1
 	};
 
 	/**
@@ -161,9 +168,6 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/G
 			//the values in seconds
 			time = this.toSeconds(time);
 
-			this._source.buffer = this.buffer.get();
-			this._source.start(time, offset);
-
 			gain = Tone.defaultArg(gain, 1);
 			this._gain = gain;
 
@@ -185,14 +189,30 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/G
 
 			var computedDur = Tone.defaultArg(duration, this.buffer.duration - offset);
 			computedDur = this.toSeconds(computedDur);
+			computedDur = Math.max(computedDur, 0);
 
 			if (!this.loop || (this.loop && !Tone.isUndef(duration))){
 				//clip the duration when not looping
 				if (!this.loop){
 					computedDur = Math.min(computedDur, this.buffer.duration - offset);
 				}
-				this.stop(time + computedDur + fadeInTime, fadeInTime);
+				this.stop(time + computedDur + fadeInTime, this.fadeOut);
 			}
+
+			//start the buffer source
+			if (this.loop){
+				//modify the offset if it's greater than the loop time
+				var loopEnd = this.loopEnd || this.buffer.duration;
+				var loopStart = this.loopStart;
+				var loopDuration = loopEnd - loopStart;
+				//move the offset back
+				if (offset > loopEnd){
+					offset = ((offset - loopStart) % loopDuration) + loopStart;
+				}
+			}
+			this._source.buffer = this.buffer.get();
+			this._source.loopEnd = this.loopEnd || this.buffer.duration;
+			this._source.start(time, offset);
 		} else {
 			throw new Error("Tone.BufferSource: buffer is either not set or not loaded.");
 		}
@@ -219,23 +239,26 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/G
 				fadeOutTime = this.toSeconds(fadeOutTime);
 			}			
 
-			this._stopTime = time + fadeOutTime;
+			//only stop if the last stop was scheduled later
+			if (this._stopTime === -1 || this._stopTime > time){
+				this._stopTime = time;				
 
-			//cancel the end curve
-			this._gainNode.gain.cancelScheduledValues(this._startTime + Tone.sampleTime);
-			time = Math.max(this._startTime, time);
+				//cancel the end curve
+				this._gainNode.gain.cancelScheduledValues(this._startTime + this.sampleTime);
+				time = Math.max(this._startTime, time);
 
-			//set a new one
-			if (fadeOutTime > 0){
-				this._gainNode.gain.setValueAtTime(this._gain, time);
-				time += fadeOutTime;
-				this._gainNode.gain.linearRampToValueAtTime(0, time);
-			} else {
-				this._gainNode.gain.setValueAtTime(0, time);
+				//set a new one
+				if (fadeOutTime > 0){
+					var startFade = Math.max(this._startTime, time - fadeOutTime);
+					this._gainNode.gain.setValueAtTime(this._gain, startFade);
+					this._gainNode.gain.linearRampToValueAtTime(0, time);
+				} else {
+					this._gainNode.gain.setValueAtTime(0, time);
+				}
+
+				Tone.context.clearTimeout(this._onendedTimeout);
+				this._onendedTimeout = Tone.context.setTimeout(this._onended.bind(this), this._stopTime - this.now());
 			}
-
-			Tone.context.clearTimeout(this._onendedTimeout);
-			this._onendedTimeout = Tone.context.setTimeout(this._onended.bind(this), this._stopTime - this.now());
 		} else {
 			throw new Error("Tone.BufferSource: buffer is either not set or not loaded.");
 		}

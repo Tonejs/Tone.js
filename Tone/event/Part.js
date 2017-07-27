@@ -4,7 +4,7 @@ define(["Tone/core/Tone", "Tone/event/Event", "Tone/type/Type", "Tone/core/Trans
 	
 	/**
 	 *  @class Tone.Part is a collection Tone.Events which can be
-	 *         started/stoped and looped as a single unit.
+	 *         started/stopped and looped as a single unit.
 	 *
 	 *  @extends {Tone.Event}
 	 *  @param {Function} callback The callback to invoke on each event
@@ -37,13 +37,11 @@ define(["Tone/core/Tone", "Tone/event/Event", "Tone/type/Type", "Tone/core/Trans
 		this._events = [];
 
 		//add the events
-		if (!Tone.isUndef(options.events)){
-			for (var i = 0; i < options.events.length; i++){
-				if (Array.isArray(options.events[i])){
-					this.add(options.events[i][0], options.events[i][1]);
-				} else {
-					this.add(options.events[i]);
-				}
+		for (var i = 0; i < options.events.length; i++){
+			if (Array.isArray(options.events[i])){
+				this.add(options.events[i][0], options.events[i][1]);
+			} else {
+				this.add(options.events[i]);
 			}
 		}
 	};
@@ -307,11 +305,10 @@ define(["Tone/core/Tone", "Tone/event/Event", "Tone/type/Type", "Tone/core/Trans
 	 *  @return  {Tone.Part}  this
 	 */
 	Tone.Part.prototype.cancel = function(after){
-		after = this.toTicks(after);
 		this._forEach(function(event){
 			event.cancel(after);
 		});
-		this._state.cancel(after);
+		this._state.cancel(this.toTicks(after));
 		return this;
 	};
 

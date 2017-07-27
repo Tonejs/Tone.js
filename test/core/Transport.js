@@ -70,8 +70,23 @@ function (Test, Transport, Tone, Offline, TransportTime, Signal, BufferTest) {
 					}, 0);
 					Transport.setLoopPoints(0, 0.1).start(0);
 					Transport.loop = true;
-				}, 0.4).then(function(){
+				}, 0.41).then(function(){
 					expect(invocations).to.equal(5);
+				});
+			});
+
+			it ("jumps to the loopStart after the loopEnd point", function(){
+				var looped = false;
+				return Offline(function(Transport){
+					Transport.on("loop", function(){
+						looped = true;
+					});
+					Transport.loop = true;
+					Transport.loopEnd = 1;
+					Transport.seconds = 2;
+					Transport.start();
+				}, 0.4).then(function(){
+					expect(looped).to.be.true;
 				});
 			});
 
@@ -257,7 +272,7 @@ function (Test, Transport, Tone, Offline, TransportTime, Signal, BufferTest) {
 						Test.whenBetween(time, 0.1, 0.11, function(){
 							expect(sample).to.equal(0);
 						});
-						Test.whenBetween(time, 0.5, 0.51, function(){
+						Test.whenBetween(time, 0.502, 0.51, function(){
 							expect(sample).to.equal(1);
 						});
 					});
@@ -316,6 +331,23 @@ function (Test, Transport, Tone, Offline, TransportTime, Signal, BufferTest) {
 				}, 0.1);
 			});
 
+			it("can toggle the state of the transport", function(){
+				return Offline(function(Transport){
+					Transport.toggle(0);
+					Transport.toggle(0.2);
+
+					return function(time){
+						Test.whenBetween(time, 0, 0.2, function(){
+							expect(Transport.state).to.equal("started");
+						});
+
+						Test.whenBetween(time, 0.2, Infinity, function(){
+							expect(Transport.state).to.equal("stopped");
+						});
+					};
+				}, 0.1);
+			});
+
 			it("tracks ticks correctly with a different PPQ and BPM", function(){
 
 				return Offline(function(Transport){
@@ -347,7 +379,7 @@ function (Test, Transport, Tone, Offline, TransportTime, Signal, BufferTest) {
 				return Offline(function(Transport){
 					var startTime = 0.1;
 					Transport.schedule(function(time){
-						expect(time).to.equal(startTime);
+						expect(time).to.be.closeTo(startTime, 0.01);
 					}, 0);
 					Transport.start(startTime);
 				}, 0.2);
@@ -452,7 +484,7 @@ function (Test, Transport, Tone, Offline, TransportTime, Signal, BufferTest) {
 					var startTime = 0.1;
 					var eventID = Transport.scheduleRepeat(function(time){
 						Transport.clear(eventID);
-						expect(time).to.equal(startTime);
+						expect(time).to.be.closeTo(startTime, 0.01);
 						invoked = true;
 					}, 1, 0);
 					Transport.start(startTime);
@@ -585,7 +617,7 @@ function (Test, Transport, Tone, Offline, TransportTime, Signal, BufferTest) {
 					var eventID = Transport.scheduleOnce(function(time){
 						invoked = true;
 						Transport.clear(eventID);
-						expect(time).to.equal(startTime);
+						expect(time).to.be.closeTo(startTime, 0.01);
 					}, 0);
 					Tone.Transport.start(startTime);
 				}, 0.2).then(function(){

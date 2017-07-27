@@ -113,10 +113,12 @@ define(["Tone/core/Tone"], function (Tone) {
 	/**
 	 *  Get the nearest event whose time is less than or equal to the given time.
 	 *  @param  {Number}  time  The time to query.
+	 *  @param  {String}  comparitor Which value in the object to compare
 	 *  @returns {Object} The event object set after that time.
 	 */
-	Tone.Timeline.prototype.get = function(time){
-		var index = this._search(time);
+	Tone.Timeline.prototype.get = function(time, comparitor){
+		comparitor = Tone.defaultArg(comparitor, "time");
+		var index = this._search(time, comparitor);
 		if (index !== -1){
 			return this._timeline[index];
 		} else {
@@ -143,10 +145,12 @@ define(["Tone/core/Tone"], function (Tone) {
 	/**
 	 *  Get the event which is scheduled after the given time.
 	 *  @param  {Number}  time  The time to query.
+	 *  @param  {String}  comparitor Which value in the object to compare
 	 *  @returns {Object} The event object after the given time
 	 */
-	Tone.Timeline.prototype.getAfter = function(time){
-		var index = this._search(time);
+	Tone.Timeline.prototype.getAfter = function(time, comparitor){
+		comparitor = Tone.defaultArg(comparitor, "time");
+		var index = this._search(time, comparitor);
 		if (index + 1 < this._timeline.length){
 			return this._timeline[index + 1];
 		} else {
@@ -157,15 +161,17 @@ define(["Tone/core/Tone"], function (Tone) {
 	/**
 	 *  Get the event before the event at the given time.
 	 *  @param  {Number}  time  The time to query.
+	 *  @param  {String}  comparitor Which value in the object to compare
 	 *  @returns {Object} The event object before the given time
 	 */
-	Tone.Timeline.prototype.getBefore = function(time){
+	Tone.Timeline.prototype.getBefore = function(time, comparitor){
+		comparitor = Tone.defaultArg(comparitor, "time");
 		var len = this._timeline.length;
 		//if it's after the last item, return the last item
-		if (len > 0 && this._timeline[len - 1].time < time){
+		if (len > 0 && this._timeline[len - 1][comparitor] < time){
 			return this._timeline[len - 1];
 		}
-		var index = this._search(time);
+		var index = this._search(time, comparitor);
 		if (index - 1 >= 0){
 			return this._timeline[index - 1];
 		} else {
@@ -223,19 +229,35 @@ define(["Tone/core/Tone"], function (Tone) {
 	};
 
 	/**
+	 * Returns the previous event if there is one. null otherwise
+	 * @param  {Object} event The event to find the previous one of
+	 * @return {Object}       The event right before the given event
+	 */
+	Tone.Timeline.prototype.previousEvent = function(event){
+		var index = this._timeline.indexOf(event);
+		if (index > 0){
+			return this._timeline[index-1];
+		} else {
+			return null;
+		}
+	};
+
+	/**
 	 *  Does a binary serach on the timeline array and returns the 
 	 *  nearest event index whose time is after or equal to the given time.
 	 *  If a time is searched before the first index in the timeline, -1 is returned.
 	 *  If the time is after the end, the index of the last item is returned.
 	 *  @param  {Number}  time  
+	 *  @param  {String}  comparitor Which value in the object to compare
 	 *  @return  {Number} the index in the timeline array 
 	 *  @private
 	 */
-	Tone.Timeline.prototype._search = function(time){
+	Tone.Timeline.prototype._search = function(time, comparitor){
+		comparitor = Tone.defaultArg(comparitor, "time");
 		var beginning = 0;
 		var len = this._timeline.length;
 		var end = len;
-		if (len > 0 && this._timeline[len - 1].time <= time){
+		if (len > 0 && this._timeline[len - 1][comparitor] <= time){
 			return len - 1;
 		}
 		while (beginning < end){
@@ -243,21 +265,21 @@ define(["Tone/core/Tone"], function (Tone) {
 			var midPoint = Math.floor(beginning + (end - beginning) / 2);
 			var event = this._timeline[midPoint];
 			var nextEvent = this._timeline[midPoint + 1];
-			if (event.time === time){
+			if (event[comparitor] === time){
 				//choose the last one that has the same time
 				for (var i = midPoint; i < this._timeline.length; i++){
 					var testEvent = this._timeline[i];
-					if (testEvent.time === time){
+					if (testEvent[comparitor] === time){
 						midPoint = i;
 					}
 				}
 				return midPoint;
-			} else if (event.time < time && nextEvent.time > time){
+			} else if (event[comparitor] < time && nextEvent[comparitor] > time){
 				return midPoint;
-			} else if (event.time > time){
+			} else if (event[comparitor] > time){
 				//search lower
 				end = midPoint;
-			} else if (event.time < time){
+			} else {
 				//search upper
 				beginning = midPoint + 1;
 			} 

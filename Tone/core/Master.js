@@ -155,5 +155,11 @@ define(["Tone/core/Tone", "Tone/component/Volume", "Tone/core/Context"], functio
 		context.Master = Tone.Master;
 	});
 
+	Tone.Context.on("close", function(context){
+		if (context.Master instanceof MasterConstructor){
+			context.Master.dispose();
+		}
+	});
+
 	return Tone.Master;
 });

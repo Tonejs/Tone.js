@@ -10,6 +10,12 @@ define(["helper/Basic", "Tone/source/BufferSource", "helper/Offline",
 
 		var buffer = new Buffer();
 
+		var ones = new Float32Array(buffer.context.sampleRate * 0.5);
+		ones.forEach(function(sample, index){
+			ones[index] = 1;
+		});
+		var onesBuffer = Buffer.fromArray(ones);
+
 		beforeEach(function(done){
 			buffer.load("./audio/sine.wav", function(){
 				done();
@@ -36,14 +42,28 @@ define(["helper/Basic", "Tone/source/BufferSource", "helper/Offline",
 			it("can be created with an options object", function(){
 				var source = new BufferSource({
 					"buffer" : buffer,
-					"loop" : true
+					"loop" : true,
+					"loopEnd" : 0.2,
+					"loopStart" : 0.1,
+					"playbackRate" : 0.5
 				});
 				expect(source.loop).to.equal(true);
+				expect(source.loopEnd).to.equal(0.2);
+				expect(source.loopStart).to.equal(0.1);
+				expect(source.playbackRate.value).to.equal(0.5);
 				source.dispose();
 			});
 
 			it ("can be constructed with no arguments", function(){
 				var source = new BufferSource();
+				source.dispose();
+			});
+
+			it ("can set the buffer after construction", function(){
+				var source = new BufferSource();
+				expect(source.buffer.loaded).to.be.false;
+				source.buffer = buffer;
+				expect(source.buffer.loaded).to.be.true;
 				source.dispose();
 			});
 
@@ -123,6 +143,19 @@ define(["helper/Basic", "Tone/source/BufferSource", "helper/Offline",
 					player.start(0);
 				}, 0.05).then(function(buffer){
 					expect(buffer.toArray()[0]).to.equal(offsetSample);
+				});
+			});
+
+			it("the offset is modulo the loopDuration", function(){
+				var testSample = buffer.toArray()[Math.floor(0.05 * buffer.context.sampleRate)];
+				return Offline(function(){
+					var player = new BufferSource(buffer).toMaster();
+					player.loop = true;
+					player.loopStart = 0;
+					player.loopEnd = 0.1;
+					player.start(0, 0.35);
+				}, 0.05).then(function(buffer){
+					expect(buffer.toArray()[0]).to.be.closeTo(testSample, 1e-4);
 				});
 			});
 
@@ -378,13 +411,66 @@ define(["helper/Basic", "Tone/source/BufferSource", "helper/Offline",
 			it("can be scheduled to stop with a ramp", function(){
 				return Meter(function(){
 					var player = new BufferSource(buffer).toMaster();
-					player.start(0).stop(0.1, 0.1);
+					player.start(0).stop(0.1, 0.05);
 				}, 0.6).then(function(rms){
 					rms.forEach(function(level, time){
-						if (time > 0.01 && time < 0.19){
+						if (time > 0.01 && time < 0.1){
 							expect(level).to.be.gt(0);
-						} else if (time > 0.21){
+						} else if (time > 0.1){
 							expect(level).to.equal(0);
+						}
+					});
+				});
+			});
+
+			it("fades from the end", function(){
+				return Offline(function(){
+					var player = new BufferSource(onesBuffer).toMaster();
+					player.start(0).stop(0.2, 0.1)
+				}, 0.3).then(function(buffer){
+					buffer.forEach(function(sample, time){
+						if (time < 0.1){
+							expect(sample).to.equal(1);
+						} else if (time < 0.2){
+							expect(sample).to.be.lessThan(1);
+						} else {
+							expect(sample).to.equal(0);
+						}
+					});
+				});
+			});
+
+			it("cant fade for shorter than the fade in time", function(){
+				return Offline(function(){
+					var player = new BufferSource(onesBuffer).toMaster();
+					player.fadeIn = 0.15
+					player.start(0).stop(0.2, 0.1)
+				}, 0.3).then(function(buffer){
+					buffer.forEach(function(sample, time){
+						if (time < 0.149){
+							expect(sample).to.be.lessThan(1);
+						} else if (Math.abs(time - 0.15) < 1e-4){
+							expect(sample).to.be.closeTo(1, 0.05);
+						} else if (time < 0.2){
+							expect(sample).to.be.lessThan(1);
+						}
+					});
+				});
+			});
+
+			it("fades at the end of the file", function(){
+				return Offline(function(){
+					var player = new BufferSource(onesBuffer).toMaster();
+					player.fadeOut = 0.1;
+					player.start(0);
+				}, 0.6).then(function(buffer){
+					buffer.forEach(function(sample, time){
+						if (time < 0.4){
+							expect(sample).to.equal(1);
+						} else if (time < 0.5){
+							expect(sample).to.be.lessThan(1);
+						} else {
+							expect(sample).to.equal(0);
 						}
 					});
 				});
@@ -421,6 +507,26 @@ define(["helper/Basic", "Tone/source/BufferSource", "helper/Offline",
 					player.start();
 				}).to.throw(Error);
 				player.dispose();
+			});
+
+			it("stops playing if invoked with 'stop' at a sooner time", function(){
+				return Offline(function(){
+					var player = new BufferSource(buffer);
+					player.toMaster();
+					player.start(0).stop(0.1).stop(0.05);
+				}, 0.3).then(function(buffer){
+					expect(buffer.getLastSoundTime()).to.be.closeTo(0.05, 0.02);
+				});
+			});
+
+			it("stops playing at the earlier time if invoked with 'stop' at a later time", function(){
+				return Offline(function(){
+					var player = new BufferSource(buffer);
+					player.toMaster();
+					player.start(0).stop(0.1).stop(0.2);
+				}, 0.3).then(function(buffer){
+					expect(buffer.getLastSoundTime()).to.be.closeTo(0.1, 0.02);
+				});
 			});
 		});
 

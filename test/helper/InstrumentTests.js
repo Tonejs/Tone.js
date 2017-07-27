@@ -2,7 +2,7 @@ define(["helper/OutputAudio", "Tone/instrument/Instrument", "helper/OutputAudioS
 	"Test", "helper/Offline"], 
 	function (OutputAudio, Instrument, OutputAudioStereo, Test, Offline) {
 
-	return function(Constr, note, constrArg){
+	return function(Constr, note, constrArg, optionsIndex){
 
 		context("Instrument Tests", function(){
 
@@ -19,9 +19,15 @@ define(["helper/OutputAudio", "Tone/instrument/Instrument", "helper/OutputAudioS
 			});
 
 			it ("can set the volume", function(){
-				var instance = new Constr({
-					"volume" : -10
-				});
+				if (!optionsIndex){
+					var instance = new Constr({
+						"volume" : -10
+					});
+				}else if (optionsIndex === 1){
+					var instance = new Constr(constrArg, {
+						"volume" : -10
+					});
+				} 
 				expect(instance.volume.value).to.be.closeTo(-10, 0.1);
 				instance.dispose();
 			});

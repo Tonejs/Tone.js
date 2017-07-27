@@ -23,5 +23,5 @@ if (!Tone && !p5){
 		});
 	};
 
-	p5.prototype.registerPreloadMethod("registeredPreload", Tone);
+	p5.prototype.registerPreloadMethod("registeredPreload", Tone.Buffer.load);
 }());

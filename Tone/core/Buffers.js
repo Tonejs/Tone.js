@@ -21,15 +21,19 @@ define(["Tone/core/Tone", "Tone/core/Buffer"], function (Tone) {
 	 * 	player.buffer = pianoSamples.get("C4");
 	 * 	player.start();
 	 * });
-	 * 
+	 * 	@example
+	 * //To pass in additional parameters in the second parameter
+	 * var buffers = new Tone.Buffers(urls, {
+	 * 	"onload" : callback,
+	 * 	"baseUrl" : "../path/to/audio/"
+	 * })
 	 */
 	Tone.Buffers = function(urls){
 
 		//remove the urls from the options
-		if (arguments.length === 1 && !arguments[0].hasOwnProperty("urls")){
-			urls = { "urls" : urls };
-		}
-		var options = Tone.defaults(arguments, ["urls", "onload", "baseUrl"], Tone.Buffers);
+		var args = Array.prototype.slice.call(arguments);
+		args.shift();
+		var options = Tone.defaults(args, ["onload", "baseUrl"], Tone.Buffers);
 		Tone.call(this);
 
 		/**
@@ -45,12 +49,11 @@ define(["Tone/core/Tone", "Tone/core/Buffer"], function (Tone) {
 		 */
 		this.baseUrl = options.baseUrl;
 
-		options.urls = this._flattenUrls(options.urls);
 		this._loadingCount = 0;
 		//add each one
-		for (var key in options.urls){
+		for (var key in urls){
 			this._loadingCount++;
-			this.add(key, options.urls[key], this._bufferLoaded.bind(this, options.onload));
+			this.add(key, urls[key], this._bufferLoaded.bind(this, options.onload));
 		}
 	};
 
@@ -142,30 +145,6 @@ define(["Tone/core/Tone", "Tone/core/Buffer"], function (Tone) {
 			this._buffers[name] = new Tone.Buffer(this.baseUrl + url, callback);
 		}
 		return this;
-	};
-
-	/**
-	 *  Flatten an object into a single depth object. 
-	 *  thanks to https://gist.github.com/penguinboy/762197
-	 *  @param   {Object} ob 	
-	 *  @return  {Object}    
-	 *  @private
-	 */
-	Tone.Buffers.prototype._flattenUrls = function(ob) {
-		var toReturn = {};
-		for (var i in ob) {
-			if (!ob.hasOwnProperty(i)) continue;
-			if (Tone.isObject(ob[i])) {
-				var flatObject = this._flattenUrls(ob[i]);
-				for (var x in flatObject) {
-					if (!flatObject.hasOwnProperty(x)) continue;
-					toReturn[i + "." + x] = flatObject[x];
-				}
-			} else {
-				toReturn[i] = ob[i];
-			}
-		}
-		return toReturn;
 	};
 
 	/**
