@@ -292,10 +292,13 @@ define(["Tone/core/Tone", "Tone/type/Type"], function(Tone){
 	 *  @returns {Tone.Param} this
 	 */
 	Tone.Param.prototype.setValueCurveAtTime = function(values, startTime, duration){
-		for (var i = 0; i < values.length; i++){
-			values[i] = this._fromUnits(values[i]);
+		duration = this.toSeconds(duration);
+		startTime = this.toSeconds(startTime);
+		this.setValueAtTime(values[0], startTime);
+		var segTime = duration / (values.length - 1);
+		for (var i = 1; i < values.length; i++){
+			this._param.linearRampToValueAtTime(this._fromUnits(values[i]), startTime + i * segTime);
 		}
-		this._param.setValueCurveAtTime(values, this.toSeconds(startTime), this.toSeconds(duration));
 		return this;
 	};
 
