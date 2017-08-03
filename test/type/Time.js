@@ -187,6 +187,9 @@ define(["helper/Basic", "Test", "Tone/type/Time", "Tone/core/Tone", "helper/Offl
 			it ("converts time into BarsBeatsSixteenths", function(){
 				expect(Time("3:1:3").toBarsBeatsSixteenths()).to.equal("3:1:3");
 				expect(Time(2).toBarsBeatsSixteenths()).to.equal("1:0:0");
+				// trailing zero removal test
+				Tone.Transport.bpm.value = 100;
+				expect(Time('0:1:3').toBarsBeatsSixteenths()).to.equal('0:1:3')
 			});
 
 		});
