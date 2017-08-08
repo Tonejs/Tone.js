@@ -322,11 +322,22 @@ gulp.task("empty.md", ["cloneSite"], function(){
 		.pipe(gulp.dest(`${TMP_FOLDER}/Site/_documentation/`));
 });
 
-gulp.task("buildJsdocs", ["empty.md"], function(done){
+gulp.task("buildJsdocs", ["empty.md"],  function(done){
 	glob("../Tone/*/*.js", function(err, files){
-		var docs = child_process.execSync(`./node_modules/.bin/jsdoc -X ${files.join(" ")}`);
+		var docs = child_process.execSync(`./node_modules/.bin/jsdoc -X -a public ${files.join(" ")}`);
 		var dest = `${TMP_FOLDER}/Site/_data/jsdocs-${VERSION}.json`;
-		fs.writeFile(dest, docs, done);
+		docs = JSON.parse(docs)
+		//filter out some stuff
+		docs = docs.filter(function(datum){
+				//is public
+			return datum.access !== "private" &&
+				//doesnt inherit
+				(!datum.hasOwnProperty('inherits') || !datum.inherits.startsWith('Tone#')) &&
+				//isnt undocumented (or a default value)
+				(!datum.undocumented || datum.longname.includes('defaults'))
+		})
+		var dest = `${TMP_FOLDER}/Site/_data/jsdocs-${VERSION}.json`;
+		fs.writeFile(dest, JSON.stringify(docs, undefined, '\t'), done);
 	});
 });
 
