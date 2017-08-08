@@ -252,7 +252,7 @@ gulp.task("commitDev", ["moveToDev"], function(){
 
 gulp.task("pushBuild", ["commitDev"], function(done){
 	if (process.env.TRAVIS && process.env.GH_TOKEN){
-		process.chdir(`${TMP_FOLDER}/build`);
+		// process.chdir(`${TMP_FOLDER}/build`);
 		git.push("origin", "gh-pages", {args: " -f"}, function (err) {
 			if (err) throw err;
 			done();
@@ -295,7 +295,7 @@ gulp.task("commitSite", ["buildJsdocs"], function(){
 
 gulp.task("pushJSDocs", ["commitSite"], function(done){
 	if (process.env.TRAVIS && process.env.GH_TOKEN){
-		process.chdir(`${TMP_FOLDER}/Site`);
+		// process.chdir(`${TMP_FOLDER}/Site`);
 		git.push("origin", "master", {args: " -f"}, function (err) {
 			if (err) throw err;
 			done();
