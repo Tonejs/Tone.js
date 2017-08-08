@@ -15,6 +15,4 @@ before_script:
   - git config --global user.name "Travis CI"
 script: gulp travis-test
 after_success: 
-  # - if [ "${TRAVIS_PULL_REQUEST}" = "false" ]; then gulp commitDevBuild; gulp coveralls; fi
-  - gulp commitDevBuild
-  - gulp commitJSDocs
+  - ./sucess.sh
