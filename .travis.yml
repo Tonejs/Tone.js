@@ -13,7 +13,8 @@ before_script:
   - npm install
   - git config --global user.email "travis@travis-ci.org"
   - git config --global user.name "Travis CI"
-# script: gulp travis-test
+script: gulp travis-test
 after_success: 
   # - if [ "${TRAVIS_PULL_REQUEST}" = "false" ]; then gulp commitDevBuild; gulp coveralls; fi
   - gulp commitDevBuild
+  - gulp commitJSDocs
