@@ -9,6 +9,8 @@ var fs = require("fs");
 var amdOptimize = require("amd-optimize");
 var replace = require("gulp-replace");
 var indent = require("gulp-indent");
+var child_process = require("child_process");
+var flatten = require("gulp-flatten");
 var insert = require("gulp-insert");
 var del = require("del");
 var uglify = require("gulp-uglify");
@@ -33,6 +35,13 @@ var argv = require("yargs")
 			.alias("x", "examples")
 			.argv;
 var KarmaServer = require("karma").Server;
+
+var VERSION = fs.readFileSync("../Tone/core/Tone.js", "utf-8")
+		.match(/(?:Tone\.version\s*=\s*)(?:'|")(.*)(?:'|");/m)[1];
+
+var BRANCH = process.env.TRAVIS && !process.env.TRAVIS_PULL_REQUEST ? process.env.TRAVIS_BRANCH : "dev";
+
+var TMP_FOLDER = "../tmp";
 
 /**
  *  BUILDING
@@ -218,34 +227,32 @@ gulp.task("collectTests", function(done){
 gulp.task("travis-test", ["lint", "karma-test"]);
 
 /**
- *  GIT
+ *  COMMIT BUILD
  */
 gulp.task("cloneBuild", function(done) {
 	var gitUser = "";
 	if (process.env.TRAVIS && process.env.GH_TOKEN){
 		gitUser = process.env.GH_TOKEN+"@";
 	}
-	git.clone("https://"+gitUser+"github.com/Tonejs/build", {args: "../tmp"}, done);
+	git.clone("https://"+gitUser+"github.com/Tonejs/build", {args: `${TMP_FOLDER}/build`}, done);
 });
 
 gulp.task("moveToDev", ["build", "cloneBuild"], function(){
 	// move files to 'dev' folder
 	return gulp.src("../build/*.js")
-		.pipe(gulp.dest("../tmp/dev/"));
+		.pipe(gulp.dest(`${TMP_FOLDER}/build/dev/`));
 });
 
 gulp.task("commitDev", ["moveToDev"], function(){
-	var version = fs.readFileSync("../Tone/core/Tone.js", "utf-8")
-		.match(/(?:Tone\.version\s*=\s*)(?:'|")(.*)(?:'|");/m)[1];
-	process.chdir("../tmp");
+	process.chdir(`${TMP_FOLDER}/build`);
 	return gulp.src("./dev/*")
 		.pipe(git.add())
-		.pipe(git.commit(version+" build #"+process.env.TRAVIS_BUILD_NUMBER));
+		.pipe(git.commit(`${VERSION} build #${process.env.TRAVIS_BUILD_NUMBER}: ${process.env.TRAVIS_COMMIT_MESSAGE}`));
 });
 
 gulp.task("pushBuild", ["commitDev"], function(done){
 	if (process.env.TRAVIS && process.env.GH_TOKEN){
-		process.chdir("../tmp");
+		process.chdir(`${TMP_FOLDER}/build`);
 		git.push("origin", "gh-pages", {args: " -f"}, function (err) {
 			if (err) throw err;
 			done();
@@ -256,7 +263,7 @@ gulp.task("pushBuild", ["commitDev"], function(done){
 });
 
 gulp.task("commitDevBuild", ["pushBuild"], function(){
-	return del(["../tmp"], { force : true});
+	return del([`${TMP_FOLDER}/build`], { force : true});
 });
 
 /**
@@ -265,4 +272,66 @@ gulp.task("commitDevBuild", ["pushBuild"], function(){
 gulp.task("coveralls", function(){
 	return gulp.src("../test/coverage/**/lcov.info")
 		.pipe(coveralls());
+});
+
+/**
+ * JS DOC ATTRIBUTES 
+ */
+
+gulp.task("cloneSite", function(done){
+	var gitUser = "";
+	if (process.env.TRAVIS && process.env.GH_TOKEN){
+		gitUser = process.env.GH_TOKEN+"@";
+	}
+	git.clone("https://"+gitUser+"github.com/Tonejs/tonejs.github.io", {args: `${TMP_FOLDER}/Site`}, done);
+});
+
+gulp.task("commitSite", ["buildJsdocs"], function(){
+	process.chdir(`${TMP_FOLDER}/Site`);
+	return gulp.src("*")
+		.pipe(git.add())
+		.pipe(git.commit(`${VERSION} build #${process.env.TRAVIS_BUILD_NUMBER}: ${process.env.TRAVIS_COMMIT_MESSAGE}`));
+});
+
+gulp.task("pushJSDocs", ["commitSite"], function(done){
+	if (process.env.TRAVIS && process.env.GH_TOKEN){
+		process.chdir(`${TMP_FOLDER}/Site`);
+		git.push("origin", "master", {args: " -f"}, function (err) {
+			if (err) throw err;
+			done();
+		});
+	} else {
+		done();
+	}
+});
+
+gulp.task("empty.md", ["cloneSite"], function(){
+	return gulp.src("../Tone/*/*.js")
+		.pipe(tap(function(file){
+			var className = path.basename(file.path, ".js");
+			var pathSplit = file.path.split("/");
+			var category = pathSplit[pathSplit.length-2];
+			file.contents = Buffer.from(`---\ntitle: ${className}\nlayout: ${className === "Type" ? "type" : "doc"}\nversion: ${VERSION}\ncategory: ${category}\nbranch: ${BRANCH}\n---`);
+		}))
+		.pipe(rename({extname: ".md"}))
+		.pipe(flatten())
+		.pipe(gulp.dest(`${TMP_FOLDER}/Site/_documentation/${VERSION}`))
+		.pipe(tap(function(file){
+			// and another one which just forwards
+			var className = path.basename(file.path, ".md");
+			file.contents = Buffer.from(`---\ntitle: ${className}\nlayout: forward\n---`);
+		}))
+		.pipe(gulp.dest(`${TMP_FOLDER}/Site/_documentation/`));
+});
+
+gulp.task("buildJsdocs", ["empty.md"], function(done){
+	glob("../Tone/*/*.js", function(err, files){
+		var docs = child_process.execSync(`./node_modules/.bin/jsdoc -X ${files.join(" ")}`);
+		var dest = `${TMP_FOLDER}/Site/_data/jsdocs-${VERSION}.json`;
+		fs.writeFile(dest, docs, done);
+	});
+});
+
+gulp.task("commitJSDocs", ["pushJSDocs"], function(){
+	return del([`${TMP_FOLDER}/Site`], { force : true});
 });
