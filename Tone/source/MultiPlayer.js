@@ -6,7 +6,7 @@ function (Tone) {
 	 *  @class Tone.MultiPlayer is well suited for one-shots, multi-sampled instruments
 	 *         or any time you need to play a bunch of audio buffers. 
 	 *
-	 *  @deprecated Use Tone.Players instead.
+	 *  @deprecated Use [Tone.Players](Players) instead.
 	 *  @param  {Object|Array|Tone.Buffers}  buffers  The buffers which are available
 	 *                                                to the MultiPlayer
 	 *  @param {Function} onload The callback to invoke when all of the buffers are loaded.
