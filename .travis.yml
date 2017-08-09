@@ -16,4 +16,4 @@ before_script:
 # script: gulp travis-test
 script: echo no tests!
 after_success: 
-  - sh sucess.sh
+  - sh success.sh
