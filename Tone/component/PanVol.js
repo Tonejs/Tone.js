@@ -35,6 +35,7 @@ define(["Tone/core/Tone", "Tone/component/Panner", "Tone/component/Volume"], fun
 		/**
 		 *  The volume node
 		 *  @type {Tone.Volume}
+		 *  @private
 		 */
 		this._volume = this.output = new Tone.Volume(options.volume);
 
