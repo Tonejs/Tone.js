@@ -309,11 +309,11 @@ gulp.task("empty.md", ["cloneSite"], function(){
 			var className = path.basename(file.path, ".js");
 			var pathSplit = file.path.split("/");
 			var category = pathSplit[pathSplit.length-2];
-			file.contents = Buffer.from(`---\ntitle: ${className}\nlayout: ${className === "Type" ? "type" : "doc"}\nversion: ${VERSION}\ncategory: ${category}\nbranch: ${BRANCH}\n---`);
+			file.contents = Buffer.from(`---\ntitle: ${className}\nlayout: ${className === "Type" ? "type" : "doc"}\nversion: ${VERSION}\n---`);
 		}))
 		.pipe(rename({extname: ".md"}))
 		.pipe(flatten())
-		.pipe(gulp.dest(`${TMP_FOLDER}/Site/_documentation/${VERSION}`))
+		.pipe(gulp.dest(`${TMP_FOLDER}/Site/_documentation/${VERSION.includes("dev") ? "dev" : VERSION}`))
 		.pipe(tap(function(file){
 			// and another one which just forwards
 			var className = path.basename(file.path, ".md");
