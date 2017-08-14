@@ -25,25 +25,27 @@ define(["Tone/core/Tone", "Tone/component/Volume", "Tone/core/Context"], functio
 	Tone.Master = function(){
 		
 		Tone.call(this);
-		this.createInsOuts(1, 0);
+		Tone.getContext(function(){
+			this.createInsOuts(1, 0);
 
-		/**
-		 *  The private volume node
-		 *  @type  {Tone.Volume}
-		 *  @private
-		 */
-		this._volume = this.output = new Tone.Volume();
+			/**
+			 *  The private volume node
+			 *  @type  {Tone.Volume}
+			 *  @private
+			 */
+			this._volume = this.output = new Tone.Volume();
 
-		/**
-		 * The volume of the master output.
-		 * @type {Decibels}
-		 * @signal
-		 */
-		this.volume = this._volume.volume;
-		
-		this._readOnly("volume");
-		//connections
-		this.input.chain(this.output, this.context.destination);
+			/**
+			 * The volume of the master output.
+			 * @type {Decibels}
+			 * @signal
+			 */
+			this.volume = this._volume.volume;
+			
+			this._readOnly("volume");
+			//connections
+			this.input.chain(this.output, this.context.destination);
+		}.bind(this));
 	};
 
 	Tone.extend(Tone.Master);

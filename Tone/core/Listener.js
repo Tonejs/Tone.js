@@ -45,8 +45,11 @@ function(Tone){
 		 */
 		this._position = [0, 0, 0];
 
-		// set the default position/forward
-		this.set(ListenerConstructor.defaults);
+		Tone.getContext(function(){
+			// set the default position/forward
+			this.set(ListenerConstructor.defaults);
+		}.bind(this));
+
 	};
 
 	Tone.extend(Tone.Listener);

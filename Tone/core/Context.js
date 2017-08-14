@@ -478,7 +478,7 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/core/Timeline"], function (
 	 *  some older implementations.
 	 *  @private
 	 */
-	function shimConnect(){
+	Tone.getContext(function(){
 
 		var nativeConnect = AudioNode.prototype.connect;
 		var nativeDisconnect = AudioNode.prototype.disconnect;
@@ -525,11 +525,11 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/core/Timeline"], function (
 			AudioNode.prototype.connect = toneConnect;
 			AudioNode.prototype.disconnect = toneDisconnect;
 		}
-	}
+	})
+
 
 	// set the audio context initially
 	if (Tone.supported){
-		shimConnect();
 		Tone.context = new Tone.Context();
 	} else {
 		console.warn("This browser does not support Tone.js");

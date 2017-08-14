@@ -238,8 +238,9 @@ define(["Tone/core/Tone", "Tone/source/Source", "Tone/core/Buffer", "Tone/source
 			_noiseBuffers[type] = new Tone.Buffer().fromArray(_noiseArrays[type]);
 		}
 	}
-	createBuffers();
 
+	//create the noise buffers
+	Tone.getContext(createBuffers);
 	Tone.Context.on("init", createBuffers);
 
 	return Tone.Noise;

@@ -32,141 +32,145 @@ function(Tone){
 
 		Tone.Emitter.call(this);
 
-		///////////////////////////////////////////////////////////////////////
-		//	LOOPING
-		//////////////////////////////////////////////////////////////////////
+		Tone.getContext(function(){
 
-		/** 
-		 * 	If the transport loops or not.
-		 *  @type {boolean}
-		 */
-		this.loop = false;
+			///////////////////////////////////////////////////////////////////////
+			//	LOOPING
+			//////////////////////////////////////////////////////////////////////
 
-		/** 
-		 * 	The loop start position in ticks
-		 *  @type {Ticks}
-		 *  @private
-		 */
-		this._loopStart = 0;
+			/** 
+			 * 	If the transport loops or not.
+			 *  @type {boolean}
+			 */
+			this.loop = false;
 
-		/** 
-		 * 	The loop end position in ticks
-		 *  @type {Ticks}
-		 *  @private
-		 */
-		this._loopEnd = 0;
+			/** 
+			 * 	The loop start position in ticks
+			 *  @type {Ticks}
+			 *  @private
+			 */
+			this._loopStart = 0;
 
-		///////////////////////////////////////////////////////////////////////
-		//	CLOCK/TEMPO
-		//////////////////////////////////////////////////////////////////////
+			/** 
+			 * 	The loop end position in ticks
+			 *  @type {Ticks}
+			 *  @private
+			 */
+			this._loopEnd = 0;
 
-		/**
-		 *  Pulses per quarter is the number of ticks per quarter note.
-		 *  @private
-		 *  @type  {Number}
-		 */
-		this._ppq = TransportConstructor.defaults.PPQ;
+			///////////////////////////////////////////////////////////////////////
+			//	CLOCK/TEMPO
+			//////////////////////////////////////////////////////////////////////
 
-		/**
-		 *  watches the main oscillator for timing ticks
-		 *  initially starts at 120bpm
-		 *  @private
-		 *  @type {Tone.Clock}
-		 */
-		this._clock = new Tone.Clock({
-			"callback" : this._processTick.bind(this), 
-			"frequency" : 0,
-		});
+			/**
+			 *  Pulses per quarter is the number of ticks per quarter note.
+			 *  @private
+			 *  @type  {Number}
+			 */
+			this._ppq = TransportConstructor.defaults.PPQ;
 
-		this._bindClockEvents();
+			/**
+			 *  watches the main oscillator for timing ticks
+			 *  initially starts at 120bpm
+			 *  @private
+			 *  @type {Tone.Clock}
+			 */
+			this._clock = new Tone.Clock({
+				"callback" : this._processTick.bind(this), 
+				"frequency" : 0,
+			});
 
-		/**
-		 *  The Beats Per Minute of the Transport. 
-		 *  @type {BPM}
-		 *  @signal
-		 *  @example
-		 * Tone.Transport.bpm.value = 80;
-		 * //ramp the bpm to 120 over 10 seconds
-		 * Tone.Transport.bpm.rampTo(120, 10);
-		 */
-		this.bpm = this._clock.frequency;
-		this.bpm._toUnits = this._toUnits.bind(this);
-		this.bpm._fromUnits = this._fromUnits.bind(this);
-		this.bpm.units = Tone.Type.BPM;
-		this.bpm.value = TransportConstructor.defaults.bpm;
-		this._readOnly("bpm");
+			this._bindClockEvents();
 
-		/**
-		 *  The time signature, or more accurately the numerator
-		 *  of the time signature over a denominator of 4. 
-		 *  @type {Number}
-		 *  @private
-		 */
-		this._timeSignature = TransportConstructor.defaults.timeSignature;
+			/**
+			 *  The Beats Per Minute of the Transport. 
+			 *  @type {BPM}
+			 *  @signal
+			 *  @example
+			 * Tone.Transport.bpm.value = 80;
+			 * //ramp the bpm to 120 over 10 seconds
+			 * Tone.Transport.bpm.rampTo(120, 10);
+			 */
+			this.bpm = this._clock.frequency;
+			this.bpm._toUnits = this._toUnits.bind(this);
+			this.bpm._fromUnits = this._fromUnits.bind(this);
+			this.bpm.units = Tone.Type.BPM;
+			this.bpm.value = TransportConstructor.defaults.bpm;
+			this._readOnly("bpm");
 
-		///////////////////////////////////////////////////////////////////////
-		//	TIMELINE EVENTS
-		//////////////////////////////////////////////////////////////////////
+			/**
+			 *  The time signature, or more accurately the numerator
+			 *  of the time signature over a denominator of 4. 
+			 *  @type {Number}
+			 *  @private
+			 */
+			this._timeSignature = TransportConstructor.defaults.timeSignature;
 
-		/**
-		 *  All the events in an object to keep track by ID
-		 *  @type {Object}
-		 *  @private
-		 */
-		this._scheduledEvents = {};
+			///////////////////////////////////////////////////////////////////////
+			//	TIMELINE EVENTS
+			//////////////////////////////////////////////////////////////////////
 
-		/**
-		 *  The event ID counter
-		 *  @type {Number}
-		 *  @private
-		 */
-		this._eventID = 0;
+			/**
+			 *  All the events in an object to keep track by ID
+			 *  @type {Object}
+			 *  @private
+			 */
+			this._scheduledEvents = {};
 
-		/**
-		 * 	The scheduled events.
-		 *  @type {Tone.Timeline}
-		 *  @private
-		 */
-		this._timeline = new Tone.Timeline();
+			/**
+			 *  The event ID counter
+			 *  @type {Number}
+			 *  @private
+			 */
+			this._eventID = 0;
 
-		/**
-		 *  Repeated events
-		 *  @type {Array}
-		 *  @private
-		 */
-		this._repeatedEvents = new Tone.IntervalTimeline();
+			/**
+			 * 	The scheduled events.
+			 *  @type {Tone.Timeline}
+			 *  @private
+			 */
+			this._timeline = new Tone.Timeline();
 
-		/**
-		 *  Events that occur once
-		 *  @type {Array}
-		 *  @private
-		 */
-		this._onceEvents = new Tone.Timeline();
+			/**
+			 *  Repeated events
+			 *  @type {Array}
+			 *  @private
+			 */
+			this._repeatedEvents = new Tone.IntervalTimeline();
 
-		/** 
-		 *  All of the synced Signals
-		 *  @private 
-		 *  @type {Array}
-		 */
-		this._syncedSignals = [];
+			/**
+			 *  Events that occur once
+			 *  @type {Array}
+			 *  @private
+			 */
+			this._onceEvents = new Tone.Timeline();
 
-		///////////////////////////////////////////////////////////////////////
-		//	SWING
-		//////////////////////////////////////////////////////////////////////
+			/** 
+			 *  All of the synced Signals
+			 *  @private 
+			 *  @type {Array}
+			 */
+			this._syncedSignals = [];
 
-		/**
-		 *  The subdivision of the swing
-		 *  @type  {Ticks}
-		 *  @private
-		 */
-		this._swingTicks = TransportConstructor.defaults.PPQ / 2; //8n
+			///////////////////////////////////////////////////////////////////////
+			//	SWING
+			//////////////////////////////////////////////////////////////////////
 
-		/**
-		 *  The swing amount
-		 *  @type {NormalRange}
-		 *  @private
-		 */
-		this._swingAmount = 0;
+			/**
+			 *  The subdivision of the swing
+			 *  @type  {Ticks}
+			 *  @private
+			 */
+			this._swingTicks = TransportConstructor.defaults.PPQ / 2; //8n
+
+			/**
+			 *  The swing amount
+			 *  @type {NormalRange}
+			 *  @private
+			 */
+			this._swingAmount = 0;
+
+		}.bind(this));
 
 	};
 
