@@ -800,7 +800,7 @@ define(function(){
 			var resCallback = function(){
 				resolve(Tone.context);
 				Tone.Context.off("init", resCallback);
-			}
+			};
 			Tone.Context.on("init", resCallback);
 		}
 		return Tone;

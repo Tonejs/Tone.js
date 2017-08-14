@@ -525,7 +525,7 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/core/Timeline"], function (
 			AudioNode.prototype.connect = toneConnect;
 			AudioNode.prototype.disconnect = toneDisconnect;
 		}
-	})
+	});
 
 
 	// set the audio context initially
