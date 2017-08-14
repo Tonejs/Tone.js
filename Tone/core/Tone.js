@@ -15,11 +15,8 @@ define(function(){
 	/**
 	 *  @class  Tone is the base class of all other classes.
 	 *  @constructor
-	 *  @param {Tone.Context} context The audio context
 	 */
-	var Tone = function(){
-		// this._context = Tone.defaultArg(context, Tone.context);
-	};
+	var Tone = function(){};
 
 	/**
 	 *  @memberOf Tone#
@@ -636,9 +633,9 @@ define(function(){
 	/**
 	 *  The private audio context shared by all Tone Nodes. 
 	 *  @private
-	 *  @type {Tone.Context|undefined}
+	 *  @type {Tone.Context}
 	 */
-	var audioContext;
+	var audioContext = null;
 
 	/**
 	 *  A static pointer to the audio context accessible as Tone.context. 
@@ -777,6 +774,37 @@ define(function(){
 			return hasAudioContext && hasPromises && hasWorkers;
 		}
 	});
+
+	/**
+	 *  Boolean value if the audio context has been initialized.
+	 *  @type {Boolean}
+	 *  @memberOf Tone
+	 *  @static
+	 *  @name initialized
+	 */
+	Object.defineProperty(Tone, "initialized", {
+		get : function(){
+			return audioContext !== null;
+		}
+	});
+
+	/**
+	 *  Get the context when it becomes available
+	 *  @param  {Function}  resolve  Callback when the context is initialized
+	 *  @return  {Tone}
+	 */
+	Tone.getContext = function(resolve){
+		if (Tone.initialized){
+			resolve(Tone.context);
+		} else {
+			var resCallback = function(){
+				resolve(Tone.context);
+				Tone.Context.off("init", resCallback);
+			}
+			Tone.Context.on("init", resCallback);
+		}
+		return Tone;
+	};
 
 	/**
 	 * The version number
