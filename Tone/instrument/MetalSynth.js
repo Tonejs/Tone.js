@@ -1,5 +1,5 @@
-define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/source/FMOscillator", "Tone/component/Filter", 
-	"Tone/component/FrequencyEnvelope", "Tone/component/AmplitudeEnvelope", "Tone/core/Gain", "Tone/signal/Scale", "Tone/signal/Multiply"], 
+define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/source/FMOscillator", "Tone/component/Filter",
+	"Tone/component/FrequencyEnvelope", "Tone/component/AmplitudeEnvelope", "Tone/core/Gain", "Tone/signal/Scale", "Tone/signal/Multiply"],
 	function (Tone) {
 
 	/**
@@ -15,7 +15,7 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/source/FMOscillato
 	 *  @class  A highly inharmonic and spectrally complex source with a highpass filter
 	 *          and amplitude envelope which is good for making metalophone sounds. Based
 	 *          on CymbalSynth by [@polyrhythmatic](https://github.com/polyrhythmatic).
-	 *          Inspiration from [Sound on Sound](http://www.soundonsound.com/sos/jul02/articles/synthsecrets0702.asp).
+	 *          Inspiration from [Sound on Sound](https://web.archive.org/web/20160610143924/https://www.soundonsound.com/sos/jul02/articles/synthsecrets0702.asp).
 	 *
 	 *  @constructor
 	 *  @extends {Tone.Instrument}
@@ -82,7 +82,7 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/source/FMOscillato
 		this._filterFreqScaler = new Tone.Scale(options.resonance, 7000);
 
 		/**
-		 *  The envelope which is connected both to the 
+		 *  The envelope which is connected both to the
 		 *  amplitude and highpass filter's cutoff frequency
 		 *  @type  {Tone.Envelope}
 		 */
@@ -161,8 +161,8 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/source/FMOscillato
 	};
 
 	/**
-	 *  Trigger the attack and release of the envelope after the given 
-	 *  duration. 
+	 *  Trigger the attack and release of the envelope after the given
+	 *  duration.
 	 *  @param  {Time}  duration  The duration before triggering the release
 	 *  @param  {Time}  time      When the attack should be triggered.
 	 *  @param  {NormalRange}  [velocity=1]  The velocity that the envelope should be triggered at.
