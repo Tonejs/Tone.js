@@ -1,5 +1,5 @@
-define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/source/FMOscillator", "Tone/component/Filter",
-	"Tone/component/FrequencyEnvelope", "Tone/component/AmplitudeEnvelope", "Tone/core/Gain", "Tone/signal/Scale", "Tone/signal/Multiply"],
+define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/source/FMOscillator", "Tone/component/Filter", 
+	"Tone/component/FrequencyEnvelope", "Tone/component/AmplitudeEnvelope", "Tone/core/Gain", "Tone/signal/Scale", "Tone/signal/Multiply"], 
 	function (Tone) {
 
 	/**
@@ -15,7 +15,7 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/source/FMOscillato
 	 *  @class  A highly inharmonic and spectrally complex source with a highpass filter
 	 *          and amplitude envelope which is good for making metalophone sounds. Based
 	 *          on CymbalSynth by [@polyrhythmatic](https://github.com/polyrhythmatic).
-	 *          Inspiration from [Sound on Sound](https://web.archive.org/web/20160610143924/https://www.soundonsound.com/sos/jul02/articles/synthsecrets0702.asp).
+	 *          Inspiration from [Sound on Sound](http://www.soundonsound.com/sos/jul02/articles/synthsecrets0702.asp).
 	 *
 	 *  @constructor
 	 *  @extends {Tone.Instrument}
@@ -24,7 +24,7 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/source/FMOscillato
 	 */
 	Tone.MetalSynth = function(options){
 
-		options = this.defaultArg(options, Tone.MetalSynth.defaults);
+		options = Tone.defaultArg(options, Tone.MetalSynth.defaults);
 		Tone.Instrument.call(this, options);
 
 		/**
@@ -82,7 +82,7 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/source/FMOscillato
 		this._filterFreqScaler = new Tone.Scale(options.resonance, 7000);
 
 		/**
-		 *  The envelope which is connected both to the
+		 *  The envelope which is connected both to the 
 		 *  amplitude and highpass filter's cutoff frequency
 		 *  @type  {Tone.Envelope}
 		 */
@@ -139,12 +139,12 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/source/FMOscillato
 	/**
 	 *  Trigger the attack.
 	 *  @param  {Time}  time      When the attack should be triggered.
-	 *  @param  {NormalRange=1}  velocity  The velocity that the envelope should be triggered at.
+	 *  @param  {NormalRange}  [velocity=1]  The velocity that the envelope should be triggered at.
 	 *  @return  {Tone.MetalSynth}  this
 	 */
 	Tone.MetalSynth.prototype.triggerAttack = function(time, vel) {
 		time = this.toSeconds(time);
-		vel = this.defaultArg(vel, 1);
+		vel = Tone.defaultArg(vel, 1);
 		this.envelope.triggerAttack(time, vel);
 		return this;
 	};
@@ -161,11 +161,11 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/source/FMOscillato
 	};
 
 	/**
-	 *  Trigger the attack and release of the envelope after the given
-	 *  duration.
+	 *  Trigger the attack and release of the envelope after the given 
+	 *  duration. 
 	 *  @param  {Time}  duration  The duration before triggering the release
 	 *  @param  {Time}  time      When the attack should be triggered.
-	 *  @param  {NormalRange=1}  velocity  The velocity that the envelope should be triggered at.
+	 *  @param  {NormalRange}  [velocity=1]  The velocity that the envelope should be triggered at.
 	 *  @return  {Tone.MetalSynth}  this
 	 */
 	Tone.MetalSynth.prototype.triggerAttackRelease = function(duration, time, velocity) {
