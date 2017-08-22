@@ -36,10 +36,15 @@ var argv = require("yargs")
 			.argv;
 var KarmaServer = require("karma").Server;
 
+var BRANCH = process.env.TRAVIS && !process.env.TRAVIS_PULL_REQUEST ? process.env.TRAVIS_BRANCH : "dev";
+var IS_DEV = BRANCH === "dev";
+
 var VERSION = fs.readFileSync("../Tone/core/Tone.js", "utf-8")
 		.match(/(?:Tone\.version\s*=\s*)(?:'|")(.*)(?:'|");/m)[1];
 
-var BRANCH = process.env.TRAVIS && !process.env.TRAVIS_PULL_REQUEST ? process.env.TRAVIS_BRANCH : "dev";
+//dev versions are just 'dev'
+VERSION = IS_DEV ? "dev" : VERSION;
+
 
 var TMP_FOLDER = "../tmp";
 
@@ -325,7 +330,6 @@ gulp.task("empty.md", ["cloneSite"], function(){
 gulp.task("buildJsdocs", ["empty.md"],  function(done){
 	glob("../Tone/*/*.js", function(err, files){
 		var docs = child_process.execSync(`./node_modules/.bin/jsdoc -X -a public ${files.join(" ")}`);
-		var dest = `${TMP_FOLDER}/Site/_data/jsdocs-${VERSION}.json`;
 		docs = JSON.parse(docs)
 		//filter out some stuff
 		docs = docs.filter(function(datum){
@@ -335,7 +339,7 @@ gulp.task("buildJsdocs", ["empty.md"],  function(done){
 				(!datum.hasOwnProperty('inherits') || !datum.inherits.startsWith('Tone#')) &&
 				//isnt undocumented (or a default value)
 				(!datum.undocumented || datum.longname.includes('defaults'))
-		})
+		});
 		var dest = `${TMP_FOLDER}/Site/_data/jsdocs-${VERSION}.json`;
 		fs.writeFile(dest, JSON.stringify(docs, undefined, '\t'), done);
 	});
