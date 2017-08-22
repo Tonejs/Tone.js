@@ -13,10 +13,10 @@ define(["Tone/core/Tone", "Tone/core/Param", "Tone/type/Type"], function (Tone) 
 	/**
 	 *  @class A thin wrapper around the Native Web Audio GainNode.
 	 *         The GainNode is a basic building block of the Web Audio
-	 *         API and is useful for routing audio and adjusting gains. 
+	 *         API and is useful for routing audio and adjusting gains.
 	 *  @extends {Tone}
 	 *  @param  {Number=}  gain  The initial gain of the GainNode
-	 *  @param {Tone.Type=} units The units of the gain parameter. 
+	 *  @param {Tone.Type=} units The units of the gain parameter.
 	 */
 	Tone.Gain = function(){
 
@@ -31,11 +31,11 @@ define(["Tone/core/Tone", "Tone/core/Param", "Tone/type/Type"], function (Tone) 
 
 		/**
 		 *  The gain parameter of the gain node.
-		 *  @type {Tone.Param}
+		 *  @type {Gain}
 		 *  @signal
 		 */
 		this.gain = new Tone.Param({
-			"param" : this._gainNode.gain, 
+			"param" : this._gainNode.gain,
 			"units" : options.units,
 			"value" : options.gain,
 			"convert" : options.convert
