@@ -181,11 +181,11 @@ define(["helper/Basic", "Test", "Tone/type/Time", "Tone/core/Tone", "helper/Offl
 			it ("converts time into ticks", function(){
 				return Offline(function(Transport){
 					expect(Time("2n").toTicks()).to.equal(2 * Transport.PPQ);
-          // floating point checks
-          var bpmOrig = Tone.Transport.bpm.value;
-          Tone.Transport.bpm.value = 100;
-          expect(Time('0:1:3').toTicks()).to.equal(1.75 * Transport.PPQ)
-          Tone.Transport.bpm.value = bpmOrig;
+					// floating point checks
+					var bpmOrig = Tone.Transport.bpm.value;
+					Tone.Transport.bpm.value = 100;
+					expect(Time('0:1:3').toTicks()).to.equal(1.75 * Transport.PPQ)
+					Tone.Transport.bpm.value = bpmOrig;
 				});
 			});
 

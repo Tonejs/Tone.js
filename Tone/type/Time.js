@@ -232,7 +232,7 @@ define(["Tone/core/Tone", "Tone/type/TimeBase"], function (Tone) {
 	Tone.Time.prototype.toTicks = function(){
 		var quarterTime = this._beatsToUnits(1);
 		var quarters = this.valueOf() / quarterTime;
-		return Math.floor(quarters * Tone.Transport.PPQ);
+		return Math.round(quarters * Tone.Transport.PPQ);
 	};
 
 	/**
