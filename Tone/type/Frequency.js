@@ -1,9 +1,9 @@
 define(["Tone/core/Tone", "Tone/type/TimeBase"], function (Tone) {
 
 	/**
-	 *  @class Tone.Frequency is a primitive type for encoding Frequency values. 
+	 *  @class Tone.Frequency is a primitive type for encoding Frequency values.
 	 *         Eventually all time values are evaluated to hertz
-	 *         using the `eval` method. 
+	 *         using the `eval` method.
 	 *  @constructor
 	 *  @extends {Tone.TimeBase}
 	 *  @param  {String|Number}  val    The time value.
@@ -15,7 +15,7 @@ define(["Tone/core/Tone", "Tone/type/TimeBase"], function (Tone) {
 	 */
 	Tone.Frequency = function(val, units){
 		if (this instanceof Tone.Frequency){
-			
+
 			Tone.TimeBase.call(this, val, units);
 
 		} else {
@@ -29,7 +29,7 @@ define(["Tone/core/Tone", "Tone/type/TimeBase"], function (Tone) {
 	//	AUGMENT BASE EXPRESSIONS
 	///////////////////////////////////////////////////////////////////////////
 
-	//clone the expressions so that 
+	//clone the expressions so that
 	//we can add more without modifying the original
 	Tone.Frequency.prototype._primaryExpressions = Object.create(Tone.TimeBase.prototype._primaryExpressions);
 
@@ -42,7 +42,7 @@ define(["Tone/core/Tone", "Tone/type/TimeBase"], function (Tone) {
 		regexp : /^(\d+(?:\.\d+)?midi)/,
 		method : function(value){
 			return this.midiToFrequency(value);
-		}	
+		}
 	};
 
 	/*
@@ -56,7 +56,7 @@ define(["Tone/core/Tone", "Tone/type/TimeBase"], function (Tone) {
 			var index = noteToScaleIndex[pitch.toLowerCase()];
 			var noteNumber = index + (parseInt(octave) + 1) * 12;
 			return this.midiToFrequency(noteNumber);
-		}	
+		}
 	};
 
 	/*
@@ -237,9 +237,9 @@ define(["Tone/core/Tone", "Tone/type/TimeBase"], function (Tone) {
 	 *  @type  {Object}
 	 */
 	var noteToScaleIndex = {
-		"cbb" : -2, "cb" : -1, "c" : 0,  "c#" : 1,  "cx" : 2, 
+		"cbb" : -2, "cb" : -1, "c" : 0,  "c#" : 1,  "cx" : 2,
 		"dbb" : 0,  "db" : 1,  "d" : 2,  "d#" : 3,  "dx" : 4,
-		"ebb" : 2,  "eb" : 3,  "e" : 4,  "e#" : 5,  "ex" : 6, 
+		"ebb" : 2,  "eb" : 3,  "e" : 4,  "e#" : 5,  "ex" : 6,
 		"fbb" : 3,  "fb" : 4,  "f" : 5,  "f#" : 6,  "fx" : 7,
 		"gbb" : 5,  "gb" : 6,  "g" : 7,  "g#" : 8,  "gx" : 9,
 		"abb" : 7,  "ab" : 8,  "a" : 9,  "a#" : 10, "ax" : 11,
@@ -254,14 +254,14 @@ define(["Tone/core/Tone", "Tone/type/TimeBase"], function (Tone) {
 
 	/**
 	 *  The [concert pitch](https://en.wikipedia.org/wiki/Concert_pitch)
-	 *  A4's values in Hertz. 
+	 *  A4's values in Hertz.
 	 *  @type {Frequency}
 	 *  @static
 	 */
 	Tone.Frequency.A4 = 440;
 
 	/**
-	 *  Convert a MIDI note to frequency value. 
+	 *  Convert a MIDI note to frequency value.
 	 *  @param  {MIDI} midi The midi number to convert.
 	 *  @return {Frequency} the corresponding frequency value
 	 *  @example
@@ -279,7 +279,7 @@ define(["Tone/core/Tone", "Tone/type/TimeBase"], function (Tone) {
 	 * tone.midiToFrequency(440); // returns 69
 	 */
 	Tone.Frequency.prototype.frequencyToMidi = function(frequency){
-		return 69 + 12 * Math.log(frequency / Tone.Frequency.A4) / Math.LN2;
+		return 69 + Math.round(12 * Math.log(frequency / Tone.Frequency.A4) / Math.LN2);
 	};
 
 	return Tone.Frequency;
