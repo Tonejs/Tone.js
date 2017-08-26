@@ -1,11 +1,12 @@
-define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/core/Buffers", "Tone/source/BufferSource"], 
+define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/core/Buffers", "Tone/source/BufferSource"],
 	function (Tone) {
 
 	/**
-	 * @class Automatically interpolates between a set of pitched samples
-	 * @param {Object} samples An object of samples mapping either Midi 
-	 *                         Note Numbers or Scientific Pitch Notation 
-	 *                         to the url of that sample. 
+	 * @class Automatically interpolates between a set of pitched samples. For sample
+	 *        or buffer playback where repitching is not necessary, use [Tone.Player](https://tonejs.github.io/docs/Player).
+	 * @param {Object} samples An object of samples mapping either Midi
+	 *                         Note Numbers or Scientific Pitch Notation
+	 *                         to the url of that sample.
 	 * @example
 	 * var sampler = new Tone.MultiSampler({
 	 * 	"C3" : "path/to/C3.mp3",
@@ -83,7 +84,7 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/core/Buffers", "To
 	/**
 	 * Returns the difference in steps between the given midi note at the closets sample.
 	 * @param  {Midi} midi
-	 * @return {Interval}    
+	 * @return {Interval}
 	 * @private
 	 */
 	Tone.MultiSampler.prototype._findClosest = function(midi){
@@ -144,18 +145,19 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/core/Buffers", "To
 		// find the note
 		if (this._activeSources[midi] && this._activeSources[midi].length){
 			var source = this._activeSources[midi].shift().source;
-			source.stop(time, this.release);
+			time = this.toSeconds(time);
+			source.stop(time + this.release, this.release);
 		}
 	};
 
 	/**
-	 * Invoke the attack phase, then after the duration, invoke the release. 
+	 * Invoke the attack phase, then after the duration, invoke the release.
 	 * @param  {Frequency} note     The note to play
 	 * @param  {Time} duration The time the note should be held
 	 * @param  {Time=} time     When to start the attack
 	 * @param  {NormalRange} [velocity=1] The velocity of the attack
 	 * @return {Tone.MultiSampler}          this
-	 */	
+	 */
 	Tone.MultiSampler.prototype.triggerAttackRelease = function(note, duration, time, velocity){
 		time = this.toSeconds(time);
 		duration = this.toSeconds(duration);
@@ -167,10 +169,10 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/core/Buffers", "To
 	/**
 	 *  Add a note to the sampler.
 	 *  @param  {Note|Midi}   note      The buffer's pitch.
-	 *  @param  {String|Tone.Buffer|Audiobuffer}  url  Either the url of the bufer, 
+	 *  @param  {String|Tone.Buffer|Audiobuffer}  url  Either the url of the bufer,
 	 *                                                 or a buffer which will be added
 	 *                                                 with the given name.
-	 *  @param  {Function=}  callback  The callback to invoke 
+	 *  @param  {Function=}  callback  The callback to invoke
 	 *                                 when the url is loaded.
 	 */
 	Tone.MultiSampler.prototype.add = function(note, url, callback){
