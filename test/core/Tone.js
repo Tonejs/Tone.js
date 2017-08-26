@@ -1,8 +1,8 @@
-define(["Test", "Tone/core/Tone", "helper/PassAudio", "Tone/source/Oscillator", 
-	"Tone/instrument/Synth", "helper/Offline", "helper/Supports", 
-	"Tone/component/Filter", "Tone/core/Gain", "Tone/core/Context", 
-	"helper/BufferTest", "Tone/component/Merge", "Tone/signal/Signal", "Tone/component/Split"], 
-	function (Test, Tone, PassAudio, Oscillator, Synth, Offline, Supports, 
+define(["Test", "Tone/core/Tone", "helper/PassAudio", "Tone/source/Oscillator",
+	"Tone/instrument/Synth", "helper/Offline", "helper/Supports",
+	"Tone/component/Filter", "Tone/core/Gain", "Tone/core/Context",
+	"helper/BufferTest", "Tone/component/Merge", "Tone/signal/Signal", "Tone/component/Split"],
+	function (Test, Tone, PassAudio, Oscillator, Synth, Offline, Supports,
 		Filter, Gain, Context, BufferTest, Merge, Signal, Split) {
 
 	describe("Tone", function(){
@@ -178,6 +178,14 @@ define(["Test", "Tone/core/Tone", "helper/PassAudio", "Tone/source/Oscillator",
 				});
 			});
 
+			it("uses constr as an object if third argument doesn't have a 'defaults' property", function(){
+				expect(Tone.defaults([1, 2], ["a", "b", "c"], {"c" : 3})).is.deep.equal({
+					"a" : 1,
+					"b" : 2,
+					"c" : 3
+				});
+			});
+
 			it("does not map parameter if first argument is already an object", function(){
 				expect(Tone.defaults([{"a" : 2, "b" : 3}], ["a", "b", "c"], {})).is.deep.equal({
 					"a" : 2,
@@ -325,7 +333,7 @@ define(["Test", "Tone/core/Tone", "helper/PassAudio", "Tone/source/Oscillator",
 				//and a saftey check
 				return ctx.close();
 			});
-			
+
 		});
 
 		context("Tone.prototype.set / get", function(){
@@ -337,14 +345,14 @@ define(["Test", "Tone/core/Tone", "helper/PassAudio", "Tone/source/Oscillator",
 				});
 				expect(osc.frequency.value).to.be.closeTo(30, 0.001);
 				osc.dispose();
-			});	
+			});
 
 			it("sets a value given a string and a value", function(){
 				var osc = new Oscillator(0);
 				osc.set("frequency", 2);
 				expect(osc.frequency.value).to.be.closeTo(2, 0.001);
 				osc.dispose();
-			});		
+			});
 
 			it("ramps to a value given an object and ramp time", function(){
 				return Offline(function(){
@@ -384,14 +392,14 @@ define(["Test", "Tone/core/Tone", "helper/PassAudio", "Tone/source/Oscillator",
 				var osc = new Oscillator(0);
 				expect(osc.get()).to.contain.keys(Object.keys(Oscillator.defaults));
 				osc.dispose();
-			});	
+			});
 
 			it("can 'get' only the given keys", function(){
 				var osc = new Oscillator(0);
 				var keys = ["frequency", "type"];
 				expect(Object.keys(osc.get(keys))).to.deep.equal(keys);
 				osc.dispose();
-			});	
+			});
 
 			it("can 'set' a nested object", function(){
 				var synth = new Synth();
@@ -402,14 +410,14 @@ define(["Test", "Tone/core/Tone", "helper/PassAudio", "Tone/source/Oscillator",
 				});
 				expect(synth.oscillator.type).to.equal("square2");
 				synth.dispose();
-			});	
+			});
 
 			it("can 'set' a value with dot notation", function(){
 				var synth = new Synth();
 				synth.set("oscillator.type", "triangle");
 				expect(synth.oscillator.type).to.equal("triangle");
 				synth.dispose();
-			});	
+			});
 
 			it("can 'get' a value with dot notation", function(){
 				var synth = new Synth();
@@ -428,7 +436,7 @@ define(["Test", "Tone/core/Tone", "helper/PassAudio", "Tone/source/Oscillator",
 					}
 				});
 				synth.dispose();
-			});	
+			});
 
 		});
 	});
