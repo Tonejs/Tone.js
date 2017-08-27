@@ -3,8 +3,10 @@
 * [Code coverage](https://coveralls.io/github/Tonejs/Tone.js) analysis
 * [Dev build](https://tonejs.github.io/build/dev/Tone.js) with each successful commit
 * [Versioned docs](https://tonejs.github.io/docs/r11/Tone) plus a [dev build](https://tonejs.github.io/docs/dev/Tone) of the docs on successful commits
-* Tone.MultiSampler simplifies creating multisampled instruments
+* Tone.AudioNode is base class for all classes which generate or process audio
+* Tone.Sampler simplifies creating multisampled instruments
 * Tone.Solo makes it easier to mute/solo audio
+* [Mixer](https://tonejs.github.io/examples/#mixer) and [sampler](https://tonejs.github.io/examples/#sampler) examples
 * Making type-checking static
 
 ### r10
@@ -19,7 +21,7 @@
 
 ### r9
 
-* Tone.Clock performance and lookAhead updates. 
+* Tone.Clock performance and lookAhead updates.
 * Tone.Transport.lookAhead = seconds|'playback'|'interactive'|'balanced'
 * Convolver.load and Player.load returns Promise
 * Tone.ExternalInput -> Tone.UserMedia, simplified API, open() returns Promise.
@@ -29,10 +31,10 @@
 
 ### r8
 
-* Transport.seconds returns the progress in seconds. 
+* Transport.seconds returns the progress in seconds.
 * Buffer.from/toArray, Float32Array <-> Buffer conversions
 * Buffer.slice(start, end) slices and returns a subsection of the Buffer
-* Source.sync now syncs all subsequent calls to `start` and `stop` to the TransportTime instead of the AudioContext time. 
+* Source.sync now syncs all subsequent calls to `start` and `stop` to the TransportTime instead of the AudioContext time.
 	* e.g. source.sync().start(0).stop(0.8); //plays source between 0 and 0.8 of the Transport
 * Transport.on("start" / "stop") callbacks are invoked just before the event.
 * Param can accept an LFO description in the constructor or .value
@@ -41,7 +43,7 @@
 * Tone.Buffer.prototype.load returns Promise
 * Using Tone.Delay and Tone.Gain everywhere
 * Patch for Chrome 53+ issue of not correctly scheduling AudioParams with setValueAtTime
-* Panner3D and Tone.Listener wrap native PannerNode and AudioListener to give 3D panning ability. 
+* Panner3D and Tone.Listener wrap native PannerNode and AudioListener to give 3D panning ability.
 
 ### r7
 
@@ -52,10 +54,10 @@
 * FM, AM, Fat Oscillators incorporated into OmniOscillator
 * Simplified FM and AM Synths and APIs
 * Panner.pan is between -1,1 like the StereoPannerNode
-* Pruned away unused (or little used) Signal classes. 
-	* All this functionality will be available when the AudioWorkerNode is introduced. 
-* Clock uses Web Workers instead of requestAnimationFrame which allows it to run in the background. 
-* Removed `startMobile`. Using [StartAudioContext](https://github.com/tambien/StartAudioContext) in examples. 
+* Pruned away unused (or little used) Signal classes.
+	* All this functionality will be available when the AudioWorkerNode is introduced.
+* Clock uses Web Workers instead of requestAnimationFrame which allows it to run in the background.
+* Removed `startMobile`. Using [StartAudioContext](https://github.com/tambien/StartAudioContext) in examples.
 * Automated test runner using [Travis CI](https://travis-ci.org/Tonejs/Tone.js/)
 * Simplified NoiseSynth by removing filter and filter envelope.
 * Added new timing primitive types: Time, Frequency, TransportTime.
@@ -65,7 +67,7 @@
 * Renamed Tone.SimpleSynth -> Tone.Synth
 * Tone.Buffers combines multiple buffers
 * Tone.BufferSource a low-level wrapper, and Tone.MultiPlayer which is good for multisampled instruments.
-* Tone.GrainPlayer: granular synthesis buffer player. 
+* Tone.GrainPlayer: granular synthesis buffer player.
 * Simplified Sampler
 
 DEPRECATED:
@@ -77,46 +79,46 @@ DEPRECATED:
 * Added Timeline/TimelineState/TimelineSignal which keeps track of all scheduled state changes.
 * Clock uses requestAnimationFrame instead of ScriptProcessorNode
 * Removed `onended` event from Tone.Source
-* Refactored tests into individual files. 
+* Refactored tests into individual files.
 * Renamed some Signal methods: `exponentialRampToValueNow`->`exponentialRampToValue`, `setCurrentValueNow`->`setRampPoint`
 * LFO no longer starts at bottom of cycle. Starts at whatever phase it's set at.
-* Transport is an event emitter. triggers events on "start", "stop", "pause", and "loop". 
-* Oscillator accepts a "partials" array. 
+* Transport is an event emitter. triggers events on "start", "stop", "pause", and "loop".
+* Oscillator accepts a "partials" array.
 * Microphone inherits from ExternalInput which is generalized for different inputs.
 * New scheduling methods on Transport - `schedule`, `scheduleOnce`, and `scheduleRepeat`.
 * Tone.Gain and Tone.Delay classes wrap the native Web Audio nodes.
 * Moved [MidiToScore](https://github.com/Tonejs/MidiConvert) and [TypeScript](https://github.com/Tonejs/TypeScript) definitions to separate repos.
-* Tone.Param wraps the native AudioParam and allows for unit conversion. 
+* Tone.Param wraps the native AudioParam and allows for unit conversion.
 * Quantization with Transport.quantize and using "@" in any Time. [Read more](https://github.com/Tonejs/Tone.js/wiki/Time).
-* Control-rate generators for value interpolation, patterns, random numbers, and markov chains. 
-* Scheduable musical events: Tone.Event, Tone.Loop, Tone.Part, Tone.Pattern, Tone.Sequence. 
-* Player's playbackRate is now a signal and Noise includes a playbackRate signal. 
-* All filterEnvelopes use new Tone.FrequencyEnvelope with frequency units and `baseFrequency` and `octaves` instead of `min` and `max`. 
-* Phaser uses "octaves" instead of "depth" to be more consistent across the whole Tone.js API. 
+* Control-rate generators for value interpolation, patterns, random numbers, and markov chains.
+* Scheduable musical events: Tone.Event, Tone.Loop, Tone.Part, Tone.Pattern, Tone.Sequence.
+* Player's playbackRate is now a signal and Noise includes a playbackRate signal.
+* All filterEnvelopes use new Tone.FrequencyEnvelope with frequency units and `baseFrequency` and `octaves` instead of `min` and `max`.
+* Phaser uses "octaves" instead of "depth" to be more consistent across the whole Tone.js API.
 * Presets now have [their own repo](https://github.com/Tonejs/Presets)
 
 DEPRECATED:
 * `setTimeout`, `setInterval`, `setTimeline` in favor of new `schedule`, `scheduleOnce`, and `scheduleRepeat`.
-* Tone.Signal no longer takes an AudioParam in the first argument. Use Tone.Param instead. 
-* Tone.Buffer.onload/onprogress/onerror is deprecated. Use `Tone.Buffer.on("load", callback)` instead. 
+* Tone.Signal no longer takes an AudioParam in the first argument. Use Tone.Param instead.
+* Tone.Buffer.onload/onprogress/onerror is deprecated. Use `Tone.Buffer.on("load", callback)` instead.
 
 ### r5
 
 * reverse buffer for Player and Sampler.
 * Tone.Volume for simple volume control in Decibels.
 * Panner uses StereoPannerNode when available.
-* AutoFilter and Tremolo effects. 
+* AutoFilter and Tremolo effects.
 * Made many attributes read-only. preventing this common type of error: `oscillator.frequency = 200` when it should be `oscillator.frequency.value = 200`.
-* Envelope supports "linear" and "exponential" attack curves. 
-* Renamed Tone.EQ -> Tone.EQ3. 
+* Envelope supports "linear" and "exponential" attack curves.
+* Renamed Tone.EQ -> Tone.EQ3.
 * Tone.DrumSynth makes kick and tom sounds.
 * Tone.MidSideCompressor and Tone.MidSideSplit/Tone.MidSideMerge
 * Tone.Oscillator - can specify the number of partials in the type: i.e. "sine10", "triangle3", "square4", etc.
-* mute/unmute the master output: `Tone.Master.mute = true`. 
+* mute/unmute the master output: `Tone.Master.mute = true`.
 * 3 new simplified synths: SimpleSynth, SimpleAM and SimpleFM
-* `harmonicity` is a signal-rate value for all instruments. 
-* expose Q in Phaser. 
-* unit conversions using Tone.Type for signals and LFO. 
+* `harmonicity` is a signal-rate value for all instruments.
+* expose Q in Phaser.
+* unit conversions using Tone.Type for signals and LFO.
 * [new docs](http://tonejs.org/docs)
 * [updated examples](http://tonejs.org/examples)
 
@@ -134,7 +136,7 @@ DEPRECATED:
 * Functions return `this` to allow for chaining. i.e. `player.toMaster().start(2)`.
 * Added `units` to Signal class which allows signals to be set in terms of Tone.Time, Tone.Frequency, Numbers, or Decibels.
 * Replaced set/get method with ES5 dot notation. i.e. `player.setVolume(-10)` is now `player.volume.value = -10`.
-	To ramp the volume use either `player.volume.linearRampToValueNow(-10, "4n")`, or the new `rampTo` method which automaically selects the ramp (linear|exponential) based on the type of data. 
+	To ramp the volume use either `player.volume.linearRampToValueNow(-10, "4n")`, or the new `rampTo` method which automaically selects the ramp (linear|exponential) based on the type of data.
 * set/get methods for all components
 * syncSignal and unsyncSignal moved from Signal to Transport
 * Add/Multiply/Subtract/Min/Max/GreaterThan/LessThan all extend Tone.Signal which allows them to be scheduled and automated just like Tone.Signal.
@@ -142,7 +144,7 @@ DEPRECATED:
 
 BREAKING CHANGES:
 
-The API has been changed consistently to use `.attribute` for getting and setting instead of `getAttribute` and `setAttribute` methods. The reasoning for this is twofold: firstly, Tone.Signal attributes were previously limited in their scheduling capabilities when set through a setter function. For exactly, it was not possible to do a setValueAtTime on the `bpm` of the Transport. Secondly, the new EcmaScript 5 getter/setter approach resembles the Web Audio API much more closely, which will make intermixing the two APIs even easier. 
+The API has been changed consistently to use `.attribute` for getting and setting instead of `getAttribute` and `setAttribute` methods. The reasoning for this is twofold: firstly, Tone.Signal attributes were previously limited in their scheduling capabilities when set through a setter function. For exactly, it was not possible to do a setValueAtTime on the `bpm` of the Transport. Secondly, the new EcmaScript 5 getter/setter approach resembles the Web Audio API much more closely, which will make intermixing the two APIs even easier.
 
 If you're using Sublime Text, one way to transition from the old API to the new one is with a regex find/replace:
 	find `Tone.Transport.setBpm\((\d+)\)` and replace it with `Tone.Transport.bpm.value = $1`.
