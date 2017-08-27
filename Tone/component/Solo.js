@@ -22,20 +22,13 @@ define(["Tone/core/Tone", "Tone/core/Gain"], function (Tone) {
 		this.input = this.output = new Tone.Gain();
 
 		/**
-		 *  Holds the current solo information
-		 *  @type  {Boolean}
-		 *  @private
-		 */
-		this._solo = false;
-
-		/**
 		 *  A bound _soloed method
 		 *  @type  {Function}
 		 *  @private
 		 */
 		this._soloBind = this._soloed.bind(this);
 
-		//listen for solo events class-wide. 
+		//listen for solo events class-wide.
 		this.context.on("solo", this._soloBind);
 		//set initially
 		this.solo = options.solo;
@@ -53,7 +46,7 @@ define(["Tone/core/Tone", "Tone/core/Gain"], function (Tone) {
 	};
 
 	/**
-	 *  Isolates this instance and mutes all other instances of Tone.Solo. 
+	 *  Isolates this instance and mutes all other instances of Tone.Solo.
 	 *  Only one instance can be soloed at a time. A soloed
 	 *  instance will report `solo=false` when another instance is soloed.
 	 *  @memberOf Tone.Solo#
@@ -62,19 +55,15 @@ define(["Tone/core/Tone", "Tone/core/Gain"], function (Tone) {
 	 */
 	Object.defineProperty(Tone.Solo.prototype, "solo", {
 		get : function(){
-			return this._solo;
+			return this._isSoloed();
 		},
 		set : function(solo){
-			this._solo = solo;
 			if (solo){
-				this.context._currentSolo = this;
-				this.context.emit("solo", this);
-			} else if (this.context._currentSolo === this){
-				this.context._currentSolo = null;
-				this.context.emit("solo", this);
-			} else if (this.context._currentSolo){
-				this._soloed();
+				this._addSolo();
+			} else {
+				this._removeSolo();
 			}
+			this.context.emit("solo", this);
 		}
 	});
 
@@ -92,20 +81,61 @@ define(["Tone/core/Tone", "Tone/core/Gain"], function (Tone) {
 	});
 
 	/**
+	 * Add this to the soloed array
+	 * @private
+	 */
+	Tone.Solo.prototype._addSolo = function(){
+		if (!Tone.isArray(this.context._currentSolo)){
+			this.context._currentSolo = [];
+		}
+		if (!this._isSoloed()){
+			this.context._currentSolo.push(this);
+		}
+	};
+
+	/**
+	 * Remove this from the soloed array
+	 * @private
+	 */
+	Tone.Solo.prototype._removeSolo = function(){
+		if (this._isSoloed()){
+			var index = this.context._currentSolo.indexOf(this);
+			this.context._currentSolo.splice(index, 1);
+		}
+	};
+
+	/**
+	 * @return {Boolean} Is this on the soloed array
+	 * @private
+	 */
+	Tone.Solo.prototype._isSoloed = function(){
+		if (Tone.isArray(this.context._currentSolo)){
+			return this.context._currentSolo.length !== 0 && this.context._currentSolo.indexOf(this) !== -1;
+		} else {
+			return false;
+		}
+	};
+
+	/**
+	 * @return {Boolean} Returns true if no one is soloed
+	 */
+	Tone.Solo.prototype._noSolos = function(){
+		return !Tone.isArray(this.context._currentSolo) || this.context._currentSolo.length === 0;
+	};
+
+	/**
 	 *  Solo the current instance and unsolo all other instances.
 	 *  @param  {Tone.Solo}  instance  The instance which is being soloed/unsoloed.
 	 *  @private
 	 */
 	Tone.Solo.prototype._soloed = function(){
-		if (this.context._currentSolo){
-			if (this.context._currentSolo !== this){
-				this._solo = false;
-				this.input.gain.value = 0;
-			} else {
-				this.input.gain.value = 1;
-			}
-		} else {
+		if (this._isSoloed()){
 			this.input.gain.value = 1;
+		} else if (this._noSolos()){
+			//no one is soloed
+			this.input.gain.value = 1;
+		} else {
+			this.input.gain.value = 0;
 		}
 	};
 
@@ -116,6 +146,7 @@ define(["Tone/core/Tone", "Tone/core/Gain"], function (Tone) {
 	Tone.Solo.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
 		this.context.off("solo", this._soloBind);
+		this._removeSolo();
 		this._soloBind = null;
 		return this;
 	};

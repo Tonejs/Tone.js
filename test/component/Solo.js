@@ -1,4 +1,4 @@
-define(["Tone/component/Solo", "helper/Basic", "helper/ConstantOutput", "Test", "Tone/signal/Signal"], 
+define(["Tone/component/Solo", "helper/Basic", "helper/ConstantOutput", "Test", "Tone/signal/Signal"],
 function (Solo, Basic, ConstantOutput, Test, Signal) {
 	describe("Solo", function(){
 
@@ -42,6 +42,9 @@ function (Solo, Basic, ConstantOutput, Test, Signal) {
 				expect(solA.solo).to.be.true;
 				expect(solB.solo).to.be.false;
 				solB.solo = true;
+				expect(solA.solo).to.be.true;
+				expect(solB.solo).to.be.true;
+				solA.solo = false;
 				expect(solA.solo).to.be.false;
 				expect(solB.solo).to.be.true;
 				solA.dispose();
@@ -99,7 +102,7 @@ function (Solo, Basic, ConstantOutput, Test, Signal) {
 				}, 10, 0.01);
 			});
 
-			it("can switch which signal is soloed", function(){
+			it("can solo multiple at once", function(){
 				return ConstantOutput(function(){
 					var soloA = new Solo().toMaster();
 					var soloB = new Solo().toMaster();
@@ -107,10 +110,23 @@ function (Solo, Basic, ConstantOutput, Test, Signal) {
 					new Signal(20).connect(soloB);
 					soloA.solo = true;
 					soloB.solo = true;
-				}, 20, 0.01);
+				}, 30, 0.01);
 			});
 
-			it("unsolos everything when solo=false", function(){
+			it("can unsolo all", function(){
+				return ConstantOutput(function(){
+					var soloA = new Solo().toMaster();
+					var soloB = new Solo().toMaster();
+					new Signal(10).connect(soloA);
+					new Signal(20).connect(soloB);
+					soloA.solo = true;
+					soloB.solo = true;
+					soloA.solo = false;
+					soloB.solo = false;
+				}, 30, 0.01);
+			});
+
+			it("can solo and unsolo while keeping previous soloed", function(){
 				return ConstantOutput(function(){
 					var soloA = new Solo().toMaster();
 					var soloB = new Solo().toMaster();
@@ -119,7 +135,7 @@ function (Solo, Basic, ConstantOutput, Test, Signal) {
 					soloA.solo = true;
 					soloB.solo = true;
 					soloB.solo = false;
-				}, 30, 0.01);
+				}, 10, 0.01);
 			});
 
 		});
