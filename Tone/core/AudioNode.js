@@ -102,6 +102,83 @@ define(["Tone/core/Tone", "Tone/core/Context"], function (Tone) {
 		}
 	});
 
+		/**
+	 *  connect the output of a ToneNode to an AudioParam, AudioNode, or ToneNode
+	 *  @param  {Tone | AudioParam | AudioNode} unit
+	 *  @param {number} [outputNum=0] optionally which output to connect from
+	 *  @param {number} [inputNum=0] optionally which input to connect to
+	 *  @returns {Tone} this
+	 *  @memberOf Tone#
+	 */
+	Tone.AudioNode.prototype.connect = function(unit, outputNum, inputNum){
+		if (Tone.isArray(this.output)){
+			outputNum = Tone.defaultArg(outputNum, 0);
+			this.output[outputNum].connect(unit, 0, inputNum);
+		} else {
+			this.output.connect(unit, outputNum, inputNum);
+		}
+		return this;
+	};
+
+	/**
+	 *  disconnect the output
+	 *  @param {Number|AudioNode} output Either the output index to disconnect
+	 *                                   if the output is an array, or the
+	 *                                   node to disconnect from.
+	 *  @returns {Tone} this
+	 *  @memberOf Tone#
+	 */
+	Tone.AudioNode.prototype.disconnect = function(destination, outputNum, inputNum){
+		if (Tone.isArray(this.output)){
+			if (Tone.isNumber(destination)){
+				this.output[destination].disconnect();
+			} else {
+				outputNum = Tone.defaultArg(outputNum, 0);
+				this.output[outputNum].disconnect(destination, 0, inputNum);
+			}
+		} else {
+			this.output.disconnect.apply(this.output, arguments);
+		}
+	};
+
+	/**
+	 *  Connect the output of this node to the rest of the nodes in series.
+	 *  @example
+	 *  //connect a node to an effect, panVol and then to the master output
+	 *  node.chain(effect, panVol, Tone.Master);
+	 *  @param {...AudioParam|Tone|AudioNode} nodes
+	 *  @returns {Tone} this
+	 *  @memberOf Tone#
+	 */
+	Tone.AudioNode.prototype.chain = function(){
+		var currentUnit = this;
+		for (var i = 0; i < arguments.length; i++){
+			var toUnit = arguments[i];
+			currentUnit.connect(toUnit);
+			currentUnit = toUnit;
+		}
+		return this;
+	};
+
+	/**
+	 *  connect the output of this node to the rest of the nodes in parallel.
+	 *  @param {...AudioParam|Tone|AudioNode} nodes
+	 *  @returns {Tone} this
+	 *  @memberOf Tone#
+	 */
+	Tone.AudioNode.prototype.fan = function(){
+		for (var i = 0; i < arguments.length; i++){
+			this.connect(arguments[i]);
+		}
+		return this;
+	};
+
+	if (window.AudioNode){
+		//give native nodes chain and fan methods
+		AudioNode.prototype.chain = Tone.AudioNode.prototype.chain;
+		AudioNode.prototype.fan = Tone.AudioNode.prototype.fan;
+	}
+
 	/**
 	 * Dispose and disconnect
 	 * @return {Tone.AudioNode} this
