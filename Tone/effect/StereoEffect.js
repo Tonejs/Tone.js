@@ -1,14 +1,14 @@
-define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/Split", 
-	"Tone/component/Merge", "Tone/component/CrossFade"], 
+define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/Split",
+	"Tone/component/Merge", "Tone/component/CrossFade"],
 function(Tone){
 
 	"use strict";
 
 	/**
-	 *  @class Base class for Stereo effects. Provides effectSendL/R and effectReturnL/R. 
+	 *  @class Base class for Stereo effects. Provides effectSendL/R and effectReturnL/R.
 	 *
 	 *	@constructor
-	 *	@extends {Tone}
+	 *	@extends {Tone.Effect}
 	 */
 	Tone.StereoEffect = function(){
 
@@ -25,7 +25,7 @@ function(Tone){
 
 		/**
 		 *  The wet control, i.e. how much of the effected
-		 *  will pass through to the output. 
+		 *  will pass through to the output.
 		 *  @type {NormalRange}
 		 *  @signal
 		 */
@@ -85,7 +85,7 @@ function(Tone){
 	Tone.extend(Tone.StereoEffect, Tone.Effect);
 
 	/**
-	 *  Clean up. 
+	 *  Clean up.
 	 *  @returns {Tone.StereoEffect} this
 	 */
 	Tone.StereoEffect.prototype.dispose = function(){
