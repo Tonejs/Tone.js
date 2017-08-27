@@ -1,15 +1,15 @@
-define(["Tone/core/Tone", "Tone/core/Param"], function(Tone){
+define(["Tone/core/Tone", "Tone/core/Param", "Tone/core/AudioNode"], function(Tone){
 
 	"use strict";
 
 	/**
-	 *  @class Tone.Compressor is a thin wrapper around the Web Audio 
+	 *  @class Tone.Compressor is a thin wrapper around the Web Audio
 	 *         [DynamicsCompressorNode](http://webaudio.github.io/web-audio-api/#the-dynamicscompressornode-interface).
-	 *         Compression reduces the volume of loud sounds or amplifies quiet sounds 
-	 *         by narrowing or "compressing" an audio signal's dynamic range. 
+	 *         Compression reduces the volume of loud sounds or amplifies quiet sounds
+	 *         by narrowing or "compressing" an audio signal's dynamic range.
 	 *         Read more on [Wikipedia](https://en.wikipedia.org/wiki/Dynamic_range_compression).
 	 *
-	 *  @extends {Tone}
+	 *  @extends {Tone.AudioNode}
 	 *  @constructor
 	 *  @param {Decibels|Object} [threshold] The value above which the compression starts to be applied.
 	 *  @param {Positive} [ratio] The gain reduction ratio.
@@ -19,7 +19,7 @@ define(["Tone/core/Tone", "Tone/core/Param"], function(Tone){
 	Tone.Compressor = function(){
 
 		var options = Tone.defaults(arguments, ["threshold", "ratio"], Tone.Compressor);
-		Tone.call(this);
+		Tone.AudioNode.call(this);
 
 		/**
 		 *  the compressor node
@@ -34,7 +34,7 @@ define(["Tone/core/Tone", "Tone/core/Param"], function(Tone){
 		 *  @signal
 		 */
 		this.threshold = new Tone.Param({
-			"param" : this._compressor.threshold, 
+			"param" : this._compressor.threshold,
 			"units" : Tone.Type.Decibels,
 			"convert" : false
 		});
@@ -59,7 +59,7 @@ define(["Tone/core/Tone", "Tone/core/Param"], function(Tone){
 		 *  @signal
 		 */
 		this.knee = new Tone.Param({
-			"param" : this._compressor.knee, 
+			"param" : this._compressor.knee,
 			"units" : Tone.Type.Decibels,
 			"convert" : false
 		});
@@ -70,7 +70,7 @@ define(["Tone/core/Tone", "Tone/core/Param"], function(Tone){
 		 *  @signal
 		 */
 		this.ratio = new Tone.Param({
-			"param" : this._compressor.ratio, 
+			"param" : this._compressor.ratio,
 			"convert" : false
 		});
 
@@ -79,7 +79,7 @@ define(["Tone/core/Tone", "Tone/core/Param"], function(Tone){
 		this.set(options);
 	};
 
-	Tone.extend(Tone.Compressor);
+	Tone.extend(Tone.Compressor, Tone.AudioNode);
 
 	/**
 	 *  @static
@@ -99,7 +99,7 @@ define(["Tone/core/Tone", "Tone/core/Param"], function(Tone){
 	 *  @returns {Tone.Compressor} this
 	 */
 	Tone.Compressor.prototype.dispose = function(){
-		Tone.prototype.dispose.call(this);
+		Tone.AudioNode.prototype.dispose.call(this);
 		this._writable(["knee", "release", "attack", "ratio", "threshold"]);
 		this._compressor.disconnect();
 		this._compressor = null;

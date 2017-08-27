@@ -1,11 +1,11 @@
-define(["Tone/core/Tone", "Tone/component/Panner", "Tone/component/Volume"], function(Tone){
+define(["Tone/core/Tone", "Tone/component/Panner", "Tone/component/Volume", "Tone/core/AudioNode"], function(Tone){
 
 	"use strict";
 
 	/**
 	 *  @class Tone.PanVol is a Tone.Panner and Tone.Volume in one.
 	 *
-	 *  @extends {Tone}
+	 *  @extends {Tone.AudioNode}
 	 *  @constructor
 	 *  @param {AudioRange} pan the initial pan
 	 *  @param {number} volume The output volume.
@@ -16,7 +16,7 @@ define(["Tone/core/Tone", "Tone/component/Panner", "Tone/component/Volume"], fun
 	Tone.PanVol = function(){
 
 		var options = Tone.defaults(arguments, ["pan", "volume"], Tone.PanVol);
-		Tone.call(this);
+		Tone.AudioNode.call(this);
 
 		/**
 		 *  The panning node
@@ -53,7 +53,7 @@ define(["Tone/core/Tone", "Tone/component/Panner", "Tone/component/Volume"], fun
 		this._readOnly(["pan", "volume"]);
 	};
 
-	Tone.extend(Tone.PanVol);
+	Tone.extend(Tone.PanVol, Tone.AudioNode);
 
 	/**
 	 *  The defaults
@@ -87,7 +87,7 @@ define(["Tone/core/Tone", "Tone/component/Panner", "Tone/component/Volume"], fun
 	 *  @returns {Tone.PanVol} this
 	 */
 	Tone.PanVol.prototype.dispose = function(){
-		Tone.prototype.dispose.call(this);
+		Tone.AudioNode.prototype.dispose.call(this);
 		this._writable(["pan", "volume"]);
 		this._panner.dispose();
 		this._panner = null;

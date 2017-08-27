@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/core/Param", "Tone/type/Type"], function (Tone) {
+define(["Tone/core/Tone", "Tone/core/Param", "Tone/type/Type", "Tone/core/AudioNode"], function (Tone) {
 
 	"use strict";
 
@@ -21,7 +21,7 @@ define(["Tone/core/Tone", "Tone/core/Param", "Tone/type/Type"], function (Tone) 
 	Tone.Gain = function(){
 
 		var options = Tone.defaults(arguments, ["gain", "units"], Tone.Gain);
-		Tone.call(this);
+		Tone.AudioNode.call(this);
 
 		/**
 		 *  The GainNode
@@ -44,7 +44,7 @@ define(["Tone/core/Tone", "Tone/core/Param", "Tone/type/Type"], function (Tone) 
 		this._readOnly("gain");
 	};
 
-	Tone.extend(Tone.Gain);
+	Tone.extend(Tone.Gain, Tone.AudioNode);
 
 	/**
 	 *  The defaults
@@ -61,7 +61,7 @@ define(["Tone/core/Tone", "Tone/core/Param", "Tone/type/Type"], function (Tone) 
 	 *  @return  {Tone.Gain}  this
 	 */
 	Tone.Gain.prototype.dispose = function(){
-		Tone.Param.prototype.dispose.call(this);
+		Tone.AudioNode.prototype.dispose.call(this);
 		this._gainNode.disconnect();
 		this._gainNode = null;
 		this._writable("gain");

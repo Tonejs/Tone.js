@@ -1,13 +1,13 @@
-define(["Tone/core/Tone"], function(Tone){
+define(["Tone/core/Tone", "Tone/core/AudioNode"], function(Tone){
 
 	"use strict";
 
 	/**
-	 *  @class  Tone.Merge brings two signals into the left and right 
+	 *  @class  Tone.Merge brings two signals into the left and right
 	 *          channels of a single stereo channel.
 	 *
 	 *  @constructor
-	 *  @extends {Tone}
+	 *  @extends {Tone.AudioNode}
 	 *  @example
 	 * var merge = new Tone.Merge().toMaster();
 	 * //routing a sine tone in the left channel
@@ -20,7 +20,7 @@ define(["Tone/core/Tone"], function(Tone){
 	 */
 	Tone.Merge = function(){
 
-		Tone.call(this);
+		Tone.AudioNode.call(this);
 		this.createInsOuts(2, 0);
 
 		/**
@@ -54,14 +54,14 @@ define(["Tone/core/Tone"], function(Tone){
 		this.right.channelCountMode = "explicit";
 	};
 
-	Tone.extend(Tone.Merge);
+	Tone.extend(Tone.Merge, Tone.AudioNode);
 
 	/**
 	 *  Clean up.
 	 *  @returns {Tone.Merge} this
 	 */
 	Tone.Merge.prototype.dispose = function(){
-		Tone.prototype.dispose.call(this);
+		Tone.AudioNode.prototype.dispose.call(this);
 		this.left.dispose();
 		this.left = null;
 		this.right.dispose();
@@ -69,7 +69,7 @@ define(["Tone/core/Tone"], function(Tone){
 		this._merger.disconnect();
 		this._merger = null;
 		return this;
-	}; 
+	};
 
 	return Tone.Merge;
 });

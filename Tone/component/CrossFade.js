@@ -1,14 +1,14 @@
-define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Expr", 
-	"Tone/signal/EqualPowerGain", "Tone/core/Gain"], function(Tone){
+define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Expr",
+	"Tone/signal/EqualPowerGain", "Tone/core/Gain", "Tone/core/AudioNode"], function(Tone){
 
 	"use strict";
 
 	/**
-	 * @class  Tone.Crossfade provides equal power fading between two inputs. 
+	 * @class  Tone.Crossfade provides equal power fading between two inputs.
 	 *         More on crossfading technique [here](https://en.wikipedia.org/wiki/Fade_(audio_engineering)#Crossfading).
 	 *
 	 * @constructor
-	 * @extends {Tone}
+	 * @extends {Tone.AudioNode}
 	 * @param {NormalRange} [initialFade=0.5]
 	 * @example
 	 * var crossFade = new Tone.CrossFade(0.5);
@@ -23,29 +23,29 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Expr",
 	 * crossFade.fade.value = 1;
 	 * // ^ only effectB is output
 	 * crossFade.fade.value = 0.5;
-	 * // ^ the two signals are mixed equally. 
-	 */		
+	 * // ^ the two signals are mixed equally.
+	 */
 	Tone.CrossFade = function(initialFade){
 
-		Tone.call(this);
+		Tone.AudioNode.call(this);
 		this.createInsOuts(2, 1);
 
 		/**
-		 *  Alias for <code>input[0]</code>. 
+		 *  Alias for <code>input[0]</code>.
 		 *  @type {Tone.Gain}
 		 */
 		this.a = this.input[0] = new Tone.Gain();
 
 		/**
-		 *  Alias for <code>input[1]</code>. 
+		 *  Alias for <code>input[1]</code>.
 		 *  @type {Tone.Gain}
 		 */
 		this.b = this.input[1] = new Tone.Gain();
 
 		/**
 		 * 	The mix between the two inputs. A fade value of 0
-		 * 	will output 100% <code>input[0]</code> and 
-		 * 	a value of 1 will output 100% <code>input[1]</code>. 
+		 * 	will output 100% <code>input[0]</code> and
+		 * 	a value of 1 will output 100% <code>input[1]</code>.
 		 *  @type {NormalRange}
 		 *  @signal
 		 */
@@ -64,7 +64,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Expr",
 		 *  @type {Tone.EqualPowerGain}
 		 */
 		this._equalPowerB = new Tone.EqualPowerGain();
-		
+
 		/**
 		 *  invert the incoming signal
 		 *  @private
@@ -80,14 +80,14 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Expr",
 		this._readOnly("fade");
 	};
 
-	Tone.extend(Tone.CrossFade);
+	Tone.extend(Tone.CrossFade, Tone.AudioNode);
 
 	/**
 	 *  clean up
 	 *  @returns {Tone.CrossFade} this
 	 */
 	Tone.CrossFade.prototype.dispose = function(){
-		Tone.prototype.dispose.call(this);
+		Tone.AudioNode.prototype.dispose.call(this);
 		this._writable("fade");
 		this._equalPowerA.dispose();
 		this._equalPowerA = null;

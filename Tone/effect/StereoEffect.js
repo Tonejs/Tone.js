@@ -13,6 +13,7 @@ function(Tone){
 	Tone.StereoEffect = function(){
 
 		//get the defaults
+		Tone.AudioNode.call(this);
 		var options = Tone.defaults(arguments, ["wet"], Tone.Effect);
 		this.createInsOuts(1, 1);
 
@@ -89,7 +90,7 @@ function(Tone){
 	 *  @returns {Tone.StereoEffect} this
 	 */
 	Tone.StereoEffect.prototype.dispose = function(){
-		Tone.prototype.dispose.call(this);
+		Tone.AudioNode.prototype.dispose.call(this);
 		this._dryWet.dispose();
 		this._dryWet = null;
 		this._split.dispose();

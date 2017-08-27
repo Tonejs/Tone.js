@@ -1,9 +1,9 @@
-define(["Tone/core/Tone", "Tone/core/Gain"], function (Tone) {
+define(["Tone/core/Tone", "Tone/core/Gain", "Tone/core/AudioNode"], function (Tone) {
 
 	/**
 	 *  @class Tone.Solo lets you isolate a specific audio stream. When
 	 *         an instance is set to `solo=true`, it will mute all other instances.
-	 *  @extends {Tone}
+	 *  @extends {Tone.AudioNode}
 	 *  @example
 	 * var soloA = new Tone.Solo()
 	 * var soloB = new Tone.Solo()
@@ -13,7 +13,7 @@ define(["Tone/core/Tone", "Tone/core/Gain"], function (Tone) {
 	Tone.Solo = function(){
 
 		var options = Tone.defaults(arguments, ["solo"], Tone.Solo);
-		Tone.call(this);
+		Tone.AudioNode.call(this);
 
 		/**
 		 *  The input and output node
@@ -34,7 +34,7 @@ define(["Tone/core/Tone", "Tone/core/Gain"], function (Tone) {
 		this.solo = options.solo;
 	};
 
-	Tone.extend(Tone.Solo);
+	Tone.extend(Tone.Solo, Tone.AudioNode);
 
 	/**
 	 *  The defaults
@@ -144,10 +144,10 @@ define(["Tone/core/Tone", "Tone/core/Gain"], function (Tone) {
 	 *  @return  {Tone.Solo}  this
 	 */
 	Tone.Solo.prototype.dispose = function(){
-		Tone.prototype.dispose.call(this);
 		this.context.off("solo", this._soloBind);
 		this._removeSolo();
 		this._soloBind = null;
+		Tone.AudioNode.prototype.dispose.call(this);
 		return this;
 	};
 

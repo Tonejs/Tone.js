@@ -1,20 +1,20 @@
-define(["Tone/core/Tone", "Tone/component/CrossFade"], function(Tone){
+define(["Tone/core/Tone", "Tone/component/CrossFade", "Tone/core/AudioNode"], function(Tone){
 
 	"use strict";
-	
+
 	/**
 	 * 	@class  Tone.Effect is the base class for effects. Connect the effect between
 	 * 	        the effectSend and effectReturn GainNodes, then control the amount of
 	 * 	        effect which goes to the output using the wet control.
 	 *
 	 *  @constructor
-	 *  @extends {Tone}
-	 *  @param {NormalRange|Object} [wet] The starting wet value. 
+	 *  @extends {Tone.AudioNode}
+	 *  @param {NormalRange|Object} [wet] The starting wet value.
 	 */
 	Tone.Effect = function(){
 
 		var options = Tone.defaults(arguments, ["wet"], Tone.Effect);
-		Tone.call(this);
+		Tone.AudioNode.call(this);
 		this.createInsOuts(1, 1);
 
 		/**
@@ -27,7 +27,7 @@ define(["Tone/core/Tone", "Tone/component/CrossFade"], function(Tone){
 		/**
 		 *  The wet control is how much of the effected
 		 *  will pass through to the output. 1 = 100% effected
-		 *  signal, 0 = 100% dry signal. 
+		 *  signal, 0 = 100% dry signal.
 		 *  @type {NormalRange}
 		 *  @signal
 		 */
@@ -55,7 +55,7 @@ define(["Tone/core/Tone", "Tone/component/CrossFade"], function(Tone){
 		this._readOnly(["wet"]);
 	};
 
-	Tone.extend(Tone.Effect);
+	Tone.extend(Tone.Effect, Tone.AudioNode);
 
 	/**
 	 *  @static
@@ -77,11 +77,11 @@ define(["Tone/core/Tone", "Tone/component/CrossFade"], function(Tone){
 	};
 
 	/**
-	 *  Clean up. 
+	 *  Clean up.
 	 *  @returns {Tone.Effect} this
 	 */
 	Tone.Effect.prototype.dispose = function(){
-		Tone.prototype.dispose.call(this);
+		Tone.AudioNode.prototype.dispose.call(this);
 		this._dryWet.dispose();
 		this._dryWet = null;
 		this.effectSend.dispose();

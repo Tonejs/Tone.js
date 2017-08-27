@@ -1,20 +1,20 @@
 define(["Tone/core/Tone", "Tone/core/Transport", "Tone/component/Volume", "Tone/core/Master",
-	"Tone/type/Type", "Tone/core/TimelineState", "Tone/signal/Signal"], 
+	"Tone/type/Type", "Tone/core/TimelineState", "Tone/signal/Signal", "Tone/core/AudioNode"],
 function(Tone){
 
 	"use strict";
-	
+
 	/**
 	 *  @class  Base class for sources. Sources have start/stop methods
-	 *          and the ability to be synced to the 
-	 *          start/stop of Tone.Transport. 
+	 *          and the ability to be synced to the
+	 *          start/stop of Tone.Transport.
 	 *
 	 *  @constructor
-	 *  @extends {Tone}
+	 *  @extends {Tone.AudioNode}
 	 *  @example
 	 * //Multiple state change events can be chained together,
 	 * //but must be set in the correct order and with ascending times
-	 * 
+	 *
 	 * // OK
 	 * state.start().stop("+0.2");
 	 * // AND
@@ -24,12 +24,12 @@ function(Tone){
 	 * state.stop("+0.2").start();
 	 * // OR
 	 * state.start("+0.3").stop("+0.2");
-	 * 
-	 */	
+	 *
+	 */
 	Tone.Source = function(options){
 
-		Tone.call(this);
 		options = Tone.defaultArg(options, Tone.Source.defaults);
+		Tone.AudioNode.call(this);
 
 		/**
 		 *  The output volume node
@@ -77,7 +77,7 @@ function(Tone){
 		this.mute = options.mute;
 	};
 
-	Tone.extend(Tone.Source);
+	Tone.extend(Tone.Source, Tone.AudioNode);
 
 	/**
 	 *  The default parameters
@@ -112,7 +112,7 @@ function(Tone){
 	});
 
 	/**
-	 * Mute the output. 
+	 * Mute the output.
 	 * @memberOf Tone.Source#
 	 * @type {boolean}
 	 * @name mute
@@ -123,7 +123,7 @@ function(Tone){
 	Object.defineProperty(Tone.Source.prototype, "mute", {
 		get : function(){
 			return this._volume.mute;
-		}, 
+		},
 		set : function(mute){
 			this._volume.mute = mute;
 		}
@@ -134,7 +134,7 @@ function(Tone){
 	Tone.Source.prototype._stop = Tone.noOp;
 
 	/**
-	 *  Start the source at the specified time. If no time is given, 
+	 *  Start the source at the specified time. If no time is given,
 	 *  start the source now.
 	 *  @param  {Time} [time=now] When the source should be started.
 	 *  @returns {Tone.Source} this
@@ -146,7 +146,7 @@ function(Tone){
 			time = Tone.Transport.seconds;
 		} else {
 			time = this.toSeconds(time);
-		}	
+		}
 		//if it's started, stop it and restart it
 		if (!this.retrigger && this._state.getValueAtTime(time) === Tone.State.Started){
 			this.stop(time);
@@ -168,9 +168,9 @@ function(Tone){
 	};
 
 	/**
-	 *  Stop the source at the specified time. If no time is given, 
+	 *  Stop the source at the specified time. If no time is given,
 	 *  stop the source now.
-	 *  @param  {Time} [time=now] When the source should be stopped. 
+	 *  @param  {Time} [time=now] When the source should be stopped.
 	 *  @returns {Tone.Source} this
 	 *  @example
 	 * source.stop(); // stops the source immediately
@@ -188,14 +188,14 @@ function(Tone){
 		} else {
 			var sched = Tone.Transport.schedule(this._stop.bind(this), time);
 			this._scheduled.push(sched);
-		}	
+		}
 		return this;
 	};
-	
+
 	/**
 	 *  Sync the source to the Transport so that all subsequent
 	 *  calls to `start` and `stop` are synced to the TransportTime
-	 *  instead of the AudioContext time. 
+	 *  instead of the AudioContext time.
 	 *
 	 *  @returns {Tone.Source} this
 	 *  @example
@@ -223,7 +223,7 @@ function(Tone){
 					var startOffset = offset - this.toSeconds(stateEvent.time);
 					var duration;
 					if (stateEvent.duration){
-						duration = this.toSeconds(stateEvent.duration) - startOffset;	
+						duration = this.toSeconds(stateEvent.duration) - startOffset;
 					}
 					this._start(time, this.toSeconds(stateEvent.offset) + startOffset, duration);
 				}
@@ -264,7 +264,7 @@ function(Tone){
 	 *  @return {Tone.Source} this
 	 */
 	Tone.Source.prototype.dispose = function(){
-		Tone.prototype.dispose.call(this);
+		Tone.AudioNode.prototype.dispose.call(this);
 		this.unsync();
 		this._scheduled = null;
 		this._writable("volume");

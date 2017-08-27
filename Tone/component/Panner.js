@@ -1,23 +1,23 @@
-define(["Tone/core/Tone", "Tone/component/CrossFade", "Tone/component/Merge", "Tone/component/Split", 
-	"Tone/signal/Signal", "Tone/signal/AudioToGain", "Tone/signal/Zero"], 
+define(["Tone/core/Tone", "Tone/component/CrossFade", "Tone/component/Merge", "Tone/component/Split",
+	"Tone/signal/Signal", "Tone/signal/AudioToGain", "Tone/signal/Zero", "Tone/core/AudioNode"],
 function(Tone){
 
 	"use strict";
 
 	/**
 	 *  @class  Tone.Panner is an equal power Left/Right Panner and does not
-	 *          support 3D. Panner uses the StereoPannerNode when available. 
-	 *  
+	 *          support 3D. Panner uses the StereoPannerNode when available.
+	 *
 	 *  @constructor
-	 *  @extends {Tone}
+	 *  @extends {Tone.AudioNode}
 	 *  @param {NormalRange} [initialPan=0] The initail panner value (center).
 	 *  @example
-	 *  //pan the input signal hard right. 
+	 *  //pan the input signal hard right.
 	 *  var panner = new Tone.Panner(1);
 	 */
 	Tone.Panner = function(initialPan){
 
-		Tone.call(this);
+		Tone.AudioNode.call(this);
 		if (Tone.Panner.hasStereoPanner){
 
 			/**
@@ -28,12 +28,12 @@ function(Tone){
 			this._panner = this.input = this.output = this.context.createStereoPanner();
 
 			/**
-			 *  The pan control. -1 = hard left, 1 = hard right. 
+			 *  The pan control. -1 = hard left, 1 = hard right.
 			 *  @type {NormalRange}
 			 *  @signal
-			 */	
+			 */
 			this.pan = this._panner.pan;
-			
+
 		} else {
 
 			/**
@@ -42,24 +42,24 @@ function(Tone){
 			 *  @private
 			 */
 			this._crossFade = new Tone.CrossFade();
-			
+
 			/**
 			 *  @type {Tone.Merge}
 			 *  @private
 			 */
 			this._merger = this.output = new Tone.Merge();
-			
+
 			/**
 			 *  @type {Tone.Split}
 			 *  @private
 			 */
 			this._splitter = this.input = new Tone.Split();
-			
+
 			/**
-			 *  The pan control. -1 = hard left, 1 = hard right. 
+			 *  The pan control. -1 = hard left, 1 = hard right.
 			 *  @type {AudioRange}
 			 *  @signal
-			 */	
+			 */
 			this.pan = new Tone.Signal(0, Tone.Type.AudioRange);
 
 			/**
@@ -91,7 +91,7 @@ function(Tone){
 		this._readOnly("pan");
 	};
 
-	Tone.extend(Tone.Panner);
+	Tone.extend(Tone.Panner, Tone.AudioNode);
 
 	/**
 	 *  Indicates if the panner is using the new StereoPannerNode internally
@@ -107,7 +107,7 @@ function(Tone){
 	 *  @returns {Tone.Panner} this
 	 */
 	Tone.Panner.prototype.dispose = function(){
-		Tone.prototype.dispose.call(this);
+		Tone.AudioNode.prototype.dispose.call(this);
 		this._writable("pan");
 		if (Tone.Panner.hasStereoPanner){
 			this._panner.disconnect();

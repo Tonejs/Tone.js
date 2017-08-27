@@ -1,4 +1,4 @@
-define(["Tone/core/Tone"], function (Tone) {
+define(["Tone/core/Tone", "Tone/core/AudioNode"], function (Tone) {
 
 	"use strict";
 
@@ -7,7 +7,7 @@ define(["Tone/core/Tone"], function (Tone) {
 	 *  @private
 	 */
 	if (window.AnalyserNode && !AnalyserNode.prototype.getFloatTimeDomainData){
-		//referenced https://github.com/mohayonao/get-float-time-domain-data 
+		//referenced https://github.com/mohayonao/get-float-time-domain-data
 		AnalyserNode.prototype.getFloatTimeDomainData = function(array){
 			var uint8 = new Uint8Array(array.length);
 			this.getByteTimeDomainData(uint8);
@@ -19,18 +19,18 @@ define(["Tone/core/Tone"], function (Tone) {
 
 
 	/**
-	 *  @class  Wrapper around the native Web Audio's 
+	 *  @class  Wrapper around the native Web Audio's
 	 *          [AnalyserNode](http://webaudio.github.io/web-audio-api/#idl-def-AnalyserNode).
 	 *          Extracts FFT or Waveform data from the incoming signal.
-	 *  @extends {Tone}
-	 *  @param {String=} type The return type of the analysis, either "fft", or "waveform". 
-	 *  @param {Number=} size The size of the FFT. Value must be a power of 
+	 *  @extends {Tone.AudioNode}
+	 *  @param {String=} type The return type of the analysis, either "fft", or "waveform".
+	 *  @param {Number=} size The size of the FFT. Value must be a power of
 	 *                       two in the range 32 to 32768.
 	 */
 	Tone.Analyser = function(){
 
 		var options = Tone.defaults(arguments, ["type", "size"], Tone.Analyser);
-		Tone.call(this);
+		Tone.AudioNode.call(this);
 
 		/**
 		 *  The analyser node.
@@ -58,7 +58,7 @@ define(["Tone/core/Tone"], function (Tone) {
 		this.type = options.type;
 	};
 
-	Tone.extend(Tone.Analyser);
+	Tone.extend(Tone.Analyser, Tone.AudioNode);
 
 	/**
 	 *  The default values.
@@ -81,8 +81,8 @@ define(["Tone/core/Tone"], function (Tone) {
 	};
 
 	/**
-	 *  Run the analysis given the current settings and return the 
-	 *  result as a TypedArray. 
+	 *  Run the analysis given the current settings and return the
+	 *  result as a TypedArray.
 	 *  @returns {TypedArray}
 	 */
 	Tone.Analyser.prototype.analyse = function(){
@@ -111,7 +111,7 @@ define(["Tone/core/Tone"], function (Tone) {
 	});
 
 	/**
-	 *  The analysis function returned by Tone.Analyser.analyse(), either "fft" or "waveform". 
+	 *  The analysis function returned by Tone.Analyser.analyse(), either "fft" or "waveform".
 	 *  @memberOf Tone.Analyser#
 	 *  @type {String}
 	 *  @name type
@@ -148,7 +148,7 @@ define(["Tone/core/Tone"], function (Tone) {
 	 *  @return  {Tone.Analyser}  this
 	 */
 	Tone.Analyser.prototype.dispose = function(){
-		Tone.prototype.dispose.call(this);
+		Tone.AudioNode.prototype.dispose.call(this);
 		this._analyser.disconnect();
 		this._analyser = null;
 		this._buffer = null;

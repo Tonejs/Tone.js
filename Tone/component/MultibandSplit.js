@@ -1,12 +1,12 @@
-define(["Tone/core/Tone", "Tone/component/Filter", "Tone/signal/Signal", "Tone/core/Gain"], function(Tone){
+define(["Tone/core/Tone", "Tone/component/Filter", "Tone/signal/Signal", "Tone/core/Gain", "Tone/core/AudioNode"], function(Tone){
 
 	"use strict";
 
 	/**
 	 *  @class Split the incoming signal into three bands (low, mid, high)
-	 *         with two crossover frequency controls. 
+	 *         with two crossover frequency controls.
 	 *
-	 *  @extends {Tone}
+	 *  @extends {Tone.AudioNode}
 	 *  @constructor
 	 *  @param {Frequency|Object} [lowFrequency] the low/mid crossover frequency
 	 *  @param {Frequency} [highFrequency] the mid/high crossover frequency
@@ -14,7 +14,7 @@ define(["Tone/core/Tone", "Tone/component/Filter", "Tone/signal/Signal", "Tone/c
 	Tone.MultibandSplit = function(){
 
 		var options = Tone.defaults(arguments, ["lowFrequency", "highFrequency"], Tone.MultibandSplit);
-		Tone.call(this);
+		Tone.AudioNode.call(this);
 
 		/**
 		 *  the input
@@ -92,7 +92,7 @@ define(["Tone/core/Tone", "Tone/component/Filter", "Tone/signal/Signal", "Tone/c
 		this._readOnly(["high", "mid", "low", "highFrequency", "lowFrequency"]);
 	};
 
-	Tone.extend(Tone.MultibandSplit);
+	Tone.extend(Tone.MultibandSplit, Tone.AudioNode);
 
 	/**
 	 *  @private
@@ -110,7 +110,7 @@ define(["Tone/core/Tone", "Tone/component/Filter", "Tone/signal/Signal", "Tone/c
 	 *  @returns {Tone.MultibandSplit} this
 	 */
 	Tone.MultibandSplit.prototype.dispose = function(){
-		Tone.prototype.dispose.call(this);
+		Tone.AudioNode.prototype.dispose.call(this);
 		this._writable(["high", "mid", "low", "highFrequency", "lowFrequency"]);
 		this.low.dispose();
 		this.low = null;

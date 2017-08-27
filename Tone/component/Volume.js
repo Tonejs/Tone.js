@@ -1,11 +1,11 @@
-define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Gain"], function(Tone){
+define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Gain", "Tone/core/AudioNode"], function(Tone){
 
 	"use strict";
 
 	/**
-	 *  @class Tone.Volume is a simple volume node, useful for creating a volume fader. 
+	 *  @class Tone.Volume is a simple volume node, useful for creating a volume fader.
 	 *
-	 *  @extends {Tone}
+	 *  @extends {Tone.AudioNode}
 	 *  @constructor
 	 *  @param {Decibels} [volume=0] the initial volume
 	 *  @example
@@ -15,7 +15,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Gain"], function(Tone
 	Tone.Volume = function(){
 
 		var options = Tone.defaults(arguments, ["volume"], Tone.Volume);
-		Tone.call(this);
+		Tone.AudioNode.call(this);
 
 		/**
 		 * the output node
@@ -32,7 +32,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Gain"], function(Tone
 		this._unmutedVolume = options.volume;
 
 		/**
-		 *  The volume control in decibels. 
+		 *  The volume control in decibels.
 		 *  @type {Decibels}
 		 *  @signal
 		 */
@@ -44,7 +44,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Gain"], function(Tone
 		this.mute = options.mute;
 	};
 
-	Tone.extend(Tone.Volume);
+	Tone.extend(Tone.Volume, Tone.AudioNode);
 
 	/**
 	 *  Defaults
@@ -58,7 +58,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Gain"], function(Tone
 	};
 
 	/**
-	 * Mute the output. 
+	 * Mute the output.
 	 * @memberOf Tone.Volume#
 	 * @type {boolean}
 	 * @name mute
@@ -69,7 +69,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Gain"], function(Tone
 	Object.defineProperty(Tone.Volume.prototype, "mute", {
 		get : function(){
 			return this.volume.value === -Infinity;
-		}, 
+		},
 		set : function(mute){
 			if (!this.mute && mute){
 				this._unmutedVolume = this.volume.value;
@@ -87,7 +87,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Gain"], function(Tone
 	 */
 	Tone.Volume.prototype.dispose = function(){
 		this.input.dispose();
-		Tone.prototype.dispose.call(this);
+		Tone.AudioNode.prototype.dispose.call(this);
 		this._writable("volume");
 		this.volume.dispose();
 		this.volume = null;

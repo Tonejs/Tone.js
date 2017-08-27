@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/component/MultibandSplit", "Tone/core/Gain"], function(Tone){
+define(["Tone/core/Tone", "Tone/component/MultibandSplit", "Tone/core/Gain", "Tone/core/AudioNode"], function(Tone){
 
 	"use strict";
 
@@ -7,8 +7,8 @@ define(["Tone/core/Tone", "Tone/component/MultibandSplit", "Tone/core/Gain"], fu
 	 *         well as the low and high crossover frequencies.
 	 *
 	 *  @constructor
-	 *  @extends {Tone}
-	 *  
+	 *  @extends {Tone.AudioNode}
+	 *
 	 *  @param {Decibels|Object} [lowLevel] The gain applied to the lows.
 	 *  @param {Decibels} [midLevel] The gain applied to the mid.
 	 *  @param {Decibels} [highLevel] The gain applied to the high.
@@ -18,7 +18,7 @@ define(["Tone/core/Tone", "Tone/component/MultibandSplit", "Tone/core/Gain"], fu
 	Tone.EQ3 = function(){
 
 		var options = Tone.defaults(arguments, ["low", "mid", "high"], Tone.EQ3);
-		Tone.call(this);
+		Tone.AudioNode.call(this);
 
 		/**
 		 *  the output node
@@ -80,21 +80,21 @@ define(["Tone/core/Tone", "Tone/component/MultibandSplit", "Tone/core/Gain"], fu
 		this.high = this._highGain.gain;
 
 		/**
-		 *  The Q value for all of the filters. 
+		 *  The Q value for all of the filters.
 		 *  @type {Positive}
 		 *  @signal
 		 */
 		this.Q = this._multibandSplit.Q;
 
 		/**
-		 *  The low/mid crossover frequency. 
+		 *  The low/mid crossover frequency.
 		 *  @type {Frequency}
 		 *  @signal
 		 */
 		this.lowFrequency = this._multibandSplit.lowFrequency;
 
 		/**
-		 *  The mid/high crossover frequency. 
+		 *  The mid/high crossover frequency.
 		 *  @type {Frequency}
 		 *  @signal
 		 */
@@ -107,7 +107,7 @@ define(["Tone/core/Tone", "Tone/component/MultibandSplit", "Tone/core/Gain"], fu
 		this._readOnly(["low", "mid", "high", "lowFrequency", "highFrequency"]);
 	};
 
-	Tone.extend(Tone.EQ3);
+	Tone.extend(Tone.EQ3, Tone.AudioNode);
 
 	/**
 	 *  the default values
@@ -125,7 +125,7 @@ define(["Tone/core/Tone", "Tone/component/MultibandSplit", "Tone/core/Gain"], fu
 	 *  @returns {Tone.EQ3} this
 	 */
 	Tone.EQ3.prototype.dispose = function(){
-		Tone.prototype.dispose.call(this);
+		Tone.AudioNode.prototype.dispose.call(this);
 		this._writable(["low", "mid", "high", "lowFrequency", "highFrequency"]);
 		this._multibandSplit.dispose();
 		this._multibandSplit = null;

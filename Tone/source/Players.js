@@ -1,14 +1,14 @@
-define(["Tone/core/Tone", "Tone/source/Player", "Tone/component/Volume"], function(Tone){
+define(["Tone/core/Tone", "Tone/source/Player", "Tone/component/Volume", "Tone/core/AudioNode"], function(Tone){
 
 	"use strict";
-	
+
 	/**
-	 *  @class  Tone.Players combines multiple [Tone.Player](Player) objects. 
-	 *  
+	 *  @class  Tone.Players combines multiple [Tone.Player](Player) objects.
+	 *
 	 *  @constructor
-	 *  @extends {Tone} 
+	 *  @extends {Tone.AudioNode}
 	 *  @param {Object} urls An object mapping a name to a url.
-	 *  @param {function=} onload The function to invoke when the buffer is loaded. 
+	 *  @param {function=} onload The function to invoke when the buffer is loaded.
 	 */
 	Tone.Players = function(urls){
 
@@ -75,7 +75,7 @@ define(["Tone/core/Tone", "Tone/source/Player", "Tone/component/Volume"], functi
 		}
 	};
 
-	Tone.extend(Tone.Players);
+	Tone.extend(Tone.Players, Tone.AudioNode);
 
 	/**
 	 * The default values
@@ -91,7 +91,7 @@ define(["Tone/core/Tone", "Tone/source/Player", "Tone/component/Volume"], functi
 
 	/**
 	 *  A buffer was loaded. decrement the counter.
-	 *  @param  {Function}  callback 
+	 *  @param  {Function}  callback
 	 *  @private
 	 */
 	Tone.Players.prototype._bufferLoaded = function(callback){
@@ -102,7 +102,7 @@ define(["Tone/core/Tone", "Tone/source/Player", "Tone/component/Volume"], functi
 	};
 
 	/**
-	 * Mute the output. 
+	 * Mute the output.
 	 * @memberOf Tone.Source#
 	 * @type {boolean}
 	 * @name mute
@@ -113,7 +113,7 @@ define(["Tone/core/Tone", "Tone/source/Player", "Tone/component/Volume"], functi
 	Object.defineProperty(Tone.Players.prototype, "mute", {
 		get : function(){
 			return this._volume.mute;
-		}, 
+		},
 		set : function(mute){
 			this._volume.mute = mute;
 		}
@@ -128,7 +128,7 @@ define(["Tone/core/Tone", "Tone/source/Player", "Tone/component/Volume"], functi
 	Object.defineProperty(Tone.Players.prototype, "fadeIn", {
 		get : function(){
 			return this._fadeIn;
-		}, 
+		},
 		set : function(fadeIn){
 			this._fadeIn = fadeIn;
 			this._forEach(function(player){
@@ -146,7 +146,7 @@ define(["Tone/core/Tone", "Tone/source/Player", "Tone/component/Volume"], functi
 	Object.defineProperty(Tone.Players.prototype, "fadeOut", {
 		get : function(){
 			return this._fadeOut;
-		}, 
+		},
 		set : function(fadeOut){
 			this._fadeOut = fadeOut;
 			this._forEach(function(player){
@@ -174,7 +174,7 @@ define(["Tone/core/Tone", "Tone/source/Player", "Tone/component/Volume"], functi
 
 	/**
 	 *  True if the buffers object has a buffer by that name.
-	 *  @param  {String|Number}  name  The key or index of the 
+	 *  @param  {String|Number}  name  The key or index of the
 	 *                                 buffer.
 	 *  @return  {Boolean}
 	 */
@@ -183,9 +183,9 @@ define(["Tone/core/Tone", "Tone/source/Player", "Tone/component/Volume"], functi
 	};
 
 	/**
-	 *  Get a player by name. 
-	 *  @param  {String}  name  The players name as defined in 
-	 *                          the constructor object or `add` method. 
+	 *  Get a player by name.
+	 *  @param  {String}  name  The players name as defined in
+	 *                          the constructor object or `add` method.
 	 *  @return  {Tone.Player}
 	 */
 	Tone.Players.prototype.get = function(name){
@@ -229,10 +229,10 @@ define(["Tone/core/Tone", "Tone/source/Player", "Tone/component/Volume"], functi
 	/**
 	 *  Add a player by name and url to the Players
 	 *  @param  {String}    name      A unique name to give the player
-	 *  @param  {String|Tone.Buffer|Audiobuffer}  url  Either the url of the bufer, 
+	 *  @param  {String|Tone.Buffer|Audiobuffer}  url  Either the url of the bufer,
 	 *                                                 or a buffer which will be added
 	 *                                                 with the given name.
-	 *  @param  {Function=}  callback  The callback to invoke 
+	 *  @param  {Function=}  callback  The callback to invoke
 	 *                                 when the url is loaded.
 	 */
 	Tone.Players.prototype.add = function(name, url, callback){
@@ -258,7 +258,7 @@ define(["Tone/core/Tone", "Tone/source/Player", "Tone/component/Volume"], functi
 	 *  @return {Tone.Players} this
 	 */
 	Tone.Players.prototype.dispose = function(){
-		Tone.prototype.dispose.call(this);
+		Tone.AudioNode.prototype.dispose.call(this);
 		this._volume.dispose();
 		this._volume = null;
 		this._writable("volume");

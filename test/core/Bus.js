@@ -1,5 +1,5 @@
-define(["Test", "Tone/core/Bus", "Tone/core/Tone", "helper/Offline", 
-	"helper/PassAudio", "Tone/signal/Signal", "Tone/core/Gain", "Tone/component/Merge"], 
+define(["Test", "Tone/core/Bus", "Tone/core/Tone", "helper/Offline",
+	"helper/PassAudio", "Tone/signal/Signal", "Tone/core/Gain", "Tone/component/Merge"],
 	function (Test, Bus, Tone, Offline, PassAudio, Signal, Gain, Merge) {
 
 	describe("Bus", function(){
@@ -17,7 +17,7 @@ define(["Test", "Tone/core/Bus", "Tone/core/Tone", "helper/Offline",
 				send.send("test");
 				recv.receive("test");
 			});
-		});	
+		});
 
 		it ("can create the recieve before the send", function(){
 			return PassAudio(function(input){
@@ -28,7 +28,7 @@ define(["Test", "Tone/core/Bus", "Tone/core/Tone", "helper/Offline",
 				recv.receive("test");
 				send.send("test");
 			});
-		});		
+		});
 
 		it ("passes audio from a send to a receive at the given level", function(){
 			return Offline(function(){
@@ -41,7 +41,7 @@ define(["Test", "Tone/core/Bus", "Tone/core/Tone", "helper/Offline",
 					expect(sample).to.be.closeTo(0.25, 0.1);
 				});
 			});
-		});	
+		});
 
 		it ("can receive from a specific channel", function(){
 			return Offline(function(){
@@ -55,6 +55,6 @@ define(["Test", "Tone/core/Bus", "Tone/core/Tone", "helper/Offline",
 					expect(r).to.be.closeTo(2, 0.01);
 				});
 			});
-		});		
+		});
 	});
 });

@@ -1,15 +1,15 @@
-define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
+define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/AudioNode"], function(Tone){
 
 	"use strict";
 
 	/**
 	 *  @class  Tone.Filter is a filter which allows for all of the same native methods
-	 *          as the [BiquadFilterNode](http://webaudio.github.io/web-audio-api/#the-biquadfilternode-interface). 
-	 *          Tone.Filter has the added ability to set the filter rolloff at -12 
-	 *          (default), -24 and -48. 
+	 *          as the [BiquadFilterNode](http://webaudio.github.io/web-audio-api/#the-biquadfilternode-interface).
+	 *          Tone.Filter has the added ability to set the filter rolloff at -12
+	 *          (default), -24 and -48.
 	 *
 	 *  @constructor
-	 *  @extends {Tone}
+	 *  @extends {Tone.AudioNode}
 	 *  @param {Frequency|Object} [frequency] The cutoff frequency of the filter.
 	 *  @param {string=} type The type of filter.
 	 *  @param {number=} rolloff The drop in decibels per octave after the cutoff frequency.
@@ -20,7 +20,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	Tone.Filter = function(){
 
 		var options = Tone.defaults(arguments, ["frequency", "type", "rolloff"], Tone.Filter);
-		Tone.call(this);
+		Tone.AudioNode.call(this);
 		this.createInsOuts(1, 1);
 
 		/**
@@ -31,7 +31,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 		this._filters = [];
 
 		/**
-		 *  The cutoff frequency of the filter. 
+		 *  The cutoff frequency of the filter.
 		 *  @type {Frequency}
 		 *  @signal
 		 */
@@ -50,7 +50,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 		 *  @signal
 		 */
 		this.gain = new Tone.Signal({
-			"value" : options.gain, 
+			"value" : options.gain,
 			"convert" : false
 		});
 
@@ -80,7 +80,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 		this._readOnly(["detune", "frequency", "gain", "Q"]);
 	};
 
-	Tone.extend(Tone.Filter);
+	Tone.extend(Tone.Filter, Tone.AudioNode);
 
 	/**
 	 *  the default parameters
@@ -97,8 +97,8 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	};
 
 	/**
-	 * The type of the filter. Types: "lowpass", "highpass", 
-	 * "bandpass", "lowshelf", "highshelf", "notch", "allpass", or "peaking". 
+	 * The type of the filter. Types: "lowpass", "highpass",
+	 * "bandpass", "lowshelf", "highshelf", "notch", "allpass", or "peaking".
 	 * @memberOf Tone.Filter#
 	 * @type {string}
 	 * @name type
@@ -138,7 +138,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 			//check the rolloff is valid
 			if (cascadingCount === -1){
 				throw new RangeError("Tone.Filter: rolloff can only be -12, -24, -48 or -96");
-			} 
+			}
 			cascadingCount += 1;
 			this._rolloff = rolloff;
 			//first disconnect the filters and throw them away
@@ -164,11 +164,11 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	});
 
 	/**
-	 *  Clean up. 
+	 *  Clean up.
 	 *  @return {Tone.Filter} this
 	 */
 	Tone.Filter.prototype.dispose = function(){
-		Tone.prototype.dispose.call(this);
+		Tone.AudioNode.prototype.dispose.call(this);
 		for (var i = 0; i < this._filters.length; i++) {
 			this._filters[i].disconnect();
 			this._filters[i] = null;

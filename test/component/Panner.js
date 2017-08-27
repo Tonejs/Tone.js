@@ -1,6 +1,6 @@
-define(["Tone/component/Panner", "helper/Basic", "helper/Offline", "Test", "Tone/signal/Signal", 
-	"helper/PassAudio", "helper/PassAudioStereo", "Tone/component/Merge", "Tone/core/Tone", "helper/Supports"], 
-function (Panner, Basic, Offline, Test, Signal, PassAudio, PassAudioStereo, Merge, Tone, Supports) {
+define(["Tone/component/Panner", "helper/Basic", "helper/Offline", "Test", "Tone/signal/Signal",
+	"helper/PassAudio", "helper/PassAudioStereo", "Tone/component/Merge", "Tone/core/Tone", "helper/Supports", "Tone/core/AudioNode"], 
+function (Panner, Basic, Offline, Test, Signal, PassAudio, PassAudioStereo, Merge, Tone, Supports, AudioNode) {
 
 	//a stereo signal for testing
 	var StereoSignal = function(val){
@@ -15,7 +15,7 @@ function (Panner, Basic, Offline, Test, Signal, PassAudio, PassAudioStereo, Merg
 		}
 	};
 
-	Tone.extend(StereoSignal);
+	Tone.extend(StereoSignal, AudioNode);
 
 	StereoSignal.prototype.dispose = function(){
 		if (Panner.hasStereoPanner){

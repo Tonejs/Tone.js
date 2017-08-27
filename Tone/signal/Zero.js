@@ -1,9 +1,9 @@
-define(["Tone/core/Tone", "Tone/core/Gain"], function (Tone) {
+define(["Tone/core/Tone", "Tone/core/Gain", "Tone/signal/SignalBase"], function (Tone) {
 
 	/**
 	 *  @class Tone.Zero outputs 0's at audio-rate. The reason this has to be
 	 *         it's own class is that many browsers optimize out Tone.Signal
-	 *         with a value of 0 and will not process nodes further down the graph. 
+	 *         with a value of 0 and will not process nodes further down the graph.
 	 *  @extends {Tone.SignalBase}
 	 */
 	Tone.Zero = function(){

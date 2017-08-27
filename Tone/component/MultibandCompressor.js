@@ -1,11 +1,11 @@
-define(["Tone/core/Tone", "Tone/component/MultibandSplit", "Tone/component/Compressor"], function(Tone){
+define(["Tone/core/Tone", "Tone/component/MultibandSplit", "Tone/component/Compressor", "Tone/core/AudioNode"], function(Tone){
 
 	"use strict";
 
 	/**
 	 *  @class A compressor with seperate controls over low/mid/high dynamics
 	 *
-	 *  @extends {Tone}
+	 *  @extends {Tone.AudioNode}
 	 *  @constructor
 	 *  @param {Object} options The low/mid/high compressor settings.
 	 *  @example
@@ -19,7 +19,7 @@ define(["Tone/core/Tone", "Tone/component/MultibandSplit", "Tone/component/Compr
 	 */
 	Tone.MultibandCompressor = function(options){
 
-		Tone.call(this);
+		Tone.AudioNode.call(this);
 		options = Tone.defaultArg(arguments, Tone.MultibandCompressor.defaults);
 
 		/**
@@ -79,7 +79,7 @@ define(["Tone/core/Tone", "Tone/component/MultibandSplit", "Tone/component/Compr
 		this._readOnly(["high", "mid", "low", "highFrequency", "lowFrequency"]);
 	};
 
-	Tone.extend(Tone.MultibandCompressor);
+	Tone.extend(Tone.MultibandCompressor, Tone.AudioNode);
 
 	/**
 	 *  @const
@@ -99,7 +99,7 @@ define(["Tone/core/Tone", "Tone/component/MultibandSplit", "Tone/component/Compr
 	 *  @returns {Tone.MultibandCompressor} this
 	 */
 	Tone.MultibandCompressor.prototype.dispose = function(){
-		Tone.prototype.dispose.call(this);
+		Tone.AudioNode.prototype.dispose.call(this);
 		this._splitter.dispose();
 		this._writable(["high", "mid", "low", "highFrequency", "lowFrequency"]);
 		this.low.dispose();

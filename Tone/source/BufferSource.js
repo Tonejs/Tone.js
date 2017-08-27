@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/Gain"], function (Tone) {
+define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/Gain", "Tone/core/AudioNode"], function (Tone) {
 
 	/**
 	 *  BufferSource polyfill
@@ -10,19 +10,19 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/G
 
 	/**
 	 *  @class Wrapper around the native BufferSourceNode.
-	 *  @extends {Tone}
+	 *  @extends {Tone.AudioNode}
 	 *  @param  {AudioBuffer|Tone.Buffer}  buffer   The buffer to play
-	 *  @param  {Function}  onload  The callback to invoke when the 
+	 *  @param  {Function}  onload  The callback to invoke when the
 	 *                               buffer is done playing.
 	 */
 	Tone.BufferSource = function(){
 
 		var options = Tone.defaults(arguments, ["buffer", "onload"], Tone.BufferSource);
-		Tone.call(this);
+		Tone.AudioNode.call(this);
 
 		/**
-		 *  The callback to invoke after the 
-		 *  buffer source is done playing. 
+		 *  The callback to invoke after the
+		 *  buffer source is done playing.
 		 *  @type  {Function}
 		 */
 		this.onended = options.onended;
@@ -62,7 +62,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/G
 		 * @private
 		 */
 		this._buffer = new Tone.Buffer(options.buffer, options.onload);
-	
+
 		/**
 		 *  The playbackRate of the buffer
 		 *  @type {Positive}
@@ -102,7 +102,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/G
 		this.playbackRate.value = options.playbackRate;
 	};
 
-	Tone.extend(Tone.BufferSource);
+	Tone.extend(Tone.BufferSource, Tone.AudioNode);
 
 	/**
 	 *  The defaults
@@ -142,9 +142,9 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/G
 	 *  Start the buffer
 	 *  @param  {Time} [startTime=now] When the player should start.
 	 *  @param  {Time} [offset=0] The offset from the beginning of the sample
-	 *                                 to start at. 
+	 *                                 to start at.
 	 *  @param  {Time=} duration How long the sample should play. If no duration
-	 *                                is given, it will default to the full length 
+	 *                                is given, it will default to the full length
 	 *                                of the sample (minus any offset)
 	 *  @param  {Gain}  [gain=1]  The gain to play the buffer back at.
 	 *  @param  {Time=}  fadeInTime  The optional fadeIn ramp time.
@@ -221,8 +221,8 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/G
 	};
 
 	/**
-	 *  Stop the buffer. Optionally add a ramp time to fade the 
-	 *  buffer out. 
+	 *  Stop the buffer. Optionally add a ramp time to fade the
+	 *  buffer out.
 	 *  @param  {Time=}  time         The time the buffer should stop.
 	 *  @param  {Time=}  fadeOutTime  How long the gain should fade out for
 	 *  @return  {Tone.BufferSource}  this
@@ -231,17 +231,17 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/G
 		if (this.buffer.loaded){
 
 			time = this.toSeconds(time);
-			
+
 			//the fadeOut time
 			if (Tone.isUndef(fadeOutTime)){
 				fadeOutTime = this.toSeconds(this.fadeOut);
 			} else {
 				fadeOutTime = this.toSeconds(fadeOutTime);
-			}			
+			}
 
 			//only stop if the last stop was scheduled later
 			if (this._stopTime === -1 || this._stopTime > time){
-				this._stopTime = time;				
+				this._stopTime = time;
 
 				//cancel the end curve
 				this._gainNode.gain.cancelScheduledValues(this._startTime + this.sampleTime);
@@ -267,7 +267,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/G
 	};
 
 	/**
-	 *  Internal callback when the buffer is ended. 
+	 *  Internal callback when the buffer is ended.
 	 *  Invokes `onended` and disposes the node.
 	 *  @private
 	 */
@@ -276,7 +276,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/G
 	};
 
 	/**
-	 * If loop is true, the loop will start at this position. 
+	 * If loop is true, the loop will start at this position.
 	 * @memberOf Tone.BufferSource#
 	 * @type {Time}
 	 * @name loopStart
@@ -284,7 +284,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/G
 	Object.defineProperty(Tone.BufferSource.prototype, "loopStart", {
 		get : function(){
 			return this._source.loopStart;
-		}, 
+		},
 		set : function(loopStart){
 			this._source.loopStart = this.toSeconds(loopStart);
 		}
@@ -299,14 +299,14 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/G
 	Object.defineProperty(Tone.BufferSource.prototype, "loopEnd", {
 		get : function(){
 			return this._source.loopEnd;
-		}, 
+		},
 		set : function(loopEnd){
 			this._source.loopEnd = this.toSeconds(loopEnd);
 		}
 	});
 
 	/**
-	 * The audio buffer belonging to the player. 
+	 * The audio buffer belonging to the player.
 	 * @memberOf Tone.BufferSource#
 	 * @type {Tone.Buffer}
 	 * @name buffer
@@ -314,14 +314,14 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/G
 	Object.defineProperty(Tone.BufferSource.prototype, "buffer", {
 		get : function(){
 			return this._buffer;
-		}, 
+		},
 		set : function(buffer){
 			this._buffer.set(buffer);
 		}
 	});
 
 	/**
-	 * If the buffer should loop once it's over. 
+	 * If the buffer should loop once it's over.
 	 * @memberOf Tone.BufferSource#
 	 * @type {Boolean}
 	 * @name loop
@@ -329,7 +329,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/G
 	Object.defineProperty(Tone.BufferSource.prototype, "loop", {
 		get : function(){
 			return this._source.loop;
-		}, 
+		},
 		set : function(loop){
 			this._source.loop = loop;
 		}
@@ -340,7 +340,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/G
 	 *  @return  {Tone.BufferSource}  this
 	 */
 	Tone.BufferSource.prototype.dispose = function(){
-		Tone.prototype.dispose.call(this);
+		Tone.AudioNode.prototype.dispose.call(this);
 		this.onended = null;
 		this._source.disconnect();
 		this._source = null;

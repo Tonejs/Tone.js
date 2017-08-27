@@ -1,5 +1,5 @@
-define(["Test", "Tone/core/Master", "Tone/core/Tone", "helper/Offline", "helper/PassAudio", "Tone/source/Oscillator"], 
-	function (Test, Master, Tone, Offline, PassAudio, Oscillator) {
+define(["Test", "Tone/core/Master", "Tone/core/Tone", "helper/Offline", "helper/PassAudio", "Tone/source/Oscillator", "Tone/core/AudioNode"],
+	function (Test, Master, Tone, Offline, PassAudio, Oscillator, AudioNode) {
 
 	describe("Master", function(){
 		it ("exists", function(){
@@ -7,7 +7,7 @@ define(["Test", "Tone/core/Master", "Tone/core/Tone", "helper/Offline", "helper/
 		});
 
 		it ("provides a toMaster method", function(){
-			expect(Tone.prototype.toMaster).is.a("function");
+			expect(AudioNode.prototype.toMaster).is.a("function");
 			var gain = Tone.context.createGain();
 			expect(gain.toMaster).is.a("function");
 			gain.toMaster();
