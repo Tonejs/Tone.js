@@ -8,7 +8,7 @@ define(["Tone/core/Tone", "Tone/component/Panner", "Tone/component/Volume"], fun
 	 *  @extends {Tone}
 	 *  @constructor
 	 *  @param {AudioRange} pan the initial pan
-	 *  @param {number} volume The output volume. 
+	 *  @param {number} volume The output volume.
 	 *  @example
 	 * //pan the incoming signal left and drop the volume
 	 * var panVol = new Tone.PanVol(-0.25, -12);
@@ -17,7 +17,7 @@ define(["Tone/core/Tone", "Tone/component/Panner", "Tone/component/Volume"], fun
 
 		var options = Tone.defaults(arguments, ["pan", "volume"], Tone.PanVol);
 		Tone.call(this);
-		
+
 		/**
 		 *  The panning node
 		 *  @type {Tone.Panner}
@@ -40,7 +40,7 @@ define(["Tone/core/Tone", "Tone/component/Panner", "Tone/component/Volume"], fun
 		this._volume = this.output = new Tone.Volume(options.volume);
 
 		/**
-		 *  The volume control in decibels. 
+		 *  The volume control in decibels.
 		 *  @type {Decibels}
 		 *  @signal
 		 */
@@ -48,6 +48,7 @@ define(["Tone/core/Tone", "Tone/component/Panner", "Tone/component/Volume"], fun
 
 		//connections
 		this._panner.connect(this._volume);
+		this.mute = options.mute;
 
 		this._readOnly(["pan", "volume"]);
 	};
@@ -61,9 +62,25 @@ define(["Tone/core/Tone", "Tone/component/Panner", "Tone/component/Volume"], fun
 	 *  @static
 	 */
 	Tone.PanVol.defaults = {
-		"pan" : 0.5,
-		"volume" : 0
+		"pan" : 0,
+		"volume" : 0,
+		"mute" : false
 	};
+
+	/**
+	 * Mute/unmute the volume
+	 * @memberOf Tone.PanVol#
+	 * @name mute
+	 * @type {Boolean}
+	 */
+	Object.defineProperty(Tone.PanVol.prototype, "mute", {
+		get : function(){
+			return this._volume.mute;
+		},
+		set : function(mute){
+			this._volume.mute = mute;
+		}
+	});
 
 	/**
 	 *  clean up

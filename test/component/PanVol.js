@@ -1,5 +1,5 @@
-define(["Tone/component/PanVol", "helper/Basic", "helper/Offline", "Test", 
-	"Tone/signal/Signal", "helper/PassAudio", "helper/PassAudioStereo", "Tone/component/Merge"], 
+define(["Tone/component/PanVol", "helper/Basic", "helper/Offline", "Test",
+	"Tone/signal/Signal", "helper/PassAudio", "helper/PassAudioStereo", "Tone/component/Merge"],
 function (PanVol, Basic, Offline, Test, Signal, PassAudio, PassAudioStereo, Merge) {
 	describe("PanVol", function(){
 
@@ -23,9 +23,11 @@ function (PanVol, Basic, Offline, Test, Signal, PassAudio, PassAudioStereo, Merg
 
 			it("can be constructed with an options object", function(){
 				var panVol = new PanVol({
-					"pan" : 0.2
+					"pan" : 0.2,
+					"mute" : true
 				});
 				expect(panVol.pan.value).to.be.closeTo(0.2, 0.001);
+				expect(panVol.mute).to.be.true
 				panVol.dispose();
 			});
 
@@ -49,6 +51,16 @@ function (PanVol, Basic, Offline, Test, Signal, PassAudio, PassAudioStereo, Merg
 				return PassAudioStereo(function(input){
 					var panVol = new PanVol().toMaster();
 					input.connect(panVol);
+				});
+			});
+
+			it("can mute the volume", function(){
+				return Offline(function(){
+					var vol = new PanVol(0).toMaster();
+					new Signal(1).connect(vol);
+					vol.mute = true;
+				}).then(function(buffer){
+					expect(buffer.isSilent()).to.be.true;
 				});
 			});
 
