@@ -52,6 +52,20 @@ define(["Tone/core/Tone"], function (Tone) {
 			}
 		};
 
+		//returns the value at the given time
+		buffer.getValueAtTime = function(time){
+			var ret = [];
+			var sample = Math.round(time * buffer.context.sampleRate);
+			for (let i = 0; i < buffer.numberOfChannels; i++){
+				ret[i] = buffer.getChannelData(i)[sample];
+			}
+			if (ret.length === 1){
+				return ret[0]
+			} else {
+				return ret;
+			}
+		};
+
 		//return the time when the buffer is silent to the remainer of the buffer
 		buffer.getLastSoundTime = function(channelNum){
 			if (Tone.isUndef(channelNum)){
@@ -83,7 +97,7 @@ define(["Tone/core/Tone"], function (Tone) {
 						return ret;
 					}
 				}
-				
+
 			} else {
 				var array = buffer.toArray();
 				for (i = start; i < end; i++){
@@ -126,7 +140,7 @@ define(["Tone/core/Tone"], function (Tone) {
 			var val;
 			buffer.toMono().forEach(function(sample){
 				if (typeof val === "undefined"){
-					val = sample;					
+					val = sample;
 				} else if (Math.abs(val - sample) > 0.0001){
 					throw new Error("multiple values in buffer");
 				}
