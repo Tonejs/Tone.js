@@ -1,12 +1,12 @@
-define(["Tone/core/Tone", "Tone/source/Source", "Tone/core/Buffer", "Tone/source/MultiPlayer"], 
+define(["Tone/core/Tone", "Tone/source/Source", "Tone/core/Buffer", "Tone/source/MultiPlayer"],
 function (Tone) {
 
 	/**
 	 * @class Tone.GrainPlayer implements [granular synthesis](https://en.wikipedia.org/wiki/Granular_synthesis).
-	 *        Granular Synthesis enables you to adjust pitch and playback rate independently. The grainSize is the 
-	 *        amount of time each small chunk of audio is played for and the overlap is the 
+	 *        Granular Synthesis enables you to adjust pitch and playback rate independently. The grainSize is the
+	 *        amount of time each small chunk of audio is played for and the overlap is the
 	 *        amount of crossfading transition time between successive grains.
-	 * @extends {Tone}
+	 * @extends {Tone.Source}
 	 * @param {String|Tone.Buffer} url	The url to load, or the Tone.Buffer to play.
 	 * @param {Function=} callback The callback to invoke after the url is loaded.
 	 */
@@ -53,7 +53,7 @@ function (Tone) {
 		 *  @private
 		 */
 		this._playbackRate = options.playbackRate;
-		
+
 		/**
 		 *  @type  {Number}
 		 *  @private
@@ -107,20 +107,20 @@ function (Tone) {
 	/**
 	 *  Play the buffer at the given startTime. Optionally add an offset
 	 *  and/or duration which will play the buffer from a position
-	 *  within the buffer for the given duration. 
-	 *  
+	 *  within the buffer for the given duration.
+	 *
 	 *  @param  {Time} [startTime=now] When the player should start.
 	 *  @param  {Time} [offset=0] The offset from the beginning of the sample
-	 *                                 to start at. 
+	 *                                 to start at.
 	 *  @param  {Time=} duration How long the sample should play. If no duration
-	 *                                is given, it will default to the full length 
+	 *                                is given, it will default to the full length
 	 *                                of the sample (minus any offset)
 	 *  @returns {Tone.GrainPlayer} this
 	 *  @memberOf Tone.GrainPlayer#
 	 *  @method start
 	 *  @name start
 	 */
-	
+
 	/**
 	 *  Internal start method
 	 *  @param {Time} time
@@ -136,7 +136,7 @@ function (Tone) {
 		this._clock.start(time);
 
 		if (duration){
-			this.stop(time + this.toSeconds(duration));			
+			this.stop(time + this.toSeconds(duration));
 		}
 	};
 
@@ -164,7 +164,7 @@ function (Tone) {
 	/**
 	 *  Invoked on each clock tick. scheduled a new
 	 *  grain at this time.
-	 *  @param  {Time}  time 
+	 *  @param  {Time}  time
 	 *  @private
 	 */
 	Tone.GrainPlayer.prototype._tick = function(time){
@@ -217,7 +217,7 @@ function (Tone) {
 	Object.defineProperty(Tone.GrainPlayer.prototype, "playbackRate", {
 		get : function(){
 			return this._playbackRate;
-		}, 
+		},
 		set : function(rate){
 			this._playbackRate = rate;
 			this.grainSize = this._grainSize;
@@ -225,7 +225,7 @@ function (Tone) {
 	});
 
 	/**
-	 * The loop start time. 
+	 * The loop start time.
 	 * @memberOf Tone.GrainPlayer#
 	 * @type {Time}
 	 * @name loopStart
@@ -233,14 +233,14 @@ function (Tone) {
 	Object.defineProperty(Tone.GrainPlayer.prototype, "loopStart", {
 		get : function(){
 			return this._loopStart;
-		}, 
+		},
 		set : function(time){
 			this._loopStart = this.toSeconds(time);
 		}
 	});
 
 	/**
-	 * The loop end time. 
+	 * The loop end time.
 	 * @memberOf Tone.GrainPlayer#
 	 * @type {Time}
 	 * @name loopEnd
@@ -248,7 +248,7 @@ function (Tone) {
 	Object.defineProperty(Tone.GrainPlayer.prototype, "loopEnd", {
 		get : function(){
 			return this._loopEnd;
-		}, 
+		},
 		set : function(time){
 			this._loopEnd = this.toSeconds(time);
 		}
@@ -263,14 +263,14 @@ function (Tone) {
 	Object.defineProperty(Tone.GrainPlayer.prototype, "reverse", {
 		get : function(){
 			return this.buffer.reverse;
-		}, 
+		},
 		set : function(rev){
 			this.buffer.reverse = rev;
 		}
 	});
 
 	/**
-	 * The size of each chunk of audio that the 
+	 * The size of each chunk of audio that the
 	 * buffer is chopped into and played back at.
 	 * @memberOf Tone.GrainPlayer#
 	 * @type {Time}
@@ -279,7 +279,7 @@ function (Tone) {
 	Object.defineProperty(Tone.GrainPlayer.prototype, "grainSize", {
 		get : function(){
 			return this._grainSize;
-		}, 
+		},
 		set : function(size){
 			this._grainSize = this.toSeconds(size);
 			this._clock.frequency.value = this._playbackRate / this._grainSize;
@@ -287,7 +287,7 @@ function (Tone) {
 	});
 
 	/**
-	 * This is the duration of the cross-fade between 
+	 * This is the duration of the cross-fade between
 	 * sucessive grains.
 	 * @memberOf Tone.GrainPlayer#
 	 * @type {Time}
@@ -296,7 +296,7 @@ function (Tone) {
 	Object.defineProperty(Tone.GrainPlayer.prototype, "overlap", {
 		get : function(){
 			return this._overlap;
-		}, 
+		},
 		set : function(time){
 			this._overlap = this.toSeconds(time);
 		}
