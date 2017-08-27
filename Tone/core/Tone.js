@@ -39,18 +39,6 @@ define(function(){
 	 *  @returns {Tone} this
 	 */
 	Tone.prototype.dispose = function(){
-		if (!Tone.isUndef(this.input)){
-			if (this.input instanceof AudioNode){
-				this.input.disconnect();
-			}
-			this.input = null;
-		}
-		if (!Tone.isUndef(this.output)){
-			if (this.output instanceof AudioNode){
-				this.output.disconnect();
-			}
-			this.output = null;
-		}
 		return this;
 	};
 
@@ -688,49 +676,6 @@ define(function(){
 	///////////////////////////////////////////////////////////////////////////
 	//	ATTRIBUTES
 	///////////////////////////////////////////////////////////////////////////
-
-	/**
-	 *  The number of inputs feeding into the AudioNode.
-	 *  For source nodes, this will be 0.
-	 *  @memberOf Tone#
-	 *  @type {Number}
-	 *  @name numberOfInputs
-	 *  @readOnly
-	 */
-	Object.defineProperty(Tone.prototype, "numberOfInputs", {
-		get : function(){
-			if (this.input){
-				if (Tone.isArray(this.input)){
-					return this.input.length;
-				} else {
-					return 1;
-				}
-			} else {
-				return 0;
-			}
-		}
-	});
-
-	/**
-	 *  The number of outputs coming out of the AudioNode.
-	 *  @memberOf Tone#
-	 *  @type {Number}
-	 *  @name numberOfOutputs
-	 *  @readOnly
-	 */
-	Object.defineProperty(Tone.prototype, "numberOfOutputs", {
-		get : function(){
-			if (this.output){
-				if (Tone.isArray(this.output)){
-					return this.output.length;
-				} else {
-					return 1;
-				}
-			} else {
-				return 0;
-			}
-		}
-	});
 
 	/**
 	 *  The number of seconds of 1 processing block (128 samples)

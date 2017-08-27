@@ -13,23 +13,6 @@ define(["Test", "Tone/core/Tone", "helper/PassAudio", "Tone/source/Oscillator",
 			Test.wasDisposed(t);
 		});
 
-		it("reports the number of inputs and outputs", function(){
-			var t0 = new Tone();
-			t0.createInsOuts(1, 2);
-			expect(t0.numberOfInputs).to.equal(1);
-			expect(t0.numberOfOutputs).to.equal(2);
-			t0.dispose();
-			var t1 = new Tone();
-			t1.createInsOuts(2, 1);
-			expect(t1.numberOfInputs).to.equal(2);
-			expect(t1.numberOfOutputs).to.equal(1);
-			t1.dispose();
-			var t2 = new Tone();
-			expect(t2.numberOfInputs).to.equal(0);
-			expect(t2.numberOfOutputs).to.equal(0);
-			t2.dispose();
-		});
-
 		it("returns the class name with toString()", function(){
 			var t = new Tone();
 			expect(t.toString()).to.equal("Tone");
