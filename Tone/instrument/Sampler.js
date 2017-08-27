@@ -1,171 +1,220 @@
-define(["Tone/core/Tone", "Tone/source/Player", "Tone/component/AmplitudeEnvelope", "Tone/instrument/Instrument"], 
-function(Tone){
-
-	"use strict";
+define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/core/Buffers", "Tone/source/BufferSource"],
+	function (Tone) {
 
 	/**
-	 *  @class Sampler wraps Tone.Player in an AmplitudeEnvelope.
-	 *
-	 *  @constructor
-	 *  @extends {Tone.Instrument}
-	 *  @param {String} url the url of the audio file
-	 *  @param {Function=} onload The callback to invoke when the sample is loaded.
-	 *  @example
-	 * var sampler = new Tone.Sampler("./audio/casio/A1.mp3", function(){
-	 * 	//repitch the sample down a half step
-	 * 	sampler.triggerAttack(-1);
-	 * }).toMaster();
+	 * @class Automatically interpolates between a set of pitched samples. Pass in an object which maps the note's pitch or midi value to the url, then you can trigger the attack and release of that note like other instruments. By automatically repitching the samples, it is possible to play pitches which were not explicitly included which can save loading time.
+	 *        For sample or buffer playback where repitching is not necessary, use [Tone.Player](https://tonejs.github.io/docs/Player).
+	 * @param {Object} samples An object of samples mapping either Midi
+	 *                         Note Numbers or Scientific Pitch Notation
+	 *                         to the url of that sample.
+	 * @example
+	 * var sampler = new Tone.Sampler({
+	 * 	"C3" : "path/to/C3.mp3",
+	 * 	"D#3" : "path/to/Dsharp3.mp3",
+	 * 	"F#3" : "path/to/Fsharp3.mp3",
+	 * 	"A3" : "path/to/A3.mp3",
+	 * }, function(){
+	 * 	//sampler will repitch the closest sample
+	 * 	sampler.triggerAttack("D3")
+	 * })
 	 */
-	Tone.Sampler = function(){
+	Tone.Sampler = function(urls){
 
-		var options = Tone.defaults(arguments, ["url", "onload"], Tone.Sampler);
+		// shift arguments over one. Those are the remainder of the options
+		var args = Array.prototype.slice.call(arguments);
+		args.shift();
+		var options = Tone.defaults(args, ["onload", "baseUrl"], Tone.Sampler);
 		Tone.Instrument.call(this, options);
 
-		/**
-		 *  The sample player.
-		 *  @type {Tone.Player}
-		 */
-		this.player = new Tone.Player(options.url, options.onload);
-		this.player.retrigger = true;
+		var urlMap = {};
+		for (var note in urls){
+			if (Tone.isNote(note)){
+				//convert the note name to MIDI
+				var mid = Tone.Frequency(note).toMidi();
+				urlMap[mid] = urls[note];
+			} else if (!isNaN(parseFloat(note))){
+				//otherwise if it's numbers assume it's midi
+				urlMap[note] = urls[note];
+			} else {
+				throw new Error("Tone.Sampler: url keys must be the note's pitch");
+			}
+		}
 
 		/**
-		 *  The amplitude envelope. 
-		 *  @type {Tone.AmplitudeEnvelope}
+		 * The stored and loaded buffers
+		 * @type {Tone.Buffers}
+		 * @private
 		 */
-		this.envelope = new Tone.AmplitudeEnvelope(options.envelope);
+		this._buffers = new Tone.Buffers(urlMap, options.onload, options.baseUrl);
 
-		this.player.chain(this.envelope, this.output);
-		this._readOnly(["player", "envelope"]);
-		this.loop = options.loop;
-		this.reverse = options.reverse;
+		/**
+		 * The object of all currently playing BufferSources
+		 * @type {Object}
+		 * @private
+		 */
+		this._activeSources = {};
+
+		/**
+		 * The envelope applied to the beginning of the sample.
+		 * @type {Time}
+		 */
+		this.attack = options.attack;
+
+		/**
+		 * The envelope applied to the end of the envelope.
+		 * @type {Time}
+		 */
+		this.release = options.release;
 	};
 
 	Tone.extend(Tone.Sampler, Tone.Instrument);
 
 	/**
-	 *  the default parameters
-	 *  @static
+	 * The defaults
+	 * @const
+	 * @type {Object}
 	 */
 	Tone.Sampler.defaults = {
-		"onload" : Tone.noOp,
-		"loop" : false,
-		"reverse" : false,
-		"envelope" : {
-			"attack" : 0.001,
-			"decay" : 0,
-			"sustain" : 1,
-			"release" : 0.1
-		}
+		attack : 0,
+		release : 0.1,
+		onload : Tone.noOp,
+		baseUrl : ""
 	};
 
 	/**
-	 *  Trigger the start of the sample. 
-	 *  @param {Interval} [pitch=0] The amount the sample should
-	 *                              be repitched. 
-	 *  @param {Time} [time=now] The time when the sample should start
-	 *  @param {NormalRange} [velocity=1] The velocity of the note
-	 *  @returns {Tone.Sampler} this
-	 *  @example
-	 * sampler.triggerAttack(0, "+0.1", 0.5);
+	 * Returns the difference in steps between the given midi note at the closets sample.
+	 * @param  {Midi} midi
+	 * @return {Interval}
+	 * @private
 	 */
-	Tone.Sampler.prototype.triggerAttack = function(pitch, time, velocity){
-		time = this.toSeconds(time);
-		pitch = Tone.defaultArg(pitch, 0);
-		this.player.playbackRate = Tone.intervalToFrequencyRatio(pitch);
-		this.player.start(time);
-		this.envelope.triggerAttack(time, velocity);
+	Tone.Sampler.prototype._findClosest = function(midi){
+		var MAX_INTERVAL = 24;
+		var interval = 0;
+		while(interval < MAX_INTERVAL){
+			// check above and below
+			if (this._buffers.has(midi + interval)){
+				return -interval;
+			} else if (this._buffers.has(midi - interval)){
+				return interval;
+			}
+			interval++;
+		}
+		return null;
+	};
+
+	/**
+	 * @param  {Frequency} note     The note to play
+	 * @param  {Time=} time     When to play the note
+	 * @param  {NormalRange=} velocity The velocity to play the sample back.
+	 * @return {Tone.Sampler}          this
+	 */
+	Tone.Sampler.prototype.triggerAttack = function(note, time, velocity){
+		var midi = Tone.Frequency(note).toMidi();
+		// find the closest note pitch
+		var difference = this._findClosest(midi);
+		if (difference !== null){
+			var closestNote = midi - difference;
+			var buffer = this._buffers.get(closestNote);
+			// play that note
+			var source = new Tone.BufferSource({
+				"buffer" : buffer,
+				"playbackRate" : Tone.intervalToFrequencyRatio(difference),
+				"fadeIn" : this.attack,
+				"fadeOut" : this.release
+			}).connect(this.output);
+			source.start(time, 0, buffer.duration, velocity);
+			// add it to the active sources
+			if (!Tone.isArray(this._activeSources[midi])){
+				this._activeSources[midi] = [];
+			}
+			this._activeSources[midi].push({
+				note : midi,
+				source : source
+			});
+		}
 		return this;
 	};
 
 	/**
-	 *  Start the release portion of the sample. Will stop the sample once the 
-	 *  envelope has fully released. 
-	 *  
-	 *  @param {Time} [time=now] The time when the note should release
-	 *  @returns {Tone.Sampler} this
-	 *  @example
-	 * sampler.triggerRelease();
+	 * @param  {Frequency} note     The note to release.
+	 * @param  {Time=} time     	When to release the note.
+	 * @return {Tone.Sampler}	this
 	 */
-	Tone.Sampler.prototype.triggerRelease = function(time){
+	Tone.Sampler.prototype.triggerRelease = function(note, time){
+		var midi = Tone.Frequency(note).toMidi();
+		// find the note
+		if (this._activeSources[midi] && this._activeSources[midi].length){
+			var source = this._activeSources[midi].shift().source;
+			time = this.toSeconds(time);
+			source.stop(time + this.release, this.release);
+		}
+	};
+
+	/**
+	 * Invoke the attack phase, then after the duration, invoke the release.
+	 * @param  {Frequency} note     The note to play
+	 * @param  {Time} duration The time the note should be held
+	 * @param  {Time=} time     When to start the attack
+	 * @param  {NormalRange} [velocity=1] The velocity of the attack
+	 * @return {Tone.Sampler}          this
+	 */
+	Tone.Sampler.prototype.triggerAttackRelease = function(note, duration, time, velocity){
 		time = this.toSeconds(time);
-		this.envelope.triggerRelease(time);
-		this.player.stop(this.toSeconds(this.envelope.release) + time);
+		duration = this.toSeconds(duration);
+		this.triggerAttack(note, time, velocity);
+		this.triggerRelease(note, time + duration);
 		return this;
 	};
 
 	/**
-	 *  Trigger the attack and then the release after the duration. 
-	 *  @param  {Interval} interval     The interval in half-steps that the
-	 *                                  sample should be pitch shifted.
-	 *  @param  {Time} duration How long the note should be held for before
-	 *                          triggering the release.
-	 *  @param {Time} [time=now]  When the note should be triggered.
-	 *  @param  {NormalRange} [velocity=1] The velocity the note should be triggered at.
-	 *  @returns {Tone.Sampler} this
-	 *  @example
-	 * //trigger the unpitched note for the duration of an 8th note
-	 * synth.triggerAttackRelease(0, "8n");
-	 *  @memberOf Tone.Sampler#
-	 *  @name triggerAttackRelease
-	 *  @method triggerAttackRelease
+	 *  Add a note to the sampler.
+	 *  @param  {Note|Midi}   note      The buffer's pitch.
+	 *  @param  {String|Tone.Buffer|Audiobuffer}  url  Either the url of the bufer,
+	 *                                                 or a buffer which will be added
+	 *                                                 with the given name.
+	 *  @param  {Function=}  callback  The callback to invoke
+	 *                                 when the url is loaded.
 	 */
+	Tone.Sampler.prototype.add = function(note, url, callback){
+		if (Tone.isNote(note)){
+			//convert the note name to MIDI
+			var mid = Tone.Frequency(note).toMidi();
+			this._buffers.add(mid, url, callback);
+		} else if (!isNaN(parseFloat(note))){
+			//otherwise if it's numbers assume it's midi
+			this._buffers.add(note, url, callback);
+		} else {
+			throw new Error("Tone.Sampler: note must be the note's pitch. Instead got "+note);
+		}
+	};
 
 	/**
-	 * If the output sample should loop or not.
+	 * If the buffers are loaded or not
 	 * @memberOf Tone.Sampler#
-	 * @type {number|string}
-	 * @name loop
+	 * @type {Boolean}
+	 * @name loaded
+	 * @readOnly
 	 */
-	Object.defineProperty(Tone.Sampler.prototype, "loop", {
+	Object.defineProperty(Tone.Sampler.prototype, "loaded", {
 		get : function(){
-			return this.player.loop;
-		},
-		set : function(loop){
-			this.player.loop = loop;
+			return this._buffers.loaded;
 		}
 	});
 
 	/**
-	 * The direction the buffer should play in
-	 * @memberOf Tone.Sampler#
-	 * @type {boolean}
-	 * @name reverse
-	 */
-	Object.defineProperty(Tone.Sampler.prototype, "reverse", {
-		get : function(){
-			return this.player.reverse;
-		}, 
-		set : function(rev){
-			this.player.reverse = rev;
-		}
-	});
-
-	/**
-	 * The buffer to play.
-	 * @memberOf Tone.Sampler#
-	 * @type {Tone.Buffer}
-	 * @name buffer
-	 */
-	Object.defineProperty(Tone.Sampler.prototype, "buffer", {
-		get : function(){
-			return this.player.buffer;
-		}, 
-		set : function(buff){
-			this.player.buffer = buff;
-		}
-	});
-
-	/**
-	 *  Clean up.
-	 *  @returns {Tone.Sampler} this
+	 * Clean up
+	 * @return {Tone.Sampler} this
 	 */
 	Tone.Sampler.prototype.dispose = function(){
 		Tone.Instrument.prototype.dispose.call(this);
-		this._writable(["player", "envelope"]);
-		this.player.dispose();
-		this.player = null;
-		this.envelope.dispose();
-		this.envelope = null;
+		this._buffers.dispose();
+		this._buffers = null;
+		for (var midi in this._activeSources){
+			this._activeSources[midi].forEach(function(event){
+				event.source.dispose();
+			});
+		}
+		this._activeSources = null;
 		return this;
 	};
 
