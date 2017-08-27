@@ -17,6 +17,7 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/core/Buffers", "To
 	 * 	//sampler will repitch the closest sample
 	 * 	sampler.triggerAttack("D3")
 	 * })
+	 * @extends {Tone.Instrument}
 	 */
 	Tone.Sampler = function(urls){
 
