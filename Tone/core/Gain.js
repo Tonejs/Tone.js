@@ -69,29 +69,5 @@ define(["Tone/core/Tone", "Tone/core/Param", "Tone/type/Type", "Tone/core/AudioN
 		this.gain = null;
 	};
 
-	/**
-	 *  Create input and outputs for this object.
-	 *  @param  {Number}  input   The number of inputs
-	 *  @param  {Number=}  outputs  The number of outputs
-	 *  @return  {Tone}  this
-	 *  @private
-	 */
-	Tone.prototype.createInsOuts = function(inputs, outputs){
-
-		if (inputs === 1){
-			this.input = new Tone.Gain();
-		} else if (inputs > 1){
-			this.input = new Array(inputs);
-		}
-
-		if (outputs === 1){
-			this.output = new Tone.Gain();
-		} else if (outputs > 1){
-			this.output = new Array(outputs);
-		}
-	};
-
-	///////////////////////////////////////////////////////////////////////////
-
 	return Tone.Gain;
 });
