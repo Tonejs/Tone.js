@@ -16,7 +16,7 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/source/Noise", "To
 	 */
 	Tone.PluckSynth = function(options){
 
-		options = this.defaultArg(options, Tone.PluckSynth.defaults);
+		options = Tone.defaultArg(options, Tone.PluckSynth.defaults);
 		Tone.Instrument.call(this, options);
 
 		/**

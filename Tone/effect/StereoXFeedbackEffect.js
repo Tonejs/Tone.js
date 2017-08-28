@@ -8,11 +8,11 @@ function(Tone){
 	 *         and right to left instead of on the same channel.
 	 *
 	 *	@constructor
-	 *	@extends {Tone.FeedbackEffect}
+	 *	@extends {Tone.StereoEffect}
 	 */
 	Tone.StereoXFeedbackEffect = function(){
 
-		var options = this.optionsObject(arguments, ["feedback"], Tone.FeedbackEffect.defaults);
+		var options = Tone.defaults(arguments, ["feedback"], Tone.FeedbackEffect);
 		Tone.StereoEffect.call(this, options);
 
 		/**
@@ -45,7 +45,7 @@ function(Tone){
 		this._readOnly(["feedback"]);
 	};
 
-	Tone.extend(Tone.StereoXFeedbackEffect, Tone.FeedbackEffect);
+	Tone.extend(Tone.StereoXFeedbackEffect, Tone.StereoEffect);
 
 	/**
 	 *  clean up

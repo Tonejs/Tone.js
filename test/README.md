@@ -1,6 +1,6 @@
 I am currently using two test runners: [mocha](https://mochajs.org/) and [karma](https://github.com/karma-runner/karma) + mocha. 
 
-From within the gulp folder, run `gulp browser-test` to collect all of the files, launch a local server and run the tests. If you run `gulp karma-test`, the tests can be configured to run across multiple browsers simultaneously. 
+From within the gulp folder, run `gulp karma-test` to collect all of the files, launch a local server and run the tests.
 
 Be sure that the browser window is in focus while tests are running. 
 

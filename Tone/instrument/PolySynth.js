@@ -25,10 +25,9 @@ function(Tone){
 	 */
 	Tone.PolySynth = function(){
 
-		Tone.Instrument.call(this);
-
-		var options = this.optionsObject(arguments, ["polyphony", "voice"], Tone.PolySynth.defaults);
-		options = this.defaultArg(options, Tone.Instrument.defaults);
+		var options = Tone.defaults(arguments, ["polyphony", "voice"], Tone.PolySynth);
+		Tone.Instrument.call(this, options);
+		options = Tone.defaultArg(options, Tone.Instrument.defaults);
 
 		//max polyphony
 		options.polyphony = Math.min(Tone.PolySynth.MAX_POLYPHONY, options.polyphony);
@@ -69,9 +68,6 @@ function(Tone){
 				voice : v
 			};
 		}
-
-		//set the volume initially
-		this.volume.value = options.volume;
 	};
 
 	Tone.extend(Tone.PolySynth, Tone.Instrument);
@@ -142,7 +138,7 @@ function(Tone){
 	Tone.PolySynth.prototype.triggerAttackRelease = function(notes, duration, time, velocity){
 		time = this.toSeconds(time);
 		this.triggerAttack(notes, time, velocity);
-		if (this.isArray(duration) && this.isArray(notes)){
+		if (Tone.isArray(duration) && Tone.isArray(notes)){
 			for (var i = 0; i < notes.length; i++){
 				var d = duration[Math.min(i, duration.length - 1)];
 				this.triggerRelease(notes[i], time + this.toSeconds(d));	

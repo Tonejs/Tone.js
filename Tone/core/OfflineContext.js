@@ -11,12 +11,13 @@ define(["Tone/core/Tone", "Tone/core/Context"], function (Tone) {
 
 	/**
 	 *  @class Wrapper around the OfflineAudioContext
-	 *  @extends {Tone.Context
+	 *  @extends {Tone.Context}
 	 *  @param  {Number}  channels  The number of channels to render
 	 *  @param  {Number}  duration  The duration to render in samples
 	 *  @param {Number} sampleRate the sample rate to render at
 	 */
 	Tone.OfflineContext = function(channels, duration, sampleRate){
+		
 		/**
 		 *  The offline context
 		 *  @private
@@ -25,7 +26,12 @@ define(["Tone/core/Tone", "Tone/core/Context"], function (Tone) {
 		var offlineContext = new OfflineAudioContext(channels, duration * sampleRate, sampleRate);
 
 		//wrap the methods/members
-		Tone.Context.call(this, offlineContext);
+		Tone.Context.call(this, {
+			"context" : offlineContext,
+			"clockSource" : "offline",
+			"lookAhead" : 0,
+			"updateInterval" : 128 / sampleRate
+		});
 
 		/**
 		 *  A private reference to the duration
@@ -40,10 +46,6 @@ define(["Tone/core/Tone", "Tone/core/Context"], function (Tone) {
 		 *  @private
 		 */
 		this._currentTime = 0;
-
-		//modify the lookAhead and updateInterval to one block
-		this.lookAhead = this.blockTime;
-		this.updateInterval = this.blockTime;
 	};
 
 	Tone.extend(Tone.OfflineContext, Tone.Context);
@@ -57,17 +59,6 @@ define(["Tone/core/Tone", "Tone/core/Context"], function (Tone) {
 	};
 
 	/**
-	 *  Overwrite this method since the worker is not necessary for the offline context
-	 *  @private
-	 */
-	Tone.OfflineContext.prototype._createWorker = function(){
-		//dummy worker that does nothing
-		return {
-			postMessage : function(){}
-		};
-	};
-
-	/**
 	 *  Render the output of the OfflineContext
 	 *  @return  {Promise}
 	 */
@@ -76,7 +67,7 @@ define(["Tone/core/Tone", "Tone/core/Context"], function (Tone) {
 			//invoke all the callbacks on that time
 			this.emit("tick");
 			//increment the clock
-			this._currentTime += Tone.prototype.blockTime;
+			this._currentTime += this.blockTime;
 		}
 
 		//promise returned is not yet implemented in all browsers
@@ -86,6 +77,14 @@ define(["Tone/core/Tone", "Tone/core/Context"], function (Tone) {
 			};
 			this._context.startRendering();
 		}.bind(this));
+	};
+
+	/**
+	 *  Close the context
+	 *  @return  {Number}
+	 */
+	Tone.OfflineContext.prototype.close = function(){
+		this._context = null;
 	};
 
 	return Tone.OfflineContext;

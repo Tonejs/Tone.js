@@ -29,6 +29,32 @@ function (PolySynth, Basic, InstrumentTests, OutputAudioStereo, Instrument, Test
 				});
 			});	
 
+			it("triggerAttack and triggerRelease can be invoked without arrays", function(){
+				return Offline(function(){
+					var polySynth = new PolySynth(2);
+					polySynth.set('envelope.release', 0.1);
+					polySynth.toMaster();
+					polySynth.triggerAttack("C4", 0);
+					polySynth.triggerRelease("C4", 0.1);
+				}, 0.3).then(function(buffer){
+					expect(buffer.getFirstSoundTime()).to.be.closeTo(0, 0.01);
+					expect(buffer.getLastSoundTime()).to.be.closeTo(0.2, 0.01);
+				});
+			});	
+
+			it("can stop all of the currently playing sounds", function(){
+				return Offline(function(){
+					var polySynth = new PolySynth(4);
+					polySynth.set('envelope.release', 0.1);
+					polySynth.toMaster();
+					polySynth.triggerAttack(["C4", "E4", "G4", "B4"], 0);
+					polySynth.releaseAll(0.1);
+				}, 0.3).then(function(buffer){
+					expect(buffer.getFirstSoundTime()).to.be.closeTo(0, 0.01);
+					expect(buffer.getLastSoundTime()).to.be.closeTo(0.2, 0.01);
+				});
+			});	
+
 			it("is silent before being triggered", function(){
 				return Offline(function(){
 					var polySynth = new PolySynth(2);
@@ -66,6 +92,16 @@ function (PolySynth, Basic, InstrumentTests, OutputAudioStereo, Instrument, Test
 				var polySynth = new PolySynth();
 				polySynth.detune.value = -1200;
 				expect(polySynth.detune.value).to.equal(-1200);
+				polySynth.dispose();
+			});
+
+			it ("can pass in the volume and detune", function(){
+				var polySynth = new PolySynth({
+					"volume" : -12,
+					"detune" : 120,
+				});
+				expect(polySynth.volume.value).to.be.closeTo(-12, 0.1);
+				expect(polySynth.detune.value).to.be.closeTo(120, 1);
 				polySynth.dispose();
 			});
 

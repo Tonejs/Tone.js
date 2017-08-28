@@ -26,9 +26,9 @@ define(["Tone/core/Tone", "Tone/component/Envelope", "Tone/signal/Scale"],
 	Tone.ScaledEnvelope = function(){
 
 		//get all of the defaults
-		var options = this.optionsObject(arguments, ["attack", "decay", "sustain", "release"], Tone.Envelope.defaults);
+		var options = Tone.defaults(arguments, ["attack", "decay", "sustain", "release"], Tone.Envelope);
 		Tone.Envelope.call(this, options);
-		options = this.defaultArg(options, Tone.ScaledEnvelope.defaults);
+		options = Tone.defaultArg(options, Tone.ScaledEnvelope.defaults);
 
 		/** 
 		 *  scale the incoming signal by an exponent

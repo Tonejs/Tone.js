@@ -24,7 +24,8 @@ define(["Tone/core/Tone", "Tone/type/Type"], function (Tone) {
 	 */
 	Tone.CtrlInterpolate = function(){
 
-		var options = this.optionsObject(arguments, ["values", "index"], Tone.CtrlInterpolate.defaults);
+		var options = Tone.defaults(arguments, ["values", "index"], Tone.CtrlInterpolate);
+		Tone.call(this);
 
 		/**
 		 *  The values to interpolate between
@@ -85,13 +86,13 @@ define(["Tone/core/Tone", "Tone/type/Type"], function (Tone) {
 	 *  @private
 	 */
 	Tone.CtrlInterpolate.prototype._interpolate = function(index, lower, upper){
-		if (this.isArray(lower)){
+		if (Tone.isArray(lower)){
 			var retArray = [];
 			for (var i = 0; i < lower.length; i++){
 				retArray[i] = this._interpolate(index, lower[i], upper[i]);
 			}
 			return retArray;
-		} else if (this.isObject(lower)){
+		} else if (Tone.isObject(lower)){
 			var retObj = {};
 			for (var attr in lower){
 				retObj[attr] = this._interpolate(index, lower[attr], upper[attr]);
@@ -111,7 +112,7 @@ define(["Tone/core/Tone", "Tone/type/Type"], function (Tone) {
 	 *  @private
 	 */
 	Tone.CtrlInterpolate.prototype._toNumber = function(val){
-		if (this.isNumber(val)){
+		if (Tone.isNumber(val)){
 			return val;
 		} else {
 			//otherwise assume that it's Time...

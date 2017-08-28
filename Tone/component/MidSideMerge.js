@@ -1,12 +1,13 @@
-define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Expr", "Tone/component/Merge", "Tone/core/Gain"], 
+define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Expr",
+	"Tone/component/Merge", "Tone/core/Gain", "Tone/core/AudioNode"],
 	function(Tone){
 
 	"use strict";
 
 	/**
-	 *  @class Mid/Side processing separates the the 'mid' signal 
-	 *         (which comes out of both the left and the right channel) 
-	 *         and the 'side' (which only comes out of the the side channels). 
+	 *  @class Mid/Side processing separates the the 'mid' signal
+	 *         (which comes out of both the left and the right channel)
+	 *         and the 'side' (which only comes out of the the side channels).
 	 *         MidSideMerge merges the mid and side signal after they've been seperated
 	 *         by Tone.MidSideSplit.<br><br>
 	 *         <code>
@@ -14,10 +15,12 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Expr", "Tone/compon
 	 *         Right = (Mid-Side)/sqrt(2);   // obtain right signal from mid and side<br>
 	 *         </code>
 	 *
-	 *  @extends {Tone.StereoEffect}
+	 *  @extends {Tone.AudioNode}
 	 *  @constructor
 	 */
 	Tone.MidSideMerge = function(){
+
+		Tone.AudioNode.call(this);
 		this.createInsOuts(2, 0);
 
 		/**
@@ -65,14 +68,14 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Expr", "Tone/compon
 		this.context.getConstant(Math.SQRT1_2).connect(this._right, 0, 2);
 	};
 
-	Tone.extend(Tone.MidSideMerge);
+	Tone.extend(Tone.MidSideMerge, Tone.AudioNode);
 
 	/**
 	 *  clean up
 	 *  @returns {Tone.MidSideMerge} this
 	 */
 	Tone.MidSideMerge.prototype.dispose = function(){
-		Tone.prototype.dispose.call(this);
+		Tone.AudioNode.prototype.dispose.call(this);
 		this.mid.dispose();
 		this.mid = null;
 		this.side.dispose();

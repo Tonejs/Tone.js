@@ -21,7 +21,7 @@ function(Tone){
 	Tone.NoiseSynth = function(options){
 
 		//get the defaults
-		options = this.defaultArg(options, Tone.NoiseSynth.defaults);
+		options = Tone.defaultArg(options, Tone.NoiseSynth.defaults);
 		Tone.Instrument.call(this, options);
 
 		/**

@@ -1,5 +1,5 @@
-define(["Tone/core/Tone", "Tone/instrument/Synth", "Tone/signal/Signal", "Tone/signal/Multiply", 
-	"Tone/instrument/Monophonic", "Tone/signal/AudioToGain", "Tone/core/Gain"], 
+define(["Tone/core/Tone", "Tone/instrument/Synth", "Tone/signal/Signal", "Tone/signal/Multiply",
+	"Tone/instrument/Monophonic", "Tone/signal/AudioToGain", "Tone/core/Gain"],
 function(Tone){
 
 	"use strict";
@@ -8,13 +8,13 @@ function(Tone){
 	 *  @class  AMSynth uses the output of one Tone.Synth to modulate the
 	 *          amplitude of another Tone.Synth. The harmonicity (the ratio between
 	 *          the two signals) affects the timbre of the output signal greatly.
-	 *          Read more about Amplitude Modulation Synthesis on 
-	 *          [SoundOnSound](http://www.soundonsound.com/sos/mar00/articles/synthsecrets.htm).
+	 *          Read more about Amplitude Modulation Synthesis on
+	 *          [SoundOnSound](https://web.archive.org/web/20160404103653/http://www.soundonsound.com:80/sos/mar00/articles/synthsecrets.htm).
 	 *          <img src="https://docs.google.com/drawings/d/1TQu8Ed4iFr1YTLKpB3U1_hur-UwBrh5gdBXc8BxfGKw/pub?w=1009&h=457">
 	 *
 	 *  @constructor
 	 *  @extends {Tone.Monophonic}
-	 *  @param {Object} [options] the options available for the synth 
+	 *  @param {Object} [options] the options available for the synth
 	 *                            see defaults below
 	 *  @example
 	 * var synth = new Tone.AMSynth().toMaster();
@@ -22,11 +22,11 @@ function(Tone){
 	 */
 	Tone.AMSynth = function(options){
 
-		options = this.defaultArg(options, Tone.AMSynth.defaults);
+		options = Tone.defaultArg(options, Tone.AMSynth.defaults);
 		Tone.Monophonic.call(this, options);
 
 		/**
-		 *  The carrier voice. 
+		 *  The carrier voice.
 		 *  @type {Tone.Synth}
 		 *  @private
 		 */
@@ -46,7 +46,7 @@ function(Tone){
 		this.envelope = this._carrier.envelope.set(options.envelope);
 
 		/**
-		 *  The modulator voice. 
+		 *  The modulator voice.
 		 *  @type {Tone.Synth}
 		 *  @private
 		 */
@@ -82,7 +82,7 @@ function(Tone){
 
 		/**
 		 *  Harmonicity is the ratio between the two voices. A harmonicity of
-		 *  1 is no change. Harmonicity = 2 means a change of an octave. 
+		 *  1 is no change. Harmonicity = 2 means a change of an octave.
 		 *  @type {Positive}
 		 *  @signal
 		 *  @example
@@ -146,7 +146,7 @@ function(Tone){
 
 	/**
 	 *  trigger the attack portion of the note
-	 *  
+	 *
 	 *  @param  {Time} [time=now] the time the note will occur
 	 *  @param {NormalRange} [velocity=1] the velocity of the note
 	 *  @private
@@ -163,7 +163,7 @@ function(Tone){
 
 	/**
 	 *  trigger the release portion of the note
-	 *  
+	 *
 	 *  @param  {Time} [time=now] the time the note will release
 	 *  @private
 	 *  @returns {Tone.AMSynth} this

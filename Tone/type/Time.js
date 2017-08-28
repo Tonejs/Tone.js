@@ -80,7 +80,7 @@ define(["Tone/core/Tone", "Tone/type/TimeBase"], function (Tone) {
 	 * Tone.Time(0.6).quantize("4n", 0.5) //returns 0.55
 	 */
 	Tone.Time.prototype.quantize = function(subdiv, percent){
-		percent = this.defaultArg(percent, 1);
+		percent = Tone.defaultArg(percent, 1);
 		this._expr = function(expr, subdivision, percent){
 			expr = expr();
 			subdivision = subdivision.toSeconds();
@@ -103,9 +103,9 @@ define(["Tone/core/Tone", "Tone/type/TimeBase"], function (Tone) {
 	};
 
 	/**
-	 *  @override
 	 *  Override the default value return when no arguments are passed in.
 	 *  The default value is 'now'
+	 *  @override
 	 *  @private
 	 */
 	Tone.Time.prototype._defaultExpr = function(){
@@ -218,7 +218,8 @@ define(["Tone/core/Tone", "Tone/type/TimeBase"], function (Tone) {
 		quarters = Math.floor(quarters) % this._timeSignature();
 		sixteenths = sixteenths.toString();
 		if (sixteenths.length > 3){
-			sixteenths = parseFloat(sixteenths).toFixed(3);
+			// the additional parseFloat removes insignificant trailing zeroes
+			sixteenths = parseFloat(parseFloat(sixteenths).toFixed(3));
 		}
 		var progress = [measures, quarters, sixteenths];
 		return progress.join(":");

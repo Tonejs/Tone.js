@@ -9,7 +9,7 @@ var Interface = {
  *
  *
  *  INIT
- *  
+ *
  */
 $(function(){
 	// make all links open a new tab
@@ -29,7 +29,7 @@ $(function(){
 /**
  *
  *	LOADING INDICATOR
- *  
+ *
  */
 Interface.Loader = function(){
 	if (this instanceof Interface.Loader){
@@ -54,7 +54,7 @@ Interface.Loader = function(){
 
 /**
  *
- *  
+ *
  *  DRAGGER
  *
  */
@@ -65,7 +65,7 @@ Interface.Dragger = function(params){
 		if ($("#DragContainer").length === 0){
 			$("<div>", {
 				"id" : "DragContainer"
-			}).appendTo(params.parent || "#Content");	
+			}).appendTo(params.parent || "#Content");
 		}
 
 		this.container = $("#DragContainer");
@@ -174,7 +174,7 @@ Interface.Dragger.prototype._onend = function(e){
 
 /**
  *
- *  
+ *
  *  SLIDER
  *
  */
@@ -268,7 +268,7 @@ Interface.Slider = function(params){
 
 			var paramValue = typeof params.value !== "undefined" ? params.value : this.tone.get(this.parameter);
 
-			this.value(paramValue);		
+			this.value(paramValue);
 		}
 
 	} else {
@@ -292,12 +292,15 @@ Interface.Slider.prototype.value = function(val){
 	}
 
 	var pos = (val - this.min) / (this.max - this.min);
+	if (this.axis === "y"){
+		pos = 1 - pos
+	}
 	pos = Math.pow(pos, 1 / this.exp) * (maxSize );
 	this.element.css(this.posAxis, pos);
 
 	if (this.options){
 		this._setParam(this.options[val]);
-	} 
+	}
 };
 
 
@@ -357,7 +360,7 @@ Interface.Slider.prototype._setParam = function(value){
 /**
  *
  * BUTTON
- *  
+ *
  */
 Interface.Button = function(params){
 
@@ -456,7 +459,7 @@ Interface.Button.prototype._keyup = function(e){
 /**
  *
  *	TRANSPORT
- *  
+ *
  */
 Interface.Transport = function(){
 
@@ -487,7 +490,7 @@ Interface.Transport.prototype._loop = function(){
 /**
  *
  *	KEYBOARD
- *  
+ *
  */
 Interface.Keyboard = function(){
 

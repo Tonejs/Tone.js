@@ -45,7 +45,7 @@ function(Tone){
 	 */
 	Tone.JCReverb = function(){
 
-		var options = this.optionsObject(arguments, ["roomSize"], Tone.JCReverb.defaults);
+		var options = Tone.defaults(arguments, ["roomSize"], Tone.JCReverb);
 		Tone.StereoEffect.call(this, options);
 
 		/**
@@ -100,7 +100,7 @@ function(Tone){
 
 		//chain the allpass filters together
 		this.roomSize.connect(this._scaleRoomSize);
-		this.connectSeries.apply(this, this._allpassFilters);
+		Tone.connectSeries.apply(Tone, this._allpassFilters);
 		this.effectSendL.connect(this._allpassFilters[0]);
 		this.effectSendR.connect(this._allpassFilters[0]);
 		this._readOnly(["roomSize"]);

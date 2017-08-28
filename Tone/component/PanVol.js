@@ -1,22 +1,23 @@
-define(["Tone/core/Tone", "Tone/component/Panner", "Tone/component/Volume"], function(Tone){
+define(["Tone/core/Tone", "Tone/component/Panner", "Tone/component/Volume", "Tone/core/AudioNode"], function(Tone){
 
 	"use strict";
 
 	/**
 	 *  @class Tone.PanVol is a Tone.Panner and Tone.Volume in one.
 	 *
-	 *  @extends {Tone}
+	 *  @extends {Tone.AudioNode}
 	 *  @constructor
 	 *  @param {AudioRange} pan the initial pan
-	 *  @param {number} volume The output volume. 
+	 *  @param {number} volume The output volume.
 	 *  @example
 	 * //pan the incoming signal left and drop the volume
-	 * var panVol = new Tone.PanVol(0.25, -12);
+	 * var panVol = new Tone.PanVol(-0.25, -12);
 	 */
 	Tone.PanVol = function(){
 
-		var options = this.optionsObject(arguments, ["pan", "volume"], Tone.PanVol.defaults);
-		
+		var options = Tone.defaults(arguments, ["pan", "volume"], Tone.PanVol);
+		Tone.AudioNode.call(this);
+
 		/**
 		 *  The panning node
 		 *  @type {Tone.Panner}
@@ -34,11 +35,12 @@ define(["Tone/core/Tone", "Tone/component/Panner", "Tone/component/Volume"], fun
 		/**
 		 *  The volume node
 		 *  @type {Tone.Volume}
+		 *  @private
 		 */
 		this._volume = this.output = new Tone.Volume(options.volume);
 
 		/**
-		 *  The volume control in decibels. 
+		 *  The volume control in decibels.
 		 *  @type {Decibels}
 		 *  @signal
 		 */
@@ -46,11 +48,12 @@ define(["Tone/core/Tone", "Tone/component/Panner", "Tone/component/Volume"], fun
 
 		//connections
 		this._panner.connect(this._volume);
+		this.mute = options.mute;
 
 		this._readOnly(["pan", "volume"]);
 	};
 
-	Tone.extend(Tone.PanVol);
+	Tone.extend(Tone.PanVol, Tone.AudioNode);
 
 	/**
 	 *  The defaults
@@ -59,16 +62,32 @@ define(["Tone/core/Tone", "Tone/component/Panner", "Tone/component/Volume"], fun
 	 *  @static
 	 */
 	Tone.PanVol.defaults = {
-		"pan" : 0.5,
-		"volume" : 0
+		"pan" : 0,
+		"volume" : 0,
+		"mute" : false
 	};
+
+	/**
+	 * Mute/unmute the volume
+	 * @memberOf Tone.PanVol#
+	 * @name mute
+	 * @type {Boolean}
+	 */
+	Object.defineProperty(Tone.PanVol.prototype, "mute", {
+		get : function(){
+			return this._volume.mute;
+		},
+		set : function(mute){
+			this._volume.mute = mute;
+		}
+	});
 
 	/**
 	 *  clean up
 	 *  @returns {Tone.PanVol} this
 	 */
 	Tone.PanVol.prototype.dispose = function(){
-		Tone.prototype.dispose.call(this);
+		Tone.AudioNode.prototype.dispose.call(this);
 		this._writable(["pan", "volume"]);
 		this._panner.dispose();
 		this._panner = null;

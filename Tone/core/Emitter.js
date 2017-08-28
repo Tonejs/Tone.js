@@ -11,6 +11,7 @@ define(["Tone/core/Tone"], function (Tone) {
 	 *  @extends {Tone}
 	 */
 	Tone.Emitter = function(){
+		Tone.call(this);
 		/**
 		 *  Contains all of the events.
 		 *  @private
@@ -55,7 +56,7 @@ define(["Tone/core/Tone"], function (Tone) {
 		for (var ev = 0; ev < events.length; ev++){
 			event = events[ev];
 			if (this._events.hasOwnProperty(event)){
-				if (Tone.prototype.isUndef(callback)){
+				if (Tone.isUndef(callback)){
 					this._events[event] = [];
 				} else {
 					var eventList = this._events[event];
@@ -74,7 +75,7 @@ define(["Tone/core/Tone"], function (Tone) {
 	 *  Invoke all of the callbacks bound to the event
 	 *  with any arguments passed in. 
 	 *  @param  {String}  event  The name of the event.
-	 *  @param {*...} args The arguments to pass to the functions listening.
+	 *  @param {*} args... The arguments to pass to the functions listening.
 	 *  @return  {Tone.Emitter}  this
 	 */
 	Tone.Emitter.prototype.emit = function(event){
@@ -93,6 +94,7 @@ define(["Tone/core/Tone"], function (Tone) {
 	/**
 	 *  Add Emitter functions (on/off/emit) to the object
 	 *  @param  {Object|Function}  object  The object or class to extend.
+	 *  @returns {Tone.Emitter}
 	 */
 	Tone.Emitter.mixin = function(object){
 		var functions = ["on", "off", "emit"];
@@ -102,6 +104,7 @@ define(["Tone/core/Tone"], function (Tone) {
 			var emitterFunc = Tone.Emitter.prototype[func];
 			object[func] = emitterFunc;
 		}
+		return Tone.Emitter;
 	};
 
 	/**

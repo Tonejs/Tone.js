@@ -5,6 +5,8 @@ function (Tone) {
 	/**
 	 *  @class Tone.MultiPlayer is well suited for one-shots, multi-sampled instruments
 	 *         or any time you need to play a bunch of audio buffers. 
+	 *
+	 *  @deprecated Use [Tone.Players](Players) instead.
 	 *  @param  {Object|Array|Tone.Buffers}  buffers  The buffers which are available
 	 *                                                to the MultiPlayer
 	 *  @param {Function} onload The callback to invoke when all of the buffers are loaded.
@@ -24,9 +26,16 @@ function (Tone) {
 	 * 	multiPlayer.start(1);
 	 * });
 	 */
-	Tone.MultiPlayer = function(){
+	Tone.MultiPlayer = function(urls){
 
-		var options = this.optionsObject(arguments, ["urls", "onload"], Tone.MultiPlayer.defaults);
+		console.warn("Tone.MultiPlayer is deprecated. Use Tone.Players instead.");
+
+		//remove the urls from the options
+		if (arguments.length === 1 && !Tone.isUndef(arguments[0]) && !arguments[0].hasOwnProperty("urls")){
+			urls = { "urls" : urls };
+		}
+		var options = Tone.defaults(arguments, ["urls", "onload"], Tone.MultiPlayer);
+		Tone.Source.call(this, options);
 
 		if (options.urls instanceof Tone.Buffers){
 			/**
@@ -58,29 +67,6 @@ function (Tone) {
 		 *  @type  {Time}
 		 */
 		this.fadeOut = options.fadeOut;
-
-		/**
-		 *  The output volume node
-		 *  @type  {Tone.Volume}
-		 *  @private
-		 */
-		this._volume = this.output = new Tone.Volume(options.volume);
-
-		/**
-		 * The volume of the output in decibels.
-		 * @type {Decibels}
-		 * @signal
-		 * @example
-		 * source.volume.value = -6;
-		 */
-		this.volume = this._volume.volume;
-		this._readOnly("volume");
-
-		//make the output explicitly stereo
-		this._volume.output.output.channelCount = 2;
-		this._volume.output.output.channelCountMode = "explicit";
-		//mute initially
-		this.mute = options.mute;
 	};
 
 	Tone.extend(Tone.MultiPlayer, Tone.Source);
@@ -103,7 +89,7 @@ function (Tone) {
 	 */
 	Tone.MultiPlayer.prototype._makeSource = function(bufferName){
 		var buffer;
-		if (this.isString(bufferName) || this.isNumber(bufferName)){
+		if (Tone.isString(bufferName) || Tone.isNumber(bufferName)){
 			buffer = this.buffers.get(bufferName).get();
 		} else if (bufferName instanceof Tone.Buffer){
 			buffer = bufferName.get();
@@ -133,12 +119,12 @@ function (Tone) {
 	Tone.MultiPlayer.prototype.start = function(bufferName, time, offset, duration, pitch, gain){
 		time = this.toSeconds(time);
 		var source = this._makeSource(bufferName);
-		source.start(time, offset, duration, this.defaultArg(gain, 1), this.fadeIn);
+		source.start(time, offset, duration, Tone.defaultArg(gain, 1), this.fadeIn);
 		if (duration){
 			source.stop(time + this.toSeconds(duration), this.fadeOut);
 		}
-		pitch = this.defaultArg(pitch, 0);
-		source.playbackRate.value = this.intervalToFrequencyRatio(pitch);
+		pitch = Tone.defaultArg(pitch, 0);
+		source.playbackRate.value = Tone.intervalToFrequencyRatio(pitch);
 		return this;
 	};
 
@@ -158,11 +144,11 @@ function (Tone) {
 		time = this.toSeconds(time);
 		var source = this._makeSource(bufferName);
 		source.loop = true;
-		source.loopStart = this.toSeconds(this.defaultArg(loopStart, 0));
-		source.loopEnd = this.toSeconds(this.defaultArg(loopEnd, 0));
-		source.start(time, offset, undefined, this.defaultArg(gain, 1), this.fadeIn);
-		pitch = this.defaultArg(pitch, 0);
-		source.playbackRate.value = this.intervalToFrequencyRatio(pitch);
+		source.loopStart = this.toSeconds(Tone.defaultArg(loopStart, 0));
+		source.loopEnd = this.toSeconds(Tone.defaultArg(loopEnd, 0));
+		source.start(time, offset, undefined, Tone.defaultArg(gain, 1), this.fadeIn);
+		pitch = Tone.defaultArg(pitch, 0);
+		source.playbackRate.value = Tone.intervalToFrequencyRatio(pitch);
 		return this;
 	};
 
@@ -248,11 +234,7 @@ function (Tone) {
 	 *  @return  {Tone.MultiPlayer}  this
 	 */
 	Tone.MultiPlayer.prototype.dispose = function(){
-		Tone.prototype.dispose.call(this);
-		this._volume.dispose();
-		this._volume = null;
-		this._writable("volume");
-		this.volume = null;
+		Tone.Source.prototype.dispose.call(this);
 		for (var bufferName in this._activeSources){
 			this._activeSources[bufferName].forEach(function(source){
 				source.dispose();

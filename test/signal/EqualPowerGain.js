@@ -1,6 +1,6 @@
 define(["helper/Offline", "Tone/signal/EqualPowerGain", "helper/Basic", 
-	"Test", "Tone/source/Oscillator", "Tone/signal/Signal", "helper/PassAudio"], 
-	function (Offline, EqualPowerGain, Basic, Test, Oscillator, Signal, PassAudio) {
+	"Test", "Tone/source/Oscillator", "Tone/signal/Signal", "helper/PassAudio", "Tone/core/Tone"], 
+	function (Offline, EqualPowerGain, Basic, Test, Oscillator, Signal, PassAudio, Tone) {
 
 	describe("EqualPowerGain", function(){
 
@@ -33,7 +33,7 @@ define(["helper/Offline", "Tone/signal/EqualPowerGain", "helper/Basic",
 					sig.linearRampToValueAtTime(1, 0.1);
 				}, 0.1).then(function(buffer){
 					buffer.forEach(function(sample, time){
-						expect(sample).to.be.closeTo(eqGain.equalPowerScale(time*10), 0.01);
+						expect(sample).to.be.closeTo(Tone.equalPowerScale(time*10), 0.01);
 					});
 				});
 			});

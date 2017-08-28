@@ -1,28 +1,29 @@
-define(["Tone/core/Tone", "Tone/component/Follower", "Tone/signal/GreaterThan"], function(Tone){
+define(["Tone/core/Tone", "Tone/component/Follower", "Tone/signal/GreaterThan", "Tone/core/AudioNode"], function(Tone){
 
 	"use strict";
 
 	/**
-	 *  @class  Tone.Gate only passes a signal through when the incoming 
-	 *          signal exceeds a specified threshold. To do this, Gate uses 
-	 *          a Tone.Follower to follow the amplitude of the incoming signal. 
+	 *  @class  Tone.Gate only passes a signal through when the incoming
+	 *          signal exceeds a specified threshold. To do this, Gate uses
+	 *          a Tone.Follower to follow the amplitude of the incoming signal.
 	 *          A common implementation of this class is a [Noise Gate](https://en.wikipedia.org/wiki/Noise_gate).
-	 *  
+	 *
 	 *  @constructor
-	 *  @extends {Tone}
-	 *  @param {Decibels|Object} [threshold] The threshold above which the gate will open. 
+	 *  @extends {Tone.AudioNode}
+	 *  @param {Decibels|Object} [threshold] The threshold above which the gate will open.
 	 *  @param {Time=} attack The follower's attack time
 	 *  @param {Time=} release The follower's release time
 	 *  @example
 	 * var gate = new Tone.Gate(-30, 0.2, 0.3).toMaster();
 	 * var mic = new Tone.UserMedia().connect(gate);
-	 * //the gate will only pass through the incoming 
+	 * //the gate will only pass through the incoming
 	 * //signal when it's louder than -30db
 	 */
 	Tone.Gate = function(){
-		
+
+		var options = Tone.defaults(arguments, ["threshold", "attack", "release"], Tone.Gate);
+		Tone.AudioNode.call(this);
 		this.createInsOuts(1, 1);
-		var options = this.optionsObject(arguments, ["threshold", "attack", "release"], Tone.Gate.defaults);
 
 		/**
 		 *  @type {Tone.Follower}
@@ -34,7 +35,7 @@ define(["Tone/core/Tone", "Tone/component/Follower", "Tone/signal/GreaterThan"],
 		 *  @type {Tone.GreaterThan}
 		 *  @private
 		 */
-		this._gt = new Tone.GreaterThan(this.dbToGain(options.threshold));
+		this._gt = new Tone.GreaterThan(Tone.dbToGain(options.threshold));
 
 		//the connections
 		this.input.connect(this.output);
@@ -42,7 +43,7 @@ define(["Tone/core/Tone", "Tone/component/Follower", "Tone/signal/GreaterThan"],
 		this.input.chain(this._gt, this._follower, this.output.gain);
 	};
 
-	Tone.extend(Tone.Gate);
+	Tone.extend(Tone.Gate, Tone.AudioNode);
 
 	/**
 	 *  @const
@@ -50,7 +51,7 @@ define(["Tone/core/Tone", "Tone/component/Follower", "Tone/signal/GreaterThan"],
 	 *  @type {Object}
 	 */
 	Tone.Gate.defaults = {
-		"attack" : 0.1, 
+		"attack" : 0.1,
 		"release" : 0.1,
 		"threshold" : -40
 	};
@@ -63,10 +64,10 @@ define(["Tone/core/Tone", "Tone/component/Follower", "Tone/signal/GreaterThan"],
 	 */
 	Object.defineProperty(Tone.Gate.prototype, "threshold", {
 		get : function(){
-			return this.gainToDb(this._gt.value);
-		}, 
+			return Tone.gainToDb(this._gt.value);
+		},
 		set : function(thresh){
-			this._gt.value = this.dbToGain(thresh);
+			this._gt.value = Tone.dbToGain(thresh);
 		}
 	});
 
@@ -79,7 +80,7 @@ define(["Tone/core/Tone", "Tone/component/Follower", "Tone/signal/GreaterThan"],
 	Object.defineProperty(Tone.Gate.prototype, "attack", {
 		get : function(){
 			return this._follower.attack;
-		}, 
+		},
 		set : function(attackTime){
 			this._follower.attack = attackTime;
 		}
@@ -94,18 +95,18 @@ define(["Tone/core/Tone", "Tone/component/Follower", "Tone/signal/GreaterThan"],
 	Object.defineProperty(Tone.Gate.prototype, "release", {
 		get : function(){
 			return this._follower.release;
-		}, 
+		},
 		set : function(releaseTime){
 			this._follower.release = releaseTime;
 		}
 	});
 
 	/**
-	 *  Clean up. 
+	 *  Clean up.
 	 *  @returns {Tone.Gate} this
 	 */
 	Tone.Gate.prototype.dispose = function(){
-		Tone.prototype.dispose.call(this);
+		Tone.AudioNode.prototype.dispose.call(this);
 		this._follower.dispose();
 		this._gt.dispose();
 		this._follower = null;

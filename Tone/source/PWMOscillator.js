@@ -9,7 +9,7 @@ function(Tone){
 	 *         changing the timbre of the oscillator by altering the harmonics 
 	 *         generated.
 	 *
-	 *  @extends {Tone.Oscillator}
+	 *  @extends {Tone.Source}
 	 *  @constructor
 	 *  @param {Frequency} frequency The starting frequency of the oscillator. 
 	 *  @param {Frequency} modulationFrequency The modulation frequency of the width of the pulse. 
@@ -17,7 +17,7 @@ function(Tone){
 	 *  var pwm = new Tone.PWMOscillator("Ab3", 0.3).toMaster().start();
 	 */
 	Tone.PWMOscillator = function(){
-		var options = this.optionsObject(arguments, ["frequency", "modulationFrequency"], Tone.PWMOscillator.defaults);
+		var options = Tone.defaults(arguments, ["frequency", "modulationFrequency"], Tone.PWMOscillator);
 		Tone.Source.call(this, options);
 
 		/**
@@ -75,7 +75,7 @@ function(Tone){
 		this._readOnly(["modulationFrequency", "frequency", "detune"]);
 	};
 
-	Tone.extend(Tone.PWMOscillator, Tone.Oscillator);
+	Tone.extend(Tone.PWMOscillator, Tone.Source);
 
 	/**
 	 *  default values

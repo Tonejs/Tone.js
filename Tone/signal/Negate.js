@@ -13,6 +13,8 @@ define(["Tone/core/Tone", "Tone/signal/Multiply", "Tone/signal/Signal"], functio
 	 * //output of neg is positive 2. 
 	 */
 	Tone.Negate = function(){
+
+		Tone.SignalBase.call(this);
 		/**
 		 *  negation is done by multiplying by -1
 		 *  @type {Tone.Multiply}
@@ -28,7 +30,7 @@ define(["Tone/core/Tone", "Tone/signal/Multiply", "Tone/signal/Signal"], functio
 	 *  @returns {Tone.Negate} this
 	 */
 	Tone.Negate.prototype.dispose = function(){
-		Tone.prototype.dispose.call(this);
+		Tone.SignalBase.prototype.dispose.call(this);
 		this._multiply.dispose();
 		this._multiply = null;
 		return this;

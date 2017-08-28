@@ -35,7 +35,7 @@ define(["helper/Basic", "Tone/source/MultiPlayer", "helper/Offline", "helper/Sou
 
 			it ("can be constructed an options object", function(){
 				var player = new MultiPlayer({
-					buffers : ["./audio/sine.wav"],
+					urls : ["./audio/sine.wav"],
 					fadeOut : 0.1
 				});
 				expect(player.fadeOut).to.equal(0.1);
@@ -102,7 +102,7 @@ define(["helper/Basic", "Tone/source/MultiPlayer", "helper/Offline", "helper/Sou
 					player.start("buffer", 0).stop("buffer", 0.1);
 				}, 0.3).then(function(rms){
 					rms.forEach(function(level, time){
-						if (time > 0 && time < 0.1){
+						if (time > 0 && time < 0.09){
 							expect(level).to.be.at.least(0.1);
 						} else if (time > 0.11){
 							expect(level).to.equal(0);
@@ -118,7 +118,7 @@ define(["helper/Basic", "Tone/source/MultiPlayer", "helper/Offline", "helper/Sou
 					player.start("buffer", 0).start("buffer", 0.02).stopAll(0.1);
 				}, 0.3).then(function(rms){
 					rms.forEach(function(level, time){
-						if (time > 0 && time < 0.1){
+						if (time > 0 && time < 0.09){
 							expect(level).to.be.at.least(0.1);
 						} else if (time > 0.12){
 							expect(level).to.equal(0);
@@ -135,7 +135,7 @@ define(["helper/Basic", "Tone/source/MultiPlayer", "helper/Offline", "helper/Sou
 					player.startLoop("buffer", 0).stop("buffer", stopTime);
 				}, buffer.duration * 1.5).then(function(rms){
 					rms.forEach(function(level, time){
-						if (time > 0 && time < stopTime){
+						if (time > 0 && time < stopTime - 0.01){
 							expect(level).to.be.at.least(0.1);
 						} else if (time > stopTime + 0.01){
 							expect(level).to.equal(0);

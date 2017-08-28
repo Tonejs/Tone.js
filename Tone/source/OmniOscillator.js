@@ -14,7 +14,7 @@ function(Tone){
 	 *         For example: `omniOsc.type = "fatsawtooth"` will create set the oscillator
 	 *         to a FatOscillator of type "sawtooth". 
 	 *
-	 *  @extends {Tone.Oscillator}
+	 *  @extends {Tone.Source}
 	 *  @constructor
 	 *  @param {Frequency} frequency The initial frequency of the oscillator.
 	 *  @param {String} type The type of the oscillator.
@@ -22,7 +22,8 @@ function(Tone){
 	 *  var omniOsc = new Tone.OmniOscillator("C#4", "pwm");
 	 */
 	Tone.OmniOscillator = function(){
-		var options = this.optionsObject(arguments, ["frequency", "type"], Tone.OmniOscillator.defaults);
+
+		var options = Tone.defaults(arguments, ["frequency", "type"], Tone.OmniOscillator);
 		Tone.Source.call(this, options);
 
 		/**
@@ -60,7 +61,7 @@ function(Tone){
 		this.set(options);
 	};
 
-	Tone.extend(Tone.OmniOscillator, Tone.Oscillator);
+	Tone.extend(Tone.OmniOscillator, Tone.Source);
 
 	/**
 	 *  default values
@@ -193,7 +194,7 @@ function(Tone){
 		//make sure the type is set first
 		if (params === "type"){
 			this.type = value;
-		} else if (this.isObject(params) && params.hasOwnProperty("type")){
+		} else if (Tone.isObject(params) && params.hasOwnProperty("type")){
 			this.type = params.type;
 		}
 		//then set the rest
@@ -210,15 +211,15 @@ function(Tone){
 			this._sourceType = oscType;
 			var OscillatorConstructor = Tone[oscType];
 			//short delay to avoid clicks on the change
-			var now = this.now() + this.blockTime;
+			var now = this.now();
 			if (this._oscillator !== null){
 				var oldOsc = this._oscillator;
 				oldOsc.stop(now);
 				//dispose the old one
-				setTimeout(function(){
+				this.context.setTimeout(function(){
 					oldOsc.dispose();
 					oldOsc = null;
-				}, this.blockTime * 1000);
+				}, this.blockTime);
 			}
 			this._oscillator = new OscillatorConstructor();
 			this.frequency.connect(this._oscillator.frequency);

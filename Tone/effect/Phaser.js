@@ -26,7 +26,7 @@ function(Tone){
 	Tone.Phaser = function(){
 
 		//set the defaults
-		var options = this.optionsObject(arguments, ["frequency", "octaves", "baseFrequency"], Tone.Phaser.defaults);
+		var options = Tone.defaults(arguments, ["frequency", "octaves", "baseFrequency"], Tone.Phaser);
 		Tone.StereoEffect.call(this, options);
 
 		/**
@@ -132,7 +132,7 @@ function(Tone){
 			connectToFreq.connect(filter.frequency);
 			filters[i] = filter;
 		}
-		this.connectSeries.apply(this, filters);
+		Tone.connectSeries.apply(Tone, filters);
 		return filters;
 	};
 

@@ -1,5 +1,5 @@
-define(["Tone/core/Tone", "Tone/signal/ScaleExp", "Tone/signal/Signal", 
-	"Tone/core/Param", "Tone/core/Delay", "Tone/core/Gain"], function(Tone){
+define(["Tone/core/Tone", "Tone/signal/ScaleExp", "Tone/signal/Signal",
+	"Tone/core/Param", "Tone/core/Delay", "Tone/core/Gain", "Tone/core/AudioNode"], function(Tone){
 
 	"use strict";
 
@@ -7,14 +7,15 @@ define(["Tone/core/Tone", "Tone/signal/ScaleExp", "Tone/signal/Signal",
 	 *  @class Comb filters are basic building blocks for physical modeling. Read more
 	 *         about comb filters on [CCRMA's website](https://ccrma.stanford.edu/~jos/pasp/Feedback_Comb_Filters.html).
 	 *
-	 *  @extends {Tone}
+	 *  @extends {Tone.AudioNode}
 	 *  @constructor
-	 *  @param {Time|Object} [delayTime] The delay time of the filter. 
-	 *  @param {NormalRange=} resonance The amount of feedback the filter has. 
+	 *  @param {Time|Object} [delayTime] The delay time of the filter.
+	 *  @param {NormalRange=} resonance The amount of feedback the filter has.
 	 */
 	Tone.FeedbackCombFilter = function(){
 
-		var options = this.optionsObject(arguments, ["delayTime", "resonance"], Tone.FeedbackCombFilter.defaults);
+		var options = Tone.defaults(arguments, ["delayTime", "resonance"], Tone.FeedbackCombFilter);
+		Tone.AudioNode.call(this);
 
 		/**
 		 *  the delay node
@@ -24,7 +25,7 @@ define(["Tone/core/Tone", "Tone/signal/ScaleExp", "Tone/signal/Signal",
 		this._delay = this.input = this.output = new Tone.Delay(options.delayTime);
 
 		/**
-		 *  The amount of delay of the comb filter. 
+		 *  The amount of delay of the comb filter.
 		 *  @type {Time}
 		 *  @signal
 		 */
@@ -38,7 +39,7 @@ define(["Tone/core/Tone", "Tone/signal/ScaleExp", "Tone/signal/Signal",
 		this._feedback = new Tone.Gain(options.resonance, Tone.Type.NormalRange);
 
 		/**
-		 *  The amount of feedback of the delayed signal. 
+		 *  The amount of feedback of the delayed signal.
 		 *  @type {NormalRange}
 		 *  @signal
 		 */
@@ -48,7 +49,7 @@ define(["Tone/core/Tone", "Tone/signal/ScaleExp", "Tone/signal/Signal",
 		this._readOnly(["resonance", "delayTime"]);
 	};
 
-	Tone.extend(Tone.FeedbackCombFilter);
+	Tone.extend(Tone.FeedbackCombFilter, Tone.AudioNode);
 
 	/**
 	 *  the default parameters
@@ -66,7 +67,7 @@ define(["Tone/core/Tone", "Tone/signal/ScaleExp", "Tone/signal/Signal",
 	 *  @returns {Tone.FeedbackCombFilter} this
 	 */
 	Tone.FeedbackCombFilter.prototype.dispose = function(){
-		Tone.prototype.dispose.call(this);
+		Tone.AudioNode.prototype.dispose.call(this);
 		this._writable(["resonance", "delayTime"]);
 		this._delay.dispose();
 		this._delay = null;

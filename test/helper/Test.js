@@ -1,6 +1,7 @@
 /* global mocha*/
 
-define(["Tone/core/Tone", "deps/chai", "Tone/core/Context"], function (Tone, chai, Context) {
+define(["Tone/core/Tone", "deps/chai", "Tone/core/Context", "Tone/core/Transport"], 
+	function (Tone, chai, Context, Transport) {
 
 	//add a chai test
 	chai.Assertion.addMethod("percentageFrom", function(val, percent){
@@ -12,7 +13,16 @@ define(["Tone/core/Tone", "deps/chai", "Tone/core/Context"], function (Tone, cha
 	mocha.setup({
 		ui: "bdd",
 		// make this very long cause sometimes the travis CI server is slow
-		timeout : 5000
+		timeout : 30000
+	});
+
+	beforeEach(function(){
+		if (Transport.bpm.value !== 120){
+			Transport.bpm.value = 120;
+		}
+		if (Transport.timeSignature !== 4){
+			Transport.timeSignature = 4;
+		}
 	});
 
 	Context.on("init", function(){

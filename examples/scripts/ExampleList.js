@@ -4,7 +4,8 @@ var ExampleList = {
 		"Envelope" : "envelope",
 		"Noise" : "noises",
 		"Player" : "player",
-		"Microphone" : "mic"
+		"Microphone" : "mic",
+		"Mixer" : "mixer"
 	},
 	"Instruments" : {
 		"Synth" : "simpleSynth",
@@ -14,6 +15,7 @@ var ExampleList = {
 		"FatOscillator" : "jump",
 		"MetalSynth" : "bembe",
 		"Granular Synthesis" : "grainPlayer",
+		"Sampler" : "sampler"
 	},
 	"Effects" : {
 		"LFO Effects" : "lfoEffects",

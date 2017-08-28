@@ -21,6 +21,9 @@ define(["Tone/core/Tone", "Tone/core/Timeline"], function (Tone) {
 	 * }, "+0.5")
 	 */
 	Tone.Draw = function(){
+
+		Tone.call(this);
+		
 		/**
 		 *  All of the events.
 		 *  @type  {Tone.Timeline}

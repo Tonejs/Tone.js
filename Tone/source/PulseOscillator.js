@@ -12,7 +12,7 @@ function(Tone){
 	 *         [here](https://wigglewave.wordpress.com/2014/08/16/pulse-waveforms-and-harmonics/).
 	 *
 	 *  @constructor
-	 *  @extends {Tone.Oscillator}
+	 *  @extends {Tone.Source}
 	 *  @param {Frequency} [frequency] The frequency of the oscillator
 	 *  @param {NormalRange} [width] The width of the pulse
 	 *  @example
@@ -20,7 +20,7 @@ function(Tone){
 	 */
 	Tone.PulseOscillator = function(){
 
-		var options = this.optionsObject(arguments, ["frequency", "width"], Tone.Oscillator.defaults);
+		var options = Tone.defaults(arguments, ["frequency", "width"], Tone.Oscillator);
 		Tone.Source.call(this, options);
 
 		/**
@@ -82,7 +82,7 @@ function(Tone){
 		this._readOnly(["width", "frequency", "detune"]);
 	};
 
-	Tone.extend(Tone.PulseOscillator, Tone.Oscillator);
+	Tone.extend(Tone.PulseOscillator, Tone.Source);
 
 	/**
 	 *  The default parameters.

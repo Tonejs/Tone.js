@@ -1,20 +1,21 @@
-define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/Split", 
-	"Tone/component/Merge", "Tone/component/CrossFade"], 
+define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/Split",
+	"Tone/component/Merge", "Tone/component/CrossFade"],
 function(Tone){
 
 	"use strict";
 
 	/**
-	 *  @class Base class for Stereo effects. Provides effectSendL/R and effectReturnL/R. 
+	 *  @class Base class for Stereo effects. Provides effectSendL/R and effectReturnL/R.
 	 *
 	 *	@constructor
 	 *	@extends {Tone.Effect}
 	 */
 	Tone.StereoEffect = function(){
 
-		this.createInsOuts(1, 1);
 		//get the defaults
-		var options = this.optionsObject(arguments, ["wet"], Tone.Effect.defaults);
+		Tone.AudioNode.call(this);
+		var options = Tone.defaults(arguments, ["wet"], Tone.Effect);
+		this.createInsOuts(1, 1);
 
 		/**
 		 *  the drywet knob to control the amount of effect
@@ -25,7 +26,7 @@ function(Tone){
 
 		/**
 		 *  The wet control, i.e. how much of the effected
-		 *  will pass through to the output. 
+		 *  will pass through to the output.
 		 *  @type {NormalRange}
 		 *  @signal
 		 */
@@ -85,11 +86,11 @@ function(Tone){
 	Tone.extend(Tone.StereoEffect, Tone.Effect);
 
 	/**
-	 *  Clean up. 
+	 *  Clean up.
 	 *  @returns {Tone.StereoEffect} this
 	 */
 	Tone.StereoEffect.prototype.dispose = function(){
-		Tone.prototype.dispose.call(this);
+		Tone.AudioNode.prototype.dispose.call(this);
 		this._dryWet.dispose();
 		this._dryWet = null;
 		this._split.dispose();

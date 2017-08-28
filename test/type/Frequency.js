@@ -1,4 +1,4 @@
-define(["helper/Basic", "Test", "Tone/type/Frequency", "Tone/core/Tone", "deps/teoria", "helper/Offline"], 
+define(["helper/Basic", "Test", "Tone/type/Frequency", "Tone/core/Tone", "deps/teoria", "helper/Offline"],
 	function (Basic, Test, Frequency, Tone, teoria, Offline) {
 
 	describe("Frequency", function(){
@@ -149,11 +149,12 @@ define(["helper/Basic", "Test", "Tone/type/Frequency", "Tone/core/Tone", "deps/t
 				expect(Frequency(440).toNote()).to.equal(teoria.Note.fromFrequency(440).note.scientific());
 				expect(Frequency(220).toNote()).to.equal(teoria.Note.fromFrequency(220).note.scientific());
 				expect(Frequency(13.75).toNote()).to.equal(teoria.Note.fromFrequency(13.75).note.scientific());
-				expect(Frequency(4979).toNote()).to.equal("D#8");				
+				expect(Frequency(4979).toNote()).to.equal("D#8");
 			});
 
 			it("can convert note to midi values", function(){
 				expect(Frequency("C4").toMidi()).to.equal(teoria.note("C4").midi());
+				expect(Frequency("C#0").toMidi()).to.equal(teoria.note("C#0").midi());
 				expect(Frequency("A-4").toMidi()).to.equal(teoria.note("A-4").midi());
 			});
 

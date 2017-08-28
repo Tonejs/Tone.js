@@ -26,48 +26,39 @@ function(Tone){
 	 *  @constructor
 	 *  @extends {Tone}
 	 *  @singleton
-	 *  @param {Number} positionX The initial x position.
-	 *  @param {Number} positionY The initial y position.
-	 *  @param {Number} positionZ The initial z position.
 	 */
 	Tone.Listener = function(){
 
-		var options = this.optionsObject(arguments, ["positionX", "positionY", "positionZ"], ListenerConstructor.defaults);
+		Tone.call(this);
 
 		/**
 		 *  Holds the current forward orientation
 		 *  @type  {Array}
 		 *  @private
 		 */
-		this._orientation = [options.forwardX, options.forwardY, options.forwardZ, options.upX, options.upY, options.upZ];
+		this._orientation = [0, 0, 0, 0, 0, 0];
 
 		/**
 		 *  Holds the current position
 		 *  @type  {Array}
 		 *  @private
 		 */
-		this._position = [options.positionX, options.positionY, options.positionZ];
+		this._position = [0, 0, 0];
 
-		// set the default position/forward
-		this.forwardX = options.forwardX;
-		this.forwardY = options.forwardY;
-		this.forwardZ = options.forwardZ;
-		this.upX = options.upX;
-		this.upY = options.upY;
-		this.upZ = options.upZ;
-		this.positionX = options.positionX;
-		this.positionY = options.positionY;
-		this.positionZ = options.positionZ;
+		Tone.getContext(function(){
+			// set the default position/forward
+			this.set(ListenerConstructor.defaults);
+		}.bind(this));
+
 	};
 
 	Tone.extend(Tone.Listener);
 
 	/**
-	 *  the default parameters
+	 *  Defaults according to the specification
 	 *  @static
 	 *  @const
 	 *  @type {Object}
-	 *  Defaults according to the specification
 	 */
 	Tone.Listener.defaults = {
 		"positionX" : 0,

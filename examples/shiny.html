@@ -48,37 +48,31 @@
 		});
 
 		//hats
-		var hats = new Tone.Sampler({
-			"url" : "./audio/505/hh.mp3",
+		var hats = new Tone.Player({
+			"url" : "./audio/505/hh.[mp3|ogg]",
 			"volume" : -10,
-			"envelope" : {
-				"attack" : 0.001,
-				"decay" : 0.02,
-				"sustain" : 0.01,
-				"release" : 0.01
-			}
+			"retrigger" : true,
+			"fadeOut" : 0.05
 		}).chain(distortion, drumCompress);
 
 		var hatsLoop = new Tone.Loop({
 			"callback" : function(time){
-				hats.triggerAttackRelease(0, "8n", time);
+				hats.start(time).stop(time + 0.05);
 			},
 			"interval" : "16n",
 			"probability" : 0.8
 		}).start("1m");
 
 		//SNARE PART
-		var snare = new Tone.Sampler({
-			"url" : "./audio/505/snare.mp3", 
-			"envelope" : {
-				"attack" : 0.01,
-				"decay" : 0.05,
-				"sustain" : 0
-			},
+		var snare = new Tone.Player({
+			"url" : "./audio/505/snare.[mp3|ogg]", 
+			"retrigger" : true,
+			"fadeOut" : 0.1
 		}).chain(distortion, drumCompress);
 
 		var snarePart = new Tone.Sequence(function(time, velocity){
-			snare.triggerAttackRelease(0, "8n", time, velocity);
+			snare.volume.value = Tone.gainToDb(velocity);
+			snare.start(time).stop(time + 0.1);
 		}, [null, 1, null, [1, 0.3]]).start(0);
 
 		var kick = new Tone.MembraneSynth({

@@ -159,11 +159,11 @@ define(["Test", "Tone/signal/TimelineSignal", "helper/Offline", "Tone/type/Type"
 			}, 1.2).then(function(buffer){
 				buffer.forEach(function(sample, time){
 					if (time < 0.5){
-						expect(sample).to.be.within(sched.dbToGain(-12), sched.dbToGain(-5));
+						expect(sample).to.be.within(Tone.dbToGain(-12), Tone.dbToGain(-5));
 					} else if (time < 1){
-						expect(sample).to.be.a.percentageFrom(sched.dbToGain(-12), 0.01);
+						expect(sample).to.be.a.percentageFrom(Tone.dbToGain(-12), 0.01);
 					} else if (time > 1.1){
-						expect(sample).to.be.a.percentageFrom(sched.dbToGain(-6), 0.01);
+						expect(sample).to.be.a.percentageFrom(Tone.dbToGain(-6), 0.01);
 					}
 				});
 			});

@@ -28,7 +28,7 @@ function(Tone){
 	Tone.MonoSynth = function(options){
 
 		//get the defaults
-		options = this.defaultArg(options, Tone.MonoSynth.defaults);
+		options = Tone.defaultArg(options, Tone.MonoSynth.defaults);
 		Tone.Monophonic.call(this, options);
 
 		/**

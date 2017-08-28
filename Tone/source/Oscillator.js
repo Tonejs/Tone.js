@@ -33,7 +33,7 @@ function(Tone){
 	 */
 	Tone.Oscillator = function(){
 		
-		var options = this.optionsObject(arguments, ["frequency", "type"], Tone.Oscillator.defaults);
+		var options = Tone.defaults(arguments, ["frequency", "type"], Tone.Oscillator);
 		Tone.Source.call(this, options);
 
 		/**
@@ -69,7 +69,7 @@ function(Tone){
 		 *  @type {Array}
 		 *  @private
 		 */
-		this._partials = this.defaultArg(options.partials, [1]);
+		this._partials = Tone.defaultArg(options.partials, [1]);
 
 		/**
 		 *  the phase of the oscillator

@@ -1,28 +1,29 @@
-define(["Tone/core/Tone", "Tone/signal/Abs", "Tone/signal/Subtract", "Tone/signal/Multiply", 
-	"Tone/signal/Signal", "Tone/signal/WaveShaper", "Tone/type/Type", "Tone/core/Delay"], 
+define(["Tone/core/Tone", "Tone/signal/Abs", "Tone/signal/Subtract", "Tone/signal/Multiply",
+	"Tone/signal/Signal", "Tone/signal/WaveShaper", "Tone/type/Type", "Tone/core/Delay", "Tone/core/AudioNode"],
 function(Tone){
 
 	"use strict";
 
 	/**
-	 *  @class  Tone.Follower is a  crude envelope follower which will follow 
-	 *          the amplitude of an incoming signal. 
-	 *          Take care with small (< 0.02) attack or decay values 
+	 *  @class  Tone.Follower is a  crude envelope follower which will follow
+	 *          the amplitude of an incoming signal.
+	 *          Take care with small (< 0.02) attack or decay values
 	 *          as follower has some ripple which is exaggerated
-	 *          at these values. Read more about envelope followers (also known 
+	 *          at these values. Read more about envelope followers (also known
 	 *          as envelope detectors) on [Wikipedia](https://en.wikipedia.org/wiki/Envelope_detector).
-	 *  
+	 *
 	 *  @constructor
-	 *  @extends {Tone}
+	 *  @extends {Tone.AudioNode}
 	 *  @param {Time|Object} [attack] The rate at which the follower rises.
-	 *  @param {Time=} release The rate at which the folower falls. 
+	 *  @param {Time=} release The rate at which the folower falls.
 	 *  @example
 	 * var follower = new Tone.Follower(0.2, 0.4);
 	 */
 	Tone.Follower = function(){
 
+		var options = Tone.defaults(arguments, ["attack", "release"], Tone.Follower);
+		Tone.AudioNode.call(this);
 		this.createInsOuts(1, 1);
-		var options = this.optionsObject(arguments, ["attack", "release"], Tone.Follower.defaults);
 
 		/**
 		 *  @type {Tone.Abs}
@@ -45,7 +46,7 @@ function(Tone){
 		 *  @private
 		 */
 		this._frequencyValues = new Tone.WaveShaper();
-		
+
 		/**
 		 *  @type {Tone.Subtract}
 		 *  @private
@@ -88,21 +89,21 @@ function(Tone){
 		this._setAttackRelease(this._attack, this._release);
 	};
 
-	Tone.extend(Tone.Follower);
+	Tone.extend(Tone.Follower, Tone.AudioNode);
 
 	/**
 	 *  @static
 	 *  @type {Object}
 	 */
 	Tone.Follower.defaults = {
-		"attack" : 0.05, 
+		"attack" : 0.05,
 		"release" : 0.5
 	};
 
 	/**
 	 *  sets the attack and release times in the wave shaper
-	 *  @param   {Time} attack  
-	 *  @param   {Time} release 
+	 *  @param   {Time} attack
+	 *  @param   {Time} release
 	 *  @private
 	 */
 	Tone.Follower.prototype._setAttackRelease = function(attack, release){
@@ -116,7 +117,7 @@ function(Tone){
 				return attack;
 			} else {
 				return release;
-			} 
+			}
 		});
 	};
 
@@ -132,7 +133,7 @@ function(Tone){
 		},
 		set : function(attack){
 			this._attack = attack;
-			this._setAttackRelease(this._attack, this._release);	
+			this._setAttackRelease(this._attack, this._release);
 		}
 	});
 
@@ -148,7 +149,7 @@ function(Tone){
 		},
 		set : function(release){
 			this._release = release;
-			this._setAttackRelease(this._attack, this._release);	
+			this._setAttackRelease(this._attack, this._release);
 		}
 	});
 
@@ -164,7 +165,7 @@ function(Tone){
 	 *  @returns {Tone.Follower} this
 	 */
 	Tone.Follower.prototype.dispose = function(){
-		Tone.prototype.dispose.call(this);
+		Tone.AudioNode.prototype.dispose.call(this);
 		this._filter.disconnect();
 		this._filter = null;
 		this._frequencyValues.disconnect();

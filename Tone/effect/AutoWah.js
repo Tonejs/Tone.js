@@ -28,7 +28,7 @@ function(Tone){
 	 */
 	Tone.AutoWah = function(){
 
-		var options = this.optionsObject(arguments, ["baseFrequency", "octaves", "sensitivity"], Tone.AutoWah.defaults);
+		var options = Tone.defaults(arguments, ["baseFrequency", "octaves", "sensitivity"], Tone.AutoWah);
 		Tone.Effect.call(this, options);
 
 		/**
@@ -168,10 +168,10 @@ function(Tone){
 	 */
 	Object.defineProperty(Tone.AutoWah.prototype, "sensitivity", {
 		get : function(){
-			return this.gainToDb(1 / this._inputBoost.gain.value);
+			return Tone.gainToDb(1 / this._inputBoost.gain.value);
 		}, 
 		set : function(sensitivy){
-			this._inputBoost.gain.value = 1 / this.dbToGain(sensitivy);
+			this._inputBoost.gain.value = 1 / Tone.dbToGain(sensitivy);
 		}
 	});
 

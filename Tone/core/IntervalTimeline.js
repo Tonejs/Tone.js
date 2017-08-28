@@ -13,6 +13,8 @@ define(["Tone/core/Tone", "Tone/type/Type"], function (Tone) {
 	 */
 	Tone.IntervalTimeline = function(){
 
+		Tone.call(this);
+
 		/**
 		 *  The root node of the inteval tree
 		 *  @type  {IntervalNode}
@@ -37,7 +39,7 @@ define(["Tone/core/Tone", "Tone/type/Type"], function (Tone) {
 	 *  @return  {Tone.IntervalTimeline}  this
 	 */
 	Tone.IntervalTimeline.prototype.add = function(event){
-		if (this.isUndef(event.time) || this.isUndef(event.duration)){
+		if (Tone.isUndef(event.time) || Tone.isUndef(event.duration)){
 			throw new Error("Tone.IntervalTimeline: events must have time and duration parameters");
 		}
 		var node = new IntervalNode(event.time, event.time + event.duration, event);
@@ -301,11 +303,9 @@ define(["Tone/core/Tone", "Tone/type/Type"], function (Tone) {
 	Tone.IntervalTimeline.prototype.forEach = function(callback){
 		if (this._root !== null){
 			var allNodes = [];
-			if (this._root !== null){
-				this._root.traverse(function(node){
-					allNodes.push(node);
-				});
-			}
+			this._root.traverse(function(node){
+				allNodes.push(node);
+			});
 			for (var i = 0; i < allNodes.length; i++){
 				var ev = allNodes[i].event;
 				if (ev){
@@ -350,9 +350,7 @@ define(["Tone/core/Tone", "Tone/type/Type"], function (Tone) {
 			this._root.searchAfter(time, results);
 			for (var i = results.length - 1; i >= 0; i--){
 				var ev = results[i].event;
-				if (ev){
-					callback(ev);
-				}
+				callback(ev);
 			}
 		}
 		return this;

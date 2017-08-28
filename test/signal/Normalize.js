@@ -52,6 +52,8 @@ define(["helper/ConstantOutput", "Tone/signal/Normalize", "helper/Basic",
 					var norm = new Normalize(0, 1);
 					norm.min = 5;
 					norm.max = 15;
+					expect(norm.min).to.be.closeTo(5, 0.1);
+					expect(norm.max).to.be.closeTo(15, 0.1);
 					sig.connect(norm);
 					norm.toMaster();
 				}, 0.5); 

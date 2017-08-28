@@ -17,7 +17,7 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type"], function(Tone)
 		AudioBuffer.prototype.copyFromChannel = function(dest, chanNum, start){
 			var channel = this.getChannelData(chanNum);
 			start = start || 0;
-			for (var i = 0; i < channel.length; i++){
+			for (var i = 0; i < dest.length; i++){
 				dest[i] = channel[i+start];
 			}
 		};
@@ -27,27 +27,31 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type"], function(Tone)
 	 *  @class  Buffer loading and storage. Tone.Buffer is used internally by all 
 	 *          classes that make requests for audio files such as Tone.Player,
 	 *          Tone.Sampler and Tone.Convolver.
-	 *          <br><br>
+	 *          
 	 *          Aside from load callbacks from individual buffers, Tone.Buffer 
-	 *  		provides static methods which keep track of the loading progress 
-	 *  		of all of the buffers. These methods are Tone.Buffer.on("load" / "progress" / "error")
+	 *  		provides events which keep track of the loading progress 
+	 *  		of _all_ of the buffers. These are Tone.Buffer.on("load" / "progress" / "error")
 	 *
 	 *  @constructor 
 	 *  @extends {Tone}
-	 *  @param {AudioBuffer|string} url The url to load, or the audio buffer to set. 
+	 *  @param {AudioBuffer|String} url The url to load, or the audio buffer to set. 
 	 *  @param {Function=} onload A callback which is invoked after the buffer is loaded. 
-	 *                            It's recommended to use Tone.Buffer.onload instead 
-	 *                            since it will give you a callback when ALL buffers are loaded.
+	 *                            It's recommended to use `Tone.Buffer.on('load', callback)` instead 
+	 *                            since it will give you a callback when _all_ buffers are loaded.
 	 *  @param {Function=} onerror The callback to invoke if there is an error
 	 *  @example
 	 * var buffer = new Tone.Buffer("path/to/sound.mp3", function(){
 	 * 	//the buffer is now available.
 	 * 	var buff = buffer.get();
 	 * });
+	 *  @example
+	 * //can load provide fallback extension types if the first type is not supported.
+	 * var buffer = new Tone.Buffer("path/to/sound.[mp3|ogg|wav]");
 	 */
 	Tone.Buffer = function(){
 
-		var options = this.optionsObject(arguments, ["url", "onload", "onerror"], Tone.Buffer.defaults);
+		var options = Tone.defaults(arguments, ["url", "onload", "onerror"], Tone.Buffer);
+		Tone.call(this);
 
 		/**
 		 *  stores the loaded AudioBuffer
@@ -76,7 +80,7 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type"], function(Tone)
 			if (options.onload){
 				options.onload(this);
 			}
-		} else if (this.isString(options.url)){
+		} else if (Tone.isString(options.url)){
 			this.load(options.url, options.onload, options.onerror);
 		}
 	};
@@ -158,10 +162,10 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type"], function(Tone)
 	 *  @returns {Tone.Buffer} this
 	 */
 	Tone.Buffer.prototype.dispose = function(){
-		Tone.Emitter.prototype.dispose.call(this);
+		Tone.prototype.dispose.call(this);
 		this._buffer = null;
 		if (this._xhr){
-			Tone.Buffer._currentDownloads--;
+			Tone.Buffer._removeFromDownloadQueue(this._xhr);
 			this._xhr.abort();
 			this._xhr = null;
 		}
@@ -234,12 +238,9 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type"], function(Tone)
 	});
 
 	/**
-	 *  Set the audio buffer from the array
+	 *  Set the audio buffer from the array. To create a multichannel AudioBuffer,
+	 *  pass in a multidimensional array. 
 	 *  @param {Float32Array} array The array to fill the audio buffer
-	 *  @param {Number} [channels=1] The number of channels contained in the array. 
-	 *                               If the channel is more than 1, the input array
-	 *                               is expected to be a multidimensional array
-	 *                               with dimensions equal to the number of channels.
 	 *  @return {Tone.Buffer} this
 	 */
 	Tone.Buffer.prototype.fromArray = function(array){
@@ -263,7 +264,7 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type"], function(Tone)
 	 *  @return {Array}
 	 */
 	Tone.Buffer.prototype.toMono = function(chanNum){
-		if (this.isNumber(chanNum)){
+		if (Tone.isNumber(chanNum)){
 			this.fromArray(this.toArray(chanNum));
 		} else {
 			var outputArray = new Float32Array(this.length);
@@ -290,7 +291,7 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type"], function(Tone)
 	 *  @return {Array}
 	 */
 	Tone.Buffer.prototype.toArray = function(channel){
-		if (this.isNumber(channel)){
+		if (Tone.isNumber(channel)){
 			return this.getChannelData(channel);
 		} else if (this.numberOfChannels === 1){
 			return this.toArray(0);
@@ -321,7 +322,7 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type"], function(Tone)
 	 *  @return {Tone.Buffer} this
 	 */
 	Tone.Buffer.prototype.slice = function(start, end){
-		end = this.defaultArg(end, this.duration);
+		end = Tone.defaultArg(end, this.duration);
 		var startSamples = Math.floor(this.context.sampleRate * this.toSeconds(start));
 		var endSamples = Math.floor(this.context.sampleRate * this.toSeconds(end));
 		var replacement = [];
@@ -379,18 +380,32 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type"], function(Tone)
 	Tone.Buffer._downloadQueue = [];
 
 	/**
-	 *  the total number of downloads
-	 *  @type {Number}
-	 *  @private
-	 */
-	Tone.Buffer._currentDownloads = 0;
-
-	/**
 	 *  A path which is prefixed before every url.
 	 *  @type  {String}
 	 *  @static
 	 */
 	Tone.Buffer.baseUrl = "";
+
+	/**
+	 *  Create a Tone.Buffer from the array. To create a multichannel AudioBuffer,
+	 *  pass in a multidimensional array. 
+	 *  @param {Float32Array} array The array to fill the audio buffer
+	 *  @return {Tone.Buffer} A Tone.Buffer created from the array
+	 */
+	Tone.Buffer.fromArray = function(array){
+		return (new Tone.Buffer()).fromArray(array);
+	};
+
+	/**
+	 * Remove an xhr request from the download queue
+	 * @private
+	 */
+	Tone.Buffer._removeFromDownloadQueue = function(request){
+		var index = Tone.Buffer._downloadQueue.indexOf(request);
+		if (index !== -1){
+			Tone.Buffer._downloadQueue.splice(index, 1);
+		}
+	};
 
 	/**
 	 *  Loads a url using XMLHttpRequest.
@@ -402,14 +417,29 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type"], function(Tone)
 	 */
 	Tone.Buffer.load = function(url, onload, onerror){
 		//default
-		onload = onload || Tone.noOp;
+		onload = Tone.defaultArg(onload, Tone.noOp);
+
+		// test if the url contains multiple extensions
+		var matches = url.match(/\[(.+\|?)+\]$/);
+		if (matches){
+			var extensions = matches[1].split("|");
+			var extension = extensions[0];
+			for (var i = 0; i < extensions.length; i++){
+				if (Tone.Buffer.supportsType(extensions[i])){
+					extension = extensions[i];
+					break;
+				}
+			}
+			url = url.replace(matches[0], extension);
+		}
 
 		function onError(e){
+			Tone.Buffer._removeFromDownloadQueue(request);
+			Tone.Buffer.emit("error", e);
 			if (onerror){
 				onerror(e);
-				Tone.Buffer.emit("error", e);
 			} else {
-				throw new Error(e);
+				throw e;
 			}
 		}
 
@@ -428,10 +458,10 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type"], function(Tone)
 		//start out as 0
 		request.progress = 0;
 
-		Tone.Buffer._currentDownloads++;
 		Tone.Buffer._downloadQueue.push(request);
 
 		request.addEventListener("load", function(){
+
 			if (request.status === 200){
 				Tone.context.decodeAudioData(request.response, function(buff) {
 
@@ -439,15 +469,13 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type"], function(Tone)
 					onProgress();
 					onload(buff);
 
-					Tone.Buffer._currentDownloads--;
-					if (Tone.Buffer._currentDownloads === 0){
-						// clear the downloads
-						Tone.Buffer._downloadQueue = [];
+					Tone.Buffer._removeFromDownloadQueue(request);
+					if (Tone.Buffer._downloadQueue.length === 0){
 						//emit the event at the end
 						Tone.Buffer.emit("load");
 					}
-
 				}, function(){
+					Tone.Buffer._removeFromDownloadQueue(request);
 					onError("Tone.Buffer: could not decode audio data: "+url);
 				});
 			} else {
@@ -475,10 +503,10 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type"], function(Tone)
 	 *  @static
 	 */
 	Tone.Buffer.cancelDownloads = function(){
-		Tone.Buffer._downloadQueue.forEach(function(request){
+		Tone.Buffer._downloadQueue.slice().forEach(function(request){
+			Tone.Buffer._removeFromDownloadQueue(request);
 			request.abort();
 		});
-		Tone.Buffer._currentDownloads = 0;
 		return Tone.Buffer;
 	};
 

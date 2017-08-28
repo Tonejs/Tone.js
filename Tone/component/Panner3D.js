@@ -1,5 +1,5 @@
-define(["Tone/core/Tone", "Tone/component/CrossFade", "Tone/component/Merge", "Tone/component/Split", 
-	"Tone/signal/Signal", "Tone/signal/AudioToGain", "Tone/signal/Zero"], 
+define(["Tone/core/Tone", "Tone/component/CrossFade", "Tone/component/Merge", "Tone/component/Split",
+	"Tone/signal/Signal", "Tone/signal/AudioToGain", "Tone/signal/Zero", "Tone/core/AudioNode"],
 function(Tone){
 
 	"use strict";
@@ -7,16 +7,17 @@ function(Tone){
 	/**
 	 *  @class  A spatialized panner node which supports equalpower or HRTF panning.
 	 *          Tries to normalize the API across various browsers. See Tone.Listener
-	 *  
+	 *
 	 *  @constructor
-	 *  @extends {Tone}
+	 *  @extends {Tone.AudioNode}
 	 *  @param {Number} positionX The initial x position.
 	 *  @param {Number} positionY The initial y position.
 	 *  @param {Number} positionZ The initial z position.
 	 */
 	Tone.Panner3D = function(){
 
-		var options = this.optionsObject(arguments, ["positionX", "positionY", "positionZ"], Tone.Panner3D.defaults);
+		var options = Tone.defaults(arguments, ["positionX", "positionY", "positionZ"], Tone.Panner3D);
+		Tone.AudioNode.call(this);
 
 		/**
 		 *  The panner node
@@ -57,14 +58,13 @@ function(Tone){
 		this.positionZ = options.positionZ;
 	};
 
-	Tone.extend(Tone.Panner3D);
+	Tone.extend(Tone.Panner3D, Tone.AudioNode);
 
 	/**
-	 *  the default parameters
+	 *  Defaults according to the specification
 	 *  @static
 	 *  @const
 	 *  @type {Object}
-	 *  Defaults according to the specification
 	 */
 	Tone.Panner3D.defaults = {
 		"positionX" : 0,
@@ -91,7 +91,7 @@ function(Tone){
 	Tone.Panner3D.prototype._rampTimeConstant = 0.01;
 
 	/**
-	 *  Sets the position of the source in 3d space.	
+	 *  Sets the position of the source in 3d space.
 	 *  @param  {Number}  x
 	 *  @param  {Number}  y
 	 *  @param  {Number}  z
@@ -111,7 +111,7 @@ function(Tone){
 	};
 
 	/**
-	 *  Sets the orientation of the source in 3d space.	
+	 *  Sets the orientation of the source in 3d space.
 	 *  @param  {Number}  x
 	 *  @param  {Number}  y
 	 *  @param  {Number}  z
@@ -283,7 +283,7 @@ function(Tone){
 	Tone.Panner3D._aliasProperty("coneInnerAngle");
 
 	/**
-	 *  The angle, in degrees, outside of which the volume will be reduced 
+	 *  The angle, in degrees, outside of which the volume will be reduced
 	 *  to a constant value of coneOuterGain
 	 *  @type {Degrees}
 	 *  @memberOf Tone.Panner3D#
@@ -300,7 +300,7 @@ function(Tone){
 	Tone.Panner3D._aliasProperty("coneOuterGain");
 
 	/**
-	 *  The maximum distance between source and listener, 
+	 *  The maximum distance between source and listener,
 	 *  after which the volume will not be reduced any further.
 	 *  @type {Positive}
 	 *  @memberOf Tone.Panner3D#
@@ -313,6 +313,7 @@ function(Tone){
 	 *  @returns {Tone.Panner3D} this
 	 */
 	Tone.Panner3D.prototype.dispose = function(){
+		Tone.AudioNode.prototype.dispose.call(this);
 		this._panner.disconnect();
 		this._panner = null;
 		this._orientation = null;

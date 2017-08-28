@@ -20,7 +20,7 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/LFO", "Tone/comp
 	 */
 	Tone.AutoFilter = function(){
 
-		var options = this.optionsObject(arguments, ["frequency", "baseFrequency", "octaves"], Tone.AutoFilter.defaults);
+		var options = Tone.defaults(arguments, ["frequency", "baseFrequency", "octaves"], Tone.AutoFilter);
 		Tone.Effect.call(this, options);
 
 		/**

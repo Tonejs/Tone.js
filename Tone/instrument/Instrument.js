@@ -1,17 +1,18 @@
-define(["Tone/core/Tone", "Tone/type/Type"], function(Tone){
+define(["Tone/core/Tone", "Tone/type/Type", "Tone/core/Master"], function(Tone){
 
 	"use strict";
 
 	/**
 	 *  @class  Base-class for all instruments
-	 *  
+	 *
 	 *  @constructor
-	 *  @extends {Tone}
+	 *  @extends {Tone.AudioNode}
 	 */
 	Tone.Instrument = function(options){
 
 		//get the defaults
-		options = this.defaultArg(options, Tone.Instrument.defaults);
+		options = Tone.defaultArg(options, Tone.Instrument.defaults);
+		Tone.AudioNode.call(this);
 
 		/**
 		 *  The output and volume triming node
@@ -31,7 +32,7 @@ define(["Tone/core/Tone", "Tone/type/Type"], function(Tone){
 		this._readOnly("volume");
 	};
 
-	Tone.extend(Tone.Instrument);
+	Tone.extend(Tone.Instrument, Tone.AudioNode);
 
 	/**
 	 *  the default attributes
@@ -57,10 +58,10 @@ define(["Tone/core/Tone", "Tone/type/Type"], function(Tone){
 	Tone.Instrument.prototype.triggerRelease = Tone.noOp;
 
 	/**
-	 *  Trigger the attack and then the release after the duration. 
+	 *  Trigger the attack and then the release after the duration.
 	 *  @param  {Frequency} note     The note to trigger.
 	 *  @param  {Time} duration How long the note should be held for before
-	 *                          triggering the release. This value must be greater than 0. 
+	 *                          triggering the release. This value must be greater than 0.
 	 *  @param {Time} [time=now]  When the note should be triggered.
 	 *  @param  {NormalRange} [velocity=1] The velocity the note should be triggered at.
 	 *  @returns {Tone.Instrument} this
@@ -69,11 +70,7 @@ define(["Tone/core/Tone", "Tone/type/Type"], function(Tone){
 	 * synth.triggerAttackRelease("C4", "8n");
 	 */
 	Tone.Instrument.prototype.triggerAttackRelease = function(note, duration, time, velocity){
-		if (this.isUndef(time)){
-			time = this.now() + this.blockTime;
-		} else {
-			time = this.toSeconds(time);
-		}
+		time = this.toSeconds(time);
 		duration = this.toSeconds(duration);
 		this.triggerAttack(note, time, velocity);
 		this.triggerRelease(time + duration);
@@ -85,7 +82,7 @@ define(["Tone/core/Tone", "Tone/type/Type"], function(Tone){
 	 *  @returns {Tone.Instrument} this
 	 */
 	Tone.Instrument.prototype.dispose = function(){
-		Tone.prototype.dispose.call(this);
+		Tone.AudioNode.prototype.dispose.call(this);
 		this._volume.dispose();
 		this._volume = null;
 		this._writable(["volume"]);

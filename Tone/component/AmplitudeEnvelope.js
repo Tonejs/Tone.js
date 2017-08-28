@@ -3,20 +3,20 @@ define(["Tone/core/Tone", "Tone/component/Envelope", "Tone/core/Gain"], function
 	"use strict";
 
 	/**
-	 *  @class  Tone.AmplitudeEnvelope is a Tone.Envelope connected to a gain node. 
+	 *  @class  Tone.AmplitudeEnvelope is a Tone.Envelope connected to a gain node.
 	 *          Unlike Tone.Envelope, which outputs the envelope's value, Tone.AmplitudeEnvelope accepts
 	 *          an audio signal as the input and will apply the envelope to the amplitude
 	 *          of the signal. Read more about ADSR Envelopes on [Wikipedia](https://en.wikipedia.org/wiki/Synthesizer#ADSR_envelope).
-	 *  
+	 *
 	 *  @constructor
 	 *  @extends {Tone.Envelope}
-	 *  @param {Time|Object} [attack] The amount of time it takes for the envelope to go from 
-	 *                               0 to it's maximum value. 
+	 *  @param {Time|Object} [attack] The amount of time it takes for the envelope to go from
+	 *                               0 to it's maximum value.
 	 *  @param {Time} [decay]	The period of time after the attack that it takes for the envelope
-	 *                       	to fall to the sustain value. 
+	 *                       	to fall to the sustain value.
 	 *  @param {NormalRange} [sustain]	The percent of the maximum value that the envelope rests at until
-	 *                                	the release is triggered. 
-	 *  @param {Time} [release]	The amount of time after the release is triggered it takes to reach 0. 
+	 *                                	the release is triggered.
+	 *  @param {Time} [release]	The amount of time after the release is triggered it takes to reach 0.
 	 *  @example
 	 * var ampEnv = new Tone.AmplitudeEnvelope({
 	 * 	"attack": 0.1,
@@ -50,8 +50,6 @@ define(["Tone/core/Tone", "Tone/component/Envelope", "Tone/core/Gain"], function
 	 *  @return  {Tone.AmplitudeEnvelope}  this
 	 */
 	Tone.AmplitudeEnvelope.prototype.dispose = function(){
-		this.input.dispose();
-		this.input = null;
 		Tone.Envelope.prototype.dispose.call(this);
 		return this;
 	};

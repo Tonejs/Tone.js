@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/Gain"], function (Tone) {
+define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/Gain", "Tone/core/AudioNode"], function (Tone) {
 
 	/**
 	 *  BufferSource polyfill
@@ -10,17 +10,19 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/G
 
 	/**
 	 *  @class Wrapper around the native BufferSourceNode.
+	 *  @extends {Tone.AudioNode}
 	 *  @param  {AudioBuffer|Tone.Buffer}  buffer   The buffer to play
-	 *  @param  {Function}  onended  The callback to invoke when the 
+	 *  @param  {Function}  onload  The callback to invoke when the
 	 *                               buffer is done playing.
 	 */
 	Tone.BufferSource = function(){
 
-		var options = this.optionsObject(arguments, ["buffer", "onended"], Tone.BufferSource.defaults);
+		var options = Tone.defaults(arguments, ["buffer", "onload"], Tone.BufferSource);
+		Tone.AudioNode.call(this);
 
 		/**
-		 *  The callback to invoke after the 
-		 *  buffer source is done playing. 
+		 *  The callback to invoke after the
+		 *  buffer source is done playing.
 		 *  @type  {Function}
 		 */
 		this.onended = options.onended;
@@ -53,7 +55,14 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/G
 		 */
 		this._source = this.context.createBufferSource();
 		this._source.connect(this._gainNode);
-	
+
+		/**
+		 * The private buffer instance
+		 * @type {Tone.Buffer}
+		 * @private
+		 */
+		this._buffer = new Tone.Buffer(options.buffer, options.onload);
+
 		/**
 		 *  The playbackRate of the buffer
 		 *  @type {Positive}
@@ -87,15 +96,13 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/G
 		 */
 		this._onendedTimeout = -1;
 
-		//set the buffer initially
-		if (!this.isUndef(options.buffer)){
-			this.buffer = options.buffer;
-		}
-
 		this.loop = options.loop;
+		this.loopStart = options.loopStart;
+		this.loopEnd = options.loopEnd;
+		this.playbackRate.value = options.playbackRate;
 	};
 
-	Tone.extend(Tone.BufferSource);
+	Tone.extend(Tone.BufferSource, Tone.AudioNode);
 
 	/**
 	 *  The defaults
@@ -104,8 +111,13 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/G
 	 */
 	Tone.BufferSource.defaults = {
 		"onended" : Tone.noOp,
+		"onload" : Tone.noOp,
+		"loop" : false,
+		"loopStart" : 0,
+		"loopEnd" : 0,
 		"fadeIn" : 0,
-		"fadeOut" : 0
+		"fadeOut" : 0,
+		"playbackRate" : 1
 	};
 
 	/**
@@ -130,9 +142,9 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/G
 	 *  Start the buffer
 	 *  @param  {Time} [startTime=now] When the player should start.
 	 *  @param  {Time} [offset=0] The offset from the beginning of the sample
-	 *                                 to start at. 
+	 *                                 to start at.
 	 *  @param  {Time=} duration How long the sample should play. If no duration
-	 *                                is given, it will default to the full length 
+	 *                                is given, it will default to the full length
 	 *                                of the sample (minus any offset)
 	 *  @param  {Gain}  [gain=1]  The gain to play the buffer back at.
 	 *  @param  {Time=}  fadeInTime  The optional fadeIn ramp time.
@@ -140,29 +152,27 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/G
 	 */
 	Tone.BufferSource.prototype.start = function(time, offset, duration, gain, fadeInTime){
 		if (this._startTime !== -1){
-			throw new Error("Tone.BufferSource: can only be started once.");
+			throw new Error("Tone.BufferSource can only be started once.");
 		}
 
-		if (this.buffer){
+		if (this.buffer.loaded){
 			time = this.toSeconds(time);
 			//if it's a loop the default offset is the loopstart point
 			if (this.loop){
-				offset = this.defaultArg(offset, this.loopStart);
+				offset = Tone.defaultArg(offset, this.loopStart);
 			} else {
 				//otherwise the default offset is 0
-				offset = this.defaultArg(offset, 0);
+				offset = Tone.defaultArg(offset, 0);
 			}
 			offset = this.toSeconds(offset);
 			//the values in seconds
 			time = this.toSeconds(time);
 
-			this._source.start(time, offset);
-
-			gain = this.defaultArg(gain, 1);
+			gain = Tone.defaultArg(gain, 1);
 			this._gain = gain;
 
 			//the fadeIn time
-			if (this.isUndef(fadeInTime)){
+			if (Tone.isUndef(fadeInTime)){
 				fadeInTime = this.toSeconds(this.fadeIn);
 			} else {
 				fadeInTime = this.toSeconds(fadeInTime);
@@ -177,72 +187,96 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/G
 
 			this._startTime = time + fadeInTime;
 
-			if (!this.isUndef(duration)){
-				duration = this.defaultArg(duration, this.buffer.duration - offset);
-				duration = this.toSeconds(duration);
-				this.stop(time + duration + fadeInTime, fadeInTime);
+			var computedDur = Tone.defaultArg(duration, this.buffer.duration - offset);
+			computedDur = this.toSeconds(computedDur);
+			computedDur = Math.max(computedDur, 0);
+
+			if (!this.loop || (this.loop && !Tone.isUndef(duration))){
+				//clip the duration when not looping
+				if (!this.loop){
+					computedDur = Math.min(computedDur, this.buffer.duration - offset);
+				}
+				this.stop(time + computedDur + fadeInTime, this.fadeOut);
 			}
+
+			//start the buffer source
+			if (this.loop){
+				//modify the offset if it's greater than the loop time
+				var loopEnd = this.loopEnd || this.buffer.duration;
+				var loopStart = this.loopStart;
+				var loopDuration = loopEnd - loopStart;
+				//move the offset back
+				if (offset > loopEnd){
+					offset = ((offset - loopStart) % loopDuration) + loopStart;
+				}
+			}
+			this._source.buffer = this.buffer.get();
+			this._source.loopEnd = this.loopEnd || this.buffer.duration;
+			this._source.start(time, offset);
+		} else {
+			throw new Error("Tone.BufferSource: buffer is either not set or not loaded.");
 		}
 
 		return this;
 	};
 
 	/**
-	 *  Stop the buffer. Optionally add a ramp time to fade the 
-	 *  buffer out. 
+	 *  Stop the buffer. Optionally add a ramp time to fade the
+	 *  buffer out.
 	 *  @param  {Time=}  time         The time the buffer should stop.
 	 *  @param  {Time=}  fadeOutTime  How long the gain should fade out for
 	 *  @return  {Tone.BufferSource}  this
 	 */
 	Tone.BufferSource.prototype.stop = function(time, fadeOutTime){
-		if (this.buffer){
+		if (this.buffer.loaded){
 
 			time = this.toSeconds(time);
-			
+
 			//the fadeOut time
-			if (this.isUndef(fadeOutTime)){
+			if (Tone.isUndef(fadeOutTime)){
 				fadeOutTime = this.toSeconds(this.fadeOut);
 			} else {
 				fadeOutTime = this.toSeconds(fadeOutTime);
 			}
 
-			this._stopTime = time + fadeOutTime;
+			//only stop if the last stop was scheduled later
+			if (this._stopTime === -1 || this._stopTime > time){
+				this._stopTime = time;
 
-			//cancel the end curve
-			this._gainNode.gain.cancelScheduledValues(this._startTime + this.sampleTime);
+				//cancel the end curve
+				this._gainNode.gain.cancelScheduledValues(this._startTime + this.sampleTime);
+				time = Math.max(this._startTime, time);
 
-			//set a new one
-			if (fadeOutTime > 0){
-				this._gainNode.gain.setValueAtTime(this._gain, time);
-				this._gainNode.gain.linearRampToValueAtTime(0, time + fadeOutTime);
-				time += fadeOutTime;
-			} else {
-				this._gainNode.gain.setValueAtTime(0, time);
+				//set a new one
+				if (fadeOutTime > 0){
+					var startFade = Math.max(this._startTime, time - fadeOutTime);
+					this._gainNode.gain.setValueAtTime(this._gain, startFade);
+					this._gainNode.gain.linearRampToValueAtTime(0, time);
+				} else {
+					this._gainNode.gain.setValueAtTime(0, time);
+				}
+
+				Tone.context.clearTimeout(this._onendedTimeout);
+				this._onendedTimeout = Tone.context.setTimeout(this._onended.bind(this), this._stopTime - this.now());
 			}
-			// fix for safari bug and old FF
-			if (!this.isNumber(this._source.playbackState) || this._source.playbackState === 2){
-				this._source.stop(time);
-			}
-
-			clearTimeout(this._onendedTimeout);
-			this._onendedTimeout = setTimeout(this._onended.bind(this), (this._stopTime - this.now()) * 1000);
+		} else {
+			throw new Error("Tone.BufferSource: buffer is either not set or not loaded.");
 		}
 
 		return this;
 	};
 
 	/**
-	 *  Internal callback when the buffer is ended. 
+	 *  Internal callback when the buffer is ended.
 	 *  Invokes `onended` and disposes the node.
 	 *  @private
 	 */
 	Tone.BufferSource.prototype._onended = function(){
 		this.onended(this);
-		this.dispose();
 	};
 
 	/**
-	 * If loop is true, the loop will start at this position. 
+	 * If loop is true, the loop will start at this position.
 	 * @memberOf Tone.BufferSource#
 	 * @type {Time}
 	 * @name loopStart
@@ -250,7 +284,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/G
 	Object.defineProperty(Tone.BufferSource.prototype, "loopStart", {
 		get : function(){
 			return this._source.loopStart;
-		}, 
+		},
 		set : function(loopStart){
 			this._source.loopStart = this.toSeconds(loopStart);
 		}
@@ -265,45 +299,37 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/G
 	Object.defineProperty(Tone.BufferSource.prototype, "loopEnd", {
 		get : function(){
 			return this._source.loopEnd;
-		}, 
+		},
 		set : function(loopEnd){
 			this._source.loopEnd = this.toSeconds(loopEnd);
 		}
 	});
 
 	/**
-	 * The audio buffer belonging to the player. 
+	 * The audio buffer belonging to the player.
 	 * @memberOf Tone.BufferSource#
-	 * @type {AudioBuffer}
+	 * @type {Tone.Buffer}
 	 * @name buffer
 	 */
 	Object.defineProperty(Tone.BufferSource.prototype, "buffer", {
 		get : function(){
-			if (this._source){
-				return this._source.buffer;
-			} else {
-				return null;
-			}
-		}, 
+			return this._buffer;
+		},
 		set : function(buffer){
-			if (buffer instanceof Tone.Buffer){
-				this._source.buffer = buffer.get();
-			} else {
-				this._source.buffer = buffer;
-			}
+			this._buffer.set(buffer);
 		}
 	});
 
 	/**
-	 * If the buffer should loop once it's over. 
+	 * If the buffer should loop once it's over.
 	 * @memberOf Tone.BufferSource#
-	 * @type {boolean}
+	 * @type {Boolean}
 	 * @name loop
 	 */
 	Object.defineProperty(Tone.BufferSource.prototype, "loop", {
 		get : function(){
 			return this._source.loop;
-		}, 
+		},
 		set : function(loop){
 			this._source.loop = loop;
 		}
@@ -314,19 +340,17 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/G
 	 *  @return  {Tone.BufferSource}  this
 	 */
 	Tone.BufferSource.prototype.dispose = function(){
+		Tone.AudioNode.prototype.dispose.call(this);
 		this.onended = null;
-		if (this._source){
-			this._source.disconnect();
-			this._source = null;
-		}
-		if (this._gainNode){
-			this._gainNode.dispose();
-			this._gainNode = null;
-		}
+		this._source.disconnect();
+		this._source = null;
+		this._gainNode.dispose();
+		this._gainNode = null;
+		this._buffer.dispose();
+		this._buffer = null;
 		this._startTime = -1;
 		this.playbackRate = null;
-		this.output = null;
-		clearTimeout(this._onendedTimeout);
+		Tone.context.clearTimeout(this._onendedTimeout);
 		return this;
 	};
 

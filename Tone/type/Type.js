@@ -18,19 +18,17 @@ function (Tone) {
 		/**
 		 *  Time can be described in a number of ways. Read more [Time](https://github.com/Tonejs/Tone.js/wiki/Time).
 		 *
-		 *  <ul>
-		 *  <li>Numbers, which will be taken literally as the time (in seconds).</li>
-		 *  <li>Notation, ("4n", "8t") describes time in BPM and time signature relative values.</li>
-		 *  <li>TransportTime, ("4:3:2") will also provide tempo and time signature relative times
-		 *  in the form BARS:QUARTERS:SIXTEENTHS.</li>
-		 *  <li>Frequency, ("8hz") is converted to the length of the cycle in seconds.</li>
-		 *  <li>Now-Relative, ("+1") prefix any of the above with "+" and it will be interpreted as
-		 *  "the current time plus whatever expression follows".</li>
-		 *  <li>Expressions, ("3:0 + 2 - (1m / 7)") any of the above can also be combined
-		 *  into a mathematical expression which will be evaluated to compute the desired time.</li>
-		 *  <li>No Argument, for methods which accept time, no argument will be interpreted as
-		 *  "now" (i.e. the currentTime).</li>
-		 *  </ul>
+		 *  * Numbers, which will be taken literally as the time (in seconds).
+		 *  * Notation, ("4n", "8t") describes time in BPM and time signature relative values.
+		 *  * TransportTime, ("4:3:2") will also provide tempo and time signature relative times
+		 *  in the form BARS:QUARTERS:SIXTEENTHS.
+		 *  * Frequency, ("8hz") is converted to the length of the cycle in seconds.
+		 *  * Now-Relative, ("+1") prefix any of the above with "+" and it will be interpreted as
+		 *  "the current time plus whatever expression follows".
+		 *  * Expressions, ("3:0 + 2 - (1m / 7)") any of the above can also be combined
+		 *  into a mathematical expression which will be evaluated to compute the desired time.
+		 *  * No Argument, for methods which accept time, no argument will be interpreted as
+		 *  "now" (i.e. the currentTime).
 		 *
 		 *  @typedef {Time}
 		 */
@@ -95,7 +93,7 @@ function (Tone) {
 		/**
 		 *  Gain is the ratio between input and output of a signal.
 		 *  A gain of 0 is the same as silencing the signal. A gain of
-		 *  1, causes no change to the incoming signal. 
+		 *  1, causes no change to the incoming signal.
 		 *  @typedef {Gain}
 		 */
 		Gain : "gain",
@@ -151,11 +149,9 @@ function (Tone) {
 		Seconds : "seconds",
 		/**
 		 *  A string representing a duration relative to a measure.
-		 *  <ul>
-		 *  	<li>"4n" = quarter note</li>
-		 *   	<li>"2m" = two measures</li>
-		 *    	<li>"8t" = eighth-note triplet</li>
-		 *  </ul>
+		 *  * "4n" = quarter note
+		 *  * "2m" = two measures
+		 *  * "8t" = eighth-note triplet
 		 *  @typedef {Notation}
 		 */
 		Notation : "notation",
@@ -172,7 +168,7 @@ function (Tone) {
 	 *  transporttime and musical notation.
 	 *
 	 *  Time : 1.40
-	 *  Notation: 4n|1m|2t
+	 *  Notation: 4n or 1m or 2t
 	 *  Now Relative: +3n
 	 *  Math: 3n+16n or even complicated expressions ((3n*2)/6 + 1)
 	 *
@@ -180,11 +176,11 @@ function (Tone) {
 	 *  @return {Seconds}
 	 */
 	Tone.prototype.toSeconds = function(time){
-		if (this.isNumber(time)){
+		if (Tone.isNumber(time)){
 			return time;
-		} else if (this.isUndef(time)){
+		} else if (Tone.isUndef(time)){
 			return this.now();
-		} else if (this.isString(time)){
+		} else if (Tone.isString(time)){
 			return (new Tone.Time(time)).toSeconds();
 		} else if (time instanceof Tone.TimeBase){
 			return time.toSeconds();
@@ -197,9 +193,9 @@ function (Tone) {
 	 *  @return {Hertz}      the frequency in hertz
 	 */
 	Tone.prototype.toFrequency = function(freq){
-		if (this.isNumber(freq)){
+		if (Tone.isNumber(freq)){
 			return freq;
-		} else if (this.isString(freq) || this.isUndef(freq)){
+		} else if (Tone.isString(freq) || Tone.isUndef(freq)){
 			return (new Tone.Frequency(freq)).valueOf();
 		} else if (freq instanceof Tone.TimeBase){
 			return freq.toFrequency();
@@ -212,9 +208,9 @@ function (Tone) {
 	 *  @return {Ticks}  the time in ticks
 	 */
 	Tone.prototype.toTicks = function(time){
-		if (this.isNumber(time) || this.isString(time)){
+		if (Tone.isNumber(time) || Tone.isString(time)){
 			return (new Tone.TransportTime(time)).toTicks();
-		} else if (this.isUndef(time)){
+		} else if (Tone.isUndef(time)){
 			return Tone.Transport.ticks;
 		} else if (time instanceof Tone.TimeBase){
 			return time.toTicks();

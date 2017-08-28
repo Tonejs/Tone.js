@@ -29,7 +29,7 @@ define(["Tone/core/Tone", "Tone/source/Source", "Tone/core/Buffer", "Tone/source
 	 */
 	Tone.Noise = function(){
 
-		var options = this.optionsObject(arguments, ["type"], Tone.Noise.defaults);
+		var options = Tone.defaults(arguments, ["type"], Tone.Noise);
 		Tone.Source.call(this, options);
 
 		/**
@@ -86,7 +86,7 @@ define(["Tone/core/Tone", "Tone/source/Source", "Tone/core/Buffer", "Tone/source
 					this._type = type;
 					//if it's playing, stop and restart it
 					if (this.state === Tone.State.Started){
-						var now = this.now() + this.blockTime;
+						var now = this.now();
 						this._stop(now);
 						this._start(now);
 					}
@@ -166,12 +166,12 @@ define(["Tone/core/Tone", "Tone/source/Source", "Tone/core/Buffer", "Tone/source
 	var channels = 2;
 
 	/**
-	 *	the noise arrays. only generated once on init
+	 *	The noise arrays. Generated on initialization.
+	 *  borrowed heavily from https://github.com/zacharydenton/noise.js 
+	 *  (c) 2013 Zach Denton (MIT)
 	 *  @static
 	 *  @private
 	 *  @type {Array}
-	 *  borrowed heavily from https://github.com/zacharydenton/noise.js 
-	 *  (c) 2013 Zach Denton (MIT)
 	 */
 	var _noiseArrays = {
 		"pink" : (function() {
@@ -238,8 +238,9 @@ define(["Tone/core/Tone", "Tone/source/Source", "Tone/core/Buffer", "Tone/source
 			_noiseBuffers[type] = new Tone.Buffer().fromArray(_noiseArrays[type]);
 		}
 	}
-	createBuffers();
 
+	//create the noise buffers
+	Tone.getContext(createBuffers);
 	Tone.Context.on("init", createBuffers);
 
 	return Tone.Noise;

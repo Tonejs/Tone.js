@@ -28,6 +28,8 @@ define(["Tone/core/Tone", "Tone/signal/SignalBase"], function(Tone){
 	 */
 	Tone.WaveShaper = function(mapping, bufferLen){
 
+		Tone.SignalBase.call(this);
+
 		/**
 		 *  the waveshaper
 		 *  @type {WaveShaperNode}
@@ -44,10 +46,10 @@ define(["Tone/core/Tone", "Tone/signal/SignalBase"], function(Tone){
 
 		if (Array.isArray(mapping)){
 			this.curve = mapping;
-		} else if (isFinite(mapping) || this.isUndef(mapping)){
-			this._curve = new Float32Array(this.defaultArg(mapping, 1024));
-		} else if (this.isFunction(mapping)){
-			this._curve = new Float32Array(this.defaultArg(bufferLen, 1024));
+		} else if (isFinite(mapping) || Tone.isUndef(mapping)){
+			this._curve = new Float32Array(Tone.defaultArg(mapping, 1024));
+		} else if (Tone.isFunction(mapping)){
+			this._curve = new Float32Array(Tone.defaultArg(bufferLen, 1024));
 			this.setMap(mapping);
 		} 
 	};
@@ -120,7 +122,7 @@ define(["Tone/core/Tone", "Tone/signal/SignalBase"], function(Tone){
 	 *  @returns {Tone.WaveShaper} this
 	 */
 	Tone.WaveShaper.prototype.dispose = function(){
-		Tone.prototype.dispose.call(this);
+		Tone.SignalBase.prototype.dispose.call(this);
 		this._shaper.disconnect();
 		this._shaper = null;
 		this._curve = null;

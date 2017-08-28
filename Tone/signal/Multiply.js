@@ -24,6 +24,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Gain"], function(Tone
 	 */
 	Tone.Multiply = function(value){
 
+		Tone.Signal.call(this);
 		this.createInsOuts(2, 0);
 
 		/**
@@ -42,7 +43,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Gain"], function(Tone
 		 */
 		this._param = this.input[1] = this.output.gain;
 		
-		this._param.value = this.defaultArg(value, 0);
+		this._param.value = Tone.defaultArg(value, 0);
 	};
 
 	Tone.extend(Tone.Multiply, Tone.Signal);
@@ -52,7 +53,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Gain"], function(Tone
 	 *  @returns {Tone.Multiply} this
 	 */
 	Tone.Multiply.prototype.dispose = function(){
-		Tone.prototype.dispose.call(this);
+		Tone.Signal.prototype.dispose.call(this);
 		this._mult.dispose();
 		this._mult = null;
 		this._param = null;

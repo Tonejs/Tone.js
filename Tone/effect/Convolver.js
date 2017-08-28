@@ -19,7 +19,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/effect/Effect"], function(To
 	 */
 	Tone.Convolver = function(){
 
-		var options = this.optionsObject(arguments, ["url", "onload"], Tone.Convolver.defaults);
+		var options = Tone.defaults(arguments, ["url", "onload"], Tone.Convolver);
 		Tone.Effect.call(this, options);
 
 	  	/**
@@ -36,7 +36,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/effect/Effect"], function(To
 		 */
 		this._buffer = new Tone.Buffer();
 
-		if (this.isString(options.url)){
+		if (Tone.isString(options.url)){
 			this._buffer.load(options.url, function(buffer){
 				this.buffer = buffer;
 				options.onload();

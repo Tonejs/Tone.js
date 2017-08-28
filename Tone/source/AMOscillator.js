@@ -18,7 +18,7 @@ function(Tone){
 	 */
 	Tone.AMOscillator = function(){
 
-		var options = this.optionsObject(arguments, ["frequency", "type", "modulationType"], Tone.AMOscillator.defaults);
+		var options = Tone.defaults(arguments, ["frequency", "type", "modulationType"], Tone.AMOscillator);
 		Tone.Source.call(this, options);
 
 		/**

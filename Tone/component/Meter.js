@@ -1,19 +1,19 @@
-define(["Tone/core/Tone", "Tone/component/Analyser"], function(Tone){
+define(["Tone/core/Tone", "Tone/component/Analyser", "Tone/core/AudioNode"], function(Tone){
 
 	"use strict";
 
 	/**
 	 *  @class  Tone.Meter gets the [RMS](https://en.wikipedia.org/wiki/Root_mean_square)
-	 *          of an input signal with some averaging applied. It can also get the raw 
+	 *          of an input signal with some averaging applied. It can also get the raw
 	 *          value of the input signal.
 	 *
 	 *  @constructor
-	 *  @extends {Tone}
-	 *  @param {String} type Either "level" or "signal". 
+	 *  @extends {Tone.AudioNode}
+	 *  @param {String} type Either "level" or "signal".
 	 *  @param {Number} smoothing The amount of smoothing applied between frames.
 	 *  @example
 	 * var meter = new Tone.Meter();
-	 * var mic = new Tone.UserMedia().start();
+	 * var mic = new Tone.UserMedia().open();
 	 * //connect mic to the meter
 	 * mic.connect(meter);
 	 * //the current level of the mic input
@@ -21,13 +21,14 @@ define(["Tone/core/Tone", "Tone/component/Analyser"], function(Tone){
 	 */
 	Tone.Meter = function(){
 
-		var options = this.optionsObject(arguments, ["type", "smoothing"], Tone.Meter.defaults);
-		
+		var options = Tone.defaults(arguments, ["type", "smoothing"], Tone.Meter);
+		Tone.AudioNode.call(this);
+
 		/**
-		 *  The type of the meter, either "level" or "signal". 
-		 *  A "level" meter will return the volume level (rms) of the 
+		 *  The type of the meter, either "level" or "signal".
+		 *  A "level" meter will return the volume level (rms) of the
 		 *  input signal and a "signal" meter will return
-		 *  the signal value of the input. 
+		 *  the signal value of the input.
 		 *  @type  {String}
 		 */
 		this.type = options.type;
@@ -38,10 +39,9 @@ define(["Tone/core/Tone", "Tone/component/Analyser"], function(Tone){
 		 *  @type  {Tone.Analyser}
 		 */
 		this.input = this.output = this._analyser = new Tone.Analyser("waveform", 512);
-		this._analyser.returnType = "float";
 
 		/**
-		 *  The amount of carryover between the current and last frame. 
+		 *  The amount of carryover between the current and last frame.
 		 *  Only applied meter for "level" type.
 		 *  @type  {Number}
 		 */
@@ -55,7 +55,7 @@ define(["Tone/core/Tone", "Tone/component/Analyser"], function(Tone){
 		this._lastValue = 0;
 	};
 
-	Tone.extend(Tone.Meter);
+	Tone.extend(Tone.Meter, Tone.AudioNode);
 
 	/**
 	 *  @private
@@ -114,7 +114,7 @@ define(["Tone/core/Tone", "Tone/component/Analyser"], function(Tone){
 	 *  @returns {Tone.Meter} this
 	 */
 	Tone.Meter.prototype.dispose = function(){
-		Tone.prototype.dispose.call(this);
+		Tone.AudioNode.prototype.dispose.call(this);
 		this._analyser.dispose();
 		this._analyser = null;
 		return this;

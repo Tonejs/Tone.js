@@ -1,21 +1,21 @@
-define(["Tone/core/Tone", "Tone/component/Volume"], function(Tone){
+define(["Tone/core/Tone", "Tone/component/Volume", "Tone/core/AudioNode"], function(Tone){
 
 	"use strict";
 
 	/**
 	 *  @class  Tone.UserMedia uses MediaDevices.getUserMedia to open up
-	 *          and external microphone or audio input. Check 
+	 *          and external microphone or audio input. Check
 	 *          [MediaDevices API Support](https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia)
 	 *          to see which browsers are supported. Access to an external input
 	 *          is limited to secure (HTTPS) connections.
-	 *         
+	 *
 	 *  @constructor
-	 *  @extends {Tone}
+	 *  @extends {Tone.AudioNode}
 	 *  @param {Decibels=} volume The level of the input
 	 *  @example
 	 * //list the inputs and open the third one
 	 * var motu = new Tone.UserMedia();
-	 * 
+	 *
 	 * //opening the input asks the user to activate their mic
 	 * motu.open().then(function(){
 	 * 	//opening is activates the microphone
@@ -26,15 +26,16 @@ define(["Tone/core/Tone", "Tone/component/Volume"], function(Tone){
 
 	Tone.UserMedia = function(){
 
-		var options = this.optionsObject(arguments, ["volume"], Tone.UserMedia.defaults);
+		var options = Tone.defaults(arguments, ["volume"], Tone.UserMedia);
+		Tone.AudioNode.call(this);
 
 		/**
-		 *  The MediaStreamNode 
+		 *  The MediaStreamNode
 		 *  @type {MediaStreamAudioSourceNode}
 		 *  @private
 		 */
 		this._mediaStream = null;
-		
+
 		/**
 		 *  The media stream created by getUserMedia.
 		 *  @type {LocalMediaStream}
@@ -69,7 +70,7 @@ define(["Tone/core/Tone", "Tone/component/Volume"], function(Tone){
 		this.mute = options.mute;
 	};
 
-	Tone.extend(Tone.UserMedia);
+	Tone.extend(Tone.UserMedia, Tone.AudioNode);
 
 	/**
 	 * the default parameters
@@ -84,28 +85,24 @@ define(["Tone/core/Tone", "Tone/component/Volume"], function(Tone){
 	 *  Open the media stream. If a string is passed in, it is assumed
 	 *  to be the label or id of the stream, if a number is passed in,
 	 *  it is the input number of the stream.
-	 *  @param  {String|Number} [labelOrId="default"] The label or id of the audio input media device. 
+	 *  @param  {String|Number} [labelOrId="default"] The label or id of the audio input media device.
 	 *                                                With no argument, the default stream is opened.
 	 *  @return {Promise} The promise is resolved when the stream is open.
 	 */
 	Tone.UserMedia.prototype.open = function(labelOrId){
-		labelOrId = this.defaultArg(labelOrId, "default");
-		return this.enumerateDevices().then(function(devices){
+		labelOrId = Tone.defaultArg(labelOrId, "default");
+		return Tone.UserMedia.enumerateDevices().then(function(devices){
 			var device;
-			if (this.isNumber(labelOrId)){
+			if (Tone.isNumber(labelOrId)){
 				device = devices[labelOrId];
 			} else {
 				device = devices.find(function(device){
 					return device.label === labelOrId || device.deviceId === labelOrId;
 				});
+				//didn't find a matching device
 				if (!device){
-					//otherwise just take the first one
-					device = devices[0];
+					throw new Error("Tone.UserMedia: no matching device: "+labelOrId);
 				}
-			}
-			//didn't find a matching device
-			if (!device){
-				throw new Error("Tone.UserMedia: no matching audio inputs.");
 			}
 			this._device = device;
 			//do getUserMedia
@@ -124,7 +121,7 @@ define(["Tone/core/Tone", "Tone/component/Volume"], function(Tone){
 					this._mediaStream = this.context.createMediaStreamSource(stream);
 					//Connect the MediaStreamSourceNode to a gate gain node
 					this._mediaStream.connect(this.output);
-				} 
+				}
 				return this;
 			}.bind(this));
 		}.bind(this));
@@ -151,12 +148,13 @@ define(["Tone/core/Tone", "Tone/component/Volume"], function(Tone){
 	/**
 	 *  Returns a promise which resolves with the list of audio input devices available.
 	 *  @return {Promise} The promise that is resolved with the devices
+	 *  @static
 	 *  @example
-	 * extInput.enumerateDevices().then(function(devices){
+	 * Tone.UserMedia.enumerateDevices().then(function(devices){
 	 * 	console.log(devices)
 	 * })
 	 */
-	Tone.UserMedia.prototype.enumerateDevices = function(){
+	Tone.UserMedia.enumerateDevices = function(){
 		return navigator.mediaDevices.enumerateDevices().then(function(devices){
 			return devices.filter(function(device){
 				return device.kind === "audioinput";
@@ -179,11 +177,11 @@ define(["Tone/core/Tone", "Tone/component/Volume"], function(Tone){
 	});
 
 	/**
-	 * 	Returns an identifier for the represented device that is 
-	 * 	persisted across sessions. It is un-guessable by other applications and 
-	 * 	unique to the origin of the calling application. It is reset when the 
-	 * 	user clears cookies (for Private Browsing, a different identifier is 
-	 * 	used that is not persisted across sessions). Returns undefined when the 
+	 * 	Returns an identifier for the represented device that is
+	 * 	persisted across sessions. It is un-guessable by other applications and
+	 * 	unique to the origin of the calling application. It is reset when the
+	 * 	user clears cookies (for Private Browsing, a different identifier is
+	 * 	used that is not persisted across sessions). Returns undefined when the
 	 * 	device is not open.
 	 *  @type {String}
 	 *  @readOnly
@@ -199,7 +197,7 @@ define(["Tone/core/Tone", "Tone/component/Volume"], function(Tone){
 	});
 
 	/**
-	 * 	Returns a group identifier. Two devices have the 
+	 * 	Returns a group identifier. Two devices have the
 	 * 	same group identifier if they belong to the same physical device.
 	 * 	Returns undefined when the device is not open.
 	 *  @type {String}
@@ -216,7 +214,7 @@ define(["Tone/core/Tone", "Tone/component/Volume"], function(Tone){
 	});
 
 	/**
-	 * 	Returns a label describing this device (for example "Built-in Microphone"). 
+	 * 	Returns a label describing this device (for example "Built-in Microphone").
 	 * 	Returns undefined when the device is not open or label is not available
 	 * 	because of permissions.
 	 *  @type {String}
@@ -233,7 +231,7 @@ define(["Tone/core/Tone", "Tone/component/Volume"], function(Tone){
 	});
 
 	/**
-	 * Mute the output. 
+	 * Mute the output.
 	 * @memberOf Tone.UserMedia#
 	 * @type {boolean}
 	 * @name mute
@@ -244,7 +242,7 @@ define(["Tone/core/Tone", "Tone/component/Volume"], function(Tone){
 	Object.defineProperty(Tone.UserMedia.prototype, "mute", {
 		get : function(){
 			return this._volume.mute;
-		}, 
+		},
 		set : function(mute){
 			this._volume.mute = mute;
 		}
@@ -255,7 +253,7 @@ define(["Tone/core/Tone", "Tone/component/Volume"], function(Tone){
 	 * @return {Tone.UserMedia} this
 	 */
 	Tone.UserMedia.prototype.dispose = function(){
-		Tone.prototype.dispose.call(this);
+		Tone.AudioNode.prototype.dispose.call(this);
 		this.close();
 		this._writable("volume");
 		this._volume.dispose();
@@ -274,7 +272,7 @@ define(["Tone/core/Tone", "Tone/component/Volume"], function(Tone){
 	 */
 	Object.defineProperty(Tone.UserMedia, "supported", {
 		get : function(){
-			return !Tone.prototype.isUndef(navigator.mediaDevices) && Tone.prototype.isFunction(navigator.mediaDevices.getUserMedia);
+			return !Tone.isUndef(navigator.mediaDevices) && Tone.isFunction(navigator.mediaDevices.getUserMedia);
 		}
 	});
 

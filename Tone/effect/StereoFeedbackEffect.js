@@ -8,11 +8,11 @@ function(Tone){
 	 *         is fed back into the same channel. 
 	 *
 	 *	@constructor
-	 *	@extends {Tone.FeedbackEffect}
+	 *	@extends {Tone.StereoEffect}
 	 */
 	Tone.StereoFeedbackEffect = function(){
 
-		var options = this.optionsObject(arguments, ["feedback"], Tone.FeedbackEffect.defaults);
+		var options = Tone.defaults(arguments, ["feedback"], Tone.FeedbackEffect);
 		Tone.StereoEffect.call(this, options);
 
 		/**
@@ -43,7 +43,7 @@ function(Tone){
 		this._readOnly(["feedback"]);
 	};
 
-	Tone.extend(Tone.StereoFeedbackEffect, Tone.FeedbackEffect);
+	Tone.extend(Tone.StereoFeedbackEffect, Tone.StereoEffect);
 
 	/**
 	 *  clean up

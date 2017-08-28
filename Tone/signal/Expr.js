@@ -19,6 +19,7 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Subtract", "Tone/signa
 	 */
 	Tone.Expr = function(){
 
+		Tone.SignalBase.call(this);
 		var expr = this._replacements(Array.prototype.slice.call(arguments));
 		var inputCount = this._parseInputs(expr);
 
@@ -273,7 +274,7 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Subtract", "Tone/signa
 	 */
 	Tone.Expr.prototype._parseTree = function(expr){
 		var lexer = this._tokenize(expr);
-		var isUndef = this.isUndef.bind(this);
+		var isUndef = Tone.isUndef.bind(this);
 
 		function matchSyntax(token, syn) {
 			return !isUndef(token) && 
@@ -420,7 +421,7 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Subtract", "Tone/signa
 	 *  @private
 	 */
 	Tone.Expr.prototype._eval = function(tree){
-		if (!this.isUndef(tree)){
+		if (!Tone.isUndef(tree)){
 			var node = tree.method(tree.args, this);
 			this._nodes.push(node);
 			return node;
@@ -434,9 +435,9 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Subtract", "Tone/signa
 	Tone.Expr.prototype._disposeNodes = function(){
 		for (var i = 0; i < this._nodes.length; i++){
 			var node = this._nodes[i];
-			if (this.isFunction(node.dispose)) {
+			if (Tone.isFunction(node.dispose)) {
 				node.dispose();
-			} else if (this.isFunction(node.disconnect)) {
+			} else if (Tone.isFunction(node.disconnect)) {
 				node.disconnect();
 			}
 			node = null;
@@ -449,7 +450,7 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Subtract", "Tone/signa
 	 *  clean up
 	 */
 	Tone.Expr.prototype.dispose = function(){
-		Tone.prototype.dispose.call(this);
+		Tone.SignalBase.prototype.dispose.call(this);
 		this._disposeNodes();
 	};
 

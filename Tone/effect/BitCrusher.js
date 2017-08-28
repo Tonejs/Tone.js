@@ -19,7 +19,7 @@ function(Tone){
 	 */
 	Tone.BitCrusher = function(){
 
-		var options = this.optionsObject(arguments, ["bits"], Tone.BitCrusher.defaults);
+		var options = Tone.defaults(arguments, ["bits"], Tone.BitCrusher);
 		Tone.Effect.call(this, options);
 
 		var invStepSize = 1 / Math.pow(2, options.bits - 1);

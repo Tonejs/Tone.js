@@ -12,7 +12,7 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/core/Delay", "Tone/compone
 	 */
 	Tone.Vibrato = function(){
 
-		var options = this.optionsObject(arguments, ["frequency", "depth"], Tone.Vibrato.defaults);
+		var options = Tone.defaults(arguments, ["frequency", "depth"], Tone.Vibrato);
 		Tone.Effect.call(this, options);
 
 		/**

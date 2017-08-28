@@ -1,24 +1,25 @@
-define(["Tone/core/Tone", "Tone/component/Compressor"], function(Tone){
+define(["Tone/core/Tone", "Tone/component/Compressor", "Tone/core/AudioNode"], function(Tone){
 
 	"use strict";
 
 	/**
-	 *  @class Tone.Limiter will limit the loudness of an incoming signal. 
-	 *         It is composed of a Tone.Compressor with a fast attack 
-	 *         and release. Limiters are commonly used to safeguard against 
-	 *         signal clipping. Unlike a compressor, limiters do not provide 
-	 *         smooth gain reduction and almost completely prevent 
+	 *  @class Tone.Limiter will limit the loudness of an incoming signal.
+	 *         It is composed of a Tone.Compressor with a fast attack
+	 *         and release. Limiters are commonly used to safeguard against
+	 *         signal clipping. Unlike a compressor, limiters do not provide
+	 *         smooth gain reduction and almost completely prevent
 	 *         additional gain above the threshold.
 	 *
-	 *  @extends {Tone}
+	 *  @extends {Tone.AudioNode}
 	 *  @constructor
-	 *  @param {number} threshold The theshold above which the limiting is applied. 
+	 *  @param {number} threshold The theshold above which the limiting is applied.
 	 *  @example
 	 *  var limiter = new Tone.Limiter(-6);
 	 */
 	Tone.Limiter = function(){
 
-		var options = this.optionsObject(arguments, ["threshold"], Tone.Limiter.defaults);
+		var options = Tone.defaults(arguments, ["threshold"], Tone.Limiter);
+		Tone.AudioNode.call(this);
 
 		/**
 		 *  the compressor
@@ -41,7 +42,7 @@ define(["Tone/core/Tone", "Tone/component/Compressor"], function(Tone){
 		this._readOnly("threshold");
 	};
 
-	Tone.extend(Tone.Limiter);
+	Tone.extend(Tone.Limiter, Tone.AudioNode);
 
 	/**
 	 *  The default value
@@ -58,7 +59,7 @@ define(["Tone/core/Tone", "Tone/component/Compressor"], function(Tone){
 	 *  @returns {Tone.Limiter} this
 	 */
 	Tone.Limiter.prototype.dispose = function(){
-		Tone.prototype.dispose.call(this);
+		Tone.AudioNode.prototype.dispose.call(this);
 		this._compressor.dispose();
 		this._compressor = null;
 		this._writable("threshold");

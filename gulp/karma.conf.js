@@ -27,7 +27,7 @@ module.exports = function(config) {
 			{pattern: 'build/*.js', included: false},
 			{pattern: 'test/audio/*', included: false},
 			{pattern: 'Tone/*/*.js', included: false},
-		],
+			],
 
 
 		// list of files to exclude
@@ -36,21 +36,29 @@ module.exports = function(config) {
 
 		// preprocess matching files before serving them to the browser
 		// available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
-		preprocessors: {},
+		preprocessors: {
+			'Tone/*/*.js': ['coverage']
+		},
 
 
 		// test results reporter to use
 		// possible values: 'dots', 'progress'
 		// available reporters: https://npmjs.org/browse/keyword/karma-reporter
-		reporters: ['progress'],
+		reporters: ['dots', 'coverage'],
+
+		coverageReporter: {
+			type : 'lcov',
+			dir : 'test/coverage/'
+		},
 
 
 		//plugins
 		plugins : [
-			'karma-mocha',
-			'karma-requirejs',
-			'karma-chrome-launcher',
-			'karma-firefox-launcher'
+		'karma-coverage',
+		'karma-mocha',
+		'karma-requirejs',
+		'karma-chrome-launcher',
+		'karma-firefox-launcher'
 		],
 
 
@@ -69,10 +77,13 @@ module.exports = function(config) {
 		// enable / disable colors in the output (reporters and logs)
 		colors: true,
 
+		// set the inactivity level to longer
+		browserNoActivityTimeout : 20000,
+
 
 		// level of logging
 		// possible values: config.LOG_DISABLE || config.LOG_ERROR || config.LOG_WARN || config.LOG_INFO || config.LOG_DEBUG
-		logLevel: config.LOG_INFO,
+		logLevel: config.LOG_ERROR,
 
 
 		// enable / disable watching file and executing tests whenever any file changes
@@ -81,7 +92,7 @@ module.exports = function(config) {
 
 		// start these browsers
 		// available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-		// browsers: ['Chrome'],
+		browsers: ['HeadlessChrome'],
 
 
 		// Continuous Integration mode
@@ -94,20 +105,12 @@ module.exports = function(config) {
 
 		//custom launcher for travis
 		customLaunchers: {
-			Chrome_travis_ci: {
-				base: 'Chrome',
-				flags: ['--no-sandbox']
+			HeadlessChrome: {
+				base: 'ChromeHeadless',
+				flags: [/*'--disable-translate', '--disable-extensions', '--remote-debugging-port=9223', */'--no-sandbox', '--use-fake-ui-for-media-stream', '--use-fake-device-for-media-stream']
 			}
 		}
 	};
 
-
-	if (process.env.TRAVIS) {
-		configuration.browsers = ['Chrome_travis_ci'];
-	} else {
-		// configuration.browsers = ['Chrome', 'Firefox'];
-		configuration.browsers = ['Chrome'];
-	}
-
-  config.set(configuration);
+	config.set(configuration);
 };

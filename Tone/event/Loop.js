@@ -17,7 +17,8 @@ define(["Tone/core/Tone", "Tone/event/Event"], function (Tone) {
 	 */
 	Tone.Loop = function(){
 
-		var options = this.optionsObject(arguments, ["callback", "interval"], Tone.Loop.defaults);
+		var options = Tone.defaults(arguments, ["callback", "interval"], Tone.Loop);
+		Tone.call(this);
 
 		/**
 		 *  The event which produces the callbacks
@@ -216,7 +217,6 @@ define(["Tone/core/Tone", "Tone/event/Event"], function (Tone) {
 			} else {
 				return this._event.loop;
 			}
-			return this._pattern.index;
 		},
 		set : function(iters){
 			if (iters === Infinity){

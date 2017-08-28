@@ -6,7 +6,7 @@ function(Tone){
 	/**
 	 *  @class Tone.FMOscillator 
 	 *
-	 *  @extends {Tone.Oscillator}
+	 *  @extends {Tone.Source}
 	 *  @constructor
 	 *  @param {Frequency} frequency The starting frequency of the oscillator. 
 	 *  @param {String} type The type of the carrier oscillator.
@@ -17,7 +17,7 @@ function(Tone){
 	 */
 	Tone.FMOscillator = function(){
 
-		var options = this.optionsObject(arguments, ["frequency", "type", "modulationType"], Tone.FMOscillator.defaults);
+		var options = Tone.defaults(arguments, ["frequency", "type", "modulationType"], Tone.FMOscillator);
 		Tone.Source.call(this, options);
 
 		/**
@@ -93,7 +93,7 @@ function(Tone){
 		this._readOnly(["modulationIndex", "frequency", "detune", "harmonicity"]);
 	};
 
-	Tone.extend(Tone.FMOscillator, Tone.Oscillator);
+	Tone.extend(Tone.FMOscillator, Tone.Source);
 
 	/**
 	 *  default values

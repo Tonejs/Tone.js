@@ -23,7 +23,8 @@ define(["Tone/core/Tone"], function (Tone) {
 	 */
 	Tone.CtrlPattern = function(){
 
-		var options = this.optionsObject(arguments, ["values", "type"], Tone.CtrlPattern.defaults);
+		var options = Tone.defaults(arguments, ["values", "type"], Tone.CtrlPattern);
+		Tone.call(this);
 
 		/**
 		 *  The array of values to arpeggiate over

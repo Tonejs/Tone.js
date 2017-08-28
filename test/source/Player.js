@@ -41,6 +41,7 @@ define(["helper/Basic", "Tone/source/Player", "helper/Offline",
 
 			it("loads a url which was passed in", function(done){
 				var player = new Player("./audio/sine.wav", function(){
+					expect(player.loaded).to.be.true;
 					player.dispose();
 					done();
 				});
@@ -136,9 +137,46 @@ define(["helper/Basic", "Tone/source/Player", "helper/Offline",
 					player.loop = true;
 					player.toMaster();
 					player.start(0);
-				}).then(function(rms){
+				}, buffer.duration * 1.5).then(function(rms){
 					rms.forEach(function(level){
 						expect(level).to.be.above(0);
+					});
+				});
+			});
+
+			it("offset is the loopStart when set to loop", function(){
+				var testSample = buffer.toArray()[Math.floor(0.1 * buffer.context.sampleRate)];
+				return Offline(function(){
+					var player = new Player(buffer);
+					player.loopStart = 0.1;
+					player.loop = true;
+					player.toMaster();
+					player.start(0);
+				}, 0.05).then(function(buffer){
+					expect(buffer.toArray()[0]).to.equal(testSample);
+				});
+			});
+
+			it ("correctly compensates if the offset is greater than the loopEnd", function(){
+				return Offline(function(){
+					//make a ramp between 0-1
+					var ramp = new Float32Array(Math.floor(Tone.context.sampleRate * 0.3));
+					for (var i = 0; i < ramp.length; i++){
+						ramp[i] = (i / (ramp.length)) * 0.3;
+					}
+					var buff = Buffer.fromArray(ramp);
+					var player = new Player(buff).toMaster();
+					player.loopStart = 0.1;
+					player.loopEnd = 0.2;
+					player.loop = true;
+					player.start(0, 0.35);
+				}, 0.05).then(function(buffer){
+					buffer.forEach(function(sample, time){
+						if (time < 0.04){
+							expect(sample).to.be.within(0.15, 0.2);
+						} else if (time > 0.05 && time < 0.09){
+							expect(sample).to.be.within(0.1, 0.15);
+						}
 					});
 				});
 			});
@@ -152,10 +190,31 @@ define(["helper/Basic", "Tone/source/Player", "helper/Offline",
 				expect(player.loop).to.be.false;
 				player.set({
 					"loop" : true,
-					"loopStart" : 0.4
+					"loopStart" : 0.4,
+					"fadeIn" : 0.1,
+					"fadeOut" : 0.2,
 				});
 				expect(player.loop).to.be.true;
 				expect(player.loopStart).to.equal(0.4);
+				expect(player.fadeIn).to.equal(0.1);
+				expect(player.fadeOut).to.equal(0.2);
+				player.dispose();
+			});
+
+			it("can set attributes after player is started", function(){
+				var player = new Player(buffer);
+				expect(player.loop).to.be.false;
+				player.start()
+				player.set({
+					"loopStart" : 0.2,
+					"loopEnd" : 0.3,
+					"loop" : true,
+					"playbackRate" : 0.9
+				});
+				expect(player.loop).to.be.true;
+				expect(player.loopStart).to.equal(0.2);
+				expect(player.loopEnd).to.equal(0.3);
+				expect(player.playbackRate).to.equal(0.9);
 				player.dispose();
 			});
 
@@ -230,6 +289,15 @@ define(["helper/Basic", "Tone/source/Player", "helper/Offline",
 				});
 			});
 
+			it("only seeks if player is started", function(){
+				return Offline(function(){
+					var player = new Player(buffer).toMaster();
+					player.seek(0.2, 0.01);
+				}, 0.05).then(function(buffer){
+					expect(buffer.isSilent()).to.be.true;
+				});
+			});
+
 			it("can seek to a position at the given time", function(){
 				return Offline(function(){
 					var ramp = new Float32Array(Math.floor(Tone.context.sampleRate * 0.3));
@@ -246,30 +314,6 @@ define(["helper/Basic", "Tone/source/Player", "helper/Offline",
 							expect(sample).to.be.within(0, 0.1);
 						} else if (time > 0.1 && time < 0.19){
 							expect(sample).to.be.within(0.2, 0.3);
-						}
-					});
-				});
-			});
-
-			it ("correctly compensates if the offset is greater than the loopEnd", function(){
-				return Offline(function(){
-					//make a ramp between 0-1
-					var ramp = new Float32Array(Math.floor(Tone.context.sampleRate * 0.3));
-					for (var i = 0; i < ramp.length; i++){
-						ramp[i] = (i / (ramp.length)) * 0.3;
-					}
-					var buff = new Buffer().fromArray(ramp);
-					var player = new Player(buff).toMaster();
-					player.loopStart = 0.1;
-					player.loopEnd = 0.2;
-					player.loop = true;
-					player.start(0, 0.35);
-				}, 0.3).then(function(buffer){
-					buffer.forEach(function(sample, time){
-						if (time < 0.04){
-							expect(sample).to.be.within(0.15, 0.2);
-						} else if (time > 0.05 && time < 0.09){
-							expect(sample).to.be.within(0.1, 0.15);
 						}
 					});
 				});
@@ -292,6 +336,16 @@ define(["helper/Basic", "Tone/source/Player", "helper/Offline",
 					buffer.forEach(function(sample){
 						expect(sample).to.equal(0);
 					}, 0.11, 0.15);
+				});
+			});
+
+			it("stops playing if invoked with 'stop' at a sooner time", function(){
+				return Offline(function(){
+					var player = new Player(buffer);
+					player.toMaster();
+					player.start(0).stop(0.1).stop(0.05);
+				}, 0.3).then(function(buffer){
+					expect(buffer.getLastSoundTime()).to.be.closeTo(0.05, 0.02);
 				});
 			});
 
@@ -326,6 +380,39 @@ define(["helper/Basic", "Tone/source/Player", "helper/Offline",
 							expect(player.state).to.equal("started");
 						});
 					};
+				}, buffer.duration * 1.1);
+			});
+
+			it("offsets correctly when started by the Transport", function(){
+				var testSample = buffer.toArray()[Math.floor(0.13125 * buffer.context.sampleRate)];
+				return Offline(function(Transport){
+					var player = new Player(buffer).sync().start(0, 0.1).toMaster();
+					Transport.start(0, 0.03125);
+				}, 0.05).then(function(buffer){
+					expect(buffer.toArray()[0]).to.equal(testSample);
+				});
+			});
+
+			it("fades in and out correctly", function(){
+				return Offline(function(){
+					var onesArray = new Float32Array(buffer.context.sampleRate * 0.5);
+					onesArray.forEach(function(sample, index){
+						onesArray[index] = 1;
+					});
+					var onesBuffer = Buffer.fromArray(onesArray);
+					var player = new Player({"url" : onesBuffer, "fadeOut" : 0.1, "fadeIn" : 0.1}).start(0).toMaster();
+				}, 0.6).then(function(buffer){
+					buffer.forEach(function(sample, time){
+						if (time < 0.1){
+							expect(sample).to.be.within(0, 1);
+						} else if (time < 0.4){
+							expect(sample).to.equal(1);
+						} else if (time < 0.5){
+							expect(sample).to.be.within(0, 1);
+						} else {
+							expect(sample).to.equal(0);
+						}
+					});
 				});
 			});
 		});

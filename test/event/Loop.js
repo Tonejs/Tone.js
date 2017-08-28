@@ -59,6 +59,16 @@ define(["helper/Basic", "Tone/event/Loop", "Tone/core/Tone", "Tone/core/Transpor
 				});
 			});
 
+			it ("can get/set the humanize values", function(){
+				return Offline(function(){
+					var callback = function(){};
+					var loop = new Loop();
+					loop.humanize = true;
+					expect(loop.humanize).to.be.true;
+					loop.dispose();
+				});
+			});
+
 			it ("can set get a the values as an object", function(){
 				return Offline(function(){
 					var callback = function(){};
@@ -223,7 +233,7 @@ define(["helper/Basic", "Tone/event/Loop", "Tone/core/Tone", "Tone/core/Transpor
 					}).start(0);
 					Transport.start();
 				}, 0.8).then(function(){
-					expect(callCount).to.above(6);
+					expect(callCount).to.equal(9);
 				});
 			});
 
@@ -282,7 +292,7 @@ define(["helper/Basic", "Tone/event/Loop", "Tone/core/Tone", "Tone/core/Transpor
 				var invoked = false;
 				return Offline(function(Transport){
 					var lastCall;
-					new Loop({
+					var loop = new Loop({
 						"playbackRate" : 2,
 						"interval" : 0.5,
 						"callback" : function(time){
@@ -293,11 +303,29 @@ define(["helper/Basic", "Tone/event/Loop", "Tone/core/Tone", "Tone/core/Transpor
 							lastCall = time;
 						}
 					}).start(0);
+					expect(loop.playbackRate).to.equal(2);
 					Transport.start();
 				}, 0.7).then(function(){
 					expect(invoked).to.be.true;
 				});
 				
+			});
+
+			it ("can playback at a faster rate", function(){
+				var callCount = 0;
+				return Offline(function(Transport){
+					var loop = new Loop({
+						"interval" : 0.1,
+						"callback" : function(){
+							callCount++;
+						}
+					}).start(0);
+					loop.playbackRate = 1.5;
+					expect(loop.playbackRate).to.equal(1.5);
+					Transport.start();
+				}, 0.8).then(function(){
+					expect(callCount).to.equal(13);
+				});
 			});
 
 		});

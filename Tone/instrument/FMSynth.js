@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/instrument/Synth", "Tone/signal/Signal", "Tone/signal/Multiply", "Tone/instrument/Monophonic"], 
+define(["Tone/core/Tone", "Tone/instrument/Synth", "Tone/signal/Signal", "Tone/signal/Multiply", "Tone/instrument/Monophonic"],
 function(Tone){
 
 	"use strict";
@@ -7,12 +7,12 @@ function(Tone){
 	 *  @class  FMSynth is composed of two Tone.Synths where one Tone.Synth modulates
 	 *          the frequency of a second Tone.Synth. A lot of spectral content 
 	 *          can be explored using the modulationIndex parameter. Read more about
-	 *          frequency modulation synthesis on [SoundOnSound](http://www.soundonsound.com/sos/apr00/articles/synthsecrets.htm).
+	 *          frequency modulation synthesis on Sound On Sound: [Part 1](https://web.archive.org/web/20160403123704/http://www.soundonsound.com/sos/apr00/articles/synthsecrets.htm), [Part 2](https://web.archive.org/web/20160403115835/http://www.soundonsound.com/sos/may00/articles/synth.htm).
 	 *          <img src="https://docs.google.com/drawings/d/1h0PUDZXPgi4Ikx6bVT6oncrYPLluFKy7lj53puxj-DM/pub?w=902&h=462">
 	 *
 	 *  @constructor
 	 *  @extends {Tone.Monophonic}
-	 *  @param {Object} [options] the options available for the synth 
+	 *  @param {Object} [options] the options available for the synth
 	 *                          see defaults below
 	 *  @example
 	 * var fmSynth = new Tone.FMSynth().toMaster();
@@ -20,7 +20,7 @@ function(Tone){
 	 */
 	Tone.FMSynth = function(options){
 
-		options = this.defaultArg(options, Tone.FMSynth.defaults);
+		options = Tone.defaultArg(options, Tone.FMSynth.defaults);
 		Tone.Monophonic.call(this, options);
 
 		/**
@@ -82,7 +82,7 @@ function(Tone){
 
 		/**
 		 *  Harmonicity is the ratio between the two voices. A harmonicity of
-		 *  1 is no change. Harmonicity = 2 means a change of an octave. 
+		 *  1 is no change. Harmonicity = 2 means a change of an octave.
 		 *  @type {Positive}
 		 *  @signal
 		 *  @example
@@ -93,9 +93,9 @@ function(Tone){
 		this.harmonicity.units = Tone.Type.Positive;
 
 		/**
-		 *  The modulation index which essentially the depth or amount of the modulation. It is the 
-		 *  ratio of the frequency of the modulating signal (mf) to the amplitude of the 
-		 *  modulating signal (ma) -- as in ma/mf. 
+		 *  The modulation index which essentially the depth or amount of the modulation. It is the
+		 *  ratio of the frequency of the modulating signal (mf) to the amplitude of the
+		 *  modulating signal (ma) -- as in ma/mf.
 		 *	@type {Positive}
 		 *	@signal
 		 */
@@ -152,7 +152,7 @@ function(Tone){
 
 	/**
 	 * 	trigger the attack portion of the note
-	 *  
+	 *
 	 *  @param  {Time} [time=now] the time the note will occur
 	 *  @param {number} [velocity=1] the velocity of the note
 	 *  @returns {Tone.FMSynth} this
@@ -168,7 +168,7 @@ function(Tone){
 
 	/**
 	 *  trigger the release portion of the note
-	 *  
+	 *
 	 *  @param  {Time} [time=now] the time the note will release
 	 *  @returns {Tone.FMSynth} this
 	 *  @private

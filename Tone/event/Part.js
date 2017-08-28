@@ -4,7 +4,7 @@ define(["Tone/core/Tone", "Tone/event/Event", "Tone/type/Type", "Tone/core/Trans
 	
 	/**
 	 *  @class Tone.Part is a collection Tone.Events which can be
-	 *         started/stoped and looped as a single unit.
+	 *         started/stopped and looped as a single unit.
 	 *
 	 *  @extends {Tone.Event}
 	 *  @param {Function} callback The callback to invoke on each event
@@ -26,64 +26,8 @@ define(["Tone/core/Tone", "Tone/event/Event", "Tone/type/Type", "Tone/core/Trans
 	 */
 	Tone.Part = function(){
 
-		var options = this.optionsObject(arguments, ["callback", "events"], Tone.Part.defaults);
-
-		/**
-		 *  If the part is looping or not
-		 *  @type  {Boolean|Positive}
-		 *  @private
-		 */
-		this._loop = options.loop;
-
-		/**
-		 *  When the note is scheduled to start.
-		 *  @type  {Ticks}
-		 *  @private
-		 */
-		this._loopStart = this.toTicks(options.loopStart);
-
-		/**
-		 *  When the note is scheduled to start.
-		 *  @type  {Ticks}
-		 *  @private
-		 */
-		this._loopEnd = this.toTicks(options.loopEnd);
-
-		/**
-		 *  The playback rate of the part
-		 *  @type  {Positive}
-		 *  @private
-		 */
-		this._playbackRate = options.playbackRate;
-
-		/**
-		 *  private holder of probability value
-		 *  @type {NormalRange}
-		 *  @private
-		 */
-		this._probability = options.probability;
-
-		/**
-		 *  the amount of variation from the
-		 *  given time. 
-		 *  @type {Boolean|Time}
-		 *  @private
-		 */
-		this._humanize = options.humanize;
-
-		/**
-		 *  The start offset
-		 *  @type {Ticks}
-		 *  @private
-		 */
-		this._startOffset = 0;
-
-		/**
-		 *  Keeps track of the current state
-		 *  @type {Tone.TimelineState}
-		 *  @private
-		 */
-		this._state = new Tone.TimelineState(Tone.State.Stopped);
+		var options = Tone.defaults(arguments, ["callback", "events"], Tone.Part);
+		Tone.Event.call(this, options);
 
 		/**
 		 *  An array of Objects. 
@@ -92,28 +36,12 @@ define(["Tone/core/Tone", "Tone/event/Event", "Tone/type/Type", "Tone/core/Trans
 		 */
 		this._events = [];
 
-		/**
-		 *  The callback to invoke at all the scheduled events.
-		 *  @type {Function}
-		 */
-		this.callback = options.callback;
-
-		/**
-		 *  If mute is true, the callback won't be
-		 *  invoked.
-		 *  @type {Boolean}
-		 */
-		this.mute = options.mute;
-
 		//add the events
-		var events = this.defaultArg(options.events, []);
-		if (!this.isUndef(options.events)){
-			for (var i = 0; i < events.length; i++){
-				if (Array.isArray(events[i])){
-					this.add(events[i][0], events[i][1]);
-				} else {
-					this.add(events[i]);
-				}
+		for (var i = 0; i < options.events.length; i++){
+			if (Array.isArray(options.events[i])){
+				this.add(options.events[i][0], options.events[i][1]);
+			} else {
+				this.add(options.events[i]);
 			}
 		}
 	};
@@ -134,6 +62,7 @@ define(["Tone/core/Tone", "Tone/event/Event", "Tone/type/Type", "Tone/core/Trans
 		"probability" : 1,
 		"humanize" : false,
 		"mute" : false,
+		"events" : []
 	};
 
 	/**
@@ -147,9 +76,9 @@ define(["Tone/core/Tone", "Tone/event/Event", "Tone/type/Type", "Tone/core/Trans
 		var ticks = this.toTicks(time);
 		if (this._state.getValueAtTime(ticks) !== Tone.State.Started){
 			if (this._loop){
-				offset = this.defaultArg(offset, this._loopStart);
+				offset = Tone.defaultArg(offset, this._loopStart);
 			} else {
-				offset = this.defaultArg(offset, 0);
+				offset = Tone.defaultArg(offset, 0);
 			}
 			offset = this.toTicks(offset);
 			this._state.add({
@@ -248,14 +177,14 @@ define(["Tone/core/Tone", "Tone/event/Event", "Tone/type/Type", "Tone/core/Trans
 		for (var i = 0; i < this._events.length; i++){
 			var event = this._events[i];
 			if (Math.abs(time.toTicks() - event.startOffset) < tickTime){
-				if (!this.isUndef(value)){
+				if (!Tone.isUndef(value)){
 					event.value = value;
 				}
 				return event;
 			}
 		}
 		//if there was no event at that time, create one
-		if (!this.isUndef(value)){
+		if (!Tone.isUndef(value)){
 			this.add(time, value);
 			//return the new event
 			return this._events[this._events.length - 1];
@@ -348,7 +277,7 @@ define(["Tone/core/Tone", "Tone/event/Event", "Tone/type/Type", "Tone/core/Trans
 				event.remove(time, value);
 			} else {
 				if (event.startOffset === time){
-					if (this.isUndef(value) || (!this.isUndef(value) && event.value === value)){
+					if (Tone.isUndef(value) || (!Tone.isUndef(value) && event.value === value)){
 						this._events.splice(i, 1);
 						event.dispose();
 					}
@@ -376,11 +305,10 @@ define(["Tone/core/Tone", "Tone/event/Event", "Tone/type/Type", "Tone/core/Trans
 	 *  @return  {Tone.Part}  this
 	 */
 	Tone.Part.prototype.cancel = function(after){
-		after = this.toTicks(after);
 		this._forEach(function(event){
 			event.cancel(after);
 		});
-		this._state.cancel(after);
+		this._state.cancel(this.toTicks(after));
 		return this;
 	};
 
@@ -391,13 +319,15 @@ define(["Tone/core/Tone", "Tone/event/Event", "Tone/type/Type", "Tone/core/Trans
 	 *  @private
 	 */
 	Tone.Part.prototype._forEach = function(callback, ctx){
-		ctx = this.defaultArg(ctx, this);
-		for (var i = this._events.length - 1; i >= 0; i--){
-			var e = this._events[i];
-			if (e instanceof Tone.Part){
-				e._forEach(callback, ctx);
-			} else {
-				callback.call(ctx, e);
+		if (this._events){
+			ctx = Tone.defaultArg(ctx, this);
+			for (var i = this._events.length - 1; i >= 0; i--){
+				var e = this._events[i];
+				if (e instanceof Tone.Part){
+					e._forEach(callback, ctx);
+				} else {
+					callback.call(ctx, e);
+				}
 			}
 		}
 		return this;

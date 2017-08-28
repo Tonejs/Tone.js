@@ -52,6 +52,15 @@ define(["Test", "Tone/core/Timeline"], function (Test, Timeline) {
 			sched.dispose();
 		});
 
+		it ("throws an error if no time is provided in object", function(){
+			var sched = new Timeline();
+			expect(function(){
+				sched.add({
+					"no_time"  : 0
+				});
+			}).to.throw(Error);
+			sched.dispose();
+		});
 
 		it ("can remove items from the timeline", function(){
 			var sched = new Timeline();
@@ -62,6 +71,20 @@ define(["Test", "Tone/core/Timeline"], function (Test, Timeline) {
 			});
 			expect(sched.length).to.equal(2);
 			sched.remove(obj);
+			expect(sched.length).to.equal(1);
+			sched.dispose();
+		});
+
+		it ("has no effect to remove an object which is not there", function(){
+			var sched = new Timeline();
+			sched.add({
+				"time" : 2
+			});
+			sched.remove({});
+			expect(sched.length).to.equal(1);
+			sched.forEach(function(event){
+				sched.remove({});
+			});
 			expect(sched.length).to.equal(1);
 			sched.dispose();
 		});
@@ -85,6 +108,21 @@ define(["Test", "Tone/core/Timeline"], function (Test, Timeline) {
 			expect(sched._search(2)).to.equal(2);
 			expect(sched._search(20000)).to.equal(2);
 			expect(sched._search(-1)).to.equal(-1);
+			sched.dispose();
+		});
+
+		it ("can get a previous event", function(){
+			var sched = new Timeline();
+			var event0 = {
+				"time"  : 0
+			};
+			var event1 = {
+				"time" : 1
+			};
+			sched.add(event0);
+			sched.add(event1);
+			expect(sched.previousEvent(event1)).to.equal(event0);
+			expect(sched.previousEvent(event0)).to.equal(null);
 			sched.dispose();
 		});
 
@@ -275,6 +313,71 @@ define(["Test", "Tone/core/Timeline"], function (Test, Timeline) {
 		});
 
 		context("Iterators", function(){
+
+			it("forEach is invoked with the timeline as the context", function(){
+				var sched = new Timeline();
+				sched.add({"time" : 0});
+				sched.add({"time" : 0.1});
+				sched.add({"time" : 0.2});
+				sched.add({"time" : 0.3});
+				sched.add({"time" : 0.4});
+				sched.forEach(function(){
+					expect(this).to.equal(sched);
+				});
+				sched.dispose();
+			});
+
+			it("forEachBefore is invoked with the timeline as the context", function(){
+				var sched = new Timeline();
+				sched.add({"time" : 0});
+				sched.add({"time" : 0.1});
+				sched.add({"time" : 0.2});
+				sched.add({"time" : 0.3});
+				sched.add({"time" : 0.4});
+				sched.forEachBefore(0.5, function(){
+					expect(this).to.equal(sched);
+				});
+				sched.dispose();
+			});
+
+			it("forEachAfter is invoked with the timeline as the context", function(){
+				var sched = new Timeline();
+				sched.add({"time" : 0});
+				sched.add({"time" : 0.1});
+				sched.add({"time" : 0.2});
+				sched.add({"time" : 0.3});
+				sched.add({"time" : 0.4});
+				sched.forEachAfter(0.5, function(){
+					expect(this).to.equal(sched);
+				});
+				sched.dispose();
+			});
+
+			it("forEachFrom is invoked with the timeline as the context", function(){
+				var sched = new Timeline();
+				sched.add({"time" : 0});
+				sched.add({"time" : 0.1});
+				sched.add({"time" : 0.2});
+				sched.add({"time" : 0.3});
+				sched.add({"time" : 0.4});
+				sched.forEachFrom(0.5, function(){
+					expect(this).to.equal(sched);
+				});
+				sched.dispose();
+			});
+
+			it("forEachAtTime is invoked with the timeline as the context", function(){
+				var sched = new Timeline();
+				sched.add({"time" : 0});
+				sched.add({"time" : 0.1});
+				sched.add({"time" : 0.2});
+				sched.add({"time" : 0.3});
+				sched.add({"time" : 0.4});
+				sched.forEachAtTime(0.5, function(){
+					expect(this).to.equal(sched);
+				});
+				sched.dispose();
+			});
 
 			it("iterates over all items and returns and item", function(){
 				var sched = new Timeline();

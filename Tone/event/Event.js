@@ -23,7 +23,8 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/type/Type", "Tone/core/Ti
 	 */
 	Tone.Event = function(){
 
-		var options = this.optionsObject(arguments, ["callback", "value"], Tone.Event.defaults);
+		var options = Tone.defaults(arguments, ["callback", "value"], Tone.Event);
+		Tone.call(this);
 
 		/**
 		 *  Loop value
@@ -83,24 +84,19 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/type/Type", "Tone/core/Ti
 		this._startOffset = 0;
 
 		/**
-		 *  The probability that the callback will be invoked
-		 *  at the scheduled time. 
+		 *  private holder of probability value
 		 *  @type {NormalRange}
-		 *  @example
-		 * //the callback will be invoked 50% of the time
-		 * event.probability = 0.5;
+		 *  @private
 		 */
-		this.probability = options.probability;
+		this._probability = options.probability;
 
 		/**
-		 *  If set to true, will apply small (+/-0.02 seconds) random variation
-		 *  to the callback time. If the value is given as a time, it will randomize
-		 *  by that amount.
-		 *  @example
-		 * event.humanize = true;
+		 *  the amount of variation from the
+		 *  given time. 
 		 *  @type {Boolean|Time}
+		 *  @private
 		 */
-		this.humanize = options.humanize;
+		this._humanize = options.humanize;
 
 		/**
 		 *  If mute is true, the callback won't be
@@ -141,17 +137,17 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/type/Type", "Tone/core/Ti
 	 */
 	Tone.Event.prototype._rescheduleEvents = function(after){
 		//if no argument is given, schedules all of the events
-		after = this.defaultArg(after, -1);
+		after = Tone.defaultArg(after, -1);
 		this._state.forEachFrom(after, function(event){
 			var duration;
 			if (event.state === Tone.State.Started){
-				if (!this.isUndef(event.id)){
+				if (!Tone.isUndef(event.id)){
 					Tone.Transport.clear(event.id);
 				}
 				var startTick = event.time + Math.round(this.startOffset / this._playbackRate);
 				if (this._loop){
 					duration = Infinity;
-					if (this.isNumber(this._loop)){
+					if (Tone.isNumber(this._loop)){
 						duration =  (this._loop) * this._getLoopDuration();
 					}
 					var nextEvent = this._state.getAfter(startTick);
@@ -203,6 +199,39 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/type/Type", "Tone/core/Ti
 	});
 
 	/**
+	 *  The probability of the notes being triggered.
+	 *  @memberOf Tone.Event#
+	 *  @type {NormalRange}
+	 *  @name probability
+	 */
+	Object.defineProperty(Tone.Event.prototype, "probability", {
+		get : function(){
+			return this._probability;
+		},
+		set : function(prob){
+			this._probability = prob;
+		}
+	});
+
+	/**
+	 *  If set to true, will apply small random variation
+	 *  to the callback time. If the value is given as a time, it will randomize
+	 *  by that amount.
+	 *  @example
+	 * event.humanize = true;
+	 *  @type {Boolean|Time}
+	 *  @name humanize
+	 */
+	Object.defineProperty(Tone.Event.prototype, "humanize", {
+		get : function(){
+			return this._humanize;
+		},
+		set : function(variation){
+			this._humanize = variation;
+		}
+	});
+
+	/**
 	 *  Start the note at the given time. 
 	 *  @param  {TimelinePosition}  time  When the note should start.
 	 *  @return  {Tone.Event}  this
@@ -246,7 +275,7 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/type/Type", "Tone/core/Ti
 	 *  @return  {Tone.Event}  this
 	 */
 	Tone.Event.prototype.cancel = function(time){
-		time = this.defaultArg(time, -Infinity);
+		time = Tone.defaultArg(time, -Infinity);
 		time = this.toTicks(time);
 		this._state.forEachFrom(time, function(event){
 			Tone.Transport.clear(event.id);
@@ -268,7 +297,7 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/type/Type", "Tone/core/Ti
 			} 
 			if (this.humanize){
 				var variation = 0.02;
-				if (!this.isBoolean(this.humanize)){
+				if (!Tone.isBoolean(this.humanize)){
 					variation = this.toSeconds(this.humanize);
 				}
 				time += (Math.random() * 2 - 1) * variation;

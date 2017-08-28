@@ -48,7 +48,7 @@
 		var waveform = new Tone.Analyser("waveform", 1024);
 
 		var player = new Tone.Player({
-			"url" : "./audio/FWDL.mp3",
+			"url" : "./audio/FWDL.[mp3|ogg]",
 			"loop" : true
 		}).fan(fft, waveform).toMaster();
 

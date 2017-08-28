@@ -32,141 +32,145 @@ function(Tone){
 
 		Tone.Emitter.call(this);
 
-		///////////////////////////////////////////////////////////////////////
-		//	LOOPING
-		//////////////////////////////////////////////////////////////////////
+		Tone.getContext(function(){
 
-		/** 
-		 * 	If the transport loops or not.
-		 *  @type {boolean}
-		 */
-		this.loop = false;
+			///////////////////////////////////////////////////////////////////////
+			//	LOOPING
+			//////////////////////////////////////////////////////////////////////
 
-		/** 
-		 * 	The loop start position in ticks
-		 *  @type {Ticks}
-		 *  @private
-		 */
-		this._loopStart = 0;
+			/** 
+			 * 	If the transport loops or not.
+			 *  @type {boolean}
+			 */
+			this.loop = false;
 
-		/** 
-		 * 	The loop end position in ticks
-		 *  @type {Ticks}
-		 *  @private
-		 */
-		this._loopEnd = 0;
+			/** 
+			 * 	The loop start position in ticks
+			 *  @type {Ticks}
+			 *  @private
+			 */
+			this._loopStart = 0;
 
-		///////////////////////////////////////////////////////////////////////
-		//	CLOCK/TEMPO
-		//////////////////////////////////////////////////////////////////////
+			/** 
+			 * 	The loop end position in ticks
+			 *  @type {Ticks}
+			 *  @private
+			 */
+			this._loopEnd = 0;
 
-		/**
-		 *  Pulses per quarter is the number of ticks per quarter note.
-		 *  @private
-		 *  @type  {Number}
-		 */
-		this._ppq = TransportConstructor.defaults.PPQ;
+			///////////////////////////////////////////////////////////////////////
+			//	CLOCK/TEMPO
+			//////////////////////////////////////////////////////////////////////
 
-		/**
-		 *  watches the main oscillator for timing ticks
-		 *  initially starts at 120bpm
-		 *  @private
-		 *  @type {Tone.Clock}
-		 */
-		this._clock = new Tone.Clock({
-			"callback" : this._processTick.bind(this), 
-			"frequency" : 0,
-		});
+			/**
+			 *  Pulses per quarter is the number of ticks per quarter note.
+			 *  @private
+			 *  @type  {Number}
+			 */
+			this._ppq = TransportConstructor.defaults.PPQ;
 
-		this._bindClockEvents();
+			/**
+			 *  watches the main oscillator for timing ticks
+			 *  initially starts at 120bpm
+			 *  @private
+			 *  @type {Tone.Clock}
+			 */
+			this._clock = new Tone.Clock({
+				"callback" : this._processTick.bind(this), 
+				"frequency" : 0,
+			});
 
-		/**
-		 *  The Beats Per Minute of the Transport. 
-		 *  @type {BPM}
-		 *  @signal
-		 *  @example
-		 * Tone.Transport.bpm.value = 80;
-		 * //ramp the bpm to 120 over 10 seconds
-		 * Tone.Transport.bpm.rampTo(120, 10);
-		 */
-		this.bpm = this._clock.frequency;
-		this.bpm._toUnits = this._toUnits.bind(this);
-		this.bpm._fromUnits = this._fromUnits.bind(this);
-		this.bpm.units = Tone.Type.BPM;
-		this.bpm.value = TransportConstructor.defaults.bpm;
-		this._readOnly("bpm");
+			this._bindClockEvents();
 
-		/**
-		 *  The time signature, or more accurately the numerator
-		 *  of the time signature over a denominator of 4. 
-		 *  @type {Number}
-		 *  @private
-		 */
-		this._timeSignature = TransportConstructor.defaults.timeSignature;
+			/**
+			 *  The Beats Per Minute of the Transport. 
+			 *  @type {BPM}
+			 *  @signal
+			 *  @example
+			 * Tone.Transport.bpm.value = 80;
+			 * //ramp the bpm to 120 over 10 seconds
+			 * Tone.Transport.bpm.rampTo(120, 10);
+			 */
+			this.bpm = this._clock.frequency;
+			this.bpm._toUnits = this._toUnits.bind(this);
+			this.bpm._fromUnits = this._fromUnits.bind(this);
+			this.bpm.units = Tone.Type.BPM;
+			this.bpm.value = TransportConstructor.defaults.bpm;
+			this._readOnly("bpm");
 
-		///////////////////////////////////////////////////////////////////////
-		//	TIMELINE EVENTS
-		//////////////////////////////////////////////////////////////////////
+			/**
+			 *  The time signature, or more accurately the numerator
+			 *  of the time signature over a denominator of 4. 
+			 *  @type {Number}
+			 *  @private
+			 */
+			this._timeSignature = TransportConstructor.defaults.timeSignature;
 
-		/**
-		 *  All the events in an object to keep track by ID
-		 *  @type {Object}
-		 *  @private
-		 */
-		this._scheduledEvents = {};
+			///////////////////////////////////////////////////////////////////////
+			//	TIMELINE EVENTS
+			//////////////////////////////////////////////////////////////////////
 
-		/**
-		 *  The event ID counter
-		 *  @type {Number}
-		 *  @private
-		 */
-		this._eventID = 0;
+			/**
+			 *  All the events in an object to keep track by ID
+			 *  @type {Object}
+			 *  @private
+			 */
+			this._scheduledEvents = {};
 
-		/**
-		 * 	The scheduled events.
-		 *  @type {Tone.Timeline}
-		 *  @private
-		 */
-		this._timeline = new Tone.Timeline();
+			/**
+			 *  The event ID counter
+			 *  @type {Number}
+			 *  @private
+			 */
+			this._eventID = 0;
 
-		/**
-		 *  Repeated events
-		 *  @type {Array}
-		 *  @private
-		 */
-		this._repeatedEvents = new Tone.IntervalTimeline();
+			/**
+			 * 	The scheduled events.
+			 *  @type {Tone.Timeline}
+			 *  @private
+			 */
+			this._timeline = new Tone.Timeline();
 
-		/**
-		 *  Events that occur once
-		 *  @type {Array}
-		 *  @private
-		 */
-		this._onceEvents = new Tone.Timeline();
+			/**
+			 *  Repeated events
+			 *  @type {Array}
+			 *  @private
+			 */
+			this._repeatedEvents = new Tone.IntervalTimeline();
 
-		/** 
-		 *  All of the synced Signals
-		 *  @private 
-		 *  @type {Array}
-		 */
-		this._syncedSignals = [];
+			/**
+			 *  Events that occur once
+			 *  @type {Array}
+			 *  @private
+			 */
+			this._onceEvents = new Tone.Timeline();
 
-		///////////////////////////////////////////////////////////////////////
-		//	SWING
-		//////////////////////////////////////////////////////////////////////
+			/** 
+			 *  All of the synced Signals
+			 *  @private 
+			 *  @type {Array}
+			 */
+			this._syncedSignals = [];
 
-		/**
-		 *  The subdivision of the swing
-		 *  @type  {Ticks}
-		 *  @private
-		 */
-		this._swingTicks = TransportConstructor.defaults.PPQ / 2; //8n
+			///////////////////////////////////////////////////////////////////////
+			//	SWING
+			//////////////////////////////////////////////////////////////////////
 
-		/**
-		 *  The swing amount
-		 *  @type {NormalRange}
-		 *  @private
-		 */
-		this._swingAmount = 0;
+			/**
+			 *  The subdivision of the swing
+			 *  @type  {Ticks}
+			 *  @private
+			 */
+			this._swingTicks = TransportConstructor.defaults.PPQ / 2; //8n
+
+			/**
+			 *  The swing amount
+			 *  @type {NormalRange}
+			 *  @private
+			 */
+			this._swingAmount = 0;
+
+		}.bind(this));
 
 	};
 
@@ -210,7 +214,7 @@ function(Tone){
 		} 
 		//do the loop test
 		if (this.loop){
-			if (ticks === this._loopEnd){
+			if (ticks >= this._loopEnd){
 				this.emit("loopEnd", tickTime);
 				this._clock.ticks = this._loopStart;
 				ticks = this._loopStart;
@@ -289,7 +293,7 @@ function(Tone){
 		}
 		var event = {
 			"time" : this.toTicks(startTime),
-			"duration" : this.toTicks(this.defaultArg(duration, Infinity)),
+			"duration" : this.toTicks(Tone.defaultArg(duration, Infinity)),
 			"interval" : this.toTicks(interval),
 			"callback" : callback
 		};
@@ -348,7 +352,7 @@ function(Tone){
 	 *  @returns {Tone.Transport} this
 	 */
 	Tone.Transport.prototype.cancel = function(after){
-		after = this.defaultArg(after, 0);
+		after = Tone.defaultArg(after, 0);
 		after = this.toTicks(after);
 		this._timeline.cancel(after);
 		this._onceEvents.cancel(after);
@@ -362,6 +366,7 @@ function(Tone){
 
 	/**
 	 *  Bind start/stop/pause events from the clock and emit them.
+	 *  @private
 	 */
 	Tone.Transport.prototype._bindClockEvents = function(){
 		this._clock.on("start", function(time, offset){
@@ -402,7 +407,7 @@ function(Tone){
 	 */
 	Tone.Transport.prototype.start = function(time, offset){
 		//start the clock
-		if (!this.isUndef(offset)){
+		if (!Tone.isUndef(offset)){
 			offset = this.toTicks(offset);
 		}
 		this._clock.start(time, offset);
@@ -431,6 +436,22 @@ function(Tone){
 		return this;
 	};
 
+	/**
+	 * Toggle the current state of the transport. If it is
+	 * started, it will stop it, otherwise it will start the Transport.
+	 * @param  {Time=} time The time of the event
+	 * @return {Tone.Transport}      this
+	 */
+	Tone.Transport.prototype.toggle = function(time){
+		time = this.toSeconds(time);
+		if (this._clock.getStateAtTime(time) !== Tone.State.Started){
+			this.start(time);
+		} else {
+			this.stop(time);
+		}
+		return this;
+	};
+
 	///////////////////////////////////////////////////////////////////////////////
 	//	SETTERS/GETTERS
 	///////////////////////////////////////////////////////////////////////////////
@@ -454,7 +475,7 @@ function(Tone){
 			return this._timeSignature;
 		},
 		set : function(timeSig){
-			if (this.isArray(timeSig)){
+			if (Tone.isArray(timeSig)){
 				timeSig = (timeSig[0] / timeSig[1]) * 4;
 			}
 			this._timeSignature = timeSig;
@@ -643,27 +664,6 @@ function(Tone){
 	});
 
 	/**
-	 *  The hint to the type of playback. Affects tradeoffs between audio 
-	 *  output latency and responsiveness. 
-	 *  
-	 *  In addition to setting the value in seconds, the latencyHint also
-	 *  accepts the strings "interactive" (prioritizes low latency), 
-	 *  "playback" (prioritizes sustained playback), "balanced" (balances
-	 *  latency and performance), and "fastest" (lowest latency, might glitch more often). 
-	 *  @memberOf Tone.Transport#
-	 *  @type {Seconds|String}
-	 *  @name latencyHint
-	 */
-	Object.defineProperty(Tone.Transport.prototype, "latencyHint", {
-		get : function(){
-			return Tone.Clock.latencyHint;
-		},
-		set : function(hint){
-			Tone.Clock.latencyHint = hint;
-		}
-	});
-
-	/**
 	 *  Convert from BPM to frequency (factoring in PPQ)
 	 *  @param  {BPM}  bpm The BPM value to convert to frequency
 	 *  @return  {Frequency}  The BPM as a frequency with PPQ factored in.
@@ -796,8 +796,14 @@ function(Tone){
 			Tone.Transport = context.Transport;
 		} else {
 			Tone.Transport = new TransportConstructor();
-			//store the Transport on the context so it can be retrieved later
-			context.Transport = Tone.Transport;
+		}
+		//store the Transport on the context so it can be retrieved later
+		context.Transport = Tone.Transport;
+	});
+
+	Tone.Context.on("close", function(context){
+		if (context.Transport instanceof TransportConstructor){
+			context.Transport.dispose();
 		}
 	});
 

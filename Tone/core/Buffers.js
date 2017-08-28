@@ -21,9 +21,20 @@ define(["Tone/core/Tone", "Tone/core/Buffer"], function (Tone) {
 	 * 	player.buffer = pianoSamples.get("C4");
 	 * 	player.start();
 	 * });
-	 * 
+	 * 	@example
+	 * //To pass in additional parameters in the second parameter
+	 * var buffers = new Tone.Buffers(urls, {
+	 * 	"onload" : callback,
+	 * 	"baseUrl" : "../path/to/audio/"
+	 * })
 	 */
-	Tone.Buffers = function(urls, onload, baseUrl){
+	Tone.Buffers = function(urls){
+
+		//remove the urls from the options
+		var args = Array.prototype.slice.call(arguments);
+		args.shift();
+		var options = Tone.defaults(args, ["onload", "baseUrl"], Tone.Buffers);
+		Tone.call(this);
 
 		/**
 		 *  All of the buffers
@@ -36,18 +47,26 @@ define(["Tone/core/Tone", "Tone/core/Buffer"], function (Tone) {
 		 *  A path which is prefixed before every url.
 		 *  @type  {String}
 		 */
-		this.baseUrl = this.defaultArg(baseUrl, "");
+		this.baseUrl = options.baseUrl;
 
-		urls = this._flattenUrls(urls);
 		this._loadingCount = 0;
 		//add each one
 		for (var key in urls){
 			this._loadingCount++;
-			this.add(key, urls[key], this._bufferLoaded.bind(this, onload));
+			this.add(key, urls[key], this._bufferLoaded.bind(this, options.onload));
 		}
 	};
 
 	Tone.extend(Tone.Buffers);
+
+	/**
+	 *  Defaults
+	 *  @type  {Object}
+	 */
+	Tone.Buffers.defaults = {
+		"onload" : Tone.noOp,
+		"baseUrl" : ""
+	};
 
 	/**
 	 *  True if the buffers object has a buffer by that name.
@@ -115,41 +134,17 @@ define(["Tone/core/Tone", "Tone/core/Buffer"], function (Tone) {
 	 *                                 when the url is loaded.
 	 */
 	Tone.Buffers.prototype.add = function(name, url, callback){
-		callback = this.defaultArg(callback, Tone.noOp);
+		callback = Tone.defaultArg(callback, Tone.noOp);
 		if (url instanceof Tone.Buffer){
 			this._buffers[name] = url;
 			callback(this);
 		} else if (url instanceof AudioBuffer){
 			this._buffers[name] = new Tone.Buffer(url);
 			callback(this);
-		} else if (this.isString(url)){
+		} else if (Tone.isString(url)){
 			this._buffers[name] = new Tone.Buffer(this.baseUrl + url, callback);
 		}
 		return this;
-	};
-
-	/**
-	 *  Flatten an object into a single depth object. 
-	 *  thanks to https://gist.github.com/penguinboy/762197
-	 *  @param   {Object} ob 	
-	 *  @return  {Object}    
-	 *  @private
-	 */
-	Tone.Buffers.prototype._flattenUrls = function(ob) {
-		var toReturn = {};
-		for (var i in ob) {
-			if (!ob.hasOwnProperty(i)) continue;
-			if (this.isObject(ob[i])) {
-				var flatObject = this._flattenUrls(ob[i]);
-				for (var x in flatObject) {
-					if (!flatObject.hasOwnProperty(x)) continue;
-					toReturn[i + "." + x] = flatObject[x];
-				}
-			} else {
-				toReturn[i] = ob[i];
-			}
-		}
-		return toReturn;
 	};
 
 	/**
@@ -157,6 +152,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer"], function (Tone) {
 	 *  @return  {Tone.Buffers} this
 	 */
 	Tone.Buffers.prototype.dispose = function(){
+		Tone.prototype.dispose.call(this);
 		for (var name in this._buffers){
 			this._buffers[name].dispose();
 		}

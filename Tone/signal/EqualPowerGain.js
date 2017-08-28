@@ -12,6 +12,7 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 	 */
 	Tone.EqualPowerGain = function(){
 
+		Tone.SignalBase.call(this);
 		/**
 		 *  @type {Tone.WaveShaper}
 		 *  @private
@@ -21,7 +22,7 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 				//should output 0 when input is 0
 				return 0;
 			} else {
-				return this.equalPowerScale(val);
+				return Tone.equalPowerScale(val);
 			}
 		}.bind(this), 4096);
 	};
@@ -33,7 +34,7 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 	 *  @returns {Tone.EqualPowerGain} this
 	 */
 	Tone.EqualPowerGain.prototype.dispose = function(){
-		Tone.prototype.dispose.call(this);
+		Tone.SignalBase.prototype.dispose.call(this);
 		this._eqPower.dispose();
 		this._eqPower = null;
 		return this;

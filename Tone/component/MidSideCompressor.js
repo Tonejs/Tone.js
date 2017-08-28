@@ -1,20 +1,21 @@
-define(["Tone/core/Tone", "Tone/component/MidSideSplit", "Tone/component/MidSideMerge", 
-	"Tone/component/Compressor"], function(Tone){
+define(["Tone/core/Tone", "Tone/component/MidSideSplit", "Tone/component/MidSideMerge",
+	"Tone/component/Compressor", "Tone/core/AudioNode"], function(Tone){
 
 	"use strict";
 
 	/**
 	 *  @class Tone.MidSideCompressor applies two different compressors to the mid
-	 *         and side signal components. See Tone.MidSideSplit. 
+	 *         and side signal components. See Tone.MidSideSplit.
 	 *
-	 *  @extends {Tone}
+	 *  @extends {Tone.AudioNode}
 	 *  @param {Object} options The options that are passed to the mid and side
-	 *                          compressors. 
+	 *                          compressors.
 	 *  @constructor
 	 */
 	Tone.MidSideCompressor = function(options){
 
-		options = this.defaultArg(options, Tone.MidSideCompressor.defaults);
+		Tone.AudioNode.call(this);
+		options = Tone.defaultArg(options, Tone.MidSideCompressor.defaults);
 
 		/**
 		 *  the mid/side split
@@ -47,7 +48,7 @@ define(["Tone/core/Tone", "Tone/component/MidSideSplit", "Tone/component/MidSide
 		this._readOnly(["mid", "side"]);
 	};
 
-	Tone.extend(Tone.MidSideCompressor);
+	Tone.extend(Tone.MidSideCompressor, Tone.AudioNode);
 
 	/**
 	 *  @const
@@ -76,7 +77,7 @@ define(["Tone/core/Tone", "Tone/component/MidSideSplit", "Tone/component/MidSide
 	 *  @returns {Tone.MidSideCompressor} this
 	 */
 	Tone.MidSideCompressor.prototype.dispose = function(){
-		Tone.prototype.dispose.call(this);
+		Tone.AudioNode.prototype.dispose.call(this);
 		this._writable(["mid", "side"]);
 		this.mid.dispose();
 		this.mid = null;
