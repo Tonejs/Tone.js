@@ -317,7 +317,7 @@ Interface.Slider.prototype._ondrag = function(e, pointer){
 	}  else {
 		var yVal = Math.max((pointer.pageY - this.top ), 0);
 		normPos =  yVal / (this.container.height());
-		normPos = 1 - normPos;
+		normPos = Math.max(1 - normPos, 0);
 	}
 	normPos = Math.pow(normPos, this.exp);
 
