@@ -680,7 +680,7 @@ define(function(){
 	 * @type {String}
 	 * @static
 	 */
-	Tone.version = "r11-dev";
+	Tone.version = "r11";
 
 	// allow optional silencing of this log
 	if (!window.TONE_SILENCE_VERSION_LOGGING) {
