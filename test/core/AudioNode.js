@@ -31,11 +31,23 @@ define(["Test", "Tone/core/Tone", "Tone/core/AudioNode", "helper/PassAudio", "To
 		});
 
 		it("reports its inputs and outputs", function(){
-			var node = new AudioNode();
-			node.createInsOuts(3, 2);
-			expect(node.numberOfInputs).to.equal(3);
-			expect(node.numberOfOutputs).to.equal(2);
-			node.dispose();
+			var node0 = new AudioNode();
+			node0.createInsOuts(3, 2);
+			expect(node0.numberOfInputs).to.equal(3);
+			expect(node0.numberOfOutputs).to.equal(2);
+			node0.dispose();
+
+			var node1 = new AudioNode();
+			node1.createInsOuts(0, 1);
+			expect(node1.numberOfInputs).to.equal(0);
+			expect(node1.numberOfOutputs).to.equal(1);
+			node1.dispose();
+
+			var node2 = new AudioNode();
+			node2.createInsOuts(1, 0);
+			expect(node2.numberOfInputs).to.equal(1);
+			expect(node2.numberOfOutputs).to.equal(0);
+			node2.dispose();
 		});
 
 		context("connections", function(){
