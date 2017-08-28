@@ -4,8 +4,8 @@
 * [Dev build](https://tonejs.github.io/build/dev/Tone.js) with each successful commit
 * [Versioned docs](https://tonejs.github.io/docs/Tone) plus a [dev build](https://tonejs.github.io/docs/dev/Tone) of the docs on successful commits
 * Tone.AudioNode is base class for all classes which generate or process audio
-* Tone.Sampler simplifies creating multisampled instruments
-* Tone.Solo makes it easier to mute/solo audio
+* [Tone.Sampler](https://tonejs.github.io/docs/Sampler) simplifies creating multisampled instruments
+* [Tone.Solo](https://tonejs.github.io/docs/Solo) makes it easier to mute/solo audio
 * [Mixer](https://tonejs.github.io/examples/#mixer) and [sampler](https://tonejs.github.io/examples/#sampler) examples
 * Making type-checking static
 * [TransportTimelineSignal](https://tonejs.github.io/docs/TransportTimelineSignal) is a signal which can be scheduled along the Transport
