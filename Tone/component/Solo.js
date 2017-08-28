@@ -118,6 +118,7 @@ define(["Tone/core/Tone", "Tone/core/Gain", "Tone/core/AudioNode"], function (To
 
 	/**
 	 * @return {Boolean} Returns true if no one is soloed
+	 * @private
 	 */
 	Tone.Solo.prototype._noSolos = function(){
 		return !Tone.isArray(this.context._currentSolo) || this.context._currentSolo.length === 0;
