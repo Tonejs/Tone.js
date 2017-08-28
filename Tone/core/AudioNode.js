@@ -41,7 +41,7 @@ define(["Tone/core/Tone", "Tone/core/Context"], function (Tone) {
 	 *  Create input and outputs for this object.
 	 *  @param  {Number}  [input=0]   The number of inputs
 	 *  @param  {Number}  [outputs=0]  The number of outputs
-	 *  @return  {Tone}  this
+	 *  @return  {Tone.AudioNode}  this
 	 *  @private
 	 */
 	Tone.AudioNode.prototype.createInsOuts = function(inputs, outputs){
@@ -62,7 +62,6 @@ define(["Tone/core/Tone", "Tone/core/Context"], function (Tone) {
 	/**
 	 *  The number of inputs feeding into the AudioNode.
 	 *  For source nodes, this will be 0.
-	 *  @memberOf Tone#
 	 *  @type {Number}
 	 *  @name numberOfInputs
 	 *  @readOnly
@@ -83,7 +82,6 @@ define(["Tone/core/Tone", "Tone/core/Context"], function (Tone) {
 
 	/**
 	 *  The number of outputs coming out of the AudioNode.
-	 *  @memberOf Tone#
 	 *  @type {Number}
 	 *  @name numberOfOutputs
 	 *  @readOnly
@@ -107,8 +105,7 @@ define(["Tone/core/Tone", "Tone/core/Context"], function (Tone) {
 	 *  @param  {Tone | AudioParam | AudioNode} unit
 	 *  @param {number} [outputNum=0] optionally which output to connect from
 	 *  @param {number} [inputNum=0] optionally which input to connect to
-	 *  @returns {Tone} this
-	 *  @memberOf Tone#
+	 *  @returns {Tone.AudioNode} this
 	 */
 	Tone.AudioNode.prototype.connect = function(unit, outputNum, inputNum){
 		if (Tone.isArray(this.output)){
@@ -125,8 +122,7 @@ define(["Tone/core/Tone", "Tone/core/Context"], function (Tone) {
 	 *  @param {Number|AudioNode} output Either the output index to disconnect
 	 *                                   if the output is an array, or the
 	 *                                   node to disconnect from.
-	 *  @returns {Tone} this
-	 *  @memberOf Tone#
+	 *  @returns {Tone.AudioNode} this
 	 */
 	Tone.AudioNode.prototype.disconnect = function(destination, outputNum, inputNum){
 		if (Tone.isArray(this.output)){
@@ -147,8 +143,7 @@ define(["Tone/core/Tone", "Tone/core/Context"], function (Tone) {
 	 *  //connect a node to an effect, panVol and then to the master output
 	 *  node.chain(effect, panVol, Tone.Master);
 	 *  @param {...AudioParam|Tone|AudioNode} nodes
-	 *  @returns {Tone} this
-	 *  @memberOf Tone#
+	 *  @returns {Tone.AudioNode} this
 	 */
 	Tone.AudioNode.prototype.chain = function(){
 		var currentUnit = this;
@@ -163,8 +158,7 @@ define(["Tone/core/Tone", "Tone/core/Context"], function (Tone) {
 	/**
 	 *  connect the output of this node to the rest of the nodes in parallel.
 	 *  @param {...AudioParam|Tone|AudioNode} nodes
-	 *  @returns {Tone} this
-	 *  @memberOf Tone#
+	 *  @returns {Tone.AudioNode} this
 	 */
 	Tone.AudioNode.prototype.fan = function(){
 		for (var i = 0; i < arguments.length; i++){
