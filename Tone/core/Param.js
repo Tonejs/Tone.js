@@ -7,7 +7,7 @@ define(["Tone/core/Tone", "Tone/type/Type"], function(Tone){
 	 *         additional unit conversion functionality. It also
 	 *         serves as a base-class for classes which have a single,
 	 *         automatable parameter.
-	 *  @extends {Tone}
+	 *  @extends {Tone.AudioNode}
 	 *  @param  {AudioParam}  param  The parameter to wrap.
 	 *  @param  {Tone.Type} units The units of the audio param.
 	 *  @param  {Boolean} convert If the param should be converted.
