@@ -3,10 +3,10 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal"], function (Tone) {
 	/**
 	 * @class Tone.TickSignal extends Tone.TimelineSignal, but adds the capability
 	 *        to calculate the number of elapsed ticks. exponential and target curves
-	 *        are approximated with multiple linear ramps. 
-	 *        
+	 *        are approximated with multiple linear ramps.
+	 *
 	 *        Thank you Bruno Dias, H. Sofia Pinto, and David M. Matos, for your [WAC paper](https://smartech.gatech.edu/bitstream/handle/1853/54588/WAC2016-49.pdf)
-	 *        describing integrating timing functions for tempo calculations. 
+	 *        describing integrating timing functions for tempo calculations.
 	 *
 	 * @param {Number} value The initial value of the signal
 	 * @extends {Tone.TimelineSignal}
@@ -30,7 +30,7 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal"], function (Tone) {
 	 * Wraps Tone.TimelineSignal methods so that they also
 	 * record the ticks.
 	 * @param  {Function} method
-	 * @return {Function} 
+	 * @return {Function}
 	 * @private
 	 */
 	function _wrapScheduleMethods(method){
@@ -51,10 +51,10 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal"], function (Tone) {
 	/**
 	 *  Start exponentially approaching the target value at the given time with
 	 *  a rate having the given time constant.
-	 *  @param {number} value        
-	 *  @param {Time} startTime    
-	 *  @param {number} timeConstant 
-	 *  @returns {Tone.TickSignal} this 
+	 *  @param {number} value
+	 *  @param {Time} startTime
+	 *  @param {number} timeConstant
+	 *  @returns {Tone.TickSignal} this
 	 */
 	Tone.TickSignal.prototype.setTargetAtTime = function(value, time, constant){
 		//aproximate it with multiple linear ramps
@@ -74,10 +74,10 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal"], function (Tone) {
 	};
 
 	/**
-	 *  Schedules an exponential continuous change in parameter value from 
+	 *  Schedules an exponential continuous change in parameter value from
 	 *  the previous scheduled parameter value to the given value.
-	 *  @param  {number} value   
-	 *  @param  {Time} endTime 
+	 *  @param  {number} value
+	 *  @param  {Time} endTime
 	 *  @returns {Tone.TickSignal} this
 	 */
 	Tone.TickSignal.prototype.exponentialRampToValueAtTime = function(value, time){
@@ -106,9 +106,10 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal"], function (Tone) {
 	/**
 	 * Returns the tick value at the time. Takes into account
 	 * any automation curves scheduled on the signal.
+	 * @private
 	 * @param  {Time} time The time to get the tick count at
 	 * @return {Ticks}      The number of ticks which have elapsed at the time
-	 *                          given any automations. 
+	 *                          given any automations.
 	 */
 	Tone.TickSignal.prototype._getTickUntilEvent = function(event, time){
 		if (event === null){
@@ -127,7 +128,7 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal"], function (Tone) {
 	 * any automation curves scheduled on the signal.
 	 * @param  {Time} time The time to get the tick count at
 	 * @return {Ticks}      The number of ticks which have elapsed at the time
-	 *                          given any automations. 
+	 *                          given any automations.
 	 */
 	Tone.TickSignal.prototype.getTickAtTime = function(time){
 		time = this.toSeconds(time);
@@ -148,17 +149,17 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal"], function (Tone) {
 	};
 
 	/**
-	 * Given a tick, returns the time that tick occurs at. 
+	 * Given a tick, returns the time that tick occurs at.
 	 * @param  {Ticks} tick
-	 * @return {Time}      The time that the tick occurs. 
+	 * @return {Time}      The time that the tick occurs.
 	 */
 	Tone.TickSignal.prototype.getTimeOfTick = function(tick){
 		var before = this._events.get(tick, "ticks");
 		var after = this._events.getAfter(tick, "ticks");
 		if (before && before.ticks === tick){
 			return before.time;
-		} else if (before && after && 
-			after.type === Tone.TimelineSignal.Type.Linear && 
+		} else if (before && after &&
+			after.type === Tone.TimelineSignal.Type.Linear &&
 			before.value !== after.value){
 			var val0 = this.getValueAtTime(before.time);
 			var val1 = this.getValueAtTime(after.time);
