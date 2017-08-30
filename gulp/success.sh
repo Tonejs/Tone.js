@@ -10,5 +10,5 @@ if [ "${TRAVIS_PULL_REQUEST}" = "false" ]; then
 fi
 
 
-# do coveralls either way
-# gulp coveralls
+# upload coveralls
+gulp coveralls
