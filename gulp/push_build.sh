@@ -45,7 +45,7 @@ fi
 
 # push the build
 git add .
-git commit -m "build $TRAVIS_BUILD_NUMBER"
+git commit -m "build #$TRAVIS_BUILD_NUMBER: $TRAVIS_COMMIT_MESSAGE"
 git push -f
 
 rm -rf $TMP_DIR
