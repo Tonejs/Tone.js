@@ -3,9 +3,13 @@
 TMP_DIR=./tmp
 mkdir $TMP_DIR
 
+
 TONE_DIR=$(pwd)/../
 
 BUILD_DIR=$TMP_DIR/build
+
+echo tone dir: $TONE_DIR
+echo build dir: $BUILD_DIR
 
 # clone the build repo
 if [[ "$TRAVIS" = "true" ]]; then
@@ -13,9 +17,9 @@ if [[ "$TRAVIS" = "true" ]]; then
 fi
 
 git clone https://${GITHUB_USER}github.com/Tonejs/build $BUILD_DIR > /dev/null 2>&1
-git checkout gh-pages
 
 cd $TMP_DIR/build
+git checkout gh-pages
 
 # generate a new build
 gulp build
