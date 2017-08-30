@@ -72,7 +72,7 @@ define(["Tone/core/Tone", "Tone/core/AudioNode"], function (Tone) {
 	};
 
 	/**
-	 *  Possible return types of Tone.Analyser.analyse()
+	 *  Possible return types of analyser.getValue()
 	 *  @enum {String}
 	 */
 	Tone.Analyser.Type = {
@@ -85,7 +85,7 @@ define(["Tone/core/Tone", "Tone/core/AudioNode"], function (Tone) {
 	 *  result as a TypedArray.
 	 *  @returns {TypedArray}
 	 */
-	Tone.Analyser.prototype.analyse = function(){
+	Tone.Analyser.prototype.getValue = function(){
 		if (this._type === Tone.Analyser.Type.FFT){
 			this._analyser.getFloatFrequencyData(this._buffer);
 		} else if (this._type === Tone.Analyser.Type.Waveform){
@@ -111,7 +111,7 @@ define(["Tone/core/Tone", "Tone/core/AudioNode"], function (Tone) {
 	});
 
 	/**
-	 *  The analysis function returned by Tone.Analyser.analyse(), either "fft" or "waveform".
+	 *  The analysis function returned by analyser.getValue(), either "fft" or "waveform".
 	 *  @memberOf Tone.Analyser#
 	 *  @type {String}
 	 *  @name type
