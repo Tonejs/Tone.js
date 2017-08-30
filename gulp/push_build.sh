@@ -27,18 +27,17 @@ echo travis branch: $TRAVIS_BRANCH
 # push to the appropriate location
 if [ "$TRAVIS" = "true" ]; then
 
-	# dev builds go into the dev folder
-	mkdir $BUILD_DIR/test/
-	cp $TONE_DIR/build/ $BUILD_DIR/test/
 
 	if [ "$TRAVIS_BRANCH" = "dev" ]; then
 
-		echo dev build
+		# dev builds go into the dev folder
+		mkdir $BUILD_DIR/test/
+		cp -r $TONE_DIR/build/ $BUILD_DIR/test/
 
 	elif [ "$TRAVIS_BRANCH" = "master" ]; then
 
 		# master builds are on the root level folder
-		cp $TONE_DIR/build/ $BUILD_DIR/
+		cp -r $TONE_DIR/build/ $BUILD_DIR/
 
 	fi
 
