@@ -19,17 +19,21 @@ git clone https://${GITHUB_USER}github.com/Tonejs/build $BUILD_DIR > /dev/null 2
 cd $BUILD_DIR
 git checkout gh-pages
 
+echo travis branch: $TRAVIS_BRANCH
+
 # generate a new build
 # gulp build
 
 # push to the appropriate location
 if [ "$TRAVIS" = "true" ]; then
 
+	# dev builds go into the dev folder
+	mkdir $BUILD_DIR/test/
+	cp $TONE_DIR/build/ $BUILD_DIR/test/
+
 	if [ "$TRAVIS_BRANCH" = "dev" ]; then
 
-		# dev builds go into the dev folder
-		mkdir $BUILD_DIR/test/
-		cp $TONE_DIR/build/ $BUILD_DIR/test/
+		echo dev build
 
 	elif [ "$TRAVIS_BRANCH" = "master" ]; then
 
