@@ -6,7 +6,7 @@ if [ "${TRAVIS_PULL_REQUEST}" = "false" ]; then
 	# gulp commitDevBuild
 
 	# commit the build
-	sh push_build.sh
+	bash push_build.sh
 
 fi
 
