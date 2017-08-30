@@ -26,7 +26,7 @@ define(["Tone/core/Tone", "Tone/core/Context"], function (Tone) {
 
 	/**
 	 * Get the audio context belonging to this instance.
-	 * @type {AudioNode}
+	 * @type {Tone.Context}
 	 * @memberOf Tone.AudioNode#
 	 * @name context
 	 * @readOnly
@@ -144,6 +144,7 @@ define(["Tone/core/Tone", "Tone/core/Context"], function (Tone) {
 	 *  node.chain(effect, panVol, Tone.Master);
 	 *  @param {...AudioParam|Tone|AudioNode} nodes
 	 *  @returns {Tone.AudioNode} this
+	 *  @private
 	 */
 	Tone.AudioNode.prototype.chain = function(){
 		var currentUnit = this;
@@ -159,6 +160,7 @@ define(["Tone/core/Tone", "Tone/core/Context"], function (Tone) {
 	 *  connect the output of this node to the rest of the nodes in parallel.
 	 *  @param {...AudioParam|Tone|AudioNode} nodes
 	 *  @returns {Tone.AudioNode} this
+	 *  @private
 	 */
 	Tone.AudioNode.prototype.fan = function(){
 		for (var i = 0; i < arguments.length; i++){
