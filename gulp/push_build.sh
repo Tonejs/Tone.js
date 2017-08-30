@@ -32,12 +32,12 @@ if [ "$TRAVIS" = "true" ]; then
 
 		# dev builds go into the dev folder
 		mkdir $BUILD_DIR/test/
-		cp -r $TONE_DIR/build/ $BUILD_DIR/test/
+		cp -a $TONE_DIR/build/. $BUILD_DIR/test/
 
 	elif [ "$TRAVIS_BRANCH" = "master" ]; then
 
 		# master builds are on the root level folder
-		cp -r $TONE_DIR/build/ $BUILD_DIR/
+		cp -a $TONE_DIR/build/. $BUILD_DIR/
 
 	fi
 
@@ -45,7 +45,7 @@ fi
 
 # push the build
 git add .
-git commit -m 'build ${TRAVIS_BUILD_NUMBER}'
+git commit -m "build $TRAVIS_BUILD_NUMBER"
 git push -f
 
 rm -rf $TMP_DIR
