@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
 TMP_DIR=$(pwd)/tmp
 mkdir $TMP_DIR
@@ -11,7 +11,7 @@ echo tone dir: $TONE_DIR
 echo build dir: $BUILD_DIR
 
 # clone the build repo
-if [[ "$TRAVIS" = "true" ]]; then
+if [ "$TRAVIS" = "true" ]; then
 	GITHUB_USER=${GH_TOKEN}@
 fi
 
@@ -20,16 +20,17 @@ cd $BUILD_DIR
 git checkout gh-pages
 
 # generate a new build
-# gulp build
+gulp build
 
 # push to the appropriate location
-if [[ "$TRAVIS" = "true" ]]; then
-	if [[ "$TRAVIS_BRANCH" = "travis" ]]; then
+if [ "$TRAVIS" = "true" ]; then
+	if [ "$TRAVIS_BRANCH" = "travis" ]; then
 
 		# dev builds go into the dev folder
+		mkdir $BUILD_DIR/test/
 		cp -rf $TONE_DIR/build/{Tone.js,Tone.min.js} $BUILD_DIR/test/
 
-	elif [[ "$TRAVIS_BRANCH" = "master" ]]; then
+	elif [ "$TRAVIS_BRANCH" = "master" ]; then
 
 		# master builds are on the root level folder
 		cp -rf $TONE_DIR/build/{Tone.js,Tone.min.js} $BUILD_DIR/
