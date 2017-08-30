@@ -10,7 +10,6 @@ if [ "$TRAVIS" = "true" ]; then
 fi
 
 git clone https://${GITHUB_USER}github.com/Tonejs/tonejs.github.io $SITE_DIR > /dev/null 2>&1
-git checkout travis-two
 
 cd $SITE_DIR
 # run the update script
