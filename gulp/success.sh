@@ -6,7 +6,7 @@ if [ "${TRAVIS_PULL_REQUEST}" = "false" ]; then
 	sh push_build.sh
 
 	# update the site
-	sh update_site.sh
+	# sh update_site.sh
 fi
 
 

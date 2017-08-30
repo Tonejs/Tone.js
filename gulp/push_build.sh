@@ -20,20 +20,20 @@ cd $BUILD_DIR
 git checkout gh-pages
 
 # generate a new build
-gulp build
+# gulp build
 
 # push to the appropriate location
 if [ "$TRAVIS" = "true" ]; then
-	if [ "$TRAVIS_BRANCH" = "travis" ]; then
+	if [ "$TRAVIS_BRANCH" = "dev" ]; then
 
 		# dev builds go into the dev folder
 		mkdir $BUILD_DIR/test/
-		cp -rf $TONE_DIR/build/{Tone.js,Tone.min.js} $BUILD_DIR/test/
+		cp $TONE_DIR/build/{Tone.js,Tone.min.js} $BUILD_DIR/test/
 
 	elif [ "$TRAVIS_BRANCH" = "master" ]; then
 
 		# master builds are on the root level folder
-		cp -rf $TONE_DIR/build/{Tone.js,Tone.min.js} $BUILD_DIR/
+		cp $TONE_DIR/build/{Tone.js,Tone.min.js} $BUILD_DIR/
 
 	fi
 fi
