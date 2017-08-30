@@ -8,6 +8,7 @@ node_js:
 #   chrome: stable
 before_script:
   - cd gulp
+  - npm install -g jsdoc
   # - npm install -g karma
   # - npm install -g gulp
   # - npm install
