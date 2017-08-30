@@ -9,9 +9,9 @@ node_js:
 before_script:
   - cd gulp
   - npm install -g jsdoc
-  # - npm install -g karma
-  # - npm install -g gulp
-  # - npm install
+  - npm install -g karma
+  - npm install -g gulp
+  - npm install
   - git config --global user.email "travis@travis-ci.org"
   - git config --global user.name "Travis CI"
 # script: gulp travis-test

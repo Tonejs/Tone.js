@@ -22,7 +22,7 @@ git checkout gh-pages
 echo travis branch: $TRAVIS_BRANCH
 
 # generate a new build
-# gulp build
+gulp build
 
 # push to the appropriate location
 if [ "$TRAVIS" = "true" ]; then
