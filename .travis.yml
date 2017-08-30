@@ -1,18 +1,18 @@
-sudo: false  
-dist: trusty  
-language: node_js  
-node_js:  
+sudo: false
+dist: trusty
+language: node_js
+node_js:
  - "8"
 
 addons:
   chrome: stable
 before_script:
   - cd gulp
-  - npm install -g karma
+  # - npm install -g karma
   - npm install -g gulp
   - npm install
   - git config --global user.email "travis@travis-ci.org"
   - git config --global user.name "Travis CI"
-script: gulp travis-test
-after_success: 
+# script: gulp travis-test
+after_success:
   - sh success.sh
