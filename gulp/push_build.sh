@@ -3,7 +3,7 @@
 TMP_DIR=$(pwd)/tmp
 mkdir $TMP_DIR
 
-TONE_DIR=$(pwd)/../
+TONE_DIR=$(pwd)/..
 
 BUILD_DIR=$TMP_DIR/build
 
