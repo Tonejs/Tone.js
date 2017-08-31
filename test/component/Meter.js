@@ -1,6 +1,6 @@
-define(["Tone/component/Meter", "helper/Basic", "helper/Offline", "Test", 
-	"Tone/signal/Signal", "helper/PassAudio", "Tone/type/Type", 
-	"Tone/component/Merge", "Tone/source/Oscillator"], 
+define(["Tone/component/Meter", "helper/Basic", "helper/Offline", "Test",
+	"Tone/signal/Signal", "helper/PassAudio", "Tone/type/Type",
+	"Tone/component/Merge", "Tone/source/Oscillator"],
 function (Meter, Basic, Offline, Test, Signal, PassAudio, Tone, Merge, Oscillator) {
 	describe("Meter", function(){
 
@@ -18,11 +18,9 @@ function (Meter, Basic, Offline, Test, Signal, PassAudio, Tone, Merge, Oscillato
 			it("handles getter/setter as Object", function(){
 				var meter = new Meter();
 				var values = {
-					"type" : "signal",
 					"smoothing" : 0.2
 				};
 				meter.set(values);
-				expect(meter.get().type).to.equal("signal");
 				expect(meter.get().smoothing).to.equal(0.2);
 				meter.dispose();
 			});
@@ -40,14 +38,14 @@ function (Meter, Basic, Offline, Test, Signal, PassAudio, Tone, Merge, Oscillato
 				return PassAudio(function(input){
 					meter = new Meter();
 					input.chain(meter, Tone.Master);
-				});				
+				});
 			});
 
 			it("measures the incoming signal", function(done){
-				var meter = new Meter("signal");
+				var meter = new Meter();
 				var signal = new Signal(1).connect(meter);
 				setTimeout(function(){
-					expect(meter.value).to.be.closeTo(1, 0.05);
+					expect(meter.getValue()).to.be.closeTo(1, 0.05);
 					meter.dispose();
 					signal.dispose();
 					done();
@@ -59,7 +57,7 @@ function (Meter, Basic, Offline, Test, Signal, PassAudio, Tone, Merge, Oscillato
 				var osc = new Oscillator().connect(meter).start();
 				osc.volume.value = -6;
 				setTimeout(function(){
-					expect(meter.value).to.be.closeTo(1, 0.1);
+					expect(meter.getLevel()).to.be.closeTo(-6, 1);
 					meter.dispose();
 					osc.dispose();
 					done();
