@@ -145,6 +145,22 @@ define(["Test", "Tone/signal/TransportTimelineSignal", "helper/Offline", "Tone/t
 			});
 		});
 
+		it("can cancel a scheduled value", function(){
+			var sched;
+			return Offline(function(Transport){
+				sched = new TransportTimelineSignal(0).toMaster();
+				sched.setValueAtTime(0, 0);
+				sched.linearRampToValueAtTime(1, 1);
+				sched.cancelAndHoldAtTime(0.5);
+				Transport.start(0);
+			}, 1).then(function(buffer){
+				expect(buffer.getValueAtTime(0)).to.be.closeTo(0, 0.1);
+				expect(buffer.getValueAtTime(0.25)).to.be.closeTo(0.25, 0.1);
+				expect(buffer.getValueAtTime(0.5)).to.be.closeTo(0.5, 0.1);
+				expect(buffer.getValueAtTime(0.75)).to.be.closeTo(0.5, 0.1);
+			});
+		});
+
 		it("can automate values with different units", function(){
 			var sched;
 			return Offline(function(Transport){

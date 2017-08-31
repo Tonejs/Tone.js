@@ -1,4 +1,4 @@
-define(["Test", "Tone/signal/TimelineSignal", "helper/Offline", "Tone/type/Type", "helper/Supports"], 
+define(["Test", "Tone/signal/TimelineSignal", "helper/Offline", "Tone/type/Type", "helper/Supports"],
 	function (Test, TimelineSignal, Offline, Tone, Supports) {
 
 	describe("TimelineSignal", function(){
@@ -78,7 +78,7 @@ define(["Test", "Tone/signal/TimelineSignal", "helper/Offline", "Tone/type/Type"
 				});
 			});
 		});
-			
+
 		it("can get set a curve in the future", function(){
 			var sched;
 			return Offline(function(){
@@ -103,8 +103,21 @@ define(["Test", "Tone/signal/TimelineSignal", "helper/Offline", "Tone/type/Type"
 			});
 		});
 
+		it ("can cancel and hold an automation curve", function(){
+			return Offline(function(){
+				var sig = new TimelineSignal(0).toMaster();
+				sig.linearRampTo(2, 1);
+				sig.cancelAndHoldAtTime(0.5)
+			}, 1).then(function(buffer){
+				expect(buffer.getValueAtTime(0)).to.be.closeTo(0, 0.1);
+				expect(buffer.getValueAtTime(0.25)).to.be.closeTo(0.5, 0.1);
+				expect(buffer.getValueAtTime(0.5)).to.be.closeTo(1, 0.1);
+				expect(buffer.getValueAtTime(0.75)).to.be.closeTo(1, 0.1);
+			});
+		});
+
 		if (Supports.ACCURATE_SIGNAL_SCHEDULING){
-			
+
 			it("can match a complex scheduled curve", function(){
 				var sched;
 				return Offline(function(){
