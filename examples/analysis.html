@@ -6,7 +6,7 @@
 
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 	<link rel="icon" type="image/png" sizes="174x174" href="./style/favicon.png">
-	
+
 	<script src="../build/Tone.js"></script>
 	<script src="./scripts/jquery.min.js"></script>
 	<script src="./scripts/draggabilly.js"></script>
@@ -30,22 +30,22 @@
 <body>
 	<div id="Content" class="FullScreen">
 		<div id="Title">Analyser</div>
-		<div id="Explanation">	
+		<div id="Explanation">
 			<a href="https://tonejs.github.io/docs/#Analyser" target="_blank">Tone.Analyser</a>
 			analyses the incoming audio to produce a TypedArray of either the
-			<a href="https://en.wikipedia.org/wiki/Fast_Fourier_transform" target="_blank">FFT data</a> 
+			<a href="https://en.wikipedia.org/wiki/Fast_Fourier_transform" target="_blank">FFT data</a>
 			or the waveform. The default <code>returnType</code> is "byte" which returns values
 			in the range 0-255.
 		</div>
-		
+
 	</div>
 
-	<script>		
-		//analyse the frequency/amplitude of the incoming signal	
-		var fft = new Tone.Analyser("fft", 32);
+	<script>
+		//analyse the frequency/amplitude of the incoming signal
+		var fft = new Tone.FFT(32);
 
 		//get the waveform data for the audio
-		var waveform = new Tone.Analyser("waveform", 1024);
+		var waveform = new Tone.Waveform(1024);
 
 		var player = new Tone.Player({
 			"url" : "./audio/FWDL.[mp3|ogg]",
@@ -77,10 +77,9 @@
 			fftContext.clearRect(0, 0, canvasWidth, canvasHeight);
 			var barWidth = canvasWidth / fft.size;
 			for (var i = 0, len = values.length; i < len; i++){
-				var val = values[i] / 255;
 				var x = canvasWidth * (i / len);
-				var y = val * canvasHeight;
-				fftContext.fillStyle = "rgba(0, 0, 0, " + val + ")";
+				var y = (values[i] + 140) * 2;
+				fftContext.fillStyle = "rgba(0, 0, 0, " + i/len + ")";
 				fftContext.fillRect(x, canvasHeight - y, barWidth, canvasHeight);
 			}
 		}
@@ -94,14 +93,13 @@
 		function drawWaveform(values){
 			//draw the waveform
 			waveContext.clearRect(0, 0, canvasWidth, canvasHeight);
-			var values = waveform.analyse();
 			waveContext.beginPath();
 			waveContext.lineJoin = "round";
 			waveContext.lineWidth = 6;
 			waveContext.strokeStyle = waveformGradient;
 			waveContext.moveTo(0, (values[0] / 255) * canvasHeight);
 			for (var i = 1, len = values.length; i < len; i++){
-				var val = values[i] / 255;
+				var val = (values[i] + 1) / 2;
 				var x = canvasWidth * (i / len);
 				var y = val * canvasHeight;
 				waveContext.lineTo(x, y);
@@ -123,7 +121,7 @@
 			//make the gradient
 			waveformGradient = waveContext.createLinearGradient(0, 0, canvasWidth, canvasHeight);
 			waveformGradient.addColorStop(0, "#ddd");
-			waveformGradient.addColorStop(1, "#000");   
+			waveformGradient.addColorStop(1, "#000");
 		}
 
 		sizeCanvases();
@@ -132,10 +130,10 @@
 		function loop(){
 			requestAnimationFrame(loop);
 			//get the fft data and draw it
-			var fftValues = fft.analyse();
+			var fftValues = fft.getValue();
 			drawFFT(fftValues);
 			//get the waveform valeus and draw it
-			var waveformValues = waveform.analyse();
+			var waveformValues = waveform.getValue();
 			drawWaveform(waveformValues);
 		}
 		loop();
