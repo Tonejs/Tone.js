@@ -144,19 +144,6 @@ gulp.task("example", function() {
 });
 
 /**
- *  THE WEBSERVER
- */
-gulp.task("server", function(){
-	gulp.src("../")
-		.pipe(webserver({
-			// livereload: false,
-			directoryListing: true,
-			port : 3000,
-			open: false
-		}));
-});
-
-/**
  *  LINTING
  */
 gulp.task("lint", function() {
@@ -177,7 +164,7 @@ gulp.task("collectTests", function(done){
 	var tests = ["../test/*/*.js", "!../test/helper/*.js", "!../test/tests/*.js"];
 	if (argv.file){
 		tests = ["../test/*/"+argv.file+".js"];
-	} else if (argv.signal || argv.core || argv.component || argv.instrument || 
+	} else if (argv.signal || argv.core || argv.component || argv.instrument ||
 				argv.source || argv.effect || argv.event || argv.type || argv.examples){
 		tests = [];
 		if (argv.signal){
@@ -207,7 +194,7 @@ gulp.task("collectTests", function(done){
 		if (argv.examples){
 			tests.push("../test/examples/*.js");
 		}
-	} 
+	}
 	// console.log(argv.signal === undefined);
 	var allFiles = [];
 	var task = gulp.src(tests)
@@ -232,119 +219,9 @@ gulp.task("collectTests", function(done){
 gulp.task("travis-test", ["lint", "karma-test"]);
 
 /**
- *  COMMIT BUILD
- */
-gulp.task("cloneBuild", function(done) {
-	var gitUser = "";
-	if (process.env.TRAVIS && process.env.GH_TOKEN){
-		gitUser = process.env.GH_TOKEN+"@";
-	}
-	git.clone("https://"+gitUser+"github.com/Tonejs/build", {args: `${TMP_FOLDER}/build`}, done);
-});
-
-gulp.task("moveToDev", ["build", "cloneBuild"], function(){
-	// move files to 'dev' folder
-	return gulp.src("../build/*.js")
-		.pipe(gulp.dest(`${TMP_FOLDER}/build/dev/`));
-});
-
-gulp.task("commitDev", ["moveToDev"], function(){
-	process.chdir(`${TMP_FOLDER}/build`);
-	return gulp.src("./dev/*")
-		.pipe(git.add())
-		.pipe(git.commit(`${VERSION} build #${process.env.TRAVIS_BUILD_NUMBER}: ${process.env.TRAVIS_COMMIT_MESSAGE}`));
-});
-
-gulp.task("pushBuild", ["commitDev"], function(done){
-	if (process.env.TRAVIS && process.env.GH_TOKEN){
-		git.push("origin", "gh-pages", {args: " -f"}, function (err) {
-			if (err) throw err;
-			done();
-		});
-	} else {
-		done();
-	}
-});
-
-gulp.task("commitDevBuild", ["pushBuild"], function(){
-	return del([`${TMP_FOLDER}/build`], { force : true});
-});
-
-/**
  *  COVERALLS
  */
 gulp.task("coveralls", function(){
 	return gulp.src("../test/coverage/**/lcov.info")
 		.pipe(coveralls());
-});
-
-/**
- * JS DOC ATTRIBUTES 
- */
-
-gulp.task("cloneSite", function(done){
-	var gitUser = "";
-	if (process.env.TRAVIS && process.env.GH_TOKEN){
-		gitUser = process.env.GH_TOKEN+"@";
-	}
-	git.clone("https://"+gitUser+"github.com/Tonejs/tonejs.github.io", {args: `${TMP_FOLDER}/Site`}, done);
-});
-
-gulp.task("commitSite", ["buildJsdocs"], function(){
-	process.chdir(`${TMP_FOLDER}/Site`);
-	return gulp.src("*")
-		.pipe(git.add())
-		.pipe(git.commit(`${VERSION} build #${process.env.TRAVIS_BUILD_NUMBER}: ${process.env.TRAVIS_COMMIT_MESSAGE}`));
-});
-
-gulp.task("pushJSDocs", ["commitSite"], function(done){
-	if (process.env.TRAVIS && process.env.GH_TOKEN){
-		git.push("origin", "master", {args: " -f"}, function (err) {
-			if (err) throw err;
-			done();
-		});
-	} else {
-		done();
-	}
-});
-
-gulp.task("empty.md", ["cloneSite"], function(){
-	return gulp.src("../Tone/*/*.js")
-		.pipe(tap(function(file){
-			var className = path.basename(file.path, ".js");
-			var pathSplit = file.path.split("/");
-			var category = pathSplit[pathSplit.length-2];
-			file.contents = Buffer.from(`---\ntitle: ${className}\nlayout: ${className === "Type" ? "type" : "doc"}\nversion: ${VERSION}\n---`);
-		}))
-		.pipe(rename({extname: ".md"}))
-		.pipe(flatten())
-		.pipe(gulp.dest(`${TMP_FOLDER}/Site/_documentation/${VERSION.includes("dev") ? "dev" : VERSION}`))
-		.pipe(tap(function(file){
-			// and another one which just forwards
-			var className = path.basename(file.path, ".md");
-			file.contents = Buffer.from(`---\ntitle: ${className}\nlayout: forward\n---`);
-		}))
-		.pipe(gulp.dest(`${TMP_FOLDER}/Site/_documentation/`));
-});
-
-gulp.task("buildJsdocs", ["empty.md"],  function(done){
-	glob("../Tone/*/*.js", function(err, files){
-		var docs = child_process.execSync(`./node_modules/.bin/jsdoc -X -a public ${files.join(" ")}`);
-		docs = JSON.parse(docs)
-		//filter out some stuff
-		docs = docs.filter(function(datum){
-				//is public
-			return datum.access !== "private" &&
-				//doesnt inherit
-				(!datum.hasOwnProperty('inherits') || !datum.inherits.startsWith('Tone#')) &&
-				//isnt undocumented (or a default value)
-				(!datum.undocumented || datum.longname.includes('defaults'))
-		});
-		var dest = `${TMP_FOLDER}/Site/_data/jsdocs-${VERSION}.json`;
-		fs.writeFile(dest, JSON.stringify(docs, undefined, '\t'), done);
-	});
-});
-
-gulp.task("commitJSDocs", ["pushJSDocs"], function(){
-	return del([`${TMP_FOLDER}/Site`], { force : true});
 });
