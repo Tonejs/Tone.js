@@ -1,5 +1,5 @@
-define(["helper/OutputAudio", "Tone/effect/Effect", "helper/PassAudio", 
-	"helper/PassAudioStereo", "Test", "helper/Offline", "Tone/signal/Signal", "Tone/component/Merge"], 
+define(["helper/OutputAudio", "Tone/effect/Effect", "helper/PassAudio",
+	"helper/PassAudioStereo", "Test", "helper/Offline", "Tone/signal/Signal", "Tone/component/Merge"],
 	function (OutputAudio, Effect, PassAudio, PassAudioStereo, Test, Offline, Signal, Merge) {
 
 	return function(Constr, args, before){
@@ -55,7 +55,7 @@ define(["helper/OutputAudio", "Tone/effect/Effect", "helper/PassAudio",
 					input.connect(instance);
 					instance.toMaster();
 				});
-			});	
+			});
 
 			it("passes audio in both channels", function(){
 				return PassAudioStereo(function(input){
@@ -66,7 +66,7 @@ define(["helper/OutputAudio", "Tone/effect/Effect", "helper/PassAudio",
 					input.connect(instance);
 					instance.toMaster();
 				});
-			});	
+			});
 
 			it("can pass 100% dry signal", function(){
 				return Offline(function(){
@@ -78,8 +78,8 @@ define(["helper/OutputAudio", "Tone/effect/Effect", "helper/PassAudio",
 					var signalL = new Signal(-1).connect(merge.left);
 					var signalR = new Signal(1).connect(merge.right);
 					//make the signals ramp
-					signalL.linearRampToValue(1, 1);
-					signalR.linearRampToValue(-1, 1);
+					signalL.linearRampTo(1, 1);
+					signalR.linearRampTo(-1, 1);
 					instance.wet.value = 0;
 				}, 0.5, 2).then(function(buffer){
 					buffer.forEach(function(L, R, time){
@@ -89,7 +89,7 @@ define(["helper/OutputAudio", "Tone/effect/Effect", "helper/PassAudio",
 						expect(R).to.be.closeTo(rightValue, 0.001);
 					});
 				});
-			});	
+			});
 
 			it("effects the incoming signal", function(){
 				return Offline(function(){
@@ -101,8 +101,8 @@ define(["helper/OutputAudio", "Tone/effect/Effect", "helper/PassAudio",
 					var signalL = new Signal(-1).connect(merge.left);
 					var signalR = new Signal(1).connect(merge.right);
 					//make the signals ramp
-					signalL.linearRampToValue(1, 1);
-					signalR.linearRampToValue(-1, 1);
+					signalL.linearRampTo(1, 1);
+					signalR.linearRampTo(-1, 1);
 					if (instance.start){
 						instance.start();
 					}
@@ -114,13 +114,13 @@ define(["helper/OutputAudio", "Tone/effect/Effect", "helper/PassAudio",
 							leftEffected = true;
 						}
 						if (Math.abs(R - rightValue) > 0.01){
-							rightEffected = true;	
+							rightEffected = true;
 						}
 					});
 					expect(leftEffected).to.be.true;
 					expect(rightEffected).to.be.true;
 				});
-			});	
+			});
 		});
 
 	};
