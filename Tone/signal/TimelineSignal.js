@@ -207,7 +207,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Timeline"], function 
 	/**
 	 *  Cancels all scheduled parameter changes with times greater than or
 	 *  equal to cancelTime and sets the output of the signal to be the value
-	 *  at cancelTime. Similar to (cancelScheduledValues)[#cancelScheduledValues].
+	 *  at cancelTime. Similar to (cancelScheduledValues)[#cancelscheduledvalues].
 	 *  @param  {Time} cancelTime
 	 *  @returns {Tone.TimelineSignal} this
 	 */
