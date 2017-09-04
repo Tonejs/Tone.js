@@ -30,6 +30,13 @@ define(["Tone/core/Tone"], function (Tone) {
 		this._toRemove = [];
 
 		/**
+		 *  An array of items to add from the list (once it's done iterating)
+		 *  @type {Array}
+		 *  @private
+		 */
+		this._toAdd = [];
+
+		/**
 		 *  Flag if the timeline is mid iteration
 		 *  @private
 		 *  @type {Boolean}
@@ -79,16 +86,16 @@ define(["Tone/core/Tone"], function (Tone) {
 		if (Tone.isUndef(event.time)){
 			throw new Error("Tone.Timeline: events must have a time attribute");
 		}
-		if (this._timeline.length){
+		if (this._iterating){
+			this._toAdd.push(event);
+		} else {
 			var index = this._search(event.time);
 			this._timeline.splice(index + 1, 0, event);
-		} else {
-			this._timeline.push(event);
-		}
-		//if the length is more than the memory, remove the previous ones
-		if (this.length > this.memory){
-			var diff = this.length - this.memory;
-			this._timeline.splice(0, diff);
+			//if the length is more than the memory, remove the previous ones
+			if (this.length > this.memory){
+				var diff = this.length - this.memory;
+				this._timeline.splice(0, diff);
+			}
 		}
 		return this;
 	};
@@ -308,6 +315,10 @@ define(["Tone/core/Tone"], function (Tone) {
 			this.remove(event);
 		}.bind(this));
 		this._toRemove = [];
+		this._toAdd.forEach(function(event){
+			this.add(event);
+		}.bind(this));
+		this._toAdd = [];
 	};
 
 	/**
@@ -393,6 +404,7 @@ define(["Tone/core/Tone"], function (Tone) {
 		Tone.prototype.dispose.call(this);
 		this._timeline = null;
 		this._toRemove = null;
+		this._toAdd = null;
 		return this;
 	};
 
