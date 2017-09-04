@@ -3,7 +3,7 @@ define(["Tone/core/Tone", "Tone/core/TransportEvent"], function(Tone){
 	/**
 	 *  @class Tone.TransportRepeatEvent is an internal class used by Tone.Transport
 	 *         to schedule repeat events. This class should not be instantiated directly.
-	 *  @extends {Tone}
+	 *  @extends {Tone.TransportEvent}
 	 *  @param {Object} options
 	 */
 	Tone.TransportRepeatEvent = function(Transport, options){
