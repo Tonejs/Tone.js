@@ -241,7 +241,7 @@ define(["Tone/core/Tone"], function (Tone) {
 	};
 
 	/**
-	 *  Does a binary serach on the timeline array and returns the
+	 *  Does a binary search on the timeline array and returns the
 	 *  nearest event index whose time is after or equal to the given time.
 	 *  If a time is searched before the first index in the timeline, -1 is returned.
 	 *  If the time is after the end, the index of the last item is returned.
@@ -304,15 +304,10 @@ define(["Tone/core/Tone"], function (Tone) {
 			callback.call(this, this._timeline[i]);
 		}
 		this._iterating = false;
-		if (this._toRemove.length > 0){
-			for (var j = 0; j < this._toRemove.length; j++){
-				var index = this._timeline.indexOf(this._toRemove[j]);
-				if (index !== -1){
-					this._timeline.splice(index, 1);
-				}
-			}
-			this._toRemove = [];
-		}
+		this._toRemove.forEach(function(event){
+			this.remove(event);
+		}.bind(this));
+		this._toRemove = [];
 	};
 
 	/**
