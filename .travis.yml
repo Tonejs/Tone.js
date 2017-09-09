@@ -28,3 +28,11 @@ deploy:
   on:
     repo: Tonejs/Tone.js
     branch: dev
+# publish without @next when pushing on master
+- provider: npm
+  skip_cleanup: true
+  email: yotammann@gmail.com
+  api_key: $NPM_TOKEN
+  on:
+    repo: Tonejs/Tone.js
+    branch: master
