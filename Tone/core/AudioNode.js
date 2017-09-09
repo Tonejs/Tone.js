@@ -1,7 +1,7 @@
 define(["Tone/core/Tone", "Tone/core/Context"], function (Tone) {
 
 	/**
-	 *  @class Tone.AudioNode is a base class for classes which process audio.
+	 *  @class Tone.AudioNode is the base class for classes which process audio.
 	 *         AudioNodes have inputs and outputs.
 	 *  @param	{AudioContext=} context	The audio context to use with the class
 	 *  @extends {Tone}
