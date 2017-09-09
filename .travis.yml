@@ -18,6 +18,7 @@ after_success:
 - sh success.sh
 before_deploy:
 - node increment_version.js
+- cd ../
 deploy:
 - provider: npm
   skip_cleanup: true
