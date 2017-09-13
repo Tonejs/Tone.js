@@ -197,6 +197,13 @@ define(["helper/Basic", "Test", "Tone/core/Param", "Tone/type/Type", "Tone/signa
 				param.dispose();
 			});
 
+			it ("can set an exponential approach ramp from the current time", function(){
+				var gain = Tone.context.createGain();
+				var param = new Param(gain.gain);
+				param.targetRampTo(0.5, 0.5);
+				param.dispose();
+			});
+
 			it ("rampTo ramps from the current value", function(){
 				var gain = Tone.context.createGain();
 				var param = new Param(gain.gain);

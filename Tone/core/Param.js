@@ -264,6 +264,27 @@ define(["Tone/core/Tone", "Tone/type/Type"], function(Tone){
 	};
 
 	/**
+	 *  Start exponentially approaching the target value at the given time. Since it
+	 *  is an exponential approach it will continue approaching after the rampTime. The
+	 *  rampTime is the time that it takes to reach over 99% of the way towards the value.
+	 *  @param  {number} value   The value to ramp to.
+	 *  @param  {Time} rampTime the time that it takes the
+	 *                               value to ramp from it's current value
+	 *  @param {Time}	[startTime=now] 	When the ramp should start.
+	 *  @returns {Tone.Param} this
+	 *  @example
+	 * //exponentially ramp to the value 2 over 4 seconds.
+	 * signal.exponentialRampTo(2, 4);
+	 */
+	Tone.Param.prototype.targetRampTo = function(value, rampTime, startTime){
+		startTime = this.toSeconds(startTime);
+		var timeConstant = Math.log(rampTime+1)/Math.log(200);
+		this.setRampPoint(startTime);
+		this.setTargetAtTime(value, startTime, timeConstant);
+		return this;
+	};
+
+	/**
 	 *  Start exponentially approaching the target value at the given time with
 	 *  a rate having the given time constant.
 	 *  @param {number} value
