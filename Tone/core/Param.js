@@ -188,7 +188,7 @@ define(["Tone/core/Tone", "Tone/type/Type"], function(Tone){
 			currentVal = this._minOutput;
 		}
 		// cancel and hold at the given time
-		this._param.setValueAtTime(currentVal, now + this.sampleTime);
+		this._param.setValueAtTime(currentVal, now);
 		return this;
 	};
 
@@ -265,7 +265,7 @@ define(["Tone/core/Tone", "Tone/type/Type"], function(Tone){
 
 	/**
 	 *  Start exponentially approaching the target value at the given time. Since it
-	 *  is an exponential approach it will continue approaching after the rampTime. The
+	 *  is an exponential approach it will continue approaching after the ramp duration. The
 	 *  rampTime is the time that it takes to reach over 99% of the way towards the value.
 	 *  @param  {number} value   The value to ramp to.
 	 *  @param  {Time} rampTime the time that it takes the
