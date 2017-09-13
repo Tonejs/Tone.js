@@ -264,6 +264,17 @@ define(["Tone/core/Tone", "Tone/type/Type"], function(Tone){
 	};
 
 	/**
+	 * Convert between Time and time constant. The time
+	 * constant returned can be used in setTargetAtTime.
+	 * @param  {Time} time The time to convert
+	 * @return {Number}      The time constant to get an exponentially approaching
+	 *                           curve to over 99% of towards the target value.
+	 */
+	Tone.Param.prototype.getTimeConstant = function(time){
+		return Math.log(this.toSeconds(time)+1)/Math.log(200);
+	};
+
+	/**
 	 *  Start exponentially approaching the target value at the given time. Since it
 	 *  is an exponential approach it will continue approaching after the ramp duration. The
 	 *  rampTime is the time that it takes to reach over 99% of the way towards the value.
@@ -278,9 +289,8 @@ define(["Tone/core/Tone", "Tone/type/Type"], function(Tone){
 	 */
 	Tone.Param.prototype.targetRampTo = function(value, rampTime, startTime){
 		startTime = this.toSeconds(startTime);
-		var timeConstant = Math.log(rampTime+1)/Math.log(200);
 		this.setRampPoint(startTime);
-		this.setTargetAtTime(value, startTime, timeConstant);
+		this.setTargetAtTime(value, startTime, this.getTimeConstant(rampTime));
 		return this;
 	};
 
