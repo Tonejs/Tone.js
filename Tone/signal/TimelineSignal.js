@@ -248,8 +248,8 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Timeline"], function 
 					this.exponentialRampToValueAtTime(val, time);
 				}
 			}
-			this.setValueAtTime(val, time);
 		}
+		this.setValueAtTime(val, time);
 		return this;
 	};
 
