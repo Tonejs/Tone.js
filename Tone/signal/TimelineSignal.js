@@ -321,13 +321,13 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Timeline"], function 
 			value = this._initial;
 		} else if (before.type === Tone.TimelineSignal.Type.Target){
 			var previous = this._events.getBefore(before.time);
-			var previouVal;
+			var previousVal;
 			if (previous === null){
-				previouVal = this._initial;
+				previousVal = this._initial;
 			} else {
-				previouVal = previous.value;
+				previousVal = previous.value;
 			}
-			value = this._exponentialApproach(before.time, previouVal, before.value, before.constant, time);
+			value = this._exponentialApproach(before.time, previousVal, before.value, before.constant, time);
 		} else if (after === null){
 			value = before.value;
 		} else if (after.type === Tone.TimelineSignal.Type.Linear){
