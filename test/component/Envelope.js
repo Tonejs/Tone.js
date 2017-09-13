@@ -1,5 +1,5 @@
-define(["Tone/component/Envelope", "helper/Basic", "helper/Offline", "Test", 
-	"helper/Supports", "helper/PassAudio", "helper/APITest"], 
+define(["Tone/component/Envelope", "helper/Basic", "helper/Offline", "Test",
+	"helper/Supports", "helper/PassAudio", "helper/APITest"],
 function (Envelope, Basic, Offline, Test, Supports, PassAudio, APITest) {
 	describe("Envelope", function(){
 
@@ -152,10 +152,10 @@ function (Envelope, Basic, Offline, Test, Supports, PassAudio, APITest) {
 					env.toMaster();
 					env.triggerAttack(0);
 				}, 0.7).then(function(buffer){
-					buffer.forEach(function(sample, time){ 
+					buffer.forEach(function(sample, time){
 						var target = 1 - (time - 0.2) * 10;
 						expect(sample).to.be.closeTo(target, 0.01);
-					}, 0.2, 0.2); 
+					}, 0.2, 0.2);
 				});
 			});
 
@@ -228,13 +228,8 @@ function (Envelope, Basic, Offline, Test, Supports, PassAudio, APITest) {
 					env.triggerAttack(attackTime);
 					env.triggerRelease(releaseTime);
 				}, 0.6).then(function(buffer){
-					buffer.forEach(function(sample, time){
-						if (time < attackTime - 0.001){
-							expect(sample).to.equal(0);
-						} else if (time > e.attack + e.decay + releaseTime + e.release){
-							expect(sample).to.equal(0);
-						}
-					});
+					expect(buffer.getValueAtTime(attackTime - 0.001)).to.equal(0);
+					expect(buffer.getValueAtTime(e.attack + e.decay + releaseTime + e.release)).to.be.below(0.01);
 				});
 			});
 
@@ -253,11 +248,8 @@ function (Envelope, Basic, Offline, Test, Supports, PassAudio, APITest) {
 						env.triggerAttack(attackTime);
 					}, 0.4).then(function(buffer){
 						buffer.forEach(function(sample, time){
-							if (time < attackTime - 0.001){
-								expect(sample).to.equal(0);
-							} else if (time > attackTime + e.attack + e.decay){
-								expect(sample).to.equal(0);
-							}
+							expect(buffer.getValueAtTime(attackTime - 0.001)).to.equal(0);
+							expect(buffer.getValueAtTime(attackTime + e.attack + e.decay)).to.be.below(0.01);
 						});
 					});
 				});
@@ -317,7 +309,7 @@ function (Envelope, Basic, Offline, Test, Supports, PassAudio, APITest) {
 							} else if (time < duration + e.release){
 								expect(sample).to.be.within(0, e.sustain + 0.01);
 							} else {
-								expect(sample).to.be.below(0.001);
+								expect(sample).to.be.below(0.0015);
 						}
 						});
 					});
@@ -375,7 +367,7 @@ function (Envelope, Basic, Offline, Test, Supports, PassAudio, APITest) {
 								expect(sample).to.be.below(0.02);
 							} else if (time > 0.5 && time < 0.8){
 								expect(sample).to.be.above(0);
-							} 
+							}
 						});
 					});
 				});
@@ -575,7 +567,7 @@ function (Envelope, Basic, Offline, Test, Supports, PassAudio, APITest) {
 					env.triggerAttackRelease(0.4, 0.1, 0.5);
 				}, 0.8).then(function(buffer){
 					buffer.forEach(function(sample){
-						expect(sample).to.be.lte(0.5);
+						expect(sample).to.be.at.most(0.51);
 					});
 				});
 			});
