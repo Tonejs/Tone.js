@@ -1,5 +1,5 @@
-define(["Tone/instrument/PolySynth", "helper/Basic", "helper/InstrumentTests", "helper/OutputAudioStereo", 
-	"Tone/instrument/Instrument", "Test", "helper/OutputAudio", "Tone/instrument/MonoSynth", "helper/Offline"], 
+define(["Tone/instrument/PolySynth", "helper/Basic", "helper/InstrumentTests", "helper/OutputAudioStereo",
+	"Tone/instrument/Instrument", "Test", "helper/OutputAudio", "Tone/instrument/MonoSynth", "helper/Offline"],
 function (PolySynth, Basic, InstrumentTests, OutputAudioStereo, Instrument, Test, OutputAudio, MonoSynth, Offline) {
 
 	describe("PolySynth", function(){
@@ -27,7 +27,7 @@ function (PolySynth, Basic, InstrumentTests, OutputAudioStereo, Instrument, Test
 					polySynth.toMaster();
 					polySynth.triggerAttackRelease(["C4", "D4"], [0.1, 0.2]);
 				});
-			});	
+			});
 
 			it("triggerAttack and triggerRelease can be invoked without arrays", function(){
 				return Offline(function(){
@@ -38,9 +38,9 @@ function (PolySynth, Basic, InstrumentTests, OutputAudioStereo, Instrument, Test
 					polySynth.triggerRelease("C4", 0.1);
 				}, 0.3).then(function(buffer){
 					expect(buffer.getFirstSoundTime()).to.be.closeTo(0, 0.01);
-					expect(buffer.getLastSoundTime()).to.be.closeTo(0.2, 0.01);
+					expect(buffer.getValueAtTime(0.2)).to.be.closeTo(0, 0.01);
 				});
-			});	
+			});
 
 			it("can stop all of the currently playing sounds", function(){
 				return Offline(function(){
@@ -51,9 +51,9 @@ function (PolySynth, Basic, InstrumentTests, OutputAudioStereo, Instrument, Test
 					polySynth.releaseAll(0.1);
 				}, 0.3).then(function(buffer){
 					expect(buffer.getFirstSoundTime()).to.be.closeTo(0, 0.01);
-					expect(buffer.getLastSoundTime()).to.be.closeTo(0.2, 0.01);
+					expect(buffer.getValueAtTime(0.2)).to.be.closeTo(0, 0.01);
 				});
-			});	
+			});
 
 			it("is silent before being triggered", function(){
 				return Offline(function(){
@@ -62,7 +62,7 @@ function (PolySynth, Basic, InstrumentTests, OutputAudioStereo, Instrument, Test
 				}).then(function(buffer){
 					expect(buffer.isSilent()).to.be.true;
 				});
-			});	
+			});
 
 			it("can be scheduled to start in the future", function(){
 				return Offline(function(){
