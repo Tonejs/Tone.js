@@ -160,6 +160,26 @@ define(["helper/Offline", "helper/Basic", "Test", "Tone/signal/Signal",
 				});
 			});
 
+			it ("can set a exponential approach ramp from the current time", function(){
+				return Offline(function(){
+					var sig = new Signal(0).toMaster();
+					sig.targetRampTo(1, 0.3);
+				}, 0.5).then(function(buffer){
+					expect(buffer.getValueAtTime(0)).to.be.below(0.0001);
+					expect(buffer.getValueAtTime(0.3)).to.be.closeTo(1, 0.02);
+				});
+			});
+
+			it ("can set an exponential approach ramp in the future", function(){
+				return Offline(function(){
+					var sig = new Signal(1).toMaster();
+					sig.targetRampTo(50, 0.3, 0.2);
+				}, 0.7).then(function(buffer){
+					expect(buffer.getValueAtTime(0)).to.be.closeTo(1, 0.0001);
+					expect(buffer.getValueAtTime(0.2)).to.be.closeTo(1, 0.0001);
+					expect(buffer.getValueAtTime(0.6)).to.be.closeTo(50, 0.5);
+				});
+			});
 
 			it ("can set an exponential ramp from the current time", function(){
 				return Offline(function(){
