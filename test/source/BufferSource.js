@@ -1,5 +1,5 @@
-define(["helper/Basic", "Tone/source/BufferSource", "helper/Offline", 
-	"Tone/core/Buffer", "helper/Meter", "Tone/core/Tone"], 
+define(["helper/Basic", "Tone/source/BufferSource", "helper/Offline",
+	"Tone/core/Buffer", "helper/Meter", "Tone/core/Tone"],
 	function (BasicTests, BufferSource, Offline, Buffer, Meter, Tone) {
 
 	if (window.__karma__){
@@ -423,15 +423,33 @@ define(["helper/Basic", "Tone/source/BufferSource", "helper/Offline",
 				});
 			});
 
-			it("fades from the end", function(){
+			it("fades from the end when passed into the stop call", function(){
 				return Offline(function(){
 					var player = new BufferSource(onesBuffer).toMaster();
 					player.start(0).stop(0.2, 0.1)
 				}, 0.3).then(function(buffer){
 					buffer.forEach(function(sample, time){
-						if (time < 0.1){
-							expect(sample).to.equal(1);
+						if (time < 0.101){
+							expect(sample).to.be.closeTo(1, 0.01);
 						} else if (time < 0.2){
+							expect(sample).to.be.lessThan(1);
+						} else {
+							expect(sample).to.equal(0);
+						}
+					});
+				});
+			});
+
+			it("fades at the end of the file at the files duration", function(){
+				return Offline(function(){
+					var player = new BufferSource(onesBuffer).toMaster();
+					player.fadeOut = 0.1;
+					player.start(0);
+				}, 0.6).then(function(buffer){
+					buffer.forEach(function(sample, time){
+						if (time < 0.401){
+							expect(sample).to.be.closeTo(1, 0.01);
+						} else if (time < 0.5){
 							expect(sample).to.be.lessThan(1);
 						} else {
 							expect(sample).to.equal(0);
@@ -443,11 +461,11 @@ define(["helper/Basic", "Tone/source/BufferSource", "helper/Offline",
 			it("cant fade for shorter than the fade in time", function(){
 				return Offline(function(){
 					var player = new BufferSource(onesBuffer).toMaster();
-					player.fadeIn = 0.15
-					player.start(0).stop(0.2, 0.1)
+					player.fadeIn = 0.15;
+					player.start(0).stop(0.2, 0.1);
 				}, 0.3).then(function(buffer){
 					buffer.forEach(function(sample, time){
-						if (time < 0.149){
+						if (time < 0.14){
 							expect(sample).to.be.lessThan(1);
 						} else if (Math.abs(time - 0.15) < 1e-4){
 							expect(sample).to.be.closeTo(1, 0.05);
@@ -458,21 +476,53 @@ define(["helper/Basic", "Tone/source/BufferSource", "helper/Offline",
 				});
 			});
 
-			it("fades at the end of the file", function(){
+			it("the fade out can shorten to fit the duration of the sample", function(){
 				return Offline(function(){
 					var player = new BufferSource(onesBuffer).toMaster();
-					player.fadeOut = 0.1;
-					player.start(0);
-				}, 0.6).then(function(buffer){
-					buffer.forEach(function(sample, time){
-						if (time < 0.4){
-							expect(sample).to.equal(1);
-						} else if (time < 0.5){
-							expect(sample).to.be.lessThan(1);
-						} else {
-							expect(sample).to.equal(0);
-						}
-					});
+					player.fadeOut = 1;
+					player.start(0).stop(0.5);
+				}, 0.51).then(function(buffer){
+					expect(buffer.getValueAtTime(0)).to.equal(1);
+					expect(buffer.getValueAtTime(0.25)).to.be.closeTo(0.5, 0.01);
+					expect(buffer.getValueAtTime(0.5)).to.be.closeTo(0, 0.01);
+				});
+			});
+
+			it("the fade out will only start after the fade in", function(){
+				return Offline(function(){
+					var player = new BufferSource(onesBuffer).toMaster();
+					player.fadeIn = 0.1;
+					player.fadeOut = 1;
+					player.start(0).stop(0.5);
+				}, 0.51).then(function(buffer){
+					expect(buffer.getValueAtTime(0)).to.equal(0);
+					expect(buffer.getValueAtTime(0.05)).to.be.closeTo(0.5, 0.01);
+					expect(buffer.getValueAtTime(0.1)).to.be.closeTo(1, 0.01);
+					expect(buffer.getValueAtTime(0.3)).to.be.closeTo(0.5, 0.01);
+					expect(buffer.getValueAtTime(0.5)).to.be.closeTo(0, 0.01);
+				});
+			});
+
+			it("can fade with an exponential curve", function(){
+				var player = new BufferSource(onesBuffer).toMaster();
+				player.curve = "exponential";
+				expect(player.curve).to.equal("exponential");
+				player.dispose();
+			});
+
+			it("fades in and out exponentially", function(){
+				return Offline(function(){
+					var player = new BufferSource(onesBuffer).toMaster();
+					player.curve = "exponential";
+					player.fadeIn = 0.1;
+					player.fadeOut = 1;
+					player.start(0).stop(0.5);
+				}, 0.51).then(function(buffer){
+					expect(buffer.getValueAtTime(0)).to.equal(0);
+					expect(buffer.getValueAtTime(0.05)).to.be.closeTo(0.93, 0.01);
+					expect(buffer.getValueAtTime(0.1)).to.be.closeTo(1, 0.01);
+					expect(buffer.getValueAtTime(0.3)).to.be.closeTo(0.05, 0.01);
+					expect(buffer.getValueAtTime(0.5)).to.be.closeTo(0, 0.01);
 				});
 			});
 
@@ -516,6 +566,26 @@ define(["helper/Basic", "Tone/source/BufferSource", "helper/Offline",
 					player.start(0).stop(0.1).stop(0.05);
 				}, 0.3).then(function(buffer){
 					expect(buffer.getLastSoundTime()).to.be.closeTo(0.05, 0.02);
+				});
+			});
+
+			it("does not play if the stop time is at the start time", function(){
+				return Offline(function(){
+					var player = new BufferSource(buffer);
+					player.toMaster();
+					player.start(0).stop(0);
+				}, 0.3).then(function(buffer){
+					expect(buffer.isSilent()).to.be.true;
+				});
+			});
+
+			it("does not play if the stop time is at before start time", function(){
+				return Offline(function(){
+					var player = new BufferSource(buffer);
+					player.toMaster();
+					player.start(0.1).stop(0);
+				}, 0.3).then(function(buffer){
+					expect(buffer.isSilent()).to.be.true;
 				});
 			});
 
