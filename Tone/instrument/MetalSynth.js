@@ -102,7 +102,7 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/source/FMOscillato
 				"harmonicity" : options.harmonicity,
 				"modulationIndex" : options.modulationIndex
 			});
-			osc.connect(this._highpass).start(0);
+			osc.connect(this._highpass).start();
 			this._oscillators[i] = osc;
 
 			var mult = new Tone.Multiply(inharmRatios[i]);
