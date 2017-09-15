@@ -217,6 +217,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/G
 			}
 			this._source.buffer = this.buffer.get();
 			this._source.loopEnd = this.loopEnd || this.buffer.duration;
+			Tone.isPast(time);
 			this._source.start(time, offset);
 		} else {
 			throw new Error("Tone.BufferSource: buffer is either not set or not loaded.");

@@ -77,13 +77,13 @@ define(["helper/Offline", "helper/Basic", "Test", "Tone/signal/Signal",
 
 			it ("can schedule an exponential ramp", function(){
 				var sig = new Signal(1);
-				sig.exponentialRampToValueAtTime(3, 1);
+				sig.exponentialRampToValueAtTime(3, "+1");
 				sig.dispose();
 			});
 
 			it ("can approach a target value", function(){
 				var sig = new Signal(1);
-				sig.setTargetAtTime(0.2, 1, 2);
+				sig.setTargetAtTime(0.2, "+1", 2);
 				sig.dispose();
 			});
 

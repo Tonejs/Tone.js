@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/source/Source", "Tone/core/Transport"], 
+define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/source/Source", "Tone/core/Transport"],
 function(Tone){
 
 	"use strict";
@@ -9,7 +9,7 @@ function(Tone){
 	 */
 	if (window.OscillatorNode && !OscillatorNode.prototype.start){
 		OscillatorNode.prototype.start = OscillatorNode.prototype.noteOn;
-		OscillatorNode.prototype.stop = OscillatorNode.prototype.noteOff;	
+		OscillatorNode.prototype.stop = OscillatorNode.prototype.noteOff;
 		if (!OscillatorNode.prototype.setPeriodicWave){
 			OscillatorNode.prototype.setPeriodicWave = OscillatorNode.prototype.setWaveTable;
 		}
@@ -20,7 +20,7 @@ function(Tone){
 
 	/**
 	 *  @class Tone.Oscillator supports a number of features including
-	 *         phase rotation, multiple oscillator types (see Tone.Oscillator.type), 
+	 *         phase rotation, multiple oscillator types (see Tone.Oscillator.type),
 	 *         and Transport syncing (see Tone.Oscillator.syncFrequency).
 	 *
 	 *  @constructor
@@ -32,7 +32,7 @@ function(Tone){
 	 * var osc = new Tone.Oscillator(440, "sine").toMaster().start();
 	 */
 	Tone.Oscillator = function(){
-		
+
 		var options = Tone.defaults(arguments, ["frequency", "type"], Tone.Oscillator);
 		Tone.Source.call(this, options);
 
@@ -42,7 +42,7 @@ function(Tone){
 		 *  @private
 		 */
 		this._oscillator = null;
-		
+
 		/**
 		 *  The frequency control.
 		 *  @type {Frequency}
@@ -85,7 +85,7 @@ function(Tone){
 		 *  @private
 		 */
 		this._type = null;
-		
+
 		//setup
 		this.type = options.type;
 		this.phase = this._phase;
@@ -120,7 +120,7 @@ function(Tone){
 
 	/**
 	 *  start the oscillator
-	 *  @param  {Time} [time=now] 
+	 *  @param  {Time} [time=now]
 	 *  @private
 	 */
 	Tone.Oscillator.prototype._start = function(time){
@@ -132,7 +132,9 @@ function(Tone){
 		this.frequency.connect(this._oscillator.frequency);
 		this.detune.connect(this._oscillator.detune);
 		//start the oscillator
-		this._oscillator.start(this.toSeconds(time));
+		time = this.toSeconds(time);
+		Tone.isPast(time);
+		this._oscillator.start(time);
 	};
 
 	/**
@@ -143,7 +145,9 @@ function(Tone){
 	 */
 	Tone.Oscillator.prototype._stop = function(time){
 		if (this._oscillator){
-			this._oscillator.stop(this.toSeconds(time));
+			time = this.toSeconds(time);
+			Tone.isPast(time);
+			this._oscillator.stop(time);
 			this._oscillator = null;
 		}
 		return this;
@@ -151,14 +155,14 @@ function(Tone){
 
 	/**
 	 *  Sync the signal to the Transport's bpm. Any changes to the transports bpm,
-	 *  will also affect the oscillators frequency. 
+	 *  will also affect the oscillators frequency.
 	 *  @returns {Tone.Oscillator} this
 	 *  @example
 	 * Tone.Transport.bpm.value = 120;
 	 * osc.frequency.value = 440;
 	 * //the ration between the bpm and the frequency will be maintained
 	 * osc.syncFrequency();
-	 * Tone.Transport.bpm.value = 240; 
+	 * Tone.Transport.bpm.value = 240;
 	 * // the frequency of the oscillator is doubled to 880
 	 */
 	Tone.Oscillator.prototype.syncFrequency = function(){
@@ -167,7 +171,7 @@ function(Tone){
 	};
 
 	/**
-	 *  Unsync the oscillator's frequency from the Transport. 
+	 *  Unsync the oscillator's frequency from the Transport.
 	 *  See Tone.Oscillator.syncFrequency
 	 *  @returns {Tone.Oscillator} this
 	 */
@@ -181,11 +185,11 @@ function(Tone){
 	 * setting the first x number of partials of the oscillator. For example: "sine4" would
 	 * set be the first 4 partials of the sine wave and "triangle8" would set the first
 	 * 8 partials of the triangle wave.
-	 * <br><br> 
-	 * Uses PeriodicWave internally even for native types so that it can set the phase. 
-	 * PeriodicWave equations are from the 
+	 * <br><br>
+	 * Uses PeriodicWave internally even for native types so that it can set the phase.
+	 * PeriodicWave equations are from the
 	 * [Webkit Web Audio implementation](https://code.google.com/p/chromium/codesearch#chromium/src/third_party/WebKit/Source/modules/webaudio/PeriodicWave.cpp&sq=package:chromium).
-	 *  
+	 *
 	 * @memberOf Tone.Oscillator#
 	 * @type {string}
 	 * @name type
@@ -212,7 +216,7 @@ function(Tone){
 	});
 
 	/**
-	 *  Returns the real and imaginary components based 
+	 *  Returns the real and imaginary components based
 	 *  on the oscillator type.
 	 *  @returns {Array} [real, imaginary]
 	 *  @private
@@ -223,7 +227,7 @@ function(Tone){
 
 		var real = new Float32Array(periodicWaveSize);
 		var imag = new Float32Array(periodicWaveSize);
-		
+
 		var partialCount = 1;
 		if (type === Tone.Oscillator.Type.Custom){
 			partialCount = this._partials.length + 1;
@@ -240,9 +244,9 @@ function(Tone){
 
 		for (var n = 1; n < periodicWaveSize; ++n) {
 			var piFactor = 2 / (n * Math.PI);
-			var b; 
+			var b;
 			switch (type) {
-				case Tone.Oscillator.Type.Sine: 
+				case Tone.Oscillator.Type.Sine:
 					b = (n <= partialCount) ? 1 : 0;
 					break;
 				case Tone.Oscillator.Type.Square:
@@ -258,7 +262,7 @@ function(Tone){
 						b = 0;
 					}
 					break;
-				case Tone.Oscillator.Type.Custom: 
+				case Tone.Oscillator.Type.Custom:
 					b = this._partials[n - 1];
 					break;
 				default:
@@ -276,10 +280,10 @@ function(Tone){
 	};
 
 	/**
-	 *  Compute the inverse FFT for a given phase.	
+	 *  Compute the inverse FFT for a given phase.
 	 *  @param  {Float32Array}  real
-	 *  @param  {Float32Array}  imag 
-	 *  @param  {NormalRange}  phase 
+	 *  @param  {Float32Array}  imag
+	 *  @param  {NormalRange}  phase
 	 *  @return  {AudioRange}
 	 *  @private
 	 */
@@ -311,12 +315,12 @@ function(Tone){
 	};
 
 	/**
-	 * The partials of the waveform. A partial represents 
-	 * the amplitude at a harmonic. The first harmonic is the 
+	 * The partials of the waveform. A partial represents
+	 * the amplitude at a harmonic. The first harmonic is the
 	 * fundamental frequency, the second is the octave and so on
-	 * following the harmonic series. 
-	 * Setting this value will automatically set the type to "custom". 
-	 * The value is an empty array when the type is not "custom". 
+	 * following the harmonic series.
+	 * Setting this value will automatically set the type to "custom".
+	 * The value is an empty array when the type is not "custom".
 	 * @memberOf Tone.Oscillator#
 	 * @type {Array}
 	 * @name partials
@@ -330,7 +334,7 @@ function(Tone){
 			} else {
 				return this._partials;
 			}
-		}, 
+		},
 		set : function(partials){
 			this._partials = partials;
 			this.type = Tone.Oscillator.Type.Custom;
@@ -338,7 +342,7 @@ function(Tone){
 	});
 
 	/**
-	 * The phase of the oscillator in degrees. 
+	 * The phase of the oscillator in degrees.
 	 * @memberOf Tone.Oscillator#
 	 * @type {Degrees}
 	 * @name phase
@@ -348,7 +352,7 @@ function(Tone){
 	Object.defineProperty(Tone.Oscillator.prototype, "phase", {
 		get : function(){
 			return this._phase * (180 / Math.PI);
-		}, 
+		},
 		set : function(phase){
 			this._phase = phase * Math.PI / 180;
 			//reset the type

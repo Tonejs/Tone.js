@@ -168,7 +168,9 @@ define(["Tone/core/Tone", "Tone/type/Type"], function(Tone){
 	 * freq.setValueAtTime("G4", "+1");
 	 */
 	Tone.Param.prototype.setValueAtTime = function(value, time){
-		this._param.setValueAtTime(this._fromUnits(value), this.toSeconds(time));
+		time = this.toSeconds(time);
+		Tone.isPast(time);
+		this._param.setValueAtTime(this._fromUnits(value), time);
 		return this;
 	};
 
@@ -202,7 +204,9 @@ define(["Tone/core/Tone", "Tone/type/Type"], function(Tone){
 	 */
 	Tone.Param.prototype.linearRampToValueAtTime = function(value, endTime){
 		value = this._fromUnits(value);
-		this._param.linearRampToValueAtTime(value, this.toSeconds(endTime));
+		endTime = this.toSeconds(endTime)
+		Tone.isPast(endTime);
+		this._param.linearRampToValueAtTime(value, endTime);
 		return this;
 	};
 
@@ -217,7 +221,9 @@ define(["Tone/core/Tone", "Tone/type/Type"], function(Tone){
 	Tone.Param.prototype.exponentialRampToValueAtTime = function(value, endTime){
 		value = this._fromUnits(value);
 		value = Math.max(this._minOutput, value);
-		this._param.exponentialRampToValueAtTime(value, this.toSeconds(endTime));
+		endTime = this.toSeconds(endTime)
+		Tone.isPast(endTime);
+		this._param.exponentialRampToValueAtTime(value, endTime);
 		return this;
 	};
 

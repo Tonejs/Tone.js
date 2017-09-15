@@ -141,14 +141,14 @@ define(["helper/Basic", "Test", "Tone/core/Param", "Tone/type/Type", "Tone/signa
 			it ("can schedule an exponential ramp", function(){
 				var gain = Tone.context.createGain();
 				var param = new Param(gain.gain);
-				param.exponentialRampToValueAtTime(3, 1);
+				param.exponentialRampToValueAtTime(3, "+1");
 				param.dispose();
 			});
 
 			it ("can approach a target value", function(){
 				var gain = Tone.context.createGain();
 				var param = new Param(gain.gain);
-				param.setTargetAtTime(0.2, 1, 2);
+				param.setTargetAtTime(0.2, "+1", 2);
 				param.dispose();
 			});
 
@@ -162,15 +162,15 @@ define(["helper/Basic", "Test", "Tone/core/Param", "Tone/type/Type", "Tone/signa
 			it ("can schedule multiple automations", function(){
 				var gain = Tone.context.createGain();
 				var param = new Param(gain.gain);
-				param.linearRampToValueAtTime(0.5, 0.5);
-				param.linearRampToValueAtTime(0, 1);
+				param.linearRampToValueAtTime(0.5, "+0.5");
+				param.linearRampToValueAtTime(0, "+1");
 				param.dispose();
 			});
 
 			it ("can cancel an automation", function(){
 				var gain = Tone.context.createGain();
 				var param = new Param(gain.gain);
-				param.linearRampToValueAtTime(0.5, 0.5);
+				param.linearRampToValueAtTime(0.5, "+0.5");
 				param.cancelScheduledValues(0);
 				param.dispose();
 			});
@@ -178,7 +178,7 @@ define(["helper/Basic", "Test", "Tone/core/Param", "Tone/type/Type", "Tone/signa
 			it ("can cancelAndHold an automation", function(){
 				var gain = Tone.context.createGain();
 				var param = new Param(gain.gain);
-				param.linearRampToValueAtTime(0.5, 0.5);
+				param.linearRampToValueAtTime(0.5, "+0.5");
 				param.cancelAndHoldAtTime(0);
 				param.dispose();
 			});
