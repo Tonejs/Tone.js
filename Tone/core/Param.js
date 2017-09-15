@@ -204,7 +204,7 @@ define(["Tone/core/Tone", "Tone/type/Type"], function(Tone){
 	 */
 	Tone.Param.prototype.linearRampToValueAtTime = function(value, endTime){
 		value = this._fromUnits(value);
-		endTime = this.toSeconds(endTime)
+		endTime = this.toSeconds(endTime);
 		Tone.isPast(endTime);
 		this._param.linearRampToValueAtTime(value, endTime);
 		return this;
@@ -221,7 +221,7 @@ define(["Tone/core/Tone", "Tone/type/Type"], function(Tone){
 	Tone.Param.prototype.exponentialRampToValueAtTime = function(value, endTime){
 		value = this._fromUnits(value);
 		value = Math.max(this._minOutput, value);
-		endTime = this.toSeconds(endTime)
+		endTime = this.toSeconds(endTime);
 		Tone.isPast(endTime);
 		this._param.exponentialRampToValueAtTime(value, endTime);
 		return this;
