@@ -36,3 +36,11 @@ deploy:
   on:
     repo: Tonejs/Tone.js
     branch: master
+# publish build files for releases
+- provider: releases
+  api-key: $GH_TOKEN
+  file_glob: true
+  file: build/*
+  skip_cleanup: true
+  on:
+    tags: true
