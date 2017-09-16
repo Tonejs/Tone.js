@@ -1,56 +1,23 @@
-
+.DS_Store
+*.asd
 *.scssc
-
-examples/scratch.html
-
 *.sublime-workspace
-
 *.sublime-project
 
-# grunt modules
 node_modules
-gulp/description
 
 TODO.txt
-
-# all the npm stuff
-utils/npm/Tone
-utils/npm/build/Tone.js
-utils/npm/build/Tone.min.js
-utils/npm/build/Tone.Preset.js
-utils/npm/README.md
-
-utils/jsdoc/*.json
-
-examples/deps/FileSaver.js
-
-examples/oscilloscope.html
-
-.idea
-
 wiki
-test/performance
 
-examples/crashes.html
-
-examples/style/examples.css.map
-
-examples/deps/Tone.dat.gui.js
-
-examples/deps/dat.gui.js
-
-test/mainTest.js
-
-test/Main.js
-
-build/p5.Tone.min.js
-build/p5.Tone.js
-
-.DS_Store
+examples/scratch.html
+examples/deps/FileSaver.js
+examples/oscilloscope.html
 examples/graph.html
 
-*.asd
-
+test/performance
+test/mainTest.js
+test/Main.js
 test/supports.html
-
 test/coverage/
+
+build/*
