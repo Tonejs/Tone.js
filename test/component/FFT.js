@@ -40,7 +40,7 @@ define(["Tone/component/FFT", "Test", "helper/Basic", "helper/Supports", "Tone/s
 				analysis = fft.getValue();
 				expect(analysis.length).to.equal(256);
 				for (i = 0; i < analysis.length; i++){
-					expect(analysis[i]).is.within(-100, 0);
+					expect(analysis[i]).is.within(-200, 0);
 				}
 				fft.dispose();
 				noise.dispose();
