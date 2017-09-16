@@ -1,4 +1,4 @@
-define(["Tone/component/FrequencyEnvelope", "helper/Basic", "helper/Offline", "Test", "Tone/component/Envelope"], 
+define(["Tone/component/FrequencyEnvelope", "helper/Basic", "helper/Offline", "Test", "Tone/component/Envelope"],
 function (FrequencyEnvelope, Basic, Offline, Test, Envelope) {
 	describe("FrequencyEnvelope", function(){
 
@@ -70,8 +70,8 @@ function (FrequencyEnvelope, Basic, Offline, Test, Envelope) {
 						if (time < e.attack){
 							expect(sample).to.be.within(200, 1600);
 						} else if (time < e.attack + e.decay){
-							expect(sample).to.be.closeTo(1600, 2);
-						} 
+							expect(sample).to.be.closeTo(1600, 10);
+						}
 					});
 				});
 			});

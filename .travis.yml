@@ -1,18 +1,46 @@
-sudo: false  
-dist: trusty  
-language: node_js  
-node_js:  
- - "8"
-
+sudo: false
+dist: trusty
+language: node_js
+node_js:
+- '8'
 addons:
   chrome: stable
 before_script:
-  - cd gulp
-  - npm install -g karma
-  - npm install -g gulp
-  - npm install
-  - git config --global user.email "travis@travis-ci.org"
-  - git config --global user.name "Travis CI"
+- cd gulp
+- npm install -g jsdoc
+- npm install -g karma
+- npm install -g gulp
+- npm install
+- git config --global user.email "travis@travis-ci.org"
+- git config --global user.name "Travis CI"
 script: gulp travis-test
-after_success: 
-  - sh success.sh
+after_success:
+- sh success.sh
+before_deploy:
+- node increment_version.js
+- cd ../
+deploy:
+- provider: npm
+  skip_cleanup: true
+  email: yotammann@gmail.com
+  api_key: $NPM_TOKEN
+  tag: next
+  on:
+    repo: Tonejs/Tone.js
+    branch: dev
+# publish without @next when pushing on master
+- provider: npm
+  skip_cleanup: true
+  email: yotammann@gmail.com
+  api_key: $NPM_TOKEN
+  on:
+    repo: Tonejs/Tone.js
+    branch: master
+# publish build files for releases
+- provider: releases
+  api-key: $GH_TOKEN
+  file_glob: true
+  file: build/*
+  skip_cleanup: true
+  on:
+    tags: true

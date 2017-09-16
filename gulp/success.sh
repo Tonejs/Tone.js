@@ -2,11 +2,13 @@
 
 if [ "${TRAVIS_PULL_REQUEST}" = "false" ]; then
 
-	# only commit the builds when not a PR
-	gulp commitDevBuild
-	gulp commitJSDocs
-		
+	# commit the build
+	sh push_build.sh
+
+	# update the site
+	sh update_site.sh
 fi
 
-# do coveralls either way
+
+# upload coveralls
 gulp coveralls

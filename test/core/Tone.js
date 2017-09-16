@@ -178,7 +178,7 @@ define(["Test", "Tone/core/Tone", "helper/PassAudio", "Tone/source/Oscillator",
 
 		});
 
-		context("Tone.setContext", function(){
+		context("Tone.context", function(){
 
 			it ("can set a new context", function(){
 				var origCtx = Tone.context;
@@ -205,6 +205,19 @@ define(["Test", "Tone/core/Tone", "helper/PassAudio", "Tone/source/Oscillator",
 				expect(Tone.prototype.context).to.equal(origCtx);
 				//and a saftey check
 				return ctx.close();
+			});
+
+			it ("tests if the audio context time has passed", function(){
+				// overwrite warn to throw errors
+				var originalWarn = console.warn;
+				console.warn = function(warning){
+					throw new Error(warning);
+				};
+				var currentTime = Tone.context.currentTime;
+				expect(function(){
+					Tone.isPast(currentTime-1);
+				}).to.throw(Error);
+				console.warn = originalWarn;
 			});
 
 		});

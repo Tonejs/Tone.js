@@ -1,4 +1,4 @@
-define(["Test", "Tone/type/Type", "Tone/core/Transport", "Tone/type/Time", "Tone/type/Frequency"], 
+define(["Test", "Tone/type/Type", "Tone/core/Transport", "Tone/type/Time", "Tone/type/Frequency"],
 function (Test, Type, Transport, Time, Frequency) {
 
 	//modified from http://stackoverflow.com/questions/15298912/javascript-generating-combinations-from-n-arrays-with-m-elements
@@ -67,26 +67,37 @@ function (Test, Type, Transport, Time, Frequency) {
 		}
 	}
 
+	function silenceWarning(cb){
+		var warning = console.warn;
+		console.warn = function(){};
+		cb();
+		console.warn = warning;
+	}
+
 	return {
 		method : function(constructor, fn, args, consArgs){
 
 			it (fn+" ("+args.join(", ") + ")", function(){
-				var permutations = generateArgs(args);
-				for (var i = 0; i < permutations.length; i++){
-					var instance = new constructor(consArgs);
-					instance[fn].apply(instance, permutations[i]);
-					instance.dispose();
-				}
+				silenceWarning(function(){
+					var permutations = generateArgs(args);
+					for (var i = 0; i < permutations.length; i++){
+						var instance = new constructor(consArgs);
+						instance[fn].apply(instance, permutations[i]);
+						instance.dispose();
+					}
+				})
 			});
 		},
 		member : function(constructor, member, param, consArgs){
 			it (member+" = "+param, function(){
-				var permutations = generateArgs([param]);
-				for (var i = 0; i < permutations.length; i++){
-					var instance = new constructor(consArgs);
-					instance[member] = permutations[i];
-					instance.dispose();
-				}
+				silenceWarning(function(){
+					var permutations = generateArgs([param]);
+					for (var i = 0; i < permutations.length; i++){
+						var instance = new constructor(consArgs);
+						instance[member] = permutations[i];
+						instance.dispose();
+					}
+				});
 			});
 		},
 		constructor : function(constructor, args){
@@ -99,14 +110,16 @@ function (Test, Type, Transport, Time, Frequency) {
 			}
 
 			it ("constructor ( "+ argString + " )", function(){
-				var permutations = generateArgs(args);
-				for (var i = 0; i < permutations.length; i++){
-					var Temp = function(){}; // temporary constructor
-					Temp.prototype = constructor.prototype;
-					var tmpInst = new Temp();
-					constructor.apply(tmpInst, permutations[i]);
-					tmpInst.dispose();
-				}
+				silenceWarning(function(){
+					var permutations = generateArgs(args);
+					for (var i = 0; i < permutations.length; i++){
+						var Temp = function(){}; // temporary constructor
+						Temp.prototype = constructor.prototype;
+						var tmpInst = new Temp();
+						constructor.apply(tmpInst, permutations[i]);
+						tmpInst.dispose();
+					}
+				});
 			});
 		},
 	};

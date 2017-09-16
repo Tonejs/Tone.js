@@ -3,12 +3,16 @@
 * [Code coverage](https://coveralls.io/github/Tonejs/Tone.js) analysis
 * [Dev build](https://tonejs.github.io/build/dev/Tone.js) with each successful commit
 * [Versioned docs](https://tonejs.github.io/docs/Tone) plus a [dev build of the docs](https://tonejs.github.io/docs/dev/Tone) on successful commits
-* Tone.AudioNode is base class for all classes which generate or process audio
+* [Tone.AudioNode](https://tonejs.github.io/docs/AudioNode) is base class for all classes which generate or process audio
 * [Tone.Sampler](https://tonejs.github.io/docs/Sampler) simplifies creating multisampled instruments
 * [Tone.Solo](https://tonejs.github.io/docs/Solo) makes it easier to mute/solo audio
 * [Mixer](https://tonejs.github.io/examples/#mixer) and [sampler](https://tonejs.github.io/examples/#sampler) examples
 * Making type-checking methods static
 * [Tone.TransportTimelineSignal](https://tonejs.github.io/docs/TransportTimelineSignal) is a signal which can be scheduled along the Transport
+* [Tone.FFT](https://tonejs.github.io/docs/FFT) and [Tone.Waveform](https://tonejs.github.io/docs/Waveform) abstract Tone.Analyser
+* [Tone.Meter](https://tonejs.github.io/docs/Meter) returns decibels
+* [Tone.Envelope](https://tonejs.github.io/docs/Envelope) uses exponential approach instead of exponential curve for decay and release curves
+* [Tone.BufferSource](https://tonejs.github.io/docs/BufferSource) fadeIn/Out can be either "linear" or "exponential" curve
 
 ### r10
 

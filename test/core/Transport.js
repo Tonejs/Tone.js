@@ -1,5 +1,5 @@
-define(["Test", "Tone/core/Transport", "Tone/core/Tone", "helper/Offline", 
-	"Tone/type/TransportTime", "Tone/signal/Signal", "helper/BufferTest"], 
+define(["Test", "Tone/core/Transport", "Tone/core/Tone", "helper/Offline",
+	"Tone/type/TransportTime", "Tone/signal/Signal", "helper/BufferTest"],
 function (Test, Transport, Tone, Offline, TransportTime, Signal, BufferTest) {
 
 	describe("Transport", function(){
@@ -230,7 +230,7 @@ function (Test, Transport, Tone, Offline, TransportTime, Signal, BufferTest) {
 			});
 
 		});
-		
+
 
 		context("state", function(){
 
@@ -287,7 +287,7 @@ function (Test, Transport, Tone, Offline, TransportTime, Signal, BufferTest) {
 			it("resets ticks on stop but not on pause", function(){
 				return Offline(function(Transport){
 					Transport.start(0).pause(0.1).stop(0.2);
-					
+
 					var pausedTicks = 0;
 
 					return function(time){
@@ -363,10 +363,10 @@ function (Test, Transport, Tone, Offline, TransportTime, Signal, BufferTest) {
 				}, 0.6);
 			});
 
-		});	
+		});
 
-		context("schedule", function(){	
-			
+		context("schedule", function(){
+
 			it ("can schedule an event on the timeline", function(){
 				return Offline(function(Transport){
 					var eventID = Transport.schedule(function(){}, 0);
@@ -376,24 +376,32 @@ function (Test, Transport, Tone, Offline, TransportTime, Signal, BufferTest) {
 
 
 			it ("scheduled event gets invoked with the time of the event", function(){
+				var wasCalled = false;
 				return Offline(function(Transport){
 					var startTime = 0.1;
 					Transport.schedule(function(time){
 						expect(time).to.be.closeTo(startTime, 0.01);
+						wasCalled = true;
 					}, 0);
 					Transport.start(startTime);
-				}, 0.2);
+				}, 0.2).then(function(){
+					expect(wasCalled).to.be.true;
+				});
 			});
 
 			it ("can schedule events with TransportTime", function(){
+				var wasCalled = false;
 				return Offline(function(Transport){
 					var startTime = 0.1;
 					var eighth = Transport.toSeconds("8n");
 					Transport.schedule(function(time){
 						expect(time).to.be.closeTo(startTime + eighth, 0.01);
+						wasCalled = true;
 					}, TransportTime("8n"));
 					Transport.start(startTime);
-				}, 0.5);
+				}, 0.5).then(function(){
+					expect(wasCalled).to.be.true;
+				});
 			});
 
 			it ("can cancel a scheduled event", function(){
@@ -401,7 +409,7 @@ function (Test, Transport, Tone, Offline, TransportTime, Signal, BufferTest) {
 					var eventID = Transport.schedule(function(){
 						throw new Error("should not call this function");
 					}, 0);
-					Transport.cancel(eventID);
+					Transport.clear(eventID);
 					Transport.start();
 				});
 			});
@@ -424,25 +432,30 @@ function (Test, Transport, Tone, Offline, TransportTime, Signal, BufferTest) {
 					Transport.scheduleOnce(Tone.noOp, 0);
 					Transport.scheduleOnce(Tone.noOp, 1);
 					Transport.scheduleOnce(Tone.noOp, 2);
-					expect(Transport._onceEvents.length).to.equal(3);
+					expect(Transport._timeline.length).to.equal(3);
 					Transport.cancel(2);
-					expect(Transport._onceEvents.length).to.equal(2);
+					expect(Transport._timeline.length).to.equal(2);
 					Transport.cancel(0);
-					expect(Transport._onceEvents.length).to.equal(0);
+					expect(Transport._timeline.length).to.equal(0);
 				});
 			});
 
 			it ("scheduled event anywhere along the timeline", function(){
+				var wasCalled = false;
 				return Offline(function(Transport){
 					var startTime = Transport.now();
 					Transport.schedule(function(time){
 						expect(time).to.be.closeTo(startTime + 0.5, 0.001);
+						wasCalled = true;
 					}, 0.5);
 					Transport.start(startTime);
-				}, 0.6);
+				}, 0.6).then(function(){
+					expect(wasCalled).to.be.true;
+				});
 			});
 
 			it ("can schedule multiple events and invoke them in the right order", function(){
+				var wasCalled = false;
 				return Offline(function(Transport){
 					var first = false;
 					Transport.schedule(function(){
@@ -450,9 +463,12 @@ function (Test, Transport, Tone, Offline, TransportTime, Signal, BufferTest) {
 					}, 0.1);
 					Transport.schedule(function(){
 						expect(first).to.be.true;
+						wasCalled = true;
 					}, 0.11);
 					Tone.Transport.start();
-				}, 0.2);
+				}, 0.2).then(function(){
+					expect(wasCalled).to.be.true;
+				});
 			});
 
 			it ("invokes the event again if the timeline is restarted", function(){
@@ -467,9 +483,27 @@ function (Test, Transport, Tone, Offline, TransportTime, Signal, BufferTest) {
 				});
 			});
 
+			it ("can add an event after the Transport is started", function(){
+				var wasCalled = false;
+				return Offline(function(Transport){
+					Transport.start(0);
+					var wasScheduled = false;
+					return function(time){
+						if (time > 0.1 && !wasScheduled){
+							wasScheduled = true;
+							Transport.schedule(function(){
+								wasCalled = true;
+							}, 0.15);
+						}
+					}
+				}, 0.3).then(function(){
+					expect(wasCalled).to.be.true;
+				});
+			});
+
 		});
 
-		context("scheduleRepeat", function(){	
+		context("scheduleRepeat", function(){
 
 			it ("can schedule a repeated event", function(){
 				return Offline(function(Transport){
@@ -483,7 +517,6 @@ function (Test, Transport, Tone, Offline, TransportTime, Signal, BufferTest) {
 				return Offline(function(Transport){
 					var startTime = 0.1;
 					var eventID = Transport.scheduleRepeat(function(time){
-						Transport.clear(eventID);
 						expect(time).to.be.closeTo(startTime, 0.01);
 						invoked = true;
 					}, 1, 0);
@@ -546,6 +579,7 @@ function (Test, Transport, Tone, Offline, TransportTime, Signal, BufferTest) {
 			});
 
 			it ("repeats at the repeat interval", function(){
+				var wasCalled = false;
 				return Offline(function(Transport){
 					var repeatTime = -1;
 					Transport.scheduleRepeat(function(time){
@@ -553,9 +587,12 @@ function (Test, Transport, Tone, Offline, TransportTime, Signal, BufferTest) {
 							expect(time - repeatTime).to.be.closeTo(0.1, 0.01);
 						}
 						repeatTime = time;
+						wasCalled = true;
 					}, 0.1, 0);
 					Transport.start();
-				}, 0.5);
+				}, 0.5).then(function(){
+					expect(wasCalled).to.be.true;
+				});
 			});
 
 			it ("can schedule multiple events and invoke them in the right order", function(){
@@ -578,18 +615,10 @@ function (Test, Transport, Tone, Offline, TransportTime, Signal, BufferTest) {
 				});
 			});
 
-			it ("cannot schedule an event with an interval of 0", function(){
-				return Offline(function(Transport){
-					expect(function(){
-						Transport.scheduleRepeat(function(){}, 0, 10);
-					}).to.throw(Error);
-				});
-			});
-
 			it ("repeats for the given interval", function(){
 				var repeatCount = 0;
 				return Offline(function(Transport){
-					Transport.scheduleRepeat(function(){
+					Transport.scheduleRepeat(function(time){
 						repeatCount++;
 					}, 0.1, 0, 0.5);
 					Transport.start();
@@ -598,9 +627,49 @@ function (Test, Transport, Tone, Offline, TransportTime, Signal, BufferTest) {
 				});
 			});
 
+			it ("can add an event after the Transport is started", function(){
+				var invocations = 0;
+				return Offline(function(Transport){
+					Transport.start(0);
+					var wasScheduled = false;
+					var times = [0.15, 0.3]
+					return function(time){
+						if (time > 0.1 && !wasScheduled){
+							wasScheduled = true;
+							Transport.scheduleRepeat(function(time){
+								expect(time).to.be.closeTo(times[invocations], 0.01);
+								invocations++;
+							}, 0.15, 0.15);
+						}
+					}
+				}, 0.31).then(function(){
+					expect(invocations).to.equal(2);
+				});
+			});
+
+			it ("can add an event to the past after the Transport is started", function(){
+				var invocations = 0;
+				return Offline(function(Transport){
+					Transport.start(0);
+					var wasScheduled = false;
+					var times = [0.15, 0.25]
+					return function(time){
+						if (time >= 0.12 && !wasScheduled){
+							wasScheduled = true;
+							Transport.scheduleRepeat(function(time){
+								expect(time).to.be.closeTo(times[invocations], 0.01);
+								invocations++;
+							}, 0.1, 0.05);
+						}
+					}
+				}, 0.3).then(function(){
+					expect(invocations).to.equal(2);
+				});
+			});
+
 		});
 
-		context("scheduleOnce", function(){	
+		context("scheduleOnce", function(){
 
 			it ("can schedule a single event on the timeline", function(){
 				return Offline(function(Transport){
@@ -683,25 +752,29 @@ function (Test, Transport, Tone, Offline, TransportTime, Signal, BufferTest) {
 		context("events", function(){
 
 			it("invokes start/stop/pause events", function(){
-				var invokations = 0;
+				var invocations = 0;
 				return Offline(function(Transport){
 					Tone.Transport.on("start pause stop", function(){
-						invokations++;
+						invocations++;
 					});
 					Transport.start().stop(0.1).start(0.2);
 				}, 0.5).then(function(){
-					expect(invokations).to.equal(3);
+					expect(invocations).to.equal(3);
 				});
 			});
 
 			it("invokes start event with correct offset", function(){
+				var wasCalled = false;
 				return Offline(function(Transport){
 					Transport.on("start", function(time, offset){
 						expect(time).to.be.closeTo(0.2, 0.01);
 						expect(offset).to.be.closeTo(0.5, 0.001);
+						wasCalled = true;
 					});
 					Transport.start(0.2, "4n");
-				}, 0.3);
+				}, 0.3).then(function(){
+					expect(wasCalled).to.be.true;
+				});
 			});
 
 			it("invokes the event just before the scheduled time", function(){
@@ -719,20 +792,20 @@ function (Test, Transport, Tone, Offline, TransportTime, Signal, BufferTest) {
 			});
 
 			it("passes in the time argument to the events", function(){
-				var invokations = 0;
+				var invocations = 0;
 				return Offline(function(Transport){
 					var now = Transport.now();
 					Transport.on("start", function(time){
-						invokations++;
+						invocations++;
 						expect(time).to.be.closeTo(now + 0.1, 0.01);
 					});
 					Transport.on("stop", function(time){
-						invokations++;
+						invocations++;
 						expect(time).to.be.closeTo(now + 0.2, 0.01);
 					});
 					Transport.start("+0.1").stop("+0.2");
 				}, 0.3).then(function(){
-					expect(invokations).to.equal(2);
+					expect(invocations).to.equal(2);
 				});
 			});
 
@@ -778,34 +851,34 @@ function (Test, Transport, Tone, Offline, TransportTime, Signal, BufferTest) {
 			});
 
 			it("can swing", function(){
-				var invokations = 0;
+				var invocations = 0;
 				return Offline(function(Transport){
 					Transport.swing = 1;
 					Transport.swingSubdivision = "8n";
 					var eightNote = Transport.toSeconds("8n");
 					//downbeat, no swing
 					Transport.schedule(function(time){
-						invokations++;
+						invocations++;
 						expect(time).is.closeTo(0, 0.001);
 					}, 0);
 					//eighth note has swing
 					Transport.schedule(function(time){
-						invokations++;
+						invocations++;
 						expect(time).is.closeTo(eightNote * 5/3, 0.001);
 					}, "8n");
 					//sixteenth note is also swung
 					Transport.schedule(function(time){
-						invokations++;
+						invocations++;
 						expect(time).is.closeTo(eightNote, 0.05);
 					}, "16n");
 					//no swing on the quarter
 					Transport.schedule(function(time){
-						invokations++;
+						invocations++;
 						expect(time).is.closeTo(eightNote * 2, 0.001);
 					}, "4n");
 					Transport.start(0).stop(0.7);
 				}, 0.7).then(function(){
-					expect(invokations).to.equal(4);
+					expect(invocations).to.equal(4);
 				});
 			});
 		});

@@ -168,7 +168,9 @@ define(["Tone/core/Tone", "Tone/type/Type"], function(Tone){
 	 * freq.setValueAtTime("G4", "+1");
 	 */
 	Tone.Param.prototype.setValueAtTime = function(value, time){
-		this._param.setValueAtTime(this._fromUnits(value), this.toSeconds(time));
+		time = this.toSeconds(time);
+		Tone.isPast(time);
+		this._param.setValueAtTime(this._fromUnits(value), time);
 		return this;
 	};
 
@@ -182,12 +184,12 @@ define(["Tone/core/Tone", "Tone/type/Type"], function(Tone){
 	 */
 	Tone.Param.prototype.setRampPoint = function(now){
 		now = Tone.defaultArg(now, this.now());
+		this.cancelAndHoldAtTime(this.context.currentTime);
 		var currentVal = this._param.value;
-		// exponentialRampToValueAt cannot ever ramp from or to 0
-		// More info: https://bugzilla.mozilla.org/show_bug.cgi?id=1125600#c2
 		if (currentVal === 0){
 			currentVal = this._minOutput;
 		}
+		// cancel and hold at the given time
 		this._param.setValueAtTime(currentVal, now);
 		return this;
 	};
@@ -202,7 +204,9 @@ define(["Tone/core/Tone", "Tone/type/Type"], function(Tone){
 	 */
 	Tone.Param.prototype.linearRampToValueAtTime = function(value, endTime){
 		value = this._fromUnits(value);
-		this._param.linearRampToValueAtTime(value, this.toSeconds(endTime));
+		endTime = this.toSeconds(endTime);
+		Tone.isPast(endTime);
+		this._param.linearRampToValueAtTime(value, endTime);
 		return this;
 	};
 
@@ -217,7 +221,9 @@ define(["Tone/core/Tone", "Tone/type/Type"], function(Tone){
 	Tone.Param.prototype.exponentialRampToValueAtTime = function(value, endTime){
 		value = this._fromUnits(value);
 		value = Math.max(this._minOutput, value);
-		this._param.exponentialRampToValueAtTime(value, this.toSeconds(endTime));
+		endTime = this.toSeconds(endTime);
+		Tone.isPast(endTime);
+		this._param.exponentialRampToValueAtTime(value, endTime);
 		return this;
 	};
 
@@ -233,9 +239,9 @@ define(["Tone/core/Tone", "Tone/type/Type"], function(Tone){
 	 *  @returns {Tone.Param} this
 	 *  @example
 	 * //exponentially ramp to the value 2 over 4 seconds.
-	 * signal.exponentialRampToValue(2, 4);
+	 * signal.exponentialRampTo(2, 4);
 	 */
-	Tone.Param.prototype.exponentialRampToValue = function(value, rampTime, startTime){
+	Tone.Param.prototype.exponentialRampTo = function(value, rampTime, startTime){
 		startTime = this.toSeconds(startTime);
 		this.setRampPoint(startTime);
 		this.exponentialRampToValueAtTime(value, startTime + this.toSeconds(rampTime));
@@ -254,12 +260,43 @@ define(["Tone/core/Tone", "Tone/type/Type"], function(Tone){
 	 *  @returns {Tone.Param} this
 	 *  @example
 	 * //linearly ramp to the value 4 over 3 seconds.
-	 * signal.linearRampToValue(4, 3);
+	 * signal.linearRampTo(4, 3);
 	 */
-	Tone.Param.prototype.linearRampToValue = function(value, rampTime, startTime){
+	Tone.Param.prototype.linearRampTo = function(value, rampTime, startTime){
 		startTime = this.toSeconds(startTime);
 		this.setRampPoint(startTime);
 		this.linearRampToValueAtTime(value, startTime + this.toSeconds(rampTime));
+		return this;
+	};
+
+	/**
+	 * Convert between Time and time constant. The time
+	 * constant returned can be used in setTargetAtTime.
+	 * @param  {Time} time The time to convert
+	 * @return {Number}      The time constant to get an exponentially approaching
+	 *                           curve to over 99% of towards the target value.
+	 */
+	Tone.Param.prototype.getTimeConstant = function(time){
+		return Math.log(this.toSeconds(time)+1)/Math.log(200);
+	};
+
+	/**
+	 *  Start exponentially approaching the target value at the given time. Since it
+	 *  is an exponential approach it will continue approaching after the ramp duration. The
+	 *  rampTime is the time that it takes to reach over 99% of the way towards the value.
+	 *  @param  {number} value   The value to ramp to.
+	 *  @param  {Time} rampTime the time that it takes the
+	 *                               value to ramp from it's current value
+	 *  @param {Time}	[startTime=now] 	When the ramp should start.
+	 *  @returns {Tone.Param} this
+	 *  @example
+	 * //exponentially ramp to the value 2 over 4 seconds.
+	 * signal.exponentialRampTo(2, 4);
+	 */
+	Tone.Param.prototype.targetRampTo = function(value, rampTime, startTime){
+		startTime = this.toSeconds(startTime);
+		this.setRampPoint(startTime);
+		this.setTargetAtTime(value, startTime, this.getTimeConstant(rampTime));
 		return this;
 	};
 
@@ -315,6 +352,31 @@ define(["Tone/core/Tone", "Tone/type/Type"], function(Tone){
 	};
 
 	/**
+	 *  This is similar to [cancelScheduledValues](#cancelScheduledValues) except
+	 *  it holds the automated value at cancelTime until the next automated event.
+	 *  @param  {Time} cancelTime
+	 *  @returns {Tone.Param} this
+	 */
+	Tone.Param.prototype.cancelAndHoldAtTime = function(cancelTime){
+		cancelTime = this.toSeconds(cancelTime);
+		if (this._param.cancelAndHoldAtTime){
+			this._param.cancelAndHoldAtTime(cancelTime);
+		} else {
+			//fallback for unsupported browsers
+			//can't cancel and hold at any time in the future
+			//just do it immediately for gapless automation curves
+			var now = this.context.currentTime;
+			this._param.cancelScheduledValues(now);
+			var currentVal = this._param.value;
+			if (currentVal === 0){
+				currentVal = this._minOutput;
+			}
+			this._param.setValueAtTime(currentVal, now + this.sampleTime);
+		}
+		return this;
+	};
+
+	/**
 	 *  Ramps to the given value over the duration of the rampTime.
 	 *  Automatically selects the best ramp type (exponential or linear)
 	 *  depending on the `units` of the signal
@@ -333,11 +395,11 @@ define(["Tone/core/Tone", "Tone/type/Type"], function(Tone){
 	 * signal.rampTo(0, 10, 5)
 	 */
 	Tone.Param.prototype.rampTo = function(value, rampTime, startTime){
-		rampTime = Tone.defaultArg(rampTime, 0);
+		rampTime = Tone.defaultArg(rampTime, 0.1);
 		if (this.units === Tone.Type.Frequency || this.units === Tone.Type.BPM || this.units === Tone.Type.Decibels){
-			this.exponentialRampToValue(value, rampTime, startTime);
+			this.exponentialRampTo(value, rampTime, startTime);
 		} else {
-			this.linearRampToValue(value, rampTime, startTime);
+			this.linearRampTo(value, rampTime, startTime);
 		}
 		return this;
 	};

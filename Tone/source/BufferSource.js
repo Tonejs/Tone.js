@@ -83,6 +83,12 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/G
 		this.fadeOut = options.fadeOut;
 
 		/**
+		 * The curve applied to the fades, either "linear" or "exponential"
+		 * @type {String}
+		 */
+		this.curve = options.curve;
+
+		/**
 		 *  The value that the buffer ramps to
 		 *  @type {Gain}
 		 *  @private
@@ -96,6 +102,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/G
 		 */
 		this._onendedTimeout = -1;
 
+		//set some values initially
 		this.loop = options.loop;
 		this.loopStart = options.loopStart;
 		this.loopEnd = options.loopEnd;
@@ -117,6 +124,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/G
 		"loopEnd" : 0,
 		"fadeIn" : 0,
 		"fadeOut" : 0,
+		"curve" : "linear",
 		"playbackRate" : 1
 	};
 
@@ -165,30 +173,27 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/G
 				offset = Tone.defaultArg(offset, 0);
 			}
 			offset = this.toSeconds(offset);
-			//the values in seconds
-			time = this.toSeconds(time);
 
 			gain = Tone.defaultArg(gain, 1);
 			this._gain = gain;
 
-			//the fadeIn time
-			if (Tone.isUndef(fadeInTime)){
-				fadeInTime = this.toSeconds(this.fadeIn);
-			} else {
-				fadeInTime = this.toSeconds(fadeInTime);
-			}
+			fadeInTime = this.toSeconds(Tone.defaultArg(fadeInTime, this.fadeIn));
+			this.fadeIn = fadeInTime;
 
 			if (fadeInTime > 0){
 				this._gainNode.gain.setValueAtTime(0, time);
-				this._gainNode.gain.linearRampToValueAtTime(this._gain, time + fadeInTime);
+				if (this.curve === "linear"){
+					this._gainNode.gain.linearRampToValueAtTime(this._gain, time + fadeInTime);
+				} else {
+					this._gainNode.gain.setTargetAtTime(this._gain, time, this._gainNode.gain.getTimeConstant(fadeInTime));
+				}
 			} else {
 				this._gainNode.gain.setValueAtTime(gain, time);
 			}
 
-			this._startTime = time + fadeInTime;
+			this._startTime = time;
 
-			var computedDur = Tone.defaultArg(duration, this.buffer.duration - offset);
-			computedDur = this.toSeconds(computedDur);
+			var computedDur = this.toSeconds(Tone.defaultArg(duration, this.buffer.duration - offset));
 			computedDur = Math.max(computedDur, 0);
 
 			if (!this.loop || (this.loop && !Tone.isUndef(duration))){
@@ -196,7 +201,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/G
 				if (!this.loop){
 					computedDur = Math.min(computedDur, this.buffer.duration - offset);
 				}
-				this.stop(time + computedDur + fadeInTime, this.fadeOut);
+				this.stop(time + computedDur, this.fadeOut);
 			}
 
 			//start the buffer source
@@ -212,6 +217,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/G
 			}
 			this._source.buffer = this.buffer.get();
 			this._source.loopEnd = this.loopEnd || this.buffer.duration;
+			Tone.isPast(time);
 			this._source.start(time, offset);
 		} else {
 			throw new Error("Tone.BufferSource: buffer is either not set or not loaded.");
@@ -232,26 +238,35 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/G
 
 			time = this.toSeconds(time);
 
-			//the fadeOut time
-			if (Tone.isUndef(fadeOutTime)){
-				fadeOutTime = this.toSeconds(this.fadeOut);
-			} else {
-				fadeOutTime = this.toSeconds(fadeOutTime);
-			}
-
-			//only stop if the last stop was scheduled later
+			//if this is before the previous stop
 			if (this._stopTime === -1 || this._stopTime > time){
+
+				//stop if it's schedule before the start time
+				if (time <= this._startTime){
+					this._gainNode.gain.cancelScheduledValues(time);
+					this._gainNode.gain.value = 0;
+					return this;
+				}
+
+				time = Math.max(this._startTime + this.fadeIn + this.sampleTime, time);
+				//cancel the previous curve
+				this._gainNode.gain.cancelScheduledValues(time);
 				this._stopTime = time;
 
-				//cancel the end curve
-				this._gainNode.gain.cancelScheduledValues(this._startTime + this.sampleTime);
-				time = Math.max(this._startTime, time);
+				//the fadeOut time
+				fadeOutTime = this.toSeconds(Tone.defaultArg(fadeOutTime, this.fadeOut));
 
 				//set a new one
-				if (fadeOutTime > 0){
-					var startFade = Math.max(this._startTime, time - fadeOutTime);
+				var heldDuration = Math.min(time - this._startTime - this.fadeIn - this.sampleTime, this.buffer.duration);
+				fadeOutTime = Math.min(heldDuration, fadeOutTime);
+				var startFade = time - fadeOutTime;
+				if (fadeOutTime > this.sampleTime){
 					this._gainNode.gain.setValueAtTime(this._gain, startFade);
-					this._gainNode.gain.linearRampToValueAtTime(0, time);
+					if (this.curve === "linear"){
+						this._gainNode.gain.linearRampToValueAtTime(0, time);
+					} else {
+						this._gainNode.gain.setTargetAtTime(0, startFade, this._gainNode.gain.getTimeConstant(fadeOutTime));
+					}
 				} else {
 					this._gainNode.gain.setValueAtTime(0, time);
 				}

@@ -245,9 +245,9 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal",
 		}
 		//attack
 		if (this._attackCurve === "linear"){
-			this._sig.linearRampToValue(velocity, attack, time);
+			this._sig.linearRampTo(velocity, attack, time);
 		} else if (this._attackCurve === "exponential"){
-			this._sig.exponentialRampToValue(velocity, attack, time);
+			this._sig.targetRampTo(velocity, attack, time);
 		} else if (attack > 0){
 			this._sig.setRampPoint(time);
 			var curve = this._attackCurve;
@@ -262,7 +262,7 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal",
 			this._sig.setValueCurveAtTime(curve, time, attack, velocity);
 		}
 		//decay
-		this._sig.exponentialRampToValue(velocity * this.sustain, decay, attack + time);
+		this._sig.targetRampTo(velocity * this.sustain, decay, attack + time);
 		return this;
 	};
 
@@ -280,9 +280,9 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal",
 		if (currentValue > 0){
 			var release = this.toSeconds(this.release);
 			if (this._releaseCurve === "linear"){
-				this._sig.linearRampToValue(0, release, time);
+				this._sig.linearRampTo(0, release, time);
 			} else if (this._releaseCurve === "exponential"){
-				this._sig.exponentialRampToValue(0, release, time);
+				this._sig.targetRampTo(0, release, time);
 			} else{
 				var curve = this._releaseCurve;
 				if (Tone.isArray(curve)){

@@ -4,8 +4,8 @@ define(["Tone/core/Tone"], function (Tone) {
 
 	/**
 	 *  @class A Timeline class for scheduling and maintaining state
-	 *         along a timeline. All events must have a "time" property. 
-	 *         Internally, events are stored in time order for fast 
+	 *         along a timeline. All events must have a "time" property.
+	 *         Internally, events are stored in time order for fast
 	 *         retrieval.
 	 *  @extends {Tone}
 	 *  @param {Positive} [memory=Infinity] The number of previous events that are retained.
@@ -23,11 +23,18 @@ define(["Tone/core/Tone"], function (Tone) {
 		this._timeline = [];
 
 		/**
-		 *  An array of items to remove from the list. 
+		 *  An array of items to remove from the list.
 		 *  @type {Array}
 		 *  @private
 		 */
 		this._toRemove = [];
+
+		/**
+		 *  An array of items to add from the list (once it's done iterating)
+		 *  @type {Array}
+		 *  @private
+		 */
+		this._toAdd = [];
 
 		/**
 		 *  Flag if the timeline is mid iteration
@@ -70,8 +77,8 @@ define(["Tone/core/Tone"], function (Tone) {
 
 	/**
 	 *  Insert an event object onto the timeline. Events must have a "time" attribute.
-	 *  @param  {Object}  event  The event object to insert into the 
-	 *                           timeline. 
+	 *  @param  {Object}  event  The event object to insert into the
+	 *                           timeline.
 	 *  @returns {Tone.Timeline} this
 	 */
 	Tone.Timeline.prototype.add = function(event){
@@ -79,16 +86,16 @@ define(["Tone/core/Tone"], function (Tone) {
 		if (Tone.isUndef(event.time)){
 			throw new Error("Tone.Timeline: events must have a time attribute");
 		}
-		if (this._timeline.length){
+		if (this._iterating){
+			this._toAdd.push(event);
+		} else {
 			var index = this._search(event.time);
 			this._timeline.splice(index + 1, 0, event);
-		} else {
-			this._timeline.push(event);			
-		}
-		//if the length is more than the memory, remove the previous ones
-		if (this.length > this.memory){
-			var diff = this.length - this.memory;
-			this._timeline.splice(0, diff);
+			//if the length is more than the memory, remove the previous ones
+			if (this.length > this.memory){
+				var diff = this.length - this.memory;
+				this._timeline.splice(0, diff);
+			}
 		}
 		return this;
 	};
@@ -113,12 +120,12 @@ define(["Tone/core/Tone"], function (Tone) {
 	/**
 	 *  Get the nearest event whose time is less than or equal to the given time.
 	 *  @param  {Number}  time  The time to query.
-	 *  @param  {String}  comparitor Which value in the object to compare
+	 *  @param  {String}  comparator Which value in the object to compare
 	 *  @returns {Object} The event object set after that time.
 	 */
-	Tone.Timeline.prototype.get = function(time, comparitor){
-		comparitor = Tone.defaultArg(comparitor, "time");
-		var index = this._search(time, comparitor);
+	Tone.Timeline.prototype.get = function(time, comparator){
+		comparator = Tone.defaultArg(comparator, "time");
+		var index = this._search(time, comparator);
 		if (index !== -1){
 			return this._timeline[index];
 		} else {
@@ -145,12 +152,12 @@ define(["Tone/core/Tone"], function (Tone) {
 	/**
 	 *  Get the event which is scheduled after the given time.
 	 *  @param  {Number}  time  The time to query.
-	 *  @param  {String}  comparitor Which value in the object to compare
+	 *  @param  {String}  comparator Which value in the object to compare
 	 *  @returns {Object} The event object after the given time
 	 */
-	Tone.Timeline.prototype.getAfter = function(time, comparitor){
-		comparitor = Tone.defaultArg(comparitor, "time");
-		var index = this._search(time, comparitor);
+	Tone.Timeline.prototype.getAfter = function(time, comparator){
+		comparator = Tone.defaultArg(comparator, "time");
+		var index = this._search(time, comparator);
 		if (index + 1 < this._timeline.length){
 			return this._timeline[index + 1];
 		} else {
@@ -161,17 +168,17 @@ define(["Tone/core/Tone"], function (Tone) {
 	/**
 	 *  Get the event before the event at the given time.
 	 *  @param  {Number}  time  The time to query.
-	 *  @param  {String}  comparitor Which value in the object to compare
+	 *  @param  {String}  comparator Which value in the object to compare
 	 *  @returns {Object} The event object before the given time
 	 */
-	Tone.Timeline.prototype.getBefore = function(time, comparitor){
-		comparitor = Tone.defaultArg(comparitor, "time");
+	Tone.Timeline.prototype.getBefore = function(time, comparator){
+		comparator = Tone.defaultArg(comparator, "time");
 		var len = this._timeline.length;
 		//if it's after the last item, return the last item
-		if (len > 0 && this._timeline[len - 1][comparitor] < time){
+		if (len > 0 && this._timeline[len - 1][comparator] < time){
 			return this._timeline[len - 1];
 		}
-		var index = this._search(time, comparitor);
+		var index = this._search(time, comparator);
 		if (index - 1 >= 0){
 			return this._timeline[index - 1];
 		} else {
@@ -219,11 +226,9 @@ define(["Tone/core/Tone"], function (Tone) {
 	 *  @returns {Tone.Timeline} this
 	 */
 	Tone.Timeline.prototype.cancelBefore = function(time){
-		if (this._timeline.length){
-			var index = this._search(time);
-			if (index >= 0){
-				this._timeline = this._timeline.slice(index + 1);
-			}
+		var index = this._search(time);
+		if (index >= 0){
+			this._timeline = this._timeline.slice(index + 1);
 		}
 		return this;
 	};
@@ -243,21 +248,24 @@ define(["Tone/core/Tone"], function (Tone) {
 	};
 
 	/**
-	 *  Does a binary serach on the timeline array and returns the 
+	 *  Does a binary search on the timeline array and returns the
 	 *  nearest event index whose time is after or equal to the given time.
 	 *  If a time is searched before the first index in the timeline, -1 is returned.
 	 *  If the time is after the end, the index of the last item is returned.
-	 *  @param  {Number}  time  
-	 *  @param  {String}  comparitor Which value in the object to compare
-	 *  @return  {Number} the index in the timeline array 
+	 *  @param  {Number}  time
+	 *  @param  {String}  comparator Which value in the object to compare
+	 *  @return  {Number} the index in the timeline array
 	 *  @private
 	 */
-	Tone.Timeline.prototype._search = function(time, comparitor){
-		comparitor = Tone.defaultArg(comparitor, "time");
+	Tone.Timeline.prototype._search = function(time, comparator){
+		if (this._timeline.length === 0){
+			return -1;
+		}
+		comparator = Tone.defaultArg(comparator, "time");
 		var beginning = 0;
 		var len = this._timeline.length;
 		var end = len;
-		if (len > 0 && this._timeline[len - 1][comparitor] <= time){
+		if (len > 0 && this._timeline[len - 1][comparator] <= time){
 			return len - 1;
 		}
 		while (beginning < end){
@@ -265,34 +273,34 @@ define(["Tone/core/Tone"], function (Tone) {
 			var midPoint = Math.floor(beginning + (end - beginning) / 2);
 			var event = this._timeline[midPoint];
 			var nextEvent = this._timeline[midPoint + 1];
-			if (event[comparitor] === time){
+			if (event[comparator] === time){
 				//choose the last one that has the same time
 				for (var i = midPoint; i < this._timeline.length; i++){
 					var testEvent = this._timeline[i];
-					if (testEvent[comparitor] === time){
+					if (testEvent[comparator] === time){
 						midPoint = i;
 					}
 				}
 				return midPoint;
-			} else if (event[comparitor] < time && nextEvent[comparitor] > time){
+			} else if (event[comparator] < time && nextEvent[comparator] > time){
 				return midPoint;
-			} else if (event[comparitor] > time){
+			} else if (event[comparator] > time){
 				//search lower
 				end = midPoint;
 			} else {
 				//search upper
 				beginning = midPoint + 1;
-			} 
+			}
 		}
 		return -1;
 	};
 
 	/**
-	 *  Internal iterator. Applies extra safety checks for 
-	 *  removing items from the array. 
-	 *  @param  {Function}  callback 
-	 *  @param  {Number=}    lowerBound     
-	 *  @param  {Number=}    upperBound    
+	 *  Internal iterator. Applies extra safety checks for
+	 *  removing items from the array.
+	 *  @param  {Function}  callback
+	 *  @param  {Number=}    lowerBound
+	 *  @param  {Number=}    upperBound
 	 *  @private
 	 */
 	Tone.Timeline.prototype._iterate = function(callback, lowerBound, upperBound){
@@ -303,15 +311,14 @@ define(["Tone/core/Tone"], function (Tone) {
 			callback.call(this, this._timeline[i]);
 		}
 		this._iterating = false;
-		if (this._toRemove.length > 0){
-			for (var j = 0; j < this._toRemove.length; j++){
-				var index = this._timeline.indexOf(this._toRemove[j]);
-				if (index !== -1){
-					this._timeline.splice(index, 1);
-				}
-			}
-			this._toRemove = [];
-		}
+		this._toRemove.forEach(function(event){
+			this.remove(event);
+		}.bind(this));
+		this._toRemove = [];
+		this._toAdd.forEach(function(event){
+			this.add(event);
+		}.bind(this));
+		this._toAdd = [];
 	};
 
 	/**
@@ -353,7 +360,7 @@ define(["Tone/core/Tone"], function (Tone) {
 	};
 
 	/**
-	 *  Iterate over everything in the array at or after the given time. Similar to 
+	 *  Iterate over everything in the array at or after the given time. Similar to
 	 *  forEachAfter, but includes the item(s) at the given time.
 	 *  @param  {Number}  time The time to check if items are before
 	 *  @param  {Function}  callback The callback to invoke with every item
@@ -383,7 +390,7 @@ define(["Tone/core/Tone"], function (Tone) {
 			this._iterate(function(event){
 				if (event.time === time){
 					callback.call(this, event);
-				} 
+				}
 			}, 0, upperBound);
 		}
 		return this;
@@ -397,6 +404,7 @@ define(["Tone/core/Tone"], function (Tone) {
 		Tone.prototype.dispose.call(this);
 		this._timeline = null;
 		this._toRemove = null;
+		this._toAdd = null;
 		return this;
 	};
 

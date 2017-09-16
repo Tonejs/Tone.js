@@ -126,7 +126,7 @@ define(["Test", "Tone/core/Timeline"], function (Test, Timeline) {
 			sched.dispose();
 		});
 
-		
+
 		it ("can get the scheduled event at the given time", function(){
 			var sched = new Timeline();
 			sched.add({
@@ -261,7 +261,7 @@ define(["Test", "Tone/core/Timeline"], function (Test, Timeline) {
 			sched.dispose();
 		});
 
-		
+
 
 		it ("has no problem with many items", function(){
 			var sched = new Timeline();
@@ -528,6 +528,26 @@ define(["Test", "Tone/core/Timeline"], function (Test, Timeline) {
 				expect(sched.length).to.equal(0);
 				sched.dispose();
 			});
+
+			it("can add items during iteration", function(){
+				var sched = new Timeline();
+				for (var i = 0; i < 1000; i++){
+					sched.add({"time" : i});
+				}
+				var added = false;
+				sched.forEach(function(event){
+					if (!added){
+						added = true;
+						sched.add({
+							"time" : 10,
+							"added" : true,
+						});
+					}
+				});
+				expect(sched.length).to.equal(1001);
+				sched.dispose();
+			});
+
 		});
 	});
 });

@@ -1,5 +1,5 @@
-define(["Tone/component/Analyser", "Test", "helper/Basic", "helper/Supports"], 
-	function (Analyser, Test, Basic, Supports) {
+define(["Tone/component/Analyser", "Test", "helper/Basic", "helper/Supports", "Tone/source/Noise"],
+	function (Analyser, Test, Basic, Supports, Noise) {
 
 	describe("Analyser", function(){
 
@@ -33,7 +33,7 @@ define(["Tone/component/Analyser", "Test", "helper/Basic", "helper/Supports"],
 
 		it("can run fft analysis", function(){
 			var anl = new Analyser("fft", 512);
-			analysis = anl.analyse();
+			analysis = anl.getValue();
 			expect(analysis.length).to.equal(512);
 			for (i = 0; i < analysis.length; i++){
 				expect(analysis[i]).is.lessThan(0);
@@ -41,14 +41,22 @@ define(["Tone/component/Analyser", "Test", "helper/Basic", "helper/Supports"],
 			anl.dispose();
 		});
 
-		it("can run waveform analysis", function(){
+		it("can run waveform analysis", function(done){
+			var noise = new Noise();
 			var anl = new Analyser("waveform", 256);
-			analysis = anl.analyse();
-			expect(analysis.length).to.equal(256);
-			for (i = 0; i < analysis.length; i++){
-				expect(analysis[i]).is.within(0, 1);
-			}
-			anl.dispose();
+			noise.connect(anl);
+			noise.start();
+
+			setTimeout(function(){
+				analysis = anl.getValue();
+				expect(analysis.length).to.equal(256);
+				for (i = 0; i < analysis.length; i++){
+					expect(analysis[i]).is.within(-1, 1);
+				}
+				anl.dispose();
+				noise.dispose();
+				done()
+			}, 300);
 		});
 
 		it("throws an error if an invalid type is set", function(){

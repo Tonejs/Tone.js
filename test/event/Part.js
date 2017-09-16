@@ -1,5 +1,5 @@
-define(["helper/Basic", "Tone/event/Part", "Tone/core/Tone", 
-	"Tone/core/Transport", "Tone/event/Event", "helper/Offline", "Test"], 
+define(["helper/Basic", "Tone/event/Part", "Tone/core/Tone",
+	"Tone/core/Transport", "Tone/event/Event", "helper/Offline", "Test"],
 	function (Basic, Part, Tone, Transport, Event, Offline, Test) {
 
 	describe("Part", function(){
@@ -210,7 +210,7 @@ define(["helper/Basic", "Tone/event/Part", "Tone/core/Tone",
 					//loop duration is the same
 					expect(firstEvent.loopEnd).to.equal("1m");
 					expect(firstEvent.loopStart).to.equal("4n");
-					
+
 					var secondEvent = part.at(0.3);
 					expect(secondEvent.humanize).to.equal(0.1);
 					expect(secondEvent.probability).to.equal(0.2);
@@ -412,7 +412,7 @@ define(["helper/Basic", "Tone/event/Part", "Tone/core/Tone",
 			});
 
 		});
-		
+
 		context("Looping", function(){
 
 			it ("can be set to loop", function(){
@@ -462,20 +462,20 @@ define(["helper/Basic", "Tone/event/Part", "Tone/core/Tone",
 						"loopEnd" : 0.5,
 						"loop" : true,
 						"callback" : function(time, value){
-							if (value === 1){
+							if (value === 1 && !switched){
 								switched = true;
 								part.loopEnd = 0.2;
 							} else if (switched){
 								expect(value).to.equal(0);
 								invoked = true;
-							} 
+							}
 						},
 						events : [[0, 0], [0.25, 1]]
 					}).start(0);
 					Transport.start();
 				}, 0.7).then(function(){
 					expect(invoked).to.be.true;
-				});		
+				});
 			});
 
 			it ("a started part will be stopped if it is before the loopStart", function(){
@@ -492,7 +492,7 @@ define(["helper/Basic", "Tone/event/Part", "Tone/core/Tone",
 							} else if (switched){
 								expect(value).to.equal(1);
 								invoked = true;
-							} 
+							}
 						},
 						events : [[0, 0], [0.25, 1]]
 					}).start(0);
@@ -502,7 +502,7 @@ define(["helper/Basic", "Tone/event/Part", "Tone/core/Tone",
 				});
 			});
 
-			
+
 			it ("can loop a specific number of times", function(){
 				var callCount = 0;
 				return Offline(function(Transport){
@@ -582,7 +582,7 @@ define(["helper/Basic", "Tone/event/Part", "Tone/core/Tone",
 					part.loopEnd = 0.3;
 					Transport.start(0.2).stop(0.61).start(0.8);
 				}, 2).then(function(){
-					expect(eventTimeIndex).to.equal(7);
+					expect(eventTimeIndex).to.equal(8);
 				});
 			});
 

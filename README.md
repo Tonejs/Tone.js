@@ -15,6 +15,7 @@ Tone.js is a Web Audio framework for creating interactive music in the browser. 
 
 * download [full](https://tonejs.github.io/build/Tone.js) | [min](https://tonejs.github.io/build/Tone.min.js)
 * `npm install tone`
+* dev -> `npm install tone@next`
 
 [Full Installation Instruction](https://github.com/Tonejs/Tone.js/wiki/Installation).
 
@@ -30,7 +31,7 @@ synth.triggerAttackRelease("C4", "8n");
 
 #### Tone.Synth
 
-[Tone.Synth](https://tonejs.github.io/docs/#Synth) is a basic synthesizer with a single [oscillator](https://tonejs.github.io/docs/#OmniOscillator) and an [ADSR envelope](https://en.wikipedia.org/wiki/Synthesizer#ADSR_envelope). 
+[Tone.Synth](https://tonejs.github.io/docs/#Synth) is a basic synthesizer with a single [oscillator](https://tonejs.github.io/docs/#OmniOscillator) and an [ADSR envelope](https://en.wikipedia.org/wiki/Synthesizer#ADSR_envelope).
 
 #### triggerAttackRelease
 
@@ -48,7 +49,7 @@ Tone.js abstracts away the AudioContext time. Instead of defining all values in 
 
 ### Transport
 
-[Tone.Transport](https://tonejs.github.io/docs/#Transport) is the master timekeeper, allowing for application-wide synchronization and scheduling of sources, signals and events along a shared timeline. Time expressions (like the ones above) are evaluated against the Transport's BPM which can be set like this: `Tone.Transport.bpm.value = 120`. 
+[Tone.Transport](https://tonejs.github.io/docs/#Transport) is the master timekeeper, allowing for application-wide synchronization and scheduling of sources, signals and events along a shared timeline. Time expressions (like the ones above) are evaluated against the Transport's BPM which can be set like this: `Tone.Transport.bpm.value = 120`.
 
 ### Loops
 
@@ -101,7 +102,7 @@ var synth = new Tone.Synth({
 synth.triggerAttack("D3", "+1");
 ```
 
-All instruments are monophonic (one voice) but can be made polyphonic when the constructor is passed in as the second argument to [Tone.PolySynth](https://tonejs.github.io/docs/#PolySynth). 
+All instruments are monophonic (one voice) but can be made polyphonic when the constructor is passed in as the second argument to [Tone.PolySynth](https://tonejs.github.io/docs/#PolySynth).
 
 ```javascript
 //a 4 voice Synth
@@ -114,7 +115,7 @@ polySynth.triggerAttackRelease(["C4", "E4", "G4", "B4"], "2n");
 
 # Effects
 
-In the above examples, the synthesizer was always connected directly to the [master output](https://tonejs.github.io/docs/#Master), but the output of the synth could also be routed through one (or more) effects before going to the speakers. 
+In the above examples, the synthesizer was always connected directly to the [master output](https://tonejs.github.io/docs/#Master), but the output of the synth could also be routed through one (or more) effects before going to the speakers.
 
 ```javascript
 //create a distortion effect
@@ -138,7 +139,7 @@ var pwm = new Tone.PWMOscillator("Bb3").toMaster().start();
 
 # Signals
 
-Like the underlying Web Audio API, Tone.js is built with audio-rate signal control over nearly everything. This is a powerful feature which allows for sample-accurate synchronization and scheduling of parameters. 
+Like the underlying Web Audio API, Tone.js is built with audio-rate signal control over nearly everything. This is a powerful feature which allows for sample-accurate synchronization and scheduling of parameters.
 
 [Read more](https://github.com/Tonejs/Tone.js/wiki/Signals).
 
@@ -158,7 +159,7 @@ Tone.js makes extensive use of the native Web Audio Nodes such as the GainNode a
 
 # Contributing
 
-There are many ways to contribute to Tone.js. Check out [this wiki](https://github.com/Tonejs/Tone.js/wiki/Contributing) if you're interested. 
+There are many ways to contribute to Tone.js. Check out [this wiki](https://github.com/Tonejs/Tone.js/wiki/Contributing) if you're interested.
 
 If you have questions (or answers) that are not necessarily bugs/issues, please post them to the [forum](https://groups.google.com/forum/#!forum/tonejs).
 
