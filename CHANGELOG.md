@@ -12,6 +12,7 @@
 * [Tone.FFT](https://tonejs.github.io/docs/FFT) and [Tone.Waveform](https://tonejs.github.io/docs/Waveform) abstract Tone.Analyser
 * [Tone.Meter](https://tonejs.github.io/docs/Meter) returns decibels
 * [Tone.Envelope](https://tonejs.github.io/docs/Envelope) uses exponential approach instead of exponential curve for decay and release curves
+* [Tone.BufferSource](https://tonejs.github.io/docs/BufferSource) fadeIn/Out can be either "linear" or "exponential" curve
 
 ### r10
 
