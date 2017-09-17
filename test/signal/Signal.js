@@ -1,6 +1,6 @@
 define(["helper/Offline", "helper/Basic", "Test", "Tone/signal/Signal",
-	"Tone/type/Type", "Tone/core/Transport", "Tone/component/LFO", "helper/ConstantOutput"],
-	function (Offline, Basic, Test, Signal, Tone, Transport, LFO, ConstantOutput) {
+	"Tone/type/Type", "Tone/core/Transport", "helper/ConstantOutput"],
+	function (Offline, Basic, Test, Signal, Tone, Transport, ConstantOutput) {
 
 	describe("Signal", function(){
 
@@ -355,81 +355,5 @@ define(["helper/Offline", "helper/Basic", "Test", "Tone/signal/Signal",
 			});
 		});
 
-		context("LFO", function(){
-
-			it ("can create an LFO from the constructor", function(){
-				var sig = new Signal({
-					"lfo" : {
-						"min" : -20,
-						"max" : 20
-					}
-				});
-				expect(sig.lfo).to.be.instanceOf(LFO);
-				expect(sig.lfo.min).to.be.closeTo(-20, 0.1);
-				expect(sig.lfo.max).to.be.closeTo(20, 0.1);
-			});
-
-			it ("can set an LFO as the .value", function(){
-				var sig = new Signal();
-				sig.value = {
-					"min" : 20,
-					"max" : -20
-				};
-				expect(sig.lfo).to.be.instanceOf(LFO);
-				expect(sig.lfo.min).to.be.closeTo(20, 0.1);
-				expect(sig.lfo.max).to.be.closeTo(-20, 0.1);
-			});
-
-			it ("outputs a modulated signal", function(){
-				return Offline(function(){
-					new Signal({
-						"lfo" : {
-							"min" : 10,
-							"max" : 20
-						}
-					}).toMaster();
-				}, 0.4).then(function(buffer){
-					buffer.forEach(function(sample){
-						expect(sample).to.be.within(10, 20);
-					});
-				});
-			});
-
-			it ("can handle multiple levels of lfo", function(){
-				return Offline(function(){
-					new Signal({
-						"lfo" : {
-							"min" : 10,
-							"max" : 20,
-							"type" : "square",
-							"frequency" : {
-								"lfo" : {
-									"min" : 2,
-									"max" : 3,
-									"frequency" : 10,
-								}
-							},
-							"amplitude" : {
-								"lfo" : {
-									"min" : 0,
-									"max" : 1,
-									"frequency" : {
-										"lfo" : {
-											"min" : 2,
-											"max" : 3,
-											"frequency" : 10,
-										}
-									},
-								}
-							}
-						}
-					}).toMaster();
-				}, 0.4).then(function(buffer){
-					buffer.forEach(function(sample){
-						expect(sample).to.be.within(10, 20);
-					});
-				});
-			});
-		});
 	});
 });

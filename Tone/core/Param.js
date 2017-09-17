@@ -45,16 +45,7 @@ define(["Tone/core/Tone", "Tone/type/Type"], function(Tone){
 		 */
 		this.overridden = false;
 
-		/**
-		 *  If there is an LFO, this is where it is held.
-		 *  @type  {Tone.LFO}
-		 *  @private
-		 */
-		this._lfo = null;
-
-		if (Tone.isObject(options.lfo)){
-			this.value = options.lfo;
-		} else if (!Tone.isUndef(options.value)){
+		if (!Tone.isUndef(options.value)){
 			this.value = options.value;
 		}
 	};
@@ -83,22 +74,9 @@ define(["Tone/core/Tone", "Tone/type/Type"], function(Tone){
 			return this._toUnits(this._param.value);
 		},
 		set : function(value){
-			if (Tone.isObject(value)){
-				//throw an error if the LFO needs to be included
-				if (Tone.isUndef(Tone.LFO)){
-					throw new Error("Include 'Tone.LFO' to use an LFO as a Param value.");
-				}
-				//remove the old one
-				if (this._lfo){
-					this._lfo.dispose();
-				}
-				this._lfo = new Tone.LFO(value).start();
-				this._lfo.connect(this.input);
-			} else {
-				var convertedVal = this._fromUnits(value);
-				this._param.cancelScheduledValues(0);
-				this._param.value = convertedVal;
-			}
+			var convertedVal = this._fromUnits(value);
+			this._param.cancelScheduledValues(0);
+			this._param.value = convertedVal;
 		}
 	});
 
@@ -405,30 +383,12 @@ define(["Tone/core/Tone", "Tone/type/Type"], function(Tone){
 	};
 
 	/**
-	 *  The LFO created by the signal instance. If none
-	 *  was created, this is null.
-	 *  @type {Tone.LFO}
-	 *  @readOnly
-	 *  @memberOf Tone.Param#
-	 *  @name lfo
-	 */
-	Object.defineProperty(Tone.Param.prototype, "lfo", {
-		get : function(){
-			return this._lfo;
-		}
-	});
-
-	/**
 	 *  Clean up
 	 *  @returns {Tone.Param} this
 	 */
 	Tone.Param.prototype.dispose = function(){
 		Tone.AudioNode.prototype.dispose.call(this);
 		this._param = null;
-		if (this._lfo){
-			this._lfo.dispose();
-			this._lfo = null;
-		}
 		return this;
 	};
 
