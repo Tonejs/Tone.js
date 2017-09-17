@@ -1,4 +1,4 @@
-define(["helper/Basic", "Test", "Tone/type/Time", "Tone/core/Tone", "helper/Offline"], 
+define(["helper/Basic", "Test", "Tone/type/Time", "Tone/core/Tone", "helper/Offline"],
 	function (Basic, Test, Time, Tone, Offline) {
 
 	describe("Time", function(){
@@ -68,7 +68,7 @@ define(["helper/Basic", "Test", "Tone/type/Time", "Tone/core/Tone", "helper/Offl
 
 			it("the clone is not modified when the original is", function(){
 				var time = new Time(1);
-				var cloned = time.clone();				
+				var cloned = time.clone();
 				expect(time.valueOf()).to.equal(1);
 				expect(cloned.valueOf()).to.equal(1);
 				time.add(1);
@@ -81,7 +81,7 @@ define(["helper/Basic", "Test", "Tone/type/Time", "Tone/core/Tone", "helper/Offl
 
 			it("can copy values from another Time", function(){
 				var time = new Time(2);
-				var copy = new Time(1);	
+				var copy = new Time(1);
 				expect(time.valueOf()).to.equal(2);
 				expect(copy.valueOf()).to.equal(1);
 				copy.copy(time);
@@ -103,7 +103,7 @@ define(["helper/Basic", "Test", "Tone/type/Time", "Tone/core/Tone", "helper/Offl
 				expect(Time(10).quantize(8, 0.5).valueOf()).to.equal(9);
 				expect(Time(2).quantize(8, 0.75).valueOf()).to.equal(0.5);
 			});
-			
+
 			it("can get the next subdivison when the transport is started", function(){
 				return Offline(function(Transport){
 					Transport.start(0);
@@ -114,16 +114,16 @@ define(["helper/Basic", "Test", "Tone/type/Time", "Tone/core/Tone", "helper/Offl
 						Transport.stop();
 					});
 				}, 0.6);
-			});	
+			});
 		});
 
 		context("Operators", function(){
 
 			it("can add the current time", function(){
 				var now = Tone.now();
-				expect(Time(4).addNow().valueOf()).to.be.closeTo(4 + now, 0.01);
-				expect(Time("2n").addNow().valueOf()).to.be.closeTo(1 + now, 0.01);
-				expect(Time("+2n").valueOf()).to.be.closeTo(1 + now, 0.01);
+				expect(Time(4).addNow().valueOf()).to.be.closeTo(4 + now, 0.02);
+				expect(Time("2n").addNow().valueOf()).to.be.closeTo(1 + now, 0.02);
+				expect(Time("+2n").valueOf()).to.be.closeTo(1 + now, 0.02);
 			});
 
 			it("can quantize the value", function(){

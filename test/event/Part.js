@@ -577,7 +577,7 @@ define(["helper/Basic", "Tone/event/Part", "Tone/core/Tone",
 							eventTimeIndex++;
 						},
 						events : [[0, 0], [0.1, 1], [0.2, 2]]
-					}).start(0.3).stop(0.8);
+					}).start(0.3).stop(0.81);
 					part.loopEnd = 0.4;
 					part.loopEnd = 0.3;
 					Transport.start(0.2).stop(0.61).start(0.8);
