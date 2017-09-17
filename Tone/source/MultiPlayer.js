@@ -180,6 +180,7 @@ function (Tone) {
 			for (var i = 0; i < sources.length; i++){
 				sources[i].stop(time);
 			}
+			this._activeSources[bufferName] = [];
 		}
 		return this;
 	};
@@ -207,7 +208,10 @@ function (Tone) {
 	 */
 	Object.defineProperty(Tone.MultiPlayer.prototype, "state", {
 		get : function(){
-			return this._activeSources.length > 0 ? Tone.State.Started : Tone.State.Stopped;
+			for (var key in this._activeSources) {
+        if (this._activeSources[key].length) { return Tone.State.Started; }
+	    }
+	    return Tone.State.Stopped;
 		}
 	});
 
