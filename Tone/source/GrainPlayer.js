@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/source/Source", "Tone/core/Buffer", "Tone/source/MultiPlayer"],
+define(["Tone/core/Tone", "Tone/source/Source", "Tone/core/Buffer"],
 function (Tone) {
 
 	/**
