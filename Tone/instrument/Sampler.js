@@ -7,6 +7,8 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/core/Buffers", "To
 	 * @param {Object} samples An object of samples mapping either Midi
 	 *                         Note Numbers or Scientific Pitch Notation
 	 *                         to the url of that sample.
+	 * @param {Function=} onload The callback to invoke when all of the samples are loaded.
+	 * @param {String=} baseUrl The root URL of all of the samples, which is prepended to all the URLs.
 	 * @example
 	 * var sampler = new Tone.Sampler({
 	 * 	"C3" : "path/to/C3.mp3",
