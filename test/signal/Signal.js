@@ -241,6 +241,44 @@ define(["helper/Offline", "helper/Basic", "Test", "Tone/signal/Signal",
 				});
 			});
 
+			it ("can set a value curve", function(){
+				return Offline(function(){
+					var sig = new Signal(0).toMaster();
+					sig.setValueCurveAtTime([0, 1, 0.5, 0.2], 0, 1);
+				}, 1).then(function(buffer){
+					expect(buffer.getValueAtTime(0)).to.be.closeTo(0, 0.01);
+					expect(buffer.getValueAtTime(0.33/2)).to.be.closeTo(0.5, 0.01);
+					expect(buffer.getValueAtTime(0.33)).to.be.closeTo(1, 0.02);
+					expect(buffer.getValueAtTime(0.66)).to.be.closeTo(0.5, 0.02);
+					expect(buffer.getValueAtTime(0.99)).to.be.closeTo(0.2, 0.02);
+				});
+			});
+
+			it ("can set a value curve in the future", function(){
+				return Offline(function(){
+					var sig = new Signal(0).toMaster();
+					sig.setValueCurveAtTime([0, 1, 0.5, 0.2], 0.5, 1);
+				}, 1.5).then(function(buffer){
+					expect(buffer.getValueAtTime(0 + 0.5)).to.be.closeTo(0, 0.01);
+					expect(buffer.getValueAtTime(0.33/2 + 0.5)).to.be.closeTo(0.5, 0.01);
+					expect(buffer.getValueAtTime(0.33 + 0.5)).to.be.closeTo(1, 0.02);
+					expect(buffer.getValueAtTime(0.66 + 0.5)).to.be.closeTo(0.5, 0.02);
+					expect(buffer.getValueAtTime(0.99 + 0.5)).to.be.closeTo(0.2, 0.02);
+				});
+			});
+
+			it ("can set an exponential approach", function(){
+				return Offline(function(){
+					var sig = new Signal(0).toMaster();
+					sig.exponentialAppraochValueAtTime(2, 0.1, 0.5);
+				}, 1).then(function(buffer){
+					expect(buffer.getValueAtTime(0)).to.be.closeTo(0, 0.01);
+					expect(buffer.getValueAtTime(0.1)).to.be.closeTo(0, 0.01);
+					expect(buffer.getValueAtTime(0.4)).to.be.closeTo(1.9, 0.1);
+					expect(buffer.getValueAtTime(0.6)).to.be.closeTo(2, 0.01);
+				});
+			});
+
 		});
 
 		context("Units", function(){
