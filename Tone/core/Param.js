@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/type/Type"], function(Tone){
+define(["Tone/core/Tone", "Tone/type/Type", "Tone/core/AudioNode"], function(Tone){
 
 	"use strict";
 
@@ -248,17 +248,6 @@ define(["Tone/core/Tone", "Tone/type/Type"], function(Tone){
 	};
 
 	/**
-	 * Convert between Time and time constant. The time
-	 * constant returned can be used in setTargetAtTime.
-	 * @param  {Time} time The time to convert
-	 * @return {Number}      The time constant to get an exponentially approaching
-	 *                           curve to over 99% of towards the target value.
-	 */
-	Tone.Param.prototype.getTimeConstant = function(time){
-		return Math.log(this.toSeconds(time)+1)/Math.log(200);
-	};
-
-	/**
 	 *  Start exponentially approaching the target value at the given time. Since it
 	 *  is an exponential approach it will continue approaching after the ramp duration. The
 	 *  rampTime is the time that it takes to reach over 99% of the way towards the value.
@@ -274,8 +263,29 @@ define(["Tone/core/Tone", "Tone/type/Type"], function(Tone){
 	Tone.Param.prototype.targetRampTo = function(value, rampTime, startTime){
 		startTime = this.toSeconds(startTime);
 		this.setRampPoint(startTime);
-		this.setTargetAtTime(value, startTime, this.getTimeConstant(rampTime));
+		this.exponentialAppraochValueAtTime(value, startTime, rampTime);
 		return this;
+	};
+
+	/**
+	 *  Start exponentially approaching the target value at the given time. Since it
+	 *  is an exponential approach it will continue approaching after the ramp duration. The
+	 *  rampTime is the time that it takes to reach over 99% of the way towards the value. This methods
+	 *  is similar to setTargetAtTime except the third argument is a time instead of a 'timeConstant'
+	 *  @param  {number} value   The value to ramp to.
+	 *  @param {Time}	time 	When the ramp should start.
+	 *  @param  {Time} rampTime the time that it takes the
+	 *                               value to ramp from it's current value
+	 *  @returns {Tone.Param} this
+	 *  @example
+	 * //exponentially ramp to the value 2 over 4 seconds.
+	 * signal.exponentialRampTo(2, 4);
+	 */
+	Tone.Param.prototype.exponentialAppraochValueAtTime = function(value, time, rampTime){
+		var timeConstant = Math.log(this.toSeconds(rampTime)+1)/Math.log(200);
+		time = this.toSeconds(time);
+		Tone.isPast(time);
+		return this.setTargetAtTime(value, time, timeConstant);
 	};
 
 	/**

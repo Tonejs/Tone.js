@@ -152,6 +152,20 @@ define(["helper/Basic", "Test", "Tone/core/Param", "Tone/type/Type", "Tone/signa
 				param.dispose();
 			});
 
+			it ("can approach a target value using time instead of timeConstant", function(){
+				var gain = Tone.context.createGain();
+				var param = new Param(gain.gain);
+				param.exponentialAppraochValueAtTime(0.2, "+1", 2);
+				param.dispose();
+			});
+
+			it ("can set a value curve", function(){
+				var gain = Tone.context.createGain();
+				var param = new Param(gain.gain);
+				param.setValueCurveAtTime([0.2, 0.3, 0.4], "+1", 2);
+				param.dispose();
+			});
+
 			it ("can set a ramp point at the current value", function(){
 				var gain = Tone.context.createGain();
 				var param = new Param(gain.gain);
@@ -221,6 +235,15 @@ define(["helper/Basic", "Test", "Tone/core/Param", "Tone/type/Type", "Tone/signa
 					param.dispose();
 					done();
 				}, 100);
+			});
+
+			it ("throws an error if timeConstant <= 0", function(){
+				var gain = Tone.context.createGain();
+				var param = new Param(gain.gain);
+				expect(function(){
+					param.setTargetAtTime(2, "+1", 0);
+				}).to.throw(Error);
+				param.dispose();
 			});
 		});
 	});
