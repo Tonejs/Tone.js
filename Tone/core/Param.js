@@ -289,10 +289,9 @@ define(["Tone/core/Tone", "Tone/type/Type"], function(Tone){
 	Tone.Param.prototype.setTargetAtTime = function(value, startTime, timeConstant){
 		value = this._fromUnits(value);
 		// The value will never be able to approach without timeConstant > 0.
-		// http://www.w3.org/TR/webaudio/#dfn-setTargetAtTime, where the equation
-		// is described. 0 results in a division by 0.
-		value = Math.max(this._minOutput, value);
-		timeConstant = Math.max(this._minOutput, timeConstant);
+		if (timeConstant <= 0){
+			throw new Error("timeConstant must be greater than 0");
+		}
 		this._param.setTargetAtTime(value, this.toSeconds(startTime), timeConstant);
 		return this;
 	};
