@@ -256,8 +256,11 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/G
 				//the fadeOut time
 				fadeOutTime = this.toSeconds(Tone.defaultArg(fadeOutTime, this.fadeOut));
 
-				//set a new one
-				var heldDuration = Math.min(time - this._startTime - this.fadeIn - this.sampleTime, this.buffer.duration);
+				var heldDuration = time - this._startTime - this.fadeIn - this.sampleTime;
+				if (!this.loop){
+					//make sure the fade does not go beyond the length of the buffer
+					heldDuration = Math.min(heldDuration, this.buffer.duration);
+				}
 				fadeOutTime = Math.min(heldDuration, fadeOutTime);
 				var startFade = time - fadeOutTime;
 				if (fadeOutTime > this.sampleTime){
@@ -288,6 +291,9 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/G
 	 */
 	Tone.BufferSource.prototype._onended = function(){
 		this.onended(this);
+		//allow additional time for the exponential curve to fully decay
+		var additionalTail = this.curve === "exponential" ? this.fadeOut * 2 : 0;
+		this._source.stop(this._stopTime + additionalTail);
 	};
 
 	/**
