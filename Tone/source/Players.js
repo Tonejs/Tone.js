@@ -8,7 +8,7 @@ define(["Tone/core/Tone", "Tone/source/Player", "Tone/component/Volume", "Tone/c
 	 *  @constructor
 	 *  @extends {Tone.AudioNode}
 	 *  @param {Object} urls An object mapping a name to a url.
-	 *  @param {function=} onload The function to invoke when the buffer is loaded.
+	 *  @param {function=} onload The function to invoke when all buffers are loaded.
 	 */
 	Tone.Players = function(urls){
 
