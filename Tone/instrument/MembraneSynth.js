@@ -9,9 +9,9 @@ function(Tone){
 	 *          with an amplitude envelope and frequency ramp. A Tone.OmniOscillator
 	 *          is routed through a Tone.AmplitudeEnvelope to the output. The drum
 	 *          quality of the sound comes from the frequency envelope applied
-	 *          during during Tone.MembraneSynth.triggerAttack(note). The frequency
-	 *          envelope starts at <code>note * .octaves</code> and ramps to 
-	 *          <code>note</code> over the duration of <code>.pitchDecay</code>. 
+	 *          during Tone.MembraneSynth.triggerAttack(note). The frequency envelope
+	 *          starts at <code>note * .octaves</code> and ramps to <code>note</code>
+	 *          over the duration of <code>.pitchDecay</code>. 
 	 *
 	 *  @constructor
 	 *  @extends {Tone.Instrument}
