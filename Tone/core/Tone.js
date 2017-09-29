@@ -553,13 +553,6 @@ define(function(){
 	///////////////////////////////////////////////////////////////////////////
 
 	/**
-	 *  The private audio context shared by all Tone Nodes.
-	 *  @private
-	 *  @type {Tone.Context}
-	 */
-	var audioContext = null;
-
-	/**
 	 *  A static pointer to the audio context accessible as Tone.context.
 	 *  @type {Tone.Context}
 	 *  @name context
@@ -567,16 +560,16 @@ define(function(){
 	 */
 	Object.defineProperty(Tone, "context", {
 		get : function(){
-			return audioContext;
+			return window.TONE_AUDIO_CONTEXT;
 		},
 		set : function(context){
 			if (Tone.Context && context instanceof Tone.Context){
-				audioContext = context;
+				window.TONE_AUDIO_CONTEXT = context;
 			} else {
-				audioContext = new Tone.Context(context);
+				window.TONE_AUDIO_CONTEXT = new Tone.Context(context);
 			}
 			//initialize the new audio context
-			Tone.Context.emit("init", audioContext);
+			Tone.Context.emit("init", window.TONE_AUDIO_CONTEXT);
 		}
 	});
 
@@ -663,7 +656,7 @@ define(function(){
 	 */
 	Object.defineProperty(Tone, "initialized", {
 		get : function(){
-			return audioContext !== null;
+			return !Tone.isUndef(window.TONE_AUDIO_CONTEXT);
 		}
 	});
 
@@ -691,11 +684,6 @@ define(function(){
 	 * @static
 	 */
 	Tone.version = "r12-dev";
-
-	// allow optional silencing of this log
-	if (!window.TONE_SILENCE_VERSION_LOGGING) {
-		console.log("%c * Tone.js " + Tone.version + " * ", "background: #000; color: #fff");
-	}
 
 	return Tone;
 });

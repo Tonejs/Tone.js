@@ -106,10 +106,10 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/core/Timeline"], function (
 	};
 
 	/**
-	 *  Define a property on this Tone.Context. 
+	 *  Define a property on this Tone.Context.
 	 *  This is used to extend the native AudioContext
 	 *  @param  {AudioContext}  context
-	 *  @param  {String}  prop 
+	 *  @param  {String}  prop
 	 *  @private
 	 */
 	Tone.Context.prototype._defineProperty = function(context, prop){
@@ -175,7 +175,7 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/core/Timeline"], function (
 	};
 
 	/**
-	 *  A setTimeout which is gaurenteed by the clock source. 
+	 *  A setTimeout which is gaurenteed by the clock source.
 	 *  Also runs in the offline context.
 	 *  @param  {Function}  fn       The callback to invoke
 	 *  @param  {Seconds}    timeout  The timeout in seconds
@@ -185,7 +185,7 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/core/Timeline"], function (
 		this._timeoutIds++;
 		var now = this.now();
 		this._timeouts.add({
-			callback : fn, 
+			callback : fn,
 			time : now + timeout,
 			id : this._timeoutIds
 		});
@@ -225,8 +225,8 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/core/Timeline"], function (
 	});
 
 	/**
-	 *  What the source of the clock is, either "worker" (Web Worker [default]), 
-	 *  "timeout" (setTimeout), or "offline" (none). 
+	 *  What the source of the clock is, either "worker" (Web Worker [default]),
+	 *  "timeout" (setTimeout), or "offline" (none).
 	 *  @type {String}
 	 *  @memberOf Tone.Context#
 	 *  @name clockSource
@@ -241,13 +241,13 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/core/Timeline"], function (
 	});
 
 	/**
-	 *  The type of playback, which affects tradeoffs between audio 
-	 *  output latency and responsiveness. 
-	 *  
+	 *  The type of playback, which affects tradeoffs between audio
+	 *  output latency and responsiveness.
+	 *
 	 *  In addition to setting the value in seconds, the latencyHint also
-	 *  accepts the strings "interactive" (prioritizes low latency), 
+	 *  accepts the strings "interactive" (prioritizes low latency),
 	 *  "playback" (prioritizes sustained playback), "balanced" (balances
-	 *  latency and performance), and "fastest" (lowest latency, might glitch more often). 
+	 *  latency and performance), and "fastest" (lowest latency, might glitch more often).
 	 *  @type {String|Seconds}
 	 *  @memberOf Tone.Context#
 	 *  @name latencyHint
@@ -364,8 +364,8 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/core/Timeline"], function (
 			"var timeoutTime = "+(this._updateInterval * 1000).toFixed(1)+";" +
 			//onmessage callback
 			"self.onmessage = function(msg){" +
-			"	timeoutTime = parseInt(msg.data);" + 
-			"};" + 
+			"	timeoutTime = parseInt(msg.data);" +
+			"};" +
 			//the tick function which posts a message
 			//and schedules a new tick
 			"function tick(){" +
@@ -461,7 +461,7 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/core/Timeline"], function (
 			this._worker.terminate();
 			this._worker.onmessage = null;
 			this._worker = null;
-		}	
+		}
 	};
 
 	/**
@@ -528,9 +528,15 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/core/Timeline"], function (
 	});
 
 
-	// set the audio context initially
-	if (Tone.supported){
+	// set the audio context initially, and if one is not already created
+	if (Tone.supported && !Tone.initialized){
 		Tone.context = new Tone.Context();
+
+		// log on first initialization
+		// allow optional silencing of this log
+		if (!window.TONE_SILENCE_VERSION_LOGGING) {
+			console.log("%c * Tone.js " + Tone.version + " * ", "background: #000; color: #fff");
+		}
 	} else {
 		console.warn("This browser does not support Tone.js");
 	}
