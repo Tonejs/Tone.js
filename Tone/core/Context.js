@@ -537,7 +537,7 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/core/Timeline"], function (
 		if (!window.TONE_SILENCE_VERSION_LOGGING) {
 			console.log("%c * Tone.js " + Tone.version + " * ", "background: #000; color: #fff");
 		}
-	} else {
+	} else if (!Tone.supported){
 		console.warn("This browser does not support Tone.js");
 	}
 
