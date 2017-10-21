@@ -1,5 +1,5 @@
-define(["helper/Basic", "Tone/source/Player", "helper/Offline", 
-	"helper/SourceTests", "Tone/core/Buffer", "helper/Meter", "Test", "Tone/core/Tone"], 
+define(["helper/Basic", "Tone/source/Player", "helper/Offline",
+	"helper/SourceTests", "Tone/core/Buffer", "helper/Meter", "Test", "Tone/core/Tone"],
 	function (BasicTests, Player, Offline, SourceTests, Buffer, Meter, Test, Tone) {
 
 	if (window.__karma__){
@@ -346,6 +346,29 @@ define(["helper/Basic", "Tone/source/Player", "helper/Offline",
 					player.start(0).stop(0.1).stop(0.05);
 				}, 0.3).then(function(buffer){
 					expect(buffer.getLastSoundTime()).to.be.closeTo(0.05, 0.02);
+				});
+			});
+
+			it("stops playing if multiple start/stops with 'stop' at a sooner time", function(){
+				return Offline(function(){
+					var player = new Player(buffer);
+					player.toMaster();
+					player.start(0, 0, 0.05).start(0.1, 0, 0.05).start(0.2, 0, 0.05);
+					player.stop(0.1)
+				}, 0.3).then(function(buffer){
+					expect(buffer.getLastSoundTime()).to.be.closeTo(0.05, 0.02);
+				});
+			});
+
+			it("can retrigger multiple sources which all stop at the stop time", function(){
+				return Offline(function(){
+					var player = new Player(buffer);
+					player.toMaster();
+					player.loop = true;
+					player.retrigger = true;
+					player.start(0).start(0.1).start(0.2).stop(0.25);
+				}, 0.4).then(function(buffer){
+					expect(buffer.getLastSoundTime()).to.be.closeTo(0.25, 0.02);
 				});
 			});
 
