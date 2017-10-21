@@ -1,15 +1,15 @@
 define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/source/BufferSource"], function(Tone){
 
 	"use strict";
-	
+
 	/**
 	 *  @class  Tone.Player is an audio file player with start, loop, and stop functions.
-	 *  
+	 *
 	 *  @constructor
-	 *  @extends {Tone.Source} 
+	 *  @extends {Tone.Source}
 	 *  @param {string|AudioBuffer} url Either the AudioBuffer or the url from
 	 *                                  which to load the AudioBuffer
-	 *  @param {function=} onload The function to invoke when the buffer is loaded. 
+	 *  @param {function=} onload The function to invoke when the buffer is loaded.
 	 *                            Recommended to use Tone.Buffer.on('load') instead.
 	 *  @example
 	 * var player = new Tone.Player("./path/to/sample.mp3").toMaster();
@@ -24,18 +24,12 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/source
 			options = Tone.Player.defaults;
 		} else {
 			options = Tone.defaults(arguments, ["url", "onload"], Tone.Player);
-		}		
+		}
 		Tone.Source.call(this, options);
 
 		/**
-		 *  @private
-		 *  @type {AudioBufferSourceNode}
-		 */
-		this._source = null;
-
-		/**
 		 *  If the file should play as soon
-		 *  as the buffer is loaded. 
+		 *  as the buffer is loaded.
 		 *  @type {boolean}
 		 *  @example
 		 * //will play as soon as it's loaded
@@ -45,14 +39,14 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/source
 		 * }).toMaster();
 		 */
 		this.autostart = options.autostart;
-		
+
 		/**
 		 *  the buffer
 		 *  @private
 		 *  @type {Tone.Buffer}
 		 */
 		this._buffer = new Tone.Buffer({
-			"url" : options.url, 
+			"url" : options.url,
 			"onload" : this._onload.bind(this, options.onload),
 			"reverse" : options.reverse
 		});
@@ -90,9 +84,9 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/source
 
 		/**
 		 *  Enabling retrigger will allow a player to be restarted
-		 *  before the the previous 'start' is done playing. Otherwise, 
+		 *  before the the previous 'start' is done playing. Otherwise,
 		 *  successive calls to Tone.Player.start will only start
-		 *  the sample if it had played all the way through. 
+		 *  the sample if it had played all the way through.
 		 *  @type {boolean}
 		 */
 		this.retrigger = options.retrigger;
@@ -111,7 +105,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/source
 	};
 
 	Tone.extend(Tone.Player, Tone.Source);
-	
+
 	/**
 	 *  the default parameters
 	 *  @static
@@ -134,10 +128,10 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/source
 	/**
 	 *  Load the audio file as an audio buffer.
 	 *  Decodes the audio asynchronously and invokes
-	 *  the callback once the audio buffer loads. 
+	 *  the callback once the audio buffer loads.
 	 *  Note: this does not need to be called if a url
 	 *  was passed in to the constructor. Only use this
-	 *  if you want to manually load a new url. 
+	 *  if you want to manually load a new url.
 	 * @param {string} url The url of the buffer to load.
 	 *                     Filetype support depends on the
 	 *                     browser.
@@ -164,13 +158,13 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/source
 	/**
 	 *  Play the buffer at the given startTime. Optionally add an offset
 	 *  and/or duration which will play the buffer from a position
-	 *  within the buffer for the given duration. 
-	 *  
+	 *  within the buffer for the given duration.
+	 *
 	 *  @param  {Time} [startTime=now] When the player should start.
 	 *  @param  {Time} [offset=0] The offset from the beginning of the sample
-	 *                                 to start at. 
+	 *                                 to start at.
 	 *  @param  {Time=} duration How long the sample should play. If no duration
-	 *                                is given, it will default to the full length 
+	 *                                is given, it will default to the full length
 	 *                                of the sample (minus any offset)
 	 *  @returns {Tone.Player} this
 	 *  @memberOf Tone.Player#
@@ -197,8 +191,8 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/source
 		duration = this.toSeconds(duration);
 		startTime = this.toSeconds(startTime);
 
-		// //make the source
-		this._source = new Tone.BufferSource({
+		//make the source
+		var source = new Tone.BufferSource({
 			"buffer" : this._buffer,
 			"loop" : this._loop,
 			"loopStart" : this._loopStart,
@@ -214,11 +208,14 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/source
 			this._state.setStateAtTime(Tone.State.Stopped, startTime + duration);
 		}
 
+		var event = this._state.get(startTime);
+		event.source = source;
+
 		//start it
 		if (this._loop){
-			this._source.start(startTime, offset);
+			source.start(startTime, offset);
 		} else {
-			this._source.start(startTime, offset, duration);
+			source.start(startTime, offset, duration);
 		}
 		return this;
 	};
@@ -230,17 +227,25 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/source
 	 *  @returns {Tone.Player} this
 	 */
 	Tone.Player.prototype._stop = function(time){
-		if (this._source){
-			this._source.stop(this.toSeconds(time));
-		}
+		time = this.toSeconds(time)
+		var event = this._state.get(time);
+		//stop all after the given time
+		var searchTime = event ? event.time : 0;
+		//if it's set to retrigger, must stop all of them
+		searchTime = this.retrigger ? 0 : searchTime;
+		this._state.forEachFrom(searchTime, function(event){
+			if (event.source){
+				event.source.stop(time);
+			}
+		});
 		return this;
 	};
 
 
 	/**
-	 *  Seek to a specific time in the player's buffer. If the 
+	 *  Seek to a specific time in the player's buffer. If the
 	 *  source is no longer playing at that time, it will stop.
-	 *  If you seek to a time that 
+	 *  If you seek to a time that
 	 *  @param {Time} offset The time to seek to.
 	 *  @param {Time=} time The time for the seek event to occur.
 	 *  @return {Tone.Player} this
@@ -261,13 +266,13 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/source
 	};
 
 	/**
-	 *  Set the loop start and end. Will only loop if loop is 
-	 *  set to true. 
+	 *  Set the loop start and end. Will only loop if loop is
+	 *  set to true.
 	 *  @param {Time} loopStart The loop end time
 	 *  @param {Time} loopEnd The loop end time
 	 *  @returns {Tone.Player} this
 	 *  @example
-	 * //loop 0.1 seconds of the file. 
+	 * //loop 0.1 seconds of the file.
 	 * player.setLoopPoints(0.2, 0.3);
 	 * player.loop = true;
 	 */
@@ -278,7 +283,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/source
 	};
 
 	/**
-	 * If loop is true, the loop will start at this position. 
+	 * If loop is true, the loop will start at this position.
 	 * @memberOf Tone.Player#
 	 * @type {Time}
 	 * @name loopStart
@@ -286,11 +291,13 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/source
 	Object.defineProperty(Tone.Player.prototype, "loopStart", {
 		get : function(){
 			return this._loopStart;
-		}, 
+		},
 		set : function(loopStart){
 			this._loopStart = loopStart;
-			if (this._source){
-				this._source.loopStart = this.toSeconds(loopStart);
+			//get the current source
+			var event = this._state.get(Tone.now());
+			if (event && event.source){
+				event.source.loopStart = this.toSeconds(loopStart);
 			}
 		}
 	});
@@ -304,17 +311,19 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/source
 	Object.defineProperty(Tone.Player.prototype, "loopEnd", {
 		get : function(){
 			return this._loopEnd;
-		}, 
+		},
 		set : function(loopEnd){
 			this._loopEnd = loopEnd;
-			if (this._source){
-				this._source.loopEnd = this.toSeconds(loopEnd);
+			//get the current source
+			var event = this._state.get(Tone.now());
+			if (event && event.source){
+				event.source.loopEnd = this.toSeconds(loopEnd);
 			}
 		}
 	});
 
 	/**
-	 * The audio buffer belonging to the player. 
+	 * The audio buffer belonging to the player.
 	 * @memberOf Tone.Player#
 	 * @type {Tone.Buffer}
 	 * @name buffer
@@ -322,14 +331,14 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/source
 	Object.defineProperty(Tone.Player.prototype, "buffer", {
 		get : function(){
 			return this._buffer;
-		}, 
+		},
 		set : function(buffer){
 			this._buffer.set(buffer);
 		}
 	});
 
 	/**
-	 * If the buffer should loop once it's over. 
+	 * If the buffer should loop once it's over.
 	 * @memberOf Tone.Player#
 	 * @type {boolean}
 	 * @name loop
@@ -337,11 +346,13 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/source
 	Object.defineProperty(Tone.Player.prototype, "loop", {
 		get : function(){
 			return this._loop;
-		}, 
+		},
 		set : function(loop){
 			this._loop = loop;
-			if (this._source){
-				this._source.loop = loop;
+			//get the current source
+			var event = this._state.get(Tone.now());
+			if (event && event.source){
+				event.source.loop = loop;
 			}
 		}
 	});
@@ -356,11 +367,13 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/source
 	Object.defineProperty(Tone.Player.prototype, "playbackRate", {
 		get : function(){
 			return this._playbackRate;
-		}, 
+		},
 		set : function(rate){
 			this._playbackRate = rate;
-			if (this._source) {
-				this._source.playbackRate.value = rate;
+			//get the current source
+			var event = this._state.get(Tone.now());
+			if (event && event.source){
+				event.source.playbackRate.value = rate;
 			}
 		}
 	});
@@ -374,7 +387,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/source
 	Object.defineProperty(Tone.Player.prototype, "reverse", {
 		get : function(){
 			return this._buffer.reverse;
-		}, 
+		},
 		set : function(rev){
 			this._buffer.reverse = rev;
 		}
@@ -398,11 +411,14 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/source
 	 *  @return {Tone.Player} this
 	 */
 	Tone.Player.prototype.dispose = function(){
+		//disconnect all of the players
+		this._state.forEach(function(event){
+			if (event.source){
+				event.source.disconnect();
+				event.source = null;
+			}
+		});
 		Tone.Source.prototype.dispose.call(this);
-		if (this._source !== null){
-			this._source.disconnect();
-			this._source = null;
-		}
 		this._buffer.dispose();
 		this._buffer = null;
 		return this;
