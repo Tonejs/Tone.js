@@ -54,7 +54,7 @@ function(Tone){
 		 *  @private
 		 */
 		this._state = new Tone.TimelineState(Tone.State.Stopped);
-		this._state.memory = 10;
+		this._state.memory = 100;
 
 		/**
 		 *  The synced `start` callback function from the transport
@@ -181,14 +181,14 @@ function(Tone){
 		} else {
 			time = this.toSeconds(time);
 		}
-		this._state.cancel(time);
-		this._state.setStateAtTime(Tone.State.Stopped, time);
 		if (!this._synced){
 			this._stop.apply(this, arguments);
 		} else {
 			var sched = Tone.Transport.schedule(this._stop.bind(this), time);
 			this._scheduled.push(sched);
 		}
+		this._state.cancel(time);
+		this._state.setStateAtTime(Tone.State.Stopped, time);
 		return this;
 	};
 
