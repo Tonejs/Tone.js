@@ -29,7 +29,7 @@ function(Tone){
 
 			/**
 			 *  The pan control. -1 = hard left, 1 = hard right.
-			 *  @type {NormalRange}
+			 *  @type {AudioRange}
 			 *  @signal
 			 */
 			this.pan = this._panner.pan;
