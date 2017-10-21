@@ -227,7 +227,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/source
 	 *  @returns {Tone.Player} this
 	 */
 	Tone.Player.prototype._stop = function(time){
-		time = this.toSeconds(time)
+		time = this.toSeconds(time);
 		var event = this._state.get(time);
 		//stop all after the given time
 		var searchTime = event ? event.time : 0;
