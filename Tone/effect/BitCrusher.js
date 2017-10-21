@@ -1,17 +1,16 @@
-define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/signal/Subtract", "Tone/signal/Modulo"],
-function(Tone){
+define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/signal/Subtract", "Tone/signal/Modulo"], function(Tone){
 
 	"use strict";
 
 	/**
-	 *  @class Tone.Bitcrusher downsamples the incoming signal to a different bitdepth. 
+	 *  @class Tone.Bitcrusher downsamples the incoming signal to a different bitdepth.
 	 *         Lowering the bitdepth of the signal creates distortion. Read more about Bitcrushing
 	 *         on [Wikipedia](https://en.wikipedia.org/wiki/Bitcrusher).
 	 *
 	 *  @constructor
 	 *  @extends {Tone.Effect}
 	 *  @param {Number} bits The number of bits to downsample the signal. Nominal range
-	 *                       of 1 to 8. 
+	 *                       of 1 to 8.
 	 *  @example
 	 * //initialize crusher and route a synth through it
 	 * var crusher = new Tone.BitCrusher(4).toMaster();
@@ -63,7 +62,7 @@ function(Tone){
 	};
 
 	/**
-	 * The bit depth of the effect. Nominal range of 1-8. 
+	 * The bit depth of the effect. Nominal range of 1-8.
 	 * @memberOf Tone.BitCrusher#
 	 * @type {number}
 	 * @name bits
@@ -80,7 +79,7 @@ function(Tone){
 	});
 
 	/**
-	 *  Clean up. 
+	 *  Clean up.
 	 *  @returns {Tone.BitCrusher} this
 	 */
 	Tone.BitCrusher.prototype.dispose = function(){
@@ -90,7 +89,7 @@ function(Tone){
 		this._modulo.dispose();
 		this._modulo = null;
 		return this;
-	}; 
+	};
 
 	return Tone.BitCrusher;
 });

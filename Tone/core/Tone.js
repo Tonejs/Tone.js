@@ -381,7 +381,7 @@ define(function(){
 		return Tone.isString(arg) && /^([a-g]{1}(?:b|#|x|bb)?)(-?[0-9]+)/i.test(arg);
 	};
 
- 	/**
+	/**
 	 *  An empty function.
 	 *  @static
 	 */
@@ -430,7 +430,7 @@ define(function(){
 		Started : "started",
 		Stopped : "stopped",
 		Paused : "paused",
- 	};
+	};
 
 	///////////////////////////////////////////////////////////////////////////
 	// CONVERSIONS
@@ -514,6 +514,7 @@ define(function(){
 	 */
 	Tone.isPast = function(time){
 		if (time < Tone.context.currentTime){
+			// eslint-disable-next-line no-console
 			console.warn("Time '" + time + "' is in the past. Scheduled time must be ≥ AudioContext.currentTime");
 		}
 	};

@@ -1,6 +1,5 @@
-define(["Tone/core/Tone", "Tone/source/OmniOscillator", "Tone/instrument/Instrument", 
-	"Tone/component/AmplitudeEnvelope"],
-function(Tone){
+define(["Tone/core/Tone", "Tone/source/OmniOscillator", "Tone/instrument/Instrument",
+	"Tone/component/AmplitudeEnvelope"], function(Tone){
 
 	"use strict";
 
@@ -11,11 +10,11 @@ function(Tone){
 	 *          quality of the sound comes from the frequency envelope applied
 	 *          during Tone.MembraneSynth.triggerAttack(note). The frequency envelope
 	 *          starts at <code>note * .octaves</code> and ramps to <code>note</code>
-	 *          over the duration of <code>.pitchDecay</code>. 
+	 *          over the duration of <code>.pitchDecay</code>.
 	 *
 	 *  @constructor
 	 *  @extends {Tone.Instrument}
-	 *  @param {Object} [options] the options available for the synth 
+	 *  @param {Object} [options] the options available for the synth
 	 *                          see defaults below
 	 *  @example
 	 * var synth = new Tone.MembraneSynth().toMaster();
@@ -45,7 +44,7 @@ function(Tone){
 		this.octaves = options.octaves;
 
 		/**
-		 *  The amount of time the frequency envelope takes. 
+		 *  The amount of time the frequency envelope takes.
 		 *  @type {Time}
 		 */
 		this.pitchDecay = options.pitchDecay;
@@ -76,8 +75,8 @@ function(Tone){
 	};
 
 	/**
-	 *  Trigger the note at the given time with the given velocity. 
-	 *  
+	 *  Trigger the note at the given time with the given velocity.
+	 *
 	 *  @param  {Frequency} note     the note
 	 *  @param  {Time} [time=now]     the time, if not given is now
 	 *  @param  {number} [velocity=1] velocity defaults to 1
@@ -97,7 +96,7 @@ function(Tone){
 
 	/**
 	 *  Trigger the release portion of the note.
-	 *  
+	 *
 	 *  @param  {Time} [time=now] the time the note will release
 	 *  @returns {Tone.MembraneSynth} this
 	 */

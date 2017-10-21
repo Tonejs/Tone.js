@@ -1,16 +1,16 @@
-define(["Tone/core/Tone", "Tone/component/AmplitudeEnvelope", "Tone/source/OmniOscillator", "Tone/signal/Signal", "Tone/instrument/Monophonic"], 
-function(Tone){
+define(["Tone/core/Tone", "Tone/component/AmplitudeEnvelope", "Tone/source/OmniOscillator",
+	"Tone/signal/Signal", "Tone/instrument/Monophonic"], function(Tone){
 
 	"use strict";
 
 	/**
 	 *  @class  Tone.Synth is composed simply of a Tone.OmniOscillator
-	 *          routed through a Tone.AmplitudeEnvelope. 
+	 *          routed through a Tone.AmplitudeEnvelope.
 	 *          <img src="https://docs.google.com/drawings/d/1-1_0YW2Z1J2EPI36P8fNCMcZG7N1w1GZluPs4og4evo/pub?w=1163&h=231">
 	 *
 	 *  @constructor
 	 *  @extends {Tone.Monophonic}
-	 *  @param {Object} [options] the options available for the synth 
+	 *  @param {Object} [options] the options available for the synth
 	 *                          see defaults below
 	 *  @example
 	 * var synth = new Tone.Synth().toMaster();
@@ -84,7 +84,7 @@ function(Tone){
 	Tone.Synth.prototype._triggerEnvelopeAttack = function(time, velocity){
 		//the envelopes
 		this.envelope.triggerAttack(time, velocity);
-		return this;	
+		return this;
 	};
 
 	/**

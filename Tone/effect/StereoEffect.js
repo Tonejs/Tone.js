@@ -1,6 +1,5 @@
 define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/Split",
-	"Tone/component/Merge", "Tone/component/CrossFade"],
-function(Tone){
+	"Tone/component/Merge", "Tone/component/CrossFade"], function(Tone){
 
 	"use strict";
 

@@ -1,11 +1,11 @@
-define(["Tone/core/Tone", "Tone/instrument/Synth", "Tone/signal/Signal", "Tone/signal/Multiply", "Tone/instrument/Monophonic"],
-function(Tone){
+define(["Tone/core/Tone", "Tone/instrument/Synth", "Tone/signal/Signal", "Tone/signal/Multiply",
+	"Tone/instrument/Monophonic"], function(Tone){
 
 	"use strict";
 
 	/**
 	 *  @class  FMSynth is composed of two Tone.Synths where one Tone.Synth modulates
-	 *          the frequency of a second Tone.Synth. A lot of spectral content 
+	 *          the frequency of a second Tone.Synth. A lot of spectral content
 	 *          can be explored using the modulationIndex parameter. Read more about
 	 *          frequency modulation synthesis on Sound On Sound: [Part 1](https://web.archive.org/web/20160403123704/http://www.soundonsound.com/sos/apr00/articles/synthsecrets.htm), [Part 2](https://web.archive.org/web/20160403115835/http://www.soundonsound.com/sos/may00/articles/synth.htm).
 	 *          <img src="https://docs.google.com/drawings/d/1h0PUDZXPgi4Ikx6bVT6oncrYPLluFKy7lj53puxj-DM/pub?w=902&h=462">

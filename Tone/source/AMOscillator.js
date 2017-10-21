@@ -1,15 +1,14 @@
-define(["Tone/core/Tone", "Tone/source/Source", "Tone/source/Oscillator", "Tone/signal/Multiply", 
-	"Tone/core/Gain", "Tone/signal/AudioToGain"], 
-function(Tone){
+define(["Tone/core/Tone", "Tone/source/Source", "Tone/source/Oscillator", "Tone/signal/Multiply",
+	"Tone/core/Gain", "Tone/signal/AudioToGain"], function(Tone){
 
 	"use strict";
 
 	/**
-	 *  @class Tone.AMOscillator 
+	 *  @class Tone.AMOscillator
 	 *
 	 *  @extends {Tone.Oscillator}
 	 *  @constructor
-	 *  @param {Frequency} frequency The starting frequency of the oscillator. 
+	 *  @param {Frequency} frequency The starting frequency of the oscillator.
 	 *  @param {String} type The type of the carrier oscillator.
 	 *  @param {String} modulationType The type of the modulator oscillator.
 	 *  @example
@@ -58,9 +57,9 @@ function(Tone){
 		this._modulationScale = new Tone.AudioToGain();
 
 		/**
-		 *  Harmonicity is the frequency ratio between the carrier and the modulator oscillators. 
-		 *  A harmonicity of 1 gives both oscillators the same frequency. 
-		 *  Harmonicity = 2 means a change of an octave. 
+		 *  Harmonicity is the frequency ratio between the carrier and the modulator oscillators.
+		 *  A harmonicity of 1 gives both oscillators the same frequency.
+		 *  Harmonicity = 2 means a change of an octave.
 		 *  @type {Positive}
 		 *  @signal
 		 *  @example
@@ -137,7 +136,7 @@ function(Tone){
 			return this._carrier.type;
 		},
 		set : function(type){
-			this._carrier.type = type;	
+			this._carrier.type = type;
 		}
 	});
 
@@ -152,7 +151,7 @@ function(Tone){
 			return this._modulator.type;
 		},
 		set : function(type){
-			this._modulator.type = type;	
+			this._modulator.type = type;
 		}
 	});
 
@@ -165,7 +164,7 @@ function(Tone){
 	Object.defineProperty(Tone.AMOscillator.prototype, "phase", {
 		get : function(){
 			return this._carrier.phase;
-		}, 
+		},
 		set : function(phase){
 			this._carrier.phase = phase;
 			this._modulator.phase = phase;
@@ -173,12 +172,12 @@ function(Tone){
 	});
 
 	/**
-	 * The partials of the carrier waveform. A partial represents 
-	 * the amplitude at a harmonic. The first harmonic is the 
+	 * The partials of the carrier waveform. A partial represents
+	 * the amplitude at a harmonic. The first harmonic is the
 	 * fundamental frequency, the second is the octave and so on
-	 * following the harmonic series. 
-	 * Setting this value will automatically set the type to "custom". 
-	 * The value is an empty array when the type is not "custom". 
+	 * following the harmonic series.
+	 * Setting this value will automatically set the type to "custom".
+	 * The value is an empty array when the type is not "custom".
 	 * @memberOf Tone.AMOscillator#
 	 * @type {Array}
 	 * @name partials
@@ -188,7 +187,7 @@ function(Tone){
 	Object.defineProperty(Tone.AMOscillator.prototype, "partials", {
 		get : function(){
 			return this._carrier.partials;
-		}, 
+		},
 		set : function(partials){
 			this._carrier.partials = partials;
 		}

@@ -1,20 +1,19 @@
-define(["Tone/core/Tone", "Tone/instrument/Synth", "Tone/source/Source"], 
-function(Tone){
+define(["Tone/core/Tone", "Tone/instrument/Synth", "Tone/source/Source"], function(Tone){
 
 	"use strict";
 
 	/**
 	 *  @class  Tone.PolySynth handles voice creation and allocation for any
-	 *          instruments passed in as the second paramter. PolySynth is 
-	 *          not a synthesizer by itself, it merely manages voices of 
-	 *          one of the other types of synths, allowing any of the 
-	 *          monophonic synthesizers to be polyphonic. 
+	 *          instruments passed in as the second paramter. PolySynth is
+	 *          not a synthesizer by itself, it merely manages voices of
+	 *          one of the other types of synths, allowing any of the
+	 *          monophonic synthesizers to be polyphonic.
 	 *
 	 *  @constructor
 	 *  @extends {Tone.Instrument}
 	 *  @param {number|Object} [polyphony=4] The number of voices to create
 	 *  @param {function} [voice=Tone.Synth] The constructor of the voices
-	 *                                            uses Tone.Synth by default. 
+	 *                                            uses Tone.Synth by default.
 	 *  @example
 	 * //a polysynth composed of 6 Voices of Synth
 	 * var synth = new Tone.PolySynth(6, Tone.Synth).toMaster();
@@ -105,11 +104,9 @@ function(Tone){
 			var val = notes[i];
 			//trigger the oldest voice
 			var oldest = this._triggers[0];
-			var oldestIndex = 0;
 			for (var j = 1; j < this._triggers.length; j++){
 				if (this._triggers[j].release < oldest.release){
 					oldest = this._triggers[j];
-					oldestIndex = j;
 				}
 			}
 			oldest.release = Infinity;
@@ -121,7 +118,7 @@ function(Tone){
 
 	/**
 	 *  Trigger the attack and release after the specified duration
-	 *  
+	 *
 	 *  @param  {Frequency|Array} notes The notes to play. Accepts a single
 	 *                                  Frequency or an array of frequencies.
 	 *  @param  {Time} duration the duration of the note
@@ -129,7 +126,7 @@ function(Tone){
 	 *  @param  {number} [velocity=1] the velocity of the attack (0-1)
 	 *  @returns {Tone.PolySynth} this
 	 *  @example
-	 * //trigger a chord for a duration of a half note 
+	 * //trigger a chord for a duration of a half note
 	 * poly.triggerAttackRelease(["Eb3", "G4", "C5"], "2n");
 	 *  @example
 	 * //can pass in an array of durations as well
@@ -141,7 +138,7 @@ function(Tone){
 		if (Tone.isArray(duration) && Tone.isArray(notes)){
 			for (var i = 0; i < notes.length; i++){
 				var d = duration[Math.min(i, duration.length - 1)];
-				this.triggerRelease(notes[i], time + this.toSeconds(d));	
+				this.triggerRelease(notes[i], time + this.toSeconds(d));
 			}
 		} else {
 			this.triggerRelease(notes, time + this.toSeconds(duration));
@@ -150,11 +147,11 @@ function(Tone){
 	};
 
 	/**
-	 *  Trigger the release of the note. Unlike monophonic instruments, 
+	 *  Trigger the release of the note. Unlike monophonic instruments,
 	 *  a note (or array of notes) needs to be passed in as the first argument.
 	 *  @param  {Frequency|Array} notes The notes to play. Accepts a single
 	 *                                  Frequency or an array of frequencies.
-	 *  @param  {Time} [time=now]  When the release will be triggered. 
+	 *  @param  {Time} [time=now]  When the release will be triggered.
 	 *  @returns {Tone.PolySynth} this
 	 *  @example
 	 * poly.triggerRelease(["Ab3", "C4", "F5"], "+2n");
@@ -179,7 +176,7 @@ function(Tone){
 	};
 
 	/**
-	 *  Set a member/attribute of the voices. 
+	 *  Set a member/attribute of the voices.
 	 *  @param {Object|string} params
 	 *  @param {number=} value
 	 *  @param {Time=} rampTime
@@ -207,7 +204,7 @@ function(Tone){
 	 *  values. Pass in a single attribute to retrieve or an array
 	 *  of attributes. The attribute strings can also include a "."
 	 *  to access deeper properties.
-	 *  @param {Array=} params the parameters to get, otherwise will return 
+	 *  @param {Array=} params the parameters to get, otherwise will return
 	 *  					   all available.
 	 */
 	Tone.PolySynth.prototype.get = function(params){
@@ -250,8 +247,8 @@ function(Tone){
 	};
 
 	/**
-	 *  The maximum number of notes that can be allocated 
-	 *  to a polysynth. 
+	 *  The maximum number of notes that can be allocated
+	 *  to a polysynth.
 	 *  @type  {Number}
 	 *  @static
 	 */

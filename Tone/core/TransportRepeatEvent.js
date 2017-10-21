@@ -31,21 +31,21 @@ define(["Tone/core/Tone", "Tone/core/TransportEvent"], function(Tone){
 		 * @type {Number}
 		 * @private
 		 */
-		 this._currentId = -1;
+		this._currentId = -1;
 
-		 /**
+		/**
 		 * The ID of the next timeline event
 		 * @type {Number}
 		 * @private
 		 */
-		 this._nextId = -1;
+		this._nextId = -1;
 
-		 /**
+		/**
 		  * The time of the next event
 		  * @type {Ticks}
 		  * @private
 		  */
-		 this._nextTick = this.time;
+		this._nextTick = this.time;
 
 		/**
 		 * a reference to the bound start method

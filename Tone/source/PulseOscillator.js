@@ -1,14 +1,13 @@
-define(["Tone/core/Tone", "Tone/source/Source", "Tone/source/Oscillator", 
-	"Tone/signal/Signal", "Tone/signal/WaveShaper", "Tone/core/Gain"],
-function(Tone){
+define(["Tone/core/Tone", "Tone/source/Source", "Tone/source/Oscillator",
+	"Tone/signal/Signal", "Tone/signal/WaveShaper", "Tone/core/Gain"], function(Tone){
 
 	"use strict";
 
 	/**
 	 *  @class Tone.PulseOscillator is a pulse oscillator with control over pulse width,
-	 *         also known as the duty cycle. At 50% duty cycle (width = 0.5) the wave is 
-	 *         a square and only odd-numbered harmonics are present. At all other widths 
-	 *         even-numbered harmonics are present. Read more 
+	 *         also known as the duty cycle. At 50% duty cycle (width = 0.5) the wave is
+	 *         a square and only odd-numbered harmonics are present. At all other widths
+	 *         even-numbered harmonics are present. Read more
 	 *         [here](https://wigglewave.wordpress.com/2014/08/16/pulse-waveforms-and-harmonics/).
 	 *
 	 *  @constructor
@@ -24,7 +23,7 @@ function(Tone){
 		Tone.Source.call(this, options);
 
 		/**
-		 *  The width of the pulse. 
+		 *  The width of the pulse.
 		 *  @type {NormalRange}
 		 *  @signal
 		 */
@@ -57,7 +56,7 @@ function(Tone){
 		this.frequency = this._sawtooth.frequency;
 
 		/**
-		 *  The detune in cents. 
+		 *  The detune in cents.
 		 *  @type {Cents}
 		 *  @signal
 		 */
@@ -99,7 +98,7 @@ function(Tone){
 
 	/**
 	 *  start the oscillator
-	 *  @param  {Time} time 
+	 *  @param  {Time} time
 	 *  @private
 	 */
 	Tone.PulseOscillator.prototype._start = function(time){
@@ -110,13 +109,13 @@ function(Tone){
 
 	/**
 	 *  stop the oscillator
-	 *  @param  {Time} time 
+	 *  @param  {Time} time
 	 *  @private
 	 */
 	Tone.PulseOscillator.prototype._stop = function(time){
 		time = this.toSeconds(time);
 		this._sawtooth.stop(time);
-		//the width is still connected to the output. 
+		//the width is still connected to the output.
 		//that needs to be stopped also
 		this._widthGate.gain.setValueAtTime(0, time);
 	};
@@ -130,7 +129,7 @@ function(Tone){
 	Object.defineProperty(Tone.PulseOscillator.prototype, "phase", {
 		get : function(){
 			return this._sawtooth.phase;
-		}, 
+		},
 		set : function(phase){
 			this._sawtooth.phase = phase;
 		}

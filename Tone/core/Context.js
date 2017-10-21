@@ -535,9 +535,11 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/core/Timeline"], function (
 		// log on first initialization
 		// allow optional silencing of this log
 		if (!window.TONE_SILENCE_VERSION_LOGGING) {
+			// eslint-disable-next-line no-console
 			console.log("%c * Tone.js " + Tone.version + " * ", "background: #000; color: #fff");
 		}
 	} else if (!Tone.supported){
+		// eslint-disable-next-line no-console
 		console.warn("This browser does not support Tone.js");
 	}
 

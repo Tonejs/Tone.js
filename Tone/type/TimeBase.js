@@ -174,7 +174,7 @@ define(["Tone/core/Tone"], function (Tone) {
 			}
 		},
 		"-" : {
-			regexp : /^\-/,
+			regexp : /^-/,
 			precedence : 2,
 			method : function(lh, rh){
 				return lh() - rh();
@@ -203,7 +203,7 @@ define(["Tone/core/Tone"], function (Tone) {
 	 */
 	Tone.TimeBase.prototype._unaryExpressions = {
 		"neg" : {
-			regexp : /^\-/,
+			regexp : /^-/,
 			method : function(lh){
 				return -lh();
 			}
@@ -226,7 +226,7 @@ define(["Tone/core/Tone"], function (Tone) {
 
 	/**
 	 *  tokenize the expression based on the Expressions object
-	 *  @param   {string} expr 
+	 *  @param   {string} expr
 	 *  @return  {Object}      returns two methods on the tokenized list, next and peek
 	 *  @private
 	 */
@@ -286,7 +286,7 @@ define(["Tone/core/Tone"], function (Tone) {
 				var op = group[opName];
 				if (op.regexp.test(token.value)){
 					if (!Tone.isUndef(prec)){
-						if(op.precedence === prec){	
+						if(op.precedence === prec){
 							return op;
 						}
 					} else {
@@ -370,7 +370,7 @@ define(["Tone/core/Tone"], function (Tone) {
 
 	/**
 	 *  Recursively parse the string expression into a syntax tree.
-	 *  @param   {string} expr 
+	 *  @param   {string} expr
 	 *  @return  {Function} the bound method to be evaluated later
 	 *  @private
 	 */
@@ -472,7 +472,7 @@ define(["Tone/core/Tone"], function (Tone) {
 	 *  @param  {Time}  val
 	 *  @param  {String}  type
 	 *  @param  {String}  units
-	 *  @return  {Tone.TimeBase} 
+	 *  @return  {Tone.TimeBase}
 	 *  @private
 	 */
 	Tone.TimeBase.prototype._pushExpr = function(val, name, units){
@@ -535,7 +535,7 @@ define(["Tone/core/Tone"], function (Tone) {
 	/**
 	 *  Evaluate the time value. Returns the time
 	 *  in seconds.
-	 *  @return  {Seconds} 
+	 *  @return  {Seconds}
 	 */
 	Tone.TimeBase.prototype.valueOf = function(){
 		return this._expr();

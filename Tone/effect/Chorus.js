@@ -1,18 +1,17 @@
-define(["Tone/core/Tone", "Tone/component/LFO", "Tone/effect/StereoXFeedbackEffect", "Tone/core/Delay"],
-function(Tone){
+define(["Tone/core/Tone", "Tone/component/LFO", "Tone/effect/StereoXFeedbackEffect", "Tone/core/Delay"], function(Tone){
 
 	"use strict";
 
 	/**
-	 *  @class Tone.Chorus is a stereo chorus effect with feedback composed of 
-	 *         a left and right delay with a Tone.LFO applied to the delayTime of each channel. 
+	 *  @class Tone.Chorus is a stereo chorus effect with feedback composed of
+	 *         a left and right delay with a Tone.LFO applied to the delayTime of each channel.
 	 *         Inspiration from [Tuna.js](https://github.com/Dinahmoe/tuna/blob/master/tuna.js).
 	 *         Read more on the chorus effect on [SoundOnSound](http://www.soundonsound.com/sos/jun04/articles/synthsecrets.htm).
 	 *
 	 *	@constructor
 	 *	@extends {Tone.StereoXFeedbackEffect}
 	 *	@param {Frequency|Object} [frequency] The frequency of the LFO.
-	 *	@param {Milliseconds} [delayTime] The delay of the chorus effect in ms. 
+	 *	@param {Milliseconds} [delayTime] The delay of the chorus effect in ms.
 	 *	@param {NormalRange} [depth] The depth of the chorus.
 	 *	@example
 	 * var chorus = new Tone.Chorus(4, 2.5, 0.5);
@@ -45,7 +44,7 @@ function(Tone){
 		 */
 		this._lfoL = new Tone.LFO({
 			"frequency" : options.frequency,
-			"min" : 0, 
+			"min" : 0,
 			"max" : 1,
 		});
 
@@ -56,7 +55,7 @@ function(Tone){
 		 */
 		this._lfoR = new Tone.LFO({
 			"frequency" : options.frequency,
-			"min" : 0, 
+			"min" : 0,
 			"max" : 1,
 			"phase" : 180
 		});
@@ -76,7 +75,7 @@ function(Tone){
 		this._delayNodeR = new Tone.Delay();
 
 		/**
-		 * The frequency of the LFO which modulates the delayTime. 
+		 * The frequency of the LFO which modulates the delayTime.
 		 * @type {Frequency}
 		 * @signal
 		 */
@@ -121,7 +120,7 @@ function(Tone){
 
 	/**
 	 * The depth of the effect. A depth of 1 makes the delayTime
-	 * modulate between 0 and 2*delayTime (centered around the delayTime). 
+	 * modulate between 0 and 2*delayTime (centered around the delayTime).
 	 * @memberOf Tone.Chorus#
 	 * @type {NormalRange}
 	 * @name depth
@@ -143,7 +142,7 @@ function(Tone){
 	/**
 	 * The delayTime in milliseconds of the chorus. A larger delayTime
 	 * will give a more pronounced effect. Nominal range a delayTime
-	 * is between 2 and 20ms. 
+	 * is between 2 and 20ms.
 	 * @memberOf Tone.Chorus#
 	 * @type {Milliseconds}
 	 * @name delayTime
@@ -159,7 +158,7 @@ function(Tone){
 	});
 
 	/**
-	 * The oscillator type of the LFO. 
+	 * The oscillator type of the LFO.
 	 * @memberOf Tone.Chorus#
 	 * @type {string}
 	 * @name type
@@ -174,7 +173,7 @@ function(Tone){
 		}
 	});
 
-	/** 
+	/**
 	 * Amount of stereo spread. When set to 0, both LFO's will be panned centrally.
 	 * When set to 180, LFO's will be panned hard left and right respectively.
 	 * @memberOf Tone.Chorus#
@@ -192,7 +191,7 @@ function(Tone){
 	});
 
 	/**
-	 *  Clean up. 
+	 *  Clean up.
 	 *  @returns {Tone.Chorus} this
 	 */
 	Tone.Chorus.prototype.dispose = function(){

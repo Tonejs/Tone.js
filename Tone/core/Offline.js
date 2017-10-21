@@ -1,11 +1,10 @@
-define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Buffer", "Tone/core/OfflineContext"], 
-function (Tone) {
+define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Buffer", "Tone/core/OfflineContext"], function (Tone) {
 
 	/**
-	 *  Generate a buffer by rendering all of the Tone.js code within the callback using the OfflineAudioContext. 
-	 *  The OfflineAudioContext is capable of rendering much faster than real time in many cases. 
+	 *  Generate a buffer by rendering all of the Tone.js code within the callback using the OfflineAudioContext.
+	 *  The OfflineAudioContext is capable of rendering much faster than real time in many cases.
 	 *  The callback function also passes in an offline instance of Tone.Transport which can be used
-	 *  to schedule events along the Transport. 
+	 *  to schedule events along the Transport.
 	 *  @param  {Function}  callback  All Tone.js nodes which are created and scheduled within this callback are recorded into the output Buffer.
 	 *  @param  {Time}  duration     the amount of time to record for.
 	 *  @return  {Promise}  The promise which is invoked with the Tone.Buffer of the recorded output.

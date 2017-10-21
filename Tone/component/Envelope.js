@@ -339,7 +339,7 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal",
 	 */
 	Tone.Envelope.prototype.connect = Tone.Signal.prototype.connect;
 
- 	/**
+	/**
  	 *  Generate some complex envelope curves.
  	 */
 	(function _createCurves(){
@@ -412,9 +412,9 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal",
 		 *  @type  {Object}
 		 *  @private
 		 */
-	 	Tone.Envelope.Type = {
-	 		"linear" : "linear",
-	 		"exponential" : "exponential",
+		Tone.Envelope.Type = {
+			"linear" : "linear",
+			"exponential" : "exponential",
 			"bounce" : {
 				In : invertCurve(bounceCurve),
 				Out : bounceCurve

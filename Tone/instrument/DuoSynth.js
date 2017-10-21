@@ -1,18 +1,17 @@
-define(["Tone/core/Tone", "Tone/instrument/MonoSynth", "Tone/component/LFO", "Tone/signal/Signal", 
-	"Tone/signal/Multiply", "Tone/instrument/Monophonic", "Tone/core/Param"], 
-function(Tone){
+define(["Tone/core/Tone", "Tone/instrument/MonoSynth", "Tone/component/LFO", "Tone/signal/Signal",
+	"Tone/signal/Multiply", "Tone/instrument/Monophonic", "Tone/core/Param"], function(Tone){
 
 	"use strict";
 
 	/**
-	 *  @class  Tone.DuoSynth is a monophonic synth composed of two 
-	 *          MonoSynths run in parallel with control over the 
+	 *  @class  Tone.DuoSynth is a monophonic synth composed of two
+	 *          MonoSynths run in parallel with control over the
 	 *          frequency ratio between the two voices and vibrato effect.
 	 *          <img src="https://docs.google.com/drawings/d/1bL4GXvfRMMlqS7XyBm9CjL9KJPSUKbcdBNpqOlkFLxk/pub?w=1012&h=448">
 	 *
 	 *  @constructor
 	 *  @extends {Tone.Monophonic}
-	 *  @param {Object} [options] the options available for the synth 
+	 *  @param {Object} [options] the options available for the synth
 	 *                          see defaults below
 	 *  @example
 	 * var duoSynth = new Tone.DuoSynth().toMaster();
@@ -38,7 +37,7 @@ function(Tone){
 		this.voice1.volume.value = -10;
 
 		/**
-		 *  The vibrato LFO. 
+		 *  The vibrato LFO.
 		 *  @type {Tone.LFO}
 		 *  @private
 		 */
@@ -75,7 +74,7 @@ function(Tone){
 
 		/**
 		 *  Harmonicity is the ratio between the two voices. A harmonicity of
-		 *  1 is no change. Harmonicity = 2 means a change of an octave. 
+		 *  1 is no change. Harmonicity = 2 means a change of an octave.
 		 *  @type {Positive}
 		 *  @signal
 		 *  @example
@@ -147,7 +146,7 @@ function(Tone){
 
 	/**
 	 *  start the attack portion of the envelopes
-	 *  
+	 *
 	 *  @param {Time} [time=now] the time the attack should start
 	 *  @param {NormalRange} [velocity=1] the velocity of the note (0-1)
 	 *  @returns {Tone.DuoSynth} this
@@ -164,7 +163,7 @@ function(Tone){
 
 	/**
 	 *  start the release portion of the envelopes
-	 *  
+	 *
 	 *  @param {Time} [time=now] the time the release should start
 	 *  @returns {Tone.DuoSynth} this
 	 *  @private

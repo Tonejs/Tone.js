@@ -1,6 +1,5 @@
-define(["Tone/core/Tone", "Tone/signal/Scale", "Tone/signal/Pow"], 
-function(Tone){
-	
+define(["Tone/core/Tone", "Tone/signal/Scale", "Tone/signal/Pow"], function(Tone){
+
 	/**
 	 *  @class  Performs an exponential scaling on an input signal.
 	 *          Scales a NormalRange value [0,1] exponentially
@@ -8,8 +7,8 @@ function(Tone){
 	 *
 	 *  @constructor
 	 *  @extends {Tone.SignalBase}
-	 *  @param {number} [outputMin=0] The output value when the input is 0. 
-	 *  @param {number} [outputMax=1]	The output value when the input is 1. 
+	 *  @param {number} [outputMin=0] The output value when the input is 0.
+	 *  @param {number} [outputMax=1]	The output value when the input is 1.
 	 *  @param {number} [exponent=2] The exponent which scales the incoming signal.
 	 *  @example
 	 * var scaleExp = new Tone.ScaleExp(0, 100, 2);
@@ -18,7 +17,7 @@ function(Tone){
 	Tone.ScaleExp = function(outputMin, outputMax, exponent){
 
 		Tone.SignalBase.call(this);
-		
+
 		/**
 		 *  scale the input to the output range
 		 *  @type {Tone.Scale}
@@ -39,9 +38,9 @@ function(Tone){
 	Tone.extend(Tone.ScaleExp, Tone.SignalBase);
 
 	/**
-	 * Instead of interpolating linearly between the <code>min</code> and 
+	 * Instead of interpolating linearly between the <code>min</code> and
 	 * <code>max</code> values, setting the exponent will interpolate between
-	 * the two values with an exponential curve. 
+	 * the two values with an exponential curve.
 	 * @memberOf Tone.ScaleExp#
 	 * @type {number}
 	 * @name exponent
@@ -56,8 +55,8 @@ function(Tone){
 	});
 
 	/**
-	 * The minimum output value. This number is output when 
-	 * the value input value is 0. 
+	 * The minimum output value. This number is output when
+	 * the value input value is 0.
 	 * @memberOf Tone.ScaleExp#
 	 * @type {number}
 	 * @name min
@@ -72,8 +71,8 @@ function(Tone){
 	});
 
 	/**
-	 * The maximum output value. This number is output when 
-	 * the value input value is 1. 
+	 * The maximum output value. This number is output when
+	 * the value input value is 1.
 	 * @memberOf Tone.ScaleExp#
 	 * @type {number}
 	 * @name max
@@ -98,7 +97,7 @@ function(Tone){
 		this._exp.dispose();
 		this._exp = null;
 		return this;
-	}; 
+	};
 
 
 	return Tone.ScaleExp;

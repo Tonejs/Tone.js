@@ -24,19 +24,19 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type"], function(Tone)
 	}
 
 	/**
-	 *  @class  Buffer loading and storage. Tone.Buffer is used internally by all 
+	 *  @class  Buffer loading and storage. Tone.Buffer is used internally by all
 	 *          classes that make requests for audio files such as Tone.Player,
 	 *          Tone.Sampler and Tone.Convolver.
-	 *          
-	 *          Aside from load callbacks from individual buffers, Tone.Buffer 
-	 *  		provides events which keep track of the loading progress 
+	 *
+	 *          Aside from load callbacks from individual buffers, Tone.Buffer
+	 *  		provides events which keep track of the loading progress
 	 *  		of _all_ of the buffers. These are Tone.Buffer.on("load" / "progress" / "error")
 	 *
-	 *  @constructor 
+	 *  @constructor
 	 *  @extends {Tone}
-	 *  @param {AudioBuffer|String} url The url to load, or the audio buffer to set. 
-	 *  @param {Function=} onload A callback which is invoked after the buffer is loaded. 
-	 *                            It's recommended to use `Tone.Buffer.on('load', callback)` instead 
+	 *  @param {AudioBuffer|String} url The url to load, or the audio buffer to set.
+	 *  @param {Function=} onload A callback which is invoked after the buffer is loaded.
+	 *                            It's recommended to use `Tone.Buffer.on('load', callback)` instead
 	 *                            since it will give you a callback when _all_ buffers are loaded.
 	 *  @param {Function=} onerror The callback to invoke if there is an error
 	 *  @example
@@ -131,7 +131,7 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type"], function(Tone)
 
 		var promise = new Promise(function(load, error){
 
-			this._xhr = Tone.Buffer.load(url, 
+			this._xhr = Tone.Buffer.load(url,
 
 				//success
 				function(buff){
@@ -141,7 +141,7 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type"], function(Tone)
 					if (onload){
 						onload(this);
 					}
-				}.bind(this), 
+				}.bind(this),
 
 				//error
 				function(err){
@@ -186,7 +186,7 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type"], function(Tone)
 	});
 
 	/**
-	 * The duration of the buffer. 
+	 * The duration of the buffer.
 	 * @memberOf Tone.Buffer#
 	 * @type {Number}
 	 * @name duration
@@ -239,7 +239,7 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type"], function(Tone)
 
 	/**
 	 *  Set the audio buffer from the array. To create a multichannel AudioBuffer,
-	 *  pass in a multidimensional array. 
+	 *  pass in a multidimensional array.
 	 *  @param {Float32Array} array The array to fill the audio buffer
 	 *  @return {Tone.Buffer} this
 	 */
@@ -285,7 +285,7 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type"], function(Tone)
 	};
 
 	/**
-	 * 	Get the buffer as an array. Single channel buffers will return a 1-dimensional 
+	 * 	Get the buffer as an array. Single channel buffers will return a 1-dimensional
 	 * 	Float32Array, and multichannel buffers will return multidimensional arrays.
 	 *  @param {Number=} channel Optionally only copy a single channel from the array.
 	 *  @return {Array}
@@ -371,7 +371,7 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type"], function(Tone)
 
 	//statically inherits Emitter methods
 	Tone.Emitter.mixin(Tone.Buffer);
-	 
+	
 	/**
 	 *  the static queue for all of the xhr requests
 	 *  @type {Array}
@@ -388,7 +388,7 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type"], function(Tone)
 
 	/**
 	 *  Create a Tone.Buffer from the array. To create a multichannel AudioBuffer,
-	 *  pass in a multidimensional array. 
+	 *  pass in a multidimensional array.
 	 *  @param {Float32Array} array The array to fill the audio buffer
 	 *  @return {Tone.Buffer} A Tone.Buffer created from the array
 	 */

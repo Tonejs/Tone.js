@@ -1,5 +1,5 @@
-define(["Tone/core/Tone", "Tone/source/Source", "Tone/core/Buffer", "Tone/source/BufferSource"], 
-	function(Tone){
+define(["Tone/core/Tone", "Tone/source/Source", "Tone/core/Buffer",
+	"Tone/source/BufferSource"], function(Tone){
 
 	"use strict";
 
@@ -14,14 +14,14 @@ define(["Tone/core/Tone", "Tone/source/Source", "Tone/core/Buffer", "Tone/source
 	 *  @example
 	 * //initialize the noise and start
 	 * var noise = new Tone.Noise("pink").start();
-	 * 
+	 *
 	 * //make an autofilter to shape the noise
 	 * var autoFilter = new Tone.AutoFilter({
-	 * 	"frequency" : "8m", 
-	 * 	"min" : 800, 
+	 * 	"frequency" : "8m",
+	 * 	"min" : 800,
 	 * 	"max" : 15000
 	 * }).connect(Tone.Master);
-	 * 
+	 *
 	 * //connect the noise
 	 * noise.connect(autoFilter);
 	 * //start the autofilter LFO
@@ -69,7 +69,7 @@ define(["Tone/core/Tone", "Tone/source/Source", "Tone/core/Buffer", "Tone/source
 	};
 
 	/**
-	 * The type of the noise. Can be "white", "brown", or "pink". 
+	 * The type of the noise. Can be "white", "brown", or "pink".
 	 * @memberOf Tone.Noise#
 	 * @type {string}
 	 * @name type
@@ -79,7 +79,7 @@ define(["Tone/core/Tone", "Tone/source/Source", "Tone/core/Buffer", "Tone/source
 	Object.defineProperty(Tone.Noise.prototype, "type", {
 		get : function(){
 			return this._type;
-		}, 
+		},
 		set : function(type){
 			if (this._type !== type){
 				if (type in _noiseBuffers){
@@ -106,7 +106,7 @@ define(["Tone/core/Tone", "Tone/source/Source", "Tone/core/Buffer", "Tone/source
 	Object.defineProperty(Tone.Noise.prototype, "playbackRate", {
 		get : function(){
 			return this._playbackRate;
-		}, 
+		},
 		set : function(rate){
 			this._playbackRate = rate;
 			if (this._source) {
@@ -167,7 +167,7 @@ define(["Tone/core/Tone", "Tone/source/Source", "Tone/core/Buffer", "Tone/source
 
 	/**
 	 *	The noise arrays. Generated on initialization.
-	 *  borrowed heavily from https://github.com/zacharydenton/noise.js 
+	 *  borrowed heavily from https://github.com/zacharydenton/noise.js
 	 *  (c) 2013 Zach Denton (MIT)
 	 *  @static
 	 *  @private

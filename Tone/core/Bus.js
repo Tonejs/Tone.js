@@ -8,20 +8,20 @@ define(["Tone/core/Tone", "Tone/core/Gain"], function(Tone){
 	 *  augments Tone.prototype to include send and recieve
 	 */
 
-	 /**
-	  *  All of the routes
-	  *  
-	  *  @type {Object}
-	  *  @static
-	  *  @private
-	  */
+	/**
+	 *  All of the routes
+	 *
+	 *  @type {Object}
+	 *  @static
+	 *  @private
+	 */
 	var Buses = {};
 
 	/**
-	 *  Send this signal to the channel name. 
+	 *  Send this signal to the channel name.
 	 *  @param  {String} channelName A named channel to send the signal to.
-	 *  @param  {Decibels} amount The amount of the source to send to the bus. 
-	 *  @return {GainNode} The gain node which connects this node to the desired channel. 
+	 *  @param  {Decibels} amount The amount of the source to send to the bus.
+	 *  @return {GainNode} The gain node which connects this node to the desired channel.
 	 *                     Can be used to adjust the levels of the send.
 	 *  @example
 	 * source.send("reverb", -12);
@@ -33,7 +33,7 @@ define(["Tone/core/Tone", "Tone/core/Gain"], function(Tone){
 		amount = Tone.defaultArg(amount, 0);
 		var sendKnob = new Tone.Gain(amount, Tone.Type.Decibels);
 		this.output.chain(sendKnob, Buses[channelName]);
-		return sendKnob;		
+		return sendKnob;
 	};
 
 	/**
@@ -47,7 +47,7 @@ define(["Tone/core/Tone", "Tone/core/Gain"], function(Tone){
 	 */
 	Tone.prototype.receive = function(channelName, inputNum){
 		if (!Buses.hasOwnProperty(channelName)){
-			Buses[channelName] = this.context.createGain();	
+			Buses[channelName] = this.context.createGain();
 		}
 		Buses[channelName].connect(this, 0, inputNum);
 		return this;

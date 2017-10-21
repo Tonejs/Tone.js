@@ -77,7 +77,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Subtract",
 		 *  @private
 		 *  @type {Tone.Subtract}
 		 */
-		this._invert = new Tone.Subtract()
+		this._invert = new Tone.Subtract();
 
 		//connections
 		this.a.connect(this.output);

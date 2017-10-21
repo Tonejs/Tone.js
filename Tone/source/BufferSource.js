@@ -1,4 +1,5 @@
-define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/Gain", "Tone/core/AudioNode"], function (Tone) {
+define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/Gain",
+	"Tone/core/AudioNode"], function (Tone) {
 
 	/**
 	 *  BufferSource polyfill

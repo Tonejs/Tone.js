@@ -65,8 +65,8 @@ define(["Tone/core/Tone", "Tone/type/TimeBase"], function (Tone) {
 	 *  @private
 	 */
 	Tone.Frequency.prototype._primaryExpressions.tr = {
-			regexp : /^(\d+(?:\.\d+)?):(\d+(?:\.\d+)?):?(\d+(?:\.\d+)?)?/,
-			method : function(m, q, s){
+		regexp : /^(\d+(?:\.\d+)?):(\d+(?:\.\d+)?):?(\d+(?:\.\d+)?)?/,
+		method : function(m, q, s){
 			var total = 1;
 			if (m && m !== "0"){
 				total *= this._beatsToUnits(this._timeSignature() * parseFloat(m));

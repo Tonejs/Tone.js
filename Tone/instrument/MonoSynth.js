@@ -1,18 +1,17 @@
-define(["Tone/core/Tone", "Tone/component/AmplitudeEnvelope", "Tone/component/FrequencyEnvelope", 
-	"Tone/source/OmniOscillator", "Tone/signal/Signal", "Tone/component/Filter", "Tone/instrument/Monophonic"], 
-function(Tone){
+define(["Tone/core/Tone", "Tone/component/AmplitudeEnvelope", "Tone/component/FrequencyEnvelope", "Tone/source/OmniOscillator",
+	"Tone/signal/Signal", "Tone/component/Filter", "Tone/instrument/Monophonic"], function(Tone){
 
 	"use strict";
 
 	/**
 	 *  @class  Tone.MonoSynth is composed of one oscillator, one filter, and two envelopes.
-	 *          The amplitude of the Tone.Oscillator and the cutoff frequency of the 
-	 *          Tone.Filter are controlled by Tone.Envelopes. 
+	 *          The amplitude of the Tone.Oscillator and the cutoff frequency of the
+	 *          Tone.Filter are controlled by Tone.Envelopes.
 	 *          <img src="https://docs.google.com/drawings/d/1gaY1DF9_Hzkodqf8JI1Cg2VZfwSElpFQfI94IQwad38/pub?w=924&h=240">
-	 *          
+	 *
 	 *  @constructor
 	 *  @extends {Tone.Monophonic}
-	 *  @param {Object} [options] the options available for the synth 
+	 *  @param {Object} [options] the options available for the synth
 	 *                          see defaults below
 	 *  @example
 	 * var synth = new Tone.MonoSynth({
@@ -123,8 +122,8 @@ function(Tone){
 	Tone.MonoSynth.prototype._triggerEnvelopeAttack = function(time, velocity){
 		//the envelopes
 		this.envelope.triggerAttack(time, velocity);
-		this.filterEnvelope.triggerAttack(time);	
-		return this;	
+		this.filterEnvelope.triggerAttack(time);
+		return this;
 	};
 
 	/**

@@ -1,7 +1,6 @@
-define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Subtract", "Tone/signal/Multiply", 
-	"Tone/signal/GreaterThan", "Tone/signal/GreaterThanZero", "Tone/signal/Abs", "Tone/signal/Negate", 
-	"Tone/signal/Modulo", "Tone/signal/Pow", "Tone/signal/AudioToGain"], 
-	function(Tone){
+define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Subtract", "Tone/signal/Multiply",
+	"Tone/signal/GreaterThan", "Tone/signal/GreaterThanZero", "Tone/signal/Abs", "Tone/signal/Negate",
+	"Tone/signal/Modulo", "Tone/signal/Pow", "Tone/signal/AudioToGain"], function(Tone){
 
 	"use strict";
 
@@ -31,7 +30,7 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Subtract", "Tone/signa
 		this._nodes = [];
 
 		/**
-		 *  The inputs. The length is determined by the expression. 
+		 *  The inputs. The length is determined by the expression.
 		 *  @type {Array}
 		 */
 		this.input = new Array(inputCount);
@@ -83,9 +82,9 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Subtract", "Tone/signa
 	/*
 	 *  the Expressions that Tone.Expr can parse.
 	 *
-	 *  each expression belongs to a group and contains a regexp 
+	 *  each expression belongs to a group and contains a regexp
 	 *  for selecting the operator as well as that operators method
-	 *  
+	 *
 	 *  @type {Object}
 	 *  @private
 	 */
@@ -159,7 +158,7 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Subtract", "Tone/signa
 				method : applyBinary.bind(this, Tone.Add)
 			},
 			"-" : {
-				regexp : /^\-/,
+				regexp : /^-/,
 				precedence : 1,
 				method : function(args, self){
 					//both unary and binary op
@@ -179,16 +178,16 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Subtract", "Tone/signa
 		//unary expressions
 		"unary" : {
 			"-" : {
-				regexp : /^\-/,
+				regexp : /^-/,
 				method : applyUnary.bind(this, Tone.Negate)
 			},
 			"!" : {
-				regexp : /^\!/,
+				regexp : /^!/,
 				method : applyUnary.bind(this, Tone.NOT)
 			},
 		},
 	};
-		
+
 	/**
 	 *  @param   {string} expr the expression string
 	 *  @return  {number}      the input count
@@ -214,14 +213,14 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Subtract", "Tone/signa
 	Tone.Expr.prototype._replacements = function(args){
 		var expr = args.shift();
 		for (var i = 0; i < args.length; i++){
-			expr = expr.replace(/\%/i, args[i]);
+			expr = expr.replace(/%/i, args[i]);
 		}
 		return expr;
 	};
 
 	/**
 	 *  tokenize the expression based on the Expressions object
-	 *  @param   {string} expr 
+	 *  @param   {string} expr
 	 *  @return  {Object}      returns two methods on the tokenized list, next and peek
 	 *  @private
 	 */
@@ -267,8 +266,8 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Subtract", "Tone/signa
 
 	/**
 	 *  recursively parse the string expression into a syntax tree
-	 *  
-	 *  @param   {string} expr 
+	 *
+	 *  @param   {string} expr
 	 *  @return  {Object}
 	 *  @private
 	 */
@@ -277,7 +276,7 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Subtract", "Tone/signa
 		var isUndef = Tone.isUndef.bind(this);
 
 		function matchSyntax(token, syn) {
-			return !isUndef(token) && 
+			return !isUndef(token) &&
 				token.type === "glue" &&
 				token.value === syn;
 		}
@@ -290,7 +289,7 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Subtract", "Tone/signa
 					var op = group[opName];
 					if (op.regexp.test(token.value)){
 						if (!isUndef(prec)){
-							if(op.precedence === prec){	
+							if(op.precedence === prec){
 								return true;
 							}
 						} else {
@@ -395,10 +394,9 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Subtract", "Tone/signa
 
 		function parseArgumentList() {
 			var token, expr, args = [];
-			while (true) {
+			while (!isUndef(expr)) {
 				expr = parseExpression();
 				if (isUndef(expr)) {
-					// TODO maybe throw exception?
 					break;
 				}
 				args.push(expr);
@@ -416,7 +414,7 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Subtract", "Tone/signa
 
 	/**
 	 *  recursively evaluate the expression tree
-	 *  @param   {Object} tree 
+	 *  @param   {Object} tree
 	 *  @return  {AudioNode}      the resulting audio node from the expression
 	 *  @private
 	 */
@@ -425,7 +423,7 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Subtract", "Tone/signa
 			var node = tree.method(tree.args, this);
 			this._nodes.push(node);
 			return node;
-		} 
+		}
 	};
 
 	/**

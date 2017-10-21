@@ -1,6 +1,5 @@
 define(["Tone/core/Tone", "Tone/instrument/Synth", "Tone/signal/Signal", "Tone/signal/Multiply",
-	"Tone/instrument/Monophonic", "Tone/signal/AudioToGain", "Tone/core/Gain"],
-function(Tone){
+	"Tone/instrument/Monophonic", "Tone/signal/AudioToGain", "Tone/core/Gain"], function(Tone){
 
 	"use strict";
 

@@ -100,7 +100,7 @@ define(["Tone/core/Tone", "Tone/core/Context"], function (Tone) {
 		}
 	});
 
-		/**
+	/**
 	 *  connect the output of a ToneNode to an AudioParam, AudioNode, or ToneNode
 	 *  @param  {Tone | AudioParam | AudioNode} unit
 	 *  @param {number} [outputNum=0] optionally which output to connect from

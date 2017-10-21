@@ -1,5 +1,4 @@
-define(["Tone/core/Tone", "Tone/component/FeedbackCombFilter", "Tone/effect/StereoEffect", "Tone/signal/Scale"], 
-function(Tone){
+define(["Tone/core/Tone", "Tone/component/FeedbackCombFilter", "Tone/effect/StereoEffect", "Tone/signal/Scale"], function(Tone){
 
 	"use strict";
 
@@ -30,15 +29,15 @@ function(Tone){
 	/**
 	 *  @class Tone.JCReverb is a simple [Schroeder Reverberator](https://ccrma.stanford.edu/~jos/pasp/Schroeder_Reverberators.html)
 	 *         tuned by John Chowning in 1970.
-	 *         It is made up of three allpass filters and four Tone.FeedbackCombFilter. 
-	 *         
+	 *         It is made up of three allpass filters and four Tone.FeedbackCombFilter.
+	 *
 	 *
 	 *  @extends {Tone.Effect}
 	 *  @constructor
 	 *  @param {NormalRange|Object} [roomSize] Coorelates to the decay time.
 	 *  @example
 	 * var reverb = new Tone.JCReverb(0.4).connect(Tone.Master);
-	 * var delay = new Tone.FeedbackDelay(0.5); 
+	 * var delay = new Tone.FeedbackDelay(0.5);
 	 * //connecting the synth to reverb through delay
 	 * var synth = new Tone.DuoSynth().chain(delay, reverb);
 	 * synth.triggerAttackRelease("A4","8n");
@@ -119,7 +118,7 @@ function(Tone){
 	};
 
 	/**
-	 *  Clean up. 
+	 *  Clean up.
 	 *  @returns {Tone.JCReverb} this
 	 */
 	Tone.JCReverb.prototype.dispose = function(){

@@ -1,10 +1,10 @@
-define(["Tone/core/Tone", "Tone/signal/TickSignal", "Tone/core/TimelineState", 
+define(["Tone/core/Tone", "Tone/signal/TickSignal", "Tone/core/TimelineState",
 	"Tone/core/Emitter", "Tone/core/Context"], function (Tone) {
 
 	"use strict";
 
 	/**
-	 *  @class  A sample accurate clock which provides a callback at the given rate. 
+	 *  @class  A sample accurate clock which provides a callback at the given rate.
 	 *          While the callback is not sample-accurate (it is still susceptible to
 	 *          loose JS timing), the time passed in as the argument to the callback
 	 *          is precise. For most applications, it is better to use Tone.Transport
@@ -47,7 +47,7 @@ define(["Tone/core/Tone", "Tone/signal/TickSignal", "Tone/core/TimelineState",
 		this._lastState = Tone.State.Stopped;
 
 		/**
-		 *  The rate the callback function should be invoked. 
+		 *  The rate the callback function should be invoked.
 		 *  @type  {BPM}
 		 *  @signal
 		 */
@@ -56,7 +56,7 @@ define(["Tone/core/Tone", "Tone/signal/TickSignal", "Tone/core/TimelineState",
 
 		/**
 		 *  The number of times the callback was invoked. Starts counting at 0
-		 *  and increments after the callback was invoked. 
+		 *  and increments after the callback was invoked.
 		 *  @type {Ticks}
 		 *  @readOnly
 		 */
@@ -70,7 +70,7 @@ define(["Tone/core/Tone", "Tone/signal/TickSignal", "Tone/core/TimelineState",
 		this._state = new Tone.TimelineState(Tone.State.Stopped);
 
 		/**
-		 *  The loop function bound to its context. 
+		 *  The loop function bound to its context.
 		 *  This is necessary to remove the event in the end.
 		 *  @type {Function}
 		 *  @private
@@ -78,7 +78,7 @@ define(["Tone/core/Tone", "Tone/signal/TickSignal", "Tone/core/TimelineState",
 		this._boundLoop = this._loop.bind(this);
 
 		//bind a callback to the worker thread
-    	this.context.on("tick", this._boundLoop);
+		this.context.on("tick", this._boundLoop);
 	};
 
 	Tone.extend(Tone.Clock, Tone.Emitter);
@@ -119,7 +119,7 @@ define(["Tone/core/Tone", "Tone/signal/TickSignal", "Tone/core/TimelineState",
 			this._state.setStateAtTime(Tone.State.Started, time);
 			this._state.get(time).offset = offset;
 		}
-		return this;	
+		return this;
 	};
 
 	/**
@@ -133,7 +133,7 @@ define(["Tone/core/Tone", "Tone/signal/TickSignal", "Tone/core/TimelineState",
 		time = this.toSeconds(time);
 		this._state.cancel(time);
 		this._state.setStateAtTime(Tone.State.Stopped, time);
-		return this;	
+		return this;
 	};
 
 
@@ -147,7 +147,7 @@ define(["Tone/core/Tone", "Tone/signal/TickSignal", "Tone/core/TimelineState",
 		if (this._state.getValueAtTime(time) === Tone.State.Started){
 			this._state.setStateAtTime(Tone.State.Paused, time);
 		}
-		return this;	
+		return this;
 	};
 
 	/**

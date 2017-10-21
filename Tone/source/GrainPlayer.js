@@ -1,5 +1,4 @@
-define(["Tone/core/Tone", "Tone/source/Source", "Tone/core/Buffer"],
-function (Tone) {
+define(["Tone/core/Tone", "Tone/source/Source", "Tone/core/Buffer"], function (Tone) {
 
 	/**
 	 * @class Tone.GrainPlayer implements [granular synthesis](https://en.wikipedia.org/wiki/Granular_synthesis).
