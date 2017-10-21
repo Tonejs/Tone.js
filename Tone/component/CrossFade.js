@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Expr",
+define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Subtract",
 	"Tone/signal/EqualPowerGain", "Tone/core/Gain", "Tone/core/AudioNode"], function(Tone){
 
 	"use strict";
@@ -70,13 +70,22 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Expr",
 		 *  @private
 		 *  @type {Tone}
 		 */
-		this._invert = new Tone.Expr("1 - $0");
+		this._one = this.context.getConstant(1);
+
+		/**
+		 *  invert the incoming signal
+		 *  @private
+		 *  @type {Tone.Subtract}
+		 */
+		this._invert = new Tone.Subtract()
 
 		//connections
 		this.a.connect(this.output);
 		this.b.connect(this.output);
 		this.fade.chain(this._equalPowerB, this.b.gain);
-		this.fade.chain(this._invert, this._equalPowerA, this.a.gain);
+		this._one.connect(this._invert, 0, 0);
+		this.fade.connect(this._invert, 0, 1);
+		this._invert.chain(this._equalPowerA, this.a.gain);
 		this._readOnly("fade");
 	};
 
@@ -97,6 +106,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Expr",
 		this.fade = null;
 		this._invert.dispose();
 		this._invert = null;
+		this._one = null;
 		this.a.dispose();
 		this.a = null;
 		this.b.dispose();

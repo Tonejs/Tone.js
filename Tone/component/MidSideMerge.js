@@ -1,6 +1,5 @@
-define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Expr",
-	"Tone/component/Merge", "Tone/core/Gain", "Tone/core/AudioNode"],
-	function(Tone){
+define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Subtract", "Tone/signal/Add",
+	"Tone/component/Merge", "Tone/core/Gain", "Tone/core/AudioNode"], function(Tone){
 
 	"use strict";
 
@@ -32,10 +31,16 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Expr",
 
 		/**
 		 *  recombine the mid/side into Left
-		 *  @type {Tone.Expr}
+		 *  @type {Tone.Add}
 		 *  @private
 		 */
-		this._left = new Tone.Expr("($0 + $1) * $2");
+		this._left = new Tone.Add();
+
+		/**
+		 * Multiply the left by sqrt(1/2)
+		 * @type {Tone.Multiply}
+		 */
+		this._timesTwoLeft = new Tone.Multiply(Math.SQRT1_2);
 
 		/**
 		 *  The side signal input. Alias for
@@ -46,10 +51,16 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Expr",
 
 		/**
 		 *  recombine the mid/side into Right
-		 *  @type {Tone.Expr}
+		 *  @type {Tone.Subtract}
 		 *  @private
 		 */
-		this._right = new Tone.Expr("($0 - $1) * $2");
+		this._right = new Tone.Subtract(/*"($0 - $1) * $2"*/);
+
+		/**
+		 * Multiply the right by sqrt(1/2)
+		 * @type {Tone.Multiply}
+		 */
+		this._timesTwoRight = new Tone.Multiply(Math.SQRT1_2);
 
 		/**
 		 *  Merge the left/right signal back into a stereo signal.
@@ -62,10 +73,10 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Expr",
 		this.side.connect(this._left, 0, 1);
 		this.mid.connect(this._right, 0, 0);
 		this.side.connect(this._right, 0, 1);
-		this._left.connect(this._merge, 0, 0);
-		this._right.connect(this._merge, 0, 1);
-		this.context.getConstant(Math.SQRT1_2).connect(this._left, 0, 2);
-		this.context.getConstant(Math.SQRT1_2).connect(this._right, 0, 2);
+		this._left.connect(this._timesTwoLeft);
+		this._right.connect(this._timesTwoRight);
+		this._timesTwoLeft.connect(this._merge, 0, 0);
+		this._timesTwoRight.connect(this._merge, 0, 1);
 	};
 
 	Tone.extend(Tone.MidSideMerge, Tone.AudioNode);
@@ -82,8 +93,12 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Expr",
 		this.side = null;
 		this._left.dispose();
 		this._left = null;
+		this._timesTwoLeft.dispose();
+		this._timesTwoLeft = null;
 		this._right.dispose();
 		this._right = null;
+		this._timesTwoRight.dispose();
+		this._timesTwoRight = null;
 		this._merge.dispose();
 		this._merge = null;
 		return this;
