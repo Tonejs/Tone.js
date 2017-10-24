@@ -56,7 +56,7 @@ define(["Tone/core/Tone"], function (Tone) {
 		buffer.getValueAtTime = function(time){
 			var ret = [];
 			var sample = Math.round(time * buffer.context.sampleRate);
-			for (let i = 0; i < buffer.numberOfChannels; i++){
+			for (var i = 0; i < buffer.numberOfChannels; i++){
 				ret[i] = buffer.getChannelData(i)[sample];
 			}
 			if (ret.length === 1){
