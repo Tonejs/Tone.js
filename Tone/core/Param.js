@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/type/Type", "Tone/core/AudioNode"], function(Tone){
+define(["Tone/core/Tone", "Tone/type/Type", "Tone/core/AudioNode", "Tone/shim/AudioParam"], function(Tone){
 
 	"use strict";
 
@@ -346,20 +346,7 @@ define(["Tone/core/Tone", "Tone/type/Type", "Tone/core/AudioNode"], function(Ton
 	 */
 	Tone.Param.prototype.cancelAndHoldAtTime = function(cancelTime){
 		cancelTime = this.toSeconds(cancelTime);
-		if (this._param.cancelAndHoldAtTime){
-			this._param.cancelAndHoldAtTime(cancelTime);
-		} else {
-			//fallback for unsupported browsers
-			//can't cancel and hold at any time in the future
-			//just do it immediately for gapless automation curves
-			var now = this.context.currentTime;
-			this._param.cancelScheduledValues(now);
-			var currentVal = this._param.value;
-			if (currentVal === 0){
-				currentVal = this._minOutput;
-			}
-			this._param.setValueAtTime(currentVal, now + this.sampleTime);
-		}
+		this._param.cancelAndHoldAtTime(cancelTime);
 		return this;
 	};
 
