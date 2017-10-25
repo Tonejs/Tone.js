@@ -288,22 +288,22 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/core/Timeline"], function (
 	});
 
 	/**
-	 *  Clean up
-	 *  @returns {Tone.Context} this
+	 *  Unlike other dispose methods, this returns a Promise
+	 *  which executes when the context is closed and disposed
+	 *  @returns {Promise} this
 	 */
 	Tone.Context.prototype.dispose = function(){
-		Tone.Context.emit("close", this);
-		Tone.Emitter.prototype.dispose.call(this);
-		this._ticker.dispose();
-		this._ticker = null;
-		this._timeouts.dispose();
-		this._timeouts = null;
-		for(var con in this._constants){
-			this._constants[con].disconnect();
-		}
-		this._constants = null;
-		this.close();
-		return this;
+		return this.close().then(function(){
+			Tone.Emitter.prototype.dispose.call(this);
+			this._ticker.dispose();
+			this._ticker = null;
+			this._timeouts.dispose();
+			this._timeouts = null;
+			for(var con in this._constants){
+				this._constants[con].disconnect();
+			}
+			this._constants = null;
+		}.bind(this));
 	};
 
 	/**
