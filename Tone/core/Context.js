@@ -21,6 +21,9 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/core/Timeline"], function (
 
 		if (!options.context){
 			options.context = new window.AudioContext();
+			if (!options.context){
+				throw new Error("could not create AudioContext. Possibly too many AudioContexts running already.");
+			}
 		}
 		this._context = options.context;
 		// extend all of the methods
@@ -135,6 +138,34 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/core/Timeline"], function (
 	 */
 	Tone.Context.prototype.now = function(){
 		return this._context.currentTime + this.lookAhead;
+	};
+
+	/**
+	 *  Promise which is invoked when the context is running.
+	 *  Tries to resume the context if it's not started.
+	 *  @return  {Promise}
+	 */
+	Tone.Context.prototype.ready = function(){
+		return new Promise(function(done){
+			if (this._context.state === "running"){
+				done();
+			} else {
+				this._context.resume().then(function(){
+					done();
+				});
+			}
+		}.bind(this));
+	};
+
+	/**
+	 *  Promise which is invoked when the context is running.
+	 *  Tries to resume the context if it's not started.
+	 *  @return  {Promise}
+	 */
+	Tone.Context.prototype.close = function(){
+		return this._context.close().then(function(){
+			Tone.Context.emit("close", this);
+		}.bind(this));
 	};
 
 	/**
