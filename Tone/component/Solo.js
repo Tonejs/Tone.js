@@ -42,7 +42,7 @@ define(["Tone/core/Tone", "Tone/core/Gain", "Tone/core/AudioNode"], function (To
 	 *  @static
 	 */
 	Tone.Solo.defaults = {
-		solo: false,
+		solo : false,
 	};
 
 	/**

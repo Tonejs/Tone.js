@@ -108,8 +108,8 @@ define(["Tone/core/Tone", "Tone/component/Volume", "Tone/core/AudioNode"], funct
 			//do getUserMedia
 			var constraints = {
 				audio : {
-					"deviceId": device.deviceId,
-					"echoCancellation": false,
+					"deviceId" : device.deviceId,
+					"echoCancellation" : false,
 					"sampleRate" : this.context.sampleRate
 				}
 			};

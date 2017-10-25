@@ -168,22 +168,20 @@ define(["Tone/core/Tone", "Tone/type/Type"], function (Tone) {
 					replacement.left = node.left;
 					replacement.right = node.right;
 				}
+			} else if (node.right.left === null){
+				replacement = node.right;
+				replacement.left = node.left;
+				temp = replacement;
 			} else {
-				if (node.right.left === null){
-					replacement = node.right;
-					replacement.left = node.left;
-					temp = replacement;
-				} else {
-					replacement = node.right.left;
-					while (replacement.left !== null) {
-						replacement = replacement.left;
-					}
-					replacement.parent = replacement.parent;
-					replacement.parent.left = replacement.right;
-					temp = replacement.parent;
-					replacement.left = node.left;
-					replacement.right = node.right;
+				replacement = node.right.left;
+				while (replacement.left !== null) {
+					replacement = replacement.left;
 				}
+				replacement.parent = replacement.parent;
+				replacement.parent.left = replacement.right;
+				temp = replacement.parent;
+				replacement.left = node.left;
+				replacement.right = node.right;
 			}
 			if (node.parent !== null){
 				if (node.isLeftChild()){
@@ -420,12 +418,10 @@ define(["Tone/core/Tone", "Tone/type/Type"], function (Tone) {
 			} else {
 				this.left.insert(node);
 			}
+		} else if (this.right === null){
+			this.right = node;
 		} else {
-			if (this.right === null){
-				this.right = node;
-			} else {
-				this.right.insert(node);
-			}
+			this.right.insert(node);
 		}
 	};
 

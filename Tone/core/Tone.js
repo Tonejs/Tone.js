@@ -399,7 +399,7 @@ define(function(){
 			}
 		} else {
 			Object.defineProperty(this, property, {
-				writable: false,
+				writable : false,
 				enumerable : true,
 			});
 		}
@@ -417,7 +417,7 @@ define(function(){
 			}
 		} else {
 			Object.defineProperty(this, property, {
-				writable: true,
+				writable : true,
 			});
 		}
 	};
