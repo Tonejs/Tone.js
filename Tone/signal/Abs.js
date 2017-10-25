@@ -20,12 +20,12 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper", "Tone/signal/SignalBase"], f
 		 *  @private
 		 */
 		this._abs = this.input = this.output = new Tone.WaveShaper(function(val){
-			if (val === 0){
+			if (Math.abs(val) < 0.001){
 				return 0;
 			} else {
 				return Math.abs(val);
 			}
-		}, 127);
+		}, 1024);
 	};
 
 	Tone.extend(Tone.Abs, Tone.SignalBase);
