@@ -17,7 +17,7 @@ define(["Tone/core/Tone", "Tone/core/Context"], function (Tone) {
 	 *  @param {Number} sampleRate the sample rate to render at
 	 */
 	Tone.OfflineContext = function(channels, duration, sampleRate){
-		
+
 		/**
 		 *  The offline context
 		 *  @private
@@ -81,10 +81,11 @@ define(["Tone/core/Tone", "Tone/core/Context"], function (Tone) {
 
 	/**
 	 *  Close the context
-	 *  @return  {Number}
+	 *  @return  {Promise}
 	 */
 	Tone.OfflineContext.prototype.close = function(){
 		this._context = null;
+		return Promise.resolve();
 	};
 
 	return Tone.OfflineContext;
