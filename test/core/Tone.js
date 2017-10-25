@@ -190,7 +190,7 @@ define(["Test", "Tone/core/Tone", "helper/PassAudio", "Tone/source/Oscillator",
 				Tone.setContext(origCtx);
 				expect(Tone.context).to.equal(origCtx);
 				expect(Tone.prototype.context).to.equal(origCtx);
-				ctx.dispose();
+				return ctx.dispose();
 			});
 
 			it ("new context can be a raw audio context", function(){
