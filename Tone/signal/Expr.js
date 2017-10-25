@@ -394,7 +394,7 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Subtract", "Tone/signa
 
 		function parseArgumentList() {
 			var token, expr, args = [];
-			while (!isUndef(expr)) {
+			while (true) {
 				expr = parseExpression();
 				if (isUndef(expr)) {
 					break;
