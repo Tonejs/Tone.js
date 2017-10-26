@@ -1,13 +1,4 @@
-define(["Tone/core/Tone", "Tone/core/Context"], function (Tone) {
-
-
-	/**
-	 *  shim
-	 *  @private
-	 */
-	if (!window.hasOwnProperty("OfflineAudioContext") && window.hasOwnProperty("webkitOfflineAudioContext")){
-		window.OfflineAudioContext = window.webkitOfflineAudioContext;
-	}
+define(["Tone/core/Tone", "Tone/core/Context", "Tone/shim/OfflineAudioContext"], function (Tone) {
 
 	/**
 	 *  @class Wrapper around the OfflineAudioContext
@@ -70,13 +61,7 @@ define(["Tone/core/Tone", "Tone/core/Context"], function (Tone) {
 			this._currentTime += this.blockTime;
 		}
 
-		//promise returned is not yet implemented in all browsers
-		return new Promise(function(done){
-			this._context.oncomplete = function(e){
-				done(e.renderedBuffer);
-			};
-			this._context.startRendering();
-		}.bind(this));
+		return this._context.startRendering();
 	};
 
 	/**
