@@ -1,5 +1,5 @@
 define(["Tone/core/Tone", "Tone/effect/MidSideEffect", "Tone/signal/Signal",
-	"Tone/signal/Multiply", "Tone/signal/Expr"], function(Tone){
+	"Tone/signal/Multiply", "Tone/signal/Subtract"], function(Tone){
 
 	"use strict";
 
@@ -28,38 +28,49 @@ define(["Tone/core/Tone", "Tone/effect/MidSideEffect", "Tone/signal/Signal",
 		 *  @signal
 		 */
 		this.width = new Tone.Signal(options.width, Tone.Type.NormalRange);
+		this._readOnly(["width"]);
+
+		/**
+		 * Two times the (1-width) for the mid channel
+		 * @type {Tone.Multiply}
+		 * @private
+		 */
+		this._twoTimesWidthMid = new Tone.Multiply(2);
+
+		/**
+		 * Two times the width for the side channel
+		 * @type {Tone.Multiply}
+		 * @private
+		 */
+		this._twoTimesWidthSide = new Tone.Multiply(2);
 
 		/**
 		 *  Mid multiplier
-		 *  @type {Tone.Expr}
+		 *  @type {Tone.Multiply}
 		 *  @private
 		 */
-		this._midMult = new Tone.Expr("$0 * ($1 * (1 - $2))");
+		this._midMult = new Tone.Multiply();
+		this._twoTimesWidthMid.connect(this._midMult, 0, 1);
+		this.midSend.chain(this._midMult, this.midReturn);
+
+		/**
+		 * 1 - width
+		 * @type {Tone}
+		 */
+		this._oneMinusWidth = new Tone.Subtract();
+		this._oneMinusWidth.connect(this._twoTimesWidthMid);
+		this.context.getConstant(1).connect(this._oneMinusWidth, 0, 0);
+		this.width.connect(this._oneMinusWidth, 0, 1);
 
 		/**
 		 *  Side multiplier
-		 *  @type {Tone.Expr}
+		 *  @type {Tone.Multiply}
 		 *  @private
 		 */
-		this._sideMult = new Tone.Expr("$0 * ($1 * $2)");
-
-		/**
-		 *  constant output of 2
-		 *  @type {Tone}
-		 *  @private
-		 */
-		this._two = new Tone.Signal(2);
-
-		//the mid chain
-		this._two.connect(this._midMult, 0, 1);
-		this.width.connect(this._midMult, 0, 2);
-		//the side chain
-		this._two.connect(this._sideMult, 0, 1);
-		this.width.connect(this._sideMult, 0, 2);
-		//connect it to the effect send/return
-		this.midSend.chain(this._midMult, this.midReturn);
+		this._sideMult = new Tone.Multiply();
+		this.width.connect(this._twoTimesWidthSide);
+		this._twoTimesWidthSide.connect(this._sideMult, 0, 1);
 		this.sideSend.chain(this._sideMult, this.sideReturn);
-		this._readOnly(["width"]);
 	};
 
 	Tone.extend(Tone.StereoWidener, Tone.MidSideEffect);
@@ -86,8 +97,12 @@ define(["Tone/core/Tone", "Tone/effect/MidSideEffect", "Tone/signal/Signal",
 		this._midMult = null;
 		this._sideMult.dispose();
 		this._sideMult = null;
-		this._two.dispose();
-		this._two = null;
+		this._twoTimesWidthMid.dispose();
+		this._twoTimesWidthMid = null;
+		this._twoTimesWidthSide.dispose();
+		this._twoTimesWidthSide = null;
+		this._oneMinusWidth.dispose();
+		this._oneMinusWidth = null;
 		return this;
 	};
 
