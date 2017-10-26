@@ -1,27 +1,6 @@
-define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type"], function(Tone){
+define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type", "Tone/shim/AudioBuffer"], function(Tone){
 
 	"use strict";
-
-	/**
-	 *  AudioBuffer.copyToChannel polyfill
-	 *  @private
-	 */
-	if (window.AudioBuffer && !AudioBuffer.prototype.copyToChannel){
-		AudioBuffer.prototype.copyToChannel = function(src, chanNum, start){
-			var channel = this.getChannelData(chanNum);
-			start = start || 0;
-			for (var i = 0; i < channel.length; i++){
-				channel[i+start] = src[i];
-			}
-		};
-		AudioBuffer.prototype.copyFromChannel = function(dest, chanNum, start){
-			var channel = this.getChannelData(chanNum);
-			start = start || 0;
-			for (var i = 0; i < dest.length; i++){
-				dest[i] = channel[i+start];
-			}
-		};
-	}
 
 	/**
 	 *  @class  Buffer loading and storage. Tone.Buffer is used internally by all
@@ -371,7 +350,7 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type"], function(Tone)
 
 	//statically inherits Emitter methods
 	Tone.Emitter.mixin(Tone.Buffer);
-	
+
 	/**
 	 *  the static queue for all of the xhr requests
 	 *  @type {Array}
