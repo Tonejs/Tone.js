@@ -153,6 +153,17 @@ define(["Tone/core/Tone", "Tone/type/Type", "Tone/core/AudioNode", "Tone/shim/Au
 	};
 
 	/**
+	 *  Get the signals value at the given time. Subsequent scheduling
+	 *  may invalidate the returned value.
+	 *  @param {Time} time When to get the value
+	 *  @returns {Number} The value at the given time
+	 */
+	Tone.Param.prototype.getValueAtTime = function(time){
+		time = this.toSeconds(time);
+		return this._fromUnits(this._param.getValueAtTime(time));
+	};
+
+	/**
 	 *  Creates a schedule point with the current value at the current time.
 	 *  This is useful for creating an automation anchor point in order to
 	 *  schedule changes from the current value.
@@ -160,15 +171,14 @@ define(["Tone/core/Tone", "Tone/type/Type", "Tone/core/AudioNode", "Tone/shim/Au
 	 *  @param {number=} now (Optionally) pass the now value in.
 	 *  @returns {Tone.Param} this
 	 */
-	Tone.Param.prototype.setRampPoint = function(now){
-		now = Tone.defaultArg(now, this.now());
-		this.cancelAndHoldAtTime(this.context.currentTime);
-		var currentVal = this._param.value;
+	Tone.Param.prototype.setRampPoint = function(time){
+		time = this.toSeconds(time);
+		var currentVal = this.getValueAtTime(time);
+		this.cancelAndHoldAtTime(time);
 		if (currentVal === 0){
 			currentVal = this._minOutput;
 		}
-		// cancel and hold at the given time
-		this._param.setValueAtTime(currentVal, now);
+		this._param.setValueAtTime(currentVal, time);
 		return this;
 	};
 
@@ -313,15 +323,17 @@ define(["Tone/core/Tone", "Tone/type/Type", "Tone/core/AudioNode", "Tone/shim/Au
 	 *  @param {Array} values
 	 *  @param {Time} startTime
 	 *  @param {Time} duration
+	 *  @param {NormalRange} [scaling=1] If the values in the curve should be scaled by some value
 	 *  @returns {Tone.Param} this
 	 */
-	Tone.Param.prototype.setValueCurveAtTime = function(values, startTime, duration){
+	Tone.Param.prototype.setValueCurveAtTime = function (values, startTime, duration, scaling) {
+		scaling = Tone.defaultArg(scaling, 1);
 		duration = this.toSeconds(duration);
 		startTime = this.toSeconds(startTime);
-		this.setValueAtTime(values[0], startTime);
+		this.setValueAtTime(values[0] * scaling, startTime);
 		var segTime = duration / (values.length - 1);
 		for (var i = 1; i < values.length; i++){
-			this._param.linearRampToValueAtTime(this._fromUnits(values[i]), startTime + i * segTime);
+			this._param.linearRampToValueAtTime(this._fromUnits(values[i] * scaling), startTime + i * segTime);
 		}
 		return this;
 	};
@@ -345,8 +357,7 @@ define(["Tone/core/Tone", "Tone/type/Type", "Tone/core/AudioNode", "Tone/shim/Au
 	 *  @returns {Tone.Param} this
 	 */
 	Tone.Param.prototype.cancelAndHoldAtTime = function(cancelTime){
-		cancelTime = this.toSeconds(cancelTime);
-		this._param.cancelAndHoldAtTime(cancelTime);
+		this._param.cancelAndHoldAtTime(this.toSeconds(cancelTime));
 		return this;
 	};
 
