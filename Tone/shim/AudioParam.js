@@ -69,7 +69,7 @@ define(["Tone/core/Tone", "Tone/core/Timeline"], function (Tone) {
 		if (!AudioParam.prototype.hasOwnProperty("minValue")){
 			Object.defineProperty(AudioParam.prototype, "minValue", {
 				get : function(){
-					return -3.4028235e38
+					return -3.4028235e38;
 				}
 			});
 		}
@@ -78,7 +78,7 @@ define(["Tone/core/Tone", "Tone/core/Timeline"], function (Tone) {
 		if (!AudioParam.prototype.hasOwnProperty("maxValue")){
 			Object.defineProperty(AudioParam.prototype, "maxValue", {
 				get : function(){
-					return 3.4028235e38
+					return 3.4028235e38;
 				}
 			});
 		}
@@ -100,7 +100,7 @@ define(["Tone/core/Tone", "Tone/core/Timeline"], function (Tone) {
 					initializeAudioParam(this);
 					//check if the exponential ramp is starting from above 0
 					if (method === AutomationType.Exponential){
-						var before = this._events.get(time)
+						var before = this._events.get(time);
 						if (before && this.getValueAtTime(before.time) <= 0){
 							throw new Error("exponentialRampToValueAtTime must ramp from a value > 0");
 						}
@@ -113,7 +113,7 @@ define(["Tone/core/Tone", "Tone/core/Timeline"], function (Tone) {
 					});
 					//invoke the native method
 					return AudioParam.prototype[nativeMethodName].call(this, value, time);
-				}
+				};
 			}
 		});
 
@@ -156,7 +156,7 @@ define(["Tone/core/Tone", "Tone/core/Timeline"], function (Tone) {
 				}
 				//call the native method
 				return this._native_setValueCurveAtTime(values, time, duration);
-			}
+			};
 		}
 
 		// cancelScheduledValues

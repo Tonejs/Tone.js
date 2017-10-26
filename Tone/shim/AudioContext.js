@@ -13,14 +13,14 @@ define(["Tone/core/Tone"], function(Tone){
 				} else {
 					return Promise.resolve();
 				}
-			}
+			};
 		}
 
 		//not functionally equivalent
 		if (!AudioContext.prototype.resume){
 			AudioContext.prototype.resume = function(){
 				return Promise.resolve();
-			}
+			};
 		}
 	}
 });

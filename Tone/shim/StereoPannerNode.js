@@ -1,7 +1,7 @@
 define(["Tone/core/Tone", "Tone/signal/WaveShaper", "Tone/component/Merge", "Tone/signal/Zero",
 	"Tone/component/Split", "Tone/core/Gain", "Tone/signal/Signal", "Tone/core/Context"], function(Tone){
 
-	if (Tone.supported && !StereoPannerNode){
+	if (Tone.supported && !window.StereoPannerNode){
 
 		/**
 		 * @class Shimmed StereoPannerNode
@@ -85,11 +85,11 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper", "Tone/component/Merge", "Ton
 
 		StereoPannerNode.prototype.disconnect = function(){
 			this.output.disconnect.apply(this.output, arguments);
-		}
+		};
 
 		StereoPannerNode.prototype.connect = function(){
 			this.output.connect.apply(this.output, arguments);
-		}
+		};
 
 		//add it to the AudioContext
 		AudioContext.prototype.createStereoPanner = function(){
