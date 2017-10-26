@@ -217,7 +217,7 @@ define(["Tone/core/Tone", "Tone/source/Source", "Tone/core/Buffer",
 				var channel = new Float32Array(bufferLength);
 				buffer[channelNum] = channel;
 				for (var i = 0; i < bufferLength; i++){
-					channel[i] =  Math.random() * 2 - 1;
+					channel[i] = Math.random() * 2 - 1;
 				}
 			}
 			return buffer;

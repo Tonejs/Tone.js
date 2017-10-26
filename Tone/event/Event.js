@@ -148,7 +148,7 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/type/Type", "Tone/core/Ti
 				if (this._loop){
 					duration = Infinity;
 					if (Tone.isNumber(this._loop)){
-						duration =  (this._loop) * this._getLoopDuration();
+						duration = (this._loop) * this._getLoopDuration();
 					}
 					var nextEvent = this._state.getAfter(startTick);
 					if (nextEvent !== null){

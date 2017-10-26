@@ -230,7 +230,7 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Subtract", "Tone/signa
 
 		while(expr.length > 0){
 			expr = expr.trim();
-			var token =  getNextToken(expr);
+			var token = getNextToken(expr);
 			tokens.push(token);
 			expr = expr.substr(token.value.length);
 		}

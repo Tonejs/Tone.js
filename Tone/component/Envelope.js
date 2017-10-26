@@ -360,7 +360,7 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal",
 		var rippleCurveFreq = 6.4;
 		for (i = 0; i < curveLen - 1; i++){
 			k = (i / (curveLen - 1));
-			var sineWave = Math.sin(k * (Math.PI  * 2) * rippleCurveFreq - Math.PI / 2) + 1;
+			var sineWave = Math.sin(k * (Math.PI * 2) * rippleCurveFreq - Math.PI / 2) + 1;
 			rippleCurve[i] = sineWave/10 + k * 0.83;
 		}
 		rippleCurve[curveLen - 1] = 1;

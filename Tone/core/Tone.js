@@ -25,7 +25,7 @@ define(function(){
 	Tone.prototype.toString = function(){
 		for (var className in Tone){
 			var isLetter = className[0].match(/^[A-Z]$/);
-			var sameConstructor =  Tone[className] === this.constructor;
+			var sameConstructor = Tone[className] === this.constructor;
 			if (Tone.isFunction(Tone[className]) && isLetter && sameConstructor){
 				return className;
 			}
@@ -467,7 +467,7 @@ define(function(){
 	 *  @memberOf Tone
 	 */
 	Tone.gainToDb = function(gain) {
-		return  20 * (Math.log(gain) / Math.LN10);
+		return 20 * (Math.log(gain) / Math.LN10);
 	};
 
 	/**
