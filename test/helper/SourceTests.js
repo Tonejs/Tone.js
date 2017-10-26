@@ -1,5 +1,5 @@
-define(["helper/OutputAudio", "Tone/source/Source", "helper/OutputAudioStereo",
-	"Test", "helper/Offline", "helper/APITest"],
+define(["helper/OutputAudio", "Tone/source/Source", "helper/OutputAudioStereo", 
+	"Test", "helper/Offline", "helper/APITest"], 
 	function (OutputAudio, Source, OutputAudioStereo, Test, Offline, APITest) {
 
 	return function(Constr, args){
@@ -39,7 +39,7 @@ define(["helper/OutputAudio", "Tone/source/Source", "helper/OutputAudioStereo",
 					instance.toMaster();
 					instance.start();
 				});
-			});
+			});	
 
 			it("produces sound in both channels", function(){
 				return OutputAudioStereo(function(){
@@ -47,7 +47,7 @@ define(["helper/OutputAudio", "Tone/source/Source", "helper/OutputAudioStereo",
 					instance.toMaster();
 					instance.start();
 				});
-			});
+			});	
 
 			it("be scheduled to start in the future", function(){
 				return Offline(function(){
@@ -97,16 +97,8 @@ define(["helper/OutputAudio", "Tone/source/Source", "helper/OutputAudioStereo",
 		});
 
 		context("Source API", function(){
-
-			it ("can invoke start with offset and duration", function(){
-				var instance = new Constr(args);
-				instance.start(0);
-				instance.stop(0.1);
-				instance.start(0.2, 0);
-				instance.stop(0.3);
-				instance.start(0.4, 0, 0.1);
-				instance.stop(0.5);
-			});
+			APITest.method(Constr, "start", ["Time=", "Time=", "Time="], args);
+			APITest.method(Constr, "stop", ["Time="], args);
 		});
 
 	};
