@@ -92,7 +92,7 @@ module.exports = function(config) {
 
 		// start these browsers
 		// available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-		browsers: ['HeadlessChrome'],
+		browsers: ['HeadlessFirefox', 'HeadlessChrome'],
 
 
 		// Continuous Integration mode
@@ -108,7 +108,14 @@ module.exports = function(config) {
 			HeadlessChrome: {
 				base: 'ChromeHeadless',
 				flags: [/*'--disable-translate', '--disable-extensions', '--remote-debugging-port=9223', */'--no-sandbox', '--use-fake-ui-for-media-stream', '--use-fake-device-for-media-stream']
-			}
+			},
+			HeadlessFirefox: {
+		        base: 'Firefox',
+				flags: [ '-headless' ],
+		        prefs: {
+		            'media.navigator.permission.disabled': true
+		        }
+		    }
 		}
 	};
 

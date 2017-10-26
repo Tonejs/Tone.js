@@ -5,6 +5,7 @@ node_js:
 - '8'
 addons:
   chrome: stable
+  firefox: latest
 before_script:
 - cd gulp
 - npm install -g jsdoc
