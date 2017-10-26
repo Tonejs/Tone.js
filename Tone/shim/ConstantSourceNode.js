@@ -33,7 +33,7 @@ define(["Tone/core/Tone", "Tone/shim/AudioContext", "Tone/core/Context", "Tone/c
 			return this;
 		};
 
-		ConstantSourceNode.prototype.connect = function(to){
+		ConstantSourceNode.prototype.connect = function(){
 			this._output.connect.apply(this._output, arguments);
 			return this;
 		};
