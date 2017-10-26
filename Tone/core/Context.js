@@ -1,12 +1,4 @@
-define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/core/Timeline"], function (Tone) {
-
-	/**
-	 *  shim
-	 *  @private
-	 */
-	if (!window.hasOwnProperty("AudioContext") && window.hasOwnProperty("webkitAudioContext")){
-		window.AudioContext = window.webkitAudioContext;
-	}
+define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/core/Timeline", "Tone/shim/AudioContext"], function (Tone) {
 
 	/**
 	 *  @class Wrapper around the native AudioContext.
