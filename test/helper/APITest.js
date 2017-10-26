@@ -22,13 +22,13 @@ function (Test, Type, Transport, Time, Frequency) {
 		if (typeof param === "string" && param.indexOf("=") !== -1){
 			return [undefined].concat(getVariations(param.replace("=", "")));
 		} else if (param === "Time"){
-			return ["2n", 1, Time("4n")];
+			return ["2n", Time("4n")];
 		} else if (param === "Number"){
-			return [20, 0, -0.5];
+			return [20, -0.5];
 		} else if (param === "NormalRange"){
-			return [0, 0.5, 1];
+			return [0, 0.5];
 		} else if (param === "Frequency"){
-			return ["C#4", 220, Frequency("A4")];
+			return ["C#4", Frequency("A4")];
 		} else if (param === "Function"){
 			return [function(){}];
 		} else {
