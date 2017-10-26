@@ -84,8 +84,7 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal",
 		 *  @type {Tone.TimelineSignal}
 		 *  @private
 		 */
-		this._sig = this.output = new Tone.TimelineSignal();
-		this._sig.setValueAtTime(0, 0);
+		this._sig = this.output = new Tone.Signal(0);
 
 		//set the attackCurve initially
 		this.attackCurve = options.attackCurve;
@@ -249,7 +248,7 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal",
 		} else if (this._attackCurve === "exponential"){
 			this._sig.targetRampTo(velocity, attack, time);
 		} else if (attack > 0){
-			this._sig.setRampPoint(time);
+			this._sig.cancelAndHoldAtTime(time);
 			var curve = this._attackCurve;
 			//take only a portion of the curve
 			if (attack < originalAttack){
@@ -262,7 +261,9 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal",
 			this._sig.setValueCurveAtTime(curve, time, attack, velocity);
 		}
 		//decay
-		this._sig.targetRampTo(velocity * this.sustain, decay, attack + time);
+		if (decay){
+			this._sig.targetRampTo(velocity * this.sustain, decay, attack + time);
+		}
 		return this;
 	};
 
@@ -286,7 +287,7 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal",
 			} else{
 				var curve = this._releaseCurve;
 				if (Tone.isArray(curve)){
-					this._sig.setRampPoint(time);
+					this._sig.cancelAndHoldAtTime(time);
 					this._sig.setValueCurveAtTime(curve, time, release, currentValue);
 				}
 			}
