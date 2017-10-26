@@ -1,15 +1,15 @@
-define(["Tone/core/Tone", "Tone/component/LFO", "Tone/effect/StereoXFeedbackEffect", "Tone/core/Delay"], function(Tone){
+define(["Tone/core/Tone", "Tone/component/LFO", "Tone/effect/StereoEffect", "Tone/core/Delay"], function(Tone){
 
 	"use strict";
 
 	/**
-	 *  @class Tone.Chorus is a stereo chorus effect with feedback composed of
+	 *  @class Tone.Chorus is a stereo chorus effect composed of
 	 *         a left and right delay with a Tone.LFO applied to the delayTime of each channel.
 	 *         Inspiration from [Tuna.js](https://github.com/Dinahmoe/tuna/blob/master/tuna.js).
 	 *         Read more on the chorus effect on [SoundOnSound](http://www.soundonsound.com/sos/jun04/articles/synthsecrets.htm).
 	 *
 	 *	@constructor
-	 *	@extends {Tone.StereoXFeedbackEffect}
+	 *	@extends {Tone.StereoEffect}
 	 *	@param {Frequency|Object} [frequency] The frequency of the LFO.
 	 *	@param {Milliseconds} [delayTime] The delay of the chorus effect in ms.
 	 *	@param {NormalRange} [depth] The depth of the chorus.
@@ -21,7 +21,7 @@ define(["Tone/core/Tone", "Tone/component/LFO", "Tone/effect/StereoXFeedbackEffe
 	Tone.Chorus = function(){
 
 		var options = Tone.defaults(arguments, ["frequency", "delayTime", "depth"], Tone.Chorus);
-		Tone.StereoXFeedbackEffect.call(this, options);
+		Tone.StereoEffect.call(this, options);
 
 		/**
 		 *  the depth of the chorus
@@ -103,7 +103,7 @@ define(["Tone/core/Tone", "Tone/component/LFO", "Tone/effect/StereoXFeedbackEffe
 		this.spread = options.spread;
 	};
 
-	Tone.extend(Tone.Chorus, Tone.StereoXFeedbackEffect);
+	Tone.extend(Tone.Chorus, Tone.StereoEffect);
 
 	/**
 	 *  @static
@@ -113,7 +113,6 @@ define(["Tone/core/Tone", "Tone/component/LFO", "Tone/effect/StereoXFeedbackEffe
 		"frequency" : 1.5,
 		"delayTime" : 3.5,
 		"depth" : 0.7,
-		"feedback" : 0.1,
 		"type" : "sine",
 		"spread" : 180
 	};
@@ -195,7 +194,7 @@ define(["Tone/core/Tone", "Tone/component/LFO", "Tone/effect/StereoXFeedbackEffe
 	 *  @returns {Tone.Chorus} this
 	 */
 	Tone.Chorus.prototype.dispose = function(){
-		Tone.StereoXFeedbackEffect.prototype.dispose.call(this);
+		Tone.StereoEffect.prototype.dispose.call(this);
 		this._lfoL.dispose();
 		this._lfoL = null;
 		this._lfoR.dispose();
