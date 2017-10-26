@@ -29,7 +29,7 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper", "Tone/component/Merge", "Ton
 			 */
 			var rightWaveShaper = new Tone.WaveShaper(function(val){
 				return Tone.equalPowerScale((val+1)/2);
-			}, 100);
+			}, 4096);
 
 			/**
 			 * Equal power scaling of the left gain
@@ -38,7 +38,7 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper", "Tone/component/Merge", "Ton
 			 */
 			var leftWaveShaper = new Tone.WaveShaper(function(val){
 				return Tone.equalPowerScale(1 - (val+1)/2);
-			}, 100);
+			}, 4096);
 
 			/**
 			 * The left gain value
