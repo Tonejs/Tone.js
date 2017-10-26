@@ -354,7 +354,6 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Timeline"], function 
 	 */
 	Tone.TimelineSignal.prototype.connect = Tone.SignalBase.prototype.connect;
 
-
 	///////////////////////////////////////////////////////////////////////////
 	//	AUTOMATION CURVE CALCULATIONS
 	//	MIT License, copyright (c) 2014 Jordan Santell

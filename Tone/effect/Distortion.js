@@ -69,7 +69,7 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/signal/WaveShaper"], funct
 					//should output 0 when input is 0
 					return 0;
 				} else {
-					return ( 3 + k ) * x * 20 * deg / ( Math.PI + k * Math.abs(x) );
+					return (3 + k) * x * 20 * deg / (Math.PI + k * Math.abs(x));
 				}
 			});
 		} 

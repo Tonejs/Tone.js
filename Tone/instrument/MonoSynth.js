@@ -138,7 +138,6 @@ define(["Tone/core/Tone", "Tone/component/AmplitudeEnvelope", "Tone/component/Fr
 		return this;
 	};
 
-
 	/**
 	 *  clean up
 	 *  @returns {Tone.MonoSynth} this

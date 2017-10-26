@@ -44,7 +44,6 @@ define(["Tone/core/Tone", "Tone/component/LFO", "Tone/component/CrossFade",
 			"type" : "sawtooth"
 		}).connect(this._delayA.delayTime);
 
-
 		/**
 		 *  The second DelayNode
 		 *  @type  {DelayNode}

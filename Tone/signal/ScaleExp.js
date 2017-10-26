@@ -99,6 +99,5 @@ define(["Tone/core/Tone", "Tone/signal/Scale", "Tone/signal/Pow"], function(Tone
 		return this;
 	};
 
-
 	return Tone.ScaleExp;
 });

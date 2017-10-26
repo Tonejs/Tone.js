@@ -453,6 +453,5 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal",
 		return this;
 	};
 
-
 	return Tone.Envelope;
 });

@@ -31,7 +31,6 @@ define(["Tone/core/Tone", "Tone/instrument/Synth", "Tone/signal/Signal", "Tone/s
 		this._carrier = new Tone.Synth(options.carrier);
 		this._carrier.volume.value = -10;
 
-
 		/**
 		 *  The carrier's oscillator
 		 *  @type {Tone.Oscillator}
@@ -51,7 +50,6 @@ define(["Tone/core/Tone", "Tone/instrument/Synth", "Tone/signal/Signal", "Tone/s
 		 */
 		this._modulator = new Tone.Synth(options.modulator);
 		this._modulator.volume.value = -10;
-
 
 		/**
 		 *  The modulator's oscillator which is applied

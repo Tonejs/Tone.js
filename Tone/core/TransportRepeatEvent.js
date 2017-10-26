@@ -11,7 +11,6 @@ define(["Tone/core/Tone", "Tone/core/TransportEvent"], function(Tone){
 		Tone.TransportEvent.call(this, Transport, options);
 		options = Tone.defaultArg(options, Tone.TransportRepeatEvent.defaults);
 
-
 		/**
 		 * When the event should stop repeating
 		 * @type {Ticks}

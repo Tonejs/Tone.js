@@ -32,7 +32,6 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Multiply", "Tone/signa
 		 */
 		this._outputMax = Tone.defaultArg(outputMax, 1);
 
-
 		/** 
 		 *  @private
 		 *  @type {Tone.Multiply}

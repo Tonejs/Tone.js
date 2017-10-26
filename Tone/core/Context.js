@@ -550,7 +550,6 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/core/Timeline", "Tone/shim/
 		}
 	});
 
-
 	// set the audio context initially, and if one is not already created
 	if (Tone.supported && !Tone.initialized){
 		Tone.context = new Tone.Context();

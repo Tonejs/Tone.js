@@ -50,7 +50,6 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper"], function(Tone){
 		}
 	});
 
-
 	/**
 	 *  the function which maps the waveshaper
 	 *  @param   {number} exp

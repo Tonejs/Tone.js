@@ -241,7 +241,6 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/source
 		return this;
 	};
 
-
 	/**
 	 *  Seek to a specific time in the player's buffer. If the
 	 *  source is no longer playing at that time, it will stop.

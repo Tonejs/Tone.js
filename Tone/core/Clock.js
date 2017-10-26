@@ -136,7 +136,6 @@ define(["Tone/core/Tone", "Tone/signal/TickSignal", "Tone/core/TimelineState",
 		return this;
 	};
 
-
 	/**
 	 *  Pause the clock. Pausing does not reset the tick counter.
 	 *  @param {Time} [time=now] The time when the clock should stop.

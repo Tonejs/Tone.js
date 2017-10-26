@@ -98,7 +98,6 @@ define(["Tone/core/Tone", "Tone/component/AmplitudeEnvelope", "Tone/source/OmniO
 		return this;
 	};
 
-
 	/**
 	 *  clean up
 	 *  @returns {Tone.Synth} this

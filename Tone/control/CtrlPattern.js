@@ -117,7 +117,6 @@ define(["Tone/core/Tone"], function (Tone) {
 		}
 	});
 
-
 	/**
 	 *  The pattern used to select the next
 	 *  item from the values array

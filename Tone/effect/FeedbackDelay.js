@@ -38,7 +38,6 @@ define(["Tone/core/Tone", "Tone/effect/FeedbackEffect", "Tone/signal/Signal", "T
 		 */
 		this.delayTime = this._delayNode.delayTime;
 
-
 		// connect it up
 		this.connectEffect(this._delayNode);
 		this._readOnly(["delayTime"]);
