@@ -1,4 +1,4 @@
-define(["helper/Basic", "Tone/source/UserMedia", "Test", "Tone/source/Source"], 
+define(["helper/Basic", "Tone/source/UserMedia", "Test", "Tone/source/Source"],
 	function (BasicTests, UserMedia, Test, Source) {
 
 	describe("UserMedia", function(){
@@ -62,8 +62,12 @@ define(["helper/Basic", "Tone/source/UserMedia", "Test", "Tone/source/Source"],
 
 				it ("can open an input by name", function(){
 					var extIn = new UserMedia();
-					return extIn.open("default").then(function(){
-						expect(extIn.deviceId).to.equal("default");
+					var name = null
+					return UserMedia.enumerateDevices().then(function(devices){
+						name = devices[0].deviceId
+						return extIn.open(name)
+					}).then(function(){
+						expect(extIn.deviceId).to.equal(name);
 						extIn.dispose();
 					});
 				});

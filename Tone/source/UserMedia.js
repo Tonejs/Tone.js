@@ -90,7 +90,6 @@ define(["Tone/core/Tone", "Tone/component/Volume", "Tone/core/AudioNode"], funct
 	 *  @return {Promise} The promise is resolved when the stream is open.
 	 */
 	Tone.UserMedia.prototype.open = function(labelOrId){
-		labelOrId = Tone.defaultArg(labelOrId, "default");
 		return Tone.UserMedia.enumerateDevices().then(function(devices){
 			var device;
 			if (Tone.isNumber(labelOrId)){
@@ -100,7 +99,9 @@ define(["Tone/core/Tone", "Tone/component/Volume", "Tone/core/AudioNode"], funct
 					return device.label === labelOrId || device.deviceId === labelOrId;
 				});
 				//didn't find a matching device
-				if (!device){
+				if (!device && devices.length > 0){
+					device = devices[0]
+				} else if (!device){
 					throw new Error("Tone.UserMedia: no matching device: "+labelOrId);
 				}
 			}
