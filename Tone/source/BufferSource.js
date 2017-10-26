@@ -2,14 +2,6 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/G
 	"Tone/core/AudioNode"], function (Tone) {
 
 	/**
-	 *  BufferSource polyfill
-	 */
-	if (window.AudioBufferSourceNode && !AudioBufferSourceNode.prototype.start){
-		AudioBufferSourceNode.prototype.start = AudioBufferSourceNode.prototype.noteGrainOn;
-		AudioBufferSourceNode.prototype.stop = AudioBufferSourceNode.prototype.noteOff;
-	}
-
-	/**
 	 *  @class Wrapper around the native BufferSourceNode.
 	 *  @extends {Tone.AudioNode}
 	 *  @param  {AudioBuffer|Tone.Buffer}  buffer   The buffer to play
@@ -194,13 +186,13 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/G
 
 			this._startTime = time;
 
-			var computedDur = this.toSeconds(Tone.defaultArg(duration, this.buffer.duration - offset));
+			var computedDur = this.toSeconds(Tone.defaultArg(duration, this.buffer.duration - (offset % this.buffer.duration)));
 			computedDur = Math.max(computedDur, 0);
 
 			if (!this.loop || (this.loop && !Tone.isUndef(duration))){
 				//clip the duration when not looping
 				if (!this.loop){
-					computedDur = Math.min(computedDur, this.buffer.duration - offset);
+					computedDur = Math.min(computedDur, this.buffer.duration - (offset % this.buffer.duration));
 				}
 				this.stop(time + computedDur, this.fadeOut);
 			}
@@ -291,10 +283,10 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/G
 	 *  @private
 	 */
 	Tone.BufferSource.prototype._onended = function(){
-		this.onended(this);
 		//allow additional time for the exponential curve to fully decay
 		var additionalTail = this.curve === "exponential" ? this.fadeOut * 2 : 0;
 		this._source.stop(this._stopTime + additionalTail);
+		this.onended(this);
 	};
 
 	/**
