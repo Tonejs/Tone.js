@@ -1,5 +1,5 @@
-define(["Test", "Tone/signal/Abs", "helper/Basic", "Tone/signal/Signal", "helper/ConstantOutput", "helper/Supports"], 
-function (Test, Abs, BasicTest, Signal, ConstantOutput, Supports) {
+define(["Test", "Tone/signal/Abs", "helper/Basic", "Tone/signal/Signal", "helper/ConstantOutput"],
+function (Test, Abs, BasicTest, Signal, ConstantOutput) {
 
 	describe("Abs", function(){
 
@@ -23,17 +23,14 @@ function (Test, Abs, BasicTest, Signal, ConstantOutput, Supports) {
 				}, 0.4);
 			});
 
-			if (Supports.WAVESHAPER_0_POSITION){
-				
-				it("outputs 0 when the input is 0", function(){
-					return ConstantOutput(function(){
-						var signal = new Signal(0);
-						var abs = new Abs();
-						signal.connect(abs);
-						abs.toMaster();
-					}, 0);
-				});
-			}
+			it("outputs 0 when the input is 0", function(){
+				return ConstantOutput(function(){
+					var signal = new Signal(0);
+					var abs = new Abs();
+					signal.connect(abs);
+					abs.toMaster();
+				}, 0);
+			});
 
 			it("outputs the absolute value for negative numbers", function(){
 				return ConstantOutput(function(){

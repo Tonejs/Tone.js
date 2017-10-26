@@ -1,5 +1,5 @@
-define(["helper/ConstantOutput", "helper/Basic", "Tone/signal/GreaterThanZero", "Tone/signal/Signal", "helper/Supports"], 
-function (ConstantOutput, Basic, GreaterThanZero, Signal, Supports) {
+define(["helper/ConstantOutput", "helper/Basic", "Tone/signal/GreaterThanZero", "Tone/signal/Signal"],
+function (ConstantOutput, Basic, GreaterThanZero, Signal) {
 
 	describe("GreaterThanZero", function(){
 
@@ -25,17 +25,14 @@ function (ConstantOutput, Basic, GreaterThanZero, Signal, Supports) {
 				}, 1);
 			});
 
-			if (Supports.WAVESHAPER_0_POSITION){
-
-				it("Outputs 0 when the value is equal to 0", function(){
-					return ConstantOutput(function(){
-						var signal = new Signal(0);
-						var gtz = new GreaterThanZero();
-						signal.connect(gtz);
-						gtz.toMaster();
-					}, 0);
-				});
-			}
+			it("Outputs 0 when the value is equal to 0", function(){
+				return ConstantOutput(function(){
+					var signal = new Signal(0);
+					var gtz = new GreaterThanZero();
+					signal.connect(gtz);
+					gtz.toMaster();
+				}, 0);
+			});
 
 			it("Outputs 1 when the value is slightly above 0", function(){
 				return ConstantOutput(function(){

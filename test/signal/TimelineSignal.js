@@ -1,5 +1,5 @@
-define(["Test", "Tone/signal/TimelineSignal", "helper/Offline", "Tone/type/Type", "helper/Supports"],
-	function (Test, TimelineSignal, Offline, Tone, Supports) {
+define(["Test", "Tone/signal/TimelineSignal", "helper/Offline", "Tone/type/Type"],
+	function (Test, TimelineSignal, Offline, Tone) {
 
 	describe("TimelineSignal", function(){
 
@@ -116,29 +116,26 @@ define(["Test", "Tone/signal/TimelineSignal", "helper/Offline", "Tone/type/Type"
 			});
 		});
 
-		if (Supports.ACCURATE_SIGNAL_SCHEDULING){
-
-			it("can match a complex scheduled curve", function(){
-				var sched;
-				return Offline(function(){
-					sched = new TimelineSignal(1).toMaster();
-					sched.setValueAtTime(0.2, 0.3);
-					sched.setTargetAtTime(0.5, 0.5, 2);
-					sched.setValueAtTime(0.4, 1);
-					sched.linearRampToValueAtTime(5, 1.4);
-					sched.exponentialRampToValueAtTime(2, 1.6);
-					sched.setValueAtTime(2.5, 2);
-					sched.linearRampToValueAtTime(2.4, 2.5);
-					sched.linearRampToValueAtTime(5, 3);
-					sched.setTargetAtTime(2, 3.5, 5);
-					sched.setValueCurveAtTime([0, 1, 0], 3.8, 0.2);
-				}, 4).then(function(buffer){
-					buffer.forEach(function(sample, time){
-						expect(sample).to.be.closeTo(sched.getValueAtTime(time), 0.01);
-					});
+		it("can match a complex scheduled curve", function(){
+			var sched;
+			return Offline(function(){
+				sched = new TimelineSignal(1).toMaster();
+				sched.setValueAtTime(0.2, 0.3);
+				sched.setTargetAtTime(0.5, 0.5, 2);
+				sched.setValueAtTime(0.4, 1);
+				sched.linearRampToValueAtTime(5, 1.4);
+				sched.exponentialRampToValueAtTime(2, 1.6);
+				sched.setValueAtTime(2.5, 2);
+				sched.linearRampToValueAtTime(2.4, 2.5);
+				sched.linearRampToValueAtTime(5, 3);
+				sched.setTargetAtTime(2, 3.5, 5);
+				sched.setValueCurveAtTime([0, 1, 0], 3.8, 0.2);
+			}, 4).then(function(buffer){
+				buffer.forEach(function(sample, time){
+					expect(sample).to.be.closeTo(sched.getValueAtTime(time), 0.01);
 				});
 			});
-		}
+		});
 
 		it("can schedule a linear ramp between two times", function(){
 			var sched = new TimelineSignal(0);

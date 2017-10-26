@@ -1,5 +1,5 @@
-define(["Tone/component/Waveform", "Test", "helper/Basic", "helper/Supports", "Tone/source/Noise"],
-	function (Waveform, Test, Basic, Supports, Noise) {
+define(["Tone/component/Waveform", "Test", "helper/Basic", "Tone/source/Noise"],
+	function (Waveform, Test, Basic, Noise) {
 
 	describe("Waveform", function(){
 

@@ -1,8 +1,8 @@
 define(["Test", "Tone/core/Tone", "Tone/core/AudioNode", "helper/PassAudio", "Tone/core/Gain",
-	"Tone/source/Oscillator", "Tone/component/Merge", "Tone/component/Split", "helper/Supports",
-	"Tone/component/Filter", "helper/Offline", "Tone/signal/Signal"],
+	"Tone/source/Oscillator", "Tone/component/Merge", "Tone/component/Split",
+	"Tone/component/Filter", "helper/Offline", "Tone/signal/Signal", "helper/Supports"],
 	function (Test, Tone, AudioNode, PassAudio, Gain, Oscillator, Merge,
-		Split, Supports, Filter, Offline, Signal) {
+		Split, Filter, Offline, Signal, Supports) {
 
 	describe("AudioNode", function(){
 

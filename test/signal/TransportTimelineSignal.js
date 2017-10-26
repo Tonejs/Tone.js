@@ -1,5 +1,5 @@
-define(["Test", "Tone/signal/TransportTimelineSignal", "helper/Offline", "Tone/type/Type", "helper/Supports"],
-	function (Test, TransportTimelineSignal, Offline, Tone, Supports) {
+define(["Test", "Tone/signal/TransportTimelineSignal", "helper/Offline", "Tone/type/Type"],
+	function (Test, TransportTimelineSignal, Offline, Tone) {
 
 	describe("TransportTimelineSignal", function(){
 

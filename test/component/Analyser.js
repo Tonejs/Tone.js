@@ -1,5 +1,5 @@
-define(["Tone/component/Analyser", "Test", "helper/Basic", "helper/Supports", "Tone/source/Noise"],
-	function (Analyser, Test, Basic, Supports, Noise) {
+define(["Tone/component/Analyser", "Test", "helper/Basic", "Tone/source/Noise"],
+	function (Analyser, Test, Basic, Noise) {
 
 	describe("Analyser", function(){
 

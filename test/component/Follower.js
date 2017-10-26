@@ -1,6 +1,6 @@
 define(["Tone/component/Follower", "helper/Basic", "helper/Offline", "Test",
-	"Tone/signal/Signal", "helper/PassAudio", "helper/PassAudioStereo", "helper/Supports"],
-function (Follower, Basic, Offline, Test, Signal, PassAudio, PassAudioStereo, Supports) {
+	"Tone/signal/Signal", "helper/PassAudio", "helper/PassAudioStereo"],
+function (Follower, Basic, Offline, Test, Signal, PassAudio, PassAudioStereo) {
 	describe("Follower", function(){
 
 		Basic(Follower);
