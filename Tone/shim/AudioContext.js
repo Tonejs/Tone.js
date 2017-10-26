@@ -22,5 +22,15 @@ define(["Tone/core/Tone"], function(Tone){
 				return Promise.resolve();
 			};
 		}
+
+		//createGain
+		if (!AudioContext.prototype.createGain && AudioContext.prototype.createGainNode){
+			AudioContext.prototype.createGain = AudioContext.prototype.createGainNode;
+		}
+
+		//createDelay
+		if (!AudioContext.prototype.createDelay && AudioContext.prototype.createDelayNode){
+			AudioContext.prototype.createDelay = AudioContext.prototype.createDelayNode;
+		}
 	}
 });

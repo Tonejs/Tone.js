@@ -3,14 +3,6 @@ define(["Tone/core/Tone", "Tone/core/Param", "Tone/core/AudioNode"], function (T
 	"use strict";
 
 	/**
-	 *  createDelay shim
-	 *  @private
-	 */
-	if (window.DelayNode && !AudioContext.prototype.createDelay){
-		AudioContext.prototype.createDelay = AudioContext.prototype.createDelayNode;
-	}
-
-	/**
 	 *  @class Wrapper around Web Audio's native [DelayNode](http://webaudio.github.io/web-audio-api/#the-delaynode-interface).
 	 *  @extends {Tone}
 	 *  @param {Time=} delayTime The delay applied to the incoming signal.
