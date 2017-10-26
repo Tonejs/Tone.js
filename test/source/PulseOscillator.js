@@ -1,4 +1,4 @@
-define(["helper/Basic", "Tone/source/PulseOscillator", "helper/Offline", "helper/SourceTests", "helper/OscillatorTests"], 
+define(["helper/Basic", "Tone/source/PulseOscillator", "helper/Offline", "helper/SourceTests", "helper/OscillatorTests"],
 	function (BasicTests, PulseOscillator, Offline, SourceTests, OscillatorTests) {
 
 	describe("PulseOscillator", function(){
@@ -21,7 +21,7 @@ define(["helper/Basic", "Tone/source/PulseOscillator", "helper/Offline", "helper
 					buffer.forEach(function(sample, time){
 						if (time < 0.25){
 							expect(sample).to.be.within(-1, 0);
-						} else if (time < 0.5){
+						} else if (time > 0.25 && time < 0.5){
 							expect(sample).to.be.within(0, 1);
 						}
 					});
@@ -40,13 +40,13 @@ define(["helper/Basic", "Tone/source/PulseOscillator", "helper/Offline", "helper
 					buffer.forEach(function(sample, time){
 						if (time < 0.25){
 							expect(sample).to.be.within(0, 1);
-						} else if (time < 0.5){
+						} else if (time > 0.25 && time < 0.5){
 							expect(sample).to.be.within(-1, 0);
 						}
 					});
 				});
 			});
-			
+
 		});
 
 		context("Width", function(){
@@ -67,11 +67,11 @@ define(["helper/Basic", "Tone/source/PulseOscillator", "helper/Offline", "helper
 					});
 					osc.toMaster();
 					osc.start(0);
-				}, 1).then(function(buffer){
+				}, 0.9).then(function(buffer){
 					buffer.forEach(function(sample, time){
-						if (time > 0.5){
+						if (time > 0.51){
 							expect(sample).to.be.within(-1, 0);
-						} 
+						}
 					});
 				});
 			});

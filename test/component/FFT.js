@@ -1,5 +1,5 @@
-define(["Tone/component/FFT", "Test", "helper/Basic", "helper/Supports", "Tone/source/Noise"],
-	function (FFT, Test, Basic, Supports, Noise) {
+define(["Tone/component/FFT", "Test", "helper/Basic", "Tone/source/Noise"],
+	function (FFT, Test, Basic, Noise) {
 
 	describe("FFT", function(){
 
@@ -40,7 +40,7 @@ define(["Tone/component/FFT", "Test", "helper/Basic", "helper/Supports", "Tone/s
 				analysis = fft.getValue();
 				expect(analysis.length).to.equal(256);
 				for (i = 0; i < analysis.length; i++){
-					expect(analysis[i]).is.within(-200, 0);
+					expect(analysis[i]).is.within(-Infinity, 0);
 				}
 				fft.dispose();
 				noise.dispose();

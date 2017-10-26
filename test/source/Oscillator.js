@@ -1,5 +1,5 @@
-define(["helper/Basic", "Tone/source/Oscillator", "helper/Offline", "helper/SourceTests", 
-	"helper/OscillatorTests", "helper/OutputAudio", "Tone/core/Transport"], 
+define(["helper/Basic", "Tone/source/Oscillator", "helper/Offline", "helper/SourceTests",
+	"helper/OscillatorTests", "helper/OutputAudio", "Tone/core/Transport"],
 	function (BasicTests, Oscillator, Offline, SourceTests, OscillatorTests, OutputAudio, Transport) {
 
 	describe("Oscillator", function(){
@@ -10,7 +10,7 @@ define(["helper/Basic", "Tone/source/Oscillator", "helper/Offline", "helper/Sour
 		OscillatorTests(Oscillator);
 
 		context("Get/Set", function(){
-			
+
 			it("can be set with an options object", function(){
 				var osc = new Oscillator();
 				osc.set({
@@ -46,7 +46,7 @@ define(["helper/Basic", "Tone/source/Oscillator", "helper/Offline", "helper/Sour
 					buffer.forEach(function(sample, time){
 						if (time < 0.25){
 							expect(sample).to.be.within(-1, 0);
-						} else if (time < 0.5){
+						} else if (time > 0.25 && time < 0.5){
 							expect(sample).to.be.within(0, 1);
 						}
 					});
@@ -65,13 +65,13 @@ define(["helper/Basic", "Tone/source/Oscillator", "helper/Offline", "helper/Sour
 					buffer.forEach(function(sample, time){
 						if (time < 0.25){
 							expect(sample).to.be.within(0, 1);
-						} else if (time < 0.5){
+						} else if (time > 0.25 && time < 0.5){
 							expect(sample).to.be.within(-1, 0);
 						}
 					});
 				});
 			});
-			
+
 		});
 
 		context("Type", function(){

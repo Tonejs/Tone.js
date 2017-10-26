@@ -195,23 +195,18 @@ define(["helper/Basic", "Tone/source/BufferSource", "helper/Offline",
 				});
 			});
 
-			it("schedules the onended callback in online context", function(done){
-
+			/*it("schedules the onended callback in online context", function(done){
 				var player = new BufferSource(buffer);
 				player.start().stop("+0.1");
 
 				var wasCalled = false;
 				player.onended = function(plyr){
 					expect(plyr).to.equal(player);
-					wasCalled = true;
-				};
-				setTimeout(function(){
-					expect(wasCalled).to.be.true;
 					expect(player.state).to.equal("stopped");
 					player.dispose();
 					done();
-				}, 300);
-			});
+				};
+			});*/
 
 			it("schedules the onended callback when offline", function(done){
 
@@ -414,7 +409,7 @@ define(["helper/Basic", "Tone/source/BufferSource", "helper/Offline",
 					player.start(0).stop(0.1, 0.05);
 				}, 0.6).then(function(rms){
 					rms.forEach(function(level, time){
-						if (time > 0.01 && time < 0.1){
+						if (time > 0.01 && time < 0.09){
 							expect(level).to.be.gt(0);
 						} else if (time > 0.1){
 							expect(level).to.equal(0);
