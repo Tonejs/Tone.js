@@ -88,9 +88,7 @@ define(["Tone/core/Tone", "Tone/core/Timeline"], function (Tone) {
 		///////////////////////////////////////////////////////////////////////////
 
 		// wrap the basic methods
-		["setValueAtTime",
-		"linearRampToValueAtTime",
-		"exponentialRampToValueAtTime"].forEach(function(method){
+		["setValueAtTime", "linearRampToValueAtTime", "exponentialRampToValueAtTime"].forEach(function(method){
 			var nativeMethodName = "_native_"+method;
 			if (!AudioParam.prototype[nativeMethodName]){
 				//make a copy of the original method prefixed _native_
@@ -151,7 +149,7 @@ define(["Tone/core/Tone", "Tone/core/Timeline"], function (Tone) {
 					this._events.add({
 						type : AutomationType.Linear,
 						value : values[i],
-						time :  time + i * segTime,
+						time : time + i * segTime,
 					});
 				}
 				//call the native method

@@ -119,7 +119,7 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Subtract", "Tone/signa
 		},
 		//functions
 		"func" : {
-			"abs" :  {
+			"abs" : {
 				regexp : /^abs/,
 				method : applyUnary.bind(this, Tone.Abs)
 			},
@@ -315,7 +315,7 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Subtract", "Tone/signa
 			while (matchGroup(token, "binary", precedence)) {
 				token = lexer.next();
 				expr = {
-					operator: token.value,
+					operator : token.value,
 					method : token.method,
 					args : [
 						expr,
@@ -334,7 +334,7 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Subtract", "Tone/signa
 				token = lexer.next();
 				expr = parseUnary();
 				return {
-					operator: token.value,
+					operator : token.value,
 					method : token.method,
 					args : [expr]
 				};
