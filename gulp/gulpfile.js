@@ -18,7 +18,7 @@ var rename = require("gulp-rename");
 var sass = require("gulp-ruby-sass");
 var prefix = require("gulp-autoprefixer");
 var openFile = require("gulp-open");
-var jshint = require("gulp-jshint");
+var eslint = require("gulp-eslint");
 var coveralls = require("gulp-coveralls");
 var git = require("gulp-git");
 var argv = require("yargs")
@@ -148,9 +148,19 @@ gulp.task("example", function() {
  */
 gulp.task("lint", function() {
 	return gulp.src("../Tone/*/*.js")
-		.pipe(jshint())
-		.pipe(jshint.reporter("default"))
-		.pipe(jshint.reporter("fail"));
+		.pipe(eslint())
+		.pipe(eslint.format())
+        .pipe(eslint.failAfterError());
+});
+
+gulp.task("lint-fix", function() {
+	return gulp.src("../Tone/*/*.js")
+		.pipe(eslint({
+			fix : true
+		}))
+		.pipe(eslint.format())
+        .pipe(eslint.failAfterError())
+		.pipe(gulp.dest("../Tone"));
 });
 
 gulp.task("karma-test", ["default"], function (done) {
