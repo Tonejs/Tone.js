@@ -198,7 +198,7 @@ define(["Tone/core/Tone", "Tone/source/Source", "Tone/source/Oscillator",
 						osc.type = this._type;
 					}
 					osc.phase = this._phase;
-					osc.volume.value = -6 - count;
+					osc.volume.value = -6 - count*1.1;
 					this.frequency.connect(osc.frequency);
 					this.detune.connect(osc.detune);
 					osc.connect(this.output);
