@@ -394,6 +394,7 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Subtract", "Tone/signa
 
 		function parseArgumentList() {
 			var token, expr, args = [];
+			// eslint-disable-next-line no-constant-condition
 			while (true) {
 				expr = parseExpression();
 				if (isUndef(expr)) {
