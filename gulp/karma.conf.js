@@ -92,7 +92,7 @@ module.exports = function(config) {
 
 		// start these browsers
 		// available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-		browsers: ['HeadlessFirefox', 'HeadlessChrome'],
+		browsers: ['HeadlessChrome', process.env.TRAVIS ? 'NormalFirefox' : 'HeadlessFirefox'],
 
 
 		// Continuous Integration mode
@@ -101,7 +101,7 @@ module.exports = function(config) {
 
 		// Concurrency level
 		// how many browser should be started simultaneous
-		concurrency: 1,
+		concurrency: process.env.TRAVIS ? 1 : Infinity,
 
 		//custom launcher for travis
 		customLaunchers: {
@@ -112,6 +112,12 @@ module.exports = function(config) {
 			HeadlessFirefox: {
 		        base: 'Firefox',
 				flags: [ '-headless' ],
+		        prefs: {
+		            'media.navigator.permission.disabled': true
+		        }
+		    },
+			NormalFirefox: {
+		        base: 'Firefox',
 		        prefs: {
 		            'media.navigator.permission.disabled': true
 		        }
