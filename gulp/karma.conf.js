@@ -92,7 +92,8 @@ module.exports = function(config) {
 
 		// start these browsers
 		// available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-		browsers: ['HeadlessChrome', process.env.TRAVIS ? 'NormalFirefox' : 'HeadlessFirefox'],
+		// browsers: ['HeadlessChrome', process.env.TRAVIS ? 'NormalFirefox' : 'HeadlessFirefox'],
+		browsers: ['HeadlessChrome'],
 
 
 		// Continuous Integration mode
@@ -112,12 +113,6 @@ module.exports = function(config) {
 			HeadlessFirefox: {
 		        base: 'Firefox',
 				flags: [ '-headless' ],
-		        prefs: {
-		            'media.navigator.permission.disabled': true
-		        }
-		    },
-			NormalFirefox: {
-		        base: 'Firefox',
 		        prefs: {
 		            'media.navigator.permission.disabled': true
 		        }
