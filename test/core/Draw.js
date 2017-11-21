@@ -3,8 +3,6 @@ define(["Test", "Tone/core/Draw", "Tone/core/Tone"],
 
 	describe("Draw", function(){
 
-		return
-
 		//replace rAF since test is not executed in focus
 		var originalRAF = window.requestAnimationFrame;
 
