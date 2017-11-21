@@ -1,6 +1,6 @@
 /* global mocha*/
 
-define(["Tone/core/Tone", "deps/chai", "Tone/core/Context", "Tone/core/Transport"], 
+define(["Tone/core/Tone", "deps/chai", "Tone/core/Context", "Tone/core/Transport"],
 	function (Tone, chai, Context, Transport) {
 
 	//add a chai test
@@ -29,6 +29,9 @@ define(["Tone/core/Tone", "deps/chai", "Tone/core/Context", "Tone/core/Transport
 		Test.input = Tone.context.createGain();
 	});
 
+	//bring window into focus
+	window.focus();
+
 	/**
 	 *  The Test object
 	 */
@@ -37,19 +40,19 @@ define(["Tone/core/Tone", "deps/chai", "Tone/core/Context", "Tone/core/Transport
 	};
 
 	Test.run = function(){
-		mocha.run(); 
+		mocha.run();
 	};
 
 	Test.wasDisposed = function(obj){
 		for (var prop in obj){
 			var member = obj[prop];
-			if (typeof member !== "function" && 
-				typeof member !== "string" && 
+			if (typeof member !== "function" &&
+				typeof member !== "string" &&
 				typeof member !== "number" &&
 				typeof member !== "boolean" &&
 				typeof member !== "undefined" &&
-				prop !== "preset" && 
-				!(member instanceof AudioContext) && 
+				prop !== "preset" &&
+				!(member instanceof AudioContext) &&
 				!obj.constructor.prototype[prop]){
 				if (member !== null){
 					throw Error("property was not completely disposed: "+prop);
