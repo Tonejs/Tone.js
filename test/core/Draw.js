@@ -1,7 +1,19 @@
-define(["Test", "Tone/core/Draw", "Tone/core/Tone"], 
+define(["Test", "Tone/core/Draw", "Tone/core/Tone"],
 	function (Test, Draw, Tone) {
 
 	describe("Draw", function(){
+
+		//replace rAF since test is not executed in focus
+		var originalRAF = window.requestAnimationFrame;
+
+		window.requestAnimationFrame = function(cb){
+			setTimeout(cb, 16);
+		};
+
+		after(function(){
+			//re-set rAF
+			window.requestAnimationFrame = originalRAF;
+		});
 
 		it ("can schedule a callback at a AudioContext time", function(done){
 			var scheduledTime = Tone.now() + 0.2;
