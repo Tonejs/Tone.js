@@ -78,7 +78,7 @@ module.exports = function(config) {
 		colors: true,
 
 		// set the inactivity level to longer
-		browserNoActivityTimeout : 20000,
+		browserNoActivityTimeout : 40000,
 
 
 		// level of logging
@@ -92,7 +92,7 @@ module.exports = function(config) {
 
 		// start these browsers
 		// available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-		browsers: ['HeadlessChrome'],
+		browsers: ['HeadlessChrome', 'HeadlessFirefox'],
 		// browsers: ['HeadlessFirefox'],
 
 
