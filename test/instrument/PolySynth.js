@@ -1,6 +1,7 @@
 define(["Tone/instrument/PolySynth", "helper/Basic", "helper/InstrumentTests", "helper/OutputAudioStereo",
-	"Tone/instrument/Instrument", "Test", "helper/OutputAudio", "Tone/instrument/MonoSynth", "helper/Offline"],
-function (PolySynth, Basic, InstrumentTests, OutputAudioStereo, Instrument, Test, OutputAudio, MonoSynth, Offline) {
+	"Tone/instrument/Instrument", "Test", "helper/OutputAudio", "Tone/instrument/MonoSynth", "helper/Offline",
+	"Tone/instrument/Sampler"],
+function (PolySynth, Basic, InstrumentTests, OutputAudioStereo, Instrument, Test, OutputAudio, MonoSynth, Offline, Sampler) {
 
 	describe("PolySynth", function(){
 
@@ -86,6 +87,12 @@ function (PolySynth, Basic, InstrumentTests, OutputAudioStereo, Instrument, Test
 				});
 				expect(polySynth.get().envelope.sustain).to.equal(0.3);
 				polySynth.dispose();
+			});
+
+			it ("throws an error if voice type is not Monophonic", function(){
+				expect(function(){
+					var polySynth = new PolySynth(4, Sampler);
+				}).to.throw(Error)
 			});
 
 			it ("can be set the detune", function(){
