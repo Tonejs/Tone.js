@@ -13,6 +13,12 @@ define(["Test", "Tone/core/Tone", "helper/PassAudio", "Tone/source/Oscillator",
 			Test.wasDisposed(t);
 		});
 
+		it ("must be invoked with 'new'", function(){
+			expect(function(){
+				var t = Tone();
+			}).to.throw(Error)
+		});
+
 		it("returns the class name with toString()", function(){
 			var t = new Tone();
 			expect(t.toString()).to.equal("Tone");

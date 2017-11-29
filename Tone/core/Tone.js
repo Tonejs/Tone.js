@@ -16,7 +16,11 @@ define(function(){
 	 *  @class  Tone is the base class of all other classes.
 	 *  @constructor
 	 */
-	var Tone = function(){};
+	var Tone = function(){
+		if (!(this instanceof Tone)){
+			throw new Error("constructor needs to be called with the 'new' keyword");
+		}
+	};
 
 	/**
 	 *  @memberOf Tone#
