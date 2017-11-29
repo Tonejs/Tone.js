@@ -45,3 +45,7 @@ deploy:
   skip_cleanup: true
   on:
     tags: true
+# cache node_modules to speed up build
+cache:
+  directories:
+    - node_modules
