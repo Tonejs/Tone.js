@@ -33,6 +33,7 @@ define(["helper/ua-parser"], function (UserAgentParser) {
 		PLUCK_SYNTH : isnt("Safari"),
 		//has float time domain analyser
 		ANALYZE_FLOAT_TIME_DOMAIN : AnalyserNode && typeof AnalyserNode.prototype.getFloatTimeDomainData === "function",
-
+		//if the tests run in focus
+		ONLINE_TESTING : isnt("Firefox")
 	};
 });

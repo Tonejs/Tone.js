@@ -1,75 +1,67 @@
-define(["Test", "Tone/core/Draw", "Tone/core/Tone"],
-	function (Test, Draw, Tone) {
+define(["Test", "Tone/core/Draw", "Tone/core/Tone", "helper/Supports"],
+	function (Test, Draw, Tone, Supports) {
 
 	describe("Draw", function(){
 
-		//replace rAF since test is not executed in focus
-		var originalRAF = window.requestAnimationFrame;
+		if (Supports.ONLINE_TESTING){
+			
+			it ("can schedule a callback at a AudioContext time", function(done){
+				var scheduledTime = Tone.now() + 0.2;
+				Draw.schedule(function(){
+					expect(Tone.now()).to.be.closeTo(scheduledTime, 0.05);
+					done();
+				}, scheduledTime);
+			});
 
-		window.requestAnimationFrame = function(cb){
-			setTimeout(cb, 16);
-		};
+			it ("can schedule multiple callbacks", function(done){
+				var callbackCount = 0;
+				var firstEvent = Tone.now() + 0.1;
+				Draw.schedule(function(){
+					callbackCount++;
+					expect(Tone.now()).to.be.closeTo(firstEvent, 0.05);
+				}, firstEvent);
 
-		after(function(){
-			//re-set rAF
-			window.requestAnimationFrame = originalRAF;
-		});
+				var thirdEvent = Tone.now() + 0.3;
+				Draw.schedule(function(){
+					callbackCount++;
+					expect(Tone.now()).to.be.closeTo(thirdEvent, 0.05);
+					expect(callbackCount).to.equal(3);
+					done();
+				}, thirdEvent);
 
-		it ("can schedule a callback at a AudioContext time", function(done){
-			var scheduledTime = Tone.now() + 0.2;
-			Draw.schedule(function(){
-				expect(Tone.now()).to.be.closeTo(scheduledTime, 0.05);
-				done();
-			}, scheduledTime);
-		});
+				var secondEvent = Tone.now() + 0.2;
+				Draw.schedule(function(){
+					callbackCount++;
+					expect(Tone.now()).to.be.closeTo(secondEvent, 0.05);
+				}, secondEvent);
+			});
 
-		it ("can schedule multiple callbacks", function(done){
-			var callbackCount = 0;
-			var firstEvent = Tone.now() + 0.1;
-			Draw.schedule(function(){
-				callbackCount++;
-				expect(Tone.now()).to.be.closeTo(firstEvent, 0.05);
-			}, firstEvent);
+			it ("can cancel scheduled events", function(done){
+				var callbackCount = 0;
+				Draw.schedule(function(){
+					callbackCount++;
+				}, Tone.now() + 0.1);
 
-			var thirdEvent = Tone.now() + 0.3;
-			Draw.schedule(function(){
-				callbackCount++;
-				expect(Tone.now()).to.be.closeTo(thirdEvent, 0.05);
-				expect(callbackCount).to.equal(3);
-				done();
-			}, thirdEvent);
+				Draw.schedule(function(){
+					throw new Error("should not call this method");
+				}, Tone.now() + 0.2);
 
-			var secondEvent = Tone.now() + 0.2;
-			Draw.schedule(function(){
-				callbackCount++;
-				expect(Tone.now()).to.be.closeTo(secondEvent, 0.05);
-			}, secondEvent);
-		});
+				Draw.schedule(function(){
+					throw new Error("should not call this method");
+				}, Tone.now() + 0.25);
 
-		it ("can cancel scheduled events", function(done){
-			var callbackCount = 0;
-			Draw.schedule(function(){
-				callbackCount++;
-			}, Tone.now() + 0.1);
+				//cancel the second and third events
+				Draw.cancel(Tone.now() + 0.15);
 
-			Draw.schedule(function(){
-				throw new Error("should not call this method");
-			}, Tone.now() + 0.2);
+				//schedule another one after
+				Draw.schedule(function(){
+					callbackCount++;
+					expect(callbackCount).to.equal(2);
+					done();
+				}, Tone.now() + 0.3);
 
-			Draw.schedule(function(){
-				throw new Error("should not call this method");
-			}, Tone.now() + 0.25);
+			});
+		}
 
-			//cancel the second and third events
-			Draw.cancel(Tone.now() + 0.15);
-
-			//schedule another one after
-			Draw.schedule(function(){
-				callbackCount++;
-				expect(callbackCount).to.equal(2);
-				done();
-			}, Tone.now() + 0.3);
-
-		});
 	});
 });

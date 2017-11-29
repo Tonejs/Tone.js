@@ -1,5 +1,5 @@
-define(["Test", "Tone/core/Clock", "helper/Offline"], 
-	function (Test, Clock, Offline) {
+define(["Test", "Tone/core/Clock", "helper/Offline", "helper/Supports"],
+	function (Test, Clock, Offline, Supports) {
 
 	describe("Clock", function(){
 
@@ -25,7 +25,7 @@ define(["Test", "Tone/core/Clock", "helper/Offline"],
 					done();
 				}, 10).start();
 			});
-			
+
 			it ("can be constructed with an options object", function(done){
 				var clock = new Clock({
 					"callback" : function(){
@@ -128,26 +128,30 @@ define(["Test", "Tone/core/Clock", "helper/Offline"],
 				}, 10).start();
 			});
 
-			it ("invokes the callback with a time great than now", function(done){
-				var clock = new Clock(function(time){
-					clock.dispose();
-					expect(time).to.be.greaterThan(now);
-					done();
-				}, 10);
-				var now = clock.now();
-				var startTime = now + 0.1;
-				clock.start(startTime);
-			});
+			if (Supports.ONLINE_TESTING){
 
-			it ("invokes the first callback at the given start time", function(done){
-				var clock = new Clock(function(time){
-					clock.dispose();
-					expect(time).to.be.closeTo(startTime, 0.01);
-					done();
-				}, 10);
-				var startTime = clock.now() + 0.1;
-				clock.start(startTime);
-			});
+				it ("invokes the callback with a time great than now", function(done){
+					var clock = new Clock(function(time){
+						clock.dispose();
+						expect(time).to.be.greaterThan(now);
+						done();
+					}, 10);
+					var now = clock.now();
+					var startTime = now + 0.1;
+					clock.start(startTime);
+				});
+
+				it ("invokes the first callback at the given start time", function(done){
+					var clock = new Clock(function(time){
+						clock.dispose();
+						expect(time).to.be.closeTo(startTime, 0.01);
+						done();
+					}, 10);
+					var startTime = clock.now() + 0.1;
+					clock.start(startTime);
+				});
+			}
+
 
 			it ("can be scheduled to stop in the future", function(){
 				var invokations = 0;
@@ -290,7 +294,7 @@ define(["Test", "Tone/core/Clock", "helper/Offline"],
 					clock.start(startTime);
 				}, 0.4);
 			});
-			
+
 			it ("triggers the start event with an offset", function(){
 				return Offline(function(){
 					var clock = new Clock(function(){}, 20);
