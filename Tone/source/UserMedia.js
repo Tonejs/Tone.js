@@ -109,11 +109,13 @@ define(["Tone/core/Tone", "Tone/component/Volume", "Tone/core/AudioNode"], funct
 			//do getUserMedia
 			var constraints = {
 				audio : {
-					"deviceId" : device.deviceId,
 					"echoCancellation" : false,
 					"sampleRate" : this.context.sampleRate
 				}
 			};
+			if (device){
+				constraints.audio.deviceId = device.deviceId;				
+			}
 			return navigator.mediaDevices.getUserMedia(constraints).then(function(stream){
 				//start a new source only if the previous one is closed
 				if (!this._stream){
