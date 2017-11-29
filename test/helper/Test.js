@@ -16,6 +16,9 @@ define(["Tone/core/Tone", "deps/chai", "Tone/core/Context", "Tone/core/Transport
 		timeout : 30000
 	});
 
+	//don't log for tests
+	window.TONE_SILENCE_VERSION_LOGGING = true
+
 	beforeEach(function(){
 		if (Transport.bpm.value !== 120){
 			Transport.bpm.value = 120;
