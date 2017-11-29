@@ -32,6 +32,13 @@ define(["Test", "Tone/core/Context", "Tone/core/Tone", "helper/Offline"],
 				});
 			});
 
+			it ("'dispose' returns a promise which resolves", function(){
+				var ctx = new Context();
+				var promise = ctx.dispose();
+				expect(promise).to.be.instanceOf(Promise);
+				return promise;
+			});
+
 			it ("can be constructed with an options object", function(){
 				var ctx = new Context({
 					"lookAhead" : 0.2,
