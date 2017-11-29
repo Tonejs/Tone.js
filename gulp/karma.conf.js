@@ -102,8 +102,8 @@ module.exports = function(config) {
 
 		// Concurrency level
 		// how many browser should be started simultaneous
-		// concurrency: process.env.TRAVIS ? 1 : Infinity,
-		concurrency: Infinity,
+		concurrency: process.env.TRAVIS ? 1 : Infinity,
+		// concurrency: Infinity,
 
 		//custom launcher for travis
 		customLaunchers: {
