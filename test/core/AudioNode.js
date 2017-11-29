@@ -20,15 +20,18 @@ define(["Test", "Tone/core/Tone", "Tone/core/AudioNode", "helper/PassAudio", "To
 			node.dispose();
 		});
 
-		it("can be constructed with an options object", function(){
-			var context = new AudioContext();
-			var node = new AudioNode({
-				"context" : context,
+		if (Supports.AUDIO_CONTEXT_CLOSE_RESOLVES){
+			it("can be constructed with an options object", function(){
+				var context = new AudioContext();
+				var node = new AudioNode({
+					"context" : context,
+				});
+				expect(node.context).to.be.equal(context);
+				node.dispose();
+				return context.close();
 			});
-			expect(node.context).to.be.equal(context);
-			node.dispose();
-			return context.close();
-		});
+		}
+
 
 		it("reports its inputs and outputs", function(){
 			var node0 = new AudioNode();

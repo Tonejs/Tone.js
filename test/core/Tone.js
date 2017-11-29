@@ -1,9 +1,9 @@
 define(["Test", "Tone/core/Tone", "helper/PassAudio", "Tone/source/Oscillator",
 	"Tone/instrument/Synth", "helper/Offline",
 	"Tone/component/Filter", "Tone/core/Gain", "Tone/core/Context",
-	"helper/BufferTest", "Tone/component/Merge", "Tone/signal/Signal", "Tone/component/Split"],
+	"helper/BufferTest", "Tone/component/Merge", "Tone/signal/Signal", "Tone/component/Split", "helper/Supports"],
 	function (Test, Tone, PassAudio, Oscillator, Synth, Offline,
-		Filter, Gain, Context, BufferTest, Merge, Signal, Split) {
+		Filter, Gain, Context, BufferTest, Merge, Signal, Split, Supports) {
 
 	describe("Tone", function(){
 
@@ -180,32 +180,36 @@ define(["Test", "Tone/core/Tone", "helper/PassAudio", "Tone/source/Oscillator",
 
 		context("Tone.context", function(){
 
-			it ("can set a new context", function(){
-				var origCtx = Tone.context;
-				var ctx = new Context();
-				Tone.context = ctx;
-				expect(Tone.context).to.equal(ctx);
-				expect(Tone.prototype.context).to.equal(ctx);
-				//then set it back
-				Tone.setContext(origCtx);
-				expect(Tone.context).to.equal(origCtx);
-				expect(Tone.prototype.context).to.equal(origCtx);
-				return ctx.dispose();
-			});
+			if (Supports.AUDIO_CONTEXT_CLOSE_RESOLVES){
 
-			it ("new context can be a raw audio context", function(){
-				var origCtx = Tone.context;
-				var ctx = new AudioContext();
-				Tone.context = ctx;
-				//wraps it in a Tone.Context
-				expect(Tone.context).to.be.instanceOf(Context);
-				//then set it back
-				Tone.setContext(origCtx);
-				expect(Tone.context).to.equal(origCtx);
-				expect(Tone.prototype.context).to.equal(origCtx);
-				//and a saftey check
-				return ctx.close();
-			});
+				it ("can set a new context", function(){
+					var origCtx = Tone.context;
+					var ctx = new Context();
+					Tone.context = ctx;
+					expect(Tone.context).to.equal(ctx);
+					expect(Tone.prototype.context).to.equal(ctx);
+					//then set it back
+					Tone.setContext(origCtx);
+					expect(Tone.context).to.equal(origCtx);
+					expect(Tone.prototype.context).to.equal(origCtx);
+					return ctx.dispose();
+				});
+
+				it ("new context can be a raw audio context", function(){
+					var origCtx = Tone.context;
+					var ctx = new AudioContext();
+					Tone.context = ctx;
+					//wraps it in a Tone.Context
+					expect(Tone.context).to.be.instanceOf(Context);
+					//then set it back
+					Tone.setContext(origCtx);
+					expect(Tone.context).to.equal(origCtx);
+					expect(Tone.prototype.context).to.equal(origCtx);
+					//and a saftey check
+					return ctx.close();
+				});
+			}
+
 
 			it ("tests if the audio context time has passed", function(){
 				// overwrite warn to throw errors

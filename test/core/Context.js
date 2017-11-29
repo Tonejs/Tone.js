@@ -1,7 +1,11 @@
-define(["Test", "Tone/core/Context", "Tone/core/Tone", "helper/Offline"],
-	function (Test, Context, Tone, Offline) {
+define(["Test", "Tone/core/Context", "Tone/core/Tone", "helper/Offline", "helper/Supports"],
+	function (Test, Context, Tone, Offline, Supports) {
 
 	describe("Context", function(){
+
+		if (!Supports.AUDIO_CONTEXT_CLOSE_RESOLVES){
+			return
+		}
 
 		context("AudioContext", function(){
 

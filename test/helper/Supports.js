@@ -34,6 +34,8 @@ define(["helper/ua-parser"], function (UserAgentParser) {
 		//has float time domain analyser
 		ANALYZE_FLOAT_TIME_DOMAIN : AnalyserNode && typeof AnalyserNode.prototype.getFloatTimeDomainData === "function",
 		//if the tests run in focus
-		ONLINE_TESTING : isnt("Firefox")
+		ONLINE_TESTING : isnt("Firefox"),
+		//the close method resolves a promise
+		AUDIO_CONTEXT_CLOSE_RESOLVES : isnt("Firefox")
 	};
 });
