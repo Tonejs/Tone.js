@@ -1,3 +1,10 @@
+### r12
+
+* Consolidating all shims into [shim folder](https://github.com/Tonejs/Tone.js/tree/dev/Tone/shim)
+* Using ConstantSourceNode in Signal when available
+* switching to eslint from jshint
+* Running CI tests on Firefox as well as Chrome
+
 ### r11
 
 * [Code coverage](https://coveralls.io/github/Tonejs/Tone.js) analysis
