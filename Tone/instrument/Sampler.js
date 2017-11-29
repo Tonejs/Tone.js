@@ -151,6 +151,24 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/core/Buffers", "To
 			time = this.toSeconds(time);
 			source.stop(time + this.release, this.release);
 		}
+		return this;
+	};
+
+	/**
+	 * Release all currently active notes.
+	 * @param  {Time=} time     	When to release the notes.
+	 * @return {Tone.Sampler}	this
+	 */
+	Tone.Sampler.prototype.releaseAll = function(time){
+		time = this.toSeconds(time);
+		for (var note in this._activeSources){
+			var sources = this._activeSources[note];
+			while(sources.length){
+				var source = sources.shift().source;
+				source.stop(time + this.release, this.release);
+			}
+		}
+		return this;
 	};
 
 	/**

@@ -123,6 +123,23 @@ define(["Tone/instrument/Sampler", "helper/Basic", "helper/InstrumentTests",
 				});
 			});
 
+			it ("can release multiple notes", function(){
+				return Offline(function(){
+					var sampler = new Sampler({
+						"A4" : A4_buffer
+					}, {
+						release : 0
+					}).toMaster();
+					sampler.triggerAttack("A4", 0);
+					sampler.triggerAttack("C4", 0);
+					sampler.triggerAttack("A4", 0.1);
+					sampler.triggerAttack("G4", 0.1);
+					sampler.releaseAll(0.2);
+				}, 0.3).then(function(buffer){
+					expect(buffer.getLastSoundTime()).to.be.closeTo(0.2, 0.01)
+				});
+			});
+
 			it ("can trigger the attack and release", function(){
 				return Offline(function(){
 					var sampler = new Sampler({
