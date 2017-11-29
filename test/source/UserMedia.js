@@ -44,102 +44,102 @@ define(["helper/Basic", "Tone/source/UserMedia", "Test", "Tone/source/Source"],
 				//long timeout to give testers time to allow the microphone
 				this.timeout(100000);
 
-				//replace gUM for FF with 'fake : true' in the constraints
-				var originalGetUserMedia = navigator.mediaDevices.getUserMedia
-				navigator.mediaDevices.getUserMedia = function(constraints){
-					constraints.fake = true
-					return originalGetUserMedia.call(navigator.mediaDevices, constraints)
-				}
+				var HAS_USER_MEDIA_INPUTS = false;
 
-				after(function(){
-					navigator.mediaDevices.getUserMedia = originalGetUserMedia
+				before(function(){
+					return UserMedia.enumerateDevices().then(function(devices){
+						HAS_USER_MEDIA_INPUTS = devices.length > 0
+					});
 				});
 
-				function hasInputs(){
-					return UserMedia.enumerateDevices().then(function(devices){
-						return devices.length > 0
-					})
-				}
-
 				it ("open returns a promise", function(){
-					var extIn = new UserMedia();
-					var promise = extIn.open();
-					expect(promise).to.be.instanceOf(Promise);
-					return promise.then(function(){
-						extIn.dispose();
-					});
+					if (HAS_USER_MEDIA_INPUTS){
+						var extIn = new UserMedia();
+						var promise = extIn.open();
+						expect(promise).to.be.instanceOf(Promise);
+						return promise.then(function(){
+							extIn.dispose();
+						});
+					}
 				});
 
 				it ("can open an input", function(){
-					var extIn = new UserMedia();
-					return extIn.open().then(function(){
-						extIn.dispose();
-					});
+					if (HAS_USER_MEDIA_INPUTS){
+						var extIn = new UserMedia();
+						return extIn.open().then(function(){
+							extIn.dispose();
+						});
+					}
 				});
 
 				it ("can open an input by name", function(){
-					var extIn = new UserMedia();
-					var name = null
-					return hasInputs().then(function(has){
-						if (has){
-							return UserMedia.enumerateDevices().then(function(devices){
-								name = devices[0].deviceId
-								return extIn.open(name)
-							}).then(function(){
-								expect(extIn.deviceId).to.equal(name);
-								extIn.dispose();
-							});
-						}
-					})
+					if (HAS_USER_MEDIA_INPUTS){
+						var extIn = new UserMedia();
+						var name = null
+						return UserMedia.enumerateDevices().then(function(devices){
+							name = devices[0].deviceId
+							return extIn.open(name)
+						}).then(function(){
+							expect(extIn.deviceId).to.equal(name);
+							extIn.dispose();
+						});
+					}
 				});
 
 				it ("can open an input by index", function(){
-					var extIn = new UserMedia();
-					return hasInputs().then(function(has){
-						if (has){
-							return extIn.open(0).then(function(){
-								extIn.dispose();
-							});
-						}
-					});
+					if (HAS_USER_MEDIA_INPUTS){
+						var extIn = new UserMedia();
+						return extIn.open(0).then(function(){
+							extIn.dispose();
+						});
+					}
 				});
 
 				it ("throws an error if it cant find the device name", function(){
-					var extIn = new UserMedia();
-					return extIn.open("doesn't exist").then(function(){
-						//shouldn't call 'then'
-						throw new Error("shouldnt call 'then'");
-					}).catch(function(){
-						extIn.dispose();
-					});
+					if (HAS_USER_MEDIA_INPUTS){
+						var extIn = new UserMedia();
+						return extIn.open("doesn't exist").then(function(){
+							//shouldn't call 'then'
+							throw new Error("shouldnt call 'then'");
+						}).catch(function(){
+							extIn.dispose();
+						});
+					}
 				});
 
 				it ("is 'started' after media is open and 'stopped' otherwise", function(){
-					var extIn = new UserMedia();
-					expect(extIn.state).to.equal("stopped");
-					return extIn.open().then(function(){
-						expect(extIn.state).to.equal("started");
-						extIn.dispose();
-					});
+					if (HAS_USER_MEDIA_INPUTS){
+						var extIn = new UserMedia();
+						expect(extIn.state).to.equal("stopped");
+						return extIn.open().then(function(){
+							expect(extIn.state).to.equal("started");
+							extIn.dispose();
+						});
+					}
 				});
 
 				it ("has a label, group and device id when open", function(){
-					var extIn = new UserMedia();
-					return extIn.open().then(function(){
-						expect(extIn.deviceId).to.be.a("string");
-						expect(extIn.groupId).to.be.a("string");
-						expect(extIn.label).to.be.a("string");
-						extIn.dispose();
-					});
+					if (HAS_USER_MEDIA_INPUTS){
+						var extIn = new UserMedia();
+						return extIn.open().then(function(){
+							expect(extIn.deviceId).to.be.a("string");
+							expect(extIn.groupId).to.be.a("string");
+							expect(extIn.label).to.be.a("string");
+							extIn.dispose();
+						});
+					}
 				});
 
 				it ("can close an input", function(){
-					var extIn = new UserMedia();
-					return extIn.open().then(function(){
-						extIn.close();
-						extIn.dispose();
-					});
+					if (HAS_USER_MEDIA_INPUTS){
+						var extIn = new UserMedia();
+						return extIn.open().then(function(){
+							extIn.close();
+							extIn.dispose();
+						});
+					}
 				});
+
 
 				it ("can enumerate devices", function(){
 					return UserMedia.enumerateDevices().then(function(devices){
