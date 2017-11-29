@@ -101,7 +101,7 @@ define(["Tone/core/Tone", "Tone/component/Volume", "Tone/core/AudioNode"], funct
 				//didn't find a matching device
 				if (!device && devices.length > 0){
 					device = devices[0];
-				} else if (!device){
+				} else if (!device && !this.isUndef(labelOrId)){
 					throw new Error("Tone.UserMedia: no matching device: "+labelOrId);
 				}
 			}
