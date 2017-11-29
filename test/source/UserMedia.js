@@ -44,6 +44,23 @@ define(["helper/Basic", "Tone/source/UserMedia", "Test", "Tone/source/Source"],
 				//long timeout to give testers time to allow the microphone
 				this.timeout(100000);
 
+				//replace gUM for FF with 'fake : true' in the constraints
+				var originalGetUserMedia = navigator.mediaDevices.getUserMedia
+				navigator.mediaDevices.getUserMedia = function(constraints){
+					constraints.fake = true
+					return originalGetUserMedia.call(navigator.mediaDevices, constraints)
+				}
+
+				after(function(){
+					navigator.mediaDevices.getUserMedia = originalGetUserMedia
+				});
+
+				function hasInputs(){
+					return UserMedia.enumerateDevices().then(function(devices){
+						return devices.length > 0
+					})
+				}
+
 				it ("open returns a promise", function(){
 					var extIn = new UserMedia();
 					var promise = extIn.open();
@@ -63,27 +80,38 @@ define(["helper/Basic", "Tone/source/UserMedia", "Test", "Tone/source/Source"],
 				it ("can open an input by name", function(){
 					var extIn = new UserMedia();
 					var name = null
-					return UserMedia.enumerateDevices().then(function(devices){
-						name = devices[0].deviceId
-						return extIn.open(name)
-					}).then(function(){
-						expect(extIn.deviceId).to.equal(name);
-						extIn.dispose();
-					});
+					return hasInputs().then(function(has){
+						if (has){
+							return UserMedia.enumerateDevices().then(function(devices){
+								name = devices[0].deviceId
+								return extIn.open(name)
+							}).then(function(){
+								expect(extIn.deviceId).to.equal(name);
+								extIn.dispose();
+							});
+						}
+					})
 				});
 
 				it ("can open an input by index", function(){
 					var extIn = new UserMedia();
-					return extIn.open(0).then(function(){
-						extIn.dispose();
+					return hasInputs().then(function(has){
+						if (has){
+							return extIn.open(0).then(function(){
+								extIn.dispose();
+							});
+						}
 					});
 				});
 
 				it ("throws an error if it cant find the device name", function(){
 					var extIn = new UserMedia();
-					return extIn.open("doesn't exist").catch(function(){
+					return extIn.open("doesn't exist").then(function(){
+						//shouldn't call 'then'
+						throw new Error("shouldnt call 'then'");
+					}).catch(function(){
 						extIn.dispose();
-					})
+					});
 				});
 
 				it ("is 'started' after media is open and 'stopped' otherwise", function(){
