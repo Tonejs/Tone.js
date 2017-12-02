@@ -73,13 +73,14 @@ define(["Tone/core/Tone", "Tone/component/Analyser", "Tone/core/AudioNode"], fun
 	 */
 	Tone.Meter.prototype.getLevel = function(){
 		var values = this._analyser.getValue();
+		var peakFloatValue;
 	
 		switch (this.type){
 			case Tone.Meter.Type.RMS:
-				var peakFloatValue = this.getRmsFloatValue(values);
+				peakFloatValue = this.getRmsFloatValue(values);
 				return this.convertFloatToDb(peakFloatValue);
 			case Tone.Meter.Type.Peak:
-				var peakFloatValue = this.getPeakFloatValue(values);
+				peakFloatValue = this.getPeakFloatValue(values);
 				return this.convertFloatToDb(peakFloatValue);
 			default:
 				// Sanity check, should always be caught when setting type
@@ -187,4 +188,3 @@ define(["Tone/core/Tone", "Tone/component/Analyser", "Tone/core/AudioNode"], fun
 
 	return Tone.Meter;
 });
-  
