@@ -174,9 +174,9 @@ define(["Test", "Tone/signal/TransportTimelineSignal", "helper/Offline", "Tone/t
 					if (time < 0.5){
 						expect(sample).to.be.within(Tone.dbToGain(-12.01), Tone.dbToGain(-4.99));
 					} else if (time < 1){
-						expect(sample).to.be.a.percentageFrom(Tone.dbToGain(-12), 0.05);
+						expect(sample).to.be.a.percentageFrom(Tone.dbToGain(-12), 0.02);
 					} else if (time > 1.1){
-						expect(sample).to.be.a.percentageFrom(Tone.dbToGain(-6), 0.05);
+						expect(sample).to.be.a.percentageFrom(Tone.dbToGain(-6), 0.02);
 					}
 				});
 			});
