@@ -172,11 +172,11 @@ define(["Test", "Tone/signal/TransportTimelineSignal", "helper/Offline", "Tone/t
 			}, 1.2).then(function(buffer){
 				buffer.forEach(function(sample, time){
 					if (time < 0.5){
-						expect(sample).to.be.within(Tone.dbToGain(-12), Tone.dbToGain(-5));
+						expect(sample).to.be.within(Tone.dbToGain(-12.01), Tone.dbToGain(-4.99));
 					} else if (time < 1){
-						expect(sample).to.be.a.percentageFrom(Tone.dbToGain(-12), 0.01);
+						expect(sample).to.be.a.percentageFrom(Tone.dbToGain(-12), 0.05);
 					} else if (time > 1.1){
-						expect(sample).to.be.a.percentageFrom(Tone.dbToGain(-6), 0.01);
+						expect(sample).to.be.a.percentageFrom(Tone.dbToGain(-6), 0.05);
 					}
 				});
 			});
