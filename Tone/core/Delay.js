@@ -13,12 +13,13 @@ define(["Tone/core/Tone", "Tone/core/Param", "Tone/core/AudioNode"], function (T
 		var options = Tone.defaults(arguments, ["delayTime", "maxDelay"], Tone.Delay);
 		Tone.AudioNode.call(this);
 
+		var maxDelay = Math.max(this.toSeconds(options.maxDelay), this.toSeconds(options.delayTime));
 		/**
 		 *  The native delay node
 		 *  @type {DelayNode}
 		 *  @private
 		 */
-		this._delayNode = this.input = this.output = this.context.createDelay(this.toSeconds(options.maxDelay));
+		this._delayNode = this.input = this.output = this.context.createDelay(maxDelay);
 
 		/**
 		 *  The amount of time the incoming signal is

@@ -32,6 +32,12 @@ define(["Test", "Tone/core/Tone", "Tone/core/Delay", "helper/PassAudio"], functi
 			delay.dispose();
 		});
 
+		it("if the constructor delay time is greater than maxDelay, use that as the maxDelay time", function(){
+			var delay = new Delay(3);
+			expect(delay.delayTime.value).to.be.closeTo(3, 0.001);
+			delay.dispose();
+		});
+
 		it("can returns state from 'get' method", function(){
 			var delay = new Delay({
 				"delayTime" : 0.4,
