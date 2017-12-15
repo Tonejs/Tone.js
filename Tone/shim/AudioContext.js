@@ -34,11 +34,11 @@ define(["Tone/core/Tone", "Tone/shim/OfflineAudioContext"], function(Tone){
 		}
 
 		//test decodeAudioData returns a promise
-		//https://github.com/mohayonao/web-audio-api-shim/blob/master/src/AudioContext.js
-		//@mohayonao MIT
-		var decodeAudioDataPromise = false
+		// https://github.com/mohayonao/web-audio-api-shim/blob/master/src/AudioContext.js
+		// MIT License (c) 2015 @mohayonao
+		var decodeAudioDataPromise = false;
 		var offlineContext = new OfflineAudioContext(1, 1, 44100);
-		var audioData = new Uint32Array([ 1179011410, 48, 1163280727, 544501094, 16, 131073, 44100, 176400, 1048580, 1635017060, 8, 0, 0, 0, 0 ]).buffer;
+		var audioData = new Uint32Array([1179011410, 48, 1163280727, 544501094, 16, 131073, 44100, 176400, 1048580, 1635017060, 8, 0, 0, 0, 0]).buffer;
 		try {
 			var ret = offlineContext.decodeAudioData(audioData);
 			if (ret instanceof Promise){
