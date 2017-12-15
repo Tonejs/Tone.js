@@ -114,7 +114,7 @@ define(["Tone/core/Tone"], function (Tone) {
 	 *  @returns {Tone.Emitter}
 	 */
 	Tone.Emitter.mixin = function(object){
-		var functions = ["on", "off", "emit"];
+		var functions = ["on", "once", "off", "emit"];
 		object._events = {};
 		for (var i = 0; i < functions.length; i++){
 			var func = functions[i];
