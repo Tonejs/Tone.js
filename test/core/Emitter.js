@@ -15,6 +15,7 @@ define(["Test", "Tone/core/Emitter"], function (Test, Emitter) {
 				emitter.dispose();
 			});
 			emitter.emit("something");
+			emitter.dispose();
 		});
 
 		it ("can unbind events", function(){
@@ -31,13 +32,37 @@ define(["Test", "Tone/core/Emitter"], function (Test, Emitter) {
 		it ("removes all events when no callback is given", function(){
 			var emitter = new Emitter();
 			emitter.on("something", function(){
-				throw new Error("should call this");	
+				throw new Error("should call this");
 			});
 			emitter.on("something", function(){
-				throw new Error("should call this");	
+				throw new Error("should call this");
 			});
 			emitter.off("something");
 			emitter.emit("something");
+			emitter.off("something-else");
+			emitter.dispose();
+		});
+
+		it ("can remove an event while emitting", function(done){
+			var emitter = new Emitter();
+			emitter.on("something", function(){
+				emitter.off("something")
+			});
+			emitter.on("something-else", function(){
+				emitter.dispose();
+				done()
+			});
+			emitter.emit("something");
+			emitter.emit("something-else");
+		});
+
+		it ("can invoke an event once", function(){
+			var emitter = new Emitter();
+			emitter.once("something", function(val){
+				expect(val).to.equal(1)
+			});
+			emitter.emit("something", 1);
+			emitter.emit("something", 2);
 			emitter.dispose();
 		});
 
