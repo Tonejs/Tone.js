@@ -53,11 +53,22 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type", "Tone/shim/Audi
 		 */
 		this._xhr = null;
 
+		/**
+		 * Private callback when the buffer is loaded.
+		 * @type {Function}
+		 * @private
+		 */
+		this._onload = Tone.noOp;
+
 		if (options.url instanceof AudioBuffer || options.url instanceof Tone.Buffer){
 			this.set(options.url);
 			// invoke the onload callback
 			if (options.onload){
-				options.onload(this);
+				if (this.loaded){
+					options.onload(this);
+				} else {
+					this._onload = options.onload;
+				}
 			}
 		} else if (Tone.isString(options.url)){
 			this.load(options.url, options.onload, options.onerror);
@@ -83,7 +94,14 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type", "Tone/shim/Audi
 	 */
 	Tone.Buffer.prototype.set = function(buffer){
 		if (buffer instanceof Tone.Buffer){
-			this._buffer = buffer.get();
+			if (buffer.loaded){
+				this._buffer = buffer.get();
+			} else {
+				buffer._onload = function(){
+					this.set(buffer);
+					this._onload(this);
+				}.bind(this);
+			}
 		} else {
 			this._buffer = buffer;
 		}
@@ -120,6 +138,7 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type", "Tone/shim/Audi
 					if (onload){
 						onload(this);
 					}
+					this._onload(this);
 				}.bind(this),
 
 				//error

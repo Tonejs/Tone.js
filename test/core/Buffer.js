@@ -1,5 +1,5 @@
 define(["Test", "Tone/core/Buffer", "Tone/core/Tone"], function (Test, Buffer, Tone) {
-	
+
 	if (window.__karma__){
 		Buffer.baseUrl = "/base/test/";
 	}
@@ -88,6 +88,20 @@ define(["Test", "Tone/core/Buffer", "Tone/core/Tone"], function (Test, Buffer, T
 						var testOne = new Buffer(buffer);
 						expect(testOne.get()).to.equal(buffer.get());
 						testOne.dispose();
+						buffer.dispose();
+						done();
+					}
+				});
+			});
+
+			it("takes an unloaded Tone.Buffer in the constructor method", function(done){
+				var unloadedBuffer = new Buffer(testFile);
+				var buffer = new Buffer({
+					"url" : unloadedBuffer,
+					"onload" : function(){
+						var testOne = new Buffer(buffer);
+						expect(unloadedBuffer.get()).to.equal(buffer.get());
+						unloadedBuffer.dispose();
 						buffer.dispose();
 						done();
 					}
@@ -188,7 +202,7 @@ define(["Test", "Tone/core/Buffer", "Tone/core/Tone"], function (Test, Buffer, T
 			});
 
 		});
-		
+
 
 		context("events", function(){
 
@@ -224,7 +238,7 @@ define(["Test", "Tone/core/Buffer", "Tone/core/Tone"], function (Test, Buffer, T
 				});
 			});
 		});
-		
+
 		context("buffer manipulation", function(){
 
 			it("can get the channel data as an array", function(done){
@@ -303,7 +317,7 @@ define(["Test", "Tone/core/Buffer", "Tone/core/Tone"], function (Test, Buffer, T
 					expect(sliced1.duration).to.be.closeTo(1, 0.01);
 					var sliced2 = sliced1.slice(0.5);
 					expect(sliced2.duration).to.be.closeTo(0.5, 0.01);
-					
+
 					buffer.dispose();
 					sliced1.dispose();
 					sliced2.dispose();
