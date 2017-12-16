@@ -81,6 +81,45 @@ define(["Tone/core/Tone", "Tone/type/Type", "Tone/core/AudioNode", "Tone/shim/Au
 	});
 
 	/**
+	 * The minimum output value of the parameter
+	 * @memberOf Tone.Param#
+	 * @type {Number}
+	 * @name value
+	 */
+	Object.defineProperty(Tone.Param.prototype, "minValue", {
+		get : function(){
+			if (this.units === Tone.Type.Time || this.units === Tone.Type.Frequency ||
+				this.units === Tone.Type.NormalRange || this.units === Tone.Type.Positive ||
+				this.units === Tone.Type.BPM){
+				return 0;
+			} else if (this.units === Tone.Type.AudioRange){
+				return -1;
+			} else if (this.units === Tone.Type.Decibels){
+				return -Infinity;
+			} else {
+				return this._param.minValue;
+			}
+		}
+	});
+
+	/**
+	 * The maximum output value of the parameter
+	 * @memberOf Tone.Param#
+	 * @type {Number}
+	 * @name value
+	 */
+	Object.defineProperty(Tone.Param.prototype, "maxValue", {
+		get : function(){
+			if (this.units === Tone.Type.NormalRange ||
+				this.units === Tone.Type.AudioRange){
+				return 1;
+			} else {
+				return this._param.maxValue;
+			}
+		}
+	});
+
+	/**
 	 *  Convert the given value from the type specified by Tone.Param.units
 	 *  into the destination value (such as Gain or Frequency).
 	 *  @private

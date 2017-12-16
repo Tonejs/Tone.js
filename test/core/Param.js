@@ -117,6 +117,69 @@ define(["helper/Basic", "Test", "Tone/core/Param", "Tone/type/Type", "Tone/signa
 
 		});
 
+		context("minValue/maxValue", function(){
+
+			it("default min/max values", function(){
+				var gain = Tone.context.createGain();
+				var param = new Param(gain.gain);
+				expect(param.minValue).to.lessThan(-3e32);
+				expect(param.maxValue).to.greaterThan(3e32);
+				param.dispose();
+			});
+
+			it("minValue for BPM is 0", function(){
+				var gain = Tone.context.createGain();
+				var param = new Param(gain.gain, Tone.Type.BPM);
+				expect(param.minValue).to.equal(0);
+				param.dispose();
+			});
+
+			it("minValue for Time is 0", function(){
+				var gain = Tone.context.createGain();
+				var param = new Param(gain.gain, Tone.Type.Time);
+				expect(param.minValue).to.equal(0);
+				param.dispose();
+			});
+
+			it("minValue for Frequency is 0", function(){
+				var gain = Tone.context.createGain();
+				var param = new Param(gain.gain, Tone.Type.Frequency);
+				expect(param.minValue).to.equal(0);
+				param.dispose();
+			});
+
+			it("minValue for Decibels is -Infinity", function(){
+				var gain = Tone.context.createGain();
+				var param = new Param(gain.gain, Tone.Type.Decibels);
+				expect(param.minValue).to.equal(-Infinity);
+				param.dispose();
+			});
+
+			it("minValue for Positive is 0", function(){
+				var gain = Tone.context.createGain();
+				var param = new Param(gain.gain, Tone.Type.Positive);
+				expect(param.minValue).to.equal(0);
+				param.dispose();
+			});
+
+			it("range for AudioRange is -1 to 1", function(){
+				var gain = Tone.context.createGain();
+				var param = new Param(gain.gain, Tone.Type.AudioRange);
+				expect(param.minValue).to.equal(-1);
+				expect(param.maxValue).to.equal(1);
+				param.dispose();
+			});
+
+			it("range for NormalRange is 0 to 1", function(){
+				var gain = Tone.context.createGain();
+				var param = new Param(gain.gain, Tone.Type.NormalRange);
+				expect(param.minValue).to.equal(0);
+				expect(param.maxValue).to.equal(1);
+				param.dispose();
+			});
+
+		});
+
 		context("Scheduling API", function(){
 
 			it ("can be scheduled to set a value in the future", function(){
