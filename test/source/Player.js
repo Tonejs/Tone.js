@@ -22,18 +22,25 @@ define(["helper/Basic", "Tone/source/Player", "helper/Offline",
 
 		context("Constructor", function(){
 
-			it ("can be constructed with a Tone.Buffer", function(done){
+			it ("can be constructed with a Tone.Buffer", function(){
 				var player = new Player(buffer);
 				expect(player.buffer.get()).to.equal(buffer.get());
 				player.dispose();
-				done();
 			});
 
-			it ("can be constructed with an AudioBuffer", function(done){
+			it ("can be constructed with an AudioBuffer", function(){
 				var player = new Player(buffer.get());
 				expect(player.buffer.get()).to.equal(buffer.get());
 				player.dispose();
-				done();
+			});
+
+			it ("can be constructed with an unloaded Tone.Buffer", function(done){
+				var buffer = new Buffer("./audio/sine.wav");
+				var player = new Player(buffer, function(){
+					expect(player.buffer.get()).to.equal(buffer.get());
+					player.dispose();
+					done();
+				});
 			});
 		});
 

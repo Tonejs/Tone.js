@@ -19,7 +19,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/source
 	Tone.Player = function(url){
 
 		var options;
-		if (url instanceof Tone.Buffer){
+		if (url instanceof Tone.Buffer && url.loaded){
 			url = url.get();
 			options = Tone.Player.defaults;
 		} else {
