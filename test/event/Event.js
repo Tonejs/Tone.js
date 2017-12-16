@@ -1,5 +1,6 @@
-define(["helper/Basic", "Tone/event/Event", "Tone/core/Tone", "Tone/core/Transport", "helper/Offline", "Test"], 
-	function (Basic, Event, Tone, Transport, Offline, Test) {
+define(["helper/Basic", "Tone/event/Event", "Tone/core/Tone", "Tone/core/Transport",
+"helper/Offline", "Test", "Tone/type/Time"],
+	function (Basic, Event, Tone, Transport, Offline, Test, Time) {
 
 	describe("Event", function(){
 
@@ -39,7 +40,7 @@ define(["helper/Basic", "Tone/event/Event", "Tone/core/Tone", "Tone/core/Transpo
 					expect(note.callback).to.equal(callback);
 					expect(note.value).to.equal(value);
 					expect(note.loop).to.be.true;
-					expect(note.loopEnd).to.equal("4n");
+					expect(note.loopEnd).to.equal(Time("4n").valueOf());
 					expect(note.probability).to.equal(0.3);
 					note.dispose();
 				});
@@ -190,7 +191,7 @@ define(["helper/Basic", "Tone/event/Event", "Tone/core/Tone", "Tone/core/Transpo
 							expect(note.state).to.equal("started");
 						});
 						Test.whenBetween(time, 0.4, 0.5, function(){
-							expect(note.state).to.equal("stopped");	
+							expect(note.state).to.equal("stopped");
 						});
 						Test.whenBetween(time, 0.55, 0.8, function(){
 							expect(note.state).to.equal("started");
@@ -421,7 +422,7 @@ define(["helper/Basic", "Tone/event/Event", "Tone/core/Tone", "Tone/core/Transpo
 						"callback" : function(time){
 							if (lastCall){
 								expect(time - lastCall).to.be.within(0.2, 0.3);
-							} 
+							}
 							lastCall += 0.25;
 						}
 					}).start(0);

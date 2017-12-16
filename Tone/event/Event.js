@@ -4,12 +4,12 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/type/Type", "Tone/core/Ti
 
 	/**
 	 *  @class  Tone.Event abstracts away Tone.Transport.schedule and provides a schedulable
-	 *          callback for a single or repeatable events along the timeline. 
+	 *          callback for a single or repeatable events along the timeline.
 	 *
 	 *  @extends {Tone}
-	 *  @param {function} callback The callback to invoke at the time. 
+	 *  @param {function} callback The callback to invoke at the time.
 	 *  @param {*} value The value or values which should be passed to
-	 *                      the callback function on invocation.  
+	 *                      the callback function on invocation.
 	 *  @example
 	 * var chord = new Tone.Event(function(time, chord){
 	 * 	//the chord as well as the exact time of the event
@@ -34,7 +34,7 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/type/Type", "Tone/core/Ti
 		this._loop = options.loop;
 
 		/**
-		 *  The callback to invoke. 
+		 *  The callback to invoke.
 		 *  @type  {Function}
 		 */
 		this.callback = options.callback;
@@ -70,7 +70,7 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/type/Type", "Tone/core/Ti
 
 		/**
 		 *  The playback speed of the note. A speed of 1
-		 *  is no change. 
+		 *  is no change.
 		 *  @private
 		 *  @type {Positive}
 		 */
@@ -92,7 +92,7 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/type/Type", "Tone/core/Ti
 
 		/**
 		 *  the amount of variation from the
-		 *  given time. 
+		 *  given time.
 		 *  @type {Boolean|Time}
 		 *  @private
 		 */
@@ -164,7 +164,7 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/type/Type", "Tone/core/Ti
 				} else {
 					event.id = Tone.Transport.schedule(this._tick.bind(this), startTick + "i");
 				}
-			} 
+			}
 		}.bind(this));
 		return this;
 	};
@@ -232,7 +232,7 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/type/Type", "Tone/core/Ti
 	});
 
 	/**
-	 *  Start the note at the given time. 
+	 *  Start the note at the given time.
 	 *  @param  {TimelinePosition}  time  When the note should start.
 	 *  @return  {Tone.Event}  this
 	 */
@@ -285,7 +285,7 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/type/Type", "Tone/core/Ti
 	};
 
 	/**
-	 *  The callback function invoker. Also 
+	 *  The callback function invoker. Also
 	 *  checks if the Event is done playing
 	 *  @param  {Number}  time  The time of the event in seconds
 	 *  @private
@@ -294,7 +294,7 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/type/Type", "Tone/core/Ti
 		if (!this.mute && this._state.getValueAtTime(Tone.Transport.ticks) === Tone.State.Started){
 			if (this.probability < 1 && Math.random() > this.probability){
 				return;
-			} 
+			}
 			if (this.humanize){
 				var variation = 0.02;
 				if (!Tone.isBoolean(this.humanize)){
@@ -317,7 +317,7 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/type/Type", "Tone/core/Ti
 
 	/**
 	 *  If the note should loop or not
-	 *  between Tone.Event.loopStart and 
+	 *  between Tone.Event.loopStart and
 	 *  Tone.Event.loopEnd. An integer
 	 *  value corresponds to the number of
 	 *  loops the Event does after it starts.
@@ -359,12 +359,12 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/type/Type", "Tone/core/Ti
 	 *  The loopEnd point is the time the event will loop
 	 *  if Tone.Event.loop is true.
 	 *  @memberOf Tone.Event#
-	 *  @type {TransportTime}
+	 *  @type {Time}
 	 *  @name loopEnd
 	 */
 	Object.defineProperty(Tone.Event.prototype, "loopEnd", {
 		get : function(){
-			return Tone.TransportTime(this._loopEnd, "i").toNotation();
+			return Tone.Time(this._loopEnd, "i").toSeconds();
 		},
 		set : function(loopEnd){
 			this._loopEnd = this.toTicks(loopEnd);
@@ -375,14 +375,14 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/type/Type", "Tone/core/Ti
 	});
 
 	/**
-	 *  The time when the loop should start. 
+	 *  The time when the loop should start.
 	 *  @memberOf Tone.Event#
-	 *  @type {TransportTime}
+	 *  @type {Time}
 	 *  @name loopStart
 	 */
 	Object.defineProperty(Tone.Event.prototype, "loopStart", {
 		get : function(){
-			return Tone.TransportTime(this._loopStart, "i").toNotation();
+			return Tone.Time(this._loopStart, "i").toSeconds();
 		},
 		set : function(loopStart){
 			this._loopStart = this.toTicks(loopStart);

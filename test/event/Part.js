@@ -1,6 +1,6 @@
 define(["helper/Basic", "Tone/event/Part", "Tone/core/Tone",
-	"Tone/core/Transport", "Tone/event/Event", "helper/Offline", "Test"],
-	function (Basic, Part, Tone, Transport, Event, Offline, Test) {
+	"Tone/core/Transport", "Tone/event/Event", "helper/Offline", "Test", "Tone/type/Time"],
+	function (Basic, Part, Tone, Transport, Event, Offline, Test, Time) {
 
 	describe("Part", function(){
 
@@ -40,7 +40,7 @@ define(["helper/Basic", "Tone/event/Part", "Tone/core/Tone",
 					expect(part.callback).to.equal(callback);
 					expect(part.length).to.equal(3);
 					expect(part.loop).to.be.true;
-					expect(part.loopEnd).to.equal("4n");
+					expect(part.loopEnd).to.equal(Time("4n").valueOf());
 					expect(part.probability).to.equal(0.3);
 					expect(part.humanize).to.be.true;
 					part.dispose();
@@ -208,15 +208,15 @@ define(["helper/Basic", "Tone/event/Part", "Tone/core/Tone",
 					expect(firstEvent.humanize).to.equal(0.1);
 					expect(firstEvent.probability).to.equal(0.2);
 					//loop duration is the same
-					expect(firstEvent.loopEnd).to.equal("1m");
-					expect(firstEvent.loopStart).to.equal("4n");
+					expect(firstEvent.loopEnd).to.equal(Time("1m").valueOf());
+					expect(firstEvent.loopStart).to.equal(Time("4n").valueOf());
 
 					var secondEvent = part.at(0.3);
 					expect(secondEvent.humanize).to.equal(0.1);
 					expect(secondEvent.probability).to.equal(0.2);
 					//loop duration is the same
-					expect(secondEvent.loopEnd).to.equal("1m");
-					expect(secondEvent.loopStart).to.equal("4n");
+					expect(secondEvent.loopEnd).to.equal(Time("1m").valueOf());
+					expect(secondEvent.loopStart).to.equal(Time("4n").valueOf());
 					part.dispose();
 				});
 			});
@@ -361,12 +361,9 @@ define(["helper/Basic", "Tone/event/Part", "Tone/core/Tone",
 					}).start(0);
 					Transport.start();
 
-					var addPart = Test.atTime(0.1, function(){
+					return Test.atTime(0.1, function(){
 						part.add(0.1, 1);
 					});
-					return function(time){
-						addPart(time);
-					};
 				}, 0.6).then(function(){
 					expect(invoked).to.be.true;
 				});
@@ -555,7 +552,7 @@ define(["helper/Basic", "Tone/event/Part", "Tone/core/Tone",
 							eventTimeIndex++;
 						},
 						events : [[0, 0], [0.1, 1], [0.2, 2]]
-					}).start(0.3).stop(0.8);
+					}).start(0.3).stop(0.81);
 					Transport.start(0.2).stop(0.61).start(0.8);
 				}, 2).then(function(){
 					expect(eventTimeIndex).to.equal(8);

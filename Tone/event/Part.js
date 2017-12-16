@@ -434,12 +434,12 @@ define(["Tone/core/Tone", "Tone/event/Event", "Tone/type/Type", "Tone/core/Trans
 	 *  The loopEnd point determines when it will
 	 *  loop if Tone.Part.loop is true.
 	 *  @memberOf Tone.Part#
-	 *  @type {TransportTime}
+	 *  @type {Time}
 	 *  @name loopEnd
 	 */
 	Object.defineProperty(Tone.Part.prototype, "loopEnd", {
 		get : function(){
-			return Tone.TransportTime(this._loopEnd, "i").toNotation();
+			return Tone.Time(this._loopEnd, "i").toSeconds();
 		},
 		set : function(loopEnd){
 			this._loopEnd = this.toTicks(loopEnd);
@@ -456,12 +456,12 @@ define(["Tone/core/Tone", "Tone/event/Event", "Tone/type/Type", "Tone/core/Trans
 	 *  The loopStart point determines when it will
 	 *  loop if Tone.Part.loop is true.
 	 *  @memberOf Tone.Part#
-	 *  @type {TransportTime}
+	 *  @type {Time}
 	 *  @name loopStart
 	 */
 	Object.defineProperty(Tone.Part.prototype, "loopStart", {
 		get : function(){
-			return Tone.TransportTime(this._loopStart, "i").toNotation();
+			return Tone.Time(this._loopStart, "i").toSeconds();
 		},
 		set : function(loopStart){
 			this._loopStart = this.toTicks(loopStart);

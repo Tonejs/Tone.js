@@ -119,6 +119,8 @@ define(function(){
 				if (param.value !== value){
 					param.value = value;
 				}
+			} else if (Tone.TimeBase && param instanceof Tone.TimeBase){
+				parent[attr] = value;
 			} else if (param instanceof Tone){
 				param.set(value);
 			} else if (param !== value){

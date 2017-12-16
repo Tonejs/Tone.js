@@ -1,5 +1,5 @@
-define(["helper/Basic", "Tone/event/Pattern", "Tone/core/Tone", "Tone/core/Transport", "helper/Offline"], 
-	function (Basic, Pattern, Tone, Transport, Offline) {
+define(["helper/Basic", "Tone/event/Pattern", "Tone/core/Tone", "Tone/core/Transport", "helper/Offline", "Tone/type/Time"],
+	function (Basic, Pattern, Tone, Transport, Offline, Time) {
 
 	describe("Pattern", function(){
 
@@ -37,7 +37,7 @@ define(["helper/Basic", "Tone/event/Pattern", "Tone/core/Tone", "Tone/core/Trans
 						"pattern" : "upDown"
 					});
 					expect(pattern.callback).to.equal(callback);
-					expect(pattern.interval).to.equal("8t");
+					expect(pattern.interval.valueOf()).to.equal(Time("8t").valueOf());
 					expect(pattern.iterations).to.equal(4);
 					expect(pattern.values).to.deep.equal([1, 2, 3]);
 					expect(pattern.probability).to.equal(0.3);

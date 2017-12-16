@@ -1,6 +1,6 @@
-define(["helper/Basic", "Tone/event/Sequence", "Tone/core/Tone", 
-	"Tone/core/Transport", "Tone/event/Event", "helper/Offline", "Test"], 
-	function (Basic, Sequence, Tone, Transport, Event, Offline, Test) {
+define(["helper/Basic", "Tone/event/Sequence", "Tone/core/Tone",
+	"Tone/core/Transport", "Tone/event/Event", "helper/Offline", "Test", "Tone/type/Time"],
+	function (Basic, Sequence, Tone, Transport, Event, Offline, Test, Time) {
 
 	describe("Sequence", function(){
 
@@ -23,7 +23,7 @@ define(["helper/Basic", "Tone/event/Sequence", "Tone/core/Tone",
 					var callback = function(){};
 					var seq = new Sequence(callback, [0, 1, 2], "2n");
 					expect(seq.callback).to.equal(callback);
-					expect(seq.subdivision).to.equal("2n");
+					expect(seq.subdivision).to.equal(Time("2n").valueOf());
 					expect(seq.length).to.equal(3);
 					seq.dispose();
 				});
@@ -51,7 +51,7 @@ define(["helper/Basic", "Tone/event/Sequence", "Tone/core/Tone",
 					expect(seq.callback).to.equal(callback);
 					expect(seq.length).to.equal(3);
 					expect(seq.loop).to.be.true;
-					expect(seq.loopEnd).to.equal("4n");
+					expect(seq.loopEnd).to.equal(Time("4n").valueOf());
 					expect(seq.probability).to.equal(0.3);
 					expect(seq.humanize).to.be.true;
 					seq.dispose();
@@ -63,7 +63,7 @@ define(["helper/Basic", "Tone/event/Sequence", "Tone/core/Tone",
 					var seq = new Sequence(function(){}, [0, 1, 2, 3], "8n");
 					expect(seq.loop).to.be.true;
 					expect(seq.length).to.equal(4);
-					expect(seq.loopEnd).to.equal("2n");
+					expect(seq.loopEnd).to.equal(Time("2n").valueOf());
 					seq.dispose();
 				});
 			});
@@ -162,7 +162,7 @@ define(["helper/Basic", "Tone/event/Sequence", "Tone/core/Tone",
 					seq.dispose();
 				});
 			});
-		
+
 		});
 		context("Sequence callback", function(){
 
@@ -368,7 +368,7 @@ define(["helper/Basic", "Tone/event/Sequence", "Tone/core/Tone",
 			});
 		});
 
-			
+
 		context("playbackRate", function(){
 
 			it ("can adjust the playbackRate", function(){
@@ -414,7 +414,7 @@ define(["helper/Basic", "Tone/event/Sequence", "Tone/core/Tone",
 					expect(invoked).to.be.true;
 				});
 			});
-			
+
 			it ("can adjust the playbackRate after starting", function(){
 				var invoked = false;
 				return Offline(function(Transport){

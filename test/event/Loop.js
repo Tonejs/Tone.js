@@ -1,5 +1,5 @@
-define(["helper/Basic", "Tone/event/Loop", "Tone/core/Tone", "Tone/core/Transport", "helper/Offline", "Test"], 
-	function (Basic, Loop, Tone, Transport, Offline, Test) {
+define(["helper/Basic", "Tone/event/Loop", "Tone/core/Tone", "Tone/core/Transport", "helper/Offline", "Test", "Tone/type/Time"],
+	function (Basic, Loop, Tone, Transport, Offline, Test, Time) {
 
 	describe("Loop", function(){
 
@@ -12,7 +12,7 @@ define(["helper/Basic", "Tone/event/Loop", "Tone/core/Tone", "Tone/core/Transpor
 					var callback = function(){};
 					var loop = new Loop(callback, "8n");
 					expect(loop.callback).to.equal(callback);
-					expect(loop.interval).to.equal("8n");
+					expect(loop.interval.valueOf()).to.equal(Time("8n").valueOf());
 					loop.dispose();
 				});
 			});
@@ -35,7 +35,7 @@ define(["helper/Basic", "Tone/event/Loop", "Tone/core/Tone", "Tone/core/Transpor
 						"interval" : "8t"
 					});
 					expect(loop.callback).to.equal(callback);
-					expect(loop.interval).to.equal("8t");
+					expect(loop.interval.valueOf()).to.equal(Time("8t").valueOf());
 					expect(loop.iterations).to.equal(4);
 					expect(loop.probability).to.equal(0.3);
 					loop.dispose();
@@ -158,13 +158,13 @@ define(["helper/Basic", "Tone/event/Loop", "Tone/core/Tone", "Tone/core/Transpor
 					Transport.start(0);
 					return function(time){
 						Test.whenBetween(time, 0, 0.19, function(){
-							expect(loop.state).to.equal("started");	
+							expect(loop.state).to.equal("started");
 						});
 						Test.whenBetween(time, 0.2, 0.39, function(){
-							expect(loop.state).to.equal("stopped");	
+							expect(loop.state).to.equal("stopped");
 						});
 						Test.whenBetween(time, 0.4, Infinity, function(){
-							expect(loop.state).to.equal("started");	
+							expect(loop.state).to.equal("started");
 						});
 					};
 				}, 0.6);
@@ -179,7 +179,7 @@ define(["helper/Basic", "Tone/event/Loop", "Tone/core/Tone", "Tone/core/Transpor
 							expect(note.state).to.equal("started");
 						});
 						Test.whenBetween(time, 0.4, 0.5, function(){
-							expect(note.state).to.equal("stopped");	
+							expect(note.state).to.equal("stopped");
 						});
 						Test.whenBetween(time, 0.55, 0.8, function(){
 							expect(note.state).to.equal("started");
@@ -308,7 +308,7 @@ define(["helper/Basic", "Tone/event/Loop", "Tone/core/Tone", "Tone/core/Transpor
 				}, 0.7).then(function(){
 					expect(invoked).to.be.true;
 				});
-				
+
 			});
 
 			it ("can playback at a faster rate", function(){
