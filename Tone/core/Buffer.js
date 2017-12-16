@@ -135,10 +135,10 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type", "Tone/shim/Audi
 					this._xhr = null;
 					this.set(buff);
 					load(this);
+					this._onload(this);
 					if (onload){
 						onload(this);
 					}
-					this._onload(this);
 				}.bind(this),
 
 				//error

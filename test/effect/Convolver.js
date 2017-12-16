@@ -1,4 +1,4 @@
-define(["Tone/effect/Convolver", "helper/Basic", "helper/EffectTests", "Tone/core/Buffer"], 
+define(["Tone/effect/Convolver", "helper/Basic", "helper/EffectTests", "Tone/core/Buffer"],
 function (Convolver, Basic, EffectTests, Buffer) {
 
 	if (window.__karma__){
@@ -58,6 +58,31 @@ function (Convolver, Basic, EffectTests, Buffer) {
 				});
 			});
 
+			it ("can be constructed with loaded buffer", function(done){
+				var buffer = new Buffer({
+					"url" : testFile,
+					"onload" : function(){
+						var convolver = new Convolver(buffer);
+						expect(convolver.buffer).is.instanceOf(AudioBuffer);
+						buffer.dispose();
+						convolver.dispose();
+						done();
+					}
+				})
+			});
+
+			it ("can be constructed with unloaded buffer", function(done){
+				var convolver = new Convolver({
+					"url" : new Buffer({
+						"url" : testFile,
+						"onload" : function(){
+							expect(convolver.buffer).is.instanceOf(AudioBuffer);
+							convolver.dispose();
+							done();
+						}
+					})
+				});
+			});
 		});
 	});
 });
