@@ -460,7 +460,7 @@ define(function(){
 	 *  @memberOf Tone
 	 */
 	Tone.dbToGain = function(db) {
-		return Math.pow(2, db / 6);
+		return Math.pow(10, db / 20);
 	};
 
 	/**
