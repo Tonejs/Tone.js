@@ -1,6 +1,6 @@
 define(["Test", "Tone/core/Transport", "Tone/core/Tone", "helper/Offline",
-	"Tone/type/TransportTime", "Tone/signal/Signal", "helper/BufferTest"],
-function (Test, Transport, Tone, Offline, TransportTime, Signal, BufferTest) {
+	"Tone/type/TransportTime", "Tone/signal/Signal", "helper/BufferTest", "Tone/type/Time"],
+function (Test, Transport, Tone, Offline, TransportTime, Signal, BufferTest, Time) {
 
 	describe("Transport", function(){
 
@@ -224,7 +224,7 @@ function (Test, Transport, Tone, Offline, TransportTime, Signal, BufferTest) {
 					expect(Transport.progress).to.be.equal(0);
 					Transport.position = "2n";
 					expect(Transport.progress).to.be.closeTo(0.5, 0.001);
-					Transport.position = "2n + 4n";
+					Transport.position = Time("2n") + Time("4n");
 					expect(Transport.progress).to.be.closeTo(0.75, 0.001);
 				});
 			});

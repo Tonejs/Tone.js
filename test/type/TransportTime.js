@@ -1,5 +1,5 @@
-define(["helper/Basic", "Test", "Tone/type/TransportTime", 
-	"Tone/core/Tone", "helper/Offline"], 
+define(["helper/Basic", "Test", "Tone/type/TransportTime",
+	"Tone/core/Tone", "helper/Offline"],
 	function (Basic, Test, TransportTime, Tone, Offline) {
 
 	describe("TransportTime", function(){
@@ -69,8 +69,6 @@ define(["helper/Basic", "Test", "Tone/type/TransportTime",
 
 			it("can quantize values", function(){
 				return Offline(function(Transport){
-					expect(TransportTime("4n @ 2n").valueOf()).to.be.closeTo(Transport.PPQ, 0.01);
-					expect(TransportTime("(1n + 4n) @ 4n").valueOf()).to.be.closeTo(Transport.PPQ * 5, 0.01);
 					expect(TransportTime("4t").quantize("4n").valueOf()).to.be.closeTo(Transport.PPQ, 0.01);
 				});
 			});
@@ -80,21 +78,9 @@ define(["helper/Basic", "Test", "Tone/type/TransportTime",
 					Transport.start();
 					return Test.atTime(0.59, function(){
 						expect(TransportTime("@1m").valueOf()).to.be.closeTo(4 * Transport.PPQ, 0.01);
-						expect(TransportTime("@(4n + 2n)").valueOf()).to.be.closeTo(Transport.PPQ * 3, 0.01);
 						expect(TransportTime("@4n").valueOf()).to.be.closeTo(Transport.PPQ * 2, 0.01);
 					});
 				}, 0.6);
-			});	
-		});
-
-		context("Expressions", function(){
-
-			it("evaluates mixed expressions", function(){
-				return Offline(function(Transport){
-					expect(TransportTime("4n * 2").valueOf()).to.equal(Transport.PPQ * 2);
-					expect(TransportTime("(4n * 2) / 4").valueOf()).to.equal(Transport.PPQ / 2);
-					expect(TransportTime("0:2 / 2").valueOf()).to.equal(Transport.PPQ);
-				});
 			});
 		});
 

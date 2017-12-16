@@ -29,57 +29,38 @@ define(["Tone/core/Tone", "Tone/type/TimeBase"], function (Tone) {
 	//	AUGMENT BASE EXPRESSIONS
 	///////////////////////////////////////////////////////////////////////////
 
-	//clone the expressions so that
-	//we can add more without modifying the original
-	Tone.Frequency.prototype._primaryExpressions = Object.create(Tone.TimeBase.prototype._primaryExpressions);
-
-	/*
-	 *  midi type primary expression
-	 *  @type {Object}
-	 *  @private
-	 */
-	Tone.Frequency.prototype._primaryExpressions.midi = {
-		regexp : /^(\d+(?:\.\d+)?midi)/,
-		method : function(value){
-			return this.midiToFrequency(value);
-		}
-	};
-
-	/*
-	 *  note type primary expression
-	 *  @type {Object}
-	 *  @private
-	 */
-	Tone.Frequency.prototype._primaryExpressions.note = {
-		regexp : /^([a-g]{1}(?:b|#|x|bb)?)(-?[0-9]+)/i,
-		method : function(pitch, octave){
-			var index = noteToScaleIndex[pitch.toLowerCase()];
-			var noteNumber = index + (parseInt(octave) + 1) * 12;
-			return this.midiToFrequency(noteNumber);
-		}
-	};
-
-	/*
-	 *  BeatsBarsSixteenths type primary expression
-	 *  @type {Object}
-	 *  @private
-	 */
-	Tone.Frequency.prototype._primaryExpressions.tr = {
-		regexp : /^(\d+(?:\.\d+)?):(\d+(?:\.\d+)?):?(\d+(?:\.\d+)?)?/,
-		method : function(m, q, s){
-			var total = 1;
-			if (m && m !== "0"){
-				total *= this._beatsToUnits(this._timeSignature() * parseFloat(m));
+	Tone.Frequency.prototype._expressions = Object.assign({}, Tone.TimeBase.prototype._expressions, {
+		"midi" : {
+			regexp : /^(\d+(?:\.\d+)?midi)/,
+			method : function(value){
+				return this.midiToFrequency(value);
 			}
-			if (q && q !== "0"){
-				total *= this._beatsToUnits(parseFloat(q));
+		},
+		"note" : {
+			regexp : /^([a-g]{1}(?:b|#|x|bb)?)(-?[0-9]+)/i,
+			method : function(pitch, octave){
+				var index = noteToScaleIndex[pitch.toLowerCase()];
+				var noteNumber = index + (parseInt(octave) + 1) * 12;
+				return this.midiToFrequency(noteNumber);
 			}
-			if (s && s !== "0"){
-				total *= this._beatsToUnits(parseFloat(s) / 4);
+		},
+		"tr" : {
+			regexp : /^(\d+(?:\.\d+)?):(\d+(?:\.\d+)?):?(\d+(?:\.\d+)?)?/,
+			method : function(m, q, s){
+				var total = 1;
+				if (m && m !== "0"){
+					total *= this._beatsToUnits(this._getTimeSignature() * parseFloat(m));
+				}
+				if (q && q !== "0"){
+					total *= this._beatsToUnits(parseFloat(q));
+				}
+				if (s && s !== "0"){
+					total *= this._beatsToUnits(parseFloat(s) / 4);
+				}
+				return total;
 			}
-			return total;
 		}
-	};
+	});
 
 	///////////////////////////////////////////////////////////////////////////
 	//	EXPRESSIONS
@@ -181,6 +162,15 @@ define(["Tone/core/Tone", "Tone/type/TimeBase"], function (Tone) {
 	///////////////////////////////////////////////////////////////////////////
 	//	UNIT CONVERSIONS HELPERS
 	///////////////////////////////////////////////////////////////////////////
+
+	/**
+	 *  With no arguments, return 0
+	 *  @return  {Number}
+	 *  @private
+	 */
+	Tone.Frequency.prototype._noArg = function(){
+		return 0;
+	};
 
 	/**
 	 *  Returns the value of a frequency in the current units

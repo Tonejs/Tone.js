@@ -12,7 +12,7 @@ define(["Tone/core/Tone", "Tone/type/Time"], function (Tone) {
 	 */
 	Tone.TransportTime = function(val, units){
 		if (this instanceof Tone.TransportTime){
-			
+
 			Tone.Time.call(this, val, units);
 
 		} else {
@@ -22,23 +22,13 @@ define(["Tone/core/Tone", "Tone/type/Time"], function (Tone) {
 
 	Tone.extend(Tone.TransportTime, Tone.Time);
 
-	//clone the expressions so that 
-	//we can add more without modifying the original
-	Tone.TransportTime.prototype._unaryExpressions = Object.create(Tone.Time.prototype._unaryExpressions);
-
 	/**
-	 *  Adds an additional unary expression
-	 *  which quantizes values to the next subdivision
-	 *  @type {Object}
-	 *  @private
+	 * Return the current time in whichever context is relevant
+	 * @type {Number}
+	 * @private
 	 */
-	Tone.TransportTime.prototype._unaryExpressions.quantize = {
-		regexp : /^@/,
-		method : function(rh){
-			var subdivision = this._secondsToTicks(rh());
-			var multiple = Math.ceil(Tone.Transport.ticks / subdivision);
-			return this._ticksToUnits(multiple * subdivision);
-		}
+	Tone.TransportTime.prototype._now = function(){
+		return Tone.Transport.seconds;
 	};
 
 	/**
@@ -58,8 +48,7 @@ define(["Tone/core/Tone", "Tone/type/Time"], function (Tone) {
 	 *  @return {Ticks}
 	 */
 	Tone.TransportTime.prototype.valueOf = function(){
-		var val = this._secondsToTicks(this._expr());
-		return val + (this._plusNow ? Tone.Transport.ticks : 0);
+		return this._secondsToTicks(this.toSeconds());
 	};
 
 	/**
@@ -75,13 +64,12 @@ define(["Tone/core/Tone", "Tone/type/Time"], function (Tone) {
 	 *  @return  {Seconds}
 	 */
 	Tone.TransportTime.prototype.toSeconds = function(){
-		var val = this._expr();
-		return val + (this._plusNow ? Tone.Transport.seconds : 0);
+		return Tone.Time.prototype.valueOf.call(this);
 	};
 
 	/**
 	 *  Return the time as a frequency value
-	 *  @return  {Frequency} 
+	 *  @return  {Frequency}
 	 */
 	Tone.TransportTime.prototype.toFrequency = function(){
 		return 1/this.toSeconds();

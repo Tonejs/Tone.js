@@ -131,17 +131,6 @@ define(["helper/Basic", "Test", "Tone/type/Frequency", "Tone/core/Tone", "deps/t
 
 		});
 
-		context("Expression", function(){
-
-			it ("can evaluate expressions", function(){
-				var a4 = teoria.note("A4").fq();
-				expect(Frequency("A4 * 2").valueOf()).to.be.closeTo(a4 * 2, 0.0001);
-				expect(Frequency("A4 + 2 * 2").valueOf()).to.be.closeTo(a4 + 4, 0.0001);
-				expect(Frequency("A4/3").valueOf()).to.be.closeTo(a4/3, 0.0001);
-			});
-
-		});
-
 		context("Conversions", function(){
 
 			it("can convert frequencies into notes", function(){
@@ -162,20 +151,6 @@ define(["helper/Basic", "Test", "Tone/type/Frequency", "Tone/core/Tone", "deps/t
 				expect(Frequency(4).toSeconds()).to.equal(0.25);
 				expect(Frequency("2hz").toSeconds()).to.equal(0.5);
 			});
-		});
-
-		context("Operators", function(){
-
-			it("can combine operations", function(){
-				expect(Frequency(4).mult(2).add(3).valueOf()).to.equal(11);
-				expect(Frequency(8).sub(2).div(2).mult(8).valueOf()).to.equal(24);
-			});
-
-			it("can combine operations", function(){
-				expect(Frequency(4).mult(2).add(3).valueOf()).to.equal(11);
-				expect(Frequency(8).sub(2).div(2).mult(8).valueOf()).to.equal(24);
-			});
-
 		});
 
 	});
