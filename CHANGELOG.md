@@ -5,6 +5,14 @@
 * switching to eslint from jshint
 * Running CI tests on Firefox as well as Chrome
 
+**BREAKING CHANGES:**
+
+* Tone.TimeBase and all classes that extend it not longer support string expressions.
+	RATIONALE :
+		* Since all classes implement `valueOf`, expressions can be composed in JS instead of as strings
+			* e.g. `Time('4n') * 2 + Time(3t)` instead of `Time('4n * 2 + 3t')`
+		* this change greatly simplifies the code and is more performant
+
 ### r11
 
 * [Code coverage](https://coveralls.io/github/Tonejs/Tone.js) analysis
