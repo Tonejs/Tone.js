@@ -453,7 +453,7 @@ define(["Tone/core/Tone", "Tone/core/Clock", "Tone/type/Type", "Tone/core/Timeli
 	/**
 	 * When the Tone.Transport.loop = true, this is the starting position of the loop.
 	 * @memberOf Tone.Transport#
-	 * @type {TransportTime}
+	 * @type {Time}
 	 * @name loopStart
 	 */
 	Object.defineProperty(Tone.Transport.prototype, "loopStart", {
@@ -468,7 +468,7 @@ define(["Tone/core/Tone", "Tone/core/Clock", "Tone/type/Type", "Tone/core/Timeli
 	/**
 	 * When the Tone.Transport.loop = true, this is the ending position of the loop.
 	 * @memberOf Tone.Transport#
-	 * @type {TransportTime}
+	 * @type {Time}
 	 * @name loopEnd
 	 */
 	Object.defineProperty(Tone.Transport.prototype, "loopEnd", {
