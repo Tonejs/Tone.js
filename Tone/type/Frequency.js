@@ -33,7 +33,7 @@ define(["Tone/core/Tone", "Tone/type/TimeBase"], function (Tone) {
 		"midi" : {
 			regexp : /^(\d+(?:\.\d+)?midi)/,
 			method : function(value){
-				if (this._defaultUnits === 'midi'){
+				if (this._defaultUnits === "midi"){
 					return value;
 				} else {
 					return Tone.Frequency.mtof(value);
@@ -45,7 +45,7 @@ define(["Tone/core/Tone", "Tone/type/TimeBase"], function (Tone) {
 			method : function(pitch, octave){
 				var index = noteToScaleIndex[pitch.toLowerCase()];
 				var noteNumber = index + (parseInt(octave) + 1) * 12;
-				if (this._defaultUnits === 'midi'){
+				if (this._defaultUnits === "midi"){
 					return noteNumber;
 				} else {
 					return Tone.Frequency.mtof(noteNumber);
