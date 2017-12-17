@@ -30,6 +30,35 @@ define(["Tone/core/Tone"], function (Tone) {
 			 */
 			this._units = units;
 
+			//test if the value is a string representation of a number
+			if (Tone.isUndef(this._units) && Tone.isString(this._val) &&
+				// eslint-disable-next-line eqeqeq
+				parseFloat(this._val) == this._val && this._val.charAt(0) !== "+"){
+				this._val = parseFloat(this._val);
+				this._units = this._defaultUnits;
+			} else if (val && val.constructor === this.constructor){
+				//if they're the same type, just copy values over
+				this._val = val._val;
+				this._units = val._units;
+			} else if (val instanceof Tone.TimeBase){
+				switch(this._defaultUnits){
+					case "s" :
+						this._val = val.toSeconds();
+						break;
+					case "i" :
+						this._val = val.toTicks();
+						break;
+					case "hz" :
+						this._val = val.toFrequency();
+						break;
+					case "midi" :
+						this._val = val.toMidi();
+						break;
+					default :
+						throw new Error("Unrecognized default units "+this._defaultUnits);
+				}
+			}
+
 		} else {
 
 			return new Tone.TimeBase(val, units);
@@ -49,13 +78,14 @@ define(["Tone/core/Tone"], function (Tone) {
 	 */
 	Tone.TimeBase.prototype._expressions = {
 		"n" : {
-			regexp : /^(\d+)n$/i,
-			method : function(value){
+			regexp : /^(\d+)n(\.?)$/i,
+			method : function(value, dot){
 				value = parseInt(value);
+				var scalar = dot === "." ? 1.5 : 1;
 				if (value === 1){
-					return this._beatsToUnits(this._getTimeSignature());
+					return this._beatsToUnits(this._getTimeSignature())*scalar;
 				} else {
-					return this._beatsToUnits(4 / value);
+					return this._beatsToUnits(4 / value)*scalar;
 				}
 			}
 		},
@@ -122,6 +152,7 @@ define(["Tone/core/Tone"], function (Tone) {
 
 	/**
 	 *  The default units if none are given.
+	 *  @type {String}
 	 *  @private
 	 */
 	Tone.TimeBase.prototype._defaultUnits = "s";
@@ -243,8 +274,6 @@ define(["Tone/core/Tone"], function (Tone) {
 	Tone.TimeBase.prototype.valueOf = function(){
 		if (Tone.isUndef(this._val)){
 			return this._noArg();
-		} else if (this._val instanceof Tone.TimeBase){
-			return this._val.valueOf();
 		} else if (Tone.isString(this._val) && Tone.isUndef(this._units)){
 			for (var units in this._expressions){
 				if (this._expressions[units].regexp.test(this._val.trim())){
@@ -264,6 +293,14 @@ define(["Tone/core/Tone"], function (Tone) {
 		} else {
 			return this._val;
 		}
+	};
+
+	/**
+	 *  Return the value in seconds
+	 *  @return {Seconds}
+	 */
+	Tone.TimeBase.prototype.toSeconds = function(){
+		return this.valueOf();
 	};
 
 	/**

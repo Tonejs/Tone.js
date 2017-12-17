@@ -1,5 +1,6 @@
-define(["helper/Basic", "Test", "Tone/type/Frequency", "Tone/core/Tone", "deps/teoria", "helper/Offline"],
-	function (Basic, Test, Frequency, Tone, teoria, Offline) {
+define(["helper/Basic", "Test", "Tone/type/Frequency", "Tone/core/Tone",
+"deps/teoria", "helper/Offline", "Tone/type/Time", "Tone/type/TransportTime", "Tone/type/Ticks"],
+	function (Basic, Test, Frequency, Tone, teoria, Offline, Time, TransportTime, Ticks) {
 
 	describe("Frequency", function(){
 
@@ -41,6 +42,31 @@ define(["helper/Basic", "Test", "Tone/type/Frequency", "Tone/core/Tone", "deps/t
 				expect(Frequency(1) + Frequency(1)).to.equal(2);
 				expect(Frequency(1) > Frequency(0)).to.be.true;
 				expect(+Frequency(1)).to.equal(1);
+			});
+
+			it("can convert from Time", function(){
+				expect(Frequency(Time(2)).valueOf()).to.equal(0.5);
+				expect(Frequency(Time("4n")).valueOf()).to.equal(2);
+				expect(Frequency(Time(4, "n")).valueOf()).to.equal(2);
+			});
+
+			it("can convert from Frequency", function(){
+				expect(Frequency(Frequency(2)).valueOf()).to.equal(2);
+				expect(Frequency(Frequency("4n")).valueOf()).to.equal(2);
+				expect(Frequency(Frequency(4, "n")).valueOf()).to.equal(2);
+			});
+
+
+			it("can convert from TransportTime", function(){
+				expect(Frequency(TransportTime(2)).valueOf()).to.equal(0.5);
+				expect(Frequency(TransportTime("4n")).valueOf()).to.equal(2);
+			});
+
+			it("can convert from Ticks", function(){
+				return Offline(function(Transport){
+					expect(Frequency(Ticks(Transport.PPQ)).valueOf()).to.equal(2);
+					expect(Frequency(Ticks("4n")).valueOf()).to.equal(2);
+				});
 			});
 		});
 

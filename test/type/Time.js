@@ -1,5 +1,6 @@
-define(["helper/Basic", "Test", "Tone/type/Time", "Tone/core/Tone", "helper/Offline"],
-	function (Basic, Test, Time, Tone, Offline) {
+define(["helper/Basic", "Test", "Tone/type/Time", "Tone/core/Tone",
+"helper/Offline", "Tone/type/Frequency", "Tone/type/Ticks", "Tone/type/TransportTime"],
+	function (Basic, Test, Time, Tone, Offline, Frequency, Ticks, TransportTime) {
 
 	describe("Time", function(){
 
@@ -44,6 +45,28 @@ define(["helper/Basic", "Test", "Tone/type/Time", "Tone/core/Tone", "helper/Offl
 				expect(Time(1) + Time(1)).to.equal(2);
 				expect(Time(1) > Time(0)).to.be.true;
 				expect(+Time(1)).to.equal(1);
+			});
+
+			it("can convert from Time", function(){
+				expect(Time(Time(2)).valueOf()).to.equal(2);
+				expect(Time(Time("4n")).valueOf()).to.equal(0.5);
+			});
+
+			it("can convert from Frequency", function(){
+				expect(Time(Frequency(2)).valueOf()).to.equal(0.5);
+				expect(Time(Frequency("4n")).valueOf()).to.equal(0.5);
+			});
+
+			it("can convert from TransportTime", function(){
+				expect(Time(TransportTime(2)).valueOf()).to.equal(2);
+				expect(Time(TransportTime("4n")).valueOf()).to.equal(0.5);
+			});
+
+			it("can convert from Ticks", function(){
+				return Offline(function(Transport){
+					expect(Time(Ticks(Transport.PPQ)).valueOf()).to.equal(0.5);
+					expect(Time(Ticks("4n")).valueOf()).to.equal(0.5);
+				});
 			});
 		});
 
@@ -95,17 +118,10 @@ define(["helper/Basic", "Test", "Tone/type/Time", "Tone/core/Tone", "helper/Offl
 					Transport.bpm.value = 120;
 					Transport.timeSignature = 4;
 					expect(Time("4n").toNotation()).to.equal("4n");
-					expect(Time(1.5).toNotation()).to.equal("2n + 4n");
+					expect(Time(1.5).toNotation()).to.equal("2n.");
 					expect(Time(0).toNotation()).to.equal("0");
-					expect(Time("1:2:3").toNotation()).to.equal("1m + 2n + 8n + 16n");
-				});
-			});
-
-			it("toNotation works with triplet notation", function(){
-				return Offline(function(Transport){
-					Transport.bpm.value = 120;
-					Transport.timeSignature = 5;
-					expect(Time(Time("1m") + Time("8t")).toNotation()).to.equal("1m + 8t");
+					expect(Time("1:2:3").toNotation()).to.equal("1m");
+					expect(Time(Time("2n") + Time("4n")).toNotation()).to.equal("2n.");
 				});
 			});
 
