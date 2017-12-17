@@ -109,13 +109,13 @@ define(["Tone/core/Tone", "Tone/event/Event", "Tone/type/Type", "Tone/core/Trans
 					//start it on the next loop
 					ticks += this._getLoopDuration();
 				}
-				event.start(Tone.TransportTime(ticks,"i"));
+				event.start(Tone.Ticks(ticks));
 			} else if (event.startOffset < this._loopStart && event.startOffset >= offset) {
 				event.loop = false;
-				event.start(Tone.TransportTime(ticks,"i"));
+				event.start(Tone.Ticks(ticks));
 			}
 		} else if (event.startOffset >= offset){
-			event.start(Tone.TransportTime(ticks,"i"));
+			event.start(Tone.Ticks(ticks));
 		}
 	};
 
@@ -171,7 +171,7 @@ define(["Tone/core/Tone", "Tone/event/Event", "Tone/type/Type", "Tone/core/Trans
 	 */
 	Tone.Part.prototype.at = function(time, value){
 		time = Tone.TransportTime(time);
-		var tickTime = Tone.Time(1, "i").toSeconds();
+		var tickTime = Tone.Ticks(1).toSeconds();
 		for (var i = 0; i < this._events.length; i++){
 			var event = this._events[i];
 			if (Math.abs(time.toTicks() - event.startOffset) < tickTime){
@@ -250,7 +250,7 @@ define(["Tone/core/Tone", "Tone/event/Event", "Tone/type/Type", "Tone/core/Trans
 				this._startNote(event, stateEvent.time, stateEvent.offset);
 			} else {
 				//stop the note
-				event.stop(Tone.TransportTime(stateEvent.time, "i"));
+				event.stop(Tone.Ticks(stateEvent.time));
 			}
 		}.bind(this));
 	};
@@ -439,7 +439,7 @@ define(["Tone/core/Tone", "Tone/event/Event", "Tone/type/Type", "Tone/core/Trans
 	 */
 	Object.defineProperty(Tone.Part.prototype, "loopEnd", {
 		get : function(){
-			return Tone.Time(this._loopEnd, "i").toSeconds();
+			return Tone.Ticks(this._loopEnd).toSeconds();
 		},
 		set : function(loopEnd){
 			this._loopEnd = this.toTicks(loopEnd);
@@ -461,7 +461,7 @@ define(["Tone/core/Tone", "Tone/event/Event", "Tone/type/Type", "Tone/core/Trans
 	 */
 	Object.defineProperty(Tone.Part.prototype, "loopStart", {
 		get : function(){
-			return Tone.Time(this._loopStart, "i").toSeconds();
+			return Tone.Ticks(this._loopStart).toSeconds();
 		},
 		set : function(loopStart){
 			this._loopStart = this.toTicks(loopStart);

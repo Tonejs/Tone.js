@@ -157,12 +157,12 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/type/Type", "Tone/core/Ti
 					if (duration !== Infinity){
 						//schedule a stop since it's finite duration
 						this._state.setStateAtTime(Tone.State.Stopped, startTick + duration + 1);
-						duration = Tone.Time(duration, "i");
+						duration = Tone.Ticks(duration);
 					}
-					var interval = Tone.Time(this._getLoopDuration(), "i");
-					event.id = Tone.Transport.scheduleRepeat(this._tick.bind(this), interval, Tone.TransportTime(startTick, "i"), duration);
+					var interval = Tone.Ticks(this._getLoopDuration());
+					event.id = Tone.Transport.scheduleRepeat(this._tick.bind(this), interval, Tone.Ticks(startTick), duration);
 				} else {
-					event.id = Tone.Transport.schedule(this._tick.bind(this), startTick + "i");
+					event.id = Tone.Transport.schedule(this._tick.bind(this), Tone.Ticks(startTick));
 				}
 			}
 		}.bind(this));
@@ -364,7 +364,7 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/type/Type", "Tone/core/Ti
 	 */
 	Object.defineProperty(Tone.Event.prototype, "loopEnd", {
 		get : function(){
-			return Tone.Time(this._loopEnd, "i").toSeconds();
+			return Tone.Ticks(this._loopEnd).toSeconds();
 		},
 		set : function(loopEnd){
 			this._loopEnd = this.toTicks(loopEnd);
@@ -382,7 +382,7 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/type/Type", "Tone/core/Ti
 	 */
 	Object.defineProperty(Tone.Event.prototype, "loopStart", {
 		get : function(){
-			return Tone.Time(this._loopStart, "i").toSeconds();
+			return Tone.Ticks(this._loopStart).toSeconds();
 		},
 		set : function(loopStart){
 			this._loopStart = this.toTicks(loopStart);

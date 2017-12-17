@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/core/TransportEvent"], function(Tone){
+define(["Tone/core/Tone", "Tone/core/TransportEvent", "Tone/type/Ticks"], function(Tone){
 
 	/**
 	 *  @class Tone.TransportRepeatEvent is an internal class used by Tone.Transport
@@ -16,14 +16,14 @@ define(["Tone/core/Tone", "Tone/core/TransportEvent"], function(Tone){
 		 * @type {Ticks}
 		 * @private
 		 */
-		this.duration = options.duration;
+		this.duration = Tone.Ticks(options.duration);
 
 		/**
 		 * The interval of the repeated event
 		 * @type {Ticks}
 		 * @private
 		 */
-		this._interval = options.interval;
+		this._interval = Tone.Ticks(options.interval);
 
 		/**
 		 * The ID of the current timeline event
@@ -91,7 +91,7 @@ define(["Tone/core/Tone", "Tone/core/TransportEvent"], function(Tone){
 		this._nextTick + this._interval < this.time + this.duration){
 			this._nextTick += this._interval;
 			this._currentId = this._nextId;
-			this._nextId = this.Transport.scheduleOnce(this.invoke.bind(this), Tone.TransportTime(this._nextTick, "i"));
+			this._nextId = this.Transport.scheduleOnce(this.invoke.bind(this), Tone.Ticks(this._nextTick));
 		}
 	};
 
@@ -107,9 +107,9 @@ define(["Tone/core/Tone", "Tone/core/TransportEvent"], function(Tone){
 		if (ticks > this.time){
 			this._nextTick = this.time + Math.ceil((ticks - this.time) / this._interval) * this._interval;
 		}
-		this._currentId = this.Transport.scheduleOnce(this.invoke.bind(this), Tone.TransportTime(this._nextTick, "i"));
+		this._currentId = this.Transport.scheduleOnce(this.invoke.bind(this), Tone.Ticks(this._nextTick));
 		this._nextTick += this._interval;
-		this._nextId = this.Transport.scheduleOnce(this.invoke.bind(this), Tone.TransportTime(this._nextTick, "i"));
+		this._nextId = this.Transport.scheduleOnce(this.invoke.bind(this), Tone.Ticks(this._nextTick));
 	};
 
 	/**
@@ -122,6 +122,8 @@ define(["Tone/core/Tone", "Tone/core/TransportEvent"], function(Tone){
 		this.Transport.off("start loopStart", this._boundRestart);
 		this._boundCreateEvents = null;
 		Tone.TransportEvent.prototype.dispose.call(this);
+		this.duration = null;
+		this._interval = null;
 		return this;
 	};
 

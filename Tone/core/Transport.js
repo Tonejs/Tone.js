@@ -195,7 +195,7 @@ define(["Tone/core/Tone", "Tone/core/Clock", "Tone/type/Type", "Tone/core/Timeli
 			//add some swing
 			var progress = (ticks % (this._swingTicks * 2)) / (this._swingTicks * 2);
 			var amount = Math.sin((progress) * Math.PI) * this._swingAmount;
-			tickTime += Tone.Time(this._swingTicks * 2/3, "i") * amount;
+			tickTime += Tone.Ticks(this._swingTicks * 2/3).toSeconds() * amount;
 		}
 		//do the loop test
 		if (this.loop){
@@ -230,7 +230,7 @@ define(["Tone/core/Tone", "Tone/core/Clock", "Tone/type/Type", "Tone/core/Timeli
 	 */
 	Tone.Transport.prototype.schedule = function(callback, time){
 		var event = new Tone.TransportEvent(this, {
-			"time" : this.toTicks(time),
+			"time" : Tone.TransportTime(time),
 			"callback" : callback
 		});
 		return this._addEvent(event, this._timeline);
@@ -243,7 +243,7 @@ define(["Tone/core/Tone", "Tone/core/Clock", "Tone/type/Type", "Tone/core/Timeli
 	 *  @param  {Function}  callback   The callback to invoke.
 	 *  @param  {Time}    interval   The duration between successive
 	 *                               callbacks. Must be a positive number.
-	 *  @param  {TimelinePosition=}    startTime  When along the timeline the events should
+	 *  @param  {TransportTime=}    startTime  When along the timeline the events should
 	 *                               start being invoked.
 	 *  @param {Time} [duration=Infinity] How long the event should repeat.
 	 *  @return  {Number}    The ID of the scheduled event. Use this to cancel
@@ -255,9 +255,9 @@ define(["Tone/core/Tone", "Tone/core/Clock", "Tone/type/Type", "Tone/core/Timeli
 	Tone.Transport.prototype.scheduleRepeat = function(callback, interval, startTime, duration){
 		var event = new Tone.TransportRepeatEvent(this, {
 			"callback" : callback,
-			"interval" : this.toTicks(interval),
-			"time" : this.toTicks(startTime),
-			"duration" : this.toTicks(Tone.defaultArg(duration, Infinity)),
+			"interval" : Tone.Time(interval),
+			"time" : Tone.TransportTime(startTime),
+			"duration" : Tone.Time(Tone.defaultArg(duration, Infinity)),
 		});
 		//kick it off if the Transport is started
 		return this._addEvent(event, this._repeatedEvents);
@@ -273,7 +273,7 @@ define(["Tone/core/Tone", "Tone/core/Clock", "Tone/type/Type", "Tone/core/Timeli
 	 */
 	Tone.Transport.prototype.scheduleOnce = function(callback, time){
 		var event = new Tone.TransportEvent(this, {
-			"time" : this.toTicks(time),
+			"time" : Tone.TransportTime(time),
 			"callback" : callback,
 			"once" : true
 		});
@@ -338,7 +338,7 @@ define(["Tone/core/Tone", "Tone/core/Clock", "Tone/type/Type", "Tone/core/Timeli
 	 */
 	Tone.Transport.prototype._bindClockEvents = function(){
 		this._clock.on("start", function(time, offset){
-			offset = Tone.Time(this._clock.ticks, "i").toSeconds();
+			offset = Tone.Ticks(this._clock.ticks).toSeconds();
 			this.emit("start", time, offset);
 		}.bind(this));
 
@@ -458,7 +458,7 @@ define(["Tone/core/Tone", "Tone/core/Clock", "Tone/type/Type", "Tone/core/Timeli
 	 */
 	Object.defineProperty(Tone.Transport.prototype, "loopStart", {
 		get : function(){
-			return Tone.TransportTime(this._loopStart, "i").toSeconds();
+			return Tone.Ticks(this._loopStart).toSeconds();
 		},
 		set : function(startPosition){
 			this._loopStart = this.toTicks(startPosition);
@@ -473,7 +473,7 @@ define(["Tone/core/Tone", "Tone/core/Clock", "Tone/type/Type", "Tone/core/Timeli
 	 */
 	Object.defineProperty(Tone.Transport.prototype, "loopEnd", {
 		get : function(){
-			return Tone.TransportTime(this._loopEnd, "i").toSeconds();
+			return Tone.Ticks(this._loopEnd).toSeconds();
 		},
 		set : function(endPosition){
 			this._loopEnd = this.toTicks(endPosition);
@@ -524,7 +524,7 @@ define(["Tone/core/Tone", "Tone/core/Clock", "Tone/type/Type", "Tone/core/Timeli
 	 */
 	Object.defineProperty(Tone.Transport.prototype, "swingSubdivision", {
 		get : function(){
-			return Tone.Time(this._swingTicks, "i").toNotation();
+			return Tone.Ticks(this._swingTicks).toNotation();
 		},
 		set : function(subdivision){
 			this._swingTicks = this.toTicks(subdivision);
@@ -540,7 +540,7 @@ define(["Tone/core/Tone", "Tone/core/Clock", "Tone/type/Type", "Tone/core/Timeli
 	 */
 	Object.defineProperty(Tone.Transport.prototype, "position", {
 		get : function(){
-			return Tone.TransportTime(this.ticks, "i").toBarsBeatsSixteenths();
+			return Tone.Ticks(this.ticks).toBarsBeatsSixteenths();
 		},
 		set : function(progress){
 			var ticks = this.toTicks(progress);
@@ -557,7 +557,7 @@ define(["Tone/core/Tone", "Tone/core/Clock", "Tone/type/Type", "Tone/core/Timeli
 	 */
 	Object.defineProperty(Tone.Transport.prototype, "seconds", {
 		get : function(){
-			return Tone.TransportTime(this.ticks, "i").toSeconds();
+			return Tone.Ticks(this.ticks).toSeconds();
 		},
 		set : function(progress){
 			var ticks = this.toTicks(progress);

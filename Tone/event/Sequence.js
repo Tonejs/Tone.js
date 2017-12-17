@@ -77,7 +77,7 @@ define(["Tone/core/Tone", "Tone/event/Part", "Tone/core/Transport"], function (T
 	 */
 	Object.defineProperty(Tone.Sequence.prototype, "subdivision", {
 		get : function(){
-			return Tone.Time(this._subdivision, "i").toSeconds();
+			return Tone.Ticks(this._subdivision).toSeconds();
 		}
 	});
 
@@ -119,7 +119,7 @@ define(["Tone/core/Tone", "Tone/event/Part", "Tone/core/Transport"], function (T
 		if (Tone.isArray(value)){
 			//make a subsequence and add that to the sequence
 			var subSubdivision = Math.round(this._subdivision / value.length);
-			value = new Tone.Sequence(this._tick.bind(this), value, Tone.Time(subSubdivision, "i"));
+			value = new Tone.Sequence(this._tick.bind(this), value, Tone.Ticks(subSubdivision));
 		}
 		Tone.Part.prototype.add.call(this, this._indexTime(index), value);
 		return this;
@@ -145,7 +145,7 @@ define(["Tone/core/Tone", "Tone/event/Part", "Tone/core/Transport"], function (T
 		if (index instanceof Tone.TransportTime){
 			return index;
 		} else {
-			return Tone.TransportTime(index * this._subdivision + this.startOffset, "i").toSeconds();
+			return Tone.Ticks(index * this._subdivision + this.startOffset).toSeconds();
 		}
 	};
 

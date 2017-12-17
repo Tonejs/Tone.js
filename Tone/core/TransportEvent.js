@@ -1,4 +1,4 @@
-define(["Tone/core/Tone"], function(Tone){
+define(["Tone/core/Tone", "Tone/type/Ticks"], function(Tone){
 
 	/**
 	 *  @class Tone.TransportEvent is an internal class used by (Tone.Transport)[Transport]
@@ -28,7 +28,7 @@ define(["Tone/core/Tone"], function(Tone){
 		 * The time the event starts
 		 * @type {Ticks}
 		 */
-		this.time = options.time;
+		this.time = Tone.Ticks(options.time);
 
 		/**
 		 * The callback to invoke
