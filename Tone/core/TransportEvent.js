@@ -85,6 +85,7 @@ define(["Tone/core/Tone", "Tone/type/Ticks"], function(Tone){
 		Tone.prototype.dispose.call(this);
 		this.Transport = null;
 		this.callback = null;
+		this.time = null;
 		return this;
 	};
 
