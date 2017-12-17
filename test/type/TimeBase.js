@@ -42,6 +42,12 @@ define(["helper/Basic", "Test", "Tone/type/TimeBase", "Tone/core/Tone", "helper/
 				expect(TimeBase("4", "n").valueOf()).to.equal(0.5);
 			});
 
+			it("can pass in a another Timebase", function(){
+				var param = TimeBase(4, "n")
+				expect(param.valueOf()).to.equal(TimeBase(param).valueOf());
+				expect(param.valueOf()).to.equal(TimeBase(param).valueOf());
+			});
+
 		});
 
 		context("Eval", function(){
@@ -60,6 +66,7 @@ define(["helper/Basic", "Test", "Tone/type/TimeBase", "Tone/core/Tone", "helper/
 					expect(TimeBase("8n").valueOf()).to.equal(0.25);
 					expect(TimeBase(16, "n").valueOf()).to.equal(0.125);
 					expect(TimeBase("32n").valueOf()).to.equal(0.5/8);
+					expect(TimeBase("32n.").valueOf()).to.equal(0.5/8 * 1.5);
 					expect(TimeBase("2t").valueOf()).to.equal(2/3);
 					Transport.bpm.value = 60;
 					Transport.timeSignature = [5,4];
