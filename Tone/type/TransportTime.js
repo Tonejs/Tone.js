@@ -31,49 +31,5 @@ define(["Tone/core/Tone", "Tone/type/Time"], function (Tone) {
 		return Tone.Transport.seconds;
 	};
 
-	/**
-	 *  Convert seconds into ticks
-	 *  @param {Seconds} seconds
-	 *  @return  {Ticks}
-	 *  @private
-	 */
-	Tone.TransportTime.prototype._secondsToTicks = function(seconds){
-		var quarterTime = this._beatsToUnits(1);
-		var quarters = seconds / quarterTime;
-		return Math.round(quarters * Tone.Transport.PPQ);
-	};
-
-	/**
-	 *  Evaluate the time expression. Returns values in ticks
-	 *  @return {Ticks}
-	 */
-	Tone.TransportTime.prototype.valueOf = function(){
-		return this._secondsToTicks(this.toSeconds());
-	};
-
-	/**
-	 *  Return the time in ticks.
-	 *  @return  {Ticks}
-	 */
-	Tone.TransportTime.prototype.toTicks = function(){
-		return this.valueOf();
-	};
-
-	/**
-	 *  Return the time in seconds.
-	 *  @return  {Seconds}
-	 */
-	Tone.TransportTime.prototype.toSeconds = function(){
-		return Tone.Time.prototype.valueOf.call(this);
-	};
-
-	/**
-	 *  Return the time as a frequency value
-	 *  @return  {Frequency}
-	 */
-	Tone.TransportTime.prototype.toFrequency = function(){
-		return 1/this.toSeconds();
-	};
-
 	return Tone.TransportTime;
 });
