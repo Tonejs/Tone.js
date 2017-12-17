@@ -86,6 +86,7 @@ define(["Tone/core/Tone"], function (Tone) {
 		if (Tone.isUndef(event.time)){
 			throw new Error("Tone.Timeline: events must have a time attribute");
 		}
+		event.time = event.time.valueOf();
 		if (this._iterating){
 			this._toAdd.push(event);
 		} else {

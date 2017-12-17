@@ -4,7 +4,7 @@ define(["Tone/core/Tone", "Tone/type/Type"], function (Tone) {
 
 	/**
 	 *  @class Similar to Tone.Timeline, but all events represent
-	 *         intervals with both "time" and "duration" times. The 
+	 *         intervals with both "time" and "duration" times. The
 	 *         events are placed in a tree structure optimized
 	 *         for querying an intersection point with the timeline
 	 *         events. Internally uses an [Interval Tree](https://en.wikipedia.org/wiki/Interval_tree)
@@ -33,7 +33,7 @@ define(["Tone/core/Tone", "Tone/type/Type"], function (Tone) {
 	Tone.extend(Tone.IntervalTimeline);
 
 	/**
-	 *  The event to add to the timeline. All events must 
+	 *  The event to add to the timeline. All events must
 	 *  have a time and duration value
 	 *  @param  {Object}  event  The event to add to the timeline
 	 *  @return  {Tone.IntervalTimeline}  this
@@ -42,6 +42,7 @@ define(["Tone/core/Tone", "Tone/type/Type"], function (Tone) {
 		if (Tone.isUndef(event.time) || Tone.isUndef(event.duration)){
 			throw new Error("Tone.IntervalTimeline: events must have time and duration parameters");
 		}
+		event.time = event.time.valueOf();
 		var node = new IntervalNode(event.time, event.time + event.duration, event);
 		if (this._root === null){
 			this._root = node;
@@ -120,8 +121,8 @@ define(["Tone/core/Tone", "Tone/type/Type"], function (Tone) {
 	/**
 	 *  Replace the references to the node in the node's parent
 	 *  with the replacement node.
-	 *  @param  {IntervalNode}  node        
-	 *  @param  {IntervalNode}  replacement 
+	 *  @param  {IntervalNode}  node
+	 *  @param  {IntervalNode}  replacement
 	 *  @private
 	 */
 	Tone.IntervalTimeline.prototype._replaceNodeInParent = function(node, replacement){
@@ -138,7 +139,7 @@ define(["Tone/core/Tone", "Tone/type/Type"], function (Tone) {
 	};
 
 	/**
-	 *  Remove the node from the tree and replace it with 
+	 *  Remove the node from the tree and replace it with
 	 *  a successor which follows the schema.
 	 *  @param  {IntervalNode}  node
 	 *  @private
@@ -231,7 +232,7 @@ define(["Tone/core/Tone", "Tone/type/Type"], function (Tone) {
 	Tone.IntervalTimeline.prototype._rotateRight = function(node){
 		var parent = node.parent;
 		var isLeftChild = node.isLeftChild();
- 
+
 		// Make node.left the new root of this sub tree (instead of node)
 		var pivotNode = node.left;
 		node.left = pivotNode.right;
@@ -288,7 +289,7 @@ define(["Tone/core/Tone", "Tone/type/Type"], function (Tone) {
 					}
 				}
 				return max.event;
-			} 
+			}
 		}
 		return null;
 	};
@@ -380,8 +381,8 @@ define(["Tone/core/Tone", "Tone/type/Type"], function (Tone) {
 	/**
 	 *  Represents a node in the binary search tree, with the addition
 	 *  of a "high" value which keeps track of the highest value of
-	 *  its children. 
-	 *  References: 
+	 *  its children.
+	 *  References:
 	 *  https://brooknovak.wordpress.com/2013/12/07/augmented-interval-tree-in-c/
 	 *  http://www.mif.vu.lt/~valdas/ALGORITMAI/LITERATURA/Cormen/Cormen.pdf
 	 *  @param {Number} low
@@ -407,7 +408,7 @@ define(["Tone/core/Tone", "Tone/type/Type"], function (Tone) {
 		this.height = 0;
 	};
 
-	/** 
+	/**
 	 *  Insert a node into the correct spot in the tree
 	 *  @param  {IntervalNode}  node
 	 */
@@ -426,7 +427,7 @@ define(["Tone/core/Tone", "Tone/type/Type"], function (Tone) {
 	};
 
 	/**
-	 *  Search the tree for nodes which overlap 
+	 *  Search the tree for nodes which overlap
 	 *  with the given point
 	 *  @param  {Number}  point  The point to query
 	 *  @param  {Array}  results  The array to put the results
@@ -457,7 +458,7 @@ define(["Tone/core/Tone", "Tone/type/Type"], function (Tone) {
 	};
 
 	/**
-	 *  Search the tree for nodes which are less 
+	 *  Search the tree for nodes which are less
 	 *  than the given point
 	 *  @param  {Number}  point  The point to query
 	 *  @param  {Array}  results  The array to put the results
@@ -469,7 +470,7 @@ define(["Tone/core/Tone", "Tone/type/Type"], function (Tone) {
 			if (this.left !== null){
 				this.left.searchAfter(point, results);
 			}
-		} 
+		}
 		// search the right side
 		if (this.right !== null){
 			this.right.searchAfter(point, results);
