@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/type/TimeBase"], function (Tone) {
+define(["Tone/core/Tone", "Tone/type/TimeBase", "Tone/type/Frequency"], function (Tone) {
 
 	/**
 	 *  @class Tone.Time is a primitive type for encoding Time values.
@@ -142,11 +142,11 @@ define(["Tone/core/Tone", "Tone/type/TimeBase"], function (Tone) {
 	};
 
 	/**
-	 *  Return the time in milliseconds.
-	 *  @return  {Milliseconds}
+	 *  Return the value as a midi note.
+	 *  @return  {Midi}
 	 */
-	Tone.Time.prototype.toMilliseconds = function(){
-		return this.toSeconds() * 1000;
+	Tone.Time.prototype.toMidi = function(){
+		return Tone.Frequency.ftom(this.toFrequency());
 	};
 
 	return Tone.Time;
