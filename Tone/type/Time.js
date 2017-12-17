@@ -134,24 +134,6 @@ define(["Tone/core/Tone", "Tone/type/TimeBase"], function (Tone) {
 	};
 
 	/**
-	 *  Return the time in samples
-	 *  @return  {Samples}
-	 */
-	Tone.Time.prototype.toSamples = function(){
-		return this.toSeconds() * this.context.sampleRate;
-	};
-
-	/**
-	 *  Return the time as a frequency value
-	 *  @return  {Frequency}
-	 *  @example
-	 * Tone.Time(2).toFrequency(); //0.5
-	 */
-	Tone.Time.prototype.toFrequency = function(){
-		return 1/this.toSeconds();
-	};
-
-	/**
 	 *  Return the time in seconds.
 	 *  @return  {Seconds}
 	 */

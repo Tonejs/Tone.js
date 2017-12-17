@@ -304,6 +304,30 @@ define(["Tone/core/Tone"], function (Tone) {
 	};
 
 	/**
+	 *  Return the value in hertz
+	 *  @return {Frequency}
+	 */
+	Tone.TimeBase.prototype.toFrequency = function(){
+		return 1 / this.toSeconds();
+	};
+
+	/**
+	 *  Return the time in samples
+	 *  @return  {Samples}
+	 */
+	Tone.TimeBase.prototype.toSamples = function(){
+		return this.toSeconds() * this.context.sampleRate;
+	};
+
+	/**
+	 *  Return the time in milliseconds.
+	 *  @return  {Milliseconds}
+	 */
+	Tone.TimeBase.prototype.toMilliseconds = function(){
+		return this.toSeconds() * 1000;
+	};
+
+	/**
 	 *  Clean up
 	 *  @return {Tone.TimeBase} this
 	 */
