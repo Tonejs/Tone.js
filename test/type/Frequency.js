@@ -1,6 +1,7 @@
 define(["helper/Basic", "Test", "Tone/type/Frequency", "Tone/core/Tone",
-"deps/teoria", "helper/Offline", "Tone/type/Time", "Tone/type/TransportTime", "Tone/type/Ticks"],
-	function (Basic, Test, Frequency, Tone, teoria, Offline, Time, TransportTime, Ticks) {
+"deps/teoria", "helper/Offline", "Tone/type/Time", "Tone/type/TransportTime",
+"Tone/type/Ticks", "Tone/type/Midi"],
+	function (Basic, Test, Frequency, Tone, teoria, Offline, Time, TransportTime, Ticks, Midi) {
 
 	describe("Frequency", function(){
 
@@ -60,6 +61,12 @@ define(["helper/Basic", "Test", "Tone/type/Frequency", "Tone/core/Tone",
 			it("can convert from TransportTime", function(){
 				expect(Frequency(TransportTime(2)).valueOf()).to.equal(0.5);
 				expect(Frequency(TransportTime("4n")).valueOf()).to.equal(2);
+			});
+
+			it("can convert from Midi", function(){
+				expect(Frequency(Midi('C4')).valueOf()).to.equal(Frequency('C4').valueOf());
+				expect(Frequency(Midi(60)).valueOf()).to.equal(Frequency('C4').valueOf());
+				expect(Frequency(Midi(61)).valueOf()).to.equal(Frequency('C#4').valueOf());
 			});
 
 			it("can convert from Ticks", function(){
