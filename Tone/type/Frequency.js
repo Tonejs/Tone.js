@@ -33,7 +33,11 @@ define(["Tone/core/Tone", "Tone/type/TimeBase"], function (Tone) {
 		"midi" : {
 			regexp : /^(\d+(?:\.\d+)?midi)/,
 			method : function(value){
-				return this.midiToFrequency(value);
+				if (this._defaultUnits === 'midi'){
+					return value;
+				} else {
+					return Tone.Frequency.mtof(value);
+				}
 			}
 		},
 		"note" : {
@@ -41,7 +45,11 @@ define(["Tone/core/Tone", "Tone/type/TimeBase"], function (Tone) {
 			method : function(pitch, octave){
 				var index = noteToScaleIndex[pitch.toLowerCase()];
 				var noteNumber = index + (parseInt(octave) + 1) * 12;
-				return this.midiToFrequency(noteNumber);
+				if (this._defaultUnits === 'midi'){
+					return noteNumber;
+				} else {
+					return Tone.Frequency.mtof(noteNumber);
+				}
 			}
 		},
 		"tr" : {
@@ -112,7 +120,7 @@ define(["Tone/core/Tone", "Tone/type/TimeBase"], function (Tone) {
 	 * Tone.Frequency("C4").toMidi(); //60
 	 */
 	Tone.Frequency.prototype.toMidi = function(){
-		return this.frequencyToMidi(this.valueOf());
+		return Tone.Frequency.ftom(this.valueOf());
 	};
 
 	/**
@@ -122,7 +130,7 @@ define(["Tone/core/Tone", "Tone/type/TimeBase"], function (Tone) {
 	 * Tone.Frequency(69, "midi").toNote(); //"A4"
 	 */
 	Tone.Frequency.prototype.toNote = function(){
-		var freq = this.valueOf();
+		var freq = this.toFrequency();
 		var log = Math.log(freq / Tone.Frequency.A4) / Math.LN2;
 		var noteNumber = Math.round(12 * log) + 57;
 		var octave = Math.floor(noteNumber/12);
@@ -138,7 +146,7 @@ define(["Tone/core/Tone", "Tone/type/TimeBase"], function (Tone) {
 	 *  @return  {Seconds}
 	 */
 	Tone.Frequency.prototype.toSeconds = function(){
-		return 1 / this.valueOf();
+		return 1 / Tone.TimeBase.prototype.toSeconds.call(this);
 	};
 
 	/**
@@ -146,7 +154,7 @@ define(["Tone/core/Tone", "Tone/type/TimeBase"], function (Tone) {
 	 *  @return  {Frequency}
 	 */
 	Tone.Frequency.prototype.toFrequency = function(){
-		return this.valueOf();
+		return Tone.TimeBase.prototype.toFrequency.call(this);
 	};
 
 	/**
@@ -254,10 +262,11 @@ define(["Tone/core/Tone", "Tone/type/TimeBase"], function (Tone) {
 	 *  Convert a MIDI note to frequency value.
 	 *  @param  {MIDI} midi The midi number to convert.
 	 *  @return {Frequency} the corresponding frequency value
+	 *  @static
 	 *  @example
-	 * tone.midiToFrequency(69); // returns 440
+	 * Tone.Frequency.mtof(69); // returns 440
 	 */
-	Tone.Frequency.prototype.midiToFrequency = function(midi){
+	Tone.Frequency.mtof = function(midi){
 		return Tone.Frequency.A4 * Math.pow(2, (midi - 69) / 12);
 	};
 
@@ -265,10 +274,11 @@ define(["Tone/core/Tone", "Tone/type/TimeBase"], function (Tone) {
 	 *  Convert a frequency value to a MIDI note.
 	 *  @param {Frequency} frequency The value to frequency value to convert.
 	 *  @returns  {MIDI}
+	 *  @static
 	 *  @example
-	 * tone.midiToFrequency(440); // returns 69
+	 * Tone.Frequency.ftom(440); // returns 69
 	 */
-	Tone.Frequency.prototype.frequencyToMidi = function(frequency){
+	Tone.Frequency.ftom = function(frequency){
 		return 69 + Math.round(12 * Math.log(frequency / Tone.Frequency.A4) / Math.LN2);
 	};
 
