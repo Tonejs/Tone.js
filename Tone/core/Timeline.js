@@ -23,27 +23,6 @@ define(["Tone/core/Tone"], function (Tone) {
 		this._timeline = [];
 
 		/**
-		 *  An array of items to remove from the list.
-		 *  @type {Array}
-		 *  @private
-		 */
-		this._toRemove = [];
-
-		/**
-		 *  An array of items to add from the list (once it's done iterating)
-		 *  @type {Array}
-		 *  @private
-		 */
-		this._toAdd = [];
-
-		/**
-		 *  Flag if the timeline is mid iteration
-		 *  @private
-		 *  @type {Boolean}
-		 */
-		this._iterating = false;
-
-		/**
 		 *  The memory of the timeline, i.e.
 		 *  how many events in the past it will retain
 		 *  @type {Positive}
@@ -87,16 +66,12 @@ define(["Tone/core/Tone"], function (Tone) {
 			throw new Error("Tone.Timeline: events must have a time attribute");
 		}
 		event.time = event.time.valueOf();
-		if (this._iterating){
-			this._toAdd.push(event);
-		} else {
-			var index = this._search(event.time);
-			this._timeline.splice(index + 1, 0, event);
-			//if the length is more than the memory, remove the previous ones
-			if (this.length > this.memory){
-				var diff = this.length - this.memory;
-				this._timeline.splice(0, diff);
-			}
+		var index = this._search(event.time);
+		this._timeline.splice(index + 1, 0, event);
+		//if the length is more than the memory, remove the previous ones
+		if (this.length > this.memory){
+			var diff = this.length - this.memory;
+			this._timeline.splice(0, diff);
 		}
 		return this;
 	};
@@ -107,13 +82,9 @@ define(["Tone/core/Tone"], function (Tone) {
 	 *  @returns {Tone.Timeline} this
 	 */
 	Tone.Timeline.prototype.remove = function(event){
-		if (this._iterating){
-			this._toRemove.push(event);
-		} else {
-			var index = this._timeline.indexOf(event);
-			if (index !== -1){
-				this._timeline.splice(index, 1);
-			}
+		var index = this._timeline.indexOf(event);
+		if (index !== -1){
+			this._timeline.splice(index, 1);
 		}
 		return this;
 	};
@@ -305,21 +276,11 @@ define(["Tone/core/Tone"], function (Tone) {
 	 *  @private
 	 */
 	Tone.Timeline.prototype._iterate = function(callback, lowerBound, upperBound){
-		this._iterating = true;
 		lowerBound = Tone.defaultArg(lowerBound, 0);
-		upperBound = Tone.defaultArg(upperBound, this._timeline.length - 1);
-		for (var i = lowerBound; i <= upperBound; i++){
-			callback.call(this, this._timeline[i]);
-		}
-		this._iterating = false;
-		this._toRemove.forEach(function(event){
-			this.remove(event);
+		upperBound = Tone.defaultArg(upperBound, this._timeline.length-1);
+		this._timeline.slice(lowerBound, upperBound+1).forEach(function(event){
+			callback.call(this, event);
 		}.bind(this));
-		this._toRemove = [];
-		this._toAdd.forEach(function(event){
-			this.add(event);
-		}.bind(this));
-		this._toAdd = [];
 	};
 
 	/**
@@ -404,8 +365,6 @@ define(["Tone/core/Tone"], function (Tone) {
 	Tone.Timeline.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
 		this._timeline = null;
-		this._toRemove = null;
-		this._toAdd = null;
 		return this;
 	};
 
