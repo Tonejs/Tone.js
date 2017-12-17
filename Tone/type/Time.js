@@ -31,7 +31,7 @@ define(["Tone/core/Tone", "Tone/type/TimeBase"], function (Tone) {
 			regexp : /^@(.+)/,
 			method : function(capture){
 				if (Tone.Transport){
-					var quantTo = new Tone.Time(capture);
+					var quantTo = new this.constructor(capture);
 					return Tone.Transport.nextSubdivision(quantTo);
 				} else {
 					return 0;
@@ -41,7 +41,7 @@ define(["Tone/core/Tone", "Tone/type/TimeBase"], function (Tone) {
 		"now" : {
 			regexp : /^\+(.+)/,
 			method : function(capture){
-				return this._now() + (new Tone.Time(capture));
+				return this._now() + (new this.constructor(capture));
 			}
 		}
 	});
@@ -74,7 +74,8 @@ define(["Tone/core/Tone", "Tone/type/TimeBase"], function (Tone) {
 	///////////////////////////////////////////////////////////////////////////
 
 	/**
-	 *  Convert a Time to Notation. Values will be thresholded to the nearest 128th note.
+	 *  Convert a Time to Notation. The notation values are will be the
+	 *  closest representation between 1m to 128th note.
 	 *  @return {Notation}
 	 *  @example
 	 * //if the Transport is at 120bpm:
@@ -82,75 +83,25 @@ define(["Tone/core/Tone", "Tone/type/TimeBase"], function (Tone) {
 	 */
 	Tone.Time.prototype.toNotation = function(){
 		var time = this.toSeconds();
-		var testNotations = ["1m", "2n", "4n", "8n", "16n", "32n", "64n", "128n"];
-		var retNotation = this._toNotationHelper(time, testNotations);
-		//try the same thing but with tripelets
-		var testTripletNotations = ["1m", "2n", "2t", "4n", "4t", "8n", "8t", "16n", "16t", "32n", "32t", "64n", "64t", "128n"];
-		var retTripletNotation = this._toNotationHelper(time, testTripletNotations);
-		//choose the simpler expression of the two
-		if (retTripletNotation.split("+").length < retNotation.split("+").length){
-			return retTripletNotation;
-		} else {
-			return retNotation;
+		var testNotations = ["1m"];
+		for (var power = 1; power < 8; power++){
+			var subdiv = Math.pow(2, power);
+			testNotations.push(subdiv + "n.");
+			testNotations.push(subdiv + "n");
+			testNotations.push(subdiv + "t");
 		}
-	};
-
-	/**
-	 *  Helper method for Tone.toNotation
-	 *  @param {Number} units
-	 *  @param {Array} testNotations
-	 *  @return {String}
-	 *  @private
-	 */
-	Tone.Time.prototype._toNotationHelper = function(units, testNotations){
-		//the threshold is the last value in the array
-		var threshold = this._notationToUnits(testNotations[testNotations.length - 1]);
-		var retNotation = "";
-		for (var i = 0; i < testNotations.length; i++){
-			var notationTime = this._notationToUnits(testNotations[i]);
-			//account for floating point errors (i.e. round up if the value is 0.999999)
-			var multiple = units / notationTime;
-			var floatingPointError = 0.000001;
-			if (1 - multiple % 1 < floatingPointError){
-				multiple += floatingPointError;
+		testNotations.push("0");
+		//find the closets notation representation
+		var closest = testNotations[0];
+		var closestSeconds = Tone.Time(testNotations[0]).toSeconds();
+		testNotations.forEach(function(notation){
+			var notationSeconds = Tone.Time(notation).toSeconds();
+			if (Math.abs(notationSeconds - time) < Math.abs(closestSeconds - time)){
+				closest = notation;
+				closestSeconds = notationSeconds;
 			}
-			multiple = Math.floor(multiple);
-			if (multiple > 0){
-				if (multiple === 1){
-					retNotation += testNotations[i];
-				} else {
-					retNotation += multiple.toString() + "*" + testNotations[i];
-				}
-				units -= multiple * notationTime;
-				if (units < threshold){
-					break;
-				} else {
-					retNotation += " + ";
-				}
-			}
-		}
-		if (retNotation === ""){
-			retNotation = "0";
-		}
-		return retNotation;
-	};
-
-	/**
-	 *  Convert a notation value to the current units
-	 *  @param  {Notation}  notation
-	 *  @return  {Number}
-	 *  @private
-	 */
-	Tone.Time.prototype._notationToUnits = function(notation){
-		var primaryExprs = this._expressions;
-		var notationExprs = [primaryExprs.n, primaryExprs.t, primaryExprs.m];
-		for (var i = 0; i < notationExprs.length; i++){
-			var expr = notationExprs[i];
-			var match = notation.match(expr.regexp);
-			if (match){
-				return expr.method.call(this, match[1]);
-			}
-		}
+		});
+		return closest;
 	};
 
 	/**
@@ -159,7 +110,7 @@ define(["Tone/core/Tone", "Tone/type/TimeBase"], function (Tone) {
 	 */
 	Tone.Time.prototype.toBarsBeatsSixteenths = function(){
 		var quarterTime = this._beatsToUnits(1);
-		var quarters = this.toSeconds() / quarterTime;
+		var quarters = this.valueOf() / quarterTime;
 		var measures = Math.floor(quarters / this._getTimeSignature());
 		var sixteenths = (quarters % 1) * 4;
 		quarters = Math.floor(quarters) % this._getTimeSignature();
@@ -178,7 +129,7 @@ define(["Tone/core/Tone", "Tone/type/TimeBase"], function (Tone) {
 	 */
 	Tone.Time.prototype.toTicks = function(){
 		var quarterTime = this._beatsToUnits(1);
-		var quarters = this.toSeconds() / quarterTime;
+		var quarters = this.valueOf() / quarterTime;
 		return Math.round(quarters * this._getPPQ());
 	};
 
