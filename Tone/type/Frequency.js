@@ -131,7 +131,7 @@ define(["Tone/core/Tone", "Tone/type/TimeBase"], function (Tone) {
 	 */
 	Tone.Frequency.prototype.toNote = function(){
 		var freq = this.toFrequency();
-		var log = Math.log(freq / Tone.Frequency.A4) / Math.LN2;
+		var log = Math.log2(freq / Tone.Frequency.A4);
 		var noteNumber = Math.round(12 * log) + 57;
 		var octave = Math.floor(noteNumber/12);
 		if(octave < 0){
@@ -279,7 +279,7 @@ define(["Tone/core/Tone", "Tone/type/TimeBase"], function (Tone) {
 	 * Tone.Frequency.ftom(440); // returns 69
 	 */
 	Tone.Frequency.ftom = function(frequency){
-		return 69 + Math.round(12 * Math.log(frequency / Tone.Frequency.A4) / Math.LN2);
+		return 69 + Math.round(12 * Math.log2(frequency / Tone.Frequency.A4));
 	};
 
 	return Tone.Frequency;
