@@ -39,7 +39,7 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal"], function (Tone) {
 			method.apply(this, arguments);
 			var event = this._events.get(time);
 			var previousEvent = this._events.previousEvent(event);
-			var ticksUntilTime = this._getTickUntilEvent(previousEvent, time - this.sampleTime);
+			var ticksUntilTime = this._getTicksUntilEvent(previousEvent, time - this.sampleTime);
 			event.ticks = Math.max(ticksUntilTime, 0);
 			return this;
 		};
@@ -111,7 +111,7 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal"], function (Tone) {
 	 * @return {Ticks}      The number of ticks which have elapsed at the time
 	 *                          given any automations.
 	 */
-	Tone.TickSignal.prototype._getTickUntilEvent = function(event, time){
+	Tone.TickSignal.prototype._getTicksUntilEvent = function(event, time){
 		if (event === null){
 			event = {
 				"ticks" : 0,
@@ -130,10 +130,10 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal"], function (Tone) {
 	 * @return {Ticks}      The number of ticks which have elapsed at the time
 	 *                          given any automations.
 	 */
-	Tone.TickSignal.prototype.getTickAtTime = function(time){
+	Tone.TickSignal.prototype.getTicksAtTime = function(time){
 		time = this.toSeconds(time);
 		var event = this._events.get(time);
-		return this._getTickUntilEvent(event, time);
+		return this._getTicksUntilEvent(event, time);
 	};
 
 	/**
@@ -144,7 +144,7 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal"], function (Tone) {
 	 */
 	Tone.TickSignal.prototype.getDurationOfTicks = function(ticks, time){
 		time = this.toSeconds(time);
-		var currentTick = this.getTickAtTime(time);
+		var currentTick = this.getTicksAtTime(time);
 		return this.getTimeOfTick(currentTick + ticks) - time;
 	};
 

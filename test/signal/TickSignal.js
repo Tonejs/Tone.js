@@ -1,4 +1,4 @@
-define(["Test", "Tone/signal/TickSignal", "helper/Offline"], 
+define(["Test", "Tone/signal/TickSignal", "helper/Offline"],
 	function (Test, TickSignal, Offline) {
 
 	describe("TickSignal", function(){
@@ -25,23 +25,23 @@ define(["Test", "Tone/signal/TickSignal", "helper/Offline"],
 
 		it("calculates the ticks when no changes are scheduled", function(){
 			var tickSignal0 = new TickSignal(2);
-			expect(tickSignal0.getTickAtTime(1)).to.be.closeTo(2, 0.01);
-			expect(tickSignal0.getTickAtTime(2)).to.be.closeTo(4, 0.01);
+			expect(tickSignal0.getTicksAtTime(1)).to.be.closeTo(2, 0.01);
+			expect(tickSignal0.getTicksAtTime(2)).to.be.closeTo(4, 0.01);
 			tickSignal0.dispose();
 
 			var tickSignal1 = new TickSignal(1);
-			expect(tickSignal1.getTickAtTime(1)).to.be.closeTo(1, 0.01);
-			expect(tickSignal1.getTickAtTime(2)).to.be.closeTo(2, 0.01);
+			expect(tickSignal1.getTicksAtTime(1)).to.be.closeTo(1, 0.01);
+			expect(tickSignal1.getTicksAtTime(2)).to.be.closeTo(2, 0.01);
 			tickSignal1.dispose();
 		});
 
 		it("calculates the ticks in the future when a setValueAtTime is scheduled", function(){
 			var tickSignal = new TickSignal(1);
 			tickSignal.setValueAtTime(2, 0.5);
-			expect(tickSignal.getTickAtTime(0)).to.be.closeTo(0, 0.01);
-			expect(tickSignal.getTickAtTime(0.5)).to.be.closeTo(0.5, 0.01);
-			expect(tickSignal.getTickAtTime(0.75)).to.be.closeTo(1, 0.01);
-			expect(tickSignal.getTickAtTime(1)).to.be.closeTo(1.5, 0.01);
+			expect(tickSignal.getTicksAtTime(0)).to.be.closeTo(0, 0.01);
+			expect(tickSignal.getTicksAtTime(0.5)).to.be.closeTo(0.5, 0.01);
+			expect(tickSignal.getTicksAtTime(0.75)).to.be.closeTo(1, 0.01);
+			expect(tickSignal.getTicksAtTime(1)).to.be.closeTo(1.5, 0.01);
 			tickSignal.dispose();
 		});
 
@@ -49,24 +49,24 @@ define(["Test", "Tone/signal/TickSignal", "helper/Offline"],
 			var tickSignal = new TickSignal(1);
 			tickSignal.setValueAtTime(2, 1);
 			tickSignal.setValueAtTime(4, 2);
-			expect(tickSignal.getTickAtTime(0)).to.be.closeTo(0, 0.01);
-			expect(tickSignal.getTickAtTime(0.5)).to.be.closeTo(0.5, 0.01);
-			expect(tickSignal.getTickAtTime(1)).to.be.closeTo(1, 0.01);
-			expect(tickSignal.getTickAtTime(1.5)).to.be.closeTo(2, 0.01);
-			expect(tickSignal.getTickAtTime(2)).to.be.closeTo(3, 0.01);
-			expect(tickSignal.getTickAtTime(2.5)).to.be.closeTo(5, 0.01);
-			expect(tickSignal.getTickAtTime(3)).to.be.closeTo(7, 0.01);
+			expect(tickSignal.getTicksAtTime(0)).to.be.closeTo(0, 0.01);
+			expect(tickSignal.getTicksAtTime(0.5)).to.be.closeTo(0.5, 0.01);
+			expect(tickSignal.getTicksAtTime(1)).to.be.closeTo(1, 0.01);
+			expect(tickSignal.getTicksAtTime(1.5)).to.be.closeTo(2, 0.01);
+			expect(tickSignal.getTicksAtTime(2)).to.be.closeTo(3, 0.01);
+			expect(tickSignal.getTicksAtTime(2.5)).to.be.closeTo(5, 0.01);
+			expect(tickSignal.getTicksAtTime(3)).to.be.closeTo(7, 0.01);
 			tickSignal.dispose();
 		});
 
-		it("if ticks are 0, getTickAtTime will return 0", function(){
+		it("if ticks are 0, getTicksAtTime will return 0", function(){
 			var tickSignal = new TickSignal(0);
 			tickSignal.setValueAtTime(0, 1);
 			tickSignal.linearRampToValueAtTime(0, 2);
-			expect(tickSignal.getTickAtTime(0)).to.equal(0);
-			expect(tickSignal.getTickAtTime(1)).to.equal(0);
-			expect(tickSignal.getTickAtTime(2)).to.equal(0);
-			expect(tickSignal.getTickAtTime(3)).to.equal(0);
+			expect(tickSignal.getTicksAtTime(0)).to.equal(0);
+			expect(tickSignal.getTicksAtTime(1)).to.equal(0);
+			expect(tickSignal.getTicksAtTime(2)).to.equal(0);
+			expect(tickSignal.getTicksAtTime(3)).to.equal(0);
 			tickSignal.dispose();
 		});
 
@@ -74,10 +74,10 @@ define(["Test", "Tone/signal/TickSignal", "helper/Offline"],
 			var tickSignal = new TickSignal(1);
 			tickSignal.setValueAtTime(1, 0);
 			tickSignal.linearRampToValueAtTime(2, 1);
-			expect(tickSignal.getTickAtTime(0)).to.be.closeTo(0, 0.01);
-			expect(tickSignal.getTickAtTime(0.5)).to.be.closeTo(0.62, 0.01);
-			expect(tickSignal.getTickAtTime(1)).to.be.closeTo(1.5, 0.01);
-			expect(tickSignal.getTickAtTime(2)).to.be.closeTo(3.5, 0.01);
+			expect(tickSignal.getTicksAtTime(0)).to.be.closeTo(0, 0.01);
+			expect(tickSignal.getTicksAtTime(0.5)).to.be.closeTo(0.62, 0.01);
+			expect(tickSignal.getTicksAtTime(1)).to.be.closeTo(1.5, 0.01);
+			expect(tickSignal.getTicksAtTime(2)).to.be.closeTo(3.5, 0.01);
 			tickSignal.dispose();
 		});
 
@@ -86,11 +86,11 @@ define(["Test", "Tone/signal/TickSignal", "helper/Offline"],
 			tickSignal.setValueAtTime(1, 0);
 			tickSignal.linearRampToValueAtTime(2, 1);
 			tickSignal.linearRampToValueAtTime(0, 2);
-			expect(tickSignal.getTickAtTime(0)).to.be.closeTo(0, 0.01);
-			expect(tickSignal.getTickAtTime(0.5)).to.be.closeTo(0.62, 0.01);
-			expect(tickSignal.getTickAtTime(1)).to.be.closeTo(1.5, 0.01);
-			expect(tickSignal.getTickAtTime(2)).to.be.closeTo(2.5, 0.01);
-			expect(tickSignal.getTickAtTime(3)).to.be.closeTo(2.5, 0.01);
+			expect(tickSignal.getTicksAtTime(0)).to.be.closeTo(0, 0.01);
+			expect(tickSignal.getTicksAtTime(0.5)).to.be.closeTo(0.62, 0.01);
+			expect(tickSignal.getTicksAtTime(1)).to.be.closeTo(1.5, 0.01);
+			expect(tickSignal.getTicksAtTime(2)).to.be.closeTo(2.5, 0.01);
+			expect(tickSignal.getTicksAtTime(3)).to.be.closeTo(2.5, 0.01);
 			tickSignal.dispose();
 		});
 
@@ -98,11 +98,11 @@ define(["Test", "Tone/signal/TickSignal", "helper/Offline"],
 			var tickSignal = new TickSignal(1);
 			tickSignal.setValueAtTime(1, 0);
 			tickSignal.exponentialRampToValueAtTime(2, 1);
-			expect(tickSignal.getTickAtTime(0)).to.be.closeTo(0, 0.01);
-			expect(tickSignal.getTickAtTime(0.5)).to.be.closeTo(0.6, 0.01);
-			expect(tickSignal.getTickAtTime(1)).to.be.closeTo(1.5, 0.1);
-			expect(tickSignal.getTickAtTime(2)).to.be.closeTo(3.5, 0.1);
-			expect(tickSignal.getTickAtTime(3)).to.be.closeTo(5.5, 0.1);
+			expect(tickSignal.getTicksAtTime(0)).to.be.closeTo(0, 0.01);
+			expect(tickSignal.getTicksAtTime(0.5)).to.be.closeTo(0.6, 0.01);
+			expect(tickSignal.getTicksAtTime(1)).to.be.closeTo(1.5, 0.1);
+			expect(tickSignal.getTicksAtTime(2)).to.be.closeTo(3.5, 0.1);
+			expect(tickSignal.getTicksAtTime(3)).to.be.closeTo(5.5, 0.1);
 			tickSignal.dispose();
 		});
 
@@ -111,11 +111,11 @@ define(["Test", "Tone/signal/TickSignal", "helper/Offline"],
 			tickSignal.setValueAtTime(1, 0);
 			tickSignal.exponentialRampToValueAtTime(2, 1);
 			tickSignal.exponentialRampToValueAtTime(0, 2);
-			expect(tickSignal.getTickAtTime(0)).to.be.closeTo(0, 0.01);
-			expect(tickSignal.getTickAtTime(0.5)).to.be.closeTo(0.6, 0.01);
-			expect(tickSignal.getTickAtTime(1)).to.be.closeTo(1.5, 0.1);
-			expect(tickSignal.getTickAtTime(2)).to.be.closeTo(1.66, 0.1);
-			expect(tickSignal.getTickAtTime(3)).to.be.closeTo(1.66, 0.1);
+			expect(tickSignal.getTicksAtTime(0)).to.be.closeTo(0, 0.01);
+			expect(tickSignal.getTicksAtTime(0.5)).to.be.closeTo(0.6, 0.01);
+			expect(tickSignal.getTicksAtTime(1)).to.be.closeTo(1.5, 0.1);
+			expect(tickSignal.getTicksAtTime(2)).to.be.closeTo(1.66, 0.1);
+			expect(tickSignal.getTicksAtTime(3)).to.be.closeTo(1.66, 0.1);
 			tickSignal.dispose();
 		});
 
@@ -235,7 +235,7 @@ define(["Test", "Tone/signal/TickSignal", "helper/Offline"],
 			tickSignal.setTargetAtTime(8, 5, 0.2);
 
 			for (var time = 0; time < 5; time+=0.2){
-				var tick = tickSignal.getTickAtTime(time);
+				var tick = tickSignal.getTicksAtTime(time);
 				expect(tickSignal.getTimeOfTick(tick)).to.be.closeTo(time, 0.1);
 			}
 
