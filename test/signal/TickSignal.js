@@ -114,8 +114,8 @@ define(["Test", "Tone/signal/TickSignal", "helper/Offline"],
 			expect(tickSignal.getTicksAtTime(0)).to.be.closeTo(0, 0.01);
 			expect(tickSignal.getTicksAtTime(0.5)).to.be.closeTo(0.6, 0.01);
 			expect(tickSignal.getTicksAtTime(1)).to.be.closeTo(1.5, 0.1);
-			expect(tickSignal.getTicksAtTime(2)).to.be.closeTo(1.66, 0.1);
-			expect(tickSignal.getTicksAtTime(3)).to.be.closeTo(1.66, 0.1);
+			expect(tickSignal.getTicksAtTime(2)).to.be.closeTo(1.54, 0.1);
+			expect(tickSignal.getTicksAtTime(3)).to.be.closeTo(1.54, 0.1);
 			tickSignal.dispose();
 		});
 
@@ -123,8 +123,8 @@ define(["Test", "Tone/signal/TickSignal", "helper/Offline"],
 			var tickSignal = new TickSignal(1);
 			tickSignal.setTargetAtTime(0.5, 0, 0.1);
 			expect(tickSignal.getTimeOfTick(0)).to.be.closeTo(0, 0.01);
-			expect(tickSignal.getTimeOfTick(1)).to.be.closeTo(1.88, 0.01);
-			expect(tickSignal.getTimeOfTick(2)).to.be.closeTo(3.86, 0.01);
+			expect(tickSignal.getTimeOfTick(1)).to.be.closeTo(1.89, 0.01);
+			expect(tickSignal.getTimeOfTick(2)).to.be.closeTo(3.89, 0.01);
 			tickSignal.dispose();
 		});
 

@@ -64,7 +64,7 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal"], function (Tone) {
 
 		//start from previously scheduled value
 		var prevEvent = this._events.get(time);
-		var segments = 5;
+		var segments = Math.round(Math.max(1 / constant, 1));
 		for (var i = 0; i <= segments; i++){
 			var segTime = constant * i + time;
 			var rampVal = this._exponentialApproach(prevEvent.time, prevEvent.value, value, constant, segTime);
@@ -93,7 +93,8 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal"], function (Tone) {
 				"time" : 0
 			};
 		}
-		var segments = 5;
+		//approx 10 segments per second
+		var segments = Math.round(Math.max((time - prevEvent.time)*10, 1));
 		var segmentDur = ((time - prevEvent.time)/segments);
 		for (var i = 0; i <= segments; i++){
 			var segTime = segmentDur * i + prevEvent.time;
