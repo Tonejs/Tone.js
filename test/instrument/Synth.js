@@ -1,5 +1,5 @@
-define(["Tone/instrument/Synth", "helper/Basic", "helper/InstrumentTests", "helper/APITest", "helper/Offline"], 
-	function (Synth, Basic, InstrumentTest, APITest, Offline) {
+define(["Tone/instrument/Synth", "helper/Basic", "helper/InstrumentTests", "helper/APITest", "helper/Offline", "Tone/type/Frequency"],
+	function (Synth, Basic, InstrumentTest, APITest, Offline, Frequency) {
 
 	describe("Synth", function(){
 
@@ -39,6 +39,15 @@ define(["Tone/instrument/Synth", "helper/Basic", "helper/InstrumentTests", "help
 				});
 				expect(simple.get().envelope.decay).to.equal(0.24);
 				simple.dispose();
+			});
+
+			it("can be trigged with a Tone.Frequency", function(){
+				return Offline(function(){
+					var synth = new Synth().toMaster();
+					synth.triggerAttack(Frequency("C4"), 0);
+				}).then(function(buffer){
+					expect(buffer.isSilent()).to.be.false;
+				});
 			});
 
 			APITest.method(Synth, "triggerAttack", ["Frequency", "Time=", "NormalRange="]);

@@ -1,7 +1,7 @@
 define(["Tone/instrument/PolySynth", "helper/Basic", "helper/InstrumentTests", "helper/OutputAudioStereo",
 	"Tone/instrument/Instrument", "Test", "helper/OutputAudio", "Tone/instrument/MonoSynth", "helper/Offline",
-	"Tone/instrument/Sampler"],
-function (PolySynth, Basic, InstrumentTests, OutputAudioStereo, Instrument, Test, OutputAudio, MonoSynth, Offline, Sampler) {
+	"Tone/instrument/Sampler", "Tone/type/Frequency"],
+function (PolySynth, Basic, InstrumentTests, OutputAudioStereo, Instrument, Test, OutputAudio, MonoSynth, Offline, Sampler, Frequency) {
 
 	describe("PolySynth", function(){
 
@@ -20,6 +20,14 @@ function (PolySynth, Basic, InstrumentTests, OutputAudioStereo, Instrument, Test
 				var polySynth = new PolySynth();
 				polySynth.connect(Test);
 				polySynth.dispose();
+			});
+
+			it("can be trigged with an array of Tone.Frequency", function(){
+				return OutputAudio(function(){
+					var polySynth = new PolySynth(2);
+					polySynth.toMaster();
+					polySynth.triggerAttackRelease(Frequency("C4").harmonize([0, 2]), 0.1, 0);
+				});
 			});
 
 			it("triggerAttackRelease can take an array of durations", function(){
