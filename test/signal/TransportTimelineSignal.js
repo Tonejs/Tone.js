@@ -140,7 +140,7 @@ define(["Test", "Tone/signal/TransportTimelineSignal", "helper/Offline", "Tone/t
 				Transport.start(0);
 			}, 3).then(function(buffer){
 				buffer.forEach(function(sample, time){
-					expect(sample).to.be.closeTo(sched.getValueAtTime(time), 0.01);
+					expect(sample).to.be.closeTo(sched.getValueAtTime(time), 0.02);
 				});
 			});
 		});
