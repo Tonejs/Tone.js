@@ -190,6 +190,66 @@ define(["Test", "Tone/core/Clock", "helper/Offline", "helper/Supports"],
 			});
 		});
 
+		context("Seconds", function(){
+
+			it("can set the current seconds", function(){
+				return Offline(function(){
+					var clock = new Clock(function(){}, 10);
+					expect(clock.seconds).to.equal(0);
+					clock.seconds = 3;
+					expect(clock.seconds).to.be.closeTo(3, 0.01);
+					clock.dispose();
+				});
+			});
+
+			it("can get the seconds", function(){
+				return Offline(function(){
+					var clock = new Clock(function(){}, 10);
+					expect(clock.seconds).to.equal(0);
+					clock.start(0.05);
+					return function(time){
+						if (time > 0.05){
+							expect(clock.seconds).to.be.closeTo(time - 0.05, 0.01);
+						}
+					};
+				}, 0.1);
+			});
+
+			it("can get the seconds during a bpm ramp", function(){
+				return Offline(function(){
+					var clock = new Clock(function(){}, 10);
+					expect(clock.seconds).to.equal(0);
+					clock.start(0.05);
+					clock.frequency.linearRampTo(60, 0.5, 0.5)
+					return function(time){
+						if (time > 0.05){
+							expect(clock.seconds).to.be.closeTo(time - 0.05, 0.01);
+						}
+					};
+				}, 0.7);
+			});
+
+			it("can set seconds during a bpm ramp", function(){
+				return Offline(function(){
+					var clock = new Clock(function(){}, 10);
+					expect(clock.seconds).to.equal(0);
+					clock.start(0.05);
+					clock.frequency.linearRampTo(60, 0.5, 0.5)
+					var changeSeconds = Test.atTime(0.4, function(){
+						clock.seconds = 0
+					});
+					return function(time){
+						changeSeconds(time);
+						if (time > 0.05 && time < 0.4){
+							expect(clock.seconds).to.be.closeTo(time - 0.05, 0.01);
+						} else if (time > 0.4){
+							expect(clock.seconds).to.be.closeTo(time - 0.4, 0.01);
+						}
+					};
+				}, 0.7);
+			});
+		});
+
 		context("Ticks", function(){
 
 			it ("has 0 ticks when first created", function(){
@@ -329,6 +389,127 @@ define(["Test", "Tone/core/Clock", "helper/Offline", "helper/Supports"],
 					clock.start().pause(0.1).stop(0.2);
 				});
 			});
+		});
+
+		context("[get,set]TicksAtTime", function(){
+
+			it ("always reports 0 if not started", function(){
+				return Offline(function(){
+					var clock = new Clock(function(){}, 20);
+					expect(clock.getTicksAtTime(0)).to.equal(0);
+					expect(clock.getTicksAtTime(1)).to.equal(0);
+					expect(clock.getTicksAtTime(2)).to.equal(0);
+					clock.dispose();
+				});
+			});
+
+			it ("can get ticks in the future", function(){
+				return Offline(function(){
+					var clock = new Clock(function(){}, 20);
+					clock.start(1);
+					expect(clock.getTicksAtTime(1)).to.be.closeTo(0, 0.01);
+					expect(clock.getTicksAtTime(1.5)).to.be.closeTo(10, 0.01);
+					expect(clock.getTicksAtTime(2)).to.be.closeTo(20, 0.01);
+					clock.dispose();
+				});
+			});
+
+			it ("pauses on last ticks", function(){
+				return Offline(function(){
+					var clock = new Clock(function(){}, 20);
+					clock.start(0).pause(1);
+					expect(clock.getTicksAtTime(0.5)).to.be.closeTo(10, 0.01);
+					expect(clock.getTicksAtTime(1)).to.be.closeTo(20, 0.01);
+					expect(clock.getTicksAtTime(2)).to.be.closeTo(20, 0.01);
+					expect(clock.getTicksAtTime(3)).to.be.closeTo(20, 0.01);
+					clock.dispose();
+				});
+			});
+
+			it ("resumes from paused position", function(){
+				return Offline(function(){
+					var clock = new Clock(function(){}, 20);
+					clock.start(0).pause(1).start(2);
+					expect(clock.getTicksAtTime(0.5)).to.be.closeTo(10, 0.01);
+					expect(clock.getTicksAtTime(1)).to.be.closeTo(20, 0.01);
+					expect(clock.getTicksAtTime(2)).to.be.closeTo(20, 0.01);
+					expect(clock.getTicksAtTime(3)).to.be.closeTo(40, 0.01);
+					expect(clock.getTicksAtTime(3.5)).to.be.closeTo(50, 0.01);
+					clock.dispose();
+				});
+			});
+
+			it ("can set a tick value at the given time", function(){
+				return Offline(function(){
+					var clock = new Clock(function(){}, 20);
+					clock.start(0);
+					clock.setTicksAtTime(0, 1);
+					clock.setTicksAtTime(0, 2);
+					expect(clock.getTicksAtTime(0)).to.be.closeTo(0, 0.01);
+					expect(clock.getTicksAtTime(0.5)).to.be.closeTo(10, 0.01);
+					expect(clock.getTicksAtTime(1)).to.be.closeTo(0, 0.01);
+					expect(clock.getTicksAtTime(1.5)).to.be.closeTo(10, 0.01);
+					expect(clock.getTicksAtTime(2)).to.be.closeTo(0, 0.01);
+					expect(clock.getTicksAtTime(2.5)).to.be.closeTo(10, 0.01);
+					expect(clock.getTicksAtTime(3)).to.be.closeTo(20, 0.01);
+					clock.dispose();
+				});
+			});
+
+			it ("can get a tick position while the frequency is scheduled with setValueAtTime", function(){
+				return Offline(function(){
+					var clock = new Clock(function(){}, 20);
+					clock.start(0);
+					clock.frequency.setValueAtTime(2, 1)
+					clock.setTicksAtTime(0, 1);
+					clock.setTicksAtTime(0, 2);
+					expect(clock.getTicksAtTime(0)).to.be.closeTo(0, 0.01);
+					expect(clock.getTicksAtTime(0.5)).to.be.closeTo(10, 0.01);
+					expect(clock.getTicksAtTime(1)).to.be.closeTo(0, 0.01);
+					expect(clock.getTicksAtTime(1.5)).to.be.closeTo(1, 0.01);
+					expect(clock.getTicksAtTime(2)).to.be.closeTo(0, 0.01);
+					expect(clock.getTicksAtTime(2.5)).to.be.closeTo(1, 0.01);
+					expect(clock.getTicksAtTime(3)).to.be.closeTo(2, 0.01);
+					clock.dispose();
+				});
+			});
+
+			it ("can get a tick position while the frequency is scheduled with linearRampTo", function(){
+				return Offline(function(){
+					var clock = new Clock(function(){}, 20);
+					clock.start(0);
+					clock.frequency.linearRampTo(2, 1, 1)
+					clock.setTicksAtTime(0, 1);
+					clock.setTicksAtTime(10, 2);
+					expect(clock.getTicksAtTime(0)).to.be.closeTo(0, 0.01);
+					expect(clock.getTicksAtTime(0.5)).to.be.closeTo(10, 0.01);
+					expect(clock.getTicksAtTime(1)).to.be.closeTo(0, 0.01);
+					expect(clock.getTicksAtTime(1.5)).to.be.closeTo(7.75, 0.01);
+					expect(clock.getTicksAtTime(2)).to.be.closeTo(10, 0.01);
+					expect(clock.getTicksAtTime(2.5)).to.be.closeTo(11, 0.01);
+					expect(clock.getTicksAtTime(3)).to.be.closeTo(12, 0.01);
+					clock.dispose();
+				});
+			});
+
+			it ("can get a tick position while the frequency is scheduled with exponentialRampTo", function(){
+				return Offline(function(){
+					var clock = new Clock(function(){}, 20);
+					clock.start(0);
+					clock.frequency.exponentialRampTo(2, 1, 1)
+					clock.setTicksAtTime(0, 1);
+					clock.setTicksAtTime(10, 2);
+					expect(clock.getTicksAtTime(0)).to.be.closeTo(0, 0.01);
+					expect(clock.getTicksAtTime(0.5)).to.be.closeTo(10, 0.01);
+					expect(clock.getTicksAtTime(1)).to.be.closeTo(0, 0.01);
+					expect(clock.getTicksAtTime(1.5)).to.be.closeTo(5.96, 0.01);
+					expect(clock.getTicksAtTime(2)).to.be.closeTo(10, 0.01);
+					expect(clock.getTicksAtTime(2.5)).to.be.closeTo(11, 0.01);
+					expect(clock.getTicksAtTime(3)).to.be.closeTo(12, 0.01);
+					clock.dispose();
+				});
+			});
+
 		});
 
 	});
