@@ -206,7 +206,7 @@ define(["Tone/core/Tone"], function (Tone) {
 	 * @private
 	 */
 	Tone.TimeBase.prototype._now = function(){
-		return Tone.now();
+		return this.now();
 	};
 
 	///////////////////////////////////////////////////////////////////////////
