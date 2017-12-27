@@ -201,7 +201,7 @@ define(["Tone/core/Tone", "Tone/core/Clock", "Tone/type/Type", "Tone/core/Timeli
 		if (this.loop){
 			if (ticks >= this._loopEnd){
 				this.emit("loopEnd", tickTime);
-				this._clock.ticks = this._loopStart;
+				this._clock.setTicksAtTime(this._loopStart, tickTime);
 				ticks = this._loopStart;
 				this.emit("loopStart", tickTime, this.seconds);
 				this.emit("loop", tickTime);
@@ -600,11 +600,11 @@ define(["Tone/core/Tone", "Tone/core/Clock", "Tone/type/Type", "Tone/core/Timeli
 				//stop everything synced to the transport
 				if (this.state === Tone.State.Started){
 					this.emit("stop", now);
-					this._clock.ticks = t;
+					this._clock.setTicksAtTime(t, now);
 					//restart it with the new time
 					this.emit("start", now, this.seconds);
 				} else {
-					this._clock.ticks = t;
+					this._clock.setTicksAtTime(t, now);
 				}
 			}
 		}
