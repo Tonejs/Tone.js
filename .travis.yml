@@ -3,6 +3,9 @@ dist: trusty
 language: node_js
 node_js:
 - '8'
+env:
+  - BROWSER=chrome
+  - BROWSER=firefox
 addons:
   chrome: stable
   firefox: latest

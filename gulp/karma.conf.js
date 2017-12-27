@@ -1,6 +1,14 @@
 // Karma configuration
 // Generated on Mon Feb 01 2016 22:48:23 GMT-0500 (EST)
 
+var BROWSERS = ['HeadlessFirefox', 'HeadlessChrome']
+
+if (process.env.BROWSER === 'chrome'){
+	BROWSERS = ['HeadlessChrome']
+} else if (process.env.BROWSER === 'firefox'){
+	BROWSERS = ['HeadlessFirefox']
+}
+
 module.exports = function(config) {
 	var configuration = {
 
@@ -92,8 +100,7 @@ module.exports = function(config) {
 
 		// start these browsers
 		// available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-		browsers: ['HeadlessFirefox', 'HeadlessChrome'],
-		// browsers: ['HeadlessChrome'],
+		browsers: BROWSERS,
 
 
 		// Continuous Integration mode
