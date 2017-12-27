@@ -576,7 +576,9 @@ define(["Tone/core/Tone", "Tone/core/Clock", "Tone/type/Type", "Tone/core/Timeli
 	Object.defineProperty(Tone.Transport.prototype, "progress", {
 		get : function(){
 			if (this.loop){
-				return (this.ticks - this._loopStart) / (this._loopEnd - this._loopStart);
+				var now = this.now();
+				var ticks = this._clock.getTicksAtTime(now);
+				return (ticks - this._loopStart) / (this._loopEnd - this._loopStart);
 			} else {
 				return 0;
 			}
