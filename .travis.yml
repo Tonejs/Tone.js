@@ -18,9 +18,8 @@ before_script:
 - git config --global user.email "travis@travis-ci.org"
 - git config --global user.name "Travis CI"
 script: gulp travis-test
-after_success:
-- sh success.sh
 before_deploy:
+- sh success.sh
 - node increment_version.js
 - cd ../
 jobs:
