@@ -22,9 +22,33 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal"], function (Tone) {
 
 		//extend the memory
 		this._events.memory = Infinity;
+
+		//clear the clock from the beginning
+		this.cancelScheduledValues(0);
+		this.setValueAtTime(value, 0);
 	};
 
 	Tone.extend(Tone.TickSignal, Tone.TimelineSignal);
+
+	/**
+	 * The current value of the signal.
+	 * @memberOf Tone.TimelineSignal#
+	 * @type {Number}
+	 * @name value
+	 */
+	Object.defineProperty(Tone.TickSignal.prototype, "value", {
+		get : function(){
+			var now = this.now();
+			return this._toUnits(this.getValueAtTime(now));
+		},
+		set : function(value){
+			if (this._events){
+				this._initial = value;
+				this.cancelScheduledValues();
+				this.setValueAtTime(value, this.now());
+			}
+		}
+	});
 
 	/**
 	 * Wraps Tone.TimelineSignal methods so that they also
