@@ -294,7 +294,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/source
 		set : function(loopStart){
 			this._loopStart = loopStart;
 			//get the current source
-			var event = this._state.get(Tone.now());
+			var event = this._state.get(this.now());
 			if (event && event.source){
 				event.source.loopStart = this.toSeconds(loopStart);
 			}
@@ -314,7 +314,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/source
 		set : function(loopEnd){
 			this._loopEnd = loopEnd;
 			//get the current source
-			var event = this._state.get(Tone.now());
+			var event = this._state.get(this.now());
 			if (event && event.source){
 				event.source.loopEnd = this.toSeconds(loopEnd);
 			}
@@ -349,7 +349,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/source
 		set : function(loop){
 			this._loop = loop;
 			//get the current source
-			var event = this._state.get(Tone.now());
+			var event = this._state.get(this.now());
 			if (event && event.source){
 				event.source.loop = loop;
 			}
@@ -370,7 +370,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/source
 		set : function(rate){
 			this._playbackRate = rate;
 			//get the current source
-			var event = this._state.get(Tone.now());
+			var event = this._state.get(this.now());
 			if (event && event.source){
 				event.source.playbackRate.value = rate;
 			}
