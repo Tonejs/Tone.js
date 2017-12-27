@@ -3,12 +3,6 @@ dist: trusty
 language: node_js
 node_js:
 - '8'
-env:
-  - BROWSER=chrome
-  - BROWSER=firefox
-addons:
-  chrome: stable
-  firefox: latest
 before_script:
 - cd gulp
 - npm install -g jsdoc
@@ -18,12 +12,24 @@ before_script:
 - git config --global user.email "travis@travis-ci.org"
 - git config --global user.name "Travis CI"
 script: gulp travis-test
+after_success:
+- gulp coveralls
 before_deploy:
-- sh success.sh
+- sh deploy_updates.sh
 - node increment_version.js
 - cd ../
 jobs:
   include:
+    - stage: test
+      script: gulp travis-test
+      env : BROWSER=chrome
+      addons:
+        chrome: stable
+    - stage: test
+      script: gulp travis-test
+      env : BROWSER=firefox
+      addons:
+        firefox: latest
     - stage: deploy
       script: skip
       deploy:
