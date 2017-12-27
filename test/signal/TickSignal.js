@@ -27,11 +27,13 @@ define(["Test", "Tone/signal/TickSignal", "helper/Offline"],
 			var tickSignal0 = new TickSignal(2);
 			expect(tickSignal0.getTicksAtTime(1)).to.be.closeTo(2, 0.01);
 			expect(tickSignal0.getTicksAtTime(2)).to.be.closeTo(4, 0.01);
+			expect(tickSignal0.getTimeOfTick(4)).to.be.closeTo(2, 0.01);
 			tickSignal0.dispose();
 
 			var tickSignal1 = new TickSignal(1);
 			expect(tickSignal1.getTicksAtTime(1)).to.be.closeTo(1, 0.01);
 			expect(tickSignal1.getTicksAtTime(2)).to.be.closeTo(2, 0.01);
+			expect(tickSignal1.getTimeOfTick(2)).to.be.closeTo(2, 0.01);
 			tickSignal1.dispose();
 		});
 
@@ -42,6 +44,7 @@ define(["Test", "Tone/signal/TickSignal", "helper/Offline"],
 			expect(tickSignal.getTicksAtTime(0.5)).to.be.closeTo(0.5, 0.01);
 			expect(tickSignal.getTicksAtTime(0.75)).to.be.closeTo(1, 0.01);
 			expect(tickSignal.getTicksAtTime(1)).to.be.closeTo(1.5, 0.01);
+			expect(tickSignal.getTimeOfTick(1.5)).to.be.closeTo(1, 0.01);
 			tickSignal.dispose();
 		});
 
@@ -56,6 +59,7 @@ define(["Test", "Tone/signal/TickSignal", "helper/Offline"],
 			expect(tickSignal.getTicksAtTime(2)).to.be.closeTo(3, 0.01);
 			expect(tickSignal.getTicksAtTime(2.5)).to.be.closeTo(5, 0.01);
 			expect(tickSignal.getTicksAtTime(3)).to.be.closeTo(7, 0.01);
+			expect(tickSignal.getTimeOfTick(7)).to.be.closeTo(3, 0.01);
 			tickSignal.dispose();
 		});
 
