@@ -557,10 +557,11 @@ define(["Tone/core/Tone", "Tone/core/Clock", "Tone/type/Type", "Tone/core/Timeli
 	 */
 	Object.defineProperty(Tone.Transport.prototype, "seconds", {
 		get : function(){
-			return Tone.Ticks(this.ticks).toSeconds();
+			return this._clock.seconds;
 		},
-		set : function(progress){
-			var ticks = this.toTicks(progress);
+		set : function(s){
+			var now = this.now();
+			var ticks = this.bpm.timeToTicks(s, now);
 			this.ticks = ticks;
 		}
 	});

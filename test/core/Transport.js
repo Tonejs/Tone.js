@@ -199,6 +199,19 @@ function (Test, Transport, Tone, Offline, TransportTime, Signal, BufferTest, Tim
 				}, 0.1);
 			});
 
+			it("can get the current position in seconds during a bpm ramp", function(){
+				return Offline(function(Transport){
+					expect(Transport.seconds).to.equal(0);
+					Transport.start(0.05);
+					Transport.bpm.linearRampTo(60, 0.5, 0.5)
+					return function(time){
+						if (time > 0.05){
+							expect(Transport.seconds).to.be.closeTo(time - 0.05, 0.01);
+						}
+					};
+				}, 0.7);
+			});
+
 			it("can set the current position in seconds", function(){
 				return Offline(function(Transport){
 					expect(Transport.seconds).to.equal(0);
