@@ -91,5 +91,27 @@ define(["helper/Basic", "Test", "Tone/type/Midi", "Tone/core/Tone",
 			});
 		});
 
+		context("transpose/harmonize", function(){
+
+			it ("can transpose a value", function(){
+				expect(Tone.Midi("A4").transpose(3).toMidi()).to.equal(72);
+				expect(Tone.Midi("A4").transpose(-3).toMidi()).to.equal(66);
+				expect(Tone.Midi(69).transpose(-12).valueOf()).to.equal(57);
+			});
+
+			it ("can harmonize a value", function(){
+				expect(Tone.Midi("A4").harmonize([0, 3])).to.be.an("array");
+				expect(Tone.Midi("A4").harmonize([0, 3]).length).to.equal(2);
+				expect(Tone.Midi("A4").harmonize([0, 3])[0].toNote()).to.equal("A4");
+				expect(Tone.Midi("A4").harmonize([0, 3])[1].toNote()).to.equal("C5");
+
+				expect(Tone.Midi("A4").harmonize([-12, 0, 12])).to.be.an("array");
+				expect(Tone.Midi("A4").harmonize([-12, 0, 12]).length).to.equal(3);
+				expect(Tone.Midi("A4").harmonize([-12, 0, 12])[0].toNote()).to.equal("A3");
+				expect(Tone.Midi("A4").harmonize([-12, 0, 12])[1].toNote()).to.equal("A4");
+				expect(Tone.Midi("A4").harmonize([-12, 0, 12])[2].toNote()).to.equal("A5");
+			});
+		});
+
 	});
 });

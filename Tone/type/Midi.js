@@ -90,5 +90,16 @@ define(["Tone/core/Tone", "Tone/type/Frequency"], function (Tone) {
 		return Tone.Frequency.mtof(this.toMidi());
 	};
 
+	/**
+	 *  Transposes the frequency by the given number of semitones.
+	 *  @param  {Interval}  interval
+	 *  @return  {Tone.Frequency} A new transposed frequency
+	 *  @example
+	 * Tone.Frequency("A4").transpose(3); //"C5"
+	 */
+	Tone.Midi.prototype.transpose = function(interval){
+		return new this.constructor(this.toMidi() + interval);
+	};
+
 	return Tone.Midi;
 });
