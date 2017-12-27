@@ -164,6 +164,28 @@ define(["helper/Basic", "Test", "Tone/type/Frequency", "Tone/core/Tone",
 
 		});
 
+		context("transpose/harmonize", function(){
+
+			it ("can transpose a value", function(){
+				expect(Tone.Frequency("A4").transpose(3).toMidi()).to.equal(72);
+				expect(Tone.Frequency("A4").transpose(-3).toMidi()).to.equal(66);
+				expect(Tone.Frequency(440).transpose(-12).valueOf()).to.equal(220);
+			});
+
+			it ("can harmonize a value", function(){
+				expect(Tone.Frequency("A4").harmonize([0, 3])).to.be.an("array");
+				expect(Tone.Frequency("A4").harmonize([0, 3]).length).to.equal(2);
+				expect(Tone.Frequency("A4").harmonize([0, 3])[0].toNote()).to.equal("A4");
+				expect(Tone.Frequency("A4").harmonize([0, 3])[1].toNote()).to.equal("C5");
+
+				expect(Tone.Frequency("A4").harmonize([-12, 0, 12])).to.be.an("array");
+				expect(Tone.Frequency("A4").harmonize([-12, 0, 12]).length).to.equal(3);
+				expect(Tone.Frequency("A4").harmonize([-12, 0, 12])[0].toNote()).to.equal("A3");
+				expect(Tone.Frequency("A4").harmonize([-12, 0, 12])[1].toNote()).to.equal("A4");
+				expect(Tone.Frequency("A4").harmonize([-12, 0, 12])[2].toNote()).to.equal("A5");
+			});
+		});
+
 		context("Conversions", function(){
 
 			it("can convert frequencies into notes", function(){

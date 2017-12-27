@@ -77,36 +77,26 @@ define(["Tone/core/Tone", "Tone/type/TimeBase"], function (Tone) {
 	/**
 	 *  Transposes the frequency by the given number of semitones.
 	 *  @param  {Interval}  interval
-	 *  @return  {Tone.Frequency} this
+	 *  @return  {Tone.Frequency} A new transposed frequency
 	 *  @example
 	 * Tone.Frequency("A4").transpose(3); //"C5"
 	 */
 	Tone.Frequency.prototype.transpose = function(interval){
-		this._expr = function(expr, interval){
-			var val = expr();
-			return val * Tone.intervalToFrequencyRatio(interval);
-		}.bind(this, this._expr, interval);
-		return this;
+		return new this.constructor(this.valueOf() * Tone.intervalToFrequencyRatio(interval));
 	};
 
 	/**
 	 *  Takes an array of semitone intervals and returns
 	 *  an array of frequencies transposed by those intervals.
 	 *  @param  {Array}  intervals
-	 *  @return  {Tone.Frequency} this
+	 *  @return  {Array<Tone.Frequency>} Returns an array of Frequencies
 	 *  @example
 	 * Tone.Frequency("A4").harmonize([0, 3, 7]); //["A4", "C5", "E5"]
 	 */
 	Tone.Frequency.prototype.harmonize = function(intervals){
-		this._expr = function(expr, intervals){
-			var val = expr();
-			var ret = [];
-			for (var i = 0; i < intervals.length; i++){
-				ret[i] = val * Tone.intervalToFrequencyRatio(intervals[i]);
-			}
-			return ret;
-		}.bind(this, this._expr, intervals);
-		return this;
+		return intervals.map(function(interval){
+			return this.transpose(interval);
+		}.bind(this));
 	};
 
 	///////////////////////////////////////////////////////////////////////////
