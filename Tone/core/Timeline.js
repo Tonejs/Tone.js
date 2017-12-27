@@ -322,6 +322,31 @@ define(["Tone/core/Tone"], function (Tone) {
 	};
 
 	/**
+	 *  Iterate over everything in the array after the given time.
+	 *  @param  {Number}  time The time to check if items are before
+	 *  @param  {Function}  callback The callback to invoke with every item
+	 *  @returns {Tone.Timeline} this
+	 */
+	Tone.Timeline.prototype.forEachBetween = function(startTime, endTime, callback){
+		var lowerBound = this._search(startTime);
+		var upperBound = this._search(endTime);
+		if (lowerBound !== -1 && upperBound !== -1){
+			if (this._timeline[lowerBound].time !== startTime){
+				lowerBound+=1;
+			}
+			this._iterate(callback, lowerBound, upperBound);
+		} else if (lowerBound === -1){
+			this._iterate(callback, 0, upperBound);
+		}
+		/*this.forEachFrom(startTime, function(event){
+			if (event.time <= endTime){
+				callback(event);
+			}
+		});*/
+		return this;
+	};
+
+	/**
 	 *  Iterate over everything in the array at or after the given time. Similar to
 	 *  forEachAfter, but includes the item(s) at the given time.
 	 *  @param  {Number}  time The time to check if items are before

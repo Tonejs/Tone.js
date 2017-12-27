@@ -548,6 +548,51 @@ define(["Test", "Tone/core/Timeline"], function (Test, Timeline) {
 				sched.dispose();
 			});
 
+			it("can iterate between a time range", function(){
+				var sched = new Timeline();
+				sched.add({"time" : 0.1});
+				sched.add({"time" : 0.2});
+				sched.add({"time" : 0.3});
+				sched.add({"time" : 0.4});
+				var count = 0;
+				sched.forEachBetween(0.2, 0.4, function(event){
+					count++;
+					expect(event.time).to.be.within(0.2, 0.4);
+				});
+				expect(count).to.equal(3);
+				count = 0;
+				sched.forEachBetween(0.21, 0.4, function(event){
+					count++;
+					expect(event.time).to.be.within(0.21, 0.4);
+				});
+				expect(count).to.equal(2);
+				count = 0;
+				sched.forEachBetween(0.21, 0.39, function(event){
+					count++;
+					expect(event.time).to.be.within(0.21, 0.39);
+				});
+				expect(count).to.equal(1);
+				count = 0;
+				sched.forEachBetween(0, 0.1, function(event){
+					count++;
+					expect(event.time).to.be.within(0, 0.1);
+				});
+				expect(count).to.equal(1);
+				count = 0;
+				sched.forEachBetween(0, 0.09, function(event){
+					count++;
+					expect(event.time).to.be.within(0, 0.09);
+				});
+				expect(count).to.equal(0);
+				count = 0;
+				sched.forEachBetween(0.41, 0.5, function(event){
+					count++;
+					expect(event.time).to.be.within(0.41, 0.5);
+				});
+				expect(count).to.equal(0);
+				sched.dispose();
+			});
+
 		});
 	});
 });
