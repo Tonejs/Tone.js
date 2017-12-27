@@ -23,31 +23,35 @@ after_success:
 before_deploy:
 - node increment_version.js
 - cd ../
-deploy:
-- provider: npm
-  skip_cleanup: true
-  email: yotammann@gmail.com
-  api_key: $NPM_TOKEN
-  tag: next
-  on:
-    repo: Tonejs/Tone.js
-    branch: dev
-# publish without @next when pushing on master
-- provider: npm
-  skip_cleanup: true
-  email: yotammann@gmail.com
-  api_key: $NPM_TOKEN
-  on:
-    repo: Tonejs/Tone.js
-    branch: master
-# publish build files for releases
-- provider: releases
-  api-key: $GH_TOKEN
-  file_glob: true
-  file: build/*
-  skip_cleanup: true
-  on:
-    tags: true
+jobs:
+  include:
+    - stage: deploy
+      script: skip
+      deploy:
+      - provider: npm
+        skip_cleanup: true
+        email: yotammann@gmail.com
+        api_key: $NPM_TOKEN
+        tag: next
+        on:
+          repo: Tonejs/Tone.js
+          branch: dev
+      # publish without @next when pushing on master
+      - provider: npm
+        skip_cleanup: true
+        email: yotammann@gmail.com
+        api_key: $NPM_TOKEN
+        on:
+          repo: Tonejs/Tone.js
+          branch: master
+      # publish build files for releases
+      - provider: releases
+        api-key: $GH_TOKEN
+        file_glob: true
+        file: build/*
+        skip_cleanup: true
+        on:
+          tags: true
 # cache node_modules to speed up build
 cache:
   directories:
