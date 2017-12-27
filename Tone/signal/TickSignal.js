@@ -204,5 +204,33 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal"], function (Tone) {
 		}
 	};
 
+	/**
+	 * Convert some number of ticks their the duration in seconds accounting
+	 * for any automation curves starting at the given time.
+	 * @param  {Ticks} ticks The number of ticks to convert to seconds.
+	 * @param  {Time} [when=now]  When along the automation timeline to convert the ticks.
+	 * @return {Tone.Time}       The duration in seconds of the ticks.
+	 */
+	Tone.TickSignal.prototype.ticksToTime = function(ticks, when){
+		when = this.toSeconds(when);
+		return new Tone.Time(this.getDurationOfTicks(ticks, when));
+	};
+
+	/**
+	 * The inverse of [ticksToTime](#tickstotime). Convert a duration in
+	 * seconds to the corresponding number of ticks accounting for any
+	 * automation curves starting at the given time.
+	 * @param  {Time} duration The time interval to convert to ticks.
+	 * @param  {Time} [when=now]     When along the automation timeline to convert the ticks.
+	 * @return {Tone.Ticks}          The duration in ticks.
+	 */
+	Tone.TickSignal.prototype.timeToTicks = function(duration, when){
+		when = this.toSeconds(when);
+		duration = this.toSeconds(duration);
+		var startTicks = this.getTicksAtTime(when);
+		var endTicks = this.getTicksAtTime(when + duration);
+		return new Tone.Ticks(endTicks - startTicks);
+	};
+
 	return Tone.TickSignal;
 });
