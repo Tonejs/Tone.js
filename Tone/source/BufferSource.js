@@ -28,6 +28,15 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/G
 		this._startTime = -1;
 
 		/**
+		 *  An additional flag if the actual BufferSourceNode
+		 *  has been started. b/c stopping an unstarted buffer
+		 *  will throw it into an invalid state
+		 *  @type  {Boolean}
+		 *  @private
+		 */
+		this._sourceStarted = false;
+
+		/**
 		 *  The time that the buffer is scheduled to stop.
 		 *  @type  {Number}
 		 *  @private
@@ -211,7 +220,10 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/G
 			this._source.buffer = this.buffer.get();
 			this._source.loopEnd = this.loopEnd || this.buffer.duration;
 			Tone.isPast(time);
-			this._source.start(time, offset);
+			if (offset < this.buffer.duration){
+				this._sourceStarted = true;
+				this._source.start(time, offset);
+			}
 		} else {
 			throw new Error("Tone.BufferSource: buffer is either not set or not loaded.");
 		}
@@ -285,7 +297,9 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/G
 	Tone.BufferSource.prototype._onended = function(){
 		//allow additional time for the exponential curve to fully decay
 		var additionalTail = this.curve === "exponential" ? this.fadeOut * 2 : 0;
-		this._source.stop(this._stopTime + additionalTail);
+		if (this._sourceStarted){
+			this._source.stop(this._stopTime + additionalTail);
+		}
 		this.onended(this);
 	};
 
