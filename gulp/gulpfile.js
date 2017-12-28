@@ -9,18 +9,14 @@ var fs = require("fs");
 var amdOptimize = require("amd-optimize");
 var replace = require("gulp-replace");
 var indent = require("gulp-indent");
-var child_process = require("child_process");
-var flatten = require("gulp-flatten");
 var insert = require("gulp-insert");
 var del = require("del");
 var uglify = require("gulp-uglify");
 var rename = require("gulp-rename");
 var sass = require("gulp-ruby-sass");
 var prefix = require("gulp-autoprefixer");
-var openFile = require("gulp-open");
 var eslint = require("gulp-eslint");
 var coveralls = require("gulp-coveralls");
-var git = require("gulp-git");
 var argv = require("yargs")
 			.alias("f", "file")
 			.alias("s", "signal")
