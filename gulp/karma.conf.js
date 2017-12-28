@@ -1,12 +1,15 @@
 // Karma configuration
 // Generated on Mon Feb 01 2016 22:48:23 GMT-0500 (EST)
 
-var BROWSERS = ['HeadlessFirefox', 'HeadlessChrome']
+// var BROWSERS = ['HeadlessChrome', 'HeadlessFirefox', 'Safari']
+var BROWSERS = ['Safari']
 
 if (process.env.BROWSER === 'chrome'){
 	BROWSERS = ['HeadlessChrome']
 } else if (process.env.BROWSER === 'firefox'){
 	BROWSERS = ['HeadlessFirefox']
+} else if (process.env.BROWSER === 'safari'){
+	BROWSERS = ['Safari']
 }
 
 module.exports = function(config) {
@@ -66,7 +69,8 @@ module.exports = function(config) {
 		'karma-mocha',
 		'karma-requirejs',
 		'karma-chrome-launcher',
-		'karma-firefox-launcher'
+		'karma-firefox-launcher',
+		'karma-safari-launcher'
 		],
 
 

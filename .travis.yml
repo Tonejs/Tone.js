@@ -5,8 +5,6 @@ node_js:
 - '8'
 before_script:
 - cd gulp
-- npm install -g jsdoc
-- npm install -g karma
 - npm install -g gulp
 - npm install
 - git config --global user.email "travis@travis-ci.org"
@@ -15,6 +13,7 @@ script: gulp travis-test
 after_success:
 - gulp coveralls
 before_deploy:
+- npm install -g jsdoc
 - sh deploy_updates.sh
 - node increment_version.js
 - cd ../
@@ -23,24 +22,31 @@ jobs:
     - stage: test
       script: gulp travis-test
       env : BROWSER=chrome
+      os: linux
       addons:
         chrome: stable
     - stage: test
       script: gulp travis-test
       env : BROWSER=firefox
+      os: linux
       addons:
         firefox: latest
+    - stage: test
+      script: gulp travis-test
+      env : BROWSER=safari
+      os: osx
     - stage: deploy
+      os: linux
       script: skip
       deploy:
-      - provider: npm
-        skip_cleanup: true
-        email: yotammann@gmail.com
-        api_key: $NPM_TOKEN
-        tag: next
-        on:
-          repo: Tonejs/Tone.js
-          branch: dev
+      # - provider: npm
+      #   skip_cleanup: true
+      #   email: yotammann@gmail.com
+      #   api_key: $NPM_TOKEN
+      #   tag: next
+      #   on:
+      #     repo: Tonejs/Tone.js
+      #     branch: dev
       # publish without @next when pushing on master
       - provider: npm
         skip_cleanup: true
