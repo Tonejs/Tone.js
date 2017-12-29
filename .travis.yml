@@ -34,7 +34,7 @@ jobs:
     - stage: test
       script:
       # needs an audio output device to run
-      - brew install Caskroom/cask/soundflower
+      - HOMEBREW_NO_AUTO_UPDATE=1 brew install Caskroom/cask/soundflower
       - gulp travis-test
       env : BROWSER=safari
       os: osx
