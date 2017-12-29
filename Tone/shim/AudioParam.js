@@ -42,8 +42,6 @@ define(["Tone/core/Tone", "Tone/core/Timeline"], function (Tone) {
 	//only shim if needed
 	if (Tone.supported){
 
-		var configurableObject = true;
-
 		try {
 			// overwrite getting the default value
 			Object.defineProperty(AudioParam.prototype, "value", {
@@ -58,9 +56,8 @@ define(["Tone/core/Tone", "Tone/core/Timeline"], function (Tone) {
 					this.setValueAtTime(val, now);
 				}
 			});
-		} catch(e){
-			configurableObject = false;
-		}
+		// eslint-disable-next-line
+	} catch(e){}
 
 		// defaultValue
 		if (!AudioParam.prototype.hasOwnProperty("defaultValue")){
