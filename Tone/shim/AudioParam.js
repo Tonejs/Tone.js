@@ -42,19 +42,25 @@ define(["Tone/core/Tone", "Tone/core/Timeline"], function (Tone) {
 	//only shim if needed
 	if (Tone.supported){
 
-		// overwrite getting the default value
-		Object.defineProperty(AudioParam.prototype, "value", {
-			get : function(){
-				var now = Tone.context.currentTime;
-				return this.getValueAtTime(now);
-			},
-			set : function(val){
-				this._initialValue = val;
-				//set the value
-				var now = Tone.context.currentTime;
-				this.setValueAtTime(val, now);
-			}
-		});
+		var configurableObject = true;
+
+		try {
+			// overwrite getting the default value
+			Object.defineProperty(AudioParam.prototype, "value", {
+				get : function(){
+					var now = Tone.context.currentTime;
+					return this.getValueAtTime(now);
+				},
+				set : function(val){
+					this._initialValue = val;
+					//set the value
+					var now = Tone.context.currentTime;
+					this.setValueAtTime(val, now);
+				}
+			});
+		} catch(e){
+			configurableObject = false;
+		}
 
 		// defaultValue
 		if (!AudioParam.prototype.hasOwnProperty("defaultValue")){
