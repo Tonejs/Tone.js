@@ -22,20 +22,23 @@ before_deploy:
 - cd ../
 jobs:
   include:
+    # - stage: test
+    #   script: gulp travis-test
+    #   env : BROWSER=chrome
+    #   os: linux
+    #   addons:
+    #     chrome: stable
+    # - stage: test
+    #   script: gulp travis-test
+    #   env : BROWSER=firefox
+    #   os: linux
+    #   addons:
+    #     firefox: latest
     - stage: test
-      script: gulp travis-test
-      env : BROWSER=chrome
-      os: linux
-      addons:
-        chrome: stable
-    - stage: test
-      script: gulp travis-test
-      env : BROWSER=firefox
-      os: linux
-      addons:
-        firefox: latest
-    - stage: test
-      script: gulp travis-test
+      script:
+      - brew install switchaudio-osx
+      - SwitchAudioSource -a
+      - gulp travis-test
       env : BROWSER=safari
       os: osx
     - stage: deploy
