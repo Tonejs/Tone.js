@@ -1,9 +1,12 @@
 define(["Tone/core/Tone", "Tone/shim/AudioContext", "Tone/core/Context", "Tone/core/Gain"], function(Tone){
 
-	if (Tone.supported && !window.ConstantSourceNode){
+	if (Tone.supported && !AudioContext.prototype.createConstantSource){
 
 		var ConstantSourceNode = function(context){
 			this.context = context;
+
+			// eslint-disable-next-line no-console
+			console.log(context.sampleRate)
 
 			var buffer = context.createBuffer(1, 128, context.sampleRate);
 			var arr = buffer.getChannelData(0);
