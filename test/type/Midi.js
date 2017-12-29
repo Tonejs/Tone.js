@@ -45,6 +45,22 @@ define(["helper/Basic", "Test", "Tone/type/Midi", "Tone/core/Tone",
 				expect(+Midi(1)).to.equal(1);
 			});
 
+			it("can convert from seconds", function(){
+				expect(Midi("0.1s").valueOf()).to.equal(3);
+				expect(Midi("0.05s").valueOf()).to.equal(15);
+				expect(Midi(0.05, "s").valueOf()).to.equal(15);
+			});
+
+			it("can convert from hertz", function(){
+				expect(Midi("440hz").valueOf()).to.equal(69);
+				expect(Midi(220, "hz").valueOf()).to.equal(57);
+			});
+
+			it("can convert from ticks", function(){
+				expect(Midi("1i").valueOf()).to.equal(67);
+				expect(Midi(2, "i").valueOf()).to.equal(55);
+			});
+
 			it("can convert from Time", function(){
 				expect(Midi(Time(0.01)).valueOf()).to.equal(43);
 				expect(Midi(Time("128n")).valueOf()).to.equal(36);
