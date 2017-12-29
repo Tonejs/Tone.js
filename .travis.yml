@@ -70,4 +70,5 @@ jobs:
 cache:
   directories:
     - node_modules
+    - gulp/node_modules
     - $HOME/Library/Caches/Homebrew
