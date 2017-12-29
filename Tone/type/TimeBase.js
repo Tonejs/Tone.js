@@ -131,7 +131,7 @@ define(["Tone/core/Tone"], function (Tone) {
 			}
 		},
 		"s" : {
-			regexp : /^(\d+(?:\.\d+)?s)$/,
+			regexp : /^(\d+(?:\.\d+)?)s$/,
 			method : function(value){
 				return this._secondsToUnits(parseFloat(value));
 			}
