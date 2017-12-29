@@ -6,7 +6,7 @@ define(["Tone/core/Tone", "Tone/shim/AudioContext", "Tone/core/Context", "Tone/c
 			this.context = context;
 
 			// eslint-disable-next-line no-console
-			console.log(context.sampleRate)
+			console.log(context.sampleRate);
 
 			var buffer = context.createBuffer(1, 128, context.sampleRate);
 			var arr = buffer.getChannelData(0);
