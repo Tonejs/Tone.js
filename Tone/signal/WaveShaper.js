@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/signal/SignalBase"], function(Tone){
+define(["Tone/core/Tone", "Tone/signal/SignalBase", "Tone/shim/WaveShaperNode"], function(Tone){
 
 	"use strict";
 
@@ -93,16 +93,6 @@ define(["Tone/core/Tone", "Tone/signal/SignalBase"], function(Tone){
 			return this._shaper.curve;
 		},
 		set : function(mapping){
-			//Safari has a bug which requires that the first values
-			//be in the first and second array location
-			var ua = navigator.userAgent.toLowerCase();
-			var isSafari = ua.indexOf("safari") !== -1 && ua.indexOf("chrome") === -1;
-			if (isSafari){
-				var curve = new Float32Array(mapping.length+1);
-				curve.set(mapping, 1);
-				curve[0] = mapping[0];
-				mapping = curve;
-			}
 			this._curve = new Float32Array(mapping);
 			this._shaper.curve = this._curve;
 		}
