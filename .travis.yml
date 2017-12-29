@@ -27,6 +27,12 @@ jobs:
         chrome: stable
     - stage: test
       script: gulp travis-test
+      env : BROWSER=chrome
+      os: linux
+      addons:
+        chrome: beta
+    - stage: test
+      script: gulp travis-test
       env : BROWSER=firefox
       os: linux
       addons:
@@ -46,7 +52,7 @@ jobs:
       env : BROWSER=safari
       os: osx
       # test on an older safari
-      osx_image: xcode6.4
+      osx_image: xcode7.3
     - stage: deploy
       os: linux
       script: skip
