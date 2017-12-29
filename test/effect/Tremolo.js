@@ -1,5 +1,6 @@
-define(["Tone/effect/Tremolo", "helper/Basic", "helper/EffectTests"], function (Tremolo, Basic, EffectTests) {
-	
+define(["Tone/effect/Tremolo", "helper/Basic", "helper/EffectTests", "helper/Offline"],
+function (Tremolo, Basic, EffectTests, Offline) {
+
 	describe("Tremolo", function(){
 		Basic(Tremolo);
 		EffectTests(Tremolo);
@@ -42,6 +43,34 @@ define(["Tone/effect/Tremolo", "helper/Basic", "helper/EffectTests"], function (
 				expect(tremolo.depth.value).to.be.closeTo(0.4, 0.01);
 				expect(tremolo.frequency.value).to.be.closeTo(0.4, 0.01);
 				tremolo.dispose();
+			});
+
+			it ("can sync the frequency to the Transport", function(){
+
+				return Offline(function(Transport){
+					var tremolo = new Tremolo(2);
+					tremolo.sync();
+					tremolo.frequency.toMaster();
+					Transport.bpm.setValueAtTime(Transport.bpm.value * 2, 0.05);
+					// Transport.start(0)
+				}, 0.1).then(function(buffer){
+					expect(buffer.getValueAtTime(0)).to.be.closeTo(2, 0.1);
+					expect(buffer.getValueAtTime(0.05)).to.be.closeTo(4, 0.1);
+				});
+			});
+
+			it ("can unsync the frequency to the Transport", function(){
+
+				return Offline(function(Transport){
+					var tremolo = new Tremolo(2);
+					tremolo.sync();
+					tremolo.frequency.toMaster();
+					Transport.bpm.setValueAtTime(Transport.bpm.value * 2, 0.05);
+					tremolo.unsync();
+				}, 0.1).then(function(buffer){
+					expect(buffer.getValueAtTime(0)).to.be.closeTo(2, 0.1);
+					expect(buffer.getValueAtTime(0.05)).to.be.closeTo(2, 0.1);
+				});
 			});
 		});
 	});

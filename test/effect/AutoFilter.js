@@ -1,6 +1,6 @@
-define(["Tone/effect/AutoFilter", "helper/Basic", "helper/EffectTests", "deps/teoria"], 
-	function (AutoFilter, Basic, EffectTests, teoria) {
-	
+define(["Tone/effect/AutoFilter", "helper/Basic", "helper/EffectTests", "deps/teoria", "helper/Offline"],
+	function (AutoFilter, Basic, EffectTests, teoria, Offline) {
+
 	describe("AutoFilter", function(){
 		Basic(AutoFilter);
 		EffectTests(AutoFilter);
@@ -59,6 +59,34 @@ define(["Tone/effect/AutoFilter", "helper/Basic", "helper/EffectTests", "deps/te
 				expect(autoFilter.baseFrequency).to.be.closeTo(teoria.note("C2").fq(), 0.01);
 				expect(autoFilter.octaves).to.equal(4);
 				autoFilter.dispose();
+			});
+
+			it ("can sync the frequency to the Transport", function(){
+
+				return Offline(function(Transport){
+					var autoFilter = new AutoFilter(2);
+					autoFilter.sync();
+					autoFilter.frequency.toMaster();
+					Transport.bpm.setValueAtTime(Transport.bpm.value * 2, 0.05);
+					// Transport.start(0)
+				}, 0.1).then(function(buffer){
+					expect(buffer.getValueAtTime(0)).to.be.closeTo(2, 0.1);
+					expect(buffer.getValueAtTime(0.05)).to.be.closeTo(4, 0.1);
+				});
+			});
+
+			it ("can unsync the frequency to the Transport", function(){
+
+				return Offline(function(Transport){
+					var autoFilter = new AutoFilter(2);
+					autoFilter.sync();
+					autoFilter.frequency.toMaster();
+					Transport.bpm.setValueAtTime(Transport.bpm.value * 2, 0.05);
+					autoFilter.unsync();
+				}, 0.1).then(function(buffer){
+					expect(buffer.getValueAtTime(0)).to.be.closeTo(2, 0.1);
+					expect(buffer.getValueAtTime(0.05)).to.be.closeTo(2, 0.1);
+				});
 			});
 		});
 	});
