@@ -3,6 +3,9 @@ dist: trusty
 language: node_js
 node_js:
 - '8'
+matrix:
+  allow_failures:
+    - os: osx
 before_script:
 - cd gulp
 - npm install -g gulp
