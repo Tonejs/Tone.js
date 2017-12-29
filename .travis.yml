@@ -37,7 +37,7 @@ jobs:
     - stage: test
       script:
       - brew install switchaudio-osx
-      - SwitchAudioSource -a
+      - echo $(SwitchAudioSource -a)
       - gulp travis-test
       env : BROWSER=safari
       os: osx
