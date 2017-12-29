@@ -36,9 +36,7 @@ jobs:
     #     firefox: latest
     - stage: test
       script:
-      - brew install switchaudio-osx
       - brew install Caskroom/cask/soundflower
-      - echo $(SwitchAudioSource -a)
       - gulp travis-test
       env : BROWSER=safari
       os: osx
