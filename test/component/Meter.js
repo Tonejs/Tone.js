@@ -42,7 +42,7 @@ function (Meter, Basic, Offline, Test, Signal, PassAudio, Tone, Merge, Oscillato
 			});
 
 			if (Supports.ONLINE_TESTING){
-				
+
 				it("measures the incoming signal", function(done){
 					var meter = new Meter();
 					var signal = new Signal(1).connect(meter);
@@ -59,7 +59,7 @@ function (Meter, Basic, Offline, Test, Signal, PassAudio, Tone, Merge, Oscillato
 					var osc = new Oscillator().connect(meter).start();
 					osc.volume.value = -6;
 					setTimeout(function(){
-						expect(meter.getLevel()).to.be.closeTo(-6, 1);
+						expect(meter.getLevel()).to.be.closeTo(-6, 6);
 						meter.dispose();
 						osc.dispose();
 						done();
