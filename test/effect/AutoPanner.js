@@ -1,5 +1,6 @@
-define(["Tone/effect/AutoPanner", "helper/Basic", "helper/EffectTests"], function (AutoPanner, Basic, EffectTests) {
-	
+define(["Tone/effect/AutoPanner", "helper/Basic", "helper/EffectTests", "helper/Offline"],
+function (AutoPanner, Basic, EffectTests, Offline) {
+
 	describe("AutoPanner", function(){
 		Basic(AutoPanner);
 		EffectTests(AutoPanner);
@@ -40,6 +41,33 @@ define(["Tone/effect/AutoPanner", "helper/Basic", "helper/EffectTests"], functio
 				expect(autoPanner.depth.value).to.be.closeTo(0.4, 0.01);
 				expect(autoPanner.frequency.value).to.be.closeTo(0.4, 0.01);
 				autoPanner.dispose();
+			});
+
+			it ("can sync the frequency to the Transport", function(){
+				return Offline(function(Transport){
+					var panner = new AutoPanner(2);
+					panner.sync();
+					panner.frequency.toMaster();
+					Transport.bpm.setValueAtTime(Transport.bpm.value * 2, 0.05);
+					// Transport.start(0)
+				}, 0.1).then(function(buffer){
+					expect(buffer.getValueAtTime(0)).to.be.closeTo(2, 0.1);
+					expect(buffer.getValueAtTime(0.05)).to.be.closeTo(4, 0.1);
+				});
+			});
+
+			it ("can unsync the frequency to the Transport", function(){
+				return Offline(function(Transport){
+					var panner = new AutoPanner(2);
+					panner.sync();
+					panner.frequency.toMaster();
+					Transport.bpm.setValueAtTime(Transport.bpm.value * 2, 0.05);
+					panner.unsync();
+					// Transport.start(0)
+				}, 0.1).then(function(buffer){
+					expect(buffer.getValueAtTime(0)).to.be.closeTo(2, 0.1);
+					expect(buffer.getValueAtTime(0.05)).to.be.closeTo(2, 0.1);
+				});
 			});
 		});
 	});
