@@ -70,3 +70,4 @@ jobs:
 cache:
   directories:
     - node_modules
+    - $HOME/Library/Caches/Homebrew
