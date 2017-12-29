@@ -1,4 +1,4 @@
-define(["helper/OutputAudio", "Tone/source/Oscillator", "helper/Offline", "Test"], 
+define(["helper/OutputAudio", "Tone/source/Oscillator", "helper/Offline", "Test"],
 	function (OutputAudio, Oscillator, Offline, Test) {
 
 	return function(Constr, args){
@@ -47,6 +47,8 @@ define(["helper/OutputAudio", "Tone/source/Oscillator", "helper/Offline", "Test"
 					"phase" : 180,
 				});
 				expect(osc.phase).to.be.closeTo(180, 0.001);
+				osc.phase = 270;
+				expect(osc.phase).to.be.closeTo(270, 0.001);
 				osc.dispose();
 			});
 
@@ -57,7 +59,7 @@ define(["helper/OutputAudio", "Tone/source/Oscillator", "helper/Offline", "Test"
 					expect(buffer.max()).to.be.at.most(1);
 				});
 			});
-			
+
 		});
 
 	};
