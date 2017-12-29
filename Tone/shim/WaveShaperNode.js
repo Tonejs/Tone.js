@@ -14,7 +14,7 @@ define(["Tone/core/Tone", "Tone/shim/AudioContext"], function(Tone){
 				this._curve = null;
 
 				for (var prop in this._internalNode){
-					defineProperty(this, this._internalNode, prop);
+					this._defineProperty(this._internalNode, prop);
 				}
 			};
 
@@ -31,9 +31,9 @@ define(["Tone/core/Tone", "Tone/shim/AudioContext"], function(Tone){
 				}
 			});
 
-			function defineProperty(self, context, prop){
-				if (Tone.isUndef(self[prop])){
-					Object.defineProperty(self, prop, {
+			WaveShaperNode.prototype._defineProperty = function(context, prop){
+				if (Tone.isUndef(this[prop])){
+					Object.defineProperty(this, prop, {
 						get : function(){
 							if (typeof context[prop] === "function"){
 								return context[prop].bind(context);
