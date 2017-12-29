@@ -3,9 +3,6 @@ dist: trusty
 language: node_js
 node_js:
 - '8'
-matrix:
-  allow_failures:
-    - os: osx
 before_script:
 - cd gulp
 - npm install -g gulp
@@ -22,20 +19,21 @@ before_deploy:
 - cd ../
 jobs:
   include:
-    # - stage: test
-    #   script: gulp travis-test
-    #   env : BROWSER=chrome
-    #   os: linux
-    #   addons:
-    #     chrome: stable
-    # - stage: test
-    #   script: gulp travis-test
-    #   env : BROWSER=firefox
-    #   os: linux
-    #   addons:
-    #     firefox: latest
+    - stage: test
+      script: gulp travis-test
+      env : BROWSER=chrome
+      os: linux
+      addons:
+        chrome: stable
+    - stage: test
+      script: gulp travis-test
+      env : BROWSER=firefox
+      os: linux
+      addons:
+        firefox: latest
     - stage: test
       script:
+      # needs an audio output device to run
       - brew install Caskroom/cask/soundflower
       - gulp travis-test
       env : BROWSER=safari
@@ -44,14 +42,14 @@ jobs:
       os: linux
       script: skip
       deploy:
-      # - provider: npm
-      #   skip_cleanup: true
-      #   email: yotammann@gmail.com
-      #   api_key: $NPM_TOKEN
-      #   tag: next
-      #   on:
-      #     repo: Tonejs/Tone.js
-      #     branch: dev
+      - provider: npm
+        skip_cleanup: true
+        email: yotammann@gmail.com
+        api_key: $NPM_TOKEN
+        tag: next
+        on:
+          repo: Tonejs/Tone.js
+          branch: dev
       # publish without @next when pushing on master
       - provider: npm
         skip_cleanup: true
