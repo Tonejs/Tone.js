@@ -149,12 +149,12 @@ define(["helper/Offline", "helper/Basic", "Test", "Tone/signal/Signal",
 				return Offline(function(){
 					var sig = new Signal(1).toMaster();
 					sig.linearRampTo(50, 0.3, 0.2);
-				}, 0.6).then(function(buffer){
+				}, 0.7).then(function(buffer){
 					buffer.forEach(function(sample, time){
 						if (time >= 0.6){
 							expect(sample).to.be.closeTo(50, 0.5);
 						} else if (time < 0.2){
-							expect(sample).to.equal(1);
+							expect(sample).to.closeTo(1, 0.01);
 						}
 					});
 				});
