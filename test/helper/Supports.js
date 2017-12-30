@@ -38,6 +38,7 @@ define(["helper/ua-parser"], function (UserAgentParser) {
 		//the close method resolves a promise
 		AUDIO_CONTEXT_CLOSE_RESOLVES : isnt("Firefox"),
 		//if it supports gUM testing
-		GET_USER_MEDIA : isnt("Safari")
+		GET_USER_MEDIA : isnt("Safari"),
+		RUN_EXAMPLES : isnt("Safari", 10)
 	};
 });
