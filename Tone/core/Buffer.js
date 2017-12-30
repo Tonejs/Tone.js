@@ -71,7 +71,7 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type", "Tone/shim/Audi
 				}
 			}
 		} else if (Tone.isString(options.url)){
-			this.load(options.url).then(options.onload).catch(options.onerror)
+			this.load(options.url).then(options.onload).catch(options.onerror);
 		}
 	};
 
