@@ -187,7 +187,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/G
 				if (this.curve === "linear"){
 					this._gainNode.gain.linearRampToValueAtTime(this._gain, time + fadeInTime);
 				} else {
-					this._gainNode.gain.exponentialAppraochValueAtTime(this._gain, time, fadeInTime);
+					this._gainNode.gain.exponentialApproachValueAtTime(this._gain, time, fadeInTime);
 				}
 			} else {
 				this._gainNode.gain.setValueAtTime(gain, time);
@@ -273,7 +273,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/G
 					if (this.curve === "linear"){
 						this._gainNode.gain.linearRampToValueAtTime(0, time);
 					} else {
-						this._gainNode.gain.exponentialAppraochValueAtTime(0, startFade, fadeOutTime);
+						this._gainNode.gain.exponentialApproachValueAtTime(0, startFade, fadeOutTime);
 					}
 				} else {
 					this._gainNode.gain.setValueAtTime(0, time);
