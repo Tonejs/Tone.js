@@ -1,6 +1,7 @@
 define(["Tone/component/Panner", "helper/Basic", "helper/Offline", "Test", "Tone/signal/Signal",
-	"helper/PassAudio", "helper/PassAudioStereo", "Tone/component/Merge", "Tone/core/Tone", "Tone/core/AudioNode"],
-function (Panner, Basic, Offline, Test, Signal, PassAudio, PassAudioStereo, Merge, Tone, AudioNode) {
+	"helper/PassAudio", "helper/PassAudioStereo", "Tone/component/Merge",
+	"Tone/core/Tone", "Tone/core/AudioNode", "helper/Supports"],
+function (Panner, Basic, Offline, Test, Signal, PassAudio, PassAudioStereo, Merge, Tone, AudioNode, Supports) {
 
 	describe("Panner", function(){
 
@@ -60,17 +61,19 @@ function (Panner, Basic, Offline, Test, Signal, PassAudio, PassAudioStereo, Merg
 				});
 			});
 
-			it("mixes the signal in equal power when panned center", function(){
-				return Offline(function(){
-					var panner = new Panner(0).toMaster();
-					new Signal(1).connect(panner);
-				}, 0.1, 2).then(function(buffer){
-					buffer.forEach(function(l, r){
-						expect(l).to.be.closeTo(0.707, 0.01);
-						expect(r).to.be.closeTo(0.707, 0.01);
+			if (Supports.EQUAL_POWER_PANNER){
+				it("mixes the signal in equal power when panned center", function(){
+					return Offline(function(){
+						var panner = new Panner(0).toMaster();
+						new Signal(1).connect(panner);
+					}, 0.1, 2).then(function(buffer){
+						buffer.forEach(function(l, r){
+							expect(l).to.be.closeTo(0.707, 0.01);
+							expect(r).to.be.closeTo(0.707, 0.01);
+						});
 					});
 				});
-			});
+			}
 		});
 	});
 });
