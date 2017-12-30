@@ -165,11 +165,15 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/signal/Signal", "Tone/typ
 		return this;
 	};
 
+	/**
+	 *  This is similar to [cancelScheduledValues](#cancelScheduledValues) except
+	 *  it holds the automated value at time until the next automated event.
+	 *  @param  {Time} time
+	 *  @returns {Tone.TransportTimelineSignal} this
+	 */
 	Tone.TransportTimelineSignal.prototype.cancelAndHoldAtTime = function (time) {
-		return Tone.Signal.prototype.cancelAndHoldAtTime.call(this, this.toSeconds(time));
+		return Tone.Signal.prototype.cancelAndHoldAtTime.call(this, Tone.TransportTime(time));
 	};
-
-
 
 	/**
 	 * Dispose and disconnect
