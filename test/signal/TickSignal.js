@@ -260,7 +260,7 @@ define(["Test", "Tone/signal/TickSignal", "helper/Offline"],
 			var sched;
 				return Offline(function(){
 				sched = new TickSignal(1).toMaster();
-				sched.linearRampToValueBetween(3, 1, 2);
+				sched.linearRampTo(3, 1, 1);
 			}, 3).then(function(buffer){
 				buffer.forEach(function(sample, time){
 					expect(sample).to.be.closeTo(sched.getValueAtTime(time), 0.01);

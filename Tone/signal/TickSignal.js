@@ -1,7 +1,7 @@
-define(["Tone/core/Tone", "Tone/signal/TimelineSignal"], function (Tone) {
+define(["Tone/core/Tone", "Tone/signal/Signal"], function (Tone) {
 
 	/**
-	 * @class Tone.TickSignal extends Tone.TimelineSignal, but adds the capability
+	 * @class Tone.TickSignal extends Tone.Signal, but adds the capability
 	 *        to calculate the number of elapsed ticks. exponential and target curves
 	 *        are approximated with multiple linear ramps.
 	 *
@@ -9,13 +9,13 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal"], function (Tone) {
 	 *        describing integrating timing functions for tempo calculations.
 	 *
 	 * @param {Number} value The initial value of the signal
-	 * @extends {Tone.TimelineSignal}
+	 * @extends {Tone.Signal}
 	 */
 	Tone.TickSignal = function(value){
 
 		value = Tone.defaultArg(value, 1);
 
-		Tone.TimelineSignal.call(this, {
+		Tone.Signal.call(this, {
 			"units" : Tone.Type.Ticks,
 			"value" : value
 		});
@@ -25,33 +25,38 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal"], function (Tone) {
 
 		//clear the clock from the beginning
 		this.cancelScheduledValues(0);
-		this.setValueAtTime(value, 0);
+		//set an initial event
+		this._events.add({
+			"type" : Tone.Param.AutomationType.SetValue,
+			"time" : 0,
+			"value" : value
+		});
 	};
 
-	Tone.extend(Tone.TickSignal, Tone.TimelineSignal);
+	Tone.extend(Tone.TickSignal, Tone.Signal);
 
 	/**
 	 * The current value of the signal.
-	 * @memberOf Tone.TimelineSignal#
+	 * @memberOf Tone.Signal#
 	 * @type {Number}
 	 * @name value
 	 */
-	Object.defineProperty(Tone.TickSignal.prototype, "value", {
+	/*Object.defineProperty(Tone.TickSignal.prototype, "value", {
 		get : function(){
 			var now = this.now();
-			return this._toUnits(this.getValueAtTime(now));
+			return this.getValueAtTime(now);
 		},
 		set : function(value){
 			if (this._events){
-				this._initial = value;
+				this._initialValue = value;
 				this.cancelScheduledValues();
 				this.setValueAtTime(value, this.now());
 			}
 		}
-	});
+	});*/
 
 	/**
-	 * Wraps Tone.TimelineSignal methods so that they also
+	 * Wraps Tone.Signal methods so that they also
 	 * record the ticks.
 	 * @param  {Function} method
 	 * @return {Function}
@@ -69,8 +74,8 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal"], function (Tone) {
 		};
 	}
 
-	Tone.TickSignal.prototype.setValueAtTime = _wrapScheduleMethods(Tone.TimelineSignal.prototype.setValueAtTime);
-	Tone.TickSignal.prototype.linearRampToValueAtTime = _wrapScheduleMethods(Tone.TimelineSignal.prototype.linearRampToValueAtTime);
+	Tone.TickSignal.prototype.setValueAtTime = _wrapScheduleMethods(Tone.Signal.prototype.setValueAtTime);
+	Tone.TickSignal.prototype.linearRampToValueAtTime = _wrapScheduleMethods(Tone.Signal.prototype.linearRampToValueAtTime);
 
 	/**
 	 *  Start exponentially approaching the target value at the given time with
@@ -113,7 +118,7 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal"], function (Tone) {
 		var prevEvent = this._events.get(time);
 		if (prevEvent === null){
 			prevEvent = {
-				"value" : this._initial,
+				"value" : this._initialValue,
 				"time" : 0
 			};
 		}
@@ -142,6 +147,9 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal"], function (Tone) {
 				"ticks" : 0,
 				"time" : 0
 			};
+		} else if (Tone.isUndef(event.ticks)){
+			var previousEvent = this._events.previousEvent(event);
+			event.ticks = this._getTicksUntilEvent(previousEvent, event.time - this.sampleTime);
 		}
 		var val0 = this.getValueAtTime(event.time);
 		var val1 = this.getValueAtTime(time);
@@ -184,7 +192,7 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal"], function (Tone) {
 		if (before && before.ticks === tick){
 			return before.time;
 		} else if (before && after &&
-			after.type === Tone.TimelineSignal.Type.Linear &&
+			after.type === Tone.Param.AutomationType.Linear &&
 			before.value !== after.value){
 			var val0 = this.getValueAtTime(before.time);
 			var val1 = this.getValueAtTime(after.time);
@@ -200,7 +208,7 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal"], function (Tone) {
 				return before.time + (tick - before.ticks) / before.value;
 			}
 		} else {
-			return tick / this._initial;
+			return tick / this._initialValue;
 		}
 	};
 
