@@ -699,8 +699,9 @@ define(["Tone/core/Tone", "Tone/core/Clock", "Tone/type/Type", "Tone/core/Timeli
 	Tone.Transport.prototype.syncSignal = function(signal, ratio){
 		if (!ratio){
 			//get the sync ratio
-			if (signal._param.value !== 0){
-				ratio = signal._param.value / this.bpm.getValueAtTime(this.now());
+			var now = this.now();
+			if (signal.getValueAtTime(now) !== 0){
+				ratio = signal.getValueAtTime(now) / this.bpm.getValueAtTime(now);
 			} else {
 				ratio = 0;
 			}
@@ -710,9 +711,9 @@ define(["Tone/core/Tone", "Tone/core/Clock", "Tone/type/Type", "Tone/core/Timeli
 		this._syncedSignals.push({
 			"ratio" : ratioSignal,
 			"signal" : signal,
-			"initial" : signal._param.value
+			"initial" : signal.value
 		});
-		signal._param.value = 0;
+		signal.value = 0;
 		return this;
 	};
 
@@ -727,7 +728,7 @@ define(["Tone/core/Tone", "Tone/core/Clock", "Tone/type/Type", "Tone/core/Timeli
 			var syncedSignal = this._syncedSignals[i];
 			if (syncedSignal.signal === signal){
 				syncedSignal.ratio.dispose();
-				syncedSignal.signal._param.value = syncedSignal.initial;
+				syncedSignal.signal.value = syncedSignal.initial;
 				this._syncedSignals.splice(i, 1);
 			}
 		}

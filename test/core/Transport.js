@@ -24,7 +24,7 @@ function (Test, Transport, Tone, Offline, TransportTime, Signal, BufferTest, Tim
 					Transport.bpm.value = 125;
 					expect(Transport.bpm.value).to.be.closeTo(125, 0.001);
 					Transport.bpm.value = 120;
-					expect(Transport.bpm._param.value).to.equal(2 * Transport.PPQ);
+					expect(Transport.bpm.value).to.equal(120);
 				});
 			});
 
