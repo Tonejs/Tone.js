@@ -14,13 +14,13 @@ function (AmplitudeEnvelope, Basic, Offline, Envelope, Test, Signal) {
 				ampEnv.dispose();
 			});
 
-			it ("extends envelope", function(){
+			it("extends envelope", function(){
 				var ampEnv = new AmplitudeEnvelope();
 				expect(ampEnv).to.be.instanceOf(Envelope);
 				ampEnv.dispose();
 			});
 
-			it ("passes no signal before being triggered", function(){
+			it("passes no signal before being triggered", function(){
 				return Offline(function(){
 					var ampEnv = new AmplitudeEnvelope().toMaster();
 					new Signal(1).connect(ampEnv);
@@ -29,7 +29,7 @@ function (AmplitudeEnvelope, Basic, Offline, Envelope, Test, Signal) {
 				});
 			});
 
-			it ("passes signal once triggered", function(){
+			it("passes signal once triggered", function(){
 				return Offline(function(){
 					var ampEnv = new AmplitudeEnvelope().toMaster();
 					new Signal(1).connect(ampEnv);

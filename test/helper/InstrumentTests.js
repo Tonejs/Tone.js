@@ -1,24 +1,24 @@
 define(["helper/OutputAudio", "Tone/instrument/Instrument", "helper/OutputAudioStereo", 
 	"Test", "helper/Offline"], 
-	function (OutputAudio, Instrument, OutputAudioStereo, Test, Offline) {
+function (OutputAudio, Instrument, OutputAudioStereo, Test, Offline) {
 
 	return function(Constr, note, constrArg, optionsIndex){
 
 		context("Instrument Tests", function(){
 
-			it ("extends Tone.Instrument", function(){
+			it("extends Tone.Instrument", function(){
 				var instance = new Constr(constrArg);
 				expect(instance).to.be.an.instanceof(Instrument);
 				instance.dispose();
 			});
 
-			it ("can connect the output", function(){
+			it("can connect the output", function(){
 				var instance = new Constr(constrArg);
 				instance.connect(Test);
 				instance.dispose();
 			});
 
-			it ("can set the volume", function(){
+			it("can set the volume", function(){
 				if (!optionsIndex){
 					var instance = new Constr({
 						"volume" : -10

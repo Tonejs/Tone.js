@@ -1,6 +1,6 @@
 define(["helper/ConstantOutput", "Tone/signal/Normalize", "helper/Basic", 
 	"Test", "Tone/source/Oscillator", "Tone/signal/Signal", "helper/Offline"], 
-	function (ConstantOutput, Normalize, Basic, Test, Oscillator, Signal, Offline) {
+function (ConstantOutput, Normalize, Basic, Test, Oscillator, Signal, Offline) {
 
 	describe("Normalize", function(){
 

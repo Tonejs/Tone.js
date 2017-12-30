@@ -7,7 +7,7 @@ define(["Tone/effect/AutoWah", "helper/Basic", "helper/EffectTests"], function (
 
 		context("API", function(){
 
-			it ("can pass in options in the constructor", function(){
+			it("can pass in options in the constructor", function(){
 				var autoWah = new AutoWah({
 					"baseFrequency" : 150,
 					"octaves" : 3,
@@ -19,7 +19,7 @@ define(["Tone/effect/AutoWah", "helper/Basic", "helper/EffectTests"], function (
 				autoWah.dispose();
 			});
 
-			it ("can get/set the options", function(){
+			it("can get/set the options", function(){
 				var autoWah = new AutoWah();
 				autoWah.set({
 					"Q" : 2.4,
@@ -28,7 +28,7 @@ define(["Tone/effect/AutoWah", "helper/Basic", "helper/EffectTests"], function (
 				autoWah.dispose();
 			});
 
-			it ("can set the gain and follower values", function(){
+			it("can set the gain and follower values", function(){
 				var autoWah = new AutoWah();
 				autoWah.gain.value = 1.2;
 				autoWah.follower.attack = 0.4;

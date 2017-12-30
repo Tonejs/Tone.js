@@ -1,6 +1,6 @@
 define(["helper/Basic", "Tone/event/Part", "Tone/core/Tone",
 	"Tone/core/Transport", "Tone/event/Event", "helper/Offline", "Test", "Tone/type/Time"],
-	function (Basic, Part, Tone, Transport, Event, Offline, Test, Time) {
+function (Basic, Part, Tone, Transport, Event, Offline, Test, Time) {
 
 	describe("Part", function(){
 
@@ -8,7 +8,7 @@ define(["helper/Basic", "Tone/event/Part", "Tone/core/Tone",
 
 		context("Constructor", function(){
 
-			it ("takes a callback and an array of values", function(){
+			it("takes a callback and an array of values", function(){
 				return Offline(function(){
 					var callback = function(){};
 					var part = new Part(callback, [0, 1, 2]);
@@ -18,7 +18,7 @@ define(["helper/Basic", "Tone/event/Part", "Tone/core/Tone",
 				});
 			});
 
-			it ("can be constructed with no arguments", function(){
+			it("can be constructed with no arguments", function(){
 				return Offline(function(){
 					var part = new Part();
 					expect(part.length).to.equal(0);
@@ -26,7 +26,7 @@ define(["helper/Basic", "Tone/event/Part", "Tone/core/Tone",
 				});
 			});
 
-			it ("can pass in arguments in options object", function(){
+			it("can pass in arguments in options object", function(){
 				return Offline(function(){
 					var callback = function(){};
 					var part = new Part({
@@ -66,7 +66,7 @@ define(["helper/Basic", "Tone/event/Part", "Tone/core/Tone",
 				});
 			});
 
-			it ("can retrieve an event using 'at'", function(){
+			it("can retrieve an event using 'at'", function(){
 				return Offline(function(){
 					var part = new Part(function(){}, [["0", 0], ["8n", "C2"], ["4n", 2]]);
 					expect(part.length).to.equal(3);
@@ -104,7 +104,7 @@ define(["helper/Basic", "Tone/event/Part", "Tone/core/Tone",
 					}]);
 					expect(part.length).to.equal(2);
 					expect(part.at(0.3).value).to.be.object;
-					expect(part.at(0.3).value.note).to.equal("C3")
+					expect(part.at(0.3).value.note).to.equal("C3");
 					part.dispose();
 				});
 			});
@@ -245,7 +245,7 @@ define(["helper/Basic", "Tone/event/Part", "Tone/core/Tone",
 
 		context("Part callback", function(){
 
-			it ("does not invoke get invoked until started", function(){
+			it("does not invoke get invoked until started", function(){
 				return Offline(function(Transport){
 					new Part(function(){
 						throw new Error("shouldn't call this callback");
@@ -254,7 +254,7 @@ define(["helper/Basic", "Tone/event/Part", "Tone/core/Tone",
 				}, 0.5);
 			});
 
-			it ("is invoked after it's started", function(){
+			it("is invoked after it's started", function(){
 				var invokations = 0;
 				return Offline(function(Transport){
 					new Part(function(){
@@ -266,7 +266,7 @@ define(["helper/Basic", "Tone/event/Part", "Tone/core/Tone",
 				});
 			});
 
-			it ("passes in the scheduled time to the callback", function(){
+			it("passes in the scheduled time to the callback", function(){
 				var invoked = false;
 				return Offline(function(Transport){
 					var startTime = 0.1;
@@ -282,7 +282,7 @@ define(["helper/Basic", "Tone/event/Part", "Tone/core/Tone",
 				});
 			});
 
-			it ("passes in the value to the callback", function(){
+			it("passes in the value to the callback", function(){
 				var invoked = false;
 				return Offline(function(Transport){
 					var part = new Part(function(time, thing){
@@ -297,7 +297,7 @@ define(["helper/Basic", "Tone/event/Part", "Tone/core/Tone",
 				});
 			});
 
-			it ("can mute the callback", function(){
+			it("can mute the callback", function(){
 				return Offline(function(){
 					var part = new Part(function(){
 						throw new Error("shouldn't call this callback");
@@ -308,7 +308,7 @@ define(["helper/Basic", "Tone/event/Part", "Tone/core/Tone",
 				}, 0.5);
 			});
 
-			it ("can trigger with some probability", function(){
+			it("can trigger with some probability", function(){
 				return Offline(function(){
 					var part = new Part(function(){
 						throw new Error("shouldn't call this callback");
@@ -319,8 +319,7 @@ define(["helper/Basic", "Tone/event/Part", "Tone/core/Tone",
 				}, 0.4);
 			});
 
-
-			it ("invokes all of the scheduled events", function(){
+			it("invokes all of the scheduled events", function(){
 				var count = 0;
 				return Offline(function(Transport){
 					new Part(function(){
@@ -332,7 +331,7 @@ define(["helper/Basic", "Tone/event/Part", "Tone/core/Tone",
 				});
 			});
 
-			it ("invokes all of the scheduled events at the correct times", function(){
+			it("invokes all of the scheduled events at the correct times", function(){
 				var count = 0;
 				return Offline(function(Transport){
 					var now = Transport.now() + 0.1;
@@ -346,7 +345,7 @@ define(["helper/Basic", "Tone/event/Part", "Tone/core/Tone",
 				});
 			});
 
-			it ("starts an event added after the part was started", function(){
+			it("starts an event added after the part was started", function(){
 				var invoked = false;
 				return Offline(function(Transport){
 					var part = new Part({
@@ -412,7 +411,7 @@ define(["helper/Basic", "Tone/event/Part", "Tone/core/Tone",
 
 		context("Looping", function(){
 
-			it ("can be set to loop", function(){
+			it("can be set to loop", function(){
 				var callCount = 0;
 				return Offline(function(Transport){
 					new Part({
@@ -429,7 +428,7 @@ define(["helper/Basic", "Tone/event/Part", "Tone/core/Tone",
 				});
 			});
 
-			it ("can be set to loop at a specific interval", function(){
+			it("can be set to loop at a specific interval", function(){
 				var invoked = false;
 				return Offline(function(Transport){
 					var lastCall;
@@ -443,7 +442,7 @@ define(["helper/Basic", "Tone/event/Part", "Tone/core/Tone",
 							}
 							lastCall = time;
 						},
-						events : [0]
+						"events" : [0]
 					}).start(0);
 					Transport.start();
 				}, 0.7).then(function(){
@@ -451,7 +450,7 @@ define(["helper/Basic", "Tone/event/Part", "Tone/core/Tone",
 				});
 			});
 
-			it ("a started part will be stopped if it is after the loopEnd", function(){
+			it("a started part will be stopped if it is after the loopEnd", function(){
 				var invoked = true;
 				return Offline(function(Transport){
 					var switched = false;
@@ -467,7 +466,7 @@ define(["helper/Basic", "Tone/event/Part", "Tone/core/Tone",
 								invoked = true;
 							}
 						},
-						events : [[0, 0], [0.25, 1]]
+						"events" : [[0, 0], [0.25, 1]]
 					}).start(0);
 					Transport.start();
 				}, 0.7).then(function(){
@@ -475,7 +474,7 @@ define(["helper/Basic", "Tone/event/Part", "Tone/core/Tone",
 				});
 			});
 
-			it ("a started part will be stopped if it is before the loopStart", function(){
+			it("a started part will be stopped if it is before the loopStart", function(){
 				var invoked = false;
 				return Offline(function(Transport){
 					var switched = false;
@@ -491,7 +490,7 @@ define(["helper/Basic", "Tone/event/Part", "Tone/core/Tone",
 								invoked = true;
 							}
 						},
-						events : [[0, 0], [0.25, 1]]
+						"events" : [[0, 0], [0.25, 1]]
 					}).start(0);
 					Transport.start();
 				}, 0.7).then(function(){
@@ -499,8 +498,7 @@ define(["helper/Basic", "Tone/event/Part", "Tone/core/Tone",
 				});
 			});
 
-
-			it ("can loop a specific number of times", function(){
+			it("can loop a specific number of times", function(){
 				var callCount = 0;
 				return Offline(function(Transport){
 					new Part({
@@ -509,7 +507,7 @@ define(["helper/Basic", "Tone/event/Part", "Tone/core/Tone",
 						"callback" : function(){
 							callCount++;
 						},
-						events : [0, 0.1]
+						"events" : [0, 0.1]
 					}).start(0.1);
 					Transport.start();
 				}, 0.8).then(function(){
@@ -517,7 +515,7 @@ define(["helper/Basic", "Tone/event/Part", "Tone/core/Tone",
 				});
 			});
 
-			it ("can loop between loopStart and loopEnd", function(){
+			it("can loop between loopStart and loopEnd", function(){
 				var invoked = false;
 				return Offline(function(Transport){
 					new Part({
@@ -529,7 +527,7 @@ define(["helper/Basic", "Tone/event/Part", "Tone/core/Tone",
 							expect(value).to.be.at.most(2);
 							invoked = true;
 						},
-						events : [[0, 0], ["8n", 1], ["8n + 16n", 2], ["4n", 3]]
+						"events" : [[0, 0], ["8n", 1], ["8n + 16n", 2], ["4n", 3]]
 					}).start(0);
 					Transport.start();
 				}, 0.8).then(function(){
@@ -537,7 +535,7 @@ define(["helper/Basic", "Tone/event/Part", "Tone/core/Tone",
 				});
 			});
 
-			it ("can be started and stopped multiple times", function(){
+			it("can be started and stopped multiple times", function(){
 				var eventTimeIndex = 0;
 				return Offline(function(Transport){
 					var eventTimes = [[0.5, 0], [0.6, 1], [1.1, 0], [1.2, 1], [1.3, 2], [1.4, 0], [1.5, 1], [1.6, 2]];
@@ -551,7 +549,7 @@ define(["helper/Basic", "Tone/event/Part", "Tone/core/Tone",
 							expect(eventTimes[eventTimeIndex][1]).to.equal(value);
 							eventTimeIndex++;
 						},
-						events : [[0, 0], [0.1, 1], [0.2, 2]]
+						"events" : [[0, 0], [0.1, 1], [0.2, 2]]
 					}).start(0.3).stop(0.81);
 					Transport.start(0.2).stop(0.61).start(0.8);
 				}, 2).then(function(){
@@ -559,7 +557,7 @@ define(["helper/Basic", "Tone/event/Part", "Tone/core/Tone",
 				});
 			});
 
-			it ("can adjust the loopEnd times", function(){
+			it("can adjust the loopEnd times", function(){
 				var eventTimeIndex = 0;
 				return Offline(function(Transport){
 					var eventTimes = [[0.5, 0], [0.6, 1], [1.1, 0], [1.2, 1], [1.3, 2], [1.4, 0], [1.5, 1], [1.6, 2]];
@@ -573,7 +571,7 @@ define(["helper/Basic", "Tone/event/Part", "Tone/core/Tone",
 							expect(eventTimes[eventTimeIndex][1]).to.equal(value);
 							eventTimeIndex++;
 						},
-						events : [[0, 0], [0.1, 1], [0.2, 2]]
+						"events" : [[0, 0], [0.1, 1], [0.2, 2]]
 					}).start(0.3).stop(0.81);
 					part.loopEnd = 0.4;
 					part.loopEnd = 0.3;
@@ -583,8 +581,7 @@ define(["helper/Basic", "Tone/event/Part", "Tone/core/Tone",
 				});
 			});
 
-
-			it ("reports the progress of the loop", function(){
+			it("reports the progress of the loop", function(){
 				var callCount = 0;
 				return Offline(function(Transport){
 					var part = new Part({
@@ -594,7 +591,7 @@ define(["helper/Basic", "Tone/event/Part", "Tone/core/Tone",
 						"callback" : function(){
 							callCount++;
 						},
-						events : [0]
+						"events" : [0]
 					}).start(0);
 					Transport.start(0);
 					return function(time){
@@ -658,7 +655,7 @@ define(["helper/Basic", "Tone/event/Part", "Tone/core/Tone",
 
 		context("playbackRate", function(){
 
-			it ("can adjust the playbackRate", function(){
+			it("can adjust the playbackRate", function(){
 				var invoked = false;
 				return Offline(function(Transport){
 					var lastCall;
@@ -681,7 +678,7 @@ define(["helper/Basic", "Tone/event/Part", "Tone/core/Tone",
 				});
 			});
 
-			it ("can adjust the playbackRate after starting", function(){
+			it("can adjust the playbackRate after starting", function(){
 				var invoked = false;
 				return Offline(function(Transport){
 					var lastCall;

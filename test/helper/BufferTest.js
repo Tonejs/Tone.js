@@ -60,7 +60,7 @@ define(["Tone/core/Tone"], function (Tone) {
 				ret[i] = buffer.getChannelData(i)[sample];
 			}
 			if (ret.length === 1){
-				return ret[0]
+				return ret[0];
 			} else {
 				return ret;
 			}

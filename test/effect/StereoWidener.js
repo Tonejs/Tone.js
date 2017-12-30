@@ -7,7 +7,7 @@ define(["Tone/effect/StereoWidener", "helper/Basic", "helper/EffectTests"], func
 
 		context("API", function(){
 
-			it ("can pass in options in the constructor", function(){
+			it("can pass in options in the constructor", function(){
 				var widener = new StereoWidener({
 					"width" : 0.2,
 				});
@@ -15,7 +15,7 @@ define(["Tone/effect/StereoWidener", "helper/Basic", "helper/EffectTests"], func
 				widener.dispose();
 			});
 
-			it ("can get/set the options", function(){
+			it("can get/set the options", function(){
 				var widener = new StereoWidener();
 				widener.set({
 					"width" : 0.4,

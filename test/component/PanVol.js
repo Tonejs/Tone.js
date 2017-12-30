@@ -27,7 +27,7 @@ function (PanVol, Basic, Offline, Test, Signal, PassAudio, PassAudioStereo, Merg
 					"mute" : true
 				});
 				expect(panVol.pan.value).to.be.closeTo(0.2, 0.001);
-				expect(panVol.mute).to.be.true
+				expect(panVol.mute).to.be.true;
 				panVol.dispose();
 			});
 

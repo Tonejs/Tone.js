@@ -6,61 +6,61 @@ define(["Test", "Tone/core/IntervalTimeline", "helper/Basic"], function (Test, I
 
 		context("inserting/deleting events", function(){
 
-			it ("accepts events into the timeline", function(){
+			it("accepts events into the timeline", function(){
 				var sched = new IntervalTimeline();
 				sched.add({
 					"state" : "A",
 					"duration" : 0.2,
-					"time"  : 0
+					"time" : 0
 				});
 				sched.add({
 					"state" : "B",
 					"duration" : 0.4,
-					"time"  : 1
+					"time" : 1
 				});
 				sched.add({
 					"state" : "C",
 					"duration" : 12,
-					"time"  : 2
+					"time" : 2
 				});
 				sched.dispose();
 			});
 
-			it ("computes the lenght of the timeline correctly after adding events", function(){
+			it("computes the lenght of the timeline correctly after adding events", function(){
 				var sched = new IntervalTimeline();
 				sched.add({
 					"state" : "A",
 					"duration" : 0.2,
-					"time"  : 0
+					"time" : 0
 				});
 				sched.add({
 					"state" : "B",
 					"duration" : 0.4,
-					"time"  : 1
+					"time" : 1
 				});
 				sched.add({
 					"state" : "C",
 					"duration" : 12,
-					"time"  : 2
+					"time" : 2
 				});
 				expect(sched.length).to.equal(3);
 				sched.dispose();
 			});
 
-			it ("can remove events from the timeline", function(){
+			it("can remove events from the timeline", function(){
 				var sched = new IntervalTimeline();
 
 				var ev0 = {
 					"duration" : 0.2,
-					"time"  : 0
+					"time" : 0
 				};
 				var ev1 = {
 					"duration" : 0.2,
-					"time"  : 0.2
+					"time" : 0.2
 				};
 				var ev2 = {
 					"duration" : 0.2,
-					"time"  : 0.1
+					"time" : 0.1
 				};
 				sched.add(ev0);
 				sched.add(ev1);
@@ -74,7 +74,7 @@ define(["Test", "Tone/core/IntervalTimeline", "helper/Basic"], function (Test, I
 				sched.dispose();
 			});
 
-			it ("removing on a null set does nothing", function(){
+			it("removing on a null set does nothing", function(){
 				var sched = new IntervalTimeline();
 				expect(sched.length).to.equal(0);
 				sched.remove({});
@@ -82,20 +82,20 @@ define(["Test", "Tone/core/IntervalTimeline", "helper/Basic"], function (Test, I
 				sched.dispose();
 			});
 
-			it ("can add and remove and add again events from the timeline", function(){
+			it("can add and remove and add again events from the timeline", function(){
 				var sched = new IntervalTimeline();
 
 				var ev0 = {
 					"duration" : 0.2,
-					"time"  : 0
+					"time" : 0
 				};
 				var ev1 = {
 					"duration" : 0.2,
-					"time"  : 0.2
+					"time" : 0.2
 				};
 				var ev2 = {
 					"duration" : 0.2,
-					"time"  : 0.1
+					"time" : 0.1
 				};
 				sched.add(ev0);
 				sched.add(ev1);
@@ -110,7 +110,7 @@ define(["Test", "Tone/core/IntervalTimeline", "helper/Basic"], function (Test, I
 				sched.dispose();
 			});
 
-			it ("throws an error if events do not have both time and duration attributes", function(){
+			it("throws an error if events do not have both time and duration attributes", function(){
 				var sched = new IntervalTimeline();
 				expect(function(){
 					sched.add({
@@ -129,50 +129,50 @@ define(["Test", "Tone/core/IntervalTimeline", "helper/Basic"], function (Test, I
 
 		context("getting events", function(){
 
-			it ("returns null when no events are in the timeline", function(){
+			it("returns null when no events are in the timeline", function(){
 				var sched = new IntervalTimeline();
 				expect(sched.get(3)).to.equal(null);
 				sched.dispose();
 			});
 
-			it ("returns the event which overlaps the given time", function(){
+			it("returns the event which overlaps the given time", function(){
 				var sched = new IntervalTimeline();
 				sched.add({
 					"state" : "A",
 					"duration" : Infinity,
-					"time"  : 0
+					"time" : 0
 				});
 				sched.add({
 					"state" : "B",
 					"duration" : 0.4,
-					"time"  : 1
+					"time" : 1
 				});
 				sched.add({
 					"state" : "C",
 					"duration" : 12,
-					"time"  : 2
+					"time" : 2
 				});
 				expect(sched.get(0.2).state).to.equal("A");
 				sched.dispose();
 			});
 
-			it ("returns events exclusive of the end time", function(){
+			it("returns events exclusive of the end time", function(){
 				var sched = new IntervalTimeline();
 				sched.add({
 					"state" : "A",
 					"duration" : 1,
-					"time"  : 0
+					"time" : 0
 				});
 				expect(sched.get(0.99).state).to.equal("A");
 				expect(sched.get(1)).to.equal(null);
 				sched.dispose();
 			});
 
-			it ("factors in start position and duration when checking for overlaps", function(){
+			it("factors in start position and duration when checking for overlaps", function(){
 				var sched = new IntervalTimeline();
 				sched.add({
 					"duration" : 0.4,
-					"time"  : 0
+					"time" : 0
 				});
 				expect(sched.get(0.5)).to.be.null;
 				expect(sched.get(-1)).to.be.null;
@@ -181,43 +181,43 @@ define(["Test", "Tone/core/IntervalTimeline", "helper/Basic"], function (Test, I
 				sched.dispose();
 			});
 
-			it ("returns the event whose start is closest to the given time", function(){
+			it("returns the event whose start is closest to the given time", function(){
 				var sched = new IntervalTimeline();
 				sched.add({
 					"state" : "A",
 					"duration" : Infinity,
-					"time"  : 0
+					"time" : 0
 				});
 				sched.add({
 					"state" : "B",
 					"duration" : 0.4,
-					"time"  : 0.2
+					"time" : 0.2
 				});
 				sched.add({
 					"state" : "C",
 					"duration" : 12,
-					"time"  : 2
+					"time" : 2
 				});
 				expect(sched.get(0.2).state).to.equal("B");
 				sched.dispose();
 			});
 
-			it ("returns the events correctly after some events are removed", function(){
+			it("returns the events correctly after some events are removed", function(){
 				var sched = new IntervalTimeline();
 				var ev0 = {
 					"state" : "A",
 					"duration" : 0.2,
-					"time"  : 0.1
+					"time" : 0.1
 				};
 				var ev1 = {
 					"state" : "B",
 					"duration" : 0.3,
-					"time"  : 0.2
+					"time" : 0.2
 				};
 				var ev2 = {
 					"state" : "C",
 					"duration" : Infinity,
-					"time"  : 0
+					"time" : 0
 				};
 				sched.add(ev0);
 				sched.add(ev1);
@@ -229,7 +229,7 @@ define(["Test", "Tone/core/IntervalTimeline", "helper/Basic"], function (Test, I
 				sched.dispose();
 			});
 
-			it ("can handle many items", function(){
+			it("can handle many items", function(){
 				var sched = new IntervalTimeline();
 				var len = 5000;
 				var events = [];
@@ -259,10 +259,9 @@ define(["Test", "Tone/core/IntervalTimeline", "helper/Basic"], function (Test, I
 
 		});
 
-
 		context("cancelling", function(){
 
-			it ("can cancel items after the given time", function(){
+			it("can cancel items after the given time", function(){
 				var sched = new IntervalTimeline();
 				for (var i = 5; i < 100; i++){
 					sched.add({
@@ -278,16 +277,15 @@ define(["Test", "Tone/core/IntervalTimeline", "helper/Basic"], function (Test, I
 			});
 		});
 
-
 		context("Iterators", function(){
 
 			it("iterates over all items and returns and item", function(){
 				var sched = new IntervalTimeline();
-				sched.add({"time" : 0, "duration" : 5});
-				sched.add({"time" : 0.1, "duration" : 5});
-				sched.add({"time" : 0.2, "duration" : 5});
-				sched.add({"time" : 0.3, "duration" : 5});
-				sched.add({"time" : 0.4, "duration" : 5});
+				sched.add({ "time" : 0, "duration" : 5 });
+				sched.add({ "time" : 0.1, "duration" : 5 });
+				sched.add({ "time" : 0.2, "duration" : 5 });
+				sched.add({ "time" : 0.3, "duration" : 5 });
+				sched.add({ "time" : 0.4, "duration" : 5 });
 				var count = 0;
 				sched.forEach(function(event){
 					expect(event).to.be.an.object;
@@ -309,11 +307,11 @@ define(["Test", "Tone/core/IntervalTimeline", "helper/Basic"], function (Test, I
 
 			it("iterates over all items overlapping the given time", function(){
 				var sched = new IntervalTimeline();
-				sched.add({"time" : 0, "duration" : 5});
-				sched.add({"time" : 0.1, "duration" : 5});
-				sched.add({"time" : 0.2, "duration" : 5});
-				sched.add({"time" : 0.3, "duration" : 5});
-				sched.add({"time" : 0.4, "duration" : 5});
+				sched.add({ "time" : 0, "duration" : 5 });
+				sched.add({ "time" : 0.1, "duration" : 5 });
+				sched.add({ "time" : 0.2, "duration" : 5 });
+				sched.add({ "time" : 0.3, "duration" : 5 });
+				sched.add({ "time" : 0.4, "duration" : 5 });
 				var count = 0;
 				sched.forEachAtTime(0.3, function(event){
 					expect(event).to.be.an.object;
@@ -326,10 +324,10 @@ define(["Test", "Tone/core/IntervalTimeline", "helper/Basic"], function (Test, I
 
 			it("handles time ranges before the available objects", function(){
 				var sched = new IntervalTimeline();
-				sched.add({"time" : 0.1, "duration" : 5});
-				sched.add({"time" : 0.2, "duration" : 5});
-				sched.add({"time" : 0.3, "duration" : 5});
-				sched.add({"time" : 0.4, "duration" : 5});
+				sched.add({ "time" : 0.1, "duration" : 5 });
+				sched.add({ "time" : 0.2, "duration" : 5 });
+				sched.add({ "time" : 0.3, "duration" : 5 });
+				sched.add({ "time" : 0.4, "duration" : 5 });
 				var count = 0;
 				sched.forEachAtTime(0, function(){
 					count++;
@@ -340,10 +338,10 @@ define(["Test", "Tone/core/IntervalTimeline", "helper/Basic"], function (Test, I
 
 			it("handles time ranges after the available objects", function(){
 				var sched = new IntervalTimeline();
-				sched.add({"time" : 0.1, "duration" : 5});
-				sched.add({"time" : 0.2, "duration" : 5});
-				sched.add({"time" : 0.3, "duration" : 5});
-				sched.add({"time" : 0.4, "duration" : 5});
+				sched.add({ "time" : 0.1, "duration" : 5 });
+				sched.add({ "time" : 0.2, "duration" : 5 });
+				sched.add({ "time" : 0.3, "duration" : 5 });
+				sched.add({ "time" : 0.4, "duration" : 5 });
 				var count = 0;
 				sched.forEachAtTime(5.5, function(){
 					count++;
@@ -354,10 +352,10 @@ define(["Test", "Tone/core/IntervalTimeline", "helper/Basic"], function (Test, I
 
 			it("iterates over all items after the given time", function(){
 				var sched = new IntervalTimeline();
-				sched.add({"time" : 0.1, "duration" : 5});
-				sched.add({"time" : 0.2, "duration" : 5});
-				sched.add({"time" : 0.3, "duration" : 5});
-				sched.add({"time" : 0.4, "duration" : 5});
+				sched.add({ "time" : 0.1, "duration" : 5 });
+				sched.add({ "time" : 0.2, "duration" : 5 });
+				sched.add({ "time" : 0.3, "duration" : 5 });
+				sched.add({ "time" : 0.4, "duration" : 5 });
 				var count = 0;
 				sched.forEachAfter(0.2, function(event){
 					expect(event).to.be.an.object;
@@ -376,10 +374,10 @@ define(["Test", "Tone/core/IntervalTimeline", "helper/Basic"], function (Test, I
 
 			it("handles time ranges after the available objects", function(){
 				var sched = new IntervalTimeline();
-				sched.add({"time" : 0.1, "duration" : 5});
-				sched.add({"time" : 0.2, "duration" : 5});
-				sched.add({"time" : 0.3, "duration" : 5});
-				sched.add({"time" : 0.4, "duration" : 5});
+				sched.add({ "time" : 0.1, "duration" : 5 });
+				sched.add({ "time" : 0.2, "duration" : 5 });
+				sched.add({ "time" : 0.3, "duration" : 5 });
+				sched.add({ "time" : 0.4, "duration" : 5 });
 				var count = 0;
 				sched.forEachAfter(0.5, function(){
 					count++;
@@ -390,10 +388,10 @@ define(["Test", "Tone/core/IntervalTimeline", "helper/Basic"], function (Test, I
 
 			it("iterates over all items", function(){
 				var sched = new IntervalTimeline();
-				sched.add({"time" : 0.1, "duration" : 5});
-				sched.add({"time" : 0.2, "duration" : 5});
-				sched.add({"time" : 0.3, "duration" : 5});
-				sched.add({"time" : 0.4, "duration" : 5});
+				sched.add({ "time" : 0.1, "duration" : 5 });
+				sched.add({ "time" : 0.2, "duration" : 5 });
+				sched.add({ "time" : 0.3, "duration" : 5 });
+				sched.add({ "time" : 0.4, "duration" : 5 });
 				var count = 0;
 				sched.forEach(function(){
 					count++;
@@ -405,7 +403,7 @@ define(["Test", "Tone/core/IntervalTimeline", "helper/Basic"], function (Test, I
 			it("can remove items during forEach iterations", function(){
 				var sched = new IntervalTimeline();
 				for (var i = 0; i < 1000; i++){
-					sched.add({"time" : i, "duration" : 0.01});
+					sched.add({ "time" : i, "duration" : 0.01 });
 				}
 				sched.forEach(function(event){
 					sched.cancel(event.time);
@@ -417,7 +415,7 @@ define(["Test", "Tone/core/IntervalTimeline", "helper/Basic"], function (Test, I
 			it("can remove items during forEachAtTime iterations", function(){
 				var sched = new IntervalTimeline();
 				for (var i = 0; i < 1000; i++){
-					sched.add({"time" : i, "duration" : Infinity});
+					sched.add({ "time" : i, "duration" : Infinity });
 				}
 				sched.forEachAtTime(1000, function(event){
 					sched.cancel(event.time);
@@ -429,7 +427,7 @@ define(["Test", "Tone/core/IntervalTimeline", "helper/Basic"], function (Test, I
 			it("can remove items during forEachAfter iterations", function(){
 				var sched = new IntervalTimeline();
 				for (var i = 0; i < 1000; i++){
-					sched.add({"time" : i, "duration" : Infinity});
+					sched.add({ "time" : i, "duration" : Infinity });
 				}
 				sched.forEachAfter(0, function(event){
 					sched.remove(event);

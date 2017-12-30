@@ -1,8 +1,8 @@
 define(["Test", "Tone/core/Tone", "Tone/core/AudioNode", "helper/PassAudio", "Tone/core/Gain",
 	"Tone/source/Oscillator", "Tone/component/Merge", "Tone/component/Split",
 	"Tone/component/Filter", "helper/Offline", "Tone/signal/Signal", "helper/Supports"],
-	function (Test, Tone, AudioNode, PassAudio, Gain, Oscillator, Merge,
-		Split, Filter, Offline, Signal, Supports) {
+function (Test, Tone, AudioNode, PassAudio, Gain, Oscillator, Merge,
+	Split, Filter, Offline, Signal, Supports) {
 
 	describe("AudioNode", function(){
 
@@ -31,7 +31,6 @@ define(["Test", "Tone/core/Tone", "Tone/core/AudioNode", "helper/PassAudio", "To
 				return context.close();
 			});
 		}
-
 
 		it("reports its inputs and outputs", function(){
 			var node0 = new AudioNode();
@@ -143,7 +142,6 @@ define(["Test", "Tone/core/Tone", "Tone/core/AudioNode", "helper/PassAudio", "To
 					input.connect(node);
 				});
 			});
-
 
 			it("can chain connections", function(){
 				return PassAudio(function(input){

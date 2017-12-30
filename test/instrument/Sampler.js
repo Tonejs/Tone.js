@@ -1,11 +1,10 @@
 define(["Tone/instrument/Sampler", "helper/Basic", "helper/InstrumentTests",
 	"Tone/core/Buffer", "helper/Offline"],
-	function (Sampler, Basic, InstrumentTest, Buffer, Offline) {
+function (Sampler, Basic, InstrumentTest, Buffer, Offline) {
 
 	if (window.__karma__){
 		Buffer.baseUrl = "/base/test/";
 	}
-
 
 	describe("Sampler", function(){
 
@@ -25,7 +24,7 @@ define(["Tone/instrument/Sampler", "helper/Basic", "helper/InstrumentTests",
 
 		context("Constructor", function(){
 
-			it ("can be constructed with an options object", function(){
+			it("can be constructed with an options object", function(){
 				var sampler = new Sampler({
 					69 : A4_buffer
 				}, {
@@ -37,7 +36,7 @@ define(["Tone/instrument/Sampler", "helper/Basic", "helper/InstrumentTests",
 				sampler.dispose();
 			});
 
-			it ("urls can be described as either midi or notes", function(){
+			it("urls can be described as either midi or notes", function(){
 				return Offline(function(){
 					var sampler = new Sampler({
 						"A4" : A4_buffer
@@ -48,7 +47,7 @@ define(["Tone/instrument/Sampler", "helper/Basic", "helper/InstrumentTests",
 				});
 			});
 
-			it ("throws an error if the url key is not midi or pitch notation", function(){
+			it("throws an error if the url key is not midi or pitch notation", function(){
 				expect(function(){
 					var sampler = new Sampler({
 						"note" : A4_buffer
@@ -56,16 +55,16 @@ define(["Tone/instrument/Sampler", "helper/Basic", "helper/InstrumentTests",
 				}).throws(Error);
 			});
 
-			it ("can get and set envelope attributes", function(){
+			it("can get and set envelope attributes", function(){
 				var sampler = new Sampler();
-				sampler.attack = 0.1
-				sampler.release = 0.1
+				sampler.attack = 0.1;
+				sampler.release = 0.1;
 				expect(sampler.attack).to.equal(0.1);
 				expect(sampler.release).to.equal(0.1);
 				sampler.dispose();
 			});
 
-			it ("invokes the callback when loaded", function(done){
+			it("invokes the callback when loaded", function(done){
 				var sampler = new Sampler({
 					"A4" : "./audio/sine.wav"
 				}, function(){
@@ -74,7 +73,7 @@ define(["Tone/instrument/Sampler", "helper/Basic", "helper/InstrumentTests",
 				});
 			});
 
-			it ("can pass in a callback and baseUrl", function(done){
+			it("can pass in a callback and baseUrl", function(done){
 				var sampler = new Sampler({
 					"A4" : A4_buffer
 				}, function(){
@@ -87,7 +86,7 @@ define(["Tone/instrument/Sampler", "helper/Basic", "helper/InstrumentTests",
 
 		context("Makes sound", function(){
 
-			it ("repitches the note", function(){
+			it("repitches the note", function(){
 				return Offline(function(){
 					var sampler = new Sampler({
 						"A4" : A4_buffer
@@ -98,7 +97,7 @@ define(["Tone/instrument/Sampler", "helper/Basic", "helper/InstrumentTests",
 				});
 			});
 
-			it ("repitches the note only up to 2 octaves", function(){
+			it("repitches the note only up to 2 octaves", function(){
 				return Offline(function(){
 					var sampler = new Sampler({
 						"A4" : A4_buffer
@@ -109,7 +108,7 @@ define(["Tone/instrument/Sampler", "helper/Basic", "helper/InstrumentTests",
 				});
 			});
 
-			it ("is silent after the release", function(){
+			it("is silent after the release", function(){
 				return Offline(function(){
 					var sampler = new Sampler({
 						"A4" : A4_buffer
@@ -119,11 +118,11 @@ define(["Tone/instrument/Sampler", "helper/Basic", "helper/InstrumentTests",
 					sampler.triggerAttack("A4", 0);
 					sampler.triggerRelease("A4", 0.2);
 				}, 0.3).then(function(buffer){
-					expect(buffer.getLastSoundTime()).to.be.closeTo(0.2, 0.01)
+					expect(buffer.getLastSoundTime()).to.be.closeTo(0.2, 0.01);
 				});
 			});
 
-			it ("can release multiple notes", function(){
+			it("can release multiple notes", function(){
 				return Offline(function(){
 					var sampler = new Sampler({
 						"A4" : A4_buffer
@@ -136,11 +135,11 @@ define(["Tone/instrument/Sampler", "helper/Basic", "helper/InstrumentTests",
 					sampler.triggerAttack("G4", 0.1);
 					sampler.releaseAll(0.2);
 				}, 0.3).then(function(buffer){
-					expect(buffer.getLastSoundTime()).to.be.closeTo(0.2, 0.01)
+					expect(buffer.getLastSoundTime()).to.be.closeTo(0.2, 0.01);
 				});
 			});
 
-			it ("can trigger the attack and release", function(){
+			it("can trigger the attack and release", function(){
 				return Offline(function(){
 					var sampler = new Sampler({
 						"A4" : A4_buffer
@@ -149,15 +148,15 @@ define(["Tone/instrument/Sampler", "helper/Basic", "helper/InstrumentTests",
 					}).toMaster();
 					sampler.triggerAttackRelease("A4", 0.2, 0.1);
 				}, 0.4).then(function(buffer){
-					expect(buffer.getFirstSoundTime()).to.be.closeTo(0.1, 0.01)
-					expect(buffer.getLastSoundTime()).to.be.closeTo(0.3, 0.01)
+					expect(buffer.getFirstSoundTime()).to.be.closeTo(0.1, 0.01);
+					expect(buffer.getLastSoundTime()).to.be.closeTo(0.3, 0.01);
 				});
 			});
 		});
 
 		context("add samples", function(){
 
-			it ("can add a note with it's midi value", function(){
+			it("can add a note with it's midi value", function(){
 				return Offline(function(){
 					var sampler = new Sampler().toMaster();
 					sampler.add("69", A4_buffer);
@@ -167,7 +166,7 @@ define(["Tone/instrument/Sampler", "helper/Basic", "helper/InstrumentTests",
 				});
 			});
 
-			it ("can add a note with it's note name", function(){
+			it("can add a note with it's note name", function(){
 				return Offline(function(){
 					var sampler = new Sampler().toMaster();
 					sampler.add("A4", A4_buffer);
@@ -177,14 +176,14 @@ define(["Tone/instrument/Sampler", "helper/Basic", "helper/InstrumentTests",
 				});
 			});
 
-			it ("can pass in a url and invokes the callback", function(done){
+			it("can pass in a url and invokes the callback", function(done){
 				var sampler = new Sampler();
 				sampler.add("A4", "./audio/sine.wav", function(){
-					done()
+					done();
 				});
 			});
 
-			it ("throws an error if added note key is not midi or note name", function(){
+			it("throws an error if added note key is not midi or note name", function(){
 				expect(function(){
 					var sampler = new Sampler().toMaster();
 					sampler.add("nope", A4_buffer);

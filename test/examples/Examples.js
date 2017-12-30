@@ -27,7 +27,7 @@ define(["Test", "Examples", "helper/Supports"], function (Test, Examples, Suppor
 
 		function createTest(url){
 
-			it (url, function(){
+			it(url, function(){
 				url = baseUrl + url + ".html";
 				return testUrl(url).then(getIframeError);
 			});

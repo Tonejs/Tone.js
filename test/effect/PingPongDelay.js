@@ -7,7 +7,7 @@ define(["Tone/effect/PingPongDelay", "helper/Basic", "helper/EffectTests"], func
 
 		context("API", function(){
 
-			it ("can pass in options in the constructor", function(){
+			it("can pass in options in the constructor", function(){
 				var pingPong = new PingPongDelay({
 					"delayTime" : 0.2,
 				});
@@ -15,7 +15,7 @@ define(["Tone/effect/PingPongDelay", "helper/Basic", "helper/EffectTests"], func
 				pingPong.dispose();
 			});
 
-			it ("can get/set the options", function(){
+			it("can get/set the options", function(){
 				var pingPong = new PingPongDelay();
 				pingPong.set({
 					"delayTime" : 0.21,

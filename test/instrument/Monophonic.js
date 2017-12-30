@@ -6,7 +6,7 @@ define(["Tone/instrument/Monophonic", "helper/Basic"], function (Monophonic, Bas
 
 		context("API", function(){
 
-			it ("can be constructed with an options object", function(){
+			it("can be constructed with an options object", function(){
 				var instr = new Monophonic({
 					"portamento" : 0.2
 				});
@@ -14,7 +14,7 @@ define(["Tone/instrument/Monophonic", "helper/Basic"], function (Monophonic, Bas
 				instr.dispose();
 			});
 
-			it ("set the portamento", function(){
+			it("set the portamento", function(){
 				var instr = new Monophonic();
 				instr.portamento = 0.4;
 				expect(instr.portamento).to.equal(0.4);

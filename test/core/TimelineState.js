@@ -2,13 +2,13 @@ define(["Test", "Tone/core/TimelineState"], function (Test, TimelineState) {
 
 	describe("TimelineState", function(){
 
-		it ("can be created and disposed", function(){
+		it("can be created and disposed", function(){
 			var sched = new TimelineState();
 			sched.dispose();
 			Test.wasDisposed(sched);
 		});
 
-		it ("can schedule a state at a given time", function(){
+		it("can schedule a state at a given time", function(){
 			var sched = new TimelineState();
 			sched.setStateAtTime("A", 0);
 			sched.setStateAtTime("B", 1);
@@ -16,7 +16,7 @@ define(["Test", "Tone/core/TimelineState"], function (Test, TimelineState) {
 			sched.dispose();
 		});
 
-		it ("can get a state at a given time", function(){
+		it("can get a state at a given time", function(){
 			var sched = new TimelineState();
 			sched.setStateAtTime("A", 0);
 			sched.setStateAtTime("B", 1);
@@ -26,7 +26,7 @@ define(["Test", "Tone/core/TimelineState"], function (Test, TimelineState) {
 			sched.dispose();
 		});
 
-		it ("returns undefined if it's before any scheduled states", function(){
+		it("returns undefined if it's before any scheduled states", function(){
 			var sched = new TimelineState();
 			sched.setStateAtTime("A", 0);
 			sched.setStateAtTime("B", 1);
@@ -35,7 +35,7 @@ define(["Test", "Tone/core/TimelineState"], function (Test, TimelineState) {
 			sched.dispose();
 		});
 
-		it ("returns initial state if defined and query time is before any scheduled states", function(){
+		it("returns initial state if defined and query time is before any scheduled states", function(){
 			var sched = new TimelineState("initial");
 			sched.setStateAtTime("A", 20);
 			sched.setStateAtTime("B", 21);

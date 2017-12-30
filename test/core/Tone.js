@@ -2,8 +2,8 @@ define(["Test", "Tone/core/Tone", "helper/PassAudio", "Tone/source/Oscillator",
 	"Tone/instrument/Synth", "helper/Offline",
 	"Tone/component/Filter", "Tone/core/Gain", "Tone/core/Context",
 	"helper/BufferTest", "Tone/component/Merge", "Tone/signal/Signal", "Tone/component/Split", "helper/Supports"],
-	function (Test, Tone, PassAudio, Oscillator, Synth, Offline,
-		Filter, Gain, Context, BufferTest, Merge, Signal, Split, Supports) {
+function (Test, Tone, PassAudio, Oscillator, Synth, Offline,
+	Filter, Gain, Context, BufferTest, Merge, Signal, Split, Supports) {
 
 	describe("Tone", function(){
 
@@ -13,10 +13,10 @@ define(["Test", "Tone/core/Tone", "helper/PassAudio", "Tone/source/Oscillator",
 			Test.wasDisposed(t);
 		});
 
-		it ("must be invoked with 'new'", function(){
+		it("must be invoked with 'new'", function(){
 			expect(function(){
 				var t = Tone();
-			}).to.throw(Error)
+			}).to.throw(Error);
 		});
 
 		it("returns the class name with toString()", function(){
@@ -131,14 +131,14 @@ define(["Test", "Tone/core/Tone", "helper/PassAudio", "Tone/source/Oscillator",
 			});
 
 			it("handles default arguments on a shallow object", function(){
-				expect(Tone.defaultArg({"b" : 10}, {"a" : 4, "b" : 10})).has.property("a", 4);
-				expect(Tone.defaultArg({"b" : 10, "c" : 20}, {"a" : 4, "b" : 10})).has.property("b", 10);
-				expect(Tone.defaultArg({"b" : 10, "c" : 20}, {"a" : 4, "b" : 10})).has.property("c", 20);
+				expect(Tone.defaultArg({ "b" : 10 }, { "a" : 4, "b" : 10 })).has.property("a", 4);
+				expect(Tone.defaultArg({ "b" : 10, "c" : 20 }, { "a" : 4, "b" : 10 })).has.property("b", 10);
+				expect(Tone.defaultArg({ "b" : 10, "c" : 20 }, { "a" : 4, "b" : 10 })).has.property("c", 20);
 			});
 
 			it("handles default arguments on a deep object", function(){
-				expect(Tone.defaultArg({"b" : {"c" : 10}}, {"b" : {"c" : 20, "d" : 30}})).has.deep.property("b.d", 30);
-				expect(Tone.defaultArg({"a" : 10}, {"b" : {"c" : 20}})).has.deep.property("b.c", 20);
+				expect(Tone.defaultArg({ "b" : { "c" : 10 } }, { "b" : { "c" : 20, "d" : 30 } })).has.deep.property("b.d", 30);
+				expect(Tone.defaultArg({ "a" : 10 }, { "b" : { "c" : 20 } })).has.deep.property("b.c", 20);
 			});
 
 			it("maps array parameters to an object", function(){
@@ -158,7 +158,7 @@ define(["Test", "Tone/core/Tone", "helper/PassAudio", "Tone/source/Oscillator",
 
 			it("gets default arguments after creating options object", function(){
 				var constr = {
-					"defaults" : {"c" : 3}
+					"defaults" : { "c" : 3 }
 				};
 				expect(Tone.defaults([1, 2], ["a", "b", "c"], constr)).is.deep.equal({
 					"a" : 1,
@@ -168,7 +168,7 @@ define(["Test", "Tone/core/Tone", "helper/PassAudio", "Tone/source/Oscillator",
 			});
 
 			it("uses constr as an object if third argument doesn't have a 'defaults' property", function(){
-				expect(Tone.defaults([1, 2], ["a", "b", "c"], {"c" : 3})).is.deep.equal({
+				expect(Tone.defaults([1, 2], ["a", "b", "c"], { "c" : 3 })).is.deep.equal({
 					"a" : 1,
 					"b" : 2,
 					"c" : 3
@@ -176,7 +176,7 @@ define(["Test", "Tone/core/Tone", "helper/PassAudio", "Tone/source/Oscillator",
 			});
 
 			it("does not map parameter if first argument is already an object", function(){
-				expect(Tone.defaults([{"a" : 2, "b" : 3}], ["a", "b", "c"], {})).is.deep.equal({
+				expect(Tone.defaults([{ "a" : 2, "b" : 3 }], ["a", "b", "c"], {})).is.deep.equal({
 					"a" : 2,
 					"b" : 3,
 				});
@@ -188,7 +188,7 @@ define(["Test", "Tone/core/Tone", "helper/PassAudio", "Tone/source/Oscillator",
 
 			if (Supports.AUDIO_CONTEXT_CLOSE_RESOLVES){
 
-				it ("can set a new context", function(){
+				it("can set a new context", function(){
 					var origCtx = Tone.context;
 					var ctx = new Context();
 					Tone.context = ctx;
@@ -201,7 +201,7 @@ define(["Test", "Tone/core/Tone", "helper/PassAudio", "Tone/source/Oscillator",
 					return ctx.dispose();
 				});
 
-				it ("new context can be a raw audio context", function(){
+				it("new context can be a raw audio context", function(){
 					var origCtx = Tone.context;
 					var ctx = new AudioContext();
 					Tone.context = ctx;
@@ -216,8 +216,7 @@ define(["Test", "Tone/core/Tone", "helper/PassAudio", "Tone/source/Oscillator",
 				});
 			}
 
-
-			it ("tests if the audio context time has passed", function(){
+			it("tests if the audio context time has passed", function(){
 				// overwrite warn to throw errors
 				var originalWarn = console.warn;
 				console.warn = function(warning){

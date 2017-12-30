@@ -6,7 +6,7 @@ function (LFO, Basic, Offline, Test, OutputAudio, Tone, Signal) {
 		Basic(LFO);
 
 		context("API", function(){
-			it ("can get the current state", function(done){
+			it("can get the current state", function(done){
 				var lfo = new LFO();
 				expect(lfo.state).to.equal("stopped");
 				lfo.start();
@@ -82,7 +82,7 @@ function (LFO, Basic, Offline, Test, OutputAudio, Tone, Signal) {
 					var lfo = new LFO(100, 10, 20).toMaster();
 					lfo.start();
 					lfo.min = 15;
-					lfo.max  = 18;
+					lfo.max = 18;
 				}).then(function(buffer){
 					expect(buffer.min()).to.be.gte(15);
 					expect(buffer.max()).to.be.lte(18);
@@ -151,7 +151,7 @@ function (LFO, Basic, Offline, Test, OutputAudio, Tone, Signal) {
 				});
 			});
 
-			it ("can sync the frequency to the Transport", function(){
+			it("can sync the frequency to the Transport", function(){
 				return Offline(function(Transport){
 					var lfo = new LFO(2);
 					lfo.sync();
@@ -164,7 +164,7 @@ function (LFO, Basic, Offline, Test, OutputAudio, Tone, Signal) {
 				});
 			});
 
-			it ("can unsync the frequency to the Transport", function(){
+			it("can unsync the frequency to the Transport", function(){
 				return Offline(function(Transport){
 					var lfo = new LFO(2);
 					lfo.sync();

@@ -9,7 +9,6 @@ function (Panner, Basic, Offline, Test, Signal, PassAudio, PassAudioStereo, Merg
 
 		context("Panning", function(){
 
-
 			it("handles input and output connections", function(){
 				var panner = new Panner();
 				Test.connect(panner);

@@ -4,19 +4,19 @@ define(["Tone/effect/Effect", "Tone/effect/FeedbackEffect", "helper/Basic"], fun
 
 		context("API", function(){
 
-			it ("extends Effect", function(){
+			it("extends Effect", function(){
 				var feedbackEffect = new FeedbackEffect();
 				expect(feedbackEffect).to.be.instanceOf(Effect);
 				feedbackEffect.dispose();
 			});
 
-			it ("has a feedback signal", function(){
+			it("has a feedback signal", function(){
 				var feedbackEffect = new FeedbackEffect();
 				expect(feedbackEffect).to.have.property("feedback");
 				feedbackEffect.dispose();
 			});
 
-			it ("can set the feedback amount", function(){
+			it("can set the feedback amount", function(){
 				var feedbackEffect = new FeedbackEffect();
 				feedbackEffect.feedback.value = 1;
 				expect(feedbackEffect.feedback.value).to.be.closeTo(1, 0.001);

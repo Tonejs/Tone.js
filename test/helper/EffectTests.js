@@ -1,19 +1,18 @@
 define(["helper/OutputAudio", "Tone/effect/Effect", "helper/PassAudio",
 	"helper/PassAudioStereo", "Test", "helper/Offline", "Tone/signal/Signal", "Tone/component/Merge"],
-	function (OutputAudio, Effect, PassAudio, PassAudioStereo, Test, Offline, Signal, Merge) {
+function (OutputAudio, Effect, PassAudio, PassAudioStereo, Test, Offline, Signal, Merge) {
 
 	return function(Constr, args, before){
 
-
 		context("Effect Tests", function(){
 
-			it ("extends Tone.Effect", function(){
+			it("extends Tone.Effect", function(){
 				var instance = new Constr(args);
 				expect(instance).to.be.an.instanceof(Effect);
 				instance.dispose();
 			});
 
-			it ("has an input and output", function(){
+			it("has an input and output", function(){
 				var instance = new Constr(args);
 				if (before){
 					before(instance);

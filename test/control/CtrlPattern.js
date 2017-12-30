@@ -6,14 +6,14 @@ define(["Tone/control/CtrlPattern", "helper/Basic"], function (CtrlPattern, Basi
 
 		context("API", function(){
 
-			it ("can be constructed with an array and type", function(){
+			it("can be constructed with an array and type", function(){
 				var pattern = new CtrlPattern([0, 1, 2, 3], "down");
 				expect(pattern.values).to.deep.equal([0, 1, 2, 3]);
 				expect(pattern.type).to.equal("down");
 				pattern.dispose();
 			});
 
-			it ("can be constructed with an object", function(){
+			it("can be constructed with an object", function(){
 				var pattern = new CtrlPattern({
 					values : [1, 2, 3],
 					type : "upDown"
@@ -23,20 +23,20 @@ define(["Tone/control/CtrlPattern", "helper/Basic"], function (CtrlPattern, Basi
 				pattern.dispose();
 			});
 
-			it ("returns undefined with no pattern", function(){
+			it("returns undefined with no pattern", function(){
 				var pattern = new CtrlPattern();
 				expect(pattern.next()).to.be.undefined;
 				pattern.dispose();
 			});
 
-			it ("can set the index", function(){
+			it("can set the index", function(){
 				var pattern = new CtrlPattern([0, 2, 3, 4]);
 				pattern.index = 2;
 				expect(pattern.index).to.be.equal(2);
 				pattern.dispose();
 			});
 
-			it ("can be resized smaller when the index is after the previous length", function(){
+			it("can be resized smaller when the index is after the previous length", function(){
 				var pattern = new CtrlPattern([0, 1, 2, 3, 4]);
 				pattern.index = 2;
 				pattern.next();
@@ -50,7 +50,7 @@ define(["Tone/control/CtrlPattern", "helper/Basic"], function (CtrlPattern, Basi
 
 		context("Patterns", function(){
 
-			it ("does the up pattern", function(){
+			it("does the up pattern", function(){
 				var pattern = new CtrlPattern([0, 1, 2, 3], "up");
 				var output = [];
 				for (var i = 0; i < 6; i++){
@@ -61,7 +61,7 @@ define(["Tone/control/CtrlPattern", "helper/Basic"], function (CtrlPattern, Basi
 				pattern.dispose();
 			});
 
-			it ("does the down pattern", function(){
+			it("does the down pattern", function(){
 				var pattern = new CtrlPattern([0, 1, 2, 3], "down");
 				var output = [];
 				for (var i = 0; i < 6; i++){
@@ -72,18 +72,18 @@ define(["Tone/control/CtrlPattern", "helper/Basic"], function (CtrlPattern, Basi
 				pattern.dispose();
 			});
 
-			it ("does the upDown pattern", function(){
+			it("does the upDown pattern", function(){
 				var pattern = new CtrlPattern([0, 1, 2, 3], "upDown");
 				var output = [];
 				for (var i = 0; i < 10; i++){
 					output[i] = pattern.value;
 					pattern.next();
 				}
-				expect(output).to.deep.equal([ 0, 1, 2, 3, 2, 1, 0, 1, 2, 3]);
+				expect(output).to.deep.equal([0, 1, 2, 3, 2, 1, 0, 1, 2, 3]);
 				pattern.dispose();
 			});
 
-			it ("does the downUp pattern", function(){
+			it("does the downUp pattern", function(){
 				var pattern = new CtrlPattern([0, 1, 2, 3], "downUp");
 				var output = [];
 				for (var i = 0; i < 10; i++){
@@ -94,7 +94,7 @@ define(["Tone/control/CtrlPattern", "helper/Basic"], function (CtrlPattern, Basi
 				pattern.dispose();
 			});
 
-			it ("does the alternateUp pattern", function(){
+			it("does the alternateUp pattern", function(){
 				var pattern = new CtrlPattern([0, 1, 2, 3, 4], "alternateUp");
 				var output = [];
 				for (var i = 0; i < 10; i++){
@@ -105,7 +105,7 @@ define(["Tone/control/CtrlPattern", "helper/Basic"], function (CtrlPattern, Basi
 				pattern.dispose();
 			});
 
-			it ("does the alternateDown pattern", function(){
+			it("does the alternateDown pattern", function(){
 				var pattern = new CtrlPattern([0, 1, 2, 3, 4], "alternateDown");
 				var output = [];
 				for (var i = 0; i < 10; i++){
@@ -116,7 +116,7 @@ define(["Tone/control/CtrlPattern", "helper/Basic"], function (CtrlPattern, Basi
 				pattern.dispose();
 			});
 
-			it ("outputs random elements form the values", function(){
+			it("outputs random elements form the values", function(){
 				var pattern = new CtrlPattern([0, 1, 2, 3, 4], "random");
 				for (var i = 0; i < 10; i++){
 					var output = pattern.value;
@@ -126,7 +126,7 @@ define(["Tone/control/CtrlPattern", "helper/Basic"], function (CtrlPattern, Basi
 				pattern.dispose();
 			});
 
-			it ("does a randomWalk", function(){
+			it("does a randomWalk", function(){
 				var pattern = new CtrlPattern([0, 1, 2, 3, 4], "randomWalk");
 				pattern.index = 2;
 				expect(pattern.value).to.equal(2);
@@ -140,7 +140,7 @@ define(["Tone/control/CtrlPattern", "helper/Basic"], function (CtrlPattern, Basi
 				pattern.dispose();
 			});
 
-			it ("does randomOnce pattern", function(){
+			it("does randomOnce pattern", function(){
 				var pattern = new CtrlPattern([4, 5, 6, 7, 8], "randomOnce");
 				var output = [];
 				var i;

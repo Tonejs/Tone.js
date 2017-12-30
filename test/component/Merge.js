@@ -21,7 +21,6 @@ function (Merge, Basic, PassAudio, PassAudioStereo, Test, Offline, Signal) {
 				});
 			});
 
-
 			it("merge two signal into one stereo signal", function(){
 				return Offline(function(){
 					var sigL = new Signal(1);

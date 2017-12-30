@@ -6,7 +6,7 @@ define(["Tone/instrument/Instrument", "helper/Basic"], function (Instrument, Bas
 
 		context("API", function(){
 
-			it ("can be constructed with an options object", function(){
+			it("can be constructed with an options object", function(){
 				var instr = new Instrument({
 					"volume" : -12
 				});
@@ -14,7 +14,7 @@ define(["Tone/instrument/Instrument", "helper/Basic"], function (Instrument, Bas
 				instr.dispose();
 			});
 
-			it ("can get/set attributes", function(){
+			it("can get/set attributes", function(){
 				var instr = new Instrument();
 				instr.set({
 					"volume" : 2

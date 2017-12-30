@@ -5,7 +5,7 @@ define(["Tone/effect/Vibrato", "helper/Basic", "helper/EffectTests"], function (
 
 		context("API", function(){
 
-			it ("can pass in options in the constructor", function(){
+			it("can pass in options in the constructor", function(){
 				var vibrato = new Vibrato({
 					"maxDelay" : 0.02,
 					"depth" : 0.25,
@@ -16,7 +16,7 @@ define(["Tone/effect/Vibrato", "helper/Basic", "helper/EffectTests"], function (
 				vibrato.dispose();
 			});
 			
-			it ("can get/set the options", function(){
+			it("can get/set the options", function(){
 				var vibrato = new Vibrato();
 				vibrato.set({
 					"frequency" : 2.4,
@@ -27,7 +27,7 @@ define(["Tone/effect/Vibrato", "helper/Basic", "helper/EffectTests"], function (
 				vibrato.dispose();
 			});
 
-			it ("can set the frequency and depth", function(){
+			it("can set the frequency and depth", function(){
 				var vibrato = new Vibrato();
 				vibrato.depth.value = 0.4;
 				vibrato.frequency.value = 0.4;

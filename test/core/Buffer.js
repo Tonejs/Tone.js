@@ -10,7 +10,7 @@ define(["Test", "Tone/core/Buffer", "Tone/core/Tone"], function (Test, Buffer, T
 
 		context("basic", function(){
 
-			it ("can be created and disposed", function(){
+			it("can be created and disposed", function(){
 				var buff = new Buffer(testFile);
 				buff.dispose();
 				Test.wasDisposed(buff);
@@ -193,7 +193,6 @@ define(["Test", "Tone/core/Buffer", "Tone/core/Tone"], function (Test, Buffer, T
 
 		});
 
-
 		context("events", function(){
 
 			it("the static on('error') method is invoked", function(done){
@@ -319,10 +318,10 @@ define(["Test", "Tone/core/Buffer", "Tone/core/Tone"], function (Test, Buffer, T
 		context("static methods", function(){
 
 			it("Test if the browser supports the given type", function(){
-				expect(Buffer.supportsType('test.wav')).to.be.true
-				expect(Buffer.supportsType('wav')).to.be.true
-				expect(Buffer.supportsType('path/to/test.wav')).to.be.true
-				expect(Buffer.supportsType('path/to/test.nope')).to.be.false
+				expect(Buffer.supportsType("test.wav")).to.be.true;
+				expect(Buffer.supportsType("wav")).to.be.true;
+				expect(Buffer.supportsType("path/to/test.wav")).to.be.true;
+				expect(Buffer.supportsType("path/to/test.nope")).to.be.false;
 			});
 
 			it("can cancel the downloads", function(){
@@ -345,18 +344,18 @@ define(["Test", "Tone/core/Buffer", "Tone/core/Tone"], function (Test, Buffer, T
 
 	describe("Tone.loaded()", function(){
 
-		it ("returns a promise", function(){
-			expect(Tone.loaded()).to.be.instanceOf(Promise)
+		it("returns a promise", function(){
+			expect(Tone.loaded()).to.be.instanceOf(Promise);
 		});
 
-		it ("is invoked when all the buffers are loaded", function(){
+		it("is invoked when all the buffers are loaded", function(){
 			Buffer.cancelDownloads();
 			var buff0 = new Buffer(testFile);
 			var buff1 = new Buffer(testFile);
 			return Tone.loaded();
 		});
 
-		it ("invokes an error if one of the buffers is not found", function(done){
+		it("invokes an error if one of the buffers is not found", function(done){
 			Buffer.cancelDownloads();
 			// expect(Tone.loaded)
 			var buff0 = new Buffer(testFile);

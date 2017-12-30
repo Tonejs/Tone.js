@@ -1,6 +1,6 @@
 define(["helper/Offline", "Tone/signal/EqualPowerGain", "helper/Basic", 
 	"Test", "Tone/source/Oscillator", "Tone/signal/Signal", "helper/PassAudio", "Tone/core/Tone"], 
-	function (Offline, EqualPowerGain, Basic, Test, Oscillator, Signal, PassAudio, Tone) {
+function (Offline, EqualPowerGain, Basic, Test, Oscillator, Signal, PassAudio, Tone) {
 
 	describe("EqualPowerGain", function(){
 
@@ -15,7 +15,7 @@ define(["helper/Offline", "Tone/signal/EqualPowerGain", "helper/Basic",
 				eqGain.dispose();
 			});
 
-			it ("passes audio through", function(){
+			it("passes audio through", function(){
 				return PassAudio(function(input){
 					var eqGain = new EqualPowerGain().toMaster();
 					input.connect(eqGain);

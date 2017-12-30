@@ -1,6 +1,6 @@
 define(["helper/Offline", "helper/Basic", "Test", "Tone/signal/Signal",
 	"Tone/type/Type", "Tone/core/Transport", "helper/ConstantOutput"],
-	function (Offline, Basic, Test, Signal, Tone, Transport, ConstantOutput) {
+function (Offline, Basic, Test, Signal, Tone, Transport, ConstantOutput) {
 
 	describe("Signal", function(){
 
@@ -48,7 +48,7 @@ define(["helper/Offline", "helper/Basic", "Test", "Tone/signal/Signal",
 
 		context("Scheduling", function(){
 
-			it ("can be scheduled to set a value in the future", function(){
+			it("can be scheduled to set a value in the future", function(){
 				return Offline(function(){
 					var sig = new Signal(0).toMaster();
 					sig.setValueAtTime(2, 0.2);
@@ -63,7 +63,7 @@ define(["helper/Offline", "helper/Basic", "Test", "Tone/signal/Signal",
 				});
 			});
 
-			it ("can linear ramp from the current value to another value in the future", function(){
+			it("can linear ramp from the current value to another value in the future", function(){
 				return Offline(function(){
 					var sig = new Signal(0).toMaster();
 					sig.setValueAtTime(0, 0);
@@ -75,25 +75,25 @@ define(["helper/Offline", "helper/Basic", "Test", "Tone/signal/Signal",
 				});
 			});
 
-			it ("can schedule an exponential ramp", function(){
+			it("can schedule an exponential ramp", function(){
 				var sig = new Signal(1);
 				sig.exponentialRampToValueAtTime(3, "+1");
 				sig.dispose();
 			});
 
-			it ("can approach a target value", function(){
+			it("can approach a target value", function(){
 				var sig = new Signal(1);
 				sig.setTargetAtTime(0.2, "+1", 2);
 				sig.dispose();
 			});
 
-			it ("can set a ramp point at the current value", function(){
+			it("can set a ramp point at the current value", function(){
 				var sig = new Signal(1);
 				sig.setRampPoint();
 				sig.dispose();
 			});
 
-			it ("can schedule multiple automations", function(){
+			it("can schedule multiple automations", function(){
 				return Offline(function(){
 					var sig = new Signal(0).toMaster();
 					sig.setValueAtTime(0, 0);
@@ -110,7 +110,7 @@ define(["helper/Offline", "helper/Basic", "Test", "Tone/signal/Signal",
 				});
 			});
 
-			it ("can cancel an automation", function(){
+			it("can cancel an automation", function(){
 				return ConstantOutput(function(){
 					var sig = new Signal(1).toMaster();
 					sig.setValueAtTime(4, 0.1);
@@ -119,11 +119,11 @@ define(["helper/Offline", "helper/Basic", "Test", "Tone/signal/Signal",
 				}, 1);
 			});
 
-			it ("can cancel and hold an automation curve", function(){
+			it("can cancel and hold an automation curve", function(){
 				return Offline(function(){
 					var sig = new Signal(0).toMaster();
 					sig.linearRampTo(2, 1);
-					sig.cancelAndHoldAtTime(0.5)
+					sig.cancelAndHoldAtTime(0.5);
 				}, 1).then(function(buffer){
 					expect(buffer.getValueAtTime(0)).to.be.closeTo(0, 0.1);
 					expect(buffer.getValueAtTime(0.25)).to.be.closeTo(0.5, 0.1);
@@ -132,7 +132,7 @@ define(["helper/Offline", "helper/Basic", "Test", "Tone/signal/Signal",
 				});
 			});
 
-			it ("can set a linear ramp from the current time", function(){
+			it("can set a linear ramp from the current time", function(){
 				return Offline(function(){
 					var sig = new Signal(0).toMaster();
 					sig.linearRampTo(2, 0.3);
@@ -145,7 +145,7 @@ define(["helper/Offline", "helper/Basic", "Test", "Tone/signal/Signal",
 				});
 			});
 
-			it ("can set an linear ramp in the future", function(){
+			it("can set an linear ramp in the future", function(){
 				return Offline(function(){
 					var sig = new Signal(1).toMaster();
 					sig.linearRampTo(50, 0.3, 0.2);
@@ -160,7 +160,7 @@ define(["helper/Offline", "helper/Basic", "Test", "Tone/signal/Signal",
 				});
 			});
 
-			it ("can set a exponential approach ramp from the current time", function(){
+			it("can set a exponential approach ramp from the current time", function(){
 				return Offline(function(){
 					var sig = new Signal(0).toMaster();
 					sig.targetRampTo(1, 0.3);
@@ -170,7 +170,7 @@ define(["helper/Offline", "helper/Basic", "Test", "Tone/signal/Signal",
 				});
 			});
 
-			it ("can set an exponential approach ramp in the future", function(){
+			it("can set an exponential approach ramp in the future", function(){
 				return Offline(function(){
 					var sig = new Signal(1).toMaster();
 					sig.targetRampTo(50, 0.3, 0.2);
@@ -181,7 +181,7 @@ define(["helper/Offline", "helper/Basic", "Test", "Tone/signal/Signal",
 				});
 			});
 
-			it ("can set an exponential ramp from the current time", function(){
+			it("can set an exponential ramp from the current time", function(){
 				return Offline(function(){
 					var sig = new Signal(1).toMaster();
 					sig.exponentialRampTo(50, 0.4);
@@ -196,7 +196,7 @@ define(["helper/Offline", "helper/Basic", "Test", "Tone/signal/Signal",
 				});
 			});
 
-			it ("can set an exponential ramp in the future", function(){
+			it("can set an exponential ramp in the future", function(){
 				return Offline(function(){
 					var sig = new Signal(1).toMaster();
 					sig.exponentialRampTo(50, 0.3, 0.2);
@@ -211,7 +211,7 @@ define(["helper/Offline", "helper/Basic", "Test", "Tone/signal/Signal",
 				});
 			});
 
-			it ("rampTo ramps from the current value", function(){
+			it("rampTo ramps from the current value", function(){
 				return Offline(function(){
 					var sig = new Signal(3).toMaster();
 					sig.rampTo(0.2, 0.1);
@@ -226,22 +226,22 @@ define(["helper/Offline", "helper/Basic", "Test", "Tone/signal/Signal",
 				});
 			});
 
-			it ("rampTo ramps from the current value at a specific time", function(){
+			it("rampTo ramps from the current value at a specific time", function(){
 				return Offline(function(){
 					var sig = new Signal(0).toMaster();
 					sig.rampTo(2, 0.1, 0.4);
 				}, 0.6).then(function(buffer){
 					buffer.forEach(function(sample, time){
 						if (time < 0.4){
-						expect(sample).to.be.closeTo(0, 0.1);
-					} else if (time > 0.5){
-						expect(sample).to.be.closeTo(2, 0.1);
-					}
+							expect(sample).to.be.closeTo(0, 0.1);
+						} else if (time > 0.5){
+							expect(sample).to.be.closeTo(2, 0.1);
+						}
 					});
 				});
 			});
 
-			it ("can set a value curve", function(){
+			it("can set a value curve", function(){
 				return Offline(function(){
 					var sig = new Signal(0).toMaster();
 					sig.setValueCurveAtTime([0, 1, 0.5, 0.2], 0, 1);
@@ -254,7 +254,7 @@ define(["helper/Offline", "helper/Basic", "Test", "Tone/signal/Signal",
 				});
 			});
 
-			it ("can set a value curve in the future", function(){
+			it("can set a value curve in the future", function(){
 				return Offline(function(){
 					var sig = new Signal(0).toMaster();
 					sig.setValueCurveAtTime([0, 1, 0.5, 0.2], 0.5, 1);
@@ -267,7 +267,7 @@ define(["helper/Offline", "helper/Basic", "Test", "Tone/signal/Signal",
 				});
 			});
 
-			it ("can set an exponential approach", function(){
+			it("can set an exponential approach", function(){
 				return Offline(function(){
 					var sig = new Signal(0).toMaster();
 					sig.exponentialApproachValueAtTime(2, 0.1, 0.5);
