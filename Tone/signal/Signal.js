@@ -71,6 +71,14 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper", "Tone/type/Type", "Tone/core
 	 */
 	Tone.Signal.prototype.connect = Tone.SignalBase.prototype.connect;
 
+	Tone.Signal.prototype.getValueAtTime = function(time){
+		if (this._param.getValueAtTime){
+			return this._param.getValueAtTime(time);
+		} else {
+			return Tone.Param.prototype.getValueAtTime.call(this, time);
+		}
+	};
+
 	/**
 	 *  dispose and disconnect
 	 *  @returns {Tone.Signal} this
