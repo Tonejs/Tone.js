@@ -36,7 +36,7 @@ define(["helper/ua-parser"], function (UserAgentParser) {
 		//if the tests run in focus
 		ONLINE_TESTING : isnt("Firefox"),
 		//the close method resolves a promise
-		AUDIO_CONTEXT_CLOSE_RESOLVES : isnt("Firefox"),
+		AUDIO_CONTEXT_CLOSE_RESOLVES : isnt("Firefox") || isnt("Safari", 10),
 		//if it supports gUM testing
 		GET_USER_MEDIA : isnt("Safari"),
 		RUN_EXAMPLES : isnt("Safari", 10)
