@@ -296,7 +296,7 @@ define(["Tone/core/Tone", "Tone/source/Oscillator", "Tone/signal/Scale", "Tone/c
 	 *  @private
 	 */
 	Tone.LFO.prototype.connect = function(node){
-		if (node.constructor === Tone.Signal || node.constructor === Tone.Param || node.constructor === Tone.TimelineSignal){
+		if (node.constructor === Tone.Signal || node.constructor === Tone.Param){
 			this.convert = node.convert;
 			this.units = node.units;
 		}
