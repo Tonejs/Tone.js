@@ -218,7 +218,7 @@ define(["helper/Basic", "Test", "Tone/core/Param", "Tone/type/Type", "Tone/signa
 			it ("can approach a target value using time instead of timeConstant", function(){
 				var gain = Tone.context.createGain();
 				var param = new Param(gain.gain);
-				param.exponentialAppraochValueAtTime(0.2, "+1", 2);
+				param.exponentialApproachValueAtTime(0.2, "+1", 2);
 				param.dispose();
 			});
 

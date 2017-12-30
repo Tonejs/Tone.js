@@ -312,7 +312,7 @@ define(["Tone/core/Tone", "Tone/type/Type", "Tone/core/AudioNode", "Tone/shim/Au
 	Tone.Param.prototype.targetRampTo = function(value, rampTime, startTime){
 		startTime = this.toSeconds(startTime);
 		this.setRampPoint(startTime);
-		this.exponentialAppraochValueAtTime(value, startTime, rampTime);
+		this.exponentialApproachValueAtTime(value, startTime, rampTime);
 		return this;
 	};
 
@@ -330,7 +330,7 @@ define(["Tone/core/Tone", "Tone/type/Type", "Tone/core/AudioNode", "Tone/shim/Au
 	 * //exponentially ramp to the value 2 over 4 seconds.
 	 * signal.exponentialRampTo(2, 4);
 	 */
-	Tone.Param.prototype.exponentialAppraochValueAtTime = function(value, time, rampTime){
+	Tone.Param.prototype.exponentialApproachValueAtTime = function(value, time, rampTime){
 		var timeConstant = Math.log(this.toSeconds(rampTime)+1)/Math.log(200);
 		time = this.toSeconds(time);
 		Tone.isPast(time);

@@ -270,7 +270,7 @@ define(["helper/Offline", "helper/Basic", "Test", "Tone/signal/Signal",
 			it ("can set an exponential approach", function(){
 				return Offline(function(){
 					var sig = new Signal(0).toMaster();
-					sig.exponentialAppraochValueAtTime(2, 0.1, 0.5);
+					sig.exponentialApproachValueAtTime(2, 0.1, 0.5);
 				}, 1).then(function(buffer){
 					expect(buffer.getValueAtTime(0)).to.be.closeTo(0, 0.01);
 					expect(buffer.getValueAtTime(0.1)).to.be.closeTo(0, 0.01);
