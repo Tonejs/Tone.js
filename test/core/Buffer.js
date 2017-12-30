@@ -191,16 +191,6 @@ define(["Test", "Tone/core/Buffer", "Tone/core/Tone"], function (Test, Buffer, T
 				});
 			});
 
-			it("Promise invokes catch callback", function(done){
-				var promise = (new Buffer()).load("nosuchfile.wav");
-				promise.then(function(){
-					throw new Error("shouldn't invoke this function");
-				});
-				promise.catch(function(){
-					done();
-				});
-			});
-
 		});
 
 
@@ -340,6 +330,14 @@ define(["Test", "Tone/core/Buffer", "Tone/core/Tone"], function (Test, Buffer, T
 				var buff1 = new Buffer(testFile);
 				Buffer.cancelDownloads();
 				expect(Buffer._downloadQueue.length).to.equal(0);
+			});
+
+			it("can be constructed with Buffer.fromUrl", function(done){
+				Buffer.fromUrl("nosuchfile.wav").then(function(){
+					throw new Error("shouldn't invoke this function");
+				}).catch(function(){
+					done();
+				});
 			});
 		});
 

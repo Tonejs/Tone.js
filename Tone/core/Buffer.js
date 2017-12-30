@@ -397,6 +397,19 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type", "Tone/shim/Audi
 	};
 
 	/**
+	 * Creates a Tone.Buffer from a URL, returns a promise
+	 * which resolves to a Tone.Buffer
+	 * @param  {String} url The url to load.
+	 * @return {Promise<Tone.Buffer>}     A promise which resolves to a Tone.Buffer
+	 */
+	Tone.Buffer.fromUrl = function(url){
+		var buffer = new Tone.Buffer();
+		return buffer.load(url).then(function(){
+			return buffer;
+		});
+	};
+
+	/**
 	 * Remove an xhr request from the download queue
 	 * @private
 	 */
