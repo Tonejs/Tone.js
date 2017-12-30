@@ -3,6 +3,9 @@ dist: trusty
 language: node_js
 node_js:
 - '8'
+matrix:
+  allow_failures:
+    - os: osx
 before_script:
 - cd gulp
 - npm install -g gulp
@@ -52,7 +55,7 @@ jobs:
       env : BROWSER=safari
       os: osx
       # test on an older safari
-      osx_image: xcode8
+      osx_image: xcode6.4
     - stage: deploy
       os: linux
       script: skip
