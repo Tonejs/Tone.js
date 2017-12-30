@@ -3,8 +3,8 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Gain"], function(Tone
 	"use strict";
 
 	/**
-	 *  @class  Multiply two incoming signals. Or, if a number is given in the constructor, 
-	 *          multiplies the incoming signal by that value. 
+	 *  @class  Multiply two incoming signals. Or, if a number is given in the constructor,
+	 *          multiplies the incoming signal by that value.
 	 *
 	 *  @constructor
 	 *  @extends {Tone.Signal}
@@ -20,7 +20,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Gain"], function(Tone
 	 *  @example
 	 * var mult = new Tone.Multiply(10);
 	 * var sig = new Tone.Signal(2).connect(mult);
-	 * //the output of mult is 20. 
+	 * //the output of mult is 20.
 	 */
 	Tone.Multiply = function(value){
 
@@ -30,7 +30,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Gain"], function(Tone
 		/**
 		 *  the input node is the same as the output node
 		 *  it is also the GainNode which handles the scaling of incoming signal
-		 *  
+		 *
 		 *  @type {GainNode}
 		 *  @private
 		 */
@@ -42,8 +42,8 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Gain"], function(Tone
 		 *  @private
 		 */
 		this._param = this.input[1] = this.output.gain;
-		
-		this._param.value = Tone.defaultArg(value, 0);
+
+		this.value = Tone.defaultArg(value, 0);
 	};
 
 	Tone.extend(Tone.Multiply, Tone.Signal);
@@ -58,7 +58,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Gain"], function(Tone
 		this._mult = null;
 		this._param = null;
 		return this;
-	}; 
+	};
 
 	return Tone.Multiply;
 });
