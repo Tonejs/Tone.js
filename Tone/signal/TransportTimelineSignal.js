@@ -42,6 +42,13 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/signal/Signal", "Tone/typ
 	Tone.extend(Tone.TransportTimelineSignal, Tone.Signal);
 
 	/**
+	 *  If scheduling past events should create a warning notification
+	 *  @type {Boolean}
+	 *  @private
+	 */
+	Tone.TransportTimelineSignal.prototype._ignorePast = true;
+
+	/**
 	 * Callback which is invoked every tick.
 	 * @private
 	 * @param  {Number} time

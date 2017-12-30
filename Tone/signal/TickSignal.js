@@ -36,24 +36,11 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function (Tone) {
 	Tone.extend(Tone.TickSignal, Tone.Signal);
 
 	/**
-	 * The current value of the signal.
-	 * @memberOf Tone.Signal#
-	 * @type {Number}
-	 * @name value
+	 *  If scheduling past events should create a warning notification
+	 *  @type {Boolean}
+	 *  @private
 	 */
-	/*Object.defineProperty(Tone.TickSignal.prototype, "value", {
-		get : function(){
-			var now = this.now();
-			return this.getValueAtTime(now);
-		},
-		set : function(value){
-			if (this._events){
-				this._initialValue = value;
-				this.cancelScheduledValues();
-				this.setValueAtTime(value, this.now());
-			}
-		}
-	});*/
+	Tone.TickSignal.prototype._ignorePast = true;
 
 	/**
 	 * Wraps Tone.Signal methods so that they also
