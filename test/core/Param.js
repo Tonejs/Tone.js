@@ -294,7 +294,7 @@ define(["helper/Basic", "Test", "Tone/core/Param", "Tone/type/Type", "Tone/signa
 				param.rampTo(0.1, 10);
 				setTimeout(function(){
 					param.value = 10;
-					expect(param.value).to.equal(10);
+					expect(param.value).to.be.closeTo(10, 0.01);
 					param.dispose();
 					done();
 				}, 100);
