@@ -71,7 +71,7 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type", "Tone/shim/Audi
 				}
 			}
 		} else if (Tone.isString(options.url)){
-			this.load(options.url, options.onload, options.onerror);
+			this.load(options.url).then(options.onload).catch(options.onerror)
 		}
 	};
 
@@ -83,7 +83,9 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type", "Tone/shim/Audi
 	 */
 	Tone.Buffer.defaults = {
 		"url" : undefined,
-		"reverse" : false
+		"reverse" : false,
+		"onload" : Tone.noOp,
+		"onerror" : Tone.noOp
 	};
 
 	/**
