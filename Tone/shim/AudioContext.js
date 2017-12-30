@@ -9,10 +9,9 @@ define(["Tone/core/Tone", "Tone/shim/OfflineAudioContext"], function(Tone){
 		if (!AudioContext.prototype.close){
 			AudioContext.prototype.close = function(){
 				if (Tone.isFunction(this.suspend)) {
-					return this.suspend();
-				} else {
-					return Promise.resolve();
+					this.suspend();
 				}
+				return Promise.resolve();
 			};
 		}
 
