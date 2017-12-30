@@ -1,18 +1,18 @@
-define(["Tone/core/Tone", "Tone/signal/TimelineSignal", "Tone/core/Transport", "Tone/signal/Signal"], function (Tone) {
+define(["Tone/core/Tone", "Tone/core/Transport", "Tone/signal/Signal", "Tone/type/TransportTime"], function (Tone) {
 
 	/**
-	 * @class Tone.TransportTimelineSignal extends Tone.TimelineSignal, but adds the ability to synchronize the signal to the signal to the Tone.Transport
-	 * @extends {Tone.TimelineSignal}
+	 * @class Tone.TransportTimelineSignal extends Tone.Signal, but adds the ability to synchronize the signal to the signal to the Tone.Transport
+	 * @extends {Tone.Signal}
 	 */
 	Tone.TransportTimelineSignal = function(){
-		Tone.TimelineSignal.apply(this, arguments);
+		Tone.Signal.apply(this, arguments);
 
 		/**
 		 * The real signal output
 		 * @type {Tone.Signal}
 		 * @private
 		 */
-		this.output = this._outputSig = new Tone.Signal(this._initial);
+		this.output = this._outputSig = new Tone.Signal(this._initialValue);
 
 		/**
 		 * Keep track of the last value. (small optimization)
@@ -39,7 +39,7 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal", "Tone/core/Transport", "
 		this._events.memory = Infinity;
 	};
 
-	Tone.extend(Tone.TransportTimelineSignal, Tone.TimelineSignal);
+	Tone.extend(Tone.TransportTimelineSignal, Tone.Signal);
 
 	/**
 	 * Callback which is invoked every tick.
@@ -63,7 +63,7 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal", "Tone/core/Transport", "
 	 * @private
 	 */
 	Tone.TransportTimelineSignal.prototype._anchorValue = function(time){
-		var val = this.getValueAtTime(Tone.Transport.ticks);
+		var val = this.getValueAtTime(Tone.Transport.seconds);
 		this._lastVal = val;
 		this._outputSig.cancelScheduledValues(time);
 		this._outputSig.setValueAtTime(val, time);
@@ -77,8 +77,8 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal", "Tone/core/Transport", "
 	 *  @return  {Number}  The scheduled value at the given time.
 	 */
 	Tone.TransportTimelineSignal.prototype.getValueAtTime = function(time){
-		time = this.toTicks(time);
-		return Tone.TimelineSignal.prototype.getValueAtTime.call(this, time);
+		time = Tone.TransportTime(time);
+		return Tone.Signal.prototype.getValueAtTime.call(this, time);
 	};
 
 	/**
@@ -88,8 +88,8 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal", "Tone/core/Transport", "
 	 * @return {Tone.TransportTimelineSignal}       this
 	 */
 	Tone.TransportTimelineSignal.prototype.setValueAtTime = function(value, time){
-		time = this.toTicks(time);
-		Tone.TimelineSignal.prototype.setValueAtTime.call(this, value, time);
+		time = Tone.TransportTime(time);
+		Tone.Signal.prototype.setValueAtTime.call(this, value, time);
 		return this;
 	};
 
@@ -100,8 +100,8 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal", "Tone/core/Transport", "
 	 * @return {Tone.TransportTimelineSignal}       this
 	 */
 	Tone.TransportTimelineSignal.prototype.linearRampToValueAtTime = function(value, time){
-		time = this.toTicks(time);
-		Tone.TimelineSignal.prototype.linearRampToValueAtTime.call(this, value, time);
+		time = Tone.TransportTime(time);
+		Tone.Signal.prototype.linearRampToValueAtTime.call(this, value, time);
 		return this;
 	};
 
@@ -112,8 +112,8 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal", "Tone/core/Transport", "
 	 * @return {Tone.TransportTimelineSignal}       this
 	 */
 	Tone.TransportTimelineSignal.prototype.exponentialRampToValueAtTime = function(value, time){
-		time = this.toTicks(time);
-		Tone.TimelineSignal.prototype.exponentialRampToValueAtTime.call(this, value, time);
+		time = Tone.TransportTime(time);
+		Tone.Signal.prototype.exponentialRampToValueAtTime.call(this, value, time);
 		return this;
 	};
 
@@ -126,8 +126,8 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal", "Tone/core/Transport", "
 	 * @return {Tone.TransportTimelineSignal}       this
 	 */
 	Tone.TransportTimelineSignal.prototype.setTargetAtTime = function(value, startTime, timeConstant){
-		startTime = this.toTicks(startTime);
-		Tone.TimelineSignal.prototype.setTargetAtTime.call(this, value, startTime, timeConstant);
+		startTime = Tone.TransportTime(startTime);
+		Tone.Signal.prototype.setTargetAtTime.call(this, value, startTime, timeConstant);
 		return this;
 	};
 
@@ -138,8 +138,8 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal", "Tone/core/Transport", "
 	 *  @returns {Tone.Param} this
 	 */
 	Tone.TransportTimelineSignal.prototype.cancelScheduledValues = function(startTime){
-		startTime = this.toTicks(startTime);
-		Tone.TimelineSignal.prototype.cancelScheduledValues.call(this, startTime);
+		startTime = Tone.TransportTime(startTime);
+		Tone.Signal.prototype.cancelScheduledValues.call(this, startTime);
 		return this;
 	};
 
@@ -149,14 +149,20 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal", "Tone/core/Transport", "
 	 *  @param {Time} startTime
 	 *  @param {Time} duration
 	 *  @param {NormalRange} [scaling=1] If the values in the curve should be scaled by some value
-	 *  @returns {Tone.TimelineSignal} this
+	 *  @returns {Tone.Signal} this
 	 */
 	Tone.TransportTimelineSignal.prototype.setValueCurveAtTime = function (values, startTime, duration, scaling) {
-		startTime = this.toTicks(startTime);
-		duration = this.toTicks(duration);
-		Tone.TimelineSignal.prototype.setValueCurveAtTime.call(this, values, startTime, duration, scaling);
+		startTime = Tone.TransportTime(startTime);
+		duration = Tone.TransportTime(duration);
+		Tone.Signal.prototype.setValueCurveAtTime.call(this, values, startTime, duration, scaling);
 		return this;
 	};
+
+	Tone.TransportTimelineSignal.prototype.cancelAndHoldAtTime = function (time) {
+		return Tone.Signal.prototype.cancelAndHoldAtTime.call(this, this.toSeconds(time));
+	};
+
+
 
 	/**
 	 * Dispose and disconnect
@@ -166,7 +172,7 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal", "Tone/core/Transport", "
 		Tone.Transport.clear(this._synced);
 		Tone.Transport.off("start stop pause", this._syncedCallback);
 		this._events.cancel(0);
-		Tone.TimelineSignal.prototype.dispose.call(this);
+		Tone.Signal.prototype.dispose.call(this);
 		this._outputSig.dispose();
 		this._outputSig = null;
 	};

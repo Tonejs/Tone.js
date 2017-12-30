@@ -121,7 +121,7 @@ define(["Test", "Tone/signal/TransportTimelineSignal", "helper/Offline", "Tone/t
 			var sched;
 			return Offline(function(Transport){
 				var sched = new TransportTimelineSignal(0).toMaster();
-				sched.linearRampToValueBetween(1, 1, 2);
+				sched.linearRampTo(1, 1, 1);
 				Transport.start(0);
 			}, 3).then(function(buffer){
 				expect(buffer.getValueAtTime(0)).to.closeTo(0, 0.1);
@@ -136,7 +136,7 @@ define(["Test", "Tone/signal/TransportTimelineSignal", "helper/Offline", "Tone/t
 			var sched;
 			return Offline(function(Transport){
 				sched = new TransportTimelineSignal(1).toMaster();
-				sched.exponentialRampToValueBetween(3, 1, 2);
+				sched.exponentialRampTo(3, 1, 1);
 				Transport.start(0);
 			}, 3).then(function(buffer){
 				buffer.forEach(function(sample, time){
@@ -167,7 +167,7 @@ define(["Test", "Tone/signal/TransportTimelineSignal", "helper/Offline", "Tone/t
 				sched = new TransportTimelineSignal(-10, Tone.Type.Decibels).toMaster();
 				sched.setValueAtTime(-5, 0);
 				sched.linearRampToValueAtTime(-12, 0.5);
-				sched.exponentialRampToValueBetween(-6, 1, 1.1);
+				sched.exponentialRampTo(-6, 0.1, 1);
 				Transport.start(0);
 			}, 1.2).then(function(buffer){
 				buffer.forEach(function(sample, time){
