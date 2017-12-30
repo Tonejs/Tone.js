@@ -427,7 +427,7 @@ define(["Tone/core/Tone", "Tone/type/Type", "Tone/core/AudioNode", "Tone/core/Ti
 		if (timeConstant <= 0){
 			throw new Error("timeConstant must be greater than 0");
 		}
-		startTime = this.toSeconds(startTime)
+		startTime = this.toSeconds(startTime);
 		this._events.add({
 			"type" : Tone.Param.AutomationType.Target,
 			"value" : value,
@@ -529,9 +529,9 @@ define(["Tone/core/Tone", "Tone/type/Type", "Tone/core/AudioNode", "Tone/core/Ti
 			"time" : time
 		});
 		if (this._param.cancelAndHoldAtTime){
-			return this._param.cancelAndHoldAtTime(time);
+			this._param.cancelAndHoldAtTime(time);
 		} else {
-			return this._param.setValueAtTime(valueAtTime, time);
+			this._param.setValueAtTime(valueAtTime, time);
 		}
 		return this;
 	};
