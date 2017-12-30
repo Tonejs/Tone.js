@@ -1,6 +1,6 @@
 /* global mocha*/
 
-define(["Tone/core/Tone", "deps/chai", "Tone/core/Context", "Tone/core/Transport", "deps/babel-polyfill"],
+define(["Tone/core/Tone", "deps/chai", "Tone/core/Context", "Tone/core/Transport"],
 	function (Tone, chai, Context, Transport) {
 
 	//add a chai test
