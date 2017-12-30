@@ -59,7 +59,7 @@ define(["helper/Basic", "Test", "Tone/core/Param", "Tone/type/Type", "Tone/signa
 					"units" : Tone.Type.Decibels,
 				});
 				param.value = -10;
-				expect(param._param.value).to.be.closeTo(0.315, 0.01);
+				expect(param.value).to.be.closeTo(-10, 0.01);
 				param.dispose();
 			});
 
@@ -71,7 +71,7 @@ define(["helper/Basic", "Test", "Tone/core/Param", "Tone/type/Type", "Tone/signa
 					"convert" : false
 				});
 				param.value = -10;
-				expect(param._param.value).to.be.closeTo(-10, 0.001);
+				expect(param.value).to.be.closeTo(-10, 0.001);
 				param.dispose();
 			});
 
