@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/signal/TimelineSignal",
+define(["Tone/core/Tone", "Tone/signal/Signal",
 	"Tone/signal/Pow", "Tone/type/Type", "Tone/core/AudioNode"], function(Tone){
 
 	"use strict";
@@ -81,7 +81,7 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal",
 
 		/**
 		 *  the signal
-		 *  @type {Tone.TimelineSignal}
+		 *  @type {Tone.Signal}
 		 *  @private
 		 */
 		this._sig = this.output = new Tone.Signal(0);
