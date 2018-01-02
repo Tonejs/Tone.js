@@ -1,6 +1,6 @@
-define(["helper/OutputAudio", "Tone/instrument/Instrument", "helper/OutputAudioStereo", 
-	"Test", "helper/Offline"], 
-function (OutputAudio, Instrument, OutputAudioStereo, Test, Offline) {
+define(["helper/OutputAudio", "Tone/instrument/Instrument", "helper/OutputAudioStereo",
+	"Test", "helper/Offline", "Tone/core/Tone"],
+function(OutputAudio, Instrument, OutputAudioStereo, Test, Offline, Tone) {
 
 	return function(Constr, note, constrArg, optionsIndex){
 
@@ -23,11 +23,11 @@ function (OutputAudio, Instrument, OutputAudioStereo, Test, Offline) {
 					var instance = new Constr({
 						"volume" : -10
 					});
-				}else if (optionsIndex === 1){
+				} else if (optionsIndex === 1){
 					var instance = new Constr(constrArg, {
 						"volume" : -10
 					});
-				} 
+				}
 				expect(instance.volume.value).to.be.closeTo(-10, 0.1);
 				instance.dispose();
 			});
@@ -38,7 +38,7 @@ function (OutputAudio, Instrument, OutputAudioStereo, Test, Offline) {
 					instance.toMaster();
 					instance.triggerAttack(note);
 				});
-			});	
+			});
 
 			it("produces sound in both channels", function(){
 				return OutputAudioStereo(function(){
@@ -46,7 +46,7 @@ function (OutputAudio, Instrument, OutputAudioStereo, Test, Offline) {
 					instance.toMaster();
 					instance.triggerAttack(note);
 				});
-			});	
+			});
 
 			it("is silent before being triggered", function(){
 				return Offline(function(){
@@ -55,7 +55,7 @@ function (OutputAudio, Instrument, OutputAudioStereo, Test, Offline) {
 				}).then(function(buffer){
 					expect(buffer.isSilent()).to.be.true;
 				});
-			});	
+			});
 
 			if (Constr.prototype.triggerRelease){
 
@@ -100,6 +100,58 @@ function (OutputAudio, Instrument, OutputAudioStereo, Test, Offline) {
 					}
 				}, 0.2).then(function(buffer){
 					expect(buffer.getFirstSoundTime()).to.be.within(0.1, 0.15);
+				});
+			});
+
+			it("can sync triggerAttack to the Transport", function(){
+				return Offline(function(Transport){
+					var instance = new Constr(constrArg);
+					instance.toMaster();
+					instance.sync();
+					if (note){
+						instance.triggerAttack(note, 0.1);
+					} else {
+						instance.triggerAttack(0.1);
+					}
+					Transport.start(0.1);
+				}, 0.3).then(function(buffer){
+					expect(buffer.getFirstSoundTime()).to.be.within(0.19, 0.25);
+				});
+			});
+
+			it("can unsync triggerAttack to the Transport", function(){
+				return Offline(function(Transport){
+					var instance = new Constr(constrArg);
+					instance.toMaster();
+					instance.sync();
+					if (note){
+						instance.triggerAttack(note, 0.1);
+					} else {
+						instance.triggerAttack(0.1);
+					}
+					instance.unsync();
+					Transport.start(0.1);
+				}, 0.3).then(function(buffer){
+					expect(buffer.isSilent()).to.be.true;
+				});
+			});
+
+			it("can sync triggerAttackRelease to the Transport", function(){
+				return Offline(function(Transport){
+					var instance = new Constr(constrArg);
+					instance.toMaster();
+					instance.sync();
+					if (note){
+						instance.triggerAttackRelease(note, 0.25, 0.1);
+					} else {
+						instance.triggerAttackRelease(0.25, 0.1);
+					}
+					Transport.start(0.1);
+				}, 1).then(function(buffer){
+					expect(buffer.getFirstSoundTime()).to.be.within(0.19, 0.25);
+					//test a sample enough in the future for the decay to die down
+					var endSample = Math.floor(0.9 * Tone.context.sampleRate);
+					expect(buffer.getRMS()[endSample]).to.be.closeTo(0, 0.1);
 				});
 			});
 

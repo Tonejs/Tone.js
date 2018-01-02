@@ -172,6 +172,26 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/core/Buffers", "To
 	};
 
 	/**
+	 * Sync the instrument to the Transport. All subsequent calls of
+	 * [triggerAttack](#triggerattack) and [triggerRelease](#triggerrelease)
+	 * will be scheduled along the transport.
+	 * @example
+	 * synth.sync()
+	 * //schedule 3 notes when the transport first starts
+	 * synth.triggerAttackRelease('8n', 0)
+	 * synth.triggerAttackRelease('8n', '8n')
+	 * synth.triggerAttackRelease('8n', '4n')
+	 * //start the transport to hear the notes
+	 * Transport.start()
+	 * @returns {Tone.Instrument} this
+	 */
+	Tone.Sampler.prototype.sync = function(){
+		this._syncMethod("triggerAttack", 1);
+		this._syncMethod("triggerRelease", 1);
+		return this;
+	};
+
+	/**
 	 * Invoke the attack phase, then after the duration, invoke the release.
 	 * @param  {Frequency} note     The note to play
 	 * @param  {Time} duration The time the note should be held

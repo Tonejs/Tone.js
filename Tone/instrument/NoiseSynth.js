@@ -88,6 +88,26 @@ define(["Tone/core/Tone", "Tone/component/AmplitudeEnvelope", "Tone/component/Fr
 	};
 
 	/**
+	 * Sync the instrument to the Transport. All subsequent calls of
+	 * [triggerAttack](#triggerattack) and [triggerRelease](#triggerrelease)
+	 * will be scheduled along the transport.
+	 * @example
+	 * synth.sync()
+	 * //schedule 3 notes when the transport first starts
+	 * synth.triggerAttackRelease('8n', 0)
+	 * synth.triggerAttackRelease('8n', '8n')
+	 * synth.triggerAttackRelease('8n', '4n')
+	 * //start the transport to hear the notes
+	 * Transport.start()
+	 * @returns {Tone.Instrument} this
+	 */
+	Tone.NoiseSynth.prototype.sync = function(){
+		this._syncMethod("triggerAttack", 0);
+		this._syncMethod("triggerRelease", 0);
+		return this;
+	};
+
+	/**
 	 *  Trigger the attack and then the release.
 	 *  @param  {Time} duration the duration of the note
 	 *  @param  {Time} [time=now]     the time of the attack

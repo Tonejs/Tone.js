@@ -161,6 +161,26 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/source/FMOscillato
 	};
 
 	/**
+	 * Sync the instrument to the Transport. All subsequent calls of
+	 * [triggerAttack](#triggerattack) and [triggerRelease](#triggerrelease)
+	 * will be scheduled along the transport.
+	 * @example
+	 * synth.sync()
+	 * //schedule 3 notes when the transport first starts
+	 * synth.triggerAttackRelease('8n', 0)
+	 * synth.triggerAttackRelease('8n', '8n')
+	 * synth.triggerAttackRelease('8n', '4n')
+	 * //start the transport to hear the notes
+	 * Transport.start()
+	 * @returns {Tone.Instrument} this
+	 */
+	Tone.MetalSynth.prototype.sync = function(){
+		this._syncMethod("triggerAttack", 0);
+		this._syncMethod("triggerRelease", 0);
+		return this;
+	};
+
+	/**
 	 *  Trigger the attack and release of the envelope after the given
 	 *  duration.
 	 *  @param  {Time}  duration  The duration before triggering the release
