@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/core/Context", "Tone/shim/OfflineAudioContext"], function (Tone) {
+define(["Tone/core/Tone", "Tone/core/Context", "Tone/shim/OfflineAudioContext"], function(Tone) {
 
 	/**
 	 *  @class Wrapper around the OfflineAudioContext
@@ -54,7 +54,7 @@ define(["Tone/core/Tone", "Tone/core/Context", "Tone/shim/OfflineAudioContext"],
 	 *  @return  {Promise}
 	 */
 	Tone.OfflineContext.prototype.render = function(){
-		while(this._duration - this._currentTime >= 0){
+		while (this._duration - this._currentTime >= 0){
 			//invoke all the callbacks on that time
 			this.emit("tick");
 			//increment the clock

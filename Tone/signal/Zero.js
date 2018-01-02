@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/core/Gain", "Tone/signal/SignalBase"], function (Tone) {
+define(["Tone/core/Tone", "Tone/core/Gain", "Tone/signal/SignalBase"], function(Tone) {
 
 	/**
 	 *  @class Tone.Zero outputs 0's at audio-rate. The reason this has to be

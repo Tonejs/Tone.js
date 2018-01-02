@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/component/Analyser", "Tone/core/AudioNode"], function (Tone) {
+define(["Tone/core/Tone", "Tone/component/Analyser", "Tone/core/AudioNode"], function(Tone) {
 
 	/**
 	 *  @class  Get the current waveform data of the connected audio source.

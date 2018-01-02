@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/event/Event"], function (Tone) {
+define(["Tone/core/Tone", "Tone/event/Event"], function(Tone) {
 
 	/**
 	 *  @class Tone.Loop creates a looped callback at the 

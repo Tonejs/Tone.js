@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/type/Time", "Tone/type/Frequency", "Tone/type/TransportTime", "Tone/core/Context"], function (Tone) {
+define(["Tone/core/Tone", "Tone/type/Time", "Tone/type/Frequency", "Tone/type/TransportTime", "Tone/core/Context"], function(Tone) {
 
 	///////////////////////////////////////////////////////////////////////////
 	//	TYPES

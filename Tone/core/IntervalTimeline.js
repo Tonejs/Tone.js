@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/type/Type"], function (Tone) {
+define(["Tone/core/Tone", "Tone/type/Type"], function(Tone) {
 
 	"use strict";
 
@@ -216,10 +216,10 @@ define(["Tone/core/Tone", "Tone/type/Type"], function (Tone) {
 		if (parent !== null){
 			if (isLeftChild){
 				parent.left = pivotNode;
-			} else{
+			} else {
 				parent.right = pivotNode;
 			}
-		} else{
+		} else {
 			this._setRoot(pivotNode);
 		}
 	};
@@ -241,10 +241,10 @@ define(["Tone/core/Tone", "Tone/type/Type"], function (Tone) {
 		if (parent !== null){
 			if (isLeftChild){
 				parent.left = pivotNode;
-			} else{
+			} else {
 				parent.right = pivotNode;
 			}
-		} else{
+		} else {
 			this._setRoot(pivotNode);
 		}
 	};

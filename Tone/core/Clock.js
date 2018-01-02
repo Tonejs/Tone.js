@@ -1,5 +1,5 @@
 define(["Tone/core/Tone", "Tone/signal/TickSignal", "Tone/core/TimelineState",
-	"Tone/core/Emitter", "Tone/core/Context"], function (Tone) {
+	"Tone/core/Emitter", "Tone/core/Context"], function(Tone) {
 
 	"use strict";
 
@@ -257,7 +257,7 @@ define(["Tone/core/Tone", "Tone/signal/TickSignal", "Tone/core/TimelineState",
 			//state change events
 			if (event.state !== this._lastState){
 				this._lastState = event.state;
-				switch(event.state){
+				switch (event.state){
 					case Tone.State.Started:
 						this._ticks = event.offset;
 						this._nextTick = event.time;
@@ -274,7 +274,7 @@ define(["Tone/core/Tone", "Tone/signal/TickSignal", "Tone/core/TimelineState",
 			}
 
 			//all the tick events
-			while(endTime > this._nextTick && this._state){
+			while (endTime > this._nextTick && this._state){
 				var tickTime = this._nextTick;
 				if (this.frequency){
 					this._nextTick += this.frequency.getDurationOfTicks(1, this._nextTick);
@@ -282,7 +282,7 @@ define(["Tone/core/Tone", "Tone/signal/TickSignal", "Tone/core/TimelineState",
 						try {
 							this.callback(tickTime);
 							this._ticks++;
-						} catch(e){
+						} catch (e){
 							this._ticks++;
 							throw e;
 						}

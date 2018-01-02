@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Buffer", "Tone/core/OfflineContext"], function (Tone) {
+define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Buffer", "Tone/core/OfflineContext"], function(Tone) {
 
 	/**
 	 *  Generate a buffer by rendering all of the Tone.js code within the callback using the OfflineAudioContext.

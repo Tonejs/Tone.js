@@ -5,7 +5,7 @@ define(["Tone/core/Tone"], function(Tone){
 	 *  @private
 	 */
 	if (Tone.supported){
-		if(!AudioBuffer.prototype.copyToChannel){
+		if (!AudioBuffer.prototype.copyToChannel){
 			AudioBuffer.prototype.copyToChannel = function(src, chanNum, start){
 				var channel = this.getChannelData(chanNum);
 				start = start || 0;

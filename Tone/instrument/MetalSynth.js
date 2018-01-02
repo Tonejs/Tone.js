@@ -1,6 +1,6 @@
 define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/source/FMOscillator", "Tone/component/Filter",
 	"Tone/component/FrequencyEnvelope", "Tone/component/AmplitudeEnvelope", "Tone/core/Gain",
-	"Tone/signal/Scale", "Tone/signal/Multiply"], function (Tone) {
+	"Tone/signal/Scale", "Tone/signal/Multiply"], function(Tone) {
 
 	/**
 	 *  Inharmonic ratio of frequencies based on the Roland TR-808

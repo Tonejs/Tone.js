@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/type/TimeBase"], function (Tone) {
+define(["Tone/core/Tone", "Tone/type/TimeBase"], function(Tone) {
 
 	/**
 	 *  @class Tone.Frequency is a primitive type for encoding Frequency values.
@@ -124,7 +124,7 @@ define(["Tone/core/Tone", "Tone/type/TimeBase"], function (Tone) {
 		var log = Math.log2(freq / Tone.Frequency.A4);
 		var noteNumber = Math.round(12 * log) + 57;
 		var octave = Math.floor(noteNumber/12);
-		if(octave < 0){
+		if (octave < 0){
 			noteNumber += -12 * octave;
 		}
 		var noteName = scaleIndexToNote[noteNumber % 12];

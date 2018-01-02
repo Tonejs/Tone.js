@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/signal/Signal"], function (Tone) {
+define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone) {
 
 	/**
 	 * @class Tone.TickSignal extends Tone.Signal, but adds the capability

@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/event/Loop", "Tone/control/CtrlPattern"], function (Tone) {
+define(["Tone/core/Tone", "Tone/event/Loop", "Tone/control/CtrlPattern"], function(Tone) {
 
 	/**
 	 *  @class Tone.Pattern arpeggiates between the given notes

@@ -135,7 +135,7 @@ define(["Tone/core/Tone", "Tone/type/Type", "Tone/core/AudioNode", "Tone/core/Ti
 	 */
 	Tone.Param.prototype._fromUnits = function(val){
 		if (this.convert || Tone.isUndef(this.convert)){
-			switch(this.units){
+			switch (this.units){
 				case Tone.Type.Time:
 					return this.toSeconds(val);
 				case Tone.Type.Frequency:
@@ -164,7 +164,7 @@ define(["Tone/core/Tone", "Tone/type/Type", "Tone/core/AudioNode", "Tone/core/Ti
 	 */
 	Tone.Param.prototype._toUnits = function(val){
 		if (this.convert || Tone.isUndef(this.convert)){
-			switch(this.units){
+			switch (this.units){
 				case Tone.Type.Decibels:
 					return Tone.gainToDb(val);
 				default:
@@ -448,7 +448,7 @@ define(["Tone/core/Tone", "Tone/type/Type", "Tone/core/AudioNode", "Tone/core/Ti
 	 *  @param {NormalRange} [scaling=1] If the values in the curve should be scaled by some value
 	 *  @returns {Tone.Param} this
 	 */
-	Tone.Param.prototype.setValueCurveAtTime = function (values, startTime, duration, scaling) {
+	Tone.Param.prototype.setValueCurveAtTime = function(values, startTime, duration, scaling) {
 		scaling = Tone.defaultArg(scaling, 1);
 		duration = this.toSeconds(duration);
 		startTime = this.toSeconds(startTime);
@@ -570,17 +570,17 @@ define(["Tone/core/Tone", "Tone/type/Type", "Tone/core/AudioNode", "Tone/core/Ti
 	///////////////////////////////////////////////////////////////////////////
 
 	// Calculates the the value along the curve produced by setTargetAtTime
-	Tone.Param.prototype._exponentialApproach = function (t0, v0, v1, timeConstant, t) {
+	Tone.Param.prototype._exponentialApproach = function(t0, v0, v1, timeConstant, t) {
 		return v1 + (v0 - v1) * Math.exp(-(t - t0) / timeConstant);
 	};
 
 	// Calculates the the value along the curve produced by linearRampToValueAtTime
-	Tone.Param.prototype._linearInterpolate = function (t0, v0, t1, v1, t) {
+	Tone.Param.prototype._linearInterpolate = function(t0, v0, t1, v1, t) {
 		return v0 + (v1 - v0) * ((t - t0) / (t1 - t0));
 	};
 
 	// Calculates the the value along the curve produced by exponentialRampToValueAtTime
-	Tone.Param.prototype._exponentialInterpolate = function (t0, v0, t1, v1, t) {
+	Tone.Param.prototype._exponentialInterpolate = function(t0, v0, t1, v1, t) {
 		return v0 * Math.pow(v1 / v0, (t - t0) / (t1 - t0));
 	};
 

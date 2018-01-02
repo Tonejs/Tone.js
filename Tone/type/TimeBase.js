@@ -1,4 +1,4 @@
-define(["Tone/core/Tone"], function (Tone) {
+define(["Tone/core/Tone"], function(Tone) {
 
 	/**
 	 *  @class Tone.TimeBase is a flexible encoding of time
@@ -41,7 +41,7 @@ define(["Tone/core/Tone"], function (Tone) {
 				this._val = val._val;
 				this._units = val._units;
 			} else if (val instanceof Tone.TimeBase){
-				switch(this._defaultUnits){
+				switch (this._defaultUnits){
 					case "s" :
 						this._val = val.toSeconds();
 						break;

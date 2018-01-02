@@ -284,7 +284,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal",
 				this._sig.linearRampTo(0, release, time);
 			} else if (this._releaseCurve === "exponential"){
 				this._sig.targetRampTo(0, release, time);
-			} else{
+			} else {
 				var curve = this._releaseCurve;
 				if (Tone.isArray(curve)){
 					this._sig.cancelAndHoldAtTime(time);
@@ -328,7 +328,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal",
 	 *  @param  {Time} after
 	 *  @returns {Tone.Envelope} this
 	 */
-	Tone.Envelope.prototype.cancel = function (after) {
+	Tone.Envelope.prototype.cancel = function(after) {
 		this._sig.cancelScheduledValues(after);
 		return this;
 	};

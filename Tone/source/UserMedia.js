@@ -135,7 +135,7 @@ define(["Tone/core/Tone", "Tone/component/Volume", "Tone/core/AudioNode"], funct
 	 *  @return {Tone.UserMedia} this
 	 */
 	Tone.UserMedia.prototype.close = function(){
-		if(this._stream){
+		if (this._stream){
 			this._stream.getAudioTracks().forEach(function(track){
 				track.stop();
 			});

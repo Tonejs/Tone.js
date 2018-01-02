@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/type/TimeBase", "Tone/type/Frequency"], function (Tone) {
+define(["Tone/core/Tone", "Tone/type/TimeBase", "Tone/type/Frequency"], function(Tone) {
 
 	/**
 	 *  @class Tone.Time is a primitive type for encoding Time values.

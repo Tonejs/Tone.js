@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/core/Context"], function (Tone) {
+define(["Tone/core/Tone", "Tone/core/Context"], function(Tone) {
 
 	/**
 	 *  @class Tone.AudioNode is the base class for classes which process audio.
@@ -179,7 +179,7 @@ define(["Tone/core/Tone", "Tone/core/Context"], function (Tone) {
 	 * Dispose and disconnect
 	 * @return {Tone.AudioNode} this
 	 */
-	Tone.AudioNode.prototype.dispose = function () {
+	Tone.AudioNode.prototype.dispose = function() {
 		if (!Tone.isUndef(this.input)){
 			if (this.input instanceof AudioNode){
 				this.input.disconnect();

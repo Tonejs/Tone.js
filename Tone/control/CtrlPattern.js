@@ -1,4 +1,4 @@
-define(["Tone/core/Tone"], function (Tone) {
+define(["Tone/core/Tone"], function(Tone) {
 
 	"use strict";
 
@@ -251,7 +251,7 @@ define(["Tone/core/Tone"], function (Tone) {
 		for (var i = 0; i < this.values.length; i++){
 			copy[i] = i;
 		}
-		while(copy.length > 0){
+		while (copy.length > 0){
 			var randVal = copy.splice(Math.floor(copy.length * Math.random()), 1);
 			this._shuffled.push(randVal[0]);
 		}

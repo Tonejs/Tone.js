@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/core/Timeline", "Tone/shim/AudioContext"], function (Tone) {
+define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/core/Timeline", "Tone/shim/AudioContext"], function(Tone) {
 
 	/**
 	 *  @class Wrapper around the native AudioContext.
@@ -192,7 +192,7 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/core/Timeline", "Tone/shim/
 	 */
 	Tone.Context.prototype._timeoutLoop = function(){
 		var now = this.now();
-		while(this._timeouts && this._timeouts.length && this._timeouts.peek().time <= now){
+		while (this._timeouts && this._timeouts.length && this._timeouts.peek().time <= now){
 			this._timeouts.shift().callback();
 		}
 	};
@@ -286,7 +286,7 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/core/Timeline", "Tone/shim/
 			var lookAhead = hint;
 			this._latencyHint = hint;
 			if (Tone.isString(hint)){
-				switch(hint){
+				switch (hint){
 					case "interactive" :
 						lookAhead = 0.1;
 						this._context.latencyHint = hint;
@@ -322,7 +322,7 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/core/Timeline", "Tone/shim/
 			this._ticker = null;
 			this._timeouts.dispose();
 			this._timeouts = null;
-			for(var con in this._constants){
+			for (var con in this._constants){
 				this._constants[con].disconnect();
 			}
 			this._constants = null;
@@ -425,7 +425,7 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/core/Timeline", "Tone/shim/
 		if (this._type === Ticker.Type.Worker){
 			try {
 				this._createWorker();
-			} catch(e) {
+			} catch (e) {
 				// workers not supported, fallback to timeout
 				this._type = Ticker.Type.Timeout;
 				this._createClock();

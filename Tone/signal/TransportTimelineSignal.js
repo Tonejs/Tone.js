@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/core/Transport", "Tone/signal/Signal", "Tone/type/TransportTime"], function (Tone) {
+define(["Tone/core/Tone", "Tone/core/Transport", "Tone/signal/Signal", "Tone/type/TransportTime"], function(Tone) {
 
 	/**
 	 * @class Tone.TransportTimelineSignal extends Tone.Signal, but adds the ability to synchronize the signal to the signal to the Tone.Transport
@@ -158,7 +158,7 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/signal/Signal", "Tone/typ
 	 *  @param {NormalRange} [scaling=1] If the values in the curve should be scaled by some value
 	 *  @returns {Tone.Signal} this
 	 */
-	Tone.TransportTimelineSignal.prototype.setValueCurveAtTime = function (values, startTime, duration, scaling) {
+	Tone.TransportTimelineSignal.prototype.setValueCurveAtTime = function(values, startTime, duration, scaling) {
 		startTime = Tone.TransportTime(startTime);
 		duration = Tone.TransportTime(duration);
 		Tone.Signal.prototype.setValueCurveAtTime.call(this, values, startTime, duration, scaling);
@@ -171,7 +171,7 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/signal/Signal", "Tone/typ
 	 *  @param  {Time} time
 	 *  @returns {Tone.TransportTimelineSignal} this
 	 */
-	Tone.TransportTimelineSignal.prototype.cancelAndHoldAtTime = function (time) {
+	Tone.TransportTimelineSignal.prototype.cancelAndHoldAtTime = function(time) {
 		return Tone.Signal.prototype.cancelAndHoldAtTime.call(this, Tone.TransportTime(time));
 	};
 
