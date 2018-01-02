@@ -540,7 +540,9 @@ define(["Tone/core/Tone", "Tone/core/Clock", "Tone/type/Type", "Tone/core/Timeli
 	 */
 	Object.defineProperty(Tone.Transport.prototype, "position", {
 		get : function(){
-			return Tone.Ticks(this.ticks).toBarsBeatsSixteenths();
+			var now = this.now();
+			var ticks = this._clock.getTicksAtTime(now);
+			return Tone.Ticks(ticks).toBarsBeatsSixteenths();
 		},
 		set : function(progress){
 			var ticks = this.toTicks(progress);
