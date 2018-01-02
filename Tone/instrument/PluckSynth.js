@@ -3,10 +3,10 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/source/Noise", "To
 	"use strict";
 
 	/**
-	 *  @class Karplus-String string synthesis. Often out of tune. 
+	 *  @class Karplus-String string synthesis. Often out of tune.
 	 *         Will change when the AudioWorkerNode is available across
-	 *         browsers. 
-	 *  
+	 *         browsers.
+	 *
 	 *  @constructor
 	 *  @extends {Tone.Instrument}
 	 *  @param {Object} [options] see the defaults
@@ -26,7 +26,7 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/source/Noise", "To
 		this._noise = new Tone.Noise("pink");
 
 		/**
-		 *  The amount of noise at the attack. 
+		 *  The amount of noise at the attack.
 		 *  Nominal range of [0.1, 20]
 		 *  @type {number}
 		 */
@@ -43,7 +43,7 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/source/Noise", "To
 		});
 
 		/**
-		 *  The resonance control. 
+		 *  The resonance control.
 		 *  @type {NormalRange}
 		 *  @signal
 		 */
@@ -72,11 +72,11 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/source/Noise", "To
 	Tone.PluckSynth.defaults = {
 		"attackNoise" : 1,
 		"dampening" : 4000,
-		"resonance" : 0.9
+		"resonance" : 0.7
 	};
 
 	/**
-	 *  Trigger the note. 
+	 *  Trigger the note.
 	 *  @param {Frequency} note The note to trigger.
 	 *  @param {Time} [time=now] When the note should be triggered.
 	 *  @returns {Tone.PluckSynth} this
@@ -85,14 +85,14 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/source/Noise", "To
 		note = this.toFrequency(note);
 		time = this.toSeconds(time);
 		var delayAmount = 1 / note;
-		this._lfcf.delayTime.setValueAtTime(delayAmount, time);		
+		this._lfcf.delayTime.setValueAtTime(delayAmount, time);
 		this._noise.start(time);
 		this._noise.stop(time + delayAmount * this.attackNoise);
 		return this;
 	};
 
 	/**
-	 *  Clean up. 
+	 *  Clean up.
 	 *  @returns {Tone.PluckSynth} this
 	 */
 	Tone.PluckSynth.prototype.dispose = function(){
