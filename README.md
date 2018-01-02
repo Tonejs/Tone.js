@@ -157,6 +157,10 @@ Tone.js makes extensive use of the native Web Audio Nodes such as the GainNode a
 
 [This wiki](https://github.com/Tonejs/Tone.js/wiki/Performance) article has some suggestions related to performance for best practices.
 
+# Testing
+
+Tone.js runs an extensive test suite using [mocha](https://mochajs.org/) and [chai](http://chaijs.com/) with nearly 100% coverage. Each commit and pull request is run on [Travis-CI](https://travis-ci.org/Tonejs/Tone.js/) across multiple versions of Chrome, Safari and Firefox to ensure backwards and future compatibility. Passing builds on the 'dev' branch are published on npm as `tone@next`. 
+
 # Contributing
 
 There are many ways to contribute to Tone.js. Check out [this wiki](https://github.com/Tonejs/Tone.js/wiki/Contributing) if you're interested.
