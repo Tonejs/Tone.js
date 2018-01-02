@@ -1,6 +1,6 @@
 define(["helper/Basic", "Tone/source/Player", "helper/Offline",
 	"helper/SourceTests", "Tone/core/Buffer", "helper/Meter", "Test", "Tone/core/Tone"],
-	function (BasicTests, Player, Offline, SourceTests, Buffer, Meter, Test, Tone) {
+function(BasicTests, Player, Offline, SourceTests, Buffer, Meter, Test, Tone) {
 
 	if (window.__karma__){
 		Buffer.baseUrl = "/base/test/";
@@ -22,19 +22,19 @@ define(["helper/Basic", "Tone/source/Player", "helper/Offline",
 
 		context("Constructor", function(){
 
-			it ("can be constructed with a Tone.Buffer", function(){
+			it("can be constructed with a Tone.Buffer", function(){
 				var player = new Player(buffer);
 				expect(player.buffer.get()).to.equal(buffer.get());
 				player.dispose();
 			});
 
-			it ("can be constructed with an AudioBuffer", function(){
+			it("can be constructed with an AudioBuffer", function(){
 				var player = new Player(buffer.get());
 				expect(player.buffer.get()).to.equal(buffer.get());
 				player.dispose();
 			});
 
-			it ("can be constructed with an unloaded Tone.Buffer", function(done){
+			it("can be constructed with an unloaded Tone.Buffer", function(done){
 				var buffer = new Buffer("./audio/sine.wav");
 				var player = new Player(buffer, function(){
 					expect(player.buffer.get()).to.equal(buffer.get());
@@ -164,7 +164,7 @@ define(["helper/Basic", "Tone/source/Player", "helper/Offline",
 				});
 			});
 
-			it ("correctly compensates if the offset is greater than the loopEnd", function(){
+			it("correctly compensates if the offset is greater than the loopEnd", function(){
 				return Offline(function(){
 					//make a ramp between 0-1
 					var ramp = new Float32Array(Math.floor(Tone.context.sampleRate * 0.3));
@@ -211,7 +211,7 @@ define(["helper/Basic", "Tone/source/Player", "helper/Offline",
 			it("can set attributes after player is started", function(){
 				var player = new Player(buffer);
 				expect(player.loop).to.be.false;
-				player.start()
+				player.start();
 				player.set({
 					"loopStart" : 0.2,
 					"loopEnd" : 0.3,
@@ -361,7 +361,7 @@ define(["helper/Basic", "Tone/source/Player", "helper/Offline",
 					var player = new Player(buffer);
 					player.toMaster();
 					player.start(0, 0, 0.05).start(0.1, 0, 0.05).start(0.2, 0, 0.05);
-					player.stop(0.1)
+					player.stop(0.1);
 				}, 0.3).then(function(buffer){
 					expect(buffer.getLastSoundTime()).to.be.closeTo(0.05, 0.02);
 				});
@@ -423,6 +423,49 @@ define(["helper/Basic", "Tone/source/Player", "helper/Offline",
 				});
 			});
 
+			it("starts with an offset when synced and started after Transport is running", function(){
+				return Offline(function(Transport){
+					var ramp = new Float32Array(Math.floor(Tone.context.sampleRate * 0.3));
+					for (var i = 0; i < ramp.length; i++){
+						ramp[i] = (i / (ramp.length)) * 0.3;
+					}
+					var buff = new Buffer().fromArray(ramp);
+					var player = new Player(buff).toMaster();
+					Transport.start(0);
+					return Test.atTime(0.1, function(){
+						player.sync().start(0);
+					});
+				}, 0.3).then(function(buffer){
+					expect(buffer.getValueAtTime(0)).to.equal(0);
+					expect(buffer.getValueAtTime(0.05)).to.equal(0);
+					expect(buffer.getValueAtTime(0.11)).to.be.closeTo(0.11, 0.01);
+					expect(buffer.getValueAtTime(0.2)).to.be.closeTo(0.2, 0.01);
+				});
+			});
+
+			it("can pass in an offset when synced and started after Transport is running", function(){
+				return Offline(function(Transport){
+					var ramp = new Float32Array(Math.floor(Tone.context.sampleRate * 0.3));
+					for (var i = 0; i < ramp.length; i++){
+						ramp[i] = (i / (ramp.length)) * 0.3;
+					}
+					var buff = new Buffer().fromArray(ramp);
+					var player = new Player(buff).toMaster();
+					player.loop = true;
+					Transport.start(0);
+					return Test.atTime(0.1, function(){
+						player.sync().start(0, 0.1);
+					});
+				}, 0.3).then(function(buffer){
+					expect(buffer.getValueAtTime(0)).to.equal(0);
+					expect(buffer.getValueAtTime(0.05)).to.equal(0);
+					expect(buffer.getValueAtTime(0.11)).to.be.closeTo(0.21, 0.01);
+					expect(buffer.getValueAtTime(0.15)).to.be.closeTo(0.25, 0.01);
+					expect(buffer.getValueAtTime(0.2)).to.be.closeTo(0.0, 0.01);
+					expect(buffer.getValueAtTime(0.25)).to.be.closeTo(0.05, 0.01);
+				});
+			});
+
 			it("fades in and out correctly", function(){
 				return Offline(function(){
 					var onesArray = new Float32Array(buffer.context.sampleRate * 0.5);
@@ -430,7 +473,7 @@ define(["helper/Basic", "Tone/source/Player", "helper/Offline",
 						onesArray[index] = 1;
 					});
 					var onesBuffer = Buffer.fromArray(onesArray);
-					var player = new Player({"url" : onesBuffer, "fadeOut" : 0.1, "fadeIn" : 0.1}).start(0).toMaster();
+					var player = new Player({ "url" : onesBuffer, "fadeOut" : 0.1, "fadeIn" : 0.1 }).start(0).toMaster();
 				}, 0.6).then(function(buffer){
 					buffer.forEach(function(sample, time){
 						if (time < 0.1){
