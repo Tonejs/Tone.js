@@ -3,7 +3,7 @@
 * Consolidating all shims into [shim folder](https://github.com/Tonejs/Tone.js/tree/dev/Tone/shim)
 * Using ConstantSourceNode in Signal when available
 * switching to eslint from jshint
-* Running [CI tests](https://travis-ci.org/Tonejs/Tone.js/) on Firefox, Chrome and Safari
+* Running [CI tests](https://travis-ci.org/Tonejs/Tone.js/) on Firefox, Chrome (latest and canary) and Safari (latest and version 9). 
 
 **BREAKING CHANGES:**
 
