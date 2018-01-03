@@ -94,7 +94,7 @@ define(function(){
 				for (var i = 0; i < attrSplit.length - 1; i++){
 					parent = parent[attrSplit[i]];
 					if (parent instanceof Tone) {
-						attrSplit.splice(0,i+1);
+						attrSplit.splice(0, i+1);
 						var innerParam = attrSplit.join(".");
 						parent.set(innerParam, value);
 						continue paramLoop;
@@ -488,7 +488,7 @@ define(function(){
 	 * tone.intervalToFrequencyRatio(-12); // 0.5
 	 */
 	Tone.intervalToFrequencyRatio = function(interval){
-		return Math.pow(2,(interval/12));
+		return Math.pow(2, (interval/12));
 	};
 
 	///////////////////////////////////////////////////////////////////////////
