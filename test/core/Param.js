@@ -1,5 +1,5 @@
 define(["helper/Basic", "Test", "Tone/core/Param", "Tone/type/Type", "Tone/signal/Signal", "Tone/core/Transport"],
-	function (Basic, Test, Param, Tone, Signal, Transport) {
+	function(Basic, Test, Param, Tone, Signal, Transport) {
 
 		describe("Param", function(){
 
@@ -252,10 +252,18 @@ define(["helper/Basic", "Test", "Tone/core/Param", "Tone/type/Type", "Tone/signa
 					param.dispose();
 				});
 
-				it("can cancelAndHold an automation", function(){
+				it("can cancelAndHold a linear automation", function(){
 					var gain = Tone.context.createGain();
 					var param = new Param(gain.gain);
 					param.linearRampToValueAtTime(0.5, "+0.5");
+					param.cancelAndHoldAtTime(0);
+					param.dispose();
+				});
+
+				it("can cancelAndHold an exponential automation", function(){
+					var gain = Tone.context.createGain();
+					var param = new Param(gain.gain);
+					param.exponentialRampToValueAtTime(0.5, "+0.5");
 					param.cancelAndHoldAtTime(0);
 					param.dispose();
 				});

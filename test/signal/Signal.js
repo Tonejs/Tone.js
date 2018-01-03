@@ -1,6 +1,6 @@
 define(["helper/Offline", "helper/Basic", "Test", "Tone/signal/Signal",
 	"Tone/type/Type", "Tone/core/Transport", "helper/ConstantOutput"],
-function (Offline, Basic, Test, Signal, Tone, Transport, ConstantOutput) {
+function(Offline, Basic, Test, Signal, Tone, Transport, ConstantOutput) {
 
 	describe("Signal", function(){
 
@@ -119,7 +119,7 @@ function (Offline, Basic, Test, Signal, Tone, Transport, ConstantOutput) {
 				}, 1);
 			});
 
-			it("can cancel and hold an automation curve", function(){
+			it("can cancel and hold a linear automation curve", function(){
 				return Offline(function(){
 					var sig = new Signal(0).toMaster();
 					sig.linearRampTo(2, 1);
@@ -129,6 +129,19 @@ function (Offline, Basic, Test, Signal, Tone, Transport, ConstantOutput) {
 					expect(buffer.getValueAtTime(0.25)).to.be.closeTo(0.5, 0.1);
 					expect(buffer.getValueAtTime(0.5)).to.be.closeTo(1, 0.1);
 					expect(buffer.getValueAtTime(0.75)).to.be.closeTo(1, 0.1);
+				});
+			});
+
+			it("can cancel and hold an exponential automation curve", function(){
+				return Offline(function(){
+					var sig = new Signal(1).toMaster();
+					sig.exponentialRampTo(2, 1);
+					sig.cancelAndHoldAtTime(0.5);
+				}, 1).then(function(buffer){
+					expect(buffer.getValueAtTime(0)).to.be.closeTo(1, 0.1);
+					expect(buffer.getValueAtTime(0.25)).to.be.closeTo(1.2, 0.1);
+					expect(buffer.getValueAtTime(0.5)).to.be.closeTo(1.4, 0.1);
+					expect(buffer.getValueAtTime(0.75)).to.be.closeTo(1.4, 0.1);
 				});
 			});
 
