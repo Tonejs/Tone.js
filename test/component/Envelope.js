@@ -1,6 +1,6 @@
 define(["Tone/component/Envelope", "helper/Basic", "helper/Offline", "Test",
 	"helper/PassAudio", "helper/APITest"],
-function (Envelope, Basic, Offline, Test, PassAudio, APITest) {
+function(Envelope, Basic, Offline, Test, PassAudio, APITest) {
 	describe("Envelope", function(){
 
 		Basic(Envelope);
@@ -386,6 +386,52 @@ function (Envelope, Basic, Offline, Test, PassAudio, APITest) {
 				});
 			});
 
+			it("can schedule multiple 'linear' attack/releases with no discontinuities", function(){
+				return Offline(function(){
+					var env = new Envelope(0.1, 0.2, 0.2, 0.4).toMaster();
+					env.attackCurve = "linear";
+					env.releaseCurve = "linear";
+					env.triggerAttackRelease(0, 0.4);
+					env.triggerAttackRelease(0.4, 0.11);
+					env.triggerAttackRelease(0.45, 0.1);
+					env.triggerAttackRelease(1.1, 0.09);
+					env.triggerAttackRelease(1.5, 0.3);
+					env.triggerAttackRelease(1.8, 0.29);
+				}, 2).then(function(buffer){
+					//test for discontinuities
+					var lastSample = 0;
+					buffer.forEach(function(sample, time){
+						expect(sample).to.be.at.most(1);
+						var diff = Math.abs(lastSample - sample);
+						expect(diff).to.be.lessThan(0.001);
+						lastSample = sample;
+					});
+				});
+			});
+
+			it("can schedule multiple 'exponential' attack/releases with no discontinuities", function(){
+				return Offline(function(){
+					var env = new Envelope(0.1, 0.2, 0.2, 0.4).toMaster();
+					env.attackCurve = "exponential";
+					env.releaseCurve = "exponential";
+					env.triggerAttackRelease(0, 0.4);
+					env.triggerAttackRelease(0.4, 0.11);
+					env.triggerAttackRelease(0.45, 0.1);
+					env.triggerAttackRelease(1.1, 0.09);
+					env.triggerAttackRelease(1.5, 0.3);
+					env.triggerAttackRelease(1.8, 0.29);
+				}, 2).then(function(buffer){
+					//test for discontinuities
+					var lastSample = 0;
+					buffer.forEach(function(sample, time){
+						expect(sample).to.be.at.most(1);
+						var diff = Math.abs(lastSample - sample);
+						expect(diff).to.be.lessThan(0.002);
+						lastSample = sample;
+					});
+				});
+			});
+
 			it("reports its current envelope value (.value)", function(){
 				return Offline(function(){
 					var env = new Envelope(1, 0.2, 1).toMaster();
@@ -573,9 +619,9 @@ function (Envelope, Basic, Offline, Test, PassAudio, APITest) {
 						attackCurve : "step",
 						releaseCurve : "step",
 					}).toMaster();
-					env.triggerAttackRelease(0.3, 0.1);
-					env.triggerAttackRelease(0.35, 0.1);
-					env.triggerAttackRelease(0.8, 0.1);
+					env.triggerAttackRelease(0.1, 0.3);
+					env.triggerAttackRelease(0.1, 0.35);
+					env.triggerAttackRelease(0.1, 0.8);
 				}, 1).then(function(buffer){
 					buffer.forEach(function(sample, time){
 						if (time > 0.3 && time < 0.5){
