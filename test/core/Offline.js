@@ -1,6 +1,6 @@
-define(["Test", "Tone/core/Offline", "Tone/core/Transport", "Tone/source/Oscillator", 
-	"Tone/core/Tone", "Tone/core/Buffer", "helper/BufferTest"], 
-function (Test, Offline, Transport, Oscillator, Tone, AudioBuffer, BufferTest) {
+define(["Test", "Tone/core/Offline", "Tone/core/Transport", "Tone/source/Oscillator",
+	"Tone/core/Tone", "Tone/core/Buffer", "helper/BufferTest"],
+function(Test, Offline, Transport, Oscillator, Tone, AudioBuffer, BufferTest) {
 
 	describe("Offline", function(){
 
@@ -37,6 +37,22 @@ function (Test, Offline, Transport, Oscillator, Tone, AudioBuffer, BufferTest) {
 				new Oscillator().toMaster().start();
 			}, 0.01).then(function(buffer){
 				BufferTest(buffer);
+				expect(buffer.isSilent()).to.be.false;
+			});
+		});
+
+		it("returning a promise defers the rendering till the promise resolves", function(){
+			var wasInvoked = false;
+			return Offline(function(){
+				new Oscillator().toMaster().start();
+				return new Promise(function(done){
+					setTimeout(done, 100);
+				}).then(function(){
+					wasInvoked = true;
+				});
+			}, 0.01).then(function(buffer){
+				BufferTest(buffer);
+				expect(wasInvoked).to.be.true;
 				expect(buffer.isSilent()).to.be.false;
 			});
 		});

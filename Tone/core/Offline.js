@@ -38,16 +38,25 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Buffer", "Tone/core/
 		Tone.context = context;
 
 		//invoke the callback/scheduling
-		callback(Tone.Transport);
+		var response = callback(Tone.Transport);
 
-		//process the audio
-		var rendered = context.render();
+		var ret;
+		if (response instanceof Promise){
+			//wait for the promise to resolve
+			ret = response.then(function(){
+				//then render the audio
+				return context.render();
+			});
+		} else {
+			//process the audio
+			ret = context.render();
+		}
 
 		//return the original AudioContext
 		Tone.context = originalContext;
 
 		//return the audio
-		return rendered.then(function(buffer){
+		return ret.then(function(buffer){
 			//wrap it in a Tone.Buffer
 			return new Tone.Buffer(buffer);
 		});
