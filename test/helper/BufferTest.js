@@ -1,4 +1,4 @@
-define(["Tone/core/Tone"], function (Tone) {
+define(["Tone/core/Tone"], function(Tone) {
 
 	//augment the built in functions
 	return function(buffer){
@@ -35,6 +35,13 @@ define(["Tone/core/Tone"], function (Tone) {
 				}
 			}
 			return rms;
+		};
+
+		//get the rms at the given time
+		buffer.getRmsAtTime = function(time){
+			var rms = this.getRMS();
+			var sample = Math.floor(time * this.context.sampleRate);
+			return rms[sample];
 		};
 
 		//return the time when the buffer is no longer silent
