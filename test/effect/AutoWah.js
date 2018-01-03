@@ -1,5 +1,5 @@
-define(["Tone/effect/AutoWah", "helper/Basic", "helper/EffectTests"], function (AutoWah, Basic, EffectTests) {
-	
+define(["Tone/effect/AutoWah", "helper/Basic", "helper/EffectTests"], function(AutoWah, Basic, EffectTests) {
+
 	describe("AutoWah", function(){
 
 		Basic(AutoWah);
@@ -14,8 +14,14 @@ define(["Tone/effect/AutoWah", "helper/Basic", "helper/EffectTests"], function (
 					"sensitivity" : -10
 				});
 				expect(autoWah.baseFrequency).to.be.closeTo(150, 0.01);
+				autoWah.baseFrequency = 250;
+				expect(autoWah.baseFrequency).to.be.closeTo(250, 0.01);
 				expect(autoWah.octaves).to.be.closeTo(3, 0.01);
+				autoWah.octaves = 2;
+				expect(autoWah.octaves).to.be.closeTo(2, 0.01);
 				expect(autoWah.sensitivity).to.be.closeTo(-10, 0.1);
+				autoWah.sensitivity = -20;
+				expect(autoWah.sensitivity).to.be.closeTo(-20, 0.1);
 				autoWah.dispose();
 			});
 
