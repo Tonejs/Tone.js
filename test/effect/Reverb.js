@@ -1,6 +1,6 @@
 define(["Tone/effect/Reverb", "helper/Basic", "helper/Offline",
 	"Tone/source/Oscillator"],
-function(Reverb, Basic, Offline, Oscillator) {
+function(Reverb, Basic, Offline, Oscillator){
 
 	describe("Reverb", function(){
 
@@ -55,9 +55,9 @@ function(Reverb, Basic, Offline, Oscillator) {
 					osc.connect(reverb);
 					return reverb.generate();
 				}, 0.3).then(function(buffer){
-					expect(buffer.getRmsAtTime(0.05)).to.be.greaterThan(0.01);
-					expect(buffer.getRmsAtTime(0.1)).to.be.greaterThan(0.001);
-					expect(buffer.getRmsAtTime(0.2)).to.be.greaterThan(0.0001);
+					expect(buffer.getRmsAtTime(0.05)).to.be.greaterThan(0);
+					expect(buffer.getRmsAtTime(0.1)).to.be.greaterThan(0);
+					expect(buffer.getRmsAtTime(0.2)).to.be.greaterThan(0);
 				});
 			});
 		});
