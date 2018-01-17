@@ -1,6 +1,6 @@
 define(["helper/Basic", "Tone/source/BufferSource", "helper/Offline",
 	"Tone/core/Buffer", "helper/Meter", "Tone/core/Tone"],
-	function (BasicTests, BufferSource, Offline, Buffer, Meter, Tone) {
+function(BasicTests, BufferSource, Offline, Buffer, Meter, Tone){
 
 	if (window.__karma__){
 		Buffer.baseUrl = "/base/test/";
@@ -27,13 +27,13 @@ define(["helper/Basic", "Tone/source/BufferSource", "helper/Offline",
 
 		context("Constructor", function(){
 
-			it ("can be constructed with a Tone.Buffer", function(){
+			it("can be constructed with a Tone.Buffer", function(){
 				var source = new BufferSource(buffer);
 				expect(source.buffer.get()).to.equal(buffer.get());
 				source.dispose();
 			});
 
-			it ("can be constructed with an AudioBuffer", function(){
+			it("can be constructed with an AudioBuffer", function(){
 				var source = new BufferSource(buffer.get());
 				expect(source.buffer.get()).to.equal(buffer.get());
 				source.dispose();
@@ -54,12 +54,12 @@ define(["helper/Basic", "Tone/source/BufferSource", "helper/Offline",
 				source.dispose();
 			});
 
-			it ("can be constructed with no arguments", function(){
+			it("can be constructed with no arguments", function(){
 				var source = new BufferSource();
 				source.dispose();
 			});
 
-			it ("can set the buffer after construction", function(){
+			it("can set the buffer after construction", function(){
 				var source = new BufferSource();
 				expect(source.buffer.loaded).to.be.false;
 				source.buffer = buffer;
@@ -67,15 +67,15 @@ define(["helper/Basic", "Tone/source/BufferSource", "helper/Offline",
 				source.dispose();
 			});
 
-			it ("can be constructed with a url and onload", function(done){
+			it("can be constructed with a url and onload", function(done){
 				var source = new BufferSource("./audio/short_sine.wav", function(){
 					expect(source.buffer.loaded).to.be.true;
 					source.dispose();
-					done()
+					done();
 				});
 			});
 
-			it ("won't start or stop if there is no buffer", function(){
+			it("won't start or stop if there is no buffer", function(){
 				var source = new BufferSource();
 				expect(function(){
 					source.start();
@@ -109,9 +109,39 @@ define(["helper/Basic", "Tone/source/BufferSource", "helper/Offline",
 					player.toMaster();
 					player.start(0);
 				}, buffer.duration * 2).then(function(buff){
-					buff.getRMS().forEach(function(val){
-						expect(val).to.be.above(0);
-					});
+					expect(buff.getRmsAtTime(0)).to.be.above(0);
+					expect(buff.getRmsAtTime(buffer.duration * 0.5)).to.be.above(0);
+					expect(buff.getRmsAtTime(buffer.duration)).to.be.above(0);
+					expect(buff.getRmsAtTime(buffer.duration * 1.5)).to.be.above(0);
+				});
+			});
+
+			it("loops the audio when loop is set after 'start'", function(){
+				return Offline(function(){
+					var player = new BufferSource(buffer);
+					player.start(0);
+					player.loop = true;
+					player.toMaster();
+				}, buffer.duration * 2).then(function(buff){
+					expect(buff.getRmsAtTime(0)).to.be.above(0);
+					expect(buff.getRmsAtTime(buffer.duration * 0.5)).to.be.above(0);
+					expect(buff.getRmsAtTime(buffer.duration)).to.be.above(0);
+					expect(buff.getRmsAtTime(buffer.duration * 1.5)).to.be.above(0);
+				});
+			});
+
+			it("unloops the audio when loop is set after 'start'", function(){
+				return Offline(function(){
+					var player = new BufferSource(buffer);
+					player.loop = true;
+					player.start(0);
+					player.loop = false;
+					player.toMaster();
+				}, buffer.duration * 2).then(function(buff){
+					expect(buff.getRmsAtTime(0)).to.be.above(0);
+					expect(buff.getRmsAtTime(buffer.duration * 0.5)).to.be.above(0);
+					expect(buff.getRmsAtTime(buffer.duration)).to.equal(0);
+					expect(buff.getRmsAtTime(buffer.duration * 1.5)).to.equal(0);
 				});
 			});
 
@@ -177,7 +207,6 @@ define(["helper/Basic", "Tone/source/BufferSource", "helper/Offline",
 				player.dispose();
 			});
 
-
 			it("can get/set the playbackRate", function(){
 				var player = new BufferSource();
 				player.playbackRate.value = 0.5;
@@ -242,7 +271,6 @@ define(["helper/Basic", "Tone/source/BufferSource", "helper/Offline",
 				}, buffer.duration * 1.1);
 			});
 
-
 		});
 
 		context("state", function(){
@@ -266,21 +294,6 @@ define(["helper/Basic", "Tone/source/BufferSource", "helper/Offline",
 						}
 					};
 				}, 0.5);
-			});
-
-			it("reports the right state when not scheduled to stop", function(){
-				return Offline(function(){
-					var player = new BufferSource(buffer).toMaster();
-					player.start(0);
-
-					return function(time){
-						if (time >= 0 && time < buffer.duration){
-							expect(player.state).to.equal("started");
-						} else {
-							expect(player.state).to.equal("stopped");
-						}
-					};
-				}, buffer.duration * 1.1);
 			});
 
 			it("reports the right state when duration is passed into start method", function(){
@@ -328,6 +341,36 @@ define(["helper/Basic", "Tone/source/BufferSource", "helper/Offline",
 				});
 			});
 
+			it("plays correctly when playbackRate is < 1", function(){
+				return Meter(function(){
+					var player = new BufferSource(buffer).toMaster();
+					player.start(0);
+					player.playbackRate.value = 0.75;
+				}, buffer.duration * 1.3).then(function(rms){
+					rms.forEach(function(level, time){
+						if (time > 0.01){
+							expect(level).to.be.gt(0);
+						}
+					});
+				});
+			});
+
+			it("plays correctly when playbackRate is > 1", function(){
+				return Meter(function(){
+					var player = new BufferSource(buffer).toMaster();
+					player.start(0);
+					player.playbackRate.value = 2;
+				}, buffer.duration).then(function(rms){
+					rms.forEach(function(level, time){
+						if (time > 0.02 && time < buffer.duration * 0.45){
+							expect(level).to.be.gt(0);
+						} else if (time > buffer.duration * 0.5){
+							expect(level).to.equal(0);
+						}
+					});
+				});
+			});
+
 			it("can play for a specific duration passed in the 'start' method", function(){
 				return Meter(function(){
 					var player = new BufferSource(buffer).toMaster();
@@ -368,7 +411,7 @@ define(["helper/Basic", "Tone/source/BufferSource", "helper/Offline",
 						if (time > buffer.duration - 0.1){
 							expect(player.state).to.equal("stopped");
 						}
-					}
+					};
 				}, buffer.duration);
 			});
 
@@ -421,30 +464,12 @@ define(["helper/Basic", "Tone/source/BufferSource", "helper/Offline",
 			it("fades from the end when passed into the stop call", function(){
 				return Offline(function(){
 					var player = new BufferSource(onesBuffer).toMaster();
-					player.start(0).stop(0.2, 0.1)
+					player.start(0).stop(0.2, 0.1);
 				}, 0.3).then(function(buffer){
 					buffer.forEach(function(sample, time){
 						if (time < 0.101){
 							expect(sample).to.be.closeTo(1, 0.01);
 						} else if (time < 0.2){
-							expect(sample).to.be.lessThan(1);
-						} else {
-							expect(sample).to.equal(0);
-						}
-					});
-				});
-			});
-
-			it("fades at the end of the file at the files duration", function(){
-				return Offline(function(){
-					var player = new BufferSource(onesBuffer).toMaster();
-					player.fadeOut = 0.1;
-					player.start(0);
-				}, 0.6).then(function(buffer){
-					buffer.forEach(function(sample, time){
-						if (time < 0.401){
-							expect(sample).to.be.closeTo(1, 0.01);
-						} else if (time < 0.5){
 							expect(sample).to.be.lessThan(1);
 						} else {
 							expect(sample).to.equal(0);
