@@ -365,7 +365,7 @@ function(BasicTests, BufferSource, Offline, Buffer, Meter, Tone){
 						if (time > 0.02 && time < buffer.duration * 0.45){
 							expect(level).to.be.gt(0);
 						} else if (time > buffer.duration * 0.5){
-							expect(level).to.equal(0);
+							expect(level).to.closeTo(0, 0.01);
 						}
 					});
 				});
