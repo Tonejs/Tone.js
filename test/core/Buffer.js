@@ -1,4 +1,4 @@
-define(["Test", "Tone/core/Buffer", "Tone/core/Tone"], function (Test, Buffer, Tone) {
+define(["Test", "Tone/core/Buffer", "Tone/core/Tone"], function(Test, Buffer, Tone){
 
 	if (window.__karma__){
 		Buffer.baseUrl = "/base/test/";
@@ -191,6 +191,14 @@ define(["Test", "Tone/core/Buffer", "Tone/core/Tone"], function (Test, Buffer, T
 				});
 			});
 
+			it("invokes the error callback if the file is corrupt", function(done){
+				var buffer = new Buffer("./audio/corrupt.wav", function(){
+					throw new Error("shouldn't invoke this function");
+				}, function(e){
+					buffer.dispose();
+					done();
+				});
+			});
 		});
 
 		context("events", function(){
