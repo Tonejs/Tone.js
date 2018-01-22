@@ -1,4 +1,5 @@
-define(["Tone/core/Tone", "Tone/shim/AudioContext", "Tone/core/Context", "Tone/core/Gain"], function(Tone){
+define(["Tone/core/Tone", "Tone/shim/AudioContext", "Tone/shim/BufferSourceNode",
+	"Tone/core/Context", "Tone/core/Gain"], function(Tone){
 
 	if (Tone.supported && !AudioContext.prototype.createConstantSource){
 

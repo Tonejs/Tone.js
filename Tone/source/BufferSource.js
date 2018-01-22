@@ -1,5 +1,5 @@
 define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/Gain",
-	"Tone/core/AudioNode"], function(Tone){
+	"Tone/core/AudioNode", "Tone/shim/BufferSourceNode"], function(Tone){
 
 	/**
 	 *  @class Wrapper around the native BufferSourceNode.
@@ -11,7 +11,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/G
 	Tone.BufferSource = function(){
 
 		var options = Tone.defaults(arguments, ["buffer", "onload"], Tone.BufferSource);
-		Tone.AudioNode.call(this);
+		Tone.AudioNode.call(this, options);
 
 		/**
 		 *  The callback to invoke after the
@@ -381,6 +381,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/G
 	Tone.BufferSource.prototype.dispose = function(){
 		Tone.AudioNode.prototype.dispose.call(this);
 		this.onended = null;
+		this._source.onended = null;
 		this._source.disconnect();
 		this._source = null;
 		this._gainNode.dispose();
