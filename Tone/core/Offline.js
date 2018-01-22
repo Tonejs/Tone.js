@@ -24,7 +24,7 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Buffer", "Tone/core/
 			return {
 				"response" : response,
 				"context" : context
-			 };
+			};
 		}
 	}
 
