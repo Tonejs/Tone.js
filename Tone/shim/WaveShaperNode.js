@@ -4,7 +4,7 @@ define(["Tone/core/Tone", "Tone/shim/AudioContext"], function(Tone){
 
 		//fixes safari only bug which is still present in 11
 		var ua = navigator.userAgent.toLowerCase();
-		var isSafari = ua.indexOf("safari") !== -1 && ua.indexOf("chrome") === -1;
+		var isSafari = ua.includes("safari") && !ua.includes("chrome");
 		if (isSafari){
 
 			var WaveShaperNode = function(context){
