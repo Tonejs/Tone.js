@@ -65,7 +65,7 @@ define(["Tone/core/Tone", "Tone/type/Ticks"], function(Tone){
 	Tone.TransportEvent._eventId = 0;
 
 	/**
-	 * Invoke the callback even callback.
+	 * Invoke the event callback.
 	 * @param  {Time} time  The AudioContext time in seconds of the event
 	 */
 	Tone.TransportEvent.prototype.invoke = function(time){
