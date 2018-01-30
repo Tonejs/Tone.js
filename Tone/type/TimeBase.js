@@ -27,6 +27,7 @@ define(["Tone/core/Tone"], function(Tone) {
 			/**
 			 * The units
 			 * @type {String?}
+			 * @private
 			 */
 			this._units = units;
 
