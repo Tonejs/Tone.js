@@ -19,6 +19,34 @@ Tone.js is a Web Audio framework for creating interactive music in the browser. 
 
 [Full Installation Instruction](https://github.com/Tonejs/Tone.js/wiki/Installation).
 
+# Dev
+
+If you want to contribute to Tone or create your own build you need to install the dev-dependencies.
+
+We are using [gulp](https://github.com/gulpjs/gulp), and keep the whole toolchain in it's own place.
+
+To install the development toolchain go from project root:
+
+```
+cd gulp
+npm install
+```
+
+Now for running the default pipeline with the local toolchain:
+
+```
+./node_modules/.bin/gulp
+```
+
+This will produce a minified distribution bundle in the `build` folder.
+
+Other gulp-tasks are available. Use them as follows: `... gulp <taskname>`
+
+* Test: `karma-test`
+* Lint: `lint` and `lint-fix` 
+
+If you have `gulp` installed on your system `-g`, you can also drop the `./node_modules...` upfront, but then you are not guaranteed to use the exact dev-dependencies versions required by Tone.
+
 # Hello Tone
 
 ```javascript
