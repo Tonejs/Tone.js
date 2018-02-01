@@ -1,5 +1,5 @@
 define(["Test", "Tone/core/Context", "Tone/core/Tone", "helper/Offline", "helper/Supports"],
-	function (Test, Context, Tone, Offline, Supports) {
+	function(Test, Context, Tone, Offline, Supports) {
 
 		describe("Context", function(){
 
@@ -139,7 +139,7 @@ define(["Test", "Tone/core/Context", "Tone/core/Tone", "helper/Offline", "helper
 					ctx.setTimeout(function(){
 						expect(wasInvoked).to.be.true;
 						done();
-					}, 0.011);
+					}, 0.02);
 					ctx.setTimeout(function(){
 						wasInvoked = true;
 					}, 0.01);
