@@ -300,7 +300,7 @@ define(["Tone/core/Tone", "Tone/source/Oscillator", "Tone/signal/Scale", "Tone/c
 			this.convert = node.convert;
 			this.units = node.units;
 		}
-		Tone.Signal.prototype.connect.apply(this, arguments);
+		Tone.SignalBase.prototype.connect.apply(this, arguments);
 		return this;
 	};
 

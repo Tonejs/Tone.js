@@ -338,7 +338,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal",
 	 *  @function
 	 *  @private
 	 */
-	Tone.Envelope.prototype.connect = Tone.Signal.prototype.connect;
+	Tone.Envelope.prototype.connect = Tone.SignalBase.prototype.connect;
 
 	/**
  	 *  Generate some complex envelope curves.

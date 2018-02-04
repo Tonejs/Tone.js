@@ -157,7 +157,7 @@ define(["Tone/core/Tone", "Tone/signal/Abs", "Tone/signal/Subtract", "Tone/signa
 	 *  as a Tone.Signal control signal.
 	 *  @function
 	 */
-	Tone.Follower.prototype.connect = Tone.Signal.prototype.connect;
+	Tone.Follower.prototype.connect = Tone.SignalBase.prototype.connect;
 
 	/**
 	 *  dispose
