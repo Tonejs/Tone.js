@@ -101,6 +101,12 @@ define(["Tone/core/Tone", "Tone/core/Context"], function(Tone) {
 	});
 
 	/**
+	 * Called when an audio param connects to this node
+	 * @private
+	 */
+	Tone.AudioNode.prototype.onConnect = function(){};
+
+	/**
 	 *  connect the output of a ToneNode to an AudioParam, AudioNode, or ToneNode
 	 *  @param  {Tone | AudioParam | AudioNode} unit
 	 *  @param {number} [outputNum=0] optionally which output to connect from
@@ -108,6 +114,9 @@ define(["Tone/core/Tone", "Tone/core/Context"], function(Tone) {
 	 *  @returns {Tone.AudioNode} this
 	 */
 	Tone.AudioNode.prototype.connect = function(unit, outputNum, inputNum){
+		if (unit.onConnect){
+			unit.onConnect(this);
+		}
 		if (Tone.isArray(this.output)){
 			outputNum = Tone.defaultArg(outputNum, 0);
 			this.output[outputNum].connect(unit, 0, inputNum);
