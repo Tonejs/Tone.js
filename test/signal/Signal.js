@@ -1,6 +1,6 @@
 define(["helper/Offline", "helper/Basic", "Test", "Tone/signal/Signal",
-	"Tone/type/Type", "Tone/core/Transport", "helper/ConstantOutput"],
-function(Offline, Basic, Test, Signal, Tone, Transport, ConstantOutput) {
+	"Tone/type/Type", "Tone/core/Transport", "helper/ConstantOutput", "Tone/core/Gain"],
+function(Offline, Basic, Test, Signal, Tone, Transport, ConstantOutput, Gain) {
 
 	describe("Signal", function(){
 
@@ -43,6 +43,14 @@ function(Offline, Basic, Test, Signal, Tone, Transport, ConstantOutput) {
 					var sigA = new Signal(0).toMaster();
 					new Signal(3).connect(sigA);
 				}, 3);
+			});
+
+			it("takes the first signals value when many values are chained", function(){
+				return ConstantOutput(function(){
+					var sigA = new Signal(3).toMaster();
+					var sigB = new Signal(1).connect(sigA);
+					var sigC = new Signal(2).connect(sigB);
+				}, 2);
 			});
 		});
 
@@ -96,6 +104,44 @@ function(Offline, Basic, Test, Signal, Tone, Transport, ConstantOutput) {
 			it("can schedule multiple automations", function(){
 				return Offline(function(){
 					var sig = new Signal(0).toMaster();
+					sig.setValueAtTime(0, 0);
+					sig.linearRampToValueAtTime(0.5, 0.5);
+					sig.linearRampToValueAtTime(0, 1);
+				}, 1).then(function(buffer){
+					buffer.forEach(function(sample, time){
+						if (time < 0.5){
+							expect(sample).to.be.closeTo(time, 0.01);
+						} else {
+							expect(sample).to.be.closeTo(1 - time, 0.01);
+						}
+					});
+				});
+			});
+
+			it("can schedule multiple automations from a connected signal", function(){
+				return Offline(function(){
+					var output = new Signal(1).toMaster();
+					var sig = new Signal(0).connect(output);
+					sig.setValueAtTime(0, 0);
+					sig.linearRampToValueAtTime(0.5, 0.5);
+					sig.linearRampToValueAtTime(0, 1);
+				}, 1).then(function(buffer){
+					buffer.forEach(function(sample, time){
+						if (time < 0.5){
+							expect(sample).to.be.closeTo(time, 0.01);
+						} else {
+							expect(sample).to.be.closeTo(1 - time, 0.01);
+						}
+					});
+				});
+			});
+
+			it("can schedule multiple automations from a connected signal through a multiple nodes", function(){
+				return Offline(function(){
+					var output = new Signal(0).toMaster();
+					var proxy = new Signal(0).connect(output);
+					var gain = new Gain(1).connect(proxy);
+					var sig = new Signal(0).connect(gain);
 					sig.setValueAtTime(0, 0);
 					sig.linearRampToValueAtTime(0.5, 0.5);
 					sig.linearRampToValueAtTime(0, 1);
