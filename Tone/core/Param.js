@@ -134,7 +134,7 @@ define(["Tone/core/Tone", "Tone/type/Type", "Tone/core/AudioNode", "Tone/core/Ti
 	 *  @return {number}     the number which the value should be set to
 	 */
 	Tone.Param.prototype._fromUnits = function(val){
-		if (this.convert || Tone.isUndef(this.convert)){
+		if ((this.convert || Tone.isUndef(this.convert)) && !this.overridden){
 			switch (this.units){
 				case Tone.Type.Time:
 					return this.toSeconds(val);
