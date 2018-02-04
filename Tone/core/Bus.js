@@ -32,7 +32,7 @@ define(["Tone/core/Tone", "Tone/core/Gain"], function(Tone){
 		}
 		amount = Tone.defaultArg(amount, 0);
 		var sendKnob = new Tone.Gain(amount, Tone.Type.Decibels);
-		this.output.connect(sendKnob);
+		this.connect(sendKnob);
 		sendKnob.connect(Buses[channelName]);
 		return sendKnob;
 	};
