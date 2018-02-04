@@ -1,6 +1,6 @@
 define(["helper/OutputAudio", "Tone/effect/Effect", "helper/PassAudio",
 	"helper/PassAudioStereo", "Test", "helper/Offline", "Tone/signal/Signal", "Tone/component/Merge"],
-function (OutputAudio, Effect, PassAudio, PassAudioStereo, Test, Offline, Signal, Merge) {
+function(OutputAudio, Effect, PassAudio, PassAudioStereo, Test, Offline, Signal, Merge) {
 
 	return function(Constr, args, before){
 
@@ -106,6 +106,8 @@ function (OutputAudio, Effect, PassAudio, PassAudioStereo, Test, Offline, Signal
 						instance.start();
 					}
 				}, 0.5, 2).then(function(buffer){
+					var leftEffected = false;
+					var rightEffected = false;
 					buffer.forEach(function(L, R, time){
 						var leftValue = (time * 2) - 1;
 						var rightValue = ((1 - time) * 2) - 1;
