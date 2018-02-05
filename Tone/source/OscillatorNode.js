@@ -68,18 +68,6 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/G
 		this.detune.value = options.detune;
 
 		/**
-		 *  The fadeIn time of the amplitude envelope.
-		 *  @type {Time}
-		 */
-		this.fadeIn = options.fadeIn;
-
-		/**
-		 *  The fadeOut time of the amplitude envelope.
-		 *  @type {Time}
-		 */
-		this.fadeOut = options.fadeOut;
-
-		/**
 		 *  The value that the buffer ramps to
 		 *  @type {Gain}
 		 *  @private
@@ -98,9 +86,6 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/G
 		"frequency" : 440,
 		"detune" : 0,
 		"type" : "sine",
-		"fadeIn" : 0,
-		"fadeOut" : 0,
-		"curve" : "linear",
 		"onended" : Tone.noOp
 	};
 
@@ -185,6 +170,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/G
 	 *  @return  {Tone.OscillatorNode}  this
 	 */
 	Tone.OscillatorNode.prototype.dispose = function(){
+		this.context.clearTimeout(this._timeout);
 		Tone.AudioNode.prototype.dispose.call(this);
 		this.onended = null;
 		this._oscillator.disconnect();
