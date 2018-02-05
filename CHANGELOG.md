@@ -5,6 +5,9 @@
 * switching to eslint from jshint
 * Running [CI tests](https://travis-ci.org/Tonejs/Tone.js/) on Firefox, Chrome (latest and canary) and Safari (latest and version 9).
 * [Tone.Reverb](https://tonejs.github.io/docs/Reverb) is a convolution-based stereo reverb
+* Optimizing basic Oscillator types and many Signal use-case
+* Testing rendered output against an existing audio file for continuity and consistency
+* Optimizing triggerAttack/Release by starting/stopping oscillators when not playing
 
 **BREAKING CHANGES:**
 
