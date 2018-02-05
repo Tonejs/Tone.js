@@ -1,18 +1,20 @@
 define(["Tone/instrument/FMSynth", "helper/Basic",
-	"helper/InstrumentTests", "helper/CompareToFile"],
-function(FMSynth, Basic, InstrumentTest, CompareToFile) {
+	"helper/InstrumentTests", "helper/CompareToFile", "helper/Supports"],
+function(FMSynth, Basic, InstrumentTest, CompareToFile, Supports) {
 
 	describe("FMSynth", function(){
 
 		Basic(FMSynth);
 		InstrumentTest(FMSynth, "C4");
 
-		it("matches a file", function(){
-			return CompareToFile(function(){
-				const synth = new FMSynth().toMaster();
-				synth.triggerAttackRelease("G4", 0.1, 0.05);
-			}, "fmSynth.wav");
-		});
+		if (Supports.CHROME_AUDIO_RENDERING){
+			it("matches a file", function(){
+				return CompareToFile(function(){
+					const synth = new FMSynth().toMaster();
+					synth.triggerAttackRelease("G4", 0.1, 0.05);
+				}, "fmSynth.wav");
+			});
+		}
 
 		context("API", function(){
 
