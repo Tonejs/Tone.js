@@ -1,4 +1,6 @@
-define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/source/Source", "Tone/core/Transport"], function(Tone){
+define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/source/Source",
+	"Tone/core/Transport", "Tone/source/OscillatorNode"],
+function(Tone){
 
 	"use strict";
 
@@ -109,7 +111,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/source/Source", "Tone/core
 	 */
 	Tone.Oscillator.prototype._start = function(time){
 		//new oscillator with previous values
-		this._oscillator = this.context.createOscillator();
+		this._oscillator = new Tone.OscillatorNode();
 		if (this._wave){
 			this._oscillator.setPeriodicWave(this._wave);
 		} else {
@@ -136,7 +138,6 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/source/Source", "Tone/core
 			time = this.toSeconds(time);
 			Tone.isPast(time);
 			this._oscillator.stop(time);
-			this._oscillator = null;
 		}
 		return this;
 	};
@@ -364,7 +365,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/source/Source", "Tone/core
 	Tone.Oscillator.prototype.dispose = function(){
 		Tone.Source.prototype.dispose.call(this);
 		if (this._oscillator !== null){
-			this._oscillator.disconnect();
+			this._oscillator.dispose();
 			this._oscillator = null;
 		}
 		this._wave = null;
