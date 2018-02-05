@@ -1,6 +1,6 @@
-define(["helper/Basic", "Tone/source/Player", "helper/Offline",
-	"helper/SourceTests", "Tone/core/Buffer", "helper/Meter", "Test", "Tone/core/Tone"],
-function(BasicTests, Player, Offline, SourceTests, Buffer, Meter, Test, Tone) {
+define(["helper/Basic", "Tone/source/Player", "helper/Offline", "helper/SourceTests",
+	"Tone/core/Buffer", "helper/Meter", "Test", "Tone/core/Tone", "helper/CompareToFile"],
+function(BasicTests, Player, Offline, SourceTests, Buffer, Meter, Test, Tone, CompareToFile) {
 
 	if (window.__karma__){
 		Buffer.baseUrl = "/base/test/";
@@ -19,6 +19,14 @@ function(BasicTests, Player, Offline, SourceTests, Buffer, Meter, Test, Tone) {
 		//run the common tests
 		BasicTests(Player, buffer);
 		SourceTests(Player, buffer);
+
+		it("matches a file", function(){
+			return CompareToFile(function(){
+				const player = new Player(buffer).toMaster();
+				player.start(0.1).stop(0.2);
+				player.playbackRate = 2;
+			}, "player.wav");
+		});
 
 		context("Constructor", function(){
 

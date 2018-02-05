@@ -1,9 +1,18 @@
-define(["Tone/instrument/MembraneSynth", "helper/Basic", "helper/InstrumentTests"], function (MembraneSynth, Basic, InstrumentTest) {
+define(["Tone/instrument/MembraneSynth", "helper/Basic",
+	"helper/InstrumentTests", "helper/CompareToFile"],
+function(MembraneSynth, Basic, InstrumentTest, CompareToFile) {
 
 	describe("MembraneSynth", function(){
 
 		Basic(MembraneSynth);
 		InstrumentTest(MembraneSynth, "C2");
+
+		it("matches a file", function(){
+			return CompareToFile(function(){
+				const synth = new MembraneSynth().toMaster();
+				synth.triggerAttackRelease("F#2", 0.1, 0.05);
+			}, "membraneSynth.wav", 50);
+		});
 
 		context("API", function(){
 

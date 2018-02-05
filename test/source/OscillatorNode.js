@@ -1,10 +1,17 @@
 define(["helper/Basic", "Tone/source/OscillatorNode", "helper/Offline",
-	"Tone/type/Frequency", "Test", "helper/Meter", "helper/Supports"],
-function(BasicTests, OscillatorNode, Offline, Frequency, Test, Meter, Supports){
+	"Tone/type/Frequency", "Test", "helper/Meter", "helper/Supports", "helper/CompareToFile"],
+function(BasicTests, OscillatorNode, Offline, Frequency, Test, Meter, Supports, CompareToFile){
 
 	describe("OscillatorNode", function(){
 
 		BasicTests(OscillatorNode);
+
+		it("matches a file", function(){
+			return CompareToFile(function(){
+				var osc = new OscillatorNode().toMaster();
+				osc.start(0.5);
+			}, "oscillatorNode.wav");
+		});
 
 		context("Constructor", function(){
 

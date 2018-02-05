@@ -1,9 +1,18 @@
-define(["Tone/instrument/NoiseSynth", "helper/Basic", "helper/InstrumentTests"], function (NoiseSynth, Basic, InstrumentTest) {
+define(["Tone/instrument/NoiseSynth", "helper/Basic",
+	"helper/InstrumentTests", "helper/CompareToFile"],
+function(NoiseSynth, Basic, InstrumentTest, CompareToFile) {
 
 	describe("NoiseSynth", function(){
 
 		Basic(NoiseSynth);
 		InstrumentTest(NoiseSynth);
+
+		it("matches a file", function(){
+			return CompareToFile(function(){
+				const synth = new NoiseSynth().toMaster();
+				synth.triggerAttack();
+			}, "noiseSynth.wav", 50);
+		});
 
 		context("API", function(){
 

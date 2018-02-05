@@ -1,9 +1,18 @@
-define(["Tone/instrument/MonoSynth", "helper/Basic", "helper/InstrumentTests"], function (MonoSynth, Basic, InstrumentTest) {
+define(["Tone/instrument/MonoSynth", "helper/Basic",
+	"helper/InstrumentTests", "helper/CompareToFile"],
+function(MonoSynth, Basic, InstrumentTest, CompareToFile) {
 
 	describe("MonoSynth", function(){
 
 		Basic(MonoSynth);
 		InstrumentTest(MonoSynth, "C4");
+
+		it("matches a file", function(){
+			return CompareToFile(function(){
+				const synth = new MonoSynth().toMaster();
+				synth.triggerAttackRelease("C4", 0.1, 0.05);
+			}, "monoSynth.wav", 250);
+		});
 
 		context("API", function(){
 

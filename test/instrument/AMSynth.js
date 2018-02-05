@@ -1,9 +1,18 @@
-define(["Tone/instrument/AMSynth", "helper/Basic", "helper/InstrumentTests"], function (AMSynth, Basic, InstrumentTest) {
+define(["Tone/instrument/AMSynth", "helper/Basic",
+	"helper/InstrumentTests", "helper/CompareToFile"],
+function(AMSynth, Basic, InstrumentTest, CompareToFile) {
 
 	describe("AMSynth", function(){
 
 		Basic(AMSynth);
 		InstrumentTest(AMSynth, "C4");
+
+		it("matches a file", function(){
+			return CompareToFile(function(){
+				const synth = new AMSynth().toMaster();
+				synth.triggerAttackRelease("C5", 0.1, 0.1);
+			}, "amSynth.wav", 50);
+		});
 
 		context("API", function(){
 
