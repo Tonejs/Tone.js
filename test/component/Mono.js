@@ -32,14 +32,14 @@ function(Mono, Basic, Test, Offline, Signal, StereoSignal) {
 			it("Sums a stereo signal into a mono signal", function(){
 				return Offline(function(){
 					var mono = new Mono().toMaster();
-					var signal = StereoSignal(2, 1).connect(mono);
+					var signal = StereoSignal(2, 2).connect(mono);
 				}, 0.1, 2).then(function(buffer){
-					expect(buffer.toArray()[0][0]).to.equal(1.5);
-					expect(buffer.toArray()[1][0]).to.equal(1.5);
-					expect(buffer.toArray()[0][100]).to.equal(1.5);
-					expect(buffer.toArray()[1][100]).to.equal(1.5);
-					expect(buffer.toArray()[0][1000]).to.equal(1.5);
-					expect(buffer.toArray()[1][1000]).to.equal(1.5);
+					expect(buffer.toArray()[0][0]).to.equal(2);
+					expect(buffer.toArray()[1][0]).to.equal(2);
+					expect(buffer.toArray()[0][100]).to.equal(2);
+					expect(buffer.toArray()[1][100]).to.equal(2);
+					expect(buffer.toArray()[0][1000]).to.equal(2);
+					expect(buffer.toArray()[1][1000]).to.equal(2);
 				});
 			});
 		});
