@@ -102,7 +102,7 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/source/FMOscillato
 				"harmonicity" : options.harmonicity,
 				"modulationIndex" : options.modulationIndex
 			});
-			osc.connect(this._highpass).start();
+			osc.connect(this._highpass);
 			this._oscillators[i] = osc;
 
 			var mult = new Tone.Multiply(inharmRatios[i]);
@@ -146,6 +146,18 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/source/FMOscillato
 		time = this.toSeconds(time);
 		vel = Tone.defaultArg(vel, 1);
 		this.envelope.triggerAttack(time, vel);
+		var oscState = this._oscillators[0].getStateAtTime(time);
+		if (oscState !== Tone.State.Started){
+			this._oscillators.forEach(function(osc){
+				osc.start(time);
+			});
+		}
+		//if the sustain is 0, stop the oscillator as well
+		if (this.envelope.sustain === 0){
+			this._oscillators.forEach(function(osc){
+				osc.stop(time + this.envelope.attack + this.envelope.decay);
+			}.bind(this));
+		}
 		return this;
 	};
 
@@ -157,6 +169,9 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/source/FMOscillato
 	Tone.MetalSynth.prototype.triggerRelease = function(time) {
 		time = this.toSeconds(time);
 		this.envelope.triggerRelease(time);
+		this._oscillators.forEach(function(osc){
+			osc.stop(time + this.envelope.release);
+		}.bind(this));
 		return this;
 	};
 

@@ -29,7 +29,7 @@ define(["Tone/core/Tone", "Tone/source/OmniOscillator", "Tone/instrument/Instrum
 		 *  The oscillator.
 		 *  @type {Tone.OmniOscillator}
 		 */
-		this.oscillator = new Tone.OmniOscillator(options.oscillator).start();
+		this.oscillator = new Tone.OmniOscillator(options.oscillator);
 
 		/**
 		 *  The amplitude envelope.
@@ -91,6 +91,9 @@ define(["Tone/core/Tone", "Tone/source/OmniOscillator", "Tone/instrument/Instrum
 		this.oscillator.frequency.setValueAtTime(maxNote, time);
 		this.oscillator.frequency.exponentialRampToValueAtTime(note, time + this.toSeconds(this.pitchDecay));
 		this.envelope.triggerAttack(time, velocity);
+		if (this.oscillator.getStateAtTime(time) !== Tone.State.Started){
+			this.oscillator.start(time);
+		}
 		return this;
 	};
 
@@ -101,7 +104,9 @@ define(["Tone/core/Tone", "Tone/source/OmniOscillator", "Tone/instrument/Instrum
 	 *  @returns {Tone.MembraneSynth} this
 	 */
 	Tone.MembraneSynth.prototype.triggerRelease = function(time){
+		time = this.toSeconds(time);
 		this.envelope.triggerRelease(time);
+		this.oscillator.stop(time + this.envelope.release);
 		return this;
 	};
 

@@ -70,8 +70,6 @@ define(["Tone/core/Tone", "Tone/component/AmplitudeEnvelope", "Tone/component/Fr
 
 		//connect the oscillators to the output
 		this.oscillator.chain(this.filter, this.envelope, this.output);
-		//start the oscillators
-		this.oscillator.start();
 		//connect the filter envelope
 		this.filterEnvelope.connect(this.filter.frequency);
 		this._readOnly(["oscillator", "frequency", "detune", "filter", "filterEnvelope", "envelope"]);
@@ -120,9 +118,16 @@ define(["Tone/core/Tone", "Tone/component/AmplitudeEnvelope", "Tone/component/Fr
 	 *  @private
 	 */
 	Tone.MonoSynth.prototype._triggerEnvelopeAttack = function(time, velocity){
+		time = this.toSeconds(time);
 		//the envelopes
 		this.envelope.triggerAttack(time, velocity);
 		this.filterEnvelope.triggerAttack(time);
+		if (this.oscillator.getStateAtTime(time) !== Tone.State.Started){
+			this.oscillator.start(time);
+		}
+		if (this.envelope.sustain === 0){
+			this.oscillator.stop(time + this.envelope.attack + this.envelope.decay);
+		}
 		return this;
 	};
 
@@ -135,6 +140,7 @@ define(["Tone/core/Tone", "Tone/component/AmplitudeEnvelope", "Tone/component/Fr
 	Tone.MonoSynth.prototype._triggerEnvelopeRelease = function(time){
 		this.envelope.triggerRelease(time);
 		this.filterEnvelope.triggerRelease(time);
+		this.oscillator.stop(time + this.envelope.release);
 		return this;
 	};
 

@@ -111,6 +111,15 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/component/Volume", "Tone/
 	});
 
 	/**
+	 * Get the state of the source at the given time.
+	 * @param  {Time} time When to get the state.
+	 * @return {Tone.State}
+	 */
+	Tone.Source.prototype.getStateAtTime = function(time){
+		return this._state.getValueAtTime(time);
+	};
+
+	/**
 	 * Mute the output.
 	 * @memberOf Tone.Source#
 	 * @type {boolean}

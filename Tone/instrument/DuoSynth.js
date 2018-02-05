@@ -154,10 +154,8 @@ define(["Tone/core/Tone", "Tone/instrument/MonoSynth", "Tone/component/LFO", "To
 	 */
 	Tone.DuoSynth.prototype._triggerEnvelopeAttack = function(time, velocity){
 		time = this.toSeconds(time);
-		this.voice0.envelope.triggerAttack(time, velocity);
-		this.voice1.envelope.triggerAttack(time, velocity);
-		this.voice0.filterEnvelope.triggerAttack(time);
-		this.voice1.filterEnvelope.triggerAttack(time);
+		this.voice0._triggerEnvelopeAttack(time, velocity);
+		this.voice1._triggerEnvelopeAttack(time, velocity);
 		return this;
 	};
 
@@ -169,8 +167,8 @@ define(["Tone/core/Tone", "Tone/instrument/MonoSynth", "Tone/component/LFO", "To
 	 *  @private
 	 */
 	Tone.DuoSynth.prototype._triggerEnvelopeRelease = function(time){
-		this.voice0.triggerRelease(time);
-		this.voice1.triggerRelease(time);
+		this.voice0._triggerEnvelopeRelease(time);
+		this.voice1._triggerEnvelopeRelease(time);
 		return this;
 	};
 
