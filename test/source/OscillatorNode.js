@@ -1,5 +1,6 @@
 define(["helper/Basic", "Tone/source/OscillatorNode", "helper/Offline",
-	"Tone/type/Frequency", "Test", "helper/Meter"], function(BasicTests, OscillatorNode, Offline, Frequency, Test, Meter){
+	"Tone/type/Frequency", "Test", "helper/Meter", "helper/Supports"],
+function(BasicTests, OscillatorNode, Offline, Frequency, Test, Meter, Supports){
 
 	describe("OscillatorNode", function(){
 
@@ -62,17 +63,34 @@ define(["helper/Basic", "Tone/source/OscillatorNode", "helper/Offline",
 
 		context("onended", function(){
 
-			it("invokes the onended callback in the online context", function(done){
-				var osc = new OscillatorNode();
-				osc.start();
-				osc.stop("+0.3");
-				var now = osc.now();
-				osc.onended = function(){
-					expect(osc.now() - now).to.be.closeTo(0.3, 0.1);
-					osc.dispose();
-					done();
-				};
-			});
+			if (Supports.ONLINE_TESTING){
+
+				it("invokes the onended callback in the online context", function(done){
+					var osc = new OscillatorNode();
+					osc.start();
+					osc.stop("+0.3");
+					var now = osc.now();
+					osc.onended = function(){
+						expect(osc.now() - now).to.be.closeTo(0.3, 0.1);
+						osc.dispose();
+						done();
+					};
+				});
+
+				it("invokes the onended callback only once in the online context", function(done){
+    				var osc = new OscillatorNode();
+    				osc.start("+0");
+    				osc.stop("+0.1");
+    				osc.stop("+0.2");
+    				osc.stop("+0.3");
+    				var now = osc.now();
+    				osc.onended = function(){
+    					expect(osc.now() - now).to.be.closeTo(0.3, 0.1);
+    					osc.dispose();
+    					done();
+    				};
+    			});
+			}
 
 			it("invokes the onended callback in the offline context", function(done){
 				Offline(function(){
@@ -85,20 +103,6 @@ define(["helper/Basic", "Tone/source/OscillatorNode", "helper/Offline",
 						done();
 					};
 				}, 0.3);
-			});
-
-			it("invokes the onended callback only once in the online context", function(done){
-				var osc = new OscillatorNode();
-				osc.start("+0");
-				osc.stop("+0.1");
-				osc.stop("+0.2");
-				osc.stop("+0.3");
-				var now = osc.now();
-				osc.onended = function(){
-					expect(osc.now() - now).to.be.closeTo(0.3, 0.1);
-					osc.dispose();
-					done();
-				};
 			});
 
 			it("invokes the onended callback only once in offline context", function(done){
