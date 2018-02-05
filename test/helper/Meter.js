@@ -1,4 +1,4 @@
-define(["helper/Offline"], function (Offline) {
+define(["helper/Offline"], function(Offline) {
 
 	return function(callback, duration, channels){
 
@@ -9,6 +9,9 @@ define(["helper/Offline"], function (Offline) {
 					var level = rms[i];
 					callback(level, i * buffer.sampleTime);
 				}
+			};
+			rms.getValueAtTime = function(time){
+				return rms[Math.floor(time * buffer.context.sampleRate)];
 			};
 			return rms;
 		});
