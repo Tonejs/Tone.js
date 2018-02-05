@@ -12,7 +12,7 @@ function(MonoSynth, Basic, InstrumentTest, CompareToFile, Supports) {
 				return CompareToFile(function(){
 					const synth = new MonoSynth().toMaster();
 					synth.triggerAttackRelease("C4", 0.1, 0.05);
-				}, "monoSynth.wav", 150);
+				}, "monoSynth.wav", 250);
 			});
 		}
 
