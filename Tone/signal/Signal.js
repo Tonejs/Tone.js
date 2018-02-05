@@ -114,8 +114,7 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper", "Tone/type/Type", "Tone/core
 	 * @private
 	 */
 	Tone.Signal.prototype._isParam = function(node){
-		return (Tone.Signal && Tone.Signal === node.constructor) ||
-				(Tone.Param && Tone.Param === node.constructor) ||
+		return (Tone.Param && Tone.Param === node.constructor) ||
 				node instanceof AudioParam;
 	};
 
@@ -154,7 +153,7 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper", "Tone/type/Type", "Tone/core
 	 * @private
 	 */
 	Tone.Signal.prototype._applyAutomations = function(param){
-		var now = this.now();
+		var now = this.context.currentTime;
 		param.cancelScheduledValues(now);
 		var currentVal = this.getValueAtTime(now);
 		param.setValueAtTime(currentVal, now);
