@@ -34,7 +34,7 @@ define(["helper/ua-parser"], function(UserAgentParser) {
 		//offline rendering matches Chrome closely
 		//chrome is the platform the files were rendered on
 		//so it is the default for continuity testing
-		CHROME_AUDIO_RENDERING : isnt("Firefox"),
+		CHROME_AUDIO_RENDERING : is("Chrome"),
 		//has float time domain analyser
 		ANALYZE_FLOAT_TIME_DOMAIN : AnalyserNode && typeof AnalyserNode.prototype.getFloatTimeDomainData === "function",
 		//if the tests run in focus
