@@ -1,18 +1,20 @@
 define(["Tone/instrument/DuoSynth", "helper/Basic",
-	"helper/InstrumentTests", "helper/CompareToFile"],
-function(DuoSynth, Basic, InstrumentTest, CompareToFile) {
+	"helper/InstrumentTests", "helper/CompareToFile", "helper/Supports"],
+function(DuoSynth, Basic, InstrumentTest, CompareToFile, Supports) {
 
 	describe("DuoSynth", function(){
 
 		Basic(DuoSynth);
 		InstrumentTest(DuoSynth, "C4");
 
-		it("matches a file", function(){
-			return CompareToFile(function(){
-				const synth = new DuoSynth().toMaster();
-				synth.triggerAttackRelease("C5", 0.1, 0.1);
-			}, "duoSynth.wav", 100);
-		});
+		if (Supports.CHROME_AUDIO_RENDERING){
+			it("matches a file", function(){
+				return CompareToFile(function(){
+					const synth = new DuoSynth().toMaster();
+					synth.triggerAttackRelease("C5", 0.1, 0.1);
+				}, "duoSynth.wav", 150);
+			});
+		}
 
 		context("API", function(){
 

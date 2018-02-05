@@ -1,18 +1,20 @@
 define(["Tone/instrument/MetalSynth", "helper/Basic",
-	"helper/InstrumentTests", "helper/CompareToFile"],
-function(MetalSynth, Basic, InstrumentTest, CompareToFile) {
+	"helper/InstrumentTests", "helper/CompareToFile", "helper/Supports"],
+function(MetalSynth, Basic, InstrumentTest, CompareToFile, Supports) {
 
 	describe("MetalSynth", function(){
 
 		Basic(MetalSynth);
 		InstrumentTest(MetalSynth);
 
-		it("matches a file", function(){
-			return CompareToFile(function(){
-				const synth = new MetalSynth().toMaster();
-				synth.triggerAttackRelease(0.1, 0.05);
-			}, "metalSynth.wav", 150);
-		});
+		if (Supports.CHROME_AUDIO_RENDERING){
+			it("matches a file", function(){
+				return CompareToFile(function(){
+					const synth = new MetalSynth().toMaster();
+					synth.triggerAttackRelease(0.1, 0.05);
+				}, "metalSynth.wav", 150);
+			});
+		}
 
 		context("API", function(){
 
