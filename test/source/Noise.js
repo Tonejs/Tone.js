@@ -9,9 +9,9 @@ define(["helper/Basic", "Tone/source/Noise", "helper/SourceTests", "helper/Outpu
 
 			it("matches a file", function(){
 				return CompareToFile(function(){
-					const synth = new Noise().toMaster();
-					synth.start(0.1).stop(0.2);
-				}, "noise.wav", 100);
+					const noise = new Noise().toMaster();
+					noise.start(0.1).stop(0.2);
+				}, "noise.wav", 150);
 			});
 
 			context("Get/Set", function(){
