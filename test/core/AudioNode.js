@@ -1,8 +1,8 @@
 define(["Test", "Tone/core/Tone", "Tone/core/AudioNode", "helper/PassAudio", "Tone/core/Gain",
 	"Tone/source/Oscillator", "Tone/component/Merge", "Tone/component/Split",
-	"Tone/component/Filter", "helper/Offline", "Tone/signal/Signal", "helper/Supports"],
+	"Tone/component/Filter", "helper/Offline", "Tone/signal/Signal", "helper/Supports", "helper/StereoSignal"],
 function(Test, Tone, AudioNode, PassAudio, Gain, Oscillator, Merge,
-	Split, Filter, Offline, Signal, Supports){
+	Split, Filter, Offline, Signal, Supports, StereoSignal){
 
 	describe("AudioNode", function(){
 
@@ -125,7 +125,7 @@ function(Test, Tone, AudioNode, PassAudio, Gain, Oscillator, Merge,
 						var merge = new Merge().toMaster();
 						var split = new Split().connect(merge, 0, 0);
 						split.connect(merge, 1, 1);
-						var sig = new Signal(3).connect(split);
+						var sig = StereoSignal(3, 3).connect(split);
 						split.disconnect(merge, 0, 0);
 					}, 0.05, 2).then(function(buffer){
 						buffer.forEach(function(l, r){
