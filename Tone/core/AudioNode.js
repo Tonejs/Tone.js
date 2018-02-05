@@ -60,10 +60,66 @@ define(["Tone/core/Tone", "Tone/core/Context"], function(Tone) {
 	};
 
 	/**
+	 *  channelCount is the number of channels used when up-mixing and down-mixing
+	 *  connections to any inputs to the node. The default value is 2 except for
+	 *  specific nodes where its value is specially determined.
+	 *
+	 *  @memberof Tone.AudioNode#
+	 *  @type {Number}
+	 *  @name channelCount
+	 *  @readOnly
+	 */
+	Object.defineProperty(Tone.AudioNode.prototype, "channelCount", {
+		get : function(){
+			return this.output.channelCount;
+		},
+		set : function(c){
+			return this.output.channelCount = c;
+		}
+	});
+
+	/**
+	 *  channelCountMode determines how channels will be counted when up-mixing and
+	 *  down-mixing connections to any inputs to the node.
+	 *  The default value is "max". This attribute has no effect for nodes with no inputs.
+	 *  @memberof Tone.AudioNode#
+	 *  @type {String}
+	 *  @name channelCountMode
+	 *  @readOnly
+	 */
+	Object.defineProperty(Tone.AudioNode.prototype, "channelCountMode", {
+		get : function(){
+			return this.output.channelCountMode;
+		},
+		set : function(m){
+			return this.output.channelCountMode = m;
+		}
+	});
+
+	/**
+	 *  channelInterpretation determines how individual channels will be treated
+	 *  when up-mixing and down-mixing connections to any inputs to the node.
+	 *  The default value is "speakers".
+	 *  @memberof Tone.AudioNode#
+	 *  @type {String}
+	 *  @name channelInterpretation
+	 *  @readOnly
+	 */
+	Object.defineProperty(Tone.AudioNode.prototype, "channelInterpretation", {
+		get : function(){
+			return this.output.channelInterpretation;
+		},
+		set : function(i){
+			return this.output.channelInterpretation = i;
+		}
+	});
+
+	/**
 	 *  The number of inputs feeding into the AudioNode.
 	 *  For source nodes, this will be 0.
 	 *  @type {Number}
 	 *  @name numberOfInputs
+	 *  @memberof Tone.AudioNode#
 	 *  @readOnly
 	 */
 	Object.defineProperty(Tone.AudioNode.prototype, "numberOfInputs", {
@@ -84,6 +140,7 @@ define(["Tone/core/Tone", "Tone/core/Context"], function(Tone) {
 	 *  The number of outputs coming out of the AudioNode.
 	 *  @type {Number}
 	 *  @name numberOfOutputs
+	 *  @memberof Tone.AudioNode#
 	 *  @readOnly
 	 */
 	Object.defineProperty(Tone.AudioNode.prototype, "numberOfOutputs", {

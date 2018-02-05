@@ -52,6 +52,29 @@ function(Test, Tone, AudioNode, PassAudio, Gain, Oscillator, Merge,
 			node2.dispose();
 		});
 
+		it("is able to get and set the channelCount, channelCountMode and channelInterpretation", function(){
+			var node0 = new AudioNode();
+			node0.createInsOuts(1, 1);
+			expect(node0.channelCount).to.equal(2);
+			node0.channelCount = 1;
+			expect(node0.channelCount).to.equal(1);
+			node0.dispose();
+
+			var node1 = new AudioNode();
+			node1.createInsOuts(1, 1);
+			expect(node1.channelCountMode).to.equal("max");
+			node1.channelCountMode = "explicit";
+			expect(node1.channelCountMode).to.equal("explicit");
+			node1.dispose();
+
+			var node2 = new AudioNode();
+			node2.createInsOuts(1, 1);
+			expect(node2.channelInterpretation).to.equal("speakers");
+			node2.channelInterpretation = "discrete";
+			expect(node2.channelInterpretation).to.equal("discrete");
+			node2.dispose();
+		});
+
 		context("connections", function(){
 
 			if (Supports.NODE_DISCONNECT){
