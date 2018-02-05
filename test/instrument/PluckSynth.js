@@ -1,6 +1,6 @@
 define(["Tone/instrument/PluckSynth", "helper/Basic",
-	"helper/InstrumentTests", "helper/CompareToFile"],
-function(PluckSynth, Basic, InstrumentTest, CompareToFile) {
+	"helper/InstrumentTests", "helper/CompareToFile", "helper/Supports"],
+function(PluckSynth, Basic, InstrumentTest, CompareToFile, Supports) {
 
 	describe("PluckSynth", function(){
 
@@ -8,12 +8,14 @@ function(PluckSynth, Basic, InstrumentTest, CompareToFile) {
 
 		InstrumentTest(PluckSynth, "C3");
 
-		it("matches a file", function(){
-			return CompareToFile(function(){
-				const synth = new PluckSynth().toMaster();
-				synth.triggerAttack("C4");
-			}, "pluckSynth.wav", 150);
-		});
+		if (Supports.CHROME_AUDIO_RENDERING){
+			it("matches a file", function(){
+				return CompareToFile(function(){
+					const synth = new PluckSynth().toMaster();
+					synth.triggerAttack("C4");
+				}, "pluckSynth.wav", 150);
+			});
+		}
 
 		context("API", function(){
 

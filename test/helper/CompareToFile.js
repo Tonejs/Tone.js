@@ -21,7 +21,7 @@ define(["helper/Offline", "Tone/core/Buffer", "deps/audiobuffer-to-wav", "deps/f
 				var renderedValues = buffers.rendered.toArray();
 				var targetValues = buffers.target.toArray();
 				targetValues.forEach(function(channel, channelNumber){
-					var fftSize = 2048;
+					var fftSize = 4096;
 					var renderedChannel = renderedValues[channelNumber];
 					for (var i = 0; i < channel.length; i+=fftSize){
 						if (i + fftSize <= channel.length){
