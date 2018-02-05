@@ -369,11 +369,12 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/source
 		},
 		set : function(rate){
 			this._playbackRate = rate;
-			//get the current source
-			var event = this._state.get(this.now());
-			if (event && event.source){
-				event.source.playbackRate.value = rate;
-			}
+			//set all future sources
+			this._state.forEachFrom(this.now(), function(event){
+				if (event.source){
+					event.source.playbackRate.value = rate;
+				}
+			});
 		}
 	});
 
