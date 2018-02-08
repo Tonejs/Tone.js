@@ -39,8 +39,6 @@ define(["Tone/core/Tone", "Tone/component/AmplitudeEnvelope", "Tone/component/Fr
 
 		//connect the noise to the output
 		this.noise.chain(this.envelope, this.output);
-		//start the noise
-		this.noise.start();
 		this._readOnly(["noise", "envelope"]);
 	};
 
@@ -74,6 +72,11 @@ define(["Tone/core/Tone", "Tone/component/AmplitudeEnvelope", "Tone/component/Fr
 	Tone.NoiseSynth.prototype.triggerAttack = function(time, velocity){
 		//the envelopes
 		this.envelope.triggerAttack(time, velocity);
+		//start the noise
+		this.noise.start(time);
+		if (this.envelope.sustain === 0){
+			this.noise.stop(time = this.envelope.attack + this.envelope.decay);
+		}
 		return this;
 	};
 
@@ -84,6 +87,7 @@ define(["Tone/core/Tone", "Tone/component/AmplitudeEnvelope", "Tone/component/Fr
 	 */
 	Tone.NoiseSynth.prototype.triggerRelease = function(time){
 		this.envelope.triggerRelease(time);
+		this.noise.stop(time + this.envelope.release);
 		return this;
 	};
 

@@ -82,9 +82,7 @@ define(["Tone/core/Tone", "Tone/component/AmplitudeEnvelope", "Tone/source/OmniO
 	Tone.Synth.prototype._triggerEnvelopeAttack = function(time, velocity){
 		//the envelopes
 		this.envelope.triggerAttack(time, velocity);
-		if (this.oscillator.getStateAtTime(time) !== Tone.State.Started){
-			this.oscillator.start(time);
-		}
+		this.oscillator.start(time);
 		//if there is no release portion, stop the oscillator
 		if (this.envelope.sustain === 0){
 			this.oscillator.stop(time + this.envelope.attack + this.envelope.decay);

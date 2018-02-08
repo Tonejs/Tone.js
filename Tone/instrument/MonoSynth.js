@@ -122,9 +122,7 @@ define(["Tone/core/Tone", "Tone/component/AmplitudeEnvelope", "Tone/component/Fr
 		//the envelopes
 		this.envelope.triggerAttack(time, velocity);
 		this.filterEnvelope.triggerAttack(time);
-		if (this.oscillator.getStateAtTime(time) !== Tone.State.Started){
-			this.oscillator.start(time);
-		}
+		this.oscillator.start(time);
 		if (this.envelope.sustain === 0){
 			this.oscillator.stop(time + this.envelope.attack + this.envelope.decay);
 		}
