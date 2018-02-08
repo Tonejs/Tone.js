@@ -5,7 +5,13 @@ function(NoiseSynth, Basic, InstrumentTest, CompareToFile) {
 	describe("NoiseSynth", function(){
 
 		Basic(NoiseSynth);
-		InstrumentTest(NoiseSynth);
+		InstrumentTest(NoiseSynth, undefined, {
+			envelope : {
+				release : 0.2,
+				decay : 0.1,
+				sustain : 0.5
+			}
+		});
 
 		it("matches a file", function(){
 			return CompareToFile(function(){

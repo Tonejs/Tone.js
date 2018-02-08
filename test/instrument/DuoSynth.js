@@ -5,7 +5,28 @@ function(DuoSynth, Basic, InstrumentTest, CompareToFile, Supports) {
 	describe("DuoSynth", function(){
 
 		Basic(DuoSynth);
-		InstrumentTest(DuoSynth, "C4");
+		InstrumentTest(DuoSynth, "C4", {
+			voice0 : {
+				oscillator : {
+					type : "square"
+				},
+				envelope : {
+					decay : 0.1,
+					sustain : 0.5,
+					release : 0.2
+				}
+			},
+			voice1 : {
+				oscillator : {
+					type : "square"
+				},
+				envelope : {
+					decay : 0.1,
+					sustain : 0.5,
+					release : 0.2
+				}
+			}
+		});
 
 		if (Supports.CHROME_AUDIO_RENDERING){
 			it("matches a file", function(){

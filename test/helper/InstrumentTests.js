@@ -1,6 +1,6 @@
 define(["helper/OutputAudio", "Tone/instrument/Instrument", "helper/OutputAudioStereo",
-	"Test", "helper/Offline", "Tone/core/Tone"],
-function(OutputAudio, Instrument, OutputAudioStereo, Test, Offline, Tone) {
+	"Test", "helper/Offline", "Tone/core/Tone", "helper/Meter"],
+function(OutputAudio, Instrument, OutputAudioStereo, Test, Offline, Tone, Meter) {
 
 	return function(Constr, note, constrArg, optionsIndex){
 
@@ -69,8 +69,44 @@ function(OutputAudio, Instrument, OutputAudioStereo, Test, Offline, Tone) {
 							instance.triggerAttack(0.05);
 						}
 						instance.triggerRelease(0.1);
-					}, 0.2).then(function(buffer){
+					}, 1).then(function(buffer){
 						expect(buffer.getFirstSoundTime()).to.be.within(0.05, 0.1);
+					});
+				});
+
+				it("can trigger another attack before the release has ended", function(){
+					//compute the end time
+					return Offline(function(){
+						var instance = new Constr(constrArg);
+						instance.toMaster();
+						if (note){
+							instance.triggerAttack(note, 0.05);
+						} else {
+							instance.triggerAttack(0.05);
+						}
+						instance.triggerRelease(0.1);
+					}, 1).then(function(buffer){
+						return buffer.getLastSoundTime();
+					}).then(function(bufferDuration){
+						var secondTrigger = 0.15;
+						return Offline(function(){
+							var instance = new Constr(constrArg);
+							instance.toMaster();
+							if (note){
+								instance.triggerAttack(note, 0.05);
+							} else {
+								instance.triggerAttack(0.05);
+							}
+							instance.triggerRelease(0.1);
+							//star the note again before the last one has finished
+							if (note){
+								instance.triggerAttack(note, secondTrigger);
+							} else {
+								instance.triggerAttack(secondTrigger);
+							}
+						}, bufferDuration + secondTrigger * 2).then(function(buffer){
+							expect(buffer.getLastSoundTime()).to.be.gt(bufferDuration);
+						});
 					});
 				});
 
