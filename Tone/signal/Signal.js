@@ -140,7 +140,7 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper", "Tone/type/Type", "Tone/core
 	 * @param  {AudioNode} from
 	 * @private
 	 */
-	Tone.Signal.prototype.onConnect = function(from){
+	Tone.Signal.prototype._onConnect = function(from){
 		if (!this._isParam(from)){
 			//connect all the proxies
 			this._connectProxies();
