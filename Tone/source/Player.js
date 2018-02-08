@@ -228,16 +228,29 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/source
 	 */
 	Tone.Player.prototype._stop = function(time){
 		time = this.toSeconds(time);
-		var event = this._state.get(time);
-		//stop all after the given time
-		var searchTime = event ? event.time : 0;
-		//if it's set to retrigger, must stop all of them
-		searchTime = this.retrigger ? 0 : searchTime;
-		this._state.forEachFrom(searchTime, function(event){
+		this._state.forEachFrom(0, function(event){
 			if (event.source){
 				event.source.stop(time);
 			}
 		});
+		return this;
+	};
+
+	/**
+	 * Stop and then restart the player from the beginning (or offset)
+	 *  @param  {Time} [startTime=now] When the player should start.
+	 *  @param  {Time} [offset=0] The offset from the beginning of the sample
+	 *                                 to start at.
+	 *  @param  {Time=} duration How long the sample should play. If no duration
+	 *                                is given, it will default to the full length
+	 *                                of the sample (minus any offset)
+	 *  @returns {Tone.Player} this
+	 */
+	Tone.Player.prototype.restart = function(time, offset, duration){
+		if (!this.retrigger){
+			this.stop(time);
+		}
+		this._start(time, offset, duration);
 		return this;
 	};
 

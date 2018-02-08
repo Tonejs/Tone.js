@@ -40,7 +40,8 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/G
 		 *  @type  {Tone.Gain}
 		 *  @private
 		 */
-		this._gainNode = this.output = new Tone.Gain(0);
+		this._gainNode = this.output = new Tone.Gain();
+		this._gainNode.gain.setValueAtTime(0, this.context.currentTime);
 
 		/**
 		 *  The oscillator
@@ -98,14 +99,17 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/G
 	 */
 	Object.defineProperty(Tone.OscillatorNode.prototype, "state", {
 		get : function(){
-			var now = this.now();
-			if (this._startTime !== -1 && now >= this._startTime && (this._stopTime === -1 || now <= this._stopTime)){
-				return Tone.State.Started;
-			} else {
-				return Tone.State.Stopped;
-			}
+			return this.getStateAtTime(this.now());
 		}
 	});
+
+	Tone.OscillatorNode.prototype.getStateAtTime = function(time){
+		if (this._startTime !== -1 && time >= this._startTime && (this._stopTime === -1 || time <= this._stopTime)){
+			return Tone.State.Started;
+		} else {
+			return Tone.State.Stopped;
+		}
+	};
 
 	/**
      * Start the oscillator node at the given time
@@ -116,6 +120,9 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/G
 		if (this._startTime === -1){
 			this._startTime = this.toSeconds(time);
 			this._oscillator.start(this._startTime);
+			var now = this.context.currentTime;
+			this._gainNode.gain.cancelScheduledValues(now);
+			this._gainNode.gain.setValueAtTime(0, now);
 			this._gainNode.gain.setValueAtTime(1, this._startTime);
 		} else {
 			throw new Error("cannot call OscillatorNode.start more than once");
@@ -139,15 +146,27 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/G
      * @return {OscillatorNode}      this
      */
 	Tone.OscillatorNode.prototype.stop = function(time){
+		//cancel the previous stop
+		this.cancelStop();
+		//reschedule it
 		this._stopTime = this.toSeconds(time);
-		this._gainNode.gain.cancelScheduledValues(0);
 		this._gainNode.gain.setValueAtTime(0, this._stopTime);
 		this.context.clearTimeout(this._timeout);
 		this._timeout = this.context.setTimeout(function(){
-			this._oscillator.stop(this._stopTime);
+			this._oscillator.stop(this.now());
 			this.onended();
 		}.bind(this), this._stopTime - this.now());
 		return this;
+	};
+
+	Tone.OscillatorNode.prototype.cancelStop = function(){
+		if (this._startTime !== -1){
+			//cancel the stop envelope
+			this._gainNode.gain.cancelScheduledValues(this._startTime + this.sampleTime);
+			this._gainNode.gain.setValueAtTime(1, Math.max(this.now(), this._startTime));
+			this.context.clearTimeout(this._timeout);
+			this._stopTime = -1;
+		}
 	};
 
 	/**

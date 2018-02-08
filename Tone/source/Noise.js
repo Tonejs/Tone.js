@@ -143,6 +143,18 @@ define(["Tone/core/Tone", "Tone/source/Source", "Tone/core/Buffer",
 	};
 
 	/**
+	 * Restarts the noise.
+	 * @param  {[type]} time [description]
+	 * @return {[type]}      [description]
+	 */
+	Tone.Noise.prototype.restart = function(time){
+		//TODO could be optimized by cancelling the buffer source 'stop'
+		//stop and restart
+		this._stop(time);
+		this._start(time);
+	};
+
+	/**
 	 *  Clean up.
 	 *  @returns {Tone.Noise} this
 	 */

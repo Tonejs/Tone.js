@@ -106,6 +106,10 @@ define(["Tone/core/Tone", "Tone/source/Source", "Tone/source/Oscillator", "Tone/
 		this._oscillator.stop(time);
 	};
 
+	Tone.OmniOscillator.prototype.restart = function(time){
+		this._oscillator.restart(time);
+	};
+
 	/**
 	 * The type of the oscillator. Can be any of the basic types: sine, square, triangle, sawtooth. Or
 	 * prefix the basic types with "fm", "am", or "fat" to use the FMOscillator, AMOscillator or FatOscillator

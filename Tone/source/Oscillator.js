@@ -143,6 +143,18 @@ function(Tone){
 	};
 
 	/**
+	 * Restart the oscillator. Does not stop the oscillator, but instead
+	 * just cancels any scheduled 'stop' from being invoked.
+	 * @param  {Time=} time
+	 * @return {Tone.Oscillator}      this
+	 */
+	Tone.Oscillator.prototype.restart = function(time){
+		this._oscillator.cancelStop();
+		this._state.cancel(this.toSeconds(time));
+		return this;
+	};
+
+	/**
 	 *  Sync the signal to the Transport's bpm. Any changes to the transports bpm,
 	 *  will also affect the oscillators frequency.
 	 *  @returns {Tone.Oscillator} this
