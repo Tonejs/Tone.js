@@ -32,11 +32,13 @@ define(["helper/Basic", "Tone/source/Noise", "helper/SourceTests", "helper/Outpu
 					noise.dispose();
 				});
 
-				it("can set the playbackRate", function(){
-					var noise = new Noise();
-					noise.playbackRate = 3;
-					expect(noise.playbackRate).to.equal(3);
-					noise.dispose();
+				it("can set the playbackRate after the noise is started", function(){
+					return OutputAudio(function(){
+						var noise = new Noise().toMaster();
+						noise.start();
+						noise.playbackRate = 3;
+						expect(noise.playbackRate).to.equal(3);
+					});
 				});
 
 			});
@@ -83,6 +85,15 @@ define(["helper/Basic", "Tone/source/Noise", "helper/SourceTests", "helper/Outpu
 						var noise = new Noise("brown");
 						noise.toMaster();
 						noise.start();
+					});
+				});
+
+				it("can set the type after the noise is started", function(){
+					return OutputAudio(function(){
+						var noise = new Noise();
+						noise.toMaster();
+						noise.start();
+						noise.type = "brown";
 					});
 				});
 			});
