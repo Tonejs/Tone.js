@@ -45,7 +45,6 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/core/Timeline", "Tone/shim/
 		 *  The amount of time events are scheduled
 		 *  into the future
 		 *  @type  {Number}
-		 *  @private
 		 */
 		this.lookAhead = options.lookAhead;
 
