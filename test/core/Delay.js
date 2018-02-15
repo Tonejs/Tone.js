@@ -1,4 +1,4 @@
-define(["Test", "Tone/core/Tone", "Tone/core/Delay", "helper/PassAudio"], function (Test, Tone, Delay, PassAudio) {
+define(["Test", "Tone/core/Tone", "Tone/core/Delay", "helper/PassAudio"], function(Test, Tone, Delay, PassAudio) {
 
 	describe("Delay", function(){
 
@@ -29,6 +29,7 @@ define(["Test", "Tone/core/Tone", "Tone/core/Delay", "helper/PassAudio"], functi
 				"maxDelay" : 2
 			});
 			expect(delay.delayTime.value).to.be.closeTo(0.3, 0.001);
+			expect(delay.maxDelay).to.equal(2);
 			delay.dispose();
 		});
 
@@ -74,7 +75,7 @@ define(["Test", "Tone/core/Tone", "Tone/core/Delay", "helper/PassAudio"], functi
 				var delay = new Delay(0).toMaster();
 				input.connect(delay);
 			});
-		});		
+		});
 
 	});
 });
