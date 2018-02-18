@@ -1,4 +1,4 @@
-define(["Test", "Tone/core/TimelineState"], function (Test, TimelineState) {
+define(["Test", "Tone/core/TimelineState"], function(Test, TimelineState) {
 
 	describe("TimelineState", function(){
 
@@ -41,6 +41,23 @@ define(["Test", "Tone/core/TimelineState"], function (Test, TimelineState) {
 			sched.setStateAtTime("B", 21);
 			sched.setStateAtTime("C", 22);
 			expect(sched.getValueAtTime(0)).is.equal("initial");
+			sched.dispose();
+		});
+
+		it("gets the last occurance of the state at or before the given time", function(){
+			var sched = new TimelineState();
+			sched.setStateAtTime("A", 0);
+			sched.setStateAtTime("B", 1);
+			sched.setStateAtTime("C", 2);
+			sched.setStateAtTime("B", 3);
+			expect(sched.getLastState("B", 1)).exists;
+			expect(sched.getLastState("B", 1).state).is.equal("B");
+			expect(sched.getLastState("B", 2)).exists;
+			expect(sched.getLastState("B", 2).state).is.equal("B");
+			expect(sched.getLastState("B", 2).time).is.equal(1);
+			expect(sched.getLastState("B", 0.9)).not.exists;
+			expect(sched.getLastState("B", 4).state).is.equal("B");
+			expect(sched.getLastState("B", 4).time).is.equal(3);
 			sched.dispose();
 		});
 		

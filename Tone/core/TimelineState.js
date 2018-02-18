@@ -53,5 +53,22 @@ define(["Tone/core/Tone", "Tone/core/Timeline", "Tone/type/Type"], function(Tone
 		return this;
 	};
 
+	/**
+	 *  Return the event before the time with the given state
+	 *  @param {Tone.State} state The state to look for
+	 *  @param  {Time}  time  When to check before			
+	 *  @return  {Object}  The event with the given state before the time
+	 */
+	Tone.TimelineState.prototype.getLastState = function(state, time){
+		time = this.toSeconds(time);
+		var index = this._search(time);
+		for (var i = index; i >= 0; i--){
+			var event = this._timeline[i];
+			if (event.state === state){
+				return event;
+			}
+		}
+	};
+
 	return Tone.TimelineState;
 });
