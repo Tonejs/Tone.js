@@ -322,8 +322,11 @@ define(["Tone/core/Tone"], function(Tone) {
 	};
 
 	/**
-	 *  Iterate over everything in the array after the given time.
-	 *  @param  {Number}  time The time to check if items are before
+	 *  Iterate over everything in the array between the startTime and endTime. 
+	 *  The timerange is inclusive of the startTime, but exclusive of the endTime. 
+	 *  range = [startTime, endTime). 
+	 *  @param  {Number}  startTime The time to check if items are before
+	 *  @param  {Number}  endTime The end of the test interval. 
 	 *  @param  {Function}  callback The callback to invoke with every item
 	 *  @returns {Tone.Timeline} this
 	 */
@@ -332,17 +335,16 @@ define(["Tone/core/Tone"], function(Tone) {
 		var upperBound = this._search(endTime);
 		if (lowerBound !== -1 && upperBound !== -1){
 			if (this._timeline[lowerBound].time !== startTime){
-				lowerBound+=1;
+				lowerBound += 1;
+			}
+			//exclusive of the end time
+			if (this._timeline[upperBound].time === endTime){
+				upperBound -= 1;
 			}
 			this._iterate(callback, lowerBound, upperBound);
 		} else if (lowerBound === -1){
 			this._iterate(callback, 0, upperBound);
 		}
-		/*this.forEachFrom(startTime, function(event){
-			if (event.time <= endTime){
-				callback(event);
-			}
-		});*/
 		return this;
 	};
 

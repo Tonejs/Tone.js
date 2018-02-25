@@ -1,4 +1,4 @@
-define(["Test", "Tone/core/Timeline"], function (Test, Timeline) {
+define(["Test", "Tone/core/Timeline"], function(Test, Timeline) {
 
 	describe("Timeline", function(){
 
@@ -548,15 +548,15 @@ define(["Test", "Tone/core/Timeline"], function (Test, Timeline) {
 				var count = 0;
 				sched.forEachBetween(0.2, 0.4, function(event){
 					count++;
-					expect(event.time).to.be.within(0.2, 0.4);
+					expect(event.time).to.be.within(0.2, 0.3);
 				});
-				expect(count).to.equal(3);
+				expect(count).to.equal(2);
 				count = 0;
 				sched.forEachBetween(0.21, 0.4, function(event){
 					count++;
-					expect(event.time).to.be.within(0.21, 0.4);
+					expect(event.time).to.be.within(0.21, 0.3);
 				});
-				expect(count).to.equal(2);
+				expect(count).to.equal(1);
 				count = 0;
 				sched.forEachBetween(0.21, 0.39, function(event){
 					count++;
@@ -564,9 +564,9 @@ define(["Test", "Tone/core/Timeline"], function (Test, Timeline) {
 				});
 				expect(count).to.equal(1);
 				count = 0;
-				sched.forEachBetween(0, 0.1, function(event){
+				sched.forEachBetween(0, 0.11, function(event){
 					count++;
-					expect(event.time).to.be.within(0, 0.1);
+					expect(event.time).to.be.within(0, 0.11);
 				});
 				expect(count).to.equal(1);
 				count = 0;
