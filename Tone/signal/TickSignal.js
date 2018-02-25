@@ -153,7 +153,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone) {
 	Tone.TickSignal.prototype.getTicksAtTime = function(time){
 		time = this.toSeconds(time);
 		var event = this._events.get(time);
-		return this._getTicksUntilEvent(event, time);
+		return Math.max(this._getTicksUntilEvent(event, time), 0);
 	};
 
 	/**
