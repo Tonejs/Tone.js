@@ -83,7 +83,8 @@ define(["Tone/core/Tone", "Tone/type/Type", "Tone/core/AudioNode", "Tone/core/Ti
 		},
 		set : function(value){
 			this._initialValue = this._fromUnits(value);
-			this.setValueAtTime(value, this.now());
+			this.cancelScheduledValues(this.context.currentTime);
+			this.setValueAtTime(value, this.context.currentTime);
 		}
 	});
 
