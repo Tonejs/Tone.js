@@ -13,7 +13,7 @@ function(BasicTests, PulseOscillator, Offline, SourceTests, OscillatorTests, Com
 			return CompareToFile(function(){
 				var osc = new PulseOscillator().toMaster();
 				osc.start(0);
-			}, "pulseOscillator.wav");
+			}, "pulseOscillator.wav", 50);
 		});
 
 		context("Phase Rotation", function(){
