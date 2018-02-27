@@ -186,8 +186,7 @@ define(["Tone/core/Tone", "Tone/core/Clock", "Tone/type/Type", "Tone/core/Timeli
 	 *  @param   {number} tickTime clock relative tick time
 	 *  @private
 	 */
-	Tone.Transport.prototype._processTick = function(tickTime){
-		var ticks = this._clock.ticks;
+	Tone.Transport.prototype._processTick = function(tickTime, ticks){
 		//handle swing
 		if (this._swingAmount > 0 &&
 			ticks % this._ppq !== 0 && //not on a downbeat
@@ -338,7 +337,7 @@ define(["Tone/core/Tone", "Tone/core/Clock", "Tone/type/Type", "Tone/core/Timeli
 	 */
 	Tone.Transport.prototype._bindClockEvents = function(){
 		this._clock.on("start", function(time, offset){
-			offset = Tone.Ticks(this._clock.ticks).toSeconds();
+			offset = Tone.Ticks(offset).toSeconds();
 			this.emit("start", time, offset);
 		}.bind(this));
 
@@ -615,6 +614,15 @@ define(["Tone/core/Tone", "Tone/core/Clock", "Tone/type/Type", "Tone/core/Timeli
 	});
 
 	/**
+	 * Get the clock's ticks at the given time.
+	 * @param  {Time} time  When to get the tick value
+	 * @return {Ticks}       The tick value at the given time.
+	 */
+	Tone.Transport.prototype.getTicksAtTime = function(time){
+		return Math.round(this._clock.getTicksAtTime(time));
+	};
+
+	/**
 	 *  Pulses Per Quarter note. This is the smallest resolution
 	 *  the Transport timing supports. This should be set once
 	 *  on initialization and not set again. Changing this value
@@ -671,20 +679,17 @@ define(["Tone/core/Tone", "Tone/core/Clock", "Tone/type/Type", "Tone/core/Timeli
 	 * Tone.Transport.nextSubdivision("4n");
 	 */
 	Tone.Transport.prototype.nextSubdivision = function(subdivision){
-		subdivision = this.toSeconds(subdivision);
-		//if the transport's not started, return 0
-		var now;
-		if (this.state === Tone.State.Started){
-			now = this._clock._nextTick;
-		} else {
+		subdivision = this.toTicks(subdivision);
+		if (this.state !== Tone.State.Started){
+			//if the transport's not started, return 0
 			return 0;
+		} else {
+			var now = this.now();
+			//the remainder of the current ticks and the subdivision
+			var transportPos = this.getTicksAtTime(now);
+			var remainingTicks = subdivision - transportPos % subdivision;
+			return this._clock.nextTickTime(remainingTicks, now);
 		}
-		var transportPos = Tone.Time(this.ticks, "i");
-		var remainingTime = subdivision - (transportPos % subdivision);
-		if (remainingTime === 0){
-			remainingTime = subdivision;
-		}
-		return now + remainingTime;
 	};
 
 	/**

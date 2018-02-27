@@ -295,19 +295,12 @@ function(Test, Transport, Tone, Offline, TransportTime, Signal, BufferTest, Time
 				return Offline(function(Transport){
 					Transport.start(0).pause(0.1).stop(0.2);
 
-					var pausedTicks = 0;
+					expect(Transport.getTicksAtTime(0)).to.be.equal(Math.floor(Transport.PPQ * 0));
+					expect(Transport.getTicksAtTime(0.05)).to.be.equal(Math.floor(Transport.PPQ * 0.1));
+					expect(Transport.getTicksAtTime(0.1)).to.be.equal(Math.floor(Transport.PPQ * 0.2));
+					expect(Transport.getTicksAtTime(0.15)).to.be.equal(Math.floor(Transport.PPQ * 0.2));
+					expect(Transport.getTicksAtTime(0.2)).to.be.equal(0);
 
-					return function(time){
-						Test.whenBetween(time, 0, 0.1, function(){
-							pausedTicks = Transport.ticks;
-						});
-						Test.whenBetween(time, 0.1, 0.19, function(){
-							expect(Transport.ticks).to.equal(pausedTicks);
-						});
-						Test.whenBetween(time, 0.2, Infinity, function(){
-							expect(Transport.ticks).to.equal(0);
-						});
-					};
 				}, 0.3);
 			});
 
