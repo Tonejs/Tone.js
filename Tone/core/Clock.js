@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/signal/TickSignal", "Tone/core/TimelineState",
+define(["Tone/core/Tone", "Tone/source/TickSource", "Tone/core/TimelineState",
 	"Tone/core/Emitter", "Tone/core/Context"], function(Tone) {
 
 	"use strict";
@@ -40,27 +40,26 @@ define(["Tone/core/Tone", "Tone/signal/TickSignal", "Tone/core/TimelineState",
 		this._nextTick = 0;
 
 		/**
-		 *  The last state of the clock.
-		 *  @type  {State}
+		 *  The tick counter
+		 *  @type  {Tone.TickSource}
 		 *  @private
 		 */
-		this._lastState = Tone.State.Stopped;
+		this._tickSource = new Tone.TickSource(options.frequency);
+
+		/**
+		 *  The last time the loop callback was invoked
+		 *  @private
+		 *  @type {Number}
+		 */
+		this._lastUpdate = 0;
 
 		/**
 		 *  The rate the callback function should be invoked.
 		 *  @type  {BPM}
 		 *  @signal
 		 */
-		this.frequency = new Tone.TickSignal(options.frequency, Tone.Type.Frequency);
+		this.frequency = this._tickSource.frequency;
 		this._readOnly("frequency");
-
-		/**
-		 *  The number of times the callback was invoked. Starts counting at 0
-		 *  and increments after the callback was invoked.
-		 *  @type {Ticks}
-		 *  @private
-		 */
-		this._ticks = 0;
 
 		/**
 		 *  The state timeline
@@ -68,18 +67,8 @@ define(["Tone/core/Tone", "Tone/signal/TickSignal", "Tone/core/TimelineState",
 		 *  @private
 		 */
 		this._state = new Tone.TimelineState(Tone.State.Stopped);
-
-		/**
-		 * The offset values of the ticks
-		 * @type {Tone.Timeline}
-		 * @private
-		 */
-		this._tickOffset = new Tone.Timeline();
-		//add the first event
-		this._tickOffset.add({
-			"time" : 0,
-			"ticks" : 0
-		});
+		//add an initial state
+		this._state.setStateAtTime(Tone.State.Stopped, 0);
 
 		/**
 		 *  The loop function bound to its context.
@@ -128,11 +117,8 @@ define(["Tone/core/Tone", "Tone/signal/TickSignal", "Tone/core/TimelineState",
 	Tone.Clock.prototype.start = function(time, offset){
 		time = this.toSeconds(time);
 		if (this._state.getValueAtTime(time) !== Tone.State.Started){
-			var ticksAtTime = Math.floor(this.getTicksAtTime(time));
-			offset = Tone.defaultArg(offset, ticksAtTime);
 			this._state.setStateAtTime(Tone.State.Started, time);
-			this._state.get(time).offset = offset;
-			this.setTicksAtTime(offset, time);
+			this._tickSource.start(time, offset);
 		}
 		return this;
 	};
@@ -148,7 +134,7 @@ define(["Tone/core/Tone", "Tone/signal/TickSignal", "Tone/core/TimelineState",
 		time = this.toSeconds(time);
 		this._state.cancel(time);
 		this._state.setStateAtTime(Tone.State.Stopped, time);
-		this.setTicksAtTime(0, time);
+		this._tickSource.stop(time);
 		return this;
 	};
 
@@ -160,9 +146,8 @@ define(["Tone/core/Tone", "Tone/signal/TickSignal", "Tone/core/TimelineState",
 	Tone.Clock.prototype.pause = function(time){
 		time = this.toSeconds(time);
 		if (this._state.getValueAtTime(time) === Tone.State.Started){
-			var pausedTicks = this.getTicksAtTime(time);
-			this.setTicksAtTime(pausedTicks, time);
 			this._state.setStateAtTime(Tone.State.Paused, time);
+			this._tickSource.pause(time);
 		}
 		return this;
 	};
@@ -174,11 +159,10 @@ define(["Tone/core/Tone", "Tone/signal/TickSignal", "Tone/core/TimelineState",
 	 */
 	Object.defineProperty(Tone.Clock.prototype, "ticks", {
 		get : function(){
-			return this._ticks;
+			return Math.ceil(this.getTicksAtTime(this.now()));
 		},
 		set : function(t){
-			this._ticks = t;
-			this.setTicksAtTime(t, this.now());
+			this._tickSource.ticks = t;
 		}
 	});
 
@@ -189,39 +173,12 @@ define(["Tone/core/Tone", "Tone/signal/TickSignal", "Tone/core/TimelineState",
 	 */
 	Object.defineProperty(Tone.Clock.prototype, "seconds", {
 		get : function(){
-			var time = this.now();
-			var ticks = this.getTicksAtTime(time);
-			var totalTicks = this.frequency.getTicksAtTime(time);
-			if (totalTicks - ticks > 0){
-				var tickTime = this.frequency.getTimeOfTick(totalTicks - ticks);
-				return this.frequency.ticksToTime(ticks, tickTime).toSeconds();
-			} else {
-				return this.frequency.ticksToTime(ticks, time).toSeconds();
-			}
+			return this._tickSource.seconds;
 		},
 		set : function(s){
-			var now = this.now();
-			var ticks = this.frequency.timeToTicks(s, now-s);
-			this.setTicksAtTime(ticks, now);
+			this._tickSource.seconds = s;
 		}
 	});
-
-	/**
-	 * Get the elapsed ticks at the given time
-	 * @param  {Time} time When to get the ticks
-	 * @return {Ticks}      The elapsed ticks at the given time.
-	 */
-	Tone.Clock.prototype.getTicksAtTime = function(time){
-		time = this.toSeconds(time);
-		var tickEvent = this._tickOffset.get(time);
-		var offset = tickEvent.ticks;
-		var elapsedTicks = this.frequency.getTicksAtTime(time) - tickEvent.position;
-		if (this._state.getValueAtTime(time) !== Tone.State.Started){
-			return offset;
-		} else {
-			return elapsedTicks + offset;
-		}
-	};
 
 	/**
 	 * Set the clock's ticks at the given time.
@@ -230,15 +187,29 @@ define(["Tone/core/Tone", "Tone/signal/TickSignal", "Tone/core/TimelineState",
 	 * @return {Tone.Clock}       this
 	 */
 	Tone.Clock.prototype.setTicksAtTime = function(ticks, time){
-		time = this.toSeconds(time);
-		this._ticks = ticks;
-		this._tickOffset.cancel(time);
-		this._tickOffset.add({
-			"time" : time,
-			"ticks" : ticks,
-			"position" : this.frequency.getTicksAtTime(time)
-		});
+		this._tickSource.setTicksAtTime(ticks, time);
 		return this;
+	};
+
+	/**
+	 * Get the clock's ticks at the given time.
+	 * @param  {Time} time  When to get the tick value
+	 * @return {Ticks}       The tick value at the given time.
+	 */
+	Tone.Clock.prototype.getTicksAtTime = function(time){
+		return this._tickSource.getTicksAtTime(time);
+	};
+
+	/**
+	 * Get the time of the next tick
+	 * @param  {Ticks} ticks The tick number.
+	 * @param  {Time} before 
+	 * @return {Tone.Clock}       this
+	 */
+	Tone.Clock.prototype.nextTickTime = function(offset, when){
+		when = this.toSeconds(when);
+		var currentTick = this.getTicksAtTime(when);
+		return this._tickSource.getTimeOfTick(currentTick+offset, when);
 	};
 
 	/**
@@ -247,48 +218,32 @@ define(["Tone/core/Tone", "Tone/signal/TickSignal", "Tone/core/TimelineState",
 	 */
 	Tone.Clock.prototype._loop = function(){
 
-		//the end of the update interval
-		var endTime = this.now() + this.context.updateInterval;
+		var startTime = this._lastUpdate;
+		var endTime = this.now() + this.context.lookAhead + this.context.updateInterval;
+		this._lastUpdate = endTime;
 
-		//the current event at the time of the loop
-		var event = this._state.get(endTime);
-
-		if (event){
-			//state change events
-			if (event.state !== this._lastState){
-				this._lastState = event.state;
-				switch (event.state){
-					case Tone.State.Started:
-						this._ticks = event.offset;
-						this._nextTick = event.time;
-						this.emit("start", event.time, this._ticks);
+		if (startTime !== endTime){
+			//the state change events
+			this._state.forEachBetween(startTime, endTime, function(e){
+				switch (e.state){
+					case Tone.State.Started : 
+						var offset = this._tickSource.getTicksAtTime(e.time);
+						this.emit("start", e.time, offset);
 						break;
-					case Tone.State.Stopped:
-						this._ticks = 0;
-						this.emit("stop", event.time);
-						break;
-					case Tone.State.Paused:
-						this.emit("pause", event.time);
-						break;
-				}
-			}
-
-			//all the tick events
-			while (endTime > this._nextTick && this._state){
-				var tickTime = this._nextTick;
-				if (this.frequency){
-					this._nextTick += this.frequency.getDurationOfTicks(1, this._nextTick);
-					if (event.state === Tone.State.Started){
-						try {
-							this.callback(tickTime);
-							this._ticks++;
-						} catch (e){
-							this._ticks++;
-							throw e;
+					case Tone.State.Stopped : 
+						if (e.time !== 0){
+							this.emit("stop", e.time);
 						}
-					}
+						break;
+					case Tone.State.Paused :
+						this.emit("pause", e.time); 
+						break;
 				}
-			}
+			}.bind(this));
+			//the tick callbacks
+			this._tickSource.forEachTickBetween(startTime, endTime, function(time, ticks){
+				this.callback(time, ticks);
+			}.bind(this));
 		}
 	};
 
@@ -313,10 +268,9 @@ define(["Tone/core/Tone", "Tone/signal/TickSignal", "Tone/core/TimelineState",
 		Tone.Emitter.prototype.dispose.call(this);
 		this.context.off("tick", this._boundLoop);
 		this._writable("frequency");
-		this.frequency.dispose();
+		this._tickSource.dispose();
+		this._tickSource = null;
 		this.frequency = null;
-		this._tickOffset.dispose();
-		this._tickOffset = null;
 		this._boundLoop = null;
 		this._nextTick = Infinity;
 		this.callback = null;

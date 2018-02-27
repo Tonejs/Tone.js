@@ -1,5 +1,5 @@
-define(["Test", "Tone/core/Clock", "helper/Offline", "helper/Supports"],
-	function (Test, Clock, Offline, Supports) {
+define(["Test", "Tone/core/Clock", "helper/Offline", "helper/Supports", "Tone/core/Tone"],
+	function(Test, Clock, Offline, Supports, Tone) {
 
 		describe("Clock", function(){
 
@@ -152,12 +152,12 @@ define(["Test", "Tone/core/Clock", "helper/Offline", "helper/Supports"],
 					});
 				}
 
-				it("can be scheduled to stop in the future", function(){
+				it("can be scheduled to start in the future", function(){
 					var invokations = 0;
 					return Offline(function(){
-						new Clock(function(){
+						var clock = new Clock(function(time){
 							invokations++;
-						}, 2).start(0);
+						}, 2).start(0.1);
 					}, 0.4).then(function(){
 						expect(invokations).to.equal(1);
 					});
@@ -166,7 +166,7 @@ define(["Test", "Tone/core/Clock", "helper/Offline", "helper/Supports"],
 				it("invokes the right number of callbacks given the duration", function(){
 					var invokations = 0;
 					return Offline(function(){
-						new Clock(function(){
+						new Clock(function(time){
 							invokations++;
 						}, 10).start(0).stop(0.45);
 					}, 0.6).then(function(){
@@ -177,7 +177,7 @@ define(["Test", "Tone/core/Clock", "helper/Offline", "helper/Supports"],
 				it("can schedule the frequency of the clock", function(){
 					var invokations = 0;
 					return Offline(function(){
-						var clock = new Clock(function(time){
+						var clock = new Clock(function(time, ticks){
 							invokations++;
 						}, 2);
 						clock.start(0).stop(1.01);
@@ -186,6 +186,7 @@ define(["Test", "Tone/core/Clock", "helper/Offline", "helper/Supports"],
 						expect(invokations).to.equal(4);
 					});
 				});
+
 			});
 
 			context("Seconds", function(){
@@ -193,7 +194,7 @@ define(["Test", "Tone/core/Clock", "helper/Offline", "helper/Supports"],
 				it("can set the current seconds", function(){
 					return Offline(function(){
 						var clock = new Clock(function(){}, 10);
-						expect(clock.seconds).to.equal(0);
+						expect(clock.seconds).to.be.closeTo(0, 0.001);
 						clock.seconds = 3;
 						expect(clock.seconds).to.be.closeTo(3, 0.01);
 						clock.dispose();
@@ -203,7 +204,7 @@ define(["Test", "Tone/core/Clock", "helper/Offline", "helper/Supports"],
 				it("can get the seconds", function(){
 					return Offline(function(){
 						var clock = new Clock(function(){}, 10);
-						expect(clock.seconds).to.equal(0);
+						expect(clock.seconds).to.be.closeTo(0, 0.001);
 						clock.start(0.05);
 						return function(time){
 							if (time > 0.05){
@@ -216,7 +217,7 @@ define(["Test", "Tone/core/Clock", "helper/Offline", "helper/Supports"],
 				it("can get the seconds during a bpm ramp", function(){
 					return Offline(function(){
 						var clock = new Clock(function(){}, 10);
-						expect(clock.seconds).to.equal(0);
+						expect(clock.seconds).to.be.closeTo(0, 0.001);
 						clock.start(0.05);
 						clock.frequency.linearRampTo(60, 0.5, 0.5);
 						return function(time){
@@ -230,7 +231,7 @@ define(["Test", "Tone/core/Clock", "helper/Offline", "helper/Supports"],
 				it("can set seconds during a bpm ramp", function(){
 					return Offline(function(){
 						var clock = new Clock(function(){}, 10);
-						expect(clock.seconds).to.equal(0);
+						expect(clock.seconds).to.be.closeTo(0, 0.001);
 						clock.start(0.05);
 						clock.frequency.linearRampTo(60, 0.5, 0.5);
 						var changeSeconds = Test.atTime(0.4, function(){
@@ -257,14 +258,15 @@ define(["Test", "Tone/core/Clock", "helper/Offline", "helper/Supports"],
 				});
 
 				it("increments 1 tick per callback", function(){
-					var ticks = 0;
-					var clock;
 					return Offline(function(){
-						clock = new Clock(function(){
+						var ticks = 0;
+						var clock = new Clock(function(){
 							ticks++;
-						}, 0.05).start();
+						}, 2).start();
+						return Test.atTime(0.59, function(){
+							expect(ticks).to.equal(clock.ticks);
+						});
 					}, 0.6).then(function(){
-						expect(ticks).to.equal(clock.ticks);
 					});
 				});
 
@@ -326,10 +328,10 @@ define(["Test", "Tone/core/Clock", "helper/Offline", "helper/Supports"],
 				it("can start with a tick offset", function(){
 					return Offline(function(){
 						var tested = false;
-						var clock = new Clock(function(){
+						var clock = new Clock(function(time, ticks){
 							if (!tested){
 								tested = true;
-								expect(clock.ticks).to.equal(4);
+								expect(ticks).to.equal(4);
 							}
 						}, 10);
 						expect(clock.ticks).to.equal(0);
@@ -341,55 +343,74 @@ define(["Test", "Tone/core/Clock", "helper/Offline", "helper/Supports"],
 
 			context("Events", function(){
 
-				it("triggers the start event on start", function(){
-					return Offline(function(){
+				it("triggers the start event on start", function(done){
+					Offline(function(){
 						var clock = new Clock(function(){}, 20);
 						var startTime = 0.3;
 						clock.on("start", function(time, offset){
 							expect(time).to.be.closeTo(startTime, 0.05);
 							expect(offset).to.equal(0);
+							done();
 						});
 						clock.start(startTime);
 					}, 0.4);
 				});
 
-				it("triggers the start event with an offset", function(){
-					return Offline(function(){
+				it("triggers the start event with an offset", function(done){
+					Offline(function(){
 						var clock = new Clock(function(){}, 20);
 						var startTime = 0.3;
 						clock.on("start", function(time, offset){
 							expect(time).to.be.closeTo(startTime, 0.05);
 							expect(offset).to.equal(2);
+							done();
 						});
 						clock.start(startTime, 2);
 					}, 0.4);
 				});
 
-				it("triggers stop event", function(){
-					return Offline(function(){
+				it("triggers stop event", function(done){
+					Offline(function(){
 						var clock = new Clock(function(){}, 20);
 						var stopTime = 0.3;
 						clock.on("stop", function(time){
 							expect(time).to.be.closeTo(stopTime, 0.05);
+							done();
 						});
 						clock.start().stop(stopTime);
-					});
+					}, 0.4);
 				});
 
-				it("triggers pause stop event", function(){
-					return Offline(function(){
+				it("triggers pause stop event", function(done){
+					Offline(function(){
 						var clock = new Clock(function(){}, 20);
 						clock.on("pause", function(time){
 							expect(time).to.be.closeTo(0.1, 0.05);
 						}).on("stop", function(time){
 							expect(time).to.be.closeTo(0.2, 0.05);
+							done();
 						});
 						clock.start().pause(0.1).stop(0.2);
-					});
+					}, 0.4);
+				});
+
+				it("triggers events even in close proximity", function(done){
+					Offline(function(){
+						var clock = new Clock(function(){}, 20);
+						var invokedStartEvent = false;
+						clock.on("start", function(){
+							invokedStartEvent = true;
+						});
+						clock.on("stop", function(){
+							expect(invokedStartEvent).to.be.true;
+							done();
+						});
+						clock.start(0.09999).stop(0.1);
+					}, 0.4);
 				});
 			});
 
-			context("[get,set]TicksAtTime", function(){
+			context("[get/set]Ticks", function(){
 
 				it("always reports 0 if not started", function(){
 					return Offline(function(){
@@ -433,6 +454,65 @@ define(["Test", "Tone/core/Clock", "helper/Offline", "helper/Supports"],
 						expect(clock.getTicksAtTime(2)).to.be.closeTo(20, 0.01);
 						expect(clock.getTicksAtTime(3)).to.be.closeTo(40, 0.01);
 						expect(clock.getTicksAtTime(3.5)).to.be.closeTo(50, 0.01);
+						clock.dispose();
+					});
+				});
+
+				it("can get tick position after multiple pauses", function(){
+					return Offline(function(){
+						var clock = new Clock(function(){}, 10);
+						clock.start(0).pause(1).start(2).pause(3).start(4);
+						expect(clock.getTicksAtTime(0.5)).to.be.closeTo(5, 0.01);
+						expect(clock.getTicksAtTime(1)).to.be.closeTo(10, 0.01);
+						expect(clock.getTicksAtTime(2)).to.be.closeTo(10, 0.01);
+						expect(clock.getTicksAtTime(3)).to.be.closeTo(20, 0.01);
+						expect(clock.getTicksAtTime(4)).to.be.closeTo(20, 0.01);
+						expect(clock.getTicksAtTime(5)).to.be.closeTo(30, 0.01);
+						clock.dispose();
+					});
+				});
+
+				it("can get tick position after multiple pauses and tempo scheduling", function(){
+					return Offline(function(){
+						var clock = new Clock(function(){}, 10);
+						clock.frequency.setValueAtTime(100, 3.5);
+						clock.start(0).pause(1).start(2).pause(3).start(4);
+						expect(clock.getTicksAtTime(0.5)).to.be.closeTo(5, 0.01);
+						expect(clock.getTicksAtTime(1)).to.be.closeTo(10, 0.01);
+						expect(clock.getTicksAtTime(2)).to.be.closeTo(10, 0.01);
+						expect(clock.getTicksAtTime(3)).to.be.closeTo(20, 0.01);
+						expect(clock.getTicksAtTime(4)).to.be.closeTo(20, 0.01);
+						expect(clock.getTicksAtTime(5)).to.be.closeTo(120, 0.01);
+						clock.dispose();
+					});
+				});
+
+				it("can get tick position after multiple pauses and setting ticks", function(){
+					return Offline(function(){
+						var clock = new Clock(function(){}, 10);
+						clock.start(0).pause(1).start(2).pause(3).start(4);
+						clock.setTicksAtTime(10, 2.5);
+						expect(clock.getTicksAtTime(0.5)).to.be.closeTo(5, 0.01);
+						expect(clock.getTicksAtTime(1)).to.be.closeTo(10, 0.01);
+						expect(clock.getTicksAtTime(2)).to.be.closeTo(10, 0.01);
+						expect(clock.getTicksAtTime(3)).to.be.closeTo(15, 0.01);
+						expect(clock.getTicksAtTime(4)).to.be.closeTo(15, 0.01);
+						expect(clock.getTicksAtTime(5)).to.be.closeTo(25, 0.01);
+						clock.dispose();
+					});
+				});
+
+				it("resumes from paused position with tempo scheduling", function(){
+					return Offline(function(){
+						var clock = new Clock(function(){}, 20);
+						clock.start(0).pause(1).start(2);
+						clock.frequency.setValueAtTime(20, 0);
+						clock.frequency.setValueAtTime(10, 0.5);
+						expect(clock.getTicksAtTime(0.5)).to.be.closeTo(10, 0.01);
+						expect(clock.getTicksAtTime(1)).to.be.closeTo(15, 0.01);
+						expect(clock.getTicksAtTime(2)).to.be.closeTo(15, 0.01);
+						expect(clock.getTicksAtTime(3)).to.be.closeTo(25, 0.01);
+						expect(clock.getTicksAtTime(3.5)).to.be.closeTo(30, 0.01);
 						clock.dispose();
 					});
 				});
