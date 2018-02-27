@@ -291,7 +291,8 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/type/Type", "Tone/core/Ti
 	 *  @private
 	 */
 	Tone.Event.prototype._tick = function(time){
-		if (!this.mute && this._state.getValueAtTime(Tone.Transport.ticks) === Tone.State.Started){
+		var ticks = Tone.Transport.getTicksAtTime(time);
+		if (!this.mute && this._state.getValueAtTime(ticks) === Tone.State.Started){
 			if (this.probability < 1 && Math.random() > this.probability){
 				return;
 			}

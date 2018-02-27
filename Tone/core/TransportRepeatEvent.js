@@ -75,7 +75,7 @@ define(["Tone/core/Tone", "Tone/core/TransportEvent", "Tone/type/Ticks"], functi
 	 */
 	Tone.TransportRepeatEvent.prototype.invoke = function(time){
 		//create more events if necessary
-		this._createEvents();
+		this._createEvents(time);
 		//call the super class
 		Tone.TransportEvent.prototype.invoke.call(this, time);
 	};
@@ -84,9 +84,9 @@ define(["Tone/core/Tone", "Tone/core/TransportEvent", "Tone/type/Ticks"], functi
 	 * Push more events onto the timeline to keep up with the position of the timeline
 	 * @private
 	 */
-	Tone.TransportRepeatEvent.prototype._createEvents = function(){
+	Tone.TransportRepeatEvent.prototype._createEvents = function(time){
 		// schedule the next event
-		var ticks = this.Transport.ticks;
+		var ticks = this.Transport.getTicksAtTime(time);
 		if (ticks >= this.time && ticks >= this._nextTick &&
 		this._nextTick + this._interval < this.time + this.duration){
 			this._nextTick += this._interval;
@@ -99,11 +99,11 @@ define(["Tone/core/Tone", "Tone/core/TransportEvent", "Tone/type/Ticks"], functi
 	 * Push more events onto the timeline to keep up with the position of the timeline
 	 * @private
 	 */
-	Tone.TransportRepeatEvent.prototype._restart = function(){
+	Tone.TransportRepeatEvent.prototype._restart = function(time){
 		this.Transport.clear(this._currentId);
 		this.Transport.clear(this._nextId);
-		var ticks = this.Transport.ticks;
 		this._nextTick = this.time;
+		var ticks = this.Transport.getTicksAtTime(time);
 		if (ticks > this.time){
 			this._nextTick = this.time + Math.ceil((ticks - this.time) / this._interval) * this._interval;
 		}
