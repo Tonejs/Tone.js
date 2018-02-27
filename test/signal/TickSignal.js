@@ -1,5 +1,4 @@
-define(["Test", "Tone/signal/TickSignal", "helper/Offline"],
-	function (Test, TickSignal, Offline) {
+define(["Test", "Tone/signal/TickSignal", "helper/Offline"], function(Test, TickSignal, Offline) {
 
 	describe("TickSignal", function(){
 
@@ -246,7 +245,7 @@ define(["Test", "Tone/signal/TickSignal", "helper/Offline"],
 			tickSignal.dispose();
 		});
 
-		it ("can get the duration of a tick at any point in time", function(){
+		it("can get the duration of a tick at any point in time", function(){
 			var tickSignal = new TickSignal(1);
 			tickSignal.setValueAtTime(2, 1);
 			tickSignal.setValueAtTime(10, 2);
@@ -258,7 +257,7 @@ define(["Test", "Tone/signal/TickSignal", "helper/Offline"],
 
 		it("outputs a signal", function(){
 			var sched;
-				return Offline(function(){
+			return Offline(function(){
 				sched = new TickSignal(1).toMaster();
 				sched.linearRampTo(3, 1, 1);
 			}, 3).then(function(buffer){
@@ -270,7 +269,7 @@ define(["Test", "Tone/signal/TickSignal", "helper/Offline"],
 
 		context("Ticks <-> Time", function(){
 
-			it ("converts from time to ticks", function(){
+			it("converts from time to ticks", function(){
 				return Offline(function(){
 					var tickSignal = new TickSignal(20);
 					expect(tickSignal.ticksToTime(20, 0)).to.be.closeTo(1, 0.01);
@@ -280,7 +279,7 @@ define(["Test", "Tone/signal/TickSignal", "helper/Offline"],
 				});
 			});
 
-			it ("converts from time to ticks with a linear ramp on the tempo", function(){
+			it("converts from time to ticks with a linear ramp on the tempo", function(){
 				return Offline(function(){
 					var tickSignal = new TickSignal(1);
 					tickSignal.linearRampTo(2, 2, 1);
@@ -292,7 +291,7 @@ define(["Test", "Tone/signal/TickSignal", "helper/Offline"],
 				});
 			});
 
-			it ("converts from time to ticks with a setValueAtTime", function(){
+			it("converts from time to ticks with a setValueAtTime", function(){
 				return Offline(function(){
 					var tickSignal = new TickSignal(1);
 					tickSignal.setValueAtTime(2, 1);
@@ -305,7 +304,7 @@ define(["Test", "Tone/signal/TickSignal", "helper/Offline"],
 				});
 			});
 
-			it ("converts from time to ticks with an exponential ramp", function(){
+			it("converts from time to ticks with an exponential ramp", function(){
 				return Offline(function(){
 					var tickSignal = new TickSignal(1);
 					tickSignal.exponentialRampTo(2, 1, 1);
@@ -317,7 +316,7 @@ define(["Test", "Tone/signal/TickSignal", "helper/Offline"],
 				});
 			});
 
-			it ("converts from time to ticks with a setTargetAtTime", function(){
+			it("converts from time to ticks with a setTargetAtTime", function(){
 				return Offline(function(){
 					var tickSignal = new TickSignal(1);
 					tickSignal.setTargetAtTime(2, 1, 1);
@@ -329,7 +328,7 @@ define(["Test", "Tone/signal/TickSignal", "helper/Offline"],
 				});
 			});
 
-			it ("converts from ticks to time", function(){
+			it("converts from ticks to time", function(){
 				return Offline(function(){
 					var tickSignal = new TickSignal(20);
 					expect(tickSignal.timeToTicks(1, 0)).to.be.closeTo(20, 0.01);
@@ -339,7 +338,7 @@ define(["Test", "Tone/signal/TickSignal", "helper/Offline"],
 				});
 			});
 
-			it ("converts from ticks to time with a setValueAtTime", function(){
+			it("converts from ticks to time with a setValueAtTime", function(){
 				return Offline(function(){
 					var tickSignal = new TickSignal(1);
 					tickSignal.setValueAtTime(2, 1);
@@ -351,7 +350,7 @@ define(["Test", "Tone/signal/TickSignal", "helper/Offline"],
 				});
 			});
 
-			it ("converts from ticks to time with a linear ramp", function(){
+			it("converts from ticks to time with a linear ramp", function(){
 				return Offline(function(){
 					var tickSignal = new TickSignal(1);
 					tickSignal.linearRampTo(2, 1, 1);
@@ -363,7 +362,7 @@ define(["Test", "Tone/signal/TickSignal", "helper/Offline"],
 				});
 			});
 
-			it ("converts from ticks to time with an exponential ramp", function(){
+			it("converts from ticks to time with an exponential ramp", function(){
 				return Offline(function(){
 					var tickSignal = new TickSignal(1);
 					tickSignal.exponentialRampTo(2, 1, 1);
@@ -375,7 +374,7 @@ define(["Test", "Tone/signal/TickSignal", "helper/Offline"],
 				});
 			});
 
-			it ("converts from ticks to time with a setTargetAtTime", function(){
+			it("converts from ticks to time with a setTargetAtTime", function(){
 				return Offline(function(){
 					var tickSignal = new TickSignal(1);
 					tickSignal.setTargetAtTime(2, 1, 1);
@@ -388,6 +387,5 @@ define(["Test", "Tone/signal/TickSignal", "helper/Offline"],
 			});
 		});
 	});
-
 
 });

@@ -55,7 +55,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone) {
 			method.apply(this, arguments);
 			var event = this._events.get(time);
 			var previousEvent = this._events.previousEvent(event);
-			var ticksUntilTime = this._getTicksUntilEvent(previousEvent, time - this.sampleTime);
+			var ticksUntilTime = this._getTicksUntilEvent(previousEvent, time);
 			event.ticks = Math.max(ticksUntilTime, 0);
 			return this;
 		};
@@ -136,10 +136,14 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone) {
 			};
 		} else if (Tone.isUndef(event.ticks)){
 			var previousEvent = this._events.previousEvent(event);
-			event.ticks = this._getTicksUntilEvent(previousEvent, event.time - this.sampleTime);
+			event.ticks = this._getTicksUntilEvent(previousEvent, event.time);
 		}
 		var val0 = this.getValueAtTime(event.time);
 		var val1 = this.getValueAtTime(time);
+		//if it's right on the line, take the previous value
+		if (this._events.get(time).time === time && this._events.get(time).type === Tone.Param.AutomationType.SetValue){
+			val1 = this.getValueAtTime(time - this.sampleTime);
+		}
 		return 0.5 * (time - event.time) * (val0 + val1) + event.ticks;
 	};
 
