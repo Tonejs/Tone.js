@@ -36,10 +36,26 @@ define(["Test", "Tone/source/TickSource", "helper/Offline", "helper/Basic"], fun
 					var source = new TickSource(2);
 					source.start(0).stop(0.4);
 					return function(time){
+						if (time < 0.399){
+							expect(source.ticks).to.be.closeTo(2*time, 0.01);
+						} else if (time > 4){
+							expect(source.ticks).to.be.equal(0);
+						}
+					};
+				}, 0.5);
+			});
+
+			it("returns the paused ticks when paused", function(){
+				return Offline(function(){
+					var source = new TickSource(2);
+					source.start(0).pause(0.4);
+					var pausedTicks = -1;
+					return function(time){
 						if (time < 0.4){
+							pausedTicks = source.ticks;
 							expect(source.ticks).to.be.closeTo(2*time, 0.01);
 						} else {
-							expect(source.ticks).to.be.equal(0);
+							expect(source.ticks).to.be.closeTo(pausedTicks, 0.01);
 						}
 					};
 				}, 0.5);
@@ -53,6 +69,41 @@ define(["Test", "Tone/source/TickSource", "helper/Offline", "helper/Basic"], fun
 				expect(source.getTicksAtTime(1)).to.be.closeTo(0, 0.01);
 				expect(source.getTicksAtTime(2)).to.be.closeTo(0, 0.01);
 				expect(source.getTicksAtTime(3)).to.be.closeTo(3, 0.01);
+				source.dispose();
+			});
+
+			it("ticks remain the same after paused", function(){
+				var source = new TickSource(3);
+				source.start(0).pause(1);
+				expect(source.getTicksAtTime(0)).to.be.closeTo(0, 0.01);
+				expect(source.getTicksAtTime(0.5)).to.be.closeTo(1.5, 0.01);
+				expect(source.getTicksAtTime(1)).to.be.closeTo(3, 0.01);
+				expect(source.getTicksAtTime(2)).to.be.closeTo(3, 0.01);
+				expect(source.getTicksAtTime(3)).to.be.closeTo(3, 0.01);
+				source.dispose();
+			});
+
+			it("ticks resume where they were paused", function(){
+				var source = new TickSource(2);
+				source.start(0).pause(1).start(2);
+				expect(source.getTicksAtTime(0)).to.be.closeTo(0, 0.01);
+				expect(source.getTicksAtTime(0.5)).to.be.closeTo(1, 0.01);
+				expect(source.getTicksAtTime(1)).to.be.closeTo(2, 0.01);
+				expect(source.getTicksAtTime(2)).to.be.closeTo(2, 0.01);
+				expect(source.getTicksAtTime(3)).to.be.closeTo(4, 0.01);
+				expect(source.getTicksAtTime(4)).to.be.closeTo(6, 0.01);
+				source.dispose();
+			});
+
+			it("ticks return to 0 after pause then stopped", function(){
+				var source = new TickSource(2);
+				source.start(0).pause(1).start(2).stop(3);
+				expect(source.getTicksAtTime(0)).to.be.closeTo(0, 0.01);
+				expect(source.getTicksAtTime(0.5)).to.be.closeTo(1, 0.01);
+				expect(source.getTicksAtTime(1)).to.be.closeTo(2, 0.01);
+				expect(source.getTicksAtTime(2)).to.be.closeTo(2, 0.01);
+				expect(source.getTicksAtTime(3)).to.be.closeTo(0, 0.01);
+				expect(source.getTicksAtTime(4)).to.be.closeTo(0, 0.01);
 				source.dispose();
 			});
 
@@ -102,6 +153,45 @@ define(["Test", "Tone/source/TickSource", "helper/Offline", "helper/Basic"], fun
 				expect(source.getTicksAtTime(7)).to.be.closeTo(2, 0.01);
 				source.dispose();
 			});
+
+			it("can pass start offset", function(){
+				var source = new TickSource(2);
+				source.start(0, 2).pause(1).start(2, 1);
+				expect(source.getTicksAtTime(0)).to.be.closeTo(2, 0.01);
+				expect(source.getTicksAtTime(1)).to.be.closeTo(4, 0.01);
+				expect(source.getTicksAtTime(2)).to.be.closeTo(1, 0.01);
+				expect(source.getTicksAtTime(3)).to.be.closeTo(3, 0.01);
+				expect(source.getTicksAtTime(4)).to.be.closeTo(5, 0.01);
+				source.dispose();
+			});
+
+			it("can set ticks at any point", function(){
+				var source = new TickSource(2);
+				source.start(0, 2).pause(1).start(2);
+				source.setTicksAtTime(10, 1.5);
+				source.setTicksAtTime(2, 3.5);
+				expect(source.getTicksAtTime(0)).to.be.closeTo(2, 0.01);
+				expect(source.getTicksAtTime(1)).to.be.closeTo(4, 0.01);
+				expect(source.getTicksAtTime(2)).to.be.closeTo(10, 0.01);
+				expect(source.getTicksAtTime(3)).to.be.closeTo(12, 0.01);
+				expect(source.getTicksAtTime(4)).to.be.closeTo(3, 0.01);
+				expect(source.getTicksAtTime(5)).to.be.closeTo(5, 0.01);
+				source.dispose();
+			});
+
+			it("get the time of the ticks", function(){
+				var source = new TickSource(2);
+				source.start(0, 2).pause(1).start(2);
+				source.setTicksAtTime(10, 1.5);
+				source.setTicksAtTime(2, 3.5);
+				expect(source.getTimeOfTick(2, 0.9)).to.be.closeTo(0, 0.01);
+				expect(source.getTimeOfTick(4, 0.9)).to.be.closeTo(1, 0.01);
+				expect(source.getTimeOfTick(10, 3)).to.be.closeTo(2, 0.01);
+				expect(source.getTimeOfTick(12, 3)).to.be.closeTo(3, 0.01);
+				expect(source.getTimeOfTick(3, 4)).to.be.closeTo(4, 0.01);
+				expect(source.getTimeOfTick(5, 4)).to.be.closeTo(5, 0.01);
+				source.dispose();
+			});
 		});
 
 		context("forEachTickBetween", function(){
@@ -130,10 +220,10 @@ define(["Test", "Tone/source/TickSource", "helper/Offline", "helper/Basic"], fun
 
 			it("iterates only at times when the state is 'started'", function(){
 				var source = new TickSource(4);
-				source.start(0.2).stop(2).start(3.5).stop(5);
+				source.start(0.2).pause(2).start(3.5).stop(5);
 				var iterations = 0;
 				var expectedTimes = [1.2, 1.45, 1.7, 1.95, 3.5, 3.75, 4, 4.25, 4.5, 4.75];
-				var expectedTicks = [4, 5, 6, 7, 0, 1, 2, 3, 4, 5];
+				var expectedTicks = [4, 5, 6, 7, 7, 8, 9, 10, 11, 12];
 				source.forEachTickBetween(1, 7, function(time, ticks){
 					expect(time).to.be.closeTo(expectedTimes[iterations], 0.001);
 					expect(ticks).to.equal(expectedTicks[iterations]);
@@ -195,6 +285,21 @@ define(["Test", "Tone/source/TickSource", "helper/Offline", "helper/Basic"], fun
 				var iterations = 0;
 				var expectedTicks = [0, 0, 1];
 				var expectedTimes = [0.5, 2, 3];
+				source.forEachTickBetween(0, 3.1, function(time, ticks){
+					expect(time).to.be.closeTo(expectedTimes[iterations], 0.001);
+					expect(ticks).to.equal(expectedTicks[iterations]);
+					iterations++;
+				});
+				expect(iterations).to.equal(expectedTicks.length);
+				source.dispose();
+			});
+
+			it("ticks resume after pause when restarted", function(){
+				var source = new TickSource(1);
+				source.start(0.5).pause(2).start(3);
+				var iterations = 0;
+				var expectedTicks = [0, 1, 2];
+				var expectedTimes = [0.5, 1.5, 3];
 				source.forEachTickBetween(0, 3.1, function(time, ticks){
 					expect(time).to.be.closeTo(expectedTimes[iterations], 0.001);
 					expect(ticks).to.equal(expectedTicks[iterations]);
@@ -314,6 +419,19 @@ define(["Test", "Tone/source/TickSource", "helper/Offline", "helper/Basic"], fun
 				source.dispose();
 			});
 
+			it("always increments by 1", function(){
+				var source = new TickSource(200);
+				source.frequency.setValueAtTime(200, 0);
+				source.frequency.linearRampToValueAtTime(1000, 4);
+				source.start(0);
+				var previousTick = -1;
+				source.forEachTickBetween(0, 10, function(time, ticks){
+					expect(ticks - previousTick).to.equal(1);
+					previousTick = ticks;
+				});
+				source.dispose();
+			});
+
 		});
 
 		context("Seconds", function(){
@@ -341,6 +459,29 @@ define(["Test", "Tone/source/TickSource", "helper/Offline", "helper/Basic"], fun
 				
 			});
 
+			it("seconds pauses at last second count", function(){
+				var source = new TickSource(1);
+				source.start(0).pause(1);
+				expect(source.getSecondsAtTime(0)).to.be.closeTo(0, 0.001);
+				expect(source.getSecondsAtTime(1)).to.be.closeTo(1, 0.001);
+				expect(source.getSecondsAtTime(2)).to.be.closeTo(1, 0.001);
+				source.dispose();
+			});
+
+			it("can handle multiple pauses", function(){
+				var source = new TickSource(1);
+				source.start(0).pause(1).start(2).pause(3).start(4).stop(6);
+				expect(source.getSecondsAtTime(0)).to.be.closeTo(0, 0.001);
+				expect(source.getSecondsAtTime(1)).to.be.closeTo(1, 0.001);
+				expect(source.getSecondsAtTime(2)).to.be.closeTo(1, 0.001);
+				expect(source.getSecondsAtTime(2.5)).to.be.closeTo(1.5, 0.001);
+				expect(source.getSecondsAtTime(3)).to.be.closeTo(2, 0.001);
+				expect(source.getSecondsAtTime(4.5)).to.be.closeTo(2.5, 0.001);
+				expect(source.getSecondsAtTime(5)).to.be.closeTo(3, 0.001);
+				expect(source.getSecondsAtTime(6)).to.be.closeTo(0, 0.001);
+				source.dispose();
+			});
+
 			it("get the elapsed time in seconds when starting in the future", function(){
 				return Offline(function(){
 					var source = new TickSource(1).start(0.1);
@@ -355,17 +496,15 @@ define(["Test", "Tone/source/TickSource", "helper/Offline", "helper/Basic"], fun
 			});
 
 			it("handles multiple starts and stops", function(){
-				return Offline(function(){
-					var source = new TickSource(1).start(0).stop(0.5).start(1).stop(1.5);
-					expect(source.getSecondsAtTime(0)).to.be.closeTo(0, 0.01);
-					expect(source.getSecondsAtTime(0.4)).to.be.closeTo(0.4, 0.01);
-					expect(source.getSecondsAtTime(0.5)).to.be.closeTo(0, 0.01);
-					expect(source.getSecondsAtTime(0.9)).to.be.closeTo(0, 0.01);
-					expect(source.getSecondsAtTime(1)).to.be.closeTo(0, 0.01);
-					expect(source.getSecondsAtTime(1.4)).to.be.closeTo(0.4, 0.01);
-					expect(source.getSecondsAtTime(1.5)).to.be.closeTo(0, 0.01);
-					
-				}, 2);
+				var source = new TickSource(1).start(0).stop(0.5).start(1).stop(1.5);
+				expect(source.getSecondsAtTime(0)).to.be.closeTo(0, 0.01);
+				expect(source.getSecondsAtTime(0.4)).to.be.closeTo(0.4, 0.01);
+				expect(source.getSecondsAtTime(0.5)).to.be.closeTo(0, 0.01);
+				expect(source.getSecondsAtTime(0.9)).to.be.closeTo(0, 0.01);
+				expect(source.getSecondsAtTime(1)).to.be.closeTo(0, 0.01);
+				expect(source.getSecondsAtTime(1.4)).to.be.closeTo(0.4, 0.01);
+				expect(source.getSecondsAtTime(1.5)).to.be.closeTo(0, 0.01);
+				source.dispose();
 			});
 		});
 

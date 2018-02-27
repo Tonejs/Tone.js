@@ -76,8 +76,9 @@ define(["Tone/core/Tone", "Tone/signal/TickSignal", "Tone/core/TimelineState",
 		time = this.toSeconds(time);
 		if (this._state.getValueAtTime(time) !== Tone.State.Started){
 			this._state.setStateAtTime(Tone.State.Started, time);
-			offset = Tone.defaultArg(offset, 0);
-			this.setTicksAtTime(offset, time);
+			if (!Tone.isUndef(offset)){
+				this.setTicksAtTime(offset, time);
+			}
 		}
 		return this;
 	};
@@ -95,6 +96,57 @@ define(["Tone/core/Tone", "Tone/signal/TickSignal", "Tone/core/TimelineState",
 		this._state.setStateAtTime(Tone.State.Stopped, time);
 		this.setTicksAtTime(0, time);
 		return this;
+	};
+
+	/**
+	 *  Pause the clock. Pausing does not reset the tick counter.
+	 *  @param {Time} [time=now] The time when the clock should stop.
+	 *  @returns {Tone.Clock} this
+	 */
+	Tone.TickSource.prototype.pause = function(time){
+		time = this.toSeconds(time);
+		if (this._state.getValueAtTime(time) === Tone.State.Started){
+			this._state.setStateAtTime(Tone.State.Paused, time);
+		}
+		return this;
+	};
+
+	/**
+	 * Get the elapsed ticks at the given time
+	 * @param  {Time} time  When to get the tick value
+	 * @return {Ticks}     The number of ticks
+	 */
+	Tone.TickSource.prototype.getTicksAtTime = function(time){
+		time = this.toSeconds(time);
+		var stopEvent = this._state.getLastState(Tone.State.Stopped, time);
+		//this event allows forEachBetween to iterate until the current time
+		var tmpEvent = { state : Tone.State.Paused, time : time };
+		this._state.add(tmpEvent);
+
+		//keep track of the previous offset event
+		var lastState = stopEvent;
+		var elapsedTicks = 0;
+
+		//iterate through all the events since the last stop
+		this._state.forEachBetween(stopEvent.time, time + this.sampleTime, function(e){
+			var periodStartTime = lastState.time;
+			//if there is an offset event in this period use that
+			var offsetEvent = this._tickOffset.get(e.time);
+			if (offsetEvent.time >= lastState.time){
+				elapsedTicks = offsetEvent.ticks;
+				periodStartTime = offsetEvent.time;
+			}
+			if (lastState.state === Tone.State.Started && e.state !== Tone.State.Started){
+				elapsedTicks += this.frequency.getTicksAtTime(e.time) - this.frequency.getTicksAtTime(periodStartTime);
+			} 
+			lastState = e;
+		}.bind(this));
+
+		//remove the temporary event
+		this._state.remove(tmpEvent);
+
+		//return the ticks
+		return elapsedTicks;
 	};
 
 	/**
@@ -131,41 +183,36 @@ define(["Tone/core/Tone", "Tone/signal/TickSignal", "Tone/core/TimelineState",
 		}
 	});
 
-	/**
-	 * Get the elapsed seconds since start at the given time
-	 * @param  {Time} time When to get the seconds
-	 * @return {Seconds}      The elapsed seconds at the given time.
-	 */
 	Tone.TickSource.prototype.getSecondsAtTime = function(time){
-		time = this.toSeconds(time);
-		var stateEvent = this._state.get(time);
-		var offsetEvent = this._tickOffset.get(time);
-		if (stateEvent.state === Tone.State.Stopped){
-			return offsetEvent.seconds;
-		} else if (stateEvent.state === Tone.State.Started){
-			var elapsedTime = time - offsetEvent.time;
-			return elapsedTime + offsetEvent.seconds;
-		}
-	};
+		var stopEvent = this._state.getLastState(Tone.State.Stopped, time);
+		//this event allows forEachBetween to iterate until the current time
+		var tmpEvent = { state : Tone.State.Paused, time : time };
+		this._state.add(tmpEvent);
 
-	/**
-	 * Get the elapsed ticks at the given time
-	 * @param  {Time} time When to get the ticks
-	 * @return {Ticks}      The elapsed ticks at the given time.
-	 */
-	Tone.TickSource.prototype.getTicksAtTime = function(time){
-		time = this.toSeconds(time);
-		var stateEvent = this._state.get(time);
-		var offsetEvent = this._tickOffset.get(time);
-		if (!stateEvent){
-			return 0;
-		} else if (stateEvent.state === Tone.State.Stopped){
-			return offsetEvent.ticks;
-		} else if (stateEvent.state === Tone.State.Started){
-			var startTime = offsetEvent.time;
-			var elapsedTicks = this.frequency.getTicksAtTime(time) - this.frequency.getTicksAtTime(startTime);
-			return elapsedTicks + offsetEvent.ticks;
-		}
+		//keep track of the previous offset event
+		var lastState = stopEvent;
+		var elapsedSeconds = 0;
+
+		//iterate through all the events since the last stop
+		this._state.forEachBetween(stopEvent.time, time + this.sampleTime, function(e){
+			var periodStartTime = lastState.time;
+			//if there is an offset event in this period use that
+			var offsetEvent = this._tickOffset.get(e.time);
+			if (offsetEvent.time >= lastState.time){
+				elapsedSeconds = offsetEvent.seconds;
+				periodStartTime = offsetEvent.time;
+			}
+			if (lastState.state === Tone.State.Started && e.state !== Tone.State.Started){
+				elapsedSeconds += e.time - periodStartTime;
+			} 
+			lastState = e;
+		}.bind(this));
+
+		//remove the temporary event
+		this._state.remove(tmpEvent);
+
+		//return the ticks
+		return elapsedSeconds;
 	};
 
 	/**
@@ -176,7 +223,7 @@ define(["Tone/core/Tone", "Tone/signal/TickSignal", "Tone/core/TimelineState",
 	 */
 	Tone.TickSource.prototype.setTicksAtTime = function(ticks, time){
 		time = this.toSeconds(time);
-		// this._tickOffset.cancel(time);
+		this._tickOffset.cancel(time);
 		this._tickOffset.add({
 			"time" : time,
 			"ticks" : ticks,
@@ -199,11 +246,28 @@ define(["Tone/core/Tone", "Tone/signal/TickSignal", "Tone/core/TimelineState",
 	};
 
 	/**
+	 * Get the time of the given tick. The second argument
+	 * is when to test before. Since ticks can be set (with setTicksAtTime)
+	 * there may be multiple times for a given tick value. 
+	 * @param  {Ticks} ticks The tick number.
+	 * @param  {Time=} before When to measure the tick value from. 
+	 * @return {Time}       The time of the tick
+	 */
+	Tone.TickSource.prototype.getTimeOfTick = function(tick, before){
+		before = Tone.defaultArg(before, this.now());
+		var offset = this._tickOffset.get(before);
+		var event = this._state.get(before);
+		var startTime = Math.max(offset.time, event.time);
+		var absoluteTicks = this.frequency.getTicksAtTime(startTime) + tick - offset.ticks;
+		return this.frequency.getTimeOfTick(absoluteTicks);
+	};
+
+	/**
 	 *  Invoke the callback event at all scheduled ticks between the 
 	 *  start time and the end time
 	 *  @param  {Time}    startTime  The beginning of the search range
 	 *  @param  {Time}    endTime    The end of the search range
-	 *  @param  {Function<Time, Ticks>}  callback   The callback to invoke with each tick
+	 *  @param  {Function<Time,Ticks>}  callback   The callback to invoke with each tick
 	 *  @return  {Tone.TickSource}    this
 	 */
 	Tone.TickSource.prototype.forEachTickBetween = function(startTime, endTime, callback){
@@ -211,7 +275,7 @@ define(["Tone/core/Tone", "Tone/signal/TickSignal", "Tone/core/TimelineState",
 		//only iterate through the sections where it is "started"
 		var lastStateEvent = this._state.get(startTime);
 		this._state.forEachBetween(startTime, endTime, function(event){
-			if (lastStateEvent.state === Tone.State.Started && event.state === Tone.State.Stopped){
+			if (lastStateEvent.state === Tone.State.Started && event.state !== Tone.State.Started){
 				this.forEachTickBetween(Math.max(lastStateEvent.time, startTime), event.time, callback);
 			}
 			lastStateEvent = event;
@@ -220,9 +284,9 @@ define(["Tone/core/Tone", "Tone/signal/TickSignal", "Tone/core/TimelineState",
 		startTime = Math.max(lastStateEvent.time, startTime);
 
 		if (lastStateEvent.state === Tone.State.Started && this._state){
-			var offsetEvent = this._tickOffset.get(startTime);
+			//figure out the difference between the frequency ticks and the 
 			var startTicks = this.frequency.getTicksAtTime(startTime);
-			var ticksAtStart = this.frequency.getTicksAtTime(offsetEvent.time);
+			var ticksAtStart = this.frequency.getTicksAtTime(lastStateEvent.time);
 			var diff = startTicks - ticksAtStart;
 			var offset = diff % 1;
 			if (offset !== 0){
@@ -232,18 +296,13 @@ define(["Tone/core/Tone", "Tone/signal/TickSignal", "Tone/core/TimelineState",
 			var error = null;
 			while (nextTickTime < endTime && this._state){
 				try {
-					callback(nextTickTime, Math.floor(this.getTicksAtTime(nextTickTime + this.sampleTime)));
+					callback(nextTickTime, Math.round(this.getTicksAtTime(nextTickTime)));
 				} catch (e){
 					error = e;
 					break;
 				}
 				if (this._state){
 					nextTickTime += this.frequency.getDurationOfTicks(1, nextTickTime);
-					var nextEvent = this._tickOffset.get(nextTickTime);
-					if (nextEvent !== offsetEvent){
-						nextTickTime = nextEvent.time;
-						offsetEvent = nextEvent;
-					}
 				} 
 			}
 		}
@@ -253,46 +312,6 @@ define(["Tone/core/Tone", "Tone/signal/TickSignal", "Tone/core/TimelineState",
 		}
 		
 		return this;
-
-		/*var event = this._tickOffset.get(startTime);
-		var error = null;
-		var startTicks = this.frequency.getTicksAtTime(startTime);
-		var ticksAtStart = this.frequency.getTicksAtTime(event.time);
-		var diff = startTicks - ticksAtStart;
-		var offset = diff % 1;*/
-		/*console.log(offset);
-		if (Math.abs(1 - offset) > 1e-3){
-			offset = 1 - offset;
-		}*/
-		// console.log(offset);
-		startTicks -= offset;
-		var nextTickTime = this.frequency.getTimeOfTick(startTicks);
-
-		while (nextTickTime <= endTime && this._state){
-			// console.log(nextTickTime);
-			if (this._state.getValueAtTime(nextTickTime) === Tone.State.Started && nextTickTime >= startTime){
-				try {
-					callback(nextTickTime, Math.round(this.getTicksAtTime(nextTickTime + this.blockTime)));
-				} catch (e){
-					error = e;
-					break;
-				}
-			}
-			if (this.frequency){
-				nextTickTime += this.frequency.getDurationOfTicks(1, nextTickTime);
-				var nextEvent = this._tickOffset.getAfter(nextTickTime);
-				if (nextEvent !== event){
-					nextTickTime = nextEvent.time;
-					event = nextEvent;
-				}
-			} 
-		}
-
-		if (error){
-			throw error;
-		}
-
-		return nextTickTime;
 	};
 
 	/**
