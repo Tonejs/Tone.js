@@ -61,5 +61,21 @@ define(["Test", "Tone/core/TimelineState"], function(Test, TimelineState) {
 			sched.dispose();
 		});
 		
+		it("gets the next occurance of the state at or before the given time", function(){
+			var sched = new TimelineState();
+			sched.setStateAtTime("A", 0);
+			sched.setStateAtTime("B", 1);
+			sched.setStateAtTime("C", 2);
+			sched.setStateAtTime("B", 3);
+			expect(sched.getNextState("B", 1)).exists;
+			expect(sched.getNextState("B", 1).state).is.equal("B");
+			expect(sched.getNextState("B", 2)).exists;
+			expect(sched.getNextState("B", 2).state).is.equal("B");
+			expect(sched.getNextState("B", 2).time).is.equal(3);
+			expect(sched.getNextState("B", 0.9)).exists;
+			expect(sched.getNextState("B", 0.9).state).is.equal("B");
+			expect(sched.getNextState("B", 0.9).time).is.equal(1);
+			sched.dispose();
+		});
 	});
 });
