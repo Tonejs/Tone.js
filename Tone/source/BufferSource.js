@@ -230,7 +230,6 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/G
 		}
 		this._source.buffer = this.buffer.get();
 		this._source.loopEnd = this.loopEnd || this.buffer.duration;
-		Tone.isPast(time);
 		if (offset < this.buffer.duration){
 			this._sourceStarted = true;
 			this._source.start(time, offset);

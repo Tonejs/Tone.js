@@ -184,13 +184,6 @@ define(["Tone/core/Tone", "Tone/type/Type", "Tone/core/AudioNode", "Tone/core/Ti
 	Tone.Param.prototype._minOutput = 0.00001;
 
 	/**
-	 *  If scheduling past events should create a warning notification
-	 *  @type {Boolean}
-	 *  @private
-	 */
-	Tone.Param.prototype._ignorePast = false;
-
-	/**
 	 *  The event types
 	 *  @enum {String}
 	 *  @private
@@ -214,9 +207,6 @@ define(["Tone/core/Tone", "Tone/type/Type", "Tone/core/AudioNode", "Tone/core/Ti
 	Tone.Param.prototype.setValueAtTime = function(value, time){
 		time = this.toSeconds(time);
 		value = this._fromUnits(value);
-		if (!this._ignorePast){
-			Tone.isPast(time);
-		}
 		this._events.add({
 			"type" : Tone.Param.AutomationType.SetValue,
 			"value" : value,
@@ -292,9 +282,6 @@ define(["Tone/core/Tone", "Tone/type/Type", "Tone/core/AudioNode", "Tone/core/Ti
 	Tone.Param.prototype.linearRampToValueAtTime = function(value, endTime){
 		value = this._fromUnits(value);
 		endTime = this.toSeconds(endTime);
-		if (!this._ignorePast){
-			Tone.isPast(endTime);
-		}
 		this._events.add({
 			"type" : Tone.Param.AutomationType.Linear,
 			"value" : value,
@@ -316,9 +303,6 @@ define(["Tone/core/Tone", "Tone/type/Type", "Tone/core/AudioNode", "Tone/core/Ti
 		value = this._fromUnits(value);
 		value = Math.max(this._minOutput, value);
 		endTime = this.toSeconds(endTime);
-		if (!this._ignorePast){
-			Tone.isPast(endTime);
-		}
 		//store the event
 		this._events.add({
 			"type" : Tone.Param.AutomationType.Exponential,
@@ -408,9 +392,6 @@ define(["Tone/core/Tone", "Tone/type/Type", "Tone/core/AudioNode", "Tone/core/Ti
 	Tone.Param.prototype.exponentialApproachValueAtTime = function(value, time, rampTime){
 		var timeConstant = Math.log(this.toSeconds(rampTime)+1)/Math.log(200);
 		time = this.toSeconds(time);
-		if (!this._ignorePast){
-			Tone.isPast(time);
-		}
 		return this.setTargetAtTime(value, time, timeConstant);
 	};
 

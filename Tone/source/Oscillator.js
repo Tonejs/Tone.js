@@ -123,7 +123,6 @@ function(Tone){
 		this.detune.connect(this._oscillator.detune);
 		//start the oscillator
 		time = this.toSeconds(time);
-		Tone.isPast(time);
 		this._oscillator.start(time);
 	};
 
@@ -136,7 +135,6 @@ function(Tone){
 	Tone.Oscillator.prototype._stop = function(time){
 		if (this._oscillator){
 			time = this.toSeconds(time);
-			Tone.isPast(time);
 			this._oscillator.stop(time);
 		}
 		return this;

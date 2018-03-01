@@ -34,14 +34,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone) {
 	};
 
 	Tone.extend(Tone.TickSignal, Tone.Signal);
-
-	/**
-	 *  If scheduling past events should create a warning notification
-	 *  @type {Boolean}
-	 *  @private
-	 */
-	Tone.TickSignal.prototype._ignorePast = true;
-
+	
 	/**
 	 * Wraps Tone.Signal methods so that they also
 	 * record the ticks.

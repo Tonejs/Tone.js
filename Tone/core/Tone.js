@@ -514,17 +514,6 @@ define(function(){
 		return Tone.context.now();
 	};
 
-	/**
-	 * Adds warning in the console if the scheduled time has passed.
-	 * @type {Time}
-	 */
-	Tone.isPast = function(time){
-		if (time < Tone.context.currentTime){
-			// eslint-disable-next-line no-console
-			console.warn("Time '" + time + "' is in the past. Scheduled time must be ≥ AudioContext.currentTime");
-		}
-	};
-
 	///////////////////////////////////////////////////////////////////////////
 	//	INHERITANCE
 	///////////////////////////////////////////////////////////////////////////

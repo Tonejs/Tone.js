@@ -2,7 +2,7 @@ define(["Test", "Tone/core/Tone", "helper/PassAudio", "Tone/source/Oscillator",
 	"Tone/instrument/Synth", "helper/Offline",
 	"Tone/component/Filter", "Tone/core/Gain", "Tone/core/Context",
 	"helper/BufferTest", "Tone/component/Merge", "Tone/signal/Signal", "Tone/component/Split", "helper/Supports"],
-function (Test, Tone, PassAudio, Oscillator, Synth, Offline,
+function(Test, Tone, PassAudio, Oscillator, Synth, Offline,
 	Filter, Gain, Context, BufferTest, Merge, Signal, Split, Supports) {
 
 	describe("Tone", function(){
@@ -215,19 +215,6 @@ function (Test, Tone, PassAudio, Oscillator, Synth, Offline,
 					return ctx.close();
 				});
 			}
-
-			it("tests if the audio context time has passed", function(){
-				// overwrite warn to throw errors
-				var originalWarn = console.warn;
-				console.warn = function(warning){
-					throw new Error(warning);
-				};
-				var currentTime = Tone.context.currentTime;
-				expect(function(){
-					Tone.isPast(currentTime-1);
-				}).to.throw(Error);
-				console.warn = originalWarn;
-			});
 
 		});
 
