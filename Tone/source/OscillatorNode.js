@@ -159,6 +159,10 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/G
 		return this;
 	};
 
+	/**
+	 *  Cancel a scheduled stop event
+	 *  @return  {Tone.OscillatorNode}  this
+	 */
 	Tone.OscillatorNode.prototype.cancelStop = function(){
 		if (this._startTime !== -1){
 			//cancel the stop envelope
@@ -167,6 +171,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/G
 			this.context.clearTimeout(this._timeout);
 			this._stopTime = -1;
 		}
+		return this;
 	};
 
 	/**
