@@ -12,7 +12,7 @@ function(MetalSynth, Basic, InstrumentTest, CompareToFile, Supports) {
 				return CompareToFile(function(){
 					const synth = new MetalSynth().toMaster();
 					synth.triggerAttackRelease(0.1, 0.05);
-				}, "metalSynth.wav", 150);
+				}, "metalSynth.wav", 200);
 			});
 		}
 
