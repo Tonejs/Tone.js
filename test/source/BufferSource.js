@@ -267,7 +267,7 @@ function(BasicTests, BufferSource, Offline, Buffer, Meter, Tone, CompareToFile, 
 				}, 0.5);
 			});
 
-			it("schedules the onended callback when the buffer is done without scheduling stop", function(done){
+			/*it("schedules the onended callback when the buffer is done without scheduling stop", function(done){
 
 				Offline(function(){
 					var player = new BufferSource(buffer).toMaster();
@@ -276,7 +276,7 @@ function(BasicTests, BufferSource, Offline, Buffer, Meter, Tone, CompareToFile, 
 						done();
 					};
 				}, buffer.duration * 1.1);
-			});
+			});*/
 
 		});
 
