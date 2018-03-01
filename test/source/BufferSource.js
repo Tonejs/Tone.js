@@ -1,6 +1,6 @@
-define(["helper/Basic", "Tone/source/BufferSource", "helper/Offline",
-	"Tone/core/Buffer", "helper/Meter", "Tone/core/Tone", "helper/CompareToFile"],
-function(BasicTests, BufferSource, Offline, Buffer, Meter, Tone, CompareToFile){
+define(["helper/Basic", "Tone/source/BufferSource", "helper/Offline", "Tone/core/Buffer", 
+	"helper/Meter", "Tone/core/Tone", "helper/CompareToFile", "helper/Supports", "Test"],
+function(BasicTests, BufferSource, Offline, Buffer, Meter, Tone, CompareToFile, Supports, Test){
 
 	if (window.__karma__){
 		Buffer.baseUrl = "/base/test/";
@@ -231,18 +231,18 @@ function(BasicTests, BufferSource, Offline, Buffer, Meter, Tone, CompareToFile){
 				});
 			});
 
-			/*it("schedules the onended callback in online context", function(done){
-				var player = new BufferSource(buffer);
-				player.start().stop("+0.1");
-
-				var wasCalled = false;
-				player.onended = function(plyr){
-					expect(plyr).to.equal(player);
-					expect(player.state).to.equal("stopped");
-					player.dispose();
-					done();
-				};
-			});*/
+			if (Supports.ONLINE_TESTING){
+				it("schedules the onended callback in online context", function(done){
+					var player = new BufferSource(buffer);
+					player.start().stop("+0.1");
+					player.onended = function(plyr){
+						expect(plyr).to.equal(player);
+						expect(player.state).to.equal("stopped");
+						player.dispose();
+						done();
+					};
+				});
+			}
 
 			it("schedules the onended callback when offline", function(done){
 
@@ -616,14 +616,47 @@ function(BasicTests, BufferSource, Offline, Buffer, Meter, Tone, CompareToFile){
 				});
 			});
 
-			it("stops playing at the earlier time if invoked with 'stop' at a later time", function(){
+			it("stops playing at the last scheduled stop time", function(){
 				return Offline(function(){
 					var player = new BufferSource(buffer);
 					player.toMaster();
 					player.start(0).stop(0.1).stop(0.2);
 				}, 0.3).then(function(buffer){
-					expect(buffer.getLastSoundTime()).to.be.closeTo(0.1, 0.02);
+					expect(buffer.getLastSoundTime()).to.be.closeTo(0.2, 0.02);
 				});
+			});
+
+			if (Supports.ONLINE_TESTING){
+				it("throws an error if stop is scheduled once the buffer has already completed in the online context", function(done){
+					var buff = Buffer.fromArray(new Float32Array(Tone.context.sampleRate * 0.05));
+					var player = new BufferSource(buff);
+					player.toMaster();
+					player.start();
+
+					setTimeout(function(){
+						expect(function(){
+							player.stop();
+						}).throws(Error);
+						done();
+					}, 200);
+
+				});
+			}
+
+			it("throws an error if stop is scheduled once the buffer has already completed in the offline context", function(){
+				return Offline(function(Transport){
+					var buff = Buffer.fromArray(new Float32Array(Transport.context.sampleRate * 0.2));
+					var player = new BufferSource(buff);
+					player.toMaster();
+					player.start().stop(0.1);
+
+					return Test.atTime(0.15, function(){
+						expect(function(){
+							player.stop(0.2);
+						}).throws(Error);
+					});
+				}, 0.2);
+
 			});
 		});
 
