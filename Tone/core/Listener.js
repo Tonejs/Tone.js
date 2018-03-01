@@ -290,6 +290,7 @@ define(["Tone/core/Tone", "Tone/component/CrossFade", "Tone/component/Merge", "T
 	//SINGLETON SETUP
 	var ListenerConstructor = Tone.Listener;
 	Tone.Listener = new ListenerConstructor();
+	Tone.context.Listener = Tone.Listener;
 
 	Tone.Context.on("init", function(context){
 		if (context.Listener instanceof ListenerConstructor){

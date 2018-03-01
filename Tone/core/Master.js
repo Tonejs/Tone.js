@@ -144,6 +144,7 @@ define(["Tone/core/Tone", "Tone/component/Volume", "Tone/core/Context", "Tone/co
 	 */
 	var MasterConstructor = Tone.Master;
 	Tone.Master = new MasterConstructor();
+	Tone.context.Master = Tone.Master;
 
 	Tone.Context.on("init", function(context){
 		// if it already exists, just restore it
