@@ -766,7 +766,6 @@ define(["Tone/core/Tone", "Tone/core/Clock", "Tone/type/Type", "Tone/core/Timeli
 
 	var TransportConstructor = Tone.Transport;
 	Tone.Transport = new TransportConstructor();
-	Tone.context.Transport = Tone.Transport;
 
 	Tone.Context.on("init", function(context){
 		if (context.Transport instanceof TransportConstructor){
