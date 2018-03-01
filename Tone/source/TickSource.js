@@ -92,6 +92,14 @@ define(["Tone/core/Tone", "Tone/signal/TickSignal", "Tone/core/TimelineState",
 	 */
 	Tone.TickSource.prototype.stop = function(time){
 		time = this.toSeconds(time);
+		//cancel the previous stop
+		if (this._state.getValueAtTime(time) === Tone.State.Stopped){
+			var event = this._state.get(time);
+			if (event.time > this.now()){
+				this._tickOffset.cancel(event.time);
+				this._state.cancel(event.time);
+			}
+		}
 		this._state.cancel(time);
 		this._state.setStateAtTime(Tone.State.Stopped, time);
 		this.setTicksAtTime(0, time);
@@ -101,13 +109,25 @@ define(["Tone/core/Tone", "Tone/signal/TickSignal", "Tone/core/TimelineState",
 	/**
 	 *  Pause the clock. Pausing does not reset the tick counter.
 	 *  @param {Time} [time=now] The time when the clock should stop.
-	 *  @returns {Tone.Clock} this
+	 *  @returns {Tone.TickSource} this
 	 */
 	Tone.TickSource.prototype.pause = function(time){
 		time = this.toSeconds(time);
 		if (this._state.getValueAtTime(time) === Tone.State.Started){
 			this._state.setStateAtTime(Tone.State.Paused, time);
 		}
+		return this;
+	};
+
+	/**
+	 *  Cancel start/stop/pause and setTickAtTime events scheduled after the given time.
+	 *  @param {Time} [time=now] When to clear the events after
+	 *  @returns {Tone.TickSource} this
+	 */
+	Tone.TickSource.prototype.cancel = function(time){
+		time = this.toSeconds(time);
+		this._state.cancel(time);
+		this._tickOffset.cancel(time);
 		return this;
 	};
 

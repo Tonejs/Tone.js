@@ -135,17 +135,30 @@ define(["Test", "Tone/source/TickSource", "helper/Offline", "helper/Basic"], fun
 				source.dispose();
 			});
 
+			it("can invoke stop multiple times, takes the last invokation", function(){
+				var source = new TickSource(1);
+				source.start(0).stop(3).stop(2).stop(4);
+				expect(source.getTicksAtTime(0)).to.be.closeTo(0, 0.01);
+				expect(source.getTicksAtTime(1)).to.be.closeTo(1, 0.01);
+				expect(source.getTicksAtTime(2)).to.be.closeTo(2, 0.01);
+				expect(source.getTicksAtTime(3)).to.be.closeTo(3, 0.01);
+				expect(source.getTicksAtTime(4)).to.be.closeTo(0, 0.01);
+				expect(source.getTicksAtTime(5)).to.be.closeTo(0, 0.01);
+				expect(source.getTicksAtTime(6)).to.be.closeTo(0, 0.01);
+				source.dispose();
+			});
+
 			it("can set multiple setTicksAtTime", function(){
 				var source = new TickSource(1);
-				source.start(0, 1).stop(3);
+				source.start(0, 1).pause(3);
 				source.setTicksAtTime(1, 4);
 				source.stop(5).start(6);
 				source.setTicksAtTime(2, 7);
 				expect(source.getTicksAtTime(0)).to.be.closeTo(1, 0.01);
 				expect(source.getTicksAtTime(1)).to.be.closeTo(2, 0.01);
 				expect(source.getTicksAtTime(2)).to.be.closeTo(3, 0.01);
-				expect(source.getTicksAtTime(3)).to.be.closeTo(0, 0.01);
-				expect(source.getTicksAtTime(3.5)).to.be.closeTo(0, 0.01);
+				expect(source.getTicksAtTime(3)).to.be.closeTo(4, 0.01);
+				expect(source.getTicksAtTime(3.5)).to.be.closeTo(4, 0.01);
 				expect(source.getTicksAtTime(4)).to.be.closeTo(1, 0.01);
 				expect(source.getTicksAtTime(5)).to.be.closeTo(0, 0.01);
 				expect(source.getTicksAtTime(6)).to.be.closeTo(0, 0.01);
@@ -190,6 +203,21 @@ define(["Test", "Tone/source/TickSource", "helper/Offline", "helper/Basic"], fun
 				expect(source.getTimeOfTick(12, 3)).to.be.closeTo(3, 0.01);
 				expect(source.getTimeOfTick(3, 4)).to.be.closeTo(4, 0.01);
 				expect(source.getTimeOfTick(5, 4)).to.be.closeTo(5, 0.01);
+				source.dispose();
+			});
+
+			it("can cancel scheduled events", function(){
+				var source = new TickSource(1);
+				source.start(0).stop(3);
+				source.setTicksAtTime(10, 2);
+				source.cancel(1);
+				expect(source.getTicksAtTime(0)).to.be.closeTo(0, 0.01);
+				expect(source.getTicksAtTime(1)).to.be.closeTo(1, 0.01);
+				expect(source.getTicksAtTime(2)).to.be.closeTo(2, 0.01);
+				expect(source.getTicksAtTime(3)).to.be.closeTo(3, 0.01);
+				expect(source.getTicksAtTime(4)).to.be.closeTo(4, 0.01);
+				expect(source.getTicksAtTime(5)).to.be.closeTo(5, 0.01);
+				expect(source.getTicksAtTime(6)).to.be.closeTo(6, 0.01);
 				source.dispose();
 			});
 		});
