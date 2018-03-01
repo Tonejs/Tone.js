@@ -95,7 +95,7 @@ define(["Tone/core/Tone", "Tone/signal/TickSignal", "Tone/core/TimelineState",
 		//cancel the previous stop
 		if (this._state.getValueAtTime(time) === Tone.State.Stopped){
 			var event = this._state.get(time);
-			if (event.time > this.now()){
+			if (event.time > 0){
 				this._tickOffset.cancel(event.time);
 				this._state.cancel(event.time);
 			}
