@@ -102,6 +102,123 @@ function(BasicTests, Player, Offline, SourceTests, Buffer, Meter, Test, Tone, Co
 
 		});
 
+		context("Position/State", function(){
+
+			it("gets the current position of the playback", function(){
+				return Offline(function(){
+					var player = new Player(buffer).toMaster();
+					player.start(0);
+					return function(time){
+						expect(player.position).to.be.closeTo(time, 0.01);
+						expect(player.state).to.equal("started");
+					};
+				}, buffer.duration);
+			});
+
+			it("gets the current position of the playback when rate is < 1", function(){
+				return Offline(function(){
+					var player = new Player(buffer).toMaster();
+					player.start(0);
+					player.playbackRate = 0.5;
+					return function(time){
+						expect(player.position).to.be.closeTo(time*0.5, 0.01);
+						expect(player.state).to.equal("started");
+					};
+				}, buffer.duration);
+			});
+
+			it("gets the current position of the playback when rate is > 1", function(){
+				return Offline(function(){
+					var player = new Player(buffer).toMaster();
+					player.playbackRate = 2;
+					player.start(0);
+					return function(time){
+						if (time < buffer.duration / 2){
+							expect(player.position).to.be.closeTo(time*2, 0.01);
+							expect(player.state).to.equal("started");
+						} else {
+							expect(player.state).to.equal("stopped");
+						}
+					};
+				}, buffer.duration);
+			});
+
+			it("position is 0 after the buffer has completed", function(){
+				return Offline(function(){
+					var player = new Player(buffer).toMaster();
+					player.start(0);
+					return function(time){
+						if (time < buffer.duration){
+							expect(player.position).to.be.closeTo(time, 0.01);
+							expect(player.state).to.equal("started");
+						} else if (time > buffer.duration){
+							expect(player.position).to.equal(0);
+							expect(player.state).to.equal("stopped");
+						}
+					};
+				}, buffer.duration + 0.1);
+			});
+
+			it("returns correct position while looping", function(){
+				return Offline(function(){
+					var player = new Player(buffer).toMaster();
+					player.start(0);
+					player.loop = true;
+					return function(time){
+						expect(player.state).to.equal("started");
+						Test.whenBetween(time, 0, buffer.duration, function(){
+							expect(player.position).to.be.closeTo(time, 0.01);
+						});
+						Test.whenBetween(time, buffer.duration, buffer.duration*2, function(){
+							expect(player.position).to.be.closeTo(time - buffer.duration, 0.01);
+						});
+						
+					};
+				}, buffer.duration * 2);
+			});
+
+			it("can stop looping after second loop", function(){
+				return Offline(function(){
+					var player = new Player(buffer).toMaster();
+					player.start(0);
+					player.loop = true;
+					return function(time){
+						Test.whenBetween(time, 0, buffer.duration, function(){
+							expect(player.state).to.equal("started");
+							expect(player.position).to.be.closeTo(time, 0.01);
+						});
+						Test.whenBetween(time, buffer.duration, buffer.duration*2, function(){
+							//set to stop looping
+							player.loop = false;
+							expect(player.position).to.be.closeTo(time - buffer.duration, 0.01);
+							expect(player.state).to.equal("started");
+						});
+						Test.whenBetween(time, buffer.duration*2, Infinity, function(){
+							expect(player.position).to.equal(0);
+							expect(player.state).to.equal("stopped");
+						});
+						
+					};
+				}, buffer.duration * 3);
+			});
+
+			it("can change playbackRate during playback", function(){
+				return Meter(function(){
+					var player = new Player(buffer).toMaster();
+					player.start(0);
+					return Test.atTime(buffer.duration * 0.5, function(){
+						player.playbackRate = 2;
+					});
+				}, buffer.duration).then(function(rms){
+					expect(rms.getValueAtTime(buffer.duration * 0)).to.be.above(0);
+					expect(rms.getValueAtTime(buffer.duration * 0.5)).to.be.above(0);
+					expect(rms.getValueAtTime(buffer.duration * 0.75)).to.be.above(0);
+					expect(rms.getValueAtTime(buffer.duration * 0.8)).to.equal(0);
+				});
+			});
+
+		});
+
 		context("Reverse", function(){
 
 			it("can be played in reverse", function(){
@@ -159,6 +276,19 @@ function(BasicTests, Player, Offline, SourceTests, Buffer, Meter, Test, Tone, Co
 				});
 			});
 
+			it("loops the audio when loop is set after start", function(){
+				return Meter(function(){
+					var player = new Player(buffer);
+					player.toMaster();
+					player.start(0);
+					player.loop = true;
+				}, buffer.duration * 1.5).then(function(rms){
+					rms.forEach(function(level){
+						expect(level).to.be.above(0);
+					});
+				});
+			});
+
 			it("offset is the loopStart when set to loop", function(){
 				var testSample = buffer.toArray()[Math.floor(0.1 * buffer.context.sampleRate)];
 				return Offline(function(){
@@ -169,6 +299,24 @@ function(BasicTests, Player, Offline, SourceTests, Buffer, Meter, Test, Tone, Co
 					player.start(0);
 				}, 0.05).then(function(buffer){
 					expect(buffer.toArray()[0]).to.equal(testSample);
+				});
+			});
+
+			it("loops the audio for the specific duration", function(){
+				var playDur = buffer.duration * 1.5;
+				return Meter(function(){
+					var player = new Player(buffer);
+					player.loop = true;
+					player.toMaster();
+					player.start(0, 0, playDur);
+				}, buffer.duration * 2).then(function(buff){
+					buff.forEach(function(val, time){
+						if (time < (playDur - 0.01)){
+							expect(val).to.be.greaterThan(0);
+						} else if (time > playDur){
+							expect(val).to.equal(0);
+						}
+					});
 				});
 			});
 
@@ -364,14 +512,14 @@ function(BasicTests, Player, Offline, SourceTests, Buffer, Meter, Test, Tone, Co
 				});
 			});
 
-			it("stops playing if multiple start/stops with 'stop' at a sooner time", function(){
+			it("stops playing if at the last scheduled 'stop' time", function(){
 				return Offline(function(){
 					var player = new Player(buffer);
 					player.toMaster();
 					player.start(0, 0, 0.05).start(0.1, 0, 0.05).start(0.2, 0, 0.05);
 					player.stop(0.1);
 				}, 0.3).then(function(buffer){
-					expect(buffer.getLastSoundTime()).to.be.closeTo(0.05, 0.02);
+					expect(buffer.getLastSoundTime()).to.be.closeTo(0.1, 0.02);
 				});
 			});
 
