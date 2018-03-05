@@ -1,6 +1,6 @@
 define(["Tone/instrument/MonoSynth", "helper/Basic",
-	"helper/InstrumentTests", "helper/CompareToFile", "helper/Supports"],
-function(MonoSynth, Basic, InstrumentTest, CompareToFile, Supports) {
+	"helper/InstrumentTests", "helper/CompareToFile", "helper/Supports", "helper/Offline"],
+function(MonoSynth, Basic, InstrumentTest, CompareToFile, Supports, Offline) {
 
 	describe("MonoSynth", function(){
 
@@ -63,6 +63,21 @@ function(MonoSynth, Basic, InstrumentTest, CompareToFile, Supports) {
 				});
 				expect(monoSynth.get().envelope.decay).to.equal(0.24);
 				monoSynth.dispose();
+			});
+
+			it("is silent after triggerAttack if sustain is 0", function(){
+				return Offline(function(){
+					var synth = new MonoSynth({
+						envelope : {
+							attack : 0.1,
+							decay : 0.1,
+							sustain : 0,
+						}
+					}).toMaster();
+					synth.triggerAttack("C4", 0);
+				}, 0.5).then(function(buffer){
+					expect(buffer.getLastSoundTime()).to.be.closeTo(0.2, 0.01);
+				});
 			});
 
 		});

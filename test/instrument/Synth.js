@@ -68,6 +68,21 @@ function(Synth, Basic, InstrumentTest, APITest, Offline, Frequency, CompareToFil
 				});
 			});
 
+			it("is silent after triggerAttack if sustain is 0", function(){
+				return Offline(function(){
+					var synth = new Synth({
+						envelope : {
+							attack : 0.1,
+							decay : 0.1,
+							sustain : 0,
+						}
+					}).toMaster();
+					synth.triggerAttack("C4", 0);
+				}, 0.5).then(function(buffer){
+					expect(buffer.getLastSoundTime()).to.be.closeTo(0.2, 0.01);
+				});
+			});
+
 			APITest.method(Synth, "triggerAttack", ["Frequency", "Time=", "NormalRange="]);
 			APITest.method(Synth, "triggerRelease", ["Time="]);
 			APITest.method(Synth, "triggerAttackRelease", ["Frequency", "Time=", "Time=", "NormalRange="]);
