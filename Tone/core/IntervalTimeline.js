@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/type/Type"], function(Tone) {
+define(["Tone/core/Tone", "Tone/type/Type"], function(Tone){
 
 	"use strict";
 
@@ -51,7 +51,7 @@ define(["Tone/core/Tone", "Tone/type/Type"], function(Tone) {
 		}
 		this._length++;
 		// Restructure tree to be balanced
-		while (node !== null) {
+		while (node !== null){
 			node.updateHeight();
 			node.updateMax();
 			this._rebalance(node);
@@ -175,7 +175,7 @@ define(["Tone/core/Tone", "Tone/type/Type"], function(Tone) {
 				temp = replacement;
 			} else {
 				replacement = node.right.left;
-				while (replacement.left !== null) {
+				while (replacement.left !== null){
 					replacement = replacement.left;
 				}
 				replacement.parent = replacement.parent;
@@ -262,7 +262,7 @@ define(["Tone/core/Tone", "Tone/type/Type"], function(Tone) {
 			} else {
 				this._rotateRight(node);
 			}
-		} else if (balance < -1) {
+		} else if (balance < -1){
 			if (node.right.getBalance() > 0){
 				this._rotateRight(node.right);
 			} else {
@@ -359,7 +359,7 @@ define(["Tone/core/Tone", "Tone/type/Type"], function(Tone) {
 	 *  Clean up
 	 *  @return  {Tone.IntervalTimeline}  this
 	 */
-	Tone.IntervalTimeline.prototype.dispose = function() {
+	Tone.IntervalTimeline.prototype.dispose = function(){
 		var allNodes = [];
 		if (this._root !== null){
 			this._root.traverse(function(node){
@@ -412,7 +412,7 @@ define(["Tone/core/Tone", "Tone/type/Type"], function(Tone) {
 	 *  Insert a node into the correct spot in the tree
 	 *  @param  {IntervalNode}  node
 	 */
-	IntervalNode.prototype.insert = function(node) {
+	IntervalNode.prototype.insert = function(node){
 		if (node.low <= this.low){
 			if (this.left === null){
 				this.left = node;
@@ -432,7 +432,7 @@ define(["Tone/core/Tone", "Tone/type/Type"], function(Tone) {
 	 *  @param  {Number}  point  The point to query
 	 *  @param  {Array}  results  The array to put the results
 	 */
-	IntervalNode.prototype.search = function(point, results) {
+	IntervalNode.prototype.search = function(point, results){
 		// If p is to the right of the rightmost point of any interval
 		// in this node and all children, there won't be any matches.
 		if (point > this.max){
@@ -463,7 +463,7 @@ define(["Tone/core/Tone", "Tone/type/Type"], function(Tone) {
 	 *  @param  {Number}  point  The point to query
 	 *  @param  {Array}  results  The array to put the results
 	 */
-	IntervalNode.prototype.searchAfter = function(point, results) {
+	IntervalNode.prototype.searchAfter = function(point, results){
 		// Check this node
 		if (this.low >= point){
 			results.push(this);
@@ -523,7 +523,7 @@ define(["Tone/core/Tone", "Tone/type/Type"], function(Tone) {
 	 *  The balance is how the leafs are distributed on the node
 	 *  @return  {Number}  Negative numbers are balanced to the right
 	 */
-	IntervalNode.prototype.getBalance = function() {
+	IntervalNode.prototype.getBalance = function(){
 		var balance = 0;
 		if (this.left !== null && this.right !== null){
 			balance = this.left.height - this.right.height;
@@ -539,7 +539,7 @@ define(["Tone/core/Tone", "Tone/type/Type"], function(Tone) {
 	 *  @returns {Boolean} true if this node is the left child
 	 *  of its parent
 	 */
-	IntervalNode.prototype.isLeftChild = function() {
+	IntervalNode.prototype.isLeftChild = function(){
 		return this.parent !== null && this.parent.left === this;
 	};
 
@@ -582,7 +582,7 @@ define(["Tone/core/Tone", "Tone/type/Type"], function(Tone) {
 	/**
 	 *  null out references.
 	 */
-	IntervalNode.prototype.dispose = function() {
+	IntervalNode.prototype.dispose = function(){
 		this.parent = null;
 		this._left = null;
 		this._right = null;

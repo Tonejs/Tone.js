@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/type/Frequency"], function(Tone) {
+define(["Tone/core/Tone", "Tone/type/Frequency"], function(Tone){
 
 	/**
 	 *  @class Tone.Midi is a primitive type for encoding Time values.

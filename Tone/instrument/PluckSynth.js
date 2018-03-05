@@ -81,7 +81,7 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/source/Noise", "To
 	 *  @param {Time} [time=now] When the note should be triggered.
 	 *  @returns {Tone.PluckSynth} this
 	 */
-	Tone.PluckSynth.prototype.triggerAttack = function(note, time) {
+	Tone.PluckSynth.prototype.triggerAttack = function(note, time){
 		note = this.toFrequency(note);
 		time = this.toSeconds(time);
 		var delayAmount = 1 / note;

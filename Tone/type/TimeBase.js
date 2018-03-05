@@ -1,4 +1,4 @@
-define(["Tone/core/Tone"], function(Tone) {
+define(["Tone/core/Tone"], function(Tone){
 
 	/**
 	 *  @class Tone.TimeBase is a flexible encoding of time
@@ -15,7 +15,7 @@ define(["Tone/core/Tone"], function(Tone) {
 	Tone.TimeBase = function(val, units){
 
 		//allows it to be constructed with or without 'new'
-		if (this instanceof Tone.TimeBase) {
+		if (this instanceof Tone.TimeBase){
 
 			/**
 			 *  The value

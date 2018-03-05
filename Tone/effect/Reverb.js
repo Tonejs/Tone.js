@@ -1,5 +1,5 @@
 define(["Tone/core/Tone", "Tone/core/Offline", "Tone/component/Filter", "Tone/component/Merge",
-	"Tone/source/Noise", "Tone/core/Gain", "Tone/effect/Convolver"], function(Tone) {
+	"Tone/source/Noise", "Tone/core/Gain", "Tone/effect/Convolver"], function(Tone){
 
 	"use strict";
 

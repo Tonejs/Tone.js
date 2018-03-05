@@ -51,7 +51,7 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/signal/Signal"], f
 	 * //trigger the note a half second from now at half velocity
 	 * synth.triggerAttack("C4", "+0.5", 0.5);
 	 */
-	Tone.Monophonic.prototype.triggerAttack = function(note, time, velocity) {
+	Tone.Monophonic.prototype.triggerAttack = function(note, time, velocity){
 		time = this.toSeconds(time);
 		this._triggerEnvelopeAttack(time, velocity);
 		this.setNote(note, time);
@@ -76,14 +76,14 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/signal/Signal"], f
 	 *  @abstract
 	 *  @private
 	 */	
-	Tone.Monophonic.prototype._triggerEnvelopeAttack = function() {};
+	Tone.Monophonic.prototype._triggerEnvelopeAttack = function(){};
 
 	/**
 	 *  override this method with the actual method
 	 *  @abstract
 	 *  @private
 	 */	
-	Tone.Monophonic.prototype._triggerEnvelopeRelease = function() {};
+	Tone.Monophonic.prototype._triggerEnvelopeRelease = function(){};
 
 	/**
 	 *  Set the note at the given time. If no time is given, the note

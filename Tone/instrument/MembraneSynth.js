@@ -84,7 +84,7 @@ define(["Tone/core/Tone", "Tone/source/OmniOscillator", "Tone/instrument/Instrum
 	 *  @example
 	 *  kick.triggerAttack(60);
 	 */
-	Tone.MembraneSynth.prototype.triggerAttack = function(note, time, velocity) {
+	Tone.MembraneSynth.prototype.triggerAttack = function(note, time, velocity){
 		time = this.toSeconds(time);
 		note = this.toFrequency(note);
 		var maxNote = note * this.octaves;

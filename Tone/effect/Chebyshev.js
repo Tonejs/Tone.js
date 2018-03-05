@@ -94,7 +94,7 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/signal/WaveShaper"], funct
 			this._order = order;
 			var curve = new Array(4096);
 			var len = curve.length;
-			for (var i = 0; i < len; ++i) {
+			for (var i = 0; i < len; ++i){
 				var x = i * 2 / len - 1;
 				if (x === 0){
 					//should output 0 when input is 0

@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/event/Event", "Tone/type/Type", "Tone/core/Transport"], function(Tone) {
+define(["Tone/core/Tone", "Tone/event/Event", "Tone/type/Type", "Tone/core/Transport"], function(Tone){
 
 	"use strict";
 
@@ -110,7 +110,7 @@ define(["Tone/core/Tone", "Tone/event/Event", "Tone/type/Type", "Tone/core/Trans
 					ticks += this._getLoopDuration();
 				}
 				event.start(Tone.Ticks(ticks));
-			} else if (event.startOffset < this._loopStart && event.startOffset >= offset) {
+			} else if (event.startOffset < this._loopStart && event.startOffset >= offset){
 				event.loop = false;
 				event.start(Tone.Ticks(ticks));
 			}

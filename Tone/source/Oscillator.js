@@ -250,10 +250,10 @@ function(Tone){
 			}
 		}
 
-		for (var n = 1; n < periodicWaveSize; ++n) {
+		for (var n = 1; n < periodicWaveSize; ++n){
 			var piFactor = 2 / (n * Math.PI);
 			var b;
-			switch (type) {
+			switch (type){
 				case Tone.Oscillator.Type.Sine:
 					b = (n <= partialCount) ? 1 : 0;
 					break;
@@ -264,7 +264,7 @@ function(Tone){
 					b = piFactor * ((n & 1) ? 1 : -1);
 					break;
 				case Tone.Oscillator.Type.Triangle:
-					if (n & 1) {
+					if (n & 1){
 						b = 2 * (piFactor * piFactor) * ((((n - 1) >> 1) & 1) ? -1 : 1);
 					} else {
 						b = 0;

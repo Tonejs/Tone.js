@@ -316,7 +316,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal",
 	 * //trigger the attack and then the release after 0.6 seconds.
 	 * env.triggerAttackRelease(0.6);
 	 */
-	Tone.Envelope.prototype.triggerAttackRelease = function(duration, time, velocity) {
+	Tone.Envelope.prototype.triggerAttackRelease = function(duration, time, velocity){
 		time = this.toSeconds(time);
 		this.triggerAttack(time, velocity);
 		this.triggerRelease(time + this.toSeconds(duration));
@@ -328,7 +328,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal",
 	 *  @param  {Time} after
 	 *  @returns {Tone.Envelope} this
 	 */
-	Tone.Envelope.prototype.cancel = function(after) {
+	Tone.Envelope.prototype.cancel = function(after){
 		this._sig.cancelScheduledValues(after);
 		return this;
 	};

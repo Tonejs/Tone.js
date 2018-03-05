@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/type/TransportTime"], function(Tone) {
+define(["Tone/core/Tone", "Tone/type/TransportTime"], function(Tone){
 
 	/**
 	 *  @class Tone.Ticks is a primitive type for encoding Time values.

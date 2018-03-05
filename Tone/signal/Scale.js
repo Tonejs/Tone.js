@@ -90,7 +90,7 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Multiply", "Tone/signa
 	 *  set the values
 	 *  @private
 	 */
-	Tone.Scale.prototype._setRange = function() {
+	Tone.Scale.prototype._setRange = function(){
 		this._add.value = this._outputMin;
 		this._scale.value = this._outputMax - this._outputMin;
 	};

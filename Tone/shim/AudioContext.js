@@ -8,7 +8,7 @@ define(["Tone/core/Tone", "Tone/shim/OfflineAudioContext"], function(Tone){
 		//not functionally equivalent, but only an API placeholder
 		if (!AudioContext.prototype.close){
 			AudioContext.prototype.close = function(){
-				if (Tone.isFunction(this.suspend)) {
+				if (Tone.isFunction(this.suspend)){
 					this.suspend();
 				}
 				return Promise.resolve();
@@ -43,11 +43,11 @@ define(["Tone/core/Tone", "Tone/shim/OfflineAudioContext"], function(Tone){
 			if (ret instanceof Promise){
 				decodeAudioDataPromise = true;
 			}
-		} catch (e) {
+		} catch (e){
 			decodeAudioDataPromise = false;
 		}
 
-		if (!decodeAudioDataPromise) {
+		if (!decodeAudioDataPromise){
 			AudioContext.prototype._native_decodeAudioData = AudioContext.prototype.decodeAudioData;
 			AudioContext.prototype.decodeAudioData = function(audioData){
 				return new Promise(function(success, error){

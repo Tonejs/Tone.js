@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/core/Buffers", "Tone/source/BufferSource"], function(Tone) {
+define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/core/Buffers", "Tone/source/BufferSource"], function(Tone){
 
 	/**
 	 * @class Automatically interpolates between a set of pitched samples. Pass in an object which maps the note's pitch or midi value to the url, then you can trigger the attack and release of that note like other instruments. By automatically repitching the samples, it is possible to play pitches which were not explicitly included which can save loading time.

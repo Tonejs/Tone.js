@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/type/Time"], function(Tone) {
+define(["Tone/core/Tone", "Tone/type/Time"], function(Tone){
 
 	/**
 	 *  @class Tone.TransportTime is a the time along the Transport's

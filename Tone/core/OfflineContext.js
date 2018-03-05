@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/core/Context", "Tone/shim/OfflineAudioContext"], function(Tone) {
+define(["Tone/core/Tone", "Tone/core/Context", "Tone/shim/OfflineAudioContext"], function(Tone){
 
 	/**
 	 *  @class Wrapper around the OfflineAudioContext

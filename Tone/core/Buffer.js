@@ -476,7 +476,7 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type", "Tone/shim/Audi
 		request.addEventListener("load", function(){
 
 			if (request.status === 200){
-				Tone.context.decodeAudioData(request.response).then(function(buff) {
+				Tone.context.decodeAudioData(request.response).then(function(buff){
 
 					request.progress = 1;
 					onProgress();

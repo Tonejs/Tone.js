@@ -93,7 +93,7 @@ define(function(){
 				var attrSplit = attr.split(".");
 				for (var i = 0; i < attrSplit.length - 1; i++){
 					parent = parent[attrSplit[i]];
-					if (parent instanceof Tone) {
+					if (parent instanceof Tone){
 						attrSplit.splice(0, i+1);
 						var innerParam = attrSplit.join(".");
 						parent.set(innerParam, value);
@@ -261,10 +261,10 @@ define(function(){
 		if (Tone.isObject(given) && Tone.isObject(fallback)){
 			var ret = {};
 			//make a deep copy of the given object
-			for (var givenProp in given) {
+			for (var givenProp in given){
 				ret[givenProp] = Tone.defaultArg(fallback[givenProp], given[givenProp]);
 			}
-			for (var fallbackProp in fallback) {
+			for (var fallbackProp in fallback){
 				ret[fallbackProp] = Tone.defaultArg(given[fallbackProp], fallback[fallbackProp]);
 			}
 			return ret;
@@ -472,7 +472,7 @@ define(function(){
 	 *  @static
 	 *  @memberOf Tone
 	 */
-	Tone.dbToGain = function(db) {
+	Tone.dbToGain = function(db){
 		return Math.pow(10, db / 20);
 	};
 
@@ -483,7 +483,7 @@ define(function(){
 	 *  @static
 	 *  @memberOf Tone
 	 */
-	Tone.gainToDb = function(gain) {
+	Tone.gainToDb = function(gain){
 		return 20 * (Math.log(gain) / Math.LN10);
 	};
 

@@ -1,6 +1,6 @@
 define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/source/FMOscillator", "Tone/component/Filter",
 	"Tone/component/FrequencyEnvelope", "Tone/component/AmplitudeEnvelope", "Tone/core/Gain",
-	"Tone/signal/Scale", "Tone/signal/Multiply"], function(Tone) {
+	"Tone/signal/Scale", "Tone/signal/Multiply"], function(Tone){
 
 	/**
 	 *  Inharmonic ratio of frequencies based on the Roland TR-808
@@ -142,7 +142,7 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/source/FMOscillato
 	 *  @param  {NormalRange}  [velocity=1]  The velocity that the envelope should be triggered at.
 	 *  @return  {Tone.MetalSynth}  this
 	 */
-	Tone.MetalSynth.prototype.triggerAttack = function(time, vel) {
+	Tone.MetalSynth.prototype.triggerAttack = function(time, vel){
 		time = this.toSeconds(time);
 		vel = Tone.defaultArg(vel, 1);
 		this.envelope.triggerAttack(time, vel);
@@ -163,7 +163,7 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/source/FMOscillato
 	 *  @param  {Time}  time      When the release should be triggered.
 	 *  @return  {Tone.MetalSynth}  this
 	 */
-	Tone.MetalSynth.prototype.triggerRelease = function(time) {
+	Tone.MetalSynth.prototype.triggerRelease = function(time){
 		time = this.toSeconds(time);
 		this.envelope.triggerRelease(time);
 		this._oscillators.forEach(function(osc){
@@ -200,7 +200,7 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/source/FMOscillato
 	 *  @param  {NormalRange}  [velocity=1]  The velocity that the envelope should be triggered at.
 	 *  @return  {Tone.MetalSynth}  this
 	 */
-	Tone.MetalSynth.prototype.triggerAttackRelease = function(duration, time, velocity) {
+	Tone.MetalSynth.prototype.triggerAttackRelease = function(duration, time, velocity){
 		time = this.toSeconds(time);
 		duration = this.toSeconds(duration);
 		this.triggerAttack(time, velocity);

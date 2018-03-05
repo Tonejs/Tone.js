@@ -88,7 +88,7 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Multiply"], function(T
 	 *  set the values
 	 *  @private
 	 */
-	Tone.Normalize.prototype._setRange = function() {
+	Tone.Normalize.prototype._setRange = function(){
 		this._sub.value = -this._inputMin;
 		this._div.value = 1 / (this._inputMax - this._inputMin);
 	};
