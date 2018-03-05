@@ -103,7 +103,13 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/G
 		}
 	});
 
+	/**
+	 *  Get the playback state at the given time
+	 *  @param  {Time}  time  The time to test the state at
+	 *  @return  {Tone.State}  The playback state. 
+	 */
 	Tone.OscillatorNode.prototype.getStateAtTime = function(time){
+		time = this.toSeconds(time);
 		if (this._startTime !== -1 && time >= this._startTime && (this._stopTime === -1 || time <= this._stopTime)){
 			return Tone.State.Started;
 		} else {
