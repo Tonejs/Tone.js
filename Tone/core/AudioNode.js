@@ -246,13 +246,13 @@ define(["Tone/core/Tone", "Tone/core/Context"], function(Tone) {
 	 * @return {Tone.AudioNode} this
 	 */
 	Tone.AudioNode.prototype.dispose = function() {
-		if (!Tone.isUndef(this.input)){
+		if (Tone.isDefined(this.input)){
 			if (this.input instanceof AudioNode){
 				this.input.disconnect();
 			}
 			this.input = null;
 		}
-		if (!Tone.isUndef(this.output)){
+		if (Tone.isDefined(this.output)){
 			if (this.output instanceof AudioNode){
 				this.output.disconnect();
 			}

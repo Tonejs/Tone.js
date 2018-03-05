@@ -175,14 +175,14 @@ define(["Tone/core/Tone", "Tone/event/Event", "Tone/type/Type", "Tone/core/Trans
 		for (var i = 0; i < this._events.length; i++){
 			var event = this._events[i];
 			if (Math.abs(time.toTicks() - event.startOffset) < tickTime){
-				if (!Tone.isUndef(value)){
+				if (Tone.isDefined(value)){
 					event.value = value;
 				}
 				return event;
 			}
 		}
 		//if there was no event at that time, create one
-		if (!Tone.isUndef(value)){
+		if (Tone.isDefined(value)){
 			this.add(time, value);
 			//return the new event
 			return this._events[this._events.length - 1];
@@ -274,7 +274,7 @@ define(["Tone/core/Tone", "Tone/event/Event", "Tone/type/Type", "Tone/core/Trans
 			if (event instanceof Tone.Part){
 				event.remove(time, value);
 			} else if (event.startOffset === time){
-				if (Tone.isUndef(value) || (!Tone.isUndef(value) && event.value === value)){
+				if (Tone.isUndef(value) || (Tone.isDefined(value) && event.value === value)){
 					this._events.splice(i, 1);
 					event.dispose();
 				}

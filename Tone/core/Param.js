@@ -52,7 +52,7 @@ define(["Tone/core/Tone", "Tone/type/Type", "Tone/core/AudioNode", "Tone/core/Ti
 		 */
 		this._events = new Tone.Timeline(1000);
 
-		if (!Tone.isUndef(options.value) && this._param){
+		if (Tone.isDefined(options.value) && this._param){
 			this.value = options.value;
 		}
 	};

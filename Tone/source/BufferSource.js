@@ -209,7 +209,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/G
 		var computedDur = this.toSeconds(Tone.defaultArg(duration, this.buffer.duration - (offset % this.buffer.duration)));
 		computedDur = Math.max(computedDur, 0);
 
-		if (!Tone.isUndef(duration)){
+		if (Tone.isDefined(duration)){
 			//clip the duration when not looping
 			if (!this.loop){
 				computedDur = Math.min(computedDur, this.buffer.duration - (offset % this.buffer.duration));

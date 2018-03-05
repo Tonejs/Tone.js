@@ -141,7 +141,7 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/type/Type", "Tone/core/Ti
 		this._state.forEachFrom(after, function(event){
 			var duration;
 			if (event.state === Tone.State.Started){
-				if (!Tone.isUndef(event.id)){
+				if (Tone.isDefined(event.id)){
 					Tone.Transport.clear(event.id);
 				}
 				var startTick = event.time + Math.round(this.startOffset / this._playbackRate);

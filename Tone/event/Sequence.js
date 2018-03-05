@@ -42,14 +42,14 @@ define(["Tone/core/Tone", "Tone/event/Part", "Tone/core/Transport"], function(To
 		this._subdivision = this.toTicks(options.subdivision);
 
 		//if no time was passed in, the loop end is the end of the cycle
-		if (Tone.isUndef(options.loopEnd) && !Tone.isUndef(events)){
+		if (Tone.isUndef(options.loopEnd) && Tone.isDefined(events)){
 			this._loopEnd = (events.length * this._subdivision);
 		}
 		//defaults to looping
 		this._loop = true;
 
 		//add all of the events
-		if (!Tone.isUndef(events)){
+		if (Tone.isDefined(events)){
 			for (var i = 0; i < events.length; i++){
 				this.add(i, events[i]);
 			}

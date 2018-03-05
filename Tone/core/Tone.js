@@ -2,7 +2,7 @@
  *  Tone.js
  *  @author Yotam Mann
  *  @license http://opensource.org/licenses/MIT MIT License
- *  @copyright 2014-2017 Yotam Mann
+ *  @copyright 2014-2018 Yotam Mann
  */
 define(function(){
 
@@ -24,7 +24,7 @@ define(function(){
 
 	/**
 	 *  @memberOf Tone#
-	 *  @returns {string} returns the name of the class as a string
+	 *  @returns {String} returns the name of the class as a string
 	 */
 	Tone.prototype.toString = function(){
 		for (var className in Tone){
@@ -57,8 +57,8 @@ define(function(){
 	 *  The last argument is an optional ramp time which
 	 *  will ramp any signal values to their destination value
 	 *  over the duration of the rampTime.
-	 *  @param {Object|string} params
-	 *  @param {number=} value
+	 *  @param {Object|String} params
+	 *  @param {Number=} value
 	 *  @param {Time=} rampTime
 	 *  @returns {Tone} this
 	 *  @memberOf Tone#
@@ -183,7 +183,7 @@ define(function(){
 				subRet[attr] = param.value;
 			} else if (param instanceof Tone){
 				subRet[attr] = param.get();
-			} else if (!Tone.isFunction(param) && !Tone.isUndef(param)){
+			} else if (!Tone.isFunction(param) && Tone.isDefined(param)){
 				subRet[attr] = param;
 			}
 		}
@@ -193,15 +193,15 @@ define(function(){
 	/**
 	 *  collect all of the default attributes in one
 	 *  @private
-	 *  @param {function} constr the constructor to find the defaults from
+	 *  @param {Function} constr the constructor to find the defaults from
 	 *  @return {Array} all of the attributes which belong to the class
 	 */
 	Tone.prototype._collectDefaults = function(constr){
 		var ret = [];
-		if (!Tone.isUndef(constr.defaults)){
+		if (Tone.isDefined(constr.defaults)){
 			ret = Object.keys(constr.defaults);
 		}
-		if (!Tone.isUndef(constr._super)){
+		if (Tone.isDefined(constr._super)){
 			var superDefs = this._collectDefaults(constr._super);
 			//filter out repeats
 			for (var i = 0; i < superDefs.length; i++){
@@ -234,7 +234,7 @@ define(function(){
 				options[keys[i]] = values[i];
 			}
 		}
-		if (!Tone.isUndef(constr.defaults)){
+		if (Tone.isDefined(constr.defaults)){
 			return Tone.defaultArg(options, constr.defaults);
 		} else if (Tone.isObject(constr)){
 			return Tone.defaultArg(options, constr);
@@ -299,9 +299,9 @@ define(function(){
 	///////////////////////////////////////////////////////////////////////////
 
 	/**
-	 *  test if the arg is undefined
+	 *  Test if the arg is undefined
 	 *  @param {*} arg the argument to test
-	 *  @returns {boolean} true if the arg is undefined
+	 *  @returns {Boolean} true if the arg is undefined
 	 *  @static
 	 *  @memberOf Tone
 	 */
@@ -310,9 +310,20 @@ define(function(){
 	};
 
 	/**
-	 *  test if the arg is a function
+	 *  Test if the arg is not undefined
 	 *  @param {*} arg the argument to test
-	 *  @returns {boolean} true if the arg is a function
+	 *  @returns {Boolean} true if the arg is undefined
+	 *  @static
+	 *  @memberOf Tone
+	 */
+	Tone.isDefined = function(val){
+		return !Tone.isUndef(val);
+	};
+
+	/**
+	 *  Test if the arg is a function
+	 *  @param {*} arg the argument to test
+	 *  @returns {Boolean} true if the arg is a function
 	 *  @static
 	 *  @memberOf Tone
 	 */
@@ -323,7 +334,7 @@ define(function(){
 	/**
 	 *  Test if the argument is a number.
 	 *  @param {*} arg the argument to test
-	 *  @returns {boolean} true if the arg is a number
+	 *  @returns {Boolean} true if the arg is a number
 	 *  @static
 	 *  @memberOf Tone
 	 */
@@ -334,7 +345,7 @@ define(function(){
 	/**
 	 *  Test if the given argument is an object literal (i.e. `{}`);
 	 *  @param {*} arg the argument to test
-	 *  @returns {boolean} true if the arg is an object literal.
+	 *  @returns {Boolean} true if the arg is an object literal.
 	 *  @static
 	 *  @memberOf Tone
 	 */
@@ -345,7 +356,7 @@ define(function(){
 	/**
 	 *  Test if the argument is a boolean.
 	 *  @param {*} arg the argument to test
-	 *  @returns {boolean} true if the arg is a boolean
+	 *  @returns {Boolean} true if the arg is a boolean
 	 *  @static
 	 *  @memberOf Tone
 	 */
@@ -356,7 +367,7 @@ define(function(){
 	/**
 	 *  Test if the argument is an Array
 	 *  @param {*} arg the argument to test
-	 *  @returns {boolean} true if the arg is an array
+	 *  @returns {Boolean} true if the arg is an array
 	 *  @static
 	 *  @memberOf Tone
 	 */
@@ -367,7 +378,7 @@ define(function(){
 	/**
 	 *  Test if the argument is a string.
 	 *  @param {*} arg the argument to test
-	 *  @returns {boolean} true if the arg is a string
+	 *  @returns {Boolean} true if the arg is a string
 	 *  @static
 	 *  @memberOf Tone
 	 */
@@ -379,7 +390,7 @@ define(function(){
 	 *  Test if the argument is in the form of a note in scientific pitch notation.
 	 *  e.g. "C4"
 	 *  @param {*} arg the argument to test
-	 *  @returns {boolean} true if the arg is a string
+	 *  @returns {Boolean} true if the arg is a string
 	 *  @static
 	 *  @memberOf Tone
 	 */
@@ -396,7 +407,7 @@ define(function(){
 	/**
 	 *  Make the property not writable. Internal use only.
 	 *  @private
-	 *  @param  {string}  property  the property to make not writable
+	 *  @param  {String}  property  the property to make not writable
 	 */
 	Tone.prototype._readOnly = function(property){
 		if (Array.isArray(property)){
@@ -414,7 +425,7 @@ define(function(){
 	/**
 	 *  Make an attribute writeable. Interal use only.
 	 *  @private
-	 *  @param  {string}  property  the property to make writable
+	 *  @param  {String}  property  the property to make writable
 	 */
 	Tone.prototype._writable = function(property){
 		if (Array.isArray(property)){
@@ -430,7 +441,7 @@ define(function(){
 
 	/**
 	 * Possible play states.
-	 * @enum {string}
+	 * @enum {String}
 	 */
 	Tone.State = {
 		Started : "started",
@@ -479,7 +490,7 @@ define(function(){
 	/**
 	 *  Convert an interval (in semitones) to a frequency ratio.
 	 *  @param  {Interval} interval the number of semitones above the base note
-	 *  @return {number}          the frequency ratio
+	 *  @return {Number}          the frequency ratio
 	 *  @static
 	 *  @memberOf Tone
 	 *  @example
@@ -527,8 +538,8 @@ define(function(){
 	 *
 	 *  @memberOf Tone
 	 *  @static
-	 *  @param  {function} 	child
-	 *  @param  {function=} parent (optional) parent to inherit from
+	 *  @param  {Function} 	child
+	 *  @param  {Function=} parent (optional) parent to inherit from
 	 *                             if no parent is supplied, the child
 	 *                             will inherit from Tone
 	 */
@@ -652,7 +663,7 @@ define(function(){
 	 */
 	Object.defineProperty(Tone, "initialized", {
 		get : function(){
-			return !Tone.isUndef(window.TONE_AUDIO_CONTEXT);
+			return Tone.isDefined(window.TONE_AUDIO_CONTEXT);
 		}
 	});
 

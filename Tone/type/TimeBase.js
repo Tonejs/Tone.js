@@ -283,7 +283,7 @@ define(["Tone/core/Tone"], function(Tone) {
 				}
 			}
 		}
-		if (!Tone.isUndef(this._units)){
+		if (Tone.isDefined(this._units)){
 			var expr = this._expressions[this._units];
 			var matching = this._val.toString().trim().match(expr.regexp);
 			if (matching){

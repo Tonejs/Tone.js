@@ -76,7 +76,7 @@ define(["Tone/core/Tone", "Tone/signal/TickSignal", "Tone/core/TimelineState",
 		time = this.toSeconds(time);
 		if (this._state.getValueAtTime(time) !== Tone.State.Started){
 			this._state.setStateAtTime(Tone.State.Started, time);
-			if (!Tone.isUndef(offset)){
+			if (Tone.isDefined(offset)){
 				this.setTicksAtTime(offset, time);
 			}
 		}

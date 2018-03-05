@@ -374,7 +374,7 @@ define(["Tone/core/Tone", "Tone/core/Clock", "Tone/type/Type", "Tone/core/Timeli
 	 */
 	Tone.Transport.prototype.start = function(time, offset){
 		//start the clock
-		if (!Tone.isUndef(offset)){
+		if (Tone.isDefined(offset)){
 			offset = this.toTicks(offset);
 		}
 		this._clock.start(time, offset);
