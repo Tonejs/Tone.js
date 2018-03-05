@@ -1,6 +1,6 @@
 define(["Tone/instrument/Sampler", "helper/Basic", "helper/InstrumentTests",
 	"Tone/core/Buffer", "helper/Offline"],
-function (Sampler, Basic, InstrumentTest, Buffer, Offline) {
+function(Sampler, Basic, InstrumentTest, Buffer, Offline) {
 
 	if (window.__karma__){
 		Buffer.baseUrl = "/base/test/";
@@ -94,17 +94,6 @@ function (Sampler, Basic, InstrumentTest, Buffer, Offline) {
 					sampler.triggerAttack("G4");
 				}).then(function(buffer){
 					expect(buffer.isSilent()).to.be.false;
-				});
-			});
-
-			it("repitches the note only up to 2 octaves", function(){
-				return Offline(function(){
-					var sampler = new Sampler({
-						"A4" : A4_buffer
-					}).toMaster();
-					sampler.triggerAttack("A#6");
-				}).then(function(buffer){
-					expect(buffer.isSilent()).to.be.true;
 				});
 			});
 
