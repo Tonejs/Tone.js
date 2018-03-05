@@ -18,9 +18,7 @@ define(["Tone/core/Tone", "Tone/component/Volume", "Tone/core/AudioNode"], funct
 	 *
 	 * //opening the input asks the user to activate their mic
 	 * motu.open().then(function(){
-	 * 	//opening is activates the microphone
-	 * 	//starting lets audio through
-	 * 	motu.start(10);
+	 * 	//promise resolves when input is available
 	 * });
 	 */
 
