@@ -90,7 +90,8 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/core/Buffers", "To
 	 * @private
 	 */
 	Tone.Sampler.prototype._findClosest = function(midi){
-		var MAX_INTERVAL = 24;
+		//searches within 8 octaves of the given midi note
+		var MAX_INTERVAL = 96; 
 		var interval = 0;
 		while (interval < MAX_INTERVAL){
 			// check above and below
