@@ -1,6 +1,6 @@
 define(["helper/Basic", "Tone/event/Sequence", "Tone/core/Tone",
 	"Tone/core/Transport", "Tone/event/Event", "helper/Offline", "Test", "Tone/type/Time"],
-function (Basic, Sequence, Tone, Transport, Event, Offline, Test, Time) {
+function(Basic, Sequence, Tone, Transport, Event, Offline, Test, Time){
 
 	describe("Sequence", function(){
 
@@ -260,7 +260,7 @@ function (Basic, Sequence, Tone, Transport, Event, Offline, Test, Time) {
 				var count = 0;
 				return Offline(function(Transport){
 					var eighth = Transport.toSeconds("8n");
-					var times = [0,eighth, eighth * 1.5, eighth * 1.75];
+					var times = [0, eighth, eighth * 1.5, eighth * 1.75];
 					var seq = new Sequence(function(time){
 						expect(time).to.be.closeTo(times[count], 0.01);
 						count++;
@@ -432,7 +432,7 @@ function (Basic, Sequence, Tone, Transport, Event, Offline, Test, Time) {
 						}
 					}).start(0);
 					Transport.start();
-				}, 1).then(function(){
+				}, 2).then(function(){
 					expect(invoked).to.be.true;
 				});
 			});

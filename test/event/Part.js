@@ -1,6 +1,6 @@
 define(["helper/Basic", "Tone/event/Part", "Tone/core/Tone",
 	"Tone/core/Transport", "Tone/event/Event", "helper/Offline", "Test", "Tone/type/Time"],
-function (Basic, Part, Tone, Transport, Event, Offline, Test, Time) {
+function(Basic, Part, Tone, Transport, Event, Offline, Test, Time){
 
 	describe("Part", function(){
 
@@ -277,7 +277,7 @@ function (Basic, Part, Tone, Transport, Event, Offline, Test, Time) {
 					}, [0.3]);
 					part.start(0.2);
 					Transport.start(startTime);
-				}, 0.6).then(function(){
+				}, 0.62).then(function(){
 					expect(invoked).to.be.true;
 				});
 			});
@@ -387,7 +387,7 @@ function (Basic, Part, Tone, Transport, Event, Offline, Test, Time) {
 						}
 					}).add(0.2, subPart).add(0, 0).start(0);
 					Transport.start(startTime);
-				}, 0.6).then(function(){
+				}, 0.7).then(function(){
 					expect(invokations).to.equal(3);
 				});
 			});
