@@ -84,20 +84,18 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/source
 		this._playbackRate = options.playbackRate;
 
 		/**
+		 *  All of the active buffer source nodes
+		 *  @type {Array<Tone.BufferSource>}
+		 *  @private
+		 */
+		this._activeSources = [];
+
+		/**
 		 *  The elapsed time counter.
 		 *  @type {Tone.TickSource}
 		 *  @private
 		 */
 		this._elapsedTime = new Tone.TickSource(options.playbackRate);
-
-		/**
-		 *  Enabling retrigger will allow a player to be restarted
-		 *  before the the previous 'start' is done playing. Otherwise,
-		 *  successive calls to Tone.Player.start will only start
-		 *  the sample if it had played all the way through.
-		 *  @type {Boolean}
-		 */
-		this.retrigger = options.retrigger;
 
 		/**
 		 *  The fadeIn time of the amplitude envelope.
@@ -164,6 +162,15 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/source
 	};
 
 	/**
+	 * Internal callback when the buffer is done playing.
+	 * @private
+	 */
+	Tone.Player.prototype._onSourceEnd = function(source){
+		var index = this._activeSources.indexOf(source);
+		this._activeSources.splice(index, 1);
+	};
+
+	/**
 	 *  Play the buffer at the given startTime. Optionally add an offset
 	 *  and/or duration which will play the buffer from a position
 	 *  within the buffer for the given duration.
@@ -208,6 +215,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/source
 			"loop" : this._loop,
 			"loopStart" : this._loopStart,
 			"loopEnd" : this._loopEnd,
+			"onended" : this._onSourceEnd.bind(this),
 			"playbackRate" : this._playbackRate,
 			"fadeIn" : this.fadeIn,
 			"fadeOut" : this.fadeOut,
@@ -219,8 +227,8 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/source
 			this._state.setStateAtTime(Tone.State.Stopped, startTime + computedDuration / this._playbackRate);
 		}
 
-		var event = this._state.get(startTime);
-		event.source = source;
+		//add it to the array of active sources
+		this._activeSources.push(source);
 
 		//start it
 		if (this._loop && Tone.isUndef(duration)){
@@ -240,10 +248,8 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/source
 	Tone.Player.prototype._stop = function(time){
 		time = this.toSeconds(time);
 		this._elapsedTime.stop(time);
-		this._state.forEachFrom(0, function(event){
-			if (event.source){
-				event.source.stop(time);
-			}
+		this._activeSources.forEach(function(source){
+			source.stop(time);
 		});
 		return this;
 	};
@@ -259,9 +265,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/source
 	 *  @returns {Tone.Player} this
 	 */
 	Tone.Player.prototype.restart = function(time, offset, duration){
-		if (!this.retrigger){
-			this.stop(time);
-		}
+		this._stop(time);
 		this._start(time, offset, duration);
 		return this;
 	};
@@ -319,10 +323,9 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/source
 		set : function(loopStart){
 			this._loopStart = loopStart;
 			//get the current source
-			var event = this._state.get(this.now());
-			if (event && event.source){
-				event.source.loopStart = this.toSeconds(loopStart);
-			}
+			this._activeSources.forEach(function(source){
+				source.loopStart = loopStart;
+			});
 		}
 	});
 
@@ -339,10 +342,9 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/source
 		set : function(loopEnd){
 			this._loopEnd = loopEnd;
 			//get the current source
-			var event = this._state.get(this.now());
-			if (event && event.source){
-				event.source.loopEnd = this.toSeconds(loopEnd);
-			}
+			this._activeSources.forEach(function(source){
+				source.loopEnd = loopEnd;
+			});
 		}
 	});
 
@@ -378,21 +380,18 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/source
 			}
 			this._loop = loop;
 			var now = this.now();
-			//get the current source
-			var event = this._state.get(now);
-			if (event && event.source){
-				event.source.loop = loop;
-				if (!loop){
-					//stop the playback on the next cycle
-					this._stopAtNextIteration(now);
-				} else {
-					//remove the next stopEvent
-					var stopEvent = this._state.getNextState(Tone.State.Stopped, now);
-					if (stopEvent){
-						event.source.cancelStop();
-						this._state.cancel(stopEvent.time);
-						this._elapsedTime.cancel(stopEvent.time);
-					}
+			if (!loop){
+				//stop the playback on the next cycle
+				this._stopAtNextIteration(now);
+			} else {
+				//remove the next stopEvent
+				var stopEvent = this._state.getNextState(Tone.State.Stopped, now);
+				if (stopEvent){
+					this._activeSources.forEach(function(source){
+						source.loop = loop;
+					});
+					this._state.cancel(stopEvent.time);
+					this._elapsedTime.cancel(stopEvent.time);
 				}
 			}
 		}
@@ -429,17 +428,13 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/source
 			this._playbackRate = rate;
 			var now = this.now();
 			this._elapsedTime.frequency.setValueAtTime(rate, now);
-			var lastStop = this._state.getLastState(Tone.State.Stopped, now);
-			var intervalStart = lastStop ? lastStop.time : 0;
 			//if it's not looping
 			if (!this._loop){
 				this._stopAtNextIteration(now);
 			}
 			//set all the sources
-			this._state.forEachFrom(intervalStart, function(event){
-				if (event.source){
-					event.source.playbackRate.setValueAtTime(rate, now);
-				}
+			this._activeSources.forEach(function(source){
+				source.playbackRate.setValueAtTime(rate, now);
 			});
 		}
 	});
@@ -497,12 +492,10 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/source
 	 */
 	Tone.Player.prototype.dispose = function(){
 		//disconnect all of the players
-		this._state.forEach(function(event){
-			if (event.source){
-				event.source.disconnect();
-				event.source = null;
-			}
+		this._activeSources.forEach(function(source){
+			source.dispose();
 		});
+		this._activeSources = null;
 		Tone.Source.prototype.dispose.call(this);
 		this._buffer.dispose();
 		this._buffer = null;

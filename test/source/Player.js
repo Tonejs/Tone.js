@@ -1,6 +1,6 @@
 define(["helper/Basic", "Tone/source/Player", "helper/Offline", "helper/SourceTests",
 	"Tone/core/Buffer", "helper/Meter", "Test", "Tone/core/Tone", "helper/CompareToFile"],
-function(BasicTests, Player, Offline, SourceTests, Buffer, Meter, Test, Tone, CompareToFile) {
+function(BasicTests, Player, Offline, SourceTests, Buffer, Meter, Test, Tone, CompareToFile){
 
 	if (window.__karma__){
 		Buffer.baseUrl = "/base/test/";
@@ -432,23 +432,6 @@ function(BasicTests, Player, Offline, SourceTests, Buffer, Meter, Test, Tone, Co
 					player.start(0.1);
 				}, 0.31).then(function(buffer){
 					expect(buffer.max()).to.be.lessThan(1);
-				});
-			});
-
-			it("can be retriggered", function(){
-				return Offline(function(){
-					//make a ramp between 0-1
-					var ramp = new Float32Array(Math.floor(Tone.context.sampleRate * 0.3));
-					for (var i = 0; i < ramp.length; i++){
-						ramp[i] = (i / (ramp.length-1));
-					}
-					var buff = new Buffer().fromArray(ramp);
-					var player = new Player(buff).toMaster();
-					player.retrigger = true;
-					player.start(0);
-					player.start(0.1);
-				}, 0.31).then(function(buffer){
-					expect(buffer.max()).to.be.greaterThan(1);
 				});
 			});
 
