@@ -119,6 +119,9 @@ define(["Tone/core/Tone", "Tone/source/TickSource", "Tone/core/TimelineState",
 		if (this._state.getValueAtTime(time) !== Tone.State.Started){
 			this._state.setStateAtTime(Tone.State.Started, time);
 			this._tickSource.start(time, offset);
+			if (time < this._lastUpdate){
+				this.emit("start", time, offset);
+			}
 		}
 		return this;
 	};
@@ -135,6 +138,9 @@ define(["Tone/core/Tone", "Tone/source/TickSource", "Tone/core/TimelineState",
 		this._state.cancel(time);
 		this._state.setStateAtTime(Tone.State.Stopped, time);
 		this._tickSource.stop(time);
+		if (time < this._lastUpdate){
+			this.emit("stop", time);
+		}
 		return this;
 	};
 
@@ -148,6 +154,9 @@ define(["Tone/core/Tone", "Tone/source/TickSource", "Tone/core/TimelineState",
 		if (this._state.getValueAtTime(time) === Tone.State.Started){
 			this._state.setStateAtTime(Tone.State.Paused, time);
 			this._tickSource.pause(time);
+			if (time < this._lastUpdate){
+				this.emit("pause", time);
+			}
 		}
 		return this;
 	};
@@ -179,6 +188,15 @@ define(["Tone/core/Tone", "Tone/source/TickSource", "Tone/core/TimelineState",
 			this._tickSource.seconds = s;
 		}
 	});
+
+	/**
+	 *  Return the elapsed seconds at the given time.
+	 *  @param  {Time}  time  When to get the elapsed seconds
+	 *  @return  {Seconds}  The number of elapsed seconds
+	 */
+	Tone.Clock.prototype.getSecondsAtTime = function(time){
+		return this._tickSource.getSecondsAtTime(time);
+	};
 
 	/**
 	 * Set the clock's ticks at the given time.
@@ -219,7 +237,7 @@ define(["Tone/core/Tone", "Tone/source/TickSource", "Tone/core/TimelineState",
 	Tone.Clock.prototype._loop = function(){
 
 		var startTime = this._lastUpdate;
-		var endTime = this.now() + this.context.lookAhead + this.context.updateInterval;
+		var endTime = this.now();
 		this._lastUpdate = endTime;
 
 		if (startTime !== endTime){

@@ -203,7 +203,13 @@ define(["Tone/core/Tone", "Tone/signal/TickSignal", "Tone/core/TimelineState",
 		}
 	});
 
+	/**
+	 *  Return the elapsed seconds at the given time.
+	 *  @param  {Time}  time  When to get the elapsed seconds
+	 *  @return  {Seconds}  The number of elapsed seconds
+	 */
 	Tone.TickSource.prototype.getSecondsAtTime = function(time){
+		time = this.toSeconds(time);
 		var stopEvent = this._state.getLastState(Tone.State.Stopped, time);
 		//this event allows forEachBetween to iterate until the current time
 		var tmpEvent = { state : Tone.State.Paused, time : time };
