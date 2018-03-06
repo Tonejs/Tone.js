@@ -626,38 +626,6 @@ function(BasicTests, BufferSource, Offline, Buffer, Meter, Tone, CompareToFile, 
 				});
 			});
 
-			if (Supports.ONLINE_TESTING){
-				it("throws an error if stop is scheduled once the buffer has already completed in the online context", function(done){
-					var buff = Buffer.fromArray(new Float32Array(Tone.context.sampleRate * 0.05));
-					var player = new BufferSource(buff);
-					player.toMaster();
-					player.start();
-
-					setTimeout(function(){
-						expect(function(){
-							player.stop();
-						}).throws(Error);
-						done();
-					}, 200);
-
-				});
-			}
-
-			it("throws an error if stop is scheduled once the buffer has already completed in the offline context", function(){
-				return Offline(function(Transport){
-					var buff = Buffer.fromArray(new Float32Array(Transport.context.sampleRate * 0.2));
-					var player = new BufferSource(buff);
-					player.toMaster();
-					player.start().stop(0.1);
-
-					return Test.atTime(0.15, function(){
-						expect(function(){
-							player.stop(0.2);
-						}).throws(Error);
-					});
-				}, 0.2);
-
-			});
 		});
 
 	});

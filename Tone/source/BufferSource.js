@@ -147,14 +147,23 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/G
 	 */
 	Object.defineProperty(Tone.BufferSource.prototype, "state", {
 		get : function(){
-			var now = this.now();
-			if (this._startTime !== -1 && now >= this._startTime && !this._sourceStopped){
-				return Tone.State.Started;
-			} else {
-				return Tone.State.Stopped;
-			}
+			return this.getStateAtTime(this.now());
 		}
 	});
+
+	/**
+	 *  Get the playback state at the given time
+	 *  @param  {Time}  time  The time to test the state at
+	 *  @return  {Tone.State}  The playback state. 
+	 */
+	Tone.BufferSource.prototype.getStateAtTime = function(time){
+		time = this.toSeconds(time);
+		if (this._startTime !== -1 && time >= this._startTime && !this._sourceStopped){
+			return Tone.State.Started;
+		} else {
+			return Tone.State.Stopped;
+		}
+	};
 
 	/**
 	 *  Start the buffer
@@ -224,7 +233,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/G
 			var loopStart = this.loopStart;
 			var loopDuration = loopEnd - loopStart;
 			//move the offset back
-			if (offset > loopEnd){
+			if (offset >= loopEnd){
 				offset = ((offset - loopStart) % loopDuration) + loopStart;
 			}
 		}
@@ -251,7 +260,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/G
 		}
 
 		if (this._sourceStopped){
-			throw new Error("Tone.BufferSource cannot be stopped, it has already finished playing");
+			return;
 		}
 
 		time = this.toSeconds(time);
