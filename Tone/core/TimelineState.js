@@ -81,10 +81,12 @@ define(["Tone/core/Tone", "Tone/core/Timeline", "Tone/type/Type"], function(Tone
 	Tone.TimelineState.prototype.getNextState = function(state, time){
 		time = this.toSeconds(time);
 		var index = this._search(time);
-		for (var i = index; i < this._timeline.length; i++){
-			var event = this._timeline[i];
-			if (event.state === state){
-				return event;
+		if (index !== -1){
+			for (var i = index; i < this._timeline.length; i++){
+				var event = this._timeline[i];
+				if (event.state === state){
+					return event;
+				}
 			}
 		}
 	};
