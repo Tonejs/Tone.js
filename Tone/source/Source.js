@@ -238,7 +238,8 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/component/Volume", "Tone/
 			}
 		}.bind(this);
 		this._syncedStop = function(time){
-			if (this._state.getValueAtTime(Tone.Transport.seconds) === Tone.State.Started){
+			var seconds = Tone.Transport.getSecondsAtTime(Math.max(time - this.sampleTime, 0));
+			if (this._state.getValueAtTime(seconds) === Tone.State.Started){
 				this._stop(time);
 			}
 		}.bind(this);
