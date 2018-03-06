@@ -1,5 +1,5 @@
 define(["Test", "Tone/core/Clock", "helper/Offline", "helper/Supports", "Tone/core/Tone"],
-	function(Test, Clock, Offline, Supports, Tone) {
+	function(Test, Clock, Offline, Supports, Tone){
 
 		describe("Clock", function(){
 
@@ -19,23 +19,27 @@ define(["Test", "Tone/core/Clock", "helper/Offline", "helper/Supports", "Tone/co
 					clock.dispose();
 				});
 
-				it("invokes the callback when started", function(done){
-					var clock = new Clock(function(){
-						clock.dispose();
-						done();
-					}, 10).start();
-				});
+				if (Supports.ONLINE_TESTING){
 
-				it("can be constructed with an options object", function(done){
-					var clock = new Clock({
-						"callback" : function(){
+					it("invokes the callback when started", function(done){
+						var clock = new Clock(function(){
 							clock.dispose();
 							done();
-						},
-						"frequency" : 8
-					}).start();
-					expect(clock.frequency.value).to.equal(8);
-				});
+						}, 10).start();
+					});
+
+					it("can be constructed with an options object", function(done){
+						var clock = new Clock({
+							"callback" : function(){
+								clock.dispose();
+								done();
+							},
+							"frequency" : 8
+						}).start();
+						expect(clock.frequency.value).to.equal(8);
+					});
+
+				}
 
 				it("can get and set it's values with the set/get", function(){
 					var clock = new Clock();
@@ -120,15 +124,15 @@ define(["Test", "Tone/core/Clock", "helper/Offline", "helper/Supports", "Tone/co
 
 			context("Scheduling", function(){
 
-				it("passes a time to the callback", function(done){
-					var clock = new Clock(function(time){
-						expect(time).to.be.a.number;
-						clock.dispose();
-						done();
-					}, 10).start();
-				});
-
 				if (Supports.ONLINE_TESTING){
+					
+					it("passes a time to the callback", function(done){
+						var clock = new Clock(function(time){
+							expect(time).to.be.a.number;
+							clock.dispose();
+							done();
+						}, 10).start();
+					});
 
 					it("invokes the callback with a time great than now", function(done){
 						var clock = new Clock(function(time){
