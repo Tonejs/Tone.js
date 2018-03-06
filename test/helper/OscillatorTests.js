@@ -1,5 +1,5 @@
-define(["helper/OutputAudio", "Tone/source/Oscillator", "helper/Offline", "Test"],
-	function (OutputAudio, Oscillator, Offline, Test) {
+define(["helper/OutputAudio", "Tone/source/Oscillator", "helper/Offline", "Test", "Tone/core/Tone"],
+	function(OutputAudio, Oscillator, Offline, Test, Tone){
 
 		return function(Constr, args){
 
@@ -49,6 +49,13 @@ define(["helper/OutputAudio", "Tone/source/Oscillator", "helper/Offline", "Test"
 					expect(osc.phase).to.be.closeTo(180, 0.001);
 					osc.phase = 270;
 					expect(osc.phase).to.be.closeTo(270, 0.001);
+					osc.dispose();
+				});
+
+				it("has a restart method", function(){
+					var osc = new Constr();
+					expect(osc.restart).to.exist;
+					expect(osc.restart).is.not.equal(Tone.noOp);
 					osc.dispose();
 				});
 

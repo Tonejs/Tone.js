@@ -116,7 +116,6 @@ define(["Tone/core/Tone", "Tone/source/Source", "Tone/source/Oscillator",
 	 *  @private
 	 */
 	Tone.FMOscillator.prototype._start = function(time){
-		time = this.toSeconds(time);
 		this._modulator.start(time);
 		this._carrier.start(time);
 	};
@@ -127,9 +126,18 @@ define(["Tone/core/Tone", "Tone/source/Source", "Tone/source/Oscillator",
 	 *  @private
 	 */
 	Tone.FMOscillator.prototype._stop = function(time){
-		time = this.toSeconds(time);
 		this._modulator.stop(time);
 		this._carrier.stop(time);
+	};
+
+	/**
+	 *  stop the oscillator
+	 *  @param  {Time} time (optional) timing parameter
+	 *  @private
+	 */
+	Tone.FMOscillator.prototype.restart = function(time){
+		this._modulator.restart(time);
+		this._carrier.restart(time);
 	};
 
 	/**

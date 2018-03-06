@@ -121,6 +121,15 @@ define(["Tone/core/Tone", "Tone/source/Source", "Tone/source/Oscillator",
 	};
 
 	/**
+	 *  restart the oscillator
+	 *  @param  {Time} time (optional) timing parameter
+	 *  @private
+	 */
+	Tone.PulseOscillator.prototype.restart = function(time){
+		this._sawtooth.restart(time);
+	};
+
+	/**
 	 * The phase of the oscillator in degrees.
 	 * @memberOf Tone.PulseOscillator#
 	 * @type {Degrees}
