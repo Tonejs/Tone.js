@@ -1,6 +1,6 @@
 define(["Tone/instrument/Synth", "helper/Basic", "helper/InstrumentTests",
 	"helper/APITest", "helper/Offline", "Tone/type/Frequency", "helper/CompareToFile"],
-function(Synth, Basic, InstrumentTest, APITest, Offline, Frequency, CompareToFile) {
+function(Synth, Basic, InstrumentTest, APITest, Offline, Frequency, CompareToFile){
 
 	describe("Synth", function(){
 
@@ -97,11 +97,14 @@ function(Synth, Basic, InstrumentTest, APITest, Offline, Frequency, CompareToFil
 					});
 					expect(synth.portamento).to.equal(0.1);
 					synth.frequency.toMaster();
-					synth.triggerAttack(880, 0);
+					synth.triggerAttack(440, 0);
+					synth.triggerAttack(880, 0.1);
 				}, 0.2).then(function(buffer){
 					buffer.forEach(function(val, time){
 						if (time < 0.1){
-							expect(val).to.not.equal(880);
+							expect(val).to.be.closeTo(440, 1);
+						} else if (time < 0.2){
+							expect(val).to.within(440, 880);
 						} else {
 							expect(val).to.be.closeTo(880, 1);
 						}

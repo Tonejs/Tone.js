@@ -100,11 +100,9 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/signal/Signal"], f
 	 */
 	Tone.Monophonic.prototype.setNote = function(note, time){
 		time = this.toSeconds(time);
-		if (this.portamento > 0){
-			var currentNote = this.frequency.value;
-			this.frequency.setValueAtTime(currentNote, time);
+		if (this.portamento > 0 && this.envelope.getValueAtTime(time) > 0.05){
 			var portTime = this.toSeconds(this.portamento);
-			this.frequency.exponentialRampToValueAtTime(note, time + portTime);
+			this.frequency.exponentialRampTo(note, portTime, time);
 		} else {
 			this.frequency.setValueAtTime(note, time);
 		}
