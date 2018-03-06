@@ -1,6 +1,6 @@
 define(["Test", "Tone/core/Transport", "Tone/core/Tone", "helper/Offline",
 	"Tone/type/TransportTime", "Tone/signal/Signal", "helper/BufferTest", "Tone/type/Time"],
-function(Test, Transport, Tone, Offline, TransportTime, Signal, BufferTest, Time) {
+function(Test, Transport, Tone, Offline, TransportTime, Signal, BufferTest, Time){
 
 	describe("Transport", function(){
 
@@ -778,7 +778,7 @@ function(Test, Transport, Tone, Offline, TransportTime, Signal, BufferTest, Time
 				var invoked = false;
 				return Offline(function(Transport){
 					Transport.on("start", function(time, offset){
-						expect(time - Transport.now()).to.be.within(0, 0.05);
+						expect(time - Transport.context.currentTime).to.be.gt(0);
 						expect(offset).to.equal(0);
 						invoked = true;
 					});
