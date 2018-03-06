@@ -202,7 +202,7 @@ define(["Tone/core/Tone", "Tone/core/Clock", "Tone/type/Type", "Tone/core/Timeli
 				this.emit("loopEnd", tickTime);
 				this._clock.setTicksAtTime(this._loopStart, tickTime);
 				ticks = this._loopStart;
-				this.emit("loopStart", tickTime, this.seconds);
+				this.emit("loopStart", tickTime, this._clock.getSecondsAtTime(tickTime));
 				this.emit("loop", tickTime);
 			}
 		}
@@ -620,6 +620,15 @@ define(["Tone/core/Tone", "Tone/core/Clock", "Tone/type/Type", "Tone/core/Timeli
 	 */
 	Tone.Transport.prototype.getTicksAtTime = function(time){
 		return Math.round(this._clock.getTicksAtTime(time));
+	};
+
+	/**
+	 *  Return the elapsed seconds at the given time.
+	 *  @param  {Time}  time  When to get the elapsed seconds
+	 *  @return  {Seconds}  The number of elapsed seconds
+	 */
+	Tone.Transport.prototype.getSecondsAtTime = function(time){
+		return this._clock.getSecondsAtTime(time);
 	};
 
 	/**
