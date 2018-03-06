@@ -12,6 +12,7 @@
 * [TickSource](https://tonejs.github.io/docs/TickSource) (used in Clock and Player) tracks the elapsed ticks
 	* Improved precision of tracking ticks in Transport and Clock
 * `Player.position` returns the playback position of the AudioBuffer accounting for any playbackRate changes
+* Removing `retrigger` option with Tone.Player. Tone.BufferSource should be used if retriggering is desired. 
 
 **BREAKING CHANGES:**
 
