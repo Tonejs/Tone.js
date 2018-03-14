@@ -466,7 +466,7 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type", "Tone/shim/Audi
 		}
 
 		var request = new XMLHttpRequest();
-		request.open("GET", Tone.Buffer.baseUrl + url, true);
+		request.open("GET", encodeURIComponent(Tone.Buffer.baseUrl + url), true);
 		request.responseType = "arraybuffer";
 		//start out as 0
 		request.progress = 0;
