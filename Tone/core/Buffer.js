@@ -466,7 +466,18 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type", "Tone/shim/Audi
 		}
 
 		var request = new XMLHttpRequest();
-		request.open("GET", encodeURIComponent(Tone.Buffer.baseUrl + url), true);
+
+		// encode the url, separating by slash
+        var urlSplit = (Tone.Buffer.baseUrl + url).split("/");
+        var encodedUrl = "";
+        for (var i = 0; i < urlSplit.length; i++) {
+        	if (i > 0) {
+        		encodedUrl += "/";
+        	}
+        	encodedUrl += encodeURIComponent(urlSplit[i]);
+        }
+
+		request.open("GET", encodedUrl, true);
 		request.responseType = "arraybuffer";
 		//start out as 0
 		request.progress = 0;
