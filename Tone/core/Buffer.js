@@ -470,11 +470,11 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type", "Tone/shim/Audi
 		// encode the url, separating by slash
 		var urlSplit = (Tone.Buffer.baseUrl + url).split("/");
 		var encodedUrl = "";
-		for (var i = 0; i < urlSplit.length; i++) {
-			if (i > 0) {
+		for (var urlSplitIdx = 0; urlSplitIdx < urlSplit.length; urlSplitIdx++){
+			if (urlSplitIdx > 0){
 				encodedUrl += "/";
 			}
-			encodedUrl += encodeURIComponent(urlSplit[i]);
+			encodedUrl += encodeURIComponent(urlSplit[urlSplitIdx]);
 		}
 
 		request.open("GET", encodedUrl, true);
