@@ -86,6 +86,17 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/signal/Signal"], f
 	Tone.Monophonic.prototype._triggerEnvelopeRelease = function(){};
 
 	/**
+	 *  Get the level of the output at the given time. Measures
+	 *  the envelope(s) value at the time. 
+	 *  @param {Time} time The time to query the envelope value
+	 *  @return {NormalRange} The output level between 0-1
+	 */
+	Tone.Monophonic.prototype.getLevelAtTime = function(time){
+		time = this.toSeconds(time);
+		return this.envelope.getValueAtTime(time);
+	};
+
+	/**
 	 *  Set the note at the given time. If no time is given, the note
 	 *  will set immediately. 
 	 *  @param {Frequency} note The note to change to.
@@ -100,7 +111,7 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/signal/Signal"], f
 	 */
 	Tone.Monophonic.prototype.setNote = function(note, time){
 		time = this.toSeconds(time);
-		if (this.portamento > 0 && this.envelope.getValueAtTime(time) > 0.05){
+		if (this.portamento > 0 && this.getLevelAtTime(time) > 0.05){
 			var portTime = this.toSeconds(this.portamento);
 			this.frequency.exponentialRampTo(note, portTime, time);
 		} else {

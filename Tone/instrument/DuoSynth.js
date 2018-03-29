@@ -173,6 +173,16 @@ define(["Tone/core/Tone", "Tone/instrument/MonoSynth", "Tone/component/LFO", "To
 	};
 
 	/**
+	 *  Get the level of the output at the given time. Measures
+	 *  the envelope(s) value at the time. 
+	 *  @param {Time} time The time to query the envelope value
+	 *  @return {NormalRange} The output level between 0-1
+	 */
+	Tone.DuoSynth.prototype.getLevelAtTime = function(time){
+		return (this.voice0.getLevelAtTime(time) + this.voice1.getLevelAtTime(time))/2;
+	};
+
+	/**
 	 *  clean up
 	 *  @returns {Tone.DuoSynth} this
 	 */
