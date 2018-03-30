@@ -133,7 +133,7 @@ function(Test, Transport, Tone, Offline, TransportTime, Signal, BufferTest, Time
 					Transport.PPQ = 1;
 					var id = Transport.schedule(function(time){
 						expect(time).to.be.closeTo(Transport.toSeconds("4n"), 0.1);
-						Transport.cancel(id);
+						Transport.clear(id);
 					}, "4n");
 					Transport.start();
 				});
@@ -403,7 +403,7 @@ function(Test, Transport, Tone, Offline, TransportTime, Signal, BufferTest, Time
 				});
 			});
 
-			it("can cancel a scheduled event", function(){
+			it("can clear a scheduled event", function(){
 				return Offline(function(Transport){
 					var eventID = Transport.schedule(function(){
 						throw new Error("should not call this function");
@@ -415,27 +415,21 @@ function(Test, Transport, Tone, Offline, TransportTime, Signal, BufferTest, Time
 
 			it("can cancel the timeline of scheduled object", function(){
 				return Offline(function(Transport){
-					Transport.schedule(Tone.noOp, 0);
-					Transport.schedule(Tone.noOp, 1);
-					Transport.schedule(Tone.noOp, 2);
-					expect(Transport._timeline.length).to.equal(3);
-					Transport.cancel(2);
-					expect(Transport._timeline.length).to.equal(2);
+					Transport.schedule(function(){
+						throw new Error("should not call this");
+					}, 0);
 					Transport.cancel(0);
-					expect(Transport._timeline.length).to.equal(0);
+					Transport.start(0);
 				});
 			});
 
-			it("can cancel the timeline of schedulOnce object", function(){
+			it("can cancel the timeline of scheduleOnce object", function(){
 				return Offline(function(Transport){
-					Transport.scheduleOnce(Tone.noOp, 0);
-					Transport.scheduleOnce(Tone.noOp, 1);
-					Transport.scheduleOnce(Tone.noOp, 2);
-					expect(Transport._timeline.length).to.equal(3);
-					Transport.cancel(2);
-					expect(Transport._timeline.length).to.equal(2);
+					Transport.scheduleOnce(function(){
+						throw new Error("should not call this");
+					}, 0);
 					Transport.cancel(0);
-					expect(Transport._timeline.length).to.equal(0);
+					Transport.start(0);
 				});
 			});
 
@@ -522,6 +516,16 @@ function(Test, Transport, Tone, Offline, TransportTime, Signal, BufferTest, Time
 					Transport.start(startTime);
 				}, 0.3).then(function(){
 					expect(invoked).to.be.true;
+				});
+			});
+
+			it("can cancel the timeline of scheduleRepeat", function(){
+				return Offline(function(Transport){
+					Transport.scheduleRepeat(function(){
+						throw new Error("should not call this");
+					}, 0.01, 0);
+					Transport.cancel(0);
+					Transport.start(0);
 				});
 			});
 
@@ -707,7 +711,7 @@ function(Test, Transport, Tone, Offline, TransportTime, Signal, BufferTest, Time
 				});
 			});
 
-			it("can cancel a scheduled event", function(){
+			it("can clear a scheduled event", function(){
 				return Offline(function(Transport){
 					var eventID = Transport.scheduleOnce(function(){
 						throw new Error("should not call this function");

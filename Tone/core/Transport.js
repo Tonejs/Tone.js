@@ -322,8 +322,12 @@ define(["Tone/core/Tone", "Tone/core/Clock", "Tone/type/Type", "Tone/core/Timeli
 	Tone.Transport.prototype.cancel = function(after){
 		after = Tone.defaultArg(after, 0);
 		after = this.toTicks(after);
-		this._timeline.cancel(after);
-		this._repeatedEvents.cancel(after);
+		this._timeline.forEachFrom(after, function(event){
+			this.clear(event.id);
+		}.bind(this));
+		this._repeatedEvents.forEachFrom(after, function(event){
+			this.clear(event.id);
+		}.bind(this));
 		return this;
 	};
 
