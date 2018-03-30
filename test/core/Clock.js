@@ -120,6 +120,26 @@ define(["Test", "Tone/core/Clock", "helper/Offline", "helper/Supports", "Tone/co
 						};
 					}, 0.5);
 				});
+
+				it("stop and immediately start", function(){
+					return Offline(function(){
+						var clock = new Clock();
+						expect(clock.state).to.equal("stopped");
+						clock.start(0).stop(0.1).start(0.1);
+						expect(clock.state).to.equal("started");
+
+						return function(sample, time){
+							Test.whenBetween(time, 0, 0.1, function(){
+								expect(clock.state).to.equal("started");
+							});
+
+							Test.whenBetween(time, 0.1, 0.5, function(){
+								expect(clock.state).to.equal("started");
+							});
+						};
+
+					}, 0.5);
+				});
 			});
 
 			context("Scheduling", function(){
