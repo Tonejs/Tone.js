@@ -100,7 +100,7 @@ define(["Tone/core/Tone", "Tone/type/Type"], function(Tone){
 	 *  @returns {Tone.IntervalTimeline} this
 	 */
 	Tone.IntervalTimeline.prototype.cancel = function(after){
-		this.forEachAfter(after, function(event){
+		this.forEachFrom(after, function(event){
 			this.remove(event);
 		}.bind(this));
 		return this;
@@ -338,12 +338,12 @@ define(["Tone/core/Tone", "Tone/type/Type"], function(Tone){
 
 	/**
 	 *  Iterate over everything in the array in which the time is greater
-	 *  than the given time.
+	 *  than or equal to the given time.
 	 *  @param  {Number}  time The time to check if items are before
 	 *  @param  {Function}  callback The callback to invoke with every item
 	 *  @returns {Tone.IntervalTimeline} this
 	 */
-	Tone.IntervalTimeline.prototype.forEachAfter = function(time, callback){
+	Tone.IntervalTimeline.prototype.forEachFrom = function(time, callback){
 		if (this._root !== null){
 			var results = [];
 			this._root.searchAfter(time, results);

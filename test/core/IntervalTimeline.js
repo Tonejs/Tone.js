@@ -1,4 +1,4 @@
-define(["Test", "Tone/core/IntervalTimeline", "helper/Basic"], function (Test, IntervalTimeline, Basic) {
+define(["Test", "Tone/core/IntervalTimeline", "helper/Basic"], function(Test, IntervalTimeline, Basic){
 
 	describe("IntervalTimeline", function(){
 
@@ -275,6 +275,19 @@ define(["Test", "Tone/core/IntervalTimeline", "helper/Basic"], function (Test, I
 				expect(sched.length).to.equal(0);
 				sched.dispose();
 			});
+
+			it("can cancel items at the given time", function(){
+				var sched = new IntervalTimeline();
+				sched.add({
+					"time" : 0,
+					"duration" : 10
+				});
+				sched.cancel(1);
+				expect(sched.length).to.equal(1);
+				sched.cancel(0);
+				expect(sched.length).to.equal(0);
+				sched.dispose();
+			});
 		});
 
 		context("Iterators", function(){
@@ -357,14 +370,14 @@ define(["Test", "Tone/core/IntervalTimeline", "helper/Basic"], function (Test, I
 				sched.add({ "time" : 0.3, "duration" : 5 });
 				sched.add({ "time" : 0.4, "duration" : 5 });
 				var count = 0;
-				sched.forEachAfter(0.2, function(event){
+				sched.forEachFrom(0.2, function(event){
 					expect(event).to.be.an.object;
 					expect(event.time).to.be.gte(0.2);
 					count++;
 				});
 				expect(count).to.equal(3);
 				count = 0;
-				sched.forEachAfter(0.35, function(event){
+				sched.forEachFrom(0.35, function(event){
 					expect(event.time).to.be.gte(0.35);
 					count++;
 				});
@@ -379,7 +392,7 @@ define(["Test", "Tone/core/IntervalTimeline", "helper/Basic"], function (Test, I
 				sched.add({ "time" : 0.3, "duration" : 5 });
 				sched.add({ "time" : 0.4, "duration" : 5 });
 				var count = 0;
-				sched.forEachAfter(0.5, function(){
+				sched.forEachFrom(0.5, function(){
 					count++;
 				});
 				expect(count).to.equal(0);
@@ -424,12 +437,12 @@ define(["Test", "Tone/core/IntervalTimeline", "helper/Basic"], function (Test, I
 				sched.dispose();
 			});
 
-			it("can remove items during forEachAfter iterations", function(){
+			it("can remove items during forEachFrom iterations", function(){
 				var sched = new IntervalTimeline();
 				for (var i = 0; i < 1000; i++){
 					sched.add({ "time" : i, "duration" : Infinity });
 				}
-				sched.forEachAfter(0, function(event){
+				sched.forEachFrom(0, function(event){
 					sched.remove(event);
 				});
 				expect(sched.length).to.equal(0);
