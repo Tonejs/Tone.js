@@ -302,7 +302,7 @@ define(["Tone/core/Tone", "Tone/signal/TickSignal", "Tone/core/TimelineState",
 		var lastStateEvent = this._state.get(startTime);
 		this._state.forEachBetween(startTime, endTime, function(event){
 			if (lastStateEvent.state === Tone.State.Started && event.state !== Tone.State.Started){
-				this.forEachTickBetween(Math.max(lastStateEvent.time, startTime) + this.sampleTime, event.time, callback);
+				this.forEachTickBetween(Math.max(lastStateEvent.time, startTime), event.time - this.sampleTime, callback);
 			}
 			lastStateEvent = event;
 		}.bind(this));
