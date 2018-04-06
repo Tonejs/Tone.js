@@ -21,6 +21,7 @@ var ExampleList = {
 		"LFO Effects" : "lfoEffects",
 		"PingPongDelay" : "pingPongDelay",
 		"Buses" : "buses",
+		"Reverb" : "reverb",
 		"Spatialization" : "spatialPanner"
 	},
 	"Sequencing / Timing" : {
@@ -37,7 +38,7 @@ var ExampleList = {
 	},
 	"Visualization" : {
 		"Animation Sync" : "animationSync",
-		"Envelopes": "funkyShape",
+		"Envelopes" : "funkyShape",
 		"Analysis" : "analysis",
 		"Meter" : "meter"
 	},
