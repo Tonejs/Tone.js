@@ -8,12 +8,11 @@ define(["Test", "Tone/core/Buffers", "Tone/core/Buffer"], function (Test, Buffer
 	var testFile2 = "./audio/hh.wav";
 
 	describe("Buffers", function(){
-		it ("can be created and disposed", function(){
+		it("can be created and disposed", function(){
 			var buff = new Buffers(testFile);
 			buff.dispose();
 			Test.wasDisposed(buff);
 		});
-
 
 		it("loads a file from an object string", function(done){
 			var buffer = new Buffers({
@@ -138,7 +137,7 @@ define(["Test", "Tone/core/Buffers", "Tone/core/Buffer"], function (Test, Buffer
 				buffer.add("name", buff);
 				expect(buffer.get("name").get()).to.equal(buff);
 				done();
-			})
+			});
 		});
 
 		it("can be constructed with Tone.Buffers", function(){

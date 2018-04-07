@@ -3,16 +3,16 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/effect/Effect"], function(To
 	"use strict";
 
 	/**
-	 *  @class  Tone.Convolver is a wrapper around the Native Web Audio 
+	 *  @class  Tone.Convolver is a wrapper around the Native Web Audio
 	 *          [ConvolverNode](http://webaudio.github.io/web-audio-api/#the-convolvernode-interface).
 	 *          Convolution is useful for reverb and filter emulation. Read more about convolution reverb on
 	 *          [Wikipedia](https://en.wikipedia.org/wiki/Convolution_reverb).
-	 *  
+	 *
 	 *  @constructor
 	 *  @extends {Tone.Effect}
 	 *  @param {string|Tone.Buffer|Object} [url] The URL of the impulse response or the Tone.Buffer
-	 *                                           contianing the impulse response. 
-	 *  @param {Function} onload The callback to invoke when the url is loaded.
+	 *                                           contianing the impulse response.
+	 *  @param {Function=} onload The callback to invoke when the url is loaded.
 	 *  @example
 	 * //initializing the convolver with an impulse response
 	 * var convolver = new Tone.Convolver("./path/to/ir.wav").toMaster();
@@ -22,7 +22,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/effect/Effect"], function(To
 		var options = Tone.defaults(arguments, ["url", "onload"], Tone.Convolver);
 		Tone.Effect.call(this, options);
 
-	  	/**
+		/**
 		 *  convolver node
 		 *  @type {ConvolverNode}
 		 *  @private
@@ -34,17 +34,10 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/effect/Effect"], function(To
 		 *  @type {Tone.Buffer}
 		 *  @private
 		 */
-		this._buffer = new Tone.Buffer();
-
-		if (Tone.isString(options.url)){
-			this._buffer.load(options.url, function(buffer){
-				this.buffer = buffer;
-				options.onload();
-			}.bind(this));
-		} else if (options.url){
-			this.buffer = options.url;
+		this._buffer = new Tone.Buffer(options.url, function(buffer){
+			this._convolver.buffer = buffer.get();
 			options.onload();
-		}
+		}.bind(this));
 
 		this.connectEffect(this._convolver);
 	};
@@ -96,7 +89,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/effect/Effect"], function(To
 	};
 
 	/**
-	 *  Clean up. 
+	 *  Clean up.
 	 *  @returns {Tone.Convolver} this
 	 */
 	Tone.Convolver.prototype.dispose = function(){
@@ -106,7 +99,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/effect/Effect"], function(To
 		this._buffer.dispose();
 		this._buffer = null;
 		return this;
-	}; 
+	};
 
 	return Tone.Convolver;
 });

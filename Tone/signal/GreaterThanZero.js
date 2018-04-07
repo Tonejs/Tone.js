@@ -1,24 +1,23 @@
-define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Multiply", "Tone/signal/WaveShaper"], 
-function(Tone){
+define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/signal/Multiply", "Tone/signal/WaveShaper"], function(Tone){
 
 	"use strict";
 
 	/**
 	 *  @class  GreaterThanZero outputs 1 when the input is strictly greater than zero
-	 *  
+	 *
 	 *  @constructor
 	 *  @extends {Tone.SignalBase}
 	 *  @example
 	 * var gt0 = new Tone.GreaterThanZero();
 	 * var sig = new Tone.Signal(0.01).connect(gt0);
-	 * //the output of gt0 is 1. 
+	 * //the output of gt0 is 1.
 	 * sig.value = 0;
-	 * //the output of gt0 is 0. 
+	 * //the output of gt0 is 0.
 	 */
 	Tone.GreaterThanZero = function(){
-		
+
 		Tone.SignalBase.call(this);
-		
+
 		/**
 		 *  @type {Tone.WaveShaper}
 		 *  @private

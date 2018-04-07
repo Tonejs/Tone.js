@@ -7,7 +7,7 @@ define(["Tone/effect/Chebyshev", "helper/Basic", "helper/EffectTests"], function
 
 		context("API", function(){
 
-			it ("can pass in options in the constructor", function(){
+			it("can pass in options in the constructor", function(){
 				var cheby = new Chebyshev({
 					"order" : 2,
 				});
@@ -15,7 +15,7 @@ define(["Tone/effect/Chebyshev", "helper/Basic", "helper/EffectTests"], function
 				cheby.dispose();
 			});
 
-			it ("can get/set the options", function(){
+			it("can get/set the options", function(){
 				var cheby = new Chebyshev();
 				cheby.set({
 					"order" : 40,

@@ -1,6 +1,6 @@
-define(["helper/Basic", "Tone/event/Sequence", "Tone/core/Tone", 
-	"Tone/core/Transport", "Tone/event/Event", "helper/Offline", "Test"], 
-	function (Basic, Sequence, Tone, Transport, Event, Offline, Test) {
+define(["helper/Basic", "Tone/event/Sequence", "Tone/core/Tone",
+	"Tone/core/Transport", "Tone/event/Event", "helper/Offline", "Test", "Tone/type/Time"],
+function(Basic, Sequence, Tone, Transport, Event, Offline, Test, Time){
 
 	describe("Sequence", function(){
 
@@ -8,7 +8,7 @@ define(["helper/Basic", "Tone/event/Sequence", "Tone/core/Tone",
 
 		context("Constructor", function(){
 
-			it ("takes a callback and a sequence of values", function(){
+			it("takes a callback and a sequence of values", function(){
 				return Offline(function(){
 					var callback = function(){};
 					var seq = new Sequence(callback, [0, 1, 2]);
@@ -18,18 +18,18 @@ define(["helper/Basic", "Tone/event/Sequence", "Tone/core/Tone",
 				});
 			});
 
-			it ("takes a callback and a sequence of values and a subdivision", function(){
+			it("takes a callback and a sequence of values and a subdivision", function(){
 				return Offline(function(){
 					var callback = function(){};
 					var seq = new Sequence(callback, [0, 1, 2], "2n");
 					expect(seq.callback).to.equal(callback);
-					expect(seq.subdivision).to.equal("2n");
+					expect(seq.subdivision).to.equal(Time("2n").valueOf());
 					expect(seq.length).to.equal(3);
 					seq.dispose();
 				});
 			});
 
-			it ("can be constructed with no arguments", function(){
+			it("can be constructed with no arguments", function(){
 				return Offline(function(){
 					var seq = new Sequence();
 					expect(seq.length).to.equal(0);
@@ -37,7 +37,7 @@ define(["helper/Basic", "Tone/event/Sequence", "Tone/core/Tone",
 				});
 			});
 
-			it ("can pass in arguments in options object", function(){
+			it("can pass in arguments in options object", function(){
 				return Offline(function(){
 					var callback = function(){};
 					var seq = new Sequence({
@@ -51,19 +51,19 @@ define(["helper/Basic", "Tone/event/Sequence", "Tone/core/Tone",
 					expect(seq.callback).to.equal(callback);
 					expect(seq.length).to.equal(3);
 					expect(seq.loop).to.be.true;
-					expect(seq.loopEnd).to.equal("4n");
+					expect(seq.loopEnd).to.equal(Time("4n").valueOf());
 					expect(seq.probability).to.equal(0.3);
 					expect(seq.humanize).to.be.true;
 					seq.dispose();
 				});
 			});
 
-			it ("loops by default with the loopEnd as the duration of the loop", function(){
+			it("loops by default with the loopEnd as the duration of the loop", function(){
 				return Offline(function(){
 					var seq = new Sequence(function(){}, [0, 1, 2, 3], "8n");
 					expect(seq.loop).to.be.true;
 					expect(seq.length).to.equal(4);
-					expect(seq.loopEnd).to.equal("2n");
+					expect(seq.loopEnd).to.equal(Time("2n").valueOf());
 					seq.dispose();
 				});
 			});
@@ -91,7 +91,7 @@ define(["helper/Basic", "Tone/event/Sequence", "Tone/core/Tone",
 				});
 			});
 
-			it ("can retrieve an event using 'at' and the index", function(){
+			it("can retrieve an event using 'at' and the index", function(){
 				return Offline(function(){
 					var seq = new Sequence(function(){}, [0, 1, 2]);
 					expect(seq.length).to.equal(3);
@@ -104,7 +104,7 @@ define(["helper/Basic", "Tone/event/Sequence", "Tone/core/Tone",
 				});
 			});
 
-			it ("can set the value of an existing event with 'at'", function(){
+			it("can set the value of an existing event with 'at'", function(){
 				return Offline(function(){
 					var seq = new Sequence(function(){}, [0, 1, 2]);
 					expect(seq.length).to.equal(3);
@@ -115,7 +115,7 @@ define(["helper/Basic", "Tone/event/Sequence", "Tone/core/Tone",
 				});
 			});
 
-			it ("can remove an event by index", function(){
+			it("can remove an event by index", function(){
 				return Offline(function(){
 					var seq = new Sequence(function(){}, [0, 1, 2]);
 					expect(seq.length).to.equal(3);
@@ -125,8 +125,7 @@ define(["helper/Basic", "Tone/event/Sequence", "Tone/core/Tone",
 				});
 			});
 
-
-			it ("can add and retrieve a subSequence with 'at'", function(){
+			it("can add and retrieve a subSequence with 'at'", function(){
 				return Offline(function(){
 					var seq = new Sequence(function(){}, [0, 1, 2]);
 					expect(seq.length).to.equal(3);
@@ -162,11 +161,11 @@ define(["helper/Basic", "Tone/event/Sequence", "Tone/core/Tone",
 					seq.dispose();
 				});
 			});
-		
+
 		});
 		context("Sequence callback", function(){
 
-			it ("invokes the callback after it's started", function(){
+			it("invokes the callback after it's started", function(){
 				var invoked = false;
 				return Offline(function(Transport){
 					var seq = new Sequence(function(){
@@ -179,7 +178,7 @@ define(["helper/Basic", "Tone/event/Sequence", "Tone/core/Tone",
 				});
 			});
 
-			it ("passes in the scheduled time to the callback", function(){
+			it("passes in the scheduled time to the callback", function(){
 				var invoked = false;
 				return Offline(function(Transport){
 					var now = 0.1;
@@ -196,7 +195,7 @@ define(["helper/Basic", "Tone/event/Sequence", "Tone/core/Tone",
 				});
 			});
 
-			it ("passes in the value to the callback", function(){
+			it("passes in the value to the callback", function(){
 				var invoked = false;
 				return Offline(function(Transport){
 					var seq = new Sequence(function(time, thing){
@@ -211,7 +210,7 @@ define(["helper/Basic", "Tone/event/Sequence", "Tone/core/Tone",
 				});
 			});
 
-			it ("invokes the scheduled events in the right order", function(){
+			it("invokes the scheduled events in the right order", function(){
 				var count = 0;
 				return Offline(function(Transport){
 					var seq = new Sequence(function(time, value){
@@ -225,7 +224,7 @@ define(["helper/Basic", "Tone/event/Sequence", "Tone/core/Tone",
 				});
 			});
 
-			it ("invokes the scheduled events at the correct times", function(){
+			it("invokes the scheduled events at the correct times", function(){
 				var count = 0;
 				return Offline(function(Transport){
 					var eighth = Transport.toSeconds("8n");
@@ -241,7 +240,7 @@ define(["helper/Basic", "Tone/event/Sequence", "Tone/core/Tone",
 				});
 			});
 
-			it ("can schedule rests using 'null'", function(){
+			it("can schedule rests using 'null'", function(){
 				var count = 0;
 				return Offline(function(Transport){
 					var eighth = Transport.toSeconds("8n");
@@ -257,11 +256,11 @@ define(["helper/Basic", "Tone/event/Sequence", "Tone/core/Tone",
 				});
 			});
 
-			it ("can schedule triple nested arrays", function(){
+			it("can schedule triple nested arrays", function(){
 				var count = 0;
 				return Offline(function(Transport){
 					var eighth = Transport.toSeconds("8n");
-					var times = [0,eighth, eighth * 1.5, eighth * 1.75];
+					var times = [0, eighth, eighth * 1.5, eighth * 1.75];
 					var seq = new Sequence(function(time){
 						expect(time).to.be.closeTo(times[count], 0.01);
 						count++;
@@ -273,7 +272,7 @@ define(["helper/Basic", "Tone/event/Sequence", "Tone/core/Tone",
 				});
 			});
 
-			it ("starts an event added after the seq was started", function(){
+			it("starts an event added after the seq was started", function(){
 				var invoked = false;
 				return Offline(function(Transport){
 					var seq = new Sequence({
@@ -302,7 +301,7 @@ define(["helper/Basic", "Tone/event/Sequence", "Tone/core/Tone",
 
 		context("Looping", function(){
 
-			it ("can be set to loop", function(){
+			it("can be set to loop", function(){
 				var callCount = 0;
 				return Offline(function(Transport){
 					var seq = new Sequence({
@@ -322,7 +321,7 @@ define(["helper/Basic", "Tone/event/Sequence", "Tone/core/Tone",
 				});
 			});
 
-			it ("can loop between loopStart and loopEnd", function(){
+			it("can loop between loopStart and loopEnd", function(){
 				var invokations = 0;
 				return Offline(function(Transport){
 					new Sequence({
@@ -342,7 +341,7 @@ define(["helper/Basic", "Tone/event/Sequence", "Tone/core/Tone",
 				});
 			});
 
-			it ("can set the loop points after starting", function(){
+			it("can set the loop points after starting", function(){
 				var invoked = false;
 				return Offline(function(Transport){
 					var switched = false;
@@ -368,10 +367,9 @@ define(["helper/Basic", "Tone/event/Sequence", "Tone/core/Tone",
 			});
 		});
 
-			
 		context("playbackRate", function(){
 
-			it ("can adjust the playbackRate", function(){
+			it("can adjust the playbackRate", function(){
 				var invoked = false;
 				return Offline(function(Transport){
 					var lastCall;
@@ -393,7 +391,7 @@ define(["helper/Basic", "Tone/event/Sequence", "Tone/core/Tone",
 				});
 			});
 
-			it ("adjusts speed of subsequences", function(){
+			it("adjusts speed of subsequences", function(){
 				var invoked = false;
 				return Offline(function(Transport){
 					var lastCall;
@@ -414,8 +412,8 @@ define(["helper/Basic", "Tone/event/Sequence", "Tone/core/Tone",
 					expect(invoked).to.be.true;
 				});
 			});
-			
-			it ("can adjust the playbackRate after starting", function(){
+
+			it("can adjust the playbackRate after starting", function(){
 				var invoked = false;
 				return Offline(function(Transport){
 					var lastCall;
@@ -434,7 +432,7 @@ define(["helper/Basic", "Tone/event/Sequence", "Tone/core/Tone",
 						}
 					}).start(0);
 					Transport.start();
-				}, 1).then(function(){
+				}, 2).then(function(){
 					expect(invoked).to.be.true;
 				});
 			});

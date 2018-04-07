@@ -7,7 +7,7 @@ define(["Tone/effect/Freeverb", "helper/Basic", "helper/EffectTests"], function 
 
 		context("API", function(){
 
-			it ("can pass in options in the constructor", function(){
+			it("can pass in options in the constructor", function(){
 				var reverb = new Freeverb({
 					"dampening" : 2000,
 					"roomSize" : 0.2,
@@ -17,7 +17,7 @@ define(["Tone/effect/Freeverb", "helper/Basic", "helper/EffectTests"], function 
 				reverb.dispose();
 			});
 
-			it ("can get/set the options", function(){
+			it("can get/set the options", function(){
 				var reverb = new Freeverb();
 				reverb.set({
 					"roomSize" : 0.23,

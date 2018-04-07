@@ -1,5 +1,5 @@
-define(["Tone/core/Tone", "Tone/signal/Expr", "Tone/signal/Signal", "Tone/component/Split", "Tone/core/AudioNode"],
-	function(Tone){
+define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Subtract", "Tone/signal/Signal",
+	"Tone/component/Split", "Tone/core/AudioNode"], function(Tone){
 
 	"use strict";
 
@@ -30,23 +30,34 @@ define(["Tone/core/Tone", "Tone/signal/Expr", "Tone/signal/Signal", "Tone/compon
 		/**
 		 *  The mid send. Connect to mid processing. Alias for
 		 *  <code>output[0]</code>
-		 *  @type {Tone.Expr}
+		 *  @type {Tone.Add}
 		 */
-		this.mid = this.output[0] = new Tone.Expr("($0 + $1) * $2");
+		this._midAdd = new Tone.Add();
 
 		/**
-		 *  The side output. Connect to side processing. Alias for
-		 *  <code>output[1]</code>
-		 *  @type {Tone.Expr}
+		 * Multiply the _midAdd by sqrt(1/2)
+		 * @type {Tone.Multiply}
 		 */
-		this.side = this.output[1] = new Tone.Expr("($0 - $1) * $2");
+		this.mid = this.output[0] = new Tone.Multiply(Math.SQRT1_2);
 
-		this._split.connect(this.mid, 0, 0);
-		this._split.connect(this.mid, 1, 1);
-		this._split.connect(this.side, 0, 0);
-		this._split.connect(this.side, 1, 1);
-		this.context.getConstant(Math.SQRT1_2).connect(this.mid, 0, 2);
-		this.context.getConstant(Math.SQRT1_2).connect(this.side, 0, 2);
+		/**
+		 *  The side output. Connect to side processing. Also Output 1
+		 *  @type {Tone.Subtract}
+		 */
+		this._sideSubtract = new Tone.Subtract();
+
+		/**
+		 * Multiply the _midAdd by sqrt(1/2)
+		 * @type {Tone.Multiply}
+		 */
+		this.side = this.output[1] = new Tone.Multiply(Math.SQRT1_2);
+
+		this._split.connect(this._midAdd, 0, 0);
+		this._split.connect(this._midAdd, 1, 1);
+		this._split.connect(this._sideSubtract, 0, 0);
+		this._split.connect(this._sideSubtract, 1, 1);
+		this._midAdd.connect(this.mid);
+		this._sideSubtract.connect(this.side);
 	};
 
 	Tone.extend(Tone.MidSideSplit, Tone.AudioNode);
@@ -61,6 +72,10 @@ define(["Tone/core/Tone", "Tone/signal/Expr", "Tone/signal/Signal", "Tone/compon
 		this.mid = null;
 		this.side.dispose();
 		this.side = null;
+		this._midAdd.dispose();
+		this._midAdd = null;
+		this._sideSubtract.dispose();
+		this._sideSubtract = null;
 		this._split.dispose();
 		this._split = null;
 		return this;

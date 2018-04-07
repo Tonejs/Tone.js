@@ -1,6 +1,5 @@
 define(["Tone/core/Tone", "Tone/component/LowpassCombFilter", "Tone/effect/StereoEffect",
-	"Tone/signal/Signal", "Tone/component/Split", "Tone/component/Merge", "Tone/signal/ScaleExp"],
-function(Tone){
+	"Tone/signal/Signal", "Tone/component/Split", "Tone/component/Merge", "Tone/signal/ScaleExp"], function(Tone){
 
 	"use strict";
 
@@ -130,17 +129,17 @@ function(Tone){
 	 */
 	Tone.Freeverb.prototype.dispose = function(){
 		Tone.StereoEffect.prototype.dispose.call(this);
-		for (var al = 0; al < this._allpassFiltersL.length; al++) {
+		for (var al = 0; al < this._allpassFiltersL.length; al++){
 			this._allpassFiltersL[al].disconnect();
 			this._allpassFiltersL[al] = null;
 		}
 		this._allpassFiltersL = null;
-		for (var ar = 0; ar < this._allpassFiltersR.length; ar++) {
+		for (var ar = 0; ar < this._allpassFiltersR.length; ar++){
 			this._allpassFiltersR[ar].disconnect();
 			this._allpassFiltersR[ar] = null;
 		}
 		this._allpassFiltersR = null;
-		for (var cf = 0; cf < this._combFilters.length; cf++) {
+		for (var cf = 0; cf < this._combFilters.length; cf++){
 			this._combFilters[cf].dispose();
 			this._combFilters[cf] = null;
 		}

@@ -1,5 +1,7 @@
-define(["helper/Basic", "Test", "Tone/type/Frequency", "Tone/core/Tone", "deps/teoria", "helper/Offline"],
-	function (Basic, Test, Frequency, Tone, teoria, Offline) {
+define(["helper/Basic", "Test", "Tone/type/Frequency", "Tone/core/Tone",
+"deps/teoria", "helper/Offline", "Tone/type/Time", "Tone/type/TransportTime",
+"Tone/type/Ticks", "Tone/type/Midi"],
+	function (Basic, Test, Frequency, Tone, teoria, Offline, Time, TransportTime, Ticks, Midi) {
 
 	describe("Frequency", function(){
 
@@ -41,6 +43,37 @@ define(["helper/Basic", "Test", "Tone/type/Frequency", "Tone/core/Tone", "deps/t
 				expect(Frequency(1) + Frequency(1)).to.equal(2);
 				expect(Frequency(1) > Frequency(0)).to.be.true;
 				expect(+Frequency(1)).to.equal(1);
+			});
+
+			it("can convert from Time", function(){
+				expect(Frequency(Time(2)).valueOf()).to.equal(0.5);
+				expect(Frequency(Time("4n")).valueOf()).to.equal(2);
+				expect(Frequency(Time(4, "n")).valueOf()).to.equal(2);
+			});
+
+			it("can convert from Frequency", function(){
+				expect(Frequency(Frequency(2)).valueOf()).to.equal(2);
+				expect(Frequency(Frequency("4n")).valueOf()).to.equal(2);
+				expect(Frequency(Frequency(4, "n")).valueOf()).to.equal(2);
+			});
+
+
+			it("can convert from TransportTime", function(){
+				expect(Frequency(TransportTime(2)).valueOf()).to.equal(0.5);
+				expect(Frequency(TransportTime("4n")).valueOf()).to.equal(2);
+			});
+
+			it("can convert from Midi", function(){
+				expect(Frequency(Midi('C4')).valueOf()).to.equal(Frequency('C4').valueOf());
+				expect(Frequency(Midi(60)).valueOf()).to.equal(Frequency('C4').valueOf());
+				expect(Frequency(Midi(61)).valueOf()).to.equal(Frequency('C#4').valueOf());
+			});
+
+			it("can convert from Ticks", function(){
+				return Offline(function(Transport){
+					expect(Frequency(Ticks(Transport.PPQ)).valueOf()).to.equal(2);
+					expect(Frequency(Ticks("4n")).valueOf()).to.equal(2);
+				});
 			});
 		});
 
@@ -131,15 +164,26 @@ define(["helper/Basic", "Test", "Tone/type/Frequency", "Tone/core/Tone", "deps/t
 
 		});
 
-		context("Expression", function(){
+		context("transpose/harmonize", function(){
 
-			it ("can evaluate expressions", function(){
-				var a4 = teoria.note("A4").fq();
-				expect(Frequency("A4 * 2").valueOf()).to.be.closeTo(a4 * 2, 0.0001);
-				expect(Frequency("A4 + 2 * 2").valueOf()).to.be.closeTo(a4 + 4, 0.0001);
-				expect(Frequency("A4/3").valueOf()).to.be.closeTo(a4/3, 0.0001);
+			it ("can transpose a value", function(){
+				expect(Tone.Frequency("A4").transpose(3).toMidi()).to.equal(72);
+				expect(Tone.Frequency("A4").transpose(-3).toMidi()).to.equal(66);
+				expect(Tone.Frequency(440).transpose(-12).valueOf()).to.equal(220);
 			});
 
+			it ("can harmonize a value", function(){
+				expect(Tone.Frequency("A4").harmonize([0, 3])).to.be.an("array");
+				expect(Tone.Frequency("A4").harmonize([0, 3]).length).to.equal(2);
+				expect(Tone.Frequency("A4").harmonize([0, 3])[0].toNote()).to.equal("A4");
+				expect(Tone.Frequency("A4").harmonize([0, 3])[1].toNote()).to.equal("C5");
+
+				expect(Tone.Frequency("A4").harmonize([-12, 0, 12])).to.be.an("array");
+				expect(Tone.Frequency("A4").harmonize([-12, 0, 12]).length).to.equal(3);
+				expect(Tone.Frequency("A4").harmonize([-12, 0, 12])[0].toNote()).to.equal("A3");
+				expect(Tone.Frequency("A4").harmonize([-12, 0, 12])[1].toNote()).to.equal("A4");
+				expect(Tone.Frequency("A4").harmonize([-12, 0, 12])[2].toNote()).to.equal("A5");
+			});
 		});
 
 		context("Conversions", function(){
@@ -162,20 +206,6 @@ define(["helper/Basic", "Test", "Tone/type/Frequency", "Tone/core/Tone", "deps/t
 				expect(Frequency(4).toSeconds()).to.equal(0.25);
 				expect(Frequency("2hz").toSeconds()).to.equal(0.5);
 			});
-		});
-
-		context("Operators", function(){
-
-			it("can combine operations", function(){
-				expect(Frequency(4).mult(2).add(3).valueOf()).to.equal(11);
-				expect(Frequency(8).sub(2).div(2).mult(8).valueOf()).to.equal(24);
-			});
-
-			it("can combine operations", function(){
-				expect(Frequency(4).mult(2).add(3).valueOf()).to.equal(11);
-				expect(Frequency(8).sub(2).div(2).mult(8).valueOf()).to.equal(24);
-			});
-
 		});
 
 	});

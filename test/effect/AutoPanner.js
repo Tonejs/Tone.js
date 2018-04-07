@@ -1,46 +1,74 @@
-define(["Tone/effect/AutoPanner", "helper/Basic", "helper/EffectTests"], function (AutoPanner, Basic, EffectTests) {
-	
-	describe("AutoPanner", function(){
-		Basic(AutoPanner);
-		EffectTests(AutoPanner);
+define(["Tone/effect/AutoPanner", "helper/Basic", "helper/EffectTests", "helper/Offline"],
+	function (AutoPanner, Basic, EffectTests, Offline) {
 
-		context("API", function(){
+		describe("AutoPanner", function(){
+			Basic(AutoPanner);
+			EffectTests(AutoPanner);
 
-			it ("can pass in options in the constructor", function(){
-				var autoPanner = new AutoPanner({
-					"type" : "sawtooth",
-					"depth" : 0.2
+			context("API", function(){
+
+				it("can pass in options in the constructor", function(){
+					var autoPanner = new AutoPanner({
+						"type" : "sawtooth",
+						"depth" : 0.2
+					});
+					expect(autoPanner.depth.value).to.be.closeTo(0.2, 0.01);
+					expect(autoPanner.type).to.equal("sawtooth");
+					autoPanner.dispose();
 				});
-				expect(autoPanner.depth.value).to.be.closeTo(0.2, 0.01);
-				expect(autoPanner.type).to.equal("sawtooth");
-				autoPanner.dispose();
-			});
 
-			it ("can be started and stopped", function(){
-				var autoPanner = new AutoPanner();
-				autoPanner.start().stop("+0.2");
-				autoPanner.dispose();
-			});
-
-			it ("can get/set the options", function(){
-				var autoPanner = new AutoPanner();
-				autoPanner.set({
-					"frequency" : 2.4,
-					"type" : "triangle"
+				it("can be started and stopped", function(){
+					var autoPanner = new AutoPanner();
+					autoPanner.start().stop("+0.2");
+					autoPanner.dispose();
 				});
-				expect(autoPanner.get().frequency).to.be.closeTo(2.4, 0.01);
-				expect(autoPanner.get().type).to.equal("triangle");
-				autoPanner.dispose();
-			});
 
-			it ("can set the frequency and depth", function(){
-				var autoPanner = new AutoPanner();
-				autoPanner.depth.value = 0.4;
-				autoPanner.frequency.value = 0.4;
-				expect(autoPanner.depth.value).to.be.closeTo(0.4, 0.01);
-				expect(autoPanner.frequency.value).to.be.closeTo(0.4, 0.01);
-				autoPanner.dispose();
+				it("can get/set the options", function(){
+					var autoPanner = new AutoPanner();
+					autoPanner.set({
+						"frequency" : 2.4,
+						"type" : "triangle"
+					});
+					expect(autoPanner.get().frequency).to.be.closeTo(2.4, 0.01);
+					expect(autoPanner.get().type).to.equal("triangle");
+					autoPanner.dispose();
+				});
+
+				it("can set the frequency and depth", function(){
+					var autoPanner = new AutoPanner();
+					autoPanner.depth.value = 0.4;
+					autoPanner.frequency.value = 0.4;
+					expect(autoPanner.depth.value).to.be.closeTo(0.4, 0.01);
+					expect(autoPanner.frequency.value).to.be.closeTo(0.4, 0.01);
+					autoPanner.dispose();
+				});
+
+				it("can sync the frequency to the Transport", function(){
+					return Offline(function(Transport){
+						var panner = new AutoPanner(2);
+						panner.sync();
+						panner.frequency.toMaster();
+						Transport.bpm.setValueAtTime(Transport.bpm.value * 2, 0.05);
+					// Transport.start(0)
+					}, 0.1).then(function(buffer){
+						expect(buffer.getValueAtTime(0)).to.be.closeTo(2, 0.1);
+						expect(buffer.getValueAtTime(0.05)).to.be.closeTo(4, 0.1);
+					});
+				});
+
+				it("can unsync the frequency to the Transport", function(){
+					return Offline(function(Transport){
+						var panner = new AutoPanner(2);
+						panner.sync();
+						panner.frequency.toMaster();
+						Transport.bpm.setValueAtTime(Transport.bpm.value * 2, 0.05);
+						panner.unsync();
+					// Transport.start(0)
+					}, 0.1).then(function(buffer){
+						expect(buffer.getValueAtTime(0)).to.be.closeTo(2, 0.1);
+						expect(buffer.getValueAtTime(0.05)).to.be.closeTo(2, 0.1);
+					});
+				});
 			});
 		});
 	});
-});

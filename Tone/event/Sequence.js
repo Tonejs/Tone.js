@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/event/Part", "Tone/core/Transport"], function (Tone) {
+define(["Tone/core/Tone", "Tone/event/Part", "Tone/core/Transport"], function(Tone){
 
 	"use strict";
 
@@ -7,11 +7,11 @@ define(["Tone/core/Tone", "Tone/event/Part", "Tone/core/Transport"], function (T
 	 *         of passing in an array of [time, event] pairs, pass
 	 *         in an array of events which will be spaced at the
 	 *         given subdivision. Sub-arrays will subdivide that beat
-	 *         by the number of items are in the array. 
+	 *         by the number of items are in the array.
 	 *         Sequence notation inspiration from [Tidal](http://yaxu.org/tidal/)
 	 *  @param  {Function}  callback  The callback to invoke with every note
 	 *  @param  {Array}    events  The sequence
-	 *  @param  {Time} subdivision  The subdivision between which events are placed. 
+	 *  @param  {Time} subdivision  The subdivision between which events are placed.
 	 *  @extends {Tone.Part}
 	 *  @example
 	 * var seq = new Tone.Sequence(function(time, note){
@@ -42,14 +42,14 @@ define(["Tone/core/Tone", "Tone/event/Part", "Tone/core/Transport"], function (T
 		this._subdivision = this.toTicks(options.subdivision);
 
 		//if no time was passed in, the loop end is the end of the cycle
-		if (Tone.isUndef(options.loopEnd) && !Tone.isUndef(events)){
+		if (Tone.isUndef(options.loopEnd) && Tone.isDefined(events)){
 			this._loopEnd = (events.length * this._subdivision);
-		} 
+		}
 		//defaults to looping
 		this._loop = true;
 
 		//add all of the events
-		if (!Tone.isUndef(events)){
+		if (Tone.isDefined(events)){
 			for (var i = 0; i < events.length; i++){
 				this.add(i, events[i]);
 			}
@@ -67,9 +67,9 @@ define(["Tone/core/Tone", "Tone/event/Part", "Tone/core/Transport"], function (T
 	};
 
 	/**
-	 *  The subdivision of the sequence. This can only be 
-	 *  set in the constructor. The subdivision is the 
-	 *  interval between successive steps. 
+	 *  The subdivision of the sequence. This can only be
+	 *  set in the constructor. The subdivision is the
+	 *  interval between successive steps.
 	 *  @type {Time}
 	 *  @memberOf Tone.Sequence#
 	 *  @name subdivision
@@ -77,13 +77,13 @@ define(["Tone/core/Tone", "Tone/event/Part", "Tone/core/Transport"], function (T
 	 */
 	Object.defineProperty(Tone.Sequence.prototype, "subdivision", {
 		get : function(){
-			return Tone.Time(this._subdivision, "i").toNotation();
+			return Tone.Ticks(this._subdivision).toSeconds();
 		}
 	});
 
 	/**
-	 *  Get/Set an index of the sequence. If the index contains a subarray, 
-	 *  a Tone.Sequence representing that sub-array will be returned. 
+	 *  Get/Set an index of the sequence. If the index contains a subarray,
+	 *  a Tone.Sequence representing that sub-array will be returned.
 	 *  @example
 	 * var sequence = new Tone.Sequence(playNote, ["E4", "C4", "F#4", ["A4", "Bb3"]])
 	 * sequence.at(0)// => returns "E4"
@@ -95,7 +95,7 @@ define(["Tone/core/Tone", "Tone/event/Part", "Tone/core/Transport"], function (T
 	 * @param {*} value Optionally pass in the value to set at the given index.
 	 */
 	Tone.Sequence.prototype.at = function(index, value){
-		//if the value is an array, 
+		//if the value is an array,
 		if (Tone.isArray(value)){
 			//remove the current event at that index
 			this.remove(index);
@@ -106,7 +106,7 @@ define(["Tone/core/Tone", "Tone/event/Part", "Tone/core/Transport"], function (T
 
 	/**
 	 *  Add an event at an index, if there's already something
-	 *  at that index, overwrite it. If `value` is an array, 
+	 *  at that index, overwrite it. If `value` is an array,
 	 *  it will be parsed as a subsequence.
 	 *  @param {Number} index The index to add the event to
 	 *  @param {*} value The value to add at that index
@@ -119,8 +119,8 @@ define(["Tone/core/Tone", "Tone/event/Part", "Tone/core/Transport"], function (T
 		if (Tone.isArray(value)){
 			//make a subsequence and add that to the sequence
 			var subSubdivision = Math.round(this._subdivision / value.length);
-			value = new Tone.Sequence(this._tick.bind(this), value, Tone.Time(subSubdivision, "i"));
-		} 
+			value = new Tone.Sequence(this._tick.bind(this), value, Tone.Ticks(subSubdivision));
+		}
 		Tone.Part.prototype.add.call(this, this._indexTime(index), value);
 		return this;
 	};
@@ -137,7 +137,7 @@ define(["Tone/core/Tone", "Tone/event/Part", "Tone/core/Transport"], function (T
 
 	/**
 	 *  Get the time of the index given the Sequence's subdivision
-	 *  @param  {Number}  index 
+	 *  @param  {Number}  index
 	 *  @return  {Time}  The time of that index
 	 *  @private
 	 */
@@ -145,7 +145,7 @@ define(["Tone/core/Tone", "Tone/event/Part", "Tone/core/Transport"], function (T
 		if (index instanceof Tone.TransportTime){
 			return index;
 		} else {
-			return Tone.TransportTime(index * this._subdivision + this.startOffset, "i");
+			return Tone.Ticks(index * this._subdivision + this.startOffset).toSeconds();
 		}
 	};
 

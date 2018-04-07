@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/type/Type"], function(Tone){
+define(["Tone/core/Tone", "Tone/type/Type", "Tone/core/AudioNode", "Tone/core/Timeline"], function(Tone){
 
 	"use strict";
 
@@ -46,15 +46,13 @@ define(["Tone/core/Tone", "Tone/type/Type"], function(Tone){
 		this.overridden = false;
 
 		/**
-		 *  If there is an LFO, this is where it is held.
-		 *  @type  {Tone.LFO}
-		 *  @private
+		 * The timeline which tracks all of the automations.
+		 * @type {Tone.Timeline}
+		 * @private
 		 */
-		this._lfo = null;
+		this._events = new Tone.Timeline(1000);
 
-		if (Tone.isObject(options.lfo)){
-			this.value = options.lfo;
-		} else if (!Tone.isUndef(options.value)){
+		if (Tone.isDefined(options.value) && this._param){
 			this.value = options.value;
 		}
 	};
@@ -80,24 +78,51 @@ define(["Tone/core/Tone", "Tone/type/Type"], function(Tone){
 	 */
 	Object.defineProperty(Tone.Param.prototype, "value", {
 		get : function(){
-			return this._toUnits(this._param.value);
+			var now = this.now();
+			return this._toUnits(this.getValueAtTime(now));
 		},
 		set : function(value){
-			if (Tone.isObject(value)){
-				//throw an error if the LFO needs to be included
-				if (Tone.isUndef(Tone.LFO)){
-					throw new Error("Include 'Tone.LFO' to use an LFO as a Param value.");
-				}
-				//remove the old one
-				if (this._lfo){
-					this._lfo.dispose();
-				}
-				this._lfo = new Tone.LFO(value).start();
-				this._lfo.connect(this.input);
+			this._initialValue = this._fromUnits(value);
+			this.cancelScheduledValues(this.context.currentTime);
+			this.setValueAtTime(value, this.context.currentTime);
+		}
+	});
+
+	/**
+	 * The minimum output value of the parameter
+	 * @memberOf Tone.Param#
+	 * @type {Number}
+	 * @name value
+	 */
+	Object.defineProperty(Tone.Param.prototype, "minValue", {
+		get : function(){
+			if (this.units === Tone.Type.Time || this.units === Tone.Type.Frequency ||
+				this.units === Tone.Type.NormalRange || this.units === Tone.Type.Positive ||
+				this.units === Tone.Type.BPM){
+				return 0;
+			} else if (this.units === Tone.Type.AudioRange){
+				return -1;
+			} else if (this.units === Tone.Type.Decibels){
+				return -Infinity;
 			} else {
-				var convertedVal = this._fromUnits(value);
-				this._param.cancelScheduledValues(0);
-				this._param.value = convertedVal;
+				return this._param.minValue;
+			}
+		}
+	});
+
+	/**
+	 * The maximum output value of the parameter
+	 * @memberOf Tone.Param#
+	 * @type {Number}
+	 * @name value
+	 */
+	Object.defineProperty(Tone.Param.prototype, "maxValue", {
+		get : function(){
+			if (this.units === Tone.Type.NormalRange ||
+				this.units === Tone.Type.AudioRange){
+				return 1;
+			} else {
+				return this._param.maxValue;
 			}
 		}
 	});
@@ -110,8 +135,8 @@ define(["Tone/core/Tone", "Tone/type/Type"], function(Tone){
 	 *  @return {number}     the number which the value should be set to
 	 */
 	Tone.Param.prototype._fromUnits = function(val){
-		if (this.convert || Tone.isUndef(this.convert)){
-			switch(this.units){
+		if ((this.convert || Tone.isUndef(this.convert)) && !this.overridden){
+			switch (this.units){
 				case Tone.Type.Time:
 					return this.toSeconds(val);
 				case Tone.Type.Frequency:
@@ -140,7 +165,7 @@ define(["Tone/core/Tone", "Tone/type/Type"], function(Tone){
 	 */
 	Tone.Param.prototype._toUnits = function(val){
 		if (this.convert || Tone.isUndef(this.convert)){
-			switch(this.units){
+			switch (this.units){
 				case Tone.Type.Decibels:
 					return Tone.gainToDb(val);
 				default:
@@ -159,6 +184,18 @@ define(["Tone/core/Tone", "Tone/type/Type"], function(Tone){
 	Tone.Param.prototype._minOutput = 0.00001;
 
 	/**
+	 *  The event types
+	 *  @enum {String}
+	 *  @private
+	 */
+	Tone.Param.AutomationType = {
+		Linear : "linearRampToValueAtTime",
+		Exponential : "exponentialRampToValueAtTime",
+		Target : "setTargetAtTime",
+		SetValue : "setValueAtTime"
+	};
+
+	/**
 	 *  Schedules a parameter value change at the given time.
 	 *  @param {*}	value The value to set the signal.
 	 *  @param {Time}  time The time when the change should occur.
@@ -169,9 +206,50 @@ define(["Tone/core/Tone", "Tone/type/Type"], function(Tone){
 	 */
 	Tone.Param.prototype.setValueAtTime = function(value, time){
 		time = this.toSeconds(time);
-		Tone.isPast(time);
-		this._param.setValueAtTime(this._fromUnits(value), time);
+		value = this._fromUnits(value);
+		this._events.add({
+			"type" : Tone.Param.AutomationType.SetValue,
+			"value" : value,
+			"time" : time,
+		});
+		this._param.setValueAtTime(value, time);
 		return this;
+	};
+
+	/**
+	 *  Get the signals value at the given time. Subsequent scheduling
+	 *  may invalidate the returned value.
+	 *  @param {Time} time When to get the value
+	 *  @returns {Number} The value at the given time
+	 */
+	Tone.Param.prototype.getValueAtTime = function(time){
+		time = this.toSeconds(time);
+		var after = this._events.getAfter(time);
+		var before = this._events.get(time);
+		var initialValue = Tone.defaultArg(this._initialValue, this._param.defaultValue);
+		var value = initialValue;
+		//if it was set by
+		if (before === null){
+			value = initialValue;
+		} else if (before.type === Tone.Param.AutomationType.Target){
+			var previous = this._events.getBefore(before.time);
+			var previousVal;
+			if (previous === null){
+				previousVal = initialValue;
+			} else {
+				previousVal = previous.value;
+			}
+			value = this._exponentialApproach(before.time, previousVal, before.value, before.constant, time);
+		} else if (after === null){
+			value = before.value;
+		} else if (after.type === Tone.Param.AutomationType.Linear){
+			value = this._linearInterpolate(before.time, before.value, after.time, after.value, time);
+		} else if (after.type === Tone.Param.AutomationType.Exponential){
+			value = this._exponentialInterpolate(before.time, before.value, after.time, after.value, time);
+		} else {
+			value = before.value;
+		}
+		return value;
 	};
 
 	/**
@@ -182,15 +260,14 @@ define(["Tone/core/Tone", "Tone/type/Type"], function(Tone){
 	 *  @param {number=} now (Optionally) pass the now value in.
 	 *  @returns {Tone.Param} this
 	 */
-	Tone.Param.prototype.setRampPoint = function(now){
-		now = Tone.defaultArg(now, this.now());
-		this.cancelAndHoldAtTime(this.context.currentTime);
-		var currentVal = this._param.value;
+	Tone.Param.prototype.setRampPoint = function(time){
+		time = this.toSeconds(time);
+		var currentVal = this.getValueAtTime(time);
+		this.cancelAndHoldAtTime(time);
 		if (currentVal === 0){
 			currentVal = this._minOutput;
 		}
-		// cancel and hold at the given time
-		this._param.setValueAtTime(currentVal, now);
+		this.setValueAtTime(this._toUnits(currentVal), time);
 		return this;
 	};
 
@@ -205,7 +282,11 @@ define(["Tone/core/Tone", "Tone/type/Type"], function(Tone){
 	Tone.Param.prototype.linearRampToValueAtTime = function(value, endTime){
 		value = this._fromUnits(value);
 		endTime = this.toSeconds(endTime);
-		Tone.isPast(endTime);
+		this._events.add({
+			"type" : Tone.Param.AutomationType.Linear,
+			"value" : value,
+			"time" : endTime,
+		});
 		this._param.linearRampToValueAtTime(value, endTime);
 		return this;
 	};
@@ -222,7 +303,12 @@ define(["Tone/core/Tone", "Tone/type/Type"], function(Tone){
 		value = this._fromUnits(value);
 		value = Math.max(this._minOutput, value);
 		endTime = this.toSeconds(endTime);
-		Tone.isPast(endTime);
+		//store the event
+		this._events.add({
+			"type" : Tone.Param.AutomationType.Exponential,
+			"time" : endTime,
+			"value" : value
+		});
 		this._param.exponentialRampToValueAtTime(value, endTime);
 		return this;
 	};
@@ -270,17 +356,6 @@ define(["Tone/core/Tone", "Tone/type/Type"], function(Tone){
 	};
 
 	/**
-	 * Convert between Time and time constant. The time
-	 * constant returned can be used in setTargetAtTime.
-	 * @param  {Time} time The time to convert
-	 * @return {Number}      The time constant to get an exponentially approaching
-	 *                           curve to over 99% of towards the target value.
-	 */
-	Tone.Param.prototype.getTimeConstant = function(time){
-		return Math.log(this.toSeconds(time)+1)/Math.log(200);
-	};
-
-	/**
 	 *  Start exponentially approaching the target value at the given time. Since it
 	 *  is an exponential approach it will continue approaching after the ramp duration. The
 	 *  rampTime is the time that it takes to reach over 99% of the way towards the value.
@@ -296,8 +371,28 @@ define(["Tone/core/Tone", "Tone/type/Type"], function(Tone){
 	Tone.Param.prototype.targetRampTo = function(value, rampTime, startTime){
 		startTime = this.toSeconds(startTime);
 		this.setRampPoint(startTime);
-		this.setTargetAtTime(value, startTime, this.getTimeConstant(rampTime));
+		this.exponentialApproachValueAtTime(value, startTime, rampTime);
 		return this;
+	};
+
+	/**
+	 *  Start exponentially approaching the target value at the given time. Since it
+	 *  is an exponential approach it will continue approaching after the ramp duration. The
+	 *  rampTime is the time that it takes to reach over 99% of the way towards the value. This methods
+	 *  is similar to setTargetAtTime except the third argument is a time instead of a 'timeConstant'
+	 *  @param  {number} value   The value to ramp to.
+	 *  @param {Time}	time 	When the ramp should start.
+	 *  @param  {Time} rampTime the time that it takes the
+	 *                               value to ramp from it's current value
+	 *  @returns {Tone.Param} this
+	 *  @example
+	 * //exponentially ramp to the value 2 over 4 seconds.
+	 * signal.exponentialRampTo(2, 4);
+	 */
+	Tone.Param.prototype.exponentialApproachValueAtTime = function(value, time, rampTime){
+		var timeConstant = Math.log(this.toSeconds(rampTime)+1)/Math.log(200);
+		time = this.toSeconds(time);
+		return this.setTargetAtTime(value, time, timeConstant);
 	};
 
 	/**
@@ -311,11 +406,17 @@ define(["Tone/core/Tone", "Tone/type/Type"], function(Tone){
 	Tone.Param.prototype.setTargetAtTime = function(value, startTime, timeConstant){
 		value = this._fromUnits(value);
 		// The value will never be able to approach without timeConstant > 0.
-		// http://www.w3.org/TR/webaudio/#dfn-setTargetAtTime, where the equation
-		// is described. 0 results in a division by 0.
-		value = Math.max(this._minOutput, value);
-		timeConstant = Math.max(this._minOutput, timeConstant);
-		this._param.setTargetAtTime(value, this.toSeconds(startTime), timeConstant);
+		if (timeConstant <= 0){
+			throw new Error("timeConstant must be greater than 0");
+		}
+		startTime = this.toSeconds(startTime);
+		this._events.add({
+			"type" : Tone.Param.AutomationType.Target,
+			"value" : value,
+			"time" : startTime,
+			"constant" : timeConstant
+		});
+		this._param.setTargetAtTime(value, startTime, timeConstant);
 		return this;
 	};
 
@@ -326,15 +427,17 @@ define(["Tone/core/Tone", "Tone/type/Type"], function(Tone){
 	 *  @param {Array} values
 	 *  @param {Time} startTime
 	 *  @param {Time} duration
+	 *  @param {NormalRange} [scaling=1] If the values in the curve should be scaled by some value
 	 *  @returns {Tone.Param} this
 	 */
-	Tone.Param.prototype.setValueCurveAtTime = function(values, startTime, duration){
+	Tone.Param.prototype.setValueCurveAtTime = function(values, startTime, duration, scaling){
+		scaling = Tone.defaultArg(scaling, 1);
 		duration = this.toSeconds(duration);
 		startTime = this.toSeconds(startTime);
-		this.setValueAtTime(values[0], startTime);
+		this.setValueAtTime(values[0] * scaling, startTime);
 		var segTime = duration / (values.length - 1);
 		for (var i = 1; i < values.length; i++){
-			this._param.linearRampToValueAtTime(this._fromUnits(values[i]), startTime + i * segTime);
+			this.linearRampToValueAtTime(values[i] * scaling, startTime + i * segTime);
 		}
 		return this;
 	};
@@ -343,35 +446,74 @@ define(["Tone/core/Tone", "Tone/type/Type"], function(Tone){
 	 *  Cancels all scheduled parameter changes with times greater than or
 	 *  equal to startTime.
 	 *
-	 *  @param  {Time} startTime
+	 *  @param  {Time} time
 	 *  @returns {Tone.Param} this
 	 */
-	Tone.Param.prototype.cancelScheduledValues = function(startTime){
-		this._param.cancelScheduledValues(this.toSeconds(startTime));
+	Tone.Param.prototype.cancelScheduledValues = function(time){
+		time = this.toSeconds(time);
+		this._events.cancel(time);
+		this._param.cancelScheduledValues(time);
 		return this;
 	};
 
 	/**
 	 *  This is similar to [cancelScheduledValues](#cancelScheduledValues) except
-	 *  it holds the automated value at cancelTime until the next automated event.
-	 *  @param  {Time} cancelTime
+	 *  it holds the automated value at time until the next automated event.
+	 *  @param  {Time} time
 	 *  @returns {Tone.Param} this
 	 */
-	Tone.Param.prototype.cancelAndHoldAtTime = function(cancelTime){
-		cancelTime = this.toSeconds(cancelTime);
-		if (this._param.cancelAndHoldAtTime){
-			this._param.cancelAndHoldAtTime(cancelTime);
-		} else {
-			//fallback for unsupported browsers
-			//can't cancel and hold at any time in the future
-			//just do it immediately for gapless automation curves
-			var now = this.context.currentTime;
-			this._param.cancelScheduledValues(now);
-			var currentVal = this._param.value;
-			if (currentVal === 0){
-				currentVal = this._minOutput;
+	Tone.Param.prototype.cancelAndHoldAtTime = function(time){
+		var valueAtTime = this.getValueAtTime(time);
+		//if there is an event at the given time
+		//and that even is not a "set"
+		var before = this._events.get(time);
+		var after = this._events.getAfter(time);
+		if (before && before.time === time){
+			//remove everything after
+			if (after){
+				this._events.cancel(after.time);
+			} else {
+				this._events.cancel(time + 1e-6);
 			}
-			this._param.setValueAtTime(currentVal, now + this.sampleTime);
+		} else if (after){
+			//cancel the next event(s)
+			this._events.cancel(after.time);
+			if (!this._param.cancelAndHoldAtTime){
+				this._param.cancelScheduledValues(time);
+			}
+			if (after.type === Tone.Param.AutomationType.Linear){
+				if (!this._param.cancelAndHoldAtTime){
+					this.linearRampToValueAtTime(valueAtTime, time);
+				} else {
+					this._events.add({
+						"type" : Tone.Param.AutomationType.Linear,
+						"value" : valueAtTime,
+						"time" : time
+					});
+				}
+			} else if (after.type === Tone.Param.AutomationType.Exponential){
+				if (!this._param.cancelAndHoldAtTime){
+					this.exponentialRampToValueAtTime(valueAtTime, time);
+				} else {
+					this._events.add({
+						"type" : Tone.Param.AutomationType.Exponential,
+						"value" : valueAtTime,
+						"time" : time
+					});
+				}
+			}
+		}
+
+		//set the value at the given time
+		this._events.add({
+			"type" : Tone.Param.AutomationType.SetValue,
+			"value" : valueAtTime,
+			"time" : time
+		});
+		if (this._param.cancelAndHoldAtTime){
+			this._param.cancelAndHoldAtTime(time);
+		} else {
+			this._param.setValueAtTime(valueAtTime, time);
 		}
 		return this;
 	};
@@ -404,19 +546,25 @@ define(["Tone/core/Tone", "Tone/type/Type"], function(Tone){
 		return this;
 	};
 
-	/**
-	 *  The LFO created by the signal instance. If none
-	 *  was created, this is null.
-	 *  @type {Tone.LFO}
-	 *  @readOnly
-	 *  @memberOf Tone.Param#
-	 *  @name lfo
-	 */
-	Object.defineProperty(Tone.Param.prototype, "lfo", {
-		get : function(){
-			return this._lfo;
-		}
-	});
+	///////////////////////////////////////////////////////////////////////////
+	//	AUTOMATION CURVE CALCULATIONS
+	//	MIT License, copyright (c) 2014 Jordan Santell
+	///////////////////////////////////////////////////////////////////////////
+
+	// Calculates the the value along the curve produced by setTargetAtTime
+	Tone.Param.prototype._exponentialApproach = function(t0, v0, v1, timeConstant, t){
+		return v1 + (v0 - v1) * Math.exp(-(t - t0) / timeConstant);
+	};
+
+	// Calculates the the value along the curve produced by linearRampToValueAtTime
+	Tone.Param.prototype._linearInterpolate = function(t0, v0, t1, v1, t){
+		return v0 + (v1 - v0) * ((t - t0) / (t1 - t0));
+	};
+
+	// Calculates the the value along the curve produced by exponentialRampToValueAtTime
+	Tone.Param.prototype._exponentialInterpolate = function(t0, v0, t1, v1, t){
+		return v0 * Math.pow(v1 / v0, (t - t0) / (t1 - t0));
+	};
 
 	/**
 	 *  Clean up
@@ -425,10 +573,7 @@ define(["Tone/core/Tone", "Tone/type/Type"], function(Tone){
 	Tone.Param.prototype.dispose = function(){
 		Tone.AudioNode.prototype.dispose.call(this);
 		this._param = null;
-		if (this._lfo){
-			this._lfo.dispose();
-			this._lfo = null;
-		}
+		this._events = null;
 		return this;
 	};
 

@@ -1,6 +1,6 @@
 define(["helper/ConstantOutput", "Tone/signal/Multiply", "helper/Basic", 
 	"Test", "Tone/source/Oscillator", "Tone/signal/Signal"], 
-	function (ConstantOutput, Multiply, Basic, Test, Oscillator, Signal) {
+function (ConstantOutput, Multiply, Basic, Test, Oscillator, Signal) {
 
 	describe("Multiply", function(){
 

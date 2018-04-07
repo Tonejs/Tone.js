@@ -1,14 +1,6 @@
-define(["Tone/core/Tone", "Tone/core/Param", "Tone/type/Type", "Tone/core/AudioNode"], function (Tone) {
+define(["Tone/core/Tone", "Tone/core/Param", "Tone/type/Type", "Tone/core/AudioNode"], function(Tone){
 
 	"use strict";
-
-	/**
-	 *  createGain shim
-	 *  @private
-	 */
-	if (window.GainNode && !AudioContext.prototype.createGain){
-		AudioContext.prototype.createGain = AudioContext.prototype.createGainNode;
-	}
 
 	/**
 	 *  @class A thin wrapper around the Native Web Audio GainNode.

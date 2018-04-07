@@ -7,7 +7,7 @@ define(["Tone/effect/Chorus", "helper/Basic", "helper/EffectTests"], function (C
 
 		context("API", function(){
 
-			it ("can pass in options in the constructor", function(){
+			it("can pass in options in the constructor", function(){
 				var chorus = new Chorus({
 					"frequency" : 2,
 					"delayTime" : 1,
@@ -21,7 +21,7 @@ define(["Tone/effect/Chorus", "helper/Basic", "helper/EffectTests"], function (C
 				chorus.dispose();
 			});
 
-			it ("can get/set the options", function(){
+			it("can get/set the options", function(){
 				var chorus = new Chorus();
 				chorus.set({
 					"type" : "square",

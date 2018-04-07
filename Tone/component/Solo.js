@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/core/Gain", "Tone/core/AudioNode"], function (Tone) {
+define(["Tone/core/Tone", "Tone/core/Gain", "Tone/core/AudioNode"], function(Tone){
 
 	/**
 	 *  @class Tone.Solo lets you isolate a specific audio stream. When
@@ -42,7 +42,7 @@ define(["Tone/core/Tone", "Tone/core/Gain", "Tone/core/AudioNode"], function (To
 	 *  @static
 	 */
 	Tone.Solo.defaults = {
-		solo: false,
+		solo : false,
 	};
 
 	/**

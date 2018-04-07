@@ -1,6 +1,6 @@
-define(["helper/Basic", "Tone/source/GrainPlayer", "helper/Offline", "helper/SourceTests", 
-	"Tone/core/Buffer", "Test", "Tone/core/Tone"], 
-	function (BasicTests, GrainPlayer, Offline, SourceTests, Buffer, Test, Tone) {
+define(["helper/Basic", "Tone/source/GrainPlayer", "helper/Offline", "helper/SourceTests",
+	"Tone/core/Buffer", "Test", "Tone/core/Tone", "helper/CompareToFile"],
+function(BasicTests, GrainPlayer, Offline, SourceTests, Buffer, Test, Tone, CompareToFile) {
 
 	if (window.__karma__){
 		Buffer.baseUrl = "/base/test/";
@@ -20,16 +20,25 @@ define(["helper/Basic", "Tone/source/GrainPlayer", "helper/Offline", "helper/Sou
 		BasicTests(GrainPlayer, buffer);
 		SourceTests(GrainPlayer, buffer);
 
+		it("matches a file", function(){
+			return CompareToFile(function(){
+				const player = new GrainPlayer(buffer).toMaster();
+				player.start(0.1).stop(0.2);
+				player.detune = -100,
+				player.playbackRate = 2;
+			}, "grainPlayer.wav");
+		});
+
 		context("Constructor", function(){
 
-			it ("can be constructed with a Tone.Buffer", function(done){
+			it("can be constructed with a Tone.Buffer", function(done){
 				var player = new GrainPlayer(buffer);
 				expect(player.buffer.get()).to.equal(buffer.get());
 				player.dispose();
 				done();
 			});
 
-			it ("can be constructed with an AudioBuffer", function(done){
+			it("can be constructed with an AudioBuffer", function(done){
 				var player = new GrainPlayer(buffer.get());
 				expect(player.buffer.get()).to.equal(buffer.get());
 				player.dispose();
@@ -185,7 +194,7 @@ define(["helper/Basic", "Tone/source/GrainPlayer", "helper/Offline", "helper/Sou
 				expect(player.playbackRate).to.equal(0.5);
 				player.dispose();
 			});
-			
+
 		});
 
 	});

@@ -1,6 +1,6 @@
 define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/source/FMOscillator", "Tone/component/Filter",
-	"Tone/component/FrequencyEnvelope", "Tone/component/AmplitudeEnvelope", "Tone/core/Gain", "Tone/signal/Scale", "Tone/signal/Multiply"],
-	function (Tone) {
+	"Tone/component/FrequencyEnvelope", "Tone/component/AmplitudeEnvelope", "Tone/core/Gain",
+	"Tone/signal/Scale", "Tone/signal/Multiply"], function(Tone){
 
 	/**
 	 *  Inharmonic ratio of frequencies based on the Roland TR-808
@@ -102,7 +102,7 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/source/FMOscillato
 				"harmonicity" : options.harmonicity,
 				"modulationIndex" : options.modulationIndex
 			});
-			osc.connect(this._highpass).start();
+			osc.connect(this._highpass);
 			this._oscillators[i] = osc;
 
 			var mult = new Tone.Multiply(inharmRatios[i]);
@@ -142,10 +142,19 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/source/FMOscillato
 	 *  @param  {NormalRange}  [velocity=1]  The velocity that the envelope should be triggered at.
 	 *  @return  {Tone.MetalSynth}  this
 	 */
-	Tone.MetalSynth.prototype.triggerAttack = function(time, vel) {
+	Tone.MetalSynth.prototype.triggerAttack = function(time, vel){
 		time = this.toSeconds(time);
 		vel = Tone.defaultArg(vel, 1);
 		this.envelope.triggerAttack(time, vel);
+		this._oscillators.forEach(function(osc){
+			osc.start(time);
+		});
+		//if the sustain is 0, stop the oscillator as well
+		if (this.envelope.sustain === 0){
+			this._oscillators.forEach(function(osc){
+				osc.stop(time + this.envelope.attack + this.envelope.decay);
+			}.bind(this));
+		}
 		return this;
 	};
 
@@ -154,9 +163,32 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/source/FMOscillato
 	 *  @param  {Time}  time      When the release should be triggered.
 	 *  @return  {Tone.MetalSynth}  this
 	 */
-	Tone.MetalSynth.prototype.triggerRelease = function(time) {
+	Tone.MetalSynth.prototype.triggerRelease = function(time){
 		time = this.toSeconds(time);
 		this.envelope.triggerRelease(time);
+		this._oscillators.forEach(function(osc){
+			osc.stop(time + this.envelope.release);
+		}.bind(this));
+		return this;
+	};
+
+	/**
+	 * Sync the instrument to the Transport. All subsequent calls of
+	 * [triggerAttack](#triggerattack) and [triggerRelease](#triggerrelease)
+	 * will be scheduled along the transport.
+	 * @example
+	 * synth.sync()
+	 * //schedule 3 notes when the transport first starts
+	 * synth.triggerAttackRelease('8n', 0)
+	 * synth.triggerAttackRelease('8n', '8n')
+	 * synth.triggerAttackRelease('8n', '4n')
+	 * //start the transport to hear the notes
+	 * Transport.start()
+	 * @returns {Tone.Instrument} this
+	 */
+	Tone.MetalSynth.prototype.sync = function(){
+		this._syncMethod("triggerAttack", 0);
+		this._syncMethod("triggerRelease", 0);
 		return this;
 	};
 
@@ -168,7 +200,7 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/source/FMOscillato
 	 *  @param  {NormalRange}  [velocity=1]  The velocity that the envelope should be triggered at.
 	 *  @return  {Tone.MetalSynth}  this
 	 */
-	Tone.MetalSynth.prototype.triggerAttackRelease = function(duration, time, velocity) {
+	Tone.MetalSynth.prototype.triggerAttackRelease = function(duration, time, velocity){
 		time = this.toSeconds(time);
 		duration = this.toSeconds(duration);
 		this.triggerAttack(time, velocity);

@@ -1,5 +1,6 @@
-define(["helper/Basic", "Test", "Tone/type/Time", "Tone/core/Tone", "helper/Offline"], 
-	function (Basic, Test, Time, Tone, Offline) {
+define(["helper/Basic", "Test", "Tone/type/Time", "Tone/core/Tone",
+"helper/Offline", "Tone/type/Frequency", "Tone/type/Ticks", "Tone/type/TransportTime"],
+	function (Basic, Test, Time, Tone, Offline, Frequency, Ticks, TransportTime) {
 
 	describe("Time", function(){
 
@@ -45,48 +46,27 @@ define(["helper/Basic", "Test", "Tone/type/Time", "Tone/core/Tone", "helper/Offl
 				expect(Time(1) > Time(0)).to.be.true;
 				expect(+Time(1)).to.equal(1);
 			});
-		});
 
-		context("Copy/Clone/Set", function(){
-
-			it("can set a new value", function(){
-				var time = new Time(1);
-				expect(time.valueOf()).to.equal(1);
-				time.set(2);
-				expect(time.valueOf()).to.equal(2);
+			it("can convert from Time", function(){
+				expect(Time(Time(2)).valueOf()).to.equal(2);
+				expect(Time(Time("4n")).valueOf()).to.equal(0.5);
 			});
 
-			it("can clone a Time", function(){
-				var time = new Time("+1");
-				var cloned = time.clone();
-				expect(cloned).to.not.equal(time);
-				expect(cloned).to.be.instanceOf(Time);
-				var now = time.now();
-				expect(time.valueOf()).to.be.closeTo(1 + now, 0.01);
-				expect(cloned.valueOf()).to.be.closeTo(1 + now, 0.01);
+			it("can convert from Frequency", function(){
+				expect(Time(Frequency(2)).valueOf()).to.equal(0.5);
+				expect(Time(Frequency("4n")).valueOf()).to.equal(0.5);
 			});
 
-			it("the clone is not modified when the original is", function(){
-				var time = new Time(1);
-				var cloned = time.clone();				
-				expect(time.valueOf()).to.equal(1);
-				expect(cloned.valueOf()).to.equal(1);
-				time.add(1);
-				expect(time.valueOf()).to.equal(2);
-				expect(cloned.valueOf()).to.equal(1);
-				time.set(3);
-				expect(time.valueOf()).to.equal(3);
-				expect(cloned.valueOf()).to.equal(1);
+			it("can convert from TransportTime", function(){
+				expect(Time(TransportTime(2)).valueOf()).to.equal(2);
+				expect(Time(TransportTime("4n")).valueOf()).to.equal(0.5);
 			});
 
-			it("can copy values from another Time", function(){
-				var time = new Time(2);
-				var copy = new Time(1);	
-				expect(time.valueOf()).to.equal(2);
-				expect(copy.valueOf()).to.equal(1);
-				copy.copy(time);
-				expect(time.valueOf()).to.equal(2);
-				expect(copy.valueOf()).to.equal(2);
+			it("can convert from Ticks", function(){
+				return Offline(function(Transport){
+					expect(Time(Ticks(Transport.PPQ)).valueOf()).to.equal(0.5);
+					expect(Time(Ticks("4n")).valueOf()).to.equal(0.5);
+				});
 			});
 		});
 
@@ -103,43 +83,32 @@ define(["helper/Basic", "Test", "Tone/type/Time", "Tone/core/Tone", "helper/Offl
 				expect(Time(10).quantize(8, 0.5).valueOf()).to.equal(9);
 				expect(Time(2).quantize(8, 0.75).valueOf()).to.equal(0.5);
 			});
-			
+
 			it("can get the next subdivison when the transport is started", function(){
 				return Offline(function(Transport){
-					Transport.start(0);
-					return Test.atTime(0.59, function(){
-						expect(Time("@1m").valueOf()).to.be.closeTo(2, 0.01);
-						expect(Time("@(4n + 2n)").valueOf()).to.be.closeTo(1.5, 0.01);
-						expect(Time("@4n").valueOf()).to.be.closeTo(1, 0.01);
-						Transport.stop();
+					Transport.start(0.1);
+					return Test.atTime(0.69, function(){
+						expect(Time("@1m").valueOf()).to.be.closeTo(2.1, 0.01);
+						expect(Time("@4n").valueOf()).to.be.closeTo(1.1, 0.01);
+						expect(Time("@8n").valueOf()).to.be.closeTo(0.85, 0.01);
 					});
-				}, 0.6);
-			});	
+				}, 0.7);
+			});
 		});
 
 		context("Operators", function(){
 
 			it("can add the current time", function(){
 				var now = Tone.now();
-				expect(Time(4).addNow().valueOf()).to.be.closeTo(4 + now, 0.01);
-				expect(Time("2n").addNow().valueOf()).to.be.closeTo(1 + now, 0.01);
-				expect(Time("+2n").valueOf()).to.be.closeTo(1 + now, 0.01);
+				expect(Time("+4").valueOf()).to.be.closeTo(4 + now, 0.02);
+				expect(Time("+2n").valueOf()).to.be.closeTo(1 + now, 0.02);
 			});
 
 			it("can quantize the value", function(){
-				expect(Time(4).quantize(3).valueOf()).to.equal(3);
-				expect(Time(5).quantize(3).valueOf()).to.equal(6);
+				expect(Time(4).quantize(3)).to.equal(3);
+				expect(Time(5).quantize(3)).to.equal(6);
 			});
 
-		});
-
-		context("Expressions", function(){
-
-			it("evaluates mixed expressions", function(){
-				expect(Time("4n * 2").valueOf()).to.equal(1);
-				expect(Time("(4n * 2) / 4").valueOf()).to.equal(0.25);
-				expect(Time("0:2 / 2").valueOf()).to.equal(0.5);
-			});
 		});
 
 		context("Conversions", function(){
@@ -149,19 +118,10 @@ define(["helper/Basic", "Test", "Tone/type/Time", "Tone/core/Tone", "helper/Offl
 					Transport.bpm.value = 120;
 					Transport.timeSignature = 4;
 					expect(Time("4n").toNotation()).to.equal("4n");
-					expect(Time(1.5).toNotation()).to.equal("2n + 4n");
+					expect(Time(1.5).toNotation()).to.equal("2n.");
 					expect(Time(0).toNotation()).to.equal("0");
-					expect(Time("1:2:3").toNotation()).to.equal("1m + 2n + 8n + 16n");
-				});
-			});
-
-			it("toNotation works with triplet notation", function(){
-				return Offline(function(Transport){
-					Transport.bpm.value = 120;
-					Transport.timeSignature = 5;
-					expect(Time("1m + 8t").toNotation()).to.equal("1m + 8t");
-					Transport.bpm.value = 120;
-					Transport.timeSignature = 4;
+					expect(Time("1:2:3").toNotation()).to.equal("1m");
+					expect(Time(Time("2n") + Time("4n")).toNotation()).to.equal("2n.");
 				});
 			});
 
@@ -181,6 +141,11 @@ define(["helper/Basic", "Test", "Tone/type/Time", "Tone/core/Tone", "helper/Offl
 			it ("converts time into ticks", function(){
 				return Offline(function(Transport){
 					expect(Time("2n").toTicks()).to.equal(2 * Transport.PPQ);
+					// floating point checks
+					var bpmOrig = Tone.Transport.bpm.value;
+					Tone.Transport.bpm.value = 100;
+					expect(Time('0:1:3').toTicks()).to.equal(1.75 * Transport.PPQ)
+					Tone.Transport.bpm.value = bpmOrig;
 				});
 			});
 

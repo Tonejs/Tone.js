@@ -1,5 +1,5 @@
-define(["helper/Basic", "Tone/source/Players", "helper/Offline", 
-	"Tone/core/Buffer", "helper/Meter", "Test", "Tone/core/Tone", "Tone/source/Player", "helper/OutputAudio"], 
+define(["helper/Basic", "Tone/source/Players", "helper/Offline",
+	"Tone/core/Buffer", "helper/Meter", "Test", "Tone/core/Tone", "Tone/source/Player", "helper/OutputAudio"],
 	function (BasicTests, Players, Offline, Buffer, Meter, Test, Tone, Player, OutputAudio) {
 
 	if (window.__karma__){
@@ -130,6 +130,17 @@ define(["helper/Basic", "Tone/source/Players", "helper/Offline",
 					done();
 				});;
 			});
+
+			it ("can add a player with an unloaded Tone.Buffer", function(done){
+				var players = new Players();
+				var buffer = new Buffer("./audio/sine.wav");
+				players.add("test", buffer, function(){
+					expect(players.has("test")).to.be.true;
+					expect(players.get("test").loaded).to.be.true;
+					players.dispose();
+					done();
+				});;
+			});
 		});
 
 		context("start/stop players", function(){
@@ -141,7 +152,7 @@ define(["helper/Basic", "Tone/source/Players", "helper/Offline",
 					}).toMaster();
 					players.get("test").start(0);
 				});
-			});	
+			});
 
 			it("can be muted", function(){
 				return Offline(function(){

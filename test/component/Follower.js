@@ -1,6 +1,6 @@
-define(["Tone/component/Follower", "helper/Basic", "helper/Offline", "Test", 
-	"Tone/signal/Signal", "helper/PassAudio", "helper/PassAudioStereo", "helper/Supports"], 
-function (Follower, Basic, Offline, Test, Signal, PassAudio, PassAudioStereo, Supports) {
+define(["Tone/component/Follower", "helper/Basic", "helper/Offline", "Test",
+	"Tone/signal/Signal", "helper/PassAudio", "helper/PassAudioStereo"],
+function (Follower, Basic, Offline, Test, Signal, PassAudio, PassAudioStereo) {
 	describe("Follower", function(){
 
 		Basic(Follower);
@@ -50,7 +50,7 @@ function (Follower, Basic, Offline, Test, Signal, PassAudio, PassAudioStereo, Su
 
 			/*it("smoothing follows attack and release", function(done){
 				var foll, sig;
-				var offline = new Offline(1); 
+				var offline = new Offline(1);
 				offline.before(function(dest){
 					foll = new Follower(0.1, 0.5);
 					sig = new Signal(0);
@@ -58,7 +58,7 @@ function (Follower, Basic, Offline, Test, Signal, PassAudio, PassAudioStereo, Su
 					foll.connect(dest);
 					sig.setValueAtTime(1, 0);
 					sig.setValueAtTime(0, 0.4);
-				}); 
+				});
 				var delta = 0.15;
 				offline.test(function(sample, time){
 					if (time < 0.1){
@@ -72,7 +72,7 @@ function (Follower, Basic, Offline, Test, Signal, PassAudio, PassAudioStereo, Su
 					} else {
 						expect(sample).to.be.closeTo(0, delta);
 					}
-				}); 
+				});
 				offline.after(function(){
 					foll.dispose();
 					sig.dispose();
@@ -81,16 +81,13 @@ function (Follower, Basic, Offline, Test, Signal, PassAudio, PassAudioStereo, Su
 				offline.run();
 			});*/
 
-			if (Supports.WAVESHAPER_0_POSITION){
-
-				it("passes the incoming signal through", function(){
-					var follower;
-					return PassAudio(function(input){
-						follower = new Follower().toMaster();
-						input.connect(follower);
-					});
+			it("passes the incoming signal through", function(){
+				var follower;
+				return PassAudio(function(input){
+					follower = new Follower().toMaster();
+					input.connect(follower);
 				});
-			}
+			});
 
 		});
 	});

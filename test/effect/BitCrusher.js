@@ -7,7 +7,7 @@ define(["Tone/effect/BitCrusher", "helper/Basic", "helper/EffectTests"], functio
 
 		context("API", function(){
 
-			it ("can pass in options in the constructor", function(){
+			it("can pass in options in the constructor", function(){
 				var crusher = new BitCrusher({
 					"bits" : 3,
 				});
@@ -15,7 +15,7 @@ define(["Tone/effect/BitCrusher", "helper/Basic", "helper/EffectTests"], functio
 				crusher.dispose();
 			});
 
-			it ("can get/set the options", function(){
+			it("can get/set the options", function(){
 				var crusher = new BitCrusher();
 				crusher.set({
 					"bits" : 5,

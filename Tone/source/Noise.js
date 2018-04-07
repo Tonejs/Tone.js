@@ -1,5 +1,5 @@
-define(["Tone/core/Tone", "Tone/source/Source", "Tone/core/Buffer", "Tone/source/BufferSource"], 
-	function(Tone){
+define(["Tone/core/Tone", "Tone/source/Source", "Tone/core/Buffer",
+	"Tone/source/BufferSource"], function(Tone){
 
 	"use strict";
 
@@ -14,14 +14,14 @@ define(["Tone/core/Tone", "Tone/source/Source", "Tone/core/Buffer", "Tone/source
 	 *  @example
 	 * //initialize the noise and start
 	 * var noise = new Tone.Noise("pink").start();
-	 * 
+	 *
 	 * //make an autofilter to shape the noise
 	 * var autoFilter = new Tone.AutoFilter({
-	 * 	"frequency" : "8m", 
-	 * 	"min" : 800, 
+	 * 	"frequency" : "8m",
+	 * 	"min" : 800,
 	 * 	"max" : 15000
 	 * }).connect(Tone.Master);
-	 * 
+	 *
 	 * //connect the noise
 	 * noise.connect(autoFilter);
 	 * //start the autofilter LFO
@@ -69,7 +69,7 @@ define(["Tone/core/Tone", "Tone/source/Source", "Tone/core/Buffer", "Tone/source
 	};
 
 	/**
-	 * The type of the noise. Can be "white", "brown", or "pink". 
+	 * The type of the noise. Can be "white", "brown", or "pink".
 	 * @memberOf Tone.Noise#
 	 * @type {string}
 	 * @name type
@@ -79,7 +79,7 @@ define(["Tone/core/Tone", "Tone/source/Source", "Tone/core/Buffer", "Tone/source
 	Object.defineProperty(Tone.Noise.prototype, "type", {
 		get : function(){
 			return this._type;
-		}, 
+		},
 		set : function(type){
 			if (this._type !== type){
 				if (type in _noiseBuffers){
@@ -106,10 +106,10 @@ define(["Tone/core/Tone", "Tone/source/Source", "Tone/core/Buffer", "Tone/source
 	Object.defineProperty(Tone.Noise.prototype, "playbackRate", {
 		get : function(){
 			return this._playbackRate;
-		}, 
+		},
 		set : function(rate){
 			this._playbackRate = rate;
-			if (this._source) {
+			if (this._source){
 				this._source.playbackRate.value = rate;
 			}
 		}
@@ -143,6 +143,18 @@ define(["Tone/core/Tone", "Tone/source/Source", "Tone/core/Buffer", "Tone/source
 	};
 
 	/**
+	 * Restarts the noise.
+	 * @param  {[type]} time [description]
+	 * @return {[type]}      [description]
+	 */
+	Tone.Noise.prototype.restart = function(time){
+		//TODO could be optimized by cancelling the buffer source 'stop'
+		//stop and restart
+		this._stop(time);
+		this._start(time);
+	};
+
+	/**
 	 *  Clean up.
 	 *  @returns {Tone.Noise} this
 	 */
@@ -156,7 +168,6 @@ define(["Tone/core/Tone", "Tone/source/Source", "Tone/core/Buffer", "Tone/source
 		return this;
 	};
 
-
 	///////////////////////////////////////////////////////////////////////////
 	// THE BUFFERS
 	///////////////////////////////////////////////////////////////////////////
@@ -167,21 +178,21 @@ define(["Tone/core/Tone", "Tone/source/Source", "Tone/core/Buffer", "Tone/source
 
 	/**
 	 *	The noise arrays. Generated on initialization.
-	 *  borrowed heavily from https://github.com/zacharydenton/noise.js 
+	 *  borrowed heavily from https://github.com/zacharydenton/noise.js
 	 *  (c) 2013 Zach Denton (MIT)
 	 *  @static
 	 *  @private
 	 *  @type {Array}
 	 */
 	var _noiseArrays = {
-		"pink" : (function() {
+		"pink" : (function(){
 			var buffer = [];
 			for (var channelNum = 0; channelNum < channels; channelNum++){
 				var channel = new Float32Array(bufferLength);
 				buffer[channelNum] = channel;
 				var b0, b1, b2, b3, b4, b5, b6;
 				b0 = b1 = b2 = b3 = b4 = b5 = b6 = 0.0;
-				for (var i = 0; i < bufferLength; i++) {
+				for (var i = 0; i < bufferLength; i++){
 					var white = Math.random() * 2 - 1;
 					b0 = 0.99886 * b0 + white * 0.0555179;
 					b1 = 0.99332 * b1 + white * 0.0750759;
@@ -196,13 +207,13 @@ define(["Tone/core/Tone", "Tone/source/Source", "Tone/core/Buffer", "Tone/source
 			}
 			return buffer;
 		}()),
-		"brown" : (function() {
+		"brown" : (function(){
 			var buffer = [];
 			for (var channelNum = 0; channelNum < channels; channelNum++){
 				var channel = new Float32Array(bufferLength);
 				buffer[channelNum] = channel;
 				var lastOut = 0.0;
-				for (var i = 0; i < bufferLength; i++) {
+				for (var i = 0; i < bufferLength; i++){
 					var white = Math.random() * 2 - 1;
 					channel[i] = (lastOut + (0.02 * white)) / 1.02;
 					lastOut = channel[i];
@@ -217,7 +228,7 @@ define(["Tone/core/Tone", "Tone/source/Source", "Tone/core/Buffer", "Tone/source
 				var channel = new Float32Array(bufferLength);
 				buffer[channelNum] = channel;
 				for (var i = 0; i < bufferLength; i++){
-					channel[i] =  Math.random() * 2 - 1;
+					channel[i] = Math.random() * 2 - 1;
 				}
 			}
 			return buffer;

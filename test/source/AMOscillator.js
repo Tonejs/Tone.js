@@ -1,5 +1,6 @@
-define(["helper/Basic", "Tone/source/AMOscillator", "helper/Offline", "helper/SourceTests", "helper/OscillatorTests", "Test"], 
-	function (BasicTests, AMOscillator, Offline, SourceTests, OscillatorTests, Test) {
+define(["helper/Basic", "Tone/source/AMOscillator", "helper/Offline",
+	"helper/SourceTests", "helper/OscillatorTests", "Test", "helper/CompareToFile"],
+function(BasicTests, AMOscillator, Offline, SourceTests, OscillatorTests, Test, CompareToFile) {
 
 	describe("AMOscillator", function(){
 
@@ -7,6 +8,13 @@ define(["helper/Basic", "Tone/source/AMOscillator", "helper/Offline", "helper/So
 		BasicTests(AMOscillator);
 		SourceTests(AMOscillator);
 		OscillatorTests(AMOscillator);
+
+		it("matches a file", function(){
+			return CompareToFile(function(){
+				var osc = new AMOscillator().toMaster();
+				osc.start(0.1).stop(0.4);
+			}, "amOscillator.wav");
+		});
 
 		context("Amplitude Modulation", function(){
 
@@ -33,7 +41,6 @@ define(["helper/Basic", "Tone/source/AMOscillator", "helper/Offline", "helper/So
 				expect(fmOsc.modulationType).to.equal("triangle5");
 				fmOsc.dispose();
 			});
-
 
 		});
 	});

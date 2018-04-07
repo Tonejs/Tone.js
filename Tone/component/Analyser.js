@@ -1,22 +1,6 @@
-define(["Tone/core/Tone", "Tone/core/AudioNode"], function (Tone) {
+define(["Tone/core/Tone", "Tone/core/AudioNode", "Tone/shim/AnalyserNode"], function(Tone){
 
 	"use strict";
-
-	/**
-	 *  AnalyserNode.getFloatTimeDomainData polyfill
-	 *  @private
-	 */
-	if (window.AnalyserNode && !AnalyserNode.prototype.getFloatTimeDomainData){
-		//referenced https://github.com/mohayonao/get-float-time-domain-data
-		AnalyserNode.prototype.getFloatTimeDomainData = function(array){
-			var uint8 = new Uint8Array(array.length);
-			this.getByteTimeDomainData(uint8);
-			for (var i = 0; i < uint8.length; i++){
-				array[i] = (uint8[i] - 128) / 128;
-			}
-		};
-	}
-
 
 	/**
 	 *  @class  Wrapper around the native Web Audio's

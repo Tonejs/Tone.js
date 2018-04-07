@@ -1,12 +1,4 @@
-define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/core/Timeline"], function (Tone) {
-
-	/**
-	 *  shim
-	 *  @private
-	 */
-	if (!window.hasOwnProperty("AudioContext") && window.hasOwnProperty("webkitAudioContext")){
-		window.AudioContext = window.webkitAudioContext;
-	}
+define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/core/Timeline", "Tone/shim/AudioContext"], function(Tone){
 
 	/**
 	 *  @class Wrapper around the native AudioContext.
@@ -21,6 +13,9 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/core/Timeline"], function (
 
 		if (!options.context){
 			options.context = new window.AudioContext();
+			if (!options.context){
+				throw new Error("could not create AudioContext. Possibly too many AudioContexts running already.");
+			}
 		}
 		this._context = options.context;
 		// extend all of the methods
@@ -50,7 +45,6 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/core/Timeline"], function (
 		 *  The amount of time events are scheduled
 		 *  into the future
 		 *  @type  {Number}
-		 *  @private
 		 */
 		this.lookAhead = options.lookAhead;
 
@@ -106,10 +100,10 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/core/Timeline"], function (
 	};
 
 	/**
-	 *  Define a property on this Tone.Context. 
+	 *  Define a property on this Tone.Context.
 	 *  This is used to extend the native AudioContext
 	 *  @param  {AudioContext}  context
-	 *  @param  {String}  prop 
+	 *  @param  {String}  prop
 	 *  @private
 	 */
 	Tone.Context.prototype._defineProperty = function(context, prop){
@@ -135,6 +129,34 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/core/Timeline"], function (
 	 */
 	Tone.Context.prototype.now = function(){
 		return this._context.currentTime + this.lookAhead;
+	};
+
+	/**
+	 *  Promise which is invoked when the context is running.
+	 *  Tries to resume the context if it's not started.
+	 *  @return  {Promise}
+	 */
+	Tone.Context.prototype.ready = function(){
+		return new Promise(function(done){
+			if (this._context.state === "running"){
+				done();
+			} else {
+				this._context.resume().then(function(){
+					done();
+				});
+			}
+		}.bind(this));
+	};
+
+	/**
+	 *  Promise which is invoked when the context is running.
+	 *  Tries to resume the context if it's not started.
+	 *  @return  {Promise}
+	 */
+	Tone.Context.prototype.close = function(){
+		return this._context.close().then(function(){
+			Tone.Context.emit("close", this);
+		}.bind(this));
 	};
 
 	/**
@@ -169,13 +191,13 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/core/Timeline"], function (
 	 */
 	Tone.Context.prototype._timeoutLoop = function(){
 		var now = this.now();
-		while(this._timeouts && this._timeouts.length && this._timeouts.peek().time <= now){
+		while (this._timeouts && this._timeouts.length && this._timeouts.peek().time <= now){
 			this._timeouts.shift().callback();
 		}
 	};
 
 	/**
-	 *  A setTimeout which is gaurenteed by the clock source. 
+	 *  A setTimeout which is gaurenteed by the clock source.
 	 *  Also runs in the offline context.
 	 *  @param  {Function}  fn       The callback to invoke
 	 *  @param  {Seconds}    timeout  The timeout in seconds
@@ -185,7 +207,7 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/core/Timeline"], function (
 		this._timeoutIds++;
 		var now = this.now();
 		this._timeouts.add({
-			callback : fn, 
+			callback : fn,
 			time : now + timeout,
 			id : this._timeoutIds
 		});
@@ -225,8 +247,8 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/core/Timeline"], function (
 	});
 
 	/**
-	 *  What the source of the clock is, either "worker" (Web Worker [default]), 
-	 *  "timeout" (setTimeout), or "offline" (none). 
+	 *  What the source of the clock is, either "worker" (Web Worker [default]),
+	 *  "timeout" (setTimeout), or "offline" (none).
 	 *  @type {String}
 	 *  @memberOf Tone.Context#
 	 *  @name clockSource
@@ -241,13 +263,13 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/core/Timeline"], function (
 	});
 
 	/**
-	 *  The type of playback, which affects tradeoffs between audio 
-	 *  output latency and responsiveness. 
-	 *  
+	 *  The type of playback, which affects tradeoffs between audio
+	 *  output latency and responsiveness.
+	 *
 	 *  In addition to setting the value in seconds, the latencyHint also
-	 *  accepts the strings "interactive" (prioritizes low latency), 
+	 *  accepts the strings "interactive" (prioritizes low latency),
 	 *  "playback" (prioritizes sustained playback), "balanced" (balances
-	 *  latency and performance), and "fastest" (lowest latency, might glitch more often). 
+	 *  latency and performance), and "fastest" (lowest latency, might glitch more often).
 	 *  @type {String|Seconds}
 	 *  @memberOf Tone.Context#
 	 *  @name latencyHint
@@ -263,7 +285,7 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/core/Timeline"], function (
 			var lookAhead = hint;
 			this._latencyHint = hint;
 			if (Tone.isString(hint)){
-				switch(hint){
+				switch (hint){
 					case "interactive" :
 						lookAhead = 0.1;
 						this._context.latencyHint = hint;
@@ -288,22 +310,22 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/core/Timeline"], function (
 	});
 
 	/**
-	 *  Clean up
-	 *  @returns {Tone.Context} this
+	 *  Unlike other dispose methods, this returns a Promise
+	 *  which executes when the context is closed and disposed
+	 *  @returns {Promise} this
 	 */
 	Tone.Context.prototype.dispose = function(){
-		Tone.Context.emit("close", this);
-		Tone.Emitter.prototype.dispose.call(this);
-		this._ticker.dispose();
-		this._ticker = null;
-		this._timeouts.dispose();
-		this._timeouts = null;
-		for(var con in this._constants){
-			this._constants[con].disconnect();
-		}
-		this._constants = null;
-		this.close();
-		return this;
+		return this.close().then(function(){
+			Tone.Emitter.prototype.dispose.call(this);
+			this._ticker.dispose();
+			this._ticker = null;
+			this._timeouts.dispose();
+			this._timeouts = null;
+			for (var con in this._constants){
+				this._constants[con].disconnect();
+			}
+			this._constants = null;
+		}.bind(this));
 	};
 
 	/**
@@ -364,8 +386,8 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/core/Timeline"], function (
 			"var timeoutTime = "+(this._updateInterval * 1000).toFixed(1)+";" +
 			//onmessage callback
 			"self.onmessage = function(msg){" +
-			"	timeoutTime = parseInt(msg.data);" + 
-			"};" + 
+			"	timeoutTime = parseInt(msg.data);" +
+			"};" +
 			//the tick function which posts a message
 			//and schedules a new tick
 			"function tick(){" +
@@ -402,7 +424,7 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/core/Timeline"], function (
 		if (this._type === Ticker.Type.Worker){
 			try {
 				this._createWorker();
-			} catch(e) {
+			} catch (e){
 				// workers not supported, fallback to timeout
 				this._type = Ticker.Type.Timeout;
 				this._createClock();
@@ -461,7 +483,7 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/core/Timeline"], function (
 			this._worker.terminate();
 			this._worker.onmessage = null;
 			this._worker = null;
-		}	
+		}
 	};
 
 	/**
@@ -488,18 +510,20 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/core/Timeline"], function (
 			if (B.input){
 				inNum = Tone.defaultArg(inNum, 0);
 				if (Tone.isArray(B.input)){
-					this.connect(B.input[inNum]);
+					return this.connect(B.input[inNum]);
 				} else {
-					this.connect(B.input, outNum, inNum);
+					return this.connect(B.input, outNum, inNum);
 				}
 			} else {
 				try {
 					if (B instanceof AudioNode){
 						nativeConnect.call(this, B, outNum, inNum);
+						return B;
 					} else {
 						nativeConnect.call(this, B, outNum);
+						return B;
 					}
-				} catch (e) {
+				} catch (e){
 					throw new Error("error connecting to node: "+B+"\n"+e);
 				}
 			}
@@ -515,7 +539,7 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/core/Timeline"], function (
 			} else {
 				try {
 					nativeDisconnect.apply(this, arguments);
-				} catch (e) {
+				} catch (e){
 					throw new Error("error disconnecting node: "+B+"\n"+e);
 				}
 			}
@@ -527,11 +551,18 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/core/Timeline"], function (
 		}
 	});
 
-
-	// set the audio context initially
-	if (Tone.supported){
+	// set the audio context initially, and if one is not already created
+	if (Tone.supported && !Tone.initialized){
 		Tone.context = new Tone.Context();
-	} else {
+
+		// log on first initialization
+		// allow optional silencing of this log
+		if (!window.TONE_SILENCE_VERSION_LOGGING){
+			// eslint-disable-next-line no-console
+			console.log("%c * Tone.js " + Tone.version + " * ", "background: #000; color: #fff");
+		}
+	} else if (!Tone.supported){
+		// eslint-disable-next-line no-console
 		console.warn("This browser does not support Tone.js");
 	}
 

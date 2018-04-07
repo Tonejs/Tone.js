@@ -18,9 +18,7 @@ define(["Tone/core/Tone", "Tone/component/Volume", "Tone/core/AudioNode"], funct
 	 *
 	 * //opening the input asks the user to activate their mic
 	 * motu.open().then(function(){
-	 * 	//opening is activates the microphone
-	 * 	//starting lets audio through
-	 * 	motu.start(10);
+	 * 	//promise resolves when input is available
 	 * });
 	 */
 
@@ -90,7 +88,6 @@ define(["Tone/core/Tone", "Tone/component/Volume", "Tone/core/AudioNode"], funct
 	 *  @return {Promise} The promise is resolved when the stream is open.
 	 */
 	Tone.UserMedia.prototype.open = function(labelOrId){
-		labelOrId = Tone.defaultArg(labelOrId, "default");
 		return Tone.UserMedia.enumerateDevices().then(function(devices){
 			var device;
 			if (Tone.isNumber(labelOrId)){
@@ -100,7 +97,9 @@ define(["Tone/core/Tone", "Tone/component/Volume", "Tone/core/AudioNode"], funct
 					return device.label === labelOrId || device.deviceId === labelOrId;
 				});
 				//didn't find a matching device
-				if (!device){
+				if (!device && devices.length > 0){
+					device = devices[0];
+				} else if (!device && Tone.isDefined(labelOrId)){
 					throw new Error("Tone.UserMedia: no matching device: "+labelOrId);
 				}
 			}
@@ -108,11 +107,13 @@ define(["Tone/core/Tone", "Tone/component/Volume", "Tone/core/AudioNode"], funct
 			//do getUserMedia
 			var constraints = {
 				audio : {
-					"deviceId": device.deviceId,
-					"echoCancellation": false,
+					"echoCancellation" : false,
 					"sampleRate" : this.context.sampleRate
 				}
 			};
+			if (device){
+				constraints.audio.deviceId = device.deviceId;				
+			}
 			return navigator.mediaDevices.getUserMedia(constraints).then(function(stream){
 				//start a new source only if the previous one is closed
 				if (!this._stream){
@@ -132,7 +133,7 @@ define(["Tone/core/Tone", "Tone/component/Volume", "Tone/core/AudioNode"], funct
 	 *  @return {Tone.UserMedia} this
 	 */
 	Tone.UserMedia.prototype.close = function(){
-		if(this._stream){
+		if (this._stream){
 			this._stream.getAudioTracks().forEach(function(track){
 				track.stop();
 			});
@@ -272,7 +273,7 @@ define(["Tone/core/Tone", "Tone/component/Volume", "Tone/core/AudioNode"], funct
 	 */
 	Object.defineProperty(Tone.UserMedia, "supported", {
 		get : function(){
-			return !Tone.isUndef(navigator.mediaDevices) && Tone.isFunction(navigator.mediaDevices.getUserMedia);
+			return Tone.isDefined(navigator.mediaDevices) && Tone.isFunction(navigator.mediaDevices.getUserMedia);
 		}
 	});
 

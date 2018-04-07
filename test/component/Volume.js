@@ -105,7 +105,7 @@ function (Volume, Basic, Offline, Test, Signal, PassAudio, PassAudioStereo) {
 				var vol = new Volume(0).toMaster();
 				vol.mute = true;
 				expect(vol.mute).to.be.true;
-				vol.volume.value = 0
+				vol.volume.value = 0;
 				expect(vol.mute).to.be.false;
 				vol.dispose();
 			});

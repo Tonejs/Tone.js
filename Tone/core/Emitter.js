@@ -1,13 +1,13 @@
-define(["Tone/core/Tone"], function (Tone) {
+define(["Tone/core/Tone"], function(Tone){
 
 	"use strict";
 
 	/**
 	 *  @class Tone.Emitter gives classes which extend it
-	 *         the ability to listen for and emit events. 
+	 *         the ability to listen for and emit events.
 	 *         Inspiration and reference from Jerome Etienne's [MicroEvent](https://github.com/jeromeetienne/microevent.js).
 	 *         MIT (c) 2011 Jerome Etienne.
-	 *         
+	 *
 	 *  @extends {Tone}
 	 */
 	Tone.Emitter = function(){
@@ -43,9 +43,26 @@ define(["Tone/core/Tone"], function (Tone) {
 	};
 
 	/**
+	 *  Bind a callback which is only invoked once
+	 *  @param  {String}    event     The name of the event to listen for.
+	 *  @param  {Function}  callback  The callback to invoke when the
+	 *                                event is emitted
+	 *  @return  {Tone.Emitter}    this
+	 */
+	Tone.Emitter.prototype.once = function(event, callback){
+		var boundCallback = function(){
+			//invoke the callback
+			callback.apply(this, arguments);
+			this.off(event, boundCallback);
+		}.bind(this);
+		this.on(event, boundCallback);
+		return this;
+	};
+
+	/**
 	 *  Remove the event listener.
 	 *  @param  {String}    event     The event to stop listening to.
-	 *  @param  {Function=}  callback  The callback which was bound to 
+	 *  @param  {Function=}  callback  The callback which was bound to
 	 *                                the event with Tone.Emitter.on.
 	 *                                If no callback is given, all callbacks
 	 *                                events are removed.
@@ -73,7 +90,7 @@ define(["Tone/core/Tone"], function (Tone) {
 
 	/**
 	 *  Invoke all of the callbacks bound to the event
-	 *  with any arguments passed in. 
+	 *  with any arguments passed in.
 	 *  @param  {String}  event  The name of the event.
 	 *  @param {*} args... The arguments to pass to the functions listening.
 	 *  @return  {Tone.Emitter}  this
@@ -82,7 +99,7 @@ define(["Tone/core/Tone"], function (Tone) {
 		if (this._events){
 			var args = Array.apply(null, arguments).slice(1);
 			if (this._events.hasOwnProperty(event)){
-				var eventList = this._events[event];
+				var eventList = this._events[event].slice(0);
 				for (var i = 0, len = eventList.length; i < len; i++){
 					eventList[i].apply(this, args);
 				}
@@ -97,7 +114,7 @@ define(["Tone/core/Tone"], function (Tone) {
 	 *  @returns {Tone.Emitter}
 	 */
 	Tone.Emitter.mixin = function(object){
-		var functions = ["on", "off", "emit"];
+		var functions = ["on", "once", "off", "emit"];
 		object._events = {};
 		for (var i = 0; i < functions.length; i++){
 			var func = functions[i];

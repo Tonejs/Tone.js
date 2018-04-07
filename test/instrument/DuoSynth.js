@@ -1,41 +1,73 @@
-define(["Tone/instrument/DuoSynth", "helper/Basic", "helper/InstrumentTests"], function (DuoSynth, Basic, InstrumentTest) {
+define(["Tone/instrument/DuoSynth", "helper/Basic",
+	"helper/InstrumentTests", "helper/CompareToFile", "helper/Supports"],
+function(DuoSynth, Basic, InstrumentTest, CompareToFile, Supports) {
 
 	describe("DuoSynth", function(){
 
 		Basic(DuoSynth);
-		InstrumentTest(DuoSynth, "C4");
+		InstrumentTest(DuoSynth, "C4", {
+			voice0 : {
+				oscillator : {
+					type : "square"
+				},
+				envelope : {
+					decay : 0.1,
+					sustain : 0.5,
+					release : 0.2
+				}
+			},
+			voice1 : {
+				oscillator : {
+					type : "square"
+				},
+				envelope : {
+					decay : 0.1,
+					sustain : 0.5,
+					release : 0.2
+				}
+			}
+		});
+
+		if (Supports.CHROME_AUDIO_RENDERING){
+			it("matches a file", function(){
+				return CompareToFile(function(){
+					const synth = new DuoSynth().toMaster();
+					synth.triggerAttackRelease("C5", 0.1, 0.1);
+				}, "duoSynth.wav", 150);
+			});
+		}
 
 		context("API", function(){
 
-			it ("can get and set voice0 attributes", function(){
+			it("can get and set voice0 attributes", function(){
 				var duoSynth = new DuoSynth();
 				duoSynth.voice0.oscillator.type = "triangle";
 				expect(duoSynth.voice0.oscillator.type).to.equal("triangle");
 				duoSynth.dispose();
 			});
 
-			it ("can get and set voice1 attributes", function(){
+			it("can get and set voice1 attributes", function(){
 				var duoSynth = new DuoSynth();
 				duoSynth.voice1.envelope.attack = 0.24;
 				expect(duoSynth.voice1.envelope.attack).to.equal(0.24);
 				duoSynth.dispose();
 			});
 
-			it ("can get and set harmonicity", function(){
+			it("can get and set harmonicity", function(){
 				var duoSynth = new DuoSynth();
 				duoSynth.harmonicity.value = 2;
 				expect(duoSynth.harmonicity.value).to.equal(2);
 				duoSynth.dispose();
 			});
 
-			it ("can get and set vibratoRate", function(){
+			it("can get and set vibratoRate", function(){
 				var duoSynth = new DuoSynth();
 				duoSynth.vibratoRate.value = 2;
 				expect(duoSynth.vibratoRate.value).to.equal(2);
 				duoSynth.dispose();
 			});
 
-			it ("can be constructed with an options object", function(){
+			it("can be constructed with an options object", function(){
 				var duoSynth = new DuoSynth({
 					"voice0" : {
 						"filter" : {
@@ -47,7 +79,7 @@ define(["Tone/instrument/DuoSynth", "helper/Basic", "helper/InstrumentTests"], f
 				duoSynth.dispose();
 			});
 
-			it ("can get/set attributes", function(){
+			it("can get/set attributes", function(){
 				var duoSynth = new DuoSynth();
 				duoSynth.set({
 					"harmonicity" : 1.5

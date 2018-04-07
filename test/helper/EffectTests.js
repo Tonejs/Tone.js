@@ -1,19 +1,18 @@
 define(["helper/OutputAudio", "Tone/effect/Effect", "helper/PassAudio",
 	"helper/PassAudioStereo", "Test", "helper/Offline", "Tone/signal/Signal", "Tone/component/Merge"],
-	function (OutputAudio, Effect, PassAudio, PassAudioStereo, Test, Offline, Signal, Merge) {
+function(OutputAudio, Effect, PassAudio, PassAudioStereo, Test, Offline, Signal, Merge) {
 
 	return function(Constr, args, before){
 
-
 		context("Effect Tests", function(){
 
-			it ("extends Tone.Effect", function(){
+			it("extends Tone.Effect", function(){
 				var instance = new Constr(args);
 				expect(instance).to.be.an.instanceof(Effect);
 				instance.dispose();
 			});
 
-			it ("has an input and output", function(){
+			it("has an input and output", function(){
 				var instance = new Constr(args);
 				if (before){
 					before(instance);
@@ -107,6 +106,8 @@ define(["helper/OutputAudio", "Tone/effect/Effect", "helper/PassAudio",
 						instance.start();
 					}
 				}, 0.5, 2).then(function(buffer){
+					var leftEffected = false;
+					var rightEffected = false;
 					buffer.forEach(function(L, R, time){
 						var leftValue = (time * 2) - 1;
 						var rightValue = ((1 - time) * 2) - 1;

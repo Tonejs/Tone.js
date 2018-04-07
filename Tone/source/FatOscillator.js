@@ -1,14 +1,14 @@
-define(["Tone/core/Tone", "Tone/source/Source", "Tone/source/Oscillator", "Tone/signal/Multiply", "Tone/core/Gain"], 
-function(Tone){
+define(["Tone/core/Tone", "Tone/source/Source", "Tone/source/Oscillator",
+	"Tone/signal/Multiply", "Tone/core/Gain"], function(Tone){
 
 	"use strict";
 
 	/**
-	 *  @class Tone.FatOscillator 
+	 *  @class Tone.FatOscillator
 	 *
 	 *  @extends {Tone.Source}
 	 *  @constructor
-	 *  @param {Frequency} frequency The starting frequency of the oscillator. 
+	 *  @param {Frequency} frequency The starting frequency of the oscillator.
 	 *  @param {String} type The type of the carrier oscillator.
 	 *  @param {String} modulationType The type of the modulator oscillator.
 	 *  @example
@@ -106,13 +106,25 @@ function(Tone){
 
 	/**
 	 *  stop the oscillator
-	 *  @param  {Time} time (optional) timing parameter
+	 *  @param  {Time} [time=now]
 	 *  @private
 	 */
 	Tone.FatOscillator.prototype._stop = function(time){
 		time = this.toSeconds(time);
 		this._forEach(function(osc){
 			osc.stop(time);
+		});
+	};
+
+	/**
+	 *  restart the oscillator
+	 *  @param  {Time} time (optional) timing parameter
+	 *  @private
+	 */
+	Tone.FatOscillator.prototype.restart = function(time){
+		time = this.toSeconds(time);
+		this._forEach(function(osc){
+			osc.restart(time);
 		});
 	};
 
@@ -198,7 +210,7 @@ function(Tone){
 						osc.type = this._type;
 					}
 					osc.phase = this._phase;
-					osc.volume.value = -6 - count;
+					osc.volume.value = -6 - count*1.1;
 					this.frequency.connect(osc.frequency);
 					this.detune.connect(osc.detune);
 					osc.connect(this.output);
@@ -209,7 +221,7 @@ function(Tone){
 				if (this.state === Tone.State.Started){
 					this._forEach(function(osc){
 						osc.start();
-					});						
+					});
 				}
 			}
 		}
@@ -224,7 +236,7 @@ function(Tone){
 	Object.defineProperty(Tone.FatOscillator.prototype, "phase", {
 		get : function(){
 			return this._phase;
-		}, 
+		},
 		set : function(phase){
 			this._phase = phase;
 			this._forEach(function(osc){
@@ -234,12 +246,12 @@ function(Tone){
 	});
 
 	/**
-	 * The partials of the carrier waveform. A partial represents 
-	 * the amplitude at a harmonic. The first harmonic is the 
+	 * The partials of the carrier waveform. A partial represents
+	 * the amplitude at a harmonic. The first harmonic is the
 	 * fundamental frequency, the second is the octave and so on
-	 * following the harmonic series. 
-	 * Setting this value will automatically set the type to "custom". 
-	 * The value is an empty array when the type is not "custom". 
+	 * following the harmonic series.
+	 * Setting this value will automatically set the type to "custom".
+	 * The value is an empty array when the type is not "custom".
 	 * @memberOf Tone.FatOscillator#
 	 * @type {Array}
 	 * @name partials
@@ -249,7 +261,7 @@ function(Tone){
 	Object.defineProperty(Tone.FatOscillator.prototype, "partials", {
 		get : function(){
 			return this._partials;
-		}, 
+		},
 		set : function(partials){
 			this._partials = partials;
 			this._type = Tone.Oscillator.Type.Custom;

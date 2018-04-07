@@ -1,9 +1,9 @@
 define(["Test", "Tone/core/Tone", "helper/PassAudio", "Tone/source/Oscillator",
-	"Tone/instrument/Synth", "helper/Offline", "helper/Supports",
+	"Tone/instrument/Synth", "helper/Offline",
 	"Tone/component/Filter", "Tone/core/Gain", "Tone/core/Context",
-	"helper/BufferTest", "Tone/component/Merge", "Tone/signal/Signal", "Tone/component/Split"],
-	function (Test, Tone, PassAudio, Oscillator, Synth, Offline, Supports,
-		Filter, Gain, Context, BufferTest, Merge, Signal, Split) {
+	"helper/BufferTest", "Tone/component/Merge", "Tone/signal/Signal", "Tone/component/Split", "helper/Supports"],
+function(Test, Tone, PassAudio, Oscillator, Synth, Offline,
+	Filter, Gain, Context, BufferTest, Merge, Signal, Split, Supports) {
 
 	describe("Tone", function(){
 
@@ -11,6 +11,12 @@ define(["Test", "Tone/core/Tone", "helper/PassAudio", "Tone/source/Oscillator",
 			var t = new Tone();
 			t.dispose();
 			Test.wasDisposed(t);
+		});
+
+		it("must be invoked with 'new'", function(){
+			expect(function(){
+				var t = Tone();
+			}).to.throw(Error);
 		});
 
 		it("returns the class name with toString()", function(){
@@ -125,14 +131,14 @@ define(["Test", "Tone/core/Tone", "helper/PassAudio", "Tone/source/Oscillator",
 			});
 
 			it("handles default arguments on a shallow object", function(){
-				expect(Tone.defaultArg({"b" : 10}, {"a" : 4, "b" : 10})).has.property("a", 4);
-				expect(Tone.defaultArg({"b" : 10, "c" : 20}, {"a" : 4, "b" : 10})).has.property("b", 10);
-				expect(Tone.defaultArg({"b" : 10, "c" : 20}, {"a" : 4, "b" : 10})).has.property("c", 20);
+				expect(Tone.defaultArg({ "b" : 10 }, { "a" : 4, "b" : 10 })).has.property("a", 4);
+				expect(Tone.defaultArg({ "b" : 10, "c" : 20 }, { "a" : 4, "b" : 10 })).has.property("b", 10);
+				expect(Tone.defaultArg({ "b" : 10, "c" : 20 }, { "a" : 4, "b" : 10 })).has.property("c", 20);
 			});
 
 			it("handles default arguments on a deep object", function(){
-				expect(Tone.defaultArg({"b" : {"c" : 10}}, {"b" : {"c" : 20, "d" : 30}})).has.deep.property("b.d", 30);
-				expect(Tone.defaultArg({"a" : 10}, {"b" : {"c" : 20}})).has.deep.property("b.c", 20);
+				expect(Tone.defaultArg({ "b" : { "c" : 10 } }, { "b" : { "c" : 20, "d" : 30 } })).has.deep.property("b.d", 30);
+				expect(Tone.defaultArg({ "a" : 10 }, { "b" : { "c" : 20 } })).has.deep.property("b.c", 20);
 			});
 
 			it("maps array parameters to an object", function(){
@@ -152,7 +158,7 @@ define(["Test", "Tone/core/Tone", "helper/PassAudio", "Tone/source/Oscillator",
 
 			it("gets default arguments after creating options object", function(){
 				var constr = {
-					"defaults" : {"c" : 3}
+					"defaults" : { "c" : 3 }
 				};
 				expect(Tone.defaults([1, 2], ["a", "b", "c"], constr)).is.deep.equal({
 					"a" : 1,
@@ -162,7 +168,7 @@ define(["Test", "Tone/core/Tone", "helper/PassAudio", "Tone/source/Oscillator",
 			});
 
 			it("uses constr as an object if third argument doesn't have a 'defaults' property", function(){
-				expect(Tone.defaults([1, 2], ["a", "b", "c"], {"c" : 3})).is.deep.equal({
+				expect(Tone.defaults([1, 2], ["a", "b", "c"], { "c" : 3 })).is.deep.equal({
 					"a" : 1,
 					"b" : 2,
 					"c" : 3
@@ -170,7 +176,7 @@ define(["Test", "Tone/core/Tone", "helper/PassAudio", "Tone/source/Oscillator",
 			});
 
 			it("does not map parameter if first argument is already an object", function(){
-				expect(Tone.defaults([{"a" : 2, "b" : 3}], ["a", "b", "c"], {})).is.deep.equal({
+				expect(Tone.defaults([{ "a" : 2, "b" : 3 }], ["a", "b", "c"], {})).is.deep.equal({
 					"a" : 2,
 					"b" : 3,
 				});
@@ -180,45 +186,35 @@ define(["Test", "Tone/core/Tone", "helper/PassAudio", "Tone/source/Oscillator",
 
 		context("Tone.context", function(){
 
-			it ("can set a new context", function(){
-				var origCtx = Tone.context;
-				var ctx = new Context();
-				Tone.context = ctx;
-				expect(Tone.context).to.equal(ctx);
-				expect(Tone.prototype.context).to.equal(ctx);
-				//then set it back
-				Tone.setContext(origCtx);
-				expect(Tone.context).to.equal(origCtx);
-				expect(Tone.prototype.context).to.equal(origCtx);
-				ctx.dispose();
-			});
+			if (Supports.AUDIO_CONTEXT_CLOSE_RESOLVES){
 
-			it ("new context can be a raw audio context", function(){
-				var origCtx = Tone.context;
-				var ctx = new AudioContext();
-				Tone.context = ctx;
-				//wraps it in a Tone.Context
-				expect(Tone.context).to.be.instanceOf(Context);
-				//then set it back
-				Tone.setContext(origCtx);
-				expect(Tone.context).to.equal(origCtx);
-				expect(Tone.prototype.context).to.equal(origCtx);
-				//and a saftey check
-				return ctx.close();
-			});
+				it("can set a new context", function(){
+					var origCtx = Tone.context;
+					var ctx = new Context();
+					Tone.context = ctx;
+					expect(Tone.context).to.equal(ctx);
+					expect(Tone.prototype.context).to.equal(ctx);
+					//then set it back
+					Tone.setContext(origCtx);
+					expect(Tone.context).to.equal(origCtx);
+					expect(Tone.prototype.context).to.equal(origCtx);
+					return ctx.dispose();
+				});
 
-			it ("tests if the audio context time has passed", function(){
-				// overwrite warn to throw errors
-				var originalWarn = console.warn;
-				console.warn = function(warning){
-					throw new Error(warning);
-				};
-				var currentTime = Tone.context.currentTime;
-				expect(function(){
-					Tone.isPast(currentTime-1);
-				}).to.throw(Error);
-				console.warn = originalWarn;
-			});
+				it("new context can be a raw audio context", function(){
+					var origCtx = Tone.context;
+					var ctx = new AudioContext();
+					Tone.context = ctx;
+					//wraps it in a Tone.Context
+					expect(Tone.context).to.be.instanceOf(Context);
+					//then set it back
+					Tone.setContext(origCtx);
+					expect(Tone.context).to.equal(origCtx);
+					expect(Tone.prototype.context).to.equal(origCtx);
+					//and a saftey check
+					return ctx.close();
+				});
+			}
 
 		});
 

@@ -1,5 +1,5 @@
-define(["Test", "Tone/core/Buffer", "Tone/core/Tone"], function (Test, Buffer, Tone) {
-	
+define(["Test", "Tone/core/Buffer", "Tone/core/Tone"], function(Test, Buffer, Tone){
+
 	if (window.__karma__){
 		Buffer.baseUrl = "/base/test/";
 	}
@@ -10,7 +10,7 @@ define(["Test", "Tone/core/Buffer", "Tone/core/Tone"], function (Test, Buffer, T
 
 		context("basic", function(){
 
-			it ("can be created and disposed", function(){
+			it("can be created and disposed", function(){
 				var buff = new Buffer(testFile);
 				buff.dispose();
 				Test.wasDisposed(buff);
@@ -88,6 +88,20 @@ define(["Test", "Tone/core/Buffer", "Tone/core/Tone"], function (Test, Buffer, T
 						var testOne = new Buffer(buffer);
 						expect(testOne.get()).to.equal(buffer.get());
 						testOne.dispose();
+						buffer.dispose();
+						done();
+					}
+				});
+			});
+
+			it("takes an unloaded Tone.Buffer in the constructor method", function(done){
+				var unloadedBuffer = new Buffer(testFile);
+				var buffer = new Buffer({
+					"url" : unloadedBuffer,
+					"onload" : function(){
+						var testOne = new Buffer(buffer);
+						expect(unloadedBuffer.get()).to.equal(buffer.get());
+						unloadedBuffer.dispose();
 						buffer.dispose();
 						done();
 					}
@@ -177,18 +191,15 @@ define(["Test", "Tone/core/Buffer", "Tone/core/Tone"], function (Test, Buffer, T
 				});
 			});
 
-			it("Promise invokes catch callback", function(done){
-				var promise = (new Buffer()).load("nosuchfile.wav");
-				promise.then(function(){
+			it("invokes the error callback if the file is corrupt", function(done){
+				var buffer = new Buffer("./audio/corrupt.wav", function(){
 					throw new Error("shouldn't invoke this function");
-				});
-				promise.catch(function(){
+				}, function(e){
+					buffer.dispose();
 					done();
 				});
 			});
-
 		});
-		
 
 		context("events", function(){
 
@@ -224,7 +235,7 @@ define(["Test", "Tone/core/Buffer", "Tone/core/Tone"], function (Test, Buffer, T
 				});
 			});
 		});
-		
+
 		context("buffer manipulation", function(){
 
 			it("can get the channel data as an array", function(done){
@@ -303,7 +314,7 @@ define(["Test", "Tone/core/Buffer", "Tone/core/Tone"], function (Test, Buffer, T
 					expect(sliced1.duration).to.be.closeTo(1, 0.01);
 					var sliced2 = sliced1.slice(0.5);
 					expect(sliced2.duration).to.be.closeTo(0.5, 0.01);
-					
+
 					buffer.dispose();
 					sliced1.dispose();
 					sliced2.dispose();
@@ -315,10 +326,10 @@ define(["Test", "Tone/core/Buffer", "Tone/core/Tone"], function (Test, Buffer, T
 		context("static methods", function(){
 
 			it("Test if the browser supports the given type", function(){
-				expect(Buffer.supportsType('test.wav')).to.be.true
-				expect(Buffer.supportsType('wav')).to.be.true
-				expect(Buffer.supportsType('path/to/test.wav')).to.be.true
-				expect(Buffer.supportsType('path/to/test.nope')).to.be.false
+				expect(Buffer.supportsType("test.wav")).to.be.true;
+				expect(Buffer.supportsType("wav")).to.be.true;
+				expect(Buffer.supportsType("path/to/test.wav")).to.be.true;
+				expect(Buffer.supportsType("path/to/test.nope")).to.be.false;
 			});
 
 			it("can cancel the downloads", function(){
@@ -327,24 +338,32 @@ define(["Test", "Tone/core/Buffer", "Tone/core/Tone"], function (Test, Buffer, T
 				Buffer.cancelDownloads();
 				expect(Buffer._downloadQueue.length).to.equal(0);
 			});
+
+			it("can be constructed with Buffer.fromUrl", function(done){
+				Buffer.fromUrl("nosuchfile.wav").then(function(){
+					throw new Error("shouldn't invoke this function");
+				}).catch(function(){
+					done();
+				});
+			});
 		});
 
 	});
 
 	describe("Tone.loaded()", function(){
 
-		it ("returns a promise", function(){
-			expect(Tone.loaded()).to.be.instanceOf(Promise)
+		it("returns a promise", function(){
+			expect(Tone.loaded()).to.be.instanceOf(Promise);
 		});
 
-		it ("is invoked when all the buffers are loaded", function(){
+		it("is invoked when all the buffers are loaded", function(){
 			Buffer.cancelDownloads();
 			var buff0 = new Buffer(testFile);
 			var buff1 = new Buffer(testFile);
 			return Tone.loaded();
 		});
 
-		it ("invokes an error if one of the buffers is not found", function(done){
+		it("invokes an error if one of the buffers is not found", function(done){
 			Buffer.cancelDownloads();
 			// expect(Tone.loaded)
 			var buff0 = new Buffer(testFile);

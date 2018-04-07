@@ -1,11 +1,11 @@
-define(["Tone/core/Tone", "Tone/instrument/Synth", "Tone/signal/Signal", "Tone/signal/Multiply", "Tone/instrument/Monophonic"],
-function(Tone){
+define(["Tone/core/Tone", "Tone/instrument/Synth", "Tone/signal/Signal", "Tone/signal/Multiply",
+	"Tone/instrument/Monophonic"], function(Tone){
 
 	"use strict";
 
 	/**
 	 *  @class  FMSynth is composed of two Tone.Synths where one Tone.Synth modulates
-	 *          the frequency of a second Tone.Synth. A lot of spectral content 
+	 *          the frequency of a second Tone.Synth. A lot of spectral content
 	 *          can be explored using the modulationIndex parameter. Read more about
 	 *          frequency modulation synthesis on Sound On Sound: [Part 1](https://web.archive.org/web/20160403123704/http://www.soundonsound.com/sos/apr00/articles/synthsecrets.htm), [Part 2](https://web.archive.org/web/20160403115835/http://www.soundonsound.com/sos/may00/articles/synth.htm).
 	 *          <img src="https://docs.google.com/drawings/d/1h0PUDZXPgi4Ikx6bVT6oncrYPLluFKy7lj53puxj-DM/pub?w=902&h=462">
@@ -31,7 +31,6 @@ function(Tone){
 		this._carrier = new Tone.Synth(options.carrier);
 		this._carrier.volume.value = -10;
 
-
 		/**
 		 *  The carrier's oscillator
 		 *  @type {Tone.Oscillator}
@@ -51,7 +50,6 @@ function(Tone){
 		 */
 		this._modulator = new Tone.Synth(options.modulator);
 		this._modulator.volume.value = -10;
-
 
 		/**
 		 *  The modulator's oscillator which is applied
@@ -161,8 +159,8 @@ function(Tone){
 	Tone.FMSynth.prototype._triggerEnvelopeAttack = function(time, velocity){
 		time = this.toSeconds(time);
 		//the envelopes
-		this.envelope.triggerAttack(time, velocity);
-		this.modulationEnvelope.triggerAttack(time);
+		this._carrier._triggerEnvelopeAttack(time, velocity);
+		this._modulator._triggerEnvelopeAttack(time);
 		return this;
 	};
 
@@ -175,8 +173,8 @@ function(Tone){
 	 */
 	Tone.FMSynth.prototype._triggerEnvelopeRelease = function(time){
 		time = this.toSeconds(time);
-		this.envelope.triggerRelease(time);
-		this.modulationEnvelope.triggerRelease(time);
+		this._carrier._triggerEnvelopeRelease(time);
+		this._modulator._triggerEnvelopeRelease(time);
 		return this;
 	};
 

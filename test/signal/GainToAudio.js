@@ -1,6 +1,6 @@
 define(["helper/ConstantOutput", "Tone/signal/GainToAudio", "helper/Basic", 
 	"Test", "Tone/signal/Signal", "Tone/signal/Zero"], 
-	function (ConstantOutput, GainToAudio, Basic, Test, Signal, Zero) {
+function (ConstantOutput, GainToAudio, Basic, Test, Signal, Zero) {
 
 	describe("GainToAudio", function(){
 

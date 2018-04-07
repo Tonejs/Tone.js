@@ -1,42 +1,21 @@
-define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type"], function(Tone){
+define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type", "Tone/shim/AudioBuffer"], function(Tone){
 
 	"use strict";
 
 	/**
-	 *  AudioBuffer.copyToChannel polyfill
-	 *  @private
-	 */
-	if (window.AudioBuffer && !AudioBuffer.prototype.copyToChannel){
-		AudioBuffer.prototype.copyToChannel = function(src, chanNum, start){
-			var channel = this.getChannelData(chanNum);
-			start = start || 0;
-			for (var i = 0; i < channel.length; i++){
-				channel[i+start] = src[i];
-			}
-		};
-		AudioBuffer.prototype.copyFromChannel = function(dest, chanNum, start){
-			var channel = this.getChannelData(chanNum);
-			start = start || 0;
-			for (var i = 0; i < dest.length; i++){
-				dest[i] = channel[i+start];
-			}
-		};
-	}
-
-	/**
-	 *  @class  Buffer loading and storage. Tone.Buffer is used internally by all 
+	 *  @class  Buffer loading and storage. Tone.Buffer is used internally by all
 	 *          classes that make requests for audio files such as Tone.Player,
 	 *          Tone.Sampler and Tone.Convolver.
-	 *          
-	 *          Aside from load callbacks from individual buffers, Tone.Buffer 
-	 *  		provides events which keep track of the loading progress 
+	 *
+	 *          Aside from load callbacks from individual buffers, Tone.Buffer
+	 *  		provides events which keep track of the loading progress
 	 *  		of _all_ of the buffers. These are Tone.Buffer.on("load" / "progress" / "error")
 	 *
-	 *  @constructor 
+	 *  @constructor
 	 *  @extends {Tone}
-	 *  @param {AudioBuffer|String} url The url to load, or the audio buffer to set. 
-	 *  @param {Function=} onload A callback which is invoked after the buffer is loaded. 
-	 *                            It's recommended to use `Tone.Buffer.on('load', callback)` instead 
+	 *  @param {AudioBuffer|String} url The url to load, or the audio buffer to set.
+	 *  @param {Function=} onload A callback which is invoked after the buffer is loaded.
+	 *                            It's recommended to use `Tone.Buffer.on('load', callback)` instead
 	 *                            since it will give you a callback when _all_ buffers are loaded.
 	 *  @param {Function=} onerror The callback to invoke if there is an error
 	 *  @example
@@ -74,14 +53,25 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type"], function(Tone)
 		 */
 		this._xhr = null;
 
+		/**
+		 * Private callback when the buffer is loaded.
+		 * @type {Function}
+		 * @private
+		 */
+		this._onload = Tone.noOp;
+
 		if (options.url instanceof AudioBuffer || options.url instanceof Tone.Buffer){
 			this.set(options.url);
 			// invoke the onload callback
 			if (options.onload){
-				options.onload(this);
+				if (this.loaded){
+					options.onload(this);
+				} else {
+					this._onload = options.onload;
+				}
 			}
 		} else if (Tone.isString(options.url)){
-			this.load(options.url, options.onload, options.onerror);
+			this.load(options.url).then(options.onload).catch(options.onerror);
 		}
 	};
 
@@ -93,7 +83,9 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type"], function(Tone)
 	 */
 	Tone.Buffer.defaults = {
 		"url" : undefined,
-		"reverse" : false
+		"reverse" : false,
+		"onload" : Tone.noOp,
+		"onerror" : Tone.noOp
 	};
 
 	/**
@@ -104,7 +96,14 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type"], function(Tone)
 	 */
 	Tone.Buffer.prototype.set = function(buffer){
 		if (buffer instanceof Tone.Buffer){
-			this._buffer = buffer.get();
+			if (buffer.loaded){
+				this._buffer = buffer.get();
+			} else {
+				buffer._onload = function(){
+					this.set(buffer);
+					this._onload(this);
+				}.bind(this);
+			}
 		} else {
 			this._buffer = buffer;
 		}
@@ -131,17 +130,18 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type"], function(Tone)
 
 		var promise = new Promise(function(load, error){
 
-			this._xhr = Tone.Buffer.load(url, 
+			this._xhr = Tone.Buffer.load(url,
 
 				//success
 				function(buff){
 					this._xhr = null;
 					this.set(buff);
 					load(this);
+					this._onload(this);
 					if (onload){
 						onload(this);
 					}
-				}.bind(this), 
+				}.bind(this),
 
 				//error
 				function(err){
@@ -186,7 +186,7 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type"], function(Tone)
 	});
 
 	/**
-	 * The duration of the buffer. 
+	 * The duration of the buffer.
 	 * @memberOf Tone.Buffer#
 	 * @type {Number}
 	 * @name duration
@@ -239,7 +239,7 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type"], function(Tone)
 
 	/**
 	 *  Set the audio buffer from the array. To create a multichannel AudioBuffer,
-	 *  pass in a multidimensional array. 
+	 *  pass in a multidimensional array.
 	 *  @param {Float32Array} array The array to fill the audio buffer
 	 *  @return {Tone.Buffer} this
 	 */
@@ -285,7 +285,7 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type"], function(Tone)
 	};
 
 	/**
-	 * 	Get the buffer as an array. Single channel buffers will return a 1-dimensional 
+	 * 	Get the buffer as an array. Single channel buffers will return a 1-dimensional
 	 * 	Float32Array, and multichannel buffers will return multidimensional arrays.
 	 *  @param {Number=} channel Optionally only copy a single channel from the array.
 	 *  @return {Array}
@@ -371,7 +371,7 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type"], function(Tone)
 
 	//statically inherits Emitter methods
 	Tone.Emitter.mixin(Tone.Buffer);
-	 
+
 	/**
 	 *  the static queue for all of the xhr requests
 	 *  @type {Array}
@@ -388,12 +388,25 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type"], function(Tone)
 
 	/**
 	 *  Create a Tone.Buffer from the array. To create a multichannel AudioBuffer,
-	 *  pass in a multidimensional array. 
+	 *  pass in a multidimensional array.
 	 *  @param {Float32Array} array The array to fill the audio buffer
 	 *  @return {Tone.Buffer} A Tone.Buffer created from the array
 	 */
 	Tone.Buffer.fromArray = function(array){
 		return (new Tone.Buffer()).fromArray(array);
+	};
+
+	/**
+	 * Creates a Tone.Buffer from a URL, returns a promise
+	 * which resolves to a Tone.Buffer
+	 * @param  {String} url The url to load.
+	 * @return {Promise<Tone.Buffer>}     A promise which resolves to a Tone.Buffer
+	 */
+	Tone.Buffer.fromUrl = function(url){
+		var buffer = new Tone.Buffer();
+		return buffer.load(url).then(function(){
+			return buffer;
+		});
 	};
 
 	/**
@@ -463,7 +476,7 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type"], function(Tone)
 		request.addEventListener("load", function(){
 
 			if (request.status === 200){
-				Tone.context.decodeAudioData(request.response, function(buff) {
+				Tone.context.decodeAudioData(request.response).then(function(buff){
 
 					request.progress = 1;
 					onProgress();
@@ -474,7 +487,7 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type"], function(Tone)
 						//emit the event at the end
 						Tone.Buffer.emit("load");
 					}
-				}, function(){
+				}).catch(function(){
 					Tone.Buffer._removeFromDownloadQueue(request);
 					onError("Tone.Buffer: could not decode audio data: "+url);
 				});

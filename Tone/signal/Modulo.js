@@ -1,11 +1,10 @@
-define(["Tone/core/Tone", "Tone/signal/WaveShaper", "Tone/signal/Multiply", "Tone/signal/Subtract"], 
-function(Tone){
+define(["Tone/core/Tone", "Tone/signal/WaveShaper", "Tone/signal/Multiply", "Tone/signal/Subtract"], function(Tone){
 
 	"use strict";
 
 	/**
 	 *  @class Signal-rate modulo operator. Only works in AudioRange [-1, 1] and for modulus
-	 *         values in the NormalRange. 
+	 *         values in the NormalRange.
 	 *
 	 *  @constructor
 	 *  @extends {Tone.SignalBase}
@@ -21,7 +20,7 @@ function(Tone){
 		this.createInsOuts(1, 0);
 
 		/**
-		 *  A waveshaper gets the integer multiple of 
+		 *  A waveshaper gets the integer multiple of
 		 *  the input signal and the modulus.
 		 *  @private
 		 *  @type {Tone.WaveShaper}

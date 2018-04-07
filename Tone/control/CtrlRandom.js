@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/type/Type"], function (Tone) {
+define(["Tone/core/Tone", "Tone/type/Type"], function(Tone){
 
 	"use strict";
 
@@ -65,7 +65,7 @@ define(["Tone/core/Tone", "Tone/type/Type"], function (Tone) {
 			var min = this.toSeconds(this.min);
 			var max = this.toSeconds(this.max);
 			var rand = Math.random(); 
-			var val =  rand * min + (1 - rand) * max;
+			var val = rand * min + (1 - rand) * max;
 			if (this.integer){
 				val = Math.floor(val);
 			}

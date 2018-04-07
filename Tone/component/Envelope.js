@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/signal/TimelineSignal",
+define(["Tone/core/Tone", "Tone/signal/Signal",
 	"Tone/signal/Pow", "Tone/type/Type", "Tone/core/AudioNode"], function(Tone){
 
 	"use strict";
@@ -81,11 +81,10 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal",
 
 		/**
 		 *  the signal
-		 *  @type {Tone.TimelineSignal}
+		 *  @type {Tone.Signal}
 		 *  @private
 		 */
-		this._sig = this.output = new Tone.TimelineSignal();
-		this._sig.setValueAtTime(0, 0);
+		this._sig = this.output = new Tone.Signal(0);
 
 		//set the attackCurve initially
 		this.attackCurve = options.attackCurve;
@@ -249,7 +248,7 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal",
 		} else if (this._attackCurve === "exponential"){
 			this._sig.targetRampTo(velocity, attack, time);
 		} else if (attack > 0){
-			this._sig.setRampPoint(time);
+			this._sig.cancelAndHoldAtTime(time);
 			var curve = this._attackCurve;
 			//take only a portion of the curve
 			if (attack < originalAttack){
@@ -262,7 +261,9 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal",
 			this._sig.setValueCurveAtTime(curve, time, attack, velocity);
 		}
 		//decay
-		this._sig.targetRampTo(velocity * this.sustain, decay, attack + time);
+		if (decay){
+			this._sig.targetRampTo(velocity * this.sustain, decay, attack + time);
+		}
 		return this;
 	};
 
@@ -283,10 +284,10 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal",
 				this._sig.linearRampTo(0, release, time);
 			} else if (this._releaseCurve === "exponential"){
 				this._sig.targetRampTo(0, release, time);
-			} else{
+			} else {
 				var curve = this._releaseCurve;
 				if (Tone.isArray(curve)){
-					this._sig.setRampPoint(time);
+					this._sig.cancelAndHoldAtTime(time);
 					this._sig.setValueCurveAtTime(curve, time, release, currentValue);
 				}
 			}
@@ -315,7 +316,7 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal",
 	 * //trigger the attack and then the release after 0.6 seconds.
 	 * env.triggerAttackRelease(0.6);
 	 */
-	Tone.Envelope.prototype.triggerAttackRelease = function(duration, time, velocity) {
+	Tone.Envelope.prototype.triggerAttackRelease = function(duration, time, velocity){
 		time = this.toSeconds(time);
 		this.triggerAttack(time, velocity);
 		this.triggerRelease(time + this.toSeconds(duration));
@@ -327,7 +328,7 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal",
 	 *  @param  {Time} after
 	 *  @returns {Tone.Envelope} this
 	 */
-	Tone.Envelope.prototype.cancel = function (after) {
+	Tone.Envelope.prototype.cancel = function(after){
 		this._sig.cancelScheduledValues(after);
 		return this;
 	};
@@ -337,9 +338,9 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal",
 	 *  @function
 	 *  @private
 	 */
-	Tone.Envelope.prototype.connect = Tone.Signal.prototype.connect;
+	Tone.Envelope.prototype.connect = Tone.SignalBase.prototype.connect;
 
- 	/**
+	/**
  	 *  Generate some complex envelope curves.
  	 */
 	(function _createCurves(){
@@ -359,7 +360,7 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal",
 		var rippleCurveFreq = 6.4;
 		for (i = 0; i < curveLen - 1; i++){
 			k = (i / (curveLen - 1));
-			var sineWave = Math.sin(k * (Math.PI  * 2) * rippleCurveFreq - Math.PI / 2) + 1;
+			var sineWave = Math.sin(k * (Math.PI * 2) * rippleCurveFreq - Math.PI / 2) + 1;
 			rippleCurve[i] = sineWave/10 + k * 0.83;
 		}
 		rippleCurve[curveLen - 1] = 1;
@@ -412,9 +413,9 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal",
 		 *  @type  {Object}
 		 *  @private
 		 */
-	 	Tone.Envelope.Type = {
-	 		"linear" : "linear",
-	 		"exponential" : "exponential",
+		Tone.Envelope.Type = {
+			"linear" : "linear",
+			"exponential" : "exponential",
 			"bounce" : {
 				In : invertCurve(bounceCurve),
 				Out : bounceCurve
@@ -451,7 +452,6 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal",
 		this._releaseCurve = null;
 		return this;
 	};
-
 
 	return Tone.Envelope;
 });

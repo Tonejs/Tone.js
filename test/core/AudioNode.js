@@ -1,8 +1,8 @@
 define(["Test", "Tone/core/Tone", "Tone/core/AudioNode", "helper/PassAudio", "Tone/core/Gain",
-	"Tone/source/Oscillator", "Tone/component/Merge", "Tone/component/Split", "helper/Supports",
-	"Tone/component/Filter", "helper/Offline", "Tone/signal/Signal"],
-	function (Test, Tone, AudioNode, PassAudio, Gain, Oscillator, Merge,
-		Split, Supports, Filter, Offline, Signal) {
+	"Tone/source/Oscillator", "Tone/component/Merge", "Tone/component/Split",
+	"Tone/component/Filter", "helper/Offline", "Tone/signal/Signal", "helper/Supports", "helper/StereoSignal"],
+function(Test, Tone, AudioNode, PassAudio, Gain, Oscillator, Merge,
+	Split, Filter, Offline, Signal, Supports, StereoSignal){
 
 	describe("AudioNode", function(){
 
@@ -20,15 +20,17 @@ define(["Test", "Tone/core/Tone", "Tone/core/AudioNode", "helper/PassAudio", "To
 			node.dispose();
 		});
 
-		it("can be constructed with an options object", function(){
-			var context = new AudioContext();
-			var node = new AudioNode({
-				"context" : context,
+		if (Supports.AUDIO_CONTEXT_CLOSE_RESOLVES){
+			it("can be constructed with an options object", function(){
+				var context = new AudioContext();
+				var node = new AudioNode({
+					"context" : context,
+				});
+				expect(node.context).to.be.equal(context);
+				node.dispose();
+				return context.close();
 			});
-			expect(node.context).to.be.equal(context);
-			node.dispose();
-			return context.close();
-		});
+		}
 
 		it("reports its inputs and outputs", function(){
 			var node0 = new AudioNode();
@@ -47,6 +49,29 @@ define(["Test", "Tone/core/Tone", "Tone/core/AudioNode", "helper/PassAudio", "To
 			node2.createInsOuts(1, 0);
 			expect(node2.numberOfInputs).to.equal(1);
 			expect(node2.numberOfOutputs).to.equal(0);
+			node2.dispose();
+		});
+
+		it("is able to get and set the channelCount, channelCountMode and channelInterpretation", function(){
+			var node0 = new AudioNode();
+			node0.createInsOuts(1, 1);
+			expect(node0.channelCount).to.equal(2);
+			node0.channelCount = 1;
+			expect(node0.channelCount).to.equal(1);
+			node0.dispose();
+
+			var node1 = new AudioNode();
+			node1.createInsOuts(1, 1);
+			expect(node1.channelCountMode).to.equal("max");
+			node1.channelCountMode = "explicit";
+			expect(node1.channelCountMode).to.equal("explicit");
+			node1.dispose();
+
+			var node2 = new AudioNode();
+			node2.createInsOuts(1, 1);
+			expect(node2.channelInterpretation).to.equal("speakers");
+			node2.channelInterpretation = "discrete";
+			expect(node2.channelInterpretation).to.equal("discrete");
 			node2.dispose();
 		});
 
@@ -123,7 +148,7 @@ define(["Test", "Tone/core/Tone", "Tone/core/AudioNode", "helper/PassAudio", "To
 						var merge = new Merge().toMaster();
 						var split = new Split().connect(merge, 0, 0);
 						split.connect(merge, 1, 1);
-						var sig = new Signal(3).connect(split);
+						var sig = StereoSignal(3, 3).connect(split);
 						split.disconnect(merge, 0, 0);
 					}, 0.05, 2).then(function(buffer){
 						buffer.forEach(function(l, r){
@@ -141,6 +166,11 @@ define(["Test", "Tone/core/Tone", "Tone/core/AudioNode", "helper/PassAudio", "To
 				});
 			});
 
+			it("'connect' returns the node connecting to", function(){
+				var nodeA = Tone.context.createGain();
+				var nodeB = Tone.context.createGain();
+				expect(nodeA.connect(nodeB)).to.equal(nodeB);
+			});
 
 			it("can chain connections", function(){
 				return PassAudio(function(input){

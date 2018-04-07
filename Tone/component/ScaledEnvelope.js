@@ -1,13 +1,12 @@
-define(["Tone/core/Tone", "Tone/component/Envelope", "Tone/signal/Scale"], 
-	function(Tone){
+define(["Tone/core/Tone", "Tone/component/Envelope", "Tone/signal/Scale"], function(Tone){
 
 	"use strict";
 
 	/**
-	 *  @class Tone.ScaledEnvelop is an envelope which can be scaled 
-	 *         to any range. It's useful for applying an envelope 
-	 *         to a frequency or any other non-NormalRange signal 
-	 *         parameter. 
+	 *  @class Tone.ScaledEnvelop is an envelope which can be scaled
+	 *         to any range. It's useful for applying an envelope
+	 *         to a frequency or any other non-NormalRange signal
+	 *         parameter.
 	 *
 	 *  @extends {Tone.Envelope}
 	 *  @constructor
@@ -30,7 +29,7 @@ define(["Tone/core/Tone", "Tone/component/Envelope", "Tone/signal/Scale"],
 		Tone.Envelope.call(this, options);
 		options = Tone.defaultArg(options, Tone.ScaledEnvelope.defaults);
 
-		/** 
+		/**
 		 *  scale the incoming signal by an exponent
 		 *  @type {Tone.Pow}
 		 *  @private
@@ -61,7 +60,7 @@ define(["Tone/core/Tone", "Tone/component/Envelope", "Tone/signal/Scale"],
 
 	/**
 	 * The envelope's min output value. This is the value which it
-	 * starts at. 
+	 * starts at.
 	 * @memberOf Tone.ScaledEnvelope#
 	 * @type {number}
 	 * @name min
@@ -77,7 +76,7 @@ define(["Tone/core/Tone", "Tone/component/Envelope", "Tone/signal/Scale"],
 
 	/**
 	 * The envelope's max output value. In other words, the value
-	 * at the peak of the attack portion of the envelope. 
+	 * at the peak of the attack portion of the envelope.
 	 * @memberOf Tone.ScaledEnvelope#
 	 * @type {number}
 	 * @name max
@@ -92,7 +91,7 @@ define(["Tone/core/Tone", "Tone/component/Envelope", "Tone/signal/Scale"],
 	});
 
 	/**
-	 * The envelope's exponent value. 
+	 * The envelope's exponent value.
 	 * @memberOf Tone.ScaledEnvelope#
 	 * @type {number}
 	 * @name exponent
@@ -105,7 +104,7 @@ define(["Tone/core/Tone", "Tone/component/Envelope", "Tone/signal/Scale"],
 			this._exp.value = exp;
 		}
 	});
-	
+
 	/**
 	 *  clean up
 	 *  @returns {Tone.ScaledEnvelope} this

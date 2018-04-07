@@ -7,7 +7,7 @@ define(["Tone/effect/Distortion", "helper/Basic", "helper/EffectTests"], functio
 
 		context("API", function(){
 
-			it ("can pass in options in the constructor", function(){
+			it("can pass in options in the constructor", function(){
 				var dist = new Distortion({
 					"distortion" : 0.2,
 				});
@@ -15,7 +15,7 @@ define(["Tone/effect/Distortion", "helper/Basic", "helper/EffectTests"], functio
 				dist.dispose();
 			});
 
-			it ("can get/set the options", function(){
+			it("can get/set the options", function(){
 				var dist = new Distortion();
 				dist.set({
 					"oversample" : "4x",

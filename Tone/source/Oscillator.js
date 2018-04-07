@@ -1,22 +1,8 @@
-define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/source/Source", "Tone/core/Transport"],
+define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/source/Source",
+	"Tone/core/Transport", "Tone/source/OscillatorNode"],
 function(Tone){
 
 	"use strict";
-
-	/**
-	 *  OscillatorNode shim
-	 *  @private
-	 */
-	if (window.OscillatorNode && !OscillatorNode.prototype.start){
-		OscillatorNode.prototype.start = OscillatorNode.prototype.noteOn;
-		OscillatorNode.prototype.stop = OscillatorNode.prototype.noteOff;
-		if (!OscillatorNode.prototype.setPeriodicWave){
-			OscillatorNode.prototype.setPeriodicWave = OscillatorNode.prototype.setWaveTable;
-		}
-		if (!AudioContext.prototype.createPeriodicWave){
-			AudioContext.prototype.createPeriodicWave = AudioContext.prototype.createWaveTable;
-		}
-	}
 
 	/**
 	 *  @class Tone.Oscillator supports a number of features including
@@ -125,15 +111,18 @@ function(Tone){
 	 */
 	Tone.Oscillator.prototype._start = function(time){
 		//new oscillator with previous values
-		this._oscillator = this.context.createOscillator();
-		this._oscillator.setPeriodicWave(this._wave);
+		this._oscillator = new Tone.OscillatorNode();
+		if (this._wave){
+			this._oscillator.setPeriodicWave(this._wave);
+		} else {
+			this._oscillator.type = this._type;
+		}
 		//connect the control signal to the oscillator frequency & detune
 		this._oscillator.connect(this.output);
 		this.frequency.connect(this._oscillator.frequency);
 		this.detune.connect(this._oscillator.detune);
 		//start the oscillator
 		time = this.toSeconds(time);
-		Tone.isPast(time);
 		this._oscillator.start(time);
 	};
 
@@ -146,10 +135,20 @@ function(Tone){
 	Tone.Oscillator.prototype._stop = function(time){
 		if (this._oscillator){
 			time = this.toSeconds(time);
-			Tone.isPast(time);
 			this._oscillator.stop(time);
-			this._oscillator = null;
 		}
+		return this;
+	};
+
+	/**
+	 * Restart the oscillator. Does not stop the oscillator, but instead
+	 * just cancels any scheduled 'stop' from being invoked.
+	 * @param  {Time=} time
+	 * @return {Tone.Oscillator}      this
+	 */
+	Tone.Oscillator.prototype.restart = function(time){
+		this._oscillator.cancelStop();
+		this._state.cancel(this.toSeconds(time));
 		return this;
 	};
 
@@ -205,11 +204,20 @@ function(Tone){
 			return this._type;
 		},
 		set : function(type){
-			var coefs = this._getRealImaginary(type, this._phase);
-			var periodicWave = this.context.createPeriodicWave(coefs[0], coefs[1]);
-			this._wave = periodicWave;
-			if (this._oscillator !== null){
-				this._oscillator.setPeriodicWave(this._wave);
+			var isBasicType = [Tone.Oscillator.Type.Sine, Tone.Oscillator.Type.Square, Tone.Oscillator.Type.Triangle, Tone.Oscillator.Type.Sawtooth].includes(type);
+			if (this._phase === 0 && isBasicType){
+				this._wave = null;
+				//just go with the basic approach
+				if (this._oscillator !== null){
+					this._oscillator.type === type;
+				}
+			} else {
+				var coefs = this._getRealImaginary(type, this._phase);
+				var periodicWave = this.context.createPeriodicWave(coefs[0], coefs[1]);
+				this._wave = periodicWave;
+				if (this._oscillator !== null){
+					this._oscillator.setPeriodicWave(this._wave);
+				}
 			}
 			this._type = type;
 		}
@@ -242,10 +250,10 @@ function(Tone){
 			}
 		}
 
-		for (var n = 1; n < periodicWaveSize; ++n) {
+		for (var n = 1; n < periodicWaveSize; ++n){
 			var piFactor = 2 / (n * Math.PI);
 			var b;
-			switch (type) {
+			switch (type){
 				case Tone.Oscillator.Type.Sine:
 					b = (n <= partialCount) ? 1 : 0;
 					break;
@@ -256,7 +264,7 @@ function(Tone){
 					b = piFactor * ((n & 1) ? 1 : -1);
 					break;
 				case Tone.Oscillator.Type.Triangle:
-					if (n & 1) {
+					if (n & 1){
 						b = 2 * (piFactor * piFactor) * ((((n - 1) >> 1) & 1) ? -1 : 1);
 					} else {
 						b = 0;
@@ -367,7 +375,7 @@ function(Tone){
 	Tone.Oscillator.prototype.dispose = function(){
 		Tone.Source.prototype.dispose.call(this);
 		if (this._oscillator !== null){
-			this._oscillator.disconnect();
+			this._oscillator.dispose();
 			this._oscillator = null;
 		}
 		this._wave = null;

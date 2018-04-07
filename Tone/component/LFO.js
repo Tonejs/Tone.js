@@ -1,6 +1,5 @@
 define(["Tone/core/Tone", "Tone/source/Oscillator", "Tone/signal/Scale", "Tone/core/AudioNode",
-	"Tone/signal/Signal", "Tone/signal/AudioToGain", "Tone/type/Type", "Tone/signal/Zero"],
-function(Tone){
+	"Tone/signal/Signal", "Tone/signal/AudioToGain", "Tone/type/Type", "Tone/signal/Zero"], function(Tone){
 
 	"use strict";
 
@@ -210,7 +209,7 @@ function(Tone){
 	 * @type {string}
 	 * @name type
 	 */
-	 Object.defineProperty(Tone.LFO.prototype, "type", {
+	Object.defineProperty(Tone.LFO.prototype, "type", {
 		get : function(){
 			return this._oscillator.type;
 		},
@@ -227,7 +226,7 @@ function(Tone){
 	 * @type {number}
 	 * @name phase
 	 */
-	 Object.defineProperty(Tone.LFO.prototype, "phase", {
+	Object.defineProperty(Tone.LFO.prototype, "phase", {
 		get : function(){
 			return this._oscillator.phase;
 		},
@@ -244,7 +243,7 @@ function(Tone){
 	 * @type {Tone.Type}
 	 * @name units
 	 */
-	 Object.defineProperty(Tone.LFO.prototype, "units", {
+	Object.defineProperty(Tone.LFO.prototype, "units", {
 		get : function(){
 			return this._units;
 		},
@@ -297,11 +296,11 @@ function(Tone){
 	 *  @private
 	 */
 	Tone.LFO.prototype.connect = function(node){
-		if (node.constructor === Tone.Signal || node.constructor === Tone.Param || node.constructor === Tone.TimelineSignal){
+		if (node.constructor === Tone.Signal || node.constructor === Tone.Param){
 			this.convert = node.convert;
 			this.units = node.units;
 		}
-		Tone.Signal.prototype.connect.apply(this, arguments);
+		Tone.SignalBase.prototype.connect.apply(this, arguments);
 		return this;
 	};
 

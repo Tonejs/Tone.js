@@ -1,28 +1,27 @@
-define(["Tone/core/Tone", "Tone/component/CrossFade", "Tone/component/Merge", "Tone/component/Split", 
-	"Tone/signal/Signal", "Tone/signal/AudioToGain", "Tone/signal/Zero"], 
-function(Tone){
+define(["Tone/core/Tone", "Tone/component/CrossFade", "Tone/component/Merge", "Tone/component/Split",
+	"Tone/signal/Signal", "Tone/signal/AudioToGain", "Tone/signal/Zero"], function(Tone){
 
 	"use strict";
 
 	/**
-	 *  @class  Both Tone.Panner3D and Tone.Listener have a position in 3D space 
-	 *          using a right-handed cartesian coordinate system. 
-	 *          The units used in the coordinate system are not defined; 
-	 *          these coordinates are independent/invariant of any particular 
-	 *          units such as meters or feet. Tone.Panner3D objects have an forward 
-	 *          vector representing the direction the sound is projecting. Additionally, 
-	 *          they have a sound cone representing how directional the sound is. 
-	 *          For example, the sound could be omnidirectional, in which case it would 
-	 *          be heard anywhere regardless of its forward, or it can be more directional 
-	 *          and heard only if it is facing the listener. Tone.Listener objects 
-	 *          (representing a person's ears) have an forward and up vector 
-	 *          representing in which direction the person is facing. Because both the 
-	 *          source stream and the listener can be moving, they both have a velocity 
-	 *          vector representing both the speed and direction of movement. Taken together, 
+	 *  @class  Both Tone.Panner3D and Tone.Listener have a position in 3D space
+	 *          using a right-handed cartesian coordinate system.
+	 *          The units used in the coordinate system are not defined;
+	 *          these coordinates are independent/invariant of any particular
+	 *          units such as meters or feet. Tone.Panner3D objects have an forward
+	 *          vector representing the direction the sound is projecting. Additionally,
+	 *          they have a sound cone representing how directional the sound is.
+	 *          For example, the sound could be omnidirectional, in which case it would
+	 *          be heard anywhere regardless of its forward, or it can be more directional
+	 *          and heard only if it is facing the listener. Tone.Listener objects
+	 *          (representing a person's ears) have an forward and up vector
+	 *          representing in which direction the person is facing. Because both the
+	 *          source stream and the listener can be moving, they both have a velocity
+	 *          vector representing both the speed and direction of movement. Taken together,
 	 *          these two velocities can be used to generate a doppler shift effect which changes the pitch.
 	 *          <br><br>
 	 *          Note: the position of the Listener will have no effect on nodes not connected to a Tone.Panner3D
-	 *  
+	 *
 	 *  @constructor
 	 *  @extends {Tone}
 	 *  @singleton
@@ -80,7 +79,7 @@ function(Tone){
 	Tone.Listener.prototype._rampTimeConstant = 0.01;
 
 	/**
-	 *  Sets the position of the listener in 3d space.	
+	 *  Sets the position of the listener in 3d space.
 	 *  @param  {Number}  x
 	 *  @param  {Number}  y
 	 *  @param  {Number}  z
@@ -101,9 +100,9 @@ function(Tone){
 
 	/**
 	 *  Sets the orientation of the listener using two vectors, the forward
-	 *  vector (which direction the listener is facing) and the up vector 
+	 *  vector (which direction the listener is facing) and the up vector
 	 *  (which the up direction of the listener). An up vector
-	 *  of 0, 0, 1 is equivalent to the listener standing up in the Z direction. 
+	 *  of 0, 0, 1 is equivalent to the listener standing up in the Z direction.
 	 *  @param  {Number}  x
 	 *  @param  {Number}  y
 	 *  @param  {Number}  z
@@ -177,7 +176,7 @@ function(Tone){
 	});
 
 	/**
-	 *  The x coordinate of the listeners front direction. i.e. 
+	 *  The x coordinate of the listeners front direction. i.e.
 	 *  which way they are facing.
 	 *  @type {Number}
 	 *  @memberOf Tone.Listener#
@@ -194,7 +193,7 @@ function(Tone){
 	});
 
 	/**
-	 *  The y coordinate of the listeners front direction. i.e. 
+	 *  The y coordinate of the listeners front direction. i.e.
 	 *  which way they are facing.
 	 *  @type {Number}
 	 *  @memberOf Tone.Listener#
@@ -211,7 +210,7 @@ function(Tone){
 	});
 
 	/**
-	 *  The z coordinate of the listeners front direction. i.e. 
+	 *  The z coordinate of the listeners front direction. i.e.
 	 *  which way they are facing.
 	 *  @type {Number}
 	 *  @memberOf Tone.Listener#

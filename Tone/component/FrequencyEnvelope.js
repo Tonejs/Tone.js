@@ -1,11 +1,10 @@
-define(["Tone/core/Tone", "Tone/component/ScaledEnvelope", "Tone/component/Envelope"], 
-	function(Tone){
+define(["Tone/core/Tone", "Tone/component/ScaledEnvelope", "Tone/component/Envelope"], function(Tone){
 
 	"use strict";
 
 	/**
 	 *  @class Tone.FrequencyEnvelope is a Tone.ScaledEnvelope, but instead of `min` and `max`
-	 *         it's got a `baseFrequency` and `octaves` parameter. 
+	 *         it's got a `baseFrequency` and `octaves` parameter.
 	 *
 	 *  @extends {Tone.Envelope}
 	 *  @constructor
@@ -14,12 +13,12 @@ define(["Tone/core/Tone", "Tone/component/ScaledEnvelope", "Tone/component/Envel
 	 *  @param {number} [sustain] 	a percentage (0-1) of the full amplitude
 	 *  @param {Time} [release]	the release time in seconds
 	 *  @example
-	 *  var env = new Tone.FrequencyEnvelope({
+	 *  var freqEnv = new Tone.FrequencyEnvelope({
 	 *  	"attack" : 0.2,
 	 *  	"baseFrequency" : "C2",
 	 *  	"octaves" : 4
 	 *  });
-	 *  scaledEnv.connect(oscillator.frequency);
+	 *  freqEnv.connect(oscillator.frequency);
 	 */
 	Tone.FrequencyEnvelope = function(){
 
@@ -54,7 +53,7 @@ define(["Tone/core/Tone", "Tone/component/ScaledEnvelope", "Tone/component/Envel
 
 	/**
 	 * The envelope's mininum output value. This is the value which it
-	 * starts at. 
+	 * starts at.
 	 * @memberOf Tone.FrequencyEnvelope#
 	 * @type {Frequency}
 	 * @name baseFrequency
@@ -88,7 +87,7 @@ define(["Tone/core/Tone", "Tone/component/ScaledEnvelope", "Tone/component/Envel
 	});
 
 	/**
-	 * The envelope's exponent value. 
+	 * The envelope's exponent value.
 	 * @memberOf Tone.FrequencyEnvelope#
 	 * @type {number}
 	 * @name exponent
@@ -101,7 +100,7 @@ define(["Tone/core/Tone", "Tone/component/ScaledEnvelope", "Tone/component/Envel
 			this._exp.value = exp;
 		}
 	});
-	
+
 	/**
 	 *  clean up
 	 *  @returns {Tone.FrequencyEnvelope} this

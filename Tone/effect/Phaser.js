@@ -1,23 +1,22 @@
-define(["Tone/core/Tone", "Tone/component/LFO", "Tone/component/Filter", "Tone/effect/StereoEffect"], 
-function(Tone){
+define(["Tone/core/Tone", "Tone/component/LFO", "Tone/component/Filter", "Tone/effect/StereoEffect"], function(Tone){
 
 	"use strict";
 
 	/**
 	 *  @class Tone.Phaser is a phaser effect. Phasers work by changing the phase
-	 *         of different frequency components of an incoming signal. Read more on 
-	 *         [Wikipedia](https://en.wikipedia.org/wiki/Phaser_(effect)). 
+	 *         of different frequency components of an incoming signal. Read more on
+	 *         [Wikipedia](https://en.wikipedia.org/wiki/Phaser_(effect)).
 	 *         Inspiration for this phaser comes from [Tuna.js](https://github.com/Dinahmoe/tuna/).
 	 *
 	 *	@extends {Tone.StereoEffect}
 	 *	@constructor
-	 *	@param {Frequency|Object} [frequency] The speed of the phasing. 
-	 *	@param {number} [octaves] The octaves of the effect. 
-	 *	@param {Frequency} [baseFrequency] The base frequency of the filters. 
+	 *	@param {Frequency|Object} [frequency] The speed of the phasing.
+	 *	@param {number} [octaves] The octaves of the effect.
+	 *	@param {Frequency} [baseFrequency] The base frequency of the filters.
 	 *	@example
 	 * var phaser = new Tone.Phaser({
-	 * 	"frequency" : 15, 
-	 * 	"octaves" : 5, 
+	 * 	"frequency" : 15,
+	 * 	"octaves" : 5,
 	 * 	"baseFrequency" : 1000
 	 * }).toMaster();
 	 * var synth = new Tone.FMSynth().connect(phaser);
@@ -64,7 +63,7 @@ function(Tone){
 		 *  @signal
 		 */
 		this.Q = new Tone.Signal(options.Q, Tone.Type.Positive);
-		
+
 		/**
 		 *  the array of filters for the left side
 		 *  @type {Array}
@@ -85,7 +84,7 @@ function(Tone){
 		 */
 		this.frequency = this._lfoL.frequency;
 		this.frequency.value = options.frequency;
-		
+
 		//connect them up
 		this.effectSendL.connect(this._filtersL[0]);
 		this.effectSendR.connect(this._filtersR[0]);
@@ -156,7 +155,7 @@ function(Tone){
 	});
 
 	/**
-	 * The the base frequency of the filters. 
+	 * The the base frequency of the filters.
 	 * @memberOf Tone.Phaser#
 	 * @type {number}
 	 * @name baseFrequency
@@ -166,7 +165,7 @@ function(Tone){
 			return this._baseFrequency;
 		},
 		set : function(freq){
-			this._baseFrequency = freq;	
+			this._baseFrequency = freq;
 			this._lfoL.min = freq;
 			this._lfoR.min = freq;
 			this.octaves = this._octaves;

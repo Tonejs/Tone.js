@@ -6,13 +6,13 @@ define(["Tone/effect/Effect", "Tone/effect/StereoEffect", "helper/Basic"], funct
 
 		context("Stereo", function(){
 
-			it ("extends Effect", function(){
+			it("extends Effect", function(){
 				var stereo = new StereoEffect();
 				expect(stereo).to.be.instanceOf(Effect);
 				stereo.dispose();
 			});
 
-			it ("has a mid and a side send and return", function(){
+			it("has a mid and a side send and return", function(){
 				var stereo = new StereoEffect();
 				expect(stereo).to.have.property("effectSendL");
 				expect(stereo).to.have.property("effectSendR");

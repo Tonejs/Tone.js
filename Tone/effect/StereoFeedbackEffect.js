@@ -1,11 +1,10 @@
-define(["Tone/core/Tone", "Tone/effect/StereoEffect", "Tone/effect/FeedbackEffect", "Tone/core/Gain"], 
-function(Tone){
+define(["Tone/core/Tone", "Tone/effect/StereoEffect", "Tone/effect/FeedbackEffect", "Tone/core/Gain"], function(Tone){
 
 	"use strict";
 
 	/**
 	 *  @class Base class for stereo feedback effects where the effectReturn
-	 *         is fed back into the same channel. 
+	 *         is fed back into the same channel.
 	 *
 	 *	@constructor
 	 *	@extends {Tone.StereoEffect}

@@ -1,18 +1,18 @@
 define(["helper/OutputAudio", "Tone/source/Source", "helper/OutputAudioStereo", 
 	"Test", "helper/Offline", "helper/APITest"], 
-	function (OutputAudio, Source, OutputAudioStereo, Test, Offline, APITest) {
+function (OutputAudio, Source, OutputAudioStereo, Test, Offline, APITest) {
 
 	return function(Constr, args){
 
 		context("Source Tests", function(){
 
-			it ("extends Tone.Source", function(){
+			it("extends Tone.Source", function(){
 				var instance = new Constr(args);
 				expect(instance).to.be.an.instanceof(Source);
 				instance.dispose();
 			});
 
-			it ("can connect the output", function(){
+			it("can connect the output", function(){
 				var instance = new Constr(args);
 				instance.connect(Test);
 				instance.dispose();

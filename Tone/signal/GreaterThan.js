@@ -1,25 +1,24 @@
-define(["Tone/core/Tone", "Tone/signal/GreaterThanZero", "Tone/signal/Subtract", "Tone/signal/Signal"], 
-	function(Tone){
+define(["Tone/core/Tone", "Tone/signal/GreaterThanZero", "Tone/signal/Subtract", "Tone/signal/Signal"], function(Tone){
 
 	"use strict";
 
 	/**
 	 *  @class  Output 1 if the signal is greater than the value, otherwise outputs 0.
-	 *          can compare two signals or a signal and a number. 
-	 *  
+	 *          can compare two signals or a signal and a number.
+	 *
 	 *  @constructor
 	 *  @extends {Tone.Signal}
 	 *  @param {number} [value=0] the value to compare to the incoming signal
 	 *  @example
 	 * var gt = new Tone.GreaterThan(2);
 	 * var sig = new Tone.Signal(4).connect(gt);
-	 * //output of gt is equal 1. 
+	 * //output of gt is equal 1.
 	 */
 	Tone.GreaterThan = function(value){
 
 		Tone.Signal.call(this);
 		this.createInsOuts(2, 0);
-		
+
 		/**
 		 *  subtract the amount from the incoming signal
 		 *  @type {Tone.Subtract}

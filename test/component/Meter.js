@@ -1,7 +1,7 @@
 define(["Tone/component/Meter", "helper/Basic", "helper/Offline", "Test",
 	"Tone/signal/Signal", "helper/PassAudio", "Tone/type/Type",
-	"Tone/component/Merge", "Tone/source/Oscillator"],
-function (Meter, Basic, Offline, Test, Signal, PassAudio, Tone, Merge, Oscillator) {
+	"Tone/component/Merge", "Tone/source/Oscillator", "helper/Supports"],
+function (Meter, Basic, Offline, Test, Signal, PassAudio, Tone, Merge, Oscillator, Supports) {
 	describe("Meter", function(){
 
 		Basic(Meter);
@@ -41,28 +41,32 @@ function (Meter, Basic, Offline, Test, Signal, PassAudio, Tone, Merge, Oscillato
 				});
 			});
 
-			it("measures the incoming signal", function(done){
-				var meter = new Meter();
-				var signal = new Signal(1).connect(meter);
-				setTimeout(function(){
-					expect(meter.getValue()).to.be.closeTo(1, 0.05);
-					meter.dispose();
-					signal.dispose();
-					done();
-				}, 400);
-			});
+			if (Supports.ONLINE_TESTING){
 
-			it("can get the level of the incoming signal", function(done){
-				var meter = new Meter();
-				var osc = new Oscillator().connect(meter).start();
-				osc.volume.value = -6;
-				setTimeout(function(){
-					expect(meter.getLevel()).to.be.closeTo(-6, 1);
-					meter.dispose();
-					osc.dispose();
-					done();
-				}, 400);
-			});
+				it("measures the incoming signal", function(done){
+					var meter = new Meter();
+					var signal = new Signal(1).connect(meter);
+					setTimeout(function(){
+						expect(meter.getValue()).to.be.closeTo(1, 0.05);
+						meter.dispose();
+						signal.dispose();
+						done();
+					}, 400);
+				});
+
+				it("can get the level of the incoming signal", function(done){
+					var meter = new Meter();
+					var osc = new Oscillator().connect(meter).start();
+					osc.volume.value = -6;
+					setTimeout(function(){
+						expect(meter.getLevel()).to.be.closeTo(-6, 6);
+						meter.dispose();
+						osc.dispose();
+						done();
+					}, 400);
+				});
+			}
+
 		});
 	});
 });

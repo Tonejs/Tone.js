@@ -1,5 +1,4 @@
-define(["Tone/core/Tone", "Tone/component/FeedbackCombFilter", "Tone/effect/StereoEffect", "Tone/signal/Scale"], 
-function(Tone){
+define(["Tone/core/Tone", "Tone/component/FeedbackCombFilter", "Tone/effect/StereoEffect", "Tone/signal/Scale"], function(Tone){
 
 	"use strict";
 
@@ -30,15 +29,15 @@ function(Tone){
 	/**
 	 *  @class Tone.JCReverb is a simple [Schroeder Reverberator](https://ccrma.stanford.edu/~jos/pasp/Schroeder_Reverberators.html)
 	 *         tuned by John Chowning in 1970.
-	 *         It is made up of three allpass filters and four Tone.FeedbackCombFilter. 
-	 *         
+	 *         It is made up of three allpass filters and four Tone.FeedbackCombFilter.
+	 *
 	 *
 	 *  @extends {Tone.Effect}
 	 *  @constructor
 	 *  @param {NormalRange|Object} [roomSize] Coorelates to the decay time.
 	 *  @example
 	 * var reverb = new Tone.JCReverb(0.4).connect(Tone.Master);
-	 * var delay = new Tone.FeedbackDelay(0.5); 
+	 * var delay = new Tone.FeedbackDelay(0.5);
 	 * //connecting the synth to reverb through delay
 	 * var synth = new Tone.DuoSynth().chain(delay, reverb);
 	 * synth.triggerAttackRelease("A4","8n");
@@ -77,7 +76,7 @@ function(Tone){
 		this._feedbackCombFilters = [];
 
 		//make the allpass filters
-		for (var af = 0; af < allpassFilterFreqs.length; af++) {
+		for (var af = 0; af < allpassFilterFreqs.length; af++){
 			var allpass = this.context.createBiquadFilter();
 			allpass.type = "allpass";
 			allpass.frequency.value = allpassFilterFreqs[af];
@@ -85,7 +84,7 @@ function(Tone){
 		}
 
 		//and the comb filters
-		for (var cf = 0; cf < combFilterDelayTimes.length; cf++) {
+		for (var cf = 0; cf < combFilterDelayTimes.length; cf++){
 			var fbcf = new Tone.FeedbackCombFilter(combFilterDelayTimes[cf], 0.1);
 			this._scaleRoomSize.connect(fbcf.resonance);
 			fbcf.resonance.value = combFilterResonances[cf];
@@ -119,17 +118,17 @@ function(Tone){
 	};
 
 	/**
-	 *  Clean up. 
+	 *  Clean up.
 	 *  @returns {Tone.JCReverb} this
 	 */
 	Tone.JCReverb.prototype.dispose = function(){
 		Tone.StereoEffect.prototype.dispose.call(this);
-		for (var apf = 0; apf < this._allpassFilters.length; apf++) {
+		for (var apf = 0; apf < this._allpassFilters.length; apf++){
 			this._allpassFilters[apf].disconnect();
 			this._allpassFilters[apf] = null;
 		}
 		this._allpassFilters = null;
-		for (var fbcf = 0; fbcf < this._feedbackCombFilters.length; fbcf++) {
+		for (var fbcf = 0; fbcf < this._feedbackCombFilters.length; fbcf++){
 			this._feedbackCombFilters[fbcf].dispose();
 			this._feedbackCombFilters[fbcf] = null;
 		}

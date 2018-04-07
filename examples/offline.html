@@ -21,11 +21,8 @@
 	</script>
 
 	<style type="text/css">
-		.Button {
-			pointer-events: none;
-		}
-		.Button.Ready {
-			pointer-events: initial;
+		.Button:not(.Visible) {
+			display: none;
 		}
 	</style>
 </head>
@@ -41,10 +38,11 @@
 	<script>
 
 		//load the buffer for use in the convolver
-		var buffer = new Tone.Buffer("https://googlechrome.github.io/web-audio-samples/samples/audio/impulse-responses/chorus-feedback.wav");
+		var buffer = new Tone.Buffer("./audio/IRs/chorus-feedback.wav");
 
-		Tone.loaded().then(function(){
+		Interface.Loader();
 
+		function generateAudioOffline(){
 			return Tone.Offline(function(Transport){
 
 				var reverb = new Tone.Convolver(buffer).toMaster();
@@ -96,22 +94,17 @@
 
 				Transport.bpm.value = 150;
 				Transport.start();
-			}, 7)
-
-		}).then(function(buffer){
-
-			//set the buffer once it's rendered
-			player.buffer = buffer;
-			button.element.text("Play");
-			button.element.addClass("Ready");
-
-		})
+			}, 7).then(function(buffer){
+				//set the buffer once it's rendered
+				player.buffer = buffer;
+			});
+		}
 
 		var player = new Tone.Player().toMaster();
 
 		// GUI //
 
-		var button = Interface.Button({
+		var playButton = Interface.Button({
 			text : "Play",
 			activeText : "Stop",
 			type : "toggle",
@@ -122,7 +115,19 @@
 				player.stop();
 			}
 		});
-		button.element.text("Rendering...");
+
+		//the render button
+		var renderButton = Interface.Button({
+			text : "Render",
+			start : function(){
+				renderButton.element.text("Rendering...");
+				generateAudioOffline().then(function(){
+					renderButton.element.remove();
+					playButton.element.addClass("Visible");
+				});
+			}
+		});
+		renderButton.element.addClass("Visible");
 
 	</script>
 </body>

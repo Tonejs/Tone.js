@@ -1,12 +1,20 @@
-define(["helper/Basic", "Tone/source/OmniOscillator", "helper/Offline", "helper/SourceTests", "helper/OscillatorTests", "helper/OutputAudio"], 
-	function (BasicTests, OmniOscillator, Offline, SourceTests, OscillatorTests, OutputAudio) {
+define(["helper/Basic", "Tone/source/OmniOscillator", "helper/Offline",
+	"helper/SourceTests", "helper/OscillatorTests", "helper/OutputAudio", "helper/CompareToFile"],
+function(BasicTests, OmniOscillator, Offline, SourceTests, OscillatorTests, OutputAudio, CompareToFile) {
 
 	describe("OmniOscillator", function(){
 
 		//run the common tests
 		BasicTests(OmniOscillator);
 		SourceTests(OmniOscillator);
-		OscillatorTests(OmniOscillator);	
+		OscillatorTests(OmniOscillator);
+
+		it("matches a file", function(){
+			return CompareToFile(function(){
+				const osc = new OmniOscillator(220, "fmsquare").toMaster();
+				osc.start(0.1).stop(0.2);
+			}, "omniOscillator.wav", 100);
+		});
 
 		context("Sound", function(){
 
@@ -16,7 +24,7 @@ define(["helper/Basic", "Tone/source/OmniOscillator", "helper/Offline", "helper/
 					osc.toMaster();
 					osc.start();
 				});
-			});		
+			});
 
 			it("makes a sound when set to square", function(){
 				return OutputAudio(function(){
@@ -24,7 +32,7 @@ define(["helper/Basic", "Tone/source/OmniOscillator", "helper/Offline", "helper/
 					osc.toMaster();
 					osc.start();
 				});
-			});		
+			});
 
 			it("makes a sound when set to pulse", function(){
 				return OutputAudio(function(){
@@ -32,7 +40,7 @@ define(["helper/Basic", "Tone/source/OmniOscillator", "helper/Offline", "helper/
 					osc.toMaster();
 					osc.start();
 				});
-			});		
+			});
 
 			it("makes a sound when set to pwm", function(){
 				return OutputAudio(function(){
@@ -40,7 +48,7 @@ define(["helper/Basic", "Tone/source/OmniOscillator", "helper/Offline", "helper/
 					osc.toMaster();
 					osc.start();
 				});
-			});		
+			});
 
 			it("makes a sound when set to fm", function(){
 				return OutputAudio(function(){
@@ -48,7 +56,7 @@ define(["helper/Basic", "Tone/source/OmniOscillator", "helper/Offline", "helper/
 					osc.toMaster();
 					osc.start();
 				});
-			});		
+			});
 
 			it("makes a sound when set to am", function(){
 				return OutputAudio(function(){
@@ -56,7 +64,7 @@ define(["helper/Basic", "Tone/source/OmniOscillator", "helper/Offline", "helper/
 					osc.toMaster();
 					osc.start();
 				});
-			});	
+			});
 
 			it("makes a sound when set to fat", function(){
 				return OutputAudio(function(){
@@ -64,7 +72,7 @@ define(["helper/Basic", "Tone/source/OmniOscillator", "helper/Offline", "helper/
 					osc.toMaster();
 					osc.start();
 				});
-			});	
+			});
 
 			it("can switch type after playing", function(){
 				return OutputAudio(function(){
@@ -73,13 +81,13 @@ define(["helper/Basic", "Tone/source/OmniOscillator", "helper/Offline", "helper/
 					osc.start();
 					osc.type = "fmsine";
 				});
-			});		
+			});
 
 		});
 
 		context("Type", function(){
 
-			it ("can get and set the type", function(){
+			it("can get and set the type", function(){
 				var osc = new OmniOscillator({
 					"type" : "sawtooth",
 				});
@@ -87,7 +95,7 @@ define(["helper/Basic", "Tone/source/OmniOscillator", "helper/Offline", "helper/
 				osc.dispose();
 			});
 
-			it ("handles various types", function(){
+			it("handles various types", function(){
 				var osc = new OmniOscillator();
 				var types = ["triangle3", "sine", "pulse", "pwm", "amsine4", "fatsquare2", "fmsawtooth"];
 				for (var i = 0; i < types.length; i++){
@@ -97,7 +105,7 @@ define(["helper/Basic", "Tone/source/OmniOscillator", "helper/Offline", "helper/
 				osc.dispose();
 			});
 
-			it ("throws an error if invalid type is set", function(){
+			it("throws an error if invalid type is set", function(){
 				var osc = new OmniOscillator();
 				expect(function(){
 					osc.type = "invalid";
@@ -105,7 +113,7 @@ define(["helper/Basic", "Tone/source/OmniOscillator", "helper/Offline", "helper/
 				osc.dispose();
 			});
 
-			it ("can set extended types", function(){
+			it("can set extended types", function(){
 				var osc = new OmniOscillator();
 				osc.type = "sine5";
 				expect(osc.type).to.equal("sine5");
@@ -172,13 +180,13 @@ define(["helper/Basic", "Tone/source/OmniOscillator", "helper/Offline", "helper/
 				omni.dispose();
 			});
 
-			it ("can set a FM oscillator with partials", function(){
+			it("can set a FM oscillator with partials", function(){
 				var omni = new OmniOscillator({
-					"detune": 4,
-					"type": "fmcustom",
+					"detune" : 4,
+					"type" : "fmcustom",
 					"partials" : [2, 1, 2, 2],
-					"phase": 120,
-					"volume": -2,
+					"phase" : 120,
+					"volume" : -2,
 					"harmonicity" : 2
 				});
 				expect(omni.volume.value).to.be.closeTo(-2, 0.01);
@@ -195,7 +203,7 @@ define(["helper/Basic", "Tone/source/OmniOscillator", "helper/Offline", "helper/
 				omni.set({
 					"modulationIndex" : 4,
 					"harmonicity" : 3,
-				})
+				});
 				omni.spread = 40;
 				expect(omni.spread).to.be.undefined;
 				omni.count = 5;

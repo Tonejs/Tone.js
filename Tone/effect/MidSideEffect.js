@@ -1,23 +1,22 @@
-define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/MidSideSplit", "Tone/component/MidSideMerge"], 
-	function(Tone){
+define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/MidSideSplit", "Tone/component/MidSideMerge"], function(Tone){
 
 	"use strict";
 
 	/**
-	 *  @class Mid/Side processing separates the the 'mid' signal 
-	 *         (which comes out of both the left and the right channel) 
-	 *         and the 'side' (which only comes out of the the side channels) 
+	 *  @class Mid/Side processing separates the the 'mid' signal
+	 *         (which comes out of both the left and the right channel)
+	 *         and the 'side' (which only comes out of the the side channels)
 	 *         and effects them separately before being recombined.
 	 *         Applies a Mid/Side seperation and recombination.
 	 *         Algorithm found in [kvraudio forums](http://www.kvraudio.com/forum/viewtopic.php?t=212587).
 	 *         <br><br>
-	 *         This is a base-class for Mid/Side Effects. 
+	 *         This is a base-class for Mid/Side Effects.
 	 *
 	 *  @extends {Tone.Effect}
 	 *  @constructor
 	 */
 	Tone.MidSideEffect = function(){
-		
+
 		Tone.Effect.apply(this, arguments);
 
 		/**
@@ -36,14 +35,14 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/MidSideSplit", "
 
 		/**
 		 *  The mid send. Connect to mid processing
-		 *  @type {Tone.Expr}
+		 *  @type {Tone}
 		 *  @private
 		 */
 		this.midSend = this._midSideSplit.mid;
 
 		/**
 		 *  The side send. Connect to side processing
-		 *  @type {Tone.Expr}
+		 *  @type {Tone}
 		 *  @private
 		 */
 		this.sideSend = this._midSideSplit.side;
@@ -70,7 +69,7 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/MidSideSplit", "
 	Tone.extend(Tone.MidSideEffect, Tone.Effect);
 
 	/**
-	 *  Clean up. 
+	 *  Clean up.
 	 *  @returns {Tone.MidSideEffect} this
 	 */
 	Tone.MidSideEffect.prototype.dispose = function(){

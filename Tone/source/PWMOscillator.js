@@ -1,18 +1,18 @@
-define(["Tone/core/Tone", "Tone/source/Source", "Tone/source/PulseOscillator", "Tone/source/Oscillator", "Tone/signal/Multiply"], 
-function(Tone){
+define(["Tone/core/Tone", "Tone/source/Source", "Tone/source/PulseOscillator",
+	"Tone/source/Oscillator", "Tone/signal/Multiply"], function(Tone){
 
 	"use strict";
 
 	/**
-	 *  @class Tone.PWMOscillator modulates the width of a Tone.PulseOscillator 
+	 *  @class Tone.PWMOscillator modulates the width of a Tone.PulseOscillator
 	 *         at the modulationFrequency. This has the effect of continuously
-	 *         changing the timbre of the oscillator by altering the harmonics 
+	 *         changing the timbre of the oscillator by altering the harmonics
 	 *         generated.
 	 *
 	 *  @extends {Tone.Source}
 	 *  @constructor
-	 *  @param {Frequency} frequency The starting frequency of the oscillator. 
-	 *  @param {Frequency} modulationFrequency The modulation frequency of the width of the pulse. 
+	 *  @param {Frequency} frequency The starting frequency of the oscillator.
+	 *  @param {Frequency} modulationFrequency The modulation frequency of the width of the pulse.
 	 *  @example
 	 *  var pwm = new Tone.PWMOscillator("Ab3", 0.3).toMaster().start();
 	 */
@@ -41,7 +41,7 @@ function(Tone){
 		});
 
 		/**
-		 *  Scale the oscillator so it doesn't go silent 
+		 *  Scale the oscillator so it doesn't go silent
 		 *  at the extreme values.
 		 *  @type {Tone.Multiply}
 		 *  @private
@@ -63,11 +63,11 @@ function(Tone){
 		this.detune = this._modulator.detune;
 
 		/**
-		 *  The modulation rate of the oscillator. 
+		 *  The modulation rate of the oscillator.
 		 *  @type {Frequency}
 		 *  @signal
 		 */
-		this.modulationFrequency = this._pulse.frequency;	
+		this.modulationFrequency = this._pulse.frequency;
 
 		//connections
 		this._modulator.chain(this._scale, this._pulse.width);
@@ -113,6 +113,16 @@ function(Tone){
 	};
 
 	/**
+	 *  restart the oscillator
+	 *  @param  {Time} time (optional) timing parameter
+	 *  @private
+	 */
+	Tone.PWMOscillator.prototype.restart = function(time){
+		this._modulator.restart(time);
+		this._pulse.restart(time);
+	};
+
+	/**
 	 * The type of the oscillator. Always returns "pwm".
 	 * @readOnly
 	 * @memberOf Tone.PWMOscillator#
@@ -147,7 +157,7 @@ function(Tone){
 	Object.defineProperty(Tone.PWMOscillator.prototype, "phase", {
 		get : function(){
 			return this._modulator.phase;
-		}, 
+		},
 		set : function(phase){
 			this._modulator.phase = phase;
 		}

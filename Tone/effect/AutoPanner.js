@@ -85,7 +85,7 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/LFO", "Tone/comp
 		return this;
 	};
 
-/**
+	/**
 	 * Stop the effect.
 	 * @param {Time} [time=now] When the LFO will stop. 
 	 * @returns {Tone.AutoPanner} this

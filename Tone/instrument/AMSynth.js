@@ -1,6 +1,5 @@
 define(["Tone/core/Tone", "Tone/instrument/Synth", "Tone/signal/Signal", "Tone/signal/Multiply",
-	"Tone/instrument/Monophonic", "Tone/signal/AudioToGain", "Tone/core/Gain"],
-function(Tone){
+	"Tone/instrument/Monophonic", "Tone/signal/AudioToGain", "Tone/core/Gain"], function(Tone){
 
 	"use strict";
 
@@ -156,8 +155,8 @@ function(Tone){
 		//the port glide
 		time = this.toSeconds(time);
 		//the envelopes
-		this.envelope.triggerAttack(time, velocity);
-		this.modulationEnvelope.triggerAttack(time, velocity);
+		this._carrier._triggerEnvelopeAttack(time, velocity);
+		this._modulator._triggerEnvelopeAttack(time);
 		return this;
 	};
 
@@ -169,8 +168,8 @@ function(Tone){
 	 *  @returns {Tone.AMSynth} this
 	 */
 	Tone.AMSynth.prototype._triggerEnvelopeRelease = function(time){
-		this.envelope.triggerRelease(time);
-		this.modulationEnvelope.triggerRelease(time);
+		this._carrier._triggerEnvelopeRelease(time);
+		this._modulator._triggerEnvelopeRelease(time);
 		return this;
 	};
 

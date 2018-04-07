@@ -1,6 +1,6 @@
-define(["helper/ConstantOutput", "helper/Basic", "Tone/signal/GreaterThan", 
-	"Tone/signal/Signal", "Test", "helper/Supports"], 
-function (ConstantOutput, Basic, GreaterThan, Signal, Test, Supports) {
+define(["helper/ConstantOutput", "helper/Basic", "Tone/signal/GreaterThan",
+	"Tone/signal/Signal", "Test"],
+function (ConstantOutput, Basic, GreaterThan, Signal, Test) {
 	describe("GreaterThan", function(){
 
 		Basic(GreaterThan);
@@ -25,17 +25,14 @@ function (ConstantOutput, Basic, GreaterThan, Signal, Test, Supports) {
 				}, 0);
 			});
 
-			if (Supports.WAVESHAPER_0_POSITION){
-
-				it("outputs 0 when signal is equal to the value", function(){
-					return ConstantOutput(function(){
-						var signal = new Signal(10);
-						var gt = new GreaterThan(10);
-						signal.connect(gt);
-						gt.toMaster();
-					}, 0);
-				});
-			}
+			it("outputs 0 when signal is equal to the value", function(){
+				return ConstantOutput(function(){
+					var signal = new Signal(10);
+					var gt = new GreaterThan(10);
+					signal.connect(gt);
+					gt.toMaster();
+				}, 0);
+			});
 
 			it("outputs 1 value is greater than", function(){
 				return ConstantOutput(function(){

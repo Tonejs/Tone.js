@@ -1,34 +1,45 @@
-define(["Tone/instrument/FMSynth", "helper/Basic", "helper/InstrumentTests"], function (FMSynth, Basic, InstrumentTest) {
+define(["Tone/instrument/FMSynth", "helper/Basic",
+	"helper/InstrumentTests", "helper/CompareToFile", "helper/Supports"],
+function(FMSynth, Basic, InstrumentTest, CompareToFile, Supports) {
 
 	describe("FMSynth", function(){
 
 		Basic(FMSynth);
 		InstrumentTest(FMSynth, "C4");
 
+		if (Supports.CHROME_AUDIO_RENDERING){
+			it("matches a file", function(){
+				return CompareToFile(function(){
+					const synth = new FMSynth().toMaster();
+					synth.triggerAttackRelease("G4", 0.1, 0.05);
+				}, "fmSynth.wav");
+			});
+		}
+
 		context("API", function(){
 
-			it ("can get and set carrier attributes", function(){
+			it("can get and set carrier attributes", function(){
 				var fmSynth = new FMSynth();
 				fmSynth.oscillator.type = "triangle";
 				expect(fmSynth.oscillator.type).to.equal("triangle");
 				fmSynth.dispose();
 			});
 
-			it ("can get and set modulator attributes", function(){
+			it("can get and set modulator attributes", function(){
 				var fmSynth = new FMSynth();
 				fmSynth.modulationEnvelope.attack = 0.24;
 				expect(fmSynth.modulationEnvelope.attack).to.equal(0.24);
 				fmSynth.dispose();
 			});
 
-			it ("can get and set harmonicity", function(){
+			it("can get and set harmonicity", function(){
 				var fmSynth = new FMSynth();
 				fmSynth.harmonicity.value = 2;
 				expect(fmSynth.harmonicity.value).to.equal(2);
 				fmSynth.dispose();
 			});
 
-			it ("can be constructed with an options object", function(){
+			it("can be constructed with an options object", function(){
 				var fmSynth = new FMSynth({
 					"envelope" : {
 						"release" : 0.3
@@ -38,7 +49,7 @@ define(["Tone/instrument/FMSynth", "helper/Basic", "helper/InstrumentTests"], fu
 				fmSynth.dispose();
 			});
 
-			it ("can get/set attributes", function(){
+			it("can get/set attributes", function(){
 				var fmSynth = new FMSynth();
 				fmSynth.set({
 					"harmonicity" : 1.5,

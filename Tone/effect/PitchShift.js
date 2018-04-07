@@ -1,18 +1,17 @@
-define(["Tone/core/Tone", "Tone/component/LFO", "Tone/component/CrossFade", 
-	"Tone/signal/Signal", "Tone/effect/FeedbackEffect", "Tone/core/Delay"], 
-function (Tone) {
+define(["Tone/core/Tone", "Tone/component/LFO", "Tone/component/CrossFade",
+	"Tone/signal/Signal", "Tone/effect/FeedbackEffect", "Tone/core/Delay"], function(Tone){
 
 	"use strict";
 
 	/**
-	 *  @class Tone.PitchShift does near-realtime pitch shifting to the incoming signal. 
+	 *  @class Tone.PitchShift does near-realtime pitch shifting to the incoming signal.
 	 *         The effect is achieved by speeding up or slowing down the delayTime
-	 *         of a DelayNode using a sawtooth wave. 
+	 *         of a DelayNode using a sawtooth wave.
 	 *         Algorithm found in [this pdf](http://dsp-book.narod.ru/soundproc.pdf).
 	 *         Additional reference by [Miller Pucket](http://msp.ucsd.edu/techniques/v0.11/book-html/node115.html).
-	 *         
+	 *
 	 *  @extends {Tone.FeedbackEffect}
-	 *  @param {Interval=} pitch The interval to transpose the incoming signal by. 
+	 *  @param {Interval=} pitch The interval to transpose the incoming signal by.
 	 */
 	Tone.PitchShift = function(){
 
@@ -28,7 +27,7 @@ function (Tone) {
 
 		/**
 		 *  Uses two DelayNodes to cover up the jump in
-		 *  the sawtooth wave. 
+		 *  the sawtooth wave.
 		 *  @type  {DelayNode}
 		 *  @private
 		 */
@@ -44,7 +43,6 @@ function (Tone) {
 			"max" : 0.1,
 			"type" : "sawtooth"
 		}).connect(this._delayA.delayTime);
-
 
 		/**
 		 *  The second DelayNode
@@ -76,7 +74,7 @@ function (Tone) {
 		/**
 		 *  LFO which alternates between the two
 		 *  delay lines to cover up the disparity in the
-		 *  sawtooth wave. 
+		 *  sawtooth wave.
 		 *  @type  {Tone.LFO}
 		 *  @private
 		 */
@@ -150,7 +148,7 @@ function (Tone) {
 
 	/**
 	 * Repitch the incoming signal by some interval (measured
-	 * in semi-tones). 
+	 * in semi-tones).
 	 * @memberOf Tone.PitchShift#
 	 * @type {Interval}
 	 * @name pitch
@@ -183,10 +181,10 @@ function (Tone) {
 	});
 
 	/**
-	 * The window size corresponds roughly to the sample length in a looping sampler. 
+	 * The window size corresponds roughly to the sample length in a looping sampler.
 	 * Smaller values are desirable for a less noticeable delay time of the pitch shifted
-	 * signal, but larger values will result in smoother pitch shifting for larger intervals. 
-	 * A nominal range of 0.03 to 0.1 is recommended. 
+	 * signal, but larger values will result in smoother pitch shifting for larger intervals.
+	 * A nominal range of 0.03 to 0.1 is recommended.
 	 * @memberOf Tone.PitchShift#
 	 * @type {Time}
 	 * @name windowSize

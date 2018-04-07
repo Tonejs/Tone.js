@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/core/Timeline", "Tone/type/Type"], function (Tone) {
+define(["Tone/core/Tone", "Tone/core/Timeline", "Tone/type/Type"], function(Tone){
 
 	"use strict";
 
@@ -46,11 +46,49 @@ define(["Tone/core/Tone", "Tone/core/Timeline", "Tone/type/Type"], function (Ton
 	 *  @returns {Tone.TimelineState} this
 	 */
 	Tone.TimelineState.prototype.setStateAtTime = function(state, time){
+		//all state changes need to be >= the previous state time
+		//TODO throw error if time < the previous event time
 		this.add({
 			"state" : state,
 			"time" : time
 		});
 		return this;
+	};
+
+	/**
+	 *  Return the event before the time with the given state
+	 *  @param {Tone.State} state The state to look for
+	 *  @param  {Time}  time  When to check before			
+	 *  @return  {Object}  The event with the given state before the time
+	 */
+	Tone.TimelineState.prototype.getLastState = function(state, time){
+		time = this.toSeconds(time);
+		var index = this._search(time);
+		for (var i = index; i >= 0; i--){
+			var event = this._timeline[i];
+			if (event.state === state){
+				return event;
+			}
+		}
+	};
+
+	/**
+	 *  Return the event after the time with the given state
+	 *  @param {Tone.State} state The state to look for
+	 *  @param  {Time}  time  When to check from
+	 *  @return  {Object}  The event with the given state after the time
+	 */
+	Tone.TimelineState.prototype.getNextState = function(state, time){
+		time = this.toSeconds(time);
+		var index = this._search(time);
+		if (index !== -1){
+			for (var i = index; i < this._timeline.length; i++){
+				var event = this._timeline[i];
+				if (event.state === state){
+					return event;
+				}
+			}
+		}
 	};
 
 	return Tone.TimelineState;
