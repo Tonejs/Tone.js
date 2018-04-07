@@ -4,7 +4,7 @@
 * Using ConstantSourceNode in Signal when available
 * switching to eslint from jshint
 * Running [CI tests](https://travis-ci.org/Tonejs/Tone.js/) on Firefox, Chrome (latest and canary) and Safari (latest and version 9).
-* [Tone.Reverb](https://tonejs.github.io/docs/Reverb) is a convolution-based stereo reverb
+* [Tone.Reverb](https://tonejs.github.io/docs/Reverb) is a convolution-based stereo reverb. [Example](https://tonejs.github.io/examples/#reverb).
 * Optimizing basic Oscillator types and many Signal use-case
 * Optimizing basic connection use-case of Tone.Signal where one signal is controlling another signal
 * Testing rendered output against an existing audio file for continuity and consistency
