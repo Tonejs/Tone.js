@@ -698,7 +698,7 @@ define(function(){
 	 * @static
 	 */
 
-	Tone.version = "r12";
+	Tone.version = "r13-dev";
 
 	return Tone;
 });
