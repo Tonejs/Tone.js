@@ -697,6 +697,7 @@ define(function(){
 	 * @type {String}
 	 * @static
 	 */
+
 	Tone.version = "r12";
 
 	return Tone;
