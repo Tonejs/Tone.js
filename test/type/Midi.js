@@ -1,7 +1,6 @@
 define(["helper/Basic", "Test", "Tone/type/Midi", "Tone/core/Tone",
-"deps/teoria", "helper/Offline", "Tone/type/Time", "Tone/type/TransportTime",
-"Tone/type/Ticks", "Tone/type/Frequency"],
-	function (Basic, Test, Midi, Tone, teoria, Offline, Time, TransportTime, Ticks, Frequency) {
+	"deps/teoria", "helper/Offline", "Tone/type/Time", "Tone/type/TransportTime",
+	"Tone/type/Ticks", "Tone/type/Frequency"], function(Basic, Test, Midi, Tone, teoria, Offline, Time, TransportTime, Ticks, Frequency){
 
 	describe("Midi", function(){
 
@@ -74,7 +73,7 @@ define(["helper/Basic", "Test", "Tone/type/Midi", "Tone/core/Tone",
 			});
 
 			it("can convert from Frequency", function(){
-				expect(Midi(Frequency('C4')).valueOf()).to.equal(60);
+				expect(Midi(Frequency("C4")).valueOf()).to.equal(60);
 				expect(Midi(Frequency("64n")).valueOf()).to.equal(24);
 				expect(Midi(Frequency(64, "n")).valueOf()).to.equal(24);
 			});
@@ -105,17 +104,23 @@ define(["helper/Basic", "Test", "Tone/type/Midi", "Tone/core/Tone",
 				expect(Midi("C#0").toMidi()).to.equal(teoria.note("C#0").midi());
 				expect(Midi("A-4").toMidi()).to.equal(teoria.note("A-4").midi());
 			});
+
+			it("can convert midi to frequency", function(){
+				expect(Midi(60).toFrequency()).to.equal(teoria.Note.fromMIDI(60).fq());
+				expect(Midi(25).toFrequency()).to.equal(teoria.Note.fromMIDI(25).fq());
+				expect(Midi(108).toFrequency()).to.equal(teoria.Note.fromMIDI(108).fq());
+			});
 		});
 
 		context("transpose/harmonize", function(){
 
-			it ("can transpose a value", function(){
+			it("can transpose a value", function(){
 				expect(Tone.Midi("A4").transpose(3).toMidi()).to.equal(72);
 				expect(Tone.Midi("A4").transpose(-3).toMidi()).to.equal(66);
 				expect(Tone.Midi(69).transpose(-12).valueOf()).to.equal(57);
 			});
 
-			it ("can harmonize a value", function(){
+			it("can harmonize a value", function(){
 				expect(Tone.Midi("A4").harmonize([0, 3])).to.be.an("array");
 				expect(Tone.Midi("A4").harmonize([0, 3]).length).to.equal(2);
 				expect(Tone.Midi("A4").harmonize([0, 3])[0].toNote()).to.equal("A4");
