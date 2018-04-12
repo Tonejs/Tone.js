@@ -1,3 +1,7 @@
+### r13
+
+* Updating semantic versioning to be more in line with other [semvers](https://semver.org/). Now version is 13.x.x
+
 ### r12
 
 * Consolidating all shims into [shim folder](https://github.com/Tonejs/Tone.js/tree/dev/Tone/shim)
