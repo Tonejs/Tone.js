@@ -538,7 +538,11 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/core/Timeline", "Tone/shim/
 				this.disconnect(B.input, outNum, inNum);
 			} else {
 				try {
-					nativeDisconnect.apply(this, arguments);
+					if (B instanceof AudioParam){
+						nativeDisconnect.call(this, B, outNum);
+					} else {
+						nativeDisconnect.apply(this, arguments);
+					}
 				} catch (e){
 					throw new Error("error disconnecting node: "+B+"\n"+e);
 				}
