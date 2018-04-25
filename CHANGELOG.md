@@ -1,6 +1,10 @@
 ### r13
 
 * Updating semantic versioning to be more in line with other [semvers](https://semver.org/). Now version is 13.x.x
+* Added Object notation for Tone.TimeBase and classes that extend it. 
+	- i.e. Tone.Time({'4n' : 1, '8t' : 2})
+	- Replacement for deprecated expression strings. 
+
 
 ### r12
 
