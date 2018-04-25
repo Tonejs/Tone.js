@@ -1,6 +1,6 @@
 define(["Tone/instrument/FMSynth", "helper/Basic",
 	"helper/InstrumentTests", "helper/CompareToFile", "helper/Supports"],
-function(FMSynth, Basic, InstrumentTest, CompareToFile, Supports) {
+function(FMSynth, Basic, InstrumentTest, CompareToFile, Supports){
 
 	describe("FMSynth", function(){
 
@@ -12,7 +12,7 @@ function(FMSynth, Basic, InstrumentTest, CompareToFile, Supports) {
 				return CompareToFile(function(){
 					const synth = new FMSynth().toMaster();
 					synth.triggerAttackRelease("G4", 0.1, 0.05);
-				}, "fmSynth.wav");
+				}, "fmSynth.wav", 40);
 			});
 		}
 
