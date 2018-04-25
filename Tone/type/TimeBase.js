@@ -4,12 +4,13 @@ define(["Tone/core/Tone"], function(Tone){
 	 *  @class Tone.TimeBase is a flexible encoding of time
 	 *         which can be evaluated to and from a string.
 	 *  @extends {Tone}
-	 *  @param  {Time}  val    The time value as a number or string
+	 *  @param  {Time}  val    The time value as a number, string or object
 	 *  @param  {String=}  units  Unit values
 	 *  @example
 	 * Tone.TimeBase(4, "n")
 	 * Tone.TimeBase(2, "t")
 	 * Tone.TimeBase("2t")
+	 * Tone.TimeBase({"2t" : 2})
 	 * Tone.TimeBase("2t") + Tone.TimeBase("4n");
 	 */
 	Tone.TimeBase = function(val, units){
@@ -282,6 +283,14 @@ define(["Tone/core/Tone"], function(Tone){
 					break;
 				}
 			}
+		} else if (Tone.isObject(this._val)){
+			var total = 0;
+			for (var typeName in this._val){
+				var quantity = this._val[typeName];
+				var time = (new this.constructor(typeName)).valueOf() * quantity;
+				total += time;
+			}
+			return total;
 		}
 		if (Tone.isDefined(this._units)){
 			var expr = this._expressions[this._units];

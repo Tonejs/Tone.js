@@ -1,6 +1,6 @@
 define(["helper/Basic", "Test", "Tone/type/Time", "Tone/core/Tone",
-"helper/Offline", "Tone/type/Frequency", "Tone/type/Ticks", "Tone/type/TransportTime"],
-	function (Basic, Test, Time, Tone, Offline, Frequency, Ticks, TransportTime) {
+	"helper/Offline", "Tone/type/Frequency", 
+	"Tone/type/Ticks", "Tone/type/TransportTime"], function(Basic, Test, Time, Tone, Offline, Frequency, Ticks, TransportTime){
 
 	describe("Time", function(){
 
@@ -68,6 +68,16 @@ define(["helper/Basic", "Test", "Tone/type/Time", "Tone/core/Tone",
 					expect(Time(Ticks("4n")).valueOf()).to.equal(0.5);
 				});
 			});
+
+			it("evalutes objects", function(){
+				return Offline(function(Transport){
+					Transport.bpm.value = 120;
+					Transport.timeSignature = 4;
+					expect(Time({ "4n" : 3 }).valueOf()).to.equal(1.5);
+					expect(Time({ "8t" : 2, "1m" : 3 }).valueOf()).to.be.closeTo(6.33, 0.01);
+					expect(Time({ "2n" : 1, "8n" : 1.5 }).valueOf()).to.equal(1.375);
+				});
+			});
 		});
 
 		context("Quantizes values", function(){
@@ -125,37 +135,37 @@ define(["helper/Basic", "Test", "Tone/type/Time", "Tone/core/Tone",
 				});
 			});
 
-			it ("converts time into milliseconds", function(){
+			it("converts time into milliseconds", function(){
 				expect(Time(2).toMilliseconds()).to.equal(2000);
 				expect(Time("4n").toMilliseconds()).to.equal(500);
 			});
 
-			it ("converts time into samples", function(){
+			it("converts time into samples", function(){
 				expect(Time(2).toSamples()).to.equal(2 * Tone.context.sampleRate);
 			});
 
-			it ("converts time into frequency", function(){
+			it("converts time into frequency", function(){
 				expect(Time(2).toFrequency()).to.equal(0.5);
 			});
 
-			it ("converts time into ticks", function(){
+			it("converts time into ticks", function(){
 				return Offline(function(Transport){
 					expect(Time("2n").toTicks()).to.equal(2 * Transport.PPQ);
 					// floating point checks
 					var bpmOrig = Tone.Transport.bpm.value;
 					Tone.Transport.bpm.value = 100;
-					expect(Time('0:1:3').toTicks()).to.equal(1.75 * Transport.PPQ)
+					expect(Time("0:1:3").toTicks()).to.equal(1.75 * Transport.PPQ);
 					Tone.Transport.bpm.value = bpmOrig;
 				});
 			});
 
-			it ("converts time into BarsBeatsSixteenths", function(){
+			it("converts time into BarsBeatsSixteenths", function(){
 				expect(Time("3:1:3").toBarsBeatsSixteenths()).to.equal("3:1:3");
 				expect(Time(2).toBarsBeatsSixteenths()).to.equal("1:0:0");
 				// trailing zero removal test
 				var bpmOrig = Tone.Transport.bpm.value;
 				Tone.Transport.bpm.value = 100;
-				expect(Time('0:1:3').toBarsBeatsSixteenths()).to.equal('0:1:3')
+				expect(Time("0:1:3").toBarsBeatsSixteenths()).to.equal("0:1:3");
 				Tone.Transport.bpm.value = bpmOrig;
 			});
 

@@ -1,6 +1,5 @@
-define(["helper/Basic", "Test", "Tone/type/Ticks",
-	"Tone/core/Tone", "helper/Offline", "Tone/type/TransportTime", "Tone/type/Time", "Tone/type/Frequency"],
-	function (Basic, Test, Ticks, Tone, Offline, TransportTime, Time, Frequency) {
+define(["helper/Basic", "Test", "Tone/type/Ticks", "Tone/core/Tone", "helper/Offline", 
+	"Tone/type/TransportTime", "Tone/type/Time", "Tone/type/Frequency"], function(Basic, Test, Ticks, Tone, Offline, TransportTime, Time, Frequency){
 
 	describe("Ticks", function(){
 
@@ -80,7 +79,6 @@ define(["helper/Basic", "Test", "Tone/type/Ticks",
 				});
 			});
 
-
 			it("can convert from TransportTime", function(){
 				return Offline(function(Transport){
 					expect(Ticks(TransportTime(2)).valueOf()).to.equal(Transport.PPQ * 4);
@@ -94,6 +92,13 @@ define(["helper/Basic", "Test", "Tone/type/Ticks",
 					expect(Ticks(Ticks("4n")).valueOf()).to.equal(Transport.PPQ);
 				});
 			});
+
+			it("can convert from an Object", function(){
+				return Offline(function(Transport){
+					expect(Ticks({ "4n" : 2 }).valueOf()).to.equal(Transport.PPQ * 2);
+					expect(Ticks({ "1n" : 1, "8t" : 2 }).valueOf()).to.equal(Transport.PPQ * 4 + Transport.PPQ * (2/3));
+				});
+			});
 		});
 
 		context("Quantizes values", function(){
@@ -104,7 +109,7 @@ define(["helper/Basic", "Test", "Tone/type/Ticks",
 				});
 			});
 
-			/*it("can get the next subdivison when the transport is started", function(){
+			it("can get the next subdivison when the transport is started", function(){
 				return Offline(function(Transport){
 					Transport.start();
 					return Test.atTime(0.59, function(){
@@ -112,7 +117,7 @@ define(["helper/Basic", "Test", "Tone/type/Ticks",
 						expect(Ticks("@4n").valueOf()).to.be.closeTo(Transport.PPQ * 2, 0.01);
 					});
 				}, 0.6);
-			});*/
+			});
 		});
 
 		context("Operators", function(){
@@ -145,26 +150,26 @@ define(["helper/Basic", "Test", "Tone/type/Ticks",
 				});
 			});
 
-			it ("converts time into samples", function(){
+			it("converts time into samples", function(){
 				return Offline(function(Transport){
 					expect(Ticks(Transport.PPQ).toSamples()).to.equal(0.5 * Tone.context.sampleRate);
 				});
 			});
 
-			it ("converts time into frequency", function(){
+			it("converts time into frequency", function(){
 				return Offline(function(Transport){
 					expect(Ticks(Transport.PPQ * 4).toFrequency()).to.equal(0.5);
 					expect(Ticks("2n").toFrequency()).to.equal(1);
 				});
 			});
 
-			it ("converts time into seconds", function(){
+			it("converts time into seconds", function(){
 				return Offline(function(){
 					expect(Ticks("2n").toSeconds()).to.equal(1);
 				});
 			});
 
-			it ("converts time into BarsBeatsSixteenths", function(){
+			it("converts time into BarsBeatsSixteenths", function(){
 				return Offline(function(Transport){
 					expect(Ticks("3:1:3").toBarsBeatsSixteenths()).to.equal("3:1:3");
 					expect(Ticks(4 * Transport.PPQ).toBarsBeatsSixteenths()).to.equal("1:0:0");

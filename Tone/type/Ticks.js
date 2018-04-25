@@ -56,7 +56,7 @@ define(["Tone/core/Tone", "Tone/type/TransportTime"], function(Tone){
 	 *  @private
 	 */
 	Tone.Ticks.prototype._secondsToUnits = function(seconds){
-		return seconds / (60 / this._getBpm()) * this._getPPQ();
+		return Math.floor(seconds / (60 / this._getBpm()) * this._getPPQ());
 	};
 
 	/**

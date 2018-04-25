@@ -1,5 +1,5 @@
-define(["helper/Basic", "Test", "Tone/type/Type", "Tone/type/Time", "Tone/type/Frequency", "Tone/type/TransportTime", "helper/Offline", "Tone/core/Tone"],
-	function (Basic, Test, Type, Time, Frequency, TransportTime, Offline, Tone) {
+define(["helper/Basic", "Test", "Tone/type/Type", "Tone/type/Time", "Tone/type/Frequency", 
+	"Tone/type/TransportTime", "helper/Offline", "Tone/core/Tone"], function(Basic, Test, Type, Time, Frequency, TransportTime, Offline, Tone){
 
 	describe("Type", function(){
 
@@ -15,6 +15,7 @@ define(["helper/Basic", "Test", "Tone/type/Type", "Tone/type/Time", "Tone/type/F
 					expect(tone.toSeconds("1")).to.equal(1);
 					expect(tone.toSeconds("1:0:0")).to.equal(2);
 					expect(tone.toSeconds("2hz")).to.equal(0.5);
+					expect(tone.toSeconds({ "4n" : 2 })).to.equal(1);
 				});
 			});
 
@@ -50,7 +51,6 @@ define(["helper/Basic", "Test", "Tone/type/Type", "Tone/type/Time", "Tone/type/F
 
 		});
 
-
 		context("Tone.toFrequency", function(){
 
 			it("infers type correctly", function(){
@@ -62,6 +62,7 @@ define(["helper/Basic", "Test", "Tone/type/Type", "Tone/type/Time", "Tone/type/F
 					expect(tone.toFrequency("1hz")).to.equal(1);
 					expect(tone.toFrequency("4n")).to.equal(2);
 					expect(tone.toFrequency(500)).to.equal(500);
+					expect(tone.toFrequency({ "4n" : 1 })).to.equal(2);
 				});
 			});
 
@@ -84,6 +85,7 @@ define(["helper/Basic", "Test", "Tone/type/Type", "Tone/type/Time", "Tone/type/F
 					expect(tone.toTicks("1i")).to.equal(1);
 					expect(tone.toTicks("4n")).to.equal(ppq);
 					expect(tone.toTicks("8n")).to.equal(ppq * 0.5);
+					expect(tone.toTicks({ "4n" : 1 })).to.equal(ppq);
 				});
 			});
 

@@ -169,7 +169,6 @@ define(["Tone/core/Tone", "Tone/type/Time", "Tone/type/Frequency", "Tone/type/Tr
 	 *  Time : 1.40
 	 *  Notation: 4n or 1m or 2t
 	 *  Now Relative: +3n
-	 *  Math: 3n+16n or even complicated expressions ((3n*2)/6 + 1)
 	 *
 	 *  @param  {Time} time
 	 *  @return {Seconds}
@@ -179,7 +178,7 @@ define(["Tone/core/Tone", "Tone/type/Time", "Tone/type/Frequency", "Tone/type/Tr
 			return time;
 		} else if (Tone.isUndef(time)){
 			return this.now();
-		} else if (Tone.isString(time)){
+		} else if (Tone.isString(time) || Tone.isObject(time)){
 			return (new Tone.Time(time)).toSeconds();
 		} else if (time instanceof Tone.TimeBase){
 			return time.toSeconds();
@@ -194,7 +193,7 @@ define(["Tone/core/Tone", "Tone/type/Time", "Tone/type/Frequency", "Tone/type/Tr
 	Tone.prototype.toFrequency = function(freq){
 		if (Tone.isNumber(freq)){
 			return freq;
-		} else if (Tone.isString(freq) || Tone.isUndef(freq)){
+		} else if (Tone.isString(freq) || Tone.isUndef(freq) || Tone.isObject(freq)){
 			return (new Tone.Frequency(freq)).valueOf();
 		} else if (freq instanceof Tone.TimeBase){
 			return freq.toFrequency();
@@ -207,7 +206,7 @@ define(["Tone/core/Tone", "Tone/type/Time", "Tone/type/Frequency", "Tone/type/Tr
 	 *  @return {Ticks}  the time in ticks
 	 */
 	Tone.prototype.toTicks = function(time){
-		if (Tone.isNumber(time) || Tone.isString(time)){
+		if (Tone.isNumber(time) || Tone.isString(time) || Tone.isObject(time)){
 			return (new Tone.TransportTime(time)).toTicks();
 		} else if (Tone.isUndef(time)){
 			return Tone.Transport.ticks;

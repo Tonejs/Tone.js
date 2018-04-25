@@ -1,7 +1,6 @@
 define(["helper/Basic", "Test", "Tone/type/Frequency", "Tone/core/Tone",
-"deps/teoria", "helper/Offline", "Tone/type/Time", "Tone/type/TransportTime",
-"Tone/type/Ticks", "Tone/type/Midi"],
-	function (Basic, Test, Frequency, Tone, teoria, Offline, Time, TransportTime, Ticks, Midi) {
+	"deps/teoria", "helper/Offline", "Tone/type/Time", "Tone/type/TransportTime",
+	"Tone/type/Ticks", "Tone/type/Midi"], function(Basic, Test, Frequency, Tone, teoria, Offline, Time, TransportTime, Ticks, Midi){
 
 	describe("Frequency", function(){
 
@@ -57,16 +56,15 @@ define(["helper/Basic", "Test", "Tone/type/Frequency", "Tone/core/Tone",
 				expect(Frequency(Frequency(4, "n")).valueOf()).to.equal(2);
 			});
 
-
 			it("can convert from TransportTime", function(){
 				expect(Frequency(TransportTime(2)).valueOf()).to.equal(0.5);
 				expect(Frequency(TransportTime("4n")).valueOf()).to.equal(2);
 			});
 
 			it("can convert from Midi", function(){
-				expect(Frequency(Midi('C4')).valueOf()).to.equal(Frequency('C4').valueOf());
-				expect(Frequency(Midi(60)).valueOf()).to.equal(Frequency('C4').valueOf());
-				expect(Frequency(Midi(61)).valueOf()).to.equal(Frequency('C#4').valueOf());
+				expect(Frequency(Midi("C4")).valueOf()).to.equal(Frequency("C4").valueOf());
+				expect(Frequency(Midi(60)).valueOf()).to.equal(Frequency("C4").valueOf());
+				expect(Frequency(Midi(61)).valueOf()).to.equal(Frequency("C#4").valueOf());
 			});
 
 			it("can convert from Ticks", function(){
@@ -93,7 +91,7 @@ define(["helper/Basic", "Test", "Tone/type/Frequency", "Tone/core/Tone",
 					expect(Frequency("8n").valueOf()).to.equal(4);
 					expect(Frequency(16, "n").valueOf()).to.equal(8);
 					Transport.bpm.value = 60;
-					Transport.timeSignature = [5,4];
+					Transport.timeSignature = [5, 4];
 					expect(Frequency("1m").valueOf()).to.equal(1/5);
 					Transport.bpm.value = 120;
 					Transport.timeSignature = 4;
@@ -166,13 +164,13 @@ define(["helper/Basic", "Test", "Tone/type/Frequency", "Tone/core/Tone",
 
 		context("transpose/harmonize", function(){
 
-			it ("can transpose a value", function(){
+			it("can transpose a value", function(){
 				expect(Tone.Frequency("A4").transpose(3).toMidi()).to.equal(72);
 				expect(Tone.Frequency("A4").transpose(-3).toMidi()).to.equal(66);
 				expect(Tone.Frequency(440).transpose(-12).valueOf()).to.equal(220);
 			});
 
-			it ("can harmonize a value", function(){
+			it("can harmonize a value", function(){
 				expect(Tone.Frequency("A4").harmonize([0, 3])).to.be.an("array");
 				expect(Tone.Frequency("A4").harmonize([0, 3]).length).to.equal(2);
 				expect(Tone.Frequency("A4").harmonize([0, 3])[0].toNote()).to.equal("A4");

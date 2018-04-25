@@ -1,6 +1,5 @@
-define(["helper/Basic", "Test", "Tone/type/TransportTime",
-	"Tone/core/Tone", "helper/Offline", "Tone/type/Time", "Tone/type/Frequency", "Tone/type/Ticks"],
-	function (Basic, Test, TransportTime, Tone, Offline, Time, Frequency, Ticks) {
+define(["helper/Basic", "Test", "Tone/type/TransportTime", "Tone/core/Tone", "helper/Offline", 
+	"Tone/type/Time", "Tone/type/Frequency", "Tone/type/Ticks"], function(Basic, Test, TransportTime, Tone, Offline, Time, Frequency, Ticks){
 
 	describe("TransportTime", function(){
 
@@ -85,6 +84,13 @@ define(["helper/Basic", "Test", "Tone/type/TransportTime",
 					expect(TransportTime(Ticks("4n")).valueOf()).to.equal(0.5);
 				});
 			});
+
+			it("can convert from an Object", function(){
+				return Offline(function(){
+					expect(TransportTime({ "4n" : 2 }).valueOf()).to.equal(1);
+					expect(TransportTime({ "1n" : 1, "8t" : 2 }).valueOf()).to.be.closeTo(2.333, 0.01);
+				});
+			});
 		});
 
 		context("Quantizes values", function(){
@@ -136,25 +142,25 @@ define(["helper/Basic", "Test", "Tone/type/TransportTime",
 				});
 			});
 
-			it ("converts time into samples", function(){
+			it("converts time into samples", function(){
 				return Offline(function(){
 					expect(TransportTime(2).toSamples()).to.equal(2 * Tone.context.sampleRate);
 				});
 			});
 
-			it ("converts time into frequency", function(){
+			it("converts time into frequency", function(){
 				return Offline(function(){
 					expect(TransportTime(2).toFrequency()).to.equal(0.5);
 				});
 			});
 
-			it ("converts time into seconds", function(){
+			it("converts time into seconds", function(){
 				return Offline(function(){
 					expect(TransportTime("2n").toSeconds()).to.equal(1);
 				});
 			});
 
-			it ("converts time into BarsBeatsSixteenths", function(){
+			it("converts time into BarsBeatsSixteenths", function(){
 				return Offline(function(){
 					expect(TransportTime("3:1:3").toBarsBeatsSixteenths()).to.equal("3:1:3");
 					expect(TransportTime(2).toBarsBeatsSixteenths()).to.equal("1:0:0");

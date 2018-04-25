@@ -6,7 +6,7 @@ define(["Tone/core/Tone", "Tone/type/TimeBase", "Tone/type/Frequency"], function
 	 *         into the parameter of any method which takes time as an argument.
 	 *  @constructor
 	 *  @extends {Tone.TimeBase}
-	 *  @param  {String|Number}  val    The time value.
+	 *  @param  {String|Number|Object}  val    The time value.
 	 *  @param  {String=}  units  The units of the value.
 	 *  @example
 	 * var t = Tone.Time("4n");//a quarter note
@@ -32,7 +32,7 @@ define(["Tone/core/Tone", "Tone/type/TimeBase", "Tone/type/Frequency"], function
 			method : function(capture){
 				if (Tone.Transport){
 					var quantTo = new this.constructor(capture);
-					return Tone.Transport.nextSubdivision(quantTo);
+					return this._secondsToUnits(Tone.Transport.nextSubdivision(quantTo));
 				} else {
 					return 0;
 				}

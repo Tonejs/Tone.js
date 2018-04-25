@@ -1,5 +1,5 @@
-define(["helper/Basic", "Test", "Tone/type/TimeBase", "Tone/core/Tone", "helper/Offline"],
-	function (Basic, Test, TimeBase, Tone, Offline) {
+define(["helper/Basic", "Test", "Tone/type/TimeBase", "Tone/core/Tone", 
+	"helper/Offline"], function(Basic, Test, TimeBase, Tone, Offline){
 
 	describe("TimeBase", function(){
 
@@ -43,7 +43,7 @@ define(["helper/Basic", "Test", "Tone/type/TimeBase", "Tone/core/Tone", "helper/
 			});
 
 			it("can pass in a another Timebase", function(){
-				var param = TimeBase(4, "n")
+				var param = TimeBase(4, "n");
 				expect(param.valueOf()).to.equal(TimeBase(param).valueOf());
 				expect(param.valueOf()).to.equal(TimeBase(param).valueOf());
 			});
@@ -69,7 +69,7 @@ define(["helper/Basic", "Test", "Tone/type/TimeBase", "Tone/core/Tone", "helper/
 					expect(TimeBase("32n.").valueOf()).to.equal(0.5/8 * 1.5);
 					expect(TimeBase("2t").valueOf()).to.equal(2/3);
 					Transport.bpm.value = 60;
-					Transport.timeSignature = [5,4];
+					Transport.timeSignature = [5, 4];
 					expect(TimeBase("1m").valueOf()).to.equal(5);
 					expect(TimeBase(2, "m").valueOf()).to.equal(10);
 					expect(TimeBase("5m").valueOf()).to.equal(25);
@@ -89,6 +89,16 @@ define(["helper/Basic", "Test", "Tone/type/TimeBase", "Tone/core/Tone", "helper/
 					Transport.timeSignature = 4;
 					expect(TimeBase(Transport.PPQ, "i").valueOf()).to.equal(0.5);
 					expect(TimeBase(1, "i").valueOf()).to.equal(0.5 / Transport.PPQ);
+				});
+			});
+
+			it("evalutes objects", function(){
+				return Offline(function(Transport){
+					Transport.bpm.value = 120;
+					Transport.timeSignature = 4;
+					expect(TimeBase({ "4n" : 3 }).valueOf()).to.equal(1.5);
+					expect(TimeBase({ "8t" : 2, "1m" : 3 }).valueOf()).to.be.closeTo(6.33, 0.01);
+					expect(TimeBase({ "2n" : 1, "8n" : 1 }).valueOf()).to.equal(1.25);
 				});
 			});
 
