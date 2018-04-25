@@ -1,6 +1,5 @@
-define(["Tone/instrument/NoiseSynth", "helper/Basic",
-	"helper/InstrumentTests", "helper/CompareToFile"],
-function(NoiseSynth, Basic, InstrumentTest, CompareToFile) {
+define(["Tone/instrument/NoiseSynth", "helper/Basic", "helper/InstrumentTests", 
+	"helper/CompareToFile"], function(NoiseSynth, Basic, InstrumentTest, CompareToFile){
 
 	describe("NoiseSynth", function(){
 
@@ -15,9 +14,27 @@ function(NoiseSynth, Basic, InstrumentTest, CompareToFile) {
 
 		it("matches a file", function(){
 			return CompareToFile(function(){
-				const synth = new NoiseSynth().toMaster();
-				synth.triggerAttack();
-			}, "noiseSynth.wav", 50);
+				const synth = new NoiseSynth({
+					envelope : {
+						attack : 0.01,
+						decay : 0.4
+					}
+				}).toMaster();
+				synth.triggerAttack(0);
+				synth.triggerAttack(0.3);
+			}, "noiseSynth.wav", 100);
+		});
+
+		it("matches another file", function(){
+			return CompareToFile(function(){
+				const synth = new NoiseSynth({
+					envelope : {
+						attack : 0.01,
+						decay : 0.4
+					}
+				}).toMaster();
+				synth.triggerAttackRelease(0.1, 0);
+			}, "noiseSynthRelease.wav", 100);
 		});
 
 		context("API", function(){
