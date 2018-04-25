@@ -215,13 +215,14 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/G
 
 		this._startTime = time;
 
-		var computedDur = this.toSeconds(Tone.defaultArg(duration, this.buffer.duration - (offset % this.buffer.duration)));
-		computedDur = Math.max(computedDur, 0);
-
 		if (Tone.isDefined(duration)){
+			var computedDur = this.toSeconds(Tone.defaultArg(duration, this.buffer.duration - (offset % this.buffer.duration)));
+			computedDur = Math.max(computedDur, 0);
+
 			//clip the duration when not looping
 			if (!this.loop){
 				computedDur = Math.min(computedDur, this.buffer.duration - (offset % this.buffer.duration));
+				computedDur = computedDur / this.playbackRate.value;
 			}
 			this.stop(time + computedDur, this.fadeOut);
 		}

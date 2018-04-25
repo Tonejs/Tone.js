@@ -118,15 +118,16 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/core/Buffers", "To
 		if (difference !== null){
 			var closestNote = midi - difference;
 			var buffer = this._buffers.get(closestNote);
+			var playbackRate = Tone.intervalToFrequencyRatio(difference);
 			// play that note
 			var source = new Tone.BufferSource({
 				"buffer" : buffer,
-				"playbackRate" : Tone.intervalToFrequencyRatio(difference),
+				"playbackRate" : playbackRate,
 				"fadeIn" : this.attack,
 				"fadeOut" : this.release,
 				"curve" : "exponential",
 			}).connect(this.output);
-			source.start(time, 0, buffer.duration, velocity);
+			source.start(time, 0, buffer.duration / playbackRate, velocity);
 			// add it to the active sources
 			if (!Tone.isArray(this._activeSources[midi])){
 				this._activeSources[midi] = [];
