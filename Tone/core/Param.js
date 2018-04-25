@@ -478,29 +478,11 @@ define(["Tone/core/Tone", "Tone/type/Type", "Tone/core/AudioNode", "Tone/core/Ti
 		} else if (after){
 			//cancel the next event(s)
 			this._events.cancel(after.time);
-			if (!this._param.cancelAndHoldAtTime){
-				this._param.cancelScheduledValues(time);
-			}
+			this._param.cancelScheduledValues(time);
 			if (after.type === Tone.Param.AutomationType.Linear){
-				if (!this._param.cancelAndHoldAtTime){
-					this.linearRampToValueAtTime(valueAtTime, time);
-				} else {
-					this._events.add({
-						"type" : Tone.Param.AutomationType.Linear,
-						"value" : valueAtTime,
-						"time" : time
-					});
-				}
+				this.linearRampToValueAtTime(valueAtTime, time);
 			} else if (after.type === Tone.Param.AutomationType.Exponential){
-				if (!this._param.cancelAndHoldAtTime){
-					this.exponentialRampToValueAtTime(valueAtTime, time);
-				} else {
-					this._events.add({
-						"type" : Tone.Param.AutomationType.Exponential,
-						"value" : valueAtTime,
-						"time" : time
-					});
-				}
+				this.exponentialRampToValueAtTime(valueAtTime, time);
 			}
 		}
 
@@ -510,11 +492,7 @@ define(["Tone/core/Tone", "Tone/type/Type", "Tone/core/AudioNode", "Tone/core/Ti
 			"value" : valueAtTime,
 			"time" : time
 		});
-		if (this._param.cancelAndHoldAtTime){
-			this._param.cancelAndHoldAtTime(time);
-		} else {
-			this._param.setValueAtTime(valueAtTime, time);
-		}
+		this._param.setValueAtTime(valueAtTime, time);
 		return this;
 	};
 
