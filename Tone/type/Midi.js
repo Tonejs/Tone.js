@@ -84,7 +84,7 @@ define(["Tone/core/Tone", "Tone/type/Frequency"], function(Tone){
 	 *  Return the value of the frequency as a MIDI note
 	 *  @return  {MIDI}
 	 *  @example
-	 * Tone.Midi(60).toMidi(); //60
+	 * Tone.Midi(60).toFrequency(); //261.6255653005986
 	 */
 	Tone.Midi.prototype.toFrequency = function(){
 		return Tone.Frequency.mtof(this.toMidi());
