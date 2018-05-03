@@ -21,8 +21,6 @@ define(["Tone/core/Tone", "Tone/core/Gain", "Tone/core/AudioNode"], function(Ton
 		 *  @private
 		 */
 		this._splitter = this.input = this.context.createChannelSplitter(2);
-		this._splitter.channelCount = 2;
-		this._splitter.channelCountMode = "explicit";
 
 		/**
 		 *  Left channel output.
