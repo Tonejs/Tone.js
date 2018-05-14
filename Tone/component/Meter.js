@@ -23,7 +23,7 @@ define(["Tone/core/Tone", "Tone/component/Analyser", "Tone/core/AudioNode"], fun
 
 		var options = Tone.defaults(arguments, ["smoothing"], Tone.Meter);
 		Tone.AudioNode.call(this);
-	
+
 		/**
 		 *  The analyser node which computes the levels.
 		 *  @private
@@ -167,7 +167,7 @@ define(["Tone/core/Tone", "Tone/component/Analyser", "Tone/core/AudioNode"], fun
 		Tone.AudioNode.prototype.dispose.call(this);
 		this._analyser.dispose();
 		this._analyser = null;
-		return this; 
+		return this;
 	};
 
 	return Tone.Meter;
