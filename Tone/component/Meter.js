@@ -77,10 +77,10 @@ define(["Tone/core/Tone", "Tone/component/Analyser", "Tone/core/AudioNode"], fun
 		switch (this.type){
 			case Tone.Meter.Type.RMS:
 				var rmsFloatValue = this.getRmsFloatValue(values);
-				return this.convertFloatToDb(rmsFloatValue);
+				return Tone.gainToDb(rmsFloatValue);
 			case Tone.Meter.Type.Peak:
 				var peakFloatValue = this.getPeakFloatValue(values);
-				return this.convertFloatToDb(peakFloatValue);
+				return Tone.gainToDb(peakFloatValue);
 			default:
 				// Sanity check, should have thrown while setting type
 				throw new TypeError("Tone.Meter: invalid type: " + this.type);
@@ -94,17 +94,6 @@ define(["Tone/core/Tone", "Tone/component/Analyser", "Tone/core/AudioNode"], fun
 	Tone.Meter.prototype.getValue = function(){
 		var value = this._analyser.getValue();
 		return value[0];
-	};
-
-	/**
-	 * Converts a float based amplitude value to it's equivalent db value
-	 * https://en.wikipedia.org/wiki/Decibel#Conversions
-	 *
-	 * @param {Number} float The float amplitude ratio value to convert to a db value
-	 * @returns {Number} dB equivalent of given float value
-	 */
-	Tone.Meter.prototype.convertFloatToDb = function(float){
-		return 20.0 * (Math.log(float) / Math.log(10.0));
 	};
 
 	/**
