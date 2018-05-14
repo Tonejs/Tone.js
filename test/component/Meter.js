@@ -91,38 +91,6 @@ function (Meter, Basic, Offline, Test, Signal, PassAudio, Tone, Merge, Oscillato
 				meter.dispose();
 			});
 
-			// Based on https://en.wikipedia.org/wiki/Decibel
-			it("gets dB values correctly", function(){
-				var meter = new Meter();
-
-				// Asserts that amplitude ratio of 1 equals 0dB
-				var floatValue = 1.0;
-				var db = meter.convertFloatToDb(floatValue);
-				expect(db).to.be.closeTo(0, 0.01);
-
-				// Asserts that amplitude ratio of 0 is less than -100dB
-				floatValue = 0;
-				db = meter.convertFloatToDb(floatValue);
-				expect(db).to.be.lte(-100);
-
-				// Correctly detects values greater than 0dB (clipping)
-				floatValue = 31.62;
-				db = meter.convertFloatToDb(floatValue);
-				expect(db).to.be.closeTo(30, 0.01);
-
-				// Asserts that amplitude ratio of 0.1 equals -20dB
-				floatValue = 0.1;
-				db = meter.convertFloatToDb(floatValue);
-				expect(db).to.be.closeTo(-20, 0.01);
-
-				// Asserts that amplitude ratio of 0.03162 equals -30dB
-				floatValue = 0.03162;
-				db = meter.convertFloatToDb(floatValue);
-				expect(db).to.be.closeTo(-30, 0.01);
-
-				meter.dispose();
-			});
-
 			if (Supports.ONLINE_TESTING) {
 				it("measures the peak incoming signal", function(done){
 					var meter = new Meter({ type: "peak" });
