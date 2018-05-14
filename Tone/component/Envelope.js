@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/signal/TimelineSignal",
+define(["Tone/core/Tone", "Tone/signal/Signal",
 	"Tone/signal/Pow", "Tone/type/Type", "Tone/core/AudioNode"], function(Tone){
 
 	"use strict";
@@ -81,7 +81,7 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal",
 
 		/**
 		 *  the signal
-		 *  @type {Tone.TimelineSignal}
+		 *  @type {Tone.Signal}
 		 *  @private
 		 */
 		this._sig = this.output = new Tone.Signal(0);
@@ -284,7 +284,7 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal",
 				this._sig.linearRampTo(0, release, time);
 			} else if (this._releaseCurve === "exponential"){
 				this._sig.targetRampTo(0, release, time);
-			} else{
+			} else {
 				var curve = this._releaseCurve;
 				if (Tone.isArray(curve)){
 					this._sig.cancelAndHoldAtTime(time);
@@ -316,7 +316,7 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal",
 	 * //trigger the attack and then the release after 0.6 seconds.
 	 * env.triggerAttackRelease(0.6);
 	 */
-	Tone.Envelope.prototype.triggerAttackRelease = function(duration, time, velocity) {
+	Tone.Envelope.prototype.triggerAttackRelease = function(duration, time, velocity){
 		time = this.toSeconds(time);
 		this.triggerAttack(time, velocity);
 		this.triggerRelease(time + this.toSeconds(duration));
@@ -328,7 +328,7 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal",
 	 *  @param  {Time} after
 	 *  @returns {Tone.Envelope} this
 	 */
-	Tone.Envelope.prototype.cancel = function (after) {
+	Tone.Envelope.prototype.cancel = function(after){
 		this._sig.cancelScheduledValues(after);
 		return this;
 	};
@@ -338,7 +338,7 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal",
 	 *  @function
 	 *  @private
 	 */
-	Tone.Envelope.prototype.connect = Tone.Signal.prototype.connect;
+	Tone.Envelope.prototype.connect = Tone.SignalBase.prototype.connect;
 
 	/**
  	 *  Generate some complex envelope curves.

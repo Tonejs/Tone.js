@@ -1,30 +1,29 @@
-define(["Test", "Tone/core/Draw", "Tone/core/Tone", "helper/Supports"],
-	function (Test, Draw, Tone, Supports) {
+define(["Test", "Tone/core/Draw", "Tone/core/Tone", "helper/Supports"], function(Test, Draw, Tone, Supports){
 
 	describe("Draw", function(){
 
 		if (Supports.ONLINE_TESTING){
 			
-			it ("can schedule a callback at a AudioContext time", function(done){
+			it("can schedule a callback at a AudioContext time", function(done){
 				var scheduledTime = Tone.now() + 0.2;
 				Draw.schedule(function(){
-					expect(Tone.now()).to.be.closeTo(scheduledTime, 0.05);
+					expect(Tone.context.currentTime).to.be.closeTo(scheduledTime, 0.05);
 					done();
 				}, scheduledTime);
 			});
 
-			it ("can schedule multiple callbacks", function(done){
+			it("can schedule multiple callbacks", function(done){
 				var callbackCount = 0;
 				var firstEvent = Tone.now() + 0.1;
 				Draw.schedule(function(){
 					callbackCount++;
-					expect(Tone.now()).to.be.closeTo(firstEvent, 0.05);
+					expect(Tone.context.currentTime).to.be.closeTo(firstEvent, 0.05);
 				}, firstEvent);
 
 				var thirdEvent = Tone.now() + 0.3;
 				Draw.schedule(function(){
 					callbackCount++;
-					expect(Tone.now()).to.be.closeTo(thirdEvent, 0.05);
+					expect(Tone.context.currentTime).to.be.closeTo(thirdEvent, 0.05);
 					expect(callbackCount).to.equal(3);
 					done();
 				}, thirdEvent);
@@ -32,11 +31,11 @@ define(["Test", "Tone/core/Draw", "Tone/core/Tone", "helper/Supports"],
 				var secondEvent = Tone.now() + 0.2;
 				Draw.schedule(function(){
 					callbackCount++;
-					expect(Tone.now()).to.be.closeTo(secondEvent, 0.05);
+					expect(Tone.context.currentTime).to.be.closeTo(secondEvent, 0.05);
 				}, secondEvent);
 			});
 
-			it ("can cancel scheduled events", function(done){
+			it("can cancel scheduled events", function(done){
 				var callbackCount = 0;
 				Draw.schedule(function(){
 					callbackCount++;

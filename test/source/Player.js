@@ -1,6 +1,6 @@
-define(["helper/Basic", "Tone/source/Player", "helper/Offline",
-	"helper/SourceTests", "Tone/core/Buffer", "helper/Meter", "Test", "Tone/core/Tone"],
-	function (BasicTests, Player, Offline, SourceTests, Buffer, Meter, Test, Tone) {
+define(["helper/Basic", "Tone/source/Player", "helper/Offline", "helper/SourceTests",
+	"Tone/core/Buffer", "helper/Meter", "Test", "Tone/core/Tone", "helper/CompareToFile"],
+function(BasicTests, Player, Offline, SourceTests, Buffer, Meter, Test, Tone, CompareToFile){
 
 	if (window.__karma__){
 		Buffer.baseUrl = "/base/test/";
@@ -20,20 +20,35 @@ define(["helper/Basic", "Tone/source/Player", "helper/Offline",
 		BasicTests(Player, buffer);
 		SourceTests(Player, buffer);
 
+		it("matches a file", function(){
+			return CompareToFile(function(){
+				const player = new Player(buffer).toMaster();
+				player.start(0.1).stop(0.2);
+				player.playbackRate = 2;
+			}, "player.wav");
+		});
+
 		context("Constructor", function(){
 
-			it ("can be constructed with a Tone.Buffer", function(done){
+			it("can be constructed with a Tone.Buffer", function(){
 				var player = new Player(buffer);
 				expect(player.buffer.get()).to.equal(buffer.get());
 				player.dispose();
-				done();
 			});
 
-			it ("can be constructed with an AudioBuffer", function(done){
+			it("can be constructed with an AudioBuffer", function(){
 				var player = new Player(buffer.get());
 				expect(player.buffer.get()).to.equal(buffer.get());
 				player.dispose();
-				done();
+			});
+
+			it("can be constructed with an unloaded Tone.Buffer", function(done){
+				var buffer = new Buffer("./audio/sine.wav");
+				var player = new Player(buffer, function(){
+					expect(player.buffer.get()).to.equal(buffer.get());
+					player.dispose();
+					done();
+				});
 			});
 		});
 
@@ -82,6 +97,123 @@ define(["helper/Basic", "Tone/source/Player", "helper/Offline",
 							done();
 						}, 10);
 					}
+				});
+			});
+
+		});
+
+		context("Position/State", function(){
+
+			it("gets the current position of the playback", function(){
+				return Offline(function(){
+					var player = new Player(buffer).toMaster();
+					player.start(0);
+					return function(time){
+						expect(player.position).to.be.closeTo(time, 0.01);
+						expect(player.state).to.equal("started");
+					};
+				}, buffer.duration);
+			});
+
+			it("gets the current position of the playback when rate is < 1", function(){
+				return Offline(function(){
+					var player = new Player(buffer).toMaster();
+					player.start(0);
+					player.playbackRate = 0.5;
+					return function(time){
+						expect(player.position).to.be.closeTo(time*0.5, 0.01);
+						expect(player.state).to.equal("started");
+					};
+				}, buffer.duration);
+			});
+
+			it("gets the current position of the playback when rate is > 1", function(){
+				return Offline(function(){
+					var player = new Player(buffer).toMaster();
+					player.playbackRate = 2;
+					player.start(0);
+					return function(time){
+						if (time < buffer.duration / 2){
+							expect(player.position).to.be.closeTo(time*2, 0.01);
+							expect(player.state).to.equal("started");
+						} else {
+							expect(player.state).to.equal("stopped");
+						}
+					};
+				}, buffer.duration);
+			});
+
+			it("position is 0 after the buffer has completed", function(){
+				return Offline(function(){
+					var player = new Player(buffer).toMaster();
+					player.start(0);
+					return function(time){
+						if (time < buffer.duration){
+							expect(player.position).to.be.closeTo(time, 0.01);
+							expect(player.state).to.equal("started");
+						} else if (time > buffer.duration){
+							expect(player.position).to.equal(0);
+							expect(player.state).to.equal("stopped");
+						}
+					};
+				}, buffer.duration + 0.1);
+			});
+
+			it("returns correct position while looping", function(){
+				return Offline(function(){
+					var player = new Player(buffer).toMaster();
+					player.start(0);
+					player.loop = true;
+					return function(time){
+						expect(player.state).to.equal("started");
+						Test.whenBetween(time, 0, buffer.duration, function(){
+							expect(player.position).to.be.closeTo(time, 0.01);
+						});
+						Test.whenBetween(time, buffer.duration, buffer.duration*2, function(){
+							expect(player.position).to.be.closeTo(time - buffer.duration, 0.01);
+						});
+						
+					};
+				}, buffer.duration * 2);
+			});
+
+			it("can stop looping after second loop", function(){
+				return Offline(function(){
+					var player = new Player(buffer).toMaster();
+					player.start(0);
+					player.loop = true;
+					return function(time){
+						Test.whenBetween(time, 0, buffer.duration, function(){
+							expect(player.state).to.equal("started");
+							expect(player.position).to.be.closeTo(time, 0.01);
+						});
+						Test.whenBetween(time, buffer.duration, buffer.duration*2, function(){
+							//set to stop looping
+							player.loop = false;
+							expect(player.position).to.be.closeTo(time - buffer.duration, 0.01);
+							expect(player.state).to.equal("started");
+						});
+						Test.whenBetween(time, buffer.duration*2, Infinity, function(){
+							expect(player.position).to.equal(0);
+							expect(player.state).to.equal("stopped");
+						});
+						
+					};
+				}, buffer.duration * 3);
+			});
+
+			it("can change playbackRate during playback", function(){
+				return Meter(function(){
+					var player = new Player(buffer).toMaster();
+					player.start(0);
+					return Test.atTime(buffer.duration * 0.5, function(){
+						player.playbackRate = 2;
+					});
+				}, buffer.duration).then(function(rms){
+					expect(rms.getValueAtTime(buffer.duration * 0)).to.be.above(0);
+					expect(rms.getValueAtTime(buffer.duration * 0.5)).to.be.above(0);
+					expect(rms.getValueAtTime(buffer.duration * 0.75)).to.be.above(0);
+					expect(rms.getValueAtTime(buffer.duration * 0.8)).to.equal(0);
 				});
 			});
 
@@ -144,6 +276,19 @@ define(["helper/Basic", "Tone/source/Player", "helper/Offline",
 				});
 			});
 
+			it("loops the audio when loop is set after start", function(){
+				return Meter(function(){
+					var player = new Player(buffer);
+					player.toMaster();
+					player.start(0);
+					player.loop = true;
+				}, buffer.duration * 1.5).then(function(rms){
+					rms.forEach(function(level){
+						expect(level).to.be.above(0);
+					});
+				});
+			});
+
 			it("offset is the loopStart when set to loop", function(){
 				var testSample = buffer.toArray()[Math.floor(0.1 * buffer.context.sampleRate)];
 				return Offline(function(){
@@ -157,7 +302,25 @@ define(["helper/Basic", "Tone/source/Player", "helper/Offline",
 				});
 			});
 
-			it ("correctly compensates if the offset is greater than the loopEnd", function(){
+			it("loops the audio for the specific duration", function(){
+				var playDur = buffer.duration * 1.5;
+				return Meter(function(){
+					var player = new Player(buffer);
+					player.loop = true;
+					player.toMaster();
+					player.start(0, 0, playDur);
+				}, buffer.duration * 2).then(function(buff){
+					buff.forEach(function(val, time){
+						if (time < (playDur - 0.01)){
+							expect(val).to.be.greaterThan(0);
+						} else if (time > playDur){
+							expect(val).to.equal(0);
+						}
+					});
+				});
+			});
+
+			it("correctly compensates if the offset is greater than the loopEnd", function(){
 				return Offline(function(){
 					//make a ramp between 0-1
 					var ramp = new Float32Array(Math.floor(Tone.context.sampleRate * 0.3));
@@ -204,7 +367,7 @@ define(["helper/Basic", "Tone/source/Player", "helper/Offline",
 			it("can set attributes after player is started", function(){
 				var player = new Player(buffer);
 				expect(player.loop).to.be.false;
-				player.start()
+				player.start();
 				player.set({
 					"loopStart" : 0.2,
 					"loopEnd" : 0.3,
@@ -272,23 +435,6 @@ define(["helper/Basic", "Tone/source/Player", "helper/Offline",
 				});
 			});
 
-			it("can be retriggered", function(){
-				return Offline(function(){
-					//make a ramp between 0-1
-					var ramp = new Float32Array(Math.floor(Tone.context.sampleRate * 0.3));
-					for (var i = 0; i < ramp.length; i++){
-						ramp[i] = (i / (ramp.length-1));
-					}
-					var buff = new Buffer().fromArray(ramp);
-					var player = new Player(buff).toMaster();
-					player.retrigger = true;
-					player.start(0);
-					player.start(0.1);
-				}, 0.31).then(function(buffer){
-					expect(buffer.max()).to.be.greaterThan(1);
-				});
-			});
-
 			it("only seeks if player is started", function(){
 				return Offline(function(){
 					var player = new Player(buffer).toMaster();
@@ -349,14 +495,14 @@ define(["helper/Basic", "Tone/source/Player", "helper/Offline",
 				});
 			});
 
-			it("stops playing if multiple start/stops with 'stop' at a sooner time", function(){
+			it("stops playing if at the last scheduled 'stop' time", function(){
 				return Offline(function(){
 					var player = new Player(buffer);
 					player.toMaster();
 					player.start(0, 0, 0.05).start(0.1, 0, 0.05).start(0.2, 0, 0.05);
-					player.stop(0.1)
+					player.stop(0.1);
 				}, 0.3).then(function(buffer){
-					expect(buffer.getLastSoundTime()).to.be.closeTo(0.05, 0.02);
+					expect(buffer.getLastSoundTime()).to.be.closeTo(0.1, 0.02);
 				});
 			});
 
@@ -416,6 +562,49 @@ define(["helper/Basic", "Tone/source/Player", "helper/Offline",
 				});
 			});
 
+			it("starts with an offset when synced and started after Transport is running", function(){
+				return Offline(function(Transport){
+					var ramp = new Float32Array(Math.floor(Tone.context.sampleRate * 0.3));
+					for (var i = 0; i < ramp.length; i++){
+						ramp[i] = (i / (ramp.length)) * 0.3;
+					}
+					var buff = new Buffer().fromArray(ramp);
+					var player = new Player(buff).toMaster();
+					Transport.start(0);
+					return Test.atTime(0.1, function(){
+						player.sync().start(0);
+					});
+				}, 0.3).then(function(buffer){
+					expect(buffer.getValueAtTime(0)).to.equal(0);
+					expect(buffer.getValueAtTime(0.05)).to.equal(0);
+					expect(buffer.getValueAtTime(0.11)).to.be.closeTo(0.11, 0.01);
+					expect(buffer.getValueAtTime(0.2)).to.be.closeTo(0.2, 0.01);
+				});
+			});
+
+			it("can pass in an offset when synced and started after Transport is running", function(){
+				return Offline(function(Transport){
+					var ramp = new Float32Array(Math.floor(Tone.context.sampleRate * 0.3));
+					for (var i = 0; i < ramp.length; i++){
+						ramp[i] = (i / (ramp.length)) * 0.3;
+					}
+					var buff = new Buffer().fromArray(ramp);
+					var player = new Player(buff).toMaster();
+					player.loop = true;
+					Transport.start(0);
+					return Test.atTime(0.1, function(){
+						player.sync().start(0, 0.1);
+					});
+				}, 0.3).then(function(buffer){
+					expect(buffer.getValueAtTime(0)).to.equal(0);
+					expect(buffer.getValueAtTime(0.05)).to.equal(0);
+					expect(buffer.getValueAtTime(0.11)).to.be.closeTo(0.21, 0.01);
+					expect(buffer.getValueAtTime(0.15)).to.be.closeTo(0.25, 0.01);
+					expect(buffer.getValueAtTime(0.2)).to.be.closeTo(0.0, 0.01);
+					expect(buffer.getValueAtTime(0.25)).to.be.closeTo(0.05, 0.01);
+				});
+			});
+
 			it("fades in and out correctly", function(){
 				return Offline(function(){
 					var onesArray = new Float32Array(buffer.context.sampleRate * 0.5);
@@ -423,7 +612,7 @@ define(["helper/Basic", "Tone/source/Player", "helper/Offline",
 						onesArray[index] = 1;
 					});
 					var onesBuffer = Buffer.fromArray(onesArray);
-					var player = new Player({"url" : onesBuffer, "fadeOut" : 0.1, "fadeIn" : 0.1}).start(0).toMaster();
+					var player = new Player({ "url" : onesBuffer, "fadeOut" : 0.1, "fadeIn" : 0.1 }).start(0).toMaster();
 				}, 0.6).then(function(buffer){
 					buffer.forEach(function(sample, time){
 						if (time < 0.1){

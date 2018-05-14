@@ -29,7 +29,7 @@ define(["Tone/core/Tone", "Tone/component/AmplitudeEnvelope", "Tone/component/Fr
 		 *  @example
 		 * noiseSynth.set("noise.type", "brown");
 		 */
-		this.noise = new Tone.Noise();
+		this.noise = new Tone.Noise(options.noise);
 
 		/**
 		 *  The amplitude envelope.
@@ -39,8 +39,6 @@ define(["Tone/core/Tone", "Tone/component/AmplitudeEnvelope", "Tone/component/Fr
 
 		//connect the noise to the output
 		this.noise.chain(this.envelope, this.output);
-		//start the noise
-		this.noise.start();
 		this._readOnly(["noise", "envelope"]);
 	};
 
@@ -72,8 +70,14 @@ define(["Tone/core/Tone", "Tone/component/AmplitudeEnvelope", "Tone/component/Fr
 	 * noiseSynth.triggerAttack();
 	 */
 	Tone.NoiseSynth.prototype.triggerAttack = function(time, velocity){
+		time = this.toSeconds(time);
 		//the envelopes
 		this.envelope.triggerAttack(time, velocity);
+		//start the noise
+		this.noise.start(time);
+		if (this.envelope.sustain === 0){
+			this.noise.stop(time + this.envelope.attack + this.envelope.decay);
+		}
 		return this;
 	};
 
@@ -84,6 +88,27 @@ define(["Tone/core/Tone", "Tone/component/AmplitudeEnvelope", "Tone/component/Fr
 	 */
 	Tone.NoiseSynth.prototype.triggerRelease = function(time){
 		this.envelope.triggerRelease(time);
+		this.noise.stop(time + this.envelope.release);
+		return this;
+	};
+
+	/**
+	 * Sync the instrument to the Transport. All subsequent calls of
+	 * [triggerAttack](#triggerattack) and [triggerRelease](#triggerrelease)
+	 * will be scheduled along the transport.
+	 * @example
+	 * synth.sync()
+	 * //schedule 3 notes when the transport first starts
+	 * synth.triggerAttackRelease('8n', 0)
+	 * synth.triggerAttackRelease('8n', '8n')
+	 * synth.triggerAttackRelease('8n', '4n')
+	 * //start the transport to hear the notes
+	 * Transport.start()
+	 * @returns {Tone.Instrument} this
+	 */
+	Tone.NoiseSynth.prototype.sync = function(){
+		this._syncMethod("triggerAttack", 0);
+		this._syncMethod("triggerRelease", 0);
 		return this;
 	};
 

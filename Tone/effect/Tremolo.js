@@ -129,6 +129,7 @@ define(["Tone/core/Tone", "Tone/component/LFO", "Tone/effect/StereoEffect"], fun
 	Tone.Tremolo.prototype.sync = function(delay){
 		this._lfoL.sync(delay);
 		this._lfoR.sync(delay);
+		Tone.Transport.syncSignal(this.frequency);
 		return this;
 	};
 
@@ -139,6 +140,7 @@ define(["Tone/core/Tone", "Tone/component/LFO", "Tone/effect/StereoEffect"], fun
 	Tone.Tremolo.prototype.unsync = function(){
 		this._lfoL.unsync();
 		this._lfoR.unsync();
+		Tone.Transport.unsyncSignal(this.frequency);
 		return this;
 	};
 
@@ -158,7 +160,7 @@ define(["Tone/core/Tone", "Tone/component/LFO", "Tone/effect/StereoEffect"], fun
 		}
 	});
 
-	/** 
+	/**
 	 * Amount of stereo spread. When set to 0, both LFO's will be panned centrally.
 	 * When set to 180, LFO's will be panned hard left and right respectively.
 	 * @memberOf Tone.Tremolo#

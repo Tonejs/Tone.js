@@ -9,42 +9,37 @@ var fs = require("fs");
 var amdOptimize = require("amd-optimize");
 var replace = require("gulp-replace");
 var indent = require("gulp-indent");
-var child_process = require("child_process");
-var flatten = require("gulp-flatten");
 var insert = require("gulp-insert");
 var del = require("del");
 var uglify = require("gulp-uglify");
 var rename = require("gulp-rename");
 var sass = require("gulp-ruby-sass");
 var prefix = require("gulp-autoprefixer");
-var openFile = require("gulp-open");
 var eslint = require("gulp-eslint");
 var coveralls = require("gulp-coveralls");
-var git = require("gulp-git");
 var argv = require("yargs")
-			.alias("f", "file")
-			.alias("s", "signal")
-			.alias("i", "instrument")
-			.alias("o", "source")
-			.alias("v", "event")
-			.alias("t", "control")
-			.alias("e", "effect")
-			.alias("c", "core")
-			.alias("m", "component")
-			.alias("y", "type")
-			.alias("x", "examples")
-			.argv;
+	.alias("f", "file")
+	.alias("s", "signal")
+	.alias("i", "instrument")
+	.alias("o", "source")
+	.alias("v", "event")
+	.alias("t", "control")
+	.alias("e", "effect")
+	.alias("c", "core")
+	.alias("m", "component")
+	.alias("y", "type")
+	.alias("x", "examples")
+	.argv;
 var KarmaServer = require("karma").Server;
 
 var BRANCH = process.env.TRAVIS && !process.env.TRAVIS_PULL_REQUEST ? process.env.TRAVIS_BRANCH : "dev";
 var IS_DEV = BRANCH === "dev";
 
 var VERSION = fs.readFileSync("../Tone/core/Tone.js", "utf-8")
-		.match(/(?:Tone\.version\s*=\s*)(?:'|")(.*)(?:'|");/m)[1];
+	.match(/(?:Tone\.version\s*=\s*)(?:'|")(.*)(?:'|");/m)[1];
 
 //dev versions are just 'dev'
 VERSION = IS_DEV ? "dev" : VERSION;
-
 
 var TMP_FOLDER = "../tmp";
 
@@ -79,8 +74,8 @@ gulp.task("compile", ["collectDependencies"], function(){
 		.pipe(replace("'use strict';", ""))
 		//indent the contents
 		.pipe(indent({
-			tabs:true,
-			amount:1
+			tabs : true,
+			amount : 1
 		}))
 		//replace the MainModule
 		.pipe(replace(/\/\* BEGIN REQUIRE \*\/(.|\n)*/gm, ""))
@@ -100,22 +95,22 @@ gulp.task("footer", ["compile"], function(){
 gulp.task("minify", ["footer"], function(){
 	return gulp.src("../build/Tone.js")
 		.pipe(uglify({
-				preserveComments : "some",
-				compress: {
-					dead_code : true,
-					evaluate : true,
-					loops : true,
-					if_return : true,
-					hoist_vars : true,
-					booleans : true,
-					conditionals : true,
-					sequences : true,
-					comparisons : true,
-					hoist_funs : true,
-					join_vars : true,
-					cascade : true,
-				},
-			}))
+			preserveComments : "some",
+			compress : {
+				dead_code : true,
+				evaluate : true,
+				loops : true,
+				if_return : true,
+				hoist_vars : true,
+				booleans : true,
+				conditionals : true,
+				sequences : true,
+				comparisons : true,
+				hoist_funs : true,
+				join_vars : true,
+				cascade : true,
+			},
+		}))
 		.pipe(rename({
 			suffix : ".min"
 		}))
@@ -134,9 +129,9 @@ gulp.task("default", ["build"]);
  *  Sass
  */
 gulp.task("sass", function () {
-    sass("../examples/style/examples.scss", {sourcemap: false})
-        .pipe(prefix("last 2 version"))
-        .pipe(gulp.dest("../examples/style/"));
+	sass("../examples/style/examples.scss", { sourcemap : false })
+		.pipe(prefix("last 2 version"))
+		.pipe(gulp.dest("../examples/style/"));
 });
 
 gulp.task("example", function() {
@@ -150,7 +145,7 @@ gulp.task("lint", function() {
 	return gulp.src("../Tone/*/*.js")
 		.pipe(eslint())
 		.pipe(eslint.format())
-        .pipe(eslint.failAfterError());
+		.pipe(eslint.failAfterError());
 });
 
 gulp.task("lint-fix", function() {
@@ -159,15 +154,15 @@ gulp.task("lint-fix", function() {
 			fix : true
 		}))
 		.pipe(eslint.format())
-        .pipe(eslint.failAfterError())
+		.pipe(eslint.failAfterError())
 		.pipe(gulp.dest("../Tone"));
 });
 
 gulp.task("karma-test", ["default"], function (done) {
-  new KarmaServer({
-    configFile: __dirname + "/karma.conf.js",
-    singleRun: true
-  }, done).start();
+	new KarmaServer({
+		configFile : __dirname + "/karma.conf.js",
+		singleRun : true
+	}, done).start();
 });
 
 gulp.task("collectTests", function(done){

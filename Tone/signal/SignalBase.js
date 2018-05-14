@@ -28,8 +28,7 @@ define(["Tone/core/Tone", "Tone/core/AudioNode"], function(Tone){
 	Tone.SignalBase.prototype.connect = function(node, outputNumber, inputNumber){
 		//zero it out so that the signal can have full control
 		if ((Tone.Signal && Tone.Signal === node.constructor) ||
-				(Tone.Param && Tone.Param === node.constructor) ||
-				(Tone.TimelineSignal && Tone.TimelineSignal === node.constructor)){
+				(Tone.Param && Tone.Param === node.constructor)){
 			//cancel changes
 			node._param.cancelScheduledValues(0);
 			//reset the value

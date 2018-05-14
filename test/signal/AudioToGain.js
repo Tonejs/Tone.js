@@ -1,6 +1,6 @@
 define(["helper/Offline", "Tone/signal/AudioToGain", "helper/Basic", 
 	"Test", "Tone/source/Oscillator", "Tone/signal/Signal", "Tone/signal/Zero", "helper/ConstantOutput"], 
-	function (Offline, AudioToGain, Basic, Test, Oscillator, Signal, Zero, ConstantOutput) {
+function (Offline, AudioToGain, Basic, Test, Oscillator, Signal, Zero, ConstantOutput) {
 
 	describe("AudioToGain", function(){
 

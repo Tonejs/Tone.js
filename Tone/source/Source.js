@@ -130,6 +130,7 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/component/Volume", "Tone/
 
 	//overwrite these functions
 	Tone.Source.prototype._start = Tone.noOp;
+	Tone.Source.prototype.restart = Tone.noOp;
 	Tone.Source.prototype._stop = Tone.noOp;
 
 	/**
@@ -147,21 +148,29 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/component/Volume", "Tone/
 			time = this.toSeconds(time);
 		}
 		//if it's started, stop it and restart it
-		if (!this.retrigger && this._state.getValueAtTime(time) === Tone.State.Started){
-			this.stop(time);
-		}
-		this._state.setStateAtTime(Tone.State.Started, time);
-		if (this._synced){
-			// add the offset time to the event
-			var event = this._state.get(time);
-			event.offset = Tone.defaultArg(offset, 0);
-			event.duration = duration;
-			var sched = Tone.Transport.schedule(function(t){
-				this._start(t, offset, duration);
-			}.bind(this), time);
-			this._scheduled.push(sched);
+		if (this._state.getValueAtTime(time) === Tone.State.Started){
+			this._state.cancel(time);
+			this._state.setStateAtTime(Tone.State.Started, time);
+			this.restart(time, offset, duration);
 		} else {
-			this._start.apply(this, arguments);
+			this._state.setStateAtTime(Tone.State.Started, time);
+			if (this._synced){
+				// add the offset time to the event
+				var event = this._state.get(time);
+				event.offset = Tone.defaultArg(offset, 0);
+				event.duration = duration;
+				var sched = Tone.Transport.schedule(function(t){
+					this._start(t, offset, duration);
+				}.bind(this), time);
+				this._scheduled.push(sched);
+
+				//if it's already started
+				if (Tone.Transport.state === Tone.State.Started){
+					this._syncedStart(this.now(), Tone.Transport.seconds);
+				}
+			} else {
+				this._start.apply(this, arguments);
+			}
 		}
 		return this;
 	};
@@ -229,7 +238,8 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/component/Volume", "Tone/
 			}
 		}.bind(this);
 		this._syncedStop = function(time){
-			if (this._state.getValueAtTime(Tone.Transport.seconds) === Tone.State.Started){
+			var seconds = Tone.Transport.getSecondsAtTime(Math.max(time - this.sampleTime, 0));
+			if (this._state.getValueAtTime(seconds) === Tone.State.Started){
 				this._stop(time);
 			}
 		}.bind(this);

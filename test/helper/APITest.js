@@ -1,28 +1,29 @@
-define(["Test", "Tone/type/Type", "Tone/core/Transport", "Tone/type/Time", "Tone/type/Frequency"],
-function (Test, Type, Transport, Time, Frequency) {
+define(["Test", "Tone/type/Type", "Tone/core/Transport", "Tone/type/Time", 
+	"Tone/type/Frequency"], function(Test, Type, Transport, Time, Frequency){
 
 	//modified from http://stackoverflow.com/questions/15298912/javascript-generating-combinations-from-n-arrays-with-m-elements
-	function generatePermutations(args) {
-	    var results = [], max = args.length-1;
-	    function helper(arr, i) {
-	        for (var j = 0; j < args[i].length; j++) {
-	            var a = arr.slice(0); // clone arr
-	            a.push(args[i][j]);
-	            if (i===max)
-	                results.push(a);
-	            else
-	                helper(a, i+1);
-	        }
-	    }
-	    helper([], 0);
-	    return results;
+	function generatePermutations(args){
+		var results = [], max = args.length-1;
+		function helper(arr, i){
+			for (var j = 0; j < args[i].length; j++){
+				var a = arr.slice(0); // clone arr
+				a.push(args[i][j]);
+				if (i===max){
+					results.push(a); 
+				} else {
+					helper(a, i+1); 
+				}
+			}
+		}
+		helper([], 0);
+		return results;
 	}
 
 	function getVariations(param){
 		if (typeof param === "string" && param.indexOf("=") !== -1){
 			return [undefined].concat(getVariations(param.replace("=", "")));
 		} else if (param === "Time"){
-			return ["2n", Time("4n")];
+			return ["2n", Time("4n"), { "4n" : 1 }];
 		} else if (param === "Number"){
 			return [20, -0.5];
 		} else if (param === "NormalRange"){
@@ -35,7 +36,6 @@ function (Test, Type, Transport, Time, Frequency) {
 			return param;
 		}
 	}
-
 
 	function generateArgs(args){
 		// turn the object into an array
@@ -77,7 +77,7 @@ function (Test, Type, Transport, Time, Frequency) {
 	return {
 		method : function(constructor, fn, args, consArgs){
 
-			it (fn+" ("+args.join(", ") + ")", function(){
+			it(fn+" ("+args.join(", ") + ")", function(){
 				silenceWarning(function(){
 					var permutations = generateArgs(args);
 					for (var i = 0; i < permutations.length; i++){
@@ -85,11 +85,11 @@ function (Test, Type, Transport, Time, Frequency) {
 						instance[fn].apply(instance, permutations[i]);
 						instance.dispose();
 					}
-				})
+				});
 			});
 		},
 		member : function(constructor, member, param, consArgs){
-			it (member+" = "+param, function(){
+			it(member+" = "+param, function(){
 				silenceWarning(function(){
 					var permutations = generateArgs([param]);
 					for (var i = 0; i < permutations.length; i++){
@@ -109,7 +109,7 @@ function (Test, Type, Transport, Time, Frequency) {
 				argString = JSON.stringify(args);
 			}
 
-			it ("constructor ( "+ argString + " )", function(){
+			it("constructor ( "+ argString + " )", function(){
 				silenceWarning(function(){
 					var permutations = generateArgs(args);
 					for (var i = 0; i < permutations.length; i++){

@@ -179,6 +179,26 @@ define(["Tone/core/Tone", "Tone/instrument/Synth", "Tone/source/Source"], functi
 	};
 
 	/**
+	 * Sync the instrument to the Transport. All subsequent calls of
+	 * [triggerAttack](#triggerattack) and [triggerRelease](#triggerrelease)
+	 * will be scheduled along the transport.
+	 * @example
+	 * synth.sync()
+	 * //schedule 3 notes when the transport first starts
+	 * synth.triggerAttackRelease('8n', 0)
+	 * synth.triggerAttackRelease('8n', '8n')
+	 * synth.triggerAttackRelease('8n', '4n')
+	 * //start the transport to hear the notes
+	 * Transport.start()
+	 * @returns {Tone.Instrument} this
+	 */
+	Tone.PolySynth.prototype.sync = function(){
+		this._syncMethod("triggerAttack", 1);
+		this._syncMethod("triggerRelease", 1);
+		return this;
+	};
+
+	/**
 	 *  Set a member/attribute of the voices.
 	 *  @param {Object|string} params
 	 *  @param {number=} value

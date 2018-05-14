@@ -1,4 +1,4 @@
-define(["Tone/core/Tone"], function(Tone){
+define(["Tone/core/Tone", "Tone/type/Ticks"], function(Tone){
 
 	/**
 	 *  @class Tone.TransportEvent is an internal class used by (Tone.Transport)[Transport]
@@ -28,7 +28,7 @@ define(["Tone/core/Tone"], function(Tone){
 		 * The time the event starts
 		 * @type {Ticks}
 		 */
-		this.time = options.time;
+		this.time = Tone.Ticks(options.time);
 
 		/**
 		 * The callback to invoke
@@ -65,7 +65,7 @@ define(["Tone/core/Tone"], function(Tone){
 	Tone.TransportEvent._eventId = 0;
 
 	/**
-	 * Invoke the callback even callback.
+	 * Invoke the event callback.
 	 * @param  {Time} time  The AudioContext time in seconds of the event
 	 */
 	Tone.TransportEvent.prototype.invoke = function(time){
@@ -85,6 +85,7 @@ define(["Tone/core/Tone"], function(Tone){
 		Tone.prototype.dispose.call(this);
 		this.Transport = null;
 		this.callback = null;
+		this.time = null;
 		return this;
 	};
 

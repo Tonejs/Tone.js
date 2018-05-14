@@ -60,6 +60,8 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper", "Tone/component/Merge", "Ton
 			 * @private
 			 */
 			var split = this.input = new Tone.Split();
+			//fixes safari issue with splitting audio
+			split._splitter.channelCountMode = "explicit";
 
 			/**
 			 * Keeps the waveshapers from optimizing 0s

@@ -12,7 +12,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/effect/Effect"], function(To
 	 *  @extends {Tone.Effect}
 	 *  @param {string|Tone.Buffer|Object} [url] The URL of the impulse response or the Tone.Buffer
 	 *                                           contianing the impulse response.
-	 *  @param {Function} onload The callback to invoke when the url is loaded.
+	 *  @param {Function=} onload The callback to invoke when the url is loaded.
 	 *  @example
 	 * //initializing the convolver with an impulse response
 	 * var convolver = new Tone.Convolver("./path/to/ir.wav").toMaster();
@@ -34,17 +34,10 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/effect/Effect"], function(To
 		 *  @type {Tone.Buffer}
 		 *  @private
 		 */
-		this._buffer = new Tone.Buffer();
-
-		if (Tone.isString(options.url)){
-			this._buffer.load(options.url, function(buffer){
-				this.buffer = buffer;
-				options.onload();
-			}.bind(this));
-		} else if (options.url){
-			this.buffer = options.url;
+		this._buffer = new Tone.Buffer(options.url, function(buffer){
+			this._convolver.buffer = buffer.get();
 			options.onload();
-		}
+		}.bind(this));
 
 		this.connectEffect(this._convolver);
 	};

@@ -50,8 +50,6 @@ define(["Tone/core/Tone", "Tone/component/AmplitudeEnvelope", "Tone/source/OmniO
 
 		//connect the oscillators to the output
 		this.oscillator.chain(this.envelope, this.output);
-		//start the oscillators
-		this.oscillator.start();
 		this._readOnly(["oscillator", "frequency", "detune", "envelope"]);
 	};
 
@@ -84,6 +82,11 @@ define(["Tone/core/Tone", "Tone/component/AmplitudeEnvelope", "Tone/source/OmniO
 	Tone.Synth.prototype._triggerEnvelopeAttack = function(time, velocity){
 		//the envelopes
 		this.envelope.triggerAttack(time, velocity);
+		this.oscillator.start(time);
+		//if there is no release portion, stop the oscillator
+		if (this.envelope.sustain === 0){
+			this.oscillator.stop(time + this.envelope.attack + this.envelope.decay);
+		}
 		return this;
 	};
 
@@ -94,7 +97,9 @@ define(["Tone/core/Tone", "Tone/component/AmplitudeEnvelope", "Tone/source/OmniO
 	 *  @private
 	 */
 	Tone.Synth.prototype._triggerEnvelopeRelease = function(time){
+		time = this.toSeconds(time);
 		this.envelope.triggerRelease(time);
+		this.oscillator.stop(time + this.envelope.release);
 		return this;
 	};
 

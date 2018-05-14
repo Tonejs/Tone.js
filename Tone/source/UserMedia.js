@@ -18,9 +18,7 @@ define(["Tone/core/Tone", "Tone/component/Volume", "Tone/core/AudioNode"], funct
 	 *
 	 * //opening the input asks the user to activate their mic
 	 * motu.open().then(function(){
-	 * 	//opening is activates the microphone
-	 * 	//starting lets audio through
-	 * 	motu.start(10);
+	 * 	//promise resolves when input is available
 	 * });
 	 */
 
@@ -101,7 +99,7 @@ define(["Tone/core/Tone", "Tone/component/Volume", "Tone/core/AudioNode"], funct
 				//didn't find a matching device
 				if (!device && devices.length > 0){
 					device = devices[0];
-				} else if (!device && !Tone.isUndef(labelOrId)){
+				} else if (!device && Tone.isDefined(labelOrId)){
 					throw new Error("Tone.UserMedia: no matching device: "+labelOrId);
 				}
 			}
@@ -135,7 +133,7 @@ define(["Tone/core/Tone", "Tone/component/Volume", "Tone/core/AudioNode"], funct
 	 *  @return {Tone.UserMedia} this
 	 */
 	Tone.UserMedia.prototype.close = function(){
-		if(this._stream){
+		if (this._stream){
 			this._stream.getAudioTracks().forEach(function(track){
 				track.stop();
 			});
@@ -275,7 +273,7 @@ define(["Tone/core/Tone", "Tone/component/Volume", "Tone/core/AudioNode"], funct
 	 */
 	Object.defineProperty(Tone.UserMedia, "supported", {
 		get : function(){
-			return !Tone.isUndef(navigator.mediaDevices) && Tone.isFunction(navigator.mediaDevices.getUserMedia);
+			return Tone.isDefined(navigator.mediaDevices) && Tone.isFunction(navigator.mediaDevices.getUserMedia);
 		}
 	});
 

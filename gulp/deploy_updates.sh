@@ -8,7 +8,3 @@ if [ "${TRAVIS_PULL_REQUEST}" = "false" ]; then
 	# update the site
 	sh update_site.sh
 fi
-
-
-# upload coveralls
-gulp coveralls

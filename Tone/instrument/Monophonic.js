@@ -51,7 +51,7 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/signal/Signal"], f
 	 * //trigger the note a half second from now at half velocity
 	 * synth.triggerAttack("C4", "+0.5", 0.5);
 	 */
-	Tone.Monophonic.prototype.triggerAttack = function(note, time, velocity) {
+	Tone.Monophonic.prototype.triggerAttack = function(note, time, velocity){
 		time = this.toSeconds(time);
 		this._triggerEnvelopeAttack(time, velocity);
 		this.setNote(note, time);
@@ -76,14 +76,25 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/signal/Signal"], f
 	 *  @abstract
 	 *  @private
 	 */	
-	Tone.Monophonic.prototype._triggerEnvelopeAttack = function() {};
+	Tone.Monophonic.prototype._triggerEnvelopeAttack = function(){};
 
 	/**
 	 *  override this method with the actual method
 	 *  @abstract
 	 *  @private
 	 */	
-	Tone.Monophonic.prototype._triggerEnvelopeRelease = function() {};
+	Tone.Monophonic.prototype._triggerEnvelopeRelease = function(){};
+
+	/**
+	 *  Get the level of the output at the given time. Measures
+	 *  the envelope(s) value at the time. 
+	 *  @param {Time} time The time to query the envelope value
+	 *  @return {NormalRange} The output level between 0-1
+	 */
+	Tone.Monophonic.prototype.getLevelAtTime = function(time){
+		time = this.toSeconds(time);
+		return this.envelope.getValueAtTime(time);
+	};
 
 	/**
 	 *  Set the note at the given time. If no time is given, the note
@@ -100,11 +111,9 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/signal/Signal"], f
 	 */
 	Tone.Monophonic.prototype.setNote = function(note, time){
 		time = this.toSeconds(time);
-		if (this.portamento > 0){
-			var currentNote = this.frequency.value;
-			this.frequency.setValueAtTime(currentNote, time);
+		if (this.portamento > 0 && this.getLevelAtTime(time) > 0.05){
 			var portTime = this.toSeconds(this.portamento);
-			this.frequency.exponentialRampToValueAtTime(note, time + portTime);
+			this.frequency.exponentialRampTo(note, portTime, time);
 		} else {
 			this.frequency.setValueAtTime(note, time);
 		}

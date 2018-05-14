@@ -109,7 +109,6 @@ define(["Tone/core/Tone", "Tone/source/Source", "Tone/source/Oscillator", "Tone/
 	 *  @private
 	 */
 	Tone.AMOscillator.prototype._start = function(time){
-		time = this.toSeconds(time);
 		this._modulator.start(time);
 		this._carrier.start(time);
 	};
@@ -120,9 +119,18 @@ define(["Tone/core/Tone", "Tone/source/Source", "Tone/source/Oscillator", "Tone/
 	 *  @private
 	 */
 	Tone.AMOscillator.prototype._stop = function(time){
-		time = this.toSeconds(time);
 		this._modulator.stop(time);
 		this._carrier.stop(time);
+	};
+
+	/**
+	 *  restart the oscillator
+	 *  @param  {Time} time (optional) timing parameter
+	 *  @private
+	 */
+	Tone.AMOscillator.prototype.restart = function(time){
+		this._modulator.restart(time);
+		this._carrier.restart(time);
 	};
 
 	/**

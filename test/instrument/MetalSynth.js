@@ -1,13 +1,24 @@
-define(["Tone/instrument/MetalSynth", "helper/Basic", "helper/InstrumentTests"], function (MetalSynth, Basic, InstrumentTest) {
+define(["Tone/instrument/MetalSynth", "helper/Basic",
+	"helper/InstrumentTests", "helper/CompareToFile", "helper/Supports"],
+function(MetalSynth, Basic, InstrumentTest, CompareToFile, Supports) {
 
 	describe("MetalSynth", function(){
 
 		Basic(MetalSynth);
 		InstrumentTest(MetalSynth);
 
+		if (Supports.CHROME_AUDIO_RENDERING){
+			it("matches a file", function(){
+				return CompareToFile(function(){
+					const synth = new MetalSynth().toMaster();
+					synth.triggerAttackRelease(0.1, 0.05);
+				}, "metalSynth.wav", 200);
+			});
+		}
+
 		context("API", function(){
 
-			it ("can be constructed with octave and harmonicity values", function(){
+			it("can be constructed with octave and harmonicity values", function(){
 				var cymbal = new MetalSynth({
 					"octaves" : 0.4,
 					"resonance" : 2300,
@@ -19,7 +30,7 @@ define(["Tone/instrument/MetalSynth", "helper/Basic", "helper/InstrumentTests"],
 				cymbal.dispose();
 			});
 
-			it ("can get and set envelope attributes", function(){
+			it("can get and set envelope attributes", function(){
 				var cymbal = new MetalSynth();
 				cymbal.envelope.attack = 0.024;
 				cymbal.envelope.decay = 0.9;
@@ -28,14 +39,14 @@ define(["Tone/instrument/MetalSynth", "helper/Basic", "helper/InstrumentTests"],
 				cymbal.dispose();
 			});
 
-			it ("can set the modulationIndex", function(){
+			it("can set the modulationIndex", function(){
 				var cymbal = new MetalSynth();
 				cymbal.modulationIndex = 82;
 				expect(cymbal.modulationIndex).to.be.closeTo(82, 0.01);
 				cymbal.dispose();
 			});
 
-			it ("can get/set attributes", function(){
+			it("can get/set attributes", function(){
 				var cymbal = new MetalSynth();
 				cymbal.set({
 					"frequency" : 120

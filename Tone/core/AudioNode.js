@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/core/Context"], function (Tone) {
+define(["Tone/core/Tone", "Tone/core/Context"], function(Tone){
 
 	/**
 	 *  @class Tone.AudioNode is the base class for classes which process audio.
@@ -60,10 +60,66 @@ define(["Tone/core/Tone", "Tone/core/Context"], function (Tone) {
 	};
 
 	/**
+	 *  channelCount is the number of channels used when up-mixing and down-mixing
+	 *  connections to any inputs to the node. The default value is 2 except for
+	 *  specific nodes where its value is specially determined.
+	 *
+	 *  @memberof Tone.AudioNode#
+	 *  @type {Number}
+	 *  @name channelCount
+	 *  @readOnly
+	 */
+	Object.defineProperty(Tone.AudioNode.prototype, "channelCount", {
+		get : function(){
+			return this.output.channelCount;
+		},
+		set : function(c){
+			return this.output.channelCount = c;
+		}
+	});
+
+	/**
+	 *  channelCountMode determines how channels will be counted when up-mixing and
+	 *  down-mixing connections to any inputs to the node.
+	 *  The default value is "max". This attribute has no effect for nodes with no inputs.
+	 *  @memberof Tone.AudioNode#
+	 *  @type {String}
+	 *  @name channelCountMode
+	 *  @readOnly
+	 */
+	Object.defineProperty(Tone.AudioNode.prototype, "channelCountMode", {
+		get : function(){
+			return this.output.channelCountMode;
+		},
+		set : function(m){
+			return this.output.channelCountMode = m;
+		}
+	});
+
+	/**
+	 *  channelInterpretation determines how individual channels will be treated
+	 *  when up-mixing and down-mixing connections to any inputs to the node.
+	 *  The default value is "speakers".
+	 *  @memberof Tone.AudioNode#
+	 *  @type {String}
+	 *  @name channelInterpretation
+	 *  @readOnly
+	 */
+	Object.defineProperty(Tone.AudioNode.prototype, "channelInterpretation", {
+		get : function(){
+			return this.output.channelInterpretation;
+		},
+		set : function(i){
+			return this.output.channelInterpretation = i;
+		}
+	});
+
+	/**
 	 *  The number of inputs feeding into the AudioNode.
 	 *  For source nodes, this will be 0.
 	 *  @type {Number}
 	 *  @name numberOfInputs
+	 *  @memberof Tone.AudioNode#
 	 *  @readOnly
 	 */
 	Object.defineProperty(Tone.AudioNode.prototype, "numberOfInputs", {
@@ -84,6 +140,7 @@ define(["Tone/core/Tone", "Tone/core/Context"], function (Tone) {
 	 *  The number of outputs coming out of the AudioNode.
 	 *  @type {Number}
 	 *  @name numberOfOutputs
+	 *  @memberof Tone.AudioNode#
 	 *  @readOnly
 	 */
 	Object.defineProperty(Tone.AudioNode.prototype, "numberOfOutputs", {
@@ -101,6 +158,12 @@ define(["Tone/core/Tone", "Tone/core/Context"], function (Tone) {
 	});
 
 	/**
+	 * Called when an audio param connects to this node
+	 * @private
+	 */
+	Tone.AudioNode.prototype._onConnect = function(){};
+
+	/**
 	 *  connect the output of a ToneNode to an AudioParam, AudioNode, or ToneNode
 	 *  @param  {Tone | AudioParam | AudioNode} unit
 	 *  @param {number} [outputNum=0] optionally which output to connect from
@@ -108,6 +171,9 @@ define(["Tone/core/Tone", "Tone/core/Context"], function (Tone) {
 	 *  @returns {Tone.AudioNode} this
 	 */
 	Tone.AudioNode.prototype.connect = function(unit, outputNum, inputNum){
+		if (unit._onConnect){
+			unit._onConnect(this);
+		}
 		if (Tone.isArray(this.output)){
 			outputNum = Tone.defaultArg(outputNum, 0);
 			this.output[outputNum].connect(unit, 0, inputNum);
@@ -144,7 +210,6 @@ define(["Tone/core/Tone", "Tone/core/Context"], function (Tone) {
 	 *  node.chain(effect, panVol, Tone.Master);
 	 *  @param {...AudioParam|Tone|AudioNode} nodes
 	 *  @returns {Tone.AudioNode} this
-	 *  @private
 	 */
 	Tone.AudioNode.prototype.chain = function(){
 		var currentUnit = this;
@@ -160,7 +225,6 @@ define(["Tone/core/Tone", "Tone/core/Context"], function (Tone) {
 	 *  connect the output of this node to the rest of the nodes in parallel.
 	 *  @param {...AudioParam|Tone|AudioNode} nodes
 	 *  @returns {Tone.AudioNode} this
-	 *  @private
 	 */
 	Tone.AudioNode.prototype.fan = function(){
 		for (var i = 0; i < arguments.length; i++){
@@ -179,14 +243,14 @@ define(["Tone/core/Tone", "Tone/core/Context"], function (Tone) {
 	 * Dispose and disconnect
 	 * @return {Tone.AudioNode} this
 	 */
-	Tone.AudioNode.prototype.dispose = function () {
-		if (!Tone.isUndef(this.input)){
+	Tone.AudioNode.prototype.dispose = function(){
+		if (Tone.isDefined(this.input)){
 			if (this.input instanceof AudioNode){
 				this.input.disconnect();
 			}
 			this.input = null;
 		}
-		if (!Tone.isUndef(this.output)){
+		if (Tone.isDefined(this.output)){
 			if (this.output instanceof AudioNode){
 				this.output.disconnect();
 			}

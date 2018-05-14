@@ -30,12 +30,8 @@ define(["Tone/core/Tone", "Tone/component/Analyser", "Tone/core/AudioNode"], fun
 		 *  @type  {Tone.Analyser}
 		 */
 		this.input = this.output = this._analyser = new Tone.Analyser("waveform", 1024);
-	
-		/**
-		 *  The amount of carryover between the current and last frame.
-		 *  Only applied meter for "level" type.
-		 *  @type  {Number}
-		 */
+
+		//set the smoothing initially
 		this.smoothing = options.smoothing;
 	
 		/**

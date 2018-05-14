@@ -1,5 +1,6 @@
-define(["helper/Basic", "Tone/source/PulseOscillator", "helper/Offline", "helper/SourceTests", "helper/OscillatorTests"],
-	function (BasicTests, PulseOscillator, Offline, SourceTests, OscillatorTests) {
+define(["helper/Basic", "Tone/source/PulseOscillator", "helper/Offline",
+	"helper/SourceTests", "helper/OscillatorTests", "helper/CompareToFile"],
+function(BasicTests, PulseOscillator, Offline, SourceTests, OscillatorTests, CompareToFile) {
 
 	describe("PulseOscillator", function(){
 
@@ -8,8 +9,15 @@ define(["helper/Basic", "Tone/source/PulseOscillator", "helper/Offline", "helper
 		SourceTests(PulseOscillator);
 		OscillatorTests(PulseOscillator);
 
+		it("matches a file", function(){
+			return CompareToFile(function(){
+				var osc = new PulseOscillator().toMaster();
+				osc.start(0);
+			}, "pulseOscillator.wav", 50);
+		});
+
 		context("Phase Rotation", function(){
-			it ("can change the phase to 90", function(){
+			it("can change the phase to 90", function(){
 				return Offline(function(){
 					var osc = new PulseOscillator({
 						"phase" : 90,
@@ -28,7 +36,7 @@ define(["helper/Basic", "Tone/source/PulseOscillator", "helper/Offline", "helper
 				});
 			});
 
-			it ("can change the phase to -90", function(){
+			it("can change the phase to -90", function(){
 				return Offline(function(){
 					var osc = new PulseOscillator({
 						"phase" : 270,
@@ -51,7 +59,7 @@ define(["helper/Basic", "Tone/source/PulseOscillator", "helper/Offline", "helper
 
 		context("Width", function(){
 
-			it ("can set the width", function(){
+			it("can set the width", function(){
 				var osc = new PulseOscillator({
 					"width" : 0.2,
 				});
@@ -59,7 +67,7 @@ define(["helper/Basic", "Tone/source/PulseOscillator", "helper/Offline", "helper
 				osc.dispose();
 			});
 
-			it ("outputs correctly with a width of 0", function(){
+			it("outputs correctly with a width of 0", function(){
 				return Offline(function(){
 					var osc = new PulseOscillator({
 						"width" : 0,
@@ -76,7 +84,7 @@ define(["helper/Basic", "Tone/source/PulseOscillator", "helper/Offline", "helper
 				});
 			});
 
-			it ("outputs correctly with a width of 0.5", function(){
+			it("outputs correctly with a width of 0.5", function(){
 				return Offline(function(){
 					var osc = new PulseOscillator({
 						"width" : 0.5,

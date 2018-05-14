@@ -109,7 +109,7 @@ define(["Tone/core/Tone", "Tone/source/Source", "Tone/core/Buffer",
 		},
 		set : function(rate){
 			this._playbackRate = rate;
-			if (this._source) {
+			if (this._source){
 				this._source.playbackRate.value = rate;
 			}
 		}
@@ -143,6 +143,18 @@ define(["Tone/core/Tone", "Tone/source/Source", "Tone/core/Buffer",
 	};
 
 	/**
+	 * Restarts the noise.
+	 * @param  {[type]} time [description]
+	 * @return {[type]}      [description]
+	 */
+	Tone.Noise.prototype.restart = function(time){
+		//TODO could be optimized by cancelling the buffer source 'stop'
+		//stop and restart
+		this._stop(time);
+		this._start(time);
+	};
+
+	/**
 	 *  Clean up.
 	 *  @returns {Tone.Noise} this
 	 */
@@ -173,14 +185,14 @@ define(["Tone/core/Tone", "Tone/source/Source", "Tone/core/Buffer",
 	 *  @type {Array}
 	 */
 	var _noiseArrays = {
-		"pink" : (function() {
+		"pink" : (function(){
 			var buffer = [];
 			for (var channelNum = 0; channelNum < channels; channelNum++){
 				var channel = new Float32Array(bufferLength);
 				buffer[channelNum] = channel;
 				var b0, b1, b2, b3, b4, b5, b6;
 				b0 = b1 = b2 = b3 = b4 = b5 = b6 = 0.0;
-				for (var i = 0; i < bufferLength; i++) {
+				for (var i = 0; i < bufferLength; i++){
 					var white = Math.random() * 2 - 1;
 					b0 = 0.99886 * b0 + white * 0.0555179;
 					b1 = 0.99332 * b1 + white * 0.0750759;
@@ -195,13 +207,13 @@ define(["Tone/core/Tone", "Tone/source/Source", "Tone/core/Buffer",
 			}
 			return buffer;
 		}()),
-		"brown" : (function() {
+		"brown" : (function(){
 			var buffer = [];
 			for (var channelNum = 0; channelNum < channels; channelNum++){
 				var channel = new Float32Array(bufferLength);
 				buffer[channelNum] = channel;
 				var lastOut = 0.0;
-				for (var i = 0; i < bufferLength; i++) {
+				for (var i = 0; i < bufferLength; i++){
 					var white = Math.random() * 2 - 1;
 					channel[i] = (lastOut + (0.02 * white)) / 1.02;
 					lastOut = channel[i];

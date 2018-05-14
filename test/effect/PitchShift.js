@@ -7,7 +7,7 @@ define(["Tone/effect/PitchShift", "helper/Basic", "helper/EffectTests"], functio
 
 		context("API", function(){
 
-			it ("can pass in options in the constructor", function(){
+			it("can pass in options in the constructor", function(){
 				var pitchShift = new PitchShift({
 					"windowSize" : 0.2,
 					"pitch" : 2
@@ -17,7 +17,7 @@ define(["Tone/effect/PitchShift", "helper/Basic", "helper/EffectTests"], functio
 				pitchShift.dispose();
 			});
 
-			it ("can set positive and negative pitches", function(){
+			it("can set positive and negative pitches", function(){
 				var pitchShift = new PitchShift();
 				pitchShift.pitch = 2;
 				expect(pitchShift.pitch).to.be.equal(2);
@@ -28,7 +28,7 @@ define(["Tone/effect/PitchShift", "helper/Basic", "helper/EffectTests"], functio
 				pitchShift.dispose();
 			});
 
-			it ("can get/set the options", function(){
+			it("can get/set the options", function(){
 				var pitchShift = new PitchShift();
 				pitchShift.set({
 					"windowSize" : 0.4,
@@ -37,7 +37,7 @@ define(["Tone/effect/PitchShift", "helper/Basic", "helper/EffectTests"], functio
 				pitchShift.dispose();
 			});
 
-			it ("can set set the feedback and delay times", function(){
+			it("can set set the feedback and delay times", function(){
 				var pitchShift = new PitchShift({
 					"delayTime" : "4n",
 					"feedback" : 0.3

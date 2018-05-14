@@ -8,7 +8,7 @@ function (MidSideSplit, MidSideMerge, Basic, Signal, PassAudioStereo, Test, Offl
 
 		context("Splitting", function(){
 
-			it ("handles inputs and outputs", function(){
+			it("handles inputs and outputs", function(){
 				var split = new MidSideSplit();
 				Test.connect(split);
 				split.mid.connect(Test);
@@ -55,7 +55,7 @@ function (MidSideSplit, MidSideMerge, Basic, Signal, PassAudioStereo, Test, Offl
 				});
 			});
 
-			it ("can decompose and reconstruct a signal", function(){
+			it("can decompose and reconstruct a signal", function(){
 				return Offline(function(){
 					var midSideMerge = new MidSideMerge().toMaster();
 					var split = new MidSideSplit();

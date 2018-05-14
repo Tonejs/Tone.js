@@ -1,6 +1,6 @@
 define(["Tone/component/Envelope", "helper/Basic", "helper/Offline", "Test",
 	"helper/PassAudio", "helper/APITest"],
-function (Envelope, Basic, Offline, Test, PassAudio, APITest) {
+function(Envelope, Basic, Offline, Test, PassAudio, APITest) {
 	describe("Envelope", function(){
 
 		Basic(Envelope);
@@ -23,14 +23,13 @@ function (Envelope, Basic, Offline, Test, PassAudio, APITest) {
 
 		context("Envelope", function(){
 
-
 			it("has an output connections", function(){
 				var env = new Envelope();
 				env.connect(Test);
 				env.dispose();
 			});
 
-			it ("can get and set values an Objects", function(){
+			it("can get and set values an Objects", function(){
 				var env = new Envelope();
 				var values = {
 					"attack" : 0,
@@ -43,7 +42,7 @@ function (Envelope, Basic, Offline, Test, PassAudio, APITest) {
 				env.dispose();
 			});
 
-			it ("passes no signal before being triggered", function(){
+			it("passes no signal before being triggered", function(){
 				return Offline(function(){
 					new Envelope().toMaster();
 				}).then(function(buffer){
@@ -51,7 +50,7 @@ function (Envelope, Basic, Offline, Test, PassAudio, APITest) {
 				});
 			});
 
-			it ("passes signal once triggered", function(){
+			it("passes signal once triggered", function(){
 				return Offline(function(){
 					var env = new Envelope().toMaster();
 					env.triggerAttack(0.05);
@@ -60,7 +59,7 @@ function (Envelope, Basic, Offline, Test, PassAudio, APITest) {
 				}, 0.1);
 			});
 
-			it ("can take parameters as both an object and as arguments", function(){
+			it("can take parameters as both an object and as arguments", function(){
 				var env0 = new Envelope({
 					"attack" : 0,
 					"decay" : 0.5,
@@ -76,7 +75,6 @@ function (Envelope, Basic, Offline, Test, PassAudio, APITest) {
 				expect(env1.sustain).to.equal(0.3);
 				env1.dispose();
 			});
-
 
 			it("can set attack to exponential or linear", function(){
 				var env = new Envelope(0.01, 0.01, 0.5, 0.3);
@@ -114,7 +112,7 @@ function (Envelope, Basic, Offline, Test, PassAudio, APITest) {
 				env2.dispose();
 			});
 
-			it ("correctly schedules an exponential attack", function(){
+			it("correctly schedules an exponential attack", function(){
 				var e = {
 					attack : 0.01,
 					decay : 0.4,
@@ -139,7 +137,7 @@ function (Envelope, Basic, Offline, Test, PassAudio, APITest) {
 				});
 			});
 
-			it ("correctly schedules a linear release", function(){
+			it("correctly schedules a linear release", function(){
 				var e = {
 					attack : 0.01,
 					decay : 0.4,
@@ -159,7 +157,7 @@ function (Envelope, Basic, Offline, Test, PassAudio, APITest) {
 				});
 			});
 
-			it ("can schedule a very short attack", function(){
+			it("can schedule a very short attack", function(){
 				var e = {
 					attack : 0.001,
 					decay : 0.01,
@@ -184,7 +182,7 @@ function (Envelope, Basic, Offline, Test, PassAudio, APITest) {
 				});
 			});
 
-			it ("correctly schedule a release", function(){
+			it("correctly schedule a release", function(){
 				var e = {
 					attack : 0.001,
 					decay : 0.01,
@@ -209,7 +207,7 @@ function (Envelope, Basic, Offline, Test, PassAudio, APITest) {
 				});
 			});
 
-			it ("is silent before and after triggering", function(){
+			it("is silent before and after triggering", function(){
 				var e = {
 					attack : 0.001,
 					decay : 0.01,
@@ -230,7 +228,7 @@ function (Envelope, Basic, Offline, Test, PassAudio, APITest) {
 				});
 			});
 
-			it ("is silent after decay if sustain is 0", function(){
+			it("is silent after decay if sustain is 0", function(){
 				var e = {
 					attack : 0.01,
 					decay : 0.04,
@@ -249,7 +247,7 @@ function (Envelope, Basic, Offline, Test, PassAudio, APITest) {
 				});
 			});
 
-			it ("correctly schedule an attack release envelope", function(){
+			it("correctly schedule an attack release envelope", function(){
 				var e = {
 					attack : 0.08,
 					decay : 0.2,
@@ -279,7 +277,7 @@ function (Envelope, Basic, Offline, Test, PassAudio, APITest) {
 				});
 			});
 
-			it ("can schedule a combined AttackRelease", function(){
+			it("can schedule a combined AttackRelease", function(){
 				var e = {
 					attack : 0.1,
 					decay : 0.2,
@@ -310,7 +308,7 @@ function (Envelope, Basic, Offline, Test, PassAudio, APITest) {
 				});
 			});
 
-			it ("can schedule a combined AttackRelease with velocity", function(){
+			it("can schedule a combined AttackRelease with velocity", function(){
 				var e = {
 					attack : 0.1,
 					decay : 0.2,
@@ -342,7 +340,7 @@ function (Envelope, Basic, Offline, Test, PassAudio, APITest) {
 				});
 			});
 
-			it ("can schedule multiple envelopes", function(){
+			it("can schedule multiple envelopes", function(){
 				var e = {
 					attack : 0.1,
 					decay : 0.2,
@@ -367,7 +365,7 @@ function (Envelope, Basic, Offline, Test, PassAudio, APITest) {
 				});
 			});
 
-			it ("can schedule multiple attack/releases with no discontinuities", function(){
+			it("can schedule multiple attack/releases with no discontinuities", function(){
 				return Offline(function(){
 					var env = new Envelope(0.1, 0.2, 0.2, 0.4).toMaster();
 					env.triggerAttackRelease(0, 0.4);
@@ -388,7 +386,53 @@ function (Envelope, Basic, Offline, Test, PassAudio, APITest) {
 				});
 			});
 
-			it ("reports its current envelope value (.value)", function(){
+			it("can schedule multiple 'linear' attack/releases with no discontinuities", function(){
+				return Offline(function(){
+					var env = new Envelope(0.1, 0.2, 0.2, 0.4).toMaster();
+					env.attackCurve = "linear";
+					env.releaseCurve = "linear";
+					env.triggerAttackRelease(0, 0.4);
+					env.triggerAttackRelease(0.4, 0.11);
+					env.triggerAttackRelease(0.45, 0.1);
+					env.triggerAttackRelease(1.1, 0.09);
+					env.triggerAttackRelease(1.5, 0.3);
+					env.triggerAttackRelease(1.8, 0.29);
+				}, 2).then(function(buffer){
+					//test for discontinuities
+					var lastSample = 0;
+					buffer.forEach(function(sample, time){
+						expect(sample).to.be.at.most(1);
+						var diff = Math.abs(lastSample - sample);
+						expect(diff).to.be.lessThan(0.001);
+						lastSample = sample;
+					});
+				});
+			});
+
+			it("can schedule multiple 'exponential' attack/releases with no discontinuities", function(){
+				return Offline(function(){
+					var env = new Envelope(0.1, 0.2, 0.2, 0.4).toMaster();
+					env.attackCurve = "exponential";
+					env.releaseCurve = "exponential";
+					env.triggerAttackRelease(0, 0.4);
+					env.triggerAttackRelease(0.4, 0.11);
+					env.triggerAttackRelease(0.45, 0.1);
+					env.triggerAttackRelease(1.1, 0.09);
+					env.triggerAttackRelease(1.5, 0.3);
+					env.triggerAttackRelease(1.8, 0.29);
+				}, 2).then(function(buffer){
+					//test for discontinuities
+					var lastSample = 0;
+					buffer.forEach(function(sample, time){
+						expect(sample).to.be.at.most(1);
+						var diff = Math.abs(lastSample - sample);
+						expect(diff).to.be.lessThan(0.002);
+						lastSample = sample;
+					});
+				});
+			});
+
+			it("reports its current envelope value (.value)", function(){
 				return Offline(function(){
 					var env = new Envelope(1, 0.2, 1).toMaster();
 					expect(env.value).to.be.closeTo(0, 0.01);
@@ -399,7 +443,7 @@ function (Envelope, Basic, Offline, Test, PassAudio, APITest) {
 				}, 0.5);
 			});
 
-			it ("can cancel a schedule envelope", function(){
+			it("can cancel a schedule envelope", function(){
 				return Offline(function(){
 					var env = new Envelope(0.1, 0.2, 1).toMaster();
 					env.triggerAttack(0.2);
@@ -412,7 +456,7 @@ function (Envelope, Basic, Offline, Test, PassAudio, APITest) {
 
 		context("Attack/Release Curves", function(){
 
-			it ("can get set all of the types as the attackCurve", function(){
+			it("can get set all of the types as the attackCurve", function(){
 
 				var env = new Envelope();
 				for (var type in Envelope.Type){
@@ -422,7 +466,7 @@ function (Envelope, Basic, Offline, Test, PassAudio, APITest) {
 				env.dispose();
 			});
 
-			it ("can get set all of the types as the releaseCurve", function(){
+			it("can get set all of the types as the releaseCurve", function(){
 				var env = new Envelope();
 				for (var type in Envelope.Type){
 					env.releaseCurve = type;
@@ -431,12 +475,12 @@ function (Envelope, Basic, Offline, Test, PassAudio, APITest) {
 				env.dispose();
 			});
 
-			it ("outputs a signal when the attack/release curves are set to 'bounce'", function(){
+			it("outputs a signal when the attack/release curves are set to 'bounce'", function(){
 				return Offline(function(){
 					var env = new Envelope({
 						attack : 0.3,
 						sustain : 1,
-						release: 0.3,
+						release : 0.3,
 						decay : 0,
 						attackCurve : "bounce",
 						releaseCurve : "bounce",
@@ -449,12 +493,12 @@ function (Envelope, Basic, Offline, Test, PassAudio, APITest) {
 				});
 			});
 
-			it ("outputs a signal when the attack/release curves are set to 'ripple'", function(){
+			it("outputs a signal when the attack/release curves are set to 'ripple'", function(){
 				return Offline(function(){
 					var env = new Envelope({
 						attack : 0.3,
 						sustain : 1,
-						release: 0.3,
+						release : 0.3,
 						decay : 0,
 						attackCurve : "ripple",
 						releaseCurve : "ripple",
@@ -467,12 +511,12 @@ function (Envelope, Basic, Offline, Test, PassAudio, APITest) {
 				});
 			});
 
-			it ("outputs a signal when the attack/release curves are set to 'sine'", function(){
+			it("outputs a signal when the attack/release curves are set to 'sine'", function(){
 				return Offline(function(){
 					var env = new Envelope({
 						attack : 0.3,
 						sustain : 1,
-						release: 0.3,
+						release : 0.3,
 						decay : 0,
 						attackCurve : "sine",
 						releaseCurve : "sine",
@@ -485,12 +529,12 @@ function (Envelope, Basic, Offline, Test, PassAudio, APITest) {
 				});
 			});
 
-			it ("outputs a signal when the attack/release curves are set to 'cosine'", function(){
+			it("outputs a signal when the attack/release curves are set to 'cosine'", function(){
 				return Offline(function(){
 					var env = new Envelope({
 						attack : 0.3,
 						sustain : 1,
-						release: 0.3,
+						release : 0.3,
 						decay : 0,
 						attackCurve : "cosine",
 						releaseCurve : "cosine",
@@ -503,12 +547,12 @@ function (Envelope, Basic, Offline, Test, PassAudio, APITest) {
 				});
 			});
 
-			it ("outputs a signal when the attack/release curves are set to 'step'", function(){
+			it("outputs a signal when the attack/release curves are set to 'step'", function(){
 				return Offline(function(){
 					var env = new Envelope({
 						attack : 0.3,
 						sustain : 1,
-						release: 0.3,
+						release : 0.3,
 						decay : 0,
 						attackCurve : "step",
 						releaseCurve : "step",
@@ -525,12 +569,12 @@ function (Envelope, Basic, Offline, Test, PassAudio, APITest) {
 				});
 			});
 
-			it ("outputs a signal when the attack/release curves are set to an array", function(){
+			it("outputs a signal when the attack/release curves are set to an array", function(){
 				return Offline(function(){
 					var env = new Envelope({
 						attack : 0.3,
 						sustain : 1,
-						release: 0.3,
+						release : 0.3,
 						decay : 0,
 						attackCurve : [0, 1, 0, 1],
 						releaseCurve : [1, 0, 1, 0],
@@ -547,12 +591,12 @@ function (Envelope, Basic, Offline, Test, PassAudio, APITest) {
 				});
 			});
 
-			it ("can scale a velocity with a custom curve", function(){
+			it("can scale a velocity with a custom curve", function(){
 				return Offline(function(){
 					var env = new Envelope({
 						attack : 0.3,
 						sustain : 1,
-						release: 0.3,
+						release : 0.3,
 						decay : 0,
 						attackCurve : [0, 1, 0, 1],
 						releaseCurve : [1, 0, 1, 0],
@@ -565,19 +609,19 @@ function (Envelope, Basic, Offline, Test, PassAudio, APITest) {
 				});
 			});
 
-			it ("can retrigger partial envelope with custom type", function(){
+			it("can retrigger partial envelope with custom type", function(){
 				return Offline(function(){
 					var env = new Envelope({
 						attack : 0.3,
 						sustain : 1,
-						release: 0.3,
+						release : 0.3,
 						decay : 0,
 						attackCurve : "step",
 						releaseCurve : "step",
 					}).toMaster();
-					env.triggerAttackRelease(0.3, 0.1);
-					env.triggerAttackRelease(0.35, 0.1);
-					env.triggerAttackRelease(0.8, 0.1);
+					env.triggerAttackRelease(0.1, 0.3);
+					env.triggerAttackRelease(0.1, 0.35);
+					env.triggerAttackRelease(0.1, 0.8);
 				}, 1).then(function(buffer){
 					buffer.forEach(function(sample, time){
 						if (time > 0.3 && time < 0.5){

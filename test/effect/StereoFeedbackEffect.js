@@ -6,20 +6,20 @@ define(["Tone/effect/Effect", "Tone/effect/StereoFeedbackEffect", "helper/Basic"
 
 		context("Feedback Effect", function(){
 
-			it ("extends Effect", function(){
+			it("extends Effect", function(){
 				var stereoFeedback = new StereoFeedbackEffect();
 				expect(stereoFeedback).to.be.instanceOf(Effect);
 				stereoFeedback.dispose();
 			});
 
-			it ("has a feedback signal", function(){
+			it("has a feedback signal", function(){
 				var stereoFeedback = new StereoFeedbackEffect();
 				expect(stereoFeedback).to.have.property("feedback");
 				expect(stereoFeedback.feedback).to.have.property("value");
 				stereoFeedback.dispose();
 			});
 
-			it ("has a mid and a side send and return", function(){
+			it("has a mid and a side send and return", function(){
 				var stereoFeedback = new StereoFeedbackEffect();
 				expect(stereoFeedback).to.have.property("effectSendL");
 				expect(stereoFeedback).to.have.property("effectSendR");

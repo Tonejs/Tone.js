@@ -106,13 +106,25 @@ define(["Tone/core/Tone", "Tone/source/Source", "Tone/source/Oscillator",
 
 	/**
 	 *  stop the oscillator
-	 *  @param  {Time} time (optional) timing parameter
+	 *  @param  {Time} [time=now]
 	 *  @private
 	 */
 	Tone.FatOscillator.prototype._stop = function(time){
 		time = this.toSeconds(time);
 		this._forEach(function(osc){
 			osc.stop(time);
+		});
+	};
+
+	/**
+	 *  restart the oscillator
+	 *  @param  {Time} time (optional) timing parameter
+	 *  @private
+	 */
+	Tone.FatOscillator.prototype.restart = function(time){
+		time = this.toSeconds(time);
+		this._forEach(function(osc){
+			osc.restart(time);
 		});
 	};
 

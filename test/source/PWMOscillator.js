@@ -1,5 +1,6 @@
-define(["helper/Basic", "Tone/source/PWMOscillator", "helper/Offline", "helper/SourceTests", "helper/OscillatorTests", "Test"], 
-	function (BasicTests, PWMOscillator, Offline, SourceTests, OscillatorTests, Test) {
+define(["helper/Basic", "Tone/source/PWMOscillator", "helper/Offline",
+	"helper/SourceTests", "helper/OscillatorTests", "Test", "helper/CompareToFile"],
+function(BasicTests, PWMOscillator, Offline, SourceTests, OscillatorTests, Test, CompareToFile) {
 
 	describe("PWMOscillator", function(){
 
@@ -7,6 +8,13 @@ define(["helper/Basic", "Tone/source/PWMOscillator", "helper/Offline", "helper/S
 		BasicTests(PWMOscillator);
 		SourceTests(PWMOscillator);
 		OscillatorTests(PWMOscillator);
+
+		it("matches a file", function(){
+			return CompareToFile(function(){
+				var osc = new PWMOscillator().toMaster();
+				osc.start(0.1);
+			}, "pwmOscillator.wav");
+		});
 
 		context("Modulation Frequency", function(){
 

@@ -1,30 +1,30 @@
-define(["Test", "Tone/core/Offline", "Tone/core/Transport", "Tone/source/Oscillator", 
-	"Tone/core/Tone", "Tone/core/Buffer", "helper/BufferTest"], 
-	function (Test, Offline, Transport, Oscillator, Tone, AudioBuffer, BufferTest) {
+define(["Test", "Tone/core/Offline", "Tone/core/Transport", "Tone/source/Oscillator",
+	"Tone/core/Tone", "Tone/core/Buffer", "helper/BufferTest"],
+function(Test, Offline, Transport, Oscillator, Tone, AudioBuffer, BufferTest) {
 
 	describe("Offline", function(){
 
-		it ("exists", function(){
+		it("exists", function(){
 			expect(Offline).to.exist;
 			expect(Tone.Offline).to.exist;
 		});
 
-		it ("accepts a callback and a duration", function(){
+		it("accepts a callback and a duration", function(){
 			Offline(function(){}, 0.01);
 		});
 
-		it ("returns a promise", function(){
+		it("returns a promise", function(){
 			expect(Offline(function(){}, 0.01)).to.be.instanceOf(Promise);
 		});
 
-		it ("generates a buffer", function(done){
+		it("generates a buffer", function(done){
 			Offline(function(){}, 0.01).then(function(buffer){
 				expect(buffer).to.be.instanceOf(AudioBuffer);
 				done();
 			});
 		});
 
-		it ("silent by default", function(done){
+		it("silent by default", function(done){
 			Offline(function(){}, 0.01).then(function(buffer){
 				BufferTest(buffer);
 				expect(buffer.isSilent()).to.be.true;
@@ -32,7 +32,7 @@ define(["Test", "Tone/core/Offline", "Tone/core/Transport", "Tone/source/Oscilla
 			});
 		});
 
-		it ("records the master output", function(){
+		it("records the master output", function(){
 			return Offline(function(){
 				new Oscillator().toMaster().start();
 			}, 0.01).then(function(buffer){
@@ -41,7 +41,23 @@ define(["Test", "Tone/core/Offline", "Tone/core/Transport", "Tone/source/Oscilla
 			});
 		});
 
-		it ("can schedule specific timing outputs", function(){
+		it("returning a promise defers the rendering till the promise resolves", function(){
+			var wasInvoked = false;
+			return Offline(function(){
+				new Oscillator().toMaster().start();
+				return new Promise(function(done){
+					setTimeout(done, 100);
+				}).then(function(){
+					wasInvoked = true;
+				});
+			}, 0.01).then(function(buffer){
+				BufferTest(buffer);
+				expect(wasInvoked).to.be.true;
+				expect(buffer.isSilent()).to.be.false;
+			});
+		});
+
+		it("can schedule specific timing outputs", function(){
 			return Offline(function(){
 				new Oscillator().toMaster().start(0.05);
 			}, 0.1).then(function(buffer){
@@ -50,7 +66,7 @@ define(["Test", "Tone/core/Offline", "Tone/core/Transport", "Tone/source/Oscilla
 			});
 		});
 
-		it ("can schedule Transport events", function(){
+		it("can schedule Transport events", function(){
 			return Offline(function(Transport){
 				var osc = new Oscillator().toMaster();
 				Transport.schedule(function(time){

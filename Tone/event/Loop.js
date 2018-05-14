@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/event/Event"], function (Tone) {
+define(["Tone/core/Tone", "Tone/event/Event"], function(Tone){
 
 	/**
 	 *  @class Tone.Loop creates a looped callback at the 
@@ -70,7 +70,7 @@ define(["Tone/core/Tone", "Tone/event/Event"], function (Tone) {
 
 	/**
 	 *  Stop the loop at the given time.
-	 *  @param  {TimelinePosition=}  time  When to stop the Arpeggio
+	 *  @param  {TimelinePosition=}  time  When to stop the Loop.
 	 *  @return  {Tone.Loop}  this
 	 */
 	Tone.Loop.prototype.stop = function(time){

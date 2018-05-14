@@ -1,3 +1,35 @@
+### r13
+
+* Updating semantic versioning to be more in line with other [semvers](https://semver.org/). Now version is 13.x.x
+* Added Object notation for Tone.TimeBase and classes that extend it. 
+	- i.e. Tone.Time({'4n' : 1, '8t' : 2})
+	- Replacement for deprecated expression strings. 
+
+
+### r12
+
+* Consolidating all shims into [shim folder](https://github.com/Tonejs/Tone.js/tree/dev/Tone/shim)
+* Using ConstantSourceNode in Signal when available
+* switching to eslint from jshint
+* Running [CI tests](https://travis-ci.org/Tonejs/Tone.js/) on Firefox, Chrome (latest and canary) and Safari (latest and version 9).
+* [Tone.Reverb](https://tonejs.github.io/docs/Reverb) is a convolution-based stereo reverb. [Example](https://tonejs.github.io/examples/#reverb).
+* Optimizing basic Oscillator types and many Signal use-case
+* Optimizing basic connection use-case of Tone.Signal where one signal is controlling another signal
+* Testing rendered output against an existing audio file for continuity and consistency
+* Optimizing triggerAttack/Release by starting/stopping oscillators when not playing
+* [TickSource](https://tonejs.github.io/docs/TickSource) (used in Clock and Player) tracks the elapsed ticks
+	* Improved precision of tracking ticks in Transport and Clock
+* `Player.position` returns the playback position of the AudioBuffer accounting for any playbackRate changes
+* Removing `retrigger` option with Tone.Player. Tone.BufferSource should be used if retriggering is desired. 
+
+**BREAKING CHANGES:**
+
+* Tone.TimeBase and all classes that extend it not longer support string expressions.
+	RATIONALE :
+		* Since all classes implement `valueOf`, expressions can be composed in JS instead of as strings
+			* e.g. `Time('4n') * 2 + Time('3t')` instead of `Time('4n * 2 + 3t')`
+		* this change greatly simplifies the code and is more performant
+
 ### r11
 
 * [Code coverage](https://coveralls.io/github/Tonejs/Tone.js) analysis

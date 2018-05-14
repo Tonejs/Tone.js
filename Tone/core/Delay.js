@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/core/Param", "Tone/core/AudioNode"], function (Tone) {
+define(["Tone/core/Tone", "Tone/core/Param", "Tone/core/AudioNode"], function(Tone){
 
 	"use strict";
 
@@ -14,11 +14,18 @@ define(["Tone/core/Tone", "Tone/core/Param", "Tone/core/AudioNode"], function (T
 		Tone.AudioNode.call(this);
 
 		/**
+		 * The maximum delay time initialized with the node
+		 * @type {Number}
+		 * @private
+		 */
+		this._maxDelay = Math.max(this.toSeconds(options.maxDelay), this.toSeconds(options.delayTime));
+		
+		/**
 		 *  The native delay node
 		 *  @type {DelayNode}
 		 *  @private
 		 */
-		this._delayNode = this.input = this.output = this.context.createDelay(this.toSeconds(options.maxDelay));
+		this._delayNode = this.input = this.output = this.context.createDelay(this._maxDelay);
 
 		/**
 		 *  The amount of time the incoming signal is
@@ -46,6 +53,19 @@ define(["Tone/core/Tone", "Tone/core/Param", "Tone/core/AudioNode"], function (T
 		"maxDelay" : 1,
 		"delayTime" : 0
 	};
+
+	/**
+	 * The maximum delay time. This cannot be changed. The value is passed into the constructor.
+	 * @memberof Tone.Delay#
+	 * @type {Time}
+	 * @name maxDelay
+	 * @readOnly
+	 */
+	Object.defineProperty(Tone.Delay.prototype, "maxDelay", {
+		get : function(){
+			return this._maxDelay;
+		}
+	});
 
 	/**
 	 *  Clean up.

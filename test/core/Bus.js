@@ -1,14 +1,14 @@
 define(["Test", "Tone/core/Bus", "Tone/core/Tone", "helper/Offline",
 	"helper/PassAudio", "Tone/signal/Signal", "Tone/core/Gain", "Tone/component/Merge"],
-	function (Test, Bus, Tone, Offline, PassAudio, Signal, Gain, Merge) {
+function (Test, Bus, Tone, Offline, PassAudio, Signal, Gain, Merge) {
 
 	describe("Bus", function(){
-		it ("provides a send and receive method", function(){
+		it("provides a send and receive method", function(){
 			expect(Tone.prototype.send).is.a("function");
 			expect(Tone.prototype.receive).is.a("function");
 		});
 
-		it ("passes audio from a send to a receive with the same name", function(){
+		it("passes audio from a send to a receive with the same name", function(){
 			return PassAudio(function(input){
 				//make them pass through nodes
 				var send = new Gain();
@@ -19,7 +19,7 @@ define(["Test", "Tone/core/Bus", "Tone/core/Tone", "helper/Offline",
 			});
 		});
 
-		it ("can create the recieve before the send", function(){
+		it("can create the recieve before the send", function(){
 			return PassAudio(function(input){
 				//make them pass through nodes
 				var send = new Gain();
@@ -30,7 +30,7 @@ define(["Test", "Tone/core/Bus", "Tone/core/Tone", "helper/Offline",
 			});
 		});
 
-		it ("passes audio from a send to a receive at the given level", function(){
+		it("passes audio from a send to a receive at the given level", function(){
 			return Offline(function(){
 				var sig = new Signal(1);
 				var recv = new Gain().toMaster();
@@ -43,7 +43,7 @@ define(["Test", "Tone/core/Bus", "Tone/core/Tone", "helper/Offline",
 			});
 		});
 
-		it ("can receive from a specific channel", function(){
+		it("can receive from a specific channel", function(){
 			return Offline(function(){
 				var sig = new Signal(2);
 				var recv = new Merge().toMaster();

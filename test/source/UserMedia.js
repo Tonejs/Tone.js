@@ -1,5 +1,5 @@
-define(["helper/Basic", "Tone/source/UserMedia", "Test", "Tone/source/Source"],
-	function (BasicTests, UserMedia, Test, Source) {
+define(["helper/Basic", "Tone/source/UserMedia", "Test", "Tone/source/Source", "helper/Supports"],
+	function (BasicTests, UserMedia, Test, Source, Supports) {
 
 	describe("UserMedia", function(){
 
@@ -37,7 +37,7 @@ define(["helper/Basic", "Tone/source/UserMedia", "Test", "Tone/source/Source"],
 
 
 		//if it is a manual test (i.e. there is a person to 'allow' the microphone)
-		if (UserMedia.supported){
+		if (Supports.GET_USER_MEDIA && UserMedia.supported){
 
 			context("Opening and closing", function(){
 

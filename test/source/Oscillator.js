@@ -1,6 +1,6 @@
 define(["helper/Basic", "Tone/source/Oscillator", "helper/Offline", "helper/SourceTests",
-	"helper/OscillatorTests", "helper/OutputAudio", "Tone/core/Transport"],
-	function (BasicTests, Oscillator, Offline, SourceTests, OscillatorTests, OutputAudio, Transport) {
+	"helper/OscillatorTests", "helper/OutputAudio", "Tone/core/Transport", "helper/CompareToFile"],
+function(BasicTests, Oscillator, Offline, SourceTests, OscillatorTests, OutputAudio, Transport, CompareToFile) {
 
 	describe("Oscillator", function(){
 
@@ -8,6 +8,14 @@ define(["helper/Basic", "Tone/source/Oscillator", "helper/Offline", "helper/Sour
 		BasicTests(Oscillator);
 		SourceTests(Oscillator);
 		OscillatorTests(Oscillator);
+
+		it("matches a file", function(){
+			return CompareToFile(function(){
+				const osc = new Oscillator().toMaster();
+				osc.type = "square";
+				osc.start(0).stop(0.2);
+			}, "oscillator.wav");
+		});
 
 		context("Get/Set", function(){
 
@@ -34,7 +42,7 @@ define(["helper/Basic", "Tone/source/Oscillator", "helper/Offline", "helper/Sour
 		});
 
 		context("Phase Rotation", function(){
-			it ("can change the phase to 90", function(){
+			it("can change the phase to 90", function(){
 				return Offline(function(){
 					var instance = new Oscillator({
 						"phase" : 90,
@@ -53,7 +61,7 @@ define(["helper/Basic", "Tone/source/Oscillator", "helper/Offline", "helper/Sour
 				});
 			});
 
-			it ("can change the phase to -90", function(){
+			it("can change the phase to -90", function(){
 				return Offline(function(){
 					var instance = new Oscillator({
 						"phase" : 270,
@@ -76,7 +84,7 @@ define(["helper/Basic", "Tone/source/Oscillator", "helper/Offline", "helper/Sour
 
 		context("Type", function(){
 
-			it ("can get and set the type", function(){
+			it("can get and set the type", function(){
 				var osc = new Oscillator({
 					"type" : "sawtooth",
 				});
@@ -84,7 +92,7 @@ define(["helper/Basic", "Tone/source/Oscillator", "helper/Offline", "helper/Sour
 				osc.dispose();
 			});
 
-			it ("handles 4 basic types", function(){
+			it("handles 4 basic types", function(){
 				var osc = new Oscillator();
 				var types = ["triangle", "sawtooth", "sine", "square"];
 				for (var i = 0; i < types.length; i++){
@@ -94,7 +102,7 @@ define(["helper/Basic", "Tone/source/Oscillator", "helper/Offline", "helper/Sour
 				osc.dispose();
 			});
 
-			it ("throws an error if invalid type is set", function(){
+			it("throws an error if invalid type is set", function(){
 				var osc = new Oscillator();
 				expect(function(){
 					osc.type = "invalid";
@@ -102,7 +110,7 @@ define(["helper/Basic", "Tone/source/Oscillator", "helper/Offline", "helper/Sour
 				osc.dispose();
 			});
 
-			it ("can set extended types", function(){
+			it("can set extended types", function(){
 				var osc = new Oscillator();
 				osc.type = "sine5";
 				expect(osc.type).to.equal("sine5");
@@ -114,7 +122,7 @@ define(["helper/Basic", "Tone/source/Oscillator", "helper/Offline", "helper/Sour
 
 		context("Partials", function(){
 
-			it ("can pass partials in the constructor", function(){
+			it("can pass partials in the constructor", function(){
 				var osc = new Oscillator({
 					"partials" : [1, 0.3, 0.3],
 					"type" : "custom"
@@ -124,7 +132,7 @@ define(["helper/Basic", "Tone/source/Oscillator", "helper/Offline", "helper/Sour
 				osc.dispose();
 			});
 
-			it ("can set partials", function(){
+			it("can set partials", function(){
 				var osc = new Oscillator();
 				osc.partials = [1, 0.2, 0.2, 0.2];
 				expect(osc.type).to.equal("custom");
@@ -132,14 +140,14 @@ define(["helper/Basic", "Tone/source/Oscillator", "helper/Offline", "helper/Sour
 				osc.dispose();
 			});
 
-			it ("makes a sound with custom partials", function(){
+			it("makes a sound with custom partials", function(){
 				return OutputAudio(function(){
 					var osc = new Oscillator().toMaster().start();
 					osc.partials = [1, 0.2, 0.2, 0.2];
 				});
 			});
 
-			it ("outputs empty array when type is not 'custom'", function(){
+			it("outputs empty array when type is not 'custom'", function(){
 				var osc = new Oscillator({
 					"partials" : [1, 0.3, 0.3],
 					"type" : "custom"

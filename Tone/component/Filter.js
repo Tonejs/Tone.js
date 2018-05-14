@@ -143,7 +143,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/AudioNode"], function
 			this._rolloff = rolloff;
 			//first disconnect the filters and throw them away
 			this.input.disconnect();
-			for (var i = 0; i < this._filters.length; i++) {
+			for (var i = 0; i < this._filters.length; i++){
 				this._filters[i].disconnect();
 				this._filters[i] = null;
 			}
@@ -169,7 +169,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/AudioNode"], function
 	 */
 	Tone.Filter.prototype.dispose = function(){
 		Tone.AudioNode.prototype.dispose.call(this);
-		for (var i = 0; i < this._filters.length; i++) {
+		for (var i = 0; i < this._filters.length; i++){
 			this._filters[i].disconnect();
 			this._filters[i] = null;
 		}

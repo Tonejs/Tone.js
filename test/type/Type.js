@@ -1,5 +1,5 @@
-define(["helper/Basic", "Test", "Tone/type/Type", "Tone/type/Time", "Tone/type/Frequency", "Tone/type/TransportTime", "helper/Offline", "Tone/core/Tone"], 
-	function (Basic, Test, Type, Time, Frequency, TransportTime, Offline, Tone) {
+define(["helper/Basic", "Test", "Tone/type/Type", "Tone/type/Time", "Tone/type/Frequency", 
+	"Tone/type/TransportTime", "helper/Offline", "Tone/core/Tone"], function(Basic, Test, Type, Time, Frequency, TransportTime, Offline, Tone){
 
 	describe("Type", function(){
 
@@ -15,6 +15,7 @@ define(["helper/Basic", "Test", "Tone/type/Type", "Tone/type/Time", "Tone/type/F
 					expect(tone.toSeconds("1")).to.equal(1);
 					expect(tone.toSeconds("1:0:0")).to.equal(2);
 					expect(tone.toSeconds("2hz")).to.equal(0.5);
+					expect(tone.toSeconds({ "4n" : 2 })).to.equal(1);
 				});
 			});
 
@@ -38,19 +39,6 @@ define(["helper/Basic", "Test", "Tone/type/Type", "Tone/type/Time", "Tone/type/F
 				expect(tone.toSeconds()).to.be.closeTo(now, 0.05);
 			});
 
-			it("can evaluate mathematical expressions of time", function(){
-				return Offline(function(Transport){
-					var tone = new Tone();
-					Transport.stop();
-					Transport.bpm.value = 120;
-					Transport.timeSignature = 4;
-					expect(tone.toSeconds("1+2+3")).to.equal(6);
-					expect(tone.toSeconds("2 * 1:2 - 1m")).to.equal(4);
-					expect(tone.toSeconds("(1 + 2) / 4n")).to.equal(6);
-					expect(tone.toSeconds("((1) + 2)*4n + 1:0:0")).to.equal(3.5);
-				});
-			});
-
 			it("can pass in Primitive time types", function(){
 				return Offline(function(Transport){
 					var tone = new Tone();
@@ -63,7 +51,6 @@ define(["helper/Basic", "Test", "Tone/type/Type", "Tone/type/Time", "Tone/type/F
 
 		});
 
-
 		context("Tone.toFrequency", function(){
 
 			it("infers type correctly", function(){
@@ -75,14 +62,7 @@ define(["helper/Basic", "Test", "Tone/type/Type", "Tone/type/Time", "Tone/type/F
 					expect(tone.toFrequency("1hz")).to.equal(1);
 					expect(tone.toFrequency("4n")).to.equal(2);
 					expect(tone.toFrequency(500)).to.equal(500);
-				});
-			});
-
-			it("evaluates expressions", function(){
-				return Offline(function(){
-					var tone = new Tone();
-					expect(tone.toFrequency("A4 * 3")).to.equal(Frequency.A4 * 3);
-					expect(tone.toFrequency("400 / 2 + 100")).to.equal(300);
+					expect(tone.toFrequency({ "4n" : 1 })).to.equal(2);
 				});
 			});
 
@@ -104,7 +84,8 @@ define(["helper/Basic", "Test", "Tone/type/Type", "Tone/type/Time", "Tone/type/F
 					Transport.timeSignature = 4;
 					expect(tone.toTicks("1i")).to.equal(1);
 					expect(tone.toTicks("4n")).to.equal(ppq);
-					expect(tone.toTicks("4n + 8n")).to.equal(ppq * 1.5);
+					expect(tone.toTicks("8n")).to.equal(ppq * 0.5);
+					expect(tone.toTicks({ "4n" : 1 })).to.equal(ppq);
 				});
 			});
 
@@ -114,7 +95,7 @@ define(["helper/Basic", "Test", "Tone/type/Type", "Tone/type/Time", "Tone/type/F
 					var ppq = Transport.PPQ;
 					expect(tone.toTicks("+4n")).to.equal(ppq);
 					Transport.start();
-					Test.atTime(0.1, function(){
+					return Test.atTime(0.1, function(){
 						var currentTicks = Transport.ticks;
 						expect(tone.toTicks("+4n")).to.equal(ppq + currentTicks);
 					});

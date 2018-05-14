@@ -8,7 +8,7 @@ function (MidSideMerge, Basic, Signal, PassAudioStereo, Test) {
 
 		context("Merging", function(){
 
-			it ("handles inputs and outputs", function(){
+			it("handles inputs and outputs", function(){
 				var merge = new MidSideMerge();
 				merge.connect(Test);
 				Test.connect(merge.mid);

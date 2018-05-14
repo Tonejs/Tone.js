@@ -7,7 +7,7 @@ define(["Tone/effect/Phaser", "helper/Basic", "helper/EffectTests"], function (P
 
 		context("API", function(){
 
-			it ("can pass in options in the constructor", function(){
+			it("can pass in options in the constructor", function(){
 				var phaser = new Phaser({
 					"frequency" : 0.2,
 				});
@@ -15,7 +15,7 @@ define(["Tone/effect/Phaser", "helper/Basic", "helper/EffectTests"], function (P
 				phaser.dispose();
 			});
 
-			it ("can get/set the options", function(){
+			it("can get/set the options", function(){
 				var phaser = new Phaser();
 				phaser.set({
 					"octaves" : 0.21,

@@ -154,10 +154,8 @@ define(["Tone/core/Tone", "Tone/instrument/MonoSynth", "Tone/component/LFO", "To
 	 */
 	Tone.DuoSynth.prototype._triggerEnvelopeAttack = function(time, velocity){
 		time = this.toSeconds(time);
-		this.voice0.envelope.triggerAttack(time, velocity);
-		this.voice1.envelope.triggerAttack(time, velocity);
-		this.voice0.filterEnvelope.triggerAttack(time);
-		this.voice1.filterEnvelope.triggerAttack(time);
+		this.voice0._triggerEnvelopeAttack(time, velocity);
+		this.voice1._triggerEnvelopeAttack(time, velocity);
 		return this;
 	};
 
@@ -169,9 +167,19 @@ define(["Tone/core/Tone", "Tone/instrument/MonoSynth", "Tone/component/LFO", "To
 	 *  @private
 	 */
 	Tone.DuoSynth.prototype._triggerEnvelopeRelease = function(time){
-		this.voice0.triggerRelease(time);
-		this.voice1.triggerRelease(time);
+		this.voice0._triggerEnvelopeRelease(time);
+		this.voice1._triggerEnvelopeRelease(time);
 		return this;
+	};
+
+	/**
+	 *  Get the level of the output at the given time. Measures
+	 *  the envelope(s) value at the time. 
+	 *  @param {Time} time The time to query the envelope value
+	 *  @return {NormalRange} The output level between 0-1
+	 */
+	Tone.DuoSynth.prototype.getLevelAtTime = function(time){
+		return (this.voice0.getLevelAtTime(time) + this.voice1.getLevelAtTime(time))/2;
 	};
 
 	/**

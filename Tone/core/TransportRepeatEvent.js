@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/core/TransportEvent"], function(Tone){
+define(["Tone/core/Tone", "Tone/core/TransportEvent", "Tone/type/Ticks"], function(Tone){
 
 	/**
 	 *  @class Tone.TransportRepeatEvent is an internal class used by Tone.Transport
@@ -16,14 +16,14 @@ define(["Tone/core/Tone", "Tone/core/TransportEvent"], function(Tone){
 		 * @type {Ticks}
 		 * @private
 		 */
-		this.duration = options.duration;
+		this.duration = Tone.Ticks(options.duration);
 
 		/**
 		 * The interval of the repeated event
 		 * @type {Ticks}
 		 * @private
 		 */
-		this._interval = options.interval;
+		this._interval = Tone.Ticks(options.interval);
 
 		/**
 		 * The ID of the current timeline event
@@ -75,7 +75,7 @@ define(["Tone/core/Tone", "Tone/core/TransportEvent"], function(Tone){
 	 */
 	Tone.TransportRepeatEvent.prototype.invoke = function(time){
 		//create more events if necessary
-		this._createEvents();
+		this._createEvents(time);
 		//call the super class
 		Tone.TransportEvent.prototype.invoke.call(this, time);
 	};
@@ -84,14 +84,14 @@ define(["Tone/core/Tone", "Tone/core/TransportEvent"], function(Tone){
 	 * Push more events onto the timeline to keep up with the position of the timeline
 	 * @private
 	 */
-	Tone.TransportRepeatEvent.prototype._createEvents = function(){
+	Tone.TransportRepeatEvent.prototype._createEvents = function(time){
 		// schedule the next event
-		var ticks = this.Transport.ticks;
+		var ticks = this.Transport.getTicksAtTime(time);
 		if (ticks >= this.time && ticks >= this._nextTick &&
 		this._nextTick + this._interval < this.time + this.duration){
 			this._nextTick += this._interval;
 			this._currentId = this._nextId;
-			this._nextId = this.Transport.scheduleOnce(this.invoke.bind(this), Tone.TransportTime(this._nextTick, "i"));
+			this._nextId = this.Transport.scheduleOnce(this.invoke.bind(this), Tone.Ticks(this._nextTick));
 		}
 	};
 
@@ -99,17 +99,17 @@ define(["Tone/core/Tone", "Tone/core/TransportEvent"], function(Tone){
 	 * Push more events onto the timeline to keep up with the position of the timeline
 	 * @private
 	 */
-	Tone.TransportRepeatEvent.prototype._restart = function(){
+	Tone.TransportRepeatEvent.prototype._restart = function(time){
 		this.Transport.clear(this._currentId);
 		this.Transport.clear(this._nextId);
-		var ticks = this.Transport.ticks;
 		this._nextTick = this.time;
+		var ticks = this.Transport.getTicksAtTime(time);
 		if (ticks > this.time){
 			this._nextTick = this.time + Math.ceil((ticks - this.time) / this._interval) * this._interval;
 		}
-		this._currentId = this.Transport.scheduleOnce(this.invoke.bind(this), Tone.TransportTime(this._nextTick, "i"));
+		this._currentId = this.Transport.scheduleOnce(this.invoke.bind(this), Tone.Ticks(this._nextTick));
 		this._nextTick += this._interval;
-		this._nextId = this.Transport.scheduleOnce(this.invoke.bind(this), Tone.TransportTime(this._nextTick, "i"));
+		this._nextId = this.Transport.scheduleOnce(this.invoke.bind(this), Tone.Ticks(this._nextTick));
 	};
 
 	/**
@@ -122,6 +122,8 @@ define(["Tone/core/Tone", "Tone/core/TransportEvent"], function(Tone){
 		this.Transport.off("start loopStart", this._boundRestart);
 		this._boundCreateEvents = null;
 		Tone.TransportEvent.prototype.dispose.call(this);
+		this.duration = null;
+		this._interval = null;
 		return this;
 	};
 

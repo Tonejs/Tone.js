@@ -159,8 +159,8 @@ define(["Tone/core/Tone", "Tone/instrument/Synth", "Tone/signal/Signal", "Tone/s
 	Tone.FMSynth.prototype._triggerEnvelopeAttack = function(time, velocity){
 		time = this.toSeconds(time);
 		//the envelopes
-		this.envelope.triggerAttack(time, velocity);
-		this.modulationEnvelope.triggerAttack(time);
+		this._carrier._triggerEnvelopeAttack(time, velocity);
+		this._modulator._triggerEnvelopeAttack(time);
 		return this;
 	};
 
@@ -173,8 +173,8 @@ define(["Tone/core/Tone", "Tone/instrument/Synth", "Tone/signal/Signal", "Tone/s
 	 */
 	Tone.FMSynth.prototype._triggerEnvelopeRelease = function(time){
 		time = this.toSeconds(time);
-		this.envelope.triggerRelease(time);
-		this.modulationEnvelope.triggerRelease(time);
+		this._carrier._triggerEnvelopeRelease(time);
+		this._modulator._triggerEnvelopeRelease(time);
 		return this;
 	};
 

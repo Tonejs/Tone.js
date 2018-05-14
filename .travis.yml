@@ -3,49 +3,87 @@ dist: trusty
 language: node_js
 node_js:
 - '8'
-addons:
-  chrome: stable
-  firefox: latest
 before_script:
 - cd gulp
-- npm install -g jsdoc
-- npm install -g karma
 - npm install -g gulp
 - npm install
 - git config --global user.email "travis@travis-ci.org"
 - git config --global user.name "Travis CI"
 script: gulp travis-test
 after_success:
-- sh success.sh
+- gulp coveralls
 before_deploy:
+- npm install -g jsdoc
+- sh deploy_updates.sh
 - node increment_version.js
 - cd ../
-deploy:
-- provider: npm
-  skip_cleanup: true
-  email: yotammann@gmail.com
-  api_key: $NPM_TOKEN
-  tag: next
-  on:
-    repo: Tonejs/Tone.js
-    branch: dev
-# publish without @next when pushing on master
-- provider: npm
-  skip_cleanup: true
-  email: yotammann@gmail.com
-  api_key: $NPM_TOKEN
-  on:
-    repo: Tonejs/Tone.js
-    branch: master
-# publish build files for releases
-- provider: releases
-  api-key: $GH_TOKEN
-  file_glob: true
-  file: build/*
-  skip_cleanup: true
-  on:
-    tags: true
+jobs:
+  include:
+    - stage: test
+      script: gulp travis-test
+      env : BROWSER=chrome
+      os: linux
+      addons:
+        chrome: stable
+    - stage: test
+      script: gulp travis-test
+      env : BROWSER=chrome
+      os: linux
+      addons:
+        chrome: beta
+    - stage: test
+      script: gulp travis-test
+      env : BROWSER=firefox
+      os: linux
+      addons:
+        firefox: latest
+    - stage: test
+      script:
+      # needs an audio output device to run
+      - HOMEBREW_NO_AUTO_UPDATE=1 brew install Caskroom/cask/soundflower
+      - gulp travis-test
+      env : BROWSER=safari
+      os: osx
+    - stage: test
+      script:
+      # needs an audio output device to run
+      - HOMEBREW_NO_AUTO_UPDATE=1 brew install Caskroom/cask/soundflower
+      - gulp travis-test
+      env : BROWSER=safari
+      os: osx
+      # test on an older safari
+      osx_image: xcode6.4
+    - stage: deploy
+      os: linux
+      script: skip
+      deploy:
+      - provider: npm
+        skip_cleanup: true
+        email: yotammann@gmail.com
+        api_key: $NPM_TOKEN
+        tag: next
+        on:
+          repo: Tonejs/Tone.js
+          branch: dev
+      # publish without @next when pushing on master
+      - provider: npm
+        skip_cleanup: true
+        email: yotammann@gmail.com
+        api_key: $NPM_TOKEN
+        on:
+          repo: Tonejs/Tone.js
+          branch: master
+      # publish build files for releases
+      - provider: releases
+        api-key: $GH_TOKEN
+        file_glob: true
+        file: build/*
+        skip_cleanup: true
+        on:
+          tags: true
 # cache node_modules to speed up build
 cache:
   directories:
     - node_modules
+    - gulp/node_modules
+    - $HOME/Library/Caches/Homebrew

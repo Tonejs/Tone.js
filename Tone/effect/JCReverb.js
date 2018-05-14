@@ -76,7 +76,7 @@ define(["Tone/core/Tone", "Tone/component/FeedbackCombFilter", "Tone/effect/Ster
 		this._feedbackCombFilters = [];
 
 		//make the allpass filters
-		for (var af = 0; af < allpassFilterFreqs.length; af++) {
+		for (var af = 0; af < allpassFilterFreqs.length; af++){
 			var allpass = this.context.createBiquadFilter();
 			allpass.type = "allpass";
 			allpass.frequency.value = allpassFilterFreqs[af];
@@ -84,7 +84,7 @@ define(["Tone/core/Tone", "Tone/component/FeedbackCombFilter", "Tone/effect/Ster
 		}
 
 		//and the comb filters
-		for (var cf = 0; cf < combFilterDelayTimes.length; cf++) {
+		for (var cf = 0; cf < combFilterDelayTimes.length; cf++){
 			var fbcf = new Tone.FeedbackCombFilter(combFilterDelayTimes[cf], 0.1);
 			this._scaleRoomSize.connect(fbcf.resonance);
 			fbcf.resonance.value = combFilterResonances[cf];
@@ -123,12 +123,12 @@ define(["Tone/core/Tone", "Tone/component/FeedbackCombFilter", "Tone/effect/Ster
 	 */
 	Tone.JCReverb.prototype.dispose = function(){
 		Tone.StereoEffect.prototype.dispose.call(this);
-		for (var apf = 0; apf < this._allpassFilters.length; apf++) {
+		for (var apf = 0; apf < this._allpassFilters.length; apf++){
 			this._allpassFilters[apf].disconnect();
 			this._allpassFilters[apf] = null;
 		}
 		this._allpassFilters = null;
-		for (var fbcf = 0; fbcf < this._feedbackCombFilters.length; fbcf++) {
+		for (var fbcf = 0; fbcf < this._feedbackCombFilters.length; fbcf++){
 			this._feedbackCombFilters[fbcf].dispose();
 			this._feedbackCombFilters[fbcf] = null;
 		}

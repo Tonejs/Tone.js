@@ -21,3 +21,5 @@ test/supports.html
 test/coverage/
 
 build/*
+
+examples/scratch.js

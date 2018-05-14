@@ -1,5 +1,6 @@
-define(["helper/Basic", "Tone/event/Event", "Tone/core/Tone", "Tone/core/Transport", "helper/Offline", "Test"], 
-	function (Basic, Event, Tone, Transport, Offline, Test) {
+define(["helper/Basic", "Tone/event/Event", "Tone/core/Tone", "Tone/core/Transport",
+	"helper/Offline", "Test", "Tone/type/Time"],
+function (Basic, Event, Tone, Transport, Offline, Test, Time) {
 
 	describe("Event", function(){
 
@@ -7,7 +8,7 @@ define(["helper/Basic", "Tone/event/Event", "Tone/core/Tone", "Tone/core/Transpo
 
 		context("Constructor", function(){
 
-			it ("takes a callback and a value", function(){
+			it("takes a callback and a value", function(){
 				return Offline(function(){
 					var callback = function(){};
 					var note = new Event(callback, "C4");
@@ -17,7 +18,7 @@ define(["helper/Basic", "Tone/event/Event", "Tone/core/Tone", "Tone/core/Transpo
 				});
 			});
 
-			it ("can be constructed with no arguments", function(){
+			it("can be constructed with no arguments", function(){
 				return Offline(function(){
 					var note = new Event();
 					expect(note.value).to.be.null;
@@ -25,10 +26,10 @@ define(["helper/Basic", "Tone/event/Event", "Tone/core/Tone", "Tone/core/Transpo
 				});
 			});
 
-			it ("can pass in arguments in options object", function(){
+			it("can pass in arguments in options object", function(){
 				return Offline(function(){
 					var callback = function(){};
-					var value = {"a" : 1};
+					var value = { "a" : 1 };
 					var note = new Event({
 						"callback" : callback,
 						"value" : value,
@@ -39,7 +40,7 @@ define(["helper/Basic", "Tone/event/Event", "Tone/core/Tone", "Tone/core/Transpo
 					expect(note.callback).to.equal(callback);
 					expect(note.value).to.equal(value);
 					expect(note.loop).to.be.true;
-					expect(note.loopEnd).to.equal("4n");
+					expect(note.loopEnd).to.equal(Time("4n").valueOf());
 					expect(note.probability).to.equal(0.3);
 					note.dispose();
 				});
@@ -48,7 +49,7 @@ define(["helper/Basic", "Tone/event/Event", "Tone/core/Tone", "Tone/core/Transpo
 
 		context("Get/Set", function(){
 
-			it ("can set values with object", function(){
+			it("can set values with object", function(){
 				return Offline(function(){
 					var callback = function(){};
 					var note = new Event();
@@ -64,7 +65,7 @@ define(["helper/Basic", "Tone/event/Event", "Tone/core/Tone", "Tone/core/Transpo
 				});
 			});
 
-			it ("can set get a the values as an object", function(){
+			it("can set get a the values as an object", function(){
 				return Offline(function(){
 					var callback = function(){};
 					var note = new Event({
@@ -82,7 +83,7 @@ define(["helper/Basic", "Tone/event/Event", "Tone/core/Tone", "Tone/core/Transpo
 
 		context("Event callback", function(){
 
-			it ("does not invoke get invoked until started", function(){
+			it("does not invoke get invoked until started", function(){
 				return Offline(function(Transport){
 					new Event(function(){
 						throw new Error("shouldn't call this callback");
@@ -91,7 +92,7 @@ define(["helper/Basic", "Tone/event/Event", "Tone/core/Tone", "Tone/core/Transpo
 				}, 0.3);
 			});
 
-			it ("is invoked after it's started", function(){
+			it("is invoked after it's started", function(){
 				var invoked = false;
 				return Offline(function(Transport){
 					var note = new Event(function(){
@@ -104,7 +105,7 @@ define(["helper/Basic", "Tone/event/Event", "Tone/core/Tone", "Tone/core/Transpo
 				});
 			});
 
-			it ("passes in the scheduled time to the callback", function(){
+			it("passes in the scheduled time to the callback", function(){
 				var invoked = false;
 				return Offline(function(Transport){
 					var now = 0.1;
@@ -121,7 +122,7 @@ define(["helper/Basic", "Tone/event/Event", "Tone/core/Tone", "Tone/core/Transpo
 				});
 			});
 
-			it ("passes in the value to the callback", function(){
+			it("passes in the value to the callback", function(){
 				var invoked = false;
 				return Offline(function(Transport){
 					var note = new Event(function(time, thing){
@@ -136,7 +137,7 @@ define(["helper/Basic", "Tone/event/Event", "Tone/core/Tone", "Tone/core/Transpo
 				});
 			});
 
-			it ("can mute the callback", function(){
+			it("can mute the callback", function(){
 				return Offline(function(Transport){
 					var note = new Event(function(){
 						throw new Error("shouldn't call this callback");
@@ -147,7 +148,7 @@ define(["helper/Basic", "Tone/event/Event", "Tone/core/Tone", "Tone/core/Transpo
 				}, 0.3);
 			});
 
-			it ("can trigger with some probability", function(){
+			it("can trigger with some probability", function(){
 
 				return Offline(function(Transport){
 					var note = new Event(function(){
@@ -162,7 +163,7 @@ define(["helper/Basic", "Tone/event/Event", "Tone/core/Tone", "Tone/core/Transpo
 
 		context("Scheduling", function(){
 
-			it ("can be started and stopped multiple times", function(){
+			it("can be started and stopped multiple times", function(){
 				return Offline(function(Transport){
 					var note = new Event().start(0).stop(0.2).start(0.4);
 					Transport.start(0);
@@ -180,7 +181,7 @@ define(["helper/Basic", "Tone/event/Event", "Tone/core/Tone", "Tone/core/Transpo
 				}, 0.5);
 			});
 
-			it ("restarts when transport is restarted", function(){
+			it("restarts when transport is restarted", function(){
 
 				return Offline(function(Transport){
 					var note = new Event().start(0).stop(0.4);
@@ -190,7 +191,7 @@ define(["helper/Basic", "Tone/event/Event", "Tone/core/Tone", "Tone/core/Transpo
 							expect(note.state).to.equal("started");
 						});
 						Test.whenBetween(time, 0.4, 0.5, function(){
-							expect(note.state).to.equal("stopped");	
+							expect(note.state).to.equal("stopped");
 						});
 						Test.whenBetween(time, 0.55, 0.8, function(){
 							expect(note.state).to.equal("started");
@@ -199,8 +200,7 @@ define(["helper/Basic", "Tone/event/Event", "Tone/core/Tone", "Tone/core/Transpo
 				}, 1);
 			});
 
-
-			it ("can be cancelled", function(){
+			it("can be cancelled", function(){
 				return Offline(function(Transport){
 					var note = new Event().start(0);
 					expect(note.state).to.equal("started");
@@ -233,7 +233,7 @@ define(["helper/Basic", "Tone/event/Event", "Tone/core/Tone", "Tone/core/Transpo
 
 		context("Looping", function(){
 
-			it ("can be set to loop", function(){
+			it("can be set to loop", function(){
 				var callCount = 0;
 				return Offline(function(Transport){
 					new Event({
@@ -250,7 +250,7 @@ define(["helper/Basic", "Tone/event/Event", "Tone/core/Tone", "Tone/core/Transpo
 
 			});
 
-			it ("can be set to loop at a specific interval", function(){
+			it("can be set to loop at a specific interval", function(){
 				return Offline(function(Transport){
 					var lastCall;
 					new Event({
@@ -267,7 +267,7 @@ define(["helper/Basic", "Tone/event/Event", "Tone/core/Tone", "Tone/core/Transpo
 				}, 1);
 			});
 
-			it ("can adjust the loop duration after starting", function(){
+			it("can adjust the loop duration after starting", function(){
 				return Offline(function(Transport){
 					var lastCall;
 					var note = new Event({
@@ -286,7 +286,7 @@ define(["helper/Basic", "Tone/event/Event", "Tone/core/Tone", "Tone/core/Transpo
 				}, 0.8);
 			});
 
-			it ("can loop a specific number of times", function(){
+			it("can loop a specific number of times", function(){
 				var callCount = 0;
 				return Offline(function(Transport){
 					new Event({
@@ -302,7 +302,7 @@ define(["helper/Basic", "Tone/event/Event", "Tone/core/Tone", "Tone/core/Transpo
 				});
 			});
 
-			it ("can be started and stopped multiple times", function(){
+			it("can be started and stopped multiple times", function(){
 				return Offline(function(Transport){
 					var eventTimes = [0.3, 0.4, 0.9, 1.0, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9];
 					var eventTimeIndex = 0;
@@ -319,7 +319,7 @@ define(["helper/Basic", "Tone/event/Event", "Tone/core/Tone", "Tone/core/Transpo
 				}, 2);
 			});
 
-			it ("loops the correct amount of times when the event is started in the Transport's past", function(){
+			it("loops the correct amount of times when the event is started in the Transport's past", function(){
 				var callCount = 0;
 				return Offline(function(Transport){
 					var note = new Event({
@@ -342,7 +342,7 @@ define(["helper/Basic", "Tone/event/Event", "Tone/core/Tone", "Tone/core/Transpo
 				});
 			});
 
-			it ("reports the progress of the loop", function(){
+			it("reports the progress of the loop", function(){
 				return Offline(function(Transport){
 					var note = new Event({
 						"loopEnd" : 1,
@@ -355,7 +355,7 @@ define(["helper/Basic", "Tone/event/Event", "Tone/core/Tone", "Tone/core/Transpo
 				}, 0.8);
 			});
 
-			it ("progress is 0 when not looping", function(){
+			it("progress is 0 when not looping", function(){
 				Offline(function(Transport){
 					var note = new Event({
 						"loopEnd" : 0.25,
@@ -371,8 +371,7 @@ define(["helper/Basic", "Tone/event/Event", "Tone/core/Tone", "Tone/core/Transpo
 
 		context("playbackRate and humanize", function(){
 
-
-			it ("can adjust the playbackRate", function(){
+			it("can adjust the playbackRate", function(){
 				return Offline(function(Transport){
 					var lastCall;
 					new Event({
@@ -390,7 +389,7 @@ define(["helper/Basic", "Tone/event/Event", "Tone/core/Tone", "Tone/core/Transpo
 				}, 0.7);
 			});
 
-			it ("can adjust the playbackRate after starting", function(){
+			it("can adjust the playbackRate after starting", function(){
 				return Offline(function(Transport){
 					var lastCall;
 					var note = new Event({
@@ -411,7 +410,7 @@ define(["helper/Basic", "Tone/event/Event", "Tone/core/Tone", "Tone/core/Transpo
 
 			});
 
-			it ("can humanize the callback by some amount", function(){
+			it("can humanize the callback by some amount", function(){
 				return Offline(function(Transport){
 					var lastCall;
 					var note = new Event({
@@ -421,7 +420,7 @@ define(["helper/Basic", "Tone/event/Event", "Tone/core/Tone", "Tone/core/Transpo
 						"callback" : function(time){
 							if (lastCall){
 								expect(time - lastCall).to.be.within(0.2, 0.3);
-							} 
+							}
 							lastCall += 0.25;
 						}
 					}).start(0);

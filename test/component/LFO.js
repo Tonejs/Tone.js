@@ -1,12 +1,12 @@
-define(["Tone/component/LFO", "helper/Basic", "helper/Offline", "Test", 
-	"helper/OutputAudio", "Tone/type/Type", "Tone/signal/Signal"], 
+define(["Tone/component/LFO", "helper/Basic", "helper/Offline", "Test",
+	"helper/OutputAudio", "Tone/type/Type", "Tone/signal/Signal"],
 function (LFO, Basic, Offline, Test, OutputAudio, Tone, Signal) {
 	describe("LFO", function(){
 
 		Basic(LFO);
 
 		context("API", function(){
-			it ("can get the current state", function(done){
+			it("can get the current state", function(done){
 				var lfo = new LFO();
 				expect(lfo.state).to.equal("stopped");
 				lfo.start();
@@ -82,7 +82,7 @@ function (LFO, Basic, Offline, Test, OutputAudio, Tone, Signal) {
 					var lfo = new LFO(100, 10, 20).toMaster();
 					lfo.start();
 					lfo.min = 15;
-					lfo.max  = 18;
+					lfo.max = 18;
 				}).then(function(buffer){
 					expect(buffer.min()).to.be.gte(15);
 					expect(buffer.max()).to.be.lte(18);
@@ -148,6 +148,33 @@ function (LFO, Basic, Offline, Test, OutputAudio, Tone, Signal) {
 				}).then(function(buffer){
 					expect(buffer.min()).to.be.closeTo(0.017, 0.01);
 					expect(buffer.max()).to.be.closeTo(0.31, 0.01);
+				});
+			});
+
+			it("can sync the frequency to the Transport", function(){
+				return Offline(function(Transport){
+					var lfo = new LFO(2);
+					lfo.sync();
+					lfo.frequency.toMaster();
+					Transport.bpm.setValueAtTime(Transport.bpm.value * 2, 0.05);
+					// Transport.start(0)
+				}, 0.1).then(function(buffer){
+					expect(buffer.getValueAtTime(0)).to.be.closeTo(2, 0.1);
+					expect(buffer.getValueAtTime(0.05)).to.be.closeTo(4, 0.1);
+				});
+			});
+
+			it("can unsync the frequency to the Transport", function(){
+				return Offline(function(Transport){
+					var lfo = new LFO(2);
+					lfo.sync();
+					lfo.frequency.toMaster();
+					Transport.bpm.setValueAtTime(Transport.bpm.value * 2, 0.05);
+					lfo.unsync();
+					// Transport.start(0)
+				}, 0.1).then(function(buffer){
+					expect(buffer.getValueAtTime(0)).to.be.closeTo(2, 0.1);
+					expect(buffer.getValueAtTime(0.05)).to.be.closeTo(2, 0.1);
 				});
 			});
 		});

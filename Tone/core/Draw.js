@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/core/Timeline"], function (Tone) {
+define(["Tone/core/Tone", "Tone/core/Timeline"], function(Tone){
 
 	"use strict";
 
@@ -93,8 +93,8 @@ define(["Tone/core/Tone", "Tone/core/Timeline"], function (Tone) {
 	 *  @private
 	 */
 	Tone.Draw.prototype._drawLoop = function(){
-		var now = Tone.now();
-		while(this._events.length && this._events.peek().time - this.anticipation <= now){
+		var now = Tone.context.currentTime;
+		while (this._events.length && this._events.peek().time - this.anticipation <= now){
 			var event = this._events.shift();
 			if (now - event.time <= this.expiration){
 				event.callback();

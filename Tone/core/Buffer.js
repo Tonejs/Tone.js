@@ -53,14 +53,25 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type", "Tone/shim/Audi
 		 */
 		this._xhr = null;
 
+		/**
+		 * Private callback when the buffer is loaded.
+		 * @type {Function}
+		 * @private
+		 */
+		this._onload = Tone.noOp;
+
 		if (options.url instanceof AudioBuffer || options.url instanceof Tone.Buffer){
 			this.set(options.url);
 			// invoke the onload callback
 			if (options.onload){
-				options.onload(this);
+				if (this.loaded){
+					options.onload(this);
+				} else {
+					this._onload = options.onload;
+				}
 			}
 		} else if (Tone.isString(options.url)){
-			this.load(options.url, options.onload, options.onerror);
+			this.load(options.url).then(options.onload).catch(options.onerror);
 		}
 	};
 
@@ -72,7 +83,9 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type", "Tone/shim/Audi
 	 */
 	Tone.Buffer.defaults = {
 		"url" : undefined,
-		"reverse" : false
+		"reverse" : false,
+		"onload" : Tone.noOp,
+		"onerror" : Tone.noOp
 	};
 
 	/**
@@ -83,7 +96,14 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type", "Tone/shim/Audi
 	 */
 	Tone.Buffer.prototype.set = function(buffer){
 		if (buffer instanceof Tone.Buffer){
-			this._buffer = buffer.get();
+			if (buffer.loaded){
+				this._buffer = buffer.get();
+			} else {
+				buffer._onload = function(){
+					this.set(buffer);
+					this._onload(this);
+				}.bind(this);
+			}
 		} else {
 			this._buffer = buffer;
 		}
@@ -117,6 +137,7 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type", "Tone/shim/Audi
 					this._xhr = null;
 					this.set(buff);
 					load(this);
+					this._onload(this);
 					if (onload){
 						onload(this);
 					}
@@ -376,6 +397,19 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type", "Tone/shim/Audi
 	};
 
 	/**
+	 * Creates a Tone.Buffer from a URL, returns a promise
+	 * which resolves to a Tone.Buffer
+	 * @param  {String} url The url to load.
+	 * @return {Promise<Tone.Buffer>}     A promise which resolves to a Tone.Buffer
+	 */
+	Tone.Buffer.fromUrl = function(url){
+		var buffer = new Tone.Buffer();
+		return buffer.load(url).then(function(){
+			return buffer;
+		});
+	};
+
+	/**
 	 * Remove an xhr request from the download queue
 	 * @private
 	 */
@@ -442,7 +476,7 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type", "Tone/shim/Audi
 		request.addEventListener("load", function(){
 
 			if (request.status === 200){
-				Tone.context.decodeAudioData(request.response, function(buff) {
+				Tone.context.decodeAudioData(request.response).then(function(buff){
 
 					request.progress = 1;
 					onProgress();
@@ -453,7 +487,7 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type", "Tone/shim/Audi
 						//emit the event at the end
 						Tone.Buffer.emit("load");
 					}
-				}, function(){
+				}).catch(function(){
 					Tone.Buffer._removeFromDownloadQueue(request);
 					onError("Tone.Buffer: could not decode audio data: "+url);
 				});

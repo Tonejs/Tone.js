@@ -6,14 +6,14 @@ define(["Tone/control/CtrlRandom", "helper/Basic"], function (CtrlRandom, Basic)
 
 		context("API", function(){
 
-			it ("can be constructed with a min and max", function(){
+			it("can be constructed with a min and max", function(){
 				var rando = new CtrlRandom(5, 10);
 				expect(rando.min).to.equal(5);
 				expect(rando.max).to.equal(10);
 				rando.dispose();
 			});
 
-			it ("can be constructed with an options object", function(){
+			it("can be constructed with an options object", function(){
 				var rando = new CtrlRandom({
 					min : -10,
 					max : 100,
@@ -25,7 +25,7 @@ define(["Tone/control/CtrlRandom", "helper/Basic"], function (CtrlRandom, Basic)
 				rando.dispose();
 			});
 
-			it ("returns numbers between min and max", function(){
+			it("returns numbers between min and max", function(){
 				var rando = new CtrlRandom({
 					min : 5,
 					max : 100,
@@ -36,7 +36,7 @@ define(["Tone/control/CtrlRandom", "helper/Basic"], function (CtrlRandom, Basic)
 				rando.dispose();
 			});
 
-			it ("returns integers between min and max", function(){
+			it("returns integers between min and max", function(){
 				var rando = new CtrlRandom({
 					min : -10,
 					max : -2,

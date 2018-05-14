@@ -1,7 +1,7 @@
-define(["Tone/core/Tone", "Tone/signal/TimelineSignal"], function (Tone) {
+define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 
 	/**
-	 * @class Tone.TickSignal extends Tone.TimelineSignal, but adds the capability
+	 * @class Tone.TickSignal extends Tone.Signal, but adds the capability
 	 *        to calculate the number of elapsed ticks. exponential and target curves
 	 *        are approximated with multiple linear ramps.
 	 *
@@ -9,25 +9,34 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal"], function (Tone) {
 	 *        describing integrating timing functions for tempo calculations.
 	 *
 	 * @param {Number} value The initial value of the signal
-	 * @extends {Tone.TimelineSignal}
+	 * @extends {Tone.Signal}
 	 */
 	Tone.TickSignal = function(value){
 
 		value = Tone.defaultArg(value, 1);
 
-		Tone.TimelineSignal.call(this, {
+		Tone.Signal.call(this, {
 			"units" : Tone.Type.Ticks,
 			"value" : value
 		});
 
 		//extend the memory
 		this._events.memory = Infinity;
+
+		//clear the clock from the beginning
+		this.cancelScheduledValues(0);
+		//set an initial event
+		this._events.add({
+			"type" : Tone.Param.AutomationType.SetValue,
+			"time" : 0,
+			"value" : value
+		});
 	};
 
-	Tone.extend(Tone.TickSignal, Tone.TimelineSignal);
-
+	Tone.extend(Tone.TickSignal, Tone.Signal);
+	
 	/**
-	 * Wraps Tone.TimelineSignal methods so that they also
+	 * Wraps Tone.Signal methods so that they also
 	 * record the ticks.
 	 * @param  {Function} method
 	 * @return {Function}
@@ -39,14 +48,14 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal"], function (Tone) {
 			method.apply(this, arguments);
 			var event = this._events.get(time);
 			var previousEvent = this._events.previousEvent(event);
-			var ticksUntilTime = this._getTickUntilEvent(previousEvent, time - this.sampleTime);
+			var ticksUntilTime = this._getTicksUntilEvent(previousEvent, time);
 			event.ticks = Math.max(ticksUntilTime, 0);
 			return this;
 		};
 	}
 
-	Tone.TickSignal.prototype.setValueAtTime = _wrapScheduleMethods(Tone.TimelineSignal.prototype.setValueAtTime);
-	Tone.TickSignal.prototype.linearRampToValueAtTime = _wrapScheduleMethods(Tone.TimelineSignal.prototype.linearRampToValueAtTime);
+	Tone.TickSignal.prototype.setValueAtTime = _wrapScheduleMethods(Tone.Signal.prototype.setValueAtTime);
+	Tone.TickSignal.prototype.linearRampToValueAtTime = _wrapScheduleMethods(Tone.Signal.prototype.linearRampToValueAtTime);
 
 	/**
 	 *  Start exponentially approaching the target value at the given time with
@@ -64,7 +73,7 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal"], function (Tone) {
 
 		//start from previously scheduled value
 		var prevEvent = this._events.get(time);
-		var segments = 5;
+		var segments = Math.round(Math.max(1 / constant, 1));
 		for (var i = 0; i <= segments; i++){
 			var segTime = constant * i + time;
 			var rampVal = this._exponentialApproach(prevEvent.time, prevEvent.value, value, constant, segTime);
@@ -89,11 +98,12 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal"], function (Tone) {
 		var prevEvent = this._events.get(time);
 		if (prevEvent === null){
 			prevEvent = {
-				"value" : this._initial,
+				"value" : this._initialValue,
 				"time" : 0
 			};
 		}
-		var segments = 5;
+		//approx 10 segments per second
+		var segments = Math.round(Math.max((time - prevEvent.time)*10, 1));
 		var segmentDur = ((time - prevEvent.time)/segments);
 		for (var i = 0; i <= segments; i++){
 			var segTime = segmentDur * i + prevEvent.time;
@@ -111,15 +121,22 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal"], function (Tone) {
 	 * @return {Ticks}      The number of ticks which have elapsed at the time
 	 *                          given any automations.
 	 */
-	Tone.TickSignal.prototype._getTickUntilEvent = function(event, time){
+	Tone.TickSignal.prototype._getTicksUntilEvent = function(event, time){
 		if (event === null){
 			event = {
 				"ticks" : 0,
 				"time" : 0
 			};
+		} else if (Tone.isUndef(event.ticks)){
+			var previousEvent = this._events.previousEvent(event);
+			event.ticks = this._getTicksUntilEvent(previousEvent, event.time);
 		}
 		var val0 = this.getValueAtTime(event.time);
 		var val1 = this.getValueAtTime(time);
+		//if it's right on the line, take the previous value
+		if (this._events.get(time).time === time && this._events.get(time).type === Tone.Param.AutomationType.SetValue){
+			val1 = this.getValueAtTime(time - this.sampleTime);
+		}
 		return 0.5 * (time - event.time) * (val0 + val1) + event.ticks;
 	};
 
@@ -130,10 +147,10 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal"], function (Tone) {
 	 * @return {Ticks}      The number of ticks which have elapsed at the time
 	 *                          given any automations.
 	 */
-	Tone.TickSignal.prototype.getTickAtTime = function(time){
+	Tone.TickSignal.prototype.getTicksAtTime = function(time){
 		time = this.toSeconds(time);
 		var event = this._events.get(time);
-		return this._getTickUntilEvent(event, time);
+		return Math.max(this._getTicksUntilEvent(event, time), 0);
 	};
 
 	/**
@@ -144,7 +161,7 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal"], function (Tone) {
 	 */
 	Tone.TickSignal.prototype.getDurationOfTicks = function(ticks, time){
 		time = this.toSeconds(time);
-		var currentTick = this.getTickAtTime(time);
+		var currentTick = this.getTicksAtTime(time);
 		return this.getTimeOfTick(currentTick + ticks) - time;
 	};
 
@@ -159,7 +176,7 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal"], function (Tone) {
 		if (before && before.ticks === tick){
 			return before.time;
 		} else if (before && after &&
-			after.type === Tone.TimelineSignal.Type.Linear &&
+			after.type === Tone.Param.AutomationType.Linear &&
 			before.value !== after.value){
 			var val0 = this.getValueAtTime(before.time);
 			var val1 = this.getValueAtTime(after.time);
@@ -175,8 +192,36 @@ define(["Tone/core/Tone", "Tone/signal/TimelineSignal"], function (Tone) {
 				return before.time + (tick - before.ticks) / before.value;
 			}
 		} else {
-			return tick / this._initial;
+			return tick / this._initialValue;
 		}
+	};
+
+	/**
+	 * Convert some number of ticks their the duration in seconds accounting
+	 * for any automation curves starting at the given time.
+	 * @param  {Ticks} ticks The number of ticks to convert to seconds.
+	 * @param  {Time} [when=now]  When along the automation timeline to convert the ticks.
+	 * @return {Tone.Time}       The duration in seconds of the ticks.
+	 */
+	Tone.TickSignal.prototype.ticksToTime = function(ticks, when){
+		when = this.toSeconds(when);
+		return new Tone.Time(this.getDurationOfTicks(ticks, when));
+	};
+
+	/**
+	 * The inverse of [ticksToTime](#tickstotime). Convert a duration in
+	 * seconds to the corresponding number of ticks accounting for any
+	 * automation curves starting at the given time.
+	 * @param  {Time} duration The time interval to convert to ticks.
+	 * @param  {Time} [when=now]     When along the automation timeline to convert the ticks.
+	 * @return {Tone.Ticks}          The duration in ticks.
+	 */
+	Tone.TickSignal.prototype.timeToTicks = function(duration, when){
+		when = this.toSeconds(when);
+		duration = this.toSeconds(duration);
+		var startTicks = this.getTicksAtTime(when);
+		var endTicks = this.getTicksAtTime(when + duration);
+		return new Tone.Ticks(endTicks - startTicks);
 	};
 
 	return Tone.TickSignal;

@@ -1,5 +1,6 @@
-define(["helper/Basic", "Tone/source/FMOscillator", "helper/Offline", "helper/SourceTests", "helper/OscillatorTests", "Test"], 
-	function (BasicTests, FMOscillator, Offline, SourceTests, OscillatorTests, Test) {
+define(["helper/Basic", "Tone/source/FMOscillator", "helper/Offline",
+	"helper/SourceTests", "helper/OscillatorTests", "Test", "helper/CompareToFile"],
+function(BasicTests, FMOscillator, Offline, SourceTests, OscillatorTests, Test, CompareToFile) {
 
 	describe("FMOscillator", function(){
 
@@ -7,6 +8,13 @@ define(["helper/Basic", "Tone/source/FMOscillator", "helper/Offline", "helper/So
 		BasicTests(FMOscillator);
 		SourceTests(FMOscillator);
 		OscillatorTests(FMOscillator);
+
+		it("matches a file", function(){
+			return CompareToFile(function(){
+				var osc = new FMOscillator().toMaster();
+				osc.start(0);
+			}, "fmOscillator.wav");
+		});
 
 		context("Frequency Modulation", function(){
 
@@ -49,7 +57,6 @@ define(["helper/Basic", "Tone/source/FMOscillator", "helper/Offline", "helper/So
 				expect(fmOsc.modulationType).to.equal("triangle5");
 				fmOsc.dispose();
 			});
-
 
 		});
 	});

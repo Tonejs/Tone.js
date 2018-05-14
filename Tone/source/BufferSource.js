@@ -1,5 +1,5 @@
 define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/Gain",
-	"Tone/core/AudioNode"], function (Tone) {
+	"Tone/core/AudioNode", "Tone/shim/BufferSourceNode"], function(Tone){
 
 	/**
 	 *  @class Wrapper around the native BufferSourceNode.
@@ -11,7 +11,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/G
 	Tone.BufferSource = function(){
 
 		var options = Tone.defaults(arguments, ["buffer", "onload"], Tone.BufferSource);
-		Tone.AudioNode.call(this);
+		Tone.AudioNode.call(this, options);
 
 		/**
 		 *  The callback to invoke after the
@@ -26,6 +26,22 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/G
 		 *  @private
 		 */
 		this._startTime = -1;
+
+		/**
+		 *  An additional flag if the actual BufferSourceNode
+		 *  has been started. b/c stopping an unstarted buffer
+		 *  will throw it into an invalid state
+		 *  @type  {Boolean}
+		 *  @private
+		 */
+		this._sourceStarted = false;
+
+		/**
+		 *  Flag if the source has already been stopped
+		 *  @type  {Boolean}
+		 *  @private
+		 */
+		this._sourceStopped = false;
 
 		/**
 		 *  The time that the buffer is scheduled to stop.
@@ -48,6 +64,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/G
 		 */
 		this._source = this.context.createBufferSource();
 		this._source.connect(this._gainNode);
+		this._source.onended = this._onended.bind(this);
 
 		/**
 		 * The private buffer instance
@@ -130,14 +147,23 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/G
 	 */
 	Object.defineProperty(Tone.BufferSource.prototype, "state", {
 		get : function(){
-			var now = this.now();
-			if (this._startTime !== -1 && now >= this._startTime && now < this._stopTime){
-				return Tone.State.Started;
-			} else {
-				return Tone.State.Stopped;
-			}
+			return this.getStateAtTime(this.now());
 		}
 	});
+
+	/**
+	 *  Get the playback state at the given time
+	 *  @param  {Time}  time  The time to test the state at
+	 *  @return  {Tone.State}  The playback state. 
+	 */
+	Tone.BufferSource.prototype.getStateAtTime = function(time){
+		time = this.toSeconds(time);
+		if (this._startTime !== -1 && time >= this._startTime && !this._sourceStopped){
+			return Tone.State.Started;
+		} else {
+			return Tone.State.Stopped;
+		}
+	};
 
 	/**
 	 *  Start the buffer
@@ -156,64 +182,67 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/G
 			throw new Error("Tone.BufferSource can only be started once.");
 		}
 
-		if (this.buffer.loaded){
-			time = this.toSeconds(time);
-			//if it's a loop the default offset is the loopstart point
-			if (this.loop){
-				offset = Tone.defaultArg(offset, this.loopStart);
+		if (!this.buffer.loaded){
+			throw new Error("Tone.BufferSource: buffer is either not set or not loaded.");
+		}
+
+		time = this.toSeconds(time);
+		//if it's a loop the default offset is the loopstart point
+		if (this.loop){
+			offset = Tone.defaultArg(offset, this.loopStart);
+		} else {
+			//otherwise the default offset is 0
+			offset = Tone.defaultArg(offset, 0);
+		}
+		offset = this.toSeconds(offset);
+
+		gain = Tone.defaultArg(gain, 1);
+		this._gain = gain;
+
+		fadeInTime = this.toSeconds(Tone.defaultArg(fadeInTime, this.fadeIn));
+		this.fadeIn = fadeInTime;
+
+		if (fadeInTime > 0){
+			this._gainNode.gain.setValueAtTime(0, time);
+			if (this.curve === "linear"){
+				this._gainNode.gain.linearRampToValueAtTime(this._gain, time + fadeInTime);
 			} else {
-				//otherwise the default offset is 0
-				offset = Tone.defaultArg(offset, 0);
+				this._gainNode.gain.exponentialApproachValueAtTime(this._gain, time, fadeInTime);
 			}
-			offset = this.toSeconds(offset);
+		} else {
+			this._gainNode.gain.setValueAtTime(gain, time);
+		}
 
-			gain = Tone.defaultArg(gain, 1);
-			this._gain = gain;
+		this._startTime = time;
 
-			fadeInTime = this.toSeconds(Tone.defaultArg(fadeInTime, this.fadeIn));
-			this.fadeIn = fadeInTime;
-
-			if (fadeInTime > 0){
-				this._gainNode.gain.setValueAtTime(0, time);
-				if (this.curve === "linear"){
-					this._gainNode.gain.linearRampToValueAtTime(this._gain, time + fadeInTime);
-				} else {
-					this._gainNode.gain.exponentialAppraochValueAtTime(this._gain, time, fadeInTime);
-				}
-			} else {
-				this._gainNode.gain.setValueAtTime(gain, time);
-			}
-
-			this._startTime = time;
-
+		if (Tone.isDefined(duration)){
 			var computedDur = this.toSeconds(Tone.defaultArg(duration, this.buffer.duration - (offset % this.buffer.duration)));
 			computedDur = Math.max(computedDur, 0);
 
-			if (!this.loop || (this.loop && !Tone.isUndef(duration))){
-				//clip the duration when not looping
-				if (!this.loop){
-					computedDur = Math.min(computedDur, this.buffer.duration - (offset % this.buffer.duration));
-				}
-				this.stop(time + computedDur, this.fadeOut);
+			//clip the duration when not looping
+			if (!this.loop){
+				computedDur = Math.min(computedDur, this.buffer.duration - (offset % this.buffer.duration));
+				computedDur = computedDur / this.playbackRate.value;
 			}
+			this.stop(time + computedDur, this.fadeOut);
+		}
 
-			//start the buffer source
-			if (this.loop){
-				//modify the offset if it's greater than the loop time
-				var loopEnd = this.loopEnd || this.buffer.duration;
-				var loopStart = this.loopStart;
-				var loopDuration = loopEnd - loopStart;
-				//move the offset back
-				if (offset > loopEnd){
-					offset = ((offset - loopStart) % loopDuration) + loopStart;
-				}
+		//start the buffer source
+		if (this.loop){
+			//modify the offset if it's greater than the loop time
+			var loopEnd = this.loopEnd || this.buffer.duration;
+			var loopStart = this.loopStart;
+			var loopDuration = loopEnd - loopStart;
+			//move the offset back
+			if (offset >= loopEnd){
+				offset = ((offset - loopStart) % loopDuration) + loopStart;
 			}
-			this._source.buffer = this.buffer.get();
-			this._source.loopEnd = this.loopEnd || this.buffer.duration;
-			Tone.isPast(time);
+		}
+		this._source.buffer = this.buffer.get();
+		this._source.loopEnd = this.loopEnd || this.buffer.duration;
+		if (offset < this.buffer.duration){
+			this._sourceStarted = true;
 			this._source.start(time, offset);
-		} else {
-			throw new Error("Tone.BufferSource: buffer is either not set or not loaded.");
 		}
 
 		return this;
@@ -227,53 +256,72 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/G
 	 *  @return  {Tone.BufferSource}  this
 	 */
 	Tone.BufferSource.prototype.stop = function(time, fadeOutTime){
-		if (this.buffer.loaded){
-
-			time = this.toSeconds(time);
-
-			//if this is before the previous stop
-			if (this._stopTime === -1 || this._stopTime > time){
-
-				//stop if it's schedule before the start time
-				if (time <= this._startTime){
-					this._gainNode.gain.cancelScheduledValues(time);
-					this._gainNode.gain.value = 0;
-					return this;
-				}
-
-				time = Math.max(this._startTime + this.fadeIn + this.sampleTime, time);
-				//cancel the previous curve
-				this._gainNode.gain.cancelScheduledValues(time);
-				this._stopTime = time;
-
-				//the fadeOut time
-				fadeOutTime = this.toSeconds(Tone.defaultArg(fadeOutTime, this.fadeOut));
-
-				var heldDuration = time - this._startTime - this.fadeIn - this.sampleTime;
-				if (!this.loop){
-					//make sure the fade does not go beyond the length of the buffer
-					heldDuration = Math.min(heldDuration, this.buffer.duration);
-				}
-				fadeOutTime = Math.min(heldDuration, fadeOutTime);
-				var startFade = time - fadeOutTime;
-				if (fadeOutTime > this.sampleTime){
-					this._gainNode.gain.setValueAtTime(this._gain, startFade);
-					if (this.curve === "linear"){
-						this._gainNode.gain.linearRampToValueAtTime(0, time);
-					} else {
-						this._gainNode.gain.exponentialAppraochValueAtTime(0, startFade, fadeOutTime);
-					}
-				} else {
-					this._gainNode.gain.setValueAtTime(0, time);
-				}
-
-				Tone.context.clearTimeout(this._onendedTimeout);
-				this._onendedTimeout = Tone.context.setTimeout(this._onended.bind(this), this._stopTime - this.now());
-			}
-		} else {
+		if (!this.buffer.loaded){
 			throw new Error("Tone.BufferSource: buffer is either not set or not loaded.");
 		}
 
+		if (this._sourceStopped){
+			return;
+		}
+
+		time = this.toSeconds(time);
+
+		//if the event has already been scheduled, clear it
+		if (this._stopTime !== -1){
+			this.cancelStop();
+		}
+		//stop if it's schedule before the start time
+		if (time <= this._startTime){
+			this._gainNode.gain.cancelScheduledValues(time);
+			this._gainNode.gain.value = 0;
+			return this;
+		}
+
+		time = Math.max(this._startTime + this.fadeIn + this.sampleTime, time);
+		//cancel the previous curve
+		this._gainNode.gain.cancelScheduledValues(time);
+		this._stopTime = time;
+
+		//the fadeOut time
+		fadeOutTime = this.toSeconds(Tone.defaultArg(fadeOutTime, this.fadeOut));
+
+		var heldDuration = time - this._startTime - this.fadeIn - this.sampleTime;
+		if (!this.loop){
+			//make sure the fade does not go beyond the length of the buffer
+			heldDuration = Math.min(heldDuration, this.buffer.duration);
+		}
+		fadeOutTime = Math.min(heldDuration, fadeOutTime);
+		var startFade = time - fadeOutTime;
+		if (fadeOutTime > this.sampleTime){
+			this._gainNode.gain.setValueAtTime(this._gain, startFade);
+			if (this.curve === "linear"){
+				this._gainNode.gain.linearRampToValueAtTime(0, time);
+			} else {
+				this._gainNode.gain.exponentialApproachValueAtTime(0, startFade, fadeOutTime);
+			}
+		} else {
+			this._gainNode.gain.setValueAtTime(0, time);
+		}
+
+		Tone.context.clearTimeout(this._onendedTimeout);
+		this._onendedTimeout = Tone.context.setTimeout(this._onended.bind(this), this._stopTime - this.now());
+
+		return this;
+	};
+
+	/**
+	 *  Cancel a scheduled stop event
+	 *  @return  {Tone.BufferSource}  this
+	 */
+	Tone.BufferSource.prototype.cancelStop = function(){
+		if (this._startTime !== -1 && !this._sourceStopped){
+			//cancel the stop envelope
+			var fadeInTime = this.toSeconds(this.fadeIn);
+			this._gainNode.gain.cancelScheduledValues(this._startTime + fadeInTime + this.sampleTime);
+			this._gainNode.gain.setValueAtTime(1, Math.max(this.now(), this._startTime + fadeInTime+ this.sampleTime));
+			this.context.clearTimeout(this._onendedTimeout);
+			this._stopTime = -1;
+		}
 		return this;
 	};
 
@@ -283,10 +331,15 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/G
 	 *  @private
 	 */
 	Tone.BufferSource.prototype._onended = function(){
-		//allow additional time for the exponential curve to fully decay
-		var additionalTail = this.curve === "exponential" ? this.fadeOut * 2 : 0;
-		this._source.stop(this._stopTime + additionalTail);
-		this.onended(this);
+		if (!this._sourceStopped){
+			this._sourceStopped = true;
+			//allow additional time for the exponential curve to fully decay
+			var additionalTail = this.curve === "exponential" ? this.fadeOut * 2 : 0;
+			if (this._sourceStarted && this._stopTime !== -1){
+				this._source.stop(this._stopTime + additionalTail);
+			}
+			this.onended(this);
+		}
 	};
 
 	/**
@@ -346,6 +399,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/G
 		},
 		set : function(loop){
 			this._source.loop = loop;
+			this.cancelStop();
 		}
 	});
 
@@ -356,6 +410,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/G
 	Tone.BufferSource.prototype.dispose = function(){
 		Tone.AudioNode.prototype.dispose.call(this);
 		this.onended = null;
+		this._source.onended = null;
 		this._source.disconnect();
 		this._source = null;
 		this._gainNode.dispose();

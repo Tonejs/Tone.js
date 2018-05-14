@@ -113,6 +113,16 @@ define(["Tone/core/Tone", "Tone/source/Source", "Tone/source/PulseOscillator",
 	};
 
 	/**
+	 *  restart the oscillator
+	 *  @param  {Time} time (optional) timing parameter
+	 *  @private
+	 */
+	Tone.PWMOscillator.prototype.restart = function(time){
+		this._modulator.restart(time);
+		this._pulse.restart(time);
+	};
+
+	/**
 	 * The type of the oscillator. Always returns "pwm".
 	 * @readOnly
 	 * @memberOf Tone.PWMOscillator#

@@ -1,4 +1,4 @@
-define(["Tone/core/Tone"], function (Tone) {
+define(["Tone/core/Tone"], function(Tone){
 
 	"use strict";
 
@@ -21,27 +21,6 @@ define(["Tone/core/Tone"], function (Tone) {
 		 *  @private
 		 */
 		this._timeline = [];
-
-		/**
-		 *  An array of items to remove from the list.
-		 *  @type {Array}
-		 *  @private
-		 */
-		this._toRemove = [];
-
-		/**
-		 *  An array of items to add from the list (once it's done iterating)
-		 *  @type {Array}
-		 *  @private
-		 */
-		this._toAdd = [];
-
-		/**
-		 *  Flag if the timeline is mid iteration
-		 *  @private
-		 *  @type {Boolean}
-		 */
-		this._iterating = false;
 
 		/**
 		 *  The memory of the timeline, i.e.
@@ -86,16 +65,13 @@ define(["Tone/core/Tone"], function (Tone) {
 		if (Tone.isUndef(event.time)){
 			throw new Error("Tone.Timeline: events must have a time attribute");
 		}
-		if (this._iterating){
-			this._toAdd.push(event);
-		} else {
-			var index = this._search(event.time);
-			this._timeline.splice(index + 1, 0, event);
-			//if the length is more than the memory, remove the previous ones
-			if (this.length > this.memory){
-				var diff = this.length - this.memory;
-				this._timeline.splice(0, diff);
-			}
+		event.time = event.time.valueOf();
+		var index = this._search(event.time);
+		this._timeline.splice(index + 1, 0, event);
+		//if the length is more than the memory, remove the previous ones
+		if (this.length > this.memory){
+			var diff = this.length - this.memory;
+			this._timeline.splice(0, diff);
 		}
 		return this;
 	};
@@ -106,13 +82,9 @@ define(["Tone/core/Tone"], function (Tone) {
 	 *  @returns {Tone.Timeline} this
 	 */
 	Tone.Timeline.prototype.remove = function(event){
-		if (this._iterating){
-			this._toRemove.push(event);
-		} else {
-			var index = this._timeline.indexOf(event);
-			if (index !== -1){
-				this._timeline.splice(index, 1);
-			}
+		var index = this._timeline.indexOf(event);
+		if (index !== -1){
+			this._timeline.splice(index, 1);
 		}
 		return this;
 	};
@@ -304,21 +276,11 @@ define(["Tone/core/Tone"], function (Tone) {
 	 *  @private
 	 */
 	Tone.Timeline.prototype._iterate = function(callback, lowerBound, upperBound){
-		this._iterating = true;
 		lowerBound = Tone.defaultArg(lowerBound, 0);
-		upperBound = Tone.defaultArg(upperBound, this._timeline.length - 1);
-		for (var i = lowerBound; i <= upperBound; i++){
-			callback.call(this, this._timeline[i]);
-		}
-		this._iterating = false;
-		this._toRemove.forEach(function(event){
-			this.remove(event);
+		upperBound = Tone.defaultArg(upperBound, this._timeline.length-1);
+		this._timeline.slice(lowerBound, upperBound+1).forEach(function(event){
+			callback.call(this, event);
 		}.bind(this));
-		this._toRemove = [];
-		this._toAdd.forEach(function(event){
-			this.add(event);
-		}.bind(this));
-		this._toAdd = [];
 	};
 
 	/**
@@ -356,6 +318,33 @@ define(["Tone/core/Tone"], function (Tone) {
 		//iterate over the items in reverse so that removing an item doesn't break things
 		var lowerBound = this._search(time);
 		this._iterate(callback, lowerBound + 1);
+		return this;
+	};
+
+	/**
+	 *  Iterate over everything in the array between the startTime and endTime. 
+	 *  The timerange is inclusive of the startTime, but exclusive of the endTime. 
+	 *  range = [startTime, endTime). 
+	 *  @param  {Number}  startTime The time to check if items are before
+	 *  @param  {Number}  endTime The end of the test interval. 
+	 *  @param  {Function}  callback The callback to invoke with every item
+	 *  @returns {Tone.Timeline} this
+	 */
+	Tone.Timeline.prototype.forEachBetween = function(startTime, endTime, callback){
+		var lowerBound = this._search(startTime);
+		var upperBound = this._search(endTime);
+		if (lowerBound !== -1 && upperBound !== -1){
+			if (this._timeline[lowerBound].time !== startTime){
+				lowerBound += 1;
+			}
+			//exclusive of the end time
+			if (this._timeline[upperBound].time === endTime){
+				upperBound -= 1;
+			}
+			this._iterate(callback, lowerBound, upperBound);
+		} else if (lowerBound === -1){
+			this._iterate(callback, 0, upperBound);
+		}
 		return this;
 	};
 
@@ -403,8 +392,6 @@ define(["Tone/core/Tone"], function (Tone) {
 	Tone.Timeline.prototype.dispose = function(){
 		Tone.prototype.dispose.call(this);
 		this._timeline = null;
-		this._toRemove = null;
-		this._toAdd = null;
 		return this;
 	};
 
