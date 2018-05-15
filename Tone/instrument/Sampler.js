@@ -111,31 +111,36 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/core/Buffers", "To
 	 * @param  {NormalRange=} velocity The velocity to play the sample back.
 	 * @return {Tone.Sampler}          this
 	 */
-	Tone.Sampler.prototype.triggerAttack = function(note, time, velocity){
-		var midi = Tone.Frequency(note).toMidi();
-		// find the closest note pitch
-		var difference = this._findClosest(midi);
-		if (difference !== null){
-			var closestNote = midi - difference;
-			var buffer = this._buffers.get(closestNote);
-			var playbackRate = Tone.intervalToFrequencyRatio(difference);
-			// play that note
-			var source = new Tone.BufferSource({
-				"buffer" : buffer,
-				"playbackRate" : playbackRate,
-				"fadeIn" : this.attack,
-				"fadeOut" : this.release,
-				"curve" : "exponential",
-			}).connect(this.output);
-			source.start(time, 0, buffer.duration / playbackRate, velocity);
-			// add it to the active sources
-			if (!Tone.isArray(this._activeSources[midi])){
-				this._activeSources[midi] = [];
+	Tone.Sampler.prototype.triggerAttack = function(notes, time, velocity){
+		if (!Array.isArray(notes)){
+			notes = [notes];
+		}
+		for (var i = 0; i < notes.length; i++){ 
+			var midi = Tone.Frequency(notes[i]).toMidi();
+			// find the closest note pitch
+			var difference = this._findClosest(midi);
+			if (difference !== null){
+				var closestNote = midi - difference;
+				var buffer = this._buffers.get(closestNote);
+				var playbackRate = Tone.intervalToFrequencyRatio(difference);
+				// play that note
+				var source = new Tone.BufferSource({
+					"buffer" : buffer,
+					"playbackRate" : playbackRate,
+					"fadeIn" : this.attack,
+					"fadeOut" : this.release,
+					"curve" : "exponential",
+				}).connect(this.output);
+				source.start(time, 0, buffer.duration / playbackRate, velocity);
+				// add it to the active sources
+				if (!Tone.isArray(this._activeSources[midi])){
+					this._activeSources[midi] = [];
+				}
+				this._activeSources[midi].push({
+					note : midi,
+					source : source
+				});
 			}
-			this._activeSources[midi].push({
-				note : midi,
-				source : source
-			});
 		}
 		return this;
 	};
@@ -145,14 +150,20 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/core/Buffers", "To
 	 * @param  {Time=} time     	When to release the note.
 	 * @return {Tone.Sampler}	this
 	 */
-	Tone.Sampler.prototype.triggerRelease = function(note, time){
-		var midi = Tone.Frequency(note).toMidi();
-		// find the note
-		if (this._activeSources[midi] && this._activeSources[midi].length){
-			var source = this._activeSources[midi].shift().source;
-			time = this.toSeconds(time);
-			source.stop(time + this.release, this.release);
+	Tone.Sampler.prototype.triggerRelease = function(notes, time){
+		if (!Array.isArray(notes)){
+			notes = [notes];
 		}
+		for (var i = 0; i < notes.length; i++){  
+			var midi = Tone.Frequency(notes[i]).toMidi();
+			// find the note
+			if (this._activeSources[midi] && this._activeSources[midi].length){
+				var source = this._activeSources[midi].shift().source;
+				time = this.toSeconds(time);
+				source.stop(time + this.release, this.release);
+			}
+		}
+
 		return this;
 	};
 
@@ -201,11 +212,17 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/core/Buffers", "To
 	 * @param  {NormalRange} [velocity=1] The velocity of the attack
 	 * @return {Tone.Sampler}          this
 	 */
-	Tone.Sampler.prototype.triggerAttackRelease = function(note, duration, time, velocity){
+	Tone.Sampler.prototype.triggerAttackRelease = function(notes, duration, time, velocity){
 		time = this.toSeconds(time);
-		duration = this.toSeconds(duration);
-		this.triggerAttack(note, time, velocity);
-		this.triggerRelease(note, time + duration);
+		this.triggerAttack(notes, time, velocity);
+		if (Tone.isArray(duration) && Tone.isArray(notes)){
+			for (var i = 0; i < notes.length; i++){
+				var d = duration[Math.min(i, duration.length - 1)];
+				this.triggerRelease(notes[i], time + this.toSeconds(d));
+			}
+		} else {
+			this.triggerRelease(notes, time + this.toSeconds(duration));
+		}
 		return this;
 	};
 
