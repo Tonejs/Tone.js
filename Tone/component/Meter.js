@@ -3,13 +3,14 @@ define(["Tone/core/Tone", "Tone/component/Analyser", "Tone/core/AudioNode"], fun
 	"use strict";
 
 	/**
-	 *  @class  Tone.Meter gets the [RMS](https://en.wikipedia.org/wiki/Root_mean_square)
+	 *  @class  Tone.Meter gets the Peak or [RMS](https://en.wikipedia.org/wiki/Root_mean_square)
 	 *          of an input signal with some averaging applied. It can also get the raw
 	 *          value of the input signal.
 	 *
 	 *  @constructor
 	 *  @extends {Tone.AudioNode}
 	 *  @param {Number} smoothing The amount of smoothing applied between frames.
+	 *  @param {'rms' | 'peak'} type Calculation method of dB value, defaults to RMS
 	 *  @example
 	 * var meter = new Tone.Meter();
 	 * var mic = new Tone.UserMedia().open();
@@ -32,9 +33,24 @@ define(["Tone/core/Tone", "Tone/component/Analyser", "Tone/core/AudioNode"], fun
 
 		//set the smoothing initially
 		this.smoothing = options.smoothing;
+	
+		/**
+		 * Calculation method used to get the dB value
+		 * @type {'rms' | 'peak'}
+		 */
+		this.type = options.type;
 	};
 
 	Tone.extend(Tone.Meter, Tone.AudioNode);
+
+	/**
+	 * Calculation methods available for dB value, default is RMS
+	 * @enum {String}
+	 */
+	Tone.Meter.Type = {
+		RMS : "rms",
+		Peak : "peak"
+	};
 
 	/**
 	 *  The defaults
@@ -43,7 +59,8 @@ define(["Tone/core/Tone", "Tone/component/Analyser", "Tone/core/AudioNode"], fun
 	 *  @const
 	 */
 	Tone.Meter.defaults = {
-		"smoothing" : 0.8
+		"smoothing" : 0.8,
+		"type" : Tone.Meter.Type.RMS
 	};
 
 	/**
@@ -51,11 +68,19 @@ define(["Tone/core/Tone", "Tone/component/Analyser", "Tone/core/AudioNode"], fun
 	 *  @returns {Decibels}
 	 */
 	Tone.Meter.prototype.getLevel = function(){
-		this._analyser.type = "fft";
 		var values = this._analyser.getValue();
-		var offset = 28; // normalizes most signal levels
-		// TODO: compute loudness from FFT
-		return Math.max.apply(this, values) + offset;
+	
+		switch (this.type){
+			case Tone.Meter.Type.RMS:
+				var rmsFloatValue = this.getRmsFloatValue(values);
+				return Tone.gainToDb(rmsFloatValue);
+			case Tone.Meter.Type.Peak:
+				var peakFloatValue = this.getPeakFloatValue(values);
+				return Tone.gainToDb(peakFloatValue);
+			default:
+				// Sanity check, should have thrown while setting type
+				throw new TypeError("Tone.Meter: invalid type: " + this.type);
+		}
 	};
 
 	/**
@@ -63,9 +88,41 @@ define(["Tone/core/Tone", "Tone/component/Analyser", "Tone/core/AudioNode"], fun
 	 *  @returns {Number}
 	 */
 	Tone.Meter.prototype.getValue = function(){
-		this._analyser.type = "waveform";
 		var value = this._analyser.getValue();
 		return value[0];
+	};
+
+	/**
+	 * Gets the peak value from a Float32Array, uses absolute values so
+	 * negative values are counted towards the peak.
+	 *
+	 * @param {Float32Array} values Float32Array with amplitude ratio readings
+	 * @returns {Number}
+	 */
+	Tone.Meter.prototype.getPeakFloatValue = function(values){
+		var peak = 0;
+		for (var i = 0; i < values.length; i++){
+			var value = Math.abs(values[i]);
+			if (value > peak){
+				peak = value;
+			}
+		}
+		return peak;
+	};
+
+	/**
+	 * Gets the [RMS](https://en.wikipedia.org/wiki/Root_mean_square) value from a Float32Array
+	 *
+	 * @param {Float32Array} values Float32Array with amplitude ratio readings
+	 * @returns {Number}
+	 */
+	Tone.Meter.prototype.getRmsFloatValue = function(values){
+		var totalSquared = 0;
+		for (var i = 0; i < values.length; i++){
+			var value = values[i];
+			totalSquared += value * value;
+		}
+		return Math.sqrt(totalSquared / values.length);
 	};
 
 	/**
@@ -81,7 +138,25 @@ define(["Tone/core/Tone", "Tone/component/Analyser", "Tone/core/AudioNode"], fun
 		},
 		set : function(val){
 			this._analyser.smoothing = val;
+		}
+	});
+
+	/**
+	 * Either 'rms' or 'peak', determines calculation method of getValue
+	 * @memberOf Tone.Meter#
+	 * @type {'rms' | 'peak'}
+	 * @name type
+	 */
+	Object.defineProperty(Tone.Meter.prototype, "type", {
+		get : function(){
+			return this._type;
 		},
+		set : function(type){
+			if (type !== Tone.Meter.Type.RMS && type !== Tone.Meter.Type.Peak){
+				throw new TypeError("Tone.Meter: invalid type: " + type);
+			}
+			this._type = type;
+		}
 	});
 
 	/**
