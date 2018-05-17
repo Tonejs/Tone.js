@@ -76,6 +76,7 @@ define(["helper/Basic", "Test", "Tone/type/Time", "Tone/core/Tone",
 					expect(Time({ "4n" : 3 }).valueOf()).to.equal(1.5);
 					expect(Time({ "8t" : 2, "1m" : 3 }).valueOf()).to.be.closeTo(6.33, 0.01);
 					expect(Time({ "2n" : 1, "8n" : 1.5 }).valueOf()).to.equal(1.375);
+					expect(Time({ "2n" : 1, "8n" : -1 }).valueOf()).to.equal(0.75);
 				});
 			});
 		});
