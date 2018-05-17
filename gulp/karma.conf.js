@@ -111,13 +111,13 @@ module.exports = function(config){
 				flags : ["--no-sandbox", "--use-fake-ui-for-media-stream", "--use-fake-device-for-media-stream", "--autoplay-policy=no-user-gesture-required"]
 			},
 			HeadlessFirefox : {
-		        base : "Firefox",
+				base : "Firefox",
 				flags : ["-headless"],
-		        prefs : {
-		            "media.navigator.permission.disabled" : true,
+				prefs : {
+					"media.navigator.permission.disabled" : true,
 					"focusmanager.testmode" : true
-		        }
-		    }
+				}
+			}
 		}
 	};
 
