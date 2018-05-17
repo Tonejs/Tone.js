@@ -3,21 +3,20 @@ define(["Tone/core/Tone", "Tone/component/Analyser", "Tone/core/AudioNode"], fun
 	"use strict";
 
 	/**
-	 *  @class  Tone.Meter gets the Peak or [RMS](https://en.wikipedia.org/wiki/Root_mean_square)
-	 *          of an input signal with some averaging applied. It can also get the raw
+	 *  @class  Tone.Meter gets the [RMS](https://en.wikipedia.org/wiki/Root_mean_square)
+	 *          of an input signal. It can also get the raw
 	 *          value of the input signal.
 	 *
 	 *  @constructor
-	 *  @extends {Tone.AudioNode}
 	 *  @param {Number} smoothing The amount of smoothing applied between frames.
-	 *  @param {'rms' | 'peak'} type Calculation method of dB value, defaults to RMS
+	 *  @extends {Tone.AudioNode}
 	 *  @example
 	 * var meter = new Tone.Meter();
 	 * var mic = new Tone.UserMedia().open();
 	 * //connect mic to the meter
 	 * mic.connect(meter);
 	 * //the current level of the mic input in decibels
-	 * var level = meter.getValue();
+	 * var level = meter.getLevel();
 	 */
 	Tone.Meter = function(){
 
@@ -25,32 +24,27 @@ define(["Tone/core/Tone", "Tone/component/Analyser", "Tone/core/AudioNode"], fun
 		Tone.AudioNode.call(this);
 
 		/**
+		 * A value from 0 -> 1 where 0 represents no time averaging with the last analysis frame.
+		 * @type {Number}
+		 */
+		this.smoothing = options.smoothing;
+
+		/**
+		 * The previous frame's value
+		 * @type {Number}
+		 * @private
+		 */
+		this._rms = 0;
+
+		/**
 		 *  The analyser node which computes the levels.
 		 *  @private
 		 *  @type  {Tone.Analyser}
 		 */
 		this.input = this.output = this._analyser = new Tone.Analyser("waveform", 1024);
-
-		//set the smoothing initially
-		this.smoothing = options.smoothing;
-	
-		/**
-		 * Calculation method used to get the dB value
-		 * @type {'rms' | 'peak'}
-		 */
-		this.type = options.type;
 	};
 
 	Tone.extend(Tone.Meter, Tone.AudioNode);
-
-	/**
-	 * Calculation methods available for dB value, default is RMS
-	 * @enum {String}
-	 */
-	Tone.Meter.Type = {
-		RMS : "rms",
-		Peak : "peak"
-	};
 
 	/**
 	 *  The defaults
@@ -60,7 +54,6 @@ define(["Tone/core/Tone", "Tone/component/Analyser", "Tone/core/AudioNode"], fun
 	 */
 	Tone.Meter.defaults = {
 		"smoothing" : 0.8,
-		"type" : Tone.Meter.Type.RMS
 	};
 
 	/**
@@ -69,18 +62,18 @@ define(["Tone/core/Tone", "Tone/component/Analyser", "Tone/core/AudioNode"], fun
 	 */
 	Tone.Meter.prototype.getLevel = function(){
 		var values = this._analyser.getValue();
-	
-		switch (this.type){
-			case Tone.Meter.Type.RMS:
-				var rmsFloatValue = this.getRmsFloatValue(values);
-				return Tone.gainToDb(rmsFloatValue);
-			case Tone.Meter.Type.Peak:
-				var peakFloatValue = this.getPeakFloatValue(values);
-				return Tone.gainToDb(peakFloatValue);
-			default:
-				// Sanity check, should have thrown while setting type
-				throw new TypeError("Tone.Meter: invalid type: " + this.type);
+		var totalSquared = 0;
+		for (var i = 0; i < values.length; i++){
+			var value = values[i];
+			totalSquared += value * value;
 		}
+		var rms = Math.sqrt(totalSquared / values.length);
+
+		//the rms can only fall at the rate of the smoothing
+		//but can jump up instantly
+		this._rms = Math.max(rms, this._rms * this.smoothing);
+
+		return Tone.gainToDb(this._rms);
 	};
 
 	/**
@@ -91,73 +84,6 @@ define(["Tone/core/Tone", "Tone/component/Analyser", "Tone/core/AudioNode"], fun
 		var value = this._analyser.getValue();
 		return value[0];
 	};
-
-	/**
-	 * Gets the peak value from a Float32Array, uses absolute values so
-	 * negative values are counted towards the peak.
-	 *
-	 * @param {Float32Array} values Float32Array with amplitude ratio readings
-	 * @returns {Number}
-	 */
-	Tone.Meter.prototype.getPeakFloatValue = function(values){
-		var peak = 0;
-		for (var i = 0; i < values.length; i++){
-			var value = Math.abs(values[i]);
-			if (value > peak){
-				peak = value;
-			}
-		}
-		return peak;
-	};
-
-	/**
-	 * Gets the [RMS](https://en.wikipedia.org/wiki/Root_mean_square) value from a Float32Array
-	 *
-	 * @param {Float32Array} values Float32Array with amplitude ratio readings
-	 * @returns {Number}
-	 */
-	Tone.Meter.prototype.getRmsFloatValue = function(values){
-		var totalSquared = 0;
-		for (var i = 0; i < values.length; i++){
-			var value = values[i];
-			totalSquared += value * value;
-		}
-		return Math.sqrt(totalSquared / values.length);
-	};
-
-	/**
-	 * A value from 0 -> 1 where 0 represents no time averaging with the last analysis frame.
-	 * @memberOf Tone.Meter#
-	 * @type {Number}
-	 * @name smoothing
-	 * @readOnly
-	 */
-	Object.defineProperty(Tone.Meter.prototype, "smoothing", {
-		get : function(){
-			return this._analyser.smoothing;
-		},
-		set : function(val){
-			this._analyser.smoothing = val;
-		}
-	});
-
-	/**
-	 * Either 'rms' or 'peak', determines calculation method of getValue
-	 * @memberOf Tone.Meter#
-	 * @type {'rms' | 'peak'}
-	 * @name type
-	 */
-	Object.defineProperty(Tone.Meter.prototype, "type", {
-		get : function(){
-			return this._type;
-		},
-		set : function(type){
-			if (type !== Tone.Meter.Type.RMS && type !== Tone.Meter.Type.Peak){
-				throw new TypeError("Tone.Meter: invalid type: " + type);
-			}
-			this._type = type;
-		}
-	});
 
 	/**
 	 *  Clean up.
