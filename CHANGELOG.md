@@ -4,8 +4,8 @@
 * Added Object notation for Tone.TimeBase and classes that extend it. 
 	- i.e. Tone.Time({'4n' : 1, '8t' : 2})
 	- Replacement for deprecated expression strings. 
-* Tone.Meter uses RMS instead of peak (thanks @Idicious)
-* Tone.Sampler supports polyphonic syntax (thanks @zfan40)
+* Tone.Meter uses RMS instead of peak (thanks [@Idicious](https://github.com/Idicious))
+* Tone.Sampler supports polyphonic syntax (thanks [@zfan40](https://github.com/zfan40))
 
 
 ### r12
