@@ -3,7 +3,8 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/G
 
 	/**
 	 *  @class Wrapper around the native fire-and-forget OscillatorNode. Adds the
-	 *     ability to reschedule the stop method.
+	 *     ability to reschedule the stop method. ***[Tone.Oscillator](Oscillator) is better 
+	 *     for most use-cases***
 	 *  @extends {Tone.AudioNode}
 	 *  @param  {AudioBuffer|Tone.Buffer}  buffer   The buffer to play
 	 *  @param  {Function}  onload  The callback to invoke when the
