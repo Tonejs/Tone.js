@@ -10,6 +10,8 @@ if (process.env.BROWSER === "chrome"){
 	BROWSERS = ["HeadlessFirefox"];
 } else if (process.env.BROWSER === "safari"){
 	BROWSERS = ["Safari"];
+} else {
+	BROWSERS = ["HeadlessChrome"];
 }
 
 module.exports = function(config){
@@ -20,23 +22,22 @@ module.exports = function(config){
 
 		// frameworks to use
 		// available frameworks: https://npmjs.org/browse/keyword/karma-adapter
-		frameworks : ["mocha", "requirejs"],
+		frameworks : ["mocha"],
 
 		// list of files / patterns to load in the browser
 		files : [
-			// '../test/helper/Test.js',
-			"test/karmaTest.js",
-			{ pattern : "test/*/*.js", included : false },
-			{ pattern : "examples/*.html", included : false },
-			{ pattern : "examples/scripts/*.js", included : false },
-			{ pattern : "examples/style/*.css", included : false },
-			{ pattern : "examples/audio/*/*.mp3", included : false },
-			{ pattern : "examples/audio/*.mp3", included : false },
-			{ pattern : "examples/audio/*/*.png", included : false },
-			{ pattern : "build/*.js", included : false },
+			"./build/test.js",
+			// { pattern : "test/*/*.js", included : false },
+			// { pattern : "examples/*.html", included : false },
+			// { pattern : "examples/scripts/*.js", included : false },
+			// { pattern : "examples/style/*.css", included : false },
+			// { pattern : "examples/audio/*/*.mp3", included : false },
+			// { pattern : "examples/audio/*.mp3", included : false },
+			// { pattern : "examples/audio/*/*.png", included : false },
+			// { pattern : "build/*.js", included : false },
 			{ pattern : "test/audio/*", included : false },
 			{ pattern : "test/audio/*/*", included : false },
-			{ pattern : "Tone/*/*.js", included : false },
+			// { pattern : "Tone/*/*.js", included : false },
 		],
 
 		// list of files to exclude
@@ -97,7 +98,7 @@ module.exports = function(config){
 
 		// Continuous Integration mode
 		// if true, Karma captures browsers, runs the tests and exits
-		singleRun : false,
+		singleRun : true,
 
 		// Concurrency level
 		// how many browser should be started simultaneous
@@ -111,13 +112,13 @@ module.exports = function(config){
 				flags : ["--no-sandbox", "--use-fake-ui-for-media-stream", "--use-fake-device-for-media-stream", "--autoplay-policy=no-user-gesture-required"]
 			},
 			HeadlessFirefox : {
-		        base : "Firefox",
+				base : "Firefox",
 				flags : ["-headless"],
-		        prefs : {
-		            "media.navigator.permission.disabled" : true,
+				prefs : {
+					"media.navigator.permission.disabled" : true,
 					"focusmanager.testmode" : true
-		        }
-		    }
+				}
+			}
 		}
 	};
 
