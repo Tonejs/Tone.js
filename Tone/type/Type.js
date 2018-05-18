@@ -24,8 +24,7 @@ define(["Tone/core/Tone", "Tone/type/Time", "Tone/type/Frequency", "Tone/type/Tr
 		 *  * Frequency, ("8hz") is converted to the length of the cycle in seconds.
 		 *  * Now-Relative, ("+1") prefix any of the above with "+" and it will be interpreted as
 		 *  "the current time plus whatever expression follows".
-		 *  * Expressions, ("3:0 + 2 - (1m / 7)") any of the above can also be combined
-		 *  into a mathematical expression which will be evaluated to compute the desired time.
+		 *  * Object, ({"4n" : 3, "8t" : -1}). The resulting time is equal to the sum of all of the keys multiplied by the values in the object. 
 		 *  * No Argument, for methods which accept time, no argument will be interpreted as
 		 *  "now" (i.e. the currentTime).
 		 *

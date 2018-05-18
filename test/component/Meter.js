@@ -7,7 +7,6 @@ function(Meter, Basic, Offline, Test, Signal, PassAudio, Tone, Merge, Oscillator
 		Basic(Meter);
 
 		context("Metering", function(){
-
 			it("handles input and output connections", function(){
 				var meter = new Meter();
 				Test.connect(meter);
@@ -22,6 +21,12 @@ function(Meter, Basic, Offline, Test, Signal, PassAudio, Tone, Merge, Oscillator
 				};
 				meter.set(values);
 				expect(meter.get().smoothing).to.equal(0.2);
+				meter.dispose();
+			});
+
+			it("can be constructed with the smoothing", function(){
+				var meter = new Meter(0.5);
+				expect(meter.smoothing).to.equal(0.5);
 				meter.dispose();
 			});
 
@@ -40,10 +45,10 @@ function(Meter, Basic, Offline, Test, Signal, PassAudio, Tone, Merge, Oscillator
 					input.chain(meter, Tone.Master);
 				});
 			});
-
+			
 			if (Supports.ONLINE_TESTING){
-
-				it("measures the incoming signal", function(done){
+		
+				it("measures the rms incoming signal", function(done){
 					var meter = new Meter();
 					var signal = new Signal(1).connect(meter);
 					setTimeout(function(){
@@ -54,19 +59,18 @@ function(Meter, Basic, Offline, Test, Signal, PassAudio, Tone, Merge, Oscillator
 					}, 400);
 				});
 
-				it("can get the level of the incoming signal", function(done){
+				it("can get the rms level of the incoming signal", function(done){
 					var meter = new Meter();
 					var osc = new Oscillator().connect(meter).start();
 					osc.volume.value = -6;
 					setTimeout(function(){
-						expect(meter.getLevel()).to.be.closeTo(-6, 6);
+						expect(meter.getLevel()).to.be.closeTo(-9, 1);
 						meter.dispose();
 						osc.dispose();
 						done();
 					}, 400);
 				});
 			}
-
 		});
 	});
 });

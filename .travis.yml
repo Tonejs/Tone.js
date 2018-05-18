@@ -35,6 +35,10 @@ jobs:
     #   addons:
     #     firefox: latest
     # - stage: test
+    #   env : BROWSER=firefox
+    #   os: linux
+    #   addons:
+    # - stage: test
     #   before_script:
     #   # needs an audio output device to run
     #   - HOMEBREW_NO_AUTO_UPDATE=1 brew install Caskroom/cask/soundflower

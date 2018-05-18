@@ -4,19 +4,19 @@ define(["Tone/core/Tone", "Tone/component/Analyser", "Tone/core/AudioNode"], fun
 
 	/**
 	 *  @class  Tone.Meter gets the [RMS](https://en.wikipedia.org/wiki/Root_mean_square)
-	 *          of an input signal with some averaging applied. It can also get the raw
+	 *          of an input signal. It can also get the raw
 	 *          value of the input signal.
 	 *
 	 *  @constructor
-	 *  @extends {Tone.AudioNode}
 	 *  @param {Number} smoothing The amount of smoothing applied between frames.
+	 *  @extends {Tone.AudioNode}
 	 *  @example
 	 * var meter = new Tone.Meter();
 	 * var mic = new Tone.UserMedia().open();
 	 * //connect mic to the meter
 	 * mic.connect(meter);
 	 * //the current level of the mic input in decibels
-	 * var level = meter.getValue();
+	 * var level = meter.getLevel();
 	 */
 	Tone.Meter = function(){
 
@@ -24,14 +24,24 @@ define(["Tone/core/Tone", "Tone/component/Analyser", "Tone/core/AudioNode"], fun
 		Tone.AudioNode.call(this);
 
 		/**
+		 * A value from 0 -> 1 where 0 represents no time averaging with the last analysis frame.
+		 * @type {Number}
+		 */
+		this.smoothing = options.smoothing;
+
+		/**
+		 * The previous frame's value
+		 * @type {Number}
+		 * @private
+		 */
+		this._rms = 0;
+
+		/**
 		 *  The analyser node which computes the levels.
 		 *  @private
 		 *  @type  {Tone.Analyser}
 		 */
 		this.input = this.output = this._analyser = new Tone.Analyser("waveform", 1024);
-
-		//set the smoothing initially
-		this.smoothing = options.smoothing;
 	};
 
 	Tone.extend(Tone.Meter, Tone.AudioNode);
@@ -43,7 +53,7 @@ define(["Tone/core/Tone", "Tone/component/Analyser", "Tone/core/AudioNode"], fun
 	 *  @const
 	 */
 	Tone.Meter.defaults = {
-		"smoothing" : 0.8
+		"smoothing" : 0.8,
 	};
 
 	/**
@@ -51,11 +61,19 @@ define(["Tone/core/Tone", "Tone/component/Analyser", "Tone/core/AudioNode"], fun
 	 *  @returns {Decibels}
 	 */
 	Tone.Meter.prototype.getLevel = function(){
-		this._analyser.type = "fft";
 		var values = this._analyser.getValue();
-		var offset = 28; // normalizes most signal levels
-		// TODO: compute loudness from FFT
-		return Math.max.apply(this, values) + offset;
+		var totalSquared = 0;
+		for (var i = 0; i < values.length; i++){
+			var value = values[i];
+			totalSquared += value * value;
+		}
+		var rms = Math.sqrt(totalSquared / values.length);
+
+		//the rms can only fall at the rate of the smoothing
+		//but can jump up instantly
+		this._rms = Math.max(rms, this._rms * this.smoothing);
+
+		return Tone.gainToDb(this._rms);
 	};
 
 	/**
@@ -63,26 +81,9 @@ define(["Tone/core/Tone", "Tone/component/Analyser", "Tone/core/AudioNode"], fun
 	 *  @returns {Number}
 	 */
 	Tone.Meter.prototype.getValue = function(){
-		this._analyser.type = "waveform";
 		var value = this._analyser.getValue();
 		return value[0];
 	};
-
-	/**
-	 * A value from 0 -> 1 where 0 represents no time averaging with the last analysis frame.
-	 * @memberOf Tone.Meter#
-	 * @type {Number}
-	 * @name smoothing
-	 * @readOnly
-	 */
-	Object.defineProperty(Tone.Meter.prototype, "smoothing", {
-		get : function(){
-			return this._analyser.smoothing;
-		},
-		set : function(val){
-			this._analyser.smoothing = val;
-		},
-	});
 
 	/**
 	 *  Clean up.
