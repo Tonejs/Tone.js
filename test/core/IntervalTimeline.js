@@ -1,4 +1,4 @@
-define(["Test", "Tone/core/IntervalTimeline", "helper/Basic"], function(Test, IntervalTimeline, Basic){
+define(["helper/Test", "Tone/core/IntervalTimeline", "helper/Basic"], function(Test, IntervalTimeline, Basic){
 
 	describe("IntervalTimeline", function(){
 

@@ -1,6 +1,6 @@
-define(["Tone/component/LowpassCombFilter", "helper/Basic", "helper/Offline", "Test", 
+define(["Tone/component/LowpassCombFilter", "helper/Basic", "helper/Offline", "helper/Test", 
 	"Tone/signal/Signal", "helper/PassAudio", "helper/PassAudioStereo"], 
-function (LowpassCombFilter, Basic, Offline, Test, Signal, PassAudio, PassAudioStereo) {
+function(LowpassCombFilter, Basic, Offline, Test, Signal, PassAudio, PassAudioStereo){
 	describe("LowpassCombFilter", function(){
 
 		Basic(LowpassCombFilter);

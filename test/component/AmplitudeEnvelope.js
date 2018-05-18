@@ -1,6 +1,6 @@
 define(["Tone/component/AmplitudeEnvelope", "helper/Basic", "helper/Offline", 
-	"Tone/component/Envelope", "Test", "Tone/signal/Signal"], 
-function (AmplitudeEnvelope, Basic, Offline, Envelope, Test, Signal) {
+	"Tone/component/Envelope", "helper/Test", "Tone/signal/Signal"], 
+function(AmplitudeEnvelope, Basic, Offline, Envelope, Test, Signal){
 	describe("AmplitudeEnvelope", function(){
 
 		Basic(AmplitudeEnvelope);

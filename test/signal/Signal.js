@@ -1,6 +1,6 @@
-define(["helper/Offline", "helper/Basic", "Test", "Tone/signal/Signal",
+define(["helper/Offline", "helper/Basic", "helper/Test", "Tone/signal/Signal",
 	"Tone/type/Type", "Tone/core/Transport", "helper/ConstantOutput", "Tone/core/Gain"],
-function(Offline, Basic, Test, Signal, Tone, Transport, ConstantOutput, Gain) {
+function(Offline, Basic, Test, Signal, Tone, Transport, ConstantOutput, Gain){
 
 	describe("Signal", function(){
 

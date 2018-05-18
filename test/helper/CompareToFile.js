@@ -1,9 +1,5 @@
 define(["helper/Offline", "Tone/core/Buffer", "deps/audiobuffer-to-wav", "deps/fft"], function(Offline, Buffer, audioBufferToWav, FFT){
 
-	if (window.__karma__){
-		Buffer.baseUrl = "/base/test/";
-	}
-
 	return function(callback, url, threshold, RENDER_NEW){
 		if (!RENDER_NEW){
 

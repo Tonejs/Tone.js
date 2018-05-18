@@ -1,4 +1,4 @@
-define(["helper/Basic", "Test", "Tone/type/TransportTime", "Tone/core/Tone", "helper/Offline", 
+define(["helper/Basic", "helper/Test", "Tone/type/TransportTime", "Tone/core/Tone", "helper/Offline", 
 	"Tone/type/Time", "Tone/type/Frequency", "Tone/type/Ticks"], function(Basic, Test, TransportTime, Tone, Offline, Time, Frequency, Ticks){
 
 	describe("TransportTime", function(){

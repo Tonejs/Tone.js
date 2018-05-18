@@ -1,6 +1,6 @@
 define(["helper/OutputAudio", "Tone/effect/Effect", "helper/PassAudio",
-	"helper/PassAudioStereo", "Test", "helper/Offline", "Tone/signal/Signal", "Tone/component/Merge"],
-function(OutputAudio, Effect, PassAudio, PassAudioStereo, Test, Offline, Signal, Merge) {
+	"helper/PassAudioStereo", "helper/Test", "helper/Offline", "Tone/signal/Signal", "Tone/component/Merge"],
+function(OutputAudio, Effect, PassAudio, PassAudioStereo, Test, Offline, Signal, Merge){
 
 	return function(Constr, args, before){
 

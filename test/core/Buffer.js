@@ -1,8 +1,4 @@
-define(["Test", "Tone/core/Buffer", "Tone/core/Tone"], function(Test, Buffer, Tone){
-
-	if (window.__karma__){
-		Buffer.baseUrl = "/base/test/";
-	}
+define(["helper/Test", "Tone/core/Buffer", "Tone/core/Tone"], function(Test, Buffer, Tone){
 
 	var testFile = "./audio/sine.wav";
 

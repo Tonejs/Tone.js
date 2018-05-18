@@ -1,7 +1,7 @@
 /* global mocha*/
 
-define(["Tone/core/Tone", "deps/chai", "Tone/core/Context", "Tone/core/Transport"],
-	function (Tone, chai, Context, Transport) {
+define(["Tone/core/Tone", "chai", "Tone/core/Context", "Tone/core/Transport", "Tone/core/Buffer"], 
+	function(Tone, chai, Context, Transport, Buffer){
 
 	//add a chai test
 		chai.Assertion.addMethod("percentageFrom", function(val, percent){
@@ -16,6 +16,13 @@ define(["Tone/core/Tone", "deps/chai", "Tone/core/Context", "Tone/core/Transport
 			timeout : 30000
 		});
 
+		//point to the relative path of the audio files
+		if (window.__karma__){
+			Buffer.baseUrl = "/base/test/";
+		} else {
+			Buffer.baseUrl = "../test/";
+		}
+
 		beforeEach(function(){
 			if (Transport.bpm.value !== 120){
 				Transport.bpm.value = 120;
@@ -29,12 +36,9 @@ define(["Tone/core/Tone", "deps/chai", "Tone/core/Context", "Tone/core/Transport
 			Test.input = Tone.context.createGain();
 		});
 
-		//bring window into focus
-		window.focus();
-
 		/**
-	 *  The Test object
-	 */
+		 *  The Test object
+		 */
 		var Test = {
 			input : Tone.context.createGain()
 		};

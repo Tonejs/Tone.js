@@ -1,4 +1,4 @@
-define(["Test", "Tone/core/Draw", "Tone/core/Tone", "helper/Supports"], function(Test, Draw, Tone, Supports){
+define(["helper/Test", "Tone/core/Draw", "Tone/core/Tone", "helper/Supports"], function(Test, Draw, Tone, Supports){
 
 	describe("Draw", function(){
 

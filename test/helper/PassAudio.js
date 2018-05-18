@@ -1,5 +1,5 @@
-define(["Test", "Tone/core/Offline", "Tone/signal/Signal", "Tone/core/Master"], 
-	function (Test, Offline, Signal, Master) {
+define(["helper/Test", "Tone/core/Offline", "Tone/signal/Signal", "Tone/core/Master"], 
+	function(Test, Offline, Signal, Master){
 
 		var PassAudio = function(before){
 
@@ -15,7 +15,7 @@ define(["Test", "Tone/core/Offline", "Tone/signal/Signal", "Tone/core/Master"],
 					var sample = array[i];
 					if (time >= duration / 2 && sample !== 0){
 						return true;
-					} else if (time < duration / 2) {
+					} else if (time < duration / 2){
 						expect(sample).to.be.closeTo(0, 0.001);
 					}
 				}

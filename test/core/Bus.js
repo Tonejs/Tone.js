@@ -1,6 +1,6 @@
-define(["Test", "Tone/core/Bus", "Tone/core/Tone", "helper/Offline",
+define(["helper/Test", "Tone/core/Bus", "Tone/core/Tone", "helper/Offline",
 	"helper/PassAudio", "Tone/signal/Signal", "Tone/core/Gain", "Tone/component/Merge"],
-function (Test, Bus, Tone, Offline, PassAudio, Signal, Gain, Merge) {
+function(Test, Bus, Tone, Offline, PassAudio, Signal, Gain, Merge){
 
 	describe("Bus", function(){
 		it("provides a send and receive method", function(){

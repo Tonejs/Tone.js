@@ -1,10 +1,6 @@
 define(["helper/Basic", "Tone/source/GrainPlayer", "helper/Offline", "helper/SourceTests",
-	"Tone/core/Buffer", "Test", "Tone/core/Tone", "helper/CompareToFile"],
-function(BasicTests, GrainPlayer, Offline, SourceTests, Buffer, Test, Tone, CompareToFile) {
-
-	if (window.__karma__){
-		Buffer.baseUrl = "/base/test/";
-	}
+	"Tone/core/Buffer", "helper/Test", "Tone/core/Tone", "helper/CompareToFile"],
+function(BasicTests, GrainPlayer, Offline, SourceTests, Buffer, Test, Tone, CompareToFile){
 
 	describe("GrainPlayer", function(){
 

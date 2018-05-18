@@ -1,4 +1,4 @@
-define(["Test", "Tone/core/Timeline"], function(Test, Timeline) {
+define(["helper/Test", "Tone/core/Timeline"], function(Test, Timeline){
 
 	describe("Timeline", function(){
 

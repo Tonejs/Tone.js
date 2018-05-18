@@ -1,10 +1,6 @@
 define(["helper/Basic", "Tone/source/BufferSource", "helper/Offline", "Tone/core/Buffer", 
-	"helper/Meter", "Tone/core/Tone", "helper/CompareToFile", "helper/Supports", "Test"],
+	"helper/Meter", "Tone/core/Tone", "helper/CompareToFile", "helper/Supports", "helper/Test"],
 function(BasicTests, BufferSource, Offline, Buffer, Meter, Tone, CompareToFile, Supports, Test){
-
-	if (window.__karma__){
-		Buffer.baseUrl = "/base/test/";
-	}
 
 	describe("BufferSource", function(){
 

@@ -1,6 +1,6 @@
 define(["Tone/component/Merge", "helper/Basic", "helper/PassAudio", "helper/PassAudioStereo", 
-	"Test", "helper/Offline", "Tone/signal/Signal"], 
-function (Merge, Basic, PassAudio, PassAudioStereo, Test, Offline, Signal) {
+	"helper/Test", "helper/Offline", "Tone/signal/Signal"], 
+function(Merge, Basic, PassAudio, PassAudioStereo, Test, Offline, Signal){
 	describe("Merge", function(){
 
 		Basic(Merge);

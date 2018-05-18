@@ -1,5 +1,5 @@
-define(["Test", "Tone/component/Panner3D", "helper/PassAudio"], 
-	function (Test, Panner3D, PassAudio) {
+define(["helper/Test", "Tone/component/Panner3D", "helper/PassAudio"], 
+	function(Test, Panner3D, PassAudio){
 
 		describe("Panner3D", function(){
 

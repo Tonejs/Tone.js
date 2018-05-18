@@ -1,4 +1,4 @@
-define(["Test", "Tone/core/Transport", "Tone/core/Tone", "helper/Offline",
+define(["helper/Test", "Tone/core/Transport", "Tone/core/Tone", "helper/Offline",
 	"Tone/type/TransportTime", "Tone/signal/Signal", "helper/BufferTest", "Tone/type/Time"],
 function(Test, Transport, Tone, Offline, TransportTime, Signal, BufferTest, Time){
 

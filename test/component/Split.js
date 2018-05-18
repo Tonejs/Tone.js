@@ -1,7 +1,7 @@
 define(["Tone/component/Merge", "helper/Basic", "helper/PassAudio", "helper/PassAudioStereo",
-	"Test", "helper/Offline", "Tone/signal/Signal", "Tone/component/Split",
+	"helper/Test", "helper/Offline", "Tone/signal/Signal", "Tone/component/Split",
 	"Tone/core/Tone", "helper/ConstantOutput", "helper/StereoSignal"],
-function(Merge, Basic, PassAudio, PassAudioStereo, Test, Offline, Signal, Split, Tone, ConstantOutput, StereoSignal) {
+function(Merge, Basic, PassAudio, PassAudioStereo, Test, Offline, Signal, Split, Tone, ConstantOutput, StereoSignal){
 	describe("Split", function(){
 
 		Basic(Split);

@@ -1,4 +1,4 @@
-define(["helper/Basic", "Test", "Tone/type/Midi", "Tone/core/Tone",
+define(["helper/Basic", "helper/Test", "Tone/type/Midi", "Tone/core/Tone",
 	"deps/teoria", "helper/Offline", "Tone/type/Time", "Tone/type/TransportTime",
 	"Tone/type/Ticks", "Tone/type/Frequency"], function(Basic, Test, Midi, Tone, teoria, Offline, Time, TransportTime, Ticks, Frequency){
 

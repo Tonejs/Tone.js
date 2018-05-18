@@ -1,6 +1,6 @@
-define(["Tone/component/PanVol", "helper/Basic", "helper/Offline", "Test",
+define(["Tone/component/PanVol", "helper/Basic", "helper/Offline", "helper/Test",
 	"Tone/signal/Signal", "helper/PassAudio", "helper/PassAudioStereo", "Tone/component/Merge"],
-function (PanVol, Basic, Offline, Test, Signal, PassAudio, PassAudioStereo, Merge) {
+function(PanVol, Basic, Offline, Test, Signal, PassAudio, PassAudioStereo, Merge){
 	describe("PanVol", function(){
 
 		Basic(PanVol);

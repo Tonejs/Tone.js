@@ -1,5 +1,5 @@
-define(["Tone/component/ScaledEnvelope", "helper/Basic", "helper/Offline", "Test", "Tone/component/Envelope"], 
-	function (ScaledEnvelope, Basic, Offline, Test, Envelope) {
+define(["Tone/component/ScaledEnvelope", "helper/Basic", "helper/Offline", "helper/Test", "Tone/component/Envelope"], 
+	function(ScaledEnvelope, Basic, Offline, Test, Envelope){
 		describe("ScaledEnvelope", function(){
 
 			Basic(ScaledEnvelope);

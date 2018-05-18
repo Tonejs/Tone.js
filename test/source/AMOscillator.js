@@ -1,6 +1,6 @@
 define(["helper/Basic", "Tone/source/AMOscillator", "helper/Offline",
-	"helper/SourceTests", "helper/OscillatorTests", "Test", "helper/CompareToFile"],
-function(BasicTests, AMOscillator, Offline, SourceTests, OscillatorTests, Test, CompareToFile) {
+	"helper/SourceTests", "helper/OscillatorTests", "helper/Test", "helper/CompareToFile"],
+function(BasicTests, AMOscillator, Offline, SourceTests, OscillatorTests, Test, CompareToFile){
 
 	describe("AMOscillator", function(){
 

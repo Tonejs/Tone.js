@@ -1,5 +1,5 @@
-define(["Tone/component/Solo", "helper/Basic", "helper/ConstantOutput", "Test", "Tone/signal/Signal"],
-	function (Solo, Basic, ConstantOutput, Test, Signal) {
+define(["Tone/component/Solo", "helper/Basic", "helper/ConstantOutput", "helper/Test", "Tone/signal/Signal"],
+	function(Solo, Basic, ConstantOutput, Test, Signal){
 		describe("Solo", function(){
 
 			Basic(Solo);

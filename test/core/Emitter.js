@@ -1,4 +1,4 @@
-define(["Test", "Tone/core/Emitter"], function (Test, Emitter) {
+define(["helper/Test", "Tone/core/Emitter"], function(Test, Emitter){
 
 	describe("Emitter", function(){
 

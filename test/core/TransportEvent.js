@@ -1,5 +1,5 @@
-define(["Test", "Tone/core/TransportEvent", "Tone/core/Tone", "helper/Offline", "helper/PassAudio", "Tone/source/Oscillator", "Tone/core/AudioNode"],
-	function (Test, TransportEvent, Tone, Offline, PassAudio, Oscillator, AudioNode) {
+define(["helper/Test", "Tone/core/TransportEvent", "Tone/core/Tone", "helper/Offline", "helper/PassAudio", "Tone/source/Oscillator", "Tone/core/AudioNode"],
+	function(Test, TransportEvent, Tone, Offline, PassAudio, Oscillator, AudioNode){
 
 		describe("TransportEvent", function(){
 

@@ -1,5 +1,5 @@
-define(["Tone/component/Limiter", "helper/Basic", "helper/PassAudio", "helper/PassAudioStereo", "Test"], 
-	function (Limiter, Basic, PassAudio, PassAudioStereo, Test) {
+define(["Tone/component/Limiter", "helper/Basic", "helper/PassAudio", "helper/PassAudioStereo", "helper/Test"], 
+	function(Limiter, Basic, PassAudio, PassAudioStereo, Test){
 		describe("Limiter", function(){
 
 			Basic(Limiter);

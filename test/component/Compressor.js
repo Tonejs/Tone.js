@@ -1,5 +1,5 @@
-define(["Tone/component/Compressor", "helper/Basic", "helper/PassAudio", "helper/PassAudioStereo", "Test"], 
-	function (Compressor, Basic, PassAudio, PassAudioStereo, Test) {
+define(["Tone/component/Compressor", "helper/Basic", "helper/PassAudio", "helper/PassAudioStereo", "helper/Test"], 
+	function(Compressor, Basic, PassAudio, PassAudioStereo, Test){
 		describe("Compressor", function(){
 
 			Basic(Compressor);

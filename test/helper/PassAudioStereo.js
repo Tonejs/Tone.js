@@ -1,5 +1,5 @@
-define(["Test", "helper/Offline", "Tone/signal/Signal", "Tone/core/Master", "Tone/component/Merge"],
-	function(Test, Offline, Signal, Master, Merge) {
+define(["helper/Test", "helper/Offline", "Tone/signal/Signal", "Tone/core/Master", "Tone/component/Merge"],
+	function(Test, Offline, Signal, Master, Merge){
 
 		var PassAudioStereo = function(before){
 
@@ -19,7 +19,7 @@ define(["Test", "helper/Offline", "Tone/signal/Signal", "Tone/core/Master", "Ton
 					if (time >= duration / 2 && l !== 0 && r !== 0){
 						silent = false;
 						return;
-					} else if (time < duration / 2) {
+					} else if (time < duration / 2){
 						expect(l).to.be.closeTo(0, 0.001);
 						expect(r).to.be.closeTo(0, 0.001);
 					}

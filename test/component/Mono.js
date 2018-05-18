@@ -1,6 +1,6 @@
 define(["Tone/component/Mono", "helper/Basic",
-	"Test", "helper/Offline", "Tone/signal/Signal", "helper/StereoSignal"],
-function(Mono, Basic, Test, Offline, Signal, StereoSignal) {
+	"helper/Test", "helper/Offline", "Tone/signal/Signal", "helper/StereoSignal"],
+function(Mono, Basic, Test, Offline, Signal, StereoSignal){
 
 	describe("Mono", function(){
 
