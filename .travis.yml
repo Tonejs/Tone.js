@@ -4,15 +4,14 @@ language: node_js
 node_js:
 - '8'
 before_script:
-- cd gulp
-- npm install -g gulp
-- npm install
+- npm ci
 - git config --global user.email "travis@travis-ci.org"
 - git config --global user.name "Travis CI"
-script: gulp travis-test
+script: npm run test:travis
 after_success:
 - gulp coveralls
 before_deploy:
+- cd gulp
 - npm install -g jsdoc
 - sh deploy_updates.sh
 - node increment_version.js
@@ -84,6 +83,6 @@ jobs:
 # cache node_modules to speed up build
 cache:
   directories:
-    - node_modules
-    - gulp/node_modules
+    # - node_modules
+    # - gulp/node_modules
     - $HOME/Library/Caches/Homebrew
