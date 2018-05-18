@@ -22,16 +22,16 @@ version = version.join(".");
 
 //write it to the package.json
 const packageFile = resolve(__dirname, "../package.json");
-const package = JSON.parse(fs.readFileSync(packageFile, "utf-8"));
+const packageObj = JSON.parse(fs.readFileSync(packageFile, "utf-8"));
 
 //if the package version if the latest, go with that one
-if (semver.gt(package.version, version)){
-	version = package.version;
+if (semver.gt(packageObj.version, version)){
+	version = packageObj.version;
 }
 
 console.log(`incrementing to version ${version}`);
-package.version = version;
-fs.writeFileSync(packageFile, JSON.stringify(package, undefined, "  "));
+packageObj.version = version;
+fs.writeFileSync(packageFile, JSON.stringify(packageObj, undefined, "  "));
 
 //write a version file
 var versionFile = `module.exports = ${JSON.stringify({ version, dev : isDev }, undefined, "\t")};\n`;
