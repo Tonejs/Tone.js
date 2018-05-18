@@ -2,7 +2,7 @@ sudo: false
 dist: trusty
 language: node_js
 node_js:
-- '8'
+- '9'
 install:
 - npm ci
 before_script:
