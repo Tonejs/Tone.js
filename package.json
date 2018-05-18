@@ -12,16 +12,16 @@
   "scripts": {
     "postinstall": "npm run increment",
     "increment": "node gulp/increment_version.js",
-    "build": "npm run increment && cd gulp && gulp collectDependencies && webpack -p --env.production",
+    "build": "npm run increment && gulp --gulpfile=gulp/gulpfile.js collectDependencies && webpack -p --env.production",
     "build:test": "webpack -p --env.test",
     "watch:test": "webpack -w --mode=development --env.test",
-    "test:all": "cd gulp && gulp collectTests",
-    "test:file": "cd gulp && gulp collectTests -f",
+    "test:all": "gulp --gulpfile=gulp/gulpfile.js collectTests",
+    "test:file": "gulp --gulpfile=gulp/gulpfile.js collectTests -f",
     "test": "npm run test:all && npm run build:test && npm run karma",
     "karma": "karma start gulp/karma.conf.js",
-    "lint": "cd gulp && gulp lint",
-    "lint:fix": "cd gulp && gulp lint-fix",
-    "coveralls": "cd gulp && gulp coveralls",
+    "lint": "gulp --gulpfile=gulp/gulpfile.js lint",
+    "lint:fix": "gulp --gulpfile=gulp/gulpfile.js lint-fix",
+    "coveralls": "gulp --gulpfile=gulp/gulpfile.js coveralls",
     "test:travis": "npm run lint && npm run test"
   },
   "repository": {
