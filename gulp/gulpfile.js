@@ -59,81 +59,6 @@ gulp.task("collectDependencies", function(done){
 	});
 });
 
-gulp.task("version", function(){
-
-});
-
-gulp.task("compile", ["collectDependencies"], function(){
-	return gulp.src("./toneMain.js")
-		// Traces all modules and outputs them in the correct order.
-		.pipe(amdOptimize("gulp/toneMain", {
-			baseUrl : "../",
-			preserveComments : true
-		}))
-		.pipe(concat("Tone.js"))
-		.pipe(replace("'use strict';", ""))
-		//indent the contents
-		.pipe(indent({
-			tabs : true,
-			amount : 1
-		}))
-		//replace the MainModule
-		.pipe(replace(/\/\* BEGIN REQUIRE \*\/(.|\n)*/gm, ""))
-		.pipe(replace("define('Tone/core/Tone', [], ", "Main("))
-		//replace the ToneModules
-		.pipe(replace(/define\(\s*'([^']*)'\s*\,\s*\[\s*'([^']*'\s*\,*\s*)+?\]\s*\,\s*/g, "Module("))
-		.pipe(insert.prepend(fs.readFileSync("./fragments/before.frag").toString()))
-		.pipe(gulp.dest("../build/"));
-});
-
-gulp.task("footer", ["compile"], function(){
-	return gulp.src("../build/Tone.js")
-		.pipe(insert.append(fs.readFileSync("./fragments/after.frag").toString()))
-		.pipe(gulp.dest("../build/"));
-});
-
-gulp.task("minify", ["footer"], function(){
-	return gulp.src("../build/Tone.js")
-		.pipe(uglify({
-			preserveComments : "some",
-			compress : {
-				dead_code : true,
-				evaluate : true,
-				loops : true,
-				if_return : true,
-				hoist_vars : true,
-				booleans : true,
-				conditionals : true,
-				sequences : true,
-				comparisons : true,
-				hoist_funs : true,
-				join_vars : true,
-				cascade : true,
-			},
-		}))
-		.pipe(rename({
-			suffix : ".min"
-		}))
-		// .pipe(del(["./toneMain.js"]))
-		.pipe(gulp.dest("../build/"));
-});
-
-gulp.task("build", ["minify"], function(){
-	return del(["./toneMain.js"]);
-});
-
-//default build
-gulp.task("default", ["build"]);
-
-/**
- *  Sass
- */
-gulp.task("sass", function(){
-	sass("../examples/style/examples.scss", { sourcemap : false })
-		.pipe(prefix("last 2 version"))
-		.pipe(gulp.dest("../examples/style/"));
-});
-
 /**
  *  LINTING
  */
@@ -196,25 +121,6 @@ gulp.task("collectTests", function(done){
 		fs.writeFile("../test/test.js", reqString, done);
 	});
 });
-
-function getFiles(globpath, cb){
-	glob(globpath, function(err, files){
-		const modules = files.filter(f => f.substring(3, f.length - 3));
-		cb(modules);
-	});
-}
-
-gulp.task("karma", done => {
-	new KarmaServer({
-		configFile : __dirname + "/karma.conf.js",
-		singleRun : true
-	}, done).start();
-});
-
-/**
- *  TEST ALL
- */
-gulp.task("travis-test", ["lint", "karma-test"]);
 
 /**
  *  COVERALLS
