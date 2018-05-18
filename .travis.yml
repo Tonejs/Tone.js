@@ -19,7 +19,7 @@ before_deploy:
 jobs:
   include:
     - stage: test
-      script: gulp travis-test
+      script: npm run test:travis
       env : BROWSER=chrome
       os: linux
       addons:
