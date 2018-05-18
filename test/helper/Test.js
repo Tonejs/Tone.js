@@ -8,6 +8,9 @@ define(["Tone/core/Tone", "chai", "Tone/core/Context", "Tone/core/Transport", "T
 			new chai.Assertion(this._obj).to.be.closeTo(val, val * percent);
 		});
 
+		//silence the logging
+		window.TONE_SILENCE_VERSION_LOGGING = true;
+
 		//testing setup
 		window.expect = chai.expect;
 		mocha.setup({
