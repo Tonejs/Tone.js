@@ -1,11 +1,5 @@
-/* globals process, __dirname */
-const gulp = require("gulp");
-const gutil = require("gulp-util");
-const glob = require("glob");
-const { execSync } = require("child_process");
+// const gutil = require("gulp-util");
 // const concat = require("gulp-concat");
-const path = require("path");
-const fs = require("fs");
 // const amdOptimize = require("amd-optimize");
 // const replace = require("gulp-replace");
 // const indent = require("gulp-indent");
@@ -15,6 +9,11 @@ const fs = require("fs");
 // const rename = require("gulp-rename");
 // const sass = require("gulp-ruby-sass");
 // const prefix = require("gulp-autoprefixer");
+const gulp = require("gulp");
+const glob = require("glob");
+const { execSync } = require("child_process");
+const path = require("path");
+const fs = require("fs");
 const eslint = require("gulp-eslint");
 const coveralls = require("gulp-coveralls");
 const argv = require("yargs")
@@ -45,7 +44,7 @@ const TMP_FOLDER = "../tmp";
 gulp.task("collectDependencies", function(done){
 	glob("../Tone/*/*.js", function(err, files){
 		var modules = [];
-		gutil.log(gutil.colors.magenta("files found:", files.length));
+		// gutil.log(gutil.colors.magenta("files found:", files.length));
 		files.forEach(function(file){
 			//remove the precedding ../ and the trailing .js
 			var module = file.substring(3, file.length - 3);
