@@ -17,17 +17,8 @@ const fs = require("fs");
 const eslint = require("gulp-eslint");
 const coveralls = require("gulp-coveralls");
 const argv = require("yargs")
-	.alias("f", "file")
-	.alias("s", "signal")
-	.alias("i", "instrument")
-	.alias("o", "source")
-	.alias("v", "event")
-	.alias("t", "control")
-	.alias("e", "effect")
-	.alias("c", "core")
-	.alias("m", "component")
-	.alias("y", "type")
-	.alias("x", "examples")
+	.alias("i", "file")
+	.alias("d", "dir")
 	.argv;
 
 const { version, dev } = require("../Tone/version.js");
@@ -81,43 +72,13 @@ gulp.task("lint-fix", function(){
 
 gulp.task("collectTests", function(done){
 	var tests = "../test/!(helper|deps|examples)/*.js";
-	// var tests = ["../test/*/*.js", "!../test/helper/*.js", "!../test/deps/*.js", "!../test/examples/*.js", ];
 	if (argv.file){
-		tests = ["../test/*/"+argv.file+".js"];
-	} else if (argv.signal || argv.core || argv.component || argv.instrument ||
-				argv.source || argv.effect || argv.event || argv.type || argv.examples){
-		tests = [];
-		if (argv.signal){
-			tests.push("../test/signal/*.js");
-		}
-		if (argv.core){
-			tests.push("../test/core/*.js");
-		}
-		if (argv.source){
-			tests.push("../test/source/*.js");
-		}
-		if (argv.instrument){
-			tests.push("../test/instrument/*.js");
-		}
-		if (argv.component){
-			tests.push("../test/component/*.js");
-		}
-		if (argv.effect){
-			tests.push("../test/effect/*.js");
-		}
-		if (argv.event){
-			tests.push("../test/event/*.js");
-		}
-		if (argv.type){
-			tests.push("../test/type/*.js");
-		}
-		if (argv.examples){
-			tests.push("../test/examples/*.js");
-		}
+		tests = `../test/*/${argv.file}.js`;
+	} else if (argv.dir){
+		tests = `../test/${argv.dir}/*.js`;
 	}
 	glob(tests, (err, files) => {
 		var reqString = files.map(r => `require("${r}");`).join("\n");
-		reqString += "\nmocha.run()\n";
 		fs.writeFile("../test/test.js", reqString, done);
 	});
 });
