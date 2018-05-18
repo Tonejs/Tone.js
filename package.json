@@ -1,6 +1,6 @@
 {
   "name": "tone",
-  "version": "13.1.14",
+  "version": "13.1.0",
   "description": "A Web Audio framework for making interactive music in the browser.",
   "main": "build/Tone.js",
   "files": [
@@ -48,6 +48,7 @@
     "chai": "^1.9.1",
     "concurrently": "^3.5.1",
     "eslint": "^4.19.1",
+    "gulp": "^3.9.1",
     "gulp-coveralls": "^0.1.4",
     "gulp-eslint": "^4.0.2",
     "gulp-watch": "^5.0.0",
