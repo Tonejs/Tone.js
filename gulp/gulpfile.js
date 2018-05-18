@@ -3,7 +3,6 @@ const gulp = require("gulp");
 const gutil = require("gulp-util");
 const glob = require("glob");
 const { execSync } = require("child_process");
-const tap = require("gulp-tap");
 // const concat = require("gulp-concat");
 const path = require("path");
 const fs = require("fs");
@@ -157,7 +156,8 @@ gulp.task("lint-fix", function(){
 });
 
 gulp.task("collectTests", function(done){
-	var tests = ["../test/*/*.js", "!../test/helper/*.js", "!../test/deps/*.js", "!../test/tests/*.js", "!../test/examples/*.js", ];
+	var tests = "../test/!(helper|deps|examples)/*.js";
+	// var tests = ["../test/*/*.js", "!../test/helper/*.js", "!../test/deps/*.js", "!../test/examples/*.js", ];
 	if (argv.file){
 		tests = ["../test/*/"+argv.file+".js"];
 	} else if (argv.signal || argv.core || argv.component || argv.instrument ||
@@ -191,15 +191,8 @@ gulp.task("collectTests", function(done){
 			tests.push("../test/examples/*.js");
 		}
 	}
-	var allFiles = [];
-	var task = gulp.src(tests)
-		.pipe(tap(function(file){
-			var fileName = path.relative("../", file.path);
-			allFiles.push(fileName.substring(0, fileName.length - 3));
-		}));
-	task.on("end", function(){
-
-		var reqString = allFiles.map(r => `require("${r}");`).join("\n");
+	glob(tests, (err, files) => {
+		var reqString = files.map(r => `require("${r}");`).join("\n");
 		reqString += "\nmocha.run()\n";
 		fs.writeFile("../test/test.js", reqString, done);
 	});
