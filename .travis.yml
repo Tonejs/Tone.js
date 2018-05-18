@@ -4,7 +4,7 @@ language: node_js
 node_js:
 - '8'
 before_script:
-- npm ci
+- npm install
 - git config --global user.email "travis@travis-ci.org"
 - git config --global user.name "Travis CI"
 script: npm run test:travis
