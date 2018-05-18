@@ -4,8 +4,8 @@ language: node_js
 node_js:
 - '9'
 install:
-- npm i -g npm@latest
-- npm ci
+# - npm i -g npm@latest
+- npm install
 before_script:
 - git config --global user.email "travis@travis-ci.org"
 - git config --global user.name "Travis CI"
