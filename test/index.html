@@ -2,10 +2,15 @@
 <head>
 	<meta charset="utf-8">
 	<title>TESTS</title>
-	<script src="../test/deps/mocha.js"></script>
-	<link rel="stylesheet" href="../test/deps/mocha.css" />
+	<script src="../node_modules/mocha/mocha.js"></script>
+	<link rel="stylesheet" href="../node_modules/mocha/mocha.css" />
 </head>
 <body>
 	<div id="mocha"></div>
+	<script type="text/javascript">
+		setTimeout(() => {
+			mocha.run()
+		}, 100)
+	</script>
 </body>
 </html>
