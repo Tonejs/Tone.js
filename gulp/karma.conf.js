@@ -1,8 +1,7 @@
 // Karma configuration
-// Generated on Mon Feb 01 2016 22:48:23 GMT-0500 (EST)
+var path = require("path");
 
 var BROWSERS = ["HeadlessChrome", "HeadlessFirefox", "Safari"];
-// var BROWSERS = ['Safari']
 
 if (process.env.BROWSER === "chrome"){
 	BROWSERS = ["HeadlessChrome"];
@@ -26,18 +25,9 @@ module.exports = function(config){
 
 		// list of files / patterns to load in the browser
 		files : [
-			"./build/test.js",
-			// { pattern : "test/*/*.js", included : false },
-			// { pattern : "examples/*.html", included : false },
-			// { pattern : "examples/scripts/*.js", included : false },
-			// { pattern : "examples/style/*.css", included : false },
-			// { pattern : "examples/audio/*/*.mp3", included : false },
-			// { pattern : "examples/audio/*.mp3", included : false },
-			// { pattern : "examples/audio/*/*.png", included : false },
-			// { pattern : "build/*.js", included : false },
+			"./test/test.js",
 			{ pattern : "test/audio/*", included : false },
 			{ pattern : "test/audio/*/*", included : false },
-			// { pattern : "Tone/*/*.js", included : false },
 		],
 
 		// list of files to exclude
@@ -46,7 +36,7 @@ module.exports = function(config){
 		// preprocess matching files before serving them to the browser
 		// available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
 		preprocessors : {
-			"Tone/!(shim)/*.js" : ["coverage"]
+			"test/test.js" : ["webpack", "sourcemap"],
 		},
 
 		// test results reporter to use
@@ -63,9 +53,11 @@ module.exports = function(config){
 		plugins : [
 			"karma-coverage",
 			"karma-mocha",
+			"karma-webpack",
 			"karma-chrome-launcher",
 			"karma-firefox-launcher",
-			"karma-safari-launcher"
+			"karma-safari-launcher",
+			"karma-sourcemap-loader",
 		],
 
 		client : {
@@ -73,6 +65,30 @@ module.exports = function(config){
 				reporter : "html", // change Karma's debug.html to the mocha web reporter
 				ui : "bdd"
 			}
+		},
+
+		//webpack
+		webpack : {
+			mode : "development",
+			resolve : {
+				modules : [
+					path.resolve(__dirname, "../node_modules"),
+					path.resolve(__dirname, "../"),
+					path.resolve(__dirname, "../test")
+				],
+			},
+			module : {
+				rules : [
+					//enables correct coverage mapping
+					{
+						test : /\.js$/,
+						use : { loader : "istanbul-instrumenter-loader" },
+						include : path.resolve(__dirname, "../Tone"),
+						exclude : path.resolve(__dirname, "../Tone/shim")
+					}
+				]
+			},
+			devtool : "inline-source-map"
 		},
 
 		// web server port
@@ -97,7 +113,7 @@ module.exports = function(config){
 
 		// Continuous Integration mode
 		// if true, Karma captures browsers, runs the tests and exits
-		singleRun : true,
+		singleRun : false,
 
 		// Concurrency level
 		// how many browser should be started simultaneous
