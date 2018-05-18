@@ -111,6 +111,7 @@ define(["Tone/core/Tone", "Tone/type/TimeBase", "Tone/type/Frequency"], function
 	Tone.Time.prototype.toBarsBeatsSixteenths = function(){
 		var quarterTime = this._beatsToUnits(1);
 		var quarters = this.valueOf() / quarterTime;
+		quarters = parseFloat(quarters.toFixed(4));
 		var measures = Math.floor(quarters / this._getTimeSignature());
 		var sixteenths = (quarters % 1) * 4;
 		quarters = Math.floor(quarters) % this._getTimeSignature();

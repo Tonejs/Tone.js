@@ -76,6 +76,7 @@ define(["helper/Basic", "helper/Test", "Tone/type/Time", "Tone/core/Tone",
 					expect(Time({ "4n" : 3 }).valueOf()).to.equal(1.5);
 					expect(Time({ "8t" : 2, "1m" : 3 }).valueOf()).to.be.closeTo(6.33, 0.01);
 					expect(Time({ "2n" : 1, "8n" : 1.5 }).valueOf()).to.equal(1.375);
+					expect(Time({ "2n" : 1, "8n" : -1 }).valueOf()).to.equal(0.75);
 				});
 			});
 		});
@@ -160,13 +161,17 @@ define(["helper/Basic", "helper/Test", "Tone/type/Time", "Tone/core/Tone",
 			});
 
 			it("converts time into BarsBeatsSixteenths", function(){
-				expect(Time("3:1:3").toBarsBeatsSixteenths()).to.equal("3:1:3");
-				expect(Time(2).toBarsBeatsSixteenths()).to.equal("1:0:0");
-				// trailing zero removal test
-				var bpmOrig = Tone.Transport.bpm.value;
-				Tone.Transport.bpm.value = 100;
-				expect(Time("0:1:3").toBarsBeatsSixteenths()).to.equal("0:1:3");
-				Tone.Transport.bpm.value = bpmOrig;
+				return Offline(function(Transport){
+					expect(Time("3:1:3").toBarsBeatsSixteenths()).to.equal("3:1:3");
+					expect(Time(2).toBarsBeatsSixteenths()).to.equal("1:0:0");
+					// trailing zero removal test
+					Transport.bpm.value = 100;
+					expect(Time("0:1:3").toBarsBeatsSixteenths()).to.equal("0:1:3");
+					expect(Time("14:0:0").toBarsBeatsSixteenths()).to.equal("14:0:0");
+					expect(Time("15:0:0").toBarsBeatsSixteenths()).to.equal("15:0:0");
+					Transport.bpm.value = 90;
+					expect(Time("100:0:0").toBarsBeatsSixteenths()).to.equal("100:0:0");
+				});
 			});
 
 		});
