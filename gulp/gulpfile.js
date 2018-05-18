@@ -1,23 +1,25 @@
 /* globals process, __dirname */
-var gulp = require("gulp");
-var gutil = require("gulp-util");
-var glob = require("glob");
-var tap = require("gulp-tap");
-var concat = require("gulp-concat");
-var path = require("path");
-var fs = require("fs");
-var amdOptimize = require("amd-optimize");
-var replace = require("gulp-replace");
-var indent = require("gulp-indent");
-var insert = require("gulp-insert");
-var del = require("del");
-var uglify = require("gulp-uglify");
-var rename = require("gulp-rename");
-var sass = require("gulp-ruby-sass");
-var prefix = require("gulp-autoprefixer");
-var eslint = require("gulp-eslint");
-var coveralls = require("gulp-coveralls");
-var argv = require("yargs")
+const gulp = require("gulp");
+const gutil = require("gulp-util");
+const glob = require("glob");
+const watch = require("gulp-watch");
+const { execSync } = require("child_process");
+const tap = require("gulp-tap");
+// const concat = require("gulp-concat");
+const path = require("path");
+const fs = require("fs");
+// const amdOptimize = require("amd-optimize");
+const replace = require("gulp-replace");
+// const indent = require("gulp-indent");
+// const insert = require("gulp-insert");
+// const del = require("del");
+// const uglify = require("gulp-uglify");
+const rename = require("gulp-rename");
+// const sass = require("gulp-ruby-sass");
+// const prefix = require("gulp-autoprefixer");
+const eslint = require("gulp-eslint");
+const coveralls = require("gulp-coveralls");
+const argv = require("yargs")
 	.alias("f", "file")
 	.alias("s", "signal")
 	.alias("i", "instrument")
@@ -30,37 +32,38 @@ var argv = require("yargs")
 	.alias("y", "type")
 	.alias("x", "examples")
 	.argv;
-var KarmaServer = require("karma").Server;
 
-var BRANCH = process.env.TRAVIS && !process.env.TRAVIS_PULL_REQUEST ? process.env.TRAVIS_BRANCH : "dev";
-var IS_DEV = BRANCH === "dev";
+const { version, dev } = require("../Tone/version.js");
+const KarmaServer = require("karma").Server;
 
-var VERSION = fs.readFileSync("../Tone/core/Tone.js", "utf-8")
-	.match(/(?:Tone\.version\s*=\s*)(?:'|")(.*)(?:'|");/m)[1];
-
-//dev versions are just 'dev'
-VERSION = IS_DEV ? "dev" : VERSION;
-
-var TMP_FOLDER = "../tmp";
+const VERSION = version;
+const TMP_FOLDER = "../tmp";
 
 /**
  *  BUILDING
  */
 
 //collect all of the files into one file prefixed with 'require'
-gulp.task("collectDependencies", function(done) {
+gulp.task("collectDependencies", function(done){
 	glob("../Tone/*/*.js", function(err, files){
 		var modules = [];
 		gutil.log(gutil.colors.magenta("files found:", files.length));
 		files.forEach(function(file){
 			//remove the precedding ../ and the trailing .js
 			var module = file.substring(3, file.length - 3);
-			modules.push(module);
+			if (module !== "Tone/core/Tone"){
+				modules.push(module);
+			}
 		});
 		//write it to disk
-		var reqString = "/* BEGIN REQUIRE */ require("+JSON.stringify(modules)+", function(){});";
-		fs.writeFile("toneMain.js", reqString, done);
+		var reqString = modules.map(r => `require("${r}");`).join("\n");
+		reqString += "\nmodule.exports = require(\"Tone/core/Tone\");\n";
+		fs.writeFile("../Tone/index.js", reqString, done);
 	});
+});
+
+gulp.task("version", function(){
+
 });
 
 gulp.task("compile", ["collectDependencies"], function(){
@@ -128,27 +131,31 @@ gulp.task("default", ["build"]);
 /**
  *  Sass
  */
-gulp.task("sass", function () {
+gulp.task("sass", function(){
 	sass("../examples/style/examples.scss", { sourcemap : false })
 		.pipe(prefix("last 2 version"))
 		.pipe(gulp.dest("../examples/style/"));
 });
 
-gulp.task("example", function() {
+gulp.task("example", function(){
 	gulp.watch(["../examples/style/examples.scss"], ["sass"]);
+});
+
+gulp.task("watch", () => {
+	watch(["../Tone/*/*.js"], () => gulp.run("collectDependencies"));
 });
 
 /**
  *  LINTING
  */
-gulp.task("lint", function() {
+gulp.task("lint", function(){
 	return gulp.src("../Tone/*/*.js")
 		.pipe(eslint())
 		.pipe(eslint.format())
 		.pipe(eslint.failAfterError());
 });
 
-gulp.task("lint-fix", function() {
+gulp.task("lint-fix", function(){
 	return gulp.src("../Tone/*/*.js")
 		.pipe(eslint({
 			fix : true
@@ -158,15 +165,8 @@ gulp.task("lint-fix", function() {
 		.pipe(gulp.dest("../Tone"));
 });
 
-gulp.task("karma-test", ["default"], function (done) {
-	new KarmaServer({
-		configFile : __dirname + "/karma.conf.js",
-		singleRun : true
-	}, done).start();
-});
-
 gulp.task("collectTests", function(done){
-	var tests = ["../test/*/*.js", "!../test/helper/*.js", "!../test/tests/*.js"];
+	var tests = ["../test/*/*.js", "!../test/helper/*.js", "!../test/deps/*.js", "!../test/tests/*.js", "!../test/examples/*.js", ];
 	if (argv.file){
 		tests = ["../test/*/"+argv.file+".js"];
 	} else if (argv.signal || argv.core || argv.component || argv.instrument ||
@@ -200,21 +200,43 @@ gulp.task("collectTests", function(done){
 			tests.push("../test/examples/*.js");
 		}
 	}
-	// console.log(argv.signal === undefined);
 	var allFiles = [];
 	var task = gulp.src(tests)
 		.pipe(tap(function(file){
-			var fileName = path.relative("../test/", file.path);
+			var fileName = path.relative("../", file.path);
 			allFiles.push(fileName.substring(0, fileName.length - 3));
 		}));
 	task.on("end", function(){
-		//build a require string
-		allFiles.unshift("Test");
-		var innerTask = gulp.src("./fragments/test.frag")
-			.pipe(replace("{FILES}", JSON.stringify(allFiles)))
-			.pipe(rename("Main.js"))
-			.pipe(gulp.dest("../test/"));
-		innerTask.on("end", done);
+
+		var reqString = allFiles.map(r => `require("${r}");`).join("\n");
+		reqString += "\nmocha.run()\n";
+		fs.writeFile("../test/test.js", reqString, done);
+	});
+});
+
+function getFiles(globpath, cb){
+	glob(globpath, function(err, files){
+		const modules = files.filter(f => f.substring(3, f.length - 3));
+		cb(modules);
+	});
+}
+
+gulp.task("karma", done => {
+	new KarmaServer({
+		configFile : __dirname + "/karma.conf.js",
+		singleRun : true
+	}, done).start();
+});
+
+gulp.task("watch-test", () => {
+	watch(["../test/*/*.js", "../Tone/*/*.js"], (e) => {
+		getFiles(`../test/*/${e.stem}.js`, files => {
+			//write it to disk
+			var reqString = files.map(r => `require("${path.relative("../", r)}");`).join("\n");
+			console.log(reqString);
+			fs.writeFileSync("../test.js", reqString);
+			gulp.run("karma");
+		});
 	});
 });
 
