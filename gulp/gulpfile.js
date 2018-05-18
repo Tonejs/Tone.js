@@ -2,19 +2,18 @@
 const gulp = require("gulp");
 const gutil = require("gulp-util");
 const glob = require("glob");
-const watch = require("gulp-watch");
 const { execSync } = require("child_process");
 const tap = require("gulp-tap");
 // const concat = require("gulp-concat");
 const path = require("path");
 const fs = require("fs");
 // const amdOptimize = require("amd-optimize");
-const replace = require("gulp-replace");
+// const replace = require("gulp-replace");
 // const indent = require("gulp-indent");
 // const insert = require("gulp-insert");
 // const del = require("del");
 // const uglify = require("gulp-uglify");
-const rename = require("gulp-rename");
+// const rename = require("gulp-rename");
 // const sass = require("gulp-ruby-sass");
 // const prefix = require("gulp-autoprefixer");
 const eslint = require("gulp-eslint");
@@ -137,14 +136,6 @@ gulp.task("sass", function(){
 		.pipe(gulp.dest("../examples/style/"));
 });
 
-gulp.task("example", function(){
-	gulp.watch(["../examples/style/examples.scss"], ["sass"]);
-});
-
-gulp.task("watch", () => {
-	watch(["../Tone/*/*.js"], () => gulp.run("collectDependencies"));
-});
-
 /**
  *  LINTING
  */
@@ -226,18 +217,6 @@ gulp.task("karma", done => {
 		configFile : __dirname + "/karma.conf.js",
 		singleRun : true
 	}, done).start();
-});
-
-gulp.task("watch-test", () => {
-	watch(["../test/*/*.js", "../Tone/*/*.js"], (e) => {
-		getFiles(`../test/*/${e.stem}.js`, files => {
-			//write it to disk
-			var reqString = files.map(r => `require("${path.relative("../", r)}");`).join("\n");
-			console.log(reqString);
-			fs.writeFileSync("../test.js", reqString);
-			gulp.run("karma");
-		});
-	});
 });
 
 /**
