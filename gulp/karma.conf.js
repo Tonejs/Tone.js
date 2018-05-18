@@ -63,7 +63,6 @@ module.exports = function(config){
 		plugins : [
 			"karma-coverage",
 			"karma-mocha",
-			"karma-requirejs",
 			"karma-chrome-launcher",
 			"karma-firefox-launcher",
 			"karma-safari-launcher"
