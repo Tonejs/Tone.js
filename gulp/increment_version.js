@@ -31,7 +31,10 @@ if (semver.gt(packageObj.version, version)){
 
 console.log(`incrementing to version ${version}`);
 packageObj.version = version;
-fs.writeFileSync(packageFile, JSON.stringify(packageObj, undefined, "  "));
+//only if it's travis, update the package.json
+if (process.env.TRAVIS){
+	fs.writeFileSync(packageFile, JSON.stringify(packageObj, undefined, "  "));
+}
 
 //write a version file
 var versionFile = `module.exports = ${JSON.stringify({ version, dev : isDev }, undefined, "\t")};\n`;
