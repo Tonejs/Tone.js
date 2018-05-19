@@ -4,7 +4,7 @@
   "description": "A Web Audio framework for making interactive music in the browser.",
   "main": "build/Tone.js",
   "files": [
-    "./README.md",
+    "README.md",
     "build/Tone.js.map",
     "build/Tone.js",
     "Tone"
@@ -13,7 +13,7 @@
     "increment": "node gulp/increment_version.js",
     "build": "npm run increment && gulp --gulpfile=gulp/gulpfile.js collectDependencies && webpack -p --env.production",
     "build:test": "webpack -p --env.test",
-    "watch:test": "webpack -w --mode=development --env.test",
+    "test:watch": "webpack -w --mode=development --env.test",
     "test:all": "gulp --gulpfile=gulp/gulpfile.js collectTests",
     "test:file": "gulp --gulpfile=gulp/gulpfile.js collectTests --file",
     "test:dir": "gulp --gulpfile=gulp/gulpfile.js collectTests --dir",
