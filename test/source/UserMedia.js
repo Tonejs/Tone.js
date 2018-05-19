@@ -55,7 +55,7 @@ define(["helper/Basic", "Tone/source/UserMedia", "helper/Test", "Tone/source/Sou
 						if (HAS_USER_MEDIA_INPUTS){
 							var extIn = new UserMedia();
 							var promise = extIn.open();
-							expect(promise).to.be.instanceOf(Promise);
+							expect(promise).to.have.property("then");
 							return promise.then(function(){
 								extIn.dispose();
 							});

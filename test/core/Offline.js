@@ -14,7 +14,7 @@ function(Test, Offline, Transport, Oscillator, Tone, AudioBuffer, BufferTest){
 		});
 
 		it("returns a promise", function(){
-			expect(Offline(function(){}, 0.01)).to.be.instanceOf(Promise);
+			expect(Offline(function(){}, 0.01)).to.have.property("then");
 		});
 
 		it("generates a buffer", function(done){

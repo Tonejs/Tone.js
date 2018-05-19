@@ -177,7 +177,7 @@ define(["helper/Test", "Tone/core/Buffer", "Tone/core/Tone"], function(Test, Buf
 
 			it("instance .load method returns Promise", function(done){
 				var promise = (new Buffer()).load(testFile);
-				expect(promise).to.be.instanceOf(Promise);
+				expect(promise).to.have.property("then");
 				promise.then(function(buff){
 					expect(buff).to.be.instanceOf(Buffer);
 					done();
@@ -349,7 +349,7 @@ define(["helper/Test", "Tone/core/Buffer", "Tone/core/Tone"], function(Test, Buf
 	describe("Tone.loaded()", function(){
 
 		it("returns a promise", function(){
-			expect(Tone.loaded()).to.be.instanceOf(Promise);
+			expect(Tone.loaded()).to.have.property("then");
 		});
 
 		it("is invoked when all the buffers are loaded", function(){

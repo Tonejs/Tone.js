@@ -1,9 +1,9 @@
 /* global mocha*/
 
-define(["Tone/core/Tone", "chai", "Tone/core/Context", "Tone/core/Transport", "Tone/core/Buffer"], 
-	function(Tone, chai, Context, Transport, Buffer){
+define(["Tone/core/Tone", "chai", "Tone/core/Context", "Tone/core/Transport", "Tone/core/Buffer", "@babel/polyfill"], 
+	function(Tone, chai, Context, Transport, Buffer, babelPolyfill){
 
-	//add a chai test
+		//add a chai test
 		chai.Assertion.addMethod("percentageFrom", function(val, percent){
 			new chai.Assertion(this._obj).to.be.closeTo(val, val * percent);
 		});

@@ -39,7 +39,7 @@ define(["helper/Test", "Tone/core/Context", "Tone/core/Tone", "helper/Offline", 
 				it("'dispose' returns a promise which resolves", function(){
 					var ctx = new Context();
 					var promise = ctx.dispose();
-					expect(promise).to.be.instanceOf(Promise);
+					expect(promise).to.have.property("then");
 					return promise;
 				});
 

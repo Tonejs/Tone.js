@@ -30,7 +30,7 @@ function(Reverb, Basic, Offline, Oscillator){
 			it("can generate an IR", function(){
 				var reverb = new Reverb();
 				var promise = reverb.generate();
-				expect(promise).to.be.instanceOf(Promise);
+				expect(promise).to.have.property("then");
 				return promise.then(function(){
 					reverb.dispose();
 				});
