@@ -14,7 +14,10 @@ after_success:
 before_deploy:
 - cd gulp
 - npm install -g jsdoc
-- sh deploy_updates.sh
+# commit the build
+- sh push_build.sh
+# update the site
+- sh update_site.sh
 - node increment_version.js
 - cd ../
 jobs:
@@ -38,12 +41,12 @@ jobs:
     #   env : BROWSER=firefox
     #   os: linux
     #   addons:
-    # - stage: test
-    #   before_script:
-    #   # needs an audio output device to run
-    #   - HOMEBREW_NO_AUTO_UPDATE=1 brew install Caskroom/cask/soundflower
-    #   env : BROWSER=safari
-    #   os: osx
+    - stage: test
+      before_script:
+      # needs an audio output device to run
+      - HOMEBREW_NO_AUTO_UPDATE=1 brew install Caskroom/cask/soundflower
+      env : BROWSER=safari
+      os: osx
     # - stage: test
     #   before_script:
     #   # needs an audio output device to run
@@ -54,7 +57,7 @@ jobs:
     #   osx_image: xcode6.4
     - stage: deploy
       os: linux
-      script: skip
+      script: npm run build
       deploy:
       - provider: npm
         skip_cleanup: true
@@ -62,9 +65,10 @@ jobs:
         api_key: $NPM_TOKEN
         tag: next
         on:
-          # check the git diff
           repo: Tonejs/Tone.js
           branch: dev
+          # don't publish on cron or PRs
+          condition: $TRAVIS_EVENT_TYPE != cron && $TRAVIS_EVENT_TYPE != pull_request
       # publish without @next when pushing on master
       - provider: npm
         skip_cleanup: true
@@ -73,6 +77,8 @@ jobs:
         on:
           repo: Tonejs/Tone.js
           branch: master
+          # don't publish on cron or PRs
+          condition: $TRAVIS_EVENT_TYPE != cron && $TRAVIS_EVENT_TYPE != pull_request
       # publish build files for releases
       - provider: releases
         api-key: $GH_TOKEN
