@@ -1,4 +1,4 @@
-define(["helper/Test", "Examples", "helper/Supports"], function(Test, Examples, Supports){
+define(["helper/Test", /*"Examples", */"helper/Supports"], function(Test, /*Examples, */Supports){
 
 	/*var baseUrl = "../examples/";
 	if (window.__karma__){
