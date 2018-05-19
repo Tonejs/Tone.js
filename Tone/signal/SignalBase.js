@@ -32,12 +32,12 @@ define(["Tone/core/Tone", "Tone/core/AudioNode"], function(Tone){
 			//cancel changes
 			node._param.cancelScheduledValues(0);
 			//reset the value
-			node._param.value = 0;
+			node._param.setValueAtTime(0, 0);
 			//mark the value as overridden
 			node.overridden = true;
 		} else if (node instanceof AudioParam){
 			node.cancelScheduledValues(0);
-			node.value = 0;
+			node.setValueAtTime(0, 0);
 		}
 		Tone.AudioNode.prototype.connect.call(this, node, outputNumber, inputNumber);
 		return this;
