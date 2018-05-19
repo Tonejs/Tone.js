@@ -8,7 +8,7 @@ define(["Tone/core/Tone"], function(Tone){
 		//returns promise?
 		var context = new OfflineAudioContext(1, 1, 44100);
 		var ret = context.startRendering();
-		if (!(ret instanceof Promise)){
+		if (!(ret && Tone.isFunction(ret.then))){
 			OfflineAudioContext.prototype._native_startRendering = OfflineAudioContext.prototype.startRendering;
 			OfflineAudioContext.prototype.startRendering = function(){
 				return new Promise(function(done){

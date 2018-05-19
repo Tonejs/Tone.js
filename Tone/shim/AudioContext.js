@@ -40,7 +40,7 @@ define(["Tone/core/Tone", "Tone/shim/OfflineAudioContext"], function(Tone){
 		var audioData = new Uint32Array([1179011410, 48, 1163280727, 544501094, 16, 131073, 44100, 176400, 1048580, 1635017060, 8, 0, 0, 0, 0]).buffer;
 		try {
 			var ret = offlineContext.decodeAudioData(audioData);
-			if (ret instanceof Promise){
+			if (ret && Tone.isFunction(ret.then)){
 				decodeAudioDataPromise = true;
 			}
 		} catch (e){
