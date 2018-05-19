@@ -66,7 +66,7 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Buffer", "Tone/core/
 		var context = renderRet.context;
 
 		var ret;
-		if (response instanceof Promise){
+		if (response && Tone.isFunction(response.then)){
 			//wait for the promise to resolve
 			ret = response.then(function(){
 				//then render the audio
