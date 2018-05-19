@@ -22,7 +22,7 @@
     "lint": "gulp --gulpfile=gulp/gulpfile.js lint",
     "lint:fix": "gulp --gulpfile=gulp/gulpfile.js lint-fix",
     "coveralls": "gulp --gulpfile=gulp/gulpfile.js coveralls",
-    "test:travis": "npm run lint && npm run test"
+    "test:travis": "npm run increment && npm run lint && npm run test"
   },
   "repository": {
     "type": "git",
