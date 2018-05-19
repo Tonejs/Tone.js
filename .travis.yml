@@ -27,34 +27,35 @@ jobs:
       os: linux
       addons:
         chrome: stable
-    # - stage: test
-    #   env : BROWSER=chrome
-    #   os: linux
-    #   addons:
-    #     chrome: beta
-    # - stage: test
-    #   env : BROWSER=firefox
-    #   os: linux
-    #   addons:
-    #     firefox: latest
-    # - stage: test
-    #   env : BROWSER=firefox
-    #   os: linux
-    #   addons:
+    - stage: test
+      env : BROWSER=chrome
+      os: linux
+      addons:
+        chrome: beta
+    - stage: test
+      env : BROWSER=firefox
+      os: linux
+      addons:
+        firefox: latest
+    - stage: test
+      env : BROWSER=firefox
+      os: linux
+      addons:
+        firefox: latest-nightly
     - stage: test
       before_script:
       # needs an audio output device to run
       - HOMEBREW_NO_AUTO_UPDATE=1 brew install Caskroom/cask/soundflower
       env : BROWSER=safari
       os: osx
-    # - stage: test
-    #   before_script:
-    #   # needs an audio output device to run
-    #   - HOMEBREW_NO_AUTO_UPDATE=1 brew install Caskroom/cask/soundflower
-    #   env : BROWSER=safari
-    #   os: osx
-    #   # test on an older safari
-    #   osx_image: xcode6.4
+    - stage: test
+      before_script:
+      # needs an audio output device to run
+      - HOMEBREW_NO_AUTO_UPDATE=1 brew install Caskroom/cask/soundflower
+      env : BROWSER=safari
+      os: osx
+      # test on an older safari
+      osx_image: xcode6.4
     - stage: deploy
       os: linux
       script: npm run build
