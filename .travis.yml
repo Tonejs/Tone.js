@@ -8,8 +8,8 @@ install:
 - npm ci
 - git config --global user.email "travis@travis-ci.org"
 - git config --global user.name "Travis CI"
-script: npm run test:travis
-after_success:
+script: 
+- npm run test:travis
 - npm run coveralls
 before_deploy:
 - cd gulp
