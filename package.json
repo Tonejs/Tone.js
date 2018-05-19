@@ -18,7 +18,7 @@
     "test:all": "gulp --gulpfile=gulp/gulpfile.js collectTests",
     "test:file": "gulp --gulpfile=gulp/gulpfile.js collectTests --file",
     "test:dir": "gulp --gulpfile=gulp/gulpfile.js collectTests --dir",
-    "test": "npm run test:all && npm run build:test && npm run karma",
+    "test": "npm run test:all && npm run karma",
     "karma": "karma start gulp/karma.conf.js --single-run",
     "lint": "gulp --gulpfile=gulp/gulpfile.js lint",
     "lint:fix": "gulp --gulpfile=gulp/gulpfile.js lint-fix",
