@@ -10,7 +10,6 @@
     "Tone"
   ],
   "scripts": {
-    "postinstall": "npm run increment",
     "increment": "node gulp/increment_version.js",
     "build": "npm run increment && gulp --gulpfile=gulp/gulpfile.js collectDependencies && webpack -p --env.production",
     "build:test": "webpack -p --env.test",
