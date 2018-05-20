@@ -94,6 +94,21 @@ function(OutputAudio, Source, OutputAudioStereo, Test, Offline, APITest){
 				});
 			});
 
+			it("can be restarted", function(){
+				return Offline(function(){
+					var instance = new Constr(args).toMaster();
+					instance.start(0).stop(0.2);
+					instance.restart(0.1);
+					instance.stop(0.25);
+				}, 0.32).then(function(buffer){
+					expect(buffer.getRmsAtTime(0)).to.be.gt(0);
+					expect(buffer.getRmsAtTime(0.1)).to.be.gt(0);
+					expect(buffer.getRmsAtTime(0.2)).to.be.gt(0);
+					expect(buffer.getRmsAtTime(0.23)).to.be.gt(0);
+					expect(buffer.getRmsAtTime(0.3)).to.equal(0);
+				});
+			});
+
 		});
 
 		context("Source API", function(){
