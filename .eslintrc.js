@@ -42,7 +42,7 @@ module.exports = {
 		"keyword-spacing" : ["error", { "before": true }],
 		"space-before-function-paren": ["error", "never"],
 		"comma-spacing": ["error", { "before": false, "after": true }],
-        "space-before-blocks": ["error", "never"]
+        "space-before-blocks": ["error", { "functions": "never", "keywords": "never", "classes": "always" }]
 		// "one-var-declaration-per-line": [ "error" , "always" ],
 		// "object-curly-newline": [ "error" , { "multiline": true }],
 		// "array-bracket-newline": [ "error" , "always" ],
