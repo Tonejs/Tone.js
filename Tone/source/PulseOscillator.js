@@ -127,6 +127,8 @@ define(["Tone/core/Tone", "Tone/source/Source", "Tone/source/Oscillator",
 	 */
 	Tone.PulseOscillator.prototype.restart = function(time){
 		this._sawtooth.restart(time);
+		this._widthGate.gain.cancelScheduledValues(time);
+		this._widthGate.gain.setValueAtTime(1, time);
 	};
 
 	/**
