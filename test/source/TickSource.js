@@ -1,4 +1,4 @@
-define(["Test", "Tone/source/TickSource", "helper/Offline", "helper/Basic"], function(Test, TickSource, Offline, BasicTests) {
+define(["helper/Test", "Tone/source/TickSource", "helper/Offline", "helper/Basic"], function(Test, TickSource, Offline, BasicTests){
 
 	describe("TickSource", function(){
 

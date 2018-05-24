@@ -1,5 +1,5 @@
-define(["Tone/component/FrequencyEnvelope", "helper/Basic", "helper/Offline", "Test", "Tone/component/Envelope"],
-	function (FrequencyEnvelope, Basic, Offline, Test, Envelope) {
+define(["Tone/component/FrequencyEnvelope", "helper/Basic", "helper/Offline", "helper/Test", "Tone/component/Envelope"],
+	function(FrequencyEnvelope, Basic, Offline, Test, Envelope){
 		describe("FrequencyEnvelope", function(){
 
 			Basic(FrequencyEnvelope);

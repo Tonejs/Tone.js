@@ -1,6 +1,6 @@
 define(["helper/ConstantOutput", "helper/Basic", "Tone/signal/GreaterThan",
-	"Tone/signal/Signal", "Test"],
-function (ConstantOutput, Basic, GreaterThan, Signal, Test) {
+	"Tone/signal/Signal", "helper/Test"],
+function(ConstantOutput, Basic, GreaterThan, Signal, Test){
 	describe("GreaterThan", function(){
 
 		Basic(GreaterThan);

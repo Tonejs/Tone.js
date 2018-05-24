@@ -1,6 +1,6 @@
-define(["Test", "Tone/core/Offline", "Tone/core/Transport", "Tone/source/Oscillator",
+define(["helper/Test", "Tone/core/Offline", "Tone/core/Transport", "Tone/source/Oscillator",
 	"Tone/core/Tone", "Tone/core/Buffer", "helper/BufferTest"],
-function(Test, Offline, Transport, Oscillator, Tone, AudioBuffer, BufferTest) {
+function(Test, Offline, Transport, Oscillator, Tone, AudioBuffer, BufferTest){
 
 	describe("Offline", function(){
 
@@ -14,7 +14,7 @@ function(Test, Offline, Transport, Oscillator, Tone, AudioBuffer, BufferTest) {
 		});
 
 		it("returns a promise", function(){
-			expect(Offline(function(){}, 0.01)).to.be.instanceOf(Promise);
+			expect(Offline(function(){}, 0.01)).to.have.property("then");
 		});
 
 		it("generates a buffer", function(done){

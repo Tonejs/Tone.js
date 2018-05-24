@@ -1,5 +1,5 @@
-define(["helper/Basic", "Tone/event/Loop", "Tone/core/Tone", "Tone/core/Transport", "helper/Offline", "Test", "Tone/type/Time"],
-	function (Basic, Loop, Tone, Transport, Offline, Test, Time) {
+define(["helper/Basic", "Tone/event/Loop", "Tone/core/Tone", "Tone/core/Transport", "helper/Offline", "helper/Test", "Tone/type/Time"],
+	function(Basic, Loop, Tone, Transport, Offline, Test, Time){
 
 		describe("Loop", function(){
 

@@ -1,6 +1,6 @@
 define(["helper/Offline", "Tone/signal/EqualPowerGain", "helper/Basic", 
-	"Test", "Tone/source/Oscillator", "Tone/signal/Signal", "helper/PassAudio", "Tone/core/Tone"], 
-function (Offline, EqualPowerGain, Basic, Test, Oscillator, Signal, PassAudio, Tone) {
+	"helper/Test", "Tone/source/Oscillator", "Tone/signal/Signal", "helper/PassAudio", "Tone/core/Tone"], 
+function(Offline, EqualPowerGain, Basic, Test, Oscillator, Signal, PassAudio, Tone){
 
 	describe("EqualPowerGain", function(){
 

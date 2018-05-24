@@ -1,12 +1,15 @@
 /* global mocha*/
 
-define(["Tone/core/Tone", "deps/chai", "Tone/core/Context", "Tone/core/Transport"],
-	function (Tone, chai, Context, Transport) {
+define(["Tone/core/Tone", "chai", "Tone/core/Context", "Tone/core/Transport", "Tone/core/Buffer", "@babel/polyfill"], 
+	function(Tone, chai, Context, Transport, Buffer, babelPolyfill){
 
-	//add a chai test
+		//add a chai test
 		chai.Assertion.addMethod("percentageFrom", function(val, percent){
 			new chai.Assertion(this._obj).to.be.closeTo(val, val * percent);
 		});
+
+		//silence the logging
+		window.TONE_SILENCE_VERSION_LOGGING = true;
 
 		//testing setup
 		window.expect = chai.expect;
@@ -15,6 +18,13 @@ define(["Tone/core/Tone", "deps/chai", "Tone/core/Context", "Tone/core/Transport
 			// make this very long cause sometimes the travis CI server is slow
 			timeout : 30000
 		});
+
+		//point to the relative path of the audio files
+		if (window.__karma__){
+			Buffer.baseUrl = "/base/test/";
+		} else {
+			Buffer.baseUrl = "../test/";
+		}
 
 		beforeEach(function(){
 			if (Transport.bpm.value !== 120){
@@ -29,12 +39,9 @@ define(["Tone/core/Tone", "deps/chai", "Tone/core/Context", "Tone/core/Transport
 			Test.input = Tone.context.createGain();
 		});
 
-		//bring window into focus
-		window.focus();
-
 		/**
-	 *  The Test object
-	 */
+		 *  The Test object
+		 */
 		var Test = {
 			input : Tone.context.createGain()
 		};

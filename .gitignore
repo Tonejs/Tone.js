@@ -23,3 +23,6 @@ test/coverage/
 build/*
 
 examples/scratch.js
+Tone/version.js
+Tone/index.js
+test/test.js

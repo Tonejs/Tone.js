@@ -1,5 +1,5 @@
-define(["Test", "Tone/core/OfflineContext"],
-	function (Test, OfflineContext) {
+define(["helper/Test", "Tone/core/OfflineContext"],
+	function(Test, OfflineContext){
 
 		context("OfflineContext", function(){
 

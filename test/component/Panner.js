@@ -1,7 +1,7 @@
-define(["Tone/component/Panner", "helper/Basic", "helper/Offline", "Test", "Tone/signal/Signal",
+define(["Tone/component/Panner", "helper/Basic", "helper/Offline", "helper/Test", "Tone/signal/Signal",
 	"helper/PassAudio", "helper/PassAudioStereo", "Tone/component/Merge",
 	"Tone/core/Tone", "Tone/core/AudioNode", "helper/Supports"],
-function (Panner, Basic, Offline, Test, Signal, PassAudio, PassAudioStereo, Merge, Tone, AudioNode, Supports) {
+function(Panner, Basic, Offline, Test, Signal, PassAudio, PassAudioStereo, Merge, Tone, AudioNode, Supports){
 
 	describe("Panner", function(){
 

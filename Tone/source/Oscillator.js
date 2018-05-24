@@ -209,7 +209,7 @@ function(Tone){
 				this._wave = null;
 				//just go with the basic approach
 				if (this._oscillator !== null){
-					this._oscillator.type === type;
+					this._oscillator.type = type;
 				}
 			} else {
 				var coefs = this._getRealImaginary(type, this._phase);

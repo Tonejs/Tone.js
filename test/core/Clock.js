@@ -1,4 +1,4 @@
-define(["Test", "Tone/core/Clock", "helper/Offline", "helper/Supports", "Tone/core/Tone"],
+define(["helper/Test", "Tone/core/Clock", "helper/Offline", "helper/Supports", "Tone/core/Tone"],
 	function(Test, Clock, Offline, Supports, Tone){
 
 		describe("Clock", function(){

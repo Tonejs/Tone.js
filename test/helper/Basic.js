@@ -1,4 +1,4 @@
-define(["Test", "Tone/core/Tone"], function (Test, Tone) {
+define(["helper/Test", "Tone/core/Tone"], function(Test, Tone){
 
 	return function(Constr, args){
 

@@ -1,5 +1,5 @@
-define(["helper/Basic", "Test", "Tone/type/Frequency", "Tone/core/Tone",
-	"deps/teoria", "helper/Offline", "Tone/type/Time", "Tone/type/TransportTime",
+define(["helper/Basic", "helper/Test", "Tone/type/Frequency", "Tone/core/Tone",
+	"teoria", "helper/Offline", "Tone/type/Time", "Tone/type/TransportTime",
 	"Tone/type/Ticks", "Tone/type/Midi"], function(Basic, Test, Frequency, Tone, teoria, Offline, Time, TransportTime, Ticks, Midi){
 
 	describe("Frequency", function(){

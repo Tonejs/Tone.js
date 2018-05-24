@@ -1,6 +1,6 @@
 define(["Tone/component/MidSideSplit", "Tone/component/MidSideMerge", "helper/Basic", "Tone/signal/Signal", "helper/PassAudioStereo", 
-	"Test", "helper/Offline", "Tone/component/Merge"], 
-function (MidSideSplit, MidSideMerge, Basic, Signal, PassAudioStereo, Test, Offline, Merge) {
+	"helper/Test", "helper/Offline", "Tone/component/Merge"], 
+function(MidSideSplit, MidSideMerge, Basic, Signal, PassAudioStereo, Test, Offline, Merge){
 
 	describe("MidSideSplit", function(){
 

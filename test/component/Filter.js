@@ -1,6 +1,6 @@
-define(["Tone/component/Filter", "helper/Basic", "helper/Offline", "Test", 
+define(["Tone/component/Filter", "helper/Basic", "helper/Offline", "helper/Test", 
 	"Tone/signal/Signal", "helper/PassAudio", "helper/PassAudioStereo"], 
-function (Filter, Basic, Offline, Test, Signal, PassAudio, PassAudioStereo) {
+function(Filter, Basic, Offline, Test, Signal, PassAudio, PassAudioStereo){
 	describe("Filter", function(){
 
 		Basic(Filter);
