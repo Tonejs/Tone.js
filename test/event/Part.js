@@ -1,5 +1,5 @@
 define(["helper/Basic", "Tone/event/Part", "Tone/core/Tone",
-	"Tone/core/Transport", "Tone/event/Event", "helper/Offline", "Test", "Tone/type/Time"],
+	"Tone/core/Transport", "Tone/event/Event", "helper/Offline", "helper/Test", "Tone/type/Time"],
 function(Basic, Part, Tone, Transport, Event, Offline, Test, Time){
 
 	describe("Part", function(){

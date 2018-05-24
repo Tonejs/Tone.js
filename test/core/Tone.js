@@ -1,9 +1,9 @@
-define(["Test", "Tone/core/Tone", "helper/PassAudio", "Tone/source/Oscillator",
+define(["helper/Test", "Tone/core/Tone", "helper/PassAudio", "Tone/source/Oscillator",
 	"Tone/instrument/Synth", "helper/Offline",
 	"Tone/component/Filter", "Tone/core/Gain", "Tone/core/Context",
 	"helper/BufferTest", "Tone/component/Merge", "Tone/signal/Signal", "Tone/component/Split", "helper/Supports"],
 function(Test, Tone, PassAudio, Oscillator, Synth, Offline,
-	Filter, Gain, Context, BufferTest, Merge, Signal, Split, Supports) {
+	Filter, Gain, Context, BufferTest, Merge, Signal, Split, Supports){
 
 	describe("Tone", function(){
 

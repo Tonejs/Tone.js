@@ -1,5 +1,5 @@
-define(["Tone/component/FFT", "Test", "helper/Basic", "Tone/source/Noise"],
-	function (FFT, Test, Basic, Noise) {
+define(["Tone/component/FFT", "helper/Test", "helper/Basic", "Tone/source/Noise"],
+	function(FFT, Test, Basic, Noise){
 
 		describe("FFT", function(){
 

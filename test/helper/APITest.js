@@ -1,4 +1,4 @@
-define(["Test", "Tone/type/Type", "Tone/core/Transport", "Tone/type/Time", 
+define(["helper/Test", "Tone/type/Type", "Tone/core/Transport", "Tone/type/Time", 
 	"Tone/type/Frequency"], function(Test, Type, Transport, Time, Frequency){
 
 	//modified from http://stackoverflow.com/questions/15298912/javascript-generating-combinations-from-n-arrays-with-m-elements

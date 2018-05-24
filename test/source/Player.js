@@ -1,10 +1,6 @@
 define(["helper/Basic", "Tone/source/Player", "helper/Offline", "helper/SourceTests",
-	"Tone/core/Buffer", "helper/Meter", "Test", "Tone/core/Tone", "helper/CompareToFile"],
+	"Tone/core/Buffer", "helper/Meter", "helper/Test", "Tone/core/Tone", "helper/CompareToFile"],
 function(BasicTests, Player, Offline, SourceTests, Buffer, Meter, Test, Tone, CompareToFile){
-
-	if (window.__karma__){
-		Buffer.baseUrl = "/base/test/";
-	}
 
 	describe("Player", function(){
 

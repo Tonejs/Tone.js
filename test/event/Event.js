@@ -1,6 +1,6 @@
 define(["helper/Basic", "Tone/event/Event", "Tone/core/Tone", "Tone/core/Transport",
-	"helper/Offline", "Test", "Tone/type/Time"],
-function (Basic, Event, Tone, Transport, Offline, Test, Time) {
+	"helper/Offline", "helper/Test", "Tone/type/Time"],
+function(Basic, Event, Tone, Transport, Offline, Test, Time){
 
 	describe("Event", function(){
 
@@ -332,7 +332,7 @@ function (Basic, Event, Tone, Transport, Offline, Test, Time) {
 					Transport.start();
 					var wasCalled = false;
 					return function(time){
-						if (time > 0.1 && !wasCalled) {
+						if (time > 0.1 && !wasCalled){
 							wasCalled = true;
 							note.start(0);
 						}

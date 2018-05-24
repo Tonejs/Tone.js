@@ -1,5 +1,5 @@
-define(["Test", "Tone/core/Master", "Tone/core/Tone", "helper/Offline", "helper/PassAudio", "Tone/source/Oscillator", "Tone/core/AudioNode"],
-	function (Test, Master, Tone, Offline, PassAudio, Oscillator, AudioNode) {
+define(["helper/Test", "Tone/core/Master", "Tone/core/Tone", "helper/Offline", "helper/PassAudio", "Tone/source/Oscillator", "Tone/core/AudioNode"],
+	function(Test, Master, Tone, Offline, PassAudio, Oscillator, AudioNode){
 
 		describe("Master", function(){
 			it("exists", function(){

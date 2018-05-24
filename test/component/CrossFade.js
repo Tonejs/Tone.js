@@ -1,5 +1,5 @@
-define(["Tone/component/CrossFade", "helper/Basic", "helper/Offline", "Test", "Tone/signal/Signal"], 
-	function (CrossFade, Basic, Offline, Test, Signal) {
+define(["Tone/component/CrossFade", "helper/Basic", "helper/Offline", "helper/Test", "Tone/signal/Signal"], 
+	function(CrossFade, Basic, Offline, Test, Signal){
 		describe("CrossFade", function(){
 
 			Basic(CrossFade);

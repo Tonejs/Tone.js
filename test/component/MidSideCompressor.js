@@ -1,5 +1,5 @@
-define(["Tone/component/MidSideCompressor", "helper/Basic", "helper/PassAudio", "helper/PassAudioStereo", "Test"], 
-	function (MidSideCompressor, Basic, PassAudio, PassAudioStereo, Test) {
+define(["Tone/component/MidSideCompressor", "helper/Basic", "helper/PassAudio", "helper/PassAudioStereo", "helper/Test"], 
+	function(MidSideCompressor, Basic, PassAudio, PassAudioStereo, Test){
 		describe("MidSideCompressor", function(){
 
 			Basic(MidSideCompressor);

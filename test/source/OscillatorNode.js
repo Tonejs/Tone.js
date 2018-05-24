@@ -1,5 +1,5 @@
 define(["helper/Basic", "Tone/source/OscillatorNode", "helper/Offline",
-	"Tone/type/Frequency", "Test", "helper/Meter", "helper/Supports", "helper/CompareToFile"],
+	"Tone/type/Frequency", "helper/Test", "helper/Meter", "helper/Supports", "helper/CompareToFile"],
 function(BasicTests, OscillatorNode, Offline, Frequency, Test, Meter, Supports, CompareToFile){
 
 	describe("OscillatorNode", function(){

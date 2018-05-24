@@ -1,5 +1,5 @@
-define(["Test", "Tone/core/Gain", "Tone/core/Tone", "helper/PassAudio"], 
-	function (Test, Gain, Tone, PassAudio) {
+define(["helper/Test", "Tone/core/Gain", "Tone/core/Tone", "helper/PassAudio"], 
+	function(Test, Gain, Tone, PassAudio){
 
 		describe("Gain", function(){
 

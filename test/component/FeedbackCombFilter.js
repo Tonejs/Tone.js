@@ -1,6 +1,6 @@
-define(["Tone/component/FeedbackCombFilter", "helper/Basic", "helper/Offline", "Test", 
+define(["Tone/component/FeedbackCombFilter", "helper/Basic", "helper/Offline", "helper/Test", 
 	"Tone/signal/Signal", "helper/PassAudio", "helper/PassAudioStereo"], 
-function (FeedbackCombFilter, Basic, Offline, Test, Signal, PassAudio, PassAudioStereo) {
+function(FeedbackCombFilter, Basic, Offline, Test, Signal, PassAudio, PassAudioStereo){
 	describe("FeedbackCombFilter", function(){
 
 		Basic(FeedbackCombFilter);

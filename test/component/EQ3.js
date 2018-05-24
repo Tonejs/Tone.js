@@ -1,6 +1,6 @@
-define(["Tone/component/EQ3", "helper/Basic", "helper/Offline", "Test", 
+define(["Tone/component/EQ3", "helper/Basic", "helper/Offline", "helper/Test", 
 	"Tone/signal/Signal", "helper/PassAudio", "helper/PassAudioStereo"], 
-function (EQ3, Basic, Offline, Test, Signal, PassAudio, PassAudioStereo) {
+function(EQ3, Basic, Offline, Test, Signal, PassAudio, PassAudioStereo){
 	describe("EQ3", function(){
 
 		Basic(EQ3);

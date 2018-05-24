@@ -1,10 +1,6 @@
 define(["helper/Basic", "Tone/source/Players", "helper/Offline",
-	"Tone/core/Buffer", "helper/Meter", "Test", "Tone/core/Tone", "Tone/source/Player", "helper/OutputAudio"],
-	function (BasicTests, Players, Offline, Buffer, Meter, Test, Tone, Player, OutputAudio) {
-
-	if (window.__karma__){
-		Buffer.baseUrl = "/base/test/";
-	}
+	"Tone/core/Buffer", "helper/Meter", "helper/Test", "Tone/core/Tone", "Tone/source/Player", "helper/OutputAudio"],
+function(BasicTests, Players, Offline, Buffer, Meter, Test, Tone, Player, OutputAudio){
 
 	describe("Players", function(){
 
@@ -16,11 +12,11 @@ define(["helper/Basic", "Tone/source/Players", "helper/Offline",
 			});
 		});
 
-		BasicTests(Players, {'test' : buffer});
+		BasicTests(Players, { "test" : buffer });
 
 		context("Constructor", function(){
 
-			it ("can be constructed with an object containing multiple Tone.Buffer", function(){
+			it("can be constructed with an object containing multiple Tone.Buffer", function(){
 				var player = new Players({
 					"test" : buffer
 				});
@@ -28,7 +24,7 @@ define(["helper/Basic", "Tone/source/Players", "helper/Offline",
 				player.dispose();
 			});
 
-			it ("can be constructed with an AudioBuffer", function(){
+			it("can be constructed with an AudioBuffer", function(){
 				var player = new Players({
 					"test" : buffer.get()
 				});
@@ -36,7 +32,7 @@ define(["helper/Basic", "Tone/source/Players", "helper/Offline",
 				player.dispose();
 			});
 
-			it ("can be constructed with a url", function(done){
+			it("can be constructed with a url", function(done){
 				var player = new Players({
 					"test0" : "./audio/sine.wav",
 					"test1" : "./audio/sine.wav",
@@ -51,7 +47,7 @@ define(["helper/Basic", "Tone/source/Players", "helper/Offline",
 				});
 			});
 
-			it ("can pass in additional args in the second parameters", function(done){
+			it("can pass in additional args in the second parameters", function(done){
 				var player = new Players({
 					"test" : "./audio/sine.wav",
 				}, {
@@ -65,7 +61,7 @@ define(["helper/Basic", "Tone/source/Players", "helper/Offline",
 				});
 			});
 
-			it ("can get and set fadeIn/Out", function(){
+			it("can get and set fadeIn/Out", function(){
 				var players = new Players({
 					"test" : "./audio/sine.wav",
 				}, {
@@ -86,7 +82,7 @@ define(["helper/Basic", "Tone/source/Players", "helper/Offline",
 
 		context("get/has/add buffers", function(){
 
-			it ("says it 'has' a sample", function(){
+			it("says it 'has' a sample", function(){
 				var players = new Players({
 					"test" : buffer
 				});
@@ -95,7 +91,7 @@ define(["helper/Basic", "Tone/source/Players", "helper/Offline",
 				players.dispose();
 			});
 
-			it ("can get a sample", function(){
+			it("can get a sample", function(){
 				var players = new Players({
 					"test" : buffer
 				});
@@ -103,7 +99,7 @@ define(["helper/Basic", "Tone/source/Players", "helper/Offline",
 				players.dispose();
 			});
 
-			it ("throws an error if it tries to get a sample which is not there", function(){
+			it("throws an error if it tries to get a sample which is not there", function(){
 				var players = new Players({
 					"test" : buffer
 				});
@@ -113,7 +109,7 @@ define(["helper/Basic", "Tone/source/Players", "helper/Offline",
 				players.dispose();
 			});
 
-			it ("can add a player with a buffer", function(){
+			it("can add a player with a buffer", function(){
 				var players = new Players();
 				expect(players.has("test")).to.be.false;
 				players.add("test", buffer);
@@ -121,17 +117,17 @@ define(["helper/Basic", "Tone/source/Players", "helper/Offline",
 				players.dispose();
 			});
 
-			it ("can add a player with a url", function(done){
+			it("can add a player with a url", function(done){
 				var players = new Players();
 				expect(players.has("test")).to.be.false;
 				players.add("test", "./audio/sine.wav", function(){
 					expect(players.has("test")).to.be.true;
 					players.dispose();
 					done();
-				});;
+				});
 			});
 
-			it ("can add a player with an unloaded Tone.Buffer", function(done){
+			it("can add a player with an unloaded Tone.Buffer", function(done){
 				var players = new Players();
 				var buffer = new Buffer("./audio/sine.wav");
 				players.add("test", buffer, function(){
@@ -139,7 +135,7 @@ define(["helper/Basic", "Tone/source/Players", "helper/Offline",
 					expect(players.get("test").loaded).to.be.true;
 					players.dispose();
 					done();
-				});;
+				});
 			});
 		});
 
@@ -211,7 +207,7 @@ define(["helper/Basic", "Tone/source/Players", "helper/Offline",
 						} else {
 							expect(players.state).to.equal("stopped");
 						}
-					}
+					};
 				}, 0.2);
 			});
 

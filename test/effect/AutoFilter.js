@@ -1,5 +1,5 @@
-define(["Tone/effect/AutoFilter", "helper/Basic", "helper/EffectTests", "deps/teoria", "helper/Offline"],
-	function (AutoFilter, Basic, EffectTests, teoria, Offline) {
+define(["Tone/effect/AutoFilter", "helper/Basic", "helper/EffectTests", "teoria", "helper/Offline"],
+	function(AutoFilter, Basic, EffectTests, teoria, Offline){
 
 		describe("AutoFilter", function(){
 			Basic(AutoFilter);

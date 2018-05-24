@@ -1,5 +1,5 @@
-define(["Test", "Tone/core/Listener", "Tone/core/Tone"], 
-	function (Test, Listener, Tone) {
+define(["helper/Test", "Tone/core/Listener", "Tone/core/Tone"], 
+	function(Test, Listener, Tone){
 
 		describe("Listener", function(){
 

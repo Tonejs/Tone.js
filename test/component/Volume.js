@@ -1,6 +1,6 @@
-define(["Tone/component/Volume", "helper/Basic", "helper/Offline", "Test", 
+define(["Tone/component/Volume", "helper/Basic", "helper/Offline", "helper/Test", 
 	"Tone/signal/Signal", "helper/PassAudio", "helper/PassAudioStereo"], 
-function (Volume, Basic, Offline, Test, Signal, PassAudio, PassAudioStereo) {
+function(Volume, Basic, Offline, Test, Signal, PassAudio, PassAudioStereo){
 	describe("Volume", function(){
 
 		Basic(Volume);

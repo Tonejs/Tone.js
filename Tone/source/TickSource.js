@@ -69,7 +69,7 @@ define(["Tone/core/Tone", "Tone/signal/TickSignal", "Tone/core/TimelineState",
 	 *  Start the clock at the given time. Optionally pass in an offset
 	 *  of where to start the tick counter from.
 	 *  @param  {Time=}  time    The time the clock should start
-	 *  @param {Ticks=0} offset The number of ticks to start the source at
+	 *  @param {Ticks} [offset=0] The number of ticks to start the source at
 	 *  @return  {Tone.TickSource}  this
 	 */
 	Tone.TickSource.prototype.start = function(time, offset){

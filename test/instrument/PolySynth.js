@@ -1,7 +1,7 @@
 define(["Tone/instrument/PolySynth", "helper/Basic", "helper/InstrumentTests", "helper/OutputAudioStereo",
-	"Tone/instrument/Instrument", "Test", "helper/OutputAudio", "Tone/instrument/MonoSynth", "helper/Offline",
+	"Tone/instrument/Instrument", "helper/Test", "helper/OutputAudio", "Tone/instrument/MonoSynth", "helper/Offline",
 	"Tone/instrument/Sampler", "Tone/type/Frequency"],
-function (PolySynth, Basic, InstrumentTests, OutputAudioStereo, Instrument, Test, OutputAudio, MonoSynth, Offline, Sampler, Frequency) {
+function(PolySynth, Basic, InstrumentTests, OutputAudioStereo, Instrument, Test, OutputAudio, MonoSynth, Offline, Sampler, Frequency){
 
 	describe("PolySynth", function(){
 

@@ -1,10 +1,6 @@
 define(["Tone/instrument/Sampler", "helper/Basic", "helper/InstrumentTests",
 	"Tone/core/Buffer", "helper/Offline"],
-function(Sampler, Basic, InstrumentTest, Buffer, Offline) {
-
-	if (window.__karma__){
-		Buffer.baseUrl = "/base/test/";
-	}
+function(Sampler, Basic, InstrumentTest, Buffer, Offline){
 
 	describe("Sampler", function(){
 

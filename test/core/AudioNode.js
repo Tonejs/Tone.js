@@ -1,4 +1,4 @@
-define(["Test", "Tone/core/Tone", "Tone/core/AudioNode", "helper/PassAudio", "Tone/core/Gain",
+define(["helper/Test", "Tone/core/Tone", "Tone/core/AudioNode", "helper/PassAudio", "Tone/core/Gain",
 	"Tone/source/Oscillator", "Tone/component/Merge", "Tone/component/Split",
 	"Tone/component/Filter", "helper/Offline", "Tone/signal/Signal", "helper/Supports", "helper/StereoSignal"],
 function(Test, Tone, AudioNode, PassAudio, Gain, Oscillator, Merge,

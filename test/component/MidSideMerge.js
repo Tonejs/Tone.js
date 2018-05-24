@@ -1,6 +1,6 @@
 define(["Tone/component/MidSideMerge", "helper/Basic", 
-	"Tone/signal/Signal", "helper/PassAudioStereo", "Test"], 
-function (MidSideMerge, Basic, Signal, PassAudioStereo, Test) {
+	"Tone/signal/Signal", "helper/PassAudioStereo", "helper/Test"], 
+function(MidSideMerge, Basic, Signal, PassAudioStereo, Test){
 
 	describe("MidSideMerge", function(){
 

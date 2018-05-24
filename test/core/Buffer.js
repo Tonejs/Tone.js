@@ -1,8 +1,4 @@
-define(["Test", "Tone/core/Buffer", "Tone/core/Tone"], function(Test, Buffer, Tone){
-
-	if (window.__karma__){
-		Buffer.baseUrl = "/base/test/";
-	}
+define(["helper/Test", "Tone/core/Buffer", "Tone/core/Tone"], function(Test, Buffer, Tone){
 
 	var testFile = "./audio/sine.wav";
 
@@ -181,7 +177,7 @@ define(["Test", "Tone/core/Buffer", "Tone/core/Tone"], function(Test, Buffer, To
 
 			it("instance .load method returns Promise", function(done){
 				var promise = (new Buffer()).load(testFile);
-				expect(promise).to.be.instanceOf(Promise);
+				expect(promise).to.have.property("then");
 				promise.then(function(buff){
 					expect(buff).to.be.instanceOf(Buffer);
 					done();
@@ -353,7 +349,7 @@ define(["Test", "Tone/core/Buffer", "Tone/core/Tone"], function(Test, Buffer, To
 	describe("Tone.loaded()", function(){
 
 		it("returns a promise", function(){
-			expect(Tone.loaded()).to.be.instanceOf(Promise);
+			expect(Tone.loaded()).to.have.property("then");
 		});
 
 		it("is invoked when all the buffers are loaded", function(){

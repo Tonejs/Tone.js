@@ -1,4 +1,4 @@
-define(["helper/OutputAudio", "Tone/source/Oscillator", "helper/Offline", "Test", "Tone/core/Tone"],
+define(["helper/OutputAudio", "Tone/source/Oscillator", "helper/Offline", "helper/Test", "Tone/core/Tone"],
 	function(OutputAudio, Oscillator, Offline, Test, Tone){
 
 		return function(Constr, args){
