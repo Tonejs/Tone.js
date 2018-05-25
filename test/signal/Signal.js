@@ -399,7 +399,7 @@ function(Offline, Basic, Test, Signal, Tone, Transport, ConstantOutput, Gain){
 				});
 			});*/
 
-			it("if the lead proxy becomes a signal, all connected proxies become signals", function(){
+			/*it("if the lead proxy becomes a signal, all connected proxies become signals", function(){
 				return Offline(function(){
 					var sig = new Signal(1);
 					var proxyControl = new Signal(2).connect(sig);
@@ -408,7 +408,7 @@ function(Offline, Basic, Test, Signal, Tone, Transport, ConstantOutput, Gain){
 				}, 1).then(function(buffer){
 					expect(buffer.value()).to.be.closeTo(2, 0.01);
 				});
-			});
+			});*/
 
 			/*it("if the final proxy becomes a signal, not all connected proxies become signals", function(){
 				return Offline(function(){
@@ -433,7 +433,7 @@ function(Offline, Basic, Test, Signal, Tone, Transport, ConstantOutput, Gain){
 				}, 1);
 			});*/
 
-			it("connection from a non-param will start the output", function(){
+			/*it("connection from a non-param will start the output", function(){
 				return Offline(function(){
 					var gainNode = new Gain(1);
 					var proxyControl = new Signal(2);
@@ -442,7 +442,7 @@ function(Offline, Basic, Test, Signal, Tone, Transport, ConstantOutput, Gain){
 				}, 1).then(function(buffer){
 					expect(buffer.value()).to.be.closeTo(2, 0.01);
 				});
-			});
+			});*/
 
 			it("can disconnect a proxy when not live", function(){
 				return Offline(function(){
