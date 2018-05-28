@@ -12,7 +12,7 @@ function(FMSynth, Basic, InstrumentTest, CompareToFile, Supports){
 				return CompareToFile(function(){
 					const synth = new FMSynth().toMaster();
 					synth.triggerAttackRelease("G4", 0.1, 0.05);
-				}, "fmSynth.wav", 40);
+				}, "fmSynth.wav", 0.1);
 			});
 		}
 

@@ -1,6 +1,6 @@
 define(["Tone/instrument/PluckSynth", "helper/Basic",
 	"helper/InstrumentTests", "helper/CompareToFile", "helper/Supports"],
-function(PluckSynth, Basic, InstrumentTest, CompareToFile, Supports) {
+function(PluckSynth, Basic, InstrumentTest, CompareToFile, Supports){
 
 	describe("PluckSynth", function(){
 
@@ -13,7 +13,7 @@ function(PluckSynth, Basic, InstrumentTest, CompareToFile, Supports) {
 				return CompareToFile(function(){
 					const synth = new PluckSynth().toMaster();
 					synth.triggerAttack("C4");
-				}, "pluckSynth.wav", 250);
+				}, "pluckSynth.wav", 0.2);
 			});
 		}
 

@@ -1,6 +1,6 @@
 define(["Tone/instrument/MetalSynth", "helper/Basic",
 	"helper/InstrumentTests", "helper/CompareToFile", "helper/Supports"],
-function(MetalSynth, Basic, InstrumentTest, CompareToFile, Supports) {
+function(MetalSynth, Basic, InstrumentTest, CompareToFile, Supports){
 
 	describe("MetalSynth", function(){
 
@@ -12,7 +12,7 @@ function(MetalSynth, Basic, InstrumentTest, CompareToFile, Supports) {
 				return CompareToFile(function(){
 					const synth = new MetalSynth().toMaster();
 					synth.triggerAttackRelease(0.1, 0.05);
-				}, "metalSynth.wav", 200);
+				}, "metalSynth.wav", 5.9);
 			});
 		}
 
