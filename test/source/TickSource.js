@@ -479,6 +479,27 @@ define(["helper/Test", "Tone/source/TickSource", "helper/Offline", "helper/Basic
 				source.dispose();
 			});
 
+			it("always increments by 1 when setting values", function(){
+				var source = new TickSource(200);
+				source.frequency.setValueAtTime(300, 0);
+				source.frequency.setValueAtTime(3, 0.1);
+				source.frequency.setValueAtTime(100, 0.2);
+				source.frequency.setValueAtTime(10, 0.3);
+				source.frequency.setValueAtTime(1000, 0.4);
+				source.frequency.setValueAtTime(1, 0.5);
+				source.frequency.setValueAtTime(50, 0.6);
+				source.start(0);
+				var previousTick = -1;
+				var previousTime = -1;
+				source.forEachTickBetween(0, 10, function(time, ticks){
+					expect(time).to.be.gt(previousTime);
+					expect(ticks - previousTick).to.equal(1);
+					previousTick = ticks;
+					previousTime = time;
+				});
+				source.dispose();
+			});
+
 		});
 
 		context("Seconds", function(){
