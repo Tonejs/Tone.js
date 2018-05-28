@@ -447,15 +447,34 @@ define(["helper/Test", "Tone/source/TickSource", "helper/Offline", "helper/Basic
 				source.dispose();
 			});
 
-			it("always increments by 1", function(){
-				var source = new TickSource(200);
-				source.frequency.setValueAtTime(200, 0);
-				source.frequency.linearRampToValueAtTime(1000, 4);
+			it("always increments by 1 at a fixed rate", function(){
+				var source = new TickSource(960);
 				source.start(0);
 				var previousTick = -1;
-				source.forEachTickBetween(0, 10, function(time, ticks){
+				var previousTime = -1;
+				source.forEachTickBetween(1000, 1010, function(time, ticks){
+					expect(time).to.be.gt(previousTime);
+					if (previousTick !== -1){
+						expect(ticks - previousTick).to.equal(1);
+					}
+					previousTick = ticks;
+					previousTime = time;
+				});
+				source.dispose();
+			});
+
+			it("always increments by 1 when linearly changing rate", function(){
+				var source = new TickSource(200);
+				source.frequency.setValueAtTime(200, 0);
+				source.frequency.linearRampToValueAtTime(1000, 100);
+				source.start(10);
+				var previousTick = -1;
+				var previousTime = -1;
+				source.forEachTickBetween(10, 30, function(time, ticks){
+					expect(time).to.be.gt(previousTime);
 					expect(ticks - previousTick).to.equal(1);
 					previousTick = ticks;
+					previousTime = time;
 				});
 				source.dispose();
 			});
