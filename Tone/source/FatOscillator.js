@@ -195,8 +195,6 @@ define(["Tone/core/Tone", "Tone/source/Source", "Tone/source/Oscillator",
 		set : function(count){
 			count = Math.max(count, 1);
 			if (this._oscillators.length !== count){
-				// var partials = this.partials;
-				// var type = this.type;
 				//dispose the previous oscillators
 				this._forEach(function(osc){
 					osc.dispose();
