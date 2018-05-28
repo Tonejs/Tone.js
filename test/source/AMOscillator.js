@@ -13,7 +13,7 @@ function(BasicTests, AMOscillator, Offline, SourceTests, OscillatorTests, Test, 
 			return CompareToFile(function(){
 				var osc = new AMOscillator().toMaster();
 				osc.start(0.1).stop(0.4);
-			}, "amOscillator.wav");
+			}, "amOscillator.wav", 0.01);
 		});
 
 		context("Amplitude Modulation", function(){
