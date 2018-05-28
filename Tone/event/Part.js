@@ -508,9 +508,8 @@ define(["Tone/core/Tone", "Tone/event/Event", "Tone/type/Type", "Tone/core/Trans
 	 *  @return  {Tone.Part}  this
 	 */
 	Tone.Part.prototype.dispose = function(){
+		Tone.Event.prototype.dispose.call(this);
 		this.removeAll();
-		this._state.dispose();
-		this._state = null;
 		this.callback = null;
 		this._events = null;
 		return this;

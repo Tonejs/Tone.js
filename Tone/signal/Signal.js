@@ -175,7 +175,10 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper", "Tone/type/Type", "Tone/core
 			//no argument, disconnect everything
 			this._proxies = [];
 		}
-		return Tone.SignalBase.prototype.disconnect.apply(this, arguments);
+		if (this._sourceStarted){
+			Tone.SignalBase.prototype.disconnect.apply(this, arguments);
+		} 
+		return this;
 	};
 
 	/**

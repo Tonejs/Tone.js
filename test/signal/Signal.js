@@ -136,6 +136,33 @@ function(Offline, Basic, Test, Signal, Tone, Transport, ConstantOutput, Gain){
 				});
 			});
 
+			it("can disconnect from all the connected notes", function(){
+				return Offline(function(){
+					var output0 = new Signal(1).toMaster();
+					var output1 = new Signal(1).toMaster();
+					var sig = new Signal(0).fan(output0, output1);
+					sig.disconnect();
+					sig.setValueAtTime(0, 0);
+					sig.linearRampToValueAtTime(0.5, 0.5);
+					sig.linearRampToValueAtTime(0, 1);
+				}, 1).then(function(buffer){
+					expect(buffer.value()).to.equal(0);
+				});
+			});
+
+			it("can disconnect from a specific node", function(){
+				return Offline(function(){
+					var output = new Signal(1).toMaster();
+					var sig = new Signal(0).connect(output);
+					sig.disconnect(output);
+					sig.setValueAtTime(0, 0);
+					sig.linearRampToValueAtTime(0.5, 0.5);
+					sig.linearRampToValueAtTime(0, 1);
+				}, 1).then(function(buffer){
+					expect(buffer.value()).to.equal(0);
+				});
+			});
+
 			it("can schedule multiple automations from a connected signal through a multiple nodes", function(){
 				return Offline(function(){
 					var output = new Signal(0).toMaster();
@@ -335,6 +362,145 @@ function(Offline, Basic, Test, Signal, Tone, Transport, ConstantOutput, Gain){
 					expect(buffer.getValueAtTime(0.1)).to.be.closeTo(0, 0.01);
 					expect(buffer.getValueAtTime(0.4)).to.be.closeTo(1.9, 0.1);
 					expect(buffer.getValueAtTime(0.6)).to.be.closeTo(2, 0.01);
+				});
+			});
+
+		});
+
+		context("Proxy", function(){
+
+			it("uses proxy connections when controling an audio param", function(){
+				return Offline(function(){
+					var gainNode = new Gain(1).toMaster();
+					var sig = new Signal(1).connect(gainNode);
+					var proxyControl = new Signal(2).connect(gainNode.gain);
+				}, 1).then(function(buffer){
+					expect(buffer.value()).to.be.closeTo(2, 0.01);
+				});
+			});
+
+			/*it("proxy does not actually output any signal when connected to a signal", function(){
+				return Offline(function(){
+					var sig = new Signal(1);
+					var proxyControl = new Signal(2).connect(sig);
+					proxyControl._constantSource.toMaster();
+				}, 1).then(function(buffer){
+					expect(buffer.value()).to.be.closeTo(0, 0.01);
+				});
+			});
+
+			it("proxy does not actually output any signal when connected from a signal", function(){
+				return Offline(function(){
+					var sig = new Signal(1);
+					var proxyControl = new Signal(2).connect(sig);
+					sig._constantSource.toMaster();
+				}, 1).then(function(buffer){
+					expect(buffer.value()).to.be.closeTo(0, 0.01);
+				});
+			});*/
+
+			/*it("if the lead proxy becomes a signal, all connected proxies become signals", function(){
+				return Offline(function(){
+					var sig = new Signal(1);
+					var proxyControl = new Signal(2).connect(sig);
+					sig._constantSource.toMaster();
+					var gainNode = new Gain().connect(proxyControl);
+				}, 1).then(function(buffer){
+					expect(buffer.value()).to.be.closeTo(2, 0.01);
+				});
+			});*/
+
+			/*it("if the final proxy becomes a signal, not all connected proxies become signals", function(){
+				return Offline(function(){
+					var sig = new Signal(1);
+					var proxyControl = new Signal(2).connect(sig);
+					proxyControl._constantSource.toMaster();
+					var gainNode = new Gain().connect(sig);
+				}, 1).then(function(buffer){
+					expect(buffer.value()).to.be.closeTo(0, 0.01);
+				});
+			});
+
+			it("all proxied signals report the same values", function(){
+				return Offline(function(){
+					var sig = new Signal(1);
+					var proxyControl = new Signal(2).connect(sig);
+					proxyControl.setValueAtTime(1, 0.5);
+					expect(sig.getValueAtTime(0)).to.be.closeTo(2, 0.01);
+					expect(proxyControl.getValueAtTime(0)).to.be.closeTo(2, 0.01);
+					expect(sig.getValueAtTime(0.5)).to.be.closeTo(1, 0.01);
+					expect(proxyControl.getValueAtTime(0.5)).to.be.closeTo(1, 0.01);
+				}, 1);
+			});*/
+
+			/*it("connection from a non-param will start the output", function(){
+				return Offline(function(){
+					var gainNode = new Gain(1);
+					var proxyControl = new Signal(2);
+					gainNode.connect(proxyControl);
+					proxyControl._constantSource.toMaster();
+				}, 1).then(function(buffer){
+					expect(buffer.value()).to.be.closeTo(2, 0.01);
+				});
+			});*/
+
+			it("can disconnect a proxy when not live", function(){
+				return Offline(function(){
+					var gainNode = new Gain(1).toMaster();
+					var sig = new Signal(1).connect(gainNode);
+					var proxyControl = new Signal(2).connect(gainNode.gain);
+					proxyControl.disconnect();
+					proxyControl.setValueAtTime(3, 0);
+				}, 1).then(function(buffer){
+					expect(buffer.value()).to.be.closeTo(2, 0.01);
+				});
+			});
+
+			it("can disconnect a proxy from a specific output when not live", function(){
+				return Offline(function(){
+					var gainNode = new Gain(1).toMaster();
+					var sig = new Signal(1).connect(gainNode);
+					var proxyControl = new Signal(2).connect(gainNode.gain);
+					proxyControl.disconnect(gainNode.gain);
+					proxyControl.setValueAtTime(3, 0);
+				}, 1).then(function(buffer){
+					expect(buffer.value()).to.be.closeTo(2, 0.01);
+				});
+			});
+
+			it("can disconnect a proxy when live", function(){
+				return Offline(function(){
+					var gainNode = new Gain(1).toMaster();
+					var sig = new Signal(1).connect(gainNode);
+					var proxyControl = new Signal(2).connect(gainNode.gain);
+					proxyControl.disconnect();
+					proxyControl.setValueAtTime(3, 0);
+				}, 1).then(function(buffer){
+					expect(buffer.value()).to.be.closeTo(2, 0.01);
+				});
+			});
+
+			it("can disconnect a proxy from a specific output when live", function(){
+				return Offline(function(){
+					var gainNode = new Gain(1).toMaster();
+					var sig = new Signal(1).connect(gainNode);
+					var proxyControl = new Signal(2).connect(gainNode.gain);
+					proxyControl.disconnect(gainNode.gain);
+					proxyControl.setValueAtTime(3, 0);
+				}, 1).then(function(buffer){
+					expect(buffer.value()).to.be.closeTo(2, 0.01);
+				});
+			});
+
+			it("proxy becomes normal signal when signal is connected to it", function(){
+				return Offline(function(){
+					var gainNode = new Gain(1).toMaster();
+					var sig = new Signal(1).connect(gainNode);
+					var proxyControl = new Signal(2).connect(gainNode.gain);
+					proxyControl.disconnect(gainNode.gain);
+					proxyControl.setValueAtTime(3, 0);
+				}, 1).then(function(buffer){
+					expect(buffer.value()).to.be.closeTo(2, 0.01);
 				});
 			});
 
