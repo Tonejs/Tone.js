@@ -250,13 +250,15 @@ define(["Tone/core/Tone", "Tone/signal/Signal",
 		} else if (attack > 0){
 			this._sig.cancelAndHoldAtTime(time);
 			var curve = this._attackCurve;
-			//take only a portion of the curve
-			if (attack < originalAttack){
-				var percentComplete = 1 - attack / originalAttack;
-				var sliceIndex = Math.floor(percentComplete * this._attackCurve.length);
-				curve = this._attackCurve.slice(sliceIndex);
-				//the first index is the current value
-				curve[0] = currentValue;
+			//find the starting position in the curve
+			for (var i = 1; i < curve.length; i++){
+				//the starting index is between the two values
+				if (curve[i-1] <= currentValue && currentValue <= curve[i]){
+					curve = this._attackCurve.slice(i);
+					//the first index is the current value
+					curve[0] = currentValue;
+					break;
+				}
 			}
 			this._sig.setValueCurveAtTime(curve, time, attack, velocity);
 		}
