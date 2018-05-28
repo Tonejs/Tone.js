@@ -13,7 +13,8 @@ function(Envelope, Basic, Offline, Test, PassAudio, APITest){
 				"sustain" : "NormalRange=",
 				"release" : "Time=",
 				"attackCurve" : ["linear", "exponential"],
-				"releaseCurve" : ["linear", "exponential"]
+				"releaseCurve" : ["linear", "exponential"],
+				"decayCurve" : ["linear", "exponential"]
 			});
 			APITest.constructor(Envelope, ["Time=", "Time=", "NormalRange=", "Time="]);
 
@@ -94,6 +95,24 @@ function(Envelope, Basic, Offline, Test, PassAudio, APITest){
 				env2.dispose();
 			});
 
+			it("can set decay to exponential or linear", function(){
+				var env = new Envelope(0.01, 0.01, 0.5, 0.3);
+				env.decayCurve = "exponential";
+				expect(env.decayCurve).to.equal("exponential");
+				env.triggerAttack();
+				env.dispose();
+				//and can be linear
+				var env2 = new Envelope(0.01, 0.01, 0.5, 0.3);
+				env2.decayCurve = "linear";
+				expect(env2.decayCurve).to.equal("linear");
+				env2.triggerAttack();
+				//and test a non-curve
+				expect(function(){
+					env2.decayCurve = "other";
+				}).to.throw(Error);
+				env2.dispose();
+			});
+
 			it("can set release to exponential or linear", function(){
 				var env = new Envelope(0.01, 0.01, 0.5, 0.3);
 				env.releaseCurve = "exponential";
@@ -154,6 +173,50 @@ function(Envelope, Basic, Offline, Test, PassAudio, APITest){
 						var target = 1 - (time - 0.2) * 10;
 						expect(sample).to.be.closeTo(target, 0.01);
 					}, 0.2, 0.2);
+				});
+			});
+
+			it("correctly schedules a linear decay", function(){
+				var e = {
+					attack : 0.1,
+					decay : 0.5,
+					sustain : 0,
+					release : 0.1,
+				};
+				return Offline(function(){
+					var env = new Envelope(e.attack, e.decay, e.sustain, e.release);
+					env.decayCurve = "linear";
+					env.toMaster();
+					env.triggerAttack(0);
+				}, 0.7).then(function(buffer){
+					expect(buffer.getValueAtTime(0.1)).to.be.closeTo(1, 0.01);
+					expect(buffer.getValueAtTime(0.2)).to.be.closeTo(0.8, 0.01);
+					expect(buffer.getValueAtTime(0.3)).to.be.closeTo(0.6, 0.01);
+					expect(buffer.getValueAtTime(0.4)).to.be.closeTo(0.4, 0.01);
+					expect(buffer.getValueAtTime(0.5)).to.be.closeTo(0.2, 0.01);
+					expect(buffer.getValueAtTime(0.6)).to.be.closeTo(0, 0.01);
+				});
+			});
+
+			it("correctly schedules an exponential decay", function(){
+				var e = {
+					attack : 0.1,
+					decay : 0.5,
+					sustain : 0,
+					release : 0.1,
+				};
+				return Offline(function(){
+					var env = new Envelope(e.attack, e.decay, e.sustain, e.release);
+					env.decayCurve = "exponential";
+					env.toMaster();
+					env.triggerAttack(0);
+				}, 0.7).then(function(buffer){
+					expect(buffer.getValueAtTime(0.1)).to.be.closeTo(1, 0.01);
+					expect(buffer.getValueAtTime(0.2)).to.be.closeTo(0.27, 0.01);
+					expect(buffer.getValueAtTime(0.3)).to.be.closeTo(0.07, 0.01);
+					expect(buffer.getValueAtTime(0.4)).to.be.closeTo(0.02, 0.01);
+					expect(buffer.getValueAtTime(0.5)).to.be.closeTo(0.005, 0.01);
+					expect(buffer.getValueAtTime(0.6)).to.be.closeTo(0, 0.01);
 				});
 			});
 
