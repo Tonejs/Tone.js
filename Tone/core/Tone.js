@@ -667,6 +667,7 @@ define(function(){
 	 *  @memberOf Tone
 	 *  @static
 	 *  @name initialized
+	 *  @readOnly
 	 */
 	Object.defineProperty(Tone, "initialized", {
 		get : function(){

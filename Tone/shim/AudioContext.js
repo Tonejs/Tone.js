@@ -18,6 +18,12 @@ define(["Tone/core/Tone", "Tone/shim/OfflineAudioContext"], function(Tone){
 		//not functionally equivalent
 		if (!AudioContext.prototype.resume){
 			AudioContext.prototype.resume = function(){
+				//play some silent audio to jumpstart the context
+				var buffer = this.createBuffer(1, 1, this.sampleRate);
+				var source = this.createBufferSource();
+				source.buffer = buffer;
+				source.connect(this.destination);
+				source.start(0);
 				return Promise.resolve();
 			};
 		}
