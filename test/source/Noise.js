@@ -1,5 +1,5 @@
 define(["helper/Basic", "Tone/source/Noise", "helper/SourceTests", "helper/OutputAudio", "helper/CompareToFile"],
-	function(BasicTests, Noise, SourceTests, OutputAudio, CompareToFile) {
+	function(BasicTests, Noise, SourceTests, OutputAudio, CompareToFile){
 
 		describe("Noise", function(){
 
@@ -11,7 +11,7 @@ define(["helper/Basic", "Tone/source/Noise", "helper/SourceTests", "helper/Outpu
 				return CompareToFile(function(){
 					const noise = new Noise().toMaster();
 					noise.start(0.1).stop(0.2);
-				}, "noise.wav", 150);
+				}, "noise.wav", 9);
 			});
 
 			context("Get/Set", function(){

@@ -1,6 +1,6 @@
 define(["Tone/instrument/DuoSynth", "helper/Basic",
 	"helper/InstrumentTests", "helper/CompareToFile", "helper/Supports"],
-function(DuoSynth, Basic, InstrumentTest, CompareToFile, Supports) {
+function(DuoSynth, Basic, InstrumentTest, CompareToFile, Supports){
 
 	describe("DuoSynth", function(){
 
@@ -33,7 +33,7 @@ function(DuoSynth, Basic, InstrumentTest, CompareToFile, Supports) {
 				return CompareToFile(function(){
 					const synth = new DuoSynth().toMaster();
 					synth.triggerAttackRelease("C5", 0.1, 0.1);
-				}, "duoSynth.wav", 150);
+				}, "duoSynth.wav", 0.01);
 			});
 		}
 

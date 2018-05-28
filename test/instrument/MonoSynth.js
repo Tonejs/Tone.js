@@ -1,6 +1,6 @@
 define(["Tone/instrument/MonoSynth", "helper/Basic",
 	"helper/InstrumentTests", "helper/CompareToFile", "helper/Supports", "helper/Offline"],
-function(MonoSynth, Basic, InstrumentTest, CompareToFile, Supports, Offline) {
+function(MonoSynth, Basic, InstrumentTest, CompareToFile, Supports, Offline){
 
 	describe("MonoSynth", function(){
 
@@ -12,7 +12,7 @@ function(MonoSynth, Basic, InstrumentTest, CompareToFile, Supports, Offline) {
 				return CompareToFile(function(){
 					const synth = new MonoSynth().toMaster();
 					synth.triggerAttackRelease("C4", 0.1, 0.05);
-				}, "monoSynth.wav", 250);
+				}, "monoSynth.wav", 1.75);
 			});
 		}
 
