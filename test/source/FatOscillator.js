@@ -13,7 +13,7 @@ function(BasicTests, FatOscillator, Offline, SourceTests, OscillatorTests, Compa
 			return CompareToFile(function(){
 				var osc = new FatOscillator().toMaster();
 				osc.start(0);
-			}, "fatOscillator.wav", 0.1);
+			}, "fatOscillator.wav", 0.2);
 		});
 
 		context("Detuned Oscillators", function(){

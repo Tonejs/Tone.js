@@ -207,7 +207,7 @@ define(["Tone/core/Tone", "Tone/source/Source", "Tone/source/Oscillator",
 					} else {
 						osc.type = this._type;
 					}
-					osc.phase = this._phase;
+					osc.phase = this._phase + (i / count) * 360;
 					osc.volume.value = -6 - count*1.1;
 					this.frequency.connect(osc.frequency);
 					this.detune.connect(osc.detune);
