@@ -1,9 +1,8 @@
-define(["helper/Offline", "Tone/core/Buffer", "audiobuffer-to-wav", "fft-js"], function(Offline, Buffer, audioBufferToWav, FFT){
+define(["helper/Offline", "Tone/core/Buffer", "audiobuffer-to-wav", "fft-js", "Tone/core/Tone"], function(Offline, Buffer, audioBufferToWav, FFT, Tone){
 
 	return function(callback, url, threshold, RENDER_NEW){
 		if (!RENDER_NEW){
-
-			threshold = threshold || 20;
+			threshold = Tone.defaultArg(threshold, 0.001);
 			var baseUrl = "./audio/compare/";
 			return Buffer.fromUrl(baseUrl+url).then(function(buffer){
 				return Offline(callback, buffer.duration, buffer.numberOfChannels).then(function(renderedBuffer){
@@ -16,6 +15,8 @@ define(["helper/Offline", "Tone/core/Buffer", "audiobuffer-to-wav", "fft-js"], f
 				//go through and compare everything
 				var renderedValues = buffers.rendered.toArray();
 				var targetValues = buffers.target.toArray();
+				var difference = 0;
+				var samples = 0;
 				targetValues.forEach(function(channel, channelNumber){
 					var fftSize = 4096;
 					var renderedChannel = renderedValues[channelNumber];
@@ -26,11 +27,13 @@ define(["helper/Offline", "Tone/core/Buffer", "audiobuffer-to-wav", "fft-js"], f
 							var renderedMagnitudes = FFT.util.fftMag(renderedPhasors);
 							var targetMagnitudes = FFT.util.fftMag(targetPhasors);
 							targetMagnitudes.forEach(function(value, index){
-								expect(value).to.be.closeTo(renderedMagnitudes[index], threshold);
+								difference += Math.abs(renderedMagnitudes[index] - value);
+								samples++;
 							});
 						}
 					}
 				});
+				expect(difference/samples).to.be.lt(threshold);
 			});
 
 		} else {

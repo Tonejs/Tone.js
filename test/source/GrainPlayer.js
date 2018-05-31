@@ -22,7 +22,7 @@ function(BasicTests, GrainPlayer, Offline, SourceTests, Buffer, Test, Tone, Comp
 				player.start(0.1).stop(0.2);
 				player.detune = -100,
 				player.playbackRate = 2;
-			}, "grainPlayer.wav");
+			}, "grainPlayer.wav", 0.16);
 		});
 
 		context("Constructor", function(){

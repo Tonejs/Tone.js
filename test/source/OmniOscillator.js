@@ -1,6 +1,6 @@
 define(["helper/Basic", "Tone/source/OmniOscillator", "helper/Offline",
 	"helper/SourceTests", "helper/OscillatorTests", "helper/OutputAudio", "helper/CompareToFile"],
-function(BasicTests, OmniOscillator, Offline, SourceTests, OscillatorTests, OutputAudio, CompareToFile) {
+function(BasicTests, OmniOscillator, Offline, SourceTests, OscillatorTests, OutputAudio, CompareToFile){
 
 	describe("OmniOscillator", function(){
 
@@ -13,7 +13,7 @@ function(BasicTests, OmniOscillator, Offline, SourceTests, OscillatorTests, Outp
 			return CompareToFile(function(){
 				const osc = new OmniOscillator(220, "fmsquare").toMaster();
 				osc.start(0.1).stop(0.2);
-			}, "omniOscillator.wav", 100);
+			}, "omniOscillator.wav", 1.6);
 		});
 
 		context("Sound", function(){

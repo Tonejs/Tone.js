@@ -1,6 +1,6 @@
 define(["helper/Basic", "Tone/source/Oscillator", "helper/Offline", "helper/SourceTests",
 	"helper/OscillatorTests", "helper/OutputAudio", "Tone/core/Transport", "helper/CompareToFile"],
-function(BasicTests, Oscillator, Offline, SourceTests, OscillatorTests, OutputAudio, Transport, CompareToFile) {
+function(BasicTests, Oscillator, Offline, SourceTests, OscillatorTests, OutputAudio, Transport, CompareToFile){
 
 	describe("Oscillator", function(){
 
@@ -14,7 +14,7 @@ function(BasicTests, Oscillator, Offline, SourceTests, OscillatorTests, OutputAu
 				const osc = new Oscillator().toMaster();
 				osc.type = "square";
 				osc.start(0).stop(0.2);
-			}, "oscillator.wav");
+			}, "oscillator.wav", 0.005);
 		});
 
 		context("Get/Set", function(){

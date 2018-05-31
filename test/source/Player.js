@@ -21,7 +21,7 @@ function(BasicTests, Player, Offline, SourceTests, Buffer, Meter, Test, Tone, Co
 				const player = new Player(buffer).toMaster();
 				player.start(0.1).stop(0.2);
 				player.playbackRate = 2;
-			}, "player.wav");
+			}, "player.wav", 0.005);
 		});
 
 		context("Constructor", function(){
