@@ -11,7 +11,7 @@ function(Synth, Basic, InstrumentTest, APITest, Offline, Frequency, CompareToFil
 			return CompareToFile(function(){
 				const synth = new Synth().toMaster();
 				synth.triggerAttackRelease("C4", 0.1, 0.05);
-			}, "synth_basic.wav");
+			}, "synth_basic.wav", 0.3);
 		});
 
 		it("matches a file melody", function(){
@@ -21,7 +21,7 @@ function(Synth, Basic, InstrumentTest, APITest, Offline, Frequency, CompareToFil
 				synth.triggerAttack("E4", 0.1, 0.5);
 				synth.triggerAttackRelease("G4", 0.5, 0.3);
 				synth.triggerAttackRelease("B4", 0.5, 0.5, 0.2);
-			}, "synth_melody.wav");
+			}, "synth_melody.wav", 0.3);
 		});
 
 		context("API", function(){

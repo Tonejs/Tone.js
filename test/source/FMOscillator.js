@@ -13,7 +13,7 @@ function(BasicTests, FMOscillator, Offline, SourceTests, OscillatorTests, Test, 
 			return CompareToFile(function(){
 				var osc = new FMOscillator().toMaster();
 				osc.start(0);
-			}, "fmOscillator.wav");
+			}, "fmOscillator.wav", 0.01);
 		});
 
 		context("Frequency Modulation", function(){

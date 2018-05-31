@@ -89,6 +89,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal",
 		//set the attackCurve initially
 		this.attackCurve = options.attackCurve;
 		this.releaseCurve = options.releaseCurve;
+		this.decayCurve = options.decayCurve;
 	};
 
 	Tone.extend(Tone.Envelope, Tone.AudioNode);
@@ -104,6 +105,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal",
 		"sustain" : 0.5,
 		"release" : 1,
 		"attackCurve" : "linear",
+		"decayCurve" : "exponential",
 		"releaseCurve" : "exponential",
 	};
 
@@ -120,6 +122,51 @@ define(["Tone/core/Tone", "Tone/signal/Signal",
 			return this.getValueAtTime(this.now());
 		}
 	});
+
+	/**
+	 *  Get the curve
+	 *  @param  {Array|String}  curve
+	 *  @param  {String}  direction  In/Out
+	 *  @return  {String}  The curve name
+	 *  @private
+	 */
+	Tone.Envelope.prototype._getCurve = function(curve, direction){
+		if (Tone.isString(curve)){
+			return curve;
+		} else if (Tone.isArray(curve)){
+			//look up the name in the curves array
+			for (var t in Tone.Envelope.Type){
+				if (Tone.Envelope.Type[t][direction] === curve){
+					return t;
+				}
+			}
+			//otherwise just return the array
+			return curve;
+		}
+	};
+
+	/**
+	 *  Assign a the curve to the given name using the direction
+	 *  @param  {String}  name
+	 *  @param  {String}  direction In/Out
+	 *  @param  {Array}  curve
+	 *  @private
+	 */
+	Tone.Envelope.prototype._setCurve = function(name, direction, curve){
+		//check if it's a valid type
+		if (Tone.Envelope.Type.hasOwnProperty(curve)){
+			var curveDef = Tone.Envelope.Type[curve];
+			if (Tone.isObject(curveDef)){
+				this[name] = curveDef[direction];
+			} else {
+				this[name] = curveDef;
+			}
+		} else if (Tone.isArray(curve)){
+			this[name] = curve;
+		} else {
+			throw new Error("Tone.Envelope: invalid curve: " + curve);
+		}
+	};
 
 	/**
 	 * The shape of the attack.
@@ -147,33 +194,10 @@ define(["Tone/core/Tone", "Tone/signal/Signal",
 	 */
 	Object.defineProperty(Tone.Envelope.prototype, "attackCurve", {
 		get : function(){
-			if (Tone.isString(this._attackCurve)){
-				return this._attackCurve;
-			} else if (Tone.isArray(this._attackCurve)){
-				//look up the name in the curves array
-				for (var type in Tone.Envelope.Type){
-					if (Tone.Envelope.Type[type].In === this._attackCurve){
-						return type;
-					}
-				}
-				//otherwise just return the array
-				return this._attackCurve;
-			}
+			return this._getCurve(this._attackCurve, "In");
 		},
 		set : function(curve){
-			//check if it's a valid type
-			if (Tone.Envelope.Type.hasOwnProperty(curve)){
-				var curveDef = Tone.Envelope.Type[curve];
-				if (Tone.isObject(curveDef)){
-					this._attackCurve = curveDef.In;
-				} else {
-					this._attackCurve = curveDef;
-				}
-			} else if (Tone.isArray(curve)){
-				this._attackCurve = curve;
-			} else {
-				throw new Error("Tone.Envelope: invalid curve: " + curve);
-			}
+			this._setCurve("_attackCurve", "In", curve);
 		}
 	});
 
@@ -187,32 +211,31 @@ define(["Tone/core/Tone", "Tone/signal/Signal",
 	 */
 	Object.defineProperty(Tone.Envelope.prototype, "releaseCurve", {
 		get : function(){
-			if (Tone.isString(this._releaseCurve)){
-				return this._releaseCurve;
-			} else if (Tone.isArray(this._releaseCurve)){
-				//look up the name in the curves array
-				for (var type in Tone.Envelope.Type){
-					if (Tone.Envelope.Type[type].Out === this._releaseCurve){
-						return type;
-					}
-				}
-				//otherwise just return the array
-				return this._releaseCurve;
-			}
+			return this._getCurve(this._releaseCurve, "Out");
 		},
 		set : function(curve){
-			//check if it's a valid type
-			if (Tone.Envelope.Type.hasOwnProperty(curve)){
-				var curveDef = Tone.Envelope.Type[curve];
-				if (Tone.isObject(curveDef)){
-					this._releaseCurve = curveDef.Out;
-				} else {
-					this._releaseCurve = curveDef;
-				}
-			} else if (Tone.isArray(curve)){
-				this._releaseCurve = curve;
-			} else {
+			this._setCurve("_releaseCurve", "Out", curve);
+		}
+	});
+
+	/**
+	 * The shape of the decay either "linear" or "exponential"
+	 * @memberOf Tone.Envelope#
+	 * @type {String}
+	 * @name decayCurve
+	 * @example
+	 * env.decayCurve = "linear";
+	 */
+	Object.defineProperty(Tone.Envelope.prototype, "decayCurve", {
+		get : function(){
+			return this._decayCurve;
+		},
+		set : function(curve){
+			var curves = ["linear", "exponential"];
+			if (!curves.includes(curve)){
 				throw new Error("Tone.Envelope: invalid curve: " + curve);
+			} else {
+				this._decayCurve = curve;
 			}
 		}
 	});
@@ -250,19 +273,27 @@ define(["Tone/core/Tone", "Tone/signal/Signal",
 		} else if (attack > 0){
 			this._sig.cancelAndHoldAtTime(time);
 			var curve = this._attackCurve;
-			//take only a portion of the curve
-			if (attack < originalAttack){
-				var percentComplete = 1 - attack / originalAttack;
-				var sliceIndex = Math.floor(percentComplete * this._attackCurve.length);
-				curve = this._attackCurve.slice(sliceIndex);
-				//the first index is the current value
-				curve[0] = currentValue;
+			//find the starting position in the curve
+			for (var i = 1; i < curve.length; i++){
+				//the starting index is between the two values
+				if (curve[i-1] <= currentValue && currentValue <= curve[i]){
+					curve = this._attackCurve.slice(i);
+					//the first index is the current value
+					curve[0] = currentValue;
+					break;
+				}
 			}
 			this._sig.setValueCurveAtTime(curve, time, attack, velocity);
 		}
 		//decay
 		if (decay){
-			this._sig.targetRampTo(velocity * this.sustain, decay, attack + time);
+			var decayValue = velocity * this.sustain;
+			var decayStart = time + attack;
+			if (this._decayCurve === "linear"){
+				this._sig.linearRampTo(decayValue, decay, decayStart);
+			} else if (this._decayCurve === "exponential"){
+				this._sig.targetRampTo(decayValue, decay, decayStart);
+			}
 		}
 		return this;
 	};

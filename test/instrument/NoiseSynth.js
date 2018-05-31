@@ -22,7 +22,7 @@ define(["Tone/instrument/NoiseSynth", "helper/Basic", "helper/InstrumentTests",
 				}).toMaster();
 				synth.triggerAttack(0);
 				synth.triggerAttack(0.3);
-			}, "noiseSynth.wav", 110);
+			}, "noiseSynth.wav", 3.8);
 		});
 
 		it("matches another file", function(){
@@ -34,7 +34,7 @@ define(["Tone/instrument/NoiseSynth", "helper/Basic", "helper/InstrumentTests",
 					}
 				}).toMaster();
 				synth.triggerAttackRelease(0.1, 0);
-			}, "noiseSynthRelease.wav", 110);
+			}, "noiseSynthRelease.wav", 3.8);
 		});
 
 		context("API", function(){

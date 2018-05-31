@@ -1,6 +1,6 @@
 define(["helper/Basic", "Tone/source/PulseOscillator", "helper/Offline",
 	"helper/SourceTests", "helper/OscillatorTests", "helper/CompareToFile"],
-function(BasicTests, PulseOscillator, Offline, SourceTests, OscillatorTests, CompareToFile) {
+function(BasicTests, PulseOscillator, Offline, SourceTests, OscillatorTests, CompareToFile){
 
 	describe("PulseOscillator", function(){
 
@@ -13,7 +13,7 @@ function(BasicTests, PulseOscillator, Offline, SourceTests, OscillatorTests, Com
 			return CompareToFile(function(){
 				var osc = new PulseOscillator().toMaster();
 				osc.start(0);
-			}, "pulseOscillator.wav", 50);
+			}, "pulseOscillator.wav", 0.03);
 		});
 
 		context("Phase Rotation", function(){

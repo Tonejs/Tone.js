@@ -1,6 +1,6 @@
 define(["Tone/instrument/AMSynth", "helper/Basic",
 	"helper/InstrumentTests", "helper/CompareToFile"],
-function(AMSynth, Basic, InstrumentTest, CompareToFile) {
+function(AMSynth, Basic, InstrumentTest, CompareToFile){
 
 	describe("AMSynth", function(){
 
@@ -11,7 +11,7 @@ function(AMSynth, Basic, InstrumentTest, CompareToFile) {
 			return CompareToFile(function(){
 				const synth = new AMSynth().toMaster();
 				synth.triggerAttackRelease("C5", 0.1, 0.1);
-			}, "amSynth.wav", 50);
+			}, "amSynth.wav", 0.15);
 		});
 
 		context("API", function(){

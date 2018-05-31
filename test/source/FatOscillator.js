@@ -1,6 +1,6 @@
 define(["helper/Basic", "Tone/source/FatOscillator", "helper/Offline",
 	"helper/SourceTests", "helper/OscillatorTests", "helper/CompareToFile"],
-function(BasicTests, FatOscillator, Offline, SourceTests, OscillatorTests, CompareToFile) {
+function(BasicTests, FatOscillator, Offline, SourceTests, OscillatorTests, CompareToFile){
 
 	describe("FatOscillator", function(){
 
@@ -13,7 +13,7 @@ function(BasicTests, FatOscillator, Offline, SourceTests, OscillatorTests, Compa
 			return CompareToFile(function(){
 				var osc = new FatOscillator().toMaster();
 				osc.start(0);
-			}, "fatOscillator.wav");
+			}, "fatOscillator.wav", 0.2);
 		});
 
 		context("Detuned Oscillators", function(){

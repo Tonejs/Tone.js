@@ -10,7 +10,7 @@ if (process.env.BROWSER === "chrome"){
 } else if (process.env.BROWSER === "safari"){
 	BROWSERS = ["Safari"];
 } else {
-	BROWSERS = ["HeadlessChrome"];
+	BROWSERS = ["HeadlessChrome", "HeadlessFirefox"];
 }
 
 module.exports = function(config){
@@ -106,6 +106,7 @@ module.exports = function(config){
 
 		// enable / disable watching file and executing tests whenever any file changes
 		autoWatch : false,
+		// restartOnFileChange : true,
 
 		// start these browsers
 		// available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
