@@ -92,6 +92,15 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/source/Noise", "To
 	};
 
 	/**
+	 *	Make this method which belongs to the parent class private since
+	 *	PluckSynth does not have any 'release' method.
+	 * 	@memberOf Tone.PluckSynth#
+	 *  @function
+	 *  @private
+	 *  @name triggerAttackRelease
+	 */
+
+	/**
 	 *  Clean up.
 	 *  @returns {Tone.PluckSynth} this
 	 */
