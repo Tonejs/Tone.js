@@ -10,7 +10,7 @@ function(FMSynth, Basic, InstrumentTest, CompareToFile, Supports){
 		if (Supports.CHROME_AUDIO_RENDERING){
 			it("matches a file", function(){
 				return CompareToFile(function(){
-					const synth = new FMSynth().toMaster();
+					var synth = new FMSynth().toMaster();
 					synth.triggerAttackRelease("G4", 0.1, 0.05);
 				}, "fmSynth.wav", 0.1);
 			});

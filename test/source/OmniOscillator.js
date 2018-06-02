@@ -11,7 +11,7 @@ function(BasicTests, OmniOscillator, Offline, SourceTests, OscillatorTests, Outp
 
 		it("matches a file", function(){
 			return CompareToFile(function(){
-				const osc = new OmniOscillator(220, "fmsquare").toMaster();
+				var osc = new OmniOscillator(220, "fmsquare").toMaster();
 				osc.start(0.1).stop(0.2);
 			}, "omniOscillator.wav", 1.6);
 		});

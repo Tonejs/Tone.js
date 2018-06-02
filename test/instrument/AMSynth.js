@@ -9,7 +9,7 @@ function(AMSynth, Basic, InstrumentTest, CompareToFile){
 
 		it("matches a file", function(){
 			return CompareToFile(function(){
-				const synth = new AMSynth().toMaster();
+				var synth = new AMSynth().toMaster();
 				synth.triggerAttackRelease("C5", 0.1, 0.1);
 			}, "amSynth.wav", 0.15);
 		});

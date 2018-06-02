@@ -14,7 +14,7 @@ define(["Tone/instrument/NoiseSynth", "helper/Basic", "helper/InstrumentTests",
 
 		it("matches a file", function(){
 			return CompareToFile(function(){
-				const synth = new NoiseSynth({
+				var synth = new NoiseSynth({
 					envelope : {
 						attack : 0.01,
 						decay : 0.4
@@ -27,7 +27,7 @@ define(["Tone/instrument/NoiseSynth", "helper/Basic", "helper/InstrumentTests",
 
 		it("matches another file", function(){
 			return CompareToFile(function(){
-				const synth = new NoiseSynth({
+				var synth = new NoiseSynth({
 					envelope : {
 						attack : 0.01,
 						decay : 0.4

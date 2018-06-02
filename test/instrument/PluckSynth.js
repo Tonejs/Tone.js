@@ -11,7 +11,7 @@ function(PluckSynth, Basic, InstrumentTest, CompareToFile, Supports){
 		if (Supports.CHROME_AUDIO_RENDERING){
 			it("matches a file", function(){
 				return CompareToFile(function(){
-					const synth = new PluckSynth().toMaster();
+					var synth = new PluckSynth().toMaster();
 					synth.triggerAttack("C4");
 				}, "pluckSynth.wav", 0.2);
 			});

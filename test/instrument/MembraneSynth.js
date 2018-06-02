@@ -9,7 +9,7 @@ function(MembraneSynth, Basic, InstrumentTest, CompareToFile){
 
 		it("matches a file", function(){
 			return CompareToFile(function(){
-				const synth = new MembraneSynth().toMaster();
+				var synth = new MembraneSynth().toMaster();
 				synth.triggerAttackRelease("F#2", 0.1, 0.05);
 			}, "membraneSynth.wav", 0.5);
 		});

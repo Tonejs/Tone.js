@@ -9,14 +9,14 @@ function(Synth, Basic, InstrumentTest, APITest, Offline, Frequency, CompareToFil
 
 		it("matches a file basic", function(){
 			return CompareToFile(function(){
-				const synth = new Synth().toMaster();
+				var synth = new Synth().toMaster();
 				synth.triggerAttackRelease("C4", 0.1, 0.05);
 			}, "synth_basic.wav", 0.3);
 		});
 
 		it("matches a file melody", function(){
 			return CompareToFile(function(){
-				const synth = new Synth().toMaster();
+				var synth = new Synth().toMaster();
 				synth.triggerAttack("C4", 0);
 				synth.triggerAttack("E4", 0.1, 0.5);
 				synth.triggerAttackRelease("G4", 0.5, 0.3);

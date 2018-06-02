@@ -369,7 +369,7 @@ define(["helper/Test", "Tone/source/TickSource", "helper/Offline", "helper/Basic
 				source.frequency.linearRampToValueAtTime(4, 1);
 				source.start(0.5);
 				var iterations = 0;
-				const times = [0.500, 0.833, 1.094, 1.344, 1.594, 1.844];
+				var times = [0.500, 0.833, 1.094, 1.344, 1.594, 1.844];
 				source.forEachTickBetween(0, 2, function(time, ticks){
 					expect(time).to.be.closeTo(times[ticks], 0.001);
 					iterations++;
