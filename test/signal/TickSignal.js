@@ -1,4 +1,5 @@
-define(["helper/Test", "Tone/signal/TickSignal", "helper/Offline"], function(Test, TickSignal, Offline){
+define(["helper/Test", "Tone/signal/TickSignal", "helper/Offline", 
+	"Tone/signal/Signal"], function(Test, TickSignal, Offline, Signal){
 
 	describe("TickSignal", function(){
 
@@ -256,14 +257,13 @@ define(["helper/Test", "Tone/signal/TickSignal", "helper/Offline"], function(Tes
 		});
 
 		it("outputs a signal", function(){
-			var sched;
 			return Offline(function(){
-				sched = new TickSignal(1).toMaster();
-				sched.linearRampTo(3, 1, 1);
-			}, 3).then(function(buffer){
-				buffer.forEach(function(sample, time){
-					expect(sample).to.be.closeTo(sched.getValueAtTime(time), 0.01);
-				});
+				var sched = new TickSignal(1).toMaster();
+				sched.linearRampTo(3, 1, 0);
+			}, 1.01).then(function(buffer){
+				expect(buffer.getValueAtTime(0)).to.be.closeTo(1, 0.01);
+				expect(buffer.getValueAtTime(0.5)).to.be.closeTo(2, 0.01);
+				expect(buffer.getValueAtTime(1)).to.be.closeTo(3, 0.01);
 			});
 		});
 
