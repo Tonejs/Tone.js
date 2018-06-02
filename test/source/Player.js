@@ -18,7 +18,7 @@ function(BasicTests, Player, Offline, SourceTests, Buffer, Meter, Test, Tone, Co
 
 		it("matches a file", function(){
 			return CompareToFile(function(){
-				const player = new Player(buffer).toMaster();
+				var player = new Player(buffer).toMaster();
 				player.start(0.1).stop(0.2);
 				player.playbackRate = 2;
 			}, "player.wav", 0.005);

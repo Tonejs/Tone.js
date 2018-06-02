@@ -18,7 +18,7 @@ function(BasicTests, GrainPlayer, Offline, SourceTests, Buffer, Test, Tone, Comp
 
 		it("matches a file", function(){
 			return CompareToFile(function(){
-				const player = new GrainPlayer(buffer).toMaster();
+				var player = new GrainPlayer(buffer).toMaster();
 				player.start(0.1).stop(0.2);
 				player.detune = -100,
 				player.playbackRate = 2;

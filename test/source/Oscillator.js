@@ -11,7 +11,7 @@ function(BasicTests, Oscillator, Offline, SourceTests, OscillatorTests, OutputAu
 
 		it("matches a file", function(){
 			return CompareToFile(function(){
-				const osc = new Oscillator().toMaster();
+				var osc = new Oscillator().toMaster();
 				osc.type = "square";
 				osc.start(0).stop(0.2);
 			}, "oscillator.wav", 0.005);

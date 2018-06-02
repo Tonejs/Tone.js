@@ -10,7 +10,7 @@ function(MetalSynth, Basic, InstrumentTest, CompareToFile, Supports){
 		if (Supports.CHROME_AUDIO_RENDERING){
 			it("matches a file", function(){
 				return CompareToFile(function(){
-					const synth = new MetalSynth().toMaster();
+					var synth = new MetalSynth().toMaster();
 					synth.triggerAttackRelease(0.1, 0.05);
 				}, "metalSynth.wav", 5.9);
 			});

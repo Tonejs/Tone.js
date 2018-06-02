@@ -23,7 +23,7 @@ function(BasicTests, BufferSource, Offline, Buffer, Meter, Tone, CompareToFile, 
 
 		it("matches a file", function(){
 			return CompareToFile(function(){
-				const source = new BufferSource(buffer).toMaster();
+				var source = new BufferSource(buffer).toMaster();
 				source.start(0).stop(0.2);
 			}, "bufferSource.wav");
 		});

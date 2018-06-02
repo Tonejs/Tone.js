@@ -9,7 +9,7 @@ define(["helper/Basic", "Tone/source/Noise", "helper/SourceTests", "helper/Outpu
 
 			it("matches a file", function(){
 				return CompareToFile(function(){
-					const noise = new Noise().toMaster();
+					var noise = new Noise().toMaster();
 					noise.start(0.1).stop(0.2);
 				}, "noise.wav", 9);
 			});

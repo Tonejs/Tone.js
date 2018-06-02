@@ -10,7 +10,7 @@ function(MonoSynth, Basic, InstrumentTest, CompareToFile, Supports, Offline){
 		if (Supports.CHROME_AUDIO_RENDERING){
 			it("matches a file", function(){
 				return CompareToFile(function(){
-					const synth = new MonoSynth().toMaster();
+					var synth = new MonoSynth().toMaster();
 					synth.triggerAttackRelease("C4", 0.1, 0.05);
 				}, "monoSynth.wav", 1.75);
 			});
