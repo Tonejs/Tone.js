@@ -151,7 +151,7 @@ define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/LFO", "Tone/comp
 	 * The minimum value of the filter's cutoff frequency.
 	 * @memberOf Tone.AutoFilter#
 	 * @type {Frequency}
-	 * @name min
+	 * @name baseFrequency
 	 */
 	Object.defineProperty(Tone.AutoFilter.prototype, "baseFrequency", {
 		get : function(){
