@@ -11,8 +11,7 @@ define(["Tone/core/Tone", "Tone/component/Follower", "Tone/signal/GreaterThan", 
 	 *  @constructor
 	 *  @extends {Tone.AudioNode}
 	 *  @param {Decibels|Object} [threshold] The threshold above which the gate will open.
-	 *  @param {Time=} attack The follower's attack time
-	 *  @param {Time=} release The follower's release time
+	 *  @param {Time=} smoothing The follower's smoothing time
 	 *  @example
 	 * var gate = new Tone.Gate(-30, 0.2, 0.3).toMaster();
 	 * var mic = new Tone.UserMedia().connect(gate);
@@ -21,7 +20,7 @@ define(["Tone/core/Tone", "Tone/component/Follower", "Tone/signal/GreaterThan", 
 	 */
 	Tone.Gate = function(){
 
-		var options = Tone.defaults(arguments, ["threshold", "attack", "release"], Tone.Gate);
+		var options = Tone.defaults(arguments, ["threshold", "smoothing"], Tone.Gate);
 		Tone.AudioNode.call(this);
 		this.createInsOuts(1, 1);
 
@@ -29,7 +28,7 @@ define(["Tone/core/Tone", "Tone/component/Follower", "Tone/signal/GreaterThan", 
 		 *  @type {Tone.Follower}
 		 *  @private
 		 */
-		this._follower = new Tone.Follower(options.attack, options.release);
+		this._follower = new Tone.Follower(options.smoothing);
 
 		/**
 		 *  @type {Tone.GreaterThan}
@@ -51,8 +50,7 @@ define(["Tone/core/Tone", "Tone/component/Follower", "Tone/signal/GreaterThan", 
 	 *  @type {Object}
 	 */
 	Tone.Gate.defaults = {
-		"attack" : 0.1,
-		"release" : 0.1,
+		"smoothing" : 0.1,
 		"threshold" : -40
 	};
 
@@ -72,32 +70,17 @@ define(["Tone/core/Tone", "Tone/component/Follower", "Tone/signal/GreaterThan", 
 	});
 
 	/**
-	 * The attack speed of the gate
+	 * The attack/decay speed of the gate
 	 * @memberOf Tone.Gate#
 	 * @type {Time}
-	 * @name attack
+	 * @name smoothing
 	 */
-	Object.defineProperty(Tone.Gate.prototype, "attack", {
+	Object.defineProperty(Tone.Gate.prototype, "smoothing", {
 		get : function(){
-			return this._follower.attack;
+			return this._follower.smoothing;
 		},
-		set : function(attackTime){
-			this._follower.attack = attackTime;
-		}
-	});
-
-	/**
-	 * The release speed of the gate
-	 * @memberOf Tone.Gate#
-	 * @type {Time}
-	 * @name release
-	 */
-	Object.defineProperty(Tone.Gate.prototype, "release", {
-		get : function(){
-			return this._follower.release;
-		},
-		set : function(releaseTime){
-			this._follower.release = releaseTime;
+		set : function(smoothingTime){
+			this._follower.smoothing = smoothingTime;
 		}
 	});
 
