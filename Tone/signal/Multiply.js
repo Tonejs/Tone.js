@@ -7,7 +7,7 @@ define(["Tone/core/Tone", "Tone/core/Param", "Tone/core/Gain", "Tone/signal/Sign
 	 *          multiplies the incoming signal by that value.
 	 *
 	 *  @constructor
-	 *  @extends {Tone.Param}
+	 *  @extends {Tone.Signal}
 	 *  @param {number=} value Constant value to multiple. If no value is provided,
 	 *                         it will return the product of the first and second inputs
 	 *  @example
@@ -24,7 +24,7 @@ define(["Tone/core/Tone", "Tone/core/Param", "Tone/core/Gain", "Tone/signal/Sign
 	 */
 	Tone.Multiply = function(value){
 
-		Tone.Param.call(this);
+		Tone.Signal.call(this);
 		this.createInsOuts(2, 0);
 
 		/**
@@ -42,11 +42,11 @@ define(["Tone/core/Tone", "Tone/core/Param", "Tone/core/Gain", "Tone/signal/Sign
 		 *  @private
 		 */
 		this._param = this.input[1] = this.output.gain;
-
 		this.value = Tone.defaultArg(value, 0);
+		this.proxy = false;
 	};
 
-	Tone.extend(Tone.Multiply, Tone.Param);
+	Tone.extend(Tone.Multiply, Tone.Signal);
 
 	Tone.Multiply.prototype.connect = Tone.SignalBase.prototype.connect;
 
@@ -55,7 +55,7 @@ define(["Tone/core/Tone", "Tone/core/Param", "Tone/core/Gain", "Tone/signal/Sign
 	 *  @returns {Tone.Multiply} this
 	 */
 	Tone.Multiply.prototype.dispose = function(){
-		Tone.Param.prototype.dispose.call(this);
+		Tone.Signal.prototype.dispose.call(this);
 		this._mult.dispose();
 		this._mult = null;
 		this._param = null;

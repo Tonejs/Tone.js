@@ -202,6 +202,19 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper", "Tone/type/Type", "Tone/core
 	});
 
 	/**
+	 * Return the current signal value at the given time.
+	 * @param  {Time} time When to get the signal value
+	 * @return {Number}
+	 */
+	Tone.Signal.prototype.getValueAtTime = function(time){
+		if (this._param.getValueAtTime){
+			return this._param.getValueAtTime(time);
+		} else {
+			return Tone.Param.prototype.getValueAtTime.call(this, time);
+		}
+	};
+
+	/**
 	 * Wrap the native scheduling methods with a method 
 	 * that also applies the automation to all the proxied connections.
 	 * @param  {Function} method The original method to wrap
