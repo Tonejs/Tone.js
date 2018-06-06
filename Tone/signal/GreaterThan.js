@@ -16,7 +16,7 @@ define(["Tone/core/Tone", "Tone/signal/GreaterThanZero", "Tone/signal/Subtract",
 	 */
 	Tone.GreaterThan = function(value){
 
-		Tone.Signal.call(this);
+		Tone.Param.call(this);
 		this.createInsOuts(2, 0);
 
 		/**
@@ -38,14 +38,17 @@ define(["Tone/core/Tone", "Tone/signal/GreaterThanZero", "Tone/signal/Subtract",
 		this._param.connect(this._gtz);
 	};
 
-	Tone.extend(Tone.GreaterThan, Tone.Signal);
+	Tone.extend(Tone.GreaterThan, Tone.Param);
+
+	//return the connect method back to signal
+	Tone.GreaterThan.prototype.connect = Tone.SignalBase.prototype.connect;
 
 	/**
 	 *  dispose method
 	 *  @returns {Tone.GreaterThan} this
 	 */
 	Tone.GreaterThan.prototype.dispose = function(){
-		Tone.Signal.prototype.dispose.call(this);
+		Tone.Param.prototype.dispose.call(this);
 		this._gtz.dispose();
 		this._gtz = null;
 		return this;

@@ -5,7 +5,7 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/signal/Signal", "Tone/typ
 	 * @extends {Tone.Signal}
 	 */
 	Tone.TransportTimelineSignal = function(){
-		Tone.Signal.apply(this, arguments);
+		Tone.Param.apply(this, arguments);
 
 		/**
 		 * The real signal output
@@ -39,7 +39,10 @@ define(["Tone/core/Tone", "Tone/core/Transport", "Tone/signal/Signal", "Tone/typ
 		this._events.memory = Infinity;
 	};
 
-	Tone.extend(Tone.TransportTimelineSignal, Tone.Signal);
+	Tone.extend(Tone.TransportTimelineSignal, Tone.Param);
+
+	//return the connect method back to signal
+	Tone.TransportTimelineSignal.prototype.connect = Tone.SignalBase.prototype.connect;
 
 	/**
 	 * Callback which is invoked every tick.
