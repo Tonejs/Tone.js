@@ -17,69 +17,91 @@ function(Follower, Basic, Offline, Test, Signal, PassAudio, PassAudioStereo){
 			it("handles getter/setter as Object", function(){
 				var foll = new Follower();
 				var values = {
-					"attack" : 0.2,
-					"release" : 0.4
+					"smoothing" : 0.2,
 				};
 				foll.set(values);
-				expect(foll.get()).to.have.keys(["attack", "release"]);
-				expect(foll.get().attack).to.be.closeTo(0.2, 0.001);
-				expect(foll.get().release).to.be.closeTo(0.4, 0.001);
+				expect(foll.get()).to.have.keys(["smoothing"]);
+				expect(foll.get().smoothing).to.be.closeTo(0.2, 0.001);
 				foll.dispose();
 			});
 
 			it("can be constructed with an object", function(){
 				var follower = new Follower({
-					"attack" : 0.5,
-					"release" : 0.3
+					"smoothing" : 0.5,
 				});
-				expect(follower.attack).to.be.closeTo(0.5, 0.001);
-				expect(follower.release).to.be.closeTo(0.3, 0.001);
+				expect(follower.smoothing).to.be.closeTo(0.5, 0.001);
 				follower.dispose();
 			});
 
-			it("smoothes the incoming signal", function(){
+			it("smoothes the incoming signal at 0.1", function(){
 				return Offline(function(){
-					var foll = new Follower(0.1, 0.5).toMaster();
+					var foll = new Follower(0.1).toMaster();
 					var sig = new Signal(0);
 					sig.connect(foll);
 					sig.setValueAtTime(1, 0.1);
-				}, 0.1).then(function(buffer){
-					expect(buffer.max()).to.lessThan(1);
+					sig.setValueAtTime(0, 0.3);
+				}, 0.41).then(function(buffer){
+					expect(buffer.getValueAtTime(0)).to.be.closeTo(0, 0.01);
+					expect(buffer.getValueAtTime(0.1)).to.be.closeTo(0.0, 0.01);
+					expect(buffer.getValueAtTime(0.15)).to.be.closeTo(0.5, 0.2);
+					expect(buffer.getValueAtTime(0.2)).to.be.closeTo(1, 0.2);
+					expect(buffer.getValueAtTime(0.3)).to.be.closeTo(1, 0.2);
+					expect(buffer.getValueAtTime(0.35)).to.be.closeTo(0.5, 0.2);
+					expect(buffer.getValueAtTime(0.4)).to.be.closeTo(0, 0.2);
 				});
 			});
 
-			/*it("smoothing follows attack and release", function(done){
-				var foll, sig;
-				var offline = new Offline(1);
-				offline.before(function(dest){
-					foll = new Follower(0.1, 0.5);
-					sig = new Signal(0);
+			it("smoothes the incoming signal at 0.05", function(){
+				return Offline(function(){
+					var foll = new Follower(0.05).toMaster();
+					var sig = new Signal(0);
 					sig.connect(foll);
-					foll.connect(dest);
-					sig.setValueAtTime(1, 0);
-					sig.setValueAtTime(0, 0.4);
+					sig.setValueAtTime(1, 0.1);
+					sig.setValueAtTime(0, 0.3);
+				}, 0.41).then(function(buffer){
+					expect(buffer.getValueAtTime(0)).to.be.closeTo(0, 0.01);
+					expect(buffer.getValueAtTime(0.1)).to.be.closeTo(0.0, 0.01);
+					expect(buffer.getValueAtTime(0.125)).to.be.closeTo(0.5, 0.2);
+					expect(buffer.getValueAtTime(0.15)).to.be.closeTo(1, 0.2);
+					expect(buffer.getValueAtTime(0.3)).to.be.closeTo(1, 0.2);
+					expect(buffer.getValueAtTime(0.325)).to.be.closeTo(0.5, 0.2);
+					expect(buffer.getValueAtTime(0.35)).to.be.closeTo(0, 0.2);
 				});
-				var delta = 0.15;
-				offline.test(function(sample, time){
-					if (time < 0.1){
-						expect(sample).to.be.within(0 - delta, 1 + delta);
-					} else if (time < 0.4){
-						expect(sample).to.be.closeTo(1, delta);
-					} else if (time < 0.65){
-						expect(sample).to.be.above(0);
-					} else if (time < 0.9){
-						expect(sample).to.be.within(0 - delta, 1 + delta);
-					} else {
-						expect(sample).to.be.closeTo(0, delta);
-					}
+			});
+
+			it("smoothes the incoming signal at 0.2", function(){
+				return Offline(function(){
+					var foll = new Follower(0.2).toMaster();
+					var sig = new Signal(0);
+					sig.connect(foll);
+					sig.setValueAtTime(1, 0.1);
+					sig.setValueAtTime(0, 0.3);
+				}, 0.51).then(function(buffer){
+					expect(buffer.getValueAtTime(0)).to.be.closeTo(0, 0.01);
+					expect(buffer.getValueAtTime(0.1)).to.be.closeTo(0.0, 0.01);
+					expect(buffer.getValueAtTime(0.2)).to.be.closeTo(0.5, 0.2);
+					expect(buffer.getValueAtTime(0.3)).to.be.closeTo(1, 0.2);
+					expect(buffer.getValueAtTime(0.4)).to.be.closeTo(0.5, 0.2);
+					expect(buffer.getValueAtTime(0.5)).to.be.closeTo(0, 0.2);
 				});
-				offline.after(function(){
-					foll.dispose();
-					sig.dispose();
-					done();
+			});
+
+			it("smoothes the incoming signal at 0.5", function(){
+				return Offline(function(){
+					var foll = new Follower(0.5).toMaster();
+					var sig = new Signal(0);
+					sig.connect(foll);
+					sig.setValueAtTime(1, 0.1);
+					sig.setValueAtTime(0, 0.6);
+				}, 1.11).then(function(buffer){
+					expect(buffer.getValueAtTime(0)).to.be.closeTo(0, 0.01);
+					expect(buffer.getValueAtTime(0.1)).to.be.closeTo(0.0, 0.01);
+					expect(buffer.getValueAtTime(0.35)).to.be.closeTo(0.5, 0.2);
+					expect(buffer.getValueAtTime(0.6)).to.be.closeTo(1, 0.2);
+					expect(buffer.getValueAtTime(0.85)).to.be.closeTo(0.5, 0.2);
+					expect(buffer.getValueAtTime(1.1)).to.be.closeTo(0, 0.2);
 				});
-				offline.run();
-			});*/
+			});
 
 			it("passes the incoming signal through", function(){
 				var follower;

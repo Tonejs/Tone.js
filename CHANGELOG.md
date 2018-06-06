@@ -7,6 +7,7 @@
 * Tone.Meter uses RMS instead of peak (thanks [@Idicious](https://github.com/Idicious))
 * Tone.Sampler supports polyphonic syntax (thanks [@zfan40](https://github.com/zfan40))
 * Building files with [webpack](https://webpack.js.org/)
+* Follower uses a single "smoothing" value instead of separate attacks and releases
 
 
 ### r12
