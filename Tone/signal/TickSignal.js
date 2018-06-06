@@ -11,24 +11,14 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 	 * @param {Number} value The initial value of the signal
 	 * @extends {Tone.Signal}
 	 */
-	Tone.TickSignal = function(value, param){
+	Tone.TickSignal = function(value){
 
 		value = Tone.defaultArg(value, 1);
 
 		Tone.Signal.call(this, {
 			"units" : Tone.Type.Ticks,
-			"value" : value,
+			"value" : value
 		});
-
-		if (!param){
-			var signal = this.context.createConstantSource();
-			this._param = signal.offset;
-			this.value = value;
-			this.output = signal;
-			signal.start(0);
-		} else {
-			this._param = param;
-		}
 
 		//extend the memory
 		this._events.memory = Infinity;
@@ -41,13 +31,12 @@ define(["Tone/core/Tone", "Tone/signal/Signal"], function(Tone){
 			"time" : 0,
 			"value" : value
 		});
-		this.proxy = false;
 	};
 
 	Tone.extend(Tone.TickSignal, Tone.Signal);
 	
 	/**
-	 * Wraps Tone.Param methods so that they also
+	 * Wraps Tone.Signal methods so that they also
 	 * record the ticks.
 	 * @param  {Function} method
 	 * @return {Function}
