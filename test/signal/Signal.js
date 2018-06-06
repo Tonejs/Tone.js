@@ -370,54 +370,145 @@ function(Offline, Basic, Test, Signal, Tone, Transport, ConstantOutput, Gain){
 		context("Proxy", function(){
 
 			it("uses proxy connections when controling an audio param", function(){
-				return Offline(function(){
-					var gainNode = new Gain(1).toMaster();
-					var sig = new Signal(1).connect(gainNode);
-					var proxyControl = new Signal(2).connect(gainNode.gain);
+				return Offline(function(Transport){
+					var constantSource = Transport.context.createConstantSource();
+					constantSource.connect(Transport.context.destination);
+					constantSource.start(0);
+					var sig = new Signal(2).connect(constantSource.offset);
+					expect(sig.proxy).to.be.true;
 				}, 1).then(function(buffer){
 					expect(buffer.value()).to.be.closeTo(2, 0.01);
 				});
 			});
 
-			/*it("proxy does not actually output any signal when connected to a signal", function(){
+			it("applies all automations from to the controlled param", function(){
+				return Offline(function(Transport){
+					var constantSource = Transport.context.createConstantSource();
+					constantSource.connect(Transport.context.destination);
+					constantSource.start(0);
+					var sig = new Signal(2).connect(constantSource.offset);
+					sig.setValueAtTime(0, 0);
+					sig.setValueAtTime(0.5, 0.5);
+					sig.setValueAtTime(0.9, 0.9);
+					expect(sig.proxy).to.be.true;
+				}, 1).then(function(buffer){
+					expect(buffer.getValueAtTime(0)).to.be.closeTo(0, 0.01);
+					expect(buffer.getValueAtTime(0.5)).to.be.closeTo(0.5, 0.01);
+					expect(buffer.getValueAtTime(0.9)).to.be.closeTo(0.9, 0.01);
+				});
+			});
+
+			it("all scheduled parameters are applied to the connected param if connected after scheduling", function(){
+				return Offline(function(Transport){
+					var constantSource = Transport.context.createConstantSource();
+					constantSource.connect(Transport.context.destination);
+					constantSource.start(0);
+					var sig = new Signal(2);
+					sig.setValueAtTime(0, 0);
+					sig.setValueAtTime(0.5, 0.5);
+					sig.setValueAtTime(0.9, 0.9);
+					sig.connect(constantSource.offset);
+					expect(sig.proxy).to.be.true;
+				}, 1).then(function(buffer){
+					expect(buffer.getValueAtTime(0)).to.be.closeTo(0, 0.01);
+					expect(buffer.getValueAtTime(0.5)).to.be.closeTo(0.5, 0.01);
+					expect(buffer.getValueAtTime(0.9)).to.be.closeTo(0.9, 0.01);
+				});
+			});
+
+			it("can chain multiple signals in the proxy chain", function(){
+				return Offline(function(Transport){
+					var constantSource = Transport.context.createConstantSource();
+					constantSource.connect(Transport.context.destination);
+					constantSource.start(0);
+					var sig = new Signal(2).connect(constantSource.offset);
+					var sig2 = new Signal(2).connect(sig);
+					sig2.setValueAtTime(0, 0);
+					sig2.setValueAtTime(0.5, 0.5);
+					sig2.setValueAtTime(0.9, 0.9);
+					expect(sig.proxy).to.be.true;
+					expect(sig2.proxy).to.be.true;
+				}, 1).then(function(buffer){
+					expect(buffer.getValueAtTime(0)).to.be.closeTo(0, 0.01);
+					expect(buffer.getValueAtTime(0.5)).to.be.closeTo(0.5, 0.01);
+					expect(buffer.getValueAtTime(0.9)).to.be.closeTo(0.9, 0.01);
+				});
+			});
+
+			it("can fan multiple signals", function(){
+				return Offline(function(Transport){
+					var constantSource = Transport.context.createConstantSource();
+					constantSource.connect(Transport.context.destination);
+					constantSource.start(0);
+					var controlled1 = new Signal(2).connect(constantSource.offset);
+					var controlled2 = new Signal(20);
+					var sig = new Signal(2);
+					sig.setValueAtTime(0, 0);
+					sig.setValueAtTime(0.5, 0.5);
+					sig.setValueAtTime(0.9, 0.9);
+					sig.fan(controlled1, controlled2);
+					expect(sig.proxy).to.be.true;
+					expect(controlled1.proxy).to.be.true;
+					expect(controlled2.proxy).to.be.true;
+					expect(controlled2.getValueAtTime(0)).to.be.closeTo(0, 0.01);
+					expect(controlled2.getValueAtTime(0.5)).to.be.closeTo(0.5, 0.01);
+					expect(controlled2.getValueAtTime(0.9)).to.be.closeTo(0.9, 0.01);
+				}, 1).then(function(buffer){
+					expect(buffer.getValueAtTime(0)).to.be.closeTo(0, 0.01);
+					expect(buffer.getValueAtTime(0.5)).to.be.closeTo(0.5, 0.01);
+					expect(buffer.getValueAtTime(0.9)).to.be.closeTo(0.9, 0.01);
+				});
+			});
+
+			it("proxy does not output any signal", function(){
 				return Offline(function(){
 					var sig = new Signal(1);
 					var proxyControl = new Signal(2).connect(sig);
-					proxyControl._constantSource.toMaster();
+					proxyControl._constantSource.connect(Transport.context.destination);
 				}, 1).then(function(buffer){
 					expect(buffer.value()).to.be.closeTo(0, 0.01);
 				});
 			});
 
-			it("proxy does not actually output any signal when connected from a signal", function(){
-				return Offline(function(){
+			it("proxy does not actually output any signal when a signal is connected to it", function(){
+				return Offline(function(Transport){
 					var sig = new Signal(1);
 					var proxyControl = new Signal(2).connect(sig);
-					sig._constantSource.toMaster();
+					sig._constantSource.connect(Transport.context.destination);
 				}, 1).then(function(buffer){
 					expect(buffer.value()).to.be.closeTo(0, 0.01);
 				});
-			});*/
+			});
 
-			/*it("if the lead proxy becomes a signal, all connected proxies become signals", function(){
-				return Offline(function(){
+			it("proxy outputs a signal when connected proxy=false", function(){
+				return Offline(function(Transport){
 					var sig = new Signal(1);
-					var proxyControl = new Signal(2).connect(sig);
-					sig._constantSource.toMaster();
+					sig._constantSource.connect(Transport.context.destination);
+					sig.proxy = false;
+					expect(sig.proxy).to.be.false;
+				}, 1).then(function(buffer){
+					expect(buffer.value()).to.be.closeTo(1, 0.01);
+				});
+			});
+
+			it("if the lead proxy becomes a signal, all connected proxies become signals", function(){
+				return Offline(function(){
+					var sig1 = new Signal(1);
+					var sig2 = new Signal(2);
+					var proxyControl = new Signal(2).chain(sig1, sig2);
+					sig2._constantSource.connect(Transport.context.destination);
 					var gainNode = new Gain().connect(proxyControl);
 				}, 1).then(function(buffer){
 					expect(buffer.value()).to.be.closeTo(2, 0.01);
 				});
-			});*/
+			});
 
-			/*it("if the final proxy becomes a signal, not all connected proxies become signals", function(){
+			it("if the final proxy becomes a signal, not all connected proxies become signals", function(){
 				return Offline(function(){
 					var sig = new Signal(1);
 					var proxyControl = new Signal(2).connect(sig);
-					proxyControl._constantSource.toMaster();
 					var gainNode = new Gain().connect(sig);
-				}, 1).then(function(buffer){
-					expect(buffer.value()).to.be.closeTo(0, 0.01);
+					expect(proxyControl.proxy).to.be.true;
 				});
 			});
 
@@ -430,19 +521,17 @@ function(Offline, Basic, Test, Signal, Tone, Transport, ConstantOutput, Gain){
 					expect(proxyControl.getValueAtTime(0)).to.be.closeTo(2, 0.01);
 					expect(sig.getValueAtTime(0.5)).to.be.closeTo(1, 0.01);
 					expect(proxyControl.getValueAtTime(0.5)).to.be.closeTo(1, 0.01);
-				}, 1);
-			});*/
+				});
+			});
 
-			/*it("connection from a non-param will start the output", function(){
+			it("connection from a non-param will start the output", function(){
 				return Offline(function(){
 					var gainNode = new Gain(1);
 					var proxyControl = new Signal(2);
 					gainNode.connect(proxyControl);
-					proxyControl._constantSource.toMaster();
-				}, 1).then(function(buffer){
-					expect(buffer.value()).to.be.closeTo(2, 0.01);
+					expect(proxyControl.proxy).to.be.false;
 				});
-			});*/
+			});
 
 			it("can disconnect a proxy when not live", function(){
 				return Offline(function(){

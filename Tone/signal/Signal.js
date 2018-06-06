@@ -93,28 +93,28 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper", "Tone/type/Type", "Tone/core
 	Tone.Signal.prototype.connect = function(node){
 		//this is an optimization where this node will forward automations
 		//to connected nodes without any signal if possible.
-		if (this._isParam(node) && !this._sourceStarted){
+		if (this._canProxy(node) && this.proxy){
 			this._proxies.push(node);
 			node.overridden = true;
+			//apply all the automations initially
 			this._applyAutomations(node);
 		} else {
 			Tone.SignalBase.prototype.connect.apply(this, arguments);
-			if (!this._sourceStarted){
-				this._sourceStarted = true;
-				this._constantSource.start(0);
-			}
+			this._connectProxies();
 		}
 		return this;
 	};
 
 	/**
-	 * Takes a node as an argument and returns if it is a Param or AudioParam
+	 * Takes a node as an argument and returns if the node can be proxied
+	 * or if the signal should be started when it's connected.
 	 * @param  {*} node The node to test
 	 * @return {Boolean}
 	 * @private
 	 */
-	Tone.Signal.prototype._isParam = function(node){
-		return (Tone.Param && Tone.Param === node.constructor) ||
+	Tone.Signal.prototype._canProxy = function(node){
+		return node.constructor === Tone.Param ||
+				(node.constructor === Tone.Signal && node.proxy) ||
 				node instanceof AudioParam;
 	};
 
@@ -129,7 +129,7 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper", "Tone/type/Type", "Tone/core
 		}
 		this._proxies.forEach(function(proxy){
 			Tone.SignalBase.prototype.connect.call(this, proxy);
-			if (proxy._proxies){
+			if (proxy.proxy){
 				proxy._connectProxies();
 			}
 		}.bind(this));
@@ -141,7 +141,7 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper", "Tone/type/Type", "Tone/core
 	 * @private
 	 */
 	Tone.Signal.prototype._onConnect = function(from){
-		if (!this._isParam(from)){
+		if (!this._canProxy(from)){
 			//connect all the proxies
 			this._connectProxies();
 		}
@@ -182,45 +182,62 @@ define(["Tone/core/Tone", "Tone/signal/WaveShaper", "Tone/type/Type", "Tone/core
 	};
 
 	/**
-	 * Return the current signal value at the given time.
-	 * @param  {Time} time When to get the signal value
-	 * @return {Number}
+	 *  True if the source is not actually outputting any signal, but merely
+	 *  acting as a proxy signal which forwards scheduled events to all of 
+	 *  the connected signals. Can force the signal to unproxy by 
+	 *  setting `sig.proxy = false` though once unproxied, cannot force it back. 
+	 *  @type {Boolean}
+	 *  @memberOf Tone.Signal#
+	 *  @name proxy
 	 */
-	Tone.Signal.prototype.getValueAtTime = function(time){
-		if (this._param.getValueAtTime){
-			return this._param.getValueAtTime(time);
-		} else {
-			return Tone.Param.prototype.getValueAtTime.call(this, time);
+	Object.defineProperty(Tone.Signal.prototype, "proxy", {
+		get : function(){
+			return !this._sourceStarted;
+		},
+		set : function(proxy){
+			if (!proxy && !this._sourceStarted){
+				this._connectProxies();
+			}
 		}
-	};
+	});
+
+	/**
+	 * Wrap the native scheduling methods with a method 
+	 * that also applies the automation to all the proxied connections.
+	 * @param  {Function} method The original method to wrap
+	 * @param  {Number} argCount How many arguments the method takes
+	 * @private
+	 */
+	function _wrapMethod(method, argCount){
+		var previousMethod = Tone.Signal.prototype[method];
+		Tone.Signal.prototype[method] = function(){
+			var args = arguments;
+			//call the original method
+			previousMethod.apply(this, arguments);
+			//if it's proxied, call the same method on all of the proxied methods
+			if (this.proxy){
+				if (argCount === 2){
+					args[0] = this._fromUnits(args[0]);
+					args[1] = this.toSeconds(args[1]);
+				} else {
+					args[0] = this.toSeconds(args[0]);
+				}
+				//apply it to the proxies
+				this._proxies.forEach(function(signal){
+					signal[method].apply(signal, args);
+				});
+			}
+		};
+	}
 
 	//wrap all of the automation methods
 	["setValueAtTime", "linearRampToValueAtTime", "exponentialRampToValueAtTime", "setTargetAtTime"]
 		.forEach(function(method){
-			var previousMethod = Tone.Signal.prototype[method];
-			Tone.Signal.prototype[method] = function(){
-				var args = arguments;
-				previousMethod.apply(this, arguments);
-				args[0] = this._fromUnits(args[0]);
-				args[1] = this.toSeconds(args[1]);
-				//apply it to the proxies
-				this._proxies.forEach(function(signal){
-					signal[method].apply(signal, args);
-				});
-			};
+			_wrapMethod(method, 2);
 		});
 	["cancelScheduledValues", "cancelAndHoldAtTime"]
 		.forEach(function(method){
-			var previousMethod = Tone.Signal.prototype[method];
-			Tone.Signal.prototype[method] = function(){
-				var args = arguments;
-				previousMethod.apply(this, arguments);
-				args[0] = this.toSeconds(args[0]);
-				//apply it to the proxies
-				this._proxies.forEach(function(signal){
-					signal[method].apply(signal, args);
-				});
-			};
+			_wrapMethod(method, 1);
 		});
 
 	/**
