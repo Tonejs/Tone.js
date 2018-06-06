@@ -25,7 +25,7 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Negate", "Tone/signal/
 	 */
 	Tone.Subtract = function(value){
 
-		Tone.Param.call(this);
+		Tone.Signal.call(this);
 		this.createInsOuts(2, 0);
 
 		/**
@@ -49,11 +49,11 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Negate", "Tone/signal/
 		 *  @type {Tone.Signal}
 		 */
 		this._param = this.input[1] = new Tone.Signal(value);
-
 		this._param.chain(this._neg, this._sum);
+		this.proxy = false;
 	};
 
-	Tone.extend(Tone.Subtract, Tone.Param);
+	Tone.extend(Tone.Subtract, Tone.Signal);
 
 	//return the connect method back to signal
 	Tone.Subtract.prototype.connect = Tone.SignalBase.prototype.connect;
@@ -63,7 +63,7 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Negate", "Tone/signal/
 	 *  @returns {Tone.SignalBase} this
 	 */
 	Tone.Subtract.prototype.dispose = function(){
-		Tone.Param.prototype.dispose.call(this);
+		Tone.Signal.prototype.dispose.call(this);
 		this._neg.dispose();
 		this._neg = null;
 		this._sum.disconnect();
