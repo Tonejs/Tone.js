@@ -17,23 +17,21 @@ function(Gate, Basic, Offline, Test, Signal, PassAudio, Tone){
 			it("handles getter/setter as Object", function(){
 				var gate = new Gate();
 				var values = {
-					"attack" : 0.2,
-					"release" : 0.4,
+					"smoothing" : 0.2,
 					"threshold" : -20
 				};
 				gate.set(values);
-				expect(gate.get().attack).to.be.closeTo(0.2, 0.001);
-				expect(gate.get().release).to.be.closeTo(0.4, 0.001);
+				expect(gate.get().smoothing).to.be.closeTo(0.2, 0.001);
 				expect(gate.get().threshold).to.be.closeTo(-20, 0.1);
 				gate.dispose();
 			});
 
 			it("can be constructed with an object", function(){
 				var gate = new Gate({
-					"release" : 0.3,
+					"smoothing" : 0.3,
 					"threshold" : -5
 				});
-				expect(gate.release).to.be.closeTo(0.3, 0.001);
+				expect(gate.smoothing).to.be.closeTo(0.3, 0.001);
 				expect(gate.threshold).to.be.closeTo(-5, 0.1);
 				gate.dispose();
 			});
