@@ -9,6 +9,7 @@ define(["Tone/core/Tone", "Tone/signal/TickSignal", "Tone/core/TimelineState",
 	 *
 	 * 	@constructor
      *  @param {Frequency} frequency The initial frequency that the signal ticks at
+     *  @param {Tone.Param=} param A parameter to control (such as playbackRate)
 	 *  @extends {Tone}
 	 */
 	Tone.TickSource = function(){
@@ -20,7 +21,7 @@ define(["Tone/core/Tone", "Tone/signal/TickSignal", "Tone/core/TimelineState",
 		 *  @type  {Frequency}
 		 *  @signal
 		 */
-		this.frequency = new Tone.TickSignal(options.frequency, Tone.Type.Frequency);
+		this.frequency = new Tone.TickSignal(options.frequency);
 		this._readOnly("frequency");
 
 		/**
