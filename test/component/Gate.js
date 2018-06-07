@@ -1,9 +1,19 @@
 define(["Tone/component/Gate", "helper/Basic", "helper/Offline", "helper/Test",
-	"Tone/signal/Signal", "helper/PassAudio", "Tone/type/Type"],
-function(Gate, Basic, Offline, Test, Signal, PassAudio, Tone){
+	"Tone/signal/Signal", "helper/PassAudio", "Tone/type/Type", "Tone/source/Oscillator", "helper/CompareToFile"],
+function(Gate, Basic, Offline, Test, Signal, PassAudio, Tone, Oscillator, CompareToFile){
 	describe("Gate", function(){
 
 		Basic(Gate);
+
+		it("matches a file", function(){
+			return CompareToFile(function(){
+				var gate = new Gate(-10, 0.1).toMaster();
+				var osc = new Oscillator().connect(gate);
+				osc.start(0);
+				osc.volume.value = -100;
+				osc.volume.exponentialRampToValueAtTime(0, 0.5);
+			}, "gate.wav", 0.1);
+		});
 
 		context("Signal Gating", function(){
 
@@ -39,7 +49,7 @@ function(Gate, Basic, Offline, Test, Signal, PassAudio, Tone){
 			it("gates the incoming signal when below the threshold", function(){
 				return Offline(function(){
 					var gate = new Gate(-9);
-					var sig = new Signal(-10, Tone.Type.Decibels);
+					var sig = new Signal(-12, Tone.Type.Decibels);
 					sig.connect(gate);
 					gate.toMaster();
 				}).then(function(buffer){

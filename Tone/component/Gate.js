@@ -39,7 +39,7 @@ define(["Tone/core/Tone", "Tone/component/Follower", "Tone/signal/GreaterThan", 
 		//the connections
 		this.input.connect(this.output);
 		//the control signal
-		this.input.chain(this._gt, this._follower, this.output.gain);
+		this.input.chain(this._follower, this._gt, this.output.gain);
 	};
 
 	Tone.extend(Tone.Gate, Tone.AudioNode);
