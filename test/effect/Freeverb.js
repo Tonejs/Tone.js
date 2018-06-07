@@ -1,9 +1,19 @@
-define(["Tone/effect/Freeverb", "helper/Basic", "helper/EffectTests"], function (Freeverb, Basic, EffectTests) {
+define(["Tone/effect/Freeverb", "helper/Basic", "helper/EffectTests", 
+	"helper/CompareToFile", "Tone/source/Oscillator"], 
+function(Freeverb, Basic, EffectTests, CompareToFile, Oscillator){
 	
 	describe("Freeverb", function(){
 
 		Basic(Freeverb);
 		EffectTests(Freeverb);
+
+		it("matches a file basic", function(){
+			return CompareToFile(function(){
+				var reverb = new Freeverb(0.9, 7000).toMaster();
+				var osc = new Oscillator().connect(reverb);
+				osc.start(0).stop(0.01);
+			}, "freeverb.wav", 1.5);
+		});
 
 		context("API", function(){
 
