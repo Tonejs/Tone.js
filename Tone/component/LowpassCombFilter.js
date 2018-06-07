@@ -1,5 +1,4 @@
-define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/component/Filter", "Tone/core/AudioNode",
-	"Tone/core/Param", "Tone/core/Gain", "Tone/core/Delay"], function(Tone){
+define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/component/Filter", "Tone/core/AudioNode", "Tone/component/FeedbackCombFilter"], function(Tone){
 
 	"use strict";
 
@@ -18,58 +17,49 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/component/Filter", "Tone/c
 
 		var options = Tone.defaults(arguments, ["delayTime", "resonance", "dampening"], Tone.LowpassCombFilter);
 		Tone.AudioNode.call(this);
-		this.createInsOuts(1, 1);
 
 		/**
 		 *  the delay node
 		 *  @type {DelayNode}
 		 *  @private
 		 */
-		this._delay = this.input = new Tone.Delay(options.delayTime);
+		this._combFilter = this.output = new Tone.FeedbackCombFilter(options.delayTime, options.resonance);
 
 		/**
 		 *  The delayTime of the comb filter.
 		 *  @type {Time}
 		 *  @signal
 		 */
-		this.delayTime = this._delay.delayTime;
+		this.delayTime = this._combFilter.delayTime;
 
 		/**
 		 *  the lowpass filter
 		 *  @type  {BiquadFilterNode}
 		 *  @private
 		 */
-		this._lowpass = this.output = this.context.createBiquadFilter();
-		this._lowpass.Q.value = -3.0102999566398125;
-		this._lowpass.type = "lowpass";
+		this._lowpass = this.input = new Tone.Filter({
+			"frequency" : options.dampening,
+			"type" : "lowpass",
+			"Q" : 0,
+			"rolloff" : -12
+		});
 
 		/**
 		 *  The dampening control of the feedback
 		 *  @type {Frequency}
 		 *  @signal
 		 */
-		this.dampening = new Tone.Param({
-			"param" : this._lowpass.frequency,
-			"units" : Tone.Type.Frequency,
-			"value" : options.dampening
-		});
-
-		/**
-		 *  the feedback gain
-		 *  @type {Tone.Gain}
-		 *  @private
-		 */
-		this._feedback = new Tone.Gain(options.resonance, Tone.Type.NormalRange);
-
+		this.dampening = this._lowpass.frequency;
+		
 		/**
 		 *  The amount of feedback of the delayed signal.
 		 *  @type {NormalRange}
 		 *  @signal
 		 */
-		this.resonance = this._feedback.gain;
+		this.resonance = this._combFilter.resonance;
 
 		//connections
-		this._delay.chain(this._lowpass, this._feedback, this._delay);
+		this._lowpass.connect(this._combFilter);
 		this._readOnly(["dampening", "resonance", "delayTime"]);
 	};
 
@@ -94,17 +84,13 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/component/Filter", "Tone/c
 	Tone.LowpassCombFilter.prototype.dispose = function(){
 		Tone.AudioNode.prototype.dispose.call(this);
 		this._writable(["dampening", "resonance", "delayTime"]);
-		this.dampening.dispose();
-		this.dampening = null;
-		this.resonance.dispose();
+		this._combFilter.dispose();
+		this._combFilter = null;
 		this.resonance = null;
-		this._delay.dispose();
-		this._delay = null;
 		this.delayTime = null;
-		this._lowpass.disconnect();
+		this._lowpass.dispose();
 		this._lowpass = null;
-		this._feedback.disconnect();
-		this._feedback = null;
+		this.dampening = null;
 		return this;
 	};
 

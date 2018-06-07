@@ -1,6 +1,6 @@
 define(["Tone/component/LowpassCombFilter", "helper/Basic", "helper/Offline", "helper/Test", 
-	"Tone/signal/Signal", "helper/PassAudio", "helper/PassAudioStereo"], 
-function(LowpassCombFilter, Basic, Offline, Test, Signal, PassAudio, PassAudioStereo){
+	"Tone/signal/Signal", "helper/PassAudio", "helper/PassAudioStereo", "Tone/source/Oscillator"], 
+function(LowpassCombFilter, Basic, Offline, Test, Signal, PassAudio, PassAudioStereo, Oscillator){
 	describe("LowpassCombFilter", function(){
 
 		Basic(LowpassCombFilter);
@@ -43,6 +43,35 @@ function(LowpassCombFilter, Basic, Offline, Test, Signal, PassAudio, PassAudioSt
 				return PassAudio(function(input){
 					var lpcf = new LowpassCombFilter(0).toMaster();
 					input.connect(lpcf);
+				});
+			});
+
+			it("produces a decay signal at high resonance", function(){
+				return Offline(function(){
+					var lpcf = new LowpassCombFilter(0.01, 0.9, 5000).toMaster();
+					var burst = new Oscillator(440).connect(lpcf);
+					burst.start(0);
+					burst.stop(0.1);
+				}, 0.8).then(function(buffer){
+					expect(buffer.getRmsAtTime(0.05)).to.be.within(0.2, 0.6);
+					expect(buffer.getRmsAtTime(0.1)).to.be.within(0.2, 0.6);
+					expect(buffer.getRmsAtTime(0.15)).to.be.within(0.15, 0.4);
+					expect(buffer.getRmsAtTime(0.3)).to.be.within(0.01, 0.15);
+					expect(buffer.getRmsAtTime(0.7)).to.be.below(0.01);
+				});
+			});
+
+			it("produces a decay signal at moderate resonance", function(){
+				return Offline(function(){
+					var lpcf = new LowpassCombFilter(0.05, 0.5).toMaster();
+					var burst = new Oscillator(440).connect(lpcf);
+					burst.start(0);
+					burst.stop(0.1);
+				}, 0.6).then(function(buffer){
+					expect(buffer.getRmsAtTime(0.05)).to.be.closeTo(0.7, 0.1);
+					expect(buffer.getRmsAtTime(0.1)).to.be.within(0.7, 1.1);
+					expect(buffer.getRmsAtTime(0.2)).to.be.closeTo(0.25, 0.1);
+					expect(buffer.getRmsAtTime(0.4)).to.be.closeTo(0.015, 0.01);
 				});
 			});
 
