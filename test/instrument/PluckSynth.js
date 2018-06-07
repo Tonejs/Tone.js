@@ -13,7 +13,7 @@ function(PluckSynth, Basic, InstrumentTest, CompareToFile, Supports){
 				return CompareToFile(function(){
 					var synth = new PluckSynth().toMaster();
 					synth.triggerAttack("C4");
-				}, "pluckSynth.wav", 0.21);
+				}, "pluckSynth.wav", 0.25);
 			});
 		}
 
