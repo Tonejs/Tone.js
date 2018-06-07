@@ -100,8 +100,8 @@ function(Filter, Basic, Offline, Test, Signal, PassAudio, PassAudioStereo, Oscil
 					var osc = new Oscillator(880).connect(filter);
 					osc.start(0);
 				}, 0.2).then(function(buffer){
-					expect(buffer.getRmsAtTime(0.05)).to.be.closeTo(0.51, 0.01);
-					expect(buffer.getRmsAtTime(0.1)).to.be.closeTo(0.51, 0.01);
+					expect(buffer.getRmsAtTime(0.05)).to.be.within(0.37, 0.53);
+					expect(buffer.getRmsAtTime(0.1)).to.be.within(0.37, 0.53);
 				});
 			});
 			
