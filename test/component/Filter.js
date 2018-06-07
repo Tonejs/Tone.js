@@ -1,6 +1,6 @@
 define(["Tone/component/Filter", "helper/Basic", "helper/Offline", "helper/Test", 
-	"Tone/signal/Signal", "helper/PassAudio", "helper/PassAudioStereo"], 
-function(Filter, Basic, Offline, Test, Signal, PassAudio, PassAudioStereo){
+	"Tone/signal/Signal", "helper/PassAudio", "helper/PassAudioStereo", "Tone/source/Oscillator"], 
+function(Filter, Basic, Offline, Test, Signal, PassAudio, PassAudioStereo, Oscillator){
 	describe("Filter", function(){
 
 		Basic(Filter);
@@ -91,6 +91,18 @@ function(Filter, Basic, Offline, Test, Signal, PassAudio, PassAudioStereo){
 					filter.type = "nontype";
 				}).to.throw(Error);
 				filter.dispose();
+			});
+
+			it("attenuates the incoming signal", function(){
+				return Offline(function(){
+					var filter = new Filter(700, "lowpass").toMaster();
+					filter.Q.value = 0;
+					var osc = new Oscillator(880).connect(filter);
+					osc.start(0);
+				}, 0.2).then(function(buffer){
+					expect(buffer.getRmsAtTime(0.05)).to.be.closeTo(0.51, 0.01);
+					expect(buffer.getRmsAtTime(0.1)).to.be.closeTo(0.51, 0.01);
+				});
 			});
 			
 		});
