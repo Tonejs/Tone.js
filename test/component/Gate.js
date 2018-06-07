@@ -12,7 +12,7 @@ function(Gate, Basic, Offline, Test, Signal, PassAudio, Tone, Oscillator, Compar
 				osc.start(0);
 				osc.volume.value = -100;
 				osc.volume.exponentialRampToValueAtTime(0, 0.5);
-			}, "gate.wav", 0.1);
+			}, "gate.wav", 0.18);
 		});
 
 		context("Signal Gating", function(){
