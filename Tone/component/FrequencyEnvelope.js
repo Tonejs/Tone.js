@@ -23,9 +23,9 @@ define(["Tone/core/Tone", "Tone/component/ScaledEnvelope", "Tone/component/Envel
 	Tone.FrequencyEnvelope = function(){
 
 		var options = Tone.defaults(arguments, ["attack", "decay", "sustain", "release"], Tone.Envelope);
-		Tone.ScaledEnvelope.call(this, options);
 		//merge it with the frequency envelope defaults
 		options = Tone.defaultArg(options, Tone.FrequencyEnvelope.defaults);
+		Tone.ScaledEnvelope.call(this, options);
 
 		/**
 		 *  Stores the octave value
@@ -37,6 +37,7 @@ define(["Tone/core/Tone", "Tone/component/ScaledEnvelope", "Tone/component/Envel
 		//setup
 		this.baseFrequency = options.baseFrequency;
 		this.octaves = options.octaves;
+		this.exponent = options.exponent;
 	};
 
 	Tone.extend(Tone.FrequencyEnvelope, Tone.Envelope);
@@ -48,7 +49,7 @@ define(["Tone/core/Tone", "Tone/component/ScaledEnvelope", "Tone/component/Envel
 	Tone.FrequencyEnvelope.defaults = {
 		"baseFrequency" : 200,
 		"octaves" : 4,
-		"exponent" : 2
+		"exponent" : 1
 	};
 
 	/**

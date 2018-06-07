@@ -37,11 +37,13 @@ define(["Tone/component/FrequencyEnvelope", "helper/Basic", "helper/Offline", "h
 					var env0 = new FrequencyEnvelope({
 						"attack" : 0,
 						"decay" : 0.5,
-						"sustain" : 1
+						"sustain" : 1,
+						"exponent" : 3
 					});
 					expect(env0.attack).to.equal(0);
 					expect(env0.decay).to.equal(0.5);
 					expect(env0.sustain).to.equal(1);
+					expect(env0.exponent).to.equal(3);
 					env0.dispose();
 					var env1 = new FrequencyEnvelope(0.1, 0.2, 0.3);
 					expect(env1.attack).to.equal(0.1);
