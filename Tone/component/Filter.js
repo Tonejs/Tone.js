@@ -51,7 +51,8 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/AudioNode"], function
 		 */
 		this.gain = new Tone.Signal({
 			"value" : options.gain,
-			"convert" : false
+			"convert" : true,
+			"type" : Tone.Type.Decibels
 		});
 
 		/**
