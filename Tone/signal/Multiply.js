@@ -48,8 +48,6 @@ define(["Tone/core/Tone", "Tone/core/Param", "Tone/core/Gain", "Tone/signal/Sign
 
 	Tone.extend(Tone.Multiply, Tone.Signal);
 
-	Tone.Multiply.prototype.connect = Tone.SignalBase.prototype.connect;
-
 	/**
 	 *  clean up
 	 *  @returns {Tone.Multiply} this
