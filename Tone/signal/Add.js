@@ -49,9 +49,6 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Gain"], function(Tone
 
 	Tone.extend(Tone.Add, Tone.Signal);
 
-	//return the connect method back to signal
-	Tone.Add.prototype.connect = Tone.SignalBase.prototype.connect;
-	
 	/**
 	 *  Clean up.
 	 *  @returns {Tone.Add} this

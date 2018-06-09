@@ -55,9 +55,6 @@ define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Negate", "Tone/signal/
 
 	Tone.extend(Tone.Subtract, Tone.Signal);
 
-	//return the connect method back to signal
-	Tone.Subtract.prototype.connect = Tone.SignalBase.prototype.connect;
-
 	/**
 	 *  Clean up.
 	 *  @returns {Tone.SignalBase} this

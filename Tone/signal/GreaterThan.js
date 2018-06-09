@@ -41,9 +41,6 @@ define(["Tone/core/Tone", "Tone/signal/GreaterThanZero", "Tone/signal/Subtract",
 
 	Tone.extend(Tone.GreaterThan, Tone.Signal);
 
-	//return the connect method back to signal
-	Tone.GreaterThan.prototype.connect = Tone.SignalBase.prototype.connect;
-
 	/**
 	 *  dispose method
 	 *  @returns {Tone.GreaterThan} this
