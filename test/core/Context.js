@@ -61,7 +61,7 @@ define(["helper/Test", "Tone/core/Context", "Tone/core/Tone", "helper/Offline", 
 				var ctx;
 				beforeEach(function(){
 					ctx = new Context();
-					return ctx.ready();
+					return ctx.resume();
 				});
 
 				afterEach(function(){
@@ -105,7 +105,7 @@ define(["helper/Test", "Tone/core/Context", "Tone/core/Tone", "helper/Offline", 
 				var ctx;
 				beforeEach(function(){
 					ctx = new Context();
-					return ctx.ready();
+					return ctx.resume();
 				});
 
 				afterEach(function(){
@@ -174,8 +174,8 @@ define(["helper/Test", "Tone/core/Context", "Tone/core/Tone", "helper/Offline", 
 					Tone.context = new Context();
 				});
 
-				it("invokes the ready promise", function(){
-					return Tone.context.ready();
+				it("invokes the resume promise", function(){
+					return Tone.context.resume();
 				});
 
 				it("invokes init when a new context is set", function(done){
@@ -208,7 +208,7 @@ define(["helper/Test", "Tone/core/Context", "Tone/core/Tone", "helper/Offline", 
 				var ctx;
 				beforeEach(function(){
 					ctx = new Context();
-					return ctx.ready();
+					return ctx.resume();
 				});
 
 				afterEach(function(){
