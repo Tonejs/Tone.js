@@ -108,7 +108,9 @@ define(["Tone/core/Tone", "Tone/component/Volume", "Tone/core/AudioNode"], funct
 			var constraints = {
 				audio : {
 					"echoCancellation" : false,
-					"sampleRate" : this.context.sampleRate
+					"sampleRate" : this.context.sampleRate,
+					"noiseSuppression" : false,
+					"mozNoiseSuppression" : false,
 				}
 			};
 			if (device){
