@@ -62,7 +62,8 @@ function(Test, Tone, PassAudio, Oscillator, Synth, Offline,
 				var osc = new Oscillator();
 				osc.start().stop();
 				expect(spy.callCount).to.equal(2);
-				console.log.restore();
+				spy.restore();
+				window.TONE_DEBUG_CLASS = null;
 			});
 
 			it("assert throws an error if the boolean is false", function(){
