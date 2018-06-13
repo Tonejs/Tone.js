@@ -84,10 +84,8 @@ define(["Tone/core/Tone", "Tone/instrument/Synth", "Tone/source/Source"], functi
 	 *  @private
 	 */
 	Tone.PolySynth.prototype._getClosestVoice = function(time, note){
-		var closestVoice = this.voices[0];
-
 		//play the note which has the same frequency, if that exists
-		var sameNote = this.voices.find(function(voice, i){
+		var sameNote = this.voices.find(function(voice){
 			//break if it's within a small epsion of the voice's frequency
 			if (Math.abs(voice.frequency.getValueAtTime(time) - Tone.Frequency(note)) < 1e-4 && 
 				//and that note is currently active
