@@ -489,7 +489,7 @@ function(Envelope, Basic, Offline, Test, PassAudio, APITest){
 					buffer.forEach(function(sample, time){
 						expect(sample).to.be.at.most(1);
 						var diff = Math.abs(lastSample - sample);
-						expect(diff).to.be.lessThan(0.002);
+						expect(diff).to.be.lessThan(0.0035);
 						lastSample = sample;
 					});
 				});
@@ -512,7 +512,7 @@ function(Envelope, Basic, Offline, Test, PassAudio, APITest){
 					buffer.forEach(function(sample, time){
 						expect(sample).to.be.at.most(1);
 						var diff = Math.abs(lastSample - sample);
-						expect(diff).to.be.lessThan(0.002);
+						expect(diff).to.be.lessThan(0.0035);
 						lastSample = sample;
 					});
 				});
