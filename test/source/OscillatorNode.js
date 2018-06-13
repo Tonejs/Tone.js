@@ -78,7 +78,7 @@ function(BasicTests, OscillatorNode, Offline, Frequency, Test, Meter, Supports, 
 					osc.stop("+0.3");
 					var now = osc.now();
 					osc.onended = function(){
-						expect(osc.now() - now).to.be.closeTo(0.3, 0.1);
+						expect(osc.now() - now).to.be.within(0.25, 0.45);
 						osc.dispose();
 						done();
 					};
@@ -92,7 +92,7 @@ function(BasicTests, OscillatorNode, Offline, Frequency, Test, Meter, Supports, 
     				osc.stop("+0.3");
     				var now = osc.now();
     				osc.onended = function(){
-    					expect(osc.now() - now).to.be.closeTo(0.3, 0.1);
+    					expect(osc.now() - now).to.be.within(0.25, 0.45);
     					osc.dispose();
     					done();
     				};
