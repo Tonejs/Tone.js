@@ -82,6 +82,10 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/core/Timeline", "Tone/shim/
 
 		this.on("tick", this._timeoutLoop.bind(this));
 
+		//forward state change events
+		this._context.addEventListener("statechange", function(e){
+			this.emit("statechange", e);
+		}.bind(this));
 	};
 
 	Tone.extend(Tone.Context, Tone.Emitter);
@@ -132,20 +136,16 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/core/Timeline", "Tone/shim/
 	};
 
 	/**
-	 *  Promise which is invoked when the context is running.
-	 *  Tries to resume the context if it's not started.
+	 *  Starts the audio context from a suspended state. This is required
+	 *  to initially start the AudioContext.
 	 *  @return  {Promise}
 	 */
-	Tone.Context.prototype.ready = function(){
-		return new Promise(function(done){
-			if (this._context.state === "running"){
-				done();
-			} else {
-				this._context.resume().then(function(){
-					done();
-				});
-			}
-		}.bind(this));
+	Tone.Context.prototype.resume = function(){
+		if (this._context.state !== "running"){
+			return this._context.resume();
+		} else {
+			return Promise.resolve();
+		}
 	};
 
 	/**
