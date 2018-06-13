@@ -1,9 +1,9 @@
 define(["helper/Test", "Tone/core/Tone", "helper/PassAudio", "Tone/source/Oscillator",
 	"Tone/instrument/Synth", "helper/Offline",
 	"Tone/component/Filter", "Tone/core/Gain", "Tone/core/Context",
-	"helper/BufferTest", "Tone/component/Merge", "Tone/signal/Signal", "Tone/component/Split", "helper/Supports", "sinon"],
+	"helper/BufferTest", "Tone/component/Merge", "Tone/signal/Signal", "Tone/component/Split", "helper/Supports"],
 function(Test, Tone, PassAudio, Oscillator, Synth, Offline,
-	Filter, Gain, Context, BufferTest, Merge, Signal, Split, Supports, sinon){
+	Filter, Gain, Context, BufferTest, Merge, Signal, Split, Supports){
 
 	describe("Tone", function(){
 
@@ -57,13 +57,16 @@ function(Test, Tone, PassAudio, Oscillator, Synth, Offline,
 		context("Debugging", function(){
 
 			it("logs when the class is set on the window", function(){
-				var spy = sinon.stub(console, "log");
-				window.TONE_DEBUG_CLASS = "Oscillator";
+				var originalLog = console.log;
+				var calls = 0;
+				console.log = function(){
+					calls++;
+				};
 				var osc = new Oscillator();
+				osc.debug = true;
 				osc.start().stop();
-				expect(spy.callCount).to.equal(2);
-				spy.restore();
-				window.TONE_DEBUG_CLASS = null;
+				expect(calls).to.equal(2);
+				console.log = originalLog;
 			});
 
 			it("assert throws an error if the boolean is false", function(){
