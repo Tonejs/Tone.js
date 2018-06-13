@@ -251,6 +251,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal",
 	 *  env.triggerAttack("+0.5", 0.2);
 	 */
 	Tone.Envelope.prototype.triggerAttack = function(time, velocity){
+		this.log("attack", time);
 		time = this.toSeconds(time);
 		var originalAttack = this.toSeconds(this.attack);
 		var attack = originalAttack;
@@ -289,10 +290,11 @@ define(["Tone/core/Tone", "Tone/signal/Signal",
 		if (decay){
 			var decayValue = velocity * this.sustain;
 			var decayStart = time + attack;
+			this.log("decay", decayStart);
 			if (this._decayCurve === "linear"){
 				this._sig.linearRampTo(decayValue, decay, decayStart);
 			} else if (this._decayCurve === "exponential"){
-				this._sig.targetRampTo(decayValue, decay, decayStart);
+				this._sig.exponentialApproachValueAtTime(decayValue, decayStart, decay);
 			}
 		}
 		return this;
@@ -307,6 +309,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal",
 	 *  env.triggerRelease();
 	 */
 	Tone.Envelope.prototype.triggerRelease = function(time){
+		this.log("release", time);
 		time = this.toSeconds(time);
 		var currentValue = this.getValueAtTime(time);
 		if (currentValue > 0){
