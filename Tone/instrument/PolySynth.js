@@ -38,14 +38,6 @@ define(["Tone/core/Tone", "Tone/instrument/Synth", "Tone/source/Source"], functi
 		this.voices = new Array(options.polyphony);
 
 		/**
-		 *  The queue of voices with data about last trigger
-		 *  and the triggered note
-		 *  @private
-		 *  @type {Array}
-		 */
-		this._triggers = new Array(options.polyphony);
-
-		/**
 		 *  The detune in cents
 		 *  @type {Cents}
 		 *  @signal
@@ -64,11 +56,6 @@ define(["Tone/core/Tone", "Tone/instrument/Synth", "Tone/source/Source"], functi
 			if (v.hasOwnProperty("detune")){
 				this.detune.connect(v.detune);
 			}
-			this._triggers[i] = {
-				release : -1,
-				note : null,
-				voice : v
-			};
 		}
 	};
 
@@ -88,6 +75,53 @@ define(["Tone/core/Tone", "Tone/instrument/Synth", "Tone/source/Source"], functi
 	};
 
 	/**
+	 *  Get the closest available voice, that is the
+	 *  one that is either the closest to the note,
+	 *  or has the lowest envelope value.
+	 *  @param {Time} time return the voice that has the lowest energy at this time.
+	 *  @param  {Note}  note  if there is a voice with this note, that should be returned
+	 *  @return  {Tone.Monophonic}  A synth voice.
+	 *  @private
+	 */
+	Tone.PolySynth.prototype._getClosestVoice = function(time, note){
+		var closestVoice = this.voices[0];
+
+		//play the note which has the same frequency, if that exists
+		var sameNote = this.voices.find(function(voice, i){
+			//break if it's within a small epsion of the voice's frequency
+			if (Math.abs(voice.frequency.getValueAtTime(time) - Tone.Frequency(note)) < 1e-4 && 
+				//and that note is currently active
+				voice.getLevelAtTime(time) > 1e-5){
+				return voice;
+			} 
+		});
+		if (sameNote){
+			return sameNote;
+		}
+
+		//find available notes
+		var availableVoices = this.voices.filter(function(voice){
+			//check that it's not ascending in energy (in attack phase)
+			var levelNow = voice.getLevelAtTime(time);
+			var nextLevel = voice.getLevelAtTime(time + this.sampleTime);
+			//and it's near silent
+			return levelNow >= nextLevel && voice.getLevelAtTime(time) < 1e-5;
+		}.bind(this));
+		if (availableVoices.length){
+			//return the first one
+			return availableVoices[0];
+		}
+		//otherwise take the one with the lowest energy
+		var closestVoice = this.voices[0];
+		this.voices.every(function(voice){
+			if (voice.getLevelAtTime(time) < closestVoice.getLevelAtTime(time)){
+				closestVoice = voice;
+			}
+		});
+		return closestVoice;
+	};
+
+	/**
 	 *  Trigger the attack portion of the note
 	 *  @param  {Frequency|Array} notes The notes to play. Accepts a single
 	 *                                  Frequency or an array of frequencies.
@@ -103,19 +137,32 @@ define(["Tone/core/Tone", "Tone/instrument/Synth", "Tone/source/Source"], functi
 			notes = [notes];
 		}
 		time = this.toSeconds(time);
-		for (var i = 0; i < notes.length; i++){
-			var val = notes[i];
-			//trigger the oldest voice
-			var oldest = this._triggers[0];
-			for (var j = 1; j < this._triggers.length; j++){
-				if (this._triggers[j].release < oldest.release){
-					oldest = this._triggers[j];
-				}
-			}
-			oldest.release = Infinity;
-			oldest.note = JSON.stringify(val);
-			oldest.voice.triggerAttack(val, time, velocity);
+		notes.forEach(function(note){
+			var voice = this._getClosestVoice(time, note);
+			voice.triggerAttack(note, time, velocity);
+		}.bind(this));
+		return this;
+	};
+
+	/**
+	 *  Trigger the release of the note. Unlike monophonic instruments,
+	 *  a note (or array of notes) needs to be passed in as the first argument.
+	 *  @param  {Frequency|Array} notes The notes to play. Accepts a single
+	 *                                  Frequency or an array of frequencies.
+	 *  @param  {Time} [time=now]  When the release will be triggered.
+	 *  @returns {Tone.PolySynth} this
+	 *  @example
+	 * poly.triggerRelease(["Ab3", "C4", "F5"], "+2n");
+	 */
+	Tone.PolySynth.prototype.triggerRelease = function(notes, time){
+		if (!Array.isArray(notes)){
+			notes = [notes];
 		}
+		time = this.toSeconds(time);
+		notes.forEach(function(note){
+			var voice = this._getClosestVoice(time, note);
+			voice.triggerRelease(time);
+		}.bind(this));
 		return this;
 	};
 
@@ -145,35 +192,6 @@ define(["Tone/core/Tone", "Tone/instrument/Synth", "Tone/source/Source"], functi
 			}
 		} else {
 			this.triggerRelease(notes, time + this.toSeconds(duration));
-		}
-		return this;
-	};
-
-	/**
-	 *  Trigger the release of the note. Unlike monophonic instruments,
-	 *  a note (or array of notes) needs to be passed in as the first argument.
-	 *  @param  {Frequency|Array} notes The notes to play. Accepts a single
-	 *                                  Frequency or an array of frequencies.
-	 *  @param  {Time} [time=now]  When the release will be triggered.
-	 *  @returns {Tone.PolySynth} this
-	 *  @example
-	 * poly.triggerRelease(["Ab3", "C4", "F5"], "+2n");
-	 */
-	Tone.PolySynth.prototype.triggerRelease = function(notes, time){
-		if (!Array.isArray(notes)){
-			notes = [notes];
-		}
-		time = this.toSeconds(time);
-		for (var i = 0; i < notes.length; i++){
-			//get the voice
-			var stringified = JSON.stringify(notes[i]);
-			for (var v = 0; v < this._triggers.length; v++){
-				var desc = this._triggers[v];
-				if (desc.note === stringified && desc.release > time){
-					desc.voice.triggerRelease(time);
-					desc.release = time;
-				}
-			}
 		}
 		return this;
 	};
@@ -241,13 +259,9 @@ define(["Tone/core/Tone", "Tone/instrument/Synth", "Tone/source/Source"], functi
 	 */
 	Tone.PolySynth.prototype.releaseAll = function(time){
 		time = this.toSeconds(time);
-		for (var i = 0; i < this._triggers.length; i++){
-			var desc = this._triggers[i];
-			if (desc.release > time){
-				desc.release = time;
-				desc.voice.triggerRelease(time);
-			}
-		}
+		this.voices.forEach(function(voice){
+			voice.triggerRelease(time);
+		});
 		return this;
 	};
 
@@ -257,15 +271,13 @@ define(["Tone/core/Tone", "Tone/instrument/Synth", "Tone/source/Source"], functi
 	 */
 	Tone.PolySynth.prototype.dispose = function(){
 		Tone.Instrument.prototype.dispose.call(this);
-		for (var i = 0; i < this.voices.length; i++){
-			this.voices[i].dispose();
-			this.voices[i] = null;
-		}
+		this.voices.forEach(function(voice){
+			voice.dispose();
+		});
 		this._writable("detune");
 		this.detune.dispose();
 		this.detune = null;
 		this.voices = null;
-		this._triggers = null;
 		return this;
 	};
 
