@@ -110,6 +110,7 @@ function(Tone){
 	 *  @private
 	 */
 	Tone.Oscillator.prototype._start = function(time){
+		this.log("start", time);
 		//new oscillator with previous values
 		this._oscillator = new Tone.OscillatorNode();
 		if (this._wave){
@@ -133,6 +134,7 @@ function(Tone){
 	 *  @returns {Tone.Oscillator} this
 	 */
 	Tone.Oscillator.prototype._stop = function(time){
+		this.log("stop", time);
 		if (this._oscillator){
 			time = this.toSeconds(time);
 			this._oscillator.stop(time);
