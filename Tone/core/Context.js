@@ -83,9 +83,9 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/core/Timeline", "Tone/shim/
 		this.on("tick", this._timeoutLoop.bind(this));
 
 		//forward state change events
-		this._context.addEventListener("statechange", function(e){
+		this._context.onstatechange = function(e){
 			this.emit("statechange", e);
-		}.bind(this));
+		}.bind(this);
 	};
 
 	Tone.extend(Tone.Context, Tone.Emitter);
