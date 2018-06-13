@@ -274,6 +274,44 @@ define(function(){
 	};
 
 	///////////////////////////////////////////////////////////////////////////
+	//	DEBUGGING
+	///////////////////////////////////////////////////////////////////////////
+
+	/**
+	 *  Print the outputs to the console log for debugging purposes. 
+	 *  Prints the contents only if either the object has a property
+	 *  called `debug` set to true, or a variable called TONE_DEBUG_CLASS
+	 *  is set to the name of the class. 
+	 *  @example
+	 * //prints all logs originating from Tone.OscillatorNode
+	 * window.TONE_DEBUG_CLASS = OscillatorNode
+	 *  @param {*} args Any arguments to print to the console.
+	 *  @private
+	 */
+	Tone.prototype.log = function(){
+		//if the object is either set to debug = true
+		//or if there is a string on the window with the class name
+		if (this.debug || this.toString() === window.TONE_DEBUG_CLASS){
+			var args = Array.from(arguments);
+			args.unshift(this.toString()+":");
+			// eslint-disable-next-line no-console
+			console.log.apply(undefined, args);
+		}
+	};
+
+	/**
+	 *  Assert that the statement is true, otherwise invoke the error. 
+	 *  @param {Boolean} statement
+	 *  @param {String} error The message which is passed into an Error
+	 *  @private
+	 */
+	Tone.prototype.assert = function(statement, error){
+		if (!statement){
+			throw new Error(error);
+		}
+	};
+
+	///////////////////////////////////////////////////////////////////////////
 	//	CONNECTIONS
 	///////////////////////////////////////////////////////////////////////////
 
@@ -507,7 +545,8 @@ define(function(){
 	///////////////////////////////////////////////////////////////////////////
 
 	/**
-	 *  Return the current time of the AudioContext clock.
+	 *  Return the current time of the AudioContext clock plus
+	 *  the lookAhead.
 	 *  @return {Number} the currentTime from the AudioContext
 	 *  @memberOf Tone#
 	 */
@@ -516,13 +555,34 @@ define(function(){
 	};
 
 	/**
-	 *  Return the current time of the AudioContext clock.
+	 *  Return the current time of the AudioContext clock plus
+	 *  the lookAhead.
 	 *  @return {Number} the currentTime from the AudioContext
 	 *  @static
 	 *  @memberOf Tone
 	 */
 	Tone.now = function(){
 		return Tone.context.now();
+	};
+
+	/**
+	 *  Return the current time of the AudioContext clock without
+	 *  any lookAhead.
+	 *  @return {Number} the currentTime from the AudioContext
+	 *  @memberOf Tone#
+	 */
+	Tone.prototype.immediate = function(){
+		return Tone.context.currentTime;
+	};
+
+	/**
+	 *  Return the current time of the AudioContext clock without
+	 *  any lookAhead.
+	 *  @return {Number} the currentTime from the AudioContext
+	 *  @memberOf Tone
+	 */
+	Tone.immediate = function(){
+		return Tone.context.currentTime;
 	};
 
 	///////////////////////////////////////////////////////////////////////////
