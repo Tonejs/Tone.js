@@ -1,9 +1,9 @@
 define(["helper/Test", "Tone/core/Tone", "helper/PassAudio", "Tone/source/Oscillator",
 	"Tone/instrument/Synth", "helper/Offline",
 	"Tone/component/Filter", "Tone/core/Gain", "Tone/core/Context",
-	"helper/BufferTest", "Tone/component/Merge", "Tone/signal/Signal", "Tone/component/Split", "helper/Supports"],
+	"helper/BufferTest", "Tone/component/Merge", "Tone/signal/Signal", "Tone/component/Split", "helper/Supports", "sinon"],
 function(Test, Tone, PassAudio, Oscillator, Synth, Offline,
-	Filter, Gain, Context, BufferTest, Merge, Signal, Split, Supports){
+	Filter, Gain, Context, BufferTest, Merge, Signal, Split, Supports, sinon){
 
 	describe("Tone", function(){
 
@@ -52,6 +52,26 @@ function(Test, Tone, PassAudio, Oscillator, Synth, Offline,
 				expect(Tone.intervalToFrequencyRatio(12)).to.equal(2);
 				expect(Tone.intervalToFrequencyRatio(7)).to.be.closeTo(1.5, 0.01);
 			});
+		});
+
+		context("Debugging", function(){
+
+			it("logs when the class is set on the window", function(){
+				var spy = sinon.stub(console, "log");
+				window.TONE_DEBUG_CLASS = "Oscillator";
+				var osc = new Oscillator();
+				osc.start().stop();
+				expect(spy.callCount).to.equal(2);
+				console.log.restore();
+			});
+
+			it("assert throws an error if the boolean is false", function(){
+				expect(function(){
+					var tone = new Tone();
+					tone.assert(false, "throws error");
+				}).throws(Error);
+			});
+
 		});
 
 		context("Type checking", function(){
