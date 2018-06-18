@@ -53,6 +53,7 @@
     "fft-js": "0.0.11",
     "glob": "^7.1.2",
     "gulp": "^4.0.0",
+    "gulp-cli": "^2.0.1",
     "gulp-coveralls": "^0.1.4",
     "gulp-eslint": "^4.0.2",
     "gulp-watch": "^5.0.0",
