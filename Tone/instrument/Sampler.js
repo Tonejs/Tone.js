@@ -112,6 +112,7 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/core/Buffers", "To
 	 * @return {Tone.Sampler}          this
 	 */
 	Tone.Sampler.prototype.triggerAttack = function(notes, time, velocity){
+		this.log("triggerAttack", notes, time, velocity);
 		if (!Array.isArray(notes)){
 			notes = [notes];
 		}
@@ -151,6 +152,7 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/core/Buffers", "To
 	 * @return {Tone.Sampler}	this
 	 */
 	Tone.Sampler.prototype.triggerRelease = function(notes, time){
+		this.log("triggerRelease", notes, time);
 		if (!Array.isArray(notes)){
 			notes = [notes];
 		}
@@ -160,7 +162,7 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/core/Buffers", "To
 			if (this._activeSources[midi] && this._activeSources[midi].length){
 				var source = this._activeSources[midi].shift().source;
 				time = this.toSeconds(time);
-				source.stop(time + this.release, this.release);
+				source.stop(time);
 			}
 		}
 
