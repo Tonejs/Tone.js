@@ -54,6 +54,30 @@ function(Test, Tone, PassAudio, Oscillator, Synth, Offline,
 			});
 		});
 
+		context("Debugging", function(){
+
+			it("logs when the class is set on the window", function(){
+				var originalLog = console.log;
+				var calls = 0;
+				console.log = function(){
+					calls++;
+				};
+				var osc = new Oscillator();
+				osc.debug = true;
+				osc.start().stop();
+				expect(calls).to.equal(2);
+				console.log = originalLog;
+			});
+
+			it("assert throws an error if the boolean is false", function(){
+				expect(function(){
+					var tone = new Tone();
+					tone.assert(false, "throws error");
+				}).throws(Error);
+			});
+
+		});
+
 		context("Type checking", function(){
 
 			it("can test if an argument is a undefined", function(){

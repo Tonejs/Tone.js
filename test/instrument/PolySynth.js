@@ -1,12 +1,33 @@
 define(["Tone/instrument/PolySynth", "helper/Basic", "helper/InstrumentTests", "helper/OutputAudioStereo",
 	"Tone/instrument/Instrument", "helper/Test", "helper/OutputAudio", "Tone/instrument/MonoSynth", "helper/Offline",
-	"Tone/instrument/Sampler", "Tone/type/Frequency"],
-function(PolySynth, Basic, InstrumentTests, OutputAudioStereo, Instrument, Test, OutputAudio, MonoSynth, Offline, Sampler, Frequency){
+	"Tone/instrument/Sampler", "Tone/type/Frequency", "helper/CompareToFile"],
+function(PolySynth, Basic, InstrumentTests, OutputAudioStereo, Instrument, Test, OutputAudio, MonoSynth, Offline, Sampler, Frequency, CompareToFile){
 
 	describe("PolySynth", function(){
 
 		Basic(PolySynth);
 		InstrumentTests(PolySynth, "C4");
+
+		it("matches a file", function(){
+			return CompareToFile(function(){
+				var synth = new PolySynth(2).toMaster();
+				synth.triggerAttackRelease("C4", 0.2, 0);
+				synth.triggerAttackRelease("C4", 0.1, 0.1);
+				synth.triggerAttackRelease("E4", 0.1, 0.2);
+				synth.triggerAttackRelease("E4", 0.1, 0.3);
+				synth.triggerAttackRelease("G4", 0.1, 0.4);
+				synth.triggerAttackRelease("B4", 0.1, 0.4);
+				synth.triggerAttackRelease("C4", 0.2, 0.5);
+			}, "polySynth.wav", 0.4);
+		});
+
+		it("matches another file", function(){
+			return CompareToFile(function(){
+				var synth = new PolySynth(4).toMaster();
+				synth.triggerAttackRelease(["C4", "E4", "G4", "B4"], 0.2, 0);
+				synth.triggerAttackRelease(["C4", "E4", "G4", "B4"], 0.2, 0.3);
+			}, "polySynth2.wav", 0.6);
+		});
 
 		context("PolySynth Tests", function(){
 

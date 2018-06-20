@@ -115,6 +115,9 @@ define(["Tone/core/Tone", "Tone/source/TickSource", "Tone/core/TimelineState",
 	 *  @return  {Tone.Clock}  this
 	 */
 	Tone.Clock.prototype.start = function(time, offset){
+		//make sure the context is started
+		this.context.resume();
+		//start the loop
 		time = this.toSeconds(time);
 		if (this._state.getValueAtTime(time) !== Tone.State.Started){
 			this._state.setStateAtTime(Tone.State.Started, time);
