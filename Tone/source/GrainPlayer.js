@@ -156,7 +156,8 @@ define(["Tone/core/Tone", "Tone/source/Source", "Tone/core/Buffer", "Tone/source
 	Tone.GrainPlayer.prototype._onstop = function(time){
 		//stop the players
 		this._activeSources.forEach(function(source){
-			source.stop(time, 0);
+			source.fadeOut = 0;
+			source.stop(time);
 		});
 	};
 
@@ -168,8 +169,16 @@ define(["Tone/core/Tone", "Tone/source/Source", "Tone/core/Buffer", "Tone/source
 	 */
 	Tone.GrainPlayer.prototype._tick = function(time){
 
+		//check if it should stop looping
+		if (!this.loop && this._offset > this.buffer.duration){
+			this.stop(time);
+			return;
+		}
+
+		//at the beginning of the file, the fade in should be 0
 		var fadeIn = this._offset < this._overlap ? 0 : this._overlap;
 
+		//create a buffer source
 		var source = new Tone.BufferSource({
 			"buffer" : this.buffer,
 			"fadeIn" : fadeIn,
@@ -177,12 +186,13 @@ define(["Tone/core/Tone", "Tone/source/Source", "Tone/core/Buffer", "Tone/source
 			"loop" : this.loop,
 			"loopStart" : this._loopStart,
 			"loopEnd" : this._loopEnd,
+			//compute the playbackRate based on the detune
 			"playbackRate" : Tone.intervalToFrequencyRatio(this.detune / 100)
 		}).connect(this.output);
 
 		source.start(time, this._offset);
 		this._offset += this.grainSize;
-		source.stop(time + this.grainSize);
+		source.stop(time + this.grainSize / this.playbackRate);
 
 		//add it to the active sources
 		this._activeSources.push(source);
@@ -193,18 +203,6 @@ define(["Tone/core/Tone", "Tone/source/Source", "Tone/core/Buffer", "Tone/source
 				this._activeSources.splice(index, 1);
 			}
 		}.bind(this);
-	};
-
-	/**
-	 *  Jump to a specific time and play it.
-	 *  @param  {Time}  offset  The offset to jump to.
-	 *  @param {Time=} time When to make the jump.
-	 *  @return  {Tone.GrainPlayer}  this
-	 */
-	Tone.GrainPlayer.prototype.seek = function(offset, time){
-		this._offset = this.toSeconds(offset);
-		this._tick(this.toSeconds(time));
-		return this;
 	};
 
 	/**
