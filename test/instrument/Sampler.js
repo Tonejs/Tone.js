@@ -1,6 +1,6 @@
 define(["Tone/instrument/Sampler", "helper/Basic", "helper/InstrumentTests",
-	"Tone/core/Buffer", "helper/Offline"],
-function(Sampler, Basic, InstrumentTest, Buffer, Offline){
+	"Tone/core/Buffer", "helper/Offline", "helper/CompareToFile"],
+function(Sampler, Basic, InstrumentTest, Buffer, Offline, CompareToFile){
 
 	describe("Sampler", function(){
 
@@ -17,6 +17,21 @@ function(Sampler, Basic, InstrumentTest, Buffer, Offline){
 		InstrumentTest(Sampler, "A4", {
 			69 : A4_buffer
 		}, 1);
+
+		it("matches a file", function(){
+			return CompareToFile(function(){
+				var sampler = new Sampler({
+					69 : A4_buffer 
+				}, {
+					release : 0.4
+				}).toMaster();
+				sampler.triggerAttackRelease("C4", 0.1, 0, 0.2);
+				sampler.triggerAttackRelease("E4", 0.1, 0.2, 0.4);
+				sampler.triggerAttackRelease("G4", 0.1, 0.4, 0.6);
+				sampler.triggerAttackRelease("B4", 0.1, 0.6, 0.8);
+				sampler.triggerAttackRelease("C4", 0.1, 0.8);
+			}, "sampler.wav", 0.01);
+		});
 
 		context("Constructor", function(){
 
