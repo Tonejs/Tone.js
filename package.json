@@ -1,6 +1,6 @@
 {
   "name": "tone",
-  "version": "13.1.0",
+  "version": "13.2.0",
   "description": "A Web Audio framework for making interactive music in the browser.",
   "main": "build/Tone.js",
   "files": [
@@ -10,19 +10,22 @@
     "Tone"
   ],
   "scripts": {
-    "increment": "node gulp/increment_version.js",
-    "build": "npm run increment && gulp --gulpfile=gulp/gulpfile.js collectDependencies && webpack -p --env.production",
-    "build:test": "webpack -p --env.test",
-    "test:watch": "webpack -w --mode=development --env.test",
-    "test:all": "gulp --gulpfile=gulp/gulpfile.js collectTests",
-    "test:file": "gulp --gulpfile=gulp/gulpfile.js collectTests --file",
-    "test:dir": "gulp --gulpfile=gulp/gulpfile.js collectTests --dir",
-    "test": "npm run test:all && npm run karma",
-    "karma": "karma start gulp/karma.conf.js --single-run",
+    "build": "npm run build:increment && gulp --gulpfile=gulp/gulpfile.js collectDependencies && webpack -p --env.production",
+    "build:increment": "node gulp/increment_version.js",
+    "watch": "npm run build:increment && gulp --gulpfile=gulp/gulpfile.js collectDependencies && webpack -w --env.production --mode=development",
+    "watch:scratch": "webpack -w --env.scratch --mode=development",
+    "examples:build": "webpack -p --env.examples",
+    "examples:watch": "webpack -w --env.examples",
+    "test": "npm run test:collect && npm run test:karma",
+    "test:browser": "npm run test:collect && concurrently \"webpack -w --mode=development --env.test\" \"http-server -p 9090 -c-1\" \"open http://localhost:9090/build/test.html\"",
+    "test:collect": "gulp --gulpfile=gulp/gulpfile.js collectTests --file $npm_config_file --dir $npm_config_dir",
+    "test:karma": "karma start gulp/karma.conf.js --single-run",
+    "test:karma:watch": "karma start gulp/karma.conf.js --auto-watch",
+    "test:travis": "npm run build:increment && npm run lint && npm run test",
+    "test:watch": "npm run test:collect && npm run test:karma:watch",
     "lint": "gulp --gulpfile=gulp/gulpfile.js lint",
     "lint:fix": "gulp --gulpfile=gulp/gulpfile.js lint-fix",
-    "coveralls": "gulp --gulpfile=gulp/gulpfile.js coveralls",
-    "test:travis": "npm run increment && npm run lint && npm run test"
+    "coveralls": "gulp --gulpfile=gulp/gulpfile.js coveralls"
   },
   "repository": {
     "type": "git",
@@ -47,16 +50,20 @@
   "devDependencies": {
     "@babel/polyfill": "^7.0.0-beta.47",
     "audiobuffer-to-wav": "^1.0.0",
+    "audiokeys": "^0.1.1",
     "chai": "^1.9.1",
     "concurrently": "^3.5.1",
+    "css-loader": "^0.28.11",
     "eslint": "^4.19.1",
     "fft-js": "0.0.11",
     "glob": "^7.1.2",
     "gulp": "^4.0.0",
+    "gulp-cli": "^2.0.1",
     "gulp-coveralls": "^0.1.4",
     "gulp-eslint": "^4.0.2",
     "gulp-watch": "^5.0.0",
     "html-webpack-plugin": "^3.2.0",
+    "http-server": "^0.11.1",
     "istanbul-instrumenter-loader": "^3.0.1",
     "karma": "^2.0.2",
     "karma-chrome-launcher": "^2.2.0",
@@ -67,9 +74,17 @@
     "karma-sourcemap-loader": "^0.3.7",
     "karma-webpack": "^3.0.0",
     "mocha": "^5.1.1",
+    "nexusui": "^2.0.7",
+    "node-sass": "^4.9.0",
+    "proxy-polyfill": "^0.2.0",
+    "sass-loader": "^7.0.1",
     "semver": "^5.5.0",
+    "style-loader": "^0.21.0",
     "teoria": "^2.5.0",
     "webpack": "^4.6.0",
     "webpack-cli": "^2.1.2"
+  },
+  "dependencies": {
+    "webmidi": "^2.0.5"
   }
 }
