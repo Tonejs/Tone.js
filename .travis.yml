@@ -10,7 +10,7 @@ install:
 script: 
 - npm run test:travis
 - npm run coveralls
-before_deploy: npm run increment
+before_deploy: npm run build:increment
 jobs:
   include:
     - stage: test
