@@ -251,7 +251,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal",
 	 *  env.triggerAttack("+0.5", 0.2);
 	 */
 	Tone.Envelope.prototype.triggerAttack = function(time, velocity){
-		this.log("attack", time);
+		this.log("triggerAttack", time, velocity);
 		time = this.toSeconds(time);
 		var originalAttack = this.toSeconds(this.attack);
 		var attack = originalAttack;
@@ -309,7 +309,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal",
 	 *  env.triggerRelease();
 	 */
 	Tone.Envelope.prototype.triggerRelease = function(time){
-		this.log("release", time);
+		this.log("triggerRelease", time);
 		time = this.toSeconds(time);
 		var currentValue = this.getValueAtTime(time);
 		if (currentValue > 0){
