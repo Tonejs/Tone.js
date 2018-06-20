@@ -470,6 +470,7 @@ define(["Tone/core/Tone", "Tone/type/Type", "Tone/core/AudioNode", "Tone/core/Ti
 	 */
 	Tone.Param.prototype.cancelAndHoldAtTime = function(time){
 		var valueAtTime = this.getValueAtTime(time);
+		this.log("cancelAndHoldAtTime", time, "value="+valueAtTime);
 
 		//remove the schedule events
 		this._param.cancelScheduledValues(time);
