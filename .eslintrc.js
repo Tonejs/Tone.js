@@ -23,6 +23,7 @@ module.exports = {
 		"quotes": [ "error","double" ],
 		"no-lonely-if" : [ "error" ],
 		"semi": [ "error", "always" ],
+		"no-cond-assign" : ["error", "always"],
 		//STYLE
 		"indent": [ "error", "tab", { "SwitchCase": 1 } ],
 		"no-multi-spaces" : [ "error" ],
