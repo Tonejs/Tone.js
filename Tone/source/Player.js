@@ -204,6 +204,10 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/source
 		offset = this.toSeconds(offset);
 		var computedDuration = Tone.defaultArg(duration, Math.max(this._buffer.duration - offset, 0));
 		computedDuration = this.toSeconds(computedDuration);
+		//scale it by the playback rate
+		computedDuration = computedDuration / this._playbackRate;
+
+		//get the start time
 		startTime = this.toSeconds(startTime);
 
 		//start the elapsed time counter
@@ -224,7 +228,7 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/source
 		//set the looping properties
 		if (!this._loop && !this._synced){
 			//if it's not looping, set the state change at the end of the sample
-			this._state.setStateAtTime(Tone.State.Stopped, startTime + computedDuration / this._playbackRate);
+			this._state.setStateAtTime(Tone.State.Stopped, startTime + computedDuration);
 		}
 
 		//add it to the array of active sources
@@ -234,7 +238,8 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/source
 		if (this._loop && Tone.isUndef(duration)){
 			source.start(startTime, offset);
 		} else {
-			source.start(startTime, offset, computedDuration);
+			//subtract the fade out time
+			source.start(startTime, offset, computedDuration - this.toSeconds(this.fadeOut));
 		}
 		return this;
 	};
