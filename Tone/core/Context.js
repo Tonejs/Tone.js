@@ -141,7 +141,7 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/core/Timeline", "Tone/shim/
 	 *  @return  {Promise}
 	 */
 	Tone.Context.prototype.resume = function(){
-		if (this._context.state !== "running"){
+		if (this._context.state !== "running" && this._context instanceof AudioContext){
 			return this._context.resume();
 		} else {
 			return Promise.resolve();
