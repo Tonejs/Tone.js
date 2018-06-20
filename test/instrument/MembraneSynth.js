@@ -14,6 +14,17 @@ function(MembraneSynth, Basic, InstrumentTest, CompareToFile){
 			}, "membraneSynth.wav", 0.5);
 		});
 
+		it("matches another file", function(){
+			return CompareToFile(function(){
+				var synth = new MembraneSynth({
+					envelope : {
+						sustain : 0
+					}
+				}).toMaster();
+				synth.triggerAttackRelease("C2", 0.1);
+			}, "membraneSynth2.wav", 0.5);
+		});
+
 		context("API", function(){
 
 			it("can get and set oscillator attributes", function(){

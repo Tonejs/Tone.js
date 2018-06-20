@@ -78,25 +78,25 @@ function(BasicTests, OscillatorNode, Offline, Frequency, Test, Meter, Supports, 
 					osc.stop("+0.3");
 					var now = osc.now();
 					osc.onended = function(){
-						expect(osc.now() - now).to.be.within(0.25, 0.45);
+						expect(osc.now() - now).to.be.within(0.25, 0.5);
 						osc.dispose();
 						done();
 					};
 				});
 
 				it("invokes the onended callback only once in the online context", function(done){
-    				var osc = new OscillatorNode();
-    				osc.start("+0");
-    				osc.stop("+0.1");
-    				osc.stop("+0.2");
-    				osc.stop("+0.3");
-    				var now = osc.now();
-    				osc.onended = function(){
-    					expect(osc.now() - now).to.be.within(0.25, 0.45);
-    					osc.dispose();
-    					done();
-    				};
-    			});
+					var osc = new OscillatorNode();
+					osc.start("+0");
+					osc.stop("+0.1");
+					osc.stop("+0.2");
+					osc.stop("+0.3");
+					var now = osc.now();
+					osc.onended = function(){
+						expect(osc.now() - now).to.be.within(0.25, 0.5);
+						osc.dispose();
+						done();
+					};
+				});
 			}
 
 			it("invokes the onended callback in the offline context", function(done){

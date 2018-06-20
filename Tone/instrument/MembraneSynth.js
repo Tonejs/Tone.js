@@ -92,6 +92,9 @@ define(["Tone/core/Tone", "Tone/source/OmniOscillator", "Tone/instrument/Instrum
 		this.oscillator.frequency.exponentialRampToValueAtTime(note, time + this.toSeconds(this.pitchDecay));
 		this.envelope.triggerAttack(time, velocity);
 		this.oscillator.start(time);
+		if (this.envelope.sustain === 0){
+			this.oscillator.stop(time + this.envelope.attack + this.envelope.decay);
+		}
 		return this;
 	};
 
