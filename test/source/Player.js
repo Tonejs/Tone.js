@@ -602,25 +602,23 @@ function(BasicTests, Player, Offline, SourceTests, Buffer, Meter, Test, Tone, Co
 			});
 
 			it("fades in and out correctly", function(){
+				var duration = 0.5;
 				return Offline(function(){
-					var onesArray = new Float32Array(buffer.context.sampleRate * 0.5);
+					var onesArray = new Float32Array(buffer.context.sampleRate * duration);
 					onesArray.forEach(function(sample, index){
 						onesArray[index] = 1;
 					});
 					var onesBuffer = Buffer.fromArray(onesArray);
-					var player = new Player({ "url" : onesBuffer, "fadeOut" : 0.1, "fadeIn" : 0.1 }).start(0).toMaster();
+					var player = new Player({ "url" : onesBuffer, "fadeOut" : 0.1, "fadeIn" : 0.1 }).toMaster();
+					player.start(0);
 				}, 0.6).then(function(buffer){
-					buffer.forEach(function(sample, time){
-						if (time < 0.1){
-							expect(sample).to.be.within(0, 1);
-						} else if (time < 0.4){
-							expect(sample).to.equal(1);
-						} else if (time < 0.5){
-							expect(sample).to.be.within(0, 1);
-						} else {
-							expect(sample).to.equal(0);
-						}
-					});
+					expect(buffer.getRmsAtTime(0)).to.be.closeTo(0, 0.1);
+					expect(buffer.getRmsAtTime(0.05)).to.be.closeTo(0.5, 0.1);
+					expect(buffer.getRmsAtTime(0.1)).to.be.closeTo(1, 0.1);
+					duration -= 0.1;
+					expect(buffer.getRmsAtTime(duration)).to.be.closeTo(1, 0.1);
+					expect(buffer.getRmsAtTime(duration + 0.05)).to.be.closeTo(0.5, 0.1);
+					expect(buffer.getRmsAtTime(duration + 0.1)).to.be.closeTo(0, 0.1);
 				});
 			});
 		});
