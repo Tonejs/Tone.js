@@ -333,14 +333,23 @@ function(BasicTests, BufferSource, Offline, Buffer, Meter, Tone, CompareToFile, 
 							expect(player.state).to.equal("stopped");
 						}
 					};
-				}, 0.4).then(function(buffer){
-					buffer.forEach(function(level, time){
-						if (time >= 0 && time < 0.09){
-							expect(level).to.be.greaterThan(0);
-						} else if (time > 0.1){
-							expect(level).to.equal(0);
-						}
-					});
+				}, 0.4).then(function(rms){
+					expect(rms.getValueAtTime(0)).to.be.gt(0);
+					expect(rms.getValueAtTime(0.09)).to.be.gt(0);
+					//after stop is scheduled
+					expect(rms.getValueAtTime(0.11)).to.equal(0);
+					expect(rms.getValueAtTime(0.3)).to.equal(0);
+				});
+			});
+
+			it("can be scheduled to stop", function(){
+				return Meter(function(){
+					var player = new BufferSource(buffer).toMaster();
+					player.start(0).stop(0.1);
+				}, 0.6).then(function(rms){
+					expect(rms.getValueAtTime(0.01)).to.be.gt(0);
+					expect(rms.getValueAtTime(0.08)).to.be.gt(0);
+					expect(rms.getValueAtTime(0.11)).to.equal(0);
 				});
 			});
 
@@ -350,11 +359,10 @@ function(BasicTests, BufferSource, Offline, Buffer, Meter, Tone, CompareToFile, 
 					player.start(0);
 					player.playbackRate.value = 0.75;
 				}, buffer.duration * 1.3).then(function(rms){
-					rms.forEach(function(level, time){
-						if (time > 0.01){
-							expect(level).to.be.gt(0);
-						}
-					});
+					expect(rms.getValueAtTime(0.01)).to.be.gt(0);
+					expect(rms.getValueAtTime(0.1)).to.be.gt(0);
+					expect(rms.getValueAtTime(0.2)).to.be.gt(0);
+					expect(rms.getValueAtTime(buffer.duration)).to.be.gt(0);
 				});
 			});
 
@@ -364,13 +372,10 @@ function(BasicTests, BufferSource, Offline, Buffer, Meter, Tone, CompareToFile, 
 					player.start(0);
 					player.playbackRate.value = 2;
 				}, buffer.duration).then(function(rms){
-					rms.forEach(function(level, time){
-						if (time > 0.02 && time < buffer.duration * 0.45){
-							expect(level).to.be.gt(0);
-						} else if (time > buffer.duration * 0.5){
-							expect(level).to.closeTo(0, 0.01);
-						}
-					});
+					expect(rms.getValueAtTime(0.03)).to.be.gt(0);
+					expect(rms.getValueAtTime(buffer.duration * 0.45)).to.be.gt(0);
+					expect(rms.getValueAtTime(buffer.duration * 0.5)).to.closeTo(0, 0.01);
+					expect(rms.getValueAtTime(buffer.duration * 0.7)).to.closeTo(0, 0.01);
 				});
 			});
 
@@ -384,14 +389,12 @@ function(BasicTests, BufferSource, Offline, Buffer, Meter, Tone, CompareToFile, 
 							expect(player.state).to.equal("stopped");
 						}
 					};
-				}, 0.4).then(function(buffer){
-					buffer.forEach(function(level, time){
-						if (time >= 0 && time < 0.09){
-							expect(level).to.be.greaterThan(0);
-						} else if (time > 0.11){
-							expect(level).to.equal(0);
-						}
-					});
+				}, 0.4).then(function(rms){
+					expect(rms.getValueAtTime(0)).to.be.gt(0);
+					expect(rms.getValueAtTime(0.09)).to.be.gt(0);
+					//after stop is scheduled
+					expect(rms.getValueAtTime(0.11)).to.equal(0);
+					expect(rms.getValueAtTime(0.3)).to.equal(0);
 				});
 			});
 
@@ -418,34 +421,39 @@ function(BasicTests, BufferSource, Offline, Buffer, Meter, Tone, CompareToFile, 
 				}, buffer.duration);
 			});
 
-			it("does not play for shorter than the ramp in time", function(){
+			it("can end start ramp early", function(){
 				return Meter(function(){
 					var player = new BufferSource(buffer);
+					player.fadeIn = 0.2;
 					player.toMaster();
-					player.start(0, 0, undefined, 1, 0.1).stop(0.05);
-				}, 0.2).then(function(buffer){
-					buffer.forEach(function(level, time){
-						if (time >= 0 && time < 0.09){
-							expect(level).to.be.greaterThan(0);
-						} else if (time > 0.1){
-							expect(level).to.equal(0);
-						}
-					});
+					player.start(0).stop(0.1);
+				}, 0.2).then(function(rms){
+					expect(rms.getValueAtTime(0.0)).to.be.gt(0);
+					expect(rms.getValueAtTime(0.05)).to.be.gt(0);
+					expect(rms.getValueAtTime(0.09)).to.be.gt(0);
+					expect(rms.getValueAtTime(0.1)).to.equal(0);
+					expect(rms.getValueAtTime(0.15)).to.equal(0);
 				});
 			});
 
-			it("can be scheduled to stop", function(){
+			it("can end start ramp with a ramp", function(){
 				return Meter(function(){
-					var player = new BufferSource(buffer).toMaster();
+					var player = new BufferSource(onesBuffer);
+					player.fadeIn = 0.2;
+					player.fadeOut = 0.1;
+					player.loop = true;
+					player.toMaster();
 					player.start(0).stop(0.1);
-				}, 0.6).then(function(rms){
-					rms.forEach(function(level, time){
-						if (time > 0.01 && time < 0.09){
-							expect(level).to.be.gt(0);
-						} else if (time > 0.11){
-							expect(level).to.equal(0);
-						}
-					});
+				}, 0.3).then(function(rms){
+					//fade in
+					expect(rms.getValueAtTime(0.01)).to.be.gt(0);
+					expect(rms.getValueAtTime(0.05)).to.be.gt(0);
+					//fade out
+					expect(rms.getValueAtTime(0.1)).to.be.gt(0);
+					expect(rms.getValueAtTime(0.15)).to.be.gt(0);
+					expect(rms.getValueAtTime(0.19)).to.be.gt(0);
+					//end of ramp
+					expect(rms.getValueAtTime(0.21)).to.equal(0);
 				});
 			});
 
@@ -464,65 +472,19 @@ function(BasicTests, BufferSource, Offline, Buffer, Meter, Tone, CompareToFile, 
 				});
 			});
 
-			it("fades from the end when passed into the stop call", function(){
+			it("fade is applied after the stop time", function(){
 				return Offline(function(){
 					var player = new BufferSource(onesBuffer).toMaster();
-					player.start(0).stop(0.2, 0.1);
-				}, 0.3).then(function(buffer){
-					buffer.forEach(function(sample, time){
-						if (time < 0.101){
-							expect(sample).to.be.closeTo(1, 0.01);
-						} else if (time < 0.2){
-							expect(sample).to.be.lessThan(1);
-						} else {
-							expect(sample).to.equal(0);
-						}
-					});
-				});
-			});
-
-			it("cant fade for shorter than the fade in time", function(){
-				return Offline(function(){
-					var player = new BufferSource(onesBuffer).toMaster();
-					player.fadeIn = 0.15;
-					player.start(0).stop(0.2, 0.1);
-				}, 0.3).then(function(buffer){
-					buffer.forEach(function(sample, time){
-						if (time < 0.14){
-							expect(sample).to.be.lessThan(1);
-						} else if (Math.abs(time - 0.15) < 1e-4){
-							expect(sample).to.be.closeTo(1, 0.05);
-						} else if (time < 0.2){
-							expect(sample).to.be.lessThan(1);
-						}
-					});
-				});
-			});
-
-			it("the fade out can shorten to fit the duration of the sample", function(){
-				return Offline(function(){
-					var player = new BufferSource(onesBuffer).toMaster();
-					player.fadeOut = 1;
-					player.start(0).stop(0.5);
-				}, 0.51).then(function(buffer){
+					player.fadeOut = 0.1;
+					player.start(0).stop(0.2);
+				}, 0.32).then(function(buffer){
 					expect(buffer.getValueAtTime(0)).to.equal(1);
+					expect(buffer.getValueAtTime(0.1)).to.equal(1);
+					expect(buffer.getValueAtTime(0.2)).to.equal(1);
 					expect(buffer.getValueAtTime(0.25)).to.be.closeTo(0.5, 0.01);
-					expect(buffer.getValueAtTime(0.5)).to.be.closeTo(0, 0.01);
-				});
-			});
-
-			it("the fade out will only start after the fade in", function(){
-				return Offline(function(){
-					var player = new BufferSource(onesBuffer).toMaster();
-					player.fadeIn = 0.1;
-					player.fadeOut = 1;
-					player.start(0).stop(0.5);
-				}, 0.51).then(function(buffer){
-					expect(buffer.getValueAtTime(0)).to.equal(0);
-					expect(buffer.getValueAtTime(0.05)).to.be.closeTo(0.5, 0.01);
-					expect(buffer.getValueAtTime(0.1)).to.be.closeTo(1, 0.01);
-					expect(buffer.getValueAtTime(0.3)).to.be.closeTo(0.5, 0.01);
-					expect(buffer.getValueAtTime(0.5)).to.be.closeTo(0, 0.01);
+					expect(buffer.getValueAtTime(0.29)).to.be.closeTo(0.1, 0.01);
+					expect(buffer.getValueAtTime(0.3)).to.be.closeTo(0, 0.01);
+					expect(buffer.getValueAtTime(0.31)).to.equal(0);
 				});
 			});
 
@@ -538,14 +500,15 @@ function(BasicTests, BufferSource, Offline, Buffer, Meter, Tone, CompareToFile, 
 					var player = new BufferSource(onesBuffer).toMaster();
 					player.curve = "exponential";
 					player.fadeIn = 0.1;
-					player.fadeOut = 1;
-					player.start(0).stop(0.5);
+					player.fadeOut = 0.1;
+					player.start(0).stop(0.4);
 				}, 0.51).then(function(buffer){
 					expect(buffer.getValueAtTime(0)).to.equal(0);
 					expect(buffer.getValueAtTime(0.05)).to.be.closeTo(0.93, 0.01);
 					expect(buffer.getValueAtTime(0.1)).to.be.closeTo(1, 0.01);
-					expect(buffer.getValueAtTime(0.3)).to.be.closeTo(0.05, 0.01);
-					expect(buffer.getValueAtTime(0.5)).to.be.closeTo(0, 0.01);
+					expect(buffer.getValueAtTime(0.4)).to.be.closeTo(1, 0.01);
+					expect(buffer.getValueAtTime(0.45)).to.be.closeTo(0.06, 0.01);
+					expect(buffer.getValueAtTime(0.5)).to.equal(0);
 				});
 			});
 
@@ -554,22 +517,11 @@ function(BasicTests, BufferSource, Offline, Buffer, Meter, Tone, CompareToFile, 
 					var player = new BufferSource(buffer).toMaster();
 					player.start(0, 0, undefined, 0.5);
 				}, 0.5).then(function(buffer){
-					buffer.forEach(function(sample){
-						expect(sample).to.be.lte(0.5);
-					});
-				});
-			});
-
-			it("can be scheduled to start with a ramp", function(){
-				return Offline(function(){
-					var player = new BufferSource(buffer).toMaster();
-					player.start(0, 0, undefined, 1, 0.1);
-				}, 0.5).then(function(buffer){
-					buffer.forEach(function(sample, time){
-						if (time < 0.1){
-							expect(sample).to.be.lte(time * 10);
-						}
-					});
+					expect(buffer.getValueAtTime(0)).to.be.lte(0.5);
+					expect(buffer.getValueAtTime(0.1)).to.be.lte(0.5);
+					expect(buffer.getValueAtTime(0.2)).to.be.lte(0.5);
+					expect(buffer.getValueAtTime(0.3)).to.be.lte(0.5);
+					expect(buffer.getValueAtTime(0.4)).to.be.lte(0.5);
 				});
 			});
 
