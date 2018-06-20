@@ -25,6 +25,18 @@ function(BasicTests, GrainPlayer, Offline, SourceTests, Buffer, Test, Tone, Comp
 			}, "grainPlayer.wav", 0.16);
 		});
 
+		it("matches another file", function(){
+			return CompareToFile(function(){
+				var player = new GrainPlayer(buffer).toMaster();
+				player.start(0.1, 0.2);
+				player.loop = true;
+				player.overlap = 0.005;
+				player.grainSize = 0.05;
+				player.detune = 1200,
+				player.playbackRate = 0.5;
+			}, "grainPlayer2.wav", 0.2);
+		});
+
 		context("Constructor", function(){
 
 			it("can be constructed with a Tone.Buffer", function(done){
@@ -128,28 +140,6 @@ function(BasicTests, GrainPlayer, Offline, SourceTests, Buffer, Test, Tone, Comp
 					};
 				}, 0.3).then(function(buffer){
 					expect(buffer.getLastSoundTime()).to.be.closeTo(0.1, 0.02);
-				});
-			});
-
-			it("can seek to a position at the given time", function(){
-				return Offline(function(){
-					var ramp = new Float32Array(Math.floor(Tone.context.sampleRate * 0.3));
-					for (var i = 0; i < ramp.length; i++){
-						ramp[i] = (i / (ramp.length)) * 0.3;
-					}
-					var buff = new Buffer().fromArray(ramp);
-					var player = new GrainPlayer(buff).toMaster();
-					player.overlap = 0;
-					player.start(0);
-					player.seek(0.2, 0.1);
-				}, 0.3).then(function(buffer){
-					buffer.forEach(function(sample, time){
-						if (time < 0.09){
-							expect(sample).to.be.within(0, 0.1);
-						} else if (time > 0.1 && time < 0.19){
-							expect(sample).to.be.within(0.2, 0.3);
-						}
-					});
 				});
 			});
 
