@@ -37,9 +37,9 @@ gulp.task("collectDependencies", function(done){
  */
 gulp.task("collectTests", function(done){
 	var tests = "../test/!(helper|deps|examples)/*.js";
-	if (argv.file){
+	if (typeof argv.file === "string"){
 		tests = `../test/*/${argv.file}.js`;
-	} else if (argv.dir){
+	} else if (typeof argv.dir === "string"){
 		tests = `../test/${argv.dir}/*.js`;
 	}
 	glob(tests, (err, files) => {
