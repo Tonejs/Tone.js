@@ -18,7 +18,7 @@ function(PolySynth, Basic, InstrumentTests, OutputAudioStereo, Instrument, Test,
 				synth.triggerAttackRelease("G4", 0.1, 0.4);
 				synth.triggerAttackRelease("B4", 0.1, 0.4);
 				synth.triggerAttackRelease("C4", 0.2, 0.5);
-			}, "polySynth.wav", 0.4);
+			}, "polySynth.wav", 0.5);
 		});
 
 		it("matches another file", function(){
@@ -27,6 +27,16 @@ function(PolySynth, Basic, InstrumentTests, OutputAudioStereo, Instrument, Test,
 				synth.triggerAttackRelease(["C4", "E4", "G4", "B4"], 0.2, 0);
 				synth.triggerAttackRelease(["C4", "E4", "G4", "B4"], 0.2, 0.3);
 			}, "polySynth2.wav", 0.6);
+		});
+
+		it("matches a file and chooses the right voice", function(){
+			return CompareToFile(function(){
+				var synth = new PolySynth(3).toMaster();
+				synth.triggerAttackRelease(["C4", "E4"], 1, 0);
+				synth.triggerAttackRelease("G4", 0.1, 0.2);
+				synth.triggerAttackRelease("B4", 0.1, 0.4);
+				synth.triggerAttackRelease("G4", 0.1, 0.6);
+			}, "polySynth3.wav", 0.5);
 		});
 
 		context("PolySynth Tests", function(){
