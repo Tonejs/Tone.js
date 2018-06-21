@@ -52,6 +52,7 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/signal/Signal"], f
 	 * synth.triggerAttack("C4", "+0.5", 0.5);
 	 */
 	Tone.Monophonic.prototype.triggerAttack = function(note, time, velocity){
+		this.log("triggerAttack", note, time, velocity);
 		time = this.toSeconds(time);
 		this._triggerEnvelopeAttack(time, velocity);
 		this.setNote(note, time);
@@ -66,6 +67,7 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/signal/Signal"], f
 	 * synth.triggerRelease();
 	 */
 	Tone.Monophonic.prototype.triggerRelease = function(time){
+		this.log("triggerRelease", time);
 		time = this.toSeconds(time);
 		this._triggerEnvelopeRelease(time);
 		return this;
