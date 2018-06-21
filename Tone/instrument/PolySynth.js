@@ -36,6 +36,7 @@ define(["Tone/core/Tone", "Tone/instrument/Synth", "Tone/source/Source"], functi
 		 *  @type {Array}
 		 */
 		this.voices = new Array(options.polyphony);
+		this.assert(options.polyphony > 0, "polyphony must be greater than 0");
 
 		/**
 		 *  The detune in cents
@@ -52,6 +53,7 @@ define(["Tone/core/Tone", "Tone/instrument/Synth", "Tone/source/Source"], functi
 				throw new Error("Synth constructor must be instance of Tone.Monophonic");
 			}
 			this.voices[i] = v;
+			v.index = i;
 			v.connect(this.output);
 			if (v.hasOwnProperty("detune")){
 				this.detune.connect(v.detune);
@@ -105,13 +107,14 @@ define(["Tone/core/Tone", "Tone/instrument/Synth", "Tone/source/Source"], functi
 			//and it's near silent
 			return levelNow >= nextLevel && voice.getLevelAtTime(time) < 1e-5;
 		}.bind(this));
+
 		if (availableVoices.length){
 			//return the first one
 			return availableVoices[0];
 		}
 		//otherwise take the one with the lowest energy
 		var closestVoice = this.voices[0];
-		this.voices.every(function(voice){
+		this.voices.forEach(function(voice){
 			if (voice.getLevelAtTime(time) < closestVoice.getLevelAtTime(time)){
 				closestVoice = voice;
 			}
@@ -138,6 +141,7 @@ define(["Tone/core/Tone", "Tone/instrument/Synth", "Tone/source/Source"], functi
 		notes.forEach(function(note){
 			var voice = this._getClosestVoice(time, note);
 			voice.triggerAttack(note, time, velocity);
+			this.log("triggerAttack", voice.index, note);
 		}.bind(this));
 		return this;
 	};
@@ -159,6 +163,7 @@ define(["Tone/core/Tone", "Tone/instrument/Synth", "Tone/source/Source"], functi
 		time = this.toSeconds(time);
 		notes.forEach(function(note){
 			var voice = this._getClosestVoice(time, note);
+			this.log("triggerRelease", voice.index, note);
 			voice.triggerRelease(time);
 		}.bind(this));
 		return this;
