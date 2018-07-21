@@ -5,7 +5,7 @@ define(["Tone/core/Tone", "Tone/core/Gain"], function(Tone){
 	/**
 	 *  buses are another way of routing audio
 	 *
-	 *  augments Tone.prototype to include send and recieve
+	 *  augments Tone.prototype to include send and receive
 	 */
 
 	/**
@@ -38,7 +38,7 @@ define(["Tone/core/Tone", "Tone/core/Gain"], function(Tone){
 	};
 
 	/**
-	 *  Recieve the input from the desired channelName to the input
+	 *  Receive the input from the desired channelName to the input
 	 *
 	 *  @param  {String} channelName A named channel to send the signal to.
 	 *  @param  {Number=} channelNumber The channel to connect to
