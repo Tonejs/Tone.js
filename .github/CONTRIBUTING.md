@@ -24,7 +24,7 @@ I'd love to see more tutorials for newcomers to Tone.js to help them get up and 
 
 ### Tests 
 
-Tone.js has an extensive [test suite](https://github.com/Tonejs/Tone.js/wiki/Testing) using Mocha and Chai. I'd love help getting more of these tests to pass on Safari and Firefox.
+Tone.js has an extensive [test suite](https://github.com/Tonejs/Tone.js/wiki/Testing) using Mocha and Chai. 
 
 Along with more unit tests, I'd also be great to have more tests which run in the online context and generate music to help find bugs by ear that the automated tests might not illuminate. [Audiokit](http://audiokit.io/tests/), for example, has a great suite of aural tests.
 
