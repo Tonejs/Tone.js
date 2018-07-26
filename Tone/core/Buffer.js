@@ -65,7 +65,10 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type", "Tone/shim/Audi
 			// invoke the onload callback
 			if (options.onload){
 				if (this.loaded){
-					options.onload(this);
+					//defer the callback
+					this.context.setTimeout(function(){
+						options.onload(this);
+					}.bind(this), 0.001);
 				} else {
 					this._onload = options.onload;
 				}
@@ -180,7 +183,7 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type", "Tone/shim/Audi
 	 * @readOnly
 	 */
 	Object.defineProperty(Tone.Buffer.prototype, "loaded", {
-		get : function(){
+		"get" : function(){
 			return this.length > 0;
 		},
 	});
@@ -193,7 +196,7 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type", "Tone/shim/Audi
 	 * @readOnly
 	 */
 	Object.defineProperty(Tone.Buffer.prototype, "duration", {
-		get : function(){
+		"get" : function(){
 			if (this._buffer){
 				return this._buffer.duration;
 			} else {
@@ -210,7 +213,7 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type", "Tone/shim/Audi
 	 * @readOnly
 	 */
 	Object.defineProperty(Tone.Buffer.prototype, "length", {
-		get : function(){
+		"get" : function(){
 			if (this._buffer){
 				return this._buffer.length;
 			} else {
@@ -228,7 +231,7 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type", "Tone/shim/Audi
 	 * @readOnly
 	 */
 	Object.defineProperty(Tone.Buffer.prototype, "numberOfChannels", {
-		get : function(){
+		"get" : function(){
 			if (this._buffer){
 				return this._buffer.numberOfChannels;
 			} else {
@@ -354,10 +357,10 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type", "Tone/shim/Audi
 	 * @name reverse
 	 */
 	Object.defineProperty(Tone.Buffer.prototype, "reverse", {
-		get : function(){
+		"get" : function(){
 			return this._reversed;
 		},
-		set : function(rev){
+		"set" : function(rev){
 			if (this._reversed !== rev){
 				this._reversed = rev;
 				this._reverse();
