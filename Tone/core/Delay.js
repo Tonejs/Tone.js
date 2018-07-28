@@ -11,7 +11,7 @@ define(["Tone/core/Tone", "Tone/core/Param", "Tone/core/AudioNode"], function(To
 	Tone.Delay = function(){
 
 		var options = Tone.defaults(arguments, ["delayTime", "maxDelay"], Tone.Delay);
-		Tone.AudioNode.call(this);
+		Tone.AudioNode.call(this, options);
 
 		/**
 		 * The maximum delay time initialized with the node
