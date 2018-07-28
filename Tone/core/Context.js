@@ -11,7 +11,7 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/core/Timeline", "Tone/shim/
 
 		var options = Tone.defaults(arguments, ["context"], Tone.Context);
 
-		if (!options.context){
+		if (!arguments.length){
 			options.context = new window.AudioContext();
 			if (!options.context){
 				throw new Error("could not create AudioContext. Possibly too many AudioContexts running already.");
@@ -496,8 +496,7 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/core/Timeline", "Tone/shim/
 	};
 
 	/**
-	 *  Shim all connect/disconnect and some deprecated methods which are still in
-	 *  some older implementations.
+	 *  Adds connect/disconnect methods
 	 *  @private
 	 */
 	Tone.getContext(function(){
