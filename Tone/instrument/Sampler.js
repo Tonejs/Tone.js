@@ -137,10 +137,15 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/core/Buffers", "To
 				if (!Tone.isArray(this._activeSources[midi])){
 					this._activeSources[midi] = [];
 				}
-				this._activeSources[midi].push({
-					note : midi,
-					source : source
-				});
+				this._activeSources[midi].push(source);
+
+				//remove it when it's done
+				source.onended = function(){
+					var index = this._activeSources[midi].indexOf(source);
+					if (index !== -1){
+						this._activeSources[midi].splice(index, 1);
+					}
+				}.bind(this);
 			}
 		}
 		return this;
@@ -160,7 +165,7 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/core/Buffers", "To
 			var midi = Tone.Frequency(notes[i]).toMidi();
 			// find the note
 			if (this._activeSources[midi] && this._activeSources[midi].length){
-				var source = this._activeSources[midi].shift().source;
+				var source = this._activeSources[midi].shift();
 				time = this.toSeconds(time);
 				source.stop(time);
 			}
@@ -179,8 +184,8 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/core/Buffers", "To
 		for (var note in this._activeSources){
 			var sources = this._activeSources[note];
 			while (sources.length){
-				var source = sources.shift().source;
-				source.stop(time + this.release, this.release);
+				var source = sources.shift();
+				source.stop(time);
 			}
 		}
 		return this;
@@ -272,8 +277,8 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/core/Buffers", "To
 		this._buffers.dispose();
 		this._buffers = null;
 		for (var midi in this._activeSources){
-			this._activeSources[midi].forEach(function(event){
-				event.source.dispose();
+			this._activeSources[midi].forEach(function(source){
+				source.dispose();
 			});
 		}
 		this._activeSources = null;
