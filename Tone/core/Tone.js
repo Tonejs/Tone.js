@@ -284,7 +284,7 @@ define(function(){
 	 *  is set to the name of the class. 
 	 *  @example
 	 * //prints all logs originating from Tone.OscillatorNode
-	 * window.TONE_DEBUG_CLASS = OscillatorNode
+	 * window.TONE_DEBUG_CLASS = "OscillatorNode"
 	 *  @param {*} args Any arguments to print to the console.
 	 *  @private
 	 */
