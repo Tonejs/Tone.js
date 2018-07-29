@@ -1,7 +1,9 @@
-define(["helper/Test", "Tone/core/Gain", "Tone/core/Tone", "helper/PassAudio"], 
-	function(Test, Gain, Tone, PassAudio){
+define(["helper/Test", "Tone/core/Gain", "Tone/core/Tone", "helper/PassAudio", "helper/Basic"], 
+	function(Test, Gain, Tone, PassAudio, Basic){
 
 		describe("Gain", function(){
+
+			Basic(Gain);
 
 			it("can be created and disposed", function(){
 				var gain = new Gain();
