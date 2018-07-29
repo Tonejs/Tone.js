@@ -11,7 +11,7 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/core/Timeline", "Tone/shim/
 
 		var options = Tone.defaults(arguments, ["context"], Tone.Context);
 
-		if (!arguments.length){
+		if (!options.context){
 			options.context = new window.AudioContext();
 			if (!options.context){
 				throw new Error("could not create AudioContext. Possibly too many AudioContexts running already.");
