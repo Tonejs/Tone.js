@@ -47,6 +47,9 @@ define(["Tone/core/Tone", "Tone/component/CrossFade", "Tone/component/Merge", "T
 		Tone.getContext(function(){
 			// set the default position/forward
 			this.set(ListenerConstructor.defaults);
+
+			//listener is a singleton so it adds itself to the context
+			this.context.listener = this;
 		}.bind(this));
 
 	};
@@ -292,14 +295,13 @@ define(["Tone/core/Tone", "Tone/component/CrossFade", "Tone/component/Merge", "T
 	Tone.Listener = new ListenerConstructor();
 
 	Tone.Context.on("init", function(context){
-		if (context.Listener instanceof ListenerConstructor){
+		if (context.listener instanceof ListenerConstructor){
 			//a single listener object
-			Tone.Listener = context.Listener;
+			Tone.Listener = context.listener;
 		} else {
 			//make new Listener insides
 			Tone.Listener = new ListenerConstructor();
 		}
-		context.Listener = Tone.Listener;
 	});
 	//END SINGLETON SETUP
 
