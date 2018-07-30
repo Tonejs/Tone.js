@@ -130,17 +130,9 @@ define(["Tone/core/Tone", "Tone/component/Volume", "Tone/core/Context", "Tone/co
 	 * var osc = new Tone.Oscillator().toMaster();
 	 */
 	Tone.AudioNode.prototype.toMaster = function(){
-		this.connect(Tone.Master);
+		this.connect(this.context.master);
 		return this;
 	};
-
-	if (window.AudioNode){
-		// Also augment AudioNode's prototype to include toMaster as a convenience
-		AudioNode.prototype.toMaster = function(){
-			this.connect(Tone.Master);
-			return this;
-		};
-	}
 
 	/**
 	 *  initialize the module and listen for new audio contexts
