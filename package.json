@@ -21,7 +21,7 @@
     "test:collect": "gulp --gulpfile=gulp/gulpfile.js collectTests --file $npm_config_file --dir $npm_config_dir",
     "test:karma": "karma start gulp/karma.conf.js --single-run",
     "test:karma:watch": "karma start gulp/karma.conf.js --auto-watch",
-    "test:travis": "npm run build:increment && npm run lint && npm run test",
+    "test:travis": "npm run build && npm run lint && npm run test",
     "test:watch": "npm run test:collect && npm run test:karma:watch",
     "lint": "gulp --gulpfile=gulp/gulpfile.js lint",
     "lint:fix": "gulp --gulpfile=gulp/gulpfile.js lint-fix",
