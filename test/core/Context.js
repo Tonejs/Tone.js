@@ -178,6 +178,15 @@ define(["helper/Test", "Tone/core/Context", "Tone/core/Tone", "helper/Offline", 
 					return Tone.context.dispose();
 				});
 
+				it("has a consistent context after offline rendering", function(){
+					var initialContext = Tone.context;
+					var initialTransport = Tone.Transport;
+					return Offline(function(){}).then(function(){
+						expect(Tone.context).to.equal(initialContext);
+						expect(Tone.Transport).to.equal(initialTransport);
+					});
+				});
+
 				it("invokes the resume promise", function(){
 					return Tone.context.resume();
 				});
@@ -211,7 +220,15 @@ define(["helper/Test", "Tone/core/Context", "Tone/core/Tone", "helper/Offline", 
 					if (window.__karma__){
 						baseUrl = "/base/test/html/";
 					}
-					return LoadHTML(baseUrl + "same_context.html");
+					return LoadHTML(baseUrl + "multiple_instances.html");
+				});
+
+				it("Transport and Master instance is the same after running Tone.Offline", function(){
+					var baseUrl = "../test/html/";
+					if (window.__karma__){
+						baseUrl = "/base/test/html/";
+					}
+					return LoadHTML(baseUrl + "same_transport.html");
 				});
 			});
 
