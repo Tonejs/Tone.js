@@ -1,5 +1,5 @@
-define(["helper/Test", "Tone/core/Context", "Tone/core/Tone", "helper/Offline", "helper/Supports"],
-	function(Test, Context, Tone, Offline, Supports){
+define(["helper/Test", "Tone/core/Context", "Tone/core/Tone", "helper/Offline", "helper/Supports", "helper/LoadHTML"],
+	function(Test, Context, Tone, Offline, Supports, LoadHTML){
 
 		describe("Context", function(){
 
@@ -156,13 +156,16 @@ define(["helper/Test", "Tone/core/Context", "Tone/core/Tone", "helper/Offline", 
 
 			context("Tone", function(){
 
+				var orignContext = Tone.context;
+
 				afterEach(function(){
-					if (Tone.context.state !== "closed"){
-					//reset the context
+					if (Tone.context.state !== "closed" && Tone.context !== orignContext){
+						//reset the context
 						return Tone.context.dispose().then(function(){
 							Tone.context = new Context();
 						});
 					}
+					Tone.context = orignContext;
 				});
 
 				it("has a context", function(){
@@ -172,6 +175,7 @@ define(["helper/Test", "Tone/core/Context", "Tone/core/Tone", "helper/Offline", 
 
 				it("can set a new context", function(){
 					Tone.context = new Context();
+					return Tone.context.dispose();
 				});
 
 				it("invokes the resume promise", function(){
@@ -200,6 +204,14 @@ define(["helper/Test", "Tone/core/Context", "Tone/core/Tone", "helper/Offline", 
 					};
 					Context.on("close", closeFn);
 					Tone.context.dispose();
+				});
+
+				it("can have two instances running on the same page", function(){
+					var baseUrl = "../test/html/";
+					if (window.__karma__){
+						baseUrl = "/base/test/html/";
+					}
+					return LoadHTML(baseUrl + "same_context.html");
 				});
 			});
 
