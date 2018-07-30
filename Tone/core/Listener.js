@@ -45,11 +45,11 @@ define(["Tone/core/Tone", "Tone/component/CrossFade", "Tone/component/Merge", "T
 		this._position = [0, 0, 0];
 
 		Tone.getContext(function(){
-			// set the default position/forward
-			this.set(ListenerConstructor.defaults);
-
 			//listener is a singleton so it adds itself to the context
 			this.context.listener = this;
+			
+			// set the default position/forward
+			this.set(ListenerConstructor.defaults);
 		}.bind(this));
 
 	};
