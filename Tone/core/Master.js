@@ -45,6 +45,9 @@ define(["Tone/core/Tone", "Tone/component/Volume", "Tone/core/Context", "Tone/co
 			this._readOnly("volume");
 			//connections
 			this.input.chain(this.output, this.context.destination);
+
+			//master is a singleton so it adds itself to the context
+			this.context.master = this;
 		}.bind(this));
 	};
 
@@ -147,17 +150,16 @@ define(["Tone/core/Tone", "Tone/component/Volume", "Tone/core/Context", "Tone/co
 
 	Tone.Context.on("init", function(context){
 		// if it already exists, just restore it
-		if (context.Master instanceof MasterConstructor){
-			Tone.Master = context.Master;
+		if (context.master instanceof MasterConstructor){
+			Tone.Master = context.master;
 		} else {
 			Tone.Master = new MasterConstructor();
 		}
-		context.Master = Tone.Master;
 	});
 
 	Tone.Context.on("close", function(context){
-		if (context.Master instanceof MasterConstructor){
-			context.Master.dispose();
+		if (context.master instanceof MasterConstructor){
+			context.master.dispose();
 		}
 	});
 
