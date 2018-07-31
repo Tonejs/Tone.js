@@ -28,6 +28,8 @@ module.exports = function(config){
 			"test/test.js",
 			{ pattern : "test/audio/*", included : false },
 			{ pattern : "test/audio/*/*", included : false },
+			{ pattern : "test/html/*", included : false },
+			{ pattern : "build/*", included : false },
 		],
 
 		// list of files to exclude

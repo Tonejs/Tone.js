@@ -45,6 +45,9 @@ define(["Tone/core/Tone", "Tone/component/Volume", "Tone/core/Context", "Tone/co
 			this._readOnly("volume");
 			//connections
 			this.input.chain(this.output, this.context.destination);
+
+			//master is a singleton so it adds itself to the context
+			this.context.master = this;
 		}.bind(this));
 	};
 
@@ -127,17 +130,9 @@ define(["Tone/core/Tone", "Tone/component/Volume", "Tone/core/Context", "Tone/co
 	 * var osc = new Tone.Oscillator().toMaster();
 	 */
 	Tone.AudioNode.prototype.toMaster = function(){
-		this.connect(Tone.Master);
+		this.connect(this.context.master);
 		return this;
 	};
-
-	if (window.AudioNode){
-		// Also augment AudioNode's prototype to include toMaster as a convenience
-		AudioNode.prototype.toMaster = function(){
-			this.connect(Tone.Master);
-			return this;
-		};
-	}
 
 	/**
 	 *  initialize the module and listen for new audio contexts
@@ -147,17 +142,16 @@ define(["Tone/core/Tone", "Tone/component/Volume", "Tone/core/Context", "Tone/co
 
 	Tone.Context.on("init", function(context){
 		// if it already exists, just restore it
-		if (context.Master instanceof MasterConstructor){
-			Tone.Master = context.Master;
+		if (context.master instanceof MasterConstructor){
+			Tone.Master = context.master;
 		} else {
 			Tone.Master = new MasterConstructor();
 		}
-		context.Master = Tone.Master;
 	});
 
 	Tone.Context.on("close", function(context){
-		if (context.Master instanceof MasterConstructor){
-			context.Master.dispose();
+		if (context.master instanceof MasterConstructor){
+			context.master.dispose();
 		}
 	});
 

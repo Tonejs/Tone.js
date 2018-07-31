@@ -156,6 +156,9 @@ define(["Tone/core/Tone", "Tone/core/Clock", "Tone/type/Type", "Tone/core/Timeli
 			 */
 			this._swingAmount = 0;
 
+			//transport is a singleton so it adds itself to the context
+			this.context.transport = this;
+
 		}.bind(this));
 	};
 
@@ -781,18 +784,18 @@ define(["Tone/core/Tone", "Tone/core/Clock", "Tone/type/Type", "Tone/core/Timeli
 	Tone.Transport = new TransportConstructor();
 
 	Tone.Context.on("init", function(context){
-		if (context.Transport instanceof TransportConstructor){
-			Tone.Transport = context.Transport;
+		if (context.transport instanceof TransportConstructor){
+			Tone.Transport = context.transport;
 		} else {
 			Tone.Transport = new TransportConstructor();
 		}
 		//store the Transport on the context so it can be retrieved later
-		context.Transport = Tone.Transport;
+		context.transport = Tone.Transport;
 	});
 
 	Tone.Context.on("close", function(context){
-		if (context.Transport instanceof TransportConstructor){
-			context.Transport.dispose();
+		if (context.transport instanceof TransportConstructor){
+			context.transport.dispose();
 		}
 	});
 

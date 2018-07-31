@@ -13,7 +13,7 @@ define(["Tone/core/Tone", "Tone/core/Param", "Tone/type/Type", "Tone/core/AudioN
 	Tone.Gain = function(){
 
 		var options = Tone.defaults(arguments, ["gain", "units"], Tone.Gain);
-		Tone.AudioNode.call(this);
+		Tone.AudioNode.call(this, options);
 
 		/**
 		 *  The GainNode

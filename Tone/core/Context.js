@@ -141,7 +141,7 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/core/Timeline", "Tone/shim/
 	 *  @return  {Promise}
 	 */
 	Tone.Context.prototype.resume = function(){
-		if (this._context.state !== "running" && this._context instanceof AudioContext){
+		if (this._context.state === "suspended" && this._context instanceof AudioContext){
 			return this._context.resume();
 		} else {
 			return Promise.resolve();
@@ -496,8 +496,7 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/core/Timeline", "Tone/shim/
 	};
 
 	/**
-	 *  Shim all connect/disconnect and some deprecated methods which are still in
-	 *  some older implementations.
+	 *  Adds connect/disconnect methods
 	 *  @private
 	 */
 	Tone.getContext(function(){
@@ -556,8 +555,10 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/core/Timeline", "Tone/shim/
 	});
 
 	// set the audio context initially, and if one is not already created
-	if (Tone.supported && !Tone.initialized){
-		Tone.context = new Tone.Context();
+	if (Tone.supported){
+		if (!Tone.initialized){
+			Tone.context = new Tone.Context();
+		}
 
 		// log on first initialization
 		// allow optional silencing of this log
