@@ -1,6 +1,6 @@
 define(["Tone/instrument/Sampler", "helper/Basic", "helper/InstrumentTests",
-	"Tone/core/Buffer", "helper/Offline", "helper/CompareToFile"],
-function(Sampler, Basic, InstrumentTest, Buffer, Offline, CompareToFile){
+	"Tone/core/Buffer", "helper/Offline", "helper/CompareToFile", "helper/Test"],
+function(Sampler, Basic, InstrumentTest, Buffer, Offline, CompareToFile, Test){
 
 	describe("Sampler", function(){
 
@@ -119,6 +119,22 @@ function(Sampler, Basic, InstrumentTest, Buffer, Offline, CompareToFile){
 					sampler.triggerRelease("A4", 0.2);
 				}, 0.3).then(function(buffer){
 					expect(buffer.getLastSoundTime()).to.be.closeTo(0.2, 0.01);
+				});
+			});
+
+			it("can triggerRelease after the buffer has already stopped", function(){
+				return Offline(function(){
+					var sampler = new Sampler({
+						"A4" : A4_buffer
+					}, {
+						release : 0
+					}).toMaster();
+					sampler.triggerAttack("A4", 0);
+					return Test.atTime(A4_buffer.duration + 0.01, function(){
+						sampler.triggerRelease("A4");
+					});
+				}, A4_buffer.duration + 0.1).then(function(buffer){
+					// expect(buffer.getLastSoundTime()).to.be.closeTo(0.2, 0.01);
 				});
 			});
 

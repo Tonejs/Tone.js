@@ -15,7 +15,7 @@ define(["Tone/core/Tone", "Tone/type/Type", "Tone/core/AudioNode", "Tone/core/Ti
 	Tone.Param = function(){
 
 		var options = Tone.defaults(arguments, ["param", "units", "convert"], Tone.Param);
-		Tone.AudioNode.call(this);
+		Tone.AudioNode.call(this, options);
 
 		/**
 		 *  The native parameter to control

@@ -15,7 +15,7 @@ define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/core/Gain", "Tone/core/Aud
 	Tone.Volume = function(){
 
 		var options = Tone.defaults(arguments, ["volume"], Tone.Volume);
-		Tone.AudioNode.call(this);
+		Tone.AudioNode.call(this, options);
 
 		/**
 		 * the output node

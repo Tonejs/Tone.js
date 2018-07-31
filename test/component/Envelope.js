@@ -415,16 +415,15 @@ function(Envelope, Basic, Offline, Test, PassAudio, APITest){
 					env.toMaster();
 					env.triggerAttack(0);
 					env.triggerAttack(0.5);
-				}, 0.7).then(function(buffer){
-					buffer.forEach(function(sample, time){
-						if (time > 0 && time < 0.3){
-							expect(sample).to.be.above(0);
-						} else if (time < 0.5){
-							expect(sample).to.be.below(0.02);
-						} else if (time > 0.5 && time < 0.8){
-							expect(sample).to.be.above(0);
-						}
-					});
+				}, 0.85).then(function(buffer){
+					//first trigger
+					expect(buffer.getValueAtTime(0)).to.be.closeTo(0, 0.01);
+					expect(buffer.getValueAtTime(0.1)).to.be.closeTo(1, 0.01);
+					expect(buffer.getValueAtTime(0.3)).to.be.closeTo(0, 0.01);
+					//second trigger
+					expect(buffer.getValueAtTime(0.5)).to.be.closeTo(0, 0.01);
+					expect(buffer.getValueAtTime(0.6)).to.be.closeTo(1, 0.01);
+					expect(buffer.getValueAtTime(0.8)).to.be.closeTo(0, 0.01);
 				});
 			});
 

@@ -21,7 +21,7 @@
     "test:collect": "gulp --gulpfile=gulp/gulpfile.js collectTests --file $npm_config_file --dir $npm_config_dir",
     "test:karma": "karma start gulp/karma.conf.js --single-run",
     "test:karma:watch": "karma start gulp/karma.conf.js --auto-watch",
-    "test:travis": "npm run build:increment && npm run lint && npm run test",
+    "test:travis": "npm run build && npm run lint && npm run test",
     "test:watch": "npm run test:collect && npm run test:karma:watch",
     "lint": "gulp --gulpfile=gulp/gulpfile.js lint",
     "lint:fix": "gulp --gulpfile=gulp/gulpfile.js lint-fix",
@@ -65,7 +65,7 @@
     "html-webpack-plugin": "^3.2.0",
     "http-server": "^0.11.1",
     "istanbul-instrumenter-loader": "^3.0.1",
-    "karma": "^2.0.2",
+    "karma": "^2.0.5",
     "karma-chrome-launcher": "^2.2.0",
     "karma-coverage": "^1.1.1",
     "karma-firefox-launcher": "^1.1.0",
@@ -75,16 +75,14 @@
     "karma-webpack": "^3.0.0",
     "mocha": "^5.1.1",
     "nexusui": "^2.0.7",
-    "node-sass": "^4.9.0",
+    "node-sass": "^4.9.2",
     "proxy-polyfill": "^0.2.0",
     "sass-loader": "^7.0.1",
     "semver": "^5.5.0",
     "style-loader": "^0.21.0",
     "teoria": "^2.5.0",
+    "webmidi": "^2.0.5",
     "webpack": "^4.6.0",
     "webpack-cli": "^2.1.2"
-  },
-  "dependencies": {
-    "webmidi": "^2.0.5"
   }
 }

@@ -1,5 +1,7 @@
 define(["helper/Test", "Tone/core/Tone"], function(Test, Tone){
 
+	// var testAudioContext = new Tone.Context();
+
 	return function(Constr, args){
 
 		context("Basic", function(){
@@ -15,6 +17,12 @@ define(["helper/Test", "Tone/core/Tone"], function(Test, Tone){
 				expect(instance).to.be.an.instanceof(Tone);
 				instance.dispose();
 			});
+
+			/*it("can specify the AudioContext", function(){
+				var instance = new Constr(testAudioContext, args);
+				expect(instance.context).to.equal(testAudioContext);
+				instance.dispose();
+			});*/
 
 		});
 

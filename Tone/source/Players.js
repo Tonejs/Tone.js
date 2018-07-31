@@ -15,7 +15,7 @@ define(["Tone/core/Tone", "Tone/source/Player", "Tone/component/Volume", "Tone/c
 		var args = Array.prototype.slice.call(arguments);
 		args.shift();
 		var options = Tone.defaults(args, ["onload"], Tone.Players);
-		Tone.call(this);
+		Tone.AudioNode.call(this, options);
 
 		/**
 		 *  The output volume node
