@@ -67,6 +67,13 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/core/Buffers", "To
 		 * @type {Time}
 		 */
 		this.release = options.release;
+
+		/**
+		 *  The shape of the attack/release curve.
+		 *  Either "linear" or "exponential"
+		 *  @type {String}
+		 */
+		this.curve = options.curve;
 	};
 
 	Tone.extend(Tone.Sampler, Tone.Instrument);
@@ -77,10 +84,11 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/core/Buffers", "To
 	 * @type {Object}
 	 */
 	Tone.Sampler.defaults = {
-		attack : 0,
-		release : 0.1,
-		onload : Tone.noOp,
-		baseUrl : ""
+		"attack" : 0,
+		"release" : 0.1,
+		"onload" : Tone.noOp,
+		"baseUrl" : "",
+		"curve" : "exponential"
 	};
 
 	/**
@@ -130,7 +138,7 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/core/Buffers", "To
 					"playbackRate" : playbackRate,
 					"fadeIn" : this.attack,
 					"fadeOut" : this.release,
-					"curve" : "exponential",
+					"curve" : this.curve,
 				}).connect(this.output);
 				source.start(time, 0, buffer.duration / playbackRate, velocity);
 				// add it to the active sources
@@ -263,7 +271,7 @@ define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/core/Buffers", "To
 	 * @readOnly
 	 */
 	Object.defineProperty(Tone.Sampler.prototype, "loaded", {
-		get : function(){
+		"get" : function(){
 			return this._buffers.loaded;
 		}
 	});
