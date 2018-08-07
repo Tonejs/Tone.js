@@ -50,6 +50,14 @@ define(["Tone/core/Tone", "Tone/core/Context", "Tone/shim/OfflineAudioContext"],
 	};
 
 	/**
+	 *  Overwrite resume, should not do anything in the OfflineAudioContext.
+	 *  @return {Promise}
+	 */
+	Tone.OfflineContext.prototype.resume = function(){
+		return Promise.resolve();
+	};
+
+	/**
 	 *  Render the output of the OfflineContext
 	 *  @return  {Promise}
 	 */
