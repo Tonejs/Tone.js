@@ -60,10 +60,10 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/effect/Effect"], function(To
 	 *  @name buffer
 	 */
 	Object.defineProperty(Tone.Convolver.prototype, "buffer", {
-		get : function(){
+		"get" : function(){
 			return this._buffer.get();
 		},
-		set : function(buffer){
+		"set" : function(buffer){
 			this._buffer.set(buffer);
 			this._convolver.buffer = this._buffer.get();
 		}
@@ -94,10 +94,10 @@ define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/effect/Effect"], function(To
 	 */
 	Tone.Convolver.prototype.dispose = function(){
 		Tone.Effect.prototype.dispose.call(this);
-		this._convolver.disconnect();
-		this._convolver = null;
 		this._buffer.dispose();
 		this._buffer = null;
+		this._convolver.disconnect();
+		this._convolver = null;
 		return this;
 	};
 
