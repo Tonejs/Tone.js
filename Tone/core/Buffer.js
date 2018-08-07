@@ -65,10 +65,7 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/type/Type", "Tone/shim/Audi
 			// invoke the onload callback
 			if (options.onload){
 				if (this.loaded){
-					//defer the callback
-					this.context.setTimeout(function(){
-						options.onload(this);
-					}.bind(this), 0.001);
+					options.onload(this);
 				} else {
 					this._onload = options.onload;
 				}
