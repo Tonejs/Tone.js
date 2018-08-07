@@ -113,14 +113,14 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/core/Timeline", "Tone/shim/
 	Tone.Context.prototype._defineProperty = function(context, prop){
 		if (Tone.isUndef(this[prop])){
 			Object.defineProperty(this, prop, {
-				get : function(){
+				"get" : function(){
 					if (typeof context[prop] === "function"){
 						return context[prop].bind(context);
 					} else {
 						return context[prop];
 					}
 				},
-				set : function(val){
+				"set" : function(val){
 					context[prop] = val;
 				}
 			});
@@ -207,9 +207,9 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/core/Timeline", "Tone/shim/
 		this._timeoutIds++;
 		var now = this.now();
 		this._timeouts.add({
-			callback : fn,
-			time : now + timeout,
-			id : this._timeoutIds
+			"callback" : fn,
+			"time" : now + timeout,
+			"id" : this._timeoutIds
 		});
 		return this._timeoutIds;
 	};
@@ -238,10 +238,10 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/core/Timeline", "Tone/shim/
 	 *  @name updateInterval
 	 */
 	Object.defineProperty(Tone.Context.prototype, "updateInterval", {
-		get : function(){
+		"get" : function(){
 			return this._ticker.updateInterval;
 		},
-		set : function(interval){
+		"set" : function(interval){
 			this._ticker.updateInterval = interval;
 		}
 	});
@@ -254,10 +254,10 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/core/Timeline", "Tone/shim/
 	 *  @name clockSource
 	 */
 	Object.defineProperty(Tone.Context.prototype, "clockSource", {
-		get : function(){
+		"get" : function(){
 			return this._ticker.type;
 		},
-		set : function(type){
+		"set" : function(type){
 			this._ticker.type = type;
 		}
 	});
@@ -278,10 +278,10 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/core/Timeline", "Tone/shim/
 	 * Tone.context.latencyHint = 0.3;
 	 */
 	Object.defineProperty(Tone.Context.prototype, "latencyHint", {
-		get : function(){
+		"get" : function(){
 			return this._latencyHint;
 		},
-		set : function(hint){
+		"set" : function(hint){
 			var lookAhead = hint;
 			this._latencyHint = hint;
 			if (Tone.isString(hint)){
@@ -366,9 +366,9 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/core/Timeline", "Tone/shim/
 	 * @type {Object}
 	 */
 	Ticker.Type = {
-		Worker : "worker",
-		Timeout : "timeout",
-		Offline : "offline"
+		"Worker" : "worker",
+		"Timeout" : "timeout",
+		"Offline" : "offline"
 	};
 
 	/**
@@ -441,10 +441,10 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/core/Timeline", "Tone/shim/
 	 * @private
 	 */
 	Object.defineProperty(Ticker.prototype, "updateInterval", {
-		get : function(){
+		"get" : function(){
 			return this._updateInterval;
 		},
-		set : function(interval){
+		"set" : function(interval){
 			this._updateInterval = Math.max(interval, 128/44100);
 			if (this._type === Ticker.Type.Worker){
 				this._worker.postMessage(Math.max(interval * 1000, 1));
@@ -460,10 +460,10 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/core/Timeline", "Tone/shim/
 	 * @private
 	 */
 	Object.defineProperty(Ticker.prototype, "type", {
-		get : function(){
+		"get" : function(){
 			return this._type;
 		},
-		set : function(type){
+		"set" : function(type){
 			this._disposeClock();
 			this._type = type;
 			this._createClock();
