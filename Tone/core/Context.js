@@ -136,6 +136,21 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/core/Timeline", "Tone/shim/
 	};
 
 	/**
+	 *  The audio output destination. Alias for Tone.Master
+	 *  @readyOnly
+	 *  @type  {Tone.Master}
+	 */
+	Object.defineProperty(Tone.Context.prototype, "destination", {
+		"get" : function(){
+			if (!this.master){
+				return this._context.destination;
+			} else {
+				return this.master;
+			}
+		}
+	});
+
+	/**
 	 *  Starts the audio context from a suspended state. This is required
 	 *  to initially start the AudioContext.
 	 *  @return  {Promise}
