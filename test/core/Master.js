@@ -14,6 +14,11 @@ function(Test, Master, Tone, Offline, PassAudio, Oscillator, AudioNode, Gain){
 			gain.toMaster();
 		});
 
+		it("attaches itself to the context", function(){
+			expect(Tone.context.master).equals(Tone.Master);
+			expect(Tone.context.destination).equals(Tone.Master);
+		});
+
 		it("can be muted and unmuted", function(){
 			Tone.Master.mute = false;
 			expect(Tone.Master.mute).to.be.false;
