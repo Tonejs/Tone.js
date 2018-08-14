@@ -36,6 +36,12 @@ define(["helper/Test", "Tone/core/Context", "Tone/core/Tone", "helper/Offline", 
 					});
 				});
 
+				it("has a rawContext", function(){
+					var ctx = new Context();
+					expect(ctx.rawContext).is.instanceOf(window.AudioContext);
+					return ctx.dispose();
+				});
+
 				it("'dispose' returns a promise which resolves", function(){
 					var ctx = new Context();
 					var promise = ctx.dispose();
@@ -156,26 +162,17 @@ define(["helper/Test", "Tone/core/Context", "Tone/core/Tone", "helper/Offline", 
 
 			context("Tone", function(){
 
-				var orignContext = Tone.context;
-
-				afterEach(function(){
-					if (Tone.context.state !== "closed" && Tone.context !== orignContext){
-						//reset the context
-						return Tone.context.dispose().then(function(){
-							Tone.context = new Context();
-						});
-					}
-					Tone.context = orignContext;
-				});
-
 				it("has a context", function(){
 					expect(Tone.context).to.exist;
 					expect(Tone.context).to.be.instanceOf(Context);
 				});
 
 				it("can set a new context", function(){
+					var originalContext = Tone.context;
 					Tone.context = new Context();
-					return Tone.context.dispose();
+					return Tone.context.dispose().then(function(){
+						Tone.context = originalContext;
+					});
 				});
 
 				it("has a consistent context after offline rendering", function(){
@@ -223,14 +220,14 @@ define(["helper/Test", "Tone/core/Context", "Tone/core/Tone", "helper/Offline", 
 					return LoadHTML(baseUrl + "multiple_instances.html");
 				});
 
-				/*it("Transport and Master instance is the same after running Tone.Offline", function(){
+			});
+			/*it("Transport and Master instance is the same after running Tone.Offline", function(){
 					var baseUrl = "../test/html/";
 					if (window.__karma__){
 						baseUrl = "/base/test/html/";
 					}
 					return LoadHTML(baseUrl + "same_transport.html");
 				});*/
-			});
 
 			context("get/set", function(){
 

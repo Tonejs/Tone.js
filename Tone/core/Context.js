@@ -11,13 +11,22 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/core/Timeline", "Tone/shim/
 
 		var options = Tone.defaults(arguments, ["context"], Tone.Context);
 
+		//make sure there is an underlying AudioContext
+		if (!window.TONE_AUDIO_CONTEXT){
+			window.TONE_AUDIO_CONTEXT = new window.AudioContext();
+		}
+
 		if (!options.context){
-			options.context = new window.AudioContext();
+			options.context = window.TONE_AUDIO_CONTEXT;
 			if (!options.context){
 				throw new Error("could not create AudioContext. Possibly too many AudioContexts running already.");
 			}
 		}
 		this._context = options.context;
+		//make sure it's not an AudioContext wrapper
+		while (this._context.rawContext){
+			this._context = this._context.rawContext;
+		}
 		// extend all of the methods
 		for (var prop in this._context){
 			this._defineProperty(this._context, prop);
@@ -169,7 +178,11 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/core/Timeline", "Tone/shim/
 	 *  @return  {Promise}
 	 */
 	Tone.Context.prototype.close = function(){
-		return this._context.close().then(function(){
+		var closePromise = Promise.resolve();
+		if (this.rawContext !== window.TONE_AUDIO_CONTEXT){
+			closePromise = this.rawContext.close();
+		}
+		return closePromise.then(function(){
 			Tone.Context.emit("close", this);
 		}.bind(this));
 	};
@@ -258,6 +271,19 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/core/Timeline", "Tone/shim/
 		},
 		"set" : function(interval){
 			this._ticker.updateInterval = interval;
+		}
+	});
+
+	/**
+	 *  The unwrapped AudioContext.
+	 *  @type {AudioContext}
+	 *  @memberOf Tone.Context#
+	 *  @name rawContext
+	 *  @readOnly
+	 */
+	Object.defineProperty(Tone.Context.prototype, "rawContext", {
+		"get" : function(){
+			return this._context;
 		}
 	});
 
@@ -570,10 +596,8 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/core/Timeline", "Tone/shim/
 	});
 
 	// set the audio context initially, and if one is not already created
-	if (Tone.supported){
-		if (!Tone.initialized){
-			Tone.context = new Tone.Context();
-		}
+	if (Tone.supported && !Tone.initialized){
+		Tone.context = new Tone.Context();
 
 		// log on first initialization
 		// allow optional silencing of this log

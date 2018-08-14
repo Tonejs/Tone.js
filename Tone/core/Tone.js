@@ -620,6 +620,13 @@ define(function(){
 	///////////////////////////////////////////////////////////////////////////
 
 	/**
+	 * The shared AudioContext
+	 * @type {Tone.Context}
+	 * @private
+	 */
+	Tone._audioContext = null;
+
+	/**
 	 *  A static pointer to the audio context accessible as Tone.context.
 	 *  @type {Tone.Context}
 	 *  @name context
@@ -627,16 +634,16 @@ define(function(){
 	 */
 	Object.defineProperty(Tone, "context", {
 		get : function(){
-			return window.TONE_AUDIO_CONTEXT;
+			return Tone._audioContext;
 		},
 		set : function(context){
 			if (Tone.Context && context instanceof Tone.Context){
-				window.TONE_AUDIO_CONTEXT = context;
+				Tone._audioContext = context;
 			} else {
-				window.TONE_AUDIO_CONTEXT = new Tone.Context(context);
+				Tone._audioContext = new Tone.Context(context);
 			}
 			//initialize the new audio context
-			Tone.Context.emit("init", window.TONE_AUDIO_CONTEXT);
+			Tone.Context.emit("init", Tone._audioContext);
 		}
 	});
 
@@ -723,7 +730,7 @@ define(function(){
 	 */
 	Object.defineProperty(Tone, "initialized", {
 		get : function(){
-			return Boolean(window.TONE_AUDIO_CONTEXT);
+			return Boolean(Tone.context);
 		}
 	});
 
