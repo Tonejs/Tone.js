@@ -1,7 +1,7 @@
 define(["Tone/core/Tone", "Tone/signal/WaveShaper", "Tone/component/Merge", "Tone/signal/Zero",
 	"Tone/component/Split", "Tone/core/Gain", "Tone/signal/Signal", "Tone/core/Context"], function(Tone){
 
-	if (Tone.supported && !window.StereoPannerNode){
+	if (Tone.supported && !window.AudioContext.prototype.createStereoPanner){
 
 		/**
 		 * @class Shimmed StereoPannerNode
