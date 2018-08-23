@@ -8,9 +8,7 @@ const masterVersion = child_process.execSync("npm show tone version").toString()
 
 //go with whichever is the latest version
 let version = masterVersion;
-let isDev = false;
 if (semver.gt(devVersion, masterVersion)){
-	isDev = true;
 	version = devVersion;
 }
 
@@ -37,5 +35,5 @@ if (process.env.TRAVIS){
 }
 
 //write a version file
-var versionFile = `module.exports = ${JSON.stringify({ version, dev : isDev }, undefined, "\t")};\n`;
+var versionFile = `module.exports = ${JSON.stringify({ version }, undefined, "\t")};\n`;
 fs.writeFileSync(resolve(__dirname, "../Tone/version.js"), versionFile);
