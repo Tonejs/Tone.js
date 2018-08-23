@@ -44,7 +44,7 @@ module.exports = function(config){
 		// test results reporter to use
 		// possible values: 'dots', 'progress'
 		// available reporters: https://npmjs.org/browse/keyword/karma-reporter
-		reporters : ["dots", "coverage"],
+		reporters : ["dots", "coverage", "coveralls"],
 
 		coverageReporter : {
 			type : "lcov",
@@ -54,6 +54,7 @@ module.exports = function(config){
 		//plugins
 		plugins : [
 			"karma-coverage",
+			"karma-coveralls",
 			"karma-mocha",
 			"karma-webpack",
 			"karma-chrome-launcher",
