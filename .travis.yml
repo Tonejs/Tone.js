@@ -7,9 +7,7 @@ install:
 - npm install
 - git config --global user.email "travis@travis-ci.org"
 - git config --global user.name "Travis CI"
-script: 
-- npm run test:travis
-- npm run coveralls
+script: npm run test:travis
 before_deploy: npm run increment
 jobs:
   include:
