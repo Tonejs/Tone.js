@@ -637,7 +637,7 @@ define(function(){
 			return Tone._audioContext;
 		},
 		set : function(context){
-			if (Tone.Context && context instanceof Tone.Context){
+			if (context.isContext){
 				Tone._audioContext = context;
 			} else {
 				Tone._audioContext = new Tone.Context(context);
@@ -757,7 +757,6 @@ define(function(){
 	 * @type {String}
 	 * @static
 	 */
-
 	Tone.version = "r13-dev";
 
 	return Tone;

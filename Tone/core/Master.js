@@ -63,6 +63,12 @@ define(["Tone/core/Tone", "Tone/component/Volume", "Tone/core/Context", "Tone/co
 	};
 
 	/**
+	 * Is an instanceof Tone.Master
+	 * @type {Boolean}
+	 */
+	Tone.Master.prototype.isMaster = true;
+
+	/**
 	 * Mute the output.
 	 * @memberOf Tone.Master#
 	 * @type {boolean}
@@ -142,7 +148,7 @@ define(["Tone/core/Tone", "Tone/component/Volume", "Tone/core/Context", "Tone/co
 
 	Tone.Context.on("init", function(context){
 		// if it already exists, just restore it
-		if (context.master instanceof MasterConstructor){
+		if (context.master && context.master.isMaster){
 			Tone.Master = context.master;
 		} else {
 			Tone.Master = new MasterConstructor();
@@ -150,7 +156,7 @@ define(["Tone/core/Tone", "Tone/component/Volume", "Tone/core/Context", "Tone/co
 	});
 
 	Tone.Context.on("close", function(context){
-		if (context.master instanceof MasterConstructor){
+		if (context.master && context.master.isMaster){
 			context.master.dispose();
 		}
 	});
