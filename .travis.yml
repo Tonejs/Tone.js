@@ -46,6 +46,11 @@ jobs:
       os: osx
       # test on an older safari
       osx_image: xcode6.4
+    - stage: test
+      # puppeteer tests
+      before_script: npm install puppeteer
+      script: npm run test:html
+      env : BROWSER=puppeteer
     - stage: deploy
       os: linux
       script: npm run build
