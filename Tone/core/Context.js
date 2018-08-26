@@ -11,13 +11,8 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/core/Timeline", "Tone/shim/
 
 		var options = Tone.defaults(arguments, ["context"], Tone.Context);
 
-		//make sure there is an underlying AudioContext
-		if (!window.TONE_AUDIO_CONTEXT){
-			window.TONE_AUDIO_CONTEXT = new window.AudioContext();
-		}
-
 		if (!options.context){
-			options.context = window.TONE_AUDIO_CONTEXT;
+			options.context = new window.AudioContext();
 			if (!options.context){
 				throw new Error("could not create AudioContext. Possibly too many AudioContexts running already.");
 			}
@@ -113,6 +108,12 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/core/Timeline", "Tone/shim/
 	};
 
 	/**
+	 * Is an instanceof Tone.Context
+	 * @type {Boolean}
+	 */
+	Tone.Context.prototype.isContext = true;
+
+	/**
 	 *  Define a property on this Tone.Context.
 	 *  This is used to extend the native AudioContext
 	 *  @param  {AudioContext}  context
@@ -179,7 +180,8 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/core/Timeline", "Tone/shim/
 	 */
 	Tone.Context.prototype.close = function(){
 		var closePromise = Promise.resolve();
-		if (this.rawContext !== window.TONE_AUDIO_CONTEXT){
+		//never close the global Tone.Context
+		if (this !== window.TONE_AUDIO_CONTEXT){
 			closePromise = this.rawContext.close();
 		}
 		return closePromise.then(function(){
@@ -596,8 +598,11 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/core/Timeline", "Tone/shim/
 	});
 
 	// set the audio context initially, and if one is not already created
-	if (Tone.supported && !Tone.initialized){
-		Tone.context = new Tone.Context();
+	if (Tone.supported && !Tone.initialized){			
+		if (!window.TONE_AUDIO_CONTEXT){
+			window.TONE_AUDIO_CONTEXT = new Tone.Context();
+		}
+		Tone.context = window.TONE_AUDIO_CONTEXT;
 
 		// log on first initialization
 		// allow optional silencing of this log
