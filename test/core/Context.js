@@ -213,21 +213,6 @@ define(["helper/Test", "Tone/core/Context", "Tone/core/Tone", "helper/Offline", 
 					Tone.context.dispose();
 				});
 
-				/*it("can have two instances running on the same page", function(){
-					var baseUrl = "../test/html/";
-					if (window.__karma__){
-						baseUrl = "/base/test/html/";
-					}
-					return LoadHTML(baseUrl + "multiple_instances.html");
-				});*/
-
-				/*it("Transport and Master instance is the same after running Tone.Offline", function(){
-					var baseUrl = "../test/html/";
-					if (window.__karma__){
-						baseUrl = "/base/test/html/";
-					}
-					return LoadHTML(baseUrl + "same_transport.html");
-				});*/
 			});
 
 			context("get/set", function(){
