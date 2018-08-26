@@ -1,6 +1,6 @@
 {
   "name": "tone",
-  "version": "13.2.0",
+  "version": "13.3.0",
   "description": "A Web Audio framework for making interactive music in the browser.",
   "main": "build/Tone.js",
   "files": [
@@ -26,6 +26,7 @@
     "test:watch": "npm run collect:tests && npm run karma:watch",
     "test:browser": "npm run collect:tests && concurrently \"webpack -w --mode=development --env.test\" \"http-server -p 9090 -c-1\" \"open http://localhost:9090/build/test.html\"",
     "test:travis": "npm run build && npm run lint && npm run test",
+    "test:html": "mocha ./test/html/testHTML.js --timeout 30000",
     "watch": "npm run increment && npm run collect:deps && webpack -w --env.production --mode=development"
   },
   "repository": {

@@ -3,29 +3,24 @@
 <head>
 	<title>SAME TRANSPORT</title>
 	<script src="../../build/Tone.js"></script>
-	<script src="/base/build/Tone.js"></script>
-
-	<script>
-
-		function assert(statement, error){
-			if (!statement){
-				throw new Error(error);
-			}
-		}
-		
-	</script>
-
+	
 </head>
 <body>
-	<script>
-		if (Tone){
-			var Transport = Tone.Transport
-			Tone.Offline(function(){}, 0.1).then(function(){})
-			assert(Tone.Transport === Transport, "Different Transports!")
-		} else {
-			throw new Error("NO TONE!");
-		}
-	</script>
+<script>
+
+function assert(statement, error){
+	if (!statement){
+		throw new Error(error);
+	}
+}
+if (Tone){
+	var Transport = Tone.Transport;
+	Tone.Offline(function(){}, 0.1).then(function(){});
+	assert(Tone.Transport === Transport, "Different Transports!");
+} else {
+	throw new Error("NO TONE!");
+}
+</script>
 
 </body>
 </html>
