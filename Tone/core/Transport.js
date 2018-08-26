@@ -180,6 +180,12 @@ define(["Tone/core/Tone", "Tone/core/Clock", "Tone/type/Type", "Tone/core/Timeli
 		"PPQ" : 192
 	};
 
+	/**
+	 * Is an instanceof Tone.Transport
+	 * @type {Boolean}
+	 */
+	Tone.Transport.prototype.isTransport = true;
+
 	///////////////////////////////////////////////////////////////////////////////
 	//	TICKS
 	///////////////////////////////////////////////////////////////////////////////
@@ -784,17 +790,15 @@ define(["Tone/core/Tone", "Tone/core/Clock", "Tone/type/Type", "Tone/core/Timeli
 	Tone.Transport = new TransportConstructor();
 
 	Tone.Context.on("init", function(context){
-		if (context.transport instanceof TransportConstructor){
+		if (context.transport && context.transport.isTransport){
 			Tone.Transport = context.transport;
 		} else {
 			Tone.Transport = new TransportConstructor();
 		}
-		//store the Transport on the context so it can be retrieved later
-		context.transport = Tone.Transport;
 	});
 
 	Tone.Context.on("close", function(context){
-		if (context.transport instanceof TransportConstructor){
+		if (context.transport && context.transport.isTransport){
 			context.transport.dispose();
 		}
 	});
