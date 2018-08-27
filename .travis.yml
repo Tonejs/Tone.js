@@ -49,7 +49,9 @@ jobs:
     - stage: test
       # puppeteer tests
       before_script: npm install puppeteer
-      script: npm run test:html
+      script: 
+        - npm run build
+        - npm run test:html
       env : BROWSER=puppeteer
     - stage: deploy
       os: linux
