@@ -4,7 +4,7 @@ const fs = require("fs");
 
 function runPage(path){
 	return new Promise(async (done, error) => {
-		const browser = await puppeteer.launch();
+		const browser = await puppeteer.launch({ args : ["--no-sandbox"] });
 		const page = await browser.newPage();
 		page.on("pageerror", e => error(e));
 		await page.goto(`file://${path}`, { waitFor : "networkidle0" });
