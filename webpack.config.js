@@ -33,7 +33,7 @@ const defaults = {
 
 const scratch = Object.assign({}, defaults, {
 	entry : {
-		scratch : "./scratch.js",
+		scratch : "./examples/scratch.js",
 	},
 	plugins : [
 		new HtmlWebpackPlugin()
