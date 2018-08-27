@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/component/MultibandSplit", "Tone/core/Gain", "Tone/core/AudioNode"], function(Tone){
+define(["../core/Tone", "../component/MultibandSplit", "../core/Gain", "../core/AudioNode"], function(Tone){
 
 	"use strict";
 

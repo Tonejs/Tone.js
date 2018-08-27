@@ -1,5 +1,5 @@
-define(["Tone/core/Tone", "Tone/component/LFO", "Tone/component/CrossFade",
-	"Tone/signal/Signal", "Tone/effect/FeedbackEffect", "Tone/core/Delay"], function(Tone){
+define(["../core/Tone", "../component/LFO", "../component/CrossFade",
+	"../signal/Signal", "../effect/FeedbackEffect", "../core/Delay"], function(Tone){
 
 	"use strict";
 

@@ -1,5 +1,5 @@
-define(["Tone/core/Tone", "Tone/signal/WaveShaper", "Tone/component/Merge", "Tone/signal/Zero",
-	"Tone/component/Split", "Tone/core/Gain", "Tone/signal/Signal", "Tone/core/Context"], function(Tone){
+define(["../core/Tone", "../signal/WaveShaper", "../component/Merge", "../signal/Zero",
+	"../component/Split", "../core/Gain", "../signal/Signal", "../core/Context"], function(Tone){
 
 	if (Tone.supported && !window.AudioContext.prototype.createStereoPanner){
 
