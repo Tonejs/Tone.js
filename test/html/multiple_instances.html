@@ -14,7 +14,7 @@ function assert(statement, error){
 
 if (Tone && Tone.context){
 	Tone.context.thisisthesamecontext = true;
-	assert(window.TONE_CONTEXT.thisisthesamecontext, "Did not assign global TONE_CONTEXT");
+	assert(window.TONE_AUDIO_CONTEXT.thisisthesamecontext, "Did not assign global TONE_AUDIO_CONTEXT");
 } else {
 	throw new Error("NO TONE!");
 }
@@ -28,7 +28,7 @@ var instanceOne = Tone;
 
 <script>
 if (Tone && Tone.context){
-	assert(window.TONE_CONTEXT === Tone.context, "Did not assign global TONE_CONTEXT 2");
+	assert(window.TONE_AUDIO_CONTEXT === Tone.context, "Did not assign global TONE_AUDIO_CONTEXT 2");
 	assert(Tone.context.thisisthesamecontext, "Not the same AudioContext");
 } else {
 	throw new Error("NO TONE 2!");
