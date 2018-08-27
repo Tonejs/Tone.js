@@ -12,6 +12,7 @@
   ],
   "scripts": {
     "build": "npm run increment && npm run collect:deps && webpack -p --env.production",
+    "collect": "npm run collect:deps",
     "collect:deps": "node scripts/collect_deps.js",
     "collect:tests": "node scripts/collect_tests.js --file $npm_config_file --dir $npm_config_dir",
     "examples": "webpack -p --env.examples",
