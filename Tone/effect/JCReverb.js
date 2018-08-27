@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/component/FeedbackCombFilter", "Tone/effect/StereoEffect", "Tone/signal/Scale"], function(Tone){
+define(["../core/Tone", "../component/FeedbackCombFilter", "../effect/StereoEffect", "../signal/Scale"], function(Tone){
 
 	"use strict";
 

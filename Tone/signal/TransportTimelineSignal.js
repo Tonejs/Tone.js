@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/core/Transport", "Tone/signal/Signal", "Tone/type/TransportTime"], function(Tone){
+define(["../core/Tone", "../core/Transport", "../signal/Signal", "../type/TransportTime"], function(Tone){
 
 	/**
 	 * @class Tone.TransportTimelineSignal extends Tone.Signal, but adds the ability to synchronize the signal to the signal to the Tone.Transport

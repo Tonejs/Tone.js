@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/effect/FeedbackEffect", "Tone/signal/Signal", "Tone/core/Delay"], function(Tone){
+define(["../core/Tone", "../effect/FeedbackEffect", "../signal/Signal", "../core/Delay"], function(Tone){
 
 	"use strict";
 

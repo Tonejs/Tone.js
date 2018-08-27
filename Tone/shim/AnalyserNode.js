@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/shim/AudioContext"], function(Tone){
+define(["../core/Tone", "../shim/AudioContext"], function(Tone){
 
 	/**
 	 *  AnalyserNode.getFloatTimeDomainData polyfill

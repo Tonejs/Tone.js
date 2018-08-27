@@ -1,6 +1,6 @@
-define(["Tone/core/Tone", "Tone/core/Clock", "Tone/type/Type", "Tone/core/Timeline",
-	"Tone/core/Emitter", "Tone/core/Gain", "Tone/core/IntervalTimeline",
-	"Tone/core/TransportRepeatEvent", "Tone/core/TransportEvent"], function(Tone){
+define(["../core/Tone", "../core/Clock", "../type/Type", "../core/Timeline",
+	"../core/Emitter", "../core/Gain", "../core/IntervalTimeline",
+	"../core/TransportRepeatEvent", "../core/TransportEvent"], function(Tone){
 
 	"use strict";
 

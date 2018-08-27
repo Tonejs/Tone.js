@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/signal/Scale", "Tone/signal/Pow"], function(Tone){
+define(["../core/Tone", "../signal/Scale", "../signal/Pow"], function(Tone){
 
 	/**
 	 *  @class  Performs an exponential scaling on an input signal.

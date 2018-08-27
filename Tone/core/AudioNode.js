@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/core/Context"], function(Tone){
+define(["../core/Tone", "../core/Context"], function(Tone){
 
 	/**
 	 *  @class Tone.AudioNode is the base class for classes which process audio.

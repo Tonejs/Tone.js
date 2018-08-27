@@ -1,4 +1,4 @@
-define(["Tone/core/Tone"], function(Tone){
+define(["../core/Tone"], function(Tone){
 
 	/**
 	 *  @class Tone.TimeBase is a flexible encoding of time

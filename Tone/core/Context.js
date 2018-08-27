@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/core/Timeline", "Tone/shim/AudioContext"], function(Tone){
+define(["../core/Tone", "../core/Emitter", "../core/Timeline", "../shim/AudioContext"], function(Tone){
 
 	/**
 	 *  @class Wrapper around the native AudioContext.

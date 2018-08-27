@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/core/Transport", "Tone/core/Buffer", "Tone/core/OfflineContext", "Tone/core/Master"], function(Tone){
+define(["../core/Tone", "../core/Transport", "../core/Buffer", "../core/OfflineContext", "../core/Master"], function(Tone){
 
 	/**
 	 * Because of a bug in iOS causing the currentTime to increment

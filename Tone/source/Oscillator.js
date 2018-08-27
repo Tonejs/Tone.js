@@ -1,5 +1,5 @@
-define(["Tone/core/Tone", "Tone/signal/Signal", "Tone/source/Source",
-	"Tone/core/Transport", "Tone/source/OscillatorNode"],
+define(["../core/Tone", "../signal/Signal", "../source/Source",
+	"../core/Transport", "../source/OscillatorNode"],
 function(Tone){
 
 	"use strict";

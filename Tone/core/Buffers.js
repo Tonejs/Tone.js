@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/core/Buffer"], function(Tone){
+define(["../core/Tone", "../core/Buffer"], function(Tone){
 
 	/**
 	 *  @class A data structure for holding multiple buffers.
