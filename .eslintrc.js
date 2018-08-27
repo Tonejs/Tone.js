@@ -7,7 +7,12 @@ module.exports = {
 		"mocha": true
     },
     "globals": {
-        "expect": true
+        "expect": true,
+        "Tone" : true
+    },
+    "parserOptions": {
+        "ecmaVersion": 2017,
+        "sourceType": "module"
     },
     "extends": "eslint:recommended",
     "rules": {
@@ -41,15 +46,8 @@ module.exports = {
 		"space-unary-ops": [ "error" , { "words" : true, "nonwords" : false } ],
 		"block-spacing" : ["error", "always"],
 		"keyword-spacing" : ["error", { "before": true }],
-		"space-before-function-paren": ["error", "never"],
+		"space-before-function-paren": ["error", {"anonymous": "never", "named": "never", "asyncArrow": "always"}],
 		"comma-spacing": ["error", { "before": false, "after": true }],
         "space-before-blocks": ["error", { "functions": "never", "keywords": "never", "classes": "always" }]
-		// "one-var-declaration-per-line": [ "error" , "always" ],
-		// "object-curly-newline": [ "error" , { "multiline": true }],
-		// "array-bracket-newline": [ "error" , "always" ],
-		// "no-use-before-define" : [ "error" ],
-		// "valid-jsdoc": [ "error" ],
-		// "lines-around-comment" : [ "error", {"beforeBlockComment": true} ],
-		// "no-template-curly-in-string" : [ "error" ],
     }
 };
