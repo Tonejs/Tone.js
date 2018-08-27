@@ -11,16 +11,11 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/core/Timeline", "Tone/shim/
 
 		var options = Tone.defaults(arguments, ["context"], Tone.Context);
 
-		if (!window.TONE_AUDIO_CONTEXT){
-			window.TONE_AUDIO_CONTEXT = new window.AudioContext();
-			//if it didn't create it, there may have been a silent error
-			if (!window.TONE_AUDIO_CONTEXT){
-				throw new Error("could not create AudioContext. Possibly too many AudioContexts running already.");				
-			}
-		}
-
 		if (!options.context){
-			options.context = window.TONE_AUDIO_CONTEXT;
+			options.context = new window.AudioContext();
+			if (!options.context){
+				throw new Error("could not create AudioContext. Possibly too many AudioContexts running already.");
+			}
 		}
 		this._context = options.context;
 		//make sure it's not an AudioContext wrapper
@@ -604,10 +599,10 @@ define(["Tone/core/Tone", "Tone/core/Emitter", "Tone/core/Timeline", "Tone/shim/
 
 	// set the audio context initially, and if one is not already created
 	if (Tone.supported && !Tone.initialized){			
-		if (!window.TONE_CONTEXT){
-			window.TONE_CONTEXT = new Tone.Context();
+		if (!window.TONE_AUDIO_CONTEXT){
+			window.TONE_AUDIO_CONTEXT = new Tone.Context();
 		}
-		Tone.context = window.TONE_CONTEXT;
+		Tone.context = window.TONE_AUDIO_CONTEXT;
 
 		// log on first initialization
 		// allow optional silencing of this log
