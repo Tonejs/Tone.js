@@ -7,7 +7,9 @@ module.exports = {
 		"mocha": true
     },
     "globals": {
-        "expect": true
+        "expect": true,
+        "Tone": true,
+        "Interface": true,
     },
     "extends": "eslint:recommended",
     "rules": {
@@ -19,7 +21,7 @@ module.exports = {
 		"no-throw-literal" : [ "error" ],
 		"no-useless-call" : [ "error" ],
 		"no-unmodified-loop-condition": [ "error" ],
-		"quote-props" : [ "error", "consistent" /*"as-needed"*/ ],
+		"quote-props" : [ "error", "always" ],
 		"quotes": [ "error","double" ],
 		"no-lonely-if" : [ "error" ],
 		"semi": [ "error", "always" ],
