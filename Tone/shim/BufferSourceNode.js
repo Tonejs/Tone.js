@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/core/OfflineContext"], function(Tone){
+define(["../core/Tone", "../core/OfflineContext"], function(Tone){
 
 	if (Tone.supported){
 

@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/core/TransportEvent", "Tone/type/Ticks"], function(Tone){
+define(["../core/Tone", "../core/TransportEvent", "../type/Ticks"], function(Tone){
 
 	/**
 	 *  @class Tone.TransportRepeatEvent is an internal class used by Tone.Transport

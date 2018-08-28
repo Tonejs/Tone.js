@@ -1,5 +1,5 @@
-define(["Tone/core/Tone", "Tone/source/Source", "Tone/source/Oscillator", "Tone/source/PulseOscillator", "Tone/source/PWMOscillator",
-	"Tone/source/FMOscillator", "Tone/source/AMOscillator", "Tone/source/FatOscillator"], function(Tone){
+define(["../core/Tone", "../source/Source", "../source/Oscillator", "../source/PulseOscillator", "../source/PWMOscillator",
+	"../source/FMOscillator", "../source/AMOscillator", "../source/FatOscillator"], function(Tone){
 
 	"use strict";
 

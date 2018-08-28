@@ -1,5 +1,5 @@
-define(["Tone/core/Tone", "Tone/component/LowpassCombFilter", "Tone/effect/StereoEffect",
-	"Tone/signal/Signal", "Tone/component/Split", "Tone/component/Merge", "Tone/signal/ScaleExp"], function(Tone){
+define(["../core/Tone", "../component/LowpassCombFilter", "../effect/StereoEffect",
+	"../signal/Signal", "../component/Split", "../component/Merge", "../signal/ScaleExp"], function(Tone){
 
 	"use strict";
 

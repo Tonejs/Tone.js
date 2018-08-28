@@ -1,5 +1,5 @@
-define(["Tone/core/Tone", "Tone/component/Follower", "Tone/signal/ScaleExp",
-	"Tone/effect/Effect", "Tone/component/Filter"], function(Tone){
+define(["../core/Tone", "../component/Follower", "../signal/ScaleExp",
+	"../effect/Effect", "../component/Filter"], function(Tone){
 
 	"use strict";
 

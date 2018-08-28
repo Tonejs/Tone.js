@@ -1,4 +1,4 @@
-define(["Tone/core/Tone"], function(Tone){
+define(["../core/Tone"], function(Tone){
 	if (Tone.supported){
 
 		if (!window.hasOwnProperty("OfflineAudioContext") && window.hasOwnProperty("webkitOfflineAudioContext")){

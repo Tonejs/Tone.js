@@ -1,5 +1,5 @@
-define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/Gain",
-	"Tone/core/AudioNode"], function(Tone){
+define(["../core/Tone", "../core/Buffer", "../source/Source", "../core/Gain",
+	"../core/AudioNode"], function(Tone){
 
 	/**
 	 *  @class Wrapper around the native fire-and-forget OscillatorNode. Adds the

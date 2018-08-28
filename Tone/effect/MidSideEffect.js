@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/effect/Effect", "Tone/component/MidSideSplit", "Tone/component/MidSideMerge"], function(Tone){
+define(["../core/Tone", "../effect/Effect", "../component/MidSideSplit", "../component/MidSideMerge"], function(Tone){
 
 	"use strict";
 

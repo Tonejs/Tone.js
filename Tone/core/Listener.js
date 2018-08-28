@@ -1,5 +1,5 @@
-define(["Tone/core/Tone", "Tone/component/CrossFade", "Tone/component/Merge", "Tone/component/Split",
-	"Tone/signal/Signal", "Tone/signal/AudioToGain", "Tone/signal/Zero"], function(Tone){
+define(["../core/Tone", "../component/CrossFade", "../component/Merge", "../component/Split",
+	"../signal/Signal", "../signal/AudioToGain", "../signal/Zero"], function(Tone){
 
 	"use strict";
 
@@ -45,11 +45,11 @@ define(["Tone/core/Tone", "Tone/component/CrossFade", "Tone/component/Merge", "T
 		this._position = [0, 0, 0];
 
 		Tone.getContext(function(){
-			//listener is a singleton so it adds itself to the context
-			this.context.listener = this;
-			
 			// set the default position/forward
 			this.set(ListenerConstructor.defaults);
+
+			//listener is a singleton so it adds itself to the context
+			this.context.listener = this;
 		}.bind(this));
 
 	};
@@ -75,6 +75,12 @@ define(["Tone/core/Tone", "Tone/component/CrossFade", "Tone/component/Merge", "T
 	};
 
 	/**
+	 * Is an instanceof Tone.Listener
+	 * @type {Boolean}
+	 */
+	Tone.Listener.prototype.isListener = true;
+
+	/**
 	 * The ramp time which is applied to the setTargetAtTime
 	 * @type {Number}
 	 * @private
@@ -89,13 +95,13 @@ define(["Tone/core/Tone", "Tone/component/CrossFade", "Tone/component/Merge", "T
 	 *  @return {Tone.Listener} this
 	 */
 	Tone.Listener.prototype.setPosition = function(x, y, z){
-		if (this.context.listener.positionX){
+		if (this.context.rawContext.listener.positionX){
 			var now = this.now();
-			this.context.listener.positionX.setTargetAtTime(x, now, this._rampTimeConstant);
-			this.context.listener.positionY.setTargetAtTime(y, now, this._rampTimeConstant);
-			this.context.listener.positionZ.setTargetAtTime(z, now, this._rampTimeConstant);
+			this.context.rawContext.listener.positionX.setTargetAtTime(x, now, this._rampTimeConstant);
+			this.context.rawContext.listener.positionY.setTargetAtTime(y, now, this._rampTimeConstant);
+			this.context.rawContext.listener.positionZ.setTargetAtTime(z, now, this._rampTimeConstant);
 		} else {
-			this.context.listener.setPosition(x, y, z);
+			this.context.rawContext.listener.setPosition(x, y, z);
 		}
 		this._position = Array.prototype.slice.call(arguments);
 		return this;
@@ -115,16 +121,16 @@ define(["Tone/core/Tone", "Tone/component/CrossFade", "Tone/component/Merge", "T
 	 *  @return {Tone.Listener} this
 	 */
 	Tone.Listener.prototype.setOrientation = function(x, y, z, upX, upY, upZ){
-		if (this.context.listener.forwardX){
+		if (this.context.rawContext.listener.forwardX){
 			var now = this.now();
-			this.context.listener.forwardX.setTargetAtTime(x, now, this._rampTimeConstant);
-			this.context.listener.forwardY.setTargetAtTime(y, now, this._rampTimeConstant);
-			this.context.listener.forwardZ.setTargetAtTime(z, now, this._rampTimeConstant);
-			this.context.listener.upX.setTargetAtTime(upX, now, this._rampTimeConstant);
-			this.context.listener.upY.setTargetAtTime(upY, now, this._rampTimeConstant);
-			this.context.listener.upZ.setTargetAtTime(upZ, now, this._rampTimeConstant);
+			this.context.rawContext.listener.forwardX.setTargetAtTime(x, now, this._rampTimeConstant);
+			this.context.rawContext.listener.forwardY.setTargetAtTime(y, now, this._rampTimeConstant);
+			this.context.rawContext.listener.forwardZ.setTargetAtTime(z, now, this._rampTimeConstant);
+			this.context.rawContext.listener.upX.setTargetAtTime(upX, now, this._rampTimeConstant);
+			this.context.rawContext.listener.upY.setTargetAtTime(upY, now, this._rampTimeConstant);
+			this.context.rawContext.listener.upZ.setTargetAtTime(upZ, now, this._rampTimeConstant);
 		} else {
-			this.context.listener.setOrientation(x, y, z, upX, upY, upZ);
+			this.context.rawContext.listener.setOrientation(x, y, z, upX, upY, upZ);
 		}
 		this._orientation = Array.prototype.slice.call(arguments);
 		return this;
@@ -295,7 +301,7 @@ define(["Tone/core/Tone", "Tone/component/CrossFade", "Tone/component/Merge", "T
 	Tone.Listener = new ListenerConstructor();
 
 	Tone.Context.on("init", function(context){
-		if (context.listener instanceof ListenerConstructor){
+		if (context.listener && context.listener.isListener){
 			//a single listener object
 			Tone.Listener = context.listener;
 		} else {

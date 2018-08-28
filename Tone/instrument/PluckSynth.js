@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/instrument/Instrument", "Tone/source/Noise", "Tone/component/LowpassCombFilter"], function(Tone){
+define(["../core/Tone", "../instrument/Instrument", "../source/Noise", "../component/LowpassCombFilter"], function(Tone){
 
 	"use strict";
 

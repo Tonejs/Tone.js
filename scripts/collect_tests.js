@@ -11,7 +11,7 @@ const argv = require("yargs")
  */
 function collectTests(){
 	return new Promise((done, error) => {
-		var tests = "../test/!(helper|deps|examples)/*.js";
+		var tests = "../test/!(helper|deps|examples|html)/*.js";
 		if (typeof argv.file === "string"){
 			tests = `../test/*/${argv.file}.js`;
 		} else if (typeof argv.dir === "string"){

@@ -63,94 +63,99 @@ define(["helper/Test", "Tone/core/Context", "Tone/core/Tone", "helper/Offline", 
 				});
 			});
 
-			context("clockSource", function(){
+			if (Supports.ONLINE_TESTING){
 
-				var ctx;
-				beforeEach(function(){
-					ctx = new Context();
-					return ctx.resume();
+				context("clockSource", function(){
+
+					var ctx;
+					beforeEach(function(){
+						ctx = new Context();
+						return ctx.resume();
+					});
+
+					afterEach(function(){
+						return ctx.dispose();
+					});
+
+					it("defaults to 'worker'", function(){
+						expect(ctx.clockSource).to.equal("worker");
+					});
+
+					it("provides callback", function(done){
+						expect(ctx.clockSource).to.equal("worker");
+						ctx.setTimeout(function(){
+							done();
+						}, 0.1);
+					});
+
+					it("can be set to 'timeout'", function(done){
+						ctx.clockSource = "timeout";
+						expect(ctx.clockSource).to.equal("timeout");
+						ctx.setTimeout(function(){
+							done();
+						}, 0.1);
+					});
+
+					it("can be set to 'offline'", function(done){
+						ctx.clockSource = "offline";
+						expect(ctx.clockSource).to.equal("offline");
+						//provides no callback
+						ctx.setTimeout(function(){
+							throw new Error("shouldn't be called");
+						}, 0.1);
+						setTimeout(function(){
+							done();
+						}, 200);
+					});
 				});
-
-				afterEach(function(){
-					return ctx.dispose();
-				});
-
-				it("defaults to 'worker'", function(){
-					expect(ctx.clockSource).to.equal("worker");
-				});
-
-				it("provides callback", function(done){
-					expect(ctx.clockSource).to.equal("worker");
-					ctx.setTimeout(function(){
-						done();
-					}, 0.1);
-				});
-
-				it("can be set to 'timeout'", function(done){
-					ctx.clockSource = "timeout";
-					expect(ctx.clockSource).to.equal("timeout");
-					ctx.setTimeout(function(){
-						done();
-					}, 0.1);
-				});
-
-				it("can be set to 'offline'", function(done){
-					ctx.clockSource = "offline";
-					expect(ctx.clockSource).to.equal("offline");
-					//provides no callback
-					ctx.setTimeout(function(){
-						throw new Error("shouldn't be called");
-					}, 0.1);
-					setTimeout(function(){
-						done();
-					}, 200);
-				});
-			});
-
+			}
 			context("setTimeout", function(){
 
-				var ctx;
-				beforeEach(function(){
-					ctx = new Context();
-					return ctx.resume();
-				});
+				if (Supports.ONLINE_TESTING){
+					
+					var ctx;
+					beforeEach(function(){
+						ctx = new Context();
+						return ctx.resume();
+					});
 
-				afterEach(function(){
-					return ctx.dispose();
-				});
+					afterEach(function(){
+						return ctx.dispose();
+					});
 
-				it("can set a timeout", function(done){
-					ctx.setTimeout(function(){
-						done();
-					}, 0.1);
-				});
+					it("can set a timeout", function(done){
+						ctx.setTimeout(function(){
+							done();
+						}, 0.1);
+					});
 
-				it("returns an id", function(){
-					expect(ctx.setTimeout(function(){}, 0.1)).to.be.a("number");
-					//try clearing a random ID, shouldn't cause any errors
-					ctx.clearTimeout(-2);
-				});
+					it("returns an id", function(){
+						expect(ctx.setTimeout(function(){}, 0.1)).to.be.a("number");
+						//try clearing a random ID, shouldn't cause any errors
+						ctx.clearTimeout(-2);
+					});
 
-				it("timeout is not invoked when cancelled", function(done){
-					var id = ctx.setTimeout(function(){
-						throw new Error("shouldn't be invoked");
-					}, 0.01);
-					ctx.clearTimeout(id);
-					ctx.setTimeout(function(){
-						done();
-					}, 0.02);
-				});
+					it("timeout is not invoked when cancelled", function(done){
+						var id = ctx.setTimeout(function(){
+							throw new Error("shouldn't be invoked");
+						}, 0.01);
+						ctx.clearTimeout(id);
+						ctx.setTimeout(function(){
+							done();
+						}, 0.02);
+					});
 
-				it("order is maintained", function(done){
-					var wasInvoked = false;
-					ctx.setTimeout(function(){
-						expect(wasInvoked).to.be.true;
-						done();
-					}, 0.02);
-					ctx.setTimeout(function(){
-						wasInvoked = true;
-					}, 0.01);
-				});
+					it("order is maintained", function(done){
+						var wasInvoked = false;
+						ctx.setTimeout(function(){
+							expect(wasInvoked).to.be.true;
+							done();
+						}, 0.02);
+						ctx.setTimeout(function(){
+							wasInvoked = true;
+						}, 0.01);
+					});
+				}
 
 				it("is invoked in the offline context", function(){
 					return Offline(function(Transport){
@@ -213,21 +218,6 @@ define(["helper/Test", "Tone/core/Context", "Tone/core/Tone", "helper/Offline", 
 					Tone.context.dispose();
 				});
 
-				/*it("can have two instances running on the same page", function(){
-					var baseUrl = "../test/html/";
-					if (window.__karma__){
-						baseUrl = "/base/test/html/";
-					}
-					return LoadHTML(baseUrl + "multiple_instances.html");
-				});*/
-
-				/*it("Transport and Master instance is the same after running Tone.Offline", function(){
-					var baseUrl = "../test/html/";
-					if (window.__karma__){
-						baseUrl = "/base/test/html/";
-					}
-					return LoadHTML(baseUrl + "same_transport.html");
-				});*/
 			});
 
 			context("get/set", function(){

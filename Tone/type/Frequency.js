@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/type/TimeBase"], function(Tone){
+define(["../core/Tone", "../type/TimeBase"], function(Tone){
 
 	/**
 	 *  @class Tone.Frequency is a primitive type for encoding Frequency values.

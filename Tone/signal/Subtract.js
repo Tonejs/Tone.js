@@ -1,4 +1,4 @@
-define(["Tone/core/Tone", "Tone/signal/Add", "Tone/signal/Negate", "Tone/signal/Signal", "Tone/core/Gain"], function(Tone){
+define(["../core/Tone", "../signal/Add", "../signal/Negate", "../signal/Signal", "../core/Gain"], function(Tone){
 
 	"use strict";
 

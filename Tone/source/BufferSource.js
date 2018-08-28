@@ -1,5 +1,5 @@
-define(["Tone/core/Tone", "Tone/core/Buffer", "Tone/source/Source", "Tone/core/Gain",
-	"Tone/core/AudioNode", "Tone/shim/BufferSourceNode"], function(Tone){
+define(["../core/Tone", "../core/Buffer", "../source/Source", "../core/Gain",
+	"../core/AudioNode", "../shim/BufferSourceNode"], function(Tone){
 
 	/**
 	 *  @class Wrapper around the native BufferSourceNode.
