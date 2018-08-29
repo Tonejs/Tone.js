@@ -1,8 +1,8 @@
 define(["../core/Tone", "../shim/OfflineAudioContext"], function(Tone){
 
 	if (Tone.supported){
-		if (!window.hasOwnProperty("AudioContext") && window.hasOwnProperty("webkitAudioContext")){
-			window.AudioContext = window.webkitAudioContext;
+		if (!Tone.global.hasOwnProperty("AudioContext") && Tone.global.hasOwnProperty("webkitAudioContext")){
+			Tone.global.AudioContext = Tone.global.webkitAudioContext;
 		}
 
 		//not functionally equivalent, but only an API placeholder

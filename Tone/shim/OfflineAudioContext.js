@@ -1,8 +1,8 @@
 define(["../core/Tone"], function(Tone){
 	if (Tone.supported){
 
-		if (!window.hasOwnProperty("OfflineAudioContext") && window.hasOwnProperty("webkitOfflineAudioContext")){
-			window.OfflineAudioContext = window.webkitOfflineAudioContext;
+		if (!Tone.global.hasOwnProperty("OfflineAudioContext") && Tone.global.hasOwnProperty("webkitOfflineAudioContext")){
+			Tone.global.OfflineAudioContext = Tone.global.webkitOfflineAudioContext;
 		}
 
 		//returns promise?

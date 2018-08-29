@@ -284,14 +284,14 @@ define(function(){
 	 *  is set to the name of the class. 
 	 *  @example
 	 * //prints all logs originating from Tone.OscillatorNode
-	 * window.TONE_DEBUG_CLASS = "OscillatorNode"
+	 * Tone.global.TONE_DEBUG_CLASS = "OscillatorNode"
 	 *  @param {*} args Any arguments to print to the console.
 	 *  @private
 	 */
 	Tone.prototype.log = function(){
 		//if the object is either set to debug = true
-		//or if there is a string on the window with the class name
-		if (this.debug || this.toString() === window.TONE_DEBUG_CLASS){
+		//or if there is a string on the Tone.global.with the class name
+		if (this.debug || this.toString() === Tone.global.TONE_DEBUG_CLASS){
 			var args = Array.from(arguments);
 			args.unshift(this.toString()+":");
 			// eslint-disable-next-line no-console
@@ -486,6 +486,11 @@ define(function(){
 		Stopped : "stopped",
 		Paused : "paused",
 	};
+
+	/**
+	 * A reference to the global context, `global` or `Tone.global.
+	 */
+	Tone.global = Tone.isUndef(global) ? window : global;
 
 	///////////////////////////////////////////////////////////////////////////
 	// CONVERSIONS
@@ -714,8 +719,8 @@ define(function(){
 	 */
 	Object.defineProperty(Tone, "supported", {
 		get : function(){
-			var hasAudioContext = window.hasOwnProperty("AudioContext") || window.hasOwnProperty("webkitAudioContext");
-			var hasPromises = window.hasOwnProperty("Promise");
+			var hasAudioContext = Tone.global.hasOwnProperty("AudioContext") || Tone.global.hasOwnProperty("webkitAudioContext");
+			var hasPromises = Tone.global.hasOwnProperty("Promise");
 			return hasAudioContext && hasPromises;
 		}
 	});

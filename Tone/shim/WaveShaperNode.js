@@ -48,8 +48,8 @@ define(["../core/Tone", "../shim/AudioContext"], function(Tone){
 				}
 			};
 
-			window.AudioContext.prototype._native_createWaveShaper = window.AudioContext.prototype.createWaveShaper;
-			window.AudioContext.prototype.createWaveShaper = function(){
+			Tone.global.AudioContext.prototype._native_createWaveShaper = Tone.global.AudioContext.prototype.createWaveShaper;
+			Tone.global.AudioContext.prototype.createWaveShaper = function(){
 				return new WaveShaperNode(this);
 			};
 		}
