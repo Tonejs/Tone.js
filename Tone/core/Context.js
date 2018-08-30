@@ -607,8 +607,13 @@ define(["../core/Tone", "../core/Emitter", "../core/Timeline", "../shim/AudioCon
 		// log on first initialization
 		// allow optional silencing of this log
 		if (!Tone.global.TONE_SILENCE_VERSION_LOGGING){
+			var prefix = "v";
+			if (Tone.version === "dev"){
+				prefix = "";
+			}
+			var printString = " * Tone.js " + prefix + Tone.version + " * "; 
 			// eslint-disable-next-line no-console
-			console.log("%c * Tone.js " + Tone.version + " * ", "background: #000; color: #fff");
+			console.log("%c" + printString, "background: #000; color: #fff");
 		}
 	} else if (!Tone.supported){
 		// eslint-disable-next-line no-console
