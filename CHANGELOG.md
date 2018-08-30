@@ -1,6 +1,7 @@
 ### r13
 
 * Updating semantic versioning to be more in line with other [semvers](https://semver.org/). Now version is 13.x.x
+* logging full version
 * Added Object notation for Tone.TimeBase and classes that extend it. 
 	- i.e. Tone.Time({'4n' : 1, '8t' : 2})
 	- Replacement for deprecated expression strings. 
@@ -8,6 +9,8 @@
 * Tone.Sampler supports polyphonic syntax (thanks [@zfan40](https://github.com/zfan40))
 * Building files with [webpack](https://webpack.js.org/)
 * Follower/Gate uses a single "smoothing" value instead of separate attacks and releases
+* Changing references to `window` allowing it to not throw error in node context
+* Testing examples
 
 
 ### r12
