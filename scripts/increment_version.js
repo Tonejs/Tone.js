@@ -35,5 +35,5 @@ if (process.env.TRAVIS){
 }
 
 //write a version file
-var versionFile = `module.exports = ${JSON.stringify({ version }, undefined, "\t")};\n`;
+var versionFile = `module.exports = ${JSON.stringify(version)};\n`;
 fs.writeFileSync(resolve(__dirname, "../Tone/version.js"), versionFile);

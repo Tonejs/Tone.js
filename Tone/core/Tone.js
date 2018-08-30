@@ -4,7 +4,7 @@
  *  @license http://opensource.org/licenses/MIT MIT License
  *  @copyright 2014-2018 Yotam Mann
  */
-define(function(){
+define(["../version"], function(version){
 
 	"use strict";
 
@@ -762,7 +762,7 @@ define(function(){
 	 * @type {String}
 	 * @static
 	 */
-	Tone.version = "r13-dev";
+	Tone.version = version;
 
 	return Tone;
 });
