@@ -224,7 +224,7 @@ define(["../core/Tone", "../core/Context"], function(Tone){
 		return this;
 	};
 
-	if (window.AudioNode){
+	if (Tone.global.AudioNode){
 		//give native nodes chain and fan methods
 		AudioNode.prototype.chain = Tone.AudioNode.prototype.chain;
 		AudioNode.prototype.fan = Tone.AudioNode.prototype.fan;

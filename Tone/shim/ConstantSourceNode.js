@@ -1,7 +1,7 @@
 define(["../core/Tone", "../shim/AudioContext", "../shim/BufferSourceNode",
 	"../core/Context", "../core/Gain"], function(Tone){
 
-	if (Tone.supported && !window.AudioContext.prototype.createConstantSource){
+	if (Tone.supported && !Tone.global.AudioContext.prototype.createConstantSource){
 
 		var ConstantSourceNode = function(context){
 			this.context = context;

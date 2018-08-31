@@ -19,10 +19,10 @@ define(["../core/Tone", "../shim/AudioContext"], function(Tone){
 			};
 
 			Object.defineProperty(WaveShaperNode.prototype, "curve", {
-				get : function(){
+				"get" : function(){
 					return this._curve;
 				},
-				set : function(curve){
+				"set" : function(curve){
 					this._curve = curve;
 					var array = new Float32Array(curve.length+1);
 					array.set(curve, 1);
@@ -34,22 +34,22 @@ define(["../core/Tone", "../shim/AudioContext"], function(Tone){
 			WaveShaperNode.prototype._defineProperty = function(context, prop){
 				if (Tone.isUndef(this[prop])){
 					Object.defineProperty(this, prop, {
-						get : function(){
+						"get" : function(){
 							if (typeof context[prop] === "function"){
 								return context[prop].bind(context);
 							} else {
 								return context[prop];
 							}
 						},
-						set : function(val){
+						"set" : function(val){
 							context[prop] = val;
 						}
 					});
 				}
 			};
 
-			window.AudioContext.prototype._native_createWaveShaper = window.AudioContext.prototype.createWaveShaper;
-			window.AudioContext.prototype.createWaveShaper = function(){
+			Tone.global.AudioContext.prototype._native_createWaveShaper = Tone.global.AudioContext.prototype.createWaveShaper;
+			Tone.global.AudioContext.prototype.createWaveShaper = function(){
 				return new WaveShaperNode(this);
 			};
 		}

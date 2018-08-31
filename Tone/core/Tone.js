@@ -4,7 +4,7 @@
  *  @license http://opensource.org/licenses/MIT MIT License
  *  @copyright 2014-2018 Yotam Mann
  */
-define(function(){
+define(["../version"], function(version){
 
 	"use strict";
 
@@ -284,14 +284,14 @@ define(function(){
 	 *  is set to the name of the class. 
 	 *  @example
 	 * //prints all logs originating from Tone.OscillatorNode
-	 * window.TONE_DEBUG_CLASS = "OscillatorNode"
+	 * Tone.global.TONE_DEBUG_CLASS = "OscillatorNode"
 	 *  @param {*} args Any arguments to print to the console.
 	 *  @private
 	 */
 	Tone.prototype.log = function(){
 		//if the object is either set to debug = true
-		//or if there is a string on the window with the class name
-		if (this.debug || this.toString() === window.TONE_DEBUG_CLASS){
+		//or if there is a string on the Tone.global.with the class name
+		if (this.debug || this.toString() === Tone.global.TONE_DEBUG_CLASS){
 			var args = Array.from(arguments);
 			args.unshift(this.toString()+":");
 			// eslint-disable-next-line no-console
@@ -454,8 +454,8 @@ define(function(){
 			}
 		} else {
 			Object.defineProperty(this, property, {
-				writable : false,
-				enumerable : true,
+				"writable" : false,
+				"enumerable" : true,
 			});
 		}
 	};
@@ -472,7 +472,7 @@ define(function(){
 			}
 		} else {
 			Object.defineProperty(this, property, {
-				writable : true,
+				"writable" : true,
 			});
 		}
 	};
@@ -482,10 +482,15 @@ define(function(){
 	 * @enum {String}
 	 */
 	Tone.State = {
-		Started : "started",
-		Stopped : "stopped",
-		Paused : "paused",
+		"Started" : "started",
+		"Stopped" : "stopped",
+		"Paused" : "paused",
 	};
+
+	/**
+	 * A reference to the global context, `global` or `Tone.global.
+	 */
+	Tone.global = Tone.isUndef(global) ? window : global;
 
 	///////////////////////////////////////////////////////////////////////////
 	// CONVERSIONS
@@ -633,10 +638,10 @@ define(function(){
 	 *  @memberOf Tone
 	 */
 	Object.defineProperty(Tone, "context", {
-		get : function(){
+		"get" : function(){
 			return Tone._audioContext;
 		},
-		set : function(context){
+		"set" : function(context){
 			if (context.isContext){
 				Tone._audioContext = context;
 			} else {
@@ -655,7 +660,7 @@ define(function(){
 	 *  @readOnly
 	 */
 	Object.defineProperty(Tone.prototype, "context", {
-		get : function(){
+		"get" : function(){
 			return Tone.context;
 		}
 	});
@@ -685,7 +690,7 @@ define(function(){
 	 *  @readOnly
 	 */
 	Object.defineProperty(Tone.prototype, "blockTime", {
-		get : function(){
+		"get" : function(){
 			return 128 / this.context.sampleRate;
 		}
 	});
@@ -699,7 +704,7 @@ define(function(){
 	 *  @readOnly
 	 */
 	Object.defineProperty(Tone.prototype, "sampleTime", {
-		get : function(){
+		"get" : function(){
 			return 1 / this.context.sampleRate;
 		}
 	});
@@ -713,9 +718,9 @@ define(function(){
 	 *  @static
 	 */
 	Object.defineProperty(Tone, "supported", {
-		get : function(){
-			var hasAudioContext = window.hasOwnProperty("AudioContext") || window.hasOwnProperty("webkitAudioContext");
-			var hasPromises = window.hasOwnProperty("Promise");
+		"get" : function(){
+			var hasAudioContext = Tone.global.hasOwnProperty("AudioContext") || Tone.global.hasOwnProperty("webkitAudioContext");
+			var hasPromises = Tone.global.hasOwnProperty("Promise");
 			return hasAudioContext && hasPromises;
 		}
 	});
@@ -729,7 +734,7 @@ define(function(){
 	 *  @readOnly
 	 */
 	Object.defineProperty(Tone, "initialized", {
-		get : function(){
+		"get" : function(){
 			return Boolean(Tone.context);
 		}
 	});
@@ -757,7 +762,7 @@ define(function(){
 	 * @type {String}
 	 * @static
 	 */
-	Tone.version = "r13-dev";
+	Tone.version = version;
 
 	return Tone;
 });

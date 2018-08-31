@@ -28,6 +28,7 @@
     "test:browser": "npm run collect:tests && concurrently \"webpack -w --mode=development --env.test\" \"http-server -p 9090 -c-1\" \"open http://localhost:9090/build/test.html\"",
     "test:travis": "npm run build && npm run lint && npm run test",
     "test:html": "mocha ./test/html/testHTML.js --timeout 30000",
+    "test:node": "node ./test/html/node_test.js",
     "watch": "npm run increment && npm run collect:deps && webpack -w --env.production --mode=development"
   },
   "repository": {

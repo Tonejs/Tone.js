@@ -12,7 +12,7 @@ define(["../core/Tone", "../core/Emitter", "../core/Timeline", "../shim/AudioCon
 		var options = Tone.defaults(arguments, ["context"], Tone.Context);
 
 		if (!options.context){
-			options.context = new window.AudioContext();
+			options.context = new Tone.global.AudioContext();
 			if (!options.context){
 				throw new Error("could not create AudioContext. Possibly too many AudioContexts running already.");
 			}
@@ -181,7 +181,7 @@ define(["../core/Tone", "../core/Emitter", "../core/Timeline", "../shim/AudioCon
 	Tone.Context.prototype.close = function(){
 		var closePromise = Promise.resolve();
 		//never close the global Tone.Context
-		if (this !== window.TONE_AUDIO_CONTEXT){
+		if (this !== Tone.global.TONE_AUDIO_CONTEXT){
 			closePromise = this.rawContext.close();
 		}
 		return closePromise.then(function(){
@@ -422,7 +422,7 @@ define(["../core/Tone", "../core/Emitter", "../core/Timeline", "../shim/AudioCon
 	Ticker.prototype._createWorker = function(){
 
 		//URL Shim
-		window.URL = window.URL || window.webkitURL;
+		Tone.global.URL = Tone.global.URL || Tone.global.webkitURL;
 
 		var blob = new Blob([
 			//the initial timeout time
@@ -599,16 +599,21 @@ define(["../core/Tone", "../core/Emitter", "../core/Timeline", "../shim/AudioCon
 
 	// set the audio context initially, and if one is not already created
 	if (Tone.supported && !Tone.initialized){			
-		if (!window.TONE_AUDIO_CONTEXT){
-			window.TONE_AUDIO_CONTEXT = new Tone.Context();
+		if (!Tone.global.TONE_AUDIO_CONTEXT){
+			Tone.global.TONE_AUDIO_CONTEXT = new Tone.Context();
 		}
-		Tone.context = window.TONE_AUDIO_CONTEXT;
+		Tone.context = Tone.global.TONE_AUDIO_CONTEXT;
 
 		// log on first initialization
 		// allow optional silencing of this log
-		if (!window.TONE_SILENCE_VERSION_LOGGING){
+		if (!Tone.global.TONE_SILENCE_VERSION_LOGGING){
+			var prefix = "v";
+			if (Tone.version === "dev"){
+				prefix = "";
+			}
+			var printString = " * Tone.js " + prefix + Tone.version + " * "; 
 			// eslint-disable-next-line no-console
-			console.log("%c * Tone.js " + Tone.version + " * ", "background: #000; color: #fff");
+			console.log("%c" + printString, "background: #000; color: #fff");
 		}
 	} else if (!Tone.supported){
 		// eslint-disable-next-line no-console

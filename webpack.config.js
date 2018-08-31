@@ -16,6 +16,7 @@ const defaults = {
 		filename : "[name].js",
 		library : "Tone",
 		libraryTarget : "umd",
+		globalObject : "typeof self !== 'undefined' ? self : this",
 	},
 	resolve : {
 		modules : [

@@ -52,6 +52,7 @@ jobs:
       script: 
         - npm run build
         - npm run test:html
+        - npm run test:node
       env : BROWSER=puppeteer
     - stage: deploy
       os: linux
