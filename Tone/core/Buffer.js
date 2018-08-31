@@ -58,13 +58,12 @@ define(["../core/Tone", "../core/Emitter", "../type/Type", "../shim/AudioBuffer"
 		 * @type {Function}
 		 * @private
 		 */
-		this._onload = Tone.noOp;
+		this.onload = Tone.noOp;
 
 		if (options.url instanceof AudioBuffer || options.url instanceof Tone.Buffer){
 			this.set(options.url);
-			// setup the onload callback if it's not loaded yet
 			if (!this.loaded){
-				this._onload = options.onload;
+				this.onload = options.onload;
 			}
 		} else if (Tone.isString(options.url)){
 			this.load(options.url).then(options.onload).catch(options.onerror);
@@ -92,12 +91,14 @@ define(["../core/Tone", "../core/Emitter", "../type/Type", "../shim/AudioBuffer"
 	 */
 	Tone.Buffer.prototype.set = function(buffer){
 		if (buffer instanceof Tone.Buffer){
+			//if it's loaded, set it
 			if (buffer.loaded){
 				this._buffer = buffer.get();
 			} else {
-				buffer._onload = function(){
+				//otherwise when it's loaded, invoke it's callback
+				buffer.onload = function(){
 					this.set(buffer);
-					this._onload(this);
+					this.onload(this);
 				}.bind(this);
 			}
 		} else {
@@ -133,7 +134,7 @@ define(["../core/Tone", "../core/Emitter", "../type/Type", "../shim/AudioBuffer"
 					this._xhr = null;
 					this.set(buff);
 					load(this);
-					this._onload(this);
+					this.onload(this);
 					if (onload){
 						onload(this);
 					}
