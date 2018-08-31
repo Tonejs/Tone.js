@@ -25,7 +25,7 @@ module.exports = {
 		"no-throw-literal" : [ "error" ],
 		"no-useless-call" : [ "error" ],
 		"no-unmodified-loop-condition": [ "error" ],
-		"quote-props" : [ "error", "always" ],
+		"quote-props" : [ "error", "consistent" ],
 		"quotes": [ "error","double" ],
 		"no-lonely-if" : [ "error" ],
 		"semi": [ "error", "always" ],

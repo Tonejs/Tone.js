@@ -62,13 +62,9 @@ define(["../core/Tone", "../core/Emitter", "../type/Type", "../shim/AudioBuffer"
 
 		if (options.url instanceof AudioBuffer || options.url instanceof Tone.Buffer){
 			this.set(options.url);
-			// invoke the onload callback
-			if (options.onload){
-				if (this.loaded){
-					options.onload(this);
-				} else {
-					this._onload = options.onload;
-				}
+			// setup the onload callback if it's not loaded yet
+			if (!this.loaded){
+				this._onload = options.onload;
 			}
 		} else if (Tone.isString(options.url)){
 			this.load(options.url).then(options.onload).catch(options.onerror);
