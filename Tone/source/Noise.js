@@ -185,56 +185,74 @@ define(["../core/Tone", "../source/Source", "../core/Buffer",
 	 *  @private
 	 *  @type {Array}
 	 */
-	var _noiseArrays = {
-		"pink" : (function(){
-			var buffer = [];
-			for (var channelNum = 0; channelNum < channels; channelNum++){
-				var channel = new Float32Array(bufferLength);
-				buffer[channelNum] = channel;
-				var b0, b1, b2, b3, b4, b5, b6;
-				b0 = b1 = b2 = b3 = b4 = b5 = b6 = 0.0;
-				for (var i = 0; i < bufferLength; i++){
-					var white = Math.random() * 2 - 1;
-					b0 = 0.99886 * b0 + white * 0.0555179;
-					b1 = 0.99332 * b1 + white * 0.0750759;
-					b2 = 0.96900 * b2 + white * 0.1538520;
-					b3 = 0.86650 * b3 + white * 0.3104856;
-					b4 = 0.55000 * b4 + white * 0.5329522;
-					b5 = -0.7616 * b5 - white * 0.0168980;
-					channel[i] = b0 + b1 + b2 + b3 + b4 + b5 + b6 + white * 0.5362;
-					channel[i] *= 0.11; // (roughly) compensate for gain
-					b6 = white * 0.115926;
+	var _noiseArrays = {};
+	var _noiseCache = {};
+
+	Object.defineProperty(_noiseArrays, "pink", {
+		getter : function(){
+			if (!_noiseCache.pink){
+				var buffer = [];
+				for (var channelNum = 0; channelNum < channels; channelNum++){
+					var channel = new Float32Array(bufferLength);
+					buffer[channelNum] = channel;
+					var b0, b1, b2, b3, b4, b5, b6;
+					b0 = b1 = b2 = b3 = b4 = b5 = b6 = 0.0;
+					for (var i = 0; i < bufferLength; i++){
+						var white = Math.random() * 2 - 1;
+						b0 = 0.99886 * b0 + white * 0.0555179;
+						b1 = 0.99332 * b1 + white * 0.0750759;
+						b2 = 0.96900 * b2 + white * 0.1538520;
+						b3 = 0.86650 * b3 + white * 0.3104856;
+						b4 = 0.55000 * b4 + white * 0.5329522;
+						b5 = -0.7616 * b5 - white * 0.0168980;
+						channel[i] = b0 + b1 + b2 + b3 + b4 + b5 + b6 + white * 0.5362;
+						channel[i] *= 0.11; // (roughly) compensate for gain
+						b6 = white * 0.115926;
+					}
 				}
+				_noiseCache.pink = buffer;
 			}
-			return buffer;
-		}()),
-		"brown" : (function(){
-			var buffer = [];
-			for (var channelNum = 0; channelNum < channels; channelNum++){
-				var channel = new Float32Array(bufferLength);
-				buffer[channelNum] = channel;
-				var lastOut = 0.0;
-				for (var i = 0; i < bufferLength; i++){
-					var white = Math.random() * 2 - 1;
-					channel[i] = (lastOut + (0.02 * white)) / 1.02;
-					lastOut = channel[i];
-					channel[i] *= 3.5; // (roughly) compensate for gain
+			return _noiseCache.pink;
+		}
+	});
+
+	Object.defineProperty(_noiseArrays, "brown", {
+		getter : function(){
+			if (!_noiseCache.brown){
+				var buffer = [];
+				for (var channelNum = 0; channelNum < channels; channelNum++){
+					var channel = new Float32Array(bufferLength);
+					buffer[channelNum] = channel;
+					var lastOut = 0.0;
+					for (var i = 0; i < bufferLength; i++){
+						var white = Math.random() * 2 - 1;
+						channel[i] = (lastOut + (0.02 * white)) / 1.02;
+						lastOut = channel[i];
+						channel[i] *= 3.5; // (roughly) compensate for gain
+					}
 				}
+				_noiseCache.brown = buffer;
 			}
-			return buffer;
-		})(),
-		"white" : (function(){
-			var buffer = [];
-			for (var channelNum = 0; channelNum < channels; channelNum++){
-				var channel = new Float32Array(bufferLength);
-				buffer[channelNum] = channel;
-				for (var i = 0; i < bufferLength; i++){
-					channel[i] = Math.random() * 2 - 1;
+			return _noiseCache.brown;
+		}
+	});
+
+	Object.defineProperty(_noiseArrays, "white", {
+		getter : function(){
+			if (!_noiseCache.white){
+				var buffer = [];
+				for (var channelNum = 0; channelNum < channels; channelNum++){
+					var channel = new Float32Array(bufferLength);
+					buffer[channelNum] = channel;
+					for (var i = 0; i < bufferLength; i++){
+						channel[i] = Math.random() * 2 - 1;
+					}
 				}
+				_noiseCache.white = buffer;
 			}
-			return buffer;
-		}())
-	};
+			return _noiseCache.white;
+		}
+	});
 
 	/**
 	 *	static noise buffers
