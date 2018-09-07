@@ -185,10 +185,10 @@ define(["../core/Tone", "../source/Source", "../core/Buffer",
 	 *  @private
 	 *  @type {Array}
 	 */
-	var _noiseArrays = {};
+	var _noiseBuffers = {};
 	var _noiseCache = {};
 
-	Object.defineProperty(_noiseArrays, "pink", {
+	Object.defineProperty(_noiseBuffers, "pink", {
 		get : function(){
 			if (!_noiseCache.pink){
 				var buffer = [];
@@ -210,13 +210,13 @@ define(["../core/Tone", "../source/Source", "../core/Buffer",
 						b6 = white * 0.115926;
 					}
 				}
-				_noiseCache.pink = buffer;
+				_noiseCache.pink = new Tone.Buffer().fromArray(buffer);
 			}
 			return _noiseCache.pink;
 		}
 	});
 
-	Object.defineProperty(_noiseArrays, "brown", {
+	Object.defineProperty(_noiseBuffers, "brown", {
 		get : function(){
 			if (!_noiseCache.brown){
 				var buffer = [];
@@ -231,13 +231,13 @@ define(["../core/Tone", "../source/Source", "../core/Buffer",
 						channel[i] *= 3.5; // (roughly) compensate for gain
 					}
 				}
-				_noiseCache.brown = buffer;
+				_noiseCache.brown = new Tone.Buffer().fromArray(buffer);
 			}
 			return _noiseCache.brown;
 		}
 	});
 
-	Object.defineProperty(_noiseArrays, "white", {
+	Object.defineProperty(_noiseBuffers, "white", {
 		get : function(){
 			if (!_noiseCache.white){
 				var buffer = [];
@@ -248,30 +248,11 @@ define(["../core/Tone", "../source/Source", "../core/Buffer",
 						channel[i] = Math.random() * 2 - 1;
 					}
 				}
-				_noiseCache.white = buffer;
+				_noiseCache.white = new Tone.Buffer().fromArray(buffer);
 			}
 			return _noiseCache.white;
 		}
 	});
-
-	/**
-	 *	static noise buffers
-	 *  @static
-	 *  @private
-	 *  @type {Tone.Buffer}
-	 */
-	var _noiseBuffers = {};
-
-	//create the Tone.Buffers
-	function createBuffers(){
-		for (var type in _noiseArrays){
-			_noiseBuffers[type] = new Tone.Buffer().fromArray(_noiseArrays[type]);
-		}
-	}
-
-	//create the noise buffers
-	Tone.getContext(createBuffers);
-	Tone.Context.on("init", createBuffers);
 
 	return Tone.Noise;
 });
