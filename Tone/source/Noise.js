@@ -189,7 +189,7 @@ define(["../core/Tone", "../source/Source", "../core/Buffer",
 	var _noiseCache = {};
 
 	Object.defineProperty(_noiseArrays, "pink", {
-		getter : function(){
+		get : function(){
 			if (!_noiseCache.pink){
 				var buffer = [];
 				for (var channelNum = 0; channelNum < channels; channelNum++){
@@ -217,7 +217,7 @@ define(["../core/Tone", "../source/Source", "../core/Buffer",
 	});
 
 	Object.defineProperty(_noiseArrays, "brown", {
-		getter : function(){
+		get : function(){
 			if (!_noiseCache.brown){
 				var buffer = [];
 				for (var channelNum = 0; channelNum < channels; channelNum++){
@@ -238,7 +238,7 @@ define(["../core/Tone", "../source/Source", "../core/Buffer",
 	});
 
 	Object.defineProperty(_noiseArrays, "white", {
-		getter : function(){
+		get : function(){
 			if (!_noiseCache.white){
 				var buffer = [];
 				for (var channelNum = 0; channelNum < channels; channelNum++){
