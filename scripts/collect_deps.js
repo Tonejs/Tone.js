@@ -16,6 +16,9 @@ function collectDependencies(){
 			//write it to disk
 			// const relativePath = "./" + relative(resolve(__dirname, "../Tone"), modules[0]);
 			let reqString = modules.map(r => `require("./${relative(resolve(__dirname, "../Tone"), r)}");`).join("\n");
+			if (process.platform === "win32"){
+				reqString = reqString.replace(/\\/g, "/");
+			}
 			reqString += "\nmodule.exports = require(\"./core/Tone\");\n";
 			fs.writeFile(resolve(__dirname, "../Tone/index.js"), reqString, e => {
 				if (e){
