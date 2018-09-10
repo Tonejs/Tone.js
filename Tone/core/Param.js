@@ -83,8 +83,8 @@ define(["../core/Tone", "../type/Type", "../core/AudioNode", "../core/Timeline"]
 		},
 		set : function(value){
 			this._initialValue = this._fromUnits(value);
-			this.cancelScheduledValues(this.context.currentTime);
-			this.setValueAtTime(value, this.context.currentTime);
+			this.cancelScheduledValues(this.now());
+			this.setValueAtTime(value, this.now());
 		}
 	});
 
