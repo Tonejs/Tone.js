@@ -454,8 +454,8 @@ define(["../version"], function(version){
 			}
 		} else {
 			Object.defineProperty(this, property, {
-				writable : false,
-				enumerable : true,
+				"writable" : false,
+				"enumerable" : true,
 			});
 		}
 	};
@@ -472,7 +472,7 @@ define(["../version"], function(version){
 			}
 		} else {
 			Object.defineProperty(this, property, {
-				writable : true,
+				"writable" : true,
 			});
 		}
 	};
@@ -482,9 +482,9 @@ define(["../version"], function(version){
 	 * @enum {String}
 	 */
 	Tone.State = {
-		Started : "started",
-		Stopped : "stopped",
-		Paused : "paused",
+		"Started" : "started",
+		"Stopped" : "stopped",
+		"Paused" : "paused",
 	};
 
 	/**
@@ -638,10 +638,10 @@ define(["../version"], function(version){
 	 *  @memberOf Tone
 	 */
 	Object.defineProperty(Tone, "context", {
-		get : function(){
+		"get" : function(){
 			return Tone._audioContext;
 		},
-		set : function(context){
+		"set" : function(context){
 			if (context.isContext){
 				Tone._audioContext = context;
 			} else {
@@ -660,7 +660,7 @@ define(["../version"], function(version){
 	 *  @readOnly
 	 */
 	Object.defineProperty(Tone.prototype, "context", {
-		get : function(){
+		"get" : function(){
 			return Tone.context;
 		}
 	});
@@ -690,7 +690,7 @@ define(["../version"], function(version){
 	 *  @readOnly
 	 */
 	Object.defineProperty(Tone.prototype, "blockTime", {
-		get : function(){
+		"get" : function(){
 			return 128 / this.context.sampleRate;
 		}
 	});
@@ -704,7 +704,7 @@ define(["../version"], function(version){
 	 *  @readOnly
 	 */
 	Object.defineProperty(Tone.prototype, "sampleTime", {
-		get : function(){
+		"get" : function(){
 			return 1 / this.context.sampleRate;
 		}
 	});
@@ -718,7 +718,7 @@ define(["../version"], function(version){
 	 *  @static
 	 */
 	Object.defineProperty(Tone, "supported", {
-		get : function(){
+		"get" : function(){
 			var hasAudioContext = Tone.global.hasOwnProperty("AudioContext") || Tone.global.hasOwnProperty("webkitAudioContext");
 			var hasPromises = Tone.global.hasOwnProperty("Promise");
 			return hasAudioContext && hasPromises;
@@ -734,7 +734,7 @@ define(["../version"], function(version){
 	 *  @readOnly
 	 */
 	Object.defineProperty(Tone, "initialized", {
-		get : function(){
+		"get" : function(){
 			return Boolean(Tone.context);
 		}
 	});

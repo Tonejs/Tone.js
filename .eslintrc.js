@@ -8,7 +8,8 @@ module.exports = {
     },
     "globals": {
         "expect": true,
-        "Tone" : true
+        "Tone": true,
+        "Interface": true
     },
     "parserOptions": {
         "ecmaVersion": 2017,
@@ -24,7 +25,7 @@ module.exports = {
 		"no-throw-literal" : [ "error" ],
 		"no-useless-call" : [ "error" ],
 		"no-unmodified-loop-condition": [ "error" ],
-		"quote-props" : [ "error", "consistent" /*"as-needed"*/ ],
+		"quote-props" : [ "error", "consistent" ],
 		"quotes": [ "error","double" ],
 		"no-lonely-if" : [ "error" ],
 		"semi": [ "error", "always" ],
