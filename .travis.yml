@@ -38,14 +38,14 @@ jobs:
       env : BROWSER=safari
       os: osx
       osx_image: xcode9.2
-    - stage: test
-      before_script:
-      # needs an audio output device to run
-      - HOMEBREW_NO_AUTO_UPDATE=1 brew install Caskroom/cask/soundflower
-      env : BROWSER=safari
-      os: osx
-      # test on an older safari
-      osx_image: xcode6.4
+    # - stage: test
+    #   before_script:
+    #   # needs an audio output device to run
+    #   - HOMEBREW_NO_AUTO_UPDATE=1 brew install Caskroom/cask/soundflower
+    #   env : BROWSER=safari
+    #   os: osx
+    #   # test on an older safari
+    #   osx_image: xcode6.4
     - stage: test
       # puppeteer tests
       before_script: npm install puppeteer
