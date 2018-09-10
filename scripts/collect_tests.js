@@ -7,10 +7,24 @@ const argv = require("yargs")
 	.argv;
 
 /**
+ * Resolves a unix style variable on windows platforms
+ * e.g.: $NODE_ENV => process.env.NODE_ENV
+ * @param {string} variable variable received from argv
+ */
+function normalizeVariable(variable) {
+	if (process.platform === "win32" && variable.startsWith("$")) {
+		return process.env[variable.replace(/$\$/, "")];
+	}
+	return variable;
+}
+
+/**
  *  COLLECT TESTS
  */
 function collectTests(){
 	return new Promise((done, error) => {
+		argv.file = normalizeVariable(argv.file);
+		argv.dir = normalizeVariable(argv.dir);
 		var tests = "../test/!(helper|deps|examples|html)/*.js";
 		if (typeof argv.file === "string"){
 			tests = `../test/*/${argv.file}.js`;
