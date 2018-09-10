@@ -39,6 +39,9 @@ define(["../core/Tone", "../core/Buffer", "../effect/Effect"], function(Tone){
 			options.onload();
 		}.bind(this));
 
+		//initially set normalization
+		this.normalize = options.normalize;
+
 		this.connectEffect(this._convolver);
 	};
 
@@ -50,7 +53,8 @@ define(["../core/Tone", "../core/Buffer", "../effect/Effect"], function(Tone){
 	 *  @type  {Object}
 	 */
 	Tone.Convolver.defaults = {
-		"onload" : Tone.noOp
+		"onload" : Tone.noOp,
+		"normalize" : true
 	};
 
 	/**
@@ -66,6 +70,21 @@ define(["../core/Tone", "../core/Buffer", "../effect/Effect"], function(Tone){
 		"set" : function(buffer){
 			this._buffer.set(buffer);
 			this._convolver.buffer = this._buffer.get();
+		}
+	});
+
+	/**
+	 *  The normalize property of the ConvolverNode interface is a boolean that controls whether the impulse response from the buffer will be scaled by an equal-power normalization when the buffer attribute is set, or not.
+	 *  @memberOf Tone.Convolver#
+	 *  @type {Boolean}
+	 *  @name normalize
+	 */
+	Object.defineProperty(Tone.Convolver.prototype, "normalize", {
+		"get" : function(){
+			return this._convolver.normalize;
+		},
+		"set" : function(norm){
+			this._convolver.normalize = norm;
 		}
 	});
 

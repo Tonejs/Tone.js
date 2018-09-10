@@ -1,5 +1,5 @@
 define(["Tone/effect/Convolver", "helper/Basic", "helper/EffectTests", "Tone/core/Buffer"],
-	function (Convolver, Basic, EffectTests, Buffer) {
+	function(Convolver, Basic, EffectTests, Buffer){
 
 		if (window.__karma__){
 			Buffer.baseUrl = "/base/test/";
@@ -28,7 +28,16 @@ define(["Tone/effect/Convolver", "helper/Basic", "helper/EffectTests", "Tone/cor
 				it("can pass in options in the constructor", function(){
 					var convolver = new Convolver({
 						"url" : testFile,
+						"normalize" : false
 					});
+					expect(convolver.normalize).to.be.false;
+					convolver.dispose();
+				});
+
+				it("can get set normalize", function(){
+					var convolver = new Convolver();
+					convolver.normalize = false;
+					expect(convolver.normalize).to.be.false;
 					convolver.dispose();
 				});
 
