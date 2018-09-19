@@ -1,6 +1,6 @@
 define(["../core/Tone", "../shim/AudioContext"], function(Tone){
 
-	if (Tone.supported){
+	if (Tone.supported && !Tone.global.AudioContext.prototype._native_createWaveShaper){
 
 		//fixes safari only bug which is still present in 11
 		var ua = navigator.userAgent.toLowerCase();
