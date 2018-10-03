@@ -83,6 +83,6 @@
     "teoria": "^2.5.0",
     "webmidi": "^2.0.5",
     "webpack": "^4.6.0",
-    "webpack-cli": "^2.1.2"
+    "webpack-cli": "^3.1.2"
   }
 }
