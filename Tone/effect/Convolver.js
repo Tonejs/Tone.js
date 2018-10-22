@@ -35,9 +35,14 @@ define(["../core/Tone", "../core/Buffer", "../effect/Effect"], function(Tone){
 		 *  @private
 		 */
 		this._buffer = new Tone.Buffer(options.url, function(buffer){
-			this._convolver.buffer = buffer.get();
+			this.buffer = buffer.get();
 			options.onload();
 		}.bind(this));
+
+		//set if it's already loaded
+		if (this._buffer.loaded){
+			this.buffer = this._buffer;
+		}
 
 		//initially set normalization
 		this.normalize = options.normalize;
@@ -65,10 +70,23 @@ define(["../core/Tone", "../core/Buffer", "../effect/Effect"], function(Tone){
 	 */
 	Object.defineProperty(Tone.Convolver.prototype, "buffer", {
 		"get" : function(){
-			return this._buffer.get();
+			if (this._buffer.length){
+				return this._buffer;
+			} else {
+				return null;
+			}
 		},
 		"set" : function(buffer){
 			this._buffer.set(buffer);
+			//if it's already got a buffer, create a new one
+			if (this._convolver.buffer){
+				//disconnect the old one
+				this.effectSend.disconnect();
+				this._convolver.disconnect();
+				//create and connect a new one
+				this._convolver = this.context.createConvolver();
+				this.connectEffect(this._convolver);
+			}
 			this._convolver.buffer = this._buffer.get();
 		}
 	});
