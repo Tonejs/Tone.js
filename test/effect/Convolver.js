@@ -67,12 +67,24 @@ define(["Tone/effect/Convolver", "helper/Basic", "helper/EffectTests", "Tone/cor
 					});
 				});
 
+				it("can assign the buffer twice", function(){
+					var convolver = new Convolver(ir);
+					convolver.buffer = ir;
+					convolver.dispose();
+				});
+
+				it("can be constructed with a buffer", function(){
+					var convolver = new Convolver(ir);
+					expect(convolver.buffer.get()).to.equal(ir.get());
+					convolver.dispose();
+				});
+
 				it("can be constructed with loaded buffer", function(done){
 					var buffer = new Buffer({
 						"url" : testFile,
 						"onload" : function(){
 							var convolver = new Convolver(buffer);
-							expect(convolver.buffer).is.instanceOf(AudioBuffer);
+							expect(convolver.buffer).is.not.null;
 							buffer.dispose();
 							convolver.dispose();
 							done();
@@ -85,7 +97,7 @@ define(["Tone/effect/Convolver", "helper/Basic", "helper/EffectTests", "Tone/cor
 						"url" : new Buffer({
 							"url" : testFile,
 							"onload" : function(){
-								expect(convolver.buffer).is.instanceOf(AudioBuffer);
+								expect(convolver.buffer).is.not.null;
 								convolver.dispose();
 								done();
 							}
