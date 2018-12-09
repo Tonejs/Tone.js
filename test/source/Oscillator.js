@@ -147,16 +147,32 @@ function(BasicTests, Oscillator, Offline, SourceTests, OscillatorTests, OutputAu
 				});
 			});
 
-			it("outputs empty array when type is not 'custom'", function(){
-				var osc = new Oscillator({
-					"partials" : [1, 0.3, 0.3],
-					"type" : "custom"
-				});
-				expect(osc.type).to.equal("custom");
-				expect(osc.partials[1]).to.equal(0.3);
+			it("outputs the partials of the given waveform", function(){
+				var osc = new Oscillator();
 				osc.type = "sine2";
 				expect(osc.type).to.equal("sine2");
-				expect(osc.partials.length).to.equal(0);
+				expect(osc.partials.length).to.equal(2);
+				expect(osc.partials).to.deep.equal([1, 1]);
+				osc.dispose();
+			});
+
+			it("partialCount is 0 when set to max", function(){
+				var osc = new Oscillator();
+				expect(osc.partialCount).to.equal(0);
+				osc.type = "square32";
+				expect(osc.partialCount).to.equal(32);
+				osc.type = "square";
+				expect(osc.partialCount).to.equal(0);
+				osc.dispose();
+			});
+
+			it("can pass in number of partials into constructor", function(){
+				var osc = new Oscillator({
+					"type" : "sine",
+					"partialCount" : 3
+				});
+				expect(osc.type).to.equal("sine3");
+				expect(osc.partialCount).to.equal(3);
 				osc.dispose();
 			});
 

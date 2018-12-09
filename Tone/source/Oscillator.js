@@ -55,7 +55,14 @@ function(Tone){
 		 *  @type {Array}
 		 *  @private
 		 */
-		this._partials = Tone.defaultArg(options.partials, [1]);
+		this._partials = options.partials;
+
+		/**
+		 *  The number of partials to limit or extend the periodic wave by
+		 *  @type {Number}
+		 *  @private
+		 */
+		this._partialCount = Tone.defaultArg(options.partialCount, 0);
 
 		/**
 		 *  the phase of the oscillator
@@ -70,10 +77,14 @@ function(Tone){
 		 *  @type {string}
 		 *  @private
 		 */
-		this._type = null;
+		this._type = options.type;
 
 		//setup
-		this.type = options.type;
+		if (options.partialCount){
+			this.type = options.type + options.partialCount.toString();	
+		} else {
+			this.type = options.type;
+		}
 		this.phase = this._phase;
 		this._readOnly(["frequency", "detune"]);
 	};
@@ -89,7 +100,7 @@ function(Tone){
 		"frequency" : 440,
 		"detune" : 0,
 		"phase" : 0,
-		"partials" : []
+		"partials" : [],
 	};
 
 	/**
@@ -206,22 +217,39 @@ function(Tone){
 			return this._type;
 		},
 		set : function(type){
-			var isBasicType = [Tone.Oscillator.Type.Sine, Tone.Oscillator.Type.Square, Tone.Oscillator.Type.Triangle, Tone.Oscillator.Type.Sawtooth].includes(type);
-			if (this._phase === 0 && isBasicType){
-				this._wave = null;
-				//just go with the basic approach
-				if (this._oscillator !== null){
-					this._oscillator.type = type;
-				}
-			} else {
-				var coefs = this._getRealImaginary(type, this._phase);
-				var periodicWave = this.context.createPeriodicWave(coefs[0], coefs[1]);
-				this._wave = periodicWave;
-				if (this._oscillator !== null){
-					this._oscillator.setPeriodicWave(this._wave);
-				}
+			var coefs = this._getRealImaginary(type, this._phase);
+			var periodicWave = this.context.createPeriodicWave(coefs[0], coefs[1]);
+			this._wave = periodicWave;
+			if (this._oscillator !== null){
+				this._oscillator.setPeriodicWave(this._wave);
 			}
 			this._type = type;
+		}
+	});
+
+	/**
+	 * 
+	 * @memberOf Tone.Oscillator#
+	 * @type {Number}
+	 * @name partialCount
+	 */
+	Object.defineProperty(Tone.Oscillator.prototype, "partialCount", {
+		get : function(){
+			return this._partialCount;
+		},
+		set : function(p){
+			var type = this._type;
+			var partial = /^(sine|triangle|square|sawtooth)(\d+)$/.exec(this._type);
+			if (partial){
+				type = partial[1];
+			}
+			if (this._type !== Tone.Oscillator.Type.Custom){
+				if (p === 0){
+					this.type = type;
+				} else {
+					this.type = type + p.toString();
+				}
+			}
 		}
 	});
 
@@ -241,15 +269,20 @@ function(Tone){
 		var partialCount = 1;
 		if (type === Tone.Oscillator.Type.Custom){
 			partialCount = this._partials.length + 1;
+			this._partialCount = this._partials.length;
 			periodicWaveSize = partialCount;
 		} else {
 			var partial = /^(sine|triangle|square|sawtooth)(\d+)$/.exec(type);
 			if (partial){
 				partialCount = parseInt(partial[2]) + 1;
+				this._partialCount = parseInt(partial[2]);
 				type = partial[1];
 				partialCount = Math.max(partialCount, 2);
 				periodicWaveSize = partialCount;
+			} else {
+				this._partialCount = 0;
 			}
+			this._partials = [];
 		}
 
 		for (var n = 1; n < periodicWaveSize; ++n){
@@ -258,12 +291,15 @@ function(Tone){
 			switch (type){
 				case Tone.Oscillator.Type.Sine:
 					b = (n <= partialCount) ? 1 : 0;
+					this._partials[n-1] = b;
 					break;
 				case Tone.Oscillator.Type.Square:
 					b = (n & 1) ? 2 * piFactor : 0;
+					this._partials[n-1] = b;
 					break;
 				case Tone.Oscillator.Type.Sawtooth:
 					b = piFactor * ((n & 1) ? 1 : -1);
+					this._partials[n-1] = b;
 					break;
 				case Tone.Oscillator.Type.Triangle:
 					if (n & 1){
@@ -271,6 +307,7 @@ function(Tone){
 					} else {
 						b = 0;
 					}
+					this._partials[n-1] = b;
 					break;
 				case Tone.Oscillator.Type.Custom:
 					b = this._partials[n - 1];
@@ -339,11 +376,7 @@ function(Tone){
 	 */
 	Object.defineProperty(Tone.Oscillator.prototype, "partials", {
 		get : function(){
-			if (this._type !== Tone.Oscillator.Type.Custom){
-				return [];
-			} else {
-				return this._partials;
-			}
+			return this._partials;
 		},
 		set : function(partials){
 			this._partials = partials;
