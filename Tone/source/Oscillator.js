@@ -228,7 +228,15 @@ function(Tone){
 	});
 
 	/**
-	 * 
+	 * 'partialCount' offers an alternative way to set the number of used partials. 
+	 * When partialCount is 0, the maximum number of partials are used when representing
+	 * the waveform using the periodicWave. When 'partials' is set, this value is 
+	 * not settable, but equals the length of the partials array.
+	 * @example
+	 * osc.type = 'sine'
+	 * osc.partialCount = 3
+	 * //is equivalent to
+	 * osc.type = 'sine3'
 	 * @memberOf Tone.Oscillator#
 	 * @type {Number}
 	 * @name partialCount
