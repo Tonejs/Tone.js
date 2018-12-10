@@ -19,27 +19,29 @@ function(BasicTests, AMOscillator, Offline, SourceTests, OscillatorTests, Test, 
 		context("Amplitude Modulation", function(){
 
 			it("can pass in parameters in the constructor", function(){
-				var fmOsc = new AMOscillator({
+				var amOsc = new AMOscillator({
+					"type" : "triangle2",
 					"harmonicity" : 3,
 					"modulationType" : "square3"
 				});
-				expect(fmOsc.harmonicity.value).to.be.closeTo(3, 0.001);
-				expect(fmOsc.modulationType).to.equal("square3");
-				fmOsc.dispose();
+				expect(amOsc.type).to.equal("triangle2");
+				expect(amOsc.harmonicity.value).to.be.closeTo(3, 0.001);
+				expect(amOsc.modulationType).to.equal("square3");
+				amOsc.dispose();
 			});
 
 			it("can set the harmonicity", function(){
-				var fmOsc = new AMOscillator();
-				fmOsc.harmonicity.value = 0.2;
-				expect(fmOsc.harmonicity.value).to.be.closeTo(0.2, 0.001);
-				fmOsc.dispose();
+				var amOsc = new AMOscillator();
+				amOsc.harmonicity.value = 0.2;
+				expect(amOsc.harmonicity.value).to.be.closeTo(0.2, 0.001);
+				amOsc.dispose();
 			});
 
 			it("can set the modulationType", function(){
-				var fmOsc = new AMOscillator();
-				fmOsc.modulationType = "triangle5";
-				expect(fmOsc.modulationType).to.equal("triangle5");
-				fmOsc.dispose();
+				var amOsc = new AMOscillator();
+				amOsc.modulationType = "triangle5";
+				expect(amOsc.modulationType).to.equal("triangle5");
+				amOsc.dispose();
 			});
 
 		});

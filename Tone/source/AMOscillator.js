@@ -99,6 +99,7 @@ define(["../core/Tone", "../source/Source", "../source/Oscillator", "../signal/M
 		"frequency" : 440,
 		"detune" : 0,
 		"phase" : 0,
+		"type" : "sine",
 		"modulationType" : "square",
 		"harmonicity" : 1
 	};

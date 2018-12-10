@@ -105,6 +105,7 @@ define(["../core/Tone", "../source/Source", "../source/Oscillator",
 		"frequency" : 440,
 		"detune" : 0,
 		"phase" : 0,
+		"type" : "sine",
 		"modulationIndex" : 2,
 		"modulationType" : "square",
 		"harmonicity" : 1

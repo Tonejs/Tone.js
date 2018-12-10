@@ -20,9 +20,11 @@ function(BasicTests, FMOscillator, Offline, SourceTests, OscillatorTests, Test, 
 
 			it("can pass in parameters in the constructor", function(){
 				var fmOsc = new FMOscillator({
+					"type" : "triangle2",
 					"harmonicity" : 3,
 					"modulationType" : "square3"
 				});
+				expect(fmOsc.type).to.equal("triangle2");
 				expect(fmOsc.harmonicity.value).to.be.closeTo(3, 0.001);
 				expect(fmOsc.modulationType).to.equal("square3");
 				fmOsc.dispose();
