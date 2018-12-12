@@ -97,7 +97,7 @@
 			waveContext.lineJoin = "round";
 			waveContext.lineWidth = 6;
 			waveContext.strokeStyle = waveformGradient;
-			waveContext.moveTo(0, (values[0] / 255) * canvasHeight);
+			waveContext.moveTo(0, (values[0] + 1) / 2 * canvasHeight);
 			for (var i = 1, len = values.length; i < len; i++){
 				var val = (values[i] + 1) / 2;
 				var x = canvasWidth * (i / len);
