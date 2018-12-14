@@ -58,7 +58,7 @@ define(["../core/Tone", "../signal/Abs", "../signal/Subtract",
 
 		this.input.connect(this._delay, this._sub);
 		this.input.connect(this._sub, 0, 1);
-		this._sub.chain(this._abs, this._filter, this.output);
+		Tone.chain(this._sub, this._abs, this._filter, this.output);
 
 		//set the smoothing initially
 		this.smoothing = options.smoothing;

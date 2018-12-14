@@ -86,7 +86,7 @@
 			player.loop = true;
 			var soloCtrl = new Tone.Solo();
 			var panVol = new Tone.PanVol();
-			player.chain(panVol, soloCtrl, Tone.Master);
+			Tone.chain(player, panVol, soloCtrl, Tone.Master);
 
 			var container = $("<div>", {
 				"class" : "Group"

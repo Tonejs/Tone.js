@@ -10,7 +10,7 @@ define(["../core/Tone", "../signal/Signal", "../core/Gain", "../core/AudioNode"]
 	 *  @param {Decibels} [volume=0] the initial volume
 	 *  @example
 	 * var vol = new Tone.Volume(-12);
-	 * instrument.chain(vol, Tone.Master);
+	 * Tone.chain(instrument, vol, Tone.Master);
 	 */
 	Tone.Volume = function(){
 

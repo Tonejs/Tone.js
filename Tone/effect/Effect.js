@@ -72,7 +72,7 @@ define(["../core/Tone", "../component/CrossFade", "../core/AudioNode"], function
 	 *  @returns {Tone.Effect} this
 	 */
 	Tone.Effect.prototype.connectEffect = function(effect){
-		this.effectSend.chain(effect, this.effectReturn);
+		Tone.chain(this.effectSend, effect, this.effectReturn);
 		return this;
 	};
 

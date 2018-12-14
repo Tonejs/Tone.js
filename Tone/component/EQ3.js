@@ -101,9 +101,9 @@ define(["../core/Tone", "../component/MultibandSplit", "../core/Gain", "../core/
 		this.highFrequency = this._multibandSplit.highFrequency;
 
 		//the frequency bands
-		this._multibandSplit.low.chain(this._lowGain, this.output);
-		this._multibandSplit.mid.chain(this._midGain, this.output);
-		this._multibandSplit.high.chain(this._highGain, this.output);
+		Tone.chain(this._multibandSplit.low, this._lowGain, this.output);
+		Tone.chain(this._multibandSplit.mid, this._midGain, this.output);
+		Tone.chain(this._multibandSplit.high, this._highGain, this.output);
 		this._readOnly(["low", "mid", "high", "lowFrequency", "highFrequency"]);
 	};
 

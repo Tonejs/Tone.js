@@ -45,7 +45,7 @@ define(["../core/Tone", "../signal/ScaleExp", "../signal/Signal",
 		 */
 		this.resonance = this._feedback.gain;
 
-		this._delay.chain(this._feedback, this._delay);
+		Tone.chain(this._delay, this._feedback, this._delay);
 		this._readOnly(["resonance", "delayTime"]);
 	};
 

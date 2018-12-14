@@ -74,8 +74,8 @@ define(["../core/Tone", "../component/LFO", "../effect/StereoEffect"], function(
 		this.depth = new Tone.Signal(options.depth, Tone.Type.NormalRange);
 
 		this._readOnly(["frequency", "depth"]);
-		this.effectSendL.chain(this._amplitudeL, this.effectReturnL);
-		this.effectSendR.chain(this._amplitudeR, this.effectReturnR);
+		Tone.chain(this.effectSendL, this._amplitudeL, this.effectReturnL);
+		Tone.chain(this.effectSendR, this._amplitudeR, this.effectReturnR);
 		this._lfoL.connect(this._amplitudeL.gain);
 		this._lfoR.connect(this._amplitudeR.gain);
 		this.frequency.fan(this._lfoL.frequency, this._lfoR.frequency);

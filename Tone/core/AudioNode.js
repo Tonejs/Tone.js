@@ -195,21 +195,22 @@ define(["../core/Tone", "../core/Context"], function(Tone){
 	};
 
 	/**
-	 *  Connect the output of this node to the rest of the nodes in series.
+	 *  Connect the output of the first node to the rest of the nodes in series.
+	 *  It returns the first node.
 	 *  @example
 	 *  //connect a node to an effect, panVol and then to the master output
-	 *  node.chain(effect, panVol, Tone.Master);
+	 *  Tone.chain(node, effect, panVol, Tone.Master);
 	 *  @param {...AudioParam|Tone|AudioNode} nodes
-	 *  @returns {Tone.AudioNode} this
+	 *  @returns {Tone.AudioNode}
 	 */
-	Tone.AudioNode.prototype.chain = function(){
-		var currentUnit = this;
-		for (var i = 0; i < arguments.length; i++){
+	Tone.chain = function(){
+		var currentUnit = arguments[0];
+		for (var i = 1; i < arguments.length; i++){
 			var toUnit = arguments[i];
 			currentUnit.connect(toUnit);
 			currentUnit = toUnit;
 		}
-		return this;
+		return arguments[0];
 	};
 
 	/**
@@ -225,8 +226,7 @@ define(["../core/Tone", "../core/Context"], function(Tone){
 	};
 
 	if (Tone.global.AudioNode){
-		//give native nodes chain and fan methods
-		AudioNode.prototype.chain = Tone.AudioNode.prototype.chain;
+		//give native nodes the fan method
 		AudioNode.prototype.fan = Tone.AudioNode.prototype.fan;
 	}
 

@@ -81,8 +81,8 @@ define(["../core/Tone", "../source/Source", "../source/Oscillator",
 
 		//connections
 		this.frequency.connect(this._carrier.frequency);
-		this.frequency.chain(this.harmonicity, this._modulator.frequency);
-		this.frequency.chain(this.modulationIndex, this._modulationNode);
+		Tone.chain(this.frequency, this.harmonicity, this._modulator.frequency);
+		Tone.chain(this.frequency, this.modulationIndex, this._modulationNode);
 		this._modulator.connect(this._modulationNode.gain);
 		this._modulationNode.connect(this._carrier.frequency);
 		this._carrier.connect(this.output);

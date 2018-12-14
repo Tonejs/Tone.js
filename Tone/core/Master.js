@@ -44,7 +44,7 @@ define(["../core/Tone", "../component/Volume", "../core/Context", "../core/Audio
 
 			this._readOnly("volume");
 			//connections
-			this.input.chain(this.output, this.context.destination);
+			Tone.chain(this.input, this.output, this.context.destination);
 
 			//master is a singleton so it adds itself to the context
 			this.context.master = this;
@@ -108,7 +108,7 @@ define(["../core/Tone", "../component/Volume", "../core/Context", "../core/Audio
 	 */
 	Tone.Master.prototype.chain = function(){
 		this.input.disconnect();
-		this.input.chain.apply(this.input, arguments);
+		Tone.chain([this.input].concat(arguments));
 		arguments[arguments.length - 1].connect(this.output);
 	};
 

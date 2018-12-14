@@ -74,13 +74,13 @@
 		var mult = new Tone.Multiply(2.5);
 		
 		//chain the components together
-		frequency.chain(scale, mult);
+		Tone.chain(frequency, scale, mult);
 		scale.connect(rightOsc.frequency);
 		mult.connect(leftOsc.frequency);
 
 		//multiply the frequency by 2 to get the octave above
 		var detuneScale = new Tone.Scale(14, 4);
-		frequency.chain(detuneScale, detuneLFO.frequency);		
+		Tone.chain(frequency, detuneScale, detuneLFO.frequency);
 
 		// GUI //
 

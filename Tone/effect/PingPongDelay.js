@@ -55,8 +55,8 @@ define(["../core/Tone", "../effect/StereoXFeedbackEffect", "../signal/Signal", "
 		this.delayTime = new Tone.Signal(options.delayTime, Tone.Type.Time);
 
 		//connect it up
-		this.effectSendL.chain(this._leftDelay, this.effectReturnL);
-		this.effectSendR.chain(this._rightPreDelay, this._rightDelay, this.effectReturnR);
+		Tone.chain(this.effectSendL, this._leftDelay, this.effectReturnL);
+		Tone.chain(this.effectSendR, this._rightPreDelay, this._rightDelay, this.effectReturnR);
 		this.delayTime.fan(this._leftDelay.delayTime, this._rightDelay.delayTime, this._rightPreDelay.delayTime);
 		//rearranged the feedback to be after the rightPreDelay
 		this._feedbackLR.disconnect();

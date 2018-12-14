@@ -96,11 +96,11 @@ define(["../core/Tone", "../component/Follower", "../signal/ScaleExp",
 		this.Q = this._bandpass.Q;
 
 		//the control signal path
-		this.effectSend.chain(this._inputBoost, this.follower, this._sweepRange);
+		Tone.chain(this.effectSend, this._inputBoost, this.follower, this._sweepRange);
 		this._sweepRange.connect(this._bandpass.frequency);
 		this._sweepRange.connect(this._peaking.frequency);
 		//the filtered path
-		this.effectSend.chain(this._bandpass, this._peaking, this.effectReturn);
+		Tone.chain(this.effectSend, this._bandpass, this._peaking, this.effectReturn);
 		//set the initial value
 		this._setSweepRange();
 		this.sensitivity = options.sensitivity;

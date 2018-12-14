@@ -76,8 +76,8 @@ define(["../core/Tone", "../source/Source", "../source/Oscillator",
 		});
 
 		//connections
-		this._sawtooth.chain(this._thresh, this.output);
-		this.width.chain(this._widthGate, this._thresh);
+		Tone.chain(this._sawtooth, this._thresh, this.output);
+		Tone.chain(this.width, this._widthGate, this._thresh);
 		this._readOnly(["width", "frequency", "detune"]);
 	};
 

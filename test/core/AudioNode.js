@@ -176,7 +176,7 @@ function(Test, Tone, AudioNode, PassAudio, Gain, Oscillator, Merge,
 				return PassAudio(function(input){
 					var node0 = new Gain();
 					var node1 = new Gain().toMaster();
-					input.chain(node0, node1);
+					Tone.chain(input, node0, node1);
 				});
 			});
 

@@ -38,7 +38,7 @@ define(["../core/Tone", "../component/AmplitudeEnvelope", "../component/Frequenc
 		this.envelope = new Tone.AmplitudeEnvelope(options.envelope);
 
 		//connect the noise to the output
-		this.noise.chain(this.envelope, this.output);
+		Tone.chain(this.noise, this.envelope, this.output);
 		this._readOnly(["noise", "envelope"]);
 	};
 

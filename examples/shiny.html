@@ -48,12 +48,12 @@
 		});
 
 		//hats
-		var hats = new Tone.Player({
+		var hats = Tone.chain(new Tone.Player({
 			"url" : "./audio/505/hh.[mp3|ogg]",
 			"volume" : -10,
 			"retrigger" : true,
 			"fadeOut" : 0.05
-		}).chain(distortion, drumCompress);
+		}), distortion, drumCompress);
 
 		var hatsLoop = new Tone.Loop({
 			"callback" : function(time){
@@ -64,11 +64,11 @@
 		}).start("1m");
 
 		//SNARE PART
-		var snare = new Tone.Player({
+		var snare = Tone.chain(new Tone.Player({
 			"url" : "./audio/505/snare.[mp3|ogg]", 
 			"retrigger" : true,
 			"fadeOut" : 0.1
-		}).chain(distortion, drumCompress);
+		}), distortion, drumCompress);
 
 		var snarePart = new Tone.Sequence(function(time, velocity){
 			snare.volume.value = Tone.gainToDb(velocity);

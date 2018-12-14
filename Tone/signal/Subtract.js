@@ -49,7 +49,7 @@ define(["../core/Tone", "../signal/Add", "../signal/Negate", "../signal/Signal",
 		 *  @type {Tone.Signal}
 		 */
 		this._param = this.input[1] = new Tone.Signal(value);
-		this._param.chain(this._neg, this._sum);
+		Tone.chain(this._param, this._neg, this._sum);
 		this.proxy = false;
 	};
 

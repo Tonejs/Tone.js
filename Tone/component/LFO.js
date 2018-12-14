@@ -95,7 +95,7 @@ define(["../core/Tone", "../source/Oscillator", "../signal/Scale", "../core/Audi
 		this.units = options.units;
 
 		//connect it up
-		this._oscillator.chain(this._a2g, this._scaler);
+		Tone.chain(this._oscillator, this._a2g, this._scaler);
 		this._zeros.connect(this._a2g);
 		this._stoppedSignal.connect(this._a2g);
 		this._readOnly(["amplitude", "frequency"]);

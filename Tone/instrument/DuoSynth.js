@@ -86,7 +86,7 @@ define(["../core/Tone", "../instrument/MonoSynth", "../component/LFO", "../signa
 
 		//control the two voices frequency
 		this.frequency.connect(this.voice0.frequency);
-		this.frequency.chain(this.harmonicity, this.voice1.frequency);
+		Tone.chain(this.frequency, this.harmonicity, this.voice1.frequency);
 		this._vibrato.connect(this._vibratoGain);
 		this._vibratoGain.fan(this.voice0.detune, this.voice1.detune);
 		this.voice0.connect(this.output);

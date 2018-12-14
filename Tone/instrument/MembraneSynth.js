@@ -49,7 +49,7 @@ define(["../core/Tone", "../source/OmniOscillator", "../instrument/Instrument",
 		 */
 		this.pitchDecay = options.pitchDecay;
 
-		this.oscillator.chain(this.envelope, this.output);
+		Tone.chain(this.oscillator, this.envelope, this.output);
 		this._readOnly(["oscillator", "envelope"]);
 	};
 

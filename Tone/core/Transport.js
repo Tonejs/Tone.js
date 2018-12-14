@@ -736,7 +736,7 @@ define(["../core/Tone", "../core/Clock", "../type/Type", "../core/Timeline",
 			}
 		}
 		var ratioSignal = new Tone.Gain(ratio);
-		this.bpm.chain(ratioSignal, signal._param);
+		Tone.chain(this.bpm, ratioSignal, signal._param);
 		this._syncedSignals.push({
 			"ratio" : ratioSignal,
 			"signal" : signal,

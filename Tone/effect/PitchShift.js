@@ -121,7 +121,7 @@ define(["../core/Tone", "../component/LFO", "../component/CrossFade",
 		this._frequency.fan(this._lfoA.frequency, this._lfoB.frequency, this._crossFadeLFO.frequency);
 		//route the input
 		this.effectSend.fan(this._delayA, this._delayB);
-		this._crossFade.chain(this._feedbackDelay, this.effectReturn);
+		Tone.chain(this._crossFade, this._feedbackDelay, this.effectReturn);
 		//start the LFOs at the same time
 		var now = this.now();
 		this._lfoA.start(now);

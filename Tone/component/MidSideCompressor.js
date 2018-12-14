@@ -43,8 +43,8 @@ define(["../core/Tone", "../component/MidSideSplit", "../component/MidSideMerge"
 		 */
 		this.side = new Tone.Compressor(options.side);
 
-		this._midSideSplit.mid.chain(this.mid, this._midSideMerge.mid);
-		this._midSideSplit.side.chain(this.side, this._midSideMerge.side);
+		Tone.chain(this._midSideSplit.mid, this.mid, this._midSideMerge.mid);
+		Tone.chain(this._midSideSplit.side, this.side, this._midSideMerge.side);
 		this._readOnly(["mid", "side"]);
 	};
 

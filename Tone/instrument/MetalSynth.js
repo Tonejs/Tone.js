@@ -86,13 +86,13 @@ define(["../core/Tone", "../instrument/Instrument", "../source/FMOscillator", ".
 		 *  amplitude and highpass filter's cutoff frequency
 		 *  @type  {Tone.Envelope}
 		 */
-		this.envelope = new Tone.Envelope({
+		this.envelope = Tone.chain(new Tone.Envelope({
 			"attack" : options.envelope.attack,
 			"attackCurve" : "linear",
 			"decay" : options.envelope.decay,
 			"sustain" : 0,
 			"release" : options.envelope.release,
-		}).chain(this._filterFreqScaler, this._highpass.frequency);
+		}), this._filterFreqScaler, this._highpass.frequency);
 		this.envelope.connect(this._amplitue.gain);
 
 		for (var i = 0; i < inharmRatios.length; i++){
@@ -107,7 +107,7 @@ define(["../core/Tone", "../instrument/Instrument", "../source/FMOscillator", ".
 
 			var mult = new Tone.Multiply(inharmRatios[i]);
 			this._freqMultipliers[i] = mult;
-			this.frequency.chain(mult, osc.frequency);
+			Tone.chain(this.frequency, mult, osc.frequency);
 		}
 
 		//set the octaves

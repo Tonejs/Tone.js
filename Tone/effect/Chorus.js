@@ -82,8 +82,8 @@ define(["../core/Tone", "../component/LFO", "../effect/StereoEffect", "../core/D
 		this.frequency = this._lfoL.frequency;
 
 		//connections
-		this.effectSendL.chain(this._delayNodeL, this.effectReturnL);
-		this.effectSendR.chain(this._delayNodeR, this.effectReturnR);
+		Tone.chain(this.effectSendL, this._delayNodeL, this.effectReturnL);
+		Tone.chain(this.effectSendR, this._delayNodeR, this.effectReturnR);
 		//and pass through to make the detune apparent
 		this.effectSendL.connect(this.effectReturnL);
 		this.effectSendR.connect(this.effectReturnR);

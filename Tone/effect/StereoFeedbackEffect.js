@@ -36,8 +36,8 @@ define(["../core/Tone", "../effect/StereoEffect", "../effect/FeedbackEffect", ".
 		this._feedbackR = new Tone.Gain();
 
 		//connect it up
-		this.effectReturnL.chain(this._feedbackL, this.effectSendL);
-		this.effectReturnR.chain(this._feedbackR, this.effectSendR);
+		Tone.chain(this.effectReturnL, this._feedbackL, this.effectSendL);
+		Tone.chain(this.effectReturnR, this._feedbackR, this.effectSendR);
 		this.feedback.fan(this._feedbackL.gain, this._feedbackR.gain);
 		this._readOnly(["feedback"]);
 	};

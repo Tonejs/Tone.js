@@ -82,10 +82,10 @@ define(["../core/Tone", "../signal/Signal", "../signal/Subtract",
 		//connections
 		this.a.connect(this.output);
 		this.b.connect(this.output);
-		this.fade.chain(this._equalPowerB, this.b.gain);
+		Tone.chain(this.fade, this._equalPowerB, this.b.gain);
 		this._one.connect(this._invert, 0, 0);
 		this.fade.connect(this._invert, 0, 1);
-		this._invert.chain(this._equalPowerA, this.a.gain);
+		Tone.chain(this._invert, this._equalPowerA, this.a.gain);
 		this._readOnly("fade");
 	};
 

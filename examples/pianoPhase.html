@@ -62,7 +62,7 @@
 			"wet" : 0.3
 		});
 
-		merge.chain(reverb, Tone.Master);
+		Tone.chain(merge, reverb, Tone.Master);
 
 		//the synth settings
 		var synthSettings = {

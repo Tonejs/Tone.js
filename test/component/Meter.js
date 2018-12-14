@@ -42,7 +42,7 @@ function(Meter, Basic, Offline, Test, Signal, PassAudio, Tone, Merge, Oscillator
 				var meter;
 				return PassAudio(function(input){
 					meter = new Meter();
-					input.chain(meter, Tone.Master);
+					Tone.chain(input, meter, Tone.Master);
 				});
 			});
 			

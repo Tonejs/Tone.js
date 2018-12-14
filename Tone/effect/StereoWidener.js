@@ -51,7 +51,7 @@ define(["../core/Tone", "../effect/MidSideEffect", "../signal/Signal",
 		 */
 		this._midMult = new Tone.Multiply();
 		this._twoTimesWidthMid.connect(this._midMult, 0, 1);
-		this.midSend.chain(this._midMult, this.midReturn);
+		Tone.chain(this.midSend, this._midMult, this.midReturn);
 
 		/**
 		 * 1 - width
@@ -70,7 +70,7 @@ define(["../core/Tone", "../effect/MidSideEffect", "../signal/Signal",
 		this._sideMult = new Tone.Multiply();
 		this.width.connect(this._twoTimesWidthSide);
 		this._twoTimesWidthSide.connect(this._sideMult, 0, 1);
-		this.sideSend.chain(this._sideMult, this.sideReturn);
+		Tone.chain(this.sideSend, this._sideMult, this.sideReturn);
 	};
 
 	Tone.extend(Tone.StereoWidener, Tone.MidSideEffect);

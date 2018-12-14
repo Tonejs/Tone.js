@@ -109,8 +109,8 @@ define(["../core/Tone", "../instrument/Synth", "../signal/Signal", "../signal/Mu
 
 		//control the two voices frequency
 		this.frequency.connect(this._carrier.frequency);
-		this.frequency.chain(this.harmonicity, this._modulator.frequency);
-		this.frequency.chain(this.modulationIndex, this._modulationNode);
+		Tone.chain(this.frequency, this.harmonicity, this._modulator.frequency);
+		Tone.chain(this.frequency, this.modulationIndex, this._modulationNode);
 		this.detune.fan(this._carrier.detune, this._modulator.detune);
 		this._modulator.connect(this._modulationNode.gain);
 		this._modulationNode.connect(this._carrier.frequency);

@@ -77,7 +77,7 @@ define(["../core/Tone", "../component/Filter", "../signal/Signal", "../core/Gain
 		this.Q = new Tone.Signal(options.Q);
 
 		this.input.fan(this.low, this.high);
-		this.input.chain(this._lowMidFilter, this.mid);
+		Tone.chain(this.input, this._lowMidFilter, this.mid);
 		//the frequency control signal
 		this.lowFrequency.connect(this.low.frequency);
 		this.lowFrequency.connect(this._lowMidFilter.frequency);

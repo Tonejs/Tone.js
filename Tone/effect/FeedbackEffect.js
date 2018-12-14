@@ -32,7 +32,7 @@ define(["../core/Tone", "../effect/Effect", "../signal/Signal",
 		this.feedback = this._feedbackGain.gain;
 
 		//the feedback loop
-		this.effectReturn.chain(this._feedbackGain, this.effectSend);
+		Tone.chain(this.effectReturn, this._feedbackGain, this.effectSend);
 		this._readOnly(["feedback"]);
 	};
 

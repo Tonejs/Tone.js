@@ -79,10 +79,10 @@ define(["../core/Tone", "../signal/WaveShaper", "../component/Merge", "../signal
 			var merge = this.output = new Tone.Merge();
 
 			//connections
-			split.left.chain(leftGain, merge.left);
-			split.right.chain(rightGain, merge.right);
-			this.pan.chain(leftWaveShaper, leftGain.gain);
-			this.pan.chain(rightWaveShaper, rightGain.gain);
+			Tone.chain(split.left, leftGain, merge.left);
+			Tone.chain(split.right, rightGain, merge.right);
+			Tone.chain(this.pan, leftWaveShaper, leftGain.gain);
+			Tone.chain(this.pan, rightWaveShaper, rightGain.gain);
 		};
 
 		StereoPannerNode.prototype.disconnect = function(){

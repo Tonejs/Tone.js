@@ -43,7 +43,7 @@ define(["../core/Tone", "../component/Envelope", "../signal/Scale"], function(To
 		 */
 		this._scale = this.output = new Tone.Scale(options.min, options.max);
 
-		this._sig.chain(this._exp, this._scale);
+		Tone.chain(this._sig, this._exp, this._scale);
 	};
 
 	Tone.extend(Tone.ScaledEnvelope, Tone.Envelope);

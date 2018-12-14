@@ -211,7 +211,7 @@
 		    "Q": 8
 		});
 
-		var bass = new Tone.PulseOscillator("A2", 0.4).chain(bassFilter, bassEnvelope);
+		var bass = Tone.chain(new Tone.PulseOscillator("A2", 0.4), bassFilter, bassEnvelope);
 		bass.start();
 
 		var bassPart = new Tone.Part(function(time, note){

@@ -51,7 +51,7 @@ define(["../core/Tone", "../effect/Effect", "../core/Delay", "../component/LFO"]
 
 		this.depth.value = options.depth;
 		this._readOnly(["frequency", "depth"]);
-		this.effectSend.chain(this._delayNode, this.effectReturn);
+		Tone.chain(this.effectSend, this._delayNode, this.effectReturn);
 	};
 
 	Tone.extend(Tone.Vibrato, Tone.Effect);

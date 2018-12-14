@@ -39,7 +39,7 @@ define(["../core/Tone", "../component/FeedbackCombFilter", "../effect/StereoEffe
 	 * var reverb = new Tone.JCReverb(0.4).connect(Tone.Master);
 	 * var delay = new Tone.FeedbackDelay(0.5);
 	 * //connecting the synth to reverb through delay
-	 * var synth = new Tone.DuoSynth().chain(delay, reverb);
+	 * var synth = Tone.chain(new Tone.DuoSynth(), delay, reverb);
 	 * synth.triggerAttackRelease("A4","8n");
 	 */
 	Tone.JCReverb = function(){

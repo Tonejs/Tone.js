@@ -77,10 +77,10 @@ define(["../core/Tone", "../source/Source", "../source/Oscillator", "../signal/M
 		this._modulationNode = new Tone.Gain(0);
 
 		//connections
-		this.frequency.chain(this.harmonicity, this._modulator.frequency);
+		Tone.chain(this.frequency, this.harmonicity, this._modulator.frequency);
 		this.detune.connect(this._modulator.detune);
-		this._modulator.chain(this._modulationScale, this._modulationNode.gain);
-		this._carrier.chain(this._modulationNode, this.output);
+		Tone.chain(this._modulator, this._modulationScale, this._modulationNode.gain);
+		Tone.chain(this._carrier, this._modulationNode, this.output);
 
 		this.phase = options.phase;
 

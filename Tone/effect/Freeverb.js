@@ -95,9 +95,9 @@ define(["../core/Tone", "../component/LowpassCombFilter", "../effect/StereoEffec
 		for (var c = 0; c < combFilterTunings.length; c++){
 			var lfpf = new Tone.LowpassCombFilter(combFilterTunings[c]);
 			if (c < combFilterTunings.length / 2){
-				this.effectSendL.chain(lfpf, this._allpassFiltersL[0]);
+				Tone.chain(this.effectSendL, lfpf, this._allpassFiltersL[0]);
 			} else {
-				this.effectSendR.chain(lfpf, this._allpassFiltersR[0]);
+				Tone.chain(this.effectSendR, lfpf, this._allpassFiltersR[0]);
 			}
 			this.roomSize.connect(lfpf.resonance);
 			this.dampening.connect(lfpf.dampening);
