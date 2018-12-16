@@ -149,9 +149,11 @@ define(["../core/Tone", "../instrument/Instrument", "../core/Buffers", "../sourc
 
 				//remove it when it's done
 				source.onended = function(){
-					var index = this._activeSources[midi].indexOf(source);
-					if (index !== -1){
-						this._activeSources[midi].splice(index, 1);
+					if (this._activeSources && this._activeSources[midi]){
+						var index = this._activeSources[midi].indexOf(source);
+						if (index !== -1){
+							this._activeSources[midi].splice(index, 1);
+						}
 					}
 				}.bind(this);
 			}
