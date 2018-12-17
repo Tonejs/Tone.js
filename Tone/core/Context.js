@@ -538,38 +538,36 @@ define(["../core/Tone", "../core/Emitter", "../core/Timeline", "../shim/AudioCon
 		this._callback = null;
 	};
 
+	Tone.connect = function(target, destination, outNum, inNum){
+		if (destination.input){
+			if (Tone.isArray(destination.input)){
+				return Tone.connect(target, destination.input[Tone.defaultArg(inNum, 0)], outNum);
+			}
+			return Tone.connect(target, destination.input, outNum, inNum);
+		}
+
+		try {
+			// destination.value is used to detect AudioParams and distinguish them
+			// from AudioNodes
+			if (destination.value === undefined){
+				target.connect(destination, outNum, inNum);
+			} else {
+				target.connect(destination, outNum);
+			}
+		} catch (e){
+			throw new Error("error connecting to node: "+destination+"\n"+e);
+		}
+
+		return destination;
+	};
+
 	/**
 	 *  Adds connect/disconnect methods
 	 *  @private
 	 */
 	Tone.getContext(function(){
 
-		var nativeConnect = AudioNode.prototype.connect;
 		var nativeDisconnect = AudioNode.prototype.disconnect;
-
-		//replace the old connect method
-		function toneConnect(B, outNum, inNum){
-			if (B.input){
-				inNum = Tone.defaultArg(inNum, 0);
-				if (Tone.isArray(B.input)){
-					return this.connect(B.input[inNum]);
-				} else {
-					return this.connect(B.input, outNum, inNum);
-				}
-			} else {
-				try {
-					if (B instanceof AudioNode){
-						nativeConnect.call(this, B, outNum, inNum);
-						return B;
-					} else {
-						nativeConnect.call(this, B, outNum);
-						return B;
-					}
-				} catch (e){
-					throw new Error("error connecting to node: "+B+"\n"+e);
-				}
-			}
-		}
 
 		//replace the old disconnect method
 		function toneDisconnect(B, outNum, inNum){
@@ -591,8 +589,7 @@ define(["../core/Tone", "../core/Emitter", "../core/Timeline", "../shim/AudioCon
 			}
 		}
 
-		if (AudioNode.prototype.connect !== toneConnect){
-			AudioNode.prototype.connect = toneConnect;
+		if (AudioNode.prototype.disconnect !== toneDisconnect){
 			AudioNode.prototype.disconnect = toneDisconnect;
 		}
 	});

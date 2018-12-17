@@ -46,7 +46,7 @@ define(["../core/Tone", "../signal/Add", "../signal/Multiply"], function(Tone){
 		 */
 		this._div = this.output = new Tone.Multiply(1);
 
-		this._sub.connect(this._div);
+		Tone.connect(this._sub, this._div);
 		this._setRange();
 	};
 

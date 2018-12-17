@@ -50,7 +50,7 @@ define(["../core/Tone", "../effect/MidSideEffect", "../signal/Signal",
 		 *  @private
 		 */
 		this._midMult = new Tone.Multiply();
-		this._twoTimesWidthMid.connect(this._midMult, 0, 1);
+		Tone.connect(this._twoTimesWidthMid, this._midMult, 0, 1);
 		Tone.chain(this.midSend, this._midMult, this.midReturn);
 
 		/**
@@ -58,9 +58,9 @@ define(["../core/Tone", "../effect/MidSideEffect", "../signal/Signal",
 		 * @type {Tone}
 		 */
 		this._oneMinusWidth = new Tone.Subtract();
-		this._oneMinusWidth.connect(this._twoTimesWidthMid);
-		this.context.getConstant(1).connect(this._oneMinusWidth, 0, 0);
-		this.width.connect(this._oneMinusWidth, 0, 1);
+		Tone.connect(this._oneMinusWidth, this._twoTimesWidthMid);
+		Tone.connect(this.context.getConstant(1), this._oneMinusWidth, 0, 0);
+		Tone.connect(this.width, this._oneMinusWidth, 0, 1);
 
 		/**
 		 *  Side multiplier
@@ -68,8 +68,8 @@ define(["../core/Tone", "../effect/MidSideEffect", "../signal/Signal",
 		 *  @private
 		 */
 		this._sideMult = new Tone.Multiply();
-		this.width.connect(this._twoTimesWidthSide);
-		this._twoTimesWidthSide.connect(this._sideMult, 0, 1);
+		Tone.connect(this.width, this._twoTimesWidthSide);
+		Tone.connect(this._twoTimesWidthSide, this._sideMult, 0, 1);
 		Tone.chain(this.sideSend, this._sideMult, this.sideReturn);
 	};
 

@@ -37,7 +37,7 @@ define(["../core/Tone", "../component/Follower", "../signal/GreaterThan", "../co
 		this._gt = new Tone.GreaterThan(Tone.dbToGain(options.threshold));
 
 		//the connections
-		this.input.connect(this.output);
+		Tone.connect(this.input, this.output);
 		//the control signal
 		Tone.chain(this.input, this._follower, this._gt, this.output.gain);
 	};

@@ -79,15 +79,15 @@ define(["../core/Tone", "../component/Filter", "../signal/Signal", "../core/Gain
 		this.input.fan(this.low, this.high);
 		Tone.chain(this.input, this._lowMidFilter, this.mid);
 		//the frequency control signal
-		this.lowFrequency.connect(this.low.frequency);
-		this.lowFrequency.connect(this._lowMidFilter.frequency);
-		this.highFrequency.connect(this.mid.frequency);
-		this.highFrequency.connect(this.high.frequency);
+		Tone.connect(this.lowFrequency, this.low.frequency);
+		Tone.connect(this.lowFrequency, this._lowMidFilter.frequency);
+		Tone.connect(this.highFrequency, this.mid.frequency);
+		Tone.connect(this.highFrequency, this.high.frequency);
 		//the Q value
-		this.Q.connect(this.low.Q);
-		this.Q.connect(this._lowMidFilter.Q);
-		this.Q.connect(this.mid.Q);
-		this.Q.connect(this.high.Q);
+		Tone.connect(this.Q, this.low.Q);
+		Tone.connect(this.Q, this._lowMidFilter.Q);
+		Tone.connect(this.Q, this.mid.Q);
+		Tone.connect(this.Q, this.high.Q);
 
 		this._readOnly(["high", "mid", "low", "highFrequency", "lowFrequency"]);
 	};

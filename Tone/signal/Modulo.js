@@ -50,9 +50,9 @@ define(["../core/Tone", "../signal/WaveShaper", "../signal/Multiply", "../signal
 
 		//connections
 		this.input.fan(this._shaper, this._subtract);
-		this._modSignal.connect(this._multiply, 0, 0);
-		this._shaper.connect(this._multiply, 0, 1);
-		this._multiply.connect(this._subtract, 0, 1);
+		Tone.connect(this._modSignal, this._multiply, 0, 0);
+		Tone.connect(this._shaper, this._multiply, 0, 1);
+		Tone.connect(this._multiply, this._subtract, 0, 1);
 		this._setWaveShaper(modulus);
 	};
 

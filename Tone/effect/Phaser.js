@@ -86,12 +86,12 @@ define(["../core/Tone", "../component/LFO", "../component/Filter", "../effect/St
 		this.frequency.value = options.frequency;
 
 		//connect them up
-		this.effectSendL.connect(this._filtersL[0]);
-		this.effectSendR.connect(this._filtersR[0]);
-		this._filtersL[options.stages - 1].connect(this.effectReturnL);
-		this._filtersR[options.stages - 1].connect(this.effectReturnR);
+		Tone.connect(this.effectSendL, this._filtersL[0]);
+		Tone.connect(this.effectSendR, this._filtersR[0]);
+		Tone.connect(this._filtersL[options.stages - 1], this.effectReturnL);
+		Tone.connect(this._filtersR[options.stages - 1], this.effectReturnR);
 		//control the frequency with one LFO
-		this._lfoL.frequency.connect(this._lfoR.frequency);
+		Tone.connect(this._lfoL.frequency, this._lfoR.frequency);
 		//set the options
 		this.baseFrequency = options.baseFrequency;
 		this.octaves = options.octaves;
@@ -127,8 +127,8 @@ define(["../core/Tone", "../component/LFO", "../component/Filter", "../effect/St
 		for (var i = 0; i < stages; i++){
 			var filter = this.context.createBiquadFilter();
 			filter.type = "allpass";
-			Q.connect(filter.Q);
-			connectToFreq.connect(filter.frequency);
+			Tone.connect(Q, filter.Q);
+			Tone.connect(connectToFreq, filter.frequency);
 			filters[i] = filter;
 		}
 		Tone.connectSeries.apply(Tone, filters);

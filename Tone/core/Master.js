@@ -109,7 +109,7 @@ define(["../core/Tone", "../component/Volume", "../core/Context", "../core/Audio
 	Tone.Master.prototype.chain = function(){
 		this.input.disconnect();
 		Tone.chain([this.input].concat(arguments));
-		arguments[arguments.length - 1].connect(this.output);
+		Tone.connect(arguments[arguments.length - 1], this.output);
 	};
 
 	/**

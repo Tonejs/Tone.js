@@ -86,22 +86,22 @@ define(["../core/Tone", "../component/FeedbackCombFilter", "../effect/StereoEffe
 		//and the comb filters
 		for (var cf = 0; cf < combFilterDelayTimes.length; cf++){
 			var fbcf = new Tone.FeedbackCombFilter(combFilterDelayTimes[cf], 0.1);
-			this._scaleRoomSize.connect(fbcf.resonance);
+			Tone.connect(this._scaleRoomSize, fbcf.resonance);
 			fbcf.resonance.value = combFilterResonances[cf];
-			this._allpassFilters[this._allpassFilters.length - 1].connect(fbcf);
+			Tone.connect(this._allpassFilters[this._allpassFilters.length - 1], fbcf);
 			if (cf < combFilterDelayTimes.length / 2){
-				fbcf.connect(this.effectReturnL);
+				Tone.connect(fbcf, this.effectReturnL);
 			} else {
-				fbcf.connect(this.effectReturnR);
+				Tone.connect(fbcf, this.effectReturnR);
 			}
 			this._feedbackCombFilters.push(fbcf);
 		}
 
 		//chain the allpass filters together
-		this.roomSize.connect(this._scaleRoomSize);
+		Tone.connect(this.roomSize, this._scaleRoomSize);
 		Tone.connectSeries.apply(Tone, this._allpassFilters);
-		this.effectSendL.connect(this._allpassFilters[0]);
-		this.effectSendR.connect(this._allpassFilters[0]);
+		Tone.connect(this.effectSendL, this._allpassFilters[0]);
+		Tone.connect(this.effectSendR, this._allpassFilters[0]);
 		this._readOnly(["roomSize"]);
 	};
 

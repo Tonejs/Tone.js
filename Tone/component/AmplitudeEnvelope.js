@@ -40,7 +40,7 @@ define(["../core/Tone", "../component/Envelope", "../core/Gain"], function(Tone)
 		 */
 		this.input = this.output = new Tone.Gain();
 
-		this._sig.connect(this.output.gain);
+		Tone.connect(this._sig, this.output.gain);
 	};
 
 	Tone.extend(Tone.AmplitudeEnvelope, Tone.Envelope);

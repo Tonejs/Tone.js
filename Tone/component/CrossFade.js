@@ -80,11 +80,11 @@ define(["../core/Tone", "../signal/Signal", "../signal/Subtract",
 		this._invert = new Tone.Subtract();
 
 		//connections
-		this.a.connect(this.output);
-		this.b.connect(this.output);
+		Tone.connect(this.a, this.output);
+		Tone.connect(this.b, this.output);
 		Tone.chain(this.fade, this._equalPowerB, this.b.gain);
-		this._one.connect(this._invert, 0, 0);
-		this.fade.connect(this._invert, 0, 1);
+		Tone.connect(this._one, this._invert, 0, 0);
+		Tone.connect(this.fade, this._invert, 0, 1);
 		Tone.chain(this._invert, this._equalPowerA, this.a.gain);
 		this._readOnly("fade");
 	};

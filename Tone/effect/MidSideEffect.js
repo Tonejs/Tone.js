@@ -62,8 +62,8 @@ define(["../core/Tone", "../effect/Effect", "../component/MidSideSplit", "../com
 		this.sideReturn = this._midSideMerge.side;
 
 		//the connections
-		this.effectSend.connect(this._midSideSplit);
-		this._midSideMerge.connect(this.effectReturn);
+		Tone.connect(this.effectSend, this._midSideSplit);
+		Tone.connect(this._midSideMerge, this.effectReturn);
 	};
 
 	Tone.extend(Tone.MidSideEffect, Tone.Effect);

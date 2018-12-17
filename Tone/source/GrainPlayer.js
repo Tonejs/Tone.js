@@ -188,7 +188,8 @@ define(["../core/Tone", "../source/Source", "../core/Buffer", "../source/BufferS
 			"loopEnd" : this._loopEnd,
 			//compute the playbackRate based on the detune
 			"playbackRate" : Tone.intervalToFrequencyRatio(this.detune / 100)
-		}).connect(this.output);
+		});
+		Tone.connect(source, this.output);
 
 		source.start(time, this._offset);
 		this._offset += this.grainSize;

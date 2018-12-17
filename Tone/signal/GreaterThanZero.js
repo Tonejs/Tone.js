@@ -39,7 +39,7 @@ define(["../core/Tone", "../signal/Signal", "../signal/Multiply", "../signal/Wav
 		this._scale = this.input = new Tone.Multiply(10000);
 
 		//connections
-		this._scale.connect(this._thresh);
+		Tone.connect(this._scale, this._thresh);
 	};
 
 	Tone.extend(Tone.GreaterThanZero, Tone.SignalBase);

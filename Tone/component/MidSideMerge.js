@@ -69,14 +69,14 @@ define(["../core/Tone", "../signal/Signal", "../signal/Subtract", "../signal/Add
 		 */
 		this._merge = this.output = new Tone.Merge();
 
-		this.mid.connect(this._left, 0, 0);
-		this.side.connect(this._left, 0, 1);
-		this.mid.connect(this._right, 0, 0);
-		this.side.connect(this._right, 0, 1);
-		this._left.connect(this._timesTwoLeft);
-		this._right.connect(this._timesTwoRight);
-		this._timesTwoLeft.connect(this._merge, 0, 0);
-		this._timesTwoRight.connect(this._merge, 0, 1);
+		Tone.connect(this.mid, this._left, 0, 0);
+		Tone.connect(this.side, this._left, 0, 1);
+		Tone.connect(this.mid, this._right, 0, 0);
+		Tone.connect(this.side, this._right, 0, 1);
+		Tone.connect(this._left, this._timesTwoLeft);
+		Tone.connect(this._right, this._timesTwoRight);
+		Tone.connect(this._timesTwoLeft, this._merge, 0, 0);
+		Tone.connect(this._timesTwoRight, this._merge, 0, 1);
 	};
 
 	Tone.extend(Tone.MidSideMerge, Tone.AudioNode);

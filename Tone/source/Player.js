@@ -223,7 +223,8 @@ define(["../core/Tone", "../core/Buffer", "../source/Source", "../source/TickSou
 			"playbackRate" : this._playbackRate,
 			"fadeIn" : this.fadeIn,
 			"fadeOut" : this.fadeOut,
-		}).connect(this.output);
+		});
+		Tone.connect(source, this.output);
 
 		//set the looping properties
 		if (!this._loop && !this._synced){

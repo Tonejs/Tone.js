@@ -97,8 +97,8 @@ define(["../core/Tone", "../component/Follower", "../signal/ScaleExp",
 
 		//the control signal path
 		Tone.chain(this.effectSend, this._inputBoost, this.follower, this._sweepRange);
-		this._sweepRange.connect(this._bandpass.frequency);
-		this._sweepRange.connect(this._peaking.frequency);
+		Tone.connect(this._sweepRange, this._bandpass.frequency);
+		Tone.connect(this._sweepRange, this._peaking.frequency);
 		//the filtered path
 		Tone.chain(this.effectSend, this._bandpass, this._peaking, this.effectReturn);
 		//set the initial value

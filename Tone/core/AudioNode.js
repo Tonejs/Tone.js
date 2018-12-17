@@ -167,9 +167,9 @@ define(["../core/Tone", "../core/Context"], function(Tone){
 	Tone.AudioNode.prototype.connect = function(unit, outputNum, inputNum){
 		if (Tone.isArray(this.output)){
 			outputNum = Tone.defaultArg(outputNum, 0);
-			this.output[outputNum].connect(unit, 0, inputNum);
+			Tone.connect(this.output[outputNum], unit, 0, inputNum);
 		} else {
-			this.output.connect(unit, outputNum, inputNum);
+			Tone.connect(this.output, unit, outputNum, inputNum);
 		}
 		return this;
 	};
@@ -207,7 +207,7 @@ define(["../core/Tone", "../core/Context"], function(Tone){
 		var currentUnit = arguments[0];
 		for (var i = 1; i < arguments.length; i++){
 			var toUnit = arguments[i];
-			currentUnit.connect(toUnit);
+			Tone.connect(currentUnit, toUnit);
 			currentUnit = toUnit;
 		}
 		return arguments[0];
@@ -220,7 +220,7 @@ define(["../core/Tone", "../core/Context"], function(Tone){
 	 */
 	Tone.AudioNode.prototype.fan = function(){
 		for (var i = 0; i < arguments.length; i++){
-			this.connect(arguments[i]);
+			Tone.connect(this, arguments[i]);
 		}
 		return this;
 	};

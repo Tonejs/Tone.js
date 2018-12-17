@@ -56,7 +56,7 @@ define(["../core/Tone", "../effect/Effect", "../component/LFO", "../component/Pa
 
 		//connections
 		this.connectEffect(this._panner);
-		this._lfo.connect(this._panner.pan);
+		Tone.connect(this._lfo, this._panner.pan);
 		this.type = options.type;
 		this._readOnly(["depth", "frequency"]);
 	};

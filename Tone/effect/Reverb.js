@@ -67,10 +67,10 @@ define(["../core/Tone", "../core/Offline", "../component/Filter", "../component/
 			var noiseL = new Tone.Noise();
 			var noiseR = new Tone.Noise();
 			var merge = new Tone.Merge();
-			noiseL.connect(merge.left);
-			noiseR.connect(merge.right);
+			Tone.connect(noiseL, merge.left);
+			Tone.connect(noiseR, merge.right);
 			var gainNode = new Tone.Gain().toMaster();
-			merge.connect(gainNode);
+			Tone.connect(merge, gainNode);
 			noiseL.start(0);
 			noiseR.start(0);
 			//short fade in

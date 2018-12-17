@@ -33,7 +33,8 @@ define(["../core/Tone", "../effect/Effect", "../core/Delay", "../component/LFO"]
 			"max" : options.maxDelay, 
 			"frequency" : options.frequency,
 			"phase" : -90 //offse the phase so the resting position is in the center
-		}).start().connect(this._delayNode.delayTime);
+		}).start();
+		Tone.connect(this._lfo, this._delayNode.delayTime);
 
 		/**
 		 *  The frequency of the vibrato

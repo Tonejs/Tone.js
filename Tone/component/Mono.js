@@ -22,8 +22,8 @@ define(["../core/Tone", "../component/Merge", "../core/AudioNode"], function(Ton
 		 */
 		this._merge = this.output = new Tone.Merge();
 
-		this.input.connect(this._merge, 0, 0);
-		this.input.connect(this._merge, 0, 1);
+		Tone.connect(this.input, this._merge, 0, 0);
+		Tone.connect(this.input, this._merge, 0, 1);
 	};
 
 	Tone.extend(Tone.Mono, Tone.AudioNode);

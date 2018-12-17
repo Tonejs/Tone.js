@@ -152,10 +152,10 @@ define(["../core/Tone", "../signal/Signal", "../core/AudioNode"], function(Tone)
 			for (var count = 0; count < cascadingCount; count++){
 				var filter = this.context.createBiquadFilter();
 				filter.type = this._type;
-				this.frequency.connect(filter.frequency);
-				this.detune.connect(filter.detune);
-				this.Q.connect(filter.Q);
-				this.gain.connect(filter.gain);
+				Tone.connect(this.frequency, filter.frequency);
+				Tone.connect(this.detune, filter.detune);
+				Tone.connect(this.Q, filter.Q);
+				Tone.connect(this.gain, filter.gain);
 				this._filters[count] = filter;
 			}
 			//connect them up

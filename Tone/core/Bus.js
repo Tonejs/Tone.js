@@ -32,8 +32,8 @@ define(["../core/Tone", "../core/Gain"], function(Tone){
 		}
 		amount = Tone.defaultArg(amount, 0);
 		var sendKnob = new Tone.Gain(amount, Tone.Type.Decibels);
-		this.connect(sendKnob);
-		sendKnob.connect(Buses[channelName]);
+		Tone.connect(this, sendKnob);
+		Tone.connect(sendKnob, Buses[channelName]);
 		return sendKnob;
 	};
 
@@ -50,7 +50,7 @@ define(["../core/Tone", "../core/Gain"], function(Tone){
 		if (!Buses.hasOwnProperty(channelName)){
 			Buses[channelName] = this.context.createGain();
 		}
-		Buses[channelName].connect(this, 0, inputNum);
+		Tone.connect(Buses[channelName], this, 0, inputNum);
 		return this;
 	};
 

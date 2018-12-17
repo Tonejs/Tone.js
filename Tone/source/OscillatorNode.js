@@ -49,7 +49,7 @@ define(["../core/Tone", "../core/Buffer", "../source/Source", "../core/Gain",
 		 *  @private
 		 */
 		this._oscillator = this.context.createOscillator();
-		this._oscillator.connect(this._gainNode);
+		Tone.connect(this._oscillator, this._gainNode);
 		this.type = options.type;
 
 		/**

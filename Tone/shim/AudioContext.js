@@ -22,7 +22,7 @@ define(["../core/Tone", "../shim/OfflineAudioContext"], function(Tone){
 				var buffer = this.createBuffer(1, 1, this.sampleRate);
 				var source = this.createBufferSource();
 				source.buffer = buffer;
-				source.connect(this.destination);
+				Tone.connect(source, this.destination);
 				source.start(0);
 				return Promise.resolve();
 			};

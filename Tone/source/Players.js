@@ -236,7 +236,8 @@ define(["../core/Tone", "../source/Player", "../component/Volume", "../core/Audi
 	 *                                 when the url is loaded.
 	 */
 	Tone.Players.prototype.add = function(name, url, callback){
-		this._players[name] = new Tone.Player(url, callback).connect(this.output);
+		this._players[name] = new Tone.Player(url, callback);
+		Tone.connect(this._players[name], this.output);
 		this._players[name].fadeIn = this._fadeIn;
 		this._players[name].fadeOut = this._fadeOut;
 		return this;

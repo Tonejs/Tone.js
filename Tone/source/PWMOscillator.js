@@ -71,7 +71,7 @@ define(["../core/Tone", "../source/Source", "../source/PulseOscillator",
 
 		//connections
 		Tone.chain(this._modulator, this._scale, this._pulse.width);
-		this._pulse.connect(this.output);
+		Tone.connect(this._pulse, this.output);
 		this._readOnly(["modulationFrequency", "frequency", "detune"]);
 	};
 

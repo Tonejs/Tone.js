@@ -74,11 +74,11 @@ define(["../core/Tone", "../effect/Effect", "../component/Split",
 		this.effectReturnR = this._merge.right;
 
 		//connections
-		this.input.connect(this._split);
+		Tone.connect(this.input, this._split);
 		//dry wet connections
-		this.input.connect(this._dryWet, 0, 0);
-		this._merge.connect(this._dryWet, 0, 1);
-		this._dryWet.connect(this.output);
+		Tone.connect(this.input, this._dryWet, 0, 0);
+		Tone.connect(this._merge, this._dryWet, 0, 1);
+		Tone.connect(this._dryWet, this.output);
 		this._readOnly(["wet"]);
 	};
 

@@ -63,7 +63,7 @@ define(["../core/Tone", "../effect/Effect", "../component/LFO", "../component/Fi
 
 		//connections
 		this.connectEffect(this.filter);
-		this._lfo.connect(this.filter.frequency);
+		Tone.connect(this._lfo, this.filter.frequency);
 		this.type = options.type;
 		this._readOnly(["frequency", "depth"]);
 		this.octaves = options.octaves;

@@ -32,7 +32,7 @@ define(["../core/Tone", "../signal/Scale", "../signal/Pow"], function(Tone){
 		 */
 		this._exp = this.input = new Tone.Pow(Tone.defaultArg(exponent, 2));
 
-		this._exp.connect(this._scale);
+		Tone.connect(this._exp, this._scale);
 	};
 
 	Tone.extend(Tone.ScaleExp, Tone.SignalBase);

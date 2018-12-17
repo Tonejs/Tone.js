@@ -47,7 +47,7 @@ define(["../core/Tone", "../component/Panner", "../component/Volume", "../core/A
 		this.volume = this._volume.volume;
 
 		//connections
-		this._panner.connect(this._volume);
+		Tone.connect(this._panner, this._volume);
 		this.mute = options.mute;
 
 		this._readOnly(["pan", "volume"]);

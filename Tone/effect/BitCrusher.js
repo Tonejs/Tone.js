@@ -46,8 +46,8 @@ define(["../core/Tone", "../effect/Effect", "../signal/Subtract", "../signal/Mod
 
 		//connect it up
 		this.effectSend.fan(this._subtract, this._modulo);
-		this._modulo.connect(this._subtract, 0, 1);
-		this._subtract.connect(this.effectReturn);
+		Tone.connect(this._modulo, this._subtract, 0, 1);
+		Tone.connect(this._subtract, this.effectReturn);
 	};
 
 	Tone.extend(Tone.BitCrusher, Tone.Effect);

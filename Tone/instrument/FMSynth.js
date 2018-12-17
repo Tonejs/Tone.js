@@ -108,13 +108,13 @@ define(["../core/Tone", "../instrument/Synth", "../signal/Signal", "../signal/Mu
 		this._modulationNode = new Tone.Gain(0);
 
 		//control the two voices frequency
-		this.frequency.connect(this._carrier.frequency);
+		Tone.connect(this.frequency, this._carrier.frequency);
 		Tone.chain(this.frequency, this.harmonicity, this._modulator.frequency);
 		Tone.chain(this.frequency, this.modulationIndex, this._modulationNode);
 		this.detune.fan(this._carrier.detune, this._modulator.detune);
-		this._modulator.connect(this._modulationNode.gain);
-		this._modulationNode.connect(this._carrier.frequency);
-		this._carrier.connect(this.output);
+		Tone.connect(this._modulator, this._modulationNode.gain);
+		Tone.connect(this._modulationNode, this._carrier.frequency);
+		Tone.connect(this._carrier, this.output);
 		this._readOnly(["frequency", "harmonicity", "modulationIndex", "oscillator", "envelope", "modulation", "modulationEnvelope", "detune"]);
 	};
 

@@ -85,16 +85,16 @@ define(["../core/Tone", "../component/LFO", "../effect/StereoEffect", "../core/D
 		Tone.chain(this.effectSendL, this._delayNodeL, this.effectReturnL);
 		Tone.chain(this.effectSendR, this._delayNodeR, this.effectReturnR);
 		//and pass through to make the detune apparent
-		this.effectSendL.connect(this.effectReturnL);
-		this.effectSendR.connect(this.effectReturnR);
+		Tone.connect(this.effectSendL, this.effectReturnL);
+		Tone.connect(this.effectSendR, this.effectReturnR);
 		//lfo setup
-		this._lfoL.connect(this._delayNodeL.delayTime);
-		this._lfoR.connect(this._delayNodeR.delayTime);
+		Tone.connect(this._lfoL, this._delayNodeL.delayTime);
+		Tone.connect(this._lfoR, this._delayNodeR.delayTime);
 		//start the lfo
 		this._lfoL.start();
 		this._lfoR.start();
 		//have one LFO frequency control the other
-		this._lfoL.frequency.connect(this._lfoR.frequency);
+		Tone.connect(this._lfoL.frequency, this._lfoR.frequency);
 		//set the initial values
 		this.depth = this._depth;
 		this.frequency.value = options.frequency;

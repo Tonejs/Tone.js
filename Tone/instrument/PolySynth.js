@@ -54,9 +54,9 @@ define(["../core/Tone", "../instrument/Synth", "../source/Source"], function(Ton
 			}
 			this.voices[i] = v;
 			v.index = i;
-			v.connect(this.output);
+			Tone.connect(v, this.output);
 			if (v.hasOwnProperty("detune")){
-				this.detune.connect(v.detune);
+				Tone.connect(this.detune, v.detune);
 			}
 		}
 	};

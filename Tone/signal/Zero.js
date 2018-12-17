@@ -17,7 +17,7 @@ define(["../core/Tone", "../core/Gain", "../signal/SignalBase"], function(Tone){
 		 */
 		this._gain = this.input = this.output = new Tone.Gain();
 
-		this.context.getConstant(0).connect(this._gain);
+		Tone.connect(this.context.getConstant(0), this._gain);
 	};
 
 	Tone.extend(Tone.Zero, Tone.SignalBase);

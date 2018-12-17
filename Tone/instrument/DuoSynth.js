@@ -85,12 +85,12 @@ define(["../core/Tone", "../instrument/MonoSynth", "../component/LFO", "../signa
 		this.harmonicity.units = Tone.Type.Positive;
 
 		//control the two voices frequency
-		this.frequency.connect(this.voice0.frequency);
+		Tone.connect(this.frequency, this.voice0.frequency);
 		Tone.chain(this.frequency, this.harmonicity, this.voice1.frequency);
-		this._vibrato.connect(this._vibratoGain);
+		Tone.connect(this._vibrato, this._vibratoGain);
 		this._vibratoGain.fan(this.voice0.detune, this.voice1.detune);
-		this.voice0.connect(this.output);
-		this.voice1.connect(this.output);
+		Tone.connect(this.voice0, this.output);
+		Tone.connect(this.voice1, this.output);
 		this._readOnly(["voice0", "voice1", "frequency", "vibratoAmount", "vibratoRate"]);
 	};
 

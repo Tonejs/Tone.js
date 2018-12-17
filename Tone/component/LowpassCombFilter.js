@@ -59,7 +59,7 @@ define(["../core/Tone", "../signal/Signal", "../component/Filter", "../core/Audi
 		this.resonance = this._combFilter.resonance;
 
 		//connections
-		this._lowpass.connect(this._combFilter);
+		Tone.connect(this._lowpass, this._combFilter);
 		this._readOnly(["dampening", "resonance", "delayTime"]);
 	};
 

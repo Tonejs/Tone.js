@@ -52,12 +52,12 @@ define(["../core/Tone", "../signal/Add", "../signal/Subtract", "../signal/Signal
 		 */
 		this.side = this.output[1] = new Tone.Multiply(Math.SQRT1_2);
 
-		this._split.connect(this._midAdd, 0, 0);
-		this._split.connect(this._midAdd, 1, 1);
-		this._split.connect(this._sideSubtract, 0, 0);
-		this._split.connect(this._sideSubtract, 1, 1);
-		this._midAdd.connect(this.mid);
-		this._sideSubtract.connect(this.side);
+		Tone.connect(this._split, this._midAdd, 0, 0);
+		Tone.connect(this._split, this._midAdd, 1, 1);
+		Tone.connect(this._split, this._sideSubtract, 0, 0);
+		Tone.connect(this._split, this._sideSubtract, 1, 1);
+		Tone.connect(this._midAdd, this.mid);
+		Tone.connect(this._sideSubtract, this.side);
 	};
 
 	Tone.extend(Tone.MidSideSplit, Tone.AudioNode);

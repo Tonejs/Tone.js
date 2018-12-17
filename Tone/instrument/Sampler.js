@@ -139,7 +139,8 @@ define(["../core/Tone", "../instrument/Instrument", "../core/Buffers", "../sourc
 					"fadeIn" : this.attack,
 					"fadeOut" : this.release,
 					"curve" : this.curve,
-				}).connect(this.output);
+				});
+				Tone.connect(source, this.output);
 				source.start(time, 0, buffer.duration / playbackRate, velocity);
 				// add it to the active sources
 				if (!Tone.isArray(this._activeSources[midi])){

@@ -57,8 +57,8 @@ define(["../core/Tone", "../instrument/Instrument", "../source/Noise", "../compo
 		this.dampening = this._lfcf.dampening;
 
 		//connections
-		this._noise.connect(this._lfcf);
-		this._lfcf.connect(this.output);
+		Tone.connect(this._noise, this._lfcf);
+		Tone.connect(this._lfcf, this.output);
 		this._readOnly(["resonance", "dampening"]);
 	};
 

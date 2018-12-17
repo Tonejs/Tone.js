@@ -21,7 +21,7 @@ define(["../core/Tone", "../shim/AudioContext", "../shim/BufferSourceNode",
 			var gainNode = this._output = context.createGain();
 			this.offset = gainNode.gain;
 
-			this._bufferSource.connect(gainNode);
+			Tone.connect(this._bufferSource, gainNode);
 		};
 
 		ConstantSourceNode.prototype.start = function(time){

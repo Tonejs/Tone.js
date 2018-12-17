@@ -69,7 +69,7 @@ define(["Tone/core/Tone", "chai", "Tone/core/Context", "Tone/core/Transport", "T
 		};
 
 		Test.connect = function(node, inputNumber){
-			this.input.connect(node, 0, inputNumber);
+			Tone.connect(this.input, node, 0, inputNumber);
 			this.input.disconnect();
 		};
 

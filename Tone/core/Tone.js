@@ -326,7 +326,7 @@ define(["../version"], function(version){
 		var currentUnit = arguments[0];
 		for (var i = 1; i < arguments.length; i++){
 			var toUnit = arguments[i];
-			currentUnit.connect(toUnit);
+			Tone.connect(currentUnit, toUnit);
 			currentUnit = toUnit;
 		}
 		return Tone;

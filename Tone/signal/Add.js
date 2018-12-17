@@ -43,7 +43,7 @@ define(["../core/Tone", "../signal/Signal", "../core/Gain"], function(Tone){
 		 */
 		this._param = this.input[1] = new Tone.Signal(value);
 
-		this._param.connect(this._sum);
+		Tone.connect(this._param, this._sum);
 		this.proxy = false;
 	};
 

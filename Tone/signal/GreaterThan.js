@@ -35,7 +35,7 @@ define(["../core/Tone", "../signal/GreaterThanZero", "../signal/Subtract", "../s
 		this._gtz = this.output = new Tone.GreaterThanZero();
 
 		//connect
-		this._param.connect(this._gtz);
+		Tone.connect(this._param, this._gtz);
 		this.proxy = false;
 	};
 

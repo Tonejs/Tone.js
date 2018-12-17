@@ -48,10 +48,10 @@ define(["../core/Tone", "../component/CrossFade", "../core/AudioNode"], function
 		this.effectReturn = new Tone.Gain();
 
 		//connections
-		this.input.connect(this._dryWet.a);
-		this.input.connect(this.effectSend);
-		this.effectReturn.connect(this._dryWet.b);
-		this._dryWet.connect(this.output);
+		Tone.connect(this.input, this._dryWet.a);
+		Tone.connect(this.input, this.effectSend);
+		Tone.connect(this.effectReturn, this._dryWet.b);
+		Tone.connect(this._dryWet, this.output);
 		this._readOnly(["wet"]);
 	};
 

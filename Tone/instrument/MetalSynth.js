@@ -53,7 +53,8 @@ define(["../core/Tone", "../instrument/Instrument", "../source/FMOscillator", ".
 		 *  @type {Tone.Gain}
 		 *  @private
 		 */
-		this._amplitue = new Tone.Gain(0).connect(this.output);
+		this._amplitue = new Tone.Gain(0);
+		Tone.connect(this._amplitue, this.output);
 
 		/**
 		 *  highpass the output
@@ -63,7 +64,8 @@ define(["../core/Tone", "../instrument/Instrument", "../source/FMOscillator", ".
 		this._highpass = new Tone.Filter({
 			"type" : "highpass",
 			"Q" : -3.0102999566398125
-		}).connect(this._amplitue);
+		});
+		Tone.connect(this._highpass, this._amplitue);
 
 		/**
 		 *  The number of octaves the highpass
@@ -93,7 +95,7 @@ define(["../core/Tone", "../instrument/Instrument", "../source/FMOscillator", ".
 			"sustain" : 0,
 			"release" : options.envelope.release,
 		}), this._filterFreqScaler, this._highpass.frequency);
-		this.envelope.connect(this._amplitue.gain);
+		Tone.connect(this.envelope, this._amplitue.gain);
 
 		for (var i = 0; i < inharmRatios.length; i++){
 			var osc = new Tone.FMOscillator({
@@ -102,7 +104,7 @@ define(["../core/Tone", "../instrument/Instrument", "../source/FMOscillator", ".
 				"harmonicity" : options.harmonicity,
 				"modulationIndex" : options.modulationIndex
 			});
-			osc.connect(this._highpass);
+			Tone.connect(osc, this._highpass);
 			this._oscillators[i] = osc;
 
 			var mult = new Tone.Multiply(inharmRatios[i]);

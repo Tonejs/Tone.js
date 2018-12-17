@@ -96,8 +96,8 @@ define(["../core/Tone", "../source/Oscillator", "../signal/Scale", "../core/Audi
 
 		//connect it up
 		Tone.chain(this._oscillator, this._a2g, this._scaler);
-		this._zeros.connect(this._a2g);
-		this._stoppedSignal.connect(this._a2g);
+		Tone.connect(this._zeros, this._a2g);
+		Tone.connect(this._stoppedSignal, this._a2g);
 		this._readOnly(["amplitude", "frequency"]);
 		this.phase = options.phase;
 	};

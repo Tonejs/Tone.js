@@ -60,7 +60,7 @@ define(["../core/Tone", "../effect/StereoXFeedbackEffect", "../signal/Signal", "
 		this.delayTime.fan(this._leftDelay.delayTime, this._rightDelay.delayTime, this._rightPreDelay.delayTime);
 		//rearranged the feedback to be after the rightPreDelay
 		this._feedbackLR.disconnect();
-		this._feedbackLR.connect(this._rightDelay);
+		Tone.connect(this._feedbackLR, this._rightDelay);
 		this._readOnly(["delayTime"]);
 	};
 

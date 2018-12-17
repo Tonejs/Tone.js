@@ -225,9 +225,9 @@ define(["../core/Tone", "../source/Source", "../source/Oscillator", "../source/P
 				}, this.blockTime);
 			}
 			this._oscillator = new OscillatorConstructor();
-			this.frequency.connect(this._oscillator.frequency);
-			this.detune.connect(this._oscillator.detune);
-			this._oscillator.connect(this.output);
+			Tone.connect(this.frequency, this._oscillator.frequency);
+			Tone.connect(this.detune, this._oscillator.detune);
+			Tone.connect(this._oscillator, this.output);
 			if (this.state === Tone.State.Started){
 				this._oscillator.start(now);
 			}

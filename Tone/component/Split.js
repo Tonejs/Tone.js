@@ -37,8 +37,8 @@ define(["../core/Tone", "../core/Gain", "../core/AudioNode"], function(Tone){
 		this.right = this.output[1] = new Tone.Gain();
 
 		//connections
-		this._splitter.connect(this.left, 0, 0);
-		this._splitter.connect(this.right, 1, 0);
+		Tone.connect(this._splitter, this.left, 0, 0);
+		Tone.connect(this._splitter, this.right, 1, 0);
 	};
 
 	Tone.extend(Tone.Split, Tone.AudioNode);

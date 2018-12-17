@@ -45,8 +45,8 @@ define(["../core/Tone", "../core/AudioNode"], function(Tone){
 		this._merger = this.output = this.context.createChannelMerger(2);
 
 		//connections
-		this.left.connect(this._merger, 0, 0);
-		this.right.connect(this._merger, 0, 1);
+		Tone.connect(this.left, this._merger, 0, 0);
+		Tone.connect(this.right, this._merger, 0, 1);
 
 		this.left.channelCount = 1;
 		this.right.channelCount = 1;

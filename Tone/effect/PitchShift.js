@@ -42,7 +42,8 @@ define(["../core/Tone", "../component/LFO", "../component/CrossFade",
 			"min" : 0,
 			"max" : 0.1,
 			"type" : "sawtooth"
-		}).connect(this._delayA.delayTime);
+		});
+		Tone.connect(this._lfoA, this._delayA.delayTime);
 
 		/**
 		 *  The second DelayNode
@@ -61,7 +62,8 @@ define(["../core/Tone", "../component/LFO", "../component/CrossFade",
 			"max" : 0.1,
 			"type" : "sawtooth",
 			"phase" : 180
-		}).connect(this._delayB.delayTime);
+		});
+		Tone.connect(this._lfoB, this._delayB.delayTime);
 
 		/**
 		 *  Crossfade quickly between the two delay lines
@@ -83,7 +85,8 @@ define(["../core/Tone", "../component/LFO", "../component/CrossFade",
 			"max" : 1,
 			"type" : "triangle",
 			"phase" : 90
-		}).connect(this._crossFade.fade);
+		});
+		Tone.connect(this._crossFadeLFO, this._crossFade.fade);
 
 		/**
 		 *  The delay node
@@ -115,8 +118,8 @@ define(["../core/Tone", "../component/LFO", "../component/CrossFade",
 		this._windowSize = options.windowSize;
 
 		//connect the two delay lines up
-		this._delayA.connect(this._crossFade.a);
-		this._delayB.connect(this._crossFade.b);
+		Tone.connect(this._delayA, this._crossFade.a);
+		Tone.connect(this._delayB, this._crossFade.b);
 		//connect the frequency
 		this._frequency.fan(this._lfoA.frequency, this._lfoB.frequency, this._crossFadeLFO.frequency);
 		//route the input

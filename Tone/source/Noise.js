@@ -123,7 +123,7 @@ define(["../core/Tone", "../source/Source", "../core/Buffer",
 	 */
 	Tone.Noise.prototype._start = function(time){
 		var buffer = _noiseBuffers[this._type];
-		this._source = new Tone.BufferSource(buffer).connect(this.output);
+		Tone.connect(this._source = new Tone.BufferSource(buffer), this.output);
 		this._source.loop = true;
 		this._source.playbackRate.value = this._playbackRate;
 		this._source.start(this.toSeconds(time), Math.random() * (buffer.duration - 0.001));

@@ -209,9 +209,9 @@ define(["../core/Tone", "../source/Source", "../source/Oscillator",
 					}
 					osc.phase = this._phase + (i / count) * 360;
 					osc.volume.value = -6 - count*1.1;
-					this.frequency.connect(osc.frequency);
-					this.detune.connect(osc.detune);
-					osc.connect(this.output);
+					Tone.connect(this.frequency, osc.frequency);
+					Tone.connect(this.detune, osc.detune);
+					Tone.connect(osc, this.output);
 					this._oscillators[i] = osc;
 				}
 				//set the spread

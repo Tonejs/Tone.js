@@ -76,8 +76,8 @@ define(["../core/Tone", "../component/LFO", "../effect/StereoEffect"], function(
 		this._readOnly(["frequency", "depth"]);
 		Tone.chain(this.effectSendL, this._amplitudeL, this.effectReturnL);
 		Tone.chain(this.effectSendR, this._amplitudeR, this.effectReturnR);
-		this._lfoL.connect(this._amplitudeL.gain);
-		this._lfoR.connect(this._amplitudeR.gain);
+		Tone.connect(this._lfoL, this._amplitudeL.gain);
+		Tone.connect(this._lfoR, this._amplitudeR.gain);
 		this.frequency.fan(this._lfoL.frequency, this._lfoR.frequency);
 		this.depth.fan(this._lfoR.amplitude, this._lfoL.amplitude);
 		this.type = options.type;

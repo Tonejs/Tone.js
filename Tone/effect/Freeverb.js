@@ -99,16 +99,16 @@ define(["../core/Tone", "../component/LowpassCombFilter", "../effect/StereoEffec
 			} else {
 				Tone.chain(this.effectSendR, lfpf, this._allpassFiltersR[0]);
 			}
-			this.roomSize.connect(lfpf.resonance);
-			this.dampening.connect(lfpf.dampening);
+			Tone.connect(this.roomSize, lfpf.resonance);
+			Tone.connect(this.dampening, lfpf.dampening);
 			this._combFilters.push(lfpf);
 		}
 
 		//chain the allpass filters togetehr
 		Tone.connectSeries.apply(Tone, this._allpassFiltersL);
 		Tone.connectSeries.apply(Tone, this._allpassFiltersR);
-		this._allpassFiltersL[this._allpassFiltersL.length - 1].connect(this.effectReturnL);
-		this._allpassFiltersR[this._allpassFiltersR.length - 1].connect(this.effectReturnR);
+		Tone.connect(this._allpassFiltersL[this._allpassFiltersL.length - 1], this.effectReturnL);
+		Tone.connect(this._allpassFiltersR[this._allpassFiltersR.length - 1], this.effectReturnR);
 		this._readOnly(["roomSize", "dampening"]);
 	};
 

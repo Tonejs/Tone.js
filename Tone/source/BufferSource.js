@@ -63,7 +63,7 @@ define(["../core/Tone", "../core/Buffer", "../source/Source", "../core/Gain",
 		 *  @private
 		 */
 		this._source = this.context.createBufferSource();
-		this._source.connect(this._gainNode);
+		Tone.connect(this._source, this._gainNode);
 		this._source.onended = this._onended.bind(this);
 
 		/**
