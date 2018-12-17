@@ -34,7 +34,7 @@ define(["../core/Tone", "../source/Source", "../source/Oscillator",
 		 *  @type {Tone.Gain}
 		 *  @private
 		 */
-		this._widthGate = new Tone.Gain();
+		this._widthGate = new Tone.Gain(0);
 
 		/**
 		 *  the sawtooth oscillator
