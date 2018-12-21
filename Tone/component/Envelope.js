@@ -293,7 +293,7 @@ define(["../core/Tone", "../signal/Signal",
 			var decayStart = time + attack;
 			this.log("decay", decayStart);
 			if (this._decayCurve === "linear"){
-				this._sig.linearRampTo(decayValue, decay, decayStart);
+				this._sig.linearRampTo(decayValue, decay, decayStart+this.sampleTime);
 			} else if (this._decayCurve === "exponential"){
 				this._sig.exponentialApproachValueAtTime(decayValue, decayStart, decay);
 			}

@@ -189,6 +189,7 @@ function(Envelope, Basic, Offline, Test, PassAudio, APITest){
 					env.toMaster();
 					env.triggerAttack(0);
 				}, 0.7).then(function(buffer){
+					expect(buffer.getValueAtTime(0.05)).to.be.closeTo(0.5, 0.01);
 					expect(buffer.getValueAtTime(0.1)).to.be.closeTo(1, 0.01);
 					expect(buffer.getValueAtTime(0.2)).to.be.closeTo(0.8, 0.01);
 					expect(buffer.getValueAtTime(0.3)).to.be.closeTo(0.6, 0.01);
