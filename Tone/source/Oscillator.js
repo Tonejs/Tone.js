@@ -62,7 +62,7 @@ function(Tone){
 		 *  @type {Number}
 		 *  @private
 		 */
-		this._partialCount = Tone.defaultArg(options.partialCount, 0);
+		this._partialCount = options.partialCount;
 
 		/**
 		 *  the phase of the oscillator
@@ -80,7 +80,7 @@ function(Tone){
 		this._type = options.type;
 
 		//setup
-		if (options.partialCount){
+		if (options.partialCount && options.type !== Tone.Oscillator.Type.Custom){
 			this.type = options.type + options.partialCount.toString();	
 		} else {
 			this.type = options.type;
@@ -101,6 +101,7 @@ function(Tone){
 		"detune" : 0,
 		"phase" : 0,
 		"partials" : [],
+		"partialCount" : 0
 	};
 
 	/**
