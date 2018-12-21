@@ -180,6 +180,41 @@ function(BasicTests, OmniOscillator, Offline, SourceTests, OscillatorTests, Outp
 				omni.dispose();
 			});
 
+			it("can get/set the partialCount", function(){
+				var omni = new OmniOscillator({
+					"type" : "square2",
+				});
+				expect(omni.partialCount).to.equal(2);
+				omni.partialCount = 3;
+				expect(omni.partialCount).to.equal(3);
+				expect(omni.type).to.equal("square3");
+				omni.dispose();
+			});
+
+			it("can set the sourceType", function(){
+				var omni = new OmniOscillator({
+					type : "fatsquare3"
+				});
+				expect(omni.type).to.equal("fatsquare3");
+				expect(omni.sourceType).to.equal("fat");
+				omni.sourceType = "oscillator";
+				expect(omni.sourceType).to.equal("oscillator");
+				expect(omni.type).to.equal("square3");
+				omni.sourceType = "pulse";
+				expect(omni.sourceType).to.equal("pulse");
+				expect(omni.type).to.equal("pulse");
+				omni.sourceType = "fm";
+				expect(omni.sourceType).to.equal("fm");
+				expect(omni.type).to.equal("fmsine");
+				omni.sourceType = "pwm";
+				expect(omni.sourceType).to.equal("pwm");
+				expect(omni.type).to.equal("pwm");
+				omni.sourceType = "am";
+				expect(omni.sourceType).to.equal("am");
+				expect(omni.type).to.equal("amsine");
+				omni.dispose();
+			});
+
 			it("can set a FM oscillator with partials", function(){
 				var omni = new OmniOscillator({
 					"detune" : 4,

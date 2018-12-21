@@ -72,7 +72,7 @@ define(["../core/Tone", "../source/Source", "../source/Oscillator", "../source/P
 		"frequency" : 440,
 		"detune" : 0,
 		"type" : "sine",
-		"phase" : 0,
+		"phase" : 0
 	};
 
 	/**
@@ -187,6 +187,24 @@ define(["../core/Tone", "../source/Source", "../source/Oscillator", "../source/P
 	});
 
 	/**
+	 * The partial count of the oscillator. This is not available on "pwm" and "pulse" oscillator types.
+	 * @memberOf Tone.OmniOscillator#
+	 * @type {Number}
+	 * @name partialCount
+	 * @example
+	 * //set the maximum number of partials
+	 * osc.partialCount = 0;
+	 */
+	Object.defineProperty(Tone.OmniOscillator.prototype, "partialCount", {
+		get : function(){
+			return this._oscillator.partialCount;
+		},
+		set : function(partialCount){
+			this._oscillator.partialCount = partialCount;
+		}
+	});
+
+	/**
 	 *  Set a member/attribute of the oscillator.
 	 *  @param {Object|String} params
 	 *  @param {number=} value
@@ -203,6 +221,22 @@ define(["../core/Tone", "../source/Source", "../source/Oscillator", "../source/P
 		//then set the rest
 		Tone.prototype.set.apply(this, arguments);
 		return this;
+	};
+
+	/**
+	 *  Get the object's attributes. Given no arguments get
+	 *  will return all available object properties and their corresponding
+	 *  values. Pass in a single attribute to retrieve or an array
+	 *  of attributes. The attribute strings can also include a "."
+	 *  to access deeper properties.
+	 *  @param {Array=|string|undefined} params the parameters to get, otherwise will return
+	 *  					                  all available.
+	 *  @returns {Object}
+	 */
+	Tone.OmniOscillator.prototype.get = function(params){
+		var options = this._oscillator.get(params);
+		options.type = this.type;
+		return options;
 	};
 
 	/**
@@ -246,6 +280,58 @@ define(["../core/Tone", "../source/Source", "../source/Oscillator", "../source/P
 		},
 		set : function(phase){
 			this._oscillator.phase = phase;
+		}
+	});
+
+	/**
+	 * The source type names
+	 * @private
+	 * @type {Object}
+	 */
+	var SourceTypeNames = {
+		PulseOscillator : "pulse",
+		PWMOscillator : "pwm",
+		Oscillator : "oscillator",
+		FMOscillator : "fm",
+		AMOscillator : "am",
+		FatOscillator : "fat"
+	};
+
+	/**
+	 * The source type of the oscillator. 
+	 * @memberOf Tone.OmniOscillator#
+	 * @type {String}
+	 * @signal
+	 * @name sourceType
+	 * @example
+	 * var omniOsc = new Tone.OmniOscillator(440, "fmsquare");
+	 * omniOsc.sourceType // 'fm'
+	 */
+	Object.defineProperty(Tone.OmniOscillator.prototype, "sourceType", {
+		get : function(){
+			return SourceTypeNames[this._sourceType];
+		},
+		set : function(sType){
+			//the basetype defaults to sine
+			var baseType = "sine";
+			if (this._oscillator.type !== "pwm" && this._oscillator.type !== "pulse"){
+				baseType = this._oscillator.type;
+			} 
+
+			//set the type
+			if (sType === SourceTypeNames.FMOscillator){
+				this.type = "fm" + baseType;
+			} else if (sType === SourceTypeNames.AMOscillator){
+				this.type = "am" + baseType;
+			} else if (sType === SourceTypeNames.FatOscillator){
+				this.type = "fat" + baseType;
+			} else if (sType === SourceTypeNames.Oscillator){
+				this.type = baseType;
+			} else if (sType === SourceTypeNames.PulseOscillator){
+				this.type = "pulse";
+			} else if (sType === SourceTypeNames.PWMOscillator){
+				this.type = "pwm";
+			}
 		}
 	});
 
