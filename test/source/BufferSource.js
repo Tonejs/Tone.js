@@ -409,18 +409,6 @@ function(BasicTests, BufferSource, Offline, Buffer, Meter, Tone, CompareToFile, 
 				});
 			});
 
-			it("won't play for longer than the buffer's duration minus the offset", function(){
-				return Offline(function(){
-					var player = new BufferSource(buffer).toMaster();
-					player.start(0, 0.1, buffer.duration);
-					return function(time){
-						if (time > buffer.duration - 0.1){
-							expect(player.state).to.equal("stopped");
-						}
-					};
-				}, buffer.duration);
-			});
-
 			it("can end start ramp early", function(){
 				return Meter(function(){
 					var player = new BufferSource(buffer);

@@ -217,10 +217,6 @@ define(["../core/Tone", "../core/Buffer", "../source/Source", "../core/Gain",
 			//make sure it's never negative
 			computedDur = Math.max(computedDur, 0);
 
-			//when not looping, the duration should be no more than the buffer.duration
-			if (!this.loop){
-				computedDur = Math.min(computedDur, this.buffer.duration - (offset % this.buffer.duration));
-			}
 			this.stop(time + computedDur);
 		}
 
