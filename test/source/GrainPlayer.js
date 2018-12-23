@@ -67,6 +67,7 @@ function(BasicTests, GrainPlayer, Offline, SourceTests, Buffer, Test, Tone, Comp
 
 			it("loads a url which was passed in", function(done){
 				var player = new GrainPlayer("./audio/sine.wav", function(){
+					expect(player.loaded).to.be.true;
 					player.dispose();
 					done();
 				});

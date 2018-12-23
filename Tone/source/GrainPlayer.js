@@ -300,6 +300,19 @@ define(["../core/Tone", "../source/Source", "../core/Buffer", "../source/BufferS
 	});
 
 	/**
+	 * If all the buffer is loaded
+	 * @memberOf Tone.GrainPlayer#
+	 * @type {Boolean}
+	 * @name loaded
+	 * @readOnly
+	 */
+	Object.defineProperty(Tone.GrainPlayer.prototype, "loaded", {
+		get : function(){
+			return this.buffer.loaded;
+		}
+	});
+
+	/**
 	 * Clean up
 	 * @return {Tone.GrainPlayer} this
 	 */
