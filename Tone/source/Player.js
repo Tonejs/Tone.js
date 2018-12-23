@@ -91,13 +91,6 @@ define(["../core/Tone", "../core/Buffer", "../source/Source", "../source/TickSou
 		this._activeSources = [];
 
 		/**
-		 *  The elapsed time counter.
-		 *  @type {Tone.TickSource}
-		 *  @private
-		 */
-		this._elapsedTime = new Tone.TickSource(options.playbackRate);
-
-		/**
 		 *  The fadeIn time of the amplitude envelope.
 		 *  @type {Time}
 		 */
@@ -125,7 +118,6 @@ define(["../core/Tone", "../core/Buffer", "../source/Source", "../source/TickSou
 		"autostart" : false,
 		"loopStart" : 0,
 		"loopEnd" : 0,
-		"retrigger" : false,
 		"reverse" : false,
 		"fadeIn" : 0,
 		"fadeOut" : 0
@@ -168,6 +160,9 @@ define(["../core/Tone", "../core/Buffer", "../source/Source", "../source/TickSou
 	Tone.Player.prototype._onSourceEnd = function(source){
 		var index = this._activeSources.indexOf(source);
 		this._activeSources.splice(index, 1);
+		if (this._activeSources.length === 0){
+			this.stop();
+		}
 	};
 
 	/**
@@ -210,9 +205,6 @@ define(["../core/Tone", "../core/Buffer", "../source/Source", "../source/TickSou
 		//get the start time
 		startTime = this.toSeconds(startTime);
 
-		//start the elapsed time counter
-		this._elapsedTime.start(startTime, offset);
-
 		//make the source
 		var source = new Tone.BufferSource({
 			"buffer" : this._buffer,
@@ -252,7 +244,6 @@ define(["../core/Tone", "../core/Buffer", "../source/Source", "../source/TickSou
 	 */
 	Tone.Player.prototype._stop = function(time){
 		time = this.toSeconds(time);
-		this._elapsedTime.stop(time);
 		this._activeSources.forEach(function(source){
 			source.stop(time);
 		});
@@ -384,39 +375,19 @@ define(["../core/Tone", "../core/Buffer", "../source/Source", "../source/TickSou
 				return;
 			}
 			this._loop = loop;
-			var now = this.now();
-			if (!loop){
-				//stop the playback on the next cycle
-				this._stopAtNextIteration(now);
-			} else {
+			//set the loop of all of the sources
+			this._activeSources.forEach(function(source){
+				source.loop = loop;
+			});
+			if (loop){
 				//remove the next stopEvent
-				var stopEvent = this._state.getNextState(Tone.State.Stopped, now);
+				var stopEvent = this._state.getNextState(Tone.State.Stopped, this.now());
 				if (stopEvent){
-					this._activeSources.forEach(function(source){
-						source.loop = loop;
-					});
 					this._state.cancel(stopEvent.time);
-					this._elapsedTime.cancel(stopEvent.time);
 				}
 			}
 		}
 	});
-
-	/**
-	 *  Schedules a stop event at the next full iteration. Used
-	 *  for scheduling stop when the loop state or playbackRate changes
-	 *  @param  {Number}  now  The current time
-	 *  @private
-	 */
-	Tone.Player.prototype._stopAtNextIteration = function(now){
-		if (this._state.getValueAtTime(now) === Tone.State.Started){
-			var nextStop = this._state.getNextState(Tone.State.Stopped, now);
-			var position = this._elapsedTime.getTicksAtTime(now);
-			var iterations = Math.max(Math.ceil(position / this.buffer.duration), 1);
-			var stopTime = this._elapsedTime.getTimeOfTick(iterations * this.buffer.duration, nextStop ? nextStop.time - this.sampleTime : Infinity);
-			this.stop(stopTime);
-		}
-	};
 
 	/**
 	 * The playback speed. 1 is normal speed. This is not a signal because
@@ -432,34 +403,18 @@ define(["../core/Tone", "../core/Buffer", "../source/Source", "../source/TickSou
 		set : function(rate){
 			this._playbackRate = rate;
 			var now = this.now();
-			this._elapsedTime.frequency.setValueAtTime(rate, now);
-			//if it's not looping
-			if (!this._loop){
-				this._stopAtNextIteration(now);
+
+			//cancel the stop event since it's at a different time now
+			var stopEvent = this._state.getNextState(Tone.State.Stopped, now);
+			if (stopEvent){
+				this._state.cancel(stopEvent.time);
 			}
+
 			//set all the sources
 			this._activeSources.forEach(function(source){
+				source.cancelStop();
 				source.playbackRate.setValueAtTime(rate, now);
 			});
-		}
-	});
-
-	/**
-	 * The current playback position of the buffer. 
-	 * @memberOf Tone.Player#
-	 * @type {Number}
-	 * @name position
-	 */
-	Object.defineProperty(Tone.Player.prototype, "position", {
-		get : function(){
-			var now = this.now();
-			if (this._state.getValueAtTime(now) === Tone.State.Started && this.loaded){
-				var duration = this.buffer.duration;
-				var position = this._elapsedTime.getTicksAtTime(now);
-				return position % duration;
-			} else {
-				return 0;
-			}
 		}
 	});
 
@@ -504,8 +459,6 @@ define(["../core/Tone", "../core/Buffer", "../source/Source", "../source/TickSou
 		Tone.Source.prototype.dispose.call(this);
 		this._buffer.dispose();
 		this._buffer = null;
-		this._elapsedTime.dispose();
-		this._elapsedTime = null;
 		return this;
 	};
 
