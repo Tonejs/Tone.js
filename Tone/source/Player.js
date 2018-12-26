@@ -160,8 +160,8 @@ define(["../core/Tone", "../core/Buffer", "../source/Source", "../source/TickSou
 	Tone.Player.prototype._onSourceEnd = function(source){
 		var index = this._activeSources.indexOf(source);
 		this._activeSources.splice(index, 1);
-		if (this._activeSources.length === 0){
-			this.stop();
+		if (this._activeSources.length === 0 && !this._synced){
+			this._state.setStateAtTime(Tone.State.Stopped, Tone.now());
 		}
 	};
 
