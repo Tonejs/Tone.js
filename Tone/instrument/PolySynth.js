@@ -99,27 +99,22 @@ define(["../core/Tone", "../instrument/Synth", "../source/Source"], function(Ton
 			return sameNote;
 		}
 
-		//find available notes
-		var availableVoices = this.voices.filter(function(voice){
-			//check that it's not ascending in energy (in attack phase)
-			var levelNow = voice.getLevelAtTime(time);
-			var nextLevel = voice.getLevelAtTime(time + this.sampleTime);
-			//and it's near silent
-			return levelNow >= nextLevel && voice.getLevelAtTime(time) < 1e-5;
+		var sortedVoices = this.voices.slice().sort(function(a, b){
+			//check that it's not scheduled in the future
+			var aLevel = a.getLevelAtTime(time + this.blockTime);
+			var bLevel = b.getLevelAtTime(time + this.blockTime);
+
+			var silenceThresh = 1e-5;
+			if (aLevel < silenceThresh){
+				aLevel = 0;
+			}
+			if (bLevel < silenceThresh){
+				bLevel = 0;
+			}
+			return aLevel - bLevel;
 		}.bind(this));
 
-		if (availableVoices.length){
-			//return the first one
-			return availableVoices[0];
-		}
-		//otherwise take the one with the lowest energy
-		var closestVoice = this.voices[0];
-		this.voices.forEach(function(voice){
-			if (voice.getLevelAtTime(time) < closestVoice.getLevelAtTime(time)){
-				closestVoice = voice;
-			}
-		});
-		return closestVoice;
+		return sortedVoices[0];
 	};
 
 	/**
