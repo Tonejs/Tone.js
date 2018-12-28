@@ -50,6 +50,17 @@ function(Filter, Basic, Offline, Test, Signal, PassAudio, PassAudioStereo, Oscil
 				filter.dispose();
 			});
 
+			it("can get the frequency response curve", function(){
+				var filter = new Filter();
+				var curve = filter.getFrequencyResponse(32);
+				expect(curve.length).to.equal(32);
+				expect(curve[0]).be.closeTo(1, 0.01);
+				expect(curve[5]).be.closeTo(0.5, 0.1);
+				expect(curve[15]).be.closeTo(0, 0.01);
+				expect(curve[31]).be.closeTo(0, 0.01);
+				filter.dispose();
+			});
+
 			it("passes the incoming signal through", function(){
 				return PassAudio(function(input){
 					var filter = new Filter().toMaster();

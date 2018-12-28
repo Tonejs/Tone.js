@@ -165,6 +165,40 @@ define(["../core/Tone", "../signal/Signal", "../core/AudioNode"], function(Tone)
 	});
 
 	/**
+	 * Get the frequency response curve. This curve represets how the filter
+	 * responses to frequencies between 20hz-20khz. 
+	 * @param  {Number} [len=128] The number of values to return
+	 * @return {Float32Array}     The frequency response curve between 20-20k
+	 */
+	Tone.Filter.prototype.getFrequencyResponse = function(len){
+		len = Tone.defaultArg(len, 128);
+		//start with all 1s
+		var totalResponse = new Float32Array(len).map(function(){
+			return 1;
+		});
+		var freqValues = new Float32Array(len);
+		for (var i = 0; i < len; i++){
+			const norm = Math.pow(i / len, 2);
+			var freq = norm * (20000 - 20) + 20;
+			freqValues[i] = freq;
+		}
+		var magValues = new Float32Array(len);
+		var phaseValues = new Float32Array(len);
+		this._filters.forEach(function(){
+			var filterClone = this.context.createBiquadFilter();
+			filterClone.type = this._type;
+			filterClone.Q.value = this.Q.value;
+			filterClone.frequency.value = this.frequency.value;
+			filterClone.gain.value = this.gain.value;
+			filterClone.getFrequencyResponse(freqValues, magValues, phaseValues);
+			magValues.forEach(function(val, i){
+				totalResponse[i] *= val;
+			});
+		}.bind(this));
+		return totalResponse;
+	};
+
+	/**
 	 *  Clean up.
 	 *  @return {Tone.Filter} this
 	 */
