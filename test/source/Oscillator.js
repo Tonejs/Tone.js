@@ -39,6 +39,15 @@ function(BasicTests, Oscillator, Offline, SourceTests, OscillatorTests, OutputAu
 				osc.dispose();
 			});
 
+			it("only returns partials when type is 'custom'", function(){
+				var osc = new Oscillator(450, "square");
+				expect(osc.get().partials).to.be.undefined;
+				osc.partials = [0, 1, 2, 3];
+				expect(osc.get().type).to.equal("custom");
+				expect(osc.get().partials).to.deep.equal([0, 1, 2, 3]);
+				osc.dispose();
+			});
+
 		});
 
 		context("Phase Rotation", function(){

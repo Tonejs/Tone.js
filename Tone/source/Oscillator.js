@@ -81,9 +81,7 @@ function(Tone){
 
 		//setup
 		if (options.partialCount && options.type !== Tone.Oscillator.Type.Custom){
-			this.type = options.type + options.partialCount.toString();	
-		} else {
-			this.type = options.type;
+			this._type = options.type + options.partialCount.toString();	
 		}
 		this.phase = this._phase;
 		this._readOnly(["frequency", "detune"]);
@@ -261,6 +259,21 @@ function(Tone){
 			}
 		}
 	});
+
+	/**
+	 *  Get the object's attributes. Given no arguments get
+	 *  will return all available object properties and their corresponding
+	 *  values. 
+	 *  @memberOf Tone.Oscillator#
+	 *  @returns {Object}
+	 */
+	Tone.Oscillator.prototype.get = function(){
+		const values = Tone.prototype.get.apply(this, arguments);
+		if (values.type !== Tone.Oscillator.Type.Custom){
+			delete values.partials;
+		}
+		return values;
+	};
 
 	/**
 	 *  Returns the real and imaginary components based
