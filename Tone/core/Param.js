@@ -181,7 +181,7 @@ define(["../core/Tone", "../type/Type", "../core/AudioNode", "../core/Timeline"]
 	 *  @type {Number}
 	 *  @private
 	 */
-	Tone.Param.prototype._minOutput = 0.00001;
+	Tone.Param.prototype._minOutput = 1e-5;
 
 	/**
 	 *  The event types
