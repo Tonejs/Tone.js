@@ -15,8 +15,6 @@
     "collect": "npm run collect:deps",
     "collect:deps": "node scripts/collect_deps.js",
     "collect:tests": "node scripts/collect_tests.js --file $npm_config_file --dir $npm_config_dir",
-    "examples": "webpack -p --env.examples",
-    "examples:watch": "webpack -w --env.examples",
     "increment": "node scripts/increment_version.js",
     "karma": "karma start scripts/karma.conf.js --single-run",
     "karma:watch": "karma start scripts/karma.conf.js --auto-watch",
@@ -54,10 +52,8 @@
   "devDependencies": {
     "@babel/polyfill": "^7.0.0-beta.47",
     "audiobuffer-to-wav": "^1.0.0",
-    "audiokeys": "^0.1.1",
     "chai": "^1.9.1",
     "concurrently": "^3.5.1",
-    "css-loader": "^0.28.11",
     "eslint": "^4.19.1",
     "eslint-plugin-html": "^5.0.0",
     "fft-js": "0.0.11",
@@ -75,15 +71,11 @@
     "karma-sourcemap-loader": "^0.3.7",
     "karma-webpack": "^3.0.0",
     "mocha": "^5.1.1",
-    "nexusui": "^2.0.7",
-    "node-sass": "^4.9.2",
     "proxy-polyfill": "^0.2.0",
-    "sass-loader": "^7.0.1",
     "semver": "^5.5.0",
-    "style-loader": "^0.21.0",
     "teoria": "^2.5.0",
-    "webmidi": "^2.0.5",
     "webpack": "^4.6.0",
     "webpack-cli": "^3.1.2"
-  }
+  },
+  "dependencies": {}
 }
