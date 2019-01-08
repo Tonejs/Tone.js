@@ -88,6 +88,10 @@ define(["../core/Tone", "../component/Volume", "../core/AudioNode"], function(To
 	 *  @return {Promise} The promise is resolved when the stream is open.
 	 */
 	Tone.UserMedia.prototype.open = function(labelOrId){
+		//close the previous stream
+		if (this.state === Tone.State.Started){
+			this.close();
+		}
 		return Tone.UserMedia.enumerateDevices().then(function(devices){
 			var device;
 			if (Tone.isNumber(labelOrId)){

@@ -129,6 +129,17 @@ define(["helper/Basic", "Tone/source/UserMedia", "helper/Test", "Tone/source/Sou
 						}
 					});
 
+					it("can reopen an input", function(){
+						if (HAS_USER_MEDIA_INPUTS){
+							var extIn = new UserMedia();
+							return extIn.open().then(function(){
+								return extIn.open();
+							}).then(function(){
+								extIn.dispose();
+							});
+						}
+					});
+
 					it("can close an input", function(){
 						if (HAS_USER_MEDIA_INPUTS){
 							var extIn = new UserMedia();
