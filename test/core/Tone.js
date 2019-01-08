@@ -279,9 +279,9 @@ function(Test, Tone, PassAudio, Oscillator, Synth, Offline,
 			});
 
 			it("ramps to a value given a string and a value and a ramp time", function(){
+				var setValue = 20;
 				return Offline(function(){
 					var osc = new Oscillator(0).toMaster();
-					var setValue = 20;
 					osc.frequency.toMaster();
 					osc.set("frequency", setValue, 0.2);
 					expect(osc.frequency.value).to.not.be.closeTo(setValue, 0.001);
@@ -296,7 +296,7 @@ function(Test, Tone, PassAudio, Oscillator, Synth, Offline,
 
 			it("gets all defaults of the object with no arguments", function(){
 				var osc = new Oscillator(0);
-				expect(osc.get()).to.contain.keys(Object.keys(Oscillator.defaults));
+				expect(osc.get()).to.contain.keys(["type", "partialCount", "frequency", "detune", "phase"]);
 				osc.dispose();
 			});
 
