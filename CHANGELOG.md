@@ -11,6 +11,9 @@
 * Follower/Gate uses a single "smoothing" value instead of separate attacks and releases
 * Changing references to `window` allowing it to not throw error in node context
 * Testing examples
+* Tone.Channel combines Tone.PanVol with Tone.Solo.
+* Removing require.html example. 
+* adding `partialCount` and `baseType` to Oscillator classes, helps with getting/setting complex types.
 
 
 ### r12
