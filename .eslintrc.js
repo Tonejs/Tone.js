@@ -6,6 +6,9 @@ module.exports = {
 		"node" : true,
 		"mocha": true
     },
+    "plugins": [
+        "html"
+    ],
     "globals": {
         "expect": true,
         "Tone": true,
