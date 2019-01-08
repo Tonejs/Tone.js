@@ -160,6 +160,19 @@ define(["../core/Tone", "../source/Source", "../source/Oscillator",
 	});
 
 	/**
+	 * The baseType of the oscillator. Always returns "pulse".
+	 * @readOnly
+	 * @memberOf Tone.PulseOscillator#
+	 * @type {string}
+	 * @name baseType
+	 */
+	Object.defineProperty(Tone.PulseOscillator.prototype, "baseType", {
+		get : function(){
+			return "pulse";
+		}
+	});
+
+	/**
 	 * The partials of the waveform. Cannot set partials for this waveform type
 	 * @memberOf Tone.PulseOscillator#
 	 * @type {Array}

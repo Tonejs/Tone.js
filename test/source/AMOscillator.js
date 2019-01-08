@@ -44,6 +44,24 @@ function(BasicTests, AMOscillator, Offline, SourceTests, OscillatorTests, Test, 
 				amOsc.dispose();
 			});
 
+			it("can get/set the baseType", function(){
+				var osc = new AMOscillator();
+				osc.type = "sine5";
+				expect(osc.baseType).to.equal("sine");
+				osc.baseType = "triangle";
+				expect(osc.type).to.equal("triangle5");
+				expect(osc.partialCount).to.equal(5);
+				osc.partialCount = 2;
+				expect(osc.type).to.equal("triangle2");
+				osc.baseType = "custom";
+				expect(osc.type).to.equal("custom");
+				osc.partials = [1, 2, 3];
+				expect(osc.baseType).to.equal("custom");
+				osc.baseType = "square";
+				expect(osc.type).to.equal("square");
+				osc.dispose();
+			});
+
 		});
 	});
 

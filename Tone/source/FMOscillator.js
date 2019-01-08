@@ -157,6 +157,43 @@ define(["../core/Tone", "../source/Source", "../source/Oscillator",
 	});
 
 	/**
+	 * The oscillator type without the partialsCount appended to the end
+	 * @memberOf Tone.FMOscillator#
+	 * @type {string}
+	 * @name baseType
+	 * @example
+	 * osc.type = 'sine2'
+	 * osc.baseType //'sine'
+	 * osc.partialCount = 2
+	 */
+	Object.defineProperty(Tone.FMOscillator.prototype, "baseType", {
+		get : function(){
+			return this._carrier.baseType;
+		},
+		set : function(baseType){
+			this._carrier.baseType = baseType;
+		}
+	});
+
+	/**
+	 * 'partialCount' offers an alternative way to set the number of used partials. 
+	 * When partialCount is 0, the maximum number of partials are used when representing
+	 * the waveform using the periodicWave. When 'partials' is set, this value is 
+	 * not settable, but equals the length of the partials array.
+	 * @memberOf Tone.FMOscillator#
+	 * @type {Number}
+	 * @name partialCount
+	 */
+	Object.defineProperty(Tone.FMOscillator.prototype, "partialCount", {
+		get : function(){
+			return this._carrier.partialCount;
+		},
+		set : function(partialCount){
+			this._carrier.partialCount = partialCount;
+		}
+	});
+
+	/**
 	 * The type of the modulator oscillator
 	 * @memberOf Tone.FMOscillator#
 	 * @type {String}

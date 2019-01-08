@@ -32,6 +32,15 @@ function(BasicTests, PWMOscillator, Offline, SourceTests, OscillatorTests, Test,
 			});
 
 		});
+
+		context("Types", function(){
+			it("reports it's type", function(){
+				var osc = new PWMOscillator();
+				expect(osc.type).to.equal("pwm");
+				expect(osc.baseType).to.equal("pwm");
+				osc.dispose();
+			});
+		});
 	});
 
 });

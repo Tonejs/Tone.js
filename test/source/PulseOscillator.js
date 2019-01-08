@@ -106,5 +106,14 @@ function(BasicTests, PulseOscillator, Offline, SourceTests, OscillatorTests, Com
 			});
 		});
 
+		context("Types", function(){
+			it("reports it's type", function(){
+				var osc = new PulseOscillator();
+				expect(osc.type).to.equal("pulse");
+				expect(osc.baseType).to.equal("pulse");
+				osc.dispose();
+			});
+		});
+
 	});
 });

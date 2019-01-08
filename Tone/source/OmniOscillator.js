@@ -301,7 +301,6 @@ define(["../core/Tone", "../source/Source", "../source/Oscillator", "../source/P
 	 * The source type of the oscillator. 
 	 * @memberOf Tone.OmniOscillator#
 	 * @type {String}
-	 * @signal
 	 * @name sourceType
 	 * @example
 	 * var omniOsc = new Tone.OmniOscillator(440, "fmsquare");
@@ -331,6 +330,28 @@ define(["../core/Tone", "../source/Source", "../source/Oscillator", "../source/P
 				this.type = "pulse";
 			} else if (sType === SourceTypeNames.PWMOscillator){
 				this.type = "pwm";
+			}
+		}
+	});
+
+	/**
+	 * The base type of the oscillator.
+	 * @memberOf Tone.OmniOscillator#
+	 * @type {String}
+	 * @name baseType
+	 * @example
+	 * var omniOsc = new Tone.OmniOscillator(440, "fmsquare4");
+	 * omniOsc.sourceType // 'fm'
+	 * omniOsc.baseType //'square'
+	 * omniOsc.partialCount //4
+	 */
+	Object.defineProperty(Tone.OmniOscillator.prototype, "baseType", {
+		get : function(){
+			return this._oscillator.baseType;
+		},
+		set : function(baseType){
+			if (this.sourceType !== SourceTypeNames.PulseOscillator && this.sourceType !== SourceTypeNames.PWMOscillator){
+				this._oscillator.baseType = baseType;
 			}
 		}
 	});

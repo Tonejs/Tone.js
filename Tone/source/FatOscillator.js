@@ -67,11 +67,17 @@ define(["../core/Tone", "../source/Source", "../source/Oscillator",
 		 *  @type {Array}
 		 *  @private
 		 */
-		this._partials = Tone.defaultArg(options.partials, []);
+		this._partials = options.partials;
+
+		/**
+		 *  The number of partials to use
+		 *  @type {Number}
+		 *  @private
+		 */
+		this._partialCount = options.partialCount;
 
 		//set the count initially
 		this.count = options.count;
-
 		this._readOnly(["frequency", "detune"]);
 	};
 
@@ -89,7 +95,9 @@ define(["../core/Tone", "../source/Source", "../source/Oscillator",
 		"phase" : 0,
 		"spread" : 20,
 		"count" : 3,
-		"type" : "sawtooth"
+		"type" : "sawtooth",
+		"partials" : [],
+		"partialCount" : 0
 	};
 
 	/**
@@ -207,6 +215,7 @@ define(["../core/Tone", "../source/Source", "../source/Oscillator",
 					} else {
 						osc.type = this._type;
 					}
+					osc.partialCount = this._partialCount;
 					osc.phase = this._phase + (i / count) * 360;
 					osc.volume.value = -6 - count*1.1;
 					this.frequency.connect(osc.frequency);
@@ -244,6 +253,28 @@ define(["../core/Tone", "../source/Source", "../source/Oscillator",
 	});
 
 	/**
+	 * The oscillator type without the partialsCount appended to the end
+	 * @memberOf Tone.FatOscillator#
+	 * @type {string}
+	 * @name baseType
+	 * @example
+	 * osc.type = 'sine2'
+	 * osc.baseType //'sine'
+	 * osc.partialCount = 2
+	 */
+	Object.defineProperty(Tone.FatOscillator.prototype, "baseType", {
+		get : function(){
+			return this._oscillators[0].baseType;
+		},
+		set : function(baseType){
+			this._forEach(function(osc){
+				osc.baseType = baseType;
+			});
+			this._type = this._oscillators[0].type;
+		}
+	});
+
+	/**
 	 * The partials of the carrier waveform. A partial represents
 	 * the amplitude at a harmonic. The first harmonic is the
 	 * fundamental frequency, the second is the octave and so on
@@ -258,7 +289,7 @@ define(["../core/Tone", "../source/Source", "../source/Oscillator",
 	 */
 	Object.defineProperty(Tone.FatOscillator.prototype, "partials", {
 		get : function(){
-			return this._partials;
+			return this._oscillators[0].partials;
 		},
 		set : function(partials){
 			this._partials = partials;
@@ -266,6 +297,28 @@ define(["../core/Tone", "../source/Source", "../source/Oscillator",
 			this._forEach(function(osc){
 				osc.partials = partials;
 			});
+		}
+	});
+
+	/**
+	 * 'partialCount' offers an alternative way to set the number of used partials. 
+	 * When partialCount is 0, the maximum number of partials are used when representing
+	 * the waveform using the periodicWave. When 'partials' is set, this value is 
+	 * not settable, but equals the length of the partials array.
+	 * @memberOf Tone.FatOscillator#
+	 * @type {Number}
+	 * @name partialCount
+	 */
+	Object.defineProperty(Tone.FatOscillator.prototype, "partialCount", {
+		get : function(){
+			return this._oscillators[0].partialCount;
+		},
+		set : function(partialCount){
+			this._partialCount = partialCount;
+			this._forEach(function(osc){
+				osc.partialCount = partialCount;
+			});
+			this._type = this._oscillators[0].type;
 		}
 	});
 

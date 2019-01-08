@@ -136,6 +136,19 @@ define(["../core/Tone", "../source/Source", "../source/PulseOscillator",
 	});
 
 	/**
+	 * The baseType of the oscillator. Always returns "pwm".
+	 * @readOnly
+	 * @memberOf Tone.PWMOscillator#
+	 * @type {string}
+	 * @name baseType
+	 */
+	Object.defineProperty(Tone.PWMOscillator.prototype, "baseType", {
+		get : function(){
+			return "pwm";
+		}
+	});
+
+	/**
 	 * The partials of the waveform. Cannot set partials for this waveform type
 	 * @memberOf Tone.PWMOscillator#
 	 * @type {Array}

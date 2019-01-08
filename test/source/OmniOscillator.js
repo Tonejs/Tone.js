@@ -191,7 +191,7 @@ function(BasicTests, OmniOscillator, Offline, SourceTests, OscillatorTests, Outp
 				omni.dispose();
 			});
 
-			it("can set the sourceType", function(){
+			it("can get/set the sourceType", function(){
 				var omni = new OmniOscillator({
 					type : "fatsquare3"
 				});
@@ -212,6 +212,29 @@ function(BasicTests, OmniOscillator, Offline, SourceTests, OscillatorTests, Outp
 				omni.sourceType = "am";
 				expect(omni.sourceType).to.equal("am");
 				expect(omni.type).to.equal("amsine");
+				omni.dispose();
+			});
+
+			it("can get/set the baseType", function(){
+				var omni = new OmniOscillator({
+					type : "fatsquare3"
+				});
+				expect(omni.type).to.equal("fatsquare3");
+				expect(omni.sourceType).to.equal("fat");
+				expect(omni.baseType).to.equal("square");
+				expect(omni.partialCount).to.equal(3);
+				omni.partialCount = 2;
+				expect(omni.type).to.equal("fatsquare2");
+				omni.type = "amsine";
+				expect(omni.baseType).to.equal("sine");
+				omni.baseType = "square";
+				expect(omni.type).to.equal("amsquare");
+				omni.type = "pwm";
+				expect(omni.baseType).to.equal("pwm");
+				omni.type = "triangle4";
+				expect(omni.baseType).to.equal("triangle");
+				omni.baseType = "square";
+				expect(omni.type).to.equal("square4");
 				omni.dispose();
 			});
 

@@ -81,7 +81,7 @@ function(Tone){
 
 		//setup
 		if (options.partialCount && options.type !== Tone.Oscillator.Type.Custom){
-			this._type = options.type + options.partialCount.toString();	
+			this._type = this.baseType + options.partialCount.toString();
 		}
 		this.phase = this._phase;
 		this._readOnly(["frequency", "detune"]);
@@ -159,7 +159,9 @@ function(Tone){
 	 * @return {Tone.Oscillator}      this
 	 */
 	Tone.Oscillator.prototype.restart = function(time){
-		this._oscillator.cancelStop();
+		if (this._oscillator){
+			this._oscillator.cancelStop();
+		}
 		this._state.cancel(this.toSeconds(time));
 		return this;
 	};
@@ -223,6 +225,29 @@ function(Tone){
 				this._oscillator.setPeriodicWave(this._wave);
 			}
 			this._type = type;
+		}
+	});
+
+	/**
+	 * The oscillator type without the partialsCount appended to the end
+	 * @memberOf Tone.Oscillator#
+	 * @type {string}
+	 * @name baseType
+	 * @example
+	 * osc.type = 'sine2'
+	 * osc.baseType //'sine'
+	 * osc.partialCount = 2
+	 */
+	Object.defineProperty(Tone.Oscillator.prototype, "baseType", {
+		get : function(){
+			return this._type.replace(this.partialCount, "");
+		},
+		set : function(baseType){
+			if (this.partialCount && this._type !== Tone.Oscillator.Type.Custom && baseType !== Tone.Oscillator.Type.Custom){
+				this.type = baseType + this.partialCount;
+			} else {
+				this.type = baseType;
+			}
 		}
 	});
 
