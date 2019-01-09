@@ -31,9 +31,10 @@ synth.triggerAttackRelease("C4", "8n");
 
 # Starting Audio
 
-Most browsers will not allow _any_ audio to play until a user clicks something (think play button). The above example won't play unless invoke `resume` on the Tone.js context. 
+Most browsers will not play _any_ audio until a user clicks something (like a play button). Execute the above example only after a users invokes `resume()` on Tone's context. 
 
 ```javascript
+//attach a click listener to a play button
 document.querySelector('button').addEventListener('click', () => Tone.context.resume())
 ``` 
 
