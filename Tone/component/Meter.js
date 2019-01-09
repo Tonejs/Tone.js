@@ -41,7 +41,7 @@ define(["../core/Tone", "../component/Analyser", "../core/AudioNode"], function(
 		 *  @private
 		 *  @type  {Tone.Analyser}
 		 */
-		this.input = this.output = this._analyser = new Tone.Analyser("waveform", 1024);
+		this.input = this.output = this._analyser = new Tone.Analyser("waveform", 256);
 	};
 
 	Tone.extend(Tone.Meter, Tone.AudioNode);
