@@ -2,7 +2,7 @@
  *  Tone.js
  *  @author Yotam Mann
  *  @license http://opensource.org/licenses/MIT MIT License
- *  @copyright 2014-2018 Yotam Mann
+ *  @copyright 2014-2019 Yotam Mann
  */
 define(["../version"], function(version){
 
