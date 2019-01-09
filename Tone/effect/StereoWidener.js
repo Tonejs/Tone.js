@@ -55,7 +55,8 @@ define(["../core/Tone", "../effect/MidSideEffect", "../signal/Signal",
 
 		/**
 		 * 1 - width
-		 * @type {Tone}
+		 * @type {Tone.Subtract}
+		 * @private
 		 */
 		this._oneMinusWidth = new Tone.Subtract();
 		this._oneMinusWidth.connect(this._twoTimesWidthMid);
