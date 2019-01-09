@@ -2,79 +2,76 @@
 <html>
 <head>
   <meta charset="utf-8">
-	<title>Quantize</title>
-	
-	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-	<link rel="icon" type="image/png" sizes="174x174" href="./style/favicon.png">
+	<title>Quantization</title>
 
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<link rel="icon" type="image/png" sizes="174x174" href="./favicon.png">
+
+	<script src="https://unpkg.com/@webcomponents/webcomponentsjs@^2/webcomponents-bundle.js"></script>
 	<script src="../build/Tone.js"></script>
-	<script src="./scripts/jquery.min.js"></script>
-	<script src="./scripts/draggabilly.js"></script>
-	<script src="https://tonejs.github.io/Logo/build/Logo.js"></script>
-	<script src="./scripts/StartAudioContext.js"></script>
-	<script src="./scripts/Interface.js"></script>
-
-	<link rel="stylesheet" type="text/css" href="./style/examples.css">
-
-	<script>
-		// jshint ignore: start
-	</script>
+	<script src="./js/tonejs-ui.js"></script>
 </head>
 <body>
-	<style type="text/css">
-		.Button {
-			width: calc(50% - 4px)!important;
-			float: left;
-			margin: 2px;
+	<style>
+		#buttons {
+			display: flex;
+			margin: 10px 0;
+		}
+		#buttons tone-button {
+			flex-grow: 1;
+			margin: 5px;
 		}
 	</style>
-	<div id="Content" class="FullScreen">
-		<div id="Title">Quantization</div>
-		<div id="Explanation">
+	<tone-example>
+		<tone-explanation label="Quantization">
 			Using the "@" symbol, <a href="https://github.com/Tonejs/Tone.js/wiki/Time" target="_blank">Time</a> 
 			expressions can be <a href="https://en.wikipedia.org/wiki/Quantization_(music)" target="_blank">quantized</a> 
 			(aligned to a subdivision). In this example, a note's start time is aligned to the given subdivision. 
-		</div>
-	</div>
-	<script id="JSCode">
+			<br><br>
+			The Transport must be started
+		</tone-explanation>
+
+		<tone-content>
+			<tone-transport></tone-transport>
+			<div id="buttons">
+				<tone-button disabled id="at8n" label="@8n"></tone-button>
+				<tone-button disabled id="at4n" label="@4n"></tone-button>
+				<tone-button disabled id="at2n" label="@2n"></tone-button>
+				<tone-button disabled id="at1m" label="@1m"></tone-button>
+			</div>
+		</tone-content>
+
+		<tone-drawer collapsed>
+			<tone-synth polyphonic collapsed></tone-synth>
+		</tone-drawer>
+	</tone-example>
+
+	<script type="text/javascript">
 		var polySynth = new Tone.PolySynth(4, Tone.Synth).toMaster();
 
-		Tone.Transport.start();
-
-		// GUI //
-
-		Interface.Transport();
-
-		Interface.Button({
-			type : "moment",
-			text : "@1m",
-			start : function(){
-				polySynth.triggerAttackRelease("C2", "8n", "@1m", 2);
-			},
+		//bind the interface
+		document.querySelector("tone-transport").bind(Tone.Transport);
+		document.querySelector("tone-transport").addEventListener("play", e => {
+			//enable all of the buttons if it's playing		
+			Array.from(document.querySelectorAll("tone-button")).forEach(el => {
+				if (e.detail){
+					el.removeAttribute("disabled");
+				} else {
+					el.setAttribute("disabled", "");
+				}
+			});
 		});
-
-		Interface.Button({
-			type : "moment",
-			text : "@2n",
-			start : function(){
-				polySynth.triggerAttackRelease("G3", "8n", "@2n");
-			},
+		document.querySelector("#at8n").addEventListener("click", e => {
+			polySynth.triggerAttackRelease("B4", "8n", "@8n");
 		});
-
-		Interface.Button({
-			type : "moment",
-			text : "@4n",
-			start : function(){
-				polySynth.triggerAttackRelease("E4", "8n", "@4n");
-			},
+		document.querySelector("#at4n").addEventListener("click", e => {
+			polySynth.triggerAttackRelease("E4", "8n", "@4n");
 		});
-
-		Interface.Button({
-			type : "moment",
-			text : "@8n",
-			start : function(){
-				polySynth.triggerAttackRelease("B4", "8n", "@8n");
-			},
+		document.querySelector("#at2n").addEventListener("click", e => {
+			polySynth.triggerAttackRelease("G3", "8n", "@2n");
+		});
+		document.querySelector("#at1m").addEventListener("click", e => {
+			polySynth.triggerAttackRelease("C2", "8n", "@1m");
 		});
 	</script>
 </body>

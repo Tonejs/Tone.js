@@ -3,39 +3,44 @@
 <head>
   <meta charset="utf-8">
 	<title>LFO Effects</title>
-	
-	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-	<link rel="icon" type="image/png" sizes="174x174" href="./style/favicon.png">
 
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<link rel="icon" type="image/png" sizes="174x174" href="./favicon.png">
+
+	<script src="https://unpkg.com/@webcomponents/webcomponentsjs@^2/webcomponents-bundle.js"></script>
 	<script src="../build/Tone.js"></script>
-	<script src="./scripts/jquery.min.js"></script>
-	<script src="./scripts/draggabilly.js"></script>
-	<script src="./scripts/StartAudioContext.js"></script>
-	<script src="./scripts/Interface.js"></script>
-	<script src="https://tonejs.github.io/Logo/build/Logo.js"></script>
-
-	<link rel="stylesheet" type="text/css" href="./style/examples.css">
-
-	<script>
-		// jshint ignore: start
-	</script>
+	<script src="./js/tonejs-ui.js"></script>
 </head>
 <body>
-	<div id="Content">
-		<div id="Title">LFO Effects</div>
-		<div id="Explanation">
-			These effects use an <a href="https://tonejs.github.io/docs/#LFO">LFO</a> (Low Frequency Oscillator) to modulate the effect. Click and drag the dot to change the frequency and depth of the effect. 
+	<style type="text/css">
+		tone-content * {
+			margin-bottom: 50px;
+		}
+		tone-play-toggle {
+			margin-bottom: 10px;
+		}
+	</style>
+	<tone-example>
+		<tone-explanation label="LFO Effects">
+			These effects use an <a href="https://tonejs.github.io/docs/LFO">LFO</a> (Low Frequency Oscillator) to modulate the effect. Click and drag the dot to change the frequency and depth of the effect. 
 			<br><br>
-			Docs on <a href="https://tonejs.github.io/docs/#AutoPanner">Tone.AutoPanner</a>, 
-			<a href="https://tonejs.github.io/docs/#AutoFilter">Tone.AutoFilter</a>, and
-			<a href="https://tonejs.github.io/docs/#Tremolo">Tone.Tremolo</a>
-		</div>
-		<div id="DragContainer">
-			
-		</div>
-	</div>
-	<script id="JSCode">
-		//AutoPanner - a penning modulation effect
+			Docs on <a href="https://tonejs.github.io/docs/AutoPanner">Tone.AutoPanner</a>, 
+			<a href="https://tonejs.github.io/docs/AutoFilter">Tone.AutoFilter</a>, and
+			<a href="https://tonejs.github.io/docs/Tremolo">Tone.Tremolo</a>
+		</tone-explanation>
+
+		<tone-content>
+			<tone-play-toggle id="osc0"></tone-play-toggle>
+			<tone-auto-panner collapsed></tone-auto-panner>
+			<tone-play-toggle id="osc1"></tone-play-toggle>
+			<tone-auto-filter collapsed></tone-auto-filter>
+			<tone-play-toggle id="osc2"></tone-play-toggle>
+			<tone-tremolo collapsed></tone-tremolo>
+		</tone-content>
+	</tone-example>
+
+	<script type="text/javascript">
+		//AutoPanner - a panning modulation effect
 		var panner = new Tone.AutoPanner({
 			"frequency" : 4,
 			"depth" : 1
@@ -72,7 +77,21 @@
 			"frequency" : "A4"
 		}).connect(tremolo).start();
 
-		// GUI //
+		//bind the interface
+		document.querySelector("#osc0").addEventListener("change", e => {
+			osc0.volume.rampTo(e.detail ? 0 : -Infinity, 0.1);
+		});
+		document.querySelector("#osc1").addEventListener("change", e => {
+			osc1.volume.rampTo(e.detail ? 0 : -Infinity, 0.1);
+		});
+		document.querySelector("#osc2").addEventListener("change", e => {
+			osc2.volume.rampTo(e.detail ? 0 : -Infinity, 0.1);
+		});
+		document.querySelector("tone-tremolo").bind(tremolo);
+		document.querySelector("tone-auto-filter").bind(filter);
+		document.querySelector("tone-auto-panner").bind(panner);
+
+		/*// GUI //
 
 		Interface.Dragger({
 			tone : panner,
@@ -132,7 +151,7 @@
 			end : function(){
 				osc2.volume.rampTo(-Infinity, 0.1);
 			}
-		});
+		});*/
 	</script>
 	
 </body>

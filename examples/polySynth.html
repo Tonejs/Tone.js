@@ -4,59 +4,45 @@
   <meta charset="utf-8">
 	<title>PolySynth</title>
 
-	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-	<link rel="icon" type="image/png" sizes="174x174" href="./style/favicon.png">
-	
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<link rel="icon" type="image/png" sizes="174x174" href="./favicon.png">
+
+	<script src="https://unpkg.com/@webcomponents/webcomponentsjs@^2/webcomponents-bundle.js"></script>
 	<script src="../build/Tone.js"></script>
-	<script src="./scripts/jquery.min.js"></script>
-	<script src="./scripts/draggabilly.js"></script>
-	<script src="./scripts/StartAudioContext.js"></script>
-	<script src="./scripts/Interface.js"></script>
-	<script src="https://tonejs.github.io/Logo/build/Logo.js"></script>
-	<script src="./scripts/Keyboard.js"></script>
-
-	<link rel="stylesheet" type="text/css" href="./style/examples.css">
-
-	<script>
-		// jshint ignore: start
-	</script>
-
+	<script src="./js/tonejs-ui.js"></script>
 </head>
-<body>	
-	<div id="Content" class="FullScreen">
-		<div id="Title">PolySynth</div>
-		<div id="Explanation">
-			<a href="https://tonejs.github.io/docs/#PolySynth">Tone.PolySynth</a> 
-			handles voice creation and allocation for any
+<body>
+	<style>
+		tone-piano {
+			margin-bottom: 10px;
+		}
+	</style>
+	<tone-example>
+		<tone-explanation label="Polyphony">
+			<a href="https://tonejs.github.io/docs/PolySynth">Tone.PolySynth</a> 
+			handles voice creation and allocation for any monophonic
 	 		instruments passed in as the second parameter. PolySynth is 
 	 		not a synthesizer by itself, it merely manages voices of 
 	 		one of the other types of synths, allowing any of the 
 	 		monophonic synthesizers to be polyphonic. 
-		</div>
-		<div id="Keyboard"></div>
-	</div>
+		</tone-explanation>
 
-	<script>
-
-		var synth = new Tone.PolySynth(6, Tone.Synth, {
+		<tone-content>
+			<tone-piano polyphonic></tone-piano>
+			<tone-synth polyphonic></tone-synth>
+		</tone-content>
+	</tone-example>
+	
+	<script type="text/javascript">
+		var synth = new Tone.PolySynth(8, Tone.Synth, {
 			"oscillator" : {
 				"partials" : [0, 2, 3, 4],
 			}
 		}).toMaster();
 
-		// GUI //
-
-		var keyboard = Interface.Keyboard();
-
-		keyboard.keyDown = function (note) {
-		    synth.triggerAttack(note);
-		};
-
-		keyboard.keyUp = function (note) {
-		    synth.triggerRelease(note);
-		};
-
-
+		//bind the interface
+		document.querySelector("tone-piano").bind(synth);
+		document.querySelector("tone-synth").bind(synth);
 	</script>
 </body>
 </html>

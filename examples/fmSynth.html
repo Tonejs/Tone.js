@@ -4,37 +4,34 @@
   <meta charset="utf-8">
 	<title>FMSynth</title>
 
-	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-	<link rel="icon" type="image/png" sizes="174x174" href="./style/favicon.png">
-	
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<link rel="icon" type="image/png" sizes="174x174" href="./favicon.png">
+
+	<script src="https://unpkg.com/@webcomponents/webcomponentsjs@^2/webcomponents-bundle.js"></script>
 	<script src="../build/Tone.js"></script>
-	<script src="./scripts/jquery.min.js"></script>
-	<script src="./scripts/draggabilly.js"></script>
-	<script src="./scripts/StartAudioContext.js"></script>
-	<script src="./scripts/Interface.js"></script>
-	<script src="https://tonejs.github.io/Logo/build/Logo.js"></script>
-	<script src="./scripts/Keyboard.js"></script>
-
-
-	<link rel="stylesheet" type="text/css" href="./style/examples.css">
-
-	<script>
-		// jshint ignore: start
-	</script>
-
+	<script src="./js/tonejs-ui.js"></script>
 </head>
 <body>
-	<div id="Content">
-		<div id="Title">FMSynth</div>
-		<div id="Explanation">	
-			<a href="https://tonejs.github.io/docs/#FMSynth">Tone.FMSynth</a>
+	<style>
+		tone-piano {
+			margin-bottom: 10px;
+		}
+	</style>
+	<tone-example>
+		<tone-explanation label="FMSynth">
+			<a href="https://tonejs.github.io/docs/FMSynth">Tone.FMSynth</a>
 			is composed of two 
-			<a href="https://tonejs.github.io/docs/#Synth">Tone.Synths</a> 
+			<a href="https://tonejs.github.io/docs/Synth">Tone.Synths</a> 
 			where one Tone.Synth modulates the frequency of a second Tone.Synth. 
-		</div>
-	</div>
+		</tone-explanation>
 
-	<script>			
+		<tone-content>
+			<tone-piano></tone-piano>
+			<tone-fm-synth></tone-fm-synth>
+		</tone-content>
+	</tone-example>
+	
+	<script type="text/javascript">
 		var synth = new Tone.FMSynth({
 			"modulationIndex" : 12.22,
 			"envelope" : {
@@ -50,25 +47,9 @@
 			}
 		}).toMaster();
 
-		// GUI //
-
-		Interface.Slider({
-			tone : synth,
-			param : "modulationIndex",
-			name : "mod index",
-			max : 100
-		});
-
-		var keyboard = Interface.Keyboard();
-
-		keyboard.keyDown = function (note) {
-			synth.triggerAttack(note);
-		};
-
-		keyboard.keyUp = function (note) {
-			synth.triggerRelease();
-		};
-
+		//bind the interface
+		document.querySelector("tone-piano").bind(synth);
+		document.querySelector("tone-fm-synth").bind(synth);
 	</script>
 </body>
 </html>

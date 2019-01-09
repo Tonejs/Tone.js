@@ -1,4 +1,4 @@
-var ExampleList = {
+{
 	"Basic" : {
 		"Oscillators" : "oscillator",
 		"Envelope" : "envelope",
@@ -34,7 +34,7 @@ var ExampleList = {
 	},
 	"Signals" : {
 		"Control Voltage" : "signal",
-		"Ramping Values" : "rampTo",
+		"Ramping Values" : "rampTo"
 	},
 	"Visualization" : {
 		"Animation Sync" : "animationSync",
@@ -43,7 +43,6 @@ var ExampleList = {
 		"Meter" : "meter"
 	},
 	"Misc" : {
-		"Module Loaders" : "require",
 		"Offline Rendering" : "offline"
-	},
-};
+	}
+}
