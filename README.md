@@ -29,6 +29,14 @@ var synth = new Tone.Synth().toMaster();
 synth.triggerAttackRelease("C4", "8n");
 ```
 
+# Starting Audio
+
+Most browsers will not allow _any_ audio to play until a user clicks something (think play button). The above example won't play unless invoke `resume` on the Tone.js context. 
+
+```javascript
+document.querySelector('button').addEventListener('click', () => Tone.context.resume())
+``` 
+
 #### Tone.Synth
 
 [Tone.Synth](https://tonejs.github.io/docs/#Synth) is a basic synthesizer with a single [oscillator](https://tonejs.github.io/docs/#OmniOscillator) and an [ADSR envelope](https://en.wikipedia.org/wiki/Synthesizer#ADSR_envelope).
