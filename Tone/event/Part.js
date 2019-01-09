@@ -256,8 +256,8 @@ define(["../core/Tone", "../event/Event", "../type/Type", "../core/Transport"], 
 	};
 
 	/**
-	 *  Remove an event from the part. Will recursively iterate
-	 *  into nested parts to find the event.
+	 *  Remove an event from the part. If the event at that time is a Tone.Part,
+	 *  it will remove the entire part.
 	 *  @param {Time} time The time of the event
 	 *  @param {*} value Optionally select only a specific event value
 	 *  @return  {Tone.Part}  this
@@ -271,9 +271,7 @@ define(["../core/Tone", "../event/Event", "../type/Type", "../core/Transport"], 
 		time = this.toTicks(time);
 		for (var i = this._events.length - 1; i >= 0; i--){
 			var event = this._events[i];
-			if (event instanceof Tone.Part){
-				event.remove(time, value);
-			} else if (event.startOffset === time){
+			if (event.startOffset === time){
 				if (Tone.isUndef(value) || (Tone.isDefined(value) && event.value === value)){
 					this._events.splice(i, 1);
 					event.dispose();

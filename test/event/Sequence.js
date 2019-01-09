@@ -125,6 +125,24 @@ function(Basic, Sequence, Tone, Transport, Event, Offline, Test, Time){
 				});
 			});
 
+			it("can add a subsequence and remove the entire subsequence", function(){
+				return Offline(function(){
+					var seq = new Sequence(function(){}, [0, 1, 2]);
+					expect(seq.length).to.equal(3);
+					seq.remove(0);
+					seq.add(0, [1, 2]);
+					expect(seq.length).to.equal(3);
+					console.log(seq.at(0));
+					expect(seq.at(0).at(0).value).to.equal(1);
+					expect(seq.at(0).at(1).value).to.equal(2);
+					seq.remove(0);
+					expect(seq.at(0)).to.equal(null);
+					seq.add(0, 4);
+					expect(seq.at(0).value).to.equal(4);
+					seq.dispose();
+				});
+			});
+
 			it("can add and retrieve a subSequence with 'at'", function(){
 				return Offline(function(){
 					var seq = new Sequence(function(){}, [0, 1, 2]);
