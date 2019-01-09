@@ -132,7 +132,6 @@ function(Basic, Sequence, Tone, Transport, Event, Offline, Test, Time){
 					seq.remove(0);
 					seq.add(0, [1, 2]);
 					expect(seq.length).to.equal(3);
-					console.log(seq.at(0));
 					expect(seq.at(0).at(0).value).to.equal(1);
 					expect(seq.at(0).at(1).value).to.equal(2);
 					seq.remove(0);
