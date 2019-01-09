@@ -55,6 +55,7 @@ define(["../core/Tone", "../component/AmplitudeEnvelope", "../component/Frequenc
 		 *  @type {Tone.Filter}
 		 */
 		this.filter = new Tone.Filter(options.filter);
+		this.filter.frequency.value = 5000;
 
 		/**
 		 *  The filter envelope.
