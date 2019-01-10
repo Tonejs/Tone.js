@@ -47,7 +47,7 @@ Tone.js abstracts away the AudioContext time. Instead of defining all values in 
 
 # Starting Audio
 
-Most browsers will not play _any_ audio until a user clicks something (like a play button). Execute the above example only after a users invokes `resume()` on Tone's context. 
+Most browsers will not play _any_ audio until a user clicks something (like a play button). Execute the above example only after a users invokes `resume()` on Tone's context, or simply `Tone.start()`
 
 ```javascript
 //attach a click listener to a play button
