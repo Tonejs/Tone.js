@@ -13,7 +13,7 @@ Tone.js is a Web Audio framework for creating interactive music in the browser. 
 
 # Installation
 
-* download [full](https://tonejs.github.io/build/Tone.js) | [min](https://tonejs.github.io/build/Tone.min.js)
+* [download](https://unpkg.com/tone)
 * `npm install tone`
 * dev -> `npm install tone@next`
 
