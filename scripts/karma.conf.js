@@ -128,7 +128,7 @@ module.exports = function(config){
 		customLaunchers : {
 			HeadlessChrome : {
 				base : "ChromeHeadless",
-				flags : ["--no-sandbox", "--use-fake-ui-for-media-stream", "--use-fake-device-for-media-stream", "--no-user-gesture-required", "--disable-background-timer-throttling"]
+				flags : ["--no-sandbox", "--use-fake-ui-for-media-stream", "--use-fake-device-for-media-stream", "--no-user-gesture-required"]
 			},
 			HeadlessFirefox : {
 				base : "Firefox",
