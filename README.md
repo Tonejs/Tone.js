@@ -29,15 +29,6 @@ var synth = new Tone.Synth().toMaster();
 synth.triggerAttackRelease("C4", "8n");
 ```
 
-# Starting Audio
-
-Most browsers will not play _any_ audio until a user clicks something (like a play button). Execute the above example only after a users invokes `resume()` on Tone's context. 
-
-```javascript
-//attach a click listener to a play button
-document.querySelector('button').addEventListener('click', () => Tone.context.resume())
-``` 
-
 #### Tone.Synth
 
 [Tone.Synth](https://tonejs.github.io/docs/#Synth) is a basic synthesizer with a single [oscillator](https://tonejs.github.io/docs/#OmniOscillator) and an [ADSR envelope](https://en.wikipedia.org/wiki/Synthesizer#ADSR_envelope).
@@ -53,6 +44,15 @@ The first argument to `triggerAttackRelease` is the frequency which can either b
 Tone.js abstracts away the AudioContext time. Instead of defining all values in seconds, any method which takes time as an argument can accept a number or a string. For example `"4n"` is a quarter-note, `"8t"` is an eighth-note triplet, and `"1m"` is one measure. These values can even be composed into expressions.
 
 [Read about Time encodings](https://github.com/Tonejs/Tone.js/wiki/Time).
+
+# Starting Audio
+
+Most browsers will not play _any_ audio until a user clicks something (like a play button). Execute the above example only after a users invokes `resume()` on Tone's context. 
+
+```javascript
+//attach a click listener to a play button
+document.querySelector('button').addEventListener('click', () => Tone.start())
+``` 
 
 # Scheduling
 
