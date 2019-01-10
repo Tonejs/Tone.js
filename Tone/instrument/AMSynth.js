@@ -36,7 +36,7 @@ define(["../core/Tone", "../instrument/Synth", "../signal/Signal", "../signal/Mu
 		 *  The carrier's oscillator
 		 *  @type {Tone.Oscillator}
 		 */
-		this.oscillator = this._carrier.oscillator;
+		this.oscillator = this._carrier.oscillator.set(options.oscillator);
 
 		/**
 		 *  The carrier's envelope

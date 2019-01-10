@@ -39,11 +39,15 @@ function(AMSynth, Basic, InstrumentTest, CompareToFile){
 
 			it("can be constructed with an options object", function(){
 				var amSynth = new AMSynth({
+					"oscillator" : {
+						"type" : "square"
+					},
 					"modulationEnvelope" : {
 						"attack" : 0.3
 					}
 				});
 				expect(amSynth.modulationEnvelope.attack).to.equal(0.3);
+				expect(amSynth.oscillator.type).to.equal("square");
 				amSynth.dispose();
 			});
 
