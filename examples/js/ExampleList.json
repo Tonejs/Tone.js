@@ -11,6 +11,7 @@
 		"Synth" : "simpleSynth",
 		"MonoSynth" : "monoSynth",
 		"FMSynth" : "fmSynth",
+		"AMSynth" : "amSynth",
 		"PolySynth" : "polySynth",
 		"FatOscillator" : "jump",
 		"MetalSynth" : "bembe",
