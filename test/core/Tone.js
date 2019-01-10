@@ -238,6 +238,12 @@ function(Test, Tone, PassAudio, Oscillator, Synth, Offline,
 					//and a saftey check
 					return ctx.close();
 				});
+
+				it("start method returns a promise which resolves", function(){
+					var response = Tone.start();
+					expect(response).to.be.instanceOf(Promise);
+					return response;
+				});
 			}
 
 		});

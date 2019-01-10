@@ -632,6 +632,21 @@ define(["../version"], function(version){
 	Tone._audioContext = null;
 
 	/**
+	 * 	Most browsers will not play _any_ audio until a user 
+	 * 	clicks something (like a play button). Invoke this method
+	 * 	on a click or keypress event handler to start the audio context. 
+	 * 	More about the Autoplay policy [here](https://developers.google.com/web/updates/2017/09/autoplay-policy-changes#webaudio)
+	 *  @memberOf Tone
+	 *  @static
+	 *  @return {Promise} This promise is resolved when the audio context is started. 
+	 *  @example
+	 * document.querySelector('#playbutton').addEventListener('click', () => Tone.start())
+	 */
+	Tone.start = function(){
+		return Tone.context.resume();
+	};
+
+	/**
 	 *  A static pointer to the audio context accessible as Tone.context.
 	 *  @type {Tone.Context}
 	 *  @name context
