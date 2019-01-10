@@ -43,6 +43,9 @@ define(["../core/Tone", "../core/Transport", "../core/Buffer", "../core/OfflineC
 		//invoke the callback/scheduling
 		var response = callback(Tone.Transport);
 
+		//the return value
+		var ret = null;
+
 		if (response && Tone.isFunction(response.then)){
 			//wait for the promise to resolve
 			ret = response.then(function(){
