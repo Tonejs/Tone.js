@@ -1,30 +1,6 @@
 define(["../core/Tone", "../core/Transport", "../core/Buffer", "../core/OfflineContext", "../core/Master"], function(Tone){
 
 	/**
-	 * Because of a bug in iOS causing the currentTime to increment
-	 * before the rendering is started, sometimes it takes multiple
-	 * attempts to render the audio correctly.
-	 * @private
-	 */
-	function attemptRender(callback, duration, sampleRate, tries){
-		tries = Tone.defaultArg(tries, 0);
-		var context = new Tone.OfflineContext(2, duration, sampleRate);
-		Tone.context = context;
-
-		//invoke the callback/scheduling
-		var response = callback(Tone.Transport);
-
-		if (context.currentTime > 0 && tries < 1000){
-			return attemptRender(callback, duration, sampleRate, ++tries);
-		} else {
-			return {
-				"response" : response,
-				"context" : context
-			};
-		}
-	}
-
-	/**
 	 *  Generate a buffer by rendering all of the Tone.js code within the callback using the OfflineAudioContext.
 	 *  The OfflineAudioContext is capable of rendering much faster than real time in many cases.
 	 *  The callback function also passes in an offline instance of Tone.Transport which can be used
@@ -61,11 +37,12 @@ define(["../core/Tone", "../core/Transport", "../core/Buffer", "../core/OfflineC
 		var sampleRate = Tone.context.sampleRate;
 		var originalContext = Tone.context;
 
-		var renderRet = attemptRender(callback, duration, sampleRate);
-		var response = renderRet.response;
-		var context = renderRet.context;
+		var context = new Tone.OfflineContext(2, duration, sampleRate);
+		Tone.context = context;
 
-		var ret;
+		//invoke the callback/scheduling
+		var response = callback(Tone.Transport);
+
 		if (response && Tone.isFunction(response.then)){
 			//wait for the promise to resolve
 			ret = response.then(function(){
