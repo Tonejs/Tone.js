@@ -484,7 +484,7 @@ define(["../core/Tone", "../type/Type", "../core/AudioNode", "../core/Timeline"]
 			if (after){
 				this._events.cancel(after.time);
 			} else {
-				this._events.cancel(time + 1e-6);
+				this._events.cancel(time + this.sampleTime);
 			}
 		} else if (after){
 			//cancel the next event(s)
