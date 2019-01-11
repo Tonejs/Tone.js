@@ -32,8 +32,8 @@ define(["../core/Tone", "../component/Analyser", "../core/AudioNode"], function(
 	};
 
 	/**
-	 *  Gets the waveform of the audio source. Returns the waveform data
-	 *  of length [size](#size) as a Float32Array with values between -1 and 1.
+	 *  Gets the current frequency data from the connected audio source. 
+	 *  Returns the frequency data of length [size](#size) as a Float32Array of decibel values. 
 	 *  @returns {TypedArray}
 	 */
 	Tone.FFT.prototype.getValue = function(){
