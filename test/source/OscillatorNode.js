@@ -86,7 +86,7 @@ function(BasicTests, OscillatorNode, Offline, Frequency, Test, Meter, Supports, 
 
 				it("invokes the onended callback only once in the online context", function(done){
 					var osc = new OscillatorNode();
-					osc.start("+0");
+					osc.start();
 					osc.stop("+0.1");
 					osc.stop("+0.2");
 					osc.stop("+0.3");
@@ -162,14 +162,32 @@ function(BasicTests, OscillatorNode, Offline, Frequency, Test, Meter, Supports, 
 				});
 			});
 
-			it("clamps start time to the currentTime", function(){
-				var osc = new OscillatorNode();
-				osc.start(0);
-				var currentTime = osc.context.currentTime;
-				expect(osc.getStateAtTime(0)).to.equal("stopped");
-				expect(osc.getStateAtTime(currentTime)).to.equal("started");
-				osc.dispose();
-			});
+			if (Supports.ONLINE_TESTING){
+
+				it("clamps start time to the currentTime", function(){
+					var osc = new OscillatorNode();
+					osc.start(0);
+					var currentTime = osc.context.currentTime;
+					expect(osc.getStateAtTime(0)).to.equal("stopped");
+					expect(osc.getStateAtTime(currentTime)).to.equal("started");
+					osc.dispose();
+				});
+
+				it("clamps stop time to the currentTime", function(done){
+					var osc = new OscillatorNode();
+					osc.start(0);
+					var currentTime = osc.context.currentTime;
+					expect(osc.getStateAtTime(0)).to.equal("stopped");
+					expect(osc.getStateAtTime(currentTime)).to.equal("started");
+					setTimeout(function(){
+						currentTime = osc.context.currentTime;
+						osc.stop(0);
+						expect(osc.getStateAtTime(currentTime + 0.01)).to.equal("stopped");
+						osc.dispose();
+						done();
+					}, 100);
+				});
+			}
 		});
 
 		context("State", function(){

@@ -1,5 +1,5 @@
-define(["helper/Test", "Tone/source/Source", "Tone/core/Transport", "helper/Offline", "Tone/core/Tone"], 
-	function(Test, Source, Transport, Offline, Tone){
+define(["helper/Test", "Tone/source/Source", "Tone/core/Transport", "helper/Offline", "Tone/core/Tone", "helper/Supports"], 
+	function(Test, Source, Transport, Offline, Tone, Supports){
 
 		describe("Source", function(){
 
@@ -91,26 +91,32 @@ define(["helper/Test", "Tone/source/Source", "Tone/core/Transport", "helper/Offl
 				});
 			});
 
-			it("clamps start time to the currentTime", function(){
-				var source = new Source();
-				source.start(0);
-				var currentTime = source.context.currentTime;
-				expect(source._state.getValueAtTime(0)).to.equal("stopped");
-				expect(source._state.getValueAtTime(currentTime)).to.equal("started");
-				source.dispose();
-			});
+			if (Supports.ONLINE_TESTING){
 
-			it("clamps stop time to the currentTime", function(){
-				var source = new Source();
-				source.start(0);
-				var currentTime = source.context.currentTime;
-				expect(source._state.getValueAtTime(0)).to.equal("stopped");
-				expect(source._state.getValueAtTime(currentTime)).to.equal("started");
-				currentTime = source.context.currentTime;
-				source.stop(0);
-				expect(source._state.getValueAtTime(currentTime)).to.equal("stopped");
-				source.dispose();
-			});
+				it("clamps start time to the currentTime", function(){
+					var source = new Source();
+					source.start(0);
+					var currentTime = source.context.currentTime;
+					expect(source._state.getValueAtTime(0)).to.equal("stopped");
+					expect(source._state.getValueAtTime(currentTime)).to.equal("started");
+					source.dispose();
+				});
+		
+				it("clamps stop time to the currentTime", function(done){
+					var source = new Source();
+					source.start(0);
+					var currentTime = source.context.currentTime;
+					expect(source._state.getValueAtTime(0)).to.equal("stopped");
+					expect(source._state.getValueAtTime(currentTime)).to.equal("started");
+					setTimeout(function(){
+						currentTime = source.context.currentTime;
+						source.stop(0);
+						expect(source._state.getValueAtTime(currentTime+0.01)).to.equal("stopped");
+						source.dispose();
+						done();
+					}, 100);
+				});
+			}
 
 			it("correctly returns the scheduled play state", function(){
 				return Offline(function(){
