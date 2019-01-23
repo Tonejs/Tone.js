@@ -161,6 +161,15 @@ function(BasicTests, OscillatorNode, Offline, Frequency, Test, Meter, Supports, 
 					expect(level.getValueAtTime(0.2)).to.equal(0);
 				});
 			});
+
+			it("clamps start time to the currentTime", function(){
+				var osc = new OscillatorNode();
+				osc.start(0);
+				var currentTime = osc.context.currentTime;
+				expect(osc.getStateAtTime(0)).to.equal("stopped");
+				expect(osc.getStateAtTime(currentTime)).to.equal("started");
+				osc.dispose();
+			});
 		});
 
 		context("State", function(){

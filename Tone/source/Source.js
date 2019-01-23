@@ -146,6 +146,7 @@ define(["../core/Tone", "../core/Transport", "../component/Volume", "../core/Mas
 			time = Tone.Transport.seconds;
 		} else {
 			time = this.toSeconds(time);
+			time = Math.max(time, this.context.currentTime);
 		}
 		//if it's started, stop it and restart it
 		if (this._state.getValueAtTime(time) === Tone.State.Started){
@@ -188,6 +189,7 @@ define(["../core/Tone", "../core/Transport", "../component/Volume", "../core/Mas
 			time = Tone.Transport.seconds;
 		} else {
 			time = this.toSeconds(time);
+			time = Math.max(time, this.context.currentTime);
 		}
 		if (!this._synced){
 			this._stop.apply(this, arguments);

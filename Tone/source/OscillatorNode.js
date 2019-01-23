@@ -132,6 +132,7 @@ define(["../core/Tone", "../core/Buffer", "../source/Source", "../core/Gain",
 		this.log("start", time);
 		if (this._startTime === -1){
 			this._startTime = this.toSeconds(time);
+			this._startTime = Math.max(this._startTime, this.context.currentTime);
 			this._oscillator.start(this._startTime);
 			this._gainNode.gain.setValueAtTime(1, this._startTime);
 		} else {
@@ -162,6 +163,7 @@ define(["../core/Tone", "../core/Buffer", "../source/Source", "../core/Gain",
 		this.cancelStop();
 		//reschedule it
 		this._stopTime = this.toSeconds(time);
+		this._stopTime = Math.max(this._stopTime, this.context.currentTime);
 		if (this._stopTime > this._startTime){
 			this._gainNode.gain.setValueAtTime(0, this._stopTime);
 			this.context.clearTimeout(this._timeout);

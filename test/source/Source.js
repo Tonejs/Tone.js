@@ -78,14 +78,37 @@ define(["helper/Test", "Tone/source/Source", "Tone/core/Transport", "helper/Offl
 			});
 
 			it("can be scheduled with multiple starts/stops", function(){
+				return Offline(function(){
+					var source = new Source();
+					source.start(0).stop(0.5).start(0.75).stop(1).start(1.25).stop(1.5);
+					expect(source._state.getValueAtTime(0)).to.equal("started");
+					expect(source._state.getValueAtTime(0.5)).to.equal("stopped");
+					expect(source._state.getValueAtTime(0.8)).to.equal("started");
+					expect(source._state.getValueAtTime(1)).to.equal("stopped");
+					expect(source._state.getValueAtTime(1.25)).to.equal("started");
+					expect(source._state.getValueAtTime(1.6)).to.equal("stopped");
+					source.dispose();
+				});
+			});
+
+			it("clamps start time to the currentTime", function(){
 				var source = new Source();
-				source.start(0).stop(0.5).start(0.75).stop(1).start(1.25).stop(1.5);
-				expect(source._state.getValueAtTime(0)).to.equal("started");
-				expect(source._state.getValueAtTime(0.5)).to.equal("stopped");
-				expect(source._state.getValueAtTime(0.8)).to.equal("started");
-				expect(source._state.getValueAtTime(1)).to.equal("stopped");
-				expect(source._state.getValueAtTime(1.25)).to.equal("started");
-				expect(source._state.getValueAtTime(1.6)).to.equal("stopped");
+				source.start(0);
+				var currentTime = source.context.currentTime;
+				expect(source._state.getValueAtTime(0)).to.equal("stopped");
+				expect(source._state.getValueAtTime(currentTime)).to.equal("started");
+				source.dispose();
+			});
+
+			it("clamps stop time to the currentTime", function(){
+				var source = new Source();
+				source.start(0);
+				var currentTime = source.context.currentTime;
+				expect(source._state.getValueAtTime(0)).to.equal("stopped");
+				expect(source._state.getValueAtTime(currentTime)).to.equal("started");
+				currentTime = source.context.currentTime;
+				source.stop(0);
+				expect(source._state.getValueAtTime(currentTime)).to.equal("stopped");
 				source.dispose();
 			});
 
