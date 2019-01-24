@@ -1,5 +1,5 @@
-define(["helper/Test", "Tone/core/Context", "Tone/core/Tone", "helper/Offline", "helper/Supports", "helper/LoadHTML"],
-	function(Test, Context, Tone, Offline, Supports, LoadHTML){
+define(["helper/Test", "Tone/core/Context", "Tone/core/Tone", "helper/Offline", "helper/Supports"],
+	function(Test, Context, Tone, Offline, Supports){
 
 		describe("Context", function(){
 
