@@ -90,7 +90,7 @@ Object.defineProperty(Tone.Master.prototype, "mute", {
 /**
  *  Add a master effects chain. NOTE: this will disconnect any nodes which were previously
  *  chained in the master effects chain.
- *  @param {AudioNode|Tone} args... All arguments will be connected in a row
+ *  @param {...(AudioNode|Tone)} nodes All arguments will be connected in a row
  *                                  and the Master will be routed through it.
  *  @return  {Tone.Master}  this
  *  @example

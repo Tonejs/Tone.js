@@ -200,7 +200,7 @@ Tone.AudioNode.prototype.disconnect = function(destination, outputNum, inputNum)
  *  @example
  *  //connect a node to an effect, panVol and then to the master output
  *  node.chain(effect, panVol, Tone.Master);
- *  @param {...AudioParam|Tone|AudioNode} nodes
+ *  @param {...(AudioParam|Tone|AudioNode)} nodes
  *  @returns {Tone.AudioNode} this
  */
 Tone.AudioNode.prototype.chain = function(){
@@ -215,7 +215,7 @@ Tone.AudioNode.prototype.chain = function(){
 
 /**
  *  connect the output of this node to the rest of the nodes in parallel.
- *  @param {...AudioParam|Tone|AudioNode} nodes
+ *  @param {...(AudioParam|Tone|AudioNode)} nodes
  *  @returns {Tone.AudioNode} this
  */
 Tone.AudioNode.prototype.fan = function(){

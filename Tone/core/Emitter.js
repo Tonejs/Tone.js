@@ -90,7 +90,7 @@ Tone.Emitter.prototype.off = function(event, callback){
  *  Invoke all of the callbacks bound to the event
  *  with any arguments passed in.
  *  @param  {String}  event  The name of the event.
- *  @param {*} args... The arguments to pass to the functions listening.
+ *  @param {...*} args The arguments to pass to the functions listening.
  *  @return  {Tone.Emitter}  this
  */
 Tone.Emitter.prototype.emit = function(event){
