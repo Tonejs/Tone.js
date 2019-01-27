@@ -1,6 +1,5 @@
 import Tone from "../core/Tone";
 import "../shim/AudioContext";
-import "../shim/BufferSourceNode";
 import "../core/Context";
 import "../core/Gain";
 

@@ -3,7 +3,6 @@ import "../core/Buffer";
 import "../source/Source";
 import "../core/Gain";
 import "../core/AudioNode";
-import "../shim/BufferSourceNode";
 
 /**
  *  @class Wrapper around the native BufferSourceNode.
