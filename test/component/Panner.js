@@ -67,19 +67,17 @@ describe("Panner", function(){
 			});
 		});
 
-		if (Supports.EQUAL_POWER_PANNER){
-			it("mixes the signal in equal power when panned center", function(){
-				return Offline(function(){
-					var panner = new Panner(0).toMaster();
-					new Signal(1).connect(panner);
-				}, 0.1, 2).then(function(buffer){
-					buffer.forEach(function(l, r){
-						expect(l).to.be.closeTo(0.707, 0.01);
-						expect(r).to.be.closeTo(0.707, 0.01);
-					});
+		it("mixes the signal in equal power when panned center", function(){
+			return Offline(function(){
+				var panner = new Panner(0).toMaster();
+				new Signal(1).connect(panner);
+			}, 0.1, 2).then(function(buffer){
+				buffer.forEach(function(l, r){
+					expect(l).to.be.closeTo(0.707, 0.01);
+					expect(r).to.be.closeTo(0.707, 0.01);
 				});
 			});
-		}
+		});
 	});
 });
 
