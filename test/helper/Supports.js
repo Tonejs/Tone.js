@@ -6,8 +6,6 @@ var name = parsed.name;
 
 var version = parseInt(parsed.major);
 
-console.log(name, version);
-
 function is(browser, above){
 	above = above || 0;
 	return name.includes(browser) && version >= above;
@@ -18,19 +16,13 @@ function isnt(browser, below){
 	return !(name.includes(browser) && version <= below);
 }
 
+function isntVersion(browser, version){
+	return !(name.includes(browser) && version === version);
+}
+
 export default {
-	//setValueCurveAtTime interpolates
-	INTERPOLATED_VALUE_CURVE : is("Chrome", 46),
-	//waveshaper has correct value at 0
-	WAVESHAPER_0_POSITION : isnt("Safari"),
-	//has stereo panner node
-	STEREO_PANNER_NODE : isnt("Safari"),
-	//can schedule a mixture of curves correctly
-	ACCURATE_SIGNAL_SCHEDULING : isnt("Safari"),
 	//can disconnect from a specific node
 	NODE_DISCONNECT : is("Chrome", 50),
-	//stereo panner is equal power panning
-	EQUAL_POWER_PANNER : isnt("Firefox"),
 	//doesn't seem to support the pluck synth
 	PLUCK_SYNTH : isnt("Safari"),
 	//offline rendering matches Chrome closely
@@ -40,7 +32,7 @@ export default {
 	//has float time domain analyser
 	ANALYZE_FLOAT_TIME_DOMAIN : AnalyserNode && typeof AnalyserNode.prototype.getFloatTimeDomainData === "function",
 	//if the tests run in focus
-	ONLINE_TESTING : is("Chrome", 72),
+	ONLINE_TESTING : isntVersion("Chrome", 71),
 	//the close method resolves a promise
 	AUDIO_CONTEXT_CLOSE_RESOLVES : isnt("Firefox") && isnt("Safari", 10),
 	//if it supports gUM testing
