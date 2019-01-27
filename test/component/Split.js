@@ -15,6 +15,22 @@ function(Merge, Basic, PassAudio, PassAudioStereo, Test, Offline, Signal, Split,
 				split.dispose();
 			});
 
+			it("defaults to two channels", function(){
+				var split = new Split();
+				expect(split.numberOfOutputs).to.equal(2);
+				split.dispose();
+			});
+
+			it("can pass in more channels", function(){
+				var split = new Split(4);
+				expect(split.numberOfOutputs).to.equal(4);
+				split.connect(Test, 0, 0);
+				split.connect(Test, 1, 0);
+				split.connect(Test, 2, 0);
+				split.connect(Test, 3, 0);
+				split.dispose();
+			});
+
 			it("passes the incoming signal through on the left side", function(){
 				return ConstantOutput(function(){
 					var split = new Split();
