@@ -74,6 +74,7 @@
     "proxy-polyfill": "^0.2.0",
     "semver": "^5.5.0",
     "teoria": "^2.5.0",
+    "ua-parser-js": "^0.7.19",
     "webpack": "^4.6.0",
     "webpack-cli": "^3.1.2"
   },

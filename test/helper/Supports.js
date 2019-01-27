@@ -1,4 +1,4 @@
-import UserAgentParser from "helper/ua-parser";
+import UserAgentParser from "ua-parser-js";
 
 var parsed = new UserAgentParser().getBrowser();
 
@@ -6,14 +6,16 @@ var name = parsed.name;
 
 var version = parseInt(parsed.major);
 
+console.log(name, version);
+
 function is(browser, above){
 	above = above || 0;
-	return name === browser && version >= above;
+	return name.includes(browser) && version >= above;
 }
 
 function isnt(browser, below){
 	below = below || Infinity;
-	return !(name === browser && version <= below);
+	return !(name.includes(browser) && version <= below);
 }
 
 export default {
