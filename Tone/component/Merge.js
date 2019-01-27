@@ -8,6 +8,7 @@ define(["../core/Tone", "../core/AudioNode"], function(Tone){
 	 *
 	 *  @constructor
 	 *  @extends {Tone.AudioNode}
+	 *  @param {number} [channels=2] The number of channels to merge. 
 	 *  @example
 	 * var merge = new Tone.Merge().toMaster();
 	 * //routing a sine tone in the left channel
@@ -18,40 +19,42 @@ define(["../core/Tone", "../core/AudioNode"], function(Tone){
 	 * noise.start();
 	 * osc.start();
 	 */
-	Tone.Merge = function(){
+	Tone.Merge = function(channels){
 
+		//defaults to 2 channels
+		channels = Tone.defaultArg(channels, 2);
+		
 		Tone.AudioNode.call(this);
-		this.createInsOuts(2, 0);
-
-		/**
-		 *  The left input channel.
-		 *  Alias for <code>input[0]</code>
-		 *  @type {GainNode}
-		 */
-		this.left = this.input[0] = new Tone.Gain();
-
-		/**
-		 *  The right input channel.
-		 *  Alias for <code>input[1]</code>.
-		 *  @type {GainNode}
-		 */
-		this.right = this.input[1] = new Tone.Gain();
+		this.createInsOuts(channels, 0);
 
 		/**
 		 *  the merger node for the two channels
 		 *  @type {ChannelMergerNode}
 		 *  @private
 		 */
-		this._merger = this.output = this.context.createChannelMerger(2);
+		this._merger = this.output = this.context.createChannelMerger(channels);
 
 		//connections
-		this.left.connect(this._merger, 0, 0);
-		this.right.connect(this._merger, 0, 1);
+		for (var i = 0; i < channels; i++){
+			this.input[i] = new Tone.Gain();
+			this.input[i].connect(this._merger, 0, i);
+			this.input[i].channelCount = 1;
+			this.input[i].channelCountMode = "explicit";
+		}
 
-		this.left.channelCount = 1;
-		this.right.channelCount = 1;
-		this.left.channelCountMode = "explicit";
-		this.right.channelCountMode = "explicit";
+		/**
+		 *  The left input channel.
+		 *  Alias for <code>input[0]</code>
+		 *  @type {GainNode}
+		 */
+		this.left = this.input[0];
+
+		/**
+		 *  The right input channel.
+		 *  Alias for <code>input[1]</code>.
+		 *  @type {GainNode}
+		 */
+		this.right = this.input[1];
 	};
 
 	Tone.extend(Tone.Merge, Tone.AudioNode);
@@ -61,10 +64,11 @@ define(["../core/Tone", "../core/AudioNode"], function(Tone){
 	 *  @returns {Tone.Merge} this
 	 */
 	Tone.Merge.prototype.dispose = function(){
+		this.input.forEach(function(input){
+			input.dispose();
+		});
 		Tone.AudioNode.prototype.dispose.call(this);
-		this.left.dispose();
 		this.left = null;
-		this.right.dispose();
 		this.right = null;
 		this._merger.disconnect();
 		this._merger = null;

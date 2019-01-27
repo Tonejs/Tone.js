@@ -14,6 +14,22 @@ function(Merge, Basic, PassAudio, PassAudioStereo, Test, Offline, Signal){
 				merge.dispose();
 			});
 
+			it("defaults to two channels", function(){
+				var merge = new Merge();
+				expect(merge.numberOfInputs).to.equal(2);
+				merge.dispose();
+			});
+
+			it("can pass in more channels", function(){
+				var merge = new Merge(4);
+				expect(merge.numberOfInputs).to.equal(4);
+				Test.connect(merge, 0, 0);
+				Test.connect(merge, 0, 1);
+				Test.connect(merge, 0, 2);
+				Test.connect(merge, 0, 3);
+				merge.dispose();
+			});
+
 			it("passes the incoming signal through", function(){
 				return PassAudio(function(input){
 					var merge = new Merge().toMaster();
