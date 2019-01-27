@@ -16,8 +16,8 @@ function isnt(browser, below){
 	return !(name.includes(browser) && version <= below);
 }
 
-function isntVersion(browser, version){
-	return !(name.includes(browser) && version === version);
+function isntVersion(browser, browserVersion){
+	return name.includes(browser) && version !== browserVersion;
 }
 
 export default {
@@ -28,7 +28,7 @@ export default {
 	//so it is the default for continuity testing
 	CHROME_AUDIO_RENDERING : is("Chrome"),
 	//if the tests run in focus
-	ONLINE_TESTING : is("Chrome") && isntVersion("Chrome", 71),
+	ONLINE_TESTING : isntVersion("Chrome", 71),
 	//the close method resolves a promise
 	AUDIO_CONTEXT_CLOSE_RESOLVES : isnt("Firefox") && isnt("Safari", 10),
 	//if it supports gUM testing
