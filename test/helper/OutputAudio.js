@@ -1,10 +1,11 @@
-define(["helper/Offline", "helper/Test"], function(Offline, Test){
+import Offline from "helper/Offline";
+import Test from "helper/Test";
 
-	var OutputAudio = function(callback){
-		return Offline(callback, 0.1).then(function(buffer){
-			return !buffer.isSilent();
-		});
-	};
+var OutputAudio = function(callback){
+	return Offline(callback, 0.1).then(function(buffer){
+		return !buffer.isSilent();
+	});
+};
 
-	return OutputAudio;
-});
+export default OutputAudio;
+

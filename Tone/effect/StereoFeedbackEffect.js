@@ -1,64 +1,65 @@
-define(["../core/Tone", "../effect/StereoEffect", "../effect/FeedbackEffect", "../core/Gain"], function(Tone){
+import Tone from "../core/Tone";
+import "../effect/StereoEffect";
+import "../effect/FeedbackEffect";
+import "../core/Gain";
 
-	"use strict";
+/**
+ *  @class Base class for stereo feedback effects where the effectReturn
+ *         is fed back into the same channel.
+ *
+ *	@constructor
+ *	@extends {Tone.StereoEffect}
+ */
+Tone.StereoFeedbackEffect = function(){
 
-	/**
-	 *  @class Base class for stereo feedback effects where the effectReturn
-	 *         is fed back into the same channel.
-	 *
-	 *	@constructor
-	 *	@extends {Tone.StereoEffect}
-	 */
-	Tone.StereoFeedbackEffect = function(){
-
-		var options = Tone.defaults(arguments, ["feedback"], Tone.FeedbackEffect);
-		Tone.StereoEffect.call(this, options);
-
-		/**
-		 *  controls the amount of feedback
-		 *  @type {NormalRange}
-		 *  @signal
-		 */
-		this.feedback = new Tone.Signal(options.feedback, Tone.Type.NormalRange);
-
-		/**
-		 *  the left side feeback
-		 *  @type {Tone.Gain}
-		 *  @private
-		 */
-		this._feedbackL = new Tone.Gain();
-
-		/**
-		 *  the right side feeback
-		 *  @type {Tone.Gain}
-		 *  @private
-		 */
-		this._feedbackR = new Tone.Gain();
-
-		//connect it up
-		this.effectReturnL.chain(this._feedbackL, this.effectSendL);
-		this.effectReturnR.chain(this._feedbackR, this.effectSendR);
-		this.feedback.fan(this._feedbackL.gain, this._feedbackR.gain);
-		this._readOnly(["feedback"]);
-	};
-
-	Tone.extend(Tone.StereoFeedbackEffect, Tone.StereoEffect);
+	var options = Tone.defaults(arguments, ["feedback"], Tone.FeedbackEffect);
+	Tone.StereoEffect.call(this, options);
 
 	/**
-	 *  clean up
-	 *  @returns {Tone.StereoFeedbackEffect} this
+	 *  controls the amount of feedback
+	 *  @type {NormalRange}
+	 *  @signal
 	 */
-	Tone.StereoFeedbackEffect.prototype.dispose = function(){
-		Tone.StereoEffect.prototype.dispose.call(this);
-		this._writable(["feedback"]);
-		this.feedback.dispose();
-		this.feedback = null;
-		this._feedbackL.dispose();
-		this._feedbackL = null;
-		this._feedbackR.dispose();
-		this._feedbackR = null;
-		return this;
-	};
+	this.feedback = new Tone.Signal(options.feedback, Tone.Type.NormalRange);
 
-	return Tone.StereoFeedbackEffect;
-});
+	/**
+	 *  the left side feeback
+	 *  @type {Tone.Gain}
+	 *  @private
+	 */
+	this._feedbackL = new Tone.Gain();
+
+	/**
+	 *  the right side feeback
+	 *  @type {Tone.Gain}
+	 *  @private
+	 */
+	this._feedbackR = new Tone.Gain();
+
+	//connect it up
+	this.effectReturnL.chain(this._feedbackL, this.effectSendL);
+	this.effectReturnR.chain(this._feedbackR, this.effectSendR);
+	this.feedback.fan(this._feedbackL.gain, this._feedbackR.gain);
+	this._readOnly(["feedback"]);
+};
+
+Tone.extend(Tone.StereoFeedbackEffect, Tone.StereoEffect);
+
+/**
+ *  clean up
+ *  @returns {Tone.StereoFeedbackEffect} this
+ */
+Tone.StereoFeedbackEffect.prototype.dispose = function(){
+	Tone.StereoEffect.prototype.dispose.call(this);
+	this._writable(["feedback"]);
+	this.feedback.dispose();
+	this.feedback = null;
+	this._feedbackL.dispose();
+	this._feedbackL = null;
+	this._feedbackR.dispose();
+	this._feedbackR = null;
+	return this;
+};
+
+export default Tone.StereoFeedbackEffect;
+

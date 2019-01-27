@@ -85,7 +85,7 @@ module.exports = function(config){
 					//enables correct coverage mapping
 					{
 						test : /\.js$/,
-						use : { loader : "istanbul-instrumenter-loader" },
+						use : { loader : "istanbul-instrumenter-loader", query : { esModules : true } },
 						include : path.resolve(__dirname, "../Tone"),
 						exclude : path.resolve(__dirname, "../Tone/shim")
 					}

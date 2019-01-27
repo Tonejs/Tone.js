@@ -1,26 +1,31 @@
-define(["helper/Test", "Tone/core/TransportEvent", "Tone/core/Tone", "helper/Offline", "helper/PassAudio", "Tone/source/Oscillator", "Tone/core/AudioNode"],
-	function(Test, TransportEvent, Tone, Offline, PassAudio, Oscillator, AudioNode){
+import Test from "helper/Test";
+import TransportEvent from "Tone/core/TransportEvent";
+import Tone from "Tone/core/Tone";
+import Offline from "helper/Offline";
+import PassAudio from "helper/PassAudio";
+import Oscillator from "Tone/source/Oscillator";
+import AudioNode from "Tone/core/AudioNode";
 
-		describe("TransportEvent", function(){
+describe("TransportEvent", function(){
 
-			it("can be created and disposed", function(){
-				return Offline(function(Transport){
-					var event = new TransportEvent(Transport, {
-						"time" : 0
-					});
-					event.dispose();
-					Test.wasDisposed(event);
-				});
+	it("can be created and disposed", function(){
+		return Offline(function(Transport){
+			var event = new TransportEvent(Transport, {
+				"time" : 0
 			});
-
-			it("generates a unique event ID", function(){
-				return Offline(function(Transport){
-					var event = new TransportEvent(Transport, {
-						"time" : 0
-					});
-					expect(event.id).to.be.a("number");
-					event.dispose();
-				});
-			});
+			event.dispose();
+			Test.wasDisposed(event);
 		});
 	});
+
+	it("generates a unique event ID", function(){
+		return Offline(function(Transport){
+			var event = new TransportEvent(Transport, {
+				"time" : 0
+			});
+			expect(event.id).to.be.a("number");
+			event.dispose();
+		});
+	});
+});
+
