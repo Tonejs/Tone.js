@@ -224,6 +224,7 @@ Tone.Frequency.prototype._defaultUnits = "hz";
 /**
  *  Note to scale index
  *  @type  {Object}
+ *  @private
  */
 var noteToScaleIndex = {
 	"cbb" : -2, "cb" : -1, "c" : 0, "c#" : 1, "cx" : 2,
@@ -238,6 +239,7 @@ var noteToScaleIndex = {
 /**
  *  scale index to note (sharps)
  *  @type  {Array}
+ *  @private
  */
 var scaleIndexToNote = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
 

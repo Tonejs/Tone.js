@@ -143,6 +143,7 @@ Tone.AudioNode.prototype.toMaster = function(){
 
 /**
  *  initialize the module and listen for new audio contexts
+ *  @private
  */
 var MasterConstructor = Tone.Master;
 Tone.Master = new MasterConstructor();

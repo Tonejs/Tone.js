@@ -9,9 +9,9 @@ import "../core/Param";
  *  		complex automation curves.
  *
  * 	@constructor
-     *  @param {Frequency} frequency The initial frequency that the signal ticks at
-     *  @param {Tone.Param=} param A parameter to control (such as playbackRate)
  *  @extends {Tone}
+ *  @param {Frequency} frequency The initial frequency that the signal ticks at
+ *  @param {Tone.Param=} param A parameter to control (such as playbackRate)
  */
 Tone.TickSource = function(){
 
@@ -291,11 +291,17 @@ Tone.TickSource.prototype.getTimeOfTick = function(tick, before){
 };
 
 /**
+ * @callback forEachTickBetween
+ * @param {Time} when
+ * @param {Ticks} when
+ */
+
+/**
  *  Invoke the callback event at all scheduled ticks between the 
  *  start time and the end time
  *  @param  {Time}    startTime  The beginning of the search range
  *  @param  {Time}    endTime    The end of the search range
- *  @param  {Function<Time,Ticks>}  callback   The callback to invoke with each tick
+ *  @param  {ForEachCallback}  callback   The callback to invoke with each tick
  *  @return  {Tone.TickSource}    this
  */
 Tone.TickSource.prototype.forEachTickBetween = function(startTime, endTime, callback){

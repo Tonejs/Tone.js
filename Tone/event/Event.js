@@ -218,10 +218,11 @@ Object.defineProperty(Tone.Event.prototype, "probability", {
  *  If set to true, will apply small random variation
  *  to the callback time. If the value is given as a time, it will randomize
  *  by that amount.
- *  @example
- * event.humanize = true;
  *  @type {Boolean|Time}
  *  @name humanize
+ *  @memberof Tone.Event#
+ *  @example
+ * event.humanize = true;
  */
 Object.defineProperty(Tone.Event.prototype, "humanize", {
 	get : function(){

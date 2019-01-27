@@ -390,6 +390,7 @@ Object.defineProperty(Tone.Part.prototype, "probability", {
  * event.humanize = true;
  *  @type {Boolean|Time}
  *  @name humanize
+ *  @memberof Tone.Part#
  */
 Object.defineProperty(Tone.Part.prototype, "humanize", {
 	get : function(){

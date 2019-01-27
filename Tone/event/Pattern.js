@@ -11,8 +11,7 @@ import "../control/CtrlPattern";
  *   //the order of the notes passed in depends on the pattern
  * }, ["C2", "D4", "E5", "A6"], "upDown");
  *  @extends {Tone.Loop}
- *  @param {Function} callback The callback to invoke with the
- *                             event.
+ *  @param {Function} callback The callback to invoke with the event.
  *  @param {Array} values The values to arpeggiate over.
  */
 Tone.Pattern = function(){

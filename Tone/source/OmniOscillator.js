@@ -450,6 +450,7 @@ Object.defineProperty(Tone.OmniOscillator.prototype, "modulationType", {
  * @type {Positive}
  * @signal
  * @name modulationIndex
+ * @memberof Tone.OmniOscillator#
  */
 Object.defineProperty(Tone.OmniOscillator.prototype, "modulationIndex", {
 	get : function(){
