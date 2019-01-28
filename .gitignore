@@ -26,3 +26,7 @@ examples/scratch.js
 Tone/version.js
 Tone/index.js
 test/test.js
+
+docs
+.vscode
+tone.d.ts
