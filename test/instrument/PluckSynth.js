@@ -15,7 +15,7 @@ describe("PluckSynth", function(){
 			return CompareToFile(function(){
 				var synth = new PluckSynth().toMaster();
 				synth.triggerAttack("C4");
-			}, "pluckSynth.wav", 0.25);
+			}, "pluckSynth.wav", 0.26);
 		});
 	}
 
