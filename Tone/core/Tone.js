@@ -315,7 +315,7 @@ Tone.prototype.assert = function(statement, error){
 
 /**
  *  connect together all of the arguments in series
- *  @param {...AudioParam|Tone|AudioNode} nodes
+ *  @param {...(AudioParam|Tone|AudioNode)} nodes
  *  @returns {Tone}
  *  @memberOf Tone
  *  @static
@@ -324,9 +324,52 @@ Tone.connectSeries = function(){
 	var currentUnit = arguments[0];
 	for (var i = 1; i < arguments.length; i++){
 		var toUnit = arguments[i];
-		currentUnit.connect(toUnit);
+		Tone.connect(currentUnit, toUnit);
 		currentUnit = toUnit;
 	}
+	return Tone;
+};
+
+/**
+ * Connect two nodes together so that signal flows from the 
+ * first node to the second. The second node can be an AudioParam. 
+ * Optionally specific the input and output channels. 
+ * @param {AudioNode|Tone.AudioNode} srcNode The source node
+ * @param {AudioNode|Tone.AudioNode|AudioParam|Tone.AudioParam} dstNode The destination node
+ * @param {number} [outputNumber=0] The output channel of the srcNode
+ * @param {number} [inputNumber=0] The input channel of the dstNode
+ */
+Tone.connect = function(srcNode, dstNode, outputNumber, inputNumber){
+
+	//resolve to output of the srcNode
+	while (!Tone.isFunction(srcNode.connect)){
+		if (Tone.isArray(srcNode.output)){
+			outputNumber = Tone.defaultArg(outputNumber, 0);
+			srcNode = srcNode.output[outputNumber];
+			outputNumber = 0;
+		} else if (srcNode.output){
+			srcNode = srcNode.output;
+		}
+	}
+	
+	//resolve the input of the dstNode
+	while (Tone.isDefined(dstNode.input)){
+		if (Tone.isArray(dstNode.input)){
+			inputNumber = Tone.defaultArg(inputNumber, 0);
+			dstNode = dstNode.input[inputNumber];
+			inputNumber = 0;
+		} else if (dstNode.input){
+			dstNode = dstNode.input;
+		}
+	}
+
+	//make the connection
+	if (dstNode instanceof AudioParam){
+		srcNode.connect(dstNode, outputNumber);
+	} else if (dstNode instanceof AudioNode){
+		srcNode.connect(dstNode, outputNumber, inputNumber);
+	}
+
 	return Tone;
 };
 

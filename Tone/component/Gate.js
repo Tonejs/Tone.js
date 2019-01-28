@@ -38,9 +38,9 @@ Tone.Gate = function(){
 	this._gt = new Tone.GreaterThan(Tone.dbToGain(options.threshold));
 
 	//the connections
-	this.input.connect(this.output);
+	Tone.connect(this.input, this.output);
 	//the control signal
-	this.input.chain(this._follower, this._gt, this.output.gain);
+	Tone.connectSeries(this.input, this._follower, this._gt, this.output.gain);
 };
 
 Tone.extend(Tone.Gate, Tone.AudioNode);

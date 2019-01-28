@@ -50,7 +50,8 @@ Tone.Modulo = function(modulus){
 	this._modSignal = new Tone.Signal(modulus);
 
 	//connections
-	this.input.fan(this._shaper, this._subtract);
+	Tone.connect(this.input, this._shaper);
+	Tone.connect(this.input, this._subtract);
 	this._modSignal.connect(this._multiply, 0, 0);
 	this._shaper.connect(this._multiply, 0, 1);
 	this._multiply.connect(this._subtract, 0, 1);

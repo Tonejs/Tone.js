@@ -85,7 +85,7 @@ Tone.CrossFade = function(initialFade){
 	this.a.connect(this.output);
 	this.b.connect(this.output);
 	this.fade.chain(this._equalPowerB, this.b.gain);
-	this._one.connect(this._invert, 0, 0);
+	Tone.connect(this._one, this._invert, 0, 0);
 	this.fade.connect(this._invert, 0, 1);
 	this._invert.chain(this._equalPowerA, this.a.gain);
 	this._readOnly("fade");

@@ -61,7 +61,7 @@ Tone.StereoWidener = function(){
 	 */
 	this._oneMinusWidth = new Tone.Subtract();
 	this._oneMinusWidth.connect(this._twoTimesWidthMid);
-	this.context.getConstant(1).connect(this._oneMinusWidth, 0, 0);
+	Tone.connect(this.context.getConstant(1), this._oneMinusWidth, 0, 0);
 	this.width.connect(this._oneMinusWidth, 0, 1);
 
 	/**

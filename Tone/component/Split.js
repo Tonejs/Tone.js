@@ -29,7 +29,7 @@ Tone.Split = function(channels){
 	//connections
 	for (var i = 0; i < channels; i++){
 		this.output[i] = new Tone.Gain();
-		this._splitter.connect(this.output[i], i, 0);
+		Tone.connect(this._splitter, this.output[i], i, 0);
 		this.output[i].channelCount = 1;
 		this.output[i].channelCountMode = "explicit";
 	}

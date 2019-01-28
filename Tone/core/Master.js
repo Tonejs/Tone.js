@@ -45,7 +45,7 @@ Tone.Master = function(){
 
 		this._readOnly("volume");
 		//connections
-		this.input.chain(this.output, this.context.destination);
+		Tone.connectSeries(this.input, this.output, this.context.destination);
 
 		//master is a singleton so it adds itself to the context
 		this.context.master = this;
@@ -109,8 +109,10 @@ Object.defineProperty(Tone.Master.prototype, "mute", {
  */
 Tone.Master.prototype.chain = function(){
 	this.input.disconnect();
-	this.input.chain.apply(this.input, arguments);
-	arguments[arguments.length - 1].connect(this.output);
+	var args = Array.from(arguments);
+	args.unshift(this.input);
+	args.push(this.output);
+	Tone.connectSeries.apply(undefined, args);
 };
 
 /**

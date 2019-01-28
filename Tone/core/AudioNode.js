@@ -170,7 +170,7 @@ Tone.AudioNode.prototype.connect = function(unit, outputNum, inputNum){
 		outputNum = Tone.defaultArg(outputNum, 0);
 		this.output[outputNum].connect(unit, 0, inputNum);
 	} else {
-		this.output.connect(unit, outputNum, inputNum);
+		Tone.connect(this.output, unit, outputNum, inputNum);
 	}
 	return this;
 };
@@ -204,13 +204,9 @@ Tone.AudioNode.prototype.disconnect = function(destination, outputNum, inputNum)
  *  @returns {Tone.AudioNode} this
  */
 Tone.AudioNode.prototype.chain = function(){
-	var currentUnit = this;
-	for (var i = 0; i < arguments.length; i++){
-		var toUnit = arguments[i];
-		currentUnit.connect(toUnit);
-		currentUnit = toUnit;
-	}
-	return this;
+	var args = Array.from(arguments);
+	args.unshift(this);
+	Tone.connectSeries.apply(undefined, args);
 };
 
 /**
@@ -224,12 +220,6 @@ Tone.AudioNode.prototype.fan = function(){
 	}
 	return this;
 };
-
-if (Tone.global.AudioNode){
-	//give native nodes chain and fan methods
-	AudioNode.prototype.chain = Tone.AudioNode.prototype.chain;
-	AudioNode.prototype.fan = Tone.AudioNode.prototype.fan;
-}
 
 /**
  * Dispose and disconnect

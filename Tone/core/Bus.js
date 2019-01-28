@@ -49,7 +49,7 @@ Tone.prototype.receive = function(channelName, inputNum){
 	if (!Buses.hasOwnProperty(channelName)){
 		Buses[channelName] = this.context.createGain();
 	}
-	Buses[channelName].connect(this, 0, inputNum);
+	Tone.connect(Buses[channelName], this, 0, inputNum);
 	return this;
 };
 

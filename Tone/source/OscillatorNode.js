@@ -53,7 +53,7 @@ Tone.OscillatorNode = function(){
 	 *  @private
 	 */
 	this._oscillator = this.context.createOscillator();
-	this._oscillator.connect(this._gainNode);
+	Tone.connect(this._oscillator, this._gainNode);
 	this.type = options.type;
 
 	/**

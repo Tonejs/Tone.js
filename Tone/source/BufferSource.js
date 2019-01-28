@@ -66,7 +66,7 @@ Tone.BufferSource = function(){
 	 *  @private
 	 */
 	this._source = this.context.createBufferSource();
-	this._source.connect(this._gainNode);
+	Tone.connect(this._source, this._gainNode);
 	this._source.onended = this._onended.bind(this);
 
 	/**

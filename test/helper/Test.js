@@ -73,7 +73,7 @@ Test.wasDisposed = function(obj){
 };
 
 Test.connect = function(node, inputNumber){
-	this.input.connect(node, 0, inputNumber);
+	Tone.connect(this.input, node, 0, inputNumber);
 	this.input.disconnect();
 };
 

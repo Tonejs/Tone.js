@@ -59,8 +59,8 @@ Tone.Follower = function(){
 	 */
 	this._smoothing = options.smoothing;
 
-	this.input.connect(this._delay, this._sub);
-	this.input.connect(this._sub, 0, 1);
+	Tone.connect(this.input, this._delay);
+	Tone.connect(this.input, this._sub, 0, 1);
 	this._sub.chain(this._abs, this._filter, this.output);
 
 	//set the smoothing initially
