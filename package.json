@@ -28,7 +28,7 @@
     "test:travis": "npm run build && npm run lint && npm run test",
     "test:html": "mocha ./test/html/testHTML.js --timeout 30000",
     "test:node": "node ./test/html/node_test.js",
-    "tsd": "./node_modules/.bin/jsdoc -c ./scripts/.tsdoc.json",
+    "tsd": "node ./scripts/generate_docs.js",
     "watch": "npm run increment && npm run collect:deps && webpack -w --env.production --mode=development"
   },
   "repository": {
@@ -51,7 +51,7 @@
   "bugs": {
     "url": "https://github.com/Tonejs/Tone.js/issues"
   },
-  "types": "tone.d.ts",
+  "types": "./tone.d.ts",
   "devDependencies": {
     "@babel/polyfill": "^7.0.0-beta.47",
     "audiobuffer-to-wav": "^1.0.0",
