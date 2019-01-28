@@ -127,7 +127,7 @@ Tone.UserMedia.prototype.open = function(labelOrId){
 				//Wrap a MediaStreamSourceNode around the live input stream.
 				this._mediaStream = this.context.createMediaStreamSource(stream);
 				//Connect the MediaStreamSourceNode to a gate gain node
-				this._mediaStream.connect(this.output);
+				Tone.connect(this._mediaStream, this.output);
 			}
 			return this;
 		}.bind(this));
