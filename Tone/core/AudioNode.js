@@ -207,6 +207,7 @@ Tone.AudioNode.prototype.chain = function(){
 	var args = Array.from(arguments);
 	args.unshift(this);
 	Tone.connectSeries.apply(undefined, args);
+	return this;
 };
 
 /**
