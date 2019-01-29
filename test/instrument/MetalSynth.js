@@ -54,6 +54,10 @@ describe("MetalSynth", function(){
 				"frequency" : 120
 			});
 			expect(cymbal.get().frequency).to.be.closeTo(120, 0.01);
+			cymbal.harmonicity = 2;
+			expect(cymbal.harmonicity).to.be.closeTo(2, 0.01);
+			cymbal.resonance = 2222;
+			expect(cymbal.resonance).to.be.closeTo(2222, 1);
 			cymbal.dispose();
 		});
 
