@@ -157,6 +157,9 @@ Tone.prototype.get = function(params){
 			attr = attrSplit[attrSplit.length - 1];
 		}
 		var param = parent[attr];
+		if (Tone.isUndef(param)){
+			continue;
+		}
 		if (Tone.isObject(params[attr])){
 			subRet[attr] = param.get();
 		} else if (Tone.isDefined(param.value)){
