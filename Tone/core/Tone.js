@@ -101,10 +101,17 @@ Tone.prototype.set = function(params, value){
 		if (Tone.isUndef(param)){
 			continue;
 		}
-		if (Tone.isDefined(param.value)){
+		if ((Tone.Signal && param instanceof Tone.Signal) ||
+			(Tone.Param && param instanceof Tone.Param)){
 			if (param.value !== value){
 				param.value = value;
 			}
+		} else if (param instanceof AudioParam){
+			if (param.value !== value){
+				param.value = value;
+			}
+		} else if (Tone.TimeBase && param instanceof Tone.TimeBase){
+			parent[attr] = value;
 		} else if (param instanceof Tone){
 			param.set(value);
 		} else if (param !== value){
@@ -157,12 +164,13 @@ Tone.prototype.get = function(params){
 			attr = attrSplit[attrSplit.length - 1];
 		}
 		var param = parent[attr];
-		if (Tone.isUndef(param)){
-			continue;
-		}
 		if (Tone.isObject(params[attr])){
 			subRet[attr] = param.get();
-		} else if (Tone.isDefined(param.value)){
+		} else if (Tone.Signal && param instanceof Tone.Signal){
+			subRet[attr] = param.value;
+		} else if (Tone.Param && param instanceof Tone.Param){
+			subRet[attr] = param.value;
+		} else if (param instanceof AudioParam){
 			subRet[attr] = param.value;
 		} else if (param instanceof Tone){
 			subRet[attr] = param.get();
