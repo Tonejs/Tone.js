@@ -57,7 +57,6 @@ Tone.prototype.dispose = function(){
  *  over the duration of the rampTime.
  *  @param {Object|String} params
  *  @param {Number=} value
- *  @param {Time=} rampTime
  *  @returns {Tone} this
  *  @memberOf Tone#
  *  @example
@@ -74,10 +73,8 @@ Tone.prototype.dispose = function(){
  * 	"frequency" : 220
  * }, 3);
  */
-Tone.prototype.set = function(params, value, rampTime){
-	if (Tone.isObject(params)){
-		rampTime = value;
-	} else if (Tone.isString(params)){
+Tone.prototype.set = function(params, value){
+	if (Tone.isString(params)){
 		var tmpObj = {};
 		tmpObj[params] = value;
 		params = tmpObj;
@@ -104,21 +101,10 @@ Tone.prototype.set = function(params, value, rampTime){
 		if (Tone.isUndef(param)){
 			continue;
 		}
-		if ((Tone.Signal && param instanceof Tone.Signal) ||
-				(Tone.Param && param instanceof Tone.Param)){
-			if (param.value !== value){
-				if (Tone.isUndef(rampTime)){
-					param.value = value;
-				} else {
-					param.rampTo(value, rampTime);
-				}
-			}
-		} else if (param instanceof AudioParam){
+		if (Tone.isDefined(param.value)){
 			if (param.value !== value){
 				param.value = value;
 			}
-		} else if (Tone.TimeBase && param instanceof Tone.TimeBase){
-			parent[attr] = value;
 		} else if (param instanceof Tone){
 			param.set(value);
 		} else if (param !== value){
@@ -173,11 +159,7 @@ Tone.prototype.get = function(params){
 		var param = parent[attr];
 		if (Tone.isObject(params[attr])){
 			subRet[attr] = param.get();
-		} else if (Tone.Signal && param instanceof Tone.Signal){
-			subRet[attr] = param.value;
-		} else if (Tone.Param && param instanceof Tone.Param){
-			subRet[attr] = param.value;
-		} else if (param instanceof AudioParam){
+		} else if (Tone.isDefined(param.value)){
 			subRet[attr] = param.value;
 		} else if (param instanceof Tone){
 			subRet[attr] = param.get();
@@ -340,17 +322,6 @@ Tone.connectSeries = function(){
  * @param {number} [inputNumber=0] The input channel of the dstNode
  */
 Tone.connect = function(srcNode, dstNode, outputNumber, inputNumber){
-
-	//resolve to output of the srcNode
-	while (!Tone.isFunction(srcNode.connect)){
-		if (Tone.isArray(srcNode.output)){
-			outputNumber = Tone.defaultArg(outputNumber, 0);
-			srcNode = srcNode.output[outputNumber];
-			outputNumber = 0;
-		} else if (srcNode.output){
-			srcNode = srcNode.output;
-		}
-	}
 	
 	//resolve the input of the dstNode
 	while (Tone.isDefined(dstNode.input)){

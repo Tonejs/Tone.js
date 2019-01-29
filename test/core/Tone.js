@@ -274,40 +274,6 @@ describe("Tone", function(){
 			osc.dispose();
 		});
 
-		it("ramps to a value given an object and ramp time", function(){
-			return Offline(function(){
-				var osc = new Oscillator(0).toMaster();
-				var setValue = 30;
-				osc.frequency.toMaster();
-				osc.set({
-					"frequency" : setValue
-				}, 0.5);
-				expect(osc.frequency.value).to.not.be.closeTo(setValue, 0.001);
-
-				return function(sample, time){
-					if (time > 0.5){
-						expect(sample).to.closeTo(setValue, setValue * 0.1);
-					}
-				};
-			});
-		});
-
-		it("ramps to a value given a string and a value and a ramp time", function(){
-			var setValue = 20;
-			return Offline(function(){
-				var osc = new Oscillator(0).toMaster();
-				osc.frequency.toMaster();
-				osc.set("frequency", setValue, 0.2);
-				expect(osc.frequency.value).to.not.be.closeTo(setValue, 0.001);
-			}).then(function(buffer){
-				buffer.forEach(function(sample, time){
-					if (time > 0.2){
-						expect(sample).to.closeTo(setValue, setValue * 0.1);
-					}
-				});
-			});
-		});
-
 		it("gets all defaults of the object with no arguments", function(){
 			var osc = new Oscillator(0);
 			expect(osc.get()).to.contain.keys(["type", "partialCount", "frequency", "detune", "phase"]);
