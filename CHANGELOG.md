@@ -1,4 +1,7 @@
-### r13
+* Moving to common.js-style code
+* Including tone.d.ts in builds (still WIP)
+
+### 13.4.9
 
 * Updating semantic versioning to be more in line with other [semvers](https://semver.org/). Now version is 13.x.x
 * logging full version
