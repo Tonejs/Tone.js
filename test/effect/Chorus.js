@@ -31,6 +31,13 @@ describe("Chorus", function(){
 			expect(chorus.get().type).to.equal("square");
 			chorus.dispose();
 		});
+
+		it("can get/set the delayTime", function(){
+			var chorus = new Chorus();
+			chorus.delayTime = 3;
+			expect(chorus.delayTime).to.equal(3);
+			chorus.dispose();
+		});
 	});
 });
 
