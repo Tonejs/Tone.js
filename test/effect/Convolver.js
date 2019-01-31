@@ -105,6 +105,8 @@ describe("Convolver", function(){
 					}
 				})
 			});
+			//is null before then
+			expect(convolver.buffer).to.be.null;
 		});
 	});
 });
