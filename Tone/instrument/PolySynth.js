@@ -14,9 +14,14 @@ import "../source/Source";
  *  @param {number|Object} [polyphony=4] The number of voices to create
  *  @param {function} [voice=Tone.Synth] The constructor of the voices
  *                                            uses Tone.Synth by default.
+ *  @param {...*}	voiceArgs	All additional arguments will be passed into the class constructor.
  *  @example
  * //a polysynth composed of 6 Voices of Synth
- * var synth = new Tone.PolySynth(6, Tone.Synth).toMaster();
+ * var synth = new Tone.PolySynth(6, Tone.Synth, {
+ *   oscillator : {
+ * 		type : "square"
+ * 	}
+ * }).toMaster();
  * //set the attributes using the set interface
  * synth.set("detune", -1200);
  * //play a chord
