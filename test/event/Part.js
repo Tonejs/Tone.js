@@ -190,12 +190,18 @@ describe("Part", function(){
 
 		it("can remove an event by time and value", function(){
 			return Offline(function(){
+				var secondEvent = {
+					time : 0.2,
+					note : "C4"
+				};
 				var part = new Part({
-					"events" : [[0.2, "C3"], [0.2, "C4"]]
+					"events" : [[0.2, "C2"], secondEvent]
 				});
 				expect(part.length).to.equal(2);
-				part.remove(0.2, "C4");
+				part.remove(0.2, "C2");
 				expect(part.length).to.equal(1);
+				part.remove(secondEvent);
+				expect(part.length).to.equal(0);
 				part.dispose();
 			});
 		});
@@ -205,10 +211,10 @@ describe("Part", function(){
 				var part = new Part({
 					"loopEnd" : "1m",
 					"loopStart" : "4n",
-					"humanize" : 0.1,
 					"probability" : 0.2,
 					"events" : [[0.2, "C3"], [0.3, "C4"]]
 				});
+				part.humanize = 0.1;
 				var firstEvent = part.at(0.2);
 				expect(firstEvent.humanize).to.equal(0.1);
 				expect(firstEvent.probability).to.equal(0.2);
