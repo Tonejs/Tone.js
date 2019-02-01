@@ -144,13 +144,25 @@ describe("CtrlPattern", function(){
 		it("does randomOnce pattern", function(){
 			var pattern = new CtrlPattern([4, 5, 6, 7, 8], "randomOnce");
 			var output = [];
-			var i;
-			for (i = 0; i < 5; i++){
+			for (var i = 0; i < 5; i++){
 				output[i] = pattern.value;
 				pattern.next();
 			}
 			output = output.sort();
 			expect(output).to.deep.equal([4, 5, 6, 7, 8]);
+			pattern.dispose();
+		});
+		
+		it("randomOnce can update if length of pattern changes", function(){
+			var pattern = new CtrlPattern([4, 5, 6, 7, 8], "randomOnce");
+			pattern.values = [4, 5, 6, 7, 8, 9];
+			var output = [];
+			for (var i = 0; i < 6; i++){
+				output[i] = pattern.value;
+				pattern.next();
+			}
+			output = output.sort();
+			expect(output).to.deep.equal([4, 5, 6, 7, 8, 9]);
 			pattern.dispose();
 		});
 	});
