@@ -276,9 +276,7 @@ Tone.Transport.prototype.scheduleRepeat = function(callback, interval, startTime
 };
 
 /**
- *  Schedule an event that will be removed after it is invoked.
- *  Note that if the given time is less than the current transport time,
- *  the event will be invoked immediately.
+ *  Schedule an event that will be removed after it is invoked. 
  *  @param {Function} callback The callback to invoke once.
  *  @param {TransportTime} time The time the callback should be invoked.
  *  @returns {Number} The ID of the scheduled event.
