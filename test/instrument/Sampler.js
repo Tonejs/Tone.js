@@ -62,6 +62,13 @@ describe("Sampler", function(){
 			});
 		});
 
+		it("throws an error if there are no available notes to play", function(){
+			expect(function(){
+				var sampler = new Sampler();
+				sampler.triggerAttack("C4");
+			}).throws(Error);
+		});
+
 		it("throws an error if the url key is not midi or pitch notation", function(){
 			expect(function(){
 				var sampler = new Sampler({
@@ -95,6 +102,19 @@ describe("Sampler", function(){
 				// expect(sampler.loaded).to.be.true;
 				done();
 			}, "./baseUrl");
+		});
+
+		it("can dispose while playing sounds", function(){
+			return Offline(function(){
+				var sampler = new Sampler({
+					"A4" : A4_buffer
+				}, {
+					release : 0
+				}).toMaster();
+				sampler.triggerAttack("A4", 0);
+				sampler.triggerRelease("A4", 0.2);
+				sampler.dispose();
+			}, 0.3);
 		});
 
 	});
@@ -170,6 +190,20 @@ describe("Sampler", function(){
 			}, 0.4).then(function(buffer){
 				expect(buffer.getFirstSoundTime()).to.be.closeTo(0.1, 0.01);
 				expect(buffer.getLastSoundTime()).to.be.closeTo(0.3, 0.01);
+			});
+		});
+
+		it("can trigger polyphonic attack release", function(){
+			return Offline(function(){
+				var sampler = new Sampler({
+					"A4" : A4_buffer
+				}, {
+					release : 0
+				}).toMaster();
+				sampler.triggerAttackRelease(["A4", "C4"], [0.2, 0.3], 0.1);
+			}, 0.5).then(function(buffer){
+				expect(buffer.getFirstSoundTime()).to.be.closeTo(0.1, 0.01);
+				expect(buffer.getLastSoundTime()).to.be.closeTo(0.4, 0.01);
 			});
 		});
 	});
