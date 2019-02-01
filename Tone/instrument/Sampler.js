@@ -113,7 +113,7 @@ Tone.Sampler.prototype._findClosest = function(midi){
 		}
 		interval++;
 	}
-	return null;
+	throw new Error("No available buffers for note: "+midi);
 };
 
 /**
@@ -131,35 +131,33 @@ Tone.Sampler.prototype.triggerAttack = function(notes, time, velocity){
 		var midi = Tone.Frequency(notes[i]).toMidi();
 		// find the closest note pitch
 		var difference = this._findClosest(midi);
-		if (difference !== null){
-			var closestNote = midi - difference;
-			var buffer = this._buffers.get(closestNote);
-			var playbackRate = Tone.intervalToFrequencyRatio(difference);
-			// play that note
-			var source = new Tone.BufferSource({
-				"buffer" : buffer,
-				"playbackRate" : playbackRate,
-				"fadeIn" : this.attack,
-				"fadeOut" : this.release,
-				"curve" : this.curve,
-			}).connect(this.output);
-			source.start(time, 0, buffer.duration / playbackRate, velocity);
-			// add it to the active sources
-			if (!Tone.isArray(this._activeSources[midi])){
-				this._activeSources[midi] = [];
-			}
-			this._activeSources[midi].push(source);
-
-			//remove it when it's done
-			source.onended = function(){
-				if (this._activeSources && this._activeSources[midi]){
-					var index = this._activeSources[midi].indexOf(source);
-					if (index !== -1){
-						this._activeSources[midi].splice(index, 1);
-					}
-				}
-			}.bind(this);
+		var closestNote = midi - difference;
+		var buffer = this._buffers.get(closestNote);
+		var playbackRate = Tone.intervalToFrequencyRatio(difference);
+		// play that note
+		var source = new Tone.BufferSource({
+			"buffer" : buffer,
+			"playbackRate" : playbackRate,
+			"fadeIn" : this.attack,
+			"fadeOut" : this.release,
+			"curve" : this.curve,
+		}).connect(this.output);
+		source.start(time, 0, buffer.duration / playbackRate, velocity);
+		// add it to the active sources
+		if (!Tone.isArray(this._activeSources[midi])){
+			this._activeSources[midi] = [];
 		}
+		this._activeSources[midi].push(source);
+
+		//remove it when it's done
+		source.onended = function(){
+			if (this._activeSources && this._activeSources[midi]){
+				var index = this._activeSources[midi].indexOf(source);
+				if (index !== -1){
+					this._activeSources[midi].splice(index, 1);
+				}
+			}
+		}.bind(this);
 	}
 	return this;
 };
@@ -226,8 +224,8 @@ Tone.Sampler.prototype.sync = function(){
 
 /**
  * Invoke the attack phase, then after the duration, invoke the release.
- * @param  {Frequency} note     The note to play
- * @param  {Time} duration The time the note should be held
+ * @param  {(Frequency|Frequency[])} note     The note to play
+ * @param  {(Time|Time[])} duration The time the note should be held
  * @param  {Time=} time     When to start the attack
  * @param  {NormalRange} [velocity=1] The velocity of the attack
  * @return {Tone.Sampler}          this
@@ -290,6 +288,7 @@ Tone.Sampler.prototype.dispose = function(){
 	this._buffers.dispose();
 	this._buffers = null;
 	for (var midi in this._activeSources){
+		console.log("here");
 		this._activeSources[midi].forEach(function(source){
 			source.dispose();
 		});
