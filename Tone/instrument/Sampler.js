@@ -288,7 +288,6 @@ Tone.Sampler.prototype.dispose = function(){
 	this._buffers.dispose();
 	this._buffers = null;
 	for (var midi in this._activeSources){
-		console.log("here");
 		this._activeSources[midi].forEach(function(source){
 			source.dispose();
 		});
