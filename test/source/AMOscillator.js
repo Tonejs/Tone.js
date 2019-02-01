@@ -61,6 +61,7 @@ describe("AMOscillator", function(){
 			expect(osc.type).to.equal("custom");
 			osc.partials = [1, 2, 3];
 			expect(osc.baseType).to.equal("custom");
+			expect(osc.partials).to.deep.equal([1, 2, 3]);
 			osc.baseType = "square";
 			expect(osc.type).to.equal("square");
 			osc.dispose();
