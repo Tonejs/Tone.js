@@ -351,7 +351,9 @@ describe("Event", function(){
 				var note = new Event({
 					"loopEnd" : 1,
 					"loop" : true,
-				}).start(0);
+				});
+				expect(note.progress).to.equal(0);
+				note.start(0);
 				Transport.start();
 				return function(time){
 					expect(note.progress).to.be.closeTo(time, 0.05);
