@@ -262,21 +262,6 @@ Object.defineProperty(Tone.LFO.prototype, "units", {
 });
 
 /**
- * Mute the output.
- * @memberOf Tone.LFO#
- * @type {Boolean}
- * @name mute
- */
-Object.defineProperty(Tone.LFO.prototype, "mute", {
-	get : function(){
-		return this._oscillator.mute;
-	},
-	set : function(mute){
-		this._oscillator.mute = mute;
-	}
-});
-
-/**
  *  Returns the playback state of the source, either "started" or "stopped".
  *  @type {Tone.State}
  *  @readOnly
