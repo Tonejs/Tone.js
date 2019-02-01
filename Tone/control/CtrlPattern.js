@@ -154,7 +154,7 @@ Object.defineProperty(Tone.CtrlPattern.prototype, "type", {
 		//randoms
 		if (this._type === Tone.CtrlPattern.Type.RandomOnce){
 			this._shuffleValues();
-		} else if (this._type === Tone.CtrlPattern.Random){
+		} else if (this._type === Tone.CtrlPattern.Type.Random){
 			this.index = Math.floor(Math.random() * this.values.length);
 		}
 	}
