@@ -79,6 +79,8 @@ describe("Pattern", function(){
 				});
 				var values = pattern.get();
 				expect(values.pattern).to.equal("random");
+				values.pattern = "upDown";
+				expect(values.pattern).to.equal("upDown");
 				expect(values.probability).to.equal(0.3);
 				pattern.dispose();
 			});
@@ -90,8 +92,11 @@ describe("Pattern", function(){
 		it("is invoked after it's started", function(){
 			var invoked = false;
 			return Offline(function(Transport){
-				new Pattern(function(){
+				var index = 0;
+				var pattern = new Pattern(function(){
 					invoked = true;
+					expect(pattern.value).to.equal(index);
+					index++;
 				}, [0, 1, 2]).start(0);
 				Transport.start();
 			}, 0.2).then(function(){
