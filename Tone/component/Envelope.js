@@ -142,8 +142,6 @@ Tone.Envelope.prototype._getCurve = function(curve, direction){
 				return t;
 			}
 		}
-		//otherwise just return the array
-		return curve;
 	}
 };
 
