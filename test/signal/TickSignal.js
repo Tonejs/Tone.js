@@ -112,6 +112,17 @@ describe("TickSignal", function(){
 		tickSignal.dispose();
 	});
 
+	it("starts at initial value if exponentialRampToValueAtTime is invoked without previous events", function(){
+		var tickSignal = new TickSignal(1);
+		tickSignal.exponentialRampToValueAtTime(2, 1);
+		expect(tickSignal.getTicksAtTime(0)).to.be.closeTo(0, 0.01);
+		expect(tickSignal.getTicksAtTime(0.5)).to.be.closeTo(0.6, 0.01);
+		expect(tickSignal.getTicksAtTime(1)).to.be.closeTo(1.5, 0.1);
+		expect(tickSignal.getTicksAtTime(2)).to.be.closeTo(3.5, 0.1);
+		expect(tickSignal.getTicksAtTime(3)).to.be.closeTo(5.5, 0.1);
+		tickSignal.dispose();
+	});
+
 	it("calculates the ticks in the future when multiple exponentialRampToValueAtTime are scheduled", function(){
 		var tickSignal = new TickSignal(1);
 		tickSignal.setValueAtTime(1, 0);
