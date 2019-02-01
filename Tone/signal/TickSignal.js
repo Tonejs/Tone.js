@@ -97,12 +97,6 @@ Tone.TickSignal.prototype.exponentialRampToValueAtTime = function(value, time){
 
 	//start from previously scheduled value
 	var prevEvent = this._events.get(time);
-	if (prevEvent === null){
-		prevEvent = {
-			"value" : this._initialValue,
-			"time" : 0
-		};
-	}
 	//approx 10 segments per second
 	var segments = Math.round(Math.max((time - prevEvent.time)*10, 1));
 	var segmentDur = ((time - prevEvent.time)/segments);
