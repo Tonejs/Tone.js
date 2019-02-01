@@ -216,6 +216,8 @@ describe("OmniOscillator", function(){
 			omni.sourceType = "am";
 			expect(omni.sourceType).to.equal("am");
 			expect(omni.type).to.equal("amsine");
+			omni.sourceType = "fat";
+			expect(omni.type).to.equal("fatsine");
 			omni.dispose();
 		});
 
