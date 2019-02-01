@@ -123,11 +123,7 @@ Tone.Oscillator.prototype._start = function(time){
 	this.log("start", time);
 	//new oscillator with previous values
 	this._oscillator = new Tone.OscillatorNode();
-	if (this._wave){
-		this._oscillator.setPeriodicWave(this._wave);
-	} else {
-		this._oscillator.type = this._type;
-	}
+	this._oscillator.setPeriodicWave(this._wave);
 	//connect the control signal to the oscillator frequency & detune
 	this._oscillator.connect(this.output);
 	this.frequency.connect(this._oscillator.frequency);
