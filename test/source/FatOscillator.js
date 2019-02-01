@@ -44,6 +44,16 @@ describe("FatOscillator", function(){
 			fatOsc.dispose();
 		});
 
+		it("can set the count after starting", function(){
+			var fatOsc = new FatOscillator({
+				"count" : 3
+			});
+			fatOsc.start();
+			fatOsc.count = 4;
+			expect(fatOsc.count).to.equal(4);
+			fatOsc.dispose();
+		});
+
 		it("correctly distributes the detune spread", function(){
 			var fatOsc = new FatOscillator({
 				"spread" : 20,
