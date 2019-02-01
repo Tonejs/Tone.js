@@ -114,6 +114,7 @@ describe("PulseOscillator", function(){
 			var osc = new PulseOscillator();
 			expect(osc.type).to.equal("pulse");
 			expect(osc.baseType).to.equal("pulse");
+			expect(osc.partials).to.deep.equal([]);
 			osc.dispose();
 		});
 	});

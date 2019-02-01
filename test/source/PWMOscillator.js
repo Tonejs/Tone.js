@@ -42,6 +42,7 @@ describe("PWMOscillator", function(){
 			var osc = new PWMOscillator();
 			expect(osc.type).to.equal("pwm");
 			expect(osc.baseType).to.equal("pwm");
+			expect(osc.partials).to.deep.equal([]);
 			osc.dispose();
 		});
 	});
