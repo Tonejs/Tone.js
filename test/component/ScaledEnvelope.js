@@ -27,12 +27,14 @@ describe("ScaledEnvelope", function(){
 				"attack" : 0,
 				"release" : "4n",
 				"min" : 2,
-				"max" : 4
+				"max" : 4,
+				"exponent" : 3
 			};
 			env.set(values);
 			expect(env.get()).to.contain.keys(Object.keys(values));
 			expect(env.min).to.equal(2);
 			expect(env.max).to.equal(4);
+			expect(env.exponent).to.equal(3);
 			env.dispose();
 		});
 
