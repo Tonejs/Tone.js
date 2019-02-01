@@ -13,6 +13,7 @@
   ],
   "scripts": {
     "build": "npm run increment && npm run collect:deps && webpack -p --env.production",
+    "codecov": "codecov",
     "collect": "npm run collect:deps",
     "collect:deps": "node scripts/collect_deps.js",
     "collect:tests": "node scripts/collect_tests.js --file $npm_config_file --dir $npm_config_dir",
@@ -56,6 +57,7 @@
     "@babel/polyfill": "^7.0.0-beta.47",
     "audiobuffer-to-wav": "^1.0.0",
     "chai": "^1.9.1",
+    "codecov": "^3.1.0",
     "concurrently": "^3.5.1",
     "eslint": "^4.19.1",
     "eslint-plugin-html": "^5.0.0",
@@ -68,7 +70,6 @@
     "karma": "^3.0.0",
     "karma-chrome-launcher": "^2.2.0",
     "karma-coverage": "^1.1.1",
-    "karma-coveralls": "^2.0.0",
     "karma-firefox-launcher": "^1.1.0",
     "karma-mocha": "^1.3.0",
     "karma-safari-launcher": "^1.0.0",

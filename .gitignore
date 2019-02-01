@@ -18,7 +18,7 @@ test/performance
 test/mainTest.js
 test/Main.js
 test/supports.html
-test/coverage/
+coverage/
 
 build/*
 
