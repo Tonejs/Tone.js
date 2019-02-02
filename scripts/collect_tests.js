@@ -1,6 +1,6 @@
 const glob = require("glob");
 const fs = require("fs");
-const { resolve } = require("path");
+const { posix } = require("path");
 const argv = require("yargs")
 	.alias("i", "file")
 	.alias("d", "dir")
@@ -16,9 +16,9 @@ function collectTests(){
 	} else if (typeof argv.dir === "string"){
 		tests = `../test/${argv.dir}/*.js`;
 	}
-	const files = glob.sync(resolve(__dirname, tests));
+	const files = glob.sync(posix.resolve(__dirname, tests));
 	var reqString = files.map(r => `import "${r}";`).join("\n");
-	fs.writeFileSync(resolve(__dirname, "../test/test.js"), reqString);
+	fs.writeFileSync(posix.resolve(__dirname, "../test/test.js"), reqString);
 }
 
 collectTests();
