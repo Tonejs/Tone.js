@@ -168,6 +168,12 @@ describe("AudioNode", function(){
 			});
 		}
 
+		it("'connect' returns the node connecting to", function(){
+			var nodeA = Tone.context.createGain();
+			var nodeB = Tone.context.createGain();
+			expect(nodeA.connect(nodeB)).to.equal(nodeB);
+		});
+
 		it("connects two nodes", function(){
 			return PassAudio(function(input){
 				var node = new Gain().toMaster();

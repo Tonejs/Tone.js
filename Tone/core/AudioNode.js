@@ -1,5 +1,6 @@
 import Tone from "../core/Tone";
 import "../core/Context";
+import "../shim/AudioNode";
 
 /**
  *  @class Tone.AudioNode is the base class for classes which process audio.
