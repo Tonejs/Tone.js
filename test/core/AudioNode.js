@@ -139,10 +139,11 @@ describe("AudioNode", function(){
 			it("can disconnect based on output number", function(){
 				return Offline(function(){
 					var merge = new Merge().toMaster();
-					var split = new Split().connect(merge, 0, 0);
+					var split = new Split();
+					split.connect(merge, 0, 0);
 					split.connect(merge, 1, 1);
 					var sig = new Signal(3).connect(split);
-					split.disconnect(1);
+					split.disconnect(merge, 1);
 				}, 0.05, 2).then(function(buffer){
 					buffer.forEach(function(l, r){
 						expect(l).to.equal(3);
@@ -172,12 +173,6 @@ describe("AudioNode", function(){
 				var node = new Gain().toMaster();
 				input.connect(node);
 			});
-		});
-
-		it("'connect' returns the node connecting to", function(){
-			var nodeA = Tone.context.createGain();
-			var nodeB = Tone.context.createGain();
-			expect(nodeA.connect(nodeB)).to.equal(nodeB);
 		});
 
 		it("can chain connections", function(){

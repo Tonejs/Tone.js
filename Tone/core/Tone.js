@@ -327,8 +327,8 @@ Tone.connectSeries = function(){
  * Connect two nodes together so that signal flows from the 
  * first node to the second. The second node can be an AudioParam. 
  * Optionally specific the input and output channels. 
- * @param {AudioNode|Tone.AudioNode} srcNode The source node
- * @param {AudioNode|Tone.AudioNode|AudioParam|Tone.AudioParam} dstNode The destination node
+ * @param {(AudioNode|Tone.AudioNode)} srcNode The source node
+ * @param {(AudioNode|Tone.AudioNode|AudioParam|Tone.AudioParam)} dstNode The destination node
  * @param {number} [outputNumber=0] The output channel of the srcNode
  * @param {number} [inputNumber=0] The input channel of the dstNode
  */
@@ -355,14 +355,30 @@ Tone.connect = function(srcNode, dstNode, outputNumber, inputNumber){
 	return Tone;
 };
 
+/**
+ * Disconnect a node from all nodes or optionally include a destination node and input/output channels.
+ * @param {(AudioNode|Tone.AudioNode)} srcNode The source node
+ * @param {?(AudioNode|Tone.AudioNode|AudioParam|Tone.AudioParam)} dstNode The destination node
+ * @param {?number} [outputNumber=0] The output channel of the srcNode
+ * @param {?number} [inputNumber=0] The input channel of the dstNode
+ */
 Tone.disconnect = function(srcNode, dstNode, outputNumber, inputNumber){
 	if (dstNode){
 		//resolve the input of the dstNode
-		while (Tone.isDefined(dstNode.input)){
+		if (Tone.isDefined(dstNode.input)){
 			if (Tone.isArray(dstNode.input)){
-				inputNumber = Tone.defaultArg(inputNumber, 0);
-				dstNode = dstNode.input[inputNumber];
-				inputNumber = 0;
+				if (Tone.isDefined(inputNumber)){
+					Tone.disconnect(srcNode, dstNode.input[inputNumber], outputNumber);
+				} else {
+					dstNode.input.forEach(function(dstNode){
+						//ignore errors from connections that aren't there
+						try {
+							Tone.disconnect(srcNode, dstNode, outputNumber);
+						// eslint-disable-next-line
+						} catch (e){}
+					});
+					
+				}
 			} else if (dstNode.input){
 				dstNode = dstNode.input;
 			}
