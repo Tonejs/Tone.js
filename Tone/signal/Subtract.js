@@ -52,7 +52,6 @@ Tone.Subtract = function(value){
 	 */
 	this._param = this.input[1] = new Tone.Signal(value);
 	this._param.chain(this._neg, this._sum);
-	this.proxy = false;
 };
 
 Tone.extend(Tone.Subtract, Tone.Signal);

@@ -37,7 +37,6 @@ Tone.GreaterThan = function(value){
 
 	//connect
 	this._param.connect(this._gtz);
-	this.proxy = false;
 };
 
 Tone.extend(Tone.GreaterThan, Tone.Signal);

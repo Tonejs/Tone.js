@@ -44,7 +44,6 @@ Tone.Multiply = function(value){
 	 */
 	this._param = this.input[1] = this.output.gain;
 	this.value = Tone.defaultArg(value, 0);
-	this.proxy = false;
 };
 
 Tone.extend(Tone.Multiply, Tone.Signal);

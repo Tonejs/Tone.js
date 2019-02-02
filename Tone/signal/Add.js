@@ -44,7 +44,6 @@ Tone.Add = function(value){
 	this._param = this.input[1] = new Tone.Signal(value);
 
 	this._param.connect(this._sum);
-	this.proxy = false;
 };
 
 Tone.extend(Tone.Add, Tone.Signal);
