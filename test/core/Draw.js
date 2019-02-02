@@ -5,8 +5,6 @@ import Supports from "helper/Supports";
 describe("Draw", function(){
 
 	if (Supports.ONLINE_TESTING){
-
-		console.log("DRAWING TESTS");
 		
 		it("can schedule a callback at a AudioContext time", function(done){
 			var scheduledTime = Tone.now() + 0.2;
