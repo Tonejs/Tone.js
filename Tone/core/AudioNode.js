@@ -184,15 +184,12 @@ Tone.AudioNode.prototype.connect = function(unit, outputNum, inputNum){
  */
 Tone.AudioNode.prototype.disconnect = function(destination, outputNum, inputNum){
 	if (Tone.isArray(this.output)){
-		if (Tone.isNumber(destination)){
-			this.output[destination].disconnect();
-		} else {
-			outputNum = Tone.defaultArg(outputNum, 0);
-			this.output[outputNum].disconnect(destination, 0, inputNum);
-		}
+		outputNum = Tone.defaultArg(outputNum, 0);
+		this.output[outputNum].disconnect(destination, 0, inputNum);
 	} else {
-		this.output.disconnect.apply(this.output, arguments);
+		Tone.disconnect(this.output, destination, outputNum, inputNum);
 	}
+	return this;
 };
 
 /**

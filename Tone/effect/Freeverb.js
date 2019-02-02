@@ -110,8 +110,8 @@ Tone.Freeverb = function(){
 	//chain the allpass filters togetehr
 	Tone.connectSeries.apply(Tone, this._allpassFiltersL);
 	Tone.connectSeries.apply(Tone, this._allpassFiltersR);
-	this._allpassFiltersL[this._allpassFiltersL.length - 1].connect(this.effectReturnL);
-	this._allpassFiltersR[this._allpassFiltersR.length - 1].connect(this.effectReturnR);
+	Tone.connect(this._allpassFiltersL[this._allpassFiltersL.length - 1], this.effectReturnL);
+	Tone.connect(this._allpassFiltersR[this._allpassFiltersR.length - 1], this.effectReturnR);
 	this._readOnly(["roomSize", "dampening"]);
 };
 

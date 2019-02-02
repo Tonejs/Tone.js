@@ -355,6 +355,32 @@ Tone.connect = function(srcNode, dstNode, outputNumber, inputNumber){
 	return Tone;
 };
 
+Tone.disconnect = function(srcNode, dstNode, outputNumber, inputNumber){
+	if (dstNode){
+		//resolve the input of the dstNode
+		while (Tone.isDefined(dstNode.input)){
+			if (Tone.isArray(dstNode.input)){
+				inputNumber = Tone.defaultArg(inputNumber, 0);
+				dstNode = dstNode.input[inputNumber];
+				inputNumber = 0;
+			} else if (dstNode.input){
+				dstNode = dstNode.input;
+			}
+		}
+	
+		//make the connection
+		if (dstNode instanceof AudioParam){
+			srcNode.disconnect(dstNode, outputNumber);
+		} else if (dstNode instanceof AudioNode){
+			srcNode.disconnect(dstNode, outputNumber, inputNumber);
+		}
+	} else {
+		srcNode.disconnect();
+	}
+
+	return Tone;
+};
+
 ///////////////////////////////////////////////////////////////////////////
 // TYPE CHECKING
 ///////////////////////////////////////////////////////////////////////////

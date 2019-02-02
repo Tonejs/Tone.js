@@ -89,7 +89,7 @@ Tone.JCReverb = function(){
 		var fbcf = new Tone.FeedbackCombFilter(combFilterDelayTimes[cf], 0.1);
 		this._scaleRoomSize.connect(fbcf.resonance);
 		fbcf.resonance.value = combFilterResonances[cf];
-		this._allpassFilters[this._allpassFilters.length - 1].connect(fbcf);
+		Tone.connect(this._allpassFilters[this._allpassFilters.length - 1], fbcf);
 		if (cf < combFilterDelayTimes.length / 2){
 			fbcf.connect(this.effectReturnL);
 		} else {

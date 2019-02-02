@@ -89,8 +89,8 @@ Tone.Phaser = function(){
 	//connect them up
 	this.effectSendL.connect(this._filtersL[0]);
 	this.effectSendR.connect(this._filtersR[0]);
-	this._filtersL[options.stages - 1].connect(this.effectReturnL);
-	this._filtersR[options.stages - 1].connect(this.effectReturnR);
+	Tone.connect(this._filtersL[options.stages - 1], this.effectReturnL);
+	Tone.connect(this._filtersR[options.stages - 1], this.effectReturnR);
 	//control the frequency with one LFO
 	this._lfoL.frequency.connect(this._lfoR.frequency);
 	//set the options

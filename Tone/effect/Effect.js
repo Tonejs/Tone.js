@@ -48,8 +48,8 @@ Tone.Effect = function(){
 	this.effectReturn = new Tone.Gain();
 
 	//connections
-	this.input.connect(this._dryWet.a);
-	this.input.connect(this.effectSend);
+	Tone.connect(this.input, this._dryWet.a);
+	Tone.connect(this.input, this.effectSend);
 	this.effectReturn.connect(this._dryWet.b);
 	this._dryWet.connect(this.output);
 	this._readOnly(["wet"]);

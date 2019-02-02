@@ -75,9 +75,9 @@ Tone.StereoEffect = function(){
 	this.effectReturnR = this._merge.right;
 
 	//connections
-	this.input.connect(this._split);
+	Tone.connect(this.input, this._split);
 	//dry wet connections
-	this.input.connect(this._dryWet, 0, 0);
+	Tone.connect(this.input, this._dryWet, 0, 0);
 	this._merge.connect(this._dryWet, 0, 1);
 	this._dryWet.connect(this.output);
 	this._readOnly(["wet"]);
