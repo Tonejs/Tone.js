@@ -119,8 +119,8 @@ describe("Ticks", function(){
 			return Offline(function(Transport){
 				Transport.start();
 				return Test.atTime(0.59, function(){
-					expect(Ticks("@1m").valueOf()).to.be.closeTo(4 * Transport.PPQ, 0.01);
-					expect(Ticks("@4n").valueOf()).to.be.closeTo(Transport.PPQ * 2, 0.01);
+					expect(Ticks("@1m").valueOf()).to.be.closeTo(4 * Transport.PPQ, 1);
+					expect(Ticks("@4n").valueOf()).to.be.closeTo(Transport.PPQ * 2, 1);
 				});
 			}, 0.6);
 		});
