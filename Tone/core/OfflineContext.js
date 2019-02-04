@@ -67,8 +67,8 @@ Tone.OfflineContext.prototype.render = function(){
 	while (this._duration - this._currentTime >= 0){
 		//invoke all the callbacks on that time
 		this.emit("tick");
-		//increment the clock
-		this._currentTime += this.blockTime;
+		//increment the clock in 5ms chunks
+		this._currentTime += 0.005;
 	}
 
 	return this._context.startRendering();
