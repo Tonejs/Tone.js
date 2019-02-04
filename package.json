@@ -52,7 +52,6 @@
   "bugs": {
     "url": "https://github.com/Tonejs/Tone.js/issues"
   },
-  "types": "./tone.d.ts",
   "devDependencies": {
     "@babel/polyfill": "^7.0.0-beta.47",
     "audiobuffer-to-wav": "^1.0.0",
