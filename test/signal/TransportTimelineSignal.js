@@ -24,10 +24,10 @@ describe("TransportTimelineSignal", function(){
 			sched.setValueAtTime(3, 0.2);
 			Transport.start(0.1);
 		}, 0.4, 1).then(function(buffer){
-			expect(buffer.getValueAtTime(0)).to.be.closeTo(1, 0.03);
-			expect(buffer.getValueAtTime(0.1)).to.be.closeTo(1, 0.03);
-			expect(buffer.getValueAtTime(0.201)).to.be.closeTo(2, 0.03);
-			expect(buffer.getValueAtTime(0.301)).to.be.closeTo(3, 0.03);
+			expect(buffer.getValueAtTime(0)).to.be.closeTo(1, 0.07);
+			expect(buffer.getValueAtTime(0.1)).to.be.closeTo(1, 0.07);
+			expect(buffer.getValueAtTime(0.201)).to.be.closeTo(2, 0.07);
+			expect(buffer.getValueAtTime(0.301)).to.be.closeTo(3, 0.07);
 		});
 	});
 
@@ -38,11 +38,11 @@ describe("TransportTimelineSignal", function(){
 			sched.linearRampToValueAtTime(2, 0.2);
 			Transport.start(0.1);
 		}, 0.4, 1).then(function(buffer){
-			expect(buffer.getValueAtTime(0)).to.be.closeTo(1, 0.03);
-			expect(buffer.getValueAtTime(0.1)).to.be.closeTo(1, 0.03);
-			expect(buffer.getValueAtTime(0.2)).to.be.closeTo(1, 0.03);
-			expect(buffer.getValueAtTime(0.25)).to.be.closeTo(1.5, 0.03);
-			expect(buffer.getValueAtTime(0.301)).to.be.closeTo(2, 0.03);
+			expect(buffer.getValueAtTime(0)).to.be.closeTo(1, 0.07);
+			expect(buffer.getValueAtTime(0.1)).to.be.closeTo(1, 0.07);
+			expect(buffer.getValueAtTime(0.2)).to.be.closeTo(1, 0.07);
+			expect(buffer.getValueAtTime(0.25)).to.be.closeTo(1.5, 0.07);
+			expect(buffer.getValueAtTime(0.301)).to.be.closeTo(2, 0.07);
 		});
 	});
 
@@ -53,11 +53,11 @@ describe("TransportTimelineSignal", function(){
 			sched.exponentialRampToValueAtTime(2, 0.2);
 			Transport.start(0.1);
 		}, 0.4, 1).then(function(buffer){
-			expect(buffer.getValueAtTime(0)).to.be.closeTo(1, 0.03);
-			expect(buffer.getValueAtTime(0.1)).to.be.closeTo(1, 0.03);
-			expect(buffer.getValueAtTime(0.2)).to.be.closeTo(1, 0.03);
-			expect(buffer.getValueAtTime(0.25)).to.be.closeTo(1.4, 0.03);
-			expect(buffer.getValueAtTime(0.301)).to.be.closeTo(2, 0.03);
+			expect(buffer.getValueAtTime(0)).to.be.closeTo(1, 0.07);
+			expect(buffer.getValueAtTime(0.1)).to.be.closeTo(1, 0.07);
+			expect(buffer.getValueAtTime(0.2)).to.be.closeTo(1, 0.07);
+			expect(buffer.getValueAtTime(0.25)).to.be.closeTo(1.4, 0.07);
+			expect(buffer.getValueAtTime(0.301)).to.be.closeTo(2, 0.07);
 		});
 	});
 
@@ -71,7 +71,7 @@ describe("TransportTimelineSignal", function(){
 			Transport.start(0.1);
 		}, 0.6).then(function(buffer){
 			buffer.forEach(function(sample, time){
-				expect(sample).to.be.closeTo(sched.getValueAtTime(time - 0.1), 0.05);
+				expect(sample).to.be.closeTo(sched.getValueAtTime(time - 0.1), 0.07);
 			});
 		});
 	});
@@ -85,7 +85,7 @@ describe("TransportTimelineSignal", function(){
 			Transport.start(0.1);
 		}, 0.6).then(function(buffer){
 			buffer.forEach(function(sample, time){
-				expect(sample).to.be.closeTo(sched.getValueAtTime(time - 0.1), 0.05);
+				expect(sample).to.be.closeTo(sched.getValueAtTime(time - 0.1), 0.07);
 			});
 		});
 	});
@@ -115,7 +115,7 @@ describe("TransportTimelineSignal", function(){
 			Transport.start(0.2);
 		}, 1).then(function(buffer){
 			buffer.forEach(function(sample, time){
-				expect(sample).to.be.closeTo(sched.getValueAtTime(time - 0.2), 0.03);
+				expect(sample).to.be.closeTo(sched.getValueAtTime(time - 0.2), 0.07);
 			});
 		});
 	});
