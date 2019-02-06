@@ -1,5 +1,7 @@
 import Test from "helper/Test";
 import Offline from "Tone/core/Offline";
+import Context from "Tone/core/Context";
+import OfflineContext from "Tone/core/OfflineContext";
 import Transport from "Tone/core/Transport";
 import Oscillator from "Tone/source/Oscillator";
 import Tone from "Tone/core/Tone";
@@ -43,6 +45,26 @@ describe("Offline", function(){
 			BufferTest(buffer);
 			expect(buffer.isSilent()).to.be.false;
 		});
+	});
+
+	it("overrides Tone.context with OfflineContext during the callback", function(){
+		return Offline(function(){
+			expect(Tone.context).to.be.an.instanceof(OfflineContext);
+		}, 0.01);
+	});
+
+	it("does not restore Tone.context during asynchronous calls", function(){
+		return Offline(function(){
+			return Promise.resolve().then(function () {
+				expect(Tone.context).to.be.an.instanceof(OfflineContext);
+			});
+		}, 0.01);
+	});
+
+	it("restores Tone.context immediately", function(){
+		var promise = Offline(function(){}, 0.01);
+		expect(Tone.context).to.be.an.instanceof(Context);
+		return promise;
 	});
 
 	it("returning a promise defers the rendering till the promise resolves", function(){
