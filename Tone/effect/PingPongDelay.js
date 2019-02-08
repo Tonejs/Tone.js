@@ -19,7 +19,7 @@ import "../core/Delay";
  *                                 is fed back through the delay.
  *  @example
  * var pingPong = new Tone.PingPongDelay("4n", 0.2).toMaster();
- * var drum = new Tone.DrumSynth().connect(pingPong);
+ * var drum = new Tone.MembraneSynth().connect(pingPong);
  * drum.triggerAttackRelease("C4", "32n");
  */
 Tone.PingPongDelay = function(){

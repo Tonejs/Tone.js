@@ -14,7 +14,7 @@ import "../core/Delay";
  *                            is fed back through the delay.
  *  @example
  * var feedbackDelay = new Tone.FeedbackDelay("8n", 0.5).toMaster();
- * var tom = new Tone.DrumSynth({
+ * var tom = new Tone.MembraneSynth({
  * 	"octaves" : 4,
  * 	"pitchDecay" : 0.1
  * }).connect(feedbackDelay);
