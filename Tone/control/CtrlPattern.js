@@ -99,7 +99,7 @@ Object.defineProperty(Tone.CtrlPattern.prototype, "value", {
 	get : function(){
 		//some safeguards
 		if (this.values.length === 0){
-			return null;
+			return undefined;
 		} else if (this.values.length === 1){
 			return this.values[0];
 		} 
