@@ -199,6 +199,8 @@ Object.defineProperty(Tone.UserMedia.prototype, "deviceId", {
 	get : function(){
 		if (this._device){
 			return this._device.deviceId;
+		} else {
+			return null;
 		}
 	}
 });
@@ -216,6 +218,8 @@ Object.defineProperty(Tone.UserMedia.prototype, "groupId", {
 	get : function(){
 		if (this._device){
 			return this._device.groupId;
+		} else {
+			return null;
 		}
 	}
 });
@@ -233,6 +237,8 @@ Object.defineProperty(Tone.UserMedia.prototype, "label", {
 	get : function(){
 		if (this._device){
 			return this._device.label;
+		} else {
+			return null;
 		}
 	}
 });

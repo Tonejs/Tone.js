@@ -177,7 +177,6 @@ Tone.IntervalTimeline.prototype._removeNode = function(node){
 			while (replacement.left !== null){
 				replacement = replacement.left;
 			}
-			replacement.parent = replacement.parent;
 			replacement.parent.left = replacement.right;
 			temp = replacement.parent;
 			replacement.left = node.left;

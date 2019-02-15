@@ -375,6 +375,8 @@ Object.defineProperty(Tone.OmniOscillator.prototype, "width", {
 	get : function(){
 		if (this._sourceType === OmniOscType.Pulse){
 			return this._oscillator.width;
+		} else {
+			return undefined;
 		}
 	}
 });
@@ -389,6 +391,8 @@ Object.defineProperty(Tone.OmniOscillator.prototype, "count", {
 	get : function(){
 		if (this._sourceType === OmniOscType.Fat){
 			return this._oscillator.count;
+		} else {
+			return undefined;
 		}
 	},
 	set : function(count){
@@ -412,6 +416,8 @@ Object.defineProperty(Tone.OmniOscillator.prototype, "spread", {
 	get : function(){
 		if (this._sourceType === OmniOscType.Fat){
 			return this._oscillator.spread;
+		} else {
+			return undefined;
 		}
 	},
 	set : function(spread){
@@ -433,6 +439,8 @@ Object.defineProperty(Tone.OmniOscillator.prototype, "modulationType", {
 	get : function(){
 		if (this._sourceType === OmniOscType.FM || this._sourceType === OmniOscType.AM){
 			return this._oscillator.modulationType;
+		} else {
+			return undefined;
 		}
 	},
 	set : function(mType){
@@ -456,6 +464,8 @@ Object.defineProperty(Tone.OmniOscillator.prototype, "modulationIndex", {
 	get : function(){
 		if (this._sourceType === OmniOscType.FM){
 			return this._oscillator.modulationIndex;
+		} else {
+			return undefined;
 		}
 	}
 });
@@ -474,6 +484,8 @@ Object.defineProperty(Tone.OmniOscillator.prototype, "harmonicity", {
 	get : function(){
 		if (this._sourceType === OmniOscType.FM || this._sourceType === OmniOscType.AM){
 			return this._oscillator.harmonicity;
+		} else {
+			return undefined;
 		}
 	}
 });
@@ -495,6 +507,8 @@ Object.defineProperty(Tone.OmniOscillator.prototype, "modulationFrequency", {
 	get : function(){
 		if (this._sourceType === OmniOscType.PWM){
 			return this._oscillator.modulationFrequency;
+		} else {
+			return undefined;
 		}
 	}
 });
