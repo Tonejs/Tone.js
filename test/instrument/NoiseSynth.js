@@ -24,7 +24,7 @@ describe("NoiseSynth", function(){
 			}).toMaster();
 			synth.triggerAttack(0);
 			synth.triggerAttack(0.3);
-		}, "noiseSynth.wav", 3.8);
+		}, "noiseSynth.wav", 4);
 	});
 
 	it("matches another file", function(){
@@ -36,7 +36,7 @@ describe("NoiseSynth", function(){
 				}
 			}).toMaster();
 			synth.triggerAttackRelease(0.1, 0);
-		}, "noiseSynthRelease.wav", 3.8);
+		}, "noiseSynthRelease.wav", 4);
 	});
 
 	context("API", function(){
