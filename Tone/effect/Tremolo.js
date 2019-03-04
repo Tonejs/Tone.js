@@ -124,7 +124,7 @@ Tone.Tremolo.prototype.stop = function(time){
  * Sync the effect to the transport.
  * @param {Time} [delay=0] Delay time before starting the effect after the
  *                              Transport has started.
- * @returns {Tone.AutoFilter} this
+ * @returns {Tone.Tremolo} this
  */
 Tone.Tremolo.prototype.sync = function(delay){
 	this._lfoL.sync(delay);
