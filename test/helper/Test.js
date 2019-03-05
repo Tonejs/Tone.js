@@ -13,7 +13,7 @@ chai.Assertion.addMethod("percentageFrom", function(val, percent){
 });
 
 //silence the logging
-window.TONE_SILENCE_VERSION_LOGGING = true;
+window.TONE_SILENCE_LOGGING = true;
 
 //testing setup
 window.expect = chai.expect;
