@@ -550,7 +550,7 @@ if (Tone.supported && !Tone.initialized){
 
 	// log on first initialization
 	// allow optional silencing of this log
-	if (!Tone.global.TONE_SILENCE_VERSION_LOGGING){
+	if (!Tone.global.TONE_SILENCE_LOGGING){
 		var prefix = "v";
 		if (Tone.version === "dev"){
 			prefix = "";
@@ -559,7 +559,7 @@ if (Tone.supported && !Tone.initialized){
 		// eslint-disable-next-line no-console
 		console.log("%c" + printString, "background: #000; color: #fff");
 	}
-} else if (!Tone.supported){
+} else if (!Tone.supported && !Tone.global.TONE_SILENCE_LOGGING){
 	// eslint-disable-next-line no-console
 	console.warn("This browser does not support Tone.js");
 }
