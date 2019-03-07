@@ -159,7 +159,7 @@ Tone.js creates an AudioContext when it loads and shims it for maximum browser c
 
 # MIDI
 
-To use MIDI files, you'll first need to convert them into a JSON format which Tone.js can understand using [MidiConvert](https://tonejs.github.io/MidiConvert/).
+To use MIDI files, you'll first need to convert them into a JSON format which Tone.js can understand using [Midi](https://tonejs.github.io/Midi/).
 
 # Performance
 
