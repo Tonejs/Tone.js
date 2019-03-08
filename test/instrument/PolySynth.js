@@ -26,7 +26,7 @@ describe("PolySynth", function(){
 			synth.triggerAttackRelease("G4", 0.1, 0.4);
 			synth.triggerAttackRelease("B4", 0.1, 0.4);
 			synth.triggerAttackRelease("C4", 0.2, 0.5);
-		}, "polySynth.wav", 0.5);
+		}, "polySynth.wav", 0.6);
 	});
 
 	it("matches another file", function(){
