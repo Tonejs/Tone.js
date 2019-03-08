@@ -1,9 +1,8 @@
 import Tone from "../core/Tone";
-import "../signal/WaveShaper";
 import "../type/Type";
 import "../core/Param";
+import "../signal/SignalBase";
 import "../shim/ConstantSourceNode";
-import "../core/Gain";
 
 /**
  *  @class  A signal is an audio-rate value. Tone.Signal is a core component of the library.
@@ -39,7 +38,7 @@ Tone.Signal = function(){
 
 	/**
 	 * The node where the constant signal value is scaled.
-	 * @type {GainNode}
+	 * @type {ConstantSourceNode}
 	 * @private
 	 */
 	this.output = this._constantSource;
@@ -89,6 +88,7 @@ Tone.Signal.prototype.getValueAtTime = function(time){
  */
 Tone.Signal.prototype.dispose = function(){
 	Tone.Param.prototype.dispose.call(this);
+	this._constantSource.stop();
 	this._constantSource.disconnect();
 	this._constantSource = null;
 	return this;
