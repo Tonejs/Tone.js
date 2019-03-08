@@ -122,12 +122,27 @@ Tone.Oscillator.Type = {
 Tone.Oscillator.prototype._start = function(time){
 	this.log("start", time);
 	//new oscillator with previous values
-	this._oscillator = new Tone.OscillatorNode();
-	this._oscillator.setPeriodicWave(this._wave);
+	var oscillator = new Tone.OscillatorNode();
+	this._oscillator = oscillator;
+	if (this._wave){
+		this._oscillator.setPeriodicWave(this._wave);
+	} else {
+		this._oscillator.type = this._type;
+	}
 	//connect the control signal to the oscillator frequency & detune
 	this._oscillator.connect(this.output);
 	this.frequency.connect(this._oscillator.frequency);
 	this.detune.connect(this._oscillator.detune);
+
+	//disconnect onended
+	oscillator.onended = function(){
+		//defer the callback for the offline context rendering
+		setTimeout(function(){
+			this.frequency.disconnect(oscillator.frequency);
+			this.detune.disconnect(oscillator.detune);
+		}.bind(this), 100);
+	}.bind(this);
+
 	//start the oscillator
 	time = this.toSeconds(time);
 	this._oscillator.start(time);
@@ -214,11 +229,21 @@ Object.defineProperty(Tone.Oscillator.prototype, "type", {
 		return this._type;
 	},
 	set : function(type){
-		var coefs = this._getRealImaginary(type, this._phase);
-		var periodicWave = this.context.createPeriodicWave(coefs[0], coefs[1]);
-		this._wave = periodicWave;
-		if (this._oscillator !== null){
-			this._oscillator.setPeriodicWave(this._wave);
+		var isBasicType = [Tone.Oscillator.Type.Sine, Tone.Oscillator.Type.Square, Tone.Oscillator.Type.Triangle, Tone.Oscillator.Type.Sawtooth].includes(type);
+		if (this._phase === 0 && isBasicType){
+			this._wave = null;
+			this._partialCount = 0;
+			//just go with the basic approach
+			if (this._oscillator !== null){
+				this._oscillator.type === type;
+			}
+		} else {
+			var coefs = this._getRealImaginary(type, this._phase);
+			var periodicWave = this.context.createPeriodicWave(coefs[0], coefs[1]);
+			this._wave = periodicWave;
+			if (this._oscillator !== null){
+				this._oscillator.setPeriodicWave(this._wave);
+			}
 		}
 		this._type = type;
 	}
