@@ -222,17 +222,20 @@ Object.defineProperty(Tone.OscillatorNode.prototype, "type", {
  *  @return  {Tone.OscillatorNode}  this
  */
 Tone.OscillatorNode.prototype.dispose = function(){
-	this.context.clearTimeout(this._timeout);
-	Tone.AudioNode.prototype.dispose.call(this);
-	this.onended = null;
-	this._oscillator.disconnect();
-	this._oscillator = null;
-	this._gainNode.dispose();
-	this._gainNode = null;
-	this.frequency.dispose();
-	this.frequency = null;
-	this.detune.dispose();
-	this.detune = null;
+	if (!this._wasDisposed){
+		this._wasDisposed = true;
+		this.context.clearTimeout(this._timeout);
+		Tone.AudioNode.prototype.dispose.call(this);
+		this.onended = null;
+		this._oscillator.disconnect();
+		this._oscillator = null;
+		this._gainNode.dispose();
+		this._gainNode = null;
+		this.frequency.dispose();
+		this.frequency = null;
+		this.detune.dispose();
+		this.detune = null;
+	}
 	return this;
 };
 

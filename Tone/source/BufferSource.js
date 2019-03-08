@@ -394,18 +394,21 @@ Object.defineProperty(Tone.BufferSource.prototype, "loop", {
  *  @return  {Tone.BufferSource}  this
  */
 Tone.BufferSource.prototype.dispose = function(){
-	Tone.AudioNode.prototype.dispose.call(this);
-	this.onended = null;
-	this._source.onended = null;
-	this._source.disconnect();
-	this._source = null;
-	this._gainNode.dispose();
-	this._gainNode = null;
-	this._buffer.dispose();
-	this._buffer = null;
-	this._startTime = -1;
-	this.playbackRate = null;
-	Tone.context.clearTimeout(this._onendedTimeout);
+	if (!this._wasDisposed){
+		this._wasDisposed = true;
+		Tone.AudioNode.prototype.dispose.call(this);
+		this.onended = null;
+		this._source.onended = null;
+		this._source.disconnect();
+		this._source = null;
+		this._gainNode.dispose();
+		this._gainNode = null;
+		this._buffer.dispose();
+		this._buffer = null;
+		this._startTime = -1;
+		this.playbackRate = null;
+		Tone.context.clearTimeout(this._onendedTimeout);
+	}
 	return this;
 };
 
