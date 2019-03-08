@@ -34,7 +34,7 @@ jobs:
       env : BROWSER=firefox
       os: linux
       addons:
-        firefox: latest-nightly
+        firefox: latest-beta
     - stage: test
       before_script:
       # needs an audio output device to run
