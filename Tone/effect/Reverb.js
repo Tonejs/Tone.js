@@ -76,9 +76,9 @@ Tone.Reverb.prototype.generate = function(){
 		merge.connect(gainNode);
 		noiseL.start(0);
 		noiseR.start(0);
-		//short fade in
+		//predelay
 		gainNode.gain.setValueAtTime(0, 0);
-		gainNode.gain.linearRampToValueAtTime(1, this.preDelay);
+		gainNode.gain.setValueAtTime(1, this.preDelay);
 		//decay
 		gainNode.gain.exponentialApproachValueAtTime(0, this.preDelay, this.decay - this.preDelay);
 	}.bind(this), this.decay).then(function(buffer){
