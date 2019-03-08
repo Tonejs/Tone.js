@@ -3,6 +3,9 @@ import "../core/Emitter";
 import "../core/Timeline";
 import "../shim/AudioContext";
 
+var AudioContextProperties = ["baseLatency", "destination", "currentTime", "sampleRate", "listener", "state"];
+var AudioContextMethods = ["suspend", "close", "resume", "getOutputTimestamp", "createMediaElementSource", "createMediaStreamSource", "createMediaStreamDestination", "createBuffer", "decodeAudioData", "createBufferSource", "createConstantSource", "createGain", "createDelay", "createBiquadFilter", "createIIRFilter", "createWaveShaper", "createPanner", "createConvolver", "createDynamicsCompressor", "createAnalyser", "createScriptProcessor", "createStereoPanner", "createOscillator", "createPeriodicWave", "createChannelSplitter", "createChannelMerger", "audioWorklet"];
+
 /**
  *  @class Wrapper around the native AudioContext.
  *  @extends {Tone.Emitter}
@@ -25,10 +28,15 @@ Tone.Context = function(){
 	while (this._context.rawContext){
 		this._context = this._context.rawContext;
 	}
-	// extend all of the methods
-	for (var prop in this._context){
+
+	// extend all of the properties
+	AudioContextProperties.forEach(function(prop){
 		this._defineProperty(this._context, prop);
-	}
+	}.bind(this));
+	// extend all of the methods
+	AudioContextMethods.forEach(function(method){
+		this._defineMethod(this._context, method);
+	}.bind(this));
 
 	/**
 	 *  The default latency hint
@@ -127,14 +135,27 @@ Tone.Context.prototype._defineProperty = function(context, prop){
 	if (Tone.isUndef(this[prop])){
 		Object.defineProperty(this, prop, {
 			"get" : function(){
-				if (typeof context[prop] === "function"){
-					return context[prop].bind(context);
-				} else {
-					return context[prop];
-				}
+				return context[prop];
 			},
 			"set" : function(val){
 				context[prop] = val;
+			}
+		});
+	}
+};
+
+/**
+ *  Define a method on this Tone.Context.
+ *  This is used to extend the native AudioContext
+ *  @param  {AudioContext}  context
+ *  @param  {String}  prop
+ *  @private
+ */
+Tone.Context.prototype._defineMethod = function(context, prop){
+	if (Tone.isUndef(this[prop])){
+		Object.defineProperty(this, prop, {
+			"get" : function(){
+				return context[prop].bind(context);
 			}
 		});
 	}
