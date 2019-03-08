@@ -317,6 +317,14 @@ Tone.BufferSource.prototype._onended = function(){
 			this._source.stop(this._stopTime + additionalTail);
 		}
 		this.onended(this);
+
+		//dispose the source after it's come to a stop
+		setTimeout(function(){
+			//if it hasn't already been disposed
+			if (this._source){
+				this.dispose();
+			}
+		}.bind(this), additionalTail * 1000 + 100);
 	}
 };
 
