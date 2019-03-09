@@ -108,13 +108,16 @@ describe("Player", function(){
 
 		it("can be played in reverse", function(){
 			var audioBuffer = buffer.get().getChannelData(0);
-			var lastSample = audioBuffer[audioBuffer.length - 1];
+			var jump = 441;
+			var lastSample = audioBuffer[audioBuffer.length - 1 - jump];
 			return Offline(function(){
-				var player = new Player(buffer.get()).toMaster();
-				player.reverse = true;
+				var player = new Player({
+					url : buffer.get(),
+					reverse : true
+				}).toMaster();
 				player.start(0);
 			}).then(function(buffer){
-				var firstSample = buffer.toArray()[0];
+				var firstSample = buffer.toArray()[jump];
 				expect(firstSample).to.equal(lastSample);
 			});
 		});

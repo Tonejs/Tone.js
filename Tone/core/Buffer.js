@@ -45,7 +45,7 @@ Tone.Buffer = function(){
 	 *  @type {Boolean}
 	 *  @private
 	 */
-	this._reversed = options.reverse;
+	this._reversed = false;
 
 	/**
 	 *  The XHR
@@ -69,6 +69,9 @@ Tone.Buffer = function(){
 	} else if (Tone.isString(options.url)){
 		this.load(options.url).then(options.onload).catch(options.onerror);
 	}
+
+	//initially set the reverse
+	this.reverse = options.reverse;
 };
 
 Tone.extend(Tone.Buffer);
