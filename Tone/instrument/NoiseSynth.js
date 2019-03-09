@@ -90,6 +90,7 @@ Tone.NoiseSynth.prototype.triggerAttack = function(time, velocity){
  *  @returns {Tone.NoiseSynth} this
  */
 Tone.NoiseSynth.prototype.triggerRelease = function(time){
+	time = this.toSeconds(time);
 	this.envelope.triggerRelease(time);
 	this.noise.stop(time + this.envelope.release);
 	return this;
