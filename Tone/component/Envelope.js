@@ -267,7 +267,10 @@ Tone.Envelope.prototype.triggerAttack = function(time, velocity){
 		attack = remainingDistance / attackRate;
 	}
 	//attack
-	if (this._attackCurve === "linear"){
+	if (attack === 0){
+		//case where the attack time is 0 should set instantly
+		this._sig.setValueAtTime(velocity, time);
+	} else if (this._attackCurve === "linear"){
 		this._sig.linearRampTo(velocity, attack, time);
 	} else if (this._attackCurve === "exponential"){
 		this._sig.targetRampTo(velocity, attack, time);

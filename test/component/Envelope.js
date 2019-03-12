@@ -249,6 +249,18 @@ describe("Envelope", function(){
 			});
 		});
 
+		it("can schedule an attack of time 0", function(){
+			return Offline(function(){
+				var env = new Envelope(0, 0.1);
+				env.toMaster();
+				env.triggerAttack(0.1);
+			}, 0.2).then(function(buffer){
+				expect(buffer.getValueAtTime(0)).to.be.closeTo(0, 0.001);
+				expect(buffer.getValueAtTime(0.0999)).to.be.closeTo(0, 0.001);
+				expect(buffer.getValueAtTime(0.1)).to.be.closeTo(1, 0.001);
+			});
+		});
+
 		it("correctly schedule a release", function(){
 			var e = {
 				attack : 0.001,
