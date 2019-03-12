@@ -464,7 +464,7 @@ describe("Player", function(){
 				//start halfway through
 				Transport.start(0, 0.15);
 			}, 0.05).then(function(buffer){
-				expect(buffer.getValueAtTime(0)).to.be.closeTo(0.25, 0.01);
+				expect(buffer.getValueAtTime(0)).to.be.closeTo(0.25, 0.03);
 			});
 		});
 
