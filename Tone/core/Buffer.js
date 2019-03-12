@@ -45,7 +45,7 @@ Tone.Buffer = function(){
 	 *  @type {Boolean}
 	 *  @private
 	 */
-	this._reversed = false;
+	this._reversed = options.reverse;
 
 	/**
 	 *  The XHR
@@ -69,9 +69,6 @@ Tone.Buffer = function(){
 	} else if (Tone.isString(options.url)){
 		this.load(options.url).then(options.onload).catch(options.onerror);
 	}
-
-	//initially set the reverse
-	this.reverse = options.reverse;
 };
 
 Tone.extend(Tone.Buffer);
@@ -107,6 +104,10 @@ Tone.Buffer.prototype.set = function(buffer){
 		}
 	} else {
 		this._buffer = buffer;
+	}
+	//reverse it initially
+	if (this._reversed){
+		this._reverse();
 	}
 	return this;
 };
