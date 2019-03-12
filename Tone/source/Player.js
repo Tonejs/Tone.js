@@ -198,8 +198,16 @@ Tone.Player.prototype._start = function(startTime, offset, duration){
 
 	//compute the values in seconds
 	offset = this.toSeconds(offset);
+	
+	//if it's synced, it should factor in the playback rate for computing the offset
+	if (this._synced){
+		offset *= this._playbackRate;
+	}
+
+	//compute the duration which is either the passed in duration of the buffer.duration - offset
 	var computedDuration = Tone.defaultArg(duration, Math.max(this._buffer.duration - offset, 0));
 	computedDuration = this.toSeconds(computedDuration);
+
 	//scale it by the playback rate
 	computedDuration = computedDuration / this._playbackRate;
 

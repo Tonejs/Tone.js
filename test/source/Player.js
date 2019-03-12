@@ -450,6 +450,24 @@ describe("Player", function(){
 			});
 		});
 
+		it("starts at the correct position when Transport is offset and playbackRate is not 1", function(){
+			return Offline(function(Transport){
+				//make a ramp between 0-1
+				var ramp = new Float32Array(Math.floor(Tone.context.sampleRate * 0.3));
+				for (var i = 0; i < ramp.length; i++){
+					ramp[i] = (i / (ramp.length));
+				}
+				var buff = Buffer.fromArray(ramp);
+				var player = new Player(buff).toMaster();
+				player.playbackRate = 0.5;
+				player.sync().start(0);
+				//start halfway through
+				Transport.start(0, 0.15);
+			}, 0.05).then(function(buffer){
+				expect(buffer.getValueAtTime(0)).to.be.closeTo(0.25, 0.01);
+			});
+		});
+
 		it("starts with an offset when synced and started after Transport is running", function(){
 			return Offline(function(Transport){
 				var ramp = new Float32Array(Math.floor(Tone.context.sampleRate * 0.3));
