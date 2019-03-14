@@ -235,7 +235,7 @@ Object.defineProperty(Tone.Oscillator.prototype, "type", {
 			this._partialCount = 0;
 			//just go with the basic approach
 			if (this._oscillator !== null){
-				this._oscillator.type === type;
+				this._oscillator.type = type;
 			}
 		} else {
 			var coefs = this._getRealImaginary(type, this._phase);
