@@ -1,37 +1,39 @@
-define(["../core/Tone", "../core/Gain", "../signal/SignalBase"], function(Tone){
+import Tone from "../core/Tone";
+import "../core/Gain";
+import "../signal/SignalBase";
+
+/**
+ *  @class Tone.Zero outputs 0's at audio-rate. The reason this has to be
+ *         it's own class is that many browsers optimize out Tone.Signal
+ *         with a value of 0 and will not process nodes further down the graph.
+ *  @extends {Tone.SignalBase}
+ */
+Tone.Zero = function(){
+
+	Tone.SignalBase.call(this);
 
 	/**
-	 *  @class Tone.Zero outputs 0's at audio-rate. The reason this has to be
-	 *         it's own class is that many browsers optimize out Tone.Signal
-	 *         with a value of 0 and will not process nodes further down the graph.
-	 *  @extends {Tone.SignalBase}
+	 *  The gain node
+	 *  @type  {Tone.Gain}
+	 *  @private
 	 */
-	Tone.Zero = function(){
+	this._gain = this.input = this.output = new Tone.Gain();
 
-		Tone.SignalBase.call(this);
+	Tone.connect(this.context.getConstant(0), this._gain);
+};
 
-		/**
-		 *  The gain node
-		 *  @type  {Tone.Gain}
-		 *  @private
-		 */
-		this._gain = this.input = this.output = new Tone.Gain();
+Tone.extend(Tone.Zero, Tone.SignalBase);
 
-		this.context.getConstant(0).connect(this._gain);
-	};
+/**
+ *  clean up
+ *  @return  {Tone.Zero}  this
+ */
+Tone.Zero.prototype.dispose = function(){
+	Tone.SignalBase.prototype.dispose.call(this);
+	this._gain.dispose();
+	this._gain = null;
+	return this;
+};
 
-	Tone.extend(Tone.Zero, Tone.SignalBase);
+export default Tone.Zero;
 
-	/**
-	 *  clean up
-	 *  @return  {Tone.Zero}  this
-	 */
-	Tone.Zero.prototype.dispose = function(){
-		Tone.SignalBase.prototype.dispose.call(this);
-		this._gain.dispose();
-		this._gain = null;
-		return this;
-	};
-
-	return Tone.Zero;
-});

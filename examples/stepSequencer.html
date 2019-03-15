@@ -2,41 +2,36 @@
 <html>
 <head>
   <meta charset="utf-8">
-	<title>SCORE</title>
+	<title>Step Sequencer</title>
 
-	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-	<link rel="icon" type="image/png" sizes="174x174" href="./style/favicon.png">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<link rel="icon" type="image/png" sizes="174x174" href="./favicon.png">
 
+	<script src="https://unpkg.com/@webcomponents/webcomponentsjs@^2/webcomponents-bundle.js"></script>
 	<script src="../build/Tone.js"></script>
-	<script src="./scripts/jquery.min.js"></script>
-	<script src="./scripts/draggabilly.js"></script>
-	<script src="https://tonejs.github.io/Logo/build/Logo.js"></script>
-	<script src="./scripts/StartAudioContext.js"></script>
-	<script src="./scripts/Interface.js"></script>
-	<script src="./scripts/nexusUI.js"></script>
-
-	<link rel="stylesheet" type="text/css" href="./style/examples.css">
-
-	<script>
-		// jshint ignore: start
-	</script>
-
-</head>
-<body>	
+	<script src="./js/tonejs-ui.js"></script>
 	<style type="text/css">
-		canvas {
-			margin-top: 3px;
+		tone-transport {
+			margin-bottom: 10px;
 		}
 	</style>
-	<div id="Content">
-		<div id="Title">Tone.Transport</div>
-		<div id="Explanation">
-			<a href="https://tonejs.github.io/docs/#Transport">Tone.Transport</a> 
+</head>
+<body>
+	<tone-example>
+		<tone-loader></tone-loader>
+		<tone-explanation label="Step Sequencer">
+			<a href="https://tonejs.github.io/docs/Transport">Tone.Transport</a> 
 			is the application-wide timekeeper. It's clock source enables sample-accurate scheduling as well as tempo-curves and automation. This example uses Tone.Sequence to invoke a callback every 16th note.
-		</div>
-		<canvas nx="matrix"></canvas>
-	</div>	
-	<script>
+		</tone-explanation>
+
+		<tone-content>
+			<tone-transport></tone-transport>
+			<tone-step-sequencer></tone-step-sequencer>
+		</tone-content>
+	</tone-example>
+
+
+	<script type="text/javascript">
 		//setup a polyphonic sampler
 		var keys = new Tone.Players({
 			"A" : "./audio/casio/A1.[mp3|ogg]",
@@ -52,57 +47,27 @@
 		var noteNames = ["F#", "E", "C#", "A"];
 
 		var loop = new Tone.Sequence(function(time, col){
-			var column = matrix1.matrix[col];
-			for (var i = 0; i < 4; i++){
-				if (column[i] === 1){
+			var column = document.querySelector("tone-step-sequencer").currentColumn;
+			column.forEach(function(val, i){
+				if (val){
 					//slightly randomized velocities
 					var vel = Math.random() * 0.5 + 0.5;
 					keys.get(noteNames[i]).start(time, 0, "32n", 0, vel);
 				}
-			}
-		}, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], "16n");
+			});
+			//set the columne on the correct draw frame
+			Tone.Draw.schedule(function(){
+				document.querySelector("tone-step-sequencer").setAttribute("highlight", col);
+			}, time);
+		}, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], "16n").start(0);
 
-		Tone.Transport.start();
+		//bind the interface
+		document.querySelector("tone-transport").bind(Tone.Transport);
 
-		// GUI //
-
-		nx.onload = function(){
-			nx.colorize("#f5871f");
-			
-			matrix1.col = 16;
-			matrix1.init();
-			matrix1.resize($("#Content").width(), 250);
-			matrix1.draw();
-		}
-
-		Interface.Slider({
-			name : "BPM",
-			min : 80,
-			max : 200,
-			value : Tone.Transport.bpm.value,
-			drag : function(val){
-				Tone.Transport.bpm.value = val;
-			}
-		});
-
-		Interface.Button({
-			text : "Start",
-			activeText : "Stop",
-			type : "toggle",
-			key : 32, //spacebar
-			start : function(){
-				loop.start();
-			},
-			end : function(){
-				loop.stop();
-			},
-		});
-
-		Interface.Loader();
-
-		$(window).on("resize", function(){
-			matrix1.resize($("#Content").width(), 250);
-			matrix1.draw();	
+		Tone.Transport.on("stop", () => {
+			setTimeout(() => {
+				document.querySelector("tone-step-sequencer").setAttribute("highlight", "-1");
+			}, 100);
 		});
 
 	</script>

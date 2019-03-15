@@ -44,17 +44,16 @@ module.exports = function(config){
 		// test results reporter to use
 		// possible values: 'dots', 'progress'
 		// available reporters: https://npmjs.org/browse/keyword/karma-reporter
-		reporters : ["dots", "coverage", "coveralls"],
+		reporters : ["dots", "coverage"],
 
 		coverageReporter : {
 			type : "lcov",
-			dir : "test/coverage/"
+			dir : "./coverage"
 		},
 
 		//plugins
 		plugins : [
 			"karma-coverage",
-			"karma-coveralls",
 			"karma-mocha",
 			"karma-webpack",
 			"karma-chrome-launcher",
@@ -85,7 +84,7 @@ module.exports = function(config){
 					//enables correct coverage mapping
 					{
 						test : /\.js$/,
-						use : { loader : "istanbul-instrumenter-loader" },
+						use : { loader : "istanbul-instrumenter-loader", query : { esModules : true } },
 						include : path.resolve(__dirname, "../Tone"),
 						exclude : path.resolve(__dirname, "../Tone/shim")
 					}
@@ -128,7 +127,7 @@ module.exports = function(config){
 		customLaunchers : {
 			HeadlessChrome : {
 				base : "ChromeHeadless",
-				flags : ["--no-sandbox", "--use-fake-ui-for-media-stream", "--use-fake-device-for-media-stream", "--no-user-gesture-required"]
+				flags : ["--no-sandbox", "--use-fake-ui-for-media-stream", "--use-fake-device-for-media-stream", "--autoplay-policy=no-user-gesture-required"]
 			},
 			HeadlessFirefox : {
 				base : "Firefox",

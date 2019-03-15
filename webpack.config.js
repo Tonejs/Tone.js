@@ -37,7 +37,9 @@ const scratch = Object.assign({}, defaults, {
 		scratch : "./examples/scratch.js",
 	},
 	plugins : [
-		new HtmlWebpackPlugin()
+		new HtmlWebpackPlugin({
+			template : "./examples/scratch.html"
+		})
 	],
 });
 

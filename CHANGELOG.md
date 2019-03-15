@@ -1,4 +1,12 @@
-### r13
+* Moving to common.js-style code
+* Including tone.d.ts in builds (still WIP)
+
+**Breaking Changes**
+
+* AudioNode.prototype.connect is no longer overwritten. This means that you can no longer connect native nodes to Tone.js Nodes.
+* Tone.connect(srcNode, destNode, [ouputNum], [inputNum]) is the way to connect native Web Audio nodes with Tone.js nodes. 
+
+### 13.4.9
 
 * Updating semantic versioning to be more in line with other [semvers](https://semver.org/). Now version is 13.x.x
 * logging full version
@@ -11,6 +19,9 @@
 * Follower/Gate uses a single "smoothing" value instead of separate attacks and releases
 * Changing references to `window` allowing it to not throw error in node context
 * Testing examples
+* Tone.Channel combines Tone.PanVol with Tone.Solo.
+* Removing require.html example. 
+* adding `partialCount` and `baseType` to Oscillator classes, helps with getting/setting complex types.
 
 
 ### r12

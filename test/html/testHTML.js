@@ -1,39 +1,57 @@
 const puppeteer = require("puppeteer");
 const { resolve } = require("path");
 const fs = require("fs");
+const { spawn } = require("child_process");
 
-function runPage(path){
+function runPage(name){
 	return new Promise(async (done, error) => {
 		const browser = await puppeteer.launch({ args : ["--no-sandbox"] });
 		const page = await browser.newPage();
 		page.on("pageerror", e => error(e));
-		await page.goto(`file://${path}`, { waitFor : "networkidle0" });
+		await page.goto(`http://localhost:9999/examples/${name}`, { waitFor : "networkidle0" });
 		await browser.close();
 		done();
 	});
 }
 
-context("HTML Tests", () => {
+describe("TEST", () => {
 
-	it("can run multiple contexts at once", () => {
-		return runPage(resolve(__dirname, "multiple_instances.html"));
+	let serverProcess = null;
+
+	before((done) => {
+		const serverCommand = resolve(__dirname, "../../node_modules/.bin/http-server");
+		serverProcess = spawn(serverCommand, ["-p", "9999"]);
+		//give it a second for the server to start
+		setTimeout(() => done(), 1000);
 	});
 
-	it("has the same transport after offline test", () => {
-		return runPage(resolve(__dirname, "same_transport.html"));
+	after(() => {
+		serverProcess.kill();
 	});
 
-});
+	context("HTML Tests", () => {
 
-context("Examples", () => {
+		it("can run multiple contexts at once", () => {
+			return runPage("../test/html/multiple_instances.html");
+		});
 
-	const exampleDir = resolve(__dirname, "../../examples/");
+		it("has the same transport after offline test", () => {
+			return runPage("../test/html/same_transport.html");
+		});
 
-	const files = fs.readdirSync(exampleDir).filter(f => f.endsWith(".html"));
+	});
 
-	files.forEach(f => {
-		it(`can run example ${f}`, () => {
-			return runPage(resolve(exampleDir, f));
+	context("Examples", () => {
+
+		const exampleDir = resolve(__dirname, "../../examples/");
+
+		const files = fs.readdirSync(exampleDir).filter(f => f.endsWith(".html"));
+
+		files.forEach(f => {
+			it(`can run example ${f}`, () => {
+				return runPage(f);
+			});
 		});
 	});
 });
+

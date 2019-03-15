@@ -2,39 +2,50 @@
 <html>
 <head>
   <meta charset="utf-8">
-	<title>SHINY</title>
+	<title>Play Along</title>
 
-	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-	<link rel="icon" type="image/png" sizes="174x174" href="./style/favicon.png">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<link rel="icon" type="image/png" sizes="174x174" href="./favicon.png">
 
+	<script src="https://unpkg.com/@webcomponents/webcomponentsjs@^2/webcomponents-bundle.js"></script>
 	<script src="../build/Tone.js"></script>
-	<script src="./scripts/jquery.min.js"></script>
-	<script src="./scripts/draggabilly.js"></script>
-	<script src="./scripts/StartAudioContext.js"></script>
-	<script src="./scripts/Interface.js"></script>
-	<script src="https://tonejs.github.io/Logo/build/Logo.js"></script>
-	<script src="./scripts/nexusUI.js"></script>
-
-	<link rel="stylesheet" type="text/css" href="./style/examples.css">
-
-	<script>
-		// jshint ignore: start
-	</script>
-
+	<script src="./js/tonejs-ui.js"></script>
+	<style type="text/css">
+		tone-play-toggle {
+			margin-bottom: 10px;
+		}
+		tone-slider {
+			display: block;
+			width: 100%;
+		}
+	</style>
 </head>
-<body>	
-	<div id="Content">
-		<div id="Title">Play Along</div>
-		<div id="Explanation">
+<body>
+	<tone-example>
+		<tone-loader></tone-loader>
+		<tone-explanation label="Play Along">
 			Touch/Mouse and drag to play along with the probabilistic backtrack. X = pitch, Y = modulation.
-		</div>
-	</div>
+		</tone-explanation>
 
-	<script>
+		<tone-content>
+			<tone-play-toggle></tone-play-toggle>
+			<tone-slider-2d></tone-slider-2d>
+		</tone-content>
 
-		//DRUMS//
+		<tone-drawer collapsed>
+			<tone-compressor collapsed id="compressor" label="Drum Compressor"></tone-compressor>
+			<tone-distortion collapsed id="distortion" label="HH/Snare Distortion"></tone-distortion>
+			<tone-player collapsed  id="hats" label="Hats"></tone-player>
+			<tone-player collapsed id="snare" label="Snare"></tone-player>
+			<tone-membrane-synth collapsed id="kick" label="Kick"></tone-membrane-synth>
+			<tone-fm-synth collapsed id="bass" label="Bass"></tone-fm-synth>
+			<tone-duo-synth collapsed id="lead" label="Lead"></tone-duo-synth>
+		</tone-drawer>
 
-		//and a compressor
+	</tone-example>
+
+	<script type="text/javascript">
+		//a compressor
 		var drumCompress = new Tone.Compressor({
 			"threshold" : -30,
 			"ratio" : 6,
@@ -51,7 +62,6 @@
 		var hats = new Tone.Player({
 			"url" : "./audio/505/hh.[mp3|ogg]",
 			"volume" : -10,
-			"retrigger" : true,
 			"fadeOut" : 0.05
 		}).chain(distortion, drumCompress);
 
@@ -66,7 +76,6 @@
 		//SNARE PART
 		var snare = new Tone.Player({
 			"url" : "./audio/505/snare.[mp3|ogg]", 
-			"retrigger" : true,
 			"fadeOut" : 0.1
 		}).chain(distortion, drumCompress);
 
@@ -122,19 +131,18 @@
 			}
 		}).toMaster();
 
-
 		var bassPart = new Tone.Part(function(time, event){
 			if (Math.random() < event.prob){
 				bass.triggerAttackRelease(event.note, event.dur, time);
 			}
-		}, [{time : "0:0", note : "C2", dur : "4n.", prob: 1}, {time : "0:2", note : "C2", dur : "8n", prob : 0.6}, 
-			{time : "0:2.6666", note : "C2", dur : "8n", prob : 0.4}, {time : "0:3.33333", note : "C2", dur : "8n", prob : 0.9},
-			{time : "1:0", note : "C2", dur : "4n.", prob : 1}, {time : "1:2", note : "C2", dur : "8n", prob : 0.6}, 
-			{time : "1:2.6666", note : "C2", dur : "8n", prob : 0.4}, {time : "1:3.33333", note : "E2", dur : "8n", prob : 0.9},
-			{time : "2:0", note : "F2", dur : "4n.", prob : 1}, {time : "2:2", note : "F2", dur : "8n", prob : 0.6}, 
-			{time : "2:2.6666", note : "F2", dur : "8n", prob : 0.4}, {time : "2:3.33333", note : "F2", dur : "8n", prob : 0.9},
-			{time : "3:0", note : "F2", dur : "4n.", prob : 1}, {time : "3:2", note : "F2", dur : "8n", prob : 0.6}, 
-			{time : "3:2.6666", note : "F2", dur : "8n", prob : 0.4}, {time : "3:3.33333", note : "B1", dur : "8n", prob : 0.9}]).start(0);
+		}, [{ time : "0:0", note : "C2", dur : "4n.", prob : 1 }, { time : "0:2", note : "C2", dur : "8n", prob : 0.6 }, 
+			{ time : "0:2.6666", note : "C2", dur : "8n", prob : 0.4 }, { time : "0:3.33333", note : "C2", dur : "8n", prob : 0.9 },
+			{ time : "1:0", note : "C2", dur : "4n.", prob : 1 }, { time : "1:2", note : "C2", dur : "8n", prob : 0.6 }, 
+			{ time : "1:2.6666", note : "C2", dur : "8n", prob : 0.4 }, { time : "1:3.33333", note : "E2", dur : "8n", prob : 0.9 },
+			{ time : "2:0", note : "F2", dur : "4n.", prob : 1 }, { time : "2:2", note : "F2", dur : "8n", prob : 0.6 }, 
+			{ time : "2:2.6666", note : "F2", dur : "8n", prob : 0.4 }, { time : "2:3.33333", note : "F2", dur : "8n", prob : 0.9 },
+			{ time : "3:0", note : "F2", dur : "4n.", prob : 1 }, { time : "3:2", note : "F2", dur : "8n", prob : 0.6 }, 
+			{ time : "3:2.6666", note : "F2", dur : "8n", prob : 0.4 }, { time : "3:3.33333", note : "B1", dur : "8n", prob : 0.9 }]).start(0);
 
 		bassPart.loop = true;
 		bassPart.loopEnd = "4m";
@@ -204,49 +212,30 @@
 
 		Tone.Transport.bpm.value = 125;
 
-		// GUI //
-
-		Interface.Button({
-			key : 32,
-			type : "toggle",
-			text : "Start",
-			activeText : "Stop",
-			start : function(){
-				Tone.Transport.start("+0.1");
-			},
-			end : function(){
-				Tone.Transport.stop();
-			}
+		//bind the interface
+		document.querySelector("tone-play-toggle").bind(Tone.Transport);
+		document.querySelector("tone-slider-2d").addEventListener("change", e => {
+			//use the x and y values to set the note and vibrato
+			const note = synthNotes[Math.round(e.detail.x * (synthNotes.length-1))];
+			synth.setNote(note);
+			synth.vibratoAmount.value = e.detail.y * 3;
 		});
-
-		var lastSynthNote = synthNotes[0];
-		Interface.Dragger({
-			// container : "#Content",
-			x : {
-				options : synthNotes,
-				drag : function(note){
-					synth.setNote(note);
-					lastSynthNote = note;
-				}
-			},
-			y : {
-				min : 0,
-				max : 2,
-				drag : function(val){
-					synth.vibratoAmount.value = val;
-				}
-			},
-			start : function(){
-				synth.triggerAttack(lastSynthNote);
-			},
-			end : function(){
-				synth.triggerRelease();
-			},
-			name : "Synth"
+		document.querySelector("tone-slider-2d").addEventListener("mousedown", e => {
+			const note = synthNotes[Math.round(e.detail.x * (synthNotes.length-1))];
+			synth.vibratoAmount.value = e.detail.y * 3;
+			synth.triggerAttack(note);
 		});
-
-		Interface.Loader();
-
+		document.querySelector("tone-slider-2d").addEventListener("mouseup", e => {
+			synth.triggerRelease();
+		});
+		//bind the drawer interfaces
+		document.querySelector("#hats").bind(hats);
+		document.querySelector("#snare").bind(snare);
+		document.querySelector("#kick").bind(kick);
+		document.querySelector("#bass").bind(bass);
+		document.querySelector("#distortion").bind(distortion);
+		document.querySelector("#compressor").bind(drumCompress);
+		document.querySelector("#lead").bind(synth);
 	</script>
 </body>
 </html>

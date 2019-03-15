@@ -1,105 +1,110 @@
-define(["../core/Tone", "../signal/WaveShaper", "../component/Merge", "../signal/Zero",
-	"../component/Split", "../core/Gain", "../signal/Signal", "../core/Context"], function(Tone){
+import Tone from "../core/Tone";
+import "../signal/WaveShaper";
+import "../component/Merge";
+import "../signal/Zero";
+import "../component/Split";
+import "../core/Gain";
+import "../signal/Signal";
+import "../core/Context";
 
-	if (Tone.supported && !Tone.global.AudioContext.prototype.createStereoPanner){
+if (Tone.supported && !Tone.global.AudioContext.prototype.createStereoPanner){
+
+	/**
+	 * @class Shimmed StereoPannerNode
+	 * @param  {AudioContext} context
+	 * @private
+	 */
+	var StereoPannerNode = function(context){
 
 		/**
-		 * @class Shimmed StereoPannerNode
-		 * @param  {AudioContext} context
+		 * The audio context
+		 * @type {AudioContext}
+		 */
+		this.context = context;
+
+		/**
+		 * The left/right panning. [-1, 1]
+		 * @type {AudioRange}
+		 * @signal
+		 */
+		this.pan = new Tone.Signal(0, Tone.Type.AudioRange);
+
+		/**
+		 * Equal power scaling of the right gain
+		 * @type {Tone.WaveShaper}
+		 */
+		var rightWaveShaper = new Tone.WaveShaper(function(val){
+			return Tone.equalPowerScale((val+1)/2);
+		}, 4096);
+
+		/**
+		 * Equal power scaling of the left gain
+		 * @type {Tone.WaveShaper}
 		 * @private
 		 */
-		var StereoPannerNode = function(context){
+		var leftWaveShaper = new Tone.WaveShaper(function(val){
+			return Tone.equalPowerScale(1 - (val+1)/2);
+		}, 4096);
 
-			/**
-			 * The audio context
-			 * @type {AudioContext}
-			 */
-			this.context = context;
+		/**
+		 * The left gain value
+		 * @type {Tone.Gain}
+		 * @private
+		 */
+		var leftGain = new Tone.Gain();
 
-			/**
-			 * The left/right panning. [-1, 1]
-			 * @type {AudioRange}
-			 * @signal
-			 */
-			this.pan = new Tone.Signal(0, Tone.Type.AudioRange);
+		/**
+		 * The right gain value
+		 * @type {Tone.Gain}
+		 * @private
+		 */
+		var rightGain = new Tone.Gain();
 
-			/**
-			 * Equal power scaling of the right gain
-			 * @type {Tone.WaveShaper}
-			 */
-			var rightWaveShaper = new Tone.WaveShaper(function(val){
-				return Tone.equalPowerScale((val+1)/2);
-			}, 4096);
+		/**
+		 * Split the incoming signal
+		 * @type {Tone.Split}
+		 * @private
+		 */
+		var split = this.input = new Tone.Split();
+		//fixes safari issue with splitting audio
+		split._splitter.channelCountMode = "explicit";
 
-			/**
-			 * Equal power scaling of the left gain
-			 * @type {Tone.WaveShaper}
-			 * @private
-			 */
-			var leftWaveShaper = new Tone.WaveShaper(function(val){
-				return Tone.equalPowerScale(1 - (val+1)/2);
-			}, 4096);
+		/**
+		 * Keeps the waveshapers from optimizing 0s
+		 * @type {Tone.Zero}
+		 * @private
+		 */
+		var zero = new Tone.Zero();
+		zero.fan(rightWaveShaper, leftWaveShaper);
 
-			/**
-			 * The left gain value
-			 * @type {Tone.Gain}
-			 * @private
-			 */
-			var leftGain = new Tone.Gain();
+		/**
+		 * Merge the outgoing signal
+		 * @type {Tone.Merge}
+		 * @private
+		 */
+		var merge = this.output = new Tone.Merge();
 
-			/**
-			 * The right gain value
-			 * @type {Tone.Gain}
-			 * @private
-			 */
-			var rightGain = new Tone.Gain();
+		//connections
+		split.left.chain(leftGain, merge.left);
+		split.right.chain(rightGain, merge.right);
+		this.pan.chain(leftWaveShaper, leftGain.gain);
+		this.pan.chain(rightWaveShaper, rightGain.gain);
+	};
 
-			/**
-			 * Split the incoming signal
-			 * @type {Tone.Split}
-			 * @private
-			 */
-			var split = this.input = new Tone.Split();
-			//fixes safari issue with splitting audio
-			split._splitter.channelCountMode = "explicit";
+	StereoPannerNode.prototype.disconnect = function(){
+		this.output.disconnect.apply(this.output, arguments);
+	};
 
-			/**
-			 * Keeps the waveshapers from optimizing 0s
-			 * @type {Tone.Zero}
-			 * @private
-			 */
-			var zero = new Tone.Zero();
-			zero.fan(rightWaveShaper, leftWaveShaper);
+	StereoPannerNode.prototype.connect = function(){
+		this.output.connect.apply(this.output, arguments);
+	};
 
-			/**
-			 * Merge the outgoing signal
-			 * @type {Tone.Merge}
-			 * @private
-			 */
-			var merge = this.output = new Tone.Merge();
+	//add it to the AudioContext
+	AudioContext.prototype.createStereoPanner = function(){
+		return new StereoPannerNode(this);
+	};
+	Tone.Context.prototype.createStereoPanner = function(){
+		return new StereoPannerNode(this);
+	};
+}
 
-			//connections
-			split.left.chain(leftGain, merge.left);
-			split.right.chain(rightGain, merge.right);
-			this.pan.chain(leftWaveShaper, leftGain.gain);
-			this.pan.chain(rightWaveShaper, rightGain.gain);
-		};
-
-		StereoPannerNode.prototype.disconnect = function(){
-			this.output.disconnect.apply(this.output, arguments);
-		};
-
-		StereoPannerNode.prototype.connect = function(){
-			this.output.connect.apply(this.output, arguments);
-		};
-
-		//add it to the AudioContext
-		AudioContext.prototype.createStereoPanner = function(){
-			return new StereoPannerNode(this);
-		};
-		Tone.Context.prototype.createStereoPanner = function(){
-			return new StereoPannerNode(this);
-		};
-	}
-
-});

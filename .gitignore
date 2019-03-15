@@ -18,7 +18,7 @@ test/performance
 test/mainTest.js
 test/Main.js
 test/supports.html
-test/coverage/
+coverage/
 
 build/*
 
@@ -26,3 +26,7 @@ examples/scratch.js
 Tone/version.js
 Tone/index.js
 test/test.js
+
+docs
+.vscode
+tone.d.ts

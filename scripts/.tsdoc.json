@@ -1,0 +1,28 @@
+{
+	"plugins": [],
+	"recurseDepth": 2,
+	"source": {
+		"include": [
+			"Tone",
+			"package.json",
+			"README.md"
+		],
+		"includePattern": ".js$",
+		"excludePattern": "(node_modules)"
+	},
+	"sourceType": "module",
+	"tags": {
+		"allowUnknownTags": true,
+		"dictionaries": [
+			"jsdoc",
+			"closure"
+		]
+	},
+	"opts": {
+		"template": "node_modules/tsd-jsdoc/dist",
+		"destination": "./",
+		"encoding": "utf8",
+		"private": false,
+		"recurse": true
+	}
+}

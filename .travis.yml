@@ -7,8 +7,12 @@ install:
 - npm install
 - git config --global user.email "travis@travis-ci.org"
 - git config --global user.name "Travis CI"
-script: npm run test:travis
-before_deploy: npm run increment
+script: 
+  - npm run test:travis
+  - npm run codecov
+before_deploy: 
+  - npm run increment
+  - npm run tsd
 jobs:
   include:
     - stage: test
@@ -30,7 +34,7 @@ jobs:
       env : BROWSER=firefox
       os: linux
       addons:
-        firefox: latest-nightly
+        firefox: latest-beta
     - stage: test
       before_script:
       # needs an audio output device to run
@@ -38,14 +42,6 @@ jobs:
       env : BROWSER=safari
       os: osx
       osx_image: xcode9.2
-    # - stage: test
-    #   before_script:
-    #   # needs an audio output device to run
-    #   - HOMEBREW_NO_AUTO_UPDATE=1 brew install Caskroom/cask/soundflower
-    #   env : BROWSER=safari
-    #   os: osx
-    #   # test on an older safari
-    #   osx_image: xcode6.4
     - stage: test
       # puppeteer tests
       before_script: npm install puppeteer

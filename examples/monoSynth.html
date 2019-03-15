@@ -4,38 +4,34 @@
   <meta charset="utf-8">
 	<title>MonoSynth</title>
 
-	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-	<link rel="icon" type="image/png" sizes="174x174" href="./style/favicon.png">
-	
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<link rel="icon" type="image/png" sizes="174x174" href="./favicon.png">
+
+	<script src="https://unpkg.com/@webcomponents/webcomponentsjs@^2/webcomponents-bundle.js"></script>
 	<script src="../build/Tone.js"></script>
-	<script src="./scripts/jquery.min.js"></script>
-	<script src="./scripts/draggabilly.js"></script>
-	<script src="./scripts/StartAudioContext.js"></script>
-	<script src="./scripts/Interface.js"></script>
-	<script src="https://tonejs.github.io/Logo/build/Logo.js"></script>
-	<script src="./scripts/Keyboard.js"></script>
-
-	<link rel="stylesheet" type="text/css" href="./style/examples.css">
-
-	<script>
-		// jshint ignore: start
-	</script>
-
+	<script src="./js/tonejs-ui.js"></script>
 </head>
-<body>	
-	<div id="Content">
-		<div id="Title">MonoSynth</div>
-		<div id="Explanation">
-			<a href="https://tonejs.github.io/docs/#MonoSynth">Tone.MonoSynth</a> 
+<body>
+	<style>
+		tone-piano {
+			margin-bottom: 10px;
+		}
+	</style>
+	<tone-example>
+		<tone-explanation label="MonoSynth">
+			<a href="https://tonejs.github.io/docs/MonoSynth">Tone.MonoSynth</a> 
 			is composed of one oscillator, one filter, and two envelopes.
 	 		Both envelopes are triggered simultaneously when a note is triggered. 
-		</div>
-		<div id="Keyboard"></div>
-	</div>
+		</tone-explanation>
 
-	<script>
+		<tone-content>
+			<tone-piano polyphonic></tone-piano>
+			<tone-mono-synth polyphonic></tone-mono-synth>
+		</tone-content>
+	</tone-example>
 
-		var synth = new Tone.MonoSynth({
+	<script type="text/javascript">
+		var synth = new Tone.PolySynth(4, Tone.MonoSynth, {
 			"oscillator" : {
 				"type" : "square8"
 			},
@@ -55,18 +51,9 @@
 			}
 		}).toMaster();
 
-		// GUI //
-
-		var keyboard = Interface.Keyboard();
-
-		keyboard.keyDown = function (note) {
-		    synth.triggerAttack(note);
-		};
-
-		keyboard.keyUp = function () {
-		    synth.triggerRelease();
-		};
-
+		//bind the interface
+		document.querySelector("tone-piano").bind(synth);
+		document.querySelector("tone-mono-synth").bind(synth);
 
 	</script>
 </body>
