@@ -30,11 +30,11 @@ jobs:
       os: linux
       addons:
         firefox: latest
-    - stage: test
-      env : BROWSER=firefox
-      os: linux
-      addons:
-        firefox: latest-beta
+    # - stage: test
+    #   env : BROWSER=firefox
+    #   os: linux
+    #   addons:
+    #     firefox: latest-beta
     - stage: test
       before_script:
       # needs an audio output device to run
