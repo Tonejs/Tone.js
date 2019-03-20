@@ -174,10 +174,11 @@ Tone.OscillatorNode.prototype.stop = function(time){
 		this._timeout = this.context.setTimeout(function(){
 			this._oscillator.stop(this.now());
 			this.onended();
-			//dispose the object when it's ended
+			//disconnect the object when it's ended
 			setTimeout(function(){
 				if (this._oscillator){
-					this.dispose();
+					this._oscillator.disconnect();
+					this._gainNode.disconnect();
 				}
 			}.bind(this), 100);
 		}.bind(this), this._stopTime - this.context.currentTime);

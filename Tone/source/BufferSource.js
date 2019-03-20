@@ -322,7 +322,8 @@ Tone.BufferSource.prototype._onended = function(){
 		setTimeout(function(){
 			//if it hasn't already been disposed
 			if (this._source){
-				this.dispose();
+				this._source.disconnect();
+				this._gainNode.disconnect();
 			}
 		}.bind(this), additionalTail * 1000 + 100);
 	}
