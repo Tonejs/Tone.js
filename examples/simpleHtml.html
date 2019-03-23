@@ -4,8 +4,13 @@
 		<meta charset="utf-8" />
 		<title>App</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<script src="./app.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/tone/13.8.3/Tone.js"></script>
+		<script>
+			function playNote() {
+				var synth = new Tone.Synth().toMaster();
+				synth.triggerAttackRelease("C4", "8n");
+			}
+		</script>
 
 	</head>
 	<body>
