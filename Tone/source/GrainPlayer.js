@@ -21,7 +21,7 @@ Tone.GrainPlayer = function(){
 	 *  The audio buffer belonging to the player.
 	 *  @type  {Tone.Buffer}
 	 */
-	this.buffer = new Tone.Buffer(options.url, options.onload);
+	this.buffer = new Tone.Buffer(options.url, options.onload.bind(undefined, this));
 
 	/**
 	 *  Create a repeating tick to schedule

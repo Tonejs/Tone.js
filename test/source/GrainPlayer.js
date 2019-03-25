@@ -78,12 +78,16 @@ describe("GrainPlayer", function(){
 			});
 		});
 
-		it("can be created with an options object", function(){
+		it("can be created with an options object", function(done){
 			var player = new GrainPlayer({
 				"url" : "./audio/sine.wav",
-				"loop" : true
+				"loop" : true,
+				"onload" : function(grain){
+					expect(grain.loop).to.be.true;
+					player.dispose();
+					done();
+				}
 			});
-			player.dispose();
 		});
 
 	});
