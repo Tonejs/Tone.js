@@ -176,7 +176,6 @@ Tone.BufferSource.prototype.getStateAtTime = function(time){
  *                                is given, it will default to the full length
  *                                of the sample (minus any offset)
  *  @param  {Gain}  [gain=1]  The gain to play the buffer back at.
- *  @param  {Time=}  fadeInTime  The optional fadeIn ramp time.
  *  @return  {Tone.BufferSource}  this
  */
 Tone.BufferSource.prototype.start = function(time, offset, duration, gain){
@@ -245,9 +244,7 @@ Tone.BufferSource.prototype.start = function(time, offset, duration, gain){
 };
 
 /**
- *  Stop the buffer. Optionally add a ramp time to fade the
- *  buffer out. If there is a fadeOut ramp, the ramp starts at 
- *  the given time and ends at time + fadeOut. 
+ *  Stop the buffer. 
  *  @param  {Time=}  time         The time the buffer should stop.
  *  @return  {Tone.BufferSource}  this
  */
