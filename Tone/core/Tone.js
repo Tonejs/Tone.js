@@ -365,7 +365,7 @@ Tone.connect = function(srcNode, dstNode, outputNumber, inputNumber){
 Tone.disconnect = function(srcNode, dstNode, outputNumber, inputNumber){
 	if (dstNode){
 		//resolve the input of the dstNode
-		if (Tone.isDefined(dstNode.input)){
+		while (Tone.isDefined(dstNode.input)){
 			if (Tone.isArray(dstNode.input)){
 				if (Tone.isDefined(inputNumber)){
 					Tone.disconnect(srcNode, dstNode.input[inputNumber], outputNumber);
