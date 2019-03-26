@@ -1,7 +1,6 @@
 import Tone from "../core/Tone";
 import "../component/AmplitudeEnvelope";
 import "../source/OmniOscillator";
-import "../signal/Signal";
 import "../instrument/Monophonic";
 
 /**
