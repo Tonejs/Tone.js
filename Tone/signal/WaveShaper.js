@@ -1,6 +1,5 @@
 import Tone from "../core/Tone";
 import "../signal/SignalBase";
-import "../shim/WaveShaperNode";
 
 /**
  *  @class Wraps the native Web Audio API

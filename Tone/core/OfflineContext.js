@@ -1,6 +1,5 @@
 import Tone from "../core/Tone";
 import "../core/Context";
-import "../shim/OfflineAudioContext";
 
 /**
  *  @class Wrapper around the OfflineAudioContext

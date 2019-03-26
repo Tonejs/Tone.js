@@ -2,7 +2,6 @@ import Tone from "../core/Tone";
 import "../component/CrossFade";
 import "../component/Merge";
 import "../component/Split";
-import "../shim/StereoPannerNode";
 import "../signal/Signal";
 import "../signal/AudioToGain";
 import "../signal/Zero";

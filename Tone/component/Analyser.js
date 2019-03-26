@@ -1,6 +1,5 @@
 import Tone from "../core/Tone";
 import "../core/AudioNode";
-import "../shim/AnalyserNode";
 
 /**
  *  @class  Wrapper around the native Web Audio's

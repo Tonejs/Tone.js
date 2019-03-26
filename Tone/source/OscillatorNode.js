@@ -3,7 +3,6 @@ import "../core/Buffer";
 import "../source/Source";
 import "../core/Gain";
 import "../core/AudioNode";
-import "../shim/OscillatorNode";
 
 /**
  *  @class Wrapper around the native fire-and-forget OscillatorNode. Adds the

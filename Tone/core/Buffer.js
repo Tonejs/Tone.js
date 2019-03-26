@@ -1,7 +1,6 @@
 import Tone from "../core/Tone";
 import "../core/Emitter";
 import "../type/Type";
-import "../shim/AudioBuffer";
 
 /**
  *  @class  Buffer loading and storage. Tone.Buffer is used internally by all

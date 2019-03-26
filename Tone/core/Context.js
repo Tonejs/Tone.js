@@ -1,7 +1,6 @@
 import Tone from "../core/Tone";
 import "../core/Emitter";
 import "../core/Timeline";
-import "../shim/AudioContext";
 
 var AudioContextProperties = ["baseLatency", "destination", "currentTime", "sampleRate", "listener", "state"];
 var AudioContextMethods = ["suspend", "close", "resume", "getOutputTimestamp", "createMediaElementSource", "createMediaStreamSource", "createMediaStreamDestination", "createBuffer", "decodeAudioData", "createBufferSource", "createConstantSource", "createGain", "createDelay", "createBiquadFilter", "createIIRFilter", "createWaveShaper", "createPanner", "createConvolver", "createDynamicsCompressor", "createAnalyser", "createScriptProcessor", "createStereoPanner", "createOscillator", "createPeriodicWave", "createChannelSplitter", "createChannelMerger", "audioWorklet"];

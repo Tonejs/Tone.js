@@ -2,7 +2,6 @@ import Tone from "../core/Tone";
 import "../type/Type";
 import "../core/Param";
 import "../signal/SignalBase";
-import "../shim/ConstantSourceNode";
 
 /**
  *  @class  A signal is an audio-rate value. Tone.Signal is a core component of the library.
