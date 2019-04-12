@@ -358,7 +358,7 @@ Tone.Part.prototype._tick = function(time, value){
  *  @private
  */
 Tone.Part.prototype._testLoopBoundries = function(event){
-	if (event.startOffset < this._loopStart || event.startOffset >= this._loopEnd){
+	if (this._loop && (event.startOffset < this._loopStart || event.startOffset >= this._loopEnd)){
 		event.cancel(0);
 	} else if (event.state === Tone.State.Stopped){
 		//reschedule it if it's stopped
