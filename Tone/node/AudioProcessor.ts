@@ -11,7 +11,7 @@ export interface AudioProcessorOptions {
 }
 
 /**
- * The BaseAudioContext belonging to this node
+ * The Base class for all nodes that have an AudioContext.
  */
 export abstract class AudioProcessor<Options extends AudioProcessorOptions> extends Tone {
 
@@ -20,6 +20,9 @@ export abstract class AudioProcessor<Options extends AudioProcessorOptions> exte
 	 */
 	readonly context: BaseAudioContext;
 
+	/**
+	 * The default context to use if no AudioContext is passed in to the constructor
+	 */
 	readonly defaultContext?: BaseAudioContext;
 
 	constructor(context?: BaseAudioContext | Partial<AudioProcessorOptions>) {
