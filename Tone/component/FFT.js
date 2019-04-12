@@ -3,7 +3,8 @@ import "../component/Analyser";
 import "../core/AudioNode";
 
 /**
- *  @class  Get the current waveform data of the connected audio source.
+ *  @class  Get the current frequency data of the connected audio source
+ *          using a fast Fourier transform.
  *  @extends {Tone.AudioNode}
  *  @param {Number=} size The size of the FFT. Value must be a power of
  *                       two in the range 32 to 32768.

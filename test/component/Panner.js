@@ -29,6 +29,14 @@ describe("Panner", function(){
 			panner.dispose();
 		});
 
+		it("can be constructed with an options object", function(){
+			var panner = new Panner({
+				"pan" : 0.5
+			});
+			expect(panner.pan.value).to.be.closeTo(0.5, 0.001);
+			panner.dispose();
+		});
+
 		it("passes the incoming signal through", function(){
 			return PassAudio(function(input){
 				var panner = new Panner().toMaster();

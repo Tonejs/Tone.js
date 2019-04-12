@@ -1,0 +1,21 @@
+<!DOCTYPE HTML>
+<html>
+	<head>	
+		<meta charset="utf-8" />
+		<title>App</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/tone/13.8.3/Tone.js"></script>
+		<script>
+			function playNote() {
+				var synth = new Tone.Synth().toMaster();
+				synth.triggerAttackRelease("C4", "8n");
+			}
+		</script>
+
+	</head>
+	<body>
+		<h1>Simple HTML5 Tone.js Demo</h1>
+		<button onclick="playNote()">Click me to play note!</button>
+	</body>
+</html>
+

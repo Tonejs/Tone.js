@@ -19,8 +19,9 @@ import "../core/AudioNode";
  *  //pan the input signal hard right.
  *  var panner = new Tone.Panner(1);
  */
-Tone.Panner = function(initialPan){
+Tone.Panner = function(){
 
+	var options = Tone.defaults(arguments, ["pan"], Tone.Panner);
 	Tone.AudioNode.call(this);
 	/**
 	*  the panner node
@@ -37,11 +38,21 @@ Tone.Panner = function(initialPan){
 	this.pan = this._panner.pan;
 
 	//initial value
-	this.pan.value = Tone.defaultArg(initialPan, 0);
+	this.pan.value = options.pan;
 	this._readOnly("pan");
 };
 
 Tone.extend(Tone.Panner, Tone.AudioNode);
+
+/**
+ *  Defaults
+ *  @type  {Object}
+ *  @const
+ *  @static
+ */
+Tone.Panner.defaults = {
+	"pan" : 0
+};
 
 /**
  *  Clean up.
