@@ -1,0 +1,25 @@
+{
+	"compileOnSave": true,
+	"compilerOptions": {
+		"strictNullChecks": true,
+		"target": "es5",
+		"module": "commonjs",
+		"noImplicitAny": false,
+		"noUnusedLocals": false,
+		"removeComments": false,
+		"experimentalDecorators": true,
+		// "outFile": "./build/Tone.js",
+		"outDir": "./build",
+		"sourceMap": true,
+		"moduleResolution": "classic",
+		"strictPropertyInitialization" : true,
+		"lib": ["es6", "dom"],
+		"baseUrl": "./",
+		"paths" : {
+			"@tonejs/plot" : ["./node_modules/@tonejs/plot/dist/index.d.ts"]
+		}
+	},
+	"include": [
+		"Tone/**/*.ts", "test/**/*.ts"
+	]
+}
