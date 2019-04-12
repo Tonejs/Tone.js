@@ -7,7 +7,7 @@ import "../core/AudioNode";
  *          using a fast Fourier transform.
  *  @extends {Tone.AudioNode}
  *  @param {Number=} size The size of the FFT. Value must be a power of
- *                       two in the range 32 to 32768.
+ *                       two in the range 16 to 16384.
  */
 Tone.FFT = function(){
 
@@ -44,7 +44,9 @@ Tone.FFT.prototype.getValue = function(){
 };
 
 /**
- *  The size of analysis. This must be a power of two in the range 32 to 32768.
+ *  The size of analysis. This must be a power of two in the range 16 to 16384.
+ *  Determines the size of the array returned by [getValue](#getvalue) (i.e. the number of
+ *  frequency bins). Large FFT sizes may be costly to compute.
  *  @memberOf Tone.FFT#
  *  @type {Number}
  *  @name size
