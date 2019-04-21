@@ -364,31 +364,31 @@ Tone.connect = function(srcNode, dstNode, outputNumber, inputNumber){
  */
 Tone.disconnect = function(srcNode, dstNode, outputNumber, inputNumber){
 	if (dstNode){
-		//resolve the input of the dstNode
-		if (Tone.isDefined(dstNode.input)){
-			if (Tone.isArray(dstNode.input)){
-				if (Tone.isDefined(inputNumber)){
-					Tone.disconnect(srcNode, dstNode.input[inputNumber], outputNumber);
-				} else {
-					dstNode.input.forEach(function(dstNode){
-						//ignore errors from connections that aren't there
-						try {
-							Tone.disconnect(srcNode, dstNode, outputNumber);
-						// eslint-disable-next-line
-						} catch (e){}
-					});
-					
-				}
-			} else if (dstNode.input){
-				dstNode = dstNode.input;
+		if (Tone.isArray(dstNode.input)){
+			if (Tone.isDefined(inputNumber)){
+				Tone.disconnect(srcNode, dstNode.input[inputNumber], outputNumber);
+			} else {
+				dstNode.input.forEach(function(dstNode){
+					//ignore errors from connections that aren't there
+					try {
+						Tone.disconnect(srcNode, dstNode, outputNumber);
+					// eslint-disable-next-line
+					} catch (e){}
+				});
 			}
+		} else if (dstNode.input){
+			dstNode = dstNode.input;
 		}
-	
-		//make the connection
-		if (dstNode instanceof AudioParam){
-			srcNode.disconnect(dstNode, outputNumber);
-		} else if (dstNode instanceof AudioNode){
-			srcNode.disconnect(dstNode, outputNumber, inputNumber);
+		
+		//Resolve the input and disconnect.
+		//Nodes can be nested.
+		while(Tone.isDefined(dstNode)){
+			if (dstNode instanceof AudioParam){
+				srcNode.disconnect(dstNode, outputNumber);
+			} else if (dstNode instanceof AudioNode){
+				srcNode.disconnect(dstNode, outputNumber, inputNumber);
+			}
+			dstNode = dstNode.input;
 		}
 	} else {
 		srcNode.disconnect();
