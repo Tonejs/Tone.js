@@ -382,7 +382,7 @@ Tone.disconnect = function(srcNode, dstNode, outputNumber, inputNumber){
 		
 		//Resolve the input and disconnect.
 		//Nodes can be nested.
-		while(Tone.isDefined(dstNode)){
+		while (Tone.isDefined(dstNode)){
 			if (dstNode instanceof AudioParam){
 				srcNode.disconnect(dstNode, outputNumber);
 			} else if (dstNode instanceof AudioNode){
