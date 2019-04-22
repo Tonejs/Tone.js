@@ -365,26 +365,23 @@ Tone.connect = function(srcNode, dstNode, outputNumber, inputNumber){
 Tone.disconnect = function(srcNode, dstNode, outputNumber, inputNumber){
 	if (dstNode){
 		//resolve the input of the dstNode
-		if (Tone.isDefined(dstNode.input)){
-			if (Tone.isArray(dstNode.input)){
-				if (Tone.isDefined(inputNumber)){
-					Tone.disconnect(srcNode, dstNode.input[inputNumber], outputNumber);
-				} else {
-					dstNode.input.forEach(function(dstNode){
-						//ignore errors from connections that aren't there
-						try {
+		try {
+			while (Tone.isDefined(dstNode.input)){
+				if (Tone.isArray(dstNode.input)){
+					if (Tone.isDefined(inputNumber)){
+						Tone.disconnect(srcNode, dstNode.input[inputNumber], outputNumber);
+					} else {
+						dstNode.input.forEach(function(dstNode){
 							Tone.disconnect(srcNode, dstNode, outputNumber);
-						// eslint-disable-next-line
-						} catch (e){}
-					});
-					
+						});
+					}
+				} else if (dstNode.input){
+					dstNode = dstNode.input;
 				}
-			} else if (dstNode.input){
-				dstNode = dstNode.input;
 			}
-		}
-	
-		//make the connection
+		// eslint-disable-next-line
+		} catch(e) {}
+
 		if (dstNode instanceof AudioParam){
 			srcNode.disconnect(dstNode, outputNumber);
 		} else if (dstNode instanceof AudioNode){
