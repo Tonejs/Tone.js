@@ -373,7 +373,7 @@ Tone.disconnect = function(srcNode, dstNode, outputNumber, inputNumber){
 				} else {
 					dstNode.input.forEach(function(dstNode){
 						//ignore errors from connections that aren't there
-						try{
+						try {
 							Tone.disconnect(srcNode, dstNode, outputNumber);
 						// eslint-disable-next-line
 						} catch (e) {}
