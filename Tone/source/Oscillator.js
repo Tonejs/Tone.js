@@ -314,7 +314,7 @@ Object.defineProperty(Tone.Oscillator.prototype, "partialCount", {
  *  @returns {Object}
  */
 Tone.Oscillator.prototype.get = function(){
-	const values = Tone.prototype.get.apply(this, arguments);
+	var values = Tone.prototype.get.apply(this, arguments);
 	if (values.type !== Tone.Oscillator.Type.Custom){
 		delete values.partials;
 	}

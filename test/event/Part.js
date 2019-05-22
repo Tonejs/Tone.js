@@ -422,7 +422,7 @@ describe("Part", function(){
 
 	context("Looping", function(){
 
-		it("can be set to loop", function(){
+		it("can be set using a boolean as an argument when created", function(){
 			var callCount = 0;
 			return Offline(function(Transport){
 				new Part({
@@ -433,6 +433,42 @@ describe("Part", function(){
 					},
 					"events" : [[0, 1], [0.1, 2]]
 				}).start(0);
+				Transport.start();
+			}, 0.55).then(function(){
+				expect(callCount).to.equal(6);
+			});
+		});
+
+		it("can be toggled off using a boolean", function(){
+			var callCount = 0;
+			return Offline(function(Transport){
+				var part = new Part({
+					"loopEnd" : 0.2,
+					"loop" : true,
+					"callback" : function(){
+						callCount++;
+					},
+					"events" : [[0, 1], [0.1, 2]]
+				}).start(0);
+				part.loop = false;
+				Transport.start();
+			}, 0.55).then(function(){
+				expect(callCount).to.equal(2);
+			});
+		});
+
+		it("can be toggled on using a boolean", function(){
+			var callCount = 0;
+			return Offline(function(Transport){
+				var part = new Part({
+					"loopEnd" : 0.2,
+					"loop" : false,
+					"callback" : function(){
+						callCount++;
+					},
+					"events" : [[0, 1], [0.1, 2]]
+				}).start(0);
+				part.loop = true;
 				Transport.start();
 			}, 0.55).then(function(){
 				expect(callCount).to.equal(6);

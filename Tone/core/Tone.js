@@ -365,7 +365,8 @@ Tone.connect = function(srcNode, dstNode, outputNumber, inputNumber){
 Tone.disconnect = function(srcNode, dstNode, outputNumber, inputNumber){
 	if (dstNode){
 		//resolve the input of the dstNode
-		if (Tone.isDefined(dstNode.input)){
+		var bDone = false;
+		while (!bDone){
 			if (Tone.isArray(dstNode.input)){
 				if (Tone.isDefined(inputNumber)){
 					Tone.disconnect(srcNode, dstNode.input[inputNumber], outputNumber);
@@ -375,12 +376,14 @@ Tone.disconnect = function(srcNode, dstNode, outputNumber, inputNumber){
 						try {
 							Tone.disconnect(srcNode, dstNode, outputNumber);
 						// eslint-disable-next-line
-						} catch (e){}
+						} catch (e) {}
 					});
-					
 				}
+				bDone = true;
 			} else if (dstNode.input){
 				dstNode = dstNode.input;
+			} else {
+				bDone = true;
 			}
 		}
 	

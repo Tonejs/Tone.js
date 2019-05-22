@@ -8,7 +8,7 @@ import "../core/AudioNode";
  *  @extends {Tone.AudioNode}
  *  @param {String=} type The return type of the analysis, either "fft", or "waveform".
  *  @param {Number=} size The size of the FFT. Value must be a power of
- *                       two in the range 32 to 32768.
+ *                       two in the range 16 to 16384.
  */
 Tone.Analyser = function(){
 
@@ -65,7 +65,7 @@ Tone.Analyser.Type = {
 
 /**
  *  Run the analysis given the current settings and return the
- *  result as a TypedArray.
+ *  result as a TypedArray of length [size](#size).
  *  @returns {TypedArray}
  */
 Tone.Analyser.prototype.getValue = function(){
@@ -78,7 +78,7 @@ Tone.Analyser.prototype.getValue = function(){
 };
 
 /**
- *  The size of analysis. This must be a power of two in the range 32 to 32768.
+ *  The size of analysis. This must be a power of two in the range 16 to 16384.
  *  @memberOf Tone.Analyser#
  *  @type {Number}
  *  @name size
@@ -88,6 +88,7 @@ Object.defineProperty(Tone.Analyser.prototype, "size", {
 		return this._analyser.frequencyBinCount;
 	},
 	set : function(size){
+		// fftSize is double frequencyBinCount
 		this._analyser.fftSize = size * 2;
 		this._buffer = new Float32Array(size);
 	}
