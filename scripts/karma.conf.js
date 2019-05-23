@@ -1,5 +1,10 @@
 // Karma configuration
 const path = require("path");
+const argv = require("yargs")
+	.option("grep", {
+		default: "",
+	})
+	.argv;
 
 let BROWSERS = ["HeadlessChrome", "HeadlessFirefox", "Safari"];
 
@@ -47,7 +52,7 @@ module.exports = function(config) {
 				},
 			},
 			coverageOptions : {
-				exclude: /test\/.*\.ts$/i,
+				exclude: /.*\.test\.ts$/i,
 			},
 			reports: {
 				html: path.resolve(__dirname, "../coverage"),
@@ -91,9 +96,9 @@ module.exports = function(config) {
 
 		client : {
 			mocha : {
-				grep: "Gain",
-				timeout : 30000,
-				reporter : "html", // change Karma's debug.html to the mocha web reporter
+				grep: argv.grep,
+				reporter : "html",
+				timeout : 10000,
 				ui : "bdd",
 			},
 		},
@@ -142,6 +147,11 @@ module.exports = function(config) {
 					"focusmanager.testmode" : true,
 					"media.navigator.permission.disabled" : true,
 				},
+			},
+			OnlineChrome: {
+				base: "Chrome",
+				flags: ["--no-sandbox", "--use-fake-ui-for-media-stream", "--use-fake-device-for-media-stream",
+					"--autoplay-policy=no-user-gesture-required"],
 			},
 		},
 	};

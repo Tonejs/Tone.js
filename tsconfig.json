@@ -11,7 +11,7 @@
 		// "outFile": "./build/Tone.js",
 		"outDir": "./build",
 		"sourceMap": true,
-		"moduleResolution": "classic",
+		"moduleResolution": "node",
 		"strictPropertyInitialization" : true,
 		"lib": ["es6", "dom"],
 		"baseUrl": "./",
