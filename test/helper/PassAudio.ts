@@ -1,7 +1,7 @@
 import { expect } from "chai";
-import { ToneAudioNode } from "../../Tone/node/AudioNode";
-import { Signal } from "../../Tone/signal/Signal";
-import { Offline } from "../helper/Offline";
+import { Offline } from "test/helper/Offline";
+import { ToneAudioNode } from "Tone/core/context/ToneAudioNode";
+import { Signal } from "Tone/signal/Signal";
 
 /**
  * Make sure that the audio passes from input node

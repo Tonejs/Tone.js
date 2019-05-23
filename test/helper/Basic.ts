@@ -1,10 +1,11 @@
 import { expect } from "chai";
-import { Tone } from "../../Tone/core/Tone";
-import { AudioProcessor } from "../../Tone/node/AudioProcessor";
+import { OfflineContext } from "Tone/core/context/OfflineContext";
+import { ToneWithContext } from "Tone/core/context/ToneWithContext";
+import { Tone } from "Tone/core/Tone";
 
-export const testAudioContext = new OfflineAudioContext(1, 1, 11025);
+export const testAudioContext = new OfflineContext(1, 1, 11025);
 
-export function BasicTests(Constr, ...args: any[]) {
+export function BasicTests(Constr, ...args: any[]): void {
 
 	context("Basic", () => {
 
@@ -23,11 +24,11 @@ export function BasicTests(Constr, ...args: any[]) {
 			const instance = new Constr(Object.assign({
 				context: testAudioContext,
 			}, ...args));
-			if (instance instanceof AudioProcessor) {
+			if (instance instanceof ToneWithContext) {
 				expect(instance.context).to.equal(testAudioContext);
 				// also check all of it's attributes to see if they also have the right context
 				for (const member in instance) {
-					if (instance[member] instanceof AudioProcessor) {
+					if (instance[member] instanceof ToneWithContext) {
 						expect(instance[member].context).to.equal(testAudioContext);
 					}
 				}

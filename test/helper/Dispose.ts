@@ -1,5 +1,5 @@
-export function isDisposed(instance){
-	for (let prop in instance) {
+export function isDisposed(instance) {
+	for (const prop in instance) {
 		const member = instance[prop];
 		if (typeof member !== "function" &&
 			typeof member !== "string" &&

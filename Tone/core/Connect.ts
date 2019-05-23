@@ -1,5 +1,5 @@
-import { InputNode, OutputNode, ToneAudioNode } from "../node/AudioNode";
-import { isArray, isDefined, isNumber } from "./Util";
+import { InputNode, OutputNode, ToneAudioNode } from "./context/ToneAudioNode";
+import { isArray, isDefined, isNumber } from "./util/TypeCheck";
 
 /**
  *  connect together all of the arguments in series

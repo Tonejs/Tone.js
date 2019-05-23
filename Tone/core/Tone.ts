@@ -4,8 +4,9 @@
  *  @license http://opensource.org/licenses/MIT MIT License
  *  @copyright 2014-2019 Yotam Mann
  */
-import "../type/Units";
 import { version } from "../version";
+import { Context } from "./context/Context";
+import "./type/Units";
 
 ///////////////////////////////////////////////////////////////////////////
 // 	TONE
@@ -33,7 +34,7 @@ export abstract class Tone {
 	/**
 	 *  disconnect and dispose.
 	 */
-	abstract dispose(): Tone;
+	abstract dispose(): this;
 
 	/**
 	 * Takes a partial options an returns the completed options by filling in the defaults
@@ -143,5 +144,17 @@ export abstract class Tone {
 	 */
 	toString(): string {
 		return this.name;
+	}
+
+	///////////////////////////////////////////////////////////////////////////
+	// 	STATIC
+	///////////////////////////////////////////////////////////////////////////
+
+	static get context(): Context {
+		return Context.getGlobal();
+	}
+
+	static now(): Seconds {
+		return Tone.context.now();
 	}
 }

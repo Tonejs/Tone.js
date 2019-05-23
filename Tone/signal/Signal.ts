@@ -1,7 +1,7 @@
-import { optionsFromArguments } from "../core/Util";
-import { AbstractParam } from "../node/AbstractParam";
-import { InputNode, ToneAudioNode, ToneAudioNodeOptions } from "../node/AudioNode";
-import { Param } from "../node/Param";
+import { AbstractParam } from "../core/context/AbstractParam";
+import { Param } from "../core/context/Param";
+import { InputNode, ToneAudioNode, ToneAudioNodeOptions } from "../core/context/ToneAudioNode";
+import { optionsFromArguments } from "../core/util/Defaults";
 
 interface SignalOptions extends ToneAudioNodeOptions {
 	value: number;
@@ -21,8 +21,7 @@ interface SignalOptions extends ToneAudioNodeOptions {
  * @example
  * const signal = new Tone.Signal(10);
  */
-export class Signal<Type extends Unit = "number">
-extends ToneAudioNode<SignalOptions>
+export class Signal<Type extends Unit = "number"> extends ToneAudioNode<SignalOptions>
 implements AbstractParam<Type> {
 
 	name = "Signal";
@@ -85,7 +84,7 @@ implements AbstractParam<Type> {
 	///////////////////////////////////////////////////////////////////////////
 	// ABSTRACT PARAM INTERFACE
 	// just a proxy for the ConstantSourceNode's offset AudioParam
-	// all docs are generated from ParamInterface.ts
+	// all docs are generated from AbstractParam.ts
 	///////////////////////////////////////////////////////////////////////////
 
 	setValueAtTime(value: UnitMap[Type], time: Time): this {

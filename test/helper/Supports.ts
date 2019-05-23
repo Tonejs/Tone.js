@@ -5,19 +5,19 @@ const parsed = new UserAgentParser().getBrowser();
 
 const name = parsed.name as string;
 
-const version = parseInt(parsed.major as string);
+const version = parseInt(parsed.major as string, 10);
 
-function is(browser, above?) {
+function is(browser, above?): boolean {
 	above = above || 0;
 	return name.includes(browser) && version >= above;
 }
 
-function isnt(browser, below?) {
+function isnt(browser, below?): boolean {
 	below = below || Infinity;
 	return !(name.includes(browser) && version <= below);
 }
 
-function isntVersion(browser, browserVersion?) {
+function isntVersion(browser, browserVersion?): boolean {
 	return name.includes(browser) && version !== browserVersion;
 }
 

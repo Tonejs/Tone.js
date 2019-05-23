@@ -3,7 +3,7 @@ import "../core/Transport";
 import "../component/Volume";
 import "../core/Master";
 import "../type/Type";
-import "../core/TimelineState";
+import "../core/StateTimeline";
 import "../signal/Signal";
 import "../core/AudioNode";
 
@@ -53,10 +53,10 @@ Tone.Source = function(options){
 
 	/**
 	 * 	Keep track of the scheduled state.
-	 *  @type {Tone.TimelineState}
+	 *  @type {Tone.StateTimeline}
 	 *  @private
 	 */
-	this._state = new Tone.TimelineState(Tone.State.Stopped);
+	this._state = new Tone.StateTimeline(Tone.State.Stopped);
 	this._state.memory = 100;
 
 	/**

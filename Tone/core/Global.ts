@@ -1,4 +1,4 @@
-import { isUndef } from "./Util";
+import { version } from "../version";
 
 /**
  * The global audio context which is getable and assignable through
@@ -37,29 +37,14 @@ export function start(): Promise < void> {
 }
 
 /**
- * True if the current environment has the necessary APIs to run Tone.js
+ * Log Tone.js + version in the console.
  */
-// // export const supported: boolean = toneGlobal.hasOwnProperty("Promise") && toneGlobal.hasOwnProperty("AudioContext");
-
-// set the audio context initially, and if one is not already created
-// if (Tone.supported && !Tone.initialized){
-// 	if (!Tone.global.TONE_AUDIO_CONTEXT){
-// 		Tone.global.TONE_AUDIO_CONTEXT = new Context();
-// 	}
-// 	Tone.context = Tone.global.TONE_AUDIO_CONTEXT;
-
-// 	// log on first initialization
-// 	// allow optional silencing of this log
-// 	if (!Tone.global.TONE_SILENCE_LOGGING){
-// 		var prefix = "v";
-// 		if (Tone.version === "dev"){
-// 			prefix = "";
-// 		}
-// 		var printString = " * Tone.js " + prefix + Tone.version + " * ";
-// 		// eslint-disable-next-line no-console
-// 		console.log("%c" + printString, "background: #000; color: #fff");
-// 	}
-// } else if (!Tone.supported && !Tone.global.TONE_SILENCE_LOGGING){
-// 	// eslint-disable-next-line no-console
-// 	console.warn("This browser does not support Tone.js");
-// }
+if (!this.TONE_SILENCE_LOGGING) {
+	let prefix = "v";
+	if (version === "dev") {
+		prefix = "";
+	}
+	const printString = ` * Tone.js ${prefix}${version} * `;
+	// tslint:disable-next-line: no-console
+	console.log(`%c${printString}`, "background: #000; color: #fff");
+}

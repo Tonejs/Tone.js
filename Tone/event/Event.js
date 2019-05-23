@@ -1,7 +1,7 @@
 import Tone from "../core/Tone";
 import "../core/Transport";
 import "../type/Type";
-import "../core/TimelineState";
+import "../core/StateTimeline";
 
 /**
  *  @class  Tone.Event abstracts away Tone.Transport.schedule and provides a schedulable
@@ -64,10 +64,10 @@ Tone.Event = function(){
 
 	/**
 	 *  Tracks the scheduled events
-	 *  @type {Tone.TimelineState}
+	 *  @type {Tone.StateTimeline}
 	 *  @private
 	 */
-	this._state = new Tone.TimelineState(Tone.State.Stopped);
+	this._state = new Tone.StateTimeline(Tone.State.Stopped);
 
 	/**
 	 *  The playback speed of the note. A speed of 1
