@@ -12,6 +12,11 @@ export abstract class OneShotSource<Options extends ToneAudioNodeOptions> extend
 	onended: () => void = noOp;
 
 	/**
+	 * Sources do not have input nodes
+	 */
+	input: undefined;
+
+	/**
 	 *  The start time
 	 */
 	private _startTime: number = -1;
@@ -29,14 +34,23 @@ export abstract class OneShotSource<Options extends ToneAudioNodeOptions> extend
 	/**
 	 * The public output node
 	 */
-	output: Gain = new Gain(0);
+	output: Gain = new Gain({
+		context: this.context,
+		gain : 0,
+	});
 
 	/**
 	 *  The output gain node.
 	 */
-	private _gainNode = this.output;
+	protected _gainNode = this.output;
 
-	protected abstract _stopSource(time): void;
+	protected abstract _stopSource(time: Seconds): void;
+
+	/**
+	 * Start the source node at the given time
+	 * @param  time When to start the node
+	 */
+	protected abstract start(time?: Time): this;
 	/**
 	 * Start the source at the given time
 	 * @param  time When to start the source
@@ -46,6 +60,15 @@ export abstract class OneShotSource<Options extends ToneAudioNodeOptions> extend
 		this._startTime = this.toSeconds(time);
 		this._startTime = Math.max(this._startTime, this.context.currentTime);
 		this._gainNode.gain.setValueAtTime(1, this._startTime);
+		return this;
+	}
+
+	/**
+	 * Stop the source node at the given time.
+	 * @param time When to stop the source
+	 */
+	stop(time?: Time): this {
+		this._stopGain(time);
 		return this;
 	}
 
