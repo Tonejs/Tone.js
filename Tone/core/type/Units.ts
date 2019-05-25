@@ -133,6 +133,12 @@ type Samples = number;
 type Hertz = number;
 
 /**
+ * A Cent is 1/100th of a semitone.
+ * e.g. a value of 50 cents would be halfway between two intervals.
+ */
+type Cents = number;
+
+/**
  *  One millisecond is a thousandth of a second.
  */
 type Milliseconds = number;
@@ -160,6 +166,7 @@ interface UnitMap {
 	degrees: Degrees;
 	samples: Samples;
 	hertz: Hertz;
+	cents: Cents;
 }
 
 /**
