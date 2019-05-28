@@ -9,8 +9,8 @@ import "../core/Gain";
  *
  *  @extends {Tone.Source}
  *  @constructor
- *  @param {Frequency} frequency The starting frequency of the oscillator.
- *  @param {String} type The type of the carrier oscillator.
+ *  @param {Frequency} frequency The oscillator's frequency.
+ *  @param {String} type The type of the oscillator.
  *  @param {Cents} spread The detune spread between the oscillators.
  *  @example
  * var fatOsc = new Tone.FatOscillator("Ab3", "sine", 40).toMaster().start();
