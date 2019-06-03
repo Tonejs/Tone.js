@@ -1,0 +1,49 @@
+{
+	"Basic" : {
+		"Oscillators" : "oscillator",
+		"Envelope" : "envelope",
+		"Noise" : "noises",
+		"Player" : "player",
+		"Microphone" : "mic",
+		"Mixer" : "mixer"
+	},
+	"Instruments" : {
+		"Synth" : "simpleSynth",
+		"MonoSynth" : "monoSynth",
+		"FMSynth" : "fmSynth",
+		"AMSynth" : "amSynth",
+		"PolySynth" : "polySynth",
+		"FatOscillator" : "jump",
+		"MetalSynth" : "bembe",
+		"Granular Synthesis" : "grainPlayer",
+		"Sampler" : "sampler"
+	},
+	"Effects" : {
+		"LFO Effects" : "lfoEffects",
+		"PingPongDelay" : "pingPongDelay",
+		"Buses" : "buses",
+		"Reverb" : "reverb",
+		"Spatialization" : "spatialPanner"
+	},
+	"Sequencing / Timing" : {
+		"Step Sequencer" : "stepSequencer",
+		"Events" : "events",
+		"Play Along" : "shiny",
+		"Quantization" : "quantization",
+		"Playback Rate" : "pianoPhase",
+		"Transport Sync" : "daw"
+	},
+	"Signals" : {
+		"Control Voltage" : "signal",
+		"Ramping Values" : "rampTo"
+	},
+	"Visualization" : {
+		"Animation Sync" : "animationSync",
+		"Envelopes" : "funkyShape",
+		"Analysis" : "analysis",
+		"Meter" : "meter"
+	},
+	"Misc" : {
+		"Offline Rendering" : "offline"
+	}
+}

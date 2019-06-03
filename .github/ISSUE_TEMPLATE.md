@@ -4,5 +4,5 @@ For help questions, check out the forum: https://groups.google.com/forum/#!forum
 
 If possible, please include a link which illustrates the issue.
 
-https://jsfiddle.net/3m9k17ef/ (latest release)
-https://jsfiddle.net/kyqnbr7d/ (dev build)
+https://jsfiddle.net/1f60jkq4/ (tone@latest)
+https://jsfiddle.net/z9marxbt/ (tone@next)

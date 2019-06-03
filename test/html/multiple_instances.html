@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>TWO CONTEXTS RUNNING AT ONCE</title>
+	<script src="../../build/Tone.js"></script>
+
+<script>
+
+function assert(statement, error){
+	if (!statement){
+		throw new Error(error);
+	}
+}
+
+if (Tone && Tone.context){
+	Tone.context.thisisthesamecontext = true;
+	assert(window.TONE_AUDIO_CONTEXT.thisisthesamecontext, "Did not assign global TONE_AUDIO_CONTEXT");
+} else {
+	throw new Error("NO TONE!");
+}
+
+var instanceOne = Tone;
+</script>
+
+	<script src="../../build/Tone.js"></script>
+</head>
+<body>
+
+<script>
+if (Tone && Tone.context){
+	assert(window.TONE_AUDIO_CONTEXT === Tone.context, "Did not assign global TONE_AUDIO_CONTEXT 2");
+	assert(Tone.context.thisisthesamecontext, "Not the same AudioContext");
+} else {
+	throw new Error("NO TONE 2!");
+}
+
+var instanceTwo = Tone;
+
+//additional checks
+assert(instanceOne !== instanceTwo, "Did not create two instances");
+assert(instanceOne.context === instanceTwo.context, "Instances don't share the same Tone.Context");
+assert(instanceOne.context.rawContext === instanceTwo.context.rawContext, "Instances don't share the same AudioContext");
+</script>
+
+</body>
+</html>

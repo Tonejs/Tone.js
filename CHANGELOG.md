@@ -1,9 +1,27 @@
-### r13
+* Moving to common.js-style code
+* Including tone.d.ts in builds (still WIP)
+
+**Breaking Changes**
+
+* AudioNode.prototype.connect is no longer overwritten. This means that you can no longer connect native nodes to Tone.js Nodes.
+* Tone.connect(srcNode, destNode, [ouputNum], [inputNum]) is the way to connect native Web Audio nodes with Tone.js nodes. 
+
+### 13.4.9
 
 * Updating semantic versioning to be more in line with other [semvers](https://semver.org/). Now version is 13.x.x
+* logging full version
 * Added Object notation for Tone.TimeBase and classes that extend it. 
 	- i.e. Tone.Time({'4n' : 1, '8t' : 2})
 	- Replacement for deprecated expression strings. 
+* Tone.Meter uses RMS instead of peak (thanks [@Idicious](https://github.com/Idicious))
+* Tone.Sampler supports polyphonic syntax (thanks [@zfan40](https://github.com/zfan40))
+* Building files with [webpack](https://webpack.js.org/)
+* Follower/Gate uses a single "smoothing" value instead of separate attacks and releases
+* Changing references to `window` allowing it to not throw error in node context
+* Testing examples
+* Tone.Channel combines Tone.PanVol with Tone.Solo.
+* Removing require.html example. 
+* adding `partialCount` and `baseType` to Oscillator classes, helps with getting/setting complex types.
 
 
 ### r12

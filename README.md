@@ -1,7 +1,8 @@
 Tone.js
 =========
 
-[![Build Status](https://travis-ci.org/Tonejs/Tone.js.svg?branch=dev)](https://travis-ci.org/Tonejs/Tone.js) [![Coverage Status](https://coveralls.io/repos/github/Tonejs/Tone.js/badge.svg?branch=dev)](https://coveralls.io/github/Tonejs/Tone.js?branch=dev)
+[![Build Status](https://travis-ci.org/Tonejs/Tone.js.svg?branch=dev)](https://travis-ci.org/Tonejs/Tone.js) [![codecov](https://codecov.io/gh/Tonejs/Tone.js/branch/dev/graph/badge.svg)](https://codecov.io/gh/Tonejs/Tone.js)
+
 
 Tone.js is a Web Audio framework for creating interactive music in the browser. The architecture of Tone.js aims to be familiar to both musicians and audio programmers looking to create web-based audio applications. On the high-level, Tone offers common DAW (digital audio workstation) features like a global transport for scheduling events and prebuilt synths and effects. For signal-processing programmers (coming from languages like Max/MSP), Tone provides a wealth of high performance, low latency building blocks and DSP modules to build your own synthesizers, effects, and complex control signals.
 
@@ -13,7 +14,7 @@ Tone.js is a Web Audio framework for creating interactive music in the browser. 
 
 # Installation
 
-* download [full](https://tonejs.github.io/build/Tone.js) | [min](https://tonejs.github.io/build/Tone.min.js)
+* [download](https://unpkg.com/tone)
 * `npm install tone`
 * dev -> `npm install tone@next`
 
@@ -44,6 +45,15 @@ The first argument to `triggerAttackRelease` is the frequency which can either b
 Tone.js abstracts away the AudioContext time. Instead of defining all values in seconds, any method which takes time as an argument can accept a number or a string. For example `"4n"` is a quarter-note, `"8t"` is an eighth-note triplet, and `"1m"` is one measure. These values can even be composed into expressions.
 
 [Read about Time encodings](https://github.com/Tonejs/Tone.js/wiki/Time).
+
+# Starting Audio
+
+Most browsers will not play _any_ audio until a user clicks something (like a play button). Execute the above example only after a users invokes `resume()` on Tone's context, or simply `Tone.start()`
+
+```javascript
+//attach a click listener to a play button
+document.querySelector('button').addEventListener('click', () => Tone.start())
+``` 
 
 # Scheduling
 
@@ -149,7 +159,7 @@ Tone.js creates an AudioContext when it loads and shims it for maximum browser c
 
 # MIDI
 
-To use MIDI files, you'll first need to convert them into a JSON format which Tone.js can understand using [MidiConvert](https://tonejs.github.io/MidiConvert/).
+To use MIDI files, you'll first need to convert them into a JSON format which Tone.js can understand using [Midi](https://tonejs.github.io/Midi/).
 
 # Performance
 

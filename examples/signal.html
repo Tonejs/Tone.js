@@ -2,30 +2,28 @@
 <html>
 <head>
   <meta charset="utf-8">
-	<title>Signals</title>
+	<title>Signal</title>
 
-	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-	<link rel="icon" type="image/png" sizes="174x174" href="./style/favicon.png">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<link rel="icon" type="image/png" sizes="174x174" href="./favicon.png">
 
+	<script src="https://unpkg.com/@webcomponents/webcomponentsjs@^2/webcomponents-bundle.js"></script>
 	<script src="../build/Tone.js"></script>
-	<script src="./scripts/jquery.min.js"></script>
-	<script src="./scripts/draggabilly.js"></script>
-	<script src="https://tonejs.github.io/Logo/build/Logo.js"></script>
-	<script src="./scripts/StartAudioContext.js"></script>
-	<script src="./scripts/Interface.js"></script>
-
-	<link rel="stylesheet" type="text/css" href="./style/examples.css">
-
-	<script>
-		// jshint ignore: start
-	</script>
-
+	<script src="./js/tonejs-ui.js"></script>
+	<style type="text/css">
+		tone-play-toggle {
+			margin-bottom: 10px;
+		}
+		tone-slider {
+			display: block;
+			width: 100%;
+		}
+	</style>
 </head>
 <body>
-	<div id="Content">
-		<div id="Title">Control Voltage</div>
-		<div id="Explanation">
-			One of the most powerful features of Tone.js is the ability to 
+	<tone-example>
+		<tone-explanation label="Control Voltage">
+			One of the most powerful features of Tone.js and the Web Audio API is the ability to 
 			perform math and logic on audio-rate signal. Signals
 			can be ramped and scheduled to control Audio Parameters and 
 			other Signals making it simple to create elaborate, 
@@ -34,27 +32,29 @@
 			This example applies a series of mappings to a
 			signal value and applies the results of those mappings
 			to the frequency attribute of 2
-			<a href="https://tonejs.github.io/docs/#Oscillator">Tone.Oscillators</a> 
-			and a <a href="https://tonejs.github.io/docs/#LFO">Tone.LFO</a>. 
-		</div>	
-	</div>
-	<script>
-		//initially muted
-		Tone.Master.mute = true;
+			<a href="https://tonejs.github.io/docs/Oscillator">Tone.Oscillators</a> 
+			and a <a href="https://tonejs.github.io/docs/LFO">Tone.LFO</a>. 
+		</tone-explanation>
 
-		//use this to pan the two oscillators hard left/right
+		<tone-content>
+			<tone-play-toggle></tone-play-toggle>
+			<tone-slider label="Modulation Rate" min="0.1" max="1" exp="2" value="0.5"></tone-slider>
+		</tone-content>
+	</tone-example>
+	
+	<script type="text/javascript">//use this to pan the two oscillators hard left/right
 		var merge = new Tone.Merge().toMaster();
 
 		//two oscillators panned hard left / hard right
 		var rightOsc = new Tone.Oscillator({
 			"type" : "sawtooth",
 			"volume" : -20
-		}).connect(merge.right).start();
+		}).connect(merge.right);
 
 		var leftOsc = new Tone.Oscillator({
 			"type" : "square",
 			"volume" : -20
-		}).connect(merge.left).start();
+		}).connect(merge.left);
 
 		//create an oscillation that goes from 0 to 1200
 		//connection it to the detune of the two oscillators
@@ -82,25 +82,22 @@
 		var detuneScale = new Tone.Scale(14, 4);
 		frequency.chain(detuneScale, detuneLFO.frequency);		
 
-		// GUI //
-
-		Interface.Slider({
-			drag : function(value){
-				frequency.rampTo(value, 0.1);
-			},
-			start : function(){
-				Tone.Master.mute = false;
-			},
-			end: function(){
-				Tone.Master.mute = true;
-			},
-			name : "frequency",
-			min : 0,
-			max : 1,
-			exp : 0.5,
-			value : 0.5,
-			position: 5
+		//start the oscillators with the play button
+		document.querySelector("tone-play-toggle").addEventListener("change", e => {
+			if (e.detail){
+				rightOsc.start();
+				leftOsc.start();
+			} else {
+				rightOsc.stop();
+				leftOsc.stop();
+			}
 		});
+
+		//ramp the frequency with the slider
+		document.querySelector("tone-slider").addEventListener("change", e => {
+			frequency.rampTo(e.detail, 0.1);
+		});
+
 	</script>
 
 </body>

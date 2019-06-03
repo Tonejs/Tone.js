@@ -3,44 +3,38 @@
 <head>
   <meta charset="utf-8">
 	<title>Offline</title>
-	
-	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-	<link rel="icon" type="image/png" sizes="174x174" href="./style/favicon.png">
 
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<link rel="icon" type="image/png" sizes="174x174" href="./favicon.png">
+
+	<script src="https://unpkg.com/@webcomponents/webcomponentsjs@^2/webcomponents-bundle.js"></script>
 	<script src="../build/Tone.js"></script>
-	<script src="./scripts/jquery.min.js"></script>
-	<script src="./scripts/draggabilly.js"></script>
-	<script src="./scripts/StartAudioContext.js"></script>
-	<script src="./scripts/Interface.js"></script>
-	<script src="https://tonejs.github.io/Logo/build/Logo.js"></script>
-
-	<link rel="stylesheet" type="text/css" href="./style/examples.css">
-
-	<script>
-		// jshint ignore: start
-	</script>
-
+	<script src="./js/tonejs-ui.js"></script>
 	<style type="text/css">
-		.Button:not(.Visible) {
-			display: none;
+		tone-button {
+			margin-bottom: 10px;
 		}
 	</style>
 </head>
 <body>
-	<div id="Content">
-		<div id="Title">Offline</div>
-		<div id="Explanation">
+	<tone-example>
+		<tone-loader></tone-loader>
+
+		<tone-explanation label="Offline Rendering">
 			Tone.Offline renders a chunk of Tone.js code into an AudioBuffer. An offline instance of Tone.Transport is passed into the callback which can be used to schedule events. It may take a moment to render the sound. 
 			<br><br>
-			<a href="https://tonejs.github.io/docs/#Tone.Offline">Tone.Offline</a> docs.
-		</div>
-	</div>
-	<script>
+			<a href="https://tonejs.github.io/docs/Tone#offline">Tone.Offline</a> docs.
+		</tone-explanation>
 
+		<tone-content>
+			<tone-button label="Render"></tone-button>
+			<tone-play-toggle disabled></tone-play-toggle>
+		</tone-content>
+	</tone-example>
+
+	<script type="text/javascript">
 		//load the buffer for use in the convolver
 		var buffer = new Tone.Buffer("./audio/IRs/chorus-feedback.wav");
-
-		Interface.Loader();
 
 		function generateAudioOffline(){
 			return Tone.Offline(function(Transport){
@@ -60,7 +54,7 @@
 					}
 				}).connect(pannerA);
 				var seqA = new Tone.Sequence(function(time, note){
-					synthA.triggerAttack(note, time)
+					synthA.triggerAttack(note, time);
 				}, ["A4", "G4", "G#4", "F#4", "E4"], "8n").start(0);
 				seqA.loop = false;
 
@@ -76,7 +70,7 @@
 					}
 				}).connect(pannerB);
 				var seqB = new Tone.Sequence(function(time, note){
-					synthB.triggerAttack(note, time)
+					synthB.triggerAttack(note, time);
 				}, ["G#4", "A4", "G4", "F4", "C4"], "8n").start("16n");
 				seqB.loop = false;
 
@@ -86,48 +80,31 @@
 						"decay" : 3,
 						"sustain" : 0.1
 					},
-				}).toMaster()
+				}).toMaster();
 				var bassSeq = new Tone.Sequence(function(time, note){
-					bass.triggerAttackRelease(note, "1n", time)
+					bass.triggerAttackRelease(note, "1n", time);
 				}, ["C2", "C2", "F1", "F1"], "4n").start(0);
 				bassSeq.loop = false;
 
 				Transport.bpm.value = 150;
 				Transport.start();
-			}, 7).then(function(buffer){
-				//set the buffer once it's rendered
-				player.buffer = buffer;
-			});
+			}, 7);
 		}
 
+		//play the buffer with a Tone.Player when it's been generated
 		var player = new Tone.Player().toMaster();
 
-		// GUI //
-
-		var playButton = Interface.Button({
-			text : "Play",
-			activeText : "Stop",
-			type : "toggle",
-			start : function(){
-				player.start();
-			},
-			end : function(){
-				player.stop();
-			}
+		//bind the interface
+		document.querySelector("tone-button").addEventListener("click", e => {
+			e.target.setAttribute("label", "Rendering...");
+			e.target.setAttribute("disabled", "");
+			var buffer = generateAudioOffline().then(buffer => {
+				document.querySelector("tone-button").setAttribute("label", "Rendered");
+				player.buffer = buffer;
+				document.querySelector("tone-play-toggle").removeAttribute("disabled");
+			});
 		});
-
-		//the render button
-		var renderButton = Interface.Button({
-			text : "Render",
-			start : function(){
-				renderButton.element.text("Rendering...");
-				generateAudioOffline().then(function(){
-					renderButton.element.remove();
-					playButton.element.addClass("Visible");
-				});
-			}
-		});
-		renderButton.element.addClass("Visible");
+		document.querySelector("tone-play-toggle").bind(player);
 
 	</script>
 </body>

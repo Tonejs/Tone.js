@@ -2,42 +2,41 @@
 <html>
 <head>
   <meta charset="utf-8">
-	<title>SCORE</title>
+	<title>Events</title>
 
-	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-	<link rel="icon" type="image/png" sizes="174x174" href="./style/favicon.png">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<link rel="icon" type="image/png" sizes="174x174" href="./favicon.png">
 
+	<script src="https://unpkg.com/@webcomponents/webcomponentsjs@^2/webcomponents-bundle.js"></script>
 	<script src="../build/Tone.js"></script>
-	<script src="./scripts/jquery.min.js"></script>
-	<script src="./scripts/draggabilly.js"></script>
-	<script src="./scripts/StartAudioContext.js"></script>
-	<script src="./scripts/Interface.js"></script>
-	<script src="https://tonejs.github.io/Logo/build/Logo.js"></script>
-
-	<link rel="stylesheet" type="text/css" href="./style/examples.css">
-
-	<script>
-		// jshint ignore: start
-	</script>
-
+	<script src="./js/tonejs-ui.js"></script>
 </head>
 <body>	
-	<div id="Content">
-		<div id="Title">Events</div>
-		<div id="Explanation">
-			Tone's Event classes (<a href="https://tonejs.github.io/docs/#Event">Tone.Event</a>, 
-				<a href="https://tonejs.github.io/docs/#Loop">Tone.Loop</a>, 
-				<a href="https://tonejs.github.io/docs/#Part">Tone.Part</a> and 
-				<a href="https://tonejs.github.io/docs/#Sequence">Tone.Sequence</a>)
+	<tone-example>
+		<tone-explanation label="Events">
+			Tone's Event classes (<a href="https://tonejs.github.io/docs/Event">Tone.Event</a>, 
+				<a href="https://tonejs.github.io/docs/Loop">Tone.Loop</a>, 
+				<a href="https://tonejs.github.io/docs/Part">Tone.Part</a> and 
+				<a href="https://tonejs.github.io/docs/Sequence">Tone.Sequence</a>)
 			simplify scheduling events along the Transport. Each class abstracts away calls to 
-				<a href="https://tonejs.github.io/docs/#Transport.schedule">Transport.schedule</a> or 
-				<a href="https://tonejs.github.io/docs/#Transport.scheduleRepeat">scheduleRepeat</a>
+				<a href="https://tonejs.github.io/docs/Transport.schedule">Transport.schedule</a> or 
+				<a href="https://tonejs.github.io/docs/Transport.scheduleRepeat">scheduleRepeat</a>
 			and lets you create precise, rhythmic events which are startable, stoppable and loopable. 
+		</tone-explanation>
 
-		</div>
-	</div>
+		<tone-content>
+			<tone-play-toggle></tone-play-toggle>
+		</tone-content>
 
-	<script id="ToneCode">
+		<tone-drawer>
+			<tone-membrane-synth collapsed label="Kick"></tone-membrane-synth>
+			<tone-noise-synth collapsed label="Snare"></tone-noise-synth>
+			<tone-mono-synth collapsed label="Bass"></tone-mono-synth>
+			<tone-synth collapsed polyphonic label="Keys"></tone-synth>
+		</tone-drawer>
+	</tone-example>
+
+	<script type="text/javascript">
 		/*
 		 KICK
 		 */
@@ -54,7 +53,6 @@
 			kick.triggerAttackRelease("C2", "8n", time);
 		}, "2n").start(0);
 		
-
 		/*
 		 SNARE
 		 */
@@ -76,7 +74,6 @@
 			snare.triggerAttack(time);
 		}, "2n").start("4n");
 
-
 		/**
 		 *  PIANO
 		 */
@@ -86,7 +83,7 @@
 				"partials" : [1, 2, 1],
 			},
 			"portamento" : 0.05
-		}).toMaster()
+		}).toMaster();
 
 		var cChord = ["C4", "E4", "G4", "B4"];
 		var dChord = ["D4", "F4", "A4", "C5"];
@@ -99,7 +96,6 @@
 		pianoPart.loop = true;
 		pianoPart.loopEnd = "1m";
 		pianoPart.humanize = true;
-
 
 		/*
 		 BASS
@@ -129,20 +125,12 @@
 		//set the transport 
 		Tone.Transport.bpm.value = 90;
 
-		// GUI //
-
-		Interface.Button({
-			key : 32,
-			type : "toggle",
-			text : "Start",
-			activeText : "Stop",
-			start : function(){
-				Tone.Transport.start("+0.1");
-			},
-			end : function(){
-				Tone.Transport.stop();
-			}
-		});
+		//bind the interface
+		document.querySelector("tone-play-toggle").bind(Tone.Transport);
+		document.querySelector("tone-membrane-synth").bind(kick);
+		document.querySelector("tone-mono-synth").bind(bass);
+		document.querySelector("tone-synth").bind(piano);
+		document.querySelector("tone-noise-synth").bind(snare);
 	</script>
 </body>
 </html>

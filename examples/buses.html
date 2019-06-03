@@ -4,48 +4,51 @@
   <meta charset="utf-8">
 	<title>Buses</title>
 
-	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-	<link rel="icon" type="image/png" sizes="174x174" href="./style/favicon.png">
-	
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<link rel="icon" type="image/png" sizes="174x174" href="./favicon.png">
+
+	<script src="https://unpkg.com/@webcomponents/webcomponentsjs@^2/webcomponents-bundle.js"></script>
 	<script src="../build/Tone.js"></script>
-	<script src="./scripts/jquery.min.js"></script>
-	<script src="./scripts/draggabilly.js"></script>
-	<script src="./scripts/StartAudioContext.js"></script>
-	<script src="./scripts/Interface.js"></script>
-	<script src="https://tonejs.github.io/Logo/build/Logo.js"></script>
-	<script src="./scripts/Keyboard.js"></script>
-
-	<link rel="stylesheet" type="text/css" href="./style/examples.css">
-
-	<script>
-		// jshint ignore: start
-	</script>
-
+	<script src="./js/tonejs-ui.js"></script>
+	<style>
+		tone-content tone-slider {
+			display: block;
+			margin-top: 10px;
+		}
+	</style>
 </head>
 <body>
-	<div id="Content">
-		<div id="Title">Buses</div>
-		<div id="Explanation">
+	<tone-example>
+		<tone-explanation label="Buses">
 			Buses make it easy to share effects across many instruments. <code>send</code>
 			audio to a named bus from an instrument and then <code>receive</code> that
 			channel on your effect. The gain values are all in decibels.
 			<br><br>
-			Docs on <a href="https://tonejs.github.io/docs/#Tone.send">send</a> and 
-			<a href="https://tonejs.github.io/docs/#Tone.receive">receive</a>.
-		</div>
-		<div id="Sliders"></div>
-		<div id="Keyboard"></div>
-	</div>
-	<script>
+			Docs on <a href="https://tonejs.github.io/docs/Tone.send">send</a> and 
+			<a href="https://tonejs.github.io/docs/Tone.receive">receive</a>.
+		</tone-explanation>
+		<tone-content>
+			<tone-piano></tone-piano>
+			<tone-slider label="Chorus Send" min="-100" max="0" value="-100" units="db"></tone-slider>
+			<tone-slider label="Chebyshev Send" min="-100" max="0" value="-100" units="db"></tone-slider>
+			<tone-slider label="Freeverb Send" min="-100" max="0" value="-100" units="db"></tone-slider>
+		</tone-content>
 
+		<tone-drawer collapsed>
+			<tone-chorus collapsed></tone-chorus>
+			<tone-chebyshev collapsed></tone-chebyshev>
+			<tone-freeverb collapsed></tone-freeverb>
+			<tone-synth collapsed></tone-synth>
+		</tone-drawer>
+	</tone-example>
+
+	<script type="text/javascript">
 		//the synth
-		var synth = new Tone.Synth().toMaster()
-			.set("envelope.attack", 0.04);
+		var synth = new Tone.Synth().toMaster().set("envelope.attack", 0.04);
 
 		//send audio to each of the effect channels
 		var chorusSend = synth.send("chorus", -Infinity);
 		var chebySend = synth.send("cheby", -Infinity);
-		var autowahSend = synth.send("autowah", -Infinity);
 		var reverbSend = synth.send("reverb", -Infinity);
 
 		//make some effects
@@ -61,51 +64,21 @@
 			.receive("reverb")
 			.toMaster();
 
-
-		// GUI //
-
-		Interface.Slider({
-			name : "Chebyshev",
-			parent : $("#Sliders"),
-			min : -100,
-			max : 0,
-			drag : function(val){
-				chebySend.gain.value = val;
-			}
+		//bind the interface
+		document.querySelector("tone-chorus").bind(chorus);
+		document.querySelector("tone-chebyshev").bind(cheby);
+		document.querySelector("tone-freeverb").bind(reverb);
+		document.querySelector("tone-synth").bind(synth);
+		document.querySelector("tone-piano").bind(synth);
+		document.querySelector("[label=\"Chorus Send\"]").addEventListener("change", e => {
+			chorusSend.gain.value = e.detail;
 		});
-
-		Interface.Slider({
-			name : "Chorus",
-			parent : $("#Sliders"),
-			min : -100,
-			max : 0,
-			drag : function(val){
-				chorusSend.gain.value = val;
-			}
+		document.querySelector("[label=\"Chebyshev Send\"]").addEventListener("change", e => {
+			chebySend.gain.value = e.detail;
 		});
-
-		Interface.Slider({
-			name : "Freeverb",
-			parent : $("#Sliders"),
-			min : -100,
-			max : 0,
-			drag : function(val){
-				reverbSend.gain.value = val;
-			}
+		document.querySelector("[label=\"Freeverb Send\"]").addEventListener("change", e => {
+			reverbSend.gain.value = e.detail;
 		});
-
-		/**
-		 *  the keyboard
-		 */
-		var keyboard = Interface.Keyboard();
-
-		keyboard.keyDown = function (note) {
-		    synth.triggerAttack(note);
-		};
-
-		keyboard.keyUp = function () {
-		    synth.triggerRelease();
-		};
 	</script>
 </body>
 </html>

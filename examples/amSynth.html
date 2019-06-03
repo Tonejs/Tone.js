@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+	<title>AMSynth</title>
+
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<link rel="icon" type="image/png" sizes="174x174" href="./favicon.png">
+
+	<script src="https://unpkg.com/@webcomponents/webcomponentsjs@^2/webcomponents-bundle.js"></script>
+	<script src="../build/Tone.js"></script>
+	<script src="./js/tonejs-ui.js"></script>
+</head>
+<body>
+	<style>
+		tone-piano {
+			margin-bottom: 10px;
+		}
+	</style>
+	<tone-example>
+		<tone-explanation label="AMSynth">
+			<a href="https://tonejs.github.io/docs/AMSynth">Tone.AMSynth</a>
+			is composed of two 
+			<a href="https://tonejs.github.io/docs/Synth">Tone.Synths</a> 
+			where one Tone.Synth modulates the amplitude of a second Tone.Synth. 
+		</tone-explanation>
+
+		<tone-content>
+			<tone-piano></tone-piano>
+			<tone-am-synth></tone-am-synth>
+		</tone-content>
+	</tone-example>
+	
+	<script type="text/javascript">
+		var synth = new Tone.AMSynth({
+			"harmonicity" : 2.5,
+			"oscillator" : {
+				"type" : "fatsawtooth"
+			},
+			"envelope" : {
+				"attack" : 0.1,
+				"decay" : 0.2,
+				"sustain" : 0.2,
+				"release" : 0.3
+			},
+			"modulation" : {
+				"type" : "square"
+			},
+			"modulationEnvelope" : {
+				"attack" : 0.5,
+				"decay" : 0.01
+			}
+		}).toMaster();
+
+		//bind the interface
+		document.querySelector("tone-piano").bind(synth);
+		document.querySelector("tone-am-synth").bind(synth);
+	</script>
+</body>
+</html>

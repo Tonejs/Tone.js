@@ -4,51 +4,46 @@
   <meta charset="utf-8">
 	<title>Phasing</title>
 
-	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-	<link rel="icon" type="image/png" sizes="174x174" href="./style/favicon.png">
-	
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<link rel="icon" type="image/png" sizes="174x174" href="./favicon.png">
+
+	<script src="https://unpkg.com/@webcomponents/webcomponentsjs@^2/webcomponents-bundle.js"></script>
 	<script src="../build/Tone.js"></script>
-	<script src="./scripts/jquery.min.js"></script>
-	<script src="./scripts/draggabilly.js"></script>
-	<script src="https://tonejs.github.io/Logo/build/Logo.js"></script>
-	<script src="./scripts/StartAudioContext.js"></script>
-	<script src="./scripts/Interface.js"></script>
-
-	<link rel="stylesheet" type="text/css" href="./style/examples.css">
-
-	<script>
-		// jshint ignore: start
-	</script>
-
+	<script src="./js/tonejs-ui.js"></script>
 </head>
-<body>	
+<body>
 	<style type="text/css">
-
-		#Left, #Right {
-			height: 200px;
-			width: 50%;
-			position: relative;
-			float: left;
-			margin-top: 5px;
-			margin-bottom: 5px;
+		#loop {
+			margin-bottom: 10px;
+			display: flex;
+			background-color: #777;
+			border-radius: 20px;
+			padding: 10px;
 		}
-
-		.Button {
-			display: inline-block;
+		tone-loop {
+			flex-grow: 1;
+			width: 40%;
+			height: 150px;
 		}
 	</style>
-	<div id="Content">
-		<div id="Title">Piano Phase</div>
-		<div id="Explanation">
+	<tone-example>
+		<tone-explanation label="Piano Phase">
 			By slightly slowing down the playbackRate of the Tone.Sequence in the right channel,
 			the two identical melodies phase against each other in interesting ways.
+			<br><br>
 			Composition by Steve Reich. Inspiration from Alexander Chen.
-		</div>
-		<canvas id="Left"></canvas>
-		<canvas id="Right"></canvas>
-	</div>
+		</tone-explanation>
 
-	<script>
+		<tone-content>
+			<div id="loop">
+				<tone-loop id="left" color="#7F33ED"></tone-loop>
+				<tone-loop id="right" color="#1EDF3E"></tone-loop>
+			</div>
+			<tone-play-toggle></tone-play-toggle>
+		</tone-content>
+	</tone-example>
+
+	<script type="text/javascript">
 		//set the bpm and time signature first
 		Tone.Transport.timeSignature = [6, 4];
 		Tone.Transport.bpm.value = 180;
@@ -66,21 +61,21 @@
 
 		//the synth settings
 		var synthSettings = {
-			"oscillator": {
-				"detune": 0,
-				"type": "custom",
+			"oscillator" : {
+				"detune" : 0,
+				"type" : "custom",
 				"partials" : [2, 1, 2, 2],
-				"phase": 0,
-				"volume": 0
+				"phase" : 0,
+				"volume" : 0
 			},
-			"envelope": {
-				"attack": 0.005,
-				"decay": 0.3,
-				"sustain": 0.2,
-				"release": 1,
+			"envelope" : {
+				"attack" : 0.005,
+				"decay" : 0.3,
+				"sustain" : 0.2,
+				"release" : 1,
 			},
-			"portamento": 0.01,
-			"volume": -20
+			"portamento" : 0.01,
+			"volume" : -20
 		};
 
 		//left and right synthesizers
@@ -99,7 +94,10 @@
 		//set the playback rate of the right part to be slightly slower
 		partR.playbackRate = 0.985;
 
-		// GUI //
+		document.querySelector("tone-play-toggle").bind(Tone.Transport);
+		document.querySelector("#left").bind(partL);
+		document.querySelector("#right").bind(partR);
+		/*// GUI //
 
 		Interface.Button({
 			key : 32,
@@ -167,7 +165,7 @@
 			rightContext.stroke();
 			rightContext.restore();
 		}
-		loop();
+		loop();*/
 		
 	</script>
 </body>

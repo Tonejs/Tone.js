@@ -4,52 +4,34 @@
   <meta charset="utf-8">
 	<title>Synth</title>
 
-	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-	<link rel="icon" type="image/png" sizes="174x174" href="./style/favicon.png">
-	
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<link rel="icon" type="image/png" sizes="174x174" href="./favicon.png">
+
+	<script src="https://unpkg.com/@webcomponents/webcomponentsjs@^2/webcomponents-bundle.js"></script>
 	<script src="../build/Tone.js"></script>
-	<script src="./scripts/jquery.min.js"></script>
-	<script src="./scripts/draggabilly.js"></script>
-	<script src="./scripts/StartAudioContext.js"></script>
-	<script src="./scripts/Interface.js"></script>
-	<script src="https://tonejs.github.io/Logo/build/Logo.js"></script>
-	<script src="./scripts/Keyboard.js"></script>
-
-	<link rel="stylesheet" type="text/css" href="./style/examples.css">
-
-	<script>
-		// jshint ignore: start
-	</script>
-
+	<script src="./js/tonejs-ui.js"></script>
 </head>
-<body>	
-	<style type="text/css">
-
-		img {
-			width: 80%;
-			max-width: 700px;
-			margin-left: auto;
-    		margin-right: auto;
-    		display: block;
-		}
-
-		#Keyboard {
-			margin: 3px!important;
+<body>
+	<style>
+		tone-piano {
+			margin-bottom: 10px;
 		}
 	</style>
-	<div id="Content">
-		<div id="Title">Synth</div>
-		<div id="Explanation">
-			<a href="https://tonejs.github.io/docs/#Synth" target="_blank">Tone.Synth</a> is composed simply of a 
-			<a href="https://tonejs.github.io/docs/#OmniOscillator" target="_blank">Tone.OmniOscillator</a>
+	<tone-example>
+		<tone-explanation label="Synth">
+			<a href="https://tonejs.github.io/docs/Synth" target="_blank">Tone.Synth</a> is composed simply of a 
+			<a href="https://tonejs.github.io/docs/OmniOscillator" target="_blank">Tone.OmniOscillator</a>
 			routed through a 
-			<a href="https://tonejs.github.io/docs/#AmplitudeEnvelope" target="_blank">Tone.AmplitudeEnvelope</a>.
-		</div>
-		<div id="Keyboard"></div>
-	</div>
+			<a href="https://tonejs.github.io/docs/AmplitudeEnvelope" target="_blank">Tone.AmplitudeEnvelope</a>. 
+		</tone-explanation>
 
-	<script>
+		<tone-content>
+			<tone-piano></tone-piano>
+			<tone-synth></tone-synth>
+		</tone-content>
+	</tone-example>
 
+	<script type="text/javascript">
 		var synth = new Tone.Synth({
 			"oscillator" : {
 				"type" : "amtriangle",
@@ -57,7 +39,7 @@
 				"modulationType" : "sine"
 			},
 			"envelope" : {
-				"attackCurve" : 'exponential',
+				"attackCurve" : "exponential",
 				"attack" : 0.05,
 				"decay" : 0.2,
 				"sustain" : 0.2,
@@ -66,18 +48,10 @@
 			"portamento" : 0.05
 		}).toMaster();
 
-		// GUI //
+		//bind the interface
+		document.querySelector("tone-piano").bind(synth);
+		document.querySelector("tone-synth").bind(synth);
 
-		var keyboard = Interface.Keyboard();
-
-		keyboard.keyDown = function (note) {
-		    synth.triggerAttack(note);
-		};
-
-		keyboard.keyUp = function () {
-		    synth.triggerRelease();
-		};
 	</script>
-
 </body>
 </html>

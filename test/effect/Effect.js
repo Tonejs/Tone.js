@@ -1,5 +1,6 @@
-define(["Tone/effect/Effect", "helper/Basic"], function (Effect, Basic) {
-	describe("Effect", function(){
-		Basic(Effect);
-	});
+import Effect from "Tone/effect/Effect";
+import Basic from "helper/Basic";
+describe("Effect", function(){
+	Basic(Effect);
 });
+

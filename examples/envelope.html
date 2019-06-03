@@ -4,61 +4,49 @@
   <meta charset="utf-8">
 	<title>Envelope</title>
 
-	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-	<link rel="icon" type="image/png" sizes="174x174" href="./style/favicon.png">
-	
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<link rel="icon" type="image/png" sizes="174x174" href="./favicon.png">
+
+	<script src="https://unpkg.com/@webcomponents/webcomponentsjs@^2/webcomponents-bundle.js"></script>
 	<script src="../build/Tone.js"></script>
-	<script src="./scripts/jquery.min.js"></script>
-	<script src="./scripts/draggabilly.js"></script>
-	<script src="./scripts/StartAudioContext.js"></script>
-	<script src="./scripts/Interface.js"></script>
-	<script src="https://tonejs.github.io/Logo/build/Logo.js"></script>
-
-	<link rel="stylesheet" type="text/css" href="./style/examples.css">
-
-	<script>
-		// jshint ignore: start
-	</script>
-
+	<script src="./js/tonejs-ui.js"></script>
 </head>
 <body>	
 	<style type="text/css">
 		img {
+			display: block;
+			margin: 5px auto;
 			width: 300px!important;
 		}
 
-		.y {
-			float: left;
-			height: 290px!important;
-		}
-
-		#Sliders {
-			float: left;
-			position: relative;
-			width: calc(100% - 100px);
-		}
-
-		.Button {
-			clear: both;
+		tone-trigger {
+			margin-bottom: 10px;
 		}
 	</style>
-	<div id="Content">
-		<div id="Title">Envelope</div>
-		<div id="Explanation">
+	<tone-example>
+		<tone-explanation label="Envelope">
 			Envelopes ramp amplitude, frequency or any other parameter over time. 
-			<a href="https://tonejs.github.io/docs/#Envelope">Tone.Envelope</a> and the classes that extend it
+			<a href="https://tonejs.github.io/docs/Envelope">Tone.Envelope</a> and the classes that extend it
 			implement an <a href="https://en.wikipedia.org/wiki/Synthesizer#ADSR_envelope" target="_blank">ADSR</a> envelope type
 			which splits its ramp into four distinct phases: Attack, Decay, Sustain, Release.
 			<img src="https://upload.wikimedia.org/wikipedia/commons/e/ea/ADSR_parameter.svg">
-		</div>
-		<div id="Sliders"></div>
-	</div>
+		</tone-explanation>
 
-	<script>
+		<tone-content>
+			<tone-trigger></tone-trigger>
+			<tone-envelope><tone-envelope>
+		</tone-content>
+
+		<tone-drawer collapsed>
+			<tone-oscillator collapsed frequency><tone-oscillator>
+		</tone-drawer>
+	</tone-example>
+
+	<script type="text/javascript">
 		var env = new Tone.AmplitudeEnvelope({
 			"attack" : 0.11,
 			"decay" : 0.21,
-			"sustain" : 0.09,
+			"sustain" : 0.5,
 			"release" : 1.2
 		}).toMaster();
 
@@ -70,58 +58,16 @@
 			"volume" : -8,
 		}).connect(env).start();
 
-		// GUI //
+		//bind the interface
+		document.querySelector("tone-envelope").bind(env);
+		document.querySelector("tone-oscillator").bind(osc);
 
-		Interface.Slider({
-			param : "attack",
-			name : "attack",
-			parent : $("#Sliders"),
-			tone : env,
-			min : 0.005,
-			max : 1,
-			exp : 2,
-		});
-
-		Interface.Slider({
-			param : "decay",
-			name : "decay",
-			parent : $("#Sliders"),
-			tone : env,
-			min : 0.005,
-			max : 1,
-			exp : 2,
-		});
-
-		Interface.Slider({
-			param : "release",
-			name : "release",
-			parent : $("#Sliders"),
-			tone : env,
-			min : 0.2,
-			max : 2,
-			exp : 2,
-		});
-
-		Interface.Slider({
-			param : "sustain",
-			name : "sustain",
-			tone : env,
-			axis : "y",
-			min : 0.0,
-			max : 1,
-			exp : 2,
-		});
-
-		Interface.Button({
-			text : "Trigger Attack",
-			activeText : "Trigger Release",
-			key : 32, //spacebar
-			start : function(){
+		document.querySelector("tone-trigger").addEventListener("change", e => {
+			if (e.detail){
 				env.triggerAttack();
-			},
-			end : function(){
+			} else {
 				env.triggerRelease();
-			},
+			}
 		});
 	</script>
 </body>
