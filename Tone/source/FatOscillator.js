@@ -5,16 +5,15 @@ import "../signal/Multiply";
 import "../core/Gain";
 
 /**
- *  @class Tone.FatOscillator
+ *  @class Tone.FatOscillator is an array of oscillators with detune spread between the oscillators
  *
  *  @extends {Tone.Source}
  *  @constructor
- *  @param {Frequency} frequency The starting frequency of the oscillator.
- *  @param {String} type The type of the carrier oscillator.
- *  @param {String} modulationType The type of the modulator oscillator.
+ *  @param {Frequency} frequency The oscillator's frequency.
+ *  @param {String} type The type of the oscillator.
+ *  @param {Cents} spread The detune spread between the oscillators.
  *  @example
- * //a sine oscillator frequency-modulated by a square wave
- * var fmOsc = new Tone.FatOscillator("Ab3", "sine", "square").toMaster().start();
+ * var fatOsc = new Tone.FatOscillator("Ab3", "sine", 40).toMaster().start();
  */
 Tone.FatOscillator = function(){
 
