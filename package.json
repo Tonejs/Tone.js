@@ -20,7 +20,7 @@
     "increment": "node scripts/increment_version.js",
     "karma": "karma start scripts/karma.conf.js --single-run --grep $npm_config_grep",
     "karma:watch": "karma start scripts/karma.conf.js --auto-watch --browsers OnlineChrome --grep $npm_config_grep",
-    "lint:fix": "eslint Tone/*/*.ts --fix",
+    "lint:fix": "tslint --project tslint.json --fix",
     "scratch": "webpack -w --env.scratch --mode=development",
     "test": "npm run karma",
     "test:watch": "npm run collect:tests && npm run karma:watch",
@@ -30,7 +30,6 @@
     "test:node": "node ./test/html/node_test.js",
     "tsd": "node ./scripts/generate_docs.js",
     "lint": "tslint --project tslint.json",
-    "lint:fix": "tslint --project tslint.json --fix",
     "tsc:watch": "tsc --watch",
     "watch:old": "npm run increment && npm run collect:deps && webpack -w --env.production --mode=development",
     "watch": "tsc --watch"
@@ -57,7 +56,7 @@
   },
   "devDependencies": {
     "@babel/polyfill": "^7.0.0-beta.47",
-    "@tonejs/plot": "0.0.20",
+    "@tonejs/plot": "0.0.21",
     "@types/chai": "^4.1.7",
     "@types/mocha": "^5.2.6",
     "@types/ua-parser-js": "^0.7.32",
