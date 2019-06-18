@@ -1,71 +1,68 @@
+import { TestAudioBuffer } from "@tonejs/plot";
 import { expect } from "chai";
+import { ToneOscillatorNode } from "Tone/source/oscillator/OscillatorNode";
 import { noOp } from "../util/Interface";
 import { Offline } from "./Offline";
 import { ToneAudioBuffer } from "./ToneAudioBuffer";
-// import Transport from "Tone/core/Transport";
-// import Oscillator from "Tone/source/Oscillator";
-// import Tone from "Tone/core/Tone";
-// import AudioBuffer from "Tone/core/Buffer";
-// import BufferTest from "helper/BufferTest";
 
 describe("Offline", () => {
 
 	it("accepts a callback and a duration", () => {
-		Offline(noOp, 0.01);
+		return Offline(noOp, 0.01);
 	});
 
 	it("returns a promise", () => {
-		expect(Offline(noOp, 0.01)).to.have.property("then");
+		const ret = Offline(noOp, 0.01);
+		expect(ret).to.have.property("then");
+		return ret;
 	});
 
-	it("generates a buffer", (done) => {
-		Offline(noOp, 0.01).then((buffer) => {
+	it("generates a buffer", () => {
+		return Offline(noOp, 0.01).then((buffer) => {
 			expect(buffer).to.be.instanceOf(ToneAudioBuffer);
-			done();
 		});
 	});
 
-	it("silent by default", (done) => {
-		Offline(noOp, 0.01, 1).then((buffer) => {
+	it("silent by default", () => {
+		return Offline(noOp, 0.01, 1).then((buffer) => {
 			const isSilent = buffer.toArray().every(sample => sample === 0);
 			expect(isSilent).to.equal(true);
-			done();
 		});
 	});
 
-	// it("records the master output", () => {
-	// 	return Offline(() => {
-	// 		new Oscillator().toMaster().start();
-	// 	}, 0.01).then((buffer) => {
-	// 		BufferTest(buffer);
-	// 		expect(buffer.isSilent()).to.be.false;
-	// 	});
-	// });
+	it("records the master output", () => {
+		return Offline(() => {
+			new ToneOscillatorNode().toMaster().start();
+		}, 0.01).then((buffer) => {
+			const testBuff = new TestAudioBuffer(buffer.get() as AudioBuffer);
+			expect(testBuff.isSilent()).is.equal(false);
+		});
+	});
 
-	// it("returning a promise defers the rendering till the promise resolves", () => {
-	// 	var wasInvoked = false;
-	// 	return Offline(() => {
-	// 		new Oscillator().toMaster().start();
-	// 		return new Promise((done) => {
-	// 			setTimeout(done, 100);
-	// 		}).then(() => {
-	// 			wasInvoked = true;
-	// 		});
-	// 	}, 0.01).then((buffer) => {
-	// 		BufferTest(buffer);
-	// 		expect(wasInvoked).to.be.true;
-	// 		expect(buffer.isSilent()).to.be.false;
-	// 	});
-	// });
+	it("returning a promise defers the rendering till the promise resolves", () => {
+		let wasInvoked = false;
+		return Offline(() => {
+			new ToneOscillatorNode().toMaster().start();
+			return new Promise((done) => {
+				setTimeout(done, 100);
+			}).then(() => {
+				wasInvoked = true;
+			});
+		}, 0.01).then((buffer) => {
+			const testBuff = new TestAudioBuffer(buffer.get() as AudioBuffer);
+			expect(wasInvoked).is.equal(true);
+			expect(testBuff.isSilent()).to.equal(false);
+		});
+	});
 
-	// it("can schedule specific timing outputs", () => {
-	// 	return Offline(() => {
-	// 		new Oscillator().toMaster().start(0.05);
-	// 	}, 0.1).then((buffer) => {
-	// 		BufferTest(buffer);
-	// 		expect(buffer.getFirstSoundTime()).to.be.closeTo(0.05, 0.0001);
-	// 	});
-	// });
+	it("can schedule specific timing outputs", () => {
+		return Offline(() => {
+			new ToneOscillatorNode().toMaster().start(0.05);
+		}, 0.1).then((buffer) => {
+			const testBuff = new TestAudioBuffer(buffer.get() as AudioBuffer);
+			expect(testBuff.getTimeOfFirstSound()).to.be.closeTo(0.05, 0.0001);
+		});
+	});
 
 	// it("can schedule Transport events", () => {
 	// 	return Offline(function (Transport) {
