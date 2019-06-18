@@ -196,9 +196,9 @@ implements AbstractParam<Type> {
 	}
 
 	getValueAtTime(time: Time): UnitMap[Type] {
-		time = this.toSeconds(time);
-		const after = this._events.getAfter(time);
-		const before = this._events.get(time);
+		const computedTime = Math.max(this.toSeconds(time), 0);
+		const after = this._events.getAfter(computedTime);
+		const before = this._events.get(computedTime);
 		let value = this._initialValue;
 		// if it was set by
 		if (before === null) {
@@ -212,7 +212,7 @@ implements AbstractParam<Type> {
 				previousVal = previous.value;
 			}
 			if (isDefined(before.constant)) {
-				value = this._exponentialApproach(before.time, previousVal, before.value, before.constant, time);
+				value = this._exponentialApproach(before.time, previousVal, before.value, before.constant, computedTime);
 			}
 		} else if (after === null) {
 			value = before.value;
@@ -227,9 +227,9 @@ implements AbstractParam<Type> {
 				}
 			}
 			if (after.type === "linear") {
-				value = this._linearInterpolate(before.time, beforeValue, after.time, after.value, time);
+				value = this._linearInterpolate(before.time, beforeValue, after.time, after.value, computedTime);
 			} else {
-				value = this._exponentialInterpolate(before.time, beforeValue, after.time, after.value, time);
+				value = this._exponentialInterpolate(before.time, beforeValue, after.time, after.value, computedTime);
 			}
 		} else {
 			value = before.value;
