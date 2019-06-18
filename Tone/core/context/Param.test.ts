@@ -79,7 +79,7 @@ describe("Param", () => {
 					expect(param.getValueAtTime(0.6)).to.be.closeTo(1.6, 0.1);
 					param.linearRampToValueAtTime(0.5, 0.7);
 					expect(param.getValueAtTime(0.6)).to.be.closeTo(0.75, 0.1);
-				}, 1.5, 1);
+				}, 1.5, 1, sampleRate);
 				document.body.appendChild(await Plot.signal(testBuffer));
 				matchesOutputCurve(param, testBuffer);
 			});
@@ -98,7 +98,7 @@ describe("Param", () => {
 					});
 					param.setValueCurveAtTime([0, 0.5, 0, 1, 1.5], 0.1, 0.8, 0.5);
 					expect(param.getValueAtTime(0.91)).to.be.closeTo(0.75, 0.01);
-				}, 1, 1);
+				}, 1, 1, sampleRate);
 				document.body.appendChild(await Plot.signal(testBuffer));
 				matchesOutputCurve(param, testBuffer);
 			});
@@ -128,7 +128,7 @@ describe("Param", () => {
 					param.setValueAtTime(4, 1.2);
 					param.cancelScheduledValues(1.2);
 					param.linearRampToValueAtTime(1, 1.3);
-				}, 1.5, 1);
+				}, 1.5, 1, sampleRate);
 				document.body.appendChild(await Plot.signal(testBuffer));
 				matchesOutputCurve(param, testBuffer);
 			});
@@ -160,7 +160,7 @@ describe("Param", () => {
 					param.setValueAtTime(1, 0.48);
 					param.cancelAndHoldAtTime(0.45);
 					expect(param.getValueAtTime(0.45)).to.be.closeTo(0, 0.001);
-				}, 0.5, 1);
+				}, 0.5, 1, sampleRate);
 				matchesOutputCurve(param, testBuffer);
 				// document.body.appendChild(await Plot.signal(testBuffer));
 			});
