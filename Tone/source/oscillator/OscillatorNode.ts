@@ -1,10 +1,10 @@
 import { connect } from "Tone/core/Connect";
+import { Param } from "Tone/core/context/Param";
+import { ToneAudioNodeOptions } from "Tone/core/context/ToneAudioNode";
 import { optionsFromArguments } from "Tone/core/util/Defaults";
-import { Param } from "../../core/context/Param";
-import { ToneAudioNodeOptions } from "../../core/context/ToneAudioNode";
-import { OneShotSource } from "../OneShotSource";
+import { OneShotSource, OneShotSourceOptions } from "../OneShotSource";
 
-interface ToneOscillatorNodeOptions extends ToneAudioNodeOptions {
+interface ToneOscillatorNodeOptions extends OneShotSourceOptions {
 	frequency: Frequency;
 	detune: Cents;
 	type: OscillatorType;

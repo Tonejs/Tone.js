@@ -1,7 +1,12 @@
+import { Tone } from "Tone/core/Tone";
 import { PlaybackState } from "Tone/core/util/StateTimeline";
 import { Gain } from "../core/context/Gain";
 import { ToneAudioNode, ToneAudioNodeOptions } from "../core/context/ToneAudioNode";
 import { noOp } from "../core/util/Interface";
+
+export interface OneShotSourceOptions extends ToneAudioNodeOptions {
+	onended: () => void;
+}
 
 export abstract class OneShotSource<Options extends ToneAudioNodeOptions> extends ToneAudioNode<Options> {
 
@@ -19,12 +24,12 @@ export abstract class OneShotSource<Options extends ToneAudioNodeOptions> extend
 	/**
 	 *  The start time
 	 */
-	private _startTime: number = -1;
+	protected _startTime: number = -1;
 
 	/**
 	 *  The stop time
 	 */
-	private _stopTime: number = -1;
+	protected _stopTime: number = -1;
 
 	/**
 	 * The id of the timeout
@@ -44,6 +49,30 @@ export abstract class OneShotSource<Options extends ToneAudioNodeOptions> extend
 	 */
 	protected _gainNode = this.output;
 
+	/**
+	 *  The fadeIn time of the amplitude envelope.
+	 */
+	protected _fadeIn: Time = 0;
+
+	/**
+	 *  The fadeOut time of the amplitude envelope.
+	 */
+	protected _fadeOut: Time = 0;
+
+	/**
+	 * The curve applied to the fades, either "linear" or "exponential"
+	 */
+	protected _curve: "linear" | "exponential" = "linear";
+
+	static getDefaults(): OneShotSourceOptions {
+		return Object.assign(ToneAudioNode.getDefaults(), {
+			onended : noOp,
+		});
+	}
+
+	/**
+	 * Stop the source node
+	 */
 	protected abstract _stopSource(time: Seconds): void;
 
 	/**
@@ -55,11 +84,26 @@ export abstract class OneShotSource<Options extends ToneAudioNodeOptions> extend
 	 * Start the source at the given time
 	 * @param  time When to start the source
 	 */
-	protected _startGain(time: Time): this {
+	protected _startGain(time: Seconds, gain: GainFactor = 1): this {
 		this.assert(this._startTime === -1, "Source cannot be started more than once");
-		this._startTime = this.toSeconds(time);
+		// apply a fade in envelope
+		const fadeInTime = this.toSeconds(this._fadeIn);
+
+		// record the start time
+		this._startTime = time + fadeInTime;
 		this._startTime = Math.max(this._startTime, this.context.currentTime);
-		this._gainNode.gain.setValueAtTime(1, this._startTime);
+
+		// schedule the envelope
+		if (fadeInTime > 0) {
+			this._gainNode.gain.setValueAtTime(0, time);
+			if (this._curve === "linear") {
+				this._gainNode.gain.linearRampToValueAtTime(gain, time + fadeInTime);
+			} else {
+				this._gainNode.gain.exponentialApproachValueAtTime(gain, time, fadeInTime);
+			}
+		} else {
+			this._gainNode.gain.setValueAtTime(gain, time);
+		}
 		return this;
 	}
 
@@ -68,7 +112,7 @@ export abstract class OneShotSource<Options extends ToneAudioNodeOptions> extend
 	 * @param time When to stop the source
 	 */
 	stop(time?: Time): this {
-		this._stopGain(time);
+		this._stopGain(this.toSeconds(time));
 		return this;
 	}
 
@@ -76,26 +120,36 @@ export abstract class OneShotSource<Options extends ToneAudioNodeOptions> extend
 	 * Stop the source at the given time
 	 * @param  time When to stop the source
 	 */
-	protected _stopGain(time: Time): this {
+	protected _stopGain(time: Seconds): this {
 		this.assert(this._startTime !== -1, "'start' must be called before 'stop'");
 		// cancel the previous stop
 		this.cancelStop();
-		// reschedule it
-		this._stopTime = this.toSeconds(time);
+
+		// the fadeOut time
+		const fadeOutTime = this.toSeconds(this._fadeOut);
+
+		// schedule the stop callback
+		this._stopTime = this.toSeconds(time) + fadeOutTime;
 		this._stopTime = Math.max(this._stopTime, this.context.currentTime);
-		if (this._stopTime > this._startTime) {
-			this._gainNode.gain.setValueAtTime(0, this._stopTime);
-			this.context.clearTimeout(this._timeout);
-			this._timeout = this.context.setTimeout(() => {
-				this._stopSource(this.now());
-				this.onended();
-				// disconnect when it's ended, to free up for garbage collection
-				setTimeout(() => this._gainNode.disconnect(), 100);
-			}, this._stopTime - this.context.currentTime);
+		if (fadeOutTime > 0) {
+			// start the fade out curve at the given time
+			if (this._curve === "linear") {
+				this._gainNode.gain.linearRampTo(0, fadeOutTime, time);
+			} else {
+				this._gainNode.gain.targetRampTo(0, fadeOutTime, time);
+			}
 		} else {
-			// cancel the stop envelope
-			this._gainNode.gain.cancelScheduledValues(this._startTime);
+			// stop any ongoing ramps, and set the value to 0
+			this._gainNode.gain.cancelAndHoldAtTime(time);
+			this._gainNode.gain.setValueAtTime(0, time);
 		}
+		this.context.clearTimeout(this._timeout);
+		this._timeout = this.context.setTimeout(() => {
+			this._stopSource(this.now());
+			this.onended();
+			// disconnect when it's ended, to free up for garbage collection
+			setTimeout(() => this._gainNode.disconnect(), 100);
+		}, this._stopTime - this.context.currentTime);
 		return this;
 	}
 
