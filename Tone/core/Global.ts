@@ -6,12 +6,17 @@ import { version } from "../version";
  */
 let globalContext: BaseAudioContext;
 
+// @ts-ignore
+globalContext = window.TONE_AUDIO_CONTEXT;
+
 /**
  * Returns the default system-wide AudioContext
  */
 export function getContext(): BaseAudioContext {
 	if (!globalContext) {
 		globalContext = new AudioContext();
+		// @ts-ignore
+		window.TONE_AUDIO_CONTEXT = globalContext;
 	}
 	return globalContext;
 }
@@ -21,6 +26,8 @@ export function getContext(): BaseAudioContext {
  */
 export function setContext(context: BaseAudioContext): void {
 	globalContext = context;
+	// @ts-ignore
+	window.TONE_AUDIO_CONTEXT = globalContext;
 }
 
 /**
