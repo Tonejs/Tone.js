@@ -165,7 +165,7 @@ export abstract class TypeBaseClass<Type extends Seconds | Hertz | Ticks> extend
 				if (isDefined(this._val[typeName])) {
 					const quantity = this._val[typeName];
 					// @ts-ignore
-					const time = (new this.constructor(typeName)).valueOf() * quantity;
+					const time = (new this.constructor(this.context, typeName)).valueOf() * quantity;
 					total += time;
 				}
 			}
