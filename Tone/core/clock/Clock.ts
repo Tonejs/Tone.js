@@ -1,4 +1,3 @@
-import { Param } from "../context/Param";
 import { ToneWithContext, ToneWithContextOptions } from "../context/ToneWithContext";
 import { optionsFromArguments } from "../util/Defaults";
 import { Emitter, EmitterEventObject } from "../util/Emitter";
