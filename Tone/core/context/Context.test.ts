@@ -186,7 +186,7 @@ describe("Context", () => {
 			return Offline(context => {
 				const transport = new Transport({context});
 				transport.context.setTimeout(() => {
-					expect(Tone.now()).to.be.closeTo(0.01, 0.005);
+					expect(transport.now()).to.be.closeTo(0.01, 0.005);
 				}, 0.01);
 			}, 0.05);
 		});
