@@ -82,10 +82,10 @@ describe("Delay", () => {
 		delay.dispose();
 	});
 
-	it("passes audio through", async () => {
-		expect(await PassAudio(input => {
+	it("passes audio through", () => {
+		return PassAudio(input => {
 			const delay = new Delay().toMaster();
 			connect(input, delay);
-		})).to.equal(true);
+		});
 	});
 });
