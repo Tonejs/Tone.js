@@ -45,9 +45,11 @@ export class TickSignal<Type extends "hertz" | "bpm"> extends Param<Type> {
 
 		this._sig = this.context.createConstantSource();
 
+		// set the multiplier
+		this.multiplier = options.multiplier;
+
 		// clear the ticks from the beginning
 		this.cancelScheduledValues(0);
-		this.multiplier = options.multiplier;
 		// set an initial event
 		this._events.add({
 			ticks: 0,
