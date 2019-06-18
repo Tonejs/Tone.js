@@ -1,5 +1,5 @@
 import { BaseToneOptions } from "../Tone";
-import { isDefined, isObject } from "./TypeCheck";
+import { isDefined, isObject, isUndef } from "./TypeCheck";
 
 /**
  * Recursively merge an object
@@ -55,11 +55,13 @@ export function getDefaultsFromInstance<T>(instance: T): BaseToneOptions {
 }
 
 /**
+ * Returns the fallback if the given object is undefined.
  * Take an array of arguments and return a formatted options object.
- * @param args the arguments passed into the function
- * @param keys an array of keys
- * @param defaults the class's defaults
  */
-// export function defaultArg<T>(given: T, fallback): T {
-
-// }
+export function defaultArg<T>(given: T, fallback: T): T {
+	if (isUndef(given)) {
+		return fallback;
+	} else {
+		return given;
+	}
+}
