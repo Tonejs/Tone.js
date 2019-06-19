@@ -1,7 +1,7 @@
 
-import * as UserAgentParser from "ua-parser-js";
+import { UAParser } from "ua-parser-js";
 
-const parsed = new UserAgentParser().getBrowser();
+const parsed = new UAParser().getBrowser();
 
 const name = parsed.name as string;
 
