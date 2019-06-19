@@ -103,21 +103,25 @@ describe("ToneOscillatorNode", () => {
 			});
 		}
 
-		it("invokes the onended callback in the offline context", (done) => {
-			Offline(() => {
+		it("invokes the onended callback in the offline context", () => {
+			let wasInvoked = false;
+			return Offline(() => {
 				const osc = new ToneOscillatorNode();
 				osc.start(0);
 				osc.stop(0.2);
 				osc.onended = () => {
 					expect(osc.now() - 0.2).to.be.closeTo(0, 0.05);
 					osc.dispose();
-					done();
+					wasInvoked = true;
 				};
-			}, 0.3);
+			}, 0.3).then(() => {
+				expect(wasInvoked).to.equal(true);
+			});
 		});
 
-		it("invokes the onended callback only once in offline context", (done) => {
-			Offline(() => {
+		it("invokes the onended callback only once in offline context", () => {
+			let wasInvoked = false;
+			return Offline(() => {
 				const osc = new ToneOscillatorNode();
 				osc.start(0);
 				osc.stop(0.1);
@@ -126,9 +130,12 @@ describe("ToneOscillatorNode", () => {
 				osc.onended = () => {
 					expect(osc.now() - 0.3).to.be.closeTo(0, 0.05);
 					osc.dispose();
-					done();
+					expect(wasInvoked).to.equal(false);
+					wasInvoked = true;
 				};
-			}, 0.4);
+			}, 0.4).then(() => {
+				expect(wasInvoked).to.equal(true);
+			});
 		});
 	});
 

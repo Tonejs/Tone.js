@@ -26,17 +26,20 @@ describe("TransportEvent", () => {
 		});
 	});
 
-	it("can invoke the callback", (done) => {
-		Offline((context) => {
+	it("can invoke the callback", () => {
+		let wasInvoked = false;
+		return Offline((context) => {
 			const transport = new Transport({context});
 			const event = new TransportEvent(transport, {
 				callback: (time) => {
 					expect(time).to.equal(100);
-					done();
+					wasInvoked = true;
 				},
 				time: 0,
 			});
 			event.invoke(100);
+		}).then(() => {
+			expect(wasInvoked).to.equal(true);
 		});
 	});
 });
