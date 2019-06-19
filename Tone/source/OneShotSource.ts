@@ -176,7 +176,7 @@ export abstract class OneShotSource<Options extends ToneAudioNodeOptions> extend
 	/**
 	 *  Cancel a scheduled stop event
 	 */
-	protected cancelStop(): this {
+	cancelStop(): this {
 		this.assert(this._startTime !== -1, "Source is not started");
 		// cancel the stop envelope
 		this._gainNode.gain.cancelScheduledValues(this._startTime + this.sampleTime);
