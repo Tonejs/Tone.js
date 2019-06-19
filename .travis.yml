@@ -8,11 +8,10 @@ install:
 - git config --global user.email "travis@travis-ci.org"
 - git config --global user.name "Travis CI"
 script: 
-  - npm run test:travis
+  - npm run test
   - npm run codecov
 before_deploy: 
   - npm run increment
-  - npm run tsd
 jobs:
   include:
     - stage: test
