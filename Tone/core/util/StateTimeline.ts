@@ -5,6 +5,8 @@ export type PlaybackState = "started" | "stopped" | "paused";
 
 export interface StateTimelineEvent extends TimelineEvent {
 	state: PlaybackState;
+	duration?: Seconds;
+	offset?: Seconds;
 }
 
 /**
@@ -29,7 +31,7 @@ export class StateTimeline extends Timeline<StateTimelineEvent> {
 	 *  @param  time  The time to query.
 	 *  @return  The name of the state input in setStateAtTime.
 	 */
-	getValueAtTime(time): PlaybackState {
+	getValueAtTime(time: Seconds): PlaybackState {
 		const event = this.get(time);
 		if (event !== null) {
 			return event.state;
@@ -43,7 +45,7 @@ export class StateTimeline extends Timeline<StateTimelineEvent> {
 	 *  @param  state The name of the state to set.
 	 *  @param  time  The time to query.
 	 */
-	setStateAtTime(state, time): this {
+	setStateAtTime(state: PlaybackState, time: Seconds): this {
 		// all state changes need to be >= the previous state time
 		// TODO throw error if time < the previous event time
 		this.add({
