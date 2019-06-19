@@ -130,7 +130,7 @@ export class ToneBufferSource extends OneShotSource<ToneBufferSourceOptions> {
 	 *                   of the sample (minus any offset)
 	 *  @param  gain  The gain to play the buffer back at.
 	 */
-	start(time?, offset: Time = 0, duration?: Time, gain: GainFactor = 1): this {
+	start(time?: Time, offset?: Time, duration?: Time, gain: GainFactor = 1): this {
 		this.assert(this.buffer.loaded, "buffer is either not set or not loaded");
 		time = this.toSeconds(time);
 
