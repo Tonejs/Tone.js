@@ -1,9 +1,9 @@
-import { BasicTests } from "test/helper/Basic";
-import { Noise } from "./Noise";
 import { expect } from "chai";
-import { SourceTests } from "test/helper/SourceTests";
-import { OutputAudio } from "test/helper/OutputAudio";
+import { BasicTests } from "test/helper/Basic";
 import { CompareToFile } from "test/helper/CompareToFile";
+import { OutputAudio } from "test/helper/OutputAudio";
+import { SourceTests } from "test/helper/SourceTests";
+import { Noise } from "./Noise";
 
 describe("Noise", () => {
 
