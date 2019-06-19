@@ -32,7 +32,7 @@ export interface SourceOptions extends ToneAudioNodeOptions {
  * state.start("+0.3").stop("+0.2");
  *
  */
-export abstract class Source extends ToneAudioNode {
+export abstract class Source<Options extends SourceOptions> extends ToneAudioNode<Options> {
 
 	/**
 	 *  The output volume node
@@ -68,7 +68,7 @@ export abstract class Source extends ToneAudioNode {
 	 *  @type {Tone.StateTimeline}
 	 *  @private
 	 */
-	private _state: StateTimeline = new StateTimeline("stopped");
+	protected _state: StateTimeline = new StateTimeline("stopped");
 
 	/**
 	 *  The synced `start` callback function from the transport
