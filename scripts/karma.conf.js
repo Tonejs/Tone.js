@@ -56,7 +56,10 @@ module.exports = function(config) {
 			},
 			reports: {
 				html: path.resolve(__dirname, "../coverage"),
-				lcovonly: path.resolve(__dirname, "../coverage"),
+				lcovonly: {
+					directory : path.resolve(__dirname, "../coverage"),
+					filename: "coverage.lcov",
+				},
 			},
 			tsconfig: "./tsconfig.json",
 		},
