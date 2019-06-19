@@ -32,7 +32,7 @@ interface NoiseOptions extends SourceOptions {
  * //start the autofilter LFO
  * autoFilter.start()
  */
-export class Noise extends Source {
+export class Noise extends Source<NoiseOptions> {
 
 	name = "Noise";
 
