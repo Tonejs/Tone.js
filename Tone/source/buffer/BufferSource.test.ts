@@ -150,8 +150,8 @@ describe("ToneBufferSource", () => {
 			}, buffer.duration * 2).then((buff) => {
 				expect(buff.getRmsAtTime(0)).to.be.above(0);
 				expect(buff.getRmsAtTime(buffer.duration * 0.5)).to.be.above(0);
-				expect(buff.getRmsAtTime(buffer.duration)).to.equal(0);
-				expect(buff.getRmsAtTime(buffer.duration * 1.5)).to.equal(0);
+				expect(buff.getRmsAtTime(buffer.duration)).to.be.closeTo(0, 0.001);
+				expect(buff.getRmsAtTime(buffer.duration * 1.5)).to.be.closeTo(0, 0.001);
 			});
 		});
 
@@ -171,7 +171,7 @@ describe("ToneBufferSource", () => {
 		});
 
 		it("starts at the loop start offset if looping", () => {
-			const offsetTime = 0.05;
+			const offsetTime = 0.047;
 			const offsetSample = buffer.toArray()[Math.floor(offsetTime * sampleRate)];
 			return Offline(() => {
 				const player = new ToneBufferSource(buffer).toMaster();
@@ -230,21 +230,20 @@ describe("ToneBufferSource", () => {
 		});
 
 		if (ONLINE_TESTING) {
-			/* it("schedules the onended callback in online context", (done) => {
-				let player = new ToneBufferSource(buffer);
+			it.skip("schedules the onended callback in online context", (done) => {
+				const player = new ToneBufferSource(buffer);
 				player.start().stop("+0.1");
-				player.onended = function(plyr) {
-					expect(plyr).to.equal(player);
+				player.onended = () => {
 					expect(player.state).to.equal("stopped");
 					player.dispose();
 					done();
 				};
-			}); */
+			});
 		}
 
 		it("schedules the onended callback when offline", (done) => {
 
-			Offline(() => {
+			return Offline(() => {
 				const player = new ToneBufferSource(buffer).toMaster();
 				player.start(0.2).stop(0.4);
 				player.onended = () => {
@@ -253,27 +252,32 @@ describe("ToneBufferSource", () => {
 			}, 0.5);
 		});
 
-		it("invokes the onended callback when a looped buffer is scheduled to stop", (done) => {
-
-			Offline(() => {
+		it("invokes the onended callback when a looped buffer is scheduled to stop", () => {
+			let wasInvoked = false;
+			return Offline(() => {
 				const player = new ToneBufferSource(buffer).toMaster();
 				player.loop = true;
 				player.start().stop(0.4);
 				player.onended = () => {
-					done();
+					wasInvoked = true;
 				};
-			}, 0.5);
+			}, 0.5).then(() => {
+				expect(wasInvoked).to.equal(true);
+			});
 		});
 
-		it("schedules the onended callback when the buffer is done without scheduling stop", (done) => {
+		it("schedules the onended callback when the buffer is done without scheduling stop", () => {
 
-			Offline(() => {
+			let wasInvoked = false;
+			return Offline(() => {
 				const player = new ToneBufferSource(buffer).toMaster();
 				player.start(0);
 				player.onended = () => {
-					done();
+					wasInvoked = true;
 				};
-			}, buffer.duration * 1.1);
+			}, buffer.duration * 1.1).then(() => {
+				expect(wasInvoked).to.equal(true);
+			});
 		});
 
 	});
@@ -498,7 +502,7 @@ describe("ToneBufferSource", () => {
 				expect(buff.getValueAtTime(0.1)).to.be.closeTo(1, 0.01);
 				expect(buff.getValueAtTime(0.4)).to.be.closeTo(1, 0.01);
 				expect(buff.getValueAtTime(0.45)).to.be.closeTo(0.06, 0.01);
-				expect(buff.getValueAtTime(0.5)).to.equal(0);
+				expect(buff.getValueAtTime(0.5)).to.closeTo(0, 0.01);
 			});
 		});
 
