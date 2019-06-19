@@ -118,7 +118,7 @@ export abstract class AbstractParam<Type extends Unit> {
 	 * @param duration
 	 * @param scaling If the values in the curve should be scaled by some value
 	 */
-	abstract setValueCurveAtTime(values: Type[], startTime: Time, duration: Time, scaling?: number): this;
+	abstract setValueCurveAtTime(values: Array<UnitMap[Type]>, startTime: Time, duration: Time, scaling?: number): this;
 
 	/**
 	 * Cancels all scheduled parameter changes with times greater than or
