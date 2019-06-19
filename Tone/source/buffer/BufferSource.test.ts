@@ -171,7 +171,7 @@ describe("ToneBufferSource", () => {
 		});
 
 		it("starts at the loop start offset if looping", () => {
-			const offsetTime = 0.047;
+			const offsetTime = 0.05;
 			const offsetSample = buffer.toArray()[Math.floor(offsetTime * sampleRate)];
 			return Offline(() => {
 				const player = new ToneBufferSource(buffer).toMaster();
