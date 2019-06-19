@@ -78,16 +78,14 @@ export class Noise extends Source<NoiseOptions> {
 		return this._type;
 	}
 	set type(type: NoiseType) {
-		this.assert(["white", "pink", "brown"].indexOf(type) !== -1, "Noise: invalid type: " + type);
+		this.assert(type in _noiseBuffers, "Noise: invalid type: " + type);
 		if (this._type !== type) {
-			if (type in _noiseBuffers) {
-				this._type = type;
-				// if it's playing, stop and restart it
-				if (this.state === "started") {
-					const now = this.now();
-					this._stop(now);
-					this._start(now);
-				}
+			this._type = type;
+			// if it's playing, stop and restart it
+			if (this.state === "started") {
+				const now = this.now();
+				this._stop(now);
+				this._start(now);
 			}
 		}
 	}
