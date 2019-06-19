@@ -1,8 +1,8 @@
-import Tone from "../core/Tone";
+import Tone from "../../core/Tone";
 import "../core/Buffer";
-import "../source/Source";
+import "../Source";
 import "../source/TickSource";
-import "../source/BufferSource";
+import "../BufferSource";
 
 /**
  *  @class  Tone.Player is an audio file player with start, loop, and stop functions.

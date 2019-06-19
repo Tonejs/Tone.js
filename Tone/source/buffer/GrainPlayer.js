@@ -1,7 +1,7 @@
-import Tone from "../core/Tone";
-import "../source/Source";
+import Tone from "../../core/Tone";
+import "../Source";
 import "../core/Buffer";
-import "../source/BufferSource";
+import "../BufferSource";
 
 /**
  * @class Tone.GrainPlayer implements [granular synthesis](https://en.wikipedia.org/wiki/Granular_synthesis).

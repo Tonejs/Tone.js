@@ -1,4 +1,4 @@
-import Tone from "../core/Tone";
+import Tone from "../../core/Tone";
 import "../source/Player";
 import "../component/Volume";
 import "../core/AudioNode";
@@ -11,7 +11,7 @@ import "../core/AudioNode";
  *  @param {Object} urls An object mapping a name to a url.
  *  @param {function=} onload The function to invoke when all buffers are loaded.
  */
-Tone.Players = function(urls){
+Tone.Players = function(urls) {
 
 	var args = Array.prototype.slice.call(arguments);
 	args.shift();
@@ -70,7 +70,7 @@ Tone.Players = function(urls){
 	this._fadeOut = options.fadeOut;
 
 	//add all of the players
-	for (var name in urls){
+	for (var name in urls) {
 		this._loadingCount++;
 		this.add(name, urls[name], this._bufferLoaded.bind(this, options.onload));
 	}
@@ -87,7 +87,7 @@ Tone.Players.defaults = {
 	"mute" : false,
 	"onload" : Tone.noOp,
 	"fadeIn" : 0,
-	"fadeOut" : 0
+	"fadeOut" : 0,
 };
 
 /**
@@ -95,9 +95,9 @@ Tone.Players.defaults = {
  *  @param  {Function}  callback
  *  @private
  */
-Tone.Players.prototype._bufferLoaded = function(callback){
+Tone.Players.prototype._bufferLoaded = function(callback) {
 	this._loadingCount--;
-	if (this._loadingCount === 0 && callback){
+	if (this._loadingCount === 0 && callback) {
 		callback(this);
 	}
 };
@@ -112,12 +112,12 @@ Tone.Players.prototype._bufferLoaded = function(callback){
  * source.mute = true;
  */
 Object.defineProperty(Tone.Players.prototype, "mute", {
-	get : function(){
+	get : function() {
 		return this._volume.mute;
 	},
-	set : function(mute){
+	set : function(mute) {
 		this._volume.mute = mute;
-	}
+	},
 });
 
 /**
@@ -127,15 +127,15 @@ Object.defineProperty(Tone.Players.prototype, "mute", {
  * @name fadeIn
  */
 Object.defineProperty(Tone.Players.prototype, "fadeIn", {
-	get : function(){
+	get : function() {
 		return this._fadeIn;
 	},
-	set : function(fadeIn){
+	set : function(fadeIn) {
 		this._fadeIn = fadeIn;
-		this._forEach(function(player){
+		this._forEach(function(player) {
 			player.fadeIn = fadeIn;
 		});
-	}
+	},
 });
 
 /**
@@ -145,15 +145,15 @@ Object.defineProperty(Tone.Players.prototype, "fadeIn", {
  * @name fadeOut
  */
 Object.defineProperty(Tone.Players.prototype, "fadeOut", {
-	get : function(){
+	get : function() {
 		return this._fadeOut;
 	},
-	set : function(fadeOut){
+	set : function(fadeOut) {
 		this._fadeOut = fadeOut;
-		this._forEach(function(player){
+		this._forEach(function(player) {
 			player.fadeOut = fadeOut;
 		});
-	}
+	},
 });
 
 /**
@@ -164,13 +164,13 @@ Object.defineProperty(Tone.Players.prototype, "fadeOut", {
  * @readOnly
  */
 Object.defineProperty(Tone.Players.prototype, "state", {
-	get : function(){
+	get : function() {
 		var playing = false;
-		this._forEach(function(player){
+		this._forEach(function(player) {
 			playing = playing || player.state === Tone.State.Started;
 		});
 		return playing ? Tone.State.Started : Tone.State.Stopped;
-	}
+	},
 });
 
 /**
@@ -179,7 +179,7 @@ Object.defineProperty(Tone.Players.prototype, "state", {
  *                                 buffer.
  *  @return  {Boolean}
  */
-Tone.Players.prototype.has = function(name){
+Tone.Players.prototype.has = function(name) {
 	return this._players.hasOwnProperty(name);
 };
 
@@ -189,11 +189,11 @@ Tone.Players.prototype.has = function(name){
  *                          the constructor object or `add` method.
  *  @return  {Tone.Player}
  */
-Tone.Players.prototype.get = function(name){
-	if (this.has(name)){
+Tone.Players.prototype.get = function(name) {
+	if (this.has(name)) {
 		return this._players[name];
 	} else {
-		throw new Error("Tone.Players: no player named "+name);
+		throw new Error("Tone.Players: no player named " + name);
 	}
 };
 
@@ -203,8 +203,8 @@ Tone.Players.prototype.get = function(name){
  * @return {Tone.Players}            this
  * @private
  */
-Tone.Players.prototype._forEach = function(callback){
-	for (var playerName in this._players){
+Tone.Players.prototype._forEach = function(callback) {
+	for (var playerName in this._players) {
 		callback(this._players[playerName], playerName);
 	}
 	return this;
@@ -218,13 +218,13 @@ Tone.Players.prototype._forEach = function(callback){
  * @readOnly
  */
 Object.defineProperty(Tone.Players.prototype, "loaded", {
-	get : function(){
+	get : function() {
 		var isLoaded = true;
-		this._forEach(function(player){
+		this._forEach(function(player) {
 			isLoaded = isLoaded && player.loaded;
 		});
 		return isLoaded;
-	}
+	},
 });
 
 /**
@@ -236,7 +236,7 @@ Object.defineProperty(Tone.Players.prototype, "loaded", {
  *  @param  {Function=}  callback  The callback to invoke
  *                                 when the url is loaded.
  */
-Tone.Players.prototype.add = function(name, url, callback){
+Tone.Players.prototype.add = function(name, url, callback) {
 	this._players[name] = new Tone.Player(url, callback).connect(this.output);
 	this._players[name].fadeIn = this._fadeIn;
 	this._players[name].fadeOut = this._fadeOut;
@@ -248,8 +248,8 @@ Tone.Players.prototype.add = function(name, url, callback){
  * @param {Time} time The time to stop all of the players.
  * @return {Tone.Players} this
  */
-Tone.Players.prototype.stopAll = function(time){
-	this._forEach(function(player){
+Tone.Players.prototype.stopAll = function(time) {
+	this._forEach(function(player) {
 		player.stop(time);
 	});
 };
@@ -258,14 +258,14 @@ Tone.Players.prototype.stopAll = function(time){
  *  Dispose and disconnect.
  *  @return {Tone.Players} this
  */
-Tone.Players.prototype.dispose = function(){
+Tone.Players.prototype.dispose = function() {
 	Tone.AudioNode.prototype.dispose.call(this);
 	this._volume.dispose();
 	this._volume = null;
 	this._writable("volume");
 	this.volume = null;
 	this.output = null;
-	this._forEach(function(player){
+	this._forEach(function(player) {
 		player.dispose();
 	});
 	this._players = null;
