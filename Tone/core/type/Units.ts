@@ -111,6 +111,12 @@ type BPM = number;
  *  Angle between 0 and 360.
  */
 type Degrees = number;
+
+/**
+ *  Angle between 0 and 2 * PI.
+ */
+type Radians = number;
+
 /**
  *  A number representing a midi note.
  */
@@ -164,6 +170,7 @@ interface UnitMap {
 	ticks: Ticks;
 	bpm: BPM;
 	degrees: Degrees;
+	radians: Radians;
 	samples: Samples;
 	hertz: Hertz;
 	cents: Cents;
