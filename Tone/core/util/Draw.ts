@@ -1,4 +1,4 @@
-import { ToneWithContext } from "../context/ToneWithContext";
+import { ToneWithContext, ToneWithContextOptions } from "../context/ToneWithContext";
 import { Timeline, TimelineEvent } from "./Timeline";
 
 interface DrawEvent extends TimelineEvent {
@@ -20,7 +20,7 @@ interface DrawEvent extends TimelineEvent {
  * 	}, time)
  * }, "+0.5")
  */
-export class Draw extends ToneWithContext {
+export class Draw extends ToneWithContext<ToneWithContextOptions> {
 
 	name = "Draw";
 
