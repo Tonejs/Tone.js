@@ -1,0 +1,247 @@
+import { ToneAudioBuffer } from "Tone/core/context/ToneAudioBuffer";
+import { optionsFromArguments } from "Tone/core/util/Defaults";
+import { Source, SourceOptions } from "../source/Source";
+import { ToneBufferSource } from "./buffer/BufferSource";
+
+type NoiseType = "white" | "brown" | "pink";
+
+interface NoiseOptions extends SourceOptions {
+	type: NoiseType;
+	playbackRate: Positive;
+}
+
+/**
+ * Noise is a noise generator. It uses looped noise buffers to save on performance.
+ * Noise supports the noise types: "pink", "white", and "brown". Read more about
+ * colors of noise on [Wikipedia](https://en.wikipedia.org/wiki/Colors_of_noise).
+ *
+ * @param type the noise type (white|pink|brown)
+ * @example
+ * //initialize the noise and start
+ * var noise = new Noise("pink").start();
+ *
+ * //make an autofilter to shape the noise
+ * var autoFilter = new Tone.AutoFilter({
+ * 	"frequency" : "8m",
+ * 	"min" : 800,
+ * 	"max" : 15000
+ * }).connect(Tone.Master);
+ *
+ * //connect the noise
+ * noise.connect(autoFilter);
+ * //start the autofilter LFO
+ * autoFilter.start()
+ */
+export class Noise extends Source {
+
+	name = "Noise";
+
+	/**
+	 * Private reference to the source
+	 */
+	private _source: ToneBufferSource | null = null;
+
+	/**
+	 * private reference to the type
+	 */
+	private _type!: NoiseType;
+
+	/**
+	 *  The playback rate of the noise. Affects
+	 *  the "frequency" of the noise.
+	 */
+	private _playbackRate: Positive;
+
+	constructor(type?: NoiseType);
+	constructor(options?: Partial<NoiseOptions>);
+	constructor() {
+		super(optionsFromArguments(Noise.getDefaults(), arguments, ["type"]));
+		const options = optionsFromArguments(Noise.getDefaults(), arguments, ["type"]);
+
+		this._playbackRate = options.playbackRate;
+		this.type = options.type;
+	}
+
+	static getDefaults(): NoiseOptions {
+		return Object.assign(Source.getDefaults(), {
+			playbackRate: 1,
+			type: "white" as NoiseType,
+		});
+	}
+
+	/**
+	 * The type of the noise. Can be "white", "brown", or "pink".
+	 * @example
+	 * noise.type = "white";
+	 */
+	get type(): NoiseType {
+		return this._type;
+	}
+	set type(type: NoiseType) {
+		this.assert(["white", "pink", "brown"].indexOf(type) !== -1, "Noise: invalid type: " + type);
+		if (this._type !== type) {
+			if (type in _noiseBuffers) {
+				this._type = type;
+				// if it's playing, stop and restart it
+				if (this.state === "started") {
+					const now = this.now();
+					this._stop(now);
+					this._start(now);
+				}
+			}
+		}
+	}
+
+	/**
+	 *  The playback rate of the noise. Affects
+	 *  the "frequency" of the noise.
+	 */
+	get playbackRate(): Positive {
+		return this._playbackRate;
+	}
+	set playbackRate(rate: Positive) {
+		this._playbackRate = rate;
+		if (this._source) {
+			this._source.playbackRate.value = rate;
+		}
+	}
+
+	/**
+	 *  internal start method
+	 */
+	protected _start(time: Time): void {
+		const buffer = _noiseBuffers[this._type];
+		this._source = new ToneBufferSource(buffer).connect(this.output);
+		this._source.loop = true;
+		this._source.playbackRate.value = this._playbackRate;
+		this._source.start(this.toSeconds(time), Math.random() * (buffer.duration - 0.001));
+	}
+
+	/**
+	 *  internal stop method
+	 *
+	 *  @param {Time} time
+	 *  @private
+	 */
+	protected _stop(time?: Time): void {
+		if (this._source) {
+			this._source.stop(this.toSeconds(time));
+			this._source = null;
+		}
+	}
+
+	/**
+	 * Restarts the noise.
+	 * @param  time When to restart the noise.
+	 */
+	restart(time?: Time): this {
+		// TODO could be optimized by cancelling the buffer source 'stop'
+		// stop and restart
+		this._stop(time);
+		this._start(time);
+		return this;
+	}
+
+	/**
+	 *  Clean up.
+	 */
+	dispose(): this {
+		super.dispose();
+		if (this._source) {
+			this._source.disconnect();
+		}
+		return this;
+	}
+}
+
+///////////////////////////////////////////////////////////////////////////
+// THE NOISE BUFFERS
+///////////////////////////////////////////////////////////////////////////
+
+// Noise buffer stats
+const BUFFER_LENGTH = 44100 * 5;
+const NUM_CHANNELS = 2;
+
+/**
+ * The cached noise buffers
+ */
+interface NoiseCache {
+	[key: string]: ToneAudioBuffer | null;
+}
+
+/**
+ * Cache the noise buffers
+ */
+const _noiseCache: NoiseCache = {
+	brown: null,
+	pink: null,
+	white: null,
+};
+
+/**
+ * The noise arrays. Generated on initialization.
+ * borrowed heavily from https://github.com/zacharydenton/noise.js
+ * (c) 2013 Zach Denton (MIT)
+ */
+const _noiseBuffers = {
+	get brown(): ToneAudioBuffer {
+		if (!_noiseCache.brown) {
+			const buffer: Float32Array[] = [];
+			for (let channelNum = 0; channelNum < NUM_CHANNELS; channelNum++) {
+				const channel = new Float32Array(BUFFER_LENGTH);
+				buffer[channelNum] = channel;
+				let lastOut = 0.0;
+				for (let i = 0; i < BUFFER_LENGTH; i++) {
+					const white = Math.random() * 2 - 1;
+					channel[i] = (lastOut + (0.02 * white)) / 1.02;
+					lastOut = channel[i];
+					channel[i] *= 3.5; // (roughly) compensate for gain
+				}
+			}
+			_noiseCache.brown = new ToneAudioBuffer().fromArray(buffer);
+		}
+		return _noiseCache.brown;
+	},
+
+	get pink(): ToneAudioBuffer {
+		if (!_noiseCache.pink) {
+			const buffer: Float32Array[] = [];
+			for (let channelNum = 0; channelNum < NUM_CHANNELS; channelNum++) {
+				const channel = new Float32Array(BUFFER_LENGTH);
+				buffer[channelNum] = channel;
+				// tslint:disable-next-line: one-variable-per-declaration
+				let b0, b1, b2, b3, b4, b5, b6;
+				b0 = b1 = b2 = b3 = b4 = b5 = b6 = 0.0;
+				for (let i = 0; i < BUFFER_LENGTH; i++) {
+					const white = Math.random() * 2 - 1;
+					b0 = 0.99886 * b0 + white * 0.0555179;
+					b1 = 0.99332 * b1 + white * 0.0750759;
+					b2 = 0.96900 * b2 + white * 0.1538520;
+					b3 = 0.86650 * b3 + white * 0.3104856;
+					b4 = 0.55000 * b4 + white * 0.5329522;
+					b5 = -0.7616 * b5 - white * 0.0168980;
+					channel[i] = b0 + b1 + b2 + b3 + b4 + b5 + b6 + white * 0.5362;
+					channel[i] *= 0.11; // (roughly) compensate for gain
+					b6 = white * 0.115926;
+				}
+			}
+			_noiseCache.pink = new ToneAudioBuffer().fromArray(buffer);
+		}
+		return _noiseCache.pink;
+	},
+
+	get white(): ToneAudioBuffer {
+		if (!_noiseCache.white) {
+			const buffer: Float32Array[] = [];
+			for (let channelNum = 0; channelNum < NUM_CHANNELS; channelNum++) {
+				const channel = new Float32Array(BUFFER_LENGTH);
+				buffer[channelNum] = channel;
+				for (let i = 0; i < BUFFER_LENGTH; i++) {
+					channel[i] = Math.random() * 2 - 1;
+				}
+			}
+			_noiseCache.white = new ToneAudioBuffer().fromArray(buffer);
+		}
+		return _noiseCache.white;
+	},
+};
