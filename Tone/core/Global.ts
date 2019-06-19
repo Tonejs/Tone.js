@@ -39,8 +39,12 @@ export function setContext(context: BaseAudioContext): void {
  * @example
  * document.querySelector('#playbutton').addEventListener('click', () => Tone.start())
  */
-export function start(): Promise < void> {
-	return globalContext.resume();
+export function start(): Promise <void> {
+	if (globalContext instanceof AudioContext) {
+		return globalContext.resume();
+	} else {
+		return Promise.resolve();
+	}
 }
 
 /**
