@@ -56,7 +56,7 @@
   },
   "devDependencies": {
     "@babel/polyfill": "^7.0.0-beta.47",
-    "@tonejs/plot": "0.0.22",
+    "@tonejs/plot": "0.0.23",
     "@types/chai": "^4.1.7",
     "@types/mocha": "^5.2.6",
     "@types/ua-parser-js": "^0.7.32",
