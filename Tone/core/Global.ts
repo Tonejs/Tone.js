@@ -52,6 +52,7 @@ export function start(): Promise <void> {
  */
 if (!this.TONE_SILENCE_LOGGING) {
 	let prefix = "v";
+	// @ts-ignore
 	if (version === "dev") {
 		prefix = "";
 	}
