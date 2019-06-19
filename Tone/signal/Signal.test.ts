@@ -67,6 +67,10 @@ describe("Signal", () => {
 
 	context("Scheduling", () => {
 
+		afterEach(done => {
+			setTimeout(() => done(), 100);
+		});
+
 		it("can be scheduled to set a value in the future", async () => {
 			const buffer = await Offline((context) => {
 					const sig = new Signal(0).toMaster();
