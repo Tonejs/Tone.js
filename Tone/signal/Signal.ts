@@ -4,7 +4,7 @@ import { InputNode, ToneAudioNode, ToneAudioNodeOptions } from "../core/context/
 import { optionsFromArguments } from "../core/util/Defaults";
 
 interface SignalOptions extends ToneAudioNodeOptions {
-	value: number;
+	value: any;
 	units: Unit;
 	convert: boolean;
 }
