@@ -307,7 +307,7 @@ export class Context extends Emitter<"statechange" | "tick"> implements BaseAudi
 	 *  to initially start the AudioContext.
 	 */
 	resume(): Promise<void> {
-		if (this._context.state === "suspended") {
+		if (this._context.state === "suspended" && this._context instanceof AudioContext) {
 			return this._context.resume();
 		} else {
 			return Promise.resolve();
