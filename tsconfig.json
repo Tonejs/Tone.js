@@ -14,10 +14,7 @@
 		"moduleResolution": "node",
 		"strictPropertyInitialization" : true,
 		"lib": ["es6", "dom"],
-		"baseUrl": "./",
-		"paths" : {
-			"@tonejs/plot" : ["./node_modules/@tonejs/plot/dist/index.d.ts"]
-		}
+		"baseUrl": "./"
 	},
 	"include": [
 		"Tone/**/*.ts", "test/**/*.ts"
