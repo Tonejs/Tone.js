@@ -3,11 +3,9 @@ import { BasicTests } from "test/helper/Basic";
 import { connectFrom, connectTo } from "test/helper/Connect";
 import { Filter }  from "./Filter";
 import { Offline } from "test/helper/Offline";
-import { Signal } from "Tone/signal/Signal";
 import { PassAudio } from "test/helper/PassAudio";
 import { Oscillator } from '../../source/oscillator/Oscillator'
 
-// import Oscillator from "Tone/source/Oscillator";
 describe("Filter", () => {
 
 	BasicTests(Filter);
