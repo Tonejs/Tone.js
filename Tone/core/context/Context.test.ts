@@ -2,8 +2,8 @@ import { expect } from "chai";
 import { Offline } from "test/helper/Offline";
 import { ONLINE_TESTING } from "test/helper/Supports";
 import { Transport } from "../clock/Transport";
-import { getContext } from "../Global";
 import { Tone } from "../Tone";
+import { getAudioContext } from "./AudioContext";
 import { Context } from "./Context";
 
 describe("Context", () => {
@@ -15,7 +15,7 @@ describe("Context", () => {
 	context("AudioContext", () => {
 
 		it("extends the AudioContext methods", () => {
-			const ctx = new Context(getContext());
+			const ctx = new Context(getAudioContext());
 			expect(ctx).to.have.property("createGain");
 			expect(ctx.createGain()).to.be.instanceOf(GainNode);
 			expect(ctx).to.have.property("createOscillator");
@@ -38,7 +38,7 @@ describe("Context", () => {
 		}
 
 		it("has a rawContext", () => {
-			const ctx = new Context(getContext());
+			const ctx = new Context(getAudioContext());
 			expect(ctx.rawContext).is.instanceOf(AudioContext);
 			return ctx.dispose();
 		});
