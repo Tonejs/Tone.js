@@ -200,11 +200,18 @@ extends ToneWithContext<Options> {
 
 	/**
 	 * Connect the output to the context's destination node.
+	 */
+	toDestination(): this {
+		this.connect(this.context.destination);
+		return this;
+	}
+
+	/**
+	 * Connect the output to the context's destination node.
 	 * alias for {@link toDestination}
 	 */
 	toMaster(): this {
-		this.connect(this.context.destination);
-		return this;
+		return this.toDestination();
 	}
 
 	/**
