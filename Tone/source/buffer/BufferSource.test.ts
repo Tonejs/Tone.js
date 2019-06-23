@@ -9,11 +9,11 @@ import { BasicTests } from "test/helper/Basic";
 import { CompareToFile } from "test/helper/CompareToFile";
 import { Offline } from "test/helper/Offline";
 import { ONLINE_TESTING } from "test/helper/Supports";
-import { Context } from "Tone/core/context/Context";
 import { ToneAudioBuffer } from "Tone/core/context/ToneAudioBuffer";
+import { getContext } from "Tone/core/Global";
 import { ToneBufferSource } from "./BufferSource";
 
-const sampleRate = Context.getGlobal().sampleRate;
+const sampleRate = getContext().sampleRate;
 
 describe("ToneBufferSource", () => {
 

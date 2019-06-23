@@ -1,6 +1,7 @@
 import { Time, TimeClass } from "Tone/core/type/Time";
 import { PlaybackState } from "Tone/core/util/StateTimeline";
 import { Signal } from "Tone/signal/Signal";
+import { Context } from "../context/Context";
 import { Gain } from "../context/Gain";
 import { Param } from "../context/Param";
 import { ToneWithContext, ToneWithContextOptions } from "../context/ToneWithContext";
@@ -149,16 +150,17 @@ export class Transport extends ToneWithContext<TransportOptions> implements Emit
 	 */
 	private _swingAmount: NormalRange = 0;
 
-	constructor(options: Partial<TransportOptions>);
+	constructor(options?: Partial<TransportOptions>);
 	constructor() {
 
-		super(optionsFromArguments(Transport.getDefaults(), arguments, []));
-		const options = optionsFromArguments(Transport.getDefaults(), arguments, []);
+		super(optionsFromArguments(Transport.getDefaults(), arguments));
+		const options = optionsFromArguments(Transport.getDefaults(), arguments);
 
 		// CLOCK/TEMPO
 		this._ppq = options.ppq;
 		this._clock = new Clock({
 			callback : this._processTick.bind(this),
+			context: this.context,
 			frequency : 0,
 			units: "bpm",
 		});
@@ -685,21 +687,6 @@ Emitter.mixin(Transport);
 // 	INITIALIZATION
 ///////////////////////////////////////////////////////////////////////////////
 
-// var TransportConstructor = Transport;
-// Transport = new TransportConstructor();
-
-// Tone.Context.on("init", function(context) {
-// 	if (context.transport && context.transport.isTransport) {
-// 		Transport = context.transport;
-// 	} else {
-// 		Transport = new TransportConstructor();
-// 	}
-// });
-
-// Tone.Context.on("close", function(context) {
-// 	if (context.transport && context.transport.isTransport) {
-// 		context.transport.dispose();
-// 	}
-// });
-
-// export default Transport;
+Context.onInit(context => {
+	context.transport = new Transport({ context });
+});

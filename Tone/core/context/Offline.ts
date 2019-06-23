@@ -1,4 +1,4 @@
-import { Context } from "./Context"
+import { getContext, setContext } from "../Global";
 import { OfflineContext } from "./OfflineContext";
 import { ToneAudioBuffer } from "./ToneAudioBuffer";
 
@@ -39,13 +39,13 @@ export async function Offline(
 	callback: (context: OfflineContext) => Promise<void> | void,
 	duration: Seconds,
 	channels: number = 2,
-	sampleRate: number = Context.getGlobal().sampleRate,
+	sampleRate: number = getContext().sampleRate,
 ): Promise<ToneAudioBuffer> {
 	// set the OfflineAudioContext based on the current context
-	const originalContext = Context.getGlobal();
+	const originalContext = getContext();
 
 	const context = new OfflineContext(channels, duration, sampleRate);
-	Context.setGlobal(context);
+	setContext(context);
 
 	// invoke the callback/scheduling
 	await callback(context);
@@ -54,7 +54,7 @@ export async function Offline(
 	const buffer = await context.render();
 
 	// return the original AudioContext
-	Context.setGlobal(originalContext);
+	setContext(originalContext);
 
 	// return the audio
 	return new ToneAudioBuffer(buffer);

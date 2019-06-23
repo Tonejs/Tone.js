@@ -3,7 +3,7 @@ import { BasicTests } from "test/helper/Basic";
 import { Offline } from "test/helper/Offline";
 import { Tone } from "../Tone";
 import { Time, TimeClass } from "./Time";
-import { Context } from "../context/Context";
+import { getContext } from "../Global";
 
 describe("TimeClass", () => {
 
@@ -15,7 +15,7 @@ describe("TimeClass", () => {
 			const t0 = Time();
 			expect(t0).to.be.instanceOf(TimeClass);
 			t0.dispose();
-			const t1 = new TimeClass(Context.getGlobal());
+			const t1 = new TimeClass(getContext());
 			expect(t1).to.be.instanceOf(TimeClass);
 			t1.dispose();
 		});

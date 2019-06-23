@@ -1,4 +1,5 @@
 import { Context } from "../context/Context";
+import { getContext } from "../Global";
 import { TimeClass } from "./Time";
 import { TypeBaseUnits } from "./TypeBase";
 
@@ -16,14 +17,10 @@ export class TransportTimeClass<Type extends Seconds | Ticks = Seconds> extends 
 	 * Return the current time in whichever context is relevant
 	 */
 	protected _now(): Type {
-		if (this.context.transport) {
-			return this.context.transport.seconds as Type;
-		} else {
-			return 0 as Type;
-		}
+		return this.context.transport.seconds as Type;
 	}
 }
 
 export function TransportTime(value: Time, units?: TypeBaseUnits): TransportTimeClass {
-	return new TransportTimeClass(Context.getGlobal(), value, units);
+	return new TransportTimeClass(getContext(), value, units);
 }

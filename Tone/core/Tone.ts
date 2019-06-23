@@ -6,6 +6,7 @@
  */
 import { version } from "../version";
 import { Context } from "./context/Context";
+import { getContext } from "./Global";
 import "./type/Units";
 
 ///////////////////////////////////////////////////////////////////////////
@@ -151,7 +152,7 @@ export abstract class Tone {
 	///////////////////////////////////////////////////////////////////////////
 
 	static get context(): Context {
-		return Context.getGlobal();
+		return getContext();
 	}
 
 	static now(): Seconds {

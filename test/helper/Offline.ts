@@ -1,7 +1,7 @@
 import { TestAudioBuffer } from "@tonejs/plot";
-import { Context } from "Tone/core/context/Context";
 import { OfflineContext } from "Tone/core/context/OfflineContext";
 import { isFunction } from "Tone/core/util/TypeCheck";
+import { setContext, getContext } from "Tone/core/Global";
 
 type ReturnFunction = (time: Seconds) => void;
 
@@ -9,9 +9,9 @@ export async function Offline(
 	callback: (context: OfflineContext) => void | ReturnFunction | Promise<void | ReturnFunction> | void,
 	duration = 0.1, channels = 1, sampleRate: number = 44100,
 ) {
-	const originalContext = Context.getGlobal();
+	const originalContext = getContext();
 	const offline = new OfflineContext(channels, duration + 1 / sampleRate, sampleRate);
-	Context.setGlobal(offline);
+	setContext(offline);
 	let retFunction = callback(offline);
 	if (retFunction instanceof Promise) {
 		retFunction = await retFunction;
@@ -20,7 +20,7 @@ export async function Offline(
 		const fn = retFunction;
 		offline.on("tick", () => fn(offline.now()));
 	}
-	Context.setGlobal(originalContext);
+	setContext(originalContext);
 	const buffer = await offline.render();
 	return new TestAudioBuffer(buffer);
 }

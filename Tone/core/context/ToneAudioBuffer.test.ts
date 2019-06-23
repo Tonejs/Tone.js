@@ -2,6 +2,7 @@ import { expect } from "chai";
 import "test/helper/ToneAudioBuffer";
 import { Context } from "../context/Context";
 import { ToneAudioBuffer } from "./ToneAudioBuffer";
+import { getContext } from "../Global";
 
 const testFile = "./audio/sine.wav";
 
@@ -253,7 +254,7 @@ describe("ToneAudioBuffer", () => {
 		});
 
 		it("can create a buffer from an array using the static method", () => {
-			const arr = new Float32Array(0.5 * Context.getGlobal().sampleRate);
+			const arr = new Float32Array(0.5 * getContext().sampleRate);
 			arr[0] = 0.5;
 			const buffer = ToneAudioBuffer.fromArray(arr);
 			expect(buffer.duration).to.equal(0.5);
