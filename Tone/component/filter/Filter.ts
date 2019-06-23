@@ -23,16 +23,15 @@ interface FilterOptions extends ToneAudioNodeOptions {
  *
  *  @constructor
  *  @extends {Tone.AudioNode}
- *  @param {Frequency|Object} [frequency] The cutoff frequency of the filter.
- *  @param {string=} type The type of filter.
- *  @param {number=} rolloff The drop in decibels per octave after the cutoff frequency.
- *                            3 choices: -12, -24, and -48
+ *  @param frequency The cutoff frequency of the filter.
+ *  @param type The type of filter.
+ *  @param rolloff The drop in decibels per octave after the cutoff frequency
  *  @example
- *  var filter = new Tone.Filter(200, "highpass");
+ *  var filter = new Filter(200, "highpass");
  */
 export class Filter extends ToneAudioNode<FilterOptions> {
 
-	readonly name = "Filter";
+	name = "Filter";
 
 	readonly input = new Gain({ context: this.context });
 	readonly output = new Gain({ context: this.context });
@@ -142,8 +141,8 @@ export class Filter extends ToneAudioNode<FilterOptions> {
 		let cascadingCount = possibilities.indexOf(rolloffNum);
 		// check the rolloff is valid
 		this.assert(cascadingCount !== -1, `rolloff can only be ${possibilities.join(", ")}`);
-
 		cascadingCount += 1;
+
 		this._rolloff = rolloffNum;
 		this.input.disconnect();
 		this._filters.forEach(filter => filter.disconnect());
