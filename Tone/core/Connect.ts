@@ -6,12 +6,13 @@ import { isArray, isDefined, isNumber } from "./util/TypeCheck";
  *  @param nodes
  */
 export function connectSeries(...nodes: InputNode[]): void {
+	const first = nodes.shift();
 	nodes.reduce((prev, current) => {
 		if (prev instanceof ToneAudioNode || prev instanceof AudioNode) {
 			connect(prev, current);
 		}
 		return current;
-	}, nodes[0]);
+	}, first);
 }
 
 /**
