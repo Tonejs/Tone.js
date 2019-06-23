@@ -55,13 +55,6 @@ export class OfflineContext extends Context {
 	}
 
 	/**
-	 *  Overwrite resume, should not do anything in the OfflineAudioContext.
-	 */
-	resume(): Promise<void> {
-		return Promise.resolve();
-	}
-
-	/**
 	 *  Render the output of the OfflineContext
 	 */
 	render(): Promise<AudioBuffer> {
