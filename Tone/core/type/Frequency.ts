@@ -1,7 +1,7 @@
 import { Context } from "../context/Context";
-import { TypeBaseExpression } from "./TypeBase";
 import { intervalToFrequencyRatio } from "./Conversions";
 import { TimeClass } from "./Time";
+import { TypeBaseExpression } from "./TypeBase";
 
 /**
  * Frequency is a primitive type for encoding Frequency values.
@@ -31,7 +31,7 @@ export class FrequencyClass extends TimeClass<Hertz> {
 		return Object.assign({}, super._getExpressions(defaultUnit), {
 			midi : {
 				regexp : /^(\d+(?:\.\d+)?midi)/,
-				method(value) {
+				method(value): number {
 					if (this._defaultUnits === "midi") {
 						return value;
 					} else {
@@ -41,7 +41,7 @@ export class FrequencyClass extends TimeClass<Hertz> {
 			},
 			note : {
 				regexp : /^([a-g]{1}(?:b|#|x|bb)?)(-?[0-9]+)/i,
-				method(pitch, octave) {
+				method(pitch, octave): number {
 					const index = noteToScaleIndex[pitch.toLowerCase()];
 					const noteNumber = index + (parseInt(octave, 10) + 1) * 12;
 					if (this._defaultUnits === "midi") {
@@ -53,7 +53,7 @@ export class FrequencyClass extends TimeClass<Hertz> {
 			},
 			tr : {
 				regexp : /^(\d+(?:\.\d+)?):(\d+(?:\.\d+)?):?(\d+(?:\.\d+)?)?/,
-				method(m, q, s) {
+				method(m, q, s): number {
 					let total = 1;
 					if (m && m !== "0") {
 						total *= this._beatsToUnits(this._getTimeSignature() * parseFloat(m));
@@ -216,6 +216,7 @@ export class FrequencyClass extends TimeClass<Hertz> {
  *  @private
  */
 const noteToScaleIndex = {
+	// tslint:disable-next-line
 	"cbb" : -2, "cb" : -1, "c" : 0, "c#" : 1, "cx" : 2,
 	"dbb" : 0, "db" : 1, "d" : 2, "d#" : 3, "dx" : 4,
 	"ebb" : 2, "eb" : 3, "e" : 4, "e#" : 5, "ex" : 6,

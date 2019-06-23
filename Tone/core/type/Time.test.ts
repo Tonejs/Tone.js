@@ -1,9 +1,9 @@
 import { expect } from "chai";
 import { BasicTests } from "test/helper/Basic";
 import { Offline } from "test/helper/Offline";
+import { Context } from "../context/Context";
 import { Tone } from "../Tone";
 import { Time, TimeClass } from "./Time";
-import { Context } from "../context/Context";
 
 describe("TimeClass", () => {
 
@@ -176,4 +176,3 @@ describe("TimeClass", () => {
 	});
 
 });
-

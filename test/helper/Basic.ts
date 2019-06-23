@@ -5,6 +5,7 @@ import { Tone } from "Tone/core/Tone";
 
 export const testAudioContext = new OfflineContext(1, 1, 11025);
 
+// tslint:disable-next-line
 export function BasicTests(Constr, ...args: any[]): void {
 
 	context("Basic", () => {

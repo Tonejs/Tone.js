@@ -191,7 +191,7 @@ export class IntervalTimeline extends Tone {
 	 *  @param  {IntervalNode}  node
 	 *  @private
 	 */
-	_rotateLeft(node) {
+	_rotateLeft(node): void {
 		const parent = node.parent;
 		const isLeftChild = node.isLeftChild();
 
@@ -216,7 +216,7 @@ export class IntervalTimeline extends Tone {
 	 *  @param  {IntervalNode}  node
 	 *  @private
 	 */
-	_rotateRight(node) {
+	_rotateRight(node): void {
 		const parent = node.parent;
 		const isLeftChild = node.isLeftChild();
 

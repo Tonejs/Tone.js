@@ -52,8 +52,7 @@ export class Noise extends Source<NoiseOptions> {
 	 */
 	private _playbackRate: Positive;
 
-	constructor(type?: NoiseType);
-	constructor(options?: Partial<NoiseOptions>);
+	constructor(options?: NoiseType | Partial<NoiseOptions>);
 	constructor() {
 		super(optionsFromArguments(Noise.getDefaults(), arguments, ["type"]));
 		const options = optionsFromArguments(Noise.getDefaults(), arguments, ["type"]);

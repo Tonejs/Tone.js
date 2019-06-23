@@ -56,7 +56,6 @@ describe("Param", () => {
 				try {
 					expect(param.getValueAtTime(index / sampleRate)).to.be.closeTo(sample, 0.1);
 				} catch (e) {
-					console.log(index / sampleRate);
 					throw e;
 				}
 			});

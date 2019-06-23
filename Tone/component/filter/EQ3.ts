@@ -1,33 +1,31 @@
-import { ToneAudioNode, ToneAudioNodeOptions } from "Tone/core/context/ToneAudioNode";
 import { Gain } from "Tone/core/context/Gain";
-import { Tone } from "Tone/core/Tone";
+import { Param } from "Tone/core/context/Param";
+import { ToneAudioNode, ToneAudioNodeOptions } from "Tone/core/context/ToneAudioNode";
 import { optionsFromArguments } from "Tone/core/util/Defaults";
 import { readOnly, writable } from "Tone/core/util/Interface";
 import { MultibandSplit } from "../channel/MultibandSplit";
-import { Signal } from "Tone/signal/Signal";
-import { Param } from "Tone/core/context/Param";
 
 interface EQ3Options extends ToneAudioNodeOptions {
-    low: Decibels,
-    mid: Decibels,
-    high: Decibels,
-    lowFrequency: Frequency,
-    highFrequency: Frequency,
-};
+	low: Decibels;
+	mid: Decibels;
+	high: Decibels;
+	lowFrequency: Frequency;
+	highFrequency: Frequency;
+}
 
 export class EQ3 extends ToneAudioNode<EQ3Options> {
-    readonly name = "EQ3"
+	readonly name = "EQ3";
 
-    /**
+	/**
 	 *  the input
 	 */
-    readonly input: MultibandSplit;
-    
-    /**
+	readonly input: MultibandSplit;
+
+	/**
 	 *  the input
 	 */
 	readonly output = new Gain({ context: this.context });
-	
+
 	private _multibandSplit: MultibandSplit;
 
 	/**
@@ -74,68 +72,68 @@ export class EQ3 extends ToneAudioNode<EQ3Options> {
 	 *  The mid/high crossover frequency.
 	 */
 	readonly highFrequency = this._multibandSplit.highFrequency;
-    
-    readonly _internalChannels = [this._multibandSplit, this.output];
 
-    constructor (lowLevel?: Decibels, midlevel?: Decibels, highLevel?: Decibels);
-    constructor (options: Partial<EQ3Options>);
-    constructor () {
-        super(optionsFromArguments(EQ3.getDefaults(), arguments, ["low", "mid", "high"]));
+	readonly _internalChannels = [this._multibandSplit, this.output];
+
+	constructor(lowLevel?: Decibels, midlevel?: Decibels, highLevel?: Decibels);
+	constructor(options: Partial<EQ3Options>);
+	constructor() {
+		super(optionsFromArguments(EQ3.getDefaults(), arguments, ["low", "mid", "high"]));
 		const options = optionsFromArguments(EQ3.getDefaults(), arguments, ["low", "mid", "high"]);
 
 		this.input = this._multibandSplit = new MultibandSplit({
-			lowFrequency: options.lowFrequency,
 			highFrequency: options.highFrequency,
+			lowFrequency: options.lowFrequency,
 		});
 
 		this._lowGain = new Gain({
 			context: this.context,
 			gain: options.low,
-			units: "decibels"
+			units: "decibels",
 		});
 
 		this._midGain = new Gain({
 			context: this.context,
 			gain: options.mid,
-			units: "decibels"
+			units: "decibels",
 		});
 
 		this._highGain = new Gain({
 			context: this.context,
-			gain: options.high, units: "decibels"
+			gain: options.high, units: "decibels",
 		});
 
 		this.low = this._lowGain.gain;
 		this.mid = this._midGain.gain;
 		this.high = this._highGain.gain;
 
-		//the frequency bands
+	// the frequency bands
 		this._multibandSplit.low.chain(this._lowGain, this.output);
 		this._multibandSplit.mid.chain(this._midGain, this.output);
 		this._multibandSplit.high.chain(this._highGain, this.output);
 
-        readOnly(this, ["low", "mid", "high", "lowFrequency", "highFrequency"]);
-    }
+		readOnly(this, ["low", "mid", "high", "lowFrequency", "highFrequency"]);
+	}
 
-    static getDefaults(): EQ3Options {
-        return Object.assign(ToneAudioNode.getDefaults(), {
-            low : 0,
-            mid : 0,
-            high : 0,
-            lowFrequency : 400,
-            highFrequency : 2500
-        });
+	static getDefaults(): EQ3Options {
+		return Object.assign(ToneAudioNode.getDefaults(), {
+			high : 0,
+			highFrequency : 2500,
+			low : 0,
+			lowFrequency : 400,
+			mid : 0,
+		});
 	}
 
 	/**
 	 *  Clean up.
 	 */
-	dispose (): this {
+	dispose(): this {
 		super.dispose();
 		writable(this, ["low", "mid", "high", "lowFrequency", "highFrequency"]);
 		this._multibandSplit.dispose();
 		this.lowFrequency.dispose();
-		this.highFrequency.dispose()
+		this.highFrequency.dispose();
 		this._lowGain.dispose();
 		this._midGain.dispose();
 		this._highGain.dispose();
@@ -145,7 +143,5 @@ export class EQ3 extends ToneAudioNode<EQ3Options> {
 		this.Q.dispose();
 		return this;
 	}
-
-
 
 }

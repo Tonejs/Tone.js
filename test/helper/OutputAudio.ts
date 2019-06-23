@@ -1,7 +1,7 @@
 import { expect } from "chai";
 import { Offline } from "./Offline";
 
-export function OutputAudio(callback) {
+export function OutputAudio(callback): Promise<void> {
 	return Offline(callback, 0.1).then((buffer) => {
 		expect(buffer.isSilent()).to.equal(false);
 	});

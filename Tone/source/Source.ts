@@ -195,7 +195,7 @@ export abstract class Source<Options extends SourceOptions> extends ToneAudioNod
 	 *  @example
 	 * source.stop(); // stops the source immediately
 	 */
-	stop(time) {
+	stop(time): this {
 		if (isUndef(time) && this._synced && this.context.transport) {
 			time = this.context.transport.seconds;
 		} else {
@@ -282,8 +282,7 @@ export abstract class Source<Options extends SourceOptions> extends ToneAudioNod
 			}
 			this._synced = false;
 			// clear all of the scheduled ids
-			for (let i = 0; i < this._scheduled.length; i++) {
-				const id = this._scheduled[i];
+			for (const id of this._scheduled) {
 				this.context.transport.clear(id);
 			}
 			this._scheduled = [];

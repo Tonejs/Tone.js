@@ -1,14 +1,14 @@
 import { Gain } from "Tone/core/context/Gain";
 import { optionsFromArguments } from "Tone/core/util/Defaults";
 import { readOnly, writable } from "Tone/core/util/Interface";
-import { ToneAudioNode, ToneAudioNodeOptions } from "../../core/context/ToneAudioNode";
 import { Signal } from "Tone/signal/Signal";
+import { ToneAudioNode, ToneAudioNodeOptions } from "../../core/context/ToneAudioNode";
 import { Filter } from "../filter/Filter";
 
 interface MultibandSplitOptions extends ToneAudioNodeOptions {
-    lowFrequency: Frequency,
-	highFrequency: Frequency,
-	Q: Positive
+	Q: Positive;
+	lowFrequency: Frequency;
+	highFrequency: Frequency;
 }
 
 /**
@@ -62,9 +62,9 @@ export class MultibandSplit extends ToneAudioNode {
 	 */
 	readonly Q: Signal<"positive">;
 
-    constructor(lowFrequency?: Frequency, highFrequency?: Frequency);
-    constructor(options?: Partial<MultibandSplitOptions>);
-    constructor() {
+	constructor(lowFrequency?: Frequency, highFrequency?: Frequency);
+	constructor(options?: Partial<MultibandSplitOptions>);
+	constructor() {
 		super(optionsFromArguments(MultibandSplit.getDefaults(), arguments, ["lowFrequency", "highFrequency"]));
 		const options = optionsFromArguments(MultibandSplit.getDefaults(), arguments, ["lowFrequency", "highFrequency"]);
 
@@ -88,32 +88,32 @@ export class MultibandSplit extends ToneAudioNode {
 
 		this.input.fan(this.low, this.high);
 		this.input.chain(this._lowMidFilter, this.mid);
-		//the frequency control signal
+		// the frequency control signal
 		this.lowFrequency.connect(this.low.frequency);
 		this.lowFrequency.connect(this._lowMidFilter.frequency);
 		this.highFrequency.connect(this.mid.frequency);
 		this.highFrequency.connect(this.high.frequency);
-		//the Q value
+		// the Q value
 		this.Q.connect(this.low.Q);
 		this.Q.connect(this._lowMidFilter.Q);
 		this.Q.connect(this.mid.Q);
 		this.Q.connect(this.high.Q);
 
 		readOnly(this, ["high", "mid", "low", "highFrequency", "lowFrequency"]);
-    }
-
-    static getDefaults(): MultibandSplitOptions {
-        return Object.assign(ToneAudioNode.getDefaults(), {
-            lowFrequency: 400,
-	        highFrequency: 2500,
-			Q: 1,
-        });
 	}
-	
+
+	static getDefaults(): MultibandSplitOptions {
+		return Object.assign(ToneAudioNode.getDefaults(), {
+			Q: 1,
+			highFrequency: 2500,
+			lowFrequency: 400,
+		});
+	}
+
 	/**
 	 *  Clean up.
 	 */
-	dispose (): this {
+	dispose(): this {
 		super.dispose();
 		writable(this, ["high", "mid", "low", "highFrequency", "lowFrequency"]);
 		this.low.dispose();
@@ -124,6 +124,6 @@ export class MultibandSplit extends ToneAudioNode {
 		this.highFrequency.dispose();
 		this.Q.dispose();
 		return this;
-	};
+	}
 
 }

@@ -675,8 +675,8 @@ describe("Transport", () => {
 				return time => {
 					if (time > 0.1 && !wasScheduled) {
 						wasScheduled = true;
-						transport.scheduleRepeat(time => {
-							expect(time).to.be.closeTo(times[invocations], 0.01);
+						transport.scheduleRepeat(repeatedTime => {
+							expect(repeatedTime).to.be.closeTo(times[invocations], 0.01);
 							invocations++;
 						}, 0.15, 0.15);
 					}
@@ -696,8 +696,8 @@ describe("Transport", () => {
 				return time => {
 					if (time >= 0.12 && !wasScheduled) {
 						wasScheduled = true;
-						transport.scheduleRepeat(time => {
-							expect(time).to.be.closeTo(times[invocations], 0.01);
+						transport.scheduleRepeat(repeatedTime => {
+							expect(repeatedTime).to.be.closeTo(times[invocations], 0.01);
 							invocations++;
 						}, 0.1, 0.05);
 					}

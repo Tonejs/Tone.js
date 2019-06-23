@@ -200,6 +200,7 @@ export class Oscillator extends Source<OscillatorOptions> {
 		return this;
 	}
 
+	/* tslint:disable */
 	/**
 	 * The type of the oscillator: either sine, square, triangle, or sawtooth. Also capable of
 	 * setting the first x number of partials of the oscillator. For example: "sine4" would
@@ -220,6 +221,7 @@ export class Oscillator extends Source<OscillatorOptions> {
 	 * //set the first 6 partials of a sawtooth wave
 	 * osc.type = "sawtooth6";
 	 */
+	/* tslint:enable */
 	get type(): ToneOscillatorType {
 		return this._type;
 	}

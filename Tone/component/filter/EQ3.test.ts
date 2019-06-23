@@ -1,9 +1,8 @@
 import { expect } from "chai";
 import { BasicTests } from "test/helper/Basic";
-import { connectFrom, connectTo } from "test/helper/Connect";
-import { Offline } from "test/helper/Offline";
-import { EQ3 } from './EQ3';
+import { connectFrom } from "test/helper/Connect";
 import { PassAudio } from "test/helper/PassAudio";
+import { EQ3 } from "./EQ3";
 
 describe("EQ3", () => {
 
@@ -19,11 +18,11 @@ describe("EQ3", () => {
 
 		it("can be constructed with an object", () => {
 			const eq3 = new EQ3({
-				low : -8,
-				mid : -9,
 				high : -10,
+				highFrequency : 2700,
+				low : -8,
 				lowFrequency : 500,
-				highFrequency : 2700
+				mid : -9,
 			});
 			expect(eq3.low.value).to.be.closeTo(-8, 0.1);
 			expect(eq3.mid.value).to.be.closeTo(-9, 0.1);
@@ -34,7 +33,7 @@ describe("EQ3", () => {
 		});
 
 		it("can be get and set through object", () => {
-			var eq3 = new EQ3();
+			const eq3 = new EQ3();
 			eq3.set({
 				high : -4,
 				lowFrequency : 250,
@@ -45,10 +44,10 @@ describe("EQ3", () => {
 		});
 
 		it("passes the incoming signal through", () => {
-			return PassAudio(function(input){
-				var eq3 = new EQ3({
-					"low" : -20,
-					"high" : 12
+			return PassAudio(input => {
+				const eq3 = new EQ3({
+					high : 12,
+					low : -20,
 				}).toMaster();
 				input.connect(eq3);
 			});
@@ -65,4 +64,3 @@ describe("EQ3", () => {
 		});
 	});
 });
-
