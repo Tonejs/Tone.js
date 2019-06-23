@@ -20,7 +20,7 @@
     "increment": "node scripts/increment_version.js",
     "karma": "karma start scripts/karma.conf.js --single-run --grep $npm_config_grep",
     "karma:watch": "karma start scripts/karma.conf.js --auto-watch --browsers OnlineChrome --grep $npm_config_grep",
-    "lint:fix": "tslint --project tslint.json --fix",
+    "lint:fix": "tslint --project tsconfig.json --fix",
     "scratch": "webpack -w --env.scratch --mode=development",
     "test": "npm run karma",
     "test:watch": "npm run collect:tests && npm run karma:watch",
@@ -29,7 +29,7 @@
     "test:html": "mocha ./test/html/testHTML.js --timeout 30000",
     "test:node": "node ./test/html/node_test.js",
     "tsd": "node ./scripts/generate_docs.js",
-    "lint": "tslint --project tslint.json",
+    "lint": "tslint --project tsconfig.json",
     "tsc": "rm -rf build && tsc --project ./scripts/tsconfig.build.json",
     "watch:old": "npm run increment && npm run collect:deps && webpack -w --env.production --mode=development",
     "watch": "tsc --watch"
