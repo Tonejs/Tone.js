@@ -1,5 +1,8 @@
 {
-	"extends": "../tsconfig.json",
+	"extends": "./tsconfig.json",
+	"include": [
+		"Tone/**/*.ts"
+	],
 	"exclude": [
 		"node_modules",
 		"Tone/**/*.test.ts",
