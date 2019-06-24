@@ -85,8 +85,8 @@ export abstract class Source<Options extends SourceOptions> extends ToneAudioNod
 	/**
 	 * Placeholder functions for syncing/unsyncing to transport
 	 */
-	private _syncedStart: (time, offset) => void = noOp;
-	private _syncedStop: (time) => void = noOp;
+	private _syncedStart: (time: Seconds, offset: Seconds) => void = noOp;
+	private _syncedStop: (time: Seconds) => void = noOp;
 
 	constructor(options: Partial<SourceOptions>);
 	constructor() {
@@ -113,7 +113,7 @@ export abstract class Source<Options extends SourceOptions> extends ToneAudioNod
 	 *  Returns the playback state of the source, either "started" or "stopped".
 	 */
 	get state(): PlaybackState {
-		if (this.context.transport && this._synced) {
+		if (this._synced) {
 			if (this.context.transport.state === "started") {
 				return this._state.getValueAtTime(this.context.transport.seconds);
 			} else {
@@ -151,7 +151,7 @@ export abstract class Source<Options extends SourceOptions> extends ToneAudioNod
 	 * source.start("+0.5"); //starts the source 0.5 seconds from now
 	 */
 	start(time?: Time, offset?: Time, duration?: Time): this {
-		if (isUndef(time) && this._synced && this.context.transport) {
+		if (isUndef(time) && this._synced) {
 			time = this.context.transport.seconds;
 		} else {
 			time = this.toSeconds(time);
@@ -164,7 +164,7 @@ export abstract class Source<Options extends SourceOptions> extends ToneAudioNod
 			this.restart(time, offset, duration);
 		} else {
 			this._state.setStateAtTime("started", time);
-			if (this._synced && this.context.transport) {
+			if (this._synced) {
 				// add the offset time to the event
 				const event = this._state.get(time);
 				if (event) {
@@ -195,8 +195,8 @@ export abstract class Source<Options extends SourceOptions> extends ToneAudioNod
 	 *  @example
 	 * source.stop(); // stops the source immediately
 	 */
-	stop(time): this {
-		if (isUndef(time) && this._synced && this.context.transport) {
+	stop(time) {
+		if (isUndef(time) && this._synced) {
 			time = this.context.transport.seconds;
 		} else {
 			time = this.toSeconds(time);
@@ -204,7 +204,7 @@ export abstract class Source<Options extends SourceOptions> extends ToneAudioNod
 		}
 		if (!this._synced) {
 			this._stop.apply(this, arguments);
-		} else if (this.context.transport) {
+		} else {
 			const sched = this.context.transport.schedule(this._stop.bind(this), time);
 			this._scheduled.push(sched);
 		}
@@ -232,7 +232,7 @@ export abstract class Source<Options extends SourceOptions> extends ToneAudioNod
 	 * this.context.transport.start("+0.5", 0.5);
 	 */
 	sync(): this {
-		if (this.context.transport) {
+		if (!this._synced) {
 			this._synced = true;
 			this._syncedStart = (time, offset) => {
 				if (offset > 0) {
@@ -251,11 +251,9 @@ export abstract class Source<Options extends SourceOptions> extends ToneAudioNod
 				}
 			};
 			this._syncedStop = time => {
-				if (this.context.transport) {
-					const seconds = this.context.transport.getSecondsAtTime(Math.max(time - this.sampleTime, 0));
-					if (this._state.getValueAtTime(seconds) === "started") {
-						this._stop(time);
-					}
+				const seconds = this.context.transport.getSecondsAtTime(Math.max(time - this.sampleTime, 0));
+				if (this._state.getValueAtTime(seconds) === "started") {
+					this._stop(time);
 				}
 			};
 			this.context.transport.on("start", this._syncedStart);
@@ -272,22 +270,21 @@ export abstract class Source<Options extends SourceOptions> extends ToneAudioNod
 	 *  @returns {Source} this
 	 */
 	unsync(): this {
-		if (this.context.transport) {
-			if (this._synced) {
-				this.context.transport.off("stop", this._syncedStop);
-				this.context.transport.off("pause", this._syncedStop);
-				this.context.transport.off("loopEnd", this._syncedStop);
-				this.context.transport.off("start", this._syncedStart);
-				this.context.transport.off("loopStart", this._syncedStart);
-			}
-			this._synced = false;
-			// clear all of the scheduled ids
-			for (const id of this._scheduled) {
-				this.context.transport.clear(id);
-			}
-			this._scheduled = [];
-			this._state.cancel(0);
+    if (this._synced) {
+			this.context.transport.off("stop", this._syncedStop);
+			this.context.transport.off("pause", this._syncedStop);
+			this.context.transport.off("loopEnd", this._syncedStop);
+			this.context.transport.off("start", this._syncedStart);
+			this.context.transport.off("loopStart", this._syncedStart);
 		}
+		this._synced = false;
+		// clear all of the scheduled ids
+		for (let i = 0; i < this._scheduled.length; i++) {
+			const id = this._scheduled[i];
+			this.context.transport.clear(id);
+		}
+		this._scheduled = [];
+		this._state.cancel(0);
 		return this;
 	}
 

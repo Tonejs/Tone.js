@@ -3,10 +3,10 @@ import { expect } from "chai";
 import { BasicTests, testAudioContext } from "test/helper/Basic";
 import { Offline } from "test/helper/Offline";
 import { SCHEDULE_RAMP_AFTER_SET_TARGET } from "test/helper/Supports";
-import { Context } from "./Context";
+import { getContext } from "../Global";
 import { Param } from "./Param";
 
-const audioContext = Context.getGlobal();
+const audioContext = getContext();
 
 describe("Param", () => {
 
@@ -68,7 +68,7 @@ describe("Param", () => {
 				// this fails on FF
 				const testBuffer = await Offline(context => {
 					const source = context.createConstantSource();
-					source.connect(context.destination);
+					source.connect(context.rawContext.destination);
 					source.start(0);
 					param = new Param({
 						context,
@@ -87,7 +87,7 @@ describe("Param", () => {
 				let param;
 				const testBuffer = await Offline(context => {
 					const source = context.createConstantSource();
-					source.connect(context.destination);
+					source.connect(context.rawContext.destination);
 					source.start(0);
 					param = new Param({
 						context,
@@ -106,7 +106,7 @@ describe("Param", () => {
 				let param;
 				const testBuffer = await Offline(context => {
 					const source = context.createConstantSource();
-					source.connect(context.destination);
+					source.connect(context.rawContext.destination);
 					source.start(0);
 					param = new Param({
 						context,
@@ -136,7 +136,7 @@ describe("Param", () => {
 				let param;
 				const testBuffer = await Offline(context => {
 					const source = context.createConstantSource();
-					source.connect(context.destination);
+					source.connect(context.rawContext.destination);
 					source.start(0);
 					param = new Param({
 						context,
@@ -167,7 +167,7 @@ describe("Param", () => {
 		// 	it ("matches known values", async () => {
 		// 		await Compare.toFile(context => {
 		// 			const source = context.createConstantSource();
-		// 			source.connect(context.destination);
+		// 			source.connect(context.rawContext.destination);
 		// 			source.start(0);
 		// 			const param = new Param({
 		// 				context,
@@ -217,7 +217,7 @@ describe("Param", () => {
 		it("can be forced to not convert", async () => {
 			const testBuffer = await Offline(context => {
 				const source = context.createConstantSource();
-				source.connect(context.destination);
+				source.connect(context.rawContext.destination);
 				source.start(0);
 				const param = new Param({
 					context,
@@ -238,7 +238,7 @@ describe("Param", () => {
 			it(`converts to ${units}`, async () => {
 				const testBuffer = await Offline(context => {
 					const source = context.createConstantSource();
-					source.connect(context.destination);
+					source.connect(context.rawContext.destination);
 					source.start(0);
 					const param = new Param({
 						context,
@@ -275,7 +275,7 @@ describe("Param", () => {
 		function testMinMaxValue(units: Unit, min, max): void {
 			it(`has proper min/max for ${units}`, () => {
 				const source = audioContext.createConstantSource();
-				source.connect(audioContext.destination);
+				source.connect(audioContext.rawContext.destination);
 				const param = new Param({
 					context : audioContext,
 					param: source.offset,
@@ -311,7 +311,7 @@ describe("Param", () => {
 			it(`can schedule value with units ${units}`, async () => {
 				const testBuffer = await Offline(context => {
 					const source = context.createConstantSource();
-					source.connect(context.destination);
+					source.connect(context.rawContext.destination);
 					source.start(0);
 					const param = new Param({
 						context,
@@ -352,7 +352,7 @@ describe("Param", () => {
 				it(`can schedule value with units ${units}`, async () => {
 					const testBuffer = await Offline(context => {
 						const source = context.createConstantSource();
-						source.connect(context.destination);
+						source.connect(context.rawContext.destination);
 						source.start(0);
 						const param = new Param({
 							context,
@@ -394,7 +394,7 @@ describe("Param", () => {
 				it(`can schedule value with units ${units}`, async () => {
 					const testBuffer = await Offline(context => {
 						const source = context.createConstantSource();
-						source.connect(context.destination);
+						source.connect(context.rawContext.destination);
 						source.start(0);
 						const param = new Param({
 							context,

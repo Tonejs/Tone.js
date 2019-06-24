@@ -24,7 +24,7 @@ context("OfflineContext", () => {
 	it("can render audio", () => {
 		const ctx = new OfflineContext(1, 0.2, 44100);
 		const osc = ctx.createOscillator();
-		osc.connect(ctx.destination);
+		osc.connect(ctx.rawContext.destination);
 		osc.start(0.1);
 		return ctx.render().then(buffer => {
 			expect(buffer).to.be.instanceOf(AudioBuffer);

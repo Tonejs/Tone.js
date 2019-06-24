@@ -231,36 +231,24 @@ export abstract class TypeBaseClass<Type extends Seconds | Hertz | Ticks> extend
 	///////////////////////////////////////////////////////////////////////////
 
 	/**
-	 * Return the bpm, or 120 if Transport is not available
+	 * Return the bpm
 	 */
 	protected _getBpm(): BPM {
-		if (this.context.transport) {
-			return this.context.transport.bpm.value;
-		} else {
-			return 120;
-		}
+		return this.context.transport.bpm.value;
 	}
 
 	/**
-	 * Return the timeSignature or 4 if Transport is not available
+	 * Return the timeSignature
 	 */
 	protected _getTimeSignature(): number {
-		if (this.context.transport) {
-			return this.context.transport.timeSignature as number;
-		} else {
-			return 4;
-		}
+		return this.context.transport.timeSignature as number;
 	}
 
 	/**
 	 * Return the PPQ or 192 if Transport is not available
 	 */
 	protected _getPPQ(): number {
-		if (this.context.transport) {
-			return this.context.transport.PPQ;
-		} else {
-			return 192;
-		}
+		return this.context.transport.PPQ;
 	}
 
 	/**

@@ -27,7 +27,7 @@ export function deepMerge<T>(target: T, ...sources: T[]): T {
 /**
  * Convert an args array into an object.
  */
-export function optionsFromArguments<T>(defaults: T, argsArray: IArguments, keys: string[]): T {
+export function optionsFromArguments<T>(defaults: T, argsArray: IArguments, keys: string[] = []): T {
 	const opts: any = {};
 	const args = Array.from(argsArray);
 	if (args.length === 1 && isObject(args[0])) {

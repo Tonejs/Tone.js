@@ -1,4 +1,4 @@
-import { Context } from "../context/Context";
+import { getContext } from "../Global";
 import { FrequencyClass } from "./Frequency";
 import { TypeBaseClass, TypeBaseExpression, TypeBaseUnits } from "./TypeBase";
 
@@ -25,11 +25,7 @@ export class TimeClass<Type extends Seconds | Ticks = Seconds> extends TypeBaseC
 			quantize: {
 				method: (capture: string): Type => {
 					const quantTo = new TimeClass(this.context, capture).valueOf();
-					if (this.context.transport) {
-						return this._secondsToUnits(this.context.transport.nextSubdivision(quantTo));
-					} else {
-						return 0 as Type;
-					}
+					return this._secondsToUnits(this.context.transport.nextSubdivision(quantTo));
 				},
 				regexp: /^@(.+)/,
 			},
@@ -137,5 +133,5 @@ export class TimeClass<Type extends Seconds | Ticks = Seconds> extends TypeBaseC
 }
 
 export function Time(value?: Time, units?: TypeBaseUnits): TimeClass {
-	return new TimeClass(Context.getGlobal(), value, units);
+	return new TimeClass(getContext(), value, units);
 }

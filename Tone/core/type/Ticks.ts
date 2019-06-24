@@ -1,4 +1,5 @@
 import { Context } from "../context/Context";
+import { getContext } from "../Global";
 import { TransportTimeClass } from "./TransportTime";
 import { TypeBaseUnits } from "./TypeBase";
 
@@ -19,11 +20,7 @@ export class TicksClass extends TransportTimeClass<Ticks> {
 	 * Get the current time in the given units
 	 */
 	protected _now(): Ticks {
-		if (this.context.transport) {
-			return this.context.transport.ticks;
-		} else {
-			return 0;
-		}
+		return this.context.transport.ticks;
 	}
 
 	/**
@@ -63,5 +60,5 @@ export class TicksClass extends TransportTimeClass<Ticks> {
 }
 
 export function Ticks(value: Time, units?: TypeBaseUnits): TicksClass {
-	return new TicksClass(Context.getGlobal(), value, units);
+	return new TicksClass(getContext(), value, units);
 }

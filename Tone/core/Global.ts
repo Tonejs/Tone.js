@@ -1,22 +1,21 @@
 import { version } from "../version";
+import { Context } from "./context/Context";
 
 /**
  * The global audio context which is getable and assignable through
  * getContext and setContext
  */
-let globalContext: BaseAudioContext;
+let globalContext: Context;
 
 // @ts-ignore
-globalContext = window.TONE_AUDIO_CONTEXT;
+globalContext = window.TONE_CONTEXT;
 
 /**
  * Returns the default system-wide AudioContext
  */
-export function getContext(): BaseAudioContext {
+export function getContext(): Context {
 	if (!globalContext) {
-		globalContext = new AudioContext();
-		// @ts-ignore
-		window.TONE_AUDIO_CONTEXT = globalContext;
+		setContext(new Context());
 	}
 	return globalContext;
 }
@@ -24,10 +23,11 @@ export function getContext(): BaseAudioContext {
 /**
  * Set the default audio context
  */
-export function setContext(context: BaseAudioContext): void {
+export function setContext(context: Context): void {
 	globalContext = context;
+	context.initialize();
 	// @ts-ignore
-	window.TONE_AUDIO_CONTEXT = globalContext;
+	window.TONE_CONTEXT = context;
 }
 
 /**
@@ -40,11 +40,7 @@ export function setContext(context: BaseAudioContext): void {
  * document.querySelector('#playbutton').addEventListener('click', () => Tone.start())
  */
 export function start(): Promise <void> {
-	if (globalContext instanceof AudioContext) {
-		return globalContext.resume();
-	} else {
-		return Promise.resolve();
-	}
+	return globalContext.resume();
 }
 
 /**

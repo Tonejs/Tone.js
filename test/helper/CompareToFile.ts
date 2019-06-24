@@ -1,7 +1,7 @@
 // import {Offline} from "./Offline";
 import { Compare } from "@tonejs/plot";
-import { Context } from "Tone/core/context/Context";
 import { OfflineContext } from "Tone/core/context/OfflineContext";
+import { getContext, setContext } from "Tone/core/Global";
 import "./ToneAudioBuffer";
 
 export async function CompareToFile(
@@ -12,14 +12,14 @@ export async function CompareToFile(
 ): Promise<void> {
 	// @ts-ignore
 	const prefix = window.__karma__ ? "/base/test/" : "../test/";
-	const origContext = Context.getGlobal();
+	const origContext = getContext();
 	try {
 		await Compare.toFile(context => {
 			const offlineContext = new OfflineContext(context, duration, 11025);
-			Context.setGlobal(offlineContext);
+			setContext(offlineContext);
 			callback(offlineContext);
 		}, prefix + "audio/compare/" + url, threshold, RENDER_NEW, duration, channels, 11025);
 	} finally {
-		Context.setGlobal(origContext);
+		setContext(origContext);
 	}
 }

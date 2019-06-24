@@ -30,7 +30,7 @@
     "test:node": "node ./test/html/node_test.js",
     "tsd": "node ./scripts/generate_docs.js",
     "lint": "tslint --project tsconfig.json",
-    "tsc": "rm -rf build && tsc --project ./scripts/tsconfig.build.json",
+    "tsc": "rm -rf build && tsc --project tsconfig.build.json",
     "watch:old": "npm run increment && npm run collect:deps && webpack -w --env.production --mode=development",
     "watch": "tsc --watch"
   },

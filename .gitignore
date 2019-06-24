@@ -21,6 +21,7 @@ test/supports.html
 coverage/
 
 build/*
+dist/*
 
 examples/scratch.js
 Tone/version.js

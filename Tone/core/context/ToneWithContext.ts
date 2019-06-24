@@ -1,3 +1,4 @@
+import { getContext } from "../Global";
 import { Tone } from "../Tone";
 import { FrequencyClass } from "../type/Frequency";
 import { TimeClass } from "../type/Time";
@@ -41,7 +42,7 @@ export abstract class ToneWithContext<Options extends ToneWithContextOptions> ex
 
 	static getDefaults(): ToneWithContextOptions {
 		return {
-			context: Context.getGlobal(),
+			context: getContext(),
 		};
 	}
 
@@ -149,7 +150,7 @@ export abstract class ToneWithContext<Options extends ToneWithContextOptions> ex
 	 * 	"type" : "highpass"
 	 * });
 	 */
-	set(props: Partial<Options>): ToneWithContext<Options> {
+	set(props: Partial<Options>): this {
 		Object.keys(props).forEach(attribute => {
 			if (Reflect.has(this, attribute)) {
 				if (isDefined(this[attribute]) && isDefined(this[attribute].value)) {

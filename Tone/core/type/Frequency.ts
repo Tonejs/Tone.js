@@ -1,4 +1,4 @@
-import { Context } from "../context/Context";
+import { getContext } from "../Global";
 import { intervalToFrequencyRatio } from "./Conversions";
 import { TimeClass } from "./Time";
 import { TypeBaseExpression } from "./TypeBase";
@@ -234,5 +234,5 @@ const noteToScaleIndex = {
 const scaleIndexToNote = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
 
 export function Frequency(value, units?): FrequencyClass {
-	return new FrequencyClass(Context.getGlobal(), value, units);
+	return new FrequencyClass(getContext(), value, units);
 }

@@ -9,7 +9,7 @@
 		"removeComments": false,
 		"experimentalDecorators": true,
 		// "outFile": "./build/Tone.js",
-		"outDir": "./build",
+		"outDir": "./dist",
 		"sourceMap": true,
 		"moduleResolution": "node",
 		"strictPropertyInitialization" : true,

@@ -3,7 +3,6 @@ import { Tone } from "../Tone";
 import { optionsFromArguments } from "../util/Defaults";
 import { noOp } from "../util/Interface";
 import { isArray, isNumber, isString } from "../util/TypeCheck";
-import { Context } from "./Context";
 
 interface ToneAudioBufferOptions {
 	url?: string | AudioBuffer | ToneAudioBuffer;
@@ -92,7 +91,7 @@ export class ToneAudioBuffer extends Tone {
 		if (this._buffer) {
 			return this._buffer.sampleRate;
 		} else {
-			return Context.getGlobal().sampleRate;
+			return getContext().sampleRate;
 		}
 	}
 
@@ -168,7 +167,7 @@ export class ToneAudioBuffer extends Tone {
 		const isMultidimensional = isArray(array) && array[0].length > 0;
 		const channels = isMultidimensional ? array.length : 1;
 		const len = isMultidimensional ? (array[0] as Float32Array).length : array.length;
-		const context = Context.getGlobal();
+		const context = getContext();
 		const buffer = context.createBuffer(channels, len, context.sampleRate);
 		const multiChannelArray: Float32Array[] = !isMultidimensional && channels === 1 ?
 			[array as Float32Array] : array as Float32Array[];

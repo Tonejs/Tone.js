@@ -1,17 +1,18 @@
 import { optionsFromArguments } from "Tone/core/util/Defaults";
 import { Ticker, TickerClockSource } from "../clock/Ticker";
 import { Transport } from "../clock/Transport";
-import { getContext } from "../Global";
 import { Emitter } from "../util/Emitter";
 import { Omit } from "../util/Interface";
 import { Timeline } from "../util/Timeline";
 import { isString } from "../util/TypeCheck";
+import { getAudioContext } from "./AudioContext";
+import { Destination } from "./Destination";
 
 export type ContextLatencyHint = AudioContextLatencyCategory | "fastest";
 
 // these are either not used in Tone.js or deprecated and not implemented.
 export type ExcludedFromBaseAudioContext = "createScriptProcessor" | "onstatechange" | "addEventListener"
-	| "removeEventListener" | "listener" | "dispatchEvent" | "audioWorklet";
+	| "removeEventListener" | "listener" | "dispatchEvent" | "audioWorklet" | "destination";
 
 // the subset of the BaseAudioContext which Tone.Context implements.
 export type BaseAudioContextSubset = Omit<BaseAudioContext, ExcludedFromBaseAudioContext>;
@@ -31,43 +32,11 @@ export interface ContextTimeoutEvent {
 }
 
 /**
- * A single global Context.
- */
-let globalContext: Context | null = null;
-
-/**
  * Wrapper around the native AudioContext.
  */
 export class Context extends Emitter<"statechange" | "tick"> implements BaseAudioContextSubset {
 
 	name = "Context";
-
-	static getDefaults(): ContextOptions {
-		return {
-			clockSource: "worker",
-			context: getContext(),
-			latencyHint: "interactive",
-			lookAhead: 0.1,
-			updateInterval: 0.03,
-		};
-	}
-
-	/**
-	 * A reference to the static global Context.
-	 */
-	static getGlobal(): Context {
-		if (!globalContext) {
-			globalContext = new Context(getContext());
-		}
-		return globalContext;
-	}
-
-	/**
-	 * Set the global Context.
-	 */
-	static setGlobal(context: Context): void {
-		globalContext = context;
-	}
 
 	/**
 	 *  The amount of time into the future events are scheduled
@@ -107,7 +76,17 @@ export class Context extends Emitter<"statechange" | "tick"> implements BaseAudi
 	/**
 	 * A reference the Transport singleton belonging to this context
 	 */
-	transport?: Transport;
+	private _transport!: Transport;
+
+	/**
+	 * A reference the Destination singleton belonging to this context
+	 */
+	private _destination!: Destination;
+
+	/**
+	 * Private indicator if the context has been initialized
+	 */
+	private _initialized: boolean = false;
 
 	constructor(context?: BaseAudioContext);
 	// tslint:disable-next-line: unified-signatures
@@ -128,6 +107,28 @@ export class Context extends Emitter<"statechange" | "tick"> implements BaseAudi
 		this._context.addEventListener("statechange", () => {
 			this.emit("statechange", this.state);
 		});
+	}
+
+	static getDefaults(): ContextOptions {
+		return {
+			clockSource: "worker",
+			context: getAudioContext(),
+			latencyHint: "interactive",
+			lookAhead: 0.1,
+			updateInterval: 0.03,
+		};
+	}
+
+	/**
+	 * Finish setting up the context. **You usually do not need to do this manually.**
+	 */
+	initialize(): this {
+		if (!this._initialized) {
+			// add any additional modules
+			Context._notifyNewContext.forEach(cb => cb(this));
+			this._initialized = true;
+		}
+		return this;
 	}
 
 	///////////////////////////////////////////////////////////////////////
@@ -192,12 +193,7 @@ export class Context extends Emitter<"statechange" | "tick"> implements BaseAudi
 	decodeAudioData(audioData: ArrayBuffer): Promise<AudioBuffer> {
 		return this._context.decodeAudioData(audioData);
 	}
-	/**
-	 *  The audio output destination. Alias for Tone.Master
-	 */
-	get destination(): AudioDestinationNode {
-		return this._context.destination;
-	}
+
 	/**
 	 *  The current time in seconds of the AudioContext.
 	 */
@@ -221,6 +217,30 @@ export class Context extends Emitter<"statechange" | "tick"> implements BaseAudi
 	 */
 	get listener(): AudioListener {
 		return this._context.listener;
+	}
+
+	/**
+	 *  There is only one Transport per Context. It is created on initialization.
+	 */
+	get transport(): Transport {
+		this.assert(this._initialized, "The context must be initialized before being used by invoking context.initialize()");
+		return this._transport;
+	}
+	set transport(t: Transport) {
+		this.assert(!this._initialized, "The transport cannot be set after initialization.");
+		this._transport = t;
+	}
+
+	/**
+	 *  A reference to the Context's destination node.
+	 */
+	get destination(): Destination {
+		this.assert(this._initialized, "The context must be initialized before being used by invoking context.initialize()");
+		return this._destination;
+	}
+	set destination(d: Destination) {
+		this.assert(!this._initialized, "The transport cannot be set after initialization.");
+		this._destination = d;
 	}
 
 	///////////////////////////////////////////////////////////////////////
@@ -408,5 +428,21 @@ export class Context extends Emitter<"statechange" | "tick"> implements BaseAudi
 			}
 		});
 		return this;
+	}
+
+	///////////////////////////////////////////////////////////////////////////
+	// INITIALIZING NEW CONTEXT
+	///////////////////////////////////////////////////////////////////////////
+
+	/**
+	 * Array of callbacks to invoke when a new context is created
+	 */
+	private static _notifyNewContext: Array<(ctx: Context) => void> = [];
+
+	/**
+	 * Used internally to setup a new Context
+	 */
+	static onInit(cb: (ctx: Context) => void): void {
+		Context._notifyNewContext.push(cb);
 	}
 }
