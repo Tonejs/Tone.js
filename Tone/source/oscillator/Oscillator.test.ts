@@ -109,9 +109,9 @@ describe("Oscillator", () => {
 		it("handles 4 basic types", () => {
 			const osc = new Oscillator();
 			const types = ["triangle", "sawtooth", "sine", "square"];
-			for (let i = 0; i < types.length; i++) {
-				osc.type = types[i];
-				expect(osc.type).to.equal(types[i]);
+			for (const type of types) {
+				osc.type = type;
+				expect(osc.type).to.equal(type);
 			}
 			osc.dispose();
 		});
@@ -241,4 +241,3 @@ describe("Oscillator", () => {
 	// });
 
 });
-

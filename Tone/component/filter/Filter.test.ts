@@ -1,10 +1,10 @@
 import { expect } from "chai";
 import { BasicTests } from "test/helper/Basic";
-import { connectFrom, connectTo } from "test/helper/Connect";
+import { connectFrom } from "test/helper/Connect";
 import { Offline } from "test/helper/Offline";
 import { PassAudio } from "test/helper/PassAudio";
 import { Oscillator } from "../../source/oscillator/Oscillator";
-import { Filter }  from "./Filter";
+import { Filter } from "./Filter";
 
 describe("Filter", () => {
 
@@ -100,9 +100,9 @@ describe("Filter", () => {
 			const filter = new Filter();
 			const types: BiquadFilterType[] = ["lowpass", "highpass",
 				"bandpass", "lowshelf", "highshelf", "notch", "allpass", "peaking"];
-			for (let i = 0; i < types.length; i++) {
-				filter.type = types[i];
-				expect(filter.type).to.equal(types[i]);
+			for (const type of types) {
+				filter.type = type;
+				expect(filter.type).to.equal(type);
 			}
 			expect(() => {
 				// @ts-ignore

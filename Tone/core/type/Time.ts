@@ -17,17 +17,17 @@ export class TimeClass<Type extends Seconds | Ticks = Seconds> extends TypeBaseC
 	protected _getExpressions(defaultUnit): TypeBaseExpression<Type> {
 		return Object.assign(super._getExpressions(defaultUnit), {
 			now: {
-				regexp: /^\+(.+)/,
 				method: (capture: string): Type => {
 					return this._now() + new TimeClass(this.context, capture).valueOf() as Type;
 				},
+				regexp: /^\+(.+)/,
 			},
 			quantize: {
-				regexp: /^@(.+)/,
 				method: (capture: string): Type => {
 					const quantTo = new TimeClass(this.context, capture).valueOf();
 					return this._secondsToUnits(this.context.transport.nextSubdivision(quantTo));
 				},
+				regexp: /^@(.+)/,
 			},
 		});
 	}

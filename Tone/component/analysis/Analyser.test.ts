@@ -1,5 +1,4 @@
 import { expect } from "chai";
-// import Test from "helper/Test";
 import { BasicTests } from "test/helper/Basic";
 import { connectFrom } from "test/helper/Connect";
 import { Noise } from "../../source/Noise";
@@ -39,13 +38,13 @@ describe("Analyser", () => {
 		const anl = new Analyser("fft", 512);
 		const analysis = anl.getValue();
 		expect(analysis.length).to.equal(512);
-		for (let i = 0; i < analysis.length; i++) {
-			expect(analysis[i]).is.lessThan(0);
-		}
+		analysis.forEach(val => {
+			expect(val).is.lessThan(0);
+		});
 		anl.dispose();
 	});
 
-	it("can run waveform analysis", function(done) {
+	it("can run waveform analysis", (done) => {
 		const noise = new Noise();
 		const anl = new Analyser("waveform", 256);
 		noise.connect(anl);
@@ -54,9 +53,9 @@ describe("Analyser", () => {
 		setTimeout(() => {
 			const analysis = anl.getValue();
 			expect(analysis.length).to.equal(256);
-			for (let i = 0; i < analysis.length; i++) {
-				expect(analysis[i]).is.within(-1, 1);
-			}
+			analysis.forEach(val => {
+				expect(val).is.within(-1, 1);
+			});
 			anl.dispose();
 			noise.dispose();
 			done();
@@ -73,4 +72,3 @@ describe("Analyser", () => {
 	});
 
 });
-

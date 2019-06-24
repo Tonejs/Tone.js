@@ -1,8 +1,8 @@
-import { readOnly } from "../../core/util/Interface";
-import { Gain } from "../../core/context/Gain";
-import { optionsFromArguments } from "../../core/util/Defaults";
 import { Param } from "Tone/core/context/Param";
 import { ToneAudioNode, ToneAudioNodeOptions } from "Tone/core/context/ToneAudioNode";
+import { Gain } from "../../core/context/Gain";
+import { optionsFromArguments } from "../../core/util/Defaults";
+import { readOnly } from "../../core/util/Interface";
 
 interface VolumeOptions extends ToneAudioNodeOptions {
 	volume: Decibels;
@@ -47,8 +47,7 @@ export class Volume extends ToneAudioNode<VolumeOptions> {
 	 */
 	volume: Param<"decibels"> = this.output.gain;
 
-	constructor(volume?: Decibels);
-	constructor(options?: Partial<VolumeOptions>);
+	constructor(options?: Decibels | Partial<VolumeOptions>);
 	constructor() {
 
 		super(optionsFromArguments(Volume.getDefaults(), arguments, ["volume"]));

@@ -1,11 +1,8 @@
 import { expect } from "chai";
-import { connectFrom, connectTo } from "test/helper/Connect";
+import { connectFrom } from "test/helper/Connect";
 import { Offline } from "test/helper/Offline";
-import { OutputAudio } from "test/helper/OutputAudio";
-import { Oscillator } from "Tone/source/oscillator/Oscillator";
-// import Test from "test/helper/Test";
-// import Tone from "Tone/core/Tone";
 
+// tslint:disable-next-line
 export function OscillatorTests(Constr, args?): void {
 
 	context("Oscillator Tests", () => {
@@ -68,4 +65,3 @@ export function OscillatorTests(Constr, args?): void {
 	});
 
 }
-

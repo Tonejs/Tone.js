@@ -68,8 +68,25 @@ export abstract class TypeBaseClass<Type extends Seconds | Hertz | Ticks> extend
 	 */
 	protected _getExpressions(defaultUnit: TypeBaseUnits): TypeBaseExpression<Type> {
 		return {
+			hz: {
+				method: (value) => {
+					return this._frequencyToUnits(parseFloat(value));
+				},
+				regexp: /^(\d+(?:\.\d+)?)hz$/i,
+			},
+			i: {
+				method: (value) => {
+					return this._ticksToUnits(parseInt(value, 10));
+				},
+				regexp: /^(\d+)i$/i,
+			},
+			m: {
+				method: (value) => {
+					return this._beatsToUnits(parseInt(value, 10) * this._getTimeSignature());
+				},
+				regexp: /^(\d+)m$/i,
+			},
 			n: {
-				regexp: /^(\d+)n(\.?)$/i,
 				method: (value, dot) => {
 					const numericValue = parseInt(value, 10);
 					const scalar = dot === "." ? 1.5 : 1;
@@ -79,34 +96,34 @@ export abstract class TypeBaseClass<Type extends Seconds | Hertz | Ticks> extend
 						return this._beatsToUnits(4 / numericValue) * scalar as Type;
 					}
 				},
+				regexp: /^(\d+)n(\.?)$/i,
+			},
+			number: {
+				method: (value) => {
+					return this._expressions[defaultUnit].method.call(this, value);
+				},
+				regexp: /^(\d+(?:\.\d+)?)$/,
+			},
+			s: {
+				method: (value): Type => {
+					return this._secondsToUnits(parseFloat(value));
+				},
+				regexp: /^(\d+(?:\.\d+)?)s$/,
+			},
+			samples: {
+				method: (value) => {
+					return parseInt(value, 10) / this.context.sampleRate as Type;
+				},
+				regexp: /^(\d+)samples$/,
 			},
 			t: {
-				regexp: /^(\d+)t$/i,
 				method: (value) => {
 					const numericValue = parseInt(value, 10);
 					return this._beatsToUnits(8 / (Math.floor(numericValue) * 3));
 				},
-			},
-			m: {
-				regexp: /^(\d+)m$/i,
-				method: (value) => {
-					return this._beatsToUnits(parseInt(value, 10) * this._getTimeSignature());
-				},
-			},
-			i: {
-				regexp: /^(\d+)i$/i,
-				method: (value) => {
-					return this._ticksToUnits(parseInt(value, 10));
-				},
-			},
-			hz: {
-				regexp: /^(\d+(?:\.\d+)?)hz$/i,
-				method: (value) => {
-					return this._frequencyToUnits(parseFloat(value));
-				},
+				regexp: /^(\d+)t$/i,
 			},
 			tr: {
-				regexp: /^(\d+(?:\.\d+)?):(\d+(?:\.\d+)?):?(\d+(?:\.\d+)?)?$/,
 				method: (m, q, s) => {
 					let total = 0;
 					if (m && m !== "0") {
@@ -120,24 +137,7 @@ export abstract class TypeBaseClass<Type extends Seconds | Hertz | Ticks> extend
 					}
 					return total as Type;
 				},
-			},
-			s: {
-				regexp: /^(\d+(?:\.\d+)?)s$/,
-				method: (value): Type => {
-					return this._secondsToUnits(parseFloat(value));
-				},
-			},
-			samples: {
-				regexp: /^(\d+)samples$/,
-				method: (value) => {
-					return parseInt(value, 10) / this.context.sampleRate as Type;
-				},
-			},
-			number: {
-				regexp: /^(\d+(?:\.\d+)?)$/,
-				method: (value) => {
-					return this._expressions[defaultUnit].method.call(this, value);
-				},
+				regexp: /^(\d+(?:\.\d+)?):(\d+(?:\.\d+)?):?(\d+(?:\.\d+)?)?$/,
 			},
 		};
 	}

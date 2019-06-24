@@ -270,7 +270,7 @@ export abstract class Source<Options extends SourceOptions> extends ToneAudioNod
 	 *  @returns {Source} this
 	 */
 	unsync(): this {
-		if (this._synced) {
+    if (this._synced) {
 			this.context.transport.off("stop", this._syncedStop);
 			this.context.transport.off("pause", this._syncedStop);
 			this.context.transport.off("loopEnd", this._syncedStop);

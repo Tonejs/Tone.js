@@ -1,6 +1,7 @@
 {
 	"extends": "tslint:recommended",
 	"rulesDirectory": [
+        "tslint-no-unused-expression-chai"
 	],
 	"rules": {
 		
@@ -62,7 +63,10 @@
 				"timeEnd",
 				"trace"
 			]
-		}
+        },
+
+        "no-unused-expression": false,
+        "no-unused-expression-chai": true
 	},
 	"jsRules": {
 		"indent": [

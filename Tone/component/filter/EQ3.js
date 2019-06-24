@@ -1,5 +1,5 @@
 import Tone from "../../core/Tone";
-import "../MultibandSplit";
+import "../channel/MultibandSplit";
 import "../core/Gain";
 import "../core/AudioNode";
 

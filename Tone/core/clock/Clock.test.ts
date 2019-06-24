@@ -30,7 +30,7 @@ describe("Clock", () => {
 
 			it("can be constructed with an options object", (done) => {
 				const clock = new Clock({
-					callback() {
+					callback(): void {
 						clock.dispose();
 						done();
 					},
