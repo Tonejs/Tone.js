@@ -12,15 +12,13 @@ interface MultibandSplitOptions extends ToneAudioNodeOptions {
 }
 
 /**
- *  @class Split the incoming signal into three bands (low, mid, high)
- *         with two crossover frequency controls.
+ *  Split the incoming signal into three bands (low, mid, high)
+ *  with two crossover frequency controls.
  *
- *  @extends {Tone.AudioNode}
- *  @constructor
- *  @param {Frequency|Object} [lowFrequency] the low/mid crossover frequency
- *  @param {Frequency} [highFrequency] the mid/high crossover frequency
+ *  @param lowFrequency the low/mid crossover frequency
+ *  @param highFrequency the mid/high crossover frequency
  */
-export class MultibandSplit extends ToneAudioNode {
+export class MultibandSplit extends ToneAudioNode<MultibandSplitOptions> {
 
 	readonly name = "MultibandSplit";
 
@@ -32,27 +30,49 @@ export class MultibandSplit extends ToneAudioNode {
 	/**
 	 *  The low band. Alias for <code>output[0]</code>
 	 */
-	readonly low = new Filter(0, "lowpass");
+	readonly low = new Filter({
+		context: this.context,
+		frequency: 0,
+		type: "lowpass",
+	});
 
 	/**
 	 *  the lower filter of the mid band
 	 */
-	private _lowMidFilter = new Filter(0, "highpass");
+	private _lowMidFilter = new Filter({
+		context: this.context,
+		frequency: 0,
+		type: "highpass",
+	});
 
 	/**
 	 *  The mid band output. Alias for <code>output[1]</code>
 	 */
-	readonly mid = new Filter(0, "lowpass");
+	readonly mid = new Filter({
+		context: this.context,
+		frequency: 0,
+		type: "lowpass",
+	});
 
 	/**
 	 *  The high band output. Alias for <code>output[2]</code>
-	 *  @type {Tone.Filter}
 	 */
-	readonly high = new Filter(0, "highpass");
+	readonly high = new Filter({
+		context: this.context,
+		frequency: 0,
+		type: "highpass",
+	});
 
 	readonly output = [this.low, this.mid, this.high];
 
+	/**
+	 *  The low/mid crossover frequency.
+	 */
 	readonly lowFrequency: Signal<"frequency">;
+
+	/**
+	 *  The mid/high crossover frequency.
+	 */
 	readonly highFrequency: Signal<"frequency">;
 
 	protected _internalChannels = [this.input, ...this.output];
@@ -89,10 +109,8 @@ export class MultibandSplit extends ToneAudioNode {
 		this.input.fan(this.low, this.high);
 		this.input.chain(this._lowMidFilter, this.mid);
 		// the frequency control signal
-		this.lowFrequency.connect(this.low.frequency);
-		this.lowFrequency.connect(this._lowMidFilter.frequency);
-		this.highFrequency.connect(this.mid.frequency);
-		this.highFrequency.connect(this.high.frequency);
+		this.lowFrequency.fan(this.low.frequency, this._lowMidFilter.frequency);
+		this.highFrequency.fan(this.mid.frequency, this.high.frequency);
 		// the Q value
 		this.Q.connect(this.low.Q);
 		this.Q.connect(this._lowMidFilter.Q);
