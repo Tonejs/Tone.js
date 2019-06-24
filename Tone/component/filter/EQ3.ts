@@ -3,6 +3,7 @@ import { Param } from "Tone/core/context/Param";
 import { ToneAudioNode, ToneAudioNodeOptions } from "Tone/core/context/ToneAudioNode";
 import { optionsFromArguments } from "Tone/core/util/Defaults";
 import { readOnly, writable } from "Tone/core/util/Interface";
+import { Signal } from "Tone/signal/Signal";
 import { MultibandSplit } from "../channel/MultibandSplit";
 
 interface EQ3Options extends ToneAudioNodeOptions {
@@ -22,7 +23,7 @@ export class EQ3 extends ToneAudioNode<EQ3Options> {
 	readonly input: MultibandSplit;
 
 	/**
-	 *  the input
+	 *  the output
 	 */
 	readonly output = new Gain({ context: this.context });
 
@@ -61,27 +62,28 @@ export class EQ3 extends ToneAudioNode<EQ3Options> {
 	/**
 	 *  The Q value for all of the filters.
 	 */
-	readonly Q = this._multibandSplit.Q;
+	readonly Q: Signal<"positive">;
 
 	/**
 	 *  The low/mid crossover frequency.
 	 */
-	readonly lowFrequency = this._multibandSplit.lowFrequency;
+	readonly lowFrequency: Signal<"frequency">;
 
 	/**
 	 *  The mid/high crossover frequency.
 	 */
-	readonly highFrequency = this._multibandSplit.highFrequency;
+	readonly highFrequency: Signal<"frequency">;
 
-	readonly _internalChannels = [this._multibandSplit, this.output];
+	protected _internalChannels: ToneAudioNode[] = [];
 
-	constructor(lowLevel?: Decibels, midlevel?: Decibels, highLevel?: Decibels);
+	constructor(lowLevel?: Decibels, midLevel?: Decibels, highLevel?: Decibels);
 	constructor(options: Partial<EQ3Options>);
 	constructor() {
 		super(optionsFromArguments(EQ3.getDefaults(), arguments, ["low", "mid", "high"]));
 		const options = optionsFromArguments(EQ3.getDefaults(), arguments, ["low", "mid", "high"]);
 
 		this.input = this._multibandSplit = new MultibandSplit({
+			context: this.context,
 			highFrequency: options.highFrequency,
 			lowFrequency: options.lowFrequency,
 		});
@@ -100,19 +102,24 @@ export class EQ3 extends ToneAudioNode<EQ3Options> {
 
 		this._highGain = new Gain({
 			context: this.context,
-			gain: options.high, units: "decibels",
+			gain: options.high,
+			units: "decibels",
 		});
 
 		this.low = this._lowGain.gain;
 		this.mid = this._midGain.gain;
 		this.high = this._highGain.gain;
+		this.Q = this._multibandSplit.Q;
+		this.lowFrequency = this._multibandSplit.lowFrequency;
+		this.highFrequency	= this._multibandSplit.highFrequency;
 
-	// the frequency bands
+		// the frequency bands
 		this._multibandSplit.low.chain(this._lowGain, this.output);
 		this._multibandSplit.mid.chain(this._midGain, this.output);
 		this._multibandSplit.high.chain(this._highGain, this.output);
 
 		readOnly(this, ["low", "mid", "high", "lowFrequency", "highFrequency"]);
+		this._internalChannels = [this._multibandSplit, this.output];
 	}
 
 	static getDefaults(): EQ3Options {
