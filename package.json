@@ -88,7 +88,7 @@
     "semver": "^5.5.0",
     "teoria": "^2.5.0",
     "tsd-jsdoc": "^2.1.2",
-    "tslint": "^5.14.0",
+    "tslint": "^5.18.0",
     "tslint-no-unused-expression-chai": "^0.1.4",
     "typescript": "^3.3.4000",
     "ua-parser-js": "^0.7.20",
