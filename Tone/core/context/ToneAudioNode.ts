@@ -231,7 +231,7 @@ extends ToneWithContext<Options> {
 	 *  node.chain(effect, panVol, Tone.Destination);
 	 */
 	chain(...nodes: InputNode[]): this {
-		connectSeries(...nodes);
+		connectSeries(this, ...nodes);
 		return this;
 	}
 
