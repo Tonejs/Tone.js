@@ -146,7 +146,7 @@ Tone.Event.prototype._rescheduleEvents = function(after){
 				Tone.Transport.clear(event.id);
 			}
 			var startTick = event.time + Math.round(this.startOffset / this._playbackRate);
-			if (this._loop){
+			if (this._loop === true || Tone.isNumber(this._loop) && this._loop > 1){
 				duration = Infinity;
 				if (Tone.isNumber(this._loop)){
 					duration = (this._loop) * this._getLoopDuration();
