@@ -321,9 +321,12 @@ Tone.Event.prototype._getLoopDuration = function(){
 /**
  *  If the note should loop or not
  *  between Tone.Event.loopStart and
- *  Tone.Event.loopEnd. An integer
- *  value corresponds to the number of
- *  loops the Event does after it starts.
+ *  Tone.Event.loopEnd. If set to true,
+ *  the event will loop indefinitely,
+ *  if set to a number greater than 1
+ *  it will play a specific number of
+ *  times, if set to false, 0 or 1, the
+ *  part will only play once.
  *  @memberOf Tone.Event#
  *  @type {Boolean|Positive}
  *  @name loop

@@ -405,9 +405,12 @@ Object.defineProperty(Tone.Part.prototype, "humanize", {
 /**
  *  If the part should loop or not
  *  between Tone.Part.loopStart and
- *  Tone.Part.loopEnd. An integer
- *  value corresponds to the number of
- *  loops the Part does after it starts.
+ *  Tone.Part.loopEnd. If set to true,
+ *  the part will loop indefinitely,
+ *  if set to a number greater than 1
+ *  it will play a specific number of
+ *  times, if set to false, 0 or 1, the
+ *  part will only play once.
  *  @memberOf Tone.Part#
  *  @type {Boolean|Positive}
  *  @name loop
