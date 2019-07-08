@@ -562,6 +562,57 @@ describe("Part", function(){
 			});
 		});
 
+		it("plays once when loop is 1", function(){
+			var callCount = 0;
+			return Offline(function(Transport){
+				new Part({
+					"loopEnd" : 0.125,
+					"loop" : 1,
+					"callback" : function(){
+						callCount++;
+					},
+					"events" : [0, 0.1]
+				}).start(0.1);
+				Transport.start();
+			}, 0.8).then(function(){
+				expect(callCount).to.equal(2);
+			});
+		});
+
+    it("plays once when loop is 0", function(){
+			var callCount = 0;
+			return Offline(function(Transport){
+				new Part({
+					"loopEnd" : 0.125,
+					"loop" : 0,
+					"callback" : function(){
+						callCount++;
+					},
+					"events" : [0, 0.1]
+				}).start(0.1);
+				Transport.start();
+			}, 0.8).then(function(){
+				expect(callCount).to.equal(2);
+			});
+		});
+
+    it("plays once when loop is false", function(){
+			var callCount = 0;
+			return Offline(function(Transport){
+				new Part({
+					"loopEnd" : 0.125,
+					"loop" : false,
+					"callback" : function(){
+						callCount++;
+					},
+					"events" : [0, 0.1]
+				}).start(0.1);
+				Transport.start();
+			}, 0.8).then(function(){
+				expect(callCount).to.equal(2);
+			});
+		});
+
 		it("can loop between loopStart and loopEnd", function(){
 			var invoked = false;
 			return Offline(function(Transport){
