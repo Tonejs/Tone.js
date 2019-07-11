@@ -6,7 +6,7 @@ import { ToneOscillatorNode } from "./OscillatorNode";
 
 type ToneOscillatorType = OscillatorType | string;
 
-interface OscillatorOptions extends SourceOptions {
+interface ToneOscillatorOptions extends SourceOptions {
 	type: ToneOscillatorType;
 	frequency: Frequency;
 	detune: Cents;
@@ -26,7 +26,7 @@ interface OscillatorOptions extends SourceOptions {
  * //make and start a 440hz sine tone
  * var osc = new Oscillator(440, "sine").toMaster().start();
  */
-export class Oscillator extends Source<OscillatorOptions> {
+export class Oscillator extends Source<ToneOscillatorOptions> {
 
 	name = "Oscillator";
 
@@ -72,7 +72,7 @@ export class Oscillator extends Source<OscillatorOptions> {
 	 */
 	private _type;
 
-	constructor(options?: Partial<OscillatorOptions>)
+	constructor(options?: Partial<ToneOscillatorOptions>)
 	constructor(frequency?: Frequency, type?: ToneOscillatorType);
 	constructor() {
 
@@ -104,7 +104,7 @@ export class Oscillator extends Source<OscillatorOptions> {
 		this.phase = this._phase;
 	}
 
-	static getDefaults(): OscillatorOptions {
+	static getDefaults(): ToneOscillatorOptions {
 		return Object.assign(Source.getDefaults(), {
 			detune: 0,
 			frequency: 440,
@@ -298,7 +298,7 @@ export class Oscillator extends Source<OscillatorOptions> {
 	 *  will return all available object properties and their corresponding
 	 *  values.
 	 */
-	get(): OscillatorOptions {
+	get(): ToneOscillatorOptions {
 		const values = super.get();
 		if (values.type !== "custom") {
 			delete values.partials;
