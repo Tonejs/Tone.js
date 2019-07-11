@@ -12,11 +12,8 @@ if (semver.gt(devVersion, masterVersion)){
 	version = devVersion;
 }
 
-version = version.split(".");
 //increment the patch
-version[2] = parseInt(version[2]) + 1;
-//put it back in semver
-version = version.join(".");
+version = semver.inc(version, "patch");
 
 //write it to the package.json
 const packageFile = resolve(__dirname, "../package.json");
