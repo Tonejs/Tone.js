@@ -1,7 +1,7 @@
-import { Time, TimeClass } from "Tone/core/type/Time";
-import { PlaybackState } from "Tone/core/util/StateTimeline";
-import { Signal } from "Tone/signal/Signal";
-import { Context } from "../context/Context";
+import { Time, TimeClass } from "../../core/type/Time";
+import { PlaybackState } from "../../core/util/StateTimeline";
+import { Signal } from "../../signal/Signal";
+import { onContextInit } from "../context/ContextInitialization";
 import { Gain } from "../context/Gain";
 import { Param } from "../context/Param";
 import { ToneWithContext, ToneWithContextOptions } from "../context/ToneWithContext";
@@ -692,6 +692,6 @@ Emitter.mixin(Transport);
 // 	INITIALIZATION
 ///////////////////////////////////////////////////////////////////////////////
 
-Context.onInit(context => {
+onContextInit(context => {
 	context.transport = new Transport({ context });
 });

@@ -1,6 +1,6 @@
-import { Param } from "Tone/core/context/Param";
-import { ToneAudioNode, ToneAudioNodeOptions } from "Tone/core/context/ToneAudioNode";
 import { Gain } from "../../core/context/Gain";
+import { Param } from "../../core/context/Param";
+import { ToneAudioNode, ToneAudioNodeOptions } from "../../core/context/ToneAudioNode";
 import { optionsFromArguments } from "../../core/util/Defaults";
 import { readOnly } from "../../core/util/Interface";
 

@@ -1,5 +1,5 @@
-import { ToneAudioBuffer } from "Tone/core/context/ToneAudioBuffer";
-import { optionsFromArguments } from "Tone/core/util/Defaults";
+import { ToneAudioBuffer } from "../core/context/ToneAudioBuffer";
+import { optionsFromArguments } from "../core/util/Defaults";
 import { Source, SourceOptions } from "../source/Source";
 import { ToneBufferSource } from "./buffer/BufferSource";
 

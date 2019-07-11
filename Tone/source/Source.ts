@@ -1,9 +1,9 @@
-import { Volume } from "Tone/component/channel/Volume";
-import { ToneAudioNode, ToneAudioNodeOptions } from "Tone/core/context/ToneAudioNode";
-import { defaultArg, optionsFromArguments } from "Tone/core/util/Defaults";
-import { noOp, readOnly } from "Tone/core/util/Interface";
-import { PlaybackState, StateTimeline, StateTimelineEvent } from "Tone/core/util/StateTimeline";
-import { isUndef } from "Tone/core/util/TypeCheck";
+import { Volume } from "../component/channel/Volume";
+import { ToneAudioNode, ToneAudioNodeOptions } from "../core/context/ToneAudioNode";
+import { defaultArg, optionsFromArguments } from "../core/util/Defaults";
+import { noOp, readOnly } from "../core/util/Interface";
+import { PlaybackState, StateTimeline, StateTimelineEvent } from "../core/util/StateTimeline";
+import { isUndef } from "../core/util/TypeCheck";
 
 export interface SourceOptions extends ToneAudioNodeOptions {
 	volume: Decibels;

@@ -1,12 +1,14 @@
 import { Ticker, TickerClockSource } from "../clock/Ticker";
-import { Transport } from "../clock/Transport";
 import { optionsFromArguments } from "../util/Defaults";
 import { Emitter } from "../util/Emitter";
 import { Omit } from "../util/Interface";
 import { Timeline } from "../util/Timeline";
 import { isString } from "../util/TypeCheck";
 import { getAudioContext } from "./AudioContext";
-import { Destination } from "./Destination";
+import { initializeContext } from "./ContextInitialization";
+
+type Transport = import("../clock/Transport").Transport;
+type Destination = import("./Destination").Destination;
 
 export type ContextLatencyHint = AudioContextLatencyCategory | "fastest";
 
@@ -125,7 +127,7 @@ export class Context extends Emitter<"statechange" | "tick"> implements BaseAudi
 	initialize(): this {
 		if (!this._initialized) {
 			// add any additional modules
-			Context._notifyNewContext.forEach(cb => cb(this));
+			initializeContext(this);
 			this._initialized = true;
 		}
 		return this;
@@ -428,21 +430,5 @@ export class Context extends Emitter<"statechange" | "tick"> implements BaseAudi
 			}
 		});
 		return this;
-	}
-
-	///////////////////////////////////////////////////////////////////////////
-	// INITIALIZING NEW CONTEXT
-	///////////////////////////////////////////////////////////////////////////
-
-	/**
-	 * Array of callbacks to invoke when a new context is created
-	 */
-	private static _notifyNewContext: Array<(ctx: Context) => void> = [];
-
-	/**
-	 * Used internally to setup a new Context
-	 */
-	static onInit(cb: (ctx: Context) => void): void {
-		Context._notifyNewContext.push(cb);
 	}
 }

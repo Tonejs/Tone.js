@@ -39,7 +39,7 @@ describe("TimeClass", () => {
 		});
 
 		it("with no arguments evaluates to 'now'", () => {
-			const now = Tone.now();
+			const now = getContext().now();
 			expect(Time().valueOf()).to.be.closeTo(now, 0.01);
 		});
 
@@ -111,7 +111,7 @@ describe("TimeClass", () => {
 	context("Operators", () => {
 
 		it("can add the current time", () => {
-			const now = Tone.now();
+			const now = getContext().now();
 			expect(Time("+4").valueOf()).to.be.closeTo(4 + now, 0.02);
 			expect(Time("+2n").valueOf()).to.be.closeTo(1 + now, 0.02);
 		});
@@ -141,7 +141,7 @@ describe("TimeClass", () => {
 		});
 
 		it("converts time into samples", () => {
-			expect(Time(2).toSamples()).to.equal(2 * Tone.context.sampleRate);
+			expect(Time(2).toSamples()).to.equal(2 * getContext().sampleRate);
 		});
 
 		it("converts time into frequency", () => {

@@ -32,7 +32,7 @@
     "tsd": "node ./scripts/generate_docs.js",
     "lint": "tslint --project tsconfig.json",
     "ts:build": "rm -rf dist && tsc --project tsconfig.build.json",
-    "watch:old": "npm run increment && npm run collect:deps && webpack -w --env.production --mode=development",
+    "watch:old": "webpack -w --env.production --mode=development",
     "watch": "tsc --watch",
     "webpack:build": "rm -rf build && webpack -p --env.production"
   },
@@ -92,6 +92,7 @@
     "ts-loader": "^6.0.4",
     "tsd-jsdoc": "^2.1.2",
     "tslint": "^5.18.0",
+    "tslint-no-circular-imports": "^0.7.0",
     "tslint-no-unused-expression-chai": "^0.1.4",
     "typescript": "^3.3.4000",
     "ua-parser-js": "^0.7.20",

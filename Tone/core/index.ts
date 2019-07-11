@@ -14,3 +14,6 @@ export { StateTimeline } from "./util/StateTimeline";
 export { IntervalTimeline } from "./util/IntervalTimeline";
 export { Timeline } from "./util/Timeline";
 export { Emitter } from "./util/Emitter";
+export { Tone } from "./Tone";
+export { Destination } from "./context/Destination";
+export { Transport } from "./clock/Transport";

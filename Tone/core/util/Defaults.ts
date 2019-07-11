@@ -1,5 +1,7 @@
-import { BaseToneOptions } from "../Tone";
+// import { BaseToneOptions } from "../Tone";
 import { isDefined, isObject, isUndef } from "./TypeCheck";
+
+type BaseToneOptions = import("../Tone").BaseToneOptions;
 
 /**
  * Recursively merge an object

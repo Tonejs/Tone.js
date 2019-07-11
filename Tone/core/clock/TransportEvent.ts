@@ -1,5 +1,6 @@
 import { noOp } from "../util/Interface";
-import { Transport } from "./Transport";
+
+type Transport = import("../clock/Transport").Transport;
 
 export interface TransportEventOptions {
 	callback: (time: number) => void;

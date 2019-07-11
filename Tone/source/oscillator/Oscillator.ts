@@ -1,5 +1,5 @@
-import { optionsFromArguments } from "Tone/core/util/Defaults";
-import { readOnly } from "Tone/core/util/Interface";
+import { optionsFromArguments } from "../../core/util/Defaults";
+import { readOnly } from "../../core/util/Interface";
 import { Signal } from "../../signal/Signal";
 import { Source, SourceOptions } from "../Source";
 import { ToneOscillatorNode } from "./OscillatorNode";

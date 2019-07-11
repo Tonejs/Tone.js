@@ -2,6 +2,7 @@ import { expect } from "chai";
 import { Offline } from "test/helper/Offline";
 import { ONLINE_TESTING } from "test/helper/Supports";
 import { Transport } from "../clock/Transport";
+import { getContext } from "../Global";
 import { Tone } from "../Tone";
 import { getAudioContext } from "./AudioContext";
 import { Context } from "./Context";
@@ -29,7 +30,7 @@ describe("Context", () => {
 		if (ONLINE_TESTING) {
 			it("clock is running", done => {
 				const interval = setInterval(() => {
-					if (Tone.context.currentTime > 0.5) {
+					if (getContext().currentTime > 0.5) {
 						clearInterval(interval);
 						done();
 					}

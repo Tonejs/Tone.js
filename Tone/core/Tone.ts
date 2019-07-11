@@ -5,8 +5,7 @@
  *  @copyright 2014-2019 Yotam Mann
  */
 import { version } from "../version";
-import { Context } from "./context/Context";
-import { getContext } from "./Global";
+// import { getContext } from "./Global";
 import "./type/Units";
 
 ///////////////////////////////////////////////////////////////////////////
@@ -151,11 +150,11 @@ export abstract class Tone {
 	// 	STATIC
 	///////////////////////////////////////////////////////////////////////////
 
-	static get context(): Context {
-		return getContext();
-	}
+	// static get context(): import("./context/Context").Context {
+	// 	return getContext();
+	// }
 
-	static now(): Seconds {
-		return Tone.context.now();
-	}
+	// static now(): Seconds {
+	// 	return Tone.context.now();
+	// }
 }

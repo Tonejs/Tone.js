@@ -1,5 +1,5 @@
 {
-	"extends": "tslint:recommended",
+	"extends": ["tslint:recommended", "tslint-no-circular-imports"],
 	"rulesDirectory": [
         "tslint-no-unused-expression-chai"
 	],

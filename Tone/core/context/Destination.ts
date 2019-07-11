@@ -1,7 +1,7 @@
-import { Volume } from "Tone/component/channel/Volume";
+import { Volume } from "../../component/channel/Volume";
 import { connectSeries } from "../Connect";
 import { optionsFromArguments } from "../util/Defaults";
-import { Context } from "./Context";
+import { onContextInit } from "./ContextInitialization";
 import { Gain } from "./Gain";
 import { Param } from "./Param";
 import { ToneAudioNode, ToneAudioNodeOptions } from "./ToneAudioNode";
@@ -112,6 +112,6 @@ export class Destination extends ToneAudioNode<DestinationOptions> {
 // 	INITIALIZATION
 ///////////////////////////////////////////////////////////////////////////
 
-Context.onInit(context => {
+onContextInit(context => {
 	context.destination = new Destination({ context });
 });

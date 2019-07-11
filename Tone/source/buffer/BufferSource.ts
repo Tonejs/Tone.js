@@ -1,10 +1,9 @@
-import { Tone } from "Tone/core/Tone";
-import { noOp } from "Tone/core/util/Interface";
-import { isDefined, isUndef } from "Tone/core/util/TypeCheck";
 import { connect } from "../../core/Connect";
 import { Param } from "../../core/context/Param";
 import { ToneAudioBuffer } from "../../core/context/ToneAudioBuffer";
 import { defaultArg, optionsFromArguments } from "../../core/util/Defaults";
+import { noOp } from "../../core/util/Interface";
+import { isDefined } from "../../core/util/TypeCheck";
 import { OneShotSource, OneShotSourceOptions } from "../OneShotSource";
 
 interface ToneBufferSourceOptions extends OneShotSourceOptions {
