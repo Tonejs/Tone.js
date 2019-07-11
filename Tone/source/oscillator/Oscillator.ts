@@ -185,9 +185,7 @@ export class Oscillator extends Source<OscillatorOptions> {
 	 * // the frequency of the oscillator is doubled to 880
 	 */
 	syncFrequency(): this {
-		// if (this.context.transport) {
-		// 	this.context.transport.syncSignal(this.frequency);
-		// }
+		this.context.transport.syncSignal(this.frequency);
 		return this;
 	}
 
@@ -196,7 +194,7 @@ export class Oscillator extends Source<OscillatorOptions> {
 	 *  See Oscillator.syncFrequency
 	 */
 	unsyncFrequency(): this {
-		// Tone.Transport.unsyncSignal(this.frequency);
+		this.context.transport.unsyncSignal(this.frequency);
 		return this;
 	}
 

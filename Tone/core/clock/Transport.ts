@@ -623,18 +623,23 @@ export class Transport extends ToneWithContext<TransportOptions> implements Emit
 	 *  @param ratio Optionally pass in the ratio between the two signals.
 	 * 				Otherwise it will be computed based on their current values.
 	 */
-	syncSignal(signal: Signal, ratio?: number): this {
+	syncSignal(signal: Signal<any>, ratio?: number): this {
 		if (!ratio) {
 			// get the sync ratio
 			const now = this.now();
 			if (signal.getValueAtTime(now) !== 0) {
-				ratio = signal.getValueAtTime(now) / this.bpm.getValueAtTime(now);
+				const bpm = this.bpm.getValueAtTime(now);
+				const computedFreq = 1 / (60 / bpm / this.PPQ);
+				ratio = signal.getValueAtTime(now) / computedFreq;
 			} else {
 				ratio = 0;
 			}
 		}
 		const ratioSignal = new Gain(ratio);
-		// this.bpm.chain(ratioSignal, signal._param);
+		// @ts-ignore
+		this.bpm.connect(ratioSignal);
+		// @ts-ignore
+		ratioSignal.connect(signal._param);
 		this._syncedSignals.push({
 			initial : signal.value,
 			ratio : ratioSignal,
@@ -648,7 +653,7 @@ export class Transport extends ToneWithContext<TransportOptions> implements Emit
 	 *  Unsyncs a previously synced signal from the transport's control.
 	 *  See Transport.syncSignal.
 	 */
-	unsyncSignal(signal: Signal): this {
+	unsyncSignal(signal: Signal<any>): this {
 		for (let i = this._syncedSignals.length - 1; i >= 0; i--) {
 			const syncedSignal = this._syncedSignals[i];
 			if (syncedSignal.signal === signal) {
@@ -664,6 +669,7 @@ export class Transport extends ToneWithContext<TransportOptions> implements Emit
 	 *  Clean up.
 	 */
 	dispose(): this {
+		super.dispose();
 		this._clock.dispose();
 		writable(this, "bpm");
 		this._timeline.dispose();

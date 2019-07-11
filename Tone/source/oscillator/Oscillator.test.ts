@@ -213,31 +213,31 @@ describe("Oscillator", () => {
 
 	});
 
-	// context("Synchronization", () => {
-	// 	it("can sync the frequency to the Transport", () => {
-	// 		return Offline(function(Transport) {
-	// 			Transport.bpm.value = 120;
-	// 			const osc = new Oscillator(2);
-	// 			osc.frequency.toMaster();
-	// 			osc.syncFrequency();
-	// 			Transport.bpm.value = 240;
-	// 		}).then((buffer) => {
-	// 			expect(buffer.value()).to.be.closeTo(4, 0.001);
-	// 		});
-	// 	});
+	context("Synchronization", () => {
+		it("can sync the frequency to the Transport", () => {
+			return Offline(({transport}) => {
+				transport.bpm.value = 120;
+				const osc = new Oscillator(2);
+				osc.frequency.toMaster();
+				osc.syncFrequency();
+				transport.bpm.value = 240;
+			}).then((buffer) => {
+				expect(buffer.value()).to.be.closeTo(4, 0.001);
+			});
+		});
 
-	// 	it("can unsync the frequency from the Transport", () => {
-	// 		return Offline(function(Transport) {
-	// 			Transport.bpm.value = 120;
-	// 			const osc = new Oscillator(2);
-	// 			osc.frequency.toMaster();
-	// 			osc.syncFrequency();
-	// 			Transport.bpm.value = 240;
-	// 			osc.unsyncFrequency();
-	// 		}).then((buffer) => {
-	// 			expect(buffer.value()).to.be.closeTo(2, 0.001);
-	// 		});
-	// 	});
-	// });
+		it("can unsync the frequency from the Transport", () => {
+			return Offline(({transport}) => {
+				transport.bpm.value = 120;
+				const osc = new Oscillator(2);
+				osc.frequency.toMaster();
+				osc.syncFrequency();
+				transport.bpm.value = 240;
+				osc.unsyncFrequency();
+			}).then((buffer) => {
+				expect(buffer.value()).to.be.closeTo(2, 0.001);
+			});
+		});
+	});
 
 });
