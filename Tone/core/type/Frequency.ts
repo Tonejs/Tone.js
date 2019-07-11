@@ -1,5 +1,6 @@
 import { getContext } from "../Global";
 import { intervalToFrequencyRatio } from "./Conversions";
+import { ftom, getA4, setA4 } from "./Conversions";
 import { TimeClass } from "./Time";
 import { TypeBaseExpression } from "./TypeBase";
 
@@ -21,7 +22,12 @@ export class FrequencyClass extends TimeClass<Hertz> {
 	 * The [concert tuning pitch](https://en.wikipedia.org/wiki/Concert_pitch) which is used
 	 * to generate all the other pitch values from notes. A4's values in Hertz.
 	 */
-	static A4: Hertz = 440;
+	static get A4(): Hertz {
+		return getA4();
+	}
+	static set A4(freq: Hertz) {
+		setA4(freq);
+	}
 
 	///////////////////////////////////////////////////////////////////////////
 	// 	AUGMENT BASE EXPRESSIONS
@@ -202,7 +208,7 @@ export class FrequencyClass extends TimeClass<Hertz> {
 	 * Frequency.ftom(440); // returns 69
 	 */
 	static ftom(frequency: Hertz): MidiNote {
-		return 69 + Math.round(12 * Math.log2(frequency / FrequencyClass.A4));
+		return ftom(frequency);
 	}
 }
 

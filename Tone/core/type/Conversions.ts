@@ -34,3 +34,27 @@ export function gainToDb(gain: GainFactor): Decibels {
 export function intervalToFrequencyRatio(interval: Interval): number {
 	return Math.pow(2, (interval / 12));
 }
+
+/**
+ * The Global [concert tuning pitch](https://en.wikipedia.org/wiki/Concert_pitch) which is used
+ * to generate all the other pitch values from notes. A4's values in Hertz.
+ */
+let A4: Hertz = 440;
+
+export function getA4(): Hertz {
+	return A4;
+}
+
+export function setA4(freq: Hertz): void {
+	A4 = freq;
+}
+
+/**
+ * Convert a frequency value to a MIDI note.
+ * @param frequency The value to frequency value to convert.
+ * @example
+ * Frequency.ftom(440); // returns 69
+ */
+export function ftom(frequency: Hertz): MidiNote {
+	return 69 + Math.round(12 * Math.log2(frequency / A4));
+}

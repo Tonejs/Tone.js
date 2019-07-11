@@ -1,11 +1,12 @@
 import { Tone } from "../../core/Tone";
 import { Context } from "../context/Context";
-import { ToneWithContext, ToneWithContextOptions } from "../context/ToneWithContext";
+import { getContext } from "../Global";
 import { isDefined, isObject , isString, isUndef } from "../util/TypeCheck";
 
-interface TypeBaseClassOptions extends ToneWithContextOptions {
+interface TypeBaseClassOptions {
 	value?: TypeBaseClassValue;
 	units?: TypeBaseUnits;
+	context: Context;
 }
 
 type TypeBaseClassValue = string | number | TimeObject | TypeBaseClass<any>;
@@ -60,7 +61,9 @@ export abstract class TypeBaseClass<Type extends Seconds | Hertz | Ticks> extend
 	}
 
 	static getDefaults(): TypeBaseClassOptions {
-		return ToneWithContext.getDefaults();
+		return {
+			context : getContext(),
+		};
 	}
 
 	/**

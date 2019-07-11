@@ -1,5 +1,5 @@
 import { getContext } from "../Global";
-import { FrequencyClass } from "./Frequency";
+import { ftom } from "./Conversions";
 import { TypeBaseClass, TypeBaseExpression, TypeBaseUnits } from "./TypeBase";
 
 /**
@@ -124,7 +124,7 @@ export class TimeClass<Type extends Seconds | Ticks = Seconds> extends TypeBaseC
 	 *  Return the value as a midi note.
 	 */
 	toMidi(): MidiNote {
-		return FrequencyClass.ftom(this.toFrequency());
+		return ftom(this.toFrequency());
 	}
 
 	protected _now(): Type {
