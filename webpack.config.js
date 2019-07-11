@@ -9,21 +9,25 @@ const defaults = {
 	mode : "development",
 	context : __dirname,
 	entry : {
-		Tone : "./Tone/index.js",
+		Tone : "./Tone/index.ts",
 	},
 	output : {
 		path : path.resolve(__dirname, "build"),
 		filename : "[name].js",
-		library : "Tone",
 		libraryTarget : "umd",
 		globalObject : "typeof self !== 'undefined' ? self : this",
 	},
 	resolve : {
-		modules : [
-			"node_modules",
-			path.resolve(__dirname, "."),
-			path.resolve(__dirname, "test")
-		],
+		extensions: ['.ts']
+	},
+	module : {
+		rules : [
+			{
+				test: /\.ts$/,
+				use: 'ts-loader',
+				exclude: /(node_modules)/,
+			}
+		]
 	},
 	devtool : "cheap-source-map",
 };

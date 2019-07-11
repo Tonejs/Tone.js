@@ -8,7 +8,6 @@
 		"noUnusedLocals": false,
 		"removeComments": false,
 		"experimentalDecorators": true,
-		// "outFile": "./build/Tone.js",
 		"outDir": "./dist",
 		"sourceMap": true,
 		"moduleResolution": "node",

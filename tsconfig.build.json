@@ -1,4 +1,8 @@
 {
+	"compilerOptions": {
+		"sourceMap": true,
+		"declaration": true
+	},
 	"extends": "./tsconfig.json",
 	"include": [
 		"Tone/**/*.ts"

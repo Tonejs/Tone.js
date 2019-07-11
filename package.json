@@ -12,7 +12,7 @@
     "Tone"
   ],
   "scripts": {
-    "build": "npm run increment && npm run collect:deps && webpack -p --env.production",
+    "build": "npm run increment && npm run ts:build && npm run webpack:build",
     "codecov": "codecov",
     "collect": "npm run collect:deps",
     "collect:deps": "node scripts/collect_deps.js",
@@ -30,9 +30,10 @@
     "test:node": "node ./test/html/node_test.js",
     "tsd": "node ./scripts/generate_docs.js",
     "lint": "tslint --project tsconfig.json",
-    "tsc": "rm -rf build && tsc --project tsconfig.build.json",
+    "ts:build": "rm -rf dist && tsc --project tsconfig.build.json",
     "watch:old": "npm run increment && npm run collect:deps && webpack -w --env.production --mode=development",
-    "watch": "tsc --watch"
+    "watch": "tsc --watch",
+    "webpack:build": "webpack -p --env.production"
   },
   "repository": {
     "type": "git",
@@ -87,6 +88,7 @@
     "proxy-polyfill": "^0.2.0",
     "semver": "^5.5.0",
     "teoria": "^2.5.0",
+    "ts-loader": "^6.0.4",
     "tsd-jsdoc": "^2.1.2",
     "tslint": "^5.18.0",
     "tslint-no-unused-expression-chai": "^0.1.4",
