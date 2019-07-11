@@ -1,6 +1,6 @@
 {
   "name": "tone",
-  "version": "14.0.0",
+  "version": "14.0.0-ts",
   "description": "A Web Audio framework for making interactive music in the browser.",
   "main": "build/Tone.js",
   "files": [
@@ -12,12 +12,13 @@
     "Tone"
   ],
   "scripts": {
-    "build": "npm run increment && npm run ts:build && npm run webpack:build",
+    "build": "npm run increment-ts && npm run ts:build && npm run webpack:build",
     "codecov": "codecov",
     "collect": "npm run collect:deps",
     "collect:deps": "node scripts/collect_deps.js",
     "collect:tests": "node scripts/collect_tests.js --file $npm_config_file --dir $npm_config_dir",
     "increment": "node scripts/increment_version.js",
+    "increment-ts": "node scripts/increment_version_ts.js",
     "karma": "karma start scripts/karma.conf.js --single-run --grep $npm_config_grep",
     "karma:watch": "karma start scripts/karma.conf.js --auto-watch --browsers OnlineChrome --grep $npm_config_grep",
     "lint:fix": "tslint --project tsconfig.json --fix",
@@ -33,7 +34,7 @@
     "ts:build": "rm -rf dist && tsc --project tsconfig.build.json",
     "watch:old": "npm run increment && npm run collect:deps && webpack -w --env.production --mode=development",
     "watch": "tsc --watch",
-    "webpack:build": "webpack -p --env.production"
+    "webpack:build": "rm -rf build && webpack -p --env.production"
   },
   "repository": {
     "type": "git",
