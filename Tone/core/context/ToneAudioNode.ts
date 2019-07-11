@@ -249,6 +249,7 @@ extends ToneWithContext<Options> {
 	 * Dispose and disconnect
 	 */
 	dispose(): this {
+		super.dispose();
 		if (isDefined(this.input)) {
 			if (isArray(this.input)) {
 				this.input.forEach(input => {

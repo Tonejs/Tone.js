@@ -95,6 +95,7 @@ export class Draw extends ToneWithContext<ToneWithContextOptions> {
 	}
 
 	dispose(): this {
+		super.dispose();
 		this._events.dispose();
 		cancelAnimationFrame(this._animationFrame);
 		return this;
