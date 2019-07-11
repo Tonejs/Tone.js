@@ -669,7 +669,6 @@ export class Transport extends ToneWithContext<TransportOptions> implements Emit
 	 *  Clean up.
 	 */
 	dispose(): this {
-		super.dispose();
 		this._clock.dispose();
 		writable(this, "bpm");
 		this._timeline.dispose();
