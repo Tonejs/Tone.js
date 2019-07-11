@@ -337,7 +337,6 @@ export class TickSource<Type extends "bpm" | "hertz"> extends ToneWithContext<Ti
 	 *  Clean up
 	 */
 	dispose(): this {
-		super.dispose();
 		this._state.dispose();
 		this._tickOffset.dispose();
 		this.frequency.dispose();

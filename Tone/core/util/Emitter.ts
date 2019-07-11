@@ -117,7 +117,6 @@ export class Emitter<EventType extends string = string> extends Tone {
 	 *  Clean up
 	 */
 	dispose(): this {
-		super.dispose();
 		this._events = undefined;
 		return this;
 	}

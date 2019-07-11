@@ -337,7 +337,6 @@ export class IntervalTimeline extends Tone {
 	 *  Clean up
 	 */
 	dispose(): this {
-		super.dispose();
 		if (this._root !== null) {
 			this._root.traverse(node => node.dispose());
 		}

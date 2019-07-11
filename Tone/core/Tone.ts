@@ -33,18 +33,9 @@ export abstract class Tone {
 	protected abstract name: string;
 
 	/**
-	 * If the instance was already disposed
-	 */
-	private _wasDisposed = false;
-
-	/**
 	 *  disconnect and dispose.
 	 */
-	dispose(): this {
-		this.assert(!this._wasDisposed, "Instance has already been disposed");
-		this._wasDisposed = true;
-		return this;
-	}
+	abstract dispose(): this;
 
 	/**
 	 * Takes a partial options an returns the completed options by filling in the defaults

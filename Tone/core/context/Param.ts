@@ -183,15 +183,15 @@ implements AbstractParam<Type> {
 	///////////////////////////////////////////////////////////////////////////
 
 	setValueAtTime(value: UnitMap[Type], time: Time): this {
-		const computedTime = this.toSeconds(time);
+		time = this.toSeconds(time);
 		const numericValue = this._fromType(value);
 		this._events.add({
-			time : computedTime,
+			time,
 			type: "setValue",
 			value: numericValue,
 		});
-		this.log("setValue", value, computedTime);
-		this._param.setValueAtTime(numericValue, computedTime);
+		this.log("setValue", value, time);
+		this._param.setValueAtTime(numericValue, time);
 		return this;
 	}
 
@@ -389,7 +389,6 @@ implements AbstractParam<Type> {
 	}
 
 	dispose(): this {
-		super.dispose();
 		this._events.dispose();
 		return this;
 	}

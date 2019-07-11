@@ -272,7 +272,6 @@ extends ToneWithContext<ClockOptions> implements Emitter<ClockEvent> {
 	 *  Clean up
 	 */
 	dispose(): this {
-		super.dispose();
 		this.context.off("tick", this._boundLoop);
 		this._tickSource.dispose();
 		this._state.dispose();

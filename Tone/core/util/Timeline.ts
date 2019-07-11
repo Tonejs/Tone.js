@@ -367,7 +367,6 @@ export class Timeline<GenericEvent extends TimelineEvent> extends Tone {
 	 *  Clean up.
 	 */
 	dispose(): this {
-		super.dispose();
 		this._timeline = [];
 		return this;
 	}

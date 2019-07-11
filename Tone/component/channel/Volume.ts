@@ -91,7 +91,6 @@ export class Volume extends ToneAudioNode<VolumeOptions> {
 	 *  clean up
 	 */
 	dispose(): this {
-		super.dispose();
 		this.input.dispose();
 		this.volume.dispose();
 		return this;
