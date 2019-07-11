@@ -1,6 +1,6 @@
-import { optionsFromArguments } from "Tone/core/util/Defaults";
 import { Ticker, TickerClockSource } from "../clock/Ticker";
 import { Transport } from "../clock/Transport";
+import { optionsFromArguments } from "../util/Defaults";
 import { Emitter } from "../util/Emitter";
 import { Omit } from "../util/Interface";
 import { Timeline } from "../util/Timeline";

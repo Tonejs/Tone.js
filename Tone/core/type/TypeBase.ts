@@ -1,4 +1,4 @@
-import { Tone } from "Tone/core/Tone";
+import { Tone } from "../../core/Tone";
 import { Context } from "../context/Context";
 import { ToneWithContext, ToneWithContextOptions } from "../context/ToneWithContext";
 import { isDefined, isObject , isString, isUndef } from "../util/TypeCheck";

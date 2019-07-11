@@ -1,9 +1,9 @@
-import { isDefined } from "Tone/core/util/TypeCheck";
 import { ToneWithContext, ToneWithContextOptions } from "../context/ToneWithContext";
 import { optionsFromArguments } from "../util/Defaults";
 import { readOnly } from "../util/Interface";
 import { PlaybackState, StateTimeline, StateTimelineEvent } from "../util/StateTimeline";
 import { Timeline } from "../util/Timeline";
+import { isDefined } from "../util/TypeCheck";
 import { TickSignal } from "./TickSignal";
 
 interface TickSourceOptions extends ToneWithContextOptions {
