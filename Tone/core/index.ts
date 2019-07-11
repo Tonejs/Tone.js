@@ -1,14 +1,13 @@
 export { Gain } from "./context/Gain";
 export { Context } from "./context/Context";
 export { OfflineContext } from "./context/OfflineContext";
-export { Param } from "./context/Param";
 export { ToneAudioBuffer } from "./context/ToneAudioBuffer";
 export { Delay } from "./context/Delay";
 export { Clock } from "./clock/Clock";
-export { Frequency, FrequencyClass } from "./type/Frequency";
-export { Time, TimeClass } from "./type/Time";
-export { Ticks, TicksClass } from "./type/Ticks";
-export { TransportTime, TransportTimeClass } from "./type/TransportTime";
+export { Frequency } from "./type/Frequency";
+export { Time } from "./type/Time";
+export { Ticks } from "./type/Ticks";
+export { TransportTime } from "./type/TransportTime";
 export { Draw } from "./util/Draw";
 export { StateTimeline } from "./util/StateTimeline";
 export { IntervalTimeline } from "./util/IntervalTimeline";
