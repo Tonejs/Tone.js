@@ -293,16 +293,45 @@ describe("TickSignal", () => {
 		});
 	});
 
-	// it("outputs a signal", () => {
-	// 	return Offline(() => {
-	// 		const sched = new TickSignal(1).toMaster();
-	// 		sched.linearRampTo(3, 1, 0);
-	// 	}, 1.01).then(buffer => {
-	// 		expect(buffer.getValueAtTime(0)).to.be.closeTo(1, 0.01);
-	// 		expect(buffer.getValueAtTime(0.5)).to.be.closeTo(2, 0.01);
-	// 		expect(buffer.getValueAtTime(1)).to.be.closeTo(3, 0.01);
-	// 	});
-	// });
+	it("outputs a signal", () => {
+		return Offline((context) => {
+			const sched = new TickSignal(1).connect(context.destination);
+			sched.linearRampTo(3, 1, 0);
+		}, 1.01).then(buffer => {
+			expect(buffer.getValueAtTime(0)).to.be.closeTo(1, 0.01);
+			expect(buffer.getValueAtTime(0.5)).to.be.closeTo(2, 0.01);
+			expect(buffer.getValueAtTime(1)).to.be.closeTo(3, 0.01);
+		});
+	});
+
+	it("outputs a signal with bpm units", () => {
+		return Offline((context) => {
+			const sched = new TickSignal({
+				units: "bpm",
+				value : 120,
+			}).connect(context.destination);
+			sched.linearRampTo(60, 1, 0);
+		}, 1.01).then(buffer => {
+			expect(buffer.getValueAtTime(0)).to.be.closeTo(2, 0.01);
+			expect(buffer.getValueAtTime(0.5)).to.be.closeTo(1.5, 0.01);
+			expect(buffer.getValueAtTime(1)).to.be.closeTo(1, 0.01);
+		});
+	});
+
+	it("outputs a signal with bpm units and a multiplier", () => {
+		return Offline((context) => {
+			const sched = new TickSignal({
+				multiplier : 10,
+				units: "bpm",
+				value : 60,
+			}).connect(context.destination);
+			sched.linearRampTo(120, 1, 0);
+		}, 1.01).then(buffer => {
+			expect(buffer.getValueAtTime(0)).to.be.closeTo(10, 0.01);
+			expect(buffer.getValueAtTime(0.5)).to.be.closeTo(15, 0.01);
+			expect(buffer.getValueAtTime(1)).to.be.closeTo(20, 0.01);
+		});
+	});
 
 	context("Ticks <-> Time", () => {
 
