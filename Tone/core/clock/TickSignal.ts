@@ -1,3 +1,4 @@
+import { connect } from "../Connect";
 import { AutomationEvent, Param, ParamOptions } from "../context/Param";
 import { getContext } from "../Global";
 import { optionsFromArguments } from "../util/Defaults";
@@ -44,6 +45,8 @@ export class TickSignal<Type extends "hertz" | "bpm"> extends Param<Type> {
 		const options = optionsFromArguments(TickSignal.getDefaults(), arguments, ["value"]);
 
 		this._sig = this.context.createConstantSource();
+		this._sig.start(0);
+		this._param = this._sig.offset;
 
 		// set the multiplier
 		this.multiplier = options.multiplier;
@@ -57,6 +60,7 @@ export class TickSignal<Type extends "hertz" | "bpm"> extends Param<Type> {
 			type : "setValue",
 			value: this._fromType(options.value),
 		});
+		this.setValueAtTime(options.value, 0);
 	}
 
 	static getDefaults(): TickSignalOptions {
@@ -262,5 +266,13 @@ export class TickSignal<Type extends "hertz" | "bpm"> extends Param<Type> {
 		const currentVal = this.value;
 		this._multiplier = m;
 		this.value = currentVal;
+	}
+
+	/**
+	 * Connect the output signal
+	 */
+	connect(dstNode, outputNumber = 0, inputNumber = 0): this {
+		connect(this._sig, dstNode, outputNumber, inputNumber);
+		return this;
 	}
 }
