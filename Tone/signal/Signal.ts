@@ -1,9 +1,9 @@
 import { AbstractParam } from "../core/context/AbstractParam";
 import { Param } from "../core/context/Param";
-import { InputNode, ToneAudioNode, ToneAudioNodeOptions } from "../core/context/ToneAudioNode";
+import { InputNode, OutputNode, ToneAudioNode, ToneAudioNodeOptions } from "../core/context/ToneAudioNode";
 import { optionsFromArguments } from "../core/util/Defaults";
 
-interface SignalOptions extends ToneAudioNodeOptions {
+export interface SignalOptions extends ToneAudioNodeOptions {
 	value: any;
 	units: Unit;
 	convert: boolean;
@@ -26,6 +26,11 @@ implements AbstractParam<Type> {
 
 	name = "Signal";
 
+	/**
+	 * Indicates if the value should be overridden on connection.
+	 */
+	readonly override: boolean = true;
+
 	static getDefaults(): SignalOptions {
 		return Object.assign(ToneAudioNode.getDefaults(), {
 			channelCount: 1,
@@ -43,9 +48,9 @@ implements AbstractParam<Type> {
 	 * The constant source node which generates the signal
 	 */
 	private _constantSource: ConstantSourceNode = this.context.createConstantSource();
-	readonly output: AudioNode = this._constantSource;
-	private _param: Param<Type>;
-	readonly input: Param<Type>;
+	readonly output: OutputNode = this._constantSource;
+	protected _param: Param<Type>;
+	readonly input: InputNode;
 	protected _internalChannels = [this._constantSource];
 
 	constructor(value?: UnitMap[Type], units?: Unit);
@@ -67,7 +72,7 @@ implements AbstractParam<Type> {
 	}
 
 	connect(destination: InputNode, outputNum = 0, inputNum = 0): this {
-		if (destination instanceof Param || destination instanceof AudioParam || destination instanceof Signal) {
+		if (destination instanceof Param || (destination instanceof Signal && destination.override)) {
 			// cancel changes
 			destination.cancelScheduledValues(0);
 			// reset the value
