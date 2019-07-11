@@ -13,7 +13,8 @@ export abstract class SignalOperator<Options extends ToneAudioNodeOptions> exten
 	}
 
 	connect(destination: InputNode, outputNum = 0, inputNum = 0): this {
-		if (destination instanceof Param || (destination instanceof Signal && destination.override)) {
+		if (destination instanceof Param || destination instanceof AudioParam ||
+			(destination instanceof Signal && destination.override)) {
 			// cancel changes
 			destination.cancelScheduledValues(0);
 			// reset the value
