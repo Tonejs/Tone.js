@@ -1,10 +1,9 @@
-import { connectSeries } from "Tone/core/Connect";
-import { Gain } from "Tone/core/context/Gain";
-import { optionsFromArguments } from "Tone/core/util/Defaults";
-import { readOnly, writable } from "Tone/core/util/Interface";
-import { isNumber } from "Tone/core/util/TypeCheck";
-import { Signal } from "Tone/signal/Signal";
-import { ToneAudioNode, ToneAudioNodeOptions } from "../../core/context/ToneAudioNode";
+import { Gain } from "../../core/context/Gain";
+import { connectSeries, ToneAudioNode, ToneAudioNodeOptions } from "../../core/context/ToneAudioNode";
+import { optionsFromArguments } from "../../core/util/Defaults";
+import { readOnly, writable } from "../../core/util/Interface";
+import { isNumber } from "../../core/util/TypeCheck";
+import { Signal } from "../../signal/Signal";
 
 interface FilterOptions extends ToneAudioNodeOptions {
 	type: BiquadFilterType;
