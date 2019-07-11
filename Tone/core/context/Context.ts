@@ -41,7 +41,9 @@ export class Context extends Emitter<"statechange" | "tick"> implements BaseAudi
 	name = "Context";
 
 	/**
-	 *  The amount of time into the future events are scheduled
+	 * The amount of time into the future events are scheduled. Giving Web Audio
+	 * a short amount of time into the future to schedule events can reduce clicks and
+	 * improve performance. This value can be set to 0 to get the lowest latency.
 	 */
 	lookAhead: Seconds;
 
@@ -318,7 +320,7 @@ export class Context extends Emitter<"statechange" | "tick"> implements BaseAudi
 	}
 
 	/**
-	 *  The current audio context time
+	 * The current audio context time plus a short {@link lookAhead}.
 	 */
 	now(): Seconds {
 		return this._context.currentTime + this.lookAhead;
