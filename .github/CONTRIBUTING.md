@@ -4,7 +4,7 @@ If you're looking for ideas for where to get started, consider jumping in on any
 
 ### Examples
 
-To contribute examples, please follow the current style of the examples. Add your example's title and file name to `ExampleList.js` file for it to appear in the examples list on the index page. 
+To contribute examples, please follow the current style of the examples. Add your example's title and file name to `examples/js/ExampleList.json` for it to appear in the examples list on the index page.
 
 ### Docs
 
@@ -32,4 +32,4 @@ You can also take a look at Tone.js' [code coverage](https://coveralls.io/github
 
 ### Synths/Effects
 
-If you'd like to contribute a cool and expressive synth or effect, i'd love to hear it. Please send me an example that i can play with along with the PR. 
+If you'd like to contribute a cool and expressive synth or effect, i'd love to hear it. Please send me an example that i can play with along with the PR.

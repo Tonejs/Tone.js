@@ -306,6 +306,54 @@ describe("Event", function(){
 			});
 		});
 
+		it("plays once when loop is 1", function(){
+			var callCount = 0;
+			return Offline(function(Transport){
+				new Event({
+					"loopEnd" : 0.125,
+					"loop" : 1,
+					"callback" : function(){
+						callCount++;
+					}
+				}).start(0);
+				Transport.start();
+			}, 0.8).then(function(){
+				expect(callCount).to.equal(1);
+			});
+		});
+
+    it("plays once when loop is 0", function(){
+			var callCount = 0;
+			return Offline(function(Transport){
+				new Event({
+					"loopEnd" : 0.125,
+					"loop" : 0,
+					"callback" : function(){
+						callCount++;
+					}
+				}).start(0);
+				Transport.start();
+			}, 0.8).then(function(){
+				expect(callCount).to.equal(1);
+			});
+		});
+
+    it("plays once when loop is false", function(){
+			var callCount = 0;
+			return Offline(function(Transport){
+				new Event({
+					"loopEnd" : 0.125,
+					"loop" : false,
+					"callback" : function(){
+						callCount++;
+					}
+				}).start(0);
+				Transport.start();
+			}, 0.8).then(function(){
+				expect(callCount).to.equal(1);
+			});
+    });
+
 		it("can be started and stopped multiple times", function(){
 			return Offline(function(Transport){
 				var eventTimes = [0.3, 0.4, 0.9, 1.0, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9];

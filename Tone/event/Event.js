@@ -146,7 +146,7 @@ Tone.Event.prototype._rescheduleEvents = function(after){
 				Tone.Transport.clear(event.id);
 			}
 			var startTick = event.time + Math.round(this.startOffset / this._playbackRate);
-			if (this._loop){
+			if (this._loop === true || Tone.isNumber(this._loop) && this._loop > 1){
 				duration = Infinity;
 				if (Tone.isNumber(this._loop)){
 					duration = (this._loop) * this._getLoopDuration();
@@ -321,9 +321,12 @@ Tone.Event.prototype._getLoopDuration = function(){
 /**
  *  If the note should loop or not
  *  between Tone.Event.loopStart and
- *  Tone.Event.loopEnd. An integer
- *  value corresponds to the number of
- *  loops the Event does after it starts.
+ *  Tone.Event.loopEnd. If set to true,
+ *  the event will loop indefinitely,
+ *  if set to a number greater than 1
+ *  it will play a specific number of
+ *  times, if set to false, 0 or 1, the
+ *  part will only play once.
  *  @memberOf Tone.Event#
  *  @type {Boolean|Positive}
  *  @name loop
