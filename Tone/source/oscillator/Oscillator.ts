@@ -25,7 +25,7 @@ export interface OscillatorInterface {
 	frequency: Signal<"frequency">;
 	detune: Signal<"cents">;
 	type: ToneOscillatorType;
-	baseType: OscillatorType;
+	baseType: OscillatorType | "pulse" | "pwm";
 }
 
 /**
@@ -361,7 +361,7 @@ export class Oscillator extends Source<ToneOscillatorOptions> implements Oscilla
 					b = (n & 1) ? 2 * piFactor : 0;
 					this._partials[n - 1] = b;
 					break;
-				case "sawooth":
+				case "sawtooth":
 					b = piFactor * ((n & 1) ? 1 : -1);
 					this._partials[n - 1] = b;
 					break;
