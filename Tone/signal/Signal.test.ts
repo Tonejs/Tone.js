@@ -20,8 +20,8 @@ describe("Signal", () => {
 		});
 
 		it("can be created with an options object", () => {
-			const signal = new Signal<Time>({
-				units: "time",
+			const signal = new Signal({
+				units: "positive",
 				value: 0.2,
 			});
 			expect(signal.value).to.be.closeTo(0.2, 0.001);
