@@ -15,10 +15,10 @@ export async function CompareToFile(
 	const origContext = getContext();
 	try {
 		await Compare.toFile(context => {
-			const offlineContext = new OfflineContext(context, duration, 11025);
+			const offlineContext = new OfflineContext(context, duration, 44100);
 			setContext(offlineContext);
 			callback(offlineContext);
-		}, prefix + "audio/compare/" + url, threshold, RENDER_NEW, duration, channels, 11025);
+		}, prefix + "audio/compare/" + url, threshold, RENDER_NEW, duration, channels, 44100);
 	} finally {
 		setContext(origContext);
 	}
