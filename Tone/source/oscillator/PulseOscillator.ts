@@ -1,9 +1,3 @@
-// import Tone from "../core/Tone";
-// import "../source/Source";
-// import "../source/Oscillator";
-// import "../signal/Signal";
-// import "../signal/WaveShaper";
-// import "../core/Gain";
 import { readOnly } from "Tone/core/util/Interface";
 import { WaveShaper } from "Tone/signal/WaveShaper";
 import { Gain } from "../../core/context/Gain";
@@ -25,11 +19,29 @@ interface PulseOscillatorOptions extends ToneOscillatorOptions {
  * a square wave.
  * [Read more](https://wigglewave.wordpress.com/2014/08/16/pulse-waveforms-and-harmonics/).
  * <pre>
- *   width = 0.25        width = 0.5         width = 0.75
- * +---+         +     +------+      +     +---------+   +
- * |   |         |     |      |      |     |         |   |
- * |   |         |     |      |      |     |         |   |
- * +   +---------+     +      +------+     +         +---+
+ *    width = -0.25        width = 0.0          width = 0.25
+ *
+ *   +-----+            +-------+       +    +-------+     +-+
+ *   |     |            |       |       |            |     |
+ *   |     |            |       |       |            |     |
+ * +-+     +-------+    +       +-------+            +-----+
+ *
+ *
+ *    width = -0.5                              width = 0.5
+ *
+ *     +---+                                 +-------+   +---+
+ *     |   |                                         |   |
+ *     |   |                                         |   |
+ * +---+   +-------+                                 +---+
+ *
+ *
+ *    width = -0.75                             width = 0.75
+ *
+ *       +-+                                 +-------+ +-----+
+ *       | |                                         | |
+ *       | |                                         | |
+ * +-----+ +-------+                                 +-+
+ *
  * </pre>
  * @param frequency The frequency of the oscillator
  * @param width The width of the pulse
