@@ -11,14 +11,14 @@ export abstract class AbstractParam<Type extends Unit> {
 	 * //set the frequency to "G4" in exactly 1 second from now.
 	 * freq.setValueAtTime("G4", "+1");
 	 */
-	abstract setValueAtTime(value: UnitMap[Type], time: Time): this;
+	abstract setValueAtTime(value: Type, time: Time): this;
 
 	/**
 	 *  Get the signals value at the given time. Subsequent scheduling
 	 *  may invalidate the returned value.
 	 *  @param time When to get the value
 	 */
-	abstract getValueAtTime(time: Time): UnitMap[Type];
+	abstract getValueAtTime(time: Time): Type;
 
 	/**
 	 * Creates a schedule point with the current value at the current time.
@@ -34,13 +34,13 @@ export abstract class AbstractParam<Type extends Unit> {
 	 * Schedules a linear continuous change in parameter value from the
 	 * previous scheduled parameter value to the given value.
 	 */
-	abstract linearRampToValueAtTime(value: UnitMap[Type], time: Time): this;
+	abstract linearRampToValueAtTime(value: Type, time: Time): this;
 
 	/**
 	 *  Schedules an exponential continuous change in parameter value from
 	 *  the previous scheduled parameter value to the given value.
 	 */
-	abstract exponentialRampToValueAtTime(value: UnitMap[Type], time: Time): this;
+	abstract exponentialRampToValueAtTime(value: Type, time: Time): this;
 
 	/**
 	 * Schedules an exponential continuous change in parameter value from
@@ -54,7 +54,7 @@ export abstract class AbstractParam<Type extends Unit> {
 	 * //exponentially ramp to the value 2 over 4 seconds.
 	 * signal.exponentialRampTo(2, 4);
 	 */
-	abstract exponentialRampTo(value: UnitMap[Type], rampTime: Time, startTime?: Time): this;
+	abstract exponentialRampTo(value: Type, rampTime: Time, startTime?: Time): this;
 
 	/**
 	 *  Schedules an linear continuous change in parameter value from
@@ -70,7 +70,7 @@ export abstract class AbstractParam<Type extends Unit> {
 	 * //linearly ramp to the value 4 over 3 seconds.
 	 * signal.linearRampTo(4, 3);
 	 */
-	abstract linearRampTo(value: UnitMap[Type], rampTime: Time, startTime?: Time): this;
+	abstract linearRampTo(value: Type, rampTime: Time, startTime?: Time): this;
 
 	/**
 	 *  Start exponentially approaching the target value at the given time. Since it
@@ -84,7 +84,7 @@ export abstract class AbstractParam<Type extends Unit> {
 	 * //exponentially ramp to the value 2 over 4 seconds.
 	 * signal.exponentialRampTo(2, 4);
 	 */
-	abstract targetRampTo(value: UnitMap[Type], rampTime: Time, startTime?: Time): this;
+	abstract targetRampTo(value: Type, rampTime: Time, startTime?: Time): this;
 
 	/**
 	 * Start exponentially approaching the target value at the given time. Since it
@@ -98,7 +98,7 @@ export abstract class AbstractParam<Type extends Unit> {
 	 * //exponentially ramp to the value 2 over 4 seconds.
 	 * signal.exponentialRampTo(2, 4);
 	 */
-	abstract exponentialApproachValueAtTime(value: UnitMap[Type], time: Time, rampTime: Time): this;
+	abstract exponentialApproachValueAtTime(value: Type, time: Time, rampTime: Time): this;
 
 	/**
 	 * Start exponentially approaching the target value at the given time with
@@ -107,7 +107,7 @@ export abstract class AbstractParam<Type extends Unit> {
 	 * @param startTime
 	 * @param timeConstant
 	 */
-	abstract setTargetAtTime(value: UnitMap[Type], startTime: Time, timeConstant: number): this;
+	abstract setTargetAtTime(value: Type, startTime: Time, timeConstant: number): this;
 
 	/**
 	 * Sets an array of arbitrary parameter values starting at the given time
@@ -118,7 +118,7 @@ export abstract class AbstractParam<Type extends Unit> {
 	 * @param duration
 	 * @param scaling If the values in the curve should be scaled by some value
 	 */
-	abstract setValueCurveAtTime(values: Array<UnitMap[Type]>, startTime: Time, duration: Time, scaling?: number): this;
+	abstract setValueCurveAtTime(values: Type[], startTime: Time, duration: Time, scaling?: number): this;
 
 	/**
 	 * Cancels all scheduled parameter changes with times greater than or
@@ -148,13 +148,13 @@ export abstract class AbstractParam<Type extends Unit> {
 	 * //schedule it to ramp starting at a specific time
 	 * signal.rampTo(0, 10, 5)
 	 */
-	abstract rampTo(value: UnitMap[Type], rampTime: Time, startTime?: Time): this;
+	abstract rampTo(value: Type, rampTime: Time, startTime?: Time): this;
 
 	/**
 	 * The current value of the parameter. Setting this value
 	 * is equivalent to setValueAtTime(value, context.currentTime)
 	 */
-	abstract value: UnitMap[Type];
+	abstract value: Type;
 
 	/**
 	 * If the value should be converted or not
@@ -164,7 +164,7 @@ export abstract class AbstractParam<Type extends Unit> {
 	/**
 	 * The unit type
 	 */
-	abstract readonly units: Unit;
+	abstract readonly units: UnitName;
 
 	/**
 	 * True if the signal value is being overridden by
@@ -175,10 +175,10 @@ export abstract class AbstractParam<Type extends Unit> {
 	/**
 	 * The minimum value of the output given the units
 	 */
-	abstract readonly minValue: UnitMap[Type];
+	abstract readonly minValue: number;
 
 	/**
 	 * The maximum value of the output given the units
 	 */
-	abstract readonly maxValue: UnitMap[Type];
+	abstract readonly maxValue: number;
 }

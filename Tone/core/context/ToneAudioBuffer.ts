@@ -187,7 +187,7 @@ export class ToneAudioBuffer extends Tone {
 		if (isNumber(chanNum)) {
 			this.fromArray(this.toArray(chanNum));
 		} else {
-			let outputArray = new Float32Array(this.length);
+			let outputArray = new Float32Array(this.length as number);
 			const numChannels = this.numberOfChannels;
 			for (let channel = 0; channel < numChannels; channel++) {
 				const channelArray = this.toArray(channel) as Float32Array;
@@ -240,7 +240,7 @@ export class ToneAudioBuffer extends Tone {
 	 *  @param start The time to start the slice
 	 *  @param end The end time to slice. If none is given will default to the end of the buffer
 	 */
-	slice(start: Seconds, end: Seconds = this.length): ToneAudioBuffer {
+	slice(start: Seconds, end: Seconds = this.duration): ToneAudioBuffer {
 		const startSamples = Math.floor(start * this.sampleRate);
 		const endSamples = Math.floor(end * this.sampleRate);
 		const replacementArray: Float32Array[] = [];

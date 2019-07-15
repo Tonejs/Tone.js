@@ -6,7 +6,7 @@ import { ToneAudioNode, ToneAudioNodeOptions } from "./ToneAudioNode";
 
 interface GainOptions extends ToneAudioNodeOptions {
 	gain: number;
-	units: Unit;
+	units: UnitName;
 	convert: boolean;
 }
 
@@ -17,9 +17,9 @@ interface GainOptions extends ToneAudioNodeOptions {
  * @param  gain The initial gain of the GainNode
  * @param units The units of the gain parameter.
  */
-export class Gain<Type extends Unit = "gain"> extends ToneAudioNode<GainOptions> {
+export class Gain<Type extends Unit = GainFactor> extends ToneAudioNode<GainOptions> {
 
-	readonly name = "Gain";
+	name = "Gain";
 
 	/**
 	 *  The gain parameter of the gain node.
@@ -62,7 +62,7 @@ export class Gain<Type extends Unit = "gain"> extends ToneAudioNode<GainOptions>
 			gain : 1,
 			numberOfInputs: 1,
 			numberOfOutputs: 1,
-			units : "gain" as Unit,
+			units : "gain" as UnitName,
 		});
 	}
 

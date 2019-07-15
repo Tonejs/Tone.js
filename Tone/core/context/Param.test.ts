@@ -17,7 +17,7 @@ describe("Param", () => {
 	context("constructor", () => {
 		it("can be created and disposed", async () => {
 			await Offline(context => {
-				const param = new Param<"time">({
+				const param = new Param<Time>({
 					context,
 					param: context.createConstantSource().offset,
 					units: "time",
@@ -193,7 +193,7 @@ describe("Param", () => {
 
 		it("can be created with specific units", () => {
 			const gain = audioContext.createGain();
-			const param = new Param<"bpm">({
+			const param = new Param<BPM>({
 				context: audioContext,
 				param : gain.gain,
 				units : "bpm",
@@ -204,7 +204,7 @@ describe("Param", () => {
 
 		it("can evaluate the given units", () => {
 			const gain = audioContext.createGain();
-			const param = new Param<"decibels">({
+			const param = new Param<Decibels>({
 				context: audioContext,
 				param: gain.gain,
 				units: "decibels",
@@ -234,7 +234,7 @@ describe("Param", () => {
 	});
 
 	context("Unit Conversions", () => {
-		function testUnitConversion(units: Unit, inputValue: any, inputVerification: number, outputValue: number): void {
+		function testUnitConversion(units: UnitName, inputValue: any, inputVerification: number, outputValue: number): void {
 			it(`converts to ${units}`, async () => {
 				const testBuffer = await Offline(context => {
 					const source = context.createConstantSource();
@@ -272,7 +272,7 @@ describe("Param", () => {
 	});
 
 	context("min/maxValue", () => {
-		function testMinMaxValue(units: Unit, min, max): void {
+		function testMinMaxValue(units: UnitName, min, max): void {
 			it(`has proper min/max for ${units}`, () => {
 				const source = audioContext.createConstantSource();
 				source.connect(audioContext.rawContext.destination);
@@ -307,7 +307,7 @@ describe("Param", () => {
 	// const allSchedulingMethods = ['setValueAtTime', 'linearRampToValueAtTime', 'exponentialRampToValueAtTime']
 
 	context("setValueAtTime", () => {
-		function testSetValueAtTime(units: Unit, value0, value1, value2): void {
+		function testSetValueAtTime(units: UnitName, value0, value1, value2): void {
 			it(`can schedule value with units ${units}`, async () => {
 				const testBuffer = await Offline(context => {
 					const source = context.createConstantSource();
@@ -333,7 +333,7 @@ describe("Param", () => {
 
 		}
 
-		const allUnits: Unit[] = ["number", "decibels", "normalRange", "audioRange", "gain",
+		const allUnits: UnitName[] = ["number", "decibels", "normalRange", "audioRange", "gain",
 		"positive", "time", "frequency", "transportTime", "ticks", "bpm", "degrees", "samples", "hertz"];
 
 		allUnits.forEach(unit => {
@@ -348,7 +348,7 @@ describe("Param", () => {
 	["linearRampToValueAtTime", "exponentialRampToValueAtTime"].forEach(method => {
 
 		context(method, () => {
-			function testRampToValueAtTime(units: Unit, value0, value1, value2): void {
+			function testRampToValueAtTime(units: UnitName, value0, value1, value2): void {
 				it(`can schedule value with units ${units}`, async () => {
 					const testBuffer = await Offline(context => {
 						const source = context.createConstantSource();
@@ -374,7 +374,7 @@ describe("Param", () => {
 
 			}
 
-			const allUnits: Unit[] = ["number", "decibels", "normalRange", "audioRange", "gain",
+			const allUnits: UnitName[] = ["number", "decibels", "normalRange", "audioRange", "gain",
 				"positive", "time", "frequency", "transportTime", "ticks", "bpm", "degrees", "samples", "hertz"];
 
 			allUnits.forEach(unit => {
@@ -390,7 +390,7 @@ describe("Param", () => {
 	["linearRampTo", "exponentialRampTo", "rampTo", "targetRampTo"].forEach(method => {
 
 		context(method, () => {
-			function testRampToValueAtTime(units: Unit, value0, value1, value2): void {
+			function testRampToValueAtTime(units: UnitName, value0, value1, value2): void {
 				it(`can schedule value with units ${units}`, async () => {
 					const testBuffer = await Offline(context => {
 						const source = context.createConstantSource();
@@ -419,7 +419,7 @@ describe("Param", () => {
 
 			}
 
-			const allUnits: Unit[] = ["number", "decibels", "normalRange", "audioRange", "gain",
+			const allUnits: UnitName[] = ["number", "decibels", "normalRange", "audioRange", "gain",
 				"positive", "time", "frequency", "transportTime", "ticks", "bpm", "degrees", "samples", "hertz"];
 
 			allUnits.forEach(unit => {

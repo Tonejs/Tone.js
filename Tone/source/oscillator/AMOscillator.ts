@@ -36,7 +36,7 @@ interface AMOscillatorOptions extends ToneOscillatorOptions {
  */
 export class AMOscillator extends Source<AMOscillatorOptions> implements OscillatorInterface {
 
-	readonly name = "AMOscillator";
+	name = "AMOscillator";
 
 	/**
 	 *  The carrier oscillator
@@ -46,12 +46,12 @@ export class AMOscillator extends Source<AMOscillatorOptions> implements Oscilla
 	/**
 	 *  The oscillator's frequency
 	 */
-	frequency: Signal<"frequency"> = this._carrier.frequency;
+	frequency: Signal<Frequency> = this._carrier.frequency;
 
 	/**
 	 *  The detune control signal.
 	 */
-	detune: Signal<"cents"> = this._carrier.detune;
+	detune: Signal<Cents> = this._carrier.detune;
 
 	/**
 	 *  The modulating oscillator

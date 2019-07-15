@@ -19,7 +19,7 @@ describe("PulseOscillator", () => {
 				width: 0.2,
 			}).toMaster();
 			osc.start(0);
-		}, "pulseOscillator.wav", 0.01);
+		}, "pulseOscillator.wav", 0.03);
 	});
 
 	context("Phase Rotation", () => {

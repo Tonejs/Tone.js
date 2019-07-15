@@ -131,7 +131,7 @@ type BarsBeatsSixteenths  = string;
  *  Sampling is the reduction of a continuous signal to a discrete signal.
  *  Audio is typically sampled 44100 times per second.
  */
-type Samples = number;
+type Samples = number | "samples";
 
 /**
  *  Hertz are a frequency representation defined as one cycle per second.
@@ -177,6 +177,11 @@ interface UnitMap {
 }
 
 /**
- * All of the units names
+ * All of the unit types
  */
-type Unit = keyof UnitMap;
+type Unit = UnitMap[keyof UnitMap];
+
+/**
+ * All of the unit names
+ */
+type UnitName = keyof UnitMap;

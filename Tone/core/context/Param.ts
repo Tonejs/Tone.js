@@ -7,8 +7,8 @@ import { isDefined } from "../util/TypeCheck";
 import { ToneWithContext, ToneWithContextOptions } from "./ToneWithContext";
 
 export interface ParamOptions extends ToneWithContextOptions {
-	units: Unit;
-	value?: number;
+	units: UnitName;
+	value?: any;
 	param: AudioParam;
 	convert: boolean;
 }
@@ -34,7 +34,7 @@ export interface AutomationEvent {
  * serves as a base-class for classes which have a single,
  * automatable parameter.
  */
-export class Param<Type extends Unit = "number">
+export class Param<Type extends Unit = number>
 extends ToneWithContext<ParamOptions>
 implements AbstractParam<Type> {
 
@@ -43,7 +43,7 @@ implements AbstractParam<Type> {
 	static getDefaults(): ParamOptions {
 		return Object.assign(ToneWithContext.getDefaults(), {
 			convert: true,
-			units: "number" as Unit,
+			units: "number" as UnitName,
 		} as ParamOptions);
 	}
 
@@ -51,7 +51,7 @@ implements AbstractParam<Type> {
 	 * The input connection
 	 */
 	readonly input: AudioParam;
-	readonly units: Unit;
+	readonly units: UnitName;
 	convert: boolean;
 	overridden: boolean = false;
 
@@ -97,11 +97,11 @@ implements AbstractParam<Type> {
 		}
 	}
 
-	get value(): UnitMap[Type] {
+	get value(): Type {
 		const now = this.now();
 		return this.getValueAtTime(now);
 	}
-	set value(value: UnitMap[Type]) {
+	set value(value: Type) {
 		this._initialValue = this._fromType(value);
 		this.cancelScheduledValues(this.now());
 		this.setValueAtTime(value, this.now());
@@ -134,7 +134,7 @@ implements AbstractParam<Type> {
 	/**
 	 * Type guard based on the unit name
 	 */
-	private _is<T>(arg, type: Unit): arg is T {
+	private _is<T>(arg: any, type: UnitName): arg is T {
 		return this.units === type;
 	}
 
@@ -142,7 +142,7 @@ implements AbstractParam<Type> {
 	 *  Convert the given value from the type specified by Param.units
 	 *  into the destination value (such as Gain or Frequency).
 	 */
-	protected _fromType(val: UnitMap[Type]): number {
+	protected _fromType(val: Type): number {
 		if (this.convert && !this.overridden) {
 			if (this._is<Time>(val, "time")) {
 				return this.toSeconds(val);
@@ -169,11 +169,11 @@ implements AbstractParam<Type> {
 	/**
 	 * Convert the parameters value into the units specified by Param.units.
 	 */
-	protected _toType(val: number): UnitMap[Type] {
+	protected _toType(val: number): Type {
 		if (this.convert && this.units === "decibels") {
-			return gainToDb(val) as UnitMap[Type];
+			return gainToDb(val) as Type;
 		} else {
-			return val as UnitMap[Type];
+			return val as Type;
 		}
 	}
 
@@ -182,7 +182,7 @@ implements AbstractParam<Type> {
 	// all docs are generated from ParamInterface.ts
 	///////////////////////////////////////////////////////////////////////////
 
-	setValueAtTime(value: UnitMap[Type], time: Time): this {
+	setValueAtTime(value: Type, time: Time): this {
 		time = this.toSeconds(time);
 		const numericValue = this._fromType(value);
 		this._events.add({
@@ -195,7 +195,7 @@ implements AbstractParam<Type> {
 		return this;
 	}
 
-	getValueAtTime(time: Time): UnitMap[Type] {
+	getValueAtTime(time: Time): Type {
 		const computedTime = Math.max(this.toSeconds(time), 0);
 		const after = this._events.getAfter(computedTime);
 		const before = this._events.get(computedTime);
@@ -248,7 +248,7 @@ implements AbstractParam<Type> {
 		return this;
 	}
 
-	linearRampToValueAtTime(value: UnitMap[Type], endTime: Time): this {
+	linearRampToValueAtTime(value: Type, endTime: Time): this {
 		const numericValue = this._fromType(value);
 		endTime = this.toSeconds(endTime);
 		this._events.add({
@@ -261,7 +261,7 @@ implements AbstractParam<Type> {
 		return this;
 	}
 
-	exponentialRampToValueAtTime(value: UnitMap[Type], endTime: Time): this {
+	exponentialRampToValueAtTime(value: Type, endTime: Time): this {
 		let numericValue = this._fromType(value);
 		numericValue = Math.max(this._minOutput, numericValue);
 		endTime = this.toSeconds(endTime);
@@ -276,34 +276,34 @@ implements AbstractParam<Type> {
 		return this;
 	}
 
-	exponentialRampTo(value: UnitMap[Type], rampTime: Time, startTime?: Time): this {
+	exponentialRampTo(value: Type, rampTime: Time, startTime?: Time): this {
 		startTime = this.toSeconds(startTime);
 		this.setRampPoint(startTime);
 		this.exponentialRampToValueAtTime(value, startTime + this.toSeconds(rampTime));
 		return this;
 	}
 
-	linearRampTo(value: UnitMap[Type], rampTime: Time, startTime?: Time): this {
+	linearRampTo(value: Type, rampTime: Time, startTime?: Time): this {
 		startTime = this.toSeconds(startTime);
 		this.setRampPoint(startTime);
 		this.linearRampToValueAtTime(value, startTime + this.toSeconds(rampTime));
 		return this;
 	}
 
-	targetRampTo(value: UnitMap[Type], rampTime: Time, startTime?: Time): this {
+	targetRampTo(value: Type, rampTime: Time, startTime?: Time): this {
 		startTime = this.toSeconds(startTime);
 		this.setRampPoint(startTime);
 		this.exponentialApproachValueAtTime(value, startTime, rampTime);
 		return this;
 	}
 
-	exponentialApproachValueAtTime(value: UnitMap[Type], time: Time, rampTime: Time): this {
+	exponentialApproachValueAtTime(value: Type, time: Time, rampTime: Time): this {
 		const timeConstant = Math.log(this.toSeconds(rampTime) + 1) / Math.log(200);
 		time = this.toSeconds(time);
 		return this.setTargetAtTime(value, time, timeConstant);
 	}
 
-	setTargetAtTime(value: UnitMap[Type], startTime: Time, timeConstant: Positive): this {
+	setTargetAtTime(value: Type, startTime: Time, timeConstant: Positive): this {
 		const numericValue = this._fromType(value);
 		// The value will never be able to approach without timeConstant > 0.
 		this.assert(timeConstant > 0, "timeConstant must be greater than 0");
@@ -319,7 +319,7 @@ implements AbstractParam<Type> {
 		return this;
 	}
 
-	setValueCurveAtTime(values: Array<UnitMap[Type]>, startTime: Time, duration: Time, scaling: number = 1): this {
+	setValueCurveAtTime(values: Type[], startTime: Time, duration: Time, scaling: number = 1): this {
 		duration = this.toSeconds(duration);
 		startTime = this.toSeconds(startTime);
 		const startingValue = this._fromType(values[0]) * scaling;
@@ -379,7 +379,7 @@ implements AbstractParam<Type> {
 		return this;
 	}
 
-	rampTo(value: UnitMap[Type], rampTime: Time = 0.1, startTime?: Time): this {
+	rampTo(value: Type, rampTime: Time = 0.1, startTime?: Time): this {
 		if (this.units === "frequency" || this.units === "bpm" || this.units === "decibels") {
 			this.exponentialRampTo(value, rampTime, startTime);
 		} else {

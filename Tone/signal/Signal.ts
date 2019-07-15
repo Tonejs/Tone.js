@@ -3,9 +3,9 @@ import { Param } from "../core/context/Param";
 import { InputNode, OutputNode, ToneAudioNode, ToneAudioNodeOptions } from "../core/context/ToneAudioNode";
 import { optionsFromArguments } from "../core/util/Defaults";
 
-export interface SignalOptions extends ToneAudioNodeOptions {
-	value: any;
-	units: Unit;
+export interface SignalOptions<Type> extends ToneAudioNodeOptions {
+	value: Type;
+	units: UnitName;
 	convert: boolean;
 }
 
@@ -21,7 +21,7 @@ export interface SignalOptions extends ToneAudioNodeOptions {
  * @example
  * const signal = new Tone.Signal(10);
  */
-export class Signal<Type extends Unit = "number"> extends ToneAudioNode<SignalOptions>
+export class Signal<Type extends Unit = number> extends ToneAudioNode<SignalOptions<any>>
 implements AbstractParam<Type> {
 
 	name = "Signal";
@@ -30,19 +30,6 @@ implements AbstractParam<Type> {
 	 * Indicates if the value should be overridden on connection.
 	 */
 	readonly override: boolean = true;
-
-	static getDefaults(): SignalOptions {
-		return Object.assign(ToneAudioNode.getDefaults(), {
-			channelCount: 1,
-			channelCountMode: "explicit",
-			channelInterpretation: "discrete",
-			convert: true,
-			numberOfInputs: 1,
-			numberOfOutputs: 1,
-			units: "number" as Unit,
-			value: 0,
-		});
-	}
 
 	/**
 	 * The constant source node which generates the signal
@@ -53,13 +40,13 @@ implements AbstractParam<Type> {
 	readonly input: InputNode;
 	protected _internalChannels = [this._constantSource];
 
-	constructor(value?: UnitMap[Type], units?: Unit);
-	constructor(options?: Partial<SignalOptions>);
+	constructor(value?: Type, units?: UnitName);
+	constructor(options?: Partial<SignalOptions<Type>>);
 	constructor() {
 
 		super(optionsFromArguments(Signal.getDefaults(), arguments, ["value", "units"]));
 
-		const options = optionsFromArguments(Signal.getDefaults(), arguments, ["value", "units"]);
+		const options = optionsFromArguments(Signal.getDefaults(), arguments, ["value", "units"]) as SignalOptions<Type>;
 
 		this._constantSource.start(0);
 		this.input = this._param = new Param({
@@ -69,6 +56,19 @@ implements AbstractParam<Type> {
 			units: options.units,
 			value: options.value,
 		});
+	}
+
+	static getDefaults(): SignalOptions<any> {
+		return Object.assign(ToneAudioNode.getDefaults(), {
+			channelCount: 1,
+			channelCountMode: "explicit",
+			channelInterpretation: "discrete",
+			convert: true,
+			numberOfInputs: 1,
+			numberOfOutputs: 1,
+			units: "number" as UnitName,
+			value: 0,
+		}) as SignalOptions<any>;
 	}
 
 	connect(destination: InputNode, outputNum = 0, inputNum = 0): this {
@@ -93,46 +93,46 @@ implements AbstractParam<Type> {
 	// all docs are generated from AbstractParam.ts
 	///////////////////////////////////////////////////////////////////////////
 
-	setValueAtTime(value: UnitMap[Type], time: Time): this {
+	setValueAtTime(value: Type, time: Time): this {
 		this._param.setValueAtTime(value, time);
 		return this;
 	}
-	getValueAtTime(time: Time): UnitMap[Type] {
+	getValueAtTime(time: Time): Type {
 		return this._param.getValueAtTime(time);
 	}
 	setRampPoint(time: Time): this {
 		this._param.setRampPoint(time);
 		return this;
 	}
-	linearRampToValueAtTime(value: UnitMap[Type], time: Time): this {
+	linearRampToValueAtTime(value: Type, time: Time): this {
 		this._param.linearRampToValueAtTime(value, time);
 		return this;
 	}
-	exponentialRampToValueAtTime(value: UnitMap[Type], time: Time): this {
+	exponentialRampToValueAtTime(value: Type, time: Time): this {
 		this._param.exponentialRampToValueAtTime(value, time);
 		return this;
 	}
-	exponentialRampTo(value: UnitMap[Type], rampTime: Time, startTime?: Time): this {
+	exponentialRampTo(value: Type, rampTime: Time, startTime?: Time): this {
 		this._param.exponentialRampTo(value, rampTime, startTime);
 		return this;
 	}
-	linearRampTo(value: UnitMap[Type], rampTime: Time, startTime?: Time): this {
+	linearRampTo(value: Type, rampTime: Time, startTime?: Time): this {
 		this._param.linearRampTo(value, rampTime, startTime);
 		return this;
 	}
-	targetRampTo(value: UnitMap[Type], rampTime: Time, startTime?: Time): this {
+	targetRampTo(value: Type, rampTime: Time, startTime?: Time): this {
 		this._param.targetRampTo(value, rampTime, startTime);
 		return this;
 	}
-	exponentialApproachValueAtTime(value: UnitMap[Type], time: Time, rampTime: Time): this {
+	exponentialApproachValueAtTime(value: Type, time: Time, rampTime: Time): this {
 		this._param.exponentialApproachValueAtTime(value, time, rampTime);
 		return this;
 	}
-	setTargetAtTime(value: UnitMap[Type], startTime: Time, timeConstant: number): this {
+	setTargetAtTime(value: Type, startTime: Time, timeConstant: number): this {
 		this._param.setTargetAtTime(value, startTime, timeConstant);
 		return this;
 	}
-	setValueCurveAtTime(values: Array<UnitMap[Type]>, startTime: Time, duration: Time, scaling?: number): this {
+	setValueCurveAtTime(values: Type[], startTime: Time, duration: Time, scaling?: number): this {
 		this._param.setValueCurveAtTime(values, startTime, duration, scaling);
 		return this;
 	}
@@ -144,15 +144,15 @@ implements AbstractParam<Type> {
 		this._param.cancelAndHoldAtTime(time);
 		return this;
 	}
-	rampTo(value: UnitMap[Type], rampTime: Time, startTime?: Time): this {
+	rampTo(value: Type, rampTime: Time, startTime?: Time): this {
 		this._param.rampTo(value, rampTime, startTime);
 		return this;
 	}
 
-	get value(): UnitMap[Type] {
+	get value(): Type {
 		return this._param.value;
 	}
-	set value(value: UnitMap[Type]) {
+	set value(value: Type) {
 		this._param.value = value;
 	}
 
@@ -163,7 +163,7 @@ implements AbstractParam<Type> {
 		this._param.convert = convert;
 	}
 
-	get units(): Unit {
+	get units(): UnitName {
 		return this._param.units;
 	}
 
@@ -174,10 +174,10 @@ implements AbstractParam<Type> {
 		this._param.overridden = overridden;
 	}
 
-	get maxValue(): UnitMap[Type] {
+	get maxValue(): number {
 		return this._param.maxValue;
 	}
-	get minValue(): UnitMap[Type] {
+	get minValue(): number {
 		return this._param.minValue;
 	}
 }

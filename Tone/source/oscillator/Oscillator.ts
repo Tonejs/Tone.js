@@ -22,8 +22,8 @@ export interface OscillatorInterface {
 	partials: number[];
 	partialCount: number;
 	phase: Degrees;
-	frequency: Signal<"frequency">;
-	detune: Signal<"cents">;
+	frequency: Signal<Frequency>;
+	detune: Signal<Cents>;
 	type: ToneOscillatorType;
 	baseType: OscillatorType | "pulse" | "pwm";
 }
@@ -51,12 +51,12 @@ export class Oscillator extends Source<ToneOscillatorOptions> implements Oscilla
 	/**
 	 *  The frequency control.
 	 */
-	frequency: Signal<"frequency">;
+	frequency: Signal<Frequency>;
 
 	/**
 	 *  The detune control signal.
 	 */
-	detune: Signal<"cents">;
+	detune: Signal<Cents>;
 
 	/**
 	 *  the periodic wave
@@ -92,14 +92,14 @@ export class Oscillator extends Source<ToneOscillatorOptions> implements Oscilla
 		super(optionsFromArguments(Oscillator.getDefaults(), arguments, ["frequency", "type"]));
 		const options = optionsFromArguments(Oscillator.getDefaults(), arguments, ["frequency", "type"]);
 
-		this.frequency = new Signal({
+		this.frequency = new Signal<Frequency>({
 			context: this.context,
 			units: "frequency",
 			value: options.frequency,
 		});
 		readOnly(this, "frequency");
 
-		this.detune = new Signal({
+		this.detune = new Signal<Cents>({
 			context: this.context,
 			units: "cents",
 			value: options.detune,

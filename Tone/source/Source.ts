@@ -56,8 +56,6 @@ export abstract class Source<Options extends SourceOptions> extends ToneAudioNod
 
 	/**
 	 * The volume of the output in decibels.
-	 * @type {Decibels}
-	 * @signal
 	 * @example
 	 * source.volume.value = -6;
 	 */

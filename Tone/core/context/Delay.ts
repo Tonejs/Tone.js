@@ -15,7 +15,7 @@ export interface DelayOptions extends ToneAudioNodeOptions {
  */
 export class Delay extends ToneAudioNode<DelayOptions> {
 
-	readonly name = "Delay";
+	name = "Delay";
 
 	/**
 	 * The maximum delay time. This cannot be changed after
@@ -26,7 +26,7 @@ export class Delay extends ToneAudioNode<DelayOptions> {
 	/**
 	 *  The amount of time the incoming signal is delayed.
 	 */
-	readonly delayTime: Param<"time">;
+	readonly delayTime: Param<Time>;
 
 	/**
 	 * Private reference to the internal DelayNode

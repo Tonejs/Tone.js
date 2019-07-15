@@ -32,7 +32,7 @@ type ClockEvent = "start" | "stop" | "pause";
  * 	console.log(time);
  * }, 1);
  */
-export class Clock<Type extends "bpm" | "hertz" = "hertz">
+export class Clock<Type extends BPM | Hertz = Hertz>
 extends ToneWithContext<ClockOptions> implements Emitter<ClockEvent> {
 
 	name = "Clock";

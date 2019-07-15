@@ -95,7 +95,7 @@ export class Transport extends ToneWithContext<TransportOptions> implements Emit
 	 *  watches the main oscillator for timing ticks
 	 *  initially starts at 120bpm
 	 */
-	private _clock: Clock<"bpm">;
+	private _clock: Clock<BPM>;
 
 	/**
 	 * The Beats Per Minute of the Transport.
@@ -104,7 +104,7 @@ export class Transport extends ToneWithContext<TransportOptions> implements Emit
 	 * //ramp the bpm to 120 over 10 seconds
 	 * Transport.bpm.rampTo(120, 10);
 	 */
-	bpm: Param<"bpm">;
+	bpm: Param<BPM>;
 
 	/**
 	 *  The time signature, or more accurately the numerator

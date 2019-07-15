@@ -20,7 +20,7 @@ interface MultibandSplitOptions extends ToneAudioNodeOptions {
  */
 export class MultibandSplit extends ToneAudioNode<MultibandSplitOptions> {
 
-	readonly name = "MultibandSplit";
+	name = "MultibandSplit";
 
 	/**
 	 *  the input
@@ -68,19 +68,19 @@ export class MultibandSplit extends ToneAudioNode<MultibandSplitOptions> {
 	/**
 	 *  The low/mid crossover frequency.
 	 */
-	readonly lowFrequency: Signal<"frequency">;
+	readonly lowFrequency: Signal<Frequency>;
 
 	/**
 	 *  The mid/high crossover frequency.
 	 */
-	readonly highFrequency: Signal<"frequency">;
+	readonly highFrequency: Signal<Frequency>;
 
 	protected _internalChannels = [this.input, ...this.output];
 
 	/**
 	 *  The Q or Quality of the filter
 	 */
-	readonly Q: Signal<"positive">;
+	readonly Q: Signal<Positive>;
 
 	constructor(lowFrequency?: Frequency, highFrequency?: Frequency);
 	constructor(options?: Partial<MultibandSplitOptions>);

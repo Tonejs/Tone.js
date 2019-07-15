@@ -22,7 +22,7 @@ interface TickSourceOffsetEvent {
  *
  *  @param frequency The initial frequency that the signal ticks at
  */
-export class TickSource<Type extends "bpm" | "hertz"> extends ToneWithContext<TickSourceOptions> {
+export class TickSource<Type extends BPM | Hertz> extends ToneWithContext<TickSourceOptions> {
 
 	name = "TickSource";
 

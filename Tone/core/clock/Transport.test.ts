@@ -256,7 +256,7 @@ describe("Transport", () => {
 				const transport = new Transport({context});
 				transport.start(0).pause(0.2).start(0.4);
 
-				const pulse = new Signal(0).toMaster();
+				const pulse = new Signal<number>(0).toMaster();
 
 				transport.schedule(time => {
 					pulse.setValueAtTime(1, time);

@@ -50,12 +50,12 @@ interface PulseOscillatorOptions extends ToneOscillatorOptions {
  */
 export class PulseOscillator extends Source<PulseOscillatorOptions> implements OscillatorInterface {
 
-	readonly name = "PulseOscillator";
+	name = "PulseOscillator";
 
 	/**
 	 *  The width of the pulse.
 	 */
-	width: Signal<"audioRange"> = new Signal({
+	width: Signal<AudioRange> = new Signal({
 		context: this.context,
 		units: "audioRange",
 	});
@@ -79,12 +79,12 @@ export class PulseOscillator extends Source<PulseOscillatorOptions> implements O
 	/**
 	 *  The frequency control.
 	 */
-	frequency: Signal<"frequency"> = this._sawtooth.frequency;
+	frequency: Signal<Frequency> = this._sawtooth.frequency;
 
 	/**
 	 *  The detune in cents.
 	 */
-	detune: Signal<"cents"> = this._sawtooth.detune;
+	detune: Signal<Cents> = this._sawtooth.detune;
 
 	/**
 	 *  Threshold the signal to turn it into a square

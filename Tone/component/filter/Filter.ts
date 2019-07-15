@@ -50,22 +50,22 @@ export class Filter extends ToneAudioNode<FilterOptions> {
 	/**
 	 *  The Q or Quality of the filter
 	 */
-	readonly Q: Signal<"positive">;
+	readonly Q: Signal<Positive>;
 
 	/**
 	 *  The cutoff frequency of the filter.
 	 */
-	readonly frequency: Signal<"frequency">;
+	readonly frequency: Signal<Frequency>;
 
 	/**
 	 *  The detune parameter
 	 */
-	readonly detune: Signal<"cents">;
+	readonly detune: Signal<Cents>;
 
 	/**
 	 *  The gain of the filter, only used in certain filter types
 	 */
-	readonly gain: Signal<"decibels">;
+	readonly gain: Signal<Decibels>;
 
 	constructor(frequency?: Frequency, type?: BiquadFilterType, rolloff?: number);
 	constructor(options?: Partial<FilterOptions>);
@@ -181,8 +181,8 @@ export class Filter extends ToneAudioNode<FilterOptions> {
 			const filterClone = this.context.createBiquadFilter();
 			filterClone.type = this._type;
 			filterClone.Q.value = this.Q.value;
-			filterClone.frequency.value = this.frequency.value as Hertz;
-			filterClone.gain.value = this.gain.value;
+			filterClone.frequency.value = this.frequency.value as number;
+			filterClone.gain.value = this.gain.value as number;
 			filterClone.getFrequencyResponse(freqValues, magValues, phaseValues);
 			magValues.forEach((val, i) => {
 				totalResponse[i] *= val;

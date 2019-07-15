@@ -26,7 +26,7 @@ export class Volume extends ToneAudioNode<VolumeOptions> {
 	/**
 	 * the output node
 	 */
-	output: Gain<"decibels"> = new Gain({
+	output: Gain<Decibels> = new Gain({
 		context: this.context,
 		units: "decibels",
 	});
@@ -45,7 +45,7 @@ export class Volume extends ToneAudioNode<VolumeOptions> {
 	/**
 	 *  The volume control in decibels.
 	 */
-	volume: Param<"decibels"> = this.output.gain;
+	volume: Param<Decibels> = this.output.gain;
 
 	constructor(options?: Decibels | Partial<VolumeOptions>);
 	constructor() {

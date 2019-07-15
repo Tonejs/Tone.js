@@ -20,9 +20,9 @@ import { Signal, SignalOptions } from "./Signal";
  * const sig = new Tone.Signal(2).connect(mult);
  * //the output of mult is 20.
  */
-export class Multiply extends Signal<"number"> {
+export class Multiply extends Signal<number> {
 
-	readonly name = "Multiply";
+	name = "Multiply";
 
 	/**
 	 * Indicates if the value should be overridden on connection
@@ -47,20 +47,20 @@ export class Multiply extends Signal<"number"> {
 	/**
 	 * The multiplication factor. Can be set directly or a signal can be connected to it.
 	 */
-	factor: Param<"number">;
+	factor: Param<number>;
 
-	constructor(options?: Partial<SignalOptions>);
+	constructor(options?: Partial<SignalOptions<number>>);
 	// tslint:disable-next-line: unified-signatures
 	constructor(value?: number);
 	constructor() {
 		super(Object.assign(optionsFromArguments(Multiply.getDefaults(), arguments, ["value"])));
 		const options = optionsFromArguments(Multiply.getDefaults(), arguments, ["value"]);
 
-		this.factor = this._param = this._mult.gain as unknown as Param<"number">;
+		this.factor = this._param = this._mult.gain as unknown as Param<number>;
 		this.factor.setValueAtTime(options.value, 0);
 	}
 
-	static getDefaults(): SignalOptions {
+	static getDefaults(): SignalOptions<number> {
 		return Object.assign(Signal.getDefaults(), {
 			value: 0,
 		});

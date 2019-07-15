@@ -15,7 +15,7 @@ interface EQ3Options extends ToneAudioNodeOptions {
 }
 
 export class EQ3 extends ToneAudioNode<EQ3Options> {
-	readonly name = "EQ3";
+	name = "EQ3";
 
 	/**
 	 *  the input
@@ -32,47 +32,47 @@ export class EQ3 extends ToneAudioNode<EQ3Options> {
 	/**
 	 *  The gain for the lower signals
 	 */
-	private _lowGain: Gain<"decibels">;
+	private _lowGain: Gain<Decibels>;
 
 	/**
 	 *  The gain for the mid signals
 	 */
-	private _midGain: Gain<"decibels">;
+	private _midGain: Gain<Decibels>;
 
 	/**
 	 *  The gain for the high signals
 	 */
-	private _highGain: Gain<"decibels">;
+	private _highGain: Gain<Decibels>;
 
 	/**
 	 * The gain in decibels of the low part
 	 */
-	readonly low: Param<"decibels">;
+	readonly low: Param<Decibels>;
 
 	/**
 	 * The gain in decibels of the mid part
 	 */
-	readonly mid: Param<"decibels">;
+	readonly mid: Param<Decibels>;
 
 	/**
 	 * The gain in decibels of the high part
 	 */
-	readonly high: Param<"decibels">;
+	readonly high: Param<Decibels>;
 
 	/**
 	 *  The Q value for all of the filters.
 	 */
-	readonly Q: Signal<"positive">;
+	readonly Q: Signal<Positive>;
 
 	/**
 	 *  The low/mid crossover frequency.
 	 */
-	readonly lowFrequency: Signal<"frequency">;
+	readonly lowFrequency: Signal<Frequency>;
 
 	/**
 	 *  The mid/high crossover frequency.
 	 */
-	readonly highFrequency: Signal<"frequency">;
+	readonly highFrequency: Signal<Frequency>;
 
 	protected _internalChannels: ToneAudioNode[] = [];
 

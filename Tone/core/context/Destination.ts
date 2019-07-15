@@ -35,7 +35,7 @@ export class Destination extends ToneAudioNode<DestinationOptions> {
 	/**
 	 * The volume of the master output.
 	 */
-	volume: Param<"decibels"> = this.input.volume;
+	volume: Param<Decibels> = this.input.volume;
 	_internalChannels = [this.input, this.output];
 
 	constructor(options: Partial<DestinationOptions>);

@@ -13,7 +13,7 @@ import { WaveShaper } from "./WaveShaper";
  */
 export class Abs extends SignalOperator<ToneAudioNodeOptions> {
 
-	readonly name = "Abs";
+	name = "Abs";
 
 	/**
 	 * The node which converts the audio ranges

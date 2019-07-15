@@ -25,7 +25,7 @@ interface TickSignalOptions extends ParamOptions {
  *
  * @param value The initial value of the signal
  */
-export class TickSignal<Type extends "hertz" | "bpm"> extends Param<Type> {
+export class TickSignal<Type extends Hertz | BPM> extends Param<Type> {
 
 	name = "TickSignal";
 
@@ -58,9 +58,9 @@ export class TickSignal<Type extends "hertz" | "bpm"> extends Param<Type> {
 			ticks: 0,
 			time : 0,
 			type : "setValue",
-			value: this._fromType(options.value),
+			value: this._fromType(options.value as Type),
 		});
-		this.setValueAtTime(options.value, 0);
+		this.setValueAtTime(options.value as Type, 0);
 	}
 
 	static getDefaults(): TickSignalOptions {
@@ -72,7 +72,7 @@ export class TickSignal<Type extends "hertz" | "bpm"> extends Param<Type> {
 		});
 	}
 
-	setTargetAtTime(value: UnitMap[Type], time: Time, constant: number): this {
+	setTargetAtTime(value: Type, time: Time, constant: number): this {
 		// approximate it with multiple linear ramps
 		time = this.toSeconds(time);
 		this.setRampPoint(time);
@@ -89,7 +89,7 @@ export class TickSignal<Type extends "hertz" | "bpm"> extends Param<Type> {
 		return this;
 	}
 
-	setValueAtTime(value: UnitMap[Type], time: Time): this {
+	setValueAtTime(value: Type, time: Time): this {
 		const computedTime = this.toSeconds(time);
 		super.setValueAtTime(value, time);
 		const event = this._events.get(computedTime) as TickAutomationEvent;
@@ -99,7 +99,7 @@ export class TickSignal<Type extends "hertz" | "bpm"> extends Param<Type> {
 		return this;
 	}
 
-	linearRampToValueAtTime(value: UnitMap[Type], time: Time): this {
+	linearRampToValueAtTime(value: Type, time: Time): this {
 		const computedTime = this.toSeconds(time);
 		super.linearRampToValueAtTime(value, time);
 		const event = this._events.get(computedTime) as TickAutomationEvent;
@@ -109,7 +109,7 @@ export class TickSignal<Type extends "hertz" | "bpm"> extends Param<Type> {
 		return this;
 	}
 
-	exponentialRampToValueAtTime(value: UnitMap[Type], time: Time): this {
+	exponentialRampToValueAtTime(value: Type, time: Time): this {
 		// aproximate it with multiple linear ramps
 		time = this.toSeconds(time);
 		const computedVal = this._fromType(value);
@@ -239,7 +239,7 @@ export class TickSignal<Type extends "hertz" | "bpm"> extends Param<Type> {
 	/**
 	 * Convert from the type when the unit value is BPM
 	 */
-	protected _fromType(val: UnitMap[Type]): number {
+	protected _fromType(val: Type): number {
 		if (this.units === "bpm" && this.multiplier) {
 			return 1 / (60 / val / this.multiplier);
 		} else {
@@ -247,9 +247,12 @@ export class TickSignal<Type extends "hertz" | "bpm"> extends Param<Type> {
 		}
 	}
 
-	protected _toType(val: number): UnitMap[Type] {
+	/**
+	 * Special case of type conversion where the units === "bpm"
+	 */
+	protected _toType(val: number): Type {
 		if (this.units === "bpm" && this.multiplier) {
-			return (val / this.multiplier) * 60;
+			return (val / this.multiplier) * 60 as Type;
 		} else {
 			return super._toType(val);
 		}
