@@ -76,7 +76,7 @@ describe("WaveShaper", () => {
 
 		it("maps the input through the waveshaping curve", () => {
 			return Offline(() => {
-				const signal = new Signal(-1);
+				const signal = new Signal<number>(-1);
 				const waveshaper = new WaveShaper((input) => {
 					return input * 2;
 				});

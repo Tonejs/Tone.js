@@ -1,5 +1,4 @@
-// import Tone from "../core/Tone";
-// import "../signal/SignalBase";
+import { ToneAudioNodeOptions } from "../core/context/ToneAudioNode";
 import { optionsFromArguments } from "../core/util/Defaults";
 import { isArray, isFunction, isUndef } from "../core/util/TypeCheck";
 import { Signal, SignalOptions } from "./Signal";
@@ -9,7 +8,7 @@ type WaveShaperMappingFn = (value: number, index?: number) => number;
 
 type WaveShaperMapping =  WaveShaperMappingFn | number[] | Float32Array;
 
-interface WaveShaperOptions extends SignalOptions {
+interface WaveShaperOptions extends ToneAudioNodeOptions {
 	mapping?: WaveShaperMapping;
 	length: number;
 	curve?: number[] | Float32Array;
