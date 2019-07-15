@@ -292,7 +292,9 @@ extends ToneWithContext<Options> {
 export function connectSeries(...nodes: InputNode[]): void {
 	const first = nodes.shift();
 	nodes.reduce((prev, current) => {
-		if (prev instanceof ToneAudioNode || prev instanceof AudioNode) {
+		if (prev instanceof ToneAudioNode) {
+			prev.connect(current);
+		} else if (prev instanceof AudioNode) {
 			connect(prev, current);
 		}
 		return current;
