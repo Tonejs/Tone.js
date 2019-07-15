@@ -4,15 +4,28 @@ import { Signal } from "../../signal/Signal";
 import { Source, SourceOptions } from "../Source";
 import { ToneOscillatorNode } from "./OscillatorNode";
 
-type ToneOscillatorType = OscillatorType | string;
+export type ToneOscillatorType = OscillatorType | string;
 
-interface ToneOscillatorOptions extends SourceOptions {
+export interface ToneOscillatorOptions extends SourceOptions {
 	type: ToneOscillatorType;
 	frequency: Frequency;
 	detune: Cents;
 	phase: Degrees;
 	partials: number[];
 	partialCount: number;
+}
+
+/**
+ * All Oscillators share this interface
+ */
+export interface OscillatorInterface {
+	partials: number[];
+	partialCount: number;
+	phase: Degrees;
+	frequency: Signal<"frequency">;
+	detune: Signal<"cents">;
+	type: ToneOscillatorType;
+	baseType: OscillatorType;
 }
 
 /**
@@ -26,7 +39,7 @@ interface ToneOscillatorOptions extends SourceOptions {
  * //make and start a 440hz sine tone
  * var osc = new Oscillator(440, "sine").toMaster().start();
  */
-export class Oscillator extends Source<ToneOscillatorOptions> {
+export class Oscillator extends Source<ToneOscillatorOptions> implements OscillatorInterface {
 
 	name = "Oscillator";
 
@@ -152,13 +165,12 @@ export class Oscillator extends Source<ToneOscillatorOptions> {
 	/**
 	 *  stop the oscillator
 	 */
-	protected _stop(time?: Time): this {
+	protected _stop(time?: Time): void {
 		this.log("stop", time);
 		if (this._oscillator) {
 			time = this.toSeconds(time);
 			this._oscillator.stop(time);
 		}
-		return this;
 	}
 
 	/**
@@ -223,7 +235,6 @@ export class Oscillator extends Source<ToneOscillatorOptions> {
 	get type(): ToneOscillatorType {
 		return this._type;
 	}
-
 	set type(type: ToneOscillatorType) {
 		const isBasicType = ["sine", "square", "sawtooth", "triangle"].indexOf(type) !== -1;
 		if (this._phase === 0 && isBasicType) {
@@ -255,7 +266,6 @@ export class Oscillator extends Source<ToneOscillatorOptions> {
 	get baseType(): OscillatorType {
 		return this._type.replace(this.partialCount, "");
 	}
-
 	set baseType(baseType: OscillatorType) {
 		if (this.partialCount && this._type !== "custom" && baseType !== "custom") {
 			this.type = baseType + this.partialCount;
