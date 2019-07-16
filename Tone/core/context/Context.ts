@@ -5,7 +5,7 @@ import { Omit } from "../util/Interface";
 import { Timeline } from "../util/Timeline";
 import { isString } from "../util/TypeCheck";
 import { getAudioContext } from "./AudioContext";
-import { initializeContext } from "./ContextInitialization";
+import { closeContext, initializeContext } from "./ContextInitialization";
 
 type Transport = import("../clock/Transport").Transport;
 type Destination = import("./Destination").Destination;
@@ -345,6 +345,9 @@ export class Context extends Emitter<"statechange" | "tick"> implements BaseAudi
 	async close(): Promise<Context> {
 		if (this._context instanceof AudioContext) {
 			await this._context.close();
+		}
+		if (this._initialized) {
+			closeContext(this);
 		}
 		return this;
 	}
