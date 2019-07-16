@@ -22,8 +22,8 @@ export interface OscillatorInterface {
 	partials: number[];
 	partialCount: number;
 	phase: Degrees;
-	frequency: Signal<Frequency>;
-	detune: Signal<Cents>;
+	readonly frequency: Signal<Frequency>;
+	readonly detune: Signal<Cents>;
 	type: ToneOscillatorType;
 	baseType: OscillatorType | "pulse" | "pwm";
 }

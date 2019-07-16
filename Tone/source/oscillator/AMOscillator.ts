@@ -46,12 +46,12 @@ export class AMOscillator extends Source<AMOscillatorOptions> implements Oscilla
 	/**
 	 *  The oscillator's frequency
 	 */
-	frequency: Signal<Frequency> = this._carrier.frequency;
+	readonly frequency: Signal<Frequency> = this._carrier.frequency;
 
 	/**
 	 *  The detune control signal.
 	 */
-	detune: Signal<Cents> = this._carrier.detune;
+	readonly detune: Signal<Cents> = this._carrier.detune;
 
 	/**
 	 *  The modulating oscillator
