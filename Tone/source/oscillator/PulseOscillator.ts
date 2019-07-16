@@ -181,7 +181,7 @@ export class PulseOscillator extends Source<PulseOscillatorOptions> implements O
 	}
 
 	/**
-	 * The partials no partials for this waveform type.
+	 * No partials for this waveform type.
 	 */
 	get partialCount(): number {
 		return 0;
