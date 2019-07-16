@@ -17,7 +17,7 @@ describe("PWMOscillator", () => {
 		return CompareToFile(() => {
 			const osc = new PWMOscillator().toMaster();
 			osc.start(0.1);
-		}, "pwmOscillator.wav");
+		}, "pwmOscillator.wav", 0.01);
 	});
 
 	context("Modulation Frequency", () => {
