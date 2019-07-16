@@ -13,14 +13,22 @@ interface FMOscillatorOptions extends ToneOscillatorOptions {
 }
 
 /**
- *  @class FMOscillator
- *
- *  @extends {Tone.Source}
- *  @constructor
- *  @param {Frequency} frequency The starting frequency of the oscillator.
- *  @param {String} type The type of the carrier oscillator.
- *  @param {String} modulationType The type of the modulator oscillator.
- *  @example
+ * FMOscillator implements a frequency modulation synthesis
+ * <pre>
+ *                                              +-------------+
+ * +---------------+        +-------------+     | Carrier Osc |
+ * | Modulator Osc +>-------> GainNode    |     |             +--->Output
+ * +---------------+        |             +>----> frequency   |
+ *                       +--> gain        |     +-------------+
+ *                       |  +-------------+
+ * +-----------------+   |
+ * | modulationIndex +>--+
+ * +-----------------+
+ * </pre>
+ * @param frequency The starting frequency of the oscillator.
+ * @param type The type of the carrier oscillator.
+ * @param modulationType The type of the modulator oscillator.
+ * @example
  * //a sine oscillator frequency-modulated by a square wave
  * var fmOsc = new FMOscillator("Ab3", "sine", "square").toMaster().start();
  */
