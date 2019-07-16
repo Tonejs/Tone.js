@@ -1,7 +1,6 @@
-import { Context } from "../context/Context";
 import { getContext } from "../Global";
 import { TimeClass } from "./Time";
-import { TypeBaseUnits } from "./TypeBase";
+import { TimeBaseUnit, TimeValue } from "./TimeBase";
 
 /**
  * TransportTime is a the time along the Transport's
@@ -21,6 +20,12 @@ export class TransportTimeClass<Type extends Seconds | Ticks = Seconds> extends 
 	}
 }
 
-export function TransportTime(value: Time, units?: TypeBaseUnits): TransportTimeClass {
+/**
+ * TransportTime is a the time along the Transport's
+ * timeline. It is similar to Tone.Time, but instead of evaluating
+ * against the AudioContext's clock, it is evaluated against
+ * the Transport's position. See [TransportTime wiki](https://github.com/Tonejs/Tone.js/wiki/TransportTime).
+ */
+export function TransportTime(value?: TimeValue, units?: TimeBaseUnit): TransportTimeClass {
 	return new TransportTimeClass(getContext(), value, units);
 }

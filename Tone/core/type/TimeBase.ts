@@ -1,75 +1,74 @@
-import { Tone } from "../../core/Tone";
 import { Context } from "../context/Context";
-import { getContext } from "../Global";
+import { Tone } from "../Tone";
 import { isDefined, isObject , isString, isUndef } from "../util/TypeCheck";
 
-interface TypeBaseClassOptions {
-	value?: TypeBaseClassValue;
-	units?: TypeBaseUnits;
-	context: Context;
-}
-
-type TypeBaseClassValue = string | number | TimeObject | TypeBaseClass<any>;
+export type TimeValue = Time | TimeBaseClass<any, any>;
 
 /**
- * TypeBase is a flexible encoding of time which can be evaluated to and from a string.
+ * The units that the TimeBase can accept. extended by other classes
+ */
+export type TimeBaseUnit = "s" | "n" | "t" | "m" | "i" | "hz" | "tr" | "samples" | "number";
+
+export interface TypeFunction {
+	regexp: RegExp;
+	method: (value: string, ...args: string[]) => number;
+}
+
+export interface TimeExpression<Type extends number> {
+	[key: string]: {
+		regexp: RegExp;
+		method: (value: string, ...args: string[]) => Type;
+	};
+}
+
+/**
+ * TimeBase is a flexible encoding of time which can be evaluated to and from a string.
  * @param  val    The time value as a number, string or object
  * @param  units  Unit values
  * @example
- * new TypeBase(4, "n")
- * new TypeBase(2, "t")
- * new TypeBase("2t")
- * new TypeBase({"2t" : 2})
- * new TypeBase("2t") + new TypeBase("4n");
+ * new TimeBase(4, "n")
+ * new TimeBase(2, "t")
+ * new TimeBase("2t")
+ * new TimeBase({"2t" : 2})
+ * new TimeBase("2t") + new TimeBase("4n");
  */
-export abstract class TypeBaseClass<Type extends Seconds | Hertz | Ticks> extends Tone {
+export abstract class TimeBaseClass<Type extends number, Unit extends string> extends Tone {
 
 	readonly context: Context;
 
 	/**
 	 * The value of the units
 	 */
-	protected _val?: TypeBaseClassValue;
+	protected _val?: TimeValue;
 
 	/**
 	 * The units of time
 	 */
-	protected _units?: TypeBaseUnits;
+	protected _units?: Unit;
 
 	/**
 	 * All of the conversion expressions
 	 */
-	protected _expressions: TypeBaseExpression<Type>;
+	protected _expressions: TimeExpression<Type>;
 
 	/**
 	 * The default units
 	 */
-	readonly defaultUnits: TypeBaseUnits = "s";
+	readonly defaultUnits: Unit = "s" as Unit;
 
-	constructor(context: Context, value?: TypeBaseClassValue, units?: TypeBaseUnits) {
+	constructor(context: Context, value?: TimeValue, units?: Unit) {
 		super();
 
 		this._val = value;
 		this._units = units;
 		this.context = context;
-
-		this._expressions = this._getExpressions(this.defaultUnits);
-
-		if (value instanceof TypeBaseClass) {
-			this.fromType(value);
-		}
-	}
-
-	static getDefaults(): TypeBaseClassOptions {
-		return {
-			context : getContext(),
-		};
+		this._expressions = this._getExpressions();
 	}
 
 	/**
 	 * All of the time encoding expressions
 	 */
-	protected _getExpressions(defaultUnit: TypeBaseUnits): TypeBaseExpression<Type> {
+	protected _getExpressions(): TimeExpression<Type> {
 		return {
 			hz: {
 				method: (value) => {
@@ -103,7 +102,7 @@ export abstract class TypeBaseClass<Type extends Seconds | Hertz | Ticks> extend
 			},
 			number: {
 				method: (value) => {
-					return this._expressions[defaultUnit].method.call(this, value);
+					return this._expressions[this.defaultUnits].method.call(this, value);
 				},
 				regexp: /^(\d+(?:\.\d+)?)$/,
 			},
@@ -153,12 +152,15 @@ export abstract class TypeBaseClass<Type extends Seconds | Hertz | Ticks> extend
 	 *  Evaluate the time value. Returns the time in seconds.
 	 */
 	valueOf(): Type {
+		if (this._val instanceof TimeBaseClass) {
+			this.fromType(this._val);
+		}
 		if (isUndef(this._val)) {
 			return this._noArg();
 		} else if (isString(this._val) && isUndef(this._units)) {
 			for (const units in this._expressions) {
 				if (this._expressions[units].regexp.test(this._val.trim())) {
-					this._units = units as TypeBaseUnits;
+					this._units = units as Unit;
 					break;
 				}
 			}
@@ -267,7 +269,7 @@ export abstract class TypeBaseClass<Type extends Seconds | Hertz | Ticks> extend
 	 * Coerce a time type into this units type.
 	 * @param type Any time type units
 	 */
-	fromType(type: TypeBaseClass<any>): void {
+	fromType(type: TimeBaseClass<any, any>): this {
 		this._units = undefined;
 		switch (this.defaultUnits) {
 			case "s":
@@ -279,7 +281,11 @@ export abstract class TypeBaseClass<Type extends Seconds | Hertz | Ticks> extend
 			case "hz":
 				this._val = type.toFrequency();
 				break;
+			case "midi":
+				this._val = type.toMidi();
+				break;
 		}
+		return this;
 	}
 
 	/**
@@ -327,17 +333,3 @@ export abstract class TypeBaseClass<Type extends Seconds | Hertz | Ticks> extend
 		return this;
 	}
 }
-/**
- * The units that the TypeBase can accept. extended by other classes
- */
-export type TypeBaseUnits = "s" | "n" | "t" | "m" | "i" | "hz" | "tr" | "samples" | "number";
-
-/**
- * The format of the type conversion expressions
- */
-export type TypeBaseExpression<T> = {
-	[key in TypeBaseUnits]: {
-		regexp: RegExp;
-		method: (value: string, ...args: string[]) => T;
-	};
-};

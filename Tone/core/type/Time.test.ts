@@ -1,9 +1,11 @@
 import { expect } from "chai";
 import { BasicTests } from "test/helper/Basic";
-import { Offline } from "test/helper/Offline";
+import { atTime, Offline } from "test/helper/Offline";
 import { getContext } from "../Global";
-import { Tone } from "../Tone";
+import { Frequency } from "./Frequency";
+import { Ticks } from "./Ticks";
 import { Time, TimeClass } from "./Time";
+import { TransportTime } from "./TransportTime";
 
 describe("TimeClass", () => {
 
@@ -51,26 +53,26 @@ describe("TimeClass", () => {
 		});
 
 		it("can convert from Time", () => {
-			// expect(Time(Time(2)).valueOf()).to.equal(2);
+			expect(Time(Time(2)).valueOf()).to.equal(2);
 			expect(Time("4n").valueOf()).to.equal(0.5);
 		});
 
-		// it("can convert from Frequency", () => {
-		// 	expect(Time(Frequency(2)).valueOf()).to.equal(0.5);
-		// 	expect(Time(Frequency("4n")).valueOf()).to.equal(0.5);
-		// });
+		it("can convert from Frequency", () => {
+			expect(Time(Frequency(2)).valueOf()).to.equal(0.5);
+			expect(Time(Frequency("4n")).valueOf()).to.equal(0.5);
+		});
 
-		// it("can convert from TransportTime", () => {
-		// 	expect(Time(TransportTime(2)).valueOf()).to.equal(2);
-		// 	expect(Time(TransportTime("4n")).valueOf()).to.equal(0.5);
-		// });
+		it("can convert from TransportTime", () => {
+			expect(Time(TransportTime(2)).valueOf()).to.equal(2);
+			expect(Time(TransportTime("4n")).valueOf()).to.equal(0.5);
+		});
 
-		// it("can convert from Ticks", () => {
-		// 	return Offline(function(Transport) {
-		// 		expect(Time(Ticks(Transport.PPQ)).valueOf()).to.equal(0.5);
-		// 		expect(Time(Ticks("4n")).valueOf()).to.equal(0.5);
-		// 	});
-		// });
+		it("can convert from Ticks", () => {
+			return Offline(({ transport}) => {
+				expect(Time(Ticks(transport.PPQ)).valueOf()).to.equal(0.5);
+				expect(Time(Ticks("4n")).valueOf()).to.equal(0.5);
+			});
+		});
 
 		it("evalutes objects", () => {
 			return Offline(() => {
@@ -96,16 +98,17 @@ describe("TimeClass", () => {
 			expect(Time(2).quantize(8, 0.75).valueOf()).to.equal(0.5);
 		});
 
-		// it("can get the next subdivison when the transport is started", () => {
-		// 	return Offline(function(Transport) {
-		// 		Transport.start(0.1);
-		// 		return Test.atTime(0.69, () => {
-		// 			expect(Time("@1m").valueOf()).to.be.closeTo(2.1, 0.01);
-		// 			expect(Time("@4n").valueOf()).to.be.closeTo(1.1, 0.01);
-		// 			expect(Time("@8n").valueOf()).to.be.closeTo(0.85, 0.01);
-		// 		});
-		// 	}, 0.7);
-		// });
+		it("can get the next subdivison when the transport is started", () => {
+			return Offline((context) => {
+				const transport = context.transport;
+				transport.start(0.1);
+				return atTime(0.69, () => {
+					expect(new TimeClass(context, "@1m").valueOf()).to.be.closeTo(2.1, 0.01);
+					expect(new TimeClass(context, "@4n").valueOf()).to.be.closeTo(1.1, 0.01);
+					expect(new TimeClass(context, "@8n").valueOf()).to.be.closeTo(0.85, 0.01);
+				});
+			}, 0.7);
+		});
 	});
 
 	context("Operators", () => {
@@ -148,30 +151,30 @@ describe("TimeClass", () => {
 			expect(Time(2).toFrequency()).to.equal(0.5);
 		});
 
-		// it("converts time into ticks", () => {
-		// 	return Offline(function(Transport) {
-		// 		expect(Time("2n").toTicks()).to.equal(2 * Transport.PPQ);
-		// 		// floating point checks
-		// 		const bpmOrig = Tone.Transport.bpm.value;
-		// 		Tone.Transport.bpm.value = 100;
-		// 		expect(Time("0:1:3").toTicks()).to.equal(1.75 * Transport.PPQ);
-		// 		Tone.Transport.bpm.value = bpmOrig;
-		// 	});
-		// });
+		it("converts time into ticks", () => {
+			return Offline(({ transport }) => {
+				expect(Time("2n").toTicks()).to.equal(2 * transport.PPQ);
+				// floating point checks
+				const bpmOrig = transport.bpm.value;
+				transport.bpm.value = 100;
+				expect(Time("0:1:3").toTicks()).to.equal(1.75 * transport.PPQ);
+				transport.bpm.value = bpmOrig;
+			});
+		});
 
-		// it("converts time into BarsBeatsSixteenths", () => {
-		// 	return Offline(function(Transport) {
-		// 		expect(Time("3:1:3").toBarsBeatsSixteenths()).to.equal("3:1:3");
-		// 		expect(Time(2).toBarsBeatsSixteenths()).to.equal("1:0:0");
-		// 		// trailing zero removal test
-		// 		Transport.bpm.value = 100;
-		// 		expect(Time("0:1:3").toBarsBeatsSixteenths()).to.equal("0:1:3");
-		// 		expect(Time("14:0:0").toBarsBeatsSixteenths()).to.equal("14:0:0");
-		// 		expect(Time("15:0:0").toBarsBeatsSixteenths()).to.equal("15:0:0");
-		// 		Transport.bpm.value = 90;
-		// 		expect(Time("100:0:0").toBarsBeatsSixteenths()).to.equal("100:0:0");
-		// 	});
-		// });
+		it("converts time into BarsBeatsSixteenths", () => {
+			return Offline(({ transport }) => {
+				expect(Time("3:1:3").toBarsBeatsSixteenths()).to.equal("3:1:3");
+				expect(Time(2).toBarsBeatsSixteenths()).to.equal("1:0:0");
+				// trailing zero removal test
+				transport.bpm.value = 100;
+				expect(Time("0:1:3").toBarsBeatsSixteenths()).to.equal("0:1:3");
+				expect(Time("14:0:0").toBarsBeatsSixteenths()).to.equal("14:0:0");
+				expect(Time("15:0:0").toBarsBeatsSixteenths()).to.equal("15:0:0");
+				transport.bpm.value = 90;
+				expect(Time("100:0:0").toBarsBeatsSixteenths()).to.equal("100:0:0");
+			});
+		});
 
 	});
 

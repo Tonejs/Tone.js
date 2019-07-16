@@ -1,8 +1,10 @@
 import { getContext } from "../Global";
-import { intervalToFrequencyRatio } from "./Conversions";
+import { intervalToFrequencyRatio, mtof } from "./Conversions";
 import { ftom, getA4, setA4 } from "./Conversions";
 import { TimeClass } from "./Time";
-import { TypeBaseExpression } from "./TypeBase";
+import { TimeBaseClass, TimeBaseUnit, TimeExpression, TimeValue } from "./TimeBase";
+
+export type FrequencyUnit = TimeBaseUnit | "midi";
 
 /**
  * Frequency is a primitive type for encoding Frequency values.
@@ -12,11 +14,11 @@ import { TypeBaseExpression } from "./TypeBase";
  * Frequency(38, "midi") //
  * Frequency("C3").transpose(4);
  */
-export class FrequencyClass extends TimeClass<Hertz> {
+export class FrequencyClass<Type extends number = Hertz> extends TimeClass<Type, FrequencyUnit> {
 
 	name = "Frequency";
 
-	readonly defaultUnits = "hz";
+	readonly defaultUnits: FrequencyUnit = "hz";
 
 	/**
 	 * The [concert tuning pitch](https://en.wikipedia.org/wiki/Concert_pitch) which is used
@@ -33,12 +35,12 @@ export class FrequencyClass extends TimeClass<Hertz> {
 	// 	AUGMENT BASE EXPRESSIONS
 	///////////////////////////////////////////////////////////////////////////
 
-	protected _getExpressions(defaultUnit): TypeBaseExpression<Hertz> {
-		return Object.assign({}, super._getExpressions(defaultUnit), {
+	protected _getExpressions(): TimeExpression<Type> {
+		return Object.assign({}, super._getExpressions(), {
 			midi : {
 				regexp : /^(\d+(?:\.\d+)?midi)/,
 				method(value): number {
-					if (this._defaultUnits === "midi") {
+					if (this.defaultUnits === "midi") {
 						return value;
 					} else {
 						return FrequencyClass.mtof(value);
@@ -50,7 +52,7 @@ export class FrequencyClass extends TimeClass<Hertz> {
 				method(pitch, octave): number {
 					const index = noteToScaleIndex[pitch.toLowerCase()];
 					const noteNumber = index + (parseInt(octave, 10) + 1) * 12;
-					if (this._defaultUnits === "midi") {
+					if (this.defaultUnits === "midi") {
 						return noteNumber;
 					} else {
 						return FrequencyClass.mtof(noteNumber);
@@ -114,7 +116,7 @@ export class FrequencyClass extends TimeClass<Hertz> {
 	 * Frequency("C4").toMidi(); //60
 	 */
 	toMidi(): MidiNote {
-		return FrequencyClass.ftom(this.valueOf());
+		return ftom(this.valueOf());
 	}
 
 	/**
@@ -158,36 +160,36 @@ export class FrequencyClass extends TimeClass<Hertz> {
 	/**
 	 *  With no arguments, return 0
 	 */
-	protected _noArg(): Hertz {
-		return 0;
+	protected _noArg(): Type {
+		return 0 as Type;
 	}
 
 	/**
 	 *  Returns the value of a frequency in the current units
 	 */
-	protected _frequencyToUnits(freq: Hertz): Hertz {
-		return freq;
+	protected _frequencyToUnits(freq: Hertz): Type {
+		return freq as Type;
 	}
 
 	/**
 	 *  Returns the value of a tick in the current time units
 	 */
-	protected _ticksToUnits(ticks: Ticks): Hertz {
-		return 1 / ((ticks * 60) / (this._getBpm() * this._getPPQ()));
+	protected _ticksToUnits(ticks: Ticks): Type {
+		return 1 / ((ticks * 60) / (this._getBpm() * this._getPPQ())) as Type;
 	}
 
 	/**
 	 *  Return the value of the beats in the current units
 	 */
-	protected _beatsToUnits(beats: number): Hertz {
-		return 1 / super._beatsToUnits(beats);
+	protected _beatsToUnits(beats: number): Type {
+		return 1 / super._beatsToUnits(beats) as Type;
 	}
 
 	/**
 	 *  Returns the value of a second in the current units
 	 */
-	protected _secondsToUnits(seconds: Seconds): Hertz {
-		return 1 / seconds;
+	protected _secondsToUnits(seconds: Seconds): Type {
+		return 1 / seconds as Type;
 	}
 
 	/**
@@ -198,7 +200,7 @@ export class FrequencyClass extends TimeClass<Hertz> {
 	 * FrequencyClass.mtof(69); // returns 440
 	 */
 	static mtof(midi: MidiNote): Hertz {
-		return FrequencyClass.A4 * Math.pow(2, (midi - 69) / 12);
+		return mtof(midi);
 	}
 
 	/**
@@ -239,6 +241,9 @@ const noteToScaleIndex = {
  */
 const scaleIndexToNote = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
 
-export function Frequency(value, units?): FrequencyClass {
+/**
+ * Convert a value into a FrequencyClass object.
+ */
+export function Frequency(value?: TimeValue | Frequency, units?: FrequencyUnit): FrequencyClass {
 	return new FrequencyClass(getContext(), value, units);
 }

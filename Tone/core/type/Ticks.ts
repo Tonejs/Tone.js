@@ -1,7 +1,6 @@
-import { Context } from "../context/Context";
 import { getContext } from "../Global";
+import { TimeBaseUnit, TimeValue } from "./TimeBase";
 import { TransportTimeClass } from "./TransportTime";
-import { TypeBaseUnits } from "./TypeBase";
 
 /**
  * Ticks is a primitive type for encoding Time values.
@@ -14,7 +13,7 @@ export class TicksClass extends TransportTimeClass<Ticks> {
 
 	name = "Ticks";
 
-	readonly defaultUnits: TypeBaseUnits = "i";
+	readonly defaultUnits: TimeBaseUnit = "i";
 
 	/**
 	 * Get the current time in the given units
@@ -59,6 +58,6 @@ export class TicksClass extends TransportTimeClass<Ticks> {
 	}
 }
 
-export function Ticks(value: Time, units?: TypeBaseUnits): TicksClass {
+export function Ticks(value?: TimeValue, units?: TimeBaseUnit): TicksClass {
 	return new TicksClass(getContext(), value, units);
 }

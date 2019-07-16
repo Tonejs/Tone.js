@@ -1,6 +1,6 @@
 import { getContext } from "../Global";
 import { ftom } from "./Conversions";
-import { TypeBaseClass, TypeBaseExpression, TypeBaseUnits } from "./TypeBase";
+import { TimeBaseClass, TimeBaseUnit, TimeExpression, TimeValue } from "./TimeBase";
 
 /**
  * TimeClass is a primitive type for encoding and decoding Time values.
@@ -10,15 +10,16 @@ import { TypeBaseClass, TypeBaseExpression, TypeBaseUnits } from "./TypeBase";
  * @example
  * var t = Time("4n");//a quarter note
  */
-export class TimeClass<Type extends Seconds | Ticks = Seconds> extends TypeBaseClass<Type> {
+export class TimeClass<Type extends Seconds | Ticks = Seconds, Unit extends string = TimeBaseUnit>
+extends TimeBaseClass<Type, Unit> {
 
 	name = "Time";
 
-	protected _getExpressions(defaultUnit): TypeBaseExpression<Type> {
-		return Object.assign(super._getExpressions(defaultUnit), {
+	protected _getExpressions(): TimeExpression<Type> {
+		return Object.assign(super._getExpressions(), {
 			now: {
 				method: (capture: string): Type => {
-					return this._now() + new TimeClass(this.context, capture).valueOf() as Type;
+					return this._now() + new (this.constructor as typeof TimeClass)(this.context, capture).valueOf() as Type;
 				},
 				regexp: /^\+(.+)/,
 			},
@@ -42,8 +43,8 @@ export class TimeClass<Type extends Seconds | Ticks = Seconds> extends TypeBaseC
 	 * Time(21).quantize(2) //returns 22
 	 * Time(0.6).quantize("4n", 0.5) //returns 0.55
 	 */
-	quantize(subdiv: number | string | TimeObject, percent = 1): Type {
-		const subdivision = new TimeClass(this.context, subdiv).valueOf();
+	quantize(subdiv: number | Subdivision | TimeObject, percent = 1): Type {
+		const subdivision = new (this.constructor as typeof TimeClass)(this.context, subdiv).valueOf();
 		const value = this.valueOf();
 		const multiple = Math.round(value / subdivision);
 		const ideal = multiple * subdivision;
@@ -132,6 +133,11 @@ export class TimeClass<Type extends Seconds | Ticks = Seconds> extends TypeBaseC
 	}
 }
 
-export function Time(value?: Time, units?: TypeBaseUnits): TimeClass {
+/**
+ * Create a TimeClass from a time string or number.
+ * @param value A value which reprsents time
+ * @param units The value's units if they can't be inferred by the value.
+ */
+export function Time(value?: TimeValue, units?: TimeBaseUnit): TimeClass<Seconds> {
 	return new TimeClass(getContext(), value, units);
 }
