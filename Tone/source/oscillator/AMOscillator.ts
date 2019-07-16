@@ -71,7 +71,7 @@ export class AMOscillator extends Source<AMOscillatorOptions> implements Oscilla
 	 * //pitch the modulator an octave below carrier
 	 * synth.harmonicity.value = 0.5;
 	 */
-	harmonicity = new Multiply({
+	readonly harmonicity: Signal<Positive> = new Multiply({
 		context: this.context,
 		units: "positive",
 	});
