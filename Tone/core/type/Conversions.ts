@@ -53,8 +53,18 @@ export function setA4(freq: Hertz): void {
  * Convert a frequency value to a MIDI note.
  * @param frequency The value to frequency value to convert.
  * @example
- * Frequency.ftom(440); // returns 69
+ * ftom(440); // returns 69
  */
 export function ftom(frequency: Hertz): MidiNote {
 	return 69 + Math.round(12 * Math.log2(frequency / A4));
+}
+
+/**
+ * Convert a MIDI note to frequency value.
+ * @param  midi The midi number to convert.
+ * @return The corresponding frequency value
+ * @example
+ */
+export function mtof(midi: MidiNote): Hertz {
+	return A4 * Math.pow(2, (midi - 69) / 12);
 }
