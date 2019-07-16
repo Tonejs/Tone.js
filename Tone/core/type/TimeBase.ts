@@ -299,6 +299,11 @@ export abstract class TimeBaseClass<Type extends number, Unit extends string> ex
 	abstract toMidi(): MidiNote;
 
 	/**
+	 * Convert the value into ticks
+	 */
+	abstract toTicks(): Ticks;
+
+	/**
 	 *  Return the value in hertz
 	 */
 	toFrequency(): Hertz {
@@ -317,13 +322,6 @@ export abstract class TimeBaseClass<Type extends number, Unit extends string> ex
 	 */
 	toMilliseconds(): Milliseconds {
 		return this.toSeconds() * 1000;
-	}
-
-	/**
-	 * Convert the value into ticks
-	 */
-	toTicks(): Ticks {
-		return 0;
 	}
 
 	/**
