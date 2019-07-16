@@ -1,4 +1,9 @@
 export { Noise } from "./Noise";
 export { Oscillator } from "./oscillator/Oscillator";
+export { AMOscillator } from "./oscillator/AMOscillator";
+export { FMOscillator } from "./oscillator/FMOscillator";
+export { PulseOscillator } from "./oscillator/PulseOscillator";
+export { FatOscillator } from "./oscillator/FatOscillator";
+export { PWMOscillator } from "./oscillator/PWMOscillator";
 export { ToneOscillatorNode } from "./oscillator/OscillatorNode";
 export { ToneBufferSource } from "./buffer/BufferSource";
