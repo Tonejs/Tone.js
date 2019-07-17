@@ -1,6 +1,7 @@
 import { AbstractParam } from "../core/context/AbstractParam";
 import { Param } from "../core/context/Param";
 import { InputNode, OutputNode, ToneAudioNode, ToneAudioNodeOptions } from "../core/context/ToneAudioNode";
+import { connect } from "../core/context/ToneAudioNode";
 import { optionsFromArguments } from "../core/util/Defaults";
 
 export interface SignalOptions<Type> extends ToneAudioNodeOptions {
@@ -180,4 +181,29 @@ implements AbstractParam<Type> {
 	get minValue(): number {
 		return this._param.minValue;
 	}
+}
+
+/**
+ * When connecting from a signal, it's necessary to zero out the node destination
+ * node if that node is also a signal. If the destination is not 0, then the values
+ * will be summed. This method insures that the output of the destination signal will
+ * be the same as the source signal, making the destination signal a pass through node.
+ * @param signal The output signal to connect from
+ * @param destination the destination to connect to
+ * @param outputNum the optional output number
+ * @param inputNum the input number
+ */
+export function connectSignal(signal: OutputNode, destination: InputNode, outputNum?: number, inputNum?: number): void {
+	if (destination instanceof Param || destination instanceof AudioParam ||
+		(destination instanceof Signal && destination.override)) {
+		// cancel changes
+		destination.cancelScheduledValues(0);
+		// reset the value
+		destination.setValueAtTime(0, 0);
+		// mark the value as overridden
+		if (destination instanceof Signal) {
+			destination.overridden = true;
+		}
+	}
+	connect(signal, destination, outputNum, inputNum);
 }

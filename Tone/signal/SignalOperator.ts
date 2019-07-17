@@ -1,7 +1,6 @@
 import { optionsFromArguments } from "..//core/util/Defaults";
-import { Param } from "../core/context/Param";
 import { InputNode, ToneAudioNode, ToneAudioNodeOptions } from "../core/context/ToneAudioNode";
-import { Signal } from "./Signal";
+import { connectSignal } from "./Signal";
 /**
  * A signal operator has an input and output and modifies the signal.
  */
@@ -12,19 +11,8 @@ export abstract class SignalOperator<Options extends ToneAudioNodeOptions> exten
 		super(Object.assign(optionsFromArguments(SignalOperator.getDefaults(), arguments, ["context"])));
 	}
 
-	connect(destination: InputNode, outputNum = 0, inputNum = 0): this {
-		if (destination instanceof Param || destination instanceof AudioParam ||
-			(destination instanceof Signal && destination.override)) {
-			// cancel changes
-			destination.cancelScheduledValues(0);
-			// reset the value
-			destination.setValueAtTime(0, 0);
-			// mark the value as overridden
-			if (destination instanceof Signal) {
-				destination.overridden = true;
-			}
-		}
-		super.connect(destination, outputNum, inputNum);
+	connect(destination: InputNode, outputNum: number = 0, inputNum: number = 0): this {
+		connectSignal(this, destination, outputNum, inputNum);
 		return this;
 	}
 }
