@@ -5,5 +5,6 @@ export { FMOscillator } from "./oscillator/FMOscillator";
 export { PulseOscillator } from "./oscillator/PulseOscillator";
 export { FatOscillator } from "./oscillator/FatOscillator";
 export { PWMOscillator } from "./oscillator/PWMOscillator";
+export { OmniOscillator } from "./oscillator/OmniOscillator";
 export { ToneOscillatorNode } from "./oscillator/OscillatorNode";
 export { ToneBufferSource } from "./buffer/BufferSource";
