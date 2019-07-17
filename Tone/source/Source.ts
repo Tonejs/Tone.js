@@ -103,6 +103,7 @@ export abstract class Source<Options extends SourceOptions> extends ToneAudioNod
 	static getDefaults(): SourceOptions {
 		return Object.assign(ToneAudioNode.getDefaults(), {
 			mute: false,
+			numberOfOutputs: 1,
 			volume: 0,
 		});
 	}
