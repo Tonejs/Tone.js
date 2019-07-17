@@ -1,6 +1,6 @@
-import { Param } from "Tone/core/context/Param";
-import { optionsFromArguments } from "Tone/core/util/Defaults";
 import { Gain } from "../core/context/Gain";
+import { Param } from "../core/context/Param";
+import { optionsFromArguments } from "../core/util/Defaults";
 import { Signal, SignalOptions } from "./Signal";
 
 /**

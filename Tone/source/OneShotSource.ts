@@ -1,8 +1,7 @@
-import { Tone } from "Tone/core/Tone";
-import { PlaybackState } from "Tone/core/util/StateTimeline";
 import { Gain } from "../core/context/Gain";
 import { ToneAudioNode, ToneAudioNodeOptions } from "../core/context/ToneAudioNode";
 import { noOp } from "../core/util/Interface";
+import { PlaybackState } from "../core/util/StateTimeline";
 
 export interface OneShotSourceOptions extends ToneAudioNodeOptions {
 	onended: () => void;

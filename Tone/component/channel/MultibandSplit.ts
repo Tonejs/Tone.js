@@ -1,8 +1,8 @@
-import { Gain } from "Tone/core/context/Gain";
-import { optionsFromArguments } from "Tone/core/util/Defaults";
-import { readOnly, writable } from "Tone/core/util/Interface";
-import { Signal } from "Tone/signal/Signal";
+import { Gain } from "../../core/context/Gain";
 import { ToneAudioNode, ToneAudioNodeOptions } from "../../core/context/ToneAudioNode";
+import { optionsFromArguments } from "../../core/util/Defaults";
+import { readOnly, writable } from "../../core/util/Interface";
+import { Signal } from "../../signal/Signal";
 import { Filter } from "../filter/Filter";
 
 interface MultibandSplitOptions extends ToneAudioNodeOptions {

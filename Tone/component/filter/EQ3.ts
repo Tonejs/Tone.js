@@ -1,9 +1,9 @@
-import { Gain } from "Tone/core/context/Gain";
-import { Param } from "Tone/core/context/Param";
-import { ToneAudioNode, ToneAudioNodeOptions } from "Tone/core/context/ToneAudioNode";
-import { optionsFromArguments } from "Tone/core/util/Defaults";
-import { readOnly, writable } from "Tone/core/util/Interface";
-import { Signal } from "Tone/signal/Signal";
+import { Gain } from "../../core/context/Gain";
+import { Param } from "../../core/context/Param";
+import { ToneAudioNode, ToneAudioNodeOptions } from "../../core/context/ToneAudioNode";
+import { optionsFromArguments } from "../../core/util/Defaults";
+import { readOnly, writable } from "../../core/util/Interface";
+import { Signal } from "../../signal/Signal";
 import { MultibandSplit } from "../channel/MultibandSplit";
 
 interface EQ3Options extends ToneAudioNodeOptions {
