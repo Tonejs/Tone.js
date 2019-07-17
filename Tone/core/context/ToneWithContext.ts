@@ -152,8 +152,8 @@ export abstract class ToneWithContext<Options extends ToneWithContextOptions> ex
 	 */
 	set(props: Partial<Options>): this {
 		Object.keys(props).forEach(attribute => {
-			if (Reflect.has(this, attribute)) {
-				if (isDefined(this[attribute]) && isDefined(this[attribute].value)) {
+			if (Reflect.has(this, attribute) && isDefined(this[attribute])) {
+				if (isDefined(this[attribute].value)) {
 					this[attribute].value = props[attribute];
 				} else if (this[attribute] instanceof ToneWithContext) {
 					this[attribute].set(props[attribute]);
