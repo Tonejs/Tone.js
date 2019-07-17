@@ -17,7 +17,7 @@ export interface PulseOscillatorOptions extends ToneOscillatorOptions {
  * also known as the duty cycle. At 50% duty cycle (width = 0) the wave is
  * a square wave.
  * [Read more](https://wigglewave.wordpress.com/2014/08/16/pulse-waveforms-and-harmonics/).
- * <pre>
+ * ```
  *    width = -0.25        width = 0.0          width = 0.25
  *
  *   +-----+            +-------+       +    +-------+     +-+
@@ -40,8 +40,7 @@ export interface PulseOscillatorOptions extends ToneOscillatorOptions {
  *       | |                                         | |
  *       | |                                         | |
  * +-----+ +-------+                                 +-+
- *
- * </pre>
+ * ```
  * @param frequency The frequency of the oscillator
  * @param width The width of the pulse
  * @example

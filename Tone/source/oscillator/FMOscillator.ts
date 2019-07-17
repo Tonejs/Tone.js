@@ -14,7 +14,7 @@ export interface FMOscillatorOptions extends ToneOscillatorOptions {
 
 /**
  * FMOscillator implements a frequency modulation synthesis
- * <pre>
+ * ```
  *                                              +-------------+
  * +---------------+        +-------------+     | Carrier Osc |
  * | Modulator Osc +>-------> GainNode    |     |             +--->Output
@@ -24,7 +24,8 @@ export interface FMOscillatorOptions extends ToneOscillatorOptions {
  * +-----------------+   |
  * | modulationIndex +>--+
  * +-----------------+
- * </pre>
+ * ```
+ *
  * @param frequency The starting frequency of the oscillator.
  * @param type The type of the carrier oscillator.
  * @param modulationType The type of the modulator oscillator.

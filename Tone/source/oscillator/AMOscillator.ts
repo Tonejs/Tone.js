@@ -16,8 +16,7 @@ export interface AMOscillatorOptions extends ToneOscillatorOptions {
  * An amplitude modulated oscillator node. It is implemented with
  * two oscillators, one which modulators the other's amplitude
  * through a gain node.
- *
- * <pre>
+ * ```
  *    +-------------+       +----------+
  *    | Carrier Osc +>------> GainNode |
  *    +-------------+       |          +--->Output
@@ -25,7 +24,7 @@ export interface AMOscillatorOptions extends ToneOscillatorOptions {
  * +---------------+    |   +----------+
  * | Modulator Osc +>---+
  * +---------------+
- * </pre>
+ * ```
  *
  * @param frequency The starting frequency of the oscillator.
  * @param type The type of the carrier oscillator.
