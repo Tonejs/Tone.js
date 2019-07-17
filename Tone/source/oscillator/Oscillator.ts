@@ -3,8 +3,11 @@ import { readOnly } from "../../core/util/Interface";
 import { Signal } from "../../signal/Signal";
 import { Source, SourceOptions } from "../Source";
 import { ToneOscillatorNode } from "./OscillatorNode";
+// type OmniOscillatorSourceType = import("./OmniOscillator").OmniOscillatorSourceType;
 
-export type ToneOscillatorType = OscillatorType | string;
+export type ToneOscillatorBaseType = OscillatorType | "pulse" | "pwm";
+
+export type ToneOscillatorType = ToneOscillatorBaseType | string;
 
 export interface ToneOscillatorOptions extends SourceOptions {
 	type: ToneOscillatorType;
@@ -25,7 +28,8 @@ export interface OscillatorInterface {
 	readonly frequency: Signal<Frequency>;
 	readonly detune: Signal<Cents>;
 	type: ToneOscillatorType;
-	baseType: OscillatorType | "pulse" | "pwm";
+	baseType: ToneOscillatorBaseType;
+	// sourceType: OmniOscillatorSourceType;
 }
 
 /**
@@ -431,7 +435,9 @@ export class Oscillator extends Source<ToneOscillatorOptions> implements Oscilla
 	}
 	set partials(partials: number[]) {
 		this._partials = partials;
-		this.type = "custom";
+		if (partials.length) {
+			this.type = "custom";
+		}
 	}
 
 	/**

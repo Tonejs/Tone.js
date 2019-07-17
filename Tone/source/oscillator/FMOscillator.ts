@@ -6,7 +6,7 @@ import { Signal } from "../../signal/Signal";
 import { Source } from "../Source";
 import { Oscillator, OscillatorInterface, ToneOscillatorOptions, ToneOscillatorType } from "./Oscillator";
 
-interface FMOscillatorOptions extends ToneOscillatorOptions {
+export interface FMOscillatorOptions extends ToneOscillatorOptions {
 	harmonicity: Positive;
 	modulationIndex: Positive;
 	modulationType: ToneOscillatorType;

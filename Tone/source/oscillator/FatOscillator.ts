@@ -7,7 +7,7 @@ import { Signal } from "../../signal/Signal";
 import { Source } from "../Source";
 import { Oscillator, OscillatorInterface, ToneOscillatorOptions, ToneOscillatorType } from "./Oscillator";
 
-interface FatOscillatorOptions extends ToneOscillatorOptions {
+export interface FatOscillatorOptions extends ToneOscillatorOptions {
 	spread: Cents;
 	count: Positive;
 	type: ToneOscillatorType;
@@ -226,7 +226,7 @@ export class FatOscillator extends Source<FatOscillatorOptions> implements Oscil
 		return this._oscillators[0].baseType;
 	}
 	set baseType(baseType: OscillatorType) {
-		this._forEach(osc =>  osc.baseType = baseType);
+		this._forEach(osc => osc.baseType = baseType);
 		this._type = this._oscillators[0].type;
 	}
 
@@ -248,8 +248,10 @@ export class FatOscillator extends Source<FatOscillatorOptions> implements Oscil
 	}
 	set partials(partials: number[]) {
 		this._partials = partials;
-		this._type = "custom";
-		this._forEach(osc => osc.partials = partials);
+		if (partials.length) {
+			this._type = "custom";
+			this._forEach(osc => osc.partials = partials);
+		}
 	}
 
 	/**

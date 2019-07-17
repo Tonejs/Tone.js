@@ -1,15 +1,14 @@
-import { readOnly } from "Tone/core/util/Interface";
-import { WaveShaper } from "Tone/signal/WaveShaper";
 import { Gain } from "../../core/context/Gain";
-import { Param } from "../../core/context/Param";
 import { optionsFromArguments } from "../../core/util/Defaults";
+import { readOnly } from "../../core/util/Interface";
 import { Signal } from "../../signal/Signal";
+import { WaveShaper } from "../../signal/WaveShaper";
 import { Source } from "../Source";
 import { Oscillator, OscillatorInterface, ToneOscillatorOptions, ToneOscillatorType } from "./Oscillator";
 
 type PulseOscillatorType = "pulse";
 
-interface PulseOscillatorOptions extends ToneOscillatorOptions {
+export interface PulseOscillatorOptions extends ToneOscillatorOptions {
 	width: NormalRange;
 }
 

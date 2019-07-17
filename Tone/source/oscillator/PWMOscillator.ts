@@ -7,7 +7,7 @@ import { Source } from "../Source";
 import { Oscillator, OscillatorInterface, ToneOscillatorOptions, ToneOscillatorType } from "./Oscillator";
 import { PulseOscillator } from "./PulseOscillator";
 
-interface PWMOscillatorOptions extends ToneOscillatorOptions {
+export interface PWMOscillatorOptions extends ToneOscillatorOptions {
 	modulationFrequency: Frequency;
 }
 
@@ -29,6 +29,8 @@ type PWMOscillatorType = "pwm";
 export class PWMOscillator extends Source<PWMOscillatorOptions> implements OscillatorInterface {
 
 	name = "PWMOscillator";
+
+	readonly sourceType = "pwm";
 
 	/**
 	 *  the pulse oscillator
@@ -65,6 +67,8 @@ export class PWMOscillator extends Source<PWMOscillatorOptions> implements Oscil
 	 */
 	readonly modulationFrequency: Signal<Frequency> = this._pulse.frequency;
 
+	constructor(options?: Partial<PWMOscillatorOptions>);
+	constructor(frequency?: Frequency, modulationFrequency?: Frequency);
 	constructor() {
 		super(optionsFromArguments(PWMOscillator.getDefaults(), arguments, ["frequency", "modulationFrequency"]));
 		const options = optionsFromArguments(PWMOscillator.getDefaults(), arguments, ["frequency", "modulationFrequency"]);
