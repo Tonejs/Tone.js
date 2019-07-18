@@ -33,10 +33,6 @@ type TypeofAnyOscillator = typeof Oscillator | typeof PWMOscillator |
  */
 type OmniOscillatorType = string;
 
-interface OmniOscillatorOptions extends ToneOscillatorOptions {
-	type: OmniOscillatorType;
-}
-
 /**
  * Select the Oscillator's Options depending on the generic type.
  */
@@ -48,6 +44,11 @@ type ConditionalOptions<Osc extends AnyOscillator> =
 	Osc extends PulseOscillator ? PulseOscillatorOptions :
 	Osc extends PWMOscillator ? PWMOscillatorOptions :
 	ToneOscillatorOptions;
+
+/**
+ * The aggregate options of all of the oscillators
+ */
+export type OmniOscillatorOptions = ConditionalOptions<AnyOscillator>;
 
 /**
  * All of the Oscillator constructor types mapped to their name.
