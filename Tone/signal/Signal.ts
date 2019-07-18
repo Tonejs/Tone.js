@@ -73,18 +73,7 @@ implements AbstractParam<Type> {
 	}
 
 	connect(destination: InputNode, outputNum = 0, inputNum = 0): this {
-		if (destination instanceof Param || destination instanceof AudioParam ||
-			(destination instanceof Signal && destination.override)) {
-			// cancel changes
-			destination.cancelScheduledValues(0);
-			// reset the value
-			destination.setValueAtTime(0, 0);
-			// mark the value as overridden
-			if (destination instanceof Signal) {
-				destination.overridden = true;
-			}
-		}
-		super.connect(destination, outputNum, inputNum);
+		connectSignal(this, destination, outputNum, inputNum);
 		return this;
 	}
 
