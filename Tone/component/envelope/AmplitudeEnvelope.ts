@@ -30,6 +30,8 @@ import { Envelope, EnvelopeOptions } from "./Envelope";
  */
 export class AmplitudeEnvelope extends Envelope {
 
+	name = "AmplitudeEnvelope";
+
 	private _gainNode: Gain = new Gain({
 		context: this.context,
 		gain: 0,
