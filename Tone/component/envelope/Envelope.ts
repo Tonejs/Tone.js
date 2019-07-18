@@ -1,4 +1,4 @@
-import { InputNode } from "Tone/core/context/ToneAudioNode";
+import { InputNode, OutputNode } from "Tone/core/context/ToneAudioNode";
 import { ToneAudioNode, ToneAudioNodeOptions } from "../../core/context/ToneAudioNode";
 import { optionsFromArguments } from "../../core/util/Defaults";
 import { isArray, isObject, isString } from "../../core/util/TypeCheck";
@@ -24,8 +24,6 @@ export interface EnvelopeOptions extends ToneAudioNodeOptions {
  *  can be connected to an AudioParam or Tone.Signal.
  *  <img src="https://upload.wikimedia.org/wikipedia/commons/e/ea/ADSR_parameter.svg">
  *
- *  @constructor
- *  @extends {Tone.AudioNode}
  *  @param attack The amount of time it takes for the envelope to go from
  *                         0 to it's maximum value.
  *  @param decay	The period of time after the attack that it takes for the envelope
@@ -93,7 +91,7 @@ export class Envelope extends ToneAudioNode<EnvelopeOptions> {
 	/**
 	 *  the signal which is output.
 	 */
-	private _sig: Signal<NormalRange> = new Signal({
+	protected _sig: Signal<NormalRange> = new Signal({
 		context: this.context,
 		value: 0,
 	});
@@ -102,12 +100,12 @@ export class Envelope extends ToneAudioNode<EnvelopeOptions> {
 	/**
 	 * The output signal of the envelope
 	 */
-	output = this._sig;
+	output: OutputNode = this._sig;
 
 	/**
 	 * Envelope has no input
 	 */
-	input: undefined;
+	input: InputNode | undefined = undefined;
 
 	constructor(attack?: Time, decay?: Time, sustain?: NormalRange, release?: Time);
 	constructor(options?: Partial<EnvelopeOptions>)
@@ -123,8 +121,6 @@ export class Envelope extends ToneAudioNode<EnvelopeOptions> {
 		this.attackCurve = options.attackCurve;
 		this.releaseCurve = options.releaseCurve;
 		this.decayCurve = options.decayCurve;
-		// set all the properties
-		this.set(options);
 	}
 
 	static getDefaults(): EnvelopeOptions {
@@ -384,7 +380,7 @@ export class Envelope extends ToneAudioNode<EnvelopeOptions> {
 	 * Connect the envelope to a destination node.
 	 */
 	connect(destination: InputNode, outputNumber: number = 0, inputNumber: number = 0): this {
-		connectSignal(this._sig, destination, outputNumber, inputNumber);
+		connectSignal(this, destination, outputNumber, inputNumber);
 		return this;
 	}
 
