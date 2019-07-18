@@ -1,4 +1,4 @@
-import { FrequencyClass } from "Tone/core/type/Frequency";
+import { FrequencyClass } from "../core/type/Frequency";
 import { optionsFromArguments } from "../core/util/Defaults";
 import { Instrument, InstrumentOptions } from "../instrument/Instrument";
 import { Signal } from "../signal/Signal";
