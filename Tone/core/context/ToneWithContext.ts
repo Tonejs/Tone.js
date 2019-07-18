@@ -4,8 +4,9 @@ import { FrequencyClass } from "../type/Frequency";
 import { TimeClass } from "../type/Time";
 import { TransportTimeClass } from "../type/TransportTime";
 import "../type/Units";
-import { getDefaultsFromInstance, optionsFromArguments } from "../util/Defaults";
-import { isDefined } from "../util/TypeCheck";
+import { getDefaultsFromInstance, omitFromObject, optionsFromArguments } from "../util/Defaults";
+import { RecursivePartial } from "../util/Interface";
+import { isDefined, isUndef } from "../util/TypeCheck";
 import { Context } from "./Context";
 
 /**
@@ -122,15 +123,18 @@ export abstract class ToneWithContext<Options extends ToneWithContextOptions> ex
 		Object.keys(defaults).forEach(attribute => {
 			if (Reflect.has(this, attribute)) {
 				const member = this[attribute];
-				if (isDefined(member) && isDefined(member.value)) {
+				if (isDefined(member) && isDefined(member.value) && isDefined(member.setValueAtTime)) {
 					defaults[attribute] = member.value;
 				} else if (member instanceof ToneWithContext) {
-					defaults[attribute] = member.get();
+					const attributes = member.get();
+					// merge only the attributes that are in the defaults
+					Object.keys(defaults[attribute]).forEach(key => {
+						defaults[attribute][key] = attributes[key];
+					});
 				} else {
 					defaults[attribute] = member;
 				}
 			}
-
 		});
 		return defaults;
 	}
@@ -150,10 +154,10 @@ export abstract class ToneWithContext<Options extends ToneWithContextOptions> ex
 	 * 	"type" : "highpass"
 	 * });
 	 */
-	set(props: Partial<Options>): this {
+	set(props: RecursivePartial<Options>): this {
 		Object.keys(props).forEach(attribute => {
 			if (Reflect.has(this, attribute) && isDefined(this[attribute])) {
-				if (isDefined(this[attribute].value)) {
+				if (isDefined(this[attribute].value) && isDefined(this[attribute].setValueAtTime)) {
 					this[attribute].value = props[attribute];
 				} else if (this[attribute] instanceof ToneWithContext) {
 					this[attribute].set(props[attribute]);
