@@ -31,7 +31,7 @@ export function BasicTests(Constr, ...args: any[]): void {
 				// also check all of it's attributes to see if they also have the right context
 				for (const member in instance) {
 					if (instance[member] instanceof ToneWithContext) {
-						expect(instance[member].context).to.equal(testAudioContext);
+						expect(instance[member].context, `member: ${member}`).to.equal(testAudioContext);
 					}
 				}
 			}
