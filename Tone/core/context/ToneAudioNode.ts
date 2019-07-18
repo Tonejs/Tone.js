@@ -76,7 +76,7 @@ extends ToneWithContext<Options> {
 		const options = optionsFromArguments(ToneAudioNode.getDefaults(), arguments, ["context"]);
 
 		this.numberOfInputs = options.numberOfInputs;
-		this.numberOfOutputs = options.numberOfInputs;
+		this.numberOfOutputs = options.numberOfOutputs;
 	}
 
 	protected createInsOuts(numberOfInputs: number = 0, numberOfOutputs: number = 0): void {
