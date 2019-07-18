@@ -269,7 +269,6 @@ describe("OmniOscillator", () => {
 
 		it("setting/getting values when the wrong type is set has no effect", () => {
 			const omni = new OmniOscillator(440, "sine");
-			console.log(omni.harmonicity);
 			omni.set({
 				harmonicity : 3,
 				modulationIndex : 4,
