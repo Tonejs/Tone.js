@@ -8,13 +8,7 @@ export interface MonophonicOptions extends InstrumentOptions {
 }
 
 /**
- *  @class  This is an abstract base class for other monophonic instruments to
- *          extend. IMPORTANT: It does not make any sound on its own and
- *          shouldn't be directly instantiated.
- *
- *  @constructor
- *  @abstract
- *  @extends {Tone.Instrument}
+ * Abstract base class for other monophonic instruments to extend.
  */
 export abstract class Monophonic<Options extends MonophonicOptions> extends Instrument<Options> {
 
