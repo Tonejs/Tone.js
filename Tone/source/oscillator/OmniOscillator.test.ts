@@ -280,7 +280,7 @@ describe("OmniOscillator", () => {
 			omni.modulationType = "sine";
 			expect(omni.modulationType).to.be.undefined;
 			expect(omni.modulationIndex).to.be.undefined;
-			// expect(omni.harmonicity).to.be.undefined;
+			expect(omni.harmonicity).to.be.undefined;
 			omni.dispose();
 		});
 	});
