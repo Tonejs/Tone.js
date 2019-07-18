@@ -1,0 +1,164 @@
+import { Volume } from "../component/channel/Volume";
+import { Param } from "../core/context/Param";
+import { OutputNode, ToneAudioNode, ToneAudioNodeOptions } from "../core/context/ToneAudioNode";
+import { optionsFromArguments } from "../core/util/Defaults";
+import { readOnly } from "../core/util/Interface";
+
+export interface InstrumentOptions extends ToneAudioNodeOptions {
+	volume: Decibels;
+}
+
+/**
+ *  Base-class for all instruments
+ */
+export abstract class Instrument<Options extends InstrumentOptions> extends ToneAudioNode<Options> {
+
+	/**
+	 *  The output and volume triming node
+	 */
+	private _volume: Volume;
+	output: OutputNode;
+
+	/**
+	 * The volume of the output in decibels.
+	 * @example
+	 * source.volume.value = -6;
+	 */
+	volume: Param<Decibels>;
+
+	/**
+	 * Keep track of all events scheduled to the transport
+	 * when the instrument is 'synced'
+	 */
+	private _scheduledEvents: number[] = [];
+
+	/**
+	 * If the instrument is currently synced
+	 */
+	private _synced: boolean = false;
+
+	constructor(options?: Partial<InstrumentOptions>);
+	constructor() {
+
+		super(optionsFromArguments(Instrument.getDefaults(), arguments));
+		const options = optionsFromArguments(Instrument.getDefaults(), arguments);
+
+		this._volume = new Volume({
+			context: this.context,
+			volume: options.volume,
+		});
+		this.volume = this._volume.volume;
+		this.output = this._volume;
+		readOnly(this, "volume");
+	}
+
+	static getDefaults(): InstrumentOptions {
+		return Object.assign(ToneAudioNode.getDefaults(), {
+			numberOfOutputs: 1,
+			volume: 0,
+		});
+	}
+
+	/**
+	 * Sync the instrument to the Transport. All subsequent calls of
+	 * [triggerAttack](#triggerattack) and [triggerRelease](#triggerrelease)
+	 * will be scheduled along the transport.
+	 * @example
+	 * instrument.sync()
+	 * //schedule 3 notes when the transport first starts
+	 * instrument.triggerAttackRelease('C4', '8n', 0)
+	 * instrument.triggerAttackRelease('E4', '8n', '8n')
+	 * instrument.triggerAttackRelease('G4', '8n', '4n')
+	 * //start the transport to hear the notes
+	 * Transport.start()
+	 * @returns {Instrument} this
+	 */
+	sync(): this {
+		if (!this._synced) {
+			this._synced = true;
+			this._syncMethod("triggerAttack", 1);
+			this._syncMethod("triggerRelease", 0);
+		}
+		return this;
+	}
+
+	/**
+	 * Wrap the given method so that it can be synchronized
+	 * @param method Which method to wrap and sync
+	 * @param  timePosition What position the time argument appears in
+	 * @private
+	 */
+	private _syncMethod(method: string, timePosition: number): void {
+		const originalMethod = this["_original_" + method] = this[method];
+		this[method] = (...args: any[]) => {
+			const time = args[timePosition];
+			const id = this.context.transport.schedule((t) => {
+				args[timePosition] = t;
+				originalMethod.apply(this, args);
+			}, time);
+			this._scheduledEvents.push(id);
+		};
+	}
+
+	/**
+	 * Unsync the instrument from the Transport
+	 */
+	unsync(): this {
+		this._scheduledEvents.forEach(id => this.context.transport.clear(id));
+		this._scheduledEvents = [];
+		if (this._synced) {
+			this._synced = false;
+			this.triggerAttack = this._original_triggerAttack;
+			this.triggerRelease = this._original_triggerRelease;
+		}
+		return this;
+	}
+
+	/**
+	 *  Trigger the attack and then the release after the duration.
+	 *  @param  note     The note to trigger.
+	 *  @param  duration How long the note should be held for before
+	 *                          triggering the release. This value must be greater than 0.
+	 *  @param time  When the note should be triggered.
+	 *  @param  velocity The velocity the note should be triggered at.
+	 *  @example
+	 * //trigger "C4" for the duration of an 8th note
+	 * synth.triggerAttackRelease("C4", "8n");
+	 */
+	triggerAttackRelease(note: Frequency, duration: Time, time?: Time, velocity?: NormalRange): this {
+		const computedTime = this.toSeconds(time);
+		const computedDuration = this.toSeconds(duration);
+		this.triggerAttack(note, computedTime, velocity);
+		this.triggerRelease(computedTime + computedDuration);
+		return this;
+	}
+
+	/**
+	 * Start the instrument's note.
+	 * @param note the note to trigger
+	 * @param time the time to trigger the ntoe
+	 * @param velocity the velocity to trigger the note (betwee 0-1)
+	 */
+	abstract triggerAttack(note: Frequency, time?: Time, velocity?: NormalRange): this;
+	// tslint:disable-next-line: variable-name
+	private _original_triggerAttack = this.triggerAttack;
+
+	/**
+	 * Trigger the release phase of the current note.
+	 *  @param time when to trigger the release
+	 */
+	abstract triggerRelease(time?: Time): this;
+	// tslint:disable-next-line: variable-name
+	private _original_triggerRelease = this.triggerRelease;
+
+	/**
+	 *  clean up
+	 *  @returns {Instrument} this
+	 */
+	dispose(): this {
+		this._volume.dispose();
+		this.unsync();
+		this._scheduledEvents = [];
+		return this;
+	}
+}
