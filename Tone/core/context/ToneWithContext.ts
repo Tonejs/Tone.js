@@ -6,7 +6,7 @@ import { TransportTimeClass } from "../type/TransportTime";
 import "../type/Units";
 import { getDefaultsFromInstance, omitFromObject, optionsFromArguments } from "../util/Defaults";
 import { RecursivePartial } from "../util/Interface";
-import { isDefined, isUndef } from "../util/TypeCheck";
+import { isArray, isDefined, isNumber, isString, isUndef } from "../util/TypeCheck";
 import { Context } from "./Context";
 
 /**
@@ -101,22 +101,10 @@ export abstract class ToneWithContext<Options extends ToneWithContextOptions> ex
 	///////////////////////////////////////////////////////////////////////////
 
 	/**
-	 * Get the object's attributes. Given no arguments get
-	 * will return all available object properties and their corresponding
-	 * values. Pass in a single attribute to retrieve or an array
-	 * of attributes. The attribute strings can also include a "."
-	 * to access deeper properties.
-	 * @param params the parameters to get, otherwise will return all available.
+	 * Get the object's attributes.
 	 * @example
 	 * osc.get();
 	 * //returns {"type" : "sine", "frequency" : 440, ...etc}
-	 * @example
-	 * osc.get("type");
-	 * //returns { "type" : "sine"}
-	 * @example
-	 * //use dot notation to access deep properties
-	 * synth.get(["envelope.attack", "envelope.release"]);
-	 * //returns {"envelope" : {"attack" : 0.2, "release" : 0.4}}
 	 */
 	get(): Options {
 		const defaults = getDefaultsFromInstance(this) as Options;
@@ -126,16 +114,17 @@ export abstract class ToneWithContext<Options extends ToneWithContextOptions> ex
 				if (isDefined(member) && isDefined(member.value) && isDefined(member.setValueAtTime)) {
 					defaults[attribute] = member.value;
 				} else if (member instanceof ToneWithContext) {
-					const attributes = member.get();
-					// merge only the attributes that are in the defaults
-					Object.keys(defaults[attribute]).forEach(key => {
-						defaults[attribute][key] = attributes[key];
-					});
-				} else {
+					defaults[attribute] = member.get();
+				// otherwise make sure it's a serializable type
+				} else if (isArray(member) || isNumber(member) || isString(member)) {
 					defaults[attribute] = member;
+				} else {
+					// remove all undefined and unserializable attributes
+					delete defaults[attribute];
 				}
 			}
 		});
+
 		return defaults;
 	}
 
