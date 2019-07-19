@@ -31,3 +31,4 @@ test/test.js
 docs
 .vscode
 tone.d.ts
+examples/scratch.ts

@@ -39,7 +39,7 @@ const defaults = {
 
 const scratch = Object.assign({}, defaults, {
 	entry : {
-		scratch : "./examples/scratch.js",
+		scratch : "./examples/scratch.ts",
 	},
 	plugins : [
 		new HtmlWebpackPlugin({
