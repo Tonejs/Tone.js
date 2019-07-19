@@ -1,6 +1,7 @@
+import { Source } from "Tone/source/Source";
 import { AmplitudeEnvelope } from "../component/envelope/AmplitudeEnvelope";
 import { Envelope, EnvelopeOptions } from "../component/envelope/Envelope";
-import { optionsFromArguments } from "../core/util/Defaults";
+import { omitFromObject, optionsFromArguments } from "../core/util/Defaults";
 import { readOnly } from "../core/util/Interface";
 import { RecursivePartial } from "../core/util/Interface";
 import { OmniOscillator } from "../source/oscillator/OmniOscillator";
@@ -72,7 +73,7 @@ export class Synth extends Monophonic<SynthOptions> {
 	static getDefaults(): SynthOptions {
 		return Object.assign(Monophonic.getDefaults(), {
 			envelope: Object.assign(
-				Envelope.getDefaults(),
+				omitFromObject(Envelope.getDefaults(), Object.keys(Source.getDefaults())),
 				{
 					attack : 0.005,
 					decay : 0.1,
@@ -81,7 +82,7 @@ export class Synth extends Monophonic<SynthOptions> {
 				},
 			),
 			oscillator: Object.assign(
-				OmniOscillator.getDefaults(),
+				omitFromObject(OmniOscillator.getDefaults(), Object.keys(Source.getDefaults())),
 				{
 					type: "triangle",
 				},
